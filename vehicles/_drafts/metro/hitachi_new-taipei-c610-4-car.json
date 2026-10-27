@@ -87,6 +87,50 @@
     ],
     "rationale": "Derived from the cited source; see notes."
   },
+  "seats": {
+    "value": 96,
+    "unit": "count",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner"
+    ],
+    "rationale": "About 24 seats per car from published layouts.",
+    "low": 80,
+    "central": 96,
+    "high": 120,
+    "distribution": "triangular"
+  },
+  "standingQuoted": {
+    "value": 554,
+    "unit": "count",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner",
+      "wp-new-taipei-metro-c610"
+    ],
+    "rationale": "Total 650 minus 96 seats.",
+    "low": 530,
+    "central": 554,
+    "high": 570,
+    "distribution": "triangular"
+  },
+  "standingArea": {
+    "value": 138.5,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner",
+      "wp-new-taipei-metro-c610"
+    ],
+    "rationale": "554 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 92.3,
+    "central": 138.5,
+    "high": 184.7,
+    "distribution": "triangular"
+  },
   "totalCapacityQuoted": {
     "value": 650,
     "unit": "count",

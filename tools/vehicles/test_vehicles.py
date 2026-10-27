@@ -117,3 +117,12 @@ def test_supply_system_ids_checked_against_library(repo: Path) -> None:
     problems = check.check(repo)
     assert any("trolley-600v-dc is not in" in p for p in problems)
     assert not any("ocl-750v-dc is not in" in p for p in problems)
+
+
+def test_assumed_seats_make_standing_assumed() -> None:
+    seats = convert.quantity(50, "count", "educated-guess", ["s"], "guess")
+    seats.update(low=40, central=50, high=60)
+    rec = {"seats": seats, "totalCapacityQuoted": convert.quantity(200, "count", "cited", ["s"], None)}
+    convert.derive_capacity(rec)
+    standing = rec["standingQuoted"]
+    assert standing["assumed"] and (standing["low"], standing["high"]) == (140, 160)

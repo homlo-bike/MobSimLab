@@ -72,6 +72,50 @@
       ]
     }
   },
+  "seats": {
+    "value": 24,
+    "unit": "count",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner"
+    ],
+    "rationale": "Typical VAL 208 seating; operators fit different layouts.",
+    "low": 16,
+    "central": 24,
+    "high": 40,
+    "distribution": "triangular"
+  },
+  "standingQuoted": {
+    "value": 100,
+    "unit": "count",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner",
+      "wp-vehicule-automatique-leger"
+    ],
+    "rationale": "Total 124 minus 24 seats.",
+    "low": 84,
+    "central": 100,
+    "high": 108,
+    "distribution": "triangular"
+  },
+  "standingArea": {
+    "value": 25.0,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner",
+      "wp-vehicule-automatique-leger"
+    ],
+    "rationale": "100 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 16.7,
+    "central": 25.0,
+    "high": 33.3,
+    "distribution": "triangular"
+  },
   "totalCapacityQuoted": {
     "value": 124,
     "unit": "count",

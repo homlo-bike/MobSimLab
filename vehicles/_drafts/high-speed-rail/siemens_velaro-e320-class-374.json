@@ -25,6 +25,20 @@
       "wp-british-rail-class-374"
     ]
   },
+  "width": {
+    "value": 2.9,
+    "unit": "m",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner"
+    ],
+    "rationale": "Owner's figure from the Siemens specification, no link; not confirmed.",
+    "low": 2.8,
+    "central": 2.9,
+    "high": 2.95,
+    "distribution": "triangular"
+  },
   "consist": {
     "carLengths": {
       "value": [

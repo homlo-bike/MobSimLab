@@ -42,6 +42,16 @@
   kind: secondary
   date: '2026-06-27'
   note: Imported with the 2026-10-26 catalogue; not re-read in this repository.
+- id: british-trams-online-luas-fleet
+  title: Luas fleet
+  publisher: British Trams Online
+  url: https://www.britishtramsonline.co.uk/fleets/luas.html
+  licence: Publisher's terms; facts cited only
+  access: free
+  retrieved: '2026-10-27'
+  checked_via: none
+  kind: secondary
+  note: Link supplied by the project owner, 2026-10-27; not re-read in this repository.
 - id: caf-caf-secures-two-tram-contracts-in-hungar
   title: CAF secures two tram contracts in Hungary and Spain
   publisher: CAF
@@ -529,6 +539,16 @@
   checked_via: none
   kind: primary
   note: Imported with the 2026-10-26 catalogue; not re-read in this repository.
+- id: mobsimlab-project-ow-estimates-supplied-by-the-project-owner
+  title: Estimates supplied by the project owner in the vehicle catalogue thread
+  publisher: MobSimLab project owner
+  url: https://claude.ai/code/project/chan_01F1w55ANnnpLfXqB5CwyRpk?thread=cmsg_01F1w55ANnnpLfXqB5CwyRpk8ftgFkdmwjYenfiv6kir1f
+  licence: Publisher's terms; facts cited only
+  access: free
+  retrieved: '2026-10-27'
+  checked_via: direct
+  kind: secondary
+  note: Owner's estimates, 2026-10-27; reasoning in each value's rationale.
 - id: motor-coach-industri-mci-j4500-charge-brochure
   title: MCI J4500 CHARGE brochure
   publisher: Motor Coach Industries (hosted by California HVIP)
@@ -636,6 +656,16 @@
   checked_via: none
   kind: secondary
   note: Imported with the 2026-10-26 catalogue; not re-read in this repository.
+- id: railway-pro-the-first-urbos-3-tram-has-arrived-in-bu
+  title: The first Urbos 3 tram has arrived in Budapest
+  publisher: Railway Pro
+  url: https://www.railwaypro.com/wp/the-first-urbos-3-tram-has-arrived-in-budapest/
+  licence: Publisher's terms; facts cited only
+  access: free
+  retrieved: '2026-10-27'
+  checked_via: none
+  kind: secondary
+  note: Link supplied by the project owner, 2026-10-27; not re-read in this repository.
 - id: runwaygirlnetwork-co-eurostar
   title: Eurostar
   publisher: runwaygirlnetwork.com
@@ -1674,6 +1704,16 @@
   checked_via: none
   kind: primary
   note: Imported with the 2026-10-26 catalogue; not re-read in this repository.
+- id: zhengzhou-yutong-bus-ic12e
+  title: IC12E
+  publisher: Zhengzhou Yutong Bus Co., Ltd.
+  url: https://en.yutong.com/products/IC12E.shtml
+  licence: Publisher's terms; facts cited only
+  access: free
+  retrieved: '2026-10-27'
+  checked_via: none
+  kind: primary
+  note: Link supplied by the project owner, 2026-10-27; not re-read in this repository.
 - id: zhengzhou-yutong-bus-yutong-e12-12m-electric-city-bus
   title: Yutong E12 | 12m Electric City Bus
   publisher: Zhengzhou Yutong Bus Co., Ltd.
@@ -1715,6 +1755,16 @@
   checked_via: none
   kind: primary
   note: Imported with the 2026-10-26 catalogue; not re-read in this repository.
+- id: zhengzhou-yutong-bus-zk6128bevg
+  title: ZK6128BEVG
+  publisher: Zhengzhou Yutong Bus Co., Ltd.
+  url: https://en.yutong.com/products/ZK6128BEVG.shtml
+  licence: Publisher's terms; facts cited only
+  access: free
+  retrieved: '2026-10-27'
+  checked_via: none
+  kind: primary
+  note: Link supplied by the project owner, 2026-10-27; not re-read in this repository.
 - id: zugerland-verkehrsbe-technische-daten-mercedes-benz-ecitaro
   title: Technische Daten Mercedes-Benz eCitaro
   publisher: Zugerland Verkehrsbetriebe AG (ZVB)

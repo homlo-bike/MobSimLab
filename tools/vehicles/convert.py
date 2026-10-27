@@ -501,6 +501,8 @@ def apply_additions(rec: dict[str, Any], adds: list[dict[str, Any]], reg: Regist
             note=a["source"].get("note", "Looked up for the catalogue import, 2026-10-27."),
         )
         q = quantity(a["value"], a.get("unit"), a.get("basis", "cited"), [sid], a.get("rationale"))
+        if "low" in a:
+            q.update(low=a["low"], central=a["value"], high=a["high"], distribution="triangular")
         if a["field"].startswith("consist."):
             rec.setdefault("consist", {})[a["field"].split(".", 1)[1]] = q
         else:
@@ -515,13 +517,21 @@ def derive_capacity(rec: dict[str, Any]) -> None:
     """
     seats, total = rec.get("seats"), rec.get("totalCapacityQuoted")
     if "standingQuoted" not in rec and seats and total:
-        rec["standingQuoted"] = quantity(
+        q = quantity(
             total["value"] - seats["value"],
             "count",
-            "documented",
+            "educated-guess" if seats["assumed"] or total["assumed"] else "documented",
             sorted(set(seats["sources"]) | set(total["sources"])),
             f"Total {total['value']} minus {seats['value']} seats.",
         )
+        if q["assumed"]:
+            q.update(
+                low=total.get("low", total["value"]) - seats.get("high", seats["value"]),
+                central=q["value"],
+                high=total.get("high", total["value"]) - seats.get("low", seats["value"]),
+                distribution="triangular",
+            )
+        rec["standingQuoted"] = q
     standing = rec.get("standingQuoted")
     if not standing:
         return

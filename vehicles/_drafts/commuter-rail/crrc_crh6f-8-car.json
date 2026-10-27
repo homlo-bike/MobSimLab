@@ -56,6 +56,50 @@
       ]
     }
   },
+  "seats": {
+    "value": 440,
+    "unit": "count",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner"
+    ],
+    "rationale": "Published CRH6F layouts fall around 430-450 seats.",
+    "low": 400,
+    "central": 440,
+    "high": 500,
+    "distribution": "triangular"
+  },
+  "standingQuoted": {
+    "value": 1062,
+    "unit": "count",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner",
+      "wp-zh-crh6"
+    ],
+    "rationale": "Total 1502 minus 440 seats.",
+    "low": 1002,
+    "central": 1062,
+    "high": 1102,
+    "distribution": "triangular"
+  },
+  "standingArea": {
+    "value": 265.5,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner",
+      "wp-zh-crh6"
+    ],
+    "rationale": "1062 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 177.0,
+    "central": 265.5,
+    "high": 354.0,
+    "distribution": "triangular"
+  },
   "totalCapacityQuoted": {
     "value": 1502,
     "unit": "count",

@@ -67,6 +67,50 @@
       ]
     }
   },
+  "seats": {
+    "value": 180,
+    "unit": "count",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner"
+    ],
+    "rationale": "Estimated from a high-density metro interior.",
+    "low": 130,
+    "central": 180,
+    "high": 220,
+    "distribution": "triangular"
+  },
+  "standingQuoted": {
+    "value": 540,
+    "unit": "count",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner",
+      "wp-b1-guangzhou-metro-car"
+    ],
+    "rationale": "Total 720 minus 180 seats.",
+    "low": 500,
+    "central": 540,
+    "high": 590,
+    "distribution": "triangular"
+  },
+  "standingArea": {
+    "value": 135.0,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner",
+      "wp-b1-guangzhou-metro-car"
+    ],
+    "rationale": "540 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 90.0,
+    "central": 135.0,
+    "high": 180.0,
+    "distribution": "triangular"
+  },
   "totalCapacityQuoted": {
     "value": 720,
     "unit": "count",

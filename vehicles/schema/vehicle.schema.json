@@ -110,6 +110,7 @@
             "overhead-ac",
             "overhead-dc",
             "overhead-multisystem",
+            "supercapacitor",
             "third-rail",
             "dual",
             "unknown"
@@ -232,7 +233,14 @@
         },
         {
           "if": { "properties": { "basis": { "const": "educated-guess" } } },
-          "then": { "required": ["rationale", "low", "central", "high"], "properties": { "assumed": { "const": true } } }
+          "then": { "required": ["rationale"], "properties": { "assumed": { "const": true } } }
+        },
+        {
+          "if": {
+            "required": ["value"],
+            "properties": { "basis": { "const": "educated-guess" }, "value": { "type": "number" } }
+          },
+          "then": { "required": ["low", "central", "high"] }
         }
       ]
     },

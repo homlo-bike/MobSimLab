@@ -25,6 +25,20 @@
       "wp-ns-intercity-nieuwe-generatie"
     ]
   },
+  "width": {
+    "value": 2.8,
+    "unit": "m",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner"
+    ],
+    "rationale": "Owner's figure from the Coradia Stream ICNG specification, no link; the sibling Danish IC5 is 2.82 m.",
+    "low": 2.75,
+    "central": 2.8,
+    "high": 2.85,
+    "distribution": "triangular"
+  },
   "weightEmpty": {
     "value": 285.7,
     "unit": "t",

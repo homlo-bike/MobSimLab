@@ -69,6 +69,50 @@
       ]
     }
   },
+  "seats": {
+    "value": 252,
+    "unit": "count",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner"
+    ],
+    "rationale": "Typical seating of a 6-car Type A train in Shanghai.",
+    "low": 200,
+    "central": 252,
+    "high": 300,
+    "distribution": "triangular"
+  },
+  "standingQuoted": {
+    "value": 1608,
+    "unit": "count",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner",
+      "wp-shanghai-metro-ac18"
+    ],
+    "rationale": "Total 1860 minus 252 seats.",
+    "low": 1560,
+    "central": 1608,
+    "high": 1660,
+    "distribution": "triangular"
+  },
+  "standingArea": {
+    "value": 402.0,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner",
+      "wp-shanghai-metro-ac18"
+    ],
+    "rationale": "1608 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 268.0,
+    "central": 402.0,
+    "high": 536.0,
+    "distribution": "triangular"
+  },
   "totalCapacityQuoted": {
     "value": 1860,
     "unit": "count",

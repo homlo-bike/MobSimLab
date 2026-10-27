@@ -25,6 +25,20 @@
       "wp-skytrain-vancouver-rolling-stock"
     ]
   },
+  "width": {
+    "value": 2.65,
+    "unit": "m",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner"
+    ],
+    "rationale": "Typical ART Mark II body width; not found in a source.",
+    "low": 2.5,
+    "central": 2.65,
+    "high": 2.7,
+    "distribution": "triangular"
+  },
   "consist": {
     "carLengths": {
       "value": [

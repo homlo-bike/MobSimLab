@@ -32,6 +32,50 @@
       "railway-gazette-inte-crrc-rolls-out-tram-equipped-with-automa"
     ]
   },
+  "seats": {
+    "value": 60,
+    "unit": "count",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner"
+    ],
+    "rationale": "No published figure; estimated for a 35.2 m low-floor tram with 380 places.",
+    "low": 45,
+    "central": 60,
+    "high": 75,
+    "distribution": "triangular"
+  },
+  "standingQuoted": {
+    "value": 320,
+    "unit": "count",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner",
+      "railway-gazette-inte-crrc-rolls-out-tram-equipped-with-automa"
+    ],
+    "rationale": "Total 380 minus 60 seats.",
+    "low": 305,
+    "central": 320,
+    "high": 335,
+    "distribution": "triangular"
+  },
+  "standingArea": {
+    "value": 80.0,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner",
+      "railway-gazette-inte-crrc-rolls-out-tram-equipped-with-automa"
+    ],
+    "rationale": "320 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 53.3,
+    "central": 80.0,
+    "high": 106.7,
+    "distribution": "triangular"
+  },
   "totalCapacityQuoted": {
     "value": 380,
     "unit": "count",
@@ -51,13 +95,22 @@
     ]
   },
   "energySource": {
-    "value": "unknown",
-    "assumed": false,
-    "basis": "documented",
+    "value": "supercapacitor",
+    "assumed": true,
+    "basis": "educated-guess",
     "sources": [
-      "railway-gazette-inte-crrc-rolls-out-tram-equipped-with-automa"
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner"
     ],
-    "rationale": "Not attributed to one source in the import; see notes."
+    "rationale": "Foshan's CRRC trams are reported to run catenary-free on supercapacitors charged at stops; not confirmed for this vehicle."
+  },
+  "onboardEnergy": {
+    "value": "supercapacitor",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner"
+    ],
+    "rationale": "Supercapacitor energy storage charged at stops (opportunity charging)."
   },
   "notes": "Figures from a 2017 roll-out report; the source does not give the number of sections, power supply, seats or the line. Expected to enter service in Foshan in 2018.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only.",

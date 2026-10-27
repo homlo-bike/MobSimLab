@@ -1,5 +1,5 @@
 {
-  "$schema": "../../../schema/vehicle.schema.json",
+  "$schema": "../../schema/vehicle.schema.json",
   "schemaVersion": "1.0.0",
   "id": "01a17aa8-1c00-78fb-bd28-34a07be7e4f3",
   "legacyId": "van-hool-exquicity-24-hybrid",
@@ -110,6 +110,42 @@
       "van-hool-nv-exqui-city-folder-2022"
     ]
   },
+  "seats": {
+    "value": 61,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-fr-van-hool-exquicity"
+    ],
+    "rationale": "61 seats for the Mettis ExquiCity 24 per the cited page. Van Hool's ExquiCity24 Trolley page lists 51 seats for the trolleybus version."
+  },
+  "standingQuoted": {
+    "value": 89,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "urban-transport-maga-metz-a-third-line-for-the-mettis-brt-sys",
+      "wp-fr-van-hool-exquicity"
+    ],
+    "rationale": "Total 150 minus 61 seats."
+  },
+  "standingArea": {
+    "value": 22.2,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "urban-transport-maga-metz-a-third-line-for-the-mettis-brt-sys",
+      "wp-fr-van-hool-exquicity"
+    ],
+    "rationale": "89 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 14.8,
+    "central": 22.2,
+    "high": 29.7,
+    "distribution": "triangular"
+  },
   "totalCapacityQuoted": {
     "value": 150,
     "unit": "count",
@@ -140,6 +176,5 @@
     "rationale": "Not attributed to one source in the import; see notes."
   },
   "notes": "Range launched 2011; production ended with Van Hool in 2024. Capacity 150 is the Metz Mettis figure (23.8 m hybrid, MAN 184 kW diesel + Siemens generator). Axle positions derived from the published 1.9 m front overhang and 6.6/6.71/6.71 m wheelbases. Turning circle 24.3 m is twice the published 12.15 m turning radius (11.4 m between kerbs). Maximum speed 67.5 km/h is the family-wide value in the French Wikipedia infobox (unsourced there), so confidence is low. Floor height is the published boarding height.",
-  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only.",
-  "draftReason": "Core fields not sourced: seats, standingQuoted"
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

@@ -45,6 +45,50 @@
       ]
     }
   },
+  "seats": {
+    "value": 88,
+    "unit": "count",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner"
+    ],
+    "rationale": "Seat count not published; 88 estimated from the 5000-class layout. Capacity 408 is published.",
+    "low": 72,
+    "central": 88,
+    "high": 100,
+    "distribution": "triangular"
+  },
+  "standingQuoted": {
+    "value": 320,
+    "unit": "count",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner",
+      "national-transport-a-luas-green-line-trams-are-getting-bigger"
+    ],
+    "rationale": "Total 408 minus 88 seats.",
+    "low": 308,
+    "central": 320,
+    "high": 336,
+    "distribution": "triangular"
+  },
+  "standingArea": {
+    "value": 80.0,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner",
+      "national-transport-a-luas-green-line-trams-are-getting-bigger"
+    ],
+    "rationale": "320 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 53.3,
+    "central": 80.0,
+    "high": 106.7,
+    "distribution": "triangular"
+  },
   "totalCapacityQuoted": {
     "value": 408,
     "unit": "count",

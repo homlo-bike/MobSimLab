@@ -89,6 +89,50 @@
     ],
     "rationale": "Derived from the cited source; see notes."
   },
+  "seats": {
+    "value": 300,
+    "unit": "count",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner"
+    ],
+    "rationale": "About 50 seats per car, consistent with Singapore MRT interiors.",
+    "low": 250,
+    "central": 300,
+    "high": 330,
+    "distribution": "triangular"
+  },
+  "standingQuoted": {
+    "value": 1620,
+    "unit": "count",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner",
+      "wp-kawasaki-heavy-industries-crrc-qingdao-s"
+    ],
+    "rationale": "Total 1920 minus 300 seats.",
+    "low": 1590,
+    "central": 1620,
+    "high": 1670,
+    "distribution": "triangular"
+  },
+  "standingArea": {
+    "value": 405.0,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner",
+      "wp-kawasaki-heavy-industries-crrc-qingdao-s"
+    ],
+    "rationale": "1620 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 270.0,
+    "central": 405.0,
+    "high": 540.0,
+    "distribution": "triangular"
+  },
   "totalCapacityQuoted": {
     "value": 1920,
     "unit": "count",

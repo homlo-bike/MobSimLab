@@ -82,6 +82,50 @@
     ],
     "rationale": "Not attributed to one source in the import; see notes."
   },
+  "seats": {
+    "value": 376,
+    "unit": "count",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner"
+    ],
+    "rationale": "About 15 % of the 2496-place total, typical of Hong Kong metro layouts.",
+    "low": 300,
+    "central": 376,
+    "high": 450,
+    "distribution": "triangular"
+  },
+  "standingQuoted": {
+    "value": 2120,
+    "unit": "count",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner",
+      "wp-mtr-cnr-changchun-emu"
+    ],
+    "rationale": "Total 2496 minus 376 seats.",
+    "low": 2046,
+    "central": 2120,
+    "high": 2196,
+    "distribution": "triangular"
+  },
+  "standingArea": {
+    "value": 530.0,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner",
+      "wp-mtr-cnr-changchun-emu"
+    ],
+    "rationale": "2120 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 353.3,
+    "central": 530.0,
+    "high": 706.7,
+    "distribution": "triangular"
+  },
   "totalCapacityQuoted": {
     "value": 2496,
     "unit": "count",

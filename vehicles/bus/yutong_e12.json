@@ -1,5 +1,5 @@
 {
-  "$schema": "../../../schema/vehicle.schema.json",
+  "$schema": "../../schema/vehicle.schema.json",
   "schemaVersion": "1.0.0",
   "id": "01a17aa8-1c00-7c13-a9ed-1063a62a9228",
   "legacyId": "yutong-e12",
@@ -68,6 +68,42 @@
       "zhengzhou-yutong-bus-yutong-e12-12m-electric-city-bus"
     ]
   },
+  "seats": {
+    "value": 33,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "zhengzhou-yutong-bus-zk6128bevg"
+    ],
+    "rationale": "Seats 32 + 1 per the manufacturer's specification. UK-market E12s are reported with 39 seats and 70 places."
+  },
+  "standingQuoted": {
+    "value": 28,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "zhengzhou-yutong-bus-yutong-e12-12m-electric-city-bus",
+      "zhengzhou-yutong-bus-zk6128bevg"
+    ],
+    "rationale": "Total 61 minus 33 seats."
+  },
+  "standingArea": {
+    "value": 7.0,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "zhengzhou-yutong-bus-yutong-e12-12m-electric-city-bus",
+      "zhengzhou-yutong-bus-zk6128bevg"
+    ],
+    "rationale": "28 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 4.7,
+    "central": 7.0,
+    "high": 9.3,
+    "distribution": "triangular"
+  },
   "totalCapacityQuoted": {
     "value": 61,
     "unit": "count",
@@ -105,6 +141,5 @@
     ]
   },
   "notes": "Manufacturer page lists \"No. of passengers 61\" without a seated/standing split; capacity depends on the market layout. Turning circle is the published minimum turning diameter (19 m). Wheelbase 6000 mm; overhangs not published, so axle positions are left empty. Battery 422.87 kWh, liquid cooled (LFP per secondary sources). Range and charging time not published on this page.",
-  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only.",
-  "draftReason": "Core fields not sourced: seats, standingQuoted"
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

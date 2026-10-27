@@ -25,6 +25,20 @@
       "wp-british-rail-class-397"
     ]
   },
+  "width": {
+    "value": 2.82,
+    "unit": "m",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner"
+    ],
+    "rationale": "Typical UK loading-gauge Civity width; the Civity family spans 2.88-2.95 m.",
+    "low": 2.75,
+    "central": 2.82,
+    "high": 2.88,
+    "distribution": "triangular"
+  },
   "consist": {
     "cars": {
       "value": 5,
