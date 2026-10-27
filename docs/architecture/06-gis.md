@@ -194,6 +194,17 @@ All thresholds are editable tables per project, initial values sourced (e.g. nat
 - **Station creation wizard:** choose 1–2 side platforms and N island platforms; the wizard generates tracks through the station, platform edges, platform lengths from the longest planned consist, and default access objects (stairs, lifts, ramps, escalators) with accessibility metadata (step-free route, lift dimensions, tactile paving).
 - **Platform validator** per section 5 of [08-vehicles.md](08-vehicles.md#5-vehiclesinfrastructure-compatibility-checks).
 
+### 9.4 Street-based service lines
+
+Bus, BRT, trolleybus and intercity bus lines are drawn with the route-point tool (ADR-0029, FR-NET-11a):
+
+1. The planner clicks points on the map in order. Each point snaps to a road edge the mode may use. Each leg is routed on the mode's road profile (access, turn bans, vehicle dimensions and turning radius, trolleybus wire and battery range, BRT lane preference, no U-turns by default), and the last point is routed back to the first so the route is always a closed circuit.
+2. Points start as via points and can be promoted to stops (and demoted). Stops store edge, travel direction and kerb side. Any stop can be marked a terminal with layover and recovery rules.
+3. One terminal makes a circular line. Two terminals make a two-way line: the circuit is split at the terminals into direction 0 and direction 1 for timetables and GTFS. The "Create return" helper proposes the return leg and opposite-kerb paired stops for a line drawn outbound only.
+4. Moving, inserting or deleting a point re-routes only the two adjacent legs. Legs that cannot be routed, or need a U-turn, are validation errors. Network edits mark affected legs stale.
+5. Variants (short turn, express, school, night) are patterns over the circuit.
+6. Vehicles start in their depot. The block builder adds a routed pull-out from the depot gate to the first stop of each block's first trip and a pull-in from the last stop of its last trip, as non-revenue trips (07 §7–8).
+
 ## 10. Schematic diagrams (ADR-0025)
 
 - **Generation:** the network's lines per mode layer (Bus, BRT, Tram, Metro, Regional Rail, Long Distance) are exported as a line graph (GeoJSON) to LOOM (`topo` → `loom` line ordering → `octi` octilinear layout), run by the tool-runner. Water bodies from OSM are simplified (Douglas–Peucker + area threshold) and transformed with the same displacement field to keep rivers recognisable.

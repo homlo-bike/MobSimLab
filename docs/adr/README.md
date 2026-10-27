@@ -32,3 +32,4 @@ All ADRs below were accepted on 2026-10-27. New ADRs start as Proposed. Template
 | [0026](0026-vehicle-catalogue-provenance.md) | Vehicle catalogue as sourced JSON files with per-field provenance | Accepted |
 | [0027](0027-collaboration-model.md) | Optimistic locking, presence and scenario branches instead of real-time co-editing | Accepted |
 | [0028](0028-persistence-semantics.md) | Persistence rule applies to modelled assets; background traffic and passengers are declared demand | Accepted |
+| [0029](0029-street-service-line-authoring.md) | Street-based service lines are drawn as an ordered point circuit, routed on the road graph | Proposed |
