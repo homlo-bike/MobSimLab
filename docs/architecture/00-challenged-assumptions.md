@@ -206,4 +206,4 @@ The MobilityData GTFS Validator is a Java application. Bundling a JRE adds rough
 | C-02 | Languages | Any language compatible with the project; TypeScript + Python + Rust accepted (2026-10-27) |
 | C-07 | First user becomes Owner | Kept; instance locked in setup mode until the Owner finishes setup (2026-10-27) |
 | C-10 | Assumption engine | No built-in AI; cited values or documented educated guesses; all variables editable in Project Preferences (2026-10-27) |
-| ADR-0002 | AGPL-3.0-or-later or Apache-2.0? | **Still open.** Recommendation: AGPL-3.0-or-later |
+| ADR-0002 | Licence | AGPL-3.0-or-later (2026-10-27) |

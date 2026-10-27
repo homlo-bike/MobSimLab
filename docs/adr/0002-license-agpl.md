@@ -1,6 +1,6 @@
 # ADR-0002: Licence MobSimLab under AGPL-3.0-or-later
 
-- Status: Proposed (needs product owner confirmation)
+- Status: Accepted (product owner, 2026-10-27)
 - Date: 2026-10-27
 - Related: NFR-OSS-01..03, C-12, [license compliance report](../compliance/license-compliance-report.md)
 

@@ -5,7 +5,7 @@ ADRs are **Proposed** until the architecture pull request is approved, except th
 | ADR | Title | Status |
 |-----|-------|--------|
 | [0001](0001-record-architecture-decisions.md) | Record architecture decisions | Proposed |
-| [0002](0002-license-agpl.md) | Licence MobSimLab under AGPL-3.0-or-later | Proposed |
+| [0002](0002-license-agpl.md) | Licence MobSimLab under AGPL-3.0-or-later | Accepted |
 | [0003](0003-deployment-topology.md) | Exactly two containers; simulation runs as supervised processes inside `mobsimlab` | Accepted |
 | [0004](0004-polyglot-runtime.md) | NestJS for the API, Python for the simulation worker, Rust for compute kernels | Accepted |
 | [0005](0005-sumo-road-engine.md) | Eclipse SUMO via libsumo is the road traffic engine | Proposed |

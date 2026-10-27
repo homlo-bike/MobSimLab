@@ -126,4 +126,4 @@ Exit: all checks pass; report published in `docs/reports/`; release candidate ta
 
 ## 5. Decisions
 
-Decided on 2026-10-27: exactly two containers (C-01), any compatible language (C-02), first user becomes Owner with setup mode (C-07), and no built-in AI with all variables editable in Project Preferences (C-10). Still open before Phase 0: the licence (ADR-0002). See the [decisions log](00-challenged-assumptions.md#decisions-log).
+Decided on 2026-10-27: exactly two containers (C-01), any compatible language (C-02), first user becomes Owner with setup mode (C-07), and no built-in AI with all variables editable in Project Preferences (C-10). Licence: AGPL-3.0-or-later (ADR-0002), also decided on 2026-10-27. See the [decisions log](00-challenged-assumptions.md#decisions-log).

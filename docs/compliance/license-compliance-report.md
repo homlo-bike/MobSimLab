@@ -1,6 +1,6 @@
 # License compliance report (planning stage)
 
-- Project licence (proposed): **AGPL-3.0-or-later** for code; **CC BY 4.0** for vehicle catalogue, assumption library and documentation (ADR-0002)
+- Project licence (accepted 2026-10-27): **AGPL-3.0-or-later** for code; **CC BY 4.0** for vehicle catalogue, assumption library and documentation (ADR-0002)
 - Date: 2026-10-27
 - Status: Pre-implementation review of **planned** dependencies, bundled tools, data sources and services. Versions are not yet pinned. Items marked **Verify** must be confirmed against the upstream LICENSE file at adoption time; the CI licence gate will then enforce the result automatically.
 - This is an engineering assessment, not legal advice.
@@ -149,4 +149,4 @@
 3. Verify LOOM licence.
 4. Verify Transit Costs Project, Mobility Database catalog and Elevation-API.eu terms.
 5. Confirm OpenFreeMap style licences.
-6. Product owner confirms AGPL-3.0-or-later (ADR-0002) and CC BY 4.0 for data.
+6. ~~Product owner confirms AGPL-3.0-or-later (ADR-0002)~~ Done 2026-10-27. CC BY 4.0 for catalogue and assumption data follows ADR-0002.
