@@ -39,7 +39,7 @@ Monorepo with pnpm workspaces (TS), uv (Python), Cargo workspace (Rust). One CI 
 
 ### Phase 1 — Platform core
 
-Auth (OIDC, claim flow), IAM (roles, groups, overrides, auto-registration), audit (hash chain), logging (all sinks), projects (visibility, sharing, preferences), source registry, providers + gateway (SSRF guards, throttling, cache, health), admin UI, map shell with layers and basemaps (OpenFreeMap, EOX 2016, WMS/WMTS/XYZ via proxy), File menu skeleton, About/Licenses/Attribution pages, generated LICENSE/NOTICE/ATTRIBUTION/THIRD_PARTY_LICENSES/SECURITY/PRIVACY.
+Auth (OIDC, first-owner setup mode and setup wizard), IAM (roles, groups, overrides, auto-registration), audit (hash chain), logging (all sinks), projects (visibility, sharing, preferences), source registry, providers + gateway (SSRF guards, throttling, cache, health), admin UI, map shell with layers and basemaps (OpenFreeMap, EOX 2016, WMS/WMTS/XYZ via proxy), File menu skeleton, About/Licenses/Attribution pages, generated LICENSE/NOTICE/ATTRIBUTION/THIRD_PARTY_LICENSES/SECURITY/PRIVACY.
 
 Exit: ASVS L2 controls for auth/session/access control pass; permission matrix test passes; ZAP baseline clean.
 
@@ -121,9 +121,9 @@ Exit: all checks pass; report published in `docs/reports/`; release candidate ta
 | Scope too large for available contributors | H | H | Phase gates; each phase delivers usable value; defer "could" items |
 | Data licensing surprises | M | M | Verification items in Phase 0; licence gate; Source registry |
 | Vehicle data gaps | H | M | Assumption ranges; contributor guide; start small |
-| Image size / install complexity | M | M | Multi-stage build; optional worker container; documented requirements |
+| Image size / install complexity | M | M | Multi-stage build; configurable number of worker processes; documented host requirements |
 | Demand model credibility without local data | H | M | Explicit "uncalibrated" labelling; calibration tools; sensitivity |
 
-## 5. Decisions needed before Phase 0
+## 5. Decisions
 
-See [00-challenged-assumptions.md — summary](00-challenged-assumptions.md#summary-of-decisions-needed-from-the-product-owner): container topology (C-01), polyglot runtime (C-02), meaning of "AI" in the assumption engine (C-10), and the licence (ADR-0002).
+Decided on 2026-10-27: exactly two containers (C-01), any compatible language (C-02), first user becomes Owner with setup mode (C-07), and no built-in AI with all variables editable in Project Preferences (C-10). Still open before Phase 0: the licence (ADR-0002). See the [decisions log](00-challenged-assumptions.md#decisions-log).

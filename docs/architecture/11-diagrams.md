@@ -853,7 +853,7 @@ flowchart LR
 
 ## 5. Sequence diagrams
 
-### 5.1 First login and instance claim
+### 5.1 First login, Owner setup mode
 
 ```mermaid
 sequenceDiagram
@@ -865,8 +865,8 @@ sequenceDiagram
   participant DB as PostgreSQL
   A->>UI: Open instance
   UI->>API: GET /api/instance/status
-  API-->>UI: unclaimed
-  A->>UI: Click "Claim instance"
+  API-->>UI: setup mode, no owner yet
+  A->>UI: Click "Log in"
   UI->>API: GET /auth/login
   API-->>UI: 302 to IdP (PKCE, state, nonce)
   UI->>IDP: Authorize
@@ -875,12 +875,16 @@ sequenceDiagram
   API->>IDP: Token exchange (code_verifier)
   IDP-->>API: ID token + access token
   API->>API: Validate token, nonce, issuer
-  API-->>UI: Pending session, ask for setup token
-  A->>UI: Enter setup token
-  UI->>API: POST /api/instance/claim {token} + CSRF
-  API->>DB: BEGIN, lock instance row, verify token hash
-  API->>DB: create user as Owner, mark claimed, audit INSTANCE_CLAIMED, COMMIT
-  API-->>UI: Session cookie rotated, role Owner
+  API->>DB: BEGIN, lock instance row, check no owner yet
+  API->>DB: create user as Owner, audit OWNER_CREATED, COMMIT
+  API-->>UI: Session cookie, role Owner, show setup wizard
+  A->>UI: Configure IdPs, roles, providers, basemaps, defaults
+  UI->>API: PUT /api/instance/setup (each step) + CSRF
+  A->>UI: Finish setup
+  UI->>API: POST /api/instance/setup/finish + CSRF
+  API->>DB: mark instance open, audit SETUP_FINISHED
+  API-->>UI: Instance open to other users
+  Note over API: Before finish, any other login gets "instance being set up"
 ```
 
 ### 5.2 OSM import

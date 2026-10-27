@@ -1,6 +1,6 @@
 # ADR-0004: NestJS for the API, Python for the simulation worker, Rust for compute kernels
 
-- Status: Proposed (needs product owner decision, see C-02)
+- Status: Accepted (product owner, 2026-10-27: "any coding language as long as it stays compatible")
 - Date: 2026-10-27
 - Related: C-02, C-05, NFR-PERF-03..05
 

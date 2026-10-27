@@ -29,7 +29,8 @@ flowchart TD
 ```
 
 - "Practical to ask" = interactive edit with ≤ 5 missing parameters. During a simulation or model run the engine never blocks; it resolves from the library and lists all assumptions in the run report.
-- If no library entry exists, the run fails validation with a clear message ("no default for X; please provide a value") rather than inventing one.
+- Every library entry has a **basis**: `cited` (a source with page/table reference), `documented` (derived from documented values with the derivation written down), or `educated-guess` (no information available; the maintainers' reasoning is written down and the range is deliberately wide). The basis is shown next to the value everywhere.
+- Every parameter has at least one **global fallback entry** in the library (CI fails otherwise), so resolution always finds a value: most specific context first, then mode-level, then global. Nothing is invented at run time.
 
 ### 1.3 Sensitivity
 
@@ -38,9 +39,20 @@ flowchart TD
 - **Switching values** for appraisal: value of an assumption at which BCR = 1 or ENPV = 0.
 - The `sensitivity` field on an `AssumedValue` stores the last computed elasticity and rank for its main metric.
 
-### 1.4 Optional LLM assistant
+### 1.4 No built-in AI
 
-Off by default. If an admin enables it and configures a provider, it may: explain an assumption in plain language, suggest a library entry for an unknown context **as a draft** that a user must accept, and summarise the assumptions report. It never writes values directly, never runs without user action, and the prompt contents are shown to the user. Project data is only sent if the project owner allows it.
+By product owner decision (2026-10-27) there is no AI or LLM component. All values come from the assumption library or from the user.
+
+### 1.5 Project Preferences: every variable is editable
+
+Every value that acts as a variable anywhere in the models (simulation, timetabling, demand, cost, appraisal, validation thresholds, standards, colours, calendars) is listed in the **Project Preferences** window, in a "Parameters" section:
+
+- Grouped by domain (Operations, Vehicles defaults, Infrastructure standards, Demand, Cost, Appraisal, Externalities, Calendar), searchable, with units.
+- Each row shows: current value, unit, basis (cited / documented / educated guess / user), source link, low/central/high, where it is used, and a **reset to default** button.
+- Editing a value records an override (who, when, optional reason; audited), and marks dependent results (runs, timetables, demand, appraisal) as stale.
+- Per-object values (e.g. one vehicle's dwell time) can still be overridden on the object; the preference is the project-wide default.
+- Parameters are generated from the assumption library's schema, so a new model variable cannot be added without appearing in Project Preferences (CI check).
+- Preferences can be exported/imported as part of the `.mslab` file and copied between projects.
 
 ## 2. Demand forecasting architecture (ADR-0019)
 

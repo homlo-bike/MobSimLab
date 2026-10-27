@@ -6,7 +6,7 @@ Severity: **High** = would block delivery or create legal/security exposure. **M
 
 ---
 
-## C-01 · One application container for frontend, backend, GIS, routing, SUMO and rail simulation — High · Decision needed
+## C-01 · One application container for frontend, backend, GIS, routing, SUMO and rail simulation — High · **Decided**
 
 **Brief:** Two runtime services only: `mobsimlab` (frontend, backend, GIS, routing, simulation) and `postgres`.
 
@@ -16,18 +16,17 @@ Severity: **High** = would block delivery or create legal/security exposure. **M
 - A city-scale simulation can use several CPU cores and several GB of RAM for hours. It cannot share a scheduling budget with the API without starving it.
 - It cannot scale: there is no way to add more simulation capacity without adding more copies of the whole application.
 
-**Proposal (ADR-0003).** Keep the two-container layout as the **default** so self-hosting stays simple, but build it as separate processes from day one:
+**Decision (product owner, 2026-10-27; ADR-0003).** Exactly two containers. Simulation runs inside the `mobsimlab` container (backend side), built as separate processes so it cannot take the API down:
 
 - Inside `mobsimlab`, a small supervisor (s6-overlay) runs three kinds of process: the `api` (NestJS, also serves the built frontend on port 8080), one or more `sim-worker` processes, and an on-demand `tool-runner` for batch tools (GTFS Validator, SUMO `netconvert`, osmium).
 - Processes talk through a job queue stored in PostgreSQL (pg-boss) and a local socket for live simulation frames. No Redis or message broker is needed.
-- The same image can be started a second time as `mobsimlab-worker` with a different command. This is an **optional** third service in `compose.yaml` for larger installations. No code changes are needed to split it out.
 - Workers get CPU and memory limits, and a per-instance cap on concurrent simulation runs.
 
-**Decision needed:** accept "two containers by default, optional worker container", or insist on exactly two containers always (we would still use separate processes internally).
+Simulation runs on the backend, not in the browser: a browser tab cannot run SUMO or the rail kernel at city scale, and results must be shared and reproducible for every user. The browser renders playback. There is no third container. Larger installations scale by giving the `mobsimlab` container more CPU and memory and raising the number of `sim-worker` processes (`MOBSIMLAB_SIM_WORKERS`).
 
 ---
 
-## C-02 · NodeJS/NestJS as the backend for everything — High · Decision needed
+## C-02 · NodeJS/NestJS as the backend for everything — High · **Decided**
 
 **Brief:** Backend is NodeJS + TypeScript + NestJS.
 
@@ -43,7 +42,7 @@ Severity: **High** = would block delivery or create legal/security exposure. **M
 
 TypeScript stays the language of the API and the UI. Shared contracts (JSON Schema → generated TypeScript types and Python/Rust types) prevent drift.
 
-**Decision needed:** accept a polyglot runtime (TypeScript + Python + Rust), or require Node-only (we would then need to reimplement demand modelling and accept that rail simulation will not reach thousands of trains in real time).
+**Decision (product owner, 2026-10-27):** any language is allowed as long as it stays compatible with the project. The polyglot runtime (TypeScript + Python + Rust) is accepted.
 
 ---
 
@@ -84,11 +83,13 @@ The geometry layer is used for drawing, swept-path and clearance checks during d
 
 ---
 
-## C-07 · "First user logging into an instance automatically becomes Owner" — High (security)
+## C-07 · "First user logging into an instance automatically becomes Owner" — Medium · **Decided**
 
-**Problem.** If the OIDC provider allows open sign-up (Google, GitHub, a public Keycloak realm), anyone who finds a freshly deployed instance can log in first and take full control.
+**Concern raised.** If the OIDC provider allows open sign-up, whoever logs in first takes full control.
 
-**Proposal (ADR-0015).** On first start the instance is **unclaimed**. The first owner must present a **one-time setup token**, printed once to the container log and written to a file in the data volume. Alternatively an operator sets `MOBSIMLAB_BOOTSTRAP_OWNER_EMAIL` (or subject) so only that identity can claim it. Auto-registration is **off** by default. This keeps the spirit of the brief with no insecure default.
+**Decision (product owner, 2026-10-27; ADR-0015).** MobSimLab is self-hosted and not exposed to the internet, so the brief's rule stays: **the first user to log in becomes Owner**. The instance then stays in **setup mode** until the Owner finishes the setup wizard (identity providers, group mappings, registration policy, providers, basemaps, defaults). In setup mode every other login is refused with "This instance is being set up", so nobody else can reach the instance before the Owner has configured it.
+
+Optional hardening for operators whose IdP is shared with other people: `MOBSIMLAB_BOOTSTRAP_OWNER_EMAIL` (or `_SUBJECT`) restricts who may become the first Owner. It is off by default. Auto-registration is **off** by default.
 
 ---
 
@@ -114,13 +115,16 @@ Both paths produce the same PostGIS tables.
 
 ---
 
-## C-10 · "AI Assumption Engine" — Medium · Decision needed
+## C-10 · "AI Assumption Engine" — Medium · **Decided**
 
-**Problem.** If a language model invents defaults and low/central/high ranges, results are not reproducible, not traceable to a source, and can be confidently wrong. Planning outputs that feed funding decisions must be auditable. Sending project data to an AI provider is also a privacy issue for agencies.
+**Concern raised.** If a language model invents defaults and low/central/high ranges, results are not reproducible, not traceable to a source, and can be confidently wrong.
 
-**Proposal (ADR-0018).** The engine is **deterministic and rule-based**. Every default and range comes from a versioned, sourced **assumption library** (for example: dwell time per boarding by door count, from a cited manual). Sensitivity is computed numerically (one-at-a-time and tornado charts; optional Monte Carlo). An LLM integration is optional, **off by default**, and may only *explain* or *suggest* (marked as such), never write values without user confirmation.
+**Decision (product owner, 2026-10-27; ADR-0018).** There is **no built-in AI**. The assumption engine is deterministic:
 
-**Decision needed:** confirm that "AI" here means "automated, sourced assumptions" rather than an LLM.
+- Every value is **cited** or **supported by documentation**.
+- Where no information exists, the maintainers write an **educated guess** into the assumption library, with its reasoning and a low/central/high range. It is labelled "educated guess" everywhere it is used.
+- **Every value that acts as a variable in the project can be adjusted by the user in the Project Preferences window** (see [09 §1.5](09-planning-models.md#15-project-preferences-every-variable-is-editable)).
+- Sensitivity is computed numerically (one-at-a-time tornado charts, optional Monte Carlo).
 
 ---
 
@@ -194,11 +198,12 @@ The MobilityData GTFS Validator is a Java application. Bundling a JRE adds rough
 
 ---
 
-## Summary of decisions needed from the product owner
+## Decisions log
 
-| ID | Question | Recommendation |
-|----|----------|----------------|
-| C-01 | Two containers always, or two by default plus an optional worker container? | Two by default, optional worker |
-| C-02 | Allow Python and Rust next to NestJS? | Yes |
-| C-10 | Is the "AI" assumption engine rule-based, or must it use an LLM? | Rule-based, LLM optional and off |
-| ADR-0002 | AGPL-3.0-or-later or Apache-2.0? | AGPL-3.0-or-later |
+| ID | Question | Decision |
+|----|----------|----------|
+| C-01 | Container topology | Exactly two containers; simulation inside `mobsimlab` (2026-10-27) |
+| C-02 | Languages | Any language compatible with the project; TypeScript + Python + Rust accepted (2026-10-27) |
+| C-07 | First user becomes Owner | Kept; instance locked in setup mode until the Owner finishes setup (2026-10-27) |
+| C-10 | Assumption engine | No built-in AI; cited values or documented educated guesses; all variables editable in Project Preferences (2026-10-27) |
+| ADR-0002 | AGPL-3.0-or-later or Apache-2.0? | **Still open.** Recommendation: AGPL-3.0-or-later |

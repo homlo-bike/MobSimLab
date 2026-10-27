@@ -33,7 +33,7 @@ Risk = likelihood × impact (H/M/L) **after** planned mitigations; anything stil
 
 | ID | Threat | Mitigation | Residual |
 |----|--------|------------|----------|
-| S1 | Stranger claims a fresh instance as Owner | Claim token or preconfigured owner identity (ADR-0015) | L |
+| S1 | Someone else logs in first and becomes Owner of a fresh instance | Deployment on a private network (product decision); setup mode refuses all other logins until the Owner finishes setup; first-owner creation shown in the wizard and audited; optional `MOBSIMLAB_BOOTSTRAP_OWNER_EMAIL` pin; `reset-owner` operator command (ADR-0015) | M (if exposed or IdP shared) / L (private network) |
 | S2 | Account linking by email across IdPs leads to takeover | Match on (issuer, subject) only | L |
 | S3 | ID token replay / forged token | PKCE, nonce, state, signature/iss/aud/exp validation with certified library | L |
 | S4 | Session hijack via XSS | HttpOnly `__Host-` cookies, strict CSP, no inline scripts, sanitised Markdown | L |
@@ -90,7 +90,6 @@ Risk = likelihood × impact (H/M/L) **after** planned mitigations; anything stil
 | E3 | Code execution via native tool parsing (osmium, GDAL, SUMO netconvert, JRE) | Sandboxed child processes: no network, seccomp, rlimits, read-only FS, non-root; patched versions tracked | M |
 | E4 | Container escape | Non-root, cap_drop ALL, no-new-privileges, no Docker socket, read-only root | L |
 | E5 | SQL injection in spatial queries | Parameterised Kysely; identifiers from allowlists; Semgrep rules | L |
-| E6 | Optional LLM assistant prompt injection from project text | Off by default; output is draft-only and needs user acceptance; no tool access | L |
 
 ### Supply chain
 
@@ -107,7 +106,7 @@ Risk = likelihood × impact (H/M/L) **after** planned mitigations; anything stil
 | A01 Broken Access Control | T1, I1, I7, E1 |
 | A02 Cryptographic Failures | ADR-0016, TLS requirement (C-16) |
 | A03 Injection | E5, CSV injection escaping, sanitised Markdown |
-| A04 Insecure Design | This threat model, ADRs, claim flow |
+| A04 Insecure Design | This threat model, ADRs, setup mode |
 | A05 Security Misconfiguration | No defaults, startup checks, hardened compose |
 | A06 Vulnerable Components | SC1, SC2, CI scanners |
 | A07 Identification and Authentication Failures | S1–S4 |

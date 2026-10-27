@@ -12,7 +12,7 @@ Each requirement has an ID so tests, ADRs and issues can reference it. Priority:
 | FR-PLAT-02 | Projects have visibility Private, Shared (named users/groups with a role) or Public (read-only to anyone, including anonymous if the admin allows). | M |
 | FR-PLAT-03 | File menu: New, Open, Save, Save As, Export, Import, Settings, Project Preferences, Help (Documentation, Tutorial, Demonstration, Example Projects, GitHub URL, Demo URL). | M |
 | FR-PLAT-04 | Projects export to a versioned `.mslab` file (ZIP) including custom vehicles, sources and assumptions; import migrates older versions forward. | M |
-| FR-PLAT-05 | Project Preferences: network/mode/line colours, gauge defaults, platform standards, energy and electrification standards, service windows, peak periods, holiday calendars, reserve fleet % (default 15 %). | M |
+| FR-PLAT-05 | Project Preferences: all model variables (FR-ASM-05), network/mode/line colours, gauge defaults, platform standards, energy and electrification standards, service windows, peak periods, holiday calendars, reserve fleet % (default 15 %). | M |
 | FR-PLAT-06 | Scenarios: named variants of a project's base network; compare any two scenarios side by side. | M |
 | FR-PLAT-07 | About, Licenses and Attribution pages generated from the source registry and dependency SBOM. | M |
 
@@ -30,7 +30,7 @@ Each requirement has an ID so tests, ADRs and issues can reference it. Priority:
 | ID | Requirement | Pri |
 |----|-------------|-----|
 | FR-AUTH-01 | Login only via OIDC (Authorization Code + PKCE). Multiple providers allowed. | M |
-| FR-AUTH-02 | First owner claims an unclaimed instance with a one-time setup token or a preconfigured identity (see C-07). | M |
+| FR-AUTH-02 | The first user to log in becomes Owner. The instance stays in setup mode, refusing all other logins, until the Owner completes the setup wizard (see C-07). | M |
 | FR-AUTH-03 | Instance roles Owner, Admin, User, Viewer, Restricted. | M |
 | FR-AUTH-04 | Map IdP groups to roles automatically; admins can override per user. | M |
 | FR-AUTH-05 | Admins enable/disable auto-registration, restrict, delete users, manage projects. | M |
@@ -124,10 +124,11 @@ Each requirement has an ID so tests, ADRs and issues can reference it. Priority:
 
 | ID | Requirement | Pri |
 |----|-------------|-----|
-| FR-ASM-01 | Missing values handled by the 8-step assumption workflow in the brief. | M |
+| FR-ASM-01 | Missing values handled by the 8-step assumption workflow in the brief. No built-in AI. Every default is cited, documentation-supported, or a documented educated guess. | M |
 | FR-ASM-02 | Assumed values stored as `{value, assumed, low, central, high, sensitivity, sourceId, rationale}`. | M |
 | FR-ASM-03 | Source registry: name, URL, licence, use case, date retrieved, for every dataset, method, calculation, assumption, API, vehicle spec. | M |
 | FR-ASM-04 | Assumptions report export per project. | M |
+| FR-ASM-05 | Every value that acts as a variable in the project is adjustable in the Project Preferences window, with its basis, source, range and a reset to default. | M |
 
 ### FR-SCH — Schematics
 

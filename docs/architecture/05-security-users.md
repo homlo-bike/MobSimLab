@@ -47,8 +47,8 @@ TB1 user input · TB2 identity assertions · TB3 untrusted remote data · TB4 da
 
 - Authorization Code flow with **PKCE**, `state` and `nonce`; ID token signature, `iss`, `aud`, `exp`, `iat`, `nonce` validated by `openid-client`.
 - Multiple providers configurable by admins; each has an issuer allowlist.
-- No local passwords. Break-glass access is via re-running the bootstrap claim with operator access to the host.
-- **Bootstrap claim** (ADR-0015): while unclaimed, every page shows "Claim this instance". The claimer must log in through OIDC **and** enter the one-time setup token (256-bit, shown once in logs and stored hashed) or match `MOBSIMLAB_BOOTSTRAP_OWNER_SUBJECT`/`_EMAIL` (email must be `email_verified`). The token expires after 24 h; a new one is generated on restart while unclaimed.
+- No local passwords. Break-glass access (lost Owner account) is an operator command run inside the container (`mobsimlab admin reset-owner`), which puts the instance back into setup mode; it is audited.
+- **First-owner setup mode** (ADR-0015): the instance is designed for self-hosting on a private network, not exposure to the internet. On first start it is in **setup mode**. The first user who completes an OIDC login becomes **Owner** (in one transaction with a row lock, so two simultaneous logins cannot both win). While in setup mode, every other login is refused with "This instance is being set up". The Owner completes the **setup wizard**: instance name and public URL, OIDC providers and group-to-role mappings, auto-registration policy and default role, external providers and credentials, basemaps, units and locale, default Project Preferences. Only when the Owner presses **Finish setup** do other users get access. Optional: `MOBSIMLAB_BOOTSTRAP_OWNER_EMAIL`/`_SUBJECT` restricts who may become the first Owner, for operators whose IdP is shared with other people.
 - Sessions: server-side session rows; cookie `__Host-msl_session`, `HttpOnly`, `Secure`, `SameSite=Lax`, 12 h idle / 7 d absolute timeout, rotated on login and privilege change. Logout revokes server-side and calls the IdP end-session endpoint where supported.
 - Account matching is by `(issuer, subject)`, never by email alone (prevents account takeover through a second IdP with the same email).
 
@@ -131,9 +131,11 @@ Non-root user, read-only root filesystem, `cap_drop: ALL`, `no-new-privileges`, 
 
 ```mermaid
 stateDiagram-v2
-  [*] --> Unclaimed: first start
-  Unclaimed --> Claimed: OIDC login + setup token
-  state Claimed {
+  [*] --> SetupMode: first start
+  SetupMode --> SetupMode: other logins refused
+  SetupMode --> OwnerConfiguring: first OIDC login becomes Owner
+  OwnerConfiguring --> Open: Owner finishes setup wizard
+  state Open {
     [*] --> Pending: login, auto-registration off
     [*] --> Active: login, auto-registration on / invited
     Pending --> Active: admin approves

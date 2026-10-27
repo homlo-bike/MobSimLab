@@ -28,7 +28,7 @@ Related folders:
 
 ## How to review
 
-1. Read [00-challenged-assumptions.md](00-challenged-assumptions.md). It lists the decisions that need the product owner's call, each with a recommendation.
+1. Read [00-challenged-assumptions.md](00-challenged-assumptions.md). Its decisions log shows what the product owner has decided and what is still open.
 2. Skim the ADR index. Each ADR has a status of `Proposed`. Approving the pull request moves them to `Accepted`.
 3. Comment on anything that is wrong, missing, or over-scoped.
 

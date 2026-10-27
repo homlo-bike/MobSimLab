@@ -88,7 +88,7 @@ Each module owns its tables (schema) and exposes a service interface. Other modu
 | Module | Responsibility |
 |--------|----------------|
 | `core` | Config, global ID, metadata envelope, error model, i18n |
-| `auth` | OIDC login, sessions, CSRF, bootstrap claim |
+| `auth` | OIDC login, sessions, CSRF, first-owner setup mode |
 | `iam` | Users, groups, instance roles, project roles, permission checks (policy engine) |
 | `audit` | Append-only hash-chained audit writer and reader |
 | `logging` | Winston setup, sinks, frontend log ingestion, redaction |
@@ -174,13 +174,6 @@ services:
     volumes: ["pgdata:/var/lib/postgresql/data", "./db/init:/docker-entrypoint-initdb.d:ro"]
     # no host port published
     healthcheck: { test: ["CMD-SHELL", "pg_isready -U postgres"], interval: 10s }
-
-  # Optional, enabled with: docker compose --profile scale up
-  mobsimlab-worker:
-    profiles: ["scale"]
-    image: ghcr.io/homlo-bike/mobsimlab:${MOBSIMLAB_VERSION}
-    command: ["worker"]
-    # same hardening, no ports
 
 secrets:   # files created by `scripts/init-secrets` with random values
   db_superuser_password: { file: ./secrets/db_superuser_password }

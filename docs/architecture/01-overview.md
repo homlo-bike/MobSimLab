@@ -15,8 +15,8 @@ The design rests on five principles:
 
 1. **Reuse mature tools.** SUMO for road traffic, PostGIS for spatial data, AequilibraE for demand modelling, MapLibre for maps, LOOM for schematic layout, the MobilityData validator for GTFS. Build custom code only where no suitable open tool exists, mainly the rail operations kernel.
 2. **Persistence and traceability.** Every modelled asset has a global ID, metadata, sources and an audit trail. Nothing appears or vanishes without an explicit, recorded action.
-3. **Security first.** OIDC only, no default credentials, claim-token bootstrap, encrypted provider credentials, an outbound gateway against SSRF, OWASP ASVS Level 2 as the target.
-4. **Simple self-hosting, honest scaling.** `docker compose up` with two containers by default. Simulation runs in separate processes that can be moved to their own container without code changes.
+3. **Security first.** OIDC only, no default credentials, first-owner setup mode, encrypted provider credentials, an outbound gateway against SSRF, OWASP ASVS Level 2 as the target.
+4. **Simple self-hosting, honest scaling.** `docker compose up` with exactly two containers. Simulation runs in separate supervised processes inside the application container, so a heavy run cannot take the UI down.
 5. **Honest numbers.** Every assumption is visible, ranged, sourced and overridable. Results show their uncertainty.
 
 The plan has 11 implementation phases (see [12-implementation-plan.md](12-implementation-plan.md)), starting with three technical spikes to remove the largest risks: SUMO–rail co-simulation, rail kernel performance at 2,000+ trains, and OSM import at regional scale.
