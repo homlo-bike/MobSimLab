@@ -802,6 +802,16 @@
   kind: primary
   date: '2024'
   note: Imported with the 2026-10-26 catalogue; not re-read in this repository.
+- id: siemens-mobility-velaro-d-class-407-high-speed-trainset-d
+  title: Velaro D (Class 407) High-Speed Trainset (data sheet)
+  publisher: Siemens Mobility
+  url: https://assets.new.siemens.com/siemens/assets/api/uuid:2f82dc92-66be-40b7-be36-78bd0f1bd0b1/high-speed-train-velaro-d-data-sheet-en.pdf
+  licence: Publisher's terms; facts cited only
+  access: free
+  retrieved: '2026-10-27'
+  checked_via: direct
+  kind: primary
+  note: Read from the data sheet the project owner downloaded, 2026-10-27.
 - id: siemens-mobility-venture-trainsets-via-rail-data-sheet
   title: Venture trainsets – VIA Rail data sheet
   publisher: Siemens Mobility
@@ -813,6 +823,16 @@
   kind: primary
   date: '2024'
   note: Imported with the 2026-10-26 catalogue; not re-read in this repository.
+- id: stadler-citylink-tram-train-das-projekt-vehicle
+  title: CITYLINK Tram-Train – Das Projekt (vehicle data)
+  publisher: Stadler
+  url: https://stadlerrail.com/api/docs/x/324f0400a6/citylink-vdv-tram-train-das-projekt_en.pdf
+  licence: Publisher's terms; facts cited only
+  access: free
+  retrieved: '2026-10-27'
+  checked_via: direct
+  kind: primary
+  note: Read from the data sheet the project owner downloaded, 2026-10-27.
 - id: stadler-electrical-double-decker-multiple-unit-s
   title: Electrical double decker multiple unit SBB IR-KISS – vehicle data
   publisher: Stadler
@@ -824,6 +844,17 @@
   kind: primary
   date: '2022'
   note: Imported with the 2026-10-26 catalogue; not re-read in this repository.
+- id: stadler-elektrischer-doppelstocktriebzug-kiss-ma
+  title: Elektrischer Doppelstocktriebzug KISS – MÁV-START Zrt., Budapest
+  publisher: Stadler
+  url: https://stadlerrail.com/api/docs/x/79dfa3d945/kiss_mav_de.pdf
+  licence: Publisher's terms; facts cited only
+  access: free
+  retrieved: '2026-10-27'
+  checked_via: direct
+  kind: primary
+  date: '2019'
+  note: Read from the data sheet the project owner downloaded, 2026-10-27.
 - id: stadler-flirt-akku-2-car-unit-nahverkehrsverbund
   title: FLIRT Akku 2-car unit, Nahverkehrsverbund Schleswig-Holstein – vehicle data
   publisher: Stadler

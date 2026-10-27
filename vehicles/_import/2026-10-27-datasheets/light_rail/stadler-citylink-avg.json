@@ -1,0 +1,88 @@
+{
+  "id": "stadler-citylink-avg",
+  "mode": "light_rail",
+  "category": "tram_train",
+  "name": "Citylink",
+  "variant": "AVG (VDV TramTrain, 3-car)",
+  "family": "Stadler Citylink",
+  "producer": "Stadler",
+  "manufacturerCountry": "Switzerland",
+  "yearIntroduced": 2026,
+  "dimensions": {
+    "lengthM": 37.2,
+    "widthM": 2.65,
+    "heightM": 3.9,
+    "minCurveRadiusM": 22,
+    "axleLoadT": 11.5
+  },
+  "consist": {
+    "cars": 3,
+    "bidirectional": true
+  },
+  "doors": {
+    "doorsPerSide": 4
+  },
+  "capacity": {
+    "seated": 93,
+    "standing": 136,
+    "total": 229,
+    "standingDensityPersM2": 4
+  },
+  "performance": {
+    "maxSpeedKmh": 100,
+    "tractionPowerKw": 750
+  },
+  "energy": {
+    "supply": "overhead_wire",
+    "supplySystems": [
+      "dc_750",
+      "ac_15k_16_7"
+    ]
+  },
+  "infrastructure": {
+    "gaugeMm": 1435,
+    "platformHeightsMm": [
+      550
+    ]
+  },
+  "operators": [
+    "Albtal-Verkehrs-Gesellschaft (Greater Karlsruhe/Heilbronn)"
+  ],
+  "sources": [
+    {
+      "url": "https://stadlerrail.com/api/docs/x/324f0400a6/citylink-vdv-tram-train-das-projekt_en.pdf",
+      "title": "CITYLINK Tram-Train – Das Projekt (vehicle data)",
+      "publisher": "Stadler",
+      "date": null,
+      "accessed": "2026-10-27",
+      "kind": "primary",
+      "checked_via": "direct",
+      "note": "Read from the data sheet the project owner downloaded, 2026-10-27.",
+      "fields": [
+        "dimensions.lengthM",
+        "dimensions.widthM",
+        "dimensions.heightM",
+        "dimensions.minCurveRadiusM",
+        "dimensions.axleLoadT",
+        "consist.cars",
+        "consist.bidirectional",
+        "doors.doorsPerSide",
+        "capacity.seated",
+        "capacity.standing",
+        "capacity.standingDensityPersM2",
+        "performance.maxSpeedKmh",
+        "performance.tractionPowerKw",
+        "energy.supply",
+        "energy.supplySystems",
+        "infrastructure"
+      ]
+    }
+  ],
+  "quality": {
+    "capacity": {
+      "kind": "published"
+    }
+  },
+  "notes": "Column 'AVG' of the Stadler VDV TramTrain vehicle table. Seats include tip-up seats; standing places at 4 pers/m2; total = seats + standing (derived). Motor power 6 x 125 kW. Bidirectional tram-train for EBO and BOStrab routes.",
+  "livery": null
+}

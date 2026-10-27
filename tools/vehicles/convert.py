@@ -13,7 +13,9 @@ ADR-0018). The conversion is deterministic: the same input gives byte-identical 
 import and this script stay the record of how each file was made.
 
 Usage:
-    python tools/vehicles/convert.py [--import-dir vehicles/_import/2026-10-26] [--out vehicles]
+    python tools/vehicles/convert.py [--import-dir DIR ...] [--out vehicles]
+
+By default every dated folder under ``vehicles/_import/`` is read.
 """
 
 from __future__ import annotations
@@ -187,6 +189,7 @@ VOLTAGES = {
     "dc_600": "600v-dc",
     "dc_750": "750v-dc",
     "dc_1500": "1500v-dc",
+    "dc_1000": "1000v-dc",
     "dc_3000": "3000v-dc",
     "ac_15k_16_7": "15kv-16-7hz",
     "ac_25k_50": "25kv-50hz",
@@ -380,7 +383,7 @@ def convert(raw: dict[str, Any], reg: Register, additions: dict[str, Any]) -> tu
     elif raw.get("category") == "high_speed_train":
         mode = "high_speed_rail"
 
-    src_ids = [(s, reg.add(s)) for s in raw.get("sources", [])]
+    src_ids = [(s, reg.add(s, s.get("checked_via", "none"), s.get("note"))) for s in raw.get("sources", [])]
     rec: dict[str, Any] = {
         "$schema": "../../schema/vehicle.schema.json",
         "schemaVersion": SCHEMA_VERSION,
@@ -562,7 +565,9 @@ def derive_capacity(rec: dict[str, Any]) -> None:
 def main(argv: list[str] | None = None) -> int:
     """Run the conversion; return 0 on success."""
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    ap.add_argument("--import-dir", type=Path, default=Path("vehicles/_import/2026-10-26"))
+    ap.add_argument(
+        "--import-dir", type=Path, nargs="+", default=sorted(Path("vehicles/_import").glob("20*/"))
+    )
     ap.add_argument("--additions", type=Path, default=Path("vehicles/_import/additions.yaml"))
     ap.add_argument("--out", type=Path, default=Path("vehicles"))
     args = ap.parse_args(argv)
@@ -572,14 +577,15 @@ def main(argv: list[str] | None = None) -> int:
         additions = yaml.safe_load(args.additions.read_text(encoding="utf-8")) or {}
     reg = Register()
     # Remove only files generated from this import, so hand-written vehicles survive a rebuild.
-    imported = {p.stem for p in args.import_dir.glob("*/*.json")}
+    paths = sorted(p for d in args.import_dir for p in d.glob("*/*.json"))
+    imported = {p.stem for p in paths}
     for folder in set(MODE_FOLDERS.values()):
         for old in [*(args.out / folder).glob("*.json"), *(args.out / "_drafts" / folder).glob("*.json")]:
             if json.loads(old.read_text(encoding="utf-8")).get("legacyId") in imported:
                 old.unlink()
 
     written = drafts = 0
-    for path in sorted(args.import_dir.glob("*/*.json")):
+    for path in paths:
         raw = json.loads(path.read_text(encoding="utf-8"))
         folder, name, rec = convert(raw, reg, additions)
         gaps = core_gaps(rec)

@@ -97,7 +97,7 @@ def test_conversion_is_reproducible(tmp_path: Path) -> None:
     convert.main(
         [
             "--import-dir",
-            str(REPO / "vehicles/_import/2026-10-26"),
+            *[str(d) for d in sorted((REPO / "vehicles/_import").glob("20*/"))],
             "--additions",
             str(REPO / "vehicles/_import/additions.yaml"),
             "--out",
@@ -126,3 +126,11 @@ def test_assumed_seats_make_standing_assumed() -> None:
     convert.derive_capacity(rec)
     standing = rec["standingQuoted"]
     assert standing["assumed"] and (standing["low"], standing["high"]) == (140, 160)
+
+
+def test_every_generated_file_comes_from_an_import() -> None:
+    imported = {p.stem for p in (REPO / "vehicles/_import").glob("20*/*/*.json")}
+    for f in [*(REPO / "vehicles").glob("*/*.json"), *(REPO / "vehicles/_drafts").glob("*/*.json")]:
+        if f.parent.name == "schema":
+            continue
+        assert json.loads(f.read_text(encoding="utf-8"))["legacyId"] in imported, f

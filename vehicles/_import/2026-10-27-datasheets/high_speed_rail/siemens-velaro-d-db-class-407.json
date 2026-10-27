@@ -1,0 +1,69 @@
+{
+  "id": "siemens-velaro-d-db-class-407",
+  "mode": "high_speed_rail",
+  "category": "high_speed_train",
+  "name": "Velaro D",
+  "variant": "DB Class 407 (ICE 3neo predecessor, 8-car)",
+  "family": "Siemens Velaro",
+  "producer": "Siemens",
+  "manufacturerCountry": "Germany",
+  "yearIntroduced": 2013,
+  "dimensions": {
+    "lengthM": 200,
+    "axleLoadT": 17
+  },
+  "consist": {
+    "cars": 8
+  },
+  "capacity": {
+    "seated": 444,
+    "standing": 0,
+    "total": 444
+  },
+  "performance": {
+    "maxSpeedKmh": 320,
+    "tractionPowerKw": 8000
+  },
+  "energy": {
+    "supply": "overhead_wire",
+    "supplySystems": [
+      "ac_15k_16_7",
+      "ac_25k_50",
+      "dc_1500",
+      "dc_3000"
+    ],
+    "regenerativeBraking": true
+  },
+  "operators": [
+    "Deutsche Bahn"
+  ],
+  "sources": [
+    {
+      "url": "https://assets.new.siemens.com/siemens/assets/api/uuid:2f82dc92-66be-40b7-be36-78bd0f1bd0b1/high-speed-train-velaro-d-data-sheet-en.pdf",
+      "title": "Velaro D (Class 407) High-Speed Trainset (data sheet)",
+      "publisher": "Siemens Mobility",
+      "date": null,
+      "accessed": "2026-10-27",
+      "kind": "primary",
+      "checked_via": "direct",
+      "note": "Read from the data sheet the project owner downloaded, 2026-10-27.",
+      "fields": [
+        "dimensions.lengthM",
+        "dimensions.axleLoadT",
+        "consist.cars",
+        "performance.maxSpeedKmh",
+        "performance.tractionPowerKw",
+        "energy.supply",
+        "energy.supplySystems",
+        "energy.regenerativeBraking"
+      ]
+    }
+  ],
+  "quality": {
+    "capacity": {
+      "kind": "derived"
+    }
+  },
+  "notes": "Siemens lists 460 seats: 111 first class, 333 second class and 16 in the bistro; seated = 111 + 333 = 444 travel seats (derived). Standing places: none planned on high-speed services (convention). Body width is not on the data sheet.",
+  "livery": null
+}

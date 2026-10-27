@@ -128,7 +128,7 @@
           "uniqueItems": true,
           "items": {
             "type": "string",
-            "pattern": "^(ocl|trolley|third-rail|fourth-rail)-(600v-dc|630v-dc|750v-dc|1500v-dc|3000v-dc|15kv-16-7hz|25kv-50hz)$"
+            "pattern": "^(ocl|trolley|third-rail|fourth-rail)-(600v-dc|630v-dc|750v-dc|1000v-dc|1500v-dc|3000v-dc|15kv-16-7hz|25kv-50hz)$"
           }
         }
       }
