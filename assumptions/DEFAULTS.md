@@ -847,12 +847,14 @@ default and the others are accepted. Full basis, sources and rationale per attri
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | `ocl-600v-dc` | Overhead contact line, 600 V DC | tram, light_rail | 600 | – | 400 | 400 | 720 | 800 | 5.5 (4.2–6.5) | – | – | – | – | – |
 | `ocl-750v-dc` | Overhead contact line, 750 V DC | tram, light_rail, metro | 750 | – | 500 | 500 | 900 | 1000 | 5.5 (4.2–6.5) | – | – | – | – | – |
+| `ocl-1000v-dc` | Overhead contact line, 1000 V DC | light_rail, regional_rail | 1000 | – | 667 | 667 | 1200 | 1333 | 5.5 (4.2–6.5) | – | – | – | – | – |
 | `ocl-1500v-dc` | Overhead contact line, 1500 V DC | light_rail, metro, commuter_rail, regional_rail, long_distance_rail | 1500 | – | 1000 | 1000 | 1800 | 1950 | 5.5 (5.0–5.75) | 1600 / 1950 | – | – | 300 | – |
 | `ocl-3000v-dc` | Overhead contact line, 3000 V DC | commuter_rail, regional_rail, long_distance_rail, high_speed_rail | 3000 | – | 2000 | 2000 | 3600 | 3900 | 5.5 (5.0–5.75) | 1600 / 1950 | – | – | 200 | – |
 | `ocl-15kv-16-7hz` | Overhead contact line, 15 kV 16.7 Hz AC | commuter_rail, regional_rail, long_distance_rail, high_speed_rail | 15000 | 16.7 | 11000 | 12000 | 17250 | 18000 | 5.5 (5.0–5.75) | 1950 / 1600 / 1450 | – | – | – | 0.95 (0.9–0.95) |
 | `ocl-25kv-50hz` | Overhead contact line, 25 kV 50 Hz AC | commuter_rail, regional_rail, long_distance_rail, high_speed_rail | 25000 | 50 | 17500 | 19000 | 27500 | 29000 | 5.5 (5.0–5.75) | 1600 / 1950 | – | – | – | 0.95 (0.9–0.95) |
 | `trolley-600v-dc` | Trolleybus twin-wire overhead line, 600 V DC | trolleybus | 600 | – | 400 | 400 | 720 | 800 | 5.5 (4.5–6.0) | – | 600 (500–750) | – | – | – |
 | `trolley-750v-dc` | Trolleybus twin-wire overhead line, 750 V DC | trolleybus | 750 | – | 500 | 500 | 900 | 1000 | 5.5 (4.5–6.0) | – | 600 (500–750) | – | – | – |
+| `third-rail-600v-dc` | Conductor rail (third rail), 600 V DC | metro | 600 | – | 400 | 400 | 720 | 800 | – | – | – | top / side / bottom | – | – |
 | `third-rail-750v-dc` | Conductor rail (third rail), 750 V DC | metro, commuter_rail, regional_rail | 750 | – | 500 | 500 | 900 | 1000 | – | – | – | top / side / bottom | – | – |
 | `third-rail-1500v-dc` | Conductor rail (third rail), 1500 V DC | metro, commuter_rail | 1500 | – | 1000 | 1000 | 1800 | 1950 | – | – | – | top / side / bottom | – | – |
 | `fourth-rail-630v-dc` | Fourth-rail system, 630 V DC (+420 V / −210 V) | metro | 630 | – | – | 420 | 760 | – | – | – | – | top | – | – |
@@ -980,3 +982,4 @@ and rationale per attribute: [`switches.yaml`](switches.yaml); geometry model:
 | <a id="src-nortrak-transit"></a>`nortrak-transit` | [voestalpine Nortrak, transit turnouts ("Meter Design" tram and LRT turnouts for standard European geometries of 20, 25, 50, 75, 100 and 150 m radius)](https://www.voestalpine.com/nortrak/en/products/Turnouts-Transit-Systems/) | free | © voestalpine; numbers cited as facts | 2026-10-27 | search-snippet |
 | <a id="src-krakow-tram-switches"></a>`krakow-tram-switches` | [Kraków tramway (MPK / ZDMK) turnout specification (switches with shallow-groove crossings 15 km/h; R = 50 m switches with deep-groove crossings 25 km/h)](https://plikimpi.krakow.pl/pliki/339992) | free | Public procurement document; numbers cited as facts | 2026-10-27 | search-snippet |
 | <a id="src-voestalpine-tram-train-hu"></a>`voestalpine-tram-train-hu` | [voestalpine, first Hungarian tram-train project (turnouts R = 200 m and R = 300 m for 40 km/h diverging)](https://voestalpine.com/railway-systems/en/company/news/first-hungarian-tram-train-project) | free | © voestalpine; numbers cited as facts | 2026-10-27 | search-snippet |
+| <a id="src-salzburger-lokalbahn"></a>`salzburger-lokalbahn` | [Salzburger Lokalbahn (Salzburg AG / Schiene Salzburg), line electrified at 1000 V DC](https://www.salzburg-ag.at/) | free | © Salzburg AG; numbers cited as facts | 2026-10-27 | none |

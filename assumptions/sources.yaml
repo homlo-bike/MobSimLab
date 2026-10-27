@@ -695,3 +695,13 @@
   access: free
   retrieved: 2026-10-27
   checked_via: search-snippet
+
+- id: salzburger-lokalbahn
+  title: Salzburger Lokalbahn (Salzburg AG / Schiene Salzburg), line electrified at 1000 V DC
+  publisher: Salzburg AG
+  url: https://www.salzburg-ag.at/
+  licence: © Salzburg AG; numbers cited as facts
+  access: free
+  retrieved: 2026-10-27
+  checked_via: none
+  note: Operator home page; the voltage was supplied by the vehicle catalogue (Stadler Citylink for Schiene Salzburg) and not read on the operator site.
