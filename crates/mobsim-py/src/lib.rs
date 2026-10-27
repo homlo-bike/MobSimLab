@@ -33,7 +33,9 @@ impl PyRailSim {
             Some(s) => serde_json::from_str(s).map_err(json_err)?,
             None => SimConfig::default(),
         };
-        Ok(Self { inner: RailSim::new(sections, cfg).map_err(PyValueError::new_err)? })
+        Ok(Self {
+            inner: RailSim::new(sections, cfg).map_err(PyValueError::new_err)?,
+        })
     }
 
     /// Purpose: place a train (TrainSpec JSON). Output: train ID.
@@ -80,7 +82,9 @@ impl PyRailSim {
 
     /// Purpose: verify safety invariants. Raises RuntimeError on violation.
     fn check_invariants(&self) -> PyResult<()> {
-        self.inner.check_invariants().map_err(PyRuntimeError::new_err)
+        self.inner
+            .check_invariants()
+            .map_err(PyRuntimeError::new_err)
     }
 
     /// Purpose: take recorded events as a JSON list.
