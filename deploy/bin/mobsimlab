@@ -1,0 +1,8 @@
+#!/bin/sh
+# Operator commands, run inside the container:
+#   docker compose exec mobsimlab /app/bin/mobsimlab admin reset-owner
+set -eu
+case "${1:-}" in
+  admin) shift; exec /usr/local/bin/node /app/api/dist/cli/admin.js "$@" ;;
+  *) echo "usage: mobsimlab admin reset-owner" >&2; exit 64 ;;
+esac

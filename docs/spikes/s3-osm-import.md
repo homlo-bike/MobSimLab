@@ -73,13 +73,30 @@ Box `50.932,6.945,50.948,6.970` (3.1 km², Köln city centre). The first request
 | osm_place | 11 | 24 kB |
 | **Total** | | **40 MB** |
 
-**Bug found.** The box returned more rail ways (29,171) than the whole Regierungsbezirk (12,505). The query took every relation touching the box, including train, tram and bus route relations, and then recursed into all their members. That pulled in whole lines far outside the box. The flex style only reads multipolygon relations, so the query now asks only for nodes, ways and multipolygon relations in the box (`overpass_fetch.py`, `build_query`). The Overpass timings above are therefore pessimistic and should be measured again with the fixed query.
+**Bug found.** The box returned more rail ways (29,171) than the whole Regierungsbezirk (12,505). The query took every relation touching the box, including train, tram and bus route relations, and then recursed into all their members. That pulled in whole lines far outside the box. The flex style only reads multipolygon relations, so the query now asks only for nodes, ways and multipolygon relations in the box (`overpass_fetch.py`, `build_query`).
+
+**Re-run with the fixed query** ([run 40534911854](https://github.com/homlo-bike/MobSimLab/actions/runs/40534911854)), same box. The server answered HTTP 502 three times; the fourth attempt succeeded. The successful request took about 43 s and returned 18 MB (was 161 MB). The import took 0.9 s and wrote 5.8 MB of tables (was 40 MB). The PBF path gave the same results as the first run (12 s download, 61 s import).
+
+| Table | Rows (first run) | Rows (fixed) | Size (fixed) |
+|-------|------|------|------|
+| osm_building | 4,620 | 4,611 | 2.2 MB |
+| osm_way_road | 25,021 | 3,760 | 1.5 MB |
+| osm_poi | 2,810 | 2,293 | 1.2 MB |
+| osm_barrier | 1,934 | 1,103 | 280 kB |
+| osm_way_rail | 29,171 | 371 | 264 kB |
+| osm_pt | 6,160 | 243 | 168 kB |
+| osm_landuse | 174 | 172 | 120 kB |
+| osm_water | 988 | 18 | 80 kB |
+| osm_place | 11 | 10 | 24 kB |
+| **Total** | 40 MB | | **5.8 MB** |
+
+The remaining small differences in buildings and land use come from multipolygon relations that are now fetched only when they touch the box.
 
 ### Default import limits
 
 - **PBF is the default** for anything larger than a district. A region of several million people imports in about a minute and needs about 0.3 GB of tables per million inhabitants, plus indexes and the PBF itself. Setup should warn when the free disk is below three times the expected size.
-- **Overpass is for small areas only.** The 400 km² hard limit stays. The suggested default is 25 km², pending the re-measurement with the fixed query.
-- Public Overpass servers fail transiently (one 502 in this run), so retries with backoff are required, as implemented.
+- **Overpass is for small areas only.** A dense 3 km² city centre took about 43 s on the public server, and the query timeout is 120 s, so the default limit is **10 km²**. Larger areas need the tiling planned for Phase 2, with the 400 km² hard limit as the ceiling for a tiled import. Above 10 km² the UI steers users to the PBF path.
+- Public Overpass servers fail transiently (one 502 in the first run, three in the second), so retries with backoff are required, as implemented.
 
 ## Findings
 

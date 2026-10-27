@@ -14,7 +14,16 @@ services:
       MOBSIMLAB_DB_HOST: postgres
       MOBSIMLAB_SIM_WORKERS: ${MOBSIMLAB_SIM_WORKERS:-1}
       MOBSIMLAB_BOOTSTRAP_OWNER_EMAIL: ${MOBSIMLAB_BOOTSTRAP_OWNER_EMAIL:-}
-    secrets: [db_migrator_password, db_app_password, db_worker_password, master_key, session_secret]
+      MOBSIMLAB_BOOTSTRAP_OWNER_SUBJECT: ${MOBSIMLAB_BOOTSTRAP_OWNER_SUBJECT:-}
+      MOBSIMLAB_OIDC_ISSUER: ${MOBSIMLAB_OIDC_ISSUER:-}
+      MOBSIMLAB_OIDC_CLIENT_ID: ${MOBSIMLAB_OIDC_CLIENT_ID:-}
+    secrets:
+      - db_migrator_password
+      - db_app_password
+      - db_worker_password
+      - master_key
+      - session_secret
+      - oidc_client_secret
     volumes: ["mobsimlab-data:/data"]
     depends_on: { postgres: { condition: service_healthy } }
     read_only: true
@@ -48,6 +57,8 @@ secrets:
   db_worker_password: { file: ./deploy/secrets/db_worker_password }
   master_key: { file: ./deploy/secrets/master_key }
   session_secret: { file: ./deploy/secrets/session_secret }
+  # Empty for a public OIDC client; otherwise the client secret from your identity provider.
+  oidc_client_secret: { file: ./deploy/secrets/oidc_client_secret }
 
 volumes:
   pgdata: {}

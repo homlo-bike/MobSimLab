@@ -121,7 +121,7 @@ All project-scoped tables have RLS enabled. The API sets `SET LOCAL mobsimlab.us
 
 - Written by row triggers on all asset tables, in the same transaction as the change.
 - `hash = sha256(prev_hash || canonical_json(record))` per project chain; instance chain for admin actions. A nightly job verifies chains and reports breaks as CRITICAL.
-- `mobsimlab_app` has `INSERT` and `SELECT` only; no `UPDATE`/`DELETE`. Retention and purge by the migrator role through a documented admin procedure, itself audited.
+- `mobsimlab_app` has `SELECT` only and appends through the `audit.append()` function, which owns the chain-head lock and the hash; it has no `INSERT`, `UPDATE` or `DELETE` on audit tables. `audit.verify(chain)` returns the first broken record. Client IPs are stored only as a keyed hash. Retention and purge by the migrator role through a documented admin procedure, itself audited.
 
 ### 3.5 Simulation results
 

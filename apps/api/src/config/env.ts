@@ -29,9 +29,22 @@ const KNOWN_WEAK = [
 export interface AppConfig {
   port: number;
   publicUrl: URL;
-  dbHost: string;
+  db: { host: string; port: number; name: string };
   bootstrapOwnerEmail?: string;
+  bootstrapOwnerSubject?: string;
+  /** Bootstrap sign-in provider. Absent: sign-in is disabled until one is configured. */
+  oidc?: OidcConfig;
   secrets: Record<ApiSecretName, string>;
+}
+
+/** The OIDC provider used for the first login (more providers are added in the setup wizard later). */
+export interface OidcConfig {
+  issuer: URL;
+  clientId: string;
+  /** Absent for a public client; PKCE is used either way. */
+  clientSecret?: string;
+  /** Development only: allow an http:// issuer (for a local mock provider). */
+  allowInsecureHttp: boolean;
 }
 
 /** Error that stops start-up. The message never contains a secret value. */
@@ -42,8 +55,19 @@ const envSchema = z.object({
   MOBSIMLAB_DB_HOST: z.string().min(1),
   MOBSIMLAB_PORT: z.coerce.number().int().min(1).max(65535).default(8080),
   MOBSIMLAB_SECRETS_DIR: z.string().min(1).default("/run/secrets"),
-  MOBSIMLAB_BOOTSTRAP_OWNER_EMAIL: z.email().optional(),
+  MOBSIMLAB_DB_PORT: z.coerce.number().int().min(1).max(65535).default(5432),
+  MOBSIMLAB_DB_NAME: z.string().min(1).default("mobsimlab"),
+  MOBSIMLAB_BOOTSTRAP_OWNER_EMAIL: z.preprocess(emptyToUndefined, z.email().optional()),
+  MOBSIMLAB_BOOTSTRAP_OWNER_SUBJECT: z.preprocess(emptyToUndefined, z.string().min(1).optional()),
+  MOBSIMLAB_OIDC_ISSUER: z.preprocess(emptyToUndefined, z.url({ protocol: /^https?$/ }).optional()),
+  MOBSIMLAB_OIDC_CLIENT_ID: z.preprocess(emptyToUndefined, z.string().min(1).optional()),
+  MOBSIMLAB_OIDC_ALLOW_INSECURE_HTTP: z.enum(["true", "false"]).default("false"),
 });
+
+/** Compose passes unset variables from .env as empty strings; treat them as absent. */
+function emptyToUndefined(v: unknown): unknown {
+  return v === "" ? undefined : v;
+}
 
 /**
  * Purpose: check that a secret is strong enough to use.
@@ -86,6 +110,21 @@ export function loadConfig(
     if (p) problems.push(p);
     secrets[name] = value;
   }
+  let oidcSecret: string | undefined;
+  try {
+    oidcSecret = readFile(join(dir, "oidc_client_secret")).trim() || undefined;
+  } catch {
+    oidcSecret = undefined;
+  }
+  if (parsed.success) {
+    const d = parsed.data;
+    if (Boolean(d.MOBSIMLAB_OIDC_ISSUER) !== Boolean(d.MOBSIMLAB_OIDC_CLIENT_ID)) {
+      problems.push("MOBSIMLAB_OIDC_ISSUER and MOBSIMLAB_OIDC_CLIENT_ID must be set together");
+    }
+    if (d.MOBSIMLAB_OIDC_ISSUER?.startsWith("http:") && d.MOBSIMLAB_OIDC_ALLOW_INSECURE_HTTP !== "true") {
+      problems.push("MOBSIMLAB_OIDC_ISSUER must use https");
+    }
+  }
   if (problems.length > 0 || !parsed.success) {
     throw new ConfigError(`MobSimLab refuses to start:\n - ${problems.join("\n - ")}`);
   }
@@ -93,8 +132,18 @@ export function loadConfig(
   return {
     port: d.MOBSIMLAB_PORT,
     publicUrl: new URL(d.MOBSIMLAB_PUBLIC_URL),
-    dbHost: d.MOBSIMLAB_DB_HOST,
+    db: { host: d.MOBSIMLAB_DB_HOST, port: d.MOBSIMLAB_DB_PORT, name: d.MOBSIMLAB_DB_NAME },
     bootstrapOwnerEmail: d.MOBSIMLAB_BOOTSTRAP_OWNER_EMAIL,
+    bootstrapOwnerSubject: d.MOBSIMLAB_BOOTSTRAP_OWNER_SUBJECT,
+    oidc:
+      d.MOBSIMLAB_OIDC_ISSUER && d.MOBSIMLAB_OIDC_CLIENT_ID
+        ? {
+            issuer: new URL(d.MOBSIMLAB_OIDC_ISSUER),
+            clientId: d.MOBSIMLAB_OIDC_CLIENT_ID,
+            clientSecret: oidcSecret,
+            allowInsecureHttp: d.MOBSIMLAB_OIDC_ALLOW_INSECURE_HTTP === "true",
+          }
+        : undefined,
     secrets,
   };
 }

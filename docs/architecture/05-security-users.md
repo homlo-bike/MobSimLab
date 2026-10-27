@@ -49,7 +49,8 @@ TB1 user input · TB2 identity assertions · TB3 untrusted remote data · TB4 da
 - Multiple providers configurable by admins; each has an issuer allowlist.
 - No local passwords. Break-glass access (lost Owner account) is an operator command run inside the container (`mobsimlab admin reset-owner`), which puts the instance back into setup mode; it is audited.
 - **First-owner setup mode** (ADR-0015): the instance is designed for self-hosting on a private network, not exposure to the internet. On first start it is in **setup mode**. The first user who completes an OIDC login becomes **Owner** (in one transaction with a row lock, so two simultaneous logins cannot both win). While in setup mode, every other login is refused with "This instance is being set up". The Owner completes the **setup wizard**: instance name and public URL, OIDC providers and group-to-role mappings, auto-registration policy and default role, external providers and credentials, basemaps, units and locale, default Project Preferences. Only when the Owner presses **Finish setup** do other users get access. Optional: `MOBSIMLAB_BOOTSTRAP_OWNER_EMAIL`/`_SUBJECT` restricts who may become the first Owner, for operators whose IdP is shared with other people.
-- Sessions: server-side session rows; cookie `__Host-msl_session`, `HttpOnly`, `Secure`, `SameSite=Lax`, 12 h idle / 7 d absolute timeout, rotated on login and privilege change. Logout revokes server-side and calls the IdP end-session endpoint where supported.
+- **Bootstrap provider:** the first provider comes from the environment (`MOBSIMLAB_OIDC_ISSUER`, `MOBSIMLAB_OIDC_CLIENT_ID`, optional `oidc_client_secret` secret), because someone must be able to sign in before the wizard exists. Further providers are added in the wizard. The callback's `state` is single-use, expires after 10 minutes and is bound to the browser by a short-lived cookie, which prevents login CSRF.
+- Sessions: server-side session rows (only a SHA-256 hash of the cookie value is stored); cookie `__Host-msl_session`, `HttpOnly`, `Secure`, `SameSite=Lax`, 12 h idle / 7 d absolute timeout, rotated on login and privilege change. Logout revokes server-side and calls the IdP end-session endpoint where supported.
 - Account matching is by `(issuer, subject)`, never by email alone (prevents account takeover through a second IdP with the same email).
 
 ### 3.2 Authorization
@@ -86,7 +87,7 @@ Two layers:
 ### 3.4 Browser security
 
 - CSP: `default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'` (Tailwind/MapLibre need inline styles; no inline scripts) `; img-src 'self' data: blob:; worker-src 'self' blob:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'`. All map tiles go through the backend tile proxy or allowlisted origins added to `img-src`/`connect-src` by admin config.
-- CSRF: double-submit token (csrf-csrf) on all state-changing requests, plus `SameSite=Lax` and `Origin` header check.
+- CSRF: a synchroniser token derived from the session (HMAC with `session_secret`), sent in `X-CSRF-Token` on all state-changing requests, plus `SameSite=Lax` and an `Origin` (or `Referer`) check that refuses state-changing requests from other origins or with neither header.
 - Headers via helmet: HSTS (when HTTPS), `X-Content-Type-Options`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy` minimal, `Cross-Origin-Opener-Policy: same-origin`.
 - WebSocket: same-origin check, session cookie auth, per-message size limits.
 
