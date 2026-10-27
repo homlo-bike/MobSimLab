@@ -1,0 +1,170 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7e21-b967-3319545f9415",
+  "legacyId": "setra-s-531-dt",
+  "name": "Setra S 531 DT (TopClass double-deck coach)",
+  "manufacturer": "Setra",
+  "builder": "Setra (Daimler Buses)",
+  "model": "S 531 DT",
+  "variant": "TopClass double-deck coach",
+  "family": "TopClass 500",
+  "manufacturerCountry": "Germany",
+  "type": "double-decker-coach",
+  "mode": "intercity_bus",
+  "length": {
+    "value": 14.0,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "daimler-truck-ag-technical-data-and-equipment-of-the-setr"
+    ]
+  },
+  "width": {
+    "value": 2.55,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "setra-daimler-buses-topclass-s-531-dt-technische-daten"
+    ]
+  },
+  "height": {
+    "value": 4.0,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "setra-daimler-buses-topclass-s-531-dt-technische-daten"
+    ]
+  },
+  "consist": {
+    "articulations": {
+      "value": 0,
+      "unit": "count",
+      "assumed": false,
+      "basis": "documented",
+      "sources": [
+        "setra-daimler-buses-topclass-s-531-dt-technische-daten"
+      ],
+      "rationale": "Derived from the cited source; see notes."
+    },
+    "axlePositions": {
+      "value": [
+        2.705,
+        9.405,
+        10.755
+      ],
+      "unit": "m",
+      "assumed": false,
+      "basis": "documented",
+      "sources": [
+        "setra-daimler-buses-topclass-s-531-dt-technische-daten"
+      ],
+      "rationale": "Derived from the cited source; see notes."
+    },
+    "cars": {
+      "value": 1,
+      "unit": "count",
+      "assumed": false,
+      "basis": "documented",
+      "sources": [
+        "setra-daimler-buses-topclass-s-531-dt-technische-daten"
+      ],
+      "rationale": "Derived from the cited source; see notes."
+    }
+  },
+  "turningCircle": {
+    "value": 23.138,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "setra-daimler-buses-topclass-s-531-dt-technische-daten"
+    ]
+  },
+  "doorClearWidth": {
+    "value": 900,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "setra-daimler-buses-topclass-s-531-dt-technische-daten"
+    ]
+  },
+  "seats": {
+    "value": 83,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "setra-daimler-buses-topclass-s-531-dt-technische-daten"
+    ]
+  },
+  "standingQuoted": {
+    "value": 10,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "setra-daimler-buses-topclass-s-531-dt-technische-daten"
+    ],
+    "rationale": "Total 93 minus 83 seats."
+  },
+  "standingArea": {
+    "value": 2.5,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "setra-daimler-buses-topclass-s-531-dt-technische-daten"
+    ],
+    "rationale": "10 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 1.7,
+    "central": 2.5,
+    "high": 3.3,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 93,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "setra-daimler-buses-topclass-s-531-dt-technische-daten"
+    ]
+  },
+  "topSpeed": {
+    "value": 100,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "legislation-gov-uk-council-directive-92-6-eec-on-speed-limi"
+    ]
+  },
+  "power": {
+    "value": 375,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "setra-daimler-buses-topclass-s-531-dt-technische-daten",
+      "daimler-truck-ag-technical-data-and-equipment-of-the-setr"
+    ]
+  },
+  "energySource": {
+    "value": "diesel",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "setra-daimler-buses-topclass-s-531-dt-technische-daten",
+      "daimler-truck-ag-technical-data-and-equipment-of-the-setr",
+      "legislation-gov-uk-council-directive-92-6-eec-on-speed-limi"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "notes": "Maximum speed is the legal speed-limiter setting for M2/M3 vehicles in the EU (Directive 92/6/EEC Art. 2: cannot exceed 100 km/h), not a manufacturer design speed. Capacity: 83 seats in series seating; the data sheet gives a maximum passenger capacity of 93 and minimum of 54 depending on layout (no standing in coach service). Axle positions derived from the published 2705 mm front overhang, 6700 mm wheelbase to the drive axle and 1350 mm to the trailing axle. Turning circle 23.138 m as published. Door clear width approx. 900 mm. Engine OM 471, 375 kW (tractionPowerKw = rated engine power).",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

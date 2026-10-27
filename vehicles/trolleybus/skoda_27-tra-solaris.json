@@ -1,0 +1,202 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7598-a34c-a64a95876ee8",
+  "legacyId": "skoda-27-tra-solaris",
+  "name": "Škoda 27 Tr Solaris (27 TrA (New Urbino body, traction batteries))",
+  "manufacturer": "Škoda",
+  "builder": "Škoda Electric (body: Solaris)",
+  "model": "27 Tr Solaris",
+  "variant": "27 TrA (New Urbino body, traction batteries)",
+  "family": "Škoda Tr",
+  "manufacturerCountry": "Czech Republic / Poland",
+  "type": "trolleybus",
+  "mode": "trolleybus",
+  "yearIntroduced": 2009,
+  "operators": [
+    "Dopravný podnik Bratislava"
+  ],
+  "length": {
+    "value": 18.25,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-27-tr-solaris-27-tra-vehicle-type"
+    ]
+  },
+  "width": {
+    "value": 2.55,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-27-tr-solaris-27-tra-vehicle-type"
+    ]
+  },
+  "height": {
+    "value": 3.4,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-27-tr-solaris-27-tra-vehicle-type"
+    ]
+  },
+  "floorHeight": {
+    "value": 320,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-27-tr-solaris-27-tra-vehicle-type"
+    ]
+  },
+  "consist": {
+    "articulations": {
+      "value": 1,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "imhd-sk-skoda-27-tr-solaris-27-tra-vehicle-type"
+      ]
+    },
+    "cars": {
+      "value": 2,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "imhd-sk-skoda-27-tr-solaris-27-tra-vehicle-type"
+      ]
+    }
+  },
+  "doorsPerSide": {
+    "value": 4,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-27-tr-solaris-27-tra-vehicle-type"
+    ]
+  },
+  "seats": {
+    "value": 36,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-27-tr-solaris-27-tra-vehicle-type"
+    ]
+  },
+  "standingQuoted": {
+    "value": 79,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-27-tr-solaris-27-tra-vehicle-type"
+    ]
+  },
+  "standingArea": {
+    "value": 19.8,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "imhd-sk-skoda-27-tr-solaris-27-tra-vehicle-type"
+    ],
+    "rationale": "79 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 13.2,
+    "central": 19.8,
+    "high": 26.3,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 115,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-27-tr-solaris-27-tra-vehicle-type"
+    ]
+  },
+  "topSpeed": {
+    "value": 65,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-27-tr-solaris-27-tra-vehicle-type"
+    ]
+  },
+  "power": {
+    "value": 250,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-27-tr-solaris-27-tra-vehicle-type"
+    ]
+  },
+  "energySource": {
+    "value": "dual",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-27-tr-solaris-27-tra-vehicle-type"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "trolley-600v-dc",
+      "trolley-750v-dc"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-27-tr-solaris-27-tra-vehicle-type"
+    ]
+  },
+  "onboardEnergy": {
+    "value": "battery",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-27-tr-solaris-27-tra-vehicle-type"
+    ]
+  },
+  "range": {
+    "value": 12,
+    "unit": "km",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-27-tr-solaris-27-tra-vehicle-type"
+    ]
+  },
+  "regenerativeBraking": {
+    "value": true,
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-27-tr-solaris-27-tra-vehicle-type"
+    ]
+  },
+  "costRecords": [
+    {
+      "item": "vehicle",
+      "value": 538950,
+      "currency": "EUR",
+      "priceBaseYear": 2021,
+      "region": "Bratislava, Slovakia",
+      "note": "Bratislava tender 2021 for 23 vehicles, price per vehicle excl. VAT (raised to 601,145 EUR for 15 vehicles), as reported by imhd.sk.",
+      "sources": [
+        "imhd-sk-skoda-27-tr-solaris-27-tra-vehicle-type"
+      ]
+    }
+  ],
+  "notes": "27 Tr prototype 2009; New Urbino body from 2017. Figures for the 23 Bratislava 27 TrA built 2023. Two LTO traction battery boxes (Škoda TBS 5.5) give at least 12 km off-wire (rangeKm is this minimum off-wire range); battery kWh not published. Converter input 600/750 V DC. Wheelbases 5900/6000 mm. Floor 320 mm (250 mm kneeling). Capacity excludes the driver.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

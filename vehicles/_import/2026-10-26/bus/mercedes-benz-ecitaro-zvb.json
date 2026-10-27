@@ -1,0 +1,107 @@
+{
+  "id": "mercedes-benz-ecitaro-zvb",
+  "mode": "bus",
+  "category": "standard_bus",
+  "simulatorCategory": "12 m Standard Bus",
+  "name": "eCitaro",
+  "variant": "12 m, NMC battery (Zugerland Verkehrsbetriebe)",
+  "family": "Citaro",
+  "producer": "Mercedes-Benz (Daimler Buses)",
+  "manufacturerCountry": "Germany",
+  "yearIntroduced": 2018,
+  "dimensions": {
+    "lengthM": 12.135,
+    "widthM": 2.55,
+    "heightM": 3.45,
+    "emptyWeightT": 14.0,
+    "grossWeightT": 19.5,
+    "floorHeightMm": 320,
+    "turningCircleM": 21.214
+  },
+  "consist": {
+    "cars": 1,
+    "articulations": 0,
+    "axlePositionsM": [2.805, 8.705]
+  },
+  "doors": {
+    "doorWidthMm": 1250
+  },
+  "capacity": {
+    "seated": 31,
+    "standing": 45
+  },
+  "performance": {
+    "maxSpeedKmh": 80,
+    "tractionPowerKw": 250
+  },
+  "energy": {
+    "supply": "battery",
+    "batteryKwh": 243,
+    "regenerativeBraking": null
+  },
+  "operators": ["Zugerland Verkehrsbetriebe (ZVB)"],
+  "sources": [
+    {
+      "url": "https://www.zvb.ch/fileadmin/Files/ZVB/Bilder_nach_Seitenstruktur/Ueber-uns/Presse-PR/Medienmitteilungen/Technische_Daten_eCitaro.pdf",
+      "title": "Technische Daten Mercedes-Benz eCitaro",
+      "publisher": "Zugerland Verkehrsbetriebe AG (ZVB)",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions.lengthM",
+        "dimensions.heightM",
+        "dimensions.emptyWeightT",
+        "dimensions.grossWeightT",
+        "capacity.seated",
+        "capacity.standing",
+        "performance.maxSpeedKmh",
+        "performance.tractionPowerKw",
+        "energy.batteryKwh"
+      ],
+      "kind": "primary"
+    },
+    {
+      "url": "https://www.mercedes-benz-bus.com/int/en/models/ecitaro/facts-ecitaro.pdf",
+      "title": "The eCitaro. Technical data and equipment at a glance.",
+      "publisher": "Mercedes-Benz Buses (Daimler Buses)",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions.widthM",
+        "dimensions.floorHeightMm",
+        "dimensions.turningCircleM",
+        "doors.doorWidthMm",
+        "consist.cars",
+        "consist.articulations"
+      ],
+      "kind": "primary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "doors": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "consist": {
+      "kind": "derived",
+      "confidence": 0.7
+    }
+  },
+  "notes": "Figures for the ZVB eCitaro (2 x 125 kW wheel-hub motors, 400 V, NMC 622 battery of 243 kWh nominal, battery mass 2.6 t, maximum charging power 150 kW). tractionPowerKw is the peak 2 x 125 kW (continuous 2 x 60 kW). Seats 31 + 1 as published; total capacity not published by ZVB. Width, entry height (door 1/2: 320 mm), door opening width and turning circle are from the current Mercedes-Benz eCitaro (2 doors / 3 doors) data sheet, which lists the same length (12,135 mm); that sheet's drive (ZF AxTrax 2, 440/360 kW), batteries (444/555/666 kWh NMC, Combo2 plug standard, pantograph or charging rail optional, depot plug-in up to 150 kW preferred) and range (\"up to 600 km\", maker internal test) describe the newer build, not the ZVB buses. Axle positions derived from the data sheet: front overhang 2,805 mm, wheelbase 5,900 mm (rear overhang 3,430 mm). Range and charging time of the ZVB buses not published."
+}

@@ -1,0 +1,90 @@
+{
+  "id": "stadler-tramlink-blt-basel",
+  "mode": "tram",
+  "category": "tram_low_floor",
+  "simulatorCategory": "40 m Tram",
+  "name": "Tramlink",
+  "variant": "BLT Basel 7-section",
+  "family": "Stadler Tramlink",
+  "producer": "Stadler",
+  "manufacturerCountry": "Switzerland",
+  "yearIntroduced": 2022,
+  "dimensions": {
+    "lengthM": 44.18,
+    "widthM": 2.4,
+    "heightM": 3.61,
+    "floorHeightMm": 400,
+    "minCurveRadiusM": 20
+  },
+  "consist": {
+    "cars": 7,
+    "bidirectional": true
+  },
+  "doors": {
+    "doorsPerSide": 7,
+    "wheelchairSpaces": 2
+  },
+  "capacity": {
+    "seated": 88,
+    "total": 265,
+    "standingDensityPersM2": 4
+  },
+  "performance": {
+    "maxSpeedKmh": 80,
+    "tractionPowerKw": 600
+  },
+  "energy": {
+    "supply": "overhead_wire"
+  },
+  "infrastructure": {
+    "gaugeMm": 1000
+  },
+  "operators": ["Baselland Transport (BLT)"],
+  "sources": [
+    {
+      "url": "https://stadlerrail.com/api/docs/x/f6df7f1948/tramlink_blt_en.pdf",
+      "title": "TRAMLINK low floor light rail vehicle – Baselland Transport AG",
+      "publisher": "Stadler",
+      "date": "2020",
+      "accessed": "2026-10-26",
+      "fields": ["dimensions", "consist", "doors", "capacity", "performance", "infrastructure.gaugeMm"],
+      "kind": "primary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.85
+    },
+    "doors": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.85
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.85
+    },
+    "energy": {
+      "kind": "not_available",
+      "confidence": 0
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.95
+    },
+    "operation": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "Seven-section bidirectional metre-gauge Tramlink for BLT (10 units, delivery 2022). Capacity 265 at 4 persons/m² with 88 seats (+16 folding seats not counted). Five double and two single doors per side (7). Power 6 × 100 kW. Entrance height 400 mm. The data sheet prints the supply voltage as 1,500 V DC; this was not cross-checked, so supplySystems is left empty. Uses real-axle bogies; the number of suspended modules is not stated.",
+  "livery": null
+}

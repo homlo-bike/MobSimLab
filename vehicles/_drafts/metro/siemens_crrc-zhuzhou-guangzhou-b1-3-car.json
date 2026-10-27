@@ -1,0 +1,119 @@
+{
+  "$schema": "../../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-724f-bd99-866b525909fa",
+  "legacyId": "siemens-crrc-zhuzhou-guangzhou-b1-3-car",
+  "name": "Siemens B1 (3-car Type B (Guangzhou Line 3))",
+  "manufacturer": "Siemens",
+  "builder": "Siemens Mobility & CRRC Zhuzhou Locomotive",
+  "model": "B1",
+  "variant": "3-car Type B (Guangzhou Line 3)",
+  "family": "Modular Metro",
+  "manufacturerCountry": "Germany / China",
+  "type": "metro-consist",
+  "mode": "metro",
+  "yearIntroduced": 2005,
+  "operators": [
+    "Guangzhou Metro (Line 3)"
+  ],
+  "length": {
+    "value": 59.94,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-b1-guangzhou-metro-car"
+    ]
+  },
+  "width": {
+    "value": 2.8,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-b1-guangzhou-metro-car"
+    ]
+  },
+  "height": {
+    "value": 3.8,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-b1-guangzhou-metro-car"
+    ]
+  },
+  "consist": {
+    "carLengths": {
+      "value": [
+        19.98,
+        19.98,
+        19.98
+      ],
+      "unit": "m",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-b1-guangzhou-metro-car"
+      ]
+    },
+    "cars": {
+      "value": 3,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-b1-guangzhou-metro-car"
+      ]
+    }
+  },
+  "totalCapacityQuoted": {
+    "value": 720,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-b1-guangzhou-metro-car"
+    ],
+    "rationale": "Derived from the cited source; see notes."
+  },
+  "topSpeed": {
+    "value": 120,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-b1-guangzhou-metro-car"
+    ]
+  },
+  "energySource": {
+    "value": "overhead-dc",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-b1-guangzhou-metro-car"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "ocl-1500v-dc"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-b1-guangzhou-metro-car"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-b1-guangzhou-metro-car"
+    ]
+  },
+  "notes": "Capacity derived: 240 per car (published) x 3 cars = 720. Formation Mcp-T-Mcp; since 2010 units run as coupled pairs (6 cars) on Line 3. The source's acceleration figure (0.9 km/(h·s)) is implausibly low and is left empty. 120 cars built 2005–2007.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only.",
+  "draftReason": "Core fields not sourced: seats, standingQuoted"
+}

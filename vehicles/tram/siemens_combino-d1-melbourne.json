@@ -1,0 +1,212 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-78e2-aff3-43333eda3819",
+  "legacyId": "siemens-combino-d1-melbourne",
+  "name": "Siemens Combino (D1 class)",
+  "manufacturer": "Siemens",
+  "builder": "Siemens",
+  "model": "Combino",
+  "variant": "D1 class",
+  "family": "Siemens Combino",
+  "manufacturerCountry": "Germany",
+  "type": "tram-low-floor",
+  "mode": "tram",
+  "yearIntroduced": 2002,
+  "operators": [
+    "Yarra Trams (Melbourne)"
+  ],
+  "length": {
+    "value": 20.04,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-d-class-melbourne-tram"
+    ]
+  },
+  "width": {
+    "value": 2.65,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-d-class-melbourne-tram"
+    ]
+  },
+  "height": {
+    "value": 3.65,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-d-class-melbourne-tram"
+    ]
+  },
+  "weightEmpty": {
+    "value": 25.8,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-d-class-melbourne-tram"
+    ]
+  },
+  "floorHeight": {
+    "value": 300,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-siemens-combino"
+    ]
+  },
+  "consist": {
+    "articulations": {
+      "value": 2,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-d-class-melbourne-tram"
+      ]
+    },
+    "cars": {
+      "value": 3,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-d-class-melbourne-tram"
+      ]
+    },
+    "suspendedModules": {
+      "value": 1,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-siemens-combino"
+      ]
+    }
+  },
+  "seats": {
+    "value": 32,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-d-class-melbourne-tram"
+    ]
+  },
+  "standingQuoted": {
+    "value": 90,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-d-class-melbourne-tram"
+    ]
+  },
+  "standingArea": {
+    "value": 22.5,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "wp-d-class-melbourne-tram"
+    ],
+    "rationale": "90 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 15.0,
+    "central": 22.5,
+    "high": 30.0,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 122,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-d-class-melbourne-tram",
+      "wp-siemens-combino"
+    ],
+    "rationale": "32 seats plus 90 standing places."
+  },
+  "topSpeed": {
+    "value": 70,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-d-class-melbourne-tram"
+    ]
+  },
+  "power": {
+    "value": 400,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-d-class-melbourne-tram"
+    ]
+  },
+  "maxAcceleration": {
+    "value": 1.3,
+    "unit": "m/s2",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-d-class-melbourne-tram"
+    ]
+  },
+  "serviceDeceleration": {
+    "value": 1.61,
+    "unit": "m/s2",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-d-class-melbourne-tram"
+    ]
+  },
+  "energySource": {
+    "value": "overhead-dc",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-d-class-melbourne-tram"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "ocl-600v-dc"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-d-class-melbourne-tram"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-d-class-melbourne-tram"
+    ]
+  },
+  "livery": {
+    "operator": "Yarra Trams (Melbourne)",
+    "primary": "#FFFFFF",
+    "secondary": "#00843D",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "en-wikipedia-org-yarra-trams-melbourne"
+    ],
+    "rationale": "approximation of white with green and blue stripes and grey skirt (Yarra Trams livery from 2000); many trams now carry the PTV livery, not described here"
+  },
+  "notes": "Melbourne D1 class: 3-section multi-articulated 100% low-floor Combino. Capacity total = seated + standing (32/90) as listed by the source; standing density not stated. Maximum speed, acceleration (1.3 m/s2), traction power (400 kW), 600 V DC and gauge are listed for the D-class fleet as a whole. Deceleration is the maximum operational rate (average operational 1.35 m/s2, maximum emergency 3.4 m/s2). Floor height 300 mm is the figure the Combino article gives for all versions. consist.suspendedModules (1) is derived from the Combino article's description of the original design as alternating wheeled and suspended sections over 3 sections; no official module plan was found, so car lengths and bogie positions are left empty. Doors: source lists '2 single, 4 (D1) or 6 (D2) double' without a per-side split, so doorsPerSide is null. 38 built. Minimum curve radius and cost not found.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

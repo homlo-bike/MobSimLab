@@ -1,0 +1,65 @@
+{
+  "$schema": "../../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7b10-b736-7f937cd0eb88",
+  "legacyId": "crrc-sifang-foshan-low-floor-tram",
+  "name": "CRRC 100% low-floor tram (Foshan (ATC-equipped))",
+  "manufacturer": "CRRC",
+  "builder": "CRRC Qingdao Sifang",
+  "model": "100% low-floor tram",
+  "variant": "Foshan (ATC-equipped)",
+  "manufacturerCountry": "China",
+  "type": "tram-low-floor",
+  "mode": "tram",
+  "operators": [
+    "Foshan (planned, per 2017 report)"
+  ],
+  "length": {
+    "value": 35.2,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "railway-gazette-inte-crrc-rolls-out-tram-equipped-with-automa"
+    ]
+  },
+  "width": {
+    "value": 2.65,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "railway-gazette-inte-crrc-rolls-out-tram-equipped-with-automa"
+    ]
+  },
+  "totalCapacityQuoted": {
+    "value": 380,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "railway-gazette-inte-crrc-rolls-out-tram-equipped-with-automa"
+    ]
+  },
+  "topSpeed": {
+    "value": 70,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "railway-gazette-inte-crrc-rolls-out-tram-equipped-with-automa"
+    ]
+  },
+  "energySource": {
+    "value": "unknown",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "railway-gazette-inte-crrc-rolls-out-tram-equipped-with-automa"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "notes": "Figures from a 2017 roll-out report; the source does not give the number of sections, power supply, seats or the line. Expected to enter service in Foshan in 2018.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only.",
+  "draftReason": "Core fields not sourced: seats, standingQuoted, energySource"
+}

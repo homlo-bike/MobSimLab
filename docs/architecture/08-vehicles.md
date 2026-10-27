@@ -16,10 +16,12 @@ vehicles/
   regional-rail/  stadler_flirt.json, alstom_coradia-lint.json, siemens_desiro-hc.json …
   long-distance-rail/ siemens_viaggio-comfort.json, stadler_smile.json, caf_oaris.json …
   high-speed-rail/    siemens_velaro-d.json, alstom_avelia-horizon.json, hitachi_frecciarossa-1000.json, crrc_cr400af.json …
-  _sources/       sources.json  (registry entries referenced by vehicle files)
+  _drafts/<mode>/ vehicles still missing a sourced core field (draftReason says which)
+  _sources/       sources.yaml  (register entries referenced by vehicle files; same shape as assumptions/sources.yaml)
+  _import/        the imported 2026-10-26 catalogue and additions.yaml; tools/vehicles/convert.py regenerates files from it
 ```
 
-Model names above are **examples of intended coverage**, not a commitment; each file is only added when its key fields are sourced (ADR-0026). File name: `<manufacturer-slug>_<model-slug>.json` (lowercase, ASCII, hyphens).
+Model names above are **examples of intended coverage**, not a commitment; each file is only added when its key fields are sourced (ADR-0026). File name: `<manufacturer-slug>_<model-slug>.json` (lowercase, ASCII, hyphens); the model slug may carry the variant or operator batch (`siemens_avenio-munich-4-car.json`), because orders of one model differ. Folder names are hyphenated; the `mode` field uses the assumption library ids (`intercity_bus`, `light_rail`, `commuter_rail`, `high_speed_rail` …). `tools/vehicles/check.py` runs in CI (rule 5 below).
 
 Every mode has its own folder, even where the brief merges them (intercity bus is separate from bus because of different dwell, door and luggage assumptions).
 
@@ -37,15 +39,15 @@ All fields from the brief, grouped. Every leaf numeric field is a `Quantity` = `
 | Connections | `connections[]`: `{ between:[i,j], type: articulation-joint | jacobs-bogie | gangway | coupler-semi-permanent | coupler-automatic, maxAngle }` |
 | Running gear | `axles[]`: `{ position, powered, load, bogieId? }`; `bogies[]`: `{ id, position, wheelbase, type: motor|trailer|jacobs, sharedBy:[sectionIdx] }`; `wheelDiameter`; `steering` (for buses: steered axles, rear steer) |
 | Doors | `doors[]`: `{ side: left|right|both, position, clearWidth, channels, height, step }` |
-| Capacity | `seats`, `foldingSeats`, `standingArea`, `standingDensityPlanning` (pers/m²), `standingCapacity` (derived at density), `wheelchairSpaces`, `bicycleSpaces`, `totalCapacity` (derived) |
+| Capacity | `seats`, `foldingSeats`, `standingQuoted` and `totalCapacityQuoted` (as published), `standingDensityQuoted`, `standingArea`, `standingDensityPlanning` (pers/m²), `standingCapacity` (derived at density), `wheelchairSpaces`, `bicycleSpaces`, `totalCapacity` (derived) |
 | Accessibility | `lowFloorShare`, `ramps`, `lifts`, `kneeling`, `audioVisualInfo`, `priorityseats`, PRM TSI compliance flags |
-| Energy | `energySource`: diesel | cng | hvo | battery | hydrogen | overhead-ac | overhead-dc | third-rail | dual; `voltageSystems[]`; `fuelCapacity`, `batteryCapacityUsable`, `range`, `refuelTime`, `rechargeTime` (by charger power), `consumption` (per km, per load, per season), `regenerativeBraking` |
+| Energy | `energySource`: diesel | diesel-hybrid | cng | hvo | battery | hydrogen | overhead | overhead-ac | overhead-dc | overhead-multisystem | third-rail | dual; `supplySystems[]` (ids from `assumptions/supply-systems.yaml`, e.g. `ocl-25kv-50hz`, `trolley-600v-dc`, `third-rail-750v-dc`), `conductorRailContact[]`, `pantographHeadMm`, `onboardEnergy`; `fuelCapacity`, `batteryCapacityUsable`, `range`, `refuelTime`, `rechargeTime` (by charger power), `consumption` (per km, per load, per season), `regenerativeBraking` |
 | Performance | `topSpeed`, `designSpeed`, `commercialSpeedTypical` (context-dependent, informational), `maxAcceleration`, `serviceDeceleration`, `emergencyDeceleration`, `jerkLimit`, `tractiveEffortCurve[]` `{v, F}`, `power`, `davis {A,B,C}`, `rotatingMassFactor` |
 | Geometry limits | `minRadiusHorizontal`, `recommendedRadius`, `minVerticalRadius` (crest/sag), `maxGradient`, `maxCantDeficiency` (rail), `turningCircle`, `sweptPathRef` (bus) |
 | Infrastructure | `trackGauge[]` (mm), `loadingGauge`, `axleLoadMax`, `platformCompatibility[]` (height + gap tolerance), `requiresOverheadWire`, `requiresChargers`, `signallingSystems[]` (e.g. ETCS L2, CBTC) |
-| Cost | `capitalCost` (with currency, price-base year, quantity context), `operatingCostPerKm`, `operatingCostPerHour`, `energyCost` (derived), `lifespanYears`, `midLifeOverhaul` (`year`, `cost`) |
+| Cost | `costRecords[]` (published order values as reported), `capitalCost` (with currency, price-base year, quantity context), `operatingCostPerKm`, `operatingCostPerHour`, `energyCost` (derived), `lifespanYears`, `midLifeOverhaul` (`year`, `cost`) |
 | Maintenance | `maintenanceIntervalKm`, `maintenanceIntervalDays`, `availability` (fraction), `mtbf`, `mttr`, `depotRequirements` |
-| Metadata | standard envelope (04 §2.2) plus `trademarkNotice` |
+| Metadata | standard envelope (04 §2.2) plus `legacyId`, `builder`, `operators[]`, `livery` (approximate colours, always an educated guess), `notes`, `trademarkNotice` |
 
 ### Example (abridged)
 

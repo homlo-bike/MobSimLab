@@ -1,0 +1,213 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-75ad-98b5-bf093ecdb05f",
+  "legacyId": "bombardier-flexity-outlook-toronto",
+  "name": "Bombardier Flexity Outlook (Toronto (TTC LFLRV))",
+  "manufacturer": "Bombardier",
+  "builder": "Bombardier Transportation (now Alstom)",
+  "model": "Flexity Outlook",
+  "variant": "Toronto (TTC LFLRV)",
+  "family": "Flexity",
+  "manufacturerCountry": "Canada",
+  "type": "tram-low-floor",
+  "mode": "tram",
+  "yearIntroduced": 2014,
+  "operators": [
+    "Toronto Transit Commission"
+  ],
+  "length": {
+    "value": 30.2,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "toronto-transit-comm-operating-statistics-2014-next-generatio",
+      "railway-gazette-toronto-welcomes-new-generation-trams"
+    ]
+  },
+  "width": {
+    "value": 2.54,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "toronto-transit-comm-operating-statistics-2014-next-generatio"
+    ]
+  },
+  "height": {
+    "value": 3.84,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "toronto-transit-comm-operating-statistics-2014-next-generatio"
+    ]
+  },
+  "weightEmpty": {
+    "value": 48.2,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "toronto-transit-comm-operating-statistics-2014-next-generatio"
+    ]
+  },
+  "consist": {
+    "articulations": {
+      "value": 4,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-flexity-outlook-toronto"
+      ]
+    },
+    "bidirectional": {
+      "value": false,
+      "assumed": false,
+      "basis": "documented",
+      "sources": [
+        "toronto-transit-comm-operating-statistics-2014-next-generatio",
+        "railway-gazette-toronto-welcomes-new-generation-trams",
+        "wp-flexity-outlook-toronto"
+      ],
+      "rationale": "Not attributed to one source in the import; see notes."
+    },
+    "cars": {
+      "value": 5,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "railway-gazette-toronto-welcomes-new-generation-trams",
+        "wp-flexity-outlook-toronto"
+      ]
+    },
+    "suspendedModules": {
+      "value": 2,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-flexity-outlook-toronto"
+      ]
+    }
+  },
+  "minRadiusHorizontal": {
+    "value": 10.97,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-flexity-outlook-toronto"
+    ]
+  },
+  "doorsPerSide": {
+    "value": 4,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "toronto-transit-comm-operating-statistics-2014-next-generatio"
+    ]
+  },
+  "seats": {
+    "value": 70,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "toronto-transit-comm-operating-statistics-2014-next-generatio",
+      "railway-gazette-toronto-welcomes-new-generation-trams"
+    ]
+  },
+  "standingQuoted": {
+    "value": 181,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "railway-gazette-toronto-welcomes-new-generation-trams",
+      "toronto-transit-comm-operating-statistics-2014-next-generatio"
+    ],
+    "rationale": "Total 251 minus 70 seats."
+  },
+  "standingArea": {
+    "value": 45.2,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "railway-gazette-toronto-welcomes-new-generation-trams",
+      "toronto-transit-comm-operating-statistics-2014-next-generatio"
+    ],
+    "rationale": "181 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 30.2,
+    "central": 45.2,
+    "high": 60.3,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 251,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "railway-gazette-toronto-welcomes-new-generation-trams"
+    ]
+  },
+  "topSpeed": {
+    "value": 70,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "toronto-transit-comm-operating-statistics-2014-next-generatio",
+      "railway-gazette-toronto-welcomes-new-generation-trams"
+    ]
+  },
+  "energySource": {
+    "value": "overhead-dc",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "railway-gazette-toronto-welcomes-new-generation-trams",
+      "wp-flexity-outlook-toronto"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "ocl-600v-dc"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "railway-gazette-toronto-welcomes-new-generation-trams",
+      "wp-flexity-outlook-toronto"
+    ]
+  },
+  "trackGauge": {
+    "value": 1495,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "railway-gazette-toronto-welcomes-new-generation-trams",
+      "wp-flexity-outlook-toronto"
+    ]
+  },
+  "livery": {
+    "operator": "Toronto Transit Commission",
+    "primary": "#C8102E",
+    "secondary": "#FFFFFF",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "blogto-com-toronto-transit-commission"
+    ],
+    "rationale": "approximation of red and white (TTC Flexity Outlook)"
+  },
+  "notes": "Five-section low-floor streetcar on Toronto's 1495 mm gauge, 600 V DC. Total 251 (incl. 70 seated) from Railway Gazette; the TTC statistics page lists '70 seated; 130 maximum', so capacity depends on the loading standard used (standing density not stated); standing left null. Four doors on the right side only (single-ended), so doorsPerSide = 4 refers to the door side. consist.suspendedModules = 2 is derived: the source gives UIC arrangement Bo'+Bo'+Bo' (three bogies) under five sections, leaving two sections without running gear. Wikipedia gives a length of 28 m; the TTC figure 30.20 m is used. Acceleration, deceleration, traction power and floor height not found. Contract values are reported without currency in the source read, so costs are left empty.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

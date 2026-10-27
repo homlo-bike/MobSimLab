@@ -1,0 +1,185 @@
+{
+  "$schema": "../../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-74ed-b089-3b90666a9931",
+  "legacyId": "siemens-velaro-e320-class-374",
+  "name": "Siemens Velaro e320 (Class 374) (16-car)",
+  "manufacturer": "Siemens",
+  "builder": "Siemens Mobility",
+  "model": "Velaro e320 (Class 374)",
+  "variant": "16-car",
+  "family": "Velaro",
+  "manufacturerCountry": "Germany",
+  "type": "high-speed-train",
+  "mode": "high_speed_rail",
+  "yearIntroduced": 2015,
+  "operators": [
+    "Eurostar"
+  ],
+  "length": {
+    "value": 400,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-374"
+    ]
+  },
+  "consist": {
+    "carLengths": {
+      "value": [
+        25.7,
+        24.2,
+        24.2,
+        24.2,
+        24.2,
+        24.2,
+        24.2,
+        24.2,
+        24.2,
+        24.2,
+        24.2,
+        24.2,
+        24.2,
+        24.2,
+        24.2,
+        25.7
+      ],
+      "unit": "m",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-british-rail-class-374"
+      ]
+    },
+    "cars": {
+      "value": 16,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-british-rail-class-374"
+      ]
+    }
+  },
+  "seats": {
+    "value": 902,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-374"
+    ]
+  },
+  "standingQuoted": {
+    "value": 0,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-british-rail-class-374",
+      "wp-siemens-velaro-ice-3neo-article-variant"
+    ],
+    "rationale": "Total 902 minus 902 seats."
+  },
+  "standingArea": {
+    "value": 0.0,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "wp-british-rail-class-374",
+      "wp-siemens-velaro-ice-3neo-article-variant"
+    ],
+    "rationale": "0 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 0.0,
+    "central": 0.0,
+    "high": 0.0,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 902,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-british-rail-class-374",
+      "wp-siemens-velaro-ice-3neo-article-variant"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "topSpeed": {
+    "value": 320,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-374"
+    ]
+  },
+  "power": {
+    "value": 16000,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-374"
+    ]
+  },
+  "energySource": {
+    "value": "overhead-multisystem",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-374"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "ocl-25kv-50hz",
+      "ocl-3000v-dc",
+      "ocl-1500v-dc"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-374"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-374"
+    ]
+  },
+  "costRecords": [
+    {
+      "item": "10 Velaro e320 trainsets for Eurostar (initial order)",
+      "value": 600000000,
+      "currency": "EUR",
+      "priceBaseYear": 2010,
+      "region": "Europe (Eurostar)",
+      "note": "Initial order of ten trainsets; later increased to 17 sets.",
+      "sources": [
+        "wp-siemens-velaro-ice-3neo-article-variant"
+      ]
+    }
+  ],
+  "livery": {
+    "operator": "Eurostar",
+    "primary": "#1E2F5A",
+    "secondary": "#A7A9AC",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "runwaygirlnetwork-co-eurostar"
+    ],
+    "rationale": "approximation of Eurostar blue and grey"
+  },
+  "notes": "Seats 902 (\"capacity\"). total = seats (no standing figure published). Power 16 MW. Supply systems as listed in the Class 374 article (25 kV 50 Hz AC, 3 kV DC, 1.5 kV DC); the Velaro variant table also lists 15 kV 16.7 Hz for the e320.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only.",
+  "draftReason": "Core fields not sourced: width"
+}

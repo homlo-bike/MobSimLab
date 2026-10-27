@@ -1,0 +1,80 @@
+{
+  "id": "byd-k8-japan",
+  "mode": "bus",
+  "category": "standard_bus",
+  "simulatorCategory": "10.5 m Midi Bus",
+  "name": "K8",
+  "variant": "Japan, urban version",
+  "family": "K-series",
+  "producer": "BYD",
+  "manufacturerCountry": "China",
+  "dimensions": {
+    "lengthM": 10.5,
+    "widthM": 2.5,
+    "heightM": 3.3
+  },
+  "consist": {
+    "cars": 1,
+    "articulations": 0
+  },
+  "doors": {
+    "wheelchairSpaces": 2
+  },
+  "capacity": {
+    "seated": 26,
+    "standing": 53,
+    "total": 79
+  },
+  "performance": {
+    "maxSpeedKmh": 70,
+    "tractionPowerKw": 200
+  },
+  "energy": {
+    "supply": "battery",
+    "batteryKwh": 314,
+    "rangeKm": 240
+  },
+  "operators": ["Nankai Rinkan Bus (Japan)"],
+  "sources": [
+    {
+      "url": "https://www.electrive.com/2026/05/13/byd-puts-500th-electric-bus-on-japanese-roads/",
+      "title": "BYD puts 500th electric bus on Japanese roads",
+      "publisher": "electrive.com",
+      "date": "2026-05-13",
+      "accessed": "2026-10-26",
+      "fields": ["dimensions", "consist", "doors", "capacity.standing", "performance", "energy"],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "doors": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "capacity": {
+      "kind": "derived",
+      "confidence": 0.6
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "costs": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "Urban version: 80 people including the driver = 22 fixed seats + 4 folding seats + 53 standing + driver. Seated (26) and total (79, without the driver) derived. Suburban version: 22 fixed + 8 folding + 45 standing + driver. 200 kW = 2 x 100 kW; charging up to 90 kW, up to 3.5 h. Wheelbase 5.3 m."
+}

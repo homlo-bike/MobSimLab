@@ -1,0 +1,77 @@
+{
+  "id": "karsan-atak-poprad",
+  "mode": "bus",
+  "category": "minibus",
+  "simulatorCategory": "8 m Midibus",
+  "name": "Atak",
+  "variant": "diesel, 2 doors (SAD Poprad)",
+  "family": "Atak",
+  "producer": "Karsan",
+  "manufacturerCountry": "Türkiye",
+  "yearIntroduced": 2014,
+  "dimensions": {
+    "lengthM": 8.154,
+    "widthM": 2.436,
+    "heightM": 3.007,
+    "emptyWeightT": 6.304,
+    "floorHeightMm": 325
+  },
+  "consist": {
+    "cars": 1,
+    "articulations": 0
+  },
+  "doors": {
+    "doorsPerSide": 2
+  },
+  "capacity": {
+    "seated": 23,
+    "standing": 35,
+    "total": 58
+  },
+  "performance": {
+    "maxSpeedKmh": 100,
+    "tractionPowerKw": 137
+  },
+  "energy": {
+    "supply": "diesel"
+  },
+  "operators": ["SAD Poprad"],
+  "sources": [
+    {
+      "url": "https://imhd.sk/tatry/popis-typu-vozidla/866/Karsan-Atak",
+      "title": "Karsan Atak – vehicle type description",
+      "publisher": "imhd.sk (Poprad-Tatry public transport information site)",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["dimensions", "consist", "doors", "capacity", "performance", "energy", "yearIntroduced"],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.65
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.65
+    },
+    "doors": {
+      "kind": "published",
+      "confidence": 0.65
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.65
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.65
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.65
+    }
+  },
+  "notes": "Low-entry midibus; SAD Poprad vehicles 2017-2018, withdrawn 2023. FPT NEF4 Euro 6 diesel 137 kW, Allison 2100 automatic. Height 3,007 mm with air conditioning. Floor 325 mm (door 1), 330 mm (door 2). Wheelbase 4,580 mm. Capacity excludes the driver. The battery-electric e-ATAK (8,315 mm, 220 kWh, up to 300 km, max. 52 passengers per Karsan) has no published top speed and is not covered by this entry."
+}

@@ -1,0 +1,176 @@
+{
+  "$schema": "../../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7b9a-98bf-8e5d62f4ca0e",
+  "legacyId": "alstom-icng-8-car",
+  "name": "Alstom ICNG (Intercity Nieuwe Generatie) (8-car (3200 series))",
+  "manufacturer": "Alstom",
+  "builder": "Alstom",
+  "model": "ICNG (Intercity Nieuwe Generatie)",
+  "variant": "8-car (3200 series)",
+  "family": "Coradia Stream",
+  "manufacturerCountry": "France",
+  "type": "intercity-train",
+  "mode": "long_distance_rail",
+  "yearIntroduced": 2023,
+  "operators": [
+    "Nederlandse Spoorwegen (NS)"
+  ],
+  "length": {
+    "value": 164.9,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-ns-intercity-nieuwe-generatie"
+    ]
+  },
+  "weightEmpty": {
+    "value": 285.7,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-ns-intercity-nieuwe-generatie"
+    ]
+  },
+  "floorHeight": {
+    "value": 810,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-ns-intercity-nieuwe-generatie"
+    ]
+  },
+  "consist": {
+    "cars": {
+      "value": 8,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-ns-intercity-nieuwe-generatie"
+      ]
+    }
+  },
+  "seats": {
+    "value": 417,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "railway-gazette-inte-intercity-new-generation-emu-prepared-fo"
+    ]
+  },
+  "standingQuoted": {
+    "value": 0,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "railway-gazette-inte-intercity-new-generation-emu-prepared-fo",
+      "wp-ns-intercity-nieuwe-generatie"
+    ],
+    "rationale": "Total 417 minus 417 seats."
+  },
+  "standingArea": {
+    "value": 0.0,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "railway-gazette-inte-intercity-new-generation-emu-prepared-fo",
+      "wp-ns-intercity-nieuwe-generatie"
+    ],
+    "rationale": "0 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 0.0,
+    "central": 0.0,
+    "high": 0.0,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 417,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-ns-intercity-nieuwe-generatie",
+      "railway-gazette-inte-intercity-new-generation-emu-prepared-fo"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "topSpeed": {
+    "value": 200,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-ns-intercity-nieuwe-generatie"
+    ]
+  },
+  "power": {
+    "value": 3390,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-ns-intercity-nieuwe-generatie"
+    ]
+  },
+  "energySource": {
+    "value": "overhead-multisystem",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-ns-intercity-nieuwe-generatie"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "ocl-1500v-dc",
+      "ocl-25kv-50hz"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-ns-intercity-nieuwe-generatie"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-ns-intercity-nieuwe-generatie"
+    ]
+  },
+  "costRecords": [
+    {
+      "item": "49 five-car and 30 eight-car ICNG units",
+      "value": 800000000,
+      "currency": "EUR",
+      "priceBaseYear": 2016,
+      "region": "Netherlands",
+      "note": "Whole NS contract for 79 trains (two lengths), not a per-train price.",
+      "sources": [
+        "railway-gazette-inte-intercity-new-generation-emu-prepared-fo"
+      ]
+    }
+  ],
+  "livery": {
+    "operator": "Nederlandse Spoorwegen (NS)",
+    "primary": "#FFC917",
+    "secondary": "#003082",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "treinreiziger-nl-nederlandse-spoorwegen-ns"
+    ],
+    "rationale": "approximation of NS yellow and blue"
+  },
+  "notes": "Seats 417 for the domestic eight-car units (Railway Gazette); the 3300 series (ICNG-B) has 410. total = seats (no standing figure published). Maximum speed 200 km/h on HSL-Zuid, 140 km/h on conventional lines. The 3300 series additionally supports 3 kV DC and 15 kV 16.7 Hz.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only.",
+  "draftReason": "Core fields not sourced: width"
+}

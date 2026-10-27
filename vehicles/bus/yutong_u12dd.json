@@ -1,0 +1,158 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7ad0-b2ed-e445e5e1658f",
+  "legacyId": "yutong-u12dd",
+  "name": "Yutong U12DD (12 m electric double-decker)",
+  "manufacturer": "Yutong",
+  "builder": "Yutong",
+  "model": "U12DD",
+  "variant": "12 m electric double-decker",
+  "family": "U-series",
+  "manufacturerCountry": "China",
+  "type": "double-decker-bus",
+  "mode": "bus",
+  "operators": [
+    "Tower Transit Singapore",
+    "Go-Ahead Singapore",
+    "SMRT Buses"
+  ],
+  "length": {
+    "value": 11.98,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "zhengzhou-yutong-bus-yutong-u12dd"
+    ]
+  },
+  "width": {
+    "value": 2.55,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "zhengzhou-yutong-bus-yutong-u12dd"
+    ]
+  },
+  "height": {
+    "value": 4.35,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "zhengzhou-yutong-bus-yutong-u12dd"
+    ]
+  },
+  "consist": {
+    "articulations": {
+      "value": 0,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "zhengzhou-yutong-bus-yutong-u12dd"
+      ]
+    },
+    "cars": {
+      "value": 1,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "zhengzhou-yutong-bus-yutong-u12dd"
+      ]
+    }
+  },
+  "turningCircle": {
+    "value": 19,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "zhengzhou-yutong-bus-yutong-u12dd"
+    ]
+  },
+  "seats": {
+    "value": 74,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "zhengzhou-yutong-bus-yutong-u12dd"
+    ]
+  },
+  "standingQuoted": {
+    "value": 43,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "zhengzhou-yutong-bus-yutong-u12dd"
+    ],
+    "rationale": "Total 117 minus 74 seats."
+  },
+  "standingArea": {
+    "value": 10.8,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "zhengzhou-yutong-bus-yutong-u12dd"
+    ],
+    "rationale": "43 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 7.2,
+    "central": 10.8,
+    "high": 14.3,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 117,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "zhengzhou-yutong-bus-yutong-u12dd"
+    ]
+  },
+  "topSpeed": {
+    "value": 70,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "zhengzhou-yutong-bus-yutong-u12dd"
+    ]
+  },
+  "energySource": {
+    "value": "battery",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "zhengzhou-yutong-bus-yutong-u12dd",
+      "land-transport-guru-yutong-zk6125bevgs-e12dd"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "batteryCapacity": {
+    "value": 528,
+    "unit": "kWh",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "zhengzhou-yutong-bus-yutong-u12dd"
+    ]
+  },
+  "livery": {
+    "operator": "Land Transport Authority (Singapore), all public bus operators",
+    "primary": "#6CB33F",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "landtransportguru-ne-land-transport-authority-singapore-all-p"
+    ],
+    "rationale": "approximation of Lush Green, the unified LTA public bus livery"
+  },
+  "notes": "Successor name of the E12DD. Seated 74 = 55 upper + 19 lower deck seats as stated on the manufacturer page; 117 passengers total. Battery: the specification table gives 528 kWh, while the page text describes a 580 kWh standard and 621 kWh optional pack (670 km SORT2 range for 621 kWh); 528 kWh kept, range left empty. Turning circle is the published minimum turning diameter. Singapore operators listed ran the earlier E12DD (12 m, 422 kWh).",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

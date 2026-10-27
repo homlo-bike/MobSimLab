@@ -1,0 +1,197 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-75d2-bb57-2ab2f0a6d830",
+  "legacyId": "solaris-urbino-12-hydrogen",
+  "name": "Solaris Urbino 12 hydrogen",
+  "manufacturer": "Solaris",
+  "builder": "Solaris Bus & Coach",
+  "model": "Urbino 12 hydrogen",
+  "family": "Urbino",
+  "manufacturerCountry": "Poland",
+  "type": "standard-bus",
+  "mode": "bus",
+  "yearIntroduced": 2019,
+  "operators": [
+    "Dopravný podnik Bratislava"
+  ],
+  "length": {
+    "value": 12.0,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-solaris-urbino-12-hydrogen-vehicle-type"
+    ]
+  },
+  "width": {
+    "value": 2.55,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-solaris-urbino-12-hydrogen-vehicle-type"
+    ]
+  },
+  "height": {
+    "value": 3.3,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-solaris-urbino-12-hydrogen-vehicle-type"
+    ]
+  },
+  "weightLoaded": {
+    "value": 18.745,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-solaris-urbino-12-hydrogen-vehicle-type"
+    ]
+  },
+  "floorHeight": {
+    "value": 320,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-solaris-urbino-12-hydrogen-vehicle-type"
+    ]
+  },
+  "consist": {
+    "articulations": {
+      "value": 0,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "imhd-sk-solaris-urbino-12-hydrogen-vehicle-type"
+      ]
+    },
+    "cars": {
+      "value": 1,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "imhd-sk-solaris-urbino-12-hydrogen-vehicle-type"
+      ]
+    }
+  },
+  "doorsPerSide": {
+    "value": 3,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-solaris-urbino-12-hydrogen-vehicle-type"
+    ]
+  },
+  "seats": {
+    "value": 29,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-solaris-urbino-12-hydrogen-vehicle-type"
+    ]
+  },
+  "standingQuoted": {
+    "value": 51,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-solaris-urbino-12-hydrogen-vehicle-type"
+    ]
+  },
+  "standingDensityQuoted": {
+    "value": 5,
+    "unit": "pers/m2",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-solaris-urbino-12-hydrogen-vehicle-type"
+    ]
+  },
+  "standingArea": {
+    "value": 10.2,
+    "unit": "m2",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "imhd-sk-solaris-urbino-12-hydrogen-vehicle-type"
+    ],
+    "rationale": "51 standing places at the quoted 5 pers/m2."
+  },
+  "totalCapacityQuoted": {
+    "value": 80,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-solaris-urbino-12-hydrogen-vehicle-type"
+    ]
+  },
+  "topSpeed": {
+    "value": 65,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-solaris-urbino-12-hydrogen-vehicle-type"
+    ]
+  },
+  "power": {
+    "value": 250,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-solaris-urbino-12-hydrogen-vehicle-type"
+    ]
+  },
+  "energySource": {
+    "value": "hydrogen",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-solaris-urbino-12-hydrogen-vehicle-type"
+    ]
+  },
+  "batteryCapacity": {
+    "value": 30.4,
+    "unit": "kWh",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-solaris-urbino-12-hydrogen-vehicle-type"
+    ]
+  },
+  "range": {
+    "value": 350,
+    "unit": "km",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-solaris-urbino-12-hydrogen-vehicle-type"
+    ]
+  },
+  "costRecords": [
+    {
+      "item": "vehicle",
+      "value": 610000,
+      "currency": "EUR",
+      "priceBaseYear": 2022,
+      "region": "Bratislava, Slovakia",
+      "note": "Price per vehicle excl. VAT; first four vehicles ordered 2022 after a 2021 tender, as reported by imhd.sk.",
+      "sources": [
+        "imhd-sk-solaris-urbino-12-hydrogen-vehicle-type"
+      ]
+    }
+  ],
+  "notes": "Fuel-cell electric bus: Ballard FCmove 70 kW fuel cell plus a 30.4 kWh LTO traction battery; two 125 kW in-wheel motors (250 kW total). Range 350 km per hydrogen fill is the guaranteed figure quoted by the source. Standing places at 5 persons/m². Kerb weight given only as approximately 13.2 t, so left empty. Wheelbase 5900 mm. Capacity excludes the driver.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

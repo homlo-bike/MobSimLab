@@ -1,0 +1,93 @@
+{
+  "id": "mercedes-benz-capacity",
+  "mode": "brt",
+  "category": "brt_articulated_bus",
+  "simulatorCategory": "BRT Articulated Bus",
+  "name": "CapaCity",
+  "variant": "O 530 GL, diesel",
+  "family": "Citaro",
+  "producer": "Mercedes-Benz (EvoBus)",
+  "manufacturerCountry": "Germany",
+  "yearIntroduced": 2007,
+  "dimensions": {
+    "lengthM": 19.54,
+    "widthM": 2.55,
+    "heightM": 3.155,
+    "emptyWeightT": 18.548,
+    "floorHeightMm": 320
+  },
+  "consist": {
+    "cars": 2,
+    "articulations": 1
+  },
+  "doors": {
+    "doorsPerSide": 4
+  },
+  "capacity": {
+    "seated": 45,
+    "standing": 132,
+    "total": 177
+  },
+  "performance": {
+    "maxSpeedKmh": 80,
+    "tractionPowerKw": 260
+  },
+  "energy": {
+    "supply": "diesel"
+  },
+  "costs": [
+    {
+      "item": "vehicle",
+      "amount": 490644,
+      "currency": "EUR",
+      "year": 2009,
+      "region": "Bratislava, Slovakia",
+      "url": "https://imhd.sk/ba/popis-typu-vozidla/428/Mercedes-Benz-CapaCity",
+      "note": "Bratislava tender 2009, price per vehicle excl. VAT, as reported by imhd.sk."
+    }
+  ],
+  "livery": null,
+  "operators": ["Dopravný podnik Bratislava"],
+  "sources": [
+    {
+      "url": "https://imhd.sk/ba/popis-typu-vozidla/428/Mercedes-Benz-CapaCity",
+      "title": "Mercedes-Benz CapaCity – vehicle type description",
+      "publisher": "imhd.sk (Bratislava public transport information site)",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["dimensions", "consist", "doors", "capacity", "performance", "energy", "costs"],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "doors": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "costs": {
+      "kind": "published",
+      "confidence": 0.6
+    }
+  },
+  "notes": "Four-axle single-articulated bus developed for BRT/Metrobus systems; prototype 2005, series from 2007. Figures for Bratislava series vehicles (2010/2012). Maximum speed 80 km/h with limiter. Engine OM 457 hLA, 260 kW (tractionPowerKw = rated engine power). Wheelbases 5845, 5990 and 1600 mm (overhangs not given). Floor 320 mm at door 1, 340 mm at doors 2-4. Height with air conditioning. Capacity excludes the driver."
+}

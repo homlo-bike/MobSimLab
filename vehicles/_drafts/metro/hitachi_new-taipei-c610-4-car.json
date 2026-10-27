@@ -1,0 +1,191 @@
+{
+  "$schema": "../../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-76c8-9817-ec69f1f7115f",
+  "legacyId": "hitachi-new-taipei-c610-4-car",
+  "name": "Hitachi New Taipei Metro C610 (4-car set (Circular line))",
+  "manufacturer": "Hitachi",
+  "builder": "Hitachi Rail Italy",
+  "model": "New Taipei Metro C610",
+  "variant": "4-car set (Circular line)",
+  "family": "Hitachi Rail Italy Driverless Metro",
+  "manufacturerCountry": "Italy",
+  "type": "light-metro",
+  "mode": "metro",
+  "yearIntroduced": 2020,
+  "operators": [
+    "New Taipei Metro (Circular line)"
+  ],
+  "length": {
+    "value": 68.43,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-new-taipei-metro-c610"
+    ]
+  },
+  "width": {
+    "value": 2.65,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-new-taipei-metro-c610"
+    ]
+  },
+  "height": {
+    "value": 3.6,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-new-taipei-metro-c610"
+    ]
+  },
+  "weightEmpty": {
+    "value": 117,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-new-taipei-metro-c610"
+    ]
+  },
+  "consist": {
+    "carLengths": {
+      "value": [
+        17.455,
+        16.76,
+        16.76,
+        17.455
+      ],
+      "unit": "m",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-new-taipei-metro-c610"
+      ]
+    },
+    "cars": {
+      "value": 4,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-new-taipei-metro-c610"
+      ]
+    }
+  },
+  "doorsPerSide": {
+    "value": 12,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-new-taipei-metro-c610"
+    ],
+    "rationale": "Derived from the cited source; see notes."
+  },
+  "totalCapacityQuoted": {
+    "value": 650,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-new-taipei-metro-c610"
+    ]
+  },
+  "topSpeed": {
+    "value": 90,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-new-taipei-metro-c610"
+    ]
+  },
+  "power": {
+    "value": 1632,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-new-taipei-metro-c610"
+    ]
+  },
+  "maxAcceleration": {
+    "value": 1.2,
+    "unit": "m/s2",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-new-taipei-metro-c610"
+    ]
+  },
+  "serviceDeceleration": {
+    "value": 1.0,
+    "unit": "m/s2",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-new-taipei-metro-c610"
+    ]
+  },
+  "energySource": {
+    "value": "third-rail",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-new-taipei-metro-c610"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "third-rail-750v-dc"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-new-taipei-metro-c610"
+    ]
+  },
+  "regenerativeBraking": {
+    "value": true,
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-new-taipei-metro-c610"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-new-taipei-metro-c610"
+    ]
+  },
+  "automationGrade": {
+    "value": "GoA4",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-new-taipei-metro-c610"
+    ]
+  },
+  "livery": {
+    "operator": "New Taipei Metro (Circular line)",
+    "primary": "#F5B800",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "emmanuellemoureaux-c-new-taipei-metro-circular-line"
+    ],
+    "rationale": "approximation of the yellow Circular line colour scheme (exterior and interior)"
+  },
+  "notes": "Medium-capacity (light metro) driverless train, formation A-C-D-B, assembled by Taiwan Rolling Stock Company. doorsPerSide = 3 per side per car x 4 cars (derived). Max speed 90 km/h design, 80 km/h service. Deceleration is the service rate (1.3 m/s2 emergency). Capacity 650 has no density basis stated. Figures from Wikipedia (secondary).",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only.",
+  "draftReason": "Core fields not sourced: seats, standingQuoted"
+}

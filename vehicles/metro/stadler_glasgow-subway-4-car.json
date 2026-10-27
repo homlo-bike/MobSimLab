@@ -1,0 +1,198 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-72a6-b9e5-e4ec59b0418f",
+  "legacyId": "stadler-glasgow-subway-4-car",
+  "name": "Stadler Metro Glasgow EMU (SPT Glasgow Subway)",
+  "manufacturer": "Stadler",
+  "builder": "Stadler",
+  "model": "Metro Glasgow EMU",
+  "variant": "SPT Glasgow Subway",
+  "family": "Stadler metro",
+  "manufacturerCountry": "Switzerland",
+  "type": "metro-automated",
+  "mode": "metro",
+  "yearIntroduced": 2023,
+  "operators": [
+    "Strathclyde Partnership for Transport (Glasgow Subway)"
+  ],
+  "length": {
+    "value": 39.51,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-metro-glasgow-emu-strathclyde-partnershi"
+    ]
+  },
+  "width": {
+    "value": 2.309,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-metro-glasgow-emu-strathclyde-partnershi"
+    ]
+  },
+  "height": {
+    "value": 2.642,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-metro-glasgow-emu-strathclyde-partnershi"
+    ]
+  },
+  "floorHeight": {
+    "value": 695,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-metro-glasgow-emu-strathclyde-partnershi"
+    ]
+  },
+  "consist": {
+    "cars": {
+      "value": 4,
+      "unit": "count",
+      "assumed": false,
+      "basis": "documented",
+      "sources": [
+        "stadler-metro-glasgow-emu-strathclyde-partnershi",
+        "wp-glasgow-subway-rolling-stock"
+      ],
+      "rationale": "Not attributed to one source in the import; see notes."
+    }
+  },
+  "doorsPerSide": {
+    "value": 6,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-metro-glasgow-emu-strathclyde-partnershi"
+    ]
+  },
+  "doorClearWidth": {
+    "value": 1200,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-metro-glasgow-emu-strathclyde-partnershi"
+    ]
+  },
+  "seats": {
+    "value": 104,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-metro-glasgow-emu-strathclyde-partnershi"
+    ]
+  },
+  "standingQuoted": {
+    "value": 200,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-metro-glasgow-emu-strathclyde-partnershi"
+    ]
+  },
+  "standingDensityQuoted": {
+    "value": 6,
+    "unit": "pers/m2",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-metro-glasgow-emu-strathclyde-partnershi"
+    ]
+  },
+  "standingArea": {
+    "value": 33.3,
+    "unit": "m2",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "stadler-metro-glasgow-emu-strathclyde-partnershi"
+    ],
+    "rationale": "200 standing places at the quoted 6 pers/m2."
+  },
+  "totalCapacityQuoted": {
+    "value": 304,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "stadler-metro-glasgow-emu-strathclyde-partnershi",
+      "wp-glasgow-subway-rolling-stock"
+    ],
+    "rationale": "104 seats plus 200 standing places."
+  },
+  "topSpeed": {
+    "value": 58,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-metro-glasgow-emu-strathclyde-partnershi"
+    ]
+  },
+  "power": {
+    "value": 820,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-metro-glasgow-emu-strathclyde-partnershi"
+    ]
+  },
+  "maxAcceleration": {
+    "value": 1.3,
+    "unit": "m/s2",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-metro-glasgow-emu-strathclyde-partnershi"
+    ]
+  },
+  "energySource": {
+    "value": "third-rail",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-metro-glasgow-emu-strathclyde-partnershi"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "third-rail-600v-dc"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-metro-glasgow-emu-strathclyde-partnershi"
+    ]
+  },
+  "trackGauge": {
+    "value": 1220,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-metro-glasgow-emu-strathclyde-partnershi"
+    ]
+  },
+  "automationGrade": {
+    "value": "GoA4",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-metro-glasgow-emu-strathclyde-partnershi"
+    ]
+  },
+  "notes": "Fully automatic, unattended small-profile train (17 units; in service from 11 December 2023). cars = 4 read from the axle arrangement Bo'Bo'+2'+2'+Bo'Bo' (derived). total = 104 seats + 200 standing at 6 persons/m² = 304 (derived; 6 tip-up seats not counted). tractionPowerKw is the maximum output at wheel (820 kW; continuous 520 kW). automationGrade GoA4 from the sheet's 'fully automatically, without drivers'. 600 V DC third rail; 1,220 mm gauge.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

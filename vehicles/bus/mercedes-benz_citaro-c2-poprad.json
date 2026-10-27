@@ -1,0 +1,173 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7a55-b73c-13229a03acb7",
+  "legacyId": "mercedes-benz-citaro-c2-poprad",
+  "name": "Mercedes-Benz Citaro (C2, 12 m diesel, 3 doors (SAD Poprad))",
+  "manufacturer": "Mercedes-Benz",
+  "builder": "Mercedes-Benz (Daimler Buses)",
+  "model": "Citaro",
+  "variant": "C2, 12 m diesel, 3 doors (SAD Poprad)",
+  "family": "Citaro",
+  "manufacturerCountry": "Germany",
+  "type": "standard-bus",
+  "mode": "bus",
+  "yearIntroduced": 2011,
+  "operators": [
+    "SAD Poprad"
+  ],
+  "length": {
+    "value": 12.135,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-citaro-c2-vehicle-type-des"
+    ]
+  },
+  "width": {
+    "value": 2.55,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-citaro-c2-vehicle-type-des"
+    ]
+  },
+  "height": {
+    "value": 3.12,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-citaro-c2-vehicle-type-des"
+    ]
+  },
+  "weightEmpty": {
+    "value": 10.967,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-citaro-c2-vehicle-type-des"
+    ]
+  },
+  "floorHeight": {
+    "value": 320,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-citaro-c2-vehicle-type-des"
+    ]
+  },
+  "consist": {
+    "articulations": {
+      "value": 0,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "imhd-sk-mercedes-benz-citaro-c2-vehicle-type-des"
+      ]
+    },
+    "cars": {
+      "value": 1,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "imhd-sk-mercedes-benz-citaro-c2-vehicle-type-des"
+      ]
+    }
+  },
+  "doorsPerSide": {
+    "value": 3,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-citaro-c2-vehicle-type-des"
+    ]
+  },
+  "seats": {
+    "value": 32,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-citaro-c2-vehicle-type-des"
+    ]
+  },
+  "standingQuoted": {
+    "value": 74,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-citaro-c2-vehicle-type-des"
+    ]
+  },
+  "standingArea": {
+    "value": 18.5,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "imhd-sk-mercedes-benz-citaro-c2-vehicle-type-des"
+    ],
+    "rationale": "74 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 12.3,
+    "central": 18.5,
+    "high": 24.7,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 106,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-citaro-c2-vehicle-type-des"
+    ]
+  },
+  "topSpeed": {
+    "value": 95,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-citaro-c2-vehicle-type-des"
+    ]
+  },
+  "power": {
+    "value": 220,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-citaro-c2-vehicle-type-des"
+    ]
+  },
+  "energySource": {
+    "value": "diesel",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-citaro-c2-vehicle-type-des"
+    ]
+  },
+  "livery": {
+    "operator": "SAD Poprad (MHD Poprad)",
+    "primary": "#FFFFFF",
+    "secondary": "#1F5AA6",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "imhd-sk-mercedes-benz-citaro-c2-vehicle-type-des"
+    ],
+    "rationale": "Delivered in a white and blue livery (\"bielo-modrý náter\"), as described by imhd.sk; hex values approximate."
+  },
+  "notes": "SAD Poprad series 1 (2020, 6 vehicles): Mercedes-Benz OM 936 h Euro 6D diesel with recuperation module, 220 kW, ZF EcoLife 6-speed. Height 3,120 mm with air conditioning (3,095 mm without). Wheelbase 5,900 mm. Capacity given by the source as approximate (seats 32 + 1, standing ~74, total ~106 + 1). imhd.sk states the second Citaro generation was presented in 2011.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

@@ -1,0 +1,173 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-791e-a25c-652ccc5fec06",
+  "legacyId": "stadler-dt8-16-stuttgart-4car",
+  "name": "Stadler DT 8 (DT 8.16 double traction (2 units))",
+  "manufacturer": "Stadler",
+  "builder": "Stadler",
+  "model": "DT 8",
+  "variant": "DT 8.16 double traction (2 units)",
+  "family": "SSB DT 8",
+  "manufacturerCountry": "Germany",
+  "type": "lrv-coupled-consist",
+  "mode": "light_rail",
+  "yearIntroduced": 2026,
+  "operators": [
+    "Stuttgarter Straßenbahnen (SSB)"
+  ],
+  "length": {
+    "value": 78.22,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-de-ssb-dt-8"
+    ]
+  },
+  "width": {
+    "value": 2.65,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-de-ssb-dt-8"
+    ]
+  },
+  "height": {
+    "value": 3.715,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-de-ssb-dt-8"
+    ]
+  },
+  "consist": {
+    "bidirectional": {
+      "value": true,
+      "assumed": false,
+      "basis": "documented",
+      "sources": [
+        "wp-de-ssb-dt-8"
+      ],
+      "rationale": "Not attributed to one source in the import; see notes."
+    },
+    "cars": {
+      "value": 4,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-de-ssb-dt-8"
+      ]
+    }
+  },
+  "minRadiusHorizontal": {
+    "value": 50,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-de-ssb-dt-8"
+    ]
+  },
+  "doorsPerSide": {
+    "value": 8,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-de-ssb-dt-8"
+    ]
+  },
+  "seats": {
+    "value": 196,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-de-ssb-dt-8"
+    ]
+  },
+  "standingQuoted": {
+    "value": 312,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-de-ssb-dt-8"
+    ]
+  },
+  "standingArea": {
+    "value": 78.0,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "wp-de-ssb-dt-8"
+    ],
+    "rationale": "312 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 52.0,
+    "central": 78.0,
+    "high": 104.0,
+    "distribution": "triangular"
+  },
+  "topSpeed": {
+    "value": 80,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-de-ssb-dt-8"
+    ]
+  },
+  "power": {
+    "value": 2080,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-de-ssb-dt-8"
+    ]
+  },
+  "energySource": {
+    "value": "overhead-dc",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-de-ssb-dt-8"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "ocl-750v-dc"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-de-ssb-dt-8"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-de-ssb-dt-8"
+    ]
+  },
+  "livery": {
+    "operator": "Stuttgarter Straßenbahnen (SSB)",
+    "primary": "#FFD200",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "urban-transport-maga-stuttgarter-straenbahnen-ssb"
+    ],
+    "rationale": "approximation of yellow, the SSB Stadtbahn colour"
+  },
+  "notes": "Two DT 8.16 units in double traction (four cars, about 80 m), the longest formation approved for regular service in Stuttgart (three units, 120 m, are not). Length, seats, standing, doors and power are per-unit values multiplied by two (marked derived); width, height, speed and radius are per unit. Per unit (infobox, DT 8.16-17): length over coupling 39.11 m, 98 seats incl. 24 folding, 156 standing; the article text gives 'room for 250 people' for DT 8.16, so total is left to seated + standing (254) and standing density is not stated. Capacity is per consist. Traction 8 x 130 kW continuous per unit. Four doors per side per 40 m unit as described for the series. Acceleration is given only as a range (0.9-1.3 m/s2), so left null; deceleration, empty weight of DT 8.16 and floor height of DT 8.16 (stated as 3 cm lower than the 1000 mm of predecessors) left null. A published price exists only for the earlier DT 8.15 series, so no cost is given for this model.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

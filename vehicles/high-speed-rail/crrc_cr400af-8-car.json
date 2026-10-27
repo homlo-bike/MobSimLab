@@ -1,0 +1,175 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7703-b8ad-c30513b0f099",
+  "legacyId": "crrc-cr400af-8-car",
+  "name": "CRRC CR400AF (8-car (4M4T))",
+  "manufacturer": "CRRC",
+  "builder": "CRRC Qingdao Sifang",
+  "model": "CR400AF",
+  "variant": "8-car (4M4T)",
+  "family": "Fuxing",
+  "manufacturerCountry": "China",
+  "type": "high-speed-train",
+  "mode": "high_speed_rail",
+  "yearIntroduced": 2016,
+  "operators": [
+    "China Railway"
+  ],
+  "length": {
+    "value": 209,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-china-railway-cr400af"
+    ]
+  },
+  "width": {
+    "value": 3.36,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-china-railway-cr400af"
+    ]
+  },
+  "height": {
+    "value": 4.05,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-china-railway-cr400af"
+    ]
+  },
+  "consist": {
+    "carLengths": {
+      "value": [
+        27.91,
+        25.65,
+        25.65,
+        25.65,
+        25.65,
+        25.65,
+        25.65,
+        27.91
+      ],
+      "unit": "m",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-china-railway-cr400af"
+      ]
+    },
+    "cars": {
+      "value": 8,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-china-railway-cr400af"
+      ]
+    }
+  },
+  "seats": {
+    "value": 576,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-china-railway-cr400af"
+    ]
+  },
+  "standingQuoted": {
+    "value": 0,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-china-railway-cr400af"
+    ],
+    "rationale": "Total 576 minus 576 seats."
+  },
+  "standingArea": {
+    "value": 0.0,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "wp-china-railway-cr400af"
+    ],
+    "rationale": "0 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 0.0,
+    "central": 0.0,
+    "high": 0.0,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 576,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-china-railway-cr400af"
+    ]
+  },
+  "topSpeed": {
+    "value": 350,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-china-railway-cr400af"
+    ]
+  },
+  "power": {
+    "value": 10400,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-china-railway-cr400af"
+    ]
+  },
+  "energySource": {
+    "value": "overhead-ac",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-china-railway-cr400af"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "ocl-25kv-50hz"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-china-railway-cr400af"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-china-railway-cr400af"
+    ]
+  },
+  "platformHeightCompatible": {
+    "value": [
+      1250
+    ],
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-china-railway-cr400af"
+    ]
+  },
+  "notes": "Seated layout 576 = 10 business + 28 first + 538 standard; the article also lists 556- and 392-seat layouts. Max speed is the service speed (350 km/h); design speed 400 km/h, record 420 km/h. Traction power 10.4 MW under 25 kV. Axle load given only as <17 t, so left empty. Car lengths are the listed end (27.91 m) and intermediate (25.65 m) car lengths; their sum (209.72 m) differs slightly from the published train length of 209 m. Livery not described in the source.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

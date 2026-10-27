@@ -1,0 +1,141 @@
+{
+  "$schema": "../../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7480-9bc9-e1216c69c9db",
+  "legacyId": "siemens-val-208-2-car",
+  "name": "Siemens VAL 208 (2-car trainset)",
+  "manufacturer": "Siemens",
+  "builder": "Siemens Mobility",
+  "model": "VAL 208",
+  "variant": "2-car trainset",
+  "family": "VAL (Véhicule Automatique Léger)",
+  "manufacturerCountry": "Austria",
+  "type": "light-metro",
+  "mode": "metro",
+  "yearIntroduced": 2001,
+  "operators": [
+    "Ilévia (Lille Metro)",
+    "Tisséo (Toulouse Metro)",
+    "Rennes Metro",
+    "Turin Metro",
+    "Paris CDGVAL"
+  ],
+  "length": {
+    "value": 26.14,
+    "unit": "m",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-val-208",
+      "wp-vehicule-automatique-leger"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "width": {
+    "value": 2.08,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-val-208"
+    ]
+  },
+  "height": {
+    "value": 3.27,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-val-208"
+    ]
+  },
+  "consist": {
+    "carLengths": {
+      "value": [
+        13.07,
+        13.07
+      ],
+      "unit": "m",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-val-208"
+      ]
+    },
+    "cars": {
+      "value": 2,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-val-208"
+      ]
+    }
+  },
+  "totalCapacityQuoted": {
+    "value": 124,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-vehicule-automatique-leger"
+    ]
+  },
+  "topSpeed": {
+    "value": 80,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-val-208"
+    ]
+  },
+  "power": {
+    "value": 520,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-val-208"
+    ]
+  },
+  "maxAcceleration": {
+    "value": 1.3,
+    "unit": "m/s2",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-val-208"
+    ]
+  },
+  "serviceDeceleration": {
+    "value": 1.3,
+    "unit": "m/s2",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-val-208"
+    ]
+  },
+  "energySource": {
+    "value": "third-rail",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-val-208"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "third-rail-750v-dc"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-val-208"
+    ]
+  },
+  "notes": "Rubber-tyred automated light metro. lengthM = 2 x 13.07 m car length (derived; no train length given). Height 3.27 m is without air conditioning (3.7 m with). Capacity 124 is the figure the VAL article gives for 2-car VAL 206/208 sets, with no density basis; low confidence. gaugeMm 1,620 is the running-pad spacing stated in the infobox (rubber-tyred guideway), not a steel-rail gauge. Doors: infobox says \"3 per side\" without saying per car or per train, so doorsPerSide is left null. Described as fully automated; no GoA grade stated, so automationGrade is empty. Figures from Wikipedia (secondary); infobox values are uncited there. Rubber-tyred: the published 1620 mm is the running-pad spacing, not a rail gauge, so gauge is left empty.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only.",
+  "draftReason": "Core fields not sourced: seats, standingQuoted"
+}

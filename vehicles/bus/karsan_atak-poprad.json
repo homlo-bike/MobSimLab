@@ -1,0 +1,162 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-79d2-b3f1-b1ea67b828a9",
+  "legacyId": "karsan-atak-poprad",
+  "name": "Karsan Atak (diesel, 2 doors (SAD Poprad))",
+  "manufacturer": "Karsan",
+  "builder": "Karsan",
+  "model": "Atak",
+  "variant": "diesel, 2 doors (SAD Poprad)",
+  "family": "Atak",
+  "manufacturerCountry": "Türkiye",
+  "type": "minibus",
+  "mode": "bus",
+  "yearIntroduced": 2014,
+  "operators": [
+    "SAD Poprad"
+  ],
+  "length": {
+    "value": 8.154,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-karsan-atak-vehicle-type-description"
+    ]
+  },
+  "width": {
+    "value": 2.436,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-karsan-atak-vehicle-type-description"
+    ]
+  },
+  "height": {
+    "value": 3.007,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-karsan-atak-vehicle-type-description"
+    ]
+  },
+  "weightEmpty": {
+    "value": 6.304,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-karsan-atak-vehicle-type-description"
+    ]
+  },
+  "floorHeight": {
+    "value": 325,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-karsan-atak-vehicle-type-description"
+    ]
+  },
+  "consist": {
+    "articulations": {
+      "value": 0,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "imhd-sk-karsan-atak-vehicle-type-description"
+      ]
+    },
+    "cars": {
+      "value": 1,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "imhd-sk-karsan-atak-vehicle-type-description"
+      ]
+    }
+  },
+  "doorsPerSide": {
+    "value": 2,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-karsan-atak-vehicle-type-description"
+    ]
+  },
+  "seats": {
+    "value": 23,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-karsan-atak-vehicle-type-description"
+    ]
+  },
+  "standingQuoted": {
+    "value": 35,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-karsan-atak-vehicle-type-description"
+    ]
+  },
+  "standingArea": {
+    "value": 8.8,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "imhd-sk-karsan-atak-vehicle-type-description"
+    ],
+    "rationale": "35 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 5.8,
+    "central": 8.8,
+    "high": 11.7,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 58,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-karsan-atak-vehicle-type-description"
+    ]
+  },
+  "topSpeed": {
+    "value": 100,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-karsan-atak-vehicle-type-description"
+    ]
+  },
+  "power": {
+    "value": 137,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-karsan-atak-vehicle-type-description"
+    ]
+  },
+  "energySource": {
+    "value": "diesel",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-karsan-atak-vehicle-type-description"
+    ]
+  },
+  "notes": "Low-entry midibus; SAD Poprad vehicles 2017-2018, withdrawn 2023. FPT NEF4 Euro 6 diesel 137 kW, Allison 2100 automatic. Height 3,007 mm with air conditioning. Floor 325 mm (door 1), 330 mm (door 2). Wheelbase 4,580 mm. Capacity excludes the driver. The battery-electric e-ATAK (8,315 mm, 220 kWh, up to 300 km, max. 52 passengers per Karsan) has no published top speed and is not covered by this entry.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

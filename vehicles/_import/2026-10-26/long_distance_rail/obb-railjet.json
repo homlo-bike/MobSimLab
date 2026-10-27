@@ -1,0 +1,118 @@
+{
+  "id": "obb-railjet",
+  "mode": "long_distance_rail",
+  "category": "push_pull_set",
+  "simulatorCategory": "Push-Pull Set",
+  "name": "Railjet",
+  "variant": "1st generation, 7 coaches + Class 1116 Taurus",
+  "family": "Viaggio",
+  "producer": "Siemens",
+  "manufacturerCountry": "Austria",
+  "yearIntroduced": 2008,
+  "dimensions": {
+    "lengthM": 205.08,
+    "widthM": 2.825,
+    "heightM": 4.05
+  },
+  "consist": {
+    "cars": 8
+  },
+  "doors": {
+    "wheelchairSpaces": 3,
+    "bicycleSpaces": 5
+  },
+  "capacity": {
+    "seated": 404,
+    "total": 404
+  },
+  "performance": {
+    "maxSpeedKmh": 230
+  },
+  "energy": {
+    "supply": "overhead_wire",
+    "supplySystems": ["ac_15k_16_7", "ac_25k_50"]
+  },
+  "infrastructure": {
+    "gaugeMm": 1435
+  },
+  "costs": [
+    {
+      "item": "23 Railjet sets (first order)",
+      "amount": 245000000,
+      "currency": "EUR",
+      "year": 2006,
+      "region": "Austria",
+      "url": "https://de.wikipedia.org/wiki/Railjet_1._Generation",
+      "note": "23 seven-coach sets."
+    },
+    {
+      "item": "44 Railjet sets (second order)",
+      "amount": 540000000,
+      "currency": "EUR",
+      "year": 2007,
+      "region": "Austria",
+      "url": "https://de.wikipedia.org/wiki/Railjet_1._Generation",
+      "note": "44 sets, ordered October 2007."
+    }
+  ],
+  "livery": {
+    "operator": "ÖBB",
+    "primary": "#7A1F2B",
+    "secondary": "#6E6E6E",
+    "windows": null,
+    "sourceUrl": "https://ledicoferroviaire.mediarail.be/obb-railjet-basic-en/",
+    "description": "approximation of burgundy red base with grey gradient and red stripe (ÖBB railjet)"
+  },
+  "operators": ["ÖBB", "ČD"],
+  "sources": [
+    {
+      "url": "https://de.wikipedia.org/wiki/Railjet_1._Generation",
+      "title": "Railjet 1. Generation",
+      "publisher": "Wikipedia (de)",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions",
+        "consist.cars",
+        "doors",
+        "capacity.seated",
+        "performance.maxSpeedKmh",
+        "energy.supplySystems",
+        "infrastructure.gaugeMm",
+        "costs"
+      ],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "consist": {
+      "kind": "derived",
+      "confidence": 0.8
+    },
+    "doors": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "capacity": {
+      "kind": "derived",
+      "confidence": 0.7
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.9
+    }
+  },
+  "notes": "Length 205.08 m with a Class 1016/1116 locomotive (185.80 m without; 204.78 m with 1293/193, 205.38 m with 1216). cars = 7 coaches + 1 locomotive. Seats 404 for sets 01–51 (16 Business, 76 First, 312 Economy); sets 52–60 and ČD sets have 442. total = seats (no standing figure published). Supply systems are those of the 1116 locomotive; 1216/1293 locomotives add 3 kV and 1.5 kV DC. Empty mass 417.2 t is published but it is unclear whether it includes the locomotive, so it is left empty."
+}

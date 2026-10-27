@@ -1,0 +1,148 @@
+{
+  "$schema": "../../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7a25-895d-ebcdc1bc85ff",
+  "legacyId": "bombardier-art-mark-ii-2-car",
+  "name": "Bombardier ART Mark II (2nd generation, 2-car train)",
+  "manufacturer": "Bombardier",
+  "builder": "Bombardier Transportation",
+  "model": "ART Mark II",
+  "variant": "2nd generation, 2-car train",
+  "family": "Bombardier Advanced Rapid Transit / Innovia Metro",
+  "manufacturerCountry": "Canada",
+  "type": "light-metro",
+  "mode": "metro",
+  "yearIntroduced": 2009,
+  "operators": [
+    "British Columbia Rapid Transit Company (SkyTrain Expo and Millennium Lines)"
+  ],
+  "length": {
+    "value": 34.7,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-skytrain-vancouver-rolling-stock"
+    ]
+  },
+  "consist": {
+    "carLengths": {
+      "value": [
+        17.35,
+        17.35
+      ],
+      "unit": "m",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-skytrain-vancouver-rolling-stock"
+      ]
+    },
+    "cars": {
+      "value": 2,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-skytrain-vancouver-rolling-stock"
+      ]
+    }
+  },
+  "seats": {
+    "value": 66,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-skytrain-vancouver-rolling-stock"
+    ],
+    "rationale": "Derived from the cited source; see notes."
+  },
+  "standingQuoted": {
+    "value": 198,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-skytrain-vancouver-rolling-stock"
+    ],
+    "rationale": "Total 264 minus 66 seats."
+  },
+  "standingArea": {
+    "value": 49.5,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "wp-skytrain-vancouver-rolling-stock"
+    ],
+    "rationale": "198 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 33.0,
+    "central": 49.5,
+    "high": 66.0,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 264,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-skytrain-vancouver-rolling-stock"
+    ],
+    "rationale": "Derived from the cited source; see notes."
+  },
+  "topSpeed": {
+    "value": 80,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-skytrain-vancouver-rolling-stock"
+    ]
+  },
+  "energySource": {
+    "value": "third-rail",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-skytrain-vancouver-rolling-stock"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-skytrain-vancouver-rolling-stock"
+    ]
+  },
+  "costRecords": [
+    {
+      "item": "Second-generation ART Mark II cars (order)",
+      "value": 113000000,
+      "currency": "CAD",
+      "priceBaseYear": 2006,
+      "region": "Vancouver, Canada",
+      "note": "Bid of $113 million for 34 second-generation Mark II cars (contract won November 2006), as reported by Wikipedia.",
+      "sources": [
+        "wp-skytrain-vancouver-rolling-stock"
+      ]
+    }
+  ],
+  "livery": {
+    "operator": "British Columbia Rapid Transit Company (TransLink)",
+    "primary": "#00539F",
+    "secondary": "#A7A9AC",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "translink-ca-british-columbia-rapid-transit-company-t"
+    ],
+    "rationale": "approximation of the blue and grey TransLink livery of the second-generation Mark II (first generation was white)"
+  },
+  "notes": "Linear-induction-motor light metro. Length and capacity per 2-car train from the SkyTrain configuration table (second-generation Mark II, 2009/2010); seated = 2 x 33 seats per car (derived). maxSpeedKmh is the 80 km/h stated for the Expo/Millennium Line ART fleet. Power is 650 V DC via a fourth-rail pair with LIM reaction rail; 650 V is not one of the project supply systems, so supplySystems is empty. Automated (driverless) operation; no GoA grade stated. Figures from Wikipedia (secondary).",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only.",
+  "draftReason": "Core fields not sourced: width"
+}

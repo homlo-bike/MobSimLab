@@ -1,0 +1,158 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-778a-b150-56ce89f66667",
+  "legacyId": "hyundai-rotem-canada-line-2-car",
+  "name": "Hyundai Rotem Canada Line EMU (2-car articulated unit)",
+  "manufacturer": "Hyundai Rotem",
+  "builder": "Hyundai Rotem",
+  "model": "Canada Line EMU",
+  "variant": "2-car articulated unit",
+  "manufacturerCountry": "South Korea",
+  "type": "metro-automated",
+  "mode": "metro",
+  "yearIntroduced": 2009,
+  "operators": [
+    "ProTrans BC (Canada Line, TransLink)"
+  ],
+  "length": {
+    "value": 40,
+    "unit": "m",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-skytrain-vancouver-rolling-stock"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "width": {
+    "value": 3,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-skytrain-vancouver-rolling-stock"
+    ]
+  },
+  "consist": {
+    "carLengths": {
+      "value": [
+        20,
+        20
+      ],
+      "unit": "m",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-skytrain-vancouver-rolling-stock"
+      ]
+    },
+    "cars": {
+      "value": 2,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-skytrain-vancouver-rolling-stock"
+      ]
+    }
+  },
+  "seats": {
+    "value": 88,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-skytrain-vancouver-rolling-stock"
+    ]
+  },
+  "standingQuoted": {
+    "value": 246,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-skytrain-vancouver-rolling-stock"
+    ],
+    "rationale": "Total 334 minus 88 seats."
+  },
+  "standingDensityQuoted": {
+    "value": 4,
+    "unit": "pers/m2",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-skytrain-vancouver-rolling-stock"
+    ]
+  },
+  "standingArea": {
+    "value": 61.5,
+    "unit": "m2",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-skytrain-vancouver-rolling-stock"
+    ],
+    "rationale": "246 standing places at the quoted 4 pers/m2."
+  },
+  "totalCapacityQuoted": {
+    "value": 334,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-skytrain-vancouver-rolling-stock"
+    ]
+  },
+  "topSpeed": {
+    "value": 90,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-skytrain-vancouver-rolling-stock"
+    ]
+  },
+  "energySource": {
+    "value": "third-rail",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-skytrain-vancouver-rolling-stock"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "third-rail-750v-dc"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-skytrain-vancouver-rolling-stock"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-skytrain-vancouver-rolling-stock"
+    ]
+  },
+  "costRecords": [
+    {
+      "item": "Additional 2-car trainsets (order)",
+      "value": 88000000,
+      "currency": "CAD",
+      "priceBaseYear": 2018,
+      "region": "Vancouver, Canada",
+      "note": "12 two-car trainsets (24 cars) ordered in 2018 for about $88 million, as reported by Wikipedia.",
+      "sources": [
+        "wp-skytrain-vancouver-rolling-stock"
+      ]
+    }
+  ],
+  "notes": "Cars are stated as 3 m wide and 20 m long; train lengthM = 2 x 20 m (derived). Capacity 334 is the normal load at 4 persons/m2 with 88 seats; crush load is stated as 400. maxSpeedKmh 90 is the catch-up mode speed; normal operation is 80 km/h. Runs driverless under SelTrac automatic train control; no GoA grade stated, so automationGrade is empty. Figures from Wikipedia (secondary).",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

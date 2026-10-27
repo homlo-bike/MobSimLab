@@ -1,0 +1,222 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7537-9e85-930bda7e61ad",
+  "legacyId": "kinki-sharyo-tokyo-metro-17000-8-car",
+  "name": "Kinki Sharyo Tokyo Metro 17000 series (8-car set)",
+  "manufacturer": "Kinki Sharyo",
+  "builder": "Kinki Sharyo",
+  "model": "Tokyo Metro 17000 series",
+  "variant": "8-car set",
+  "family": "A-train",
+  "manufacturerCountry": "Japan",
+  "type": "metro-consist",
+  "mode": "metro",
+  "yearIntroduced": 2021,
+  "operators": [
+    "Tokyo Metro (Yurakucho and Fukutoshin lines, through services)"
+  ],
+  "length": {
+    "value": 160.94,
+    "unit": "m",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wikipedia-17000-tokyo-metro-17000-series"
+    ],
+    "rationale": "Derived from the cited source; see notes."
+  },
+  "width": {
+    "value": 2.8,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-tokyo-metro-17000-series"
+    ]
+  },
+  "height": {
+    "value": 3.635,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-tokyo-metro-17000-series"
+    ]
+  },
+  "weightEmpty": {
+    "value": 247.3,
+    "unit": "t",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wikipedia-17000-tokyo-metro-17000-series"
+    ],
+    "rationale": "Derived from the cited source; see notes."
+  },
+  "floorHeight": {
+    "value": 1140,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wikipedia-17000-tokyo-metro-17000-series"
+    ],
+    "rationale": "Derived from the cited source; see notes."
+  },
+  "consist": {
+    "carLengths": {
+      "value": [
+        20.47,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.47
+      ],
+      "unit": "m",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wikipedia-17000-tokyo-metro-17000-series"
+      ]
+    },
+    "cars": {
+      "value": 8,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wikipedia-17000-tokyo-metro-17000-series"
+      ]
+    }
+  },
+  "doorsPerSide": {
+    "value": 32,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-tokyo-metro-17000-series"
+    ],
+    "rationale": "Derived from the cited source; see notes."
+  },
+  "seats": {
+    "value": 396,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wikipedia-17000-tokyo-metro-17000-series"
+    ],
+    "rationale": "Derived from the cited source; see notes."
+  },
+  "standingQuoted": {
+    "value": 814,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wikipedia-17000-tokyo-metro-17000-series"
+    ],
+    "rationale": "Total 1210 minus 396 seats."
+  },
+  "standingArea": {
+    "value": 203.5,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "wikipedia-17000-tokyo-metro-17000-series"
+    ],
+    "rationale": "814 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 135.7,
+    "central": 203.5,
+    "high": 271.3,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 1210,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wikipedia-17000-tokyo-metro-17000-series"
+    ],
+    "rationale": "Derived from the cited source; see notes."
+  },
+  "topSpeed": {
+    "value": 120,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-tokyo-metro-17000-series"
+    ]
+  },
+  "maxAcceleration": {
+    "value": 0.92,
+    "unit": "m/s2",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wikipedia-17000-tokyo-metro-17000-series"
+    ],
+    "rationale": "Derived from the cited source; see notes."
+  },
+  "serviceDeceleration": {
+    "value": 0.97,
+    "unit": "m/s2",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wikipedia-17000-tokyo-metro-17000-series"
+    ],
+    "rationale": "Derived from the cited source; see notes."
+  },
+  "energySource": {
+    "value": "overhead-dc",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wikipedia-17000-tokyo-metro-17000-series",
+      "wp-tokyo-metro-17000-series"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "ocl-1500v-dc"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wikipedia-17000-tokyo-metro-17000-series",
+      "wp-tokyo-metro-17000-series"
+    ]
+  },
+  "trackGauge": {
+    "value": 1067,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wikipedia-17000-tokyo-metro-17000-series",
+      "wp-tokyo-metro-17000-series"
+    ]
+  },
+  "livery": {
+    "operator": "Tokyo Metro",
+    "primary": "#C9CCCE",
+    "secondary": "#C1A470",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "designboom-com-tokyo-metro"
+    ],
+    "rationale": "approximation of gold and reddish-brown accents (Yurakucho and Fukutoshin line colours) on the aluminium body"
+  },
+  "notes": "8-car sets (17180 series numbers) built by Kinki Sharyo; 10-car sets by Hitachi. lengthM = 2 x 20.47 m end cars + 6 x 20.00 m intermediate cars (overall lengths, derived). emptyWeightT = sum of the per-car tare weights in the Japanese formation table (derived). Total 1,210 is the stated 8-car train capacity; seated = 2 x 45 + 6 x 51 from the formation table (derived). doorsPerSide = 4 per side per car x 8 cars (derived). Acceleration 3.3 km/h/s and service deceleration 3.5 km/h/s from the Japanese article, converted to m/s2 (derived; the English article gives 1 m/s2 for both). Max speed 120 km/h design; 80 km/h on Tokyo Metro lines, up to 110 km/h on through-service lines. Traction power per train not stated. Figures from Wikipedia (secondary).",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

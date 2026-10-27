@@ -1,0 +1,179 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7370-97bd-6677d1a4de3b",
+  "legacyId": "crrc-crh6a-8-car",
+  "name": "CRRC CRH6A (8-car (4M4T))",
+  "manufacturer": "CRRC",
+  "builder": "CRRC Qingdao Sifang / CRRC Nanjing Puzhen / CRRC Guangdong",
+  "model": "CRH6A",
+  "variant": "8-car (4M4T)",
+  "family": "CRH6",
+  "manufacturerCountry": "China",
+  "type": "emu",
+  "mode": "regional_rail",
+  "yearIntroduced": 2014,
+  "operators": [
+    "China Railway Guangzhou Group (Guangzhou–Zhuhai, Guangzhou–Shenzhen)",
+    "Guangdong Intercity",
+    "Shanghai Jinshan line",
+    "Beijing Suburban Railway"
+  ],
+  "length": {
+    "value": 201.4,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-zh-crh6"
+    ]
+  },
+  "width": {
+    "value": 3.3,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-zh-crh6"
+    ]
+  },
+  "height": {
+    "value": 3.86,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-zh-crh6"
+    ]
+  },
+  "consist": {
+    "carLengths": {
+      "value": [
+        24.5,
+        24.5,
+        24.5,
+        24.5,
+        24.5,
+        24.5,
+        24.5,
+        24.5
+      ],
+      "unit": "m",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-zh-crh6"
+      ]
+    },
+    "cars": {
+      "value": 8,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-zh-crh6"
+      ]
+    }
+  },
+  "seats": {
+    "value": 557,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-zh-crh6"
+    ]
+  },
+  "standingQuoted": {
+    "value": 931,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-zh-crh6"
+    ],
+    "rationale": "Total 1488 minus 557 seats."
+  },
+  "standingArea": {
+    "value": 232.8,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "wp-zh-crh6"
+    ],
+    "rationale": "931 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 155.2,
+    "central": 232.8,
+    "high": 310.3,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 1488,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-zh-crh6"
+    ]
+  },
+  "topSpeed": {
+    "value": 200,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-zh-crh6"
+    ]
+  },
+  "power": {
+    "value": 5520,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-zh-crh6"
+    ]
+  },
+  "maxAcceleration": {
+    "value": 0.65,
+    "unit": "m/s2",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-zh-crh6"
+    ]
+  },
+  "energySource": {
+    "value": "overhead-ac",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-zh-crh6",
+      "wp-china-railway-crh6"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "ocl-25kv-50hz"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-zh-crh6",
+      "wp-china-railway-crh6"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-zh-crh6",
+      "wp-china-railway-crh6"
+    ]
+  },
+  "notes": "Chinese Wikipedia specification table: rated capacity 1488 (standard version; 613 for the 'high-spec' version), 557 seats. Operating speed 200 km/h, test 220 km/h. Starting acceleration >=0.65 m/s². Car length 24,500 mm is a single table value applied to every car; the English article gives 199.5 m for the train. Standing places not stated separately. Livery: units carry a blue or orange band; base colour not stated, so no livery is set.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

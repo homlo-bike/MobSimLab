@@ -1,0 +1,107 @@
+{
+  "$schema": "../../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7763-9919-66ed9afef0d6",
+  "legacyId": "alstom-citadis-502-luas",
+  "name": "Alstom Citadis 502 (Luas Green Line (5000 class))",
+  "manufacturer": "Alstom",
+  "builder": "Alstom",
+  "model": "Citadis 502",
+  "variant": "Luas Green Line (5000 class)",
+  "family": "Citadis",
+  "manufacturerCountry": "France",
+  "type": "tram-low-floor",
+  "mode": "tram",
+  "yearIntroduced": 2018,
+  "operators": [
+    "Luas (Transport Infrastructure Ireland / Transdev)"
+  ],
+  "length": {
+    "value": 54.7,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "transport-infrastruc-trams-and-depots"
+    ]
+  },
+  "width": {
+    "value": 2.4,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "transport-infrastruc-trams-and-depots"
+    ]
+  },
+  "consist": {
+    "cars": {
+      "value": 9,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-alstom-citadis"
+      ]
+    }
+  },
+  "totalCapacityQuoted": {
+    "value": 408,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "national-transport-a-luas-green-line-trams-are-getting-bigger"
+    ]
+  },
+  "topSpeed": {
+    "value": 70,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-luas"
+    ]
+  },
+  "energySource": {
+    "value": "overhead-dc",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-luas"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "ocl-750v-dc"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-luas"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-luas"
+    ]
+  },
+  "livery": {
+    "operator": "Luas (Transdev for TII)",
+    "primary": "#C0C2C4",
+    "secondary": "#FFD100",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "wp-luas"
+    ],
+    "rationale": "approximation of silver body with a yellow visibility stripe (Luas)"
+  },
+  "notes": "54.7 m, 2.4 m wide, 100% low floor (TII). Capacity 408 for the extended/new 55 m trams (NTA, 2019); TII says 'over 400'. Seated/standing split and standing density not given. Nine sections per the Citadis type list (502); module plan (bogie vs suspended modules), bogie positions and doors per side were not found in a source, so they are left empty. 70 km/h is the top speed stated for the Luas Citadis trams on off-street sections. Power, acceleration and cost not found.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only.",
+  "draftReason": "Core fields not sourced: seats, standingQuoted"
+}

@@ -1,0 +1,102 @@
+{
+  "$schema": "../../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7bbb-b5bc-a904840a9f1a",
+  "legacyId": "caf-urbos-3-budapest-9-module",
+  "name": "CAF Urbos 3 (Budapest 9-module)",
+  "manufacturer": "CAF",
+  "builder": "CAF",
+  "model": "Urbos 3",
+  "variant": "Budapest 9-module",
+  "family": "CAF Urbos",
+  "manufacturerCountry": "Spain",
+  "type": "tram-low-floor",
+  "mode": "tram",
+  "yearIntroduced": 2016,
+  "operators": [
+    "BKV / BKK (Budapest)"
+  ],
+  "length": {
+    "value": 56,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "caf-caf-secures-two-tram-contracts-in-hungar",
+      "wp-hu-caf-urbos"
+    ]
+  },
+  "consist": {
+    "cars": {
+      "value": 9,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "caf-caf-secures-two-tram-contracts-in-hungar"
+      ]
+    }
+  },
+  "totalCapacityQuoted": {
+    "value": 562,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "caf-caf-secures-two-tram-contracts-in-hungar"
+    ]
+  },
+  "topSpeed": {
+    "value": 50,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "caf-caf-secures-two-tram-contracts-in-hungar"
+    ]
+  },
+  "power": {
+    "value": 840,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-hu-caf-urbos"
+    ]
+  },
+  "energySource": {
+    "value": "overhead",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "caf-caf-secures-two-tram-contracts-in-hungar",
+      "wp-hu-caf-urbos"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-hu-caf-urbos"
+    ]
+  },
+  "costRecords": [
+    {
+      "item": "47 Urbos 3 trams (mix of 34 m and 56 m units) after the 2014 call-off",
+      "value": 31000000000,
+      "currency": "HUF",
+      "priceBaseYear": 2014,
+      "region": "Budapest, Hungary",
+      "note": "Total for the 47 trams ordered by then; not split by length (secondary source).",
+      "sources": [
+        "wp-hu-caf-urbos"
+      ]
+    }
+  ],
+  "notes": "Nine-module, about 56 m long Budapest Urbos 3 (Hungarian Wikipedia photo caption: 55.9 m); up to 562 passengers (CAF, no seated/standing split). maxSpeedKmh = 50 is the service speed CAF states for the Budapest trams; a design maximum speed was not found in the sources read. Power 840 kW for the long trams (560 kW for the 34 m five-module trams). First long tram received its operating permit in March 2016 (line 1). Supply voltage, width, weight, doors and module layout (suspended modules) not stated in the sources read.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only.",
+  "draftReason": "Core fields not sourced: width, seats, standingQuoted"
+}

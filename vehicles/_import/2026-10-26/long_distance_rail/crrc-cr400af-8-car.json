@@ -1,0 +1,84 @@
+{
+  "id": "crrc-cr400af-8-car",
+  "mode": "long_distance_rail",
+  "category": "high_speed_train",
+  "simulatorCategory": "8-Car High-Speed EMU",
+  "name": "CR400AF",
+  "variant": "8-car (4M4T)",
+  "family": "Fuxing",
+  "producer": "CRRC Qingdao Sifang",
+  "manufacturerCountry": "China",
+  "yearIntroduced": 2016,
+  "dimensions": {
+    "lengthM": 209,
+    "widthM": 3.36,
+    "heightM": 4.05
+  },
+  "consist": {
+    "cars": 8,
+    "carLengthsM": [27.91, 25.65, 25.65, 25.65, 25.65, 25.65, 25.65, 27.91]
+  },
+  "capacity": {
+    "seated": 576,
+    "total": 576
+  },
+  "performance": {
+    "maxSpeedKmh": 350,
+    "tractionPowerKw": 10400
+  },
+  "energy": {
+    "supply": "overhead_wire",
+    "supplySystems": ["ac_25k_50"]
+  },
+  "infrastructure": {
+    "gaugeMm": 1435,
+    "platformHeightsMm": [1250]
+  },
+  "operators": ["China Railway"],
+  "sources": [
+    {
+      "url": "https://en.wikipedia.org/wiki/China_Railway_CR400AF",
+      "title": "China Railway CR400AF",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["dimensions", "consist", "capacity", "performance", "energy", "infrastructure", "operators"],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "doors": {
+      "kind": "not_available",
+      "confidence": 0
+    },
+    "costs": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "Seated layout 576 = 10 business + 28 first + 538 standard; the article also lists 556- and 392-seat layouts. Max speed is the service speed (350 km/h); design speed 400 km/h, record 420 km/h. Traction power 10.4 MW under 25 kV. Axle load given only as <17 t, so left empty. Car lengths are the listed end (27.91 m) and intermediate (25.65 m) car lengths; their sum (209.72 m) differs slightly from the published train length of 209 m. Livery not described in the source."
+}

@@ -1,0 +1,202 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7ffd-85ef-4d5bd12a240a",
+  "legacyId": "siemens-class-717",
+  "name": "Siemens Class 717 (6-car)",
+  "manufacturer": "Siemens",
+  "builder": "Siemens",
+  "model": "Class 717",
+  "variant": "6-car",
+  "family": "Desiro City",
+  "manufacturerCountry": "Germany",
+  "type": "emu",
+  "mode": "commuter_rail",
+  "yearIntroduced": 2018,
+  "operators": [
+    "Great Northern (Govia Thameslink Railway)"
+  ],
+  "length": {
+    "value": 121.7,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-717"
+    ]
+  },
+  "width": {
+    "value": 2.8,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-717"
+    ]
+  },
+  "weightEmpty": {
+    "value": 204,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-717"
+    ]
+  },
+  "floorHeight": {
+    "value": 1100,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-717"
+    ]
+  },
+  "consist": {
+    "carLengths": {
+      "value": [
+        20.2,
+        20.2,
+        20.2,
+        20.2,
+        20.2,
+        20.2
+      ],
+      "unit": "m",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-british-rail-class-717"
+      ]
+    },
+    "cars": {
+      "value": 6,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-british-rail-class-717"
+      ]
+    }
+  },
+  "doorsPerSide": {
+    "value": 12,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-british-rail-class-717"
+    ],
+    "rationale": "Derived from the cited source; see notes."
+  },
+  "doorClearWidth": {
+    "value": 1500,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-british-rail-class-717"
+    ],
+    "rationale": "Derived from the cited source; see notes."
+  },
+  "seats": {
+    "value": 362,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-717"
+    ]
+  },
+  "standingQuoted": {
+    "value": 0,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-british-rail-class-717"
+    ],
+    "rationale": "Total 362 minus 362 seats."
+  },
+  "standingArea": {
+    "value": 0.0,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "wp-british-rail-class-717"
+    ],
+    "rationale": "0 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 0.0,
+    "central": 0.0,
+    "high": 0.0,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 362,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-british-rail-class-717"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "topSpeed": {
+    "value": 137,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-717"
+    ]
+  },
+  "power": {
+    "value": 1200,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-717"
+    ]
+  },
+  "maxAcceleration": {
+    "value": 0.85,
+    "unit": "m/s2",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-717"
+    ]
+  },
+  "energySource": {
+    "value": "overhead-multisystem",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-717"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "ocl-25kv-50hz",
+      "ocl-750v-dc"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-717"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-717"
+    ]
+  },
+  "notes": "Dual-voltage: 25 kV 50 Hz AC overhead and 750 V DC third rail (Moorgate branch). total = seats (no standing figure published). doorsPerSide derived: 2 doors per side per car × 6. Power 1,200 kW at the wheels; maximum speed 85 mph (137 km/h).",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

@@ -1,0 +1,68 @@
+{
+  "id": "solaris-urbino-12-electric-stoag",
+  "mode": "bus",
+  "category": "standard_bus",
+  "simulatorCategory": "12 m Standard Bus",
+  "name": "Urbino 12 electric",
+  "variant": "LiFePO4 200 kWh, pantograph charging (STOAG Oberhausen)",
+  "family": "Urbino",
+  "producer": "Solaris Bus & Coach",
+  "manufacturerCountry": "Poland",
+  "dimensions": {
+    "lengthM": 12.0,
+    "widthM": 2.55,
+    "heightM": 3.45,
+    "grossWeightT": 18.0
+  },
+  "consist": {
+    "cars": 1,
+    "articulations": 0
+  },
+  "capacity": {
+    "seated": 24,
+    "total": 70
+  },
+  "performance": {
+    "maxSpeedKmh": 75,
+    "tractionPowerKw": 220
+  },
+  "energy": {
+    "supply": "battery",
+    "batteryKwh": 200
+  },
+  "operators": ["STOAG Stadtwerke Oberhausen"],
+  "sources": [
+    {
+      "url": "https://www.stoag.de/en/stoag/elektromobilitaet/technische-daten.html",
+      "title": "Technical data (electric buses)",
+      "publisher": "STOAG Stadtwerke Oberhausen GmbH",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["dimensions", "capacity", "performance", "energy"],
+      "kind": "primary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "consist": {
+      "kind": "derived",
+      "confidence": 0.8
+    }
+  },
+  "notes": "STOAG figures: 24 seats plus 4 folding seats, 70 passengers in total (standing not given separately). Two asynchronous motors of 110 kW each on the rear axle (tractionPowerKw = 2 x 110 kW). LiFePO4 battery, 5 modules of 40 kWh. Charging by Schunk roof pantograph (opportunity charging) at 220 kW chargers; charging time and range not published. Single-body two-axle bus (consist not a published figure). Newer Urbino 12 electric generations differ (Solaris lists up to 600 kWh in 2024)."
+}

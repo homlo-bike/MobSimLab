@@ -1,0 +1,176 @@
+{
+  "$schema": "../../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7c0e-960f-8ab88337d18f",
+  "legacyId": "crrc-tangshan-porto-ct",
+  "name": "CRRC Class CT (Metro do Porto)",
+  "manufacturer": "CRRC",
+  "builder": "CRRC Tangshan",
+  "model": "Class CT",
+  "variant": "Metro do Porto",
+  "manufacturerCountry": "China",
+  "type": "lrv-single",
+  "mode": "light_rail",
+  "yearIntroduced": 2023,
+  "operators": [
+    "Metro do Porto (lines C and E)"
+  ],
+  "length": {
+    "value": 35,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "railway-gazette-inte-metro-de-porto-unveils-crrc-tangshan-lig"
+    ]
+  },
+  "weightEmpty": {
+    "value": 52,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "railway-gazette-inte-metro-de-porto-unveils-crrc-tangshan-lig"
+    ]
+  },
+  "consist": {
+    "articulations": {
+      "value": 3,
+      "unit": "count",
+      "assumed": false,
+      "basis": "documented",
+      "sources": [
+        "wp-porto-metro"
+      ],
+      "rationale": "Derived from the cited source; see notes."
+    },
+    "bidirectional": {
+      "value": true,
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "railway-gazette-inte-metro-de-porto-unveils-crrc-tangshan-lig"
+      ]
+    },
+    "cars": {
+      "value": 4,
+      "unit": "count",
+      "assumed": false,
+      "basis": "documented",
+      "sources": [
+        "wp-porto-metro"
+      ],
+      "rationale": "Derived from the cited source; see notes."
+    }
+  },
+  "seats": {
+    "value": 64,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "railway-gazette-inte-metro-do-porto-selects-crrc-to-supply-li"
+    ]
+  },
+  "standingQuoted": {
+    "value": 180,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "railway-gazette-inte-metro-de-porto-unveils-crrc-tangshan-lig",
+      "railway-gazette-inte-metro-do-porto-selects-crrc-to-supply-li",
+      "wp-porto-metro"
+    ],
+    "rationale": "Total 244 minus 64 seats."
+  },
+  "standingArea": {
+    "value": 45.0,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "railway-gazette-inte-metro-de-porto-unveils-crrc-tangshan-lig",
+      "railway-gazette-inte-metro-do-porto-selects-crrc-to-supply-li",
+      "wp-porto-metro"
+    ],
+    "rationale": "180 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 30.0,
+    "central": 45.0,
+    "high": 60.0,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 244,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "railway-gazette-inte-metro-de-porto-unveils-crrc-tangshan-lig",
+      "wp-porto-metro"
+    ]
+  },
+  "topSpeed": {
+    "value": 80,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "railway-gazette-inte-metro-do-porto-selects-crrc-to-supply-li"
+    ]
+  },
+  "energySource": {
+    "value": "overhead-dc",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-porto-metro"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "ocl-750v-dc"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-porto-metro"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-porto-metro"
+    ]
+  },
+  "costRecords": [
+    {
+      "item": "Order for 18 light rail vehicles",
+      "value": 49600000,
+      "currency": "EUR",
+      "priceBaseYear": 2019,
+      "region": "Porto, Portugal",
+      "note": "Contract value at selection (December 2019); tender reference value EUR 56.1m including five years of maintenance.",
+      "sources": [
+        "railway-gazette-inte-metro-do-porto-selects-crrc-to-supply-li"
+      ]
+    }
+  ],
+  "livery": {
+    "operator": "Metro do Porto",
+    "primary": "#8C8C8C",
+    "secondary": "#F2C200",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "railway-gazette-inte-metro-de-porto-unveils-crrc-tangshan-lig"
+    ],
+    "rationale": "Grey and yellow livery, as described in the source; hex values are approximations."
+  },
+  "notes": "Total capacity 244 (64 seated) per the 2023 unveiling report and Wikipedia; the 2019 award report gave 252. 52 t is the weight stated by the source (assumed empty). Four articulated sections; articulations (3) derived from that. 750 V DC overhead and standard gauge are system values of Metro do Porto.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only.",
+  "draftReason": "Core fields not sourced: width"
+}

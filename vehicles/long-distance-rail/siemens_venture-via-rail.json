@@ -1,0 +1,257 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-787c-9a77-3181c437f9c0",
+  "legacyId": "siemens-venture-via-rail",
+  "name": "Siemens Venture (VIA Rail Corridor set: Charger SCV-42 + 4 coaches + cab car)",
+  "manufacturer": "Siemens",
+  "builder": "Siemens Mobility",
+  "model": "Venture",
+  "variant": "VIA Rail Corridor set: Charger SCV-42 + 4 coaches + cab car",
+  "family": "Venture",
+  "manufacturerCountry": "United States",
+  "type": "push-pull-set",
+  "mode": "long_distance_rail",
+  "yearIntroduced": 2022,
+  "operators": [
+    "VIA Rail Canada"
+  ],
+  "length": {
+    "value": 151.333,
+    "unit": "m",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "siemens-mobility-venture-trainsets-via-rail-data-sheet",
+      "wp-siemens-venture",
+      "wp-siemens-charger"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "width": {
+    "value": 3.201,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mobility-venture-trainsets-via-rail-data-sheet"
+    ]
+  },
+  "height": {
+    "value": 4.268,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mobility-venture-trainsets-via-rail-data-sheet"
+    ]
+  },
+  "floorHeight": {
+    "value": 1296,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mobility-venture-trainsets-via-rail-data-sheet"
+    ]
+  },
+  "consist": {
+    "bidirectional": {
+      "value": true,
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "siemens-mobility-venture-trainsets-via-rail-data-sheet"
+      ]
+    },
+    "carLengths": {
+      "value": [
+        21.793,
+        25.908,
+        25.908,
+        25.908,
+        25.908,
+        25.908
+      ],
+      "unit": "m",
+      "assumed": false,
+      "basis": "documented",
+      "sources": [
+        "siemens-mobility-venture-trainsets-via-rail-data-sheet",
+        "wp-siemens-venture",
+        "wp-siemens-charger"
+      ],
+      "rationale": "Not attributed to one source in the import; see notes."
+    },
+    "cars": {
+      "value": 6,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "siemens-mobility-venture-trainsets-via-rail-data-sheet"
+      ]
+    },
+    "gangway": {
+      "value": true,
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "siemens-mobility-venture-trainsets-via-rail-data-sheet"
+      ]
+    }
+  },
+  "doorClearWidth": {
+    "value": 864,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mobility-venture-trainsets-via-rail-data-sheet"
+    ]
+  },
+  "seats": {
+    "value": 281,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mobility-venture-trainsets-via-rail-data-sheet"
+    ]
+  },
+  "standingQuoted": {
+    "value": 0,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "siemens-mobility-venture-trainsets-via-rail-data-sheet",
+      "wp-siemens-charger",
+      "wp-siemens-venture"
+    ],
+    "rationale": "Total 281 minus 281 seats."
+  },
+  "standingArea": {
+    "value": 0.0,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "siemens-mobility-venture-trainsets-via-rail-data-sheet",
+      "wp-siemens-charger",
+      "wp-siemens-venture"
+    ],
+    "rationale": "0 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 0.0,
+    "central": 0.0,
+    "high": 0.0,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 281,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "siemens-mobility-venture-trainsets-via-rail-data-sheet",
+      "wp-siemens-venture",
+      "wp-siemens-charger"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "wheelchairSpaces": {
+    "value": 5,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mobility-venture-trainsets-via-rail-data-sheet"
+    ]
+  },
+  "topSpeed": {
+    "value": 201,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mobility-venture-trainsets-via-rail-data-sheet"
+    ]
+  },
+  "power": {
+    "value": 3100,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-siemens-charger"
+    ]
+  },
+  "energySource": {
+    "value": "diesel",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "siemens-mobility-venture-trainsets-via-rail-data-sheet",
+      "wp-siemens-venture",
+      "wp-siemens-charger"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "fuelCapacity": {
+    "value": 8328,
+    "unit": "L",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mobility-venture-trainsets-via-rail-data-sheet"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-siemens-venture"
+    ]
+  },
+  "platformHeightCompatible": {
+    "value": [
+      1219,
+      203
+    ],
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-siemens-venture"
+    ]
+  },
+  "costRecords": [
+    {
+      "item": "32 five-car Venture trainsets for VIA Rail",
+      "value": 989000000,
+      "currency": "CAD",
+      "priceBaseYear": 2018,
+      "region": "Canada",
+      "note": "Contract for 32 trainsets.",
+      "sources": [
+        "wp-siemens-venture"
+      ]
+    }
+  ],
+  "livery": {
+    "operator": "VIA Rail Canada",
+    "primary": "#8A8D8F",
+    "secondary": "#FFD100",
+    "windows": "#1A1A1A",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "wp-siemens-venture"
+    ],
+    "rationale": "approximation of grey, black and yellow (VIA Rail Venture)"
+  },
+  "notes": "Standard configuration per the Siemens sheet: four coaches, one cab car and one locomotive (flexible). Length derived: Charger 21.793 m (Wikipedia) + 5 × 25.908 m passenger cars (Siemens). Width/height are passenger-car values. Seats 281 = 194 economy + 87 business. total = seats (no standing figure published). Maximum operational speed 201 km/h; Canadian track class currently limits passenger trains to 160 km/h. tractionPowerKw = 4,200 hp diesel engine rating (3,100 kW per Wikipedia). Trainset weight 524.9 t is published for the standard configuration but not stated as empty or loaded, so it is left empty. Wheelchair spaces = mobility aid spaces. Platform heights: level boarding at 1,219 mm, step boarding from 203 mm.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

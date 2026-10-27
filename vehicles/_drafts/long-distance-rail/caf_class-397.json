@@ -1,0 +1,139 @@
+{
+  "$schema": "../../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7fb7-a7cd-1a66759597ab",
+  "legacyId": "caf-class-397",
+  "name": "CAF Class 397 Nova 2 (5-car)",
+  "manufacturer": "CAF",
+  "builder": "CAF",
+  "model": "Class 397 Nova 2",
+  "variant": "5-car",
+  "family": "Civity",
+  "manufacturerCountry": "Spain",
+  "type": "intercity-train",
+  "mode": "long_distance_rail",
+  "yearIntroduced": 2019,
+  "operators": [
+    "TransPennine Express"
+  ],
+  "length": {
+    "value": 118,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-397"
+    ]
+  },
+  "consist": {
+    "cars": {
+      "value": 5,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-british-rail-class-397"
+      ]
+    }
+  },
+  "doorsPerSide": {
+    "value": 10,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-397"
+    ]
+  },
+  "seats": {
+    "value": 288,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-397"
+    ]
+  },
+  "standingQuoted": {
+    "value": 0,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-british-rail-class-397"
+    ],
+    "rationale": "Total 288 minus 288 seats."
+  },
+  "standingArea": {
+    "value": 0.0,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "wp-british-rail-class-397"
+    ],
+    "rationale": "0 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 0.0,
+    "central": 0.0,
+    "high": 0.0,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 288,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-british-rail-class-397"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "topSpeed": {
+    "value": 200,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-397"
+    ]
+  },
+  "maxAcceleration": {
+    "value": 0.92,
+    "unit": "m/s2",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-397"
+    ]
+  },
+  "energySource": {
+    "value": "overhead-ac",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-397"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "ocl-25kv-50hz"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-397"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-397"
+    ]
+  },
+  "notes": "Seats 288 (24 first, 264 standard). total = seats (no standing figure published). doorsPerSide derived: 2 doors per side per car × 5. Width, weight and power not given in the source.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only.",
+  "draftReason": "Core fields not sourced: width"
+}

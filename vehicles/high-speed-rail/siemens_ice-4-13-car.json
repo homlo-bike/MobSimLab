@@ -1,0 +1,183 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-764a-88a2-369b3176def3",
+  "legacyId": "siemens-ice-4-13-car",
+  "name": "Siemens ICE 4 (13-car (class 412, XXL))",
+  "manufacturer": "Siemens",
+  "builder": "Siemens / Bombardier",
+  "model": "ICE 4",
+  "variant": "13-car (class 412, XXL)",
+  "family": "ICE",
+  "manufacturerCountry": "Germany",
+  "type": "high-speed-train",
+  "mode": "high_speed_rail",
+  "yearIntroduced": 2017,
+  "operators": [
+    "DB Fernverkehr"
+  ],
+  "length": {
+    "value": 374,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-ice-4"
+    ]
+  },
+  "width": {
+    "value": 2.852,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-ice-4"
+    ]
+  },
+  "height": {
+    "value": 4.115,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-ice-4"
+    ]
+  },
+  "weightEmpty": {
+    "value": 736.249,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-de-ice-4"
+    ]
+  },
+  "floorHeight": {
+    "value": 1220,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-de-ice-4"
+    ]
+  },
+  "consist": {
+    "cars": {
+      "value": 13,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-de-ice-4"
+      ]
+    }
+  },
+  "seats": {
+    "value": 918,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-ice-4",
+      "wp-de-ice-4"
+    ]
+  },
+  "standingQuoted": {
+    "value": 0,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-de-ice-4",
+      "wp-ice-4"
+    ],
+    "rationale": "Total 918 minus 918 seats."
+  },
+  "standingArea": {
+    "value": 0.0,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "wp-de-ice-4",
+      "wp-ice-4"
+    ],
+    "rationale": "0 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 0.0,
+    "central": 0.0,
+    "high": 0.0,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 918,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-ice-4",
+      "wp-de-ice-4"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "topSpeed": {
+    "value": 265,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-ice-4",
+      "wp-de-ice-4"
+    ]
+  },
+  "power": {
+    "value": 11550,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-ice-4",
+      "wp-de-ice-4"
+    ]
+  },
+  "energySource": {
+    "value": "overhead-ac",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-ice-4"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "ocl-15kv-16-7hz"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-ice-4"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-ice-4"
+    ]
+  },
+  "platformHeightCompatible": {
+    "value": [
+      550,
+      760
+    ],
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-de-ice-4"
+    ]
+  },
+  "notes": "Thirteen-car ICE 4 (50 built). 918 seats per data sheet (920 in the German configuration table), 205 first class; total = seats (no standing figure published). Empty weight 736.249 t ready for service (German Wikipedia); the English infobox lists 890 t without saying whether laden. Power 14 × 825 kW = 11,550 kW continuous. Width 2,852 mm (external), height 4,115 mm for the middle cars (3,870 mm end cars). Floor 1,220 mm; entrances for 550–760 mm platforms. Entered service (family) 10 December 2017.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

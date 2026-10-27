@@ -1,0 +1,97 @@
+{
+  "id": "sor-tns-12",
+  "mode": "trolleybus",
+  "category": "trolleybus",
+  "simulatorCategory": "Trolleybus 12 m",
+  "name": "TNS 12",
+  "variant": "A02, Škoda Electric equipment, traction battery",
+  "family": "NS",
+  "producer": "SOR Libchavy",
+  "manufacturerCountry": "Czech Republic",
+  "yearIntroduced": 2022,
+  "dimensions": {
+    "lengthM": 12.0,
+    "widthM": 2.5,
+    "heightM": 3.4,
+    "emptyWeightT": 12.55,
+    "floorHeightMm": 340
+  },
+  "consist": {
+    "cars": 1,
+    "articulations": 0
+  },
+  "doors": {
+    "doorsPerSide": 3
+  },
+  "capacity": {
+    "seated": 31,
+    "standing": 37,
+    "total": 68
+  },
+  "performance": {
+    "maxSpeedKmh": 65,
+    "tractionPowerKw": 180
+  },
+  "energy": {
+    "supply": "overhead_wire",
+    "supplySystems": ["dc_600", "dc_750"],
+    "onboard": "battery",
+    "batteryKwh": 42,
+    "regenerativeBraking": true
+  },
+  "costs": [
+    {
+      "item": "vehicle",
+      "amount": 464600,
+      "currency": "EUR",
+      "year": 2022,
+      "region": "Bratislava, Slovakia",
+      "url": "https://imhd.sk/ba/popis-typu-vozidla/1036/SOR-TNS-12",
+      "note": "Bratislava tender 2022, price per vehicle excl. VAT (later raised to 508,621 EUR), as reported by imhd.sk."
+    }
+  ],
+  "livery": null,
+  "operators": ["Dopravný podnik Bratislava"],
+  "sources": [
+    {
+      "url": "https://imhd.sk/ba/popis-typu-vozidla/1036/SOR-TNS-12",
+      "title": "SOR TNS 12 – vehicle type description",
+      "publisher": "imhd.sk (Bratislava public transport information site)",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["dimensions", "consist", "doors", "capacity", "performance", "energy", "costs"],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "doors": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "costs": {
+      "kind": "published",
+      "confidence": 0.6
+    }
+  },
+  "notes": "Series production from 2022. Bratislava vehicles have Škoda Electric SJ 10.4 equipment (converter input 600/750 V DC) and a 42 kWh Škoda TBS 5.1 traction battery for off-wire running; off-wire range not published. Wheelbase 5900 mm. Capacity excludes the driver."
+}

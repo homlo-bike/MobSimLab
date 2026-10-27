@@ -1,0 +1,162 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-78d7-9710-bdc224521a09",
+  "legacyId": "pesa-swing-120na-warsaw",
+  "name": "PESA Swing (120Na Warsaw)",
+  "manufacturer": "PESA",
+  "builder": "PESA Bydgoszcz",
+  "model": "Swing",
+  "variant": "120Na Warsaw",
+  "family": "PESA Swing",
+  "manufacturerCountry": "Poland",
+  "type": "tram-low-floor",
+  "mode": "tram",
+  "yearIntroduced": 2010,
+  "operators": [
+    "Tramwaje Warszawskie (Warsaw)",
+    "MPK Łódź",
+    "Stolichen Elektrotransport (Sofia)"
+  ],
+  "length": {
+    "value": 30.12,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wikipedia-pesa-swing"
+    ]
+  },
+  "width": {
+    "value": 2.35,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wikipedia-pesa-swing"
+    ]
+  },
+  "height": {
+    "value": 3.4,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-pesa-swing"
+    ]
+  },
+  "floorHeight": {
+    "value": 350,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-pesa-swing"
+    ]
+  },
+  "consist": {
+    "cars": {
+      "value": 5,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-pesa-swing"
+      ]
+    }
+  },
+  "seats": {
+    "value": 40,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-pesa-swing"
+    ]
+  },
+  "standingQuoted": {
+    "value": 161,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-pesa-swing"
+    ]
+  },
+  "standingArea": {
+    "value": 40.2,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "wp-pesa-swing"
+    ],
+    "rationale": "161 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 26.8,
+    "central": 40.2,
+    "high": 53.7,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 201,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-pesa-swing"
+    ]
+  },
+  "topSpeed": {
+    "value": 70,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wikipedia-pesa-swing"
+    ]
+  },
+  "power": {
+    "value": 420,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wikipedia-pesa-swing"
+    ]
+  },
+  "energySource": {
+    "value": "overhead",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-pesa-swing",
+      "wikipedia-pesa-swing"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-pesa-swing",
+      "wikipedia-pesa-swing"
+    ]
+  },
+  "costRecords": [
+    {
+      "item": "186 Swing trams for Warsaw",
+      "value": 1500000000,
+      "currency": "PLN",
+      "priceBaseYear": 2010,
+      "region": "Warsaw, Poland",
+      "note": "About 1.5 bn zł for the 2010 order (about 8.06 m zł per tram, per the article); secondary source.",
+      "sources": [
+        "wikipedia-pesa-swing"
+      ]
+    }
+  ],
+  "notes": "Five-section, 100 % low-floor Swing 120Na of the 2010 Warsaw order (180 + 6 Duo units). Length 30.12 m (Polish Wikipedia 120Na entry; same as the English infobox). Capacity 40 seated + 161 standing = 201 and power 4 × 105 kW are family figures from the English infobox that match this 30.12 m version; the Polish article lists 40 + 4 seats for the 120Na and no standing figure. Standing density, doors, weight and supply voltage not stated.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

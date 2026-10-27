@@ -1,0 +1,186 @@
+{
+  "$schema": "../../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-754a-9fbe-2361f547d04a",
+  "legacyId": "kawasaki-crrc-c151c-6-car",
+  "name": "Kawasaki C151C (6-car set (Singapore MRT))",
+  "manufacturer": "Kawasaki",
+  "builder": "Kawasaki Heavy Industries & CRRC Qingdao Sifang",
+  "model": "C151C",
+  "variant": "6-car set (Singapore MRT)",
+  "manufacturerCountry": "Japan / China",
+  "type": "metro-consist",
+  "mode": "metro",
+  "yearIntroduced": 2018,
+  "operators": [
+    "SMRT Trains (North-South and East-West lines)"
+  ],
+  "length": {
+    "value": 138.86,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-kawasaki-heavy-industries-crrc-qingdao-s"
+    ]
+  },
+  "width": {
+    "value": 3.2,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-kawasaki-heavy-industries-crrc-qingdao-s"
+    ]
+  },
+  "height": {
+    "value": 3.7,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-kawasaki-heavy-industries-crrc-qingdao-s"
+    ]
+  },
+  "consist": {
+    "carLengths": {
+      "value": [
+        23.83,
+        22.8,
+        22.8,
+        22.8,
+        22.8,
+        23.83
+      ],
+      "unit": "m",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-kawasaki-heavy-industries-crrc-qingdao-s"
+      ]
+    },
+    "cars": {
+      "value": 6,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-kawasaki-heavy-industries-crrc-qingdao-s"
+      ]
+    }
+  },
+  "doorsPerSide": {
+    "value": 24,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-kawasaki-heavy-industries-crrc-qingdao-s"
+    ],
+    "rationale": "Derived from the cited source; see notes."
+  },
+  "doorClearWidth": {
+    "value": 1450,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-kawasaki-heavy-industries-crrc-qingdao-s"
+    ],
+    "rationale": "Derived from the cited source; see notes."
+  },
+  "totalCapacityQuoted": {
+    "value": 1920,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-kawasaki-heavy-industries-crrc-qingdao-s"
+    ]
+  },
+  "topSpeed": {
+    "value": 90,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-kawasaki-heavy-industries-crrc-qingdao-s"
+    ]
+  },
+  "power": {
+    "value": 2240,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-kawasaki-heavy-industries-crrc-qingdao-s"
+    ]
+  },
+  "maxAcceleration": {
+    "value": 1.0,
+    "unit": "m/s2",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-kawasaki-heavy-industries-crrc-qingdao-s"
+    ]
+  },
+  "serviceDeceleration": {
+    "value": 1.2,
+    "unit": "m/s2",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-kawasaki-heavy-industries-crrc-qingdao-s"
+    ]
+  },
+  "energySource": {
+    "value": "third-rail",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-kawasaki-heavy-industries-crrc-qingdao-s"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "third-rail-750v-dc"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-kawasaki-heavy-industries-crrc-qingdao-s"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-kawasaki-heavy-industries-crrc-qingdao-s"
+    ]
+  },
+  "automationGrade": {
+    "value": "GoA3",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-kawasaki-heavy-industries-crrc-qingdao-s"
+    ]
+  },
+  "livery": {
+    "operator": "SMRT Trains (LTA livery)",
+    "primary": "#FFFFFF",
+    "secondary": "#E1251B",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "landtransportguru-ne-smrt-trains-lta-livery"
+    ],
+    "rationale": "approximation of white base with central red and green stripes (North South and East West line colours)"
+  },
+  "notes": "Formation DT-M1-M2+M2-M1-DT. doorsPerSide = 4 per side per car x 6 cars (derived); door width 1,450 mm. Capacity 1,920 passengers with no density basis stated. Max speed 90 km/h design, 80 km/h service. Deceleration is the service rate (1.3 m/s2 emergency). Thales SelTrac CBTC, GoA 3 (DTO). Figures from Wikipedia (secondary).",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only.",
+  "draftReason": "Core fields not sourced: seats, standingQuoted"
+}

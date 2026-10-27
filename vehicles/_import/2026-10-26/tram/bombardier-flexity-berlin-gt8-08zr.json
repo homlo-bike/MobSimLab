@@ -1,0 +1,117 @@
+{
+  "id": "bombardier-flexity-berlin-gt8-08zr",
+  "mode": "tram",
+  "category": "tram_low_floor",
+  "simulatorCategory": "40 m Tram",
+  "name": "Flexity Berlin",
+  "variant": "GT8-08ZR (long, bidirectional)",
+  "family": "Flexity",
+  "producer": "Bombardier Transportation (now Alstom)",
+  "manufacturerCountry": "Germany",
+  "yearIntroduced": 2008,
+  "dimensions": {
+    "lengthM": 40,
+    "widthM": 2.4,
+    "heightM": 3.45,
+    "emptyWeightT": 51.5,
+    "floorHeightMm": 355
+  },
+  "consist": {
+    "cars": 7,
+    "bidirectional": true
+  },
+  "capacity": {
+    "seated": 75,
+    "standing": 165
+  },
+  "performance": {
+    "maxSpeedKmh": 70,
+    "tractionPowerKw": 600
+  },
+  "energy": {
+    "supply": "overhead_wire",
+    "supplySystems": ["dc_600"]
+  },
+  "infrastructure": {
+    "gaugeMm": 1435
+  },
+  "costs": [
+    {
+      "item": "39 long Flexity Berlin trams (second BVG order, funding amount)",
+      "amount": 439100000,
+      "currency": "EUR",
+      "year": 2012,
+      "region": "Berlin, Germany",
+      "url": "https://en.wikipedia.org/wiki/Flexity_Berlin",
+      "note": "Reported as funding for the order; may include items beyond vehicles."
+    }
+  ],
+  "livery": {
+    "operator": "BVG (Berliner Verkehrsbetriebe)",
+    "primary": "#F0D722",
+    "secondary": "#FCFFFF",
+    "windows": null,
+    "sourceUrl": "https://de.wikipedia.org/wiki/Berliner_Verkehrsbetriebe",
+    "description": "Verkehrsgelb RAL 1023 main surfaces, Verkehrsweiß RAL 9016 roof, Schiefergrau RAL 7015 lower area (BVG vehicle colours as tabled; hex as given there)"
+  },
+  "operators": ["BVG (Berliner Verkehrsbetriebe)"],
+  "sources": [
+    {
+      "url": "https://en.wikipedia.org/wiki/Flexity_Berlin",
+      "title": "Flexity Berlin",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions.lengthM",
+        "dimensions.widthM",
+        "dimensions.heightM",
+        "dimensions.emptyWeightT",
+        "dimensions.floorHeightMm",
+        "consist.cars",
+        "capacity.seated",
+        "capacity.standing",
+        "performance.maxSpeedKmh",
+        "performance.tractionPowerKw",
+        "energy.supplySystems",
+        "infrastructure.gaugeMm"
+      ],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "doors": {
+      "kind": "not_available",
+      "confidence": 0
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.65
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.65
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "operation": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "Seven-module 100% low-floor tram, bidirectional version (ZR); the unidirectional GT8-08 has 88 seats/151 standing and 50.1 t. Capacity total is seated + standing (75 + 165); standing density not stated. Traction power 12 x 50 kW = 600 kW. 600 V DC in Berlin (750 V DC at Strausberg). Bogie/module layout, doors per side, minimum curve radius, acceleration and deceleration not found."
+}

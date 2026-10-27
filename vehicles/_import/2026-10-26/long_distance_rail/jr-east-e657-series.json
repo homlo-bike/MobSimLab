@@ -1,0 +1,100 @@
+{
+  "id": "jr-east-e657-series",
+  "mode": "long_distance_rail",
+  "category": "intercity_train",
+  "simulatorCategory": "10-Car Intercity",
+  "name": "E657 series",
+  "variant": "10-car limited express",
+  "producer": "Hitachi / J-TREC / Kinki Sharyo",
+  "manufacturerCountry": "Japan",
+  "yearIntroduced": 2012,
+  "dimensions": {
+    "lengthM": 202.2,
+    "widthM": 2.946,
+    "heightM": 4.249,
+    "emptyWeightT": 380.3
+  },
+  "consist": {
+    "cars": 10,
+    "carLengthsM": [21.1, 20, 20, 20, 20, 20, 20, 20, 20, 21.1]
+  },
+  "doors": {
+    "doorsPerSide": 12
+  },
+  "capacity": {
+    "seated": 600,
+    "total": 600
+  },
+  "performance": {
+    "maxSpeedKmh": 130,
+    "accelerationMs2": 0.56,
+    "decelerationMs2": 1.4
+  },
+  "energy": {
+    "supply": "overhead_wire",
+    "supplySystems": ["dc_1500"]
+  },
+  "infrastructure": {
+    "gaugeMm": 1067
+  },
+  "livery": {
+    "operator": "JR East",
+    "primary": "#F6EEF0",
+    "secondary": "#B03A5B",
+    "windows": null,
+    "sourceUrl": "https://www.jreast.co.jp/multi/traininformation/hitachi/index.html",
+    "description": "approximation of pink-hued white body with a dark pink line under the windows (JR East)"
+  },
+  "operators": ["JR East"],
+  "sources": [
+    {
+      "url": "https://en.wikipedia.org/wiki/E657_series",
+      "title": "E657 series",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions.widthM",
+        "dimensions.heightM",
+        "consist",
+        "doors",
+        "capacity.seated",
+        "performance",
+        "energy.supplySystems",
+        "infrastructure.gaugeMm"
+      ],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "derived",
+      "confidence": 0.75
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.85
+    },
+    "doors": {
+      "kind": "derived",
+      "confidence": 0.8
+    },
+    "capacity": {
+      "kind": "derived",
+      "confidence": 0.7
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.9
+    }
+  },
+  "notes": "Length derived from car lengths (2 end cars × 21.1 m + 8 × 20.0 m = 202.2 m); weight derived as the sum of the ten published car weights (380.3 t). Seats 600 (30 Green, 570 standard). total = seats (no standing figure published). doorsPerSide derived: 1 per side per car, 2 on end cars. Also runs on 20 kV 50 Hz AC, which the project supply-system list does not include. Cape gauge 1,067 mm."
+}

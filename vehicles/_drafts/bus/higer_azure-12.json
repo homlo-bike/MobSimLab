@@ -1,0 +1,135 @@
+{
+  "$schema": "../../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7ef4-8c02-f00c40c16ab7",
+  "legacyId": "higer-azure-12",
+  "name": "Higer Azure 12 (Electric city bus (UK/Ireland))",
+  "manufacturer": "Higer",
+  "builder": "Higer Bus",
+  "model": "Azure 12",
+  "variant": "Electric city bus (UK/Ireland)",
+  "family": "Azure",
+  "manufacturerCountry": "China",
+  "type": "standard-bus",
+  "mode": "bus",
+  "length": {
+    "value": 12.0,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "higer-ireland-azure-12"
+    ]
+  },
+  "width": {
+    "value": 2.48,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "higer-ireland-azure-12"
+    ]
+  },
+  "height": {
+    "value": 3.29,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "higer-ireland-azure-12"
+    ]
+  },
+  "weightLoaded": {
+    "value": 19.5,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "epd-international-hi-azure12-electric-bus-epd-ies-0025966"
+    ]
+  },
+  "consist": {
+    "articulations": {
+      "value": 0,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "higer-ireland-azure-12"
+      ]
+    },
+    "cars": {
+      "value": 1,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "higer-ireland-azure-12"
+      ]
+    }
+  },
+  "turningCircle": {
+    "value": 22.2,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "epd-international-hi-azure12-electric-bus-epd-ies-0025966"
+    ]
+  },
+  "totalCapacityQuoted": {
+    "value": 70,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "higer-ireland-azure-12"
+    ]
+  },
+  "topSpeed": {
+    "value": 83.7,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "brit-brief-china-s-300k-electric-bus-set-to-hit-uk"
+    ],
+    "rationale": "Derived from the cited source; see notes."
+  },
+  "energySource": {
+    "value": "battery",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "higer-ireland-azure-12",
+      "brit-brief-china-s-300k-electric-bus-set-to-hit-uk",
+      "epd-international-hi-azure12-electric-bus-epd-ies-0025966"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "batteryCapacity": {
+    "value": 352.08,
+    "unit": "kWh",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "higer-ireland-azure-12"
+    ]
+  },
+  "costRecords": [
+    {
+      "item": "Higer Azure 12 bus (UK price)",
+      "value": 300000,
+      "currency": "GBP",
+      "priceBaseYear": 2026,
+      "region": "United Kingdom",
+      "note": "Price as reported in the press; configuration not stated.",
+      "sources": [
+        "brit-brief-china-s-300k-electric-bus-set-to-hit-uk"
+      ]
+    }
+  ],
+  "notes": "Max speed derived: reported cap of 52 mph = 83.7 km/h. Distributor page: 'up to 70 seated and standing', '39 + 3 seats' (split not used). The EPD (Belgian configuration) lists 78 passengers (34 seats + 3 folding + 1 wheelchair + 44 standing), dimensions 12090 x 2550 x 3350 mm, 422.9 kWh max battery, 22.2 m turning circle and 19.5 t gross weight; turning circle and gross weight are taken from it. Range 'over 400 km', recharge under three hours (CCS2).",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only.",
+  "draftReason": "Core fields not sourced: seats, standingQuoted"
+}

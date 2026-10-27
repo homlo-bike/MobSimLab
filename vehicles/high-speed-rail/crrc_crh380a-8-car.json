@@ -1,0 +1,147 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7d02-8c08-287363361237",
+  "legacyId": "crrc-crh380a-8-car",
+  "name": "CRRC CRH380A (8-car (6M2T))",
+  "manufacturer": "CRRC",
+  "builder": "CRRC Qingdao Sifang (formerly CSR Sifang)",
+  "model": "CRH380A",
+  "variant": "8-car (6M2T)",
+  "family": "Hexie",
+  "manufacturerCountry": "China",
+  "type": "high-speed-train",
+  "mode": "high_speed_rail",
+  "yearIntroduced": 2010,
+  "operators": [
+    "China Railway",
+    "MTR Corporation (Hong Kong section)"
+  ],
+  "length": {
+    "value": 203,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-china-railway-crh380a"
+    ]
+  },
+  "width": {
+    "value": 3.38,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-china-railway-crh380a"
+    ]
+  },
+  "height": {
+    "value": 3.7,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-china-railway-crh380a"
+    ]
+  },
+  "consist": {
+    "cars": {
+      "value": 8,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-china-railway-crh380a"
+      ]
+    }
+  },
+  "seats": {
+    "value": 480,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-china-railway-crh380a"
+    ]
+  },
+  "standingQuoted": {
+    "value": 0,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-china-railway-crh380a"
+    ],
+    "rationale": "Total 480 minus 480 seats."
+  },
+  "standingArea": {
+    "value": 0.0,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "wp-china-railway-crh380a"
+    ],
+    "rationale": "0 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 0.0,
+    "central": 0.0,
+    "high": 0.0,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 480,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-china-railway-crh380a"
+    ]
+  },
+  "topSpeed": {
+    "value": 350,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-china-railway-crh380a"
+    ]
+  },
+  "power": {
+    "value": 9600,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-china-railway-crh380a"
+    ]
+  },
+  "energySource": {
+    "value": "overhead-ac",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-china-railway-crh380a"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "ocl-25kv-50hz"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-china-railway-crh380a"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-china-railway-crh380a"
+    ]
+  },
+  "notes": "480 seats (the 'EC type' has 556). Max speed is the 350 km/h operating speed; design commercial maximum 380 km/h, test 486.1 km/h. Power 9.6 MW. Entered service 30 October 2010. The 16-car CRH380AL is 401.4 m with 1061 or 1028 seats.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

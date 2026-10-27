@@ -1,0 +1,87 @@
+{
+  "id": "caf-class-195-0",
+  "mode": "regional_rail",
+  "category": "dmu",
+  "simulatorCategory": "2-Car DMU",
+  "name": "Class 195/0",
+  "variant": "2-car",
+  "family": "Civity",
+  "producer": "CAF",
+  "manufacturerCountry": "Spain",
+  "yearIntroduced": 2019,
+  "dimensions": {
+    "lengthM": 48.05,
+    "widthM": 2.712,
+    "heightM": 3.85
+  },
+  "consist": {
+    "cars": 2
+  },
+  "doors": {
+    "doorsPerSide": 4
+  },
+  "capacity": {
+    "seated": 124,
+    "total": 124
+  },
+  "performance": {
+    "maxSpeedKmh": 160,
+    "accelerationMs2": 0.83,
+    "tractionPowerKw": 780
+  },
+  "energy": {
+    "supply": "diesel"
+  },
+  "infrastructure": {
+    "gaugeMm": 1435
+  },
+  "livery": null,
+  "operators": ["Northern Trains"],
+  "sources": [
+    {
+      "url": "https://en.wikipedia.org/wiki/British_Rail_Class_195",
+      "title": "British Rail Class 195",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions.lengthM",
+        "dimensions.widthM",
+        "dimensions.heightM",
+        "consist.cars",
+        "capacity.seated",
+        "performance",
+        "infrastructure.gaugeMm",
+        "doors.doorsPerSide"
+      ],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "doors": {
+      "kind": "derived",
+      "confidence": 0.8
+    },
+    "capacity": {
+      "kind": "derived",
+      "confidence": 0.7
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.9
+    }
+  },
+  "notes": "total = seats (no standing figure published). doorsPerSide derived: 2 double-leaf plug doors per side per car × 2 cars. Maximum speed 100 mph (160 km/h)."
+}

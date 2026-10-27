@@ -1,0 +1,97 @@
+{
+  "id": "skoda-30-tr-sor",
+  "mode": "trolleybus",
+  "category": "trolleybus",
+  "simulatorCategory": "Trolleybus 12 m",
+  "name": "30 Tr SOR",
+  "family": "Škoda Tr",
+  "producer": "Škoda Electric (body: SOR Libchavy)",
+  "manufacturerCountry": "Czech Republic",
+  "yearIntroduced": 2010,
+  "yearDiscontinued": 2020,
+  "dimensions": {
+    "lengthM": 12.18,
+    "widthM": 2.55,
+    "heightM": 3.4,
+    "emptyWeightT": 10.68,
+    "grossWeightT": 17.55,
+    "floorHeightMm": 360
+  },
+  "consist": {
+    "cars": 1,
+    "articulations": 0
+  },
+  "doors": {
+    "doorsPerSide": 4
+  },
+  "capacity": {
+    "seated": 32,
+    "standing": 62,
+    "total": 94
+  },
+  "performance": {
+    "maxSpeedKmh": 65,
+    "tractionPowerKw": 160
+  },
+  "energy": {
+    "supply": "overhead_wire",
+    "supplySystems": ["dc_600"],
+    "onboard": "none",
+    "regenerativeBraking": true
+  },
+  "costs": [
+    {
+      "item": "vehicle (without APU)",
+      "amount": 403578,
+      "currency": "EUR",
+      "year": 2013,
+      "region": "Bratislava, Slovakia",
+      "url": "https://imhd.sk/ba/popis-typu-vozidla/738/%C5%A0koda-30-Tr-SOR",
+      "note": "Bratislava tender 2013; vehicle with diesel APU cost 498,338 EUR. As reported by imhd.sk."
+    }
+  ],
+  "livery": null,
+  "operators": ["Dopravný podnik Bratislava"],
+  "sources": [
+    {
+      "url": "https://imhd.sk/ba/popis-typu-vozidla/738/%C5%A0koda-30-Tr-SOR",
+      "title": "Škoda 30 Tr SOR – vehicle type description",
+      "publisher": "imhd.sk (Bratislava public transport information site)",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["dimensions", "consist", "doors", "capacity", "performance", "energy", "costs"],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "doors": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "costs": {
+      "kind": "published",
+      "confidence": 0.6
+    }
+  },
+  "notes": "Figures for the version without auxiliary power unit. The 30 TrDG variant has a diesel generator APU (28 seats, 32 standing, 12.78 t kerb weight). Traction converter input 600 V DC. Floor 360 mm (320 mm at door sill, 240 mm kneeling). Wheelbase 6180 mm. Capacity excludes the driver and two further places listed separately (+1+2)."
+}

@@ -1,0 +1,186 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7744-b775-4bb4edc78521",
+  "legacyId": "siemens-mireo-rhine-neckar-3-car",
+  "name": "Siemens Mireo (S-Bahn Rhein-Neckar 3-car)",
+  "manufacturer": "Siemens",
+  "builder": "Siemens",
+  "model": "Mireo",
+  "variant": "S-Bahn Rhein-Neckar 3-car",
+  "family": "Siemens Mireo",
+  "manufacturerCountry": "Germany",
+  "type": "emu",
+  "mode": "commuter_rail",
+  "operators": [
+    "DB Regio (S-Bahn Rhein-Neckar)"
+  ],
+  "length": {
+    "value": 69.86,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mireo-rhine-neckar-s-bahn-for-db-regio-a",
+      "wp-siemens-mireo"
+    ]
+  },
+  "width": {
+    "value": 2.808,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-siemens-mireo"
+    ]
+  },
+  "height": {
+    "value": 4.208,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-siemens-mireo"
+    ]
+  },
+  "weightEmpty": {
+    "value": 112,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-siemens-mireo"
+    ]
+  },
+  "floorHeight": {
+    "value": 800,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mireo-rhine-neckar-s-bahn-for-db-regio-a"
+    ]
+  },
+  "consist": {
+    "cars": {
+      "value": 3,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-siemens-mireo"
+      ]
+    }
+  },
+  "seats": {
+    "value": 200,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mireo-rhine-neckar-s-bahn-for-db-regio-a"
+    ]
+  },
+  "standingQuoted": {
+    "value": 0,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "siemens-mireo-rhine-neckar-s-bahn-for-db-regio-a",
+      "wp-siemens-mireo"
+    ],
+    "rationale": "Total 200 minus 200 seats."
+  },
+  "standingArea": {
+    "value": 0.0,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "siemens-mireo-rhine-neckar-s-bahn-for-db-regio-a",
+      "wp-siemens-mireo"
+    ],
+    "rationale": "0 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 0.0,
+    "central": 0.0,
+    "high": 0.0,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 200,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "siemens-mireo-rhine-neckar-s-bahn-for-db-regio-a",
+      "wp-siemens-mireo"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "bicycleSpaces": {
+    "value": 26,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mireo-rhine-neckar-s-bahn-for-db-regio-a"
+    ]
+  },
+  "topSpeed": {
+    "value": 160,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mireo-rhine-neckar-s-bahn-for-db-regio-a"
+    ]
+  },
+  "power": {
+    "value": 2600,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mireo-rhine-neckar-s-bahn-for-db-regio-a"
+    ]
+  },
+  "maxAcceleration": {
+    "value": 0.96,
+    "unit": "m/s2",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mireo-rhine-neckar-s-bahn-for-db-regio-a"
+    ]
+  },
+  "energySource": {
+    "value": "overhead-ac",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mireo-rhine-neckar-s-bahn-for-db-regio-a"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "ocl-15kv-16-7hz"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mireo-rhine-neckar-s-bahn-for-db-regio-a"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mireo-rhine-neckar-s-bahn-for-db-regio-a"
+    ]
+  },
+  "notes": "Three-car Mireo (wheel arrangement Bo'2'2'Bo', Jacobs bogies) for the Rhine-Neckar S-Bahn (57 trains ordered 2017). total = seats (no standing figure published). Width, height and weight (112 t) are the family values for three-car Mireo sets from Wikipedia. floorHeightMm is the entrance height (800 mm). Up to 26 bicycles in the multipurpose areas. Six entrance areas per train (sides not specified), so doorsPerSide is empty. Service start year not stated in the sources read.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

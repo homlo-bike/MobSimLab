@@ -1,0 +1,175 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-72e7-a417-0e23be384f47",
+  "legacyId": "mercedes-benz-capacity",
+  "name": "Mercedes-Benz CapaCity (O 530 GL, diesel)",
+  "manufacturer": "Mercedes-Benz",
+  "builder": "Mercedes-Benz (EvoBus)",
+  "model": "CapaCity",
+  "variant": "O 530 GL, diesel",
+  "family": "Citaro",
+  "manufacturerCountry": "Germany",
+  "type": "brt-articulated-bus",
+  "mode": "brt",
+  "yearIntroduced": 2007,
+  "operators": [
+    "Dopravný podnik Bratislava"
+  ],
+  "length": {
+    "value": 19.54,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-capacity-vehicle-type-desc"
+    ]
+  },
+  "width": {
+    "value": 2.55,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-capacity-vehicle-type-desc"
+    ]
+  },
+  "height": {
+    "value": 3.155,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-capacity-vehicle-type-desc"
+    ]
+  },
+  "weightEmpty": {
+    "value": 18.548,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-capacity-vehicle-type-desc"
+    ]
+  },
+  "floorHeight": {
+    "value": 320,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-capacity-vehicle-type-desc"
+    ]
+  },
+  "consist": {
+    "articulations": {
+      "value": 1,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "imhd-sk-mercedes-benz-capacity-vehicle-type-desc"
+      ]
+    },
+    "cars": {
+      "value": 2,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "imhd-sk-mercedes-benz-capacity-vehicle-type-desc"
+      ]
+    }
+  },
+  "doorsPerSide": {
+    "value": 4,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-capacity-vehicle-type-desc"
+    ]
+  },
+  "seats": {
+    "value": 45,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-capacity-vehicle-type-desc"
+    ]
+  },
+  "standingQuoted": {
+    "value": 132,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-capacity-vehicle-type-desc"
+    ]
+  },
+  "standingArea": {
+    "value": 33.0,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "imhd-sk-mercedes-benz-capacity-vehicle-type-desc"
+    ],
+    "rationale": "132 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 22.0,
+    "central": 33.0,
+    "high": 44.0,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 177,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-capacity-vehicle-type-desc"
+    ]
+  },
+  "topSpeed": {
+    "value": 80,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-capacity-vehicle-type-desc"
+    ]
+  },
+  "power": {
+    "value": 260,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-capacity-vehicle-type-desc"
+    ]
+  },
+  "energySource": {
+    "value": "diesel",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-capacity-vehicle-type-desc"
+    ]
+  },
+  "costRecords": [
+    {
+      "item": "vehicle",
+      "value": 490644,
+      "currency": "EUR",
+      "priceBaseYear": 2009,
+      "region": "Bratislava, Slovakia",
+      "note": "Bratislava tender 2009, price per vehicle excl. VAT, as reported by imhd.sk.",
+      "sources": [
+        "imhd-sk-mercedes-benz-capacity-vehicle-type-desc"
+      ]
+    }
+  ],
+  "notes": "Four-axle single-articulated bus developed for BRT/Metrobus systems; prototype 2005, series from 2007. Figures for Bratislava series vehicles (2010/2012). Maximum speed 80 km/h with limiter. Engine OM 457 hLA, 260 kW (tractionPowerKw = rated engine power). Wheelbases 5845, 5990 and 1600 mm (overhangs not given). Floor 320 mm at door 1, 340 mm at doors 2-4. Height with air conditioning. Capacity excludes the driver.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

@@ -1,0 +1,83 @@
+{
+  "id": "crrc-cr400af-a-16-car",
+  "mode": "long_distance_rail",
+  "category": "high_speed_train",
+  "simulatorCategory": "16-Car High-Speed EMU",
+  "name": "CR400AF-A",
+  "variant": "16-car (8M8T)",
+  "family": "Fuxing",
+  "producer": "CRRC Qingdao Sifang",
+  "manufacturerCountry": "China",
+  "yearIntroduced": 2018,
+  "dimensions": {
+    "lengthM": 414,
+    "widthM": 3.36,
+    "heightM": 4.05
+  },
+  "consist": {
+    "cars": 16
+  },
+  "capacity": {
+    "seated": 1193,
+    "total": 1193
+  },
+  "performance": {
+    "maxSpeedKmh": 350,
+    "tractionPowerKw": 20800
+  },
+  "energy": {
+    "supply": "overhead_wire",
+    "supplySystems": ["ac_25k_50"]
+  },
+  "infrastructure": {
+    "gaugeMm": 1435,
+    "platformHeightsMm": [1250]
+  },
+  "operators": ["China Railway"],
+  "sources": [
+    {
+      "url": "https://en.wikipedia.org/wiki/China_Railway_CR400AF",
+      "title": "China Railway CR400AF",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["dimensions", "consist", "capacity", "performance", "energy", "infrastructure", "operators"],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "doors": {
+      "kind": "not_available",
+      "confidence": 0
+    },
+    "costs": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "Seats 1193 = 22 business + 148 first + 1023 standard. Length 414 m from the specification table (the variant text says 415 m). Service speed 350 km/h (design 400 km/h). Traction power 20.8 MW under 25 kV. Entered service 16 June 2018."
+}

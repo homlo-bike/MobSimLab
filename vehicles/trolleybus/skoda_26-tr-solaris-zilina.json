@@ -1,0 +1,205 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-70bf-94f3-4364700fba52",
+  "legacyId": "skoda-26-tr-solaris-zilina",
+  "name": "Škoda 26 Tr Solaris (Solaris New Trollino 12 body, Škoda SJ 10.1 equipment (DPMŽ Žilina))",
+  "manufacturer": "Škoda",
+  "builder": "Škoda Electric / Solaris Bus & Coach",
+  "model": "26 Tr Solaris",
+  "variant": "Solaris New Trollino 12 body, Škoda SJ 10.1 equipment (DPMŽ Žilina)",
+  "family": "Trollino",
+  "manufacturerCountry": "Czech Republic / Poland",
+  "type": "trolleybus",
+  "mode": "trolleybus",
+  "yearIntroduced": 2017,
+  "operators": [
+    "Dopravný podnik mesta Žiliny"
+  ],
+  "length": {
+    "value": 12.0,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-26-tr-solaris-vehicle-type-descrip"
+    ]
+  },
+  "width": {
+    "value": 2.55,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-26-tr-solaris-vehicle-type-descrip"
+    ]
+  },
+  "height": {
+    "value": 3.4,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-26-tr-solaris-vehicle-type-descrip"
+    ]
+  },
+  "weightEmpty": {
+    "value": 11.8,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-26-tr-solaris-vehicle-type-descrip"
+    ]
+  },
+  "weightLoaded": {
+    "value": 18.0,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-26-tr-solaris-vehicle-type-descrip"
+    ]
+  },
+  "floorHeight": {
+    "value": 320,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-26-tr-solaris-vehicle-type-descrip"
+    ]
+  },
+  "consist": {
+    "articulations": {
+      "value": 0,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "imhd-sk-skoda-26-tr-solaris-vehicle-type-descrip"
+      ]
+    },
+    "cars": {
+      "value": 1,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "imhd-sk-skoda-26-tr-solaris-vehicle-type-descrip"
+      ]
+    }
+  },
+  "doorsPerSide": {
+    "value": 3,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-26-tr-solaris-vehicle-type-descrip"
+    ]
+  },
+  "seats": {
+    "value": 30,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-26-tr-solaris-vehicle-type-descrip"
+    ]
+  },
+  "standingQuoted": {
+    "value": 60,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-26-tr-solaris-vehicle-type-descrip"
+    ]
+  },
+  "standingArea": {
+    "value": 15.0,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "imhd-sk-skoda-26-tr-solaris-vehicle-type-descrip"
+    ],
+    "rationale": "60 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 10.0,
+    "central": 15.0,
+    "high": 20.0,
+    "distribution": "triangular"
+  },
+  "topSpeed": {
+    "value": 65,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-26-tr-solaris-vehicle-type-descrip"
+    ]
+  },
+  "power": {
+    "value": 160,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-26-tr-solaris-vehicle-type-descrip"
+    ]
+  },
+  "energySource": {
+    "value": "overhead-dc",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-26-tr-solaris-vehicle-type-descrip"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "trolley-600v-dc",
+      "trolley-750v-dc"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-26-tr-solaris-vehicle-type-descrip"
+    ]
+  },
+  "regenerativeBraking": {
+    "value": true,
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-26-tr-solaris-vehicle-type-descrip"
+    ]
+  },
+  "costRecords": [
+    {
+      "item": "vehicle",
+      "value": 447950,
+      "currency": "EUR",
+      "priceBaseYear": 2016,
+      "region": "Žilina, Slovakia",
+      "note": "DPMŽ tender 2016, price per vehicle excl. VAT; 26TrA with traction battery (2019 order): 598,000 EUR excl. VAT. As reported by imhd.sk.",
+      "sources": [
+        "imhd-sk-skoda-26-tr-solaris-vehicle-type-descrip"
+      ]
+    }
+  ],
+  "livery": {
+    "operator": "Dopravný podnik mesta Žiliny (DPMŽ)",
+    "primary": "#FFFFFF",
+    "secondary": "#3AAA35",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "imhd-sk-skoda-26-tr-solaris-vehicle-type-descrip"
+    ],
+    "rationale": "White, yellow and green DPMŽ colour scheme (\"bielo-žlto-zelená farebná schéma\"), as described by imhd.sk; hex values approximate, yellow not represented."
+  },
+  "notes": "First trolleybuses with the Solaris New Trollino body (Žilina, from December 2017; 9 x 26 Tr, 2 x 26TrA). Škoda SJ 10.1 IGBT converter with regeneration, rated 600/750 V DC; one Škoda 4ML 3444 K/4 asynchronous motor, 160 kW. Height with pantographs lowered. Floor 320 mm (250 mm kneeling). Wheelbase 5,900 mm. Seats 30 + 1 + 1 (driver and an extra seat not split out), standing 60, total given as 90 + 1 + 1. Empty weight 11,800 kg ± 3 %. 26TrA variant: 45.4 kWh Škoda TBS 5.1 traction battery, 25 + 1 seats, 45 standing, 12,950 kg empty, 19,500 kg gross; off-wire range not published.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

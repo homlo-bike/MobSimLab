@@ -1,0 +1,106 @@
+{
+  "id": "crrc-crh6a-8-car",
+  "mode": "regional_rail",
+  "category": "emu",
+  "simulatorCategory": "8-Car Intercity EMU",
+  "name": "CRH6A",
+  "variant": "8-car (4M4T)",
+  "family": "CRH6",
+  "producer": "CRRC Qingdao Sifang / CRRC Nanjing Puzhen / CRRC Guangdong",
+  "manufacturerCountry": "China",
+  "yearIntroduced": 2014,
+  "dimensions": {
+    "lengthM": 201.4,
+    "widthM": 3.3,
+    "heightM": 3.86
+  },
+  "consist": {
+    "cars": 8,
+    "carLengthsM": [24.5, 24.5, 24.5, 24.5, 24.5, 24.5, 24.5, 24.5]
+  },
+  "capacity": {
+    "seated": 557,
+    "total": 1488
+  },
+  "performance": {
+    "maxSpeedKmh": 200,
+    "accelerationMs2": 0.65,
+    "tractionPowerKw": 5520
+  },
+  "energy": {
+    "supply": "overhead_wire",
+    "supplySystems": ["ac_25k_50"]
+  },
+  "infrastructure": {
+    "gaugeMm": 1435
+  },
+  "operators": [
+    "China Railway Guangzhou Group (Guangzhou–Zhuhai, Guangzhou–Shenzhen)",
+    "Guangdong Intercity",
+    "Shanghai Jinshan line",
+    "Beijing Suburban Railway"
+  ],
+  "sources": [
+    {
+      "url": "https://zh.wikipedia.org/wiki/和谐号CRH6型电力动车组",
+      "title": "和谐号CRH6型电力动车组",
+      "publisher": "Chinese Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions",
+        "consist",
+        "capacity",
+        "performance",
+        "energy",
+        "infrastructure.gaugeMm",
+        "operators"
+      ],
+      "kind": "secondary"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/CRH6",
+      "title": "China Railway CRH6",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["infrastructure.gaugeMm", "energy"],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.5
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.5
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "doors": {
+      "kind": "not_available",
+      "confidence": 0
+    },
+    "costs": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "Chinese Wikipedia specification table: rated capacity 1488 (standard version; 613 for the 'high-spec' version), 557 seats. Operating speed 200 km/h, test 220 km/h. Starting acceleration >=0.65 m/s². Car length 24,500 mm is a single table value applied to every car; the English article gives 199.5 m for the train. Standing places not stated separately. Livery: units carry a blue or orange band; base colour not stated, so no livery is set."
+}

@@ -1,0 +1,202 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7676-bb00-03eeb6b8430e",
+  "legacyId": "skoda-30-tr-sor",
+  "name": "Škoda 30 Tr SOR",
+  "manufacturer": "Škoda",
+  "builder": "Škoda Electric (body: SOR Libchavy)",
+  "model": "30 Tr SOR",
+  "family": "Škoda Tr",
+  "manufacturerCountry": "Czech Republic",
+  "type": "trolleybus",
+  "mode": "trolleybus",
+  "yearIntroduced": 2010,
+  "yearDiscontinued": 2020,
+  "operators": [
+    "Dopravný podnik Bratislava"
+  ],
+  "length": {
+    "value": 12.18,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-30-tr-sor-vehicle-type-description"
+    ]
+  },
+  "width": {
+    "value": 2.55,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-30-tr-sor-vehicle-type-description"
+    ]
+  },
+  "height": {
+    "value": 3.4,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-30-tr-sor-vehicle-type-description"
+    ]
+  },
+  "weightEmpty": {
+    "value": 10.68,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-30-tr-sor-vehicle-type-description"
+    ]
+  },
+  "weightLoaded": {
+    "value": 17.55,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-30-tr-sor-vehicle-type-description"
+    ]
+  },
+  "floorHeight": {
+    "value": 360,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-30-tr-sor-vehicle-type-description"
+    ]
+  },
+  "consist": {
+    "articulations": {
+      "value": 0,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "imhd-sk-skoda-30-tr-sor-vehicle-type-description"
+      ]
+    },
+    "cars": {
+      "value": 1,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "imhd-sk-skoda-30-tr-sor-vehicle-type-description"
+      ]
+    }
+  },
+  "doorsPerSide": {
+    "value": 4,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-30-tr-sor-vehicle-type-description"
+    ]
+  },
+  "seats": {
+    "value": 32,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-30-tr-sor-vehicle-type-description"
+    ]
+  },
+  "standingQuoted": {
+    "value": 62,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-30-tr-sor-vehicle-type-description"
+    ]
+  },
+  "standingArea": {
+    "value": 15.5,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "imhd-sk-skoda-30-tr-sor-vehicle-type-description"
+    ],
+    "rationale": "62 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 10.3,
+    "central": 15.5,
+    "high": 20.7,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 94,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-30-tr-sor-vehicle-type-description"
+    ]
+  },
+  "topSpeed": {
+    "value": 65,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-30-tr-sor-vehicle-type-description"
+    ]
+  },
+  "power": {
+    "value": 160,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-30-tr-sor-vehicle-type-description"
+    ]
+  },
+  "energySource": {
+    "value": "overhead-dc",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-30-tr-sor-vehicle-type-description"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "trolley-600v-dc"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-30-tr-sor-vehicle-type-description"
+    ]
+  },
+  "regenerativeBraking": {
+    "value": true,
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-30-tr-sor-vehicle-type-description"
+    ]
+  },
+  "costRecords": [
+    {
+      "item": "vehicle (without APU)",
+      "value": 403578,
+      "currency": "EUR",
+      "priceBaseYear": 2013,
+      "region": "Bratislava, Slovakia",
+      "note": "Bratislava tender 2013; vehicle with diesel APU cost 498,338 EUR. As reported by imhd.sk.",
+      "sources": [
+        "imhd-sk-skoda-30-tr-sor-vehicle-type-description"
+      ]
+    }
+  ],
+  "notes": "Figures for the version without auxiliary power unit. The 30 TrDG variant has a diesel generator APU (28 seats, 32 standing, 12.78 t kerb weight). Traction converter input 600 V DC. Floor 360 mm (320 mm at door sill, 240 mm kneeling). Wheelbase 6180 mm. Capacity excludes the driver and two further places listed separately (+1+2).",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

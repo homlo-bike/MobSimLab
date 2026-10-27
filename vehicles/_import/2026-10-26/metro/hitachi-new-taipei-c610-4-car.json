@@ -1,0 +1,109 @@
+{
+  "id": "hitachi-new-taipei-c610-4-car",
+  "mode": "metro",
+  "category": "light_metro",
+  "simulatorCategory": "4-Car Metro",
+  "name": "New Taipei Metro C610",
+  "variant": "4-car set (Circular line)",
+  "family": "Hitachi Rail Italy Driverless Metro",
+  "producer": "Hitachi Rail Italy",
+  "manufacturerCountry": "Italy",
+  "yearIntroduced": 2020,
+  "dimensions": {
+    "lengthM": 68.43,
+    "widthM": 2.65,
+    "heightM": 3.6,
+    "emptyWeightT": 117
+  },
+  "consist": {
+    "cars": 4,
+    "carLengthsM": [17.455, 16.76, 16.76, 17.455]
+  },
+  "doors": {
+    "doorsPerSide": 12
+  },
+  "capacity": {
+    "total": 650
+  },
+  "performance": {
+    "maxSpeedKmh": 90,
+    "accelerationMs2": 1.2,
+    "decelerationMs2": 1.0,
+    "tractionPowerKw": 1632
+  },
+  "energy": {
+    "supply": "third_rail",
+    "supplySystems": ["dc_750"],
+    "regenerativeBraking": true
+  },
+  "infrastructure": {
+    "gaugeMm": 1435
+  },
+  "operation": {
+    "automationGrade": "GoA4"
+  },
+  "livery": {
+    "operator": "New Taipei Metro (Circular line)",
+    "primary": "#F5B800",
+    "secondary": null,
+    "windows": null,
+    "sourceUrl": "https://www.emmanuellemoureaux.com/art/circular-line/",
+    "description": "approximation of the yellow Circular line colour scheme (exterior and interior)"
+  },
+  "operators": ["New Taipei Metro (Circular line)"],
+  "sources": [
+    {
+      "url": "https://en.wikipedia.org/wiki/New_Taipei_Metro_C610",
+      "title": "New Taipei Metro C610",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions",
+        "consist",
+        "doors",
+        "capacity",
+        "performance",
+        "energy",
+        "infrastructure.gaugeMm",
+        "operation"
+      ],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "doors": {
+      "kind": "derived",
+      "confidence": 0.6
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "operation": {
+      "kind": "published",
+      "confidence": 0.7
+    }
+  },
+  "notes": "Medium-capacity (light metro) driverless train, formation A-C-D-B, assembled by Taiwan Rolling Stock Company. doorsPerSide = 3 per side per car x 4 cars (derived). Max speed 90 km/h design, 80 km/h service. Deceleration is the service rate (1.3 m/s2 emergency). Capacity 650 has no density basis stated. Figures from Wikipedia (secondary)."
+}

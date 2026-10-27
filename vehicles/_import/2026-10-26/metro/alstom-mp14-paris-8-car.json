@@ -1,0 +1,113 @@
+{
+  "id": "alstom-mp14-paris-8-car",
+  "mode": "metro",
+  "category": "metro_automated",
+  "simulatorCategory": "8-Car Metro",
+  "name": "MP 14",
+  "variant": "8-car automated set (Line 14)",
+  "family": "Metropolis",
+  "producer": "Alstom",
+  "manufacturerCountry": "France",
+  "yearIntroduced": 2020,
+  "dimensions": {
+    "lengthM": 120,
+    "widthM": 2.45
+  },
+  "consist": {
+    "cars": 8
+  },
+  "doors": {
+    "doorsPerSide": 24
+  },
+  "capacity": {
+    "total": 932
+  },
+  "performance": {
+    "maxSpeedKmh": 100,
+    "accelerationMs2": 1.35,
+    "tractionPowerKw": 3200
+  },
+  "energy": {
+    "supply": "third_rail",
+    "supplySystems": ["dc_750"],
+    "regenerativeBraking": true
+  },
+  "infrastructure": {
+    "gaugeMm": 1435
+  },
+  "costs": [
+    {
+      "item": "Initial order of 8-car automated trains for Line 14",
+      "amount": 500000000,
+      "currency": "EUR",
+      "year": 2015,
+      "region": "Paris, France",
+      "url": "https://en.wikipedia.org/wiki/MP_14_(Paris_Metro)",
+      "note": "About EUR 500 million for 35 eight-car trains (280 cars) under the EUR 2 billion framework contract awarded January 2015, as reported by Wikipedia (\"around\")."
+    }
+  ],
+  "livery": {
+    "operator": "RATP / Île-de-France Mobilités",
+    "primary": "#FFFFFF",
+    "secondary": "#8C8C8C",
+    "windows": null,
+    "sourceUrl": "https://en.wikipedia.org/wiki/MP_14_(Paris_Metro)",
+    "description": "approximation of white with grey accents and light blue stripes (Île-de-France Mobilités livery)"
+  },
+  "operators": ["RATP (Paris Metro Lines 14, 4 and 11)"],
+  "sources": [
+    {
+      "url": "https://en.wikipedia.org/wiki/MP_14_(Paris_Metro)",
+      "title": "MP 14 (Paris Metro)",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions",
+        "consist",
+        "doors",
+        "capacity",
+        "performance",
+        "energy",
+        "infrastructure.gaugeMm",
+        "costs"
+      ],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "doors": {
+      "kind": "derived",
+      "confidence": 0.6
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "performance": {
+      "kind": "derived",
+      "confidence": 0.6
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "operation": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "Rubber-tyred metro: running pads outside 1,435 mm steel rails; current via side contact shoes on the guide bars (750 V DC), recorded as third_rail. doorsPerSide = 3 per side per car x 8 cars (derived). Max speed 100 km/h design, 80 km/h service. accelerationMs2 = 4.86 km/h/s maximum converted to m/s2 (derived); only an emergency deceleration (5 km/h/s) is given, so decelerationMs2 is null. Fully automated (driverless) on Line 14; no GoA grade stated, so automationGrade is empty. Figures from Wikipedia (secondary)."
+}

@@ -1,0 +1,110 @@
+{
+  "id": "siemens-velaro-e320-class-374",
+  "mode": "long_distance_rail",
+  "category": "high_speed_train",
+  "simulatorCategory": "High Speed Train",
+  "name": "Velaro e320 (Class 374)",
+  "variant": "16-car",
+  "family": "Velaro",
+  "producer": "Siemens Mobility",
+  "manufacturerCountry": "Germany",
+  "yearIntroduced": 2015,
+  "dimensions": {
+    "lengthM": 400
+  },
+  "consist": {
+    "cars": 16,
+    "carLengthsM": [
+      25.7, 24.2, 24.2, 24.2, 24.2, 24.2, 24.2, 24.2, 24.2, 24.2, 24.2, 24.2, 24.2, 24.2, 24.2, 25.7
+    ]
+  },
+  "capacity": {
+    "seated": 902,
+    "total": 902
+  },
+  "performance": {
+    "maxSpeedKmh": 320,
+    "tractionPowerKw": 16000
+  },
+  "energy": {
+    "supply": "overhead_wire",
+    "supplySystems": ["ac_25k_50", "dc_3000", "dc_1500"]
+  },
+  "infrastructure": {
+    "gaugeMm": 1435
+  },
+  "costs": [
+    {
+      "item": "10 Velaro e320 trainsets for Eurostar (initial order)",
+      "amount": 600000000,
+      "currency": "EUR",
+      "year": 2010,
+      "region": "Europe (Eurostar)",
+      "url": "https://en.wikipedia.org/wiki/ICE_3neo",
+      "note": "Initial order of ten trainsets; later increased to 17 sets."
+    }
+  ],
+  "livery": {
+    "operator": "Eurostar",
+    "primary": "#1E2F5A",
+    "secondary": "#A7A9AC",
+    "windows": null,
+    "sourceUrl": "https://runwaygirlnetwork.com/2024/10/new-logo-same-train-a-eurostar-standard-premier-review/",
+    "description": "approximation of Eurostar blue and grey"
+  },
+  "operators": ["Eurostar"],
+  "sources": [
+    {
+      "url": "https://en.wikipedia.org/wiki/British_Rail_Class_374",
+      "title": "British Rail Class 374",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions.lengthM",
+        "consist",
+        "capacity.seated",
+        "performance",
+        "energy.supplySystems",
+        "infrastructure.gaugeMm"
+      ],
+      "kind": "secondary"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/ICE_3neo",
+      "title": "Siemens Velaro (ICE 3neo article, variant table and orders)",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["costs"],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.85
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.85
+    },
+    "capacity": {
+      "kind": "derived",
+      "confidence": 0.75
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.85
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.85
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.9
+    }
+  },
+  "notes": "Seats 902 (\"capacity\"). total = seats (no standing figure published). Power 16 MW. Supply systems as listed in the Class 374 article (25 kV 50 Hz AC, 3 kV DC, 1.5 kV DC); the Velaro variant table also lists 15 kV 16.7 Hz for the e320."
+}

@@ -1,0 +1,132 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7b8c-95c8-3f60dd317c16",
+  "legacyId": "bombardier-london-2009-stock-8-car",
+  "name": "Bombardier 2009 Stock (Victoria line 8-car)",
+  "manufacturer": "Bombardier",
+  "builder": "Bombardier Transportation",
+  "model": "2009 Stock",
+  "variant": "Victoria line 8-car",
+  "family": "Bombardier Movia",
+  "manufacturerCountry": "United Kingdom",
+  "type": "metro-consist",
+  "mode": "metro",
+  "yearIntroduced": 2009,
+  "operators": [
+    "London Underground (Victoria line)"
+  ],
+  "length": {
+    "value": 133.275,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-london-underground-2009-stock"
+    ]
+  },
+  "width": {
+    "value": 2.68,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-london-underground-2009-stock"
+    ]
+  },
+  "height": {
+    "value": 2.883,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-london-underground-2009-stock"
+    ]
+  },
+  "weightEmpty": {
+    "value": 197.3,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-london-underground-2009-stock"
+    ]
+  },
+  "consist": {
+    "cars": {
+      "value": 8,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-london-underground-2009-stock"
+      ]
+    }
+  },
+  "seats": {
+    "value": 252,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-london-underground-2009-stock"
+    ]
+  },
+  "standingQuoted": {
+    "value": 876,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-london-underground-2009-stock"
+    ]
+  },
+  "standingDensityQuoted": {
+    "value": 6,
+    "unit": "pers/m2",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-london-underground-2009-stock"
+    ]
+  },
+  "standingArea": {
+    "value": 146.0,
+    "unit": "m2",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-london-underground-2009-stock"
+    ],
+    "rationale": "876 standing places at the quoted 6 pers/m2."
+  },
+  "totalCapacityQuoted": {
+    "value": 1128,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-london-underground-2009-stock"
+    ]
+  },
+  "topSpeed": {
+    "value": 80,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-london-underground-2009-stock"
+    ]
+  },
+  "energySource": {
+    "value": "third-rail",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-london-underground-2009-stock"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "notes": "Eight-car Victoria line train (47 trains, in service from 21 July 2009). Capacity 252 seats + 876 standing at 6 persons/m² = 1,128 (the article body also mentions an estimate of 1,196 standing). Supply is 630 V DC by fourth rail, which has no matching supply-system id, so supplySystems is empty. Traction 24 × 75 kW; the infobox acceleration (1.3 m/s²) and service braking (1.14 m/s²) are marked 'citation needed' and are not entered. Car lengths 16.8825 m (trailer) and 16.585 m (others); positions in the consist not stated, so carLengthsM is empty.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

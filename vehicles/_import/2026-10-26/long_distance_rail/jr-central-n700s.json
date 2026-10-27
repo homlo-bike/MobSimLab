@@ -1,0 +1,102 @@
+{
+  "id": "jr-central-n700s",
+  "mode": "long_distance_rail",
+  "category": "high_speed_train",
+  "simulatorCategory": "High Speed Train",
+  "name": "N700S Shinkansen",
+  "variant": "16-car",
+  "family": "N700",
+  "producer": "Hitachi / Nippon Sharyo",
+  "manufacturerCountry": "Japan",
+  "yearIntroduced": 2020,
+  "dimensions": {
+    "lengthM": 404.7,
+    "widthM": 3.36,
+    "heightM": 3.6
+  },
+  "consist": {
+    "cars": 16,
+    "carLengthsM": [27.35, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 27.35]
+  },
+  "capacity": {
+    "seated": 1323,
+    "total": 1323
+  },
+  "performance": {
+    "maxSpeedKmh": 300
+  },
+  "energy": {
+    "supply": "overhead_wire",
+    "regenerativeBraking": true
+  },
+  "infrastructure": {
+    "gaugeMm": 1435
+  },
+  "costs": [
+    {
+      "item": "19 additional 16-car N700S trainsets (JR Central plan)",
+      "amount": 114000000000,
+      "currency": "JPY",
+      "year": 2022,
+      "region": "Japan",
+      "url": "https://en.wikipedia.org/wiki/N700S_Series_Shinkansen",
+      "note": "Fleet purchase plan for 19 trainsets, not a per-train price."
+    }
+  ],
+  "livery": {
+    "operator": "JR Central",
+    "primary": "#FFFFFF",
+    "secondary": "#0A3E8C",
+    "windows": null,
+    "sourceUrl": "https://runwaygirlnetwork.com/2020/10/16/inside-japans-brand-new-n700s-shinkansen/",
+    "description": "approximation of white body with blue cheatline (Tokaido Shinkansen)"
+  },
+  "operators": ["JR Central", "JR West", "JR Kyushu"],
+  "sources": [
+    {
+      "url": "https://en.wikipedia.org/wiki/N700S_Series_Shinkansen",
+      "title": "N700S Series Shinkansen",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions.widthM",
+        "dimensions.heightM",
+        "consist",
+        "capacity.seated",
+        "performance.maxSpeedKmh",
+        "energy.regenerativeBraking",
+        "infrastructure.gaugeMm",
+        "costs"
+      ],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "derived",
+      "confidence": 0.75
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.85
+    },
+    "capacity": {
+      "kind": "derived",
+      "confidence": 0.75
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.85
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.9
+    }
+  },
+  "notes": "Length derived from car lengths: 2 end cars × 27.35 m + 14 × 25 m = 404.7 m. Seats 1,323 (200 Green + 1,123 ordinary). total = seats (no standing figure published). Maximum service speed 300 km/h on the San'yō Shinkansen, 285 km/h on the Tōkaidō; design speed 360 km/h. Supply 25 kV 60 Hz AC, which the project supply-system list does not include, so supplySystems is empty. Height excludes rooftop equipment."
+}

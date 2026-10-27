@@ -1,0 +1,197 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7041-87d6-d3fb78ef7265",
+  "legacyId": "siemens-inspiro-warsaw-6-car",
+  "name": "Siemens Inspiro (Metro Warszawskie 6-car)",
+  "manufacturer": "Siemens",
+  "builder": "Siemens / Newag",
+  "model": "Inspiro",
+  "variant": "Metro Warszawskie 6-car",
+  "family": "Siemens Inspiro",
+  "manufacturerCountry": "Austria / Poland",
+  "type": "metro-consist",
+  "mode": "metro",
+  "yearIntroduced": 2013,
+  "operators": [
+    "Metro Warszawskie (Warsaw)"
+  ],
+  "length": {
+    "value": 117.8,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-35-six-car-inspiro-metro-trains-metro-wa"
+    ]
+  },
+  "width": {
+    "value": 2.74,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-35-six-car-inspiro-metro-trains-metro-wa"
+    ]
+  },
+  "weightEmpty": {
+    "value": 163,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-35-six-car-inspiro-metro-trains-metro-wa"
+    ]
+  },
+  "weightLoaded": {
+    "value": 265,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-35-six-car-inspiro-metro-trains-metro-wa"
+    ]
+  },
+  "floorHeight": {
+    "value": 1130,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-35-six-car-inspiro-metro-trains-metro-wa"
+    ]
+  },
+  "consist": {
+    "cars": {
+      "value": 6,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "siemens-35-six-car-inspiro-metro-trains-metro-wa"
+      ]
+    },
+    "gangway": {
+      "value": true,
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "siemens-35-six-car-inspiro-metro-trains-metro-wa"
+      ]
+    }
+  },
+  "minRadiusHorizontal": {
+    "value": 60,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-35-six-car-inspiro-metro-trains-metro-wa"
+    ]
+  },
+  "axleLoadMax": {
+    "value": 12.6,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-35-six-car-inspiro-metro-trains-metro-wa"
+    ]
+  },
+  "doorsPerSide": {
+    "value": 24,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "siemens-35-six-car-inspiro-metro-trains-metro-wa",
+      "wp-siemens-inspiro"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "seats": {
+    "value": 234,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-35-six-car-inspiro-metro-trains-metro-wa"
+    ]
+  },
+  "standingQuoted": {
+    "value": 1268,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "siemens-35-six-car-inspiro-metro-trains-metro-wa"
+    ],
+    "rationale": "Total 1502 minus 234 seats."
+  },
+  "standingDensityQuoted": {
+    "value": 7,
+    "unit": "pers/m2",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-35-six-car-inspiro-metro-trains-metro-wa"
+    ]
+  },
+  "standingArea": {
+    "value": 181.1,
+    "unit": "m2",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "siemens-35-six-car-inspiro-metro-trains-metro-wa"
+    ],
+    "rationale": "1268 standing places at the quoted 7 pers/m2."
+  },
+  "totalCapacityQuoted": {
+    "value": 1502,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-35-six-car-inspiro-metro-trains-metro-wa"
+    ]
+  },
+  "topSpeed": {
+    "value": 90,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-35-six-car-inspiro-metro-trains-metro-wa"
+    ]
+  },
+  "energySource": {
+    "value": "third-rail",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-35-six-car-inspiro-metro-trains-metro-wa"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "third-rail-750v-dc"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-35-six-car-inspiro-metro-trains-metro-wa"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-35-six-car-inspiro-metro-trains-metro-wa"
+    ]
+  },
+  "notes": "Six-car Mc-T-M-M-T-Mc Inspiro for Warsaw (35 trains, first in service October 2013). Length approx. 117.8 m over couplers; tare approx. 163 t, total approx. 265 t at 7 passengers/m². Capacity 1,502 at 7 passengers/m² with 234 seats; standing = 1,502 − 234 = 1,268 (derived). Eight passenger doors per car, i.e. 4 per side × 6 cars = 24 per side (derived). Minimum curve radius 300 m on the service line and 60 m in the depot (60 m entered). Traction power, acceleration and braking not given in the sheet.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

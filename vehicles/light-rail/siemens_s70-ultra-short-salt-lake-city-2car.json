@@ -1,0 +1,237 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7f4f-8c28-54fc5f818c9f",
+  "legacyId": "siemens-s70-ultra-short-salt-lake-city-2car",
+  "name": "Siemens S70 Ultra Short (UTA TRAX, 2-vehicle consist)",
+  "manufacturer": "Siemens",
+  "builder": "Siemens Mobility",
+  "model": "S70 Ultra Short",
+  "variant": "UTA TRAX, 2-vehicle consist",
+  "family": "Siemens S70/S700",
+  "manufacturerCountry": "United States",
+  "type": "lrv-coupled-consist",
+  "mode": "light_rail",
+  "operators": [
+    "Utah Transit Authority (TRAX)"
+  ],
+  "length": {
+    "value": 49.62,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mobility-s70-ultra-short-light-rail-vehicle-salt"
+    ]
+  },
+  "width": {
+    "value": 2.65,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mobility-s70-ultra-short-light-rail-vehicle-salt"
+    ]
+  },
+  "weightEmpty": {
+    "value": 87.542,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mobility-s70-ultra-short-light-rail-vehicle-salt"
+    ]
+  },
+  "floorHeight": {
+    "value": 356,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mobility-s70-ultra-short-light-rail-vehicle-salt"
+    ]
+  },
+  "consist": {
+    "bidirectional": {
+      "value": true,
+      "assumed": false,
+      "basis": "documented",
+      "sources": [
+        "siemens-mobility-s70-ultra-short-light-rail-vehicle-salt"
+      ],
+      "rationale": "Not attributed to one source in the import; see notes."
+    },
+    "carLengths": {
+      "value": [
+        24.81,
+        24.81
+      ],
+      "unit": "m",
+      "assumed": false,
+      "basis": "documented",
+      "sources": [
+        "siemens-mobility-s70-ultra-short-light-rail-vehicle-salt"
+      ],
+      "rationale": "Not attributed to one source in the import; see notes."
+    },
+    "cars": {
+      "value": 2,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "siemens-mobility-s70-ultra-short-light-rail-vehicle-salt"
+      ]
+    }
+  },
+  "minRadiusHorizontal": {
+    "value": 25,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mobility-s70-ultra-short-light-rail-vehicle-salt"
+    ]
+  },
+  "doorsPerSide": {
+    "value": 8,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mobility-s70-ultra-short-light-rail-vehicle-salt"
+    ]
+  },
+  "seats": {
+    "value": 120,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mobility-s70-ultra-short-light-rail-vehicle-salt"
+    ]
+  },
+  "standingQuoted": {
+    "value": 330,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "siemens-mobility-s70-ultra-short-light-rail-vehicle-salt"
+    ],
+    "rationale": "Total 450 minus 120 seats."
+  },
+  "standingDensityQuoted": {
+    "value": 6,
+    "unit": "pers/m2",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mobility-s70-ultra-short-light-rail-vehicle-salt"
+    ]
+  },
+  "standingArea": {
+    "value": 55.0,
+    "unit": "m2",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "siemens-mobility-s70-ultra-short-light-rail-vehicle-salt"
+    ],
+    "rationale": "330 standing places at the quoted 6 pers/m2."
+  },
+  "totalCapacityQuoted": {
+    "value": 450,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mobility-s70-ultra-short-light-rail-vehicle-salt"
+    ]
+  },
+  "wheelchairSpaces": {
+    "value": 4,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mobility-s70-ultra-short-light-rail-vehicle-salt"
+    ]
+  },
+  "topSpeed": {
+    "value": 88,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mobility-s70-ultra-short-light-rail-vehicle-salt"
+    ]
+  },
+  "power": {
+    "value": 1040,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mobility-s70-ultra-short-light-rail-vehicle-salt"
+    ]
+  },
+  "maxAcceleration": {
+    "value": 1.34,
+    "unit": "m/s2",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mobility-s70-ultra-short-light-rail-vehicle-salt"
+    ]
+  },
+  "serviceDeceleration": {
+    "value": 1.34,
+    "unit": "m/s2",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mobility-s70-ultra-short-light-rail-vehicle-salt"
+    ]
+  },
+  "energySource": {
+    "value": "overhead-dc",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mobility-s70-ultra-short-light-rail-vehicle-salt"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "ocl-600v-dc"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mobility-s70-ultra-short-light-rail-vehicle-salt"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mobility-s70-ultra-short-light-rail-vehicle-salt"
+    ]
+  },
+  "livery": {
+    "operator": "Utah Transit Authority (TRAX)",
+    "primary": "#FFFFFF",
+    "secondary": "#C8102E",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "ksl-com-utah-transit-authority-trax"
+    ],
+    "rationale": "approximation of the red, white and blue wrap of UTA S70 cars (Red and Green lines)"
+  },
+  "notes": "Describes a consist of 2 coupled S70 Ultra Short vehicles. Per-vehicle figures (Siemens data sheet): length over coupler 24.81 m, empty weight 43.771 t, 60 seats, approx. 225 total passengers at 6 p/m2, 4 doors per side, 2 wheelchair spaces, traction 4 x 130 kW, maximum operational speed 88 km/h, service acceleration and deceleration 1.34 m/s2, emergency braking 2.18-2.2 m/s2, minimum turning radius 25 m. Consist totals (length, weight, seats, total, doors, wheelchair spaces, power) are per-vehicle values multiplied by 2 (marked derived); width, height, speeds and rates are per vehicle. Capacity is per consist; per vehicle it is 225. The data sheet says the vehicles can run in multiple-unit consists of up to four. Each vehicle is double-articulated (three sections, Bo'+2'+Bo'). 70% low-floor; floor height 356 mm is the low-floor threshold (high-floor section 855 mm). Height left null because the data sheet's metric height (43771 mm) is evidently a misprint. Maximum allowable speed 95 km/h.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

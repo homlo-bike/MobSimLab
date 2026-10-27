@@ -1,0 +1,214 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-797d-842a-95bc1a0d560c",
+  "legacyId": "stadler-smile-giruno-sbb",
+  "name": "Stadler SMILE (Giruno) (SBB RABe 501, 11-car)",
+  "manufacturer": "Stadler",
+  "builder": "Stadler",
+  "model": "SMILE (Giruno)",
+  "variant": "SBB RABe 501, 11-car",
+  "family": "Stadler SMILE",
+  "manufacturerCountry": "Switzerland",
+  "type": "high-speed-train",
+  "mode": "high_speed_rail",
+  "yearIntroduced": 2019,
+  "operators": [
+    "SBB",
+    "Westbahn"
+  ],
+  "length": {
+    "value": 202,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-smile-electric-high-speed-multiple-unit"
+    ]
+  },
+  "width": {
+    "value": 2.9,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-smile-electric-high-speed-multiple-unit"
+    ]
+  },
+  "height": {
+    "value": 4.255,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-smile-electric-high-speed-multiple-unit"
+    ]
+  },
+  "weightEmpty": {
+    "value": 380,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-sbb-rabe-501"
+    ]
+  },
+  "floorHeight": {
+    "value": 940,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-smile-electric-high-speed-multiple-unit"
+    ]
+  },
+  "consist": {
+    "cars": {
+      "value": 11,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-sbb-rabe-501"
+      ]
+    }
+  },
+  "doorClearWidth": {
+    "value": 900,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-smile-electric-high-speed-multiple-unit"
+    ]
+  },
+  "seats": {
+    "value": 405,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-smile-electric-high-speed-multiple-unit"
+    ]
+  },
+  "standingQuoted": {
+    "value": 0,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "stadler-smile-electric-high-speed-multiple-unit",
+      "wp-sbb-rabe-501"
+    ],
+    "rationale": "Total 405 minus 405 seats."
+  },
+  "standingArea": {
+    "value": 0.0,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "stadler-smile-electric-high-speed-multiple-unit",
+      "wp-sbb-rabe-501"
+    ],
+    "rationale": "0 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 0.0,
+    "central": 0.0,
+    "high": 0.0,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 405,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "stadler-smile-electric-high-speed-multiple-unit",
+      "wp-sbb-rabe-501"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "wheelchairSpaces": {
+    "value": 4,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-sbb-rabe-501"
+    ]
+  },
+  "topSpeed": {
+    "value": 250,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-smile-electric-high-speed-multiple-unit"
+    ]
+  },
+  "power": {
+    "value": 6000,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-smile-electric-high-speed-multiple-unit"
+    ]
+  },
+  "energySource": {
+    "value": "overhead-multisystem",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-smile-electric-high-speed-multiple-unit"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "ocl-15kv-16-7hz",
+      "ocl-25kv-50hz",
+      "ocl-3000v-dc"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-smile-electric-high-speed-multiple-unit"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-smile-electric-high-speed-multiple-unit"
+    ]
+  },
+  "platformHeightCompatible": {
+    "value": [
+      550,
+      760
+    ],
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-smile-electric-high-speed-multiple-unit"
+    ]
+  },
+  "costRecords": [
+    {
+      "item": "29 Giruno trainsets (first batch)",
+      "value": 970000000,
+      "currency": "CHF",
+      "priceBaseYear": 2014,
+      "region": "Switzerland",
+      "note": "The 2014 announcement gave CHF 980 million (secondary source).",
+      "sources": [
+        "wp-sbb-rabe-501"
+      ]
+    }
+  ],
+  "notes": "Eleven-car EC250 multi-system unit. 405 seats (117 first / 288 second class) per the Stadler sheet (Wikipedia: 117 / 286), plus 17 dining-car seats not counted; total = seats (no standing figure published). Max. output at wheel 6,000 kW (Wikipedia: 4,800 kW continuous). 250 km/h maximum; approved for 200 km/h on Swiss lines in single formation. Floor 940 mm low-floor / 1,200 mm high-floor; level boarding at P55 and P76 platforms. Unladen weight 380 t (Wikipedia).",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

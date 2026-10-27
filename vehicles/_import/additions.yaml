@@ -1,0 +1,17 @@
+# Values looked up after the 2026-10-26 import, keyed by the import's legacyId.
+# tools/vehicles/convert.py applies them on top of the import. Each needs a source.
+# This environment could not open most pages directly (egress blocked), so values taken from
+# search-result extracts carry checked_via: search-snippet and should be re-read when possible.
+siemens-velaro-e-renfe-s103:
+  - field: seats
+    value: 404
+    unit: count
+    basis: cited
+    source:
+      url: https://en.wikipedia.org/wiki/Renfe_Class_103
+      title: Renfe Class 103
+      publisher: Wikipedia
+      accessed: "2026-10-27"
+      kind: secondary
+      checked_via: search-snippet
+      note: "Seat count read from a search-result extract of the page, 2026-10-27."

@@ -1,0 +1,179 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7f11-bb83-70a11ee10408",
+  "legacyId": "siemens-desiro-hc-rrx-4-car",
+  "name": "Siemens Desiro HC (Rhein-Ruhr-Express 4-car)",
+  "manufacturer": "Siemens",
+  "builder": "Siemens",
+  "model": "Desiro HC",
+  "variant": "Rhein-Ruhr-Express 4-car",
+  "family": "Siemens Desiro",
+  "manufacturerCountry": "Germany",
+  "type": "emu",
+  "mode": "regional_rail",
+  "yearIntroduced": 2018,
+  "operators": [
+    "Rhein-Ruhr-Express (RRX)"
+  ],
+  "length": {
+    "value": 105.252,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mobility-desiro-hc-rrx-electrical-multiple-units"
+    ]
+  },
+  "width": {
+    "value": 2.82,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mobility-desiro-hc-rrx-electrical-multiple-units"
+    ]
+  },
+  "weightEmpty": {
+    "value": 200,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mobility-desiro-hc-rrx-electrical-multiple-units"
+    ]
+  },
+  "floorHeight": {
+    "value": 730,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mobility-desiro-hc-rrx-electrical-multiple-units"
+    ]
+  },
+  "consist": {
+    "carLengths": {
+      "value": [
+        26.226,
+        25.2,
+        25.2,
+        26.226
+      ],
+      "unit": "m",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "siemens-mobility-desiro-hc-rrx-electrical-multiple-units"
+      ]
+    },
+    "cars": {
+      "value": 4,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "siemens-mobility-desiro-hc-rrx-electrical-multiple-units"
+      ]
+    }
+  },
+  "seats": {
+    "value": 400,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mobility-desiro-hc-rrx-electrical-multiple-units"
+    ]
+  },
+  "standingQuoted": {
+    "value": 0,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "siemens-mobility-desiro-hc-rrx-electrical-multiple-units"
+    ],
+    "rationale": "Total 400 minus 400 seats."
+  },
+  "standingArea": {
+    "value": 0.0,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "siemens-mobility-desiro-hc-rrx-electrical-multiple-units"
+    ],
+    "rationale": "0 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 0.0,
+    "central": 0.0,
+    "high": 0.0,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 400,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "siemens-mobility-desiro-hc-rrx-electrical-multiple-units"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "topSpeed": {
+    "value": 160,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mobility-desiro-hc-rrx-electrical-multiple-units"
+    ]
+  },
+  "power": {
+    "value": 4000,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mobility-desiro-hc-rrx-electrical-multiple-units"
+    ]
+  },
+  "maxAcceleration": {
+    "value": 1.1,
+    "unit": "m/s2",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mobility-desiro-hc-rrx-electrical-multiple-units"
+    ]
+  },
+  "energySource": {
+    "value": "overhead-ac",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mobility-desiro-hc-rrx-electrical-multiple-units"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "ocl-15kv-16-7hz"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mobility-desiro-hc-rrx-electrical-multiple-units"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mobility-desiro-hc-rrx-electrical-multiple-units"
+    ]
+  },
+  "notes": "Four-car unit: single-deck powered end cars and two double-deck trailers (Bo'Bo'+2'2'+2'2'+Bo'Bo'). 400 seats (36 first class); total = seats (no standing figure published). Access height 800 mm at the end cars and 730 mm at the middle cars; floorHeightMm holds 730. Weight 200 t. In operation since the end of 2018.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

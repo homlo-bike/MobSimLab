@@ -1,0 +1,196 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7016-9601-3b6ef4ec875f",
+  "legacyId": "mercedes-benz-ecitaro-zvb",
+  "name": "Mercedes-Benz eCitaro (12 m, NMC battery (Zugerland Verkehrsbetriebe))",
+  "manufacturer": "Mercedes-Benz",
+  "builder": "Mercedes-Benz (Daimler Buses)",
+  "model": "eCitaro",
+  "variant": "12 m, NMC battery (Zugerland Verkehrsbetriebe)",
+  "family": "Citaro",
+  "manufacturerCountry": "Germany",
+  "type": "standard-bus",
+  "mode": "bus",
+  "yearIntroduced": 2018,
+  "operators": [
+    "Zugerland Verkehrsbetriebe (ZVB)"
+  ],
+  "length": {
+    "value": 12.135,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "zugerland-verkehrsbe-technische-daten-mercedes-benz-ecitaro"
+    ]
+  },
+  "width": {
+    "value": 2.55,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "mercedes-benz-buses-the-ecitaro-technical-data-and-equipment"
+    ]
+  },
+  "height": {
+    "value": 3.45,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "zugerland-verkehrsbe-technische-daten-mercedes-benz-ecitaro"
+    ]
+  },
+  "weightEmpty": {
+    "value": 14.0,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "zugerland-verkehrsbe-technische-daten-mercedes-benz-ecitaro"
+    ]
+  },
+  "weightLoaded": {
+    "value": 19.5,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "zugerland-verkehrsbe-technische-daten-mercedes-benz-ecitaro"
+    ]
+  },
+  "floorHeight": {
+    "value": 320,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "mercedes-benz-buses-the-ecitaro-technical-data-and-equipment"
+    ]
+  },
+  "consist": {
+    "articulations": {
+      "value": 0,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "mercedes-benz-buses-the-ecitaro-technical-data-and-equipment"
+      ]
+    },
+    "axlePositions": {
+      "value": [
+        2.805,
+        8.705
+      ],
+      "unit": "m",
+      "assumed": false,
+      "basis": "documented",
+      "sources": [
+        "zugerland-verkehrsbe-technische-daten-mercedes-benz-ecitaro",
+        "mercedes-benz-buses-the-ecitaro-technical-data-and-equipment"
+      ],
+      "rationale": "Not attributed to one source in the import; see notes."
+    },
+    "cars": {
+      "value": 1,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "mercedes-benz-buses-the-ecitaro-technical-data-and-equipment"
+      ]
+    }
+  },
+  "turningCircle": {
+    "value": 21.214,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "mercedes-benz-buses-the-ecitaro-technical-data-and-equipment"
+    ]
+  },
+  "doorClearWidth": {
+    "value": 1250,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "mercedes-benz-buses-the-ecitaro-technical-data-and-equipment"
+    ]
+  },
+  "seats": {
+    "value": 31,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "zugerland-verkehrsbe-technische-daten-mercedes-benz-ecitaro"
+    ]
+  },
+  "standingQuoted": {
+    "value": 45,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "zugerland-verkehrsbe-technische-daten-mercedes-benz-ecitaro"
+    ]
+  },
+  "standingArea": {
+    "value": 11.2,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "zugerland-verkehrsbe-technische-daten-mercedes-benz-ecitaro"
+    ],
+    "rationale": "45 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 7.5,
+    "central": 11.2,
+    "high": 15.0,
+    "distribution": "triangular"
+  },
+  "topSpeed": {
+    "value": 80,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "zugerland-verkehrsbe-technische-daten-mercedes-benz-ecitaro"
+    ]
+  },
+  "power": {
+    "value": 250,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "zugerland-verkehrsbe-technische-daten-mercedes-benz-ecitaro"
+    ]
+  },
+  "energySource": {
+    "value": "battery",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "zugerland-verkehrsbe-technische-daten-mercedes-benz-ecitaro",
+      "mercedes-benz-buses-the-ecitaro-technical-data-and-equipment"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "batteryCapacity": {
+    "value": 243,
+    "unit": "kWh",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "zugerland-verkehrsbe-technische-daten-mercedes-benz-ecitaro"
+    ]
+  },
+  "notes": "Figures for the ZVB eCitaro (2 x 125 kW wheel-hub motors, 400 V, NMC 622 battery of 243 kWh nominal, battery mass 2.6 t, maximum charging power 150 kW). tractionPowerKw is the peak 2 x 125 kW (continuous 2 x 60 kW). Seats 31 + 1 as published; total capacity not published by ZVB. Width, entry height (door 1/2: 320 mm), door opening width and turning circle are from the current Mercedes-Benz eCitaro (2 doors / 3 doors) data sheet, which lists the same length (12,135 mm); that sheet's drive (ZF AxTrax 2, 440/360 kW), batteries (444/555/666 kWh NMC, Combo2 plug standard, pantograph or charging rail optional, depot plug-in up to 150 kW preferred) and range (\"up to 600 km\", maker internal test) describe the newer build, not the ZVB buses. Axle positions derived from the data sheet: front overhang 2,805 mm, wheelbase 5,900 mm (rear overhang 3,430 mm). Range and charging time of the ZVB buses not published.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

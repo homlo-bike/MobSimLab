@@ -1,0 +1,155 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-73de-9801-a7b703385cb1",
+  "legacyId": "stadler-kiss-sbb-rabe-512",
+  "name": "Stadler KISS (SBB IR-KISS RABe 512 (6-car double-deck))",
+  "manufacturer": "Stadler",
+  "builder": "Stadler",
+  "model": "KISS",
+  "variant": "SBB IR-KISS RABe 512 (6-car double-deck)",
+  "family": "KISS",
+  "manufacturerCountry": "Switzerland",
+  "type": "emu",
+  "mode": "regional_rail",
+  "yearIntroduced": 2023,
+  "operators": [
+    "SBB"
+  ],
+  "length": {
+    "value": 151.88,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-electrical-double-decker-multiple-unit-s"
+    ]
+  },
+  "width": {
+    "value": 2.8,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-electrical-double-decker-multiple-unit-s"
+    ]
+  },
+  "height": {
+    "value": 4.595,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-electrical-double-decker-multiple-unit-s"
+    ]
+  },
+  "floorHeight": {
+    "value": 495,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-electrical-double-decker-multiple-unit-s"
+    ]
+  },
+  "consist": {
+    "cars": {
+      "value": 6,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "stadler-electrical-double-decker-multiple-unit-s"
+      ]
+    }
+  },
+  "doorClearWidth": {
+    "value": 1400,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-electrical-double-decker-multiple-unit-s"
+    ]
+  },
+  "seats": {
+    "value": 466,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-electrical-double-decker-multiple-unit-s"
+    ]
+  },
+  "standingQuoted": {
+    "value": 838,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-electrical-double-decker-multiple-unit-s"
+    ]
+  },
+  "standingArea": {
+    "value": 209.5,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "stadler-electrical-double-decker-multiple-unit-s"
+    ],
+    "rationale": "838 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 139.7,
+    "central": 209.5,
+    "high": 279.3,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 1304,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "stadler-electrical-double-decker-multiple-unit-s"
+    ],
+    "rationale": "466 seats plus 838 standing places."
+  },
+  "topSpeed": {
+    "value": 160,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-electrical-double-decker-multiple-unit-s"
+    ]
+  },
+  "energySource": {
+    "value": "overhead-ac",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-electrical-double-decker-multiple-unit-s"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "ocl-15kv-16-7hz"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-electrical-double-decker-multiple-unit-s"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-electrical-double-decker-multiple-unit-s"
+    ]
+  },
+  "notes": "Seats 466 (94 first + 372 second class); 15 tip-up seats not counted; standing spaces 838 as published; total = seats + standing. cars = 6 read from the axle arrangement Bo'Bo'+2'2'+2'2'+2'2'+2'2'+Bo'Bo'. Floor height is low floor at entrance (lower deck 443 mm, upper deck 2,527 mm). The sheet prints power at wheel as \"4000 W / 6000 W\" (unit apparently misprinted), so tractionPowerKw is left empty. Delivery from 2023; used on interregio and regional services.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

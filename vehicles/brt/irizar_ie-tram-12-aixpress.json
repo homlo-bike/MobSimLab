@@ -1,0 +1,182 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7811-bdb4-16377a4e927c",
+  "legacyId": "irizar-ie-tram-12-aixpress",
+  "name": "Irizar ie tram (12 m, 3 doors (L'Aixpress, Aix-en-Provence))",
+  "manufacturer": "Irizar",
+  "builder": "Irizar e-mobility",
+  "model": "ie tram",
+  "variant": "12 m, 3 doors (L'Aixpress, Aix-en-Provence)",
+  "family": "ie tram",
+  "manufacturerCountry": "Spain",
+  "type": "brt-standard-bus",
+  "mode": "brt",
+  "operators": [
+    "RDT 13 (L'Aixpress, Aix-en-Provence)"
+  ],
+  "length": {
+    "value": 12.16,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "irizar-e-mobility-irizar-ie-tram-12-m-ficha-tecnica"
+    ]
+  },
+  "width": {
+    "value": 2.55,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "irizar-e-mobility-irizar-ie-tram-12-m-ficha-tecnica"
+    ]
+  },
+  "height": {
+    "value": 3.4,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "irizar-e-mobility-irizar-ie-tram-12-m-ficha-tecnica"
+    ]
+  },
+  "floorHeight": {
+    "value": 320,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "irizar-e-mobility-irizar-ie-tram-12-m-ficha-tecnica"
+    ]
+  },
+  "consist": {
+    "articulations": {
+      "value": 0,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "irizar-e-mobility-irizar-ie-tram-12-m-ficha-tecnica"
+      ]
+    },
+    "axlePositions": {
+      "value": [
+        2.805,
+        8.76
+      ],
+      "unit": "m",
+      "assumed": false,
+      "basis": "documented",
+      "sources": [
+        "railway-gazette-inte-irizar-signs-aix-en-provence-electric-bu",
+        "irizar-e-mobility-irizar-ie-tram-12-m-ficha-tecnica"
+      ],
+      "rationale": "Not attributed to one source in the import; see notes."
+    },
+    "cars": {
+      "value": 1,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "irizar-e-mobility-irizar-ie-tram-12-m-ficha-tecnica"
+      ]
+    }
+  },
+  "turningCircle": {
+    "value": 21.374,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "irizar-e-mobility-irizar-ie-tram-12-m-ficha-tecnica"
+    ]
+  },
+  "doorsPerSide": {
+    "value": 3,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "railway-gazette-inte-irizar-signs-aix-en-provence-electric-bu"
+    ]
+  },
+  "seats": {
+    "value": 22,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "railway-gazette-inte-irizar-signs-aix-en-provence-electric-bu"
+    ]
+  },
+  "standingQuoted": {
+    "value": 78,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "railway-gazette-inte-irizar-signs-aix-en-provence-electric-bu"
+    ]
+  },
+  "standingDensityQuoted": {
+    "value": 4,
+    "unit": "pers/m2",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "railway-gazette-inte-irizar-signs-aix-en-provence-electric-bu"
+    ]
+  },
+  "standingArea": {
+    "value": 19.5,
+    "unit": "m2",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "railway-gazette-inte-irizar-signs-aix-en-provence-electric-bu"
+    ],
+    "rationale": "78 standing places at the quoted 4 pers/m2."
+  },
+  "topSpeed": {
+    "value": 70,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "railway-gazette-inte-irizar-signs-aix-en-provence-electric-bu"
+    ]
+  },
+  "power": {
+    "value": 185,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "irizar-e-mobility-irizar-ie-tram-12-m-ficha-tecnica"
+    ]
+  },
+  "energySource": {
+    "value": "battery",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "railway-gazette-inte-irizar-signs-aix-en-provence-electric-bu",
+      "irizar-e-mobility-irizar-ie-tram-12-m-ficha-tecnica"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "range": {
+    "value": 50,
+    "unit": "km",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "railway-gazette-inte-irizar-signs-aix-en-provence-electric-bu"
+    ]
+  },
+  "notes": "15 buses ordered in 2018 by RDT 13 for the 7.2 km L'Aixpress route (19 stops, every 5 min), deliveries due April-September 2019; charged at opportunity charging stations and overnight at the Pont de l'Arc depot (charging power/time not given). Standing at 4 per m². Dimensions, floor height, turning circle and nominal motor power (185 kW synchronous) are from the current Irizar ie tram 12 m data sheet (battery options 90/470/510 kWh; pantograph up to 300-450 kW, Combo2 150 kW; max. 105 passengers), which may differ from the 2019 Aix vehicles; their battery size is not published. Axle positions derived from the sheet: front overhang 2,805 mm, wheelbase 5,955 mm. Total capacity not published; seated + standing = 100.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

@@ -1,0 +1,110 @@
+{
+  "$schema": "../../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7c13-a9ed-1063a62a9228",
+  "legacyId": "yutong-e12",
+  "name": "Yutong E12 (ZK6128BEVG)",
+  "manufacturer": "Yutong",
+  "builder": "Yutong",
+  "model": "E12",
+  "variant": "ZK6128BEVG",
+  "family": "E-series",
+  "manufacturerCountry": "China",
+  "type": "standard-bus",
+  "mode": "bus",
+  "length": {
+    "value": 12.17,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "zhengzhou-yutong-bus-yutong-e12-12m-electric-city-bus"
+    ]
+  },
+  "width": {
+    "value": 2.55,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "zhengzhou-yutong-bus-yutong-e12-12m-electric-city-bus"
+    ]
+  },
+  "height": {
+    "value": 3.3,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "zhengzhou-yutong-bus-yutong-e12-12m-electric-city-bus"
+    ]
+  },
+  "consist": {
+    "articulations": {
+      "value": 0,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "zhengzhou-yutong-bus-yutong-e12-12m-electric-city-bus"
+      ]
+    },
+    "cars": {
+      "value": 1,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "zhengzhou-yutong-bus-yutong-e12-12m-electric-city-bus"
+      ]
+    }
+  },
+  "turningCircle": {
+    "value": 19,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "zhengzhou-yutong-bus-yutong-e12-12m-electric-city-bus"
+    ]
+  },
+  "totalCapacityQuoted": {
+    "value": 61,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "zhengzhou-yutong-bus-yutong-e12-12m-electric-city-bus"
+    ]
+  },
+  "topSpeed": {
+    "value": 70,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "zhengzhou-yutong-bus-yutong-e12-12m-electric-city-bus"
+    ]
+  },
+  "energySource": {
+    "value": "battery",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "zhengzhou-yutong-bus-yutong-e12-12m-electric-city-bus"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "batteryCapacity": {
+    "value": 422.87,
+    "unit": "kWh",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "zhengzhou-yutong-bus-yutong-e12-12m-electric-city-bus"
+    ]
+  },
+  "notes": "Manufacturer page lists \"No. of passengers 61\" without a seated/standing split; capacity depends on the market layout. Turning circle is the published minimum turning diameter (19 m). Wheelbase 6000 mm; overhangs not published, so axle positions are left empty. Battery 422.87 kWh, liquid cooled (LFP per secondary sources). Range and charging time not published on this page.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only.",
+  "draftReason": "Core fields not sourced: seats, standingQuoted"
+}

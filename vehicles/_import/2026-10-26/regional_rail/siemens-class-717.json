@@ -1,0 +1,94 @@
+{
+  "id": "siemens-class-717",
+  "mode": "regional_rail",
+  "category": "emu",
+  "simulatorCategory": "6-Car EMU",
+  "name": "Class 717",
+  "variant": "6-car",
+  "family": "Desiro City",
+  "producer": "Siemens",
+  "manufacturerCountry": "Germany",
+  "yearIntroduced": 2018,
+  "dimensions": {
+    "lengthM": 121.7,
+    "widthM": 2.8,
+    "emptyWeightT": 204,
+    "floorHeightMm": 1100
+  },
+  "consist": {
+    "cars": 6,
+    "carLengthsM": [20.2, 20.2, 20.2, 20.2, 20.2, 20.2]
+  },
+  "doors": {
+    "doorsPerSide": 12,
+    "doorWidthMm": 1500
+  },
+  "capacity": {
+    "seated": 362,
+    "total": 362
+  },
+  "performance": {
+    "maxSpeedKmh": 137,
+    "accelerationMs2": 0.85,
+    "tractionPowerKw": 1200
+  },
+  "energy": {
+    "supply": "overhead_wire",
+    "supplySystems": ["ac_25k_50", "dc_750"]
+  },
+  "infrastructure": {
+    "gaugeMm": 1435
+  },
+  "livery": null,
+  "operators": ["Great Northern (Govia Thameslink Railway)"],
+  "sources": [
+    {
+      "url": "https://en.wikipedia.org/wiki/British_Rail_Class_717",
+      "title": "British Rail Class 717",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions",
+        "consist",
+        "doors",
+        "capacity.seated",
+        "performance",
+        "energy.supplySystems",
+        "infrastructure.gaugeMm"
+      ],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "doors": {
+      "kind": "derived",
+      "confidence": 0.8
+    },
+    "capacity": {
+      "kind": "derived",
+      "confidence": 0.7
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.9
+    }
+  },
+  "notes": "Dual-voltage: 25 kV 50 Hz AC overhead and 750 V DC third rail (Moorgate branch). total = seats (no standing figure published). doorsPerSide derived: 2 doors per side per car × 6. Power 1,200 kW at the wheels; maximum speed 85 mph (137 km/h)."
+}

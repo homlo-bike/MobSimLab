@@ -1,0 +1,74 @@
+{
+  "id": "yutong-t15e",
+  "mode": "intercity_bus",
+  "category": "coach",
+  "simulatorCategory": "15 m Coach",
+  "name": "T15E",
+  "variant": "Battery-electric coach",
+  "family": "T-series",
+  "producer": "Yutong",
+  "manufacturerCountry": "China",
+  "dimensions": {
+    "lengthM": 14.95,
+    "widthM": 2.55,
+    "heightM": 3.9,
+    "grossWeightT": 25.5
+  },
+  "consist": {
+    "cars": 1,
+    "articulations": 0
+  },
+  "capacity": {
+    "seated": 61,
+    "total": 61
+  },
+  "performance": {
+    "maxSpeedKmh": 100
+  },
+  "energy": {
+    "supply": "battery",
+    "batteryKwh": 621.33
+  },
+  "sources": [
+    {
+      "url": "https://www.yutong.co.nl/products/T15E-param.shtml",
+      "title": "Yutong T15E technical parameters",
+      "publisher": "Yutong (Netherlands)",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["dimensions", "consist", "capacity", "performance", "energy"],
+      "kind": "primary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "doors": {
+      "kind": "not_available",
+      "confidence": 0
+    },
+    "costs": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "Seats 'up to 63 (61+1+1)': 61 passengers plus driver and guide. Battery 'up to 621.33 kWh'. Rated power 250 kW or 430 kW depending on configuration, so left empty. Wheelbase 7100+1515 mm (tri-axle)."
+}
