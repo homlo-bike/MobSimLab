@@ -10,10 +10,16 @@ read_secret() {
   tr -d '\n' < "$f"
 }
 
+# Plain assignments, so that `set -e` stops the script when a secret is missing
+# (an exit inside "$(...)" in a command's arguments would not).
+migrator_pw=$(read_secret db_migrator_password)
+app_pw=$(read_secret db_app_password)
+worker_pw=$(read_secret db_worker_password)
+
 psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname postgres \
-  -v migrator_pw="$(read_secret db_migrator_password)" \
-  -v app_pw="$(read_secret db_app_password)" \
-  -v worker_pw="$(read_secret db_worker_password)" <<'SQL'
+  -v migrator_pw="$migrator_pw" \
+  -v app_pw="$app_pw" \
+  -v worker_pw="$worker_pw" <<'SQL'
 SELECT format('CREATE ROLE mobsimlab_migrator LOGIN PASSWORD %L', :'migrator_pw') \gexec
 SELECT format('CREATE ROLE mobsimlab_app LOGIN PASSWORD %L', :'app_pw') \gexec
 SELECT format('CREATE ROLE mobsimlab_worker LOGIN PASSWORD %L', :'worker_pw') \gexec

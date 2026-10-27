@@ -1,6 +1,5 @@
 #!/bin/sh
-# Database migrations run here with the mobsimlab_migrator role (Phase 1).
-# Phase 0: only check that the migrator secret exists, so a broken setup fails early.
+# Applies database migrations (db/migrations) as the mobsimlab_migrator role before the API starts.
 set -eu
 [ -s /run/secrets/db_migrator_password ] || { echo "secret db_migrator_password is missing" >&2; exit 78; }
-echo '{"level":"info","msg":"migrations: none yet (Phase 0)"}'
+exec /usr/local/bin/node /app/api/dist/cli/migrate.js

@@ -1,11 +1,12 @@
 import "reflect-metadata";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
+import { Logger } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import type { NestExpressApplication } from "@nestjs/platform-express";
 import type { NextFunction, Request, Response } from "express";
-import helmet from "helmet";
 import { AppModule } from "./app.module";
+import { configureApp } from "./app.setup";
 import { ConfigError, loadConfig } from "./config/env";
 
 /**
@@ -23,26 +24,15 @@ async function bootstrap(): Promise<void> {
     }
     throw e;
   }
-  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+  const app = await NestFactory.create<NestExpressApplication>(AppModule.forRoot(config), {
     logger: ["error", "warn", "log"],
   });
-  app.disable("x-powered-by");
-  app.use(
-    helmet({
-      contentSecurityPolicy: {
-        directives: {
-          "default-src": ["'self'"],
-          "img-src": ["'self'", "data:", "blob:", "https://tiles.openfreemap.org"],
-          "connect-src": ["'self'", "https://tiles.openfreemap.org"],
-          "worker-src": ["'self'", "blob:"],
-          "style-src": ["'self'"],
-          "script-src": ["'self'"],
-          "object-src": ["'none'"],
-          "frame-ancestors": ["'none'"],
-        },
-      },
-    }),
-  );
+  configureApp(app);
+  if (!config.oidc) {
+    new Logger("bootstrap").warn(
+      "no sign-in provider configured (MOBSIMLAB_OIDC_ISSUER); sign-in is disabled",
+    );
+  }
   // Serve the built SPA from the same origin; unknown non-API GETs fall back to index.html.
   const webDir = process.env.MOBSIMLAB_WEB_DIR ?? join(__dirname, "..", "..", "web", "dist");
   if (existsSync(join(webDir, "index.html"))) {
