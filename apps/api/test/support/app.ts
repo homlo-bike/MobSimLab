@@ -1,14 +1,15 @@
+import { randomBytes } from "node:crypto";
 import { Test } from "@nestjs/testing";
 import type { NestExpressApplication } from "@nestjs/platform-express";
 import { AppModule } from "../../src/app.module";
 import { configureApp } from "../../src/app.setup";
 import type { AppConfig } from "../../src/config/env";
 
-/** Strong dummy secrets for tests (never used outside tests). */
+/** Random secrets for each test run, so no secret-looking value is committed. */
 export const TEST_SECRETS = {
-  db_app_password: "unused-in-unit-tests-9f8e7d6c5b4a",
-  master_key: "Qm9ndXMtdGVzdC1tYXN0ZXIta2V5LTAxMjM0NTY3ODk=",
-  session_secret: "VGVzdC1zZXNzaW9uLXNlY3JldC0wMTIzNDU2Nzg5YWI=",
+  db_app_password: randomBytes(24).toString("hex"),
+  master_key: randomBytes(32).toString("base64"),
+  session_secret: randomBytes(32).toString("base64"),
 };
 
 /** Purpose: a config for tests; override any field. */
