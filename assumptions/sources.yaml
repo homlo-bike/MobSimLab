@@ -1,0 +1,707 @@
+# Source register for the assumption library (ADR-0018).
+#
+# Every `sources:` id used in assumptions/parameters/*.yaml must be defined here.
+# `licence` describes the cited document, not this file. The library only quotes
+# numeric values (facts) with a reference; no text or tables are copied.
+# `access`: free | paywalled | on-request.
+# `retrieved`: date the URL was last opened or checked by a maintainer.
+# `checked_via`: how the retrieval was done (direct | search-snippet | none).
+#   `none` means the URL is the publisher's catalogue page and the clause was
+#   not read on that date; the value entries that rely on it are marked
+#   `check: unverified` until someone reads the clause.
+
+- id: tsi-inf
+  title: Commission Regulation (EU) No 1299/2014, technical specification for interoperability relating to the infrastructure subsystem (TSI INF), consolidated with (EU) 2019/776 and (EU) 2023/1694
+  publisher: European Union
+  url: https://eur-lex.europa.eu/eli/reg/2014/1299/oj
+  licence: © European Union; reuse authorised under Commission Decision 2011/833/EU
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+
+- id: tsi-prm
+  title: Commission Regulation (EU) No 1300/2014, TSI for accessibility for persons with disabilities and persons with reduced mobility (TSI PRM), consolidated with (EU) 2019/772 and (EU) 2023/1695
+  publisher: European Union
+  url: https://eur-lex.europa.eu/eli/reg/2014/1300/oj
+  licence: © European Union; reuse authorised under Commission Decision 2011/833/EU
+  access: free
+  retrieved: 2026-10-27
+  checked_via: none
+
+- id: tsi-ene
+  title: Commission Regulation (EU) No 1301/2014, TSI for the energy subsystem (TSI ENE)
+  publisher: European Union
+  url: https://eur-lex.europa.eu/eli/reg/2014/1301/oj
+  licence: © European Union; reuse authorised under Commission Decision 2011/833/EU
+  access: free
+  retrieved: 2026-10-27
+  checked_via: none
+
+- id: eu-reco-2001-290
+  title: Commission Recommendation 2001/290/EC on the basic parameters of the trans-European high-speed rail system
+  publisher: European Union
+  url: https://eur-lex.europa.eu/eli/reco/2001/290/oj
+  licence: © European Union; reuse authorised under Commission Decision 2011/833/EU
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+
+- id: eu-dir-96-53
+  title: Council Directive 96/53/EC laying down maximum authorised dimensions and weights for road vehicles (Annex I, 1.2 width and 1.5 turning circle), as amended by Directive (EU) 2015/719
+  publisher: European Union
+  url: https://eur-lex.europa.eu/eli/dir/1996/53/oj
+  licence: © European Union; reuse authorised under Commission Decision 2011/833/EU
+  access: free
+  retrieved: 2026-10-27
+  checked_via: none
+
+- id: eu-dir-92-6
+  title: Council Directive 92/6/EEC on the installation and use of speed limitation devices for certain categories of motor vehicles (M3 buses set to 100 km/h)
+  publisher: European Union
+  url: https://eur-lex.europa.eu/eli/dir/1992/6/oj
+  licence: © European Union; reuse authorised under Commission Decision 2011/833/EU
+  access: free
+  retrieved: 2026-10-27
+  checked_via: none
+
+- id: unece-r107
+  title: UN Regulation No. 107, uniform provisions concerning the approval of category M2 or M3 vehicles (Annex 3, area per standing passenger by vehicle class)
+  publisher: UNECE World Forum for Harmonization of Vehicle Regulations (WP.29)
+  url: https://unece.org/transport/vehicle-regulations-wp29/standards/addenda-1958-agreement-regulations-101-120
+  licence: United Nations document; free to reproduce with attribution
+  access: free
+  retrieved: 2026-10-27
+  checked_via: none
+
+- id: ebo
+  title: Eisenbahn-Bau- und Betriebsordnung (EBO), Germany
+  publisher: Bundesministerium der Justiz / Bundesamt für Justiz
+  url: https://www.gesetze-im-internet.de/ebo/
+  licence: Official work, no copyright (§ 5 UrhG)
+  access: free
+  retrieved: 2026-10-27
+  checked_via: none
+  note: Host not reachable from the build environment on 2026-10-27.
+
+- id: bostrab
+  title: Verordnung über den Bau und Betrieb der Straßenbahnen (BOStrab), Germany
+  publisher: Bundesministerium der Justiz / Bundesamt für Justiz
+  url: https://www.gesetze-im-internet.de/strabbo_1987/
+  licence: Official work, no copyright (§ 5 UrhG)
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+  note: §17(3) and §34(2) seen in search results; other clauses not read.
+
+- id: bostrab-trr
+  title: Richtlinien für die Trassierung von Bahnen nach BOStrab (BOStrab-Trassierungsrichtlinien, BOStrab-TrR)
+  publisher: Bundesministerium für Verkehr / VDV
+  url: https://www.vdv.de/
+  licence: © publisher; numbers cited as facts
+  access: on-request
+  retrieved: 2026-10-27
+  checked_via: none
+
+- id: tud-tram-radius
+  title: "„Spurführung“ seminar slides, werkstadt mobilität (2026): tram curve radii in practice about 20 to 30 m, extremes just under 12 m"
+  publisher: werkstadt mobilität
+  url: https://werkstadtmobilitaet.de/wp-content/uploads/2026/07/2-Spurfuehrung.pdf
+  licence: © author; numbers cited as facts
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+
+- id: db-ril-819
+  title: DB InfraGO Richtlinie 819 (LST-Anlagen planen), module 819.0202 Signale für Zug- und Rangierfahrten (Durchrutschweg lengths)
+  publisher: DB InfraGO AG
+  url: https://www.dbinfrago.com/web/schienennetz/netzzugang-und-regulierung/regelwerke
+  licence: © DB InfraGO; numbers cited as facts
+  access: on-request
+  retrieved: 2026-10-27
+  checked_via: none
+
+- id: db-ril-408
+  title: DB InfraGO Richtlinie 408 (Fahrdienstvorschrift), speed limits for shunting movements
+  publisher: DB InfraGO AG
+  url: https://www.dbinfrago.com/web/schienennetz/netzzugang-und-regulierung/regelwerke
+  licence: © DB InfraGO; numbers cited as facts
+  access: free
+  retrieved: 2026-10-27
+  checked_via: none
+
+- id: trackopedia-track-centres
+  title: 'Trackopedia, "Track centreline distance" (German practice: 4.50 m new lines up to 300 km/h, 4.00 m upgraded lines up to 230 km/h, 3.50 m minimum)'
+  publisher: Plasser & Theurer
+  url: https://www.trackopedia.com/en/encyclopedia/maintenance-of-way/track-measurements/track-centreline-distance
+  licence: © Plasser & Theurer; numbers cited as facts
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+
+- id: en-13803
+  title: EN 13803:2017 Railway applications — Track — Track alignment design parameters — Track gauges 1435 mm and wider
+  publisher: CEN
+  url: https://standards.cencenelec.eu/
+  licence: © CEN; numbers cited as facts
+  access: paywalled
+  retrieved: 2026-10-27
+  checked_via: none
+
+- id: en-15273
+  title: EN 15273-3:2013+A1:2016 Railway applications — Gauges — Part 3 Structure gauges
+  publisher: CEN
+  url: https://standards.cencenelec.eu/
+  licence: © CEN; numbers cited as facts
+  access: paywalled
+  retrieved: 2026-10-27
+  checked_via: none
+
+- id: en-15663
+  title: EN 15663:2017+A1:2018 Railway applications — Vehicle reference masses (standing passenger densities by service type)
+  publisher: CEN
+  url: https://standards.cencenelec.eu/
+  licence: © CEN; numbers cited as facts
+  access: paywalled
+  retrieved: 2026-10-27
+  checked_via: none
+
+- id: en-50163
+  title: EN 50163:2004+A1:2007 Railway applications — Supply voltages of traction systems
+  publisher: CENELEC
+  url: https://standards.cencenelec.eu/
+  licence: © CENELEC; numbers cited as facts
+  access: paywalled
+  retrieved: 2026-10-27
+  checked_via: none
+
+- id: uic-451-1
+  title: UIC Leaflet 451-1, Timetable recovery margins to guarantee timekeeping — Recovery margins
+  publisher: International Union of Railways (UIC)
+  url: https://shop.uic.org/
+  licence: © UIC; numbers cited as facts
+  access: paywalled
+  retrieved: 2026-10-27
+  checked_via: none
+
+- id: tcqsm3
+  title: TCRP Report 165, Transit Capacity and Quality of Service Manual, 3rd edition (2013)
+  publisher: Transportation Research Board / National Academies Press
+  url: https://nap.nationalacademies.org/catalog/24766
+  licence: © National Academy of Sciences; free to read; numbers cited as facts
+  access: free
+  retrieved: 2026-10-27
+  checked_via: none
+
+- id: fta-c9030
+  title: FTA Circular 9030.1E, Urbanized Area Formula Program — spare ratio guideline (spares ≤ 20 % of vehicles in maximum service for fleets of 50 or more)
+  publisher: US Federal Transit Administration
+  url: https://www.transit.dot.gov/regulations-and-guidance/fta-circulars/urbanized-area-formula-program-program-guidance-and
+  licence: US Government work, public domain
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+  note: Wording confirmed via the TCRP synthesis and agency documents quoting the circular.
+
+- id: tcrp-spare-ratio
+  title: TCRP Synthesis / National Academies chapter on bus spare ratios quoting FTA Circular 9030.1C ch. V para 9.a.5
+  publisher: National Academies Press
+  url: https://nap.nationalacademies.org/read/22409/chapter/2
+  licence: © National Academy of Sciences; free to read
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+
+- id: ada-49cfr38
+  title: 49 CFR Part 38, ADA Accessibility Specifications for Transportation Vehicles (§ 38.53 rapid rail, § 38.71/38.73 light rail, § 38.93 commuter rail)
+  publisher: US Department of Transportation
+  url: https://www.ecfr.gov/current/title-49/subtitle-A/part-38
+  licence: US Government work, public domain
+  access: free
+  retrieved: 2026-10-27
+  checked_via: none
+  note: Host not reachable from the build environment on 2026-10-27.
+
+- id: railfuture-step-gap
+  title: Railfuture presentation on step-free access (TSI PRM and GB NTSN level boarding defined as horizontal gap ≤ 75 mm and vertical step ≤ 50 mm)
+  publisher: Railfuture
+  url: https://railfuture.org.uk/DL3021
+  licence: © Railfuture; numbers cited as facts
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+
+- id: eu-accessible-platforms
+  title: AccessibleEU, physical accessibility of rail platforms (TSI INF platform heights 550 mm and 760 mm)
+  publisher: European Commission, AccessibleEU Centre
+  url: https://accessible-eu-centre.ec.europa.eu/physical-accessibility-rail-platforms_bg
+  licence: © European Union, reuse authorised
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+
+- id: orr-ole-heat
+  title: Office of Rail and Road, review of summer 2019 performance — legacy overhead line equipment designed for −18 °C to +38 °C
+  publisher: Office of Rail and Road (UK)
+  url: https://www.orr.gov.uk/media/22720/download
+  licence: Open Government Licence v3.0
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+
+- id: nr-anglia-ole
+  title: Network Rail media release, overhead line upgrade on Anglia route (rail up to 20 °C hotter than air in hot weather)
+  publisher: Network Rail
+  url: https://www.networkrailmediacentre.co.uk/news/overhead-line-upgrade-on-key-rail-route-into-london-means-fewer-heat-related-delays-for-passengers
+  licence: © Network Rail; numbers cited as facts
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+
+- id: nr-cwr-sft
+  title: Network Rail standard NR/L2/TRK/001 Inspection and maintenance of permanent way, module on continuous welded rail (stress-free temperature 27 °C, range 21–27 °C)
+  publisher: Network Rail
+  url: https://www.networkrail.co.uk/
+  licence: © Network Rail; numbers cited as facts
+  access: on-request
+  retrieved: 2026-10-27
+  checked_via: none
+
+- id: cornell-ebus-cold
+  title: 'Cornell Chronicle, "Electric buses don''t like the cold, study finds" (TCAT fleet, Transportation Research Part D): +27–29 % energy at −12 to 10 °C, about +48 % at −4 to 0 °C'
+  publisher: Cornell University
+  url: https://news.cornell.edu/node/330990
+  licence: © Cornell University; numbers cited as facts
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+
+- id: vde-ebus-fleet
+  title: "Analysis and Characterization of the Energy Consumption in an Electric Bus Fleet (VDE proceedings): electric-only heating +70 to 94 % at 0 °C, hybrid heating +6 to 29 %"
+  publisher: VDE Verlag
+  url: https://www.vde-verlag.de/proceedings-de/566134035.html
+  licence: © VDE; numbers cited as facts
+  access: paywalled
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+
+- id: curtius-kniffler
+  title: "Curtius, E. W.; Kniffler, A. (1950): Neue Erkenntnisse über die Haftung zwischen Treibrad und Schiene. Elektrische Bahnen 20, 201–210 (μ = 0.161 + 7.5/(v + 44), v in km/h)"
+  publisher: Elektrische Bahnen
+  url: https://de.wikipedia.org/wiki/Haftreibungsbeiwert
+  licence: Formula is a fact; Wikipedia text CC BY-SA 4.0 (not copied)
+  access: free
+  retrieved: 2026-10-27
+  checked_via: none
+
+- id: sumo-vtype
+  title: Eclipse SUMO documentation, Definition of Vehicles, Vehicle Types, and Routes (default minGap 2.5 m, tau 1.0 s)
+  publisher: Eclipse Foundation / DLR
+  url: https://sumo.dlr.de/docs/Definition_of_Vehicles%2C_Vehicle_Types%2C_and_Routes.html
+  licence: EPL-2.0
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+
+- id: mutcd-2009
+  title: Manual on Uniform Traffic Control Devices, 2009 edition, § 4E.06 (pedestrian clearance walking speed 3.5 ft/s ≈ 1.07 m/s)
+  publisher: US Federal Highway Administration
+  url: https://mutcd.fhwa.dot.gov/
+  licence: US Government work, public domain
+  access: free
+  retrieved: 2026-10-27
+  checked_via: none
+
+- id: hcm7
+  title: Highway Capacity Manual, 7th edition, pedestrian walking speeds
+  publisher: Transportation Research Board
+  url: https://www.trb.org/Main/Blurbs/182013.aspx
+  licence: © National Academy of Sciences; numbers cited as facts
+  access: paywalled
+  retrieved: 2026-10-27
+  checked_via: none
+
+- id: rast06
+  title: FGSV Richtlinien für die Anlage von Stadtstraßen (RASt 06), lane widths
+  publisher: Forschungsgesellschaft für Straßen- und Verkehrswesen (FGSV)
+  url: https://www.fgsv-verlag.de/
+  licence: © FGSV; numbers cited as facts
+  access: paywalled
+  retrieved: 2026-10-27
+  checked_via: none
+
+- id: aashto-green-book
+  title: AASHTO, A Policy on Geometric Design of Highways and Streets (Green Book), 7th edition (12 ft / 3.6 m lanes)
+  publisher: AASHTO
+  url: https://store.transportation.org/
+  licence: © AASHTO; numbers cited as facts
+  access: paywalled
+  retrieved: 2026-10-27
+  checked_via: none
+
+- id: vuchic-2007
+  title: "Vuchic, V. R. (2007): Urban Transit Systems and Technology. Wiley (right-of-way categories A, B, C)"
+  publisher: John Wiley & Sons
+  url: https://doi.org/10.1002/9780470168066
+  licence: © Wiley; categories cited as facts
+  access: paywalled
+  retrieved: 2026-10-27
+  checked_via: none
+
+- id: db-punctuality
+  title: Deutsche Bahn punctuality definition (a stop counts as punctual if reached less than 6 minutes after schedule)
+  publisher: Deutsche Bahn AG
+  url: https://www.deutschebahn.com/de/konzern/konzernprofil/zahlen_fakten/puenktlichkeitswerte-6878476
+  licence: © Deutsche Bahn; numbers cited as facts
+  access: free
+  retrieved: 2026-10-27
+  checked_via: none
+
+- id: sbb-punctuality
+  title: SBB customer punctuality definition (arrival less than 3 minutes late)
+  publisher: SBB CFF FFS
+  url: https://company.sbb.ch/en/the-company/profile/facts-and-figures.html
+  licence: © SBB; numbers cited as facts
+  access: free
+  retrieved: 2026-10-27
+  checked_via: none
+
+- id: orr-ppm
+  title: ORR data portal, Public Performance Measure (on time within 5 minutes for London & South East and regional, 10 minutes for long distance)
+  publisher: Office of Rail and Road (UK)
+  url: https://dataportal.orr.gov.uk/statistics/performance/passenger-rail-performance/
+  licence: Open Government Licence v3.0
+  access: free
+  retrieved: 2026-10-27
+  checked_via: none
+
+- id: vienna-convention-1968
+  title: Convention on Road Traffic, Vienna 1968 (Art. 10 driving side; Art. 19 level crossings)
+  publisher: United Nations Economic Commission for Europe
+  url: https://unece.org/DAM/trans/conventn/crt1968e.pdf
+  licence: United Nations treaty text; free to reproduce
+  access: free
+  retrieved: 2026-10-27
+  checked_via: none
+
+- id: sae-j2601-2
+  title: SAE J2601-2, Fueling Protocol for Gaseous Hydrogen Powered Heavy Duty Vehicles
+  publisher: SAE International
+  url: https://www.sae.org/standards/content/j2601/2_202310/
+  licence: © SAE; numbers cited as facts
+  access: paywalled
+  retrieved: 2026-10-27
+  checked_via: none
+
+- id: mobsimlab-derivation
+  title: MobSimLab maintainers' derivation, written down in the entry's `rationale`
+  publisher: MobSimLab contributors
+  url: https://github.com/homlo-bike/MobSimLab/tree/main/assumptions
+  licence: CC BY 4.0
+  access: free
+  retrieved: 2026-10-27
+  checked_via: direct
+
+- id: iec-60850
+  title: IEC 60850:2014 Railway applications — Supply voltages of traction systems (international counterpart of EN 50163; Annex B lists implemented voltages worldwide)
+  publisher: IEC
+  url: https://webstore.iec.ch/en/publication/3594
+  licence: © IEC; numbers cited as facts
+  access: paywalled
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+  note: Scope and Annex B seen in the publisher preview; the voltage table itself was not read.
+
+- id: en-50388-1
+  title: EN 50388-1:2022 Railway applications — Fixed installations and rolling stock — Technical criteria for the coordination between electric traction power supply systems and rolling stock to achieve interoperability
+  publisher: CENELEC
+  url: https://standards.cencenelec.eu/
+  licence: © CENELEC; numbers cited as facts
+  access: paywalled
+  retrieved: 2026-10-27
+  checked_via: none
+
+- id: en-50367
+  title: EN 50367:2020+A1:2022 Railway applications — Fixed installations and rolling stock — Criteria to achieve technical compatibility between pantographs and overhead contact line
+  publisher: CENELEC
+  url: https://iteh.eu/catalog/standards/sist/41233ef9-e0c9-4990-ac56-1bad9ae76bd6/sist-en-50367-2020
+  licence: © CENELEC; numbers cited as facts
+  access: paywalled
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+
+- id: en-50119
+  title: EN 50119:2020 Railway applications — Fixed installations — Electric traction overhead contact lines (covers heavy and light railways and trolleybuses; not ground-level conductor rails)
+  publisher: CENELEC
+  url: https://evs.ee/en/evs-en-50119-2020
+  licence: © CENELEC; numbers cited as facts
+  access: paywalled
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+
+- id: en-50122-1
+  title: EN 50122-1 Railway applications — Fixed installations — Electrical safety, earthing and the return circuit — Part 1 Protective provisions against electric shock (covers contact lines and conductor rails)
+  publisher: CENELEC
+  url: https://standards.cencenelec.eu/
+  licence: © CENELEC; numbers cited as facts
+  access: paywalled
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+
+- id: tsi-loc-pas
+  title: Commission Regulation (EU) No 1302/2014, TSI for the rolling stock — locomotives and passenger rolling stock subsystem (TSI LOC&PAS), pantograph head geometry and current at standstill
+  publisher: European Union
+  url: https://eur-lex.europa.eu/eli/reg/2014/1302/oj
+  licence: © European Union; reuse authorised under Commission Decision 2011/833/EU
+  access: free
+  retrieved: 2026-10-27
+  checked_via: none
+
+- id: era-tsi-ene
+  title: ERA, TSI Energy (consolidated text and application guide) — contact wire height verification points 5.0 m and 6.5 m above top of rail
+  publisher: European Union Agency for Railways
+  url: https://www.era.europa.eu/system/files/2022-11/TSI%20Energy.pdf
+  licence: © European Union Agency for Railways; reuse authorised with attribution
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+
+- id: uk-dc-third-rail
+  title: Study guide on UK DC electrification (third-rail top-contact system at nominal 750 V DC predominates on GB mainline DC lines)
+  publisher: open-exam-prep.com (secondary source)
+  url: https://open-exam-prep.com/study-guides/uk-pts-track-safety/dc-conductor-rail-safety/dc-infrastructure-and-voltages
+  licence: © publisher; numbers cited as facts
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+  kind: secondary
+
+# Switches and crossings (assumptions/switches.yaml). Compiled 2026-10-27 from search results only:
+# the build environment could not open the pages themselves, so every entry is search-snippet or none.
+
+- id: db-ril-800-0120
+  title: DB InfraGO Richtlinie 800.0120 (Netzinfrastruktur Technik entwerfen; Weichen und Kreuzungen) and the DB standard turnout drawings (Regelzeichnungen, Zeichnungsverzeichnis Weiche 54 / 60)
+  publisher: DB InfraGO AG
+  url: https://lieferanten.deutschebahn.com/resource/blob/12635996/278bd141e7324656a19adac30cd9f6de/Zeichnungsverzeichnis-Weiche-60-I-IAM-22-Stand-08-01-2026--data.pdf
+  licence: © DB InfraGO; numbers cited as facts
+  access: on-request
+  retrieved: 2026-10-27
+  checked_via: none
+  note: The drawing index is public; the drawings and Ril 800.0120 with the turnout dimensions are not.
+
+- id: dewiki-weiche
+  title: 'Wikipedia (de), "Weiche (Schienenverkehr)": DB standard turnouts EW 190-1:9 (40 km/h), 300-1:9 (50), 500-1:12 (60), 760-1:14 (80), 1200-1:18,5 (100), 2500-1:26,5 (130), 6000/3700-1:32,5 fb (160/280), 7000/6000-1:42 fb (200/280)'
+  publisher: Wikipedia contributors
+  url: https://de.wikipedia.org/wiki/Weiche_(Schienenverkehr)
+  licence: CC BY-SA 4.0
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+  kind: secondary
+
+- id: hanser-weichen
+  title: "Textbook excerpt on turnout geometry (Weichen-Grundformen table: 54/60-500-1:12, rigid frog, tangent length 20.797 m, 60 km/h diverging, 160/230 km/h through), ISBN 978-3-446-44894-0"
+  publisher: Carl Hanser Verlag
+  url: https://files.hanser.de/Files/Article/ARTK_ZCO_9783446448940_0001.pdf
+  licence: © Carl Hanser Verlag; numbers cited as facts
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+  kind: secondary
+
+- id: zusi-weichen
+  title: 'Zusi wiki, "In Zusi umsetzbare Weichentypen": for a turnout with a curved crossing the length is twice the tangent length, equal at all three ends'
+  publisher: Zusi community
+  url: https://zusiwiki.echoray.de/wiki/In_Zusi_umsetzbare_Weichentypen
+  licence: © authors; rule cited as fact
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+  kind: secondary
+
+- id: osm-switch-2500
+  title: "OpenStreetMap node 75194419: DB switch tagged EW 2500-1:26,5 fb, 130 km/h diverging, 300 km/h through"
+  publisher: OpenStreetMap contributors
+  url: https://www.openstreetmap.org/node/75194419
+  licence: ODbL 1.0
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+  kind: secondary
+
+- id: eisenbahnweiche-fandom
+  title: 'Vereins-Wiki, "Eisenbahnweiche": high-speed turnouts of the 1:42 class about 154 m long, 210 t, switch blades about 56 m'
+  publisher: Fandom contributors
+  url: https://vereins.fandom.com/wiki/Eisenbahnweiche
+  licence: CC BY-SA 3.0
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+  kind: secondary
+  note: Weak source; it does not say which 1:42 design it means.
+
+- id: becker-kreuzungsweichen
+  title: 'Thomas Becker, "Einfache Kreuzungsweichen" / "Kreuzungsweichen": EKW and DKW 54-190-1:9 keep the crossing angle, radii and length of their predecessors'
+  publisher: drahtkupplung.de
+  url: https://drahtkupplung.de/gtbhb2418.html
+  licence: © author; numbers cited as facts
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+  kind: secondary
+
+- id: crchi-hs-turnouts
+  title: "China Railway High-tech Industry, 350 km/h passenger dedicated line turnouts: No. 18 (R 1100 m, 69 m, 80 km/h diverging), No. 42 (R 5000 m, 157.2 m, 160 km/h diverging), 350 km/h through"
+  publisher: China Railway High-tech Industry Corporation (CRHIC)
+  url: https://www.crchi.com/col2464/art/2018/art_2464_124.html
+  licence: © publisher; numbers cited as facts
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+  note: The No. 18 split 31.729 m + 37.271 m was seen in a second search result quoting the same design.
+
+- id: nra-tech-rules
+  title: "铁路技术管理规程 (Railway Technical Management Rules, 2006, Ministry of Railways Order 29): single turnouts for 80–140 km/h diverging must be No. 30 or larger"
+  publisher: National Railway Administration of China
+  url: https://www.nra.gov.cn/xxgk/gkml/ztjg/gfzd/bmgz/202206/t20220624_327439.shtml
+  licence: Official document; numbers cited as facts
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+
+- id: gb-50157
+  title: "GB 50157-2013 Code for design of metro (地铁设计规范), commentary on turnouts: No. 9 diverging limit 35 km/h (R 200 m, 0.5 m/s² gives 36 km/h); 60 kg/m No. 9 front length 13.839 m, rear length 15.730 m"
+  publisher: Ministry of Housing and Urban-Rural Development of China
+  url: http://m.jianbiaoku.com/webarbs/book/1027/1073495.shtml
+  licence: Official standard; numbers cited as facts
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+
+- id: metro-no9-optimised
+  title: "地铁60 kg/m钢轨9号单开道岔优化设计 (optimised metro No. 9 turnout: 12.570 m + 15.730 m = 28.300 m, R 200 m, ≤120 km/h through, ≤35 km/h diverging)"
+  publisher: fx361.com (journal reprint)
+  url: https://m.fx361.com/news/2021/0808/12713763.html
+  licence: © publisher; numbers cited as facts
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+  kind: secondary
+
+- id: suburban-no12
+  title: 市域铁路60 kg/m钢轨12号可动心轨无砟道岔设计, Journal of Railway Engineering Society 41(5), 2024 (Wenzhou suburban railway turnout selection; rigid No. 12 ballasted turnout 37.8 m, a 16.592 m, b 21.208 m, 160/50 km/h)
+  publisher: China Railway Engineering Corporation (journal)
+  url: https://tdgcxb.crec.cn/CN/Y2024/V41/I5/6
+  licence: © publisher; numbers cited as facts
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+
+- id: adif-desvios-av
+  title: "Diseño de desvíos y cruzamientos adaptados al sistema de vía en placa (table of ADIF high-speed turnouts: DSIH-AV3-60-17000/7300-1:50 350/220 km/h, DSIH-AV3-60-10000/4000-1:36 350/160 km/h)"
+  publisher: Scribd upload (secondary)
+  url: https://es.scribd.com/document/729015749/Diseno-de-desvios-y-cruzamientos-adaptados-al-sistema-de-via-en-placa
+  licence: © author; numbers cited as facts
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+  kind: secondary
+
+- id: sncf-landes-220
+  title: "The Landes test site: points and crossings for switching trains at high speeds (Chemins de fer no. 307, 1974): 220 km/h diverging, 36 m blades, 210 m total length, radius about 10,000 m, tg 0.0162"
+  publisher: TRID / Transportation Research Board (abstract)
+  url: https://trid.trb.org/View/39290
+  licence: © publisher; numbers cited as facts
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+
+- id: arema-mre-ch5
+  title: AREMA Manual for Railway Engineering, Chapter 5 Track (turnout plans, leads, closure radii, maximum speeds by turnout number and unbalance)
+  publisher: American Railway Engineering and Maintenance-of-Way Association
+  url: https://www.arema.org/
+  licence: © AREMA; numbers cited as facts
+  access: paywalled
+  retrieved: 2026-10-27
+  checked_via: none
+
+- id: amtrak-spec-63
+  title: "Amtrak Track Design Specification 63 (turnout selection: conventional No. 8 and No. 10 RBM-frog turnouts for diverging speeds up to 15 mph)"
+  publisher: Amtrak
+  url: https://www.amtrak.com/content/dam/projects/dotcom/english/public/documents/corporate/engineering-practices/engineering-specs/amtrak-track-design-specification-63.pdf
+  licence: © Amtrak; numbers cited as facts
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+
+- id: csx-sidetracks
+  title: CSX Standard Specifications for the Design and Construction of Private Sidetracks (No. 8 or larger on industry tracks, No. 10 or larger on lead tracks)
+  publisher: CSX Transportation
+  url: https://www.fbfl.us/DocumentCenter/View/17462/CSX-Industrial-Sidetrack-Manual---Specifications-2016
+  licence: © CSX; numbers cited as facts
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+
+- id: up-5015
+  title: Union Pacific standard drawing 5015, No. 15 turnout (actual lead 111'-2 3/4" from point of switch to 1/2-inch point of frog)
+  publisher: Union Pacific Railroad
+  url: https://www.up.com/emp/engineering/mapcontent/standards/track%20standard%20drawings/5015.pdf
+  licence: © Union Pacific; numbers cited as facts
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+
+- id: fra-td99-021
+  title: FRA Technology Digest TD99-021, No. 20 turnout with intermediate geometry (156 ft lead for AREMA and intermediate geometry; 50 mph AREMA, 45 mph intermediate)
+  publisher: US Federal Railroad Administration / MxV Rail
+  url: https://www.mxvrail.com/wp-content/uploads/2023/01/TD99-021.pdf
+  licence: US government work (public domain)
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+
+- id: fra-rr0610
+  title: FRA Research Results RR06-10, increasing diverging speed of a No. 20 turnout from the current 45 mph to 55 mph without changing lead or frog angle
+  publisher: US Federal Railroad Administration
+  url: https://railroads.dot.gov/sites/fra.dot.gov/files/fra_net/2121/rr0610.pdf
+  licence: US government work (public domain)
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+
+- id: nortrak-transit
+  title: voestalpine Nortrak, transit turnouts ("Meter Design" tram and LRT turnouts for standard European geometries of 20, 25, 50, 75, 100 and 150 m radius)
+  publisher: voestalpine Railway Systems Nortrak
+  url: https://www.voestalpine.com/nortrak/en/products/Turnouts-Transit-Systems/
+  licence: © voestalpine; numbers cited as facts
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+
+- id: krakow-tram-switches
+  title: Kraków tramway (MPK / ZDMK) turnout specification (switches with shallow-groove crossings 15 km/h; R = 50 m switches with deep-groove crossings 25 km/h)
+  publisher: Zarząd Dróg Miasta Krakowa
+  url: https://plikimpi.krakow.pl/pliki/339992
+  licence: Public procurement document; numbers cited as facts
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+
+- id: voestalpine-tram-train-hu
+  title: voestalpine, first Hungarian tram-train project (turnouts R = 200 m and R = 300 m for 40 km/h diverging)
+  publisher: voestalpine Railway Systems
+  url: https://voestalpine.com/railway-systems/en/company/news/first-hungarian-tram-train-project
+  licence: © voestalpine; numbers cited as facts
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+
+- id: salzburger-lokalbahn
+  title: Salzburger Lokalbahn (Salzburg AG / Schiene Salzburg), line electrified at 1000 V DC
+  publisher: Salzburg AG
+  url: https://www.salzburg-ag.at/
+  licence: © Salzburg AG; numbers cited as facts
+  access: free
+  retrieved: 2026-10-27
+  checked_via: none
+  note: Operator home page; the voltage was supplied by the vehicle catalogue (Stadler Citylink for Schiene Salzburg) and not read on the operator site.

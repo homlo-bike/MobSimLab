@@ -1,0 +1,473 @@
+# Infrastructure standards and drawing defaults. Schema: assumptions/README.md.
+# Per-mode platform length, platform height, curve radii and track gauge are in modes.yaml.
+
+- key: track.centre_distance_m
+  label: Track centre distance (double track, open line)
+  group: Infrastructure standards
+  unit: m
+  used_by: [drawing of new double track, clearance check]
+  values:
+    - context:
+        mode: "*"
+      low: 3.5
+      central: 4.0
+      high: 4.5
+      basis: cited
+      sources: [trackopedia-track-centres, ebo, tsi-inf]
+      check: secondary
+      rationale: "German practice: 4.00 m on upgraded lines up to 230 km/h, 4.50 m on new lines up to 300 km/h, 3.50 m absolute minimum (EBO §10)."
+    - context:
+        mode: tram
+      low: 2.8
+      central: 3.0
+      high: 3.6
+      basis: documented
+      sources: [bostrab, mobsimlab-derivation]
+      check: unverified
+      rationale: Vehicle width 2.40–2.65 m plus kinematic sway and a safety gap of about 0.3 m; 3.60 m or more with centre poles.
+    - context:
+        mode: light_rail
+      low: 3.0
+      central: 3.2
+      high: 3.8
+      basis: documented
+      sources: [bostrab, mobsimlab-derivation]
+      check: unverified
+      rationale: Wider and faster vehicles than tram; centre poles push to the high end.
+    - context:
+        mode: metro
+      low: 3.2
+      central: 3.6
+      high: 4.0
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: Car body 2.65–3.10 m plus sway and clearance; tunnel type dominates (twin bores are far apart).
+    - context:
+        mode: [commuter_rail, regional_rail, long_distance_rail]
+      low: 3.5
+      central: 4.0
+      high: 4.5
+      basis: cited
+      sources: [trackopedia-track-centres, ebo]
+      check: secondary
+      rationale: As global.
+    - context:
+        mode: high_speed_rail
+      low: 4.0
+      central: 4.5
+      high: 5.0
+      basis: cited
+      sources: [trackopedia-track-centres, tsi-inf]
+      check: secondary
+      rationale: 4.50 m on new lines up to 300 km/h; TSI INF sets a speed-dependent minimum (clause to be checked).
+
+- key: track.clearance_marker_centre_distance_m
+  label: Track centre distance at the clearance marker of converging tracks (where a waiting train must stand clear)
+  group: Infrastructure standards
+  unit: m
+  used_by: [fouling point placement, usable track length]
+  values:
+    - context:
+        mode: "*"
+      low: 3.0
+      central: 3.5
+      high: 3.5
+      basis: documented
+      sources: [ebo, trackopedia-track-centres]
+      check: unverified
+      rationale: German clearance markers (Grenzzeichen) stand where converging tracks are 3.50 m apart, matching the minimum track centre distance.
+    - context:
+        mode: [tram, light_rail]
+      low: 2.7
+      central: 3.0
+      high: 3.2
+      basis: documented
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: Vehicle width plus sway, as for tram track centre distance.
+    - context:
+        mode: metro
+      low: 3.0
+      central: 3.2
+      high: 3.5
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: Between tram and mainline.
+
+- key: station.track_suggest_distance_m
+  label: Distance for suggesting tracks at a station
+  group: Infrastructure standards
+  unit: m
+  used_by: [editor, offering existing tracks when a stop or platform is placed]
+  values:
+    - context:
+        mode: "*"
+      low: 25
+      central: 50
+      high: 150
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: Editor tolerance, not an engineering value; wide enough to cover a station throat, small enough to avoid unrelated tracks.
+
+- key: platform.side_width_m
+  label: Side platform width
+  group: Infrastructure standards
+  unit: m
+  used_by: [new platform default, crowding capacity]
+  values:
+    - context:
+        mode: "*"
+      low: 2.5
+      central: 3.5
+      high: 5.0
+      basis: documented
+      sources: [tsi-prm, mobsimlab-derivation]
+      check: unverified
+      rationale: TSI PRM requires an obstacle-free width of at least 1.60 m beyond the danger area; with a danger area of about 1.0 m and street furniture this gives about 3.5 m.
+    - context:
+        mode: [bus, trolleybus, tram]
+      low: 2.0
+      central: 2.5
+      high: 3.5
+      basis: documented
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: "Street stops: 1.50 m wheelchair turning plus ramp deployment area (about 2.5 m)."
+
+- key: platform.island_width_m
+  label: Island platform width
+  group: Infrastructure standards
+  unit: m
+  used_by: [new platform default, crowding capacity]
+  values:
+    - context:
+        mode: "*"
+      low: 5.5
+      central: 7.0
+      high: 10.0
+      basis: documented
+      sources: [tsi-prm, mobsimlab-derivation]
+      check: unverified
+      rationale: Two danger areas plus obstacle-free width and room for stairs or lifts in the middle.
+    - context:
+        mode: [bus, trolleybus, tram]
+      low: 3.0
+      central: 4.0
+      high: 5.0
+      basis: documented
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: Shared street island stop with ramp deployment on both sides.
+
+- key: crossing.clearance_m
+  label: Clearance before and after a crossing
+  group: Infrastructure standards
+  unit: m
+  used_by: [stop line placement, keep-clear zones in simulation]
+  values:
+    - context:
+        mode: "*"
+      low: 2
+      central: 5
+      high: 10
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: Distance from the conflict area to the stop line so a waiting vehicle does not foul the crossing; local road rules decide.
+
+- key: curve.cant_tram_mm
+  label: "Curve speed: cant (superelevation) of tram and light rail curves"
+  group: Infrastructure standards
+  unit: mm
+  used_by: [curve speed v = sqrt((D + I) R / 11.8)]
+  values:
+    - context:
+        mode: "*"
+      low: 0
+      central: 60
+      high: 150
+      basis: documented
+      sources: [bostrab-trr, mobsimlab-derivation]
+      check: unverified
+      rationale: Street-running track flush with the road has no cant; segregated tram and light rail track typically up to about 100–150 mm (BOStrab-TrR, figure to be checked).
+
+- key: curve.cant_deficiency_tram_mm
+  label: "Curve speed: permitted cant deficiency of tram and light rail curves"
+  group: Infrastructure standards
+  unit: mm
+  used_by: [curve speed]
+  values:
+    - context:
+        mode: "*"
+      low: 70
+      central: 100
+      high: 150
+      basis: documented
+      sources: [bostrab-trr, mobsimlab-derivation]
+      check: unverified
+      rationale: "I = a · s / g with s ≈ 1500 mm: 0.65 m/s² unbalanced lateral acceleration (comfort with standing passengers) gives about 100 mm; 1.0 m/s² gives about 150 mm."
+
+- key: curve.cant_rail_mm
+  label: "Curve speed: cant (superelevation) of metro and railway curves"
+  group: Infrastructure standards
+  unit: mm
+  used_by: [curve speed]
+  values:
+    - context:
+        mode: "*"
+      low: 100
+      central: 160
+      high: 180
+      basis: cited
+      sources: [en-13803, ebo, eu-reco-2001-290]
+      check: secondary
+      rationale: 2001/290/EC limits design cant on new high-speed lines to 180 mm (seen in source); EN 13803 and EBO §6 give 160 mm as the usual limit on ballasted track and 180 mm as the maximum (to be checked).
+    - context:
+        mode: metro
+      low: 60
+      central: 100
+      high: 150
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: Lower line speeds need less cant; trains stop in curves at stations.
+
+- key: curve.cant_deficiency_rail_mm
+  label: "Curve speed: permitted cant deficiency of metro and railway curves"
+  group: Infrastructure standards
+  unit: mm
+  used_by: [curve speed]
+  values:
+    - context:
+        mode: "*"
+      low: 100
+      central: 130
+      high: 150
+      basis: cited
+      sources: [en-13803, ebo]
+      check: unverified
+      rationale: "EN 13803 and EBO §6: 130 mm normal and 150 mm with conditions for conventional stock; tilting trains are higher. Clause to be checked."
+    - context:
+        mode: metro
+      low: 70
+      central: 100
+      high: 130
+      basis: documented
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: 0.65 m/s² comfort limit for standing passengers gives about 100 mm.
+
+- key: structure.outline_width_m
+  label: "Bridge and tunnel outline: width beyond the rails on each side (drawing)"
+  group: Infrastructure standards
+  unit: m
+  used_by: [drawing of bridges and tunnels]
+  values:
+    - context:
+        mode: "*"
+      low: 1.0
+      central: 1.5
+      high: 2.5
+      basis: educated-guess
+      sources: [en-15273, mobsimlab-derivation]
+      check: unverified
+      rationale: "Drawing value: structure gauge half-width (about 1.6–2.0 m from track centre for mainline, EN 15273) minus half the gauge, plus a walkway."
+    - context:
+        mode: [tram, light_rail]
+      low: 0.8
+      central: 1.2
+      high: 1.5
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: Narrower vehicles.
+    - context:
+        mode: [long_distance_rail, high_speed_rail]
+      low: 1.5
+      central: 2.2
+      high: 3.0
+      basis: educated-guess
+      sources: [en-15273, mobsimlab-derivation]
+      check: unverified
+      rationale: Larger gauge and cable troughs, escape walkway.
+
+- key: structure.underground_level_depth_m
+  label: Depth of track per underground level, below the street (ramps)
+  group: Infrastructure standards
+  unit: m
+  used_by: [ramp length and portal placement]
+  values:
+    - context:
+        mode: "*"
+      low: 6
+      central: 8
+      high: 12
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: "Cut-and-cover box: about 1–2 m cover for utilities, 4.5–6 m internal height, slab; deeper for mainline overhead line."
+
+- key: structure.elevated_level_height_m
+  label: Height of track per elevated level, above the street (ramps)
+  group: Infrastructure standards
+  unit: m
+  used_by: [ramp length and viaduct drawing]
+  values:
+    - context:
+        mode: "*"
+      low: 6
+      central: 7
+      high: 9
+      basis: documented
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: Road clearance of about 4.5–5.0 m (national road standards) plus 1.5–2.0 m deck depth.
+
+- key: platform.max_gradient_pct
+  label: Steepest gradient of track at a station platform, tram, light rail and metro
+  group: Infrastructure standards
+  unit: "%"
+  used_by: [station placement check]
+  values:
+    - context:
+        mode: "*"
+      low: 0
+      central: 0.25
+      high: 0.5
+      basis: cited
+      sources: [ebo, tsi-inf]
+      check: unverified
+      rationale: EBO §7 and TSI INF limit station tracks where vehicles are stabled to 2.5 mm/m (0.25 %) so that vehicles do not roll away. Clause to be checked.
+    - context:
+        mode: [tram, light_rail]
+      low: 0.25
+      central: 2.0
+      high: 4.0
+      basis: educated-guess
+      sources: [bostrab-trr, mobsimlab-derivation]
+      check: unverified
+      rationale: Street stops follow the road profile; steep stops make wheelchair boarding and ramps harder. BOStrab-TrR values to be checked.
+    - context:
+        mode: metro
+      low: 0
+      central: 0.25
+      high: 0.5
+      basis: documented
+      sources: [ebo]
+      check: unverified
+      rationale: As mainline practice.
+
+- key: stop.reuse_distance_m
+  label: Distance within which a new stop or station reuses an existing one
+  group: Infrastructure standards
+  unit: m
+  used_by: [editor and import, merging stops]
+  values:
+    - context:
+        mode: "*"
+      low: 30
+      central: 75
+      high: 150
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: Editor tolerance. Smaller than typical stop spacing (300–500 m for bus) and larger than the size of a stop area.
+
+- key: switch.cant_deficiency_mm
+  label: "Turnouts: permitted cant deficiency in the diverging track"
+  group: Infrastructure standards
+  unit: mm
+  used_by: [diverging speed of a turnout radius, v = sqrt(I R / 11.8), switch catalogue checks]
+  values:
+    - context:
+        mode: "*"
+      low: 90
+      central: 100
+      high: 120
+      basis: documented
+      sources: [dewiki-weiche, en-13803]
+      check: secondary
+      rationale: "The DB standard turnout speeds (R 190 m 40 km/h, 300 m 50, 760 m 80, 1200 m 100) all equal sqrt(100 · R / 11.8) rounded down, so the diverging track runs with about 100 mm cant deficiency and no cant. EN 13803 allows more with conditions (clause to be checked)."
+    - context:
+        mode: metro
+      low: 70
+      central: 76
+      high: 100
+      basis: cited
+      sources: [gb-50157]
+      check: secondary
+      rationale: "GB 50157 commentary: 0.5 m/s² unbalanced lateral acceleration in metro turnouts (R 200 m gives 36 km/h); 0.5 · 1500 / 9.81 = 76 mm."
+    - context:
+        mode: [tram, light_rail]
+      low: 70
+      central: 100
+      high: 150
+      basis: documented
+      sources: [krakow-tram-switches, mobsimlab-derivation]
+      check: unverified
+      rationale: As curve.cant_deficiency_tram_mm. The Kraków limit of 25 km/h for R 50 m deep-groove switches corresponds to about 150 mm, the upper end.
+
+- key: switch.default_turnout
+  label: "Turnouts: default catalogue turnout offered when connecting tracks"
+  group: Infrastructure standards
+  unit: id
+  kind: enum
+  options:
+    - tram-r25
+    - tram-r50
+    - tram-r100
+    - db-ew-190-1-9
+    - db-ew-300-1-9
+    - db-ew-500-1-12
+    - db-ew-760-1-14
+    - db-ew-1200-1-18.5
+    - db-ew-2500-1-26.5-fb
+    - cn-metro-60-no9
+    - arema-no10
+  used_by: [railway design tool, connection between tracks]
+  values:
+    - context:
+        mode: "*"
+      central: db-ew-300-1-9
+      basis: educated-guess
+      sources: [dewiki-weiche, mobsimlab-derivation]
+      check: unverified
+      rationale: 50 km/h diverging in 33 m is the usual compromise for station and junction connections on conventional lines. The planner picks any element of switches.yaml; this is only the first offer.
+    - context:
+        mode: tram
+      central: tram-r50
+      basis: educated-guess
+      sources: [nortrak-transit, mobsimlab-derivation]
+      check: unverified
+      rationale: 50 m is the common street junction radius; 25 m for depots and loops, 100 m on segregated track.
+    - context:
+        mode: light_rail
+      central: tram-r100
+      basis: educated-guess
+      sources: [nortrak-transit, mobsimlab-derivation]
+      check: unverified
+      rationale: Faster segregated running; street sections can switch to tram-r50.
+    - context:
+        mode: metro
+      central: db-ew-190-1-9
+      basis: educated-guess
+      sources: [gb-50157, mobsimlab-derivation]
+      check: unverified
+      rationale: 1:9 turnouts with R 190–200 m and 35–40 km/h diverging are the metro norm (GB 50157 No. 9 is the Chinese equivalent, cn-metro-60-no9).
+    - context:
+        mode: [long_distance_rail]
+      central: db-ew-500-1-12
+      basis: educated-guess
+      sources: [hanser-weichen, mobsimlab-derivation]
+      check: unverified
+      rationale: 60 km/h diverging for passing loops and station throats on intercity lines.
+    - context:
+        mode: high_speed_rail
+      central: db-ew-1200-1-18.5
+      basis: educated-guess
+      sources: [dewiki-weiche, mobsimlab-derivation]
+      check: unverified
+      rationale: 100 km/h diverging into station and overtaking tracks; junctions between lines use 1:26.5 or flatter.

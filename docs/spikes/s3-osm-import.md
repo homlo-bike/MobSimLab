@@ -1,7 +1,7 @@
 # Spike S3: OSM import (PBF and Overpass paths)
 
 - Date: 2026-10-27
-- Status: **Pipeline done, regional benchmark pending.** Both paths import into the same tables with tag mapping v0. The 1-million-inhabitant timing must run on GitHub Actions, because this development environment cannot reach Geofabrik or Overpass (HTTP 403 from the network proxy).
+- Status: **Done.** Both paths import into the same tables with tag mapping v0. The regional benchmark ran on GitHub Actions ([run 40515611225](https://github.com/homlo-bike/MobSimLab/actions/runs/40515611225)) for Regierungsbezirk Köln, about 4.4 million inhabitants. It found one bug in the Overpass query, fixed below.
 - Code: [`tools/osm`](../../tools/osm), workflow [`osm-benchmark.yml`](../../.github/workflows/osm-benchmark.yml)
 - Related: [06 §2](../architecture/06-gis.md#2-openstreetmap-import), ADR-0009
 
@@ -33,12 +33,74 @@ PBF import took 0.27 s. The Overpass path was tested with the same importer on O
 
 A naive linear extrapolation (about 2.9 MB per 38,000 inhabitants) suggests 0.1–0.3 GB of tables for a 1-million region. That figure is not a measurement: the benchmark run below replaces it.
 
-## Pending: regional benchmark
+## Regional results (Regierungsbezirk Köln)
 
-After this PR is merged, run **Actions → OSM import benchmark (Spike S3) → Run workflow**. The defaults are region `europe/germany/bremen` (about 570,000 inhabitants; pick a larger extract such as `europe/germany/nordrhein-westfalen/koeln-regbez` for more than 1 million) and a small bbox for the Overpass path. The report is uploaded as an artifact and will be copied into this document.
+Run on a GitHub-hosted ubuntu-24.04 runner, PostGIS 17-3.5 service container with default settings, osm2pgsql from Ubuntu 24.04.
+
+### PBF path
+
+Geofabrik extract `europe/germany/nordrhein-westfalen/koeln-regbez`: 215 MB, data as of 2026-10-25T21:21Z. Download took 15.3 s and the flex import 62.6 s.
+
+| Table | Rows | Size |
+|-------|------|------|
+| osm_building | 2,271,216 | 799 MB |
+| osm_way_road | 636,254 | 212 MB |
+| osm_landuse | 195,391 | 106 MB |
+| osm_poi | 137,003 | 52 MB |
+| osm_pt | 44,039 | 17 MB |
+| osm_barrier | 163,262 | 34 MB |
+| osm_water | 66,449 | 25 MB |
+| osm_way_rail | 12,505 | 6.9 MB |
+| osm_place | 4,275 | 1.2 MB |
+| **Total** | | **1,254 MB** |
+
+Per million inhabitants this is about **285 MB of tables and 14 s of import**. Buildings are 64 % of the storage. The earlier extrapolation from the fixture (0.1–0.3 GB per million) was at the top of its range.
+
+### Overpass path
+
+Box `50.932,6.945,50.948,6.970` (3.1 km², Köln city centre). The first request got HTTP 502 and the retry succeeded. The fetch took 107 s in total and returned 161 MB of XML. The import took 2.3 s and wrote 40 MB of tables.
+
+| Table | Rows | Size |
+|-------|------|------|
+| osm_way_rail | 29,171 | 21 MB |
+| osm_way_road | 25,021 | 12 MB |
+| osm_pt | 6,160 | 2.7 MB |
+| osm_building | 4,620 | 2.2 MB |
+| osm_poi | 2,810 | 1.3 MB |
+| osm_barrier | 1,934 | 440 kB |
+| osm_water | 988 | 776 kB |
+| osm_landuse | 174 | 120 kB |
+| osm_place | 11 | 24 kB |
+| **Total** | | **40 MB** |
+
+**Bug found.** The box returned more rail ways (29,171) than the whole Regierungsbezirk (12,505). The query took every relation touching the box, including train, tram and bus route relations, and then recursed into all their members. That pulled in whole lines far outside the box. The flex style only reads multipolygon relations, so the query now asks only for nodes, ways and multipolygon relations in the box (`overpass_fetch.py`, `build_query`).
+
+**Re-run with the fixed query** ([run 40534911854](https://github.com/homlo-bike/MobSimLab/actions/runs/40534911854)), same box. The server answered HTTP 502 three times; the fourth attempt succeeded. The successful request took about 43 s and returned 18 MB (was 161 MB). The import took 0.9 s and wrote 5.8 MB of tables (was 40 MB). The PBF path gave the same results as the first run (12 s download, 61 s import).
+
+| Table | Rows (first run) | Rows (fixed) | Size (fixed) |
+|-------|------|------|------|
+| osm_building | 4,620 | 4,611 | 2.2 MB |
+| osm_way_road | 25,021 | 3,760 | 1.5 MB |
+| osm_poi | 2,810 | 2,293 | 1.2 MB |
+| osm_barrier | 1,934 | 1,103 | 280 kB |
+| osm_way_rail | 29,171 | 371 | 264 kB |
+| osm_pt | 6,160 | 243 | 168 kB |
+| osm_landuse | 174 | 172 | 120 kB |
+| osm_water | 988 | 18 | 80 kB |
+| osm_place | 11 | 10 | 24 kB |
+| **Total** | 40 MB | | **5.8 MB** |
+
+The remaining small differences in buildings and land use come from multipolygon relations that are now fetched only when they touch the box.
+
+### Default import limits
+
+- **PBF is the default** for anything larger than a district. A region of several million people imports in about a minute and needs about 0.3 GB of tables per million inhabitants, plus indexes and the PBF itself. Setup should warn when the free disk is below three times the expected size.
+- **Overpass is for small areas only.** A dense 3 km² city centre took about 43 s on the public server, and the query timeout is 120 s, so the default limit is **10 km²**. Larger areas need the tiling planned for Phase 2, with the 400 km² hard limit as the ceiling for a tiled import. Above 10 km² the UI steers users to the PBF path.
+- Public Overpass servers fail transiently (one 502 in the first run, three in the second), so retries with backoff are required, as implemented.
 
 ## Findings
 
 - One flex style serves both paths because osm2pgsql reads PBF and OSM XML alike, so the rest of the system does not need to know where data came from.
 - The OSM data timestamp is available from the PBF header (`osmosis_replication_timestamp`) for the Source record. For Overpass, it is the `osm_base` attribute of the response.
+- PostgreSQL warned that checkpoints were too frequent during the PBF import. The production container should raise `max_wal_size` for imports.
 - Phase 2 work: tiling and quadtree split for Overpass timeouts, the provider status probe, polygon (not just bbox) extracts with `osmium extract -p`, incremental refresh, and moving the import into the sandboxed tool-runner.
