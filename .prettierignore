@@ -1,0 +1,11 @@
+dist
+target
+pnpm-lock.yaml
+docs
+*.md
+crates
+worker
+deploy
+db
+tools
+.github

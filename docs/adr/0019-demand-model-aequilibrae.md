@@ -12,7 +12,7 @@ The brief requires a four-step model. Writing gravity models, logit mode choice,
 
 Use AequilibraE in the Python worker for skimming, distribution (gravity, IPF), traffic assignment (bi-conjugate Frank-Wolfe) and transit assignment (Spiess–Florian). Implement trip generation and mode choice utilities in our code (simple, transparent formulas). Networks exported from the unified graph. Matrices in OMX.
 
-**Licence gate:** confirm AequilibraE's licence before adoption. Permissive or GPL-3.0-compatible is fine; GPL-2.0-only would not be (then fall back to running it as a separate program or reimplementing assignment).
+**Licence gate (verified 2026-10-27):** AequilibraE's LICENSE is the MIT licence text with one added clause: "Reference to the software has to be made in all documentation for work developed with the software." This is compatible with AGPL-3.0-or-later, but the added clause makes it a non-OSI variant. We treat it as an attribution obligation: every report or export produced with a demand run cites AequilibraE automatically, and it is listed in `ATTRIBUTION`. The licence gate allowlists it by name (not as plain MIT).
 
 ## Alternatives considered
 
