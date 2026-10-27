@@ -854,6 +854,7 @@ default and the others are accepted. Full basis, sources and rationale per attri
 | `ocl-25kv-50hz` | Overhead contact line, 25 kV 50 Hz AC | commuter_rail, regional_rail, long_distance_rail, high_speed_rail | 25000 | 50 | 17500 | 19000 | 27500 | 29000 | 5.5 (5.0–5.75) | 1600 / 1950 | – | – | – | 0.95 (0.9–0.95) |
 | `trolley-600v-dc` | Trolleybus twin-wire overhead line, 600 V DC | trolleybus | 600 | – | 400 | 400 | 720 | 800 | 5.5 (4.5–6.0) | – | 600 (500–750) | – | – | – |
 | `trolley-750v-dc` | Trolleybus twin-wire overhead line, 750 V DC | trolleybus | 750 | – | 500 | 500 | 900 | 1000 | 5.5 (4.5–6.0) | – | 600 (500–750) | – | – | – |
+| `third-rail-600v-dc` | Conductor rail (third rail), 600 V DC | metro | 600 | – | 400 | 400 | 720 | 800 | – | – | – | top / side / bottom | – | – |
 | `third-rail-750v-dc` | Conductor rail (third rail), 750 V DC | metro, commuter_rail, regional_rail | 750 | – | 500 | 500 | 900 | 1000 | – | – | – | top / side / bottom | – | – |
 | `third-rail-1500v-dc` | Conductor rail (third rail), 1500 V DC | metro, commuter_rail | 1500 | – | 1000 | 1000 | 1800 | 1950 | – | – | – | top / side / bottom | – | – |
 | `fourth-rail-630v-dc` | Fourth-rail system, 630 V DC (+420 V / −210 V) | metro | 630 | – | – | 420 | 760 | – | – | – | – | top | – | – |

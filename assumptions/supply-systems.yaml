@@ -590,6 +590,50 @@
     contact_wire_height_m: *id003
     trolley_wire_spacing_mm: *id004
 
+- id: third-rail-600v-dc
+  label: Conductor rail (third rail), 600 V DC
+  collection: third-rail
+  current: dc
+  typical_modes: [metro]
+  attributes:
+    nominal_v:
+      central: 600
+      basis: cited
+      sources: [en-50163, iec-60850]
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    u_min2_v:
+      central: 400
+      basis: cited
+      sources: [en-50163, iec-60850]
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    u_min1_v:
+      central: 400
+      basis: cited
+      sources: [en-50163, iec-60850]
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    u_max1_v:
+      central: 720
+      basis: cited
+      sources: [en-50163, iec-60850]
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    u_max2_v:
+      central: 800
+      basis: cited
+      sources: [en-50163, iec-60850]
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    conductor_rail_contact:
+      central: top
+      basis: documented
+      sources: [en-50122-1, mobsimlab-derivation]
+      check: unverified
+      rationale: "Older metros on 600 V DC conductor rail (for example Toronto subway and Glasgow Subway, per the vehicle catalogue) use top contact; take the position from the line."
+      options: [top, side, bottom]
+
 - id: third-rail-750v-dc
   label: Conductor rail (third rail), 750 V DC
   collection: third-rail
