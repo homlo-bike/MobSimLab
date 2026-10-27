@@ -1,6 +1,6 @@
 # ADR-0010: OSM import via Overpass for small areas and PBF extracts for large areas
 
-- Status: Proposed
+- Status: Accepted (architecture PR approved by product owner, 2026-10-27)
 - Date: 2026-10-27
 - Related: FR-GIS-01..03, C-08
 

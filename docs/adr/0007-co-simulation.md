@@ -1,6 +1,6 @@
 # ADR-0007: Lock-step co-simulation between SUMO and the rail kernel with portal handover
 
-- Status: Proposed
+- Status: Accepted (architecture PR approved by product owner, 2026-10-27)
 - Date: 2026-10-27
 - Related: FR-SIM-03, ADR-0005, ADR-0006
 

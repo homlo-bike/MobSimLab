@@ -1,6 +1,6 @@
 # ADR-0009: One unified transport graph in PostGIS, one routing library, engine-specific exports
 
-- Status: Proposed
+- Status: Accepted (architecture PR approved by product owner, 2026-10-27)
 - Date: 2026-10-27
 - Related: FR-NET-01, FR-NET-02
 

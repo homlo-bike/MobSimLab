@@ -1,6 +1,6 @@
 # ADR-0025: Generate schematic diagrams with LOOM, edit them in our SVG editor
 
-- Status: Proposed
+- Status: Accepted (architecture PR approved by product owner, 2026-10-27)
 - Date: 2026-10-27
 - Related: FR-SCH-01..03
 

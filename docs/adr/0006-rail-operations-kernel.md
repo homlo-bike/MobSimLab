@@ -1,6 +1,6 @@
 # ADR-0006: Custom rail operations kernel in Rust, with OSRD as reference and validation oracle
 
-- Status: Proposed
+- Status: Accepted (architecture PR approved by product owner, 2026-10-27)
 - Date: 2026-10-27
 - Related: FR-SIM-02, NFR-PERF-03, NFR-ACC-01, C-05
 

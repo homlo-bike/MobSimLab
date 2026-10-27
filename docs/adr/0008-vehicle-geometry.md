@@ -1,6 +1,6 @@
 # ADR-0008: One-dimensional authoritative motion with derived multi-body geometry
 
-- Status: Proposed
+- Status: Accepted (architecture PR approved by product owner, 2026-10-27)
 - Date: 2026-10-27
 - Related: FR-SIM-04, FR-SIM-05, C-03
 

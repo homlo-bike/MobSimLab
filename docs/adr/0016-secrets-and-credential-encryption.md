@@ -1,6 +1,6 @@
 # ADR-0016: Docker secrets for instance secrets; envelope encryption for provider credentials
 
-- Status: Proposed
+- Status: Accepted (architecture PR approved by product owner, 2026-10-27)
 - Date: 2026-10-27
 - Related: NFR-SEC-03, 05 §3.6
 

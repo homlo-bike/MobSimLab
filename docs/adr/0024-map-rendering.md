@@ -1,6 +1,6 @@
 # ADR-0024: MapLibre GL for the map, deck.gl for moving vehicles and heavy overlays
 
-- Status: Proposed
+- Status: Accepted (architecture PR approved by product owner, 2026-10-27)
 - Date: 2026-10-27
 - Related: NFR-PERF-01, FR-GIS-06
 

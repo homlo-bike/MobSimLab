@@ -1,6 +1,6 @@
 # ADR-0021: Versioned `.mslab` ZIP project format with JSON Schemas
 
-- Status: Proposed
+- Status: Accepted (architecture PR approved by product owner, 2026-10-27)
 - Date: 2026-10-27
 - Related: FR-PLAT-04, C-17
 

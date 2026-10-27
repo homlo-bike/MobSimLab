@@ -1,6 +1,6 @@
 # ADR-0005: Eclipse SUMO via libsumo is the road traffic engine
 
-- Status: Proposed
+- Status: Accepted (architecture PR approved by product owner, 2026-10-27)
 - Date: 2026-10-27
 - Related: FR-SIM-01, FR-SIM-04, C-04
 

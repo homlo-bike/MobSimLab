@@ -1,6 +1,6 @@
 # ADR-0023: Job queue in PostgreSQL with pg-boss
 
-- Status: Proposed
+- Status: Accepted (architecture PR approved by product owner, 2026-10-27)
 - Date: 2026-10-27
 - Related: ADR-0003
 

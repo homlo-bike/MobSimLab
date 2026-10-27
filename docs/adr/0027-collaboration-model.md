@@ -1,6 +1,6 @@
 # ADR-0027: Optimistic locking, presence and scenario branches instead of real-time co-editing
 
-- Status: Proposed
+- Status: Accepted (architecture PR approved by product owner, 2026-10-27)
 - Date: 2026-10-27
 - Related: FR-PLAT-02, FR-PLAT-06
 

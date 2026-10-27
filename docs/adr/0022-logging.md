@@ -1,6 +1,6 @@
 # ADR-0022: Logging with Pino (frontend) and Winston (backend), DB sink WARN and above
 
-- Status: Proposed
+- Status: Accepted (architecture PR approved by product owner, 2026-10-27)
 - Date: 2026-10-27
 - Related: FR-LOG-01..03, C-13
 

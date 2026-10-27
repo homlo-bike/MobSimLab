@@ -1,6 +1,6 @@
 # ADR-0026: Vehicle catalogue as sourced JSON files with per-field provenance
 
-- Status: Proposed
+- Status: Accepted (architecture PR approved by product owner, 2026-10-27)
 - Date: 2026-10-27
 - Related: FR-VEH-01..03, C-11
 

@@ -1,6 +1,6 @@
 # ADR-0014: Simulation trajectories in Arrow/Parquet files, aggregates in PostgreSQL
 
-- Status: Proposed
+- Status: Accepted (architecture PR approved by product owner, 2026-10-27)
 - Date: 2026-10-27
 - Related: NFR-PERF-01, 04 §3.5
 

@@ -1,6 +1,6 @@
 # ADR-0012: Append-only, hash-chained audit trail separate from logs
 
-- Status: Proposed
+- Status: Accepted (architecture PR approved by product owner, 2026-10-27)
 - Date: 2026-10-27
 - Related: FR-OBJ-02, FR-LOG-01, C-13
 

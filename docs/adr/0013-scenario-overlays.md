@@ -1,6 +1,6 @@
 # ADR-0013: Scenarios as copy-on-write overlays on the base network
 
-- Status: Proposed
+- Status: Accepted (architecture PR approved by product owner, 2026-10-27)
 - Date: 2026-10-27
 - Related: FR-PLAT-06, ADR-0027
 

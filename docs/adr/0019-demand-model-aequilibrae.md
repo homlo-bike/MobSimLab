@@ -1,6 +1,6 @@
 # ADR-0019: Four-step demand model built on AequilibraE
 
-- Status: Proposed (licence to be confirmed at adoption)
+- Status: Accepted (architecture PR approved by product owner, 2026-10-27)
 - Date: 2026-10-27
 - Related: FR-DEM-01..04
 

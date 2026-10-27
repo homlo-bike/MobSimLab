@@ -1,6 +1,6 @@
 # ADR-0020: Multi-year simulation through representative day types and calendar expansion
 
-- Status: Proposed
+- Status: Accepted (architecture PR approved by product owner, 2026-10-27)
 - Date: 2026-10-27
 - Related: FR-SIM-08, C-06
 

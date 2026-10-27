@@ -1,6 +1,6 @@
 # ADR-0011: UUIDv7 global identifiers and a shared metadata envelope
 
-- Status: Proposed
+- Status: Accepted (architecture PR approved by product owner, 2026-10-27)
 - Date: 2026-10-27
 - Related: FR-OBJ-01
 

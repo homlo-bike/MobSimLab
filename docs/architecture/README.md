@@ -1,6 +1,6 @@
 # MobSimLab architecture documentation
 
-Status: **Draft for review.** No application code may be written until this set is approved.
+Status: **Approved 2026-10-27.** Implementation follows [12-implementation-plan.md](12-implementation-plan.md).
 
 This folder holds the architecture and implementation plan for Mobility Simulator Lab (MobSimLab). Read the documents in order. Each one is written in plain language and links to the Architecture Decision Records (ADRs) that justify its choices.
 
@@ -29,7 +29,7 @@ Related folders:
 ## How to review
 
 1. Read [00-challenged-assumptions.md](00-challenged-assumptions.md). Its decisions log shows what the product owner has decided and what is still open.
-2. Skim the ADR index. Each ADR has a status of `Proposed`. Approving the pull request moves them to `Accepted`.
+2. Skim the ADR index. All ADRs are Accepted; changes need a new superseding ADR.
 3. Comment on anything that is wrong, missing, or over-scoped.
 
 Diagrams are Mermaid inside Markdown, so they render directly on GitHub.
