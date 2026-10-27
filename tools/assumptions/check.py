@@ -43,6 +43,9 @@ GROUP_ORDER = [
     "Depots and streets",
     "Energy and climate",
 ]
+COLLECTIONS = {"ocl", "trolley", "third-rail", "fourth-rail"}
+SUPPLY_FIELDS = {"id", "label", "collection", "current", "typical_modes", "attributes"}
+VOLTAGE_ORDER = ["u_min2_v", "u_min1_v", "nominal_v", "u_max1_v", "u_max2_v"]
 BASES = {"cited", "documented", "educated-guess"}
 CHECKS = {"read", "secondary", "unverified"}
 ACCESS = {"free", "paywalled", "on-request"}
@@ -90,7 +93,73 @@ def as_list(v):
     return v if isinstance(v, list) else [v]
 
 
-def validate(sources: dict[str, dict], params: list[dict]) -> list[str]:
+def load_supply_systems() -> list[dict]:
+    return yaml.safe_load((LIB / "supply-systems.yaml").read_text(encoding="utf-8"))
+
+
+def validate_entry(
+    where: str, v: dict, sources: dict[str, dict], used: set[str]
+) -> list[str]:
+    """Checks shared by parameter values and supply-system attributes."""
+    errors = []
+    if v.get("basis") not in BASES:
+        errors.append(f"{where}: basis must be one of {sorted(BASES)}")
+    if v.get("check") not in CHECKS:
+        errors.append(f"{where}: check must be one of {sorted(CHECKS)}")
+    if not v.get("rationale"):
+        errors.append(f"{where}: missing rationale")
+    if not v.get("sources"):
+        errors.append(f"{where}: no sources")
+    for sid in v.get("sources", []):
+        used.add(sid)
+        if sid not in sources:
+            errors.append(f"{where}: unknown source {sid}")
+    if "central" not in v:
+        errors.append(f"{where}: missing central")
+    return errors
+
+
+def validate_supply(
+    sources: dict[str, dict], systems: list[dict], used: set[str]
+) -> list[str]:
+    errors: list[str] = []
+    ids = [s.get("id") for s in systems]
+    for dup in sorted({i for i in ids if ids.count(i) > 1}):
+        errors.append(f"supply system {dup}: defined twice")
+    for sy in systems:
+        sid = sy.get("id", "<no id>")
+        if extra := set(sy) - SUPPLY_FIELDS:
+            errors.append(f"supply system {sid}: unknown fields {sorted(extra)}")
+        if sy.get("collection") not in COLLECTIONS:
+            errors.append(
+                f"supply system {sid}: collection must be one of {sorted(COLLECTIONS)}"
+            )
+        if sy.get("current") not in ("ac", "dc"):
+            errors.append(f"supply system {sid}: current must be ac or dc")
+        for m in sy.get("typical_modes", []):
+            if m not in MODES:
+                errors.append(f"supply system {sid}: unknown mode {m}")
+        attrs = sy.get("attributes") or {}
+        if "nominal_v" not in attrs:
+            errors.append(f"supply system {sid}: missing nominal_v")
+        for name, v in attrs.items():
+            where = f"supply system {sid}.{name}"
+            if extra := set(v) - VALUE_FIELDS - {"options"}:
+                errors.append(f"{where}: unknown fields {sorted(extra)}")
+            errors += validate_entry(where, v, sources, used)
+            if "options" in v and v.get("central") not in v["options"]:
+                errors.append(f"{where}: central not in options")
+        volts = [attrs[k]["central"] for k in VOLTAGE_ORDER if k in attrs]
+        if volts != sorted(volts):
+            errors.append(
+                f"supply system {sid}: needs Umin2 <= Umin1 <= Un <= Umax1 <= Umax2"
+            )
+    return errors
+
+
+def validate(
+    sources: dict[str, dict], params: list[dict], used_sources: set[str]
+) -> list[str]:
     errors: list[str] = []
     for sid, s in sources.items():
         if extra := set(s) - SOURCE_FIELDS:
@@ -107,7 +176,6 @@ def validate(sources: dict[str, dict], params: list[dict]) -> list[str]:
         if s.get("kind") not in (None, "primary", "secondary"):
             errors.append(f"source {sid}: kind must be primary or secondary")
 
-    used_sources: set[str] = set()
     seen_keys: set[str] = set()
     for p in params:
         key = p.get("key", f"<no key in {p['_file']}>")
@@ -146,20 +214,7 @@ def validate(sources: dict[str, dict], params: list[dict]) -> list[str]:
                     errors.append(f"{where}: unknown traction {t}")
             if extra := set(v) - VALUE_FIELDS:
                 errors.append(f"{where}: unknown fields {sorted(extra)}")
-            if v.get("basis") not in BASES:
-                errors.append(f"{where}: basis must be one of {sorted(BASES)}")
-            if v.get("check") not in CHECKS:
-                errors.append(f"{where}: check must be one of {sorted(CHECKS)}")
-            if not v.get("rationale"):
-                errors.append(f"{where}: missing rationale")
-            if not v.get("sources"):
-                errors.append(f"{where}: no sources")
-            for sid in v.get("sources", []):
-                used_sources.add(sid)
-                if sid not in sources:
-                    errors.append(f"{where}: unknown source {sid}")
-            if "central" not in v:
-                errors.append(f"{where}: missing central")
+            errors += validate_entry(where, v, sources, used_sources)
             if kind == "number":
                 nums = [
                     v.get(k) for k in ("low", "central", "high") if v.get(k) is not None
@@ -178,9 +233,6 @@ def validate(sources: dict[str, dict], params: list[dict]) -> list[str]:
                         errors.append(f"{where}: {k}={v[k]!r} not in options")
         if not has_global:
             errors.append(f"{key}: no global fallback entry (context mode '*')")
-
-    for sid in sorted(set(sources) - used_sources):
-        errors.append(f"source {sid}: defined but never used")
     return errors
 
 
@@ -209,7 +261,56 @@ def resolve(p: dict, mode: str) -> dict:
     return next(v for v in p["values"] if v["context"] == {"mode": "*"})
 
 
-def render(sources: dict[str, dict], params: list[dict]) -> str:
+def render_supply(systems: list[dict]) -> list[str]:
+    cols = [
+        ("nominal_v", "Un (V)"),
+        ("frequency_hz", "f (Hz)"),
+        ("u_min2_v", "Umin2"),
+        ("u_min1_v", "Umin1"),
+        ("u_max1_v", "Umax1"),
+        ("u_max2_v", "Umax2"),
+        ("contact_wire_height_m", "Wire height (m)"),
+        ("pantograph_head_mm", "Pantograph head (mm)"),
+        ("trolley_wire_spacing_mm", "Wire spacing (mm)"),
+        ("conductor_rail_contact", "Rail contact"),
+        ("standstill_current_a", "Standstill current (A)"),
+        ("min_power_factor", "Min. power factor"),
+    ]
+    lines = [
+        "## Energy supply systems",
+        "",
+        "Vehicles list the supply systems they support (`supplySystems`); a section can only be run by a vehicle",
+        "whose list contains the section's system, whose pantograph head or collector shoe fits the listed options,",
+        "and whose voltage range covers Umin1–Umax1. Central values; where options exist the central value is the",
+        "default and the others are accepted. Full basis, sources and rationale per attribute:",
+        "[`supply-systems.yaml`](supply-systems.yaml).",
+        "",
+        "| Id | System | Modes | " + " | ".join(c for _, c in cols) + " |",
+        "|---|---|---|" + "---|" * len(cols),
+    ]
+    for sy in systems:
+        attrs = sy["attributes"]
+        cells = []
+        for key, _ in cols:
+            v = attrs.get(key)
+            if v is None:
+                cells.append("–")
+            elif "options" in v:
+                cells.append(" / ".join(str(o) for o in v["options"]))
+            elif v.get("low") is not None:
+                cells.append(f"{v['central']} ({v['low']}–{v['high']})")
+            else:
+                cells.append(str(v["central"]))
+        lines.append(
+            f"| `{sy['id']}` | {sy['label']} | {', '.join(sy['typical_modes'])} | "
+            + " | ".join(cells)
+            + " |"
+        )
+    lines.append("")
+    return lines
+
+
+def render(sources: dict[str, dict], params: list[dict], systems: list[dict]) -> str:
     lines = [
         "# Default parameter values",
         "",
@@ -239,7 +340,11 @@ def render(sources: dict[str, dict], params: list[dict]) -> str:
     lines += ["## Contents", ""]
     for g in by_group:
         lines.append(f"- [{g}](#{g.lower().replace(' ', '-')})")
-    lines += ["- [Sources](#sources)", ""]
+    lines += [
+        "- [Energy supply systems](#energy-supply-systems)",
+        "- [Sources](#sources)",
+        "",
+    ]
 
     lines += [
         "## Mode table (central values)",
@@ -276,6 +381,7 @@ def render(sources: dict[str, dict], params: list[dict]) -> str:
                 )
             lines.append("")
 
+    lines += render_supply(systems)
     lines += [
         "## Sources",
         "",
@@ -299,18 +405,33 @@ def main() -> int:
 
     sources = load_sources()
     params = load_parameters()
-    errors = validate(sources, params)
+    systems = load_supply_systems()
+    used: set[str] = set()
+    errors = validate(sources, params, used) + validate_supply(sources, systems, used)
+    supply_ids = {"none"} | {s["id"] for s in systems}
+    for p in params:
+        if (
+            p["key"] == "mode.new_track_electrification"
+            and set(p.get("options", [])) != supply_ids
+        ):
+            errors.append(
+                "mode.new_track_electrification: options must be 'none' plus the supply-system ids"
+            )
+    for sid in sorted(set(sources) - used):
+        errors.append(f"source {sid}: defined but never used")
     if errors:
         print("\n".join(errors), file=sys.stderr)
         return 1
-    text = render(sources, params)
+    text = render(sources, params, systems)
     if args.render:
         OUT.write_text(text, encoding="utf-8")
     if args.check_rendered and OUT.read_text(encoding="utf-8") != text:
         print(f"{OUT.relative_to(ROOT)} is stale; run with --render", file=sys.stderr)
         return 1
     n_values = sum(len(p["values"]) for p in params)
-    print(f"OK: {len(params)} parameters, {n_values} values, {len(sources)} sources")
+    print(
+        f"OK: {len(params)} parameters, {n_values} values, {len(systems)} supply systems, {len(sources)} sources"
+    )
     return 0
 
 

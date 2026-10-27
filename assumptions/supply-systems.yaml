@@ -1,0 +1,708 @@
+# Energy supply systems (standards table, Project Preferences → Parameters → Energy supply).
+#
+# Vehicles list the ids they support in `supplySystems`; a section's supply system must be in that list.
+# Each attribute uses the value-entry shape of assumptions/parameters (central, optional low/high,
+# basis, sources, check, rationale; `options` for list-valued attributes). Schema: assumptions/README.md.
+
+- id: ocl-600v-dc
+  label: Overhead contact line, 600 V DC
+  collection: ocl
+  current: dc
+  typical_modes:
+    - tram
+    - light_rail
+  attributes:
+    nominal_v:
+      central: 600
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    u_min2_v:
+      central: 400
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    u_min1_v:
+      central: 400
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    u_max1_v:
+      central: 720
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    u_max2_v:
+      central: 800
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    contact_wire_height_m: &id001
+      low: 4.2
+      central: 5.5
+      high: 6.5
+      basis: educated-guess
+      sources:
+        - en-50119
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Street overhead line hangs above road vehicle height (about 4.7 m or more over roads in many national rules); lower in tunnels and under bridges. EN 50119 covers design but leaves heights to the project.
+
+- id: ocl-750v-dc
+  label: Overhead contact line, 750 V DC
+  collection: ocl
+  current: dc
+  typical_modes:
+    - tram
+    - light_rail
+    - metro
+  attributes:
+    nominal_v:
+      central: 750
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    u_min2_v:
+      central: 500
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    u_min1_v:
+      central: 500
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    u_max1_v:
+      central: 900
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    u_max2_v:
+      central: 1000
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    contact_wire_height_m: *id001
+
+- id: ocl-1500v-dc
+  label: Overhead contact line, 1500 V DC
+  collection: ocl
+  current: dc
+  typical_modes:
+    - light_rail
+    - metro
+    - commuter_rail
+    - regional_rail
+    - long_distance_rail
+  attributes:
+    nominal_v:
+      central: 1500
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    u_min2_v:
+      central: 1000
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    u_min1_v:
+      central: 1000
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    u_max1_v:
+      central: 1800
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    u_max2_v:
+      central: 1950
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    contact_wire_height_m: &id002
+      low: 5.0
+      central: 5.5
+      high: 5.75
+      basis: cited
+      sources:
+        - tsi-ene
+        - era-tsi-ene
+      check: secondary
+      rationale: "TSI ENE: nominal contact wire height between 5.00 m and 5.75 m on new mainline (5.0 m and 6.5 m are the pantograph verification points, seen in the ERA text); lower under structures on existing lines."
+    pantograph_head_mm:
+      central: 1600
+      basis: cited
+      sources:
+        - tsi-loc-pas
+        - en-50367
+      check: unverified
+      rationale: "TSI LOC&PAS / EN 50367 pantograph heads: 1600 mm (European) and 1950 mm (several national DC networks). Metro and light rail lines often use their own head profile; take it from the line."
+      options:
+        - 1600
+        - 1950
+    standstill_current_a:
+      central: 300
+      basis: cited
+      sources:
+        - tsi-ene
+        - tsi-loc-pas
+      check: unverified
+      rationale: TSI ENE and LOC&PAS set a maximum current per pantograph at standstill for DC systems so the contact wire does not overheat; 300 A for 1.5 kV DC. Value to be checked.
+
+- id: ocl-3000v-dc
+  label: Overhead contact line, 3000 V DC
+  collection: ocl
+  current: dc
+  typical_modes:
+    - commuter_rail
+    - regional_rail
+    - long_distance_rail
+    - high_speed_rail
+  attributes:
+    nominal_v:
+      central: 3000
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    u_min2_v:
+      central: 2000
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    u_min1_v:
+      central: 2000
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    u_max1_v:
+      central: 3600
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    u_max2_v:
+      central: 3900
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    contact_wire_height_m: *id002
+    pantograph_head_mm:
+      central: 1600
+      basis: cited
+      sources:
+        - tsi-loc-pas
+        - en-50367
+      check: unverified
+      rationale: "TSI LOC&PAS / EN 50367: 1600 mm European head; 1950 mm on some 3 kV networks."
+      options:
+        - 1600
+        - 1950
+    standstill_current_a:
+      central: 200
+      basis: cited
+      sources:
+        - tsi-ene
+        - tsi-loc-pas
+      check: unverified
+      rationale: "TSI ENE and LOC&PAS maximum current per pantograph at standstill for 3 kV DC: 200 A. Value to be checked."
+
+- id: ocl-15kv-16-7hz
+  label: Overhead contact line, 15 kV 16.7 Hz AC
+  collection: ocl
+  current: ac
+  typical_modes:
+    - commuter_rail
+    - regional_rail
+    - long_distance_rail
+    - high_speed_rail
+  attributes:
+    nominal_v:
+      central: 15000
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    u_min2_v:
+      central: 11000
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    u_min1_v:
+      central: 12000
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    u_max1_v:
+      central: 17250
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    u_max2_v:
+      central: 18000
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    frequency_hz:
+      central: 16.7
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: EN 50163 nominal frequency 16.7 Hz (formerly 16 2/3 Hz).
+    contact_wire_height_m: *id002
+    pantograph_head_mm:
+      central: 1950
+      basis: cited
+      sources:
+        - tsi-loc-pas
+        - en-50367
+      check: unverified
+      rationale: 1950 mm is usual in Germany and Austria, 1450 mm in Switzerland, 1600 mm is the European head (TSI LOC&PAS, EN 50367). Values to be checked.
+      options:
+        - 1950
+        - 1600
+        - 1450
+    min_power_factor:
+      low: 0.9
+      central: 0.95
+      high: 0.95
+      basis: cited
+      sources:
+        - en-50388-1
+      check: unverified
+      rationale: EN 50388-1 requires a minimum inductive power factor of about 0.95 for trains drawing significant power on AC systems. Value to be checked.
+
+- id: ocl-25kv-50hz
+  label: Overhead contact line, 25 kV 50 Hz AC
+  collection: ocl
+  current: ac
+  typical_modes:
+    - commuter_rail
+    - regional_rail
+    - long_distance_rail
+    - high_speed_rail
+  attributes:
+    nominal_v:
+      central: 25000
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    u_min2_v:
+      central: 17500
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    u_min1_v:
+      central: 19000
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    u_max1_v:
+      central: 27500
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    u_max2_v:
+      central: 29000
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    frequency_hz:
+      central: 50
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: EN 50163 nominal frequency 50 Hz.
+    contact_wire_height_m: *id002
+    pantograph_head_mm:
+      central: 1600
+      basis: cited
+      sources:
+        - tsi-loc-pas
+        - en-50367
+      check: unverified
+      rationale: "TSI LOC&PAS / EN 50367: 1600 mm European head; 1950 mm accepted on some lines."
+      options:
+        - 1600
+        - 1950
+    min_power_factor:
+      low: 0.9
+      central: 0.95
+      high: 0.95
+      basis: cited
+      sources:
+        - en-50388-1
+      check: unverified
+      rationale: EN 50388-1 minimum inductive power factor about 0.95. Value to be checked.
+
+- id: trolley-600v-dc
+  label: Trolleybus twin-wire overhead line, 600 V DC
+  collection: trolley
+  current: dc
+  typical_modes:
+    - trolleybus
+  attributes:
+    nominal_v:
+      central: 600
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    u_min2_v:
+      central: 400
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    u_min1_v:
+      central: 400
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    u_max1_v:
+      central: 720
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    u_max2_v:
+      central: 800
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    contact_wire_height_m: &id003
+      low: 4.5
+      central: 5.5
+      high: 6.0
+      basis: educated-guess
+      sources:
+        - en-50119
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Trolleybus wires above road traffic; poles reach about 6–7 m, so trolleybuses can deviate a few metres sideways.
+    trolley_wire_spacing_mm: &id004
+      low: 500
+      central: 600
+      high: 750
+      basis: educated-guess
+      sources:
+        - en-50119
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Positive and negative trolley wires are usually hung about 600 mm apart (some networks 500–750 mm). No harmonised value found.
+
+- id: trolley-750v-dc
+  label: Trolleybus twin-wire overhead line, 750 V DC
+  collection: trolley
+  current: dc
+  typical_modes:
+    - trolleybus
+  attributes:
+    nominal_v:
+      central: 750
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    u_min2_v:
+      central: 500
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    u_min1_v:
+      central: 500
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    u_max1_v:
+      central: 900
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    u_max2_v:
+      central: 1000
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    contact_wire_height_m: *id003
+    trolley_wire_spacing_mm: *id004
+
+- id: third-rail-750v-dc
+  label: Conductor rail (third rail), 750 V DC
+  collection: third-rail
+  current: dc
+  typical_modes:
+    - metro
+    - commuter_rail
+    - regional_rail
+  attributes:
+    nominal_v:
+      central: 750
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    u_min2_v:
+      central: 500
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    u_min1_v:
+      central: 500
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    u_max1_v:
+      central: 900
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    u_max2_v:
+      central: 1000
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    conductor_rail_contact:
+      central: top
+      basis: documented
+      sources:
+        - en-50122-1
+        - uk-dc-third-rail
+      check: secondary
+      rationale: "Contact position is set by the line: top contact on GB mainline and many older metros, bottom contact on for example Berlin S-Bahn and Hamburg; side contact on some metros. Collector shoes are not interchangeable between positions. EN 50122-1 covers conductor-rail safety but not the position."
+      options:
+        - top
+        - side
+        - bottom
+
+- id: third-rail-1500v-dc
+  label: Conductor rail (third rail), 1500 V DC
+  collection: third-rail
+  current: dc
+  typical_modes:
+    - metro
+    - commuter_rail
+  attributes:
+    nominal_v:
+      central: 1500
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    u_min2_v:
+      central: 1000
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    u_min1_v:
+      central: 1000
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    u_max1_v:
+      central: 1800
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    u_max2_v:
+      central: 1950
+      basis: cited
+      sources:
+        - en-50163
+        - iec-60850
+      check: unverified
+      rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
+    conductor_rail_contact:
+      central: bottom
+      basis: documented
+      sources:
+        - en-50122-1
+        - uk-dc-third-rail
+      check: secondary
+      rationale: Higher-voltage conductor rails are usually bottom contact with full shrouding (for example some Chinese metro lines). Take the position from the line.
+      options:
+        - top
+        - side
+        - bottom
+
+- id: fourth-rail-630v-dc
+  label: Fourth-rail system, 630 V DC (+420 V / −210 V)
+  collection: fourth-rail
+  current: dc
+  typical_modes:
+    - metro
+  attributes:
+    nominal_v:
+      central: 630
+      basis: documented
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: "London Underground: positive outside rail about +420 V and centre negative rail about −210 V relative to earth, 630 V between them. Not an EN 50163 nominal voltage."
+    u_min1_v:
+      central: 420
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Not in EN 50163; scaled from the 750 V DC ratio (2/3 of nominal).
+    u_max1_v:
+      central: 760
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Not in EN 50163; scaled from the 750 V DC ratio (1.2 × nominal).
+    conductor_rail_contact:
+      central: top
+      basis: documented
+      sources:
+        - en-50122-1
+        - uk-dc-third-rail
+      check: secondary
+      rationale: Both conductor rails are top contact on the London Underground.
+      options:
+        - top

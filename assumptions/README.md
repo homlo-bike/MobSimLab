@@ -8,6 +8,8 @@ educated guess with the reasoning written down.
 
 - [`DEFAULTS.md`](DEFAULTS.md): all values as readable tables, with a per-mode summary. Generated; do not edit.
 - [`sources.yaml`](sources.yaml): the source register (shared with the vehicle catalogue).
+- [`supply-systems.yaml`](supply-systems.yaml): the energy supply systems (overhead line, trolleybus wires, third
+  and fourth rail) that vehicles declare support for.
 - [`parameters/*.yaml`](parameters/): the parameters, one file per Project Preferences group.
 - [`../tools/assumptions/check.py`](../tools/assumptions/check.py): validates the library and renders `DEFAULTS.md`.
 
@@ -67,6 +69,28 @@ AASHTO) and with the German and US legal portals unreachable from the build envi
   kind: primary                     # optional: primary | secondary
   note: "…"                         # optional
 ```
+
+## Energy supply systems
+
+`supply-systems.yaml` defines one entry per supply system, with ids of the form `<collection>-<voltage>`:
+`ocl-600v-dc`, `ocl-750v-dc`, `ocl-1500v-dc`, `ocl-3000v-dc`, `ocl-15kv-16-7hz`, `ocl-25kv-50hz`,
+`trolley-600v-dc`, `trolley-750v-dc`, `third-rail-750v-dc`, `third-rail-1500v-dc`, `fourth-rail-630v-dc`.
+Each attribute (voltages, frequency, contact wire height, pantograph head widths, trolley wire spacing,
+conductor-rail contact position, standstill current, power factor) uses the same value-entry shape as a parameter,
+so it carries basis, sources, check and rationale and is editable in Project Preferences.
+
+The voltage limits follow EN 50163 / IEC 60850: Umin1–Umax1 is the permanent range, Umin2 and Umax2 the
+short-time limits. `mode.new_track_electrification` takes its options from these ids (the checker enforces it).
+
+Vehicle compatibility (08 §5, Electrification row), checked per section:
+
+| Vehicle field | Rule | Severity |
+|---------------|------|----------|
+| `supplySystems` (list of ids) | contains the section's supply system id, or the vehicle has enough onboard energy for the section | error |
+| voltage range (from the vehicle file, or the system's Umin1–Umax1 if absent) | covers the system's Umin1–Umax1 | error |
+| `pantographHeadMm` | is one of the system's `pantograph_head_mm` options | error if set, warning if missing |
+| `conductorRailContact` (list) | includes the system's contact position for that line | error if set, warning if missing |
+| pantograph working range | covers the line's contact wire height | warning |
 
 ## Adding or changing a value
 

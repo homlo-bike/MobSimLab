@@ -21,6 +21,7 @@ Schema and contribution rules: [README.md](README.md).
 - [Accessibility](#accessibility)
 - [Depots and streets](#depots-and-streets)
 - [Energy and climate](#energy-and-climate)
+- [Energy supply systems](#energy-supply-systems)
 - [Sources](#sources)
 
 ## Mode table (central values)
@@ -45,7 +46,7 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 | Service braking deceleration (m/s²) | 1.25 | 1.25 | 1.25 | 1.0 | 1.3 | 1.1 | 1.1 | 0.9 | 0.8 | 0.7 | 0.6 |
 | Emergency braking deceleration (mean) (m/s²) | 5.0 | 5.0 | 5.0 | 5.0 | 2.73 | 2.73 | 1.2 | 1.2 | 1.2 | 1.2 | 1.2 |
 | Track gauge (new track and drawing of the rails) (mm) | 1435 | 1435 | 1435 | 1435 | 1435 | 1435 | 1435 | 1435 | 1435 | 1435 | 1435 |
-| Electrification of new track or wire (system) | none | none | 750 V DC | none | 750 V DC | 750 V DC | 750 V DC | 25 kV 50 Hz | 25 kV 50 Hz | 25 kV 50 Hz | 25 kV 50 Hz |
+| Electrification of new track or wire (system) | none | none | trolley-750v-dc | none | ocl-750v-dc | ocl-750v-dc | third-rail-750v-dc | ocl-25kv-50hz | ocl-25kv-50hz | ocl-25kv-50hz | ocl-25kv-50hz |
 | Crossing priority (lower rank goes first at an at-grade crossing) (rank) | 4 | 3 | 4 | 5 | 3 | 2 | 1 | 1 | 1 | 1 | 1 |
 
 ## Modes
@@ -300,12 +301,13 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 
 | Context | Low | Central | High | Basis | Check | Sources | Rationale |
 |---|---|---|---|---|---|---|---|
-| all | – | 25 kV 50 Hz | – | cited | unverified | [tsi-ene](#src-tsi-ene), [en-50163](#src-en-50163) | TSI ENE: 25 kV 50 Hz preferred for new mainline electrification; existing national systems may be kept. |
+| all | – | ocl-25kv-50hz | – | cited | unverified | [tsi-ene](#src-tsi-ene), [en-50163](#src-en-50163) | TSI ENE: 25 kV 50 Hz preferred for new mainline electrification; existing national systems may be kept. |
 | bus, brt, intercity_bus | – | none | – | documented | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Road vehicles without wires. |
-| trolleybus, tram, light_rail | 600 V DC | 750 V DC | 750 V DC | cited | unverified | [en-50163](#src-en-50163) | EN 50163 nominal DC systems; 750 V DC for new tram and trolleybus systems, 600 V DC legacy. |
-| metro | 750 V DC | 750 V DC | 1500 V DC | cited | unverified | [en-50163](#src-en-50163) | 750 V third rail is most common; 1500 V DC overhead on some systems. |
-| commuter_rail, regional_rail, long_distance_rail | 15 kV 16.7 Hz | 25 kV 50 Hz | 25 kV 50 Hz | cited | unverified | [tsi-ene](#src-tsi-ene), [en-50163](#src-en-50163) | Use the national system of the surrounding network (DE/AT/CH/SE/NO 15 kV 16.7 Hz; NL/FR-south 1500 V DC; BE/IT/PL/ES-conv. 3000 V DC). |
-| high_speed_rail | – | 25 kV 50 Hz | – | cited | unverified | [tsi-ene](#src-tsi-ene) | TSI ENE for new high-speed lines. |
+| tram, light_rail | ocl-600v-dc | ocl-750v-dc | ocl-750v-dc | cited | unverified | [en-50163](#src-en-50163) | EN 50163 nominal DC systems; 750 V DC overhead line for new tram systems, 600 V DC on older networks. |
+| trolleybus | trolley-600v-dc | trolley-750v-dc | trolley-750v-dc | cited | unverified | [en-50163](#src-en-50163), [en-50119](#src-en-50119) | Twin-wire trolleybus line; 750 V DC for new systems, 600 V DC on older networks. |
+| metro | ocl-1500v-dc | third-rail-750v-dc | third-rail-1500v-dc | cited | unverified | [en-50163](#src-en-50163) | 750 V DC third rail is most common; 1500 V DC overhead line or shrouded 1500 V DC third rail on some systems. |
+| commuter_rail, regional_rail, long_distance_rail | ocl-15kv-16-7hz | ocl-25kv-50hz | ocl-25kv-50hz | cited | unverified | [tsi-ene](#src-tsi-ene), [en-50163](#src-en-50163) | Use the national system of the surrounding network (DE/AT/CH/SE/NO 15 kV 16.7 Hz; NL/FR-south 1500 V DC; BE/IT/PL/ES-conv. 3000 V DC). |
+| high_speed_rail | – | ocl-25kv-50hz | – | cited | unverified | [tsi-ene](#src-tsi-ene) | TSI ENE for new high-speed lines. |
 
 ### Crossing priority (lower rank goes first at an at-grade crossing)
 
@@ -809,6 +811,28 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 |---|---|---|---|---|---|---|---|
 | all | 32 | 38 | 45 | cited | secondary | [orr-ole-heat](#src-orr-ole-heat) | ORR: UK legacy overhead line equipment is designed for −18 °C to +38 °C; modern auto-tensioned systems and hot-climate designs go higher. |
 
+## Energy supply systems
+
+Vehicles list the supply systems they support (`supplySystems`); a section can only be run by a vehicle
+whose list contains the section's system, whose pantograph head or collector shoe fits the listed options,
+and whose voltage range covers Umin1–Umax1. Central values; where options exist the central value is the
+default and the others are accepted. Full basis, sources and rationale per attribute:
+[`supply-systems.yaml`](supply-systems.yaml).
+
+| Id | System | Modes | Un (V) | f (Hz) | Umin2 | Umin1 | Umax1 | Umax2 | Wire height (m) | Pantograph head (mm) | Wire spacing (mm) | Rail contact | Standstill current (A) | Min. power factor |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `ocl-600v-dc` | Overhead contact line, 600 V DC | tram, light_rail | 600 | – | 400 | 400 | 720 | 800 | 5.5 (4.2–6.5) | – | – | – | – | – |
+| `ocl-750v-dc` | Overhead contact line, 750 V DC | tram, light_rail, metro | 750 | – | 500 | 500 | 900 | 1000 | 5.5 (4.2–6.5) | – | – | – | – | – |
+| `ocl-1500v-dc` | Overhead contact line, 1500 V DC | light_rail, metro, commuter_rail, regional_rail, long_distance_rail | 1500 | – | 1000 | 1000 | 1800 | 1950 | 5.5 (5.0–5.75) | 1600 / 1950 | – | – | 300 | – |
+| `ocl-3000v-dc` | Overhead contact line, 3000 V DC | commuter_rail, regional_rail, long_distance_rail, high_speed_rail | 3000 | – | 2000 | 2000 | 3600 | 3900 | 5.5 (5.0–5.75) | 1600 / 1950 | – | – | 200 | – |
+| `ocl-15kv-16-7hz` | Overhead contact line, 15 kV 16.7 Hz AC | commuter_rail, regional_rail, long_distance_rail, high_speed_rail | 15000 | 16.7 | 11000 | 12000 | 17250 | 18000 | 5.5 (5.0–5.75) | 1950 / 1600 / 1450 | – | – | – | 0.95 (0.9–0.95) |
+| `ocl-25kv-50hz` | Overhead contact line, 25 kV 50 Hz AC | commuter_rail, regional_rail, long_distance_rail, high_speed_rail | 25000 | 50 | 17500 | 19000 | 27500 | 29000 | 5.5 (5.0–5.75) | 1600 / 1950 | – | – | – | 0.95 (0.9–0.95) |
+| `trolley-600v-dc` | Trolleybus twin-wire overhead line, 600 V DC | trolleybus | 600 | – | 400 | 400 | 720 | 800 | 5.5 (4.5–6.0) | – | 600 (500–750) | – | – | – |
+| `trolley-750v-dc` | Trolleybus twin-wire overhead line, 750 V DC | trolleybus | 750 | – | 500 | 500 | 900 | 1000 | 5.5 (4.5–6.0) | – | 600 (500–750) | – | – | – |
+| `third-rail-750v-dc` | Conductor rail (third rail), 750 V DC | metro, commuter_rail, regional_rail | 750 | – | 500 | 500 | 900 | 1000 | – | – | – | top / side / bottom | – | – |
+| `third-rail-1500v-dc` | Conductor rail (third rail), 1500 V DC | metro, commuter_rail | 1500 | – | 1000 | 1000 | 1800 | 1950 | – | – | – | top / side / bottom | – | – |
+| `fourth-rail-630v-dc` | Fourth-rail system, 630 V DC (+420 V / −210 V) | metro | 630 | – | – | 420 | 760 | – | – | – | – | top | – | – |
+
 ## Sources
 
 | Id | Source | Access | Licence of the source | Retrieved | Checked via |
@@ -856,3 +880,11 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 | <a id="src-vienna-convention-1968"></a>`vienna-convention-1968` | [Convention on Road Traffic, Vienna 1968 (Art. 10 driving side; Art. 19 level crossings)](https://unece.org/DAM/trans/conventn/crt1968e.pdf) | free | United Nations treaty text; free to reproduce | 2026-10-27 | none |
 | <a id="src-sae-j2601-2"></a>`sae-j2601-2` | [SAE J2601-2, Fueling Protocol for Gaseous Hydrogen Powered Heavy Duty Vehicles](https://www.sae.org/standards/content/j2601/2_202310/) | paywalled | © SAE; numbers cited as facts | 2026-10-27 | none |
 | <a id="src-mobsimlab-derivation"></a>`mobsimlab-derivation` | [MobSimLab maintainers' derivation, written down in the entry's `rationale`](https://github.com/homlo-bike/MobSimLab/tree/main/assumptions) | free | CC BY 4.0 | 2026-10-27 | direct |
+| <a id="src-iec-60850"></a>`iec-60850` | [IEC 60850:2014 Railway applications — Supply voltages of traction systems (international counterpart of EN 50163; Annex B lists implemented voltages worldwide)](https://webstore.iec.ch/en/publication/3594) | paywalled | © IEC; numbers cited as facts | 2026-10-27 | search-snippet |
+| <a id="src-en-50388-1"></a>`en-50388-1` | [EN 50388-1:2022 Railway applications — Fixed installations and rolling stock — Technical criteria for the coordination between electric traction power supply systems and rolling stock to achieve interoperability](https://standards.cencenelec.eu/) | paywalled | © CENELEC; numbers cited as facts | 2026-10-27 | none |
+| <a id="src-en-50367"></a>`en-50367` | [EN 50367:2020+A1:2022 Railway applications — Fixed installations and rolling stock — Criteria to achieve technical compatibility between pantographs and overhead contact line](https://iteh.eu/catalog/standards/sist/41233ef9-e0c9-4990-ac56-1bad9ae76bd6/sist-en-50367-2020) | paywalled | © CENELEC; numbers cited as facts | 2026-10-27 | search-snippet |
+| <a id="src-en-50119"></a>`en-50119` | [EN 50119:2020 Railway applications — Fixed installations — Electric traction overhead contact lines (covers heavy and light railways and trolleybuses; not ground-level conductor rails)](https://evs.ee/en/evs-en-50119-2020) | paywalled | © CENELEC; numbers cited as facts | 2026-10-27 | search-snippet |
+| <a id="src-en-50122-1"></a>`en-50122-1` | [EN 50122-1 Railway applications — Fixed installations — Electrical safety, earthing and the return circuit — Part 1 Protective provisions against electric shock (covers contact lines and conductor rails)](https://standards.cencenelec.eu/) | paywalled | © CENELEC; numbers cited as facts | 2026-10-27 | search-snippet |
+| <a id="src-tsi-loc-pas"></a>`tsi-loc-pas` | [Commission Regulation (EU) No 1302/2014, TSI for the rolling stock — locomotives and passenger rolling stock subsystem (TSI LOC&PAS), pantograph head geometry and current at standstill](https://eur-lex.europa.eu/eli/reg/2014/1302/oj) | free | © European Union; reuse authorised under Commission Decision 2011/833/EU | 2026-10-27 | none |
+| <a id="src-era-tsi-ene"></a>`era-tsi-ene` | [ERA, TSI Energy (consolidated text and application guide) — contact wire height verification points 5.0 m and 6.5 m above top of rail](https://www.era.europa.eu/system/files/2022-11/TSI%20Energy.pdf) | free | © European Union Agency for Railways; reuse authorised with attribution | 2026-10-27 | search-snippet |
+| <a id="src-uk-dc-third-rail"></a>`uk-dc-third-rail` | [Study guide on UK DC electrification (third-rail top-contact system at nominal 750 V DC predominates on GB mainline DC lines)](https://open-exam-prep.com/study-guides/uk-pts-track-safety/dc-conductor-rail-safety/dc-infrastructure-and-voltages) | free | © publisher; numbers cited as facts | 2026-10-27 | search-snippet |

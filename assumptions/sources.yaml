@@ -400,3 +400,77 @@
   access: free
   retrieved: 2026-10-27
   checked_via: direct
+
+- id: iec-60850
+  title: IEC 60850:2014 Railway applications — Supply voltages of traction systems (international counterpart of EN 50163; Annex B lists implemented voltages worldwide)
+  publisher: IEC
+  url: https://webstore.iec.ch/en/publication/3594
+  licence: © IEC; numbers cited as facts
+  access: paywalled
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+  note: Scope and Annex B seen in the publisher preview; the voltage table itself was not read.
+
+- id: en-50388-1
+  title: EN 50388-1:2022 Railway applications — Fixed installations and rolling stock — Technical criteria for the coordination between electric traction power supply systems and rolling stock to achieve interoperability
+  publisher: CENELEC
+  url: https://standards.cencenelec.eu/
+  licence: © CENELEC; numbers cited as facts
+  access: paywalled
+  retrieved: 2026-10-27
+  checked_via: none
+
+- id: en-50367
+  title: EN 50367:2020+A1:2022 Railway applications — Fixed installations and rolling stock — Criteria to achieve technical compatibility between pantographs and overhead contact line
+  publisher: CENELEC
+  url: https://iteh.eu/catalog/standards/sist/41233ef9-e0c9-4990-ac56-1bad9ae76bd6/sist-en-50367-2020
+  licence: © CENELEC; numbers cited as facts
+  access: paywalled
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+
+- id: en-50119
+  title: EN 50119:2020 Railway applications — Fixed installations — Electric traction overhead contact lines (covers heavy and light railways and trolleybuses; not ground-level conductor rails)
+  publisher: CENELEC
+  url: https://evs.ee/en/evs-en-50119-2020
+  licence: © CENELEC; numbers cited as facts
+  access: paywalled
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+
+- id: en-50122-1
+  title: EN 50122-1 Railway applications — Fixed installations — Electrical safety, earthing and the return circuit — Part 1 Protective provisions against electric shock (covers contact lines and conductor rails)
+  publisher: CENELEC
+  url: https://standards.cencenelec.eu/
+  licence: © CENELEC; numbers cited as facts
+  access: paywalled
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+
+- id: tsi-loc-pas
+  title: Commission Regulation (EU) No 1302/2014, TSI for the rolling stock — locomotives and passenger rolling stock subsystem (TSI LOC&PAS), pantograph head geometry and current at standstill
+  publisher: European Union
+  url: https://eur-lex.europa.eu/eli/reg/2014/1302/oj
+  licence: © European Union; reuse authorised under Commission Decision 2011/833/EU
+  access: free
+  retrieved: 2026-10-27
+  checked_via: none
+
+- id: era-tsi-ene
+  title: ERA, TSI Energy (consolidated text and application guide) — contact wire height verification points 5.0 m and 6.5 m above top of rail
+  publisher: European Union Agency for Railways
+  url: https://www.era.europa.eu/system/files/2022-11/TSI%20Energy.pdf
+  licence: © European Union Agency for Railways; reuse authorised with attribution
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+
+- id: uk-dc-third-rail
+  title: Study guide on UK DC electrification (third-rail top-contact system at nominal 750 V DC predominates on GB mainline DC lines)
+  publisher: open-exam-prep.com (secondary source)
+  url: https://open-exam-prep.com/study-guides/uk-pts-track-safety/dc-conductor-rail-safety/dc-infrastructure-and-voltages
+  licence: © publisher; numbers cited as facts
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+  kind: secondary

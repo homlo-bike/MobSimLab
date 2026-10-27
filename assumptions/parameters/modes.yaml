@@ -1285,12 +1285,26 @@
   group: Modes
   unit: system
   kind: enum
-  options: [none, 600 V DC, 750 V DC, 1500 V DC, 3000 V DC, 15 kV 16.7 Hz, 25 kV 50 Hz]
+  options:
+    [
+      none,
+      ocl-600v-dc,
+      ocl-750v-dc,
+      ocl-1500v-dc,
+      ocl-3000v-dc,
+      ocl-15kv-16-7hz,
+      ocl-25kv-50hz,
+      trolley-600v-dc,
+      trolley-750v-dc,
+      third-rail-750v-dc,
+      third-rail-1500v-dc,
+      fourth-rail-630v-dc,
+    ]
   used_by: [new track default, energy model, vehicle compatibility]
   values:
     - context:
         mode: "*"
-      central: 25 kV 50 Hz
+      central: ocl-25kv-50hz
       basis: cited
       sources: [tsi-ene, en-50163]
       check: unverified
@@ -1303,35 +1317,44 @@
       check: unverified
       rationale: Road vehicles without wires.
     - context:
-        mode: [trolleybus, tram, light_rail]
-      low: 600 V DC
-      central: 750 V DC
-      high: 750 V DC
+        mode: [tram, light_rail]
+      low: ocl-600v-dc
+      central: ocl-750v-dc
+      high: ocl-750v-dc
       basis: cited
       sources: [en-50163]
       check: unverified
-      rationale: EN 50163 nominal DC systems; 750 V DC for new tram and trolleybus systems, 600 V DC legacy.
+      rationale: EN 50163 nominal DC systems; 750 V DC overhead line for new tram systems, 600 V DC on older networks.
+    - context:
+        mode: trolleybus
+      low: trolley-600v-dc
+      central: trolley-750v-dc
+      high: trolley-750v-dc
+      basis: cited
+      sources: [en-50163, en-50119]
+      check: unverified
+      rationale: Twin-wire trolleybus line; 750 V DC for new systems, 600 V DC on older networks.
     - context:
         mode: metro
-      low: 750 V DC
-      central: 750 V DC
-      high: 1500 V DC
+      low: ocl-1500v-dc
+      central: third-rail-750v-dc
+      high: third-rail-1500v-dc
       basis: cited
       sources: [en-50163]
       check: unverified
-      rationale: 750 V third rail is most common; 1500 V DC overhead on some systems.
+      rationale: 750 V DC third rail is most common; 1500 V DC overhead line or shrouded 1500 V DC third rail on some systems.
     - context:
         mode: [commuter_rail, regional_rail, long_distance_rail]
-      low: 15 kV 16.7 Hz
-      central: 25 kV 50 Hz
-      high: 25 kV 50 Hz
+      low: ocl-15kv-16-7hz
+      central: ocl-25kv-50hz
+      high: ocl-25kv-50hz
       basis: cited
       sources: [tsi-ene, en-50163]
       check: unverified
       rationale: Use the national system of the surrounding network (DE/AT/CH/SE/NO 15 kV 16.7 Hz; NL/FR-south 1500 V DC; BE/IT/PL/ES-conv. 3000 V DC).
     - context:
         mode: high_speed_rail
-      central: 25 kV 50 Hz
+      central: ocl-25kv-50hz
       basis: cited
       sources: [tsi-ene]
       check: unverified
