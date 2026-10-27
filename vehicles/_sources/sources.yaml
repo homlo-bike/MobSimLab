@@ -1014,6 +1014,16 @@
   kind: primary
   date: '2022'
   note: Imported with the 2026-10-26 catalogue; not re-read in this repository.
+- id: van-hool-nv-exquicity24-trolley
+  title: ExquiCity24 Trolley
+  publisher: Van Hool NV
+  url: https://www.vanhool.com/en/vehicles/public-transport/trolley/exquicity24-trolley
+  licence: Publisher's terms; facts cited only
+  access: free
+  retrieved: '2026-10-27'
+  checked_via: search-snippet
+  kind: primary
+  note: Seat count read from a search-result extract of the page, 2026-10-27.
 - id: wikipedia-17000-tokyo-metro-17000-series
   title: 東京メトロ17000系電車 (Tokyo Metro 17000 series)
   publisher: Wikipedia (Japanese)

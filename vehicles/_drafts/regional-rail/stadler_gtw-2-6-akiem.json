@@ -30,7 +30,7 @@
     "sources": [
       "mobsimlab-project-ow-estimates-supplied-by-the-project-owner"
     ],
-    "rationale": "Owner's figure 2.89 m; Wikipedia gives 3.0-3.1 m for standard-gauge GTWs, so the range covers both.",
+    "rationale": "2.89 m, the project owner's figure (accepted 2026-10-27); Wikipedia gives 3.0-3.1 m for standard-gauge GTWs, so the range covers both.",
     "low": 2.85,
     "central": 2.89,
     "high": 3.1,

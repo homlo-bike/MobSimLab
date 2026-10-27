@@ -17,19 +17,19 @@ siemens-velaro-e-renfe-s103:
     note: Seat count read from a search-result extract of the page, 2026-10-27.
 van-hool-exquicity-24-hybrid:
 - field: seats
-  value: 61
+  value: 51
   unit: count
-  basis: cited
+  basis: documented
+  rationale: 51 seats as listed for the ExquiCity24 (trolleybus version, same 24 m body); the project owner chose
+    it over the 61 on French Wikipedia, 2026-10-27.
   source:
-    url: https://fr.wikipedia.org/wiki/Van_Hool_ExquiCity
-    title: Van Hool ExquiCity
-    publisher: Wikipédia (fr)
+    url: https://www.vanhool.com/en/vehicles/public-transport/trolley/exquicity24-trolley
+    title: ExquiCity24 Trolley
+    publisher: Van Hool NV
     accessed: '2026-10-27'
-    kind: secondary
-    checked_via: none
-    note: Link supplied by the project owner, 2026-10-27; not re-read in this repository.
-  rationale: 61 seats for the Mettis ExquiCity 24 per the cited page. Van Hool's ExquiCity24 Trolley page lists
-    51 seats for the trolleybus version.
+    kind: primary
+    checked_via: search-snippet
+    note: Seat count read from a search-result extract of the page, 2026-10-27.
 higer-azure-12:
 - field: seats
   value: 42
@@ -251,7 +251,8 @@ stadler-gtw-2-6-akiem:
   basis: educated-guess
   low: 2.85
   high: 3.1
-  rationale: Owner's figure 2.89 m; Wikipedia gives 3.0-3.1 m for standard-gauge GTWs, so the range covers both.
+  rationale: 2.89 m, the project owner's figure (accepted 2026-10-27); Wikipedia gives 3.0-3.1 m for standard-gauge
+    GTWs, so the range covers both.
   source: *id001
 alstom-icng-8-car:
 - field: width

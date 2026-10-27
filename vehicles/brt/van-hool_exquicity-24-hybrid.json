@@ -111,39 +111,39 @@
     ]
   },
   "seats": {
-    "value": 61,
+    "value": 51,
     "unit": "count",
     "assumed": false,
-    "basis": "cited",
+    "basis": "documented",
     "sources": [
-      "wp-fr-van-hool-exquicity"
+      "van-hool-nv-exquicity24-trolley"
     ],
-    "rationale": "61 seats for the Mettis ExquiCity 24 per the cited page. Van Hool's ExquiCity24 Trolley page lists 51 seats for the trolleybus version."
+    "rationale": "51 seats as listed for the ExquiCity24 (trolleybus version, same 24 m body); the project owner chose it over the 61 on French Wikipedia, 2026-10-27."
   },
   "standingQuoted": {
-    "value": 89,
+    "value": 99,
     "unit": "count",
     "assumed": false,
     "basis": "documented",
     "sources": [
       "urban-transport-maga-metz-a-third-line-for-the-mettis-brt-sys",
-      "wp-fr-van-hool-exquicity"
+      "van-hool-nv-exquicity24-trolley"
     ],
-    "rationale": "Total 150 minus 61 seats."
+    "rationale": "Total 150 minus 51 seats."
   },
   "standingArea": {
-    "value": 22.2,
+    "value": 24.8,
     "unit": "m2",
     "assumed": true,
     "basis": "educated-guess",
     "sources": [
       "urban-transport-maga-metz-a-third-line-for-the-mettis-brt-sys",
-      "wp-fr-van-hool-exquicity"
+      "van-hool-nv-exquicity24-trolley"
     ],
-    "rationale": "89 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
-    "low": 14.8,
-    "central": 22.2,
-    "high": 29.7,
+    "rationale": "99 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 16.5,
+    "central": 24.8,
+    "high": 33.0,
     "distribution": "triangular"
   },
   "totalCapacityQuoted": {
