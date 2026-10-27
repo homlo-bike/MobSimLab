@@ -1,0 +1,2081 @@
+# Switches and crossings catalogue (ADR-0030 point 5; Project Preferences → Parameters → Switches and crossings).
+#
+# The railway design tool connects tracks only by placing one of these elements. Each attribute uses the
+# value-entry shape of assumptions/parameters (central, optional low/high, basis, sources, check, rationale).
+# Geometry model and field meanings: assumptions/README.md#switches-and-crossings.
+
+- id: db-ew-190-1-9
+  label: DB EW 49/54/60-190-1:9, straight crossing
+  element: turnout
+  standard: db
+  geometry: straight-crossing
+  crossing: rigid
+  typical_modes:
+    - light_rail
+    - metro
+    - commuter_rail
+    - regional_rail
+    - long_distance_rail
+  attributes:
+    crossing_ratio_n:
+      central: 9
+      basis: cited
+      sources:
+        - dewiki-weiche
+        - db-ril-800-0120
+      check: secondary
+      rationale: Designation 1:9; listed as the standard turnout with a straight crossing.
+    diverging_radius_m:
+      central: 190
+      basis: cited
+      sources:
+        - dewiki-weiche
+        - db-ril-800-0120
+      check: secondary
+      rationale: Designation radius 190 m.
+    length_a_m:
+      low: 11.5
+      central: 12.222
+      high: 13.0
+      basis: cited
+      sources:
+        - db-ril-800-0120
+      check: unverified
+      rationale: DB standard drawing value from the compiler's recollection of the DB drawing; not read. With a straight crossing the curve ends before the crossing, so a > R·tan(α/2) = 10.523 m and a < b.
+    length_b_m:
+      low: 14.0
+      central: 14.916
+      high: 16.0
+      basis: cited
+      sources:
+        - db-ril-800-0120
+      check: unverified
+      rationale: DB standard drawing value from the compiler's recollection of the DB drawing; not read. Includes the straight crossing leg.
+    total_length_m:
+      low: 26.0
+      central: 27.138
+      high: 29.0
+      basis: cited
+      sources:
+        - db-ril-800-0120
+      check: unverified
+      rationale: a + b.
+    diverging_speed_kmh:
+      central: 40
+      basis: cited
+      sources:
+        - dewiki-weiche
+        - db-ril-800-0120
+        - voestalpine-tram-train-hu
+      check: secondary
+      rationale: Matches v = sqrt(I·R/11.8) with I = 100 mm cant deficiency in the uncanted diverging track (switch.cant_deficiency_mm). A Hungarian tram-train line uses R 200 m and 300 m turnouts at 40 km/h.
+    through_speed_kmh:
+      low: 120
+      central: 160
+      high: 200
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Rigid-crossing standard turnouts are used on lines up to about 160 km/h; the line, not the turnout, usually limits it.
+- id: db-ew-300-1-9
+  label: DB EW 54/60-300-1:9, curved crossing
+  element: turnout
+  standard: db
+  geometry: curved-crossing
+  crossing: rigid
+  typical_modes:
+    - metro
+    - commuter_rail
+    - regional_rail
+    - long_distance_rail
+  attributes:
+    crossing_ratio_n:
+      central: 9
+      basis: cited
+      sources:
+        - dewiki-weiche
+        - db-ril-800-0120
+      check: secondary
+      rationale: Designation 1:9.
+    diverging_radius_m:
+      central: 300
+      basis: cited
+      sources:
+        - dewiki-weiche
+        - db-ril-800-0120
+      check: secondary
+      rationale: Designation radius 300 m.
+    length_a_m:
+      central: 16.616
+      basis: documented
+      sources:
+        - dewiki-weiche
+        - db-ril-800-0120
+        - zusi-weichen
+      check: unverified
+      rationale: "Curved crossing: the diverging curve runs to the end, so a = b = R·tan(α/2) with tan α = 1/n (length = twice the tangent length). R = 300 m, 1:9 gives 16.616 m."
+    length_b_m:
+      central: 16.616
+      basis: documented
+      sources:
+        - dewiki-weiche
+        - db-ril-800-0120
+        - zusi-weichen
+      check: unverified
+      rationale: "Curved crossing: the diverging curve runs to the end, so a = b = R·tan(α/2) with tan α = 1/n (length = twice the tangent length). R = 300 m, 1:9 gives 16.616 m."
+    total_length_m:
+      central: 33.232
+      basis: documented
+      sources:
+        - dewiki-weiche
+        - db-ril-800-0120
+        - zusi-weichen
+      check: unverified
+      rationale: a + b.
+    diverging_speed_kmh:
+      central: 50
+      basis: cited
+      sources:
+        - dewiki-weiche
+        - db-ril-800-0120
+      check: secondary
+      rationale: Matches v = sqrt(I·R/11.8) with I = 100 mm cant deficiency in the uncanted diverging track (switch.cant_deficiency_mm).
+    through_speed_kmh:
+      low: 120
+      central: 160
+      high: 230
+      basis: cited
+      sources:
+        - hanser-weichen
+      check: secondary
+      rationale: The textbook table gives 160 km/h, 230 km/h with additional measures, for the 1:9 and 1:12 rigid-crossing types.
+- id: db-ew-500-1-12
+  label: DB EW 54/60-500-1:12, curved crossing
+  element: turnout
+  standard: db
+  geometry: curved-crossing
+  crossing: rigid
+  typical_modes:
+    - commuter_rail
+    - regional_rail
+    - long_distance_rail
+    - high_speed_rail
+  attributes:
+    crossing_ratio_n:
+      central: 12
+      basis: cited
+      sources:
+        - hanser-weichen
+      check: secondary
+      rationale: Designation 1:12.
+    diverging_radius_m:
+      central: 500
+      basis: cited
+      sources:
+        - hanser-weichen
+      check: secondary
+      rationale: Designation radius 500 m.
+    length_a_m:
+      central: 20.797
+      basis: cited
+      sources:
+        - hanser-weichen
+        - zusi-weichen
+      check: secondary
+      rationale: "Curved crossing: the diverging curve runs to the end, so a = b = R·tan(α/2) with tan α = 1/n (length = twice the tangent length). R = 500 m, 1:12 gives 20.797 m. The textbook table lists the tangent length 20.797 m."
+    length_b_m:
+      central: 20.797
+      basis: cited
+      sources:
+        - hanser-weichen
+        - zusi-weichen
+      check: secondary
+      rationale: "Curved crossing: the diverging curve runs to the end, so a = b = R·tan(α/2) with tan α = 1/n (length = twice the tangent length). R = 500 m, 1:12 gives 20.797 m. The textbook table lists the tangent length 20.797 m."
+    total_length_m:
+      central: 41.594
+      basis: cited
+      sources:
+        - hanser-weichen
+        - zusi-weichen
+      check: secondary
+      rationale: a + b.
+    diverging_speed_kmh:
+      central: 60
+      basis: cited
+      sources:
+        - hanser-weichen
+        - dewiki-weiche
+      check: secondary
+      rationale: 60 km/h in the textbook table; the radius alone would allow 65 km/h at I = 100 mm, DB rounds down to the 10 km/h step used in signalling.
+    through_speed_kmh:
+      low: 120
+      central: 160
+      high: 230
+      basis: cited
+      sources:
+        - hanser-weichen
+      check: secondary
+      rationale: 160 km/h, 230 km/h with additional measures (textbook table).
+- id: db-ew-500-1-14
+  label: DB EW 60-500-1:14 fb, curved crossing with movable point
+  element: turnout
+  standard: db
+  geometry: curved-crossing
+  crossing: movable
+  typical_modes:
+    - regional_rail
+    - long_distance_rail
+    - high_speed_rail
+  attributes:
+    crossing_ratio_n:
+      central: 14
+      basis: cited
+      sources:
+        - hanser-weichen
+      check: secondary
+      rationale: Designation 60-500-1:14 fb shown as an example in the textbook's layout plans.
+    diverging_radius_m:
+      central: 500
+      basis: cited
+      sources:
+        - hanser-weichen
+      check: secondary
+      rationale: Designation radius 500 m.
+    length_a_m:
+      central: 17.834
+      basis: documented
+      sources:
+        - zusi-weichen
+        - db-ril-800-0120
+      check: unverified
+      rationale: "Curved crossing: the diverging curve runs to the end, so a = b = R·tan(α/2) with tan α = 1/n (length = twice the tangent length). R = 500 m, 1:14 gives 17.834 m."
+    length_b_m:
+      central: 17.834
+      basis: documented
+      sources:
+        - zusi-weichen
+        - db-ril-800-0120
+      check: unverified
+      rationale: "Curved crossing: the diverging curve runs to the end, so a = b = R·tan(α/2) with tan α = 1/n (length = twice the tangent length). R = 500 m, 1:14 gives 17.834 m."
+    total_length_m:
+      central: 35.668
+      basis: documented
+      sources:
+        - zusi-weichen
+        - db-ril-800-0120
+      check: unverified
+      rationale: a + b.
+    diverging_speed_kmh:
+      central: 60
+      basis: documented
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Same radius as EW 500-1:12. Matches v = sqrt(I·R/11.8) with I = 100 mm cant deficiency in the uncanted diverging track (switch.cant_deficiency_mm).
+    through_speed_kmh:
+      low: 200
+      central: 250
+      high: 300
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Movable-point crossing removes the crossing gap, so the through route suits high-speed lines; exact approval not found.
+- id: db-ew-760-1-14
+  label: DB EW 54/60-760-1:14, curved crossing
+  element: turnout
+  standard: db
+  geometry: curved-crossing
+  crossing: rigid
+  typical_modes:
+    - regional_rail
+    - long_distance_rail
+    - high_speed_rail
+  attributes:
+    crossing_ratio_n:
+      central: 14
+      basis: cited
+      sources:
+        - dewiki-weiche
+        - db-ril-800-0120
+      check: secondary
+      rationale: Designation 1:14.
+    diverging_radius_m:
+      central: 760
+      basis: cited
+      sources:
+        - dewiki-weiche
+        - db-ril-800-0120
+      check: secondary
+      rationale: Designation radius 760 m.
+    length_a_m:
+      central: 27.108
+      basis: documented
+      sources:
+        - dewiki-weiche
+        - db-ril-800-0120
+        - zusi-weichen
+      check: unverified
+      rationale: "Curved crossing: the diverging curve runs to the end, so a = b = R·tan(α/2) with tan α = 1/n (length = twice the tangent length). R = 760 m, 1:14 gives 27.108 m."
+    length_b_m:
+      central: 27.108
+      basis: documented
+      sources:
+        - dewiki-weiche
+        - db-ril-800-0120
+        - zusi-weichen
+      check: unverified
+      rationale: "Curved crossing: the diverging curve runs to the end, so a = b = R·tan(α/2) with tan α = 1/n (length = twice the tangent length). R = 760 m, 1:14 gives 27.108 m."
+    total_length_m:
+      central: 54.216
+      basis: documented
+      sources:
+        - dewiki-weiche
+        - db-ril-800-0120
+        - zusi-weichen
+      check: unverified
+      rationale: a + b.
+    diverging_speed_kmh:
+      central: 80
+      basis: cited
+      sources:
+        - dewiki-weiche
+        - db-ril-800-0120
+      check: secondary
+      rationale: Matches v = sqrt(I·R/11.8) with I = 100 mm cant deficiency in the uncanted diverging track (switch.cant_deficiency_mm).
+    through_speed_kmh:
+      low: 120
+      central: 160
+      high: 230
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: As the other rigid-crossing standard turnouts (textbook table for 1:9 and 1:12).
+- id: db-ew-1200-1-18.5
+  label: DB EW 60-1200-1:18,5, curved crossing
+  element: turnout
+  standard: db
+  geometry: curved-crossing
+  crossing: rigid
+  typical_modes:
+    - regional_rail
+    - long_distance_rail
+    - high_speed_rail
+  attributes:
+    crossing_ratio_n:
+      central: 18.5
+      basis: cited
+      sources:
+        - dewiki-weiche
+        - db-ril-800-0120
+      check: secondary
+      rationale: Designation 1:18,5.
+    diverging_radius_m:
+      central: 1200
+      basis: cited
+      sources:
+        - dewiki-weiche
+        - db-ril-800-0120
+      check: secondary
+      rationale: Designation radius 1200 m.
+    length_a_m:
+      central: 32.409
+      basis: documented
+      sources:
+        - dewiki-weiche
+        - db-ril-800-0120
+        - zusi-weichen
+      check: unverified
+      rationale: "Curved crossing: the diverging curve runs to the end, so a = b = R·tan(α/2) with tan α = 1/n (length = twice the tangent length). R = 1200 m, 1:18.5 gives 32.409 m."
+    length_b_m:
+      central: 32.409
+      basis: documented
+      sources:
+        - dewiki-weiche
+        - db-ril-800-0120
+        - zusi-weichen
+      check: unverified
+      rationale: "Curved crossing: the diverging curve runs to the end, so a = b = R·tan(α/2) with tan α = 1/n (length = twice the tangent length). R = 1200 m, 1:18.5 gives 32.409 m."
+    total_length_m:
+      central: 64.818
+      basis: documented
+      sources:
+        - dewiki-weiche
+        - db-ril-800-0120
+        - zusi-weichen
+      check: unverified
+      rationale: a + b.
+    diverging_speed_kmh:
+      central: 100
+      basis: cited
+      sources:
+        - dewiki-weiche
+        - db-ril-800-0120
+      check: secondary
+      rationale: Matches v = sqrt(I·R/11.8) with I = 100 mm cant deficiency in the uncanted diverging track (switch.cant_deficiency_mm).
+    through_speed_kmh:
+      low: 160
+      central: 200
+      high: 250
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Rigid crossing; movable-point versions (fb) exist for higher line speeds.
+- id: db-ew-2500-1-26.5-fb
+  label: DB EW 60-2500-1:26,5 fb, high-speed turnout with movable point
+  element: turnout
+  standard: db
+  geometry: curved-crossing
+  crossing: movable
+  typical_modes:
+    - long_distance_rail
+    - high_speed_rail
+  attributes:
+    crossing_ratio_n:
+      central: 26.5
+      basis: cited
+      sources:
+        - dewiki-weiche
+        - osm-switch-2500
+      check: secondary
+      rationale: Designation 1:26,5.
+    diverging_radius_m:
+      central: 2500
+      basis: cited
+      sources:
+        - dewiki-weiche
+        - osm-switch-2500
+      check: secondary
+      rationale: Designation radius 2500 m.
+    length_a_m:
+      central: 47.153
+      basis: documented
+      sources:
+        - zusi-weichen
+        - db-ril-800-0120
+      check: unverified
+      rationale: "Curved crossing: the diverging curve runs to the end, so a = b = R·tan(α/2) with tan α = 1/n (length = twice the tangent length). R = 2500 m, 1:26.5 gives 47.153 m. Treated as fully circular; check against the DB drawing."
+      low: 45.0
+      high: 56.0
+    length_b_m:
+      central: 47.153
+      basis: documented
+      sources:
+        - zusi-weichen
+        - db-ril-800-0120
+      check: unverified
+      rationale: "Curved crossing: the diverging curve runs to the end, so a = b = R·tan(α/2) with tan α = 1/n (length = twice the tangent length). R = 2500 m, 1:26.5 gives 47.153 m. Treated as fully circular; check against the DB drawing."
+      low: 45.0
+      high: 56.0
+    total_length_m:
+      central: 94.306
+      basis: documented
+      sources:
+        - zusi-weichen
+        - db-ril-800-0120
+      check: unverified
+      rationale: a + b.
+      low: 90.0
+      high: 112.0
+    diverging_speed_kmh:
+      central: 130
+      basis: cited
+      sources:
+        - dewiki-weiche
+        - osm-switch-2500
+      check: secondary
+      rationale: 130 km/h diverging (both sources). The radius would allow about 145 km/h at I = 100 mm; the jerk at the curve start limits it.
+    through_speed_kmh:
+      low: 250
+      central: 280
+      high: 300
+      basis: cited
+      sources:
+        - dewiki-weiche
+        - osm-switch-2500
+      check: secondary
+      rationale: Wikipedia table 280 km/h; the OSM example is tagged 300 km/h.
+- id: db-ew-6000-3700-1-32.5-fb
+  label: DB EW 60-6000/3700-1:32,5 fb, clothoid high-speed turnout
+  element: turnout
+  standard: db
+  geometry: transition
+  crossing: movable
+  typical_modes:
+    - long_distance_rail
+    - high_speed_rail
+  attributes:
+    crossing_ratio_n:
+      central: 32.5
+      basis: cited
+      sources:
+        - dewiki-weiche
+      check: secondary
+      rationale: Designation 1:32,5.
+    diverging_radius_m:
+      central: 3700
+      basis: cited
+      sources:
+        - dewiki-weiche
+      check: secondary
+      rationale: Smallest radius of the 6000/3700 diverging curve.
+    length_a_m:
+      low: 57.5
+      central: 66.25
+      high: 75.0
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Half of the total length; split between a and b not found (a is usually the longer for a clothoid entry).
+    length_b_m:
+      low: 57.5
+      central: 66.25
+      high: 75.0
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Half of the total length.
+    total_length_m:
+      low: 115
+      central: 132.5
+      high: 150
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Transition (clothoid or compound) diverging curve, so the length is longer than the circular 2·R·tan(α/2) = 113.82 m at the smallest radius. Range spans 2·t at 3700 m (114 m) to the 1:42 type.
+    diverging_speed_kmh:
+      central: 160
+      basis: cited
+      sources:
+        - dewiki-weiche
+      check: secondary
+      rationale: 160 km/h diverging.
+    through_speed_kmh:
+      central: 280
+      basis: cited
+      sources:
+        - dewiki-weiche
+      check: secondary
+      rationale: 280 km/h through.
+- id: db-ew-7000-6000-1-42-fb
+  label: DB EW 60-7000/6000-1:42 fb, high-speed turnout
+  element: turnout
+  standard: db
+  geometry: transition
+  crossing: movable
+  typical_modes:
+    - high_speed_rail
+  attributes:
+    crossing_ratio_n:
+      central: 42
+      basis: cited
+      sources:
+        - dewiki-weiche
+      check: secondary
+      rationale: Designation 1:42.
+    diverging_radius_m:
+      central: 6000
+      basis: cited
+      sources:
+        - dewiki-weiche
+      check: secondary
+      rationale: Smallest radius of the 7000/6000 diverging curve.
+    length_a_m:
+      low: 70.0
+      central: 77.0
+      high: 85.0
+      basis: educated-guess
+      sources:
+        - eisenbahnweiche-fandom
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Half of the total length; split between a and b not found (a is usually the longer for a clothoid entry).
+    length_b_m:
+      low: 70.0
+      central: 77.0
+      high: 85.0
+      basis: educated-guess
+      sources:
+        - eisenbahnweiche-fandom
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Half of the total length.
+    total_length_m:
+      low: 140
+      central: 154.0
+      high: 170
+      basis: educated-guess
+      sources:
+        - eisenbahnweiche-fandom
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Transition (clothoid or compound) diverging curve, so the length is longer than the circular 2·R·tan(α/2) = 142.836 m at the smallest radius. Vereins-Wiki gives about 154 m for the 1:42 class (weak source).
+    diverging_speed_kmh:
+      central: 200
+      basis: cited
+      sources:
+        - dewiki-weiche
+      check: secondary
+      rationale: 200 km/h diverging.
+    through_speed_kmh:
+      central: 280
+      basis: cited
+      sources:
+        - dewiki-weiche
+      check: secondary
+      rationale: 280 km/h through.
+- id: adif-dsih-17000-7300-1-50
+  label: ADIF DSIH-AV3-60-17000/7300-1:50, high-speed turnout
+  element: turnout
+  standard: adif
+  geometry: transition
+  crossing: movable
+  typical_modes:
+    - high_speed_rail
+  attributes:
+    crossing_ratio_n:
+      central: 50
+      basis: cited
+      sources:
+        - adif-desvios-av
+      check: secondary
+      rationale: Designation 1:50.
+    diverging_radius_m:
+      central: 7300
+      basis: cited
+      sources:
+        - adif-desvios-av
+      check: secondary
+      rationale: Smallest radius of the 17000/7300 diverging curve.
+    length_a_m:
+      low: 73.0
+      central: 96.5
+      high: 120.0
+      basis: educated-guess
+      sources:
+        - adif-desvios-av
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Half of the total length; split between a and b not found (a is usually the longer for a clothoid entry).
+    length_b_m:
+      low: 73.0
+      central: 96.5
+      high: 120.0
+      basis: educated-guess
+      sources:
+        - adif-desvios-av
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Half of the total length.
+    total_length_m:
+      low: 146
+      central: 193.0
+      high: 240
+      basis: educated-guess
+      sources:
+        - adif-desvios-av
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Transition (clothoid or compound) diverging curve, so the length is longer than the circular 2·R·tan(α/2) = 145.986 m at the smallest radius. ADIF table shows an unlabelled 239.136 for this type, possibly the length.
+    diverging_speed_kmh:
+      central: 220
+      basis: cited
+      sources:
+        - adif-desvios-av
+      check: secondary
+      rationale: 220 km/h diverging.
+    through_speed_kmh:
+      central: 350
+      basis: cited
+      sources:
+        - adif-desvios-av
+      check: secondary
+      rationale: 350 km/h through.
+- id: adif-dsih-10000-4000-1-36
+  label: ADIF DSIH-AV3-60-10000/4000-1:36, high-speed turnout
+  element: turnout
+  standard: adif
+  geometry: transition
+  crossing: movable
+  typical_modes:
+    - high_speed_rail
+  attributes:
+    crossing_ratio_n:
+      central: 36
+      basis: cited
+      sources:
+        - adif-desvios-av
+      check: secondary
+      rationale: Designation 1:36.
+    diverging_radius_m:
+      central: 4000
+      basis: cited
+      sources:
+        - adif-desvios-av
+      check: secondary
+      rationale: Smallest radius of the 10000/4000 diverging curve.
+    length_a_m:
+      low: 55.5
+      central: 67.75
+      high: 80.0
+      basis: educated-guess
+      sources:
+        - adif-desvios-av
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Half of the total length; split between a and b not found (a is usually the longer for a clothoid entry).
+    length_b_m:
+      low: 55.5
+      central: 67.75
+      high: 80.0
+      basis: educated-guess
+      sources:
+        - adif-desvios-av
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Half of the total length.
+    total_length_m:
+      low: 111
+      central: 135.5
+      high: 160
+      basis: educated-guess
+      sources:
+        - adif-desvios-av
+        - mobsimlab-derivation
+      check: unverified
+      rationale: "Transition (clothoid or compound) diverging curve, so the length is longer than the circular 2·R·tan(α/2) = 111.09 m at the smallest radius. "
+    diverging_speed_kmh:
+      central: 160
+      basis: cited
+      sources:
+        - adif-desvios-av
+      check: secondary
+      rationale: 160 km/h diverging (column assignment in the snippet slightly unclear).
+    through_speed_kmh:
+      central: 350
+      basis: cited
+      sources:
+        - adif-desvios-av
+      check: secondary
+      rationale: 350 km/h through.
+- id: sncf-tg-0.0154
+  label: SNCF high-speed turnout tg 0.0154 (about 1:65)
+  element: turnout
+  standard: sncf
+  geometry: transition
+  crossing: movable
+  typical_modes:
+    - high_speed_rail
+  attributes:
+    crossing_ratio_n:
+      low: 62
+      central: 65
+      high: 65
+      basis: documented
+      sources:
+        - sncf-landes-220
+        - mobsimlab-derivation
+      check: unverified
+      rationale: tg 0.0154 = 1:64.9; the 1974 Landes prototype was tg 0.0162 (1:61.7).
+    diverging_radius_m:
+      low: 9000
+      central: 10000
+      high: 11000
+      basis: cited
+      sources:
+        - sncf-landes-220
+      check: unverified
+      rationale: About 10,000 m on the Landes prototype.
+    length_a_m:
+      low: 100.0
+      central: 105.0
+      high: 110.0
+      basis: educated-guess
+      sources:
+        - sncf-landes-220
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Half of the total length; split not found.
+    length_b_m:
+      low: 100.0
+      central: 105.0
+      high: 110.0
+      basis: educated-guess
+      sources:
+        - sncf-landes-220
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Half of the total length.
+    total_length_m:
+      low: 200.0
+      central: 210.0
+      high: 220.0
+      basis: cited
+      sources:
+        - sncf-landes-220
+      check: unverified
+      rationale: 210 m total with 36 m blades on the Landes prototype for 220 km/h.
+    diverging_speed_kmh:
+      central: 220
+      basis: cited
+      sources:
+        - sncf-landes-220
+      check: unverified
+      rationale: Designed for 220 km/h diverging (LGV Sud-Est and later lines).
+    through_speed_kmh:
+      low: 300
+      central: 320
+      high: 350
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: LGV line speed; turnout does not limit it.
+- id: cn-60-no18-hs
+  label: China 60 kg/m No. 18 high-speed turnout (1:18)
+  element: turnout
+  standard: china-tb
+  geometry: straight-crossing
+  crossing: movable
+  typical_modes:
+    - long_distance_rail
+    - high_speed_rail
+  attributes:
+    crossing_ratio_n:
+      central: 18
+      basis: cited
+      sources:
+        - crchi-hs-turnouts
+      check: unverified
+      rationale: Turnout number 18 (tan α = 1/18).
+    diverging_radius_m:
+      central: 1100
+      basis: cited
+      sources:
+        - crchi-hs-turnouts
+      check: unverified
+      rationale: Lead curve radius 1100 m.
+    length_a_m:
+      central: 31.729
+      basis: cited
+      sources:
+        - crchi-hs-turnouts
+      check: unverified
+      rationale: Front length 31,729 mm.
+    length_b_m:
+      central: 37.271
+      basis: cited
+      sources:
+        - crchi-hs-turnouts
+      check: unverified
+      rationale: Rear length 37,271 mm.
+    total_length_m:
+      central: 69.0
+      basis: cited
+      sources:
+        - crchi-hs-turnouts
+      check: unverified
+      rationale: Total length 69 m.
+    diverging_speed_kmh:
+      central: 80
+      basis: cited
+      sources:
+        - crchi-hs-turnouts
+      check: unverified
+      rationale: 80 km/h diverging.
+    through_speed_kmh:
+      central: 350
+      basis: cited
+      sources:
+        - crchi-hs-turnouts
+      check: unverified
+      rationale: 350 km/h through.
+- id: cn-60-no42-hs
+  label: China 60 kg/m No. 42 high-speed turnout (1:42)
+  element: turnout
+  standard: china-tb
+  geometry: transition
+  crossing: movable
+  typical_modes:
+    - high_speed_rail
+  attributes:
+    crossing_ratio_n:
+      central: 42
+      basis: cited
+      sources:
+        - crchi-hs-turnouts
+      check: unverified
+      rationale: Turnout number 42.
+    diverging_radius_m:
+      central: 5000
+      basis: cited
+      sources:
+        - crchi-hs-turnouts
+      check: unverified
+      rationale: Lead curve radius 5000 m.
+    length_a_m:
+      low: 70.0
+      central: 78.6
+      high: 90.0
+      basis: educated-guess
+      sources:
+        - crchi-hs-turnouts
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Half of the total; front/rear split not found.
+    length_b_m:
+      low: 67.2
+      central: 78.6
+      high: 87.2
+      basis: educated-guess
+      sources:
+        - crchi-hs-turnouts
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Half of the total.
+    total_length_m:
+      central: 157.2
+      basis: cited
+      sources:
+        - crchi-hs-turnouts
+      check: unverified
+      rationale: Total length 157.2 m.
+    diverging_speed_kmh:
+      central: 160
+      basis: cited
+      sources:
+        - crchi-hs-turnouts
+        - nra-tech-rules
+      check: unverified
+      rationale: 160 km/h diverging; rules require No. 30 or larger above 80 km/h diverging.
+    through_speed_kmh:
+      central: 350
+      basis: cited
+      sources:
+        - crchi-hs-turnouts
+      check: unverified
+      rationale: 350 km/h through.
+- id: cn-60-no12
+  label: China 60 kg/m No. 12 turnout, rigid crossing (1:12)
+  element: turnout
+  standard: china-tb
+  geometry: straight-crossing
+  crossing: rigid
+  typical_modes:
+    - commuter_rail
+    - regional_rail
+    - long_distance_rail
+  attributes:
+    crossing_ratio_n:
+      central: 12
+      basis: cited
+      sources:
+        - suburban-no12
+      check: unverified
+      rationale: Turnout number 12.
+    diverging_radius_m:
+      low: 330
+      central: 350
+      high: 350
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Commonly quoted lead radius of the 60 kg/m No. 12 turnout; not confirmed in a source this time. 50 km/h at 76 mm cant deficiency needs R ≥ 390 m, at 100 mm R ≥ 295 m.
+    length_a_m:
+      central: 16.592
+      basis: cited
+      sources:
+        - suburban-no12
+      check: unverified
+      rationale: a = 16.592 m.
+    length_b_m:
+      central: 21.208
+      basis: cited
+      sources:
+        - suburban-no12
+      check: unverified
+      rationale: b = 21.208 m.
+    total_length_m:
+      central: 37.8
+      basis: cited
+      sources:
+        - suburban-no12
+      check: unverified
+      rationale: Total 37.8 m.
+    diverging_speed_kmh:
+      central: 50
+      basis: cited
+      sources:
+        - suburban-no12
+      check: unverified
+      rationale: 50 km/h diverging.
+    through_speed_kmh:
+      central: 160
+      basis: cited
+      sources:
+        - suburban-no12
+      check: unverified
+      rationale: 160 km/h through.
+- id: cn-metro-60-no9
+  label: China metro 60 kg/m No. 9 turnout (1:9)
+  element: turnout
+  standard: china-gb50157
+  geometry: straight-crossing
+  crossing: rigid
+  typical_modes:
+    - metro
+    - light_rail
+  attributes:
+    crossing_ratio_n:
+      central: 9
+      basis: cited
+      sources:
+        - gb-50157
+      check: unverified
+      rationale: Turnout number 9.
+    diverging_radius_m:
+      central: 200
+      basis: cited
+      sources:
+        - gb-50157
+        - metro-no9-optimised
+      check: unverified
+      rationale: R = 200 m in the GB 50157 commentary and the optimised design.
+    length_a_m:
+      low: 12.57
+      central: 13.839
+      high: 13.839
+      basis: cited
+      sources:
+        - gb-50157
+        - metro-no9-optimised
+      check: unverified
+      rationale: Front length 2.65 + 11.189 = 13.839 m (stated as the current maximum); the optimised design shortens it to 12.570 m.
+    length_b_m:
+      central: 15.73
+      basis: cited
+      sources:
+        - gb-50157
+        - metro-no9-optimised
+      check: unverified
+      rationale: Rear length 12.955 + 2.775 = 15.730 m in both sources.
+    total_length_m:
+      low: 28.3
+      central: 29.569
+      high: 29.569
+      basis: documented
+      sources:
+        - gb-50157
+        - metro-no9-optimised
+      check: unverified
+      rationale: a + b; 28.300 m for the optimised design.
+    diverging_speed_kmh:
+      central: 35
+      basis: cited
+      sources:
+        - gb-50157
+      check: unverified
+      rationale: 35 km/h limit; R 200 m with 0.5 m/s² unbalanced lateral acceleration gives 36 km/h.
+    through_speed_kmh:
+      low: 100
+      central: 120
+      high: 120
+      basis: cited
+      sources:
+        - metro-no9-optimised
+      check: unverified
+      rationale: ≤ 120 km/h through in the optimised design.
+- id: arema-no8
+  label: AREMA No. 8 turnout
+  element: turnout
+  standard: arema
+  geometry: straight-crossing
+  crossing: rigid
+  typical_modes:
+    - commuter_rail
+    - regional_rail
+    - long_distance_rail
+  attributes:
+    crossing_ratio_n:
+      central: 7.97
+      basis: documented
+      sources:
+        - arema-mre-ch5
+        - mobsimlab-derivation
+      check: unverified
+      rationale: "Frog number N = 8: frog angle F = 2·atan(1/(2N)) = 7.1527°, so tan F = 1/7.97."
+    diverging_radius_m:
+      low: 145.6
+      central: 153.31
+      high: 161.0
+      basis: educated-guess
+      sources:
+        - arema-mre-ch5
+        - mobsimlab-derivation
+      check: unverified
+      rationale: About 500 ft lead curve radius as remembered from AREMA tables; not read. Gives 19 mph at 3 in unbalance.
+    lead_m:
+      low: 19.0
+      central: 20.7
+      high: 21.5
+      basis: educated-guess
+      sources:
+        - arema-mre-ch5
+        - mobsimlab-derivation
+      check: unverified
+      rationale: About 68 ft as remembered from AREMA tables; not read.
+    length_a_m:
+      low: 7.26
+      central: 9.26
+      high: 11.26
+      basis: documented
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: "Point of switch to the centre-line intersection: lead minus g/tan F = 11.435 m (distance from the intersection to the theoretical frog point, g = 1.435 m)."
+    length_b_m:
+      low: 11.84
+      central: 13.84
+      high: 16.84
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: "Intersection to frog heel joint: g/tan F plus a frog heel of about 0.3·N m."
+    total_length_m:
+      low: 19.1
+      central: 23.1
+      high: 28.1
+      basis: documented
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: a + b.
+    diverging_speed_kmh:
+      low: 16
+      central: 24
+      high: 31
+      basis: cited
+      sources:
+        - amtrak-spec-63
+        - csx-sidetracks
+      check: unverified
+      rationale: "Amtrak: conventional No. 8 for yards and terminals up to 15 mph; CSX minimum for industry tracks. With 3 in unbalance, V = sqrt(3 / (0.0007·D)) mph, D = 5729.65 / R(ft) degrees of curve."
+    through_speed_kmh:
+      low: 97
+      central: 127
+      high: 177
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Track class speed of the line (FRA class 4 = 80 mph freight / 79 mph passenger); a rigid frog does not normally limit it.
+- id: arema-no10
+  label: AREMA No. 10 turnout
+  element: turnout
+  standard: arema
+  geometry: straight-crossing
+  crossing: rigid
+  typical_modes:
+    - light_rail
+    - commuter_rail
+    - regional_rail
+    - long_distance_rail
+  attributes:
+    crossing_ratio_n:
+      central: 9.97
+      basis: documented
+      sources:
+        - arema-mre-ch5
+        - mobsimlab-derivation
+      check: unverified
+      rationale: "Frog number N = 10: frog angle F = 2·atan(1/(2N)) = 5.7248°, so tan F = 1/9.97."
+    diverging_radius_m:
+      low: 226.1
+      central: 237.97
+      high: 249.9
+      basis: cited
+      sources:
+        - arema-mre-ch5
+      check: unverified
+      rationale: 780.74 ft closure curve radius (AREMA plan, value not read; a forum quoting Mallery gives about 790 ft). Gives 24 mph at 3 in unbalance.
+    lead_m:
+      low: 23.5
+      central: 24.0
+      high: 24.5
+      basis: cited
+      sources:
+        - arema-mre-ch5
+      check: unverified
+      rationale: Lead 78 ft 9 in (AREMA plan, value not read).
+    length_a_m:
+      low: 7.69
+      central: 9.69
+      high: 11.69
+      basis: documented
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: "Point of switch to the centre-line intersection: lead minus g/tan F = 14.314 m (distance from the intersection to the theoretical frog point, g = 1.435 m)."
+    length_b_m:
+      low: 15.31
+      central: 17.31
+      high: 20.31
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: "Intersection to frog heel joint: g/tan F plus a frog heel of about 0.3·N m."
+    total_length_m:
+      low: 23.0
+      central: 27.0
+      high: 32.0
+      basis: documented
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: a + b.
+    diverging_speed_kmh:
+      low: 24
+      central: 24
+      high: 40
+      basis: cited
+      sources:
+        - amtrak-spec-63
+        - arema-mre-ch5
+      check: unverified
+      rationale: "Amtrak: conventional No. 10 RBM-frog turnouts for diverging speeds up to 15 mph; AREMA curved-point designs reach about 20–25 mph. With 3 in unbalance, V = sqrt(3 / (0.0007·D)) mph, D = 5729.65 / R(ft) degrees of curve."
+    through_speed_kmh:
+      low: 97
+      central: 127
+      high: 177
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Track class speed of the line (FRA class 4 = 80 mph freight / 79 mph passenger); a rigid frog does not normally limit it.
+- id: arema-no15
+  label: AREMA No. 15 turnout
+  element: turnout
+  standard: arema
+  geometry: straight-crossing
+  crossing: rigid
+  typical_modes:
+    - commuter_rail
+    - regional_rail
+    - long_distance_rail
+  attributes:
+    crossing_ratio_n:
+      central: 14.98
+      basis: documented
+      sources:
+        - arema-mre-ch5
+        - mobsimlab-derivation
+      check: unverified
+      rationale: "Frog number N = 15: frog angle F = 2·atan(1/(2N)) = 3.8183°, so tan F = 1/14.98."
+    diverging_radius_m:
+      low: 530.0
+      central: 557.91
+      high: 585.8
+      basis: cited
+      sources:
+        - arema-mre-ch5
+      check: unverified
+      rationale: About 1,830 ft lead curve radius (AREMA plan, value not read). Gives 37 mph at 3 in unbalance.
+    lead_m:
+      low: 33.0
+      central: 33.9
+      high: 34.5
+      basis: cited
+      sources:
+        - up-5015
+      check: unverified
+      rationale: "Union Pacific drawing 5015: actual lead 111 ft 2 3/4 in (33.90 m); railroad plans differ slightly from the AREMA plan."
+    length_a_m:
+      low: 10.4
+      central: 12.4
+      high: 14.4
+      basis: documented
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: "Point of switch to the centre-line intersection: lead minus g/tan F = 21.501 m (distance from the intersection to the theoretical frog point, g = 1.435 m)."
+    length_b_m:
+      low: 24.0
+      central: 26.0
+      high: 29.0
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: "Intersection to frog heel joint: g/tan F plus a frog heel of about 0.3·N m."
+    total_length_m:
+      low: 34.4
+      central: 38.4
+      high: 43.4
+      basis: documented
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: a + b.
+    diverging_speed_kmh:
+      low: 40
+      central: 48
+      high: 60
+      basis: documented
+      sources:
+        - arema-mre-ch5
+      check: unverified
+      rationale: 30 mph is the usual timetable figure; 37 mph is the 3 in unbalance limit. With 3 in unbalance, V = sqrt(3 / (0.0007·D)) mph, D = 5729.65 / R(ft) degrees of curve.
+    through_speed_kmh:
+      low: 97
+      central: 127
+      high: 177
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Track class speed of the line (FRA class 4 = 80 mph freight / 79 mph passenger); a rigid frog does not normally limit it.
+- id: arema-no20
+  label: AREMA No. 20 turnout
+  element: turnout
+  standard: arema
+  geometry: straight-crossing
+  crossing: rigid
+  typical_modes:
+    - commuter_rail
+    - regional_rail
+    - long_distance_rail
+  attributes:
+    crossing_ratio_n:
+      central: 19.99
+      basis: documented
+      sources:
+        - arema-mre-ch5
+        - mobsimlab-derivation
+      check: unverified
+      rationale: "Frog number N = 20: frog angle F = 2·atan(1/(2N)) = 2.8642°, so tan F = 1/19.99."
+    diverging_radius_m:
+      low: 946.9
+      central: 996.73
+      high: 1046.6
+      basis: cited
+      sources:
+        - arema-mre-ch5
+      check: unverified
+      rationale: About 3,270 ft lead curve radius (AREMA plan, value not read). Gives 49 mph at 3 in unbalance.
+    lead_m:
+      low: 40.0
+      central: 47.5
+      high: 48.0
+      basis: cited
+      sources:
+        - fra-td99-021
+      check: unverified
+      rationale: 156 ft lead for both the AREMA and the intermediate geometry (FRA digest).
+    length_a_m:
+      low: 16.82
+      central: 18.82
+      high: 20.82
+      basis: documented
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: "Point of switch to the centre-line intersection: lead minus g/tan F = 28.682 m (distance from the intersection to the theoretical frog point, g = 1.435 m)."
+    length_b_m:
+      low: 32.68
+      central: 34.68
+      high: 37.68
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: "Intersection to frog heel joint: g/tan F plus a frog heel of about 0.3·N m."
+    total_length_m:
+      low: 49.5
+      central: 53.5
+      high: 58.5
+      basis: documented
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: a + b.
+    diverging_speed_kmh:
+      low: 64
+      central: 72
+      high: 80
+      basis: cited
+      sources:
+        - fra-rr0610
+        - fra-td99-021
+      check: unverified
+      rationale: "FRA: current limit 45 mph; 50 mph for AREMA curved-point geometry. With 3 in unbalance, V = sqrt(3 / (0.0007·D)) mph, D = 5729.65 / R(ft) degrees of curve."
+    through_speed_kmh:
+      low: 97
+      central: 127
+      high: 177
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Track class speed of the line (FRA class 4 = 80 mph freight / 79 mph passenger); a rigid frog does not normally limit it.
+- id: tram-r25
+  label: Tram grooved-rail turnout R 25 m (about 1:4.5)
+  element: turnout
+  standard: tram
+  geometry: straight-crossing
+  crossing: rigid
+  typical_modes:
+    - tram
+  attributes:
+    crossing_ratio_n:
+      low: 3.5
+      central: 4.5
+      high: 5.5
+      basis: educated-guess
+      sources:
+        - nortrak-transit
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Grooved-rail tram turnouts are built to each operator's geometry; 1:4.5 is what a curved crossing of R 25 m reaches over a compact turnout. Used at depot fans, loops and tight street junctions (grooved rail allows about 25 m).
+    diverging_radius_m:
+      central: 25
+      basis: cited
+      sources:
+        - nortrak-transit
+      check: unverified
+      rationale: Standard European tram turnout radii are 20, 25, 50, 75, 100 and 150 m.
+    length_a_m:
+      low: 2.24
+      central: 3.24
+      high: 5.24
+      basis: documented
+      sources:
+        - nortrak-transit
+        - mobsimlab-derivation
+      check: unverified
+      rationale: R·tan(α/2) = 2.744 m plus about 0.5 m of straight switch tip ahead of the curve.
+    length_b_m:
+      low: 3.76
+      central: 6.76
+      high: 10.76
+      basis: educated-guess
+      sources:
+        - nortrak-transit
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Total minus a; includes the straight crossing legs that tram crossings usually have.
+    total_length_m:
+      low: 7.0
+      central: 10.0
+      high: 14.0
+      basis: educated-guess
+      sources:
+        - nortrak-transit
+        - mobsimlab-derivation
+      check: unverified
+      rationale: 2·R·tan(α/2) = 5.488 m plus straight switch tip and crossing legs.
+    diverging_speed_kmh:
+      low: 5
+      central: 10
+      high: 15
+      basis: documented
+      sources:
+        - krakow-tram-switches
+        - mobsimlab-derivation
+      check: unverified
+      rationale: At most the 15 km/h of shallow-groove crossings; v = sqrt(I·R/11.8) with I = 100 mm gives 15 km/h.
+    through_speed_kmh:
+      low: 30
+      central: 50
+      high: 70
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Street-running tram speed; a deep-groove crossing on the straight is usually not limiting.
+- id: tram-r50
+  label: Tram grooved-rail turnout R 50 m (about 1:6)
+  element: turnout
+  standard: tram
+  geometry: straight-crossing
+  crossing: rigid
+  typical_modes:
+    - tram
+    - light_rail
+  attributes:
+    crossing_ratio_n:
+      low: 5
+      central: 6
+      high: 7
+      basis: educated-guess
+      sources:
+        - nortrak-transit
+        - mobsimlab-derivation
+      check: unverified
+      rationale: "Grooved-rail tram turnouts are built to each operator's geometry; 1:6 is what a curved crossing of R 50 m reaches over a compact turnout. "
+    diverging_radius_m:
+      central: 50
+      basis: cited
+      sources:
+        - nortrak-transit
+      check: unverified
+      rationale: Standard European tram turnout radii are 20, 25, 50, 75, 100 and 150 m.
+    length_a_m:
+      low: 3.64
+      central: 4.64
+      high: 6.64
+      basis: documented
+      sources:
+        - nortrak-transit
+        - mobsimlab-derivation
+      check: unverified
+      rationale: R·tan(α/2) = 4.138 m plus about 0.5 m of straight switch tip ahead of the curve.
+    length_b_m:
+      low: 5.36
+      central: 9.36
+      high: 13.36
+      basis: educated-guess
+      sources:
+        - nortrak-transit
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Total minus a; includes the straight crossing legs that tram crossings usually have.
+    total_length_m:
+      low: 10.0
+      central: 14.0
+      high: 18.0
+      basis: educated-guess
+      sources:
+        - nortrak-transit
+        - mobsimlab-derivation
+      check: unverified
+      rationale: 2·R·tan(α/2) = 8.276 m plus straight switch tip and crossing legs.
+    diverging_speed_kmh:
+      low: 10
+      central: 15
+      high: 25
+      basis: cited
+      sources:
+        - krakow-tram-switches
+      check: unverified
+      rationale: 15 km/h with shallow-groove (flange-running) crossings, 25 km/h for R 50 m switches with deep-groove crossings (Kraków specification).
+    through_speed_kmh:
+      low: 30
+      central: 50
+      high: 70
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Street-running tram speed; a deep-groove crossing on the straight is usually not limiting.
+- id: tram-r100
+  label: Tram grooved-rail turnout R 100 m (about 1:7)
+  element: turnout
+  standard: tram
+  geometry: straight-crossing
+  crossing: rigid
+  typical_modes:
+    - tram
+    - light_rail
+  attributes:
+    crossing_ratio_n:
+      low: 6
+      central: 7
+      high: 8
+      basis: educated-guess
+      sources:
+        - nortrak-transit
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Grooved-rail tram turnouts are built to each operator's geometry; 1:7 is what a curved crossing of R 100 m reaches over a compact turnout. Used on segregated tram and light rail track.
+    diverging_radius_m:
+      central: 100
+      basis: cited
+      sources:
+        - nortrak-transit
+      check: unverified
+      rationale: Standard European tram turnout radii are 20, 25, 50, 75, 100 and 150 m.
+    length_a_m:
+      low: 6.61
+      central: 7.61
+      high: 9.61
+      basis: documented
+      sources:
+        - nortrak-transit
+        - mobsimlab-derivation
+      check: unverified
+      rationale: R·tan(α/2) = 7.107 m plus about 0.5 m of straight switch tip ahead of the curve.
+    length_b_m:
+      low: 7.39
+      central: 11.39
+      high: 16.39
+      basis: educated-guess
+      sources:
+        - nortrak-transit
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Total minus a; includes the straight crossing legs that tram crossings usually have.
+    total_length_m:
+      low: 15.0
+      central: 19.0
+      high: 24.0
+      basis: educated-guess
+      sources:
+        - nortrak-transit
+        - mobsimlab-derivation
+      check: unverified
+      rationale: 2·R·tan(α/2) = 14.214 m plus straight switch tip and crossing legs.
+    diverging_speed_kmh:
+      low: 20
+      central: 25
+      high: 30
+      basis: documented
+      sources:
+        - krakow-tram-switches
+        - mobsimlab-derivation
+      check: unverified
+      rationale: v = sqrt(I·R/11.8) with I = 70–100 mm gives 25–29 km/h; deep-groove crossing needed.
+    through_speed_kmh:
+      low: 30
+      central: 50
+      high: 70
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Street-running tram speed; a deep-groove crossing on the straight is usually not limiting.
+- id: xo-db-ew-190-1-9-4.5
+  label: Crossover with DB EW 190-1:9 at 4.50 m track centres
+  element: crossover
+  standard: db
+  built_from: db-ew-190-1-9
+  typical_modes:
+    - metro
+    - commuter_rail
+    - regional_rail
+    - long_distance_rail
+  attributes:
+    track_centre_m:
+      central: 4.5
+      basis: cited
+      sources:
+        - trackopedia-track-centres
+      check: unverified
+      rationale: 4.50 m track centres (new German lines).
+    total_length_m:
+      central: 64.944
+      basis: documented
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: 2·a + d·n = 2·12.222 + 4.5·9 (switch start to switch start; the intersection points are d·n apart along the track).
+- id: xo-db-ew-500-1-12-4.0
+  label: Crossover with DB EW 500-1:12 at 4.00 m track centres
+  element: crossover
+  standard: db
+  built_from: db-ew-500-1-12
+  typical_modes:
+    - commuter_rail
+    - regional_rail
+    - long_distance_rail
+  attributes:
+    track_centre_m:
+      central: 4.0
+      basis: cited
+      sources:
+        - trackopedia-track-centres
+      check: unverified
+      rationale: 4.00 m track centres (upgraded German lines).
+    total_length_m:
+      central: 89.594
+      basis: documented
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: 2·a + d·n = 2·20.797 + 4.0·12 (switch start to switch start; the intersection points are d·n apart along the track).
+- id: xo-db-ew-1200-1-18.5-4.5
+  label: Crossover with DB EW 1200-1:18,5 at 4.50 m track centres
+  element: crossover
+  standard: db
+  built_from: db-ew-1200-1-18.5
+  typical_modes:
+    - long_distance_rail
+    - high_speed_rail
+  attributes:
+    track_centre_m:
+      central: 4.5
+      basis: cited
+      sources:
+        - trackopedia-track-centres
+      check: unverified
+      rationale: 4.50 m track centres (new lines up to 300 km/h).
+    total_length_m:
+      central: 148.068
+      basis: documented
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: 2·a + d·n = 2·32.409 + 4.5·18.5 (switch start to switch start; the intersection points are d·n apart along the track).
+- id: xo-cn-metro-no9-4.0
+  label: Crossover with metro No. 9 turnouts at 4.0 m track centres
+  element: crossover
+  standard: china-gb50157
+  built_from: cn-metro-60-no9
+  typical_modes:
+    - metro
+  attributes:
+    track_centre_m:
+      central: 4.0
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Typical metro double-track centres of about 4 m between stations (track.centre_distance_m for metro is 3.6 m; crossovers are usually placed where the tracks are a little wider).
+    total_length_m:
+      central: 63.678
+      basis: documented
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: 2·a + d·n = 2·13.839 + 4.0·9 (switch start to switch start; the intersection points are d·n apart along the track).
+- id: sx-cn-metro-no9-5.0
+  label: Scissors crossover with metro No. 9 turnouts at 5.0 m track centres
+  element: scissors_crossover
+  standard: china-gb50157
+  built_from: cn-metro-60-no9
+  typical_modes:
+    - metro
+  attributes:
+    track_centre_m:
+      central: 5.0
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Scissors crossovers need wider centres so the middle diamond fits; about 5 m is common in metro terminals.
+    total_length_m:
+      central: 72.678
+      basis: documented
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: 2·a + d·n = 2·13.839 + 5.0·9 (switch start to switch start; the intersection points are d·n apart along the track).
+    diamond_ratio_n:
+      central: 4.44
+      basis: documented
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: The two crossovers cross at twice the turnout angle, so the middle diamond has tan(2α).
+- id: xo-tram-r50-3.0
+  label: Tram crossover with R 50 m turnouts at 3.0 m track centres
+  element: crossover
+  standard: tram
+  built_from: tram-r50
+  typical_modes:
+    - tram
+    - light_rail
+  attributes:
+    track_centre_m:
+      central: 3.0
+      basis: documented
+      sources:
+        - bostrab
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Tram double-track centres (track.centre_distance_m for tram).
+    total_length_m:
+      central: 27.28
+      basis: documented
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: 2·a + d·n = 2·4.64 + 3.0·6 (switch start to switch start; the intersection points are d·n apart along the track).
+- id: sx-tram-r50-3.2
+  label: Tram scissors crossover with R 50 m turnouts at 3.2 m track centres
+  element: scissors_crossover
+  standard: tram
+  built_from: tram-r50
+  typical_modes:
+    - tram
+    - light_rail
+  attributes:
+    track_centre_m:
+      central: 3.2
+      basis: documented
+      sources:
+        - bostrab
+        - mobsimlab-derivation
+      check: unverified
+      rationale: "Slightly wider than plain tram double track (3.0 m) so both crossovers' legs meet clear of the middle diamond: needs d·sqrt(n² + 1) ≥ 2·b."
+    total_length_m:
+      central: 28.48
+      basis: documented
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: 2·a + d·n = 2·4.64 + 3.2·6 (switch start to switch start; the intersection points are d·n apart along the track).
+    diamond_ratio_n:
+      central: 2.92
+      basis: documented
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: The two crossovers cross at twice the turnout angle, so the middle diamond has tan(2α).
+- id: db-kr-1-9
+  label: DB diamond crossing 1:9 (Kreuzung)
+  element: diamond
+  standard: db
+  crossing: rigid
+  typical_modes:
+    - commuter_rail
+    - regional_rail
+    - long_distance_rail
+  attributes:
+    crossing_ratio_n:
+      central: 9
+      basis: cited
+      sources:
+        - becker-kreuzungsweichen
+      check: unverified
+      rationale: 1:9 is the standard angle of German diamonds and slips.
+    length_a_m:
+      low: 14.0
+      central: 16.615
+      high: 17.0
+      basis: educated-guess
+      sources:
+        - becker-kreuzungsweichen
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Half-length from the centre to each end along either track; same body as the 1:9 slips. The two acute crossings are g·n = 12.9 m apart.
+    length_b_m:
+      low: 14.0
+      central: 16.615
+      high: 17.0
+      basis: educated-guess
+      sources:
+        - becker-kreuzungsweichen
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Symmetrical.
+    total_length_m:
+      low: 28.0
+      central: 33.23
+      high: 34.0
+      basis: educated-guess
+      sources:
+        - becker-kreuzungsweichen
+        - mobsimlab-derivation
+      check: unverified
+      rationale: a + b.
+    through_speed_kmh:
+      low: 60
+      central: 100
+      high: 160
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Obtuse crossings have an unguarded gap; rigid 1:9 diamonds are station elements, not open-line ones.
+- id: db-dkw-190-1-9
+  label: DB DKW 54-190-1:9 (double slip)
+  element: double_slip
+  standard: db
+  crossing: rigid
+  typical_modes:
+    - commuter_rail
+    - regional_rail
+    - long_distance_rail
+  attributes:
+    crossing_ratio_n:
+      central: 9
+      basis: cited
+      sources:
+        - becker-kreuzungsweichen
+      check: unverified
+      rationale: EKW/DKW 54-190-1:9 designation.
+    diverging_radius_m:
+      central: 190
+      basis: cited
+      sources:
+        - becker-kreuzungsweichen
+      check: unverified
+      rationale: Slip curves R 190 m.
+    length_a_m:
+      low: 14.0
+      central: 16.615
+      high: 17.0
+      basis: educated-guess
+      sources:
+        - becker-kreuzungsweichen
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Same body as the 1:9 diamond (half-length).
+    length_b_m:
+      low: 14.0
+      central: 16.615
+      high: 17.0
+      basis: educated-guess
+      sources:
+        - becker-kreuzungsweichen
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Symmetrical.
+    total_length_m:
+      low: 28.0
+      central: 33.23
+      high: 34.0
+      basis: educated-guess
+      sources:
+        - becker-kreuzungsweichen
+        - db-ril-800-0120
+      check: unverified
+      rationale: a + b; DB drawing to be checked.
+    diverging_speed_kmh:
+      central: 40
+      basis: documented
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: R 190 m as EW 190-1:9 (switch.cant_deficiency_mm).
+    through_speed_kmh:
+      low: 60
+      central: 100
+      high: 120
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Station element; obtuse crossings and four switch sets limit it.
+- id: db-ekw-190-1-9
+  label: DB EKW 54-190-1:9 (single slip)
+  element: single_slip
+  standard: db
+  crossing: rigid
+  typical_modes:
+    - commuter_rail
+    - regional_rail
+    - long_distance_rail
+  attributes:
+    crossing_ratio_n:
+      central: 9
+      basis: cited
+      sources:
+        - becker-kreuzungsweichen
+      check: unverified
+      rationale: EKW/DKW 54-190-1:9 designation.
+    diverging_radius_m:
+      central: 190
+      basis: cited
+      sources:
+        - becker-kreuzungsweichen
+      check: unverified
+      rationale: Slip curves R 190 m.
+    length_a_m:
+      low: 14.0
+      central: 16.615
+      high: 17.0
+      basis: educated-guess
+      sources:
+        - becker-kreuzungsweichen
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Same body as the 1:9 diamond (half-length).
+    length_b_m:
+      low: 14.0
+      central: 16.615
+      high: 17.0
+      basis: educated-guess
+      sources:
+        - becker-kreuzungsweichen
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Symmetrical.
+    total_length_m:
+      low: 28.0
+      central: 33.23
+      high: 34.0
+      basis: educated-guess
+      sources:
+        - becker-kreuzungsweichen
+        - db-ril-800-0120
+      check: unverified
+      rationale: a + b; DB drawing to be checked.
+    diverging_speed_kmh:
+      central: 40
+      basis: documented
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: R 190 m as EW 190-1:9 (switch.cant_deficiency_mm).
+    through_speed_kmh:
+      low: 60
+      central: 100
+      high: 120
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Station element; obtuse crossings and four switch sets limit it.
+- id: tram-diamond-90
+  label: Tram right-angle crossing (90° diamond)
+  element: diamond
+  standard: tram
+  crossing: rigid
+  typical_modes:
+    - tram
+  attributes:
+    crossing_angle_deg:
+      low: 60
+      central: 90
+      high: 90
+      basis: documented
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Street tram crossings are usually close to a right angle; the angle is set by the streets.
+    length_a_m:
+      low: 1.2
+      central: 1.5
+      high: 2.5
+      basis: documented
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Half of the gauge (0.72 m) plus rail head and the crossing block ends, along each track.
+    length_b_m:
+      low: 1.2
+      central: 1.5
+      high: 2.5
+      basis: documented
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Symmetrical.
+    total_length_m:
+      low: 2.4
+      central: 3.0
+      high: 5.0
+      basis: documented
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: a + b.
+    through_speed_kmh:
+      low: 10
+      central: 15
+      high: 25
+      basis: cited
+      sources:
+        - krakow-tram-switches
+      check: unverified
+      rationale: Flange-bearing (shallow-groove) crossings are limited to 15 km/h.

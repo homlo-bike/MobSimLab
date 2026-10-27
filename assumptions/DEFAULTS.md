@@ -22,6 +22,7 @@ Schema and contribution rules: [README.md](README.md).
 - [Depots and streets](#depots-and-streets)
 - [Energy and climate](#energy-and-climate)
 - [Energy supply systems](#energy-supply-systems)
+- [Switches and crossings](#switches-and-crossings)
 - [Sources](#sources)
 
 ## Mode table (central values)
@@ -602,6 +603,29 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 |---|---|---|---|---|---|---|---|
 | all | 30 | 75 | 150 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Editor tolerance. Smaller than typical stop spacing (300–500 m for bus) and larger than the size of a stop area. |
 
+### Turnouts: permitted cant deficiency in the diverging track
+
+`switch.cant_deficiency_mm` · unit: mm · used by: diverging speed of a turnout radius, v = sqrt(I R / 11.8), switch catalogue checks
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 90 | 100 | 120 | documented | secondary | [dewiki-weiche](#src-dewiki-weiche), [en-13803](#src-en-13803) | The DB standard turnout speeds (R 190 m 40 km/h, 300 m 50, 760 m 80, 1200 m 100) all equal sqrt(100 · R / 11.8) rounded down, so the diverging track runs with about 100 mm cant deficiency and no cant. EN 13803 allows more with conditions (clause to be checked). |
+| metro | 70 | 76 | 100 | cited | secondary | [gb-50157](#src-gb-50157) | GB 50157 commentary: 0.5 m/s² unbalanced lateral acceleration in metro turnouts (R 200 m gives 36 km/h); 0.5 · 1500 / 9.81 = 76 mm. |
+| tram, light_rail | 70 | 100 | 150 | documented | unverified | [krakow-tram-switches](#src-krakow-tram-switches), [mobsimlab-derivation](#src-mobsimlab-derivation) | As curve.cant_deficiency_tram_mm. The Kraków limit of 25 km/h for R 50 m deep-groove switches corresponds to about 150 mm, the upper end. |
+
+### Turnouts: default catalogue turnout offered when connecting tracks
+
+`switch.default_turnout` · unit: id · used by: railway design tool, connection between tracks
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | – | db-ew-300-1-9 | – | educated-guess | unverified | [dewiki-weiche](#src-dewiki-weiche), [mobsimlab-derivation](#src-mobsimlab-derivation) | 50 km/h diverging in 33 m is the usual compromise for station and junction connections on conventional lines. The planner picks any element of switches.yaml; this is only the first offer. |
+| tram | – | tram-r50 | – | educated-guess | unverified | [nortrak-transit](#src-nortrak-transit), [mobsimlab-derivation](#src-mobsimlab-derivation) | 50 m is the common street junction radius; 25 m for depots and loops, 100 m on segregated track. |
+| light_rail | – | tram-r100 | – | educated-guess | unverified | [nortrak-transit](#src-nortrak-transit), [mobsimlab-derivation](#src-mobsimlab-derivation) | Faster segregated running; street sections can switch to tram-r50. |
+| metro | – | db-ew-190-1-9 | – | educated-guess | unverified | [gb-50157](#src-gb-50157), [mobsimlab-derivation](#src-mobsimlab-derivation) | 1:9 turnouts with R 190–200 m and 35–40 km/h diverging are the metro norm (GB 50157 No. 9 is the Chinese equivalent, cn-metro-60-no9). |
+| long_distance_rail | – | db-ew-500-1-12 | – | educated-guess | unverified | [hanser-weichen](#src-hanser-weichen), [mobsimlab-derivation](#src-mobsimlab-derivation) | 60 km/h diverging for passing loops and station throats on intercity lines. |
+| high_speed_rail | – | db-ew-1200-1-18.5 | – | educated-guess | unverified | [dewiki-weiche](#src-dewiki-weiche), [mobsimlab-derivation](#src-mobsimlab-derivation) | 100 km/h diverging into station and overtaking tracks; junctions between lines use 1:26.5 or flatter. |
+
 ## Accessibility
 
 ### Level access: largest horizontal gap between platform edge and vehicle floor
@@ -833,6 +857,51 @@ default and the others are accepted. Full basis, sources and rationale per attri
 | `third-rail-1500v-dc` | Conductor rail (third rail), 1500 V DC | metro, commuter_rail | 1500 | – | 1000 | 1000 | 1800 | 1950 | – | – | – | top / side / bottom | – | – |
 | `fourth-rail-630v-dc` | Fourth-rail system, 630 V DC (+420 V / −210 V) | metro | 630 | – | – | 420 | 760 | – | – | – | – | top | – | – |
 
+## Switches and crossings
+
+The railway design tool connects tracks only with these elements (ADR-0030 point 5). Central values,
+with low–high in brackets where the value is uncertain. a runs from the start of the switch to the
+intersection point of the track centre lines, b from there to the end of each leg. Full basis, sources
+and rationale per attribute: [`switches.yaml`](switches.yaml); geometry model:
+[README](README.md#switches-and-crossings).
+
+| Id | Element | Standard | Built from | Crossing | Modes | 1:n | R (m) | a (m) | b (m) | Length (m) | Track centres (m) | V diverging (km/h) | V through (km/h) |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `db-ew-190-1-9` | turnout | db | – | straight-crossing rigid | light_rail, metro, commuter_rail, regional_rail, long_distance_rail | 9 | 190 | 12.222 (11.5–13.0) | 14.916 (14.0–16.0) | 27.138 (26.0–29.0) | – | 40 | 160 (120–200) |
+| `db-ew-300-1-9` | turnout | db | – | curved-crossing rigid | metro, commuter_rail, regional_rail, long_distance_rail | 9 | 300 | 16.616 | 16.616 | 33.232 | – | 50 | 160 (120–230) |
+| `db-ew-500-1-12` | turnout | db | – | curved-crossing rigid | commuter_rail, regional_rail, long_distance_rail, high_speed_rail | 12 | 500 | 20.797 | 20.797 | 41.594 | – | 60 | 160 (120–230) |
+| `db-ew-500-1-14` | turnout | db | – | curved-crossing movable | regional_rail, long_distance_rail, high_speed_rail | 14 | 500 | 17.834 | 17.834 | 35.668 | – | 60 | 250 (200–300) |
+| `db-ew-760-1-14` | turnout | db | – | curved-crossing rigid | regional_rail, long_distance_rail, high_speed_rail | 14 | 760 | 27.108 | 27.108 | 54.216 | – | 80 | 160 (120–230) |
+| `db-ew-1200-1-18.5` | turnout | db | – | curved-crossing rigid | regional_rail, long_distance_rail, high_speed_rail | 18.5 | 1200 | 32.409 | 32.409 | 64.818 | – | 100 | 200 (160–250) |
+| `db-ew-2500-1-26.5-fb` | turnout | db | – | curved-crossing movable | long_distance_rail, high_speed_rail | 26.5 | 2500 | 47.153 (45.0–56.0) | 47.153 (45.0–56.0) | 94.306 (90.0–112.0) | – | 130 | 280 (250–300) |
+| `db-ew-6000-3700-1-32.5-fb` | turnout | db | – | transition movable | long_distance_rail, high_speed_rail | 32.5 | 3700 | 66.25 (57.5–75.0) | 66.25 (57.5–75.0) | 132.5 (115–150) | – | 160 | 280 |
+| `db-ew-7000-6000-1-42-fb` | turnout | db | – | transition movable | high_speed_rail | 42 | 6000 | 77.0 (70.0–85.0) | 77.0 (70.0–85.0) | 154.0 (140–170) | – | 200 | 280 |
+| `adif-dsih-17000-7300-1-50` | turnout | adif | – | transition movable | high_speed_rail | 50 | 7300 | 96.5 (73.0–120.0) | 96.5 (73.0–120.0) | 193.0 (146–240) | – | 220 | 350 |
+| `adif-dsih-10000-4000-1-36` | turnout | adif | – | transition movable | high_speed_rail | 36 | 4000 | 67.75 (55.5–80.0) | 67.75 (55.5–80.0) | 135.5 (111–160) | – | 160 | 350 |
+| `sncf-tg-0.0154` | turnout | sncf | – | transition movable | high_speed_rail | 65 (62–65) | 10000 (9000–11000) | 105.0 (100.0–110.0) | 105.0 (100.0–110.0) | 210.0 (200.0–220.0) | – | 220 | 320 (300–350) |
+| `cn-60-no18-hs` | turnout | china-tb | – | straight-crossing movable | long_distance_rail, high_speed_rail | 18 | 1100 | 31.729 | 37.271 | 69.0 | – | 80 | 350 |
+| `cn-60-no42-hs` | turnout | china-tb | – | transition movable | high_speed_rail | 42 | 5000 | 78.6 (70.0–90.0) | 78.6 (67.2–87.2) | 157.2 | – | 160 | 350 |
+| `cn-60-no12` | turnout | china-tb | – | straight-crossing rigid | commuter_rail, regional_rail, long_distance_rail | 12 | 350 (330–350) | 16.592 | 21.208 | 37.8 | – | 50 | 160 |
+| `cn-metro-60-no9` | turnout | china-gb50157 | – | straight-crossing rigid | metro, light_rail | 9 | 200 | 13.839 (12.57–13.839) | 15.73 | 29.569 (28.3–29.569) | – | 35 | 120 (100–120) |
+| `arema-no8` | turnout | arema | – | straight-crossing rigid | commuter_rail, regional_rail, long_distance_rail | 7.97 | 153.31 (145.6–161.0) | 9.26 (7.26–11.26) | 13.84 (11.84–16.84) | 23.1 (19.1–28.1) | – | 24 (16–31) | 127 (97–177) |
+| `arema-no10` | turnout | arema | – | straight-crossing rigid | light_rail, commuter_rail, regional_rail, long_distance_rail | 9.97 | 237.97 (226.1–249.9) | 9.69 (7.69–11.69) | 17.31 (15.31–20.31) | 27.0 (23.0–32.0) | – | 24 (24–40) | 127 (97–177) |
+| `arema-no15` | turnout | arema | – | straight-crossing rigid | commuter_rail, regional_rail, long_distance_rail | 14.98 | 557.91 (530.0–585.8) | 12.4 (10.4–14.4) | 26.0 (24.0–29.0) | 38.4 (34.4–43.4) | – | 48 (40–60) | 127 (97–177) |
+| `arema-no20` | turnout | arema | – | straight-crossing rigid | commuter_rail, regional_rail, long_distance_rail | 19.99 | 996.73 (946.9–1046.6) | 18.82 (16.82–20.82) | 34.68 (32.68–37.68) | 53.5 (49.5–58.5) | – | 72 (64–80) | 127 (97–177) |
+| `tram-r25` | turnout | tram | – | straight-crossing rigid | tram | 4.5 (3.5–5.5) | 25 | 3.24 (2.24–5.24) | 6.76 (3.76–10.76) | 10.0 (7.0–14.0) | – | 10 (5–15) | 50 (30–70) |
+| `tram-r50` | turnout | tram | – | straight-crossing rigid | tram, light_rail | 6 (5–7) | 50 | 4.64 (3.64–6.64) | 9.36 (5.36–13.36) | 14.0 (10.0–18.0) | – | 15 (10–25) | 50 (30–70) |
+| `tram-r100` | turnout | tram | – | straight-crossing rigid | tram, light_rail | 7 (6–8) | 100 | 7.61 (6.61–9.61) | 11.39 (7.39–16.39) | 19.0 (15.0–24.0) | – | 25 (20–30) | 50 (30–70) |
+| `xo-db-ew-190-1-9-4.5` | crossover | db | `db-ew-190-1-9` | – | metro, commuter_rail, regional_rail, long_distance_rail | – | – | – | – | 64.944 | 4.5 | – | – |
+| `xo-db-ew-500-1-12-4.0` | crossover | db | `db-ew-500-1-12` | – | commuter_rail, regional_rail, long_distance_rail | – | – | – | – | 89.594 | 4.0 | – | – |
+| `xo-db-ew-1200-1-18.5-4.5` | crossover | db | `db-ew-1200-1-18.5` | – | long_distance_rail, high_speed_rail | – | – | – | – | 148.068 | 4.5 | – | – |
+| `xo-cn-metro-no9-4.0` | crossover | china-gb50157 | `cn-metro-60-no9` | – | metro | – | – | – | – | 63.678 | 4.0 | – | – |
+| `sx-cn-metro-no9-5.0` | scissors_crossover | china-gb50157 | `cn-metro-60-no9` | – | metro | 4.44 | – | – | – | 72.678 | 5.0 | – | – |
+| `xo-tram-r50-3.0` | crossover | tram | `tram-r50` | – | tram, light_rail | – | – | – | – | 27.28 | 3.0 | – | – |
+| `sx-tram-r50-3.2` | scissors_crossover | tram | `tram-r50` | – | tram, light_rail | 2.92 | – | – | – | 28.48 | 3.2 | – | – |
+| `db-kr-1-9` | diamond | db | – | rigid | commuter_rail, regional_rail, long_distance_rail | 9 | – | 16.615 (14.0–17.0) | 16.615 (14.0–17.0) | 33.23 (28.0–34.0) | – | – | 100 (60–160) |
+| `db-dkw-190-1-9` | double_slip | db | – | rigid | commuter_rail, regional_rail, long_distance_rail | 9 | 190 | 16.615 (14.0–17.0) | 16.615 (14.0–17.0) | 33.23 (28.0–34.0) | – | 40 | 100 (60–120) |
+| `db-ekw-190-1-9` | single_slip | db | – | rigid | commuter_rail, regional_rail, long_distance_rail | 9 | 190 | 16.615 (14.0–17.0) | 16.615 (14.0–17.0) | 33.23 (28.0–34.0) | – | 40 | 100 (60–120) |
+| `tram-diamond-90` | diamond | tram | – | rigid | tram | 90° | – | 1.5 (1.2–2.5) | 1.5 (1.2–2.5) | 3.0 (2.4–5.0) | – | – | 15 (10–25) |
+
 ## Sources
 
 | Id | Source | Access | Licence of the source | Retrieved | Checked via |
@@ -888,3 +957,26 @@ default and the others are accepted. Full basis, sources and rationale per attri
 | <a id="src-tsi-loc-pas"></a>`tsi-loc-pas` | [Commission Regulation (EU) No 1302/2014, TSI for the rolling stock — locomotives and passenger rolling stock subsystem (TSI LOC&PAS), pantograph head geometry and current at standstill](https://eur-lex.europa.eu/eli/reg/2014/1302/oj) | free | © European Union; reuse authorised under Commission Decision 2011/833/EU | 2026-10-27 | none |
 | <a id="src-era-tsi-ene"></a>`era-tsi-ene` | [ERA, TSI Energy (consolidated text and application guide) — contact wire height verification points 5.0 m and 6.5 m above top of rail](https://www.era.europa.eu/system/files/2022-11/TSI%20Energy.pdf) | free | © European Union Agency for Railways; reuse authorised with attribution | 2026-10-27 | search-snippet |
 | <a id="src-uk-dc-third-rail"></a>`uk-dc-third-rail` | [Study guide on UK DC electrification (third-rail top-contact system at nominal 750 V DC predominates on GB mainline DC lines)](https://open-exam-prep.com/study-guides/uk-pts-track-safety/dc-conductor-rail-safety/dc-infrastructure-and-voltages) | free | © publisher; numbers cited as facts | 2026-10-27 | search-snippet |
+| <a id="src-db-ril-800-0120"></a>`db-ril-800-0120` | [DB InfraGO Richtlinie 800.0120 (Netzinfrastruktur Technik entwerfen; Weichen und Kreuzungen) and the DB standard turnout drawings (Regelzeichnungen, Zeichnungsverzeichnis Weiche 54 / 60)](https://lieferanten.deutschebahn.com/resource/blob/12635996/278bd141e7324656a19adac30cd9f6de/Zeichnungsverzeichnis-Weiche-60-I-IAM-22-Stand-08-01-2026--data.pdf) | on-request | © DB InfraGO; numbers cited as facts | 2026-10-27 | none |
+| <a id="src-dewiki-weiche"></a>`dewiki-weiche` | [Wikipedia (de), "Weiche (Schienenverkehr)": DB standard turnouts EW 190-1:9 (40 km/h), 300-1:9 (50), 500-1:12 (60), 760-1:14 (80), 1200-1:18,5 (100), 2500-1:26,5 (130), 6000/3700-1:32,5 fb (160/280), 7000/6000-1:42 fb (200/280)](https://de.wikipedia.org/wiki/Weiche_(Schienenverkehr)) | free | CC BY-SA 4.0 | 2026-10-27 | search-snippet |
+| <a id="src-hanser-weichen"></a>`hanser-weichen` | [Textbook excerpt on turnout geometry (Weichen-Grundformen table: 54/60-500-1:12, rigid frog, tangent length 20.797 m, 60 km/h diverging, 160/230 km/h through), ISBN 978-3-446-44894-0](https://files.hanser.de/Files/Article/ARTK_ZCO_9783446448940_0001.pdf) | free | © Carl Hanser Verlag; numbers cited as facts | 2026-10-27 | search-snippet |
+| <a id="src-zusi-weichen"></a>`zusi-weichen` | [Zusi wiki, "In Zusi umsetzbare Weichentypen": for a turnout with a curved crossing the length is twice the tangent length, equal at all three ends](https://zusiwiki.echoray.de/wiki/In_Zusi_umsetzbare_Weichentypen) | free | © authors; rule cited as fact | 2026-10-27 | search-snippet |
+| <a id="src-osm-switch-2500"></a>`osm-switch-2500` | [OpenStreetMap node 75194419: DB switch tagged EW 2500-1:26,5 fb, 130 km/h diverging, 300 km/h through](https://www.openstreetmap.org/node/75194419) | free | ODbL 1.0 | 2026-10-27 | search-snippet |
+| <a id="src-eisenbahnweiche-fandom"></a>`eisenbahnweiche-fandom` | [Vereins-Wiki, "Eisenbahnweiche": high-speed turnouts of the 1:42 class about 154 m long, 210 t, switch blades about 56 m](https://vereins.fandom.com/wiki/Eisenbahnweiche) | free | CC BY-SA 3.0 | 2026-10-27 | search-snippet |
+| <a id="src-becker-kreuzungsweichen"></a>`becker-kreuzungsweichen` | [Thomas Becker, "Einfache Kreuzungsweichen" / "Kreuzungsweichen": EKW and DKW 54-190-1:9 keep the crossing angle, radii and length of their predecessors](https://drahtkupplung.de/gtbhb2418.html) | free | © author; numbers cited as facts | 2026-10-27 | search-snippet |
+| <a id="src-crchi-hs-turnouts"></a>`crchi-hs-turnouts` | [China Railway High-tech Industry, 350 km/h passenger dedicated line turnouts: No. 18 (R 1100 m, 69 m, 80 km/h diverging), No. 42 (R 5000 m, 157.2 m, 160 km/h diverging), 350 km/h through](https://www.crchi.com/col2464/art/2018/art_2464_124.html) | free | © publisher; numbers cited as facts | 2026-10-27 | search-snippet |
+| <a id="src-nra-tech-rules"></a>`nra-tech-rules` | [铁路技术管理规程 (Railway Technical Management Rules, 2006, Ministry of Railways Order 29): single turnouts for 80–140 km/h diverging must be No. 30 or larger](https://www.nra.gov.cn/xxgk/gkml/ztjg/gfzd/bmgz/202206/t20220624_327439.shtml) | free | Official document; numbers cited as facts | 2026-10-27 | search-snippet |
+| <a id="src-gb-50157"></a>`gb-50157` | [GB 50157-2013 Code for design of metro (地铁设计规范), commentary on turnouts: No. 9 diverging limit 35 km/h (R 200 m, 0.5 m/s² gives 36 km/h); 60 kg/m No. 9 front length 13.839 m, rear length 15.730 m](http://m.jianbiaoku.com/webarbs/book/1027/1073495.shtml) | free | Official standard; numbers cited as facts | 2026-10-27 | search-snippet |
+| <a id="src-metro-no9-optimised"></a>`metro-no9-optimised` | [地铁60 kg/m钢轨9号单开道岔优化设计 (optimised metro No. 9 turnout: 12.570 m + 15.730 m = 28.300 m, R 200 m, ≤120 km/h through, ≤35 km/h diverging)](https://m.fx361.com/news/2021/0808/12713763.html) | free | © publisher; numbers cited as facts | 2026-10-27 | search-snippet |
+| <a id="src-suburban-no12"></a>`suburban-no12` | [市域铁路60 kg/m钢轨12号可动心轨无砟道岔设计, Journal of Railway Engineering Society 41(5), 2024 (Wenzhou suburban railway turnout selection; rigid No. 12 ballasted turnout 37.8 m, a 16.592 m, b 21.208 m, 160/50 km/h)](https://tdgcxb.crec.cn/CN/Y2024/V41/I5/6) | free | © publisher; numbers cited as facts | 2026-10-27 | search-snippet |
+| <a id="src-adif-desvios-av"></a>`adif-desvios-av` | [Diseño de desvíos y cruzamientos adaptados al sistema de vía en placa (table of ADIF high-speed turnouts: DSIH-AV3-60-17000/7300-1:50 350/220 km/h, DSIH-AV3-60-10000/4000-1:36 350/160 km/h)](https://es.scribd.com/document/729015749/Diseno-de-desvios-y-cruzamientos-adaptados-al-sistema-de-via-en-placa) | free | © author; numbers cited as facts | 2026-10-27 | search-snippet |
+| <a id="src-sncf-landes-220"></a>`sncf-landes-220` | [The Landes test site: points and crossings for switching trains at high speeds (Chemins de fer no. 307, 1974): 220 km/h diverging, 36 m blades, 210 m total length, radius about 10,000 m, tg 0.0162](https://trid.trb.org/View/39290) | free | © publisher; numbers cited as facts | 2026-10-27 | search-snippet |
+| <a id="src-arema-mre-ch5"></a>`arema-mre-ch5` | [AREMA Manual for Railway Engineering, Chapter 5 Track (turnout plans, leads, closure radii, maximum speeds by turnout number and unbalance)](https://www.arema.org/) | paywalled | © AREMA; numbers cited as facts | 2026-10-27 | none |
+| <a id="src-amtrak-spec-63"></a>`amtrak-spec-63` | [Amtrak Track Design Specification 63 (turnout selection: conventional No. 8 and No. 10 RBM-frog turnouts for diverging speeds up to 15 mph)](https://www.amtrak.com/content/dam/projects/dotcom/english/public/documents/corporate/engineering-practices/engineering-specs/amtrak-track-design-specification-63.pdf) | free | © Amtrak; numbers cited as facts | 2026-10-27 | search-snippet |
+| <a id="src-csx-sidetracks"></a>`csx-sidetracks` | [CSX Standard Specifications for the Design and Construction of Private Sidetracks (No. 8 or larger on industry tracks, No. 10 or larger on lead tracks)](https://www.fbfl.us/DocumentCenter/View/17462/CSX-Industrial-Sidetrack-Manual---Specifications-2016) | free | © CSX; numbers cited as facts | 2026-10-27 | search-snippet |
+| <a id="src-up-5015"></a>`up-5015` | [Union Pacific standard drawing 5015, No. 15 turnout (actual lead 111'-2 3/4" from point of switch to 1/2-inch point of frog)](https://www.up.com/emp/engineering/mapcontent/standards/track%20standard%20drawings/5015.pdf) | free | © Union Pacific; numbers cited as facts | 2026-10-27 | search-snippet |
+| <a id="src-fra-td99-021"></a>`fra-td99-021` | [FRA Technology Digest TD99-021, No. 20 turnout with intermediate geometry (156 ft lead for AREMA and intermediate geometry; 50 mph AREMA, 45 mph intermediate)](https://www.mxvrail.com/wp-content/uploads/2023/01/TD99-021.pdf) | free | US government work (public domain) | 2026-10-27 | search-snippet |
+| <a id="src-fra-rr0610"></a>`fra-rr0610` | [FRA Research Results RR06-10, increasing diverging speed of a No. 20 turnout from the current 45 mph to 55 mph without changing lead or frog angle](https://railroads.dot.gov/sites/fra.dot.gov/files/fra_net/2121/rr0610.pdf) | free | US government work (public domain) | 2026-10-27 | search-snippet |
+| <a id="src-nortrak-transit"></a>`nortrak-transit` | [voestalpine Nortrak, transit turnouts ("Meter Design" tram and LRT turnouts for standard European geometries of 20, 25, 50, 75, 100 and 150 m radius)](https://www.voestalpine.com/nortrak/en/products/Turnouts-Transit-Systems/) | free | © voestalpine; numbers cited as facts | 2026-10-27 | search-snippet |
+| <a id="src-krakow-tram-switches"></a>`krakow-tram-switches` | [Kraków tramway (MPK / ZDMK) turnout specification (switches with shallow-groove crossings 15 km/h; R = 50 m switches with deep-groove crossings 25 km/h)](https://plikimpi.krakow.pl/pliki/339992) | free | Public procurement document; numbers cited as facts | 2026-10-27 | search-snippet |
+| <a id="src-voestalpine-tram-train-hu"></a>`voestalpine-tram-train-hu` | [voestalpine, first Hungarian tram-train project (turnouts R = 200 m and R = 300 m for 40 km/h diverging)](https://voestalpine.com/railway-systems/en/company/news/first-hungarian-tram-train-project) | free | © voestalpine; numbers cited as facts | 2026-10-27 | search-snippet |
