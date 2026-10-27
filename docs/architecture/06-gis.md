@@ -198,12 +198,24 @@ All thresholds are editable tables per project, initial values sourced (e.g. nat
 
 Bus, BRT, trolleybus and intercity bus lines are drawn with the route-point tool (ADR-0029, FR-NET-11a):
 
-1. The planner clicks points on the map in order. Each point snaps to a road edge the mode may use. Each leg is routed on the mode's road profile (access, turn bans, vehicle dimensions and turning radius, trolleybus wire and battery range, BRT lane preference, no U-turns by default), and the last point is routed back to the first so the route is always a closed circuit.
-2. Points start as via points and can be promoted to stops (and demoted). Stops store edge, travel direction and kerb side. Any stop can be marked a terminal with layover and recovery rules.
-3. One terminal makes a circular line. Two terminals make a two-way line: the circuit is split at the terminals into direction 0 and direction 1 for timetables and GTFS. The "Create return" helper proposes the return leg and opposite-kerb paired stops for a line drawn outbound only.
-4. Moving, inserting or deleting a point re-routes only the two adjacent legs. Legs that cannot be routed, or need a U-turn, are validation errors. Network edits mark affected legs stale.
-5. Variants (short turn, express, school, night) are patterns over the circuit.
-6. Vehicles start in their depot. The block builder adds a routed pull-out from the depot gate to the first stop of each block's first trip and a pull-in from the last stop of its last trip, as non-revenue trips (07 §7–8).
+1. The planner clicks points on the map in order. Each leg is routed on the mode's road profile (access, one-ways, turn bans, vehicle dimensions and turning radius, trolleybus wire and battery range, BRT lane preference), and the last point is routed back to the first, so the route is always a closed circuit. A two-way line is a circuit that passes stops on both sidewalks.
+2. Points start as via points and can be promoted to stops (and demoted). Stops are placed on the sidewalk; the sidewalk fixes the street side, and the stop can only be served by traffic that has it on the door side, so the router approaches it in that direction.
+3. U-turns and reversing are never allowed. If a vehicle must go back along the same street, the router goes round the block. Long turn-round detours raise a warning advising the planner to put the end stop where vehicles can turn (bus station, turning loop, roundabout).
+4. Stops within the grouping distance (including the pair on opposite sidewalks) form one station group with the first stop's name.
+5. End stops carry layover and recovery rules and split the circuit into directions for timetables and GTFS.
+6. Moving, inserting or deleting a point re-routes only the two adjacent legs; network edits mark affected legs stale.
+7. Vehicles start in their depot. The block builder adds routed pull-out and pull-in trips between the depot gate and the first and last stops of each block (07 §7–8).
+
+### 9.5 Railway design tool
+
+Station-first workflow for tram, light rail, metro, regional, intercity and high-speed rail (ADR-0030):
+
+1. Place stations: side and island platforms (one track per platform edge), sized from the mode table and the longest planned consist; move and rotate; level street, underground (thick station-box and tunnel walls) or elevated (faint deck and viaduct edges).
+2. Draw tracks between station connection points: the tool fits straights, arcs and clothoids that meet the mode's minimum radius, cant and transition rules, so there are no sharp corners. Double track uses the mode's track spacing.
+3. Connect tracks only with catalogue switches and crossings (turnouts, crossovers, diamonds, slips) with real geometry and diverging speeds. Level changes use ramp/portal elements sized from the maximum gradient.
+4. Everything is stored at true size; the map shows rails at real gauge with OCS or third-rail symbols when zoomed in, and simplifies to single lines when zoomed out.
+5. Signals and train detection sections are generated from line speed and signalling type, then editable; tram street running links tracks to road lanes.
+6. Validations from §9.2 run live while drawing.
 
 ## 10. Schematic diagrams (ADR-0025)
 

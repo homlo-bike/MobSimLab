@@ -65,7 +65,7 @@ Each requirement has an ID so tests, ADRs and issues can reference it. Priority:
 | FR-NET-09 | Bus/BRT/trolleybus depots from a polygon with entrances, exits, parking, charging, maintenance, reserve, circulation; slots generated automatically; dynamic sizing. | M |
 | FR-NET-10 | Rail depots from storage tracks; capacity check against fleet with warnings. | M |
 | FR-NET-11 | Lines, routes, patterns, stop sequences for all 11 modes; regional and long-distance rail may share infrastructure. | M |
-| FR-NET-11a | Street-based lines (bus, BRT, trolleybus, intercity bus) drawn as ordered map points that are routed on the road graph into a closed circuit; points are via points, stops or terminals; a helper proposes the return leg with opposite-kerb stops; moving a point re-routes adjacent legs; depot pull-out/pull-in routed automatically (ADR-0029). | M |
+| FR-NET-11a | Street-based lines (bus, BRT, trolleybus, intercity bus) drawn as ordered map points that are routed on the road graph into a closed circuit; points are via points, stops or end stops; stops sit on the sidewalk and are approached from the side they are on; no U-turns or reversing (detours round the block, with a warning when long); moving a point re-routes adjacent legs; depot pull-out/pull-in routed automatically (ADR-0029). | M |
 | FR-NET-12 | GTFS import of existing services into the network. | M |
 
 ### FR-VEH — Vehicles
