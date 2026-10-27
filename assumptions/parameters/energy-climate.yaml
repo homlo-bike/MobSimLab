@@ -1,0 +1,94 @@
+# Energy and climate notes. Schema: assumptions/README.md.
+
+- key: climate.rail_temp_above_air_c
+  label: Rail temperature above air temperature in sunlight (climate note)
+  group: Energy and climate
+  unit: °C
+  used_by: [heat-related speed restriction note]
+  values:
+    - {context: {mode: "*"}, low: 10, central: 20, high: 25, basis: cited, sources: [nr-anglia-ole], check: secondary,
+       rationale: "Network Rail: in hot weather the railway can be up to 20 °C hotter than the air away from the track."}
+
+- key: climate.rail_design_temp_c
+  label: Rail temperature the track is designed for (stress-free or neutral temperature, climate note)
+  group: Energy and climate
+  unit: °C
+  used_by: [buckling-risk note (risk rises as rail temperature exceeds this by a margin)]
+  values:
+    - {context: {mode: "*"}, low: 20, central: 25, high: 35, basis: documented, sources: [nr-cwr-sft, mobsimlab-derivation], check: unverified,
+       rationale: "UK continuous welded rail is stressed for 27 °C (range 21–27 °C); central European practice is about 20–26 °C; hot climates use higher values."}
+
+- key: ebus.cool_band_low_c
+  label: "Battery buses: lower end of the cool range (climate note)"
+  group: Energy and climate
+  unit: °C
+  used_by: [battery bus energy uplift]
+  values:
+    - {context: {mode: "*"}, low: -5, central: 0, high: 5, basis: documented, sources: [cornell-ebus-cold, vde-ebus-fleet], check: secondary,
+       rationale: "Fleet studies show consumption lowest around 20 °C and rising below; 0 °C separates heating-dominated cold operation from cool."}
+
+- key: ebus.cool_band_high_c
+  label: "Battery buses: upper end of the cool range (climate note)"
+  group: Energy and climate
+  unit: °C
+  used_by: [battery bus energy uplift]
+  values:
+    - {context: {mode: "*"}, low: 10, central: 12, high: 15, basis: documented, sources: [cornell-ebus-cold, vde-ebus-fleet], check: secondary,
+       rationale: "Cornell/TCAT reports the uplift over −12 to 10 °C; above about 12–15 °C the effect is small."}
+
+- key: ebus.cool_extra_share
+  label: "Battery buses: extra energy in the cool range, share"
+  group: Energy and climate
+  unit: share
+  used_by: [battery bus energy uplift]
+  values:
+    - {context: {mode: "*"}, low: 0.10, central: 0.20, high: 0.30, basis: documented, sources: [cornell-ebus-cold], check: secondary,
+       rationale: "Cornell/TCAT: about +27–29 % over −12 to 10 °C overall; the cool part of that band sits lower."}
+
+- key: ebus.cold_band_low_c
+  label: "Battery buses: lower end of the cold band (climate note)"
+  group: Energy and climate
+  unit: °C
+  used_by: [battery bus energy uplift]
+  values:
+    - {context: {mode: "*"}, low: -30, central: -20, high: -10, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified,
+       rationale: "Below this the note asks the user to model the climate explicitly."}
+
+- key: ebus.cold_band_high_c
+  label: "Battery buses: upper end of the cold band (climate note)"
+  group: Energy and climate
+  unit: °C
+  used_by: [battery bus energy uplift]
+  values:
+    - {context: {mode: "*"}, low: -5, central: 0, high: 5, basis: documented, sources: [cornell-ebus-cold], check: secondary,
+       rationale: "Matches the lower end of the cool range."}
+
+- key: ebus.cold_extra_share
+  label: "Battery buses: extra energy in the cold band, share"
+  group: Energy and climate
+  unit: share
+  used_by: [battery bus energy uplift]
+  values:
+    - {context: {mode: "*"}, low: 0.30, central: 0.50, high: 0.90, basis: documented, sources: [cornell-ebus-cold, vde-ebus-fleet], check: secondary,
+       rationale: "Cornell/TCAT: about +48 % at −4 to 0 °C; VDE fleet study: +70–94 % at 0 °C with electric-only heating, +6–29 % with fuel-fired auxiliary heating."}
+
+- key: energy.hvac_power_kw
+  label: Heating and air-conditioning power of a battery vehicle in service
+  group: Energy and climate
+  unit: kW
+  used_by: [auxiliary energy demand]
+  values:
+    - {context: {mode: "*"}, low: 5, central: 15, high: 30, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified,
+       rationale: "12 m bus: about 5 kW with a heat pump in mild weather up to about 25–30 kW with resistive heating in frost."}
+    - {context: {mode: brt}, low: 8, central: 20, high: 40, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "18 m articulated bus."}
+    - {context: {mode: [tram, light_rail]}, low: 15, central: 40, high: 70, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "30–40 m articulated vehicle."}
+    - {context: {mode: [metro, commuter_rail, regional_rail]}, low: 30, central: 80, high: 150, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Per multiple unit."}
+
+- key: climate.ocl_sag_air_temp_c
+  label: Air temperature above which the overhead contact line sags too far
+  group: Energy and climate
+  unit: °C
+  used_by: [heat-related speed restriction note]
+  values:
+    - {context: {mode: "*"}, low: 32, central: 38, high: 45, basis: cited, sources: [orr-ole-heat], check: secondary,
+       rationale: "ORR: UK legacy overhead line equipment is designed for −18 °C to +38 °C; modern auto-tensioned systems and hot-climate designs go higher."}

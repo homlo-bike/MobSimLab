@@ -1,0 +1,349 @@
+# Per-mode defaults (the "mode table" in Project Preferences → Parameters → Modes).
+# Schema: see assumptions/README.md. Mode ids: bus, brt, trolleybus, intercity_bus,
+# tram, light_rail, metro, commuter_rail, regional_rail, long_distance_rail,
+# high_speed_rail. "*" is the global fallback required by ADR-0018.
+
+- key: mode.min_curve_radius_m
+  label: Curve radius, minimum
+  group: Modes
+  unit: m
+  used_by: [alignment check (error below this), swept-path check, vehicle–infrastructure compatibility]
+  values:
+    - {context: {mode: "*"}, low: 12.5, central: 25, high: 300, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified,
+       rationale: "Wide fallback spanning road vehicles to mainline rail; every mode below has its own entry."}
+    - {context: {mode: [bus, brt, trolleybus, intercity_bus]}, low: 12.5, central: 12.5, high: 12.5, basis: cited, sources: [eu-dir-96-53], check: unverified,
+       rationale: "Directive 96/53/EC Annex I 1.5: a road vehicle must turn within a circle of 12.5 m outer radius (5.3 m inner). Used as the outer swept radius at walking pace, not as a running radius."}
+    - {context: {mode: tram}, low: 15, central: 20, high: 25, basis: documented, sources: [tud-tram-radius, bostrab], check: secondary,
+       rationale: "Practice in German networks is about 20 to 30 m with extremes just under 12 m (seminar slides); BOStrab §17(3) only requires radii on segregated track to avoid speed restrictions. Depot tracks can go lower; vehicle file wins."}
+    - {context: {mode: light_rail}, low: 20, central: 25, high: 50, basis: documented, sources: [tud-tram-radius, bostrab-trr], check: unverified,
+       rationale: "Light rail vehicles still run street sections, so the tram minimum applies at junctions; segregated sections use the recommended radius."}
+    - {context: {mode: metro}, low: 60, central: 100, high: 150, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified,
+       rationale: "Metro stock is typically specified for about 60 to 100 m on running lines (lower in depots). Wide range; take the vehicle file value when it exists."}
+    - {context: {mode: commuter_rail}, low: 150, central: 300, high: 600, basis: documented, sources: [en-13803, mobsimlab-derivation], check: unverified,
+       rationale: "Derived from R = 11.8 v² / (D + I) with v = 120 km/h, D = 160 mm cant, I = 130 mm cant deficiency gives about 590 m for full line speed; 150–300 m is what mainline EMUs accept at reduced speed."}
+    - {context: {mode: regional_rail}, low: 300, central: 600, high: 1050, basis: documented, sources: [en-13803, mobsimlab-derivation], check: unverified,
+       rationale: "R = 11.8 v² / (D + I): v = 160 km/h, D = 160, I = 130 gives about 1040 m; lower values impose a local speed restriction."}
+    - {context: {mode: long_distance_rail}, low: 600, central: 1050, high: 1650, basis: documented, sources: [en-13803, mobsimlab-derivation], check: unverified,
+       rationale: "R = 11.8 v² / (D + I): v = 160 km/h → about 1040 m; v = 200 km/h → about 1630 m."}
+    - {context: {mode: high_speed_rail}, low: 2240, central: 3220, high: 4380, basis: documented, sources: [en-13803, eu-reco-2001-290, mobsimlab-derivation], check: unverified,
+       rationale: "R = 11.8 v² / (D + I) with D = 180 mm (2001/290/EC limit for new high-speed lines) and I = 150 mm: v = 250 km/h → about 2240 m (low), 300 km/h → about 3220 m (central), 350 km/h → about 4380 m (high)."}
+
+- key: mode.recommended_curve_radius_m
+  label: Curve radius, recommended
+  group: Modes
+  unit: m
+  used_by: [alignment check (warning below this)]
+  values:
+    - {context: {mode: "*"}, low: 25, central: 100, high: 1000, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified,
+       rationale: "Wide fallback; modes below have their own entries."}
+    - {context: {mode: [bus, trolleybus]}, low: 20, central: 30, high: 50, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified,
+       rationale: "Comfortable urban bus turning; trolleybus overhead wire curves favour larger radii."}
+    - {context: {mode: brt}, low: 30, central: 50, high: 100, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified,
+       rationale: "Busway running at about 50 km/h with standing passengers (0.65 m/s² lateral at 30 km/h needs about 100 m)."}
+    - {context: {mode: intercity_bus}, low: 100, central: 200, high: 500, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified,
+       rationale: "Road design, not bus-specific; the road network sets the real limit."}
+    - {context: {mode: tram}, low: 25, central: 50, high: 100, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified,
+       rationale: "Larger radii reduce wheel squeal and wear; 50 m is a common planning target."}
+    - {context: {mode: light_rail}, low: 50, central: 100, high: 300, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified,
+       rationale: "Segregated light rail at 70–80 km/h."}
+    - {context: {mode: metro}, low: 200, central: 300, high: 500, basis: documented, sources: [mobsimlab-derivation], check: unverified,
+       rationale: "R = 11.8 v² / (D + I) with v = 80 km/h, D = 120 mm, I = 100 mm gives about 340 m for full speed."}
+    - {context: {mode: commuter_rail}, low: 500, central: 600, high: 1000, basis: documented, sources: [en-13803, mobsimlab-derivation], check: unverified,
+       rationale: "Full 120 km/h without restriction (see minimum)."}
+    - {context: {mode: regional_rail}, low: 1000, central: 1500, high: 2500, basis: documented, sources: [en-13803, mobsimlab-derivation], check: unverified,
+       rationale: "160 km/h with comfort margin (I = 100 mm instead of 130)."}
+    - {context: {mode: long_distance_rail}, low: 1600, central: 2500, high: 4000, basis: documented, sources: [en-13803, mobsimlab-derivation], check: unverified,
+       rationale: "200 km/h with comfort margin."}
+    - {context: {mode: high_speed_rail}, low: 4000, central: 7000, high: 10000, basis: documented, sources: [en-13803, mobsimlab-derivation], check: unverified,
+       rationale: "300 km/h with low cant and deficiency for comfort and mixed speeds; 7000 m is common on 300 km/h lines."}
+
+- key: mode.max_speed_kmh
+  label: Maximum speed
+  group: Modes
+  unit: km/h
+  used_by: [running time, simulation speed limit when no line speed is set]
+  values:
+    - {context: {mode: "*"}, low: 50, central: 80, high: 160, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Wide fallback."}
+    - {context: {mode: bus}, low: 50, central: 60, high: 80, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified,
+       rationale: "Urban speed limits (50 km/h in most of Europe) bound service speed; the street's own limit wins."}
+    - {context: {mode: brt}, low: 60, central: 70, high: 90, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Segregated busway."}
+    - {context: {mode: trolleybus}, low: 50, central: 60, high: 70, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified,
+       rationale: "Overhead wire special work usually restricts speed."}
+    - {context: {mode: intercity_bus}, low: 80, central: 100, high: 100, basis: cited, sources: [eu-dir-92-6], check: unverified,
+       rationale: "M3 vehicles in the EU must have a speed limiter set to 100 km/h."}
+    - {context: {mode: tram}, low: 50, central: 60, high: 80, basis: documented, sources: [bostrab], check: unverified,
+       rationale: "Street running follows road limits; BOStrab permits higher speeds on segregated track. Clause to be checked."}
+    - {context: {mode: light_rail}, low: 70, central: 80, high: 100, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Typical LRV top speed."}
+    - {context: {mode: metro}, low: 70, central: 80, high: 100, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Typical metro top speed."}
+    - {context: {mode: commuter_rail}, low: 100, central: 120, high: 160, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "S-Bahn and suburban EMUs."}
+    - {context: {mode: regional_rail}, low: 120, central: 160, high: 200, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Regional EMUs/DMUs."}
+    - {context: {mode: long_distance_rail}, low: 160, central: 200, high: 250, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Conventional intercity."}
+    - {context: {mode: high_speed_rail}, low: 250, central: 300, high: 350, basis: documented, sources: [tsi-inf], check: unverified,
+       rationale: "TSI INF high-speed line categories are built for at least 250 km/h; 300–320 km/h is the common design speed."}
+
+- key: mode.dwell_s
+  label: Dwell time at a stop
+  group: Modes
+  unit: s
+  used_by: [timetable generation, running time, simulation (when passenger flows are not modelled)]
+  values:
+    - {context: {mode: "*"}, low: 15, central: 30, high: 60, basis: documented, sources: [tcqsm3], check: unverified,
+       rationale: "TCQSM gives about 30 s as a typical urban dwell and 60 s for busy stops."}
+    - {context: {mode: [bus, trolleybus]}, low: 15, central: 30, high: 60, basis: documented, sources: [tcqsm3], check: unverified,
+       rationale: "TCQSM default bus dwell; on-board fare payment pushes towards the high end."}
+    - {context: {mode: brt}, low: 10, central: 20, high: 40, basis: documented, sources: [tcqsm3], check: unverified,
+       rationale: "Off-board fare collection and all-door boarding shorten dwell."}
+    - {context: {mode: intercity_bus}, low: 60, central: 180, high: 600, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified,
+       rationale: "Luggage handling and ticket checks at intermediate stops."}
+    - {context: {mode: tram}, low: 15, central: 25, high: 45, basis: documented, sources: [tcqsm3], check: unverified, rationale: "Low-floor, multiple doors."}
+    - {context: {mode: [light_rail, metro]}, low: 20, central: 30, high: 45, basis: documented, sources: [tcqsm3], check: unverified,
+       rationale: "TCQSM rail dwell; central stations reach the high end."}
+    - {context: {mode: commuter_rail}, low: 30, central: 45, high: 60, basis: documented, sources: [tcqsm3], check: unverified, rationale: "Fewer doors per metre than metro."}
+    - {context: {mode: regional_rail}, low: 30, central: 60, high: 120, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Single-leaf doors, luggage."}
+    - {context: {mode: long_distance_rail}, low: 60, central: 120, high: 300, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Reserved seating and luggage."}
+    - {context: {mode: high_speed_rail}, low: 60, central: 120, high: 240, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "As long distance."}
+
+- key: mode.spare_share
+  label: Spare vehicles, share of the vehicles in peak service (fleet)
+  group: Modes
+  unit: share
+  used_by: [fleet sizing, depot capacity check, cost model]
+  values:
+    - {context: {mode: "*"}, low: 0.10, central: 0.15, high: 0.20, basis: cited, sources: [fta-c9030, tcrp-spare-ratio], check: secondary,
+       rationale: "FTA expects spares at or below 20 % of vehicles in maximum service for fleets of 50 or more; 15 % is the project default already named in FR-PLAT-05."}
+    - {context: {mode: [bus, brt, trolleybus, intercity_bus]}, low: 0.10, central: 0.15, high: 0.20, basis: cited, sources: [fta-c9030, tcrp-spare-ratio], check: secondary,
+       rationale: "FTA 20 % ceiling for bus fleets of 50 or more; smaller fleets need judgement and often run higher."}
+    - {context: {mode: [tram, light_rail]}, low: 0.10, central: 0.15, high: 0.20, basis: documented, sources: [fta-c9030], check: unverified,
+       rationale: "FTA applies the 20 % guideline to rail as a reference point; light rail fleets are small, so the ceiling is common."}
+    - {context: {mode: [metro, commuter_rail, regional_rail]}, low: 0.08, central: 0.12, high: 0.18, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified,
+       rationale: "Larger rail fleets with planned maintenance windows usually run below the bus ratio."}
+    - {context: {mode: [long_distance_rail, high_speed_rail]}, low: 0.08, central: 0.10, high: 0.15, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified,
+       rationale: "High utilisation fleets with night maintenance."}
+
+- key: mode.standing_density_ppm2
+  label: Standing places, passengers per square metre of standing area
+  group: Modes
+  unit: persons/m²
+  used_by: [vehicle capacity, crowding, passenger assignment]
+  values:
+    - {context: {mode: "*"}, low: 2, central: 4, high: 6, basis: documented, sources: [en-15663, tcqsm3], check: unverified,
+       rationale: "4 persons/m² is the common planning load for urban services; 6 is crush."}
+    - {context: {mode: [bus, brt, trolleybus]}, low: 3, central: 4, high: 8, basis: cited, sources: [unece-r107, tcqsm3], check: unverified,
+       rationale: "UN R107 allows 0.125 m² per standing passenger in Class I buses (8/m², legal maximum); planning uses about 4/m²."}
+    - {context: {mode: intercity_bus}, low: 0, central: 0, high: 0, basis: cited, sources: [unece-r107], check: unverified,
+       rationale: "Class III coaches carry no standing passengers."}
+    - {context: {mode: [tram, light_rail, metro, commuter_rail]}, low: 3, central: 4, high: 6, basis: documented, sources: [en-15663, tcqsm3], check: unverified,
+       rationale: "EN 15663 reference loads for urban/suburban service; 6/m² as crush."}
+    - {context: {mode: regional_rail}, low: 1, central: 2, high: 4, basis: documented, sources: [en-15663], check: unverified, rationale: "Mostly seated."}
+    - {context: {mode: [long_distance_rail, high_speed_rail]}, low: 0, central: 0, high: 2, basis: documented, sources: [en-15663], check: unverified,
+       rationale: "Reserved seating; standing only in exceptional loads."}
+
+- key: mode.colour
+  label: Vehicle and line colour (default)
+  group: Modes
+  unit: hex colour
+  kind: string
+  used_by: [map rendering, schematics, legends]
+  values:
+    - {context: {mode: "*"}, central: "#5F6B7A", basis: educated-guess, sources: [mobsimlab-derivation], check: unverified,
+       rationale: "No standard exists. MobSimLab palette chosen for contrast on light and dark basemaps; S-Bahn green and U-Bahn blue follow common German map practice."}
+    - {context: {mode: bus}, central: "#8E3A8C", basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Palette."}
+    - {context: {mode: brt}, central: "#C2185B", basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Palette."}
+    - {context: {mode: trolleybus}, central: "#6A8E23", basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Palette."}
+    - {context: {mode: intercity_bus}, central: "#7B5E3B", basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Palette."}
+    - {context: {mode: tram}, central: "#D32F2F", basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Palette."}
+    - {context: {mode: light_rail}, central: "#E65100", basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Palette."}
+    - {context: {mode: metro}, central: "#1565C0", basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Palette (U-Bahn blue)."}
+    - {context: {mode: commuter_rail}, central: "#2E7D32", basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Palette (S-Bahn green)."}
+    - {context: {mode: regional_rail}, central: "#546E7A", basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Palette."}
+    - {context: {mode: long_distance_rail}, central: "#37474F", basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Palette."}
+    - {context: {mode: high_speed_rail}, central: "#212121", basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Palette."}
+
+- key: mode.catchment_m
+  label: Catchment, walking distance to a stop
+  group: Modes
+  unit: m
+  used_by: [coverage analysis, demand model access links]
+  values:
+    - {context: {mode: "*"}, low: 300, central: 400, high: 800, basis: cited, sources: [tcqsm3], check: unverified,
+       rationale: "TCQSM: about 1/4 mile (400 m) to bus stops and 1/2 mile (800 m) to rail stations."}
+    - {context: {mode: [bus, trolleybus]}, low: 300, central: 400, high: 500, basis: cited, sources: [tcqsm3], check: unverified, rationale: "1/4 mile."}
+    - {context: {mode: brt}, low: 400, central: 600, high: 800, basis: documented, sources: [tcqsm3], check: unverified, rationale: "Between bus and rail values."}
+    - {context: {mode: intercity_bus}, low: 800, central: 1500, high: 3000, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified,
+       rationale: "Reached mostly by feeder transit or car; walking catchment is a weak model here."}
+    - {context: {mode: tram}, low: 300, central: 500, high: 600, basis: documented, sources: [tcqsm3], check: unverified, rationale: "Between bus and rail values."}
+    - {context: {mode: [light_rail, metro]}, low: 500, central: 800, high: 1000, basis: cited, sources: [tcqsm3], check: unverified, rationale: "1/2 mile."}
+    - {context: {mode: commuter_rail}, low: 800, central: 1000, high: 2000, basis: documented, sources: [tcqsm3], check: unverified, rationale: "Longer access trips, bike and park-and-ride."}
+    - {context: {mode: [regional_rail, long_distance_rail, high_speed_rail]}, low: 1000, central: 2000, high: 5000, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified,
+       rationale: "Station is usually reached by other modes; walking catchment only bounds the walk-only share."}
+
+- key: mode.right_of_way
+  label: Structure and right of way (category A, B or C)
+  group: Modes
+  unit: category
+  kind: enum
+  options: [A, B, C]
+  used_by: [default for new lines, interaction with road traffic in simulation]
+  values:
+    - {context: {mode: "*"}, central: C, basis: cited, sources: [vuchic-2007], check: unverified,
+       rationale: "Vuchic: A = fully separated, B = longitudinally separated with level crossings, C = mixed with traffic."}
+    - {context: {mode: [bus, trolleybus, intercity_bus]}, low: B, central: C, high: C, basis: cited, sources: [vuchic-2007], check: unverified, rationale: "Street running."}
+    - {context: {mode: brt}, low: A, central: B, high: B, basis: cited, sources: [vuchic-2007], check: unverified, rationale: "Busway with at-grade junctions."}
+    - {context: {mode: tram}, low: B, central: C, high: C, basis: cited, sources: [vuchic-2007], check: unverified, rationale: "Street running with some reserved track."}
+    - {context: {mode: light_rail}, low: A, central: B, high: C, basis: cited, sources: [vuchic-2007], check: unverified, rationale: "Mostly reserved track."}
+    - {context: {mode: [metro, commuter_rail, regional_rail, long_distance_rail, high_speed_rail]}, low: A, central: A, high: B, basis: cited, sources: [vuchic-2007], check: unverified,
+       rationale: "Fully separated; mainline rail may keep level crossings (category B)."}
+
+- key: mode.platform_height_mm
+  label: Platform height above rail (rail) or kerb height above road (road modes)
+  group: Modes
+  unit: mm
+  used_by: [level-access check, new stop defaults]
+  values:
+    - {context: {mode: "*"}, low: 160, central: 300, high: 1000, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Wide fallback."}
+    - {context: {mode: [bus, trolleybus]}, low: 160, central: 180, high: 220, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified,
+       rationale: "Raised bus kerbs (for example the Kassel kerb family) are made in 160–220 mm heights; low-floor bus entry is about 320 mm when not kneeling."}
+    - {context: {mode: brt}, low: 220, central: 300, high: 900, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified,
+       rationale: "Low-floor BRT uses raised kerbs; high-floor closed-station BRT (for example Bogotá) uses about 900 mm."}
+    - {context: {mode: intercity_bus}, low: 120, central: 160, high: 180, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "High-floor coaches; kerb height does not give level access."}
+    - {context: {mode: tram}, low: 200, central: 250, high: 300, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified,
+       rationale: "Low-floor trams have a floor of about 300–350 mm; platforms sit slightly below to allow for suspension travel."}
+    - {context: {mode: light_rail}, low: 300, central: 350, high: 900, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Low-floor or high-floor systems."}
+    - {context: {mode: metro}, low: 900, central: 1000, high: 1100, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "High-floor metro stock."}
+    - {context: {mode: commuter_rail}, low: 760, central: 960, high: 1219, basis: documented, sources: [tsi-inf, ada-49cfr38], check: unverified,
+       rationale: "German S-Bahn 960 mm; TSI 760 mm; North American high-level platforms 48 in (1219 mm)."}
+    - {context: {mode: [regional_rail, long_distance_rail, high_speed_rail]}, low: 550, central: 760, high: 760, basis: cited, sources: [tsi-inf, eu-accessible-platforms], check: secondary,
+       rationale: "TSI INF nominal platform heights are 550 mm and 760 mm above the running surface."}
+
+- key: mode.platform_length_m
+  label: Platform length (usable)
+  group: Modes
+  unit: m
+  used_by: [new station defaults, platform-length compatibility check]
+  values:
+    - {context: {mode: "*"}, low: 30, central: 120, high: 400, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Wide fallback."}
+    - {context: {mode: [bus, trolleybus]}, low: 15, central: 20, high: 40, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified,
+       rationale: "One 12 m bus plus approach, or two buses."}
+    - {context: {mode: brt}, low: 40, central: 60, high: 90, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Two to four 18 m articulated buses."}
+    - {context: {mode: intercity_bus}, low: 15, central: 20, high: 40, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "One coach bay."}
+    - {context: {mode: tram}, low: 30, central: 45, high: 75, basis: documented, sources: [bostrab], check: unverified,
+       rationale: "BOStrab limits street-running train length (75 m); typical trams are 30–45 m. Clause to be checked."}
+    - {context: {mode: light_rail}, low: 60, central: 90, high: 120, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Two to four coupled LRVs."}
+    - {context: {mode: metro}, low: 80, central: 120, high: 210, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified,
+       rationale: "Examples: about 110 m (Berlin U-Bahn), 120 m (Munich U-Bahn), up to 200 m+ on large metros."}
+    - {context: {mode: commuter_rail}, low: 140, central: 210, high: 300, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified,
+       rationale: "German S-Bahn standards are 140 m (Berlin) and 210 m (three 70 m units); some systems use longer."}
+    - {context: {mode: regional_rail}, low: 120, central: 170, high: 220, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Typical regional stations."}
+    - {context: {mode: [long_distance_rail, high_speed_rail]}, low: 300, central: 400, high: 420, basis: documented, sources: [tsi-inf], check: unverified,
+       rationale: "400 m accommodates a 2 × 200 m high-speed train; TSI INF leaves the length to the member state."}
+
+- key: mode.min_headway_s
+  label: Following distance, minimum headway between vehicles on the same track or lane
+  group: Modes
+  unit: s
+  used_by: [timetable conflict check, capacity]
+  values:
+    - {context: {mode: "*"}, low: 60, central: 120, high: 180, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Wide fallback."}
+    - {context: {mode: [bus, trolleybus]}, low: 30, central: 60, high: 90, basis: documented, sources: [tcqsm3], check: unverified, rationale: "Bus stop and lane capacity per TCQSM."}
+    - {context: {mode: brt}, low: 20, central: 45, high: 60, basis: documented, sources: [tcqsm3], check: unverified, rationale: "Multiple loading positions and passing lanes."}
+    - {context: {mode: intercity_bus}, low: 60, central: 120, high: 300, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Bay occupancy at terminals."}
+    - {context: {mode: tram}, low: 60, central: 90, high: 120, basis: documented, sources: [tcqsm3], check: unverified, rationale: "On-sight running, limited by stops and junctions."}
+    - {context: {mode: light_rail}, low: 90, central: 120, high: 180, basis: documented, sources: [tcqsm3], check: unverified, rationale: "Signalled sections."}
+    - {context: {mode: metro}, low: 75, central: 90, high: 120, basis: documented, sources: [tcqsm3], check: unverified, rationale: "CBTC lines reach 75–90 s; fixed block about 120 s."}
+    - {context: {mode: commuter_rail}, low: 90, central: 120, high: 180, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Core trunk sections (for example S-Bahn tunnels) reach about 120 s."}
+    - {context: {mode: regional_rail}, low: 120, central: 180, high: 240, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Conventional signalling."}
+    - {context: {mode: long_distance_rail}, low: 150, central: 180, high: 300, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Cab signalling 150–180 s."}
+    - {context: {mode: high_speed_rail}, low: 180, central: 240, high: 300, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "ETCS L2 / LZB at 300 km/h."}
+
+- key: mode.acceleration_ms2
+  label: Acceleration (initial, at low speed)
+  group: Modes
+  unit: m/s²
+  used_by: [running time, simulation when the vehicle file has no tractive effort curve]
+  values:
+    - {context: {mode: "*"}, low: 0.5, central: 1.0, high: 1.3, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Wide fallback."}
+    - {context: {mode: [bus, brt, trolleybus]}, low: 1.0, central: 1.2, high: 1.5, basis: documented, sources: [sumo-vtype], check: unverified,
+       rationale: "Standing-passenger comfort keeps service acceleration at or below about 1.5 m/s²; SUMO's bus class uses about 1.2."}
+    - {context: {mode: intercity_bus}, low: 0.6, central: 0.8, high: 1.0, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Heavier, seated passengers."}
+    - {context: {mode: tram}, low: 1.0, central: 1.2, high: 1.4, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Typical LRV traction specification."}
+    - {context: {mode: [light_rail, metro]}, low: 0.9, central: 1.1, high: 1.3, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Typical specification."}
+    - {context: {mode: commuter_rail}, low: 0.7, central: 0.9, high: 1.1, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Suburban EMUs."}
+    - {context: {mode: regional_rail}, low: 0.5, central: 0.8, high: 1.0, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "EMU high, DMU/loco-hauled low."}
+    - {context: {mode: long_distance_rail}, low: 0.3, central: 0.5, high: 0.7, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Loco-hauled to EMU."}
+    - {context: {mode: high_speed_rail}, low: 0.3, central: 0.4, high: 0.6, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "High-speed EMUs."}
+
+- key: mode.service_braking_ms2
+  label: Service braking deceleration
+  group: Modes
+  unit: m/s²
+  used_by: [running time, simulation braking curves, signal overlap check]
+  values:
+    - {context: {mode: "*"}, low: 0.5, central: 0.9, high: 1.3, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Wide fallback."}
+    - {context: {mode: [bus, brt, trolleybus]}, low: 1.0, central: 1.25, high: 1.5, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified,
+       rationale: "Comfort limit for standing passengers."}
+    - {context: {mode: intercity_bus}, low: 0.8, central: 1.0, high: 1.5, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Comfort braking."}
+    - {context: {mode: tram}, low: 1.0, central: 1.3, high: 1.5, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified,
+       rationale: "Service braking; BOStrab §36 sets a separate, much higher emergency braking requirement (see mode.emergency_braking_ms2)."}
+    - {context: {mode: [light_rail, metro]}, low: 0.9, central: 1.1, high: 1.3, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Typical specification."}
+    - {context: {mode: commuter_rail}, low: 0.7, central: 0.9, high: 1.1, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Typical specification."}
+    - {context: {mode: regional_rail}, low: 0.6, central: 0.8, high: 1.0, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Typical specification."}
+    - {context: {mode: long_distance_rail}, low: 0.5, central: 0.7, high: 0.9, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Typical specification."}
+    - {context: {mode: high_speed_rail}, low: 0.5, central: 0.6, high: 0.8, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Adhesion-limited at speed."}
+
+- key: mode.emergency_braking_ms2
+  label: Emergency braking deceleration (mean)
+  group: Modes
+  unit: m/s²
+  used_by: [on-sight stopping distance, safety checks]
+  values:
+    - {context: {mode: "*"}, low: 0.8, central: 1.2, high: 1.5, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified,
+       rationale: "Rail emergency braking without track brakes."}
+    - {context: {mode: [bus, brt, trolleybus, intercity_bus]}, low: 3.0, central: 5.0, high: 7.0, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified,
+       rationale: "Tyre-road adhesion; passenger safety, not the brake, is the practical limit."}
+    - {context: {mode: [tram, light_rail]}, low: 2.73, central: 2.73, high: 3.0, basis: cited, sources: [bostrab], check: unverified,
+       rationale: "BOStrab §36 requires vehicles driving on sight to reach a mean emergency deceleration of 2.73 m/s² (magnetic track brakes). Figure to be checked against the clause."}
+
+- key: mode.new_track_gauge_mm
+  label: Track gauge (new track and drawing of the rails)
+  group: Modes
+  unit: mm
+  used_by: [new track default, rail drawing, gauge compatibility check]
+  values:
+    - {context: {mode: "*"}, low: 1000, central: 1435, high: 1668, basis: documented, sources: [tsi-inf], check: unverified,
+       rationale: "1435 mm standard gauge is the TSI default; common alternatives: 1000 (metre), 1067 (Cape), 1520/1524, 1600, 1668 (Iberian). Road modes ignore this value."}
+    - {context: {mode: [tram, light_rail]}, low: 1000, central: 1435, high: 1435, basis: documented, sources: [bostrab], check: unverified,
+       rationale: "Many tram networks are metre gauge; new systems are mostly standard gauge."}
+
+- key: mode.new_track_electrification
+  label: Electrification of new track or wire
+  group: Modes
+  unit: system
+  kind: enum
+  options: [none, "600 V DC", "750 V DC", "1500 V DC", "3000 V DC", "15 kV 16.7 Hz", "25 kV 50 Hz"]
+  used_by: [new track default, energy model, vehicle compatibility]
+  values:
+    - {context: {mode: "*"}, central: "25 kV 50 Hz", basis: cited, sources: [tsi-ene, en-50163], check: unverified,
+       rationale: "TSI ENE: 25 kV 50 Hz preferred for new mainline electrification; existing national systems may be kept."}
+    - {context: {mode: [bus, brt, intercity_bus]}, central: none, basis: documented, sources: [mobsimlab-derivation], check: unverified, rationale: "Road vehicles without wires."}
+    - {context: {mode: [trolleybus, tram, light_rail]}, low: "600 V DC", central: "750 V DC", high: "750 V DC", basis: cited, sources: [en-50163], check: unverified,
+       rationale: "EN 50163 nominal DC systems; 750 V DC for new tram and trolleybus systems, 600 V DC legacy."}
+    - {context: {mode: metro}, low: "750 V DC", central: "750 V DC", high: "1500 V DC", basis: cited, sources: [en-50163], check: unverified,
+       rationale: "750 V third rail is most common; 1500 V DC overhead on some systems."}
+    - {context: {mode: [commuter_rail, regional_rail, long_distance_rail]}, low: "15 kV 16.7 Hz", central: "25 kV 50 Hz", high: "25 kV 50 Hz", basis: cited, sources: [tsi-ene, en-50163], check: unverified,
+       rationale: "Use the national system of the surrounding network (DE/AT/CH/SE/NO 15 kV 16.7 Hz; NL/FR-south 1500 V DC; BE/IT/PL/ES-conv. 3000 V DC)."}
+    - {context: {mode: high_speed_rail}, central: "25 kV 50 Hz", basis: cited, sources: [tsi-ene], check: unverified, rationale: "TSI ENE for new high-speed lines."}
+
+- key: mode.crossing_priority_rank
+  label: Crossing priority (lower rank goes first at an at-grade crossing)
+  group: Modes
+  unit: rank
+  used_by: [junction control in co-simulation, transit signal priority defaults]
+  values:
+    - {context: {mode: "*"}, low: 1, central: 5, high: 9, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "General road traffic."}
+    - {context: {mode: [commuter_rail, regional_rail, long_distance_rail, high_speed_rail, metro]}, central: 1, basis: cited, sources: [vienna-convention-1968], check: unverified,
+       rationale: "Railways have absolute priority at level crossings (Vienna Convention Art. 19)."}
+    - {context: {mode: light_rail}, central: 2, basis: documented, sources: [vienna-convention-1968], check: unverified, rationale: "Treated like rail where crossings are protected; otherwise signal priority."}
+    - {context: {mode: tram}, central: 3, basis: documented, sources: [bostrab], check: unverified, rationale: "Tram signal priority at junctions is common practice; national road rules decide unsignalled cases."}
+    - {context: {mode: brt}, central: 3, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Signal priority on busways."}
+    - {context: {mode: [bus, trolleybus]}, central: 4, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "Conditional signal priority."}
+    - {context: {mode: intercity_bus}, central: 5, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified, rationale: "No priority, like general traffic."}

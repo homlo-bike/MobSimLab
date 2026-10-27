@@ -1,0 +1,70 @@
+# Simulation and signalling defaults. Schema: assumptions/README.md.
+
+- key: sim.start_adhesion
+  label: Wheel–rail adhesion for starting, when a vehicle gives no starting tractive effort (simulation)
+  group: Simulation
+  unit: coefficient
+  used_by: [rail kernel starting tractive effort = adhesion × adhesive weight × g]
+  values:
+    - {context: {mode: "*"}, low: 0.15, central: 0.25, high: 0.33, basis: documented, sources: [curtius-kniffler], check: unverified,
+       rationale: "Curtius–Kniffler μ = 0.161 + 7.5/(v + 44) gives 0.33 at standstill on dry rail; 0.25 is a common design value with wheel-slip control; wet or leaf-contaminated rail can fall to 0.15 or less."}
+    - {context: {mode: [tram, light_rail]}, low: 0.15, central: 0.20, high: 0.30, basis: educated-guess, sources: [curtius-kniffler, mobsimlab-derivation], check: unverified,
+       rationale: "Grooved rail in streets collects dirt and water; lower central value."}
+
+- key: sim.time_gap_s
+  label: Time gap to the vehicle ahead, buses and trams driving on sight (simulation)
+  group: Simulation
+  unit: s
+  used_by: [SUMO tau, on-sight car-following for trams]
+  values:
+    - {context: {mode: "*"}, low: 1.0, central: 1.5, high: 2.0, basis: documented, sources: [sumo-vtype], check: secondary,
+       rationale: "SUMO default tau is 1.0 s; professional drivers of heavy vehicles keep longer gaps."}
+    - {context: {mode: [bus, brt, trolleybus, intercity_bus]}, low: 1.0, central: 1.5, high: 2.0, basis: documented, sources: [sumo-vtype], check: secondary, rationale: "As above."}
+    - {context: {mode: [tram, light_rail]}, low: 1.5, central: 2.0, high: 3.0, basis: educated-guess, sources: [bostrab, mobsimlab-derivation], check: unverified,
+       rationale: "On-sight running must allow stopping within the visible distance (BOStrab); longer than road vehicles because of lower service braking."}
+
+- key: sim.min_gap_stopped_m
+  label: Minimum gap to the vehicle ahead when stopped, buses and trams (simulation)
+  group: Simulation
+  unit: m
+  used_by: [SUMO minGap, stop queueing]
+  values:
+    - {context: {mode: "*"}, low: 1.0, central: 2.5, high: 4.0, basis: cited, sources: [sumo-vtype], check: secondary, rationale: "SUMO default minGap is 2.5 m."}
+    - {context: {mode: [tram, light_rail]}, low: 1.0, central: 2.0, high: 5.0, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified,
+       rationale: "Trams queue closely at stops but must keep couplers apart."}
+
+- key: sim.rail_min_following_distance_m
+  label: Minimum distance between following metro and commuter trains (simulation)
+  group: Simulation
+  unit: m
+  used_by: [rail kernel moving-block / on-sight separation floor]
+  values:
+    - {context: {mode: "*"}, low: 20, central: 50, high: 100, basis: educated-guess, sources: [mobsimlab-derivation], check: unverified,
+       rationale: "Safety margin added behind the rear of the train ahead under moving block (CBTC) separation; fixed-block lines get their separation from block sections and overlaps instead."}
+
+- key: signalling.overlap_31_40_m
+  label: Signal overlap before the clearance point, 31–40 km/h (metro and commuter rail)
+  group: Simulation
+  unit: m
+  used_by: [route setting, interlocking release, headway]
+  values:
+    - {context: {mode: "*"}, low: 30, central: 50, high: 50, basis: cited, sources: [db-ril-819], check: unverified,
+       rationale: "DB Ril 819.0202: overlap 50 m for entry speeds up to 40 km/h. Metro lines with train stops often use shorter computed overlaps. Clause to be checked."}
+
+- key: signalling.overlap_41_60_m
+  label: Signal overlap before the clearance point, 41–60 km/h (metro and commuter rail)
+  group: Simulation
+  unit: m
+  used_by: [route setting, interlocking release, headway]
+  values:
+    - {context: {mode: "*"}, low: 50, central: 100, high: 100, basis: cited, sources: [db-ril-819], check: unverified,
+       rationale: "DB Ril 819.0202: overlap 100 m for entry speeds 41–60 km/h. Clause to be checked."}
+
+- key: signalling.overlap_above_60_m
+  label: Signal overlap before the clearance point, above 60 km/h (metro and commuter rail)
+  group: Simulation
+  unit: m
+  used_by: [route setting, interlocking release, headway]
+  values:
+    - {context: {mode: "*"}, low: 100, central: 200, high: 200, basis: cited, sources: [db-ril-819], check: unverified,
+       rationale: "DB Ril 819.0202: standard overlap 200 m above 60 km/h. Clause to be checked."}
