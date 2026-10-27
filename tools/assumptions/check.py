@@ -57,6 +57,7 @@ SOURCE_FIELDS = {
     "retrieved",
     "checked_via",
     "kind",
+    "note",
 }
 PARAM_FIELDS = {"key", "label", "group", "unit", "kind", "options", "used_by", "values"}
 VALUE_FIELDS = {

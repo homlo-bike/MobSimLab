@@ -65,6 +65,7 @@ AASHTO) and with the German and US legal portals unreachable from the build envi
   retrieved: 2026-10-27             # date the URL was last opened or checked
   checked_via: search-snippet       # direct | search-snippet | none
   kind: primary                     # optional: primary | secondary
+  note: "…"                         # optional
 ```
 
 ## Adding or changing a value

@@ -6,8 +6,15 @@
   unit: mm
   used_by: [level-access check per door]
   values:
-    - {context: {mode: "*"}, low: 50, central: 75, high: 100, basis: cited, sources: [tsi-prm, railfuture-step-gap, ada-49cfr38], check: secondary,
-       rationale: "TSI PRM (and GB NTSN) treat boarding as unassisted level access with a horizontal gap ≤ 75 mm; ADA level boarding for rapid and light rail uses 3 in (≈ 76 mm)."}
+    - context:
+        mode: "*"
+      low: 50
+      central: 75
+      high: 100
+      basis: cited
+      sources: [tsi-prm, railfuture-step-gap, ada-49cfr38]
+      check: secondary
+      rationale: TSI PRM (and GB NTSN) treat boarding as unassisted level access with a horizontal gap ≤ 75 mm; ADA level boarding for rapid and light rail uses 3 in (≈ 76 mm).
 
 - key: access.level_gap_vertical_mm
   label: "Level access: largest height difference between platform and vehicle floor"
@@ -15,8 +22,15 @@
   unit: mm
   used_by: [level-access check per door]
   values:
-    - {context: {mode: "*"}, low: 16, central: 50, high: 50, basis: cited, sources: [tsi-prm, railfuture-step-gap, ada-49cfr38], check: secondary,
-       rationale: "TSI PRM: vertical step ≤ 50 mm in either direction (seen in source); ADA: ± 5/8 in (≈ 16 mm) for rapid and light rail (to be checked)."}
+    - context:
+        mode: "*"
+      low: 16
+      central: 50
+      high: 50
+      basis: cited
+      sources: [tsi-prm, railfuture-step-gap, ada-49cfr38]
+      check: secondary
+      rationale: "TSI PRM: vertical step ≤ 50 mm in either direction (seen in source); ADA: ± 5/8 in (≈ 16 mm) for rapid and light rail (to be checked)."
 
 - key: access.step_gap_horizontal_mm
   label: "Step limit: largest horizontal gap (straight track)"
@@ -24,8 +38,15 @@
   unit: mm
   used_by: [step-gap check per door when level access is not met]
   values:
-    - {context: {mode: "*"}, low: 75, central: 200, high: 200, basis: cited, sources: [tsi-prm], check: unverified,
-       rationale: "TSI PRM step position limits for the first access step relative to a platform on straight, level track: horizontal 200 mm. Clause to be checked."}
+    - context:
+        mode: "*"
+      low: 75
+      central: 200
+      high: 200
+      basis: cited
+      sources: [tsi-prm]
+      check: unverified
+      rationale: "TSI PRM step position limits for the first access step relative to a platform on straight, level track: horizontal 200 mm. Clause to be checked."
 
 - key: access.step_above_platform_mm
   label: "Step limit: vehicle floor at most this much above the platform"
@@ -33,8 +54,15 @@
   unit: mm
   used_by: [step-gap check per door]
   values:
-    - {context: {mode: "*"}, low: 50, central: 230, high: 230, basis: cited, sources: [tsi-prm], check: unverified,
-       rationale: "TSI PRM step position: first step at most 230 mm above the platform. Clause to be checked."}
+    - context:
+        mode: "*"
+      low: 50
+      central: 230
+      high: 230
+      basis: cited
+      sources: [tsi-prm]
+      check: unverified
+      rationale: "TSI PRM step position: first step at most 230 mm above the platform. Clause to be checked."
 
 - key: access.step_below_platform_mm
   label: "Step limit: vehicle floor at most this much below the platform"
@@ -42,5 +70,12 @@
   unit: mm
   used_by: [step-gap check per door]
   values:
-    - {context: {mode: "*"}, low: 50, central: 160, high: 160, basis: cited, sources: [tsi-prm], check: unverified,
-       rationale: "TSI PRM step position: first step at most 160 mm below the platform. Clause to be checked."}
+    - context:
+        mode: "*"
+      low: 50
+      central: 160
+      high: 160
+      basis: cited
+      sources: [tsi-prm]
+      check: unverified
+      rationale: "TSI PRM step position: first step at most 160 mm below the platform. Clause to be checked."
