@@ -26,7 +26,8 @@ jobs:
           HEAD: ${{ github.event.pull_request.head.sha }}
         run: |
           missing=0
-          for c in $(git rev-list --no-merges "$BASE..$HEAD"); do
+          # --first-parent: commits brought in by merges were checked on their own branch.
+          for c in $(git rev-list --no-merges --first-parent "$BASE..$HEAD"); do
             if ! git log -1 --format=%B "$c" | grep -qE '^Signed-off-by: .+ <.+@.+>$'; then
               echo "::error::commit $c has no Signed-off-by line (git commit -s)"; missing=1
             fi
