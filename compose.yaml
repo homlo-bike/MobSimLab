@@ -1,0 +1,54 @@
+# MobSimLab: exactly two containers (ADR-0003).
+# First run:  deploy/scripts/init-secrets && cp .env.example .env  (edit MOBSIMLAB_PUBLIC_URL)
+#             docker compose up -d
+name: mobsimlab
+
+services:
+  mobsimlab:
+    image: ${MOBSIMLAB_IMAGE:-ghcr.io/homlo-bike/mobsimlab:${MOBSIMLAB_VERSION:-latest}}
+    build: { context: ., dockerfile: deploy/Dockerfile }
+    container_name: mobsimlab
+    ports: ["${MOBSIMLAB_BIND:-127.0.0.1}:8080:8080"]
+    environment:
+      MOBSIMLAB_PUBLIC_URL: ${MOBSIMLAB_PUBLIC_URL:?set MOBSIMLAB_PUBLIC_URL in .env}
+      MOBSIMLAB_DB_HOST: postgres
+      MOBSIMLAB_SIM_WORKERS: ${MOBSIMLAB_SIM_WORKERS:-1}
+      MOBSIMLAB_BOOTSTRAP_OWNER_EMAIL: ${MOBSIMLAB_BOOTSTRAP_OWNER_EMAIL:-}
+    secrets: [db_migrator_password, db_app_password, db_worker_password, master_key, session_secret]
+    volumes: ["mobsimlab-data:/data"]
+    depends_on: { postgres: { condition: service_healthy } }
+    read_only: true
+    tmpfs: ["/run:uid=10001,gid=10001,mode=0755,exec", "/tmp:uid=10001,gid=10001,mode=1777"]
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    restart: unless-stopped
+    deploy: { resources: { limits: { cpus: "${MOBSIMLAB_CPUS:-4}", memory: "${MOBSIMLAB_MEMORY:-8g}" } } }
+
+  postgres:
+    image: postgis/postgis:17-3.5
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_superuser_password
+    secrets: [db_superuser_password, db_migrator_password, db_app_password, db_worker_password]
+    volumes: ["pgdata:/var/lib/postgresql/data", "./db/init:/docker-entrypoint-initdb.d:ro"]
+    # No host port: only the mobsimlab container can reach the database.
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d mobsimlab"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    security_opt: ["no-new-privileges:true"]
+    restart: unless-stopped
+
+secrets:
+  db_superuser_password: { file: ./deploy/secrets/db_superuser_password }
+  db_migrator_password: { file: ./deploy/secrets/db_migrator_password }
+  db_app_password: { file: ./deploy/secrets/db_app_password }
+  db_worker_password: { file: ./deploy/secrets/db_worker_password }
+  master_key: { file: ./deploy/secrets/master_key }
+  session_secret: { file: ./deploy/secrets/session_secret }
+
+volumes:
+  pgdata: {}
+  mobsimlab-data: {}

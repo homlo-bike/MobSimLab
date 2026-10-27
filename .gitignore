@@ -5,3 +5,9 @@ __pycache__/
 node_modules/
 dist/
 *.so
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+/secrets/
+deploy/secrets/
+.env
