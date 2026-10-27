@@ -20,19 +20,55 @@ LIB = ROOT / "assumptions"
 OUT = LIB / "DEFAULTS.md"
 
 MODES = [
-    "bus", "brt", "trolleybus", "intercity_bus", "tram", "light_rail", "metro",
-    "commuter_rail", "regional_rail", "long_distance_rail", "high_speed_rail",
+    "bus",
+    "brt",
+    "trolleybus",
+    "intercity_bus",
+    "tram",
+    "light_rail",
+    "metro",
+    "commuter_rail",
+    "regional_rail",
+    "long_distance_rail",
+    "high_speed_rail",
 ]
 TRACTIONS = ["battery", "diesel", "hydrogen", "cng", "electric"]
-GROUP_ORDER = ["Modes", "Operations", "Demand", "Simulation", "Infrastructure standards",
-               "Accessibility", "Depots and streets", "Energy and climate"]
+GROUP_ORDER = [
+    "Modes",
+    "Operations",
+    "Demand",
+    "Simulation",
+    "Infrastructure standards",
+    "Accessibility",
+    "Depots and streets",
+    "Energy and climate",
+]
 BASES = {"cited", "documented", "educated-guess"}
 CHECKS = {"read", "secondary", "unverified"}
 ACCESS = {"free", "paywalled", "on-request"}
 CHECKED_VIA = {"direct", "search-snippet", "none"}
-SOURCE_FIELDS = {"id", "title", "publisher", "url", "licence", "access", "retrieved", "checked_via", "kind"}
+SOURCE_FIELDS = {
+    "id",
+    "title",
+    "publisher",
+    "url",
+    "licence",
+    "access",
+    "retrieved",
+    "checked_via",
+    "kind",
+}
 PARAM_FIELDS = {"key", "label", "group", "unit", "kind", "options", "used_by", "values"}
-VALUE_FIELDS = {"context", "low", "central", "high", "basis", "sources", "check", "rationale"}
+VALUE_FIELDS = {
+    "context",
+    "low",
+    "central",
+    "high",
+    "basis",
+    "sources",
+    "check",
+    "rationale",
+}
 
 
 def load_sources() -> dict[str, dict]:
@@ -64,7 +100,9 @@ def validate(sources: dict[str, dict], params: list[dict]) -> list[str]:
         if s.get("access") not in ACCESS:
             errors.append(f"source {sid}: access must be one of {sorted(ACCESS)}")
         if s.get("checked_via") not in CHECKED_VIA:
-            errors.append(f"source {sid}: checked_via must be one of {sorted(CHECKED_VIA)}")
+            errors.append(
+                f"source {sid}: checked_via must be one of {sorted(CHECKED_VIA)}"
+            )
         if s.get("kind") not in (None, "primary", "secondary"):
             errors.append(f"source {sid}: kind must be primary or secondary")
 
@@ -81,7 +119,9 @@ def validate(sources: dict[str, dict], params: list[dict]) -> list[str]:
             if not p.get(f):
                 errors.append(f"{key}: missing {f}")
         if any(not isinstance(u, str) for u in p.get("used_by", [])):
-            errors.append(f"{key}: used_by entries must be strings (quote entries containing ': ')")
+            errors.append(
+                f"{key}: used_by entries must be strings (quote entries containing ': ')"
+            )
         kind = p.get("kind", "number")
         if kind == "enum" and not p.get("options"):
             errors.append(f"{key}: enum without options")
@@ -120,10 +160,16 @@ def validate(sources: dict[str, dict], params: list[dict]) -> list[str]:
             if "central" not in v:
                 errors.append(f"{where}: missing central")
             if kind == "number":
-                nums = [v.get(k) for k in ("low", "central", "high") if v.get(k) is not None]
+                nums = [
+                    v.get(k) for k in ("low", "central", "high") if v.get(k) is not None
+                ]
                 if any(not isinstance(n, (int, float)) for n in nums):
                     errors.append(f"{where}: low/central/high must be numbers")
-                elif v.get("low") is not None and v.get("high") is not None and not (v["low"] <= v["central"] <= v["high"]):
+                elif (
+                    v.get("low") is not None
+                    and v.get("high") is not None
+                    and not (v["low"] <= v["central"] <= v["high"])
+                ):
                     errors.append(f"{where}: needs low <= central <= high")
             if kind == "enum":
                 for k in ("low", "central", "high"):
@@ -145,7 +191,11 @@ def fmt_ctx(ctx: dict) -> str:
     parts = []
     for k, x in ctx.items():
         vals = ", ".join(str(i) for i in as_list(x))
-        parts.append("all" if (k == "mode" and vals == "*") else (vals if k == "mode" else f"{k}: {vals}"))
+        parts.append(
+            "all"
+            if (k == "mode" and vals == "*")
+            else (vals if k == "mode" else f"{k}: {vals}")
+        )
     return "; ".join(parts)
 
 
@@ -175,7 +225,14 @@ def render(sources: dict[str, dict], params: list[dict]) -> str:
         "",
     ]
     by_group: dict[str, list[dict]] = {}
-    for p in sorted(params, key=lambda p: GROUP_ORDER.index(p["group"]) if p["group"] in GROUP_ORDER else len(GROUP_ORDER)):
+    for p in sorted(
+        params,
+        key=lambda p: (
+            GROUP_ORDER.index(p["group"])
+            if p["group"] in GROUP_ORDER
+            else len(GROUP_ORDER)
+        ),
+    ):
         by_group.setdefault(p["group"], []).append(p)
 
     lines += ["## Contents", ""]
@@ -183,9 +240,14 @@ def render(sources: dict[str, dict], params: list[dict]) -> str:
         lines.append(f"- [{g}](#{g.lower().replace(' ', '-')})")
     lines += ["- [Sources](#sources)", ""]
 
-    lines += ["## Mode table (central values)", "",
-              "Central value per mode, resolved the way the engine resolves it (mode entry, else global fallback).", "",
-              "| Parameter | " + " | ".join(MODES) + " |", "|---|" + "---|" * len(MODES)]
+    lines += [
+        "## Mode table (central values)",
+        "",
+        "Central value per mode, resolved the way the engine resolves it (mode entry, else global fallback).",
+        "",
+        "| Parameter | " + " | ".join(MODES) + " |",
+        "|---|" + "---|" * len(MODES),
+    ]
     for p in by_group.get("Modes", []):
         cells = [fmt(resolve(p, m).get("central")) for m in MODES]
         lines.append(f"| {p['label']} ({p['unit']}) | " + " | ".join(cells) + " |")
@@ -194,22 +256,36 @@ def render(sources: dict[str, dict], params: list[dict]) -> str:
     for g, ps in by_group.items():
         lines += [f"## {g}", ""]
         for p in ps:
-            lines += [f"### {p['label']}", "", f"`{p['key']}` · unit: {p['unit']} · used by: {', '.join(p['used_by'])}", ""]
-            lines += ["| Context | Low | Central | High | Basis | Check | Sources | Rationale |",
-                      "|---|---|---|---|---|---|---|---|"]
+            lines += [
+                f"### {p['label']}",
+                "",
+                f"`{p['key']}` · unit: {p['unit']} · used by: {', '.join(p['used_by'])}",
+                "",
+            ]
+            lines += [
+                "| Context | Low | Central | High | Basis | Check | Sources | Rationale |",
+                "|---|---|---|---|---|---|---|---|",
+            ]
             for v in p["values"]:
                 srcs = ", ".join(f"[{s}](#src-{s})" for s in v["sources"])
                 rat = str(v["rationale"]).replace("|", "\\|")
-                lines.append(f"| {fmt_ctx(v['context'])} | {fmt(v.get('low'))} | {fmt(v.get('central'))} | {fmt(v.get('high'))} "
-                             f"| {v['basis']} | {v['check']} | {srcs} | {rat} |")
+                lines.append(
+                    f"| {fmt_ctx(v['context'])} | {fmt(v.get('low'))} | {fmt(v.get('central'))} | {fmt(v.get('high'))} "
+                    f"| {v['basis']} | {v['check']} | {srcs} | {rat} |"
+                )
             lines.append("")
 
-    lines += ["## Sources", "",
-              "| Id | Source | Access | Licence of the source | Retrieved | Checked via |",
-              "|---|---|---|---|---|---|"]
+    lines += [
+        "## Sources",
+        "",
+        "| Id | Source | Access | Licence of the source | Retrieved | Checked via |",
+        "|---|---|---|---|---|---|",
+    ]
     for sid, s in sources.items():
         title = str(s["title"]).replace("|", "\\|")
-        lines.append(f"| <a id=\"src-{sid}\"></a>`{sid}` | [{title}]({s['url']}) | {s['access']} | {s['licence']} | {s['retrieved']} | {s['checked_via']} |")
+        lines.append(
+            f'| <a id="src-{sid}"></a>`{sid}` | [{title}]({s["url"]}) | {s["access"]} | {s["licence"]} | {s["retrieved"]} | {s["checked_via"]} |'
+        )
     lines.append("")
     return "\n".join(lines)
 
