@@ -6,7 +6,7 @@
 
 | Concept | Description |
 |---------|-------------|
-| `AssumptionLibraryEntry` | Versioned, sourced default for a named parameter in a context. Example: `dwell.per_boarding_s` for `{mode: bus, fare: onboard, floor: low}` → low 2.5, central 3.5, high 5.0, source TCQSM. Shipped as YAML in the repo (`assumptions/`), reviewed like code. |
+| `AssumptionLibraryEntry` | Versioned, sourced default for a named parameter in a context. Example: `dwell.per_boarding_s` for `{mode: bus, fare: onboard, floor: low}` → low 2.5, central 3.5, high 5.0, source TCQSM. Shipped as YAML in the repo ([`assumptions/`](../../assumptions/README.md), readable tables in [`DEFAULTS.md`](../../assumptions/DEFAULTS.md)), reviewed like code. |
 | `AssumedValue` | A value stored on an object where the user did not provide one (04 §2.3). |
 | `Override` | User-provided value replacing an assumption; keeps a link to the original and records who/when/why. |
 | `SensitivityResult` | Effect of varying the assumption from low to high on chosen output metrics. |

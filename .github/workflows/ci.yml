@@ -69,6 +69,15 @@ jobs:
       - run: uv run mypy
       - run: uv run pytest -q
 
+  assumptions:
+    name: Assumption library (schema, sources, DEFAULTS.md up to date)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v6
+        with: { python-version: "3.12" }
+      - run: uv run --no-project --with pyyaml python tools/assumptions/check.py --check-rendered
+
   rust:
     name: Kernels (fmt, clippy, test, S2 smoke benchmark)
     runs-on: ubuntu-24.04

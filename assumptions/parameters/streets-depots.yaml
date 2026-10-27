@@ -1,0 +1,161 @@
+# Street and depot layout defaults. Schema: assumptions/README.md.
+
+- key: depot.vehicles_per_lane
+  label: "Street depot: vehicles per parking lane"
+  group: Depots and streets
+  unit: vehicles
+  used_by: [automatic bus depot layout]
+  values:
+    - context:
+        mode: "*"
+      low: 2
+      central: 4
+      high: 8
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: Longer lanes save area but block vehicles in (last in, first out); 3–5 is a common compromise.
+
+- key: depot.lateral_spacing_m
+  label: "Street depot: space between vehicles in neighbouring lanes"
+  group: Depots and streets
+  unit: m
+  used_by: [automatic bus depot layout]
+  values:
+    - context:
+        mode: "*"
+      low: 0.8
+      central: 1.0
+      high: 1.5
+      basis: documented
+      sources: [eu-dir-96-53, mobsimlab-derivation]
+      check: unverified
+      rationale: Bus width 2.55 m (Directive 96/53/EC) in parking lanes of 3.5–4.0 m leaves about 1.0–1.5 m; mirrors need at least about 0.8 m.
+
+- key: depot.walkway_width_m
+  label: "Street depot: walkway width between lanes"
+  group: Depots and streets
+  unit: m
+  used_by: [automatic bus depot layout]
+  values:
+    - context:
+        mode: "*"
+      low: 0.9
+      central: 1.2
+      high: 1.5
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: Escape route and staff access width as used in workplace rules (about 0.9–1.2 m).
+
+- key: depot.walkway_every_n_lanes
+  label: "Street depot: a walkway after every n lanes"
+  group: Depots and streets
+  unit: lanes
+  used_by: [automatic bus depot layout]
+  values:
+    - context:
+        mode: "*"
+      low: 1
+      central: 2
+      high: 4
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: Every second lane gives each vehicle a walkway on one side.
+
+- key: depot.aisle_width_m
+  label: "Street depot: width of the aisles at the lane ends and of the perimeter road"
+  group: Depots and streets
+  unit: m
+  used_by: [automatic bus depot layout, swept-path check]
+  values:
+    - context:
+        mode: "*"
+      low: 8
+      central: 12
+      high: 18
+      basis: documented
+      sources: [eu-dir-96-53, mobsimlab-derivation]
+      check: unverified
+      rationale: A bus must turn within a 12.5 m outer / 5.3 m inner radius (96/53/EC); a 90° turn into a lane needs an aisle of roughly 10–15 m; straight drive-through lanes need only about 8 m.
+
+- key: depot.longitudinal_gap_m
+  label: "Street depot: gap between vehicles one behind the other in a lane"
+  group: Depots and streets
+  unit: m
+  used_by: [automatic bus depot layout]
+  values:
+    - context:
+        mode: "*"
+      low: 0.5
+      central: 1.0
+      high: 2.0
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: Room to walk between vehicles and for charging connectors.
+
+- key: street.lane_width_m
+  label: Lane width of a street (vehicles drawn half a lane from the centreline)
+  group: Depots and streets
+  unit: m
+  used_by: [vehicle drawing offset, swept-path check]
+  values:
+    - context:
+        mode: "*"
+      low: 3.0
+      central: 3.25
+      high: 3.75
+      basis: documented
+      sources: [rast06, aashto-green-book]
+      check: unverified
+      rationale: Urban lanes used by buses are about 3.25–3.50 m in German guidance (RASt 06); US standard lane is 12 ft (3.66 m). Values to be checked.
+
+- key: street.lanes
+  label: Lanes of a street carriageway (swept-path check of road vehicles)
+  group: Depots and streets
+  unit: lanes
+  used_by: [swept-path check when OSM has no lanes tag]
+  values:
+    - context:
+        mode: "*"
+      low: 1
+      central: 2
+      high: 4
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: One lane per direction is the most common urban street; OSM lanes=* wins when present.
+
+- key: street.driving_side
+  label: Driving side of buses, BRT and trolleybuses
+  group: Depots and streets
+  unit: side
+  kind: enum
+  options: [right, left]
+  used_by: [road network, stop side, door side]
+  values:
+    - context:
+        mode: "*"
+      central: right
+      basis: cited
+      sources: [vienna-convention-1968]
+      check: unverified
+      rationale: Right-hand traffic in most countries; the project country sets it (left in for example GB, IE, MT, CY, JP, IN, AU, NZ, ZA, HK, SG, TH, ID).
+
+- key: track.running_side
+  label: Running side for new double track
+  group: Depots and streets
+  unit: side
+  kind: enum
+  options: [right, left]
+  used_by: [new double track, signal placement]
+  values:
+    - context:
+        mode: "*"
+      central: right
+      basis: documented
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: "Follow the national mainline convention: right in for example DE, AT, NL, ES, PL, CZ, US; left in GB, FR (except Alsace-Moselle), BE, CH, IT, SE, PT, JP. Trams and most metros follow road traffic."
