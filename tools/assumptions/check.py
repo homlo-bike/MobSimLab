@@ -10,6 +10,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import math
 import sys
 from pathlib import Path
 
@@ -46,6 +47,43 @@ GROUP_ORDER = [
 COLLECTIONS = {"ocl", "trolley", "third-rail", "fourth-rail"}
 SUPPLY_FIELDS = {"id", "label", "collection", "current", "typical_modes", "attributes"}
 VOLTAGE_ORDER = ["u_min2_v", "u_min1_v", "nominal_v", "u_max1_v", "u_max2_v"]
+SWITCH_FIELDS = {
+    "id",
+    "label",
+    "element",
+    "standard",
+    "geometry",
+    "crossing",
+    "typical_modes",
+    "built_from",
+    "attributes",
+}
+TURNOUT_ATTRS = {
+    "crossing_ratio_n",
+    "diverging_radius_m",
+    "length_a_m",
+    "length_b_m",
+    "total_length_m",
+    "diverging_speed_kmh",
+    "through_speed_kmh",
+}
+# Required attributes per element; "crossing_ratio_n|crossing_angle_deg" means either.
+SWITCH_REQUIRED = {
+    "turnout": TURNOUT_ATTRS,
+    "single_slip": TURNOUT_ATTRS,
+    "double_slip": TURNOUT_ATTRS,
+    "diamond": {
+        "crossing_ratio_n|crossing_angle_deg",
+        "length_a_m",
+        "length_b_m",
+        "total_length_m",
+        "through_speed_kmh",
+    },
+    "crossover": {"track_centre_m", "total_length_m"},
+    "scissors_crossover": {"track_centre_m", "total_length_m", "diamond_ratio_n"},
+}
+SWITCH_GEOMETRIES = {"curved-crossing", "straight-crossing", "transition"}
+SWITCH_CROSSINGS = {"rigid", "movable"}
 BASES = {"cited", "documented", "educated-guess"}
 CHECKS = {"read", "secondary", "unverified"}
 ACCESS = {"free", "paywalled", "on-request"}
@@ -95,6 +133,10 @@ def as_list(v):
 
 def load_supply_systems() -> list[dict]:
     return yaml.safe_load((LIB / "supply-systems.yaml").read_text(encoding="utf-8"))
+
+
+def load_switches() -> list[dict]:
+    return yaml.safe_load((LIB / "switches.yaml").read_text(encoding="utf-8"))
 
 
 def validate_entry(
@@ -153,6 +195,113 @@ def validate_supply(
         if volts != sorted(volts):
             errors.append(
                 f"supply system {sid}: needs Umin2 <= Umin1 <= Un <= Umax1 <= Umax2"
+            )
+    return errors
+
+
+def validate_switches(
+    sources: dict[str, dict], switches: list[dict], used: set[str]
+) -> list[str]:
+    """Schema plus geometry consistency of the switches and crossings catalogue."""
+    errors: list[str] = []
+    ids = [s.get("id") for s in switches]
+    for dup in sorted({i for i in ids if ids.count(i) > 1}):
+        errors.append(f"switch {dup}: defined twice")
+    by_id = {s.get("id"): s for s in switches}
+    for sw in switches:
+        sid = sw.get("id", "<no id>")
+        el = sw.get("element")
+        if extra := set(sw) - SWITCH_FIELDS:
+            errors.append(f"switch {sid}: unknown fields {sorted(extra)}")
+        if el not in SWITCH_REQUIRED:
+            errors.append(
+                f"switch {sid}: element must be one of {sorted(SWITCH_REQUIRED)}"
+            )
+            continue
+        if not sw.get("label") or not sw.get("standard"):
+            errors.append(f"switch {sid}: missing label or standard")
+        for m in sw.get("typical_modes", []):
+            if m not in MODES:
+                errors.append(f"switch {sid}: unknown mode {m}")
+        if el == "turnout" and sw.get("geometry") not in SWITCH_GEOMETRIES:
+            errors.append(
+                f"switch {sid}: geometry must be one of {sorted(SWITCH_GEOMETRIES)}"
+            )
+        if el in ("crossover", "scissors_crossover"):
+            base = by_id.get(sw.get("built_from"))
+            if not base or base.get("element") != "turnout":
+                errors.append(f"switch {sid}: built_from must be a turnout id")
+        elif sw.get("crossing") not in SWITCH_CROSSINGS:
+            errors.append(
+                f"switch {sid}: crossing must be one of {sorted(SWITCH_CROSSINGS)}"
+            )
+        attrs = sw.get("attributes") or {}
+        for req in SWITCH_REQUIRED[el]:
+            if not any(r in attrs for r in req.split("|")):
+                errors.append(f"switch {sid}: missing attribute {req}")
+        for name, v in attrs.items():
+            where = f"switch {sid}.{name}"
+            if extra := set(v) - VALUE_FIELDS:
+                errors.append(f"{where}: unknown fields {sorted(extra)}")
+            errors += validate_entry(where, v, sources, used)
+            nums = [
+                v.get(k) for k in ("low", "central", "high") if v.get(k) is not None
+            ]
+            if any(not isinstance(n, (int, float)) for n in nums):
+                errors.append(f"{where}: low/central/high must be numbers")
+            elif nums != sorted(nums):
+                errors.append(f"{where}: needs low <= central <= high")
+        errors += check_switch_geometry(sid, sw, attrs, by_id)
+    return errors
+
+
+def central(attrs: dict, name: str):
+    return (attrs.get(name) or {}).get("central")
+
+
+def check_switch_geometry(sid: str, sw: dict, attrs: dict, by_id: dict) -> list[str]:
+    """Central values must describe a buildable element."""
+    errors = []
+    a, b, total = (
+        central(attrs, k) for k in ("length_a_m", "length_b_m", "total_length_m")
+    )
+    if None not in (a, b, total) and abs(a + b - total) > 0.01:
+        errors.append(f"switch {sid}: length_a_m + length_b_m != total_length_m")
+    div, thr = (
+        central(attrs, "diverging_speed_kmh"),
+        central(attrs, "through_speed_kmh"),
+    )
+    if div is not None and thr is not None and div > thr:
+        errors.append(f"switch {sid}: diverging speed above through speed")
+    n, r = central(attrs, "crossing_ratio_n"), central(attrs, "diverging_radius_m")
+    if sw["element"] == "turnout" and n and r and a:
+        tangent = r * math.tan(math.atan(1 / n) / 2)
+        if (
+            sw.get("geometry") == "curved-crossing"
+            and abs(a - tangent) > 0.005 * tangent
+        ):
+            errors.append(
+                f"switch {sid}: curved crossing needs a = R·tan(α/2) = {tangent:.3f}"
+            )
+    if sw["element"] in ("crossover", "scissors_crossover"):
+        base = by_id.get(sw.get("built_from")) or {}
+        battrs = base.get("attributes") or {}
+        ba, bn, d = (
+            central(battrs, "length_a_m"),
+            central(battrs, "crossing_ratio_n"),
+            central(attrs, "track_centre_m"),
+        )
+        if None not in (ba, bn, d, total) and abs(2 * ba + d * bn - total) > 0.05:
+            errors.append(
+                f"switch {sid}: total_length_m must be 2·a + d·n = {2 * ba + d * bn:.3f}"
+            )
+        bb = central(battrs, "length_b_m")
+        if (
+            None not in (bb, bn, d)
+            and d * math.hypot(bn, 1) < (1 if sw["element"] == "crossover" else 2) * bb
+        ):
+            errors.append(
+                f"switch {sid}: track centres too close for the turnout legs to meet"
             )
     return errors
 
@@ -310,7 +459,67 @@ def render_supply(systems: list[dict]) -> list[str]:
     return lines
 
 
-def render(sources: dict[str, dict], params: list[dict], systems: list[dict]) -> str:
+def render_switches(switches: list[dict]) -> list[str]:
+    def cell(attrs: dict, key: str) -> str:
+        v = attrs.get(key)
+        if v is None:
+            return "–"
+        if v.get("low") is not None:
+            return f"{v['central']} ({v['low']}–{v['high']})"
+        return str(v["central"])
+
+    cols = [
+        ("crossing_ratio_n", "1:n"),
+        ("diverging_radius_m", "R (m)"),
+        ("length_a_m", "a (m)"),
+        ("length_b_m", "b (m)"),
+        ("total_length_m", "Length (m)"),
+        ("track_centre_m", "Track centres (m)"),
+        ("diverging_speed_kmh", "V diverging (km/h)"),
+        ("through_speed_kmh", "V through (km/h)"),
+    ]
+    lines = [
+        "## Switches and crossings",
+        "",
+        "The railway design tool connects tracks only with these elements (ADR-0030 point 5). Central values,",
+        "with low–high in brackets where the value is uncertain. a runs from the start of the switch to the",
+        "intersection point of the track centre lines, b from there to the end of each leg. Full basis, sources",
+        "and rationale per attribute: [`switches.yaml`](switches.yaml); geometry model:",
+        "[README](README.md#switches-and-crossings).",
+        "",
+        "| Id | Element | Standard | Built from | Crossing | Modes | "
+        + " | ".join(c for _, c in cols)
+        + " |",
+        "|---|---|---|---|---|---|" + "---|" * len(cols),
+    ]
+    for sw in switches:
+        attrs = dict(sw["attributes"])
+        if "crossing_angle_deg" in attrs and "crossing_ratio_n" not in attrs:
+            attrs["crossing_ratio_n"] = {
+                "central": f"{attrs['crossing_angle_deg']['central']}°"
+            }
+        if "diamond_ratio_n" in attrs:
+            attrs["crossing_ratio_n"] = attrs["diamond_ratio_n"]
+        built = f"`{sw['built_from']}`" if sw.get("built_from") else "–"
+        crossing = (
+            " ".join(x for x in (sw.get("geometry"), sw.get("crossing")) if x) or "–"
+        )
+        lines.append(
+            f"| `{sw['id']}` | {sw['element']} | {sw['standard']} | {built} | {crossing} | "
+            f"{', '.join(sw['typical_modes'])} | "
+            + " | ".join(cell(attrs, k) for k, _ in cols)
+            + " |"
+        )
+    lines.append("")
+    return lines
+
+
+def render(
+    sources: dict[str, dict],
+    params: list[dict],
+    systems: list[dict],
+    switches: list[dict],
+) -> str:
     lines = [
         "# Default parameter values",
         "",
@@ -342,6 +551,7 @@ def render(sources: dict[str, dict], params: list[dict], systems: list[dict]) ->
         lines.append(f"- [{g}](#{g.lower().replace(' ', '-')})")
     lines += [
         "- [Energy supply systems](#energy-supply-systems)",
+        "- [Switches and crossings](#switches-and-crossings)",
         "- [Sources](#sources)",
         "",
     ]
@@ -382,6 +592,7 @@ def render(sources: dict[str, dict], params: list[dict], systems: list[dict]) ->
             lines.append("")
 
     lines += render_supply(systems)
+    lines += render_switches(switches)
     lines += [
         "## Sources",
         "",
@@ -406,8 +617,14 @@ def main() -> int:
     sources = load_sources()
     params = load_parameters()
     systems = load_supply_systems()
+    switches = load_switches()
     used: set[str] = set()
-    errors = validate(sources, params, used) + validate_supply(sources, systems, used)
+    errors = (
+        validate(sources, params, used)
+        + validate_supply(sources, systems, used)
+        + validate_switches(sources, switches, used)
+    )
+    turnout_ids = {s["id"] for s in switches if s.get("element") == "turnout"}
     supply_ids = {"none"} | {s["id"] for s in systems}
     for p in params:
         if (
@@ -417,12 +634,19 @@ def main() -> int:
             errors.append(
                 "mode.new_track_electrification: options must be 'none' plus the supply-system ids"
             )
+        if (
+            p["key"] == "switch.default_turnout"
+            and not set(p.get("options", [])) <= turnout_ids
+        ):
+            errors.append(
+                "switch.default_turnout: options must be turnout ids from switches.yaml"
+            )
     for sid in sorted(set(sources) - used):
         errors.append(f"source {sid}: defined but never used")
     if errors:
         print("\n".join(errors), file=sys.stderr)
         return 1
-    text = render(sources, params, systems)
+    text = render(sources, params, systems, switches)
     if args.render:
         OUT.write_text(text, encoding="utf-8")
     if args.check_rendered and OUT.read_text(encoding="utf-8") != text:
@@ -430,7 +654,8 @@ def main() -> int:
         return 1
     n_values = sum(len(p["values"]) for p in params)
     print(
-        f"OK: {len(params)} parameters, {n_values} values, {len(systems)} supply systems, {len(sources)} sources"
+        f"OK: {len(params)} parameters, {n_values} values, {len(systems)} supply systems, "
+        f"{len(switches)} switches and crossings, {len(sources)} sources"
     )
     return 0
 

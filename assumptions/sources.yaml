@@ -474,3 +474,224 @@
   retrieved: 2026-10-27
   checked_via: search-snippet
   kind: secondary
+
+# Switches and crossings (assumptions/switches.yaml). Compiled 2026-10-27 from search results only:
+# the build environment could not open the pages themselves, so every entry is search-snippet or none.
+
+- id: db-ril-800-0120
+  title: DB InfraGO Richtlinie 800.0120 (Netzinfrastruktur Technik entwerfen; Weichen und Kreuzungen) and the DB standard turnout drawings (Regelzeichnungen, Zeichnungsverzeichnis Weiche 54 / 60)
+  publisher: DB InfraGO AG
+  url: https://lieferanten.deutschebahn.com/resource/blob/12635996/278bd141e7324656a19adac30cd9f6de/Zeichnungsverzeichnis-Weiche-60-I-IAM-22-Stand-08-01-2026--data.pdf
+  licence: © DB InfraGO; numbers cited as facts
+  access: on-request
+  retrieved: 2026-10-27
+  checked_via: none
+  note: The drawing index is public; the drawings and Ril 800.0120 with the turnout dimensions are not.
+
+- id: dewiki-weiche
+  title: 'Wikipedia (de), "Weiche (Schienenverkehr)": DB standard turnouts EW 190-1:9 (40 km/h), 300-1:9 (50), 500-1:12 (60), 760-1:14 (80), 1200-1:18,5 (100), 2500-1:26,5 (130), 6000/3700-1:32,5 fb (160/280), 7000/6000-1:42 fb (200/280)'
+  publisher: Wikipedia contributors
+  url: https://de.wikipedia.org/wiki/Weiche_(Schienenverkehr)
+  licence: CC BY-SA 4.0
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+  kind: secondary
+
+- id: hanser-weichen
+  title: "Textbook excerpt on turnout geometry (Weichen-Grundformen table: 54/60-500-1:12, rigid frog, tangent length 20.797 m, 60 km/h diverging, 160/230 km/h through), ISBN 978-3-446-44894-0"
+  publisher: Carl Hanser Verlag
+  url: https://files.hanser.de/Files/Article/ARTK_ZCO_9783446448940_0001.pdf
+  licence: © Carl Hanser Verlag; numbers cited as facts
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+  kind: secondary
+
+- id: zusi-weichen
+  title: 'Zusi wiki, "In Zusi umsetzbare Weichentypen": for a turnout with a curved crossing the length is twice the tangent length, equal at all three ends'
+  publisher: Zusi community
+  url: https://zusiwiki.echoray.de/wiki/In_Zusi_umsetzbare_Weichentypen
+  licence: © authors; rule cited as fact
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+  kind: secondary
+
+- id: osm-switch-2500
+  title: "OpenStreetMap node 75194419: DB switch tagged EW 2500-1:26,5 fb, 130 km/h diverging, 300 km/h through"
+  publisher: OpenStreetMap contributors
+  url: https://www.openstreetmap.org/node/75194419
+  licence: ODbL 1.0
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+  kind: secondary
+
+- id: eisenbahnweiche-fandom
+  title: 'Vereins-Wiki, "Eisenbahnweiche": high-speed turnouts of the 1:42 class about 154 m long, 210 t, switch blades about 56 m'
+  publisher: Fandom contributors
+  url: https://vereins.fandom.com/wiki/Eisenbahnweiche
+  licence: CC BY-SA 3.0
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+  kind: secondary
+  note: Weak source; it does not say which 1:42 design it means.
+
+- id: becker-kreuzungsweichen
+  title: 'Thomas Becker, "Einfache Kreuzungsweichen" / "Kreuzungsweichen": EKW and DKW 54-190-1:9 keep the crossing angle, radii and length of their predecessors'
+  publisher: drahtkupplung.de
+  url: https://drahtkupplung.de/gtbhb2418.html
+  licence: © author; numbers cited as facts
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+  kind: secondary
+
+- id: crchi-hs-turnouts
+  title: "China Railway High-tech Industry, 350 km/h passenger dedicated line turnouts: No. 18 (R 1100 m, 69 m, 80 km/h diverging), No. 42 (R 5000 m, 157.2 m, 160 km/h diverging), 350 km/h through"
+  publisher: China Railway High-tech Industry Corporation (CRHIC)
+  url: https://www.crchi.com/col2464/art/2018/art_2464_124.html
+  licence: © publisher; numbers cited as facts
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+  note: The No. 18 split 31.729 m + 37.271 m was seen in a second search result quoting the same design.
+
+- id: nra-tech-rules
+  title: "铁路技术管理规程 (Railway Technical Management Rules, 2006, Ministry of Railways Order 29): single turnouts for 80–140 km/h diverging must be No. 30 or larger"
+  publisher: National Railway Administration of China
+  url: https://www.nra.gov.cn/xxgk/gkml/ztjg/gfzd/bmgz/202206/t20220624_327439.shtml
+  licence: Official document; numbers cited as facts
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+
+- id: gb-50157
+  title: "GB 50157-2013 Code for design of metro (地铁设计规范), commentary on turnouts: No. 9 diverging limit 35 km/h (R 200 m, 0.5 m/s² gives 36 km/h); 60 kg/m No. 9 front length 13.839 m, rear length 15.730 m"
+  publisher: Ministry of Housing and Urban-Rural Development of China
+  url: http://m.jianbiaoku.com/webarbs/book/1027/1073495.shtml
+  licence: Official standard; numbers cited as facts
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+
+- id: metro-no9-optimised
+  title: "地铁60 kg/m钢轨9号单开道岔优化设计 (optimised metro No. 9 turnout: 12.570 m + 15.730 m = 28.300 m, R 200 m, ≤120 km/h through, ≤35 km/h diverging)"
+  publisher: fx361.com (journal reprint)
+  url: https://m.fx361.com/news/2021/0808/12713763.html
+  licence: © publisher; numbers cited as facts
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+  kind: secondary
+
+- id: suburban-no12
+  title: 市域铁路60 kg/m钢轨12号可动心轨无砟道岔设计, Journal of Railway Engineering Society 41(5), 2024 (Wenzhou suburban railway turnout selection; rigid No. 12 ballasted turnout 37.8 m, a 16.592 m, b 21.208 m, 160/50 km/h)
+  publisher: China Railway Engineering Corporation (journal)
+  url: https://tdgcxb.crec.cn/CN/Y2024/V41/I5/6
+  licence: © publisher; numbers cited as facts
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+
+- id: adif-desvios-av
+  title: "Diseño de desvíos y cruzamientos adaptados al sistema de vía en placa (table of ADIF high-speed turnouts: DSIH-AV3-60-17000/7300-1:50 350/220 km/h, DSIH-AV3-60-10000/4000-1:36 350/160 km/h)"
+  publisher: Scribd upload (secondary)
+  url: https://es.scribd.com/document/729015749/Diseno-de-desvios-y-cruzamientos-adaptados-al-sistema-de-via-en-placa
+  licence: © author; numbers cited as facts
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+  kind: secondary
+
+- id: sncf-landes-220
+  title: "The Landes test site: points and crossings for switching trains at high speeds (Chemins de fer no. 307, 1974): 220 km/h diverging, 36 m blades, 210 m total length, radius about 10,000 m, tg 0.0162"
+  publisher: TRID / Transportation Research Board (abstract)
+  url: https://trid.trb.org/View/39290
+  licence: © publisher; numbers cited as facts
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+
+- id: arema-mre-ch5
+  title: AREMA Manual for Railway Engineering, Chapter 5 Track (turnout plans, leads, closure radii, maximum speeds by turnout number and unbalance)
+  publisher: American Railway Engineering and Maintenance-of-Way Association
+  url: https://www.arema.org/
+  licence: © AREMA; numbers cited as facts
+  access: paywalled
+  retrieved: 2026-10-27
+  checked_via: none
+
+- id: amtrak-spec-63
+  title: "Amtrak Track Design Specification 63 (turnout selection: conventional No. 8 and No. 10 RBM-frog turnouts for diverging speeds up to 15 mph)"
+  publisher: Amtrak
+  url: https://www.amtrak.com/content/dam/projects/dotcom/english/public/documents/corporate/engineering-practices/engineering-specs/amtrak-track-design-specification-63.pdf
+  licence: © Amtrak; numbers cited as facts
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+
+- id: csx-sidetracks
+  title: CSX Standard Specifications for the Design and Construction of Private Sidetracks (No. 8 or larger on industry tracks, No. 10 or larger on lead tracks)
+  publisher: CSX Transportation
+  url: https://www.fbfl.us/DocumentCenter/View/17462/CSX-Industrial-Sidetrack-Manual---Specifications-2016
+  licence: © CSX; numbers cited as facts
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+
+- id: up-5015
+  title: Union Pacific standard drawing 5015, No. 15 turnout (actual lead 111'-2 3/4" from point of switch to 1/2-inch point of frog)
+  publisher: Union Pacific Railroad
+  url: https://www.up.com/emp/engineering/mapcontent/standards/track%20standard%20drawings/5015.pdf
+  licence: © Union Pacific; numbers cited as facts
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+
+- id: fra-td99-021
+  title: FRA Technology Digest TD99-021, No. 20 turnout with intermediate geometry (156 ft lead for AREMA and intermediate geometry; 50 mph AREMA, 45 mph intermediate)
+  publisher: US Federal Railroad Administration / MxV Rail
+  url: https://www.mxvrail.com/wp-content/uploads/2023/01/TD99-021.pdf
+  licence: US government work (public domain)
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+
+- id: fra-rr0610
+  title: FRA Research Results RR06-10, increasing diverging speed of a No. 20 turnout from the current 45 mph to 55 mph without changing lead or frog angle
+  publisher: US Federal Railroad Administration
+  url: https://railroads.dot.gov/sites/fra.dot.gov/files/fra_net/2121/rr0610.pdf
+  licence: US government work (public domain)
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+
+- id: nortrak-transit
+  title: voestalpine Nortrak, transit turnouts ("Meter Design" tram and LRT turnouts for standard European geometries of 20, 25, 50, 75, 100 and 150 m radius)
+  publisher: voestalpine Railway Systems Nortrak
+  url: https://www.voestalpine.com/nortrak/en/products/Turnouts-Transit-Systems/
+  licence: © voestalpine; numbers cited as facts
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+
+- id: krakow-tram-switches
+  title: Kraków tramway (MPK / ZDMK) turnout specification (switches with shallow-groove crossings 15 km/h; R = 50 m switches with deep-groove crossings 25 km/h)
+  publisher: Zarząd Dróg Miasta Krakowa
+  url: https://plikimpi.krakow.pl/pliki/339992
+  licence: Public procurement document; numbers cited as facts
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
+
+- id: voestalpine-tram-train-hu
+  title: voestalpine, first Hungarian tram-train project (turnouts R = 200 m and R = 300 m for 40 km/h diverging)
+  publisher: voestalpine Railway Systems
+  url: https://voestalpine.com/railway-systems/en/company/news/first-hungarian-tram-train-project
+  licence: © voestalpine; numbers cited as facts
+  access: free
+  retrieved: 2026-10-27
+  checked_via: search-snippet
