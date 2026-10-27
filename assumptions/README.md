@@ -75,7 +75,7 @@ AASHTO) and with the German and US legal portals unreachable from the build envi
 ## Energy supply systems
 
 `supply-systems.yaml` defines one entry per supply system, with ids of the form `<collection>-<voltage>`:
-`ocl-600v-dc`, `ocl-750v-dc`, `ocl-1500v-dc`, `ocl-3000v-dc`, `ocl-15kv-16-7hz`, `ocl-25kv-50hz`,
+`ocl-600v-dc`, `ocl-750v-dc`, `ocl-1000v-dc`, `ocl-1500v-dc`, `ocl-3000v-dc`, `ocl-15kv-16-7hz`, `ocl-25kv-50hz`,
 `trolley-600v-dc`, `trolley-750v-dc`, `third-rail-750v-dc`, `third-rail-1500v-dc`, `fourth-rail-630v-dc`.
 Each attribute (voltages, frequency, contact wire height, pantograph head widths, trolley wire spacing,
 conductor-rail contact position, standstill current, power factor) uses the same value-entry shape as a parameter,

@@ -114,6 +114,51 @@
       rationale: "EN 50163 / IEC 60850 table of supply voltages: Umin1/Umax1 bound permanent operation, Umin2/Umax2 the short-time limits (durations defined in the standard). Values to be checked against the current edition."
     contact_wire_height_m: *id001
 
+- id: ocl-1000v-dc
+  label: Overhead contact line, 1000 V DC
+  collection: ocl
+  current: dc
+  typical_modes: [light_rail, regional_rail]
+  attributes:
+    nominal_v:
+      central: 1000
+      basis: documented
+      sources: [salzburger-lokalbahn]
+      check: unverified
+      rationale: "Salzburger Lokalbahn (Austria) is electrified at 1000 V DC; dual-voltage tram-trains (for example Stadler Citylink for Salzburg) run 750 V DC and 1000 V DC."
+    u_min2_v:
+      central: 667
+      basis: educated-guess
+      sources: [en-50163, mobsimlab-derivation]
+      check: unverified
+      rationale: "Not an EN 50163 nominal voltage; value scaled from the 750 V DC row (Umin = 2/3 Un, Umax1 = 1.2 Un, Umax2 = 1.33 Un). Check against the operator's network statement."
+    u_min1_v:
+      central: 667
+      basis: educated-guess
+      sources: [en-50163, mobsimlab-derivation]
+      check: unverified
+      rationale: "Not an EN 50163 nominal voltage; value scaled from the 750 V DC row (Umin = 2/3 Un, Umax1 = 1.2 Un, Umax2 = 1.33 Un). Check against the operator's network statement."
+    u_max1_v:
+      central: 1200
+      basis: educated-guess
+      sources: [en-50163, mobsimlab-derivation]
+      check: unverified
+      rationale: "Not an EN 50163 nominal voltage; value scaled from the 750 V DC row (Umin = 2/3 Un, Umax1 = 1.2 Un, Umax2 = 1.33 Un). Check against the operator's network statement."
+    u_max2_v:
+      central: 1333
+      basis: educated-guess
+      sources: [en-50163, mobsimlab-derivation]
+      check: unverified
+      rationale: "Not an EN 50163 nominal voltage; value scaled from the 750 V DC row (Umin = 2/3 Un, Umax1 = 1.2 Un, Umax2 = 1.33 Un). Check against the operator's network statement."
+    contact_wire_height_m:
+      low: 4.2
+      central: 5.5
+      high: 6.5
+      basis: educated-guess
+      sources: [en-50119, mobsimlab-derivation]
+      check: unverified
+      rationale: As the 600/750 V DC light rail overhead line.
+
 - id: ocl-1500v-dc
   label: Overhead contact line, 1500 V DC
   collection: ocl

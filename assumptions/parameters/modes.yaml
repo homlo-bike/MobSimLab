@@ -1290,6 +1290,7 @@
       none,
       ocl-600v-dc,
       ocl-750v-dc,
+      ocl-1000v-dc,
       ocl-1500v-dc,
       ocl-3000v-dc,
       ocl-15kv-16-7hz,
