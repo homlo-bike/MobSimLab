@@ -33,4 +33,4 @@ All ADRs below were accepted on 2026-10-27. New ADRs start as Proposed. Template
 | [0027](0027-collaboration-model.md) | Optimistic locking, presence and scenario branches instead of real-time co-editing | Accepted |
 | [0028](0028-persistence-semantics.md) | Persistence rule applies to modelled assets; background traffic and passengers are declared demand | Accepted |
 | [0029](0029-street-service-line-authoring.md) | Street-based service lines are drawn as an ordered point circuit, routed on the road graph | Accepted |
-| [0030](0030-railway-design-tool.md) | Railway design is station-first, drawn to scale from engineering elements | Proposed |
+| [0030](0030-railway-design-tool.md) | Railway design is station-first, drawn to scale from engineering elements | Accepted |

@@ -1,6 +1,6 @@
 # ADR-0030: Railway design is station-first, drawn to scale from engineering elements
 
-- Status: Proposed (based on the product owner's workflow of 2026-10-27; awaiting confirmation of the points flagged below)
+- Status: Accepted (product owner's workflow and confirmation, 2026-10-27)
 - Date: 2026-10-27
 - Related: FR-NET-02..07, ADR-0009 (unified graph), ADR-0029 (street lines), [06 §9.1–9.3, §9.5](../architecture/06-gis.md#95-railway-design-tool)
 
@@ -33,7 +33,8 @@ Adopt the station-first workflow with these engineering rules.
 7. **Signalling is generated, then editable.** After drawing, the tool proposes block sections, signals at station starters and ahead of switches, and train detection sections, from the line speed and the mode's signalling type (line-of-sight for tram, fixed block, ETCS or CBTC). The rail kernel (07 §4) uses them. The planner can move or add signals.
 8. **Tram street running.** Tram tracks at street level along a road are linked to the road edges they occupy: shared lane, reserved lane or segregated. The road graph and the SUMO export are updated, and tram stops on the street use the platform rules for street stops.
 9. **Existing infrastructure.** Imported OSM railways can be adopted as existing corridors. They are snapped and converted into alignments with an "existing" flag, so new lines can branch off them using catalogue switches.
-10. **Validation runs live** while drawing (radius, cant, gradient, vertical curves, clearance, platform on curve, switch in platform or vertical curve, tunnel cover, bridge clearance; 06 §9.2). Errors are shown on the element and in the issue list.
+10. **Track use: running or storage.** Every track has a use: **running** (part of routes that trains are routed over) or **storage** (stabling sidings and depot tracks where vehicles are parked when not needed). Storage tracks have a usable length checked against the parked consists (07 §4.6), are reached through catalogue switches, and are where trains start and end each run (ADR-0028). A track can be both, for example a platform track used for overnight stabling.
+11. **Validation runs live** while drawing (radius, cant, gradient, vertical curves, clearance, platform on curve, switch in platform or vertical curve, tunnel cover, bridge clearance; 06 §9.2). Errors are shown on the element and in the issue list.
 
 ## Consequences
 
@@ -42,7 +43,8 @@ Adopt the station-first workflow with these engineering rules.
 - Mode tables (gauge, track spacing, radii by speed, gradients, platform dimensions, switch catalogue per mode) become a sourced data set in Project Preferences. Initial values come from cited guidance (for example BOStrab and VDV for trams, EN 13803 for track alignment, TSI INF for mainline and high speed) and are marked as assumptions where generic.
 - More work in Phase 3: the fitting solver, the switch catalogue and LOD rendering. The kernel data model (TDS, signals) is generated from this geometry.
 
-## Points for the product owner
+## Confirmed by the product owner (2026-10-27)
 
-- An island platform has two edges and serves two tracks, so "each platform has one track" is read as "each platform **edge** has one track".
-- High-speed and intercity lines are mostly drawn between far-apart stations and through existing corridors. Station-first still works, but the alignment tool, not the station, will usually set the geometry there, because high-speed curves have radii of several kilometres.
+- Each platform **edge** serves one track; an island platform therefore serves two.
+- Tracks serve either routing or storage (depot and stabling), as in point 10.
+- On high-speed and intercity lines the track alignment, not the station, usually sets the geometry, because their curves have radii of several kilometres.

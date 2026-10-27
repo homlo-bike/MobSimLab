@@ -214,8 +214,9 @@ Station-first workflow for tram, light rail, metro, regional, intercity and high
 2. Draw tracks between station connection points: the tool fits straights, arcs and clothoids that meet the mode's minimum radius, cant and transition rules, so there are no sharp corners. Double track uses the mode's track spacing.
 3. Connect tracks only with catalogue switches and crossings (turnouts, crossovers, diamonds, slips) with real geometry and diverging speeds. Level changes use ramp/portal elements sized from the maximum gradient.
 4. Everything is stored at true size; the map shows rails at real gauge with OCS or third-rail symbols when zoomed in, and simplifies to single lines when zoomed out.
-5. Signals and train detection sections are generated from line speed and signalling type, then editable; tram street running links tracks to road lanes.
-6. Validations from §9.2 run live while drawing.
+5. Each track is for running (routing), storage (depot and stabling, with usable length checked against parked trains) or both.
+6. Signals and train detection sections are generated from line speed and signalling type, then editable; tram street running links tracks to road lanes.
+7. Validations from §9.2 run live while drawing.
 
 ## 10. Schematic diagrams (ADR-0025)
 
