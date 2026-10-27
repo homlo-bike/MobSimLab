@@ -1,0 +1,13 @@
+[build-system]
+requires = ["maturin>=1.9,<2"]
+build-backend = "maturin"
+
+[project]
+name = "mobsim-kernels"
+version = "0.1.0"
+description = "MobSimLab simulation kernels (Rust) for the Python sim-worker"
+license = "AGPL-3.0-or-later"
+requires-python = ">=3.12"
+
+[tool.maturin]
+module-name = "mobsim_kernels"
