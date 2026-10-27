@@ -55,6 +55,8 @@ Unified graph, road/walk/cycle graph build, rail alignment editor (line, arc, cl
 
 Exit: example project with tram + bus + metro lines built through the UI; all validations demonstrated; scenario diff works.
 
+Started early: the street line tool's router and editor (ADR-0029, ADR-0031) work on a loaded OSM file; storage in `svc.route` and the PostGIS graph view follow in this phase.
+
 ### Phase 4 — Vehicles and depots
 
 Vehicle schema, catalogue v1 (2–3 sourced models per mode), custom vehicles, fleet, kinematics crate, platform validator, road depot layout generator, rail depot capacity check, swept-path checks.

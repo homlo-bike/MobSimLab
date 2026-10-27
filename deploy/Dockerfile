@@ -7,6 +7,18 @@ ARG PYTHON_VERSION=3.12
 ARG RUST_VERSION=1.97
 ARG S6_OVERLAY_VERSION=3.2.1.0
 
+# ---- 0. Street routing compiled to WebAssembly for the web editor -------------
+FROM rust:${RUST_VERSION}-slim-bookworm AS wasm-build
+ARG WASM_BINDGEN_VERSION=0.2.129
+RUN apt-get update && apt-get install -y --no-install-recommends pkg-config libssl-dev && rm -rf /var/lib/apt/lists/*
+RUN rustup target add wasm32-unknown-unknown \
+ && cargo install wasm-bindgen-cli --version "${WASM_BINDGEN_VERSION}" --locked
+WORKDIR /src
+COPY Cargo.toml Cargo.lock ./
+COPY crates crates
+COPY tools/wasm tools/wasm
+RUN tools/wasm/build-street-routing.sh
+
 # ---- 1. Web SPA and API (Node) ------------------------------------------------
 FROM node:${NODE_VERSION}-bookworm-slim AS node-build
 WORKDIR /src
@@ -16,6 +28,7 @@ COPY apps/api/package.json apps/api/
 COPY apps/web/package.json apps/web/
 RUN pnpm install --frozen-lockfile
 COPY apps apps
+COPY --from=wasm-build /src/apps/web/src/wasm apps/web/src/wasm
 RUN pnpm -r build \
  && pnpm --filter @mobsimlab/api deploy --prod --legacy /out/api \
  && cp -r apps/api/dist /out/api/dist \

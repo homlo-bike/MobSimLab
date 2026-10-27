@@ -114,7 +114,7 @@ Each module owns its tables (schema) and exposes a service interface. Other modu
 
 Python `sim-worker` packages: `mobsim_worker.jobs`, `.road` (SUMO adapter), `.rail` (bindings to the Rust crate), `.cosim`, `.demand`, `.timetable`, `.results`, `.kinematics`.
 
-Rust workspace crates: `rail-model` (types), `rail-dynamics` (running-time calculation), `rail-interlocking` (routes, locking, signals), `rail-dispatch` (dispatching, platform assignment, rerouting), `rail-sim` (event loop), `kinematics` (axle/bogie/body pose derivation for all vehicles), `mobsim-py` (PyO3 bindings).
+Rust workspace crates: `rail-model` (types), `rail-dynamics` (running-time calculation), `rail-interlocking` (routes, locking, signals), `rail-dispatch` (dispatching, platform assignment, rerouting), `rail-sim` (event loop), `kinematics` (axle/bogie/body pose derivation for all vehicles), `street-routing` (road graph view and legal street paths for bus, BRT, trolleybus and intercity bus, ADR-0031), `street-routing-wasm` (the same router for the map editor), `mobsim-py` (PyO3 bindings).
 
 ## 5. Frontend structure
 

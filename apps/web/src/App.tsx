@@ -1,7 +1,15 @@
+import type { Map as MapLibreMap } from "maplibre-gl";
+import { useState } from "react";
+import { StreetLineEditor } from "./features/street-lines/StreetLineEditor";
 import { MapView } from "./map/MapView";
 
-/** Application shell: top bar and the map. Menus and panels arrive in Phase 1. */
+/** Application shell: top bar, the map and the street line tool. Menus and panels arrive in Phase 1. */
 export function App() {
+  const [map, setMap] = useState<MapLibreMap | null>(null);
+  const [streetLine, setStreetLine] = useState(false);
+  // Development hook for end-to-end scripts that need map coordinates.
+  if (import.meta.env.DEV) Object.assign(window, { mobsimMap: map });
+
   return (
     <div className="flex h-full flex-col">
       <header className="flex h-10 items-center gap-4 border-b border-slate-300 bg-white px-3 text-sm">
@@ -12,9 +20,20 @@ export function App() {
           <span>View</span>
           <span>Help</span>
         </nav>
+        <div className="ml-auto flex gap-2" role="toolbar" aria-label="Network design">
+          <button
+            type="button"
+            aria-pressed={streetLine}
+            onClick={() => setStreetLine(!streetLine)}
+            className={`rounded border px-2 py-0.5 ${streetLine ? "border-blue-700 bg-blue-700 text-white" : "border-slate-300 hover:bg-slate-100"}`}
+          >
+            Street line
+          </button>
+        </div>
       </header>
       <main className="relative flex-1">
-        <MapView />
+        <MapView onReady={setMap} />
+        {streetLine && <StreetLineEditor map={map} />}
       </main>
     </div>
   );
