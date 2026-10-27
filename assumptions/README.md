@@ -10,6 +10,8 @@ educated guess with the reasoning written down.
 - [`sources.yaml`](sources.yaml): the source register (shared with the vehicle catalogue).
 - [`supply-systems.yaml`](supply-systems.yaml): the energy supply systems (overhead line, trolleybus wires, third
   and fourth rail) that vehicles declare support for.
+- [`switches.yaml`](switches.yaml): the switches and crossings catalogue (turnouts, crossovers, scissors
+  crossovers, diamonds, slips) that the railway design tool places between tracks.
 - [`parameters/*.yaml`](parameters/): the parameters, one file per Project Preferences group.
 - [`../tools/assumptions/check.py`](../tools/assumptions/check.py): validates the library and renders `DEFAULTS.md`.
 
@@ -92,6 +94,61 @@ Vehicle compatibility (08 §5, Electrification row), checked per section:
 | `conductorRailContact` (list) | includes the system's contact position for that line | error if set, warning if missing |
 | pantograph working range | covers the line's contact wire height | warning |
 
+## Switches and crossings
+
+`switches.yaml` is the catalogue from [ADR-0030](../docs/adr/0030-railway-design-tool.md) point 5: the railway design
+tool joins tracks only by placing one of these elements, and refuses geometry no element can build, so every
+connection has a real length, angle, radius and speed and no sharp corners. Each attribute uses the value-entry shape
+above (basis, sources, check, rationale, and low/high where uncertain), so the planner can change it in Project
+Preferences.
+
+### Geometry model
+
+All lengths are along the track centre line at true size.
+
+```text
+             a                     b
+  S ──────────────────── IP ─────────────────── E  (through track, straight)
+    ╲__  diverging curve, radius R  ╲__
+                                        ╲__ ─ ─ ─ ─ E' (diverging track; IP→E' = b, at angle α)
+```
+
+- **S**, start of the switch (blade tip); **IP**, the intersection point of the through and diverging centre lines;
+  **E** and **E'**, the ends of the two legs. `length_a_m` is S→IP, `length_b_m` is IP→E and IP→E' (equal on both
+  legs), `total_length_m` = a + b.
+- `crossing_ratio_n` is the crossing angle as 1:n, so tan α = 1/n. The diverging leg leaves E' at angle α, which is
+  what the drawing tool needs to attach the next alignment tangentially. North American frog numbers N
+  (`arema-no*`) are converted with α = 2·atan(1/(2N)).
+- `diverging_radius_m` is the smallest radius of the diverging track. `geometry` says how it runs:
+  - `curved-crossing`: one circular curve from S to E', so a = b = R·tan(α/2) (checked by the CI script);
+  - `straight-crossing`: the curve ends before the crossing and the crossing leg is straight, so a and b differ;
+  - `transition`: clothoid or compound curve (high-speed turnouts); a and b are given, the curve shape is fitted.
+- `crossing`: `rigid` crossing or `movable` point (DB "fb").
+- **Crossovers** (`crossover`, `scissors_crossover`) are built from two turnouts (`built_from`) at a track centre
+  distance d: the two IPs lie d·n apart along the track, so total length = 2·a + d·n. Speeds are those of the
+  turnout. A scissors crossover adds a middle diamond at twice the turnout angle (`diamond_ratio_n`) and needs
+  d·sqrt(n² + 1) ≥ 2·b so the legs meet clear of it; the CI script checks both rules. For another track centre
+  distance the tool builds the crossover from the turnout with the same formula.
+- **Diamonds** and **slips** (`single_slip`, `double_slip`) are symmetrical about their centre: a and b are the
+  half-lengths along either track; `crossing_angle_deg` replaces `crossing_ratio_n` for right-angle tram crossings.
+- `diverging_speed_kmh` and `through_speed_kmh` are the speed limits of the element. For a radius not in the
+  catalogue the tool uses v = sqrt(I·R / 11.8) with I = `switch.cant_deficiency_mm` (no cant in the diverging
+  track), which reproduces the DB standard speeds.
+- `switch.default_turnout` is the element offered first per mode.
+
+### Coverage and confidence
+
+The first version (2026-10-27) covers DB/EN standard turnouts (1:9 to 1:42), ADIF and SNCF high-speed turnouts,
+Chinese No. 9 (metro), 12, 18 and 42, AREMA No. 8 to 20, grooved-rail tram turnouts (R 25, 50, 100 m), crossovers and
+scissors crossovers for each family, a 1:9 diamond, 1:9 single and double slips and a right-angle tram crossing.
+It was compiled from search results only: the build environment could not open the source pages, so no entry is
+`read`. Where a length was not found it is derived from the standard geometry (`documented`) or estimated with a
+wide range (`educated-guess`), and the rationale says which. Reading the DB drawings (Ril 800.0120), the AREMA
+Manual chapter 5 and a tram operator's turnout catalogue would raise most entries to `read`.
+
+Not yet in the catalogue: symmetrical (Y) and three-way turnouts, curved (in-curve) turnouts, tram turnouts with
+other operators' geometry, Network Rail (UK) designs and flange-bearing tram crossings at other angles.
+
 ## Adding or changing a value
 
 1. Add or edit the entry in `parameters/`, and the source in `sources.yaml`.
@@ -143,3 +200,4 @@ taken from standards and literature, not from that tool.
 | Driving side; running side of new double track | `street.driving_side`, `track.running_side` |
 | Per-mode columns: curve radius min/recommended, max speed, dwell, spares, standing places, colour, catchment, structure/right of way, platform, following distance, acceleration/braking, new track gauge/electrification | `mode.*` (see the mode table in `DEFAULTS.md`) |
 | Crossing priority | `mode.crossing_priority_rank` |
+| Switches and crossings (geometry, speeds) | `switches.yaml`, `switch.cant_deficiency_mm`, `switch.default_turnout` |

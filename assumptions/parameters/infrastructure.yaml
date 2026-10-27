@@ -375,3 +375,99 @@
       sources: [mobsimlab-derivation]
       check: unverified
       rationale: Editor tolerance. Smaller than typical stop spacing (300–500 m for bus) and larger than the size of a stop area.
+
+- key: switch.cant_deficiency_mm
+  label: "Turnouts: permitted cant deficiency in the diverging track"
+  group: Infrastructure standards
+  unit: mm
+  used_by: [diverging speed of a turnout radius, v = sqrt(I R / 11.8), switch catalogue checks]
+  values:
+    - context:
+        mode: "*"
+      low: 90
+      central: 100
+      high: 120
+      basis: documented
+      sources: [dewiki-weiche, en-13803]
+      check: secondary
+      rationale: "The DB standard turnout speeds (R 190 m 40 km/h, 300 m 50, 760 m 80, 1200 m 100) all equal sqrt(100 · R / 11.8) rounded down, so the diverging track runs with about 100 mm cant deficiency and no cant. EN 13803 allows more with conditions (clause to be checked)."
+    - context:
+        mode: metro
+      low: 70
+      central: 76
+      high: 100
+      basis: cited
+      sources: [gb-50157]
+      check: secondary
+      rationale: "GB 50157 commentary: 0.5 m/s² unbalanced lateral acceleration in metro turnouts (R 200 m gives 36 km/h); 0.5 · 1500 / 9.81 = 76 mm."
+    - context:
+        mode: [tram, light_rail]
+      low: 70
+      central: 100
+      high: 150
+      basis: documented
+      sources: [krakow-tram-switches, mobsimlab-derivation]
+      check: unverified
+      rationale: As curve.cant_deficiency_tram_mm. The Kraków limit of 25 km/h for R 50 m deep-groove switches corresponds to about 150 mm, the upper end.
+
+- key: switch.default_turnout
+  label: "Turnouts: default catalogue turnout offered when connecting tracks"
+  group: Infrastructure standards
+  unit: id
+  kind: enum
+  options:
+    - tram-r25
+    - tram-r50
+    - tram-r100
+    - db-ew-190-1-9
+    - db-ew-300-1-9
+    - db-ew-500-1-12
+    - db-ew-760-1-14
+    - db-ew-1200-1-18.5
+    - db-ew-2500-1-26.5-fb
+    - cn-metro-60-no9
+    - arema-no10
+  used_by: [railway design tool, connection between tracks]
+  values:
+    - context:
+        mode: "*"
+      central: db-ew-300-1-9
+      basis: educated-guess
+      sources: [dewiki-weiche, mobsimlab-derivation]
+      check: unverified
+      rationale: 50 km/h diverging in 33 m is the usual compromise for station and junction connections on conventional lines. The planner picks any element of switches.yaml; this is only the first offer.
+    - context:
+        mode: tram
+      central: tram-r50
+      basis: educated-guess
+      sources: [nortrak-transit, mobsimlab-derivation]
+      check: unverified
+      rationale: 50 m is the common street junction radius; 25 m for depots and loops, 100 m on segregated track.
+    - context:
+        mode: light_rail
+      central: tram-r100
+      basis: educated-guess
+      sources: [nortrak-transit, mobsimlab-derivation]
+      check: unverified
+      rationale: Faster segregated running; street sections can switch to tram-r50.
+    - context:
+        mode: metro
+      central: db-ew-190-1-9
+      basis: educated-guess
+      sources: [gb-50157, mobsimlab-derivation]
+      check: unverified
+      rationale: 1:9 turnouts with R 190–200 m and 35–40 km/h diverging are the metro norm (GB 50157 No. 9 is the Chinese equivalent, cn-metro-60-no9).
+    - context:
+        mode: [long_distance_rail]
+      central: db-ew-500-1-12
+      basis: educated-guess
+      sources: [hanser-weichen, mobsimlab-derivation]
+      check: unverified
+      rationale: 60 km/h diverging for passing loops and station throats on intercity lines.
+    - context:
+        mode: high_speed_rail
+      central: db-ew-1200-1-18.5
+      basis: educated-guess
+      sources: [dewiki-weiche, mobsimlab-derivation]
+      check: unverified
+      rationale: 100 km/h diverging into station and overtaking tracks; junctions between lines use 1:26.5 or flatter.
