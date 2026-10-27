@@ -38,9 +38,16 @@ def bbox_area_km2(s: float, w: float, n: float, e: float) -> float:
 
 
 def build_query(s: float, w: float, n: float, e: float, timeout_s: int = 120, maxsize: int = 512 * 1024 * 1024) -> str:
-    """Overpass QL returning every element in the box with all referenced nodes, as XML."""
+    """Overpass QL returning nodes, ways and multipolygon relations in the box, with their members, as XML.
+
+    Other relations (routes, boundaries, networks) are left out: recursing into their members
+    pulls in ways far outside the box, and the flex style only reads multipolygons.
+    """
     b = f"{s},{w},{n},{e}"
-    return f"[out:xml][timeout:{timeout_s}][maxsize:{maxsize}];(nwr({b}););(._;>;);out meta;"
+    return (
+        f"[out:xml][timeout:{timeout_s}][maxsize:{maxsize}];"
+        f'(node({b});way({b});rel({b})["type"="multipolygon"];);(._;>;);out meta;'
+    )
 
 
 def fetch(query: str, endpoint: str, cache_dir: Path, http_timeout_s: int = 180) -> bytes:
