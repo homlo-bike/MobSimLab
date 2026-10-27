@@ -1,0 +1,8 @@
+# Default owner for everything.
+*                       @homlo-bike
+# Data and policy files that change results or obligations need an explicit owner review.
+/vehicles/              @homlo-bike
+/assumptions/           @homlo-bike
+/tools/license-gate/    @homlo-bike
+/deploy/                @homlo-bike
+/db/                    @homlo-bike

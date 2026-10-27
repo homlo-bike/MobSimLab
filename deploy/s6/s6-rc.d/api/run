@@ -1,0 +1,4 @@
+#!/command/execlineb -P
+with-contenv
+cd /app/api
+node dist/main.js

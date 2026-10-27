@@ -15,3 +15,7 @@ Run LOOM (`topo`, `loom`, `octi`) as a separate program in the tool-runner to ge
 ## Consequences
 
 GPL-3.0 tool shipped as separate program (compatible with AGPL-3.0 anyway). If LOOM output does not meet quality needs, fall back to a simpler force-directed + octilinear snapping algorithm.
+
+## Licence verification
+
+Verified 2026-10-27: LOOM is GPL-3.0. It runs as a separate program in the tool-runner (no linking), so the AGPL code base is unaffected; its licence text ships in `LICENSES/` and the SBOM.

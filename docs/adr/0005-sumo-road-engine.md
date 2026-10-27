@@ -28,4 +28,4 @@ The brief says to use SUMO for buses, BRT, trolleybuses, congestion, signals, in
 
 - libsumo allows only one SUMO instance per process: each concurrent run needs its own worker process (fits ADR-0003).
 - SUMO's 1-D vehicle model drives our geometry layer (ADR-0008).
-- SUMO licence (EPL-2.0 / GPL-2.0-or-later secondary) to be re-verified at adoption and recorded.
+- SUMO licence verified 2026-10-27 (SUMO 1.28.0): `EPL-2.0 OR GPL-2.0-or-later`. In-process libsumo is used under GPL-2.0-or-later, which is compatible with AGPL-3.0-or-later. Spike S1 confirmed libsumo and the Rust kernel run in one Python process ([S1 report](../spikes/s1-cosimulation.md)).

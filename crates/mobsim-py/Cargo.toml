@@ -1,0 +1,17 @@
+[package]
+name = "mobsim-py"
+version = "0.1.0"
+description = "Python bindings for the MobSimLab simulation kernels"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[lib]
+name = "mobsim_kernels"
+crate-type = ["cdylib"]
+
+[dependencies]
+rail-sim = { path = "../rail-sim" }
+pyo3 = { version = "0.30", features = ["extension-module", "abi3-py312"] }
+serde_json = "1"

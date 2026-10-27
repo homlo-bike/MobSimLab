@@ -1,0 +1,15 @@
+[package]
+name = "rail-sim"
+version = "0.1.0"
+description = "MobSimLab rail operations kernel (Phase 0 prototype): fixed-block interlocking, route locking and train dynamics."
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[dev-dependencies]
+proptest = "1"

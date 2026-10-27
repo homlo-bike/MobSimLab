@@ -67,8 +67,8 @@
 | Component | Licence | Status |
 |-----------|---------|--------|
 | CPython | PSF-2.0 | ✅ |
-| Eclipse SUMO (libsumo, netconvert, tools) | EPL-2.0 with GPL-2.0-or-later as Secondary Licence | ✅ **Verify** Exhibit A secondary-licence notice in current SUMO sources before linking libsumo. If absent, run SUMO as a separate process via TraCI (aggregation is fine). |
-| AequilibraE | **Verify** (reported as permissive/GPL in different sources) | ⚠️ Adoption gate in ADR-0019: OK if permissive or GPL-3.0-compatible; if GPL-2.0-only, run as separate program |
+| Eclipse SUMO (libsumo, netconvert, tools) | `EPL-2.0 OR GPL-2.0-or-later` | ✅ Verified 2026-10-27 (1.28.0). In-process libsumo used under GPL-2.0-or-later. |
+| AequilibraE | MIT text + added clause: "Reference to the software has to be made in all documentation for work developed with the software" | ✅ Verified 2026-10-27. Compatible; non-OSI variant, allowlisted by name. Obligation: automatic citation in reports/exports and `ATTRIBUTION` (ADR-0019) |
 | NumPy, SciPy, pandas | BSD-3-Clause | ✅ |
 | PyArrow / Apache Arrow | Apache-2.0 | ✅ |
 | pydantic | MIT | ✅ |
@@ -90,12 +90,12 @@
 | PostGIS (separate container) | GPL-2.0-or-later | ✅ Separate program |
 | `postgis/postgis` image | MIT (Dockerfile) + contents | ✅ |
 | GDAL/OGR | MIT (some drivers other licences) | ✅ Build without non-free drivers |
-| osmium-tool | GPL-3.0 | ✅ Separate program |
+| osmium-tool | GPL-3.0 (verified 2026-10-27) | ✅ Separate program |
 | libosmium | BSL-1.0 | ✅ |
 | osm2pgsql | GPL-2.0-or-later | ✅ Separate program |
 | MobilityData GTFS Validator | Apache-2.0 | ✅ |
 | OpenJDK runtime (jlink) | GPL-2.0 with Classpath Exception | ✅ Separate runtime |
-| LOOM | GPL-3.0 (**Verify** upstream LICENSE) | ✅ Separate program |
+| LOOM | GPL-3.0 (verified 2026-10-27) | ✅ Separate program |
 | s6-overlay | ISC | ✅ |
 | Debian base image packages | Mixed FOSS | ✅ SBOM lists all |
 
@@ -144,9 +144,9 @@
 
 ## 8. Open items before implementation
 
-1. Verify SUMO secondary-licence notice (decides libsumo in-process vs TraCI).
-2. Verify AequilibraE licence.
-3. Verify LOOM licence.
+1. ~~Verify SUMO licence~~ Done 2026-10-27: `EPL-2.0 OR GPL-2.0-or-later`, libsumo in-process.
+2. ~~Verify AequilibraE licence~~ Done 2026-10-27: MIT plus attribution clause (see §4).
+3. ~~Verify LOOM licence~~ Done 2026-10-27: GPL-3.0, separate program. osm2pgsql (GPL-2.0-or-later) and MobilityData GTFS Validator (Apache-2.0) also confirmed.
 4. Verify Transit Costs Project, Mobility Database catalog and Elevation-API.eu terms.
 5. Confirm OpenFreeMap style licences.
 6. ~~Product owner confirms AGPL-3.0-or-later (ADR-0002)~~ Done 2026-10-27. CC BY 4.0 for catalogue and assumption data follows ADR-0002.

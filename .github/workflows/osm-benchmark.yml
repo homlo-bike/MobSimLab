@@ -1,0 +1,37 @@
+name: OSM import benchmark (Spike S3)
+
+# Manual only: downloads a regional extract from Geofabrik (about 100–400 MB).
+on:
+  workflow_dispatch:
+    inputs:
+      region:
+        description: Geofabrik extract path, e.g. europe/germany/bremen
+        default: europe/germany/bremen
+      bbox:
+        description: Small-area bbox for the Overpass path (south,west,north,east)
+        default: "53.070,8.790,53.085,8.820"
+
+permissions:
+  contents: read
+
+jobs:
+  s3:
+    runs-on: ubuntu-24.04
+    services:
+      postgres:
+        image: postgis/postgis:17-3.5
+        env: { POSTGRES_PASSWORD: ci-only-throwaway-${{ github.run_id }} }
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s --health-retries 20
+    env:
+      PGHOST: localhost
+      PGUSER: postgres
+      PGPASSWORD: ci-only-throwaway-${{ github.run_id }}
+    steps:
+      - uses: actions/checkout@v5
+      - run: sudo apt-get update && sudo apt-get install -y osm2pgsql osmium-tool postgresql-client
+      - name: Run S3
+        run: tools/osm/s3_benchmark.sh "${{ inputs.region }}" "${{ inputs.bbox }}" | tee s3-report.txt
+      - uses: actions/upload-artifact@v4
+        with: { name: s3-report, path: s3-report.txt }
