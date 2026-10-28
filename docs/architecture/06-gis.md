@@ -206,6 +206,8 @@ Bus, BRT, trolleybus and intercity bus lines are drawn with the route-point tool
 6. Moving, inserting or deleting a point re-routes only the two adjacent legs; network edits mark affected legs stale.
 7. Vehicles start in their depot. The block builder adds routed pull-out and pull-in trips between the depot gate and the first and last stops of each block (07 §7–8).
 
+Implementation: `crates/street-routing` (router and route-point model), run in the editor as WebAssembly (ADR-0031). How to use it: [street line tool](../user/street-line-tool.md).
+
 ### 9.5 Railway design tool
 
 Station-first workflow for tram, light rail, metro, regional, intercity and high-speed rail (ADR-0030):

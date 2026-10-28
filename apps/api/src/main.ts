@@ -27,7 +27,7 @@ async function bootstrap(): Promise<void> {
   const app = await NestFactory.create<NestExpressApplication>(AppModule.forRoot(config), {
     logger: ["error", "warn", "log"],
   });
-  configureApp(app);
+  configureApp(app, config);
   if (!config.oidc) {
     new Logger("bootstrap").warn(
       "no sign-in provider configured (MOBSIMLAB_OIDC_ISSUER); sign-in is disabled",
