@@ -1,0 +1,91 @@
+{
+  "id": "siemens-class-185",
+  "mode": "regional_rail",
+  "category": "dmu",
+  "simulatorCategory": "3-Car DMU",
+  "name": "Class 185",
+  "variant": "3-car",
+  "family": "Desiro",
+  "producer": "Siemens",
+  "manufacturerCountry": "Germany",
+  "yearIntroduced": 2006,
+  "dimensions": {
+    "lengthM": 71.276,
+    "widthM": 2.673,
+    "heightM": 3.71,
+    "emptyWeightT": 168.5
+  },
+  "consist": {
+    "cars": 3,
+    "carLengthsM": [23.763, 23.763, 23.763]
+  },
+  "capacity": {
+    "seated": 169,
+    "total": 169
+  },
+  "performance": {
+    "maxSpeedKmh": 160,
+    "accelerationMs2": 0.49,
+    "tractionPowerKw": 1683
+  },
+  "energy": {
+    "supply": "diesel"
+  },
+  "infrastructure": {
+    "gaugeMm": 1435
+  },
+  "costs": [
+    {
+      "item": "51 three-car trains and associated depots",
+      "amount": 260000000,
+      "currency": "GBP",
+      "year": 2003,
+      "region": "United Kingdom",
+      "url": "https://en.wikipedia.org/wiki/British_Rail_Class_185",
+      "note": "Order for 51 trains including depots, not a per-train price."
+    }
+  ],
+  "livery": {
+    "operator": "TransPennine Express",
+    "primary": "#1F3C88",
+    "secondary": "#5B2C83",
+    "windows": null,
+    "sourceUrl": "https://runwaygirlnetwork.com/2024/07/luxurious-first-class-outweighs-service-flaws-on-transpennine-express",
+    "description": "approximation of various blues with a purple underbelly and yellow front (TPE)"
+  },
+  "operators": ["TransPennine Express"],
+  "sources": [
+    {
+      "url": "https://en.wikipedia.org/wiki/British_Rail_Class_185",
+      "title": "British Rail Class 185",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["dimensions", "consist", "capacity.seated", "performance", "infrastructure.gaugeMm"],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.75
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "capacity": {
+      "kind": "derived",
+      "confidence": 0.7
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.9
+    }
+  },
+  "notes": "Seats 169 (15 first, 154 standard) plus 12 tip-up seats not counted. total = seats (no standing figure published). Weight is given as approx. 168.5 t. Power 1,683 kW = 3 × 561 kW engines."
+}

@@ -1,0 +1,103 @@
+{
+  "id": "scania-citywide-lf-12-cng-zvolen",
+  "mode": "bus",
+  "category": "standard_bus",
+  "simulatorCategory": "12 m Standard Bus",
+  "name": "Citywide LF 12M",
+  "variant": "CNG, 3 doors (MHD Zvolen)",
+  "family": "Citywide",
+  "producer": "Scania",
+  "manufacturerCountry": "Sweden (built in Słupsk, Poland)",
+  "yearIntroduced": 2011,
+  "yearDiscontinued": 2023,
+  "dimensions": {
+    "lengthM": 11.995,
+    "widthM": 2.55,
+    "heightM": 3.377,
+    "emptyWeightT": 12.82,
+    "floorHeightMm": 333
+  },
+  "consist": {
+    "cars": 1,
+    "articulations": 0
+  },
+  "doors": {
+    "doorsPerSide": 3
+  },
+  "capacity": {
+    "seated": 29,
+    "standing": 52,
+    "total": 81
+  },
+  "performance": {
+    "maxSpeedKmh": 80,
+    "tractionPowerKw": 206
+  },
+  "energy": {
+    "supply": "gas"
+  },
+  "costs": [
+    {
+      "item": "vehicle",
+      "amount": 272500,
+      "currency": "EUR",
+      "year": 2022,
+      "region": "Zvolen, Slovakia",
+      "url": "https://imhd.sk/zv/popis-typu-vozidla/1067/Scania-Citywide-LF-12M-CNG",
+      "note": "Tender won in 2022 by Scania Slovakia for 4 buses; price per bus excl. VAT, as reported by imhd.sk."
+    }
+  ],
+  "operators": ["MHD Zvolen"],
+  "sources": [
+    {
+      "url": "https://imhd.sk/zv/popis-typu-vozidla/1067/Scania-Citywide-LF-12M-CNG",
+      "title": "Scania Citywide LF 12M CNG – vehicle type description",
+      "publisher": "imhd.sk (Zvolen public transport information site)",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions",
+        "consist",
+        "doors",
+        "capacity",
+        "performance",
+        "energy",
+        "yearIntroduced",
+        "yearDiscontinued",
+        "costs"
+      ],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "doors": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "costs": {
+      "kind": "published",
+      "confidence": 0.6
+    }
+  },
+  "notes": "4 buses delivered 2023 (in service from November 2023). Scania OC09 104 Euro 6 CNG engine, 206 kW, ZF 6-speed automatic. Empty weight given as approximate (~12,820 kg). Capacity excludes the driver. imhd.sk: Citywide presented 2011, production of Scania complete buses in Słupsk ended at the end of 2023. Livery not described."
+}

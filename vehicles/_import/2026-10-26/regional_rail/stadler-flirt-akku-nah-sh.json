@@ -1,0 +1,99 @@
+{
+  "id": "stadler-flirt-akku-nah-sh",
+  "mode": "regional_rail",
+  "category": "emu",
+  "simulatorCategory": "2-Car Battery EMU",
+  "name": "FLIRT Akku",
+  "variant": "NAH.SH 2-car",
+  "family": "FLIRT",
+  "producer": "Stadler",
+  "manufacturerCountry": "Switzerland",
+  "yearIntroduced": 2023,
+  "dimensions": {
+    "lengthM": 45.7,
+    "widthM": 2.82,
+    "heightM": 4.275,
+    "floorHeightMm": 780
+  },
+  "consist": {
+    "cars": 2
+  },
+  "doors": {
+    "doorsPerSide": 2,
+    "doorWidthMm": 1300
+  },
+  "capacity": {
+    "seated": 123,
+    "standing": 93,
+    "total": 216,
+    "standingDensityPersM2": 4
+  },
+  "performance": {
+    "maxSpeedKmh": 160,
+    "tractionPowerKw": 1000
+  },
+  "energy": {
+    "supply": "overhead_wire",
+    "supplySystems": ["ac_15k_16_7"],
+    "onboard": "battery",
+    "regenerativeBraking": true
+  },
+  "infrastructure": {
+    "gaugeMm": 1435
+  },
+  "livery": null,
+  "operators": ["NAH.SH (Schleswig-Holstein)"],
+  "sources": [
+    {
+      "url": "https://stadlerrail.com/api/docs/x/5aa4c05888/flirt-akku-nahsh_en.pdf",
+      "title": "FLIRT Akku 2-car unit, Nahverkehrsverbund Schleswig-Holstein – vehicle data",
+      "publisher": "Stadler",
+      "date": "2024",
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions",
+        "consist.cars",
+        "doors",
+        "capacity",
+        "performance.maxSpeedKmh",
+        "performance.tractionPowerKw",
+        "energy.supplySystems",
+        "energy.onboard",
+        "energy.regenerativeBraking",
+        "infrastructure.gaugeMm"
+      ],
+      "kind": "primary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "doors": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "performance": {
+      "kind": "derived",
+      "confidence": 0.85
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.9
+    }
+  },
+  "notes": "Battery bi-mode EMU: 15 kV catenary plus lithium-ion traction battery for catenary-free sections, charged under the wire and at electrified terminals; braking energy stored in the batteries. Seats 105 + 18 flap seats = 123; standing 123 at 4 pers./m², 93 when the flap seats are occupied; the sheet gives 216 passengers in total (123 seated + 93 standing). tractionPowerKw derived from \"Drive 2 × 500 kW\". Battery capacity and battery range are not published in this sheet, so left empty. Floor height is low floor (high floor 1,145 mm)."
+}

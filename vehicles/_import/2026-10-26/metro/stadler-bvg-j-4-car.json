@@ -1,0 +1,107 @@
+{
+  "id": "stadler-bvg-j-4-car",
+  "mode": "metro",
+  "category": "metro_consist",
+  "simulatorCategory": "4-Car Metro",
+  "name": "Class J",
+  "variant": "Berlin U-Bahn large profile, 4-car",
+  "family": "Stadler metro",
+  "producer": "Stadler",
+  "manufacturerCountry": "Germany",
+  "yearIntroduced": 2026,
+  "dimensions": {
+    "lengthM": 64.2,
+    "widthM": 2.65,
+    "heightM": 3.425,
+    "floorHeightMm": 950
+  },
+  "consist": {
+    "cars": 4,
+    "carLengthsM": [16.05, 16.05, 16.05, 16.05]
+  },
+  "doors": {
+    "doorsPerSide": 12
+  },
+  "capacity": {
+    "seated": 110,
+    "standing": 353,
+    "total": 463
+  },
+  "performance": {
+    "maxSpeedKmh": 70,
+    "tractionPowerKw": 1200
+  },
+  "energy": {
+    "supply": "third_rail",
+    "supplySystems": ["dc_750"],
+    "regenerativeBraking": true
+  },
+  "infrastructure": {
+    "gaugeMm": 1435
+  },
+  "livery": {
+    "operator": "BVG (Berliner Verkehrsbetriebe)",
+    "primary": "#F0D722",
+    "secondary": "#FCFFFF",
+    "windows": null,
+    "sourceUrl": "https://de.wikipedia.org/wiki/Berliner_Verkehrsbetriebe",
+    "description": "Verkehrsgelb RAL 1023 main surfaces, Verkehrsweiß RAL 9016 roof, Schiefergrau RAL 7015 lower area (BVG vehicle colours as tabled; hex as given there)"
+  },
+  "operators": ["Berliner Verkehrsbetriebe (BVG)"],
+  "sources": [
+    {
+      "url": "https://en.wikipedia.org/wiki/BVG_Class_J",
+      "title": "BVG Class J",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions",
+        "consist",
+        "doors",
+        "capacity.seated",
+        "capacity.standing",
+        "performance",
+        "energy",
+        "infrastructure.gaugeMm"
+      ],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.75
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "doors": {
+      "kind": "derived",
+      "confidence": 0.7
+    },
+    "capacity": {
+      "kind": "derived",
+      "confidence": 0.6
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.75
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.85
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "operation": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "Four-car (DM–M–M–DM) large-profile J unit built by Stadler in Berlin-Pankow; entered service 30 April 2026. total = 110 seats + 353 standing = 463 (derived sum; standing density not stated). The article gives 38 seats / 177 standing for the 2-car unit, which does not double to the 4-car figure; values copied as published. Doors: 3 sliding plug doors per side per car, × 4 cars = 12 per side (derived). Power 12 × 100 kW. 750 V DC third rail; regenerative braking.",
+  "livery": null
+}

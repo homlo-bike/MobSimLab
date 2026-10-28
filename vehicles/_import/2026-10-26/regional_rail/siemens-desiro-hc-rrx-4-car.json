@@ -1,0 +1,93 @@
+{
+  "id": "siemens-desiro-hc-rrx-4-car",
+  "mode": "regional_rail",
+  "category": "emu",
+  "simulatorCategory": "4-Car EMU",
+  "name": "Desiro HC",
+  "variant": "Rhein-Ruhr-Express 4-car",
+  "family": "Siemens Desiro",
+  "producer": "Siemens",
+  "manufacturerCountry": "Germany",
+  "yearIntroduced": 2018,
+  "dimensions": {
+    "lengthM": 105.252,
+    "widthM": 2.82,
+    "emptyWeightT": 200,
+    "floorHeightMm": 730
+  },
+  "consist": {
+    "cars": 4,
+    "carLengthsM": [26.226, 25.2, 25.2, 26.226]
+  },
+  "capacity": {
+    "seated": 400,
+    "total": 400
+  },
+  "performance": {
+    "maxSpeedKmh": 160,
+    "accelerationMs2": 1.1,
+    "tractionPowerKw": 4000
+  },
+  "energy": {
+    "supply": "overhead_wire",
+    "supplySystems": ["ac_15k_16_7"]
+  },
+  "infrastructure": {
+    "gaugeMm": 1435
+  },
+  "operators": ["Rhein-Ruhr-Express (RRX)"],
+  "sources": [
+    {
+      "url": "https://assets.new.siemens.com/siemens/assets/api/uuid:c94ec23d-2e24-4bd7-842f-d9438851b8c1/siemens-mobility-desiro-hc-rrx-en.pdf",
+      "title": "Desiro HC RRX – Electrical multiple units and maintenance for the Rhine-Ruhr Express",
+      "publisher": "Siemens Mobility",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions",
+        "consist",
+        "capacity.seated",
+        "performance",
+        "energy.supplySystems",
+        "infrastructure.gaugeMm"
+      ],
+      "kind": "primary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "capacity": {
+      "kind": "derived",
+      "confidence": 0.8
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.95
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.95
+    },
+    "doors": {
+      "kind": "not_available",
+      "confidence": 0
+    },
+    "operation": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "Four-car unit: single-deck powered end cars and two double-deck trailers (Bo'Bo'+2'2'+2'2'+Bo'Bo'). 400 seats (36 first class); total = seats (no standing figure published). Access height 800 mm at the end cars and 730 mm at the middle cars; floorHeightMm holds 730. Weight 200 t. In operation since the end of 2018.",
+  "livery": null
+}

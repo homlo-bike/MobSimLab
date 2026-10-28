@@ -1,0 +1,168 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7c31-8d74-444a8fedfb11",
+  "legacyId": "byd-k8-japan",
+  "name": "BYD K8 (Japan, urban version)",
+  "manufacturer": "BYD",
+  "builder": "BYD",
+  "model": "K8",
+  "variant": "Japan, urban version",
+  "family": "K-series",
+  "manufacturerCountry": "China",
+  "type": "standard-bus",
+  "mode": "bus",
+  "operators": [
+    "Nankai Rinkan Bus (Japan)"
+  ],
+  "length": {
+    "value": 10.5,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "electrive-com-byd-puts-500th-electric-bus-on-japanese"
+    ]
+  },
+  "width": {
+    "value": 2.5,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "electrive-com-byd-puts-500th-electric-bus-on-japanese"
+    ]
+  },
+  "height": {
+    "value": 3.3,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "electrive-com-byd-puts-500th-electric-bus-on-japanese"
+    ]
+  },
+  "consist": {
+    "articulations": {
+      "value": 0,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "electrive-com-byd-puts-500th-electric-bus-on-japanese"
+      ]
+    },
+    "cars": {
+      "value": 1,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "electrive-com-byd-puts-500th-electric-bus-on-japanese"
+      ]
+    }
+  },
+  "seats": {
+    "value": 26,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "electrive-com-byd-puts-500th-electric-bus-on-japanese"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "standingQuoted": {
+    "value": 53,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "electrive-com-byd-puts-500th-electric-bus-on-japanese"
+    ]
+  },
+  "standingArea": {
+    "value": 13.2,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "electrive-com-byd-puts-500th-electric-bus-on-japanese"
+    ],
+    "rationale": "53 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 8.8,
+    "central": 13.2,
+    "high": 17.7,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 79,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "electrive-com-byd-puts-500th-electric-bus-on-japanese"
+    ],
+    "rationale": "26 seats plus 53 standing places."
+  },
+  "wheelchairSpaces": {
+    "value": 2,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "electrive-com-byd-puts-500th-electric-bus-on-japanese"
+    ]
+  },
+  "topSpeed": {
+    "value": 70,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "electrive-com-byd-puts-500th-electric-bus-on-japanese"
+    ]
+  },
+  "power": {
+    "value": 200,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "electrive-com-byd-puts-500th-electric-bus-on-japanese"
+    ]
+  },
+  "energySource": {
+    "value": "battery",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "electrive-com-byd-puts-500th-electric-bus-on-japanese"
+    ]
+  },
+  "batteryCapacity": {
+    "value": 314,
+    "unit": "kWh",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "electrive-com-byd-puts-500th-electric-bus-on-japanese"
+    ]
+  },
+  "range": {
+    "value": 240,
+    "unit": "km",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "electrive-com-byd-puts-500th-electric-bus-on-japanese"
+    ]
+  },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/BYD_K_series",
+    "scope": "family",
+    "checked_via": "search"
+  },
+  "notes": "Urban version: 80 people including the driver = 22 fixed seats + 4 folding seats + 53 standing + driver. Seated (26) and total (79, without the driver) derived. Suburban version: 22 fixed + 8 folding + 45 standing + driver. 200 kW = 2 x 100 kW; charging up to 90 kW, up to 3.5 h. Wheelbase 5.3 m.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

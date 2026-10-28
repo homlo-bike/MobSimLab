@@ -1,0 +1,94 @@
+{
+  "id": "solaris-urbino-18-gen4",
+  "mode": "bus",
+  "category": "articulated_bus",
+  "simulatorCategory": "18 m Articulated Bus",
+  "name": "Urbino 18",
+  "variant": "4th generation (New Urbino), diesel",
+  "family": "Urbino",
+  "producer": "Solaris Bus & Coach",
+  "manufacturerCountry": "Poland",
+  "yearIntroduced": 2014,
+  "dimensions": {
+    "lengthM": 18.0,
+    "widthM": 2.55,
+    "heightM": 3.05,
+    "emptyWeightT": 16.699,
+    "grossWeightT": 28,
+    "floorHeightMm": 320
+  },
+  "consist": {
+    "cars": 2,
+    "articulations": 1
+  },
+  "doors": {
+    "doorsPerSide": 4
+  },
+  "capacity": {
+    "seated": 34,
+    "standing": 98,
+    "total": 132
+  },
+  "performance": {
+    "maxSpeedKmh": 72,
+    "tractionPowerKw": 270
+  },
+  "energy": {
+    "supply": "diesel"
+  },
+  "costs": [
+    {
+      "item": "vehicle",
+      "amount": 312500,
+      "currency": "EUR",
+      "year": 2019,
+      "region": "Bratislava, Slovakia",
+      "url": "https://imhd.sk/ba/popis-typu-vozidla/948/Solaris-New-Urbino-18",
+      "note": "Bratislava tender 2019, price per vehicle (extended luggage version) excl. VAT, as reported by imhd.sk."
+    }
+  ],
+  "livery": null,
+  "operators": ["Dopravný podnik Bratislava"],
+  "sources": [
+    {
+      "url": "https://imhd.sk/ba/popis-typu-vozidla/948/Solaris-New-Urbino-18",
+      "title": "Solaris New Urbino 18 – vehicle type description",
+      "publisher": "imhd.sk (Bratislava public transport information site)",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["dimensions", "consist", "doors", "capacity", "performance", "energy", "costs"],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "doors": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "costs": {
+      "kind": "published",
+      "confidence": 0.6
+    }
+  },
+  "notes": "4th-generation Urbino presented 2014 (facelift 2019); figures for Bratislava vehicles built 2020. Maximum speed 72 km/h as set on fleet 3221-3231 (81 km/h on the driving-school vehicle). Engine DAF Paccar MX-11, 270 kW (tractionPowerKw = rated engine power). Wheelbases 5900 mm and 6000 mm. Capacity excludes the driver."
+}

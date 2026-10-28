@@ -1,0 +1,75 @@
+{
+  "id": "mercedes-benz-citaro-c2-k-poprad",
+  "mode": "bus",
+  "category": "standard_bus",
+  "simulatorCategory": "10.5 m Midi Bus",
+  "name": "Citaro K",
+  "variant": "C2, 10.6 m diesel, 2 doors (SAD Poprad)",
+  "family": "Citaro",
+  "producer": "Mercedes-Benz (Daimler Buses)",
+  "manufacturerCountry": "Germany",
+  "dimensions": {
+    "lengthM": 10.633,
+    "widthM": 2.55,
+    "heightM": 3.12,
+    "floorHeightMm": 320
+  },
+  "consist": {
+    "cars": 1,
+    "articulations": 0
+  },
+  "doors": {
+    "doorsPerSide": 2
+  },
+  "capacity": {
+    "seated": 26,
+    "standing": 60,
+    "total": 86
+  },
+  "performance": {
+    "maxSpeedKmh": 95,
+    "tractionPowerKw": 220
+  },
+  "energy": {
+    "supply": "diesel"
+  },
+  "operators": ["SAD Poprad"],
+  "sources": [
+    {
+      "url": "https://imhd.sk/tatry/popis-typu-vozidla/1015/Mercedes-Benz-Citaro-C2-K",
+      "title": "Mercedes-Benz Citaro C2 K – vehicle type description",
+      "publisher": "imhd.sk (Poprad-Tatry public transport information site)",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["dimensions", "consist", "doors", "capacity", "performance", "energy"],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "doors": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.7
+    }
+  },
+  "notes": "SAD Poprad, 8 vehicles (2021-2022). OM 936 h Euro 6e diesel, 220 kW. Height 3,120 mm with air conditioning (3,095 mm without). Wheelbase 4,398 mm. Capacity excludes the driver (+1). Livery not described by the source."
+}

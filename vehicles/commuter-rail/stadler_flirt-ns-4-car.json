@@ -1,0 +1,192 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-79db-ac56-cc8891c3326e",
+  "legacyId": "stadler-flirt-ns-4-car",
+  "name": "Stadler FLIRT (NS 4-car (SNG/Sprinter FLIRT 3))",
+  "manufacturer": "Stadler",
+  "builder": "Stadler",
+  "model": "FLIRT",
+  "variant": "NS 4-car (SNG/Sprinter FLIRT 3)",
+  "family": "FLIRT",
+  "manufacturerCountry": "Switzerland",
+  "type": "emu",
+  "mode": "commuter_rail",
+  "yearIntroduced": 2016,
+  "operators": [
+    "Nederlandse Spoorwegen (NS)"
+  ],
+  "length": {
+    "value": 80.7,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-flirt-for-ns-netherlands-vehicle-data-3"
+    ]
+  },
+  "width": {
+    "value": 2.82,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-flirt-for-ns-netherlands-vehicle-data-3"
+    ]
+  },
+  "height": {
+    "value": 4.12,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-flirt-for-ns-netherlands-vehicle-data-3"
+    ]
+  },
+  "floorHeight": {
+    "value": 780,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-flirt-for-ns-netherlands-vehicle-data-3"
+    ]
+  },
+  "consist": {
+    "cars": {
+      "value": 4,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "stadler-flirt-for-ns-netherlands-vehicle-data-3"
+      ]
+    }
+  },
+  "doorsPerSide": {
+    "value": 8,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "stadler-flirt-for-ns-netherlands-vehicle-data-3"
+    ],
+    "rationale": "Derived from the cited source; see notes."
+  },
+  "doorClearWidth": {
+    "value": 1300,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "stadler-flirt-for-ns-netherlands-vehicle-data-3"
+    ],
+    "rationale": "Derived from the cited source; see notes."
+  },
+  "seats": {
+    "value": 202,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-flirt-for-ns-netherlands-vehicle-data-3"
+    ]
+  },
+  "standingQuoted": {
+    "value": 0,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "stadler-flirt-for-ns-netherlands-vehicle-data-3"
+    ],
+    "rationale": "Total 202 minus 202 seats."
+  },
+  "standingArea": {
+    "value": 0.0,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "stadler-flirt-for-ns-netherlands-vehicle-data-3"
+    ],
+    "rationale": "0 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 0.0,
+    "central": 0.0,
+    "high": 0.0,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 202,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "stadler-flirt-for-ns-netherlands-vehicle-data-3"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "topSpeed": {
+    "value": 160,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-flirt-for-ns-netherlands-vehicle-data-3"
+    ]
+  },
+  "power": {
+    "value": 3000,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-flirt-for-ns-netherlands-vehicle-data-3"
+    ]
+  },
+  "energySource": {
+    "value": "overhead-dc",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-flirt-for-ns-netherlands-vehicle-data-3"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "ocl-1500v-dc"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-flirt-for-ns-netherlands-vehicle-data-3"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-flirt-for-ns-netherlands-vehicle-data-3"
+    ]
+  },
+  "livery": {
+    "operator": "Nederlandse Spoorwegen (NS)",
+    "primary": "#FFC917",
+    "secondary": "#003082",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "treinreiziger-nl-nederlandse-spoorwegen-ns"
+    ],
+    "rationale": "approximation of NS yellow and blue; Sprinters carry partly white bodywork (since 2003)"
+  },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Stadler_FLIRT",
+    "scope": "family",
+    "checked_via": "search"
+  },
+  "notes": "4-car column of the Stadler sheet: 170 second + 32 first class seats; 12 fold-up seats not counted. total = seats (no standing figure published). doorsPerSide derived: 2 entrance doors per car body and side × 4. Floor height is the low-floor value (PRM area 808 mm, high floor 1,180 mm). tractionPowerKw = maximum power at wheel.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

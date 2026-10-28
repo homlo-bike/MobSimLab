@@ -1,0 +1,97 @@
+{
+  "id": "setra-s-531-dt",
+  "mode": "intercity_bus",
+  "category": "double_decker_coach",
+  "simulatorCategory": "Intercity Coach",
+  "name": "S 531 DT",
+  "variant": "TopClass double-deck coach",
+  "family": "TopClass 500",
+  "producer": "Setra (Daimler Buses)",
+  "manufacturerCountry": "Germany",
+  "dimensions": {
+    "lengthM": 14.0,
+    "widthM": 2.55,
+    "heightM": 4.0,
+    "turningCircleM": 23.138
+  },
+  "consist": {
+    "cars": 1,
+    "articulations": 0,
+    "axlePositionsM": [2.705, 9.405, 10.755]
+  },
+  "doors": {
+    "doorWidthMm": 900
+  },
+  "capacity": {
+    "seated": 83,
+    "total": 93
+  },
+  "performance": {
+    "maxSpeedKmh": 100,
+    "tractionPowerKw": 375
+  },
+  "energy": {
+    "supply": "diesel"
+  },
+  "livery": null,
+  "sources": [
+    {
+      "url": "https://www.setra-bus.com/de/de/models/tc-dt-models/facts-tc-dt-models.pdf",
+      "title": "TopClass S 531 DT – Technische Daten",
+      "publisher": "Setra / Daimler Buses (EvoBus GmbH)",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["dimensions", "consist", "doors.doorWidthMm", "capacity", "performance.tractionPowerKw"],
+      "kind": "primary"
+    },
+    {
+      "url": "https://www.daimlertruck.com/en/newsroom/pressrelease/technical-data-and-equipment-of-the-setra-s-531-dt-nu-dt-5311-42758242",
+      "title": "Technical data and equipment of the Setra S 531 DT",
+      "publisher": "Daimler Truck AG",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["dimensions.lengthM", "performance.tractionPowerKw"],
+      "kind": "primary"
+    },
+    {
+      "url": "https://www.legislation.gov.uk/eudr/1992/6/pdfs/eudr_19920006_2002-12-04_en.pdf",
+      "title": "Council Directive 92/6/EEC on speed limitation devices (consolidated 2002-12-04), Article 2",
+      "publisher": "legislation.gov.uk (EU directive text)",
+      "date": "2002-12-04",
+      "accessed": "2026-10-26",
+      "fields": ["performance.maxSpeedKmh"],
+      "kind": "primary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "consist": {
+      "kind": "derived",
+      "confidence": 0.8
+    },
+    "doors": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "costs": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "Maximum speed is the legal speed-limiter setting for M2/M3 vehicles in the EU (Directive 92/6/EEC Art. 2: cannot exceed 100 km/h), not a manufacturer design speed. Capacity: 83 seats in series seating; the data sheet gives a maximum passenger capacity of 93 and minimum of 54 depending on layout (no standing in coach service). Axle positions derived from the published 2705 mm front overhang, 6700 mm wheelbase to the drive axle and 1350 mm to the trailing axle. Turning circle 23.138 m as published. Door clear width approx. 900 mm. Engine OM 471, 375 kW (tractionPowerKw = rated engine power)."
+}

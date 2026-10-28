@@ -1,0 +1,95 @@
+{
+  "id": "mercedes-benz-citaro-c2-poprad",
+  "mode": "bus",
+  "category": "standard_bus",
+  "simulatorCategory": "12 m Standard Bus",
+  "name": "Citaro",
+  "variant": "C2, 12 m diesel, 3 doors (SAD Poprad)",
+  "family": "Citaro",
+  "producer": "Mercedes-Benz (Daimler Buses)",
+  "manufacturerCountry": "Germany",
+  "yearIntroduced": 2011,
+  "dimensions": {
+    "lengthM": 12.135,
+    "widthM": 2.55,
+    "heightM": 3.12,
+    "emptyWeightT": 10.967,
+    "floorHeightMm": 320
+  },
+  "consist": {
+    "cars": 1,
+    "articulations": 0
+  },
+  "doors": {
+    "doorsPerSide": 3
+  },
+  "capacity": {
+    "seated": 32,
+    "standing": 74,
+    "total": 106
+  },
+  "performance": {
+    "maxSpeedKmh": 95,
+    "tractionPowerKw": 220
+  },
+  "energy": {
+    "supply": "diesel",
+    "regenerativeBraking": null
+  },
+  "livery": {
+    "operator": "SAD Poprad (MHD Poprad)",
+    "primary": "#FFFFFF",
+    "secondary": "#1F5AA6",
+    "windows": null,
+    "sourceUrl": "https://imhd.sk/tatry/popis-typu-vozidla/954/Mercedes-Benz-Citaro-C2",
+    "description": "Delivered in a white and blue livery (\"bielo-modrý náter\"), as described by imhd.sk; hex values approximate."
+  },
+  "operators": ["SAD Poprad"],
+  "sources": [
+    {
+      "url": "https://imhd.sk/tatry/popis-typu-vozidla/954/Mercedes-Benz-Citaro-C2",
+      "title": "Mercedes-Benz Citaro C2 – vehicle type description",
+      "publisher": "imhd.sk (Poprad-Tatry public transport information site)",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions",
+        "consist",
+        "doors",
+        "capacity",
+        "performance",
+        "energy",
+        "yearIntroduced",
+        "livery"
+      ],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.65
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.65
+    },
+    "doors": {
+      "kind": "published",
+      "confidence": 0.65
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.65
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.65
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.65
+    }
+  },
+  "notes": "SAD Poprad series 1 (2020, 6 vehicles): Mercedes-Benz OM 936 h Euro 6D diesel with recuperation module, 220 kW, ZF EcoLife 6-speed. Height 3,120 mm with air conditioning (3,095 mm without). Wheelbase 5,900 mm. Capacity given by the source as approximate (seats 32 + 1, standing ~74, total ~106 + 1). imhd.sk states the second Citaro generation was presented in 2011."
+}

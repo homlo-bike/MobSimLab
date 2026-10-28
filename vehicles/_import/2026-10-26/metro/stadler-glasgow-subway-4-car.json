@@ -1,0 +1,113 @@
+{
+  "id": "stadler-glasgow-subway-4-car",
+  "mode": "metro",
+  "category": "metro_automated",
+  "simulatorCategory": "4-Car Metro",
+  "name": "Metro Glasgow EMU",
+  "variant": "SPT Glasgow Subway",
+  "family": "Stadler metro",
+  "producer": "Stadler",
+  "manufacturerCountry": "Switzerland",
+  "yearIntroduced": 2023,
+  "dimensions": {
+    "lengthM": 39.51,
+    "widthM": 2.309,
+    "heightM": 2.642,
+    "floorHeightMm": 695
+  },
+  "consist": {
+    "cars": 4
+  },
+  "doors": {
+    "doorsPerSide": 6,
+    "doorWidthMm": 1200
+  },
+  "capacity": {
+    "seated": 104,
+    "standing": 200,
+    "total": 304,
+    "standingDensityPersM2": 6
+  },
+  "performance": {
+    "maxSpeedKmh": 58,
+    "accelerationMs2": 1.3,
+    "tractionPowerKw": 820
+  },
+  "energy": {
+    "supply": "third_rail",
+    "supplySystems": ["dc_600"]
+  },
+  "infrastructure": {
+    "gaugeMm": 1220
+  },
+  "operation": {
+    "automationGrade": "GoA4"
+  },
+  "operators": ["Strathclyde Partnership for Transport (Glasgow Subway)"],
+  "sources": [
+    {
+      "url": "https://stadlerrail.com/api/docs/x/3c2214052a/metro-glasgow-spt-en.pdf",
+      "title": "Metro Glasgow EMU – Strathclyde Partnership for Transport (SPT), UK",
+      "publisher": "Stadler",
+      "date": "2022",
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions",
+        "doors",
+        "capacity.seated",
+        "capacity.standing",
+        "capacity.standingDensityPersM2",
+        "performance",
+        "energy.supplySystems",
+        "infrastructure.gaugeMm",
+        "operation.automationGrade"
+      ],
+      "kind": "primary"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Glasgow_Subway_rolling_stock",
+      "title": "Glasgow Subway rolling stock",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["yearIntroduced"],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "consist": {
+      "kind": "derived",
+      "confidence": 0.75
+    },
+    "doors": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "capacity": {
+      "kind": "derived",
+      "confidence": 0.85
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.85
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.95
+    },
+    "operation": {
+      "kind": "published",
+      "confidence": 0.8
+    }
+  },
+  "notes": "Fully automatic, unattended small-profile train (17 units; in service from 11 December 2023). cars = 4 read from the axle arrangement Bo'Bo'+2'+2'+Bo'Bo' (derived). total = 104 seats + 200 standing at 6 persons/m² = 304 (derived; 6 tip-up seats not counted). tractionPowerKw is the maximum output at wheel (820 kW; continuous 520 kW). automationGrade GoA4 from the sheet's 'fully automatically, without drivers'. 600 V DC third rail; 1,220 mm gauge.",
+  "livery": null
+}

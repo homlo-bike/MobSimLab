@@ -1,0 +1,199 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-70a4-bf17-946893ae2110",
+  "legacyId": "hitachi-frecciarossa-1000",
+  "name": "Hitachi Frecciarossa 1000 (ETR 1000) (8-car)",
+  "manufacturer": "Hitachi",
+  "builder": "Hitachi Rail Italy / Bombardier (now Alstom)",
+  "model": "Frecciarossa 1000 (ETR 1000)",
+  "variant": "8-car",
+  "family": "Zefiro",
+  "manufacturerCountry": "Italy",
+  "type": "high-speed-train",
+  "mode": "high_speed_rail",
+  "yearIntroduced": 2015,
+  "operators": [
+    "Trenitalia",
+    "Iryo"
+  ],
+  "length": {
+    "value": 202,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-frecciarossa-1000"
+    ]
+  },
+  "width": {
+    "value": 2.924,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-frecciarossa-1000",
+      "wikipedia-etr-1000"
+    ]
+  },
+  "height": {
+    "value": 4.08,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-frecciarossa-1000"
+    ]
+  },
+  "weightEmpty": {
+    "value": 454,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wikipedia-etr-1000"
+    ]
+  },
+  "consist": {
+    "cars": {
+      "value": 8,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-frecciarossa-1000"
+      ]
+    }
+  },
+  "seats": {
+    "value": 457,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-frecciarossa-1000",
+      "wikipedia-etr-1000"
+    ]
+  },
+  "standingQuoted": {
+    "value": 0,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wikipedia-etr-1000",
+      "wp-frecciarossa-1000"
+    ],
+    "rationale": "Total 457 minus 457 seats."
+  },
+  "standingArea": {
+    "value": 0.0,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "wikipedia-etr-1000",
+      "wp-frecciarossa-1000"
+    ],
+    "rationale": "0 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 0.0,
+    "central": 0.0,
+    "high": 0.0,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 457,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-frecciarossa-1000",
+      "wikipedia-etr-1000"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "wheelchairSpaces": {
+    "value": 2,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-frecciarossa-1000"
+    ]
+  },
+  "topSpeed": {
+    "value": 300,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-frecciarossa-1000"
+    ]
+  },
+  "power": {
+    "value": 9800,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wikipedia-etr-1000"
+    ]
+  },
+  "maxAcceleration": {
+    "value": 0.7,
+    "unit": "m/s2",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-frecciarossa-1000"
+    ]
+  },
+  "energySource": {
+    "value": "overhead-multisystem",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-frecciarossa-1000"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "ocl-25kv-50hz",
+      "ocl-3000v-dc",
+      "ocl-1500v-dc"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-frecciarossa-1000"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-frecciarossa-1000"
+    ]
+  },
+  "livery": {
+    "operator": "Trenitalia",
+    "primary": "#D2001E",
+    "secondary": "#B1B3B6",
+    "windows": "#1A1A1A",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "wikipedia-etr-1000"
+    ],
+    "rationale": "Frecciarossa livery: red body with a red arrow on the front, silver lower band and black window band (2022 revision extends the black band to the cab doors); hex values approximate."
+  },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Frecciarossa_1000",
+    "scope": "model",
+    "checked_via": "source"
+  },
+  "notes": "Eight-car (4M4T) ETR 1000: 457 seats (10 Executive, 69 Business, 76 Premium, 300 Standard) plus 2 wheelchair places; total = seats (no standing figure published). maxSpeedKmh = 300 is the service speed; design commercial speed 360 km/h (Italian Wikipedia: homologated 360 km/h), design maximum 400 km/h. Length 202 m (202.02 m in the Italian article). Empty mass 454 t, in-service mass 501 t. Power 9.8 MW (up to 10 MW). 15 kV 16.7 Hz listed as not active, so not entered. 28 doors in total (per side not stated).",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

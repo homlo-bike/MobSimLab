@@ -1,0 +1,71 @@
+{
+  "id": "karsan-e-jest",
+  "mode": "bus",
+  "category": "minibus",
+  "simulatorCategory": "6 m Minibus",
+  "name": "e-JEST",
+  "variant": "88 kWh, Class A (M2), layout 1",
+  "family": "Jest",
+  "producer": "Karsan",
+  "manufacturerCountry": "Türkiye",
+  "dimensions": {
+    "lengthM": 5.845,
+    "widthM": 2.055,
+    "heightM": 2.8
+  },
+  "consist": {
+    "cars": 1,
+    "articulations": 0,
+    "axlePositionsM": [1.2, 4.95]
+  },
+  "capacity": {
+    "seated": 10,
+    "standing": 5,
+    "total": 15
+  },
+  "performance": {
+    "maxSpeedKmh": 100,
+    "tractionPowerKw": 135
+  },
+  "energy": {
+    "supply": "battery",
+    "batteryKwh": 88,
+    "rangeKm": 210,
+    "rechargeTimeMin": 65
+  },
+  "operators": [],
+  "sources": [
+    {
+      "url": "https://www.karsan.com/en-gb/electric-bus/e-jest/e-jest-specs",
+      "title": "e-JEST specs",
+      "publisher": "Karsan Otomotiv",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["dimensions", "capacity", "performance", "energy"],
+      "kind": "primary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "consist": {
+      "kind": "derived",
+      "confidence": 0.7
+    }
+  },
+  "notes": "Karsan UK spec page: width without mirrors, height with air conditioning; wheelbase 3,750 mm, front overhang 1,200 mm, rear 950 mm (axle positions derived from these); turning radius 6,993 mm; GVW 5,000/5,200 kg (not split by version, left null). Motor 135 kW peak, 290 Nm. Battery Li-ion up to 88 kWh; range 210 km NEDC for a base-level vehicle. Charging: AC Type 2 22 kW about 4 h, DC Combo 2 80 kW about 65 min to 80 % (depot plug-in; rechargeTimeMin is the DC figure). Other layouts: 10 seated + 2 folding + 3 standing (15), 10 seated + 1 wheelchair + 2 standing (13). Operators not listed by the source."
+}

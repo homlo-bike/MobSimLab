@@ -1,0 +1,93 @@
+{
+  "id": "stadler-flirt-pkp-intercity-ed160",
+  "mode": "long_distance_rail",
+  "category": "intercity_train",
+  "simulatorCategory": "8-Car Intercity",
+  "name": "FLIRT ED160",
+  "variant": "PKP Intercity 8-car",
+  "family": "FLIRT",
+  "producer": "Stadler",
+  "manufacturerCountry": "Switzerland",
+  "yearIntroduced": 2015,
+  "dimensions": {
+    "lengthM": 152.9,
+    "widthM": 2.82,
+    "heightM": 4.12,
+    "floorHeightMm": 1180
+  },
+  "consist": {
+    "cars": 8
+  },
+  "doors": {
+    "doorsPerSide": 8,
+    "doorWidthMm": 940
+  },
+  "capacity": {
+    "seated": 354,
+    "total": 354
+  },
+  "performance": {
+    "maxSpeedKmh": 160,
+    "accelerationMs2": 0.6,
+    "tractionPowerKw": 3000
+  },
+  "energy": {
+    "supply": "overhead_wire",
+    "supplySystems": ["dc_3000"]
+  },
+  "infrastructure": {
+    "gaugeMm": 1435
+  },
+  "livery": null,
+  "operators": ["PKP Intercity"],
+  "sources": [
+    {
+      "url": "https://www.stadlerrail.com/api/docs/x/c7781cb689/flirt_pkp-intercity_en.pdf",
+      "title": "FLIRT for PKP Intercity – vehicle data",
+      "publisher": "Stadler",
+      "date": "2014",
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions",
+        "consist.cars",
+        "doors",
+        "capacity.seated",
+        "performance",
+        "energy.supplySystems",
+        "infrastructure.gaugeMm"
+      ],
+      "kind": "primary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "consist": {
+      "kind": "derived",
+      "confidence": 0.8
+    },
+    "doors": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "capacity": {
+      "kind": "derived",
+      "confidence": 0.7
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.9
+    }
+  },
+  "notes": "First batch (20 units, commissioning 2015). Seats 354 = 60 first + 294 second class; 8 bistro benches and 6 tip-up seats not counted. total = seats (no standing figure published). cars = 8 read from the axle arrangement Bo'2'2'2'2'+2'2'2'2'Bo'. tractionPowerKw = maximum output at wheel (continuous 2,000 kW). Entrance width 940 mm; eight doors per side."
+}

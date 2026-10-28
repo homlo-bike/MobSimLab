@@ -1,0 +1,188 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-781e-94df-04afb1694e67",
+  "legacyId": "stadler-flirt-pkp-intercity-ed160",
+  "name": "Stadler FLIRT ED160 (PKP Intercity 8-car)",
+  "manufacturer": "Stadler",
+  "builder": "Stadler",
+  "model": "FLIRT ED160",
+  "variant": "PKP Intercity 8-car",
+  "family": "FLIRT",
+  "manufacturerCountry": "Switzerland",
+  "type": "intercity-train",
+  "mode": "long_distance_rail",
+  "yearIntroduced": 2015,
+  "operators": [
+    "PKP Intercity"
+  ],
+  "length": {
+    "value": 152.9,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-flirt-for-pkp-intercity-vehicle-data"
+    ]
+  },
+  "width": {
+    "value": 2.82,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-flirt-for-pkp-intercity-vehicle-data"
+    ]
+  },
+  "height": {
+    "value": 4.12,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-flirt-for-pkp-intercity-vehicle-data"
+    ]
+  },
+  "floorHeight": {
+    "value": 1180,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-flirt-for-pkp-intercity-vehicle-data"
+    ]
+  },
+  "consist": {
+    "cars": {
+      "value": 8,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "stadler-flirt-for-pkp-intercity-vehicle-data"
+      ]
+    }
+  },
+  "doorsPerSide": {
+    "value": 8,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-flirt-for-pkp-intercity-vehicle-data"
+    ]
+  },
+  "doorClearWidth": {
+    "value": 940,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-flirt-for-pkp-intercity-vehicle-data"
+    ]
+  },
+  "seats": {
+    "value": 354,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-flirt-for-pkp-intercity-vehicle-data"
+    ]
+  },
+  "standingQuoted": {
+    "value": 0,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "stadler-flirt-for-pkp-intercity-vehicle-data"
+    ],
+    "rationale": "Total 354 minus 354 seats."
+  },
+  "standingArea": {
+    "value": 0.0,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "stadler-flirt-for-pkp-intercity-vehicle-data"
+    ],
+    "rationale": "0 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 0.0,
+    "central": 0.0,
+    "high": 0.0,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 354,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "stadler-flirt-for-pkp-intercity-vehicle-data"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "topSpeed": {
+    "value": 160,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-flirt-for-pkp-intercity-vehicle-data"
+    ]
+  },
+  "power": {
+    "value": 3000,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-flirt-for-pkp-intercity-vehicle-data"
+    ]
+  },
+  "maxAcceleration": {
+    "value": 0.6,
+    "unit": "m/s2",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-flirt-for-pkp-intercity-vehicle-data"
+    ]
+  },
+  "energySource": {
+    "value": "overhead-dc",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-flirt-for-pkp-intercity-vehicle-data"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "ocl-3000v-dc"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-flirt-for-pkp-intercity-vehicle-data"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-flirt-for-pkp-intercity-vehicle-data"
+    ]
+  },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Stadler_FLIRT",
+    "scope": "family",
+    "checked_via": "search"
+  },
+  "notes": "First batch (20 units, commissioning 2015). Seats 354 = 60 first + 294 second class; 8 bistro benches and 6 tip-up seats not counted. total = seats (no standing figure published). cars = 8 read from the axle arrangement Bo'2'2'2'2'+2'2'2'2'Bo'. tractionPowerKw = maximum output at wheel (continuous 2,000 kW). Entrance width 940 mm; eight doors per side.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

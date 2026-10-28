@@ -1,0 +1,114 @@
+{
+  "id": "alstom-citadis-502-luas",
+  "mode": "tram",
+  "category": "tram_low_floor",
+  "simulatorCategory": "55 m Tram",
+  "name": "Citadis 502",
+  "variant": "Luas Green Line (5000 class)",
+  "family": "Citadis",
+  "producer": "Alstom",
+  "manufacturerCountry": "France",
+  "yearIntroduced": 2018,
+  "dimensions": {
+    "lengthM": 54.7,
+    "widthM": 2.4
+  },
+  "consist": {
+    "cars": 9
+  },
+  "capacity": {
+    "total": 408
+  },
+  "performance": {
+    "maxSpeedKmh": 70
+  },
+  "energy": {
+    "supply": "overhead_wire",
+    "supplySystems": ["dc_750"]
+  },
+  "infrastructure": {
+    "gaugeMm": 1435
+  },
+  "livery": {
+    "operator": "Luas (Transdev for TII)",
+    "primary": "#C0C2C4",
+    "secondary": "#FFD100",
+    "windows": null,
+    "sourceUrl": "https://en.wikipedia.org/wiki/Luas",
+    "description": "approximation of silver body with a yellow visibility stripe (Luas)"
+  },
+  "operators": ["Luas (Transport Infrastructure Ireland / Transdev)"],
+  "sources": [
+    {
+      "url": "https://www.tii.ie/public-transport/luas/trams-and-depots/",
+      "title": "Trams and Depots",
+      "publisher": "Transport Infrastructure Ireland",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["dimensions.lengthM", "dimensions.widthM"],
+      "kind": "primary"
+    },
+    {
+      "url": "https://www.nationaltransport.ie/news/luas-green-line-trams-are-getting-bigger/",
+      "title": "Luas Green Line trams are getting bigger",
+      "publisher": "National Transport Authority (Ireland)",
+      "date": "2019-10-14",
+      "accessed": "2026-10-26",
+      "fields": ["capacity.total"],
+      "kind": "primary"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Luas",
+      "title": "Luas",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["performance.maxSpeedKmh", "energy.supplySystems", "infrastructure.gaugeMm"],
+      "kind": "secondary"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Alstom_Citadis",
+      "title": "Alstom Citadis",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["consist.cars"],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.85
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "doors": {
+      "kind": "not_available",
+      "confidence": 0
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.75
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.5
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "operation": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "54.7 m, 2.4 m wide, 100% low floor (TII). Capacity 408 for the extended/new 55 m trams (NTA, 2019); TII says 'over 400'. Seated/standing split and standing density not given. Nine sections per the Citadis type list (502); module plan (bogie vs suspended modules), bogie positions and doors per side were not found in a source, so they are left empty. 70 km/h is the top speed stated for the Luas Citadis trams on off-street sections. Power, acceleration and cost not found."
+}

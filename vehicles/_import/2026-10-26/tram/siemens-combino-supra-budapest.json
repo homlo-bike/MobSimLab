@@ -1,0 +1,128 @@
+{
+  "id": "siemens-combino-supra-budapest",
+  "mode": "tram",
+  "category": "tram_low_floor",
+  "simulatorCategory": "55 m Tram",
+  "name": "Combino Supra",
+  "variant": "NF12B Budapest",
+  "family": "Siemens Combino",
+  "producer": "Siemens",
+  "manufacturerCountry": "Germany",
+  "yearIntroduced": 2006,
+  "dimensions": {
+    "lengthM": 53.99,
+    "widthM": 2.4,
+    "heightM": 3.562,
+    "emptyWeightT": 69.7,
+    "axleLoadT": 10,
+    "floorHeightMm": 350,
+    "minCurveRadiusM": 20
+  },
+  "consist": {
+    "cars": 6,
+    "suspendedModules": 0
+  },
+  "doors": {
+    "doorWidthMm": 1300
+  },
+  "capacity": {
+    "seated": 64,
+    "total": 350
+  },
+  "performance": {
+    "maxSpeedKmh": 60,
+    "tractionPowerKw": 800
+  },
+  "energy": {
+    "supply": "overhead_wire"
+  },
+  "costs": [
+    {
+      "item": "40 Combino Supra trams (fleet)",
+      "amount": 36000000000,
+      "currency": "HUF",
+      "year": 2006,
+      "region": "Budapest, Hungary",
+      "url": "https://hu.wikipedia.org/wiki/Siemens_Combino_Supra",
+      "note": "36 billion HUF at 2006 prices for the Budapest fleet (secondary source)."
+    }
+  ],
+  "livery": {
+    "operator": "BKV (Budapest)",
+    "primary": "#FFD100",
+    "secondary": null,
+    "windows": null,
+    "sourceUrl": "https://www.timeout.com/budapest/things-to-do/worlds-busiest-tram",
+    "description": "approximation of yellow (Budapest Combino Supra)"
+  },
+  "operators": ["BKV (Budapest)"],
+  "sources": [
+    {
+      "url": "https://hu.wikipedia.org/wiki/Siemens_Combino_Supra",
+      "title": "Siemens Combino Supra",
+      "publisher": "Wikipedia (Hungarian)",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions.lengthM",
+        "dimensions.widthM",
+        "dimensions.heightM",
+        "dimensions.emptyWeightT",
+        "dimensions.axleLoadT",
+        "dimensions.floorHeightMm",
+        "dimensions.minCurveRadiusM",
+        "consist.cars",
+        "doors.doorWidthMm",
+        "capacity.seated",
+        "capacity.total",
+        "performance.maxSpeedKmh",
+        "performance.tractionPowerKw"
+      ],
+      "kind": "secondary"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Siemens_Combino",
+      "title": "Siemens Combino",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["consist.suspendedModules", "dimensions.lengthM"],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.65
+    },
+    "doors": {
+      "kind": "published",
+      "confidence": 0.5
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.55
+    },
+    "energy": {
+      "kind": "not_available",
+      "confidence": 0
+    },
+    "infrastructure": {
+      "kind": "not_available",
+      "confidence": 0
+    },
+    "operation": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "Six-module, 54 m Combino Supra for Budapest lines 4/6. Unlike the original Combino it has no suspended sections (two axles under each body section), so suspendedModules = 0. Maximum speed 60 km/h is the electronically limited permitted speed in the infobox; the text gives 70 km/h design maximum and 50 km/h permitted line speed. Capacity 350 (infobox; text says 353 places), 64 seats; standing and standing density not stated. Floor 320 mm at entrance, 350 mm inside. Power 8 x 100 kW. Doors listed as '8 x 2 doors, 1300 mm' without a per-side split, so doorsPerSide is null. Supply voltage and gauge not stated in the sources read; left empty."
+}

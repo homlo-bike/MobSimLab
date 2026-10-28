@@ -1,0 +1,189 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-714b-835d-4c37ed92d8fd",
+  "legacyId": "solaris-urbino-18-gen4",
+  "name": "Solaris Urbino 18 (4th generation (New Urbino), diesel)",
+  "manufacturer": "Solaris",
+  "builder": "Solaris Bus & Coach",
+  "model": "Urbino 18",
+  "variant": "4th generation (New Urbino), diesel",
+  "family": "Urbino",
+  "manufacturerCountry": "Poland",
+  "type": "articulated-bus",
+  "mode": "bus",
+  "yearIntroduced": 2014,
+  "operators": [
+    "Dopravný podnik Bratislava"
+  ],
+  "length": {
+    "value": 18.0,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-solaris-new-urbino-18-vehicle-type-descr"
+    ]
+  },
+  "width": {
+    "value": 2.55,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-solaris-new-urbino-18-vehicle-type-descr"
+    ]
+  },
+  "height": {
+    "value": 3.05,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-solaris-new-urbino-18-vehicle-type-descr"
+    ]
+  },
+  "weightEmpty": {
+    "value": 16.699,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-solaris-new-urbino-18-vehicle-type-descr"
+    ]
+  },
+  "weightLoaded": {
+    "value": 28,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-solaris-new-urbino-18-vehicle-type-descr"
+    ]
+  },
+  "floorHeight": {
+    "value": 320,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-solaris-new-urbino-18-vehicle-type-descr"
+    ]
+  },
+  "consist": {
+    "articulations": {
+      "value": 1,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "imhd-sk-solaris-new-urbino-18-vehicle-type-descr"
+      ]
+    },
+    "cars": {
+      "value": 2,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "imhd-sk-solaris-new-urbino-18-vehicle-type-descr"
+      ]
+    }
+  },
+  "doorsPerSide": {
+    "value": 4,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-solaris-new-urbino-18-vehicle-type-descr"
+    ]
+  },
+  "seats": {
+    "value": 34,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-solaris-new-urbino-18-vehicle-type-descr"
+    ]
+  },
+  "standingQuoted": {
+    "value": 98,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-solaris-new-urbino-18-vehicle-type-descr"
+    ]
+  },
+  "standingArea": {
+    "value": 24.5,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "imhd-sk-solaris-new-urbino-18-vehicle-type-descr"
+    ],
+    "rationale": "98 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 16.3,
+    "central": 24.5,
+    "high": 32.7,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 132,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-solaris-new-urbino-18-vehicle-type-descr"
+    ]
+  },
+  "topSpeed": {
+    "value": 72,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-solaris-new-urbino-18-vehicle-type-descr"
+    ]
+  },
+  "power": {
+    "value": 270,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-solaris-new-urbino-18-vehicle-type-descr"
+    ]
+  },
+  "energySource": {
+    "value": "diesel",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-solaris-new-urbino-18-vehicle-type-descr"
+    ]
+  },
+  "costRecords": [
+    {
+      "item": "vehicle",
+      "value": 312500,
+      "currency": "EUR",
+      "priceBaseYear": 2019,
+      "region": "Bratislava, Slovakia",
+      "note": "Bratislava tender 2019, price per vehicle (extended luggage version) excl. VAT, as reported by imhd.sk.",
+      "sources": [
+        "imhd-sk-solaris-new-urbino-18-vehicle-type-descr"
+      ]
+    }
+  ],
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Solaris_Urbino_18",
+    "scope": "model",
+    "checked_via": "search"
+  },
+  "notes": "4th-generation Urbino presented 2014 (facelift 2019); figures for Bratislava vehicles built 2020. Maximum speed 72 km/h as set on fleet 3221-3231 (81 km/h on the driving-school vehicle). Engine DAF Paccar MX-11, 270 kW (tractionPowerKw = rated engine power). Wheelbases 5900 mm and 6000 mm. Capacity excludes the driver.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

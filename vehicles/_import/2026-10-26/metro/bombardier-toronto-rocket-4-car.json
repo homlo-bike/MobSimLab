@@ -1,0 +1,107 @@
+{
+  "id": "bombardier-toronto-rocket-4-car",
+  "mode": "metro",
+  "category": "metro_consist",
+  "simulatorCategory": "4-Car Metro",
+  "name": "Toronto Rocket",
+  "variant": "4-car set (Line 4 Sheppard)",
+  "family": "Movia",
+  "producer": "Bombardier Transportation",
+  "manufacturerCountry": "Canada",
+  "yearIntroduced": 2011,
+  "dimensions": {
+    "lengthM": 92.1,
+    "widthM": 3.137,
+    "heightM": 3.645,
+    "floorHeightMm": 1105,
+    "minCurveRadiusM": 75
+  },
+  "consist": {
+    "cars": 4,
+    "carLengthsM": [23.19, 22.86, 22.86, 23.19]
+  },
+  "doors": {
+    "doorsPerSide": 16
+  },
+  "capacity": {
+    "seated": 264,
+    "total": 948
+  },
+  "performance": {
+    "maxSpeedKmh": 88,
+    "accelerationMs2": 0.9,
+    "decelerationMs2": 1.35,
+    "tractionPowerKw": 1860
+  },
+  "energy": {
+    "supply": "third_rail",
+    "supplySystems": ["dc_600"],
+    "regenerativeBraking": true
+  },
+  "infrastructure": {
+    "gaugeMm": 1495
+  },
+  "livery": {
+    "operator": "Toronto Transit Commission",
+    "primary": "#C4C8CC",
+    "secondary": null,
+    "windows": null,
+    "sourceUrl": "https://en.wikipedia.org/wiki/Toronto_Rocket",
+    "description": "approximation of the stainless-steel car body (no painted livery stated)"
+  },
+  "operators": ["Toronto Transit Commission"],
+  "sources": [
+    {
+      "url": "https://en.wikipedia.org/wiki/Toronto_Rocket",
+      "title": "Toronto Rocket",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions",
+        "consist",
+        "capacity",
+        "performance",
+        "energy",
+        "infrastructure.gaugeMm",
+        "doors"
+      ],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "doors": {
+      "kind": "derived",
+      "confidence": 0.6
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "operation": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "Total 948 is the crush load for a 4-car set (no density stated). doorsPerSide = 4 door sets per side per car x 4 cars (derived). Acceleration 0.9 m/s2 is the limited value; deceleration is the service rate (1.5 m/s2 emergency). Max speed 88 km/h train maximum; 75 km/h service maximum. minCurveRadiusM is the horizontal minimum (vertical 610 m). Figures from Wikipedia (secondary)."
+}

@@ -1,0 +1,99 @@
+{
+  "id": "caf-urbos-3-budapest-9-module",
+  "mode": "tram",
+  "category": "tram_low_floor",
+  "simulatorCategory": "55 m Tram",
+  "name": "Urbos 3",
+  "variant": "Budapest 9-module",
+  "family": "CAF Urbos",
+  "producer": "CAF",
+  "manufacturerCountry": "Spain",
+  "yearIntroduced": 2016,
+  "dimensions": {
+    "lengthM": 56
+  },
+  "consist": {
+    "cars": 9
+  },
+  "capacity": {
+    "total": 562
+  },
+  "performance": {
+    "maxSpeedKmh": 50,
+    "tractionPowerKw": 840
+  },
+  "energy": {
+    "supply": "overhead_wire"
+  },
+  "infrastructure": {
+    "gaugeMm": 1435
+  },
+  "costs": [
+    {
+      "item": "47 Urbos 3 trams (mix of 34 m and 56 m units) after the 2014 call-off",
+      "amount": 31000000000,
+      "currency": "HUF",
+      "year": 2014,
+      "region": "Budapest, Hungary",
+      "url": "https://hu.wikipedia.org/wiki/CAF_Urbos",
+      "note": "Total for the 47 trams ordered by then; not split by length (secondary source)."
+    }
+  ],
+  "operators": ["BKV / BKK (Budapest)"],
+  "sources": [
+    {
+      "url": "https://cafmobility.com/en/press-room/caf-secures-two-tram-contracts-hungary-spain",
+      "title": "CAF secures two tram contracts in Hungary and Spain",
+      "publisher": "CAF",
+      "date": "2023-03-20",
+      "accessed": "2026-10-26",
+      "fields": ["dimensions.lengthM", "consist.cars", "capacity.total", "performance.maxSpeedKmh"],
+      "kind": "primary"
+    },
+    {
+      "url": "https://hu.wikipedia.org/wiki/CAF_Urbos",
+      "title": "CAF Urbos",
+      "publisher": "Wikipedia (Hungarian)",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["performance.tractionPowerKw", "infrastructure.gaugeMm", "dimensions.lengthM"],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.85
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.75
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.5
+    },
+    "energy": {
+      "kind": "not_available",
+      "confidence": 0
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "doors": {
+      "kind": "not_available",
+      "confidence": 0
+    },
+    "operation": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "Nine-module, about 56 m long Budapest Urbos 3 (Hungarian Wikipedia photo caption: 55.9 m); up to 562 passengers (CAF, no seated/standing split). maxSpeedKmh = 50 is the service speed CAF states for the Budapest trams; a design maximum speed was not found in the sources read. Power 840 kW for the long trams (560 kW for the 34 m five-module trams). First long tram received its operating permit in March 2016 (line 1). Supply voltage, width, weight, doors and module layout (suspended modules) not stated in the sources read.",
+  "livery": null
+}

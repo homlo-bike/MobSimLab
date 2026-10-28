@@ -1,0 +1,216 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7125-a64c-3afb6513f113",
+  "legacyId": "sor-tns-12",
+  "name": "SOR TNS 12 (A02, Škoda Electric equipment, traction battery)",
+  "manufacturer": "SOR",
+  "builder": "SOR Libchavy",
+  "model": "TNS 12",
+  "variant": "A02, Škoda Electric equipment, traction battery",
+  "family": "NS",
+  "manufacturerCountry": "Czech Republic",
+  "type": "trolleybus",
+  "mode": "trolleybus",
+  "yearIntroduced": 2022,
+  "operators": [
+    "Dopravný podnik Bratislava"
+  ],
+  "length": {
+    "value": 12.0,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-sor-tns-12-vehicle-type-description"
+    ]
+  },
+  "width": {
+    "value": 2.5,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-sor-tns-12-vehicle-type-description"
+    ]
+  },
+  "height": {
+    "value": 3.4,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-sor-tns-12-vehicle-type-description"
+    ]
+  },
+  "weightEmpty": {
+    "value": 12.55,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-sor-tns-12-vehicle-type-description"
+    ]
+  },
+  "floorHeight": {
+    "value": 340,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-sor-tns-12-vehicle-type-description"
+    ]
+  },
+  "consist": {
+    "articulations": {
+      "value": 0,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "imhd-sk-sor-tns-12-vehicle-type-description"
+      ]
+    },
+    "cars": {
+      "value": 1,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "imhd-sk-sor-tns-12-vehicle-type-description"
+      ]
+    }
+  },
+  "doorsPerSide": {
+    "value": 3,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-sor-tns-12-vehicle-type-description"
+    ]
+  },
+  "seats": {
+    "value": 31,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-sor-tns-12-vehicle-type-description"
+    ]
+  },
+  "standingQuoted": {
+    "value": 37,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-sor-tns-12-vehicle-type-description"
+    ]
+  },
+  "standingArea": {
+    "value": 9.2,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "imhd-sk-sor-tns-12-vehicle-type-description"
+    ],
+    "rationale": "37 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 6.2,
+    "central": 9.2,
+    "high": 12.3,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 68,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-sor-tns-12-vehicle-type-description"
+    ]
+  },
+  "topSpeed": {
+    "value": 65,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-sor-tns-12-vehicle-type-description"
+    ]
+  },
+  "power": {
+    "value": 180,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-sor-tns-12-vehicle-type-description"
+    ]
+  },
+  "energySource": {
+    "value": "dual",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-sor-tns-12-vehicle-type-description"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "trolley-600v-dc",
+      "trolley-750v-dc"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-sor-tns-12-vehicle-type-description"
+    ]
+  },
+  "onboardEnergy": {
+    "value": "battery",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-sor-tns-12-vehicle-type-description"
+    ]
+  },
+  "batteryCapacity": {
+    "value": 42,
+    "unit": "kWh",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-sor-tns-12-vehicle-type-description"
+    ]
+  },
+  "regenerativeBraking": {
+    "value": true,
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-sor-tns-12-vehicle-type-description"
+    ]
+  },
+  "costRecords": [
+    {
+      "item": "vehicle",
+      "value": 464600,
+      "currency": "EUR",
+      "priceBaseYear": 2022,
+      "region": "Bratislava, Slovakia",
+      "note": "Bratislava tender 2022, price per vehicle excl. VAT (later raised to 508,621 EUR), as reported by imhd.sk.",
+      "sources": [
+        "imhd-sk-sor-tns-12-vehicle-type-description"
+      ]
+    }
+  ],
+  "wikipedia": {
+    "url": "https://cs.wikipedia.org/wiki/SOR_TNS_12",
+    "scope": "model",
+    "checked_via": "search"
+  },
+  "notes": "Series production from 2022. Bratislava vehicles have Škoda Electric SJ 10.4 equipment (converter input 600/750 V DC) and a 42 kWh Škoda TBS 5.1 traction battery for off-wire running; off-wire range not published. Wheelbase 5900 mm. Capacity excludes the driver.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

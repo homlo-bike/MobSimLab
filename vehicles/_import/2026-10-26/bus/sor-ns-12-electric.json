@@ -1,0 +1,92 @@
+{
+  "id": "sor-ns-12-electric",
+  "mode": "bus",
+  "category": "standard_bus",
+  "simulatorCategory": "12 m Standard Bus",
+  "name": "NS 12 Electric",
+  "family": "NS",
+  "producer": "SOR Libchavy",
+  "manufacturerCountry": "Czech Republic",
+  "yearIntroduced": 2016,
+  "dimensions": {
+    "lengthM": 12.0,
+    "widthM": 2.55,
+    "heightM": 3.2,
+    "emptyWeightT": 12.35
+  },
+  "consist": {
+    "cars": 1,
+    "articulations": 0
+  },
+  "doors": {
+    "doorsPerSide": 3
+  },
+  "capacity": {
+    "seated": 33,
+    "standing": 72,
+    "total": 105
+  },
+  "performance": {
+    "maxSpeedKmh": 80,
+    "tractionPowerKw": 160
+  },
+  "energy": {
+    "supply": "battery",
+    "batteryKwh": 242
+  },
+  "costs": [
+    {
+      "item": "vehicle incl. charging infrastructure",
+      "amount": 589000,
+      "currency": "EUR",
+      "year": 2017,
+      "region": "Bratislava, Slovakia",
+      "url": "https://imhd.sk/ba/popis-typu-vozidla/861/SOR-NS-12-Electric",
+      "note": "Bratislava tender won 2017 for 16 e-buses; price per e-bus including charging infrastructure, as reported by imhd.sk."
+    }
+  ],
+  "livery": null,
+  "operators": ["Dopravný podnik Bratislava"],
+  "sources": [
+    {
+      "url": "https://imhd.sk/ba/popis-typu-vozidla/861/SOR-NS-12-Electric",
+      "title": "SOR NS 12 Electric – vehicle type description",
+      "publisher": "imhd.sk (Bratislava public transport information site)",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["dimensions", "consist", "doors", "capacity", "performance", "energy", "costs"],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "doors": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "costs": {
+      "kind": "published",
+      "confidence": 0.6
+    }
+  },
+  "notes": "Prototype presented 2016, series from 2017. Bratislava fleet 3001-3016. Battery 242 kWh as delivered (NMC, 666 V); after battery replacement 274 kWh. Motor 160 kW continuous (186.6 kW 30-min maximum). Height with air conditioning. Wheelbase 5900 mm. Capacity excludes the driver. Range not published by the source."
+}

@@ -1,0 +1,120 @@
+{
+  "id": "hitachi-frecciarossa-1000",
+  "mode": "long_distance_rail",
+  "category": "high_speed_train",
+  "simulatorCategory": "High Speed Train",
+  "name": "Frecciarossa 1000 (ETR 1000)",
+  "variant": "8-car",
+  "family": "Zefiro",
+  "producer": "Hitachi Rail Italy / Bombardier (now Alstom)",
+  "manufacturerCountry": "Italy",
+  "yearIntroduced": 2015,
+  "dimensions": {
+    "lengthM": 202,
+    "widthM": 2.924,
+    "heightM": 4.08,
+    "emptyWeightT": 454
+  },
+  "consist": {
+    "cars": 8
+  },
+  "doors": {
+    "wheelchairSpaces": 2
+  },
+  "capacity": {
+    "seated": 457,
+    "total": 457
+  },
+  "performance": {
+    "maxSpeedKmh": 300,
+    "accelerationMs2": 0.7,
+    "tractionPowerKw": 9800
+  },
+  "energy": {
+    "supply": "overhead_wire",
+    "supplySystems": ["ac_25k_50", "dc_3000", "dc_1500"]
+  },
+  "infrastructure": {
+    "gaugeMm": 1435
+  },
+  "livery": {
+    "operator": "Trenitalia",
+    "primary": "#D2001E",
+    "secondary": "#B1B3B6",
+    "windows": "#1A1A1A",
+    "sourceUrl": "https://it.wikipedia.org/wiki/ETR_1000",
+    "description": "Frecciarossa livery: red body with a red arrow on the front, silver lower band and black window band (2022 revision extends the black band to the cab doors); hex values approximate."
+  },
+  "operators": ["Trenitalia", "Iryo"],
+  "sources": [
+    {
+      "url": "https://en.wikipedia.org/wiki/Frecciarossa_1000",
+      "title": "Frecciarossa 1000",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions.lengthM",
+        "dimensions.widthM",
+        "dimensions.heightM",
+        "consist.cars",
+        "doors.wheelchairSpaces",
+        "capacity.seated",
+        "performance",
+        "energy.supplySystems",
+        "infrastructure.gaugeMm"
+      ],
+      "kind": "secondary"
+    },
+    {
+      "url": "https://it.wikipedia.org/wiki/ETR_1000",
+      "title": "ETR 1000",
+      "publisher": "Wikipedia (Italian)",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions.emptyWeightT",
+        "dimensions.widthM",
+        "capacity.seated",
+        "performance.tractionPowerKw",
+        "livery"
+      ],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "doors": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "capacity": {
+      "kind": "derived",
+      "confidence": 0.8
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.85
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "operation": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "Eight-car (4M4T) ETR 1000: 457 seats (10 Executive, 69 Business, 76 Premium, 300 Standard) plus 2 wheelchair places; total = seats (no standing figure published). maxSpeedKmh = 300 is the service speed; design commercial speed 360 km/h (Italian Wikipedia: homologated 360 km/h), design maximum 400 km/h. Length 202 m (202.02 m in the Italian article). Empty mass 454 t, in-service mass 501 t. Power 9.8 MW (up to 10 MW). 15 kV 16.7 Hz listed as not active, so not entered. 28 doors in total (per side not stated)."
+}

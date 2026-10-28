@@ -1,0 +1,195 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-75b0-8639-a320dbccf89d",
+  "legacyId": "jr-central-n700s",
+  "name": "Hitachi N700S Shinkansen (16-car)",
+  "manufacturer": "Hitachi",
+  "builder": "Hitachi / Nippon Sharyo",
+  "model": "N700S Shinkansen",
+  "variant": "16-car",
+  "family": "N700",
+  "manufacturerCountry": "Japan",
+  "type": "high-speed-train",
+  "mode": "high_speed_rail",
+  "yearIntroduced": 2020,
+  "operators": [
+    "JR Central",
+    "JR West",
+    "JR Kyushu"
+  ],
+  "length": {
+    "value": 404.7,
+    "unit": "m",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-n700s-series-shinkansen"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "width": {
+    "value": 3.36,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-n700s-series-shinkansen"
+    ]
+  },
+  "height": {
+    "value": 3.6,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-n700s-series-shinkansen"
+    ]
+  },
+  "consist": {
+    "carLengths": {
+      "value": [
+        27.35,
+        25,
+        25,
+        25,
+        25,
+        25,
+        25,
+        25,
+        25,
+        25,
+        25,
+        25,
+        25,
+        25,
+        25,
+        27.35
+      ],
+      "unit": "m",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-n700s-series-shinkansen"
+      ]
+    },
+    "cars": {
+      "value": 16,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-n700s-series-shinkansen"
+      ]
+    }
+  },
+  "seats": {
+    "value": 1323,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-n700s-series-shinkansen"
+    ]
+  },
+  "standingQuoted": {
+    "value": 0,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-n700s-series-shinkansen"
+    ],
+    "rationale": "Total 1323 minus 1323 seats."
+  },
+  "standingArea": {
+    "value": 0.0,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "wp-n700s-series-shinkansen"
+    ],
+    "rationale": "0 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 0.0,
+    "central": 0.0,
+    "high": 0.0,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 1323,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-n700s-series-shinkansen"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "topSpeed": {
+    "value": 300,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-n700s-series-shinkansen"
+    ]
+  },
+  "energySource": {
+    "value": "overhead",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-n700s-series-shinkansen"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "regenerativeBraking": {
+    "value": true,
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-n700s-series-shinkansen"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-n700s-series-shinkansen"
+    ]
+  },
+  "costRecords": [
+    {
+      "item": "19 additional 16-car N700S trainsets (JR Central plan)",
+      "value": 114000000000,
+      "currency": "JPY",
+      "priceBaseYear": 2022,
+      "region": "Japan",
+      "note": "Fleet purchase plan for 19 trainsets, not a per-train price.",
+      "sources": [
+        "wp-n700s-series-shinkansen"
+      ]
+    }
+  ],
+  "livery": {
+    "operator": "JR Central",
+    "primary": "#FFFFFF",
+    "secondary": "#0A3E8C",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "runwaygirlnetwork-co-jr-central"
+    ],
+    "rationale": "approximation of white body with blue cheatline (Tokaido Shinkansen)"
+  },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/N700S_Series_Shinkansen",
+    "scope": "model",
+    "checked_via": "source"
+  },
+  "notes": "Length derived from car lengths: 2 end cars × 27.35 m + 14 × 25 m = 404.7 m. Seats 1,323 (200 Green + 1,123 ordinary). total = seats (no standing figure published). Maximum service speed 300 km/h on the San'yō Shinkansen, 285 km/h on the Tōkaidō; design speed 360 km/h. Supply 25 kV 60 Hz AC, which the project supply-system list does not include, so supplySystems is empty. Height excludes rooftop equipment.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

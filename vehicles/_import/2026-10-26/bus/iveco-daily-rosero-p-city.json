@@ -1,0 +1,81 @@
+{
+  "id": "iveco-daily-rosero-p-city",
+  "mode": "bus",
+  "category": "minibus",
+  "simulatorCategory": "Mini Bus",
+  "name": "Daily A50C / Rošero-P City",
+  "variant": "Daily DCLI 70",
+  "family": "Daily",
+  "producer": "Iveco (body: Rošero-P)",
+  "manufacturerCountry": "Italy / Slovakia",
+  "dimensions": {
+    "lengthM": 6.95,
+    "widthM": 2.0,
+    "heightM": 2.945,
+    "emptyWeightT": 3.4,
+    "grossWeightT": 5.6
+  },
+  "consist": {
+    "cars": 1,
+    "articulations": 0
+  },
+  "doors": {
+    "doorsPerSide": 2
+  },
+  "capacity": {
+    "seated": 12,
+    "standing": 15,
+    "total": 27
+  },
+  "performance": {
+    "maxSpeedKmh": 100,
+    "tractionPowerKw": 107
+  },
+  "energy": {
+    "supply": "diesel"
+  },
+  "livery": null,
+  "operators": ["Dopravný podnik Bratislava"],
+  "sources": [
+    {
+      "url": "https://imhd.sk/ba/popis-typu-vozidla/423/Iveco-Daily-Ro%C5%A1ero-P-City",
+      "title": "Iveco Daily / Rošero-P City – vehicle type description",
+      "publisher": "imhd.sk (Bratislava public transport information site)",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["dimensions", "consist", "doors", "capacity", "performance", "energy"],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "doors": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "costs": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "Figures for Bratislava vehicles 1902-1905 (built 2007-2008); vehicles 1906-1909 have 10 standing places (22 total) and 3.57 t kerb weight. Maximum speed 100 km/h with limiter. Capacity excludes the driver. Wheelbase 3950 mm. tractionPowerKw is the rated engine power (107 kW; 130 kW on one vehicle). Two passenger doors plus two service doors."
+}

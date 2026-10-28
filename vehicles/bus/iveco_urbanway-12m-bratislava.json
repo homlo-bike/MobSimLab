@@ -1,0 +1,180 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-764f-8106-204a9c70372a",
+  "legacyId": "iveco-urbanway-12m-bratislava",
+  "name": "Iveco Urbanway 12M (diesel, 3 doors (DPB Bratislava))",
+  "manufacturer": "Iveco",
+  "builder": "Iveco Bus",
+  "model": "Urbanway 12M",
+  "variant": "diesel, 3 doors (DPB Bratislava)",
+  "family": "Urbanway",
+  "manufacturerCountry": "Czech Republic (Vysoké Mýto plant)",
+  "type": "standard-bus",
+  "mode": "bus",
+  "yearIntroduced": 2013,
+  "operators": [
+    "Dopravný podnik Bratislava"
+  ],
+  "length": {
+    "value": 12.0,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-iveco-urbanway-12m-vehicle-type-descript"
+    ]
+  },
+  "width": {
+    "value": 2.5,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-iveco-urbanway-12m-vehicle-type-descript"
+    ]
+  },
+  "height": {
+    "value": 3.066,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-iveco-urbanway-12m-vehicle-type-descript"
+    ]
+  },
+  "weightEmpty": {
+    "value": 11.6,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-iveco-urbanway-12m-vehicle-type-descript"
+    ]
+  },
+  "floorHeight": {
+    "value": 320,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-iveco-urbanway-12m-vehicle-type-descript"
+    ]
+  },
+  "consist": {
+    "articulations": {
+      "value": 0,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "imhd-sk-iveco-urbanway-12m-vehicle-type-descript"
+      ]
+    },
+    "cars": {
+      "value": 1,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "imhd-sk-iveco-urbanway-12m-vehicle-type-descript"
+      ]
+    }
+  },
+  "doorsPerSide": {
+    "value": 3,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-iveco-urbanway-12m-vehicle-type-descript"
+    ]
+  },
+  "seats": {
+    "value": 31,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-iveco-urbanway-12m-vehicle-type-descript"
+    ]
+  },
+  "standingQuoted": {
+    "value": 63,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-iveco-urbanway-12m-vehicle-type-descript"
+    ]
+  },
+  "standingArea": {
+    "value": 15.8,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "imhd-sk-iveco-urbanway-12m-vehicle-type-descript"
+    ],
+    "rationale": "63 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 10.5,
+    "central": 15.8,
+    "high": 21.0,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 94,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-iveco-urbanway-12m-vehicle-type-descript"
+    ]
+  },
+  "topSpeed": {
+    "value": 80,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-iveco-urbanway-12m-vehicle-type-descript"
+    ]
+  },
+  "power": {
+    "value": 210,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-iveco-urbanway-12m-vehicle-type-descript"
+    ]
+  },
+  "energySource": {
+    "value": "diesel",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-iveco-urbanway-12m-vehicle-type-descript"
+    ]
+  },
+  "costRecords": [
+    {
+      "item": "vehicle",
+      "value": 204897,
+      "currency": "EUR",
+      "priceBaseYear": 2014,
+      "region": "Bratislava, Slovakia",
+      "note": "DPB tender 2014 (supplier Corex Vráble), price per vehicle excl. VAT, as reported by imhd.sk.",
+      "sources": [
+        "imhd-sk-iveco-urbanway-12m-vehicle-type-descript"
+      ]
+    }
+  ],
+  "wikipedia": {
+    "url": "https://cs.wikipedia.org/wiki/Iveco_Urbanway_12M",
+    "scope": "model",
+    "checked_via": "search"
+  },
+  "notes": "DPB fleet 1041-1070 and 4041-4050 (2014-2015, first series vehicles from the Vysoké Mýto plant). FPT Tector 7 Euro 6 diesel 210 kW, Voith DIWA.6. Height 3,066 mm with air conditioning (2,845 mm without). Floor at doors 320/330/340 mm. Wheelbase 6,120 mm. Empty weight 11,600 kg for #1041-1060 (11,550 kg for the others). Capacity excludes the driver.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

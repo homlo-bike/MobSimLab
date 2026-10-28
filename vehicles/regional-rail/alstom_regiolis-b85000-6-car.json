@@ -1,0 +1,176 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7626-b8d6-9981f2f5f5fd",
+  "legacyId": "alstom-regiolis-b85000-6-car",
+  "name": "Alstom Coradia Polyvalent (Régiolis) (B 85000 Intercités 6-car bi-mode)",
+  "manufacturer": "Alstom",
+  "builder": "Alstom",
+  "model": "Coradia Polyvalent (Régiolis)",
+  "variant": "B 85000 Intercités 6-car bi-mode",
+  "family": "Alstom Coradia",
+  "manufacturerCountry": "France",
+  "type": "regional-train",
+  "mode": "regional_rail",
+  "yearIntroduced": 2014,
+  "operators": [
+    "SNCF Voyageurs (Intercités)",
+    "SNCF Voyageurs (TER regions)"
+  ],
+  "length": {
+    "value": 109.98,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wikipedia-coradia-polyvalent"
+    ]
+  },
+  "width": {
+    "value": 2.85,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wikipedia-coradia-polyvalent"
+    ]
+  },
+  "height": {
+    "value": 4.295,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wikipedia-coradia-polyvalent"
+    ]
+  },
+  "consist": {
+    "cars": {
+      "value": 6,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wikipedia-coradia-polyvalent"
+      ]
+    }
+  },
+  "doorClearWidth": {
+    "value": 1300,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wikipedia-coradia-polyvalent"
+    ]
+  },
+  "seats": {
+    "value": 269,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wikipedia-coradia-polyvalent"
+    ]
+  },
+  "standingQuoted": {
+    "value": 0,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wikipedia-coradia-polyvalent"
+    ],
+    "rationale": "Total 269 minus 269 seats."
+  },
+  "standingArea": {
+    "value": 0.0,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "wikipedia-coradia-polyvalent"
+    ],
+    "rationale": "0 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 0.0,
+    "central": 0.0,
+    "high": 0.0,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 269,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wikipedia-coradia-polyvalent"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "topSpeed": {
+    "value": 160,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wikipedia-coradia-polyvalent"
+    ]
+  },
+  "energySource": {
+    "value": "dual",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wikipedia-coradia-polyvalent"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "ocl-1500v-dc",
+      "ocl-25kv-50hz"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wikipedia-coradia-polyvalent"
+    ]
+  },
+  "onboardEnergy": {
+    "value": "diesel",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wikipedia-coradia-polyvalent"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wikipedia-coradia-polyvalent"
+    ]
+  },
+  "costRecords": [
+    {
+      "item": "Régiolis B 85000 six-car set (Intercités)",
+      "value": 10300000,
+      "currency": "EUR",
+      "priceBaseYear": 2013,
+      "region": "France",
+      "note": "Per set, 2013 order (secondary source).",
+      "sources": [
+        "wikipedia-coradia-polyvalent"
+      ]
+    }
+  ],
+  "wikipedia": {
+    "url": "https://fr.wikipedia.org/wiki/Coradia_Polyvalent",
+    "scope": "family",
+    "checked_via": "source"
+  },
+  "notes": "Six-car bi-mode, dual-voltage (1.5 kV DC / 25 kV 50 Hz) Régiolis in the Intercités B 85000 version: 269 seats including 35 first class; total = seats (no standing figure published). Length, width and height are the infobox values for six-car Régiolis. Maximum speed 160 km/h (200 km/h optional). Double doors 1,300 mm wide. Diesel engines MAN D26, 338 kW each (number per set not stated); electric traction power not stated. First commercial Régiolis service 22 April 2014 (family).",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

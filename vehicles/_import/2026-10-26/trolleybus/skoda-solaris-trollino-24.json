@@ -1,0 +1,97 @@
+{
+  "id": "skoda-solaris-trollino-24",
+  "mode": "trolleybus",
+  "category": "trolleybus",
+  "simulatorCategory": "Trolleybus 24 m",
+  "name": "Trollino 24",
+  "variant": "Škoda 38 Tr (Škoda Electric equipment, traction batteries)",
+  "family": "Trollino",
+  "producer": "Solaris Bus & Coach / Škoda Electric",
+  "manufacturerCountry": "Poland / Czech Republic",
+  "yearIntroduced": 2019,
+  "dimensions": {
+    "lengthM": 24.7,
+    "widthM": 2.55,
+    "heightM": 3.5,
+    "emptyWeightT": 24.75,
+    "grossWeightT": 39.33,
+    "floorHeightMm": 320
+  },
+  "consist": {
+    "cars": 3,
+    "articulations": 2
+  },
+  "doors": {
+    "doorsPerSide": 5
+  },
+  "capacity": {
+    "seated": 60,
+    "standing": 121,
+    "total": 181
+  },
+  "performance": {
+    "maxSpeedKmh": 65,
+    "tractionPowerKw": 320
+  },
+  "energy": {
+    "supply": "overhead_wire",
+    "supplySystems": ["dc_600", "dc_750"],
+    "onboard": "battery",
+    "regenerativeBraking": true
+  },
+  "costs": [
+    {
+      "item": "vehicle",
+      "amount": 1047500,
+      "currency": "EUR",
+      "year": 2021,
+      "region": "Bratislava, Slovakia",
+      "url": "https://imhd.sk/ba/popis-typu-vozidla/1033/%C5%A0koda-Solaris-Trollino-24",
+      "note": "Bratislava tender 2021 for 16 vehicles, price per vehicle excl. VAT (raised to 1,152,244 EUR for 8 vehicles), as reported by imhd.sk."
+    }
+  ],
+  "livery": null,
+  "operators": ["Dopravný podnik Bratislava", "Dopravní podnik hl. m. Prahy"],
+  "sources": [
+    {
+      "url": "https://imhd.sk/ba/popis-typu-vozidla/1033/%C5%A0koda-Solaris-Trollino-24",
+      "title": "Škoda-Solaris Trollino 24 – vehicle type description",
+      "publisher": "imhd.sk (Bratislava public transport information site)",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["dimensions", "consist", "doors", "capacity", "performance", "energy", "costs", "operators"],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "doors": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "costs": {
+      "kind": "published",
+      "confidence": 0.6
+    }
+  },
+  "notes": "Three-section (double-articulated) trolleybus; Solaris prototype 2019. Figures for Bratislava vehicles built 2023, ordered as hybrid trolleybuses with traction batteries (battery size and off-wire range not published by the source). Two 160 kW motors (320 kW). Converter input 600/750 V DC. Wheelbases 5900/6000/7350 mm. Capacity excludes the driver."
+}

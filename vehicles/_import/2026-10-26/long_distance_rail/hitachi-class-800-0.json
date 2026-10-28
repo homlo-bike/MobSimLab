@@ -1,0 +1,99 @@
+{
+  "id": "hitachi-class-800-0",
+  "mode": "long_distance_rail",
+  "category": "intercity_train",
+  "simulatorCategory": "5-Car Intercity",
+  "name": "Class 800/0",
+  "variant": "5-car bi-mode (GWR)",
+  "family": "AT300 / IET",
+  "producer": "Hitachi Rail",
+  "manufacturerCountry": "Japan",
+  "yearIntroduced": 2017,
+  "dimensions": {
+    "lengthM": 129.7,
+    "widthM": 2.7,
+    "emptyWeightT": 243
+  },
+  "consist": {
+    "cars": 5
+  },
+  "doors": {
+    "doorsPerSide": 10
+  },
+  "capacity": {
+    "seated": 326,
+    "total": 326
+  },
+  "performance": {
+    "maxSpeedKmh": 200,
+    "accelerationMs2": 0.7
+  },
+  "energy": {
+    "supply": "overhead_wire",
+    "supplySystems": ["ac_25k_50"],
+    "onboard": "diesel"
+  },
+  "infrastructure": {
+    "gaugeMm": 1435
+  },
+  "livery": {
+    "operator": "Great Western Railway",
+    "primary": "#0B3D2E",
+    "secondary": null,
+    "windows": null,
+    "sourceUrl": "https://en.wikipedia.org/wiki/Great_Western_Railway_(train_operating_company)",
+    "description": "approximation of the GWR green livery"
+  },
+  "operators": ["Great Western Railway"],
+  "sources": [
+    {
+      "url": "https://en.wikipedia.org/wiki/British_Rail_Class_800",
+      "title": "British Rail Class 800",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions",
+        "consist.cars",
+        "doors.doorsPerSide",
+        "capacity.seated",
+        "performance",
+        "energy.supplySystems",
+        "energy.onboard",
+        "infrastructure.gaugeMm"
+      ],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "doors": {
+      "kind": "derived",
+      "confidence": 0.8
+    },
+    "capacity": {
+      "kind": "derived",
+      "confidence": 0.7
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.9
+    }
+  },
+  "notes": "Electro-diesel bi-mode: 25 kV AC overhead plus underfloor diesel generator units (700 kW per engine on GWR units; the number of engines per 5-car set is not given in the source, so total traction power is left empty). Seats 326 (36 first, 290 standard). total = seats (no standing figure published). doorsPerSide derived: 2 doors per side per car × 5. Weight 243 t as given."
+}

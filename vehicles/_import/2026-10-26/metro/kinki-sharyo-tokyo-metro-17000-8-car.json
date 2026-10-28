@@ -1,0 +1,113 @@
+{
+  "id": "kinki-sharyo-tokyo-metro-17000-8-car",
+  "mode": "metro",
+  "category": "metro_consist",
+  "simulatorCategory": "8-Car Metro",
+  "name": "Tokyo Metro 17000 series",
+  "variant": "8-car set",
+  "family": "A-train",
+  "producer": "Kinki Sharyo",
+  "manufacturerCountry": "Japan",
+  "yearIntroduced": 2021,
+  "dimensions": {
+    "lengthM": 160.94,
+    "widthM": 2.8,
+    "heightM": 3.635,
+    "emptyWeightT": 247.3,
+    "floorHeightMm": 1140
+  },
+  "consist": {
+    "cars": 8,
+    "carLengthsM": [20.47, 20.0, 20.0, 20.0, 20.0, 20.0, 20.0, 20.47]
+  },
+  "doors": {
+    "doorsPerSide": 32
+  },
+  "capacity": {
+    "seated": 396,
+    "total": 1210
+  },
+  "performance": {
+    "maxSpeedKmh": 120,
+    "accelerationMs2": 0.92,
+    "decelerationMs2": 0.97
+  },
+  "energy": {
+    "supply": "overhead_wire",
+    "supplySystems": ["dc_1500"]
+  },
+  "infrastructure": {
+    "gaugeMm": 1067
+  },
+  "livery": {
+    "operator": "Tokyo Metro",
+    "primary": "#C9CCCE",
+    "secondary": "#C1A470",
+    "windows": null,
+    "sourceUrl": "https://www.designboom.com/technology/tokyo-metro-new-17000-series-yurakucho-and-fukutoshin-lines-08-18-2020/",
+    "description": "approximation of gold and reddish-brown accents (Yurakucho and Fukutoshin line colours) on the aluminium body"
+  },
+  "operators": ["Tokyo Metro (Yurakucho and Fukutoshin lines, through services)"],
+  "sources": [
+    {
+      "url": "https://ja.wikipedia.org/wiki/%E6%9D%B1%E4%BA%AC%E3%83%A1%E3%83%88%E3%83%AD17000%E7%B3%BB%E9%9B%BB%E8%BB%8A",
+      "title": "東京メトロ17000系電車 (Tokyo Metro 17000 series)",
+      "publisher": "Wikipedia (Japanese)",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["dimensions", "consist", "capacity", "performance", "energy", "infrastructure.gaugeMm"],
+      "kind": "secondary"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Tokyo_Metro_17000_series",
+      "title": "Tokyo Metro 17000 series",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions.widthM",
+        "dimensions.heightM",
+        "doors",
+        "performance.maxSpeedKmh",
+        "energy",
+        "infrastructure.gaugeMm"
+      ],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "derived",
+      "confidence": 0.6
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "doors": {
+      "kind": "derived",
+      "confidence": 0.6
+    },
+    "capacity": {
+      "kind": "derived",
+      "confidence": 0.7
+    },
+    "performance": {
+      "kind": "derived",
+      "confidence": 0.6
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "operation": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "8-car sets (17180 series numbers) built by Kinki Sharyo; 10-car sets by Hitachi. lengthM = 2 x 20.47 m end cars + 6 x 20.00 m intermediate cars (overall lengths, derived). emptyWeightT = sum of the per-car tare weights in the Japanese formation table (derived). Total 1,210 is the stated 8-car train capacity; seated = 2 x 45 + 6 x 51 from the formation table (derived). doorsPerSide = 4 per side per car x 8 cars (derived). Acceleration 3.3 km/h/s and service deceleration 3.5 km/h/s from the Japanese article, converted to m/s2 (derived; the English article gives 1 m/s2 for both). Max speed 120 km/h design; 80 km/h on Tokyo Metro lines, up to 110 km/h on through-service lines. Traction power per train not stated. Figures from Wikipedia (secondary)."
+}

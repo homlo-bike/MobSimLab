@@ -1,0 +1,117 @@
+{
+  "id": "siemens-avenio-munich-4-car",
+  "mode": "tram",
+  "category": "tram_low_floor",
+  "simulatorCategory": "40 m Tram",
+  "name": "Avenio",
+  "variant": "Munich TZ 4-car",
+  "family": "Siemens Avenio",
+  "producer": "Siemens",
+  "manufacturerCountry": "Germany",
+  "yearIntroduced": null,
+  "dimensions": {
+    "lengthM": 36.85,
+    "widthM": 2.3,
+    "emptyWeightT": 45,
+    "floorHeightMm": 300
+  },
+  "consist": {
+    "cars": 4,
+    "suspendedModules": 0
+  },
+  "capacity": {
+    "seated": 60,
+    "standing": 159,
+    "total": 219,
+    "standingDensityPersM2": 4
+  },
+  "performance": {
+    "maxSpeedKmh": 70,
+    "tractionPowerKw": 600
+  },
+  "energy": {
+    "supply": "overhead_wire",
+    "supplySystems": ["dc_750"]
+  },
+  "infrastructure": {
+    "gaugeMm": 1435
+  },
+  "operators": ["MVG / Stadtwerke München (Munich)"],
+  "sources": [
+    {
+      "url": "https://assets.new.siemens.com/siemens/assets/api/uuid:cc8e5045-622e-415a-b009-9c2ddc927c4a/siemens-mobility-avenio-munichtz-datasheet-en.pdf",
+      "title": "Avenio Tram TZ – Munich, Germany (data sheet)",
+      "publisher": "Siemens Mobility",
+      "date": "2020",
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions.lengthM",
+        "dimensions.widthM",
+        "dimensions.emptyWeightT",
+        "dimensions.floorHeightMm",
+        "consist.cars",
+        "capacity.seated",
+        "capacity.total",
+        "capacity.standingDensityPersM2",
+        "performance",
+        "energy.supplySystems",
+        "infrastructure.gaugeMm"
+      ],
+      "kind": "primary"
+    },
+    {
+      "url": "https://assets.new.siemens.com/siemens/assets/api/uuid:fe5785e6-6b17-4498-8eb5-d1c688870536/avenio-munich-uk.pdf",
+      "title": "Avenio Tram – Munich, Germany (first eight vehicles)",
+      "publisher": "Siemens",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["consist.suspendedModules"],
+      "kind": "primary"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Siemens_Avenio",
+      "title": "Siemens Avenio",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["operators"],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.75
+    },
+    "capacity": {
+      "kind": "derived",
+      "confidence": 0.8
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.85
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "doors": {
+      "kind": "not_available",
+      "confidence": 0
+    },
+    "operation": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "Figures for the 73 four-car units of the 2019 option (MVG class T4.8): 219 places incl. 60 seats at 4 persons/m²; standing = 219 − 60 = 159 (derived). The four-car units of the basic 2015 order have 215 places incl. 65 seats. Tare weight approx. 45 t; motor power 6 × 100 kW (600 kW). Each of the four modules has its own centrally installed bogie (Siemens sheet for the first Munich Avenios, same length and capacity), so suspendedModules = 0. Entrance/floor height 300 mm. First delivery of this option was scheduled for 2021; the actual year is not stated, so yearIntroduced is empty. Height not given for this batch (the first-batch sheet gives 3,550 mm).",
+  "livery": null
+}

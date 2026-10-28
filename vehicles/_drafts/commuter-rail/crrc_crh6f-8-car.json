@@ -1,0 +1,177 @@
+{
+  "$schema": "../../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7058-a538-d6515dce6af7",
+  "legacyId": "crrc-crh6f-8-car",
+  "name": "CRRC CRH6F (8-car (4M4T))",
+  "manufacturer": "CRRC",
+  "builder": "CRRC Qingdao Sifang / CRRC Nanjing Puzhen / CRRC Guangdong",
+  "model": "CRH6F",
+  "variant": "8-car (4M4T)",
+  "family": "CRH6",
+  "manufacturerCountry": "China",
+  "type": "emu",
+  "mode": "commuter_rail",
+  "yearIntroduced": 2015,
+  "operators": [
+    "Guangdong Intercity (Guangzhou–Zhaoqing, Guangzhou–Huizhou)",
+    "China Railway Shanghai Group (Ningbo–Yuyao)",
+    "Beijing Suburban Railway"
+  ],
+  "length": {
+    "value": 201.4,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-zh-crh6"
+    ]
+  },
+  "width": {
+    "value": 3.3,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-zh-crh6"
+    ]
+  },
+  "height": {
+    "value": 3.86,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-zh-crh6"
+    ]
+  },
+  "consist": {
+    "cars": {
+      "value": 8,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-zh-crh6"
+      ]
+    }
+  },
+  "seats": {
+    "value": 440,
+    "unit": "count",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner"
+    ],
+    "rationale": "Published CRH6F layouts fall around 430-450 seats.",
+    "low": 400,
+    "central": 440,
+    "high": 500,
+    "distribution": "triangular"
+  },
+  "standingQuoted": {
+    "value": 1062,
+    "unit": "count",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner",
+      "wp-zh-crh6"
+    ],
+    "rationale": "Total 1502 minus 440 seats.",
+    "low": 1002,
+    "central": 1062,
+    "high": 1102,
+    "distribution": "triangular"
+  },
+  "standingArea": {
+    "value": 265.5,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner",
+      "wp-zh-crh6"
+    ],
+    "rationale": "1062 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 177.0,
+    "central": 265.5,
+    "high": 354.0,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 1502,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-zh-crh6"
+    ]
+  },
+  "topSpeed": {
+    "value": 160,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-zh-crh6"
+    ]
+  },
+  "power": {
+    "value": 5152,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-zh-crh6"
+    ]
+  },
+  "maxAcceleration": {
+    "value": 0.8,
+    "unit": "m/s2",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-zh-crh6"
+    ]
+  },
+  "energySource": {
+    "value": "overhead-ac",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-zh-crh6",
+      "wp-china-railway-crh6"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "ocl-25kv-50hz"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-zh-crh6",
+      "wp-china-railway-crh6"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-zh-crh6",
+      "wp-china-railway-crh6"
+    ]
+  },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/CRH6",
+    "scope": "family",
+    "checked_via": "source"
+  },
+  "notes": "Chinese Wikipedia: rated capacity (定员) 1502, crush load (超员) 1998 (the table lists 1998). Operating speed 160 km/h, test 180 km/h; starting acceleration >=0.8 m/s²; traction power 5,152 kW. Seated count not given. Entered service 11 July 2015.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only.",
+  "draftReason": "Core fields not sourced: seats, standingQuoted"
+}

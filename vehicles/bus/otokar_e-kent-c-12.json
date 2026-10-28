@@ -1,0 +1,185 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7e62-9d60-0d5f5e8f6121",
+  "legacyId": "otokar-e-kent-c-12",
+  "name": "Otokar e-Kent C 12 (2nd generation (CATL LFP battery), type EX16SR2BX)",
+  "manufacturer": "Otokar",
+  "builder": "Otokar",
+  "model": "e-Kent C 12",
+  "variant": "2nd generation (CATL LFP battery), type EX16SR2BX",
+  "family": "Kent C",
+  "manufacturerCountry": "Turkey",
+  "type": "standard-bus",
+  "mode": "bus",
+  "yearIntroduced": 2024,
+  "operators": [
+    "Dopravný podnik Bratislava"
+  ],
+  "length": {
+    "value": 12.13,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-otokar-e-kent-c-12-vehicle-type-descript"
+    ]
+  },
+  "width": {
+    "value": 2.55,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-otokar-e-kent-c-12-vehicle-type-descript"
+    ]
+  },
+  "height": {
+    "value": 3.22,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-otokar-e-kent-c-12-vehicle-type-descript"
+    ]
+  },
+  "weightEmpty": {
+    "value": 13.95,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-otokar-e-kent-c-12-vehicle-type-descript"
+    ]
+  },
+  "weightLoaded": {
+    "value": 19.5,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-otokar-e-kent-c-12-vehicle-type-descript"
+    ]
+  },
+  "floorHeight": {
+    "value": 330,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-otokar-e-kent-c-12-vehicle-type-descript"
+    ]
+  },
+  "consist": {
+    "articulations": {
+      "value": 0,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "imhd-sk-otokar-e-kent-c-12-vehicle-type-descript"
+      ]
+    },
+    "cars": {
+      "value": 1,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "imhd-sk-otokar-e-kent-c-12-vehicle-type-descript"
+      ]
+    }
+  },
+  "doorsPerSide": {
+    "value": 3,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-otokar-e-kent-c-12-vehicle-type-descript"
+    ]
+  },
+  "seats": {
+    "value": 33,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-otokar-e-kent-c-12-vehicle-type-descript"
+    ]
+  },
+  "standingQuoted": {
+    "value": 48,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-otokar-e-kent-c-12-vehicle-type-descript"
+    ]
+  },
+  "standingArea": {
+    "value": 12.0,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "imhd-sk-otokar-e-kent-c-12-vehicle-type-descript"
+    ],
+    "rationale": "48 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 8.0,
+    "central": 12.0,
+    "high": 16.0,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 81,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-otokar-e-kent-c-12-vehicle-type-descript"
+    ]
+  },
+  "topSpeed": {
+    "value": 80,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-otokar-e-kent-c-12-vehicle-type-descript"
+    ]
+  },
+  "power": {
+    "value": 310,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-otokar-e-kent-c-12-vehicle-type-descript"
+    ]
+  },
+  "energySource": {
+    "value": "battery",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-otokar-e-kent-c-12-vehicle-type-descript"
+    ]
+  },
+  "batteryCapacity": {
+    "value": 449.3,
+    "unit": "kWh",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-otokar-e-kent-c-12-vehicle-type-descript"
+    ]
+  },
+  "wikipedia": {
+    "url": "https://pl.wikipedia.org/wiki/Otokar_Kent_C_(12m)",
+    "scope": "family",
+    "checked_via": "search"
+  },
+  "notes": "First e-Kent prototype 2019; the second generation with CATL batteries was presented in 2024 (figures here are for the Bratislava vehicles with 449.3 kWh CATL LFP). Voith motor 310 kW continuous / 410 kW peak. Wheelbase 5900 mm. Capacity excludes the driver. Range not published by the source. The 550,000 EUR value reported for Bratislava was compensation in kind, not a purchase price, so it is not listed as a cost.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

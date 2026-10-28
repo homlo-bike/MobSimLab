@@ -1,0 +1,160 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-71d4-af32-c501be590dad",
+  "legacyId": "hitachi-honolulu-skyline-4-car",
+  "name": "Hitachi Skyline train (4-car set (Honolulu))",
+  "manufacturer": "Hitachi",
+  "builder": "Hitachi Rail",
+  "model": "Skyline train",
+  "variant": "4-car set (Honolulu)",
+  "family": "Hitachi Rail Italy Driverless Metro",
+  "manufacturerCountry": "Italy / United States",
+  "type": "metro-automated",
+  "mode": "metro",
+  "yearIntroduced": 2023,
+  "operators": [
+    "Hitachi Rail (for Honolulu Department of Transportation Services)"
+  ],
+  "length": {
+    "value": 78.2,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-hitachi-rail-italy-driverless-metro"
+    ]
+  },
+  "width": {
+    "value": 3.05,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-hitachi-rail-italy-driverless-metro"
+    ]
+  },
+  "consist": {
+    "cars": {
+      "value": 4,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-hitachi-rail-italy-driverless-metro",
+        "wp-skyline-honolulu"
+      ]
+    }
+  },
+  "seats": {
+    "value": 144,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-skyline-honolulu"
+    ],
+    "rationale": "Derived from the cited source; see notes."
+  },
+  "standingQuoted": {
+    "value": 636,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-skyline-honolulu"
+    ],
+    "rationale": "Total 780 minus 144 seats."
+  },
+  "standingArea": {
+    "value": 159.0,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "wp-skyline-honolulu"
+    ],
+    "rationale": "636 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 106.0,
+    "central": 159.0,
+    "high": 212.0,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 780,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-skyline-honolulu"
+    ],
+    "rationale": "Derived from the cited source; see notes."
+  },
+  "topSpeed": {
+    "value": 105,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-hitachi-rail-italy-driverless-metro"
+    ]
+  },
+  "energySource": {
+    "value": "third-rail",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-skyline-honolulu"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "third-rail-750v-dc"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-skyline-honolulu"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-skyline-honolulu"
+    ]
+  },
+  "costRecords": [
+    {
+      "item": "Railcar design and fabrication (part of core systems contract)",
+      "value": 574000000,
+      "currency": "USD",
+      "priceBaseYear": 2011,
+      "region": "Honolulu, United States",
+      "note": "Part of the $1.1 billion core systems contract signed 28 Nov 2011; covers 80 cars (20 four-car sets), as reported by Wikipedia.",
+      "sources": [
+        "wp-skyline-honolulu"
+      ]
+    }
+  ],
+  "livery": {
+    "operator": "Honolulu Skyline (DTS)",
+    "primary": "#FFFFFF",
+    "secondary": "#00843D",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "railway-news-com-honolulu-skyline-dts"
+    ],
+    "rationale": "approximation of green and white livery (as unveiled 2016)"
+  },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Hitachi_Rail_Italy_Driverless_Metro",
+    "scope": "family",
+    "checked_via": "source"
+  },
+  "notes": "Capacity = 4 cars x 195 people (36 seated) per car as listed for each car (derived); the article also says \"nearly 800 passengers\" per train. No density basis stated. Length 78.2 m and width 3.05 m from the Driverless Metro systems table (the Skyline article gives 256 ft / 64 ft per car). Top contact third rail. Driverless operation; no GoA grade stated. Figures from Wikipedia (secondary).",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

@@ -1,0 +1,175 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7e1f-b1b0-4a98556493b4",
+  "legacyId": "alexander-dennis-enviro500ev-hong-kong",
+  "name": "Alexander Dennis Enviro500EV (Hong Kong 12 m, three-axle)",
+  "manufacturer": "Alexander Dennis",
+  "builder": "Alexander Dennis",
+  "model": "Enviro500EV",
+  "variant": "Hong Kong 12 m, three-axle",
+  "family": "Enviro500",
+  "manufacturerCountry": "United Kingdom",
+  "type": "double-decker-bus",
+  "mode": "bus",
+  "length": {
+    "value": 12.0,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "alexander-dennis-enviro500ev-asia-pacific"
+    ]
+  },
+  "width": {
+    "value": 2.55,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "alexander-dennis-enviro500ev-asia-pacific"
+    ]
+  },
+  "height": {
+    "value": 4.3,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "alexander-dennis-enviro500ev-asia-pacific"
+    ]
+  },
+  "consist": {
+    "articulations": {
+      "value": 0,
+      "unit": "count",
+      "assumed": false,
+      "basis": "documented",
+      "sources": [
+        "alexander-dennis-enviro500ev-asia-pacific"
+      ],
+      "rationale": "Derived from the cited source; see notes."
+    },
+    "axlePositions": {
+      "value": [
+        2.5,
+        8.1,
+        9.6
+      ],
+      "unit": "m",
+      "assumed": false,
+      "basis": "documented",
+      "sources": [
+        "alexander-dennis-enviro500ev-asia-pacific"
+      ],
+      "rationale": "Derived from the cited source; see notes."
+    },
+    "cars": {
+      "value": 1,
+      "unit": "count",
+      "assumed": false,
+      "basis": "documented",
+      "sources": [
+        "alexander-dennis-enviro500ev-asia-pacific"
+      ],
+      "rationale": "Derived from the cited source; see notes."
+    }
+  },
+  "turningCircle": {
+    "value": 22.2,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "alexander-dennis-enviro500ev-asia-pacific"
+    ]
+  },
+  "seats": {
+    "value": 82,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "alexander-dennis-enviro500ev-asia-pacific"
+    ]
+  },
+  "standingQuoted": {
+    "value": 35,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "alexander-dennis-enviro500ev-asia-pacific"
+    ],
+    "rationale": "Total 117 minus 82 seats."
+  },
+  "standingArea": {
+    "value": 8.8,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "alexander-dennis-enviro500ev-asia-pacific"
+    ],
+    "rationale": "35 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 5.8,
+    "central": 8.8,
+    "high": 11.7,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 117,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "alexander-dennis-enviro500ev-asia-pacific"
+    ]
+  },
+  "topSpeed": {
+    "value": 70,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "environment-and-ecol-double-deck-electric-bus-alexander-denni"
+    ]
+  },
+  "power": {
+    "value": 310,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "alexander-dennis-enviro500ev-asia-pacific",
+      "environment-and-ecol-double-deck-electric-bus-alexander-denni"
+    ]
+  },
+  "energySource": {
+    "value": "battery",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "alexander-dennis-enviro500ev-asia-pacific",
+      "environment-and-ecol-double-deck-electric-bus-alexander-denni"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "batteryCapacity": {
+    "value": 472,
+    "unit": "kWh",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "alexander-dennis-enviro500ev-asia-pacific",
+      "environment-and-ecol-double-deck-electric-bus-alexander-denni"
+    ]
+  },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Alexander_Dennis_Enviro500_MMC",
+    "scope": "family",
+    "checked_via": "search"
+  },
+  "notes": "Capacity: 82 seats / up to 117 passengers (Hong Kong layout, manufacturer). Axle positions derived from the published 2.5 m front overhang and 5.6 m + 1.5 m wheelbases. Turning circle 22.2 m is twice the published 11.1 m turning radius. Maximum speed 70 km/h and range 200 km come from the Hong Kong government sheet for a non-franchised version (driver + 86 seats), which may differ from the franchised layout. 310 kW continuous / 410 kW peak motor. Range removed: the only published range is for a different seating layout.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

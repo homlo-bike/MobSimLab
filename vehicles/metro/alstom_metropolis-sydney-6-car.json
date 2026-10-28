@@ -1,0 +1,203 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7bd3-b3d9-0db1ce8a93fd",
+  "legacyId": "alstom-metropolis-sydney-6-car",
+  "name": "Alstom Metropolis Stock (Sydney Metro 6-car set)",
+  "manufacturer": "Alstom",
+  "builder": "Alstom",
+  "model": "Metropolis Stock",
+  "variant": "Sydney Metro 6-car set",
+  "family": "Metropolis",
+  "manufacturerCountry": "France / India",
+  "type": "metro-automated",
+  "mode": "metro",
+  "yearIntroduced": 2019,
+  "operators": [
+    "Metro Trains Sydney"
+  ],
+  "length": {
+    "value": 121.5,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-sydney-metro-metropolis-stock"
+    ]
+  },
+  "width": {
+    "value": 3.035,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-sydney-metro-metropolis-stock"
+    ]
+  },
+  "weightEmpty": {
+    "value": 240,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-sydney-metro-metropolis-stock"
+    ]
+  },
+  "consist": {
+    "carLengths": {
+      "value": [
+        20.25,
+        20.25,
+        20.25,
+        20.25,
+        20.25,
+        20.25
+      ],
+      "unit": "m",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-sydney-metro-metropolis-stock"
+      ]
+    },
+    "cars": {
+      "value": 6,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-sydney-metro-metropolis-stock"
+      ]
+    }
+  },
+  "doorsPerSide": {
+    "value": 18,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-sydney-metro-metropolis-stock"
+    ],
+    "rationale": "Derived from the cited source; see notes."
+  },
+  "seats": {
+    "value": 378,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-sydney-metro-metropolis-stock"
+    ]
+  },
+  "standingQuoted": {
+    "value": 722,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-sydney-metro-metropolis-stock"
+    ],
+    "rationale": "Total 1100 minus 378 seats."
+  },
+  "standingArea": {
+    "value": 180.5,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "wp-sydney-metro-metropolis-stock"
+    ],
+    "rationale": "722 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 120.3,
+    "central": 180.5,
+    "high": 240.7,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 1100,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-sydney-metro-metropolis-stock"
+    ]
+  },
+  "topSpeed": {
+    "value": 120,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-sydney-metro-metropolis-stock"
+    ]
+  },
+  "power": {
+    "value": 3200,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-sydney-metro-metropolis-stock"
+    ]
+  },
+  "maxAcceleration": {
+    "value": 1.2,
+    "unit": "m/s2",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-sydney-metro-metropolis-stock"
+    ]
+  },
+  "serviceDeceleration": {
+    "value": 1.1,
+    "unit": "m/s2",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-sydney-metro-metropolis-stock"
+    ]
+  },
+  "energySource": {
+    "value": "overhead-dc",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-sydney-metro-metropolis-stock"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "ocl-1500v-dc"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-sydney-metro-metropolis-stock"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-sydney-metro-metropolis-stock"
+    ]
+  },
+  "automationGrade": {
+    "value": "GoA4",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-sydney-metro-metropolis-stock"
+    ]
+  },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Sydney_Metro_Metropolis_Stock",
+    "scope": "model",
+    "checked_via": "source"
+  },
+  "notes": "Formation TC-MPC-MC-MC-MPC-TC, built at Sri City, India. carLengthsM uses the single 20.25 m car length given for all cars. emptyWeightT is the 240 t train weight in the infobox (tare/loaded basis not stated). doorsPerSide = 3 per side per car x 6 cars (derived). Max speed 120 km/h design, 100 km/h service. Deceleration is the service rate (1.4 m/s2 emergency). No density basis given for the 1,100 total. Figures from Wikipedia (secondary).",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

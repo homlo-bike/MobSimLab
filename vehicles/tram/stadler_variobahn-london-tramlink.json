@@ -1,0 +1,217 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7f62-b6e9-90eaa1f495f0",
+  "legacyId": "stadler-variobahn-london-tramlink",
+  "name": "Stadler Variobahn (London Tramlink (Croydon))",
+  "manufacturer": "Stadler",
+  "builder": "Stadler",
+  "model": "Variobahn",
+  "variant": "London Tramlink (Croydon)",
+  "family": "Stadler Variobahn",
+  "manufacturerCountry": "Germany",
+  "type": "tram-low-floor",
+  "mode": "tram",
+  "yearIntroduced": 2012,
+  "operators": [
+    "London Trams / Tramlink (Transport for London)"
+  ],
+  "length": {
+    "value": 32.37,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-pankow-low-floor-light-rail-vehicle-type-variob"
+    ]
+  },
+  "width": {
+    "value": 2.65,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-pankow-low-floor-light-rail-vehicle-type-variob"
+    ]
+  },
+  "height": {
+    "value": 3.535,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-pankow-low-floor-light-rail-vehicle-type-variob"
+    ]
+  },
+  "weightEmpty": {
+    "value": 41.5,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-pankow-low-floor-light-rail-vehicle-type-variob"
+    ]
+  },
+  "floorHeight": {
+    "value": 385,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-pankow-low-floor-light-rail-vehicle-type-variob"
+    ]
+  },
+  "consist": {
+    "bidirectional": {
+      "value": true,
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "stadler-pankow-low-floor-light-rail-vehicle-type-variob"
+      ]
+    },
+    "cars": {
+      "value": 5,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "stadler-pankow-low-floor-light-rail-vehicle-type-variob"
+      ]
+    }
+  },
+  "minRadiusHorizontal": {
+    "value": 25,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-pankow-low-floor-light-rail-vehicle-type-variob"
+    ]
+  },
+  "doorsPerSide": {
+    "value": 4,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-pankow-low-floor-light-rail-vehicle-type-variob"
+    ]
+  },
+  "seats": {
+    "value": 72,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-pankow-low-floor-light-rail-vehicle-type-variob",
+      "wp-stadler-variobahn"
+    ]
+  },
+  "standingQuoted": {
+    "value": 134,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-pankow-low-floor-light-rail-vehicle-type-variob",
+      "wp-stadler-variobahn"
+    ]
+  },
+  "standingDensityQuoted": {
+    "value": 4,
+    "unit": "pers/m2",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-pankow-low-floor-light-rail-vehicle-type-variob"
+    ]
+  },
+  "standingArea": {
+    "value": 33.5,
+    "unit": "m2",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "stadler-pankow-low-floor-light-rail-vehicle-type-variob",
+      "wp-stadler-variobahn"
+    ],
+    "rationale": "134 standing places at the quoted 4 pers/m2."
+  },
+  "totalCapacityQuoted": {
+    "value": 206,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "stadler-pankow-low-floor-light-rail-vehicle-type-variob",
+      "wp-stadler-variobahn"
+    ],
+    "rationale": "72 seats plus 134 standing places."
+  },
+  "topSpeed": {
+    "value": 80,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-pankow-low-floor-light-rail-vehicle-type-variob"
+    ]
+  },
+  "power": {
+    "value": 360,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-pankow-low-floor-light-rail-vehicle-type-variob"
+    ]
+  },
+  "energySource": {
+    "value": "overhead-dc",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-pankow-low-floor-light-rail-vehicle-type-variob"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "ocl-750v-dc"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-pankow-low-floor-light-rail-vehicle-type-variob"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-pankow-low-floor-light-rail-vehicle-type-variob"
+    ]
+  },
+  "costRecords": [
+    {
+      "item": "6 Variobahn trams for Croydon",
+      "value": 16300000,
+      "currency": "GBP",
+      "priceBaseYear": 2011,
+      "region": "London, United Kingdom",
+      "note": "2011 order (secondary source).",
+      "sources": [
+        "wp-stadler-variobahn"
+      ]
+    }
+  ],
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Stadler_Variobahn",
+    "scope": "family",
+    "checked_via": "source"
+  },
+  "notes": "Five-section bidirectional Variobahn for Croydon (6 units from 2012). total = 72 seats + 134 standing (4 persons/m²) = 206 (derived sum). Power 8 × 45 kW = 360 kW. Floor 385 mm constant low floor, access height 350 mm. Net weight 41.5 t. Suspended modules not stated in the sources read.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

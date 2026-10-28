@@ -1,0 +1,101 @@
+{
+  "id": "alstom-metropolis-sydney-6-car",
+  "mode": "metro",
+  "category": "metro_automated",
+  "simulatorCategory": "6-Car Metro",
+  "name": "Metropolis Stock",
+  "variant": "Sydney Metro 6-car set",
+  "family": "Metropolis",
+  "producer": "Alstom",
+  "manufacturerCountry": "France / India",
+  "yearIntroduced": 2019,
+  "dimensions": {
+    "lengthM": 121.5,
+    "widthM": 3.035,
+    "emptyWeightT": 240
+  },
+  "consist": {
+    "cars": 6,
+    "carLengthsM": [20.25, 20.25, 20.25, 20.25, 20.25, 20.25]
+  },
+  "doors": {
+    "doorsPerSide": 18
+  },
+  "capacity": {
+    "seated": 378,
+    "total": 1100
+  },
+  "performance": {
+    "maxSpeedKmh": 120,
+    "accelerationMs2": 1.2,
+    "decelerationMs2": 1.1,
+    "tractionPowerKw": 3200
+  },
+  "energy": {
+    "supply": "overhead_wire",
+    "supplySystems": ["dc_1500"]
+  },
+  "infrastructure": {
+    "gaugeMm": 1435
+  },
+  "operation": {
+    "automationGrade": "GoA4"
+  },
+  "livery": null,
+  "operators": ["Metro Trains Sydney"],
+  "sources": [
+    {
+      "url": "https://en.wikipedia.org/wiki/Sydney_Metro_Metropolis_Stock",
+      "title": "Sydney Metro Metropolis Stock",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions",
+        "consist",
+        "doors",
+        "capacity",
+        "performance",
+        "energy",
+        "infrastructure.gaugeMm",
+        "operation"
+      ],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "doors": {
+      "kind": "derived",
+      "confidence": 0.6
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "operation": {
+      "kind": "published",
+      "confidence": 0.8
+    }
+  },
+  "notes": "Formation TC-MPC-MC-MC-MPC-TC, built at Sri City, India. carLengthsM uses the single 20.25 m car length given for all cars. emptyWeightT is the 240 t train weight in the infobox (tare/loaded basis not stated). doorsPerSide = 3 per side per car x 6 cars (derived). Max speed 120 km/h design, 100 km/h service. Deceleration is the service rate (1.4 m/s2 emergency). No density basis given for the 1,100 total. Figures from Wikipedia (secondary)."
+}

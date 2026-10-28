@@ -1,0 +1,95 @@
+{
+  "id": "otokar-kent-c-18-75",
+  "mode": "bus",
+  "category": "articulated_bus",
+  "simulatorCategory": "18 m Articulated Bus",
+  "name": "Kent C 18,75",
+  "variant": "ZX16SA3BX, diesel",
+  "family": "Kent C",
+  "producer": "Otokar",
+  "manufacturerCountry": "Turkey",
+  "yearIntroduced": 2015,
+  "dimensions": {
+    "lengthM": 18.75,
+    "widthM": 2.54,
+    "heightM": 3.245,
+    "emptyWeightT": 17.45,
+    "grossWeightT": 28,
+    "floorHeightMm": 330
+  },
+  "consist": {
+    "cars": 2,
+    "articulations": 1
+  },
+  "doors": {
+    "doorsPerSide": 4
+  },
+  "capacity": {
+    "seated": 39,
+    "standing": 91,
+    "total": 130,
+    "standingDensityPersM2": 5
+  },
+  "performance": {
+    "maxSpeedKmh": 85,
+    "tractionPowerKw": 270
+  },
+  "energy": {
+    "supply": "diesel"
+  },
+  "costs": [
+    {
+      "item": "vehicle",
+      "amount": 254950,
+      "currency": "EUR",
+      "year": 2021,
+      "region": "Bratislava, Slovakia",
+      "url": "https://imhd.sk/ba/popis-typu-vozidla/997/Otokar-Kent-C-18-75",
+      "note": "Bratislava tender won 2019; framework contract signed 2021. Price per vehicle excl. VAT, as reported by imhd.sk."
+    }
+  ],
+  "livery": null,
+  "operators": ["Dopravný podnik Bratislava"],
+  "sources": [
+    {
+      "url": "https://imhd.sk/ba/popis-typu-vozidla/997/Otokar-Kent-C-18-75",
+      "title": "Otokar Kent C 18,75 – vehicle type description",
+      "publisher": "imhd.sk (Bratislava public transport information site)",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["dimensions", "consist", "doors", "capacity", "performance", "energy", "costs"],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "doors": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "costs": {
+      "kind": "published",
+      "confidence": 0.6
+    }
+  },
+  "notes": "Articulated Kent C presented 2015. Standing places at 5 persons/m² (116 standing, 155 total at 8 persons/m²). Engine DAF Paccar MX-11, 270 kW (tractionPowerKw = rated engine power). Wheelbases 5900 mm and 6740 mm. Floor 330 mm (270 mm kneeling). Capacity excludes the driver."
+}

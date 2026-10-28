@@ -1,0 +1,213 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7d6a-843b-95b9deadaf00",
+  "legacyId": "alstom-metropolis-amsterdam-m5-6-car",
+  "name": "Alstom Metropolis (Amsterdam M5 6-car)",
+  "manufacturer": "Alstom",
+  "builder": "Alstom",
+  "model": "Metropolis",
+  "variant": "Amsterdam M5 6-car",
+  "family": "Alstom Metropolis",
+  "manufacturerCountry": "France / Poland",
+  "type": "metro-consist",
+  "mode": "metro",
+  "yearIntroduced": 2013,
+  "operators": [
+    "GVB (Amsterdam Metro)"
+  ],
+  "length": {
+    "value": 116.2,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-m5-amsterdam-metro"
+    ]
+  },
+  "width": {
+    "value": 3.005,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-m5-amsterdam-metro"
+    ]
+  },
+  "height": {
+    "value": 3.77,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-m5-amsterdam-metro"
+    ]
+  },
+  "weightEmpty": {
+    "value": 190,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-m5-amsterdam-metro"
+    ]
+  },
+  "floorHeight": {
+    "value": 1100,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-m5-amsterdam-metro"
+    ]
+  },
+  "consist": {
+    "carLengths": {
+      "value": [
+        20.296,
+        18.89,
+        18.89,
+        18.89,
+        18.89,
+        20.296
+      ],
+      "unit": "m",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-m5-amsterdam-metro"
+      ]
+    },
+    "cars": {
+      "value": 6,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-m5-amsterdam-metro"
+      ]
+    }
+  },
+  "doorsPerSide": {
+    "value": 24,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-m5-amsterdam-metro"
+    ]
+  },
+  "seats": {
+    "value": 174,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-m5-amsterdam-metro"
+    ]
+  },
+  "standingQuoted": {
+    "value": 786,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-m5-amsterdam-metro"
+    ]
+  },
+  "standingArea": {
+    "value": 196.5,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "wp-m5-amsterdam-metro"
+    ],
+    "rationale": "786 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 131.0,
+    "central": 196.5,
+    "high": 262.0,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 960,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-m5-amsterdam-metro"
+    ]
+  },
+  "topSpeed": {
+    "value": 90,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-m5-amsterdam-metro"
+    ]
+  },
+  "power": {
+    "value": 3200,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-m5-amsterdam-metro"
+    ]
+  },
+  "maxAcceleration": {
+    "value": 1.2,
+    "unit": "m/s2",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-m5-amsterdam-metro"
+    ]
+  },
+  "energySource": {
+    "value": "third-rail",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-m5-amsterdam-metro"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "third-rail-750v-dc"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-m5-amsterdam-metro"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-m5-amsterdam-metro"
+    ]
+  },
+  "livery": {
+    "operator": "GVB (Amsterdam)",
+    "primary": "#B5B8BB",
+    "secondary": "#D2232A",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "wp-m5-amsterdam-metro"
+    ],
+    "rationale": "Silver-grey body with red doors, as described in the article; hex values approximate."
+  },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/M5_(Amsterdam_Metro)",
+    "scope": "model",
+    "checked_via": "source"
+  },
+  "notes": "Six-car M5 Metropolis (constructed 2011–2015, in service 24 June 2013). Capacity 174 seats + 786 standing = 960; standing density not stated. Power 16 × 200 kW = 3,200 kW. carLengthsM places the two 20.296 m end cars at the ends and the four 18.890 m intermediate cars between them (sum 116.15 m vs 116.2 m published). The order cost about €200 million according to the article, but no year is given, so no cost entry.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

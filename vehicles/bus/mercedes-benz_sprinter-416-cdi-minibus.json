@@ -1,0 +1,166 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-77ff-8aba-fb73ec4a39b5",
+  "legacyId": "mercedes-benz-sprinter-416-cdi-minibus",
+  "name": "Mercedes-Benz Sprinter 416 CDI (city minibus (904.663 KA))",
+  "manufacturer": "Mercedes-Benz",
+  "builder": "Mercedes-Benz (DaimlerChrysler)",
+  "model": "Sprinter 416 CDI",
+  "variant": "city minibus (904.663 KA)",
+  "family": "Sprinter",
+  "manufacturerCountry": "Germany",
+  "type": "minibus",
+  "mode": "bus",
+  "operators": [
+    "Dopravný podnik Bratislava"
+  ],
+  "length": {
+    "value": 6.59,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-sprinter-vehicle-type-desc"
+    ]
+  },
+  "width": {
+    "value": 1.944,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-sprinter-vehicle-type-desc"
+    ]
+  },
+  "height": {
+    "value": 2.61,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-sprinter-vehicle-type-desc"
+    ]
+  },
+  "weightEmpty": {
+    "value": 2.89,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-sprinter-vehicle-type-desc"
+    ]
+  },
+  "weightLoaded": {
+    "value": 4.6,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-sprinter-vehicle-type-desc"
+    ]
+  },
+  "consist": {
+    "articulations": {
+      "value": 0,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "imhd-sk-mercedes-benz-sprinter-vehicle-type-desc"
+      ]
+    },
+    "cars": {
+      "value": 1,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "imhd-sk-mercedes-benz-sprinter-vehicle-type-desc"
+      ]
+    }
+  },
+  "doorsPerSide": {
+    "value": 1,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-sprinter-vehicle-type-desc"
+    ]
+  },
+  "seats": {
+    "value": 10,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-sprinter-vehicle-type-desc"
+    ]
+  },
+  "standingQuoted": {
+    "value": 14,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-sprinter-vehicle-type-desc"
+    ]
+  },
+  "standingArea": {
+    "value": 3.5,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "imhd-sk-mercedes-benz-sprinter-vehicle-type-desc"
+    ],
+    "rationale": "14 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 2.3,
+    "central": 3.5,
+    "high": 4.7,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 24,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-sprinter-vehicle-type-desc"
+    ]
+  },
+  "topSpeed": {
+    "value": 90,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-sprinter-vehicle-type-desc"
+    ]
+  },
+  "power": {
+    "value": 115,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-sprinter-vehicle-type-desc"
+    ]
+  },
+  "energySource": {
+    "value": "diesel",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-sprinter-vehicle-type-desc"
+    ]
+  },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Mercedes-Benz_Sprinter",
+    "scope": "family",
+    "checked_via": "search"
+  },
+  "notes": "Figures for the two 2005-built Bratislava vehicles (fleet 1900-1901, withdrawn 2016-2019). Capacity excludes the driver. Wheelbase 4025 mm. tractionPowerKw is the rated engine power (OM 612, 115 kW). One passenger door plus driver and rear service doors.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

@@ -1,0 +1,119 @@
+{
+  "id": "siemens-s700-san-diego-3car",
+  "mode": "light_rail",
+  "category": "lrv_coupled_consist",
+  "simulatorCategory": "3-Car LRV",
+  "name": "S700",
+  "variant": "San Diego MTS Trolley, 3-vehicle consist",
+  "family": "Siemens S70/S700",
+  "producer": "Siemens Mobility",
+  "manufacturerCountry": "United States",
+  "dimensions": {
+    "lengthM": 74.4,
+    "widthM": 2.65,
+    "heightM": 3.755,
+    "emptyWeightT": 131.85,
+    "floorHeightMm": 381,
+    "minCurveRadiusM": 25
+  },
+  "consist": {
+    "cars": 3,
+    "carLengthsM": [24.8, 24.8, 24.8],
+    "bidirectional": true
+  },
+  "doors": {
+    "doorsPerSide": 12,
+    "wheelchairSpaces": 12
+  },
+  "capacity": {
+    "seated": 174,
+    "total": 552,
+    "standingDensityPersM2": null
+  },
+  "performance": {
+    "maxSpeedKmh": 88,
+    "accelerationMs2": 1.34,
+    "decelerationMs2": 1.34,
+    "tractionPowerKw": 1560
+  },
+  "energy": {
+    "supply": "overhead_wire",
+    "supplySystems": ["dc_600"]
+  },
+  "infrastructure": {
+    "gaugeMm": 1435
+  },
+  "livery": {
+    "operator": "San Diego Metropolitan Transit System (Trolley)",
+    "primary": "#C8102E",
+    "secondary": null,
+    "windows": null,
+    "sourceUrl": "https://passengertrainjournal.com/next-generation-san-diego-trolley-cars-begin-service-on-saturday/",
+    "description": "approximation of the traditional San Diego Trolley red"
+  },
+  "operators": ["San Diego Metropolitan Transit System (Trolley)"],
+  "sources": [
+    {
+      "url": "https://assets.new.siemens.com/siemens/assets/api/uuid:7cffff9c-d96d-4493-8528-4b1f0594a6d5/San-Diego-S700-Data-Sheet_original.pdf",
+      "title": "S700 Low-Floor Light Rail Vehicle – San Diego, California (data sheet)",
+      "publisher": "Siemens Mobility",
+      "date": "2024",
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions.lengthM",
+        "dimensions.widthM",
+        "dimensions.heightM",
+        "dimensions.emptyWeightT",
+        "dimensions.floorHeightMm",
+        "dimensions.minCurveRadiusM",
+        "doors.doorsPerSide",
+        "doors.wheelchairSpaces",
+        "capacity.seated",
+        "capacity.total",
+        "performance.maxSpeedKmh",
+        "performance.accelerationMs2",
+        "performance.decelerationMs2",
+        "performance.tractionPowerKw",
+        "energy.supplySystems",
+        "infrastructure.gaugeMm",
+        "consist.cars"
+      ],
+      "kind": "primary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "derived",
+      "confidence": 0.85
+    },
+    "consist": {
+      "kind": "derived",
+      "confidence": 0.8
+    },
+    "doors": {
+      "kind": "derived",
+      "confidence": 0.85
+    },
+    "capacity": {
+      "kind": "derived",
+      "confidence": 0.8
+    },
+    "performance": {
+      "kind": "derived",
+      "confidence": 0.85
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "operation": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "Describes a consist of 3 coupled S700 vehicles. Per-vehicle figures (Siemens data sheet): length over coupler 24.8 m, empty weight 43.95 t, 58 seats, approx. 184 total passengers, 4 doors per side, 4 wheelchair spaces, traction 4 x 130 kW, maximum operational speed 88 km/h, service acceleration and deceleration 1.34 m/s2, emergency braking 2.18-2.2 m/s2, minimum turning radius 25 m. Consist totals (length, weight, seats, total, doors, wheelchair spaces, power) are per-vehicle values multiplied by 3 (marked derived); width, height, speeds and rates are per vehicle. Capacity is per consist; per vehicle it is 184. The data sheet says the vehicles can run in multiple-unit consists of up to four. Each vehicle is double-articulated (three sections, Bo'+2'+Bo'). Floor height 381 mm is the low-floor centre (356 mm threshold; a 670 mm high-floor section over the trucks is also listed). The data sheet gives no standing density for 'approx. 184 total passengers'. Maximum allowable speed 105 km/h. Standing places not separately stated."
+}

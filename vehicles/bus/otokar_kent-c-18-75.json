@@ -1,0 +1,194 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7df5-bd61-19593f755872",
+  "legacyId": "otokar-kent-c-18-75",
+  "name": "Otokar Kent C 18,75 (ZX16SA3BX, diesel)",
+  "manufacturer": "Otokar",
+  "builder": "Otokar",
+  "model": "Kent C 18,75",
+  "variant": "ZX16SA3BX, diesel",
+  "family": "Kent C",
+  "manufacturerCountry": "Turkey",
+  "type": "articulated-bus",
+  "mode": "bus",
+  "yearIntroduced": 2015,
+  "operators": [
+    "Dopravný podnik Bratislava"
+  ],
+  "length": {
+    "value": 18.75,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-otokar-kent-c-18-75-vehicle-type-descrip"
+    ]
+  },
+  "width": {
+    "value": 2.54,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-otokar-kent-c-18-75-vehicle-type-descrip"
+    ]
+  },
+  "height": {
+    "value": 3.245,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-otokar-kent-c-18-75-vehicle-type-descrip"
+    ]
+  },
+  "weightEmpty": {
+    "value": 17.45,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-otokar-kent-c-18-75-vehicle-type-descrip"
+    ]
+  },
+  "weightLoaded": {
+    "value": 28,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-otokar-kent-c-18-75-vehicle-type-descrip"
+    ]
+  },
+  "floorHeight": {
+    "value": 330,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-otokar-kent-c-18-75-vehicle-type-descrip"
+    ]
+  },
+  "consist": {
+    "articulations": {
+      "value": 1,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "imhd-sk-otokar-kent-c-18-75-vehicle-type-descrip"
+      ]
+    },
+    "cars": {
+      "value": 2,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "imhd-sk-otokar-kent-c-18-75-vehicle-type-descrip"
+      ]
+    }
+  },
+  "doorsPerSide": {
+    "value": 4,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-otokar-kent-c-18-75-vehicle-type-descrip"
+    ]
+  },
+  "seats": {
+    "value": 39,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-otokar-kent-c-18-75-vehicle-type-descrip"
+    ]
+  },
+  "standingQuoted": {
+    "value": 91,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-otokar-kent-c-18-75-vehicle-type-descrip"
+    ]
+  },
+  "standingDensityQuoted": {
+    "value": 5,
+    "unit": "pers/m2",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-otokar-kent-c-18-75-vehicle-type-descrip"
+    ]
+  },
+  "standingArea": {
+    "value": 18.2,
+    "unit": "m2",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "imhd-sk-otokar-kent-c-18-75-vehicle-type-descrip"
+    ],
+    "rationale": "91 standing places at the quoted 5 pers/m2."
+  },
+  "totalCapacityQuoted": {
+    "value": 130,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-otokar-kent-c-18-75-vehicle-type-descrip"
+    ]
+  },
+  "topSpeed": {
+    "value": 85,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-otokar-kent-c-18-75-vehicle-type-descrip"
+    ]
+  },
+  "power": {
+    "value": 270,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-otokar-kent-c-18-75-vehicle-type-descrip"
+    ]
+  },
+  "energySource": {
+    "value": "diesel",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-otokar-kent-c-18-75-vehicle-type-descrip"
+    ]
+  },
+  "costRecords": [
+    {
+      "item": "vehicle",
+      "value": 254950,
+      "currency": "EUR",
+      "priceBaseYear": 2021,
+      "region": "Bratislava, Slovakia",
+      "note": "Bratislava tender won 2019; framework contract signed 2021. Price per vehicle excl. VAT, as reported by imhd.sk.",
+      "sources": [
+        "imhd-sk-otokar-kent-c-18-75-vehicle-type-descrip"
+      ]
+    }
+  ],
+  "wikipedia": {
+    "url": "https://sk.wikipedia.org/wiki/Otokar_Kent_C_18,75",
+    "scope": "model",
+    "checked_via": "search"
+  },
+  "notes": "Articulated Kent C presented 2015. Standing places at 5 persons/m² (116 standing, 155 total at 8 persons/m²). Engine DAF Paccar MX-11, 270 kW (tractionPowerKw = rated engine power). Wheelbases 5900 mm and 6740 mm. Floor 330 mm (270 mm kneeling). Capacity excludes the driver.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

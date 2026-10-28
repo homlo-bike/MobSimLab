@@ -1,0 +1,117 @@
+{
+  "id": "crrc-tangshan-porto-ct",
+  "mode": "light_rail",
+  "category": "lrv_single",
+  "simulatorCategory": "4-Section LRV",
+  "name": "Class CT",
+  "variant": "Metro do Porto",
+  "producer": "CRRC Tangshan",
+  "manufacturerCountry": "China",
+  "yearIntroduced": 2023,
+  "dimensions": {
+    "lengthM": 35,
+    "emptyWeightT": 52
+  },
+  "consist": {
+    "cars": 4,
+    "articulations": 3,
+    "bidirectional": true
+  },
+  "capacity": {
+    "seated": 64,
+    "total": 244
+  },
+  "performance": {
+    "maxSpeedKmh": 80
+  },
+  "energy": {
+    "supply": "overhead_wire",
+    "supplySystems": ["dc_750"]
+  },
+  "infrastructure": {
+    "gaugeMm": 1435
+  },
+  "costs": [
+    {
+      "item": "Order for 18 light rail vehicles",
+      "amount": 49600000,
+      "currency": "EUR",
+      "year": 2019,
+      "region": "Porto, Portugal",
+      "url": "https://www.railwaygazette.com/modes/metro-do-porto-selects-crrc-to-supply-light-rail-vehicles/55362.article",
+      "note": "Contract value at selection (December 2019); tender reference value EUR 56.1m including five years of maintenance."
+    }
+  ],
+  "livery": {
+    "operator": "Metro do Porto",
+    "primary": "#8C8C8C",
+    "secondary": "#F2C200",
+    "sourceUrl": "https://www.railwaygazette.com/metro/metro-de-porto-unveils-crrc-tangshan-light-rail-vehicle/63547.article",
+    "description": "Grey and yellow livery, as described in the source; hex values are approximations."
+  },
+  "operators": ["Metro do Porto (lines C and E)"],
+  "sources": [
+    {
+      "url": "https://www.railwaygazette.com/metro/metro-de-porto-unveils-crrc-tangshan-light-rail-vehicle/63547.article",
+      "title": "Metro de Porto unveils CRRC Tangshan light rail vehicle",
+      "publisher": "Railway Gazette International",
+      "date": "2023-02-14",
+      "accessed": "2026-10-26",
+      "fields": ["dimensions", "capacity", "performance", "consist.bidirectional"],
+      "kind": "secondary"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Porto_Metro",
+      "title": "Porto Metro",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["consist", "capacity", "energy", "infrastructure.gaugeMm"],
+      "kind": "secondary"
+    },
+    {
+      "url": "https://www.railwaygazette.com/modes/metro-do-porto-selects-crrc-to-supply-light-rail-vehicles/55362.article",
+      "title": "Metro do Porto selects CRRC to supply light rail vehicles",
+      "publisher": "Railway Gazette International",
+      "date": "2019-12-16",
+      "accessed": "2026-10-26",
+      "fields": ["costs", "performance.maxSpeedKmh", "capacity.seated"],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "consist": {
+      "kind": "derived",
+      "confidence": 0.5
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "doors": {
+      "kind": "not_available",
+      "confidence": 0
+    },
+    "costs": {
+      "kind": "published",
+      "confidence": 0.7
+    }
+  },
+  "notes": "Total capacity 244 (64 seated) per the 2023 unveiling report and Wikipedia; the 2019 award report gave 252. 52 t is the weight stated by the source (assumed empty). Four articulated sections; articulations (3) derived from that. 750 V DC overhead and standard gauge are system values of Metro do Porto."
+}

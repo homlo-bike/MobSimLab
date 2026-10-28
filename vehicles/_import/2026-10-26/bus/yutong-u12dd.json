@@ -1,0 +1,92 @@
+{
+  "id": "yutong-u12dd",
+  "mode": "bus",
+  "category": "double_decker_bus",
+  "simulatorCategory": "Double-Decker Bus",
+  "name": "U12DD",
+  "variant": "12 m electric double-decker",
+  "family": "U-series",
+  "producer": "Yutong",
+  "manufacturerCountry": "China",
+  "dimensions": {
+    "lengthM": 11.98,
+    "widthM": 2.55,
+    "heightM": 4.35,
+    "turningCircleM": 19
+  },
+  "consist": {
+    "cars": 1,
+    "articulations": 0
+  },
+  "capacity": {
+    "seated": 74,
+    "total": 117
+  },
+  "performance": {
+    "maxSpeedKmh": 70
+  },
+  "energy": {
+    "supply": "battery",
+    "batteryKwh": 528
+  },
+  "sources": [
+    {
+      "url": "https://en.yutong.com/products/U12DD.shtml",
+      "title": "Yutong U12DD",
+      "publisher": "Zhengzhou Yutong Bus Co., Ltd.",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["dimensions", "consist", "capacity", "performance.maxSpeedKmh", "energy.batteryKwh"],
+      "kind": "primary"
+    },
+    {
+      "url": "https://landtransportguru.net/yutong-e12dd/",
+      "title": "Yutong ZK6125BEVGS (E12DD)",
+      "publisher": "Land Transport Guru",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["operators"],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "doors": {
+      "kind": "not_available",
+      "confidence": 0
+    },
+    "costs": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "livery": {
+    "operator": "Land Transport Authority (Singapore), all public bus operators",
+    "primary": "#6CB33F",
+    "secondary": null,
+    "windows": null,
+    "sourceUrl": "https://landtransportguru.net/news-lush-green-chosen-for-the-singapore-bus/",
+    "description": "approximation of Lush Green, the unified LTA public bus livery"
+  },
+  "operators": ["Tower Transit Singapore", "Go-Ahead Singapore", "SMRT Buses"],
+  "notes": "Successor name of the E12DD. Seated 74 = 55 upper + 19 lower deck seats as stated on the manufacturer page; 117 passengers total. Battery: the specification table gives 528 kWh, while the page text describes a 580 kWh standard and 621 kWh optional pack (670 km SORT2 range for 621 kWh); 528 kWh kept, range left empty. Turning circle is the published minimum turning diameter. Singapore operators listed ran the earlier E12DD (12 m, 422 kWh)."
+}

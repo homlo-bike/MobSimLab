@@ -1,0 +1,111 @@
+{
+  "id": "higer-azure-12",
+  "mode": "bus",
+  "category": "standard_bus",
+  "simulatorCategory": "12 m Standard Bus",
+  "name": "Azure 12",
+  "variant": "Electric city bus (UK/Ireland)",
+  "family": "Azure",
+  "producer": "Higer Bus",
+  "manufacturerCountry": "China",
+  "dimensions": {
+    "lengthM": 12.0,
+    "widthM": 2.48,
+    "heightM": 3.29,
+    "grossWeightT": 19.5,
+    "turningCircleM": 22.2
+  },
+  "consist": {
+    "cars": 1,
+    "articulations": 0
+  },
+  "capacity": {
+    "total": 70
+  },
+  "performance": {
+    "maxSpeedKmh": 83.7
+  },
+  "energy": {
+    "supply": "battery",
+    "batteryKwh": 352.08
+  },
+  "costs": [
+    {
+      "item": "Higer Azure 12 bus (UK price)",
+      "amount": 300000,
+      "currency": "GBP",
+      "year": 2026,
+      "region": "United Kingdom",
+      "url": "https://britbrief.co.uk/business/tech/chinas-300k-electric-bus-set-to-hit-uk-roads-soon.html",
+      "note": "Price as reported in the press; configuration not stated."
+    }
+  ],
+  "operators": [],
+  "sources": [
+    {
+      "url": "https://higer.ie/higer-range/azure-12/",
+      "title": "Azure 12",
+      "publisher": "Higer Ireland (distributor)",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions.lengthM",
+        "dimensions.widthM",
+        "dimensions.heightM",
+        "consist",
+        "capacity.total",
+        "energy.batteryKwh"
+      ],
+      "kind": "primary"
+    },
+    {
+      "url": "https://britbrief.co.uk/business/tech/chinas-300k-electric-bus-set-to-hit-uk-roads-soon.html",
+      "title": "China's £300k Electric Bus Set to Hit UK Roads Soon",
+      "publisher": "Brit Brief",
+      "date": "2026-06-27",
+      "accessed": "2026-10-26",
+      "fields": ["performance", "costs"],
+      "kind": "secondary"
+    },
+    {
+      "url": "https://www.environdec.com/library/epd25966",
+      "title": "Azure12 Electric Bus (EPD-IES-0025966)",
+      "publisher": "EPD International / Higer Bus Company",
+      "date": "2026-08-03",
+      "accessed": "2026-10-26",
+      "fields": ["dimensions.grossWeightT", "dimensions.turningCircleM"],
+      "kind": "primary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.5
+    },
+    "performance": {
+      "kind": "derived",
+      "confidence": 0.4
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "costs": {
+      "kind": "published",
+      "confidence": 0.4
+    },
+    "doors": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "Max speed derived: reported cap of 52 mph = 83.7 km/h. Distributor page: 'up to 70 seated and standing', '39 + 3 seats' (split not used). The EPD (Belgian configuration) lists 78 passengers (34 seats + 3 folding + 1 wheelchair + 44 standing), dimensions 12090 x 2550 x 3350 mm, 422.9 kWh max battery, 22.2 m turning circle and 19.5 t gross weight; turning circle and gross weight are taken from it. Range 'over 400 km', recharge under three hours (CCS2)."
+}

@@ -1,0 +1,84 @@
+{
+  "id": "otokar-e-kent-c-12",
+  "mode": "bus",
+  "category": "standard_bus",
+  "simulatorCategory": "12 m Standard Bus",
+  "name": "e-Kent C 12",
+  "variant": "2nd generation (CATL LFP battery), type EX16SR2BX",
+  "family": "Kent C",
+  "producer": "Otokar",
+  "manufacturerCountry": "Turkey",
+  "yearIntroduced": 2024,
+  "dimensions": {
+    "lengthM": 12.13,
+    "widthM": 2.55,
+    "heightM": 3.22,
+    "emptyWeightT": 13.95,
+    "grossWeightT": 19.5,
+    "floorHeightMm": 330
+  },
+  "consist": {
+    "cars": 1,
+    "articulations": 0
+  },
+  "doors": {
+    "doorsPerSide": 3
+  },
+  "capacity": {
+    "seated": 33,
+    "standing": 48,
+    "total": 81
+  },
+  "performance": {
+    "maxSpeedKmh": 80,
+    "tractionPowerKw": 310
+  },
+  "energy": {
+    "supply": "battery",
+    "batteryKwh": 449.3
+  },
+  "livery": null,
+  "operators": ["Dopravný podnik Bratislava"],
+  "sources": [
+    {
+      "url": "https://imhd.sk/ba/popis-typu-vozidla/1134/Otokar-e-Kent-C-12",
+      "title": "Otokar e-Kent C 12 – vehicle type description",
+      "publisher": "imhd.sk (Bratislava public transport information site)",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["dimensions", "consist", "doors", "capacity", "performance", "energy"],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "doors": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "costs": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "First e-Kent prototype 2019; the second generation with CATL batteries was presented in 2024 (figures here are for the Bratislava vehicles with 449.3 kWh CATL LFP). Voith motor 310 kW continuous / 410 kW peak. Wheelbase 5900 mm. Capacity excludes the driver. Range not published by the source. The 550,000 EUR value reported for Bratislava was compensation in kind, not a purchase price, so it is not listed as a cost."
+}

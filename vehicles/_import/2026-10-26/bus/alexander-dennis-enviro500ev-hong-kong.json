@@ -1,0 +1,87 @@
+{
+  "id": "alexander-dennis-enviro500ev-hong-kong",
+  "mode": "bus",
+  "category": "double_decker_bus",
+  "simulatorCategory": "Double-Decker Bus",
+  "name": "Enviro500EV",
+  "variant": "Hong Kong 12 m, three-axle",
+  "family": "Enviro500",
+  "producer": "Alexander Dennis",
+  "manufacturerCountry": "United Kingdom",
+  "dimensions": {
+    "lengthM": 12.0,
+    "widthM": 2.55,
+    "heightM": 4.3,
+    "turningCircleM": 22.2
+  },
+  "consist": {
+    "cars": 1,
+    "articulations": 0,
+    "axlePositionsM": [2.5, 8.1, 9.6]
+  },
+  "capacity": {
+    "seated": 82,
+    "total": 117
+  },
+  "performance": {
+    "maxSpeedKmh": 70,
+    "tractionPowerKw": 310
+  },
+  "energy": {
+    "supply": "battery",
+    "batteryKwh": 472,
+    "rangeKm": null
+  },
+  "livery": null,
+  "sources": [
+    {
+      "url": "https://www.alexander-dennis.com/buses/enviro500ev-asia-pacific/",
+      "title": "Enviro500EV (Asia Pacific)",
+      "publisher": "Alexander Dennis",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["dimensions", "consist", "capacity", "performance.tractionPowerKw", "energy.batteryKwh"],
+      "kind": "primary"
+    },
+    {
+      "url": "https://eeb.gov.hk/sites/default/files/en/node5762/Alexander_Dennis_ENVIRO500EV_ENG.pdf",
+      "title": "Double-deck Electric Bus: Alexander Dennis ENVIRO500EV – key specifications (information provided by the supplier)",
+      "publisher": "Environment and Ecology Bureau, Hong Kong SAR Government",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["performance.maxSpeedKmh", "energy.batteryKwh", "performance.tractionPowerKw"],
+      "kind": "primary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "consist": {
+      "kind": "derived",
+      "confidence": 0.7
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "doors": {
+      "kind": "not_available",
+      "confidence": 0
+    },
+    "costs": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "Capacity: 82 seats / up to 117 passengers (Hong Kong layout, manufacturer). Axle positions derived from the published 2.5 m front overhang and 5.6 m + 1.5 m wheelbases. Turning circle 22.2 m is twice the published 11.1 m turning radius. Maximum speed 70 km/h and range 200 km come from the Hong Kong government sheet for a non-franchised version (driver + 86 seats), which may differ from the franchised layout. 310 kW continuous / 410 kW peak motor. Range removed: the only published range is for a different seating layout."
+}

@@ -1,0 +1,95 @@
+{
+  "id": "solaris-urbino-12-hydrogen",
+  "mode": "bus",
+  "category": "standard_bus",
+  "simulatorCategory": "12 m Standard Bus",
+  "name": "Urbino 12 hydrogen",
+  "family": "Urbino",
+  "producer": "Solaris Bus & Coach",
+  "manufacturerCountry": "Poland",
+  "yearIntroduced": 2019,
+  "dimensions": {
+    "lengthM": 12.0,
+    "widthM": 2.55,
+    "heightM": 3.3,
+    "grossWeightT": 18.745,
+    "floorHeightMm": 320
+  },
+  "consist": {
+    "cars": 1,
+    "articulations": 0
+  },
+  "doors": {
+    "doorsPerSide": 3
+  },
+  "capacity": {
+    "seated": 29,
+    "standing": 51,
+    "total": 80,
+    "standingDensityPersM2": 5
+  },
+  "performance": {
+    "maxSpeedKmh": 65,
+    "tractionPowerKw": 250
+  },
+  "energy": {
+    "supply": "hydrogen",
+    "batteryKwh": 30.4,
+    "rangeKm": 350
+  },
+  "costs": [
+    {
+      "item": "vehicle",
+      "amount": 610000,
+      "currency": "EUR",
+      "year": 2022,
+      "region": "Bratislava, Slovakia",
+      "url": "https://imhd.sk/ba/popis-typu-vozidla/1054/Solaris-Urbino-12-hydrogen",
+      "note": "Price per vehicle excl. VAT; first four vehicles ordered 2022 after a 2021 tender, as reported by imhd.sk."
+    }
+  ],
+  "livery": null,
+  "operators": ["Dopravný podnik Bratislava"],
+  "sources": [
+    {
+      "url": "https://imhd.sk/ba/popis-typu-vozidla/1054/Solaris-Urbino-12-hydrogen",
+      "title": "Solaris Urbino 12 hydrogen – vehicle type description",
+      "publisher": "imhd.sk (Bratislava public transport information site)",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["dimensions", "consist", "doors", "capacity", "performance", "energy", "costs"],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "doors": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "costs": {
+      "kind": "published",
+      "confidence": 0.6
+    }
+  },
+  "notes": "Fuel-cell electric bus: Ballard FCmove 70 kW fuel cell plus a 30.4 kWh LTO traction battery; two 125 kW in-wheel motors (250 kW total). Range 350 km per hydrogen fill is the guaranteed figure quoted by the source. Standing places at 5 persons/m². Kerb weight given only as approximately 13.2 t, so left empty. Wheelbase 5900 mm. Capacity excludes the driver."
+}

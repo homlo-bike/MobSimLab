@@ -1,0 +1,76 @@
+{
+  "id": "iveco-crossway-le-line-12m-arriva-bratislava",
+  "mode": "intercity_bus",
+  "category": "coach",
+  "simulatorCategory": "12 m Intercity Bus",
+  "name": "Crossway LE Line 12M",
+  "variant": "low-entry, diesel, 2 doors (Arriva, Bratislava region)",
+  "family": "Crossway",
+  "producer": "Iveco Bus",
+  "manufacturerCountry": "Czech Republic (Vysoké Mýto plant)",
+  "yearIntroduced": 2007,
+  "dimensions": {
+    "lengthM": 12.05,
+    "widthM": 2.55,
+    "heightM": 3.205,
+    "floorHeightMm": 320
+  },
+  "consist": {
+    "cars": 1,
+    "articulations": 0
+  },
+  "doors": {
+    "doorsPerSide": 2
+  },
+  "capacity": {
+    "seated": 45,
+    "standing": 43,
+    "total": 88
+  },
+  "performance": {
+    "maxSpeedKmh": 100,
+    "tractionPowerKw": 235
+  },
+  "energy": {
+    "supply": "diesel"
+  },
+  "operators": ["Arriva Mobility Solutions (IDS BK regional lines)"],
+  "sources": [
+    {
+      "url": "https://imhd.sk/ba/popis-typu-vozidla/1009/Iveco-Crossway-LE-12M",
+      "title": "Iveco Crossway LE 12M – vehicle type description",
+      "publisher": "imhd.sk (Bratislava public transport information site)",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["dimensions", "consist", "doors", "capacity", "performance", "energy", "yearIntroduced"],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "doors": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.7
+    }
+  },
+  "notes": "80 vehicles (2021-2022) for regional lines of the Bratislava Region integrated transport system. FPT Tector 7 Euro 6d/6e diesel 235 kW, ZF 6-speed manual. Maximum speed 100 km/h with speed limiter, as stated by the source. Height 3,205 mm with air conditioning (3,140 mm without). Floor 320 mm (door 1), 330 mm (door 2); raised floor in the rear. Wheelbase 6,030 mm. Standing 43 for 2021 vehicles (42 for 2022, total 87). Capacity excludes the driver. imhd.sk: low-entry version presented 2007; over 60,000 Crossway built by 2023. A suburban low-entry bus rather than a touring coach. Livery not described."
+}

@@ -1,0 +1,82 @@
+{
+  "id": "crrc-crh380a-8-car",
+  "mode": "long_distance_rail",
+  "category": "high_speed_train",
+  "simulatorCategory": "8-Car High-Speed EMU",
+  "name": "CRH380A",
+  "variant": "8-car (6M2T)",
+  "family": "Hexie",
+  "producer": "CRRC Qingdao Sifang (formerly CSR Sifang)",
+  "manufacturerCountry": "China",
+  "yearIntroduced": 2010,
+  "dimensions": {
+    "lengthM": 203,
+    "widthM": 3.38,
+    "heightM": 3.7
+  },
+  "consist": {
+    "cars": 8
+  },
+  "capacity": {
+    "seated": 480,
+    "total": 480
+  },
+  "performance": {
+    "maxSpeedKmh": 350,
+    "tractionPowerKw": 9600
+  },
+  "energy": {
+    "supply": "overhead_wire",
+    "supplySystems": ["ac_25k_50"]
+  },
+  "infrastructure": {
+    "gaugeMm": 1435
+  },
+  "operators": ["China Railway", "MTR Corporation (Hong Kong section)"],
+  "sources": [
+    {
+      "url": "https://en.wikipedia.org/wiki/CRH380A",
+      "title": "China Railway CRH380A",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["dimensions", "consist", "capacity", "performance", "energy", "infrastructure", "operators"],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "doors": {
+      "kind": "not_available",
+      "confidence": 0
+    },
+    "costs": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "480 seats (the 'EC type' has 556). Max speed is the 350 km/h operating speed; design commercial maximum 380 km/h, test 486.1 km/h. Power 9.6 MW. Entered service 30 October 2010. The 16-car CRH380AL is 401.4 m with 1061 or 1028 seats."
+}

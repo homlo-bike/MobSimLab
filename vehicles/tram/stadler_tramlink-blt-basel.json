@@ -1,0 +1,191 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7053-b70a-0f2dadec9cc4",
+  "legacyId": "stadler-tramlink-blt-basel",
+  "name": "Stadler Tramlink (BLT Basel 7-section)",
+  "manufacturer": "Stadler",
+  "builder": "Stadler",
+  "model": "Tramlink",
+  "variant": "BLT Basel 7-section",
+  "family": "Stadler Tramlink",
+  "manufacturerCountry": "Switzerland",
+  "type": "tram-low-floor",
+  "mode": "tram",
+  "yearIntroduced": 2022,
+  "operators": [
+    "Baselland Transport (BLT)"
+  ],
+  "length": {
+    "value": 44.18,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-tramlink-low-floor-light-rail-vehicle-ba"
+    ]
+  },
+  "width": {
+    "value": 2.4,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-tramlink-low-floor-light-rail-vehicle-ba"
+    ]
+  },
+  "height": {
+    "value": 3.61,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-tramlink-low-floor-light-rail-vehicle-ba"
+    ]
+  },
+  "floorHeight": {
+    "value": 400,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-tramlink-low-floor-light-rail-vehicle-ba"
+    ]
+  },
+  "consist": {
+    "bidirectional": {
+      "value": true,
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "stadler-tramlink-low-floor-light-rail-vehicle-ba"
+      ]
+    },
+    "cars": {
+      "value": 7,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "stadler-tramlink-low-floor-light-rail-vehicle-ba"
+      ]
+    }
+  },
+  "minRadiusHorizontal": {
+    "value": 20,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-tramlink-low-floor-light-rail-vehicle-ba"
+    ]
+  },
+  "doorsPerSide": {
+    "value": 7,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-tramlink-low-floor-light-rail-vehicle-ba"
+    ]
+  },
+  "seats": {
+    "value": 88,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-tramlink-low-floor-light-rail-vehicle-ba"
+    ]
+  },
+  "standingQuoted": {
+    "value": 177,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "stadler-tramlink-low-floor-light-rail-vehicle-ba"
+    ],
+    "rationale": "Total 265 minus 88 seats."
+  },
+  "standingDensityQuoted": {
+    "value": 4,
+    "unit": "pers/m2",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-tramlink-low-floor-light-rail-vehicle-ba"
+    ]
+  },
+  "standingArea": {
+    "value": 44.2,
+    "unit": "m2",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "stadler-tramlink-low-floor-light-rail-vehicle-ba"
+    ],
+    "rationale": "177 standing places at the quoted 4 pers/m2."
+  },
+  "totalCapacityQuoted": {
+    "value": 265,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-tramlink-low-floor-light-rail-vehicle-ba"
+    ]
+  },
+  "wheelchairSpaces": {
+    "value": 2,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-tramlink-low-floor-light-rail-vehicle-ba"
+    ]
+  },
+  "topSpeed": {
+    "value": 80,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-tramlink-low-floor-light-rail-vehicle-ba"
+    ]
+  },
+  "power": {
+    "value": 600,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-tramlink-low-floor-light-rail-vehicle-ba"
+    ]
+  },
+  "energySource": {
+    "value": "overhead",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "stadler-tramlink-low-floor-light-rail-vehicle-ba"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "trackGauge": {
+    "value": 1000,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-tramlink-low-floor-light-rail-vehicle-ba"
+    ]
+  },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Stadler_Tramlink",
+    "scope": "family",
+    "checked_via": "search"
+  },
+  "notes": "Seven-section bidirectional metre-gauge Tramlink for BLT (10 units, delivery 2022). Capacity 265 at 4 persons/m² with 88 seats (+16 folding seats not counted). Five double and two single doors per side (7). Power 6 × 100 kW. Entrance height 400 mm. The data sheet prints the supply voltage as 1,500 V DC; this was not cross-checked, so supplySystems is left empty. Uses real-axle bogies; the number of suspended modules is not stated.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

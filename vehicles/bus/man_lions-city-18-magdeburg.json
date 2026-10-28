@@ -1,0 +1,151 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7f7a-8331-7fd383da38f7",
+  "legacyId": "man-lions-city-18-magdeburg",
+  "name": "MAN Lion's City 18 (18C EfficientHybrid diesel, 4 doors (MVB Magdeburg))",
+  "manufacturer": "MAN",
+  "builder": "MAN Truck & Bus",
+  "model": "Lion's City 18",
+  "variant": "18C EfficientHybrid diesel, 4 doors (MVB Magdeburg)",
+  "family": "Lion's City",
+  "manufacturerCountry": "Germany",
+  "type": "articulated-bus",
+  "mode": "bus",
+  "operators": [
+    "Magdeburger Verkehrsbetriebe (MVB)"
+  ],
+  "length": {
+    "value": 18.04,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "magdeburger-verkehrs-typenblatter-gelenkbusse-2024"
+    ]
+  },
+  "width": {
+    "value": 2.55,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "magdeburger-verkehrs-typenblatter-gelenkbusse-2024"
+    ]
+  },
+  "height": {
+    "value": 3.16,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "magdeburger-verkehrs-typenblatter-gelenkbusse-2024"
+    ]
+  },
+  "weightLoaded": {
+    "value": 28.0,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "magdeburger-verkehrs-typenblatter-gelenkbusse-2024"
+    ]
+  },
+  "consist": {
+    "articulations": {
+      "value": 1,
+      "unit": "count",
+      "assumed": false,
+      "basis": "documented",
+      "sources": [
+        "magdeburger-verkehrs-typenblatter-gelenkbusse-2024"
+      ],
+      "rationale": "Not attributed to one source in the import; see notes."
+    },
+    "cars": {
+      "value": 2,
+      "unit": "count",
+      "assumed": false,
+      "basis": "documented",
+      "sources": [
+        "magdeburger-verkehrs-typenblatter-gelenkbusse-2024"
+      ],
+      "rationale": "Not attributed to one source in the import; see notes."
+    }
+  },
+  "doorsPerSide": {
+    "value": 4,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "magdeburger-verkehrs-typenblatter-gelenkbusse-2024"
+    ]
+  },
+  "seats": {
+    "value": 41,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "magdeburger-verkehrs-typenblatter-gelenkbusse-2024"
+    ]
+  },
+  "standingQuoted": {
+    "value": 111,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "magdeburger-verkehrs-typenblatter-gelenkbusse-2024"
+    ]
+  },
+  "standingArea": {
+    "value": 27.8,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "magdeburger-verkehrs-typenblatter-gelenkbusse-2024"
+    ],
+    "rationale": "111 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 18.5,
+    "central": 27.8,
+    "high": 37.0,
+    "distribution": "triangular"
+  },
+  "topSpeed": {
+    "value": 85,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "magdeburger-verkehrs-typenblatter-gelenkbusse-2024"
+    ]
+  },
+  "power": {
+    "value": 265,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "magdeburger-verkehrs-typenblatter-gelenkbusse-2024"
+    ]
+  },
+  "energySource": {
+    "value": "diesel",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "magdeburger-verkehrs-typenblatter-gelenkbusse-2024"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/MAN_Lion's_City",
+    "scope": "family",
+    "checked_via": "search"
+  },
+  "notes": "MVB fleet numbers 3220-3236, built 2022/23. MAN EfficientHybrid (UltraCap store 40 Wh, 12 kW starter-generator), engine 9,037 cm³, drive power 265 kW. Consist (two body sections, one articulation) follows from the type \"Niederflurgelenkbus\"; not a published figure. Total capacity not published; seated + standing = 152. Livery not described.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

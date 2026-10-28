@@ -1,0 +1,112 @@
+{
+  "id": "siemens-mireo-rhine-neckar-3-car",
+  "mode": "regional_rail",
+  "category": "emu",
+  "simulatorCategory": "3-Car EMU",
+  "name": "Mireo",
+  "variant": "S-Bahn Rhein-Neckar 3-car",
+  "family": "Siemens Mireo",
+  "producer": "Siemens",
+  "manufacturerCountry": "Germany",
+  "yearIntroduced": null,
+  "dimensions": {
+    "lengthM": 69.86,
+    "widthM": 2.808,
+    "heightM": 4.208,
+    "emptyWeightT": 112,
+    "floorHeightMm": 800
+  },
+  "consist": {
+    "cars": 3
+  },
+  "doors": {
+    "bicycleSpaces": 26
+  },
+  "capacity": {
+    "seated": 200,
+    "total": 200
+  },
+  "performance": {
+    "maxSpeedKmh": 160,
+    "accelerationMs2": 0.96,
+    "tractionPowerKw": 2600
+  },
+  "energy": {
+    "supply": "overhead_wire",
+    "supplySystems": ["ac_15k_16_7"]
+  },
+  "infrastructure": {
+    "gaugeMm": 1435
+  },
+  "operators": ["DB Regio (S-Bahn Rhein-Neckar)"],
+  "sources": [
+    {
+      "url": "https://assets.new.siemens.com/siemens/assets/api/uuid:0d76ca96-27dc-4ca9-91d1-01bea6bfd8e6/datasheet-mireo-s-bahn-rhein-neckar-en.pdf",
+      "title": "Mireo Rhine-Neckar S-Bahn for DB Regio AG (technical data)",
+      "publisher": "Siemens",
+      "date": "2018",
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions.lengthM",
+        "dimensions.floorHeightMm",
+        "doors.bicycleSpaces",
+        "capacity.seated",
+        "performance",
+        "energy.supplySystems",
+        "infrastructure.gaugeMm"
+      ],
+      "kind": "primary"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Siemens_Mireo",
+      "title": "Siemens Mireo",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions.widthM",
+        "dimensions.heightM",
+        "dimensions.emptyWeightT",
+        "dimensions.lengthM",
+        "consist.cars"
+      ],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.75
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "doors": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "capacity": {
+      "kind": "derived",
+      "confidence": 0.75
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.85
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.95
+    },
+    "operation": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "Three-car Mireo (wheel arrangement Bo'2'2'Bo', Jacobs bogies) for the Rhine-Neckar S-Bahn (57 trains ordered 2017). total = seats (no standing figure published). Width, height and weight (112 t) are the family values for three-car Mireo sets from Wikipedia. floorHeightMm is the entrance height (800 mm). Up to 26 bicycles in the multipurpose areas. Six entrance areas per train (sides not specified), so doorsPerSide is empty. Service start year not stated in the sources read.",
+  "livery": null
+}

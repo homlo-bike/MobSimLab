@@ -1,0 +1,106 @@
+{
+  "id": "alstom-metropolis-amsterdam-m5-6-car",
+  "mode": "metro",
+  "category": "metro_consist",
+  "simulatorCategory": "6-Car Metro",
+  "name": "Metropolis",
+  "variant": "Amsterdam M5 6-car",
+  "family": "Alstom Metropolis",
+  "producer": "Alstom",
+  "manufacturerCountry": "France / Poland",
+  "yearIntroduced": 2013,
+  "dimensions": {
+    "lengthM": 116.2,
+    "widthM": 3.005,
+    "heightM": 3.77,
+    "emptyWeightT": 190,
+    "floorHeightMm": 1100
+  },
+  "consist": {
+    "cars": 6,
+    "carLengthsM": [20.296, 18.89, 18.89, 18.89, 18.89, 20.296]
+  },
+  "doors": {
+    "doorsPerSide": 24
+  },
+  "capacity": {
+    "seated": 174,
+    "standing": 786,
+    "total": 960
+  },
+  "performance": {
+    "maxSpeedKmh": 90,
+    "accelerationMs2": 1.2,
+    "tractionPowerKw": 3200
+  },
+  "energy": {
+    "supply": "third_rail",
+    "supplySystems": ["dc_750"]
+  },
+  "infrastructure": {
+    "gaugeMm": 1435
+  },
+  "livery": {
+    "operator": "GVB (Amsterdam)",
+    "primary": "#B5B8BB",
+    "secondary": "#D2232A",
+    "sourceUrl": "https://en.wikipedia.org/wiki/M5_(Amsterdam_Metro)",
+    "description": "Silver-grey body with red doors, as described in the article; hex values approximate."
+  },
+  "operators": ["GVB (Amsterdam Metro)"],
+  "sources": [
+    {
+      "url": "https://en.wikipedia.org/wiki/M5_(Amsterdam_Metro)",
+      "title": "M5 (Amsterdam Metro)",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions",
+        "consist",
+        "doors",
+        "capacity",
+        "performance",
+        "energy.supplySystems",
+        "infrastructure.gaugeMm",
+        "livery"
+      ],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "doors": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.75
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "operation": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "Six-car M5 Metropolis (constructed 2011–2015, in service 24 June 2013). Capacity 174 seats + 786 standing = 960; standing density not stated. Power 16 × 200 kW = 3,200 kW. carLengthsM places the two 20.296 m end cars at the ends and the four 18.890 m intermediate cars between them (sum 116.15 m vs 116.2 m published). The order cost about €200 million according to the article, but no year is given, so no cost entry."
+}

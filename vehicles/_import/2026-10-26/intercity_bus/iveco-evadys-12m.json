@@ -1,0 +1,75 @@
+{
+  "id": "iveco-evadys-12m",
+  "mode": "intercity_bus",
+  "category": "coach",
+  "simulatorCategory": "12 m Coach",
+  "name": "Evadys",
+  "variant": "12M (imhd.sk Piešťany)",
+  "family": "Evadys",
+  "producer": "Iveco Bus",
+  "manufacturerCountry": "Czech Republic (Vysoké Mýto plant)",
+  "dimensions": {
+    "lengthM": 12.097,
+    "widthM": 2.55,
+    "heightM": 3.455,
+    "emptyWeightT": 13.2,
+    "grossWeightT": 18.6
+  },
+  "consist": {
+    "cars": 1,
+    "articulations": 0
+  },
+  "doors": {
+    "doorsPerSide": 2
+  },
+  "capacity": {
+    "seated": 53,
+    "standing": 1,
+    "total": 54
+  },
+  "performance": {
+    "maxSpeedKmh": 100,
+    "tractionPowerKw": 294
+  },
+  "energy": {
+    "supply": "diesel"
+  },
+  "sources": [
+    {
+      "url": "https://imhd.sk/pn/popis-typu-vozidla/1120/Iveco-Evadys",
+      "title": "Iveco Evadys – vehicle type description",
+      "publisher": "imhd.sk (Piešťany public transport information site)",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["dimensions", "consist", "doors", "capacity", "performance", "energy"],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "doors": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.6
+    }
+  },
+  "notes": "Two coaches (2023-2024) on suburban and long-distance lines of the Piešťany depot listed by imhd.sk (operator not named in the source). Engine 8,709 cm³, 294 kW, automatic gearbox; diesel assumed from the engine data (fuel not stated explicitly). Capacity 53 seats + 1 standing as published. Livery not described."
+}

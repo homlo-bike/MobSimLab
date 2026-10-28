@@ -1,0 +1,92 @@
+{
+  "id": "siemens-velaro-e-renfe-s103",
+  "mode": "long_distance_rail",
+  "category": "high_speed_train",
+  "simulatorCategory": "High Speed Train",
+  "name": "Velaro E (AVE S-103)",
+  "variant": "8-car",
+  "family": "Velaro",
+  "producer": "Siemens",
+  "manufacturerCountry": "Germany",
+  "yearIntroduced": 2007,
+  "dimensions": {
+    "lengthM": 200.0,
+    "widthM": 2.95,
+    "heightM": 3.89,
+    "emptyWeightT": 425
+  },
+  "consist": {
+    "cars": 8,
+    "carLengthsM": [25.675, 24.775, 24.775, 24.775, 24.775, 24.775, 24.775, 25.675]
+  },
+  "capacity": {
+    "total": 404
+  },
+  "performance": {
+    "maxSpeedKmh": 300,
+    "tractionPowerKw": 8800
+  },
+  "energy": {
+    "supply": "overhead_wire",
+    "supplySystems": ["ac_25k_50"]
+  },
+  "infrastructure": {
+    "gaugeMm": 1435
+  },
+  "livery": {
+    "operator": "Renfe",
+    "primary": "#FFFFFF",
+    "secondary": "#6C2C8C",
+    "windows": null,
+    "sourceUrl": "https://www.thelocal.es/20190911/this-is-what-spains-new-low-cost-and-brightly-coloured-trains-will-look-like",
+    "description": "approximation of white body with a splash of purple (Renfe AVE)"
+  },
+  "operators": ["Renfe"],
+  "sources": [
+    {
+      "url": "https://en.wikipedia.org/wiki/Renfe_Class_103",
+      "title": "Renfe Class 103",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions.widthM",
+        "dimensions.heightM",
+        "dimensions.emptyWeightT",
+        "consist",
+        "capacity.total",
+        "performance",
+        "energy.supplySystems",
+        "infrastructure.gaugeMm"
+      ],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "derived",
+      "confidence": 0.75
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.85
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.85
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.9
+    }
+  },
+  "notes": "Length derived from car lengths: 2 cab cars × 25.675 m + 6 × 24.775 m = 200.0 m. Capacity 404 passengers as published (a separate seat count is not given). Maximum service speed 300 km/h; certified 350 km/h. Weight 425 t as given."
+}

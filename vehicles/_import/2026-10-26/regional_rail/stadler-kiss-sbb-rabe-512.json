@@ -1,0 +1,92 @@
+{
+  "id": "stadler-kiss-sbb-rabe-512",
+  "mode": "regional_rail",
+  "category": "emu",
+  "simulatorCategory": "6-Car EMU",
+  "name": "KISS",
+  "variant": "SBB IR-KISS RABe 512 (6-car double-deck)",
+  "family": "KISS",
+  "producer": "Stadler",
+  "manufacturerCountry": "Switzerland",
+  "yearIntroduced": 2023,
+  "dimensions": {
+    "lengthM": 151.88,
+    "widthM": 2.8,
+    "heightM": 4.595,
+    "floorHeightMm": 495
+  },
+  "consist": {
+    "cars": 6
+  },
+  "doors": {
+    "doorWidthMm": 1400
+  },
+  "capacity": {
+    "seated": 466,
+    "standing": 838,
+    "total": 1304
+  },
+  "performance": {
+    "maxSpeedKmh": 160
+  },
+  "energy": {
+    "supply": "overhead_wire",
+    "supplySystems": ["ac_15k_16_7"]
+  },
+  "infrastructure": {
+    "gaugeMm": 1435
+  },
+  "livery": null,
+  "operators": ["SBB"],
+  "sources": [
+    {
+      "url": "https://stadlerrail.com/api/docs/x/1e89320dda/kiss_sbb-ir-2021_en.pdf",
+      "title": "Electrical double decker multiple unit SBB IR-KISS – vehicle data",
+      "publisher": "Stadler",
+      "date": "2022",
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions",
+        "consist.cars",
+        "doors.doorWidthMm",
+        "capacity.seated",
+        "capacity.standing",
+        "performance.maxSpeedKmh",
+        "energy.supplySystems",
+        "infrastructure.gaugeMm"
+      ],
+      "kind": "primary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "consist": {
+      "kind": "derived",
+      "confidence": 0.8
+    },
+    "doors": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "capacity": {
+      "kind": "derived",
+      "confidence": 0.85
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.9
+    }
+  },
+  "notes": "Seats 466 (94 first + 372 second class); 15 tip-up seats not counted; standing spaces 838 as published; total = seats + standing. cars = 6 read from the axle arrangement Bo'Bo'+2'2'+2'2'+2'2'+2'2'+Bo'Bo'. Floor height is low floor at entrance (lower deck 443 mm, upper deck 2,527 mm). The sheet prints power at wheel as \"4000 W / 6000 W\" (unit apparently misprinted), so tractionPowerKw is left empty. Delivery from 2023; used on interregio and regional services."
+}

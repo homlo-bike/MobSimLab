@@ -1,0 +1,76 @@
+{
+  "id": "stadler-gtw-2-6-akiem",
+  "mode": "regional_rail",
+  "category": "dmu",
+  "simulatorCategory": "2-Car DMU",
+  "name": "GTW 2/6",
+  "variant": "diesel (Akiem lease fleet, NL authorisation)",
+  "family": "GTW",
+  "producer": "Stadler",
+  "manufacturerCountry": "Switzerland",
+  "yearIntroduced": 2007,
+  "dimensions": {
+    "lengthM": 40.9,
+    "emptyWeightT": 71.6,
+    "floorHeightMm": 830
+  },
+  "consist": {
+    "cars": 2
+  },
+  "capacity": {
+    "seated": 109,
+    "total": 109
+  },
+  "performance": {
+    "maxSpeedKmh": 140,
+    "tractionPowerKw": 760
+  },
+  "energy": {
+    "supply": "diesel",
+    "regenerativeBraking": false
+  },
+  "livery": null,
+  "sources": [
+    {
+      "url": "https://www.akiem.com/wp-content/uploads/2020/09/GTW-MU-Technical-Data-Sheet-V2_EN.pdf",
+      "title": "Stadler GTW MU technical data sheet (non-binding)",
+      "publisher": "Akiem",
+      "date": "2020",
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions.lengthM",
+        "dimensions.emptyWeightT",
+        "dimensions.floorHeightMm",
+        "consist.cars",
+        "capacity.seated",
+        "performance.maxSpeedKmh",
+        "performance.tractionPowerKw",
+        "energy.regenerativeBraking"
+      ],
+      "kind": "primary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "capacity": {
+      "kind": "derived",
+      "confidence": 0.6
+    },
+    "performance": {
+      "kind": "derived",
+      "confidence": 0.6
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.7
+    }
+  },
+  "notes": "Data sheet column GTW 2/6 (year of construction 2007, authorisation NL); the lessor marks the sheet non-binding. Seated = 93 standard + 16 first class; 14 folding seats not counted. total = seats (no standing figure published). tractionPowerKw = installed diesel engine power 2 × 380 kW (engine output, not power at wheel). Floor height is the low-floor value (high floor 996 mm). Sheet gives 2 doors per vehicle (not per side), so doorsPerSide is left empty. Configuration given by the sheet as \"2 car\"."
+}

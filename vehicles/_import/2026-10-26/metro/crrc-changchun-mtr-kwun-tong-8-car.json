@@ -1,0 +1,92 @@
+{
+  "id": "crrc-changchun-mtr-kwun-tong-8-car",
+  "mode": "metro",
+  "category": "metro_consist",
+  "simulatorCategory": "8-Car Metro",
+  "name": "MTR CNR Changchun EMU",
+  "variant": "8-car (Kwun Tong line)",
+  "producer": "CRRC Changchun Railway Vehicles (formerly CNR Changchun)",
+  "manufacturerCountry": "China",
+  "yearIntroduced": 2011,
+  "dimensions": {
+    "lengthM": 175.78,
+    "widthM": 3.12,
+    "heightM": 3.698
+  },
+  "consist": {
+    "cars": 8,
+    "carLengthsM": [23.09, 21.6, 21.6, 21.6, 21.6, 21.6, 21.6, 23.09]
+  },
+  "doors": {
+    "doorsPerSide": 40
+  },
+  "capacity": {
+    "total": 2496
+  },
+  "performance": {
+    "maxSpeedKmh": 80,
+    "tractionPowerKw": 3720
+  },
+  "energy": {
+    "supply": "overhead_wire",
+    "supplySystems": ["dc_1500"]
+  },
+  "infrastructure": {
+    "gaugeMm": 1432
+  },
+  "operators": ["MTR Corporation (Kwun Tong line)"],
+  "sources": [
+    {
+      "url": "https://en.wikipedia.org/wiki/MTR_CNR_Changchun_EMU",
+      "title": "MTR CNR Changchun EMU",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": [
+        "consist",
+        "dimensions.widthM",
+        "dimensions.heightM",
+        "capacity",
+        "performance",
+        "energy",
+        "infrastructure"
+      ],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "derived",
+      "confidence": 0.5
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.5
+    },
+    "doors": {
+      "kind": "derived",
+      "confidence": 0.6
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "costs": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "Train length derived from the published car lengths (2 x 23.09 m end cars + 6 x 21.6 m; assignment of the two lengths to end and intermediate cars assumed). Doors per side derived: 5 per car side x 8 cars. Max speed is the 80 km/h service speed (design 90 km/h). Acceleration 1–1.3 m/s² and service deceleration 0.8–1.35 m/s² are published as ranges and left empty. Gauge 1432 mm on the original Kwun Tong line (1435 mm on extensions). Height without pantograph/air conditioning."
+}

@@ -1,0 +1,73 @@
+{
+  "id": "man-lions-city-12c-presov",
+  "mode": "bus",
+  "category": "standard_bus",
+  "simulatorCategory": "12 m Standard Bus",
+  "name": "Lion's City 12",
+  "variant": "12C EfficientHybrid diesel, 3 doors (DPMP Prešov)",
+  "family": "Lion's City",
+  "producer": "MAN Truck & Bus",
+  "manufacturerCountry": "Germany",
+  "dimensions": {
+    "lengthM": 12.185,
+    "widthM": 2.55,
+    "heightM": 3.16
+  },
+  "consist": {
+    "cars": 1,
+    "articulations": 0
+  },
+  "doors": {
+    "doorsPerSide": 3
+  },
+  "capacity": {
+    "seated": 31,
+    "standing": 67
+  },
+  "performance": {
+    "maxSpeedKmh": 80,
+    "tractionPowerKw": 243
+  },
+  "energy": {
+    "supply": "diesel"
+  },
+  "operators": ["Dopravný podnik mesta Prešov"],
+  "sources": [
+    {
+      "url": "https://imhd.sk/po/popis-typu-vozidla/1142/MAN-Lion-s-City-12C",
+      "title": "MAN Lion's City 12C – vehicle type description",
+      "publisher": "imhd.sk (Prešov public transport information site)",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["dimensions", "consist", "doors", "capacity", "performance", "energy"],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.65
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.65
+    },
+    "doors": {
+      "kind": "published",
+      "confidence": 0.65
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.65
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.65
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.65
+    }
+  },
+  "notes": "MAN 12C Lion's City NL330 EfficientHybrid (built 2020), leased by DPMP in 2026. MAN D1556 LOH Euro 6 diesel, 243 kW, Voith DIWA 6-speed. Height with air conditioning. Wheelbase 6,005 mm. The source gives seats 31 + 2, standing 67 and total 100; the two extra seats (driver/folding) are not split out, so total is left to seated + standing (98). Livery not described."
+}

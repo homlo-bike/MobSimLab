@@ -1,0 +1,108 @@
+{
+  "id": "hitachi-honolulu-skyline-4-car",
+  "mode": "metro",
+  "category": "metro_automated",
+  "simulatorCategory": "4-Car Metro",
+  "name": "Skyline train",
+  "variant": "4-car set (Honolulu)",
+  "family": "Hitachi Rail Italy Driverless Metro",
+  "producer": "Hitachi Rail",
+  "manufacturerCountry": "Italy / United States",
+  "yearIntroduced": 2023,
+  "dimensions": {
+    "lengthM": 78.2,
+    "widthM": 3.05
+  },
+  "consist": {
+    "cars": 4
+  },
+  "capacity": {
+    "seated": 144,
+    "total": 780
+  },
+  "performance": {
+    "maxSpeedKmh": 105
+  },
+  "energy": {
+    "supply": "third_rail",
+    "supplySystems": ["dc_750"]
+  },
+  "infrastructure": {
+    "gaugeMm": 1435
+  },
+  "costs": [
+    {
+      "item": "Railcar design and fabrication (part of core systems contract)",
+      "amount": 574000000,
+      "currency": "USD",
+      "year": 2011,
+      "region": "Honolulu, United States",
+      "url": "https://en.wikipedia.org/wiki/Skyline_(Honolulu)",
+      "note": "Part of the $1.1 billion core systems contract signed 28 Nov 2011; covers 80 cars (20 four-car sets), as reported by Wikipedia."
+    }
+  ],
+  "livery": {
+    "operator": "Honolulu Skyline (DTS)",
+    "primary": "#FFFFFF",
+    "secondary": "#00843D",
+    "windows": null,
+    "sourceUrl": "https://railway-news.com/hitachi-unveil-honolulu-metro-cars/",
+    "description": "approximation of green and white livery (as unveiled 2016)"
+  },
+  "operators": ["Hitachi Rail (for Honolulu Department of Transportation Services)"],
+  "sources": [
+    {
+      "url": "https://en.wikipedia.org/wiki/Hitachi_Rail_Italy_Driverless_Metro",
+      "title": "Hitachi Rail Italy Driverless Metro",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["dimensions.lengthM", "dimensions.widthM", "consist.cars", "performance.maxSpeedKmh"],
+      "kind": "secondary"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Skyline_(Honolulu)",
+      "title": "Skyline (Honolulu)",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["capacity", "energy", "infrastructure.gaugeMm", "consist.cars", "costs"],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "doors": {
+      "kind": "not_available",
+      "confidence": 0
+    },
+    "capacity": {
+      "kind": "derived",
+      "confidence": 0.6
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.5
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "operation": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "Capacity = 4 cars x 195 people (36 seated) per car as listed for each car (derived); the article also says \"nearly 800 passengers\" per train. No density basis stated. Length 78.2 m and width 3.05 m from the Driverless Metro systems table (the Skyline article gives 256 ft / 64 ft per car). Top contact third rail. Driverless operation; no GoA grade stated. Figures from Wikipedia (secondary)."
+}

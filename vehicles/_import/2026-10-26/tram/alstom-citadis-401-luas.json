@@ -1,0 +1,113 @@
+{
+  "id": "alstom-citadis-401-luas",
+  "mode": "tram",
+  "category": "tram_articulated",
+  "simulatorCategory": "40 m Tram",
+  "name": "Citadis 401",
+  "variant": "Luas Red Line (4000 class)",
+  "family": "Citadis",
+  "producer": "Alstom",
+  "manufacturerCountry": "France",
+  "dimensions": {
+    "lengthM": 40.8,
+    "widthM": 2.4
+  },
+  "consist": {
+    "cars": 5
+  },
+  "capacity": {
+    "total": 358
+  },
+  "doors": {
+    "wheelchairSpaces": 2
+  },
+  "performance": {
+    "maxSpeedKmh": 70
+  },
+  "energy": {
+    "supply": "overhead_wire",
+    "supplySystems": ["dc_750"]
+  },
+  "infrastructure": {
+    "gaugeMm": 1435
+  },
+  "livery": {
+    "operator": "Luas (Transdev for TII)",
+    "primary": "#C0C2C4",
+    "secondary": "#FFD100",
+    "windows": null,
+    "sourceUrl": "https://en.wikipedia.org/wiki/Luas",
+    "description": "approximation of silver body with a yellow visibility stripe (Luas)"
+  },
+  "operators": ["Luas (Transport Infrastructure Ireland / Transdev)"],
+  "sources": [
+    {
+      "url": "https://www.tii.ie/public-transport/luas/trams-and-depots/",
+      "title": "Trams and Depots",
+      "publisher": "Transport Infrastructure Ireland",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["dimensions.lengthM", "dimensions.widthM"],
+      "kind": "primary"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Luas",
+      "title": "Luas",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": [
+        "capacity.total",
+        "doors.wheelchairSpaces",
+        "performance.maxSpeedKmh",
+        "energy.supplySystems",
+        "infrastructure.gaugeMm"
+      ],
+      "kind": "secondary"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Alstom_Citadis",
+      "title": "Alstom Citadis",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["consist.cars"],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.85
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "doors": {
+      "kind": "published",
+      "confidence": 0.5
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.55
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.55
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "operation": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "Original Citadis 301 trams extended to the 401 specification by 2007 (TII): 40.8 m, 2.4 m wide, 70% low floor. Capacity 358 including two wheelchairs (Wikipedia; seated/standing split and standing density not given). Top speed 70 km/h is stated for the Luas Citadis trams on off-street sections. Five sections per the Citadis type list (401). Module plan, bogie positions, doors per side, power, acceleration and cost not found."
+}

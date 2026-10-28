@@ -1,0 +1,99 @@
+{
+  "id": "van-hool-exquicity-24-hybrid",
+  "mode": "brt",
+  "category": "brt_double_articulated_bus",
+  "simulatorCategory": "24 m Double Articulated BRT",
+  "name": "ExquiCity 24",
+  "variant": "Hybrid (diesel-electric series hybrid, Metz Mettis)",
+  "family": "ExquiCity",
+  "producer": "Van Hool",
+  "manufacturerCountry": "Belgium",
+  "yearIntroduced": 2011,
+  "yearDiscontinued": 2024,
+  "dimensions": {
+    "lengthM": 23.82,
+    "widthM": 2.55,
+    "heightM": 3.3,
+    "floorHeightMm": 330,
+    "turningCircleM": 24.3
+  },
+  "consist": {
+    "cars": 3,
+    "articulations": 2,
+    "axlePositionsM": [1.9, 8.5, 15.21, 21.92]
+  },
+  "doors": {
+    "doorsPerSide": 4
+  },
+  "capacity": {
+    "total": 150
+  },
+  "performance": {
+    "maxSpeedKmh": 67.5
+  },
+  "energy": {
+    "supply": "hybrid"
+  },
+  "livery": null,
+  "operators": ["Metz (Mettis, TAMM/Le Met')", "De Lijn", "Nîmes (Tango)"],
+  "sources": [
+    {
+      "url": "https://www.vanhool.be/sites/default/files/inline-files/folder_Exquicity2022_screen.pdf",
+      "title": "Exqui.City folder 2022",
+      "publisher": "Van Hool NV",
+      "date": "2022",
+      "accessed": "2026-10-26",
+      "fields": ["dimensions", "consist", "doors.doorsPerSide"],
+      "kind": "primary"
+    },
+    {
+      "url": "https://www.urban-transport-magazine.com/en/?p=5709",
+      "title": "Metz: A third line for the Mettis BRT system",
+      "publisher": "Urban Transport Magazine",
+      "date": "2019-10-17",
+      "accessed": "2026-10-26",
+      "fields": ["capacity.total"],
+      "kind": "secondary"
+    },
+    {
+      "url": "https://fr.wikipedia.org/wiki/Van_Hool_ExquiCity",
+      "title": "Van Hool ExquiCity",
+      "publisher": "Wikipédia (fr)",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["performance.maxSpeedKmh", "operators"],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "consist": {
+      "kind": "derived",
+      "confidence": 0.8
+    },
+    "doors": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.5
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "costs": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "Range launched 2011; production ended with Van Hool in 2024. Capacity 150 is the Metz Mettis figure (23.8 m hybrid, MAN 184 kW diesel + Siemens generator). Axle positions derived from the published 1.9 m front overhang and 6.6/6.71/6.71 m wheelbases. Turning circle 24.3 m is twice the published 12.15 m turning radius (11.4 m between kerbs). Maximum speed 67.5 km/h is the family-wide value in the French Wikipedia infobox (unsourced there), so confidence is low. Floor height is the published boarding height."
+}

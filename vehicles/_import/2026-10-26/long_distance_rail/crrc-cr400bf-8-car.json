@@ -1,0 +1,81 @@
+{
+  "id": "crrc-cr400bf-8-car",
+  "mode": "long_distance_rail",
+  "category": "high_speed_train",
+  "simulatorCategory": "8-Car High-Speed EMU",
+  "name": "CR400BF",
+  "variant": "8-car (4M4T)",
+  "family": "Fuxing",
+  "producer": "CRRC Changchun Railway Vehicles",
+  "manufacturerCountry": "China",
+  "dimensions": {
+    "lengthM": 209,
+    "widthM": 3.36,
+    "heightM": 4.05
+  },
+  "consist": {
+    "cars": 8
+  },
+  "capacity": {
+    "seated": 576,
+    "total": 576
+  },
+  "performance": {
+    "maxSpeedKmh": 350,
+    "tractionPowerKw": 10140
+  },
+  "energy": {
+    "supply": "overhead_wire",
+    "supplySystems": ["ac_25k_50"]
+  },
+  "infrastructure": {
+    "gaugeMm": 1435
+  },
+  "operators": ["China Railway"],
+  "sources": [
+    {
+      "url": "https://en.wikipedia.org/wiki/China_Railway_CR400BF",
+      "title": "China Railway CR400BF",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["dimensions", "consist", "capacity", "performance", "energy", "infrastructure", "operators"],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "doors": {
+      "kind": "not_available",
+      "confidence": 0
+    },
+    "costs": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "Seated layout 576 = 10 business + 28 first + 538 standard (a 556-seat layout is also listed). Service speed 350 km/h; design 400 km/h. Traction power 10.14 MW under 25 kV. End cars 27.089 m and intermediate cars 25.65 m per the article (not listed per car here). Axle load given only as <17 t. Year of entry into service not read from the source; livery not described."
+}

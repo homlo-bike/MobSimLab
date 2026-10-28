@@ -1,0 +1,191 @@
+{
+  "$schema": "../../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-79c4-8131-9fdb7209087e",
+  "legacyId": "crrc-changchun-mtr-kwun-tong-8-car",
+  "name": "CRRC MTR CNR Changchun EMU (8-car (Kwun Tong line))",
+  "manufacturer": "CRRC",
+  "builder": "CRRC Changchun Railway Vehicles (formerly CNR Changchun)",
+  "model": "MTR CNR Changchun EMU",
+  "variant": "8-car (Kwun Tong line)",
+  "manufacturerCountry": "China",
+  "type": "metro-consist",
+  "mode": "metro",
+  "yearIntroduced": 2011,
+  "operators": [
+    "MTR Corporation (Kwun Tong line)"
+  ],
+  "length": {
+    "value": 175.78,
+    "unit": "m",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-mtr-cnr-changchun-emu"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "width": {
+    "value": 3.12,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-mtr-cnr-changchun-emu"
+    ]
+  },
+  "height": {
+    "value": 3.698,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-mtr-cnr-changchun-emu"
+    ]
+  },
+  "consist": {
+    "carLengths": {
+      "value": [
+        23.09,
+        21.6,
+        21.6,
+        21.6,
+        21.6,
+        21.6,
+        21.6,
+        23.09
+      ],
+      "unit": "m",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-mtr-cnr-changchun-emu"
+      ]
+    },
+    "cars": {
+      "value": 8,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-mtr-cnr-changchun-emu"
+      ]
+    }
+  },
+  "doorsPerSide": {
+    "value": 40,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-mtr-cnr-changchun-emu"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "seats": {
+    "value": 376,
+    "unit": "count",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner"
+    ],
+    "rationale": "About 15 % of the 2496-place total, typical of Hong Kong metro layouts.",
+    "low": 300,
+    "central": 376,
+    "high": 450,
+    "distribution": "triangular"
+  },
+  "standingQuoted": {
+    "value": 2120,
+    "unit": "count",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner",
+      "wp-mtr-cnr-changchun-emu"
+    ],
+    "rationale": "Total 2496 minus 376 seats.",
+    "low": 2046,
+    "central": 2120,
+    "high": 2196,
+    "distribution": "triangular"
+  },
+  "standingArea": {
+    "value": 530.0,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner",
+      "wp-mtr-cnr-changchun-emu"
+    ],
+    "rationale": "2120 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 353.3,
+    "central": 530.0,
+    "high": 706.7,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 2496,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-mtr-cnr-changchun-emu"
+    ]
+  },
+  "topSpeed": {
+    "value": 80,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-mtr-cnr-changchun-emu"
+    ]
+  },
+  "power": {
+    "value": 3720,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-mtr-cnr-changchun-emu"
+    ]
+  },
+  "energySource": {
+    "value": "overhead-dc",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-mtr-cnr-changchun-emu"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "ocl-1500v-dc"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-mtr-cnr-changchun-emu"
+    ]
+  },
+  "trackGauge": {
+    "value": 1432,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-mtr-cnr-changchun-emu"
+    ]
+  },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/MTR_CNR_Changchun_EMU",
+    "scope": "model",
+    "checked_via": "source"
+  },
+  "notes": "Train length derived from the published car lengths (2 x 23.09 m end cars + 6 x 21.6 m; assignment of the two lengths to end and intermediate cars assumed). Doors per side derived: 5 per car side x 8 cars. Max speed is the 80 km/h service speed (design 90 km/h). Acceleration 1–1.3 m/s² and service deceleration 0.8–1.35 m/s² are published as ranges and left empty. Gauge 1432 mm on the original Kwun Tong line (1435 mm on extensions). Height without pantograph/air conditioning.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only.",
+  "draftReason": "Core fields not sourced: seats, standingQuoted"
+}

@@ -1,0 +1,119 @@
+{
+  "id": "siemens-s70-ultra-short-salt-lake-city-2car",
+  "mode": "light_rail",
+  "category": "lrv_coupled_consist",
+  "simulatorCategory": "2-Car LRV",
+  "name": "S70 Ultra Short",
+  "variant": "UTA TRAX, 2-vehicle consist",
+  "family": "Siemens S70/S700",
+  "producer": "Siemens Mobility",
+  "manufacturerCountry": "United States",
+  "dimensions": {
+    "lengthM": 49.62,
+    "widthM": 2.65,
+    "heightM": null,
+    "emptyWeightT": 87.542,
+    "floorHeightMm": 356,
+    "minCurveRadiusM": 25
+  },
+  "consist": {
+    "cars": 2,
+    "carLengthsM": [24.81, 24.81],
+    "bidirectional": true
+  },
+  "doors": {
+    "doorsPerSide": 8,
+    "wheelchairSpaces": 4
+  },
+  "capacity": {
+    "seated": 120,
+    "total": 450,
+    "standingDensityPersM2": 6
+  },
+  "performance": {
+    "maxSpeedKmh": 88,
+    "accelerationMs2": 1.34,
+    "decelerationMs2": 1.34,
+    "tractionPowerKw": 1040
+  },
+  "energy": {
+    "supply": "overhead_wire",
+    "supplySystems": ["dc_600"]
+  },
+  "infrastructure": {
+    "gaugeMm": 1435
+  },
+  "livery": {
+    "operator": "Utah Transit Authority (TRAX)",
+    "primary": "#FFFFFF",
+    "secondary": "#C8102E",
+    "windows": null,
+    "sourceUrl": "https://www.ksl.com/article/news/utah/uta-debuts-first-blue-line-trax-car-of-long-term-renovation-project/46528492",
+    "description": "approximation of the red, white and blue wrap of UTA S70 cars (Red and Green lines)"
+  },
+  "operators": ["Utah Transit Authority (TRAX)"],
+  "sources": [
+    {
+      "url": "https://assets.new.siemens.com/siemens/assets/api/uuid:0ba2f66dc64e7369c4fe242e7825eaa53a6492e1/salt-lake-city-s70-data-sheet.pdf",
+      "title": "S70 Ultra Short Light Rail Vehicle – Salt Lake City, Utah (data sheet)",
+      "publisher": "Siemens Mobility",
+      "date": "2018",
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions.lengthM",
+        "dimensions.widthM",
+        "dimensions.emptyWeightT",
+        "dimensions.floorHeightMm",
+        "dimensions.minCurveRadiusM",
+        "doors.doorsPerSide",
+        "doors.wheelchairSpaces",
+        "capacity.seated",
+        "capacity.total",
+        "capacity.standingDensityPersM2",
+        "performance.maxSpeedKmh",
+        "performance.accelerationMs2",
+        "performance.decelerationMs2",
+        "performance.tractionPowerKw",
+        "energy.supplySystems",
+        "infrastructure.gaugeMm",
+        "consist.cars"
+      ],
+      "kind": "primary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "derived",
+      "confidence": 0.85
+    },
+    "consist": {
+      "kind": "derived",
+      "confidence": 0.8
+    },
+    "doors": {
+      "kind": "derived",
+      "confidence": 0.85
+    },
+    "capacity": {
+      "kind": "derived",
+      "confidence": 0.8
+    },
+    "performance": {
+      "kind": "derived",
+      "confidence": 0.85
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "operation": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "Describes a consist of 2 coupled S70 Ultra Short vehicles. Per-vehicle figures (Siemens data sheet): length over coupler 24.81 m, empty weight 43.771 t, 60 seats, approx. 225 total passengers at 6 p/m2, 4 doors per side, 2 wheelchair spaces, traction 4 x 130 kW, maximum operational speed 88 km/h, service acceleration and deceleration 1.34 m/s2, emergency braking 2.18-2.2 m/s2, minimum turning radius 25 m. Consist totals (length, weight, seats, total, doors, wheelchair spaces, power) are per-vehicle values multiplied by 2 (marked derived); width, height, speeds and rates are per vehicle. Capacity is per consist; per vehicle it is 225. The data sheet says the vehicles can run in multiple-unit consists of up to four. Each vehicle is double-articulated (three sections, Bo'+2'+Bo'). 70% low-floor; floor height 356 mm is the low-floor threshold (high-floor section 855 mm). Height left null because the data sheet's metric height (43771 mm) is evidently a misprint. Maximum allowable speed 95 km/h."
+}

@@ -1,0 +1,120 @@
+{
+  "id": "stadler-smile-giruno-sbb",
+  "mode": "long_distance_rail",
+  "category": "high_speed_train",
+  "simulatorCategory": "High Speed Train",
+  "name": "SMILE (Giruno)",
+  "variant": "SBB RABe 501, 11-car",
+  "family": "Stadler SMILE",
+  "producer": "Stadler",
+  "manufacturerCountry": "Switzerland",
+  "yearIntroduced": 2019,
+  "dimensions": {
+    "lengthM": 202,
+    "widthM": 2.9,
+    "heightM": 4.255,
+    "emptyWeightT": 380,
+    "floorHeightMm": 940
+  },
+  "consist": {
+    "cars": 11
+  },
+  "doors": {
+    "doorWidthMm": 900,
+    "wheelchairSpaces": 4
+  },
+  "capacity": {
+    "seated": 405,
+    "total": 405
+  },
+  "performance": {
+    "maxSpeedKmh": 250,
+    "tractionPowerKw": 6000
+  },
+  "energy": {
+    "supply": "overhead_wire",
+    "supplySystems": ["ac_15k_16_7", "ac_25k_50", "dc_3000"]
+  },
+  "infrastructure": {
+    "gaugeMm": 1435,
+    "platformHeightsMm": [550, 760]
+  },
+  "costs": [
+    {
+      "item": "29 Giruno trainsets (first batch)",
+      "amount": 970000000,
+      "currency": "CHF",
+      "year": 2014,
+      "region": "Switzerland",
+      "url": "https://en.wikipedia.org/wiki/SBB_RABe_501",
+      "note": "The 2014 announcement gave CHF 980 million (secondary source)."
+    }
+  ],
+  "operators": ["SBB", "Westbahn"],
+  "sources": [
+    {
+      "url": "https://www.stadlerrail.com/api/docs/x/a56791c29b/smile_sbb_en.pdf",
+      "title": "SMILE electric high-speed multiple unit – SBB, Switzerland",
+      "publisher": "Stadler",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions.lengthM",
+        "dimensions.widthM",
+        "dimensions.heightM",
+        "dimensions.floorHeightMm",
+        "doors.doorWidthMm",
+        "capacity.seated",
+        "performance",
+        "energy.supplySystems",
+        "infrastructure"
+      ],
+      "kind": "primary"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/SBB_RABe_501",
+      "title": "SBB RABe 501",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["dimensions.emptyWeightT", "consist.cars", "doors.wheelchairSpaces"],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.85
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "doors": {
+      "kind": "published",
+      "confidence": 0.75
+    },
+    "capacity": {
+      "kind": "derived",
+      "confidence": 0.85
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.85
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.95
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "operation": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "Eleven-car EC250 multi-system unit. 405 seats (117 first / 288 second class) per the Stadler sheet (Wikipedia: 117 / 286), plus 17 dining-car seats not counted; total = seats (no standing figure published). Max. output at wheel 6,000 kW (Wikipedia: 4,800 kW continuous). 250 km/h maximum; approved for 200 km/h on Swiss lines in single formation. Floor 940 mm low-floor / 1,200 mm high-floor; level boarding at P55 and P76 platforms. Unladen weight 380 t (Wikipedia).",
+  "livery": null
+}

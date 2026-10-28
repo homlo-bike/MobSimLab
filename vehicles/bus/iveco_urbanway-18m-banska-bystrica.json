@@ -1,0 +1,179 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7039-a377-365d5e85f117",
+  "legacyId": "iveco-urbanway-18m-banska-bystrica",
+  "name": "Iveco Urbanway 18M (diesel, 4 doors, series 1 (SAD Zvolen, MHD Banská Bystrica))",
+  "manufacturer": "Iveco",
+  "builder": "Iveco Bus",
+  "model": "Urbanway 18M",
+  "variant": "diesel, 4 doors, series 1 (SAD Zvolen, MHD Banská Bystrica)",
+  "family": "Urbanway",
+  "manufacturerCountry": "Czech Republic (Vysoké Mýto plant)",
+  "type": "articulated-bus",
+  "mode": "bus",
+  "yearIntroduced": 2013,
+  "operators": [
+    "SAD Zvolen (MHD Banská Bystrica)",
+    "Dopravný podnik mesta Prešov"
+  ],
+  "length": {
+    "value": 17.91,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-iveco-urbanway-18m-vehicle-type-descript"
+    ]
+  },
+  "width": {
+    "value": 2.5,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-iveco-urbanway-18m-vehicle-type-descript"
+    ]
+  },
+  "height": {
+    "value": 3.066,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-iveco-urbanway-18m-vehicle-type-descript"
+    ]
+  },
+  "weightEmpty": {
+    "value": 18.01,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-iveco-urbanway-18m-vehicle-type-descript"
+    ]
+  },
+  "floorHeight": {
+    "value": 320,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-iveco-urbanway-18m-vehicle-type-descript"
+    ]
+  },
+  "consist": {
+    "articulations": {
+      "value": 1,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "imhd-sk-iveco-urbanway-18m-vehicle-type-descript"
+      ]
+    },
+    "cars": {
+      "value": 2,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "imhd-sk-iveco-urbanway-18m-vehicle-type-descript"
+      ]
+    }
+  },
+  "doorsPerSide": {
+    "value": 4,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-iveco-urbanway-18m-vehicle-type-descript"
+    ]
+  },
+  "seats": {
+    "value": 34,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-iveco-urbanway-18m-vehicle-type-descript"
+    ]
+  },
+  "standingQuoted": {
+    "value": 97,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-iveco-urbanway-18m-vehicle-type-descript"
+    ]
+  },
+  "standingArea": {
+    "value": 24.2,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "imhd-sk-iveco-urbanway-18m-vehicle-type-descript"
+    ],
+    "rationale": "97 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 16.2,
+    "central": 24.2,
+    "high": 32.3,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 131,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-iveco-urbanway-18m-vehicle-type-descript"
+    ]
+  },
+  "topSpeed": {
+    "value": 93,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-iveco-urbanway-18m-vehicle-type-descript"
+    ]
+  },
+  "power": {
+    "value": 265,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-iveco-urbanway-18m-vehicle-type-descript"
+    ]
+  },
+  "energySource": {
+    "value": "diesel",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-iveco-urbanway-18m-vehicle-type-descript"
+    ]
+  },
+  "livery": {
+    "operator": "SAD Zvolen (MHD Banská Bystrica)",
+    "primary": "#D2232A",
+    "secondary": "#FFFFFF",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "imhd-sk-iveco-urbanway-18m-vehicle-type-descript"
+    ],
+    "rationale": "Delivered in a red and white livery (\"červeno-biely náter\"), as described by imhd.sk; hex values approximate."
+  },
+  "wikipedia": {
+    "url": "https://fr.wikipedia.org/wiki/Iveco_Bus_Urbanway",
+    "scope": "family",
+    "checked_via": "search"
+  },
+  "notes": "Series 1 (2017, 5 vehicles; 3 sold to DPMP Prešov in 2025). FPT Cursor 9 Euro 6 diesel 265 kW, Voith DIWA.6. Floor 320 mm (door 1), 330 mm (doors 2-3), 340 mm (door 4). Wheelbases 5,355 and 6,675 mm. Standing 97 (91 with a wheelchair). Series 3 mild hybrid (2023): length 18,003 mm, height 3,165 mm, 42 + 1 seats, 106 standing, 148 + 1 total, 1 kWh 48 V battery. Capacity excludes the driver. Two body sections with one articulation (front and rear section joined by a covered joint).",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

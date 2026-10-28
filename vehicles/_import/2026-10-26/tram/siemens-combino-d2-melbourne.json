@@ -1,0 +1,122 @@
+{
+  "id": "siemens-combino-d2-melbourne",
+  "mode": "tram",
+  "category": "tram_low_floor",
+  "simulatorCategory": "30 m Tram",
+  "name": "Combino",
+  "variant": "D2 class",
+  "family": "Siemens Combino",
+  "producer": "Siemens",
+  "manufacturerCountry": "Germany",
+  "yearIntroduced": 2004,
+  "dimensions": {
+    "lengthM": 29.85,
+    "widthM": 2.65,
+    "heightM": 3.53,
+    "emptyWeightT": 35.3,
+    "floorHeightMm": 300
+  },
+  "consist": {
+    "cars": 5,
+    "articulations": 4,
+    "bidirectional": null,
+    "suspendedModules": 2
+  },
+  "capacity": {
+    "seated": 56,
+    "standing": 130,
+    "total": 186
+  },
+  "performance": {
+    "maxSpeedKmh": 70,
+    "accelerationMs2": 1.3,
+    "decelerationMs2": 1.47,
+    "tractionPowerKw": 400
+  },
+  "energy": {
+    "supply": "overhead_wire",
+    "supplySystems": ["dc_600"]
+  },
+  "infrastructure": {
+    "gaugeMm": 1435
+  },
+  "livery": {
+    "operator": "Yarra Trams (Melbourne)",
+    "primary": "#FFFFFF",
+    "secondary": "#00843D",
+    "windows": null,
+    "sourceUrl": "https://en.wikipedia.org/wiki/Yarra_Trams",
+    "description": "approximation of white with green and blue stripes and grey skirt (Yarra Trams livery from 2000); many trams now carry the PTV livery, not described here"
+  },
+  "operators": ["Yarra Trams (Melbourne)"],
+  "sources": [
+    {
+      "url": "https://en.wikipedia.org/wiki/D-class_Melbourne_tram",
+      "title": "D-class Melbourne tram",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions.lengthM",
+        "dimensions.widthM",
+        "dimensions.heightM",
+        "dimensions.emptyWeightT",
+        "consist.cars",
+        "consist.articulations",
+        "capacity.seated",
+        "capacity.standing",
+        "performance.maxSpeedKmh",
+        "performance.accelerationMs2",
+        "performance.decelerationMs2",
+        "performance.tractionPowerKw",
+        "energy.supplySystems",
+        "infrastructure.gaugeMm"
+      ],
+      "kind": "secondary"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Siemens_Combino",
+      "title": "Siemens Combino",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["dimensions.floorHeightMm", "consist.suspendedModules"],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.65
+    },
+    "consist": {
+      "kind": "derived",
+      "confidence": 0.55
+    },
+    "doors": {
+      "kind": "not_available",
+      "confidence": 0
+    },
+    "capacity": {
+      "kind": "derived",
+      "confidence": 0.65
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.65
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.65
+    },
+    "operation": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "Melbourne D2 class: 5-section multi-articulated 100% low-floor Combino. Capacity total = seated + standing (56/130) as listed by the source; standing density not stated. Maximum speed, acceleration (1.3 m/s2), traction power (400 kW), 600 V DC and gauge are listed for the D-class fleet as a whole. Deceleration is the maximum operational rate (average operational 1.25 m/s2, maximum emergency 3.3 m/s2). Floor height 300 mm is the figure the Combino article gives for all versions. consist.suspendedModules (2) is derived from the Combino article's description of the original design as alternating wheeled and suspended sections over 5 sections; no official module plan was found, so car lengths and bogie positions are left empty. Doors: source lists '2 single, 4 (D1) or 6 (D2) double' without a per-side split, so doorsPerSide is null. 21 built. Minimum curve radius and cost not found."
+}

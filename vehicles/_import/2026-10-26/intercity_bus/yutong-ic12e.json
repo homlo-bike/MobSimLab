@@ -1,0 +1,93 @@
+{
+  "id": "yutong-ic12e",
+  "mode": "intercity_bus",
+  "category": "coach",
+  "simulatorCategory": "12 m Coach",
+  "name": "IC12E",
+  "variant": "2026 battery-electric intercity bus",
+  "family": "IC-series",
+  "producer": "Yutong",
+  "manufacturerCountry": "China",
+  "dimensions": {
+    "lengthM": 12.66,
+    "widthM": 2.55,
+    "heightM": 3.5,
+    "grossWeightT": 19.5,
+    "turningCircleM": 19
+  },
+  "consist": {
+    "cars": 1,
+    "articulations": 0
+  },
+  "capacity": {
+    "total": 61
+  },
+  "performance": {
+    "maxSpeedKmh": 100
+  },
+  "energy": {
+    "supply": "battery",
+    "batteryKwh": 465.99,
+    "rangeKm": 675
+  },
+  "sources": [
+    {
+      "url": "https://en.yutong.com/z/2026NME/images/pdf/IC12E.pdf",
+      "title": "Yutong IC12E brochure (February 2026 edition)",
+      "publisher": "Zhengzhou Yutong Bus Co., Ltd.",
+      "date": "2026",
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions.lengthM",
+        "dimensions.widthM",
+        "dimensions.heightM",
+        "dimensions.grossWeightT",
+        "consist",
+        "capacity",
+        "performance",
+        "energy"
+      ],
+      "kind": "primary"
+    },
+    {
+      "url": "https://en.yutong.com/products/IC12E_2026-param.shtml",
+      "title": "Yutong IC12E(2026) technical parameters",
+      "publisher": "Zhengzhou Yutong Bus Co., Ltd.",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["dimensions.turningCircleM", "energy"],
+      "kind": "primary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.5
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "doors": {
+      "kind": "not_available",
+      "confidence": 0
+    },
+    "costs": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "Brochure: maximum number of passengers 61; the parameter page says 'up to 59+1+1' seats, so seated is left empty. Battery 399.92 kWh standard, 465.99 kWh optional; range up to 675 km (SORT2) with the larger battery. Rated power 215/250/430 kW by configuration."
+}

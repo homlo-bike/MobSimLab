@@ -1,0 +1,81 @@
+{
+  "id": "mercedes-benz-sprinter-416-cdi-minibus",
+  "mode": "bus",
+  "category": "minibus",
+  "simulatorCategory": "Mini Bus",
+  "name": "Sprinter 416 CDI",
+  "variant": "city minibus (904.663 KA)",
+  "family": "Sprinter",
+  "producer": "Mercedes-Benz (DaimlerChrysler)",
+  "manufacturerCountry": "Germany",
+  "dimensions": {
+    "lengthM": 6.59,
+    "widthM": 1.944,
+    "heightM": 2.61,
+    "emptyWeightT": 2.89,
+    "grossWeightT": 4.6
+  },
+  "consist": {
+    "cars": 1,
+    "articulations": 0
+  },
+  "doors": {
+    "doorsPerSide": 1
+  },
+  "capacity": {
+    "seated": 10,
+    "standing": 14,
+    "total": 24
+  },
+  "performance": {
+    "maxSpeedKmh": 90,
+    "tractionPowerKw": 115
+  },
+  "energy": {
+    "supply": "diesel"
+  },
+  "livery": null,
+  "operators": ["Dopravný podnik Bratislava"],
+  "sources": [
+    {
+      "url": "https://imhd.sk/ba/popis-typu-vozidla/219/Mercedes-Benz-Sprinter",
+      "title": "Mercedes-Benz Sprinter – vehicle type description",
+      "publisher": "imhd.sk (Bratislava public transport information site)",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["dimensions", "consist", "doors", "capacity", "performance", "energy"],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "doors": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "costs": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "Figures for the two 2005-built Bratislava vehicles (fleet 1900-1901, withdrawn 2016-2019). Capacity excludes the driver. Wheelbase 4025 mm. tractionPowerKw is the rated engine power (OM 612, 115 kW). One passenger door plus driver and rear service doors."
+}

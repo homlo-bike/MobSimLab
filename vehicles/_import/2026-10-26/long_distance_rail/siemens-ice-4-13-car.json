@@ -1,0 +1,109 @@
+{
+  "id": "siemens-ice-4-13-car",
+  "mode": "long_distance_rail",
+  "category": "high_speed_train",
+  "simulatorCategory": "High Speed Train",
+  "name": "ICE 4",
+  "variant": "13-car (class 412, XXL)",
+  "family": "ICE",
+  "producer": "Siemens / Bombardier",
+  "manufacturerCountry": "Germany",
+  "yearIntroduced": 2017,
+  "dimensions": {
+    "lengthM": 374,
+    "widthM": 2.852,
+    "heightM": 4.115,
+    "emptyWeightT": 736.249,
+    "floorHeightMm": 1220
+  },
+  "consist": {
+    "cars": 13
+  },
+  "capacity": {
+    "seated": 918,
+    "total": 918
+  },
+  "performance": {
+    "maxSpeedKmh": 265,
+    "tractionPowerKw": 11550
+  },
+  "energy": {
+    "supply": "overhead_wire",
+    "supplySystems": ["ac_15k_16_7"]
+  },
+  "infrastructure": {
+    "gaugeMm": 1435,
+    "platformHeightsMm": [550, 760]
+  },
+  "operators": ["DB Fernverkehr"],
+  "sources": [
+    {
+      "url": "https://en.wikipedia.org/wiki/ICE_4",
+      "title": "ICE 4",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions.lengthM",
+        "dimensions.widthM",
+        "dimensions.heightM",
+        "capacity.seated",
+        "performance",
+        "energy.supplySystems",
+        "infrastructure"
+      ],
+      "kind": "secondary"
+    },
+    {
+      "url": "https://de.wikipedia.org/wiki/ICE_4",
+      "title": "ICE 4",
+      "publisher": "Wikipedia (German)",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions",
+        "consist.cars",
+        "capacity.seated",
+        "performance",
+        "infrastructure.platformHeightsMm"
+      ],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.75
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "capacity": {
+      "kind": "derived",
+      "confidence": 0.75
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.85
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.95
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "doors": {
+      "kind": "not_available",
+      "confidence": 0
+    },
+    "operation": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "Thirteen-car ICE 4 (50 built). 918 seats per data sheet (920 in the German configuration table), 205 first class; total = seats (no standing figure published). Empty weight 736.249 t ready for service (German Wikipedia); the English infobox lists 890 t without saying whether laden. Power 14 × 825 kW = 11,550 kW continuous. Width 2,852 mm (external), height 4,115 mm for the middle cars (3,870 mm end cars). Floor 1,220 mm; entrances for 550–760 mm platforms. Entered service (family) 10 December 2017.",
+  "livery": null
+}

@@ -1,0 +1,150 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7ab5-8695-63bf8dacba2a",
+  "legacyId": "crrc-cr400bf-8-car",
+  "name": "CRRC CR400BF (8-car (4M4T))",
+  "manufacturer": "CRRC",
+  "builder": "CRRC Changchun Railway Vehicles",
+  "model": "CR400BF",
+  "variant": "8-car (4M4T)",
+  "family": "Fuxing",
+  "manufacturerCountry": "China",
+  "type": "high-speed-train",
+  "mode": "high_speed_rail",
+  "operators": [
+    "China Railway"
+  ],
+  "length": {
+    "value": 209,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-china-railway-cr400bf"
+    ]
+  },
+  "width": {
+    "value": 3.36,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-china-railway-cr400bf"
+    ]
+  },
+  "height": {
+    "value": 4.05,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-china-railway-cr400bf"
+    ]
+  },
+  "consist": {
+    "cars": {
+      "value": 8,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-china-railway-cr400bf"
+      ]
+    }
+  },
+  "seats": {
+    "value": 576,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-china-railway-cr400bf"
+    ]
+  },
+  "standingQuoted": {
+    "value": 0,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-china-railway-cr400bf"
+    ],
+    "rationale": "Total 576 minus 576 seats."
+  },
+  "standingArea": {
+    "value": 0.0,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "wp-china-railway-cr400bf"
+    ],
+    "rationale": "0 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 0.0,
+    "central": 0.0,
+    "high": 0.0,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 576,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-china-railway-cr400bf"
+    ]
+  },
+  "topSpeed": {
+    "value": 350,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-china-railway-cr400bf"
+    ]
+  },
+  "power": {
+    "value": 10140,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-china-railway-cr400bf"
+    ]
+  },
+  "energySource": {
+    "value": "overhead-ac",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-china-railway-cr400bf"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "ocl-25kv-50hz"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-china-railway-cr400bf"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-china-railway-cr400bf"
+    ]
+  },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/China_Railway_CR400BF",
+    "scope": "model",
+    "checked_via": "source"
+  },
+  "notes": "Seated layout 576 = 10 business + 28 first + 538 standard (a 556-seat layout is also listed). Service speed 350 km/h; design 400 km/h. Traction power 10.14 MW under 25 kV. End cars 27.089 m and intermediate cars 25.65 m per the article (not listed per car here). Axle load given only as <17 t. Year of entry into service not read from the source; livery not described.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

@@ -1,0 +1,154 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-71a8-9173-74b6c5b1c9e7",
+  "legacyId": "alstom-citadis-401-luas",
+  "name": "Alstom Citadis 401 (Luas Red Line (4000 class))",
+  "manufacturer": "Alstom",
+  "builder": "Alstom",
+  "model": "Citadis 401",
+  "variant": "Luas Red Line (4000 class)",
+  "family": "Citadis",
+  "manufacturerCountry": "France",
+  "type": "tram-articulated",
+  "mode": "tram",
+  "operators": [
+    "Luas (Transport Infrastructure Ireland / Transdev)"
+  ],
+  "length": {
+    "value": 40.8,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "transport-infrastruc-trams-and-depots"
+    ]
+  },
+  "width": {
+    "value": 2.4,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "transport-infrastruc-trams-and-depots"
+    ]
+  },
+  "consist": {
+    "cars": {
+      "value": 5,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-alstom-citadis"
+      ]
+    }
+  },
+  "seats": {
+    "value": 72,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "british-trams-online-luas-fleet"
+    ]
+  },
+  "standingQuoted": {
+    "value": 286,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "british-trams-online-luas-fleet",
+      "wp-luas"
+    ],
+    "rationale": "Total 358 minus 72 seats."
+  },
+  "standingArea": {
+    "value": 71.5,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "british-trams-online-luas-fleet",
+      "wp-luas"
+    ],
+    "rationale": "286 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 47.7,
+    "central": 71.5,
+    "high": 95.3,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 358,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-luas"
+    ]
+  },
+  "wheelchairSpaces": {
+    "value": 2,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-luas"
+    ]
+  },
+  "topSpeed": {
+    "value": 70,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-luas"
+    ]
+  },
+  "energySource": {
+    "value": "overhead-dc",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-luas"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "ocl-750v-dc"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-luas"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-luas"
+    ]
+  },
+  "livery": {
+    "operator": "Luas (Transdev for TII)",
+    "primary": "#C0C2C4",
+    "secondary": "#FFD100",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "wp-luas"
+    ],
+    "rationale": "approximation of silver body with a yellow visibility stripe (Luas)"
+  },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Alstom_Citadis",
+    "scope": "family",
+    "checked_via": "source"
+  },
+  "notes": "Original Citadis 301 trams extended to the 401 specification by 2007 (TII): 40.8 m, 2.4 m wide, 70% low floor. Capacity 358 including two wheelchairs (Wikipedia; seated/standing split and standing density not given). Top speed 70 km/h is stated for the Luas Citadis trams on off-street sections. Five sections per the Citadis type list (401). Module plan, bogie positions, doors per side, power, acceleration and cost not found.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}
