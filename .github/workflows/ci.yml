@@ -76,6 +76,15 @@ jobs:
       - run: uv run mypy
       - run: uv run pytest -q
 
+  assumptions:
+    name: Assumption library (schema, sources, DEFAULTS.md up to date)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v6
+        with: { python-version: "3.12" }
+      - run: uv run --no-project --with pyyaml python tools/assumptions/check.py --check-rendered
+
   rust:
     name: Kernels (fmt, clippy, test, S2 smoke benchmark)
     runs-on: ubuntu-24.04
@@ -164,6 +173,11 @@ jobs:
           docker compose exec -T postgres psql -U postgres -d mobsimlab -tAc \
             "select string_agg(rolname, ',' order by rolname) from pg_roles where rolname like 'mobsimlab_%'" \
             | grep -qx 'mobsimlab_app,mobsimlab_migrator,mobsimlab_worker'
+          docker compose exec -T postgres psql -U postgres -d mobsimlab -tAc "select name from meta.migration" \
+            | grep -qx '0001_iam_audit.sql'
+          curl -fsS http://127.0.0.1:8080/api/auth/me | grep -q '"mode":"setup"'
+          code=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8080/api/setup)
+          test "$code" = 401 || { echo "expected 401 from /api/setup, got $code"; exit 1; }
       - name: Logs on failure
         if: failure()
         run: docker compose logs --no-color

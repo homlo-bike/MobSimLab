@@ -22,7 +22,8 @@ describe("loadConfig", () => {
   it("accepts strong secrets and a valid environment", () => {
     const c = loadConfig(env, reader);
     expect(c.port).toBe(8080);
-    expect(c.dbHost).toBe("postgres");
+    expect(c.db).toEqual({ host: "postgres", port: 5432, name: "mobsimlab" });
+    expect(c.oidc).toBeUndefined();
   });
 
   it("refuses to start when a secret is missing", () => {
@@ -48,5 +49,26 @@ describe("loadConfig", () => {
       expect((e as Error).message).toMatch(/MOBSIMLAB_PUBLIC_URL/);
       expect((e as Error).message).not.toContain(strong());
     }
+  });
+
+  it("reads the bootstrap OIDC provider and refuses an http issuer unless allowed", () => {
+    const oidcEnv = {
+      ...env,
+      MOBSIMLAB_OIDC_ISSUER: "https://id.example.org",
+      MOBSIMLAB_OIDC_CLIENT_ID: "msl",
+    };
+    const c = loadConfig(oidcEnv, reader);
+    expect(c.oidc?.issuer.href).toBe("https://id.example.org/");
+    expect(c.oidc?.clientSecret).toBeUndefined();
+    expect(() => loadConfig({ ...oidcEnv, MOBSIMLAB_OIDC_ISSUER: "http://id.example.org" }, reader)).toThrow(
+      /https/,
+    );
+    expect(() => loadConfig({ ...env, MOBSIMLAB_OIDC_CLIENT_ID: "msl" }, reader)).toThrow(/set together/);
+  });
+
+  it("treats empty optional variables as unset", () => {
+    expect(
+      loadConfig({ ...env, MOBSIMLAB_BOOTSTRAP_OWNER_EMAIL: "" }, reader).bootstrapOwnerEmail,
+    ).toBeUndefined();
   });
 });

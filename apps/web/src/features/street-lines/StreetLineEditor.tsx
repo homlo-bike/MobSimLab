@@ -156,19 +156,21 @@ export function StreetLineEditor({
       }
       let added = 0;
       let failed = 0;
+      let reason: string | null = null;
       got.forEach((r, i) => {
         try {
           if (r.status === "rejected") throw r.reason;
           e.addOsm(r.value);
           added++;
-        } catch {
+        } catch (err) {
           tiles.current.delete(want[i]!);
           failed++;
+          reason ??= err instanceof Error ? err.message : null;
         }
       });
       if (added) run((eng) => eng.rebuild());
       setReady(e.ready());
-      setStatus(failed ? "Some streets did not load. Move the map to try again." : null);
+      setStatus(failed ? `${reason ?? "Some streets did not load."} Move the map to try again.` : null);
       if (again) {
         again = false;
         void load();

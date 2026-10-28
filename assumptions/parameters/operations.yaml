@@ -1,0 +1,293 @@
+# Operations, timetabling and recording defaults. Schema: assumptions/README.md.
+
+- key: timetable.recovery_share
+  label: Recovery time in the planned timetable, as a share of the running time
+  group: Operations
+  unit: share
+  used_by: [timetable generation, cycle time, fleet size]
+  values:
+    - context:
+        mode: "*"
+      low: 0.05
+      central: 0.1
+      high: 0.2
+      basis: documented
+      sources: [tcqsm3, uic-451-1]
+      check: unverified
+      rationale: Wide fallback between rail (UIC) and bus (TCQSM) practice.
+    - context:
+        mode: [bus, brt, trolleybus, intercity_bus]
+      low: 0.1
+      central: 0.15
+      high: 0.2
+      basis: documented
+      sources: [tcqsm3]
+      check: unverified
+      rationale: "TCQSM: recovery time commonly 10–20 % of running time for bus routes."
+    - context:
+        mode: [tram, light_rail]
+      low: 0.08
+      central: 0.12
+      high: 0.15
+      basis: educated-guess
+      sources: [tcqsm3, mobsimlab-derivation]
+      check: unverified
+      rationale: Street running behaves like bus; segregated sections like rail.
+    - context:
+        mode: [metro, commuter_rail, regional_rail, long_distance_rail, high_speed_rail]
+      low: 0.03
+      central: 0.05
+      high: 0.07
+      basis: cited
+      sources: [uic-451-1]
+      check: unverified
+      rationale: UIC 451-1 regular running time supplement of about 3–7 % depending on speed and traction. Clause to be checked.
+
+- key: timetable.layover_min
+  label: Layover at each terminal before the vehicle turns back
+  group: Operations
+  unit: min
+  used_by: [vehicle scheduling, fleet size]
+  values:
+    - context:
+        mode: "*"
+      low: 3
+      central: 5
+      high: 10
+      basis: documented
+      sources: [tcqsm3]
+      check: unverified
+      rationale: "TCQSM: minimum layover for driver relief and recovery, commonly 5–10 min or about 10 % of cycle time."
+    - context:
+        mode: [bus, brt, trolleybus, tram, light_rail]
+      low: 3
+      central: 5
+      high: 10
+      basis: documented
+      sources: [tcqsm3]
+      check: unverified
+      rationale: As above.
+    - context:
+        mode: intercity_bus
+      low: 10
+      central: 15
+      high: 30
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: Cleaning, luggage, driver rest rules.
+    - context:
+        mode: metro
+      low: 2
+      central: 3
+      high: 5
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: Driver changes end; automated lines shorter.
+    - context:
+        mode: commuter_rail
+      low: 3
+      central: 5
+      high: 10
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: Turnback platform occupancy.
+    - context:
+        mode: regional_rail
+      low: 5
+      central: 10
+      high: 20
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: Typical regional turnaround.
+    - context:
+        mode: [long_distance_rail, high_speed_rail]
+      low: 15
+      central: 25
+      high: 45
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: Cleaning and catering at terminals.
+
+- key: recording.late_threshold_s
+  label: A call counts as late from this delay on (recording)
+  group: Operations
+  unit: s
+  used_by: [punctuality statistics, reports]
+  values:
+    - context:
+        mode: "*"
+      low: 60
+      central: 300
+      high: 600
+      basis: documented
+      sources: [tcqsm3, orr-ppm]
+      check: unverified
+      rationale: TCQSM and UK PPM both use 5 min as the common on-time window.
+    - context:
+        mode: [bus, brt, trolleybus, tram, light_rail]
+      low: 60
+      central: 300
+      high: 300
+      basis: cited
+      sources: [tcqsm3]
+      check: unverified
+      rationale: "TCQSM on-time window: up to 5 min late (some agencies use 1–3 min)."
+    - context:
+        mode: metro
+      low: 60
+      central: 120
+      high: 300
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: High-frequency metros measure headway regularity rather than lateness; 2 min is a usable proxy.
+    - context:
+        mode: [commuter_rail, regional_rail]
+      low: 180
+      central: 300
+      high: 360
+      basis: cited
+      sources: [sbb-punctuality, orr-ppm, db-punctuality]
+      check: unverified
+      rationale: SBB counts 3 min, UK PPM 5 min, DB 6 min (late from 6:00 on).
+    - context:
+        mode: [long_distance_rail, high_speed_rail]
+      low: 300
+      central: 360
+      high: 600
+      basis: cited
+      sources: [db-punctuality, orr-ppm]
+      check: unverified
+      rationale: DB 6 min; UK PPM 10 min for long-distance operators.
+
+- key: operations.depot_run_speed_kmh
+  label: Speed of empty runs between a line and its depot tracks
+  group: Operations
+  unit: km/h
+  used_by: [depot run times, vehicle scheduling]
+  values:
+    - context:
+        mode: "*"
+      low: 15
+      central: 25
+      high: 40
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: Wide fallback.
+    - context:
+        mode: [bus, brt, trolleybus, intercity_bus]
+      low: 20
+      central: 30
+      high: 50
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: Urban road speed; the street's own limit wins when routed on the road graph.
+    - context:
+        mode: [tram, light_rail]
+      low: 10
+      central: 15
+      high: 25
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: Depot fans and yard tracks driven on sight.
+    - context:
+        mode: [metro, commuter_rail, regional_rail, long_distance_rail, high_speed_rail]
+      low: 15
+      central: 25
+      high: 40
+      basis: documented
+      sources: [db-ril-408]
+      check: unverified
+      rationale: Shunting movements are limited to 25 km/h in DB operating rules; signalled depot access tracks can allow 40 km/h.
+
+- key: operations.refuel_time_min
+  label: Time to refuel a vehicle at the depot during the day
+  group: Operations
+  unit: min
+  used_by: [vehicle scheduling, depot throughput]
+  values:
+    - context:
+        mode: "*"
+      low: 3
+      central: 6
+      high: 10
+      basis: documented
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: "Diesel: 250–300 l tank at 40–60 l/min pump rate is about 5 min plus positioning."
+    - context:
+        traction: hydrogen
+      low: 7
+      central: 10
+      high: 20
+      basis: documented
+      sources: [sae-j2601-2]
+      check: unverified
+      rationale: Heavy-duty hydrogen fuelling of 30–40 kg; rate depends on the J2601-2 protocol and station pre-cooling.
+    - context:
+        traction: cng
+      low: 5
+      central: 8
+      high: 15
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: Fast-fill CNG.
+
+- key: demand.walk_speed_kmh
+  label: Walking speed for walking links between stations
+  group: Demand
+  unit: km/h
+  used_by: [transfer links, access/egress links, catchment]
+  values:
+    - context:
+        mode: "*"
+      low: 3.8
+      central: 4.5
+      high: 5.4
+      basis: cited
+      sources: [mutcd-2009, hcm7]
+      check: unverified
+      rationale: MUTCD uses 3.5 ft/s (≈ 3.8 km/h) for slow pedestrians at crossings; typical free walking is about 1.25 m/s (4.5 km/h); HCM free-flow up to about 1.5 m/s (5.4 km/h).
+
+- key: operations.energy_reserve_share
+  label: Energy reserve kept in the battery or tank, share of its capacity (energy planning)
+  group: Operations
+  unit: share
+  used_by: [block feasibility, charging plan]
+  values:
+    - context:
+        mode: "*"
+      low: 0.1
+      central: 0.15
+      high: 0.25
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: Fallback.
+    - context:
+        traction: battery
+      low: 0.1
+      central: 0.2
+      high: 0.3
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: Operators plan against the usable state-of-charge window and keep a reserve for diversions, traffic and battery ageing; 20 % of nominal is a common planning figure.
+    - context:
+        traction: [diesel, hydrogen, cng]
+      low: 0.1
+      central: 0.15
+      high: 0.25
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: Fuel reserve for disruption.

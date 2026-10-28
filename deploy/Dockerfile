@@ -80,6 +80,7 @@ COPY --from=node-build /usr/local/bin/node /usr/local/bin/node
 COPY --from=node-build /out/api /app/api
 COPY --from=node-build /out/web /app/web
 COPY --from=py-build /app/venv /app/venv
+COPY db/migrations /app/db/migrations
 COPY deploy/bin /app/bin
 COPY deploy/s6/s6-rc.d /etc/s6-overlay/s6-rc.d
 COPY LICENSE /app/LICENSE

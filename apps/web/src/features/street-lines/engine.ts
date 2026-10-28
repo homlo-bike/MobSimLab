@@ -57,6 +57,7 @@ export const loadWasmEngine: EngineLoader = async () => {
 /** Purpose: fetch one street tile from the API (OSM streets, fetched and cached server-side). */
 export const fetchStreetTile: TileFetcher = async (x, y) => {
   const res = await fetch(`/api/street-network/tiles/14/${x}/${y}`);
+  if (res.status === 401) throw new Error("Sign in to load streets.");
   if (!res.ok)
     throw new Error(res.status === 400 ? "Invalid tile" : "OpenStreetMap streets are unavailable right now.");
   return res.text();
