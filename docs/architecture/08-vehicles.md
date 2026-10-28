@@ -47,7 +47,7 @@ All fields from the brief, grouped. Every leaf numeric field is a `Quantity` = `
 | Infrastructure | `trackGauge[]` (mm), `loadingGauge`, `axleLoadMax`, `platformCompatibility[]` (height + gap tolerance), `requiresOverheadWire`, `requiresChargers`, `signallingSystems[]` (e.g. ETCS L2, CBTC) |
 | Cost | `costRecords[]` (published order values as reported), `capitalCost` (with currency, price-base year, quantity context), `operatingCostPerKm`, `operatingCostPerHour`, `energyCost` (derived), `lifespanYears`, `midLifeOverhaul` (`year`, `cost`) |
 | Maintenance | `maintenanceIntervalKm`, `maintenanceIntervalDays`, `availability` (fraction), `mtbf`, `mttr`, `depotRequirements` |
-| Metadata | standard envelope (04 §2.2) plus `legacyId`, `builder`, `operators[]`, `livery` (approximate colours, always an educated guess), `notes`, `trademarkNotice` |
+| Metadata | standard envelope (04 §2.2) plus `legacyId`, `builder`, `operators[]`, `livery` (approximate colours, always an educated guess), `wikipedia` (`{url, scope: model|family|fleet, checked_via}`, a link for identification; no article text or images are copied or embedded), `schematic` (optional hand-drawn SVG side view in `vehicles/_schematics/`, CC BY 4.0, used instead of the drawing generated from the geometry), `notes`, `trademarkNotice` |
 
 ### Example (abridged)
 

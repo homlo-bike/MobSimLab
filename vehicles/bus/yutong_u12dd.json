@@ -153,6 +153,11 @@
     ],
     "rationale": "approximation of Lush Green, the unified LTA public bus livery"
   },
+  "wikipedia": {
+    "url": "https://nl.wikipedia.org/wiki/Yutong_U12DD",
+    "scope": "model",
+    "checked_via": "search"
+  },
   "notes": "Successor name of the E12DD. Seated 74 = 55 upper + 19 lower deck seats as stated on the manufacturer page; 117 passengers total. Battery: the specification table gives 528 kWh, while the page text describes a 580 kWh standard and 621 kWh optional pack (670 km SORT2 range for 621 kWh); 528 kWh kept, range left empty. Turning circle is the published minimum turning diameter. Singapore operators listed ran the earlier E12DD (12 m, 422 kWh).",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

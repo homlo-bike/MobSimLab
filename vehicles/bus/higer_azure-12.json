@@ -163,6 +163,11 @@
       ]
     }
   ],
+  "wikipedia": {
+    "url": "https://nl.wikipedia.org/wiki/Higer_AZURE",
+    "scope": "family",
+    "checked_via": "search"
+  },
   "notes": "Max speed derived: reported cap of 52 mph = 83.7 km/h. Distributor page: 'up to 70 seated and standing', '39 + 3 seats' (split not used). The EPD (Belgian configuration) lists 78 passengers (34 seats + 3 folding + 1 wheelchair + 44 standing), dimensions 12090 x 2550 x 3350 mm, 422.9 kWh max battery, 22.2 m turning circle and 19.5 t gross weight; turning circle and gross weight are taken from it. Range 'over 400 km', recharge under three hours (CCS2).",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

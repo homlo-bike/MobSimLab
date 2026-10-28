@@ -202,6 +202,11 @@
     ],
     "rationale": "approximation of pink-hued white body with a dark pink line under the windows (JR East)"
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/E657_series",
+    "scope": "model",
+    "checked_via": "source"
+  },
   "notes": "Length derived from car lengths (2 end cars × 21.1 m + 8 × 20.0 m = 202.2 m); weight derived as the sum of the ten published car weights (380.3 t). Seats 600 (30 Green, 570 standard). total = seats (no standing figure published). doorsPerSide derived: 1 per side per car, 2 on end cars. Also runs on 20 kV 50 Hz AC, which the project supply-system list does not include. Cape gauge 1,067 mm.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

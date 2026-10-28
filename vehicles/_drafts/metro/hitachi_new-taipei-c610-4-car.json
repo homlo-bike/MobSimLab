@@ -229,6 +229,11 @@
     ],
     "rationale": "approximation of the yellow Circular line colour scheme (exterior and interior)"
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/New_Taipei_Metro_C610",
+    "scope": "model",
+    "checked_via": "source"
+  },
   "notes": "Medium-capacity (light metro) driverless train, formation A-C-D-B, assembled by Taiwan Rolling Stock Company. doorsPerSide = 3 per side per car x 4 cars (derived). Max speed 90 km/h design, 80 km/h service. Deceleration is the service rate (1.3 m/s2 emergency). Capacity 650 has no density basis stated. Figures from Wikipedia (secondary).",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only.",
   "draftReason": "Core fields not sourced: seats, standingQuoted"

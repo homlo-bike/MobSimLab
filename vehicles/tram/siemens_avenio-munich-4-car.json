@@ -163,6 +163,11 @@
       "siemens-mobility-avenio-tram-tz-munich-germany-data-sheet"
     ]
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Siemens_Avenio",
+    "scope": "family",
+    "checked_via": "search"
+  },
   "notes": "Figures for the 73 four-car units of the 2019 option (MVG class T4.8): 219 places incl. 60 seats at 4 persons/m²; standing = 219 − 60 = 159 (derived). The four-car units of the basic 2015 order have 215 places incl. 65 seats. Tare weight approx. 45 t; motor power 6 × 100 kW (600 kW). Each of the four modules has its own centrally installed bogie (Siemens sheet for the first Munich Avenios, same length and capacity), so suspendedModules = 0. Entrance/floor height 300 mm. First delivery of this option was scheduled for 2021; the actual year is not stated, so yearIntroduced is empty. Height not given for this batch (the first-batch sheet gives 3,550 mm).",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

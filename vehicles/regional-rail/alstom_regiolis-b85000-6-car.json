@@ -166,6 +166,11 @@
       ]
     }
   ],
+  "wikipedia": {
+    "url": "https://fr.wikipedia.org/wiki/Coradia_Polyvalent",
+    "scope": "family",
+    "checked_via": "source"
+  },
   "notes": "Six-car bi-mode, dual-voltage (1.5 kV DC / 25 kV 50 Hz) Régiolis in the Intercités B 85000 version: 269 seats including 35 first class; total = seats (no standing figure published). Length, width and height are the infobox values for six-car Régiolis. Maximum speed 160 km/h (200 km/h optional). Double doors 1,300 mm wide. Diesel engines MAN D26, 338 kW each (number per set not stated); electric traction power not stated. First commercial Régiolis service 22 April 2014 (family).",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

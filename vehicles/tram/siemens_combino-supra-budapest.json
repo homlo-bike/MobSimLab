@@ -202,6 +202,11 @@
     ],
     "rationale": "approximation of yellow (Budapest Combino Supra)"
   },
+  "wikipedia": {
+    "url": "https://hu.wikipedia.org/wiki/Siemens_Combino_Supra",
+    "scope": "model",
+    "checked_via": "source"
+  },
   "notes": "Six-module, 54 m Combino Supra for Budapest lines 4/6. Unlike the original Combino it has no suspended sections (two axles under each body section), so suspendedModules = 0. Maximum speed 60 km/h is the electronically limited permitted speed in the infobox; the text gives 70 km/h design maximum and 50 km/h permitted line speed. Capacity 350 (infobox; text says 353 places), 64 seats; standing and standing density not stated. Floor 320 mm at entrance, 350 mm inside. Power 8 x 100 kW. Doors listed as '8 x 2 doors, 1300 mm' without a per-side split, so doorsPerSide is null. Supply voltage and gauge not stated in the sources read; left empty.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

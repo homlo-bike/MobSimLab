@@ -168,6 +168,11 @@
     ],
     "rationale": "Delivered in a white and blue livery (\"bielo-modrý náter\"), as described by imhd.sk; hex values approximate."
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Mercedes-Benz_Citaro",
+    "scope": "family",
+    "checked_via": "search"
+  },
   "notes": "SAD Poprad series 1 (2020, 6 vehicles): Mercedes-Benz OM 936 h Euro 6D diesel with recuperation module, 220 kW, ZF EcoLife 6-speed. Height 3,120 mm with air conditioning (3,095 mm without). Wheelbase 5,900 mm. Capacity given by the source as approximate (seats 32 + 1, standing ~74, total ~106 + 1). imhd.sk states the second Citaro generation was presented in 2011.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

@@ -182,6 +182,11 @@
       "motor-coach-industri-mci-j4500-charge-brochure"
     ]
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/MCI_J-Series",
+    "scope": "family",
+    "checked_via": "search"
+  },
   "notes": "Top speed 72 mph / 116 km/h as published. Range: published nominal range 262-375 km (163-233 miles, heavy to low usage); the low end is stored. Recharge time is the published \"< 4 hrs\" (5 to 95 %) at 150+ kW DC (CCS1). Curb weight only estimated (~20.5 t) in the brochure, so left empty. Passenger capacity 56 (seated coach).",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only.",
   "draftReason": "Core fields not sourced: seats, standingQuoted"

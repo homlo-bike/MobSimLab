@@ -171,6 +171,11 @@
       ]
     }
   ],
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Scania_Citywide",
+    "scope": "family",
+    "checked_via": "search"
+  },
   "notes": "4 buses delivered 2023 (in service from November 2023). Scania OC09 104 Euro 6 CNG engine, 206 kW, ZF 6-speed automatic. Empty weight given as approximate (~12,820 kg). Capacity excludes the driver. imhd.sk: Citywide presented 2011, production of Scania complete buses in Słupsk ended at the end of 2023. Livery not described.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

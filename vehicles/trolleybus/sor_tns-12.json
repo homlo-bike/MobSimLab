@@ -206,6 +206,11 @@
       ]
     }
   ],
+  "wikipedia": {
+    "url": "https://cs.wikipedia.org/wiki/SOR_TNS_12",
+    "scope": "model",
+    "checked_via": "search"
+  },
   "notes": "Series production from 2022. Bratislava vehicles have Škoda Electric SJ 10.4 equipment (converter input 600/750 V DC) and a 42 kWh Škoda TBS 5.1 traction battery for off-wire running; off-wire range not published. Wheelbase 5900 mm. Capacity excludes the driver.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

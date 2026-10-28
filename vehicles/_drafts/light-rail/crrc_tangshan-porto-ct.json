@@ -184,6 +184,11 @@
     ],
     "rationale": "Grey and yellow livery, as described in the source; hex values are approximations."
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Porto_Metro",
+    "scope": "fleet",
+    "checked_via": "source"
+  },
   "notes": "Total capacity 244 (64 seated) per the 2023 unveiling report and Wikipedia; the 2019 award report gave 252. 52 t is the weight stated by the source (assumed empty). Four articulated sections; articulations (3) derived from that. 750 V DC overhead and standard gauge are system values of Metro do Porto.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only.",
   "draftReason": "Core fields not sourced: width"

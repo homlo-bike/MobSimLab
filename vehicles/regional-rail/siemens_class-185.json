@@ -188,6 +188,11 @@
     ],
     "rationale": "approximation of various blues with a purple underbelly and yellow front (TPE)"
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/British_Rail_Class_185",
+    "scope": "model",
+    "checked_via": "source"
+  },
   "notes": "Seats 169 (15 first, 154 standard) plus 12 tip-up seats not counted. total = seats (no standing figure published). Weight is given as approx. 168.5 t. Power 1,683 kW = 3 × 561 kW engines.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

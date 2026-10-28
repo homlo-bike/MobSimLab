@@ -182,6 +182,11 @@
     ],
     "rationale": "Verkehrsgelb RAL 1023 main surfaces, Verkehrsweiß RAL 9016 roof, Schiefergrau RAL 7015 lower area (BVG vehicle colours as tabled; hex as given there)"
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Flexity_Berlin",
+    "scope": "model",
+    "checked_via": "source"
+  },
   "notes": "Seven-module 100% low-floor tram, bidirectional version (ZR); the unidirectional GT8-08 has 88 seats/151 standing and 50.1 t. Capacity total is seated + standing (75 + 165); standing density not stated. Traction power 12 x 50 kW = 600 kW. 600 V DC in Berlin (750 V DC at Strausberg). Bogie/module layout, doors per side, minimum curve radius, acceleration and deceleration not found.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

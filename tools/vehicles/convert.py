@@ -2,7 +2,8 @@
 
 Reads the flat import format (one JSON file per vehicle under ``<import>/<mode>/``, with
 per-group ``sources[].fields`` and ``quality`` blocks), applies looked-up additions from
-``vehicles/_import/additions.yaml``, and writes:
+``vehicles/_import/additions.yaml``, adds the Wikipedia links in ``vehicles/_import/wikipedia.yaml`` and
+any hand-drawn schematics listed in ``vehicles/_import/schematics.yaml``, and writes:
 
 - ``vehicles/<mode-folder>/<manufacturer>_<model>.json`` for vehicles whose core fields are
   sourced (ADR-0026), or ``vehicles/_drafts/<mode-folder>/…`` for the rest;
@@ -179,6 +180,8 @@ FIELD_ORDER = [
     "automationGrade",
     "costRecords",
     "livery",
+    "wikipedia",
+    "schematic",
     "notes",
     "draftReason",
     "trademarkNotice",
@@ -372,7 +375,13 @@ def supply_systems(energy: dict[str, Any], mode: str) -> list[str]:
     return [f"{collection}-{VOLTAGES[v]}" for v in energy["supplySystems"]]
 
 
-def convert(raw: dict[str, Any], reg: Register, additions: dict[str, Any]) -> tuple[str, str, dict]:
+def convert(
+    raw: dict[str, Any],
+    reg: Register,
+    additions: dict[str, Any],
+    links: dict[str, Any] | None = None,
+    schematics: dict[str, Any] | None = None,
+) -> tuple[str, str, dict]:
     """Convert one import record; return (mode folder, file name, catalogue record)."""
     legacy = raw["id"]
     mname, mslug = manufacturer_of(raw["producer"])
@@ -487,6 +496,10 @@ def convert(raw: dict[str, Any], reg: Register, additions: dict[str, Any]) -> tu
             "sources": sids,
             "rationale": lv.get("description") or "Colours approximated from photographs.",
         }
+    if links and legacy in links:
+        rec["wikipedia"] = links[legacy]
+    if schematics and legacy in schematics:
+        rec["schematic"] = schematics[legacy]
     if raw.get("notes"):
         rec["notes"] = raw["notes"]
     rec["trademarkNotice"] = TRADEMARK
@@ -569,12 +582,18 @@ def main(argv: list[str] | None = None) -> int:
         "--import-dir", type=Path, nargs="+", default=sorted(Path("vehicles/_import").glob("20*/"))
     )
     ap.add_argument("--additions", type=Path, default=Path("vehicles/_import/additions.yaml"))
+    ap.add_argument("--wikipedia", type=Path, default=Path("vehicles/_import/wikipedia.yaml"))
+    ap.add_argument("--schematics", type=Path, default=Path("vehicles/_import/schematics.yaml"))
     ap.add_argument("--out", type=Path, default=Path("vehicles"))
     args = ap.parse_args(argv)
 
     additions: dict[str, Any] = {}
     if args.additions.exists():
         additions = yaml.safe_load(args.additions.read_text(encoding="utf-8")) or {}
+    links, schematics = (
+        yaml.safe_load(p.read_text(encoding="utf-8")) or {} if p.exists() else {}
+        for p in (args.wikipedia, args.schematics)
+    )
     reg = Register()
     # Remove only files generated from this import, so hand-written vehicles survive a rebuild.
     paths = sorted(p for d in args.import_dir for p in d.glob("*/*.json"))
@@ -587,7 +606,7 @@ def main(argv: list[str] | None = None) -> int:
     written = drafts = 0
     for path in paths:
         raw = json.loads(path.read_text(encoding="utf-8"))
-        folder, name, rec = convert(raw, reg, additions)
+        folder, name, rec = convert(raw, reg, additions, links, schematics)
         gaps = core_gaps(rec)
         base = args.out / "_drafts" if gaps else args.out
         if gaps:

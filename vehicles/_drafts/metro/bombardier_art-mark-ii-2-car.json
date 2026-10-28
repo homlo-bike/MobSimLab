@@ -156,6 +156,11 @@
     ],
     "rationale": "approximation of the blue and grey TransLink livery of the second-generation Mark II (first generation was white)"
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/SkyTrain_(Vancouver)_rolling_stock",
+    "scope": "fleet",
+    "checked_via": "source"
+  },
   "notes": "Linear-induction-motor light metro. Length and capacity per 2-car train from the SkyTrain configuration table (second-generation Mark II, 2009/2010); seated = 2 x 33 seats per car (derived). maxSpeedKmh is the 80 km/h stated for the Expo/Millennium Line ART fleet. Power is 650 V DC via a fourth-rail pair with LIM reaction rail; 650 V is not one of the project supply systems, so supplySystems is empty. Automated (driverless) operation; no GoA grade stated. Figures from Wikipedia (secondary).",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only.",
   "draftReason": "Core fields not sourced: width"

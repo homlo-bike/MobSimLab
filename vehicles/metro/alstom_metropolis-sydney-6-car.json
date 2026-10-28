@@ -193,6 +193,11 @@
       "wp-sydney-metro-metropolis-stock"
     ]
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Sydney_Metro_Metropolis_Stock",
+    "scope": "model",
+    "checked_via": "source"
+  },
   "notes": "Formation TC-MPC-MC-MC-MPC-TC, built at Sri City, India. carLengthsM uses the single 20.25 m car length given for all cars. emptyWeightT is the 240 t train weight in the infobox (tare/loaded basis not stated). doorsPerSide = 3 per side per car x 6 cars (derived). Max speed 120 km/h design, 100 km/h service. Deceleration is the service rate (1.4 m/s2 emergency). No density basis given for the 1,100 total. Figures from Wikipedia (secondary).",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

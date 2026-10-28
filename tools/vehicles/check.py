@@ -7,6 +7,7 @@ Fails if any catalogue file:
 - cites a source id that is in no source register;
 - lists a supply system that ``assumptions/supply-systems.yaml`` does not define (once it exists);
 - has a derived capacity value that does not match its inputs;
+- points at a schematic that does not exist or is not named after the catalogue file;
 - is in the catalogue (not ``_drafts/``) with a core field missing or assumed (ADR-0026).
 
 Also checks that every source register entry has the shared shape.
@@ -130,6 +131,12 @@ def check(root: Path) -> list[str]:
                     if s not in supply_ids
                 ]
             out += check_derived(rec)
+            if "schematic" in rec:
+                svg = rec["schematic"]["file"]
+                if not (root / svg).is_file():
+                    out.append(f"schematic {svg} does not exist")
+                elif Path(svg).stem != path.stem:
+                    out.append(f"schematic {svg} is not named {path.stem}.svg")
             gaps = core_gaps(rec)
             if draft and "draftReason" not in rec:
                 out.append("draft without draftReason")

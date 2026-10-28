@@ -178,6 +178,11 @@
       "wp-de-ice-4"
     ]
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/ICE_4",
+    "scope": "model",
+    "checked_via": "source"
+  },
   "notes": "Thirteen-car ICE 4 (50 built). 918 seats per data sheet (920 in the German configuration table), 205 first class; total = seats (no standing figure published). Empty weight 736.249 t ready for service (German Wikipedia); the English infobox lists 890 t without saying whether laden. Power 14 × 825 kW = 11,550 kW continuous. Width 2,852 mm (external), height 4,115 mm for the middle cars (3,870 mm end cars). Floor 1,220 mm; entrances for 550–760 mm platforms. Entered service (family) 10 December 2017.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

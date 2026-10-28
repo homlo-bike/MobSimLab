@@ -147,6 +147,11 @@
       "wp-british-rail-class-397"
     ]
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/British_Rail_Class_397",
+    "scope": "model",
+    "checked_via": "source"
+  },
   "notes": "Seats 288 (24 first, 264 standard). total = seats (no standing figure published). doorsPerSide derived: 2 doors per side per car × 5. Width, weight and power not given in the source.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only.",
   "draftReason": "Core fields not sourced: width"

@@ -179,6 +179,11 @@
       "wp-val-208"
     ]
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/VAL_208",
+    "scope": "model",
+    "checked_via": "source"
+  },
   "notes": "Rubber-tyred automated light metro. lengthM = 2 x 13.07 m car length (derived; no train length given). Height 3.27 m is without air conditioning (3.7 m with). Capacity 124 is the figure the VAL article gives for 2-car VAL 206/208 sets, with no density basis; low confidence. gaugeMm 1,620 is the running-pad spacing stated in the infobox (rubber-tyred guideway), not a steel-rail gauge. Doors: infobox says \"3 per side\" without saying per car or per train, so doorsPerSide is left null. Described as fully automated; no GoA grade stated, so automationGrade is empty. Figures from Wikipedia (secondary); infobox values are uncited there. Rubber-tyred: the published 1620 mm is the running-pad spacing, not a rail gauge, so gauge is left empty.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only.",
   "draftReason": "Core fields not sourced: seats, standingQuoted"

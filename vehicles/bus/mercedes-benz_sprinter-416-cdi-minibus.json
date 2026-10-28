@@ -156,6 +156,11 @@
       "imhd-sk-mercedes-benz-sprinter-vehicle-type-desc"
     ]
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Mercedes-Benz_Sprinter",
+    "scope": "family",
+    "checked_via": "search"
+  },
   "notes": "Figures for the two 2005-built Bratislava vehicles (fleet 1900-1901, withdrawn 2016-2019). Capacity excludes the driver. Wheelbase 4025 mm. tractionPowerKw is the rated engine power (OM 612, 115 kW). One passenger door plus driver and rear service doors.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

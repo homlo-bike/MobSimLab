@@ -157,6 +157,11 @@
       "wp-b1-guangzhou-metro-car"
     ]
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/B1_(Guangzhou_Metro_car)",
+    "scope": "model",
+    "checked_via": "source"
+  },
   "notes": "Capacity derived: 240 per car (published) x 3 cars = 720. Formation Mcp-T-Mcp; since 2010 units run as coupled pairs (6 cars) on Line 3. The source's acceleration figure (0.9 km/(h·s)) is implausibly low and is left empty. 120 cars built 2005–2007.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only.",
   "draftReason": "Core fields not sourced: seats, standingQuoted"

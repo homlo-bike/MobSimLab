@@ -177,6 +177,11 @@
       "railway-gazette-inte-irizar-signs-aix-en-provence-electric-bu"
     ]
   },
+  "wikipedia": {
+    "url": "https://nl.wikipedia.org/wiki/Irizar_ie_tram",
+    "scope": "model",
+    "checked_via": "search"
+  },
   "notes": "15 buses ordered in 2018 by RDT 13 for the 7.2 km L'Aixpress route (19 stops, every 5 min), deliveries due April-September 2019; charged at opportunity charging stations and overnight at the Pont de l'Arc depot (charging power/time not given). Standing at 4 per m². Dimensions, floor height, turning circle and nominal motor power (185 kW synchronous) are from the current Irizar ie tram 12 m data sheet (battery options 90/470/510 kWh; pantograph up to 300-450 kW, Combo2 150 kW; max. 105 passengers), which may differ from the 2019 Aix vehicles; their battery size is not published. Axle positions derived from the sheet: front overhang 2,805 mm, wheelbase 5,955 mm. Total capacity not published; seated + standing = 100.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

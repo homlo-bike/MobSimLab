@@ -144,6 +144,11 @@
       "stadler-elektrischer-doppelstocktriebzug-kiss-ma"
     ]
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Stadler_KISS",
+    "scope": "family",
+    "checked_via": "search"
+  },
   "notes": "Continuous power at the wheel 4000 kW (6000 kW maximum); starting acceleration 1.1 m/s2 below 54 km/h. Low floor 440 mm, high floor 1350 mm. Standing places are not on the data sheet.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only.",
   "draftReason": "Core fields not sourced: standingQuoted"

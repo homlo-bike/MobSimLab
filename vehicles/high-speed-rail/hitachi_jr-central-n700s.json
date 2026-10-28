@@ -185,6 +185,11 @@
     ],
     "rationale": "approximation of white body with blue cheatline (Tokaido Shinkansen)"
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/N700S_Series_Shinkansen",
+    "scope": "model",
+    "checked_via": "source"
+  },
   "notes": "Length derived from car lengths: 2 end cars × 27.35 m + 14 × 25 m = 404.7 m. Seats 1,323 (200 Green + 1,123 ordinary). total = seats (no standing figure published). Maximum service speed 300 km/h on the San'yō Shinkansen, 285 km/h on the Tōkaidō; design speed 360 km/h. Supply 25 kV 60 Hz AC, which the project supply-system list does not include, so supplySystems is empty. Height excludes rooftop equipment.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

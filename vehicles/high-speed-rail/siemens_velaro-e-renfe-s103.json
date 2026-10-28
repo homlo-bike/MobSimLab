@@ -180,6 +180,11 @@
     ],
     "rationale": "approximation of white body with a splash of purple (Renfe AVE)"
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Renfe_Class_103",
+    "scope": "model",
+    "checked_via": "source"
+  },
   "notes": "Length derived from car lengths: 2 cab cars × 25.675 m + 6 × 24.775 m = 200.0 m. Capacity 404 passengers as published (a separate seat count is not given). Maximum service speed 300 km/h; certified 350 km/h. Weight 425 t as given.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

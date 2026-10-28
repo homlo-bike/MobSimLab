@@ -141,6 +141,11 @@
     ],
     "rationale": "Not attributed to one source in the import; see notes."
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/MAN_Lion's_City",
+    "scope": "family",
+    "checked_via": "search"
+  },
   "notes": "MVB fleet numbers 3220-3236, built 2022/23. MAN EfficientHybrid (UltraCap store 40 Wh, 12 kW starter-generator), engine 9,037 cm³, drive power 265 kW. Consist (two body sections, one articulation) follows from the type \"Niederflurgelenkbus\"; not a published figure. Total capacity not published; seated + standing = 152. Livery not described.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

@@ -189,6 +189,11 @@
     ],
     "rationale": "Frecciarossa livery: red body with a red arrow on the front, silver lower band and black window band (2022 revision extends the black band to the cab doors); hex values approximate."
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Frecciarossa_1000",
+    "scope": "model",
+    "checked_via": "source"
+  },
   "notes": "Eight-car (4M4T) ETR 1000: 457 seats (10 Executive, 69 Business, 76 Premium, 300 Standard) plus 2 wheelchair places; total = seats (no standing figure published). maxSpeedKmh = 300 is the service speed; design commercial speed 360 km/h (Italian Wikipedia: homologated 360 km/h), design maximum 400 km/h. Length 202 m (202.02 m in the Italian article). Empty mass 454 t, in-service mass 501 t. Power 9.8 MW (up to 10 MW). 15 kV 16.7 Hz listed as not active, so not entered. 28 doors in total (per side not stated).",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

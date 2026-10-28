@@ -142,6 +142,11 @@
       "wp-china-railway-crh380a"
     ]
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/CRH380A",
+    "scope": "model",
+    "checked_via": "source"
+  },
   "notes": "480 seats (the 'EC type' has 556). Max speed is the 350 km/h operating speed; design commercial maximum 380 km/h, test 486.1 km/h. Power 9.6 MW. Entered service 30 October 2010. The 16-car CRH380AL is 401.4 m with 1061 or 1028 seats.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

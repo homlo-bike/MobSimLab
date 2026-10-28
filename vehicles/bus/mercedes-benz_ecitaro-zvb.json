@@ -191,6 +191,11 @@
       "zugerland-verkehrsbe-technische-daten-mercedes-benz-ecitaro"
     ]
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Mercedes-Benz_Citaro",
+    "scope": "family",
+    "checked_via": "search"
+  },
   "notes": "Figures for the ZVB eCitaro (2 x 125 kW wheel-hub motors, 400 V, NMC 622 battery of 243 kWh nominal, battery mass 2.6 t, maximum charging power 150 kW). tractionPowerKw is the peak 2 x 125 kW (continuous 2 x 60 kW). Seats 31 + 1 as published; total capacity not published by ZVB. Width, entry height (door 1/2: 320 mm), door opening width and turning circle are from the current Mercedes-Benz eCitaro (2 doors / 3 doors) data sheet, which lists the same length (12,135 mm); that sheet's drive (ZF AxTrax 2, 440/360 kW), batteries (444/555/666 kWh NMC, Combo2 plug standard, pantograph or charging rail optional, depot plug-in up to 150 kW preferred) and range (\"up to 600 km\", maker internal test) describe the newer build, not the ZVB buses. Axle positions derived from the data sheet: front overhang 2,805 mm, wheelbase 5,900 mm (rear overhang 3,430 mm). Range and charging time of the ZVB buses not published.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

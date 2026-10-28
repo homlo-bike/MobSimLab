@@ -170,6 +170,11 @@
       "wp-china-railway-cr400af"
     ]
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/China_Railway_CR400AF",
+    "scope": "model",
+    "checked_via": "source"
+  },
   "notes": "Seated layout 576 = 10 business + 28 first + 538 standard; the article also lists 556- and 392-seat layouts. Max speed is the service speed (350 km/h); design speed 400 km/h, record 420 km/h. Traction power 10.4 MW under 25 kV. Axle load given only as <17 t, so left empty. Car lengths are the listed end (27.91 m) and intermediate (25.65 m) car lengths; their sum (209.72 m) differs slightly from the published train length of 209 m. Livery not described in the source.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

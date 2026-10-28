@@ -136,6 +136,11 @@
       "siemens-mobility-velaro-d-class-407-high-speed-trainset-d"
     ]
   },
+  "wikipedia": {
+    "url": "https://de.wikipedia.org/wiki/DB-Baureihe_407",
+    "scope": "model",
+    "checked_via": "search"
+  },
   "notes": "Siemens lists 460 seats: 111 first class, 333 second class and 16 in the bistro; seated = 111 + 333 = 444 travel seats (derived). Standing places: none planned on high-speed services (convention). Body width is not on the data sheet.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only.",
   "draftReason": "Core fields not sourced: width"

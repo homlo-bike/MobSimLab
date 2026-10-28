@@ -156,6 +156,11 @@
       "imhd-sk-iveco-daily-rosero-p-city-vehicle-type-d"
     ]
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Iveco_Daily",
+    "scope": "family",
+    "checked_via": "search"
+  },
   "notes": "Figures for Bratislava vehicles 1902-1905 (built 2007-2008); vehicles 1906-1909 have 10 standing places (22 total) and 3.57 t kerb weight. Maximum speed 100 km/h with limiter. Capacity excludes the driver. Wheelbase 3950 mm. tractionPowerKw is the rated engine power (107 kW; 130 kW on one vehicle). Two passenger doors plus two service doors.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

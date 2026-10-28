@@ -181,6 +181,11 @@
       "stadler-tramlink-low-floor-light-rail-vehicle-ba"
     ]
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Stadler_Tramlink",
+    "scope": "family",
+    "checked_via": "search"
+  },
   "notes": "Seven-section bidirectional metre-gauge Tramlink for BLT (10 units, delivery 2022). Capacity 265 at 4 persons/m² with 88 seats (+16 folding seats not counted). Five double and two single doors per side (7). Power 6 × 100 kW. Entrance height 400 mm. The data sheet prints the supply voltage as 1,500 V DC; this was not cross-checked, so supplySystems is left empty. Uses real-axle bogies; the number of suspended modules is not stated.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

@@ -127,6 +127,11 @@
     ],
     "rationale": "Not attributed to one source in the import; see notes."
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/London_Underground_2009_Stock",
+    "scope": "model",
+    "checked_via": "source"
+  },
   "notes": "Eight-car Victoria line train (47 trains, in service from 21 July 2009). Capacity 252 seats + 876 standing at 6 persons/m² = 1,128 (the article body also mentions an estimate of 1,196 standing). Supply is 630 V DC by fourth rail, which has no matching supply-system id, so supplySystems is empty. Traction 24 × 75 kW; the infobox acceleration (1.3 m/s²) and service braking (1.14 m/s²) are marked 'citation needed' and are not entered. Car lengths 16.8825 m (trailer) and 16.585 m (others); positions in the consist not stated, so carLengthsM is empty.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

@@ -217,6 +217,11 @@
     ],
     "rationale": "approximation of gold and reddish-brown accents (Yurakucho and Fukutoshin line colours) on the aluminium body"
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Tokyo_Metro_17000_series",
+    "scope": "model",
+    "checked_via": "source"
+  },
   "notes": "8-car sets (17180 series numbers) built by Kinki Sharyo; 10-car sets by Hitachi. lengthM = 2 x 20.47 m end cars + 6 x 20.00 m intermediate cars (overall lengths, derived). emptyWeightT = sum of the per-car tare weights in the Japanese formation table (derived). Total 1,210 is the stated 8-car train capacity; seated = 2 x 45 + 6 x 51 from the formation table (derived). doorsPerSide = 4 per side per car x 8 cars (derived). Acceleration 3.3 km/h/s and service deceleration 3.5 km/h/s from the Japanese article, converted to m/s2 (derived; the English article gives 1 m/s2 for both). Max speed 120 km/h design; 80 km/h on Tokyo Metro lines, up to 110 km/h on through-service lines. Traction power per train not stated. Figures from Wikipedia (secondary).",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

@@ -140,6 +140,11 @@
       "wp-china-railway-cr400bf"
     ]
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/China_Railway_CR400BF",
+    "scope": "model",
+    "checked_via": "source"
+  },
   "notes": "Seated layout 576 = 10 business + 28 first + 538 standard (a 556-seat layout is also listed). Service speed 350 km/h; design 400 km/h. Traction power 10.14 MW under 25 kV. End cars 27.089 m and intermediate cars 25.65 m per the article (not listed per car here). Axle load given only as <17 t. Year of entry into service not read from the source; livery not described.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

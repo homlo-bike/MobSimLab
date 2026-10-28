@@ -134,3 +134,28 @@ def test_every_generated_file_comes_from_an_import() -> None:
         if f.parent.name == "schema":
             continue
         assert json.loads(f.read_text(encoding="utf-8"))["legacyId"] in imported, f
+
+
+def test_wikipedia_links_cover_known_vehicles() -> None:
+    import yaml
+
+    links = yaml.safe_load((REPO / "vehicles/_import/wikipedia.yaml").read_text(encoding="utf-8"))
+    paths = [*REPO.glob("vehicles/*/*.json"), *REPO.glob("vehicles/_drafts/*/*.json")]
+    legacy = {json.loads(p.read_text(encoding="utf-8")).get("legacyId") for p in paths}
+    assert set(links) <= legacy
+
+
+def test_non_wikipedia_link_fails(repo: Path) -> None:
+    link = {"url": "https://example.com/wiki/Tram", "scope": "model", "checked_via": "search"}
+    edit(first(repo), lambda r: r.update(wikipedia=link))
+    assert any("wikipedia" in p for p in check.check(repo))
+
+
+def test_schematic_must_exist_and_match(repo: Path) -> None:
+    f = first(repo)
+    svg = f"vehicles/_schematics/{f.stem}.svg"
+    edit(f, lambda r: r.update(schematic={"file": svg, "author": "Homlo", "licence": "CC-BY-4.0"}))
+    assert any("does not exist" in p for p in check.check(repo))
+    (repo / "vehicles/_schematics").mkdir(exist_ok=True)
+    (repo / svg).write_text("<svg xmlns='http://www.w3.org/2000/svg'/>", encoding="utf-8")
+    assert not any("schematic" in p for p in check.check(repo))

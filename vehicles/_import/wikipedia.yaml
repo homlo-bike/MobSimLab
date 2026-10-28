@@ -1,0 +1,146 @@
+# Wikipedia article per vehicle, keyed by legacyId. Applied by tools/vehicles/convert.py as the
+# `wikipedia` field: a link for identifying the vehicle (no text or images are copied).
+# scope: model  = the article is about this vehicle type or class;
+#        family = the article covers the product family or platform it belongs to;
+#        fleet  = the article covers the operator's fleet or system, with this vehicle in it.
+# checked_via: source = the URL is already a cited source of the vehicle;
+#              search = found by web search (title and URL), 2026-10-27.
+
+# brt
+mercedes-benz-capacity: {url: "https://nl.wikipedia.org/wiki/Mercedes-Benz_CapaCity", scope: model, checked_via: search}
+van-hool-exquicity-24-hybrid: {url: "https://fr.wikipedia.org/wiki/Van_Hool_ExquiCity", scope: family, checked_via: source}
+irizar-ie-tram-12-aixpress: {url: "https://nl.wikipedia.org/wiki/Irizar_ie_tram", scope: model, checked_via: search}
+
+# bus
+alexander-dennis-enviro500ev-hong-kong: {url: "https://en.wikipedia.org/wiki/Alexander_Dennis_Enviro500_MMC", scope: family, checked_via: search}
+byd-k8-japan: {url: "https://en.wikipedia.org/wiki/BYD_K_series", scope: family, checked_via: search}
+byd-k9-gemilang-singapore: {url: "https://en.wikipedia.org/wiki/BYD_K_series", scope: family, checked_via: source}
+higer-azure-12: {url: "https://nl.wikipedia.org/wiki/Higer_AZURE", scope: family, checked_via: search}
+iveco-daily-rosero-p-city: {url: "https://en.wikipedia.org/wiki/Iveco_Daily", scope: family, checked_via: search}
+iveco-urbanway-12m-bratislava: {url: "https://cs.wikipedia.org/wiki/Iveco_Urbanway_12M", scope: model, checked_via: search}
+iveco-urbanway-18m-banska-bystrica: {url: "https://fr.wikipedia.org/wiki/Iveco_Bus_Urbanway", scope: family, checked_via: search}
+karsan-atak-poprad: {url: "https://nl.wikipedia.org/wiki/Karsan_ATAK", scope: model, checked_via: search}
+karsan-e-jest: {url: "https://en.wikipedia.org/wiki/Karsan_Jest", scope: family, checked_via: search}
+man-lions-city-12c-presov: {url: "https://pl.wikipedia.org/wiki/MAN_Lion%E2%80%99s_City_12_EfficientHybrid", scope: model, checked_via: search}
+man-lions-city-18-magdeburg: {url: "https://en.wikipedia.org/wiki/MAN_Lion's_City", scope: family, checked_via: search}
+mercedes-benz-citaro-c2-k-poprad: {url: "https://de.wikipedia.org/wiki/Mercedes-Benz_Citaro_K", scope: model, checked_via: search}
+mercedes-benz-citaro-c2-poprad: {url: "https://en.wikipedia.org/wiki/Mercedes-Benz_Citaro", scope: family, checked_via: search}
+mercedes-benz-ecitaro-zvb: {url: "https://en.wikipedia.org/wiki/Mercedes-Benz_Citaro", scope: family, checked_via: search}
+mercedes-benz-sprinter-416-cdi-minibus: {url: "https://en.wikipedia.org/wiki/Mercedes-Benz_Sprinter", scope: family, checked_via: search}
+otokar-e-kent-c-12: {url: "https://pl.wikipedia.org/wiki/Otokar_Kent_C_(12m)", scope: family, checked_via: search}
+otokar-kent-c-18-75: {url: "https://sk.wikipedia.org/wiki/Otokar_Kent_C_18,75", scope: model, checked_via: search}
+scania-citywide-lf-12-cng-zvolen: {url: "https://en.wikipedia.org/wiki/Scania_Citywide", scope: family, checked_via: search}
+solaris-urbino-12-electric-stoag: {url: "https://en.wikipedia.org/wiki/Solaris_Urbino_12_electric", scope: model, checked_via: search}
+solaris-urbino-12-hydrogen: {url: "https://en.wikipedia.org/wiki/Solaris_Urbino", scope: family, checked_via: search}
+solaris-urbino-18-gen4: {url: "https://en.wikipedia.org/wiki/Solaris_Urbino_18", scope: model, checked_via: search}
+sor-ns-12-electric: {url: "https://cs.wikipedia.org/wiki/SOR_NS_12", scope: model, checked_via: search}
+yutong-e12: {url: "https://en.wikipedia.org/wiki/Yutong_E10", scope: model, checked_via: search}
+yutong-u12dd: {url: "https://nl.wikipedia.org/wiki/Yutong_U12DD", scope: model, checked_via: search}
+
+# intercity bus
+iveco-crossway-le-line-12m-arriva-bratislava: {url: "https://en.wikipedia.org/wiki/Irisbus_Crossway", scope: family, checked_via: search}
+iveco-evadys-12m: {url: "https://fr.wikipedia.org/wiki/Iveco_Bus_Evadys", scope: model, checked_via: search}
+mci-j4500-charge: {url: "https://en.wikipedia.org/wiki/MCI_J-Series", scope: family, checked_via: search}
+setra-s-531-dt: {url: "https://cs.wikipedia.org/wiki/Setra_S_531_DT", scope: model, checked_via: search}
+
+# trolleybus
+skoda-26-tr-solaris-zilina: {url: "https://sk.wikipedia.org/wiki/%C5%A0koda_26Tr_Solaris", scope: model, checked_via: search}
+skoda-27-tra-solaris: {url: "https://en.wikipedia.org/wiki/%C5%A0koda_27Tr_Solaris", scope: model, checked_via: search}
+skoda-30-tr-sor: {url: "https://en.wikipedia.org/wiki/%C5%A0koda_30Tr_SOR", scope: model, checked_via: search}
+skoda-solaris-trollino-24: {url: "https://cs.wikipedia.org/wiki/%C5%A0koda-Solaris_24m", scope: model, checked_via: search}
+sor-tns-12: {url: "https://cs.wikipedia.org/wiki/SOR_TNS_12", scope: model, checked_via: search}
+
+# tram
+alstom-citadis-401-luas: {url: "https://en.wikipedia.org/wiki/Alstom_Citadis", scope: family, checked_via: source}
+alstom-citadis-502-luas: {url: "https://en.wikipedia.org/wiki/Alstom_Citadis", scope: family, checked_via: source}
+bombardier-flexity-berlin-gt8-08zr: {url: "https://en.wikipedia.org/wiki/Flexity_Berlin", scope: model, checked_via: source}
+bombardier-flexity-outlook-toronto: {url: "https://en.wikipedia.org/wiki/Flexity_Outlook_(Toronto)", scope: model, checked_via: source}
+caf-urbos-3-budapest-9-module: {url: "https://hu.wikipedia.org/wiki/CAF_Urbos", scope: family, checked_via: source}
+pesa-swing-120na-warsaw: {url: "https://en.wikipedia.org/wiki/Pesa_Swing", scope: family, checked_via: source}
+siemens-avenio-munich-4-car: {url: "https://en.wikipedia.org/wiki/Siemens_Avenio", scope: family, checked_via: search}
+siemens-combino-d1-melbourne: {url: "https://en.wikipedia.org/wiki/D-class_Melbourne_tram", scope: model, checked_via: source}
+siemens-combino-d2-melbourne: {url: "https://en.wikipedia.org/wiki/D-class_Melbourne_tram", scope: model, checked_via: source}
+siemens-combino-supra-budapest: {url: "https://hu.wikipedia.org/wiki/Siemens_Combino_Supra", scope: model, checked_via: source}
+skoda-10t-portland: {url: "https://en.wikipedia.org/wiki/%C5%A0koda_10_T", scope: model, checked_via: source}
+skoda-15t-forcity-prague: {url: "https://en.wikipedia.org/wiki/%C5%A0koda_15_T", scope: model, checked_via: source}
+stadler-citylink-vbk: {url: "https://en.wikipedia.org/wiki/Stadler_Citylink", scope: family, checked_via: search}
+stadler-tramlink-blt-basel: {url: "https://en.wikipedia.org/wiki/Stadler_Tramlink", scope: family, checked_via: search}
+stadler-variobahn-london-tramlink: {url: "https://en.wikipedia.org/wiki/Stadler_Variobahn", scope: family, checked_via: source}
+
+# light rail
+crrc-tangshan-porto-ct: {url: "https://en.wikipedia.org/wiki/Porto_Metro", scope: fleet, checked_via: source}
+siemens-s70-twin-cities-3car: {url: "https://en.wikipedia.org/wiki/Siemens_S700_and_S70", scope: family, checked_via: search}
+siemens-s70-ultra-short-salt-lake-city-2car: {url: "https://en.wikipedia.org/wiki/Siemens_S700_and_S70", scope: family, checked_via: search}
+siemens-s700-minneapolis-4car: {url: "https://en.wikipedia.org/wiki/Siemens_S700_and_S70", scope: family, checked_via: search}
+siemens-s700-san-diego-3car: {url: "https://en.wikipedia.org/wiki/Siemens_S700_and_S70", scope: family, checked_via: search}
+stadler-citylink-avg: {url: "https://en.wikipedia.org/wiki/Stadler_Citylink", scope: family, checked_via: search}
+stadler-citylink-rsb-neckar-alb: {url: "https://en.wikipedia.org/wiki/Stadler_Citylink", scope: family, checked_via: search}
+stadler-citylink-saarbahn: {url: "https://en.wikipedia.org/wiki/Stadler_Citylink", scope: family, checked_via: search}
+stadler-citylink-salzburg: {url: "https://en.wikipedia.org/wiki/Stadler_Citylink", scope: family, checked_via: search}
+stadler-citylink-schiene-ooe: {url: "https://en.wikipedia.org/wiki/Stadler_Citylink", scope: family, checked_via: search}
+stadler-dt8-16-stuttgart-2car: {url: "https://de.wikipedia.org/wiki/SSB_DT_8", scope: model, checked_via: source}
+stadler-dt8-16-stuttgart-4car: {url: "https://de.wikipedia.org/wiki/SSB_DT_8", scope: model, checked_via: source}
+
+# metro
+alstom-metropolis-amsterdam-m5-6-car: {url: "https://en.wikipedia.org/wiki/M5_(Amsterdam_Metro)", scope: model, checked_via: source}
+alstom-metropolis-sydney-6-car: {url: "https://en.wikipedia.org/wiki/Sydney_Metro_Metropolis_Stock", scope: model, checked_via: source}
+alstom-mp14-paris-8-car: {url: "https://en.wikipedia.org/wiki/MP_14_(Paris_Metro)", scope: model, checked_via: source}
+bombardier-art-mark-ii-2-car: {url: "https://en.wikipedia.org/wiki/SkyTrain_(Vancouver)_rolling_stock", scope: fleet, checked_via: source}
+bombardier-london-2009-stock-8-car: {url: "https://en.wikipedia.org/wiki/London_Underground_2009_Stock", scope: model, checked_via: source}
+bombardier-london-s8-stock-8-car: {url: "https://en.wikipedia.org/wiki/London_Underground_S7_and_S8_Stock", scope: model, checked_via: source}
+bombardier-toronto-rocket-4-car: {url: "https://en.wikipedia.org/wiki/Toronto_Rocket", scope: model, checked_via: source}
+bombardier-toronto-rocket-6-car: {url: "https://en.wikipedia.org/wiki/Toronto_Rocket", scope: model, checked_via: source}
+crrc-changchun-mtr-kwun-tong-8-car: {url: "https://en.wikipedia.org/wiki/MTR_CNR_Changchun_EMU", scope: model, checked_via: source}
+crrc-puzhen-shanghai-13a01-6-car: {url: "https://en.wikipedia.org/wiki/Shanghai_Metro_AC18", scope: model, checked_via: source}
+hitachi-honolulu-skyline-4-car: {url: "https://en.wikipedia.org/wiki/Hitachi_Rail_Italy_Driverless_Metro", scope: family, checked_via: source}
+hitachi-new-taipei-c610-4-car: {url: "https://en.wikipedia.org/wiki/New_Taipei_Metro_C610", scope: model, checked_via: source}
+hyundai-rotem-canada-line-2-car: {url: "https://en.wikipedia.org/wiki/SkyTrain_(Vancouver)_rolling_stock", scope: fleet, checked_via: source}
+kawasaki-crrc-c151c-6-car: {url: "https://en.wikipedia.org/wiki/Kawasaki_Heavy_Industries_%26_CRRC_Qingdao_Sifang_C151C", scope: model, checked_via: source}
+kinki-sharyo-tokyo-metro-17000-8-car: {url: "https://en.wikipedia.org/wiki/Tokyo_Metro_17000_series", scope: model, checked_via: source}
+siemens-crrc-zhuzhou-guangzhou-b1-3-car: {url: "https://en.wikipedia.org/wiki/B1_(Guangzhou_Metro_car)", scope: model, checked_via: source}
+siemens-inspiro-warsaw-6-car: {url: "https://en.wikipedia.org/wiki/Siemens_Inspiro", scope: family, checked_via: source}
+siemens-val-208-2-car: {url: "https://en.wikipedia.org/wiki/VAL_208", scope: model, checked_via: source}
+stadler-bvg-j-4-car: {url: "https://en.wikipedia.org/wiki/BVG_Class_J", scope: model, checked_via: source}
+stadler-glasgow-subway-4-car: {url: "https://en.wikipedia.org/wiki/Glasgow_Subway_rolling_stock", scope: fleet, checked_via: source}
+
+# commuter rail
+crrc-crh6f-8-car: {url: "https://en.wikipedia.org/wiki/CRH6", scope: family, checked_via: source}
+siemens-class-717: {url: "https://en.wikipedia.org/wiki/British_Rail_Class_717", scope: model, checked_via: source}
+siemens-mireo-rhine-neckar-3-car: {url: "https://en.wikipedia.org/wiki/Siemens_Mireo", scope: family, checked_via: source}
+stadler-flirt-ns-4-car: {url: "https://en.wikipedia.org/wiki/Stadler_FLIRT", scope: family, checked_via: search}
+stadler-kiss-mav-6-car: {url: "https://en.wikipedia.org/wiki/Stadler_KISS", scope: family, checked_via: search}
+
+# regional rail
+alstom-regiolis-b85000-6-car: {url: "https://fr.wikipedia.org/wiki/Coradia_Polyvalent", scope: family, checked_via: source}
+caf-class-195-0: {url: "https://en.wikipedia.org/wiki/British_Rail_Class_195", scope: model, checked_via: source}
+caf-class-195-1: {url: "https://en.wikipedia.org/wiki/British_Rail_Class_195", scope: model, checked_via: source}
+caf-class-331-1: {url: "https://en.wikipedia.org/wiki/British_Rail_Class_331", scope: model, checked_via: source}
+crrc-crh6a-8-car: {url: "https://en.wikipedia.org/wiki/CRH6", scope: family, checked_via: source}
+siemens-class-185: {url: "https://en.wikipedia.org/wiki/British_Rail_Class_185", scope: model, checked_via: source}
+siemens-desiro-hc-rrx-4-car: {url: "https://de.wikipedia.org/wiki/Siemens_Desiro_HC", scope: family, checked_via: search}
+stadler-flirt-akku-nah-sh: {url: "https://de.wikipedia.org/wiki/Stadler_Flirt_Akku", scope: family, checked_via: search}
+stadler-gtw-2-6-akiem: {url: "https://en.wikipedia.org/wiki/Stadler_GTW", scope: family, checked_via: search}
+stadler-kiss-sbb-rabe-512: {url: "https://en.wikipedia.org/wiki/Stadler_KISS", scope: family, checked_via: search}
+
+# long-distance rail
+alstom-icng-8-car: {url: "https://en.wikipedia.org/wiki/NS_Intercity_Nieuwe_Generatie", scope: model, checked_via: source}
+caf-class-397: {url: "https://en.wikipedia.org/wiki/British_Rail_Class_397", scope: model, checked_via: source}
+hitachi-class-800-0: {url: "https://en.wikipedia.org/wiki/British_Rail_Class_800", scope: model, checked_via: source}
+jr-east-e657-series: {url: "https://en.wikipedia.org/wiki/E657_series", scope: model, checked_via: source}
+obb-railjet: {url: "https://de.wikipedia.org/wiki/Railjet_1._Generation", scope: model, checked_via: source}
+siemens-venture-via-rail: {url: "https://en.wikipedia.org/wiki/Siemens_Venture", scope: family, checked_via: source}
+stadler-flirt-pkp-intercity-ed160: {url: "https://en.wikipedia.org/wiki/Stadler_FLIRT", scope: family, checked_via: search}
+
+# high-speed rail
+crrc-cr400af-8-car: {url: "https://en.wikipedia.org/wiki/China_Railway_CR400AF", scope: model, checked_via: source}
+crrc-cr400af-a-16-car: {url: "https://en.wikipedia.org/wiki/China_Railway_CR400AF", scope: model, checked_via: source}
+crrc-cr400bf-8-car: {url: "https://en.wikipedia.org/wiki/China_Railway_CR400BF", scope: model, checked_via: source}
+crrc-crh380a-8-car: {url: "https://en.wikipedia.org/wiki/CRH380A", scope: model, checked_via: source}
+hitachi-frecciarossa-1000: {url: "https://en.wikipedia.org/wiki/Frecciarossa_1000", scope: model, checked_via: source}
+jr-central-n700s: {url: "https://en.wikipedia.org/wiki/N700S_Series_Shinkansen", scope: model, checked_via: source}
+siemens-ice-4-13-car: {url: "https://en.wikipedia.org/wiki/ICE_4", scope: model, checked_via: source}
+siemens-velaro-d-db-class-407: {url: "https://de.wikipedia.org/wiki/DB-Baureihe_407", scope: model, checked_via: search}
+siemens-velaro-e-renfe-s103: {url: "https://en.wikipedia.org/wiki/Renfe_Class_103", scope: model, checked_via: source}
+siemens-velaro-e320-class-374: {url: "https://en.wikipedia.org/wiki/British_Rail_Class_374", scope: model, checked_via: source}
+stadler-smile-giruno-sbb: {url: "https://en.wikipedia.org/wiki/SBB_RABe_501", scope: model, checked_via: source}
+talgo-avril-renfe-106: {url: "https://en.wikipedia.org/wiki/Talgo_AVRIL", scope: model, checked_via: source}

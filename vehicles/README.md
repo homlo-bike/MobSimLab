@@ -11,6 +11,9 @@ Licence: **CC BY 4.0** (see `CONTRIBUTING.md`). Manufacturer, model and operator
 | `_sources/sources.yaml` | Source register, same entry shape as `assumptions/sources.yaml`. |
 | `_import/<date>/` | Imported vehicle records the files are generated from: the 2026-10-26 catalogue, unchanged, and `2026-10-27-datasheets/`, transcribed from manufacturer data sheets. |
 | `_import/additions.yaml` | Values looked up after the import, each with its source. |
+| `_import/wikipedia.yaml` | Wikipedia article per vehicle (by `legacyId`), copied into the `wikipedia` field. |
+| `_import/schematics.yaml` | Hand-drawn schematics for generated vehicles (none yet), copied into the `schematic` field. |
+| `_schematics/` | Hand-drawn side views as SVG, CC BY 4.0. See `_schematics/README.md`. |
 | `schema/vehicle.schema.json` | JSON Schema 2020-12 for one vehicle file. |
 
 Mode folders: `bus`, `brt`, `trolleybus`, `intercity-bus`, `tram`, `light-rail`, `metro`, `commuter-rail`, `regional-rail`, `long-distance-rail`, `high-speed-rail`. The `mode` field uses the assumption library's ids (`intercity_bus`, `light_rail`, …).
@@ -23,6 +26,8 @@ Every value is a record `{value, unit, assumed, basis, sources, rationale}`, wit
 - `supplySystems` lists the electrical supply systems the vehicle can take power from, as ids defined in `assumptions/supply-systems.yaml` (`ocl-25kv-50hz`, `ocl-1000v-dc`, `trolley-600v-dc`, `third-rail-750v-dc`, …).
 - `costRecords` are published order values, usually for a whole fleet, not per-vehicle prices.
 - `livery` colours are always educated guesses.
+- `wikipedia` is a link to identify the vehicle, `{url, scope, checked_via}`. `scope` says whether the article covers this `model`, its product `family`, or the operator's `fleet`. Nothing from the article is copied, and photos are not embedded: the app shows a link that opens the article.
+- `schematic` (optional) points at a hand-drawn SVG in `_schematics/` that replaces the side view the app draws from the geometry fields.
 
 ## Regenerating and checking
 

@@ -184,6 +184,11 @@
       ]
     }
   ],
+  "wikipedia": {
+    "url": "https://sk.wikipedia.org/wiki/Otokar_Kent_C_18,75",
+    "scope": "model",
+    "checked_via": "search"
+  },
   "notes": "Articulated Kent C presented 2015. Standing places at 5 persons/m² (116 standing, 155 total at 8 persons/m²). Engine DAF Paccar MX-11, 270 kW (tractionPowerKw = rated engine power). Wheelbases 5900 mm and 6740 mm. Floor 330 mm (270 mm kneeling). Capacity excludes the driver.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

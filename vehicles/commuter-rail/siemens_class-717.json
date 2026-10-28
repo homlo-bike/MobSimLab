@@ -197,6 +197,11 @@
       "wp-british-rail-class-717"
     ]
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/British_Rail_Class_717",
+    "scope": "model",
+    "checked_via": "source"
+  },
   "notes": "Dual-voltage: 25 kV 50 Hz AC overhead and 750 V DC third rail (Moorgate branch). total = seats (no standing figure published). doorsPerSide derived: 2 doors per side per car × 6. Power 1,200 kW at the wheels; maximum speed 85 mph (137 km/h).",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

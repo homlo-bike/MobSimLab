@@ -165,6 +165,11 @@
     ],
     "rationale": "Not attributed to one source in the import; see notes."
   },
+  "wikipedia": {
+    "url": "https://cs.wikipedia.org/wiki/Setra_S_531_DT",
+    "scope": "model",
+    "checked_via": "search"
+  },
   "notes": "Maximum speed is the legal speed-limiter setting for M2/M3 vehicles in the EU (Directive 92/6/EEC Art. 2: cannot exceed 100 km/h), not a manufacturer design speed. Capacity: 83 seats in series seating; the data sheet gives a maximum passenger capacity of 93 and minimum of 54 depending on layout (no standing in coach service). Axle positions derived from the published 2705 mm front overhang, 6700 mm wheelbase to the drive axle and 1350 mm to the trailing axle. Turning circle 23.138 m as published. Door clear width approx. 900 mm. Engine OM 471, 375 kW (tractionPowerKw = rated engine power).",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

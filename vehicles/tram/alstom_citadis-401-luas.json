@@ -144,6 +144,11 @@
     ],
     "rationale": "approximation of silver body with a yellow visibility stripe (Luas)"
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Alstom_Citadis",
+    "scope": "family",
+    "checked_via": "source"
+  },
   "notes": "Original Citadis 301 trams extended to the 401 specification by 2007 (TII): 40.8 m, 2.4 m wide, 70% low floor. Capacity 358 including two wheelchairs (Wikipedia; seated/standing split and standing density not given). Top speed 70 km/h is stated for the Luas Citadis trams on off-street sections. Five sections per the Citadis type list (401). Module plan, bogie positions, doors per side, power, acceleration and cost not found.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

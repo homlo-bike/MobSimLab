@@ -140,6 +140,11 @@
       "zhengzhou-yutong-bus-yutong-e12-12m-electric-city-bus"
     ]
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Yutong_E10",
+    "scope": "model",
+    "checked_via": "search"
+  },
   "notes": "Manufacturer page lists \"No. of passengers 61\" without a seated/standing split; capacity depends on the market layout. Turning circle is the published minimum turning diameter (19 m). Wheelbase 6000 mm; overhangs not published, so axle positions are left empty. Battery 422.87 kWh, liquid cooled (LFP per secondary sources). Range and charging time not published on this page.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

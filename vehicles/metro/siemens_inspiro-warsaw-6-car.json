@@ -192,6 +192,11 @@
       "siemens-35-six-car-inspiro-metro-trains-metro-wa"
     ]
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Siemens_Inspiro",
+    "scope": "family",
+    "checked_via": "source"
+  },
   "notes": "Six-car Mc-T-M-M-T-Mc Inspiro for Warsaw (35 trains, first in service October 2013). Length approx. 117.8 m over couplers; tare approx. 163 t, total approx. 265 t at 7 passengers/m². Capacity 1,502 at 7 passengers/m² with 234 seats; standing = 1,502 − 234 = 1,268 (derived). Eight passenger doors per car, i.e. 4 per side × 6 cars = 24 per side (derived). Minimum curve radius 300 m on the service line and 60 m in the depot (60 m entered). Traction power, acceleration and braking not given in the sheet.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

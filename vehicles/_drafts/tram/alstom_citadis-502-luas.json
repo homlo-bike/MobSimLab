@@ -145,6 +145,11 @@
     ],
     "rationale": "approximation of silver body with a yellow visibility stripe (Luas)"
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Alstom_Citadis",
+    "scope": "family",
+    "checked_via": "source"
+  },
   "notes": "54.7 m, 2.4 m wide, 100% low floor (TII). Capacity 408 for the extended/new 55 m trams (NTA, 2019); TII says 'over 400'. Seated/standing split and standing density not given. Nine sections per the Citadis type list (502); module plan (bogie vs suspended modules), bogie positions and doors per side were not found in a source, so they are left empty. 70 km/h is the top speed stated for the Luas Citadis trams on off-street sections. Power, acceleration and cost not found.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only.",
   "draftReason": "Core fields not sourced: seats, standingQuoted"

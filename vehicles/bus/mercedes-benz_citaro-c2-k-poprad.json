@@ -147,6 +147,11 @@
       "imhd-sk-mercedes-benz-citaro-c2-k-vehicle-type-d"
     ]
   },
+  "wikipedia": {
+    "url": "https://de.wikipedia.org/wiki/Mercedes-Benz_Citaro_K",
+    "scope": "model",
+    "checked_via": "search"
+  },
   "notes": "SAD Poprad, 8 vehicles (2021-2022). OM 936 h Euro 6e diesel, 220 kW. Height 3,120 mm with air conditioning (3,095 mm without). Wheelbase 4,398 mm. Capacity excludes the driver (+1). Livery not described by the source.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

@@ -169,6 +169,11 @@
     ],
     "rationale": "approximation of the GWR green livery"
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/British_Rail_Class_800",
+    "scope": "model",
+    "checked_via": "source"
+  },
   "notes": "Electro-diesel bi-mode: 25 kV AC overhead plus underfloor diesel generator units (700 kW per engine on GWR units; the number of engines per 5-car set is not given in the source, so total traction power is left empty). Seats 326 (36 first, 290 standard). total = seats (no standing figure published). doorsPerSide derived: 2 doors per side per car × 5. Weight 243 t as given.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

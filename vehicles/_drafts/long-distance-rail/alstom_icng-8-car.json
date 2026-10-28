@@ -184,6 +184,11 @@
     ],
     "rationale": "approximation of NS yellow and blue"
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/NS_Intercity_Nieuwe_Generatie",
+    "scope": "model",
+    "checked_via": "source"
+  },
   "notes": "Seats 417 for the domestic eight-car units (Railway Gazette); the 3300 series (ICNG-B) has 410. total = seats (no standing figure published). Maximum speed 200 km/h on HSL-Zuid, 140 km/h on conventional lines. The 3300 series additionally supports 3 kV DC and 15 kV 16.7 Hz.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only.",
   "draftReason": "Core fields not sourced: width"

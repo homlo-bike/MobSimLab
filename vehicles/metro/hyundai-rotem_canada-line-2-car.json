@@ -153,6 +153,11 @@
       ]
     }
   ],
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/SkyTrain_(Vancouver)_rolling_stock",
+    "scope": "fleet",
+    "checked_via": "source"
+  },
   "notes": "Cars are stated as 3 m wide and 20 m long; train lengthM = 2 x 20 m (derived). Capacity 334 is the normal load at 4 persons/m2 with 88 seats; crush load is stated as 400. maxSpeedKmh 90 is the catch-up mode speed; normal operation is 80 km/h. Runs driverless under SelTrac automatic train control; no GoA grade stated, so automationGrade is empty. Figures from Wikipedia (secondary).",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

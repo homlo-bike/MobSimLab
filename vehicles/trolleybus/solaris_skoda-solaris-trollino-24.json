@@ -207,6 +207,11 @@
       ]
     }
   ],
+  "wikipedia": {
+    "url": "https://cs.wikipedia.org/wiki/%C5%A0koda-Solaris_24m",
+    "scope": "model",
+    "checked_via": "search"
+  },
   "notes": "Three-section (double-articulated) trolleybus; Solaris prototype 2019. Figures for Bratislava vehicles built 2023, ordered as hybrid trolleybuses with traction batteries (battery size and off-wire range not published by the source). Two 160 kW motors (320 kW). Converter input 600/750 V DC. Wheelbases 5900/6000/7350 mm. Capacity excludes the driver.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

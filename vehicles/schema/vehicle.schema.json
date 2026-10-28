@@ -197,6 +197,34 @@
         "rationale": { "type": "string" }
       }
     },
+    "wikipedia": {
+      "description": "Wikipedia article for identifying the vehicle: a link only, no text or images are copied. scope: model = article on this type or class; family = its product family or platform; fleet = the operator's fleet or system.",
+      "type": "object",
+      "required": ["url", "scope", "checked_via"],
+      "additionalProperties": false,
+      "properties": {
+        "url": { "type": "string", "pattern": "^https://[a-z]{2,3}(-[a-z]+)?\\.wikipedia\\.org/wiki/[^\\s#?]+$" },
+        "scope": { "enum": ["model", "family", "fleet"] },
+        "checked_via": { "enum": ["source", "search"] }
+      }
+    },
+    "schematic": {
+      "description": "Hand-drawn side view used instead of the one generated from the geometry fields. Optional; without it the app draws the vehicle from length, consist, doors and livery.",
+      "type": "object",
+      "required": ["file", "author", "licence"],
+      "additionalProperties": false,
+      "properties": {
+        "file": {
+          "description": "SVG under vehicles/_schematics/, named after the catalogue file.",
+          "type": "string",
+          "pattern": "^vehicles/_schematics/[a-z0-9-]+_[a-z0-9-]+\\.svg$"
+        },
+        "author": { "type": "string", "minLength": 1 },
+        "licence": { "const": "CC-BY-4.0" },
+        "created": { "type": "string", "format": "date" },
+        "note": { "type": "string" }
+      }
+    },
     "notes": { "type": "string" },
     "draftReason": { "description": "Present only on files in vehicles/_drafts/.", "type": "string" },
     "trademarkNotice": { "type": "string", "minLength": 1 }

@@ -224,6 +224,11 @@
     ],
     "rationale": "approximation of white base with central red and green stripes (North South and East West line colours)"
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Kawasaki_Heavy_Industries_%26_CRRC_Qingdao_Sifang_C151C",
+    "scope": "model",
+    "checked_via": "source"
+  },
   "notes": "Formation DT-M1-M2+M2-M1-DT. doorsPerSide = 4 per side per car x 6 cars (derived); door width 1,450 mm. Capacity 1,920 passengers with no density basis stated. Max speed 90 km/h design, 80 km/h service. Deceleration is the service rate (1.3 m/s2 emergency). Thales SelTrac CBTC, GoA 3 (DTO). Figures from Wikipedia (secondary).",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only.",
   "draftReason": "Core fields not sourced: seats, standingQuoted"

@@ -182,6 +182,11 @@
       "wp-bvg-class-j"
     ]
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/BVG_Class_J",
+    "scope": "model",
+    "checked_via": "source"
+  },
   "notes": "Four-car (DM–M–M–DM) large-profile J unit built by Stadler in Berlin-Pankow; entered service 30 April 2026. total = 110 seats + 353 standing = 463 (derived sum; standing density not stated). The article gives 38 seats / 177 standing for the 2-car unit, which does not double to the 4-car figure; values copied as published. Doors: 3 sliding plug doors per side per car, × 4 cars = 12 per side (derived). Power 12 × 100 kW. 750 V DC third rail; regenerative braking.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

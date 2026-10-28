@@ -188,6 +188,11 @@
       "stadler-flirt-akku-2-car-unit-nahverkehrsverbund"
     ]
   },
+  "wikipedia": {
+    "url": "https://de.wikipedia.org/wiki/Stadler_Flirt_Akku",
+    "scope": "family",
+    "checked_via": "search"
+  },
   "notes": "Battery bi-mode EMU: 15 kV catenary plus lithium-ion traction battery for catenary-free sections, charged under the wire and at electrified terminals; braking energy stored in the batteries. Seats 105 + 18 flap seats = 123; standing 123 at 4 pers./m², 93 when the flap seats are occupied; the sheet gives 216 passengers in total (123 seated + 93 standing). tractionPowerKw derived from \"Drive 2 × 500 kW\". Battery capacity and battery range are not published in this sheet, so left empty. Floor height is low floor (high floor 1,145 mm).",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

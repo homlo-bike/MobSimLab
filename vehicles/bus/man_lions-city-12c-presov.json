@@ -129,6 +129,11 @@
       "imhd-sk-man-lion-s-city-12c-vehicle-type-descrip"
     ]
   },
+  "wikipedia": {
+    "url": "https://pl.wikipedia.org/wiki/MAN_Lion%E2%80%99s_City_12_EfficientHybrid",
+    "scope": "model",
+    "checked_via": "search"
+  },
   "notes": "MAN 12C Lion's City NL330 EfficientHybrid (built 2020), leased by DPMP in 2026. MAN D1556 LOH Euro 6 diesel, 243 kW, Voith DIWA 6-speed. Height with air conditioning. Wheelbase 6,005 mm. The source gives seats 31 + 2, standing 67 and total 100; the two extra seats (driver/folding) are not split out, so total is left to seated + standing (98). Livery not described.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

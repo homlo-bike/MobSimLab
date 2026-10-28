@@ -165,6 +165,11 @@
       "environment-and-ecol-double-deck-electric-bus-alexander-denni"
     ]
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Alexander_Dennis_Enviro500_MMC",
+    "scope": "family",
+    "checked_via": "search"
+  },
   "notes": "Capacity: 82 seats / up to 117 passengers (Hong Kong layout, manufacturer). Axle positions derived from the published 2.5 m front overhang and 5.6 m + 1.5 m wheelbases. Turning circle 22.2 m is twice the published 11.1 m turning radius. Maximum speed 70 km/h and range 200 km come from the Hong Kong government sheet for a non-franchised version (driver + 86 seats), which may differ from the franchised layout. 310 kW continuous / 410 kW peak motor. Range removed: the only published range is for a different seating layout.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

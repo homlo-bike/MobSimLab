@@ -178,6 +178,11 @@
       "stadler-flirt-for-pkp-intercity-vehicle-data"
     ]
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Stadler_FLIRT",
+    "scope": "family",
+    "checked_via": "search"
+  },
   "notes": "First batch (20 units, commissioning 2015). Seats 354 = 60 first + 294 second class; 8 bistro benches and 6 tip-up seats not counted. total = seats (no standing figure published). cars = 8 read from the axle arrangement Bo'2'2'2'2'+2'2'2'2'Bo'. tractionPowerKw = maximum output at wheel (continuous 2,000 kW). Entrance width 940 mm; eight doors per side.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

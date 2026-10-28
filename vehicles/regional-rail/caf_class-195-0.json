@@ -151,6 +151,11 @@
       "wp-british-rail-class-195"
     ]
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/British_Rail_Class_195",
+    "scope": "model",
+    "checked_via": "source"
+  },
   "notes": "total = seats (no standing figure published). doorsPerSide derived: 2 double-leaf plug doors per side per car × 2 cars. Maximum speed 100 mph (160 km/h).",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

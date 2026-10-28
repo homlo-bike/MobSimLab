@@ -160,6 +160,11 @@
       "wp-british-rail-class-331"
     ]
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/British_Rail_Class_331",
+    "scope": "model",
+    "checked_via": "source"
+  },
   "notes": "Seats 260 plus 23 tip-up seats not counted. total = seats (no standing figure published). doorsPerSide derived: 2 double-leaf plug doors per side per car × 4. Maximum speed 100 mph (161 km/h as given). Power 1,760 kW is given once for the class.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

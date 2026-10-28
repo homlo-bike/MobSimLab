@@ -207,6 +207,11 @@
     ],
     "rationale": "approximation of white with green and blue stripes and grey skirt (Yarra Trams livery from 2000); many trams now carry the PTV livery, not described here"
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/D-class_Melbourne_tram",
+    "scope": "model",
+    "checked_via": "source"
+  },
   "notes": "Melbourne D2 class: 5-section multi-articulated 100% low-floor Combino. Capacity total = seated + standing (56/130) as listed by the source; standing density not stated. Maximum speed, acceleration (1.3 m/s2), traction power (400 kW), 600 V DC and gauge are listed for the D-class fleet as a whole. Deceleration is the maximum operational rate (average operational 1.25 m/s2, maximum emergency 3.3 m/s2). Floor height 300 mm is the figure the Combino article gives for all versions. consist.suspendedModules (2) is derived from the Combino article's description of the original design as alternating wheeled and suspended sections over 5 sections; no official module plan was found, so car lengths and bogie positions are left empty. Doors: source lists '2 single, 4 (D1) or 6 (D2) double' without a per-side split, so doorsPerSide is null. 21 built. Minimum curve radius and cost not found.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

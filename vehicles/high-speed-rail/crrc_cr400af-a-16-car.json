@@ -152,6 +152,11 @@
       "wp-china-railway-cr400af"
     ]
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/China_Railway_CR400AF",
+    "scope": "model",
+    "checked_via": "source"
+  },
   "notes": "Seats 1193 = 22 business + 148 first + 1023 standard. Length 414 m from the specification table (the variant text says 415 m). Service speed 350 km/h (design 400 km/h). Traction power 20.8 MW under 25 kV. Entered service 16 June 2018.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

@@ -203,6 +203,11 @@
     ],
     "rationale": "Silver-grey body with red doors, as described in the article; hex values approximate."
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/M5_(Amsterdam_Metro)",
+    "scope": "model",
+    "checked_via": "source"
+  },
   "notes": "Six-car M5 Metropolis (constructed 2011–2015, in service 24 June 2013). Capacity 174 seats + 786 standing = 960; standing density not stated. Power 16 × 200 kW = 3,200 kW. carLengthsM places the two 20.296 m end cars at the ends and the four 18.890 m intermediate cars between them (sum 116.15 m vs 116.2 m published). The order cost about €200 million according to the article, but no year is given, so no cost entry.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

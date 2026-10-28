@@ -175,6 +175,11 @@
       "imhd-sk-otokar-e-kent-c-12-vehicle-type-descript"
     ]
   },
+  "wikipedia": {
+    "url": "https://pl.wikipedia.org/wiki/Otokar_Kent_C_(12m)",
+    "scope": "family",
+    "checked_via": "search"
+  },
   "notes": "First e-Kent prototype 2019; the second generation with CATL batteries was presented in 2024 (figures here are for the Bratislava vehicles with 449.3 kWh CATL LFP). Voith motor 310 kW continuous / 410 kW peak. Wheelbase 5900 mm. Capacity excludes the driver. Range not published by the source. The 550,000 EUR value reported for Bratislava was compensation in kind, not a purchase price, so it is not listed as a cost.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

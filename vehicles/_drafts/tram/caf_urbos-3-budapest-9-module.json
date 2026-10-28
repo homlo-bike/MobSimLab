@@ -146,6 +146,11 @@
       ]
     }
   ],
+  "wikipedia": {
+    "url": "https://hu.wikipedia.org/wiki/CAF_Urbos",
+    "scope": "family",
+    "checked_via": "source"
+  },
   "notes": "Nine-module, about 56 m long Budapest Urbos 3 (Hungarian Wikipedia photo caption: 55.9 m); up to 562 passengers (CAF, no seated/standing split). maxSpeedKmh = 50 is the service speed CAF states for the Budapest trams; a design maximum speed was not found in the sources read. Power 840 kW for the long trams (560 kW for the 34 m five-module trams). First long tram received its operating permit in March 2016 (line 1). Supply voltage, width, weight, doors and module layout (suspended modules) not stated in the sources read.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only.",
   "draftReason": "Core fields not sourced: width"

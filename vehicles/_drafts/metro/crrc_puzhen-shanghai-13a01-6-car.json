@@ -192,6 +192,11 @@
     ],
     "rationale": "Grey-silver body with black and pink, as described in the source; hex values are approximations."
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Shanghai_Metro_AC18",
+    "scope": "model",
+    "checked_via": "source"
+  },
   "notes": "Capacity derived: 310 per car (published) x 6 cars = 1860. Acceleration and deceleration converted from 3.2 and 3.6 km/(h·s) (service; emergency 4.7 km/(h·s)). The single published car length (23.54 m) is applied to every car; the train length is the published 139.98 m. Formation Tc-Mp-M+M-Mp-Tc, 144 cars built 2011–2013.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only.",
   "draftReason": "Core fields not sourced: seats, standingQuoted"

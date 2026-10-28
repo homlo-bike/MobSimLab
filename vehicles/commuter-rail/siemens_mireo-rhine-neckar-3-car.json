@@ -181,6 +181,11 @@
       "siemens-mireo-rhine-neckar-s-bahn-for-db-regio-a"
     ]
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Siemens_Mireo",
+    "scope": "family",
+    "checked_via": "source"
+  },
   "notes": "Three-car Mireo (wheel arrangement Bo'2'2'Bo', Jacobs bogies) for the Rhine-Neckar S-Bahn (57 trains ordered 2017). total = seats (no standing figure published). Width, height and weight (112 t) are the family values for three-car Mireo sets from Wikipedia. floorHeightMm is the entrance height (800 mm). Up to 26 bicycles in the multipurpose areas. Six entrance areas per train (sides not specified), so doorsPerSide is empty. Service start year not stated in the sources read.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

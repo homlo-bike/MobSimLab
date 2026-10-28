@@ -150,6 +150,11 @@
     ],
     "rationale": "approximation of green and white livery (as unveiled 2016)"
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Hitachi_Rail_Italy_Driverless_Metro",
+    "scope": "family",
+    "checked_via": "source"
+  },
   "notes": "Capacity = 4 cars x 195 people (36 seated) per car as listed for each car (derived); the article also says \"nearly 800 passengers\" per train. No density basis stated. Length 78.2 m and width 3.05 m from the Driverless Metro systems table (the Skyline article gives 256 ft / 64 ft per car). Top contact third rail. Driverless operation; no GoA grade stated. Figures from Wikipedia (secondary).",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

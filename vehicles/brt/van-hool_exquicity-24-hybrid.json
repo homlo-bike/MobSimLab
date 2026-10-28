@@ -175,6 +175,11 @@
     ],
     "rationale": "Not attributed to one source in the import; see notes."
   },
+  "wikipedia": {
+    "url": "https://fr.wikipedia.org/wiki/Van_Hool_ExquiCity",
+    "scope": "family",
+    "checked_via": "source"
+  },
   "notes": "Range launched 2011; production ended with Van Hool in 2024. Capacity 150 is the Metz Mettis figure (23.8 m hybrid, MAN 184 kW diesel + Siemens generator). Axle positions derived from the published 1.9 m front overhang and 6.6/6.71/6.71 m wheelbases. Turning circle 24.3 m is twice the published 12.15 m turning radius (11.4 m between kerbs). Maximum speed 67.5 km/h is the family-wide value in the French Wikipedia infobox (unsourced there), so confidence is low. Floor height is the published boarding height.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

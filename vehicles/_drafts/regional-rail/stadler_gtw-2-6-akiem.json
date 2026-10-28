@@ -143,6 +143,11 @@
       "akiem-stadler-gtw-mu-technical-data-sheet-non"
     ]
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Stadler_GTW",
+    "scope": "family",
+    "checked_via": "search"
+  },
   "notes": "Data sheet column GTW 2/6 (year of construction 2007, authorisation NL); the lessor marks the sheet non-binding. Seated = 93 standard + 16 first class; 14 folding seats not counted. total = seats (no standing figure published). tractionPowerKw = installed diesel engine power 2 × 380 kW (engine output, not power at wheel). Floor height is the low-floor value (high floor 996 mm). Sheet gives 2 doors per vehicle (not per side), so doorsPerSide is left empty. Configuration given by the sheet as \"2 car\".",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only.",
   "draftReason": "Core fields not sourced: width"

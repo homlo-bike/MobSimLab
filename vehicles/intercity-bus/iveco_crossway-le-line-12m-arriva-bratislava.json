@@ -148,6 +148,11 @@
       "imhd-sk-iveco-crossway-le-12m-vehicle-type-descr"
     ]
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Irisbus_Crossway",
+    "scope": "family",
+    "checked_via": "search"
+  },
   "notes": "80 vehicles (2021-2022) for regional lines of the Bratislava Region integrated transport system. FPT Tector 7 Euro 6d/6e diesel 235 kW, ZF 6-speed manual. Maximum speed 100 km/h with speed limiter, as stated by the source. Height 3,205 mm with air conditioning (3,140 mm without). Floor 320 mm (door 1), 330 mm (door 2); raised floor in the rear. Wheelbase 6,030 mm. Standing 43 for 2021 vehicles (42 for 2022, total 87). Capacity excludes the driver. imhd.sk: low-entry version presented 2007; over 60,000 Crossway built by 2023. A suburban low-entry bus rather than a touring coach. Livery not described.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

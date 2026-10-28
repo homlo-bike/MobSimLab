@@ -169,6 +169,11 @@
     ],
     "rationale": "Singapore 'Lush Green' public bus livery, as described in the source; hex value is an approximation."
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/BYD_K_series",
+    "scope": "family",
+    "checked_via": "source"
+  },
   "notes": "Singapore configuration: 28 seated + 52 standing = 80, two wheelchair bays, two doors (front entrance, middle exit). Max speed 96 km/h is BYD's general K9 figure (Wikipedia), not stated for this Singapore batch. 300 kW = 2 x 150 kW motors. Range 'over 250 km' (Singapore operation limited to 200 km). 20 units, in service from 29 July 2020.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

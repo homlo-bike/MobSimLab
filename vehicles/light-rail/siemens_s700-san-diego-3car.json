@@ -236,6 +236,11 @@
     ],
     "rationale": "approximation of the traditional San Diego Trolley red"
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Siemens_S700_and_S70",
+    "scope": "family",
+    "checked_via": "search"
+  },
   "notes": "Describes a consist of 3 coupled S700 vehicles. Per-vehicle figures (Siemens data sheet): length over coupler 24.8 m, empty weight 43.95 t, 58 seats, approx. 184 total passengers, 4 doors per side, 4 wheelchair spaces, traction 4 x 130 kW, maximum operational speed 88 km/h, service acceleration and deceleration 1.34 m/s2, emergency braking 2.18-2.2 m/s2, minimum turning radius 25 m. Consist totals (length, weight, seats, total, doors, wheelchair spaces, power) are per-vehicle values multiplied by 3 (marked derived); width, height, speeds and rates are per vehicle. Capacity is per consist; per vehicle it is 184. The data sheet says the vehicles can run in multiple-unit consists of up to four. Each vehicle is double-articulated (three sections, Bo'+2'+Bo'). Floor height 381 mm is the low-floor centre (356 mm threshold; a 670 mm high-floor section over the trucks is also listed). The data sheet gives no standing density for 'approx. 184 total passengers'. Maximum allowable speed 105 km/h. Standing places not separately stated.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

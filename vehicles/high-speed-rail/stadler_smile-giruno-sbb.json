@@ -209,6 +209,11 @@
       ]
     }
   ],
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/SBB_RABe_501",
+    "scope": "model",
+    "checked_via": "source"
+  },
   "notes": "Eleven-car EC250 multi-system unit. 405 seats (117 first / 288 second class) per the Stadler sheet (Wikipedia: 117 / 286), plus 17 dining-car seats not counted; total = seats (no standing figure published). Max. output at wheel 6,000 kW (Wikipedia: 4,800 kW continuous). 250 km/h maximum; approved for 200 km/h on Swiss lines in single formation. Floor 940 mm low-floor / 1,200 mm high-floor; level boarding at P55 and P76 platforms. Unladen weight 380 t (Wikipedia).",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

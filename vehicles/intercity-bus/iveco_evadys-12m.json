@@ -153,6 +153,11 @@
       "imhd-sk-iveco-evadys-vehicle-type-description"
     ]
   },
+  "wikipedia": {
+    "url": "https://fr.wikipedia.org/wiki/Iveco_Bus_Evadys",
+    "scope": "model",
+    "checked_via": "search"
+  },
   "notes": "Two coaches (2023-2024) on suburban and long-distance lines of the Piešťany depot listed by imhd.sk (operator not named in the source). Engine 8,709 cm³, 294 kW, automatic gearbox; diesel assumed from the engine data (fuel not stated explicitly). Capacity 53 seats + 1 standing as published. Livery not described.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

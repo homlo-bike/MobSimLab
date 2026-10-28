@@ -219,6 +219,11 @@
     ],
     "rationale": "approximation of the stainless-steel car body (no painted livery stated)"
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Toronto_Rocket",
+    "scope": "model",
+    "checked_via": "source"
+  },
   "notes": "Total 948 is the crush load for a 4-car set (no density stated). doorsPerSide = 4 door sets per side per car x 4 cars (derived). Acceleration 0.9 m/s2 is the limited value; deceleration is the service rate (1.5 m/s2 emergency). Max speed 88 km/h train maximum; 75 km/h service maximum. minCurveRadiusM is the horizontal minimum (vertical 610 m). Figures from Wikipedia (secondary).",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

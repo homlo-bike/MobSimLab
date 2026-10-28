@@ -150,6 +150,11 @@
       "stadler-electrical-double-decker-multiple-unit-s"
     ]
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Stadler_KISS",
+    "scope": "family",
+    "checked_via": "search"
+  },
   "notes": "Seats 466 (94 first + 372 second class); 15 tip-up seats not counted; standing spaces 838 as published; total = seats + standing. cars = 6 read from the axle arrangement Bo'Bo'+2'2'+2'2'+2'2'+2'2'+Bo'Bo'. Floor height is low floor at entrance (lower deck 443 mm, upper deck 2,527 mm). The sheet prints power at wheel as \"4000 W / 6000 W\" (unit apparently misprinted), so tractionPowerKw is left empty. Delivery from 2023; used on interregio and regional services.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

@@ -168,6 +168,11 @@
       "karsan-otomotiv-e-jest-specs"
     ]
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Karsan_Jest",
+    "scope": "family",
+    "checked_via": "search"
+  },
   "notes": "Karsan UK spec page: width without mirrors, height with air conditioning; wheelbase 3,750 mm, front overhang 1,200 mm, rear 950 mm (axle positions derived from these); turning radius 6,993 mm; GVW 5,000/5,200 kg (not split by version, left null). Motor 135 kW peak, 290 Nm. Battery Li-ion up to 88 kWh; range 210 km NEDC for a base-level vehicle. Charging: AC Type 2 22 kW about 4 h, DC Combo 2 80 kW about 65 min to 80 % (depot plug-in; rechargeTimeMin is the DC figure). Other layouts: 10 seated + 2 folding + 3 standing (15), 10 seated + 1 wheelchair + 2 standing (13). Operators not listed by the source.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

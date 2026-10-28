@@ -197,6 +197,11 @@
       ]
     }
   ],
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/%C5%A0koda_30Tr_SOR",
+    "scope": "model",
+    "checked_via": "search"
+  },
   "notes": "Figures for the version without auxiliary power unit. The 30 TrDG variant has a diesel generator APU (28 seats, 32 standing, 12.78 t kerb weight). Traction converter input 600 V DC. Floor 360 mm (320 mm at door sill, 240 mm kneeling). Wheelbase 6180 mm. Capacity excludes the driver and two further places listed separately (+1+2).",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

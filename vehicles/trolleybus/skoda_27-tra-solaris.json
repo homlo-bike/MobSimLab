@@ -197,6 +197,11 @@
       ]
     }
   ],
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/%C5%A0koda_27Tr_Solaris",
+    "scope": "model",
+    "checked_via": "search"
+  },
   "notes": "27 Tr prototype 2009; New Urbino body from 2017. Figures for the 23 Bratislava 27 TrA built 2023. Two LTO traction battery boxes (Škoda TBS 5.5) give at least 12 km off-wire (rangeKm is this minimum off-wire range); battery kWh not published. Converter input 600/750 V DC. Wheelbases 5900/6000 mm. Floor 320 mm (250 mm kneeling). Capacity excludes the driver.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

@@ -157,6 +157,11 @@
       ]
     }
   ],
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Pesa_Swing",
+    "scope": "family",
+    "checked_via": "source"
+  },
   "notes": "Five-section, 100 % low-floor Swing 120Na of the 2010 Warsaw order (180 + 6 Duo units). Length 30.12 m (Polish Wikipedia 120Na entry; same as the English infobox). Capacity 40 seated + 161 standing = 201 and power 4 × 105 kW are family figures from the English infobox that match this 30.12 m version; the Polish article lists 40 + 4 seats for the 120Na and no standing figure. Standing density, doors, weight and supply voltage not stated.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

@@ -193,6 +193,11 @@
       "stadler-metro-glasgow-emu-strathclyde-partnershi"
     ]
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Glasgow_Subway_rolling_stock",
+    "scope": "fleet",
+    "checked_via": "source"
+  },
   "notes": "Fully automatic, unattended small-profile train (17 units; in service from 11 December 2023). cars = 4 read from the axle arrangement Bo'Bo'+2'+2'+Bo'Bo' (derived). total = 104 seats + 200 standing at 6 persons/m² = 304 (derived; 6 tip-up seats not counted). tractionPowerKw is the maximum output at wheel (820 kW; continuous 520 kW). automationGrade GoA4 from the sheet's 'fully automatically, without drivers'. 600 V DC third rail; 1,220 mm gauge.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

@@ -193,6 +193,11 @@
       "stadler-citylink-tram-train-das-projekt-vehicle"
     ]
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Stadler_Citylink",
+    "scope": "family",
+    "checked_via": "search"
+  },
   "notes": "Column 'Schiene OÖ' of the Stadler VDV TramTrain vehicle table. Seats include tip-up seats; standing places at 4 pers/m2; total = seats + standing (derived). Motor power 6 x 125 kW. Bidirectional tram-train for EBO and BOStrab routes.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

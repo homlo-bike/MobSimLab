@@ -169,6 +169,11 @@
       ]
     }
   ],
+  "wikipedia": {
+    "url": "https://cs.wikipedia.org/wiki/SOR_NS_12",
+    "scope": "model",
+    "checked_via": "search"
+  },
   "notes": "Prototype presented 2016, series from 2017. Bratislava fleet 3001-3016. Battery 242 kWh as delivered (NMC, 666 V); after battery replacement 274 kWh. Motor 160 kW continuous (186.6 kW 30-min maximum). Height with air conditioning. Wheelbase 5900 mm. Capacity excludes the driver. Range not published by the source.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

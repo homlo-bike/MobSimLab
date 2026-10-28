@@ -200,6 +200,11 @@
     ],
     "rationale": "White, yellow and green DPMŽ colour scheme (\"bielo-žlto-zelená farebná schéma\"), as described by imhd.sk; hex values approximate, yellow not represented."
   },
+  "wikipedia": {
+    "url": "https://sk.wikipedia.org/wiki/%C5%A0koda_26Tr_Solaris",
+    "scope": "model",
+    "checked_via": "search"
+  },
   "notes": "First trolleybuses with the Solaris New Trollino body (Žilina, from December 2017; 9 x 26 Tr, 2 x 26TrA). Škoda SJ 10.1 IGBT converter with regeneration, rated 600/750 V DC; one Škoda 4ML 3444 K/4 asynchronous motor, 160 kW. Height with pantographs lowered. Floor 320 mm (250 mm kneeling). Wheelbase 5,900 mm. Seats 30 + 1 + 1 (driver and an extra seat not split out), standing 60, total given as 90 + 1 + 1. Empty weight 11,800 kg ± 3 %. 26TrA variant: 45.4 kWh Škoda TBS 5.1 traction battery, 25 + 1 seats, 45 standing, 12,950 kg empty, 19,500 kg gross; off-wire range not published.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

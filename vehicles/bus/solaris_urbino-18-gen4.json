@@ -179,6 +179,11 @@
       ]
     }
   ],
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Solaris_Urbino_18",
+    "scope": "model",
+    "checked_via": "search"
+  },
   "notes": "4th-generation Urbino presented 2014 (facelift 2019); figures for Bratislava vehicles built 2020. Maximum speed 72 km/h as set on fleet 3221-3231 (81 km/h on the driving-school vehicle). Engine DAF Paccar MX-11, 270 kW (tractionPowerKw = rated engine power). Wheelbases 5900 mm and 6000 mm. Capacity excludes the driver.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

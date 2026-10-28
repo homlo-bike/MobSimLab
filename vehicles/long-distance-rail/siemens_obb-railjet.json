@@ -188,6 +188,11 @@
     ],
     "rationale": "approximation of burgundy red base with grey gradient and red stripe (ÖBB railjet)"
   },
+  "wikipedia": {
+    "url": "https://de.wikipedia.org/wiki/Railjet_1._Generation",
+    "scope": "model",
+    "checked_via": "source"
+  },
   "notes": "Length 205.08 m with a Class 1016/1116 locomotive (185.80 m without; 204.78 m with 1293/193, 205.38 m with 1216). cars = 7 coaches + 1 locomotive. Seats 404 for sets 01–51 (16 Business, 76 First, 312 Economy); sets 52–60 and ČD sets have 442. total = seats (no standing figure published). Supply systems are those of the 1116 locomotive; 1216/1293 locomotives add 3 kV and 1.5 kV DC. Empty mass 417.2 t is published but it is unclear whether it includes the locomotive, so it is left empty.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

@@ -157,6 +157,11 @@
       ]
     }
   ],
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Talgo_AVRIL",
+    "scope": "model",
+    "checked_via": "source"
+  },
   "notes": "Two power cars and 12 short (13 m) articulated passenger cars; cars = 14 counts the power cars. 507 seats in the standard layout (581 in the Avlo layout); total = seats (no standing figure published). maxSpeedKmh = 330 is the certified speed; service speed 300 km/h, design 380 km/h; press reports of temporary speed restrictions are not reflected. Weight 325 t as listed (laden state not stated). Power 8.8 MW. Variable-gauge (1,435/1,668 mm) sets also exist. 2012 is the prototype year.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

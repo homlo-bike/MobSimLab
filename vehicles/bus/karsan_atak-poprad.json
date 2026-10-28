@@ -157,6 +157,11 @@
       "imhd-sk-karsan-atak-vehicle-type-description"
     ]
   },
+  "wikipedia": {
+    "url": "https://nl.wikipedia.org/wiki/Karsan_ATAK",
+    "scope": "model",
+    "checked_via": "search"
+  },
   "notes": "Low-entry midibus; SAD Poprad vehicles 2017-2018, withdrawn 2023. FPT NEF4 Euro 6 diesel 137 kW, Allison 2100 automatic. Height 3,007 mm with air conditioning. Floor 325 mm (door 1), 330 mm (door 2). Wheelbase 4,580 mm. Capacity excludes the driver. The battery-electric e-ATAK (8,315 mm, 220 kWh, up to 300 km, max. 52 passengers per Karsan) has no published top speed and is not covered by this entry.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

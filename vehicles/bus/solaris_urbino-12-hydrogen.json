@@ -192,6 +192,11 @@
       ]
     }
   ],
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Solaris_Urbino",
+    "scope": "family",
+    "checked_via": "search"
+  },
   "notes": "Fuel-cell electric bus: Ballard FCmove 70 kW fuel cell plus a 30.4 kWh LTO traction battery; two 125 kW in-wheel motors (250 kW total). Range 350 km per hydrogen fill is the guaranteed figure quoted by the source. Standing places at 5 persons/m². Kerb weight given only as approximately 13.2 t, so left empty. Wheelbase 5900 mm. Capacity excludes the driver.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

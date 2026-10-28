@@ -197,6 +197,11 @@
     ],
     "rationale": "approximation of red body with blue front (Portland Streetcar; individual cars vary, some have a red front; Tacoma Link not covered)"
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/%C5%A0koda_10_T",
+    "scope": "model",
+    "checked_via": "source"
+  },
   "notes": "Three-section, 50% low-floor streetcar (floor 350 mm in the low-floor part, 780 mm over the bogies). Maximum speed 70 km/h is the design figure. Traction power 4 x 90 kW = 360 kW as given by the source. Acceleration, deceleration, standing density and cost not found in a source; left null.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

@@ -170,6 +170,11 @@
       ]
     }
   ],
+  "wikipedia": {
+    "url": "https://cs.wikipedia.org/wiki/Iveco_Urbanway_12M",
+    "scope": "model",
+    "checked_via": "search"
+  },
   "notes": "DPB fleet 1041-1070 and 4041-4050 (2014-2015, first series vehicles from the Vysoké Mýto plant). FPT Tector 7 Euro 6 diesel 210 kW, Voith DIWA.6. Height 3,066 mm with air conditioning (2,845 mm without). Floor at doors 320/330/340 mm. Wheelbase 6,120 mm. Empty weight 11,600 kg for #1041-1060 (11,550 kg for the others). Capacity excludes the driver.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

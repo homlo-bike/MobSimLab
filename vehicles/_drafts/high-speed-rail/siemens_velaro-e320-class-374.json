@@ -193,6 +193,11 @@
     ],
     "rationale": "approximation of Eurostar blue and grey"
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/British_Rail_Class_374",
+    "scope": "model",
+    "checked_via": "source"
+  },
   "notes": "Seats 902 (\"capacity\"). total = seats (no standing figure published). Power 16 MW. Supply systems as listed in the Class 374 article (25 kV 50 Hz AC, 3 kV DC, 1.5 kV DC); the Velaro variant table also lists 15 kV 16.7 Hz for the e320.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only.",
   "draftReason": "Core fields not sourced: width"

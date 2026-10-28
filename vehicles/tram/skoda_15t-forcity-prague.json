@@ -193,6 +193,11 @@
       "wp-skoda-15-t"
     ]
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/%C5%A0koda_15_T",
+    "scope": "model",
+    "checked_via": "source"
+  },
   "notes": "Prague three-section 15T (2 articulations), 100 % low floor (350/450 mm). Capacity 61 seats + 239 standing = 300 per English Wikipedia; the Czech article gives 239 standing at 8 persons/m² (119 at 4/m²), so the density is 8. Six double passenger doors (two per section). Maximum speed 60 km/h is the electronically limited service speed (design 80 km/h). Power 16 × 46.6 kW = 745.6 kW. Minimum curve radius 18 m (15 m also listed). Supply 600 V DC (Czech Wikipedia). yearIntroduced is the start of construction (2009). The order for 250 trams was worth 17 billion CZK, but no order year was given in the source, so it is not entered as a cost.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

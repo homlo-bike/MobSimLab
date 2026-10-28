@@ -166,6 +166,11 @@
       "wp-china-railway-crh6"
     ]
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/CRH6",
+    "scope": "family",
+    "checked_via": "source"
+  },
   "notes": "Chinese Wikipedia: rated capacity (定员) 1502, crush load (超员) 1998 (the table lists 1998). Operating speed 160 km/h, test 180 km/h; starting acceleration >=0.8 m/s²; traction power 5,152 kW. Seated count not given. Entered service 11 July 2015.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only.",
   "draftReason": "Core fields not sourced: seats, standingQuoted"

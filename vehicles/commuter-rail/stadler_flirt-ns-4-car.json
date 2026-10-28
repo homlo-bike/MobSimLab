@@ -182,6 +182,11 @@
     ],
     "rationale": "approximation of NS yellow and blue; Sprinters carry partly white bodywork (since 2003)"
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Stadler_FLIRT",
+    "scope": "family",
+    "checked_via": "search"
+  },
   "notes": "4-car column of the Stadler sheet: 170 second + 32 first class seats; 12 fold-up seats not counted. total = seats (no standing figure published). doorsPerSide derived: 2 entrance doors per car body and side × 4. Floor height is the low-floor value (PRM area 808 mm, high floor 1,180 mm). tractionPowerKw = maximum power at wheel.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

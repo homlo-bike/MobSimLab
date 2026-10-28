@@ -210,6 +210,11 @@
     ],
     "rationale": "approximation of London Underground corporate red, white and blue livery (TfL information sheet)"
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/London_Underground_S7_and_S8_Stock",
+    "scope": "model",
+    "checked_via": "source"
+  },
   "notes": "Driving motor cars 18.139 m, non-driving cars 16.234 m; open gangways throughout. doorsPerSide = 3 per side per car x 8 cars (derived); 4 wheelchair spaces per train. Capacity 1,350 with 306 seats; no density basis stated. Deceleration is the service rate (1.4 m/s2 emergency). Supply is 630-750 V DC fourth rail (shoe collection); recorded as third_rail with no supply-system id because the nominal voltage is a range. Figures from Wikipedia (secondary).",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

@@ -150,6 +150,11 @@
       "stoag-stadtwerke-obe-technical-data-electric-buses"
     ]
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Solaris_Urbino_12_electric",
+    "scope": "model",
+    "checked_via": "search"
+  },
   "notes": "STOAG figures: 24 seats plus 4 folding seats, 70 passengers in total (standing not given separately). Two asynchronous motors of 110 kW each on the rear axle (tractionPowerKw = 2 x 110 kW). LiFePO4 battery, 5 modules of 40 kWh. Charging by Schunk roof pantograph (opportunity charging) at 220 kW chargers; charging time and range not published. Single-body two-axle bus (consist not a published figure). Newer Urbino 12 electric generations differ (Solaris lists up to 600 kWh in 2024).",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

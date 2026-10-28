@@ -170,6 +170,11 @@
       ]
     }
   ],
+  "wikipedia": {
+    "url": "https://nl.wikipedia.org/wiki/Mercedes-Benz_CapaCity",
+    "scope": "model",
+    "checked_via": "search"
+  },
   "notes": "Four-axle single-articulated bus developed for BRT/Metrobus systems; prototype 2005, series from 2007. Figures for Bratislava series vehicles (2010/2012). Maximum speed 80 km/h with limiter. Engine OM 457 hLA, 260 kW (tractionPowerKw = rated engine power). Wheelbases 5845, 5990 and 1600 mm (overhangs not given). Floor 320 mm at door 1, 340 mm at doors 2-4. Height with air conditioning. Capacity excludes the driver.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }

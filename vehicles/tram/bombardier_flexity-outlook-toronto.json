@@ -208,6 +208,11 @@
     ],
     "rationale": "approximation of red and white (TTC Flexity Outlook)"
   },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Flexity_Outlook_(Toronto)",
+    "scope": "model",
+    "checked_via": "source"
+  },
   "notes": "Five-section low-floor streetcar on Toronto's 1495 mm gauge, 600 V DC. Total 251 (incl. 70 seated) from Railway Gazette; the TTC statistics page lists '70 seated; 130 maximum', so capacity depends on the loading standard used (standing density not stated); standing left null. Four doors on the right side only (single-ended), so doorsPerSide = 4 refers to the door side. consist.suspendedModules = 2 is derived: the source gives UIC arrangement Bo'+Bo'+Bo' (three bogies) under five sections, leaving two sections without running gear. Wikipedia gives a length of 28 m; the TTC figure 30.20 m is used. Acceleration, deceleration, traction power and floor height not found. Contract values are reported without currency in the source read, so costs are left empty.",
   "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
 }
