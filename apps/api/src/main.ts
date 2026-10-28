@@ -36,7 +36,8 @@ async function bootstrap(): Promise<void> {
           "connect-src": ["'self'", "https://tiles.openfreemap.org"],
           "worker-src": ["'self'", "blob:"],
           "style-src": ["'self'"],
-          "script-src": ["'self'"],
+          // WebAssembly street router (ADR-0031) needs wasm compilation, not general eval.
+          "script-src": ["'self'", "'wasm-unsafe-eval'"],
           "object-src": ["'none'"],
           "frame-ancestors": ["'none'"],
         },

@@ -31,6 +31,8 @@ export interface PointView {
   lonlat: LonLat;
   status: Status;
   message: string | null;
+  bearing_deg: number | null;
+  bay: LonLat[] | null;
 }
 
 export interface LegView {
@@ -81,20 +83,18 @@ export interface LineView {
   time_s: number;
 }
 
-export interface NetworkStats {
-  nodes: number;
-  arcs: number;
-  turn_bans: number;
-}
-
 /** The routing engine as the editor sees it. Every edit returns the new line view. */
 export interface StreetEngine {
-  bounds(): [number, number, number, number];
-  stats(): NetworkStats;
+  /** Adds the streets of one tile (OSM XML); call `rebuild` after a batch. */
+  addOsm(xml: string): void;
+  /** Rebuilds the network from all tiles so far and re-routes the line. */
+  rebuild(): LineView;
+  ready(): boolean;
   view(): LineView;
   insertPoint(seq: number, lonlat: LonLat, kind: PointKind): LineView;
   movePoint(id: number, lonlat: LonLat): LineView;
   deletePoint(id: number): LineView;
+  clear(): LineView;
   setKind(id: number, kind: PointKind): LineView;
   setName(id: number, name: string): LineView;
   setDepot(lonlat: LonLat): LineView;
@@ -108,5 +108,8 @@ export interface StreetEngine {
   dispose(): void;
 }
 
-/** Creates an engine from OSM XML text. */
-export type EngineLoader = (osmXml: string) => Promise<StreetEngine>;
+/** Creates an engine with no streets loaded yet. */
+export type EngineLoader = () => Promise<StreetEngine>;
+
+/** Fetches the OSM XML of one street tile. */
+export type TileFetcher = (x: number, y: number) => Promise<string>;

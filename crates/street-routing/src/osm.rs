@@ -1,11 +1,11 @@
 //! Minimal OSM XML reader: nodes, ways and turn-restriction relations.
 //!
-//! Reads the files written by `tools/osm/overpass_fetch.py` or exported from
-//! openstreetmap.org. Data © OpenStreetMap contributors, ODbL.
+//! Reads the street tiles served by the API (`/api/street-network/tiles`) and the
+//! files written by `tools/osm/overpass_fetch.py`. Data © OpenStreetMap contributors, ODbL.
 
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, HashSet};
 
 /// Tag map of one OSM element.
 pub type Tags = BTreeMap<String, String>;
@@ -35,7 +35,7 @@ pub struct RawWay {
 }
 
 /// Whether a restriction forbids one turn or allows only one turn.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum RestrictionKind {
     /// `no_*`: the turn from `from` to `to` is banned.
     No,
@@ -65,6 +65,30 @@ pub struct OsmData {
     pub ways: Vec<RawWay>,
     /// Turn restrictions that apply to buses.
     pub restrictions: Vec<RawRestriction>,
+}
+
+impl OsmData {
+    /// Purpose: add another extract (for example a neighbouring tile), skipping elements already present.
+    /// Side effects: grows `self`; elements are matched by OSM id.
+    pub fn merge(&mut self, other: OsmData) {
+        let nodes: HashSet<i64> = self.nodes.iter().map(|n| n.id).collect();
+        let ways: HashSet<i64> = self.ways.iter().map(|w| w.id).collect();
+        let rels: HashSet<(i64, i64, i64, RestrictionKind)> = self
+            .restrictions
+            .iter()
+            .map(|r| (r.from_way, r.via_node, r.to_way, r.kind))
+            .collect();
+        self.nodes
+            .extend(other.nodes.into_iter().filter(|n| !nodes.contains(&n.id)));
+        self.ways
+            .extend(other.ways.into_iter().filter(|w| !ways.contains(&w.id)));
+        self.restrictions.extend(
+            other
+                .restrictions
+                .into_iter()
+                .filter(|r| !rels.contains(&(r.from_way, r.via_node, r.to_way, r.kind))),
+        );
+    }
 }
 
 fn attr(e: &BytesStart, key: &[u8]) -> Option<String> {
@@ -250,6 +274,24 @@ mod tests {
             "the psv-exempt restriction does not apply to buses"
         );
         assert_eq!(d.restrictions[0].kind, RestrictionKind::No);
+    }
+
+    #[test]
+    fn merging_skips_duplicates() {
+        let tile = |ids: &[i64]| {
+            let nodes: String = ids
+                .iter()
+                .map(|i| format!(r#"<node id="{i}" lat="50.0" lon="7.0"/>"#))
+                .collect();
+            parse_osm_xml(&format!(
+                r#"<osm>{nodes}<way id="10"><nd ref="1"/><nd ref="2"/><tag k="highway" v="residential"/></way></osm>"#
+            ))
+            .unwrap()
+        };
+        let mut a = tile(&[1, 2]);
+        a.merge(tile(&[2, 3]));
+        assert_eq!(a.nodes.len(), 3);
+        assert_eq!(a.ways.len(), 1);
     }
 
     #[test]

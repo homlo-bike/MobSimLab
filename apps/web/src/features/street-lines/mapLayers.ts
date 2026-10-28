@@ -1,23 +1,34 @@
 import type { GeoJSONSource, Map as MapLibreMap } from "maplibre-gl";
-import { depotTripsToGeoJson, legsToGeoJson, STATUS_COLOR, type FeatureCollection } from "./geojson";
+import {
+  baysToGeoJson,
+  depotTripsToGeoJson,
+  groupLinksToGeoJson,
+  legsToGeoJson,
+  STATUS_COLOR,
+  type FeatureCollection,
+} from "./geojson";
 import type { LineView } from "./types";
 
 /** Layer that receives clicks on the route (to insert a point into a leg). */
 export const HIT_LAYER = "sl-legs-hit";
 
 const EMPTY: FeatureCollection = { type: "FeatureCollection", features: [] };
+const SOURCES = ["sl-roads", "sl-depot", "sl-groups", "sl-bays", "sl-legs"];
 const LAYERS = [
-  "sl-bounds",
+  "sl-roads",
   "sl-depot",
+  "sl-groups",
+  "sl-bays-fill",
+  "sl-bays-line",
   "sl-legs-casing",
   "sl-legs",
   "sl-legs-error",
   "sl-legs-arrows",
   HIT_LAYER,
 ];
-const SOURCES = ["sl-roads", "sl-bounds", "sl-depot", "sl-legs"];
+const DEPOT_COLOR = "#6b7280";
 
-/** Purpose: draw a chevron into an image so direction arrows need no font glyphs. */
+/** Purpose: draw a white chevron into an image so direction arrows need no font glyphs. */
 function arrowImage(): ImageData | null {
   const size = 32;
   const canvas = document.createElement("canvas");
@@ -27,27 +38,22 @@ function arrowImage(): ImageData | null {
   if (!ctx) return null;
   ctx.lineCap = "round";
   ctx.lineJoin = "round";
-  for (const [colour, width] of [
-    ["#ffffff", 9],
-    ["#1e3a8a", 4.5],
-  ] as const) {
-    ctx.strokeStyle = colour;
-    ctx.lineWidth = width;
-    ctx.beginPath();
-    ctx.moveTo(10, 7);
-    ctx.lineTo(21, 16);
-    ctx.lineTo(10, 25);
-    ctx.stroke();
-  }
+  ctx.strokeStyle = "#ffffff";
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.moveTo(11, 9);
+  ctx.lineTo(19, 16);
+  ctx.lineTo(11, 23);
+  ctx.stroke();
   return ctx.getImageData(0, 0, size, size);
 }
 
 /**
  * Purpose: add the street line sources and layers once.
- * Inputs: the map (style loaded) and the side vehicles drive on, which offsets each direction to its own side.
+ * Inputs: the map (style loaded), the line colour and the driving side, which offsets each direction to its own side.
  * Side effects: adds sources, layers and the arrow image to the map.
  */
-export function ensureLayers(map: MapLibreMap, trafficSide: "right" | "left"): void {
+export function ensureLayers(map: MapLibreMap, color: string, trafficSide: "right" | "left"): void {
   if (map.getSource("sl-legs")) return;
   const offset = trafficSide === "right" ? 3 : -3;
   for (const id of SOURCES) map.addSource(id, { type: "geojson", data: EMPTY });
@@ -58,14 +64,8 @@ export function ensureLayers(map: MapLibreMap, trafficSide: "right" | "left"): v
     paint: {
       "line-color": ["case", ["get", "wire"], "#15803d", ["get", "bus_lane"], "#0e7490", "#94a3b8"],
       "line-width": ["interpolate", ["linear"], ["zoom"], 12, 0.5, 17, 3],
-      "line-opacity": 0.7,
+      "line-opacity": 0.6,
     },
-  });
-  map.addLayer({
-    id: "sl-bounds",
-    type: "line",
-    source: "sl-bounds",
-    paint: { "line-color": "#64748b", "line-width": 1, "line-dasharray": [4, 3] },
   });
   map.addLayer({
     id: "sl-depot",
@@ -73,18 +73,37 @@ export function ensureLayers(map: MapLibreMap, trafficSide: "right" | "left"): v
     source: "sl-depot",
     layout: { "line-join": "round" },
     paint: {
-      "line-color": ["match", ["get", "kind"], "pull_out", "#16a34a", "#9333ea"],
+      "line-color": DEPOT_COLOR,
       "line-width": 3,
-      "line-dasharray": [1.5, 1.5],
+      "line-dasharray": [2, 1.5],
       "line-offset": offset * 2,
     },
+  });
+  map.addLayer({
+    id: "sl-groups",
+    type: "line",
+    source: "sl-groups",
+    paint: { "line-color": "#334155", "line-width": 1, "line-dasharray": [1, 2] },
+  });
+  map.addLayer({
+    id: "sl-bays-fill",
+    type: "fill",
+    source: "sl-bays",
+    paint: { "fill-color": color, "fill-opacity": 0.3 },
+  });
+  map.addLayer({
+    id: "sl-bays-line",
+    type: "line",
+    source: "sl-bays",
+    paint: { "line-color": color, "line-width": 1 },
   });
   map.addLayer({
     id: "sl-legs-casing",
     type: "line",
     source: "sl-legs",
+    filter: ["!=", ["get", "status"], "error"],
     layout: { "line-join": "round", "line-cap": "round" },
-    paint: { "line-color": "#ffffff", "line-width": 7, "line-offset": offset },
+    paint: { "line-color": "#ffffff", "line-width": 8, "line-offset": offset },
   });
   map.addLayer({
     id: "sl-legs",
@@ -93,8 +112,8 @@ export function ensureLayers(map: MapLibreMap, trafficSide: "right" | "left"): v
     filter: ["!=", ["get", "status"], "error"],
     layout: { "line-join": "round", "line-cap": "round" },
     paint: {
-      "line-color": ["match", ["get", "status"], "warning", STATUS_COLOR.warning, STATUS_COLOR.ok],
-      "line-width": 4,
+      "line-color": ["match", ["get", "status"], "warning", STATUS_COLOR.warning, color],
+      "line-width": 5,
       "line-offset": offset,
     },
   });
@@ -115,10 +134,10 @@ export function ensureLayers(map: MapLibreMap, trafficSide: "right" | "left"): v
       filter: ["!=", ["get", "status"], "error"],
       layout: {
         "symbol-placement": "line",
-        "symbol-spacing": 90,
+        "symbol-spacing": 80,
         "icon-image": "sl-arrow",
         "icon-allow-overlap": true,
-        "icon-offset": [0, offset],
+        "icon-offset": [0, offset * 2],
       },
     });
   }
@@ -126,8 +145,22 @@ export function ensureLayers(map: MapLibreMap, trafficSide: "right" | "left"): v
     id: HIT_LAYER,
     type: "line",
     source: "sl-legs",
-    paint: { "line-color": "#000000", "line-opacity": 0, "line-width": 14 },
+    paint: { "line-color": "#000000", "line-opacity": 0, "line-width": 16 },
   });
+}
+
+/** Purpose: recolour the route and stop bays for another mode. */
+export function setLineColor(map: MapLibreMap, color: string): void {
+  if (!map.getLayer("sl-legs")) return;
+  map.setPaintProperty("sl-legs", "line-color", [
+    "match",
+    ["get", "status"],
+    "warning",
+    STATUS_COLOR.warning,
+    color,
+  ]);
+  map.setPaintProperty("sl-bays-fill", "fill-color", color);
+  map.setPaintProperty("sl-bays-line", "line-color", color);
 }
 
 /** Purpose: remove everything `ensureLayers` added. */
@@ -137,41 +170,23 @@ export function removeLayers(map: MapLibreMap): void {
   if (map.hasImage("sl-arrow")) map.removeImage("sl-arrow");
 }
 
-/** Purpose: show the roads usable by the current vehicle, or hide them with `null`. */
-export function drawRoads(map: MapLibreMap, roads: object | null): void {
-  (map.getSource("sl-roads") as GeoJSONSource | undefined)?.setData((roads ?? EMPTY) as never);
+function set(map: MapLibreMap, id: string, data: object): void {
+  (map.getSource(id) as GeoJSONSource | undefined)?.setData(data as never);
 }
 
-/** Purpose: push the current line view and network bounds to the map sources. */
+/** Purpose: show the roads usable by the current vehicle, or hide them with `null`. */
+export function drawRoads(map: MapLibreMap, roads: object | null): void {
+  set(map, "sl-roads", roads ?? EMPTY);
+}
+
+/** Purpose: push the line view to the map; `depot` picks which depot runs to show (`null` hides them). */
 export function drawLine(
   map: MapLibreMap,
   view: LineView,
-  bounds: [number, number, number, number] | null,
+  depot: { out?: number; in?: number } | null,
 ): void {
-  const set = (id: string, data: FeatureCollection) =>
-    (map.getSource(id) as GeoJSONSource | undefined)?.setData(data as never);
-  set("sl-legs", legsToGeoJson(view));
-  set("sl-depot", depotTripsToGeoJson(view));
-  if (bounds) {
-    const [w, s, e, n] = bounds;
-    set("sl-bounds", {
-      type: "FeatureCollection",
-      features: [
-        {
-          type: "Feature",
-          properties: {},
-          geometry: {
-            type: "LineString",
-            coordinates: [
-              [w, s],
-              [e, s],
-              [e, n],
-              [w, n],
-              [w, s],
-            ],
-          },
-        },
-      ],
-    });
-  }
+  set(map, "sl-legs", legsToGeoJson(view));
+  set(map, "sl-bays", baysToGeoJson(view));
+  set(map, "sl-groups", groupLinksToGeoJson(view));
+  set(map, "sl-depot", depot ? depotTripsToGeoJson(view, depot) : EMPTY);
 }

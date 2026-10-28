@@ -34,6 +34,7 @@ describe("App shell", () => {
     render(<App />);
     fireEvent.click(screen.getByRole("button", { name: "Street line" }));
     expect(screen.getByRole("complementary", { name: "Street line editor" })).toBeTruthy();
+    expect(screen.getByRole("toolbar", { name: "Street line tools" })).toBeTruthy();
   });
 
   it("credits OpenStreetMap on the default basemap", () => {

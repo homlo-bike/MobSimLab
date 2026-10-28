@@ -465,3 +465,48 @@ fn low_bridge_blocks_tall_vehicles() {
     );
     assert!(v.legs[0].length_m > 400.0 + 300.0);
 }
+
+#[test]
+fn loading_more_area_keeps_the_line() {
+    // First the grid without Col 3 (way 1008) is loaded, then the rest arrives.
+    let full = grid();
+    let mut west = Osm::new();
+    west.nodes = full.nodes.clone();
+    let start = full.ways.find(r#"<way id="1008">"#).unwrap();
+    let end = start + full.ways[start..].find("</way>").unwrap() + "</way>".len();
+    west.ways = format!("{}{}", &full.ways[..start], &full.ways[end..]);
+    let xml = |o: &Osm| {
+        format!(
+            r#"<osm version="0.6">{}{}{}</osm>"#,
+            o.nodes, o.ways, o.rels
+        )
+    };
+    let mut data = parse_osm_xml(&xml(&west)).unwrap();
+    let g1 = RoadGraph::from_osm(&data).unwrap();
+    let rules = RoutingRules {
+        max_snap_m: 50.0,
+        ..Default::default()
+    };
+    let mut line = StreetLine::new(bus(), rules);
+    add(&mut line, &g1, 100.0, -5.0, PointKind::EndStop);
+    let far = add(&mut line, &g1, 595.0, 300.0, PointKind::Stop); // Col 3 is not loaded yet
+    assert_eq!(line.view(&g1).points[1].status, Status::Error);
+
+    data.merge(parse_osm_xml(&xml(&full)).unwrap());
+    let g2 = RoadGraph::from_osm_with(&data, Some(g1.proj)).unwrap();
+    line.rebuild(&g2);
+    let v = line.view(&g2);
+    assert_eq!(v.points.len(), 2);
+    assert_eq!(v.points[1].id, far);
+    assert_eq!(
+        v.points[1].status,
+        Status::Ok,
+        "the point snaps to the newly loaded street"
+    );
+    assert!(
+        v.legs.iter().all(|l| l.status != Status::Error),
+        "{:?}",
+        v.legs
+    );
+    assert!(v.points[0].bay.is_some() && v.points[0].bearing_deg.is_some());
+}

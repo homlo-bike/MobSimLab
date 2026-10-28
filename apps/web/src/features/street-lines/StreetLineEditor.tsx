@@ -1,111 +1,90 @@
 import { Marker, type Map as MapLibreMap, type MapMouseEvent } from "maplibre-gl";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { loadWasmEngine } from "./engine";
-import { formatLength, formatTime, lineToGeoJson, STATUS_COLOR } from "./geojson";
-import { drawLine, drawRoads, ensureLayers, HIT_LAYER, removeLayers } from "./mapLayers";
+import { createPortal } from "react-dom";
+import { fetchStreetTile, loadWasmEngine } from "./engine";
+import { LinePanel, type PanelActions } from "./LinePanel";
+import { drawLine, drawRoads, ensureLayers, HIT_LAYER, removeLayers, setLineColor } from "./mapLayers";
+import { depotElement, pointElement, vehicleElement } from "./markers";
+import { DEFAULT_TIMING, MODES, type Timing } from "./modes";
+import { along, circuitPath } from "./summary";
+import { MIN_LOAD_ZOOM, tilesFor } from "./tiles";
+import { ToolPalette, type Tool } from "./ToolPalette";
 import type {
   EngineLoader,
   LineView,
   LonLat,
-  Mode,
-  NetworkStats,
-  PointKind,
-  PointView,
   RoutingRules,
   StreetEngine,
+  TileFetcher,
   VehicleProfile,
 } from "./types";
 
-const MODES: { id: Mode; label: string }[] = [
-  { id: "bus", label: "Bus" },
-  { id: "brt", label: "BRT" },
-  { id: "trolleybus", label: "Trolleybus" },
-  { id: "intercity_bus", label: "Intercity bus" },
-];
+const EMPTY_VIEW: LineView = {
+  points: [],
+  legs: [],
+  directions: [],
+  station_groups: [],
+  depot: null,
+  depot_trips: [],
+  issues: [],
+  length_m: 0,
+  time_s: 0,
+};
 
-const KINDS: { id: PointKind; label: string; title: string }[] = [
-  { id: "via", label: "Via", title: "Via point: shapes the path, no passengers" },
-  { id: "stop", label: "Stop", title: "Stop on the sidewalk, served from the door side" },
-  { id: "end_stop", label: "End", title: "End stop: layover; splits the line into directions" },
-];
+const HINTS: Record<Tool, string> = {
+  select: "Drag a point to move it; the route recalculates. Click a point to edit it in the panel.",
+  add: "Click on a street to add the next point. Click on the line to insert a point between two others.",
+  pan: "Drag to move the map.",
+  depot: "Click on the street at the depot gate.",
+};
 
-type Tool = "add" | "depot" | null;
-
-/** Purpose: DOM element for a route point marker (number in a circle, square for end stops). */
-function pointElement(p: PointView, selected: boolean): HTMLElement {
-  const el = document.createElement("button");
-  el.type = "button";
-  el.textContent = String(p.seq + 1);
-  el.title = `${p.seq + 1}. ${p.name}${p.message ? ` — ${p.message}` : ""}`;
-  el.setAttribute("aria-label", `Route point ${p.seq + 1}: ${p.name}`);
-  const size = p.kind === "via" ? 18 : 24;
-  const bg = p.status === "error" ? STATUS_COLOR.error : p.kind === "via" ? "#ffffff" : "#1e3a8a";
-  Object.assign(el.style, {
-    width: `${size}px`,
-    height: `${size}px`,
-    borderRadius: p.kind === "end_stop" ? "4px" : "50%",
-    background: bg,
-    color: p.kind === "via" && p.status !== "error" ? "#1e3a8a" : "#ffffff",
-    border: `2px solid ${selected ? "#f59e0b" : "#1e3a8a"}`,
-    font: "600 11px system-ui, sans-serif",
-    cursor: "grab",
-    padding: "0",
-    boxShadow: "0 1px 3px rgba(0,0,0,.4)",
-  });
-  return el;
-}
-
-function depotElement(): HTMLElement {
-  const el = document.createElement("div");
-  el.textContent = "D";
-  el.title = "Depot gate (drag to move)";
-  Object.assign(el.style, {
-    width: "26px",
-    height: "26px",
-    lineHeight: "22px",
-    textAlign: "center",
-    background: "#334155",
-    color: "#fff",
-    border: "2px solid #fff",
-    borderRadius: "4px",
-    font: "700 12px system-ui, sans-serif",
-    cursor: "grab",
-    boxShadow: "0 1px 3px rgba(0,0,0,.4)",
-  });
-  return el;
-}
+/** The preview runs this many times faster than the timetable. */
+const PREVIEW_SPEEDUP = 30;
 
 interface Props {
   /** The map to draw on; `null` until the map has loaded. */
   map: MapLibreMap | null;
+  /** Where the side panel renders; inline when `null`. */
+  panel?: HTMLElement | null;
   /** Engine loader; tests inject a fake. */
   loadEngine?: EngineLoader;
+  /** Street tile source; tests inject a fake. */
+  fetchTile?: TileFetcher;
 }
 
 /**
- * Purpose: street line tool for bus, BRT, trolleybus and intercity bus (ADR-0029).
- * The planner clicks points in order; the route follows legal streets and closes back to the first point.
- * Points can be dragged, inserted (click on the line), deleted, promoted to stops or end stops; a depot
- * adds routed pull-out and pull-in trips.
- * Side effects: adds layers, markers and click handlers to the map while mounted.
+ * Purpose: street line tool for bus, BRT, trolleybus and intercity bus (ADR-0029), laid out like the
+ * line and track drawing mockup. Streets for the area on screen load automatically. The planner adds
+ * points in order; the route follows legal streets and closes back to the first point. Points can be
+ * dragged, inserted (click on the line), deleted, and promoted to stops or end stops; a depot adds
+ * routed pull-out and pull-in runs; the preview run drives a vehicle round the circuit.
+ * Side effects: adds layers, markers and handlers to the map while mounted; fetches street tiles.
  */
-export function StreetLineEditor({ map, loadEngine = loadWasmEngine }: Props) {
+export function StreetLineEditor({
+  map,
+  panel = null,
+  loadEngine = loadWasmEngine,
+  fetchTile = fetchStreetTile,
+}: Props) {
   const engine = useRef<StreetEngine | null>(null);
-  const [view, setView] = useState<LineView | null>(null);
-  const [stats, setStats] = useState<NetworkStats | null>(null);
-  const [bounds, setBounds] = useState<[number, number, number, number] | null>(null);
+  const [view, setView] = useState<LineView>(EMPTY_VIEW);
+  const [ready, setReady] = useState(false);
   const [profile, setProfile] = useState<VehicleProfile | null>(null);
   const [rules, setRules] = useState<RoutingRules | null>(null);
+  const [timing, setTiming] = useState<Timing>(DEFAULT_TIMING);
+  const [lineName, setLineName] = useState("Line 1");
   const [tool, setTool] = useState<Tool>("add");
-  const [newKind, setNewKind] = useState<PointKind>("via");
   const [selected, setSelected] = useState<number | null>(null);
+  const [depotStops, setDepotStops] = useState<{ out?: number; in?: number }>({});
+  const [showDepot, setShowDepot] = useState(true);
+  const [showRoads, setShowRoads] = useState(false);
+  const [previewing, setPreviewing] = useState(false);
+  const [status, setStatus] = useState<string | null>("Starting the routing engine…");
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [showRoads, setShowRoads] = useState(true);
 
-  // Latest values for map event handlers registered once.
-  const latest = useRef({ tool, newKind, view });
-  latest.current = { tool, newKind, view };
+  // Latest values for map and keyboard handlers registered once.
+  const latest = useRef({ tool, view, selected });
+  latest.current = { tool, view, selected };
 
   const run = useCallback((f: (e: StreetEngine) => LineView) => {
     const e = engine.current;
@@ -118,83 +97,140 @@ export function StreetLineEditor({ map, loadEngine = loadWasmEngine }: Props) {
     }
   }, []);
 
-  const loadFile = async (file: File) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const eng = await loadEngine(await file.text());
-      engine.current?.dispose();
-      engine.current = eng;
-      const p = profile ?? eng.defaultProfile("bus");
-      const r = rules ?? eng.defaultRules();
-      setProfile(p);
-      setRules(r);
-      setStats(eng.stats());
-      setBounds(eng.bounds());
-      setView(eng.setSettings(p, r));
-      setSelected(null);
-      const [w, s, e, n] = eng.bounds();
-      map?.fitBounds(
-        [
-          [w, s],
-          [e, n],
-        ],
-        { padding: 40, duration: 0 },
+  useEffect(() => {
+    let alive = true;
+    loadEngine()
+      .then((e) => {
+        if (!alive) return e.dispose();
+        engine.current = e;
+        setProfile(e.defaultProfile("bus"));
+        setRules(e.defaultRules());
+        setStatus(null);
+      })
+      .catch((err) =>
+        setError(`The routing engine did not start: ${err instanceof Error ? err.message : String(err)}`),
       );
-    } catch (err) {
-      setError(err instanceof Error ? err.message : String(err));
-    } finally {
-      setLoading(false);
-    }
-  };
+    return () => {
+      alive = false;
+      engine.current?.dispose();
+      engine.current = null;
+    };
+  }, [loadEngine]);
 
-  const changeProfile = (p: VehicleProfile, r: RoutingRules | null = rules) => {
-    setProfile(p);
-    if (r) run((e) => e.setSettings(p, r));
-  };
+  // Streets: load the tiles on screen whenever the map stops moving, then rebuild once per batch.
+  const tiles = useRef(new Set<string>());
+  const [zoomedOut, setZoomedOut] = useState(false);
+  useEffect(() => {
+    if (!map || !profile) return;
+    let busy = false;
+    let again = false;
+    let stopped = false;
+    const load = async () => {
+      const e = engine.current;
+      if (!e || stopped) return;
+      if (busy) {
+        again = true;
+        return;
+      }
+      const tooFar = map.getZoom() < MIN_LOAD_ZOOM;
+      setZoomedOut(tooFar);
+      if (tooFar) return;
+      const b = map.getBounds();
+      const want = tilesFor([b.getWest(), b.getSouth(), b.getEast(), b.getNorth()])
+        .map(([x, y]) => `${x}/${y}`)
+        .filter((k) => !tiles.current.has(k));
+      if (!want.length) return;
+      busy = true;
+      want.forEach((k) => tiles.current.add(k));
+      setStatus("Loading streets…");
+      const got = await Promise.allSettled(
+        want.map((k) => {
+          const [x, y] = k.split("/").map(Number);
+          return fetchTile(x!, y!);
+        }),
+      );
+      busy = false;
+      if (stopped || engine.current !== e) {
+        want.forEach((k) => tiles.current.delete(k));
+        return;
+      }
+      let added = 0;
+      let failed = 0;
+      got.forEach((r, i) => {
+        try {
+          if (r.status === "rejected") throw r.reason;
+          e.addOsm(r.value);
+          added++;
+        } catch {
+          tiles.current.delete(want[i]!);
+          failed++;
+        }
+      });
+      if (added) run((eng) => eng.rebuild());
+      setReady(e.ready());
+      setStatus(failed ? "Some streets did not load. Move the map to try again." : null);
+      if (again) {
+        again = false;
+        void load();
+      }
+    };
+    const onMove = () => void load();
+    map.on("moveend", onMove);
+    void load();
+    return () => {
+      stopped = true;
+      map.off("moveend", onMove);
+    };
+  }, [map, profile !== null, fetchTile, run]);
 
-  // Layers live as long as the editor and the map.
+  const color = profile ? MODES[profile.mode].color : MODES.bus.color;
+  const terminals = [...new Set(view.depot_trips.map((t) => t.stop))];
+  const pick = (s: number | undefined) => (s !== undefined && terminals.includes(s) ? s : terminals[0]);
+  const shownDepot = { out: pick(depotStops.out), in: pick(depotStops.in) };
+
+  // Layers live as long as the editor, the map and the driving side.
   useEffect(() => {
     if (!map || !rules) return;
-    ensureLayers(map, rules.traffic_side);
+    ensureLayers(map, MODES.bus.color, rules.traffic_side);
     return () => removeLayers(map);
-  }, [map, rules]);
+  }, [map, rules?.traffic_side]);
 
   useEffect(() => {
-    if (map && view && map.getSource("sl-legs")) drawLine(map, view, bounds);
-  }, [map, view, bounds, rules]);
+    if (map && map.getSource("sl-legs")) setLineColor(map, color);
+  }, [map, color, rules?.traffic_side]);
 
-  // Usable roads change with the vehicle (motorways, wire, height limits...).
+  useEffect(() => {
+    if (map && map.getSource("sl-legs")) drawLine(map, view, showDepot ? shownDepot : null);
+  }, [map, view, showDepot, shownDepot.out, shownDepot.in, rules?.traffic_side]);
+
   useEffect(() => {
     if (map && map.getSource("sl-roads"))
       drawRoads(map, showRoads && engine.current ? engine.current.usableRoads() : null);
-  }, [map, profile, rules, showRoads, stats]);
+  }, [map, profile, ready, showRoads, rules?.traffic_side]);
 
-  // Map clicks: add or insert a point, or place the depot.
+  // Map clicks: add or insert a point, place the depot, or clear the selection.
   useEffect(() => {
     if (!map) return;
     const onClick = (ev: MapMouseEvent) => {
-      const { tool: t, newKind: k, view: v } = latest.current;
-      if (!engine.current || !v || !t) return;
+      const { tool: t, view: v } = latest.current;
+      if (!engine.current) return;
       const at: LonLat = [ev.lngLat.lng, ev.lngLat.lat];
       if (t === "depot") {
         run((e) => e.setDepot(at));
-        setTool("add");
-        return;
+        setTool("select");
+      } else if (t === "add") {
+        const { x, y } = ev.point;
+        const box: [[number, number], [number, number]] = [
+          [x - 6, y - 6],
+          [x + 6, y + 6],
+        ];
+        const hits = map.getLayer(HIT_LAYER) ? map.queryRenderedFeatures(box, { layers: [HIT_LAYER] }) : [];
+        const hit = hits[0]?.properties?.index;
+        const seq = hit === undefined ? v.points.length : Number(hit) + 1;
+        run((e) => e.insertPoint(seq, at, "via"));
+      } else if (t === "select") {
+        setSelected(null);
       }
-      const { x, y } = ev.point;
-      const hits = map.getLayer(HIT_LAYER)
-        ? map.queryRenderedFeatures(
-            [
-              [x - 6, y - 6],
-              [x + 6, y + 6],
-            ],
-            { layers: [HIT_LAYER] },
-          )
-        : [];
-      const hit = hits[0]?.properties?.index;
-      const seq = hit === undefined ? v.points.length : Number(hit) + 1;
-      run((e) => e.insertPoint(seq, at, k));
     };
     map.on("click", onClick);
     return () => {
@@ -203,19 +239,26 @@ export function StreetLineEditor({ map, loadEngine = loadWasmEngine }: Props) {
   }, [map, run]);
 
   useEffect(() => {
-    if (map) map.getCanvas().style.cursor = tool && engine.current ? "crosshair" : "";
-  }, [map, tool, view]);
+    if (map)
+      map.getCanvas().style.cursor =
+        tool === "add" || tool === "depot" ? "crosshair" : tool === "pan" ? "grab" : "";
+  }, [map, tool]);
 
-  // Markers for points and the depot, rebuilt on every view change.
+  // Markers for points and the depot, rebuilt on every change.
   useEffect(() => {
-    if (!map || !view) return;
+    if (!map) return;
+    const firstOfGroup = new Map<number, string>();
+    for (const g of view.station_groups) if (g.stops[0] !== undefined) firstOfGroup.set(g.stops[0], g.name);
+    const grouped = new Set(view.station_groups.flatMap((g) => g.stops));
+    const draggable = tool === "select" || tool === "add";
     const markers: Marker[] = view.points.map((p) => {
-      const el = pointElement(p, p.id === selected);
+      const label = p.kind === "via" ? null : grouped.has(p.id) ? (firstOfGroup.get(p.id) ?? null) : p.name;
+      const el = pointElement(p, color, p.id === selected, label);
       el.addEventListener("click", (ev) => {
         ev.stopPropagation();
         setSelected(p.id);
       });
-      const m = new Marker({ element: el, draggable: true }).setLngLat(p.lonlat).addTo(map);
+      const m = new Marker({ element: el, draggable }).setLngLat(p.lonlat).addTo(map);
       m.on("dragend", () => {
         const { lng, lat } = m.getLngLat();
         run((e) => e.movePoint(p.id, [lng, lat]));
@@ -224,7 +267,7 @@ export function StreetLineEditor({ map, loadEngine = loadWasmEngine }: Props) {
       return m;
     });
     if (view.depot) {
-      const m = new Marker({ element: depotElement(), draggable: true }).setLngLat(view.depot).addTo(map);
+      const m = new Marker({ element: depotElement(), draggable }).setLngLat(view.depot).addTo(map);
       m.on("dragend", () => {
         const { lng, lat } = m.getLngLat();
         run((e) => e.setDepot([lng, lat]));
@@ -232,334 +275,155 @@ export function StreetLineEditor({ map, loadEngine = loadWasmEngine }: Props) {
       markers.push(m);
     }
     return () => markers.forEach((m) => m.remove());
-  }, [map, view, selected, run]);
+  }, [map, view, selected, color, tool, run]);
 
-  // Delete key removes the selected point.
+  // Preview run: one vehicle drives the circuit, stopping at every stop.
   useEffect(() => {
-    if (selected === null) return;
+    if (!map || !previewing) return;
+    const c = circuitPath(view);
+    if (!c || view.time_s <= 0) {
+      setPreviewing(false);
+      return;
+    }
+    const speed = (c.length / view.time_s) * PREVIEW_SPEEDUP;
+    const dwellMs = (timing.dwellS * 1000) / PREVIEW_SPEEDUP;
+    const vehicle = new Marker({ element: vehicleElement(color), rotationAlignment: "map" })
+      .setLngLat(c.coords[0]!)
+      .addTo(map);
+    let s = 0;
+    let lap = 0;
+    let next = 1;
+    let pausedUntil = 0;
+    let last = performance.now();
+    let frame = requestAnimationFrame(function step(now) {
+      const dt = (now - last) / 1000;
+      last = now;
+      if (now >= pausedUntil) {
+        s += speed * dt;
+        const stopAt =
+          lap * c.length + (next < c.stops.length ? c.stops[next]! : c.length + (c.stops[0] ?? 0));
+        if (c.stops.length && s >= stopAt) {
+          s = stopAt;
+          pausedUntil = now + dwellMs;
+          next++;
+          if (next > c.stops.length) {
+            next = 1;
+            lap++;
+          }
+        }
+      }
+      const pos = along(c, s);
+      vehicle.setLngLat(pos.at).setRotation(pos.bearing);
+      frame = requestAnimationFrame(step);
+    });
+    return () => {
+      cancelAnimationFrame(frame);
+      vehicle.remove();
+    };
+  }, [map, previewing, view, color, timing.dwellS]);
+
+  // Keyboard: V, P and H pick tools; Delete removes the selected point; Escape stops what is going on.
+  useEffect(() => {
     const onKey = (ev: KeyboardEvent) => {
       const target = ev.target as HTMLElement | null;
       if (target && ["INPUT", "SELECT", "TEXTAREA"].includes(target.tagName)) return;
-      if (ev.key === "Delete" || ev.key === "Backspace") {
-        run((e) => e.deletePoint(selected));
+      if (ev.ctrlKey || ev.metaKey || ev.altKey) return;
+      const sel = latest.current.selected;
+      const key = ev.key.toLowerCase();
+      if (key === "v") setTool("select");
+      else if (key === "p") setTool("add");
+      else if (key === "h") setTool("pan");
+      else if ((ev.key === "Delete" || ev.key === "Backspace") && sel !== null) {
+        run((e) => e.deletePoint(sel));
         setSelected(null);
+      } else if (ev.key === "Escape") {
+        setSelected(null);
+        setPreviewing(false);
+        setTool((t) => (t === "depot" ? "select" : t));
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [selected, run]);
+  }, [run]);
 
-  useEffect(() => () => engine.current?.dispose(), []);
-
-  const exportGeoJson = () => {
-    if (!view) return;
-    const blob = new Blob([JSON.stringify(lineToGeoJson(view), null, 2)], { type: "application/geo+json" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "street-line.geojson";
-    a.click();
-    URL.revokeObjectURL(a.href);
+  const settings = (p: VehicleProfile, r: RoutingRules) => {
+    setProfile(p);
+    setRules(r);
+    run((e) => e.setSettings(p, r));
   };
 
-  const nameOf = (id: number | undefined) => view?.points.find((p) => p.id === id)?.name ?? `#${id}`;
-  const btn = "rounded border border-slate-300 px-2 py-1 hover:bg-slate-100 disabled:opacity-40";
-  const on = "border-blue-700 bg-blue-700 text-white hover:bg-blue-800";
+  const actions: PanelActions = {
+    setName: setLineName,
+    setMode: (m) => engine.current && rules && settings(engine.current.defaultProfile(m), rules),
+    setProfile: (p) => rules && settings(p, rules),
+    setRules: (r) => profile && settings(profile, r),
+    setTiming,
+    select: setSelected,
+    setKind: (id, k) => run((e) => e.setKind(id, k)),
+    setPointName: (id, n) => run((e) => e.setName(id, n)),
+    deletePoint: (id) => {
+      run((e) => e.deletePoint(id));
+      setSelected(null);
+    },
+    optimise: () => run((e) => e.optimise()),
+    clear: () => {
+      run((e) => e.clear());
+      setSelected(null);
+      setPreviewing(false);
+    },
+    placeDepot: () => setTool("depot"),
+    removeDepot: () => run((e) => e.clearDepot()),
+    setDepotStops,
+    setShowDepot,
+    setShowRoads,
+  };
+
+  const canPreview = circuitPath(view) !== null;
+  const notice =
+    zoomedOut && !ready
+      ? "Zoom in to street level to load streets."
+      : zoomedOut
+        ? "Zoom in to load streets for this area."
+        : status;
+
+  const sidePanel = profile && rules && (
+    <LinePanel
+      lineName={lineName}
+      view={view}
+      profile={profile}
+      rules={rules}
+      timing={timing}
+      selected={selected}
+      depotStops={shownDepot}
+      showDepot={showDepot}
+      showRoads={showRoads}
+      status={null}
+      error={error}
+      actions={actions}
+    />
+  );
 
   return (
-    <aside
-      aria-label="Street line editor"
-      className="absolute top-2 left-2 z-10 flex max-h-[calc(100%-1rem)] w-80 flex-col gap-3 overflow-y-auto rounded-md bg-white p-3 text-sm shadow-lg"
-    >
-      <h2 className="text-base font-semibold">Street line</h2>
-
-      <section className="flex flex-col gap-1">
-        <label className="font-medium" htmlFor="sl-osm">
-          Road network (OSM XML)
-        </label>
-        <input
-          id="sl-osm"
-          type="file"
-          accept=".osm,.xml,application/xml,text/xml"
-          onChange={(e) => {
-            const f = e.target.files?.[0];
-            if (f) void loadFile(f);
-          }}
-        />
-        {loading && <p className="text-slate-600">Building the road network…</p>}
-        {stats ? (
-          <p className="text-slate-600">
-            {stats.arcs.toLocaleString()} road links, {stats.turn_bans} turn bans for buses.
-          </p>
-        ) : (
-          <p className="text-slate-600">
-            Load an area exported from openstreetmap.org or fetched with{" "}
-            <code>tools/osm/overpass_fetch.py</code>. The project&apos;s imported OSM network replaces this
-            step in Phase 2.
-          </p>
-        )}
-      </section>
-
-      {profile && rules && (
-        <section className="flex flex-col gap-2">
-          <div className="flex gap-2">
-            <label className="flex flex-1 flex-col">
-              <span className="font-medium">Mode</span>
-              <select
-                value={profile.mode}
-                onChange={(e) => changeProfile(engine.current!.defaultProfile(e.target.value as Mode))}
-                className="rounded border border-slate-300 p-1"
-              >
-                {MODES.map((m) => (
-                  <option key={m.id} value={m.id}>
-                    {m.label}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="flex flex-col">
-              <span className="font-medium">Traffic</span>
-              <select
-                value={rules.traffic_side}
-                onChange={(e) => {
-                  const r = { ...rules, traffic_side: e.target.value as RoutingRules["traffic_side"] };
-                  setRules(r);
-                  changeProfile(profile, r);
-                }}
-                className="rounded border border-slate-300 p-1"
-              >
-                <option value="right">Right-hand</option>
-                <option value="left">Left-hand</option>
-              </select>
-            </label>
-          </div>
-          <p className="text-xs text-slate-600">
-            Vehicle: {profile.length_m} m long, {profile.height_m} m high, {profile.weight_t} t.
-          </p>
-          <label className="flex items-center gap-2">
-            <input type="checkbox" checked={showRoads} onChange={(e) => setShowRoads(e.target.checked)} />
-            Show roads this vehicle may use
-            {profile.mode === "trolleybus" && <span className="text-xs text-green-700">(green: wire)</span>}
-          </label>
-          {profile.mode === "trolleybus" && (
-            <label className="flex items-center gap-2">
-              Battery range (m)
-              <input
-                type="number"
-                min={0}
-                step={100}
-                value={profile.battery_range_m}
-                onChange={(e) => changeProfile({ ...profile, battery_range_m: Number(e.target.value) || 0 })}
-                className="w-24 rounded border border-slate-300 p-1"
-              />
-            </label>
-          )}
-          {profile.mode === "brt" && (
-            <label className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                checked={profile.doors_both_sides}
-                onChange={(e) => changeProfile({ ...profile, doors_both_sides: e.target.checked })}
-              />
-              Doors on both sides
-            </label>
-          )}
-        </section>
+    <>
+      <ToolPalette
+        tool={tool}
+        onTool={setTool}
+        previewing={previewing}
+        canPreview={canPreview}
+        onPreview={() => setPreviewing(!previewing)}
+      />
+      <div className="pointer-events-none absolute bottom-8 left-1/2 z-10 flex max-w-[90%] -translate-x-1/2 flex-col items-center gap-1 text-sm">
+        {notice && <p className="rounded-full bg-slate-900/85 px-3 py-1 text-white">{notice}</p>}
+        <p className="rounded-full bg-white/95 px-3 py-1 text-slate-700 shadow" role="note">
+          {HINTS[tool]}
+        </p>
+      </div>
+      {panel ? sidePanel && createPortal(sidePanel, panel) : sidePanel}
+      {!profile && error && (
+        <p className="absolute top-3 right-14 z-10 rounded bg-red-50 px-2 py-1 text-sm text-red-700">
+          {error}
+        </p>
       )}
-
-      {view && (
-        <>
-          <section className="flex flex-col gap-2">
-            <div className="flex flex-wrap gap-1" role="toolbar" aria-label="Tools">
-              <button
-                type="button"
-                className={`${btn} ${tool === "add" ? on : ""}`}
-                onClick={() => setTool(tool === "add" ? null : "add")}
-              >
-                Add points
-              </button>
-              <button
-                type="button"
-                className={`${btn} ${tool === "depot" ? on : ""}`}
-                onClick={() => setTool(tool === "depot" ? null : "depot")}
-              >
-                Place depot
-              </button>
-              <button
-                type="button"
-                className={btn}
-                onClick={() => run((e) => e.optimise())}
-                disabled={view.points.length < 2}
-              >
-                Optimise
-              </button>
-              <button type="button" className={btn} onClick={exportGeoJson} disabled={view.points.length < 2}>
-                Export
-              </button>
-            </div>
-            <div className="flex items-center gap-2 text-xs">
-              New points:
-              {KINDS.slice(0, 2).map((k) => (
-                <label key={k.id} className="flex items-center gap-1">
-                  <input
-                    type="radio"
-                    name="sl-new-kind"
-                    checked={newKind === k.id}
-                    onChange={() => setNewKind(k.id)}
-                  />
-                  {k.label}
-                </label>
-              ))}
-            </div>
-            <p className="text-xs text-slate-600">
-              Click the map to add points in order; the line returns from the last point to the first. Click
-              on the line to insert a point, drag points to move them, Delete removes the selected point.
-              Stops snap to the sidewalk you click on and are served from the door side.
-            </p>
-          </section>
-
-          {view.points.length >= 2 && (
-            <p className="font-medium">
-              Circuit {formatLength(view.length_m)}, {formatTime(view.time_s)} running time
-            </p>
-          )}
-
-          {(error || view.issues.length > 0) && (
-            <ul className="flex flex-col gap-1 text-xs" aria-label="Problems">
-              {error && <li className="text-red-700">{error}</li>}
-              {view.issues.map((i) => (
-                <li key={i} className="text-amber-700">
-                  {i}
-                </li>
-              ))}
-            </ul>
-          )}
-
-          {view.points.length > 0 && (
-            <section>
-              <h3 className="font-medium">Points</h3>
-              <ol className="flex flex-col gap-1">
-                {view.points.map((p) => {
-                  const leg = view.legs[p.seq];
-                  return (
-                    <li
-                      key={p.id}
-                      className={`rounded border p-1 ${p.id === selected ? "border-amber-500 bg-amber-50" : "border-slate-200"}`}
-                      onClick={() => setSelected(p.id)}
-                    >
-                      <div className="flex items-center gap-1">
-                        <span className="w-5 text-right font-semibold">{p.seq + 1}</span>
-                        {p.kind === "via" ? (
-                          <span className="flex-1 truncate text-slate-500">{p.name}</span>
-                        ) : (
-                          <input
-                            aria-label={`Name of point ${p.seq + 1}`}
-                            className="min-w-0 flex-1 rounded border border-transparent px-1 hover:border-slate-300"
-                            defaultValue={p.name}
-                            key={p.name}
-                            onBlur={(e) =>
-                              e.target.value !== p.name && run((en) => en.setName(p.id, e.target.value))
-                            }
-                          />
-                        )}
-                        <span className="flex" role="group" aria-label={`Kind of point ${p.seq + 1}`}>
-                          {KINDS.map((k) => (
-                            <button
-                              key={k.id}
-                              type="button"
-                              title={k.title}
-                              aria-pressed={p.kind === k.id}
-                              className={`border border-slate-300 px-1 text-xs ${p.kind === k.id ? on : ""}`}
-                              onClick={() => run((e) => e.setKind(p.id, k.id))}
-                            >
-                              {k.label}
-                            </button>
-                          ))}
-                        </span>
-                        <button
-                          type="button"
-                          aria-label={`Delete point ${p.seq + 1}`}
-                          className="px-1 text-slate-500 hover:text-red-700"
-                          onClick={(ev) => {
-                            ev.stopPropagation();
-                            run((e) => e.deletePoint(p.id));
-                          }}
-                        >
-                          ×
-                        </button>
-                      </div>
-                      {p.message && <p className="text-xs text-red-700">{p.message}</p>}
-                      {leg && (
-                        <p className="pl-6 text-xs" style={{ color: STATUS_COLOR[leg.status] }}>
-                          → {formatLength(leg.length_m)}, {formatTime(leg.time_s)}
-                          {leg.message ? ` — ${leg.message}` : ""}
-                        </p>
-                      )}
-                    </li>
-                  );
-                })}
-              </ol>
-            </section>
-          )}
-
-          {view.directions.length > 0 && (
-            <section>
-              <h3 className="font-medium">Directions</h3>
-              <ul className="text-xs">
-                {view.directions.map((d) => (
-                  <li key={d.direction}>
-                    {d.direction}: {nameOf(d.stops[0])} → {nameOf(d.stops[d.stops.length - 1])},{" "}
-                    {d.stops.length} stops, {formatLength(d.length_m)}, {formatTime(d.time_s)}
-                  </li>
-                ))}
-              </ul>
-            </section>
-          )}
-
-          {view.station_groups.some((g) => g.stops.length > 1) && (
-            <section>
-              <h3 className="font-medium">Station groups</h3>
-              <ul className="text-xs">
-                {view.station_groups
-                  .filter((g) => g.stops.length > 1)
-                  .map((g) => (
-                    <li key={g.stops.join("-")}>
-                      {g.name}: {g.stops.length} stops
-                    </li>
-                  ))}
-              </ul>
-            </section>
-          )}
-
-          {view.depot && (
-            <section>
-              <h3 className="flex items-center justify-between font-medium">
-                Depot trips
-                <button
-                  type="button"
-                  className="text-xs text-slate-500 hover:text-red-700"
-                  onClick={() => run((e) => e.clearDepot())}
-                >
-                  Remove depot
-                </button>
-              </h3>
-              <ul className="text-xs">
-                {view.depot_trips.map((t) => (
-                  <li
-                    key={`${t.kind}-${t.stop}`}
-                    style={{ color: t.status === "ok" ? undefined : STATUS_COLOR.error }}
-                  >
-                    {t.kind === "pull_out"
-                      ? `Pull-out to ${nameOf(t.stop)}`
-                      : `Pull-in from ${nameOf(t.stop)}`}
-                    : {t.status === "ok" ? `${formatLength(t.length_m)}, ${formatTime(t.time_s)}` : t.message}
-                  </li>
-                ))}
-                {view.depot_trips.length === 0 && <li>Add stops to route pull-out and pull-in trips.</li>}
-              </ul>
-            </section>
-          )}
-        </>
-      )}
-    </aside>
+    </>
   );
 }

@@ -14,7 +14,7 @@ A round trip to the server for every drag would make editing sluggish, and the A
 
 1. Street routing lives in one Rust crate, `crates/street-routing`: road graph view with bus access rules, edge-based Dijkstra from `pathfinding` (the state is the directed road link, so turn bans and the no-U-turn rule are exact), and the route-point circuit model of ADR-0029.
 2. The same crate is compiled to WebAssembly (`crates/street-routing-wasm`, `wasm-bindgen`) and loaded by the map editor, so the editor routes locally in milliseconds. The simulation worker will use the same crate natively. There is still one routing implementation.
-3. The road graph view is built from OSM tags with the same mapping the PostGIS import will use. Until the Phase 2 import exists, the planner loads an OSM XML file (from `tools/osm/overpass_fetch.py` or an openstreetmap.org export). The browser does not call Overpass itself: outbound requests belong to the gateway (ADR-0017).
+3. The road graph view is built from OSM tags with the same mapping the PostGIS import will use. The planner never loads or exports files. The editor asks the API for the streets on screen, one zoom-14 tile at a time (`GET /api/street-network/tiles/14/{x}/{y}`), merges the tiles and rebuilds the graph with a fixed projection, so points already drawn keep their places. Until the Phase 2 import exists, the API fills a tile from Overpass through the gateway's `OverpassClient` (ADR-0017: one request at a time, HTTPS only, retries with backoff, size and time limits, identifying User-Agent) and caches it. The browser never calls Overpass itself.
 4. Detour warning (ADR-0029 §6): a leg warns when turning round costs more than the larger of 500 m and 25 % of the direct distance, where the direct distance is the same leg with U-turns allowed. Both values are Project Preferences.
 5. Snapping prefers main roads: a click must be 15 m closer to a service road, living street or pedestrian street than to a main road to snap to it.
 
@@ -22,8 +22,9 @@ A round trip to the server for every drag would make editing sluggish, and the A
 
 - Dragging a point re-routes its two legs in a few milliseconds (Monaco, 27,000 road links: four stops routed in about 15 ms natively).
 - CI and the image build need the `wasm32-unknown-unknown` target and `wasm-bindgen-cli` pinned to the crate's `wasm-bindgen` version (`tools/wasm/build-street-routing.sh`).
-- When the graph moves to PostGIS, only the graph builder changes: the editor will receive the mode-specific view for the project area from the API instead of parsing an OSM file.
-- Line persistence (`svc.route`, ADR-0029 consequences) arrives with the network design module; until then lines can be exported as GeoJSON.
+- When the graph moves to PostGIS, only the tile endpoint changes: it will serve the project's imported streets instead of Overpass data. The editor and the router stay the same.
+- The web app's Content Security Policy allows `'wasm-unsafe-eval'` so the browser may compile the module.
+- Line persistence (`svc.route`, ADR-0029 consequences) arrives with the network design module. Until then a line lives only in the open editor.
 
 ## Alternatives considered
 

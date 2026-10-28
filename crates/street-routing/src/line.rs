@@ -106,6 +106,10 @@ pub struct PointView {
     pub status: Status,
     /// Explanation.
     pub message: Option<String>,
+    /// Direction of travel through the point, degrees clockwise from north.
+    pub bearing_deg: Option<f64>,
+    /// Stops: the bus bay on the kerb (vehicle length + 3 m by 3 m), as a closed ring in degrees.
+    pub bay: Option<Vec<[f64; 2]>>,
 }
 
 /// Leg as reported to the UI.
@@ -319,6 +323,19 @@ impl StreetLine {
         self.profile = profile;
         for i in 0..self.points.len() {
             self.resnap(g, i);
+        }
+        self.reroute_all(g);
+    }
+
+    /// Purpose: after the road graph was rebuilt (more area loaded), snap every point and the depot
+    /// again and re-route the whole circuit. The graph must use the same projection as before.
+    pub fn rebuild(&mut self, g: &RoadGraph) {
+        for i in 0..self.points.len() {
+            self.resnap(g, i);
+        }
+        if let Some(d) = &self.depot {
+            let ll = g.proj.to_lonlat(d.click.0, d.click.1);
+            self.set_depot(g, Some(ll));
         }
         self.reroute_all(g);
     }
@@ -649,6 +666,37 @@ impl StreetLine {
         street
     }
 
+    /// Bus bay rectangle beside the kerb for a stop, centred on the stop along the street.
+    fn bay(&self, g: &RoadGraph, p: &RoutePoint) -> Option<Vec<[f64; 2]>> {
+        let a = p.anchor.filter(|_| p.kind.is_stop())?;
+        let arc = &g.arcs[a.arc as usize];
+        let seg = &g.segments[arc.segment as usize];
+        let on = g.point_on_arc(a.arc, a.t);
+        let (ux, uy) = (arc.heading.cos(), arc.heading.sin());
+        // Door side: right of travel in right-hand traffic.
+        let sign = match self.rules.traffic_side {
+            TrafficSide::Right => -1.0,
+            TrafficSide::Left => 1.0,
+        };
+        let (nx, ny) = (-uy * sign, ux * sign);
+        let half = (self.profile.length_m + 3.0) / 2.0;
+        let outer = seg.width_m / 2.0;
+        let inner = (outer - 3.0).max(0.5);
+        let corner = |along: f64, off: f64| {
+            let (lon, lat) = g
+                .proj
+                .to_lonlat(on.0 + ux * along + nx * off, on.1 + uy * along + ny * off);
+            [lon, lat]
+        };
+        Some(vec![
+            corner(-half, inner),
+            corner(half, inner),
+            corner(half, outer),
+            corner(-half, outer),
+            corner(-half, inner),
+        ])
+    }
+
     fn display_xy(&self, g: &RoadGraph, p: &RoutePoint) -> (f64, f64) {
         let Some(a) = p.anchor else { return p.click };
         let on = g.point_on_arc(a.arc, a.t);
@@ -730,7 +778,13 @@ impl StreetLine {
                 let (lon, lat) = g
                     .proj
                     .to_lonlat(self.display_xy(g, p).0, self.display_xy(g, p).1);
+                let bearing_deg = p.anchor.map(|a| {
+                    let h = g.arcs[a.arc as usize].heading.to_degrees();
+                    (90.0 - h).rem_euclid(360.0)
+                });
                 PointView {
+                    bearing_deg,
+                    bay: self.bay(g, p),
                     id: p.id,
                     seq,
                     kind: p.kind,

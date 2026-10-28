@@ -3,10 +3,11 @@ import { useState } from "react";
 import { StreetLineEditor } from "./features/street-lines/StreetLineEditor";
 import { MapView } from "./map/MapView";
 
-/** Application shell: top bar, the map and the street line tool. Menus and panels arrive in Phase 1. */
+/** Application shell: top bar, the map and the street line tool with its side panel. Menus and panels arrive in Phase 1. */
 export function App() {
   const [map, setMap] = useState<MapLibreMap | null>(null);
   const [streetLine, setStreetLine] = useState(false);
+  const [panel, setPanel] = useState<HTMLElement | null>(null);
   // Development hook for end-to-end scripts that need map coordinates.
   if (import.meta.env.DEV) Object.assign(window, { mobsimMap: map });
 
@@ -31,9 +32,18 @@ export function App() {
           </button>
         </div>
       </header>
-      <main className="relative flex-1">
-        <MapView onReady={setMap} />
-        {streetLine && <StreetLineEditor map={map} />}
+      <main className="flex min-h-0 flex-1">
+        <div className="relative min-w-0 flex-1">
+          <MapView onReady={setMap} />
+          {streetLine && <StreetLineEditor map={map} panel={panel} />}
+        </div>
+        {streetLine && (
+          <aside
+            ref={setPanel}
+            aria-label="Street line editor"
+            className="w-96 shrink-0 overflow-y-auto border-l border-slate-300 bg-white"
+          />
+        )}
       </main>
     </div>
   );
