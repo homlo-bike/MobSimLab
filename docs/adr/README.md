@@ -35,3 +35,4 @@ All ADRs below were accepted on 2026-10-27. New ADRs start as Proposed. Template
 | [0029](0029-street-service-line-authoring.md) | Street-based service lines are drawn as an ordered point circuit, routed on the road graph | Accepted |
 | [0030](0030-railway-design-tool.md) | Railway design is station-first, drawn to scale from engineering elements | Accepted |
 | [0031](0031-street-routing-in-browser.md) | One street routing crate, compiled for the worker and, as WebAssembly, for the map editor | Proposed |
+| [0032](0032-railway-operations-management.md) | Railway operations management: rail lines from stations, conflict-free timetables on blocking times, traffic management that reschedules | Proposed |
