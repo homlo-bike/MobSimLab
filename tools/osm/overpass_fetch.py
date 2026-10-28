@@ -38,15 +38,16 @@ def bbox_area_km2(s: float, w: float, n: float, e: float) -> float:
 
 
 def build_query(s: float, w: float, n: float, e: float, timeout_s: int = 120, maxsize: int = 512 * 1024 * 1024) -> str:
-    """Overpass QL returning nodes, ways and multipolygon relations in the box, with their members, as XML.
+    """Overpass QL returning nodes, ways, multipolygon and turn-restriction relations in the box, as XML.
 
     Other relations (routes, boundaries, networks) are left out: recursing into their members
-    pulls in ways far outside the box, and the flex style only reads multipolygons.
+    pulls in ways far outside the box. The flex style reads multipolygons; the street line
+    router reads turn restrictions, whose member ways meet at one junction.
     """
     b = f"{s},{w},{n},{e}"
     return (
         f"[out:xml][timeout:{timeout_s}][maxsize:{maxsize}];"
-        f'(node({b});way({b});rel({b})["type"="multipolygon"];);(._;>;);out meta;'
+        f'(node({b});way({b});rel({b})["type"~"^(multipolygon|restriction)$"];);(._;>;);out meta;'
     )
 
 

@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["crates/rail-sim", "crates/mobsim-py"]
+members = ["crates/rail-sim", "crates/mobsim-py", "crates/street-routing", "crates/street-routing-wasm"]
 
 [workspace.package]
 edition = "2021"

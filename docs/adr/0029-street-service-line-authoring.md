@@ -38,6 +38,7 @@ Keep the owner's model as the core. Revised 2026-10-27 after the owner's review:
 - The planner's workflow is exactly the proposed one: click points, the line closes itself, promote stops, move points.
 - Stop side is always unambiguous because stops sit on a sidewalk, and the router enforces the approach direction.
 - Long turn-round detours and impossible legs surface as warnings and validation errors instead of silently invalid paths.
+- Implemented in `crates/street-routing` and the map editor's Street line tool (ADR-0031).
 - The domain model gains `RoutePoint {seq, kind: via|stop|end_stop, sidewalk_ref, edge_ref, direction, pinned_leg?}` under `svc.route`, plus end-stop and detour-threshold rules in Project Preferences.
 
 ## Alternatives considered

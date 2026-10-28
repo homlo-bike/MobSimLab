@@ -4,10 +4,17 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 vi.mock("maplibre-gl", () => {
   class Map {
     addControl() {}
+    on() {}
     remove() {}
   }
   class Control {}
-  return { Map, AttributionControl: Control, NavigationControl: Control, ScaleControl: Control };
+  return {
+    Map,
+    AttributionControl: Control,
+    NavigationControl: Control,
+    ScaleControl: Control,
+    setWorkerUrl: () => {},
+  };
 });
 
 import { App } from "../src/App";
@@ -70,6 +77,14 @@ describe("App shell", () => {
     expect((put?.init?.headers as Record<string, string>)["X-CSRF-Token"]).toBe("csrf-123");
     expect(calls.some((c) => c.url === "/api/setup/finish")).toBe(true);
     expect(await screen.findByText("Köln")).toBeTruthy();
+  });
+
+  it("opens the street line tool from the toolbar", () => {
+    stubFetch([setupMe]);
+    render(<App />);
+    fireEvent.click(screen.getByRole("button", { name: "Street line" }));
+    expect(screen.getByRole("complementary", { name: "Street line editor" })).toBeTruthy();
+    expect(screen.getByRole("toolbar", { name: "Street line tools" })).toBeTruthy();
   });
 
   it("credits OpenStreetMap on the default basemap", () => {

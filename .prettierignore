@@ -9,3 +9,4 @@ deploy
 db
 tools
 .github
+apps/web/src/wasm
