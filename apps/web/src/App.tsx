@@ -1,5 +1,6 @@
 import type { Map as MapLibreMap } from "maplibre-gl";
 import { useCallback, useEffect, useState } from "react";
+import { AdminPanel } from "./admin/AdminPanel";
 import { StreetLineEditor } from "./features/street-lines/StreetLineEditor";
 import { MapView } from "./map/MapView";
 import { AccountMenu } from "./session/AccountMenu";
@@ -7,11 +8,12 @@ import { fetchMe, type Me, SIGNIN_MESSAGES } from "./session/api";
 import { SetupPanel } from "./setup/SetupPanel";
 
 /**
- * Application shell: top bar with account menu, the setup wizard while in setup mode, the map, and
- * the street line tool with its side panel.
+ * Application shell: top bar with account menu, the setup wizard while in setup mode, the administration
+ * panel for Owners and Admins, the map, and the street line tool with its side panel.
  */
 export function App() {
   const [me, setMe] = useState<Me | null>(null);
+  const [admin, setAdmin] = useState(false);
   const reload = useCallback(() => {
     fetchMe().then(setMe, () => setMe(null));
   }, []);
@@ -43,15 +45,28 @@ export function App() {
             Street line
           </button>
         </div>
-        <span>{me && <AccountMenu me={me} onSignedOut={reload} />}</span>
+        <span>{me && <AccountMenu me={me} onSignedOut={reload} onAdmin={() => setAdmin(true)} />}</span>
       </header>
       {refusal && !me?.user && (
         <p role="status" className="border-b border-amber-300 bg-amber-50 px-3 py-1 text-sm">
           {SIGNIN_MESSAGES[refusal] ?? SIGNIN_MESSAGES.invalid_request}
         </p>
       )}
+      {me?.user?.role === "restricted" && (
+        <p role="status" className="border-b border-amber-300 bg-amber-50 px-3 py-1 text-sm">
+          Your account is restricted. Please contact an administrator.
+        </p>
+      )}
       <main className="flex min-h-0 flex-1">
         <div className="relative min-w-0 flex-1">
+          {admin && me?.user && me.csrfToken && (
+            <AdminPanel
+              role={me.user.role}
+              userId={me.user.id}
+              csrfToken={me.csrfToken}
+              onClose={() => setAdmin(false)}
+            />
+          )}
           {me?.instance.mode === "setup" && me.user?.role === "owner" && me.csrfToken && (
             <SetupPanel name={me.instance.name} csrfToken={me.csrfToken} onFinished={reload} />
           )}

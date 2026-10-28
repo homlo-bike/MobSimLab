@@ -18,6 +18,7 @@ export function testConfig(over: Partial<AppConfig> = {}): AppConfig {
     port: 0,
     publicUrl: new URL("http://127.0.0.1:8080"),
     db: { host: "127.0.0.1", port: 5432, name: "mobsimlab" },
+    rateLimits: { authPerMinute: 1000, writesPerMinute: 1000 },
     secrets: { ...TEST_SECRETS },
     ...over,
   };
@@ -27,7 +28,7 @@ export function testConfig(over: Partial<AppConfig> = {}): AppConfig {
 export async function createApp(config: AppConfig): Promise<NestExpressApplication> {
   const mod = await Test.createTestingModule({ imports: [AppModule.forRoot(config)] }).compile();
   const app = mod.createNestApplication<NestExpressApplication>({ logger: false });
-  configureApp(app);
+  configureApp(app, config);
   await app.init();
   return app;
 }

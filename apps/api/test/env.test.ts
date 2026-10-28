@@ -71,4 +71,17 @@ describe("loadConfig", () => {
       loadConfig({ ...env, MOBSIMLAB_BOOTSTRAP_OWNER_EMAIL: "" }, reader).bootstrapOwnerEmail,
     ).toBeUndefined();
   });
+
+  it("reads trusted proxies and rate limits with safe defaults", () => {
+    const d = loadConfig(env, reader);
+    expect(d.trustedProxies).toBeUndefined();
+    expect(d.rateLimits).toEqual({ authPerMinute: 10, writesPerMinute: 120 });
+    const c = loadConfig(
+      { ...env, MOBSIMLAB_TRUSTED_PROXIES: "loopback, 172.16.0.0/12", MOBSIMLAB_RATE_LIMIT_AUTH: "20" },
+      reader,
+    );
+    expect(c.trustedProxies).toEqual(["loopback", "172.16.0.0/12"]);
+    expect(c.rateLimits.authPerMinute).toBe(20);
+    expect(() => loadConfig({ ...env, MOBSIMLAB_TRUSTED_PROXIES: "*" }, reader)).toThrow(/TRUSTED_PROXIES/);
+  });
 });
