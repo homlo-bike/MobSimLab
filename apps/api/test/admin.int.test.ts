@@ -74,7 +74,9 @@ describe("administration", () => {
   });
 
   it("lists pending users with their IdP groups and lets an admin approve them", async () => {
-    expect((await login("dave", { groups: ["planning"] })).headers.location).toBe("/?signin=pending_approval");
+    expect((await login("dave", { groups: ["planning"] })).headers.location).toBe(
+      "/?signin=pending_approval",
+    );
     const list = await as("alice").get("/api/admin/users?status=pending");
     expect(list.status).toBe(200);
     expect(list.body.users).toHaveLength(1);
@@ -145,18 +147,21 @@ describe("administration", () => {
     });
     expect(put.status).toBe(200);
     expect(put.body.allowedGroups).toEqual(["staff"]);
-    expect((await as("alice").post("/api/admin/group-mappings", { group: "planners", role: "user" })).status).toBe(
-      201,
-    );
     expect(
-      (await as("alice").post("/api/admin/group-mappings", { group: "suspended", role: "restricted" })).status,
+      (await as("alice").post("/api/admin/group-mappings", { group: "planners", role: "user" })).status,
     ).toBe(201);
-    expect((await as("alice").post("/api/admin/group-mappings", { group: "planners", role: "viewer" })).status).toBe(
-      409,
-    );
+    expect(
+      (await as("alice").post("/api/admin/group-mappings", { group: "suspended", role: "restricted" }))
+        .status,
+    ).toBe(201);
+    expect(
+      (await as("alice").post("/api/admin/group-mappings", { group: "planners", role: "viewer" })).status,
+    ).toBe(409);
     // Only an Owner may map a group to Admin.
     await login("erin");
-    expect((await as("erin").post("/api/admin/group-mappings", { group: "it", role: "admin" })).status).toBe(201);
+    expect((await as("erin").post("/api/admin/group-mappings", { group: "it", role: "admin" })).status).toBe(
+      201,
+    );
 
     expect((await login("gina", { groups: ["staff", "planners"] })).headers.location).toBe("/");
     expect((await as("gina").get("/api/auth/me")).body.user.role).toBe("user");
@@ -186,7 +191,9 @@ describe("administration", () => {
     const it = mappings.find((m) => m.group === "it");
     await as("alice").patch(`/api/admin/users/${await userId("erin@example.org")}`, { role: "admin" });
     await login("erin");
-    expect((await as("erin").post("/api/admin/group-mappings", { group: "x", role: "admin" })).status).toBe(403);
+    expect((await as("erin").post("/api/admin/group-mappings", { group: "x", role: "admin" })).status).toBe(
+      403,
+    );
     expect((await as("erin").del(`/api/admin/group-mappings/${it?.id}`)).status).toBe(403);
     expect((await as("alice").del(`/api/admin/group-mappings/${it?.id}`)).status).toBe(200);
   });
@@ -247,7 +254,12 @@ describe("administration", () => {
           .set("Cookie", b.cookie)
           .set("Origin", config.publicUrl.origin)
           .set("X-CSRF-Token", b.csrf)
-          .send({ autoRegistration: false, defaultRole: "viewer", allowedEmailDomains: [], allowedGroups: [] });
+          .send({
+            autoRegistration: false,
+            defaultRole: "viewer",
+            allowedEmailDomains: [],
+            allowedGroups: [],
+          });
       expect((await write()).status).toBe(200);
       expect((await write()).status).toBe(200);
       expect((await write()).status).toBe(429);

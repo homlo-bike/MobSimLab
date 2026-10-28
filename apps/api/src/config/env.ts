@@ -135,7 +135,8 @@ export function loadConfig(
       problems.push("MOBSIMLAB_OIDC_ISSUER and MOBSIMLAB_OIDC_CLIENT_ID must be set together");
     }
     for (const p of splitList(d.MOBSIMLAB_TRUSTED_PROXIES)) {
-      if (!PROXY_ENTRY.test(p)) problems.push(`MOBSIMLAB_TRUSTED_PROXIES: "${p}" is not an IP, CIDR or keyword`);
+      if (!PROXY_ENTRY.test(p))
+        problems.push(`MOBSIMLAB_TRUSTED_PROXIES: "${p}" is not an IP, CIDR or keyword`);
     }
     if (d.MOBSIMLAB_OIDC_ISSUER?.startsWith("http:") && d.MOBSIMLAB_OIDC_ALLOW_INSECURE_HTTP !== "true") {
       problems.push("MOBSIMLAB_OIDC_ISSUER must use https");
@@ -161,7 +162,10 @@ export function loadConfig(
           }
         : undefined,
     trustedProxies: d.MOBSIMLAB_TRUSTED_PROXIES ? splitList(d.MOBSIMLAB_TRUSTED_PROXIES) : undefined,
-    rateLimits: { authPerMinute: d.MOBSIMLAB_RATE_LIMIT_AUTH, writesPerMinute: d.MOBSIMLAB_RATE_LIMIT_WRITES },
+    rateLimits: {
+      authPerMinute: d.MOBSIMLAB_RATE_LIMIT_AUTH,
+      writesPerMinute: d.MOBSIMLAB_RATE_LIMIT_WRITES,
+    },
     secrets,
   };
 }

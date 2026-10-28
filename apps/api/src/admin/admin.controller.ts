@@ -48,7 +48,10 @@ const registrationBody = z.strictObject({
 const mappingBody = z.strictObject({
   group: z.string().trim().min(1).max(200),
   role: z.enum(MAPPABLE_ROLES),
-  issuer: z.url({ protocol: /^https?$/ }).nullable().optional(),
+  issuer: z
+    .url({ protocol: /^https?$/ })
+    .nullable()
+    .optional(),
 });
 const auditQuery = z.strictObject({
   before: z.coerce.number().int().min(1).optional(),

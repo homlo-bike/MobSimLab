@@ -1,14 +1,23 @@
 import { describe, expect, it } from "vitest";
 import { type GroupMapping, mappedRole, mayManage, meetsRegistrationRules } from "../src/iam/roles";
 
-const m = (group_value: string, instance_role: GroupMapping["instance_role"], issuer: string | null = null) => ({
+const m = (
+  group_value: string,
+  instance_role: GroupMapping["instance_role"],
+  issuer: string | null = null,
+) => ({
   group_value,
   instance_role,
   issuer,
 });
 
 describe("group mappings", () => {
-  const mappings = [m("staff", "viewer"), m("planners", "user"), m("it", "admin", "https://a"), m("x", "restricted")];
+  const mappings = [
+    m("staff", "viewer"),
+    m("planners", "user"),
+    m("it", "admin", "https://a"),
+    m("x", "restricted"),
+  ];
   it("returns null when nothing matches", () => {
     expect(mappedRole("https://a", ["other"], mappings)).toBeNull();
   });
@@ -30,13 +39,20 @@ describe("auto-registration rules", () => {
     expect(meetsRegistrationRules(id, { allowed_email_domains: [], allowed_groups: [] })).toBe(true);
   });
   it("matches a verified e-mail domain, case-insensitively", () => {
-    expect(meetsRegistrationRules(id, { allowed_email_domains: ["example.org"], allowed_groups: [] })).toBe(true);
+    expect(meetsRegistrationRules(id, { allowed_email_domains: ["example.org"], allowed_groups: [] })).toBe(
+      true,
+    );
     expect(
-      meetsRegistrationRules({ ...id, emailVerified: false }, { allowed_email_domains: ["example.org"], allowed_groups: [] }),
+      meetsRegistrationRules(
+        { ...id, emailVerified: false },
+        { allowed_email_domains: ["example.org"], allowed_groups: [] },
+      ),
     ).toBe(false);
   });
   it("matches a group", () => {
-    expect(meetsRegistrationRules(id, { allowed_email_domains: ["other.org"], allowed_groups: ["g1"] })).toBe(true);
+    expect(meetsRegistrationRules(id, { allowed_email_domains: ["other.org"], allowed_groups: ["g1"] })).toBe(
+      true,
+    );
     expect(meetsRegistrationRules(id, { allowed_email_domains: [], allowed_groups: ["g2"] })).toBe(false);
   });
 });

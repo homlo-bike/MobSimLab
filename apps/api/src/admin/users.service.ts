@@ -1,10 +1,4 @@
-import {
-  ConflictException,
-  ForbiddenException,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from "@nestjs/common";
+import { ConflictException, ForbiddenException, Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { sql } from "kysely";
 import { AuditService } from "../audit/audit.service";
 import { DATABASE, type Database, type InstanceRole } from "../db/database";
@@ -51,21 +45,19 @@ export class UsersService {
    * e-mail and display name. Output: up to 500 rows.
    */
   async list(filter: { status?: UserStatus; q?: string }): Promise<UserRow[]> {
-    let query = this.db
-      .selectFrom("iam.user as u")
-      .select([
-        "u.id",
-        "u.email",
-        "u.display_name as displayName",
-        "u.instance_role as role",
-        "u.status",
-        "u.role_override as roleOverride",
-        "u.created_at as createdAt",
-        "u.last_login_at as lastLoginAt",
-        sql<UserRow["identities"]>`coalesce((
+    let query = this.db.selectFrom("iam.user as u").select([
+      "u.id",
+      "u.email",
+      "u.display_name as displayName",
+      "u.instance_role as role",
+      "u.status",
+      "u.role_override as roleOverride",
+      "u.created_at as createdAt",
+      "u.last_login_at as lastLoginAt",
+      sql<UserRow["identities"]>`coalesce((
           SELECT json_agg(json_build_object('issuer', i.issuer, 'groups', i.groups) ORDER BY i.issuer)
           FROM iam.identity i WHERE i.user_id = u.id), '[]')`.as("identities"),
-      ]);
+    ]);
     query = filter.status
       ? query.where("u.status", "=", filter.status)
       : query.where("u.status", "<>", "deleted");
