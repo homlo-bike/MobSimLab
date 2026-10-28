@@ -71,9 +71,11 @@ Two layers:
 
 **Policy engine:** a single `PermissionService.can(actor, action, resource)` in `iam`, backed by a declarative policy table (action × role). Every controller method carries a `@Requires(action)` decorator; a CI test fails if any route lacks one. RLS in PostgreSQL is a second line (see 04 §3.3).
 
-**Group mapping:** admins map IdP group claim values to instance roles and to project memberships. On every login, mapped roles are recomputed; a **manual override** flag on the user pins a role and is shown in the admin UI.
+**Group mapping:** admins map IdP group claim values to instance roles and to project memberships. On every login, mapped roles are recomputed; a **manual override** flag on the user pins a role and is shown in the admin UI. When several mappings match, the highest role wins, except that a match to Restricted always wins (so a suspension group cannot be outvoted). A mapping can never grant Owner, and only an Owner may create or remove a mapping to Admin. A role set by an admin is pinned by default. Owners are never changed by mappings.
 
-**Auto-registration:** off by default. When on, new users get the configured default role (default Viewer) and optionally must belong to an allowed IdP group or email domain.
+**Who manages whom:** only an Owner may create, change or delete Owners and Admins; Admins manage User, Viewer and Restricted accounts. Nobody changes their own account through the admin API, and the last active Owner cannot be demoted or deleted (checked under a lock on the instance row). Deleting a user removes e-mail, name and group claims and ends all sessions; the row and the (issuer, subject) pair remain so audit records keep their actor and the account cannot silently register again.
+
+**Auto-registration:** off by default. When on, new users get the configured default role (default Viewer), or their mapped role, and optionally must belong to an allowed IdP group or have a provider-verified email in an allowed domain; others wait for approval.
 
 ### 3.3 Input validation and output encoding
 
@@ -93,7 +95,7 @@ Two layers:
 
 ### 3.5 Rate limiting and abuse controls
 
-- Per-IP and per-user token buckets (`@nestjs/throttler` with PostgreSQL store): auth endpoints 10/min, writes 120/min, imports 5/h, simulation runs per user configurable.
+- Per-IP and per-user token buckets in PostgreSQL (`iam.take_token`, an unlogged table, so limits hold across processes): auth endpoints 10/min per client address, writes 120/min per user (both configurable), imports 5/h, simulation runs per user configurable. Refusals return 429 with `Retry-After`. Behind a TLS proxy the operator sets `MOBSIMLAB_TRUSTED_PROXIES`; without it the TCP peer is the client address and `X-Forwarded-For` is ignored.
 - Resource quotas per project: max area for OSM import, max upload size, max concurrent runs, max run duration.
 
 ### 3.6 Secrets and credentials

@@ -7,6 +7,18 @@ import type { AppConfig } from "../config/env";
 export const INSTANCE_ROLES = ["owner", "admin", "user", "viewer", "restricted"] as const;
 export type InstanceRole = (typeof INSTANCE_ROLES)[number];
 
+/** Roles a group mapping may grant. Owner is never granted automatically. */
+export const MAPPABLE_ROLES = ["admin", "user", "viewer", "restricted"] as const;
+export type MappableRole = (typeof MAPPABLE_ROLES)[number];
+
+/**
+ * Purpose: rank of a role (0 = owner, highest).
+ * Inputs: role. Output: index in INSTANCE_ROLES.
+ */
+export function roleRank(role: InstanceRole): number {
+  return INSTANCE_ROLES.indexOf(role);
+}
+
 type Timestamp = ColumnType<Date, Date | string | undefined, Date | string>;
 
 /** Table types for the tables the API reads and writes (db/migrations). */
@@ -17,6 +29,8 @@ export interface DB {
     name: string;
     auto_registration: boolean;
     default_role: "user" | "viewer";
+    allowed_email_domains: ColumnType<string[], never, string[]>;
+    allowed_groups: ColumnType<string[], never, string[]>;
     setup_finished_at: Date | null;
     updated_at: Timestamp;
   };
@@ -29,6 +43,7 @@ export interface DB {
     role_override: Generated<boolean>;
     created_at: Generated<Date>;
     last_login_at: Date | null;
+    deleted_at: ColumnType<Date | null, never, Date | null>;
   };
   "iam.identity": {
     issuer: string;
@@ -54,6 +69,13 @@ export interface DB {
     absolute_expires_at: Date;
     revoked_at: Date | null;
   };
+  "iam.group_mapping": {
+    id: Generated<string>;
+    issuer: string | null;
+    group_value: string;
+    instance_role: MappableRole;
+    created_at: Generated<Date>;
+  };
   "audit.record": {
     id: Generated<string>;
     chain: string;
@@ -63,6 +85,7 @@ export interface DB {
     action: string;
     object_type: string;
     object_id: string | null;
+    before: unknown;
     after: unknown;
     reason: string | null;
   };
