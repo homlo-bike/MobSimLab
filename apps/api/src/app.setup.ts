@@ -20,7 +20,8 @@ export function configureApp(app: NestExpressApplication, config: AppConfig): vo
           "connect-src": ["'self'", "https://tiles.openfreemap.org"],
           "worker-src": ["'self'", "blob:"],
           "style-src": ["'self'"],
-          "script-src": ["'self'"],
+          // WebAssembly street router (ADR-0031) needs wasm compilation, not general eval.
+          "script-src": ["'self'", "'wasm-unsafe-eval'"],
           "object-src": ["'none'"],
           "frame-ancestors": ["'none'"],
           "base-uri": ["'none'"],

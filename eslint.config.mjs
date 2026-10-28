@@ -3,7 +3,17 @@ import js from "@eslint/js";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  { ignores: ["**/dist/**", "**/node_modules/**", "target/**", "**/*.d.ts", "worker/**", "crates/**"] },
+  {
+    ignores: [
+      "**/dist/**",
+      "**/node_modules/**",
+      "target/**",
+      "**/*.d.ts",
+      "worker/**",
+      "crates/**",
+      "apps/web/src/wasm/**",
+    ],
+  },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
