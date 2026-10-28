@@ -1,8 +1,16 @@
 import type { Me } from "./api";
 import { send } from "./api";
 
-/** Sign-in link, or the signed-in user with a sign-out button. */
-export function AccountMenu({ me, onSignedOut }: { me: Me; onSignedOut: () => void }) {
+/** Sign-in link, or the signed-in user with sign-out (and Administration for Owners and Admins). */
+export function AccountMenu({
+  me,
+  onSignedOut,
+  onAdmin,
+}: {
+  me: Me;
+  onSignedOut: () => void;
+  onAdmin?: () => void;
+}) {
   if (!me.user) {
     if (!me.signInAvailable) return <span className="text-slate-500">Sign-in not configured</span>;
     return (
@@ -25,6 +33,11 @@ export function AccountMenu({ me, onSignedOut }: { me: Me; onSignedOut: () => vo
       <span>
         {me.user.displayName ?? me.user.email} <span className="text-slate-500">({me.user.role})</span>
       </span>
+      {onAdmin && (me.user.role === "owner" || me.user.role === "admin") && (
+        <button type="button" className="rounded border border-slate-300 px-2 py-1" onClick={onAdmin}>
+          Administration
+        </button>
+      )}
       <button
         type="button"
         className="rounded border border-slate-300 px-2 py-1"

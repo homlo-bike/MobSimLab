@@ -15,6 +15,7 @@ import { APP_CONFIG } from "../config/config.module";
 import type { AppConfig } from "../config/env";
 import { DATABASE, type Database } from "../db/database";
 import { AuditService } from "../audit/audit.service";
+import { AuthRateLimit } from "../iam/rate-limit.service";
 import { Public, Requires } from "../iam/requires";
 import { AuthService } from "./auth.service";
 import { OidcNotConfiguredError, OidcService } from "./oidc.service";
@@ -62,6 +63,7 @@ export class AuthController {
    */
   @Get("login")
   @Public()
+  @AuthRateLimit()
   async login(@Res() res: Response): Promise<void> {
     let r;
     try {
@@ -94,6 +96,7 @@ export class AuthController {
    */
   @Get("callback")
   @Public()
+  @AuthRateLimit()
   async callback(@Req() req: MslRequest, @Res() res: Response): Promise<void> {
     const fail = (reason: string) => res.redirect(302, `/?signin=${encodeURIComponent(reason)}`);
     res.clearCookie(FLOW_COOKIE, { ...this.sessions.cookieOptions(), path: "/api/auth" });

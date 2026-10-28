@@ -2,7 +2,8 @@ import { Inject, Injectable } from "@nestjs/common";
 import { AuditService } from "../audit/audit.service";
 import { APP_CONFIG } from "../config/config.module";
 import type { AppConfig } from "../config/env";
-import { DATABASE, type Database } from "../db/database";
+import { DATABASE, type Database, type InstanceRole } from "../db/database";
+import { mappedRole, meetsRegistrationRules } from "../iam/roles";
 import type { OidcIdentity } from "./oidc.service";
 
 /** Why a sign-in was refused; shown to the user as a fixed message. */
@@ -40,7 +41,7 @@ export class AuthService {
       const existing = await tx
         .selectFrom("iam.identity as i")
         .innerJoin("iam.user as u", "u.id", "i.user_id")
-        .select(["u.id", "u.instance_role", "u.status"])
+        .select(["u.id", "u.instance_role", "u.status", "u.role_override"])
         .where("i.issuer", "=", id.issuer)
         .where("i.subject", "=", id.subject)
         .executeTakeFirst();
@@ -82,8 +83,11 @@ export class AuthService {
           );
         }
       } else if (!existing) {
-        const status = inst.auto_registration ? "active" : "pending";
-        const role = inst.auto_registration ? inst.default_role : "viewer";
+        const mappings = await tx.selectFrom("iam.group_mapping").selectAll().execute();
+        const allowed = inst.auto_registration && meetsRegistrationRules(id, inst);
+        const status = allowed ? "active" : "pending";
+        // Pending users keep the role they would get, so the approver sees a proposal.
+        const role = mappedRole(id.issuer, id.groups, mappings) ?? inst.default_role;
         userId = await this.createUser(tx, id, role, status);
         await this.audit.append(
           {
@@ -98,6 +102,12 @@ export class AuthService {
         if (status === "pending") return { ok: false, reason: "pending_approval" } as const;
       } else if (existing.status === "pending") {
         return { ok: false, reason: "pending_approval" } as const;
+      } else if (existing.instance_role !== "owner" && !existing.role_override) {
+        const mappings = await tx.selectFrom("iam.group_mapping").selectAll().execute();
+        const role = mappedRole(id.issuer, id.groups, mappings);
+        if (role && role !== existing.instance_role) {
+          await this.setMappedRole(tx, existing.id, existing.instance_role, role, auditBase);
+        }
       }
 
       if (!userId) throw new Error("unreachable: no user id");
@@ -117,6 +127,28 @@ export class AuthService {
     });
   }
 
+  /** Purpose: apply a role recomputed from group mappings at sign-in, with an audit record. */
+  private async setMappedRole(
+    tx: Database,
+    userId: string,
+    before: InstanceRole,
+    after: InstanceRole,
+    auditBase: { actorIpHash: string | null; requestId: string | null; objectType: string },
+  ): Promise<void> {
+    await tx.updateTable("iam.user").set({ instance_role: after }).where("id", "=", userId).execute();
+    await this.audit.append(
+      {
+        ...auditBase,
+        action: "user.role_mapped",
+        objectId: userId,
+        actorId: userId,
+        before: { instance_role: before },
+        after: { instance_role: after },
+      },
+      tx,
+    );
+  }
+
   /** Purpose: apply the optional MOBSIMLAB_BOOTSTRAP_OWNER_* restrictions. */
   private mayBecomeOwner(id: OidcIdentity): boolean {
     const { bootstrapOwnerEmail: email, bootstrapOwnerSubject: subject } = this.config;
@@ -128,7 +160,7 @@ export class AuthService {
   private async createUser(
     tx: Database,
     id: OidcIdentity,
-    role: "owner" | "user" | "viewer",
+    role: InstanceRole,
     status: "active" | "pending",
   ): Promise<string> {
     const u = await tx
