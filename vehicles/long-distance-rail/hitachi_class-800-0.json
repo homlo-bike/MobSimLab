@@ -1,0 +1,179 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-70f6-9fa0-4eeff1a4d65b",
+  "legacyId": "hitachi-class-800-0",
+  "name": "Hitachi Class 800/0 (5-car bi-mode (GWR))",
+  "manufacturer": "Hitachi",
+  "builder": "Hitachi Rail",
+  "model": "Class 800/0",
+  "variant": "5-car bi-mode (GWR)",
+  "family": "AT300 / IET",
+  "manufacturerCountry": "Japan",
+  "type": "intercity-train",
+  "mode": "long_distance_rail",
+  "yearIntroduced": 2017,
+  "operators": [
+    "Great Western Railway"
+  ],
+  "length": {
+    "value": 129.7,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-800"
+    ]
+  },
+  "width": {
+    "value": 2.7,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-800"
+    ]
+  },
+  "weightEmpty": {
+    "value": 243,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-800"
+    ]
+  },
+  "consist": {
+    "cars": {
+      "value": 5,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-british-rail-class-800"
+      ]
+    }
+  },
+  "doorsPerSide": {
+    "value": 10,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-800"
+    ]
+  },
+  "seats": {
+    "value": 326,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-800"
+    ]
+  },
+  "standingQuoted": {
+    "value": 0,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-british-rail-class-800"
+    ],
+    "rationale": "Total 326 minus 326 seats."
+  },
+  "standingArea": {
+    "value": 0.0,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "wp-british-rail-class-800"
+    ],
+    "rationale": "0 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 0.0,
+    "central": 0.0,
+    "high": 0.0,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 326,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-british-rail-class-800"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "topSpeed": {
+    "value": 200,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-800"
+    ]
+  },
+  "maxAcceleration": {
+    "value": 0.7,
+    "unit": "m/s2",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-800"
+    ]
+  },
+  "energySource": {
+    "value": "dual",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-800"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "ocl-25kv-50hz"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-800"
+    ]
+  },
+  "onboardEnergy": {
+    "value": "diesel",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-800"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-800"
+    ]
+  },
+  "livery": {
+    "operator": "Great Western Railway",
+    "primary": "#0B3D2E",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "en-wikipedia-org-great-western-railway"
+    ],
+    "rationale": "approximation of the GWR green livery"
+  },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/British_Rail_Class_800",
+    "scope": "model",
+    "checked_via": "source"
+  },
+  "notes": "Electro-diesel bi-mode: 25 kV AC overhead plus underfloor diesel generator units (700 kW per engine on GWR units; the number of engines per 5-car set is not given in the source, so total traction power is left empty). Seats 326 (36 first, 290 standard). total = seats (no standing figure published). doorsPerSide derived: 2 doors per side per car × 5. Weight 243 t as given.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

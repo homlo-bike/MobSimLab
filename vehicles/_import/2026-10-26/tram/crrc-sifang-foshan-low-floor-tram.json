@@ -1,0 +1,66 @@
+{
+  "id": "crrc-sifang-foshan-low-floor-tram",
+  "mode": "tram",
+  "category": "tram_low_floor",
+  "simulatorCategory": "100% Low-Floor Tram",
+  "name": "100% low-floor tram",
+  "variant": "Foshan (ATC-equipped)",
+  "producer": "CRRC Qingdao Sifang",
+  "manufacturerCountry": "China",
+  "dimensions": {
+    "lengthM": 35.2,
+    "widthM": 2.65
+  },
+  "capacity": {
+    "total": 380
+  },
+  "performance": {
+    "maxSpeedKmh": 70
+  },
+  "energy": {
+    "supply": "unknown"
+  },
+  "operators": ["Foshan (planned, per 2017 report)"],
+  "sources": [
+    {
+      "url": "https://railwaygazette.com/modes/crrc-rolls-out-tram-equipped-with-automatic-train-control/44974.article",
+      "title": "CRRC rolls out tram equipped with automatic train control",
+      "publisher": "Railway Gazette International",
+      "date": "2017-08-08",
+      "accessed": "2026-10-26",
+      "fields": ["dimensions", "capacity", "performance"],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.5
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "energy": {
+      "kind": "not_available",
+      "confidence": 0
+    },
+    "consist": {
+      "kind": "not_available",
+      "confidence": 0
+    },
+    "doors": {
+      "kind": "not_available",
+      "confidence": 0
+    },
+    "costs": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "Figures from a 2017 roll-out report; the source does not give the number of sections, power supply, seats or the line. Expected to enter service in Foshan in 2018."
+}

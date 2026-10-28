@@ -1,0 +1,108 @@
+{
+  "id": "alstom-icng-8-car",
+  "mode": "long_distance_rail",
+  "category": "intercity_train",
+  "simulatorCategory": "8-Car Intercity",
+  "name": "ICNG (Intercity Nieuwe Generatie)",
+  "variant": "8-car (3200 series)",
+  "family": "Coradia Stream",
+  "producer": "Alstom",
+  "manufacturerCountry": "France",
+  "yearIntroduced": 2023,
+  "dimensions": {
+    "lengthM": 164.9,
+    "emptyWeightT": 285.7,
+    "floorHeightMm": 810
+  },
+  "consist": {
+    "cars": 8
+  },
+  "capacity": {
+    "seated": 417,
+    "total": 417
+  },
+  "performance": {
+    "maxSpeedKmh": 200,
+    "tractionPowerKw": 3390
+  },
+  "energy": {
+    "supply": "overhead_wire",
+    "supplySystems": ["dc_1500", "ac_25k_50"]
+  },
+  "infrastructure": {
+    "gaugeMm": 1435
+  },
+  "costs": [
+    {
+      "item": "49 five-car and 30 eight-car ICNG units",
+      "amount": 800000000,
+      "currency": "EUR",
+      "year": 2016,
+      "region": "Netherlands",
+      "url": "https://www.railwaygazette.com/traction-and-rolling-stock/intercity-new-generation-emu-prepared-for-testing/48079.article",
+      "note": "Whole NS contract for 79 trains (two lengths), not a per-train price."
+    }
+  ],
+  "livery": {
+    "operator": "Nederlandse Spoorwegen (NS)",
+    "primary": "#FFC917",
+    "secondary": "#003082",
+    "windows": null,
+    "sourceUrl": "https://www.treinreiziger.nl/sprinters-in-de-toekomst-niet-meer-met-wit-maar-ook-geel-blauw/",
+    "description": "approximation of NS yellow and blue"
+  },
+  "operators": ["Nederlandse Spoorwegen (NS)"],
+  "sources": [
+    {
+      "url": "https://en.wikipedia.org/wiki/NS_Intercity_Nieuwe_Generatie",
+      "title": "NS Intercity Nieuwe Generatie",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions",
+        "consist.cars",
+        "performance",
+        "energy.supplySystems",
+        "infrastructure.gaugeMm"
+      ],
+      "kind": "secondary"
+    },
+    {
+      "url": "https://www.railwaygazette.com/traction-and-rolling-stock/intercity-new-generation-emu-prepared-for-testing/48079.article",
+      "title": "Intercity New Generation EMU prepared for testing",
+      "publisher": "Railway Gazette International",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["capacity.seated", "costs"],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "capacity": {
+      "kind": "derived",
+      "confidence": 0.7
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.85
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.9
+    }
+  },
+  "notes": "Seats 417 for the domestic eight-car units (Railway Gazette); the 3300 series (ICNG-B) has 410. total = seats (no standing figure published). Maximum speed 200 km/h on HSL-Zuid, 140 km/h on conventional lines. The 3300 series additionally supports 3 kV DC and 15 kV 16.7 Hz."
+}

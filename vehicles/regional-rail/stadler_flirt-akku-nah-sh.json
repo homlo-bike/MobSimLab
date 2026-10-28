@@ -1,0 +1,198 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7dca-807e-66a9e99999f0",
+  "legacyId": "stadler-flirt-akku-nah-sh",
+  "name": "Stadler FLIRT Akku (NAH.SH 2-car)",
+  "manufacturer": "Stadler",
+  "builder": "Stadler",
+  "model": "FLIRT Akku",
+  "variant": "NAH.SH 2-car",
+  "family": "FLIRT",
+  "manufacturerCountry": "Switzerland",
+  "type": "emu",
+  "mode": "regional_rail",
+  "yearIntroduced": 2023,
+  "operators": [
+    "NAH.SH (Schleswig-Holstein)"
+  ],
+  "length": {
+    "value": 45.7,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-flirt-akku-2-car-unit-nahverkehrsverbund"
+    ]
+  },
+  "width": {
+    "value": 2.82,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-flirt-akku-2-car-unit-nahverkehrsverbund"
+    ]
+  },
+  "height": {
+    "value": 4.275,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-flirt-akku-2-car-unit-nahverkehrsverbund"
+    ]
+  },
+  "floorHeight": {
+    "value": 780,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-flirt-akku-2-car-unit-nahverkehrsverbund"
+    ]
+  },
+  "consist": {
+    "cars": {
+      "value": 2,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "stadler-flirt-akku-2-car-unit-nahverkehrsverbund"
+      ]
+    }
+  },
+  "doorsPerSide": {
+    "value": 2,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-flirt-akku-2-car-unit-nahverkehrsverbund"
+    ]
+  },
+  "doorClearWidth": {
+    "value": 1300,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-flirt-akku-2-car-unit-nahverkehrsverbund"
+    ]
+  },
+  "seats": {
+    "value": 123,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-flirt-akku-2-car-unit-nahverkehrsverbund"
+    ]
+  },
+  "standingQuoted": {
+    "value": 93,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-flirt-akku-2-car-unit-nahverkehrsverbund"
+    ]
+  },
+  "standingDensityQuoted": {
+    "value": 4,
+    "unit": "pers/m2",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-flirt-akku-2-car-unit-nahverkehrsverbund"
+    ]
+  },
+  "standingArea": {
+    "value": 23.2,
+    "unit": "m2",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "stadler-flirt-akku-2-car-unit-nahverkehrsverbund"
+    ],
+    "rationale": "93 standing places at the quoted 4 pers/m2."
+  },
+  "totalCapacityQuoted": {
+    "value": 216,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-flirt-akku-2-car-unit-nahverkehrsverbund"
+    ]
+  },
+  "topSpeed": {
+    "value": 160,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-flirt-akku-2-car-unit-nahverkehrsverbund"
+    ]
+  },
+  "power": {
+    "value": 1000,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-flirt-akku-2-car-unit-nahverkehrsverbund"
+    ]
+  },
+  "energySource": {
+    "value": "dual",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-flirt-akku-2-car-unit-nahverkehrsverbund"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "ocl-15kv-16-7hz"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-flirt-akku-2-car-unit-nahverkehrsverbund"
+    ]
+  },
+  "onboardEnergy": {
+    "value": "battery",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-flirt-akku-2-car-unit-nahverkehrsverbund"
+    ]
+  },
+  "regenerativeBraking": {
+    "value": true,
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-flirt-akku-2-car-unit-nahverkehrsverbund"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-flirt-akku-2-car-unit-nahverkehrsverbund"
+    ]
+  },
+  "wikipedia": {
+    "url": "https://de.wikipedia.org/wiki/Stadler_Flirt_Akku",
+    "scope": "family",
+    "checked_via": "search"
+  },
+  "notes": "Battery bi-mode EMU: 15 kV catenary plus lithium-ion traction battery for catenary-free sections, charged under the wire and at electrified terminals; braking energy stored in the batteries. Seats 105 + 18 flap seats = 123; standing 123 at 4 pers./m², 93 when the flap seats are occupied; the sheet gives 216 passengers in total (123 seated + 93 standing). tractionPowerKw derived from \"Drive 2 × 500 kW\". Battery capacity and battery range are not published in this sheet, so left empty. Floor height is low floor (high floor 1,145 mm).",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

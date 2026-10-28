@@ -1,0 +1,193 @@
+{
+  "$schema": "../../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-707c-aded-24c7f2634932",
+  "legacyId": "mci-j4500-charge",
+  "name": "MCI J4500 CHARGE (battery-electric 45 ft coach)",
+  "manufacturer": "MCI",
+  "builder": "Motor Coach Industries (MCI, NFI Group)",
+  "model": "J4500 CHARGE",
+  "variant": "battery-electric 45 ft coach",
+  "family": "J-Series",
+  "manufacturerCountry": "United States / Canada",
+  "type": "coach",
+  "mode": "intercity_bus",
+  "length": {
+    "value": 13.8,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "motor-coach-industri-mci-j4500-charge-brochure"
+    ]
+  },
+  "width": {
+    "value": 2.59,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "motor-coach-industri-mci-j4500-charge-brochure"
+    ]
+  },
+  "height": {
+    "value": 3.58,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "motor-coach-industri-mci-j4500-charge-brochure"
+    ]
+  },
+  "weightLoaded": {
+    "value": 24.494,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "motor-coach-industri-mci-j4500-charge-brochure"
+    ]
+  },
+  "consist": {
+    "articulations": {
+      "value": 0,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "motor-coach-industri-mci-j4500-charge-brochure"
+      ]
+    },
+    "cars": {
+      "value": 1,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "motor-coach-industri-mci-j4500-charge-brochure"
+      ]
+    }
+  },
+  "seats": {
+    "value": 56,
+    "unit": "count",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner"
+    ],
+    "rationale": "The J-Series brochure gives up to 60 passengers; 56 seats is the usual fleet configuration.",
+    "low": 52,
+    "central": 56,
+    "high": 60,
+    "distribution": "triangular"
+  },
+  "standingQuoted": {
+    "value": 0,
+    "unit": "count",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner",
+      "motor-coach-industri-mci-j4500-charge-brochure"
+    ],
+    "rationale": "Total 56 minus 56 seats.",
+    "low": -4,
+    "central": 0,
+    "high": 4,
+    "distribution": "triangular"
+  },
+  "standingArea": {
+    "value": 0.0,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner",
+      "motor-coach-industri-mci-j4500-charge-brochure"
+    ],
+    "rationale": "0 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 0.0,
+    "central": 0.0,
+    "high": 0.0,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 56,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "motor-coach-industri-mci-j4500-charge-brochure"
+    ]
+  },
+  "topSpeed": {
+    "value": 116,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "motor-coach-industri-mci-j4500-charge-brochure"
+    ]
+  },
+  "power": {
+    "value": 260,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "motor-coach-industri-mci-j4500-charge-brochure"
+    ]
+  },
+  "energySource": {
+    "value": "battery",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "motor-coach-industri-mci-j4500-charge-brochure"
+    ]
+  },
+  "batteryCapacity": {
+    "value": 544,
+    "unit": "kWh",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "motor-coach-industri-mci-j4500-charge-brochure"
+    ]
+  },
+  "range": {
+    "value": 262,
+    "unit": "km",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "motor-coach-industri-mci-j4500-charge-brochure"
+    ]
+  },
+  "rechargeTime": {
+    "value": 240,
+    "unit": "min",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "motor-coach-industri-mci-j4500-charge-brochure"
+    ]
+  },
+  "regenerativeBraking": {
+    "value": true,
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "motor-coach-industri-mci-j4500-charge-brochure"
+    ]
+  },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/MCI_J-Series",
+    "scope": "family",
+    "checked_via": "search"
+  },
+  "notes": "Top speed 72 mph / 116 km/h as published. Range: published nominal range 262-375 km (163-233 miles, heavy to low usage); the low end is stored. Recharge time is the published \"< 4 hrs\" (5 to 95 %) at 150+ kW DC (CCS1). Curb weight only estimated (~20.5 t) in the brochure, so left empty. Passenger capacity 56 (seated coach).",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only.",
+  "draftReason": "Core fields not sourced: seats, standingQuoted"
+}

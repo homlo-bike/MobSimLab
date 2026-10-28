@@ -1,0 +1,157 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-70cb-8d5c-c7a5083fa61b",
+  "legacyId": "mercedes-benz-citaro-c2-k-poprad",
+  "name": "Mercedes-Benz Citaro K (C2, 10.6 m diesel, 2 doors (SAD Poprad))",
+  "manufacturer": "Mercedes-Benz",
+  "builder": "Mercedes-Benz (Daimler Buses)",
+  "model": "Citaro K",
+  "variant": "C2, 10.6 m diesel, 2 doors (SAD Poprad)",
+  "family": "Citaro",
+  "manufacturerCountry": "Germany",
+  "type": "standard-bus",
+  "mode": "bus",
+  "operators": [
+    "SAD Poprad"
+  ],
+  "length": {
+    "value": 10.633,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-citaro-c2-k-vehicle-type-d"
+    ]
+  },
+  "width": {
+    "value": 2.55,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-citaro-c2-k-vehicle-type-d"
+    ]
+  },
+  "height": {
+    "value": 3.12,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-citaro-c2-k-vehicle-type-d"
+    ]
+  },
+  "floorHeight": {
+    "value": 320,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-citaro-c2-k-vehicle-type-d"
+    ]
+  },
+  "consist": {
+    "articulations": {
+      "value": 0,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "imhd-sk-mercedes-benz-citaro-c2-k-vehicle-type-d"
+      ]
+    },
+    "cars": {
+      "value": 1,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "imhd-sk-mercedes-benz-citaro-c2-k-vehicle-type-d"
+      ]
+    }
+  },
+  "doorsPerSide": {
+    "value": 2,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-citaro-c2-k-vehicle-type-d"
+    ]
+  },
+  "seats": {
+    "value": 26,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-citaro-c2-k-vehicle-type-d"
+    ]
+  },
+  "standingQuoted": {
+    "value": 60,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-citaro-c2-k-vehicle-type-d"
+    ]
+  },
+  "standingArea": {
+    "value": 15.0,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "imhd-sk-mercedes-benz-citaro-c2-k-vehicle-type-d"
+    ],
+    "rationale": "60 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 10.0,
+    "central": 15.0,
+    "high": 20.0,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 86,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-citaro-c2-k-vehicle-type-d"
+    ]
+  },
+  "topSpeed": {
+    "value": 95,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-citaro-c2-k-vehicle-type-d"
+    ]
+  },
+  "power": {
+    "value": 220,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-citaro-c2-k-vehicle-type-d"
+    ]
+  },
+  "energySource": {
+    "value": "diesel",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-mercedes-benz-citaro-c2-k-vehicle-type-d"
+    ]
+  },
+  "wikipedia": {
+    "url": "https://de.wikipedia.org/wiki/Mercedes-Benz_Citaro_K",
+    "scope": "model",
+    "checked_via": "search"
+  },
+  "notes": "SAD Poprad, 8 vehicles (2021-2022). OM 936 h Euro 6e diesel, 220 kW. Height 3,120 mm with air conditioning (3,095 mm without). Wheelbase 4,398 mm. Capacity excludes the driver (+1). Livery not described by the source.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

@@ -1,0 +1,192 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-77ab-81cd-e34f6e92b80e",
+  "legacyId": "stadler-bvg-j-4-car",
+  "name": "Stadler Class J (Berlin U-Bahn large profile, 4-car)",
+  "manufacturer": "Stadler",
+  "builder": "Stadler",
+  "model": "Class J",
+  "variant": "Berlin U-Bahn large profile, 4-car",
+  "family": "Stadler metro",
+  "manufacturerCountry": "Germany",
+  "type": "metro-consist",
+  "mode": "metro",
+  "yearIntroduced": 2026,
+  "operators": [
+    "Berliner Verkehrsbetriebe (BVG)"
+  ],
+  "length": {
+    "value": 64.2,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-bvg-class-j"
+    ]
+  },
+  "width": {
+    "value": 2.65,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-bvg-class-j"
+    ]
+  },
+  "height": {
+    "value": 3.425,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-bvg-class-j"
+    ]
+  },
+  "floorHeight": {
+    "value": 950,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-bvg-class-j"
+    ]
+  },
+  "consist": {
+    "carLengths": {
+      "value": [
+        16.05,
+        16.05,
+        16.05,
+        16.05
+      ],
+      "unit": "m",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-bvg-class-j"
+      ]
+    },
+    "cars": {
+      "value": 4,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-bvg-class-j"
+      ]
+    }
+  },
+  "doorsPerSide": {
+    "value": 12,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-bvg-class-j"
+    ],
+    "rationale": "Derived from the cited source; see notes."
+  },
+  "seats": {
+    "value": 110,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-bvg-class-j"
+    ]
+  },
+  "standingQuoted": {
+    "value": 353,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-bvg-class-j"
+    ]
+  },
+  "standingArea": {
+    "value": 88.2,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "wp-bvg-class-j"
+    ],
+    "rationale": "353 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 58.8,
+    "central": 88.2,
+    "high": 117.7,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 463,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-bvg-class-j"
+    ],
+    "rationale": "110 seats plus 353 standing places."
+  },
+  "topSpeed": {
+    "value": 70,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-bvg-class-j"
+    ]
+  },
+  "power": {
+    "value": 1200,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-bvg-class-j"
+    ]
+  },
+  "energySource": {
+    "value": "third-rail",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-bvg-class-j"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "third-rail-750v-dc"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-bvg-class-j"
+    ]
+  },
+  "regenerativeBraking": {
+    "value": true,
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-bvg-class-j"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-bvg-class-j"
+    ]
+  },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/BVG_Class_J",
+    "scope": "model",
+    "checked_via": "source"
+  },
+  "notes": "Four-car (DM–M–M–DM) large-profile J unit built by Stadler in Berlin-Pankow; entered service 30 April 2026. total = 110 seats + 353 standing = 463 (derived sum; standing density not stated). The article gives 38 seats / 177 standing for the 2-car unit, which does not double to the 4-car figure; values copied as published. Doors: 3 sliding plug doors per side per car, × 4 cars = 12 per side (derived). Power 12 × 100 kW. 750 V DC third rail; regenerative braking.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

@@ -1,0 +1,103 @@
+{
+  "id": "byd-k9-gemilang-singapore",
+  "mode": "bus",
+  "category": "standard_bus",
+  "simulatorCategory": "12 m Standard Bus",
+  "name": "K9",
+  "variant": "Gemilang body (Singapore)",
+  "family": "K-series",
+  "producer": "BYD",
+  "manufacturerCountry": "China",
+  "yearIntroduced": 2020,
+  "dimensions": {
+    "lengthM": 12.0,
+    "widthM": 2.55,
+    "heightM": 3.5
+  },
+  "consist": {
+    "cars": 1,
+    "articulations": 0
+  },
+  "doors": {
+    "doorsPerSide": 2,
+    "wheelchairSpaces": 2
+  },
+  "capacity": {
+    "seated": 28,
+    "standing": 52,
+    "total": 80
+  },
+  "performance": {
+    "maxSpeedKmh": 96,
+    "tractionPowerKw": 300
+  },
+  "energy": {
+    "supply": "battery",
+    "batteryKwh": 310
+  },
+  "livery": {
+    "operator": "SBS Transit (Singapore)",
+    "primary": "#7AB829",
+    "sourceUrl": "https://landtransportguru.net/byd-k9-gemilang/",
+    "description": "Singapore 'Lush Green' public bus livery, as described in the source; hex value is an approximation."
+  },
+  "operators": ["SBS Transit (Singapore)"],
+  "sources": [
+    {
+      "url": "https://landtransportguru.net/byd-k9-gemilang/",
+      "title": "BYD K9 (Gemilang)",
+      "publisher": "Land Transport Guru",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions",
+        "consist",
+        "doors",
+        "capacity",
+        "performance.tractionPowerKw",
+        "energy.batteryKwh"
+      ],
+      "kind": "secondary"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/BYD_K_series",
+      "title": "BYD K series",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["performance.maxSpeedKmh"],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "doors": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.5
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "costs": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "Singapore configuration: 28 seated + 52 standing = 80, two wheelchair bays, two doors (front entrance, middle exit). Max speed 96 km/h is BYD's general K9 figure (Wikipedia), not stated for this Singapore batch. 300 kW = 2 x 150 kW motors. Range 'over 250 km' (Singapore operation limited to 200 km). 20 units, in service from 29 July 2020."
+}

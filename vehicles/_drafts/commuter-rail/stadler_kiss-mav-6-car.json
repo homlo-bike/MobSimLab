@@ -1,0 +1,155 @@
+{
+  "$schema": "../../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7a44-a779-9279130fb470",
+  "legacyId": "stadler-kiss-mav-6-car",
+  "name": "Stadler KISS (MÁV-START Budapest suburban (6-car double-deck))",
+  "manufacturer": "Stadler",
+  "builder": "Stadler",
+  "model": "KISS",
+  "variant": "MÁV-START Budapest suburban (6-car double-deck)",
+  "family": "Stadler KISS",
+  "manufacturerCountry": "Switzerland",
+  "type": "emu-double-deck",
+  "mode": "commuter_rail",
+  "yearIntroduced": 2019,
+  "operators": [
+    "MÁV-START (Budapest suburban services)"
+  ],
+  "length": {
+    "value": 155.88,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-elektrischer-doppelstocktriebzug-kiss-ma"
+    ]
+  },
+  "width": {
+    "value": 2.8,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-elektrischer-doppelstocktriebzug-kiss-ma"
+    ]
+  },
+  "height": {
+    "value": 4.595,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-elektrischer-doppelstocktriebzug-kiss-ma"
+    ]
+  },
+  "floorHeight": {
+    "value": 440,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-elektrischer-doppelstocktriebzug-kiss-ma"
+    ]
+  },
+  "consist": {
+    "cars": {
+      "value": 6,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "stadler-elektrischer-doppelstocktriebzug-kiss-ma"
+      ]
+    }
+  },
+  "doorsPerSide": {
+    "value": 12,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-elektrischer-doppelstocktriebzug-kiss-ma"
+    ]
+  },
+  "doorClearWidth": {
+    "value": 1300,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-elektrischer-doppelstocktriebzug-kiss-ma"
+    ]
+  },
+  "seats": {
+    "value": 600,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-elektrischer-doppelstocktriebzug-kiss-ma"
+    ]
+  },
+  "topSpeed": {
+    "value": 160,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-elektrischer-doppelstocktriebzug-kiss-ma"
+    ]
+  },
+  "power": {
+    "value": 4000,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-elektrischer-doppelstocktriebzug-kiss-ma"
+    ]
+  },
+  "maxAcceleration": {
+    "value": 1.1,
+    "unit": "m/s2",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-elektrischer-doppelstocktriebzug-kiss-ma"
+    ]
+  },
+  "energySource": {
+    "value": "overhead-ac",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-elektrischer-doppelstocktriebzug-kiss-ma"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "ocl-25kv-50hz"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-elektrischer-doppelstocktriebzug-kiss-ma"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-elektrischer-doppelstocktriebzug-kiss-ma"
+    ]
+  },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Stadler_KISS",
+    "scope": "family",
+    "checked_via": "search"
+  },
+  "notes": "Continuous power at the wheel 4000 kW (6000 kW maximum); starting acceleration 1.1 m/s2 below 54 km/h. Low floor 440 mm, high floor 1350 mm. Standing places are not on the data sheet.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only.",
+  "draftReason": "Core fields not sourced: standingQuoted"
+}

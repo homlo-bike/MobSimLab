@@ -1,0 +1,105 @@
+{
+  "id": "alstom-regiolis-b85000-6-car",
+  "mode": "regional_rail",
+  "category": "regional_train",
+  "simulatorCategory": "6-Car EMU",
+  "name": "Coradia Polyvalent (Régiolis)",
+  "variant": "B 85000 Intercités 6-car bi-mode",
+  "family": "Alstom Coradia",
+  "producer": "Alstom",
+  "manufacturerCountry": "France",
+  "yearIntroduced": 2014,
+  "dimensions": {
+    "lengthM": 109.98,
+    "widthM": 2.85,
+    "heightM": 4.295
+  },
+  "consist": {
+    "cars": 6
+  },
+  "doors": {
+    "doorWidthMm": 1300
+  },
+  "capacity": {
+    "seated": 269,
+    "total": 269
+  },
+  "performance": {
+    "maxSpeedKmh": 160
+  },
+  "energy": {
+    "supply": "overhead_wire",
+    "supplySystems": ["dc_1500", "ac_25k_50"],
+    "onboard": "diesel"
+  },
+  "infrastructure": {
+    "gaugeMm": 1435
+  },
+  "costs": [
+    {
+      "item": "Régiolis B 85000 six-car set (Intercités)",
+      "amount": 10300000,
+      "currency": "EUR",
+      "year": 2013,
+      "region": "France",
+      "url": "https://fr.wikipedia.org/wiki/Coradia_Polyvalent",
+      "note": "Per set, 2013 order (secondary source)."
+    }
+  ],
+  "operators": ["SNCF Voyageurs (Intercités)", "SNCF Voyageurs (TER regions)"],
+  "sources": [
+    {
+      "url": "https://fr.wikipedia.org/wiki/Coradia_Polyvalent",
+      "title": "Coradia Polyvalent",
+      "publisher": "Wikipédia (French)",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions",
+        "consist",
+        "doors",
+        "capacity.seated",
+        "performance",
+        "energy.supplySystems",
+        "infrastructure.gaugeMm"
+      ],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.75
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.85
+    },
+    "doors": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "capacity": {
+      "kind": "derived",
+      "confidence": 0.7
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.75
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "operation": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "Six-car bi-mode, dual-voltage (1.5 kV DC / 25 kV 50 Hz) Régiolis in the Intercités B 85000 version: 269 seats including 35 first class; total = seats (no standing figure published). Length, width and height are the infobox values for six-car Régiolis. Maximum speed 160 km/h (200 km/h optional). Double doors 1,300 mm wide. Diesel engines MAN D26, 338 kW each (number per set not stated); electric traction power not stated. First commercial Régiolis service 22 April 2014 (family).",
+  "livery": null
+}

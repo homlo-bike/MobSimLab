@@ -1,0 +1,96 @@
+{
+  "id": "skoda-27-tra-solaris",
+  "mode": "trolleybus",
+  "category": "trolleybus",
+  "simulatorCategory": "Trolleybus 18 m",
+  "name": "27 Tr Solaris",
+  "variant": "27 TrA (New Urbino body, traction batteries)",
+  "family": "Škoda Tr",
+  "producer": "Škoda Electric (body: Solaris)",
+  "manufacturerCountry": "Czech Republic / Poland",
+  "yearIntroduced": 2009,
+  "dimensions": {
+    "lengthM": 18.25,
+    "widthM": 2.55,
+    "heightM": 3.4,
+    "floorHeightMm": 320
+  },
+  "consist": {
+    "cars": 2,
+    "articulations": 1
+  },
+  "doors": {
+    "doorsPerSide": 4
+  },
+  "capacity": {
+    "seated": 36,
+    "standing": 79,
+    "total": 115
+  },
+  "performance": {
+    "maxSpeedKmh": 65,
+    "tractionPowerKw": 250
+  },
+  "energy": {
+    "supply": "overhead_wire",
+    "supplySystems": ["dc_600", "dc_750"],
+    "onboard": "battery",
+    "rangeKm": 12,
+    "regenerativeBraking": true
+  },
+  "costs": [
+    {
+      "item": "vehicle",
+      "amount": 538950,
+      "currency": "EUR",
+      "year": 2021,
+      "region": "Bratislava, Slovakia",
+      "url": "https://imhd.sk/ba/popis-typu-vozidla/1032/%C5%A0koda-27-Tr-Solaris",
+      "note": "Bratislava tender 2021 for 23 vehicles, price per vehicle excl. VAT (raised to 601,145 EUR for 15 vehicles), as reported by imhd.sk."
+    }
+  ],
+  "livery": null,
+  "operators": ["Dopravný podnik Bratislava"],
+  "sources": [
+    {
+      "url": "https://imhd.sk/ba/popis-typu-vozidla/1032/%C5%A0koda-27-Tr-Solaris",
+      "title": "Škoda 27 Tr Solaris (27 TrA) – vehicle type description",
+      "publisher": "imhd.sk (Bratislava public transport information site)",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["dimensions", "consist", "doors", "capacity", "performance", "energy", "costs"],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "doors": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "costs": {
+      "kind": "published",
+      "confidence": 0.6
+    }
+  },
+  "notes": "27 Tr prototype 2009; New Urbino body from 2017. Figures for the 23 Bratislava 27 TrA built 2023. Two LTO traction battery boxes (Škoda TBS 5.5) give at least 12 km off-wire (rangeKm is this minimum off-wire range); battery kWh not published. Converter input 600/750 V DC. Wheelbases 5900/6000 mm. Floor 320 mm (250 mm kneeling). Capacity excludes the driver."
+}

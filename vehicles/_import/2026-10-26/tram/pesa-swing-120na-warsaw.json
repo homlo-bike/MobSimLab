@@ -1,0 +1,110 @@
+{
+  "id": "pesa-swing-120na-warsaw",
+  "mode": "tram",
+  "category": "tram_low_floor",
+  "simulatorCategory": "30 m Tram",
+  "name": "Swing",
+  "variant": "120Na Warsaw",
+  "family": "PESA Swing",
+  "producer": "PESA Bydgoszcz",
+  "manufacturerCountry": "Poland",
+  "yearIntroduced": 2010,
+  "dimensions": {
+    "lengthM": 30.12,
+    "widthM": 2.35,
+    "heightM": 3.4,
+    "floorHeightMm": 350
+  },
+  "consist": {
+    "cars": 5
+  },
+  "capacity": {
+    "seated": 40,
+    "standing": 161,
+    "total": 201
+  },
+  "performance": {
+    "maxSpeedKmh": 70,
+    "tractionPowerKw": 420
+  },
+  "energy": {
+    "supply": "overhead_wire"
+  },
+  "infrastructure": {
+    "gaugeMm": 1435
+  },
+  "costs": [
+    {
+      "item": "186 Swing trams for Warsaw",
+      "amount": 1500000000,
+      "currency": "PLN",
+      "year": 2010,
+      "region": "Warsaw, Poland",
+      "url": "https://pl.wikipedia.org/wiki/Pesa_Swing",
+      "note": "About 1.5 bn zł for the 2010 order (about 8.06 m zł per tram, per the article); secondary source."
+    }
+  ],
+  "operators": ["Tramwaje Warszawskie (Warsaw)", "MPK Łódź", "Stolichen Elektrotransport (Sofia)"],
+  "sources": [
+    {
+      "url": "https://en.wikipedia.org/wiki/Pesa_Swing",
+      "title": "Pesa Swing",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["dimensions", "consist.cars", "capacity", "performance", "infrastructure.gaugeMm"],
+      "kind": "secondary"
+    },
+    {
+      "url": "https://pl.wikipedia.org/wiki/Pesa_Swing",
+      "title": "Pesa Swing",
+      "publisher": "Wikipedia (Polish)",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions.lengthM",
+        "dimensions.widthM",
+        "infrastructure.gaugeMm",
+        "performance.maxSpeedKmh",
+        "performance.tractionPowerKw"
+      ],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.45
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "energy": {
+      "kind": "not_available",
+      "confidence": 0
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "doors": {
+      "kind": "not_available",
+      "confidence": 0
+    },
+    "operation": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "Five-section, 100 % low-floor Swing 120Na of the 2010 Warsaw order (180 + 6 Duo units). Length 30.12 m (Polish Wikipedia 120Na entry; same as the English infobox). Capacity 40 seated + 161 standing = 201 and power 4 × 105 kW are family figures from the English infobox that match this 30.12 m version; the Polish article lists 40 + 4 seats for the 120Na and no standing figure. Standing density, doors, weight and supply voltage not stated.",
+  "livery": null
+}

@@ -1,0 +1,107 @@
+{
+  "id": "bombardier-art-mark-ii-2-car",
+  "mode": "metro",
+  "category": "light_metro",
+  "simulatorCategory": "2-Car Metro",
+  "name": "ART Mark II",
+  "variant": "2nd generation, 2-car train",
+  "family": "Bombardier Advanced Rapid Transit / Innovia Metro",
+  "producer": "Bombardier Transportation",
+  "manufacturerCountry": "Canada",
+  "yearIntroduced": 2009,
+  "dimensions": {
+    "lengthM": 34.7
+  },
+  "consist": {
+    "cars": 2,
+    "carLengthsM": [17.35, 17.35]
+  },
+  "capacity": {
+    "seated": 66,
+    "total": 264
+  },
+  "performance": {
+    "maxSpeedKmh": 80
+  },
+  "energy": {
+    "supply": "third_rail",
+    "supplySystems": []
+  },
+  "infrastructure": {
+    "gaugeMm": 1435
+  },
+  "costs": [
+    {
+      "item": "Second-generation ART Mark II cars (order)",
+      "amount": 113000000,
+      "currency": "CAD",
+      "year": 2006,
+      "region": "Vancouver, Canada",
+      "url": "https://en.wikipedia.org/wiki/SkyTrain_(Vancouver)_rolling_stock",
+      "note": "Bid of $113 million for 34 second-generation Mark II cars (contract won November 2006), as reported by Wikipedia."
+    }
+  ],
+  "livery": {
+    "operator": "British Columbia Rapid Transit Company (TransLink)",
+    "primary": "#00539F",
+    "secondary": "#A7A9AC",
+    "windows": null,
+    "sourceUrl": "https://www.translink.ca/about-us/about-translink/operating-companies/british-columbia-rapid-transit-company",
+    "description": "approximation of the blue and grey TransLink livery of the second-generation Mark II (first generation was white)"
+  },
+  "operators": ["British Columbia Rapid Transit Company (SkyTrain Expo and Millennium Lines)"],
+  "sources": [
+    {
+      "url": "https://en.wikipedia.org/wiki/SkyTrain_(Vancouver)_rolling_stock",
+      "title": "SkyTrain (Vancouver) rolling stock",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions.lengthM",
+        "consist",
+        "capacity",
+        "performance.maxSpeedKmh",
+        "energy",
+        "infrastructure.gaugeMm",
+        "costs"
+      ],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "doors": {
+      "kind": "not_available",
+      "confidence": 0
+    },
+    "capacity": {
+      "kind": "derived",
+      "confidence": 0.6
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.5
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "operation": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "Linear-induction-motor light metro. Length and capacity per 2-car train from the SkyTrain configuration table (second-generation Mark II, 2009/2010); seated = 2 x 33 seats per car (derived). maxSpeedKmh is the 80 km/h stated for the Expo/Millennium Line ART fleet. Power is 650 V DC via a fourth-rail pair with LIM reaction rail; 650 V is not one of the project supply systems, so supplySystems is empty. Automated (driverless) operation; no GoA grade stated. Figures from Wikipedia (secondary)."
+}

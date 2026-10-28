@@ -1,0 +1,168 @@
+{
+  "$schema": "../../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-724f-bd99-866b525909fa",
+  "legacyId": "siemens-crrc-zhuzhou-guangzhou-b1-3-car",
+  "name": "Siemens B1 (3-car Type B (Guangzhou Line 3))",
+  "manufacturer": "Siemens",
+  "builder": "Siemens Mobility & CRRC Zhuzhou Locomotive",
+  "model": "B1",
+  "variant": "3-car Type B (Guangzhou Line 3)",
+  "family": "Modular Metro",
+  "manufacturerCountry": "Germany / China",
+  "type": "metro-consist",
+  "mode": "metro",
+  "yearIntroduced": 2005,
+  "operators": [
+    "Guangzhou Metro (Line 3)"
+  ],
+  "length": {
+    "value": 59.94,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-b1-guangzhou-metro-car"
+    ]
+  },
+  "width": {
+    "value": 2.8,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-b1-guangzhou-metro-car"
+    ]
+  },
+  "height": {
+    "value": 3.8,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-b1-guangzhou-metro-car"
+    ]
+  },
+  "consist": {
+    "carLengths": {
+      "value": [
+        19.98,
+        19.98,
+        19.98
+      ],
+      "unit": "m",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-b1-guangzhou-metro-car"
+      ]
+    },
+    "cars": {
+      "value": 3,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-b1-guangzhou-metro-car"
+      ]
+    }
+  },
+  "seats": {
+    "value": 180,
+    "unit": "count",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner"
+    ],
+    "rationale": "Estimated from a high-density metro interior.",
+    "low": 130,
+    "central": 180,
+    "high": 220,
+    "distribution": "triangular"
+  },
+  "standingQuoted": {
+    "value": 540,
+    "unit": "count",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner",
+      "wp-b1-guangzhou-metro-car"
+    ],
+    "rationale": "Total 720 minus 180 seats.",
+    "low": 500,
+    "central": 540,
+    "high": 590,
+    "distribution": "triangular"
+  },
+  "standingArea": {
+    "value": 135.0,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner",
+      "wp-b1-guangzhou-metro-car"
+    ],
+    "rationale": "540 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 90.0,
+    "central": 135.0,
+    "high": 180.0,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 720,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-b1-guangzhou-metro-car"
+    ],
+    "rationale": "Derived from the cited source; see notes."
+  },
+  "topSpeed": {
+    "value": 120,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-b1-guangzhou-metro-car"
+    ]
+  },
+  "energySource": {
+    "value": "overhead-dc",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-b1-guangzhou-metro-car"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "ocl-1500v-dc"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-b1-guangzhou-metro-car"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-b1-guangzhou-metro-car"
+    ]
+  },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/B1_(Guangzhou_Metro_car)",
+    "scope": "model",
+    "checked_via": "source"
+  },
+  "notes": "Capacity derived: 240 per car (published) x 3 cars = 720. Formation Mcp-T-Mcp; since 2010 units run as coupled pairs (6 cars) on Line 3. The source's acceleration figure (0.9 km/(h·s)) is implausibly low and is left empty. 120 cars built 2005–2007.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only.",
+  "draftReason": "Core fields not sourced: seats, standingQuoted"
+}

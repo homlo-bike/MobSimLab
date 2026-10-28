@@ -1,0 +1,203 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7814-b3fa-e757439100e1",
+  "legacyId": "skoda-15t-forcity-prague",
+  "name": "Škoda 15T ForCity Alfa (Prague)",
+  "manufacturer": "Škoda",
+  "builder": "Škoda Transportation",
+  "model": "15T ForCity Alfa",
+  "variant": "Prague",
+  "family": "Škoda ForCity",
+  "manufacturerCountry": "Czech Republic",
+  "type": "tram-low-floor",
+  "mode": "tram",
+  "yearIntroduced": 2009,
+  "operators": [
+    "Dopravní podnik hl. m. Prahy (Prague)",
+    "Rīgas Satiksme (Riga, own variant)"
+  ],
+  "length": {
+    "value": 31.4,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-skoda-15-t"
+    ]
+  },
+  "width": {
+    "value": 2.46,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-skoda-15-t"
+    ]
+  },
+  "height": {
+    "value": 3.6,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-skoda-15-t"
+    ]
+  },
+  "weightEmpty": {
+    "value": 42,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wikipedia-skoda-15t"
+    ]
+  },
+  "floorHeight": {
+    "value": 350,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-skoda-15-t"
+    ]
+  },
+  "consist": {
+    "articulations": {
+      "value": 2,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-skoda-15-t"
+      ]
+    },
+    "cars": {
+      "value": 3,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-skoda-15-t"
+      ]
+    }
+  },
+  "minRadiusHorizontal": {
+    "value": 18,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-skoda-15-t"
+    ]
+  },
+  "doorsPerSide": {
+    "value": 6,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-skoda-15-t",
+      "wikipedia-skoda-15t"
+    ]
+  },
+  "seats": {
+    "value": 61,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-skoda-15-t"
+    ]
+  },
+  "standingQuoted": {
+    "value": 239,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-skoda-15-t"
+    ]
+  },
+  "standingDensityQuoted": {
+    "value": 8,
+    "unit": "pers/m2",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wikipedia-skoda-15t"
+    ]
+  },
+  "standingArea": {
+    "value": 29.9,
+    "unit": "m2",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wikipedia-skoda-15t",
+      "wp-skoda-15-t"
+    ],
+    "rationale": "239 standing places at the quoted 8 pers/m2."
+  },
+  "totalCapacityQuoted": {
+    "value": 300,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-skoda-15-t"
+    ]
+  },
+  "topSpeed": {
+    "value": 60,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wikipedia-skoda-15t"
+    ]
+  },
+  "power": {
+    "value": 745.6,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-skoda-15-t"
+    ]
+  },
+  "energySource": {
+    "value": "overhead-dc",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wikipedia-skoda-15t"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "ocl-600v-dc"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wikipedia-skoda-15t"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-skoda-15-t"
+    ]
+  },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/%C5%A0koda_15_T",
+    "scope": "model",
+    "checked_via": "source"
+  },
+  "notes": "Prague three-section 15T (2 articulations), 100 % low floor (350/450 mm). Capacity 61 seats + 239 standing = 300 per English Wikipedia; the Czech article gives 239 standing at 8 persons/m² (119 at 4/m²), so the density is 8. Six double passenger doors (two per section). Maximum speed 60 km/h is the electronically limited service speed (design 80 km/h). Power 16 × 46.6 kW = 745.6 kW. Minimum curve radius 18 m (15 m also listed). Supply 600 V DC (Czech Wikipedia). yearIntroduced is the start of construction (2009). The order for 250 trams was worth 17 billion CZK, but no order year was given in the source, so it is not entered as a cost.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

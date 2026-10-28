@@ -1,0 +1,112 @@
+{
+  "id": "skoda-26-tr-solaris-zilina",
+  "mode": "trolleybus",
+  "category": "trolleybus",
+  "simulatorCategory": "Trolleybus 12 m",
+  "name": "26 Tr Solaris",
+  "variant": "Solaris New Trollino 12 body, Škoda SJ 10.1 equipment (DPMŽ Žilina)",
+  "family": "Trollino",
+  "producer": "Škoda Electric / Solaris Bus & Coach",
+  "manufacturerCountry": "Czech Republic / Poland",
+  "yearIntroduced": 2017,
+  "dimensions": {
+    "lengthM": 12.0,
+    "widthM": 2.55,
+    "heightM": 3.4,
+    "emptyWeightT": 11.8,
+    "grossWeightT": 18.0,
+    "floorHeightMm": 320
+  },
+  "consist": {
+    "cars": 1,
+    "articulations": 0
+  },
+  "doors": {
+    "doorsPerSide": 3
+  },
+  "capacity": {
+    "seated": 30,
+    "standing": 60
+  },
+  "performance": {
+    "maxSpeedKmh": 65,
+    "tractionPowerKw": 160
+  },
+  "energy": {
+    "supply": "overhead_wire",
+    "supplySystems": ["dc_600", "dc_750"],
+    "regenerativeBraking": true
+  },
+  "costs": [
+    {
+      "item": "vehicle",
+      "amount": 447950,
+      "currency": "EUR",
+      "year": 2016,
+      "region": "Žilina, Slovakia",
+      "url": "https://imhd.sk/za/popis-typu-vozidla/854/%C5%A0koda-26-Tr-Solaris",
+      "note": "DPMŽ tender 2016, price per vehicle excl. VAT; 26TrA with traction battery (2019 order): 598,000 EUR excl. VAT. As reported by imhd.sk."
+    }
+  ],
+  "livery": {
+    "operator": "Dopravný podnik mesta Žiliny (DPMŽ)",
+    "primary": "#FFFFFF",
+    "secondary": "#3AAA35",
+    "windows": null,
+    "sourceUrl": "https://imhd.sk/za/popis-typu-vozidla/854/%C5%A0koda-26-Tr-Solaris",
+    "description": "White, yellow and green DPMŽ colour scheme (\"bielo-žlto-zelená farebná schéma\"), as described by imhd.sk; hex values approximate, yellow not represented."
+  },
+  "operators": ["Dopravný podnik mesta Žiliny"],
+  "sources": [
+    {
+      "url": "https://imhd.sk/za/popis-typu-vozidla/854/%C5%A0koda-26-Tr-Solaris",
+      "title": "Škoda 26 Tr Solaris – vehicle type description",
+      "publisher": "imhd.sk (Žilina public transport information site)",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions",
+        "consist",
+        "doors",
+        "capacity",
+        "performance",
+        "energy",
+        "yearIntroduced",
+        "costs",
+        "livery"
+      ],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "doors": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "costs": {
+      "kind": "published",
+      "confidence": 0.6
+    }
+  },
+  "notes": "First trolleybuses with the Solaris New Trollino body (Žilina, from December 2017; 9 x 26 Tr, 2 x 26TrA). Škoda SJ 10.1 IGBT converter with regeneration, rated 600/750 V DC; one Škoda 4ML 3444 K/4 asynchronous motor, 160 kW. Height with pantographs lowered. Floor 320 mm (250 mm kneeling). Wheelbase 5,900 mm. Seats 30 + 1 + 1 (driver and an extra seat not split out), standing 60, total given as 90 + 1 + 1. Empty weight 11,800 kg ± 3 %. 26TrA variant: 45.4 kWh Škoda TBS 5.1 traction battery, 25 + 1 seats, 45 standing, 12,950 kg empty, 19,500 kg gross; off-wire range not published."
+}

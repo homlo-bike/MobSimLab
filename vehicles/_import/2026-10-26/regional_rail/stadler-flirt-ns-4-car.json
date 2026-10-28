@@ -1,0 +1,99 @@
+{
+  "id": "stadler-flirt-ns-4-car",
+  "mode": "regional_rail",
+  "category": "emu",
+  "simulatorCategory": "4-Car EMU",
+  "name": "FLIRT",
+  "variant": "NS 4-car (SNG/Sprinter FLIRT 3)",
+  "family": "FLIRT",
+  "producer": "Stadler",
+  "manufacturerCountry": "Switzerland",
+  "yearIntroduced": 2016,
+  "dimensions": {
+    "lengthM": 80.7,
+    "widthM": 2.82,
+    "heightM": 4.12,
+    "floorHeightMm": 780
+  },
+  "consist": {
+    "cars": 4
+  },
+  "doors": {
+    "doorsPerSide": 8,
+    "doorWidthMm": 1300
+  },
+  "capacity": {
+    "seated": 202,
+    "total": 202
+  },
+  "performance": {
+    "maxSpeedKmh": 160,
+    "tractionPowerKw": 3000
+  },
+  "energy": {
+    "supply": "overhead_wire",
+    "supplySystems": ["dc_1500"]
+  },
+  "infrastructure": {
+    "gaugeMm": 1435
+  },
+  "livery": {
+    "operator": "Nederlandse Spoorwegen (NS)",
+    "primary": "#FFC917",
+    "secondary": "#003082",
+    "windows": null,
+    "sourceUrl": "https://www.treinreiziger.nl/sprinters-in-de-toekomst-niet-meer-met-wit-maar-ook-geel-blauw/",
+    "description": "approximation of NS yellow and blue; Sprinters carry partly white bodywork (since 2003)"
+  },
+  "operators": ["Nederlandse Spoorwegen (NS)"],
+  "sources": [
+    {
+      "url": "https://stadlerrail.com/api/docs/x/3145dc2e7e/flirt_ns_en.pdf",
+      "title": "FLIRT for NS, Netherlands – vehicle data (3-car and 4-car)",
+      "publisher": "Stadler",
+      "date": "2015",
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions",
+        "consist.cars",
+        "doors",
+        "capacity.seated",
+        "performance",
+        "energy.supplySystems",
+        "infrastructure.gaugeMm"
+      ],
+      "kind": "primary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "doors": {
+      "kind": "derived",
+      "confidence": 0.8
+    },
+    "capacity": {
+      "kind": "derived",
+      "confidence": 0.7
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.9
+    }
+  },
+  "notes": "4-car column of the Stadler sheet: 170 second + 32 first class seats; 12 fold-up seats not counted. total = seats (no standing figure published). doorsPerSide derived: 2 entrance doors per car body and side × 4. Floor height is the low-floor value (PRM area 808 mm, high floor 1,180 mm). tractionPowerKw = maximum power at wheel."
+}

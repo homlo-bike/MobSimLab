@@ -1,0 +1,115 @@
+{
+  "id": "skoda-10t-portland",
+  "mode": "tram",
+  "category": "tram_articulated",
+  "simulatorCategory": "20 m Tram",
+  "name": "10 T",
+  "variant": "Portland Streetcar / Tacoma Link",
+  "family": "Astra / Škoda 10 T",
+  "producer": "Škoda Transportation (with Inekon)",
+  "manufacturerCountry": "Czech Republic",
+  "yearIntroduced": 2000,
+  "dimensions": {
+    "lengthM": 20.13,
+    "widthM": 2.46,
+    "heightM": 3.44,
+    "emptyWeightT": 28.8,
+    "floorHeightMm": 350,
+    "minCurveRadiusM": 18
+  },
+  "consist": {
+    "cars": 3,
+    "articulations": 2
+  },
+  "doors": {
+    "doorsPerSide": 3
+  },
+  "capacity": {
+    "seated": 30,
+    "standing": 127,
+    "total": 157
+  },
+  "performance": {
+    "maxSpeedKmh": 70,
+    "tractionPowerKw": 360
+  },
+  "energy": {
+    "supply": "overhead_wire",
+    "supplySystems": ["dc_750"]
+  },
+  "infrastructure": {
+    "gaugeMm": 1435
+  },
+  "livery": {
+    "operator": "Portland Streetcar",
+    "primary": "#C8102E",
+    "secondary": "#0072CE",
+    "windows": null,
+    "sourceUrl": "https://www.expats.cz/czech-news/article/czech-built-tram-makes-an-appearance-on-the-simpsons",
+    "description": "approximation of red body with blue front (Portland Streetcar; individual cars vary, some have a red front; Tacoma Link not covered)"
+  },
+  "operators": ["Portland Streetcar", "Tacoma Link (Sound Transit)"],
+  "sources": [
+    {
+      "url": "https://en.wikipedia.org/wiki/%C5%A0koda_10_T",
+      "title": "Škoda 10 T",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions.lengthM",
+        "dimensions.widthM",
+        "dimensions.heightM",
+        "dimensions.emptyWeightT",
+        "dimensions.floorHeightMm",
+        "dimensions.minCurveRadiusM",
+        "consist.cars",
+        "consist.articulations",
+        "doors.doorsPerSide",
+        "capacity.seated",
+        "capacity.standing",
+        "capacity.total",
+        "performance.maxSpeedKmh",
+        "performance.tractionPowerKw",
+        "energy.supplySystems",
+        "infrastructure.gaugeMm"
+      ],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "doors": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.65
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "operation": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "Three-section, 50% low-floor streetcar (floor 350 mm in the low-floor part, 780 mm over the bogies). Maximum speed 70 km/h is the design figure. Traction power 4 x 90 kW = 360 kW as given by the source. Acceleration, deceleration, standing density and cost not found in a source; left null."
+}

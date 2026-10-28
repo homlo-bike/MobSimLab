@@ -1,0 +1,179 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-74b0-8d36-f2021d932f2a",
+  "legacyId": "sor-ns-12-electric",
+  "name": "SOR NS 12 Electric",
+  "manufacturer": "SOR",
+  "builder": "SOR Libchavy",
+  "model": "NS 12 Electric",
+  "family": "NS",
+  "manufacturerCountry": "Czech Republic",
+  "type": "standard-bus",
+  "mode": "bus",
+  "yearIntroduced": 2016,
+  "operators": [
+    "Dopravný podnik Bratislava"
+  ],
+  "length": {
+    "value": 12.0,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-sor-ns-12-electric-vehicle-type-descript"
+    ]
+  },
+  "width": {
+    "value": 2.55,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-sor-ns-12-electric-vehicle-type-descript"
+    ]
+  },
+  "height": {
+    "value": 3.2,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-sor-ns-12-electric-vehicle-type-descript"
+    ]
+  },
+  "weightEmpty": {
+    "value": 12.35,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-sor-ns-12-electric-vehicle-type-descript"
+    ]
+  },
+  "consist": {
+    "articulations": {
+      "value": 0,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "imhd-sk-sor-ns-12-electric-vehicle-type-descript"
+      ]
+    },
+    "cars": {
+      "value": 1,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "imhd-sk-sor-ns-12-electric-vehicle-type-descript"
+      ]
+    }
+  },
+  "doorsPerSide": {
+    "value": 3,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-sor-ns-12-electric-vehicle-type-descript"
+    ]
+  },
+  "seats": {
+    "value": 33,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-sor-ns-12-electric-vehicle-type-descript"
+    ]
+  },
+  "standingQuoted": {
+    "value": 72,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-sor-ns-12-electric-vehicle-type-descript"
+    ]
+  },
+  "standingArea": {
+    "value": 18.0,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "imhd-sk-sor-ns-12-electric-vehicle-type-descript"
+    ],
+    "rationale": "72 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 12.0,
+    "central": 18.0,
+    "high": 24.0,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 105,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-sor-ns-12-electric-vehicle-type-descript"
+    ]
+  },
+  "topSpeed": {
+    "value": 80,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-sor-ns-12-electric-vehicle-type-descript"
+    ]
+  },
+  "power": {
+    "value": 160,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-sor-ns-12-electric-vehicle-type-descript"
+    ]
+  },
+  "energySource": {
+    "value": "battery",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-sor-ns-12-electric-vehicle-type-descript"
+    ]
+  },
+  "batteryCapacity": {
+    "value": 242,
+    "unit": "kWh",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-sor-ns-12-electric-vehicle-type-descript"
+    ]
+  },
+  "costRecords": [
+    {
+      "item": "vehicle incl. charging infrastructure",
+      "value": 589000,
+      "currency": "EUR",
+      "priceBaseYear": 2017,
+      "region": "Bratislava, Slovakia",
+      "note": "Bratislava tender won 2017 for 16 e-buses; price per e-bus including charging infrastructure, as reported by imhd.sk.",
+      "sources": [
+        "imhd-sk-sor-ns-12-electric-vehicle-type-descript"
+      ]
+    }
+  ],
+  "wikipedia": {
+    "url": "https://cs.wikipedia.org/wiki/SOR_NS_12",
+    "scope": "model",
+    "checked_via": "search"
+  },
+  "notes": "Prototype presented 2016, series from 2017. Bratislava fleet 3001-3016. Battery 242 kWh as delivered (NMC, 666 V); after battery replacement 274 kWh. Motor 160 kW continuous (186.6 kW 30-min maximum). Height with air conditioning. Wheelbase 5900 mm. Capacity excludes the driver. Range not published by the source.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

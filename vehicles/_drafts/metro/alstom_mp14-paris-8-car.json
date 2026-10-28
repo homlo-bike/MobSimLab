@@ -1,0 +1,208 @@
+{
+  "$schema": "../../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7aa8-a580-01058e492545",
+  "legacyId": "alstom-mp14-paris-8-car",
+  "name": "Alstom MP 14 (8-car automated set (Line 14))",
+  "manufacturer": "Alstom",
+  "builder": "Alstom",
+  "model": "MP 14",
+  "variant": "8-car automated set (Line 14)",
+  "family": "Metropolis",
+  "manufacturerCountry": "France",
+  "type": "metro-automated",
+  "mode": "metro",
+  "yearIntroduced": 2020,
+  "operators": [
+    "RATP (Paris Metro Lines 14, 4 and 11)"
+  ],
+  "length": {
+    "value": 120,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-mp-14-paris-metro"
+    ]
+  },
+  "width": {
+    "value": 2.45,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-mp-14-paris-metro"
+    ]
+  },
+  "consist": {
+    "cars": {
+      "value": 8,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-mp-14-paris-metro"
+      ]
+    }
+  },
+  "doorsPerSide": {
+    "value": 24,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-mp-14-paris-metro"
+    ],
+    "rationale": "Derived from the cited source; see notes."
+  },
+  "seats": {
+    "value": 248,
+    "unit": "count",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner"
+    ],
+    "rationale": "Estimated from MP 14 interior layouts and the 932-place total.",
+    "low": 200,
+    "central": 248,
+    "high": 300,
+    "distribution": "triangular"
+  },
+  "standingQuoted": {
+    "value": 684,
+    "unit": "count",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner",
+      "wp-mp-14-paris-metro"
+    ],
+    "rationale": "Total 932 minus 248 seats.",
+    "low": 632,
+    "central": 684,
+    "high": 732,
+    "distribution": "triangular"
+  },
+  "standingArea": {
+    "value": 171.0,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner",
+      "wp-mp-14-paris-metro"
+    ],
+    "rationale": "684 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 114.0,
+    "central": 171.0,
+    "high": 228.0,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 932,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-mp-14-paris-metro"
+    ]
+  },
+  "topSpeed": {
+    "value": 100,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-mp-14-paris-metro"
+    ],
+    "rationale": "Derived from the cited source; see notes."
+  },
+  "power": {
+    "value": 3200,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-mp-14-paris-metro"
+    ],
+    "rationale": "Derived from the cited source; see notes."
+  },
+  "maxAcceleration": {
+    "value": 1.35,
+    "unit": "m/s2",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-mp-14-paris-metro"
+    ],
+    "rationale": "Derived from the cited source; see notes."
+  },
+  "energySource": {
+    "value": "third-rail",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-mp-14-paris-metro"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "third-rail-750v-dc"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-mp-14-paris-metro"
+    ]
+  },
+  "regenerativeBraking": {
+    "value": true,
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-mp-14-paris-metro"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-mp-14-paris-metro"
+    ]
+  },
+  "costRecords": [
+    {
+      "item": "Initial order of 8-car automated trains for Line 14",
+      "value": 500000000,
+      "currency": "EUR",
+      "priceBaseYear": 2015,
+      "region": "Paris, France",
+      "note": "About EUR 500 million for 35 eight-car trains (280 cars) under the EUR 2 billion framework contract awarded January 2015, as reported by Wikipedia (\"around\").",
+      "sources": [
+        "wp-mp-14-paris-metro"
+      ]
+    }
+  ],
+  "livery": {
+    "operator": "RATP / Île-de-France Mobilités",
+    "primary": "#FFFFFF",
+    "secondary": "#8C8C8C",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "wp-mp-14-paris-metro"
+    ],
+    "rationale": "approximation of white with grey accents and light blue stripes (Île-de-France Mobilités livery)"
+  },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/MP_14_(Paris_Metro)",
+    "scope": "model",
+    "checked_via": "source"
+  },
+  "notes": "Rubber-tyred metro: running pads outside 1,435 mm steel rails; current via side contact shoes on the guide bars (750 V DC), recorded as third_rail. doorsPerSide = 3 per side per car x 8 cars (derived). Max speed 100 km/h design, 80 km/h service. accelerationMs2 = 4.86 km/h/s maximum converted to m/s2 (derived); only an emergency deceleration (5 km/h/s) is given, so decelerationMs2 is null. Fully automated (driverless) on Line 14; no GoA grade stated, so automationGrade is empty. Figures from Wikipedia (secondary).",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only.",
+  "draftReason": "Core fields not sourced: seats, standingQuoted"
+}

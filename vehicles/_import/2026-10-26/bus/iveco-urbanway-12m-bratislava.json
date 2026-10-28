@@ -1,0 +1,101 @@
+{
+  "id": "iveco-urbanway-12m-bratislava",
+  "mode": "bus",
+  "category": "standard_bus",
+  "simulatorCategory": "12 m Standard Bus",
+  "name": "Urbanway 12M",
+  "variant": "diesel, 3 doors (DPB Bratislava)",
+  "family": "Urbanway",
+  "producer": "Iveco Bus",
+  "manufacturerCountry": "Czech Republic (Vysoké Mýto plant)",
+  "yearIntroduced": 2013,
+  "dimensions": {
+    "lengthM": 12.0,
+    "widthM": 2.5,
+    "heightM": 3.066,
+    "emptyWeightT": 11.6,
+    "floorHeightMm": 320
+  },
+  "consist": {
+    "cars": 1,
+    "articulations": 0
+  },
+  "doors": {
+    "doorsPerSide": 3
+  },
+  "capacity": {
+    "seated": 31,
+    "standing": 63,
+    "total": 94
+  },
+  "performance": {
+    "maxSpeedKmh": 80,
+    "tractionPowerKw": 210
+  },
+  "energy": {
+    "supply": "diesel"
+  },
+  "costs": [
+    {
+      "item": "vehicle",
+      "amount": 204897,
+      "currency": "EUR",
+      "year": 2014,
+      "region": "Bratislava, Slovakia",
+      "url": "https://imhd.sk/ba/popis-typu-vozidla/790/Iveco-Urbanway-12M",
+      "note": "DPB tender 2014 (supplier Corex Vráble), price per vehicle excl. VAT, as reported by imhd.sk."
+    }
+  ],
+  "operators": ["Dopravný podnik Bratislava"],
+  "sources": [
+    {
+      "url": "https://imhd.sk/ba/popis-typu-vozidla/790/Iveco-Urbanway-12M",
+      "title": "Iveco Urbanway 12M – vehicle type description",
+      "publisher": "imhd.sk (Bratislava public transport information site)",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions",
+        "consist",
+        "doors",
+        "capacity",
+        "performance",
+        "energy",
+        "yearIntroduced",
+        "costs"
+      ],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "doors": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "costs": {
+      "kind": "published",
+      "confidence": 0.6
+    }
+  },
+  "notes": "DPB fleet 1041-1070 and 4041-4050 (2014-2015, first series vehicles from the Vysoké Mýto plant). FPT Tector 7 Euro 6 diesel 210 kW, Voith DIWA.6. Height 3,066 mm with air conditioning (2,845 mm without). Floor at doors 320/330/340 mm. Wheelbase 6,120 mm. Empty weight 11,600 kg for #1041-1060 (11,550 kg for the others). Capacity excludes the driver."
+}

@@ -1,0 +1,74 @@
+{
+  "id": "yutong-e12",
+  "mode": "bus",
+  "category": "standard_bus",
+  "simulatorCategory": "12 m Standard Bus",
+  "name": "E12",
+  "variant": "ZK6128BEVG",
+  "family": "E-series",
+  "producer": "Yutong",
+  "manufacturerCountry": "China",
+  "dimensions": {
+    "lengthM": 12.17,
+    "widthM": 2.55,
+    "heightM": 3.3,
+    "turningCircleM": 19
+  },
+  "consist": {
+    "cars": 1,
+    "articulations": 0
+  },
+  "capacity": {
+    "total": 61
+  },
+  "performance": {
+    "maxSpeedKmh": 70
+  },
+  "energy": {
+    "supply": "battery",
+    "batteryKwh": 422.87
+  },
+  "livery": null,
+  "sources": [
+    {
+      "url": "https://en.yutong.com/products/E12.shtml",
+      "title": "Yutong E12 | 12m Electric City Bus",
+      "publisher": "Zhengzhou Yutong Bus Co., Ltd.",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["dimensions", "consist", "capacity.total", "performance.maxSpeedKmh", "energy.batteryKwh"],
+      "kind": "primary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "doors": {
+      "kind": "not_available",
+      "confidence": 0
+    },
+    "costs": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "Manufacturer page lists \"No. of passengers 61\" without a seated/standing split; capacity depends on the market layout. Turning circle is the published minimum turning diameter (19 m). Wheelbase 6000 mm; overhangs not published, so axle positions are left empty. Battery 422.87 kWh, liquid cooled (LFP per secondary sources). Range and charging time not published on this page."
+}

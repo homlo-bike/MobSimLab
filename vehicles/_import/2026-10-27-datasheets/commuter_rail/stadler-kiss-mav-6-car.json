@@ -1,0 +1,75 @@
+{
+  "id": "stadler-kiss-mav-6-car",
+  "mode": "commuter_rail",
+  "category": "emu_double_deck",
+  "name": "KISS",
+  "variant": "MÁV-START Budapest suburban (6-car double-deck)",
+  "family": "Stadler KISS",
+  "producer": "Stadler",
+  "manufacturerCountry": "Switzerland",
+  "yearIntroduced": 2019,
+  "dimensions": {
+    "lengthM": 155.88,
+    "widthM": 2.8,
+    "heightM": 4.595,
+    "floorHeightMm": 440
+  },
+  "consist": {
+    "cars": 6
+  },
+  "doors": {
+    "doorsPerSide": 12,
+    "doorWidthMm": 1300
+  },
+  "capacity": {
+    "seated": 600
+  },
+  "performance": {
+    "maxSpeedKmh": 160,
+    "tractionPowerKw": 4000,
+    "accelerationMs2": 1.1
+  },
+  "energy": {
+    "supply": "overhead_wire",
+    "supplySystems": [
+      "ac_25k_50"
+    ]
+  },
+  "infrastructure": {
+    "gaugeMm": 1435
+  },
+  "operators": [
+    "MÁV-START (Budapest suburban services)"
+  ],
+  "sources": [
+    {
+      "url": "https://stadlerrail.com/api/docs/x/79dfa3d945/kiss_mav_de.pdf",
+      "title": "Elektrischer Doppelstocktriebzug KISS – MÁV-START Zrt., Budapest",
+      "publisher": "Stadler",
+      "date": "2019",
+      "accessed": "2026-10-27",
+      "kind": "primary",
+      "checked_via": "direct",
+      "note": "Read from the data sheet the project owner downloaded, 2026-10-27.",
+      "fields": [
+        "dimensions.lengthM",
+        "dimensions.widthM",
+        "dimensions.heightM",
+        "dimensions.floorHeightMm",
+        "consist.cars",
+        "doors.doorsPerSide",
+        "doors.doorWidthMm",
+        "capacity.seated",
+        "performance.maxSpeedKmh",
+        "performance.tractionPowerKw",
+        "performance.accelerationMs2",
+        "energy.supply",
+        "energy.supplySystems",
+        "infrastructure.gaugeMm"
+      ]
+    }
+  ],
+  "quality": {},
+  "notes": "Continuous power at the wheel 4000 kW (6000 kW maximum); starting acceleration 1.1 m/s2 below 54 km/h. Low floor 440 mm, high floor 1350 mm. Standing places are not on the data sheet.",
+  "livery": null
+}

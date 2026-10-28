@@ -1,0 +1,284 @@
+# Values added after the 2026-10-26 import, keyed by the import's legacyId.
+# tools/vehicles/convert.py applies them on top of the import. Each needs a source; educated
+# guesses need a range. Links supplied by the project owner are marked checked_via: none until
+# they are re-read here (this environment's network blocks most of these sites).
+siemens-velaro-e-renfe-s103:
+- field: seats
+  value: 404
+  unit: count
+  basis: cited
+  source:
+    url: https://en.wikipedia.org/wiki/Renfe_Class_103
+    title: Renfe Class 103
+    publisher: Wikipedia
+    accessed: '2026-10-27'
+    kind: secondary
+    checked_via: search-snippet
+    note: Seat count read from a search-result extract of the page, 2026-10-27.
+van-hool-exquicity-24-hybrid:
+- field: seats
+  value: 51
+  unit: count
+  basis: documented
+  rationale: 51 seats as listed for the ExquiCity24 (trolleybus version, same 24 m body); the project owner chose
+    it over the 61 on French Wikipedia, 2026-10-27.
+  source:
+    url: https://www.vanhool.com/en/vehicles/public-transport/trolley/exquicity24-trolley
+    title: ExquiCity24 Trolley
+    publisher: Van Hool NV
+    accessed: '2026-10-27'
+    kind: primary
+    checked_via: search-snippet
+    note: Seat count read from a search-result extract of the page, 2026-10-27.
+higer-azure-12:
+- field: seats
+  value: 42
+  unit: count
+  basis: cited
+  source:
+    url: https://higer.ie/higer-range/azure-12/
+    title: Azure 12
+    publisher: Higer Ireland (distributor)
+    accessed: '2026-10-27'
+    kind: primary
+    checked_via: none
+    note: Link supplied by the project owner, 2026-10-27; not re-read in this repository.
+  rationale: Seating 39 + 3 folding seats; passenger capacity 70. The distributor Harris Group also quotes 42 seated.
+yutong-e12:
+- field: seats
+  value: 33
+  unit: count
+  basis: cited
+  source:
+    url: https://en.yutong.com/products/ZK6128BEVG.shtml
+    title: ZK6128BEVG
+    publisher: Zhengzhou Yutong Bus Co., Ltd.
+    accessed: '2026-10-27'
+    kind: primary
+    checked_via: none
+    note: Link supplied by the project owner, 2026-10-27; not re-read in this repository.
+  rationale: Seats 32 + 1 per the manufacturer's specification. UK-market E12s are reported with 39 seats and 70
+    places.
+yutong-ic12e:
+- field: seats
+  value: 61
+  unit: count
+  basis: cited
+  source:
+    url: https://en.yutong.com/products/IC12E.shtml
+    title: IC12E
+    publisher: Zhengzhou Yutong Bus Co., Ltd.
+    accessed: '2026-10-27'
+    kind: primary
+    checked_via: none
+    note: Link supplied by the project owner, 2026-10-27; not re-read in this repository.
+alstom-citadis-401-luas:
+- field: seats
+  value: 72
+  unit: count
+  basis: cited
+  source:
+    url: https://www.britishtramsonline.co.uk/fleets/luas.html
+    title: Luas fleet
+    publisher: British Trams Online
+    accessed: '2026-10-27'
+    kind: secondary
+    checked_via: none
+    note: Link supplied by the project owner, 2026-10-27; not re-read in this repository.
+caf-urbos-3-budapest-9-module:
+- field: seats
+  value: 81
+  unit: count
+  basis: cited
+  source:
+    url: https://www.railwaypro.com/wp/the-first-urbos-3-tram-has-arrived-in-budapest/
+    title: The first Urbos 3 tram has arrived in Budapest
+    publisher: Railway Pro
+    accessed: '2026-10-27'
+    kind: secondary
+    checked_via: none
+    note: Link supplied by the project owner, 2026-10-27; not re-read in this repository.
+  rationale: 81 seats. Early reports gave 345 places for the same tram; the 562 total is likely at a higher standing
+    density.
+- field: width
+  value: 2.65
+  unit: m
+  basis: educated-guess
+  low: 2.4
+  high: 2.65
+  rationale: The Urbos family ranges from 2.30 to 2.65 m; the owner judges Budapest uses the widest body. Not confirmed
+    for Budapest.
+  source: &id001
+    url: https://claude.ai/code/project/chan_01F1w55ANnnpLfXqB5CwyRpk?thread=cmsg_01F1w55ANnnpLfXqB5CwyRpk8ftgFkdmwjYenfiv6kir1f
+    title: Estimates supplied by the project owner in the vehicle catalogue thread
+    publisher: MobSimLab project owner
+    accessed: '2026-10-27'
+    kind: secondary
+    checked_via: direct
+    note: Owner's estimates, 2026-10-27; reasoning in each value's rationale.
+mci-j4500-charge:
+- field: seats
+  value: 56
+  unit: count
+  basis: educated-guess
+  low: 52
+  high: 60
+  rationale: The J-Series brochure gives up to 60 passengers; 56 seats is the usual fleet configuration.
+  source: *id001
+alstom-citadis-502-luas:
+- field: seats
+  value: 88
+  unit: count
+  basis: educated-guess
+  low: 72
+  high: 100
+  rationale: Seat count not published; 88 estimated from the 5000-class layout. Capacity 408 is published.
+  source: *id001
+crrc-sifang-foshan-low-floor-tram:
+- field: seats
+  value: 60
+  unit: count
+  basis: educated-guess
+  low: 45
+  high: 75
+  rationale: No published figure; estimated for a 35.2 m low-floor tram with 380 places.
+  source: *id001
+- field: energySource
+  value: supercapacitor
+  basis: educated-guess
+  source: *id001
+  rationale: Foshan's CRRC trams are reported to run catenary-free on supercapacitors charged at stops; not confirmed
+    for this vehicle.
+- field: onboardEnergy
+  value: supercapacitor
+  basis: educated-guess
+  source: *id001
+  rationale: Supercapacitor energy storage charged at stops (opportunity charging).
+crrc-tangshan-porto-ct:
+- field: width
+  value: 2.65
+  unit: m
+  basis: educated-guess
+  low: 2.4
+  high: 2.65
+  rationale: Not published; typical light-rail body width for Porto's fleet.
+  source: *id001
+alstom-mp14-paris-8-car:
+- field: seats
+  value: 248
+  unit: count
+  basis: educated-guess
+  low: 200
+  high: 300
+  rationale: Estimated from MP 14 interior layouts and the 932-place total.
+  source: *id001
+bombardier-art-mark-ii-2-car:
+- field: width
+  value: 2.65
+  unit: m
+  basis: educated-guess
+  low: 2.5
+  high: 2.7
+  rationale: Typical ART Mark II body width; not found in a source.
+  source: *id001
+crrc-changchun-mtr-kwun-tong-8-car:
+- field: seats
+  value: 376
+  unit: count
+  basis: educated-guess
+  low: 300
+  high: 450
+  rationale: About 15 % of the 2496-place total, typical of Hong Kong metro layouts.
+  source: *id001
+crrc-puzhen-shanghai-13a01-6-car:
+- field: seats
+  value: 252
+  unit: count
+  basis: educated-guess
+  low: 200
+  high: 300
+  rationale: Typical seating of a 6-car Type A train in Shanghai.
+  source: *id001
+hitachi-new-taipei-c610-4-car:
+- field: seats
+  value: 96
+  unit: count
+  basis: educated-guess
+  low: 80
+  high: 120
+  rationale: About 24 seats per car from published layouts.
+  source: *id001
+kawasaki-crrc-c151c-6-car:
+- field: seats
+  value: 300
+  unit: count
+  basis: educated-guess
+  low: 250
+  high: 330
+  rationale: About 50 seats per car, consistent with Singapore MRT interiors.
+  source: *id001
+siemens-crrc-zhuzhou-guangzhou-b1-3-car:
+- field: seats
+  value: 180
+  unit: count
+  basis: educated-guess
+  low: 130
+  high: 220
+  rationale: Estimated from a high-density metro interior.
+  source: *id001
+siemens-val-208-2-car:
+- field: seats
+  value: 24
+  unit: count
+  basis: educated-guess
+  low: 16
+  high: 40
+  rationale: Typical VAL 208 seating; operators fit different layouts.
+  source: *id001
+crrc-crh6f-8-car:
+- field: seats
+  value: 440
+  unit: count
+  basis: educated-guess
+  low: 400
+  high: 500
+  rationale: Published CRH6F layouts fall around 430-450 seats.
+  source: *id001
+stadler-gtw-2-6-akiem:
+- field: width
+  value: 2.89
+  unit: m
+  basis: educated-guess
+  low: 2.85
+  high: 3.1
+  rationale: 2.89 m, the project owner's figure (accepted 2026-10-27); Wikipedia gives 3.0-3.1 m for standard-gauge
+    GTWs, so the range covers both.
+  source: *id001
+alstom-icng-8-car:
+- field: width
+  value: 2.8
+  unit: m
+  basis: educated-guess
+  low: 2.75
+  high: 2.85
+  rationale: Owner's figure from the Coradia Stream ICNG specification, no link; the sibling Danish IC5 is 2.82
+    m.
+  source: *id001
+caf-class-397:
+- field: width
+  value: 2.82
+  unit: m
+  basis: educated-guess
+  low: 2.75
+  high: 2.88
+  rationale: Typical UK loading-gauge Civity width; the Civity family spans 2.88-2.95 m.
+  source: *id001
+siemens-velaro-e320-class-374:
+- field: width
+  value: 2.9
+  unit: m
+  basis: educated-guess
+  low: 2.8
+  high: 2.95
+  rationale: Owner's figure from the Siemens specification, no link; not confirmed.
+  source: *id001

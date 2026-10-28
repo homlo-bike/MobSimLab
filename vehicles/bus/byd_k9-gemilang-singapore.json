@@ -1,0 +1,179 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7c11-b289-e0f5820f4a9e",
+  "legacyId": "byd-k9-gemilang-singapore",
+  "name": "BYD K9 (Gemilang body (Singapore))",
+  "manufacturer": "BYD",
+  "builder": "BYD",
+  "model": "K9",
+  "variant": "Gemilang body (Singapore)",
+  "family": "K-series",
+  "manufacturerCountry": "China",
+  "type": "standard-bus",
+  "mode": "bus",
+  "yearIntroduced": 2020,
+  "operators": [
+    "SBS Transit (Singapore)"
+  ],
+  "length": {
+    "value": 12.0,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "land-transport-guru-byd-k9-gemilang"
+    ]
+  },
+  "width": {
+    "value": 2.55,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "land-transport-guru-byd-k9-gemilang"
+    ]
+  },
+  "height": {
+    "value": 3.5,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "land-transport-guru-byd-k9-gemilang"
+    ]
+  },
+  "consist": {
+    "articulations": {
+      "value": 0,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "land-transport-guru-byd-k9-gemilang"
+      ]
+    },
+    "cars": {
+      "value": 1,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "land-transport-guru-byd-k9-gemilang"
+      ]
+    }
+  },
+  "doorsPerSide": {
+    "value": 2,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "land-transport-guru-byd-k9-gemilang"
+    ]
+  },
+  "seats": {
+    "value": 28,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "land-transport-guru-byd-k9-gemilang"
+    ]
+  },
+  "standingQuoted": {
+    "value": 52,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "land-transport-guru-byd-k9-gemilang"
+    ]
+  },
+  "standingArea": {
+    "value": 13.0,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "land-transport-guru-byd-k9-gemilang"
+    ],
+    "rationale": "52 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 8.7,
+    "central": 13.0,
+    "high": 17.3,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 80,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "land-transport-guru-byd-k9-gemilang"
+    ]
+  },
+  "wheelchairSpaces": {
+    "value": 2,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "land-transport-guru-byd-k9-gemilang"
+    ]
+  },
+  "topSpeed": {
+    "value": 96,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-byd-k-series"
+    ]
+  },
+  "power": {
+    "value": 300,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "land-transport-guru-byd-k9-gemilang"
+    ]
+  },
+  "energySource": {
+    "value": "battery",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "land-transport-guru-byd-k9-gemilang",
+      "wp-byd-k-series"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "batteryCapacity": {
+    "value": 310,
+    "unit": "kWh",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "land-transport-guru-byd-k9-gemilang"
+    ]
+  },
+  "livery": {
+    "operator": "SBS Transit (Singapore)",
+    "primary": "#7AB829",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "land-transport-guru-byd-k9-gemilang"
+    ],
+    "rationale": "Singapore 'Lush Green' public bus livery, as described in the source; hex value is an approximation."
+  },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/BYD_K_series",
+    "scope": "family",
+    "checked_via": "source"
+  },
+  "notes": "Singapore configuration: 28 seated + 52 standing = 80, two wheelchair bays, two doors (front entrance, middle exit). Max speed 96 km/h is BYD's general K9 figure (Wikipedia), not stated for this Singapore batch. 300 kW = 2 x 150 kW motors. Range 'over 250 km' (Singapore operation limited to 200 km). 20 units, in service from 29 July 2020.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

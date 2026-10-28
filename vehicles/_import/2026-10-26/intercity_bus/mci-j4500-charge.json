@@ -1,0 +1,78 @@
+{
+  "id": "mci-j4500-charge",
+  "mode": "intercity_bus",
+  "category": "coach",
+  "simulatorCategory": "Intercity Coach",
+  "name": "J4500 CHARGE",
+  "variant": "battery-electric 45 ft coach",
+  "family": "J-Series",
+  "producer": "Motor Coach Industries (MCI, NFI Group)",
+  "manufacturerCountry": "United States / Canada",
+  "dimensions": {
+    "lengthM": 13.8,
+    "widthM": 2.59,
+    "heightM": 3.58,
+    "grossWeightT": 24.494
+  },
+  "consist": {
+    "cars": 1,
+    "articulations": 0
+  },
+  "capacity": {
+    "total": 56
+  },
+  "performance": {
+    "maxSpeedKmh": 116,
+    "tractionPowerKw": 260
+  },
+  "energy": {
+    "supply": "battery",
+    "batteryKwh": 544,
+    "rangeKm": 262,
+    "rechargeTimeMin": 240,
+    "regenerativeBraking": true
+  },
+  "livery": null,
+  "sources": [
+    {
+      "url": "https://californiahvip.org/wp-content/uploads/2020/09/MCI-J4500-CHARGE%E2%84%A2-brochure-230829.pdf",
+      "title": "MCI J4500 CHARGE brochure",
+      "publisher": "Motor Coach Industries (hosted by California HVIP)",
+      "date": "2023-08-29",
+      "accessed": "2026-10-26",
+      "fields": ["dimensions", "consist", "capacity.total", "performance", "energy"],
+      "kind": "primary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "doors": {
+      "kind": "not_available",
+      "confidence": 0
+    },
+    "costs": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "Top speed 72 mph / 116 km/h as published. Range: published nominal range 262-375 km (163-233 miles, heavy to low usage); the low end is stored. Recharge time is the published \"< 4 hrs\" (5 to 95 %) at 150+ kW DC (CCS1). Curb weight only estimated (~20.5 t) in the brochure, so left empty. Passenger capacity 56 (seated coach)."
+}

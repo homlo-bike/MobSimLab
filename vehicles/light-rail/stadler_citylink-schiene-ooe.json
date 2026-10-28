@@ -1,0 +1,203 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-72b2-b385-a7a267c1dd72",
+  "legacyId": "stadler-citylink-schiene-ooe",
+  "name": "Stadler Citylink (Schiene OÖ (VDV TramTrain, 3-car))",
+  "manufacturer": "Stadler",
+  "builder": "Stadler",
+  "model": "Citylink",
+  "variant": "Schiene OÖ (VDV TramTrain, 3-car)",
+  "family": "Stadler Citylink",
+  "manufacturerCountry": "Switzerland",
+  "type": "tram-train",
+  "mode": "light_rail",
+  "yearIntroduced": 2026,
+  "operators": [
+    "Schiene Oberösterreich (Upper Austria)"
+  ],
+  "length": {
+    "value": 37.2,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-citylink-tram-train-das-projekt-vehicle"
+    ]
+  },
+  "width": {
+    "value": 2.65,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-citylink-tram-train-das-projekt-vehicle"
+    ]
+  },
+  "height": {
+    "value": 3.9,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-citylink-tram-train-das-projekt-vehicle"
+    ]
+  },
+  "consist": {
+    "bidirectional": {
+      "value": true,
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "stadler-citylink-tram-train-das-projekt-vehicle"
+      ]
+    },
+    "cars": {
+      "value": 3,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "stadler-citylink-tram-train-das-projekt-vehicle"
+      ]
+    }
+  },
+  "minRadiusHorizontal": {
+    "value": 22,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-citylink-tram-train-das-projekt-vehicle"
+    ]
+  },
+  "axleLoadMax": {
+    "value": 11.5,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-citylink-tram-train-das-projekt-vehicle"
+    ]
+  },
+  "doorsPerSide": {
+    "value": 4,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-citylink-tram-train-das-projekt-vehicle"
+    ]
+  },
+  "seats": {
+    "value": 94,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-citylink-tram-train-das-projekt-vehicle"
+    ]
+  },
+  "standingQuoted": {
+    "value": 136,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-citylink-tram-train-das-projekt-vehicle"
+    ]
+  },
+  "standingDensityQuoted": {
+    "value": 4,
+    "unit": "pers/m2",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-citylink-tram-train-das-projekt-vehicle"
+    ]
+  },
+  "standingArea": {
+    "value": 34.0,
+    "unit": "m2",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "stadler-citylink-tram-train-das-projekt-vehicle"
+    ],
+    "rationale": "136 standing places at the quoted 4 pers/m2."
+  },
+  "totalCapacityQuoted": {
+    "value": 230,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "stadler-citylink-tram-train-das-projekt-vehicle"
+    ],
+    "rationale": "94 seats plus 136 standing places."
+  },
+  "topSpeed": {
+    "value": 100,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-citylink-tram-train-das-projekt-vehicle"
+    ]
+  },
+  "power": {
+    "value": 750,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-citylink-tram-train-das-projekt-vehicle"
+    ]
+  },
+  "energySource": {
+    "value": "overhead-multisystem",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-citylink-tram-train-das-projekt-vehicle"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "ocl-750v-dc",
+      "ocl-15kv-16-7hz"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-citylink-tram-train-das-projekt-vehicle"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-citylink-tram-train-das-projekt-vehicle"
+    ]
+  },
+  "platformHeightCompatible": {
+    "value": [
+      550
+    ],
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-citylink-tram-train-das-projekt-vehicle"
+    ]
+  },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Stadler_Citylink",
+    "scope": "family",
+    "checked_via": "search"
+  },
+  "notes": "Column 'Schiene OÖ' of the Stadler VDV TramTrain vehicle table. Seats include tip-up seats; standing places at 4 pers/m2; total = seats + standing (derived). Motor power 6 x 125 kW. Bidirectional tram-train for EBO and BOStrab routes.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

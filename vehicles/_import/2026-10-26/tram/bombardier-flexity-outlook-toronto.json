@@ -1,0 +1,138 @@
+{
+  "id": "bombardier-flexity-outlook-toronto",
+  "mode": "tram",
+  "category": "tram_low_floor",
+  "simulatorCategory": "30 m Tram",
+  "name": "Flexity Outlook",
+  "variant": "Toronto (TTC LFLRV)",
+  "family": "Flexity",
+  "producer": "Bombardier Transportation (now Alstom)",
+  "manufacturerCountry": "Canada",
+  "yearIntroduced": 2014,
+  "dimensions": {
+    "lengthM": 30.2,
+    "widthM": 2.54,
+    "heightM": 3.84,
+    "emptyWeightT": 48.2,
+    "minCurveRadiusM": 10.97
+  },
+  "consist": {
+    "cars": 5,
+    "articulations": 4,
+    "bidirectional": false,
+    "suspendedModules": 2
+  },
+  "doors": {
+    "doorsPerSide": 4
+  },
+  "capacity": {
+    "seated": 70,
+    "total": 251
+  },
+  "performance": {
+    "maxSpeedKmh": 70
+  },
+  "energy": {
+    "supply": "overhead_wire",
+    "supplySystems": ["dc_600"]
+  },
+  "infrastructure": {
+    "gaugeMm": 1495
+  },
+  "livery": {
+    "operator": "Toronto Transit Commission",
+    "primary": "#C8102E",
+    "secondary": "#FFFFFF",
+    "windows": null,
+    "sourceUrl": "https://www.blogto.com/city/2019/01/what-new-eglinton-crosstown-vehicle-looks",
+    "description": "approximation of red and white (TTC Flexity Outlook)"
+  },
+  "operators": ["Toronto Transit Commission"],
+  "sources": [
+    {
+      "url": "https://www.ttc.ca/transparency-and-accountability/Operating-Statistics/operating-statistics-2014/next-generation-streetcars",
+      "title": "Operating Statistics 2014 – Next generation streetcars",
+      "publisher": "Toronto Transit Commission",
+      "date": "2014",
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions.lengthM",
+        "dimensions.widthM",
+        "dimensions.heightM",
+        "dimensions.emptyWeightT",
+        "capacity.seated",
+        "performance.maxSpeedKmh",
+        "doors.doorsPerSide"
+      ],
+      "kind": "primary"
+    },
+    {
+      "url": "https://railwaygazette.com/toronto-welcomes-new-generation-trams/39936.article",
+      "title": "Toronto welcomes new generation trams",
+      "publisher": "Railway Gazette",
+      "date": "2014-09-04",
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions.lengthM",
+        "capacity.total",
+        "capacity.seated",
+        "performance.maxSpeedKmh",
+        "energy.supplySystems",
+        "infrastructure.gaugeMm",
+        "consist.cars"
+      ],
+      "kind": "secondary"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Flexity_Outlook_(Toronto)",
+      "title": "Flexity Outlook (Toronto)",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions.minCurveRadiusM",
+        "consist.cars",
+        "consist.articulations",
+        "consist.suspendedModules",
+        "energy.supplySystems",
+        "infrastructure.gaugeMm"
+      ],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "consist": {
+      "kind": "derived",
+      "confidence": 0.6
+    },
+    "doors": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.75
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "operation": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "Five-section low-floor streetcar on Toronto's 1495 mm gauge, 600 V DC. Total 251 (incl. 70 seated) from Railway Gazette; the TTC statistics page lists '70 seated; 130 maximum', so capacity depends on the loading standard used (standing density not stated); standing left null. Four doors on the right side only (single-ended), so doorsPerSide = 4 refers to the door side. consist.suspendedModules = 2 is derived: the source gives UIC arrangement Bo'+Bo'+Bo' (three bogies) under five sections, leaving two sections without running gear. Wikipedia gives a length of 28 m; the TTC figure 30.20 m is used. Acceleration, deceleration, traction power and floor height not found. Contract values are reported without currency in the source read, so costs are left empty."
+}

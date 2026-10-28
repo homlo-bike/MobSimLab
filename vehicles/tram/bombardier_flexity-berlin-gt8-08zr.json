@@ -1,0 +1,192 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7005-b139-a98412f8af75",
+  "legacyId": "bombardier-flexity-berlin-gt8-08zr",
+  "name": "Bombardier Flexity Berlin (GT8-08ZR (long, bidirectional))",
+  "manufacturer": "Bombardier",
+  "builder": "Bombardier Transportation (now Alstom)",
+  "model": "Flexity Berlin",
+  "variant": "GT8-08ZR (long, bidirectional)",
+  "family": "Flexity",
+  "manufacturerCountry": "Germany",
+  "type": "tram-low-floor",
+  "mode": "tram",
+  "yearIntroduced": 2008,
+  "operators": [
+    "BVG (Berliner Verkehrsbetriebe)"
+  ],
+  "length": {
+    "value": 40,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-flexity-berlin"
+    ]
+  },
+  "width": {
+    "value": 2.4,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-flexity-berlin"
+    ]
+  },
+  "height": {
+    "value": 3.45,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-flexity-berlin"
+    ]
+  },
+  "weightEmpty": {
+    "value": 51.5,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-flexity-berlin"
+    ]
+  },
+  "floorHeight": {
+    "value": 355,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-flexity-berlin"
+    ]
+  },
+  "consist": {
+    "bidirectional": {
+      "value": true,
+      "assumed": false,
+      "basis": "documented",
+      "sources": [
+        "wp-flexity-berlin"
+      ],
+      "rationale": "Not attributed to one source in the import; see notes."
+    },
+    "cars": {
+      "value": 7,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-flexity-berlin"
+      ]
+    }
+  },
+  "seats": {
+    "value": 75,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-flexity-berlin"
+    ]
+  },
+  "standingQuoted": {
+    "value": 165,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-flexity-berlin"
+    ]
+  },
+  "standingArea": {
+    "value": 41.2,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "wp-flexity-berlin"
+    ],
+    "rationale": "165 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 27.5,
+    "central": 41.2,
+    "high": 55.0,
+    "distribution": "triangular"
+  },
+  "topSpeed": {
+    "value": 70,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-flexity-berlin"
+    ]
+  },
+  "power": {
+    "value": 600,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-flexity-berlin"
+    ]
+  },
+  "energySource": {
+    "value": "overhead-dc",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-flexity-berlin"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "ocl-600v-dc"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-flexity-berlin"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-flexity-berlin"
+    ]
+  },
+  "costRecords": [
+    {
+      "item": "39 long Flexity Berlin trams (second BVG order, funding amount)",
+      "value": 439100000,
+      "currency": "EUR",
+      "priceBaseYear": 2012,
+      "region": "Berlin, Germany",
+      "note": "Reported as funding for the order; may include items beyond vehicles.",
+      "sources": [
+        "wp-flexity-berlin"
+      ]
+    }
+  ],
+  "livery": {
+    "operator": "BVG (Berliner Verkehrsbetriebe)",
+    "primary": "#F0D722",
+    "secondary": "#FCFFFF",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "de-wikipedia-org-bvg-berliner-verkehrsbetriebe"
+    ],
+    "rationale": "Verkehrsgelb RAL 1023 main surfaces, Verkehrsweiß RAL 9016 roof, Schiefergrau RAL 7015 lower area (BVG vehicle colours as tabled; hex as given there)"
+  },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Flexity_Berlin",
+    "scope": "model",
+    "checked_via": "source"
+  },
+  "notes": "Seven-module 100% low-floor tram, bidirectional version (ZR); the unidirectional GT8-08 has 88 seats/151 standing and 50.1 t. Capacity total is seated + standing (75 + 165); standing density not stated. Traction power 12 x 50 kW = 600 kW. 600 V DC in Berlin (750 V DC at Strausberg). Bogie/module layout, doors per side, minimum curve radius, acceleration and deceleration not found.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

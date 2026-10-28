@@ -1,0 +1,72 @@
+{
+  "id": "king-long-xmq6127",
+  "mode": "intercity_bus",
+  "category": "coach",
+  "simulatorCategory": "12 m Coach",
+  "name": "XMQ6127",
+  "variant": "Diesel coach (2005 UK specification)",
+  "producer": "King Long",
+  "manufacturerCountry": "China",
+  "dimensions": {
+    "lengthM": 12.0,
+    "widthM": 2.49,
+    "heightM": 3.755,
+    "grossWeightT": 17.9
+  },
+  "consist": {
+    "cars": 1,
+    "articulations": 0
+  },
+  "capacity": {
+    "seated": 51,
+    "total": 51
+  },
+  "performance": {
+    "maxSpeedKmh": 135
+  },
+  "energy": {
+    "supply": "diesel"
+  },
+  "sources": [
+    {
+      "url": "https://www.chinabuses.com/english/spotlight/kinglong005.htm",
+      "title": "XMQ6127 to be launched in the U.K soon",
+      "publisher": "ChinaBuses.com",
+      "date": "2005-04-03",
+      "accessed": "2026-10-26",
+      "fields": ["dimensions", "consist", "capacity", "performance", "energy"],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.5
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.5
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "doors": {
+      "kind": "not_available",
+      "confidence": 0
+    },
+    "costs": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "2005 specification: seats 51+1+1 (passengers + driver + guide), Cummins 335 Euro III engine, fuel consumption 24 L/100 km, wheelbase 6000 mm, max gradeability 30%. Later XMQ6127 versions differ."
+}

@@ -1,0 +1,300 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/homlo-bike/MobSimLab/vehicles/schema/vehicle.schema.json",
+  "title": "MobSimLab vehicle type",
+  "description": "One vehicle type in the catalogue (08-vehicles.md, ADR-0026). Every value carries its provenance: cited, documented (derivation written down) or educated-guess (assumed, with a range).",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "id",
+    "name",
+    "manufacturer",
+    "model",
+    "type",
+    "mode",
+    "length",
+    "topSpeed",
+    "energySource",
+    "trademarkNotice"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "const": "1.0.0" },
+    "id": {
+      "description": "Stable UUIDv7.",
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "legacyId": { "description": "Slug in the import the file was made from.", "type": "string" },
+    "name": { "type": "string", "minLength": 1 },
+    "manufacturer": { "description": "Lead builder.", "type": "string", "minLength": 1 },
+    "builder": { "description": "All builders as published, including partners and body builders.", "type": "string" },
+    "model": { "type": "string", "minLength": 1 },
+    "variant": { "type": "string" },
+    "family": { "type": "string" },
+    "manufacturerCountry": { "type": "string" },
+    "type": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "mode": {
+      "enum": [
+        "bus",
+        "brt",
+        "trolleybus",
+        "intercity_bus",
+        "tram",
+        "light_rail",
+        "metro",
+        "commuter_rail",
+        "regional_rail",
+        "long_distance_rail",
+        "high_speed_rail"
+      ]
+    },
+    "yearIntroduced": { "type": "integer", "minimum": 1800, "maximum": 2100 },
+    "yearDiscontinued": { "type": "integer", "minimum": 1800, "maximum": 2100 },
+    "operators": { "type": "array", "items": { "type": "string" } },
+
+    "length": { "$ref": "#/$defs/length" },
+    "width": { "$ref": "#/$defs/length" },
+    "height": { "$ref": "#/$defs/length" },
+    "weightEmpty": { "$ref": "#/$defs/mass" },
+    "weightLoaded": { "$ref": "#/$defs/mass" },
+    "floorHeight": { "$ref": "#/$defs/millimetres" },
+    "consist": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "cars": { "$ref": "#/$defs/count" },
+        "articulations": { "$ref": "#/$defs/count" },
+        "suspendedModules": { "$ref": "#/$defs/count" },
+        "carLengths": { "$ref": "#/$defs/lengthList" },
+        "axlePositions": { "$ref": "#/$defs/lengthList" },
+        "bidirectional": { "$ref": "#/$defs/flag" },
+        "gangway": { "$ref": "#/$defs/flag" }
+      }
+    },
+    "minRadiusHorizontal": { "$ref": "#/$defs/length" },
+    "turningCircle": { "$ref": "#/$defs/length" },
+    "axleLoadMax": { "$ref": "#/$defs/mass" },
+    "doorsPerSide": { "$ref": "#/$defs/count" },
+    "doorClearWidth": { "$ref": "#/$defs/millimetres" },
+
+    "seats": { "$ref": "#/$defs/count" },
+    "standingQuoted": {
+      "description": "Standing places as the source quotes them. Planning capacity is recomputed from standingArea at the project density (08 §3 rule 4).",
+      "$ref": "#/$defs/count"
+    },
+    "standingDensityQuoted": { "$ref": "#/$defs/quantity", "properties": { "unit": { "const": "pers/m2" } } },
+    "standingArea": { "$ref": "#/$defs/quantity", "properties": { "unit": { "const": "m2" } } },
+    "totalCapacityQuoted": { "$ref": "#/$defs/count" },
+    "wheelchairSpaces": { "$ref": "#/$defs/count" },
+    "bicycleSpaces": { "$ref": "#/$defs/count" },
+
+    "topSpeed": { "$ref": "#/$defs/quantity", "properties": { "unit": { "const": "km/h" } } },
+    "power": { "$ref": "#/$defs/quantity", "properties": { "unit": { "const": "kW" } } },
+    "maxAcceleration": { "$ref": "#/$defs/quantity", "properties": { "unit": { "const": "m/s2" } } },
+    "serviceDeceleration": { "$ref": "#/$defs/quantity", "properties": { "unit": { "const": "m/s2" } } },
+
+    "energySource": {
+      "$ref": "#/$defs/quantity",
+      "properties": {
+        "value": {
+          "enum": [
+            "diesel",
+            "diesel-hybrid",
+            "cng",
+            "hvo",
+            "battery",
+            "hydrogen",
+            "overhead",
+            "overhead-ac",
+            "overhead-dc",
+            "overhead-multisystem",
+            "supercapacitor",
+            "third-rail",
+            "dual",
+            "unknown"
+          ]
+        }
+      }
+    },
+    "supplySystems": {
+      "description": "Electrical supply systems the vehicle can draw power from, as <collection>-<voltage> ids (collection: ocl = overhead contact line, trolley = twin-wire trolleybus line, third-rail, fourth-rail; voltage: EN 50163 nominal).",
+      "$ref": "#/$defs/quantity",
+      "properties": {
+        "value": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^(ocl|trolley|third-rail|fourth-rail)-(600v-dc|630v-dc|750v-dc|1000v-dc|1500v-dc|3000v-dc|15kv-16-7hz|25kv-50hz)$"
+          }
+        }
+      }
+    },
+    "conductorRailContact": {
+      "description": "Contact positions of the collector shoes, checked against the conductor-rail system (assumptions/supply-systems.yaml).",
+      "$ref": "#/$defs/quantity",
+      "properties": { "value": { "type": "array", "minItems": 1, "items": { "enum": ["top", "side", "bottom"] } } }
+    },
+    "pantographHeadMm": {
+      "description": "Pantograph head width, checked against the widths the overhead line accepts.",
+      "$ref": "#/$defs/quantity",
+      "properties": { "value": { "enum": [1450, 1600, 1950] }, "unit": { "const": "mm" } }
+    },
+    "onboardEnergy": {
+      "$ref": "#/$defs/quantity",
+      "properties": { "value": { "enum": ["battery", "diesel", "supercapacitor", "hydrogen"] } }
+    },
+    "batteryCapacity": { "$ref": "#/$defs/quantity", "properties": { "unit": { "const": "kWh" } } },
+    "fuelCapacity": { "$ref": "#/$defs/quantity", "properties": { "unit": { "const": "L" } } },
+    "range": { "$ref": "#/$defs/quantity", "properties": { "unit": { "const": "km" } } },
+    "rechargeTime": { "$ref": "#/$defs/quantity", "properties": { "unit": { "const": "min" } } },
+    "regenerativeBraking": { "$ref": "#/$defs/flag" },
+
+    "trackGauge": { "$ref": "#/$defs/millimetres" },
+    "platformHeightCompatible": {
+      "$ref": "#/$defs/quantity",
+      "properties": { "value": { "type": "array", "items": { "type": "number" } }, "unit": { "const": "mm" } }
+    },
+    "automationGrade": {
+      "$ref": "#/$defs/quantity",
+      "properties": { "value": { "enum": ["GoA0", "GoA1", "GoA2", "GoA3", "GoA4"] } }
+    },
+
+    "costRecords": {
+      "description": "Published prices as reported, usually for a whole order. Not a per-vehicle cost until converted with the order size.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["item", "value", "currency", "priceBaseYear", "sources"],
+        "additionalProperties": false,
+        "properties": {
+          "item": { "type": "string" },
+          "value": { "type": "number", "exclusiveMinimum": 0 },
+          "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+          "priceBaseYear": { "type": "integer" },
+          "region": { "type": ["string", "null"] },
+          "note": { "type": ["string", "null"] },
+          "sources": { "$ref": "#/$defs/sourceIds" }
+        }
+      }
+    },
+    "livery": {
+      "description": "Approximate colours for drawing the vehicle; always an educated guess.",
+      "type": "object",
+      "required": ["primary", "assumed", "basis", "sources", "rationale"],
+      "additionalProperties": false,
+      "properties": {
+        "operator": { "type": "string" },
+        "primary": { "$ref": "#/$defs/colour" },
+        "secondary": { "$ref": "#/$defs/colour" },
+        "windows": { "$ref": "#/$defs/colour" },
+        "assumed": { "const": true },
+        "basis": { "const": "educated-guess" },
+        "sources": { "$ref": "#/$defs/sourceIds" },
+        "rationale": { "type": "string" }
+      }
+    },
+    "wikipedia": {
+      "description": "Wikipedia article for identifying the vehicle: a link only, no text or images are copied. scope: model = article on this type or class; family = its product family or platform; fleet = the operator's fleet or system.",
+      "type": "object",
+      "required": ["url", "scope", "checked_via"],
+      "additionalProperties": false,
+      "properties": {
+        "url": { "type": "string", "pattern": "^https://[a-z]{2,3}(-[a-z]+)?\\.wikipedia\\.org/wiki/[^\\s#?]+$" },
+        "scope": { "enum": ["model", "family", "fleet"] },
+        "checked_via": { "enum": ["source", "search"] }
+      }
+    },
+    "schematic": {
+      "description": "Hand-drawn side view used instead of the one generated from the geometry fields. Optional; without it the app draws the vehicle from length, consist, doors and livery.",
+      "type": "object",
+      "required": ["file", "author", "licence"],
+      "additionalProperties": false,
+      "properties": {
+        "file": {
+          "description": "SVG under vehicles/_schematics/, named after the catalogue file.",
+          "type": "string",
+          "pattern": "^vehicles/_schematics/[a-z0-9-]+_[a-z0-9-]+\\.svg$"
+        },
+        "author": { "type": "string", "minLength": 1 },
+        "licence": { "const": "CC-BY-4.0" },
+        "created": { "type": "string", "format": "date" },
+        "note": { "type": "string" }
+      }
+    },
+    "notes": { "type": "string" },
+    "draftReason": { "description": "Present only on files in vehicles/_drafts/.", "type": "string" },
+    "trademarkNotice": { "type": "string", "minLength": 1 }
+  },
+
+  "$defs": {
+    "sourceIds": { "type": "array", "items": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" } },
+    "colour": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" },
+    "quantity": {
+      "description": "An assumed value (04 §2.3, ADR-0018).",
+      "type": "object",
+      "required": ["value", "assumed", "basis", "sources"],
+      "additionalProperties": false,
+      "properties": {
+        "value": {},
+        "unit": { "type": "string" },
+        "assumed": { "type": "boolean" },
+        "basis": { "enum": ["cited", "documented", "educated-guess"] },
+        "sources": { "$ref": "#/$defs/sourceIds" },
+        "rationale": { "type": "string", "minLength": 1 },
+        "low": { "type": "number" },
+        "central": { "type": "number" },
+        "high": { "type": "number" },
+        "distribution": { "enum": ["triangular", "uniform", "normal", "lognormal"] }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "basis": { "const": "cited" } } },
+          "then": { "properties": { "assumed": { "const": false }, "sources": { "minItems": 1 } } }
+        },
+        {
+          "if": { "properties": { "basis": { "const": "documented" } } },
+          "then": { "required": ["rationale"], "properties": { "sources": { "minItems": 1 } } }
+        },
+        {
+          "if": { "properties": { "basis": { "const": "educated-guess" } } },
+          "then": { "required": ["rationale"], "properties": { "assumed": { "const": true } } }
+        },
+        {
+          "if": {
+            "required": ["value"],
+            "properties": { "basis": { "const": "educated-guess" }, "value": { "type": "number" } }
+          },
+          "then": { "required": ["low", "central", "high"] }
+        }
+      ]
+    },
+    "length": {
+      "$ref": "#/$defs/quantity",
+      "properties": { "value": { "type": "number", "exclusiveMinimum": 0 }, "unit": { "const": "m" } }
+    },
+    "lengthList": {
+      "$ref": "#/$defs/quantity",
+      "properties": { "value": { "type": "array", "items": { "type": "number" } }, "unit": { "const": "m" } }
+    },
+    "millimetres": {
+      "$ref": "#/$defs/quantity",
+      "properties": { "value": { "type": "number", "minimum": 0 }, "unit": { "const": "mm" } }
+    },
+    "mass": {
+      "$ref": "#/$defs/quantity",
+      "properties": { "value": { "type": "number", "exclusiveMinimum": 0 }, "unit": { "const": "t" } }
+    },
+    "count": {
+      "$ref": "#/$defs/quantity",
+      "properties": { "value": { "type": "integer", "minimum": 0 }, "unit": { "const": "count" } }
+    },
+    "flag": {
+      "$ref": "#/$defs/quantity",
+      "properties": { "value": { "type": "boolean" } }
+    }
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "id": "man-lions-city-18-magdeburg",
+  "mode": "bus",
+  "category": "articulated_bus",
+  "simulatorCategory": "18 m Articulated Bus",
+  "name": "Lion's City 18",
+  "variant": "18C EfficientHybrid diesel, 4 doors (MVB Magdeburg)",
+  "family": "Lion's City",
+  "producer": "MAN Truck & Bus",
+  "manufacturerCountry": "Germany",
+  "dimensions": {
+    "lengthM": 18.04,
+    "widthM": 2.55,
+    "heightM": 3.16,
+    "grossWeightT": 28.0
+  },
+  "consist": {
+    "cars": 2,
+    "articulations": 1
+  },
+  "doors": {
+    "doorsPerSide": 4
+  },
+  "capacity": {
+    "seated": 41,
+    "standing": 111
+  },
+  "performance": {
+    "maxSpeedKmh": 85,
+    "tractionPowerKw": 265
+  },
+  "energy": {
+    "supply": "diesel"
+  },
+  "operators": ["Magdeburger Verkehrsbetriebe (MVB)"],
+  "sources": [
+    {
+      "url": "https://mvbnet.de//files/2024/06/2024_mvb_typenblaetter-Glenkbusse_A4_2024.pdf",
+      "title": "Typenblätter Gelenkbusse 2024",
+      "publisher": "Magdeburger Verkehrsbetriebe GmbH & Co. KG (MVB)",
+      "date": "2024",
+      "accessed": "2026-10-26",
+      "fields": ["dimensions", "doors", "capacity", "performance"],
+      "kind": "primary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.85
+    },
+    "doors": {
+      "kind": "published",
+      "confidence": 0.85
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.85
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.85
+    },
+    "consist": {
+      "kind": "derived",
+      "confidence": 0.8
+    }
+  },
+  "notes": "MVB fleet numbers 3220-3236, built 2022/23. MAN EfficientHybrid (UltraCap store 40 Wh, 12 kW starter-generator), engine 9,037 cm³, drive power 265 kW. Consist (two body sections, one articulation) follows from the type \"Niederflurgelenkbus\"; not a published figure. Total capacity not published; seated + standing = 152. Livery not described."
+}

@@ -1,0 +1,212 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-71e6-a372-d506aa8d650b",
+  "legacyId": "siemens-combino-supra-budapest",
+  "name": "Siemens Combino Supra (NF12B Budapest)",
+  "manufacturer": "Siemens",
+  "builder": "Siemens",
+  "model": "Combino Supra",
+  "variant": "NF12B Budapest",
+  "family": "Siemens Combino",
+  "manufacturerCountry": "Germany",
+  "type": "tram-low-floor",
+  "mode": "tram",
+  "yearIntroduced": 2006,
+  "operators": [
+    "BKV (Budapest)"
+  ],
+  "length": {
+    "value": 53.99,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-hu-siemens-combino-supra",
+      "wp-siemens-combino"
+    ]
+  },
+  "width": {
+    "value": 2.4,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-hu-siemens-combino-supra"
+    ]
+  },
+  "height": {
+    "value": 3.562,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-hu-siemens-combino-supra"
+    ]
+  },
+  "weightEmpty": {
+    "value": 69.7,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-hu-siemens-combino-supra"
+    ]
+  },
+  "floorHeight": {
+    "value": 350,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-hu-siemens-combino-supra"
+    ]
+  },
+  "consist": {
+    "cars": {
+      "value": 6,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-hu-siemens-combino-supra"
+      ]
+    },
+    "suspendedModules": {
+      "value": 0,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-siemens-combino"
+      ]
+    }
+  },
+  "minRadiusHorizontal": {
+    "value": 20,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-hu-siemens-combino-supra"
+    ]
+  },
+  "axleLoadMax": {
+    "value": 10,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-hu-siemens-combino-supra"
+    ]
+  },
+  "doorClearWidth": {
+    "value": 1300,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-hu-siemens-combino-supra"
+    ]
+  },
+  "seats": {
+    "value": 64,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-hu-siemens-combino-supra"
+    ]
+  },
+  "standingQuoted": {
+    "value": 286,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-hu-siemens-combino-supra"
+    ],
+    "rationale": "Total 350 minus 64 seats."
+  },
+  "standingArea": {
+    "value": 71.5,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "wp-hu-siemens-combino-supra"
+    ],
+    "rationale": "286 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 47.7,
+    "central": 71.5,
+    "high": 95.3,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 350,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-hu-siemens-combino-supra"
+    ]
+  },
+  "topSpeed": {
+    "value": 60,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-hu-siemens-combino-supra"
+    ]
+  },
+  "power": {
+    "value": 800,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-hu-siemens-combino-supra"
+    ]
+  },
+  "energySource": {
+    "value": "overhead",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-hu-siemens-combino-supra",
+      "wp-siemens-combino"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "costRecords": [
+    {
+      "item": "40 Combino Supra trams (fleet)",
+      "value": 36000000000,
+      "currency": "HUF",
+      "priceBaseYear": 2006,
+      "region": "Budapest, Hungary",
+      "note": "36 billion HUF at 2006 prices for the Budapest fleet (secondary source).",
+      "sources": [
+        "wp-hu-siemens-combino-supra"
+      ]
+    }
+  ],
+  "livery": {
+    "operator": "BKV (Budapest)",
+    "primary": "#FFD100",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "timeout-com-bkv-budapest"
+    ],
+    "rationale": "approximation of yellow (Budapest Combino Supra)"
+  },
+  "wikipedia": {
+    "url": "https://hu.wikipedia.org/wiki/Siemens_Combino_Supra",
+    "scope": "model",
+    "checked_via": "source"
+  },
+  "notes": "Six-module, 54 m Combino Supra for Budapest lines 4/6. Unlike the original Combino it has no suspended sections (two axles under each body section), so suspendedModules = 0. Maximum speed 60 km/h is the electronically limited permitted speed in the infobox; the text gives 70 km/h design maximum and 50 km/h permitted line speed. Capacity 350 (infobox; text says 353 places), 64 seats; standing and standing density not stated. Floor 320 mm at entrance, 350 mm inside. Power 8 x 100 kW. Doors listed as '8 x 2 doors, 1300 mm' without a per-side split, so doorsPerSide is null. Supply voltage and gauge not stated in the sources read; left empty.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

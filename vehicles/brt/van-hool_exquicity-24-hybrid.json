@@ -1,0 +1,185 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-78fb-bd28-34a07be7e4f3",
+  "legacyId": "van-hool-exquicity-24-hybrid",
+  "name": "Van Hool ExquiCity 24 (Hybrid (diesel-electric series hybrid, Metz Mettis))",
+  "manufacturer": "Van Hool",
+  "builder": "Van Hool",
+  "model": "ExquiCity 24",
+  "variant": "Hybrid (diesel-electric series hybrid, Metz Mettis)",
+  "family": "ExquiCity",
+  "manufacturerCountry": "Belgium",
+  "type": "brt-double-articulated-bus",
+  "mode": "brt",
+  "yearIntroduced": 2011,
+  "yearDiscontinued": 2024,
+  "operators": [
+    "Metz (Mettis, TAMM/Le Met')",
+    "De Lijn",
+    "Nîmes (Tango)"
+  ],
+  "length": {
+    "value": 23.82,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "van-hool-nv-exqui-city-folder-2022"
+    ]
+  },
+  "width": {
+    "value": 2.55,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "van-hool-nv-exqui-city-folder-2022"
+    ]
+  },
+  "height": {
+    "value": 3.3,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "van-hool-nv-exqui-city-folder-2022"
+    ]
+  },
+  "floorHeight": {
+    "value": 330,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "van-hool-nv-exqui-city-folder-2022"
+    ]
+  },
+  "consist": {
+    "articulations": {
+      "value": 2,
+      "unit": "count",
+      "assumed": false,
+      "basis": "documented",
+      "sources": [
+        "van-hool-nv-exqui-city-folder-2022"
+      ],
+      "rationale": "Derived from the cited source; see notes."
+    },
+    "axlePositions": {
+      "value": [
+        1.9,
+        8.5,
+        15.21,
+        21.92
+      ],
+      "unit": "m",
+      "assumed": false,
+      "basis": "documented",
+      "sources": [
+        "van-hool-nv-exqui-city-folder-2022"
+      ],
+      "rationale": "Derived from the cited source; see notes."
+    },
+    "cars": {
+      "value": 3,
+      "unit": "count",
+      "assumed": false,
+      "basis": "documented",
+      "sources": [
+        "van-hool-nv-exqui-city-folder-2022"
+      ],
+      "rationale": "Derived from the cited source; see notes."
+    }
+  },
+  "turningCircle": {
+    "value": 24.3,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "van-hool-nv-exqui-city-folder-2022"
+    ]
+  },
+  "doorsPerSide": {
+    "value": 4,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "van-hool-nv-exqui-city-folder-2022"
+    ]
+  },
+  "seats": {
+    "value": 51,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "van-hool-nv-exquicity24-trolley"
+    ],
+    "rationale": "51 seats as listed for the ExquiCity24 (trolleybus version, same 24 m body); the project owner chose it over the 61 on French Wikipedia, 2026-10-27."
+  },
+  "standingQuoted": {
+    "value": 99,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "urban-transport-maga-metz-a-third-line-for-the-mettis-brt-sys",
+      "van-hool-nv-exquicity24-trolley"
+    ],
+    "rationale": "Total 150 minus 51 seats."
+  },
+  "standingArea": {
+    "value": 24.8,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "urban-transport-maga-metz-a-third-line-for-the-mettis-brt-sys",
+      "van-hool-nv-exquicity24-trolley"
+    ],
+    "rationale": "99 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 16.5,
+    "central": 24.8,
+    "high": 33.0,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 150,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "urban-transport-maga-metz-a-third-line-for-the-mettis-brt-sys"
+    ]
+  },
+  "topSpeed": {
+    "value": 67.5,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-fr-van-hool-exquicity"
+    ]
+  },
+  "energySource": {
+    "value": "diesel-hybrid",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "van-hool-nv-exqui-city-folder-2022",
+      "urban-transport-maga-metz-a-third-line-for-the-mettis-brt-sys",
+      "wp-fr-van-hool-exquicity"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "wikipedia": {
+    "url": "https://fr.wikipedia.org/wiki/Van_Hool_ExquiCity",
+    "scope": "family",
+    "checked_via": "source"
+  },
+  "notes": "Range launched 2011; production ended with Van Hool in 2024. Capacity 150 is the Metz Mettis figure (23.8 m hybrid, MAN 184 kW diesel + Siemens generator). Axle positions derived from the published 1.9 m front overhang and 6.6/6.71/6.71 m wheelbases. Turning circle 24.3 m is twice the published 12.15 m turning radius (11.4 m between kerbs). Maximum speed 67.5 km/h is the family-wide value in the French Wikipedia infobox (unsourced there), so confidence is low. Floor height is the published boarding height.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

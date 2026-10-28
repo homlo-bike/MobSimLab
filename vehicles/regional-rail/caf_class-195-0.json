@@ -1,0 +1,161 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-739a-969a-b3d5c57015a0",
+  "legacyId": "caf-class-195-0",
+  "name": "CAF Class 195/0 (2-car)",
+  "manufacturer": "CAF",
+  "builder": "CAF",
+  "model": "Class 195/0",
+  "variant": "2-car",
+  "family": "Civity",
+  "manufacturerCountry": "Spain",
+  "type": "dmu",
+  "mode": "regional_rail",
+  "yearIntroduced": 2019,
+  "operators": [
+    "Northern Trains"
+  ],
+  "length": {
+    "value": 48.05,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-195"
+    ]
+  },
+  "width": {
+    "value": 2.712,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-195"
+    ]
+  },
+  "height": {
+    "value": 3.85,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-195"
+    ]
+  },
+  "consist": {
+    "cars": {
+      "value": 2,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-british-rail-class-195"
+      ]
+    }
+  },
+  "doorsPerSide": {
+    "value": 4,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-195"
+    ]
+  },
+  "seats": {
+    "value": 124,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-195"
+    ]
+  },
+  "standingQuoted": {
+    "value": 0,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-british-rail-class-195"
+    ],
+    "rationale": "Total 124 minus 124 seats."
+  },
+  "standingArea": {
+    "value": 0.0,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "wp-british-rail-class-195"
+    ],
+    "rationale": "0 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 0.0,
+    "central": 0.0,
+    "high": 0.0,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 124,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-british-rail-class-195"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "topSpeed": {
+    "value": 160,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-195"
+    ]
+  },
+  "power": {
+    "value": 780,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-195"
+    ]
+  },
+  "maxAcceleration": {
+    "value": 0.83,
+    "unit": "m/s2",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-195"
+    ]
+  },
+  "energySource": {
+    "value": "diesel",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-british-rail-class-195"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-195"
+    ]
+  },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/British_Rail_Class_195",
+    "scope": "model",
+    "checked_via": "source"
+  },
+  "notes": "total = seats (no standing figure published). doorsPerSide derived: 2 double-leaf plug doors per side per car × 2 cars. Maximum speed 100 mph (160 km/h).",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

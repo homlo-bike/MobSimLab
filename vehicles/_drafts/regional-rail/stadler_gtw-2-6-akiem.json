@@ -1,0 +1,154 @@
+{
+  "$schema": "../../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-77a9-ba1a-217505b2bef7",
+  "legacyId": "stadler-gtw-2-6-akiem",
+  "name": "Stadler GTW 2/6 (diesel (Akiem lease fleet, NL authorisation))",
+  "manufacturer": "Stadler",
+  "builder": "Stadler",
+  "model": "GTW 2/6",
+  "variant": "diesel (Akiem lease fleet, NL authorisation)",
+  "family": "GTW",
+  "manufacturerCountry": "Switzerland",
+  "type": "dmu",
+  "mode": "regional_rail",
+  "yearIntroduced": 2007,
+  "length": {
+    "value": 40.9,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "akiem-stadler-gtw-mu-technical-data-sheet-non"
+    ]
+  },
+  "width": {
+    "value": 2.89,
+    "unit": "m",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner"
+    ],
+    "rationale": "2.89 m, the project owner's figure (accepted 2026-10-27); Wikipedia gives 3.0-3.1 m for standard-gauge GTWs, so the range covers both.",
+    "low": 2.85,
+    "central": 2.89,
+    "high": 3.1,
+    "distribution": "triangular"
+  },
+  "weightEmpty": {
+    "value": 71.6,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "akiem-stadler-gtw-mu-technical-data-sheet-non"
+    ]
+  },
+  "floorHeight": {
+    "value": 830,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "akiem-stadler-gtw-mu-technical-data-sheet-non"
+    ]
+  },
+  "consist": {
+    "cars": {
+      "value": 2,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "akiem-stadler-gtw-mu-technical-data-sheet-non"
+      ]
+    }
+  },
+  "seats": {
+    "value": 109,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "akiem-stadler-gtw-mu-technical-data-sheet-non"
+    ]
+  },
+  "standingQuoted": {
+    "value": 0,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "akiem-stadler-gtw-mu-technical-data-sheet-non"
+    ],
+    "rationale": "Total 109 minus 109 seats."
+  },
+  "standingArea": {
+    "value": 0.0,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "akiem-stadler-gtw-mu-technical-data-sheet-non"
+    ],
+    "rationale": "0 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 0.0,
+    "central": 0.0,
+    "high": 0.0,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 109,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "akiem-stadler-gtw-mu-technical-data-sheet-non"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "topSpeed": {
+    "value": 140,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "akiem-stadler-gtw-mu-technical-data-sheet-non"
+    ]
+  },
+  "power": {
+    "value": 760,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "akiem-stadler-gtw-mu-technical-data-sheet-non"
+    ]
+  },
+  "energySource": {
+    "value": "diesel",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "akiem-stadler-gtw-mu-technical-data-sheet-non"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "regenerativeBraking": {
+    "value": false,
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "akiem-stadler-gtw-mu-technical-data-sheet-non"
+    ]
+  },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Stadler_GTW",
+    "scope": "family",
+    "checked_via": "search"
+  },
+  "notes": "Data sheet column GTW 2/6 (year of construction 2007, authorisation NL); the lessor marks the sheet non-binding. Seated = 93 standard + 16 first class; 14 folding seats not counted. total = seats (no standing figure published). tractionPowerKw = installed diesel engine power 2 × 380 kW (engine output, not power at wheel). Floor height is the low-floor value (high floor 996 mm). Sheet gives 2 doors per vehicle (not per side), so doorsPerSide is left empty. Configuration given by the sheet as \"2 car\".",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only.",
+  "draftReason": "Core fields not sourced: width"
+}

@@ -1,0 +1,101 @@
+{
+  "id": "talgo-avril-renfe-106",
+  "mode": "long_distance_rail",
+  "category": "high_speed_train",
+  "simulatorCategory": "High Speed Train",
+  "name": "AVRIL",
+  "variant": "Renfe class 106 (standard gauge)",
+  "family": "Talgo",
+  "producer": "Talgo",
+  "manufacturerCountry": "Spain",
+  "yearIntroduced": 2012,
+  "dimensions": {
+    "lengthM": 201.8,
+    "widthM": 3.2,
+    "emptyWeightT": 325
+  },
+  "consist": {
+    "cars": 14
+  },
+  "capacity": {
+    "seated": 507,
+    "total": 507
+  },
+  "performance": {
+    "maxSpeedKmh": 330,
+    "tractionPowerKw": 8800
+  },
+  "energy": {
+    "supply": "overhead_wire",
+    "supplySystems": ["ac_25k_50", "dc_1500", "dc_3000"]
+  },
+  "infrastructure": {
+    "gaugeMm": 1435
+  },
+  "costs": [
+    {
+      "item": "15 standard-gauge AVRIL trainsets plus 30 years of maintenance",
+      "amount": 786500000,
+      "currency": "EUR",
+      "year": 2016,
+      "region": "Spain",
+      "url": "https://en.wikipedia.org/wiki/Talgo_AVRIL",
+      "note": "Includes maintenance (secondary source)."
+    }
+  ],
+  "operators": ["Renfe (AVE / Avlo)"],
+  "sources": [
+    {
+      "url": "https://en.wikipedia.org/wiki/Talgo_AVRIL",
+      "title": "Talgo AVRIL",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions",
+        "consist.cars",
+        "capacity.seated",
+        "performance",
+        "energy.supplySystems",
+        "infrastructure.gaugeMm"
+      ],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.8
+    },
+    "capacity": {
+      "kind": "derived",
+      "confidence": 0.7
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.65
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.85
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.85
+    },
+    "doors": {
+      "kind": "not_available",
+      "confidence": 0
+    },
+    "operation": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "Two power cars and 12 short (13 m) articulated passenger cars; cars = 14 counts the power cars. 507 seats in the standard layout (581 in the Avlo layout); total = seats (no standing figure published). maxSpeedKmh = 330 is the certified speed; service speed 300 km/h, design 380 km/h; press reports of temporary speed restrictions are not reflected. Weight 325 t as listed (laden state not stated). Power 8.8 MW. Variable-gauge (1,435/1,668 mm) sets also exist. 2012 is the prototype year.",
+  "livery": null
+}

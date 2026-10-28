@@ -1,0 +1,110 @@
+{
+  "id": "siemens-inspiro-warsaw-6-car",
+  "mode": "metro",
+  "category": "metro_consist",
+  "simulatorCategory": "6-Car Metro",
+  "name": "Inspiro",
+  "variant": "Metro Warszawskie 6-car",
+  "family": "Siemens Inspiro",
+  "producer": "Siemens / Newag",
+  "manufacturerCountry": "Austria / Poland",
+  "yearIntroduced": 2013,
+  "dimensions": {
+    "lengthM": 117.8,
+    "widthM": 2.74,
+    "emptyWeightT": 163,
+    "grossWeightT": 265,
+    "axleLoadT": 12.6,
+    "floorHeightMm": 1130,
+    "minCurveRadiusM": 60
+  },
+  "consist": {
+    "cars": 6,
+    "gangway": true
+  },
+  "doors": {
+    "doorsPerSide": 24
+  },
+  "capacity": {
+    "seated": 234,
+    "standing": 1268,
+    "total": 1502,
+    "standingDensityPersM2": 7
+  },
+  "performance": {
+    "maxSpeedKmh": 90
+  },
+  "energy": {
+    "supply": "third_rail",
+    "supplySystems": ["dc_750"]
+  },
+  "infrastructure": {
+    "gaugeMm": 1435
+  },
+  "operators": ["Metro Warszawskie (Warsaw)"],
+  "sources": [
+    {
+      "url": "https://assets.new.siemens.com/siemens/assets/api/uuid:68efc7133287d03bf86a2acc6a3637d9b540ffad/metro-warsaw-en.pdf",
+      "title": "35 six-car Inspiro metro trains – Metro Warsaw, Poland",
+      "publisher": "Siemens",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions",
+        "consist",
+        "capacity.seated",
+        "capacity.total",
+        "capacity.standingDensityPersM2",
+        "performance",
+        "energy.supplySystems",
+        "infrastructure.gaugeMm"
+      ],
+      "kind": "primary"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Siemens_Inspiro",
+      "title": "Siemens Inspiro",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["operators"],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.85
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "doors": {
+      "kind": "derived",
+      "confidence": 0.8
+    },
+    "capacity": {
+      "kind": "derived",
+      "confidence": 0.85
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.85
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.9
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.95
+    },
+    "operation": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "Six-car Mc-T-M-M-T-Mc Inspiro for Warsaw (35 trains, first in service October 2013). Length approx. 117.8 m over couplers; tare approx. 163 t, total approx. 265 t at 7 passengers/m². Capacity 1,502 at 7 passengers/m² with 234 seats; standing = 1,502 − 234 = 1,268 (derived). Eight passenger doors per car, i.e. 4 per side × 6 cars = 24 per side (derived). Minimum curve radius 300 m on the service line and 60 m in the depot (60 m entered). Traction power, acceleration and braking not given in the sheet.",
+  "livery": null
+}

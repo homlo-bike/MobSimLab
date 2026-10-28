@@ -1,0 +1,203 @@
+{
+  "$schema": "../../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-71fe-aa47-465a22db4dd1",
+  "legacyId": "crrc-puzhen-shanghai-13a01-6-car",
+  "name": "CRRC 13A01 (AC18) (6-car Type A (Shanghai Line 13))",
+  "manufacturer": "CRRC",
+  "builder": "CRRC Nanjing Puzhen (formerly CSR Nanjing Puzhen)",
+  "model": "13A01 (AC18)",
+  "variant": "6-car Type A (Shanghai Line 13)",
+  "manufacturerCountry": "China",
+  "type": "metro-consist",
+  "mode": "metro",
+  "yearIntroduced": 2012,
+  "operators": [
+    "Shanghai Shentong Metro Group (Line 13)"
+  ],
+  "length": {
+    "value": 139.98,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-shanghai-metro-ac18"
+    ]
+  },
+  "width": {
+    "value": 3.0,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-shanghai-metro-ac18"
+    ]
+  },
+  "height": {
+    "value": 3.8,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-shanghai-metro-ac18"
+    ]
+  },
+  "consist": {
+    "carLengths": {
+      "value": [
+        23.54,
+        23.54,
+        23.54,
+        23.54,
+        23.54,
+        23.54
+      ],
+      "unit": "m",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-shanghai-metro-ac18"
+      ]
+    },
+    "cars": {
+      "value": 6,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-shanghai-metro-ac18"
+      ]
+    }
+  },
+  "seats": {
+    "value": 252,
+    "unit": "count",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner"
+    ],
+    "rationale": "Typical seating of a 6-car Type A train in Shanghai.",
+    "low": 200,
+    "central": 252,
+    "high": 300,
+    "distribution": "triangular"
+  },
+  "standingQuoted": {
+    "value": 1608,
+    "unit": "count",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner",
+      "wp-shanghai-metro-ac18"
+    ],
+    "rationale": "Total 1860 minus 252 seats.",
+    "low": 1560,
+    "central": 1608,
+    "high": 1660,
+    "distribution": "triangular"
+  },
+  "standingArea": {
+    "value": 402.0,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "mobsimlab-project-ow-estimates-supplied-by-the-project-owner",
+      "wp-shanghai-metro-ac18"
+    ],
+    "rationale": "1608 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 268.0,
+    "central": 402.0,
+    "high": 536.0,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 1860,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-shanghai-metro-ac18"
+    ],
+    "rationale": "Derived from the cited source; see notes."
+  },
+  "topSpeed": {
+    "value": 80,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-shanghai-metro-ac18"
+    ],
+    "rationale": "Derived from the cited source; see notes."
+  },
+  "maxAcceleration": {
+    "value": 0.89,
+    "unit": "m/s2",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-shanghai-metro-ac18"
+    ],
+    "rationale": "Derived from the cited source; see notes."
+  },
+  "serviceDeceleration": {
+    "value": 1.0,
+    "unit": "m/s2",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-shanghai-metro-ac18"
+    ],
+    "rationale": "Derived from the cited source; see notes."
+  },
+  "energySource": {
+    "value": "overhead-dc",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-shanghai-metro-ac18"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "ocl-1500v-dc"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-shanghai-metro-ac18"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-shanghai-metro-ac18"
+    ]
+  },
+  "livery": {
+    "operator": "Shanghai Shentong Metro (Line 13)",
+    "primary": "#C0C0C0",
+    "secondary": "#E8609A",
+    "windows": "#1A1A1A",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "wp-shanghai-metro-ac18"
+    ],
+    "rationale": "Grey-silver body with black and pink, as described in the source; hex values are approximations."
+  },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Shanghai_Metro_AC18",
+    "scope": "model",
+    "checked_via": "source"
+  },
+  "notes": "Capacity derived: 310 per car (published) x 6 cars = 1860. Acceleration and deceleration converted from 3.2 and 3.6 km/(h·s) (service; emergency 4.7 km/(h·s)). The single published car length (23.54 m) is applied to every car; the train length is the published 139.98 m. Formation Tc-Mp-M+M-Mp-Tc, 144 cars built 2011–2013.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only.",
+  "draftReason": "Core fields not sourced: seats, standingQuoted"
+}

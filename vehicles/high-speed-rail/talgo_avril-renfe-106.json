@@ -1,0 +1,167 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7b02-a5c6-4d21ee8bc49b",
+  "legacyId": "talgo-avril-renfe-106",
+  "name": "Talgo AVRIL (Renfe class 106 (standard gauge))",
+  "manufacturer": "Talgo",
+  "builder": "Talgo",
+  "model": "AVRIL",
+  "variant": "Renfe class 106 (standard gauge)",
+  "family": "Talgo",
+  "manufacturerCountry": "Spain",
+  "type": "high-speed-train",
+  "mode": "high_speed_rail",
+  "yearIntroduced": 2012,
+  "operators": [
+    "Renfe (AVE / Avlo)"
+  ],
+  "length": {
+    "value": 201.8,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-talgo-avril"
+    ]
+  },
+  "width": {
+    "value": 3.2,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-talgo-avril"
+    ]
+  },
+  "weightEmpty": {
+    "value": 325,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-talgo-avril"
+    ]
+  },
+  "consist": {
+    "cars": {
+      "value": 14,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "wp-talgo-avril"
+      ]
+    }
+  },
+  "seats": {
+    "value": 507,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-talgo-avril"
+    ]
+  },
+  "standingQuoted": {
+    "value": 0,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-talgo-avril"
+    ],
+    "rationale": "Total 507 minus 507 seats."
+  },
+  "standingArea": {
+    "value": 0.0,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "wp-talgo-avril"
+    ],
+    "rationale": "0 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 0.0,
+    "central": 0.0,
+    "high": 0.0,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 507,
+    "unit": "count",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-talgo-avril"
+    ],
+    "rationale": "Not attributed to one source in the import; see notes."
+  },
+  "topSpeed": {
+    "value": 330,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-talgo-avril"
+    ]
+  },
+  "power": {
+    "value": 8800,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-talgo-avril"
+    ]
+  },
+  "energySource": {
+    "value": "overhead-multisystem",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-talgo-avril"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "ocl-25kv-50hz",
+      "ocl-1500v-dc",
+      "ocl-3000v-dc"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-talgo-avril"
+    ]
+  },
+  "trackGauge": {
+    "value": 1435,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-talgo-avril"
+    ]
+  },
+  "costRecords": [
+    {
+      "item": "15 standard-gauge AVRIL trainsets plus 30 years of maintenance",
+      "value": 786500000,
+      "currency": "EUR",
+      "priceBaseYear": 2016,
+      "region": "Spain",
+      "note": "Includes maintenance (secondary source).",
+      "sources": [
+        "wp-talgo-avril"
+      ]
+    }
+  ],
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Talgo_AVRIL",
+    "scope": "model",
+    "checked_via": "source"
+  },
+  "notes": "Two power cars and 12 short (13 m) articulated passenger cars; cars = 14 counts the power cars. 507 seats in the standard layout (581 in the Avlo layout); total = seats (no standing figure published). maxSpeedKmh = 330 is the certified speed; service speed 300 km/h, design 380 km/h; press reports of temporary speed restrictions are not reflected. Weight 325 t as listed (laden state not stated). Power 8.8 MW. Variable-gauge (1,435/1,668 mm) sets also exist. 2012 is the prototype year.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

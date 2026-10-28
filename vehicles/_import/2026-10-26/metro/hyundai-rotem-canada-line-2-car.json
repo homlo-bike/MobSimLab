@@ -1,0 +1,101 @@
+{
+  "id": "hyundai-rotem-canada-line-2-car",
+  "mode": "metro",
+  "category": "metro_automated",
+  "simulatorCategory": "2-Car Metro",
+  "name": "Canada Line EMU",
+  "variant": "2-car articulated unit",
+  "producer": "Hyundai Rotem",
+  "manufacturerCountry": "South Korea",
+  "yearIntroduced": 2009,
+  "dimensions": {
+    "lengthM": 40,
+    "widthM": 3
+  },
+  "consist": {
+    "cars": 2,
+    "carLengthsM": [20, 20]
+  },
+  "capacity": {
+    "seated": 88,
+    "total": 334,
+    "standingDensityPersM2": 4
+  },
+  "performance": {
+    "maxSpeedKmh": 90
+  },
+  "energy": {
+    "supply": "third_rail",
+    "supplySystems": ["dc_750"]
+  },
+  "infrastructure": {
+    "gaugeMm": 1435
+  },
+  "costs": [
+    {
+      "item": "Additional 2-car trainsets (order)",
+      "amount": 88000000,
+      "currency": "CAD",
+      "year": 2018,
+      "region": "Vancouver, Canada",
+      "url": "https://en.wikipedia.org/wiki/SkyTrain_(Vancouver)_rolling_stock",
+      "note": "12 two-car trainsets (24 cars) ordered in 2018 for about $88 million, as reported by Wikipedia."
+    }
+  ],
+  "livery": null,
+  "operators": ["ProTrans BC (Canada Line, TransLink)"],
+  "sources": [
+    {
+      "url": "https://en.wikipedia.org/wiki/SkyTrain_(Vancouver)_rolling_stock",
+      "title": "SkyTrain (Vancouver) rolling stock",
+      "publisher": "Wikipedia",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": [
+        "dimensions.widthM",
+        "consist",
+        "capacity",
+        "performance.maxSpeedKmh",
+        "energy",
+        "infrastructure.gaugeMm",
+        "costs"
+      ],
+      "kind": "secondary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "derived",
+      "confidence": 0.6
+    },
+    "consist": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "doors": {
+      "kind": "not_available",
+      "confidence": 0
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "infrastructure": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "operation": {
+      "kind": "not_available",
+      "confidence": 0
+    }
+  },
+  "notes": "Cars are stated as 3 m wide and 20 m long; train lengthM = 2 x 20 m (derived). Capacity 334 is the normal load at 4 persons/m2 with 88 seats; crush load is stated as 400. maxSpeedKmh 90 is the catch-up mode speed; normal operation is 80 km/h. Runs driverless under SelTrac automatic train control; no GoA grade stated, so automationGrade is empty. Figures from Wikipedia (secondary)."
+}

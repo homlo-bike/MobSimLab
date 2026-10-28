@@ -1,0 +1,95 @@
+{
+  "id": "irizar-ie-tram-12-aixpress",
+  "mode": "brt",
+  "category": "brt_standard_bus",
+  "simulatorCategory": "12 m BRT Bus",
+  "name": "ie tram",
+  "variant": "12 m, 3 doors (L'Aixpress, Aix-en-Provence)",
+  "family": "ie tram",
+  "producer": "Irizar e-mobility",
+  "manufacturerCountry": "Spain",
+  "dimensions": {
+    "lengthM": 12.16,
+    "widthM": 2.55,
+    "heightM": 3.4,
+    "floorHeightMm": 320,
+    "turningCircleM": 21.374
+  },
+  "consist": {
+    "cars": 1,
+    "articulations": 0,
+    "axlePositionsM": [2.805, 8.76]
+  },
+  "doors": {
+    "doorsPerSide": 3,
+    "wheelchairSpaces": null
+  },
+  "capacity": {
+    "seated": 22,
+    "standing": 78,
+    "standingDensityPersM2": 4
+  },
+  "performance": {
+    "maxSpeedKmh": 70,
+    "tractionPowerKw": 185
+  },
+  "energy": {
+    "supply": "battery",
+    "rangeKm": 50
+  },
+  "operators": ["RDT 13 (L'Aixpress, Aix-en-Provence)"],
+  "sources": [
+    {
+      "url": "https://railwaygazette.com/modes/irizar-signs-aix-en-provence-electric-bus-contract/46890.article",
+      "title": "Irizar signs Aix-en-Provence electric bus contract",
+      "publisher": "Railway Gazette International",
+      "date": "2018-07",
+      "accessed": "2026-10-26",
+      "fields": [
+        "capacity.seated",
+        "capacity.standing",
+        "capacity.standingDensityPersM2",
+        "performance.maxSpeedKmh",
+        "energy.rangeKm",
+        "doors.doorsPerSide"
+      ],
+      "kind": "secondary"
+    },
+    {
+      "url": "https://irizar-emobility.com/images/01-vehiculos/fichas-tecnicas/Ie%20tram12%20m_ES.pdf",
+      "title": "Irizar ie tram 12 m – ficha técnica",
+      "publisher": "Irizar e-mobility",
+      "date": null,
+      "accessed": "2026-10-26",
+      "fields": ["dimensions", "performance.tractionPowerKw", "consist.cars", "consist.articulations"],
+      "kind": "primary"
+    }
+  ],
+  "quality": {
+    "dimensions": {
+      "kind": "published",
+      "confidence": 0.7
+    },
+    "doors": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "capacity": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "performance": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "energy": {
+      "kind": "published",
+      "confidence": 0.6
+    },
+    "consist": {
+      "kind": "derived",
+      "confidence": 0.6
+    }
+  },
+  "notes": "15 buses ordered in 2018 by RDT 13 for the 7.2 km L'Aixpress route (19 stops, every 5 min), deliveries due April-September 2019; charged at opportunity charging stations and overnight at the Pont de l'Arc depot (charging power/time not given). Standing at 4 per m². Dimensions, floor height, turning circle and nominal motor power (185 kW synchronous) are from the current Irizar ie tram 12 m data sheet (battery options 90/470/510 kWh; pantograph up to 300-450 kW, Combo2 150 kW; max. 105 passengers), which may differ from the 2019 Aix vehicles; their battery size is not published. Axle positions derived from the sheet: front overhang 2,805 mm, wheelbase 5,955 mm. Total capacity not published; seated + standing = 100."
+}

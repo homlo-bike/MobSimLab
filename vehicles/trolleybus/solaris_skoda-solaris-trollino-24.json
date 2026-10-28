@@ -1,0 +1,217 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-76ac-adb5-e403ea5be8fd",
+  "legacyId": "skoda-solaris-trollino-24",
+  "name": "Solaris Trollino 24 (Škoda 38 Tr (Škoda Electric equipment, traction batteries))",
+  "manufacturer": "Solaris",
+  "builder": "Solaris Bus & Coach / Škoda Electric",
+  "model": "Trollino 24",
+  "variant": "Škoda 38 Tr (Škoda Electric equipment, traction batteries)",
+  "family": "Trollino",
+  "manufacturerCountry": "Poland / Czech Republic",
+  "type": "trolleybus",
+  "mode": "trolleybus",
+  "yearIntroduced": 2019,
+  "operators": [
+    "Dopravný podnik Bratislava",
+    "Dopravní podnik hl. m. Prahy"
+  ],
+  "length": {
+    "value": 24.7,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-solaris-trollino-24-vehicle-type-d"
+    ]
+  },
+  "width": {
+    "value": 2.55,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-solaris-trollino-24-vehicle-type-d"
+    ]
+  },
+  "height": {
+    "value": 3.5,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-solaris-trollino-24-vehicle-type-d"
+    ]
+  },
+  "weightEmpty": {
+    "value": 24.75,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-solaris-trollino-24-vehicle-type-d"
+    ]
+  },
+  "weightLoaded": {
+    "value": 39.33,
+    "unit": "t",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-solaris-trollino-24-vehicle-type-d"
+    ]
+  },
+  "floorHeight": {
+    "value": 320,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-solaris-trollino-24-vehicle-type-d"
+    ]
+  },
+  "consist": {
+    "articulations": {
+      "value": 2,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "imhd-sk-skoda-solaris-trollino-24-vehicle-type-d"
+      ]
+    },
+    "cars": {
+      "value": 3,
+      "unit": "count",
+      "assumed": false,
+      "basis": "cited",
+      "sources": [
+        "imhd-sk-skoda-solaris-trollino-24-vehicle-type-d"
+      ]
+    }
+  },
+  "doorsPerSide": {
+    "value": 5,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-solaris-trollino-24-vehicle-type-d"
+    ]
+  },
+  "seats": {
+    "value": 60,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-solaris-trollino-24-vehicle-type-d"
+    ]
+  },
+  "standingQuoted": {
+    "value": 121,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-solaris-trollino-24-vehicle-type-d"
+    ]
+  },
+  "standingArea": {
+    "value": 30.2,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "imhd-sk-skoda-solaris-trollino-24-vehicle-type-d"
+    ],
+    "rationale": "121 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 20.2,
+    "central": 30.2,
+    "high": 40.3,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 181,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-solaris-trollino-24-vehicle-type-d"
+    ]
+  },
+  "topSpeed": {
+    "value": 65,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-solaris-trollino-24-vehicle-type-d"
+    ]
+  },
+  "power": {
+    "value": 320,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-solaris-trollino-24-vehicle-type-d"
+    ]
+  },
+  "energySource": {
+    "value": "dual",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-solaris-trollino-24-vehicle-type-d"
+    ]
+  },
+  "supplySystems": {
+    "value": [
+      "trolley-600v-dc",
+      "trolley-750v-dc"
+    ],
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-solaris-trollino-24-vehicle-type-d"
+    ]
+  },
+  "onboardEnergy": {
+    "value": "battery",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-solaris-trollino-24-vehicle-type-d"
+    ]
+  },
+  "regenerativeBraking": {
+    "value": true,
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "imhd-sk-skoda-solaris-trollino-24-vehicle-type-d"
+    ]
+  },
+  "costRecords": [
+    {
+      "item": "vehicle",
+      "value": 1047500,
+      "currency": "EUR",
+      "priceBaseYear": 2021,
+      "region": "Bratislava, Slovakia",
+      "note": "Bratislava tender 2021 for 16 vehicles, price per vehicle excl. VAT (raised to 1,152,244 EUR for 8 vehicles), as reported by imhd.sk.",
+      "sources": [
+        "imhd-sk-skoda-solaris-trollino-24-vehicle-type-d"
+      ]
+    }
+  ],
+  "wikipedia": {
+    "url": "https://cs.wikipedia.org/wiki/%C5%A0koda-Solaris_24m",
+    "scope": "model",
+    "checked_via": "search"
+  },
+  "notes": "Three-section (double-articulated) trolleybus; Solaris prototype 2019. Figures for Bratislava vehicles built 2023, ordered as hybrid trolleybuses with traction batteries (battery size and off-wire range not published by the source). Two 160 kW motors (320 kW). Converter input 600/750 V DC. Wheelbases 5900/6000/7350 mm. Capacity excludes the driver.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}

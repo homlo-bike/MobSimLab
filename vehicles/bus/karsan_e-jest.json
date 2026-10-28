@@ -1,0 +1,178 @@
+{
+  "$schema": "../../schema/vehicle.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "01a17aa8-1c00-7c89-a7f1-131f7447dfda",
+  "legacyId": "karsan-e-jest",
+  "name": "Karsan e-JEST (88 kWh, Class A (M2), layout 1)",
+  "manufacturer": "Karsan",
+  "builder": "Karsan",
+  "model": "e-JEST",
+  "variant": "88 kWh, Class A (M2), layout 1",
+  "family": "Jest",
+  "manufacturerCountry": "Türkiye",
+  "type": "minibus",
+  "mode": "bus",
+  "length": {
+    "value": 5.845,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "karsan-otomotiv-e-jest-specs"
+    ]
+  },
+  "width": {
+    "value": 2.055,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "karsan-otomotiv-e-jest-specs"
+    ]
+  },
+  "height": {
+    "value": 2.8,
+    "unit": "m",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "karsan-otomotiv-e-jest-specs"
+    ]
+  },
+  "consist": {
+    "articulations": {
+      "value": 0,
+      "unit": "count",
+      "assumed": false,
+      "basis": "documented",
+      "sources": [
+        "karsan-otomotiv-e-jest-specs"
+      ],
+      "rationale": "Not attributed to one source in the import; see notes."
+    },
+    "axlePositions": {
+      "value": [
+        1.2,
+        4.95
+      ],
+      "unit": "m",
+      "assumed": false,
+      "basis": "documented",
+      "sources": [
+        "karsan-otomotiv-e-jest-specs"
+      ],
+      "rationale": "Not attributed to one source in the import; see notes."
+    },
+    "cars": {
+      "value": 1,
+      "unit": "count",
+      "assumed": false,
+      "basis": "documented",
+      "sources": [
+        "karsan-otomotiv-e-jest-specs"
+      ],
+      "rationale": "Not attributed to one source in the import; see notes."
+    }
+  },
+  "seats": {
+    "value": 10,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "karsan-otomotiv-e-jest-specs"
+    ]
+  },
+  "standingQuoted": {
+    "value": 5,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "karsan-otomotiv-e-jest-specs"
+    ]
+  },
+  "standingArea": {
+    "value": 1.2,
+    "unit": "m2",
+    "assumed": true,
+    "basis": "educated-guess",
+    "sources": [
+      "karsan-otomotiv-e-jest-specs"
+    ],
+    "rationale": "5 standing places; the source states no density, so 4 pers/m2 is assumed (range 3-6 pers/m2, the spread of densities manufacturers quote).",
+    "low": 0.8,
+    "central": 1.2,
+    "high": 1.7,
+    "distribution": "triangular"
+  },
+  "totalCapacityQuoted": {
+    "value": 15,
+    "unit": "count",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "karsan-otomotiv-e-jest-specs"
+    ]
+  },
+  "topSpeed": {
+    "value": 100,
+    "unit": "km/h",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "karsan-otomotiv-e-jest-specs"
+    ]
+  },
+  "power": {
+    "value": 135,
+    "unit": "kW",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "karsan-otomotiv-e-jest-specs"
+    ]
+  },
+  "energySource": {
+    "value": "battery",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "karsan-otomotiv-e-jest-specs"
+    ]
+  },
+  "batteryCapacity": {
+    "value": 88,
+    "unit": "kWh",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "karsan-otomotiv-e-jest-specs"
+    ]
+  },
+  "range": {
+    "value": 210,
+    "unit": "km",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "karsan-otomotiv-e-jest-specs"
+    ]
+  },
+  "rechargeTime": {
+    "value": 65,
+    "unit": "min",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "karsan-otomotiv-e-jest-specs"
+    ]
+  },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org/wiki/Karsan_Jest",
+    "scope": "family",
+    "checked_via": "search"
+  },
+  "notes": "Karsan UK spec page: width without mirrors, height with air conditioning; wheelbase 3,750 mm, front overhang 1,200 mm, rear 950 mm (axle positions derived from these); turning radius 6,993 mm; GVW 5,000/5,200 kg (not split by version, left null). Motor 135 kW peak, 290 Nm. Battery Li-ion up to 88 kWh; range 210 km NEDC for a base-level vehicle. Charging: AC Type 2 22 kW about 4 h, DC Combo 2 80 kW about 65 min to 80 % (depot plug-in; rechargeTimeMin is the DC figure). Other layouts: 10 seated + 2 folding + 3 standing (15), 10 seated + 1 wheelchair + 2 standing (13). Operators not listed by the source.",
+  "trademarkNotice": "Manufacturer, model and operator names are trademarks of their owners and are used for identification only."
+}
