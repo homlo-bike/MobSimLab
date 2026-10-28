@@ -34,6 +34,13 @@ export interface AppConfig {
   bootstrapOwnerSubject?: string;
   /** Bootstrap sign-in provider. Absent: sign-in is disabled until one is configured. */
   oidc?: OidcConfig;
+  /**
+   * Express `trust proxy` value: which reverse proxies may set X-Forwarded-For. Absent: none, so the client
+   * address is the TCP peer. Needed for per-IP rate limits and audit IP hashes behind a TLS proxy.
+   */
+  trustedProxies?: string[];
+  /** Token-bucket limits (05 §3.5), in requests per minute. */
+  rateLimits: { authPerMinute: number; writesPerMinute: number };
   secrets: Record<ApiSecretName, string>;
 }
 
@@ -62,7 +69,13 @@ const envSchema = z.object({
   MOBSIMLAB_OIDC_ISSUER: z.preprocess(emptyToUndefined, z.url({ protocol: /^https?$/ }).optional()),
   MOBSIMLAB_OIDC_CLIENT_ID: z.preprocess(emptyToUndefined, z.string().min(1).optional()),
   MOBSIMLAB_OIDC_ALLOW_INSECURE_HTTP: z.enum(["true", "false"]).default("false"),
+  MOBSIMLAB_TRUSTED_PROXIES: z.preprocess(emptyToUndefined, z.string().min(1).optional()),
+  MOBSIMLAB_RATE_LIMIT_AUTH: z.coerce.number().int().min(1).max(10_000).default(10),
+  MOBSIMLAB_RATE_LIMIT_WRITES: z.coerce.number().int().min(1).max(100_000).default(120),
 });
+
+/** Accepted entries for MOBSIMLAB_TRUSTED_PROXIES: an IP, a CIDR range, or an Express keyword. */
+const PROXY_ENTRY = /^(loopback|linklocal|uniquelocal|[0-9a-fA-F:.]+(\/\d{1,3})?)$/;
 
 /** Compose passes unset variables from .env as empty strings; treat them as absent. */
 function emptyToUndefined(v: unknown): unknown {
@@ -121,6 +134,9 @@ export function loadConfig(
     if (Boolean(d.MOBSIMLAB_OIDC_ISSUER) !== Boolean(d.MOBSIMLAB_OIDC_CLIENT_ID)) {
       problems.push("MOBSIMLAB_OIDC_ISSUER and MOBSIMLAB_OIDC_CLIENT_ID must be set together");
     }
+    for (const p of splitList(d.MOBSIMLAB_TRUSTED_PROXIES)) {
+      if (!PROXY_ENTRY.test(p)) problems.push(`MOBSIMLAB_TRUSTED_PROXIES: "${p}" is not an IP, CIDR or keyword`);
+    }
     if (d.MOBSIMLAB_OIDC_ISSUER?.startsWith("http:") && d.MOBSIMLAB_OIDC_ALLOW_INSECURE_HTTP !== "true") {
       problems.push("MOBSIMLAB_OIDC_ISSUER must use https");
     }
@@ -144,6 +160,15 @@ export function loadConfig(
             allowInsecureHttp: d.MOBSIMLAB_OIDC_ALLOW_INSECURE_HTTP === "true",
           }
         : undefined,
+    trustedProxies: d.MOBSIMLAB_TRUSTED_PROXIES ? splitList(d.MOBSIMLAB_TRUSTED_PROXIES) : undefined,
+    rateLimits: { authPerMinute: d.MOBSIMLAB_RATE_LIMIT_AUTH, writesPerMinute: d.MOBSIMLAB_RATE_LIMIT_WRITES },
     secrets,
   };
+}
+
+function splitList(v: string | undefined): string[] {
+  return (v ?? "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
 }
