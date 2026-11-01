@@ -165,6 +165,17 @@ From the record and the TMS prediction, the simulation view shows live boards:
 
 Expected times come from the TMS prediction (§5), not from simple delay copying, so they already include holds, reordering and rerouting decisions.
 
+### 5b. Further industry-standard features
+
+Added at the product owner's request to follow industry practice (2026-11-01):
+
+- **Exchange standards.** Import and export **railML 3** (infrastructure, timetable, rolling stock; aligned with the UIC RailTopoModel, IRS 30100) alongside OSRD RailJSON; timetables also as **NeTEx** (CEN Transmodel, EN 12896) and **GTFS**; live predictions (§5a) as **SIRI** (CEN/TS 15531) and **GTFS-Realtime**. Internal names follow Transmodel where one exists.
+- **Punctuality KPIs and delay attribution.** Punctuality = share of train arrivals (and departures) later than the threshold, measured at every call and at terminals; thresholds are a parameter per mode with national defaults (for example SBB under 3 minutes, DB and ÖBB under 6 minutes). Every delay minute is recorded with a cause code from **UIC Leaflet 450-2** (infrastructure, operator, external, and so on), and knock-on (secondary) delays are linked to the primary delay that caused them, so a run report shows which failure caused how many delay minutes. Also reported: cancellations, missed connections, passenger delay minutes and capacity consumption (§3 step 8).
+- **Engineering possessions.** Planned track closures (usually at night or at weekends) are scenario objects: section, time window and type (full block, one line of a double track). The planner treats them like any other blocked resource: trains use **single-line working** over a crossover pair (bidirectional signalling where it exists, otherwise a pilot / written order at reduced speed), divert, or are replaced by buses; affected timetables are rebuilt and checked like normal ones.
+- **Rolling stock operation.** Trains are formed from **units** that can be **coupled and split** (for example two units in the peak and one off-peak, or splitting a train to serve two branches); coupling and splitting take time and a platform track, and are planned in the circulation (§3 step 6). **Maintenance**: each vehicle has inspection and maintenance intervals by kilometres and days (from the vehicle file or the assumption library); the circulation brings it to a depot with a workshop in time, and vehicles in maintenance are not available. **Servicing**: cleaning, sanding, toilet emptying, refuelling or battery charging slots in the depot, with their durations.
+- **Traction power.** Electrified sections are fed by **substations** with rated power; the kernel sums the power of trains in each feeding section every step (with regenerative braking where the vehicle supports it). If the limit is reached, trains are limited in acceleration (as in real power management), and the planner's validation warns when the timetable would exceed it; this can limit the frequency (EN 50388 for the supply quality and voltage limits; EN 50163 for voltages, already in the supply system data).
+- **Weather and adhesion.** Seasonal day types (ADR-0020) can lower adhesion (leaf fall, ice; `sim.start_adhesion` low values) and braking rates; running times and supplements are computed per season, and the simulation uses the same values.
+
 ### 6. Crates and where things run
 
 | Crate | Content |
@@ -212,3 +223,8 @@ All are Rust, deterministic (no wall clock, seeded RNG, stable iteration order, 
 1. **Same minutes every hour?** Service varies by period (peak, off-peak, no service) with frequencies suggested from demand and overridable per project or line; punctuality before speed, the Swiss way, with lines meeting at transfer stations; consistent platforms per destination; capacity and the maximum before delays pile up. → §2 service periods, §3 steps 0, 4, 5 and 8, §5 objective.
 2. **Automatic short-turns and cancellations?** Yes, when the train cannot continue; the vehicle then serves another line or returns to the depot. Full records, and boards with the next 5 arrivals per station and next 5 stops per train. → §5 step 5, §5a.
 3. **Reverse in the platform by default?** Yes, if it does not block other trains. → §2 terminals, §3 step 8.
+
+## Still open for the product owner
+
+4. **Crew scheduling:** driver and guard duties, breaks and working-time rules. The requirements so far say "crew-free" blocks (FR-TT-04). Should crews be planned and simulated?
+5. **Manual dispatching in live runs:** should the user be able to act as dispatcher (hold, cancel, reroute a train) during a live run? Today the simulation view is read-only (07 §13).
