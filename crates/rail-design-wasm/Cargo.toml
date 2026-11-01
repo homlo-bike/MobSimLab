@@ -1,0 +1,16 @@
+[package]
+name = "rail-design-wasm"
+version = "0.1.0"
+description = "WebAssembly bindings of rail-design for the MobSimLab railway editor"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+rail-design = { path = "../rail-design" }
+serde_json = "1"
+wasm-bindgen = "=0.2.129"

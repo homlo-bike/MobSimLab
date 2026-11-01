@@ -1419,3 +1419,82 @@
       sources: [mobsimlab-derivation]
       check: unverified
       rationale: No priority, like general traffic.
+
+- key: mode.max_gradient_permille
+  label: Gradient of running track, maximum
+  group: Modes
+  unit: ‰
+  used_by: [ramp length between levels, railway design check (error above this)]
+  values:
+    - context:
+        mode: "*"
+      low: 12.5
+      central: 40
+      high: 70
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: Wide fallback spanning mainline rail (12.5 ‰) to tram (70 ‰); every rail mode below has its own entry.
+    - context:
+        mode: tram
+      low: 40
+      central: 70
+      high: 100
+      basis: cited
+      sources: [bostrab-trr]
+      check: unverified
+      rationale: BOStrab-TrR allows up to 70 ‰ for adhesion trams with all axles driven; short stretches up to 100 ‰ exist (figure to be checked).
+    - context:
+        mode: light_rail
+      low: 40
+      central: 60
+      high: 70
+      basis: educated-guess
+      sources: [bostrab-trr, mobsimlab-derivation]
+      check: unverified
+      rationale: Light rail vehicles have fewer driven axles than trams and run faster; 60 ‰ keeps a margin below the tram limit.
+    - context:
+        mode: metro
+      low: 30
+      central: 40
+      high: 50
+      basis: documented
+      sources: [gb-50157, mobsimlab-derivation]
+      check: unverified
+      rationale: Metro codes allow about 30 ‰ on the main line and 35–40 ‰ in difficult sections; rubber-tyred metros go higher.
+    - context:
+        mode: commuter_rail
+      low: 25
+      central: 40
+      high: 40
+      basis: cited
+      sources: [ebo]
+      check: unverified
+      rationale: EBO §7 allows up to 40 ‰ on S-Bahn lines used only by multiple units (clause to be checked).
+    - context:
+        mode: regional_rail
+      low: 12.5
+      central: 25
+      high: 40
+      basis: educated-guess
+      sources: [ebo, mobsimlab-derivation]
+      check: unverified
+      rationale: EBO §7 gives 12.5 ‰ on main lines and 40 ‰ on secondary lines; 25 ‰ is a typical passenger-only regional line.
+    - context:
+        mode: long_distance_rail
+      low: 12.5
+      central: 12.5
+      high: 25
+      basis: cited
+      sources: [ebo, tsi-inf]
+      check: unverified
+      rationale: Mixed-traffic main lines are designed for 12.5 ‰ (EBO §7) so that freight trains can use them.
+    - context:
+        mode: high_speed_rail
+      low: 12.5
+      central: 35
+      high: 40
+      basis: cited
+      sources: [tsi-inf]
+      check: unverified
+      rationale: TSI INF allows up to 35 ‰ on passenger-only high-speed lines, with limits on the length of steep sections (clause to be checked).

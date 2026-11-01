@@ -26,6 +26,8 @@
     "rail-sim": "AGPL-3.0-or-later: this project",
     "mobsim-py": "AGPL-3.0-or-later: this project",
     "street-routing": "AGPL-3.0-or-later: this project",
-    "street-routing-wasm": "AGPL-3.0-or-later: this project"
+    "street-routing-wasm": "AGPL-3.0-or-later: this project",
+    "rail-design": "AGPL-3.0-or-later: this project",
+    "rail-design-wasm": "AGPL-3.0-or-later: this project"
   }
 }
