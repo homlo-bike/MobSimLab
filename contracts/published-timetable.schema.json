@@ -1,0 +1,143 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/homlo-bike/MobSimLab/contracts/published-timetable.schema.json",
+  "title": "MobSimLab published timetable",
+  "description": "What the timetable planners publish and the journey planner reads (ADR-0034). Field names follow GTFS so the GTFS export (FR-TT-05) copies them without renames. Times are seconds after midnight of the service day and may pass 86400. Rail (rail-plan, ADR-0032) publishes exact trips with one stop per platform edge; lines without exact trips yet (street lines) publish frequency patterns.",
+  "type": "object",
+  "properties": {
+    "stops": { "type": "array", "items": { "$ref": "#/$defs/stop" } },
+    "routes": { "type": "array", "items": { "$ref": "#/$defs/route" } },
+    "trips": { "type": "array", "items": { "$ref": "#/$defs/trip" } },
+    "transfers": { "type": "array", "items": { "$ref": "#/$defs/transfer" } },
+    "frequency_patterns": { "type": "array", "items": { "$ref": "#/$defs/frequency_pattern" } }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "seconds": { "type": "integer", "minimum": 0 },
+    "stop": {
+      "type": "object",
+      "description": "A bus stop or one platform edge (rail: the railway editor's stable platform edge id).",
+      "required": ["stop_id", "stop_name", "stop_lat", "stop_lon"],
+      "properties": {
+        "stop_id": { "type": "string" },
+        "stop_name": { "type": "string" },
+        "stop_lat": { "type": "number", "minimum": -90, "maximum": 90 },
+        "stop_lon": { "type": "number", "minimum": -180, "maximum": 180 },
+        "parent_station": {
+          "type": "string",
+          "description": "Station group: platforms of one station, paired stops, same-name station parts."
+        },
+        "platform_code": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "route": {
+      "type": "object",
+      "required": ["route_id", "route_short_name", "mode"],
+      "properties": {
+        "route_id": { "type": "string" },
+        "route_short_name": { "type": "string" },
+        "mode": {
+          "type": "string",
+          "description": "MobSimLab mode id (bus, tram, metro, regional_rail, ...)."
+        },
+        "route_color": { "type": "string", "pattern": "^[0-9A-Fa-f]{6}$" }
+      },
+      "additionalProperties": false
+    },
+    "stop_time": {
+      "type": "object",
+      "description": "One call. Pass-through calls are left out.",
+      "required": ["stop_id", "stop_sequence", "arrival_time", "departure_time"],
+      "properties": {
+        "stop_id": { "type": "string" },
+        "stop_sequence": { "type": "integer", "minimum": 0 },
+        "arrival_time": { "$ref": "#/$defs/seconds" },
+        "departure_time": { "$ref": "#/$defs/seconds" },
+        "pickup_type": { "enum": [0, 1], "description": "0 regular, 1 no pickup." },
+        "drop_off_type": { "enum": [0, 1], "description": "0 regular, 1 no drop-off." }
+      },
+      "additionalProperties": false
+    },
+    "trip": {
+      "type": "object",
+      "required": ["trip_id", "route_id", "stop_times"],
+      "properties": {
+        "trip_id": { "type": "string" },
+        "route_id": { "type": "string" },
+        "direction_id": { "enum": [0, 1] },
+        "service_id": { "type": "string", "description": "Day type (ADR-0020). Default weekday." },
+        "block_id": {
+          "type": "string",
+          "description": "Vehicle circulation; consecutive trips of one vehicle."
+        },
+        "stop_times": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/stop_time" } }
+      },
+      "additionalProperties": false
+    },
+    "transfer": {
+      "type": "object",
+      "required": ["from_stop_id", "to_stop_id"],
+      "properties": {
+        "from_stop_id": { "type": "string" },
+        "to_stop_id": { "type": "string" },
+        "transfer_type": {
+          "enum": [0, 1, 2, 3],
+          "description": "GTFS: 0 recommended, 1 timed (guaranteed node connection), 2 needs min_transfer_time, 3 not possible."
+        },
+        "min_transfer_time": { "$ref": "#/$defs/seconds" },
+        "max_wait_s": {
+          "$ref": "#/$defs/seconds",
+          "description": "How long the connecting vehicle is planned to hold for a late feeder."
+        },
+        "estimated": {
+          "type": "boolean",
+          "description": "Time is an estimate until the station model provides it."
+        }
+      },
+      "additionalProperties": false
+    },
+    "period": {
+      "type": "object",
+      "required": ["start_time", "end_time", "headway_secs", "kind"],
+      "properties": {
+        "start_time": { "$ref": "#/$defs/seconds" },
+        "end_time": { "$ref": "#/$defs/seconds" },
+        "headway_secs": { "type": "integer", "minimum": 1 },
+        "offset_secs": {
+          "$ref": "#/$defs/seconds",
+          "description": "Clock-face position of departures within the headway."
+        },
+        "kind": { "enum": ["peak", "off_peak"] }
+      },
+      "additionalProperties": false
+    },
+    "frequency_pattern": {
+      "type": "object",
+      "description": "A line direction at a headway per service period; no period means no service.",
+      "required": ["pattern_id", "route_id", "stops", "periods"],
+      "properties": {
+        "pattern_id": { "type": "string" },
+        "route_id": { "type": "string" },
+        "direction_id": { "enum": [0, 1] },
+        "service_id": { "type": "string" },
+        "stops": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "object",
+            "required": ["stop_id", "run_time", "dwell_time"],
+            "properties": {
+              "stop_id": { "type": "string" },
+              "run_time": { "$ref": "#/$defs/seconds" },
+              "dwell_time": { "$ref": "#/$defs/seconds" }
+            },
+            "additionalProperties": false
+          }
+        },
+        "periods": { "type": "array", "items": { "$ref": "#/$defs/period" } }
+      },
+      "additionalProperties": false
+    }
+  }
+}

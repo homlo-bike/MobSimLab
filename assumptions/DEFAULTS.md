@@ -404,6 +404,30 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 |---|---|---|---|---|---|---|---|
 | all | 3.8 | 4.5 | 5.4 | cited | unverified | [mutcd-2009](#src-mutcd-2009), [hcm7](#src-hcm7) | MUTCD uses 3.5 ft/s (≈ 3.8 km/h) for slow pedestrians at crossings; typical free walking is about 1.25 m/s (4.5 km/h); HCM free-flow up to about 1.5 m/s (5.4 km/h). |
 
+### Journey planner: walking distance over straight-line distance
+
+`journey.walk_detour_factor` · unit: ratio · used by: journey planner access, egress and transfer walks
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 1.2 | 1.3 | 1.5 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Stand-in until walks are routed on the walk graph: street networks make a walk roughly 20–50 % longer than the straight line (lower in dense grids, higher with rivers, rail lines and cul-de-sacs). 1.3 is the planning value used by the journey planner (ADR-0034); replace with a cited circuity study. |
+
+### Journey planner: minimum time to change vehicles at the same stop
+
+`journey.min_change_s` · unit: s · used by: journey planner transfers
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0 | 60 | 180 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Alighting, finding the next vehicle and boarding at one stop or one platform. 0 for cross-platform timed connections (those come from the published timetable as transfer_type 1); 60 s as a cautious default. |
+
+### Journey planner: added time to change platform within one station (stairs, lifts)
+
+`journey.level_change_s` · unit: s · used by: journey planner transfers, estimated platform-to-platform times
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 30 | 60 | 180 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Added to the straight-line walk between two platforms of one station until rail-model provides platform-to-platform times from the station layout (ADR-0032, 06 §9.3). About one flight of stairs or a lift ride; deep metro stations need the high value. |
+
 ## Simulation
 
 ### Wheel–rail adhesion for starting, when a vehicle gives no starting tractive effort (simulation)

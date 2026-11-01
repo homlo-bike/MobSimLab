@@ -1,6 +1,8 @@
 import type { Map as MapLibreMap } from "maplibre-gl";
 import { useCallback, useEffect, useState } from "react";
 import { AdminPanel } from "./admin/AdminPanel";
+import { JourneyPlanner } from "./features/journey-planner/JourneyPlanner";
+import type { StreetLineInput } from "./features/journey-planner/network";
 import { StreetLineEditor } from "./features/street-lines/StreetLineEditor";
 import { MapView } from "./map/MapView";
 import { AccountMenu } from "./session/AccountMenu";
@@ -20,7 +22,10 @@ export function App() {
   useEffect(reload, [reload]);
   const refusal = new URLSearchParams(window.location.search).get("signin");
   const [map, setMap] = useState<MapLibreMap | null>(null);
-  const [streetLine, setStreetLine] = useState(false);
+  // One side tool at a time: the street line editor or the journey planner.
+  const [tool, setTool] = useState<"street-line" | "journey" | null>(null);
+  const streetLine = tool === "street-line";
+  const [line, setLine] = useState<StreetLineInput | null>(null);
   const [panel, setPanel] = useState<HTMLElement | null>(null);
   // Development hook for end-to-end scripts that need map coordinates.
   if (import.meta.env.DEV) Object.assign(window, { mobsimMap: map });
@@ -36,14 +41,22 @@ export function App() {
           <span>Help</span>
         </nav>
         <div className="ml-auto flex gap-2" role="toolbar" aria-label="Network design">
-          <button
-            type="button"
-            aria-pressed={streetLine}
-            onClick={() => setStreetLine(!streetLine)}
-            className={`rounded border px-2 py-0.5 ${streetLine ? "border-blue-700 bg-blue-700 text-white" : "border-slate-300 hover:bg-slate-100"}`}
-          >
-            Street line
-          </button>
+          {(
+            [
+              ["street-line", "Street line"],
+              ["journey", "Journey planner"],
+            ] as const
+          ).map(([id, label]) => (
+            <button
+              key={id}
+              type="button"
+              aria-pressed={tool === id}
+              onClick={() => setTool(tool === id ? null : id)}
+              className={`rounded border px-2 py-0.5 ${tool === id ? "border-blue-700 bg-blue-700 text-white" : "border-slate-300 hover:bg-slate-100"}`}
+            >
+              {label}
+            </button>
+          ))}
         </div>
         <span>{me && <AccountMenu me={me} onSignedOut={reload} onAdmin={() => setAdmin(true)} />}</span>
       </header>
@@ -71,12 +84,20 @@ export function App() {
             <SetupPanel name={me.instance.name} csrfToken={me.csrfToken} onFinished={reload} />
           )}
           <MapView onReady={setMap} />
-          {streetLine && <StreetLineEditor map={map} panel={panel} />}
+          {streetLine && <StreetLineEditor map={map} panel={panel} onLineChange={setLine} />}
+          {tool === "journey" && (
+            <JourneyPlanner
+              map={map}
+              panel={panel}
+              streetLine={line && line.view.points.length >= 2 ? line : null}
+            />
+          )}
         </div>
-        {streetLine && (
+        {tool && (
           <aside
+            key={tool}
             ref={setPanel}
-            aria-label="Street line editor"
+            aria-label={tool === "journey" ? "Journey planner" : "Street line editor"}
             className="w-96 shrink-0 overflow-y-auto border-l border-slate-300 bg-white"
           />
         )}

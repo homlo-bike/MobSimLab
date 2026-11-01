@@ -8,6 +8,7 @@ import { depotElement, pointElement, vehicleElement } from "./markers";
 import { DEFAULT_TIMING, MODES, type Timing } from "./modes";
 import { along, circuitPath } from "./summary";
 import { MIN_LOAD_ZOOM, tilesFor } from "./tiles";
+import type { StreetLineInput } from "../journey-planner/network";
 import { ToolPalette, type Tool } from "./ToolPalette";
 import type {
   EngineLoader,
@@ -50,6 +51,8 @@ interface Props {
   loadEngine?: EngineLoader;
   /** Street tile source; tests inject a fake. */
   fetchTile?: TileFetcher;
+  /** Told about the line after every change, so the journey planner can ride it. */
+  onLineChange?: (line: StreetLineInput) => void;
 }
 
 /**
@@ -65,6 +68,7 @@ export function StreetLineEditor({
   panel = null,
   loadEngine = loadWasmEngine,
   fetchTile = fetchStreetTile,
+  onLineChange,
 }: Props) {
   const engine = useRef<StreetEngine | null>(null);
   const [view, setView] = useState<LineView>(EMPTY_VIEW);
@@ -186,6 +190,18 @@ export function StreetLineEditor({
   }, [map, profile !== null, fetchTile, run]);
 
   const color = profile ? MODES[profile.mode].color : MODES.bus.color;
+  const lineChanged = useRef(onLineChange);
+  lineChanged.current = onLineChange;
+  useEffect(() => {
+    lineChanged.current?.({
+      name: lineName,
+      mode: profile?.mode ?? "bus",
+      color,
+      view,
+      dwellS: timing.dwellS,
+      headwayMin: timing.headwayMin,
+    });
+  }, [view, lineName, profile?.mode, color, timing.dwellS, timing.headwayMin]);
   const terminals = [...new Set(view.depot_trips.map((t) => t.stop))];
   const pick = (s: number | undefined) => (s !== undefined && terminals.includes(s) ? s : terminals[0]);
   const shownDepot = { out: pick(depotStops.out), in: pick(depotStops.in) };
