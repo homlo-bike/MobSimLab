@@ -4,12 +4,16 @@
 Usage:
   python3 tools/assumptions/check.py            # validate only
   python3 tools/assumptions/check.py --render   # validate and write assumptions/DEFAULTS.md
-  python3 tools/assumptions/check.py --check-rendered  # fail if DEFAULTS.md is stale
+  python3 tools/assumptions/check.py --check-rendered  # fail if DEFAULTS.md or the rail export is stale
+
+--render also writes crates/rail-design/data/defaults.json, the central values the railway design tool
+uses per rail mode, with the switches and crossings catalogue (ADR-0030, ADR-0032).
 """
 
 from __future__ import annotations
 
 import argparse
+import json
 import math
 import sys
 from pathlib import Path
@@ -19,6 +23,68 @@ import yaml
 ROOT = Path(__file__).resolve().parents[2]
 LIB = ROOT / "assumptions"
 OUT = LIB / "DEFAULTS.md"
+RAIL_OUT = ROOT / "crates" / "rail-design" / "data" / "defaults.json"
+RAIL_MODES = [
+    "tram",
+    "light_rail",
+    "metro",
+    "commuter_rail",
+    "regional_rail",
+    "long_distance_rail",
+    "high_speed_rail",
+]
+# Field of the rail export -> parameter key (central value resolved per mode).
+RAIL_FIELDS = {
+    "label": None,
+    "gauge_mm": "mode.new_track_gauge_mm",
+    "design_speed_kmh": "mode.max_speed_kmh",
+    "track_centre_m": "track.centre_distance_m",
+    "clearance_marker_m": "track.clearance_marker_centre_distance_m",
+    "min_radius_m": "mode.min_curve_radius_m",
+    "recommended_radius_m": "mode.recommended_curve_radius_m",
+    "max_gradient_permille": "mode.max_gradient_permille",
+    "vertical_radius_m": "curve.vertical_radius_m",
+    "cant_change_rate_mm_s": "curve.cant_change_rate_mm_s",
+    "cant_deficiency_change_rate_mm_s": "curve.cant_deficiency_change_rate_mm_s",
+    "max_cant_gradient_mm_m": "curve.max_cant_gradient_mm_m",
+    "platform_length_m": "mode.platform_length_m",
+    "platform_height_mm": "mode.platform_height_mm",
+    "side_platform_width_m": "platform.side_width_m",
+    "island_platform_width_m": "platform.island_width_m",
+    "platform_edge_offset_m": "platform.edge_offset_m",
+    "track_beyond_platform_m": "station.track_beyond_platform_m",
+    "underground_level_depth_m": "structure.underground_level_depth_m",
+    "elevated_level_height_m": "structure.elevated_level_height_m",
+    "structure_outline_m": "structure.outline_width_m",
+    "electrification": "mode.new_track_electrification",
+    "ocl_span_m": "ocl.span_m",
+    "default_turnout": "switch.default_turnout",
+    "acceleration_ms2": "mode.acceleration_ms2",
+    "service_braking_ms2": "mode.service_braking_ms2",
+    "colour": "mode.colour",
+}
+RAIL_LABELS = {
+    "tram": "Tram",
+    "light_rail": "Light rail",
+    "metro": "Metro",
+    "commuter_rail": "Commuter rail",
+    "regional_rail": "Regional rail",
+    "long_distance_rail": "Intercity",
+    "high_speed_rail": "High-speed rail",
+}
+# Switch attribute -> export field.
+SWITCH_EXPORT = {
+    "crossing_ratio_n": "crossing_ratio_n",
+    "crossing_angle_deg": "crossing_angle_deg",
+    "diverging_radius_m": "radius_m",
+    "length_a_m": "length_a_m",
+    "length_b_m": "length_b_m",
+    "total_length_m": "total_length_m",
+    "diverging_speed_kmh": "diverging_speed_kmh",
+    "through_speed_kmh": "through_speed_kmh",
+    "track_centre_m": "track_centre_m",
+    "diamond_ratio_n": "diamond_ratio_n",
+}
 
 MODES = [
     "bus",
@@ -410,6 +476,60 @@ def resolve(p: dict, mode: str) -> dict:
     return next(v for v in p["values"] if v["context"] == {"mode": "*"})
 
 
+def export_rail(params: list[dict], systems: list[dict], switches: list[dict]) -> str:
+    """Central values per rail mode and the switch catalogue as JSON for crates/rail-design."""
+    by_key = {p["key"]: p for p in params}
+    modes = {}
+    for m in RAIL_MODES:
+        row: dict = {}
+        for field, key in RAIL_FIELDS.items():
+            row[field] = (
+                RAIL_LABELS[m] if key is None else resolve(by_key[key], m)["central"]
+            )
+        tram = m in ("tram", "light_rail")
+        row["max_cant_mm"] = resolve(
+            by_key["curve.cant_tram_mm" if tram else "curve.cant_rail_mm"], m
+        )["central"]
+        row["max_cant_deficiency_mm"] = resolve(
+            by_key[
+                "curve.cant_deficiency_tram_mm"
+                if tram
+                else "curve.cant_deficiency_rail_mm"
+            ],
+            m,
+        )["central"]
+        modes[m] = row
+    supply = {
+        s["id"]: {
+            "label": s["label"],
+            "collection": s["collection"],
+            "current": s["current"],
+        }
+        for s in systems
+    }
+    catalogue = []
+    for sw in switches:
+        e = {
+            "id": sw["id"],
+            "label": sw["label"],
+            "element": sw["element"],
+            "geometry": sw.get("geometry"),
+            "built_from": sw.get("built_from"),
+            "typical_modes": sw.get("typical_modes", []),
+        }
+        for attr, field in SWITCH_EXPORT.items():
+            if attr in sw["attributes"]:
+                e[field] = sw["attributes"][attr]["central"]
+        catalogue.append(e)
+    data = {
+        "_comment": "Generated by tools/assumptions/check.py --render from assumptions/. Do not edit by hand.",
+        "modes": modes,
+        "supply_systems": supply,
+        "switches": catalogue,
+    }
+    return json.dumps(data, indent=1, ensure_ascii=False) + "\n"
+
+
 def render_supply(systems: list[dict]) -> list[str]:
     cols = [
         ("nominal_v", "Un (V)"),
@@ -647,11 +767,19 @@ def main() -> int:
         print("\n".join(errors), file=sys.stderr)
         return 1
     text = render(sources, params, systems, switches)
+    rail = export_rail(params, systems, switches)
     if args.render:
         OUT.write_text(text, encoding="utf-8")
-    if args.check_rendered and OUT.read_text(encoding="utf-8") != text:
-        print(f"{OUT.relative_to(ROOT)} is stale; run with --render", file=sys.stderr)
-        return 1
+        RAIL_OUT.parent.mkdir(parents=True, exist_ok=True)
+        RAIL_OUT.write_text(rail, encoding="utf-8")
+    if args.check_rendered:
+        for path, want in ((OUT, text), (RAIL_OUT, rail)):
+            if not path.exists() or path.read_text(encoding="utf-8") != want:
+                print(
+                    f"{path.relative_to(ROOT)} is stale; run with --render",
+                    file=sys.stderr,
+                )
+                return 1
     n_values = sum(len(p["values"]) for p in params)
     print(
         f"OK: {len(params)} parameters, {n_values} values, {len(systems)} supply systems, "
