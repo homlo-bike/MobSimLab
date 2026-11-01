@@ -223,8 +223,4 @@ All are Rust, deterministic (no wall clock, seeded RNG, stable iteration order, 
 1. **Same minutes every hour?** Service varies by period (peak, off-peak, no service) with frequencies suggested from demand and overridable per project or line; punctuality before speed, the Swiss way, with lines meeting at transfer stations; consistent platforms per destination; capacity and the maximum before delays pile up. → §2 service periods, §3 steps 0, 4, 5 and 8, §5 objective.
 2. **Automatic short-turns and cancellations?** Yes, when the train cannot continue; the vehicle then serves another line or returns to the depot. Full records, and boards with the next 5 arrivals per station and next 5 stops per train. → §5 step 5, §5a.
 3. **Reverse in the platform by default?** Yes, if it does not block other trains. → §2 terminals, §3 step 8.
-
-## Still open for the product owner
-
-4. **Crew scheduling:** driver and guard duties, breaks and working-time rules. The requirements so far say "crew-free" blocks (FR-TT-04). Should crews be planned and simulated?
-5. **Manual dispatching in live runs:** should the user be able to act as dispatcher (hold, cancel, reroute a train) during a live run? Today the simulation view is read-only (07 §13).
+4. **Crew scheduling** and **manual dispatching in live runs**: not needed (2026-11-01). Blocks stay crew-free (FR-TT-04) and the simulation view stays read-only (07 §13).
