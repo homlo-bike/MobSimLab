@@ -1,0 +1,13 @@
+[package]
+name = "rail-plan"
+version = "0.1.0"
+description = "MobSimLab railway planning: blocking times, timetable conflict detection and UIC 406 capacity consumption (ADR-0032 §3)."
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+rail-model = { path = "../rail-model" }
+rail-dynamics = { path = "../rail-dynamics" }

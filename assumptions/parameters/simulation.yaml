@@ -147,3 +147,76 @@
       sources: [db-ril-819]
       check: unverified
       rationale: "DB Ril 819.0202: standard overlap 200 m above 60 km/h. Clause to be checked."
+
+- key: signalling.route_setting_s
+  label: Route setting time before switch throwing (electronic interlocking)
+  group: Simulation
+  unit: s
+  used_by: [blocking times, route setting]
+  values:
+    - context:
+        mode: "*"
+      low: 2
+      central: 3
+      high: 10
+      basis: documented
+      sources: [pachl-roc]
+      check: unverified
+      rationale: "Blocking time component 'route formation': a few seconds for electronic interlockings, longer for relay interlockings; the switch throw time from the switch catalogue is added on top."
+
+- key: signalling.sight_reaction_s
+  label: Driver sight and reaction time at the approach point
+  group: Simulation
+  unit: s
+  used_by: [blocking times]
+  values:
+    - context:
+        mode: "*"
+      low: 6
+      central: 12
+      high: 18
+      basis: documented
+      sources: [pachl-roc]
+      check: unverified
+      rationale: "Blocking time component 'sight and reaction': the time the driver needs to see the aspect at the distant signal or sighting point and react; about 0.2 min is the usual planning value."
+
+- key: signalling.release_s
+  label: Route release time after the train has cleared a section
+  group: Simulation
+  unit: s
+  used_by: [blocking times, sectional release]
+  values:
+    - context:
+        mode: "*"
+      low: 1
+      central: 3
+      high: 10
+      basis: documented
+      sources: [pachl-roc]
+      check: unverified
+      rationale: "Blocking time component 'release': short for electronic interlockings with axle counters or track circuits; longer for manual or relay release."
+
+- key: signalling.sighting_m
+  label: Sighting distance added to the braking distance for the approach
+  group: Simulation
+  unit: m
+  used_by: [blocking times]
+  values:
+    - context:
+        mode: "*"
+      low: 50
+      central: 150
+      high: 300
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: "Distance a driver needs to read a signal aspect before the braking point; lineside signals are typically readable for 10–15 s at line speed. Cab signalling (ETCS L2, CBTC) can set it to 0."
+    - context:
+        mode: [metro, tram, light_rail]
+      low: 0
+      central: 50
+      high: 150
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: "Lower speeds and short blocks; CBTC lines use 0."
