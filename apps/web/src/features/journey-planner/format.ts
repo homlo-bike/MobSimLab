@@ -22,12 +22,17 @@ export function duration(s: number): string {
   return m >= 60 ? `${Math.floor(m / 60)} h ${String(m % 60).padStart(2, "0")} min` : `${m} min`;
 }
 
-/** The parts of a journey's time in stacking order, with their chart colour (categorical slots 1–6). */
-export const PARTS: { key: keyof Breakdown; label: string; color: string }[] = [
-  { key: "walk_s", label: "Walking", color: "#2a78d6" },
-  { key: "wait_s", label: "Waiting", color: "#eb6834" },
-  { key: "in_vehicle_s", label: "In vehicle", color: "#1baf7a" },
-  { key: "transfer_walk_s", label: "Change: walking", color: "#eda100" },
-  { key: "transfer_wait_s", label: "Change: waiting", color: "#e87ba4" },
-  { key: "early_arrival_s", label: "Early arrival", color: "#008300" },
+/** The parts of a journey's time in stacking order, with a short label and chart colour (categorical slots 1–6). */
+export const PARTS: { key: keyof Breakdown; label: string; short: string; color: string }[] = [
+  { key: "walk_s", label: "Walking", short: "Walk", color: "#2a78d6" },
+  { key: "wait_s", label: "Waiting", short: "Wait", color: "#eb6834" },
+  { key: "in_vehicle_s", label: "On board", short: "On board", color: "#1baf7a" },
+  { key: "transfer_walk_s", label: "Change: walking", short: "Change walk", color: "#eda100" },
+  { key: "transfer_wait_s", label: "Change: waiting", short: "Change wait", color: "#e87ba4" },
+  { key: "early_arrival_s", label: "Early arrival", short: "Early", color: "#008300" },
 ];
+
+/** Purpose: whole minutes, rounded, for the part tiles. */
+export function minutes(s: number): number {
+  return Math.round(s / 60);
+}

@@ -254,12 +254,15 @@ describe("JourneyPlanner panel", () => {
     await waitFor(() => expect(screen.getByTestId("total").textContent).toBe("21 min"));
     expect(calls[0]!.timetable.routes).toHaveLength(4);
     expect(screen.getByTestId("network-summary").textContent).toContain("4 lines");
-    expect(screen.getByText("Leave at 08:02 to skip the wait: 19 min door to door.")).toBeTruthy();
+    expect(
+      screen.getByText("Leave at 08:02 and you won't wait at the stop: 19 min door to door."),
+    ).toBeTruthy();
     expect(screen.getByRole("list", { name: "Itinerary" }).textContent).toContain(
-      "Wait to change at Central",
+      "Change to platform T · 1 min walk, 3 min wait",
     );
     expect(screen.getByText("(timed connection)")).toBeTruthy();
-    expect(screen.getAllByText("In vehicle").length).toBeGreaterThan(0);
+    expect(screen.getByText("On board")).toBeTruthy();
+    expect(screen.getByRole("button", { name: /^A: Near / })).toBeTruthy();
 
     // Arrive-by asks the engine with that mode.
     fireEvent.click(screen.getByRole("radio", { name: "Arrive by" }));

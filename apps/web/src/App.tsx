@@ -98,7 +98,7 @@ export function App() {
             key={tool}
             ref={setPanel}
             aria-label={tool === "journey" ? "Journey planner" : "Street line editor"}
-            className="w-96 shrink-0 overflow-y-auto border-l border-slate-300 bg-white"
+            className={`${tool === "journey" ? "w-[26rem]" : "w-96"} shrink-0 overflow-y-auto border-l border-slate-300 bg-white`}
           />
         )}
       </main>

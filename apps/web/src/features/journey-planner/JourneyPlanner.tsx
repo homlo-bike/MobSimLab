@@ -2,18 +2,20 @@ import { Marker, type Map as MapLibreMap, type MapMouseEvent } from "maplibre-gl
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { loadWasmPlanner } from "./engine";
-import { clock, duration, PARTS, parseClock } from "./format";
+import { clock, duration, minutes, PARTS, parseClock } from "./format";
 import { drawJourney, drawNetwork, ensureLayers, removeLayers } from "./mapLayers";
 import {
+  DEFAULT_SERVICE_DAY,
   exampleNetwork,
   mergeTimetables,
   offset,
   streetLineTimetable,
   type StreetLineInput,
 } from "./network";
-import { PartsLegend, ProfileChart } from "./ProfileChart";
+import { ProfileChart } from "./ProfileChart";
 import type {
   Journey,
+  Leg,
   LonLat,
   NetworkSummary,
   Plan,
@@ -37,87 +39,46 @@ interface Props {
 
 const PROFILE_START = 4 * 3600;
 const PROFILE_END = 25 * 3600;
+const EMPTY_TT: Timetable = { stops: [], routes: [], trips: [], transfers: [], frequency_patterns: [] };
 
-/** Purpose: a journey's time as one stacked bar, parts labelled in the list below it. */
-function BreakdownBar({ j }: { j: Journey }) {
-  const parts = PARTS.filter((p) => j.breakdown[p.key] > 0);
-  return (
-    <div>
-      <div className="flex h-3 w-full gap-0.5 overflow-hidden rounded" role="img" aria-label="Time split">
-        {parts.map((p) => (
-          <div
-            key={p.key}
-            title={`${p.label}: ${duration(j.breakdown[p.key])}`}
-            style={{ width: `${(j.breakdown[p.key] / j.total_s) * 100}%`, background: p.color }}
-          />
-        ))}
-      </div>
-      <dl className="mt-2 grid grid-cols-2 gap-x-4 gap-y-0.5 text-xs">
-        {parts.map((p) => (
-          <div key={p.key} className="flex items-center gap-1.5">
-            <span className="inline-block h-2.5 w-2.5 rounded-sm" style={{ background: p.color }} />
-            <dt className="text-slate-600">{p.label}</dt>
-            <dd className="ml-auto tabular-nums">{duration(j.breakdown[p.key])}</dd>
-          </div>
-        ))}
-      </dl>
-    </div>
-  );
-}
+/** One line of the itinerary: a walk, a ride, or a change (walk and wait between two rides). */
+type Step =
+  | { kind: "walk"; at: number; text: string }
+  | { kind: "ride"; at: number; leg: Extract<Leg, { type: "ride" }> }
+  | { kind: "change"; at: number; text: string };
 
-/** Purpose: the legs of a journey as an itinerary. */
-function Itinerary({ j }: { j: Journey }) {
-  return (
-    <ol className="mt-3 space-y-1.5 text-xs" aria-label="Itinerary">
-      {j.legs.map((l, i) => {
-        const time = `${clock(l.start_s)}–${clock(l.end_s)}`;
-        if (l.type === "walk") {
-          const what = {
-            access: `Walk to ${l.to.name}`,
-            transfer: `Walk to ${l.to.name}${l.to.platform_code ? ` (platform ${l.to.platform_code})` : ""}`,
-            egress: "Walk to B",
-            direct: "Walk all the way to B",
-          }[l.kind];
-          return (
-            <li key={i} className="flex gap-2">
-              <span className="w-20 shrink-0 tabular-nums text-slate-500">{time}</span>
-              <span>
-                {what} · {Math.round(l.distance_m)} m, {duration(l.end_s - l.start_s)}
-              </span>
-            </li>
-          );
-        }
-        if (l.type === "wait") {
-          return (
-            <li key={i} className="flex gap-2 text-slate-600">
-              <span className="w-20 shrink-0 tabular-nums text-slate-500">{time}</span>
-              <span>
-                {l.kind === "initial" ? "Wait" : "Wait to change"} at {l.at.name} ·{" "}
-                {duration(l.end_s - l.start_s)}
-              </span>
-            </li>
-          );
-        }
-        return (
-          <li key={i} className="flex gap-2">
-            <span className="w-20 shrink-0 tabular-nums text-slate-500">{time}</span>
-            <span>
-              <span
-                className="mr-1 inline-block rounded px-1 font-semibold text-white"
-                style={{ background: `#${l.route_color ?? "1f2937"}` }}
-              >
-                {l.route_short_name}
-              </span>
-              {l.from.name} → {l.to.name} · {duration(l.end_s - l.start_s)}
-              {l.intermediate_stops > 0 &&
-                `, ${l.intermediate_stops} stop${l.intermediate_stops === 1 ? "" : "s"} between`}
-              {l.guaranteed && <span className="ml-1 text-emerald-700">(timed connection)</span>}
-            </span>
-          </li>
-        );
-      })}
-    </ol>
-  );
+/** Purpose: legs as design A's itinerary; the first wait is left out (it is in the tiles and the tip). */
+function steps(j: Journey): Step[] {
+  const out: Step[] = [];
+  const legs = j.legs;
+  for (let i = 0; i < legs.length; i++) {
+    const l = legs[i]!;
+    if (l.type === "ride") {
+      out.push({ kind: "ride", at: l.start_s, leg: l });
+    } else if (l.type === "walk" && l.kind !== "transfer") {
+      const to = l.kind === "access" ? l.to.name : "B";
+      const what =
+        l.kind === "direct" ? "Walk all the way to B" : `Walk ${Math.round(l.distance_m)} m to ${to}`;
+      out.push({ kind: "walk", at: l.start_s, text: `${what} · ${duration(l.end_s - l.start_s)}` });
+    } else if (l.type === "walk" || (l.type === "wait" && l.kind === "transfer")) {
+      // A change: an optional transfer walk followed by an optional wait.
+      const walk = l.type === "walk" ? l : null;
+      const next = legs[i + 1];
+      const wait = l.type === "wait" ? l : next?.type === "wait" && next.kind === "transfer" ? next : null;
+      if (walk && wait) i++;
+      const where = walk
+        ? walk.to.platform_code
+          ? `platform ${walk.to.platform_code}`
+          : walk.to.name
+        : (wait!.at.platform_code ?? wait!.at.name);
+      const parts = [
+        walk && `${duration(walk.end_s - walk.start_s)} walk`,
+        wait && `${duration(wait.end_s - wait.start_s)} wait`,
+      ].filter(Boolean);
+      out.push({ kind: "change", at: l.start_s, text: `Change to ${where} · ${parts.join(", ")}` });
+    }
+  }
+  return out;
 }
 
 function median(xs: number[]): number {
@@ -126,30 +87,43 @@ function median(xs: number[]): number {
   return s.length % 2 ? s[m]! : (s[m - 1]! + s[m]!) / 2;
 }
 
-/** Purpose: the A or B marker element. */
+/** Purpose: the A or B marker element (A filled, B outlined, as in design A). */
 function pinElement(label: string): HTMLElement {
   const el = document.createElement("div");
   el.textContent = label;
   el.setAttribute("aria-label", `Point ${label}`);
   Object.assign(el.style, {
-    width: "26px",
-    height: "26px",
+    width: "30px",
+    height: "30px",
+    boxSizing: "border-box",
     borderRadius: "50%",
     background: label === "A" ? "#0f172a" : "#ffffff",
     color: label === "A" ? "#ffffff" : "#0f172a",
     border: "2px solid #0f172a",
-    font: "700 13px/22px system-ui, sans-serif",
+    font: "700 14px/26px system-ui, sans-serif",
     textAlign: "center",
-    boxShadow: "0 1px 3px rgba(0,0,0,.4)",
+    boxShadow: "0 1px 4px rgba(0,0,0,.35)",
     cursor: "grab",
   });
   return el;
 }
 
+/** Purpose: "Near <stop>" for a point, from the closest stop within 1 km. */
+function nearName(tt: Timetable | null, p: LonLat): string | null {
+  if (!tt) return null;
+  const k = Math.cos((p[1] * Math.PI) / 180);
+  let best: { d: number; name: string } | null = null;
+  for (const s of tt.stops) {
+    const d = Math.hypot((s.stop_lon - p[0]) * k, s.stop_lat - p[1]) * 111_320;
+    if (d <= 1000 && (!best || d < best.d)) best = { d, name: s.stop_name };
+  }
+  return best ? `Near ${best.name}` : null;
+}
+
 /**
- * Purpose: the journey time benchmark (ADR-0034). The planner picks A and B on the map and a departure
- * or arrival time; the panel shows the fastest journey split into walking, waiting, in-vehicle and change
- * time, journeys with fewer changes, and how the journey time changes through the day.
+ * Purpose: the journey time benchmark (ADR-0034), laid out as design A. The planner picks A and B on the
+ * map and a departure or arrival time; the panel shows the total, its split into walking, waiting, on board
+ * and change time, the itinerary, journeys with fewer changes, and the journey time through the day.
  * Side effects: adds layers, two markers and a click handler to the map while mounted.
  */
 export function JourneyPlanner({
@@ -245,11 +219,7 @@ export function JourneyPlanner({
     return () => removeLayers(map);
   }, [map]);
   useEffect(() => {
-    if (map)
-      drawNetwork(
-        map,
-        timetable ?? { stops: [], routes: [], trips: [], transfers: [], frequency_patterns: [] },
-      );
+    if (map) drawNetwork(map, timetable ?? EMPTY_TT);
   }, [map, timetable]);
   useEffect(() => {
     if (map) drawJourney(map, journey);
@@ -330,97 +300,93 @@ export function JourneyPlanner({
   };
 
   const totals = profile.flatMap((p) => (p.journey ? [p.journey.total_s] : []));
-  const served = profile.filter((p) => p.journey && p.journey.rides > 0).length;
+  const arriveBy = mode === "arrive_by";
+  const parts = journey ? PARTS.filter((p) => p.key !== "early_arrival_s" || arriveBy) : [];
 
-  const body = (
-    <div className="space-y-4 p-3 text-sm">
-      <header>
-        <h2 className="text-base font-semibold">Journey planner</h2>
-        <p className="text-xs text-slate-600">
-          How long does it take from A to B with your network? Walking, waiting, riding and changing, through
-          the day.
-        </p>
-      </header>
-
-      <section aria-label="Network" className="space-y-2">
-        <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-500">Network</h3>
-        {streetLine && (
-          <label className="flex items-center gap-2">
-            <input type="checkbox" checked={useStreet} onChange={(e) => setUseStreet(e.target.checked)} />
-            Street line “{streetLine.name}” (every {streetLine.headwayMin} min, peak every{" "}
-            {Math.max(1, Math.round(streetLine.headwayMin / 2))} min)
-          </label>
-        )}
-        <div className="flex flex-wrap items-center gap-2">
+  const networkControls = (
+    <div className="space-y-2">
+      {streetLine && (
+        <label className="flex items-center gap-2">
+          <input type="checkbox" checked={useStreet} onChange={(e) => setUseStreet(e.target.checked)} />
+          Street line “{streetLine.name}” (every {streetLine.headwayMin} min, peak every{" "}
+          {Math.max(1, Math.round(streetLine.headwayMin / 2))} min)
+        </label>
+      )}
+      <div className="flex flex-wrap items-center gap-3">
+        <button
+          type="button"
+          onClick={placeExample}
+          className="h-8 rounded-md border border-slate-300 bg-white px-3 hover:bg-slate-50"
+        >
+          {exampleAt ? "Move example network here" : "Place example network here"}
+        </button>
+        {exampleAt && (
           <button
             type="button"
-            onClick={placeExample}
-            className="rounded border border-slate-300 px-2 py-0.5 hover:bg-slate-100"
+            onClick={() => setExampleAt(null)}
+            className="text-xs text-slate-600 underline"
           >
-            {exampleAt ? "Move example network here" : "Place example network here"}
+            Remove example
           </button>
-          {exampleAt && (
-            <button
-              type="button"
-              onClick={() => setExampleAt(null)}
-              className="text-xs text-slate-600 underline"
-            >
-              Remove example
-            </button>
-          )}
-        </div>
-        {!timetable && (
-          <p className="text-xs text-slate-600">
-            No timetable yet. Draw a street line, or place the example city (metro, tram, bus and a regional
-            train with a timed connection) at the centre of the map. Rail lines join here once the railway
-            operations planner publishes timetables.
-          </p>
         )}
-        {summary && (
-          <p className="text-xs text-slate-600" data-testid="network-summary">
-            {summary.stops} stops · {summary.routes} lines · {summary.trips} trips
-            {summary.first_departure_s !== null &&
-              ` · service ${clock(summary.first_departure_s)}–${clock(summary.last_arrival_s ?? 0)}`}
-          </p>
-        )}
-        {summary?.warnings.slice(0, 3).map((w) => (
-          <p key={w} className="text-xs text-amber-700">
-            {w}
-          </p>
-        ))}
-      </section>
+      </div>
+      {!timetable && (
+        <p className="text-xs text-slate-600">
+          No timetable yet. Draw a street line, or place the example city (metro, tram, bus and a regional
+          train with a timed connection) at the centre of the map. Rail lines join here once the railway
+          operations planner publishes timetables.
+        </p>
+      )}
+      {summary && (
+        <p className="text-xs text-slate-600" data-testid="network-summary">
+          {summary.stops} stops · {summary.routes} lines · {summary.trips} trips
+          {summary.first_departure_s !== null &&
+            ` · service ${clock(summary.first_departure_s)}–${clock(summary.last_arrival_s ?? 0)}`}
+        </p>
+      )}
+      {summary?.warnings.slice(0, 3).map((w) => (
+        <p key={w} className="text-xs text-amber-700">
+          {w}
+        </p>
+      ))}
+    </div>
+  );
 
-      <section aria-label="Journey" className="space-y-2">
-        <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-500">From A to B</h3>
-        <div className="flex gap-2">
+  const body = (
+    <div className="flex min-h-full flex-col text-sm text-slate-900">
+      {/* Question: A, B, time. */}
+      <div className="flex flex-col gap-3 border-b border-slate-200 px-5 pb-4 pt-5">
+        <h2 className="text-lg font-semibold">Journey planner</h2>
+        <div className="flex flex-col overflow-hidden rounded-lg border border-slate-300">
           {(["a", "b"] as const).map((k) => {
             const pos = k === "a" ? a : b;
+            const label =
+              picking === k
+                ? "Click the map…"
+                : pos
+                  ? (nearName(timetable, pos) ?? `${pos[1].toFixed(4)}, ${pos[0].toFixed(4)}`)
+                  : "Pick on the map";
             return (
               <button
                 key={k}
                 type="button"
                 aria-pressed={picking === k}
+                aria-label={`${k.toUpperCase()}: ${label}`}
                 onClick={() => setPicking(picking === k ? null : k)}
-                className={`flex-1 rounded border px-2 py-1 text-left ${picking === k ? "border-blue-700 bg-blue-50" : "border-slate-300 hover:bg-slate-100"}`}
+                className={`flex h-11 items-center gap-2.5 px-3 text-left ${k === "a" ? "border-b border-slate-200" : ""} ${picking === k ? "bg-blue-50" : "bg-white hover:bg-slate-50"}`}
               >
-                <span className="font-semibold">{k.toUpperCase()}</span>{" "}
-                <span className="text-xs text-slate-600">
-                  {picking === k
-                    ? "click the map…"
-                    : pos
-                      ? `${pos[1].toFixed(4)}, ${pos[0].toFixed(4)}`
-                      : "pick on map"}
+                <span
+                  className={`flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full text-xs font-bold ${k === "a" ? "bg-slate-900 text-white" : "border-2 border-slate-900"}`}
+                >
+                  {k.toUpperCase()}
                 </span>
+                <span className={pos || picking === k ? "" : "text-slate-500"}>{label}</span>
               </button>
             );
           })}
         </div>
-        <div className="flex items-center gap-2">
-          <div
-            role="radiogroup"
-            aria-label="Time"
-            className="flex overflow-hidden rounded border border-slate-300"
-          >
+        <div className="flex flex-wrap items-center gap-2">
+          <div role="radiogroup" aria-label="Time" className="flex rounded-lg bg-slate-100 p-[3px]">
             {(
               [
                 ["depart_at", "Depart at"],
@@ -433,184 +399,267 @@ export function JourneyPlanner({
                 role="radio"
                 aria-checked={mode === m}
                 onClick={() => setMode(m)}
-                className={`px-2 py-0.5 ${mode === m ? "bg-slate-800 text-white" : "hover:bg-slate-100"}`}
+                className={`h-8 rounded-md px-3 text-[13px] ${mode === m ? "bg-white font-semibold shadow-sm" : "text-slate-600"}`}
               >
                 {label}
               </button>
             ))}
           </div>
-          <input
-            type="time"
-            aria-label="Time of day"
-            value={timeText}
-            onChange={(e) => setTimeText(e.target.value)}
-            className="rounded border border-slate-300 px-1 py-0.5"
-          />
+          <label className="flex h-[38px] items-center gap-1.5 rounded-lg border border-slate-300 px-2.5">
+            <span className="text-slate-600">Time</span>
+            <input
+              type="time"
+              aria-label="Time of day"
+              value={timeText}
+              onChange={(e) => setTimeText(e.target.value)}
+              className="w-28 border-0 font-semibold outline-none"
+            />
+          </label>
+          <span className="text-xs text-slate-600">Weekday</span>
         </div>
-      </section>
+      </div>
 
-      {(error ?? planned.error) && (
-        <p role="alert" className="text-xs text-red-700">
-          {error ?? planned.error}
-        </p>
-      )}
+      <div className="flex flex-1 flex-col gap-3.5 px-5 py-4">
+        {(error ?? planned.error) && (
+          <p role="alert" className="text-xs text-red-700">
+            {error ?? planned.error}
+          </p>
+        )}
 
-      {plan && !journey && (
-        <p role="status" className="text-xs text-slate-600">
-          No journey found. B may be too far from any stop (more than {settings.max_access_m ?? 1000} m), or
-          there is no service {mode === "arrive_by" ? "before" : "after"} this time.
-        </p>
-      )}
+        {!timetable && networkControls}
 
-      {journey && (
-        <section aria-label="Result" className="space-y-2">
-          <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-semibold tabular-nums" data-testid="total">
-              {duration(journey.total_s)}
-            </span>
-            <span className="text-xs text-slate-600">
-              {mode === "depart_at" ? `from ${clock(journey.query_s)}` : `before ${clock(journey.query_s)}`} ·
-              arrive {clock(journey.arrive_s)} · {journey.transfers} change
-              {journey.transfers === 1 ? "" : "s"}
-            </span>
-          </div>
-          {journey.rides > 0 && journey.leave_s > journey.depart_s && (
+        {timetable && (!a || !b) && (
+          <p className="text-slate-600">Pick A and B on the map to see how long the journey takes.</p>
+        )}
+
+        {plan && !journey && (
+          <p role="status" className="text-slate-600">
+            No journey found. B may be more than {settings.max_access_m ?? 1000} m from any stop, or there is
+            no service {arriveBy ? "before" : "after"} this time.
+          </p>
+        )}
+
+        {journey && (
+          <section aria-label="Result" className="flex flex-col gap-3.5">
+            <div className="flex items-baseline gap-2.5">
+              <span className="text-4xl font-bold tracking-tight tabular-nums" data-testid="total">
+                {duration(journey.total_s)}
+              </span>
+              <span className="text-[13px] text-slate-600">
+                {clock(journey.depart_s)} → {clock(journey.arrive_s)} · {journey.transfers} change
+                {journey.transfers === 1 ? "" : "s"}
+              </span>
+            </div>
+            <div className="flex h-3.5 gap-0.5 overflow-hidden rounded" role="img" aria-label="Time split">
+              {parts
+                .filter((p) => journey.breakdown[p.key] > 0)
+                .map((p) => (
+                  <div
+                    key={p.key}
+                    title={`${p.label}: ${duration(journey.breakdown[p.key])}`}
+                    style={{
+                      width: `${(journey.breakdown[p.key] / journey.total_s) * 100}%`,
+                      background: p.color,
+                    }}
+                  />
+                ))}
+            </div>
+            <dl
+              className="grid gap-1.5 text-[11px] text-slate-600"
+              style={{ gridTemplateColumns: `repeat(${parts.length}, minmax(0, 1fr))` }}
+            >
+              {parts.map((p) => (
+                <div key={p.key} className="flex flex-col-reverse gap-0.5">
+                  <dt>{p.short}</dt>
+                  <dd className="flex items-center gap-1 text-[15px] font-semibold tabular-nums text-slate-900">
+                    <span
+                      className="inline-block h-2 w-2 rounded-sm"
+                      style={{ background: p.color }}
+                      aria-hidden="true"
+                    />
+                    {minutes(journey.breakdown[p.key])}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+            {journey.rides > 0 && journey.leave_s > journey.depart_s && (
+              <p className="rounded-lg bg-blue-50 px-3 py-2.5 text-[13px] text-blue-900">
+                Leave at {clock(journey.leave_s)} and you won't wait at the stop:{" "}
+                {duration(journey.door_to_door_s)} door to door.
+              </p>
+            )}
+            {plan!.journeys.length > 1 && (
+              <div className="flex flex-wrap gap-1.5" role="tablist" aria-label="Alternatives">
+                {plan!.journeys.map((j, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    role="tab"
+                    aria-selected={i === chosen}
+                    onClick={() => setChosen(i)}
+                    className={`h-7 rounded-md border px-2 text-xs ${i === chosen ? "border-slate-900 bg-slate-900 text-white" : "border-slate-300 hover:bg-slate-50"}`}
+                  >
+                    {duration(j.total_s)} ·{" "}
+                    {j.rides === 0 ? "walk" : `${j.transfers} change${j.transfers === 1 ? "" : "s"}`}
+                  </button>
+                ))}
+              </div>
+            )}
+            <ol aria-label="Itinerary" className="flex flex-col text-[13px]">
+              {steps(journey).map((s, i) => (
+                <li key={i} className="flex gap-3 py-1.5">
+                  <span className="w-11 shrink-0 tabular-nums text-slate-600">{clock(s.at)}</span>
+                  {s.kind === "ride" ? (
+                    <span>
+                      <span
+                        className="mr-1 rounded px-1.5 py-px text-xs font-bold text-white"
+                        style={{ background: `#${s.leg.route_color ?? "1f2937"}` }}
+                      >
+                        {s.leg.route_short_name}
+                      </span>
+                      {s.leg.from.name} → <b className="font-semibold">{s.leg.to.name}</b> ·{" "}
+                      {duration(s.leg.end_s - s.leg.start_s)}
+                      {s.leg.intermediate_stops > 0 &&
+                        `, ${s.leg.intermediate_stops} stop${s.leg.intermediate_stops === 1 ? "" : "s"}`}
+                      {s.leg.guaranteed && <span className="ml-1 text-emerald-700">(timed connection)</span>}
+                    </span>
+                  ) : (
+                    <span>{s.text}</span>
+                  )}
+                </li>
+              ))}
+            </ol>
+          </section>
+        )}
+
+        {profile.length > 0 && (
+          <section
+            aria-label="Through the day"
+            className="flex flex-col gap-2 border-t border-slate-200 pt-3"
+          >
+            <div className="flex items-baseline gap-2">
+              <h3 className="text-[13px] font-semibold">Through the day</h3>
+              {totals.length > 0 && (
+                <span className="text-xs text-slate-600">
+                  fastest {minutes(Math.min(...totals))} · median {minutes(median(totals))} · slowest{" "}
+                  {minutes(Math.max(...totals))} min
+                </span>
+              )}
+            </div>
             <p className="text-xs text-slate-600">
-              Leave at {clock(journey.leave_s)} to skip the wait: {duration(journey.door_to_door_s)} door to
-              door.
+              Bold: one-hour average. Grey: each departure, which varies with the wait.
             </p>
-          )}
-          <BreakdownBar j={journey} />
-          {plan!.journeys.length > 1 && (
-            <div className="flex flex-wrap gap-1" role="tablist" aria-label="Alternatives">
-              {plan!.journeys.map((j, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  role="tab"
-                  aria-selected={i === chosen}
-                  onClick={() => setChosen(i)}
-                  className={`rounded border px-1.5 py-0.5 text-xs ${i === chosen ? "border-slate-800 bg-slate-800 text-white" : "border-slate-300 hover:bg-slate-100"}`}
+            <ProfileChart
+              points={profile}
+              selected={time}
+              peaks={DEFAULT_SERVICE_DAY.peaks}
+              onSelect={(t) => setTimeText(clock(t))}
+            />
+            <div className="flex items-center gap-3 text-xs text-slate-600">
+              <button type="button" className="underline" onClick={() => setShowTable(!showTable)}>
+                {showTable ? "Hide table" : "Show as table"}
+              </button>
+              <label className="ml-auto">
+                every{" "}
+                <select
+                  aria-label="Profile step"
+                  value={stepMin}
+                  onChange={(e) => setStepMin(Number(e.target.value))}
+                  className="rounded border border-slate-300"
                 >
-                  {duration(j.total_s)} ·{" "}
-                  {j.rides === 0 ? "walk" : `${j.transfers} change${j.transfers === 1 ? "" : "s"}`}
-                </button>
+                  {[5, 10, 15, 30, 60].map((s) => (
+                    <option key={s} value={s}>
+                      {s} min
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+            {showTable && (
+              <table className="w-full text-xs tabular-nums">
+                <thead>
+                  <tr className="text-left text-slate-600">
+                    <th>Time</th>
+                    <th>Total</th>
+                    <th>Walk</th>
+                    <th>Wait</th>
+                    <th>On board</th>
+                    <th>Change</th>
+                    <th>Changes</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {profile.map((p) => (
+                    <tr key={p.time_s}>
+                      <td>{clock(p.time_s)}</td>
+                      {p.journey ? (
+                        <>
+                          <td>{duration(p.journey.total_s)}</td>
+                          <td>{duration(p.journey.breakdown.walk_s)}</td>
+                          <td>
+                            {duration(p.journey.breakdown.wait_s + p.journey.breakdown.early_arrival_s)}
+                          </td>
+                          <td>{duration(p.journey.breakdown.in_vehicle_s)}</td>
+                          <td>
+                            {duration(
+                              p.journey.breakdown.transfer_walk_s + p.journey.breakdown.transfer_wait_s,
+                            )}
+                          </td>
+                          <td>{p.journey.transfers}</td>
+                        </>
+                      ) : (
+                        <td colSpan={6}>no journey</td>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </section>
+        )}
+
+        <div className="mt-auto flex flex-col gap-2 border-t border-slate-200 pt-3 text-xs">
+          {timetable && (
+            <details>
+              <summary className="cursor-pointer text-slate-600">Network</summary>
+              <div className="mt-2">{networkControls}</div>
+            </details>
+          )}
+          <details>
+            <summary className="cursor-pointer text-slate-600">Walking and changing</summary>
+            <div className="mt-2 grid grid-cols-2 gap-2">
+              {(
+                [
+                  ["walk_speed_kmh", "Walking speed (km/h)", 4.5, 0.1],
+                  ["max_access_m", "Longest walk to a stop (m)", 1000, 50],
+                  ["max_transfer_m", "Longest walk at a change (m)", 400, 50],
+                  ["min_change_s", "Change at one stop (s)", 60, 10],
+                  ["max_rides", "Most vehicles", 5, 1],
+                ] as const
+              ).map(([key, label, def, stepv]) => (
+                <label key={key} className="flex flex-col gap-0.5">
+                  <span className="text-slate-600">{label}</span>
+                  <input
+                    type="number"
+                    step={stepv}
+                    min={0}
+                    value={settings[key] ?? def}
+                    onChange={(e) => {
+                      const v = Number(e.target.value);
+                      if (Number.isFinite(v) && v > 0) setSettings((s) => ({ ...s, [key]: v }));
+                    }}
+                    className="rounded border border-slate-300 px-1 py-0.5"
+                  />
+                </label>
               ))}
             </div>
-          )}
-          <Itinerary j={journey} />
-        </section>
-      )}
-
-      {profile.length > 0 && (
-        <section aria-label="Through the day" className="space-y-2">
-          <div className="flex items-center gap-2">
-            <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-500">Through the day</h3>
-            <label className="ml-auto text-xs text-slate-600">
-              every{" "}
-              <select
-                aria-label="Profile step"
-                value={stepMin}
-                onChange={(e) => setStepMin(Number(e.target.value))}
-                className="rounded border border-slate-300"
-              >
-                {[5, 10, 15, 30, 60].map((s) => (
-                  <option key={s} value={s}>
-                    {s} min
-                  </option>
-                ))}
-              </select>
-            </label>
-          </div>
-          {totals.length > 0 && (
-            <p className="text-xs text-slate-600">
-              Fastest {duration(Math.min(...totals))} · median {duration(median(totals))} · slowest{" "}
-              {duration(Math.max(...totals))} · transit used at {served} of {profile.length} times
+            <p className="mt-2 text-slate-600">
+              Walks are straight-line distance × 1.3 until the walking network exists. Defaults come from the
+              assumption library.
             </p>
-          )}
-          <ProfileChart points={profile} selected={time} onSelect={(t) => setTimeText(clock(t))} />
-          <PartsLegend arriveBy={mode === "arrive_by"} />
-          <button
-            type="button"
-            className="text-xs text-slate-600 underline"
-            onClick={() => setShowTable(!showTable)}
-          >
-            {showTable ? "Hide table" : "Show as table"}
-          </button>
-          {showTable && (
-            <table className="w-full text-xs tabular-nums">
-              <thead>
-                <tr className="text-left text-slate-500">
-                  <th>Time</th>
-                  <th>Total</th>
-                  <th>Walk</th>
-                  <th>Wait</th>
-                  <th>Ride</th>
-                  <th>Change</th>
-                  <th>Changes</th>
-                </tr>
-              </thead>
-              <tbody>
-                {profile.map((p) => (
-                  <tr key={p.time_s}>
-                    <td>{clock(p.time_s)}</td>
-                    {p.journey ? (
-                      <>
-                        <td>{duration(p.journey.total_s)}</td>
-                        <td>{duration(p.journey.breakdown.walk_s)}</td>
-                        <td>{duration(p.journey.breakdown.wait_s + p.journey.breakdown.early_arrival_s)}</td>
-                        <td>{duration(p.journey.breakdown.in_vehicle_s)}</td>
-                        <td>
-                          {duration(
-                            p.journey.breakdown.transfer_walk_s + p.journey.breakdown.transfer_wait_s,
-                          )}
-                        </td>
-                        <td>{p.journey.transfers}</td>
-                      </>
-                    ) : (
-                      <td colSpan={6}>no journey</td>
-                    )}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </section>
-      )}
-
-      <details className="text-xs">
-        <summary className="cursor-pointer text-slate-600">Walking and changing</summary>
-        <div className="mt-2 grid grid-cols-2 gap-2">
-          {(
-            [
-              ["walk_speed_kmh", "Walking speed (km/h)", 4.5, 0.1],
-              ["max_access_m", "Longest walk to a stop (m)", 1000, 50],
-              ["max_transfer_m", "Longest walk at a change (m)", 400, 50],
-              ["min_change_s", "Change at one stop (s)", 60, 10],
-              ["max_rides", "Most vehicles", 5, 1],
-            ] as const
-          ).map(([key, label, def, stepv]) => (
-            <label key={key} className="flex flex-col gap-0.5">
-              <span className="text-slate-600">{label}</span>
-              <input
-                type="number"
-                step={stepv}
-                min={0}
-                value={settings[key] ?? def}
-                onChange={(e) => {
-                  const v = Number(e.target.value);
-                  if (Number.isFinite(v) && v > 0) setSettings((s) => ({ ...s, [key]: v }));
-                }}
-                className="rounded border border-slate-300 px-1 py-0.5"
-              />
-            </label>
-          ))}
+          </details>
         </div>
-        <p className="mt-2 text-slate-500">
-          Walks are straight-line distance × 1.3 until the walking network exists. Defaults come from the
-          assumption library.
-        </p>
-      </details>
+      </div>
     </div>
   );
 
