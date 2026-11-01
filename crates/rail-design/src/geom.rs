@@ -15,6 +15,8 @@ pub struct P2 {
     pub y: f64,
 }
 
+// Named methods rather than operator traits keep long geometry expressions readable as chains.
+#[allow(clippy::should_implement_trait)]
 impl P2 {
     /// Purpose: build a point.
     pub const fn new(x: f64, y: f64) -> Self {
@@ -142,7 +144,12 @@ pub fn slice(samples: &[Sample], s0: f64, s1: f64) -> Vec<Sample> {
         return vec![];
     }
     let mut out = vec![at_s(samples, s0)];
-    out.extend(samples.iter().filter(|q| q.s > s0 + 1e-6 && q.s < s1 - 1e-6).copied());
+    out.extend(
+        samples
+            .iter()
+            .filter(|q| q.s > s0 + 1e-6 && q.s < s1 - 1e-6)
+            .copied(),
+    );
     out.push(at_s(samples, s1));
     out
 }
@@ -247,7 +254,10 @@ pub fn poly_cross(a: &[P2], b: &[P2], mut f: impl FnMut(Hit, usize, usize)) {
         let (y0, y1) = (p1.y.min(p2.y), p1.y.max(p2.y));
         for j in 0..b.len().saturating_sub(1) {
             let (q1, q2) = (b[j], b[j + 1]);
-            if q1.x.max(q2.x) < x0 || q1.x.min(q2.x) > x1 || q1.y.max(q2.y) < y0 || q1.y.min(q2.y) > y1
+            if q1.x.max(q2.x) < x0
+                || q1.x.min(q2.x) > x1
+                || q1.y.max(q2.y) < y0
+                || q1.y.min(q2.y) > y1
             {
                 continue;
             }
@@ -312,6 +322,98 @@ pub fn with_headings(pts: &[P2]) -> Vec<Sample> {
     out
 }
 
+/// Uniform grid over polylines for "what is near this point" queries.
+pub struct Grid<'a> {
+    cell: f64,
+    cells: std::collections::HashMap<(i64, i64), Vec<(usize, usize)>>,
+    lines: Vec<(u32, &'a [Sample])>,
+}
+
+impl<'a> Grid<'a> {
+    /// Purpose: an empty grid with square cells of `cell` metres.
+    pub fn new(cell: f64) -> Self {
+        Self {
+            cell,
+            cells: Default::default(),
+            lines: vec![],
+        }
+    }
+    fn key(&self, p: P2) -> (i64, i64) {
+        (
+            (p.x / self.cell).floor() as i64,
+            (p.y / self.cell).floor() as i64,
+        )
+    }
+    /// Purpose: add a polyline belonging to `owner`.
+    pub fn add(&mut self, owner: u32, line: &'a [Sample]) {
+        let li = self.lines.len();
+        self.lines.push((owner, line));
+        for i in 0..line.len().saturating_sub(1) {
+            let (a, b) = (self.key(line[i].p), self.key(line[i + 1].p));
+            for x in a.0.min(b.0)..=a.0.max(b.0) {
+                for y in a.1.min(b.1)..=a.1.max(b.1) {
+                    self.cells.entry((x, y)).or_default().push((li, i));
+                }
+            }
+        }
+    }
+    /// Purpose: call `f(owner, distance, chainage)` for every segment within `r` of `p`
+    /// (a segment may be reported more than once).
+    pub fn near(&self, p: P2, r: f64, mut f: impl FnMut(u32, f64, f64)) {
+        let (a, b) = (
+            self.key(p.sub(P2::new(r, r))),
+            self.key(p.add(P2::new(r, r))),
+        );
+        for x in a.0..=b.0 {
+            for y in a.1..=b.1 {
+                let Some(v) = self.cells.get(&(x, y)) else {
+                    continue;
+                };
+                for &(li, i) in v {
+                    let (owner, line) = self.lines[li];
+                    let (q0, q1) = (line[i], line[i + 1]);
+                    let ab = q1.p.sub(q0.p);
+                    let l2 = ab.dot(ab);
+                    let t = if l2 > 0.0 {
+                        (p.sub(q0.p).dot(ab) / l2).clamp(0.0, 1.0)
+                    } else {
+                        0.0
+                    };
+                    let d = p.dist(q0.p.add(ab.mul(t)));
+                    if d <= r {
+                        f(owner, d, q0.s + (q1.s - q0.s) * t);
+                    }
+                }
+            }
+        }
+    }
+}
+
+/// Purpose: drop points that lie on the straight line between their neighbours (within `tol`
+/// metres), for drawing.
+pub fn simplify(pts: &[P2], tol: f64) -> Vec<P2> {
+    if pts.len() < 3 {
+        return pts.to_vec();
+    }
+    let mut out = vec![pts[0]];
+    for i in 1..pts.len() - 1 {
+        let a = *out.last().expect("not empty");
+        let (p, b) = (pts[i], pts[i + 1]);
+        let ab = b.sub(a);
+        let l = ab.len();
+        let off = if l > 0.0 {
+            ab.cross(p.sub(a)).abs() / l
+        } else {
+            p.dist(a)
+        };
+        if off > tol {
+            out.push(p);
+        }
+    }
+    out.push(pts[pts.len() - 1]);
+    out
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -337,76 +439,4 @@ mod tests {
         let n = nearest(&s, P2::new(4.0, 2.0)).unwrap();
         assert!((n.s - 4.0).abs() < 1e-9 && (n.side - 2.0).abs() < 1e-9);
     }
-}
-
-/// Uniform grid over polylines for "what is near this point" queries.
-pub struct Grid<'a> {
-    cell: f64,
-    cells: std::collections::HashMap<(i64, i64), Vec<(usize, usize)>>,
-    lines: Vec<(u32, &'a [Sample])>,
-}
-
-impl<'a> Grid<'a> {
-    /// Purpose: an empty grid with square cells of `cell` metres.
-    pub fn new(cell: f64) -> Self {
-        Self { cell, cells: Default::default(), lines: vec![] }
-    }
-    fn key(&self, p: P2) -> (i64, i64) {
-        ((p.x / self.cell).floor() as i64, (p.y / self.cell).floor() as i64)
-    }
-    /// Purpose: add a polyline belonging to `owner`.
-    pub fn add(&mut self, owner: u32, line: &'a [Sample]) {
-        let li = self.lines.len();
-        self.lines.push((owner, line));
-        for i in 0..line.len().saturating_sub(1) {
-            let (a, b) = (self.key(line[i].p), self.key(line[i + 1].p));
-            for x in a.0.min(b.0)..=a.0.max(b.0) {
-                for y in a.1.min(b.1)..=a.1.max(b.1) {
-                    self.cells.entry((x, y)).or_default().push((li, i));
-                }
-            }
-        }
-    }
-    /// Purpose: call `f(owner, distance, chainage)` for every segment within `r` of `p`
-    /// (a segment may be reported more than once).
-    pub fn near(&self, p: P2, r: f64, mut f: impl FnMut(u32, f64, f64)) {
-        let (a, b) = (self.key(p.sub(P2::new(r, r))), self.key(p.add(P2::new(r, r))));
-        for x in a.0..=b.0 {
-            for y in a.1..=b.1 {
-                let Some(v) = self.cells.get(&(x, y)) else { continue };
-                for &(li, i) in v {
-                    let (owner, line) = self.lines[li];
-                    let (q0, q1) = (line[i], line[i + 1]);
-                    let ab = q1.p.sub(q0.p);
-                    let l2 = ab.dot(ab);
-                    let t = if l2 > 0.0 { (p.sub(q0.p).dot(ab) / l2).clamp(0.0, 1.0) } else { 0.0 };
-                    let d = p.dist(q0.p.add(ab.mul(t)));
-                    if d <= r {
-                        f(owner, d, q0.s + (q1.s - q0.s) * t);
-                    }
-                }
-            }
-        }
-    }
-}
-
-/// Purpose: drop points that lie on the straight line between their neighbours (within `tol`
-/// metres), for drawing.
-pub fn simplify(pts: &[P2], tol: f64) -> Vec<P2> {
-    if pts.len() < 3 {
-        return pts.to_vec();
-    }
-    let mut out = vec![pts[0]];
-    for i in 1..pts.len() - 1 {
-        let a = *out.last().expect("not empty");
-        let (p, b) = (pts[i], pts[i + 1]);
-        let ab = b.sub(a);
-        let l = ab.len();
-        let off = if l > 0.0 { ab.cross(p.sub(a)).abs() / l } else { p.dist(a) };
-        if off > tol {
-            out.push(p);
-        }
-    }
-    out.push(pts[pts.len() - 1]);
-    out
 }

@@ -114,7 +114,9 @@ impl Design {
     pub fn overhead(&self, t: &Track) -> bool {
         match t.power {
             crate::model::Power::Overhead => true,
-            crate::model::Power::Auto => !self.params.third_rail_default() && self.params.electrification != "none",
+            crate::model::Power::Auto => {
+                !self.params.third_rail_default() && self.params.electrification != "none"
+            }
             _ => false,
         }
     }
@@ -122,13 +124,32 @@ impl Design {
 
 fn resolve(a: &Anchor, stations: &[StationGeo], switches: &[SwitchGeo]) -> Option<ResolvedAnchor> {
     match a {
-        Anchor::Free { x, y, level } => Some(ResolvedAnchor { p: P2::new(*x, *y), dir: None, spacing: 0.0, level: *level }),
-        Anchor::Station { station, end, tracks } => {
+        Anchor::Free { x, y, level } => Some(ResolvedAnchor {
+            p: P2::new(*x, *y),
+            dir: None,
+            spacing: 0.0,
+            level: *level,
+        }),
+        Anchor::Station {
+            station,
+            end,
+            tracks,
+        } => {
             let g = stations.iter().find(|s| s.id == *station)?;
             let c = g.connection(*end, tracks)?;
-            Some(ResolvedAnchor { p: c.p, dir: Some(c.dir), spacing: c.spacing, level: Some(g.level) })
+            Some(ResolvedAnchor {
+                p: c.p,
+                dir: Some(c.dir),
+                spacing: c.spacing,
+                level: Some(g.level),
+            })
         }
-        Anchor::Switch { switch, leg } => switches.iter().find(|s| s.id == *switch)?.anchors.get(*leg).copied(),
+        Anchor::Switch { switch, leg } => switches
+            .iter()
+            .find(|s| s.id == *switch)?
+            .anchors
+            .get(*leg)
+            .copied(),
     }
 }
 
@@ -145,7 +166,10 @@ fn refers_to_missing(a: &Anchor, net: &Network) -> bool {
 /// Output: the design (pure; no side effects).
 pub fn build(net: &Network, draft: Option<u32>) -> Design {
     let d = defaults();
-    let params = net.params.clone().unwrap_or_else(|| d.mode(net.mode).clone());
+    let params = net
+        .params
+        .clone()
+        .unwrap_or_else(|| d.mode(net.mode).clone());
     let storage_radius = d
         .switch(&params.default_turnout)
         .and_then(|s| s.radius_m)
@@ -161,12 +185,19 @@ pub fn build(net: &Network, draft: Option<u32>) -> Design {
             if tracks.iter().any(|g| g.id == t.id) {
                 continue;
             }
-            let Some(start) = resolve(&t.start, &stations, &switches) else { continue };
+            let Some(start) = resolve(&t.start, &stations, &switches) else {
+                continue;
+            };
             let end = match &t.end {
                 None => None,
                 Some(a) => match resolve(a, &stations, &switches) {
                     Some(r) => Some(r),
-                    None if !last && !refers_to_missing(a, net) && matches!(a, Anchor::Switch { .. }) => continue,
+                    None if !last
+                        && !refers_to_missing(a, net)
+                        && matches!(a, Anchor::Switch { .. }) =>
+                    {
+                        continue
+                    }
                     None => None,
                 },
             };
@@ -175,24 +206,44 @@ pub fn build(net: &Network, draft: Option<u32>) -> Design {
                 Bed::Ballast => false,
                 Bed::Auto => net.mode.street_running(),
             };
-            tracks.push(fit(&FitInput { track: t, start, end, params: &params, storage_radius, embedded }));
+            tracks.push(fit(&FitInput {
+                track: t,
+                start,
+                end,
+                params: &params,
+                storage_radius,
+                embedded,
+            }));
         }
         for sw in &net.switches {
-            if switches.iter().any(|g| g.id == sw.id) || switch_errors.iter().any(|i| i.ref_id == Some(sw.id)) {
+            if switches.iter().any(|g| g.id == sw.id)
+                || switch_errors.iter().any(|i| i.ref_id == Some(sw.id))
+            {
                 continue;
             }
-            let Some(parent) = tracks.iter().find(|g| g.id == sw.track) else { continue };
+            let Some(parent) = tracks.iter().find(|g| g.id == sw.track) else {
+                continue;
+            };
             let Some(spec) = d.switch(&sw.element) else {
-                switch_errors.push(Issue::error(format!("Unknown catalogue element {}.", sw.element), None, sw.id));
+                switch_errors.push(Issue::error(
+                    format!("Unknown catalogue element {}.", sw.element),
+                    None,
+                    sw.id,
+                ));
                 continue;
             };
             match place(sw, parent, spec, &params) {
                 Ok(g) => switches.push(g),
-                Err(e) => switch_errors.push(Issue::error(e, Some(at_s(&parent.centre, sw.s).p), sw.id)),
+                Err(e) => {
+                    switch_errors.push(Issue::error(e, Some(at_s(&parent.centre, sw.s).p), sw.id))
+                }
             }
         }
     }
-    let train_length = net.train_length_m.unwrap_or(params.platform_length_m - 5.0).max(1.0);
+    let train_length = net
+        .train_length_m
+        .unwrap_or(params.platform_length_m - 5.0)
+        .max(1.0);
     let mut design = Design {
         mode: net.mode,
         params,
@@ -228,6 +279,13 @@ fn validate(dz: &mut Design, draft: Option<u32>) {
             continue;
         };
         let end_at = g.centre.last().map(|q| q.p);
+        if matches!(t.start, Anchor::Free { .. }) && t.usage == TrackUse::Running {
+            iss.push(Issue::warning(
+                "Open track start. Connect it to a station or a switch, or set the track to storage to end it at a buffer stop.",
+                g.centre.first().map(|q| q.p),
+                t.id,
+            ));
+        }
         match &t.end {
             Some(a) if !matches!(a, Anchor::Free { .. }) && g.end.is_none() => iss.push(Issue::warning(
                 "This track lost its end connection (the station or its tracks changed). Drag the end onto a connection point.",
@@ -246,7 +304,11 @@ fn validate(dz: &mut Design, draft: Option<u32>) {
             iss.push(Issue::warning(
                 format!(
                     "{} holds {}, shorter than one {} train.",
-                    if t.name.is_empty() { "Storage track" } else { &t.name },
+                    if t.name.is_empty() {
+                        "Storage track"
+                    } else {
+                        &t.name
+                    },
                     fmt_m(g.length - 10.0),
                     fmt_m(dz.train_length)
                 ),
@@ -257,7 +319,9 @@ fn validate(dz: &mut Design, draft: Option<u32>) {
     }
     // Switches.
     for sw in &dz.switches {
-        let Some(g) = dz.track(sw.track) else { continue };
+        let Some(g) = dz.track(sw.track) else {
+            continue;
+        };
         let at = sw.toes.first().copied();
         let name = &sw.label;
         if !sw.fits {
@@ -270,11 +334,19 @@ fn validate(dz: &mut Design, draft: Option<u32>) {
                 sw.id,
             ));
         }
-        if g.centre.iter().any(|q| q.s >= sw.s0 - 0.5 && q.s <= sw.s1 + 0.5 && q.k.abs() > 1e-7) {
-            iss.push(Issue::error(format!("{name} sits on a curve. Catalogue switches go on straight track."), at, sw.id));
+        if g.centre
+            .iter()
+            .any(|q| q.s >= sw.s0 - 0.5 && q.s <= sw.s1 + 0.5 && q.k.abs() > 1e-7)
+        {
+            iss.push(Issue::error(
+                format!("{name} sits on a curve. Catalogue switches go on straight track."),
+                at,
+                sw.id,
+            ));
         }
         if g.ntracks == 2
-            && ((g.spread_start > 0.0 && sw.s0 < g.spread_start) || (g.spread_end > 0.0 && sw.s1 > g.length - g.spread_end))
+            && ((g.spread_start > 0.0 && sw.s0 < g.spread_start)
+                || (g.spread_end > 0.0 && sw.s1 > g.length - g.spread_end))
         {
             iss.push(Issue::error(
                 format!("{name} is where the tracks spread towards the platforms. Move it onto parallel track."),
@@ -290,11 +362,19 @@ fn validate(dz: &mut Design, draft: Option<u32>) {
             ));
         }
         if sw.s0 < -0.5 || sw.s1 > g.length + 0.5 {
-            iss.push(Issue::error(format!("{name} runs past the end of the track."), at, sw.id));
+            iss.push(Issue::error(
+                format!("{name} runs past the end of the track."),
+                at,
+                sw.id,
+            ));
         }
         for o in &dz.switches {
             if o.id > sw.id && o.track == sw.track && !(o.s1 < sw.s0 || o.s0 > sw.s1) {
-                iss.push(Issue::error("Two switches overlap. Move one along the track.", at, sw.id));
+                iss.push(Issue::error(
+                    "Two switches overlap. Move one along the track.",
+                    at,
+                    sw.id,
+                ));
             }
         }
     }
@@ -312,7 +392,10 @@ fn validate(dz: &mut Design, draft: Option<u32>) {
     let flattest = defaults().flattest_diamond_n();
     let mut crossings = Vec::new();
     let geos = &dz.tracks;
-    let boxes: Vec<BBox> = geos.iter().map(|g| BBox::of(g.centre.iter().map(|q| q.p))).collect();
+    let boxes: Vec<BBox> = geos
+        .iter()
+        .map(|g| BBox::of(g.centre.iter().map(|q| q.p)))
+        .collect();
     for i in 0..geos.len() {
         for j in i + 1..geos.len() {
             if !boxes[i].overlaps(&boxes[j], 0.0) {
@@ -365,14 +448,20 @@ fn validate(dz: &mut Design, draft: Option<u32>) {
                     }
                     CrossingKind::Diamond
                 };
-                crossings.push(Crossing { p: h.p, angle: h.angle, tracks: [a.id, b.id], kind });
+                crossings.push(Crossing {
+                    p: h.p,
+                    angle: h.angle,
+                    tracks: [a.id, b.id],
+                    kind,
+                });
             });
         }
     }
     // Clearance between tracks of different alignments on the same level.
     let anchored_near = |g: &TrackGeo, s: f64| {
         let lead = 40.0 + g.spread_start.max(g.spread_end);
-        (g.start.dir.is_some() && s < lead) || (g.end.is_some_and(|e| e.dir.is_some()) && s > g.length - lead)
+        (g.start.dir.is_some() && s < lead)
+            || (g.end.is_some_and(|e| e.dir.is_some()) && s > g.length - lead)
     };
     let mut grid = Grid::new(25.0);
     for g in geos {
@@ -417,7 +506,8 @@ fn validate(dz: &mut Design, draft: Option<u32>) {
     // Tracks running through a station box on its level without being attached to it.
     for st in &dz.stations {
         for g in geos {
-            let attached = |a: &Anchor| matches!(a, Anchor::Station { station, .. } if *station == st.id);
+            let attached =
+                |a: &Anchor| matches!(a, Anchor::Station { station, .. } if *station == st.id);
             let t = net.tracks.iter().find(|t| t.id == g.id);
             if t.is_some_and(|t| attached(&t.start) || t.end.as_ref().is_some_and(attached)) {
                 continue;
@@ -472,9 +562,12 @@ fn validate(dz: &mut Design, draft: Option<u32>) {
                 continue;
             }
             let has_crossover = dz.switches.iter().any(|s| {
-                other.contains(&s.track) && matches!(s.kind, SwitchKind::Crossover | SwitchKind::Scissors)
+                other.contains(&s.track)
+                    && matches!(s.kind, SwitchKind::Crossover | SwitchKind::Scissors)
             });
-            let double = other.iter().any(|id| dz.track(*id).is_some_and(|g| g.ntracks == 2));
+            let double = other
+                .iter()
+                .any(|id| dz.track(*id).is_some_and(|g| g.ntracks == 2));
             let pos = st.point(if e == 1 { st.half_len } else { -st.half_len }, 0.0);
             let name = format!("{} {} end", doc.name, if e == 1 { "ahead" } else { "rear" });
             if double && !has_crossover {
@@ -494,7 +587,11 @@ fn validate(dz: &mut Design, draft: Option<u32>) {
         }
     }
     iss.sort_by_key(|i| i.severity);
-    if !iss.iter().any(|i| matches!(i.severity, Severity::Error | Severity::Warning)) && !geos.is_empty() {
+    if !iss
+        .iter()
+        .any(|i| matches!(i.severity, Severity::Error | Severity::Warning))
+        && !geos.is_empty()
+    {
         iss.insert(
             0,
             Issue {
@@ -527,7 +624,11 @@ fn speed_profile(dz: &Design, t: &Track, g: &TrackGeo) -> SpeedProfile {
     let mut x: f64 = 0.0;
     loop {
         let sv = x.min(tot);
-        let mut l = if t.usage == TrackUse::Storage { p.design_speed_kmh.min(25.0) } else { p.design_speed_kmh };
+        let mut l = if t.usage == TrackUse::Storage {
+            p.design_speed_kmh.min(25.0)
+        } else {
+            p.design_speed_kmh
+        };
         for c in &g.curves {
             if sv >= c.s0 - 1.0 && sv <= c.s1 + 1.0 {
                 l = l.min(c.speed_kmh);
@@ -557,12 +658,19 @@ fn speed_profile(dz: &Design, t: &Track, g: &TrackGeo) -> SpeedProfile {
         v[i] = v[i].min((v[i - 1].powi(2) + 2.0 * p.acceleration_ms2 * (s[i] - s[i - 1])).sqrt());
     }
     for i in (0..n - 1).rev() {
-        v[i] = v[i].min((v[i + 1].powi(2) + 2.0 * p.service_braking_ms2 * (s[i + 1] - s[i])).sqrt());
+        v[i] =
+            v[i].min((v[i + 1].powi(2) + 2.0 * p.service_braking_ms2 * (s[i + 1] - s[i])).sqrt());
     }
     let mut time = 0.0;
     for i in 1..n {
         time += (s[i] - s[i - 1]) / ((v[i] + v[i - 1]) / 2.0).max(0.5);
     }
     let vmax = v.iter().copied().fold(0.0, f64::max) * 3.6;
-    SpeedProfile { s, limit: lim, v: v.iter().map(|x| x * 3.6).collect(), time_s: time, vmax }
+    SpeedProfile {
+        s,
+        limit: lim,
+        v: v.iter().map(|x| x * 3.6).collect(),
+        time_s: time,
+        vmax,
+    }
 }

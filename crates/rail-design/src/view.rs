@@ -30,15 +30,24 @@ impl Layers {
         json!([(lon * 1e8).round() / 1e8, (lat * 1e8).round() / 1e8])
     }
     fn push(&mut self, layer: &str, geometry: Value, props: Value) {
-        let fc = self.out.entry(layer.to_string()).or_insert_with(|| json!([]));
-        fc.as_array_mut().expect("array").push(json!({"type": "Feature", "geometry": geometry, "properties": props}));
+        let fc = self
+            .out
+            .entry(layer.to_string())
+            .or_insert_with(|| json!([]));
+        fc.as_array_mut()
+            .expect("array")
+            .push(json!({"type": "Feature", "geometry": geometry, "properties": props}));
     }
     fn line(&mut self, layer: &str, pts: &[P2], props: Value) {
         if pts.len() < 2 {
             return;
         }
         let c: Vec<Value> = simplify(pts, 0.002).iter().map(|p| self.ll(*p)).collect();
-        self.push(layer, json!({"type": "LineString", "coordinates": c}), props);
+        self.push(
+            layer,
+            json!({"type": "LineString", "coordinates": c}),
+            props,
+        );
     }
     fn polygon(&mut self, layer: &str, ring: &[P2], props: Value) {
         if ring.len() < 3 {
@@ -81,9 +90,20 @@ pub fn view(dz: &Design) -> Value {
     let p = &dz.params;
     let net = &dz.network;
     let gauge = p.gauge_m();
-    let mut ly = Layers { proj: dz.proj, out: Map::new() };
+    let mut ly = Layers {
+        proj: dz.proj,
+        out: Map::new(),
+    };
     for k in [
-        "structures", "edges", "tracks", "rails", "platforms", "wires", "masts", "markers", "corridors",
+        "structures",
+        "edges",
+        "tracks",
+        "rails",
+        "platforms",
+        "wires",
+        "masts",
+        "markers",
+        "corridors",
         "connections",
     ] {
         ly.out.insert(k.into(), json!([]));
@@ -99,10 +119,24 @@ pub fn view(dz: &Design) -> Value {
             st.point(st.half_len, st.half_w),
             st.point(-st.half_len, st.half_w),
         ];
-        let kind = if st.level.underground() { "station_box" } else if st.level.elevated() { "deck" } else { "ballast" };
-        ly.polygon("structures", &box_ring, json!({"kind": kind, "z": z, "ref": st.id, "deep": st.level == Level::Underground2}));
+        let kind = if st.level.underground() {
+            "station_box"
+        } else if st.level.elevated() {
+            "deck"
+        } else {
+            "ballast"
+        };
+        ly.polygon(
+            "structures",
+            &box_ring,
+            json!({"kind": kind, "z": z, "ref": st.id, "deep": st.level == Level::Underground2}),
+        );
         if st.level != Level::Street {
-            let wall = if st.level.underground() { "tunnel_wall" } else { "deck_edge" };
+            let wall = if st.level.underground() {
+                "tunnel_wall"
+            } else {
+                "deck_edge"
+            };
             let props = json!({"kind": wall, "z": z, "ref": st.id, "deep": st.level == Level::Underground2});
             ly.line("edges", &[box_ring[0], box_ring[1]], props.clone());
             ly.line("edges", &[box_ring[3], box_ring[2]], props.clone());
@@ -112,10 +146,21 @@ pub fn view(dz: &Design) -> Value {
                 let mut open: Vec<(f64, f64)> = Vec::new();
                 for t in &net.tracks {
                     for anc in [Some(&t.start), t.end.as_ref()].into_iter().flatten() {
-                        if let Anchor::Station { station, end: e, tracks } = anc {
+                        if let Anchor::Station {
+                            station,
+                            end: e,
+                            tracks,
+                        } = anc
+                        {
                             if *station == st.id && *e == end {
-                                let ns: Vec<f64> = tracks.iter().filter_map(|i| st.tracks.get(*i).map(|t| t.n)).collect();
-                                if let (Some(lo), Some(hi)) = (ns.iter().copied().reduce(f64::min), ns.iter().copied().reduce(f64::max)) {
+                                let ns: Vec<f64> = tracks
+                                    .iter()
+                                    .filter_map(|i| st.tracks.get(*i).map(|t| t.n))
+                                    .collect();
+                                if let (Some(lo), Some(hi)) = (
+                                    ns.iter().copied().reduce(f64::min),
+                                    ns.iter().copied().reduce(f64::max),
+                                ) {
                                     open.push((lo - 2.5, hi + 2.5));
                                 }
                             }
@@ -131,7 +176,11 @@ pub fn view(dz: &Design) -> Value {
                     n = n.max(o1);
                 }
                 if n < st.half_w {
-                    ly.line("edges", &[st.point(a, n), st.point(a, st.half_w)], props.clone());
+                    ly.line(
+                        "edges",
+                        &[st.point(a, n), st.point(a, st.half_w)],
+                        props.clone(),
+                    );
                 }
             }
         }
@@ -142,11 +191,18 @@ pub fn view(dz: &Design) -> Value {
                 st.point(st.platform_half, pl.n1),
                 st.point(-st.platform_half, pl.n1),
             ];
-            ly.polygon("platforms", &ring, json!({"kind": "platform", "z": z, "ref": st.id, "name": doc.name}));
+            ly.polygon(
+                "platforms",
+                &ring,
+                json!({"kind": "platform", "z": z, "ref": st.id, "name": doc.name}),
+            );
             for n in [pl.n0, pl.n1] {
                 ly.line(
                     "platforms",
-                    &[st.point(-st.platform_half, n), st.point(st.platform_half, n)],
+                    &[
+                        st.point(-st.platform_half, n),
+                        st.point(st.platform_half, n),
+                    ],
                     json!({"kind": "platform_edge", "z": z, "ref": st.id}),
                 );
             }
@@ -183,7 +239,9 @@ pub fn view(dz: &Design) -> Value {
     }
     // Tracks.
     for g in &dz.tracks {
-        let Some(t) = dz.doc_track(g.id) else { continue };
+        let Some(t) = dz.doc_track(g.id) else {
+            continue;
+        };
         if g.length < 0.1 {
             continue;
         }
@@ -200,7 +258,10 @@ pub fn view(dz: &Design) -> Value {
             };
             let centre = slice(&g.centre, z.s0, z.s1);
             let lvl = z.level;
-            let underground = lvl.map_or_else(|| z.ramp.is_some_and(|r| g.ramps[r].order() < 2), |l| l.underground());
+            let underground = lvl.map_or_else(
+                || z.ramp.is_some_and(|r| g.ramps[r].order() < 2),
+                |l| l.underground(),
+            );
             let common = json!({"ref": g.id, "z": order});
             let props = |extra: Value| {
                 let mut m = common.as_object().unwrap().clone();
@@ -209,36 +270,71 @@ pub fn view(dz: &Design) -> Value {
             };
             match lvl {
                 Some(l) if l.underground() => {
-                    ly.polygon("structures", &band(&centre, half), props(json!({"kind": "tunnel", "deep": l == Level::Underground2})));
+                    ly.polygon(
+                        "structures",
+                        &band(&centre, half),
+                        props(json!({"kind": "tunnel", "deep": l == Level::Underground2})),
+                    );
                     for sg in [1.0, -1.0] {
-                        let e: Vec<P2> = centre.iter().map(|q| q.offset(sg * (half(q) + 0.3))).collect();
-                        ly.line("edges", &e, props(json!({"kind": "tunnel_wall", "deep": l == Level::Underground2})));
+                        let e: Vec<P2> = centre
+                            .iter()
+                            .map(|q| q.offset(sg * (half(q) + 0.3)))
+                            .collect();
+                        ly.line(
+                            "edges",
+                            &e,
+                            props(json!({"kind": "tunnel_wall", "deep": l == Level::Underground2})),
+                        );
                     }
                 }
                 Some(l) if l.elevated() => {
-                    ly.polygon("structures", &band(&centre, half), props(json!({"kind": "deck", "deep": l == Level::Elevated2})));
+                    ly.polygon(
+                        "structures",
+                        &band(&centre, half),
+                        props(json!({"kind": "deck", "deep": l == Level::Elevated2})),
+                    );
                     for sg in [1.0, -1.0] {
                         let e: Vec<P2> = centre.iter().map(|q| q.offset(sg * half(q))).collect();
-                        ly.line("edges", &e, props(json!({"kind": "deck_edge", "deep": l == Level::Elevated2})));
+                        ly.line(
+                            "edges",
+                            &e,
+                            props(json!({"kind": "deck_edge", "deep": l == Level::Elevated2})),
+                        );
                     }
                 }
                 Some(_) => {
                     let kind = if embedded { "paving" } else { "ballast" };
-                    ly.polygon("structures", &band(&centre, |q| half(q) - 0.4), props(json!({"kind": kind})));
+                    ly.polygon(
+                        "structures",
+                        &band(&centre, |q| half(q) - 0.4),
+                        props(json!({"kind": kind})),
+                    );
                 }
                 None => {
                     let r = &g.ramps[z.ramp.unwrap_or(0)];
-                    ly.polygon("structures", &band(&centre, half), props(json!({"kind": "ramp", "underground": underground})));
+                    ly.polygon(
+                        "structures",
+                        &band(&centre, half),
+                        props(json!({"kind": "ramp", "underground": underground})),
+                    );
                     for sg in [1.0, -1.0] {
                         let e: Vec<P2> = centre.iter().map(|q| q.offset(sg * half(q))).collect();
                         ly.line("edges", &e, props(json!({"kind": if underground {"tunnel_wall"} else {"deck_edge"}, "deep": false})));
                     }
                     // Portal or abutment across the deep (or high) end.
                     let deep_start = r.from.height_m(p).abs() >= r.to.height_m(p).abs();
-                    let q = if deep_start { centre.first() } else { centre.last() };
+                    let q = if deep_start {
+                        centre.first()
+                    } else {
+                        centre.last()
+                    };
                     if let Some(q) = q {
                         let w = half(q) + 0.6;
-                        ly.line("edges", &[q.offset(w), q.offset(-w)], props(json!({"kind": "portal", "deep": false})));
+                        ly.line(
+                            "edges",
+                            &[q.offset(w), q.offset(-w)],
+                            props(json!({"kind": "portal", "deep": false})),
+                        );
                     }
                 }
             }
@@ -250,7 +346,15 @@ pub fn view(dz: &Design) -> Value {
             for (li, line) in g.lines.iter().enumerate() {
                 let pts = slice(line, z.s0, z.s1);
                 // Third rail on the outer side, away from the other track.
-                let third_side = if g.ntracks == 2 { if li == 0 { 1.0 } else { -1.0 } } else { -1.0 };
+                let third_side = if g.ntracks == 2 {
+                    if li == 0 {
+                        1.0
+                    } else {
+                        -1.0
+                    }
+                } else {
+                    -1.0
+                };
                 pieces.push((
                     pts,
                     props(json!({"kind": "track", "line": li, "bed": if lvl == Some(Level::Street) && embedded {"embedded"} else {"ballast"},
@@ -285,7 +389,11 @@ pub fn view(dz: &Design) -> Value {
                 if open {
                     let q = crate::geom::at_s(&g.centre, s);
                     let e = g.spacing_at(s) / 2.0;
-                    let sides: &[f64] = if g.ntracks == 2 { &[1.0, -1.0] } else { &[-1.0] };
+                    let sides: &[f64] = if g.ntracks == 2 {
+                        &[1.0, -1.0]
+                    } else {
+                        &[-1.0]
+                    };
                     for sg in sides {
                         let mast = q.offset(sg * (e + MAST_OFFSET_M));
                         let mut blocked = false;
@@ -295,7 +403,11 @@ pub fn view(dz: &Design) -> Value {
                         }
                         let z = g.order_at(s);
                         ly.point("masts", mast, json!({"kind": "mast", "z": z, "ref": g.id}));
-                        ly.line("masts", &[mast, q.offset(sg * e)], json!({"kind": "cantilever", "z": z, "ref": g.id}));
+                        ly.line(
+                            "masts",
+                            &[mast, q.offset(sg * e)],
+                            json!({"kind": "cantilever", "z": z, "ref": g.id}),
+                        );
                     }
                 }
                 s += span;
@@ -305,7 +417,9 @@ pub fn view(dz: &Design) -> Value {
 
     // Switch paths.
     for sw in &dz.switches {
-        let Some(g) = dz.track(sw.track) else { continue };
+        let Some(g) = dz.track(sw.track) else {
+            continue;
+        };
         let t = dz.doc_track(sw.track);
         let mid = (sw.s0 + sw.s1) / 2.0;
         let z = g.order_at(mid.clamp(0.0, g.length));
@@ -315,11 +429,23 @@ pub fn view(dz: &Design) -> Value {
         let half_w = gauge / 2.0 + p.structure_outline_m;
         for path in &sw.paths {
             if lvl.is_some_and(|l| l != Level::Street) {
-                let kind = if lvl.is_some_and(|l| l.underground()) { "tunnel" } else { "deck" };
-                ly.polygon("structures", &band(path, |_| half_w), json!({"kind": kind, "z": z, "ref": sw.id, "deep": false}));
+                let kind = if lvl.is_some_and(|l| l.underground()) {
+                    "tunnel"
+                } else {
+                    "deck"
+                };
+                ly.polygon(
+                    "structures",
+                    &band(path, |_| half_w),
+                    json!({"kind": kind, "z": z, "ref": sw.id, "deep": false}),
+                );
             } else {
                 let kind = if embedded { "paving" } else { "ballast" };
-                ly.polygon("structures", &band(path, |_| half_w - 0.4), json!({"kind": kind, "z": z, "ref": sw.id}));
+                ly.polygon(
+                    "structures",
+                    &band(path, |_| half_w - 0.4),
+                    json!({"kind": kind, "z": z, "ref": sw.id}),
+                );
             }
             pieces.push((
                 path.clone(),
@@ -329,10 +455,18 @@ pub fn view(dz: &Design) -> Value {
             ));
         }
         for d in &sw.diamonds {
-            ly.point("markers", *d, json!({"kind": "diamond", "z": z, "ref": sw.id}));
+            ly.point(
+                "markers",
+                *d,
+                json!({"kind": "diamond", "z": z, "ref": sw.id}),
+            );
         }
         for toe in &sw.toes {
-            ly.point("markers", *toe, json!({"kind": "toe", "z": z, "ref": sw.id}));
+            ly.point(
+                "markers",
+                *toe,
+                json!({"kind": "toe", "z": z, "ref": sw.id}),
+            );
         }
     }
     for c in &dz.crossings {
@@ -341,11 +475,19 @@ pub fn view(dz: &Design) -> Value {
             CrossingKind::GradeSeparated => "bridge",
             CrossingKind::Clash => "clash",
         };
-        ly.point("markers", c.p, json!({"kind": kind, "z": 4, "ref": c.tracks[1]}));
+        ly.point(
+            "markers",
+            c.p,
+            json!({"kind": kind, "z": 4, "ref": c.tracks[1]}),
+        );
     }
 
     // Track pieces: centre line (beds, sleepers, single-line view), rails, wires and third rail.
-    let gaps: Vec<(u32, f64, f64)> = dz.switches.iter().map(|s| (s.track, s.s0 - 4.0, s.s1 + 4.0)).collect();
+    let gaps: Vec<(u32, f64, f64)> = dz
+        .switches
+        .iter()
+        .map(|s| (s.track, s.s0 - 4.0, s.s1 + 4.0))
+        .collect();
     for (pts, props) in &pieces {
         if pts.len() < 2 {
             continue;
@@ -360,7 +502,11 @@ pub fn view(dz: &Design) -> Value {
         let z = props["z"].clone();
         let r = props["ref"].clone();
         if props["overhead"].as_bool().unwrap_or(false) {
-            ly.line("wires", &centre, json!({"kind": "contact_wire", "z": z, "ref": r, "underground": underground}));
+            ly.line(
+                "wires",
+                &centre,
+                json!({"kind": "contact_wire", "z": z, "ref": r, "underground": underground}),
+            );
         }
         if props["third"].as_bool().unwrap_or(false) {
             let side = props["third_side"].as_f64().unwrap_or(1.0);
@@ -368,13 +514,22 @@ pub fn view(dz: &Design) -> Value {
             let mut run: Vec<P2> = Vec::new();
             let flush = |run: &mut Vec<P2>, ly: &mut Layers| {
                 if run.len() >= 2 {
-                    ly.line("wires", run, json!({"kind": "third_rail", "z": z, "ref": r}));
+                    ly.line(
+                        "wires",
+                        run,
+                        json!({"kind": "third_rail", "z": z, "ref": r}),
+                    );
                 }
                 run.clear();
             };
             for q in pts {
-                let in_gap = gaps.iter().any(|(t, a, b)| *t == id && q.s > *a && q.s < *b)
-                    || dz.crossings.iter().any(|c| c.kind == CrossingKind::Diamond && c.p.dist(q.p) < 9.0);
+                let in_gap = gaps
+                    .iter()
+                    .any(|(t, a, b)| *t == id && q.s > *a && q.s < *b)
+                    || dz
+                        .crossings
+                        .iter()
+                        .any(|c| c.kind == CrossingKind::Diamond && c.p.dist(q.p) < 9.0);
                 if in_gap {
                     flush(&mut run, &mut ly);
                 } else {
@@ -396,15 +551,29 @@ pub fn view(dz: &Design) -> Value {
     let mut connections = Vec::new();
     for st in &dz.stations {
         for c in &st.connections {
-            let anchor = Anchor::Station { station: st.id, end: c.end, tracks: c.tracks.clone() };
+            let anchor = Anchor::Station {
+                station: st.id,
+                end: c.end,
+                tracks: c.tracks.clone(),
+            };
             connections.push((anchor, c.p, c.dir, c.tracks.len(), st.level));
         }
     }
     for sw in &dz.switches {
         for (leg, a) in sw.anchors.iter().enumerate() {
             let anchor = Anchor::Switch { switch: sw.id, leg };
-            let n = if sw.kind == SwitchKind::DoubleJunction { 2 } else { 1 };
-            connections.push((anchor, a.p, a.dir.unwrap_or_default(), n, a.level.unwrap_or(Level::Street)));
+            let n = if sw.kind == SwitchKind::DoubleJunction {
+                2
+            } else {
+                1
+            };
+            connections.push((
+                anchor,
+                a.p,
+                a.dir.unwrap_or_default(),
+                n,
+                a.level.unwrap_or(Level::Street),
+            ));
         }
     }
     let mut conn_out = Vec::new();
@@ -424,7 +593,9 @@ pub fn view(dz: &Design) -> Value {
     // Edit handles.
     let mut handles = Vec::new();
     for g in &dz.tracks {
-        let Some(t) = dz.doc_track(g.id) else { continue };
+        let Some(t) = dz.doc_track(g.id) else {
+            continue;
+        };
         for (i, v) in g.verts.iter().enumerate() {
             let kind = match g.kinds[i] {
                 VertexKind::Pi => "pi",
@@ -522,7 +693,11 @@ pub fn view(dz: &Design) -> Value {
         .tracks
         .iter()
         .flat_map(|g| g.centre.iter().map(|q| q.p))
-        .chain(dz.stations.iter().map(|s| s.centre))
+        .chain(dz.stations.iter().flat_map(|s| {
+            [-1.0, 1.0]
+                .into_iter()
+                .map(move |k| s.centre.add(s.u.mul(k * s.half_len)))
+        }))
         .collect();
     let bbox = if all.is_empty() {
         Value::Null

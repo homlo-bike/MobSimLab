@@ -231,13 +231,19 @@ pub struct CurveSpeed {
 pub fn curve_speed(radius: f64, p: &ModeParams, embedded: bool) -> CurveSpeed {
     let emax = if embedded { 0.0 } else { p.max_cant_mm };
     let imax = p.max_cant_deficiency_mm;
-    let mut v = p.design_speed_kmh.min(((emax + imax) * radius / 11.8).sqrt());
+    let mut v = p
+        .design_speed_kmh
+        .min(((emax + imax) * radius / 11.8).sqrt());
     if v >= 5.0 {
         v = (v / 5.0).floor() * 5.0;
     }
     let eq = 11.8 * v * v / radius.max(1.0);
     let cant = ((eq - imax / 2.0).clamp(0.0, emax) / 5.0).round() * 5.0;
-    CurveSpeed { speed_kmh: v, cant_mm: cant, deficiency_mm: (eq - cant).max(0.0) }
+    CurveSpeed {
+        speed_kmh: v,
+        cant_mm: cant,
+        deficiency_mm: (eq - cant).max(0.0),
+    }
 }
 
 /// Purpose: transition (clothoid) length for a curve: the longest of
@@ -298,7 +304,11 @@ fn template(r: f64, ls: f64, d: f64) -> Template {
         let s = i as f64 * ds;
         pts.push((x, y, head(s), curv(s)));
     }
-    Template { tangent: x - y / d.tan(), pts, transition: ls }
+    Template {
+        tangent: x - y / d.tan(),
+        pts,
+        transition: ls,
+    }
 }
 
 struct VertexInfo {
@@ -334,8 +344,16 @@ pub fn fit(inp: &FitInput) -> TrackGeo {
     let a = inp.start;
     let e_anchor = inp.end;
     let level_of_pi = |i: usize| t.points[i].level.unwrap_or(t.level);
-    let first_level = if t.points.is_empty() { t.level } else { level_of_pi(0) };
-    let last_level = if t.points.is_empty() { t.level } else { level_of_pi(t.points.len() - 1) };
+    let first_level = if t.points.is_empty() {
+        t.level
+    } else {
+        level_of_pi(0)
+    };
+    let last_level = if t.points.is_empty() {
+        t.level
+    } else {
+        level_of_pi(t.points.len() - 1)
+    };
 
     let mut verts = Vec::new();
     let mut radii: Vec<Option<f64>> = Vec::new();
@@ -349,18 +367,48 @@ pub fn fit(inp: &FitInput) -> TrackGeo {
         levels.push(l);
         pis.push(pi);
     };
-    push(a.p, None, VertexKind::Start, a.level.unwrap_or(t.level), None);
+    push(
+        a.p,
+        None,
+        VertexKind::Start,
+        a.level.unwrap_or(t.level),
+        None,
+    );
     if let Some(d) = a.dir {
-        push(a.p.add(d.mul(t.lead_start_m.max(1.0))), t.radius_start_m, VertexKind::LeadStart, first_level, None);
+        push(
+            a.p.add(d.mul(t.lead_start_m.max(1.0))),
+            t.radius_start_m,
+            VertexKind::LeadStart,
+            first_level,
+            None,
+        );
     }
     for (i, q) in t.points.iter().enumerate() {
-        push(P2::new(q.x, q.y), q.radius_m, VertexKind::Pi, level_of_pi(i), Some(i));
+        push(
+            P2::new(q.x, q.y),
+            q.radius_m,
+            VertexKind::Pi,
+            level_of_pi(i),
+            Some(i),
+        );
     }
     if let Some(e) = e_anchor {
         if let Some(d) = e.dir {
-            push(e.p.add(d.mul(t.lead_end_m.max(1.0))), t.radius_end_m, VertexKind::LeadEnd, last_level, None);
+            push(
+                e.p.add(d.mul(t.lead_end_m.max(1.0))),
+                t.radius_end_m,
+                VertexKind::LeadEnd,
+                last_level,
+                None,
+            );
         }
-        push(e.p, None, VertexKind::End, e.level.unwrap_or(last_level), None);
+        push(
+            e.p,
+            None,
+            VertexKind::End,
+            e.level.unwrap_or(last_level),
+            None,
+        );
     }
     // drop coincident vertices
     let mut i = verts.len();
@@ -393,13 +441,32 @@ pub fn fit(inp: &FitInput) -> TrackGeo {
             ));
             continue;
         }
-        let r = radii[i].unwrap_or(if storage { inp.storage_radius } else { p.recommended_radius_m }).max(1.0);
-        let ls = if storage { 0.0 } else { transition_length(r, p, inp.embedded) };
+        let r = radii[i]
+            .unwrap_or(if storage {
+                inp.storage_radius
+            } else {
+                p.recommended_radius_m
+            })
+            .max(1.0);
+        let ls = if storage {
+            0.0
+        } else {
+            transition_length(r, p, inp.embedded)
+        };
         let tp = template(r, ls, d.abs());
-        info[i] = Some(VertexInfo { a: da, deflection: d, radius: r, transition: ls, tangent: tp.tangent, k: 1.0 });
+        info[i] = Some(VertexInfo {
+            a: da,
+            deflection: d,
+            radius: r,
+            transition: ls,
+            tangent: tp.tangent,
+            k: 1.0,
+        });
     }
     // Tighten curves whose tangents do not fit between their vertices.
-    let seg_len: Vec<f64> = (0..n.saturating_sub(1)).map(|j| verts[j + 1].dist(verts[j])).collect();
+    let seg_len: Vec<f64> = (0..n.saturating_sub(1))
+        .map(|j| verts[j + 1].dist(verts[j]))
+        .collect();
     for _ in 0..8 {
         for j in 0..seg_len.len() {
             let tl = info[j].as_ref().map_or(0.0, |v| v.tangent * v.k);
@@ -418,8 +485,17 @@ pub fn fit(inp: &FitInput) -> TrackGeo {
     let total_poly: f64 = seg_len.iter().sum();
     let step = (total_poly / 2500.0).clamp(0.5, 10.0);
     let mut centre: Vec<Sample> = Vec::new();
-    let h0 = if n > 1 { verts[1].sub(verts[0]).heading() } else { 0.0 };
-    centre.push(Sample { p: verts[0], h: h0, k: 0.0, s: 0.0 });
+    let h0 = if n > 1 {
+        verts[1].sub(verts[0]).heading()
+    } else {
+        0.0
+    };
+    centre.push(Sample {
+        p: verts[0],
+        h: h0,
+        k: 0.0,
+        s: 0.0,
+    });
     let mut s = 0.0;
     let mut cur = verts[0];
     let straight = |to: P2, centre: &mut Vec<Sample>, s: &mut f64, cur: &mut P2| {
@@ -431,7 +507,12 @@ pub fn fit(inp: &FitInput) -> TrackGeo {
         let k = (len / step).ceil().max(1.0) as usize;
         for i in 1..=k {
             let f = i as f64 / k as f64;
-            centre.push(Sample { p: cur.add(to.sub(*cur).mul(f)), h, k: 0.0, s: *s + len * f });
+            centre.push(Sample {
+                p: cur.add(to.sub(*cur).mul(f)),
+                h,
+                k: 0.0,
+                s: *s + len * f,
+            });
         }
         *s += len;
         *cur = to;
@@ -455,7 +536,12 @@ pub fn fit(inp: &FitInput) -> TrackGeo {
         for q in tp.pts.iter().skip(1) {
             let pt = ts.add(v.a.mul(q.0)).add(pe.mul(sg * q.1));
             s += pt.dist(cur);
-            centre.push(Sample { p: pt, h: ha + sg * q.2, k: sg * q.3, s });
+            centre.push(Sample {
+                p: pt,
+                h: ha + sg * q.2,
+                k: sg * q.3,
+                s,
+            });
             cur = pt;
         }
         vert_s[i] = (s0 + s) / 2.0;
@@ -474,12 +560,28 @@ pub fn fit(inp: &FitInput) -> TrackGeo {
             cant_mm: cs.cant_mm,
             cant_deficiency_mm: cs.deficiency_mm,
         });
-        let min_r = if storage { inp.storage_radius } else { p.min_radius_m };
+        let min_r = if storage {
+            inp.storage_radius
+        } else {
+            p.min_radius_m
+        };
         if r < min_r * 0.995 {
-            let what = if storage { "storage track".to_string() } else { format!("{} km/h", p.design_speed_kmh) };
-            let squeezed = if v.k < 0.999 { " (not enough room between the points)" } else { "" };
+            let what = if storage {
+                "storage track".to_string()
+            } else {
+                format!("{} km/h", p.design_speed_kmh)
+            };
+            let squeezed = if v.k < 0.999 {
+                " (not enough room between the points)"
+            } else {
+                ""
+            };
             issues.push(Issue::error(
-                format!("Curve radius {} is below the {} minimum for {what}{squeezed}.", fmt_m(r), fmt_m(min_r)),
+                format!(
+                    "Curve radius {} is below the {} minimum for {what}{squeezed}.",
+                    fmt_m(r),
+                    fmt_m(min_r)
+                ),
                 Some(verts[i]),
                 t.id,
             ));
@@ -507,13 +609,23 @@ pub fn fit(inp: &FitInput) -> TrackGeo {
     // Double track: line spacing, spreading to the wider spacing of station tracks.
     let ntracks = t.tracks.clamp(1, 2);
     let e = p.track_centre_m;
-    let e_s = if ntracks == 2 && a.spacing > 0.0 { a.spacing } else { e };
+    let e_s = if ntracks == 2 && a.spacing > 0.0 {
+        a.spacing
+    } else {
+        e
+    };
     let e_e = match e_anchor {
         Some(x) if ntracks == 2 && x.spacing > 0.0 => x.spacing,
         _ => e,
     };
     let r_spread = p.min_radius_m.max(150.0);
-    let spread = |de: f64| if de.abs() > 0.01 { 2.0 * (r_spread * de.abs() / 2.0).sqrt() } else { 0.0 };
+    let spread = |de: f64| {
+        if de.abs() > 0.01 {
+            2.0 * (r_spread * de.abs() / 2.0).sqrt()
+        } else {
+            0.0
+        }
+    };
 
     // Level changes: a ramp sits against the deeper (or higher) end.
     let g = p.max_gradient().max(1e-4);
@@ -526,7 +638,11 @@ pub fn fit(inp: &FitInput) -> TrackGeo {
         let dh = (h1 - h0).abs();
         let len = dh / g + p.vertical_radius_m * g;
         let deep_prev = h0.abs() >= h1.abs();
-        let (s0, s1) = if deep_prev { (vert_s[i - 1], vert_s[i - 1] + len) } else { (vert_s[i] - len, vert_s[i]) };
+        let (s0, s1) = if deep_prev {
+            (vert_s[i - 1], vert_s[i - 1] + len)
+        } else {
+            (vert_s[i] - len, vert_s[i])
+        };
         let at = verts[if deep_prev { i - 1 } else { i }];
         if s0 < -0.5 || s1 > length + 0.5 {
             issues.push(Issue::error(
@@ -543,7 +659,14 @@ pub fn fit(inp: &FitInput) -> TrackGeo {
             ));
         }
         ramps.push((
-            Ramp { s0: s0.clamp(0.0, length), s1: s1.clamp(0.0, length), from: levels[i - 1], to: levels[i], dh, length: len },
+            Ramp {
+                s0: s0.clamp(0.0, length),
+                s1: s1.clamp(0.0, length),
+                from: levels[i - 1],
+                to: levels[i],
+                dh,
+                length: len,
+            },
             i,
             at,
         ));
@@ -590,7 +713,16 @@ pub fn fit(inp: &FitInput) -> TrackGeo {
         }
         let mid = (z0 + z1) / 2.0;
         let ramp = ramps.iter().position(|r| mid > r.0.s0 && mid < r.0.s1);
-        let z = Zone { s0: z0, s1: z1, level: if ramp.is_some() { None } else { Some(flat_level(mid)) }, ramp };
+        let z = Zone {
+            s0: z0,
+            s1: z1,
+            level: if ramp.is_some() {
+                None
+            } else {
+                Some(flat_level(mid))
+            },
+            ramp,
+        };
         match zones.last_mut() {
             Some(l) if l.level.is_some() && l.level == z.level => l.s1 = z1,
             Some(l) if l.ramp.is_some() && l.ramp == z.ramp => l.s1 = z1,
@@ -598,7 +730,12 @@ pub fn fit(inp: &FitInput) -> TrackGeo {
         }
     }
     if zones.is_empty() {
-        zones.push(Zone { s0: 0.0, s1: length, level: Some(levels.first().copied().unwrap_or(t.level)), ramp: None });
+        zones.push(Zone {
+            s0: 0.0,
+            s1: length,
+            level: Some(levels.first().copied().unwrap_or(t.level)),
+            ramp: None,
+        });
     }
 
     let mut geo = TrackGeo {
@@ -630,7 +767,10 @@ pub fn fit(inp: &FitInput) -> TrackGeo {
             .map(|sg| {
                 geo.centre
                     .iter()
-                    .map(|q| Sample { p: q.offset(sg * geo.spacing_at(q.s) / 2.0), ..*q })
+                    .map(|q| Sample {
+                        p: q.offset(sg * geo.spacing_at(q.s) / 2.0),
+                        ..*q
+                    })
                     .collect()
             })
             .collect()
@@ -650,8 +790,16 @@ mod tests {
         Track {
             id: 7,
             name: String::new(),
-            start: Anchor::Free { x: 0.0, y: 0.0, level: None },
-            end: Some(Anchor::Free { x: 2000.0, y: 0.0, level: None }),
+            start: Anchor::Free {
+                x: 0.0,
+                y: 0.0,
+                level: None,
+            },
+            end: Some(Anchor::Free {
+                x: 2000.0,
+                y: 0.0,
+                level: None,
+            }),
             points,
             tracks: ntracks,
             level: Level::Street,
@@ -667,7 +815,12 @@ mod tests {
     }
 
     fn free(x: f64, y: f64) -> ResolvedAnchor {
-        ResolvedAnchor { p: P2::new(x, y), dir: None, spacing: 0.0, level: None }
+        ResolvedAnchor {
+            p: P2::new(x, y),
+            dir: None,
+            spacing: 0.0,
+            level: None,
+        }
     }
 
     fn fit_metro(t: &Track, end: P2) -> TrackGeo {
@@ -684,7 +837,12 @@ mod tests {
 
     #[test]
     fn curve_has_no_corner_and_meets_the_radius() {
-        let pi = Pi { x: 1000.0, y: 0.0, radius_m: None, level: None };
+        let pi = Pi {
+            x: 1000.0,
+            y: 0.0,
+            radius_m: None,
+            level: None,
+        };
         let t = track(vec![pi], 1);
         let g = fit_metro(&t, P2::new(1000.0, 1000.0));
         assert_eq!(g.curves.len(), 1);
@@ -707,8 +865,18 @@ mod tests {
     #[test]
     fn tight_points_shrink_the_radius_and_raise_an_error() {
         let pis = vec![
-            Pi { x: 100.0, y: 0.0, radius_m: None, level: None },
-            Pi { x: 120.0, y: 100.0, radius_m: None, level: None },
+            Pi {
+                x: 100.0,
+                y: 0.0,
+                radius_m: None,
+                level: None,
+            },
+            Pi {
+                x: 120.0,
+                y: 100.0,
+                radius_m: None,
+                level: None,
+            },
         ];
         let t = track(pis, 1);
         let g = fit_metro(&t, P2::new(0.0, 120.0));
@@ -717,13 +885,19 @@ mod tests {
 
     #[test]
     fn level_change_makes_a_ramp_of_the_right_length() {
-        let pis = vec![Pi { x: 1000.0, y: 0.0, radius_m: None, level: Some(Level::Underground) }];
+        let pis = vec![Pi {
+            x: 1000.0,
+            y: 0.0,
+            radius_m: None,
+            level: Some(Level::Underground),
+        }];
         let t = track(pis, 2);
         let g = fit_metro(&t, P2::new(2000.0, 0.0));
         assert_eq!(g.ramps.len(), 1);
         assert_eq!(g.zones.len(), 3);
         let p = defaults().mode(RailMode::Metro);
-        let want = p.underground_level_depth_m / p.max_gradient() + p.vertical_radius_m * p.max_gradient();
+        let want =
+            p.underground_level_depth_m / p.max_gradient() + p.vertical_radius_m * p.max_gradient();
         assert!((g.ramps[0].length - want).abs() < 1e-6);
         assert_eq!(g.lines.len(), 2);
         let mid = crate::geom::at_s(&g.lines[0], 500.0).p;

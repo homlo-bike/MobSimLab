@@ -34,15 +34,30 @@ pub struct Issue {
 impl Issue {
     /// Purpose: an error at a place on an element.
     pub fn error(text: impl Into<String>, at: Option<P2>, ref_id: u32) -> Self {
-        Self { severity: Severity::Error, text: text.into(), at, ref_id: Some(ref_id) }
+        Self {
+            severity: Severity::Error,
+            text: text.into(),
+            at,
+            ref_id: Some(ref_id),
+        }
     }
     /// Purpose: a warning at a place on an element.
     pub fn warning(text: impl Into<String>, at: Option<P2>, ref_id: u32) -> Self {
-        Self { severity: Severity::Warning, text: text.into(), at, ref_id: Some(ref_id) }
+        Self {
+            severity: Severity::Warning,
+            text: text.into(),
+            at,
+            ref_id: Some(ref_id),
+        }
     }
     /// Purpose: information at a place on an element.
     pub fn info(text: impl Into<String>, at: Option<P2>, ref_id: Option<u32>) -> Self {
-        Self { severity: Severity::Info, text: text.into(), at, ref_id }
+        Self {
+            severity: Severity::Info,
+            text: text.into(),
+            at,
+            ref_id,
+        }
     }
 }
 

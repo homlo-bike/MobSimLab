@@ -109,7 +109,10 @@ mod tests {
         for (lon, lat) in [(7.1, 51.0), (6.5, 50.5), (7.6, 51.3)] {
             let q = p.to_xy(lon, lat);
             let [lo, la] = p.to_lonlat(q);
-            assert!((lo - lon).abs() < 1e-9 && (la - lat).abs() < 1e-9, "{lo} {la} vs {lon} {lat}");
+            assert!(
+                (lo - lon).abs() < 1e-9 && (la - lat).abs() < 1e-9,
+                "{lo} {la} vs {lon} {lat}"
+            );
         }
         // One degree of latitude along the central meridian at 51° is about 111.25 km.
         let d = p.to_xy(6.96, 51.44).y - p.to_xy(6.96, 50.44).y;

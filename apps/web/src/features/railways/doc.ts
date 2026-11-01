@@ -44,7 +44,8 @@ export function addStation(
 ): [Network, number] {
   const id = nextId(doc);
   const name =
-    STATION_NAMES.find((n) => !doc.stations.some((s) => s.name === n)) ?? `Station ${doc.stations.length + 1}`;
+    STATION_NAMES.find((n) => !doc.stations.some((s) => s.name === n)) ??
+    `Station ${doc.stations.length + 1}`;
   const st: Station = {
     id,
     name,
@@ -101,12 +102,9 @@ export function autoLeads(
   const along = (c: LocalConnection, q: [number, number]) =>
     (q[0] - c.p[0]) * c.dir[0] + (q[1] - c.p[1]) * c.dir[1];
   const out = { ...t };
-  const first: [number, number] | null = t.points[0]
-    ? [t.points[0].x, t.points[0].y]
-    : end
-      ? end.p
-      : cursor;
-  if (start && first) out.lead_start_m = Math.max(minLead, (t.points.length ? 0.5 : 0.3) * along(start, first));
+  const first: [number, number] | null = t.points[0] ? [t.points[0].x, t.points[0].y] : end ? end.p : cursor;
+  if (start && first)
+    out.lead_start_m = Math.max(minLead, (t.points.length ? 0.5 : 0.3) * along(start, first));
   const last: [number, number] | null = t.points.length
     ? [t.points[t.points.length - 1]!.x, t.points[t.points.length - 1]!.y]
     : start
@@ -136,7 +134,8 @@ export function addSwitch(
 }
 
 const refersTo = (a: Anchor | null, kind: "station" | "switch", ids: number[]) =>
-  !!a && ((kind === "station" && a.type === "station" && ids.includes(a.station)) ||
+  !!a &&
+  ((kind === "station" && a.type === "station" && ids.includes(a.station)) ||
     (kind === "switch" && a.type === "switch" && ids.includes(a.switch)));
 
 /**

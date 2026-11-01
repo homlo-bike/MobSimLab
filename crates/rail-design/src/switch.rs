@@ -52,9 +52,15 @@ fn turnout_path(t: &TurnoutGeometry, x0: f64, y0: f64, sg: f64) -> Vec<P2> {
     let n = 24;
     for i in 1..=n {
         let f = t.alpha * i as f64 / n as f64;
-        v.push(P2::new(x0 + t.lead + t.radius * f.sin(), y0 + sg * t.radius * (1.0 - f.cos())));
+        v.push(P2::new(
+            x0 + t.lead + t.radius * f.sin(),
+            y0 + sg * t.radius * (1.0 - f.cos()),
+        ));
     }
-    v.push(P2::new(x0 + t.a + t.b * t.alpha.cos(), y0 + sg * t.b * t.alpha.sin()));
+    v.push(P2::new(
+        x0 + t.a + t.b * t.alpha.cos(),
+        y0 + sg * t.b * t.alpha.sin(),
+    ));
     v
 }
 
@@ -71,7 +77,10 @@ fn crossover_half(t: &TurnoutGeometry, e: f64) -> (Vec<P2>, f64) {
         let a = (1.0 - e / (2.0 * t.radius)).acos();
         for i in 1..=n {
             let f = a * i as f64 / n as f64;
-            v.push(P2::new(t.lead + t.radius * f.sin(), -e / 2.0 + t.radius * (1.0 - f.cos())));
+            v.push(P2::new(
+                t.lead + t.radius * f.sin(),
+                -e / 2.0 + t.radius * (1.0 - f.cos()),
+            ));
         }
         // two arcs of radius R turning by `a` rise exactly e: the arc ends in the middle
         let last = *v.last().unwrap();
@@ -79,7 +88,10 @@ fn crossover_half(t: &TurnoutGeometry, e: f64) -> (Vec<P2>, f64) {
     }
     for i in 1..=n {
         let f = t.alpha * i as f64 / n as f64;
-        v.push(P2::new(t.lead + t.radius * f.sin(), -e / 2.0 + t.radius * (1.0 - f.cos())));
+        v.push(P2::new(
+            t.lead + t.radius * f.sin(),
+            -e / 2.0 + t.radius * (1.0 - f.cos()),
+        ));
     }
     let xm = t.a + e / 2.0 * t.n;
     v.push(P2::new(xm, 0.0));
@@ -103,7 +115,12 @@ fn crossover_path(t: &TurnoutGeometry, e: f64) -> (Vec<P2>, f64) {
 /// Purpose: place a switch on its track.
 /// Inputs: the switch, its track's geometry, the catalogue turnout, the mode's values.
 /// Output: the geometry, or a message when the switch cannot be built there.
-pub fn place(sw: &Switch, parent: &TrackGeo, spec: &SwitchSpec, p: &ModeParams) -> Result<SwitchGeo, String> {
+pub fn place(
+    sw: &Switch,
+    parent: &TrackGeo,
+    spec: &SwitchSpec,
+    p: &ModeParams,
+) -> Result<SwitchGeo, String> {
     let t = spec
         .turnout_geometry()
         .ok_or_else(|| format!("{} is not a turnout with complete geometry.", spec.id))?;
@@ -192,18 +209,31 @@ pub fn place(sw: &Switch, parent: &TrackGeo, spec: &SwitchSpec, p: &ModeParams) 
     let label = match sw.kind {
         SwitchKind::Turnout => spec.label.clone(),
         SwitchKind::DoubleJunction => format!("Double junction with {}", spec.label),
-        SwitchKind::Crossover => format!("Crossover with {} at {:.2} m track centres", spec.label, e),
-        SwitchKind::Scissors => format!("Scissors crossover with {} at {:.2} m track centres", spec.label, e),
+        SwitchKind::Crossover => {
+            format!("Crossover with {} at {:.2} m track centres", spec.label, e)
+        }
+        SwitchKind::Scissors => format!(
+            "Scissors crossover with {} at {:.2} m track centres",
+            spec.label, e
+        ),
     };
     Ok(SwitchGeo {
         id: sw.id,
         kind: sw.kind,
         track: sw.track,
-        paths: paths.iter().map(|v| with_headings(&v.iter().map(|x| world(*x)).collect::<Vec<_>>())).collect(),
+        paths: paths
+            .iter()
+            .map(|v| with_headings(&v.iter().map(|x| world(*x)).collect::<Vec<_>>()))
+            .collect(),
         toes: toes.into_iter().map(world).collect(),
         anchors: anchors
             .into_iter()
-            .map(|(pt, dir, spacing)| ResolvedAnchor { p: world(pt), dir: Some(world_dir(dir).unit()), spacing, level })
+            .map(|(pt, dir, spacing)| ResolvedAnchor {
+                p: world(pt),
+                dir: Some(world_dir(dir).unit()),
+                spacing,
+                level,
+            })
             .collect(),
         s0: sw.s + lo,
         s1: sw.s + hi,
@@ -220,7 +250,11 @@ mod tests {
     use super::*;
 
     fn tg(id: &str) -> TurnoutGeometry {
-        crate::params::defaults().switch(id).unwrap().turnout_geometry().unwrap()
+        crate::params::defaults()
+            .switch(id)
+            .unwrap()
+            .turnout_geometry()
+            .unwrap()
     }
 
     #[test]
@@ -230,7 +264,12 @@ mod tests {
         // the arc end lies on the line from IP = (a, 0) at angle α
         let arc_end = path[path.len() - 2];
         let on_line = (arc_end.x - t.a) * t.alpha.tan();
-        assert!((arc_end.y - on_line).abs() < 1e-6, "{} vs {}", arc_end.y, on_line);
+        assert!(
+            (arc_end.y - on_line).abs() < 1e-6,
+            "{} vs {}",
+            arc_end.y,
+            on_line
+        );
         let end = *path.last().unwrap();
         assert!((end.dist(P2::new(t.a, 0.0)) - t.b).abs() < 1e-6);
     }

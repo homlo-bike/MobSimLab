@@ -79,7 +79,9 @@ impl StationGeo {
     }
     /// Purpose: the connection point for an end and a set of station tracks, if it exists.
     pub fn connection(&self, end: u8, tracks: &[usize]) -> Option<&Connection> {
-        self.connections.iter().find(|c| c.end == end && c.tracks == tracks)
+        self.connections
+            .iter()
+            .find(|c| c.end == end && c.tracks == tracks)
     }
 }
 
@@ -97,17 +99,26 @@ pub fn layout(st: &Station, p: &ModeParams) -> StationGeo {
     }
     let mut els = Vec::new();
     if sides >= 1 {
-        els.push(El::Platform { w: p.side_platform_width_m, island: false });
+        els.push(El::Platform {
+            w: p.side_platform_width_m,
+            island: false,
+        });
         els.push(El::Track);
     }
     for _ in 0..islands {
         els.push(El::Track);
-        els.push(El::Platform { w: p.island_platform_width_m, island: true });
+        els.push(El::Platform {
+            w: p.island_platform_width_m,
+            island: true,
+        });
         els.push(El::Track);
     }
     if sides >= 2 {
         els.push(El::Track);
-        els.push(El::Platform { w: p.side_platform_width_m, island: false });
+        els.push(El::Platform {
+            w: p.side_platform_width_m,
+            island: false,
+        });
     }
     // Walk across the station from the right: platform edges sit at the edge offset from the track
     // centre; adjacent tracks with no platform between them are one track spacing apart.
@@ -146,7 +157,11 @@ pub fn layout(st: &Station, p: &ModeParams) -> StationGeo {
     for (i, el) in els.iter().enumerate() {
         let (a, b) = (pos[i].0 - mid, pos[i].1 - mid);
         match el {
-            El::Platform { island, .. } => platforms.push(Platform { n0: a, n1: b, island: *island }),
+            El::Platform { island, .. } => platforms.push(Platform {
+                n0: a,
+                n1: b,
+                island: *island,
+            }),
             El::Track => tracks.push(StationTrack {
                 n: a,
                 platform_right: i > 0 && matches!(els[i - 1], El::Platform { .. }),

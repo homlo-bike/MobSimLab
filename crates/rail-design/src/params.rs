@@ -133,7 +133,8 @@ impl ModeParams {
     }
     /// Purpose: whether the default supply is a third (or fourth) rail.
     pub fn third_rail_default(&self) -> bool {
-        self.electrification.starts_with("third-rail") || self.electrification.starts_with("fourth-rail")
+        self.electrification.starts_with("third-rail")
+            || self.electrification.starts_with("fourth-rail")
     }
 }
 
@@ -296,7 +297,11 @@ impl Defaults {
             .iter()
             .filter(|s| s.element == Element::Turnout && s.typical_modes.contains(&m))
             .collect();
-        v.sort_by(|a, b| a.radius_m.unwrap_or(0.0).total_cmp(&b.radius_m.unwrap_or(0.0)));
+        v.sort_by(|a, b| {
+            a.radius_m
+                .unwrap_or(0.0)
+                .total_cmp(&b.radius_m.unwrap_or(0.0))
+        });
         v
     }
     /// Purpose: flattest diamond crossing in the catalogue, as ratio n of 1:n.
@@ -319,7 +324,9 @@ mod tests {
         for m in RailMode::ALL {
             let p = d.mode(m);
             assert!(p.min_radius_m <= p.recommended_radius_m, "{m:?}");
-            let t = d.switch(&p.default_turnout).expect("default turnout in catalogue");
+            let t = d
+                .switch(&p.default_turnout)
+                .expect("default turnout in catalogue");
             assert!(t.turnout_geometry().is_some(), "{}", t.id);
         }
         assert!(d.flattest_diamond_n() >= 9.0);
@@ -328,7 +335,11 @@ mod tests {
     #[test]
     fn turnout_geometry_matches_catalogue_crossover_length() {
         // Crossover length = 2a + e·n (assumptions/README.md); check DB EW 190-1:9 at 4.5 m.
-        let t = defaults().switch("db-ew-190-1-9").unwrap().turnout_geometry().unwrap();
+        let t = defaults()
+            .switch("db-ew-190-1-9")
+            .unwrap()
+            .turnout_geometry()
+            .unwrap();
         let x = 2.0 * t.a + 4.5 * t.n;
         assert!((x - 64.944).abs() < 0.01, "{x}");
     }

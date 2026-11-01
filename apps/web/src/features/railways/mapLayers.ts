@@ -290,14 +290,16 @@ export function removeRailLayers(map: MapLibreMap): void {
 
 /** Purpose: draw a built design. Side effects: replaces the data of every railway source. */
 export function drawRail(map: MapLibreMap, view: RailView, selection: FeatureCollection): void {
-  for (const n of LAYER_NAMES) (map.getSource(`${P}${n}`) as GeoJSONSource | undefined)?.setData(view.layers[n]);
+  for (const n of LAYER_NAMES)
+    (map.getSource(`${P}${n}`) as GeoJSONSource | undefined)?.setData(view.layers[n]);
   (map.getSource(`${P}issues`) as GeoJSONSource | undefined)?.setData(issuesToGeoJson(view.issues));
   (map.getSource(`${P}selection`) as GeoJSONSource | undefined)?.setData(selection);
 }
 
 /** Purpose: show or hide the connection points (while drawing track). */
 export function showConnections(map: MapLibreMap, on: boolean): void {
-  if (map.getLayer(CONNECTION_LAYER)) map.setLayoutProperty(CONNECTION_LAYER, "visibility", on ? "visible" : "none");
+  if (map.getLayer(CONNECTION_LAYER))
+    map.setLayoutProperty(CONNECTION_LAYER, "visibility", on ? "visible" : "none");
 }
 
 /** Purpose: errors and warnings with a position, as map points. */

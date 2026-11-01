@@ -22,7 +22,13 @@ import {
   showConnections,
 } from "./mapLayers";
 import { COLORS, shiftLevel } from "./modes";
-import { RailPanel, type NewStationOpts, type NewSwitchOpts, type NewTrackOpts, type RailTool } from "./RailPanel";
+import {
+  RailPanel,
+  type NewStationOpts,
+  type NewSwitchOpts,
+  type NewTrackOpts,
+  type RailTool,
+} from "./RailPanel";
 import { RailToolPalette } from "./RailToolPalette";
 import type {
   Anchor,
@@ -38,7 +44,8 @@ import type {
 } from "./types";
 
 const HINTS: Record<RailTool, string> = {
-  select: "Click a station, track or switch to edit it. Drag stations and track points; drag a switch along its track.",
+  select:
+    "Click a station, track or switch to edit it. Drag stations and track points; drag a switch along its track.",
   station: "Click on the map to place a station. Then drag it into place and rotate it.",
   track:
     "Click a connection point or the map to start, click to add points, click a connection point or double-click to finish. + / − change the level.",
@@ -88,7 +95,11 @@ export function RailwayEditor({ map, panel = null, loadEngine = loadRailEngine }
     use: "running",
   });
   const [stationOpts, setStationOpts] = useState<NewStationOpts>({ level: "street", sides: 0, islands: 1 });
-  const [switchOpts, setSwitchOpts] = useState<NewSwitchOpts>({ junction: true, scissors: false, element: null });
+  const [switchOpts, setSwitchOpts] = useState<NewSwitchOpts>({
+    junction: true,
+    scissors: false,
+    element: null,
+  });
   const [flash, setFlash] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -121,7 +132,8 @@ export function RailwayEditor({ map, panel = null, loadEngine = loadRailEngine }
   }, [doc]);
 
   const local = useCallback(
-    (ll: LonLat): [number, number] => (engine.current && doc ? engine.current.toLocal(doc.origin, ll) : [0, 0]),
+    (ll: LonLat): [number, number] =>
+      engine.current && doc ? engine.current.toLocal(doc.origin, ll) : [0, 0],
     [doc],
   );
 
@@ -186,8 +198,7 @@ export function RailwayEditor({ map, panel = null, loadEngine = loadRailEngine }
     return () => map.doubleClickZoom.enable();
   }, [map]);
   useEffect(() => {
-    if (map)
-      map.getCanvas().style.cursor = tool === "pan" ? "grab" : tool === "select" ? "" : "crosshair";
+    if (map) map.getCanvas().style.cursor = tool === "pan" ? "grab" : tool === "select" ? "" : "crosshair";
   }, [map, tool]);
 
   const say = (m: string) => {
@@ -231,15 +242,12 @@ export function RailwayEditor({ map, panel = null, loadEngine = loadRailEngine }
     | null
   >(null);
 
-  const startDraft = useCallback(
-    (start: Anchor, d: Network, level: Track["level"], tracks: 1 | 2) => {
-      const o = latest.current.trackOpts;
-      setDraft(newTrack(d, start, { ...o, level, tracks }));
-      setCursor(null);
-      setSel(null);
-    },
-    [],
-  );
+  const startDraft = useCallback((start: Anchor, d: Network, level: Track["level"], tracks: 1 | 2) => {
+    const o = latest.current.trackOpts;
+    setDraft(newTrack(d, start, { ...o, level, tracks }));
+    setCursor(null);
+    setSel(null);
+  }, []);
 
   const finishDraft = useCallback(
     (end: Anchor | null) => {
@@ -252,7 +260,11 @@ export function RailwayEditor({ map, panel = null, loadEngine = loadRailEngine }
           setDraft(null);
           return;
         }
-        t = { ...t, points: t.points.slice(0, -1), end: { type: "free", x: last.x, y: last.y, level: last.level ?? t.level } };
+        t = {
+          ...t,
+          points: t.points.slice(0, -1),
+          end: { type: "free", x: last.x, y: last.y, level: last.level ?? t.level },
+        };
       }
       const startC = connLocal(t.start);
       const endC = t.end && t.end.type !== "free" ? connLocal(t.end) : null;
@@ -361,7 +373,9 @@ export function RailwayEditor({ map, panel = null, loadEngine = loadRailEngine }
         const at = e.toLocal(s.doc.origin, ll);
         cancelAnimationFrame(frame);
         frame = requestAnimationFrame(() =>
-          setDoc((d) => d && update(d, "stations", dr.id, (st) => ({ ...st, x: at[0] - dr.dx, y: at[1] - dr.dy }))),
+          setDoc(
+            (d) => d && update(d, "stations", dr.id, (st) => ({ ...st, x: at[0] - dr.dx, y: at[1] - dr.dy })),
+          ),
         );
         return;
       }
@@ -370,7 +384,9 @@ export function RailwayEditor({ map, panel = null, loadEngine = loadRailEngine }
         if (!Number.isFinite(ch)) return;
         cancelAnimationFrame(frame);
         frame = requestAnimationFrame(() =>
-          setDoc((d) => d && update(d, "switches", dr.id, (sw) => ({ ...sw, s: Math.max(0, ch - dr.offset) }))),
+          setDoc(
+            (d) => d && update(d, "switches", dr.id, (sw) => ({ ...sw, s: Math.max(0, ch - dr.offset) })),
+          ),
         );
         return;
       }
@@ -436,20 +452,20 @@ export function RailwayEditor({ map, panel = null, loadEngine = loadRailEngine }
 
   // Edit handles for the selected track (points, leads, free ends) and station (rotation).
   const handles = useMemo(
-    () =>
-      (view?.handles ?? []).filter((h) =>
-        "track" in h ? sel?.id === h.track : sel?.id === h.station,
-      ),
+    () => (view?.handles ?? []).filter((h) => ("track" in h ? sel?.id === h.track : sel?.id === h.station)),
     [view, sel],
   );
-  const handleKey = handles.map((h) => ("track" in h ? `${h.track}:${h.kind}:${h.index}` : `r${h.station}`)).join("|");
+  const handleKey = handles
+    .map((h) => ("track" in h ? `${h.track}:${h.kind}:${h.index}` : `r${h.station}`))
+    .join("|");
   const markers = useRef(new Map<string, Marker>());
   useEffect(() => {
     if (!map) return;
     const made = new Map<string, Marker>();
-    const hs = latest.current.view?.handles.filter((h) =>
-      "track" in h ? latest.current.sel?.id === h.track : latest.current.sel?.id === h.station,
-    ) ?? [];
+    const hs =
+      latest.current.view?.handles.filter((h) =>
+        "track" in h ? latest.current.sel?.id === h.track : latest.current.sel?.id === h.station,
+      ) ?? [];
     let frame = 0;
     for (const h of hs) {
       const key = "track" in h ? `${h.track}:${h.kind}:${h.index}` : `r${h.station}`;
@@ -469,7 +485,11 @@ export function RailwayEditor({ map, panel = null, loadEngine = loadRailEngine }
           const st = s.doc.stations.find((x) => x.id === h.station);
           if (!st) return;
           const deg = Math.round((Math.atan2(at[1] - st.y, at[0] - st.x) * 180) / Math.PI - 90);
-          setDoc((d) => d && update(d, "stations", h.station, (x) => ({ ...x, rotation_deg: ((deg % 360) + 360) % 360 })));
+          setDoc(
+            (d) =>
+              d &&
+              update(d, "stations", h.station, (x) => ({ ...x, rotation_deg: ((deg % 360) + 360) % 360 })),
+          );
           return;
         }
         const t = s.doc.tracks.find((x) => x.id === h.track);
@@ -550,7 +570,11 @@ export function RailwayEditor({ map, panel = null, loadEngine = loadRailEngine }
       if (s.draft) {
         if (ev.key === "+" || ev.key === "=" || ev.key === "-" || ev.key === "_") {
           const up = ev.key === "+" || ev.key === "=";
-          setDraft({ ...s.draft, level: shiftLevel(draftLevel(s.draft), up ? 1 : -1), points: s.draft.points });
+          setDraft({
+            ...s.draft,
+            level: shiftLevel(draftLevel(s.draft), up ? 1 : -1),
+            points: s.draft.points,
+          });
           setTrackOpts((o) => ({ ...o, level: shiftLevel(draftLevel(s.draft!), up ? 1 : -1) }));
           ev.preventDefault();
           return;
@@ -580,7 +604,14 @@ export function RailwayEditor({ map, panel = null, loadEngine = loadRailEngine }
         }
         return;
       }
-      const tools: Record<string, RailTool> = { v: "select", s: "station", t: "track", b: "turnout", x: "crossover", h: "pan" };
+      const tools: Record<string, RailTool> = {
+        v: "select",
+        s: "station",
+        t: "track",
+        b: "turnout",
+        x: "crossover",
+        h: "pan",
+      };
       if (tools[k]) setTool(tools[k]);
     };
     window.addEventListener("keydown", onKey);
@@ -603,7 +634,14 @@ export function RailwayEditor({ map, panel = null, loadEngine = loadRailEngine }
     select: setSel,
     setTrackOpts: (o: NewTrackOpts) => {
       setTrackOpts(o);
-      if (draft) setDraft({ ...draft, tracks: draft.start.type === "switch" ? draft.tracks : o.tracks, level: o.level, power: o.power, use: o.use });
+      if (draft)
+        setDraft({
+          ...draft,
+          tracks: draft.start.type === "switch" ? draft.tracks : o.tracks,
+          level: o.level,
+          power: o.power,
+          use: o.use,
+        });
     },
     setStationOpts,
     setSwitchOpts,
@@ -630,7 +668,14 @@ export function RailwayEditor({ map, panel = null, loadEngine = loadRailEngine }
       setDraft(null);
       setTool("select");
       const v = engine.current.build(d, null);
-      if (v.bbox) map.fitBounds([[v.bbox[0], v.bbox[1]], [v.bbox[2], v.bbox[3]]], { padding: 60, duration: 0 });
+      if (v.bbox)
+        map.fitBounds(
+          [
+            [v.bbox[0], v.bbox[1]],
+            [v.bbox[2], v.bbox[3]],
+          ],
+          { padding: 60, duration: 0 },
+        );
     },
     clear: () => {
       if (!map) return;
@@ -646,7 +691,14 @@ export function RailwayEditor({ map, panel = null, loadEngine = loadRailEngine }
     },
     fit: () => {
       const b = view?.bbox;
-      if (b && map) map.fitBounds([[b[0], b[1]], [b[2], b[3]]], { padding: 60 });
+      if (b && map)
+        map.fitBounds(
+          [
+            [b[0], b[1]],
+            [b[2], b[3]],
+          ],
+          { padding: 60 },
+        );
     },
   };
 
@@ -670,7 +722,10 @@ export function RailwayEditor({ map, panel = null, loadEngine = loadRailEngine }
       <RailToolPalette tool={tool} onTool={changeTool} />
       <div className="pointer-events-none absolute bottom-8 left-1/2 z-10 flex max-w-[90%] -translate-x-1/2 flex-col items-center gap-1 text-sm">
         {(flash || (!ready && !error)) && (
-          <p className="rounded-full px-3 py-1 text-white" style={{ background: flash ? COLORS.error : "#0f172ad9" }}>
+          <p
+            className="rounded-full px-3 py-1 text-white"
+            style={{ background: flash ? COLORS.error : "#0f172ad9" }}
+          >
             {flash ?? "Starting the railway engine…"}
           </p>
         )}
@@ -680,7 +735,9 @@ export function RailwayEditor({ map, panel = null, loadEngine = loadRailEngine }
       </div>
       {panel ? sidePanel && createPortal(sidePanel, panel) : sidePanel}
       {error && !view && (
-        <p className="absolute top-3 right-14 z-10 rounded bg-red-50 px-2 py-1 text-sm text-red-700">{error}</p>
+        <p className="absolute top-3 right-14 z-10 rounded bg-red-50 px-2 py-1 text-sm text-red-700">
+          {error}
+        </p>
       )}
     </>
   );

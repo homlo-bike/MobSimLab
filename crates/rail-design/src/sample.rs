@@ -4,7 +4,9 @@
 
 use crate::design::build;
 use crate::geom::{at_s, P2};
-use crate::model::{Anchor, Bed, Level, Network, Pi, Power, Station, Switch, SwitchKind, Track, TrackUse};
+use crate::model::{
+    Anchor, Bed, Level, Network, Pi, Power, Station, Switch, SwitchKind, Track, TrackUse,
+};
 use crate::params::{defaults, RailMode};
 
 fn scale(m: RailMode) -> f64 {
@@ -62,23 +64,47 @@ pub fn sample(mode: RailMode, lon: f64, lat: f64) -> Network {
     };
     let start_x = -0.5 * big;
     net.stations.push(station(1, "Riverside", start_x, 0.0, la));
-    net.stations.push(station(2, "Northgate", start_x + big, 0.25 * big, lb));
+    net.stations
+        .push(station(2, "Northgate", start_x + big, 0.25 * big, lb));
     let mut main = track(
         3,
-        Anchor::Station { station: 1, end: 1, tracks: vec![0, 1] },
-        Some(Anchor::Station { station: 2, end: 0, tracks: vec![0, 1] }),
+        Anchor::Station {
+            station: 1,
+            end: 1,
+            tracks: vec![0, 1],
+        },
+        Some(Anchor::Station {
+            station: 2,
+            end: 0,
+            tracks: vec![0, 1],
+        }),
         // metro: out of the underground station, up to street level and on to the viaduct
-        if mode == RailMode::Metro { Level::Street } else { la },
+        if mode == RailMode::Metro {
+            Level::Street
+        } else {
+            la
+        },
     );
     main.lead_start_m = 0.25 * big;
     main.lead_end_m = 0.3 * big;
     net.tracks.push(main);
     let g = build(&net, None);
-    let Some(mg) = g.track(3).cloned() else { return net };
-    let (Some(c1), Some(c2)) = (mg.curves.first().cloned(), mg.curves.get(1).cloned()) else { return net };
-    let turnout = d.switch(&p.default_turnout).and_then(|s| s.turnout_geometry());
+    let Some(mg) = g.track(3).cloned() else {
+        return net;
+    };
+    let (Some(c1), Some(c2)) = (mg.curves.first().cloned(), mg.curves.get(1).cloned()) else {
+        return net;
+    };
+    let turnout = d
+        .switch(&p.default_turnout)
+        .and_then(|s| s.turnout_geometry());
     // Crossover, then a turnout to a stabling siding, on the straight between the two curves.
-    let ramp_end = mg.ramps.iter().filter(|r| r.s0 < mg.length / 2.0).map(|r| r.s1).fold(0.0, f64::max);
+    let ramp_end = mg
+        .ramps
+        .iter()
+        .filter(|r| r.s0 < mg.length / 2.0)
+        .map(|r| r.s1)
+        .fold(0.0, f64::max);
     let xo_s = c1.s1.max(ramp_end).max(mg.spread_start) + 15.0;
     if let Some(t) = turnout {
         let lx = 2.0 * t.a + mg.spacing * t.n;
@@ -117,12 +143,21 @@ pub fn sample(mode: RailMode, lon: f64, lat: f64) -> Network {
                 let bend = leg.p.add(leg.dir.unwrap_or(ux).mul(lead));
                 let len = (p.platform_length_m * 1.15).max(60.0);
                 let end = bend.add(ux.mul(len));
-                let mut siding = track(6, Anchor::Switch { switch: 5, leg: 0 }, None, mg.level_at(s_tu).unwrap_or(la));
+                let mut siding = track(
+                    6,
+                    Anchor::Switch { switch: 5, leg: 0 },
+                    None,
+                    mg.level_at(s_tu).unwrap_or(la),
+                );
                 siding.tracks = 1;
                 siding.usage = TrackUse::Storage;
                 siding.name = "Stabling siding".into();
                 siding.lead_start_m = lead;
-                siding.end = Some(Anchor::Free { x: end.x, y: end.y, level: None });
+                siding.end = Some(Anchor::Free {
+                    x: end.x,
+                    y: end.y,
+                    level: None,
+                });
                 net.tracks.push(siding);
             }
         }
@@ -141,12 +176,25 @@ pub fn sample(mode: RailMode, lon: f64, lat: f64) -> Network {
     let b = q.p.add(n.mul(hl));
     let mut cross = track(
         7,
-        Anchor::Free { x: a.x, y: a.y, level: Some(lv) },
-        Some(Anchor::Free { x: b.x, y: b.y, level: Some(lv) }),
+        Anchor::Free {
+            x: a.x,
+            y: a.y,
+            level: Some(lv),
+        },
+        Some(Anchor::Free {
+            x: b.x,
+            y: b.y,
+            level: Some(lv),
+        }),
         lv,
     );
     cross.name = "Cross-town line".into();
-    cross.points = vec![Pi { x: q.p.x, y: q.p.y, radius_m: None, level: None }];
+    cross.points = vec![Pi {
+        x: q.p.x,
+        y: q.p.y,
+        radius_m: None,
+        level: None,
+    }];
     net.tracks.push(cross);
     net
 }
@@ -163,7 +211,11 @@ mod tests {
             let dz = build(&net, None);
             assert_eq!(dz.tracks.len(), net.tracks.len(), "{m:?}");
             assert!(!dz.switches.is_empty(), "{m:?}: no switches placed");
-            let errors: Vec<_> = dz.issues.iter().filter(|i| i.severity == Severity::Error).collect();
+            let errors: Vec<_> = dz
+                .issues
+                .iter()
+                .filter(|i| i.severity == Severity::Error)
+                .collect();
             assert!(errors.is_empty(), "{m:?}: {errors:#?}");
         }
     }

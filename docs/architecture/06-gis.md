@@ -220,6 +220,8 @@ Station-first workflow for tram, light rail, metro, regional, intercity and high
 6. Signals and train detection sections are generated from line speed and signalling type, then editable; tram street running links tracks to road lanes.
 7. Validations from §9.2 run live while drawing.
 
+Implementation: `crates/rail-design` (document model, alignment fitting, stations, switches, crossings, checks and map view), run in the editor as WebAssembly (ADR-0033). Signals, train detection, tram street running, existing OSM corridors and terrain checks are still to come. How to use it: [railway tool](../user/railway-tool.md).
+
 ## 10. Schematic diagrams (ADR-0025)
 
 - **Generation:** the network's lines per mode layer (Bus, BRT, Tram, Metro, Regional Rail, Long Distance) are exported as a line graph (GeoJSON) to LOOM (`topo` → `loom` line ordering → `octi` octilinear layout), run by the tool-runner. Water bodies from OSM are simplified (Douglas–Peucker + area threshold) and transformed with the same displacement field to keep rivers recognisable.

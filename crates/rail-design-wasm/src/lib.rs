@@ -11,7 +11,8 @@ use rail_design::{build, Design, Network, RailMode};
 use wasm_bindgen::prelude::*;
 
 fn mode(s: &str) -> Result<RailMode, JsError> {
-    serde_json::from_value(serde_json::Value::String(s.into())).map_err(|_| JsError::new(&format!("unknown rail mode {s}")))
+    serde_json::from_value(serde_json::Value::String(s.into()))
+        .map_err(|_| JsError::new(&format!("unknown rail mode {s}")))
 }
 
 fn js(e: impl std::fmt::Display) -> JsError {
@@ -51,11 +52,15 @@ impl RailDesigner {
     /// Purpose: the track nearest to a map position within `max_m` metres, as JSON
     /// `{track, s, side, distance, tracks, straight}`, or `null`.
     pub fn nearest_track(&self, lon: f64, lat: f64, max_m: f64) -> String {
-        let Some(d) = &self.design else { return "null".into() };
+        let Some(d) = &self.design else {
+            return "null".into();
+        };
         let q = d.proj.to_xy(lon, lat);
         let mut best: Option<(f64, serde_json::Value)> = None;
         for g in &d.tracks {
-            let Some(r) = nearest(&g.centre, q) else { continue };
+            let Some(r) = nearest(&g.centre, q) else {
+                continue;
+            };
             let tol = max_m + g.spacing_at(r.s) / 2.0;
             if r.d > tol || best.as_ref().is_some_and(|b| r.d >= b.0) {
                 continue;
@@ -72,8 +77,12 @@ impl RailDesigner {
 
     /// Purpose: chainage on a given track nearest to a map position (NaN when the track is unknown).
     pub fn chainage(&self, track: u32, lon: f64, lat: f64) -> f64 {
-        let Some(d) = &self.design else { return f64::NAN };
-        let Some(g) = d.track(track) else { return f64::NAN };
+        let Some(d) = &self.design else {
+            return f64::NAN;
+        };
+        let Some(g) = d.track(track) else {
+            return f64::NAN;
+        };
         nearest(&g.centre, d.proj.to_xy(lon, lat)).map_or(f64::NAN, |r| r.s)
     }
 
@@ -85,12 +94,14 @@ impl RailDesigner {
 
     /// Purpose: local metres to degrees `[lon, lat]` around an origin.
     pub fn to_lonlat(origin_lon: f64, origin_lat: f64, x: f64, y: f64) -> Vec<f64> {
-        LocalTm::new(origin_lon, origin_lat).to_lonlat(P2::new(x, y)).to_vec()
+        LocalTm::new(origin_lon, origin_lat)
+            .to_lonlat(P2::new(x, y))
+            .to_vec()
     }
 
     /// Purpose: the design values of a mode from the assumption library (JSON).
     pub fn default_params(m: &str) -> Result<String, JsError> {
-        Ok(serde_json::to_string(rail_design::defaults().mode(mode(m)?)).map_err(js)?)
+        serde_json::to_string(rail_design::defaults().mode(mode(m)?)).map_err(js)
     }
 
     /// Purpose: an example line for a mode around a position (document JSON).

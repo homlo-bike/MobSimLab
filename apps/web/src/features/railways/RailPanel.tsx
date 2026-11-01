@@ -1,0 +1,706 @@
+import { update } from "./doc";
+import { COLORS, fmtM, fmtTime, LEVEL_LABEL, LEVELS, POWER, RAIL_MODES } from "./modes";
+import type { Selection } from "./RailwayEditor";
+import type {
+  Level,
+  LonLat,
+  Network,
+  Power,
+  RailMode,
+  RailView,
+  Severity,
+  Station,
+  Switch,
+  Track,
+  TrackUse,
+} from "./types";
+
+/** Railway editing tools, as in the mockup. */
+export type RailTool = "select" | "station" | "track" | "turnout" | "crossover" | "pan";
+
+/** Settings for the next track drawn. */
+export interface NewTrackOpts {
+  tracks: 1 | 2;
+  level: Level;
+  power: Power;
+  use: TrackUse;
+}
+
+/** Settings for the next station placed. */
+export interface NewStationOpts {
+  level: Level;
+  sides: number;
+  islands: number;
+}
+
+/** Settings for the next switch placed (`element` null = the mode's default turnout). */
+export interface NewSwitchOpts {
+  junction: boolean;
+  scissors: boolean;
+  element: string | null;
+}
+
+/** Edits the panel can ask for; the editor applies them. */
+export interface RailPanelActions {
+  setTool: (t: RailTool) => void;
+  setDoc: (d: Network) => void;
+  select: (s: Selection | null) => void;
+  setTrackOpts: (o: NewTrackOpts) => void;
+  setStationOpts: (o: NewStationOpts) => void;
+  setSwitchOpts: (o: NewSwitchOpts) => void;
+  finishDraft: () => void;
+  cancelDraft: () => void;
+  remove: (id: number) => void;
+  setMode: (m: RailMode) => void;
+  example: () => void;
+  clear: () => void;
+  showIssue: (at: LonLat | null, ref: number | null) => void;
+  fit: () => void;
+}
+
+interface Props {
+  doc: Network;
+  view: RailView;
+  tool: RailTool;
+  sel: Selection | null;
+  draft: Track | null;
+  trackOpts: NewTrackOpts;
+  stationOpts: NewStationOpts;
+  switchOpts: NewSwitchOpts;
+  error: string | null;
+  actions: RailPanelActions;
+}
+
+const CHIP: Record<Severity, string> = {
+  ok: COLORS.ok,
+  info: COLORS.info,
+  warning: COLORS.warn,
+  error: COLORS.error,
+};
+const VERTEX: Record<string, string> = {
+  leadstart: "Out of start",
+  lead_start: "Out of start",
+  leadend: "Into end",
+  lead_end: "Into end",
+};
+const field = "rounded border border-slate-300 bg-slate-50 px-2 py-1";
+const input = `${field} min-w-0 max-w-56`;
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <section className="flex flex-col gap-2 border-t border-slate-200 pt-3">
+      <h3 className="text-xs font-semibold tracking-wider text-slate-500 uppercase">{title}</h3>
+      {children}
+    </section>
+  );
+}
+
+function Stat({ value, label }: { value: string; label: string }) {
+  return (
+    <div className="rounded-md bg-slate-100 p-2">
+      <b className="block font-mono text-base">{value}</b>
+      <span className="text-xs text-slate-600">{label}</span>
+    </div>
+  );
+}
+
+function Row({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <label className="flex items-center justify-between gap-2">
+      <span className="text-slate-700">{label}</span>
+      {children}
+    </label>
+  );
+}
+
+function Num({
+  value,
+  onChange,
+  unit,
+  min = 0,
+  step = 1,
+  label,
+}: {
+  value: number;
+  onChange: (v: number) => void;
+  unit: string;
+  min?: number;
+  step?: number;
+  label: string;
+}) {
+  return (
+    <span className="flex items-center gap-1">
+      <input
+        type="number"
+        aria-label={label}
+        min={min}
+        step={step}
+        value={Math.round(value * 10) / 10}
+        onChange={(e) => {
+          const v = Number(e.target.value);
+          if (Number.isFinite(v)) onChange(Math.max(min, v));
+        }}
+        className="w-20 rounded border border-slate-300 px-1 py-0.5 text-right"
+      />
+      <span className="w-7 text-slate-500">{unit}</span>
+    </span>
+  );
+}
+
+function Segmented<T extends string | number>({
+  label,
+  value,
+  options,
+  onChange,
+}: {
+  label: string;
+  value: T;
+  options: { id: T; label: string }[];
+  onChange: (v: T) => void;
+}) {
+  return (
+    <div
+      role="radiogroup"
+      aria-label={label}
+      className="flex rounded border border-slate-300 bg-slate-50 p-0.5"
+    >
+      {options.map((o) => (
+        <button
+          key={String(o.id)}
+          type="button"
+          role="radio"
+          aria-checked={value === o.id}
+          onClick={() => onChange(o.id)}
+          className={`flex-1 rounded px-1.5 py-1 text-xs ${value === o.id ? "bg-emerald-800 text-white" : "hover:bg-slate-200"}`}
+        >
+          {o.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+const LEVEL_OPTS = LEVELS.map((l) => ({ id: l.id, label: l.short }));
+
+/**
+ * Purpose: the railway side panel, laid out like the railways tab of the mockup: mode and its
+ * design values, settings for new elements, the inspector for the selection, and live checks.
+ */
+export function RailPanel(props: Props) {
+  const { doc, view, tool, sel, draft, actions: a } = props;
+  const p = view.params;
+  const kind = sel
+    ? doc.stations.some((s) => s.id === sel.id)
+      ? "station"
+      : doc.tracks.some((t) => t.id === sel.id)
+        ? "track"
+        : doc.switches.some((s) => s.id === sel.id)
+          ? "switch"
+          : null
+    : null;
+  const issues = view.issues;
+
+  return (
+    <div className="flex flex-col gap-3 p-4 text-sm">
+      <h2 className="text-xl font-semibold">Railway</h2>
+      <label className="flex flex-col gap-1">
+        <span className="text-xs text-slate-600">Mode</span>
+        <select value={doc.mode} onChange={(e) => a.setMode(e.target.value as RailMode)} className={field}>
+          {RAIL_MODES.map((m) => (
+            <option key={m.id} value={m.id}>
+              {m.label}
+            </option>
+          ))}
+        </select>
+      </label>
+      <p className="text-xs text-slate-600">
+        Gauge {p.gauge_mm} mm · track centres {p.track_centre_m} m · min radius {p.min_radius_m} m
+        (recommended {p.recommended_radius_m} m) · max gradient {p.max_gradient_permille} ‰ · design speed{" "}
+        {p.design_speed_kmh} km/h · platforms {p.platform_length_m} m at {p.platform_height_mm} mm ·{" "}
+        {String(p.electrification).replace("_", " ")}
+      </p>
+      <div className="grid grid-cols-2 gap-2">
+        <Stat value={`${view.counts.route_km.toFixed(2)} km`} label="Route" />
+        <Stat value={`${view.counts.track_km.toFixed(2)} km`} label="Track" />
+        <Stat value={String(doc.stations.length)} label="Stations" />
+        <Stat value={String(doc.switches.length)} label="Switches" />
+      </div>
+      <div className="flex gap-2">
+        <button
+          type="button"
+          onClick={a.example}
+          className="flex-1 rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
+        >
+          Example
+        </button>
+        <button
+          type="button"
+          onClick={a.fit}
+          className="flex-1 rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
+        >
+          Zoom to all
+        </button>
+        <button
+          type="button"
+          onClick={a.clear}
+          className="flex-1 rounded border border-slate-300 px-2 py-1 hover:bg-red-50"
+        >
+          Clear
+        </button>
+      </div>
+
+      {tool === "station" && (
+        <Section title="New station">
+          <Segmented
+            label="Station level"
+            value={props.stationOpts.level}
+            options={LEVEL_OPTS}
+            onChange={(level) => a.setStationOpts({ ...props.stationOpts, level })}
+          />
+          <Row label="Side platforms">
+            <Num
+              label="Side platforms"
+              unit=""
+              value={props.stationOpts.sides}
+              onChange={(sides) =>
+                a.setStationOpts({ ...props.stationOpts, sides: Math.min(2, Math.round(sides)) })
+              }
+            />
+          </Row>
+          <Row label="Island platforms">
+            <Num
+              label="Island platforms"
+              unit=""
+              value={props.stationOpts.islands}
+              onChange={(islands) =>
+                a.setStationOpts({ ...props.stationOpts, islands: Math.min(4, Math.round(islands)) })
+              }
+            />
+          </Row>
+        </Section>
+      )}
+
+      {(tool === "track" || draft) && (
+        <Section title={draft ? "Drawing track" : "New track"}>
+          <Segmented<1 | 2>
+            label="Tracks"
+            value={props.trackOpts.tracks}
+            options={[
+              { id: 1, label: "Single" },
+              { id: 2, label: "Double" },
+            ]}
+            onChange={(tracks) => a.setTrackOpts({ ...props.trackOpts, tracks })}
+          />
+          <Segmented
+            label="Level"
+            value={props.trackOpts.level}
+            options={LEVEL_OPTS}
+            onChange={(level) => a.setTrackOpts({ ...props.trackOpts, level })}
+          />
+          <Row label="Electrification">
+            <select
+              value={props.trackOpts.power}
+              onChange={(e) => a.setTrackOpts({ ...props.trackOpts, power: e.target.value as Power })}
+              className={input}
+            >
+              {POWER.map((o) => (
+                <option key={o.id} value={o.id}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
+          </Row>
+          <Segmented<TrackUse>
+            label="Use"
+            value={props.trackOpts.use}
+            options={[
+              { id: "running", label: "Running" },
+              { id: "storage", label: "Storage" },
+            ]}
+            onChange={(use) => a.setTrackOpts({ ...props.trackOpts, use })}
+          />
+          {draft && (
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={a.finishDraft}
+                className="flex-1 rounded bg-emerald-800 px-2 py-1 text-white"
+              >
+                Finish (Enter)
+              </button>
+              <button
+                type="button"
+                onClick={a.cancelDraft}
+                className="flex-1 rounded border border-slate-300 px-2 py-1"
+              >
+                Cancel (Esc)
+              </button>
+            </div>
+          )}
+        </Section>
+      )}
+
+      {(tool === "turnout" || tool === "crossover") && (
+        <Section title={tool === "turnout" ? "New turnout" : "New crossover"}>
+          <Row label="Element">
+            <select
+              value={props.switchOpts.element ?? p.default_turnout}
+              onChange={(e) => a.setSwitchOpts({ ...props.switchOpts, element: e.target.value })}
+              className={input}
+            >
+              {view.turnouts.map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.label}
+                </option>
+              ))}
+            </select>
+          </Row>
+          {tool === "turnout" ? (
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={props.switchOpts.junction}
+                onChange={(e) => a.setSwitchOpts({ ...props.switchOpts, junction: e.target.checked })}
+              />
+              Double junction on double track
+            </label>
+          ) : (
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={props.switchOpts.scissors}
+                onChange={(e) => a.setSwitchOpts({ ...props.switchOpts, scissors: e.target.checked })}
+              />
+              Scissors crossover
+            </label>
+          )}
+        </Section>
+      )}
+
+      {kind === "station" && sel && (
+        <StationInspector st={doc.stations.find((s) => s.id === sel.id)!} {...props} />
+      )}
+      {kind === "track" && sel && <TrackInspector t={doc.tracks.find((s) => s.id === sel.id)!} {...props} />}
+      {kind === "switch" && sel && (
+        <SwitchInspector sw={doc.switches.find((s) => s.id === sel.id)!} {...props} />
+      )}
+
+      <Section title="Trains">
+        <Row label="Train length">
+          <Num
+            label="Train length"
+            unit="m"
+            value={view.train_length_m}
+            onChange={(v) => a.setDoc({ ...doc, train_length_m: v || null })}
+          />
+        </Row>
+      </Section>
+
+      <Section title={`Checks · ${view.counts.errors} errors · ${view.counts.warnings} warnings`}>
+        {props.error && <p className="text-red-700">{props.error}</p>}
+        <ul className="flex flex-col gap-1">
+          {issues.map((i, n) => (
+            <li key={n}>
+              <button
+                type="button"
+                disabled={!i.at && !i.ref_id}
+                onClick={() => a.showIssue(i.at, i.ref_id)}
+                className="flex w-full items-start gap-2 rounded px-1 py-0.5 text-left hover:bg-slate-100 disabled:hover:bg-transparent"
+              >
+                <span
+                  className="mt-1.5 h-2 w-2 shrink-0 rounded-full"
+                  style={{ background: CHIP[i.severity] }}
+                  aria-label={i.severity}
+                />
+                <span>{i.text}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      </Section>
+    </div>
+  );
+}
+
+function Remove({ onClick, what }: { onClick: () => void; what: string }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="rounded border border-red-300 px-2 py-1 text-red-700 hover:bg-red-50"
+    >
+      Delete {what} (Del)
+    </button>
+  );
+}
+
+function StationInspector({ st, doc, view, actions: a }: Props & { st: Station }) {
+  const sv = view.stations.find((s) => s.id === st.id);
+  const set = (f: (s: Station) => Station) => a.setDoc(update(doc, "stations", st.id, f));
+  return (
+    <Section title="Station">
+      <input
+        aria-label="Station name"
+        value={st.name}
+        onChange={(e) => set((s) => ({ ...s, name: e.target.value }))}
+        className={field}
+      />
+      {sv && (
+        <p className="text-xs text-slate-600">
+          {sv.layout} · {sv.tracks} tracks · {sv.platform_edges} platform edges · box {fmtM(sv.box_length_m)}{" "}
+          × {fmtM(sv.box_width_m)}
+        </p>
+      )}
+      <Segmented
+        label="Station level"
+        value={st.level}
+        options={LEVEL_OPTS}
+        onChange={(level) => set((s) => ({ ...s, level }))}
+      />
+      <Row label="Side platforms">
+        <Num
+          label="Side platforms"
+          unit=""
+          value={st.side_platforms}
+          onChange={(v) => set((s) => ({ ...s, side_platforms: Math.min(2, Math.round(v)) }))}
+        />
+      </Row>
+      <Row label="Island platforms">
+        <Num
+          label="Island platforms"
+          unit=""
+          value={st.island_platforms}
+          onChange={(v) => set((s) => ({ ...s, island_platforms: Math.min(4, Math.round(v)) }))}
+        />
+      </Row>
+      <Row label="Platform length">
+        <Num
+          label="Platform length"
+          unit="m"
+          min={20}
+          value={st.platform_length_m}
+          onChange={(v) => set((s) => ({ ...s, platform_length_m: v }))}
+        />
+      </Row>
+      <Row label="Rotation">
+        <Num
+          label="Rotation"
+          unit="°"
+          value={st.rotation_deg}
+          onChange={(v) => set((s) => ({ ...s, rotation_deg: v % 360 }))}
+        />
+      </Row>
+      <Remove what="station" onClick={() => a.remove(st.id)} />
+    </Section>
+  );
+}
+
+function TrackInspector({ t, doc, view, sel, actions: a }: Props & { t: Track }) {
+  const tv = view.tracks.find((x) => x.id === t.id);
+  const set = (f: (x: Track) => Track) => a.setDoc(update(doc, "tracks", t.id, f));
+  const pi = sel?.pi !== undefined ? t.points[sel.pi] : undefined;
+  return (
+    <Section title={t.name || `Track ${t.id}`}>
+      <input
+        aria-label="Track name"
+        placeholder="Name"
+        value={t.name}
+        onChange={(e) => set((x) => ({ ...x, name: e.target.value }))}
+        className={field}
+      />
+      {tv && (
+        <p className="text-xs text-slate-600">
+          {fmtM(tv.length_m)} · {tv.tracks === 2 ? "double" : "single"} track
+          {tv.speed &&
+            ` · up to ${Math.round(tv.speed.max_kmh)} km/h · ${fmtTime(tv.speed.time_s)} end to end`}
+        </p>
+      )}
+      <Segmented<1 | 2>
+        label="Tracks"
+        value={t.tracks}
+        options={[
+          { id: 1, label: "Single" },
+          { id: 2, label: "Double" },
+        ]}
+        onChange={(tracks) => set((x) => ({ ...x, tracks }))}
+      />
+      <Segmented
+        label="Level"
+        value={t.level}
+        options={LEVEL_OPTS}
+        onChange={(level) => set((x) => ({ ...x, level }))}
+      />
+      <Row label="Electrification">
+        <select
+          value={t.power}
+          onChange={(e) => set((x) => ({ ...x, power: e.target.value as Power }))}
+          className={input}
+        >
+          {POWER.map((o) => (
+            <option key={o.id} value={o.id}>
+              {o.label}
+            </option>
+          ))}
+        </select>
+      </Row>
+      <Row label="Track bed">
+        <select
+          value={t.bed}
+          onChange={(e) => set((x) => ({ ...x, bed: e.target.value as Track["bed"] }))}
+          className={input}
+        >
+          <option value="auto">Mode default</option>
+          <option value="ballast">Ballast</option>
+          <option value="embedded">Embedded in street</option>
+        </select>
+      </Row>
+      <Segmented<TrackUse>
+        label="Use"
+        value={t.use}
+        options={[
+          { id: "running", label: "Running" },
+          { id: "storage", label: "Storage" },
+        ]}
+        onChange={(use) => set((x) => ({ ...x, use }))}
+      />
+      {pi && sel?.pi !== undefined && (
+        <div className="flex flex-col gap-2 rounded border border-amber-300 bg-amber-50 p-2">
+          <b>Point {sel.pi + 1}</b>
+          <Segmented
+            label="Point level"
+            value={pi.level ?? t.level}
+            options={LEVEL_OPTS}
+            onChange={(level) =>
+              set((x) => ({ ...x, points: x.points.map((q, i) => (i === sel.pi ? { ...q, level } : q)) }))
+            }
+          />
+          <Row label="Radius (empty = largest that fits)">
+            <input
+              type="number"
+              aria-label="Curve radius"
+              value={pi.radius_m ?? ""}
+              min={0}
+              onChange={(e) => {
+                const v = e.target.value === "" ? null : Math.max(1, Number(e.target.value));
+                set((x) => ({
+                  ...x,
+                  points: x.points.map((q, i) => (i === sel.pi ? { ...q, radius_m: v } : q)),
+                }));
+              }}
+              className="w-20 rounded border border-slate-300 px-1 py-0.5 text-right"
+            />
+          </Row>
+          <button
+            type="button"
+            className="rounded border border-red-300 px-2 py-1 text-red-700"
+            onClick={() => {
+              set((x) => ({ ...x, points: x.points.filter((_, i) => i !== sel.pi) }));
+              a.select({ id: t.id });
+            }}
+          >
+            Remove point
+          </button>
+        </div>
+      )}
+      {tv && tv.curves.length > 0 && (
+        <table className="w-full text-xs">
+          <thead className="text-slate-500">
+            <tr>
+              <th className="text-left">Curve</th>
+              <th className="text-right">R</th>
+              <th className="text-right">Transition</th>
+              <th className="text-right">Cant</th>
+              <th className="text-right">Speed</th>
+            </tr>
+          </thead>
+          <tbody>
+            {tv.curves.map((c, i) => (
+              <tr
+                key={i}
+                className={c.pi !== null ? "cursor-pointer hover:bg-slate-100" : ""}
+                onClick={() => c.pi !== null && a.select({ id: t.id, pi: c.pi })}
+                style={{ color: c.radius_m < view.params.min_radius_m ? COLORS.error : undefined }}
+              >
+                <td>{c.pi !== null ? `Point ${c.pi + 1}` : (VERTEX[c.kind] ?? c.kind)}</td>
+                <td className="text-right font-mono">{Math.round(c.radius_m)} m</td>
+                <td className="text-right font-mono">{Math.round(c.transition_m)} m</td>
+                <td className="text-right font-mono">{Math.round(c.cant_mm)} mm</td>
+                <td className="text-right font-mono">{Math.round(c.speed_kmh)} km/h</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+      {tv && tv.ramps.length > 0 && (
+        <ul className="text-xs text-slate-600">
+          {tv.ramps.map((r, i) => (
+            <li key={i}>
+              Ramp {LEVEL_LABEL[r.from]} → {LEVEL_LABEL[r.to]}: {r.dh_m.toFixed(1)} m over {fmtM(r.length_m)}
+            </li>
+          ))}
+        </ul>
+      )}
+      <p className="text-xs text-slate-500">
+        Click a point to edit it. Drag the square handles to change the straight out of a station or switch.
+      </p>
+      <Remove what="track" onClick={() => a.remove(t.id)} />
+    </Section>
+  );
+}
+
+function SwitchInspector({ sw, doc, view, actions: a }: Props & { sw: Switch }) {
+  const sv = view.switches.find((x) => x.id === sw.id);
+  const set = (f: (x: Switch) => Switch) => a.setDoc(update(doc, "switches", sw.id, f));
+  return (
+    <Section title={sv?.label ?? "Switch"}>
+      {sv && (
+        <p className="text-xs text-slate-600">
+          {fmtM(sv.length_m)} long · 1:{sv.crossing_ratio_n} · R {Math.round(sv.radius_m)} m ·{" "}
+          {Math.round(sv.diverging_speed_kmh)} km/h diverging · at {fmtM(sv.s0)}
+        </p>
+      )}
+      <Row label="Element">
+        <select
+          value={sw.element}
+          onChange={(e) => set((x) => ({ ...x, element: e.target.value }))}
+          className={input}
+        >
+          {view.turnouts.map((t) => (
+            <option key={t.id} value={t.id}>
+              {t.label}
+            </option>
+          ))}
+        </select>
+      </Row>
+      <Row label="Position along track">
+        <Num label="Switch position" unit="m" value={sw.s} onChange={(s) => set((x) => ({ ...x, s }))} />
+      </Row>
+      <div className="flex gap-2">
+        <button
+          type="button"
+          className="flex-1 rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
+          onClick={() => set((x) => ({ ...x, side: x.side === 1 ? -1 : 1 }))}
+        >
+          Other side
+        </button>
+        <button
+          type="button"
+          className="flex-1 rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
+          onClick={() => set((x) => ({ ...x, direction: x.direction === 1 ? -1 : 1 }))}
+        >
+          Reverse
+        </button>
+        {sw.kind !== "turnout" && (
+          <button
+            type="button"
+            className="flex-1 rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
+            onClick={() => set((x) => ({ ...x, flip: !x.flip }))}
+          >
+            Mirror
+          </button>
+        )}
+      </div>
+      <Remove what="switch" onClick={() => a.remove(sw.id)} />
+    </Section>
+  );
+}
