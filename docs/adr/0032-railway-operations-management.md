@@ -1,6 +1,6 @@
 # ADR-0032: Railway operations management: rail lines from stations, conflict-free timetables on blocking times, and a traffic management layer that reschedules
 
-- Status: Proposed (design for product owner review, 2026-10-28; product owner answers added 2026-11-01)
+- Status: Accepted (product owner approval, 2026-11-01)
 - Date: 2026-10-28, revised 2026-11-01
 - Deciders: product owner, architecture
 - Related: FR-NET-10, FR-NET-11, FR-SIM-02, FR-SIM-04, FR-SIM-07, FR-SIM-09, FR-TT-01..06, NFR-PERF-03, NFR-ACC-01/02, ADR-0006 (rail kernel), ADR-0007 (co-simulation), ADR-0028 (persistence), ADR-0029 (street lines), ADR-0030 (railway design tool), [07 §4, §9, §11](../architecture/07-simulation.md), [spike S2](../spikes/s2-rail-kernel-performance.md)
