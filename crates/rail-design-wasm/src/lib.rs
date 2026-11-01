@@ -75,6 +75,15 @@ impl RailDesigner {
         best.map_or("null".into(), |b| b.1.to_string())
     }
 
+    /// Purpose: the track topology of the last build for railway operations, as JSON
+    /// (`contracts/rail-topology.schema.json`); "null" before the first build.
+    pub fn topology(&self) -> String {
+        self.design.as_ref().map_or("null".into(), |d| {
+            serde_json::to_string(&rail_design::topology::topology(d))
+                .unwrap_or_else(|_| "null".into())
+        })
+    }
+
     /// Purpose: chainage on a given track nearest to a map position (NaN when the track is unknown).
     pub fn chainage(&self, track: u32, lon: f64, lat: f64) -> f64 {
         let Some(d) = &self.design else {

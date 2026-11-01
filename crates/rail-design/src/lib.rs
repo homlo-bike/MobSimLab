@@ -10,6 +10,7 @@
 //! - [`switch`]: catalogue turnouts, double junctions, crossovers and scissors crossovers.
 //! - [`design`]: builds everything and runs the live checks of 06 §9.2.
 //! - [`view`]: GeoJSON layers, handles and summaries for the map editor.
+//! - [`topology`]: the track graph for railway operations (`contracts/rail-topology.schema.json`).
 //! - [`params`]: rail modes, design values and the switch catalogue from the assumption library.
 //!
 //! The same crate runs natively (simulation worker, rail kernel input) and, compiled to
@@ -26,6 +27,7 @@ pub mod proj;
 pub mod sample;
 pub mod station;
 pub mod switch;
+pub mod topology;
 pub mod view;
 
 pub use design::{build, Design};

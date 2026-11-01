@@ -711,6 +711,16 @@ export function RailwayEditor({ map, panel = null, loadEngine = loadRailEngine }
       if (ref) setSel({ id: ref });
       if (at && map) map.easeTo({ center: at, zoom: Math.max(map.getZoom(), 16) });
     },
+    downloadTopology: () => {
+      const t = engine.current?.topology();
+      if (!t) return;
+      const url = URL.createObjectURL(new Blob([JSON.stringify(t, null, 1)], { type: "application/json" }));
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "rail-topology.json";
+      link.click();
+      URL.revokeObjectURL(url);
+    },
     fit: () => {
       const b = view?.bbox;
       if (b && map)

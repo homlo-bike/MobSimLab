@@ -56,6 +56,7 @@ export interface RailPanelActions {
   clear: () => void;
   showIssue: (at: LonLat | null, ref: number | null) => void;
   fit: () => void;
+  downloadTopology: () => void;
 }
 
 interface Props {
@@ -394,6 +395,21 @@ export function RailPanel(props: Props) {
             onChange={(v) => a.setDoc({ ...doc, train_length_m: v || null })}
           />
         </Row>
+      </Section>
+
+      <Section title="Operations">
+        <p className="text-xs text-slate-600">
+          The track graph for timetables and train control: sections, allowed movements, switches, platform
+          edges, crossings and depot groups.
+        </p>
+        <button
+          type="button"
+          onClick={a.downloadTopology}
+          disabled={view.tracks.length === 0}
+          className="rounded border border-slate-300 px-2 py-1 hover:bg-slate-100 disabled:opacity-40"
+        >
+          Download track topology (JSON){view.counts.errors > 0 ? " · has errors" : ""}
+        </button>
       </Section>
 
       <Section title={`Checks · ${view.counts.errors} errors · ${view.counts.warnings} warnings`}>

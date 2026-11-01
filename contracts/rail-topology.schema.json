@@ -1,0 +1,340 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mobsimlab.org/contracts/rail-topology.schema.json",
+  "title": "Railway topology",
+  "description": "The track graph of a railway design for railway operations (ADR-0032, ADR-0033), produced by crates/rail-design (topology module). Positions and geometry are metres east and north of `origin` in the design's local transverse Mercator frame. Offsets along a section (`from_m`, `to_m`) are measured from its `from` node.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "origin",
+    "mode",
+    "modes",
+    "valid",
+    "errors",
+    "nodes",
+    "sections",
+    "links",
+    "switches",
+    "platform_edges",
+    "crossings",
+    "depot_groups"
+  ],
+  "properties": {
+    "schema": { "const": "mobsimlab.rail-topology/1" },
+    "origin": {
+      "description": "[longitude, latitude] of the local frame's origin, degrees (WGS84).",
+      "type": "array",
+      "items": { "type": "number" },
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "mode": { "$ref": "#/$defs/mode", "description": "The network's mode." },
+    "modes": {
+      "description": "Railway systems in the drawing.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/mode" },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "valid": { "type": "boolean", "description": "No design errors: operations may use this topology." },
+    "errors": { "type": "array", "items": { "type": "string" } },
+    "nodes": { "type": "array", "items": { "$ref": "#/$defs/node" } },
+    "sections": { "type": "array", "items": { "$ref": "#/$defs/section" } },
+    "links": { "type": "array", "items": { "$ref": "#/$defs/link" } },
+    "switches": { "type": "array", "items": { "$ref": "#/$defs/switch" } },
+    "platform_edges": { "type": "array", "items": { "$ref": "#/$defs/platform_edge" } },
+    "crossings": { "type": "array", "items": { "$ref": "#/$defs/crossing" } },
+    "depot_groups": { "type": "array", "items": { "$ref": "#/$defs/depot_group" } }
+  },
+  "$defs": {
+    "mode": {
+      "enum": [
+        "tram",
+        "light_rail",
+        "metro",
+        "commuter_rail",
+        "regional_rail",
+        "long_distance_rail",
+        "high_speed_rail"
+      ]
+    },
+    "metres": { "type": "number", "minimum": 0 },
+    "point": {
+      "type": "array",
+      "items": { "type": "number" },
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "node_id": {
+      "description": "w{switch}.{toe} at switch points; otherwise the first section end that meets there, such as s{station}.{track}.a or t{track}.{line}.b.",
+      "type": "string",
+      "pattern": "^(w\\d+\\.(\\d+|p\\d+\\.[ab])|s\\d+\\.\\d+\\.[ab]|t\\d+\\.\\d+\\.[ab])$"
+    },
+    "section_id": {
+      "description": "t{track}.{line}.{piece} (line 0 is the left track of a double track; pieces are split at switch points), s{station}.{track}, or w{switch}.{leg}.",
+      "type": "string",
+      "pattern": "^(t\\d+\\.\\d+\\.\\d+|s\\d+\\.\\d+|w\\d+\\.\\d+)$"
+    },
+    "node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "switch", "x", "y"],
+      "properties": {
+        "id": { "$ref": "#/$defs/node_id" },
+        "kind": {
+          "description": "end: one section (buffer stop or unconnected end); join: two sections; switch: three or more.",
+          "enum": ["end", "join", "switch"]
+        },
+        "switch": { "type": ["integer", "null"], "minimum": 1 },
+        "x": { "type": "number" },
+        "y": { "type": "number" }
+      }
+    },
+    "range_number": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from_m", "to_m", "value"],
+      "properties": {
+        "from_m": { "$ref": "#/$defs/metres" },
+        "to_m": { "$ref": "#/$defs/metres" },
+        "value": { "type": "number" }
+      }
+    },
+    "range_level": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from_m", "to_m", "value"],
+      "properties": {
+        "from_m": { "$ref": "#/$defs/metres" },
+        "to_m": { "$ref": "#/$defs/metres" },
+        "value": { "enum": ["underground2", "underground", "street", "elevated", "elevated2", "ramp"] }
+      }
+    },
+    "section": {
+      "description": "A physical track between two nodes.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "source",
+        "from",
+        "to",
+        "length_m",
+        "mode",
+        "gauge_mm",
+        "use",
+        "power",
+        "levels",
+        "speed_kmh",
+        "gradient_permille",
+        "radius_m",
+        "platform_edges",
+        "geometry"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/section_id" },
+        "source": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "ref", "index", "chainage_m"],
+          "properties": {
+            "kind": { "enum": ["track", "station", "switch"] },
+            "ref": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Document id of the track, station or switch."
+            },
+            "index": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Line of a double track, station track index or switch leg."
+            },
+            "chainage_m": {
+              "description": "Chainage range on the track's centre line (track sections only).",
+              "oneOf": [
+                { "type": "null" },
+                { "type": "array", "items": { "type": "number" }, "minItems": 2, "maxItems": 2 }
+              ]
+            }
+          }
+        },
+        "from": { "$ref": "#/$defs/node_id" },
+        "to": { "$ref": "#/$defs/node_id" },
+        "length_m": { "$ref": "#/$defs/metres" },
+        "mode": { "$ref": "#/$defs/mode" },
+        "gauge_mm": { "type": "number", "exclusiveMinimum": 0 },
+        "use": { "enum": ["running", "storage"] },
+        "power": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "system"],
+          "properties": {
+            "kind": { "enum": ["overhead", "third_rail", "none"] },
+            "system": {
+              "type": ["string", "null"],
+              "description": "Supply system id in the assumption library."
+            }
+          }
+        },
+        "levels": { "type": "array", "items": { "$ref": "#/$defs/range_level" }, "minItems": 1 },
+        "speed_kmh": { "type": "array", "items": { "$ref": "#/$defs/range_number" } },
+        "gradient_permille": {
+          "description": "Ramp gradient (the mode's maximum), positive rising from `from` to `to`.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/range_number" }
+        },
+        "radius_m": { "type": "array", "items": { "$ref": "#/$defs/range_number" } },
+        "platform_edges": { "type": "array", "items": { "type": "string" } },
+        "geometry": { "type": "array", "items": { "$ref": "#/$defs/point" }, "minItems": 2 }
+      }
+    },
+    "end": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["section", "end"],
+      "properties": {
+        "section": { "$ref": "#/$defs/section_id" },
+        "end": { "enum": ["from", "to"] }
+      }
+    },
+    "link": {
+      "description": "A train may pass from section end a into section end b at the node, and back.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["node", "a", "b"],
+      "properties": {
+        "node": { "$ref": "#/$defs/node_id" },
+        "a": { "$ref": "#/$defs/end" },
+        "b": { "$ref": "#/$defs/end" }
+      }
+    },
+    "switch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "element",
+        "label",
+        "track",
+        "chainage_m",
+        "nodes",
+        "legs",
+        "conflict_sections",
+        "diverging_speed_kmh",
+        "radius_m",
+        "crossing_ratio_n"
+      ],
+      "properties": {
+        "id": { "type": "integer", "minimum": 1 },
+        "kind": { "enum": ["turnout", "double_junction", "crossover", "scissors"] },
+        "element": { "type": "string", "description": "Catalogue element (assumptions/switches.yaml)." },
+        "label": { "type": "string" },
+        "track": { "type": "integer", "minimum": 1 },
+        "chainage_m": { "type": "array", "items": { "type": "number" }, "minItems": 2, "maxItems": 2 },
+        "nodes": { "type": "array", "items": { "$ref": "#/$defs/node_id" } },
+        "legs": { "type": "array", "items": { "$ref": "#/$defs/section_id" }, "minItems": 1 },
+        "conflict_sections": {
+          "description": "Sections a train in the switch occupies or fouls; one train at a time.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/section_id" }
+        },
+        "diverging_speed_kmh": { "type": "number", "exclusiveMinimum": 0 },
+        "radius_m": { "type": "number", "exclusiveMinimum": 0 },
+        "crossing_ratio_n": { "type": "number", "exclusiveMinimum": 0 }
+      }
+    },
+    "platform_edge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "station",
+        "station_name",
+        "track",
+        "side",
+        "section",
+        "from_m",
+        "to_m",
+        "length_m",
+        "height_mm",
+        "mode"
+      ],
+      "properties": {
+        "id": { "type": "string", "pattern": "^p\\d+\\.\\d+\\.[lr]$" },
+        "station": { "type": "integer", "minimum": 1 },
+        "station_name": {
+          "type": "string",
+          "description": "Stations with the same name are one station in several parts (ADR-0032)."
+        },
+        "track": { "type": "integer", "minimum": 0 },
+        "side": { "enum": ["left", "right"] },
+        "section": { "$ref": "#/$defs/section_id" },
+        "from_m": { "$ref": "#/$defs/metres" },
+        "to_m": { "$ref": "#/$defs/metres" },
+        "length_m": { "$ref": "#/$defs/metres" },
+        "height_mm": { "type": "number", "minimum": 0 },
+        "mode": { "$ref": "#/$defs/mode" }
+      }
+    },
+    "crossing_track": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["track", "chainage_m", "fouling_before_m", "fouling_after_m", "sections"],
+      "properties": {
+        "track": { "type": "integer", "minimum": 1 },
+        "chainage_m": { "$ref": "#/$defs/metres" },
+        "fouling_before_m": {
+          "$ref": "#/$defs/metres",
+          "description": "Distance back from the crossing to where the other alignment is clear by the clearance marker distance."
+        },
+        "fouling_after_m": { "$ref": "#/$defs/metres" },
+        "sections": {
+          "description": "Line sections within the fouling points (same-level crossings only).",
+          "type": "array",
+          "items": { "$ref": "#/$defs/section_id" }
+        }
+      }
+    },
+    "crossing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "conflict", "modes", "angle_deg", "x", "y", "tracks"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^x\\d+-\\d+-\\d+$" },
+        "kind": {
+          "description": "diamond: same level, a conflict for one train at a time from either system; grade_separated: no conflict; clash: a design error.",
+          "enum": ["diamond", "grade_separated", "clash"]
+        },
+        "conflict": { "type": "boolean" },
+        "modes": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/mode" },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "angle_deg": { "type": "number", "minimum": 0, "maximum": 90 },
+        "x": { "type": "number" },
+        "y": { "type": "number" },
+        "tracks": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/crossing_track" },
+          "minItems": 2,
+          "maxItems": 2
+        }
+      }
+    },
+    "depot_group": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "tracks", "sections", "length_m"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^d\\d+$" },
+        "tracks": { "type": "array", "items": { "type": "integer", "minimum": 1 }, "minItems": 1 },
+        "sections": { "type": "array", "items": { "$ref": "#/$defs/section_id" }, "minItems": 1 },
+        "length_m": { "$ref": "#/$defs/metres" }
+      }
+    }
+  }
+}

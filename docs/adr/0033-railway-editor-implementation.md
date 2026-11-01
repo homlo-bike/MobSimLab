@@ -33,7 +33,7 @@ The editor has to refit curves and re-run the checks on every drag. Railway oper
 
 - The editor needs no server. Railway designs live in the open editor until the network design module stores them, as street lines do (ADR-0031).
 - CI and the image build compile a second WebAssembly module (`tools/wasm/build-rail-design.sh`). The web tests load it from disk.
-- Railway operations (ADR-0032) gets a topology export from the same crate in the next PR, with a JSON Schema in `contracts/`. It will carry stable ids for sections, switch legs, platform edges and buffer stops, the directed topology, conflicts (switches and same-level crossings between any systems), speed, gradient and radius ranges, electrification, use and level, and depot groups.
+- Railway operations (ADR-0032) reads the design as a track topology from the same crate (`topology` module, `contracts/rail-topology.schema.json`). It contains sections with stable ids split at switch points, the allowed movements through each node, switches with their conflict sections, platform edges, crossings with chainages and fouling points, and depot groups. CI checks every mode's example against the schema.
 - Signals and train detection sections (ADR-0030 point 7) are generated in a later step from the same geometry.
 - Tunnel cover, bridge clearance and terrain checks wait for the DEM (06 §4). Until then levels are nominal heights from the assumption library.
 

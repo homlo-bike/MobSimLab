@@ -267,6 +267,8 @@ export interface RailEngine {
   toLocal(origin: LonLat, at: LonLat): [number, number];
   defaultParams(mode: RailMode): ModeParams;
   sample(mode: RailMode, at: LonLat): Network;
+  /** Track topology of the last build for railway operations (contracts/rail-topology.schema.json). */
+  topology(): unknown;
   dispose(): void;
 }
 

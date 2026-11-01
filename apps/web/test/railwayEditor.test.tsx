@@ -172,6 +172,24 @@ describe("railway engine (WebAssembly)", () => {
     e.dispose();
   });
 
+  it("exports the track topology of the last build for operations", async () => {
+    const e = await loadRailEngine();
+    e.build(e.sample("metro", ORIGIN), null);
+    const t = e.topology() as {
+      schema: string;
+      valid: boolean;
+      sections: { id: string }[];
+      switches: { id: number; legs: string[] }[];
+      platform_edges: unknown[];
+    };
+    expect(t.schema).toBe("mobsimlab.rail-topology/1");
+    expect(t.valid).toBe(true);
+    expect(t.sections.map((s) => s.id)).toContain("s1.0");
+    expect(t.switches.map((s) => s.id)).toEqual([4, 5]);
+    expect(t.platform_edges).toHaveLength(4);
+    e.dispose();
+  });
+
   it("reports a curve tighter than the minimum radius", async () => {
     const e = await loadRailEngine();
     const doc: Network = {

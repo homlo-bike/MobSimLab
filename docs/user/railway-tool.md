@@ -73,6 +73,10 @@ Double track spreads smoothly to the station's track spacing where it meets a st
 - Further out, each track is one line, and below zoom 12.5 each alignment is one line.
 - Tracks on the same level merge into one piece of trackwork. Lower levels are drawn under higher ones and paler.
 
+## Track topology for operations
+
+**Download track topology (JSON)** in the panel saves the drawing as a graph for timetables and train control. It contains track sections, the movements allowed at every switch and join, platform edges, switches, crossings and depot groups. The format is described in [contracts](../../contracts/README.md). If the design has errors, the file says so (`valid: false`), and the button shows it.
+
 ## Checks
 
 The panel lists errors and warnings as you draw. Click one to go to it. Among them:
