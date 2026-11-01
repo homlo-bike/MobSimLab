@@ -1,6 +1,6 @@
 # ADR-0035: AI agents connect from outside through an MCP server; MobSimLab supplies deterministic scenario, benchmark and walk-coverage tools
 
-- Status: Proposed (design for product owner review, 2026-11-01)
+- Status: Proposed (design for product owner review, 2026-11-01; product owner answers added 2026-11-01)
 - Date: 2026-11-01
 - Deciders: product owner, architecture
 - Related: FR-PLAT-05, FR-PLAT-06, FR-ASM-01..05, FR-DEM-03, FR-NET-01, C-10, ADR-0012 (audit), ADR-0013 (scenario overlays), ADR-0014 (results storage), ADR-0015 (OIDC), ADR-0017 (outbound gateway), ADR-0018 (no built-in AI), ADR-0020 (day types), ADR-0023 (job queue), ADR-0027 (collaboration), ADR-0031 (street routing), ADR-0032 (railway operations), ADR-0034 (journey time planner, in progress), [06 §9.3](../architecture/06-gis.md), [09 §2.2](../architecture/09-planning-models.md)
@@ -51,6 +51,7 @@ Forces:
 | `simulation:run` | Start, cancel and read simulation runs and experiments on scenarios, within the agent budget |
 
   The effective permission is always **the intersection** of the token's scopes and the user's current project role (05). An agent can never do more than its user, and if the user loses a role the token loses it immediately.
+- **Only Editors and above can connect agents** (product owner, 2026-11-01). Users whose role in a project is Viewer cannot authorise an agent for that project, not even with `project:read`; the consent screen lists only projects where the user is Editor or higher, and a token loses a project as soon as the user is demoted to Viewer there.
 - Access tokens live 1 hour, refresh tokens rotate and expire after 30 days of non-use; both are revocable on a **Connected agents** page in the user's settings, which lists each client, its scopes, last use and recent actions. Tokens are stored hashed. For headless use (CI) a user can create a **personal access token** with the same scopes and an expiry date.
 
 ### 3. Agents work in scenarios only, and people promote
@@ -95,7 +96,7 @@ The first set of tools (names are stable API; each declares MCP tool annotations
 
 | Preset | Rule | Default |
 |--------|------|---------|
-| `walk_minutes` | Walk time to the nearest stop ≤ X min | X = **15** (new entry `analysis.walk_rule_minutes`, editable); about 1.1 km at the central 4.5 km/h |
+| `walk_minutes` | Walk time to the nearest stop or station ≤ X min. **The headline number on every report** (product owner, 2026-11-01) | X = **15** (new entry `analysis.walk_rule_minutes`, editable); about 1.1 km at the central 4.5 km/h |
 | `sdg_11_2_1` | 500 m to low-capacity, 1000 m to high-capacity stops, network distance | UN-Habitat definition, fixed so results are comparable between cities |
 | `catchment_by_mode` | Mode catchment from `mode.catchment_m` | Matches the demand model's access links |
 | `frequent_only` | As `walk_minutes`, counting only stops with headway ≤ H in the period | H = 15 min (`analysis.frequent_headway_min`) |
@@ -136,7 +137,7 @@ The coverage and spacing analyses ship as map layers and reports in the same pha
 
 | Option | Why not |
 |--------|---------|
-| Built-in chat with Claude through the outbound gateway, using an instance-wide API key | Contradicts ADR-0018; the instance would send project data to a model provider and pay for it; results would depend on model output. Can be revisited by the product owner as an optional add-on later, and would then reuse these same tools |
+| Built-in chat with Claude through the outbound gateway, using an instance-wide API key | Contradicts ADR-0018; the instance would send project data to a model provider and pay for it; results would depend on model output. The product owner confirmed (2026-11-01) that no optional in-app chat is wanted |
 | REST API only, let each user write their own agent glue | Works for scripts (and stays available), but every agent client would need custom setup and tool descriptions; MCP is the open standard the major AI clients support |
 | A separate MCP service or container calling the REST API | A third container (ADR-0003) and a second place for permissions and audit; an in-process module reuses both |
 | Delegate token issuing for agents to the OIDC provider | Most providers lack dynamic client registration and audience-bound tokens for third-party MCP clients; a small authorization server in front of OIDC works with every provider |
@@ -154,8 +155,8 @@ The coverage and spacing analyses ship as map layers and reports in the same pha
 - The MCP tool names and schemas become a public contract; changes follow the same versioning and deprecation rules as the REST API.
 - MCP is young and its authorization part has changed between revisions. The adapter is kept thin and tested against the official MCP conformance tooling and Claude's connector, so a spec revision means updating one module.
 
-## Questions for the product owner
+## Product owner answers (2026-11-01)
 
-1. Which reading of "the 15-minute rule" should be the headline number on reports: **15-minute walk to any stop** (proposed default), SDG 11.2.1, or the 15-minute city (daily needs)? All presets will be available either way.
-2. Should agents be allowed for users with the Viewer role (read and analyse only), or only for Editors and above?
-3. Is an optional in-app chat (with an API key the Owner provides) something you want later? It would need a change to ADR-0018, so this ADR does not include it.
+1. **Headline rule:** a 15-minute walk to the nearest stop or station (`walk_minutes` preset). The other presets stay available as secondary figures.
+2. **Viewers cannot connect agents.** Agent access needs the Editor role or higher in each granted project (§2).
+3. **No optional in-app chat.** MobSimLab stays model-free; agents connect only from outside through MCP.
