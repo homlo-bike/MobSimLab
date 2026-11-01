@@ -228,6 +228,7 @@ mod tests {
             side_platforms: sides,
             island_platforms: islands,
             platform_length_m: 120.0,
+            mode: None,
         }
     }
 

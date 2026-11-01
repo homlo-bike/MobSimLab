@@ -157,6 +157,21 @@ describe("railway engine (WebAssembly)", () => {
     e.dispose();
   });
 
+  it("crosses a tram line and a regional railway on one shared diamond", async () => {
+    const e = await loadRailEngine();
+    const v = e.build(e.sample("regional_rail", ORIGIN), null);
+    const diamond = v.crossings.find((c) => c.kind === "diamond");
+    expect(diamond?.modes).toEqual(["regional_rail", "tram"]);
+    expect(diamond?.id).toMatch(/^x\d+-\d+-0$/);
+    expect(v.issues.some((i) => /Only one train at a time/.test(i.text))).toBe(true);
+    expect(v.counts.errors).toBe(0);
+    expect(Object.keys(v.modes).sort()).toEqual(["regional_rail", "tram"]);
+    // Sleepers of both systems share one layer per level, under all rails of that level.
+    const modes = new Set(v.layers.tracks.features.map((f) => f.properties.mode));
+    expect(modes).toEqual(new Set(["regional_rail", "tram"]));
+    e.dispose();
+  });
+
   it("reports a curve tighter than the minimum radius", async () => {
     const e = await loadRailEngine();
     const doc: Network = {
@@ -247,6 +262,37 @@ describe("Railway editor", () => {
     expect(map.fitBounds).toHaveBeenCalled();
     fireEvent.click(screen.getByText(/Diamond crossing/));
     expect(await screen.findByRole("button", { name: /Delete track/ })).toBeTruthy();
+  });
+
+  it("keeps what is drawn in its own railway system when the mode for new elements changes", async () => {
+    let built: Network | null = null;
+    const { map } = fakeMap();
+    render(
+      <RailwayEditor
+        map={map}
+        loadEngine={async () => {
+          const e = await loadRailEngine();
+          const build = e.build;
+          e.build = (doc, draft) => {
+            built = doc;
+            return build(doc, draft);
+          };
+          return e;
+        }}
+      />,
+    );
+    await waitFor(() => expect(screen.getByRole("button", { name: "Example" })).toBeTruthy());
+    // The drawing outlives the editor, so start from metro whatever an earlier test left.
+    fireEvent.change(screen.getByRole("combobox"), { target: { value: "metro" } });
+    fireEvent.click(screen.getByRole("button", { name: "Example" }));
+    await screen.findByText(/Train length \(Metro\)/);
+    fireEvent.change(screen.getByRole("combobox"), { target: { value: "tram" } });
+    expect(await screen.findByText(/Train length \(Tram\)/)).toBeTruthy();
+    const doc = built! as Network;
+    expect(doc.mode).toBe("tram");
+    expect(doc.stations.every((st) => st.mode === "metro")).toBe(true);
+    expect(doc.tracks.every((t) => t.mode === "metro")).toBe(true);
+    expect(screen.getByText(/0 errors/)).toBeTruthy();
   });
 
   it("switches tools from the keyboard and cancels a draft with Escape", async () => {

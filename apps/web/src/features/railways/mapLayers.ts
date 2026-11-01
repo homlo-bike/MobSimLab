@@ -38,6 +38,20 @@ export function metres(m: number, lat: number, minPx = 0): ExpressionSpecificati
   return ["interpolate", ["exponential", 2], ["zoom"], ...stops] as ExpressionSpecification;
 }
 
+/** Purpose: the gauge of a track feature in metres (each railway system has its own). */
+const GAUGE: ExpressionSpecification = ["coalesce", ["get", "gauge"], 1.435];
+
+/**
+ * Purpose: like `metres`, for a width that depends on the feature (`m` is an expression in metres),
+ * so tracks of different railway systems in one drawing each keep their own gauge.
+ */
+export function metresBy(m: ExpressionSpecification, lat: number, minPx = 0): ExpressionSpecification {
+  const k = 78271.517 * Math.cos((lat * Math.PI) / 180);
+  const stops: unknown[] = [];
+  for (let z = 8; z <= 24; z++) stops.push(z, ["max", minPx, ["*", m, 2 ** z / k]]);
+  return ["interpolate", ["exponential", 2], ["zoom"], ...stops] as ExpressionSpecification;
+}
+
 const kindIs = (...kinds: string[]): FilterSpecification =>
   ["match", ["get", "kind"], kinds, true, false] as FilterSpecification;
 const atZ = (z: number, f?: FilterSpecification): FilterSpecification =>
@@ -47,10 +61,10 @@ const atZ = (z: number, f?: FilterSpecification): FilterSpecification =>
  * Purpose: add the railway sources and layers once. One stack per level, lowest level first;
  * inside a level all beds and sleepers come before all rails, so tracks that meet or cross on one
  * level merge into one piece of trackwork.
- * Inputs: the map, the latitude used for metre widths, and the gauge in metres.
+ * Inputs: the map and the latitude used for metre widths. Track widths follow each feature's gauge.
  * Side effects: adds sources and layers to the map.
  */
-export function ensureRailLayers(map: MapLibreMap, lat: number, gauge: number): void {
+export function ensureRailLayers(map: MapLibreMap, lat: number): void {
   if (map.getSource(`${P}tracks`)) return;
   for (const n of LAYER_NAMES) map.addSource(`${P}${n}`, { type: "geojson", data: EMPTY });
   map.addSource(`${P}issues`, { type: "geojson", data: EMPTY });
@@ -149,7 +163,8 @@ export function ensureRailLayers(map: MapLibreMap, lat: number, gauge: number): 
         filter: atZ(z, ["!=", ["get", "bed"], "embedded"] as FilterSpecification),
         paint: {
           "line-color": COLORS.sleeper,
-          "line-width": metres(2.6, lat, 1),
+          // Sleepers 2.6 m long on standard gauge: the gauge plus 1.165 m.
+          "line-width": metresBy(["+", GAUGE, 1.165], lat, 1),
           // Concrete sleepers 0.26 m wide every 0.6 m; dash lengths are in line widths.
           "line-dasharray": [0.26 / 2.6, 0.34 / 2.6],
           "line-opacity": below ? 0.6 : 1,
@@ -165,7 +180,7 @@ export function ensureRailLayers(map: MapLibreMap, lat: number, gauge: number): 
         layout: { "line-join": "round" },
         paint: {
           "line-color": ["case", ["==", ["get", "use"], "storage"], COLORS.storage, COLORS.rail],
-          "line-width": metres(gauge + 0.2, lat, 1.5),
+          "line-width": metresBy(["+", GAUGE, 0.2], lat, 1.5),
           "line-opacity": below ? 0.6 : 1,
         },
       },

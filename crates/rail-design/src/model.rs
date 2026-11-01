@@ -134,6 +134,10 @@ pub struct Station {
     pub island_platforms: u8,
     /// Platform length, m.
     pub platform_length_m: f64,
+    /// Railway system of the station; `None` is the network's mode. Stations of different modes
+    /// are separate infrastructure in one drawing (a tram stop next to a metro station).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<RailMode>,
 }
 
 /// Where a track begins or ends.
@@ -279,6 +283,10 @@ pub struct Track {
     /// Running direction per track (left track first on double track); right-hand running when empty.
     #[serde(default)]
     pub directions: Vec<Direction>,
+    /// Railway system of the track; `None` takes the mode of what it starts from (station or
+    /// switch), else the network's mode. Tracks of different modes may cross on one level.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<RailMode>,
 }
 
 fn default_lead() -> f64 {

@@ -50,6 +50,8 @@ export interface Station {
   side_platforms: number;
   island_platforms: number;
   platform_length_m: number;
+  /** Railway system; absent = the network's mode. */
+  mode?: RailMode | null;
 }
 
 export type Anchor =
@@ -80,6 +82,8 @@ export interface Track {
   radius_start_m?: number | null;
   radius_end_m?: number | null;
   directions?: ("forward" | "back" | "both")[];
+  /** Railway system; absent = that of the station or switch it starts from, else the network's. */
+  mode?: RailMode | null;
 }
 
 export interface Switch {
@@ -120,6 +124,7 @@ export interface ConnectionView {
   used: boolean;
   level: Level;
   bearing_deg: number;
+  mode: RailMode;
 }
 
 export type HandleView =
@@ -152,6 +157,7 @@ export interface TrackView {
   ramps: { from: Level; to: Level; dh_m: number; length_m: number }[];
   levels: { from_m: number; to_m: number; level: Level | "ramp" }[];
   spread_m: [number, number];
+  mode: RailMode;
   speed: { max_kmh: number; time_s: number; profile: [number, number, number][] } | null;
   centre: LonLat[];
 }
@@ -166,6 +172,7 @@ export interface StationView {
   box_width_m: number;
   platform_height_mm: number;
   lonlat: LonLat;
+  mode: RailMode;
 }
 
 export interface SwitchView {
@@ -189,6 +196,16 @@ export interface TurnoutOption {
   diverging_speed_kmh: number | null;
   total_length_m: number | null;
   length_a_m: number | null;
+}
+
+/** Two tracks crossing; a same-level crossing is a conflict one train at a time may occupy. */
+export interface CrossingView {
+  id: string;
+  kind: "diamond" | "gradeseparated" | "clash";
+  tracks: [number, number];
+  modes: [RailMode, RailMode];
+  angle_deg: number;
+  lonlat: LonLat;
 }
 
 export interface FeatureCollection {
@@ -225,6 +242,9 @@ export interface RailView {
   params: ModeParams;
   train_length_m: number;
   turnouts: TurnoutOption[];
+  /** Design values and catalogue of every mode in the drawing. */
+  modes: Partial<Record<RailMode, { params: ModeParams; turnouts: TurnoutOption[] }>>;
+  crossings: CrossingView[];
   counts: { errors: number; warnings: number; track_km: number; route_km: number };
   bbox: [number, number, number, number] | null;
 }

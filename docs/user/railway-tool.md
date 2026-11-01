@@ -23,6 +23,19 @@ The drawing stays while you switch tools or close the railway tool. It is not sa
 
 **Delete** removes the selected element or point. **Escape** clears the selection or cancels the track being drawn.
 
+## Several railway systems
+
+One drawing can hold several railway systems, for example a tram line crossing a regional railway.
+
+- The mode at the top of the panel is the mode for **new** stations and tracks. Changing it does not change what is already drawn.
+- Select a station or track to see or change its **railway system**. Each system keeps its own gauge, track spacing, radii, switches, electrification and train length.
+- A track drawn from a station or switch takes that system automatically.
+- Joining a track to a station or switch of another system gives a warning. If the gauges differ, it is an error.
+- Where two systems cross on the same level, they share one diamond crossing. The sleepers of both are under the rails of both. Only one train at a time may be on the crossing, from either line.
+- A flat crossing with a high-speed line is an error. Different gauges, and overhead lines of different supply systems, give a warning, because they need special trackwork and an insulated wire crossing.
+
+The commuter and regional rail examples show a tram line crossing the railway on one diamond.
+
 ## Stations
 
 - A station has side platforms (at most two) and island platforms. Each platform edge serves one track, so an island serves two tracks.

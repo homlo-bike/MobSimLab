@@ -1,5 +1,6 @@
 //! An example line for a mode, scaled to the mode: two stations, a double track with two curves,
-//! a crossover, a turnout to a stabling siding and a crossing line. Used by the editor's
+//! a crossover, a turnout to a stabling siding and a crossing line (a tram line on one shared
+//! diamond for commuter and regional rail). Used by the editor's
 //! "Example" button and by the tests.
 
 use crate::design::build;
@@ -38,6 +39,7 @@ fn track(id: u32, start: Anchor, end: Option<Anchor>, level: Level) -> Track {
         radius_start_m: None,
         radius_end_m: None,
         directions: vec![],
+        mode: None,
     }
 }
 
@@ -61,6 +63,7 @@ pub fn sample(mode: RailMode, lon: f64, lat: f64) -> Network {
         side_platforms: if mode == RailMode::Tram { 2 } else { 0 },
         island_platforms: if mode == RailMode::Tram { 0 } else { 1 },
         platform_length_m: p.platform_length_m,
+        mode: None,
     };
     let start_x = -0.5 * big;
     net.stations.push(station(1, "Riverside", start_x, 0.0, la));
@@ -167,10 +170,13 @@ pub fn sample(mode: RailMode, lon: f64, lat: f64) -> Network {
     let q = at_s(&mg.centre, sx);
     let n = P2::dir(q.h).left();
     let hl = 0.22 * big;
-    let lv = match mode {
-        RailMode::Tram | RailMode::LightRail => Level::Street,
-        RailMode::Metro => Level::Underground,
-        _ => Level::Elevated,
+    // Commuter and regional rail cross a street-level tram line: two railway systems on one
+    // shared diamond.
+    let (lv, cross_mode) = match mode {
+        RailMode::Tram | RailMode::LightRail => (Level::Street, None),
+        RailMode::Metro => (Level::Underground, None),
+        RailMode::CommuterRail | RailMode::RegionalRail => (Level::Street, Some(RailMode::Tram)),
+        _ => (Level::Elevated, None),
     };
     let a = q.p.sub(n.mul(hl));
     let b = q.p.add(n.mul(hl));
@@ -188,7 +194,13 @@ pub fn sample(mode: RailMode, lon: f64, lat: f64) -> Network {
         }),
         lv,
     );
-    cross.name = "Cross-town line".into();
+    cross.name = if cross_mode.is_some() {
+        "Tram line"
+    } else {
+        "Cross-town line"
+    }
+    .into();
+    cross.mode = cross_mode;
     cross.points = vec![Pi {
         x: q.p.x,
         y: q.p.y,

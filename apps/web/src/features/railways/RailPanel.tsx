@@ -204,7 +204,7 @@ export function RailPanel(props: Props) {
     <div className="flex flex-col gap-3 p-4 text-sm">
       <h2 className="text-xl font-semibold">Railway</h2>
       <label className="flex flex-col gap-1">
-        <span className="text-xs text-slate-600">Mode</span>
+        <span className="text-xs text-slate-600">Mode for new stations and tracks</span>
         <select value={doc.mode} onChange={(e) => a.setMode(e.target.value as RailMode)} className={field}>
           {RAIL_MODES.map((m) => (
             <option key={m.id} value={m.id}>
@@ -386,7 +386,7 @@ export function RailPanel(props: Props) {
       )}
 
       <Section title="Trains">
-        <Row label="Train length">
+        <Row label={`Train length (${p.label})`}>
           <Num
             label="Train length"
             unit="m"
@@ -434,6 +434,29 @@ function Remove({ onClick, what }: { onClick: () => void; what: string }) {
   );
 }
 
+/**
+ * Purpose: the railway system of a station or track. Systems are separate infrastructure in one
+ * drawing; `null` follows the mode for new elements.
+ */
+function ModeRow({ value, onChange }: { value: RailMode; onChange: (m: RailMode) => void }) {
+  return (
+    <Row label="Railway system">
+      <select
+        aria-label="Railway system"
+        value={value}
+        onChange={(e) => onChange(e.target.value as RailMode)}
+        className={input}
+      >
+        {RAIL_MODES.map((m) => (
+          <option key={m.id} value={m.id}>
+            {m.label}
+          </option>
+        ))}
+      </select>
+    </Row>
+  );
+}
+
 function StationInspector({ st, doc, view, actions: a }: Props & { st: Station }) {
   const sv = view.stations.find((s) => s.id === st.id);
   const set = (f: (s: Station) => Station) => a.setDoc(update(doc, "stations", st.id, f));
@@ -444,6 +467,10 @@ function StationInspector({ st, doc, view, actions: a }: Props & { st: Station }
         value={st.name}
         onChange={(e) => set((s) => ({ ...s, name: e.target.value }))}
         className={field}
+      />
+      <ModeRow
+        value={sv?.mode ?? st.mode ?? doc.mode}
+        onChange={(m) => set((x) => ({ ...x, mode: m === doc.mode ? null : m }))}
       />
       {sv && (
         <p className="text-xs text-slate-600">
@@ -508,6 +535,7 @@ function TrackInspector({ t, doc, view, sel, actions: a }: Props & { t: Track })
         onChange={(e) => set((x) => ({ ...x, name: e.target.value }))}
         className={field}
       />
+      <ModeRow value={tv?.mode ?? t.mode ?? doc.mode} onChange={(m) => set((x) => ({ ...x, mode: m }))} />
       {tv && (
         <p className="text-xs text-slate-600">
           {fmtM(tv.length_m)} · {tv.tracks === 2 ? "double" : "single"} track

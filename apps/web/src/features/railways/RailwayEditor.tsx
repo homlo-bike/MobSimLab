@@ -176,12 +176,11 @@ export function RailwayEditor({ map, panel = null, loadEngine = loadRailEngine }
 
   // Layers.
   const lat = doc?.origin[1] ?? 50;
-  const gauge = view ? view.params.gauge_mm / 1000 : 1.435;
   useEffect(() => {
     if (!map) return;
-    ensureRailLayers(map, lat, gauge);
+    ensureRailLayers(map, lat);
     return () => removeRailLayers(map);
-  }, [map, lat, gauge]);
+  }, [map, lat]);
   const selection: FeatureCollection = useMemo(() => {
     const features = (view?.layers.tracks.features ?? []).filter((f) => sel && f.properties.ref === sel.id);
     return { type: "FeatureCollection", features };
@@ -313,10 +312,18 @@ export function RailwayEditor({ map, panel = null, loadEngine = loadRailEngine }
         const hit = e.nearestTrack(ll, pxToM(10));
         if (!hit) return say("Click on a track to place a switch.");
         if (!hit.straight) return say("Catalogue switches go on straight track. Click on a straight part.");
-        const element = s.switchOpts.element ?? params?.default_turnout ?? "";
+        // The panel's element is from the catalogue of the mode for new elements; a track of
+        // another railway system gets its own mode's default turnout.
+        const trackMode = s.view?.tracks.find((t) => t.id === hit.track)?.mode ?? s.doc.mode;
+        const catalogue = s.view?.modes[trackMode];
+        const element =
+          (trackMode === s.doc.mode ? s.switchOpts.element : null) ??
+          catalogue?.params.default_turnout ??
+          params?.default_turnout ??
+          "";
         if (s.tool === "crossover") {
           if (hit.tracks !== 2) return say("Crossovers join two parallel tracks. Pick a double track.");
-          const t = s.view?.turnouts.find((x) => x.id === element);
+          const t = (catalogue?.turnouts ?? s.view?.turnouts)?.find((x) => x.id === element);
           const len = t ? 2 * (t.length_a_m ?? 0) + hit.spacing * (t.crossing_ratio_n ?? 0) : 0;
           const [d, id] = addSwitch(s.doc, {
             kind: s.switchOpts.scissors ? "scissors" : "crossover",
@@ -655,9 +662,24 @@ export function RailwayEditor({ map, panel = null, loadEngine = loadRailEngine }
       setDoc(deleteElement(doc, id, anchorAt));
       setSel(null);
     },
+    // The panel's mode is the mode for new stations and tracks. What is already drawn keeps its
+    // railway system: elements that followed the old network mode get it as their own.
     setMode: (mode: RailMode) => {
       if (!doc) return;
-      setDoc({ ...doc, mode, params: null });
+      const tm = new Map(view?.tracks.map((t) => [t.id, t.mode]));
+      const sm = new Map(view?.stations.map((st) => [st.id, st.mode]));
+      const pin = (own: RailMode | null | undefined, built: RailMode | undefined) => {
+        const m = own ?? built ?? doc.mode;
+        return m === mode ? null : m;
+      };
+      setDoc({
+        ...doc,
+        mode,
+        params: null,
+        train_length_m: null,
+        stations: doc.stations.map((st) => ({ ...st, mode: pin(st.mode, sm.get(st.id)) })),
+        tracks: doc.tracks.map((t) => ({ ...t, mode: pin(t.mode, tm.get(t.id)) })),
+      });
     },
     example: () => {
       if (!map || !engine.current || !doc) return;

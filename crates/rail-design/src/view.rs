@@ -87,9 +87,7 @@ fn level_name(l: Option<Level>) -> Value {
 
 /// Purpose: everything the editor needs after a rebuild, as one JSON value.
 pub fn view(dz: &Design) -> Value {
-    let p = &dz.params;
     let net = &dz.network;
-    let gauge = p.gauge_m();
     let mut ly = Layers {
         proj: dz.proj,
         out: Map::new(),
@@ -113,6 +111,8 @@ pub fn view(dz: &Design) -> Value {
     // Stations.
     for (st, doc) in dz.stations.iter().zip(&net.stations) {
         let z = st.level.order();
+        let sm = dz.station_mode(doc);
+        let sp = dz.params_for(sm);
         let box_ring = vec![
             st.point(-st.half_len, -st.half_w),
             st.point(st.half_len, -st.half_w),
@@ -212,16 +212,16 @@ pub fn view(dz: &Design) -> Value {
             st.point(0.0, st.half_w + 6.0),
             json!({"kind": "station_label", "z": z, "ref": st.id, "name": doc.name}),
         );
-        let embedded = dz.mode.street_running() && st.level == Level::Street;
+        let embedded = sm.street_running() && st.level == Level::Street;
         for (i, t) in st.tracks.iter().enumerate() {
             let pts = with_headings(&[st.point(-st.half_len, t.n), st.point(st.half_len, t.n)]);
             let third_side = if t.platform_left { -1.0 } else { 1.0 };
             pieces.push((
                 pts,
                 json!({"kind": "station", "ref": st.id, "index": i, "z": z, "bed": if embedded {"embedded"} else {"ballast"},
-                       "use": "running", "third": dz.params.third_rail_default(), "third_side": third_side,
-                       "overhead": !dz.params.third_rail_default() && dz.params.electrification != "none",
-                       "underground": st.level.underground()}),
+                       "use": "running", "third": sp.third_rail_default(), "third_side": third_side,
+                       "overhead": !sp.third_rail_default() && sp.electrification != "none",
+                       "underground": st.level.underground(), "mode": sm, "gauge": sp.gauge_m()}),
             ));
         }
         ly.line(
@@ -245,6 +245,9 @@ pub fn view(dz: &Design) -> Value {
         if g.length < 0.1 {
             continue;
         }
+        let tm = dz.track_mode(g.id);
+        let p = dz.track_params(g.id);
+        let gauge = p.gauge_m();
         let embedded = dz.embedded(t);
         let third = dz.third_rail(t);
         let overhead = dz.overhead(t);
@@ -262,7 +265,7 @@ pub fn view(dz: &Design) -> Value {
                 || z.ramp.is_some_and(|r| g.ramps[r].order() < 2),
                 |l| l.underground(),
             );
-            let common = json!({"ref": g.id, "z": order});
+            let common = json!({"ref": g.id, "z": order, "mode": tm});
             let props = |extra: Value| {
                 let mut m = common.as_object().unwrap().clone();
                 m.extend(extra.as_object().unwrap().clone());
@@ -359,7 +362,7 @@ pub fn view(dz: &Design) -> Value {
                     pts,
                     props(json!({"kind": "track", "line": li, "bed": if lvl == Some(Level::Street) && embedded {"embedded"} else {"ballast"},
                                  "use": if storage {"storage"} else {"running"}, "third": third, "third_side": third_side,
-                                 "overhead": overhead, "underground": underground})),
+                                 "overhead": overhead, "underground": underground, "gauge": gauge})),
                 ));
             }
         }
@@ -426,6 +429,9 @@ pub fn view(dz: &Design) -> Value {
         let lvl = g.level_at(mid.clamp(0.0, g.length));
         let embedded = t.is_some_and(|t| dz.embedded(t)) && lvl == Some(Level::Street);
         let overhead = t.is_some_and(|t| dz.overhead(t));
+        let sm = dz.track_mode(sw.track);
+        let p = dz.params_for(sm);
+        let gauge = p.gauge_m();
         let half_w = gauge / 2.0 + p.structure_outline_m;
         for path in &sw.paths {
             if lvl.is_some_and(|l| l != Level::Street) {
@@ -451,7 +457,7 @@ pub fn view(dz: &Design) -> Value {
                 path.clone(),
                 json!({"kind": "switch", "ref": sw.id, "z": z, "bed": if embedded {"embedded"} else {"ballast"},
                        "use": "running", "third": false, "third_side": 0.0, "overhead": overhead,
-                       "underground": lvl.is_some_and(|l| l.underground())}),
+                       "underground": lvl.is_some_and(|l| l.underground()), "mode": sm, "gauge": gauge}),
             ));
         }
         for d in &sw.diamonds {
@@ -493,6 +499,7 @@ pub fn view(dz: &Design) -> Value {
             continue;
         }
         let centre: Vec<P2> = pts.iter().map(|q| q.p).collect();
+        let gauge = props["gauge"].as_f64().unwrap_or(1.435);
         ly.line("tracks", &centre, props.clone());
         let mut rp = props.clone();
         rp["kind"] = json!("rail");
@@ -586,6 +593,7 @@ pub fn view(dz: &Design) -> Value {
         );
         conn_out.push(json!({
             "index": i, "anchor": anchor, "lonlat": ly.ll(*at), "tracks": n, "used": is_used, "level": level,
+            "mode": anchor_mode(dz, anchor),
             "bearing_deg": (90.0 - dir.heading().to_degrees()).rem_euclid(360.0),
         }));
     }
@@ -646,7 +654,8 @@ pub fn view(dz: &Design) -> Value {
                 "id": doc.id, "name": doc.name, "tracks": st.tracks.len(),
                 "platform_edges": st.tracks.iter().filter(|t| t.platform_left || t.platform_right).count(),
                 "layout": layout.join(" "), "box_length_m": st.half_len * 2.0, "box_width_m": st.half_w * 2.0,
-                "platform_height_mm": p.platform_height_mm, "lonlat": ly.ll(st.centre),
+                "platform_height_mm": dz.params_for(dz.station_mode(doc)).platform_height_mm, "lonlat": ly.ll(st.centre),
+                "mode": dz.station_mode(doc),
             })
         })
         .collect();
@@ -657,7 +666,7 @@ pub fn view(dz: &Design) -> Value {
         .map(|g| {
             let sp = dz.speeds.get(&g.id);
             json!({
-                "id": g.id, "length_m": g.length, "tracks": g.ntracks,
+                "id": g.id, "length_m": g.length, "tracks": g.ntracks, "mode": dz.track_mode(g.id),
                 "curves": g.curves.iter().map(|c| json!({
                     "pi": c.pi, "kind": format!("{:?}", c.kind).to_lowercase(), "radius_m": c.radius, "nominal_radius_m": c.nominal_radius,
                     "deflection_deg": c.deflection.to_degrees(), "transition_m": c.transition, "speed_kmh": c.speed_kmh,
@@ -714,6 +723,11 @@ pub fn view(dz: &Design) -> Value {
         "route_km": dz.tracks.iter().filter(|g| dz.doc_track(g.id).is_some_and(|t| t.usage == TrackUse::Running)).map(|g| g.length).sum::<f64>() / 1000.0,
     });
 
+    let crossings: Vec<Value> = dz.crossings.iter().map(|c| json!({
+        "id": c.id, "kind": format!("{:?}", c.kind).to_lowercase(), "tracks": c.tracks, "modes": c.modes,
+        "angle_deg": c.angle.to_degrees(), "lonlat": ly.ll(c.p),
+    })).collect();
+
     json!({
         "layers": ly.finish(),
         "connections": conn_out,
@@ -724,13 +738,42 @@ pub fn view(dz: &Design) -> Value {
         "issues": issues,
         "params": dz.params,
         "train_length_m": dz.train_length,
-        "turnouts": defaults().turnouts_for(dz.mode).iter().map(|s| json!({
-            "id": s.id, "label": s.label, "radius_m": s.radius_m, "crossing_ratio_n": s.crossing_ratio_n,
-            "diverging_speed_kmh": s.diverging_speed_kmh, "total_length_m": s.total_length_m, "length_a_m": s.length_a_m,
-        })).collect::<Vec<_>>(),
+        "turnouts": turnouts(dz.mode),
+        "modes": dz.modes.iter().map(|(m, p)| (m.id().to_string(), json!({"params": p, "turnouts": turnouts(*m)}))).collect::<Map<String, Value>>(),
+        "crossings": crossings,
         "counts": counts,
         "bbox": bbox,
     })
+}
+
+/// Purpose: a mode's catalogue turnouts for the panel.
+fn turnouts(m: crate::params::RailMode) -> Vec<Value> {
+    defaults()
+        .turnouts_for(m)
+        .iter()
+        .map(|s| {
+            json!({
+                "id": s.id, "label": s.label, "radius_m": s.radius_m, "crossing_ratio_n": s.crossing_ratio_n,
+                "diverging_speed_kmh": s.diverging_speed_kmh, "total_length_m": s.total_length_m, "length_a_m": s.length_a_m,
+            })
+        })
+        .collect()
+}
+
+/// Purpose: the railway system a connection point belongs to.
+fn anchor_mode(dz: &Design, a: &Anchor) -> crate::params::RailMode {
+    match a {
+        Anchor::Station { station, .. } => dz
+            .network
+            .stations
+            .iter()
+            .find(|s| s.id == *station)
+            .map_or(dz.mode, |s| dz.station_mode(s)),
+        Anchor::Switch { switch, .. } => dz
+            .switch(*switch)
+            .map_or(dz.mode, |s| dz.track_mode(s.track)),
+        Anchor::Free { .. } => dz.mode,
+    }
 }
 
 trait FreeEnd {
