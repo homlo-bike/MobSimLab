@@ -91,6 +91,12 @@ RAIL_FIELDS = {
     "level_crossing_max_speed_kmh": "level_crossing.max_line_speed_kmh",
     "level_crossing_min_angle_deg": "level_crossing.min_angle_deg",
     "level_crossing_warning_time_s": "level_crossing.warning_time_s",
+    "signalling_system": "signalling.system",
+    "signal_before_switch_m": "signalling.signal_before_switch_m",
+    "overlap_31_40_m": "signalling.overlap_31_40_m",
+    "overlap_41_60_m": "signalling.overlap_41_60_m",
+    "overlap_above_60_m": "signalling.overlap_above_60_m",
+    "sighting_m": "signalling.sighting_m",
 }
 RAIL_LABELS = {
     "tram": "Tram",

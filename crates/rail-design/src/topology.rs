@@ -60,6 +60,32 @@ pub struct Topology {
     pub level_crossings: Vec<LevelCrossingOut>,
     /// Groups of connected storage sections (stabling and depot).
     pub depot_groups: Vec<DepotGroup>,
+    /// Signals: the planner's plan, or a generated one while the document has none.
+    pub signals: Vec<SignalOut>,
+    /// The signals were generated, not planned.
+    pub signals_generated: bool,
+    /// The generated plan in document form, for the editor's "Generate signals".
+    #[serde(skip)]
+    pub generated: Vec<crate::signal::Signal>,
+}
+
+/// A signal on a section.
+#[derive(Debug, Clone, Serialize)]
+pub struct SignalOut {
+    /// Id: `sg{document id}` for planned signals, `g{n}` for generated ones.
+    pub id: String,
+    /// Section it stands on.
+    pub section: String,
+    /// Offset from the section's `from` end, m.
+    pub chainage_m: f64,
+    /// Direction of travel it governs: `to` (from `from` towards `to`) or `from`.
+    pub facing: &'static str,
+    /// `main`, `block`, `shunting` or `distant`.
+    pub kind: crate::signal::SignalKind,
+    /// Overlap beyond the signal, m; null when trains drive on sight.
+    pub overlap_m: Option<f64>,
+    /// A lineside signal with lights; false for a block marker under cab signalling.
+    pub lineside: bool,
 }
 
 /// Where section ends meet.
@@ -133,6 +159,9 @@ pub struct Section {
     pub usage: &'static str,
     /// Electrification.
     pub power: Power,
+    /// Train control (`signalling.system`): `line_of_sight`, `fixed_block`, or the moving-block
+    /// cab systems `cbtc` and `etcs_l2`.
+    pub train_protection: String,
     /// Levels along it (`ramp` between levels).
     pub levels: Vec<Range<String>>,
     /// Permitted speed, km/h.
@@ -812,6 +841,7 @@ pub fn topology(dz: &Design) -> Topology {
             gauge_mm: p.gauge_mm,
             usage,
             power,
+            train_protection: p.signalling_system.clone(),
             levels,
             speed_kmh: speed,
             gradient_permille: gradient,
@@ -907,7 +937,7 @@ pub fn topology(dz: &Design) -> Topology {
             .collect()
     };
 
-    let switches = dz
+    let switches: Vec<SwitchOut> = dz
         .switches
         .iter()
         .map(|sw| {
@@ -940,7 +970,7 @@ pub fn topology(dz: &Design) -> Topology {
 
     // Crossings: fouling points where the other alignment's nearest track comes within the
     // clearance marker distance (the larger of the two systems').
-    let crossings = dz
+    let crossings: Vec<CrossingOut> = dz
         .crossings
         .iter()
         .filter_map(|c| {
@@ -984,7 +1014,7 @@ pub fn topology(dz: &Design) -> Topology {
         })
         .collect();
 
-    let level_crossings = dz
+    let level_crossings: Vec<LevelCrossingOut> = dz
         .level_crossings
         .iter()
         .map(|x| LevelCrossingOut {
@@ -1048,6 +1078,55 @@ pub fn topology(dz: &Design) -> Topology {
         });
     }
 
+    // Signals.
+    let (generated_sec, generated) = generate_signals(
+        dz,
+        &segs,
+        &sections,
+        &nodes,
+        &node_of,
+        &switches,
+        &crossings,
+        &level_crossings,
+        &platforms,
+    );
+    let signals_generated = net.signals.is_none();
+    let placed: Vec<(usize, f64, bool, crate::signal::SignalKind, String)> = match &net.signals {
+        None => generated_sec
+            .iter()
+            .enumerate()
+            .map(|(n, g)| (g.seg, g.x, g.to, g.kind, format!("g{n}")))
+            .collect(),
+        Some(list) => list
+            .iter()
+            .filter_map(|sg| {
+                let (seg, x) = to_section(dz, &segs, &sg.at)?;
+                Some((seg, x, sg.facing > 0, sg.kind, format!("sg{}", sg.id)))
+            })
+            .collect(),
+    };
+    let signals = placed
+        .into_iter()
+        .map(|(seg, x, to, kind, id)| {
+            let p = dz.params_for(segs[seg].mode);
+            let kmh = sections[seg]
+                .speed_kmh
+                .iter()
+                .find(|r| x >= r.from_m - 1e-6 && x <= r.to_m + 1e-6)
+                .map_or(p.design_speed_kmh, |r| r.value);
+            SignalOut {
+                id,
+                section: segs[seg].id.clone(),
+                chainage_m: rd(x),
+                facing: if to { "to" } else { "from" },
+                kind,
+                overlap_m: crate::signal::overlap_m(p, kmh),
+                lineside: !(kind == crate::signal::SignalKind::Block
+                    && crate::signal::system_of(p) == crate::signal::System::Cab),
+            }
+        })
+        .collect();
+
     let errors: Vec<String> = dz
         .issues
         .iter()
@@ -1069,7 +1148,365 @@ pub fn topology(dz: &Design) -> Topology {
         crossings,
         level_crossings,
         depot_groups,
+        signals,
+        signals_generated,
+        generated,
     }
+}
+
+/// A generated signal on a section.
+struct SecSignal {
+    seg: usize,
+    x: f64,
+    /// Governs trains moving from the section's `from` end towards its `to` end.
+    to: bool,
+    kind: crate::signal::SignalKind,
+}
+
+/// Purpose: scale from centre-line chainage to distance along a track section.
+fn section_scale(s: &Seg) -> Option<(f64, f64)> {
+    let span = s.span?;
+    Some((span[0], length(&s.pts) / (span[1] - span[0]).max(1e-9)))
+}
+
+/// Purpose: a document signal's section and offset from the section's `from` end.
+fn to_section(dz: &Design, segs: &[Seg], at: &crate::signal::SignalAt) -> Option<(usize, f64)> {
+    use crate::signal::SignalAt;
+    match *at {
+        SignalAt::Track { track, line, s } => segs.iter().enumerate().find_map(|(i, g)| {
+            let span = g.span?;
+            (g.source.kind == "track"
+                && g.source.id == track
+                && g.source.index == line
+                && s >= span[0] - 1e-6
+                && s <= span[1] + 1e-6)
+                .then(|| {
+                    let (s0, k) = section_scale(g).unwrap_or((span[0], 1.0));
+                    (i, (s - s0) * k)
+                })
+        }),
+        SignalAt::Station { station, track, x } => {
+            let st = dz.station(station)?;
+            let i = segs
+                .iter()
+                .position(|g| g.id == format!("s{station}.{track}"))?;
+            Some((i, x + st.half_len))
+        }
+        SignalAt::Leg { switch, leg, x } => {
+            let i = segs
+                .iter()
+                .position(|g| g.id == format!("w{switch}.{leg}"))?;
+            Some((i, x))
+        }
+    }
+}
+
+/// Purpose: a section position in document form.
+fn to_anchor(dz: &Design, g: &Seg, x: f64) -> Option<crate::signal::SignalAt> {
+    use crate::signal::SignalAt;
+    match g.source.kind {
+        "track" => {
+            let (s0, k) = section_scale(g)?;
+            Some(SignalAt::Track {
+                track: g.source.id,
+                line: g.source.index,
+                s: s0 + x / k,
+            })
+        }
+        "station" => {
+            let st = dz.station(g.source.id)?;
+            Some(SignalAt::Station {
+                station: g.source.id,
+                track: g.source.index,
+                x: x - st.half_len,
+            })
+        }
+        _ => Some(SignalAt::Leg {
+            switch: g.source.id,
+            leg: g.source.index,
+            x,
+        }),
+    }
+}
+
+/// Purpose: generate the signal plan (ADR-0030 point 7) on the sections, and the same plan in
+/// document form. Rules (see [`crate::signal`]):
+///
+/// - main signals facing every switch area: `signal_before_switch_m` in front of a switch point,
+///   at the fouling point on a leg; facing every same-level crossing at its fouling points;
+///   none where it would stand inside another area, or where a train waiting at it would not
+///   fit before the area behind it (the two areas are then protected as one);
+/// - starter signals at the ends of platform tracks that continue (not for driving on sight);
+/// - block signals on plain running line, both directions, no further apart than the block
+///   length (braking distance + sighting + overlap), avoiding switch areas, crossings and level
+///   crossings (not for driving on sight).
+#[allow(clippy::too_many_arguments)]
+fn generate_signals(
+    dz: &Design,
+    segs: &[Seg],
+    sections: &[Section],
+    nodes: &[NodeAt],
+    node_of: &BTreeMap<(usize, usize), String>,
+    switches: &[SwitchOut],
+    crossings: &[CrossingOut],
+    level_crossings: &[LevelCrossingOut],
+    platforms: &[PlatformEdge],
+) -> (Vec<SecSignal>, Vec<crate::signal::Signal>) {
+    use crate::signal::{block_length_m, system_of, SignalKind, System};
+    let idx: BTreeMap<&str, usize> = segs
+        .iter()
+        .enumerate()
+        .map(|(i, s)| (s.id.as_str(), i))
+        .collect();
+    let len: Vec<f64> = sections.iter().map(|s| s.length_m).collect();
+    let storage = |i: usize| sections[i].usage == "storage";
+    let params = |i: usize| dz.params_for(segs[i].mode);
+    let mut areas: Vec<Vec<(f64, f64)>> = vec![vec![]; segs.len()];
+    let mut cands: Vec<SecSignal> = Vec::new();
+    let main_kind = |i: usize| {
+        if storage(i) {
+            SignalKind::Shunting
+        } else {
+            SignalKind::Main
+        }
+    };
+
+    // Switch areas, from the fouling points.
+    for sw in switches {
+        for f in &sw.fouling_points {
+            let (Some(&si), Some(&ai)) =
+                (idx.get(f.section.as_str()), idx.get(f.at_section.as_str()))
+            else {
+                continue;
+            };
+            let Some(n) = nodes.iter().find(|n| n.0 == f.node) else {
+                continue;
+            };
+            let Some(&(_, e)) = n.2.iter().find(|x| x.0 == si) else {
+                continue;
+            };
+            if si == ai {
+                let d = f.distance_m.min(len[si]);
+                let (x, to, area) = if e == 0 {
+                    let x = if d == 0.0 {
+                        params(si).signal_before_switch_m.min(len[si])
+                    } else {
+                        d
+                    };
+                    (x, false, (0.0, d))
+                } else {
+                    let x = if d == 0.0 {
+                        (len[si] - params(si).signal_before_switch_m).max(0.0)
+                    } else {
+                        len[si] - d
+                    };
+                    (x, true, (len[si] - d, len[si]))
+                };
+                areas[si].push(area);
+                cands.push(SecSignal {
+                    seg: si,
+                    x,
+                    to,
+                    kind: main_kind(si),
+                });
+            } else {
+                areas[si].push((0.0, len[si]));
+                let far = &node_of[&(si, 1 - e)];
+                let entered_from = node_of.get(&(ai, 0)) == Some(far);
+                let o = f.at_offset_m;
+                if entered_from {
+                    areas[ai].push((0.0, o));
+                    cands.push(SecSignal {
+                        seg: ai,
+                        x: o,
+                        to: false,
+                        kind: main_kind(ai),
+                    });
+                } else {
+                    areas[ai].push((o, len[ai]));
+                    cands.push(SecSignal {
+                        seg: ai,
+                        x: o,
+                        to: true,
+                        kind: main_kind(ai),
+                    });
+                }
+            }
+        }
+    }
+    // Same-level crossings of two alignments, at their fouling points.
+    for c in crossings.iter().filter(|c| c.conflict) {
+        for tr in &c.tracks {
+            for sid in &tr.sections {
+                let Some(&i) = idx.get(sid.as_str()) else {
+                    continue;
+                };
+                let Some((s0, k)) = section_scale(&segs[i]) else {
+                    continue;
+                };
+                let a = (tr.chainage_m - tr.fouling_before_m - s0) * k;
+                let b = (tr.chainage_m + tr.fouling_after_m - s0) * k;
+                areas[i].push((a.max(0.0), b.min(len[i])));
+                if a >= 0.0 {
+                    cands.push(SecSignal {
+                        seg: i,
+                        x: a,
+                        to: true,
+                        kind: main_kind(i),
+                    });
+                }
+                if b <= len[i] {
+                    cands.push(SecSignal {
+                        seg: i,
+                        x: b,
+                        to: false,
+                        kind: main_kind(i),
+                    });
+                }
+            }
+        }
+    }
+    // Level crossings: no train stands on them.
+    for lc in level_crossings {
+        for sid in &lc.sections {
+            let Some(&i) = idx.get(sid.as_str()) else {
+                continue;
+            };
+            let Some((s0, k)) = section_scale(&segs[i]) else {
+                continue;
+            };
+            let (a, b) = (
+                (lc.chainage_m - lc.rail_zone_m - s0) * k,
+                (lc.chainage_m + lc.rail_zone_m - s0) * k,
+            );
+            areas[i].push((a.max(0.0), b.min(len[i])));
+        }
+    }
+    let inside = |i: usize, x: f64, areas: &Vec<Vec<(f64, f64)>>| {
+        areas[i].iter().any(|(a, b)| x > a + 0.5 && x < b - 0.5)
+    };
+    let mut out: Vec<SecSignal> = Vec::new();
+    let push = |out: &mut Vec<SecSignal>, sig: SecSignal| {
+        if !out
+            .iter()
+            .any(|o| o.seg == sig.seg && o.to == sig.to && (o.x - sig.x).abs() < 1.0)
+        {
+            out.push(sig);
+        }
+    };
+    for c in cands {
+        if inside(c.seg, c.x, &areas) {
+            continue;
+        }
+        // The train waits behind the signal: it must fit before the area behind it.
+        let train = dz.train_length_for(segs[c.seg].mode);
+        let (lo, hi) = if c.to {
+            (c.x - train, c.x - 0.5)
+        } else {
+            (c.x + 0.5, c.x + train)
+        };
+        if areas[c.seg].iter().any(|(a, b)| *a < hi && *b > lo) {
+            continue;
+        }
+        push(&mut out, c);
+    }
+    // Starters at the ends of platform tracks that continue.
+    let mut seen = std::collections::BTreeSet::new();
+    for pe in platforms {
+        let Some(&i) = idx.get(pe.section.as_str()) else {
+            continue;
+        };
+        if !seen.insert(i) || system_of(params(i)) == System::LineOfSight {
+            continue;
+        }
+        for e in [0usize, 1] {
+            let continues = nodes
+                .iter()
+                .find(|n| n.0 == node_of[&(i, e)])
+                .is_some_and(|n| n.2.len() > 1);
+            if continues {
+                push(
+                    &mut out,
+                    SecSignal {
+                        seg: i,
+                        x: if e == 1 { len[i] } else { 0.0 },
+                        to: e == 1,
+                        kind: SignalKind::Main,
+                    },
+                );
+            }
+        }
+    }
+    // Block signals on plain running line.
+    for i in 0..segs.len() {
+        let p = params(i);
+        if segs[i].source.kind != "track" || storage(i) || system_of(p) == System::LineOfSight {
+            continue;
+        }
+        let vmax = sections[i]
+            .speed_kmh
+            .iter()
+            .map(|r| r.value)
+            .fold(0.0, f64::max)
+            .max(1.0);
+        let block = block_length_m(p, vmax);
+        for to in [true, false] {
+            let mut cuts: Vec<f64> = vec![0.0, len[i]];
+            cuts.extend(out.iter().filter(|o| o.seg == i && o.to == to).map(|o| o.x));
+            for (a, b) in &areas[i] {
+                cuts.push(*a);
+                cuts.push(*b);
+            }
+            cuts.retain(|x| *x >= 0.0 && *x <= len[i]);
+            cuts.sort_by(f64::total_cmp);
+            for w in cuts.windows(2) {
+                let gap = w[1] - w[0];
+                if inside(i, (w[0] + w[1]) / 2.0, &areas) {
+                    continue;
+                }
+                let n = (gap / block).ceil() as usize;
+                for k in 1..n {
+                    let x = w[0] + gap * k as f64 / n as f64;
+                    if !inside(i, x, &areas) {
+                        push(
+                            &mut out,
+                            SecSignal {
+                                seg: i,
+                                x,
+                                to,
+                                kind: SignalKind::Block,
+                            },
+                        );
+                    }
+                }
+            }
+        }
+    }
+    out.sort_by(|a, b| {
+        segs[a.seg]
+            .id
+            .cmp(&segs[b.seg].id)
+            .then(a.x.total_cmp(&b.x))
+            .then(b.to.cmp(&a.to))
+    });
+    let mut id = crate::signal::next_id(&dz.network);
+    let docs = out
+        .iter()
+        .filter_map(|o| {
+            let at = to_anchor(dz, &segs[o.seg], o.x)?;
+            // Leg and line sections run with their source's direction; station tracks too.
+            let sig = crate::signal::Signal {
+                id,
+                at,
+                facing: if o.to { 1 } else { -1 },
+                kind: o.kind,
+                name: String::new(),
+            };
+            id += 1;
+            Some(sig)
+        })
+        .collect();
+    (out, docs)
 }
 
 #[cfg(test)]
@@ -1077,6 +1514,7 @@ mod tests {
     use super::*;
     use crate::design::build;
     use crate::sample::sample;
+    use crate::signal::SignalKind;
 
     #[test]
     fn every_example_is_one_connected_graph_with_switch_movements() {
@@ -1157,5 +1595,50 @@ mod tests {
         assert_eq!(x.sections.len(), 2, "both lines of the double track");
         assert_eq!(x.street.name, "Station Road");
         assert!(x.approach_m > 500.0);
+    }
+
+    #[test]
+    fn signals_are_generated_per_system_and_survive_a_round_trip() {
+        for mode in [RailMode::Tram, RailMode::RegionalRail, RailMode::Metro] {
+            let net = sample(mode, 7.0, 50.9);
+            let dz = build(&net, None);
+            let t = topology(&dz);
+            assert!(t.signals_generated && !t.signals.is_empty(), "{mode:?}");
+            for s in &t.signals {
+                let sec = t.sections.iter().find(|x| x.id == s.section).unwrap();
+                assert!(
+                    s.chainage_m >= 0.0 && s.chainage_m <= sec.length_m + 1e-6,
+                    "{s:?}"
+                );
+            }
+            let blocks: Vec<_> = t
+                .signals
+                .iter()
+                .filter(|s| s.kind == SignalKind::Block)
+                .collect();
+            match mode {
+                RailMode::Tram => {
+                    assert!(blocks.is_empty());
+                    assert!(t.signals.iter().all(|s| s.overlap_m.is_none()));
+                }
+                RailMode::Metro => {
+                    assert!(!blocks.is_empty() && blocks.iter().all(|s| !s.lineside))
+                }
+                _ => assert!(blocks.iter().all(|s| s.lineside)),
+            }
+            // Freezing the generated plan into the document gives the same signals.
+            let mut planned = net.clone();
+            planned.signals = Some(t.generated.clone());
+            let t2 = topology(&build(&planned, None));
+            assert!(!t2.signals_generated);
+            assert_eq!(t.signals.len(), t2.signals.len(), "{mode:?}");
+            for (a, b) in t.signals.iter().zip(&t2.signals) {
+                assert_eq!(
+                    (&a.section, a.facing, a.kind),
+                    (&b.section, b.facing, b.kind)
+                );
+                assert!((a.chainage_m - b.chainage_m).abs() < 0.01, "{a:?} {b:?}");
+            }
+        }
     }
 }

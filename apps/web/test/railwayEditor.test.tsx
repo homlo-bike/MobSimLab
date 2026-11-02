@@ -246,6 +246,35 @@ describe("railway engine (WebAssembly)", () => {
     e.dispose();
   });
 
+  it("generates a signal plan, draws it and exports it as the planner's plan", async () => {
+    const e = await loadRailEngine();
+    const doc = e.sample("regional_rail", ORIGIN);
+    const before = e.build(doc, null);
+    expect(before.signals_planned).toBe(false);
+    expect((e.topology() as { signals_generated: boolean }).signals_generated).toBe(true);
+    const plan = e.generateSignals();
+    expect(plan.length).toBeGreaterThan(5);
+    expect(Math.min(...plan.map((s) => s.id))).toBe(nextId(doc));
+    const planned = { ...doc, signals: plan };
+    const v = e.build(planned, null);
+    expect(v.signals_planned).toBe(true);
+    expect(v.signals).toHaveLength(plan.length);
+    expect(v.layers.signals.features.filter((f) => f.properties.kind === "signal")).toHaveLength(plan.length);
+    const t = e.topology() as { signals_generated: boolean; signals: { id: string; facing: string }[] };
+    expect(t.signals_generated).toBe(false);
+    expect(t.signals.map((s) => s.id)).toContain(`sg${plan[0]!.id}`);
+    // A click beside a track finds where a signal would stand.
+    const at = e.signalAnchor(v.signals[0]!.lonlat, 10);
+    expect(at).not.toBeNull();
+    expect(e.signalAnchor([ORIGIN[0] + 1, ORIGIN[1]], 10)).toBeNull();
+    // Deleting a signal leaves the others; ids stay unique across all elements.
+    const fewer = deleteElement(planned, plan[0]!.id, () => null);
+    expect(fewer.signals).toHaveLength(plan.length - 1);
+    expect(kindOf(planned, plan[0]!.id)).toBe("signal");
+    expect(nextId(planned)).toBe(Math.max(...plan.map((s) => s.id)) + 1);
+    e.dispose();
+  });
+
   it("reports a curve tighter than the minimum radius", async () => {
     const e = await loadRailEngine();
     const doc: Network = {
@@ -379,6 +408,38 @@ describe("Railway editor", () => {
     expect(fetchTile).toHaveBeenCalled();
     expect(await screen.findByText(/Level crossings · [1-9]/)).toBeTruthy();
     expect(screen.getAllByText(/Station Road · \d+° · barriers · buses/).length).toBeGreaterThan(0);
+  });
+
+  it("generates signals, lets the planner turn one round and removes the plan", async () => {
+    await opened();
+    fireEvent.change(screen.getByRole("combobox"), { target: { value: "regional_rail" } });
+    fireEvent.click(screen.getByRole("button", { name: "Example" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Generate signals" }));
+    expect(await screen.findByText(/Signals · [1-9]/)).toBeTruthy();
+    expect(screen.getByRole("status").textContent).toMatch(/signals generated/);
+    expect(screen.getByRole("button", { name: "Generate again" })).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Remove plan" }));
+    expect(await screen.findByRole("button", { name: "Generate signals" })).toBeTruthy();
+  });
+
+  it("places a signal on a track with the signal tool and turns it round with F", async () => {
+    const { handlers, engine } = await opened();
+    fireEvent.change(screen.getByRole("combobox"), { target: { value: "regional_rail" } });
+    fireEvent.click(screen.getByRole("button", { name: "Example" }));
+    await screen.findByText(/0 errors/);
+    fireEvent.keyDown(window, { key: "g" });
+    expect(screen.getByRole("button", { name: /Signal/ }).getAttribute("aria-pressed")).toBe("true");
+    // A point on the first track of the example.
+    const e = engine();
+    const plan = e.generateSignals();
+    const v = e.build({ ...e.sample("regional_rail", ORIGIN), signals: plan }, null);
+    const [lng, lat] = v.signals[0]!.lonlat;
+    act(() => handlers.get("click")!({ lngLat: { lng, lat }, point: { x: 0, y: 0 } }));
+    expect(await screen.findByRole("button", { name: /Turn round/ })).toBeTruthy();
+    expect(screen.getByText(/^Signals · 1$/)).toBeTruthy();
+    fireEvent.keyDown(window, { key: "f" });
+    fireEvent.click(screen.getByRole("button", { name: /Delete signal/ }));
+    expect(screen.getByText(/^Signals · 0$/)).toBeTruthy();
   });
 
   it("keeps what is drawn in its own railway system when the mode for new elements changes", async () => {
