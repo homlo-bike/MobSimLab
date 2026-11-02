@@ -246,6 +246,21 @@ export interface LevelCrossingView {
   lonlat: LonLat;
 }
 
+/** Tram or light rail track running along a street. */
+export interface StreetRunningView {
+  id: string;
+  track: number;
+  /** reserved: own lane; mixed: in road traffic; pedestrian_zone: shared with people on foot. */
+  running: "reserved" | "mixed" | "pedestrian_zone";
+  speed_limit_kmh: number;
+  length_m: number;
+  street: string;
+  class: string;
+  bus: boolean;
+  stops: number[];
+  lonlat: LonLat | null;
+}
+
 /** A drawn signal of the plan. */
 export interface SignalView {
   id: number;
@@ -278,6 +293,7 @@ export const LAYER_NAMES = [
   "markers",
   "level_crossings",
   "signals",
+  "street_running",
   "corridors",
   "connections",
 ] as const;
@@ -299,6 +315,7 @@ export interface RailView {
   crossings: CrossingView[];
   level_crossings: LevelCrossingView[];
   signals: SignalView[];
+  street_running: StreetRunningView[];
   /** The document holds a signal plan. */
   signals_planned: boolean;
   counts: { errors: number; warnings: number; track_km: number; route_km: number };

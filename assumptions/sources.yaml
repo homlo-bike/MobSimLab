@@ -82,6 +82,16 @@
   retrieved: 2026-10-27
   checked_via: none
 
+- id: stvo
+  title: Straßenverkehrs-Ordnung (StVO), Germany
+  publisher: Bundesministerium der Justiz / Bundesamt für Justiz
+  url: https://www.gesetze-im-internet.de/stvo_2013/
+  licence: Official work, no copyright (§ 5 UrhG)
+  access: free
+  retrieved: 2026-11-02
+  checked_via: none
+  note: § 3(3) (50 km/h inside built-up areas) and sign 325.1 (walking pace in a living street) quoted from general knowledge; to be read.
+
 - id: ebo
   title: Eisenbahn-Bau- und Betriebsordnung (EBO), Germany
   publisher: Bundesministerium der Justiz / Bundesamt für Justiz

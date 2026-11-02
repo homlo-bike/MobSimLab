@@ -30,6 +30,7 @@ pub mod sample;
 pub mod signal;
 pub mod station;
 pub mod street;
+pub mod street_running;
 pub mod switch;
 pub mod topology;
 pub mod view;

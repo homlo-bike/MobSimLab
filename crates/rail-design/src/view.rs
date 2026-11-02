@@ -103,6 +103,7 @@ pub fn view(dz: &Design) -> Value {
         "markers",
         "level_crossings",
         "signals",
+        "street_running",
         "corridors",
         "connections",
     ] {
@@ -539,6 +540,30 @@ pub fn view(dz: &Design) -> Value {
         }
     }
 
+    // Street running: the edges of the tram's own lane (solid) or, in mixed traffic, of the
+    // space the tram sweeps in the traffic lane (dashed).
+    for r in &dz.street_running {
+        let Some(g) = dz.track(r.track) else {
+            continue;
+        };
+        if r.running == crate::street_running::Running::PedestrianZone {
+            continue;
+        }
+        let pts = slice(&g.centre, r.from_m, r.to_m);
+        let z = Level::Street.order();
+        let kind = match r.running {
+            crate::street_running::Running::Reserved => "tram_lane",
+            _ => "shared_lane",
+        };
+        for side in [-1.0, 1.0] {
+            ly.line(
+                "street_running",
+                &offset_line(&pts, side * r.tram_lane_m / 2.0),
+                json!({"kind": kind, "z": z, "ref": r.track, "id": r.id}),
+            );
+        }
+    }
+
     // Signals of the plan: a post on the right of the track in the direction of travel, and a
     // short arm pointing that way, so the facing reads on the map.
     let mut signal_list: Vec<Value> = Vec::new();
@@ -832,6 +857,13 @@ pub fn view(dz: &Design) -> Value {
         })
         .collect();
 
+    let street_running: Vec<Value> = dz.street_running.iter().map(|r| json!({
+            "id": r.id, "track": r.track, "running": r.running, "speed_limit_kmh": r.speed_limit_kmh,
+            "length_m": r.to_m - r.from_m, "street": r.street.name, "class": r.street.class, "bus": r.street.bus,
+            "stops": r.stops,
+            "lonlat": dz.track(r.track).map(|g| ly.ll(crate::geom::at_s(&g.centre, (r.from_m + r.to_m) / 2.0).p)),
+        })).collect::<Vec<_>>();
+
     json!({
         "layers": ly.finish(),
         "connections": conn_out,
@@ -847,6 +879,7 @@ pub fn view(dz: &Design) -> Value {
         "crossings": crossings,
         "level_crossings": level_crossings,
         "signals": signal_list,
+        "street_running": street_running,
         "signals_planned": net.signals.is_some(),
         "counts": counts,
         "bbox": bbox,

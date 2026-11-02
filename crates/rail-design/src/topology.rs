@@ -60,6 +60,8 @@ pub struct Topology {
     pub level_crossings: Vec<LevelCrossingOut>,
     /// Groups of connected storage sections (stabling and depot).
     pub depot_groups: Vec<DepotGroup>,
+    /// Stretches where tram or light rail track runs along a street.
+    pub street_running: Vec<StreetRunningOut>,
     /// Signals: the planner's plan, or a generated one while the document has none.
     pub signals: Vec<SignalOut>,
     /// The signals were generated, not planned.
@@ -67,6 +69,29 @@ pub struct Topology {
     /// The generated plan in document form, for the editor's "Generate signals".
     #[serde(skip)]
     pub generated: Vec<crate::signal::Signal>,
+}
+
+/// Track running along a street (`crate::street_running`).
+#[derive(Debug, Clone, Serialize)]
+pub struct StreetRunningOut {
+    /// Stable id `sr{track}-{way}-{n}`.
+    pub id: String,
+    /// Track (alignment) id.
+    pub track: u32,
+    /// Stretch on the track's centre line, m.
+    pub from_m: f64,
+    /// End of the stretch, m.
+    pub to_m: f64,
+    /// Line sections along the stretch.
+    pub sections: Vec<String>,
+    /// `reserved` (own lane), `mixed` (in road traffic) or `pedestrian_zone`.
+    pub running: crate::street_running::Running,
+    /// Road speed limit the tram keeps to, km/h (already in the sections' `speed_kmh`).
+    pub speed_limit_kmh: f64,
+    /// The street.
+    pub street: crate::street_running::RunningStreet,
+    /// Stations (tram stops) on the stretch.
+    pub stops: Vec<u32>,
 }
 
 /// A signal on a section.
@@ -1046,6 +1071,25 @@ pub fn topology(dz: &Design) -> Topology {
         })
         .collect();
 
+    let street_running: Vec<StreetRunningOut> = dz
+        .street_running
+        .iter()
+        .map(|r| StreetRunningOut {
+            id: r.id.clone(),
+            track: r.track,
+            from_m: rd(r.from_m),
+            to_m: rd(r.to_m),
+            sections: over(r.track, r.from_m, r.to_m),
+            running: r.running,
+            speed_limit_kmh: rd(r.speed_limit_kmh),
+            street: crate::street_running::RunningStreet {
+                width_m: rd(r.street.width_m),
+                ..r.street.clone()
+            },
+            stops: r.stops.clone(),
+        })
+        .collect();
+
     // Depot groups: storage sections joined by movements.
     let storage: Vec<bool> = sections.iter().map(|s| s.usage == "storage").collect();
     let mut seen = vec![false; segs.len()];
@@ -1148,6 +1192,7 @@ pub fn topology(dz: &Design) -> Topology {
         crossings,
         level_crossings,
         depot_groups,
+        street_running,
         signals,
         signals_generated,
         generated,
@@ -1595,6 +1640,25 @@ mod tests {
         assert_eq!(x.sections.len(), 2, "both lines of the double track");
         assert_eq!(x.street.name, "Station Road");
         assert!(x.approach_m > 500.0);
+    }
+
+    #[test]
+    fn street_running_is_exported_and_caps_the_section_speeds() {
+        let net = sample(RailMode::Tram, 7.0, 50.9);
+        let streets = crate::sample::sample_streets(&build(&net, None));
+        let t = topology(&crate::design::build_with_streets(&net, None, &streets));
+        let r = &t.street_running[0];
+        assert_eq!(r.id, "sr3-1002-0");
+        assert_eq!(r.running, crate::street_running::Running::Reserved);
+        assert!(!r.sections.is_empty() && t.valid);
+        // The street's 50 km/h shows in the section's speeds; without the street it does not.
+        let speeds = |t: &Topology| {
+            let sec = t.sections.iter().find(|s| s.id == r.sections[0]).unwrap();
+            sec.speed_kmh.iter().map(|x| x.value).collect::<Vec<_>>()
+        };
+        let plain = topology(&build(&net, None));
+        assert!(speeds(&t).contains(&50.0), "{:?}", speeds(&t));
+        assert!(!speeds(&plain).contains(&50.0), "{:?}", speeds(&plain));
     }
 
     #[test]
