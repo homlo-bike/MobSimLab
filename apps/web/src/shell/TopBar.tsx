@@ -24,7 +24,7 @@ export function TopBar({
     <header className="flex h-14 shrink-0 items-center gap-1 border-b border-slate-200 bg-white px-2 md:gap-2 md:px-3">
       <a
         href="/"
-        className="mr-1 shrink-0 truncate rounded-lg px-2 py-2 text-[15px] font-bold text-slate-900 no-underline hover:bg-slate-100 md:mr-2"
+        className={`${children ? "hidden md:block" : ""} mr-1 shrink-0 truncate rounded-lg px-2 py-2 text-[15px] font-bold text-slate-900 no-underline hover:bg-slate-100 md:mr-2`}
         onClick={(e) => {
           if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
           e.preventDefault();
