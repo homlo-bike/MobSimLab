@@ -1,6 +1,6 @@
 # ADR-0036: Plugins add modes, infrastructure, calculations and schematics as signed packages of data and sandboxed WebAssembly, installed by Admins and enabled per project
 
-- Status: Proposed
+- Status: Accepted (product owner, 2026-11-02); see *Product owner answers* at the end
 - Date: 2026-11-02
 - Deciders: product owner, architecture
 - Related: ADR-0037 (cable car and ferry service lines), FR-PLAT-04, FR-PLAT-05, FR-ASM-01..05, FR-COST-03, FR-SCH-01..03, C-10, ADR-0002 (licence), ADR-0003 (two containers), ADR-0004 (polyglot runtime), ADR-0007 (co-simulation), ADR-0009 (unified graph), ADR-0012 (audit), ADR-0013 (scenario overlays), ADR-0014 (results storage), ADR-0017 (outbound gateway), ADR-0018 (assumption engine), ADR-0021 (`.mslab` format), ADR-0025 (schematics), ADR-0026 (vehicle catalogue), ADR-0031 / ADR-0033 / ADR-0034 (Rust kernels as WebAssembly), ADR-0035 (MCP server), [threat model](../security/threat-model.md)
@@ -180,15 +180,16 @@ A mode is more than a colour. It needs a network representation, an authoring to
 
 **Simulation engines.** The coordinator keeps the master clock (ADR-0007), as SUMO and the rail kernel already accept. A mode plugin's `engines` contribution does not own a loop; it implements a small **mesoscopic segment engine** interface that the coordinator drives: `depart(trip, t)`, `advance(t) -> events` (arrivals, departures, holds), `capacity(vehicle)`, `dwell(stop, boardings, alightings)`, and `reserve(resource, from, to) -> granted | wait(until)` for resources that one vehicle at a time may hold (berths, locks, the single track of an aerial tramway or a funicular passing loop). The coordinator owns the reservation table, so conflicts between plugins, and with core engines that share a resource, are resolved in one place. The core supplies the generic segment engine; the plugin supplies the numbers and rules. Microscopic interaction with road traffic or rail signalling is not a plugin feature; modes that need it (for example a guided bus on SUMO lanes) stay in the core engines. Persistence (ADR-0028) is enforced by the coordinator, not by the plugin: vehicles start and end in their declared depots or terminals.
 
-**Recommendation.** Build cable car and ferry **as first-party plugins bundled with the image** (`org.mobsimlab.aerial-lift`, `org.mobsimlab.ferry`) once Phases 0 to 3 exist, and build the two new authoring kits and the segment engine in the core. Bundling means users get them without installing anything, while the plugin boundary is proven by two real modes before anyone else depends on it. Funiculars, people movers, demand-responsive services and bike or scooter sharing fit the same model. Monorails, air taxis and hyperloop are out of scope (product owner, 2026-11-02: not economically sustainable), so no plugin for them is planned. If the cable car and ferry work starts before Phase 3, it should still use the registries from Phase 0 so the modes can move into plugins without data migration.
+**Decision (product owner, 2026-11-02).** Build cable car and ferry **as the first plugins, bundled with the image** (`org.mobsimlab.aerial-lift`, `org.mobsimlab.ferry`) once Phases 0 to 3 exist, and build the two new authoring kits and the segment engine in the core. Bundling means users get them without installing anything, while the plugin boundary is proven by two real modes before anyone else depends on it. Funiculars, people movers, demand-responsive services and bike or scooter sharing fit the same model. Monorails, air taxis and hyperloop are out of scope (product owner, 2026-11-02: not economically sustainable), so no plugin for them is planned. If the cable car and ferry work starts before Phase 3, it should still use the registries from Phase 0 so the modes can move into plugins without data migration.
 
 **Noise map.** The noise estimate is a natural `calculation` (inputs: network, timetable, fleet, terrain; output: a grid and per-segment levels) with source data per vehicle type as `vehicles` and `parameters` contributions. Where the core method belongs is decided separately; this design only makes sure a plugin could add another national method next to it, and that vehicle noise data from a plugin's catalogue is used by the core method.
 
 ### 9. Lifecycle, trust and versioning
 
-- **Install** is instance-wide and only for **Owners and Admins**: upload a `.msplugin` file, or pick from a registry an Admin has configured (fetched through the outbound gateway, ADR-0017). The install screen shows the publisher, signature status, tiers, permissions, licences and the contributions. Installation is audited (ADR-0012).
+- **Install** is instance-wide and an **Admin** action (Owners hold every Admin right, so they can too; Editors and below cannot): upload a `.msplugin` file, or pick from the **public MobSimLab plugin registry** or another registry an Admin has added (fetched through the outbound gateway, ADR-0017). The install screen shows the publisher, signature status, tiers, permissions, licences and the contributions. Installation is audited (ADR-0012).
 - **Enable per project.** A project Owner enables an installed plugin for a project and pins its version. Disabling hides the plugin's tools and keeps its data, marked as belonging to a disabled plugin.
-- **Signatures.** Packages are signed with **Sigstore** (cosign bundle in the package), checked against the instance's trust policy: `official` (MobSimLab release key), `trusted publishers` (an Admin's list) and, only if an Owner switches it on, `unsigned` for local development. Each package carries an SBOM and a SHA-256 of every file; the hash of the whole package is what projects and results record.
+- **Public registry.** The MobSimLab project runs a public plugin registry: an index of signed packages with publisher, version, licence, permissions and download hash, served as static files so any instance can mirror it. Listing needs a verified publisher and a passing `mobsimlab plugin check`; it is a catalogue, not an endorsement, and each instance's trust policy still decides what installs. Instances on private networks can use uploads or a mirrored copy.
+- **Signatures.** Packages are signed with **Sigstore** (cosign bundle in the package), checked against the instance's trust policy: `official` (MobSimLab release key), `trusted publishers` (an Admin's list) and `unsigned`, which an Owner can switch on **only in development mode** (§10); outside development mode unsigned packages are always refused. Each package carries an SBOM and a SHA-256 of every file; the hash of the whole package is what projects and results record.
 - **Versioning.** Plugins use SemVer. The plugin API (manifest schema, contribution schemas, WIT package) has its own major version; a major bump has a deprecation period of at least two minor MobSimLab releases in which both versions load. Data a plugin wrote is stored with the plugin id and version, and a plugin can ship **migrations** (data-tier JSON Patch or a compute `migrate` function) that run when a project upgrades it.
 - **Reproducibility.** Every result manifest (ADR-0014) lists the plugin ids, versions and package hashes it used. Re-running an old result with a newer plugin version is a new run; old results are not silently recalculated.
 - **Project files.** `.mslab` (ADR-0021) gains `requiredPlugins` with version ranges and hashes. Opening a project on an instance without a required plugin opens it read-only for that plugin's objects, shows them as opaque elements with their stored geometry, and names the missing plugin; nothing is dropped. Plugin data is exported in the plugin's own namespace inside the ZIP.
@@ -222,7 +223,7 @@ New threats for the threat model (§4, a new "Plugins" table):
 | 1 | Data-tier plugins: install, enable per project, signatures, `.mslab` `requiredPlugins`, Project Preferences and catalogue integration, audit | National catalogues and guidance without code |
 | 2 | Compute: `crates/plugin-host`, WIT package, `calculation` and `check` worlds, jco for API and browser, auto MCP tools, result provenance, `mobsimlab plugin` CLI and Rust SDK | Calculations such as alternative noise or accessibility methods |
 | 3 | Modes and engines: infrastructure elements in the unified graph, the straight spans and water route kits, the mesoscopic segment engine, `mode-dynamics` and `engines`; cable car and ferry as bundled plugins | Two new modes, and proof that the model holds |
-| 4 | Schematic styles and layouts, importers and exporters, UI-tier panels, a plugin registry | The rest of the asked-for scope |
+| 4 | Schematic styles and layouts, importers and exporters, UI-tier panels, the public plugin registry | The rest of the asked-for scope |
 
 ## Alternatives considered
 
@@ -247,9 +248,10 @@ New threats for the threat model (§4, a new "Plugins" table):
 - Some ideas cannot be plugins: anything that needs the internet at run time, direct database access, a new microscopic engine that interacts with SUMO or the rail kernel, or changes to permissions and auth. Those stay core work.
 - Licensing needs a legal check before Phase 1: whether a plugin running in our host is a "work based on" MobSimLab under AGPL-3.0, and therefore which plugin licences we accept. Until then, the trust policy accepts AGPL-compatible licences only.
 
-## Questions for the product owner
+## Product owner answers (2026-11-02)
 
-1. Should installing plugins be Owner and Admin only, with project Owners enabling them per project (as proposed)?
-2. Should cable car and ferry be the first bundled plugins (recommended), or core modes that move into plugins later?
-3. Should the project run a public plugin registry, or should instances only install uploaded files and registries their Admin adds?
-4. May an Owner allow unsigned plugins outside development mode?
+1. **Install:** Admins install plugins (Owners hold every Admin right). Project Owners enable them per project.
+2. **Cable car and ferry** are the first built-in plugins (§8).
+3. **Public registry:** yes, the project runs a public plugin registry (§9). Instances can still install uploads and add other registries.
+4. **Unsigned plugins:** an Owner may allow them only in development mode.
+5. Earlier in the day, in the cable car and ferry work (ADR-0037): car ferries come later, and monorails, air taxis and hyperloop are out of scope.
