@@ -2,14 +2,18 @@ import { Inject, Injectable } from "@nestjs/common";
 import { type Kysely, sql } from "kysely";
 import { DATABASE, type Database, type DB } from "../db/database";
 
-/** Chain for instance-level (admin) actions; projects get their own chain later. */
+/** Chain for instance-level (admin) actions. Each project has its own chain, `projectChain(id)`. */
 export const INSTANCE_CHAIN = "instance";
+
+/** Purpose: the audit chain of one project (04 §3.4: one chain per project). */
+export const projectChain = (projectId: string): string => `project:${projectId}`;
 
 /** One audit entry (04 §3.4). */
 export interface AuditEntry {
   action: string;
   objectType: string;
   objectId?: string | null;
+  projectId?: string | null;
   actorId?: string | null;
   actorIpHash?: string | null;
   before?: unknown;
@@ -32,7 +36,7 @@ export class AuditService {
     const json = (v: unknown) => (v === undefined || v === null ? null : JSON.stringify(v));
     const { rows } = await sql<{ id: string }>`
       SELECT audit.append(${entry.chain ?? INSTANCE_CHAIN}, ${entry.actorId ?? null}::uuid, ${entry.actorIpHash ?? null},
-        ${entry.action}, ${entry.objectType}, ${entry.objectId ?? null}, NULL::uuid,
+        ${entry.action}, ${entry.objectType}, ${entry.objectId ?? null}, ${entry.projectId ?? null}::uuid,
         ${json(entry.before)}::jsonb, ${json(entry.after)}::jsonb, ${entry.reason ?? null}, ${entry.requestId ?? null}) AS id`.execute(
       tx,
     );
