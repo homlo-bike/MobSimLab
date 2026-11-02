@@ -22,6 +22,27 @@ fn main() {
         m.routes.len(),
         m.level_crossings.len()
     );
+    for t in &imp.spec.tracks {
+        println!(
+            "track {:<16} {:>7.1} m  {:?} {:?}",
+            t.id, t.length_m, t.directions, t.usage
+        );
+    }
+    for s in &imp.spec.signals {
+        println!(
+            "signal {:<5} {:?} on {} at {:.1} m facing {:?}",
+            s.id, s.kind, s.track, s.position_m, s.facing
+        );
+    }
+    for p in &imp.spec.platforms {
+        println!(
+            "platform {:<8} {} on {} {:.1}..{:.1} m",
+            p.id, p.station, p.track, p.from_m, p.to_m
+        );
+    }
+    for n in &imp.spec.nodes {
+        println!("node {n:?}");
+    }
     for t in &m.tds {
         let len: f64 = t
             .pieces

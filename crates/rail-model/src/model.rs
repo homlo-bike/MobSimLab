@@ -872,8 +872,11 @@ impl Model {
         if succ.is_empty() {
             let exit = if let Some(i) = self.buffer_index(last.piece, last.dir.exit_end()) {
                 RouteExit::BufferStop(i)
-            } else {
+            } else if self.adj[end_index(last.piece, last.dir.exit_end())].is_empty() {
                 RouteExit::NetworkEnd
+            } else {
+                // Connected only to tracks closed to this direction: no route.
+                return;
             };
             found.push((steps.clone(), sws.clone(), exit));
             return;
@@ -1089,6 +1092,18 @@ impl Model {
             .keys()
             .position(|&k| k == (piece, end))
             .map(|i| i as u32)
+    }
+
+    /// Purpose: where a signal stands.
+    /// Output: track index, chainage (m) and the direction of travel it faces.
+    pub fn signal_location(&self, signal: SignalId) -> (usize, f64, Dir) {
+        let (piece, dir, entry) = match self.signals[signal as usize].at {
+            SignalAt::Entry { piece, dir } => (piece, dir, true),
+            SignalAt::Exit { piece, dir } => (piece, dir, false),
+        };
+        let pc = &self.pieces[piece as usize];
+        let at_from = matches!((entry, dir), (true, Dir::Up) | (false, Dir::Down));
+        (pc.track, if at_from { pc.from_m } else { pc.to_m }, dir)
     }
 
     /// Purpose: whether a piece is on a storage track.
