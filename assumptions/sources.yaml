@@ -19,6 +19,15 @@
   retrieved: 2026-10-27
   checked_via: search-snippet
 
+- id: tsi-ccs
+  title: Commission Implementing Regulation (EU) 2023/1695, technical specification for interoperability relating to the control-command and signalling subsystems (TSI CCS), ETCS on high-speed lines
+  publisher: European Union
+  url: https://eur-lex.europa.eu/eli/reg_impl/2023/1695/oj
+  licence: © European Union; reuse authorised under Commission Decision 2011/833/EU
+  access: free
+  retrieved: 2026-11-02
+  checked_via: none
+
 - id: tsi-prm
   title: Commission Regulation (EU) No 1300/2014, TSI for accessibility for persons with disabilities and persons with reduced mobility (TSI PRM), consolidated with (EU) 2019/772 and (EU) 2023/1695
   publisher: European Union

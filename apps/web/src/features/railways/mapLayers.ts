@@ -16,14 +16,19 @@ export const RAILS_ZOOM = 17.5;
 export const CORRIDOR_ZOOM = 12.5;
 const LEVEL_ORDERS = [0, 1, 2, 3, 4];
 
-/** Layers that answer clicks on track, switches, stations and platforms. */
-export const HIT_LAYERS = LEVEL_ORDERS.flatMap((z) => [
-  `${P}z${z}-track-line`,
-  `${P}z${z}-sleepers`,
-  `${P}z${z}-rails`,
-  `${P}z${z}-structures`,
-  `${P}z${z}-platforms`,
-]).concat([`${P}corridors`]);
+/** Layer of signal heads (answers clicks first: a signal stands beside a track). */
+export const SIGNAL_LAYER = `${P}signals`;
+/** Layers that answer clicks on signals, track, switches, stations and platforms. */
+export const HIT_LAYERS = [SIGNAL_LAYER].concat(
+  LEVEL_ORDERS.flatMap((z) => [
+    `${P}z${z}-track-line`,
+    `${P}z${z}-sleepers`,
+    `${P}z${z}-rails`,
+    `${P}z${z}-structures`,
+    `${P}z${z}-platforms`,
+  ]),
+  [`${P}corridors`],
+);
 export const CONNECTION_LAYER = `${P}connections`;
 
 /**
@@ -285,6 +290,42 @@ export function ensureRailLayers(map: MapLibreMap, lat: number): void {
         "line-color": COLORS.barrier,
         "line-width": metres(0.15, lat, 2),
         "line-dasharray": [2, 1],
+      },
+    },
+    {
+      // Signals: post and an arm pointing in the direction of travel the signal governs.
+      id: `${P}signal-posts`,
+      type: "line",
+      source: `${P}signals`,
+      minzoom: 15,
+      filter: ["==", ["geometry-type"], "LineString"] as FilterSpecification,
+      layout: { "line-cap": "round" },
+      paint: { "line-color": COLORS.signalPost, "line-width": metres(0.25, lat, 1.5) },
+    },
+    {
+      id: SIGNAL_LAYER,
+      type: "circle",
+      source: `${P}signals`,
+      minzoom: 15,
+      filter: kindIs("signal"),
+      paint: {
+        "circle-radius": metres(0.9, lat, 4),
+        "circle-color": [
+          "case",
+          ["!", ["get", "lineside"]],
+          COLORS.signalMarker,
+          [
+            "match",
+            ["get", "signal"],
+            "shunting",
+            COLORS.signalShunt,
+            "distant",
+            COLORS.signalDistant,
+            COLORS.signalMain,
+          ],
+        ],
+        "circle-stroke-color": COLORS.signalPost,
+        "circle-stroke-width": 1,
       },
     },
     {

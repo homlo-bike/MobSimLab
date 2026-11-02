@@ -130,6 +130,26 @@ impl RailDesigner {
         })
     }
 
+    /// Purpose: a signal plan generated from the last built design (JSON list of document
+    /// signals, ids continuing the document's), for "Generate signals". "[]" before a build.
+    pub fn generate_signals(&self) -> String {
+        self.design.as_ref().map_or("[]".into(), |d| {
+            serde_json::to_string(&rail_design::topology::topology(d).generated)
+                .unwrap_or_else(|_| "[]".into())
+        })
+    }
+
+    /// Purpose: where a signal placed at a map position would stand (JSON anchor: a track line,
+    /// station track or switch leg within `max_m`), or "null".
+    pub fn signal_anchor(&self, lon: f64, lat: f64, max_m: f64) -> String {
+        let Some(d) = &self.design else {
+            return "null".into();
+        };
+        rail_design::signal::nearest_anchor(d, d.proj.to_xy(lon, lat), max_m)
+            .and_then(|(at, _)| serde_json::to_string(&at).ok())
+            .unwrap_or_else(|| "null".into())
+    }
+
     /// Purpose: chainage on a given track nearest to a map position (NaN when the track is unknown).
     pub fn chainage(&self, track: u32, lon: f64, lat: f64) -> f64 {
         let Some(d) = &self.design else {

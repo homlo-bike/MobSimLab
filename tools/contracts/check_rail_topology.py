@@ -61,6 +61,14 @@ def graph_errors(t: dict) -> list[str]:
     ]
     refs += [(f"level crossing {x['id']}", x["sections"]) for x in t["level_crossings"]]
     refs += [(f"depot group {d['id']}", d["sections"]) for d in t["depot_groups"]]
+    refs += [(f"signal {g['id']}", [g["section"]]) for g in t["signals"]]
+    ids = [g["id"] for g in t["signals"]]
+    if len(set(ids)) != len(ids):
+        errs.append("duplicate signal ids")
+    for g in t["signals"]:
+        s = sections.get(g["section"])
+        if s is not None and g["chainage_m"] > s["length_m"] + 0.01:
+            errs.append(f"signal {g['id']}: chainage beyond the end of {g['section']}")
     for what, ids in refs:
         errs += [f"{what}: unknown section {i}" for i in ids if i not in sections]
     return errs

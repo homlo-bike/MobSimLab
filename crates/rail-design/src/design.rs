@@ -118,6 +118,19 @@ impl Design {
     pub fn track_params(&self, id: u32) -> &ModeParams {
         self.params_for(self.track_mode(id))
     }
+    /// Purpose: design values of the railway system a signal stands on, None when its track,
+    /// station or switch is gone.
+    pub fn signal_params(&self, at: &crate::signal::SignalAt) -> Option<&ModeParams> {
+        use crate::signal::SignalAt;
+        Some(match *at {
+            SignalAt::Track { track, .. } => self.track(track).map(|_| self.track_params(track))?,
+            SignalAt::Station { station, .. } => {
+                let st = self.network.stations.iter().find(|s| s.id == station)?;
+                self.params_for(self.station_mode(st))
+            }
+            SignalAt::Leg { switch, .. } => self.track_params(self.switch(switch)?.track),
+        })
+    }
     /// Purpose: the railway system a station belongs to.
     pub fn station_mode(&self, st: &Station) -> RailMode {
         st.mode.unwrap_or(self.mode)
@@ -354,6 +367,7 @@ pub fn build_with_streets(
     };
     validate(&mut design, draft);
     crate::street::level_crossings(&mut design, streets);
+    crate::signal::check(&mut design);
     finish_issues(&mut design);
     design
 }

@@ -134,6 +134,18 @@ pub struct ModeParams {
     pub level_crossing_min_angle_deg: f64,
     /// Warning time before a train reaches a level crossing, s.
     pub level_crossing_warning_time_s: f64,
+    /// Train control: `line_of_sight`, `fixed_block`, `cbtc` or `etcs_l2`.
+    pub signalling_system: String,
+    /// Distance of a signal in front of the switch point it protects, m.
+    pub signal_before_switch_m: f64,
+    /// Overlap for approach speeds up to 40 km/h, m.
+    pub overlap_31_40_m: f64,
+    /// Overlap for approach speeds of 41–60 km/h, m.
+    pub overlap_41_60_m: f64,
+    /// Overlap above 60 km/h, m.
+    pub overlap_above_60_m: f64,
+    /// Sighting distance added to the braking distance for lineside signals, m.
+    pub sighting_m: f64,
 }
 
 impl ModeParams {
