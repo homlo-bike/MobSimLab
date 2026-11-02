@@ -2218,7 +2218,8 @@
     {
       "id": "lc3-1001-0",
       "protection": "barriers",
-      "allowed": true,
+      "standard": true,
+      "special_measures": [],
       "mode": "regional_rail",
       "angle_deg": 89.954,
       "x": -766.097,

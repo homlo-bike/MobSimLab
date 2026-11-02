@@ -201,6 +201,15 @@
   retrieved: 2026-11-01
   checked_via: none
 
+- id: ceder-2016
+  title: "Avishai Ceder, Public Transit Planning and Operation: Modeling, Practice and Behavior, 2nd edition, chapters 3–4 (frequency and headway determination)"
+  publisher: CRC Press
+  url: https://www.routledge.com/Public-Transit-Planning-and-Operation-Modeling-Practice-and-Behavior-Second-Edition/Ceder/p/book/9781466563919
+  licence: © Taylor & Francis; only numeric values are quoted
+  access: paywalled
+  retrieved: 2026-11-02
+  checked_via: none
+
 - id: tcqsm3
   title: TCRP Report 165, Transit Capacity and Quality of Service Manual, 3rd edition (2013)
   publisher: Transportation Research Board / National Academies Press

@@ -13,7 +13,9 @@
 //! The approach starts where the train would have to start braking to stop at
 //! the entry signal: the service braking distance from its speed at the signal
 //! plus the sighting distance. A train that stands at the entry signal (a
-//! departure) needs the route at its departure time. Overlap sections are
+//! departure), or stops between the approach point and the signal (at a
+//! platform with the starter just beyond its end), needs the route at its
+//! departure time. Overlap sections are
 //! blocked until the head passes (or, after a stop, leaves) the exit signal.
 
 use rail_dynamics::{run, RunOptions, Segment, SpeedProfile, Stop, TrainParams};
@@ -64,9 +66,15 @@ pub struct TrainRun {
     pub depart_s: f64,
     /// Scheduled stops: head position from the first route's entry signal and dwell.
     pub stops: Vec<Stop>,
-    /// Whether the train stops at the end of its last route (buffer stop, turn-back)
-    /// or runs out (portal).
+    /// Whether the train stops at the end of its path (buffer stop, terminal
+    /// platform, storage track) or runs out (portal).
     pub stop_at_end: bool,
+    /// Where the path ends, as the head position from the first route's entry
+    /// signal, m. None = the end of the last route. A train that stops at a
+    /// platform inside its last route ends there; the rest of that route stays
+    /// blocked until it leaves.
+    #[serde(default)]
+    pub end_m: Option<f64>,
     /// Until when the train stays on the end of its path after arriving, s
     /// (for a turn-back: the departure of the next run). None = arrival time.
     pub occupy_until_s: Option<f64>,
@@ -144,6 +152,23 @@ fn segments_from(model: &Model, steps: &[Step], start_m: f64) -> Vec<Segment> {
     out
 }
 
+/// Purpose: cut a segment list to a total length.
+fn truncate(segs: &mut Vec<Segment>, length_m: f64) {
+    let mut acc = 0.0;
+    let mut keep = 0;
+    for s in segs.iter_mut() {
+        if acc + s.length_m >= length_m - 1e-9 {
+            s.length_m = length_m - acc;
+            keep += 1;
+            break;
+        }
+        acc += s.length_m;
+        keep += 1;
+    }
+    segs.truncate(keep);
+    segs.retain(|s| s.length_m > 1e-9);
+}
+
 /// Purpose: running time and blocking times of one train run.
 /// Inputs: model, the run, its index (stored in each [`Blocking`]) and signalling parameters.
 /// Output: the run's timing, or Err for a broken route chain, a stop outside
@@ -158,7 +183,10 @@ pub fn run_timing(
         return Err(format!("{}: no routes", tr.name));
     }
     let steps = route_steps(model, &tr.routes)?;
-    let segs = segments_from(model, &steps, tr.start_m);
+    let mut segs = segments_from(model, &steps, tr.start_m);
+    if let Some(end) = tr.end_m {
+        truncate(&mut segs, end - tr.start_m);
+    }
     let stops: Vec<Stop> = tr
         .stops
         .iter()
@@ -227,7 +255,18 @@ pub fn run_timing(
             } else {
                 let approach = tr.train.braking_distance(v_e) + p.sighting_m;
                 let ap = (entry_pos - approach).max(tr.start_m);
-                if ap <= tr.start_m + 1e-6 {
+                // A train that stops between the approach point and the signal (a
+                // starter just beyond the platform end) needs the route only to
+                // leave that stop.
+                let stop_before = tr
+                    .stops
+                    .iter()
+                    .filter(|s| s.position_m >= ap - 1e-6 && s.position_m <= entry_pos + 1e-6)
+                    .map(|s| s.position_m)
+                    .fold(None, |a: Option<f64>, x| Some(a.map_or(x, |a| a.max(x))));
+                if let Some(sp) = stop_before {
+                    leaving(sp)
+                } else if ap <= tr.start_m + 1e-6 {
                     tr.depart_s
                 } else {
                     at(ap)

@@ -167,3 +167,32 @@ fn rejects_unknown_schema_and_invalid_designs() {
     .unwrap_err();
     assert!(e.contains("radius too small"));
 }
+
+#[test]
+fn crossing_outside_the_usual_rules_is_imported_with_a_warning() {
+    let path = format!(
+        "{}/tests/data/regional_rail.json",
+        env!("CARGO_MANIFEST_DIR")
+    );
+    let json = std::fs::read_to_string(path).unwrap().replacen(
+        "\"standard\": true,\n      \"special_measures\": [],",
+        "\"standard\": false,\n      \"special_measures\": [\"line_speed\"],",
+        1,
+    );
+    let imp = import_json(&json, &ImportOptions::default()).unwrap();
+    assert!(imp
+        .notes
+        .iter()
+        .any(|n| n.contains("obstacle detection") && n.contains("line_speed")));
+    let m = Model::compile(&imp.spec).unwrap();
+    assert_eq!(m.level_crossings.len(), 2);
+    assert!(m
+        .level_crossings
+        .iter()
+        .all(|lc| lc.spec.special_measures == ["line_speed"]));
+    let (std_m, _) = load("regional_rail");
+    assert!(std_m
+        .level_crossings
+        .iter()
+        .all(|lc| lc.spec.special_measures.is_empty()));
+}

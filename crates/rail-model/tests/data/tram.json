@@ -1489,7 +1489,8 @@
     {
       "id": "lc3-1001-0",
       "protection": "traffic_signals",
-      "allowed": true,
+      "standard": true,
+      "special_measures": [],
       "mode": "tram",
       "angle_deg": 89.461,
       "x": -120.994,
