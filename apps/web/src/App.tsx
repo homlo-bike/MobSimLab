@@ -1,154 +1,237 @@
-import type { Map as MapLibreMap } from "maplibre-gl";
-import { useCallback, useEffect, useState } from "react";
+import { type ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { AdminPanel } from "./admin/AdminPanel";
 import { AgentsPanel } from "./agents/AgentsPanel";
 import { ConsentPage } from "./agents/ConsentPage";
-import { JourneyPlanner } from "./features/journey-planner/JourneyPlanner";
-import type { StreetLineInput } from "./features/journey-planner/network";
-import { RailwayEditor } from "./features/railways/RailwayEditor";
-import { StreetLineEditor } from "./features/street-lines/StreetLineEditor";
-import { MapView } from "./map/MapView";
-import { AccountMenu } from "./session/AccountMenu";
-import { fetchMe, type Me, SIGNIN_MESSAGES } from "./session/api";
+import {
+  I18nProvider,
+  LANGUAGES,
+  type LanguageChoice,
+  storeChoice,
+  storedChoice,
+  useI18n,
+} from "./i18n/i18n";
+import { projectsApi } from "./projects/api";
+import { ProjectsHome } from "./projects/ProjectsHome";
+import { fetchMe, type Me, type Preferences, savePreferences } from "./session/api";
 import { SetupPanel } from "./setup/SetupPanel";
+import { AboutDialog } from "./shell/AboutDialog";
+import { useRoute } from "./shell/route";
+import { SettingsDialog } from "./shell/SettingsDialog";
+import { SignIn } from "./shell/SignIn";
+import { TopBar } from "./shell/TopBar";
+import { type SettingsSection, UserMenu } from "./shell/UserMenu";
+import { Workspace } from "./workspace/Workspace";
+
+const asChoice = (v: string | undefined): LanguageChoice | null =>
+  v === "system" || LANGUAGES.some((l) => l.tag === v) ? (v as LanguageChoice) : null;
 
 /**
- * Application shell: top bar with account menu, the setup wizard while in setup mode, the administration
- * panel for Owners and Admins, the map, and the street line and railway tools with their side panel.
+ * Application root: loads the session, keeps the language (from the account, else this device, else the browser),
+ * and applies the app settings to the page.
  */
 export function App() {
   const [me, setMe] = useState<Me | null>(null);
-  const [admin, setAdmin] = useState(false);
-  const [agents, setAgents] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  const [prefs, setPrefs] = useState<Preferences>({});
+  const [choice, setChoice] = useState<LanguageChoice>(storedChoice);
+
   const reload = useCallback(() => {
-    fetchMe().then(setMe, () => setMe(null));
+    fetchMe().then(
+      (m) => {
+        setMe(m);
+        const p = m.user?.preferences ?? {};
+        setPrefs(p);
+        const c = asChoice(p.language);
+        if (c) setChoice(c);
+        setLoaded(true);
+      },
+      () => {
+        setMe(null);
+        setLoaded(true);
+      },
+    );
   }, []);
   useEffect(reload, [reload]);
+
+  const csrf = me?.csrfToken;
+  const savePrefs = useCallback(
+    (patch: Preferences) => {
+      setPrefs((p) => ({ ...p, ...patch }));
+      if (csrf) savePreferences(csrf, patch).then(setPrefs, () => {});
+    },
+    [csrf],
+  );
+  const choose = useCallback(
+    (c: LanguageChoice) => {
+      setChoice(c);
+      storeChoice(c);
+      if (csrf) savePrefs({ language: c });
+    },
+    [csrf, savePrefs],
+  );
+
+  useEffect(() => {
+    const html = document.documentElement.classList;
+    html.toggle("larger-targets", Boolean(prefs.largerTargets));
+    html.toggle("reduce-motion", Boolean(prefs.reduceMotion));
+  }, [prefs.largerTargets, prefs.reduceMotion]);
+
+  return (
+    <I18nProvider choice={choice} onChoose={choose}>
+      <Shell me={me} loaded={loaded} prefs={prefs} onPrefs={savePrefs} reload={reload} />
+    </I18nProvider>
+  );
+}
+
+type Overlay =
+  { kind: "about" } | { kind: "settings"; section: SettingsSection } | { kind: "admin" } | { kind: "agents" };
+
+/** The pages: sign-in, the projects home, and an open project; plus the dialogs the top bar opens. */
+function Shell({
+  me,
+  loaded,
+  prefs,
+  onPrefs,
+  reload,
+}: {
+  me: Me | null;
+  loaded: boolean;
+  prefs: Preferences;
+  onPrefs: (p: Preferences) => void;
+  reload: () => void;
+}) {
+  const { t } = useI18n();
+  const [route, go] = useRoute();
+  const [overlay, setOverlay] = useState<Overlay | null>(null);
+  const user = me?.user;
+  const csrf = me?.csrfToken ?? "";
+  const api = useMemo(() => projectsApi(csrf), [csrf]);
+  const brand = me?.instance.name ?? "MobSimLab";
   const refusal = new URLSearchParams(window.location.search).get("signin");
-  const [map, setMap] = useState<MapLibreMap | null>(null);
-  // One side tool at a time: they share the side panel and the map's click handlers.
-  const [tool, setTool] = useState<"street" | "railway" | "journey" | null>(null);
-  const toggle = (t: "street" | "railway" | "journey") => setTool(tool === t ? null : t);
-  const toolButton = (on: boolean) =>
-    `rounded border px-2 py-0.5 ${on ? "border-blue-700 bg-blue-700 text-white" : "border-slate-300 hover:bg-slate-100"}`;
-  // The street line last drawn, so the journey planner can ride it.
-  const [line, setLine] = useState<StreetLineInput | null>(null);
-  const [panel, setPanel] = useState<HTMLElement | null>(null);
-  // Development hook for end-to-end scripts that need map coordinates.
-  if (import.meta.env.DEV) Object.assign(window, { mobsimMap: map });
+  useEffect(() => {
+    document.title = brand;
+  }, [brand]);
+
+  const close = () => setOverlay(null);
+  const overlays: ReactNode = (
+    <>
+      {overlay?.kind === "about" && <AboutDialog instanceName={brand} onClose={close} />}
+      {overlay?.kind === "settings" && me && (
+        <SettingsDialog
+          me={me}
+          section={overlay.section}
+          preferences={prefs}
+          onChange={onPrefs}
+          onClose={close}
+        />
+      )}
+      {(overlay?.kind === "admin" || overlay?.kind === "agents") && user && csrf && (
+        <div className="fixed inset-0 z-40 bg-slate-900/30">
+          {overlay.kind === "admin" ? (
+            <AdminPanel role={user.role} userId={user.id} csrfToken={csrf} onClose={close} />
+          ) : (
+            <AgentsPanel role={user.role} csrfToken={csrf} map={null} onClose={close} />
+          )}
+        </div>
+      )}
+    </>
+  );
 
   // An AI app sent the person here to approve a connection (ADR-0035).
-  if (window.location.pathname === "/agents/consent")
+  if (route.page === "consent")
     return (
       <div className="h-full overflow-y-auto bg-slate-50">
         <ConsentPage me={me} />
       </div>
     );
 
+  if (!loaded) return <p className="p-6 text-slate-500">{t("common.loading")}</p>;
+
+  if (!user)
+    return (
+      <>
+        <SignIn
+          instanceName={brand}
+          available={me?.signInAvailable ?? false}
+          refusal={refusal}
+          onAbout={() => setOverlay({ kind: "about" })}
+        />
+        {overlays}
+      </>
+    );
+
+  const account = (
+    <UserMenu
+      me={me}
+      onSettings={(section) => setOverlay({ kind: "settings", section })}
+      onAgents={() => setOverlay({ kind: "agents" })}
+      onAdmin={() => setOverlay({ kind: "admin" })}
+      onSignedOut={() => {
+        go({ page: "home" }, true);
+        reload();
+      }}
+    />
+  );
+  const home = () => go({ page: "home" });
+  const about = () => setOverlay({ kind: "about" });
+
+  if (user.role === "restricted")
+    return (
+      <div className="flex h-full flex-col">
+        <TopBar brand={brand} onHome={home} onAbout={about} account={account} />
+        <main className="flex flex-1 items-center justify-center p-6">
+          <p
+            role="status"
+            className="max-w-md rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-amber-950"
+          >
+            {t("signin.restricted")}
+          </p>
+        </main>
+        {overlays}
+      </div>
+    );
+
+  const setup = me.instance.mode === "setup" && user.role === "owner" && csrf && (
+    <div className="fixed inset-x-0 top-14 bottom-0 z-30">
+      <SetupPanel name={me.instance.name} csrfToken={csrf} onFinished={reload} />
+    </div>
+  );
+
+  if (route.page === "project")
+    return (
+      <>
+        <Workspace
+          api={api}
+          projectId={route.id}
+          tab={route.tab}
+          fresh={route.fresh}
+          brand={brand}
+          account={account}
+          onTab={(tab) => go({ ...route, tab, fresh: route.fresh && tab === "create" }, route.fresh)}
+          onHome={home}
+          onAbout={about}
+        />
+        {setup}
+        {overlays}
+      </>
+    );
+
+  const canCreate = ["owner", "admin", "user"].includes(user.role);
   return (
     <div className="flex h-full flex-col">
-      <header className="flex h-10 items-center gap-4 border-b border-slate-300 bg-white px-3 text-sm">
-        <span className="font-semibold">{me?.instance.name ?? "MobSimLab"}</span>
-        <nav aria-label="Main menu" className="flex gap-3 text-slate-600">
-          <span>File</span>
-          <span>Edit</span>
-          <span>View</span>
-          <span>Help</span>
-        </nav>
-        <div className="ml-auto flex gap-2" role="toolbar" aria-label="Network design">
-          <button
-            type="button"
-            aria-pressed={tool === "street"}
-            onClick={() => toggle("street")}
-            className={toolButton(tool === "street")}
-          >
-            Street line
-          </button>
-          <button
-            type="button"
-            aria-pressed={tool === "railway"}
-            onClick={() => toggle("railway")}
-            className={toolButton(tool === "railway")}
-          >
-            Railway
-          </button>
-          <button
-            type="button"
-            aria-pressed={tool === "journey"}
-            onClick={() => toggle("journey")}
-            className={toolButton(tool === "journey")}
-          >
-            Journey planner
-          </button>
-        </div>
-        <span>
-          {me && (
-            <AccountMenu
-              me={me}
-              onSignedOut={reload}
-              onAdmin={() => setAdmin(true)}
-              onAgents={() => setAgents(true)}
-            />
-          )}
-        </span>
-      </header>
-      {refusal && !me?.user && (
-        <p role="status" className="border-b border-amber-300 bg-amber-50 px-3 py-1 text-sm">
-          {SIGNIN_MESSAGES[refusal] ?? SIGNIN_MESSAGES.invalid_request}
-        </p>
-      )}
-      {me?.user?.role === "restricted" && (
-        <p role="status" className="border-b border-amber-300 bg-amber-50 px-3 py-1 text-sm">
-          Your account is restricted. Please contact an administrator.
-        </p>
-      )}
-      <main className="flex min-h-0 flex-1">
-        <div className="relative min-w-0 flex-1">
-          {admin && me?.user && me.csrfToken && (
-            <AdminPanel
-              role={me.user.role}
-              userId={me.user.id}
-              csrfToken={me.csrfToken}
-              onClose={() => setAdmin(false)}
-            />
-          )}
-          {agents && me?.user && me.csrfToken && (
-            <AgentsPanel
-              role={me.user.role}
-              csrfToken={me.csrfToken}
-              map={map}
-              onClose={() => setAgents(false)}
-            />
-          )}
-          {me?.instance.mode === "setup" && me.user?.role === "owner" && me.csrfToken && (
-            <SetupPanel name={me.instance.name} csrfToken={me.csrfToken} onFinished={reload} />
-          )}
-          <MapView onReady={setMap} />
-          {tool === "street" && <StreetLineEditor map={map} panel={panel} onLineChange={setLine} />}
-          {tool === "railway" && <RailwayEditor map={map} panel={panel} />}
-          {tool === "journey" && (
-            <JourneyPlanner
-              map={map}
-              panel={panel}
-              streetLine={line && line.view.points.length >= 2 ? line : null}
-            />
-          )}
-        </div>
-        {tool && (
-          <aside
-            key={tool}
-            ref={setPanel}
-            aria-label={
-              tool === "journey"
-                ? "Journey planner"
-                : tool === "street"
-                  ? "Street line editor"
-                  : "Railway editor"
-            }
-            className={`${tool === "journey" ? "w-[26rem]" : "w-96"} shrink-0 overflow-y-auto border-l border-slate-300 bg-white`}
-          />
-        )}
-      </main>
+      <TopBar brand={brand} onHome={home} onAbout={about} account={account} />
+      <div className="min-h-0 flex-1">
+        <ProjectsHome
+          api={api}
+          meId={user.id}
+          canCreate={canCreate}
+          onOpen={(p, fresh = false) =>
+            go({ page: "project", id: p.id, tab: fresh ? "create" : "simulator", fresh })
+          }
+        />
+      </div>
+      {setup}
+      {overlays}
     </div>
   );
 }

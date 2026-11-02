@@ -19,6 +19,10 @@ export function roleRank(role: InstanceRole): number {
   return INSTANCE_ROLES.indexOf(role);
 }
 
+/** Project roles (05 §3.2), highest first. */
+export const PROJECT_ROLES = ["owner", "editor", "commenter", "viewer"] as const;
+export type ProjectRole = (typeof PROJECT_ROLES)[number];
+
 type Timestamp = ColumnType<Date, Date | string | undefined, Date | string>;
 
 /** Table types for the tables the API reads and writes (db/migrations). */
@@ -45,6 +49,7 @@ export interface DB {
     created_at: Generated<Date>;
     last_login_at: Date | null;
     deleted_at: ColumnType<Date | null, never, Date | null>;
+    preferences: ColumnType<Record<string, unknown>, never, string>;
   };
   "iam.identity": {
     issuer: string;
@@ -132,6 +137,26 @@ export interface DB {
     doc: ColumnType<unknown, string, string>;
     created_at: Generated<Date>;
     updated_at: Timestamp;
+  };
+  "project.project": {
+    id: Generated<string>;
+    name: string;
+    description: Generated<string>;
+    area_name: string | null;
+    modes: ColumnType<string[], string[] | undefined, string[]>;
+    link_access: Generated<boolean>;
+    copied_from: string | null;
+    created_at: Generated<Date>;
+    updated_at: Timestamp;
+    archived_at: Date | null;
+    deleted_at: Date | null;
+  };
+  "project.member": {
+    project_id: string;
+    user_id: string;
+    role: ProjectRole;
+    added_by: string | null;
+    created_at: Generated<Date>;
   };
   "audit.record": {
     id: Generated<string>;

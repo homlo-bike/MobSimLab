@@ -14,6 +14,8 @@ import { HealthController } from "./health/health.controller";
 import { StreetNetworkModule } from "./street-network/street-network.module";
 import { AccessGuard } from "./iam/access.guard";
 import { RateLimitService } from "./iam/rate-limit.service";
+import { ProjectsController } from "./projects/projects.controller";
+import { ProjectsService } from "./projects/projects.service";
 import { SetupController } from "./setup/setup.controller";
 
 /** Root module. Every route passes the global AccessGuard. */
@@ -27,11 +29,12 @@ export class AppModule {
     return {
       module: AppModule,
       imports: [ConfigModule.forRoot(config), StreetNetworkModule, AgentsModule],
-      controllers: [HealthController, AuthController, SetupController, AdminController],
+      controllers: [HealthController, AuthController, SetupController, AdminController, ProjectsController],
       providers: [
         AuditService,
         AuthService,
         OidcService,
+        ProjectsService,
         RateLimitService,
         SessionService,
         UsersService,

@@ -1,19 +1,24 @@
 import { createHash } from "node:crypto";
 import {
+  BadRequestException,
+  Body,
   Controller,
   Get,
   HttpCode,
   Inject,
   Logger,
   Post,
+  Put,
   Query,
   Req,
   Res,
   ServiceUnavailableException,
 } from "@nestjs/common";
 import type { Response } from "express";
+import { z } from "zod";
 import { APP_CONFIG } from "../config/config.module";
 import type { AppConfig } from "../config/env";
+import { sql } from "kysely";
 import { DATABASE, type Database } from "../db/database";
 import { AuditService } from "../audit/audit.service";
 import { AuthRateLimit } from "../iam/rate-limit.service";
@@ -21,6 +26,23 @@ import { Public, Requires } from "../iam/requires";
 import { AuthService } from "./auth.service";
 import { OidcNotConfiguredError, OidcService } from "./oidc.service";
 import { ABSOLUTE_MS, type MslRequest, SessionService } from "./session.service";
+
+/**
+ * Per-user preferences that follow the person to other devices. `language` is "system" (follow the browser)
+ * or a BCP 47 tag; numbers, dates and units follow the language unless `units` is set.
+ */
+export const preferencesBody = z.strictObject({
+  language: z
+    .string()
+    .regex(/^(system|[a-z]{2,3}(-[A-Za-z0-9]{2,8})*)$/, "not a language tag")
+    .optional(),
+  units: z.enum(["auto", "metric", "imperial"]).optional(),
+  theme: z.enum(["auto", "light", "dark"]).optional(),
+  mapStyle: z.string().max(60).optional(),
+  largerTargets: z.boolean().optional(),
+  reduceMotion: z.boolean().optional(),
+});
+export type Preferences = z.infer<typeof preferencesBody>;
 
 const FLOW_COOKIE = "msl_auth_flow";
 const FLOW_MS = 10 * 60 * 1000;
@@ -48,14 +70,47 @@ export class AuthController {
   async me(@Req() req: MslRequest) {
     const inst = await this.db.selectFrom("iam.instance").select(["mode", "name"]).executeTakeFirstOrThrow();
     const s = req.session;
+    const prefs = s
+      ? await this.db
+          .selectFrom("iam.user")
+          .select("preferences")
+          .where("id", "=", s.actor.userId)
+          .executeTakeFirst()
+      : undefined;
     return {
       instance: { mode: inst.mode, name: inst.name },
       signInAvailable: Boolean(this.config.oidc),
       user: s
-        ? { id: s.actor.userId, role: s.actor.role, email: s.email, displayName: s.displayName }
+        ? {
+            id: s.actor.userId,
+            role: s.actor.role,
+            email: s.email,
+            displayName: s.displayName,
+            preferences: preferencesBody.catch({}).parse(prefs?.preferences ?? {}),
+          }
         : undefined,
       csrfToken: s ? this.sessions.csrfToken(s.tokenHash) : undefined,
     };
+  }
+
+  /**
+   * Purpose: change one's own preferences (language, units, theme). Body: the fields to change; the rest stay.
+   * Output: `{ preferences }`, the stored set.
+   */
+  @Put("preferences")
+  @Requires("session.own")
+  async setPreferences(@Body() body: unknown, @Req() req: MslRequest) {
+    const s = req.session;
+    const r = preferencesBody.safeParse(body ?? {});
+    if (!r.success) throw new BadRequestException(r.error.issues.map((i) => i.message));
+    if (!s) throw new BadRequestException();
+    const row = await this.db
+      .updateTable("iam.user")
+      .set({ preferences: sql`preferences || ${JSON.stringify(r.data)}::jsonb` })
+      .where("id", "=", s.actor.userId)
+      .returning("preferences")
+      .executeTakeFirstOrThrow();
+    return { preferences: preferencesBody.catch({}).parse(row.preferences) };
   }
 
   /**

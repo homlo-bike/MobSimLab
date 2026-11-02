@@ -2,14 +2,15 @@ import type { InstanceRole } from "../db/database";
 
 /**
  * Instance-level actions. Each API route declares exactly one with `@Requires` (or is `@Public`).
- * Project-level actions arrive with the projects module.
+ * Project-level actions (edit, manage access) are checked per project by ProjectsService.
  */
 export const ACTIONS = [
-  "session.own", // see and end one's own session
+  "session.own", // see and end one's own session, and change one's own preferences
   "instance.read", // read instance name and settings that every member may see
   "setup.manage", // run the setup wizard and finish setup
   "users.manage", // list users, set roles, approve, restrict, delete
   "audit.read", // read and verify the audit log
+  "projects.read", // list and open projects one is a member of (project roles decide the rest)
   "projects.create",
   "agents.connect", // connect AI agents, manage one's connections, tokens and agent scenarios (ADR-0035)
   "agents.manage", // instance settings for agent connections
@@ -26,6 +27,7 @@ export const POLICY: Record<Action, readonly InstanceRole[]> = {
   "setup.manage": ["owner"],
   "users.manage": ["owner", "admin"],
   "audit.read": ["owner", "admin"],
+  "projects.read": ["owner", "admin", "user", "viewer"],
   "projects.create": ["owner", "admin", "user"],
   // Product owner 2026-11-01: Viewers cannot connect agents.
   "agents.connect": ["owner", "admin", "user"],
