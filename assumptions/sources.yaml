@@ -183,6 +183,24 @@
   retrieved: 2026-10-27
   checked_via: none
 
+- id: uic-406
+  title: UIC Code 406, Capacity, 2nd edition (2013)
+  publisher: International Union of Railways (UIC)
+  url: https://shop.uic.org/
+  licence: © UIC; numbers cited as facts
+  access: paywalled
+  retrieved: 2026-11-01
+  checked_via: none
+
+- id: pachl-roc
+  title: J. Pachl, Railway Operation and Control, VTD Rail Publishing (blocking time theory, route setting, release and approach times)
+  publisher: VTD Rail Publishing
+  url: https://www.vtd-rail.com/
+  licence: © the author; numbers cited as facts
+  access: paywalled
+  retrieved: 2026-11-01
+  checked_via: none
+
 - id: tcqsm3
   title: TCRP Report 165, Transit Capacity and Quality of Service Manual, 3rd edition (2013)
   publisher: Transportation Research Board / National Academies Press
