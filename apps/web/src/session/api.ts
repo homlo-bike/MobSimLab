@@ -2,20 +2,30 @@
 export interface Me {
   instance: { mode: "setup" | "open"; name: string };
   signInAvailable: boolean;
-  user?: { id: string; role: string; email: string | null; displayName: string | null };
+  user?: {
+    id: string;
+    role: string;
+    email: string | null;
+    displayName: string | null;
+    preferences?: Preferences;
+  };
   csrfToken?: string;
 }
 
-/** Messages for `/?signin=<reason>` after a refused sign-in. */
-export const SIGNIN_MESSAGES: Record<string, string> = {
-  setup_in_progress: "This instance is being set up. Please try again later.",
-  not_bootstrap_owner: "Only the person named by the operator can set up this instance.",
-  pending_approval: "Your account is waiting for an administrator to approve it.",
-  account_deleted: "This account has been removed.",
-  expired: "The sign-in took too long. Please try again.",
-  invalid_request: "The sign-in could not be completed. Please try again.",
-  provider_error: "The sign-in provider returned an error. Please try again.",
-};
+/** Per-user settings stored on the account (`PUT /api/auth/preferences`). */
+export interface Preferences {
+  /** "system" follows the device or browser; otherwise a language tag. */
+  language?: string;
+  units?: "auto" | "metric" | "imperial";
+  largerTargets?: boolean;
+  reduceMotion?: boolean;
+}
+
+/** Purpose: change some preferences; the others stay. Output: the stored set. */
+export async function savePreferences(csrfToken: string, patch: Preferences): Promise<Preferences> {
+  return (await send<{ preferences: Preferences }>("PUT", "/api/auth/preferences", csrfToken, patch))
+    .preferences;
+}
 
 /** Purpose: load the current session and instance state. */
 export async function fetchMe(): Promise<Me> {
