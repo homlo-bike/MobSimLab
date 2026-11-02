@@ -1,3 +1,4 @@
+import type { StreetInfo, StreetInfoLoader } from "../street-setup/types";
 import type {
   EngineLoader,
   LineView,
@@ -46,12 +47,22 @@ export const loadWasmEngine: EngineLoader = async () => {
     clearDepot: () => v(ed.clear_depot()),
     optimise: () => v(ed.optimise()),
     setSettings: (p, r) => v(ed.set_settings(JSON.stringify(p), JSON.stringify(r))),
+    setStreetSetups: (s) => v(ed.set_street_setups(JSON.stringify(s))),
     usableRoads: () => JSON.parse(ed.usable_roads()),
     defaultProfile: (mode: Mode) => JSON.parse(wasm.StreetLineEditor.default_profile(mode)) as VehicleProfile,
     defaultRules: () => JSON.parse(wasm.StreetLineEditor.default_rules()) as RoutingRules,
     dispose: () => ed.free(),
   };
   return engine;
+};
+
+/**
+ * Purpose: the streets of one OSM XML tile that the GIS tab can set up, with what OSM says about them.
+ * Dependencies: the street-routing WebAssembly module (same parser and lane rules as routing).
+ */
+export const loadStreetInfos: StreetInfoLoader = async () => {
+  const wasm = await initWasm();
+  return (xml) => JSON.parse(wasm.street_infos(xml)) as StreetInfo[];
 };
 
 /** Purpose: fetch one street tile from the API (OSM streets, fetched and cached server-side). */
