@@ -227,8 +227,8 @@ fn run_across_an_imported_design() {
             break;
         }
         for &n in m.next_routes(r) {
-            if !prev.contains_key(&n) {
-                prev.insert(n, Some(r));
+            if let std::collections::btree_map::Entry::Vacant(e) = prev.entry(n) {
+                e.insert(Some(r));
                 q.push_back(n);
             }
         }
