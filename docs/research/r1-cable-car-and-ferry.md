@@ -1,7 +1,7 @@
 # Research R1: cable car and ferry service lines, and other modes worth adding
 
 - Date: 2026-11-02
-- Status: Research for [ADR-0036](../adr/0036-cable-car-and-ferry-lines.md) (Proposed)
+- Status: Research for [ADR-0037](../adr/0037-cable-car-and-ferry-lines.md) (Proposed)
 - Asked by: product owner, 2026-11-02: "In addition to street service lines and rail service lines, add cable car and ferry service lines. Start with research on industry, startups, requirements and infrastructure design. What other similar public mobility solutions should be included?"
 - Related: [01 Overview, out of scope](../architecture/01-overview.md) (ferry and aerial cable car were listed as later candidates), ADR-0018 (assumptions), ADR-0026 (vehicle catalogue), ADR-0029 (street lines), ADR-0030/0032 (railway design and operations), ADR-0034 (journey planner)
 
@@ -144,10 +144,10 @@ Not recommended: hyperloop and urban air mobility (eVTOL "air taxis"). Neither r
 
 ## 4. Where the research points
 
-1. Treat **cable car** (continuous gondolas and reversible trams) and **ferry** as two new mode families with their own drawing tools, both sharing the station-and-line concepts already used for rail.
+1. Treat **cable car** (continuous gondolas and reversible trams) and **ferry** as two new mode families, built as bundled plugins on two new core drawing kits (ADR-0036 §8), both sharing the station-and-line concepts already used for rail.
 2. A continuous gondola is **frequency-based** (no timetable); the existing journey planner already expands frequency patterns into trips.
 3. Ferries are **timetabled** like rail, with **berths** as the reserved resource, running times from speed zones, and weather as a disruption scenario.
 4. Add **funicular** at the same time through the railway tool; plan people movers, monorails, rack railways and public lifts next; leave DRT for its own ADR.
 5. The assumption library needs new entries for both modes; start with TCQSM Chapter 9 and TCRP Report 238 for ferries, and EN 12929 plus manufacturer data for ropeways.
 
-The decisions are in [ADR-0036](../adr/0036-cable-car-and-ferry-lines.md).
+The decisions are in [ADR-0037](../adr/0037-cable-car-and-ferry-lines.md).

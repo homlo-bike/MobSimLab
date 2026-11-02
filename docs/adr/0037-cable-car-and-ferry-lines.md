@@ -1,9 +1,9 @@
-# ADR-0036: Cable car and ferry service lines: two new mode families drawn station-first, frequency-based gondolas and timetabled ferries with berths
+# ADR-0037: Cable car and ferry service lines: two new mode families drawn station-first, frequency-based gondolas and timetabled ferries with berths
 
 - Status: Proposed
 - Date: 2026-11-02
 - Deciders: product owner, architecture
-- Related: FR-NET-01, FR-NET-11, FR-VEH-01, FR-SIM, FR-TT, ADR-0009 (unified graph), ADR-0018 (assumptions), ADR-0026 (vehicle catalogue), ADR-0029 (street lines), ADR-0030 and ADR-0032 (railway design and operations), ADR-0034 (journey planner), [Research R1](../research/r1-cable-car-and-ferry.md)
+- Related: FR-NET-01, FR-NET-11, FR-VEH-01, FR-SIM, FR-TT, ADR-0009 (unified graph), ADR-0018 (assumptions), ADR-0026 (vehicle catalogue), ADR-0029 (street lines), ADR-0030 and ADR-0032 (railway design and operations), ADR-0034 (journey planner), ADR-0036 (plugins, §8 new modes as plugins), [Research R1](../research/r1-cable-car-and-ferry.md)
 
 ## Context
 
@@ -13,9 +13,17 @@ The product owner asked (2026-11-02) to add **cable car** and **ferry** service 
 2. **Cable car geometry is simple but strict:** straight sections between stations, direction changes only in stations, towers whose spans and heights depend on the technology, and clearance over the ground and buildings with rope sag. Overflight of buildings and wind are the main reasons projects stall or stop.
 3. **Ferries run on water, which the unified graph does not have.** They are timetabled like rail; the scarce resource is the **berth**, dwell is limited by **gangway throughput**, running time depends on **speed zones**, and **bridges and locks** constrain the route.
 4. **Weather** (wind for ropeways; waves, wind, fog and ice for ferries) is the normal cause of service loss for both.
-5. The existing journey planner (ADR-0034) already expands **frequency patterns** into trips, and the GTFS-shaped published timetable carries a free `mode` string.
+5. ADR-0036 (plugins, Proposed) recommends building cable car and ferry as **first-party plugins bundled with the image**, on two new core **authoring kits** (straight spans between stations and supports; routes over water between terminals) and a core **mesoscopic segment engine** that plugins supply numbers and rules to. This ADR is the mode-specific content for those plugins and kits.
+6. The existing journey planner (ADR-0034) already expands **frequency patterns** into trips, and the GTFS-shaped published timetable carries a free `mode` string.
 
 ## Decision
+
+### 0. Packaging (aligned with ADR-0036)
+
+- Cable car and aerial tramway ship together as the bundled plugin `org.mobsimlab.aerial-lift`; ferry as `org.mobsimlab.ferry`. Funicular stays a core rail mode, because it uses the railway tool and rail kernel unchanged.
+- §2 below specifies the core **straight spans kit**, and §3 the core **water route kit**. The kits are generic (a people mover can reuse straight spans); everything ropeway- or vessel-specific (systems, parameters, checks, vehicle fields) is a plugin contribution.
+- §5 describes behaviour on the core **mesoscopic segment engine**, not separate engines. The plugins supply running times, dwell and capacity rules through its interface.
+- If this work starts before the plugin host exists, it is built against the Phase 0 registries of ADR-0036 so the modes move into plugins without data migration.
 
 ### 1. Modes
 
@@ -25,13 +33,13 @@ Add three mode ids to the assumption library, the vehicle catalogue and the publ
 |---------|--------|-----------|-------------------|
 | `cable_car` | Continuous ropeways: monocable (MGD), bicable (2S), tricable (3S), funitel, pulsed gondola | Frequency-based, no timetable | 6 (aerial lift) |
 | `aerial_tramway` | Reversible ropeways (one or two cabins shuttling) | Timetabled shuttle | 6 |
-| `ferry` | Water buses, crossing shuttles, commuter fast ferries; passenger-only in v1 | Timetabled | 4 (ferry) |
+| `ferry` | Water buses, crossing shuttles, commuter fast ferries; passenger-only at first | Timetabled | 4 (ferry) |
 
 The ropeway **technology** (`mgd`, `2s`, `3s`, `funitel`, `pulsed`, `reversible`) is a property of the line's system, like a railway system in ADR-0030, and becomes a new assumption context key `ropeway_system`. Ferries get a context key `vessel_type` (`monohull`, `catamaran`, `hydrofoil`). Both are additive changes to the assumption engine.
 
-### 2. Cable car tool (map editor)
+### 2. Cable car tool: the straight spans kit (map editor)
 
-Station-first, like the railway tool (ADR-0030), because the stations decide everything else.
+Station-first, like the railway tool (ADR-0030), because the stations decide everything else. The steps below are the straight spans kit with the aerial-lift plugin's parameters and checks.
 
 1. Pick the **system** (MGD, 3S …). Line speed, cabin size, max span, max tower height, max station angle and wind limits come from the assumption library and are editable.
 2. **Click stations in order.** The line between two stations is straight. Each station is a **terminal** (drive or return), an **intermediate** station (boarding) or an **angle** station (direction change; boarding optional). An angle above the system's limit is an error.
@@ -41,9 +49,11 @@ Station-first, like the railway tool (ADR-0030), because the stations decide eve
 6. Stations join `StationGroup`s with nearby stops and stations by the grouping rule (06 §9.3), so transfers to bus, tram and metro work as for any other station.
 7. A **cabin garage** at one station (or a separate building on the line) is the depot; the tool computes the cabin count: `2 × line length ÷ cabin spacing + reserve`.
 
-Implemented in a new Rust crate `crates/ropeway-design` compiled to WebAssembly for the editor, following ADR-0031 and ADR-0033.
+The kit's geometry (tower placement, sag and clearance) is a core Rust crate compiled to WebAssembly for the editor, following ADR-0031 and ADR-0033; the plugin supplies the per-system limits.
 
-### 3. Ferry tool (map editor)
+### 3. Ferry tool: the water route kit (map editor)
+
+The steps below are the water route kit with the ferry plugin's parameters and checks.
 
 1. **Piers.** Place piers on the shore, or adopt OSM `amenity=ferry_terminal` and existing `route=ferry` ways as hints. Each pier has berths, gangways per berth, a fixed or floating type, and optional shore charging. Piers join `StationGroup`s like stops.
 2. **A line is an ordered list of pier calls**, like a rail line (ADR-0032 §2): pick piers in order; both directions are generated from one pattern, with per-direction exceptions. Ends are terminals with a layover.
@@ -65,11 +75,13 @@ New catalogue folders `vehicles/cable-car/`, `vehicles/aerial-tramway/` and `veh
 | Service plan | Operating hours and **line speed** per period (lower speed off-peak saves energy); capacity = cabins per hour × cabin size × planning load | Shuttle timetable from cycle time | Timetable through the existing pipeline (07 §11): suggested frequency from demand, clock-face, layover, vehicle blocks |
 | Published timetable | Frequency pattern with headway = cabin interval; the journey planner expands it at no less than 60 s (waiting time is at most the interval, so this is conservative) | Exact trips | Exact trips |
 | Reserved resource | None (cabins cannot conflict) | The single track; two cabins pass at mid-span | **Berths** at piers, assigned like platforms (ADR-0032), and lock chambers |
-| Engine | New **ropeway engine** in Rust: deterministic cabin positions from rope speed; mesoscopic boarding per station | Same engine, shuttle mode | New **vessel engine** in Rust: running time from speed zones, berth reservation, dwell from gangway throughput, seeded delays |
+| Engine (core segment engine, plugin rules) | Departures at the cabin interval, section times from rope and station speed, boarding per station | Shuttle trips, cycle time | Section times from speed zones, berthing manoeuvre, dwell from gangway throughput, berth reservation, seeded delays |
 | Weather | Wind scenario per hour: slow-down above `ropeway.wind_slow_kmh`, stop above `ropeway.wind_stop_kmh`, with replacement buses | Same | Wave height, wind, fog: cancellations or reduced speed per vessel limit |
 | Depot | Cabin garage | Cabins stay on the line | Home port berths |
 
-Both engines plug into the co-simulation coordinator (07 §1) as additional engines. They exchange passengers with the others through station groups only; there is no shared right of way with road or rail traffic in v1.
+Both modes run on the core mesoscopic segment engine of ADR-0036 §8, driven by the co-simulation coordinator (07 §1). They exchange passengers with the other engines through station groups only; there is no shared right of way with road or rail traffic in v1.
+
+**One addition the segment engine needs.** The interface in ADR-0036 (`depart`, `advance`, `capacity`, `dwell`) has no shared resources. Ferries need **berths** and **lock chambers**, and an aerial tramway needs its single track, as reservable resources: a vessel that finds all berths taken waits outside the pier (a hold event), as a train waits at a signal. We propose a core `reserve(resource, from, to) -> granted | wait_until` call in the segment engine, with resources declared by the infrastructure contribution. Without it, berth conflicts are only checked in the timetable, not simulated.
 
 ### 6. Assumption library
 
@@ -89,11 +101,13 @@ Follow the ranking in [R1 §3](../research/r1-cable-car-and-ferry.md#3-other-pub
 
 ### 8. Phasing
 
-1. Assumption library and vehicle schema for the three modes plus funicular; first sourced vehicle files.
-2. Cable car tool with automatic towers, profile view and checks; frequency patterns in the published timetable.
-3. Water graph from OSM, pier editor and ferry line tool.
-4. Ropeway and vessel engines in the co-simulation; weather scenarios.
-5. Funicular in the railway tool.
+Ordered to fit ADR-0036's phases (registries in its Phase 0, modes and engines in its Phase 3):
+
+1. Funicular in the railway tool (core, needs no plugin work).
+2. Assumption parameters and vehicle schema fields for the three modes, registered through the Phase 0 registries; first sourced vehicle files.
+3. Straight spans kit with automatic towers, profile view and checks; frequency patterns in the published timetable.
+4. Water graph from OSM, pier editor and water route kit.
+5. Segment engine with resource reservation; weather scenarios; packaging as the two bundled plugins.
 
 ## Alternatives considered
 
@@ -102,12 +116,13 @@ Follow the ranking in [R1 §3](../research/r1-cable-car-and-ferry.md#3-other-pub
 | One `cable` mode for gondolas and aerial trams | Their operation differs completely (frequency belt vs timetabled shuttle); two mode ids keep timetables, assumptions and GTFS export simple |
 | Draw cable cars with the street line tool (points routed on a graph) | There is no graph to route on; the geometry is straight lines between stations with towers, which is closer to the railway tool |
 | Model ferries as straight lines between piers | Underestimates running time and ignores bridges, locks and land; a water graph is needed anyway for walk access and maps |
+| Dedicated ropeway and vessel engines in Rust (first draft of this ADR) | Dropped to align with ADR-0036: the generic segment engine covers both modes once it can reserve berths, and other plugin modes reuse it |
 | Simulate ferries and ropeways in SUMO | SUMO has no rope or vessel physics that helps here, and neither mode interacts with road traffic in v1; small dedicated engines are simpler and deterministic |
-| Include car ferries (ro-pax) in v1 | Needs handover of road vehicles between SUMO and the vessel engine (like ADR-0007 portals); kept for later |
+| Include car ferries (ro-pax) in v1 (ADR-0036 lists ro-pax vessels in the ferry plugin) | Needs handover of road vehicles between SUMO and the vessel engine (like ADR-0007 portals); kept for later |
 
 ## Consequences
 
 - Planners can design and compare urban ropeways and ferry lines with the same station grouping, journey planner, timetable and appraisal as bus and rail.
-- New work: the `ropeway-design` crate, a water graph in the OSM import and unified graph, two new simulation engines, schema and assumption additions, and new catalogue folders. The 01 Overview out-of-scope list and FR-NET-11 ("all 11 modes") change once this ADR is accepted.
+- New work, shared with ADR-0036 Phase 3: the straight spans and water route kits, a water graph in the OSM import and unified graph, the segment engine with resource reservation, schema and assumption additions, and catalogue folders inside the two bundled plugins. The 01 Overview out-of-scope list and FR-NET-11 ("all 11 modes") change once this ADR is accepted.
 - The model leaves room for on-demand cable pods and water taxis, but does not build the dispatch model they need.
 - Open questions for the product owner: tides and river levels (constant per pier in v1, or a time series?); whether car ferries are needed early; whether wind and wave statistics should come from a provider (for example a weather reanalysis download) or be entered by the planner.
