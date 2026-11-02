@@ -62,6 +62,8 @@ pub struct Topology {
     pub depot_groups: Vec<DepotGroup>,
     /// Stretches where tram or light rail track runs along a street.
     pub street_running: Vec<StreetRunningOut>,
+    /// Where free ends of new track join existing railways from OpenStreetMap.
+    pub existing_joins: Vec<ExistingJoinOut>,
     /// Signals: the planner's plan, or a generated one while the document has none.
     pub signals: Vec<SignalOut>,
     /// The signals were generated, not planned.
@@ -92,6 +94,26 @@ pub struct StreetRunningOut {
     pub street: crate::street_running::RunningStreet,
     /// Stations (tram stops) on the stretch.
     pub stops: Vec<u32>,
+}
+
+/// A free end of new track that joins an existing railway (`crate::existing`).
+#[derive(Debug, Clone, Serialize)]
+pub struct ExistingJoinOut {
+    /// Track (alignment) id.
+    pub track: u32,
+    /// 0 the track's start, 1 its end.
+    pub end: u8,
+    /// The `end` nodes there (one per line of the track).
+    pub nodes: Vec<String>,
+    /// OSM way id of the existing track.
+    pub way: i64,
+    /// Existing railway's name, empty when unnamed.
+    pub name: String,
+    /// Its OSM `railway` kind (`rail`, `tram`, `light_rail`, `subway`, ...).
+    pub railway: String,
+    /// The new track continues the existing way at its end; otherwise a new turnout goes into the
+    /// existing track.
+    pub continues: bool,
 }
 
 /// A signal on a section.
@@ -1090,6 +1112,39 @@ pub fn topology(dz: &Design) -> Topology {
         })
         .collect();
 
+    let existing_joins: Vec<ExistingJoinOut> = dz
+        .joins
+        .iter()
+        .map(|j| {
+            let at = dz.track(j.track).and_then(|g| {
+                let q = if j.end == 0 {
+                    g.centre.first()
+                } else {
+                    g.centre.last()
+                }?;
+                Some((
+                    q.p,
+                    g.spacing_at(q.s) * f64::from(g.ntracks.max(1)) / 2.0 + 1.0,
+                ))
+            });
+            ExistingJoinOut {
+                track: j.track,
+                end: j.end,
+                nodes: node_out
+                    .iter()
+                    .filter(|n| {
+                        n.kind == "end" && at.is_some_and(|(p, r)| P2::new(n.x, n.y).dist(p) <= r)
+                    })
+                    .map(|n| n.id.clone())
+                    .collect(),
+                way: j.way,
+                name: j.name.clone(),
+                railway: j.kind.clone(),
+                continues: j.continues,
+            }
+        })
+        .collect();
+
     // Depot groups: storage sections joined by movements.
     let storage: Vec<bool> = sections.iter().map(|s| s.usage == "storage").collect();
     let mut seen = vec![false; segs.len()];
@@ -1193,6 +1248,7 @@ pub fn topology(dz: &Design) -> Topology {
         level_crossings,
         depot_groups,
         street_running,
+        existing_joins,
         signals,
         signals_generated,
         generated,
@@ -1659,6 +1715,31 @@ mod tests {
         let plain = topology(&build(&net, None));
         assert!(speeds(&t).contains(&50.0), "{:?}", speeds(&t));
         assert!(!speeds(&plain).contains(&50.0), "{:?}", speeds(&plain));
+    }
+
+    #[test]
+    fn a_join_to_an_existing_railway_names_its_end_nodes() {
+        for mode in RailMode::ALL {
+            let net = sample(mode, 7.0, 50.9);
+            let plain = build(&net, None);
+            let rails = crate::sample::sample_railways(&plain);
+            let dz = crate::design::build_with_osm(&net, None, &[], &rails);
+            let t = topology(&dz);
+            assert_eq!(t.existing_joins.len(), 1, "{mode:?}");
+            let j = &t.existing_joins[0];
+            assert!(j.continues && j.track == 7 && j.end == 1, "{mode:?}");
+            assert_eq!(j.nodes.len(), 2, "{mode:?}: {:?}", j.nodes);
+            assert!(
+                !dz.issues.iter().any(|i| i.ref_id == Some(7)
+                    && matches!(
+                        i.severity,
+                        crate::issue::Severity::Error | crate::issue::Severity::Warning
+                    )
+                    && (i.text.contains("existing") || i.text.starts_with("Open track end"))),
+                "{mode:?}: {:?}",
+                dz.issues
+            );
+        }
     }
 
     #[test]

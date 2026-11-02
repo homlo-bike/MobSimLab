@@ -7,12 +7,14 @@
 //!
 //! The editor also passes the street tiles on screen (OSM XML from the API, the same tiles the
 //! street line tool uses) to [`RailDesigner::add_street_tile`], so the build finds level
-//! crossings with the streets.
+//! crossings with the streets, and the railway tiles to [`RailDesigner::add_rail_tile`], so new
+//! track can join the existing railways.
 
+use rail_design::existing::{nearest_on, rail_from_osm, ExistingRail};
 use rail_design::geom::{nearest, P2};
 use rail_design::proj::LocalTm;
 use rail_design::street::{street_from_osm, Street};
-use rail_design::{build_with_streets, Design, Network, RailMode};
+use rail_design::{build_with_osm, Design, Network, RailMode};
 use std::collections::{BTreeMap, HashMap};
 use wasm_bindgen::prelude::*;
 
@@ -31,6 +33,8 @@ pub struct RailDesigner {
     design: Option<Design>,
     streets: BTreeMap<i64, Street>,
     street_list: Vec<Street>,
+    rails: BTreeMap<i64, ExistingRail>,
+    rail_list: Vec<ExistingRail>,
 }
 
 impl Default for RailDesigner {
@@ -48,6 +52,8 @@ impl RailDesigner {
             design: None,
             streets: BTreeMap::new(),
             street_list: Vec::new(),
+            rails: BTreeMap::new(),
+            rail_list: Vec::new(),
         }
     }
 
@@ -55,7 +61,12 @@ impl RailDesigner {
     /// `draft` is the id of a track still being drawn (0 for none).
     pub fn build(&mut self, doc: &str, draft: u32) -> Result<String, JsError> {
         let net: Network = serde_json::from_str(doc).map_err(js)?;
-        let d = build_with_streets(&net, (draft != 0).then_some(draft), &self.street_list);
+        let d = build_with_osm(
+            &net,
+            (draft != 0).then_some(draft),
+            &self.street_list,
+            &self.rail_list,
+        );
         let v = rail_design::view::view(&d);
         self.design = Some(d);
         Ok(v.to_string())
@@ -93,6 +104,69 @@ impl RailDesigner {
     pub fn clear_streets(&mut self) {
         self.streets.clear();
         self.street_list.clear();
+    }
+
+    /// Purpose: add the existing railways of one OSM XML railway tile. A way already known is kept
+    /// with the longer of its two shapes. Output: number of existing railways.
+    /// Side effects: the next build draws them and joins new track ends to them.
+    pub fn add_rail_tile(&mut self, xml: &str) -> Result<u32, JsError> {
+        let data = street_routing::osm::parse_osm_xml(xml).map_err(js)?;
+        let nodes: HashMap<i64, [f64; 2]> =
+            data.nodes.iter().map(|n| (n.id, [n.lon, n.lat])).collect();
+        for w in &data.ways {
+            let coords: Vec<[f64; 2]> = w
+                .nodes
+                .iter()
+                .filter_map(|n| nodes.get(n).copied())
+                .collect();
+            let Some(r) = rail_from_osm(w.id, &w.tags, coords) else {
+                continue;
+            };
+            if self
+                .rails
+                .get(&w.id)
+                .map_or(true, |old| old.coords.len() < r.coords.len())
+            {
+                self.rails.insert(w.id, r);
+            }
+        }
+        self.rail_list = self.rails.values().cloned().collect();
+        Ok(self.rails.len() as u32)
+    }
+
+    /// Purpose: forget all existing railways. Side effects: the next build has none.
+    pub fn clear_rails(&mut self) {
+        self.rails.clear();
+        self.rail_list.clear();
+    }
+
+    /// Purpose: the nearest point on an existing railway (in use or under construction) within
+    /// `max_m` metres, to snap a track end onto, as JSON `{lonlat, heading_deg (anticlockwise from east), way, name,
+    /// railway}`, or `null`. Needs a build first (for the local frame).
+    pub fn existing_snap(&self, lon: f64, lat: f64, max_m: f64) -> String {
+        let Some(d) = &self.design else {
+            return "null".into();
+        };
+        let q = d.proj.to_xy(lon, lat);
+        let mut best: Option<(f64, serde_json::Value)> = None;
+        for e in d
+            .existing
+            .iter()
+            .filter(|e| matches!(e.rail.status.as_str(), "active" | "construction"))
+        {
+            let Some((dist, p, dir, _)) = nearest_on(&e.pts, q) else {
+                continue;
+            };
+            if dist > max_m || best.as_ref().is_some_and(|b| dist >= b.0) {
+                continue;
+            }
+            best = Some((
+                dist,
+                serde_json::json!({"lonlat": d.proj.to_lonlat(p), "heading_deg": dir.heading().to_degrees(),
+                                   "way": e.rail.way, "name": e.rail.name, "railway": e.rail.kind}),
+            ));
+        }
+        best.map_or("null".into(), |b| b.1.to_string())
     }
 
     /// Purpose: the track nearest to a map position within `max_m` metres, as JSON

@@ -19,7 +19,7 @@ import {
   updateSignal,
   type LocalConnection,
 } from "./doc";
-import { loadRailEngine } from "./engine";
+import { fetchRailTile, loadRailEngine } from "./engine";
 import { basemapLabels, featuresFromLabels, preferTransitKind } from "../naming/labels";
 import { describeChoice, describeClash, nameForNewPlace, renamePlace } from "../naming/names";
 import { placesOtherThan, publishPlaces } from "../naming/registry";
@@ -77,6 +77,8 @@ interface Props {
   loadEngine?: RailEngineLoader;
   /** Street tile loader (OSM XML) for level crossings; tests inject a fake. */
   fetchTile?: TileFetcher;
+  /** Railway tile loader (OSM XML) for existing railways; tests inject a fake. */
+  fetchRails?: TileFetcher;
 }
 
 export interface Selection {
@@ -98,6 +100,7 @@ export function RailwayEditor({
   panel = null,
   loadEngine = loadRailEngine,
   fetchTile = fetchStreetTile,
+  fetchRails = fetchRailTile,
 }: Props) {
   const engine = useRef<RailEngine | null>(null);
   const [ready, setReady] = useState(false);
@@ -140,8 +143,9 @@ export function RailwayEditor({
     };
   }, [loadEngine]);
 
-  // Streets for level crossings: the tiles on screen, loaded when the map stops moving, the same
-  // tiles the street line tool routes on. Each batch of new streets triggers one rebuild.
+  // Streets for level crossings and existing railways for joins: the tiles on screen, loaded when
+  // the map stops moving, the same tiles the street line tool routes on. Each batch of new tiles
+  // triggers one rebuild.
   const [streets, setStreets] = useState(0);
   const [streetNote, setStreetNote] = useState<string | null>(null);
   const tiles = useRef(new Set<string>());
@@ -158,7 +162,7 @@ export function RailwayEditor({
         return;
       }
       if (map.getZoom() < MIN_LOAD_ZOOM) {
-        setStreetNote(`Zoom in to load streets and find level crossings (from zoom ${MIN_LOAD_ZOOM}).`);
+        setStreetNote(`Zoom in to load streets and existing railways (from zoom ${MIN_LOAD_ZOOM}).`);
         return;
       }
       const b = map.getBounds();
@@ -168,12 +172,14 @@ export function RailwayEditor({
       if (!want.length) return;
       busy = true;
       want.forEach((k) => tiles.current.add(k));
-      const got = await Promise.allSettled(
-        want.map((k) => {
-          const [x, y] = k.split("/").map(Number);
-          return fetchTile(x!, y!);
-        }),
-      );
+      const fetchAll = (f: TileFetcher) =>
+        Promise.allSettled(
+          want.map((k) => {
+            const [x, y] = k.split("/").map(Number);
+            return f(x!, y!);
+          }),
+        );
+      const [got, rails] = await Promise.all([fetchAll(fetchTile), fetchAll(fetchRails)]);
       busy = false;
       if (stopped || engine.current !== e) {
         want.forEach((k) => tiles.current.delete(k));
@@ -181,6 +187,7 @@ export function RailwayEditor({
       }
       let added = 0;
       let reason: string | null = null;
+      let railReason: string | null = null;
       got.forEach((r, i) => {
         try {
           if (r.status === "rejected") throw r.reason;
@@ -191,12 +198,22 @@ export function RailwayEditor({
           reason ??= err instanceof Error ? err.message : "Some streets did not load.";
         }
       });
+      rails.forEach((r, i) => {
+        try {
+          if (r.status === "rejected") throw r.reason;
+          e.addRailTile(r.value);
+          added++;
+        } catch (err) {
+          tiles.current.delete(want[i]!);
+          railReason ??= err instanceof Error ? err.message : "Some existing railways did not load.";
+        }
+      });
       if (added) setStreets((n) => n + 1);
-      setStreetNote(
-        reason
-          ? `${reason} Level crossings are only found where streets have loaded. Move the map to try again.`
-          : null,
-      );
+      const notes = [
+        reason && `${reason} Level crossings are only found where streets have loaded.`,
+        railReason && `${railReason} New track only joins existing railways where they have loaded.`,
+      ].filter(Boolean);
+      setStreetNote(notes.length ? `${notes.join(" ")} Move the map to try again.` : null);
       if (again) {
         again = false;
         void load();
@@ -210,7 +227,7 @@ export function RailwayEditor({
       map.off("moveend", onMove);
       tiles.current.clear();
     };
-  }, [map, ready, fetchTile]);
+  }, [map, ready, fetchTile, fetchRails]);
 
   // A new drawing starts at the map centre.
   useEffect(() => {
@@ -409,16 +426,19 @@ export function RailwayEditor({
         setSel({ id });
         setTool("select");
       } else if (s.tool === "track") {
+        // A free point close to an existing railway snaps onto it, so the track joins it.
+        const snap = e.existingSnap(ll, pxToM(10));
+        const p = snap ? e.toLocal(s.doc.origin, snap.lonlat) : at;
         if (!s.draft) {
           const c = connectionAt(ev.point, s.trackOpts.tracks);
           if (c) startDraft(c.anchor, s.doc, c.level, c.tracks === 2 ? 2 : 1);
-          else startDraft({ type: "free", x: at[0], y: at[1] }, s.doc, s.trackOpts.level, s.trackOpts.tracks);
+          else startDraft({ type: "free", x: p[0], y: p[1] }, s.doc, s.trackOpts.level, s.trackOpts.tracks);
           return;
         }
         const c = connectionAt(ev.point, s.draft.tracks);
         if (c) return finishDraft(c.anchor);
         const dr = s.draft;
-        const pts = [...dr.points, { x: at[0], y: at[1], level: draftLevel(dr) }];
+        const pts = [...dr.points, { x: p[0], y: p[1], level: draftLevel(dr) }];
         const next = autoLeads({ ...dr, points: pts }, connLocal(dr.start), null, null, minLead);
         setDraft(next);
       } else if (s.tool === "turnout" || s.tool === "crossover") {
@@ -527,7 +547,8 @@ export function RailwayEditor({
       }
       if (s.tool === "track" && s.draft) {
         const conn = connectionAt(ev.point, s.draft.tracks);
-        const at = e.toLocal(s.doc.origin, ll);
+        const snap = e.existingSnap(ll, pxToM(10));
+        const at = e.toLocal(s.doc.origin, snap ? snap.lonlat : ll);
         cancelAnimationFrame(frame);
         frame = requestAnimationFrame(() => {
           const d = latest.current.draft;
