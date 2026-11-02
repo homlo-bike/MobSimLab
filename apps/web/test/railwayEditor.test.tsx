@@ -219,7 +219,7 @@ describe("railway engine (WebAssembly)", () => {
     const v = e.build(lineAcross("regional_rail"), null);
     expect(v.level_crossings).toHaveLength(1);
     const x = v.level_crossings[0]!;
-    expect(x).toMatchObject({ street: "Station Road", protection: "barriers", allowed: true, bus: true });
+    expect(x).toMatchObject({ street: "Station Road", protection: "barriers", standard: true, bus: true });
     expect(x.angle_deg).toBeCloseTo(90, 0);
     expect(v.issues.some((i) => /Level crossing with Station Road/.test(i.text))).toBe(true);
     const kinds = v.layers.level_crossings.features.map((f) => f.properties?.kind);
@@ -234,8 +234,11 @@ describe("railway engine (WebAssembly)", () => {
     });
     // A metro line may not cross a street on the level; a street on a bridge is no crossing.
     const m = e.build(lineAcross("metro"), null);
-    expect(m.level_crossings[0]!.allowed).toBe(false);
-    expect(m.issues.some((i) => i.severity === "error" && /no level crossings/.test(i.text))).toBe(true);
+    expect(m.level_crossings[0]).toMatchObject({ standard: false, special_measures: ["mode", "third_rail"] });
+    expect(m.issues.some((i) => i.severity === "error")).toBe(false);
+    expect(
+      m.issues.some((i) => i.severity === "warning" && /normally have no level crossings/.test(i.text)),
+    ).toBe(true);
     e.clearStreets();
     e.addStreetTile(streetTile(50.899, 50.901, { bridge: "yes" }));
     expect(e.build(lineAcross("regional_rail"), null).level_crossings).toHaveLength(0);

@@ -504,7 +504,7 @@ pub fn view(dz: &Design) -> Value {
         let (a, b) = (deck / sin, x.street_width_m / 2.0 / sin);
         let corner = |i: f64, j: f64| x.p.add(ds.mul(i * a)).add(dt.mul(j * b));
         let z = Level::Street.order();
-        let props = |kind: &str| json!({"kind": kind, "z": z, "ref": x.track, "id": x.id, "allowed": x.allowed});
+        let props = |kind: &str| json!({"kind": kind, "z": z, "ref": x.track, "id": x.id, "standard": x.standard});
         ly.polygon(
             "level_crossings",
             &[
@@ -784,7 +784,7 @@ pub fn view(dz: &Design) -> Value {
         .map(|x| {
             json!({
                 "id": x.id, "track": x.track, "mode": x.mode, "street": x.street, "class": x.class,
-                "angle_deg": x.angle.to_degrees(), "protection": x.protection, "allowed": x.allowed,
+                "angle_deg": x.angle.to_degrees(), "protection": x.protection, "standard": x.standard, "special_measures": x.special_measures,
                 "bus": x.bus, "trolley_wire": x.trolley_wire, "keep_clear_m": x.keep_clear_m,
                 "approach_m": x.approach_m, "lonlat": ly.ll(x.p),
             })

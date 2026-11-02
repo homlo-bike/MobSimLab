@@ -355,7 +355,8 @@
       "required": [
         "id",
         "protection",
-        "allowed",
+        "standard",
+        "special_measures",
         "mode",
         "angle_deg",
         "x",
@@ -379,7 +380,13 @@
           "description": "barriers: ballasted railway track, barriers and lights; traffic_signals: tram track embedded in the street.",
           "enum": ["barriers", "traffic_signals"]
         },
-        "allowed": { "type": "boolean", "description": "No design error at this crossing." },
+        "standard": { "type": "boolean", "description": "Meets the usual rules for level crossings." },
+        "special_measures": {
+          "description": "Why it does not, so the crossing needs special safety measures (full barriers, obstacle detection, train protection): mode (a railway system that normally has no level crossings), third_rail, motorway, line_speed (above the usual limit).",
+          "type": "array",
+          "items": { "enum": ["mode", "third_rail", "motorway", "line_speed"] },
+          "uniqueItems": true
+        },
         "mode": { "$ref": "#/$defs/mode" },
         "angle_deg": { "type": "number", "minimum": 0, "maximum": 90 },
         "x": { "type": "number" },

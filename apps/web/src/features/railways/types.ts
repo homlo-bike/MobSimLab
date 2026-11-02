@@ -217,8 +217,9 @@ export interface LevelCrossingView {
   class: string;
   angle_deg: number;
   protection: "barriers" | "traffic_signals";
-  /** No design error at this crossing. */
-  allowed: boolean;
+  /** Meets the usual rules; otherwise `special_measures` says why it needs special safety measures. */
+  standard: boolean;
+  special_measures: ("mode" | "third_rail" | "motorway" | "line_speed")[];
   bus: boolean;
   trolley_wire: boolean;
   keep_clear_m: number;

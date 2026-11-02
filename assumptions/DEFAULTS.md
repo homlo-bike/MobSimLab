@@ -714,7 +714,7 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 | tram, light_rail | 25 | 35 | 45 | documented | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Tram trolley wire without a catenary sags more, so spans of about 30–40 m are usual. |
 | metro | 40 | 50 | 60 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Between tram and mainline; only used where a metro is built with overhead line instead of third rail. |
 
-### Level crossings with streets: allowed for the mode
+### Level crossings with streets: usual for the mode (otherwise a warning asks for special safety measures)
 
 `level_crossing.permitted` · unit: yes/no · used by: railway design check of street-level track crossing a street
 
@@ -723,7 +723,7 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 | all | – | yes | – | cited | unverified | [vuchic-2007](#src-vuchic-2007), [ebo](#src-ebo) | Trams cross streets at traffic signals; light rail and mainline rail may keep level crossings (right-of-way category B). The line speed limit (level_crossing.max_line_speed_kmh) applies as well. |
 | metro, high_speed_rail | – | no | – | cited | unverified | [vuchic-2007](#src-vuchic-2007), [ebo](#src-ebo) | Metro is fully separated by definition (right-of-way category A, usually with a live third rail). High-speed lines run above the speed up to which level crossings are allowed (EBO § 11(2)). |
 
-### Level crossings: highest line speed over a level crossing
+### Level crossings: highest usual line speed over a level crossing (above it, a warning asks for special safety measures)
 
 `level_crossing.max_line_speed_kmh` · unit: km/h · used by: railway design check of street-level track crossing a street
 

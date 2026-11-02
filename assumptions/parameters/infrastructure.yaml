@@ -729,7 +729,7 @@
       rationale: Between tram and mainline; only used where a metro is built with overhead line instead of third rail.
 
 - key: level_crossing.permitted
-  label: "Level crossings with streets: allowed for the mode"
+  label: "Level crossings with streets: usual for the mode (otherwise a warning asks for special safety measures)"
   group: Infrastructure standards
   unit: yes/no
   kind: enum
@@ -752,7 +752,7 @@
       rationale: Metro is fully separated by definition (right-of-way category A, usually with a live third rail). High-speed lines run above the speed up to which level crossings are allowed (EBO § 11(2)).
 
 - key: level_crossing.max_line_speed_kmh
-  label: "Level crossings: highest line speed over a level crossing"
+  label: "Level crossings: highest usual line speed over a level crossing (above it, a warning asks for special safety measures)"
   group: Infrastructure standards
   unit: km/h
   used_by: [railway design check of street-level track crossing a street]

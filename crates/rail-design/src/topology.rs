@@ -309,8 +309,11 @@ pub struct LevelCrossingOut {
     pub id: String,
     /// `barriers` or `traffic_signals`.
     pub protection: crate::street::Protection,
-    /// No design error at this crossing.
-    pub allowed: bool,
+    /// Meets the usual rules for level crossings.
+    pub standard: bool,
+    /// Why not, so special safety measures are needed: `mode`, `third_rail`, `motorway`,
+    /// `line_speed`.
+    pub special_measures: Vec<&'static str>,
     /// Railway system.
     pub mode: RailMode,
     /// Angle between track and street, degrees.
@@ -987,7 +990,8 @@ pub fn topology(dz: &Design) -> Topology {
         .map(|x| LevelCrossingOut {
             id: x.id.clone(),
             protection: x.protection,
-            allowed: x.allowed,
+            standard: x.standard,
+            special_measures: x.special_measures.clone(),
             mode: x.mode,
             angle_deg: rd(x.angle.to_degrees()),
             x: rd(x.p.x),
@@ -1149,7 +1153,7 @@ mod tests {
         let t = topology(&crate::design::build_with_streets(&net, None, &streets));
         let x = &t.level_crossings[0];
         assert_eq!(x.id, "lc3-1001-0");
-        assert!(x.allowed && t.valid);
+        assert!(x.standard && x.special_measures.is_empty() && t.valid);
         assert_eq!(x.sections.len(), 2, "both lines of the double track");
         assert_eq!(x.street.name, "Station Road");
         assert!(x.approach_m > 500.0);

@@ -196,8 +196,11 @@ pub struct LevelCrossing {
     pub trolley_wire: bool,
     /// Buses use the street (bus lane, busway or bus access tagged).
     pub bus: bool,
-    /// The crossing is allowed for this railway system and street (no error).
-    pub allowed: bool,
+    /// The crossing meets the usual rules for level crossings.
+    pub standard: bool,
+    /// Why it does not, and so needs special safety measures: `mode` (a railway system that
+    /// normally has none), `third_rail`, `motorway`, `line_speed`.
+    pub special_measures: Vec<&'static str>,
 }
 
 /// Street drawn in local metres.
@@ -325,31 +328,38 @@ pub fn level_crossings(dz: &mut Design, streets: &[Street]) {
                 } else {
                     Protection::Barriers
                 };
-                let mut errors: Vec<String> = Vec::new();
-                let mut err = |text: String| errors.push(text);
+                // Crossings outside the usual rules are possible with special safety measures,
+                // so they are warnings that say which measures, not errors.
+                let mut special: Vec<(&'static str, String)> = Vec::new();
                 if p.level_crossing_permitted == "no" {
-                    err(format!(
-                        "{} track crosses {name} on the level. {} lines have no level crossings: take the track under or over the street.",
+                    special.push(("mode", format!(
+                        "{} track crosses {name} on the level. {} lines normally have no level crossings. This one needs full barriers, obstacle detection and train protection that stops trains while the crossing is not clear. Consider taking the track under or over the street.",
                         p.label, p.label
-                    ));
-                } else if third_rail {
-                    err(format!(
-                        "This track crosses {name} on the level with a third rail, which would be live where road vehicles and people cross. Use overhead line here, or take the track under or over the street."
-                    ));
+                    )));
+                }
+                if third_rail {
+                    special.push(("third_rail", format!(
+                        "This track crosses {name} on the level with a third rail, which would be live where road vehicles and people cross. It needs a gap in the third rail across the crossing (trains coast over it) with insulated ends and fencing, or overhead line on this stretch."
+                    )));
                 }
                 if matches!(st.class.as_str(), "motorway" | "motorway_link") {
-                    err(format!(
-                        "{name} is a motorway, and motorways never cross a railway on the level. Take the track under or over it."
-                    ));
+                    special.push(("motorway", format!(
+                        "{name} is a motorway, and motorways normally have no level crossings. This one needs full barriers across every lane, obstacle detection and advance warning signs and signals well before the crossing. Consider a bridge."
+                    )));
                 }
                 if line_speed > p.level_crossing_max_speed_kmh + 0.5 {
-                    err(format!(
-                        "The line speed over the level crossing with {name} is {line_speed:.0} km/h; level crossings are allowed up to {:.0} km/h. Separate the levels, or lower the speed there.",
+                    special.push(("line_speed", format!(
+                        "The line speed over the level crossing with {name} is {line_speed:.0} km/h, above the usual limit of {:.0} km/h. It needs full barriers with obstacle detection tied to the signals, so trains stop while the crossing is not clear, or a lower speed there.",
                         p.level_crossing_max_speed_kmh
-                    ));
+                    )));
                 }
-                let allowed = errors.is_empty();
-                iss.extend(errors.into_iter().map(|e| Issue::error(e, Some(h.p), g.id)));
+                let standard = special.is_empty();
+                let special_measures: Vec<&'static str> = special.iter().map(|x| x.0).collect();
+                iss.extend(
+                    special
+                        .into_iter()
+                        .map(|(_, text)| Issue::warning(text, Some(h.p), g.id)),
+                );
                 if !(mode.street_running() && embedded) && h.angle < min_angle {
                     iss.push(Issue::warning(
                         format!(
@@ -381,7 +391,7 @@ pub fn level_crossings(dz: &mut Design, streets: &[Street]) {
                         ));
                     }
                 }
-                if allowed {
+                {
                     let how = match protection {
                         Protection::Barriers => format!(
                             "barriers close the street {warning:.0} s before a train ({:.0} m before the crossing at {line_speed:.0} km/h)",
@@ -425,7 +435,8 @@ pub fn level_crossings(dz: &mut Design, streets: &[Street]) {
                     approach_m: warning * line_speed / 3.6,
                     trolley_wire: st.trolley_wire,
                     bus: st.bus,
-                    allowed,
+                    standard,
+                    special_measures,
                 });
             }
         }
@@ -491,9 +502,13 @@ mod tests {
     }
 
     fn errors(dz: &Design) -> Vec<&str> {
+        issues(dz, Severity::Error)
+    }
+
+    fn issues(dz: &Design, sev: Severity) -> Vec<&str> {
         dz.issues
             .iter()
-            .filter(|i| i.severity == Severity::Error)
+            .filter(|i| i.severity == sev)
             .map(|i| i.text.as_str())
             .collect()
     }
@@ -527,14 +542,23 @@ mod tests {
             None,
             &[street("residential", 90.0, &[])],
         );
-        assert!(errors(&dz).iter().any(|e| e.contains("no level crossings")));
-        assert!(!dz.level_crossings[0].allowed);
+        // Possible with special safety measures: a warning that says which, not an error.
+        assert!(errors(&dz).is_empty(), "{:?}", errors(&dz));
+        assert!(issues(&dz, Severity::Warning)
+            .iter()
+            .any(|e| e.contains("normally have no level crossings")));
+        let x = &dz.level_crossings[0];
+        assert!(!x.standard);
+        assert!(x.special_measures.contains(&"mode"));
         let dz = build_with_streets(
             &line(RailMode::RegionalRail, Level::Street),
             None,
             &[street("motorway", 90.0, &[])],
         );
-        assert!(errors(&dz).iter().any(|e| e.contains("motorway")));
+        assert!(issues(&dz, Severity::Warning)
+            .iter()
+            .any(|e| e.contains("motorway")));
+        assert_eq!(dz.level_crossings[0].special_measures, vec!["motorway"]);
         let dz = build_with_streets(
             &line(RailMode::RegionalRail, Level::Street),
             None,
@@ -551,12 +575,15 @@ mod tests {
         fast.tracks[0].usage = TrackUse::Running;
         let dz = build_with_streets(&fast, None, &[street("residential", 90.0, &[])]);
         assert!(
-            errors(&dz)
+            issues(&dz, Severity::Warning)
                 .iter()
-                .any(|e| e.contains("allowed up to 160 km/h")),
+                .any(|e| e.contains("above the usual limit of 160 km/h")),
             "{:?}",
-            errors(&dz)
+            dz.issues
         );
+        assert!(dz.level_crossings[0]
+            .special_measures
+            .contains(&"line_speed"));
         assert!(street_from_osm(
             1,
             &BTreeMap::from([("highway".into(), "footway".into())]),

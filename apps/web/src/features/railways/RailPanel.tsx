@@ -428,12 +428,15 @@ export function RailPanel(props: Props) {
                 onClick={() => a.showIssue(x.lonlat, x.track)}
                 className="flex w-full items-start gap-2 rounded px-1 py-0.5 text-left hover:bg-slate-100"
               >
-                <span style={{ color: x.allowed ? COLORS.info : COLORS.error }}>{x.allowed ? "●" : "✕"}</span>
+                <span style={{ color: x.standard ? COLORS.info : COLORS.warn }}>
+                  {x.standard ? "●" : "▲"}
+                </span>
                 <span>
                   {x.street || "Unnamed street"} · {Math.round(x.angle_deg)}° ·{" "}
                   {x.protection === "barriers" ? "barriers" : "traffic signals"}
                   {x.bus ? " · buses" : ""}
                   {x.trolley_wire ? " · trolleybus wire" : ""}
+                  {x.standard ? "" : " · special safety measures"}
                 </span>
               </button>
             </li>

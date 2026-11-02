@@ -80,8 +80,8 @@ When the map is zoomed in to zoom 13 or closer, the tool loads the streets on sc
 - Railway track gets barriers, and tram track embedded in the street gets traffic signals. When zoomed in, the street surface covers the sleepers, the rails stay on top, and the stop lines and barriers are drawn on the street.
 - Buses, trolleybuses, depot runs and cars wait at the stop lines. They never stop on the track.
 - A street on a bridge or in a tunnel, or a track below or above street level, is not a level crossing. A tram running along a street is not crossing it.
-- Errors: a metro or high-speed line crossing a street, a third rail, a line speed above 160 km/h, or a motorway. Put the track or the street on another level.
-- Warnings:
+- Warnings for crossings outside the usual rules: a metro or high-speed line crossing a street, a third rail, a line speed above 160 km/h, or a motorway. They can be built, but only with special safety measures, which the warning names: full barriers, obstacle detection, train protection that stops trains while the crossing is not clear, or a gap in the third rail. The panel marks these crossings. Usually a bridge or underpass is the better answer.
+- Other warnings:
   - The street crosses at an angle flatter than 45°.
   - A trolleybus wire crosses the railway's overhead line. A tram line needs an insulated wire crossing. On a 15 or 25 kV main line, trolleybuses cross on battery.
 
