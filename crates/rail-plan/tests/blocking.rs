@@ -177,3 +177,81 @@ fn broken_route_chain_is_rejected() {
     r.routes.swap(1, 2);
     assert!(run_timing(&m, &r, 0, &BlockingParams::default()).is_err());
 }
+
+#[test]
+fn run_across_an_imported_design() {
+    use rail_model::topology::{import_json, ImportOptions};
+    let json = std::fs::read_to_string(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/../rail-model/tests/data/regional_rail.json"
+    ))
+    .unwrap();
+    let imp = import_json(&json, &ImportOptions::default()).unwrap();
+    let m = Model::compile(&imp.spec).unwrap();
+    // Breadth-first search over routes from a starter on a Riverside platform to a buffer stop at Northgate.
+    let station_tracks = |name: &str| -> Vec<usize> {
+        m.platforms
+            .iter()
+            .filter(|p| m.stations[p.station as usize].name == name)
+            .map(|p| p.track)
+            .collect()
+    };
+    let (from, to) = (station_tracks("Riverside"), station_tracks("Northgate"));
+    let starts: Vec<u32> = (0..m.routes.len() as u32)
+        .filter(|&r| {
+            let first = m.routes[r as usize].steps[0].piece;
+            // Starter: the route leaves a platform track.
+            let entry = match m.signals[m.routes[r as usize].entry as usize].at {
+                rail_model::SignalAt::Exit { piece, .. }
+                | rail_model::SignalAt::Entry { piece, .. } => piece,
+            };
+            from.contains(&m.pieces[entry as usize].track) && first != u32::MAX
+        })
+        .collect();
+    assert!(!starts.is_empty());
+    let mut prev = std::collections::BTreeMap::new();
+    let mut q: std::collections::VecDeque<u32> = starts.iter().copied().collect();
+    let mut goal = None;
+    for &s in &starts {
+        prev.insert(s, None);
+    }
+    while let Some(r) = q.pop_front() {
+        let last = m.routes[r as usize].steps.last().unwrap().piece;
+        if to.contains(&m.pieces[last as usize].track)
+            && matches!(
+                m.routes[r as usize].exit,
+                rail_model::RouteExit::BufferStop(_)
+            )
+        {
+            goal = Some(r);
+            break;
+        }
+        for &n in m.next_routes(r) {
+            if !prev.contains_key(&n) {
+                prev.insert(n, Some(r));
+                q.push_back(n);
+            }
+        }
+    }
+    let mut path = vec![goal.expect("Northgate reachable")];
+    while let Some(Some(p)) = prev.get(path.last().unwrap()) {
+        path.push(*p);
+    }
+    path.reverse();
+    let run = TrainRun {
+        name: "RE 1".into(),
+        train: emu(),
+        routes: path,
+        start_m: 0.0,
+        depart_s: 6.0 * 3600.0,
+        stops: vec![],
+        stop_at_end: true,
+        occupy_until_s: None,
+        supplement_share: 0.05,
+    };
+    let t = run_timing(&m, &run, 0, &BlockingParams::default()).unwrap();
+    let minutes = t.profile.total_time_s() / 60.0;
+    // About 3.5 km with a 40 km/h crossover and 80 km/h station speed: a few minutes.
+    assert!(minutes > 2.0 && minutes < 8.0, "{minutes} min");
+    assert!(t.blocking.iter().all(|b| b.end_s > b.start_s));
+}

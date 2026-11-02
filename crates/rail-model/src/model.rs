@@ -8,8 +8,8 @@ use serde::Serialize;
 use unicode_normalization::UnicodeNormalization;
 
 use crate::spec::{
-    Dir, Directions, End, InfraSpec, NodeSpec, SignalKind, SwitchPosition, TrackEnd, TrackSpec,
-    TrackUse,
+    Dir, Directions, End, InfraSpec, LevelCrossingSpec, NodeSpec, SignalKind, SwitchPosition,
+    TrackEnd, TrackSpec, TrackUse,
 };
 
 /// Index of a track piece.
@@ -213,6 +213,17 @@ pub struct StationGroup {
     pub stations: Vec<StationId>,
 }
 
+/// A level crossing with a street, located on a piece.
+#[derive(Clone, Debug, PartialEq, Serialize)]
+pub struct LevelCrossing {
+    /// The crossing as given.
+    pub spec: LevelCrossingSpec,
+    /// Track index.
+    pub track: usize,
+    /// The piece holding the crossing point.
+    pub piece: PieceId,
+}
+
 /// A stretch of a path with constant permitted speed and gradient.
 #[derive(Clone, Copy, Debug, PartialEq, Serialize)]
 pub struct ProfileSegment {
@@ -254,6 +265,8 @@ pub struct Model {
     pub stations: Vec<Station>,
     /// Station groups.
     pub groups: Vec<StationGroup>,
+    /// Level crossings with streets.
+    pub level_crossings: Vec<LevelCrossing>,
     adj: Vec<Vec<Adj>>,
     buffer_ends: BTreeMap<(PieceId, End), String>,
     signal_at: HashMap<SignalAt, SignalId>,
@@ -616,6 +629,24 @@ impl Model {
             });
         }
 
+        let mut level_crossings = Vec::new();
+        for lc in &spec.level_crossings {
+            let Some(t) = find_track(&lc.track, &mut errors, &format!("level crossing {}", lc.id))
+            else {
+                continue;
+            };
+            let piece = track_pieces[t]
+                .iter()
+                .copied()
+                .find(|&p| lc.position_m <= pieces[p as usize].to_m + END_TOL_M)
+                .unwrap_or(*track_pieces[t].last().unwrap());
+            level_crossings.push(LevelCrossing {
+                spec: lc.clone(),
+                track: t,
+                piece,
+            });
+        }
+
         if !errors.is_empty() {
             return Err(errors);
         }
@@ -630,6 +661,7 @@ impl Model {
             platforms,
             stations,
             groups,
+            level_crossings,
             adj,
             buffer_ends,
             signal_at,

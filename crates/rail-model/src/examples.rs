@@ -148,6 +148,7 @@ pub fn terminal_station() -> InfraSpec {
                 to_m: 250.0,
             },
         ],
+        level_crossings: vec![],
         default_overlap_m: 200.0,
     }
 }

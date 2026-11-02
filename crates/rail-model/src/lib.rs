@@ -18,13 +18,14 @@
 pub mod examples;
 pub mod model;
 pub mod spec;
+pub mod topology;
 
 pub use model::{
-    normalise_name, GroupId, Model, Piece, PieceId, Platform, PlatformId, ProfileSegment, Route,
-    RouteExit, RouteId, Signal, SignalAt, SignalId, Station, StationGroup, StationId, Step,
-    Successor, Switch, SwitchId, Tds, TdsId,
+    normalise_name, GroupId, LevelCrossing, Model, Piece, PieceId, Platform, PlatformId,
+    ProfileSegment, Route, RouteExit, RouteId, Signal, SignalAt, SignalId, Station, StationGroup,
+    StationId, Step, Successor, Switch, SwitchId, Tds, TdsId,
 };
 pub use spec::{
-    DetectionSpec, Dir, Directions, End, InfraSpec, NodeSpec, PlatformSpec, Range, SignalKind,
-    SignalSpec, StationSpec, SwitchPosition, TrackEnd, TrackSpec, TrackUse,
+    DetectionSpec, Dir, Directions, End, InfraSpec, LevelCrossingSpec, NodeSpec, PlatformSpec,
+    Range, SignalKind, SignalSpec, StationSpec, SwitchPosition, TrackEnd, TrackSpec, TrackUse,
 };

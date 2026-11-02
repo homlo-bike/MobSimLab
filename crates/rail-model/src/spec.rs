@@ -232,6 +232,35 @@ pub struct PlatformSpec {
     pub to_m: f64,
 }
 
+/// Where a track crosses a street on one level (a level crossing). The railway
+/// owns it: the street is closed before a train arrives and the train's route
+/// over it is cleared only once the street is closed (ADR-0007, 07 §5).
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct LevelCrossingSpec {
+    /// Stable id.
+    pub id: String,
+    /// Track it is on.
+    pub track: String,
+    /// Chainage of the crossing point on that track, m.
+    pub position_m: f64,
+    /// Half length of the track stretch the street covers, m.
+    pub rail_zone_m: f64,
+    /// Distance before the crossing at which an approaching train closes the street, m.
+    pub approach_m: f64,
+    /// Warning time before the train arrives, s.
+    pub warning_time_s: f64,
+    /// Protection: `barriers` or `traffic_signals`.
+    pub protection: String,
+    /// OpenStreetMap way id of the street.
+    pub street_way: i64,
+    /// Street name.
+    pub street_name: String,
+    /// Distance from the crossing point to each road stop line, m. Road vehicles never stop inside it.
+    pub keep_clear_m: f64,
+    /// Whether buses use the street.
+    pub bus: bool,
+}
+
 /// The whole network as the operations model needs it.
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 pub struct InfraSpec {
@@ -250,6 +279,9 @@ pub struct InfraSpec {
     /// Platform edges.
     #[serde(default)]
     pub platforms: Vec<PlatformSpec>,
+    /// Level crossings with streets.
+    #[serde(default)]
+    pub level_crossings: Vec<LevelCrossingSpec>,
     /// Overlap used when a signal gives none, metres (`signalling.overlap_*`).
     #[serde(default = "default_overlap")]
     pub default_overlap_m: f64,
