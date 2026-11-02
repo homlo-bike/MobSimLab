@@ -454,6 +454,39 @@ export function RailPanel(props: Props) {
         </div>
       </Section>
 
+      <Section title={`Street running · ${view.street_running.length}`}>
+        <p className="text-xs text-slate-600">
+          Where tram track in the street runs along a street. The tram keeps to the street&apos;s speed limit
+          there. It needs its own lane, or it runs in the traffic and is held up by it.
+        </p>
+        <ul className="flex flex-col gap-1">
+          {view.street_running.map((r) => (
+            <li key={r.id}>
+              <button
+                type="button"
+                onClick={() => a.showIssue(r.lonlat, r.track)}
+                className="flex w-full items-start gap-2 rounded px-1 py-0.5 text-left hover:bg-slate-100"
+              >
+                <span style={{ color: r.running === "mixed" ? COLORS.warn : COLORS.info }}>
+                  {r.running === "mixed" ? "▲" : "●"}
+                </span>
+                <span>
+                  {r.street || "Unnamed street"} · {fmtM(r.length_m)} ·{" "}
+                  {r.running === "reserved"
+                    ? "own lane"
+                    : r.running === "mixed"
+                      ? "in traffic"
+                      : "pedestrian zone"}{" "}
+                  · {Math.round(r.speed_limit_kmh)} km/h
+                  {r.bus ? " · buses" : ""}
+                  {r.stops.length ? ` · ${r.stops.length} stop${r.stops.length > 1 ? "s" : ""}` : ""}
+                </span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      </Section>
+
       <Section title={`Level crossings · ${view.level_crossings.length}`}>
         <p className="text-xs text-slate-600">
           Where street-level track crosses a street that buses, trolleybuses and other road vehicles use. The

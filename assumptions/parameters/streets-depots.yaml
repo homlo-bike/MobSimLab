@@ -128,6 +128,38 @@
       check: unverified
       rationale: One lane per direction is the most common urban street; OSM lanes=* wins when present.
 
+- key: street.speed_limit_kmh
+  label: Speed limit of a street where OSM has no maxspeed (trams running in the street keep to it)
+  group: Depots and streets
+  unit: km/h
+  used_by: [speed of street-running trams, road traffic]
+  values:
+    - context:
+        mode: "*"
+      low: 30
+      central: 50
+      high: 60
+      basis: cited
+      sources: [stvo, bostrab]
+      check: unverified
+      rationale: "50 km/h is the general limit inside built-up areas (StVO § 3(3)); many towns use 30 km/h on residential streets and some countries 60 km/h. Trams on track embedded in the street run under the road traffic rules (BOStrab), so the street's limit caps their speed there. OSM maxspeed wins when present."
+
+- key: street.walking_pace_kmh
+  label: Speed in a living street or pedestrian zone (walking pace)
+  group: Depots and streets
+  unit: km/h
+  used_by: [speed of street-running trams, road traffic]
+  values:
+    - context:
+        mode: "*"
+      low: 4
+      central: 7
+      high: 10
+      basis: educated-guess
+      sources: [stvo, mobsimlab-derivation]
+      check: unverified
+      rationale: "Living streets and pedestrian zones allow walking pace only (StVO sign 325.1); courts read this as about 4–7 km/h, and trams in pedestrian zones often run at 10–15 km/h by local rule."
+
 - key: street.driving_side
   label: Driving side of buses, BRT and trolleybuses
   group: Depots and streets

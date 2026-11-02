@@ -1117,6 +1117,22 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 |---|---|---|---|---|---|---|---|
 | all | 1 | 2 | 4 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | One lane per direction is the most common urban street; OSM lanes=* wins when present. |
 
+### Speed limit of a street where OSM has no maxspeed (trams running in the street keep to it)
+
+`street.speed_limit_kmh` · unit: km/h · used by: speed of street-running trams, road traffic
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 30 | 50 | 60 | cited | unverified | [stvo](#src-stvo), [bostrab](#src-bostrab) | 50 km/h is the general limit inside built-up areas (StVO § 3(3)); many towns use 30 km/h on residential streets and some countries 60 km/h. Trams on track embedded in the street run under the road traffic rules (BOStrab), so the street's limit caps their speed there. OSM maxspeed wins when present. |
+
+### Speed in a living street or pedestrian zone (walking pace)
+
+`street.walking_pace_kmh` · unit: km/h · used by: speed of street-running trams, road traffic
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 4 | 7 | 10 | educated-guess | unverified | [stvo](#src-stvo), [mobsimlab-derivation](#src-mobsimlab-derivation) | Living streets and pedestrian zones allow walking pace only (StVO sign 325.1); courts read this as about 4–7 km/h, and trams in pedestrian zones often run at 10–15 km/h by local rule. |
+
 ### Driving side of buses, BRT and trolleybuses
 
 `street.driving_side` · unit: side · used by: road network, stop side, door side
@@ -1299,6 +1315,7 @@ and rationale per attribute: [`switches.yaml`](switches.yaml); geometry model:
 | <a id="src-eu-dir-96-53"></a>`eu-dir-96-53` | [Council Directive 96/53/EC laying down maximum authorised dimensions and weights for road vehicles (Annex I, 1.2 width and 1.5 turning circle), as amended by Directive (EU) 2015/719](https://eur-lex.europa.eu/eli/dir/1996/53/oj) | free | © European Union; reuse authorised under Commission Decision 2011/833/EU | 2026-10-27 | none |
 | <a id="src-eu-dir-92-6"></a>`eu-dir-92-6` | [Council Directive 92/6/EEC on the installation and use of speed limitation devices for certain categories of motor vehicles (M3 buses set to 100 km/h)](https://eur-lex.europa.eu/eli/dir/1992/6/oj) | free | © European Union; reuse authorised under Commission Decision 2011/833/EU | 2026-10-27 | none |
 | <a id="src-unece-r107"></a>`unece-r107` | [UN Regulation No. 107, uniform provisions concerning the approval of category M2 or M3 vehicles (Annex 3, area per standing passenger by vehicle class)](https://unece.org/transport/vehicle-regulations-wp29/standards/addenda-1958-agreement-regulations-101-120) | free | United Nations document; free to reproduce with attribution | 2026-10-27 | none |
+| <a id="src-stvo"></a>`stvo` | [Straßenverkehrs-Ordnung (StVO), Germany](https://www.gesetze-im-internet.de/stvo_2013/) | free | Official work, no copyright (§ 5 UrhG) | 2026-11-02 | none |
 | <a id="src-ebo"></a>`ebo` | [Eisenbahn-Bau- und Betriebsordnung (EBO), Germany](https://www.gesetze-im-internet.de/ebo/) | free | Official work, no copyright (§ 5 UrhG) | 2026-10-27 | none |
 | <a id="src-us-49cfr234"></a>`us-49cfr234` | [US Code of Federal Regulations, 49 CFR Part 234 (Grade crossing safety), § 234.225: active warning devices give at least 20 seconds of warning before a train arrives](https://www.ecfr.gov/current/title-49/subtitle-B/chapter-II/part-234) | free | US Government work, public domain | 2026-11-02 | none |
 | <a id="src-bostrab"></a>`bostrab` | [Verordnung über den Bau und Betrieb der Straßenbahnen (BOStrab), Germany](https://www.gesetze-im-internet.de/strabbo_1987/) | free | Official work, no copyright (§ 5 UrhG) | 2026-10-27 | search-snippet |

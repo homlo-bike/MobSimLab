@@ -48,9 +48,19 @@ pub struct Street {
     /// Bus route or bus access (`bus`/`psv` designated, `busway`), for information.
     #[serde(default)]
     pub bus: bool,
+    /// Speed limit (`maxspeed`), km/h, when tagged with a number.
+    #[serde(default)]
+    pub maxspeed_kmh: Option<f64>,
+    /// Walking pace only: a living street, a pedestrian zone or `maxspeed=walk`.
+    #[serde(default)]
+    pub walking_pace: bool,
     /// Shape, `[lon, lat]` degrees.
     pub coords: Vec<[f64; 2]>,
 }
+
+/// Pedestrian zones: trams may run through them (street running), but they are no level
+/// crossings for road vehicles.
+const PEDESTRIAN: &str = "pedestrian";
 
 /// Road classes used by motor vehicles. Footways, cycleways and paths are not included.
 const ROAD_CLASSES: [&str; 18] = [
@@ -78,6 +88,14 @@ fn yes(v: Option<&String>) -> bool {
     v.is_some_and(|v| matches!(v.as_str(), "yes" | "true" | "1" | "designated"))
 }
 
+/// Purpose: a numeric OSM `maxspeed` in km/h (`50`, `30 mph`); None for `walk`, `none` and
+/// country codes such as `DE:urban`.
+fn maxspeed(v: Option<&String>) -> Option<f64> {
+    let v = v?;
+    let n = number(Some(v))?;
+    Some(if v.contains("mph") { n * 1.609_344 } else { n })
+}
+
 fn number(v: Option<&String>) -> Option<f64> {
     let v = v?.trim();
     let n: String = v
@@ -95,7 +113,7 @@ pub fn street_from_osm(
     coords: Vec<[f64; 2]>,
 ) -> Option<Street> {
     let class = tags.get("highway")?;
-    if !ROAD_CLASSES.contains(&class.as_str()) || coords.len() < 2 {
+    if !(ROAD_CLASSES.contains(&class.as_str()) || class == PEDESTRIAN) || coords.len() < 2 {
         return None;
     }
     if tags.get("area").is_some_and(|v| v == "yes") {
@@ -134,6 +152,11 @@ pub fn street_from_osm(
             || yes(tags.get("bus"))
             || yes(tags.get("psv"))
             || tags.get("busway").is_some(),
+        maxspeed_kmh: maxspeed(tags.get("maxspeed")),
+        walking_pace: matches!(class.as_str(), "living_street" | "pedestrian")
+            || tags
+                .get("maxspeed")
+                .is_some_and(|v| v.contains("walk") || v.contains("living_street")),
         coords,
     })
 }
@@ -228,7 +251,7 @@ fn coarse(c: &[Sample]) -> Vec<Sample> {
 pub fn level_crossings(dz: &mut Design, streets: &[Street]) {
     let local: Vec<Local> = streets
         .iter()
-        .filter(|s| s.layer == 0)
+        .filter(|s| s.layer == 0 && s.class != PEDESTRIAN)
         .map(|st| {
             let pts: Vec<P2> = st
                 .coords

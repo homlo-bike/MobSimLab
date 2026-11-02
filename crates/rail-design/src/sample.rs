@@ -231,7 +231,7 @@ pub fn sample_streets(dz: &crate::design::Design) -> Vec<crate::street::Street> 
         .iter()
         .map(|k| dz.proj.to_lonlat(q.p.add(n.mul(*k))))
         .collect();
-    vec![crate::street::Street {
+    let mut out = vec![crate::street::Street {
         way: 1001,
         name: "Station Road".into(),
         class: "secondary".into(),
@@ -241,8 +241,36 @@ pub fn sample_streets(dz: &crate::design::Design) -> Vec<crate::street::Street> 
         layer: if level_ok { 0 } else { 1 },
         trolley_wire: true,
         bus: true,
+        maxspeed_kmh: None,
+        walking_pace: false,
         coords,
-    }]
+    }];
+    // Trams and light rail run along a four-lane main street for part of the line: their own
+    // lane in the middle, one lane each way beside it, at the street's speed limit.
+    if dz.track_mode(3).street_running() {
+        let along: Vec<[f64; 2]> = (0..=12)
+            .map(|k| at_s(&g.centre, g.length * (0.4 + 0.3 * f64::from(k) / 12.0)))
+            .filter(|q| g.level_at(q.s) == Some(Level::Street))
+            .map(|q| dz.proj.to_lonlat(q.p))
+            .collect();
+        if along.len() >= 2 {
+            out.push(crate::street::Street {
+                way: 1002,
+                name: "High Street".into(),
+                class: "primary".into(),
+                lanes: Some(4.0),
+                width_m: None,
+                oneway: false,
+                layer: 0,
+                trolley_wire: false,
+                bus: true,
+                maxspeed_kmh: None,
+                walking_pace: false,
+                coords: along,
+            });
+        }
+    }
+    out
 }
 
 #[cfg(test)]

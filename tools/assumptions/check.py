@@ -86,6 +86,8 @@ RAIL_FIELDS = {
     "colour": "mode.colour",
     "street_lane_width_m": "street.lane_width_m",
     "street_lanes": "street.lanes",
+    "street_speed_limit_kmh": "street.speed_limit_kmh",
+    "street_walking_pace_kmh": "street.walking_pace_kmh",
     "road_stop_clearance_m": "crossing.clearance_m",
     "level_crossing_permitted": "level_crossing.permitted",
     "level_crossing_max_speed_kmh": "level_crossing.max_line_speed_kmh",

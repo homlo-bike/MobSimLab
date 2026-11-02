@@ -62,6 +62,7 @@ def graph_errors(t: dict) -> list[str]:
     refs += [(f"level crossing {x['id']}", x["sections"]) for x in t["level_crossings"]]
     refs += [(f"depot group {d['id']}", d["sections"]) for d in t["depot_groups"]]
     refs += [(f"signal {g['id']}", [g["section"]]) for g in t["signals"]]
+    refs += [(f"street running {r['id']}", r["sections"]) for r in t["street_running"]]
     ids = [g["id"] for g in t["signals"]]
     if len(set(ids)) != len(ids):
         errs.append("duplicate signal ids")

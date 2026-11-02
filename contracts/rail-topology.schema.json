@@ -20,6 +20,7 @@
     "crossings",
     "level_crossings",
     "depot_groups",
+    "street_running",
     "signals",
     "signals_generated"
   ],
@@ -50,6 +51,11 @@
     "crossings": { "type": "array", "items": { "$ref": "#/$defs/crossing" } },
     "level_crossings": { "type": "array", "items": { "$ref": "#/$defs/level_crossing" } },
     "depot_groups": { "type": "array", "items": { "$ref": "#/$defs/depot_group" } },
+    "street_running": {
+      "description": "Stretches where tram or light rail track embedded in the street runs along a street from OpenStreetMap.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/street_running" }
+    },
     "signals": {
       "description": "Signals (ADR-0030 point 7): the planner's signal plan, or one generated from the design while the document has none.",
       "type": "array",
@@ -456,6 +462,61 @@
         "tracks": { "type": "array", "items": { "type": "integer", "minimum": 1 }, "minItems": 1 },
         "sections": { "type": "array", "items": { "$ref": "#/$defs/section_id" }, "minItems": 1 },
         "length_m": { "$ref": "#/$defs/metres" }
+      }
+    },
+    "street_running": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "track",
+        "from_m",
+        "to_m",
+        "sections",
+        "running",
+        "speed_limit_kmh",
+        "street",
+        "stops"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^sr\\d+-\\d+-\\d+$",
+          "description": "sr{track}-{OSM way}-{n}."
+        },
+        "track": { "type": "integer", "minimum": 1 },
+        "from_m": { "$ref": "#/$defs/metres", "description": "Start on the track's centre-line chainage." },
+        "to_m": { "$ref": "#/$defs/metres", "description": "End on the track's centre-line chainage." },
+        "sections": { "type": "array", "items": { "$ref": "#/$defs/section_id" }, "minItems": 1 },
+        "running": {
+          "enum": ["reserved", "mixed", "pedestrian_zone"],
+          "description": "reserved: the tram has its own lane and road traffic passes beside it; mixed: road traffic drives on the track and the tram runs in traffic; pedestrian_zone: shared with people on foot."
+        },
+        "speed_limit_kmh": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Road speed limit the tram keeps to on the stretch; already applied to the sections' speed_kmh."
+        },
+        "street": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["way", "name", "class", "width_m", "lanes", "oneway", "bus", "trolley_wire"],
+          "properties": {
+            "way": { "type": "integer" },
+            "name": { "type": "string" },
+            "class": { "type": "string", "description": "OSM highway value." },
+            "width_m": { "$ref": "#/$defs/metres" },
+            "lanes": { "type": "number", "minimum": 0 },
+            "oneway": { "type": "boolean" },
+            "bus": { "type": "boolean" },
+            "trolley_wire": { "type": "boolean" }
+          }
+        },
+        "stops": {
+          "type": "array",
+          "items": { "type": "integer", "minimum": 1 },
+          "description": "Stations (tram stops) on the stretch."
+        }
       }
     },
     "signal": {
