@@ -258,6 +258,54 @@
       check: unverified
       rationale: MUTCD uses 3.5 ft/s (≈ 3.8 km/h) for slow pedestrians at crossings; typical free walking is about 1.25 m/s (4.5 km/h); HCM free-flow up to about 1.5 m/s (5.4 km/h).
 
+- key: journey.walk_detour_factor
+  label: "Journey planner: walking distance over straight-line distance"
+  group: Demand
+  unit: ratio
+  used_by: [journey planner access, egress and transfer walks]
+  values:
+    - context:
+        mode: "*"
+      low: 1.2
+      central: 1.3
+      high: 1.5
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: "Stand-in until walks are routed on the walk graph: street networks make a walk roughly 20–50 % longer than the straight line (lower in dense grids, higher with rivers, rail lines and cul-de-sacs). 1.3 is the planning value used by the journey planner (ADR-0034); replace with a cited circuity study."
+
+- key: journey.min_change_s
+  label: "Journey planner: minimum time to change vehicles at the same stop"
+  group: Demand
+  unit: s
+  used_by: [journey planner transfers]
+  values:
+    - context:
+        mode: "*"
+      low: 0
+      central: 60
+      high: 180
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: "Alighting, finding the next vehicle and boarding at one stop or one platform. 0 for cross-platform timed connections (those come from the published timetable as transfer_type 1); 60 s as a cautious default."
+
+- key: journey.level_change_s
+  label: "Journey planner: added time to change platform within one station (stairs, lifts)"
+  group: Demand
+  unit: s
+  used_by: [journey planner transfers, estimated platform-to-platform times]
+  values:
+    - context:
+        mode: "*"
+      low: 30
+      central: 60
+      high: 180
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: "Added to the straight-line walk between two platforms of one station until rail-model provides platform-to-platform times from the station layout (ADR-0032, 06 §9.3). About one flight of stairs or a lift ride; deep metro stations need the high value."
+
 - key: operations.energy_reserve_share
   label: Energy reserve kept in the battery or tank, share of its capacity (energy planning)
   group: Operations

@@ -471,3 +471,259 @@
       sources: [dewiki-weiche, mobsimlab-derivation]
       check: unverified
       rationale: 100 km/h diverging into station and overtaking tracks; junctions between lines use 1:26.5 or flatter.
+
+- key: curve.vertical_radius_m
+  label: Vertical curve radius at a change of gradient, minimum
+  group: Infrastructure standards
+  unit: m
+  used_by: [ramp length between levels]
+  values:
+    - context:
+        mode: "*"
+      low: 500
+      central: 2000
+      high: 40000
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: Wide fallback; every rail mode below has its own entry.
+    - context:
+        mode: tram
+      low: 300
+      central: 500
+      high: 1000
+      basis: documented
+      sources: [bostrab-trr, mobsimlab-derivation]
+      check: unverified
+      rationale: Street-running trams follow the road profile; a few hundred metres is common at crests and sags (figure to be checked against BOStrab-TrR).
+    - context:
+        mode: light_rail
+      low: 500
+      central: 1000
+      high: 2000
+      basis: documented
+      sources: [bostrab-trr, mobsimlab-derivation]
+      check: unverified
+      rationale: Higher speeds than tram; 1000 m keeps vertical acceleration below about 0.5 m/s² at 80 km/h.
+    - context:
+        mode: metro
+      low: 1600
+      central: 2000
+      high: 5000
+      basis: documented
+      sources: [en-13803, mobsimlab-derivation]
+      check: unverified
+      rationale: "Rule of thumb from mainline practice: at least 0.25 · V² (V in km/h), so 1600 m at 80 km/h, rounded up to 2000 m."
+    - context:
+        mode: commuter_rail
+      low: 3600
+      central: 6000
+      high: 10000
+      basis: documented
+      sources: [en-13803, mobsimlab-derivation]
+      check: unverified
+      rationale: "0.4 · V² (V = 120 km/h) is about 5800 m; 0.25 · V² gives the minimum 3600 m."
+    - context:
+        mode: regional_rail
+      low: 6400
+      central: 10000
+      high: 15000
+      basis: documented
+      sources: [en-13803, mobsimlab-derivation]
+      check: unverified
+      rationale: "0.4 · V² at 160 km/h is about 10,000 m; 0.25 · V² gives the minimum 6400 m."
+    - context:
+        mode: long_distance_rail
+      low: 10000
+      central: 16000
+      high: 25000
+      basis: documented
+      sources: [en-13803, mobsimlab-derivation]
+      check: unverified
+      rationale: "0.4 · V² at 200 km/h is 16,000 m; 0.25 · V² gives the minimum 10,000 m."
+    - context:
+        mode: high_speed_rail
+      low: 22500
+      central: 36000
+      high: 50000
+      basis: documented
+      sources: [en-13803, tsi-inf, mobsimlab-derivation]
+      check: unverified
+      rationale: "0.4 · V² at 300 km/h is 36,000 m; 0.25 · V² gives the minimum 22,500 m."
+
+- key: curve.cant_change_rate_mm_s
+  label: "Transition curve: rate of change of cant, maximum"
+  group: Infrastructure standards
+  unit: mm/s
+  used_by: [transition curve length]
+  values:
+    - context:
+        mode: "*"
+      low: 35
+      central: 50
+      high: 60
+      basis: cited
+      sources: [en-13803]
+      check: unverified
+      rationale: EN 13803 recommends about 50 mm/s for the rate of change of cant along a transition, with higher maximum values (clause to be checked). Length = speed · cant / rate.
+
+- key: curve.cant_deficiency_change_rate_mm_s
+  label: "Transition curve: rate of change of cant deficiency, maximum"
+  group: Infrastructure standards
+  unit: mm/s
+  used_by: [transition curve length]
+  values:
+    - context:
+        mode: "*"
+      low: 40
+      central: 55
+      high: 70
+      basis: cited
+      sources: [en-13803]
+      check: unverified
+      rationale: EN 13803 recommends about 55 mm/s for the rate of change of cant deficiency (clause to be checked). Length = speed · cant deficiency / rate.
+
+- key: curve.max_cant_gradient_mm_m
+  label: "Transition curve: cant gradient along the track, maximum"
+  group: Infrastructure standards
+  unit: mm/m
+  used_by: [transition curve length]
+  values:
+    - context:
+        mode: "*"
+      low: 1.0
+      central: 2.25
+      high: 2.5
+      basis: cited
+      sources: [en-13803]
+      check: unverified
+      rationale: About 1:450 recommended and 1:400 as a limit on ballasted track (EN 13803, to be checked). Length = cant / gradient.
+    - context:
+        mode: [tram, light_rail]
+      low: 2.25
+      central: 3.33
+      high: 4.0
+      basis: documented
+      sources: [bostrab-trr, mobsimlab-derivation]
+      check: unverified
+      rationale: Slower vehicles allow a steeper cant ramp, about 1:300 (BOStrab-TrR, figure to be checked).
+
+- key: platform.edge_offset_m
+  label: Distance from track centre to the platform edge
+  group: Infrastructure standards
+  unit: m
+  used_by: [station layout drawing, platform gap]
+  values:
+    - context:
+        mode: "*"
+      low: 1.6
+      central: 1.65
+      high: 1.7
+      basis: cited
+      sources: [tsi-prm, en-15273]
+      check: unverified
+      rationale: "TSI PRM and EN 15273-3 give bq0 = 1650 mm on straight track for 550 mm and 760 mm platforms on 1435 mm gauge (to be checked); curves add the gauge widening."
+    - context:
+        mode: [tram, light_rail]
+      low: 1.25
+      central: 1.35
+      high: 1.45
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: "Half the vehicle width (2.40–2.65 m) plus a horizontal gap of about 50 mm for level boarding."
+    - context:
+        mode: metro
+      low: 1.45
+      central: 1.55
+      high: 1.65
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: "Half the car body width (2.80–3.10 m) plus a gap of about 75 mm (access.level_gap_horizontal_mm)."
+
+- key: station.track_beyond_platform_m
+  label: Station track beyond each platform end, up to the station's connection point
+  group: Infrastructure standards
+  unit: m
+  used_by: [station layout drawing, overrun at termini]
+  values:
+    - context:
+        mode: "*"
+      low: 10
+      central: 40
+      high: 100
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: Room for the platform-end ramps, the starter signal and its overlap or a buffer-stop overrun; the line's track spacing is reached outside the station.
+    - context:
+        mode: tram
+      low: 5
+      central: 12
+      high: 20
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: Trams run on sight; a few metres past the stop is enough.
+    - context:
+        mode: light_rail
+      low: 10
+      central: 18
+      high: 30
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: Between tram and metro.
+    - context:
+        mode: metro
+      low: 15
+      central: 25
+      high: 50
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: Starter signal and a short overlap at the platform end.
+    - context:
+        mode: [long_distance_rail, high_speed_rail]
+      low: 40
+      central: 70
+      high: 150
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: Longer overlaps and wider platform track spacing to bring back to the line spacing.
+
+- key: ocl.span_m
+  label: Overhead line span (mast spacing) on straight track
+  group: Infrastructure standards
+  unit: m
+  used_by: [overhead line drawing, mast count]
+  values:
+    - context:
+        mode: "*"
+      low: 50
+      central: 63
+      high: 80
+      basis: documented
+      sources: [en-50119, mobsimlab-derivation]
+      check: unverified
+      rationale: Mainline catenary spans are typically 60–65 m on straight track and shorter in curves; EN 50119 sets the design rules, not a fixed span.
+    - context:
+        mode: [tram, light_rail]
+      low: 25
+      central: 35
+      high: 45
+      basis: documented
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: Tram trolley wire without a catenary sags more, so spans of about 30–40 m are usual.
+    - context:
+        mode: metro
+      low: 40
+      central: 50
+      high: 60
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: Between tram and mainline; only used where a metro is built with overhead line instead of third rail.

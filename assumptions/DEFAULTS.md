@@ -49,6 +49,7 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 | Track gauge (new track and drawing of the rails) (mm) | 1435 | 1435 | 1435 | 1435 | 1435 | 1435 | 1435 | 1435 | 1435 | 1435 | 1435 |
 | Electrification of new track or wire (system) | none | none | trolley-750v-dc | none | ocl-750v-dc | ocl-750v-dc | third-rail-750v-dc | ocl-25kv-50hz | ocl-25kv-50hz | ocl-25kv-50hz | ocl-25kv-50hz |
 | Crossing priority (lower rank goes first at an at-grade crossing) (rank) | 4 | 3 | 4 | 5 | 3 | 2 | 1 | 1 | 1 | 1 | 1 |
+| Gradient of running track, maximum (‰) | 40 | 40 | 40 | 40 | 70 | 60 | 40 | 40 | 25 | 12.5 | 35 |
 
 ## Modes
 
@@ -324,6 +325,21 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 | bus, trolleybus | – | 4 | – | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Conditional signal priority. |
 | intercity_bus | – | 5 | – | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | No priority, like general traffic. |
 
+### Gradient of running track, maximum
+
+`mode.max_gradient_permille` · unit: ‰ · used by: ramp length between levels, railway design check (error above this)
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 12.5 | 40 | 70 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Wide fallback spanning mainline rail (12.5 ‰) to tram (70 ‰); every rail mode below has its own entry. |
+| tram | 40 | 70 | 100 | cited | unverified | [bostrab-trr](#src-bostrab-trr) | BOStrab-TrR allows up to 70 ‰ for adhesion trams with all axles driven; short stretches up to 100 ‰ exist (figure to be checked). |
+| light_rail | 40 | 60 | 70 | educated-guess | unverified | [bostrab-trr](#src-bostrab-trr), [mobsimlab-derivation](#src-mobsimlab-derivation) | Light rail vehicles have fewer driven axles than trams and run faster; 60 ‰ keeps a margin below the tram limit. |
+| metro | 30 | 40 | 50 | documented | unverified | [gb-50157](#src-gb-50157), [mobsimlab-derivation](#src-mobsimlab-derivation) | Metro codes allow about 30 ‰ on the main line and 35–40 ‰ in difficult sections; rubber-tyred metros go higher. |
+| commuter_rail | 25 | 40 | 40 | cited | unverified | [ebo](#src-ebo) | EBO §7 allows up to 40 ‰ on S-Bahn lines used only by multiple units (clause to be checked). |
+| regional_rail | 12.5 | 25 | 40 | educated-guess | unverified | [ebo](#src-ebo), [mobsimlab-derivation](#src-mobsimlab-derivation) | EBO §7 gives 12.5 ‰ on main lines and 40 ‰ on secondary lines; 25 ‰ is a typical passenger-only regional line. |
+| long_distance_rail | 12.5 | 12.5 | 25 | cited | unverified | [ebo](#src-ebo), [tsi-inf](#src-tsi-inf) | Mixed-traffic main lines are designed for 12.5 ‰ (EBO §7) so that freight trains can use them. |
+| high_speed_rail | 12.5 | 35 | 40 | cited | unverified | [tsi-inf](#src-tsi-inf) | TSI INF allows up to 35 ‰ on passenger-only high-speed lines, with limits on the length of steep sections (clause to be checked). |
+
 ## Operations
 
 ### Recovery time in the planned timetable, as a share of the running time
@@ -403,6 +419,30 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 | Context | Low | Central | High | Basis | Check | Sources | Rationale |
 |---|---|---|---|---|---|---|---|
 | all | 3.8 | 4.5 | 5.4 | cited | unverified | [mutcd-2009](#src-mutcd-2009), [hcm7](#src-hcm7) | MUTCD uses 3.5 ft/s (≈ 3.8 km/h) for slow pedestrians at crossings; typical free walking is about 1.25 m/s (4.5 km/h); HCM free-flow up to about 1.5 m/s (5.4 km/h). |
+
+### Journey planner: walking distance over straight-line distance
+
+`journey.walk_detour_factor` · unit: ratio · used by: journey planner access, egress and transfer walks
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 1.2 | 1.3 | 1.5 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Stand-in until walks are routed on the walk graph: street networks make a walk roughly 20–50 % longer than the straight line (lower in dense grids, higher with rivers, rail lines and cul-de-sacs). 1.3 is the planning value used by the journey planner (ADR-0034); replace with a cited circuity study. |
+
+### Journey planner: minimum time to change vehicles at the same stop
+
+`journey.min_change_s` · unit: s · used by: journey planner transfers
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0 | 60 | 180 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Alighting, finding the next vehicle and boarding at one stop or one platform. 0 for cross-platform timed connections (those come from the published timetable as transfer_type 1); 60 s as a cautious default. |
+
+### Journey planner: added time to change platform within one station (stairs, lifts)
+
+`journey.level_change_s` · unit: s · used by: journey planner transfers, estimated platform-to-platform times
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 30 | 60 | 180 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Added to the straight-line walk between two platforms of one station until rail-model provides platform-to-platform times from the station layout (ADR-0032, 06 §9.3). About one flight of stairs or a lift ride; deep metro stations need the high value. |
 
 ## Simulation
 
@@ -625,6 +665,78 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 | metro | – | db-ew-190-1-9 | – | educated-guess | unverified | [gb-50157](#src-gb-50157), [mobsimlab-derivation](#src-mobsimlab-derivation) | 1:9 turnouts with R 190–200 m and 35–40 km/h diverging are the metro norm (GB 50157 No. 9 is the Chinese equivalent, cn-metro-60-no9). |
 | long_distance_rail | – | db-ew-500-1-12 | – | educated-guess | unverified | [hanser-weichen](#src-hanser-weichen), [mobsimlab-derivation](#src-mobsimlab-derivation) | 60 km/h diverging for passing loops and station throats on intercity lines. |
 | high_speed_rail | – | db-ew-1200-1-18.5 | – | educated-guess | unverified | [dewiki-weiche](#src-dewiki-weiche), [mobsimlab-derivation](#src-mobsimlab-derivation) | 100 km/h diverging into station and overtaking tracks; junctions between lines use 1:26.5 or flatter. |
+
+### Vertical curve radius at a change of gradient, minimum
+
+`curve.vertical_radius_m` · unit: m · used by: ramp length between levels
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 500 | 2000 | 40000 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Wide fallback; every rail mode below has its own entry. |
+| tram | 300 | 500 | 1000 | documented | unverified | [bostrab-trr](#src-bostrab-trr), [mobsimlab-derivation](#src-mobsimlab-derivation) | Street-running trams follow the road profile; a few hundred metres is common at crests and sags (figure to be checked against BOStrab-TrR). |
+| light_rail | 500 | 1000 | 2000 | documented | unverified | [bostrab-trr](#src-bostrab-trr), [mobsimlab-derivation](#src-mobsimlab-derivation) | Higher speeds than tram; 1000 m keeps vertical acceleration below about 0.5 m/s² at 80 km/h. |
+| metro | 1600 | 2000 | 5000 | documented | unverified | [en-13803](#src-en-13803), [mobsimlab-derivation](#src-mobsimlab-derivation) | Rule of thumb from mainline practice: at least 0.25 · V² (V in km/h), so 1600 m at 80 km/h, rounded up to 2000 m. |
+| commuter_rail | 3600 | 6000 | 10000 | documented | unverified | [en-13803](#src-en-13803), [mobsimlab-derivation](#src-mobsimlab-derivation) | 0.4 · V² (V = 120 km/h) is about 5800 m; 0.25 · V² gives the minimum 3600 m. |
+| regional_rail | 6400 | 10000 | 15000 | documented | unverified | [en-13803](#src-en-13803), [mobsimlab-derivation](#src-mobsimlab-derivation) | 0.4 · V² at 160 km/h is about 10,000 m; 0.25 · V² gives the minimum 6400 m. |
+| long_distance_rail | 10000 | 16000 | 25000 | documented | unverified | [en-13803](#src-en-13803), [mobsimlab-derivation](#src-mobsimlab-derivation) | 0.4 · V² at 200 km/h is 16,000 m; 0.25 · V² gives the minimum 10,000 m. |
+| high_speed_rail | 22500 | 36000 | 50000 | documented | unverified | [en-13803](#src-en-13803), [tsi-inf](#src-tsi-inf), [mobsimlab-derivation](#src-mobsimlab-derivation) | 0.4 · V² at 300 km/h is 36,000 m; 0.25 · V² gives the minimum 22,500 m. |
+
+### Transition curve: rate of change of cant, maximum
+
+`curve.cant_change_rate_mm_s` · unit: mm/s · used by: transition curve length
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 35 | 50 | 60 | cited | unverified | [en-13803](#src-en-13803) | EN 13803 recommends about 50 mm/s for the rate of change of cant along a transition, with higher maximum values (clause to be checked). Length = speed · cant / rate. |
+
+### Transition curve: rate of change of cant deficiency, maximum
+
+`curve.cant_deficiency_change_rate_mm_s` · unit: mm/s · used by: transition curve length
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 40 | 55 | 70 | cited | unverified | [en-13803](#src-en-13803) | EN 13803 recommends about 55 mm/s for the rate of change of cant deficiency (clause to be checked). Length = speed · cant deficiency / rate. |
+
+### Transition curve: cant gradient along the track, maximum
+
+`curve.max_cant_gradient_mm_m` · unit: mm/m · used by: transition curve length
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 1.0 | 2.25 | 2.5 | cited | unverified | [en-13803](#src-en-13803) | About 1:450 recommended and 1:400 as a limit on ballasted track (EN 13803, to be checked). Length = cant / gradient. |
+| tram, light_rail | 2.25 | 3.33 | 4.0 | documented | unverified | [bostrab-trr](#src-bostrab-trr), [mobsimlab-derivation](#src-mobsimlab-derivation) | Slower vehicles allow a steeper cant ramp, about 1:300 (BOStrab-TrR, figure to be checked). |
+
+### Distance from track centre to the platform edge
+
+`platform.edge_offset_m` · unit: m · used by: station layout drawing, platform gap
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 1.6 | 1.65 | 1.7 | cited | unverified | [tsi-prm](#src-tsi-prm), [en-15273](#src-en-15273) | TSI PRM and EN 15273-3 give bq0 = 1650 mm on straight track for 550 mm and 760 mm platforms on 1435 mm gauge (to be checked); curves add the gauge widening. |
+| tram, light_rail | 1.25 | 1.35 | 1.45 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Half the vehicle width (2.40–2.65 m) plus a horizontal gap of about 50 mm for level boarding. |
+| metro | 1.45 | 1.55 | 1.65 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Half the car body width (2.80–3.10 m) plus a gap of about 75 mm (access.level_gap_horizontal_mm). |
+
+### Station track beyond each platform end, up to the station's connection point
+
+`station.track_beyond_platform_m` · unit: m · used by: station layout drawing, overrun at termini
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 10 | 40 | 100 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Room for the platform-end ramps, the starter signal and its overlap or a buffer-stop overrun; the line's track spacing is reached outside the station. |
+| tram | 5 | 12 | 20 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Trams run on sight; a few metres past the stop is enough. |
+| light_rail | 10 | 18 | 30 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Between tram and metro. |
+| metro | 15 | 25 | 50 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Starter signal and a short overlap at the platform end. |
+| long_distance_rail, high_speed_rail | 40 | 70 | 150 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Longer overlaps and wider platform track spacing to bring back to the line spacing. |
+
+### Overhead line span (mast spacing) on straight track
+
+`ocl.span_m` · unit: m · used by: overhead line drawing, mast count
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 50 | 63 | 80 | documented | unverified | [en-50119](#src-en-50119), [mobsimlab-derivation](#src-mobsimlab-derivation) | Mainline catenary spans are typically 60–65 m on straight track and shorter in curves; EN 50119 sets the design rules, not a fixed span. |
+| tram, light_rail | 25 | 35 | 45 | documented | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Tram trolley wire without a catenary sags more, so spans of about 30–40 m are usual. |
+| metro | 40 | 50 | 60 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Between tram and mainline; only used where a metro is built with overhead line instead of third rail. |
 
 ## Accessibility
 
