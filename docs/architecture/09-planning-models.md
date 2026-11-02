@@ -143,7 +143,7 @@ Default methodology follows the **EU Guide to Cost-Benefit Analysis of Investmen
 | Travel time savings | Δ generalised time from demand model × value of time by purpose (rule-of-half for new users) |
 | Vehicle operating cost savings | Δ car-km × unit VOC |
 | Emissions (CO₂, NOx, PM) | Δ vehicle-km by mode × emission factor; transit energy from simulation × grid factor; monetised with shadow price of carbon by year |
-| Noise | Δ vehicle-km by mode and area type × marginal cost |
+| Noise | Δ people exposed per 5 dB band from the scenario noise maps × cost per person per dB (ADR-0038); without maps, Δ vehicle-km by mode and area type × marginal cost |
 | Accidents | Δ vehicle-km × accident rate × cost per casualty |
 | Health | Active travel (walk/cycle access) via HEAT-style method (WHO) |
 | Congestion | Δ road delay from assignment × value of time |
