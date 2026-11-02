@@ -76,12 +76,20 @@ New catalogue folders `vehicles/cable-car/`, `vehicles/aerial-tramway/` and `veh
 | Published timetable | Frequency pattern with headway = cabin interval; the journey planner expands it at no less than 60 s (waiting time is at most the interval, so this is conservative) | Exact trips | Exact trips |
 | Reserved resource | None (cabins cannot conflict) | The single track; two cabins pass at mid-span | **Berths** at piers, assigned like platforms (ADR-0032), and lock chambers |
 | Engine (core segment engine, plugin rules) | Departures at the cabin interval, section times from rope and station speed, boarding per station | Shuttle trips, cycle time | Section times from speed zones, berthing manoeuvre, dwell from gangway throughput, berth reservation, seeded delays |
-| Weather | Wind scenario per hour: slow-down above `ropeway.wind_slow_kmh`, stop above `ropeway.wind_stop_kmh`, with replacement buses | Same | Wave height, wind, fog: cancellations or reduced speed per vessel limit |
+| Weather (§5a) | Wind scenario per hour: slow-down above `ropeway.wind_slow_kmh`, stop above `ropeway.wind_stop_kmh`, with replacement buses | Same | Wave height, wind, fog: cancellations or reduced speed per vessel limit |
 | Depot | Cabin garage | Cabins stay on the line | Home port berths |
 
 Both modes run on the core mesoscopic segment engine of ADR-0036 §8, driven by the co-simulation coordinator (07 §1). They exchange passengers with the other engines through station groups only; there is no shared right of way with road or rail traffic in v1.
 
 **One addition the segment engine needs.** The interface in ADR-0036 (`depart`, `advance`, `capacity`, `dwell`) has no shared resources. Ferries need **berths** and **lock chambers**, and an aerial tramway needs its single track, as reservable resources: a vessel that finds all berths taken waits outside the pier (a hold event), as a train waits at a signal. We propose a core `reserve(resource, from, to) -> granted | wait_until` call in the segment engine, with resources declared by the infrastructure contribution. Without it, berth conflicts are only checked in the timetable, not simulated.
+
+### 5a. Tide, wind and wave data
+
+Decided by the product owner on 2026-11-02:
+
+- **Tides and water levels are a time series per pier.** Tidal predictions come from a tide provider, and river levels come from a gauge provider. A planner can also upload a series. The series sets the gangway or ramp gradient at each call, so it is checked for step-free access against the accessibility limit. It also sets the air draught under bridges and the depth on the route. A call whose gangway gradient goes over the limit, or a leg that falls below the minimum depth or air draught, is a validation warning for that time window. In a simulation it becomes a cancellation or a diversion.
+- **Wind and waves come from a weather service.** For planning, an hourly history over several years (a reanalysis) gives the share of service hours above the cable car's slow-down and stop thresholds and above each vessel's wave limit. These shares feed availability, the appraisal and weather day types (ADR-0020). In a simulation, a chosen day's hourly series drives the weather scenario in §5.
+- **Both are providers behind the outbound gateway** (ADR-0017), configured by an Admin like Overpass or WorldPop. Downloads are cached per project and recorded as sources with their licence. Candidates to evaluate are Open-Meteo (historical weather and marine API), Copernicus ERA5 and Copernicus Marine for waves, and national services: NOAA CO-OPS, the UK Admiralty tidal API, BSH, and PEGELONLINE for German rivers *(licences and coverage to verify)*. Without a provider, the planner enters a constant water level and fixed weather shares, and the result is marked as an assumption.
 
 ### 6. Assumption library
 
@@ -96,8 +104,9 @@ New parameters, all starting as `educated-guess` or `documented` with `check: un
 Follow the ranking in [R1 §3](../research/r1-cable-car-and-ferry.md#3-other-public-mobility-modes-worth-adding):
 
 - **Funicular** ships with this work as a rail mode (`funicular`, GTFS 7) in the railway tool: steep-gradient single track with a passing loop and two counterweighted cars, timetabled as a shuttle.
-- **Next:** automated people mover and monorail (rail modes with a guideway system; cable-driven APMs use the ropeway engine), rack railway (rail mode with rack sections), public lifts and outdoor escalators (walk links with capacity and wait), trackless tram (street mode, catalogue only).
+- **Next:** automated people mover (a rail mode with a guideway system; cable-driven APMs use the straight spans kit), rack railway (rail mode with rack sections), public lifts and outdoor escalators (walk links with capacity and wait), trackless tram (street mode, catalogue only).
 - **Separate ADR later:** demand-responsive transport and on-demand pods or water taxis, which need a dispatch model.
+- **Excluded** (product owner, 2026-11-02): monorail, air taxis (eVTOL) and hyperloop, because they are not economically sustainable as public transport.
 
 ### 8. Phasing
 
@@ -118,11 +127,11 @@ Ordered to fit ADR-0036's phases (registries in its Phase 0, modes and engines i
 | Model ferries as straight lines between piers | Underestimates running time and ignores bridges, locks and land; a water graph is needed anyway for walk access and maps |
 | Dedicated ropeway and vessel engines in Rust (first draft of this ADR) | Dropped to align with ADR-0036: the generic segment engine covers both modes once it can reserve berths, and other plugin modes reuse it |
 | Simulate ferries and ropeways in SUMO | SUMO has no rope or vessel physics that helps here, and neither mode interacts with road traffic in v1; small dedicated engines are simpler and deterministic |
-| Include car ferries (ro-pax) in v1 (ADR-0036 lists ro-pax vessels in the ferry plugin) | Needs handover of road vehicles between SUMO and the vessel engine (like ADR-0007 portals); kept for later |
+| Include car ferries (ro-pax) now (ADR-0036 lists ro-pax vessels in the ferry plugin) | Product owner, 2026-11-02: later, not now. Needs handover of road vehicles between SUMO and the ferry (like ADR-0007 portals) |
 
 ## Consequences
 
 - Planners can design and compare urban ropeways and ferry lines with the same station grouping, journey planner, timetable and appraisal as bus and rail.
 - New work, shared with ADR-0036 Phase 3: the straight spans and water route kits, a water graph in the OSM import and unified graph, the segment engine with resource reservation, schema and assumption additions, and catalogue folders inside the two bundled plugins. The 01 Overview out-of-scope list and FR-NET-11 ("all 11 modes") change once this ADR is accepted.
 - The model leaves room for on-demand cable pods and water taxis, but does not build the dispatch model they need.
-- Open questions for the product owner: tides and river levels (constant per pier in v1, or a time series?); whether car ferries are needed early; whether wind and wave statistics should come from a provider (for example a weather reanalysis download) or be entered by the planner.
+- Product owner answers (2026-11-02): tides and water levels come from **tide data** (§5a); **car ferries later**; wind and waves from a **weather service** (§5a).

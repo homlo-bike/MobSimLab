@@ -73,7 +73,7 @@ The startups matter for MobSimLab mainly as a reminder that "cable" is a family:
 | **Ropes and drive** | Line speed, number of cabins, drive power | Capacity, cycle time, power demand |
 | **Cabin garage** | Where cabins are stored at night | Cabin count = line length × 2 ÷ cabin spacing + reserve; this is the "depot" |
 | **Overflight corridor** | Width either side of the line | Buildings and land parcels flown over, length over private property |
-| **Wind exposure** | — | Share of hours above the slow-down and stop thresholds from a wind statistic the planner supplies |
+| **Wind exposure** | — | Share of hours above the slow-down and stop thresholds, from a weather service's hourly wind history (ADR-0037 §5a) |
 
 Cost: about €20–35 million per km for recent urban systems, stations being the largest item *(to verify against Toulouse Téléo and Câble C1 published costs)*. Operating cost per passenger-km is low because one control room runs the whole line.
 
@@ -132,7 +132,7 @@ Ranked by how well they fit MobSimLab's existing engines and how often planners 
 |----------|------|-----|--------------------------|
 | **1 (with this work)** | **Funicular** | Hill links in many cities (Lisbon, Haifa Carmelit, Valparaíso, Budapest); two counterweighted cars on one track with a passing loop | Railway design tool and rail kernel: a rail mode with fixed two-car shuttle operation and steep gradients. GTFS route type 7 |
 | **1** | **Aerial tramway** (reversible) | Same as cable car but timetabled | Cable car tool, shuttle operation |
-| **2** | **Automated people mover (APM) and monorail** | Airports, new districts, some cities (Las Vegas, Chongqing, São Paulo) | Railway tool and kernel with a guideway "gauge" and CBTC; cable-driven APMs (Doppelmayr Cable Liner, *to verify*) fit the cable engine instead. GTFS route type 12 for monorail |
+| **2** | **Automated people mover (APM)** | Airports and new districts | Railway tool and kernel with a guideway "gauge" and CBTC; cable-driven APMs (Doppelmayr Cable Liner, *to verify*) fit the cable engine instead |
 | **2** | **Rack (cog) railway** | Steep mountain and city lines (Stuttgart Zacke, Zürich Dolderbahn *(to verify)*) | Rail mode with a rack section allowing much steeper gradients and lower speeds |
 | **2** | **Public lifts, inclined elevators and outdoor escalators** | Medellín Comuna 13 escalators, Lisbon and Valparaíso lifts, Genoa | Not lines: walk links with a capacity and wait time in the walk graph (journey planner and 15-minute walk analysis) |
 | **2** | **Guided bus / trackless tram (ART)** | Already close to BRT | Street line tool, vehicle catalogue entry only |
@@ -140,14 +140,14 @@ Ranked by how well they fit MobSimLab's existing engines and how often planners 
 | **3** | **Bike share, e-scooters, cargo bikes** | First and last mile | GBFS as data for access to stops (already the v1 position), not simulated |
 | **3** | **On-demand cable pods (PRT)** and **water taxis** | Startups above | Later, on top of the DRT dispatch model |
 
-Not recommended: hyperloop and urban air mobility (eVTOL "air taxis"). Neither runs as public scheduled transport today, and their parameters cannot be sourced.
+Excluded by the product owner (2026-11-02) because they are not economically sustainable: **monorail**, **air taxis** (eVTOL urban air mobility) and **hyperloop**. Air taxis and hyperloop also do not run as public scheduled transport today, so their parameters cannot be sourced.
 
 ## 4. Where the research points
 
 1. Treat **cable car** (continuous gondolas and reversible trams) and **ferry** as two new mode families, built as bundled plugins on two new core drawing kits (ADR-0036 §8), both sharing the station-and-line concepts already used for rail.
 2. A continuous gondola is **frequency-based** (no timetable); the existing journey planner already expands frequency patterns into trips.
 3. Ferries are **timetabled** like rail, with **berths** as the reserved resource, running times from speed zones, and weather as a disruption scenario.
-4. Add **funicular** at the same time through the railway tool; plan people movers, monorails, rack railways and public lifts next; leave DRT for its own ADR.
+4. Add **funicular** at the same time through the railway tool; plan people movers, rack railways and public lifts next; leave DRT for its own ADR.
 5. The assumption library needs new entries for both modes; start with TCQSM Chapter 9 and TCRP Report 238 for ferries, and EN 12929 plus manufacturer data for ropeways.
 
 The decisions are in [ADR-0037](../adr/0037-cable-car-and-ferry-lines.md).
