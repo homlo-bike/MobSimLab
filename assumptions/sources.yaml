@@ -723,3 +723,21 @@
   retrieved: 2026-10-27
   checked_via: none
   note: Operator home page; the voltage was supplied by the vehicle catalogue (Stadler Citylink for Schiene Salzburg) and not read on the operator site.
+
+- id: moreno-2021
+  title: "Moreno, Allam, Chabaud, Gall, Pratlong: Introducing the “15-Minute City”: Sustainability, Resilience and Place Identity in Future Post-Pandemic Cities. Smart Cities 4(1), 93–111 (2021)"
+  publisher: MDPI
+  url: https://doi.org/10.3390/smartcities4010006
+  licence: CC BY 4.0
+  access: free
+  retrieved: 2026-11-02
+  checked_via: none
+
+- id: itdp-pnft
+  title: "ITDP, People Near Frequent Transit (share of people living within 500 m of transit running at least every 15 minutes)"
+  publisher: Institute for Transportation and Development Policy
+  url: https://www.itdp.org/rapid-transit-database/
+  licence: © ITDP; numbers cited as facts
+  access: free
+  retrieved: 2026-11-02
+  checked_via: none

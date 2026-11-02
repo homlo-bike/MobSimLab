@@ -583,6 +583,7 @@ dependencies = [
 name = "street-routing-wasm"
 version = "0.1.0"
 dependencies = [
+ "serde",
  "serde_json",
  "street-routing",
  "wasm-bindgen",

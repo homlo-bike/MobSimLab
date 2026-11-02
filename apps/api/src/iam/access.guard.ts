@@ -15,7 +15,7 @@ import { APP_CONFIG } from "../config/config.module";
 import type { AppConfig } from "../config/env";
 import { type Action, can } from "./policy";
 import { RATE_LIMIT_KEY, RateLimitService } from "./rate-limit.service";
-import { PUBLIC_KEY, REQUIRES_KEY } from "./requires";
+import { BEARER_KEY, CROSS_ORIGIN_KEY, PUBLIC_KEY, REQUIRES_KEY } from "./requires";
 
 const SAFE_METHODS = new Set(["GET", "HEAD", "OPTIONS"]);
 
@@ -46,6 +46,13 @@ export class AccessGuard implements CanActivate {
       const key = `auth:${ctx.getHandler().name}:${req.ip ?? "unknown"}`;
       await this.limit(ctx, key, this.config.rateLimits.authPerMinute);
     }
+    // Cookie-less machine routes: OAuth endpoints and the bearer-token MCP endpoint (ADR-0035). They never
+    // read the session cookie, so a cross-site request cannot ride on it and the origin check is not needed.
+    if (
+      this.reflector.getAllAndOverride<boolean>(BEARER_KEY, targets) ||
+      this.reflector.getAllAndOverride<boolean>(CROSS_ORIGIN_KEY, targets)
+    )
+      return true;
     const token = (req.cookies as Record<string, string> | undefined)?.[this.sessions.cookieName];
     req.session = token ? ((await this.sessions.resolve(token)) ?? undefined) : undefined;
 

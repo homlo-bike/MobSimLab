@@ -17,7 +17,8 @@ WORKDIR /src
 COPY Cargo.toml Cargo.lock ./
 COPY crates crates
 COPY tools/wasm tools/wasm
-RUN tools/wasm/build-street-routing.sh && tools/wasm/build-rail-design.sh && tools/wasm/build-journey-planner.sh
+RUN tools/wasm/build-street-routing.sh && tools/wasm/build-rail-design.sh && tools/wasm/build-journey-planner.sh \
+ && tools/wasm/build-api.sh
 
 # ---- 1. Web SPA and API (Node) ------------------------------------------------
 FROM node:${NODE_VERSION}-bookworm-slim AS node-build
@@ -29,9 +30,11 @@ COPY apps/web/package.json apps/web/
 RUN pnpm install --frozen-lockfile
 COPY apps apps
 COPY --from=wasm-build /src/apps/web/src/wasm apps/web/src/wasm
+COPY --from=wasm-build /src/apps/api/wasm apps/api/wasm
 RUN pnpm -r build \
  && pnpm --filter @mobsimlab/api deploy --prod --legacy /out/api \
  && cp -r apps/api/dist /out/api/dist \
+ && rm -rf /out/api/wasm && cp -r apps/api/wasm /out/api/wasm \
  && cp -r apps/web/dist /out/web
 
 # ---- 2. Rust kernels as a Python wheel --------------------------------------
