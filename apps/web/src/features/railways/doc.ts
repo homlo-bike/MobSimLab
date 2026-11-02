@@ -2,8 +2,21 @@
  * Pure edits of the railway design document. Positions are local metres around `doc.origin`;
  * every function returns a new document and leaves its input unchanged.
  */
-import type { Anchor, Level, Network, Power, Station, Switch, SwitchKind, Track, TrackUse } from "./types";
+import type { NamedPlace } from "../naming/names";
+import type {
+  Anchor,
+  Level,
+  Network,
+  Power,
+  RailView,
+  Station,
+  Switch,
+  SwitchKind,
+  Track,
+  TrackUse,
+} from "./types";
 
+/** Fictional names, used only when the map has nothing named near a new station. */
 const STATION_NAMES = [
   "Riverside",
   "Northgate",
@@ -40,12 +53,10 @@ export function emptyNetwork(mode: Network["mode"], origin: [number, number]): N
 export function addStation(
   doc: Network,
   at: [number, number],
-  opts: { level: Level; sides: number; islands: number; platformLength: number },
+  opts: { level: Level; sides: number; islands: number; platformLength: number; name?: string },
 ): [Network, number] {
   const id = nextId(doc);
-  const name =
-    STATION_NAMES.find((n) => !doc.stations.some((s) => s.name === n)) ??
-    `Station ${doc.stations.length + 1}`;
+  const name = opts.name ?? fallbackStationName(doc);
   const st: Station = {
     id,
     name,
@@ -58,6 +69,30 @@ export function addStation(
     platform_length_m: opts.platformLength,
   };
   return [{ ...doc, stations: [...doc.stations, st] }, id];
+}
+
+/** Purpose: a name for a station when nothing better is known: the first fictional name not in use. */
+export function fallbackStationName(doc: Network, alsoTaken: readonly string[] = []): string {
+  const taken = new Set([...doc.stations.map((s) => s.name), ...alsoTaken]);
+  return STATION_NAMES.find((n) => !taken.has(n)) ?? `Station ${doc.stations.length + 1}`;
+}
+
+/** Purpose: the stations as named places (platform centre line) for station naming and groups. */
+export function stationPlaces(doc: Network, view: RailView | null): NamedPlace[] {
+  return doc.stations.flatMap((s) => {
+    const sv = view?.stations.find((v) => v.id === s.id);
+    return sv
+      ? [
+          {
+            id: `rail:${s.id}`,
+            name: s.name,
+            lonlat: sv.lonlat,
+            halfLengthM: s.platform_length_m / 2,
+            rotationDeg: s.rotation_deg,
+          },
+        ]
+      : [];
+  });
 }
 
 /** Purpose: a new track starting at an anchor (not yet in the document). */

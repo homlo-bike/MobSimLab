@@ -44,6 +44,7 @@ import {
 } from "../src/features/railways/doc";
 import { loadRailEngine } from "../src/features/railways/engine";
 import { metres } from "../src/features/railways/mapLayers";
+import { clearPlaces, publishPlaces } from "../src/features/naming/registry";
 import { fmtM, fmtTime, shiftLevel } from "../src/features/railways/modes";
 import { RailwayEditor } from "../src/features/railways/RailwayEditor";
 import type { Network, RailEngine, RailMode } from "../src/features/railways/types";
@@ -251,6 +252,25 @@ describe("Railway editor", () => {
     act(() => handlers.get("click")!({ lngLat: { lng: ORIGIN[0], lat: ORIGIN[1] }, point: { x: 0, y: 0 } }));
     expect(await screen.findByDisplayValue("Riverside")).toBeTruthy();
     expect(screen.getByText(/2 tracks · 2 platform edges/)).toBeTruthy();
+  });
+
+  it("names a station placed beside a bus stop after it, and a far one uniquely", async () => {
+    publishPlaces("street", [
+      { id: "street:1", name: "Harbour", lonlat: [ORIGIN[0] + 0.001, ORIGIN[1]] },
+      { id: "street:2", name: "Riverside", lonlat: [ORIGIN[0] + 0.05, ORIGIN[1]] },
+    ]);
+    const { handlers } = await opened();
+    fireEvent.click(screen.getByRole("button", { name: "Clear" }));
+    act(() => handlers.get("click")!({ lngLat: { lng: ORIGIN[0], lat: ORIGIN[1] }, point: { x: 0, y: 0 } }));
+    expect(await screen.findByDisplayValue("Harbour")).toBeTruthy();
+    expect(screen.getByRole("status").textContent).toMatch(/one station with the station next to it/);
+    // Far from everything and nothing on the map: a fictional name no other stop uses.
+    fireEvent.click(screen.getByRole("button", { name: /Station/ }));
+    act(() =>
+      handlers.get("click")!({ lngLat: { lng: ORIGIN[0], lat: ORIGIN[1] + 0.03 }, point: { x: 0, y: 0 } }),
+    );
+    expect(await screen.findByDisplayValue("Northgate")).toBeTruthy();
+    clearPlaces();
   });
 
   it("loads the example, lists its checks and inspects a track", async () => {

@@ -9,11 +9,21 @@ import { DEFAULT_TIMING, MODES, type Timing } from "./modes";
 import { along, circuitPath } from "./summary";
 import { MIN_LOAD_ZOOM, tilesFor } from "./tiles";
 import type { StreetLineInput } from "../journey-planner/network";
+import { basemapLabels, featuresFromLabels, preferTransitKind } from "../naming/labels";
+import {
+  describeChoice,
+  describeClash,
+  nameForNewPlace,
+  type NamedPlace,
+  renamePlace,
+} from "../naming/names";
+import { placesOtherThan, publishPlaces } from "../naming/registry";
 import { ToolPalette, type Tool } from "./ToolPalette";
 import type {
   EngineLoader,
   LineView,
   LonLat,
+  PointKind,
   RoutingRules,
   StreetEngine,
   TileFetcher,
@@ -38,6 +48,13 @@ const HINTS: Record<Tool, string> = {
   pan: "Drag to move the map.",
   depot: "Click on the street at the depot gate.",
 };
+
+/** Purpose: the stops of a line as named places for stop naming and station groups. */
+function stopPlaces(view: LineView): NamedPlace[] {
+  return view.points
+    .filter((p) => p.kind !== "via")
+    .map((p) => ({ id: `street:${p.id}`, name: p.name, lonlat: p.lonlat }));
+}
 
 /** The preview runs this many times faster than the timetable. */
 const PREVIEW_SPEEDUP = 30;
@@ -85,6 +102,7 @@ export function StreetLineEditor({
   const [previewing, setPreviewing] = useState(false);
   const [status, setStatus] = useState<string | null>("Starting the routing engine…");
   const [error, setError] = useState<string | null>(null);
+  const [note, setNote] = useState<string | null>(null);
 
   // Latest values for map and keyboard handlers registered once.
   const latest = useRef({ tool, view, selected });
@@ -94,6 +112,7 @@ export function StreetLineEditor({
     const e = engine.current;
     if (!e) return;
     try {
+      setNote(null);
       setView(f(e));
       setError(null);
     } catch (err) {
@@ -364,6 +383,43 @@ export function StreetLineEditor({
     return () => window.removeEventListener("keydown", onKey);
   }, [run]);
 
+  // Other tools see this line's stops, so a station drawn next to one takes its name.
+  useEffect(() => publishPlaces("street", stopPlaces(view)), [view]);
+
+  const groupingM = rules?.grouping_distance_m;
+
+  /** A via point that becomes a stop joins a stop nearby, or is named after what is around it. */
+  const setKind = (id: number, kind: PointKind) =>
+    run((e) => {
+      const was = latest.current.view.points.find((p) => p.id === id)?.kind;
+      let v = e.setKind(id, kind);
+      const p = v.points.find((q) => q.id === id);
+      if (was !== "via" || kind === "via" || !p) return v;
+      const places = [...placesOtherThan("street"), ...stopPlaces(v).filter((q) => q.id !== `street:${id}`)];
+      const features = preferTransitKind(featuresFromLabels(basemapLabels(map, p.lonlat), p.lonlat), "bus");
+      const choice = nameForNewPlace(p.lonlat, { places, features, fallback: p.name, radiusM: groupingM });
+      if (choice.name !== p.name) v = e.setName(id, choice.name);
+      setNote(describeChoice(choice, "stop"));
+      return v;
+    });
+
+  /** Renaming a stop renames its whole station group; a name used farther away gets a number. */
+  const setPointName = (id: number, name: string) =>
+    run((e) => {
+      const v0 = latest.current.view;
+      if (!name.trim() || v0.points.find((p) => p.id === id)?.kind === "via") return e.setName(id, name);
+      const r = renamePlace(
+        `street:${id}`,
+        name,
+        [...placesOtherThan("street"), ...stopPlaces(v0)],
+        groupingM,
+      );
+      let v = v0;
+      for (const m of r.members) if (m.startsWith("street:")) v = e.setName(Number(m.slice(7)), r.name);
+      setNote(describeClash(r, groupingM));
+      return v;
+    });
+
   const settings = (p: VehicleProfile, r: RoutingRules) => {
     setProfile(p);
     setRules(r);
@@ -377,8 +433,8 @@ export function StreetLineEditor({
     setRules: (r) => profile && settings(profile, r),
     setTiming,
     select: setSelected,
-    setKind: (id, k) => run((e) => e.setKind(id, k)),
-    setPointName: (id, n) => run((e) => e.setName(id, n)),
+    setKind,
+    setPointName,
     deletePoint: (id) => {
       run((e) => e.deletePoint(id));
       setSelected(null);
@@ -432,6 +488,11 @@ export function StreetLineEditor({
       />
       <div className="pointer-events-none absolute bottom-8 left-1/2 z-10 flex max-w-[90%] -translate-x-1/2 flex-col items-center gap-1 text-sm">
         {notice && <p className="rounded-full bg-slate-900/85 px-3 py-1 text-white">{notice}</p>}
+        {note && (
+          <p className="rounded-full bg-blue-700 px-3 py-1 text-white" role="status">
+            {note}
+          </p>
+        )}
         <p className="rounded-full bg-white/95 px-3 py-1 text-slate-700 shadow" role="note">
           {HINTS[tool]}
         </p>

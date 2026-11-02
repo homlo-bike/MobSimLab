@@ -36,6 +36,7 @@ import {
   formatTime,
   legsToGeoJson,
 } from "../src/features/street-lines/geojson";
+import { clearPlaces, publishPlaces } from "../src/features/naming/registry";
 import { DEFAULT_TIMING } from "../src/features/street-lines/modes";
 import { StreetLineEditor } from "../src/features/street-lines/StreetLineEditor";
 import { along, circuitPath, lineChecks, lineStats } from "../src/features/street-lines/summary";
@@ -192,6 +193,33 @@ describe("Street line editor", () => {
     fireEvent.click(screen.getByRole("button", { name: "Delete point 2" }));
     expect(engine.deletePoint).toHaveBeenCalledWith(2);
     expect(screen.queryByText("Street 3")).toBeNull();
+  });
+
+  it("names a new stop after the stop next to it, so they are one stop", async () => {
+    const { engine } = await opened();
+    await waitFor(() => expect(engine.rebuild).toHaveBeenCalled());
+    fireEvent.click(screen.getByText("Via point 2"));
+    fireEvent.click(screen.getByRole("group", { name: "Kind of point 2" }).querySelectorAll("button")[1]!);
+    // Point 2 is 71 m from stops 1 and 3, inside the 150 m station distance.
+    expect(engine.setName).toHaveBeenCalledWith(2, expect.stringMatching(/^Street [13]$/));
+    expect(screen.getByRole("status").textContent).toMatch(/one stop with the stop next to it/);
+  });
+
+  it("renames a whole stop group and numbers a name used by a station far away", async () => {
+    publishPlaces("rail", [{ id: "rail:9", name: "Harbour", lonlat: [8, 50] }]);
+    const { engine } = await opened();
+    await waitFor(() => expect(engine.rebuild).toHaveBeenCalled());
+    fireEvent.click(screen.getByText("Street 3"));
+    const input = screen.getByRole("textbox", { name: "Name of point 3" });
+    fireEvent.change(input, { target: { value: "Harbour" } });
+    fireEvent.blur(input);
+    // Stop 1 is 142 m from stop 3: one stop, so both take the name.
+    expect(engine.setName).toHaveBeenCalledWith(3, "Harbour 2");
+    expect(engine.setName).toHaveBeenCalledWith(1, "Harbour 2");
+    expect(screen.getByRole("status").textContent).toMatch(
+      /already the name of a stop or station 71\.\d km away/,
+    );
+    clearPlaces();
   });
 
   it("re-routes and recolours when the mode changes", async () => {
