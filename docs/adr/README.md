@@ -35,4 +35,6 @@ All ADRs below were accepted on 2026-10-27. New ADRs start as Proposed. Template
 | [0029](0029-street-service-line-authoring.md) | Street-based service lines are drawn as an ordered point circuit, routed on the road graph | Accepted |
 | [0030](0030-railway-design-tool.md) | Railway design is station-first, drawn to scale from engineering elements | Accepted |
 | [0031](0031-street-routing-in-browser.md) | One street routing crate, compiled for the worker and, as WebAssembly, for the map editor | Proposed |
+| [0033](0033-railway-editor-implementation.md) | Railway editor: one Rust geometry crate, run in the browser as WebAssembly | Proposed |
 | [0034](0034-journey-planner.md) | Journey time benchmark: RAPTOR over a GTFS-shaped published timetable, in Rust and WebAssembly | Proposed |
+| [0035](0035-ai-agent-integration-mcp.md) | AI agents connect from outside through an MCP server; MobSimLab supplies deterministic scenario, benchmark and walk-coverage tools | Proposed |

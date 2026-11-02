@@ -1,0 +1,12 @@
+[package]
+name = "rail-design"
+version = "0.1.0"
+description = "MobSimLab railway design: stations with platforms, tracks fitted from straights, clothoids and arcs, catalogue switches and crossings, levels and ramps, drawn to scale, with live design checks (ADR-0030, ADR-0032)."
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
