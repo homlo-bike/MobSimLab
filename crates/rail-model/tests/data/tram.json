@@ -1300,7 +1300,51 @@
       ],
       "diverging_speed_kmh": 15.0,
       "radius_m": 50.0,
-      "crossing_ratio_n": 6.0
+      "crossing_ratio_n": 6.0,
+      "fouling_points": [
+        {
+          "node": "w4.0",
+          "section": "t3.1.0",
+          "distance_m": 0.0,
+          "at_section": "t3.1.0",
+          "at_offset_m": 186.391
+        },
+        {
+          "node": "w4.0",
+          "section": "t3.1.1",
+          "distance_m": 26.5,
+          "at_section": "t3.1.1",
+          "at_offset_m": 26.5
+        },
+        {
+          "node": "w4.0",
+          "section": "w4.0",
+          "distance_m": 26.5,
+          "at_section": "w4.0",
+          "at_offset_m": 26.5
+        },
+        {
+          "node": "w4.1",
+          "section": "t3.0.0",
+          "distance_m": 26.5,
+          "at_section": "t3.0.0",
+          "at_offset_m": 185.248
+        },
+        {
+          "node": "w4.1",
+          "section": "t3.0.1",
+          "distance_m": 0.0,
+          "at_section": "t3.0.1",
+          "at_offset_m": 0.0
+        },
+        {
+          "node": "w4.1",
+          "section": "w4.0",
+          "distance_m": 26.5,
+          "at_section": "w4.0",
+          "at_offset_m": 0.991
+        }
+      ]
     },
     {
       "id": 5,
@@ -1325,7 +1369,30 @@
       ],
       "diverging_speed_kmh": 15.0,
       "radius_m": 50.0,
-      "crossing_ratio_n": 6.0
+      "crossing_ratio_n": 6.0,
+      "fouling_points": [
+        {
+          "node": "w5.0",
+          "section": "t3.0.1",
+          "distance_m": 0.0,
+          "at_section": "t3.0.1",
+          "at_offset_m": 20.0
+        },
+        {
+          "node": "w5.0",
+          "section": "t3.0.2",
+          "distance_m": 22.5,
+          "at_section": "t3.0.2",
+          "at_offset_m": 22.5
+        },
+        {
+          "node": "w5.0",
+          "section": "w5.0",
+          "distance_m": 22.5,
+          "at_section": "t6.0.0",
+          "at_offset_m": 8.519
+        }
+      ]
     }
   ],
   "platform_edges": [

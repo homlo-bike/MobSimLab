@@ -1996,7 +1996,51 @@
       ],
       "diverging_speed_kmh": 50.0,
       "radius_m": 300.0,
-      "crossing_ratio_n": 9.0
+      "crossing_ratio_n": 9.0,
+      "fouling_points": [
+        {
+          "node": "w4.0",
+          "section": "t3.1.0",
+          "distance_m": 0.0,
+          "at_section": "t3.1.0",
+          "at_offset_m": 1375.984
+        },
+        {
+          "node": "w4.0",
+          "section": "t3.1.1",
+          "distance_m": 52.0,
+          "at_section": "t3.1.1",
+          "at_offset_m": 52.0
+        },
+        {
+          "node": "w4.0",
+          "section": "w4.0",
+          "distance_m": 52.0,
+          "at_section": "w4.0",
+          "at_offset_m": 52.0
+        },
+        {
+          "node": "w4.1",
+          "section": "t3.0.0",
+          "distance_m": 52.0,
+          "at_section": "t3.0.0",
+          "at_offset_m": 1390.881
+        },
+        {
+          "node": "w4.1",
+          "section": "t3.0.1",
+          "distance_m": 0.0,
+          "at_section": "t3.0.1",
+          "at_offset_m": 0.0
+        },
+        {
+          "node": "w4.1",
+          "section": "w4.0",
+          "distance_m": 52.0,
+          "at_section": "w4.0",
+          "at_offset_m": 17.386
+        }
+      ]
     },
     {
       "id": 5,
@@ -2021,7 +2065,30 @@
       ],
       "diverging_speed_kmh": 50.0,
       "radius_m": 300.0,
-      "crossing_ratio_n": 9.0
+      "crossing_ratio_n": 9.0,
+      "fouling_points": [
+        {
+          "node": "w5.0",
+          "section": "t3.0.1",
+          "distance_m": 0.0,
+          "at_section": "t3.0.1",
+          "at_offset_m": 33.232
+        },
+        {
+          "node": "w5.0",
+          "section": "t3.0.2",
+          "distance_m": 48.0,
+          "at_section": "t3.0.2",
+          "at_offset_m": 48.0
+        },
+        {
+          "node": "w5.0",
+          "section": "w5.0",
+          "distance_m": 48.0,
+          "at_section": "t6.0.0",
+          "at_offset_m": 14.802
+        }
+      ]
     }
   ],
   "platform_edges": [

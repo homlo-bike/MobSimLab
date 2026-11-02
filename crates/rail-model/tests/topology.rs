@@ -48,6 +48,11 @@ fn sample_exports_compile_with_a_provisional_signal_plan() {
         let (m, notes) = load(name);
         assert!(!m.routes.is_empty(), "{name}: no routes");
         assert!(notes.iter().any(|n| n.contains("provisional")));
+        // The export gives fouling points, so no default distance is assumed.
+        assert!(
+            !notes.iter().any(|n| n.contains("without fouling points")),
+            "{name}: {notes:?}"
+        );
         // Conflicts are symmetric and no route conflicts with itself.
         for (a, cs) in m.conflicts.iter().enumerate() {
             assert!(!cs.contains(&(a as u32)));

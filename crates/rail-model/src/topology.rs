@@ -4,8 +4,9 @@
 //! The export describes physical tracks between nodes. The operations model
 //! needs train detection sections and signals, so the import:
 //!
-//! 1. cuts each section around every switch node (the toe margin on the
-//!    common side, the fouling distance on the legs; a whole switch leg), around
+//! 1. cuts each section around every switch node, up to the switch's fouling
+//!    points from the export (older exports: a toe margin on the common side and
+//!    a default fouling distance on the legs; a whole switch leg), around
 //!    every same-level crossing of two alignments (its fouling points) and around
 //!    every level crossing with a street (its rail zone);
 //! 2. groups the pieces of one switch (both switches of a crossover) or one
@@ -105,11 +106,22 @@ struct TLink {
 }
 
 #[derive(Deserialize)]
+struct TFouling {
+    node: String,
+    section: String,
+    distance_m: f64,
+    at_section: String,
+    at_offset_m: f64,
+}
+
+#[derive(Deserialize)]
 struct TSwitch {
     id: u32,
     nodes: Vec<String>,
     legs: Vec<String>,
     diverging_speed_kmh: f64,
+    #[serde(default)]
+    fouling_points: Vec<TFouling>,
 }
 
 #[derive(Deserialize)]
@@ -182,9 +194,11 @@ struct TSignal {
 /// export carries the values.
 #[derive(Clone, Debug, PartialEq)]
 pub struct ImportOptions {
-    /// Distance from a switch node to the fouling point along each leg, m.
+    /// Distance from a switch node to the fouling point along each leg, m,
+    /// for exports without fouling points.
     pub switch_fouling_m: f64,
-    /// Distance from a switch node to the detection joint on the toe side, m.
+    /// Distance from a switch node to the detection joint on the toe side, m
+    /// (also the shortest switch area on a side the export gives 0 m).
     pub switch_toe_m: f64,
     /// Switch throw and lock time, s.
     pub switch_throw_s: f64,
@@ -319,7 +333,44 @@ fn import(t: Topology, opt: &ImportOptions) -> Result<Imported, String> {
         .iter()
         .flat_map(|s| s.nodes.iter().map(move |n| (n.as_str(), s)))
         .collect();
-    for sw in &t.switches {
+    for sw in t.switches.iter().filter(|s| !s.fouling_points.is_empty()) {
+        // Fouling points from the export: the area runs from the node to each point.
+        let key = format!("sw{}", sw.id);
+        groups.find(&key);
+        for f in &sw.fouling_points {
+            let i = sec(&f.section)?;
+            let s = &t.sections[i];
+            let len = s.length_m;
+            let at_from = s.from == f.node;
+            if sw.legs.contains(&s.id) {
+                zones[i].push((0.0, len, Some(key.clone())));
+            }
+            if f.at_section == f.section {
+                let d = f.distance_m.max(opt.switch_toe_m).min(len);
+                let z = if at_from { (0.0, d) } else { (len - d, len) };
+                zones[i].push((z.0, z.1, Some(key.clone())));
+            } else {
+                // The point lies beyond the section, on a section joined at its far end.
+                zones[i].push((0.0, len, Some(key.clone())));
+                let far = if at_from { &s.to } else { &s.from };
+                let j = sec(&f.at_section)?;
+                let a = &t.sections[j];
+                let z = if &a.from == far {
+                    (0.0, f.at_offset_m)
+                } else {
+                    (f.at_offset_m, a.length_m)
+                };
+                zones[j].push((z.0, z.1, Some(key.clone())));
+            }
+        }
+    }
+    if t.switches.iter().any(|s| s.fouling_points.is_empty()) {
+        notes.push(format!(
+            "switches without fouling points in the export: assumed {} m on the legs, {} m on the toe side",
+            opt.switch_fouling_m, opt.switch_toe_m
+        ));
+    }
+    for sw in t.switches.iter().filter(|s| s.fouling_points.is_empty()) {
         let key = format!("sw{}", sw.id);
         groups.find(&key);
         for (i, s) in t.sections.iter().enumerate() {

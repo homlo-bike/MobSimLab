@@ -1967,7 +1967,51 @@
       ],
       "diverging_speed_kmh": 40.0,
       "radius_m": 190.0,
-      "crossing_ratio_n": 9.0
+      "crossing_ratio_n": 9.0,
+      "fouling_points": [
+        {
+          "node": "w4.0",
+          "section": "t3.1.0",
+          "distance_m": 0.0,
+          "at_section": "t3.1.0",
+          "at_offset_m": 459.571
+        },
+        {
+          "node": "w4.0",
+          "section": "t3.1.1",
+          "distance_m": 42.5,
+          "at_section": "t3.1.1",
+          "at_offset_m": 42.5
+        },
+        {
+          "node": "w4.0",
+          "section": "w4.0",
+          "distance_m": 42.5,
+          "at_section": "w4.0",
+          "at_offset_m": 42.5
+        },
+        {
+          "node": "w4.1",
+          "section": "t3.0.0",
+          "distance_m": 42.5,
+          "at_section": "t3.0.0",
+          "at_offset_m": 471.523
+        },
+        {
+          "node": "w4.1",
+          "section": "t3.0.1",
+          "distance_m": 0.0,
+          "at_section": "t3.0.1",
+          "at_offset_m": 0.0
+        },
+        {
+          "node": "w4.1",
+          "section": "w4.0",
+          "distance_m": 42.5,
+          "at_section": "w4.0",
+          "at_offset_m": 14.5
+        }
+      ]
     },
     {
       "id": 5,
@@ -1992,7 +2036,30 @@
       ],
       "diverging_speed_kmh": 40.0,
       "radius_m": 190.0,
-      "crossing_ratio_n": 9.0
+      "crossing_ratio_n": 9.0,
+      "fouling_points": [
+        {
+          "node": "w5.0",
+          "section": "t3.0.1",
+          "distance_m": 0.0,
+          "at_section": "t3.0.1",
+          "at_offset_m": 27.138
+        },
+        {
+          "node": "w5.0",
+          "section": "t3.0.2",
+          "distance_m": 41.0,
+          "at_section": "t3.0.2",
+          "at_offset_m": 41.0
+        },
+        {
+          "node": "w5.0",
+          "section": "w5.0",
+          "distance_m": 41.0,
+          "at_section": "t6.0.0",
+          "at_offset_m": 13.883
+        }
+      ]
     }
   ],
   "platform_edges": [
