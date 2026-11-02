@@ -7,6 +7,8 @@
 //! - [`line`]: the route-point tool of ADR-0029: a closed circuit of via points,
 //!   stops and end stops, local re-routing on edits, detour warnings, directions,
 //!   station groups and depot pull-out/pull-in trips.
+//! - [`walk`]: pedestrian graph, walk coverage (the 15-minute walk rule, SDG 11.2.1) and stop
+//!   spacing (ADR-0035).
 //!
 //! The same crate runs in the simulation worker and, compiled to WebAssembly, in
 //! the map editor, so the planner sees exactly the path the simulation will drive.
@@ -18,9 +20,11 @@ pub mod line;
 pub mod osm;
 pub mod profile;
 pub mod router;
+pub mod walk;
 
 pub use graph::RoadGraph;
 pub use line::{LineView, PointKind, Status, StreetLine};
 pub use osm::parse_osm_xml;
 pub use profile::{Mode, RoutingRules, TrafficSide, VehicleProfile};
 pub use router::{route, Anchor, Path, SearchOptions};
+pub use walk::{WalkGraph, WalkSettings};

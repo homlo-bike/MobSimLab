@@ -11,6 +11,8 @@ export const ACTIONS = [
   "users.manage", // list users, set roles, approve, restrict, delete
   "audit.read", // read and verify the audit log
   "projects.create",
+  "agents.connect", // connect AI agents, manage one's connections, tokens and agent scenarios (ADR-0035)
+  "agents.manage", // instance settings for agent connections
 ] as const;
 export type Action = (typeof ACTIONS)[number];
 
@@ -25,6 +27,9 @@ export const POLICY: Record<Action, readonly InstanceRole[]> = {
   "users.manage": ["owner", "admin"],
   "audit.read": ["owner", "admin"],
   "projects.create": ["owner", "admin", "user"],
+  // Product owner 2026-11-01: Viewers cannot connect agents.
+  "agents.connect": ["owner", "admin", "user"],
+  "agents.manage": ["owner", "admin"],
 };
 
 /** The minimum an actor needs for a permission decision. */

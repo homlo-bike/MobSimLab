@@ -1,0 +1,49 @@
+# Walk coverage and stop spacing analysis defaults (ADR-0035 §5, §6). Schema: assumptions/README.md.
+
+- key: analysis.walk_rule_minutes
+  label: "Walk rule: largest walk to the nearest stop or station, in minutes (headline coverage figure)"
+  group: Analysis
+  unit: min
+  used_by: [walk coverage report, agent tools, coverage map layer]
+  values:
+    - context:
+        mode: "*"
+      low: 10
+      central: 15
+      high: 20
+      basis: documented
+      sources: [moreno-2021, mobsimlab-derivation]
+      check: unverified
+      rationale: "Product owner rule (2026-11-01): a 15-minute walk to the nearest stop or station is the headline figure, following the 15-minute city idea of Moreno et al. (2021). About 1.1 km at the central 4.5 km/h walking speed, measured on the street network. 10 and 20 min are the usual sensitivity values."
+
+- key: analysis.frequent_headway_min
+  label: "Frequent service: longest headway for a stop to count in the frequent-only coverage"
+  group: Analysis
+  unit: min
+  used_by: [frequent-only walk coverage]
+  values:
+    - context:
+        mode: "*"
+      low: 10
+      central: 15
+      high: 20
+      basis: cited
+      sources: [itdp-pnft, tcqsm3]
+      check: unverified
+      rationale: "ITDP People Near Frequent Transit counts stops served at least every 15 minutes; TCQSM frequency levels of service put 10–14 min and 15–20 min headways at the boundary where passengers stop consulting a timetable."
+
+- key: walk.crossing_delay_s
+  label: Average wait at a signalised pedestrian crossing
+  group: Analysis
+  unit: s
+  used_by: [walk coverage, walk catchments]
+  values:
+    - context:
+        mode: "*"
+      low: 10
+      central: 20
+      high: 40
+      basis: documented
+      sources: [hcm7]
+      check: unverified
+      rationale: "HCM average pedestrian delay at a signalised crossing d = (C − g)² / (2C). C = 90 s with a 30 s walk interval gives 20 s; a 60 s cycle with 25 s walk gives about 10 s; a 120 s cycle with 20 s walk gives about 42 s."

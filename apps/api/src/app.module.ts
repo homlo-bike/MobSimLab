@@ -1,5 +1,6 @@
 import { type DynamicModule, Module } from "@nestjs/common";
 import { APP_GUARD } from "@nestjs/core";
+import { AgentsModule } from "./agents/agents.module";
 import { AdminController } from "./admin/admin.controller";
 import { UsersService } from "./admin/users.service";
 import { AuditService } from "./audit/audit.service";
@@ -25,7 +26,7 @@ export class AppModule {
   static forRoot(config: AppConfig): DynamicModule {
     return {
       module: AppModule,
-      imports: [ConfigModule.forRoot(config), StreetNetworkModule],
+      imports: [ConfigModule.forRoot(config), StreetNetworkModule, AgentsModule],
       controllers: [HealthController, AuthController, SetupController, AdminController],
       providers: [
         AuditService,

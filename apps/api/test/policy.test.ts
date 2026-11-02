@@ -24,6 +24,8 @@ describe("permission policy", () => {
       "users.manage": "owner,admin",
       "audit.read": "owner,admin",
       "projects.create": "owner,admin,user",
+      "agents.connect": "owner,admin,user",
+      "agents.manage": "owner,admin",
     });
   });
 

@@ -16,6 +16,7 @@ Schema and contribution rules: [README.md](README.md).
 - [Modes](#modes)
 - [Operations](#operations)
 - [Demand](#demand)
+- [Analysis](#analysis)
 - [Simulation](#simulation)
 - [Infrastructure standards](#infrastructure-standards)
 - [Accessibility](#accessibility)
@@ -39,6 +40,7 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 | Standing places, passengers per square metre of standing area (persons/m²) | 4 | 4 | 4 | 0 | 4 | 4 | 4 | 4 | 2 | 0 | 0 |
 | Vehicle and line colour (default) (hex colour) | #8E3A8C | #C2185B | #6A8E23 | #7B5E3B | #D32F2F | #E65100 | #1565C0 | #2E7D32 | #546E7A | #37474F | #212121 |
 | Catchment, walking distance to a stop (m) | 400 | 600 | 400 | 1500 | 500 | 800 | 800 | 1000 | 2000 | 2000 | 2000 |
+| Distance between consecutive stops or stations along a line (guidance range) (m) | 400 | 800 | 400 | 10000 | 500 | 1000 | 1000 | 3000 | 6000 | 60000 | 60000 |
 | Structure and right of way (category A, B or C) (category) | C | B | C | C | C | B | A | A | A | A | A |
 | Platform height above rail (rail) or kerb height above road (road modes) (mm) | 180 | 300 | 180 | 160 | 250 | 350 | 1000 | 960 | 760 | 760 | 760 |
 | Platform length (usable) (m) | 20 | 60 | 20 | 20 | 45 | 90 | 120 | 210 | 170 | 400 | 400 |
@@ -181,6 +183,23 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 | light_rail, metro | 500 | 800 | 1000 | cited | unverified | [tcqsm3](#src-tcqsm3) | 1/2 mile. |
 | commuter_rail | 800 | 1000 | 2000 | documented | unverified | [tcqsm3](#src-tcqsm3) | Longer access trips, bike and park-and-ride. |
 | regional_rail, long_distance_rail, high_speed_rail | 1000 | 2000 | 5000 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Station is usually reached by other modes; walking catchment only bounds the walk-only share. |
+
+### Distance between consecutive stops or stations along a line (guidance range)
+
+`mode.stop_spacing_m` · unit: m · used by: stop spacing analysis, agent tools
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 300 | 500 | 1000 | documented | unverified | [tcqsm3](#src-tcqsm3) | Wide fallback between bus and rail practice; TCQSM discusses stop spacing as a trade-off between walk access and running time. |
+| bus, trolleybus | 250 | 400 | 600 | cited | unverified | [tcqsm3](#src-tcqsm3) | TCQSM: urban bus stops commonly 1/8–1/4 mile (200–400 m) apart in North America; European practice is closer to 300–500 m. Below about 250 m the time lost to stopping outweighs the shorter walk. |
+| brt | 400 | 800 | 1200 | documented | unverified | [tcqsm3](#src-tcqsm3), [mobsimlab-derivation](#src-mobsimlab-derivation) | Stations are spaced wider than local stops to keep the running speed up; between bus and light rail values. |
+| intercity_bus | 2000 | 10000 | 50000 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Few stops per town; spacing is set by the towns served rather than by walk access. |
+| tram | 300 | 500 | 800 | documented | unverified | [tcqsm3](#src-tcqsm3), [vuchic-2007](#src-vuchic-2007) | Street-running trams stop about as often as buses, a little wider where they run on their own right of way. |
+| light_rail | 500 | 1000 | 2000 | documented | unverified | [tcqsm3](#src-tcqsm3), [vuchic-2007](#src-vuchic-2007) | Light rail station spacing grows with the share of segregated right of way (Vuchic, category B). |
+| metro | 700 | 1000 | 2000 | documented | unverified | [vuchic-2007](#src-vuchic-2007) | Metro stations about 0.8–1.5 km apart in city centres and wider in outer areas. |
+| commuter_rail | 1500 | 3000 | 6000 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Suburban stations a few kilometres apart; tighter in the core. |
+| regional_rail | 3000 | 6000 | 15000 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | One station per village or town on the line. |
+| long_distance_rail, high_speed_rail | 20000 | 60000 | 200000 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Stops at cities only; spacing set by the settlement pattern. |
 
 ### Structure and right of way (category A, B or C)
 
@@ -452,6 +471,32 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 | Context | Low | Central | High | Basis | Check | Sources | Rationale |
 |---|---|---|---|---|---|---|---|
 | all | 30 | 60 | 180 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Added to the straight-line walk between two platforms of one station until rail-model provides platform-to-platform times from the station layout (ADR-0032, 06 §9.3). About one flight of stairs or a lift ride; deep metro stations need the high value. |
+
+## Analysis
+
+### Walk rule: largest walk to the nearest stop or station, in minutes (headline coverage figure)
+
+`analysis.walk_rule_minutes` · unit: min · used by: walk coverage report, agent tools, coverage map layer
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 10 | 15 | 20 | documented | unverified | [moreno-2021](#src-moreno-2021), [mobsimlab-derivation](#src-mobsimlab-derivation) | Product owner rule (2026-11-01): a 15-minute walk to the nearest stop or station is the headline figure, following the 15-minute city idea of Moreno et al. (2021). About 1.1 km at the central 4.5 km/h walking speed, measured on the street network. 10 and 20 min are the usual sensitivity values. |
+
+### Frequent service: longest headway for a stop to count in the frequent-only coverage
+
+`analysis.frequent_headway_min` · unit: min · used by: frequent-only walk coverage
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 10 | 15 | 20 | cited | unverified | [itdp-pnft](#src-itdp-pnft), [tcqsm3](#src-tcqsm3) | ITDP People Near Frequent Transit counts stops served at least every 15 minutes; TCQSM frequency levels of service put 10–14 min and 15–20 min headways at the boundary where passengers stop consulting a timetable. |
+
+### Average wait at a signalised pedestrian crossing
+
+`walk.crossing_delay_s` · unit: s · used by: walk coverage, walk catchments
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 10 | 20 | 40 | documented | unverified | [hcm7](#src-hcm7) | HCM average pedestrian delay at a signalised crossing d = (C − g)² / (2C). C = 90 s with a 30 s walk interval gives 20 s; a 60 s cycle with 25 s walk gives about 10 s; a 120 s cycle with 20 s walk gives about 42 s. |
 
 ## Simulation
 
@@ -1139,3 +1184,5 @@ and rationale per attribute: [`switches.yaml`](switches.yaml); geometry model:
 | <a id="src-krakow-tram-switches"></a>`krakow-tram-switches` | [Kraków tramway (MPK / ZDMK) turnout specification (switches with shallow-groove crossings 15 km/h; R = 50 m switches with deep-groove crossings 25 km/h)](https://plikimpi.krakow.pl/pliki/339992) | free | Public procurement document; numbers cited as facts | 2026-10-27 | search-snippet |
 | <a id="src-voestalpine-tram-train-hu"></a>`voestalpine-tram-train-hu` | [voestalpine, first Hungarian tram-train project (turnouts R = 200 m and R = 300 m for 40 km/h diverging)](https://voestalpine.com/railway-systems/en/company/news/first-hungarian-tram-train-project) | free | © voestalpine; numbers cited as facts | 2026-10-27 | search-snippet |
 | <a id="src-salzburger-lokalbahn"></a>`salzburger-lokalbahn` | [Salzburger Lokalbahn (Salzburg AG / Schiene Salzburg), line electrified at 1000 V DC](https://www.salzburg-ag.at/) | free | © Salzburg AG; numbers cited as facts | 2026-10-27 | none |
+| <a id="src-moreno-2021"></a>`moreno-2021` | [Moreno, Allam, Chabaud, Gall, Pratlong: Introducing the “15-Minute City”: Sustainability, Resilience and Place Identity in Future Post-Pandemic Cities. Smart Cities 4(1), 93–111 (2021)](https://doi.org/10.3390/smartcities4010006) | free | CC BY 4.0 | 2026-11-02 | none |
+| <a id="src-itdp-pnft"></a>`itdp-pnft` | [ITDP, People Near Frequent Transit (share of people living within 500 m of transit running at least every 15 minutes)](https://www.itdp.org/rapid-transit-database/) | free | © ITDP; numbers cited as facts | 2026-11-02 | none |

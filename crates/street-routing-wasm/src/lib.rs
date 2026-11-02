@@ -9,6 +9,10 @@
 use street_routing::geo::LocalProjection;
 use street_routing::line::{PointKind, StreetLine};
 use street_routing::osm::OsmData;
+use street_routing::walk::{
+    stop_spacing, CoverageRequest, SpacingRequest, StopPoint, SuggestRequest, WalkGraph,
+    WalkSettings,
+};
 use street_routing::{parse_osm_xml, Mode, RoadGraph, RoutingRules, VehicleProfile};
 use wasm_bindgen::prelude::*;
 
@@ -205,4 +209,94 @@ impl StreetLineEditor {
             None => r#"{"points":[],"legs":[],"directions":[],"station_groups":[],"depot":null,"depot_trips":[],"issues":[],"length_m":0,"time_s":0}"#.to_string(),
         }
     }
+}
+
+/// Walk network analysis (ADR-0035): 15-minute walk coverage, SDG 11.2.1, catchments and stop spacing
+/// along the walk network. The API runs it (WebAssembly for Node) for the agent tools; the map editor
+/// can run the same code for live layers.
+#[wasm_bindgen]
+pub struct WalkAnalysis {
+    data: OsmData,
+    graph: Option<WalkGraph>,
+}
+
+impl Default for WalkAnalysis {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+fn parse_json<T: serde::de::DeserializeOwned>(what: &str, json: &str) -> Result<T, JsError> {
+    serde_json::from_str(json).map_err(|e| JsError::new(&format!("invalid {what}: {e}")))
+}
+
+#[wasm_bindgen]
+impl WalkAnalysis {
+    /// Purpose: empty analysis with no walk network loaded.
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> WalkAnalysis {
+        Self {
+            data: OsmData::default(),
+            graph: None,
+        }
+    }
+
+    /// Purpose: add walkable ways (OSM XML for one tile). Call `build` after a batch.
+    pub fn add_osm(&mut self, osm_xml: &str) -> Result<(), JsError> {
+        let d = parse_osm_xml(osm_xml).map_err(|e| JsError::new(&e))?;
+        self.data.merge(d);
+        Ok(())
+    }
+
+    /// Purpose: build the walk graph from everything added so far.
+    /// Output: an error when no walkable way has been loaded.
+    pub fn build(&mut self) -> Result<(), JsError> {
+        let proj = self.graph.as_ref().map(|g| g.proj);
+        self.graph = Some(WalkGraph::from_osm(&self.data, proj).map_err(|e| JsError::new(&e))?);
+        Ok(())
+    }
+
+    /// Purpose: whether a walk graph is built.
+    pub fn ready(&self) -> bool {
+        self.graph.is_some()
+    }
+
+    /// Purpose: answer a coverage question (JSON `walk::CoverageRequest`). Output: JSON `CoverageResult`.
+    pub fn coverage(&self, request_json: &str) -> Result<String, JsError> {
+        let g = self.graph.as_ref().ok_or_else(no_walk_graph)?;
+        let req: CoverageRequest = parse_json("coverage request", request_json)?;
+        Ok(serde_json::to_string(&g.coverage(&req)).unwrap_or_default())
+    }
+
+    /// Purpose: walk network coloured by minutes to the nearest stop, as GeoJSON.
+    /// Inputs: stops (JSON list of `StopPoint`), the largest minutes to include, settings (JSON).
+    pub fn catchment(
+        &self,
+        stops_json: &str,
+        max_minutes: f64,
+        settings_json: &str,
+    ) -> Result<String, JsError> {
+        let g = self.graph.as_ref().ok_or_else(no_walk_graph)?;
+        let stops: Vec<StopPoint> = parse_json("stops", stops_json)?;
+        let settings: WalkSettings = parse_json("settings", settings_json)?;
+        Ok(g.catchment_geojson(&stops, max_minutes, &settings))
+    }
+
+    /// Purpose: suggest new stop locations (JSON `walk::SuggestRequest`). Output: JSON `SuggestResult`.
+    pub fn suggest_stops(&self, request_json: &str) -> Result<String, JsError> {
+        let g = self.graph.as_ref().ok_or_else(no_walk_graph)?;
+        let req: SuggestRequest = parse_json("suggestion request", request_json)?;
+        Ok(serde_json::to_string(&g.suggest_stops(&req)).unwrap_or_default())
+    }
+
+    /// Purpose: stop spacing along a route and on foot (JSON `walk::SpacingRequest`).
+    /// Works without a walk graph (then `walk_m` is empty). Output: JSON `SpacingResult`.
+    pub fn spacing(&self, request_json: &str) -> Result<String, JsError> {
+        let req: SpacingRequest = parse_json("spacing request", request_json)?;
+        Ok(serde_json::to_string(&stop_spacing(&req, self.graph.as_ref())).unwrap_or_default())
+    }
+}
+
+fn no_walk_graph() -> JsError {
+    JsError::new("No walk network is loaded for this area yet.")
 }

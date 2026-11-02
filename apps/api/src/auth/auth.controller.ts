@@ -6,6 +6,7 @@ import {
   Inject,
   Logger,
   Post,
+  Query,
   Req,
   Res,
   ServiceUnavailableException,
@@ -59,12 +60,13 @@ export class AuthController {
 
   /**
    * Purpose: start sign-in: store state, nonce and PKCE verifier, bind the state to this browser with a
-   * short-lived cookie (prevents login CSRF), and redirect to the provider.
+   * short-lived cookie (prevents login CSRF), and redirect to the provider. `return_to` (a path on this
+   * instance, for example the agent consent page) is where the browser lands afterwards.
    */
   @Get("login")
   @Public()
   @AuthRateLimit()
-  async login(@Res() res: Response): Promise<void> {
+  async login(@Query("return_to") returnTo: unknown, @Res() res: Response): Promise<void> {
     let r;
     try {
       r = await this.oidc.begin();
@@ -81,7 +83,7 @@ export class AuthController {
         state_hash: sha256(r.state),
         code_verifier: r.codeVerifier,
         nonce: r.nonce,
-        return_to: "/",
+        return_to: safeReturnTo(returnTo),
         expires_at: new Date(Date.now() + FLOW_MS),
       })
       .execute();
@@ -159,4 +161,17 @@ export class AuthController {
 
 function sha256(s: string): Buffer {
   return createHash("sha256").update(s).digest();
+}
+
+/** Purpose: a same-origin path to return to after sign-in; anything else becomes "/" (no open redirect). */
+export function safeReturnTo(v: unknown): string {
+  if (typeof v !== "string" || v.length > 1000) return "/";
+  if (
+    !v.startsWith("/") ||
+    v.startsWith("//") ||
+    v.includes("\\") ||
+    [...v].some((c) => c.charCodeAt(0) < 32)
+  )
+    return "/";
+  return v;
 }

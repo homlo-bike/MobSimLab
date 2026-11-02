@@ -7,5 +7,6 @@ import { StreetNetworkService } from "./street-network.service";
 @Module({
   controllers: [StreetNetworkController],
   providers: [StreetNetworkService, { provide: OverpassClient, useFactory: () => new OverpassClient() }],
+  exports: [StreetNetworkService],
 })
 export class StreetNetworkModule {}

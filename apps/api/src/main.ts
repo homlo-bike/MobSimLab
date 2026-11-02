@@ -38,7 +38,8 @@ async function bootstrap(): Promise<void> {
   if (existsSync(join(webDir, "index.html"))) {
     app.useStaticAssets(webDir, { index: false, maxAge: "1h" });
     app.use((req: Request, res: Response, next: NextFunction) => {
-      if (req.method !== "GET" || req.path.startsWith("/api/")) return next();
+      const api = ["/api/", "/mcp", "/oauth/", "/.well-known/"];
+      if (req.method !== "GET" || api.some((p) => req.path.startsWith(p))) return next();
       res.sendFile(join(webDir, "index.html"));
     });
   }
