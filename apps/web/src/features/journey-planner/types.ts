@@ -87,6 +87,8 @@ export interface Settings {
   walk_detour_factor: number;
   max_access_m: number;
   max_transfer_m: number;
+  /** Stops with the same name within this distance are one station (a bus stop named like the railway station). */
+  same_name_station_m: number;
   max_walk_only_m: number;
   min_change_s: number;
   level_change_s: number;
@@ -186,6 +188,10 @@ export interface NetworkSummary {
   trips: number;
   raptor_routes: number;
   footpaths: number;
+  /** Stations with more than one stop. */
+  stations?: number;
+  /** Stops joined into a station because they share its name. */
+  joined_by_name?: number;
   first_departure_s: number | null;
   last_arrival_s: number | null;
   warnings: string[];
