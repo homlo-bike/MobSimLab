@@ -1,6 +1,8 @@
 import type { Map as MapLibreMap } from "maplibre-gl";
 import { useCallback, useEffect, useState } from "react";
 import { AdminPanel } from "./admin/AdminPanel";
+import { JourneyPlanner } from "./features/journey-planner/JourneyPlanner";
+import type { StreetLineInput } from "./features/journey-planner/network";
 import { RailwayEditor } from "./features/railways/RailwayEditor";
 import { StreetLineEditor } from "./features/street-lines/StreetLineEditor";
 import { MapView } from "./map/MapView";
@@ -21,11 +23,13 @@ export function App() {
   useEffect(reload, [reload]);
   const refusal = new URLSearchParams(window.location.search).get("signin");
   const [map, setMap] = useState<MapLibreMap | null>(null);
-  // One design tool at a time: they share the side panel and the map's click handlers.
-  const [tool, setTool] = useState<"street" | "railway" | null>(null);
-  const toggle = (t: "street" | "railway") => setTool(tool === t ? null : t);
+  // One side tool at a time: they share the side panel and the map's click handlers.
+  const [tool, setTool] = useState<"street" | "railway" | "journey" | null>(null);
+  const toggle = (t: "street" | "railway" | "journey") => setTool(tool === t ? null : t);
   const toolButton = (on: boolean) =>
     `rounded border px-2 py-0.5 ${on ? "border-blue-700 bg-blue-700 text-white" : "border-slate-300 hover:bg-slate-100"}`;
+  // The street line last drawn, so the journey planner can ride it.
+  const [line, setLine] = useState<StreetLineInput | null>(null);
   const [panel, setPanel] = useState<HTMLElement | null>(null);
   // Development hook for end-to-end scripts that need map coordinates.
   if (import.meta.env.DEV) Object.assign(window, { mobsimMap: map });
@@ -57,6 +61,14 @@ export function App() {
           >
             Railway
           </button>
+          <button
+            type="button"
+            aria-pressed={tool === "journey"}
+            onClick={() => toggle("journey")}
+            className={toolButton(tool === "journey")}
+          >
+            Journey planner
+          </button>
         </div>
         <span>{me && <AccountMenu me={me} onSignedOut={reload} onAdmin={() => setAdmin(true)} />}</span>
       </header>
@@ -84,15 +96,28 @@ export function App() {
             <SetupPanel name={me.instance.name} csrfToken={me.csrfToken} onFinished={reload} />
           )}
           <MapView onReady={setMap} />
-          {tool === "street" && <StreetLineEditor map={map} panel={panel} />}
+          {tool === "street" && <StreetLineEditor map={map} panel={panel} onLineChange={setLine} />}
           {tool === "railway" && <RailwayEditor map={map} panel={panel} />}
+          {tool === "journey" && (
+            <JourneyPlanner
+              map={map}
+              panel={panel}
+              streetLine={line && line.view.points.length >= 2 ? line : null}
+            />
+          )}
         </div>
         {tool && (
           <aside
             key={tool}
             ref={setPanel}
-            aria-label={tool === "street" ? "Street line editor" : "Railway editor"}
-            className="w-96 shrink-0 overflow-y-auto border-l border-slate-300 bg-white"
+            aria-label={
+              tool === "journey"
+                ? "Journey planner"
+                : tool === "street"
+                  ? "Street line editor"
+                  : "Railway editor"
+            }
+            className={`${tool === "journey" ? "w-[26rem]" : "w-96"} shrink-0 overflow-y-auto border-l border-slate-300 bg-white`}
           />
         )}
       </main>
