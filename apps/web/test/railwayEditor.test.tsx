@@ -246,6 +246,35 @@ describe("railway engine (WebAssembly)", () => {
     e.dispose();
   });
 
+  it("finds a tram running along a street, keeps it to the street's speed limit and exports it", async () => {
+    const e = await loadRailEngine();
+    e.addStreetTile(streetTile(50.898, 50.902, { highway: "primary", name: "High Street", lanes: "4" }));
+    const net = emptyNetwork("tram", ORIGIN);
+    const t = newTrack(
+      net,
+      { type: "free", x: 0, y: -400 },
+      { tracks: 2, level: "street", power: "auto", use: "running" },
+    );
+    const v = e.build({ ...net, tracks: [{ ...t, end: { type: "free", x: 0, y: 400 } }] }, null);
+    expect(v.street_running).toHaveLength(1);
+    expect(v.street_running[0]).toMatchObject({
+      street: "High Street",
+      running: "reserved",
+      speed_limit_kmh: 50,
+    });
+    expect(v.level_crossings).toHaveLength(0);
+    expect(v.layers.street_running.features.length).toBe(2);
+    const topo = e.topology() as { street_running: { id: string; running: string }[] };
+    expect(topo.street_running[0]).toMatchObject({ id: "sr1-100-0", running: "reserved" });
+    // Two lanes are too narrow for a tram lane and a road lane each way: the tram runs in traffic.
+    e.clearStreets();
+    e.addStreetTile(streetTile(50.898, 50.902, { highway: "primary", name: "High Street", lanes: "2" }));
+    const m = e.build({ ...net, tracks: [{ ...t, end: { type: "free", x: 0, y: 400 } }] }, null);
+    expect(m.street_running[0]!.running).toBe("mixed");
+    expect(m.issues.some((i) => i.severity === "warning" && /held up by traffic/.test(i.text))).toBe(true);
+    e.dispose();
+  });
+
   it("generates a signal plan, draws it and exports it as the planner's plan", async () => {
     const e = await loadRailEngine();
     const doc = e.sample("regional_rail", ORIGIN);

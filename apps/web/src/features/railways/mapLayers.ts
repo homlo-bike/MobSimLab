@@ -280,6 +280,24 @@ export function ensureRailLayers(map: MapLibreMap, lat: number): void {
       paint: { "line-color": COLORS.stopLine, "line-width": metres(0.3, lat, 1.5) },
     },
     {
+      // Street running: edges of the tram's own lane (solid) or of its path in traffic (dashed).
+      id: `${P}tram-lanes`,
+      type: "line",
+      source: `${P}street_running`,
+      minzoom: 16,
+      filter: kindIs("tram_lane", "shared_lane"),
+      paint: {
+        "line-color": COLORS.tramLane,
+        "line-width": metres(0.2, lat, 2),
+        "line-dasharray": [
+          "case",
+          ["==", ["get", "kind"], "shared_lane"],
+          ["literal", [3, 3]],
+          ["literal", [1, 0]],
+        ],
+      },
+    },
+    {
       id: `${P}barriers`,
       type: "line",
       source: `${P}level_crossings`,

@@ -81,6 +81,8 @@ pub struct Design {
     pub crossings: Vec<Crossing>,
     /// Level crossings of street-level track with streets.
     pub level_crossings: Vec<crate::street::LevelCrossing>,
+    /// Stretches where tram track runs along a street.
+    pub street_running: Vec<crate::street_running::StreetRunning>,
     /// Speed profile per track id.
     pub speeds: BTreeMap<u32, SpeedProfile>,
     /// All findings, errors first.
@@ -361,11 +363,15 @@ pub fn build_with_streets(
         switches,
         crossings: vec![],
         level_crossings: vec![],
+        street_running: vec![],
         speeds: BTreeMap::new(),
         issues: switch_errors,
         network: net.clone(),
     };
     validate(&mut design, draft);
+    // Street running first: the street's speed limit caps the tram's speed, which the level
+    // crossings' approach distances use.
+    crate::street_running::street_running(&mut design, streets);
     crate::street::level_crossings(&mut design, streets);
     crate::signal::check(&mut design);
     finish_issues(&mut design);
@@ -838,7 +844,27 @@ fn validate(dz: &mut Design, draft: Option<u32>) {
 /// Purpose: speed along a track: design speed capped by each curve, by the diverging speed when
 /// it starts from a switch leg, 25 km/h on storage track; stops at station and buffer ends; mode
 /// acceleration and braking between.
+/// Purpose: lower a track's permitted speed on stretches `(from, to, km/h)` of its chainage (a
+/// street's speed limit) and run its speed profile again.
+/// Side effects: replaces `dz.speeds` for the track.
+pub(crate) fn cap_speeds(dz: &mut Design, track: u32, caps: &[(f64, f64, f64)]) {
+    let (Some(t), Some(g)) = (dz.doc_track(track).cloned(), dz.track(track).cloned()) else {
+        return;
+    };
+    let sp = speed_profile_capped(dz, &t, &g, caps);
+    dz.speeds.insert(track, sp);
+}
+
 fn speed_profile(dz: &Design, t: &Track, g: &TrackGeo) -> SpeedProfile {
+    speed_profile_capped(dz, t, g, &[])
+}
+
+fn speed_profile_capped(
+    dz: &Design,
+    t: &Track,
+    g: &TrackGeo,
+    caps: &[(f64, f64, f64)],
+) -> SpeedProfile {
     let p = dz.track_params(t.id);
     let train_length = dz.train_length_for(dz.track_mode(t.id));
     let tot = g.length;
@@ -867,6 +893,11 @@ fn speed_profile(dz: &Design, t: &Track, g: &TrackGeo) -> SpeedProfile {
         if let Some(v) = vdiv {
             if sv < train_length {
                 l = l.min(v);
+            }
+        }
+        for (a, b, v) in caps {
+            if sv >= *a - 1.0 && sv <= *b + 1.0 {
+                l = l.min(*v);
             }
         }
         s.push(sv);
