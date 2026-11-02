@@ -427,6 +427,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "rail-interlocking"
+version = "0.1.0"
+dependencies = [
+ "proptest",
+ "rail-model",
+ "serde",
+]
+
+[[package]]
 name = "rail-model"
 version = "0.1.0"
 dependencies = [
@@ -449,6 +458,10 @@ name = "rail-sim"
 version = "0.1.0"
 dependencies = [
  "proptest",
+ "rail-dynamics",
+ "rail-interlocking",
+ "rail-model",
+ "rail-plan",
  "serde",
  "serde_json",
 ]

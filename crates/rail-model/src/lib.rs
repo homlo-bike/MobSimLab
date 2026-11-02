@@ -21,11 +21,12 @@ pub mod spec;
 pub mod topology;
 
 pub use model::{
-    normalise_name, GroupId, LevelCrossing, Model, Piece, PieceId, Platform, PlatformId,
+    normalise_name, GroupId, LevelCrossing, Model, Neighbour, Piece, PieceId, Platform, PlatformId,
     ProfileSegment, Route, RouteExit, RouteId, Signal, SignalAt, SignalId, Station, StationGroup,
     StationId, Step, Successor, Switch, SwitchId, Tds, TdsId,
 };
 pub use spec::{
     DetectionSpec, Dir, Directions, End, InfraSpec, LevelCrossingSpec, NodeSpec, PlatformSpec,
     Range, SignalKind, SignalSpec, StationSpec, SwitchPosition, TrackEnd, TrackSpec, TrackUse,
+    TrainProtection,
 };

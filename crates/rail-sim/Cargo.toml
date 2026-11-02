@@ -8,6 +8,10 @@ repository.workspace = true
 rust-version.workspace = true
 
 [dependencies]
+rail-model = { path = "../rail-model" }
+rail-dynamics = { path = "../rail-dynamics" }
+rail-plan = { path = "../rail-plan" }
+rail-interlocking = { path = "../rail-interlocking" }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 

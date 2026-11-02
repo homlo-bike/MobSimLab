@@ -22,6 +22,7 @@ fn track(id: &str, length_m: f64, kmh: f64, directions: Directions) -> TrackSpec
         directions,
         usage: Default::default(),
         mode: None,
+        protection: Default::default(),
     }
 }
 
@@ -33,6 +34,7 @@ fn signal(id: &str, track: &str, position_m: f64, facing: Dir, kind: SignalKind)
         facing,
         kind,
         overlap_m: None,
+        lineside: true,
     }
 }
 
