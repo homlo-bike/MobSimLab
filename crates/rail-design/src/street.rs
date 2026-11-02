@@ -21,7 +21,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 
 /// A street from OpenStreetMap (one OSM way).
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
 pub struct Street {
     /// OSM way id.
     pub way: i64,
@@ -54,8 +54,35 @@ pub struct Street {
     /// Walking pace only: a living street, a pedestrian zone or `maxspeed=walk`.
     #[serde(default)]
     pub walking_pace: bool,
+    /// A bike lane or cycle track along the street.
+    #[serde(default)]
+    pub bike_lane: bool,
+    /// A bus lane along the street.
+    #[serde(default)]
+    pub bus_lane: bool,
+    /// The tram or bus lane is separated from the traffic by a kerb, barrier or track bed (set
+    /// in the GIS tab; `mobsimlab:separated`).
+    #[serde(default)]
+    pub separated: bool,
+    /// How a tram shares the street, when the planner set it in the GIS tab
+    /// (`mobsimlab:tram`); otherwise inferred from the street's width.
+    #[serde(default)]
+    pub tram: Option<TramShare>,
+    /// The planner set the street up in the GIS tab (`mobsimlab:setup`).
+    #[serde(default)]
+    pub setup: bool,
     /// Shape, `[lon, lat]` degrees.
     pub coords: Vec<[f64; 2]>,
+}
+
+/// How a tram shares the street, as the planner sets it in the GIS tab.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum TramShare {
+    /// Own lane (reserved track); road traffic drives beside it.
+    OwnLane,
+    /// Road traffic drives on the track.
+    Mixed,
 }
 
 /// Pedestrian zones: trams may run through them (street running), but they are no level
@@ -157,6 +184,41 @@ pub fn street_from_osm(
             || tags
                 .get("maxspeed")
                 .is_some_and(|v| v.contains("walk") || v.contains("living_street")),
+        bike_lane: [
+            "cycleway",
+            "cycleway:both",
+            "cycleway:left",
+            "cycleway:right",
+        ]
+        .iter()
+        .any(|k| {
+            tags.get(*k).is_some_and(|v| {
+                matches!(
+                    v.as_str(),
+                    "lane" | "track" | "opposite_lane" | "opposite_track" | "share_busway"
+                )
+            })
+        }) || tags.keys().any(|k| k.starts_with("cycleway:lanes"))
+            || yes(tags.get("bicycle_road")),
+        bus_lane: matches!(class.as_str(), "busway" | "bus_guideway")
+            || ["busway", "busway:left", "busway:right", "busway:both"]
+                .iter()
+                .any(|k| {
+                    tags.get(*k)
+                        .is_some_and(|v| v == "lane" || v == "opposite_lane")
+                })
+            || tags.keys().any(|k| {
+                k.starts_with("bus:lanes")
+                    || k.starts_with("lanes:bus")
+                    || k.starts_with("lanes:psv")
+            }),
+        separated: tags.get("mobsimlab:separated").is_some_and(|v| v == "yes"),
+        tram: match tags.get("mobsimlab:tram").map(String::as_str) {
+            Some("own_lane") => Some(TramShare::OwnLane),
+            Some("mixed") => Some(TramShare::Mixed),
+            _ => None,
+        },
+        setup: tags.get("mobsimlab:setup").is_some_and(|v| v == "yes"),
         coords,
     })
 }

@@ -28,8 +28,15 @@ pub struct Path {
     pub xy: Vec<(f64, f64)>,
     /// Length in metres.
     pub length_m: f64,
-    /// Running time in seconds at legal speed (no dwell, no traffic).
+    /// Running time in seconds: legal speed plus the expected delay in main-road traffic (no
+    /// dwell).
     pub time_s: f64,
+    /// Of `time_s`, the expected delay in main-road traffic, s ([`crate::setup`]).
+    pub traffic_delay_s: f64,
+    /// Length on main roads in the general traffic (no bus lane), m.
+    pub mixed_traffic_m: f64,
+    /// Length on main roads in a bus lane, m.
+    pub bus_lane_m: f64,
     /// Longest continuous stretch without overhead wire, in metres.
     pub max_off_wire_m: f64,
 }
@@ -53,7 +60,8 @@ const TURN_ROUND_MS: u64 = 30_000;
 /// Cost factor for BRT on bus lanes and busways (preference, not a ban elsewhere).
 const BRT_LANE_FACTOR: f64 = 0.7;
 
-fn arc_time_ms(g: &RoadGraph, arc: u32, v: &VehicleProfile) -> f64 {
+/// Purpose: free-flow running time on an arc, ms (BRT lane preference included).
+fn free_ms(g: &RoadGraph, arc: u32, v: &VehicleProfile) -> f64 {
     let a = &g.arcs[arc as usize];
     let speed = a.speed_kmh.min(v.max_speed_kmh) / 3.6;
     let factor = if v.mode == Mode::Brt && a.bus_lane {
@@ -62,6 +70,12 @@ fn arc_time_ms(g: &RoadGraph, arc: u32, v: &VehicleProfile) -> f64 {
         1.0
     };
     a.length_m / speed * 1000.0 * factor
+}
+
+/// Purpose: expected running time on an arc, ms: free flow plus the delay in main-road traffic,
+/// so routes avoid congested main roads where a bus lane runs alongside.
+fn arc_time_ms(g: &RoadGraph, arc: u32, v: &VehicleProfile) -> f64 {
+    free_ms(g, arc, v) * (1.0 + g.arcs[arc as usize].delay_share)
 }
 
 /// Purpose: time penalty for a turn by deflection angle, or `None` when the turn is illegal.
@@ -137,6 +151,7 @@ pub fn route(
 fn build_path(g: &RoadGraph, v: &VehicleProfile, arcs: &[u32], start: Anchor, end: Anchor) -> Path {
     let mut xy = vec![g.point_on_arc(start.arc, start.t)];
     let (mut length_m, mut time_ms, mut off, mut max_off) = (0.0, 0.0, 0.0f64, 0.0f64);
+    let (mut delay_ms, mut mixed_m, mut lane_m) = (0.0, 0.0, 0.0);
     for (i, &a) in arcs.iter().enumerate() {
         let t0 = if i == 0 { start.t } else { 0.0 };
         let t1 = if i == arcs.len() - 1 { end.t } else { 1.0 };
@@ -144,6 +159,15 @@ fn build_path(g: &RoadGraph, v: &VehicleProfile, arcs: &[u32], start: Anchor, en
         let len = g.arcs[a as usize].length_m * share;
         length_m += len;
         time_ms += arc_time_ms(g, a, v) * share;
+        let ga = &g.arcs[a as usize];
+        delay_ms += free_ms(g, a, v) * ga.delay_share * share;
+        if ga.main_road {
+            if ga.bus_lane {
+                lane_m += len;
+            } else {
+                mixed_m += len;
+            }
+        }
         if g.arcs[a as usize].wire {
             off = 0.0;
         } else {
@@ -160,6 +184,9 @@ fn build_path(g: &RoadGraph, v: &VehicleProfile, arcs: &[u32], start: Anchor, en
         xy,
         length_m,
         time_s: time_ms / 1000.0,
+        traffic_delay_s: delay_ms / 1000.0,
+        mixed_traffic_m: mixed_m,
+        bus_lane_m: lane_m,
         max_off_wire_m: max_off,
     }
 }
