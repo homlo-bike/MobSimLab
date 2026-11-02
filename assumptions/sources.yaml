@@ -192,6 +192,33 @@
   retrieved: 2026-10-27
   checked_via: none
 
+- id: uic-406
+  title: UIC Code 406, Capacity, 2nd edition (2013)
+  publisher: International Union of Railways (UIC)
+  url: https://shop.uic.org/
+  licence: © UIC; numbers cited as facts
+  access: paywalled
+  retrieved: 2026-11-01
+  checked_via: none
+
+- id: pachl-roc
+  title: J. Pachl, Railway Operation and Control, VTD Rail Publishing (blocking time theory, route setting, release and approach times)
+  publisher: VTD Rail Publishing
+  url: https://www.vtd-rail.com/
+  licence: © the author; numbers cited as facts
+  access: paywalled
+  retrieved: 2026-11-01
+  checked_via: none
+
+- id: ceder-2016
+  title: "Avishai Ceder, Public Transit Planning and Operation: Modeling, Practice and Behavior, 2nd edition, chapters 3–4 (frequency and headway determination)"
+  publisher: CRC Press
+  url: https://www.routledge.com/Public-Transit-Planning-and-Operation-Modeling-Practice-and-Behavior-Second-Edition/Ceder/p/book/9781466563919
+  licence: © Taylor & Francis; only numeric values are quoted
+  access: paywalled
+  retrieved: 2026-11-02
+  checked_via: none
+
 - id: tcqsm3
   title: TCRP Report 165, Transit Capacity and Quality of Service Manual, 3rd edition (2013)
   publisher: Transportation Research Board / National Academies Press
@@ -714,3 +741,21 @@
   retrieved: 2026-10-27
   checked_via: none
   note: Operator home page; the voltage was supplied by the vehicle catalogue (Stadler Citylink for Schiene Salzburg) and not read on the operator site.
+
+- id: moreno-2021
+  title: "Moreno, Allam, Chabaud, Gall, Pratlong: Introducing the “15-Minute City”: Sustainability, Resilience and Place Identity in Future Post-Pandemic Cities. Smart Cities 4(1), 93–111 (2021)"
+  publisher: MDPI
+  url: https://doi.org/10.3390/smartcities4010006
+  licence: CC BY 4.0
+  access: free
+  retrieved: 2026-11-02
+  checked_via: none
+
+- id: itdp-pnft
+  title: "ITDP, People Near Frequent Transit (share of people living within 500 m of transit running at least every 15 minutes)"
+  publisher: Institute for Transportation and Development Policy
+  url: https://www.itdp.org/rapid-transit-database/
+  licence: © ITDP; numbers cited as facts
+  access: free
+  retrieved: 2026-11-02
+  checked_via: none

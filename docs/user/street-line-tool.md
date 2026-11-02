@@ -39,6 +39,14 @@ Draw bus, BRT, trolleybus and intercity bus lines on the street network. The lay
 - One-way streets (with bus contra-flow lanes), turn bans, `maxheight`/`maxweight`/`maxlength`, barriers and access tags (`bus`, `psv`, `motor_vehicle`, `access`) are respected. City buses do not use motorways; intercity buses may. Guided busways are for BRT only, and BRT prefers bus lanes. Trolleybuses need overhead wire, or a battery range for the stretches without it.
 - **Show roads this vehicle may use** draws them in grey. Bus lanes are teal, and overhead wire is green.
 
+## Stop and station names
+
+- A new stop (a point you make a stop or end stop) or a new station that is within **150 m** of an existing stop or station takes its name: they are one stop or station for passengers. The street line tool uses the station distance under *Rules* (150 m by default); railway stations are measured to the platform, not the centre. This works across the tools, so a bus stop beside a railway station takes the station's name.
+- With nothing that close, the name comes from the map around it (within 500 m): a station or stop already on the map, a landmark, the district, a facility, a street corner ("A / B"), a main street, a street, then a local place name. The note at the bottom of the map says what the name came from.
+- Names are unique otherwise. If the best name is already used farther away, the next suggestion is used, or the name gets its district or street, "Market (Old Town)", or a number, "Market 2".
+- Renaming a stop or station renames the ones next to it too. A name already used farther away gets a number, and the note says so.
+- The 150 m default is the station grouping distance of [06-gis §9.3](../architecture/06-gis.md#93-stations-and-stops).
+
 ## Problems
 
 - **Orange leg:** turning round costs more than the detour limit (500 m by default) or 25 % of the direct distance, whichever is larger. Consider putting the end stop where the vehicle can turn: a bus station, turning loop, roundabout or a block it can drive round.

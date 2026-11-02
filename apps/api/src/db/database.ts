@@ -33,6 +33,7 @@ export interface DB {
     allowed_groups: ColumnType<string[], never, string[]>;
     setup_finished_at: Date | null;
     updated_at: Timestamp;
+    agent_registration: Generated<boolean>;
   };
   "iam.user": {
     id: Generated<string>;
@@ -75,6 +76,62 @@ export interface DB {
     group_value: string;
     instance_role: MappableRole;
     created_at: Generated<Date>;
+  };
+  "agent.client": {
+    id: string;
+    name: string;
+    redirect_uris: ColumnType<string[], string[], string[]>;
+    client_uri: string | null;
+    registered_by: "dynamic" | "admin";
+    created_at: Generated<Date>;
+    last_used_at: Date | null;
+  };
+  "agent.consent_request": {
+    id_hash: Buffer;
+    client_id: string;
+    redirect_uri: string;
+    scopes: ColumnType<string[], string[], string[]>;
+    code_challenge: string;
+    state: string | null;
+    resource: string;
+    expires_at: Date;
+  };
+  "agent.connection": {
+    id: Generated<string>;
+    user_id: string;
+    client_id: string | null;
+    kind: "oauth" | "pat";
+    name: string;
+    scopes: ColumnType<string[], string[], string[]>;
+    created_at: Generated<Date>;
+    last_used_at: Date | null;
+    expires_at: Date | null;
+    revoked_at: Date | null;
+  };
+  "agent.token": {
+    token_hash: Buffer;
+    connection_id: string;
+    kind: "code" | "access" | "refresh" | "pat";
+    redirect_uri: string | null;
+    code_challenge: string | null;
+    resource: string | null;
+    expires_at: Date;
+    used_at: Date | null;
+    created_at: Generated<Date>;
+  };
+  "agent.scenario": {
+    id: Generated<string>;
+    owner_id: string;
+    connection_id: string | null;
+    origin: "agent" | "user";
+    client_name: string | null;
+    name: string;
+    description: Generated<string>;
+    parent_id: string | null;
+    version: Generated<number>;
+    doc: ColumnType<unknown, string, string>;
+    created_at: Generated<Date>;
+    updated_at: Timestamp;
   };
   "audit.record": {
     id: Generated<string>;

@@ -10,12 +10,17 @@ import {
   autoLeads,
   deleteElement,
   emptyNetwork,
+  fallbackStationName,
   kindOf,
   newTrack,
+  stationPlaces,
   update,
   type LocalConnection,
 } from "./doc";
 import { loadRailEngine } from "./engine";
+import { basemapLabels, featuresFromLabels, preferTransitKind } from "../naming/labels";
+import { describeChoice, describeClash, nameForNewPlace, renamePlace } from "../naming/names";
+import { placesOtherThan, publishPlaces } from "../naming/registry";
 import {
   CONNECTION_LAYER,
   drawRail,
@@ -112,6 +117,7 @@ export function RailwayEditor({
   });
   const [flash, setFlash] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [note, setNote] = useState<string | null>(null);
 
   useEffect(() => {
     let alive = true;
@@ -283,6 +289,11 @@ export function RailwayEditor({
     if (map) map.getCanvas().style.cursor = tool === "pan" ? "grab" : tool === "select" ? "" : "crosshair";
   }, [map, tool]);
 
+  // Other tools see these stations, so a bus stop placed next to one takes its name.
+  useEffect(() => {
+    if (doc && view) publishPlaces("rail", stationPlaces(doc, view));
+  }, [doc, view]);
+
   const say = (m: string) => {
     setFlash(m);
     window.setTimeout(() => setFlash((f) => (f === m ? null : f)), 4000);
@@ -371,9 +382,21 @@ export function RailwayEditor({
       const at = e.toLocal(s.doc.origin, ll);
       const params = s.view?.params;
       if (s.tool === "station") {
+        // Next to an existing stop or station it is part of that one; otherwise named from the map.
+        const places = [...placesOtherThan("rail"), ...stationPlaces(s.doc, s.view)];
+        const choice = nameForNewPlace(ll, {
+          places,
+          features: preferTransitKind(featuresFromLabels(basemapLabels(map, ll), ll), "rail"),
+          fallback: fallbackStationName(
+            s.doc,
+            places.map((p) => p.name),
+          ),
+        });
+        setNote(describeChoice(choice, "station"));
         const [d, id] = addStation(s.doc, at, {
           ...s.stationOpts,
           platformLength: params?.platform_length_m ?? 120,
+          name: choice.name,
         });
         setDoc(d);
         setSel({ id });
@@ -790,6 +813,14 @@ export function RailwayEditor({
       setDraft(null);
       setTool("station");
     },
+    renameStation: (id: number, name: string) => {
+      if (!doc || !name.trim()) return;
+      const r = renamePlace(`rail:${id}`, name, [...placesOtherThan("rail"), ...stationPlaces(doc, view)]);
+      const members = new Set(r.members.filter((m) => m.startsWith("rail:")).map((m) => Number(m.slice(5))));
+      members.add(id);
+      setDoc({ ...doc, stations: doc.stations.map((s) => (members.has(s.id) ? { ...s, name: r.name } : s)) });
+      setNote(describeClash(r));
+    },
     showIssue: (at: LonLat | null, ref: number | null) => {
       if (ref) setSel({ id: ref });
       if (at && map) map.easeTo({ center: at, zoom: Math.max(map.getZoom(), 16) });
@@ -843,6 +874,11 @@ export function RailwayEditor({
             style={{ background: flash ? COLORS.error : "#0f172ad9" }}
           >
             {flash ?? "Starting the railway engine…"}
+          </p>
+        )}
+        {note && (
+          <p className="rounded-full bg-blue-700 px-3 py-1 text-white" role="status">
+            {note}
           </p>
         )}
         <p className="rounded-full bg-white/95 px-3 py-1 text-slate-700 shadow" role="note">

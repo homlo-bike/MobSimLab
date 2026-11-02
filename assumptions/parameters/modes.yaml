@@ -693,6 +693,103 @@
       check: unverified
       rationale: Station is usually reached by other modes; walking catchment only bounds the walk-only share.
 
+- key: mode.stop_spacing_m
+  label: Distance between consecutive stops or stations along a line (guidance range)
+  group: Modes
+  unit: m
+  used_by: [stop spacing analysis, agent tools]
+  values:
+    - context:
+        mode: "*"
+      low: 300
+      central: 500
+      high: 1000
+      basis: documented
+      sources: [tcqsm3]
+      check: unverified
+      rationale: "Wide fallback between bus and rail practice; TCQSM discusses stop spacing as a trade-off between walk access and running time."
+    - context:
+        mode: [bus, trolleybus]
+      low: 250
+      central: 400
+      high: 600
+      basis: cited
+      sources: [tcqsm3]
+      check: unverified
+      rationale: "TCQSM: urban bus stops commonly 1/8–1/4 mile (200–400 m) apart in North America; European practice is closer to 300–500 m. Below about 250 m the time lost to stopping outweighs the shorter walk."
+    - context:
+        mode: brt
+      low: 400
+      central: 800
+      high: 1200
+      basis: documented
+      sources: [tcqsm3, mobsimlab-derivation]
+      check: unverified
+      rationale: Stations are spaced wider than local stops to keep the running speed up; between bus and light rail values.
+    - context:
+        mode: intercity_bus
+      low: 2000
+      central: 10000
+      high: 50000
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: Few stops per town; spacing is set by the towns served rather than by walk access.
+    - context:
+        mode: tram
+      low: 300
+      central: 500
+      high: 800
+      basis: documented
+      sources: [tcqsm3, vuchic-2007]
+      check: unverified
+      rationale: Street-running trams stop about as often as buses, a little wider where they run on their own right of way.
+    - context:
+        mode: light_rail
+      low: 500
+      central: 1000
+      high: 2000
+      basis: documented
+      sources: [tcqsm3, vuchic-2007]
+      check: unverified
+      rationale: Light rail station spacing grows with the share of segregated right of way (Vuchic, category B).
+    - context:
+        mode: metro
+      low: 700
+      central: 1000
+      high: 2000
+      basis: documented
+      sources: [vuchic-2007]
+      check: unverified
+      rationale: Metro stations about 0.8–1.5 km apart in city centres and wider in outer areas.
+    - context:
+        mode: commuter_rail
+      low: 1500
+      central: 3000
+      high: 6000
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: Suburban stations a few kilometres apart; tighter in the core.
+    - context:
+        mode: regional_rail
+      low: 3000
+      central: 6000
+      high: 15000
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: One station per village or town on the line.
+    - context:
+        mode: [long_distance_rail, high_speed_rail]
+      low: 20000
+      central: 60000
+      high: 200000
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: Stops at cities only; spacing set by the settlement pattern.
+
 - key: mode.right_of_way
   label: Structure and right of way (category A, B or C)
   group: Modes

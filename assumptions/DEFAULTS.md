@@ -16,6 +16,7 @@ Schema and contribution rules: [README.md](README.md).
 - [Modes](#modes)
 - [Operations](#operations)
 - [Demand](#demand)
+- [Analysis](#analysis)
 - [Simulation](#simulation)
 - [Infrastructure standards](#infrastructure-standards)
 - [Accessibility](#accessibility)
@@ -39,6 +40,7 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 | Standing places, passengers per square metre of standing area (persons/m²) | 4 | 4 | 4 | 0 | 4 | 4 | 4 | 4 | 2 | 0 | 0 |
 | Vehicle and line colour (default) (hex colour) | #8E3A8C | #C2185B | #6A8E23 | #7B5E3B | #D32F2F | #E65100 | #1565C0 | #2E7D32 | #546E7A | #37474F | #212121 |
 | Catchment, walking distance to a stop (m) | 400 | 600 | 400 | 1500 | 500 | 800 | 800 | 1000 | 2000 | 2000 | 2000 |
+| Distance between consecutive stops or stations along a line (guidance range) (m) | 400 | 800 | 400 | 10000 | 500 | 1000 | 1000 | 3000 | 6000 | 60000 | 60000 |
 | Structure and right of way (category A, B or C) (category) | C | B | C | C | C | B | A | A | A | A | A |
 | Platform height above rail (rail) or kerb height above road (road modes) (mm) | 180 | 300 | 180 | 160 | 250 | 350 | 1000 | 960 | 760 | 760 | 760 |
 | Platform length (usable) (m) | 20 | 60 | 20 | 20 | 45 | 90 | 120 | 210 | 170 | 400 | 400 |
@@ -181,6 +183,23 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 | light_rail, metro | 500 | 800 | 1000 | cited | unverified | [tcqsm3](#src-tcqsm3) | 1/2 mile. |
 | commuter_rail | 800 | 1000 | 2000 | documented | unverified | [tcqsm3](#src-tcqsm3) | Longer access trips, bike and park-and-ride. |
 | regional_rail, long_distance_rail, high_speed_rail | 1000 | 2000 | 5000 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Station is usually reached by other modes; walking catchment only bounds the walk-only share. |
+
+### Distance between consecutive stops or stations along a line (guidance range)
+
+`mode.stop_spacing_m` · unit: m · used by: stop spacing analysis, agent tools
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 300 | 500 | 1000 | documented | unverified | [tcqsm3](#src-tcqsm3) | Wide fallback between bus and rail practice; TCQSM discusses stop spacing as a trade-off between walk access and running time. |
+| bus, trolleybus | 250 | 400 | 600 | cited | unverified | [tcqsm3](#src-tcqsm3) | TCQSM: urban bus stops commonly 1/8–1/4 mile (200–400 m) apart in North America; European practice is closer to 300–500 m. Below about 250 m the time lost to stopping outweighs the shorter walk. |
+| brt | 400 | 800 | 1200 | documented | unverified | [tcqsm3](#src-tcqsm3), [mobsimlab-derivation](#src-mobsimlab-derivation) | Stations are spaced wider than local stops to keep the running speed up; between bus and light rail values. |
+| intercity_bus | 2000 | 10000 | 50000 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Few stops per town; spacing is set by the towns served rather than by walk access. |
+| tram | 300 | 500 | 800 | documented | unverified | [tcqsm3](#src-tcqsm3), [vuchic-2007](#src-vuchic-2007) | Street-running trams stop about as often as buses, a little wider where they run on their own right of way. |
+| light_rail | 500 | 1000 | 2000 | documented | unverified | [tcqsm3](#src-tcqsm3), [vuchic-2007](#src-vuchic-2007) | Light rail station spacing grows with the share of segregated right of way (Vuchic, category B). |
+| metro | 700 | 1000 | 2000 | documented | unverified | [vuchic-2007](#src-vuchic-2007) | Metro stations about 0.8–1.5 km apart in city centres and wider in outer areas. |
+| commuter_rail | 1500 | 3000 | 6000 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Suburban stations a few kilometres apart; tighter in the core. |
+| regional_rail | 3000 | 6000 | 15000 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | One station per village or town on the line. |
+| long_distance_rail, high_speed_rail | 20000 | 60000 | 200000 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Stops at cities only; spacing set by the settlement pattern. |
 
 ### Structure and right of way (category A, B or C)
 
@@ -410,6 +429,82 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 | traction: battery | 0.1 | 0.2 | 0.3 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Operators plan against the usable state-of-charge window and keep a reserve for diversions, traffic and battery ageing; 20 % of nominal is a common planning figure. |
 | traction: diesel, hydrogen, cng | 0.1 | 0.15 | 0.25 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Fuel reserve for disruption. |
 
+### Minimum buffer time between the blocking times of two trains on one section
+
+`timetable.min_buffer_s` · unit: s · used by: timetable construction, conflict detection, capacity
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 30 | 60 | 120 | educated-guess | unverified | [uic-406](#src-uic-406), [mobsimlab-derivation](#src-mobsimlab-derivation) | Buffer times absorb small delays so they do not spread to the next train (UIC 406 stability). National practice differs; one minute is a common planning value on mainlines. |
+| metro, tram, light_rail | 10 | 20 | 40 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Short headways on metro and light rail leave little room; 20 s keeps a 2-minute headway feasible. |
+
+### Planned load at the maximum load point, as a share of the train's capacity
+
+`timetable.target_load_factor` · unit: share · used by: frequency suggestion, train length
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.7 | 0.8 | 1.0 | documented | unverified | [ceder-2016](#src-ceder-2016), [tcqsm3](#src-tcqsm3) | Ceder's maximum load point method sets the frequency so that the peak hour load at the busiest link stays at a desired occupancy; capacity counts standees at the planning density, so values near 0.8 leave room for uneven loading between trains. |
+
+### Longest headway allowed in the peak, whatever the demand
+
+`timetable.policy_headway_peak_min` · unit: min · used by: frequency suggestion
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 10 | 15 | 30 | documented | unverified | [ceder-2016](#src-ceder-2016), [tcqsm3](#src-tcqsm3) | Policy headway (Ceder: minimum frequency standard). Planners set it per mode; 15 min is a common urban floor. |
+| metro, light_rail, tram | 3 | 5 | 10 | educated-guess | unverified | [tcqsm3](#src-tcqsm3), [mobsimlab-derivation](#src-mobsimlab-derivation) | Urban rail usually runs every 2–5 min in the peak so passengers need no timetable. |
+
+### Longest headway allowed off-peak, whatever the demand
+
+`timetable.policy_headway_offpeak_min` · unit: min · used by: frequency suggestion
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 15 | 30 | 60 | documented | unverified | [ceder-2016](#src-ceder-2016), [tcqsm3](#src-tcqsm3) | Common off-peak minimum frequency standard; 60 min on rural and regional services. |
+| metro, light_rail, tram | 5 | 10 | 15 | educated-guess | unverified | [tcqsm3](#src-tcqsm3), [mobsimlab-derivation](#src-mobsimlab-derivation) | Urban rail commonly keeps a 10 min off-peak service. |
+
+### Least time between an arrival and a departure crossing in a terminal throat
+
+`timetable.terminal_separation_s` · unit: s · used by: timetable construction (return offset)
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 60 | 90 | 180 | educated-guess | unverified | [pachl-roc](#src-pachl-roc), [mobsimlab-derivation](#src-mobsimlab-derivation) | The periodic pattern keeps conflicting moves in the throat apart by at least the route setting, approach and clearing time; 90 s fits the example metro terminal. |
+
+### Door opening and closing time within a dwell
+
+`dwell.door_open_close_s` · unit: s · used by: dwell model
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 2 | 5 | 10 | documented | unverified | [tcqsm3](#src-tcqsm3) | TCQSM: door opening and closing take about 2–5 s, plus the warning before closing. |
+
+### Boarding time per passenger per door channel
+
+`dwell.board_s_per_pax` · unit: s · used by: dwell model
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 1.0 | 1.5 | 2.5 | documented | unverified | [tcqsm3](#src-tcqsm3) | TCQSM gives passenger service times for level, wide doors of about 1–2 s per passenger per channel; steps and fare payment raise them. |
+
+### Alighting time per passenger per door channel
+
+`dwell.alight_s_per_pax` · unit: s · used by: dwell model
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.8 | 1.2 | 2.0 | documented | unverified | [tcqsm3](#src-tcqsm3) | TCQSM: alighting is somewhat quicker than boarding. |
+
+### Recommended capacity consumption limit in the peak hour (UIC 406)
+
+`capacity.occupancy_limit_share` · unit: share · used by: capacity report, maximum capacity
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.6 | 0.75 | 0.85 | cited | unverified | [uic-406](#src-uic-406) | UIC 406 recommends about 75 % in the peak hour on mixed-traffic lines and 60 % daily; values to be checked against the current edition. |
+| metro, commuter_rail | 0.75 | 0.85 | 0.9 | cited | unverified | [uic-406](#src-uic-406) | UIC 406: dedicated suburban passenger traffic about 85 % in the peak hour. |
+
 ## Demand
 
 ### Walking speed for walking links between stations
@@ -419,6 +514,56 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 | Context | Low | Central | High | Basis | Check | Sources | Rationale |
 |---|---|---|---|---|---|---|---|
 | all | 3.8 | 4.5 | 5.4 | cited | unverified | [mutcd-2009](#src-mutcd-2009), [hcm7](#src-hcm7) | MUTCD uses 3.5 ft/s (≈ 3.8 km/h) for slow pedestrians at crossings; typical free walking is about 1.25 m/s (4.5 km/h); HCM free-flow up to about 1.5 m/s (5.4 km/h). |
+
+### Journey planner: walking distance over straight-line distance
+
+`journey.walk_detour_factor` · unit: ratio · used by: journey planner access, egress and transfer walks
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 1.2 | 1.3 | 1.5 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Stand-in until walks are routed on the walk graph: street networks make a walk roughly 20–50 % longer than the straight line (lower in dense grids, higher with rivers, rail lines and cul-de-sacs). 1.3 is the planning value used by the journey planner (ADR-0034); replace with a cited circuity study. |
+
+### Journey planner: minimum time to change vehicles at the same stop
+
+`journey.min_change_s` · unit: s · used by: journey planner transfers
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0 | 60 | 180 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Alighting, finding the next vehicle and boarding at one stop or one platform. 0 for cross-platform timed connections (those come from the published timetable as transfer_type 1); 60 s as a cautious default. |
+
+### Journey planner: added time to change platform within one station (stairs, lifts)
+
+`journey.level_change_s` · unit: s · used by: journey planner transfers, estimated platform-to-platform times
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 30 | 60 | 180 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Added to the straight-line walk between two platforms of one station until rail-model provides platform-to-platform times from the station layout (ADR-0032, 06 §9.3). About one flight of stairs or a lift ride; deep metro stations need the high value. |
+
+## Analysis
+
+### Walk rule: largest walk to the nearest stop or station, in minutes (headline coverage figure)
+
+`analysis.walk_rule_minutes` · unit: min · used by: walk coverage report, agent tools, coverage map layer
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 10 | 15 | 20 | documented | unverified | [moreno-2021](#src-moreno-2021), [mobsimlab-derivation](#src-mobsimlab-derivation) | Product owner rule (2026-11-01): a 15-minute walk to the nearest stop or station is the headline figure, following the 15-minute city idea of Moreno et al. (2021). About 1.1 km at the central 4.5 km/h walking speed, measured on the street network. 10 and 20 min are the usual sensitivity values. |
+
+### Frequent service: longest headway for a stop to count in the frequent-only coverage
+
+`analysis.frequent_headway_min` · unit: min · used by: frequent-only walk coverage
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 10 | 15 | 20 | cited | unverified | [itdp-pnft](#src-itdp-pnft), [tcqsm3](#src-tcqsm3) | ITDP People Near Frequent Transit counts stops served at least every 15 minutes; TCQSM frequency levels of service put 10–14 min and 15–20 min headways at the boundary where passengers stop consulting a timetable. |
+
+### Average wait at a signalised pedestrian crossing
+
+`walk.crossing_delay_s` · unit: s · used by: walk coverage, walk catchments
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 10 | 20 | 40 | documented | unverified | [hcm7](#src-hcm7) | HCM average pedestrian delay at a signalised crossing d = (C − g)² / (2C). C = 90 s with a 30 s walk interval gives 20 s; a 60 s cycle with 25 s walk gives about 10 s; a 120 s cycle with 20 s walk gives about 42 s. |
 
 ## Simulation
 
@@ -481,6 +626,39 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 | Context | Low | Central | High | Basis | Check | Sources | Rationale |
 |---|---|---|---|---|---|---|---|
 | all | 100 | 200 | 200 | cited | unverified | [db-ril-819](#src-db-ril-819) | DB Ril 819.0202: standard overlap 200 m above 60 km/h. Clause to be checked. |
+
+### Route setting time before switch throwing (electronic interlocking)
+
+`signalling.route_setting_s` · unit: s · used by: blocking times, route setting
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 2 | 3 | 10 | documented | unverified | [pachl-roc](#src-pachl-roc) | Blocking time component 'route formation': a few seconds for electronic interlockings, longer for relay interlockings; the switch throw time from the switch catalogue is added on top. |
+
+### Driver sight and reaction time at the approach point
+
+`signalling.sight_reaction_s` · unit: s · used by: blocking times
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 6 | 12 | 18 | documented | unverified | [pachl-roc](#src-pachl-roc) | Blocking time component 'sight and reaction': the time the driver needs to see the aspect at the distant signal or sighting point and react; about 0.2 min is the usual planning value. |
+
+### Route release time after the train has cleared a section
+
+`signalling.release_s` · unit: s · used by: blocking times, sectional release
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 1 | 3 | 10 | documented | unverified | [pachl-roc](#src-pachl-roc) | Blocking time component 'release': short for electronic interlockings with axle counters or track circuits; longer for manual or relay release. |
+
+### Sighting distance added to the braking distance for the approach
+
+`signalling.sighting_m` · unit: m · used by: blocking times
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 50 | 150 | 300 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Distance a driver needs to read a signal aspect before the braking point; lineside signals are typically readable for 10–15 s at line speed. Cab signalling (ETCS L2, CBTC) can set it to 0. |
+| metro, tram, light_rail | 0 | 50 | 150 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Lower speeds and short blocks; CBTC lines use 0. |
 
 ## Infrastructure standards
 
@@ -1050,6 +1228,9 @@ and rationale per attribute: [`switches.yaml`](switches.yaml); geometry model:
 | <a id="src-en-15663"></a>`en-15663` | [EN 15663:2017+A1:2018 Railway applications — Vehicle reference masses (standing passenger densities by service type)](https://standards.cencenelec.eu/) | paywalled | © CEN; numbers cited as facts | 2026-10-27 | none |
 | <a id="src-en-50163"></a>`en-50163` | [EN 50163:2004+A1:2007 Railway applications — Supply voltages of traction systems](https://standards.cencenelec.eu/) | paywalled | © CENELEC; numbers cited as facts | 2026-10-27 | none |
 | <a id="src-uic-451-1"></a>`uic-451-1` | [UIC Leaflet 451-1, Timetable recovery margins to guarantee timekeeping — Recovery margins](https://shop.uic.org/) | paywalled | © UIC; numbers cited as facts | 2026-10-27 | none |
+| <a id="src-uic-406"></a>`uic-406` | [UIC Code 406, Capacity, 2nd edition (2013)](https://shop.uic.org/) | paywalled | © UIC; numbers cited as facts | 2026-11-01 | none |
+| <a id="src-pachl-roc"></a>`pachl-roc` | [J. Pachl, Railway Operation and Control, VTD Rail Publishing (blocking time theory, route setting, release and approach times)](https://www.vtd-rail.com/) | paywalled | © the author; numbers cited as facts | 2026-11-01 | none |
+| <a id="src-ceder-2016"></a>`ceder-2016` | [Avishai Ceder, Public Transit Planning and Operation: Modeling, Practice and Behavior, 2nd edition, chapters 3–4 (frequency and headway determination)](https://www.routledge.com/Public-Transit-Planning-and-Operation-Modeling-Practice-and-Behavior-Second-Edition/Ceder/p/book/9781466563919) | paywalled | © Taylor & Francis; only numeric values are quoted | 2026-11-02 | none |
 | <a id="src-tcqsm3"></a>`tcqsm3` | [TCRP Report 165, Transit Capacity and Quality of Service Manual, 3rd edition (2013)](https://nap.nationalacademies.org/catalog/24766) | free | © National Academy of Sciences; free to read; numbers cited as facts | 2026-10-27 | none |
 | <a id="src-fta-c9030"></a>`fta-c9030` | [FTA Circular 9030.1E, Urbanized Area Formula Program — spare ratio guideline (spares ≤ 20 % of vehicles in maximum service for fleets of 50 or more)](https://www.transit.dot.gov/regulations-and-guidance/fta-circulars/urbanized-area-formula-program-program-guidance-and) | free | US Government work, public domain | 2026-10-27 | search-snippet |
 | <a id="src-tcrp-spare-ratio"></a>`tcrp-spare-ratio` | [TCRP Synthesis / National Academies chapter on bus spare ratios quoting FTA Circular 9030.1C ch. V para 9.a.5](https://nap.nationalacademies.org/read/22409/chapter/2) | free | © National Academy of Sciences; free to read | 2026-10-27 | search-snippet |
@@ -1106,3 +1287,5 @@ and rationale per attribute: [`switches.yaml`](switches.yaml); geometry model:
 | <a id="src-krakow-tram-switches"></a>`krakow-tram-switches` | [Kraków tramway (MPK / ZDMK) turnout specification (switches with shallow-groove crossings 15 km/h; R = 50 m switches with deep-groove crossings 25 km/h)](https://plikimpi.krakow.pl/pliki/339992) | free | Public procurement document; numbers cited as facts | 2026-10-27 | search-snippet |
 | <a id="src-voestalpine-tram-train-hu"></a>`voestalpine-tram-train-hu` | [voestalpine, first Hungarian tram-train project (turnouts R = 200 m and R = 300 m for 40 km/h diverging)](https://voestalpine.com/railway-systems/en/company/news/first-hungarian-tram-train-project) | free | © voestalpine; numbers cited as facts | 2026-10-27 | search-snippet |
 | <a id="src-salzburger-lokalbahn"></a>`salzburger-lokalbahn` | [Salzburger Lokalbahn (Salzburg AG / Schiene Salzburg), line electrified at 1000 V DC](https://www.salzburg-ag.at/) | free | © Salzburg AG; numbers cited as facts | 2026-10-27 | none |
+| <a id="src-moreno-2021"></a>`moreno-2021` | [Moreno, Allam, Chabaud, Gall, Pratlong: Introducing the “15-Minute City”: Sustainability, Resilience and Place Identity in Future Post-Pandemic Cities. Smart Cities 4(1), 93–111 (2021)](https://doi.org/10.3390/smartcities4010006) | free | CC BY 4.0 | 2026-11-02 | none |
+| <a id="src-itdp-pnft"></a>`itdp-pnft` | [ITDP, People Near Frequent Transit (share of people living within 500 m of transit running at least every 15 minutes)](https://www.itdp.org/rapid-transit-database/) | free | © ITDP; numbers cited as facts | 2026-11-02 | none |
