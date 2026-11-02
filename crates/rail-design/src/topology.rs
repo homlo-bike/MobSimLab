@@ -195,6 +195,27 @@ pub struct SwitchOut {
     pub radius_m: f64,
     /// Crossing ratio 1:n.
     pub crossing_ratio_n: f64,
+    /// Fouling points: for each section attached at one of its switch points, where a train on
+    /// it stands clear of the switch's other routes (clearance marker). Detection and
+    /// reservation of the switch need only the part of each section up to this point.
+    pub fouling_points: Vec<FoulingPoint>,
+}
+
+/// Where a section leaving a switch point is clear of the switch's other routes: the track
+/// centres there are the clearance marker distance apart.
+#[derive(Debug, Clone, Serialize)]
+pub struct FoulingPoint {
+    /// Switch point node.
+    pub node: String,
+    /// Section attached at that node.
+    pub section: String,
+    /// Distance from the node along the section, and on through joins if the point lies beyond
+    /// the section's end, m.
+    pub distance_m: f64,
+    /// Section the fouling point lies on (`section`, or one joined to it beyond its end).
+    pub at_section: String,
+    /// Offset of the fouling point from that section's `from` end, m.
+    pub at_offset_m: f64,
 }
 
 /// A platform edge.
@@ -396,6 +417,70 @@ fn ranges<T: Clone + PartialEq>(span: [f64; 2], items: &[(f64, f64, T)]) -> Vec<
         });
     }
     out
+}
+
+/// How far a fouling point is searched along a route from a switch point, m.
+const FOULING_SEARCH_M: f64 = 400.0;
+
+/// Purpose: shortest distance from a point to a polyline.
+fn dist_to_polyline(q: P2, pts: &[P2]) -> f64 {
+    pts.windows(2)
+        .map(|w| {
+            let (a, b) = (w[0], w[1]);
+            let ab = b.sub(a);
+            let l2 = ab.dot(ab);
+            let t = if l2 < 1e-12 {
+                0.0
+            } else {
+                (q.sub(a).dot(ab) / l2).clamp(0.0, 1.0)
+            };
+            q.dist(a.add(ab.mul(t)))
+        })
+        .fold(f64::INFINITY, f64::min)
+}
+
+/// A section on a walked route: (segment, distance where the route enters it, walked from the
+/// segment's `to` end, length).
+type Piece = (usize, f64, bool, f64);
+
+/// A route walked from a node: its points and the sections it passes.
+struct Walk {
+    pts: Vec<P2>,
+    pieces: Vec<Piece>,
+}
+
+/// Purpose: walk away from a node into section end `start` and on through joins (nodes with
+/// two ends that a train passes), up to `max` metres.
+fn walk(
+    segs: &[Seg],
+    start: (usize, usize),
+    next_at: &BTreeMap<(usize, usize), (usize, usize)>,
+    max: f64,
+) -> Walk {
+    let (mut pts, mut pieces): (Vec<P2>, Vec<Piece>) = (vec![], vec![]);
+    let (mut cur, mut acc) = (start, 0.0);
+    loop {
+        let s = &segs[cur.0];
+        let mut p: Vec<P2> = s.pts.iter().map(|q| q.p).collect();
+        let rev = cur.1 == 1;
+        if rev {
+            p.reverse();
+        }
+        let l = length(&s.pts);
+        pieces.push((cur.0, acc, rev, l));
+        if pts.is_empty() {
+            pts = p;
+        } else {
+            pts.extend(p.into_iter().skip(1));
+        }
+        acc += l;
+        let far = (cur.0, 1 - cur.1);
+        match next_at.get(&far) {
+            Some(n) if acc < max && !pieces.iter().any(|x| x.0 == n.0) => cur = *n,
+            _ => break,
+        }
+    }
+    Walk { pts, pieces }
 }
 
 /// Purpose: the topology of a built design (pure).
@@ -740,6 +825,76 @@ pub fn topology(dz: &Design) -> Topology {
         });
     }
 
+    // Joins a train runs straight through: the other end at a node with exactly two ends.
+    let mut next_at: BTreeMap<(usize, usize), (usize, usize)> = BTreeMap::new();
+    for n in nodes.iter().filter(|n| n.2.len() == 2) {
+        let (a, b) = (n.2[0], n.2[1]);
+        if adj.get(&a.0).is_some_and(|v| v.contains(&b.0)) {
+            next_at.insert(a, b);
+            next_at.insert(b, a);
+        }
+    }
+    // Fouling points: along each section leaving a switch point, the last place within the
+    // clearance marker distance of the switch point's other routes.
+    let fouling_of = |sw: &crate::switch::SwitchGeo| -> Vec<FoulingPoint> {
+        let cm = dz.track_params(sw.track).clearance_marker_m;
+        let prefix = format!("w{}.", sw.id);
+        let mut out = Vec::new();
+        for n in nodes
+            .iter()
+            .filter(|n| n.2.len() > 2 && n.0.starts_with(&prefix) && !n.0.contains(".p"))
+        {
+            let walks: Vec<Walk> =
+                n.2.iter()
+                    .map(|e| walk(&segs, *e, &next_at, FOULING_SEARCH_M))
+                    .collect();
+            // Routes a train passes from one into the other are the same track, not a
+            // conflict: the approach to a switch point fouls neither of its legs.
+            let dirs: Vec<P2> =
+                n.2.iter()
+                    .map(|e| outward(&segs[e.0].pts, e.1 == 0))
+                    .collect();
+            let through: Vec<Vec<bool>> = dirs
+                .iter()
+                .map(|a| dirs.iter().map(|b| a.dot(*b) < -0.5).collect())
+                .collect();
+            for (i, w) in walks.iter().enumerate() {
+                let (mut d, mut last, step) = (0.0, 0.0, 0.5);
+                let line = with_headings(&w.pts);
+                let total = length(&line);
+                while d <= total {
+                    let q = crate::geom::at_s(&line, d).p;
+                    let near = walks
+                        .iter()
+                        .enumerate()
+                        .filter(|(j, _)| *j != i && !through[i][*j])
+                        .map(|(_, o)| dist_to_polyline(q, &o.pts))
+                        .fold(f64::INFINITY, f64::min);
+                    if near < cm - 1e-6 {
+                        last = d;
+                    }
+                    d += step;
+                }
+                let at = w
+                    .pieces
+                    .iter()
+                    .rev()
+                    .find(|p| p.1 <= last + 1e-9)
+                    .copied()
+                    .unwrap_or(w.pieces[0]);
+                let local = (last - at.1).min(at.3);
+                out.push(FoulingPoint {
+                    node: n.0.clone(),
+                    section: segs[n.2[i].0].id.clone(),
+                    distance_m: rd(last),
+                    at_section: segs[at.0].id.clone(),
+                    at_offset_m: rd(if at.2 { at.3 - local } else { local }),
+                });
+            }
+        }
+        out
+    };
+
     // Line sections of a track over a chainage range.
     let over = |track: u32, a: f64, b: f64| -> Vec<String> {
         segs.iter()
@@ -775,6 +930,7 @@ pub fn topology(dz: &Design) -> Topology {
                 diverging_speed_kmh: sw.turnout.diverging_kmh,
                 radius_m: rd(sw.turnout.radius),
                 crossing_ratio_n: sw.turnout.n,
+                fouling_points: fouling_of(sw),
             }
         })
         .collect();
@@ -965,6 +1121,25 @@ mod tests {
             assert!(tr.fouling_before_m > 3.0 && tr.fouling_after_m > 3.0);
             assert_eq!(tr.sections.len(), 2, "both lines of the double track");
         }
+    }
+
+    #[test]
+    fn switches_give_fouling_points_short_of_the_whole_line_section() {
+        let t = topology(&build(&sample(RailMode::RegionalRail, 7.0, 50.9), None));
+        let sw = t.switches.iter().find(|s| s.id == 5).unwrap();
+        let get = |sec: &str| sw.fouling_points.iter().find(|f| f.section == sec).unwrap();
+        // The approach to the switch point is the same track as both routes: no fouling.
+        assert_eq!(get("t3.0.1").distance_m, 0.0);
+        // A 1:9 turnout with a = 12.2 m: the routes are 3.5 m apart about a + 3.5 · 9 ≈ 44 m
+        // from the switch point (a little more, because the diverging track starts curved).
+        for sec in ["t3.0.2", "w5.0"] {
+            let f = get(sec);
+            assert!(f.distance_m > 43.0 && f.distance_m < 55.0, "{sec}: {f:?}");
+        }
+        // The leg is shorter than that, so its fouling point lies on the siding beyond it.
+        assert_eq!(get("w5.0").at_section, "t6.0.0");
+        let main = t.sections.iter().find(|s| s.id == "t3.0.2").unwrap();
+        assert!(get("t3.0.2").distance_m < main.length_m / 10.0);
     }
 
     #[test]

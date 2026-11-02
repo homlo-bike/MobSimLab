@@ -39,7 +39,20 @@ def graph_errors(t: dict) -> list[str]:
                     f"link at {link['node']}: {e['section']} {e['end']} is at {s[e['end']]}"
                 )
     refs = [
-        (f"switch {w['id']}", w["legs"] + w["conflict_sections"]) for w in t["switches"]
+        (
+            f"switch {w['id']}",
+            w["legs"]
+            + w["conflict_sections"]
+            + [x for f in w["fouling_points"] for x in (f["section"], f["at_section"])],
+        )
+        for w in t["switches"]
+    ]
+    node_ids = {n["id"] for n in t["nodes"]}
+    errs += [
+        f"switch {w['id']}: fouling point at unknown node {f['node']}"
+        for w in t["switches"]
+        for f in w["fouling_points"]
+        if f["node"] not in node_ids
     ]
     refs += [(f"platform edge {p['id']}", [p["section"]]) for p in t["platform_edges"]]
     refs += [

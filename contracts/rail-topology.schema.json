@@ -226,7 +226,8 @@
         "conflict_sections",
         "diverging_speed_kmh",
         "radius_m",
-        "crossing_ratio_n"
+        "crossing_ratio_n",
+        "fouling_points"
       ],
       "properties": {
         "id": { "type": "integer", "minimum": 1 },
@@ -244,7 +245,27 @@
         },
         "diverging_speed_kmh": { "type": "number", "exclusiveMinimum": 0 },
         "radius_m": { "type": "number", "exclusiveMinimum": 0 },
-        "crossing_ratio_n": { "type": "number", "exclusiveMinimum": 0 }
+        "crossing_ratio_n": { "type": "number", "exclusiveMinimum": 0 },
+        "fouling_points": {
+          "description": "For each section attached at a switch point: where a train on it is clear of the switch's other routes (track centres at the clearance marker distance). Routes a train passes from one into the other (the approach and either leg) do not foul each other, so the approach gets 0. Detection and reservation of the switch need each section only up to this point.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/fouling_point" }
+        }
+      }
+    },
+    "fouling_point": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["node", "section", "distance_m", "at_section", "at_offset_m"],
+      "properties": {
+        "node": { "$ref": "#/$defs/node_id" },
+        "section": { "$ref": "#/$defs/section_id" },
+        "distance_m": {
+          "$ref": "#/$defs/metres",
+          "description": "From the node along the section, and on through joins when the point lies beyond the section's end."
+        },
+        "at_section": { "$ref": "#/$defs/section_id", "description": "Section the fouling point lies on." },
+        "at_offset_m": { "$ref": "#/$defs/metres", "description": "Offset from that section's `from` end." }
       }
     },
     "platform_edge": {
