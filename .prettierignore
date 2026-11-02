@@ -11,3 +11,5 @@ tools
 .github
 vehicles
 apps/web/src/wasm
+apps/api/wasm
+apps/api/src/agents/defaults.json

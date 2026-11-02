@@ -19,11 +19,11 @@
 
 ## 2. Actors
 
-Anonymous internet user · authenticated low-privilege user (Viewer/Restricted) · malicious project collaborator · compromised IdP account · malicious or compromised external provider · malicious uploaded file author · malicious contributor (supply chain) · operator with host access (trusted).
+Anonymous internet user · authenticated low-privilege user (Viewer/Restricted) · malicious project collaborator · compromised IdP account · malicious or compromised external provider · malicious uploaded file author · malicious contributor (supply chain) · operator with host access (trusted) · AI agent acting for a user through MCP (ADR-0035): follows instructions from content it reads, so treat it as able to misuse whatever its user granted.
 
 ## 3. Data flow and trust boundaries
 
-See the diagram in [05 §2](../architecture/05-security-users.md#2-trust-boundaries). Boundaries: TB1 browser→API, TB2 API↔IdP, TB3 API→external providers, TB4 API↔DB, TB5 API→workers (jobs with user-controlled inputs), TB6 tool-runner parsing untrusted files.
+See the diagram in [05 §2](../architecture/05-security-users.md#2-trust-boundaries). Boundaries: TB1 browser→API, TB2 API↔IdP, TB3 API→external providers, TB4 API↔DB, TB5 API→workers (jobs with user-controlled inputs), TB6 tool-runner parsing untrusted files, TB7 AI agent→`/mcp` (bearer tokens, OAuth 2.1).
 
 ## 4. Threats and mitigations
 
@@ -91,6 +91,17 @@ Risk = likelihood × impact (H/M/L) **after** planned mitigations; anything stil
 | E4 | Container escape | Non-root, cap_drop ALL, no-new-privileges, no Docker socket, read-only root | L |
 | E5 | SQL injection in spatial queries | Parameterised Kysely; identifiers from allowlists; Semgrep rules | L |
 
+### AI agents (ADR-0035)
+
+| ID | Threat | Mitigation | Residual |
+|----|--------|------------|----------|
+| AG1 | Malicious app tricks a user into granting access (consent phishing) | Consent page shows the app name and exact redirect host; redirect URIs must be https or loopback, matched exactly; PKCE S256 required; Admin can switch off self-registration | M |
+| AG2 | Stolen access or refresh token | Tokens hashed at rest, 1 h access lifetime, bound to this instance's `/mcp` (RFC 8707); refresh rotation with reuse detection revokes the connection; one-click disconnect | L |
+| AG3 | Agent exceeds its user (Viewer, demoted user, wider scope) | Effective rights = scopes ∩ current role, checked on every call; Viewers and Restricted users cannot connect; agents cannot touch base data, sharing, users or settings | L |
+| AG4 | Prompt injection makes an agent destroy work | Agents only write their own scenarios and delete only scenarios their connection created; every change audited with app, tool and argument hash | L |
+| AG5 | Agent loops exhaust the server | Per-connection rate limit, 200 scenarios per user, 2000 stops / 100 lines per scenario, street tile and candidate caps | L |
+| AG6 | Cookie-authenticated browser request reaches `/mcp` or `/oauth/*` | `/mcp` accepts only bearer tokens; consent decisions need the session cookie, CSRF token and same origin | L |
+
 ### Supply chain
 
 | ID | Threat | Mitigation | Residual |
@@ -103,13 +114,13 @@ Risk = likelihood × impact (H/M/L) **after** planned mitigations; anything stil
 
 | Category | Covered by |
 |----------|-----------|
-| A01 Broken Access Control | T1, I1, I7, E1 |
+| A01 Broken Access Control | T1, I1, I7, E1, AG3 |
 | A02 Cryptographic Failures | ADR-0016, TLS requirement (C-16) |
 | A03 Injection | E5, CSV injection escaping, sanitised Markdown |
 | A04 Insecure Design | This threat model, ADRs, setup mode |
 | A05 Security Misconfiguration | No defaults, startup checks, hardened compose |
 | A06 Vulnerable Components | SC1, SC2, CI scanners |
-| A07 Identification and Authentication Failures | S1–S4 |
+| A07 Identification and Authentication Failures | S1–S4, AG1, AG2 |
 | A08 Software and Data Integrity Failures | T4, SC3, signed releases |
 | A09 Security Logging and Monitoring Failures | ADR-0012, ADR-0022, CRITICAL alerts |
 | A10 SSRF | I4, ADR-0017 |

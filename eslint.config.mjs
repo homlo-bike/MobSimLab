@@ -12,6 +12,7 @@ export default tseslint.config(
       "worker/**",
       "crates/**",
       "apps/web/src/wasm/**",
+      "apps/api/wasm/**",
     ],
   },
   js.configs.recommended,

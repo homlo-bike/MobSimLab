@@ -1,6 +1,6 @@
 # ADR-0035: AI agents connect from outside through an MCP server; MobSimLab supplies deterministic scenario, benchmark and walk-coverage tools
 
-- Status: Proposed (design for product owner review, 2026-11-01; product owner answers added 2026-11-01)
+- Status: Accepted, phases A and B implemented (2026-11-02); see *Implementation status* at the end
 - Date: 2026-11-01
 - Deciders: product owner, architecture
 - Related: FR-PLAT-05, FR-PLAT-06, FR-ASM-01..05, FR-DEM-03, FR-NET-01, C-10, ADR-0012 (audit), ADR-0013 (scenario overlays), ADR-0014 (results storage), ADR-0015 (OIDC), ADR-0017 (outbound gateway), ADR-0018 (no built-in AI), ADR-0020 (day types), ADR-0023 (job queue), ADR-0027 (collaboration), ADR-0031 (street routing), ADR-0032 (railway operations), ADR-0034 (journey time planner, in progress), [06 §9.3](../architecture/06-gis.md), [09 §2.2](../architecture/09-planning-models.md)
@@ -160,3 +160,21 @@ The coverage and spacing analyses ship as map layers and reports in the same pha
 1. **Headline rule:** a 15-minute walk to the nearest stop or station (`walk_minutes` preset). The other presets stay available as secondary figures.
 2. **Viewers cannot connect agents.** Agent access needs the Editor role or higher in each granted project (§2).
 3. **No optional in-app chat.** MobSimLab stays model-free; agents connect only from outside through MCP.
+
+## Implementation status (2026-11-02)
+
+Implemented (phases A and B), user guide in [docs/user/ai-agents.md](../user/ai-agents.md):
+
+- `/mcp` (Streamable HTTP, stateless, JSON responses) in the API with 15 tools, 4 resources (KPI catalogue, assumptions, change schema, scenarios) and 3 prompts. Tools: `list_scenarios`, `get_scenario`, `get_assumptions`, `create_scenario`, `apply_changes`, `validate_scenario`, `diff_scenarios`, `delete_agent_scenario`, `measure_stop_spacing`, `coverage_report`, `find_coverage_gaps`, `walk_catchment`, `suggest_stop_locations`, `plan_journey`, `benchmark_scenarios`.
+- Authorization server: RFC 9728 and RFC 8414 metadata, Dynamic Client Registration with the Admin switch, PKCE S256 only, RFC 8707 resource binding, rotating refresh tokens with reuse detection (reuse revokes the whole connection), revocation (RFC 7009), personal access tokens. Tokens are stored as SHA-256 hashes. The consent page is in the web app; the AI agents panel lists connections with recent actions, tokens, agent scenarios and the registration switch.
+- Walk analysis in `street-routing` (`walk` module, also compiled to WebAssembly for the API): pedestrian graph from OSM, multi-source Dijkstra by time or distance, signal delay, step-free option, coverage over demand points / walkable street length / street cells with the crow-flies figure, 5-minute bands, catchment GeoJSON, stop spacing along the line and on foot, and greedy maximum-coverage stop suggestions.
+- Assumption library: `mode.stop_spacing_m`, `analysis.walk_rule_minutes`, `analysis.frequent_headway_min`, `walk.crossing_delay_s`, exported for the API as `apps/api/src/agents/defaults.json`.
+
+Differences from the design, because the pieces they depend on do not exist yet:
+
+- **No server-side projects yet**, so agent scenarios live in the user's own workspace (`agent.scenario`) instead of ADR-0013 overlays, and the role check uses the instance role (Owner, Admin, Editor) instead of the per-project role. The consent page therefore has no project picker. Moving scenarios into projects is a follow-up once projects are stored on the server.
+- **No population layer yet:** coverage uses walkable street length as a proxy, or demand points the agent supplies, and says which.
+- **Rail timetables** from the railway operations planner are not on main yet: rail lines use kinematic run times from the vehicle defaults and the agent's headways, and journeys use frequency patterns.
+- Exact MCLP with HiGHS is not added; `suggest_stop_locations` is greedy (within 1 − 1/e of optimal for this objective).
+
+Deferred to phases C and D: `simulation:run` with runs, experiments and sweeps; PTAL and the 15-minute-city destination preset (`walk.gradient_factor` and the destination list come with it); GTFS export; Client ID Metadata Documents; the stdio bridge; conformance-suite runs in CI.
