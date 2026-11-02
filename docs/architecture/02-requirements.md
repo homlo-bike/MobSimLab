@@ -121,6 +121,16 @@ Each requirement has an ID so tests, ADRs and issues can reference it. Priority:
 | FR-COST-03 | Externalities: emissions, noise, accidents, health, congestion. | M |
 | FR-COST-04 | Sensitivity and switching-value analysis. | M |
 
+### FR-ENV — Environment (ADR-0038)
+
+| ID | Requirement | Pri |
+|----|-------------|-----|
+| FR-ENV-01 | While a street line or railway is drawn, an optional noise corridor (free field, CNOSSOS-EU emission) and noise checks update live in the editor. | S |
+| FR-ENV-02 | Estimated noise map per scenario (CNOSSOS-EU, L<sub>den</sub>, L<sub>night</sub>, L<sub>day</sub> at 4 m) with buildings and terrain, shown as a map layer in 5 dB bands. | S |
+| FR-ENV-03 | People exposed per band and above the WHO 2018 guidelines; difference map between two scenarios. | S |
+| FR-ENV-04 | Noise externality in the appraisal from the change in exposure when a noise map exists; vehicle-km method otherwise. | S |
+| FR-ENV-05 | Every noise result states its input level (planned, timetabled, simulated), whether general traffic is included, and its range from the assumption ranges. | S |
+
 ### FR-ASM — Assumptions and sources
 
 | ID | Requirement | Pri |

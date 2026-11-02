@@ -40,3 +40,4 @@ All ADRs below were accepted on 2026-10-27. New ADRs start as Proposed. Template
 | [0034](0034-journey-planner.md) | Journey time benchmark: RAPTOR over a GTFS-shaped published timetable, in Rust and WebAssembly | Proposed |
 | [0035](0035-ai-agent-integration-mcp.md) | AI agents connect from outside through an MCP server; MobSimLab supplies deterministic scenario, benchmark and walk-coverage tools | Accepted |
 | [0037](0037-cable-car-and-ferry-lines.md) | Cable car and ferry service lines: two new mode families drawn station-first, frequency-based gondolas and timetabled ferries with berths | Proposed |
+| [0038](0038-service-line-noise-map.md) | Estimated noise map of service lines with CNOSSOS-EU: live corridor in the editors, full map as an analysis layer, exposure into the appraisal | Proposed |
