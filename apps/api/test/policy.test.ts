@@ -23,6 +23,7 @@ describe("permission policy", () => {
       "setup.manage": "owner",
       "users.manage": "owner,admin",
       "audit.read": "owner,admin",
+      "projects.read": "owner,admin,user,viewer",
       "projects.create": "owner,admin,user",
       "agents.connect": "owner,admin,user",
       "agents.manage": "owner,admin",
