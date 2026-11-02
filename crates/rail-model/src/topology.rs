@@ -164,8 +164,12 @@ struct TStreet {
 struct TLevelCrossing {
     id: String,
     protection: String,
+    /// Whether the crossing meets the usual rules (a warning otherwise, never an error).
     #[serde(default = "yes")]
-    allowed: bool,
+    standard: bool,
+    /// Why it does not: `mode`, `third_rail`, `motorway`, `line_speed`.
+    #[serde(default)]
+    special_measures: Vec<String>,
     track: u32,
     chainage_m: f64,
     rail_zone_m: f64,
@@ -435,12 +439,12 @@ fn import(t: Topology, opt: &ImportOptions) -> Result<Imported, String> {
     }
     let mut level_crossings = Vec::new();
     for lc in &t.level_crossings {
-        if !lc.allowed {
+        if !lc.standard {
             notes.push(format!(
-                "level crossing {} is not allowed by the design; skipped",
-                lc.id
+                "level crossing {} is outside the usual rules ({}); it is protected by obstacle detection",
+                lc.id,
+                lc.special_measures.join(", ")
             ));
-            continue;
         }
         for sid in &lc.sections {
             let i = sec(sid)?;
@@ -734,6 +738,7 @@ fn import(t: Topology, opt: &ImportOptions) -> Result<Imported, String> {
             street_name: lc.street.name.clone(),
             keep_clear_m: lc.street.keep_clear_m,
             bus: lc.street.bus,
+            special_measures: lc.special_measures.clone(),
         });
     }
 
