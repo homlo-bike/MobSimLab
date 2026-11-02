@@ -419,6 +419,73 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 | all | 30 | 60 | 120 | educated-guess | unverified | [uic-406](#src-uic-406), [mobsimlab-derivation](#src-mobsimlab-derivation) | Buffer times absorb small delays so they do not spread to the next train (UIC 406 stability). National practice differs; one minute is a common planning value on mainlines. |
 | metro, tram, light_rail | 10 | 20 | 40 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Short headways on metro and light rail leave little room; 20 s keeps a 2-minute headway feasible. |
 
+### Planned load at the maximum load point, as a share of the train's capacity
+
+`timetable.target_load_factor` · unit: share · used by: frequency suggestion, train length
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.7 | 0.8 | 1.0 | documented | unverified | [ceder-2016](#src-ceder-2016), [tcqsm3](#src-tcqsm3) | Ceder's maximum load point method sets the frequency so that the peak hour load at the busiest link stays at a desired occupancy; capacity counts standees at the planning density, so values near 0.8 leave room for uneven loading between trains. |
+
+### Longest headway allowed in the peak, whatever the demand
+
+`timetable.policy_headway_peak_min` · unit: min · used by: frequency suggestion
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 10 | 15 | 30 | documented | unverified | [ceder-2016](#src-ceder-2016), [tcqsm3](#src-tcqsm3) | Policy headway (Ceder: minimum frequency standard). Planners set it per mode; 15 min is a common urban floor. |
+| metro, light_rail, tram | 3 | 5 | 10 | educated-guess | unverified | [tcqsm3](#src-tcqsm3), [mobsimlab-derivation](#src-mobsimlab-derivation) | Urban rail usually runs every 2–5 min in the peak so passengers need no timetable. |
+
+### Longest headway allowed off-peak, whatever the demand
+
+`timetable.policy_headway_offpeak_min` · unit: min · used by: frequency suggestion
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 15 | 30 | 60 | documented | unverified | [ceder-2016](#src-ceder-2016), [tcqsm3](#src-tcqsm3) | Common off-peak minimum frequency standard; 60 min on rural and regional services. |
+| metro, light_rail, tram | 5 | 10 | 15 | educated-guess | unverified | [tcqsm3](#src-tcqsm3), [mobsimlab-derivation](#src-mobsimlab-derivation) | Urban rail commonly keeps a 10 min off-peak service. |
+
+### Least time between an arrival and a departure crossing in a terminal throat
+
+`timetable.terminal_separation_s` · unit: s · used by: timetable construction (return offset)
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 60 | 90 | 180 | educated-guess | unverified | [pachl-roc](#src-pachl-roc), [mobsimlab-derivation](#src-mobsimlab-derivation) | The periodic pattern keeps conflicting moves in the throat apart by at least the route setting, approach and clearing time; 90 s fits the example metro terminal. |
+
+### Door opening and closing time within a dwell
+
+`dwell.door_open_close_s` · unit: s · used by: dwell model
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 2 | 5 | 10 | documented | unverified | [tcqsm3](#src-tcqsm3) | TCQSM: door opening and closing take about 2–5 s, plus the warning before closing. |
+
+### Boarding time per passenger per door channel
+
+`dwell.board_s_per_pax` · unit: s · used by: dwell model
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 1.0 | 1.5 | 2.5 | documented | unverified | [tcqsm3](#src-tcqsm3) | TCQSM gives passenger service times for level, wide doors of about 1–2 s per passenger per channel; steps and fare payment raise them. |
+
+### Alighting time per passenger per door channel
+
+`dwell.alight_s_per_pax` · unit: s · used by: dwell model
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.8 | 1.2 | 2.0 | documented | unverified | [tcqsm3](#src-tcqsm3) | TCQSM: alighting is somewhat quicker than boarding. |
+
+### Recommended capacity consumption limit in the peak hour (UIC 406)
+
+`capacity.occupancy_limit_share` · unit: share · used by: capacity report, maximum capacity
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.6 | 0.75 | 0.85 | cited | unverified | [uic-406](#src-uic-406) | UIC 406 recommends about 75 % in the peak hour on mixed-traffic lines and 60 % daily; values to be checked against the current edition. |
+| metro, commuter_rail | 0.75 | 0.85 | 0.9 | cited | unverified | [uic-406](#src-uic-406) | UIC 406: dedicated suburban passenger traffic about 85 % in the peak hour. |
+
 ## Demand
 
 ### Walking speed for walking links between stations
@@ -1083,6 +1150,7 @@ and rationale per attribute: [`switches.yaml`](switches.yaml); geometry model:
 | <a id="src-uic-451-1"></a>`uic-451-1` | [UIC Leaflet 451-1, Timetable recovery margins to guarantee timekeeping — Recovery margins](https://shop.uic.org/) | paywalled | © UIC; numbers cited as facts | 2026-10-27 | none |
 | <a id="src-uic-406"></a>`uic-406` | [UIC Code 406, Capacity, 2nd edition (2013)](https://shop.uic.org/) | paywalled | © UIC; numbers cited as facts | 2026-11-01 | none |
 | <a id="src-pachl-roc"></a>`pachl-roc` | [J. Pachl, Railway Operation and Control, VTD Rail Publishing (blocking time theory, route setting, release and approach times)](https://www.vtd-rail.com/) | paywalled | © the author; numbers cited as facts | 2026-11-01 | none |
+| <a id="src-ceder-2016"></a>`ceder-2016` | [Avishai Ceder, Public Transit Planning and Operation: Modeling, Practice and Behavior, 2nd edition, chapters 3–4 (frequency and headway determination)](https://www.routledge.com/Public-Transit-Planning-and-Operation-Modeling-Practice-and-Behavior-Second-Edition/Ceder/p/book/9781466563919) | paywalled | © Taylor & Francis; only numeric values are quoted | 2026-11-02 | none |
 | <a id="src-tcqsm3"></a>`tcqsm3` | [TCRP Report 165, Transit Capacity and Quality of Service Manual, 3rd edition (2013)](https://nap.nationalacademies.org/catalog/24766) | free | © National Academy of Sciences; free to read; numbers cited as facts | 2026-10-27 | none |
 | <a id="src-fta-c9030"></a>`fta-c9030` | [FTA Circular 9030.1E, Urbanized Area Formula Program — spare ratio guideline (spares ≤ 20 % of vehicles in maximum service for fleets of 50 or more)](https://www.transit.dot.gov/regulations-and-guidance/fta-circulars/urbanized-area-formula-program-program-guidance-and) | free | US Government work, public domain | 2026-10-27 | search-snippet |
 | <a id="src-tcrp-spare-ratio"></a>`tcrp-spare-ratio` | [TCRP Synthesis / National Academies chapter on bus spare ratios quoting FTA Circular 9030.1C ch. V para 9.a.5](https://nap.nationalacademies.org/read/22409/chapter/2) | free | © National Academy of Sciences; free to read | 2026-10-27 | search-snippet |
