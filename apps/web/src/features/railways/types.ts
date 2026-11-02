@@ -208,6 +208,25 @@ export interface CrossingView {
   lonlat: LonLat;
 }
 
+/** A street-level track crossing a street from OpenStreetMap. */
+export interface LevelCrossingView {
+  id: string;
+  track: number;
+  mode: RailMode;
+  street: string;
+  class: string;
+  angle_deg: number;
+  protection: "barriers" | "traffic_signals";
+  /** Meets the usual rules; otherwise `special_measures` says why it needs special safety measures. */
+  standard: boolean;
+  special_measures: ("mode" | "third_rail" | "motorway" | "line_speed")[];
+  bus: boolean;
+  trolley_wire: boolean;
+  keep_clear_m: number;
+  approach_m: number;
+  lonlat: LonLat;
+}
+
 export interface FeatureCollection {
   type: "FeatureCollection";
   features: {
@@ -226,6 +245,7 @@ export const LAYER_NAMES = [
   "wires",
   "masts",
   "markers",
+  "level_crossings",
   "corridors",
   "connections",
 ] as const;
@@ -245,6 +265,7 @@ export interface RailView {
   /** Design values and catalogue of every mode in the drawing. */
   modes: Partial<Record<RailMode, { params: ModeParams; turnouts: TurnoutOption[] }>>;
   crossings: CrossingView[];
+  level_crossings: LevelCrossingView[];
   counts: { errors: number; warnings: number; track_km: number; route_km: number };
   bbox: [number, number, number, number] | null;
 }
@@ -267,6 +288,12 @@ export interface RailEngine {
   toLocal(origin: LonLat, at: LonLat): [number, number];
   defaultParams(mode: RailMode): ModeParams;
   sample(mode: RailMode, at: LonLat): Network;
+  /** Track topology of the last build for railway operations (contracts/rail-topology.schema.json). */
+  topology(): unknown;
+  /** Add the streets of one OSM XML street tile, so the next build finds level crossings. */
+  addStreetTile(xml: string): number;
+  /** Forget all streets. */
+  clearStreets(): void;
   dispose(): void;
 }
 

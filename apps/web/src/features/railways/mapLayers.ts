@@ -171,6 +171,15 @@ export function ensureRailLayers(map: MapLibreMap, lat: number): void {
         },
       },
       {
+        // Level crossings: the street surface over the sleepers; rails are drawn on top.
+        id: `${P}z${z}-crossing-deck`,
+        type: "fill",
+        source: `${P}level_crossings`,
+        minzoom: 15,
+        filter: atZ(z, kindIs("deck")),
+        paint: { "fill-color": COLORS.road, "fill-opacity": 0.85 },
+      },
+      {
         id: `${P}z${z}-track-line`,
         type: "line",
         source: `${P}tracks`,
@@ -256,6 +265,27 @@ export function ensureRailLayers(map: MapLibreMap, lat: number): void {
       minzoom: 15,
       filter: kindIs("buffer"),
       paint: { "line-color": COLORS.error, "line-width": metres(0.4, lat, 2) },
+    },
+    {
+      id: `${P}stop-lines`,
+      type: "line",
+      source: `${P}level_crossings`,
+      minzoom: 16,
+      filter: kindIs("stop_line"),
+      paint: { "line-color": COLORS.stopLine, "line-width": metres(0.3, lat, 1.5) },
+    },
+    {
+      id: `${P}barriers`,
+      type: "line",
+      source: `${P}level_crossings`,
+      minzoom: 16,
+      filter: kindIs("barrier"),
+      layout: { "line-cap": "round" },
+      paint: {
+        "line-color": COLORS.barrier,
+        "line-width": metres(0.15, lat, 2),
+        "line-dasharray": [2, 1],
+      },
     },
     {
       id: `${P}diamonds`,

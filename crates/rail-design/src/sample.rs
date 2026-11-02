@@ -1,7 +1,8 @@
 //! An example line for a mode, scaled to the mode: two stations, a double track with two curves,
 //! a crossover, a turnout to a stabling siding and a crossing line (a tram line on one shared
 //! diamond for commuter and regional rail). Used by the editor's
-//! "Example" button and by the tests.
+//! "Example" button and by the tests. [`sample_streets`] adds a street with a bus route across the
+//! main line: on the level where the mode allows level crossings, else on a bridge.
 
 use crate::design::build;
 use crate::geom::{at_s, P2};
@@ -211,6 +212,39 @@ pub fn sample(mode: RailMode, lon: f64, lat: f64) -> Network {
     net
 }
 
+/// Purpose: example streets for a built example: "Station Road", a two-lane street with buses
+/// and a trolleybus wire, crossing the main line (track 3) at a right angle a quarter of the way
+/// along. It crosses on the level for modes that allow level crossings at their line speed, and
+/// on a bridge otherwise. Used by the tests and the topology example.
+pub fn sample_streets(dz: &crate::design::Design) -> Vec<crate::street::Street> {
+    let Some(g) = dz.track(3) else {
+        return vec![];
+    };
+    let p = dz.track_params(3);
+    let q = at_s(&g.centre, g.length * 0.25);
+    let n = P2::dir(q.h).left();
+    let half = 60.0 + g.spacing_at(q.s);
+    let level_ok = p.level_crossing_permitted == "yes"
+        && p.design_speed_kmh <= p.level_crossing_max_speed_kmh
+        && g.level_at(q.s) == Some(Level::Street);
+    let coords = [-half, -half / 3.0, half / 3.0, half]
+        .iter()
+        .map(|k| dz.proj.to_lonlat(q.p.add(n.mul(*k))))
+        .collect();
+    vec![crate::street::Street {
+        way: 1001,
+        name: "Station Road".into(),
+        class: "secondary".into(),
+        lanes: None,
+        width_m: None,
+        oneway: false,
+        layer: if level_ok { 0 } else { 1 },
+        trolley_wire: true,
+        bus: true,
+        coords,
+    }]
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -229,6 +263,30 @@ mod tests {
                 .filter(|i| i.severity == Severity::Error)
                 .collect();
             assert!(errors.is_empty(), "{m:?}: {errors:#?}");
+        }
+    }
+
+    #[test]
+    fn the_example_street_crosses_on_the_level_only_where_the_mode_allows_it() {
+        for m in RailMode::ALL {
+            let net = sample(m, 7.0, 50.9);
+            let streets = sample_streets(&build(&net, None));
+            let dz = crate::design::build_with_streets(&net, None, &streets);
+            let errors: Vec<_> = dz
+                .issues
+                .iter()
+                .filter(|i| i.severity == Severity::Error)
+                .collect();
+            assert!(errors.is_empty(), "{m:?}: {errors:#?}");
+            let on_level = dz.level_crossings.iter().filter(|x| x.track == 3).count();
+            let expect = matches!(
+                m,
+                RailMode::Tram
+                    | RailMode::LightRail
+                    | RailMode::CommuterRail
+                    | RailMode::RegionalRail
+            );
+            assert_eq!(on_level == 1, expect, "{m:?}: {:?}", dz.level_crossings);
         }
     }
 }
