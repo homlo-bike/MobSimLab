@@ -32,6 +32,7 @@ fn line_run(m: &Model, name: &str, depart_s: f64) -> TrainRun {
         depart_s,
         stops: vec![],
         stop_at_end: false,
+        end_m: None,
         occupy_until_s: None,
         supplement_share: 0.0,
     }
@@ -127,6 +128,7 @@ fn terminal_station_parallel_and_conflicting_moves() {
             depart_s,
             stops: vec![],
             stop_at_end: true,
+            end_m: None,
             occupy_until_s: Some(depart_s + 1200.0),
             supplement_share: 0.0,
         }
@@ -139,6 +141,7 @@ fn terminal_station_parallel_and_conflicting_moves() {
         depart_s,
         stops: vec![],
         stop_at_end: false,
+        end_m: None,
         occupy_until_s: None,
         supplement_share: 0.0,
     };
@@ -246,6 +249,7 @@ fn run_across_an_imported_design() {
         depart_s: 6.0 * 3600.0,
         stops: vec![],
         stop_at_end: true,
+        end_m: None,
         occupy_until_s: None,
         supplement_share: 0.05,
     };
@@ -254,4 +258,42 @@ fn run_across_an_imported_design() {
     // About 3.5 km with a 40 km/h crossover and 80 km/h station speed: a few minutes.
     assert!(minutes > 2.0 && minutes < 8.0, "{minutes} min");
     assert!(t.blocking.iter().all(|b| b.end_s > b.start_s));
+}
+
+#[test]
+fn starter_route_after_a_stop_is_needed_at_departure_not_on_arrival() {
+    // Alder's eastbound platform lies between the block signal E0B and the
+    // starter SE1, 2 m behind the platform end; a train that stops there
+    // needs SE1's route only when it is about to leave.
+    let m = Model::compile(&examples::metro_line()).unwrap();
+    let mut train = emu();
+    train.length_m = 120.0;
+    let run = TrainRun {
+        name: "a".into(),
+        train,
+        routes: routes(&m, &["E0B>SE1", "SE1>E1B"]),
+        start_m: 0.0,
+        depart_s: 0.0,
+        stops: vec![rail_dynamics::Stop {
+            position_m: 540.0,
+            dwell_s: 300.0,
+        }],
+        stop_at_end: false,
+        end_m: None,
+        occupy_until_s: None,
+        supplement_share: 0.0,
+    };
+    let t = run_timing(&m, &run, 0, &BlockingParams::default()).unwrap();
+    let (arrive, depart) = t.profile.stops[0];
+    assert!(depart - arrive >= 299.0);
+    let starter = t
+        .blocking
+        .iter()
+        .filter(|b| b.route == run.routes[1] && !b.overlap)
+        .map(|b| b.start_s)
+        .fold(f64::INFINITY, f64::min);
+    assert!(
+        starter > arrive + 200.0 && starter < depart,
+        "starter route blocked from {starter}, train stands {arrive}..{depart}"
+    );
 }

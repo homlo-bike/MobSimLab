@@ -364,3 +364,158 @@
       sources: [mobsimlab-derivation]
       check: unverified
       rationale: "Short headways on metro and light rail leave little room; 20 s keeps a 2-minute headway feasible."
+
+- key: timetable.target_load_factor
+  label: Planned load at the maximum load point, as a share of the train's capacity
+  group: Operations
+  unit: share
+  used_by: [frequency suggestion, train length]
+  values:
+    - context:
+        mode: "*"
+      low: 0.7
+      central: 0.8
+      high: 1.0
+      basis: documented
+      sources: [ceder-2016, tcqsm3]
+      check: unverified
+      rationale: "Ceder's maximum load point method sets the frequency so that the peak hour load at the busiest link stays at a desired occupancy; capacity counts standees at the planning density, so values near 0.8 leave room for uneven loading between trains."
+
+- key: timetable.policy_headway_peak_min
+  label: Longest headway allowed in the peak, whatever the demand
+  group: Operations
+  unit: min
+  used_by: [frequency suggestion]
+  values:
+    - context:
+        mode: "*"
+      low: 10
+      central: 15
+      high: 30
+      basis: documented
+      sources: [ceder-2016, tcqsm3]
+      check: unverified
+      rationale: "Policy headway (Ceder: minimum frequency standard). Planners set it per mode; 15 min is a common urban floor."
+    - context:
+        mode: [metro, light_rail, tram]
+      low: 3
+      central: 5
+      high: 10
+      basis: educated-guess
+      sources: [tcqsm3, mobsimlab-derivation]
+      check: unverified
+      rationale: Urban rail usually runs every 2–5 min in the peak so passengers need no timetable.
+
+- key: timetable.policy_headway_offpeak_min
+  label: Longest headway allowed off-peak, whatever the demand
+  group: Operations
+  unit: min
+  used_by: [frequency suggestion]
+  values:
+    - context:
+        mode: "*"
+      low: 15
+      central: 30
+      high: 60
+      basis: documented
+      sources: [ceder-2016, tcqsm3]
+      check: unverified
+      rationale: Common off-peak minimum frequency standard; 60 min on rural and regional services.
+    - context:
+        mode: [metro, light_rail, tram]
+      low: 5
+      central: 10
+      high: 15
+      basis: educated-guess
+      sources: [tcqsm3, mobsimlab-derivation]
+      check: unverified
+      rationale: Urban rail commonly keeps a 10 min off-peak service.
+
+- key: timetable.terminal_separation_s
+  label: Least time between an arrival and a departure crossing in a terminal throat
+  group: Operations
+  unit: s
+  used_by: [timetable construction (return offset)]
+  values:
+    - context:
+        mode: "*"
+      low: 60
+      central: 90
+      high: 180
+      basis: educated-guess
+      sources: [pachl-roc, mobsimlab-derivation]
+      check: unverified
+      rationale: "The periodic pattern keeps conflicting moves in the throat apart by at least the route setting, approach and clearing time; 90 s fits the example metro terminal."
+
+- key: dwell.door_open_close_s
+  label: Door opening and closing time within a dwell
+  group: Operations
+  unit: s
+  used_by: [dwell model]
+  values:
+    - context:
+        mode: "*"
+      low: 2
+      central: 5
+      high: 10
+      basis: documented
+      sources: [tcqsm3]
+      check: unverified
+      rationale: "TCQSM: door opening and closing take about 2–5 s, plus the warning before closing."
+
+- key: dwell.board_s_per_pax
+  label: Boarding time per passenger per door channel
+  group: Operations
+  unit: s
+  used_by: [dwell model]
+  values:
+    - context:
+        mode: "*"
+      low: 1.0
+      central: 1.5
+      high: 2.5
+      basis: documented
+      sources: [tcqsm3]
+      check: unverified
+      rationale: "TCQSM gives passenger service times for level, wide doors of about 1–2 s per passenger per channel; steps and fare payment raise them."
+
+- key: dwell.alight_s_per_pax
+  label: Alighting time per passenger per door channel
+  group: Operations
+  unit: s
+  used_by: [dwell model]
+  values:
+    - context:
+        mode: "*"
+      low: 0.8
+      central: 1.2
+      high: 2.0
+      basis: documented
+      sources: [tcqsm3]
+      check: unverified
+      rationale: "TCQSM: alighting is somewhat quicker than boarding."
+
+- key: capacity.occupancy_limit_share
+  label: Recommended capacity consumption limit in the peak hour (UIC 406)
+  group: Operations
+  unit: share
+  used_by: [capacity report, maximum capacity]
+  values:
+    - context:
+        mode: "*"
+      low: 0.6
+      central: 0.75
+      high: 0.85
+      basis: cited
+      sources: [uic-406]
+      check: unverified
+      rationale: "UIC 406 recommends about 75 % in the peak hour on mixed-traffic lines and 60 % daily; values to be checked against the current edition."
+    - context:
+        mode: [metro, commuter_rail]
+      low: 0.75
+      central: 0.85
+      high: 0.9
+      basis: cited
+      sources: [uic-406]
+      check: unverified
+      rationale: "UIC 406: dedicated suburban passenger traffic about 85 % in the peak hour."

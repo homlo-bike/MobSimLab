@@ -182,3 +182,209 @@ pub fn plain_line(blocks: usize, block_m: f64, kmh: f64) -> InfraSpec {
     }
     spec
 }
+
+fn storage(id: &str, length_m: f64) -> TrackSpec {
+    TrackSpec {
+        usage: crate::spec::TrackUse::Storage,
+        ..track(id, length_m, 25.0, Directions::Both)
+    }
+}
+
+fn switch(id: &str, common: TrackEnd, straight: TrackEnd, diverging: TrackEnd) -> NodeSpec {
+    NodeSpec::Switch {
+        id: id.into(),
+        common,
+        straight,
+        diverging,
+        diverging_speed_mps: 40.0 / 3.6,
+        throw_time_s: 6.0,
+    }
+}
+
+fn link(a: TrackEnd, b: TrackEnd) -> NodeSpec {
+    NodeSpec::Link { a, b }
+}
+
+fn buffer(id: &str, at: TrackEnd) -> NodeSpec {
+    NodeSpec::BufferStop { id: id.into(), at }
+}
+
+/// Purpose: a double-track metro line with two stub terminals, three through
+/// stations, a depot and terminal sidings, for planning tests (ADR-0032 §7 step 3).
+///
+/// Output: the network below (`Up` = eastbound, right-hand running). The
+/// eastbound main `e0..e3` and the westbound main `w0..w3` are 800 m
+/// interstations at 80 km/h with a block signal halfway; the through stations
+/// Alder, Birch and Cedar have a 150 m track with a 140 m platform on each main
+/// and a starter at its end. Each terminal (Westpark, Eastgate) has two 160 m
+/// stub platform tracks behind a double crossover, so every platform can be
+/// reached from the arrival main and left towards the departure main. The
+/// Westpark depot (three 400 m storage tracks `wd1..wd3`, three trains each)
+/// and the Eastgate sidings (`es1`, `es2`, the same length) branch off the departure side of each throat:
+/// trains enter them from a platform and leave them into a platform.
+/// Throat tracks run at 40–60 km/h, depot tracks at 25 km/h, diverging at 40 km/h.
+/// The default overlap is 100 m (a common metro value; `signalling.overlap_*`).
+///
+/// ```text
+///          wd1..wd3                                                   es1, es2
+///             \                                                          /
+///  |wp1 S_WP1 wsa-wm1a-wsc= e0 =|alder|= e1 =|birch|= e2 =|cedar|= e3 =H_E esc-em1a-esa ep1|
+///  |wp2 S_WP2 wsb-wm2a-wdep-wm2c-wsd= w0 =| ... westbound ... |= w3 = esd-em2a-edep-em2c-esb ep2|
+/// ```
+pub fn metro_line() -> InfraSpec {
+    use Directions::*;
+    use End::{A, B};
+    let mut s = InfraSpec {
+        default_overlap_m: 100.0,
+        ..Default::default()
+    };
+    let main = |id: &str, len: f64, d: Directions| track(id, len, 80.0, d);
+    // West terminal and depot.
+    s.tracks.extend([
+        track("wp1", 160.0, 40.0, Both),
+        track("wp2", 160.0, 40.0, Both),
+        track("wxo", 60.0, 40.0, Both),
+        track("wm1a", 100.0, 60.0, Both),
+        track("wm2a", 60.0, 60.0, Both),
+        track("wm2c", 60.0, 60.0, Both),
+        track("wxo2", 60.0, 40.0, Both),
+        track("wdl", 120.0, 25.0, Both),
+        track("wdl2", 30.0, 25.0, Both),
+        storage("wd1", 400.0),
+        storage("wd2", 400.0),
+        storage("wd3", 400.0),
+    ]);
+    s.nodes.extend([
+        buffer("wp1.end", te("wp1", A)),
+        buffer("wp2.end", te("wp2", A)),
+        switch("wsa", te("wp1", B), te("wm1a", A), te("wxo", A)),
+        switch("wsb", te("wm2a", A), te("wp2", B), te("wxo", B)),
+        switch("wdep", te("wm2a", B), te("wm2c", A), te("wdl", A)),
+        switch("wsd", te("wm2c", B), te("w0", A), te("wxo2", A)),
+        switch("wsc", te("e0", A), te("wm1a", B), te("wxo2", B)),
+        switch("wds1", te("wdl", B), te("wd1", A), te("wdl2", A)),
+        switch("wds2", te("wdl2", B), te("wd2", A), te("wd3", A)),
+        buffer("wd1.end", te("wd1", B)),
+        buffer("wd2.end", te("wd2", B)),
+        buffer("wd3.end", te("wd3", B)),
+    ]);
+    // Mains and through stations.
+    let names = ["alder", "birch", "cedar"];
+    for k in 0..4 {
+        s.tracks.push(main(&format!("e{k}"), 800.0, UpOnly));
+        s.tracks.push(main(&format!("w{k}"), 800.0, DownOnly));
+        s.signals.push(signal(
+            &format!("E{k}B"),
+            &format!("e{k}"),
+            400.0,
+            Dir::Up,
+            SignalKind::Block,
+        ));
+        s.signals.push(signal(
+            &format!("W{k}B"),
+            &format!("w{k}"),
+            400.0,
+            Dir::Down,
+            SignalKind::Block,
+        ));
+        if let Some(&nm) = names.get(k) {
+            let (ea, wa) = (format!("ea{}", k + 1), format!("wa{}", k + 1));
+            s.tracks.push(main(&ea, 150.0, UpOnly));
+            s.tracks.push(main(&wa, 150.0, DownOnly));
+            s.nodes.extend([
+                link(te(&format!("e{k}"), B), te(&ea, A)),
+                link(te(&ea, B), te(&format!("e{}", k + 1), A)),
+                link(te(&format!("w{k}"), B), te(&wa, A)),
+                link(te(&wa, B), te(&format!("w{}", k + 1), A)),
+            ]);
+            s.signals.push(signal(
+                &format!("SE{}", k + 1),
+                &ea,
+                148.0,
+                Dir::Up,
+                SignalKind::Main,
+            ));
+            s.signals.push(signal(
+                &format!("SW{}", k + 1),
+                &wa,
+                2.0,
+                Dir::Down,
+                SignalKind::Main,
+            ));
+            s.stations.push(StationSpec {
+                id: nm.into(),
+                name: format!("{}{}", nm[..1].to_uppercase(), &nm[1..]),
+                group: None,
+            });
+            for (n, t) in [(1, &ea), (2, &wa)] {
+                s.platforms.push(PlatformSpec {
+                    id: format!("{}-{n}", nm),
+                    station: nm.into(),
+                    label: Some(n.to_string()),
+                    track: t.clone(),
+                    from_m: 5.0,
+                    to_m: 145.0,
+                });
+            }
+        }
+    }
+    // East terminal and sidings.
+    s.tracks.extend([
+        track("ep1", 160.0, 40.0, Both),
+        track("ep2", 160.0, 40.0, Both),
+        track("exo", 60.0, 40.0, Both),
+        track("em1a", 100.0, 60.0, Both),
+        track("em2a", 60.0, 60.0, Both),
+        track("em2c", 60.0, 60.0, Both),
+        track("exo2", 60.0, 40.0, Both),
+        track("esl", 80.0, 25.0, Both),
+        storage("es1", 400.0),
+        storage("es2", 400.0),
+    ]);
+    s.nodes.extend([
+        switch("esc", te("e3", B), te("em1a", A), te("exo2", A)),
+        switch("esa", te("ep1", A), te("em1a", B), te("exo", B)),
+        switch("esb", te("em2c", B), te("ep2", A), te("exo", A)),
+        switch("edep", te("em2c", A), te("em2a", B), te("esl", B)),
+        switch("esd", te("em2a", A), te("w3", B), te("exo2", B)),
+        switch("ess", te("esl", A), te("es1", B), te("es2", B)),
+        buffer("ep1.end", te("ep1", B)),
+        buffer("ep2.end", te("ep2", B)),
+        buffer("es1.end", te("es1", A)),
+        buffer("es2.end", te("es2", A)),
+    ]);
+    s.signals.extend([
+        signal("S_WP1", "wp1", 155.0, Dir::Up, SignalKind::Main),
+        signal("S_WP2", "wp2", 155.0, Dir::Up, SignalKind::Main),
+        signal("H_W", "w0", 0.0, Dir::Down, SignalKind::Main),
+        signal("H_E", "e3", 800.0, Dir::Up, SignalKind::Main),
+        signal("S_EP1", "ep1", 5.0, Dir::Down, SignalKind::Main),
+        signal("S_EP2", "ep2", 5.0, Dir::Down, SignalKind::Main),
+        signal("SD1", "wd1", 0.0, Dir::Down, SignalKind::Shunting),
+        signal("SD2", "wd2", 0.0, Dir::Down, SignalKind::Shunting),
+        signal("SD3", "wd3", 0.0, Dir::Down, SignalKind::Shunting),
+        signal("SS1", "es1", 400.0, Dir::Up, SignalKind::Shunting),
+        signal("SS2", "es2", 400.0, Dir::Up, SignalKind::Shunting),
+    ]);
+    for (id, name, p1, p2) in [
+        ("westpark", "Westpark", "wp1", "wp2"),
+        ("eastgate", "Eastgate", "ep1", "ep2"),
+    ] {
+        s.stations.push(StationSpec {
+            id: id.into(),
+            name: name.into(),
+            group: None,
+        });
+        for (n, t) in [(1, p1), (2, p2)] {
+            s.platforms.push(PlatformSpec {
+                id: format!("{id}-{n}"),
+                station: id.into(),
+                label: Some(n.to_string()),
+                track: t.into(),
+                from_m: 10.0,
+                to_m: 150.0,
+            });
+        }
+    }
+    s
+}

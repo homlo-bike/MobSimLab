@@ -259,6 +259,12 @@ pub struct LevelCrossingSpec {
     pub keep_clear_m: f64,
     /// Whether buses use the street.
     pub bus: bool,
+    /// Special measures of a crossing outside the usual rules (`mode`,
+    /// `third_rail`, `motorway`, `line_speed`). Empty for a standard crossing.
+    /// A crossing with special measures is protected by obstacle detection:
+    /// trains are held while its road zone is not clear.
+    #[serde(default)]
+    pub special_measures: Vec<String>,
 }
 
 /// The whole network as the operations model needs it.
