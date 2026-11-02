@@ -55,6 +55,8 @@ export interface RailPanelActions {
   example: () => void;
   clear: () => void;
   showIssue: (at: LonLat | null, ref: number | null) => void;
+  /** Rename a station and the stations next to it; a name used farther away gets a number. */
+  renameStation: (id: number, name: string) => void;
   fit: () => void;
 }
 
@@ -466,6 +468,7 @@ function StationInspector({ st, doc, view, actions: a }: Props & { st: Station }
         aria-label="Station name"
         value={st.name}
         onChange={(e) => set((s) => ({ ...s, name: e.target.value }))}
+        onBlur={(e) => a.renameStation(st.id, e.target.value)}
         className={field}
       />
       <ModeRow
