@@ -39,3 +39,4 @@ All ADRs below were accepted on 2026-10-27. New ADRs start as Proposed. Template
 | [0033](0033-railway-editor-implementation.md) | Railway editor: one Rust geometry crate, run in the browser as WebAssembly | Proposed |
 | [0034](0034-journey-planner.md) | Journey time benchmark: RAPTOR over a GTFS-shaped published timetable, in Rust and WebAssembly | Proposed |
 | [0035](0035-ai-agent-integration-mcp.md) | AI agents connect from outside through an MCP server; MobSimLab supplies deterministic scenario, benchmark and walk-coverage tools | Accepted |
+| [0036](0036-plugins.md) | Plugins add modes, infrastructure, calculations and schematics as signed packages of data and sandboxed WebAssembly, installed by Admins and enabled per project | Proposed |
