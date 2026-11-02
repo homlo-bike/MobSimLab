@@ -727,3 +727,85 @@
       sources: [mobsimlab-derivation]
       check: unverified
       rationale: Between tram and mainline; only used where a metro is built with overhead line instead of third rail.
+
+- key: level_crossing.permitted
+  label: "Level crossings with streets: allowed for the mode"
+  group: Infrastructure standards
+  unit: yes/no
+  kind: enum
+  options: ["yes", "no"]
+  used_by: [railway design check of street-level track crossing a street]
+  values:
+    - context:
+        mode: "*"
+      central: "yes"
+      basis: cited
+      sources: [vuchic-2007, ebo]
+      check: unverified
+      rationale: Trams cross streets at traffic signals; light rail and mainline rail may keep level crossings (right-of-way category B). The line speed limit (level_crossing.max_line_speed_kmh) applies as well.
+    - context:
+        mode: [metro, high_speed_rail]
+      central: "no"
+      basis: cited
+      sources: [vuchic-2007, ebo]
+      check: unverified
+      rationale: Metro is fully separated by definition (right-of-way category A, usually with a live third rail). High-speed lines run above the speed up to which level crossings are allowed (EBO § 11(2)).
+
+- key: level_crossing.max_line_speed_kmh
+  label: "Level crossings: highest line speed over a level crossing"
+  group: Infrastructure standards
+  unit: km/h
+  used_by: [railway design check of street-level track crossing a street]
+  values:
+    - context:
+        mode: "*"
+      low: 140
+      central: 160
+      high: 200
+      basis: cited
+      sources: [ebo]
+      check: unverified
+      rationale: EBO § 11(2) does not allow level crossings on lines with a permitted speed above 160 km/h. Other countries set similar limits; the project country decides.
+
+- key: level_crossing.min_angle_deg
+  label: "Level crossings: smallest angle between track and street"
+  group: Infrastructure standards
+  unit: degrees
+  used_by:
+    [railway design check of street-level track crossing a street, telling street running from a crossing]
+  values:
+    - context:
+        mode: "*"
+      low: 30
+      central: 45
+      high: 70
+      basis: educated-guess
+      sources: [aashto-green-book, mobsimlab-derivation]
+      check: unverified
+      rationale: Road guidance asks for crossings as near to a right angle as possible, because a skewed crossing is longer, keeps road vehicles on the track for longer and makes it hard for drivers to look along the line. A warning below 45° is a maintainers' choice to be confirmed. For street-running trams, a track meeting a street at a flatter angle is taken as running along the street, not crossing it.
+
+- key: level_crossing.warning_time_s
+  label: "Level crossings: warning time before a train reaches the crossing"
+  group: Infrastructure standards
+  unit: s
+  used_by:
+    [approach distance in the track topology (start of the crossing's warning), road closure in simulation]
+  values:
+    - context:
+        mode: "*"
+      low: 20
+      central: 25
+      high: 40
+      basis: cited
+      sources: [us-49cfr234]
+      check: unverified
+      rationale: 49 CFR 234.225 requires at least 20 s of warning; railways usually add a few seconds for barriers to come down, so the central value is 25 s. Countries set their own times.
+    - context:
+        mode: [tram, light_rail]
+      low: 10
+      central: 15
+      high: 25
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: Trams crossing at traffic signals request priority one signal cycle step ahead (amber plus clearance time of the conflicting traffic), about 10–20 s. To be confirmed against local signal timing.

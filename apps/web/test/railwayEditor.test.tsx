@@ -56,6 +56,29 @@ beforeAll(async () => {
 
 const ORIGIN: [number, number] = [7, 50.9];
 
+/** One OSM street tile: a north–south street through the origin's longitude. */
+function streetTile(lat0: number, lat1: number, tags: Record<string, string> = {}): string {
+  const t = { highway: "secondary", name: "Station Road", bus: "designated", ...tags };
+  return `<osm version="0.6">
+  <node id="1" lon="${ORIGIN[0]}" lat="${lat0}"/>
+  <node id="2" lon="${ORIGIN[0]}" lat="${lat1}"/>
+  <way id="100"><nd ref="1"/><nd ref="2"/>${Object.entries(t)
+    .map(([k, v]) => `<tag k="${k}" v="${v}"/>`)
+    .join("")}</way>
+</osm>`;
+}
+
+/** A single storage track along the x axis through the origin, 800 m long. */
+function lineAcross(mode: RailMode): Network {
+  const net = emptyNetwork(mode, ORIGIN);
+  const t = newTrack(
+    net,
+    { type: "free", x: -400, y: 0 },
+    { tracks: 1, level: "street", power: "auto", use: "storage" },
+  );
+  return { ...net, tracks: [{ ...t, end: { type: "free", x: 400, y: 0 } }] };
+}
+
 describe("railway document edits", () => {
   it("gives ids unique across element types and names stations", () => {
     let d = emptyNetwork("metro", ORIGIN);
@@ -190,6 +213,35 @@ describe("railway engine (WebAssembly)", () => {
     e.dispose();
   });
 
+  it("finds level crossings with streets and exports them for operations", async () => {
+    const e = await loadRailEngine();
+    expect(e.addStreetTile(streetTile(50.899, 50.901))).toBe(1);
+    const v = e.build(lineAcross("regional_rail"), null);
+    expect(v.level_crossings).toHaveLength(1);
+    const x = v.level_crossings[0]!;
+    expect(x).toMatchObject({ street: "Station Road", protection: "barriers", allowed: true, bus: true });
+    expect(x.angle_deg).toBeCloseTo(90, 0);
+    expect(v.issues.some((i) => /Level crossing with Station Road/.test(i.text))).toBe(true);
+    const kinds = v.layers.level_crossings.features.map((f) => f.properties?.kind);
+    expect(kinds).toEqual(expect.arrayContaining(["deck", "stop_line", "barrier"]));
+    const t = e.topology() as {
+      level_crossings: { id: string; sections: string[]; street: { way: number } }[];
+    };
+    expect(t.level_crossings[0]).toMatchObject({
+      id: "lc1-100-0",
+      sections: ["t1.0.0"],
+      street: { way: 100 },
+    });
+    // A metro line may not cross a street on the level; a street on a bridge is no crossing.
+    const m = e.build(lineAcross("metro"), null);
+    expect(m.level_crossings[0]!.allowed).toBe(false);
+    expect(m.issues.some((i) => i.severity === "error" && /no level crossings/.test(i.text))).toBe(true);
+    e.clearStreets();
+    e.addStreetTile(streetTile(50.899, 50.901, { bridge: "yes" }));
+    expect(e.build(lineAcross("regional_rail"), null).level_crossings).toHaveLength(0);
+    e.dispose();
+  });
+
   it("reports a curve tighter than the minimum radius", async () => {
     const e = await loadRailEngine();
     const doc: Network = {
@@ -240,6 +292,12 @@ function fakeMap() {
     off: (t: string) => handlers.delete(t),
     getZoom: () => 16,
     getCenter: () => ({ lng: ORIGIN[0], lat: ORIGIN[1] }),
+    getBounds: () => ({
+      getWest: () => ORIGIN[0] - 0.01,
+      getEast: () => ORIGIN[0] + 0.01,
+      getSouth: () => ORIGIN[1] - 0.01,
+      getNorth: () => ORIGIN[1] + 0.01,
+    }),
     getSource: () => undefined,
     getLayer: () => undefined,
     queryRenderedFeatures: () => [],
@@ -254,10 +312,18 @@ function fakeMap() {
 }
 
 describe("Railway editor", () => {
-  async function opened() {
+  async function opened(
+    fetchTile: (x: number, y: number) => Promise<string> = () => Promise.reject(new Error("offline")),
+  ) {
     let engine: RailEngine | null = null;
     const { map, handlers } = fakeMap();
-    render(<RailwayEditor map={map} loadEngine={async () => (engine = await loadRailEngine())} />);
+    render(
+      <RailwayEditor
+        map={map}
+        fetchTile={fetchTile}
+        loadEngine={async () => (engine = await loadRailEngine())}
+      />,
+    );
     await waitFor(() => expect(screen.getByRole("button", { name: "Example" })).toBeTruthy());
     return { map, handlers, engine: () => engine! };
   }
@@ -282,12 +348,23 @@ describe("Railway editor", () => {
     expect(await screen.findByRole("button", { name: /Delete track/ })).toBeTruthy();
   });
 
+  it("loads the streets on screen and lists the level crossings with them", async () => {
+    const fetchTile = vi.fn(async () => streetTile(50.88, 50.92));
+    await opened(fetchTile);
+    fireEvent.change(screen.getByRole("combobox"), { target: { value: "regional_rail" } });
+    fireEvent.click(screen.getByRole("button", { name: "Example" }));
+    expect(fetchTile).toHaveBeenCalled();
+    expect(await screen.findByText(/Level crossings · [1-9]/)).toBeTruthy();
+    expect(screen.getAllByText(/Station Road · \d+° · barriers · buses/).length).toBeGreaterThan(0);
+  });
+
   it("keeps what is drawn in its own railway system when the mode for new elements changes", async () => {
     let built: Network | null = null;
     const { map } = fakeMap();
     render(
       <RailwayEditor
         map={map}
+        fetchTile={() => Promise.reject(new Error("offline"))}
         loadEngine={async () => {
           const e = await loadRailEngine();
           const build = e.build;

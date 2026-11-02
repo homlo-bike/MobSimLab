@@ -73,9 +73,23 @@ Double track spreads smoothly to the station's track spacing where it meets a st
 - Further out, each track is one line, and below zoom 12.5 each alignment is one line.
 - Tracks on the same level merge into one piece of trackwork. Lower levels are drawn under higher ones and paler.
 
+## Level crossings with streets
+
+When the map is zoomed in to zoom 13 or closer, the tool loads the streets on screen. These are the same OpenStreetMap streets the street line tool uses. Wherever street-level track crosses a street used by road vehicles, it makes a **level crossing**. The panel lists them under **Level crossings**; click one to go to it.
+
+- Railway track gets barriers, and tram track embedded in the street gets traffic signals. When zoomed in, the street surface covers the sleepers, the rails stay on top, and the stop lines and barriers are drawn on the street.
+- Buses, trolleybuses, depot runs and cars wait at the stop lines. They never stop on the track.
+- A street on a bridge or in a tunnel, or a track below or above street level, is not a level crossing. A tram running along a street is not crossing it.
+- Errors: a metro or high-speed line crossing a street, a third rail, a line speed above 160 km/h, or a motorway. Put the track or the street on another level.
+- Warnings:
+  - The street crosses at an angle flatter than 45°.
+  - A trolleybus wire crosses the railway's overhead line. A tram line needs an insulated wire crossing. On a 15 or 25 kV main line, trolleybuses cross on battery.
+
+Where streets did not load (for example, while signed out), the panel says so and those crossings are not checked.
+
 ## Track topology for operations
 
-**Download track topology (JSON)** in the panel saves the drawing as a graph for timetables and train control. It contains track sections, the movements allowed at every switch and join, platform edges, switches, crossings and depot groups. The format is described in [contracts](../../contracts/README.md). If the design has errors, the file says so (`valid: false`), and the button shows it.
+**Download track topology (JSON)** in the panel saves the drawing as a graph for timetables and train control. It contains track sections, the movements allowed at every switch and join, platform edges, switches, crossings, level crossings with streets and depot groups. The format is described in [contracts](../../contracts/README.md). If the design has errors, the file says so (`valid: false`), and the button shows it.
 
 ## Checks
 

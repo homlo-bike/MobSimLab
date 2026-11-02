@@ -18,6 +18,7 @@
     "switches",
     "platform_edges",
     "crossings",
+    "level_crossings",
     "depot_groups"
   ],
   "properties": {
@@ -45,6 +46,7 @@
     "switches": { "type": "array", "items": { "$ref": "#/$defs/switch" } },
     "platform_edges": { "type": "array", "items": { "$ref": "#/$defs/platform_edge" } },
     "crossings": { "type": "array", "items": { "$ref": "#/$defs/crossing" } },
+    "level_crossings": { "type": "array", "items": { "$ref": "#/$defs/level_crossing" } },
     "depot_groups": { "type": "array", "items": { "$ref": "#/$defs/depot_group" } }
   },
   "$defs": {
@@ -322,6 +324,82 @@
           "items": { "$ref": "#/$defs/crossing_track" },
           "minItems": 2,
           "maxItems": 2
+        }
+      }
+    },
+    "level_crossing": {
+      "description": "Street-level track crossing a street from OpenStreetMap: a conflict between trains and road vehicles (buses, trolleybuses, depot runs, cars). The railway owns it: it closes the street before a train and clears the train only when the street is closed (ADR-0007).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "protection",
+        "allowed",
+        "mode",
+        "angle_deg",
+        "x",
+        "y",
+        "track",
+        "chainage_m",
+        "rail_zone_m",
+        "sections",
+        "line_speed_kmh",
+        "warning_time_s",
+        "approach_m",
+        "street"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^lc\\d+-\\d+-\\d+$",
+          "description": "lc{track}-{OSM way}-{n}."
+        },
+        "protection": {
+          "description": "barriers: ballasted railway track, barriers and lights; traffic_signals: tram track embedded in the street.",
+          "enum": ["barriers", "traffic_signals"]
+        },
+        "allowed": { "type": "boolean", "description": "No design error at this crossing." },
+        "mode": { "$ref": "#/$defs/mode" },
+        "angle_deg": { "type": "number", "minimum": 0, "maximum": 90 },
+        "x": { "type": "number" },
+        "y": { "type": "number" },
+        "track": { "type": "integer", "minimum": 1 },
+        "chainage_m": { "$ref": "#/$defs/metres" },
+        "rail_zone_m": {
+          "$ref": "#/$defs/metres",
+          "description": "Half the length of track covered by the street, each side of the crossing point."
+        },
+        "sections": {
+          "description": "Line sections within the rail zone.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/section_id" }
+        },
+        "line_speed_kmh": { "type": "number", "minimum": 0 },
+        "warning_time_s": { "type": "number", "minimum": 0 },
+        "approach_m": {
+          "$ref": "#/$defs/metres",
+          "description": "Distance before the crossing, in either direction, where an approaching train starts the warning (warning time at line speed)."
+        },
+        "street": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["way", "name", "class", "offset_m", "width_m", "keep_clear_m", "bus", "trolley_wire"],
+          "properties": {
+            "way": { "type": "integer", "description": "OSM way id." },
+            "name": { "type": "string" },
+            "class": { "type": "string", "description": "OSM highway value." },
+            "offset_m": {
+              "$ref": "#/$defs/metres",
+              "description": "Distance along the way from its first node."
+            },
+            "width_m": { "type": "number", "exclusiveMinimum": 0 },
+            "keep_clear_m": {
+              "$ref": "#/$defs/metres",
+              "description": "From the crossing point to each stop line along the street. Road vehicles wait behind it and never stop between the stop lines."
+            },
+            "bus": { "type": "boolean" },
+            "trolley_wire": { "type": "boolean" }
+          }
         }
       }
     },

@@ -79,6 +79,8 @@ pub struct Design {
     pub switches: Vec<SwitchGeo>,
     /// Crossings between tracks.
     pub crossings: Vec<Crossing>,
+    /// Level crossings of street-level track with streets.
+    pub level_crossings: Vec<crate::street::LevelCrossing>,
     /// Speed profile per track id.
     pub speeds: BTreeMap<u32, SpeedProfile>,
     /// All findings, errors first.
@@ -222,6 +224,16 @@ fn refers_to_missing(a: &Anchor, net: &Network) -> bool {
 /// Inputs: the document, and the id of a track still being drawn (no open-end warning for it).
 /// Output: the design (pure; no side effects).
 pub fn build(net: &Network, draft: Option<u32>) -> Design {
+    build_with_streets(net, draft, &[])
+}
+
+/// Purpose: build the design and find its level crossings with the given streets (pure).
+/// Inputs: the document, the id of a track still being drawn, streets from OpenStreetMap.
+pub fn build_with_streets(
+    net: &Network,
+    draft: Option<u32>,
+    streets: &[crate::street::Street],
+) -> Design {
     let d = defaults();
     let params = net
         .params
@@ -335,12 +347,36 @@ pub fn build(net: &Network, draft: Option<u32>) -> Design {
         tracks,
         switches,
         crossings: vec![],
+        level_crossings: vec![],
         speeds: BTreeMap::new(),
         issues: switch_errors,
         network: net.clone(),
     };
     validate(&mut design, draft);
+    crate::street::level_crossings(&mut design, streets);
+    finish_issues(&mut design);
     design
+}
+
+/// Purpose: sort the findings, errors first, and say so when nothing needs attention.
+fn finish_issues(dz: &mut Design) {
+    let iss = &mut dz.issues;
+    iss.sort_by_key(|i| i.severity);
+    if !iss
+        .iter()
+        .any(|i| matches!(i.severity, Severity::Error | Severity::Warning))
+        && !dz.tracks.is_empty()
+    {
+        iss.insert(
+            0,
+            Issue {
+                severity: Severity::Ok,
+                text: "No sharp corners or impossible connections: every curve meets the minimum radius, every switch is a catalogue element on straight track, every level change has a ramp within the maximum gradient.".into(),
+                at: None,
+                ref_id: None,
+            },
+        );
+    }
 }
 
 fn validate(dz: &mut Design, draft: Option<u32>) {
@@ -780,22 +816,6 @@ fn validate(dz: &mut Design, draft: Option<u32>) {
             let sp = speed_profile(dz, t, g);
             dz.speeds.insert(g.id, sp);
         }
-    }
-    iss.sort_by_key(|i| i.severity);
-    if !iss
-        .iter()
-        .any(|i| matches!(i.severity, Severity::Error | Severity::Warning))
-        && !geos.is_empty()
-    {
-        iss.insert(
-            0,
-            Issue {
-                severity: Severity::Ok,
-                text: "No sharp corners or impossible connections: every curve meets the minimum radius, every switch is a catalogue element on straight track, every level change has a ramp within the maximum gradient.".into(),
-                at: None,
-                ref_id: None,
-            },
-        );
     }
     dz.crossings = crossings;
     dz.issues = iss;

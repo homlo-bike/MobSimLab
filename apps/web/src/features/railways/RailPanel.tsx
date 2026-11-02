@@ -60,6 +60,8 @@ export interface RailPanelActions {
 }
 
 interface Props {
+  /** Why streets (and so level crossings) are missing, if they are. */
+  streetNote?: string | null;
   doc: Network;
   view: RailView;
   tool: RailTool;
@@ -400,7 +402,7 @@ export function RailPanel(props: Props) {
       <Section title="Operations">
         <p className="text-xs text-slate-600">
           The track graph for timetables and train control: sections, allowed movements, switches, platform
-          edges, crossings and depot groups.
+          edges, crossings, level crossings and depot groups.
         </p>
         <button
           type="button"
@@ -410,6 +412,33 @@ export function RailPanel(props: Props) {
         >
           Download track topology (JSON){view.counts.errors > 0 ? " · has errors" : ""}
         </button>
+      </Section>
+
+      <Section title={`Level crossings · ${view.level_crossings.length}`}>
+        <p className="text-xs text-slate-600">
+          Where street-level track crosses a street that buses, trolleybuses and other road vehicles use. The
+          railway closes the street before each train; road vehicles wait at the stop lines.
+        </p>
+        {props.streetNote && <p className="text-xs text-amber-800">{props.streetNote}</p>}
+        <ul className="flex flex-col gap-1">
+          {view.level_crossings.map((x) => (
+            <li key={x.id}>
+              <button
+                type="button"
+                onClick={() => a.showIssue(x.lonlat, x.track)}
+                className="flex w-full items-start gap-2 rounded px-1 py-0.5 text-left hover:bg-slate-100"
+              >
+                <span style={{ color: x.allowed ? COLORS.info : COLORS.error }}>{x.allowed ? "●" : "✕"}</span>
+                <span>
+                  {x.street || "Unnamed street"} · {Math.round(x.angle_deg)}° ·{" "}
+                  {x.protection === "barriers" ? "barriers" : "traffic signals"}
+                  {x.bus ? " · buses" : ""}
+                  {x.trolley_wire ? " · trolleybus wire" : ""}
+                </span>
+              </button>
+            </li>
+          ))}
+        </ul>
       </Section>
 
       <Section title={`Checks · ${view.counts.errors} errors · ${view.counts.warnings} warnings`}>

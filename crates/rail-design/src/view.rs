@@ -101,6 +101,7 @@ pub fn view(dz: &Design) -> Value {
         "wires",
         "masts",
         "markers",
+        "level_crossings",
         "corridors",
         "connections",
     ] {
@@ -488,6 +489,55 @@ pub fn view(dz: &Design) -> Value {
         );
     }
 
+    // Level crossings: the street surface across the sleepers (rails stay on top), the stop
+    // lines road vehicles wait behind and, where the crossing has them, the barriers.
+    for x in &dz.level_crossings {
+        let Some(g) = dz.track(x.track) else {
+            continue;
+        };
+        let p = dz.track_params(x.track);
+        let ds = x.street_dir;
+        let dt = P2::dir(crate::geom::at_s(&g.centre, x.s).h);
+        let sin = x.angle.sin().max(0.05);
+        // The deck covers the sleepers of every line: half the spacing plus half a sleeper.
+        let deck = g.spacing_at(x.s) / 2.0 + (p.gauge_m() + 1.165) / 2.0 + 0.3;
+        let (a, b) = (deck / sin, x.street_width_m / 2.0 / sin);
+        let corner = |i: f64, j: f64| x.p.add(ds.mul(i * a)).add(dt.mul(j * b));
+        let z = Level::Street.order();
+        let props = |kind: &str| json!({"kind": kind, "z": z, "ref": x.track, "id": x.id, "allowed": x.allowed});
+        ly.polygon(
+            "level_crossings",
+            &[
+                corner(-1.0, -1.0),
+                corner(1.0, -1.0),
+                corner(1.0, 1.0),
+                corner(-1.0, 1.0),
+            ],
+            props("deck"),
+        );
+        let n = ds.left();
+        let half = x.street_width_m / 2.0;
+        for k in [-1.0, 1.0] {
+            let c = x.p.add(ds.mul(k * x.keep_clear_m));
+            ly.line(
+                "level_crossings",
+                &[c.add(n.mul(-half)), c.add(n.mul(half))],
+                props("stop_line"),
+            );
+            if x.protection == crate::street::Protection::Barriers {
+                // A half barrier across the lane that approaches the crossing (right-hand
+                // traffic), 1 m beyond the stop line.
+                let c = x.p.add(ds.mul(k * (x.keep_clear_m - 1.0)));
+                let side = n.mul(k);
+                ly.line(
+                    "level_crossings",
+                    &[c.add(side.mul(half)), c],
+                    props("barrier"),
+                );
+            }
+        }
+    }
+
     // Track pieces: centre line (beds, sleepers, single-line view), rails, wires and third rail.
     let gaps: Vec<(u32, f64, f64)> = dz
         .switches
@@ -728,6 +778,19 @@ pub fn view(dz: &Design) -> Value {
         "angle_deg": c.angle.to_degrees(), "lonlat": ly.ll(c.p),
     })).collect();
 
+    let level_crossings: Vec<Value> = dz
+        .level_crossings
+        .iter()
+        .map(|x| {
+            json!({
+                "id": x.id, "track": x.track, "mode": x.mode, "street": x.street, "class": x.class,
+                "angle_deg": x.angle.to_degrees(), "protection": x.protection, "allowed": x.allowed,
+                "bus": x.bus, "trolley_wire": x.trolley_wire, "keep_clear_m": x.keep_clear_m,
+                "approach_m": x.approach_m, "lonlat": ly.ll(x.p),
+            })
+        })
+        .collect();
+
     json!({
         "layers": ly.finish(),
         "connections": conn_out,
@@ -741,6 +804,7 @@ pub fn view(dz: &Design) -> Value {
         "turnouts": turnouts(dz.mode),
         "modes": dz.modes.iter().map(|(m, p)| (m.id().to_string(), json!({"params": p, "turnouts": turnouts(*m)}))).collect::<Map<String, Value>>(),
         "crossings": crossings,
+        "level_crossings": level_crossings,
         "counts": counts,
         "bbox": bbox,
     })

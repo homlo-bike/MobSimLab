@@ -49,6 +49,9 @@ export const COLORS = {
   warn: "#b97300",
   info: "#3a6aa0",
   ok: "#2e7a3a",
+  road: "#6f7377",
+  stopLine: "#ffffff",
+  barrier: "#d0342c",
 };
 
 /** Purpose: shift a level up or down by `d` steps, clamped to the five levels. */

@@ -30,6 +30,8 @@ export const loadRailEngine: RailEngineLoader = async () => {
     defaultParams: (mode) => JSON.parse(wasm.RailDesigner.default_params(mode)),
     sample: (mode, [lon, lat]) => JSON.parse(wasm.RailDesigner.sample(mode, lon, lat)),
     topology: () => JSON.parse(d.topology()),
+    addStreetTile: (xml) => d.add_street_tile(xml),
+    clearStreets: () => d.clear_streets(),
     dispose: () => d.free(),
   };
   return engine;

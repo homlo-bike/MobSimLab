@@ -3,7 +3,7 @@
 Usage: check_rail_topology.py FILE.json [FILE.json ...]
 
 Beyond the schema it checks that the graph is consistent: every section's nodes exist, every
-link joins ends of sections at that node, and switches, platform edges, crossings and depot
+link joins ends of sections at that node, and switches, platform edges, crossings, level crossings and depot
 groups refer to sections that exist.
 """
 
@@ -46,6 +46,7 @@ def graph_errors(t: dict) -> list[str]:
         (f"crossing {c['id']}", [x for tr in c["tracks"] for x in tr["sections"]])
         for c in t["crossings"]
     ]
+    refs += [(f"level crossing {x['id']}", x["sections"]) for x in t["level_crossings"]]
     refs += [(f"depot group {d['id']}", d["sections"]) for d in t["depot_groups"]]
     for what, ids in refs:
         errs += [f"{what}: unknown section {i}" for i in ids if i not in sections]

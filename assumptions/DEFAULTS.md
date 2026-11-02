@@ -714,6 +714,40 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 | tram, light_rail | 25 | 35 | 45 | documented | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Tram trolley wire without a catenary sags more, so spans of about 30–40 m are usual. |
 | metro | 40 | 50 | 60 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Between tram and mainline; only used where a metro is built with overhead line instead of third rail. |
 
+### Level crossings with streets: allowed for the mode
+
+`level_crossing.permitted` · unit: yes/no · used by: railway design check of street-level track crossing a street
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | – | yes | – | cited | unverified | [vuchic-2007](#src-vuchic-2007), [ebo](#src-ebo) | Trams cross streets at traffic signals; light rail and mainline rail may keep level crossings (right-of-way category B). The line speed limit (level_crossing.max_line_speed_kmh) applies as well. |
+| metro, high_speed_rail | – | no | – | cited | unverified | [vuchic-2007](#src-vuchic-2007), [ebo](#src-ebo) | Metro is fully separated by definition (right-of-way category A, usually with a live third rail). High-speed lines run above the speed up to which level crossings are allowed (EBO § 11(2)). |
+
+### Level crossings: highest line speed over a level crossing
+
+`level_crossing.max_line_speed_kmh` · unit: km/h · used by: railway design check of street-level track crossing a street
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 140 | 160 | 200 | cited | unverified | [ebo](#src-ebo) | EBO § 11(2) does not allow level crossings on lines with a permitted speed above 160 km/h. Other countries set similar limits; the project country decides. |
+
+### Level crossings: smallest angle between track and street
+
+`level_crossing.min_angle_deg` · unit: degrees · used by: railway design check of street-level track crossing a street, telling street running from a crossing
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 30 | 45 | 70 | educated-guess | unverified | [aashto-green-book](#src-aashto-green-book), [mobsimlab-derivation](#src-mobsimlab-derivation) | Road guidance asks for crossings as near to a right angle as possible, because a skewed crossing is longer, keeps road vehicles on the track for longer and makes it hard for drivers to look along the line. A warning below 45° is a maintainers' choice to be confirmed. For street-running trams, a track meeting a street at a flatter angle is taken as running along the street, not crossing it. |
+
+### Level crossings: warning time before a train reaches the crossing
+
+`level_crossing.warning_time_s` · unit: s · used by: approach distance in the track topology (start of the crossing's warning), road closure in simulation
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 20 | 25 | 40 | cited | unverified | [us-49cfr234](#src-us-49cfr234) | 49 CFR 234.225 requires at least 20 s of warning; railways usually add a few seconds for barriers to come down, so the central value is 25 s. Countries set their own times. |
+| tram, light_rail | 10 | 15 | 25 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Trams crossing at traffic signals request priority one signal cycle step ahead (amber plus clearance time of the conflicting traffic), about 10–20 s. To be confirmed against local signal timing. |
+
 ## Accessibility
 
 ### Level access: largest horizontal gap between platform edge and vehicle floor
@@ -1004,6 +1038,7 @@ and rationale per attribute: [`switches.yaml`](switches.yaml); geometry model:
 | <a id="src-eu-dir-92-6"></a>`eu-dir-92-6` | [Council Directive 92/6/EEC on the installation and use of speed limitation devices for certain categories of motor vehicles (M3 buses set to 100 km/h)](https://eur-lex.europa.eu/eli/dir/1992/6/oj) | free | © European Union; reuse authorised under Commission Decision 2011/833/EU | 2026-10-27 | none |
 | <a id="src-unece-r107"></a>`unece-r107` | [UN Regulation No. 107, uniform provisions concerning the approval of category M2 or M3 vehicles (Annex 3, area per standing passenger by vehicle class)](https://unece.org/transport/vehicle-regulations-wp29/standards/addenda-1958-agreement-regulations-101-120) | free | United Nations document; free to reproduce with attribution | 2026-10-27 | none |
 | <a id="src-ebo"></a>`ebo` | [Eisenbahn-Bau- und Betriebsordnung (EBO), Germany](https://www.gesetze-im-internet.de/ebo/) | free | Official work, no copyright (§ 5 UrhG) | 2026-10-27 | none |
+| <a id="src-us-49cfr234"></a>`us-49cfr234` | [US Code of Federal Regulations, 49 CFR Part 234 (Grade crossing safety), § 234.225: active warning devices give at least 20 seconds of warning before a train arrives](https://www.ecfr.gov/current/title-49/subtitle-B/chapter-II/part-234) | free | US Government work, public domain | 2026-11-02 | none |
 | <a id="src-bostrab"></a>`bostrab` | [Verordnung über den Bau und Betrieb der Straßenbahnen (BOStrab), Germany](https://www.gesetze-im-internet.de/strabbo_1987/) | free | Official work, no copyright (§ 5 UrhG) | 2026-10-27 | search-snippet |
 | <a id="src-bostrab-trr"></a>`bostrab-trr` | [Richtlinien für die Trassierung von Bahnen nach BOStrab (BOStrab-Trassierungsrichtlinien, BOStrab-TrR)](https://www.vdv.de/) | on-request | © publisher; numbers cited as facts | 2026-10-27 | none |
 | <a id="src-tud-tram-radius"></a>`tud-tram-radius` | [„Spurführung“ seminar slides, werkstadt mobilität (2026): tram curve radii in practice about 20 to 30 m, extremes just under 12 m](https://werkstadtmobilitaet.de/wp-content/uploads/2026/07/2-Spurfuehrung.pdf) | free | © author; numbers cited as facts | 2026-10-27 | search-snippet |

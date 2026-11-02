@@ -62,6 +62,13 @@ RAIL_FIELDS = {
     "acceleration_ms2": "mode.acceleration_ms2",
     "service_braking_ms2": "mode.service_braking_ms2",
     "colour": "mode.colour",
+    "street_lane_width_m": "street.lane_width_m",
+    "street_lanes": "street.lanes",
+    "road_stop_clearance_m": "crossing.clearance_m",
+    "level_crossing_permitted": "level_crossing.permitted",
+    "level_crossing_max_speed_kmh": "level_crossing.max_line_speed_kmh",
+    "level_crossing_min_angle_deg": "level_crossing.min_angle_deg",
+    "level_crossing_warning_time_s": "level_crossing.warning_time_s",
 }
 RAIL_LABELS = {
     "tram": "Tram",

@@ -4,10 +4,16 @@
 //! edit to [`RailDesigner::build`], which returns the map layers, edit handles, summaries and
 //! checks as JSON (see `rail_design::view`). Geometry runs in the browser, so dragging a point
 //! refits the curves at once, with the same code the simulation will use.
+//!
+//! The editor also passes the street tiles on screen (OSM XML from the API, the same tiles the
+//! street line tool uses) to [`RailDesigner::add_street_tile`], so the build finds level
+//! crossings with the streets.
 
 use rail_design::geom::{nearest, P2};
 use rail_design::proj::LocalTm;
-use rail_design::{build, Design, Network, RailMode};
+use rail_design::street::{street_from_osm, Street};
+use rail_design::{build_with_streets, Design, Network, RailMode};
+use std::collections::{BTreeMap, HashMap};
 use wasm_bindgen::prelude::*;
 
 fn mode(s: &str) -> Result<RailMode, JsError> {
@@ -23,6 +29,8 @@ fn js(e: impl std::fmt::Display) -> JsError {
 #[wasm_bindgen]
 pub struct RailDesigner {
     design: Option<Design>,
+    streets: BTreeMap<i64, Street>,
+    street_list: Vec<Street>,
 }
 
 impl Default for RailDesigner {
@@ -36,17 +44,55 @@ impl RailDesigner {
     /// Purpose: an engine with nothing built yet.
     #[wasm_bindgen(constructor)]
     pub fn new() -> RailDesigner {
-        Self { design: None }
+        Self {
+            design: None,
+            streets: BTreeMap::new(),
+            street_list: Vec::new(),
+        }
     }
 
     /// Purpose: build the design from the document (JSON) and return the view (JSON).
     /// `draft` is the id of a track still being drawn (0 for none).
     pub fn build(&mut self, doc: &str, draft: u32) -> Result<String, JsError> {
         let net: Network = serde_json::from_str(doc).map_err(js)?;
-        let d = build(&net, (draft != 0).then_some(draft));
+        let d = build_with_streets(&net, (draft != 0).then_some(draft), &self.street_list);
         let v = rail_design::view::view(&d);
         self.design = Some(d);
         Ok(v.to_string())
+    }
+
+    /// Purpose: add the streets of one OSM XML tile, for level crossings. A way already known is
+    /// kept with the longer of its two shapes (a way cut at a tile edge). Output: number of streets.
+    /// Side effects: the next build checks the tracks against these streets.
+    pub fn add_street_tile(&mut self, xml: &str) -> Result<u32, JsError> {
+        let data = street_routing::osm::parse_osm_xml(xml).map_err(js)?;
+        let nodes: HashMap<i64, [f64; 2]> =
+            data.nodes.iter().map(|n| (n.id, [n.lon, n.lat])).collect();
+        for w in &data.ways {
+            let coords: Vec<[f64; 2]> = w
+                .nodes
+                .iter()
+                .filter_map(|n| nodes.get(n).copied())
+                .collect();
+            let Some(st) = street_from_osm(w.id, &w.tags, coords) else {
+                continue;
+            };
+            if self
+                .streets
+                .get(&w.id)
+                .map_or(true, |old| old.coords.len() < st.coords.len())
+            {
+                self.streets.insert(w.id, st);
+            }
+        }
+        self.street_list = self.streets.values().cloned().collect();
+        Ok(self.streets.len() as u32)
+    }
+
+    /// Purpose: forget all streets. Side effects: the next build has no level crossings.
+    pub fn clear_streets(&mut self) {
+        self.streets.clear();
+        self.street_list.clear();
     }
 
     /// Purpose: the track nearest to a map position within `max_m` metres, as JSON

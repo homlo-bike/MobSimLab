@@ -13,6 +13,7 @@
 //!   (`s{station}.{track}.a`, `t{track}.{line}.a`, …; `a` is the start, `b` the end);
 //! - platform edges: `p{station}.{track}.l` or `.r`;
 //! - crossings: the design's crossing id (`x{trackA}-{trackB}-{n}`);
+//! - level crossings: `lc{track}-{osm way}-{n}` (street-level track crossing a street);
 //! - depot groups: `d{lowest storage track id}`.
 
 use crate::design::{CrossingKind, Design};
@@ -55,6 +56,8 @@ pub struct Topology {
     pub platform_edges: Vec<PlatformEdge>,
     /// Crossings of two alignments.
     pub crossings: Vec<CrossingOut>,
+    /// Level crossings with streets.
+    pub level_crossings: Vec<LevelCrossingOut>,
     /// Groups of connected storage sections (stabling and depot).
     pub depot_groups: Vec<DepotGroup>,
 }
@@ -255,6 +258,62 @@ pub struct CrossingOut {
     pub y: f64,
     /// The two tracks.
     pub tracks: [CrossingTrack; 2],
+}
+
+/// The street at a level crossing.
+#[derive(Debug, Clone, Serialize)]
+pub struct LevelCrossingStreet {
+    /// OSM way id.
+    pub way: i64,
+    /// Name, empty when unnamed.
+    pub name: String,
+    /// OSM `highway` class.
+    pub class: String,
+    /// Distance along the OSM way from its first node to the crossing point, m.
+    pub offset_m: f64,
+    /// Carriageway width, m.
+    pub width_m: f64,
+    /// From the crossing point to each stop line along the street, m.
+    pub keep_clear_m: f64,
+    /// Buses use the street.
+    pub bus: bool,
+    /// A trolleybus wire runs along the street.
+    pub trolley_wire: bool,
+}
+
+/// A street-level track crossing a street: a conflict between trains and road vehicles.
+#[derive(Debug, Clone, Serialize)]
+pub struct LevelCrossingOut {
+    /// Id.
+    pub id: String,
+    /// `barriers` or `traffic_signals`.
+    pub protection: crate::street::Protection,
+    /// No design error at this crossing.
+    pub allowed: bool,
+    /// Railway system.
+    pub mode: RailMode,
+    /// Angle between track and street, degrees.
+    pub angle_deg: f64,
+    /// Position, m east.
+    pub x: f64,
+    /// Position, m north.
+    pub y: f64,
+    /// Track id.
+    pub track: u32,
+    /// Chainage on the track's centre line, m.
+    pub chainage_m: f64,
+    /// Half the length of track covered by the street, each side of the crossing point, m.
+    pub rail_zone_m: f64,
+    /// Line sections within the rail zone.
+    pub sections: Vec<String>,
+    /// Line speed over the crossing, km/h.
+    pub line_speed_kmh: f64,
+    /// Warning time, s.
+    pub warning_time_s: f64,
+    /// Distance before the crossing, in either direction, where a train starts the warning, m.
+    pub approach_m: f64,
+    /// The street.
+    pub street: LevelCrossingStreet,
 }
 
 /// Connected storage sections.
@@ -766,6 +825,37 @@ pub fn topology(dz: &Design) -> Topology {
         })
         .collect();
 
+    let level_crossings = dz
+        .level_crossings
+        .iter()
+        .map(|x| LevelCrossingOut {
+            id: x.id.clone(),
+            protection: x.protection,
+            allowed: x.allowed,
+            mode: x.mode,
+            angle_deg: rd(x.angle.to_degrees()),
+            x: rd(x.p.x),
+            y: rd(x.p.y),
+            track: x.track,
+            chainage_m: rd(x.s),
+            rail_zone_m: rd(x.rail_zone_m),
+            sections: over(x.track, x.s - x.rail_zone_m, x.s + x.rail_zone_m),
+            line_speed_kmh: rd(x.line_speed_kmh),
+            warning_time_s: x.warning_time_s,
+            approach_m: rd(x.approach_m),
+            street: LevelCrossingStreet {
+                way: x.way,
+                name: x.street.clone(),
+                class: x.class.clone(),
+                offset_m: rd(x.street_offset_m),
+                width_m: rd(x.street_width_m),
+                keep_clear_m: rd(x.keep_clear_m),
+                bus: x.bus,
+                trolley_wire: x.trolley_wire,
+            },
+        })
+        .collect();
+
     // Depot groups: storage sections joined by movements.
     let storage: Vec<bool> = sections.iter().map(|s| s.usage == "storage").collect();
     let mut seen = vec![false; segs.len()];
@@ -817,6 +907,7 @@ pub fn topology(dz: &Design) -> Topology {
         switches,
         platform_edges: platforms,
         crossings,
+        level_crossings,
         depot_groups,
     }
 }
@@ -874,5 +965,18 @@ mod tests {
             assert!(tr.fouling_before_m > 3.0 && tr.fouling_after_m > 3.0);
             assert_eq!(tr.sections.len(), 2, "both lines of the double track");
         }
+    }
+
+    #[test]
+    fn a_level_crossing_lists_both_lines_and_the_street() {
+        let net = sample(RailMode::RegionalRail, 7.0, 50.9);
+        let streets = crate::sample::sample_streets(&build(&net, None));
+        let t = topology(&crate::design::build_with_streets(&net, None, &streets));
+        let x = &t.level_crossings[0];
+        assert_eq!(x.id, "lc3-1001-0");
+        assert!(x.allowed && t.valid);
+        assert_eq!(x.sections.len(), 2, "both lines of the double track");
+        assert_eq!(x.street.name, "Station Road");
+        assert!(x.approach_m > 500.0);
     }
 }

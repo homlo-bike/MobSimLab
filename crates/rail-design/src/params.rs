@@ -120,6 +120,20 @@ pub struct ModeParams {
     pub service_braking_ms2: f64,
     /// Line colour.
     pub colour: String,
+    /// Street lane width, m (carriageway width where OSM has no `width`).
+    pub street_lane_width_m: f64,
+    /// Lanes of a two-way street where OSM has no `lanes`.
+    pub street_lanes: f64,
+    /// Road vehicles stop this far outside a crossing's conflict area, m.
+    pub road_stop_clearance_m: f64,
+    /// Whether the mode may cross streets on the level (`yes` or `no`).
+    pub level_crossing_permitted: String,
+    /// Highest line speed over a level crossing, km/h.
+    pub level_crossing_max_speed_kmh: f64,
+    /// Smallest angle between track and street at a level crossing, degrees.
+    pub level_crossing_min_angle_deg: f64,
+    /// Warning time before a train reaches a level crossing, s.
+    pub level_crossing_warning_time_s: f64,
 }
 
 impl ModeParams {
