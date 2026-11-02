@@ -7,7 +7,7 @@ ARG PYTHON_VERSION=3.12
 ARG RUST_VERSION=1.97
 ARG S6_OVERLAY_VERSION=3.2.1.0
 
-# ---- 0. Street routing and railway design compiled to WebAssembly for the web editor
+# ---- 0. Street routing, railway design and journey planner compiled to WebAssembly
 FROM rust:${RUST_VERSION}-slim-bookworm AS wasm-build
 ARG WASM_BINDGEN_VERSION=0.2.129
 RUN apt-get update && apt-get install -y --no-install-recommends pkg-config libssl-dev && rm -rf /var/lib/apt/lists/*
@@ -17,7 +17,7 @@ WORKDIR /src
 COPY Cargo.toml Cargo.lock ./
 COPY crates crates
 COPY tools/wasm tools/wasm
-RUN tools/wasm/build-street-routing.sh && tools/wasm/build-rail-design.sh
+RUN tools/wasm/build-street-routing.sh && tools/wasm/build-rail-design.sh && tools/wasm/build-journey-planner.sh
 
 # ---- 1. Web SPA and API (Node) ------------------------------------------------
 FROM node:${NODE_VERSION}-bookworm-slim AS node-build

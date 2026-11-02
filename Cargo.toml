@@ -7,6 +7,8 @@ members = [
   "crates/street-routing-wasm",
   "crates/rail-design",
   "crates/rail-design-wasm",
+  "crates/journey-planner",
+  "crates/journey-planner-wasm",
 ]
 
 [workspace.package]
