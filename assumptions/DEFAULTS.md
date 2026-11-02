@@ -410,6 +410,15 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 | traction: battery | 0.1 | 0.2 | 0.3 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Operators plan against the usable state-of-charge window and keep a reserve for diversions, traffic and battery ageing; 20 % of nominal is a common planning figure. |
 | traction: diesel, hydrogen, cng | 0.1 | 0.15 | 0.25 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Fuel reserve for disruption. |
 
+### Minimum buffer time between the blocking times of two trains on one section
+
+`timetable.min_buffer_s` · unit: s · used by: timetable construction, conflict detection, capacity
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 30 | 60 | 120 | educated-guess | unverified | [uic-406](#src-uic-406), [mobsimlab-derivation](#src-mobsimlab-derivation) | Buffer times absorb small delays so they do not spread to the next train (UIC 406 stability). National practice differs; one minute is a common planning value on mainlines. |
+| metro, tram, light_rail | 10 | 20 | 40 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Short headways on metro and light rail leave little room; 20 s keeps a 2-minute headway feasible. |
+
 ## Demand
 
 ### Walking speed for walking links between stations
@@ -505,6 +514,39 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 | Context | Low | Central | High | Basis | Check | Sources | Rationale |
 |---|---|---|---|---|---|---|---|
 | all | 100 | 200 | 200 | cited | unverified | [db-ril-819](#src-db-ril-819) | DB Ril 819.0202: standard overlap 200 m above 60 km/h. Clause to be checked. |
+
+### Route setting time before switch throwing (electronic interlocking)
+
+`signalling.route_setting_s` · unit: s · used by: blocking times, route setting
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 2 | 3 | 10 | documented | unverified | [pachl-roc](#src-pachl-roc) | Blocking time component 'route formation': a few seconds for electronic interlockings, longer for relay interlockings; the switch throw time from the switch catalogue is added on top. |
+
+### Driver sight and reaction time at the approach point
+
+`signalling.sight_reaction_s` · unit: s · used by: blocking times
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 6 | 12 | 18 | documented | unverified | [pachl-roc](#src-pachl-roc) | Blocking time component 'sight and reaction': the time the driver needs to see the aspect at the distant signal or sighting point and react; about 0.2 min is the usual planning value. |
+
+### Route release time after the train has cleared a section
+
+`signalling.release_s` · unit: s · used by: blocking times, sectional release
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 1 | 3 | 10 | documented | unverified | [pachl-roc](#src-pachl-roc) | Blocking time component 'release': short for electronic interlockings with axle counters or track circuits; longer for manual or relay release. |
+
+### Sighting distance added to the braking distance for the approach
+
+`signalling.sighting_m` · unit: m · used by: blocking times
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 50 | 150 | 300 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Distance a driver needs to read a signal aspect before the braking point; lineside signals are typically readable for 10–15 s at line speed. Cab signalling (ETCS L2, CBTC) can set it to 0. |
+| metro, tram, light_rail | 0 | 50 | 150 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Lower speeds and short blocks; CBTC lines use 0. |
 
 ## Infrastructure standards
 
@@ -1039,6 +1081,8 @@ and rationale per attribute: [`switches.yaml`](switches.yaml); geometry model:
 | <a id="src-en-15663"></a>`en-15663` | [EN 15663:2017+A1:2018 Railway applications — Vehicle reference masses (standing passenger densities by service type)](https://standards.cencenelec.eu/) | paywalled | © CEN; numbers cited as facts | 2026-10-27 | none |
 | <a id="src-en-50163"></a>`en-50163` | [EN 50163:2004+A1:2007 Railway applications — Supply voltages of traction systems](https://standards.cencenelec.eu/) | paywalled | © CENELEC; numbers cited as facts | 2026-10-27 | none |
 | <a id="src-uic-451-1"></a>`uic-451-1` | [UIC Leaflet 451-1, Timetable recovery margins to guarantee timekeeping — Recovery margins](https://shop.uic.org/) | paywalled | © UIC; numbers cited as facts | 2026-10-27 | none |
+| <a id="src-uic-406"></a>`uic-406` | [UIC Code 406, Capacity, 2nd edition (2013)](https://shop.uic.org/) | paywalled | © UIC; numbers cited as facts | 2026-11-01 | none |
+| <a id="src-pachl-roc"></a>`pachl-roc` | [J. Pachl, Railway Operation and Control, VTD Rail Publishing (blocking time theory, route setting, release and approach times)](https://www.vtd-rail.com/) | paywalled | © the author; numbers cited as facts | 2026-11-01 | none |
 | <a id="src-tcqsm3"></a>`tcqsm3` | [TCRP Report 165, Transit Capacity and Quality of Service Manual, 3rd edition (2013)](https://nap.nationalacademies.org/catalog/24766) | free | © National Academy of Sciences; free to read; numbers cited as facts | 2026-10-27 | none |
 | <a id="src-fta-c9030"></a>`fta-c9030` | [FTA Circular 9030.1E, Urbanized Area Formula Program — spare ratio guideline (spares ≤ 20 % of vehicles in maximum service for fleets of 50 or more)](https://www.transit.dot.gov/regulations-and-guidance/fta-circulars/urbanized-area-formula-program-program-guidance-and) | free | US Government work, public domain | 2026-10-27 | search-snippet |
 | <a id="src-tcrp-spare-ratio"></a>`tcrp-spare-ratio` | [TCRP Synthesis / National Academies chapter on bus spare ratios quoting FTA Circular 9030.1C ch. V para 9.a.5](https://nap.nationalacademies.org/read/22409/chapter/2) | free | © National Academy of Sciences; free to read | 2026-10-27 | search-snippet |

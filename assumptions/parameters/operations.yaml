@@ -339,3 +339,28 @@
       sources: [mobsimlab-derivation]
       check: unverified
       rationale: Fuel reserve for disruption.
+
+- key: timetable.min_buffer_s
+  label: Minimum buffer time between the blocking times of two trains on one section
+  group: Operations
+  unit: s
+  used_by: [timetable construction, conflict detection, capacity]
+  values:
+    - context:
+        mode: "*"
+      low: 30
+      central: 60
+      high: 120
+      basis: educated-guess
+      sources: [uic-406, mobsimlab-derivation]
+      check: unverified
+      rationale: "Buffer times absorb small delays so they do not spread to the next train (UIC 406 stability). National practice differs; one minute is a common planning value on mainlines."
+    - context:
+        mode: [metro, tram, light_rail]
+      low: 10
+      central: 20
+      high: 40
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: "Short headways on metro and light rail leave little room; 20 s keeps a 2-minute headway feasible."

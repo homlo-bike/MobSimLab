@@ -1,0 +1,11 @@
+[package]
+name = "rail-dynamics"
+version = "0.1.0"
+description = "MobSimLab running-time calculation: speed profiles with traction, resistance, gradient, speed limits and braking curves (ADR-0032 §3 step 2)."
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
