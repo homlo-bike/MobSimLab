@@ -33,6 +33,8 @@ export function App() {
     `rounded border px-2 py-0.5 ${on ? "border-blue-700 bg-blue-700 text-white" : "border-slate-300 hover:bg-slate-100"}`;
   // The street line last drawn, so the journey planner can ride it.
   const [line, setLine] = useState<StreetLineInput | null>(null);
+  // The track topology last built in the railway tool, so street lines wait at its level crossings.
+  const [railTopology, setRailTopology] = useState<unknown>(null);
   const [panel, setPanel] = useState<HTMLElement | null>(null);
   // Development hook for end-to-end scripts that need map coordinates.
   if (import.meta.env.DEV) Object.assign(window, { mobsimMap: map });
@@ -124,8 +126,10 @@ export function App() {
             <SetupPanel name={me.instance.name} csrfToken={me.csrfToken} onFinished={reload} />
           )}
           <MapView onReady={setMap} />
-          {tool === "street" && <StreetLineEditor map={map} panel={panel} onLineChange={setLine} />}
-          {tool === "railway" && <RailwayEditor map={map} panel={panel} />}
+          {tool === "street" && (
+            <StreetLineEditor map={map} panel={panel} onLineChange={setLine} railTopology={railTopology} />
+          )}
+          {tool === "railway" && <RailwayEditor map={map} panel={panel} onTopologyChange={setRailTopology} />}
           {tool === "journey" && (
             <JourneyPlanner
               map={map}

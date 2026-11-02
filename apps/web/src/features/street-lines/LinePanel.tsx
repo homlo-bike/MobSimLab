@@ -34,6 +34,71 @@ export interface PanelActions {
   setDepotStops: (s: { out?: number; in?: number }) => void;
   setShowDepot: (v: boolean) => void;
   setShowRoads: (v: boolean) => void;
+  /** A track topology file (the railway tool's Download track topology) replaces the drawing. */
+  loadTopology: (name: string, text: string) => void;
+  /** Rail timetable closures (rail-plan's level_crossing_closures) replace the assumed service. */
+  loadClosures: (name: string, text: string) => void;
+  clearTopology: () => void;
+  clearClosures: () => void;
+}
+
+/** Where the level crossings and their closures come from, for the panel. */
+export interface CrossingSources {
+  /** Topology file name, "railway tool drawing", or null for none. */
+  topology: string | null;
+  topologyIsFile: boolean;
+  /** Closures file name, or null for the service assumed in the topology. */
+  closures: string | null;
+}
+
+const RAIL_MODE: Record<string, string> = {
+  tram: "Tram",
+  light_rail: "Light rail",
+  metro: "Metro",
+  commuter_rail: "Commuter rail",
+  regional_rail: "Regional rail",
+  long_distance_rail: "Intercity",
+  high_speed_rail: "High-speed rail",
+};
+
+const SOURCE: Record<"timetable" | "assumed" | "mixed", string> = {
+  timetable: "rail timetable",
+  assumed: "assumed service",
+  mixed: "timetable and assumed service",
+};
+
+/** Purpose: seconds with one decimal under a minute, else whole minutes and seconds. */
+function seconds(s: number): string {
+  if (s < 60) return `${s.toFixed(1)} s`;
+  const m = Math.floor(s / 60);
+  return `${m} min ${Math.round(s - m * 60)} s`;
+}
+
+/** Purpose: clock time of seconds after midnight, "08:00". */
+function clock(s: number): string {
+  const h = Math.floor(s / 3600) % 24;
+  const m = Math.floor((s % 3600) / 60);
+  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+}
+
+/** Purpose: a file input that hands the file's name and text to `onLoad`. */
+function FileButton({ label, onLoad }: { label: string; onLoad: (name: string, text: string) => void }) {
+  return (
+    <label className="w-fit cursor-pointer rounded border border-slate-300 px-2 py-1 hover:bg-slate-100">
+      {label}
+      <input
+        type="file"
+        accept="application/json,.json"
+        className="sr-only"
+        aria-label={label}
+        onChange={(e) => {
+          const f = e.target.files?.[0];
+          e.target.value = "";
+          if (f) void f.text().then((t) => onLoad(f.name, t));
+        }}
+      />
+    </label>
+  );
 }
 
 interface Props {
@@ -46,6 +111,7 @@ interface Props {
   depotStops: { out?: number; in?: number };
   showDepot: boolean;
   showRoads: boolean;
+  crossingSources?: CrossingSources;
   status: string | null;
   error: string | null;
   actions: PanelActions;
@@ -179,7 +245,7 @@ export function LinePanel(props: Props) {
         <Stat value={String(st.stops)} label={`Stops (${st.endStops} end)`} />
         <Stat
           value={`${Math.round(st.cycleMin)} min`}
-          label={`Cycle: ${Math.round(st.runMin)} run, ${Math.round(st.dwellMin)} dwell, ${Math.round(st.layoverMin)} layover`}
+          label={`Cycle: ${Math.round(st.runMin)} run${st.crossingMin > 0 ? ` (${st.crossingMin < 1 ? "<1" : Math.round(st.crossingMin)} at level crossings)` : ""}, ${Math.round(st.dwellMin)} dwell, ${Math.round(st.layoverMin)} layover`}
         />
         <Stat value={String(st.vehicles)} label={`Vehicles for a ${timing.headwayMin} min headway`} />
       </div>
@@ -320,6 +386,66 @@ export function LinePanel(props: Props) {
             </li>
           ))}
         </ul>
+      </Section>
+
+      <Section title={`Level crossings · ${view.level_crossings.length}`}>
+        <p className="text-xs text-slate-600">
+          Where the line crosses a railway on the level, the expected wait for the street to open is added to
+          the running time: the busiest hour of the rail timetable, or the service assumed for the railway
+          until there is one.
+        </p>
+        {view.level_crossings.length > 0 && (
+          <ul className="flex flex-col gap-1.5" aria-label="Level crossings on the line">
+            {view.level_crossings.map((x) => (
+              <li key={x.ids.join()} className="flex flex-col">
+                <span>
+                  <b>{x.street || "Unnamed street"}</b> · {x.modes.map((m) => RAIL_MODE[m] ?? m).join(", ")} ·{" "}
+                  {x.protection === "barriers" ? "barriers" : "traffic signals"}
+                  {x.passes > 1 ? ` · passed ${x.passes}×` : ""}
+                </span>
+                <span className="text-xs text-slate-600">
+                  +{seconds(x.wait.wait_s)} per pass
+                  {x.wait.peak_hour_s !== null
+                    ? ` (${clock(x.wait.peak_hour_s)} busiest hour)`
+                    : " (peak)"}, {seconds(x.wait.off_peak_wait_s)} off-peak ·{" "}
+                  {Math.round(x.wait.closures_per_hour)} closures an hour of{" "}
+                  {Math.round(x.wait.mean_closure_s)} s, closed {Math.round(x.wait.closed_share * 100)} % ·{" "}
+                  {SOURCE[x.wait.source]}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+        <p className="text-xs text-slate-600">
+          {props.crossingSources?.topology
+            ? `Railway: ${props.crossingSources.topology}. Closures: ${props.crossingSources.closures ?? "assumed service"}.`
+            : "No railway yet. Draw one in the railway tool, or load its track topology."}
+          {props.crossingSources?.topology && view.level_crossings.length === 0 && view.legs.length > 0
+            ? " The line crosses none of its level crossings."
+            : ""}
+        </p>
+        <div className="flex flex-wrap gap-2">
+          <FileButton label="Load track topology" onLoad={a.loadTopology} />
+          {props.crossingSources?.topologyIsFile && (
+            <button
+              type="button"
+              className="rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
+              onClick={a.clearTopology}
+            >
+              Use the railway tool drawing
+            </button>
+          )}
+          <FileButton label="Load rail timetable closures" onLoad={a.loadClosures} />
+          {props.crossingSources?.closures && (
+            <button
+              type="button"
+              className="rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
+              onClick={a.clearClosures}
+            >
+              Use the assumed service
+            </button>
+          )}
+        </div>
       </Section>
 
       <Section title="Depot runs">

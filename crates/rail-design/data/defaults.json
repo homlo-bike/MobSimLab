@@ -36,6 +36,9 @@
    "level_crossing_max_speed_kmh": 160,
    "level_crossing_min_angle_deg": 45,
    "level_crossing_warning_time_s": 15,
+   "level_crossing_reopen_s": 5,
+   "policy_headway_peak_min": 5,
+   "policy_headway_offpeak_min": 10,
    "max_cant_mm": 60,
    "max_cant_deficiency_mm": 100
   },
@@ -74,6 +77,9 @@
    "level_crossing_max_speed_kmh": 160,
    "level_crossing_min_angle_deg": 45,
    "level_crossing_warning_time_s": 15,
+   "level_crossing_reopen_s": 5,
+   "policy_headway_peak_min": 5,
+   "policy_headway_offpeak_min": 10,
    "max_cant_mm": 60,
    "max_cant_deficiency_mm": 100
   },
@@ -112,6 +118,9 @@
    "level_crossing_max_speed_kmh": 160,
    "level_crossing_min_angle_deg": 45,
    "level_crossing_warning_time_s": 25,
+   "level_crossing_reopen_s": 10,
+   "policy_headway_peak_min": 5,
+   "policy_headway_offpeak_min": 10,
    "max_cant_mm": 100,
    "max_cant_deficiency_mm": 100
   },
@@ -150,6 +159,9 @@
    "level_crossing_max_speed_kmh": 160,
    "level_crossing_min_angle_deg": 45,
    "level_crossing_warning_time_s": 25,
+   "level_crossing_reopen_s": 10,
+   "policy_headway_peak_min": 15,
+   "policy_headway_offpeak_min": 30,
    "max_cant_mm": 160,
    "max_cant_deficiency_mm": 130
   },
@@ -188,6 +200,9 @@
    "level_crossing_max_speed_kmh": 160,
    "level_crossing_min_angle_deg": 45,
    "level_crossing_warning_time_s": 25,
+   "level_crossing_reopen_s": 10,
+   "policy_headway_peak_min": 15,
+   "policy_headway_offpeak_min": 30,
    "max_cant_mm": 160,
    "max_cant_deficiency_mm": 130
   },
@@ -226,6 +241,9 @@
    "level_crossing_max_speed_kmh": 160,
    "level_crossing_min_angle_deg": 45,
    "level_crossing_warning_time_s": 25,
+   "level_crossing_reopen_s": 10,
+   "policy_headway_peak_min": 15,
+   "policy_headway_offpeak_min": 30,
    "max_cant_mm": 160,
    "max_cant_deficiency_mm": 130
   },
@@ -264,6 +282,9 @@
    "level_crossing_max_speed_kmh": 160,
    "level_crossing_min_angle_deg": 45,
    "level_crossing_warning_time_s": 25,
+   "level_crossing_reopen_s": 10,
+   "policy_headway_peak_min": 15,
+   "policy_headway_offpeak_min": 30,
    "max_cant_mm": 160,
    "max_cant_deficiency_mm": 130
   }

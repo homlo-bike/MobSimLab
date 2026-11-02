@@ -809,3 +809,32 @@
       sources: [mobsimlab-derivation]
       check: unverified
       rationale: Trams crossing at traffic signals request priority one signal cycle step ahead (amber plus clearance time of the conflicting traffic), about 10–20 s. To be confirmed against local signal timing.
+
+- key: level_crossing.reopen_s
+  label: "Level crossings: time from the train clearing the crossing until road traffic may go again"
+  group: Infrastructure standards
+  unit: s
+  used_by:
+    [
+      road closure per train in the track topology,
+      expected wait of buses at level crossings in street line running times,
+    ]
+  values:
+    - context:
+        mode: "*"
+      low: 6
+      central: 10
+      high: 12
+      basis: cited
+      sources: [mutcd-2009-part8]
+      check: unverified
+      rationale: "MUTCD 2009 § 8C.04: gate arms rise to upright in not more than 12 s once the train has cleared and no other train is detected; the lights stop when the arms are up. Barriers rising in about 6–10 s are usual elsewhere. The central value is between the two."
+    - context:
+        mode: [tram, light_rail]
+      low: 3
+      central: 5
+      high: 8
+      basis: educated-guess
+      sources: [hcm7, mobsimlab-derivation]
+      check: unverified
+      rationale: Trams in the street cross at traffic signals, so road traffic waits only for the intergreen after the tram has cleared (clearance of the tram's conflict area plus the start of the road green), usually a few seconds. To be confirmed against local signal timing.

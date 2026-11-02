@@ -46,6 +46,36 @@ export interface LegView {
   status: Status;
   message: string | null;
   ways: number[];
+  /** Expected wait at level crossings on this leg, s (included in `time_s`). */
+  crossing_wait_s: number;
+  level_crossings: { crossing: number; passes: number; wait_s: number }[];
+}
+
+/** Expected wait of a bus at one level crossing (Rust `crossings::CrossingWait`). */
+export interface CrossingWait {
+  /** Per pass in the peak (the timetable's busiest hour), s; added to running times. */
+  wait_s: number;
+  /** Per pass off-peak (the timetable's day average), s. */
+  off_peak_wait_s: number;
+  closed_share: number;
+  closures_per_hour: number;
+  mean_closure_s: number;
+  /** Start of the busiest hour, s after midnight (timetable only). */
+  peak_hour_s: number | null;
+  source: "timetable" | "assumed" | "mixed";
+}
+
+/** A level crossing with a railway that the line passes. */
+export interface LineCrossingView {
+  ids: string[];
+  street: string;
+  modes: string[];
+  protection: "barriers" | "traffic_signals";
+  lonlat: LonLat;
+  wait: CrossingWait;
+  passes: number;
+  /** Expected wait per circuit, s. */
+  wait_s: number;
 }
 
 export interface DirectionView {
@@ -67,6 +97,7 @@ export interface DepotTripView {
   coords: LonLat[];
   length_m: number;
   time_s: number;
+  crossing_wait_s: number;
   status: Status;
   message: string | null;
 }
@@ -80,7 +111,11 @@ export interface LineView {
   depot_trips: DepotTripView[];
   issues: string[];
   length_m: number;
+  /** Running time, s, with the expected wait at level crossings. */
   time_s: number;
+  level_crossings: LineCrossingView[];
+  /** Expected wait at level crossings per circuit, s (included in `time_s`). */
+  crossing_wait_s: number;
 }
 
 /** The routing engine as the editor sees it. Every edit returns the new line view. */
@@ -101,6 +136,11 @@ export interface StreetEngine {
   clearDepot(): LineView;
   optimise(): LineView;
   setSettings(profile: VehicleProfile, rules: RoutingRules): LineView;
+  /**
+   * Level crossings from a track topology (JSON text, contracts/rail-topology.schema.json) with rail
+   * timetable closures (contracts/level-crossing-closures.schema.json, or ""); "" removes them.
+   */
+  setLevelCrossings(topology: string, closures: string): LineView;
   /** Roads the current vehicle may use, as GeoJSON with `oneway`, `wire` and `bus_lane` properties. */
   usableRoads(): object;
   defaultProfile(mode: Mode): VehicleProfile;

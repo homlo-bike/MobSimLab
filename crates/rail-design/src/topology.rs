@@ -322,6 +322,8 @@ pub struct LevelCrossingOut {
     pub x: f64,
     /// Position, m north.
     pub y: f64,
+    /// Position, `[lon, lat]` degrees, for tools that work on the map (the street line tool).
+    pub lonlat: [f64; 2],
     /// Track id.
     pub track: u32,
     /// Chainage on the track's centre line, m.
@@ -336,6 +338,8 @@ pub struct LevelCrossingOut {
     pub warning_time_s: f64,
     /// Distance before the crossing, in either direction, where a train starts the warning, m.
     pub approach_m: f64,
+    /// How long one train closes the street, and the service assumed until a timetable exists.
+    pub road_closure: crate::street::RoadClosure,
     /// The street.
     pub street: LevelCrossingStreet,
 }
@@ -996,6 +1000,10 @@ pub fn topology(dz: &Design) -> Topology {
             angle_deg: rd(x.angle.to_degrees()),
             x: rd(x.p.x),
             y: rd(x.p.y),
+            lonlat: {
+                let [lon, lat] = dz.proj.to_lonlat(x.p);
+                [(lon * 1e7).round() / 1e7, (lat * 1e7).round() / 1e7]
+            },
             track: x.track,
             chainage_m: rd(x.s),
             rail_zone_m: rd(x.rail_zone_m),
@@ -1003,6 +1011,15 @@ pub fn topology(dz: &Design) -> Topology {
             line_speed_kmh: rd(x.line_speed_kmh),
             warning_time_s: x.warning_time_s,
             approach_m: rd(x.approach_m),
+            road_closure: crate::street::RoadClosure {
+                train_length_m: rd(x.road_closure.train_length_m),
+                reopen_s: rd(x.road_closure.reopen_s),
+                closure_s: rd(x.road_closure.closure_s),
+                assumed_trains_per_hour_peak: rd(x.road_closure.assumed_trains_per_hour_peak),
+                assumed_trains_per_hour_off_peak: rd(x
+                    .road_closure
+                    .assumed_trains_per_hour_off_peak),
+            },
             street: LevelCrossingStreet {
                 way: x.way,
                 name: x.street.clone(),
@@ -1157,5 +1174,13 @@ mod tests {
         assert_eq!(x.sections.len(), 2, "both lines of the double track");
         assert_eq!(x.street.name, "Station Road");
         assert!(x.approach_m > 500.0);
+        // 25 s warning, a 160 m train over 3 m of rail zone at 160 km/h, 10 s barriers rising.
+        let c = &x.road_closure;
+        let want =
+            x.warning_time_s + (x.rail_zone_m + c.train_length_m) / (160.0 / 3.6) + c.reopen_s;
+        assert!((c.closure_s - want).abs() < 0.01, "{c:?}");
+        assert!(c.assumed_trains_per_hour_peak >= c.assumed_trains_per_hour_off_peak);
+        assert!(c.assumed_trains_per_hour_peak > 0.0);
+        assert!((x.lonlat[0] - 7.0).abs() < 0.05 && (x.lonlat[1] - 50.9).abs() < 0.05);
     }
 }

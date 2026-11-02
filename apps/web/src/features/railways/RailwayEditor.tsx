@@ -74,6 +74,11 @@ interface Props {
   loadEngine?: RailEngineLoader;
   /** Street tile loader (OSM XML) for level crossings; tests inject a fake. */
   fetchTile?: TileFetcher;
+  /**
+   * Told the track topology (contracts/rail-topology.schema.json) whenever the level crossings change,
+   * so the street line tool can add the expected wait at them to bus running times.
+   */
+  onTopologyChange?: (topology: unknown) => void;
 }
 
 export interface Selection {
@@ -95,6 +100,7 @@ export function RailwayEditor({
   panel = null,
   loadEngine = loadRailEngine,
   fetchTile = fetchStreetTile,
+  onTopologyChange,
 }: Props) {
   const engine = useRef<RailEngine | null>(null);
   const [ready, setReady] = useState(false);
@@ -251,6 +257,15 @@ export function RailwayEditor({
   }, [ready, shown, streets]);
   const lastView = useRef<RailView | null>(null);
   if (view) lastView.current = view;
+
+  // Share the topology with the street line tool when the level crossings change (not while drawing).
+  const topologyChanged = useRef(onTopologyChange);
+  topologyChanged.current = onTopologyChange;
+  const crossingsKey = view && shown?.draftId === null ? JSON.stringify(view.level_crossings) : null;
+  useEffect(() => {
+    if (crossingsKey === null || !engine.current) return;
+    topologyChanged.current?.(engine.current.topology());
+  }, [crossingsKey]);
 
   const connLocal = useCallback(
     (a: Anchor): LocalConnection | null => {

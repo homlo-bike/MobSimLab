@@ -46,6 +46,7 @@ export const loadWasmEngine: EngineLoader = async () => {
     clearDepot: () => v(ed.clear_depot()),
     optimise: () => v(ed.optimise()),
     setSettings: (p, r) => v(ed.set_settings(JSON.stringify(p), JSON.stringify(r))),
+    setLevelCrossings: (topology, closures) => v(ed.set_level_crossings(topology, closures)),
     usableRoads: () => JSON.parse(ed.usable_roads()),
     defaultProfile: (mode: Mode) => JSON.parse(wasm.StreetLineEditor.default_profile(mode)) as VehicleProfile,
     defaultRules: () => JSON.parse(wasm.StreetLineEditor.default_rules()) as RoutingRules,

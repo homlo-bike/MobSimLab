@@ -265,6 +265,11 @@ pub struct LevelCrossingSpec {
     /// trains are held while its road zone is not clear.
     #[serde(default)]
     pub special_measures: Vec<String>,
+    /// Time from the train's tail clearing the crossing until road traffic may go again
+    /// (barriers rising, or the intergreen of tram priority signals), s. None in exports
+    /// made before the topology carried it.
+    #[serde(default)]
+    pub reopen_s: Option<f64>,
 }
 
 /// The whole network as the operations model needs it.

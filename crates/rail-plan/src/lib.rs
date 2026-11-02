@@ -12,10 +12,13 @@
 //!   band, circulation with turn-back in the platform, conflict-free train
 //!   paths, consistent platforms, pull-out and pull-in runs and stabling.
 //! - [`report`]: validation, fleet and UIC 406 capacity per hour, maximum capacity.
+//! - [`closures`]: road **closures at level crossings** from the planned runs, for the
+//!   street line tool's expected wait at each crossing.
 //! - [`published`]: the published timetable with GTFS names, for the journey planner.
 #![warn(missing_docs)]
 
 pub mod blocking;
+pub mod closures;
 pub mod conflicts;
 pub mod demand;
 pub mod line;
@@ -27,6 +30,7 @@ pub mod report;
 pub use blocking::{
     route_steps, run_timing, timetable_timing, Blocking, BlockingParams, RunTiming, TrainRun,
 };
+pub use closures::{level_crossing_closures, run_closures, Closure, ClosuresOut, CrossingClosures};
 pub use conflicts::{compress, find_conflicts, Compression, Conflict};
 pub use demand::{
     bands, dwell_s, link_loads, suggest_frequency, Band, Binding, DwellParams, FrequencyInput,

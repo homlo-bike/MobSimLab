@@ -91,6 +91,9 @@ RAIL_FIELDS = {
     "level_crossing_max_speed_kmh": "level_crossing.max_line_speed_kmh",
     "level_crossing_min_angle_deg": "level_crossing.min_angle_deg",
     "level_crossing_warning_time_s": "level_crossing.warning_time_s",
+    "level_crossing_reopen_s": "level_crossing.reopen_s",
+    "policy_headway_peak_min": "timetable.policy_headway_peak_min",
+    "policy_headway_offpeak_min": "timetable.policy_headway_offpeak_min",
 }
 RAIL_LABELS = {
     "tram": "Tram",

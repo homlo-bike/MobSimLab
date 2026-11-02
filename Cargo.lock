@@ -442,6 +442,7 @@ dependencies = [
  "rail-dynamics",
  "rail-model",
  "serde",
+ "serde_json",
 ]
 
 [[package]]

@@ -510,3 +510,67 @@ fn loading_more_area_keeps_the_line() {
     );
     assert!(v.points[0].bay.is_some() && v.points[0].bearing_deg.is_some());
 }
+
+#[test]
+fn level_crossings_on_the_route_add_their_expected_wait_to_running_time() {
+    let g = grid().graph();
+    let mut line = StreetLine::new(bus(), RoutingRules::default());
+    add(&mut line, &g, 205.0, 100.0, PointKind::EndStop);
+    add(&mut line, &g, 205.0, 500.0, PointKind::EndStop);
+    let before = line.view(&g);
+    assert!(before.level_crossings.is_empty() && before.crossing_wait_s == 0.0);
+    // A railway crosses Col 1 (way 1006) between rows 1 and 2, and Col 3 (way 1008), which the
+    // line does not use.
+    let at = |x: f64, y: f64| {
+        let (lon, lat) = ll(x, y);
+        format!("[{lon},{lat}]")
+    };
+    let lc = |id: &str, way: i64, lonlat: String| {
+        format!(
+            r#"{{"id":"{id}","protection":"barriers","mode":"regional_rail","lonlat":{lonlat},
+            "line_speed_kmh":100,"warning_time_s":25,"rail_zone_m":3.5,
+            "road_closure":{{"train_length_m":170,"reopen_s":10,"closure_s":44.4,
+              "assumed_trains_per_hour_peak":8,"assumed_trains_per_hour_off_peak":4}},
+            "street":{{"way":{way},"name":"Col","keep_clear_m":9}}}}"#
+        )
+    };
+    let topo = format!(
+        r#"{{"schema":"mobsimlab.rail-topology/1","level_crossings":[{},{}]}}"#,
+        lc("lc3-1006-0", 1006, at(200.0, 300.0)),
+        lc("lc3-1008-0", 1008, at(600.0, 300.0))
+    );
+    line.level_crossings = street_routing::crossings::from_topology(&topo, "").unwrap();
+    let v = line.view(&g);
+    assert_eq!(v.level_crossings.len(), 1, "{:?}", v.level_crossings);
+    let x = &v.level_crossings[0];
+    assert_eq!(x.ids, ["lc3-1006-0"]);
+    let per_pass = 8.0 * 44.4 * 44.4 / 7200.0;
+    assert!((x.wait.wait_s - per_pass).abs() < 1e-9);
+    assert!(x.passes >= 1);
+    assert!((v.crossing_wait_s - x.passes as f64 * per_pass).abs() < 1e-9);
+    assert!((v.time_s - before.time_s - v.crossing_wait_s).abs() < 1e-6);
+    // Outbound up Col 1 passes it: that leg's running time carries the wait.
+    let out = &v.legs[0];
+    assert_eq!(out.level_crossings.len(), 1);
+    assert!((out.time_s - before.legs[0].time_s - per_pass).abs() < 1e-6);
+    // Directions add it up too.
+    let d: f64 = v.directions.iter().map(|d| d.time_s).sum();
+    assert!((d - v.time_s).abs() < 1e-6);
+}
+
+#[test]
+fn level_crossings_are_read_from_the_railway_tools_topology_export() {
+    let json = std::fs::read_to_string(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/../rail-model/tests/data/regional_rail.json"
+    ))
+    .unwrap();
+    let v = street_routing::crossings::from_topology(&json, "").unwrap();
+    assert_eq!(v.len(), 1);
+    let x = &v[0];
+    assert_eq!((x.street.as_str(), x.way), ("Station Road", 1001));
+    assert_eq!(x.protection, "barriers");
+    // 8 regional trains an hour in the peak closing the street for about 39 s each.
+    assert!(x.wait.wait_s > 1.0 && x.wait.wait_s < 2.5, "{:?}", x.wait);
+    assert!(x.wait.off_peak_wait_s < x.wait.wait_s);
+}
