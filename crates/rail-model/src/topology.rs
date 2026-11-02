@@ -38,6 +38,9 @@ pub const SCHEMA: &str = "mobsimlab.rail-topology/1";
 struct Topology {
     schema: String,
     valid: bool,
+    /// `[lon, lat]` of the local frame's origin.
+    #[serde(default)]
+    origin: Option<[f64; 2]>,
     #[serde(default)]
     errors: Vec<String>,
     nodes: Vec<TNode>,
@@ -97,6 +100,9 @@ struct TSection {
     /// `line_of_sight`, `fixed_block`, `cbtc` or `etcs_l2`.
     #[serde(default)]
     train_protection: Option<String>,
+    /// Centre line from the `from` node to the `to` node, local metres.
+    #[serde(default)]
+    geometry: Vec<[f64; 2]>,
 }
 
 #[derive(Deserialize, Clone)]
@@ -139,6 +145,8 @@ struct TPlatform {
     section: String,
     from_m: f64,
     to_m: f64,
+    #[serde(default)]
+    mode: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -252,6 +260,53 @@ pub struct Imported {
     pub signals_generated: bool,
     /// Notes for the run report (assumed values, skipped elements).
     pub notes: Vec<String>,
+    /// `[lon, lat]` of the local frame's origin, when the export gives it.
+    pub origin: Option<[f64; 2]>,
+    /// Where passengers board each platform edge, by platform edge id.
+    pub platform_places: BTreeMap<String, PlatformPlace>,
+}
+
+/// Where a platform edge lies, for passenger information and the journey planner.
+#[derive(Clone, Debug, PartialEq)]
+pub struct PlatformPlace {
+    /// Middle of the edge, metres east and north of the export's origin
+    /// (local transverse Mercator frame of the design).
+    pub x: f64,
+    /// See `x`.
+    pub y: f64,
+    /// Mode of the platform edge (`metro`, `regional_rail`, …), when given.
+    pub mode: Option<String>,
+}
+
+/// Purpose: the point `at_m` along a polyline whose true length is `length_m`
+/// (the drawn centre line may differ slightly from the section length).
+fn point_along(geometry: &[[f64; 2]], length_m: f64, at_m: f64) -> Option<[f64; 2]> {
+    let first = *geometry.first()?;
+    let seg: Vec<f64> = geometry
+        .windows(2)
+        .map(|w| (w[1][0] - w[0][0]).hypot(w[1][1] - w[0][1]))
+        .collect();
+    let drawn: f64 = seg.iter().sum();
+    if drawn <= 0.0 {
+        return Some(first);
+    }
+    let scale = if length_m > 0.0 {
+        drawn / length_m
+    } else {
+        1.0
+    };
+    let mut left = (at_m * scale).clamp(0.0, drawn);
+    for (w, d) in geometry.windows(2).zip(&seg) {
+        if left <= *d && *d > 0.0 {
+            let k = left / d;
+            return Some([
+                w[0][0] + (w[1][0] - w[0][0]) * k,
+                w[0][1] + (w[1][1] - w[0][1]) * k,
+            ]);
+        }
+        left -= d;
+    }
+    geometry.last().copied()
 }
 
 /// Purpose: overlap for a signal from the approach speed (DB Ril 819.0202 classes,
@@ -324,6 +379,23 @@ fn import(t: Topology, opt: &ImportOptions) -> Result<Imported, String> {
         return Err(format!("the design has errors: {}", t.errors.join("; ")));
     }
     let mut notes = Vec::new();
+    let platform_places: BTreeMap<String, PlatformPlace> = t
+        .platform_edges
+        .iter()
+        .filter_map(|p| {
+            let sec = t.sections.iter().find(|s| s.id == p.section)?;
+            let [x, y] = point_along(&sec.geometry, sec.length_m, (p.from_m + p.to_m) / 2.0)?;
+            Some((
+                p.id.clone(),
+                PlatformPlace {
+                    x,
+                    y,
+                    mode: p.mode.clone().or_else(|| Some(sec.mode.clone())),
+                },
+            ))
+        })
+        .collect();
+    let origin = t.origin;
     let sec_index: HashMap<&str, usize> = t
         .sections
         .iter()
@@ -801,6 +873,8 @@ fn import(t: Topology, opt: &ImportOptions) -> Result<Imported, String> {
         spec,
         signals_generated,
         notes,
+        origin,
+        platform_places,
     })
 }
 

@@ -12,12 +12,14 @@
 //!   band, circulation with turn-back in the platform, conflict-free train
 //!   paths, consistent platforms, pull-out and pull-in runs and stabling.
 //! - [`report`]: validation, fleet and UIC 406 capacity per hour, maximum capacity.
-//! - [`published`]: the published timetable with GTFS names, for the journey planner.
+//! - [`published`]: the published timetable with GTFS names (text form, for the GTFS export).
+//! - [`journeys`]: the same timetable in the contract's form, with stop positions, for the journey planner.
 #![warn(missing_docs)]
 
 pub mod blocking;
 pub mod conflicts;
 pub mod demand;
+pub mod journeys;
 pub mod line;
 pub mod path;
 pub mod plan;
@@ -32,6 +34,7 @@ pub use demand::{
     bands, dwell_s, link_loads, suggest_frequency, Band, Binding, DwellParams, FrequencyInput,
     FrequencySuggestion, Period, PeriodKind, CLOCK_FACE_HEADWAYS_S,
 };
+pub use journeys::{journey_timetable, JourneyTimetable, RouteInfo};
 pub use line::{resolve, Call, LineSpec, Pick};
 pub use path::{find_path, FoundPath, Place};
 pub use plan::{plan, CallTime, Issue, Plan, PlanParams, PlannedRun, RunKind};

@@ -70,6 +70,12 @@ pub struct NetworkSummary {
     pub trips: usize,
     pub raptor_routes: usize,
     pub footpaths: usize,
+    /// Stations with more than one stop (platforms of one station, a station group, or same-name stops).
+    #[serde(default)]
+    pub stations: usize,
+    /// Stops joined into a station because they share a name with a stop close by.
+    #[serde(default)]
+    pub joined_by_name: usize,
     pub first_departure_s: Option<u32>,
     pub last_arrival_s: Option<u32>,
     pub warnings: Vec<String>,
@@ -139,6 +145,54 @@ pub struct Planner {
     summary: NetworkSummary,
     k_lat: f64,
     k_lon: f64,
+}
+
+/// Union-find over stop indices: the stations.
+struct Stations {
+    parent: Vec<usize>,
+}
+
+impl Stations {
+    fn new(n: usize) -> Self {
+        Self {
+            parent: (0..n).collect(),
+        }
+    }
+    fn find(&mut self, i: usize) -> usize {
+        let mut r = i;
+        while self.parent[r] != r {
+            r = self.parent[r];
+        }
+        let mut j = i;
+        while self.parent[j] != r {
+            let next = self.parent[j];
+            self.parent[j] = r;
+            j = next;
+        }
+        r
+    }
+    fn union(&mut self, a: usize, b: usize) {
+        let (ra, rb) = (self.find(a), self.find(b));
+        if ra != rb {
+            self.parent[ra.max(rb)] = ra.min(rb);
+        }
+    }
+}
+
+/// Purpose: the key two stop names are compared by; case, accents and spacing are ignored (as
+/// `rail_model::normalise_name` and the web app's `normaliseName`).
+pub fn normalise_name(name: &str) -> String {
+    use unicode_normalization::UnicodeNormalization;
+    let stripped: String = name
+        .nfd()
+        .filter(|c| !unicode_normalization::char::is_combining_mark(*c))
+        .collect::<String>()
+        .to_lowercase();
+    stripped
+        .split(|c: char| c.is_whitespace() || c == '-' || c == '.' || c == '_')
+        .filter(|w| !w.is_empty())
+        .collect::<Vec<_>>()
+        .join(" ")
 }
 
 /// Mean Earth radius in metres.
@@ -290,13 +344,50 @@ impl Planner {
             }
         }
 
-        // Footpaths: walks within reach, the platforms of one station, then explicit transfer rules.
+        // Stations: stops sharing a `parent_station`, and stops with the same name close to each other
+        // (a street line's stop named like the railway station beside it), are one station. Every pair of
+        // stops of one station gets a walk with the level change, whatever the distance.
+        let mut station = Stations::new(stops.len());
+        let mut by_parent: HashMap<&String, usize> = HashMap::new();
+        for (i, p) in parent.iter().enumerate() {
+            if let Some(p) = p {
+                match by_parent.get(p) {
+                    Some(&j) => station.union(i, j),
+                    None => {
+                        by_parent.insert(p, i);
+                    }
+                }
+            }
+        }
+        let mut by_name: HashMap<String, Vec<usize>> = HashMap::new();
+        for (i, s) in stops.iter().enumerate() {
+            let key = normalise_name(&s.place.name);
+            if !key.is_empty() {
+                by_name.entry(key).or_default().push(i);
+            }
+        }
+        let mut joined_by_name = 0usize;
+        for members in by_name.values() {
+            for (n, &a) in members.iter().enumerate() {
+                for &b in &members[n + 1..] {
+                    let d = ((stops[a].x - stops[b].x).powi(2) + (stops[a].y - stops[b].y).powi(2))
+                        .sqrt();
+                    if d <= settings.same_name_station_m && station.find(a) != station.find(b) {
+                        station.union(a, b);
+                        joined_by_name += 1;
+                    }
+                }
+            }
+        }
+        let root: Vec<usize> = (0..stops.len()).map(|i| station.find(i)).collect();
+
+        // Footpaths: walks within reach, the stops of one station, then explicit transfer rules.
         let mut foot: HashMap<(usize, usize), Foot> = HashMap::new();
         let mut order: Vec<usize> = (0..stops.len()).collect();
         order.sort_by(|&a, &b| stops[a].x.total_cmp(&stops[b].x));
         let estimate = |a: usize, b: usize, stops: &Vec<StopData>| {
             let d = ((stops[a].x - stops[b].x).powi(2) + (stops[a].y - stops[b].y).powi(2)).sqrt();
-            let same_station = parent[a].is_some() && parent[a] == parent[b];
+            let same_station = root[a] == root[b];
             let dur = settings.walk_s(d)
                 + if same_station {
                     settings.level_change_s
@@ -322,13 +413,11 @@ impl Planner {
                 }
             }
         }
-        let mut groups: HashMap<&String, Vec<usize>> = HashMap::new();
-        for (i, p) in parent.iter().enumerate() {
-            if let Some(p) = p {
-                groups.entry(p).or_default().push(i);
-            }
+        let mut groups: HashMap<usize, Vec<usize>> = HashMap::new();
+        for (i, &r) in root.iter().enumerate() {
+            groups.entry(r).or_default().push(i);
         }
-        for members in groups.values() {
+        for members in groups.values().filter(|m| m.len() > 1) {
             for &a in members {
                 for &b in members {
                     if a != b {
@@ -337,6 +426,7 @@ impl Planner {
                 }
             }
         }
+        let stations = groups.values().filter(|m| m.len() > 1).count();
         for t in &tt.transfers {
             let (Some(&a), Some(&b)) = (
                 stop_index.get(&t.from_stop_id),
@@ -388,6 +478,8 @@ impl Planner {
             trips: n_trips,
             raptor_routes: routes.len(),
             footpaths: n_foot,
+            stations,
+            joined_by_name,
             first_departure_s: (first != INF).then_some(first),
             last_arrival_s: (n_trips > 0).then_some(last),
             warnings,

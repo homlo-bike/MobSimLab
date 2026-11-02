@@ -315,3 +315,60 @@ export function mergeTimetables(parts: Timetable[]): Timetable {
     frequency_patterns: parts.flatMap((p) => p.frequency_patterns),
   };
 }
+
+/**
+ * Purpose: read a published rail timetable (JSON text, `contracts/published-timetable.schema.json`), such as
+ * the railway operations planner writes with `cargo run -p rail-plan --example publish_journeys`. Every id
+ * gets the `rail:` prefix so it cannot collide with street lines or the example city; stop names and station
+ * groups stay, so the planner joins the trains to street stops of the same station.
+ * Output: the timetable, or an error message for text that is not a usable timetable.
+ */
+export function parseRailTimetable(text: string): { timetable: Timetable } | { error: string } {
+  let raw: unknown;
+  try {
+    raw = JSON.parse(text);
+  } catch {
+    return { error: "The file is not JSON." };
+  }
+  if (typeof raw !== "object" || raw === null || Array.isArray(raw))
+    return { error: "The file is not a published timetable." };
+  const r = raw as Partial<Timetable>;
+  const list = <T>(v: T[] | undefined): T[] => (Array.isArray(v) ? v : []);
+  const stops = list(r.stops);
+  const trips = list(r.trips);
+  const patterns = list(r.frequency_patterns);
+  if (!stops.length || (!trips.length && !patterns.length))
+    return { error: "The timetable has no stops or no trips." };
+  const bad = stops.find(
+    (s) => typeof s?.stop_id !== "string" || !Number.isFinite(s.stop_lat) || !Number.isFinite(s.stop_lon),
+  );
+  if (bad) return { error: "Every stop needs a stop_id, stop_lat and stop_lon." };
+  const p = (id: string) => `rail:${id}`;
+  return {
+    timetable: {
+      stops: stops.map((s) => ({
+        ...s,
+        stop_id: p(s.stop_id),
+        ...(s.parent_station ? { parent_station: p(s.parent_station) } : {}),
+      })),
+      routes: list(r.routes).map((x) => ({ ...x, route_id: p(x.route_id) })),
+      trips: trips.map((t) => ({
+        ...t,
+        trip_id: p(t.trip_id),
+        route_id: p(t.route_id),
+        stop_times: list(t.stop_times).map((st) => ({ ...st, stop_id: p(st.stop_id) })),
+      })),
+      transfers: list(r.transfers).map((x) => ({
+        ...x,
+        from_stop_id: p(x.from_stop_id),
+        to_stop_id: p(x.to_stop_id),
+      })),
+      frequency_patterns: patterns.map((f) => ({
+        ...f,
+        pattern_id: p(f.pattern_id),
+        route_id: p(f.route_id),
+        stops: list(f.stops).map((s) => ({ ...s, stop_id: p(s.stop_id) })),
+      })),
+    },
+  };
+}

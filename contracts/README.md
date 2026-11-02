@@ -5,6 +5,7 @@ JSON Schemas for data that one part of MobSimLab produces and another consumes. 
 | Schema | Producer | Consumer | Check |
 |--------|----------|----------|-------|
 | [rail-topology.schema.json](rail-topology.schema.json) | `crates/rail-design` (`topology` module; the railway tool's **Download track topology**) | Railway operations (ADR-0032): routes, timetables, reservations | `cargo run -p rail-design --example topology -- DIR`, then `tools/contracts/check_rail_topology.py DIR/*.json` |
+| [published-timetable.schema.json](published-timetable.schema.json) | `crates/rail-plan` (`journeys` module; `cargo run -p rail-plan --example publish_journeys -- TOPOLOGY LINES`), the web app's street lines | Journey planner (ADR-0034): `crates/journey-planner`, the panel's **Add rail timetable (JSON)** | `cargo test -p rail-plan --test journeys` |
 
 ## Railway topology
 

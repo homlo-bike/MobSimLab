@@ -9,6 +9,7 @@ import {
   exampleNetwork,
   mergeTimetables,
   offset,
+  parseRailTimetable,
   streetLineTimetable,
   type StreetLineInput,
 } from "./network";
@@ -134,6 +135,8 @@ export function JourneyPlanner({
 }: Props) {
   const [exampleAt, setExampleAt] = useState<LonLat | null>(null);
   const [useStreet, setUseStreet] = useState(true);
+  const [rail, setRail] = useState<{ name: string; timetable: Timetable } | null>(null);
+  const [railError, setRailError] = useState<string | null>(null);
   const [settings, setSettings] = useState<Partial<Settings>>({});
   const [engine, setEngine] = useState<PlannerEngine | null>(null);
   const [summary, setSummary] = useState<NetworkSummary | null>(null);
@@ -152,11 +155,21 @@ export function JourneyPlanner({
     [streetLine, useStreet],
   );
   const timetable: Timetable | null = useMemo(() => {
-    const parts = [exampleAt ? exampleNetwork(exampleAt) : null, street].filter(
+    const parts = [exampleAt ? exampleNetwork(exampleAt) : null, street, rail?.timetable ?? null].filter(
       (p): p is Timetable => p !== null,
     );
     return parts.length ? mergeTimetables(parts) : null;
-  }, [exampleAt, street]);
+  }, [exampleAt, street, rail]);
+
+  const addRailTimetable = async (file: File) => {
+    const r = parseRailTimetable(await file.text());
+    if ("error" in r) {
+      setRailError(`${file.name}: ${r.error}`);
+      return;
+    }
+    setRailError(null);
+    setRail({ name: file.name, timetable: r.timetable });
+  };
 
   // Compile the timetable whenever it or the settings change.
   useEffect(() => {
@@ -313,6 +326,34 @@ export function JourneyPlanner({
         </label>
       )}
       <div className="flex flex-wrap items-center gap-3">
+        <label className="flex h-8 cursor-pointer items-center rounded-md border border-slate-300 bg-white px-3 hover:bg-slate-50">
+          {rail ? "Replace rail timetable (JSON)" : "Add rail timetable (JSON)"}
+          <input
+            type="file"
+            accept="application/json,.json"
+            className="sr-only"
+            aria-label="Rail timetable file"
+            onChange={(e) => {
+              const f = e.target.files?.[0];
+              e.target.value = "";
+              if (f) void addRailTimetable(f);
+            }}
+          />
+        </label>
+        {rail && (
+          <button type="button" onClick={() => setRail(null)} className="text-xs text-slate-600 underline">
+            Remove rail timetable
+          </button>
+        )}
+      </div>
+      {rail && (
+        <p className="text-xs text-slate-600" data-testid="rail-timetable">
+          Rail: {rail.name} · {rail.timetable.routes.map((r) => r.route_short_name).join(", ") || "no lines"}{" "}
+          · {rail.timetable.trips.length} trips
+        </p>
+      )}
+      {railError && <p className="text-xs text-red-700">{railError}</p>}
+      <div className="flex flex-wrap items-center gap-3">
         <button
           type="button"
           onClick={placeExample}
@@ -332,9 +373,9 @@ export function JourneyPlanner({
       </div>
       {!timetable && (
         <p className="text-xs text-slate-600">
-          No timetable yet. Draw a street line, or place the example city (metro, tram, bus and a regional
-          train with a timed connection) at the centre of the map. Rail lines join here once the railway
-          operations planner publishes timetables.
+          No timetable yet. Draw a street line, add a rail timetable published by the railway operations
+          planner, or place the example city (metro, tram, bus and a regional train with a timed connection)
+          at the centre of the map. Trains and street lines connect at stations of the same name.
         </p>
       )}
       {summary && (
@@ -342,6 +383,9 @@ export function JourneyPlanner({
           {summary.stops} stops · {summary.routes} lines · {summary.trips} trips
           {summary.first_departure_s !== null &&
             ` · service ${clock(summary.first_departure_s)}–${clock(summary.last_arrival_s ?? 0)}`}
+          {summary.joined_by_name
+            ? ` · ${summary.joined_by_name} ${summary.joined_by_name === 1 ? "stop" : "stops"} joined to a station by name`
+            : ""}
         </p>
       )}
       {summary?.warnings.slice(0, 3).map((w) => (
@@ -633,6 +677,7 @@ export function JourneyPlanner({
                   ["walk_speed_kmh", "Walking speed (km/h)", 4.5, 0.1],
                   ["max_access_m", "Longest walk to a stop (m)", 1000, 50],
                   ["max_transfer_m", "Longest walk at a change (m)", 400, 50],
+                  ["same_name_station_m", "Same-name stops are one station within (m)", 600, 50],
                   ["min_change_s", "Change at one stop (s)", 60, 10],
                   ["max_rides", "Most vehicles", 5, 1],
                 ] as const
