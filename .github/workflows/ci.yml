@@ -98,6 +98,14 @@ jobs:
       - run: cargo test --workspace --exclude mobsim-py
       - name: Street routing, railway design and journey planner compile to WebAssembly
         run: rustup target add wasm32-unknown-unknown && cargo build --locked --target wasm32-unknown-unknown -p street-routing-wasm -p rail-design-wasm -p journey-planner-wasm
+      - uses: astral-sh/setup-uv@v6
+        with: { python-version: "3.12" }
+      - name: Railway topology export matches contracts/rail-topology.schema.json
+        run: |
+          uvx ruff check tools/contracts && uvx ruff format --check tools/contracts
+          mkdir -p "$RUNNER_TEMP/topology"
+          cargo run -q -p rail-design --example topology -- "$RUNNER_TEMP/topology"
+          uv run --no-project --with jsonschema python tools/contracts/check_rail_topology.py "$RUNNER_TEMP"/topology/*.json
       - name: S2 benchmark (one simulated hour, must not deadlock)
         run: cargo run --release -p rail-sim --bin bench_s2 -- 3600 1.0 | tee bench.json
 

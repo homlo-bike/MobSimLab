@@ -83,6 +83,15 @@
   checked_via: none
   note: Host not reachable from the build environment on 2026-10-27.
 
+- id: us-49cfr234
+  title: "US Code of Federal Regulations, 49 CFR Part 234 (Grade crossing safety), § 234.225: active warning devices give at least 20 seconds of warning before a train arrives"
+  publisher: US Federal Railroad Administration / eCFR
+  url: https://www.ecfr.gov/current/title-49/subtitle-B/chapter-II/part-234
+  licence: US Government work, public domain
+  access: free
+  retrieved: 2026-11-02
+  checked_via: none
+
 - id: bostrab
   title: Verordnung über den Bau und Betrieb der Straßenbahnen (BOStrab), Germany
   publisher: Bundesministerium der Justiz / Bundesamt für Justiz

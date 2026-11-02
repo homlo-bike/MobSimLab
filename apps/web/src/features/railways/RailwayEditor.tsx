@@ -1,6 +1,9 @@
 import { Marker, type Map as MapLibreMap, type MapMouseEvent } from "maplibre-gl";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { fetchStreetTile } from "../street-lines/engine";
+import { MIN_LOAD_ZOOM, tilesFor } from "../street-lines/tiles";
+import type { TileFetcher } from "../street-lines/types";
 import {
   addStation,
   addSwitch,
@@ -69,6 +72,8 @@ interface Props {
   panel?: HTMLElement | null;
   /** Engine loader; tests inject a fake. */
   loadEngine?: RailEngineLoader;
+  /** Street tile loader (OSM XML) for level crossings; tests inject a fake. */
+  fetchTile?: TileFetcher;
 }
 
 export interface Selection {
@@ -85,7 +90,12 @@ const sameAnchor = (a: Anchor, b: Anchor) => JSON.stringify(a) === JSON.stringif
  * everything to scale and checks the design live.
  * Side effects: adds layers, markers and handlers to the map while mounted.
  */
-export function RailwayEditor({ map, panel = null, loadEngine = loadRailEngine }: Props) {
+export function RailwayEditor({
+  map,
+  panel = null,
+  loadEngine = loadRailEngine,
+  fetchTile = fetchStreetTile,
+}: Props) {
   const engine = useRef<RailEngine | null>(null);
   const [ready, setReady] = useState(false);
   const [doc, setDoc] = useState<Network | null>(kept);
@@ -127,6 +137,78 @@ export function RailwayEditor({ map, panel = null, loadEngine = loadRailEngine }
     };
   }, [loadEngine]);
 
+  // Streets for level crossings: the tiles on screen, loaded when the map stops moving, the same
+  // tiles the street line tool routes on. Each batch of new streets triggers one rebuild.
+  const [streets, setStreets] = useState(0);
+  const [streetNote, setStreetNote] = useState<string | null>(null);
+  const tiles = useRef(new Set<string>());
+  useEffect(() => {
+    if (!map || !ready) return;
+    let busy = false;
+    let again = false;
+    let stopped = false;
+    const load = async () => {
+      const e = engine.current;
+      if (!e || stopped) return;
+      if (busy) {
+        again = true;
+        return;
+      }
+      if (map.getZoom() < MIN_LOAD_ZOOM) {
+        setStreetNote(`Zoom in to load streets and find level crossings (from zoom ${MIN_LOAD_ZOOM}).`);
+        return;
+      }
+      const b = map.getBounds();
+      const want = tilesFor([b.getWest(), b.getSouth(), b.getEast(), b.getNorth()])
+        .map(([x, y]) => `${x}/${y}`)
+        .filter((k) => !tiles.current.has(k));
+      if (!want.length) return;
+      busy = true;
+      want.forEach((k) => tiles.current.add(k));
+      const got = await Promise.allSettled(
+        want.map((k) => {
+          const [x, y] = k.split("/").map(Number);
+          return fetchTile(x!, y!);
+        }),
+      );
+      busy = false;
+      if (stopped || engine.current !== e) {
+        want.forEach((k) => tiles.current.delete(k));
+        return;
+      }
+      let added = 0;
+      let reason: string | null = null;
+      got.forEach((r, i) => {
+        try {
+          if (r.status === "rejected") throw r.reason;
+          e.addStreetTile(r.value);
+          added++;
+        } catch (err) {
+          tiles.current.delete(want[i]!);
+          reason ??= err instanceof Error ? err.message : "Some streets did not load.";
+        }
+      });
+      if (added) setStreets((n) => n + 1);
+      setStreetNote(
+        reason
+          ? `${reason} Level crossings are only found where streets have loaded. Move the map to try again.`
+          : null,
+      );
+      if (again) {
+        again = false;
+        void load();
+      }
+    };
+    const onMove = () => void load();
+    map.on("moveend", onMove);
+    void load();
+    return () => {
+      stopped = true;
+      map.off("moveend", onMove);
+      tiles.current.clear();
+    };
+  }, [map, ready, fetchTile]);
+
   // A new drawing starts at the map centre.
   useEffect(() => {
     if (!map || doc) return;
@@ -165,7 +247,8 @@ export function RailwayEditor({ map, panel = null, loadEngine = loadRailEngine }
       setError(err instanceof Error ? err.message : String(err));
       return null;
     }
-  }, [ready, shown]);
+    // `streets` changes when new streets arrive; the engine holds them.
+  }, [ready, shown, streets]);
   const lastView = useRef<RailView | null>(null);
   if (view) lastView.current = view;
 
@@ -742,6 +825,16 @@ export function RailwayEditor({ map, panel = null, loadEngine = loadRailEngine }
       if (ref) setSel({ id: ref });
       if (at && map) map.easeTo({ center: at, zoom: Math.max(map.getZoom(), 16) });
     },
+    downloadTopology: () => {
+      const t = engine.current?.topology();
+      if (!t) return;
+      const url = URL.createObjectURL(new Blob([JSON.stringify(t, null, 1)], { type: "application/json" }));
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "rail-topology.json";
+      link.click();
+      URL.revokeObjectURL(url);
+    },
     fit: () => {
       const b = view?.bbox;
       if (b && map)
@@ -766,6 +859,7 @@ export function RailwayEditor({ map, panel = null, loadEngine = loadRailEngine }
       stationOpts={stationOpts}
       switchOpts={switchOpts}
       error={error}
+      streetNote={streetNote}
       actions={panelActions}
     />
   );
