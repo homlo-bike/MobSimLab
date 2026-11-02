@@ -227,7 +227,12 @@
   unit: system
   kind: enum
   options: [line_of_sight, fixed_block, cbtc, etcs_l2]
-  used_by: [generated signal plan (home and starter signals, block signals or cab-signalling block markers), blocking times]
+  used_by:
+    [
+      generated signal plan (home and starter signals,
+      block signals or cab-signalling block markers),
+      blocking times,
+    ]
   values:
     - context:
         mode: "*"
