@@ -228,6 +228,24 @@
   retrieved: 2026-11-02
   checked_via: none
 
+- id: era-subset-026
+  title: "ERA, ERTMS/ETCS System Requirements Specification, SUBSET-026, chapter 3.13 (speed and distance monitoring) and appendix A.3.1 (ceiling speed supervision values)"
+  publisher: European Union Agency for Railways
+  url: https://www.era.europa.eu/era-folder/1-ccs-tsi-and-ertms-specifications
+  licence: © ERA; numbers cited as facts
+  access: free
+  retrieved: 2026-11-02
+  checked_via: none
+
+- id: ieee-1474-1
+  title: IEEE 1474.1, Standard for Communications-Based Train Control (CBTC) Performance and Functional Requirements
+  publisher: IEEE
+  url: https://standards.ieee.org/ieee/1474.1/
+  licence: © IEEE; numbers cited as facts
+  access: paywalled
+  retrieved: 2026-11-02
+  checked_via: none
+
 - id: tcqsm3
   title: TCRP Report 165, Transit Capacity and Quality of Service Manual, 3rd edition (2013)
   publisher: Transportation Research Board / National Academies Press

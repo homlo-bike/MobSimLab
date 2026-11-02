@@ -282,3 +282,99 @@
       sources: [mobsimlab-derivation]
       check: unverified
       rationale: The signal stands just in front of the first switch it protects, so a train waiting at it does not foul the switch; room for the insulated joint or axle counter and the signal mast. Signals facing a switch from its legs stand at the clearance marker (the fouling point in the topology export) instead.
+
+- key: signalling.overlap_release_s
+  label: Time a train must stand at the exit signal before its overlap is released
+  group: Simulation
+  unit: s
+  used_by: [interlocking]
+  values:
+    - context:
+        mode: "*"
+      low: 30
+      central: 60
+      high: 120
+      basis: educated-guess
+      sources: [db-ril-819, mobsimlab-derivation]
+      check: unverified
+      rationale: "The overlap is released by time once the train has come to a stand in front of the exit signal (or at once when its next route locks); about one minute is common for electronic interlockings."
+
+- key: signalling.approach_release_s
+  label: Delay before a cancelled route is released in front of an approaching train (approach locking)
+  group: Simulation
+  unit: s
+  used_by: [interlocking, traffic management]
+  values:
+    - context:
+        mode: "*"
+      low: 60
+      central: 120
+      high: 240
+      basis: educated-guess
+      sources: [db-ril-819, mobsimlab-derivation]
+      check: unverified
+      rationale: "Time release of an approach-locked route: long enough for a train that has seen the proceed aspect to stop; about two minutes is common."
+
+- key: signalling.moving_block_margin_m
+  label: Safety margin behind the rear of the train ahead under moving block
+  group: Simulation
+  unit: m
+  used_by: [train protection]
+  values:
+    - context:
+        mode: "*"
+      low: 25
+      central: 50
+      high: 100
+      basis: educated-guess
+      sources: [ieee-1474-1, mobsimlab-derivation]
+      check: unverified
+      rationale: "CBTC and ETCS level 2 keep a safety margin beyond the braking curve to cover position uncertainty and the rear of the train ahead; suppliers use a few tens of metres."
+
+- key: signalling.supervision_tolerance_kmh
+  label: Overspeed above the permitted speed before the protection brakes
+  group: Simulation
+  unit: km/h
+  used_by: [train protection]
+  values:
+    - context:
+        mode: "*"
+      low: 5
+      central: 7.5
+      high: 15
+      basis: cited
+      sources: [era-subset-026]
+      check: unverified
+      rationale: "ETCS ceiling speed supervision: the emergency brake intervention lies about 7.5 km/h above the permitted speed at low speeds and grows with speed; CBTC systems use similar margins."
+
+- key: sim.ato_brake_share
+  label: Share of the service braking rate the driver model plans with
+  group: Simulation
+  unit: share
+  used_by: [driver model]
+  values:
+    - context:
+        mode: "*"
+      low: 0.7
+      central: 0.85
+      high: 1.0
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: "Drivers and ATO brake below the rate the protection supervises, so normal stops never touch the protection curve."
+
+- key: sim.emergency_brake_factor
+  label: Emergency braking rate as a multiple of the service braking rate
+  group: Simulation
+  unit: factor
+  used_by: [train protection]
+  values:
+    - context:
+        mode: "*"
+      low: 1.2
+      central: 1.3
+      high: 1.5
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: "Emergency braking is typically 20–50 % stronger than full service braking on multiple units."

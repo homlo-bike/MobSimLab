@@ -679,6 +679,54 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 |---|---|---|---|---|---|---|---|
 | all | 5 | 10 | 50 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | The signal stands just in front of the first switch it protects, so a train waiting at it does not foul the switch; room for the insulated joint or axle counter and the signal mast. Signals facing a switch from its legs stand at the clearance marker (the fouling point in the topology export) instead. |
 
+### Time a train must stand at the exit signal before its overlap is released
+
+`signalling.overlap_release_s` · unit: s · used by: interlocking
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 30 | 60 | 120 | educated-guess | unverified | [db-ril-819](#src-db-ril-819), [mobsimlab-derivation](#src-mobsimlab-derivation) | The overlap is released by time once the train has come to a stand in front of the exit signal (or at once when its next route locks); about one minute is common for electronic interlockings. |
+
+### Delay before a cancelled route is released in front of an approaching train (approach locking)
+
+`signalling.approach_release_s` · unit: s · used by: interlocking, traffic management
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 60 | 120 | 240 | educated-guess | unverified | [db-ril-819](#src-db-ril-819), [mobsimlab-derivation](#src-mobsimlab-derivation) | Time release of an approach-locked route: long enough for a train that has seen the proceed aspect to stop; about two minutes is common. |
+
+### Safety margin behind the rear of the train ahead under moving block
+
+`signalling.moving_block_margin_m` · unit: m · used by: train protection
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 25 | 50 | 100 | educated-guess | unverified | [ieee-1474-1](#src-ieee-1474-1), [mobsimlab-derivation](#src-mobsimlab-derivation) | CBTC and ETCS level 2 keep a safety margin beyond the braking curve to cover position uncertainty and the rear of the train ahead; suppliers use a few tens of metres. |
+
+### Overspeed above the permitted speed before the protection brakes
+
+`signalling.supervision_tolerance_kmh` · unit: km/h · used by: train protection
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 5 | 7.5 | 15 | cited | unverified | [era-subset-026](#src-era-subset-026) | ETCS ceiling speed supervision: the emergency brake intervention lies about 7.5 km/h above the permitted speed at low speeds and grows with speed; CBTC systems use similar margins. |
+
+### Share of the service braking rate the driver model plans with
+
+`sim.ato_brake_share` · unit: share · used by: driver model
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.7 | 0.85 | 1.0 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Drivers and ATO brake below the rate the protection supervises, so normal stops never touch the protection curve. |
+
+### Emergency braking rate as a multiple of the service braking rate
+
+`sim.emergency_brake_factor` · unit: factor · used by: train protection
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 1.2 | 1.3 | 1.5 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Emergency braking is typically 20–50 % stronger than full service braking on multiple units. |
+
 ## Infrastructure standards
 
 ### Track centre distance (double track, open line)
@@ -944,6 +992,22 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 |---|---|---|---|---|---|---|---|
 | all | 20 | 25 | 40 | cited | unverified | [us-49cfr234](#src-us-49cfr234) | 49 CFR 234.225 requires at least 20 s of warning; railways usually add a few seconds for barriers to come down, so the central value is 25 s. Countries set their own times. |
 | tram, light_rail | 10 | 15 | 25 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Trams crossing at traffic signals request priority one signal cycle step ahead (amber plus clearance time of the conflicting traffic), about 10–20 s. To be confirmed against local signal timing. |
+
+### Level crossings with barriers: time from triggering until the crossing is proved closed
+
+`level_crossing.barrier_closing_s` · unit: s · used by: interlocking, road closure in simulation
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 10 | 15 | 25 | educated-guess | unverified | [ebo](#src-ebo), [mobsimlab-derivation](#src-mobsimlab-derivation) | Road lights show a few seconds before the barriers start to lower; lowering takes about 6–10 s; the crossing is then proved closed. |
+
+### Level crossings with road traffic signals only: time from triggering until closed
+
+`level_crossing.signal_closing_s` · unit: s · used by: interlocking, road closure in simulation
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 6 | 10 | 15 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Amber then red for road traffic, with a clearing time for vehicles already on the crossing. |
 
 ## Accessibility
 
@@ -1251,6 +1315,8 @@ and rationale per attribute: [`switches.yaml`](switches.yaml); geometry model:
 | <a id="src-uic-406"></a>`uic-406` | [UIC Code 406, Capacity, 2nd edition (2013)](https://shop.uic.org/) | paywalled | © UIC; numbers cited as facts | 2026-11-01 | none |
 | <a id="src-pachl-roc"></a>`pachl-roc` | [J. Pachl, Railway Operation and Control, VTD Rail Publishing (blocking time theory, route setting, release and approach times)](https://www.vtd-rail.com/) | paywalled | © the author; numbers cited as facts | 2026-11-01 | none |
 | <a id="src-ceder-2016"></a>`ceder-2016` | [Avishai Ceder, Public Transit Planning and Operation: Modeling, Practice and Behavior, 2nd edition, chapters 3–4 (frequency and headway determination)](https://www.routledge.com/Public-Transit-Planning-and-Operation-Modeling-Practice-and-Behavior-Second-Edition/Ceder/p/book/9781466563919) | paywalled | © Taylor & Francis; only numeric values are quoted | 2026-11-02 | none |
+| <a id="src-era-subset-026"></a>`era-subset-026` | [ERA, ERTMS/ETCS System Requirements Specification, SUBSET-026, chapter 3.13 (speed and distance monitoring) and appendix A.3.1 (ceiling speed supervision values)](https://www.era.europa.eu/era-folder/1-ccs-tsi-and-ertms-specifications) | free | © ERA; numbers cited as facts | 2026-11-02 | none |
+| <a id="src-ieee-1474-1"></a>`ieee-1474-1` | [IEEE 1474.1, Standard for Communications-Based Train Control (CBTC) Performance and Functional Requirements](https://standards.ieee.org/ieee/1474.1/) | paywalled | © IEEE; numbers cited as facts | 2026-11-02 | none |
 | <a id="src-tcqsm3"></a>`tcqsm3` | [TCRP Report 165, Transit Capacity and Quality of Service Manual, 3rd edition (2013)](https://nap.nationalacademies.org/catalog/24766) | free | © National Academy of Sciences; free to read; numbers cited as facts | 2026-10-27 | none |
 | <a id="src-fta-c9030"></a>`fta-c9030` | [FTA Circular 9030.1E, Urbanized Area Formula Program — spare ratio guideline (spares ≤ 20 % of vehicles in maximum service for fleets of 50 or more)](https://www.transit.dot.gov/regulations-and-guidance/fta-circulars/urbanized-area-formula-program-program-guidance-and) | free | US Government work, public domain | 2026-10-27 | search-snippet |
 | <a id="src-tcrp-spare-ratio"></a>`tcrp-spare-ratio` | [TCRP Synthesis / National Academies chapter on bus spare ratios quoting FTA Circular 9030.1C ch. V para 9.a.5](https://nap.nationalacademies.org/read/22409/chapter/2) | free | © National Academy of Sciences; free to read | 2026-10-27 | search-snippet |
