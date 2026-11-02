@@ -15,6 +15,11 @@ pub struct Settings {
     pub max_access_m: f64,
     /// Longest walk between two stops at a change, in straight-line metres.
     pub max_transfer_m: f64,
+    /// Stops with the same name within this straight-line distance are one station: a bus stop named like
+    /// the railway station beside it is an interchange even beyond `max_transfer_m` (station names are
+    /// shared within the 150 m grouping distance of the platform line, so a long platform's middle can be
+    /// a few hundred metres from the stop).
+    pub same_name_station_m: f64,
     /// Longest journey walked all the way, in straight-line metres; longer ones must use transit.
     pub max_walk_only_m: f64,
     /// `journey.min_change_s`: time to change between two vehicles at the same stop.
@@ -36,6 +41,7 @@ impl Default for Settings {
             walk_detour_factor: 1.3,
             max_access_m: 1000.0,
             max_transfer_m: 400.0,
+            same_name_station_m: 600.0,
             max_walk_only_m: 3000.0,
             min_change_s: 60,
             level_change_s: 60,
