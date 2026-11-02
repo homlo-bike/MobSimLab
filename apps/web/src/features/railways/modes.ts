@@ -52,6 +52,11 @@ export const COLORS = {
   road: "#6f7377",
   stopLine: "#ffffff",
   barrier: "#d0342c",
+  signalMain: "#d0342c",
+  signalShunt: "#f8fafc",
+  signalDistant: "#eab308",
+  signalMarker: "#2563eb",
+  signalPost: "#1e293b",
 };
 
 /** Purpose: shift a level up or down by `d` steps, clamped to the five levels. */

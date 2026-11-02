@@ -6,6 +6,7 @@ const TOOLS: { id: RailTool; label: string; key: string; icon: string }[] = [
   { id: "track", label: "Track", key: "T", icon: "M8 3l-3 18M16 3l3 18M6 7h12M5.5 12h13M5 17h14" },
   { id: "turnout", label: "Turnout", key: "B", icon: "M6 21V3m0 10c0-4 4-6 12-10" },
   { id: "crossover", label: "Crossover", key: "X", icon: "M6 21V3m12 18V3M6 17l12-10" },
+  { id: "signal", label: "Signal", key: "G", icon: "M12 21v-9m-3-9h6v9H9zM12 6v.01M12 9v.01" },
   {
     id: "pan",
     label: "Pan",

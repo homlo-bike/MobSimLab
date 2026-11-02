@@ -19,7 +19,9 @@
     "platform_edges",
     "crossings",
     "level_crossings",
-    "depot_groups"
+    "depot_groups",
+    "signals",
+    "signals_generated"
   ],
   "properties": {
     "schema": { "const": "mobsimlab.rail-topology/1" },
@@ -47,7 +49,16 @@
     "platform_edges": { "type": "array", "items": { "$ref": "#/$defs/platform_edge" } },
     "crossings": { "type": "array", "items": { "$ref": "#/$defs/crossing" } },
     "level_crossings": { "type": "array", "items": { "$ref": "#/$defs/level_crossing" } },
-    "depot_groups": { "type": "array", "items": { "$ref": "#/$defs/depot_group" } }
+    "depot_groups": { "type": "array", "items": { "$ref": "#/$defs/depot_group" } },
+    "signals": {
+      "description": "Signals (ADR-0030 point 7): the planner's signal plan, or one generated from the design while the document has none.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/signal" }
+    },
+    "signals_generated": {
+      "type": "boolean",
+      "description": "true: the signals were generated on the fly; false: they are the planner's plan."
+    }
   },
   "$defs": {
     "mode": {
@@ -127,6 +138,7 @@
         "gauge_mm",
         "use",
         "power",
+        "train_protection",
         "levels",
         "speed_kmh",
         "gradient_permille",
@@ -167,6 +179,10 @@
         "mode": { "$ref": "#/$defs/mode" },
         "gauge_mm": { "type": "number", "exclusiveMinimum": 0 },
         "use": { "enum": ["running", "storage"] },
+        "train_protection": {
+          "enum": ["line_of_sight", "fixed_block", "cbtc", "etcs_l2"],
+          "description": "Train control of the section's railway system (signalling.system): driving on sight, fixed blocks with lineside signals, or moving block with cab signalling (CBTC, ETCS Level 2)."
+        },
         "power": {
           "type": "object",
           "additionalProperties": false,
@@ -440,6 +456,34 @@
         "tracks": { "type": "array", "items": { "type": "integer", "minimum": 1 }, "minItems": 1 },
         "sections": { "type": "array", "items": { "$ref": "#/$defs/section_id" }, "minItems": 1 },
         "length_m": { "$ref": "#/$defs/metres" }
+      }
+    },
+    "signal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "section", "chainage_m", "facing", "kind", "overlap_m", "lineside"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^(sg|g)\\d+$",
+          "description": "sg{document id} for a planned signal, g{n} for a generated one (not stable between exports)."
+        },
+        "section": { "$ref": "#/$defs/section_id" },
+        "chainage_m": { "$ref": "#/$defs/metres", "description": "Offset from the section's from node." },
+        "facing": {
+          "enum": ["to", "from"],
+          "description": "Direction of travel the signal governs: towards the section's to node, or towards its from node."
+        },
+        "kind": { "enum": ["main", "block", "shunting", "distant"] },
+        "overlap_m": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "description": "Overlap beyond the signal; null where trains drive on sight."
+        },
+        "lineside": {
+          "type": "boolean",
+          "description": "A lineside signal; false for a block marker under cab signalling (CBTC, ETCS Level 2)."
+        }
       }
     }
   }

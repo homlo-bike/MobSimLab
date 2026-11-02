@@ -97,6 +97,23 @@ export interface Switch {
   flip: boolean;
 }
 
+export type SignalKind = "main" | "block" | "shunting" | "distant";
+
+/** Where a signal stands: on a track line (centre-line chainage), a station track or a switch leg. */
+export type SignalAt =
+  | { type: "track"; track: number; line: number; s: number }
+  | { type: "station"; station: number; track: number; x: number }
+  | { type: "leg"; switch: number; leg: number; x: number };
+
+/** A signal of the planner's signal plan. `facing` +1 governs trains moving with the chainage. */
+export interface Signal {
+  id: number;
+  at: SignalAt;
+  facing: 1 | -1;
+  kind: SignalKind;
+  name: string;
+}
+
 export interface Network {
   origin: LonLat;
   mode: RailMode;
@@ -105,6 +122,8 @@ export interface Network {
   stations: Station[];
   tracks: Track[];
   switches: Switch[];
+  /** The signal plan; absent until the planner generates it (operations then gets generated signals). */
+  signals?: Signal[] | null;
 }
 
 export type Severity = "error" | "warning" | "info" | "ok";
@@ -227,6 +246,18 @@ export interface LevelCrossingView {
   lonlat: LonLat;
 }
 
+/** A drawn signal of the plan. */
+export interface SignalView {
+  id: number;
+  kind: SignalKind;
+  name: string;
+  facing: 1 | -1;
+  at: SignalAt;
+  /** False for a block marker under cab signalling. */
+  lineside: boolean;
+  lonlat: LonLat;
+}
+
 export interface FeatureCollection {
   type: "FeatureCollection";
   features: {
@@ -246,6 +277,7 @@ export const LAYER_NAMES = [
   "masts",
   "markers",
   "level_crossings",
+  "signals",
   "corridors",
   "connections",
 ] as const;
@@ -266,6 +298,9 @@ export interface RailView {
   modes: Partial<Record<RailMode, { params: ModeParams; turnouts: TurnoutOption[] }>>;
   crossings: CrossingView[];
   level_crossings: LevelCrossingView[];
+  signals: SignalView[];
+  /** The document holds a signal plan. */
+  signals_planned: boolean;
   counts: { errors: number; warnings: number; track_km: number; route_km: number };
   bbox: [number, number, number, number] | null;
 }
@@ -294,6 +329,10 @@ export interface RailEngine {
   addStreetTile(xml: string): number;
   /** Forget all streets. */
   clearStreets(): void;
+  /** A signal plan generated from the last build, with ids continuing the document's. */
+  generateSignals(): Signal[];
+  /** Where a signal placed at a map position would stand, within `maxM`. */
+  signalAnchor(at: LonLat, maxM: number): SignalAt | null;
   dispose(): void;
 }
 

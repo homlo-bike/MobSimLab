@@ -220,3 +220,60 @@
       sources: [mobsimlab-derivation]
       check: unverified
       rationale: "Lower speeds and short blocks; CBTC lines use 0."
+
+- key: signalling.system
+  label: Train control and signalling of a railway system (which signals the railway design tool generates)
+  group: Simulation
+  unit: system
+  kind: enum
+  options: [line_of_sight, fixed_block, cbtc, etcs_l2]
+  used_by: [generated signal plan (home and starter signals, block signals or cab-signalling block markers), blocking times]
+  values:
+    - context:
+        mode: "*"
+      central: fixed_block
+      basis: documented
+      sources: [db-ril-819]
+      check: unverified
+      rationale: "Mainline railways run on fixed blocks with lineside main and block signals; overlaps follow DB Ril 819.0202."
+    - context:
+        mode: tram
+      central: line_of_sight
+      basis: cited
+      sources: [bostrab]
+      check: unverified
+      rationale: "Trams drive on sight (BOStrab); signals only protect switches, junctions and crossings with other railways."
+    - context:
+        mode: metro
+      low: fixed_block
+      central: cbtc
+      high: cbtc
+      basis: documented
+      sources: [tcqsm3, vuchic-2007]
+      check: unverified
+      rationale: New and resignalled metro lines use communications-based train control (CBTC); older lines keep fixed blocks with train stops.
+    - context:
+        mode: high_speed_rail
+      low: fixed_block
+      central: etcs_l2
+      high: etcs_l2
+      basis: cited
+      sources: [tsi-ccs]
+      check: unverified
+      rationale: High-speed lines in the EU are equipped with ETCS (TSI CCS); Level 2 uses cab signalling with block marker boards instead of lineside block signals. Older lines use national cab signalling such as LZB.
+
+- key: signalling.signal_before_switch_m
+  label: Distance of a signal in front of the switch point (blade tip) it protects
+  group: Simulation
+  unit: m
+  used_by: [generated signal plan]
+  values:
+    - context:
+        mode: "*"
+      low: 5
+      central: 10
+      high: 50
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: The signal stands just in front of the first switch it protects, so a train waiting at it does not foul the switch; room for the insulated joint or axle counter and the signal mast. Signals facing a switch from its legs stand at the clearance marker (the fouling point in the topology export) instead.

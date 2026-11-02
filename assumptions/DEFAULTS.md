@@ -660,6 +660,25 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 | all | 50 | 150 | 300 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Distance a driver needs to read a signal aspect before the braking point; lineside signals are typically readable for 10–15 s at line speed. Cab signalling (ETCS L2, CBTC) can set it to 0. |
 | metro, tram, light_rail | 0 | 50 | 150 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Lower speeds and short blocks; CBTC lines use 0. |
 
+### Train control and signalling of a railway system (which signals the railway design tool generates)
+
+`signalling.system` · unit: system · used by: generated signal plan (home and starter signals, block signals or cab-signalling block markers), blocking times
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | – | fixed_block | – | documented | unverified | [db-ril-819](#src-db-ril-819) | Mainline railways run on fixed blocks with lineside main and block signals; overlaps follow DB Ril 819.0202. |
+| tram | – | line_of_sight | – | cited | unverified | [bostrab](#src-bostrab) | Trams drive on sight (BOStrab); signals only protect switches, junctions and crossings with other railways. |
+| metro | fixed_block | cbtc | cbtc | documented | unverified | [tcqsm3](#src-tcqsm3), [vuchic-2007](#src-vuchic-2007) | New and resignalled metro lines use communications-based train control (CBTC); older lines keep fixed blocks with train stops. |
+| high_speed_rail | fixed_block | etcs_l2 | etcs_l2 | cited | unverified | [tsi-ccs](#src-tsi-ccs) | High-speed lines in the EU are equipped with ETCS (TSI CCS); Level 2 uses cab signalling with block marker boards instead of lineside block signals. Older lines use national cab signalling such as LZB. |
+
+### Distance of a signal in front of the switch point (blade tip) it protects
+
+`signalling.signal_before_switch_m` · unit: m · used by: generated signal plan
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 5 | 10 | 50 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | The signal stands just in front of the first switch it protects, so a train waiting at it does not foul the switch; room for the insulated joint or axle counter and the signal mast. Signals facing a switch from its legs stand at the clearance marker (the fouling point in the topology export) instead. |
+
 ## Infrastructure standards
 
 ### Track centre distance (double track, open line)
@@ -1209,6 +1228,7 @@ and rationale per attribute: [`switches.yaml`](switches.yaml); geometry model:
 | Id | Source | Access | Licence of the source | Retrieved | Checked via |
 |---|---|---|---|---|---|
 | <a id="src-tsi-inf"></a>`tsi-inf` | [Commission Regulation (EU) No 1299/2014, technical specification for interoperability relating to the infrastructure subsystem (TSI INF), consolidated with (EU) 2019/776 and (EU) 2023/1694](https://eur-lex.europa.eu/eli/reg/2014/1299/oj) | free | © European Union; reuse authorised under Commission Decision 2011/833/EU | 2026-10-27 | search-snippet |
+| <a id="src-tsi-ccs"></a>`tsi-ccs` | [Commission Implementing Regulation (EU) 2023/1695, technical specification for interoperability relating to the control-command and signalling subsystems (TSI CCS), ETCS on high-speed lines](https://eur-lex.europa.eu/eli/reg_impl/2023/1695/oj) | free | © European Union; reuse authorised under Commission Decision 2011/833/EU | 2026-11-02 | none |
 | <a id="src-tsi-prm"></a>`tsi-prm` | [Commission Regulation (EU) No 1300/2014, TSI for accessibility for persons with disabilities and persons with reduced mobility (TSI PRM), consolidated with (EU) 2019/772 and (EU) 2023/1695](https://eur-lex.europa.eu/eli/reg/2014/1300/oj) | free | © European Union; reuse authorised under Commission Decision 2011/833/EU | 2026-10-27 | none |
 | <a id="src-tsi-ene"></a>`tsi-ene` | [Commission Regulation (EU) No 1301/2014, TSI for the energy subsystem (TSI ENE)](https://eur-lex.europa.eu/eli/reg/2014/1301/oj) | free | © European Union; reuse authorised under Commission Decision 2011/833/EU | 2026-10-27 | none |
 | <a id="src-eu-reco-2001-290"></a>`eu-reco-2001-290` | [Commission Recommendation 2001/290/EC on the basic parameters of the trans-European high-speed rail system](https://eur-lex.europa.eu/eli/reco/2001/290/oj) | free | © European Union; reuse authorised under Commission Decision 2011/833/EU | 2026-10-27 | search-snippet |
