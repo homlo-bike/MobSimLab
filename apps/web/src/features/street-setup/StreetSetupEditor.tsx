@@ -207,7 +207,7 @@ export function StreetSetupEditor({
     <div className="flex flex-col gap-4 px-4 pt-1 pb-6 md:px-5">
       <div>
         <h2 className="text-lg font-semibold">Streets</h2>
-        <p className="mt-1 text-sm text-slate-600">
+        <p className={`mt-1 text-sm text-slate-600 ${info ? "hidden md:block" : ""}`}>
           Tap a street to say how it is shared: traffic lanes, bus and bike lanes, separation and trams. Your
           setup overrides OpenStreetMap in the street line tool and the railway editor, for running times and
           the reliability and safety checks.
@@ -463,9 +463,9 @@ function Choice<T extends string | boolean>({
     <div role="group" aria-label={label}>
       <div className="font-medium">{label}</div>
       {hint && <div className="text-xs text-slate-500">{hint}</div>}
-      <div className="seg mt-1.5">
+      <div className="seg mt-1.5 [&>button]:min-h-11 [&>button]:px-1.5 [&>button]:text-sm [&>button]:leading-tight [&>button]:whitespace-normal">
         <button type="button" aria-pressed={value === null} onClick={() => onPick(null)}>
-          OSM <span className="font-normal opacity-75">({osm})</span>
+          OSM <span className="block text-xs font-normal opacity-75">{osm}</span>
         </button>
         {options.map(([v, l]) => (
           <button key={String(v)} type="button" aria-pressed={value === v} onClick={() => onPick(v)}>

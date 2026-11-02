@@ -47,7 +47,16 @@ export function ensureLayers(map: MapLibreMap): void {
         PRIORITY_COLOR.mixed,
         PRIORITY_COLOR.other,
       ],
-      "line-width": ["case", ["get", "main"], width(2.5, 9), width(1, 5)] as never,
+      // Zoom must be the outermost expression: main roads draw wider at every zoom.
+      "line-width": [
+        "interpolate",
+        ["linear"],
+        ["zoom"],
+        13,
+        ["case", ["get", "main"], 2.5, 1],
+        18,
+        ["case", ["get", "main"], 9, 5],
+      ] as never,
       "line-opacity": ["case", ["==", ["get", "priority"], "other"], 0.55, 0.95],
     },
   });
