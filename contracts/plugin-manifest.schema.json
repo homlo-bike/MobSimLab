@@ -43,9 +43,7 @@
     "publisher": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "name"
-      ],
+      "required": ["name"],
       "properties": {
         "name": {
           "type": "string",
@@ -70,10 +68,7 @@
     "engines": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "mobsimlab",
-        "pluginApi"
-      ],
+      "required": ["mobsimlab", "pluginApi"],
       "properties": {
         "mobsimlab": {
           "description": "Range of MobSimLab versions, such as \">=0.1 <1\".",
@@ -93,11 +88,7 @@
       "minItems": 1,
       "uniqueItems": true,
       "items": {
-        "enum": [
-          "data",
-          "compute",
-          "ui"
-        ]
+        "enum": ["data", "compute", "ui"]
       }
     },
     "contributes": {
@@ -109,10 +100,7 @@
           "type": "array",
           "items": {
             "$ref": "#/$defs/fileItem",
-            "required": [
-              "id",
-              "file"
-            ]
+            "required": ["id", "file"]
           }
         },
         "contexts": {
@@ -121,11 +109,7 @@
           "items": {
             "type": "object",
             "additionalProperties": false,
-            "required": [
-              "key",
-              "label",
-              "options"
-            ],
+            "required": ["key", "label", "options"],
             "properties": {
               "key": {
                 "type": "string",
@@ -140,10 +124,7 @@
                 "items": {
                   "type": "object",
                   "additionalProperties": false,
-                  "required": [
-                    "id",
-                    "label"
-                  ],
+                  "required": ["id", "label"],
                   "properties": {
                     "id": {
                       "type": "string",
@@ -163,9 +144,7 @@
           "type": "array",
           "items": {
             "$ref": "#/$defs/fileItem",
-            "required": [
-              "file"
-            ]
+            "required": ["file"]
           }
         },
         "sources": {
@@ -173,9 +152,7 @@
           "type": "array",
           "items": {
             "$ref": "#/$defs/fileItem",
-            "required": [
-              "file"
-            ]
+            "required": ["file"]
           }
         },
         "vehicles": {
@@ -183,9 +160,7 @@
           "type": "array",
           "items": {
             "$ref": "#/$defs/fileItem",
-            "required": [
-              "dir"
-            ]
+            "required": ["dir"]
           }
         },
         "tools": {
@@ -194,12 +169,7 @@
           "items": {
             "type": "object",
             "additionalProperties": false,
-            "required": [
-              "id",
-              "label",
-              "kit",
-              "modes"
-            ],
+            "required": ["id", "label", "kit", "modes"],
             "properties": {
               "id": {
                 "type": "string",
@@ -212,10 +182,7 @@
                 "type": "string"
               },
               "kit": {
-                "enum": [
-                  "straight-spans",
-                  "water-route"
-                ]
+                "enum": ["straight-spans", "water-route"]
               },
               "modes": {
                 "type": "array",
@@ -233,14 +200,7 @@
           "items": {
             "type": "object",
             "additionalProperties": false,
-            "required": [
-              "id",
-              "label",
-              "runtime",
-              "module",
-              "inputs",
-              "outputs"
-            ],
+            "required": ["id", "label", "runtime", "module", "inputs", "outputs"],
             "properties": {
               "id": {
                 "type": "string",
@@ -253,9 +213,7 @@
                 "type": "string"
               },
               "runtime": {
-                "enum": [
-                  "bundled-wasm"
-                ]
+                "enum": ["bundled-wasm"]
               },
               "module": {
                 "description": "WebAssembly module name under apps/web/src/wasm/ (bundled-wasm).",
@@ -282,13 +240,7 @@
                 "minItems": 1,
                 "uniqueItems": true,
                 "items": {
-                  "enum": [
-                    "grid",
-                    "segments",
-                    "table",
-                    "kpis",
-                    "findings"
-                  ]
+                  "enum": ["grid", "segments", "table", "kpis", "findings"]
                 }
               },
               "where": {
@@ -296,13 +248,7 @@
                 "type": "array",
                 "uniqueItems": true,
                 "items": {
-                  "enum": [
-                    "street-line-tool",
-                    "railway-tool",
-                    "cable-car-tool",
-                    "ferry-tool",
-                    "analysis"
-                  ]
+                  "enum": ["street-line-tool", "railway-tool", "cable-car-tool", "ferry-tool", "analysis"]
                 }
               }
             }
@@ -338,12 +284,7 @@
           "items": {
             "type": "object",
             "additionalProperties": false,
-            "required": [
-              "id",
-              "label",
-              "calculation",
-              "style"
-            ],
+            "required": ["id", "label", "calculation", "style"],
             "properties": {
               "id": {
                 "type": "string",

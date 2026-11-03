@@ -7,18 +7,41 @@
   "additionalProperties": false,
   "required": ["id", "label", "family", "colour", "gtfsRouteType", "kit", "operation"],
   "properties": {
-    "id": { "description": "Mode id, unique across the core and all plugins.", "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+    "id": {
+      "description": "Mode id, unique across the core and all plugins.",
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
     "label": { "type": "string", "minLength": 1 },
     "family": { "enum": ["street", "rail", "guided", "aerial", "water"] },
-    "colour": { "description": "Default line colour (assumption `mode.colour`).", "type": "string", "pattern": "^#[0-9a-f]{6}$" },
-    "gtfsRouteType": { "description": "GTFS route_type (basic or extended).", "type": "integer", "minimum": 0 },
-    "kit": { "description": "Core authoring kit that draws the mode.", "enum": ["straight-spans", "water-route"] },
+    "colour": {
+      "description": "Default line colour (assumption `mode.colour`).",
+      "type": "string",
+      "pattern": "^#[0-9a-f]{6}$"
+    },
+    "gtfsRouteType": {
+      "description": "GTFS route_type (basic or extended).",
+      "type": "integer",
+      "minimum": 0
+    },
+    "kit": {
+      "description": "Core authoring kit that draws the mode.",
+      "enum": ["straight-spans", "water-route"]
+    },
     "operation": {
       "description": "frequency: a belt of vehicles with no timetable; shuttle: vehicles reverse between two ends; timetabled: exact trips.",
       "enum": ["frequency", "shuttle", "timetabled"]
     },
-    "contextKey": { "description": "Assumption context key whose option picks the system or vessel type.", "type": "string" },
-    "contexts": { "description": "Options of contextKey this mode uses.", "type": "array", "minItems": 1, "items": { "type": "string" } },
+    "contextKey": {
+      "description": "Assumption context key whose option picks the system or vessel type.",
+      "type": "string"
+    },
+    "contexts": {
+      "description": "Options of contextKey this mode uses.",
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" }
+    },
     "defaultContext": { "type": "string" }
   }
 }
