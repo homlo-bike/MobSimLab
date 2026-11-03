@@ -113,6 +113,7 @@ function fakeEngine(): StreetEngine {
     clearDepot: vi.fn(() => view),
     optimise: vi.fn(() => view),
     setSettings: vi.fn(() => view),
+    setStreetSetups: vi.fn(() => view),
     usableRoads: () => ({ type: "FeatureCollection", features: [] }),
     defaultProfile: (mode) => ({ ...profile, mode }),
     defaultRules: () => ({

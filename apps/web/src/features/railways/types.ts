@@ -1,5 +1,7 @@
 /** The railway design document (Rust `rail_design::model`) and the view returned by the engine. */
 
+import type { StreetSetup } from "../street-setup/types";
+
 export type RailMode =
   | "tram"
   | "light_rail"
@@ -259,6 +261,15 @@ export interface StreetRunningView {
   bus: boolean;
   stops: number[];
   lonlat: LonLat | null;
+  /** OSM way of the street. */
+  way: number;
+  /** The tram's own lane is separated from the traffic. */
+  separated: boolean;
+  /** setup: set in the GIS tab; osm: inferred from the street's width. */
+  source: "setup" | "osm";
+  bike_lane: boolean;
+  /** Expected extra running time in traffic at peak, share of the running time. */
+  traffic_delay_share: number;
 }
 
 /** Where a free end of new track joins an existing railway from OpenStreetMap. */
@@ -384,6 +395,8 @@ export interface RailEngine {
   clearRails(): void;
   /** The nearest point on an existing railway within `maxM`, to snap a track end onto. */
   existingSnap(at: LonLat, maxM: number): ExistingSnap | null;
+  /** Applies the planner's street setups from the GIS tab; the next build uses them. */
+  setStreetSetups(setups: readonly StreetSetup[]): void;
   /** A signal plan generated from the last build, with ids continuing the document's. */
   generateSignals(): Signal[];
   /** Where a signal placed at a map position would stand, within `maxM`. */

@@ -283,7 +283,21 @@ describe("railway engine (WebAssembly)", () => {
     e.addStreetTile(streetTile(50.898, 50.902, { highway: "primary", name: "High Street", lanes: "2" }));
     const m = e.build({ ...net, tracks: [{ ...t, end: { type: "free", x: 0, y: 400 } }] }, null);
     expect(m.street_running[0]!.running).toBe("mixed");
-    expect(m.issues.some((i) => i.severity === "warning" && /held up by traffic/.test(i.text))).toBe(true);
+    expect(m.issues.some((i) => i.severity === "warning" && /held up in traffic jams/.test(i.text))).toBe(
+      true,
+    );
+    // Set up in the GIS tab with its own lane, separated: the warning is resolved.
+    e.setStreetSetups([{ way: 100, tram: "own_lane", separated: true, bike_lane: true }]);
+    const s = e.build({ ...net, tracks: [{ ...t, end: { type: "free", x: 0, y: 400 } }] }, null);
+    expect(s.street_running[0]).toMatchObject({
+      running: "reserved",
+      separated: true,
+      source: "setup",
+      traffic_delay_share: 0,
+    });
+    expect(s.issues.some((i) => i.severity === "warning" && /traffic jams|Cyclists/.test(i.text))).toBe(
+      false,
+    );
     e.dispose();
   });
 

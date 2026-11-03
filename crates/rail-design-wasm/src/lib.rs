@@ -8,7 +8,9 @@
 //! The editor also passes the street tiles on screen (OSM XML from the API, the same tiles the
 //! street line tool uses) to [`RailDesigner::add_street_tile`], so the build finds level
 //! crossings with the streets, and the railway tiles to [`RailDesigner::add_rail_tile`], so new
-//! track can join the existing railways.
+//! track can join the existing railways. The planner's street setups from the GIS tab
+//! ([`RailDesigner::set_street_setups`]) are applied over the OSM tags, so a street set up with a
+//! separated tram lane is built as one.
 
 use rail_design::existing::{nearest_on, rail_from_osm, ExistingRail};
 use rail_design::geom::{nearest, P2};
@@ -16,6 +18,8 @@ use rail_design::proj::LocalTm;
 use rail_design::street::{street_from_osm, Street};
 use rail_design::{build_with_osm, Design, Network, RailMode};
 use std::collections::{BTreeMap, HashMap};
+use street_routing::osm::Tags;
+use street_routing::StreetSetup;
 use wasm_bindgen::prelude::*;
 
 fn mode(s: &str) -> Result<RailMode, JsError> {
@@ -31,7 +35,9 @@ fn js(e: impl std::fmt::Display) -> JsError {
 #[wasm_bindgen]
 pub struct RailDesigner {
     design: Option<Design>,
-    streets: BTreeMap<i64, Street>,
+    /// OSM tags and shape per street way, as loaded.
+    streets: BTreeMap<i64, (Tags, Vec<[f64; 2]>)>,
+    setups: Vec<StreetSetup>,
     street_list: Vec<Street>,
     rails: BTreeMap<i64, ExistingRail>,
     rail_list: Vec<ExistingRail>,
@@ -51,6 +57,7 @@ impl RailDesigner {
         Self {
             design: None,
             streets: BTreeMap::new(),
+            setups: Vec::new(),
             street_list: Vec::new(),
             rails: BTreeMap::new(),
             rail_list: Vec::new(),
@@ -85,19 +92,27 @@ impl RailDesigner {
                 .iter()
                 .filter_map(|n| nodes.get(n).copied())
                 .collect();
-            let Some(st) = street_from_osm(w.id, &w.tags, coords) else {
+            if street_from_osm(w.id, &w.tags, coords.clone()).is_none() {
                 continue;
-            };
+            }
             if self
                 .streets
                 .get(&w.id)
-                .map_or(true, |old| old.coords.len() < st.coords.len())
+                .map_or(true, |old| old.1.len() < coords.len())
             {
-                self.streets.insert(w.id, st);
+                self.streets.insert(w.id, (w.tags.clone(), coords));
             }
         }
-        self.street_list = self.streets.values().cloned().collect();
+        self.refresh_streets();
         Ok(self.streets.len() as u32)
+    }
+
+    /// Purpose: set the planner's street setups from the GIS tab (JSON list of
+    /// `street_routing::StreetSetup`). Side effects: the next build uses them.
+    pub fn set_street_setups(&mut self, json: &str) -> Result<(), JsError> {
+        self.setups = serde_json::from_str(json).map_err(js)?;
+        self.refresh_streets();
+        Ok(())
     }
 
     /// Purpose: forget all streets. Side effects: the next build has no level crossings.
@@ -167,6 +182,22 @@ impl RailDesigner {
             ));
         }
         best.map_or("null".into(), |b| b.1.to_string())
+    }
+
+    /// Purpose: rebuild the street list from the loaded ways with the setups applied.
+    fn refresh_streets(&mut self) {
+        let by_way: HashMap<i64, &StreetSetup> = self.setups.iter().map(|s| (s.way, s)).collect();
+        self.street_list = self
+            .streets
+            .iter()
+            .filter_map(|(way, (tags, coords))| {
+                let mut t = tags.clone();
+                if let Some(s) = by_way.get(way) {
+                    s.apply(&mut t);
+                }
+                street_from_osm(*way, &t, coords.clone())
+            })
+            .collect();
     }
 
     /// Purpose: the track nearest to a map position within `max_m` metres, as JSON

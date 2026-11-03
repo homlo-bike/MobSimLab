@@ -879,7 +879,8 @@ pub fn view(dz: &Design) -> Value {
     let street_running: Vec<Value> = dz.street_running.iter().map(|r| json!({
             "id": r.id, "track": r.track, "running": r.running, "speed_limit_kmh": r.speed_limit_kmh,
             "length_m": r.to_m - r.from_m, "street": r.street.name, "class": r.street.class, "bus": r.street.bus,
-            "stops": r.stops,
+            "stops": r.stops, "way": r.street.way, "separated": r.separated, "source": r.source,
+            "bike_lane": r.street.bike_lane, "traffic_delay_share": r.traffic_delay_share,
             "lonlat": dz.track(r.track).map(|g| ly.ll(crate::geom::at_s(&g.centre, (r.from_m + r.to_m) / 2.0).p)),
         })).collect::<Vec<_>>();
 
