@@ -84,13 +84,13 @@ export function verdicts(info: StreetInfo, e: Effective): Verdict[] {
     out.push({
       level: "info",
       who: "Buses",
-      text: `Painted bus lane: turning and parking cars still get in the way, about ${pct(PAINTED_DELAY)} longer running time at peak. Separate it to keep cars out.`,
+      text: `Painted bus lane: turning and parking cars still get in the way, about ${pct(PAINTED_DELAY)} longer running time for buses and trolleybuses at peak. Separate it to keep cars out.`,
     });
   } else {
     out.push({
       level: "warning",
       who: "Buses",
-      text: `Buses run in the traffic of a main road: about ${pct(MIXED_DELAY)} longer running time at peak, and late when traffic jams. A bus lane fixes it.`,
+      text: `Buses and trolleybuses run in the traffic of a main road: about ${pct(MIXED_DELAY)} longer running time at peak, and late when traffic jams. A bus lane fixes it.`,
     });
   }
   if (e.hasTram) {
@@ -109,7 +109,7 @@ export function verdicts(info: StreetInfo, e: Effective): Verdict[] {
         level: main ? "warning" : "info",
         who: "Trams",
         text: main
-          ? `Mixed traffic on a main road: the tram is held up in traffic jams and can be stuck in gridlock, about ${pct(MIXED_DELAY)} longer at peak. Give it its own lane, separated.`
+          ? `Mixed traffic on a main road: the tram is held up in traffic jams and can be stuck in gridlock, about ${pct(MIXED_DELAY)} longer at peak. The tram timetable counts it in the running time. Give it its own lane, separated.`
           : "Mixed traffic: the tram runs in the traffic lanes.",
       });
     } else {

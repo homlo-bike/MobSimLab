@@ -223,6 +223,10 @@ pub struct Section {
     pub gradient_permille: Vec<Range<f64>>,
     /// Horizontal radius of the centre line in curves, m.
     pub radius_m: Vec<Range<f64>>,
+    /// Expected extra running time in street traffic, share of the running time at the permitted
+    /// speed (`street.mixed_traffic_delay_share` where a tram runs in a main road's traffic,
+    /// `street.bus_lane_delay_share` in a painted own lane); only stretches with a delay.
+    pub traffic_delay_share: Vec<Range<f64>>,
     /// Platform edges along it.
     pub platform_edges: Vec<String>,
     /// Polyline, m east and north of the origin (within 2 cm of the fitted line).
@@ -803,7 +807,7 @@ pub fn topology(dz: &Design) -> Topology {
                 .and_then(|v| v.as_str().map(String::from))
                 .unwrap_or_else(|| name(Some(l)))
         };
-        let (levels, speed, gradient, radius) = match (s.span, g) {
+        let (levels, speed, gradient, radius, delay) = match (s.span, g) {
             (Some(span), Some(g)) => {
                 let zl: Vec<(f64, f64, String)> = g
                     .zones
@@ -830,6 +834,13 @@ pub fn topology(dz: &Design) -> Topology {
                     .iter()
                     .map(|c| (c.s0, c.s1, rd(c.radius)))
                     .collect();
+                let mut dl: Vec<(f64, f64, f64)> = dz
+                    .street_running
+                    .iter()
+                    .filter(|r| r.track == g.id && r.traffic_delay_share > 0.0)
+                    .map(|r| (r.from_m, r.to_m, rd(r.traffic_delay_share)))
+                    .collect();
+                dl.sort_by(|a, b| a.0.total_cmp(&b.0));
                 // Chainage ranges are the centre line's; scale them to this line's length.
                 let k = len / (span[1] - span[0]).max(1e-9);
                 let sc = |v: Vec<Range<f64>>| {
@@ -854,6 +865,7 @@ pub fn topology(dz: &Design) -> Topology {
                     sc(ranges(span, &sp)),
                     sc(ranges(span, &gr)),
                     sc(ranges(span, &rr)),
+                    sc(ranges(span, &dl)),
                 )
             }
             _ => {
@@ -881,7 +893,7 @@ pub fn topology(dz: &Design) -> Topology {
                     to_m: rd(len),
                     value: rd(v),
                 }];
-                (lv, sp, vec![], r)
+                (lv, sp, vec![], r, vec![])
             }
         };
         sections.push(Section {
@@ -899,6 +911,7 @@ pub fn topology(dz: &Design) -> Topology {
             speed_kmh: speed,
             gradient_permille: gradient,
             radius_m: radius,
+            traffic_delay_share: delay,
             platform_edges: platforms
                 .iter()
                 .filter(|e| e.section == s.id)
