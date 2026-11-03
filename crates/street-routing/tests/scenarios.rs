@@ -510,3 +510,71 @@ fn loading_more_area_keeps_the_line() {
     );
     assert!(v.points[0].bay.is_some() && v.points[0].bearing_deg.is_some());
 }
+
+/// A grid whose bottom row is a main road (High Street), with the planner's street setups.
+fn main_road_graph(setups: &[street_routing::StreetSetup]) -> (RoadGraph, i64) {
+    let mut o = Osm::new();
+    for r in 0..2 {
+        for c in 0..4 {
+            o.node(10 * r + c + 1, c as f64 * 200.0, r as f64 * 200.0, &[]);
+        }
+    }
+    let high = o.way(
+        &[1, 2, 3, 4],
+        &[("highway", "primary"), ("name", "High Street")],
+    );
+    o.way(
+        &[11, 12, 13, 14],
+        &[("highway", "residential"), ("name", "Back Lane")],
+    );
+    for c in 0..4 {
+        o.way(&[c + 1, 10 + c + 1], &[("highway", "residential")]);
+    }
+    let xml = format!(r#"<osm version="0.6">{}{}</osm>"#, o.nodes, o.ways);
+    let mut data = parse_osm_xml(&xml).unwrap();
+    street_routing::apply_setups(&mut data, setups);
+    (RoadGraph::from_osm(&data).unwrap(), high)
+}
+
+fn high_street_line(g: &RoadGraph) -> StreetLine {
+    let mut line = StreetLine::new(bus(), RoutingRules::default());
+    add(&mut line, g, 50.0, 3.0, PointKind::EndStop);
+    add(&mut line, g, 550.0, 3.0, PointKind::EndStop);
+    line
+}
+
+#[test]
+fn main_road_traffic_delays_buses_until_the_street_gets_a_separated_bus_lane() {
+    let (g, high) = main_road_graph(&[]);
+    let v = high_street_line(&g).view(&g);
+    assert!(v.mixed_traffic_m >= 400.0, "{}", v.mixed_traffic_m);
+    assert!(v.traffic_delay_s > 0.0);
+    assert_eq!(v.mixed_streets[0].way, high);
+    assert!(
+        v.issues
+            .iter()
+            .any(|i| i.contains("traffic of main roads (High Street)")),
+        "{:?}",
+        v.issues
+    );
+
+    let painted = street_routing::StreetSetup {
+        way: high,
+        bus_lane: Some(true),
+        ..Default::default()
+    };
+    let (g2, _) = main_road_graph(std::slice::from_ref(&painted));
+    let v2 = high_street_line(&g2).view(&g2);
+    assert!(v2.bus_lane_m >= 400.0);
+    assert!(v2.traffic_delay_s > 0.0 && v2.traffic_delay_s < v.traffic_delay_s);
+    assert!(!v2.issues.iter().any(|i| i.contains("main roads")));
+
+    let separated = street_routing::StreetSetup {
+        separated: Some(true),
+        ..painted
+    };
+    let (g3, _) = main_road_graph(&[separated]);
+    let v3 = high_street_line(&g3).view(&g3);
+    assert!(v3.traffic_delay_s.abs() < 1e-9, "{}", v3.traffic_delay_s);
+    assert!(v3.time_s < v2.time_s && v2.time_s < v.time_s);
+}

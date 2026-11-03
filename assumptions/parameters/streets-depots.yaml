@@ -144,6 +144,40 @@
       check: unverified
       rationale: "50 km/h is the general limit inside built-up areas (StVO § 3(3)); many towns use 30 km/h on residential streets and some countries 60 km/h. Trams on track embedded in the street run under the road traffic rules (BOStrab), so the street's limit caps their speed there. OSM maxspeed wins when present."
 
+- key: street.mixed_traffic_delay_share
+  label: "Extra running time of buses and trams in the traffic of a main road (share of the free-flow time)"
+  group: Depots and streets
+  unit: share
+  used_by:
+    [street line running times and reliability check, tram street running reliability, GIS tab street setup]
+  values:
+    - context:
+        mode: "*"
+      low: 0.1
+      central: 0.25
+      high: 0.5
+      basis: educated-guess
+      sources: [tcqsm3, hcm7, mobsimlab-derivation]
+      check: unverified
+      rationale: "Buses and trams in the general traffic of a main road lose time in queues at signals and in jams; at peak, urban bus speeds in mixed traffic are commonly 20–50 % below those in a reserved lane (TCQSM bus running speed and lane type adjustments; HCM urban street speeds). The central 25 % is a planning value until the simulation measures it; set a bus or tram lane in the GIS tab to remove it."
+
+- key: street.bus_lane_delay_share
+  label: "Extra running time in a painted (not separated) bus or tram lane (share of the free-flow time)"
+  group: Depots and streets
+  unit: share
+  used_by:
+    [street line running times and reliability check, tram street running reliability, GIS tab street setup]
+  values:
+    - context:
+        mode: "*"
+      low: 0.03
+      central: 0.08
+      high: 0.15
+      basis: educated-guess
+      sources: [tcqsm3, mobsimlab-derivation]
+      check: unverified
+      rationale: "A lane that is only painted is entered by turning, parking and loading vehicles; TCQSM treats such lanes as giving part of the benefit of a separated lane. 8 % is about a third of the mixed-traffic loss. A kerb, barrier or separate track bed (separation in the GIS tab) removes it."
+
 - key: street.walking_pace_kmh
   label: Speed in a living street or pedestrian zone (walking pace)
   group: Depots and streets

@@ -88,6 +88,8 @@ RAIL_FIELDS = {
     "street_lanes": "street.lanes",
     "street_speed_limit_kmh": "street.speed_limit_kmh",
     "street_walking_pace_kmh": "street.walking_pace_kmh",
+    "street_mixed_traffic_delay_share": "street.mixed_traffic_delay_share",
+    "street_bus_lane_delay_share": "street.bus_lane_delay_share",
     "road_stop_clearance_m": "crossing.clearance_m",
     "level_crossing_permitted": "level_crossing.permitted",
     "level_crossing_max_speed_kmh": "level_crossing.max_line_speed_kmh",

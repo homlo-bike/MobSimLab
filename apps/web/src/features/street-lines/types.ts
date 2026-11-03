@@ -1,5 +1,7 @@
 /** Types of the JSON returned by the street-routing WebAssembly module (Rust `LineView`). */
 
+import type { StreetSetup } from "../street-setup/types";
+
 export type Mode = "bus" | "brt" | "trolleybus" | "intercity_bus";
 export type PointKind = "via" | "stop" | "end_stop";
 export type Status = "ok" | "warning" | "error";
@@ -46,6 +48,12 @@ export interface LegView {
   status: Status;
   message: string | null;
   ways: number[];
+  /** Of `time_s`, the expected delay in main-road traffic, s. */
+  traffic_delay_s?: number;
+  /** Metres on main roads in the general traffic. */
+  mixed_traffic_m?: number;
+  /** Metres on main roads in a bus lane. */
+  bus_lane_m?: number;
 }
 
 export interface DirectionView {
@@ -81,6 +89,14 @@ export interface LineView {
   issues: string[];
   length_m: number;
   time_s: number;
+  /** Of `time_s`, the expected delay in main-road traffic over the circuit, s. */
+  traffic_delay_s?: number;
+  /** Circuit metres on main roads in the general traffic. */
+  mixed_traffic_m?: number;
+  /** Circuit metres on main roads in a bus lane. */
+  bus_lane_m?: number;
+  /** Main roads driven in the general traffic, longest first. */
+  mixed_streets?: { way: number; name: string; length_m: number }[];
 }
 
 /** The routing engine as the editor sees it. Every edit returns the new line view. */
@@ -101,6 +117,8 @@ export interface StreetEngine {
   clearDepot(): LineView;
   optimise(): LineView;
   setSettings(profile: VehicleProfile, rules: RoutingRules): LineView;
+  /** Applies the planner's street setups from the GIS tab and re-routes. */
+  setStreetSetups(setups: readonly StreetSetup[]): LineView;
   /** Roads the current vehicle may use, as GeoJSON with `oneway`, `wire` and `bus_lane` properties. */
   usableRoads(): object;
   defaultProfile(mode: Mode): VehicleProfile;

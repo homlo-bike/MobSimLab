@@ -1125,6 +1125,22 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 |---|---|---|---|---|---|---|---|
 | all | 30 | 50 | 60 | cited | unverified | [stvo](#src-stvo), [bostrab](#src-bostrab) | 50 km/h is the general limit inside built-up areas (StVO § 3(3)); many towns use 30 km/h on residential streets and some countries 60 km/h. Trams on track embedded in the street run under the road traffic rules (BOStrab), so the street's limit caps their speed there. OSM maxspeed wins when present. |
 
+### Extra running time of buses and trams in the traffic of a main road (share of the free-flow time)
+
+`street.mixed_traffic_delay_share` · unit: share · used by: street line running times and reliability check, tram street running reliability, GIS tab street setup
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.1 | 0.25 | 0.5 | educated-guess | unverified | [tcqsm3](#src-tcqsm3), [hcm7](#src-hcm7), [mobsimlab-derivation](#src-mobsimlab-derivation) | Buses and trams in the general traffic of a main road lose time in queues at signals and in jams; at peak, urban bus speeds in mixed traffic are commonly 20–50 % below those in a reserved lane (TCQSM bus running speed and lane type adjustments; HCM urban street speeds). The central 25 % is a planning value until the simulation measures it; set a bus or tram lane in the GIS tab to remove it. |
+
+### Extra running time in a painted (not separated) bus or tram lane (share of the free-flow time)
+
+`street.bus_lane_delay_share` · unit: share · used by: street line running times and reliability check, tram street running reliability, GIS tab street setup
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.03 | 0.08 | 0.15 | educated-guess | unverified | [tcqsm3](#src-tcqsm3), [mobsimlab-derivation](#src-mobsimlab-derivation) | A lane that is only painted is entered by turning, parking and loading vehicles; TCQSM treats such lanes as giving part of the benefit of a separated lane. 8 % is about a third of the mixed-traffic loss. A kerb, barrier or separate track bed (separation in the GIS tab) removes it. |
+
 ### Speed in a living street or pedestrian zone (walking pace)
 
 `street.walking_pace_kmh` · unit: km/h · used by: speed of street-running trams, road traffic

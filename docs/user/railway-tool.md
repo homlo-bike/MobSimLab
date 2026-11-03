@@ -97,6 +97,8 @@ Tram and light rail track at street level is embedded in the street (unless you 
 - **In traffic**: it is not, so cars and buses drive on the track and the tram runs with them. Dashed lines mark where the tram runs. On a main road this is a warning, because the tram is held up and runs late. Give it its own lane, or use traffic signals that let the tram go first.
 - **Pedestrian zone**: the tram runs at walking pace.
 
+To decide instead of the width, set the street up in the GIS tab ([Streets in the GIS tab](gis-streets.md)): **Own lane** resolves the in-traffic warning, and a kerb or separate track bed (separation) keeps cars out of the lane. Where a tram runs in traffic without a bike lane, a check warns that cyclists ride along the rails.
+
 On the street the tram keeps to the street's speed limit (from OpenStreetMap, otherwise 50 km/h). Running times, signals and the track topology use the lower speed. Tram stops on the street get a note on how passengers board: from the pavement, or from an island platform in the middle of the street that needs a pedestrian crossing. Where the tram crosses another street at a junction, that is a level crossing with traffic signals (see above).
 
 ## Signals

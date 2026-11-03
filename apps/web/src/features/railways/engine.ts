@@ -32,6 +32,7 @@ export const loadRailEngine: RailEngineLoader = async () => {
     topology: () => JSON.parse(d.topology()),
     addStreetTile: (xml) => d.add_street_tile(xml),
     clearStreets: () => d.clear_streets(),
+    setStreetSetups: (s) => d.set_street_setups(JSON.stringify(s)),
     generateSignals: () => JSON.parse(d.generate_signals()),
     signalAnchor: ([lon, lat], maxM) => JSON.parse(d.signal_anchor(lon, lat, maxM)),
     dispose: () => d.free(),

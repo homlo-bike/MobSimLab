@@ -128,6 +128,10 @@ pub struct ModeParams {
     pub street_speed_limit_kmh: f64,
     /// Walking pace in a living street or pedestrian zone, km/h.
     pub street_walking_pace_kmh: f64,
+    /// Extra running time in the traffic of a main road, share of the free-flow time.
+    pub street_mixed_traffic_delay_share: f64,
+    /// Extra running time in a painted (not separated) tram or bus lane, share.
+    pub street_bus_lane_delay_share: f64,
     /// Road vehicles stop this far outside a crossing's conflict area, m.
     pub road_stop_clearance_m: f64,
     /// Whether the mode may cross streets on the level (`yes` or `no`).

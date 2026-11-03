@@ -244,6 +244,7 @@ pub fn sample_streets(dz: &crate::design::Design) -> Vec<crate::street::Street> 
         maxspeed_kmh: None,
         walking_pace: false,
         coords,
+        ..Default::default()
     }];
     // Trams and light rail run along a four-lane main street for part of the line: their own
     // lane in the middle, one lane each way beside it, at the street's speed limit.
@@ -267,6 +268,7 @@ pub fn sample_streets(dz: &crate::design::Design) -> Vec<crate::street::Street> 
                 maxspeed_kmh: None,
                 walking_pace: false,
                 coords: along,
+                ..Default::default()
             });
         }
     }

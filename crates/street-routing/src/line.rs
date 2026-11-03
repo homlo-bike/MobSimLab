@@ -125,8 +125,14 @@ pub struct LegView {
     pub coords: Vec<[f64; 2]>,
     /// Length in metres.
     pub length_m: f64,
-    /// Running time in seconds.
+    /// Running time in seconds, including the expected delay in main-road traffic.
     pub time_s: f64,
+    /// Of `time_s`, the expected delay in main-road traffic, s.
+    pub traffic_delay_s: f64,
+    /// Length on main roads in the general traffic (no bus lane), m.
+    pub mixed_traffic_m: f64,
+    /// Length on main roads in a bus lane, m.
+    pub bus_lane_m: f64,
     /// Shortest length if U-turns were allowed (for the detour warning).
     pub direct_m: Option<f64>,
     /// Problem level.
@@ -201,7 +207,30 @@ pub struct LineView {
     pub length_m: f64,
     /// Circuit running time in seconds.
     pub time_s: f64,
+    /// Of `time_s`, the expected delay in main-road traffic over the circuit, s.
+    pub traffic_delay_s: f64,
+    /// Circuit length on main roads in the general traffic, m.
+    pub mixed_traffic_m: f64,
+    /// Circuit length on main roads in a bus lane, m.
+    pub bus_lane_m: f64,
+    /// Main roads the line runs along in the general traffic, longest first: OSM way, name and
+    /// length, for the reliability check and the GIS tab.
+    pub mixed_streets: Vec<MixedStreet>,
 }
+
+/// A main road a street line runs along in the general traffic.
+#[derive(Debug, Clone, Serialize)]
+pub struct MixedStreet {
+    /// OSM way id.
+    pub way: i64,
+    /// Street name (or `ref`), empty when unnamed.
+    pub name: String,
+    /// Length driven in traffic over the circuit, m.
+    pub length_m: f64,
+}
+
+/// A line runs late when at least this much of its circuit is in main-road traffic, m.
+const MIXED_WARN_M: f64 = 200.0;
 
 impl StreetLine {
     /// Purpose: empty line for a vehicle and project rules.
@@ -825,6 +854,9 @@ impl StreetLine {
                         coords,
                         length_m: l.path.as_ref().map_or(0.0, |p| p.length_m),
                         time_s: l.path.as_ref().map_or(0.0, |p| p.time_s),
+                        traffic_delay_s: l.path.as_ref().map_or(0.0, |p| p.traffic_delay_s),
+                        mixed_traffic_m: l.path.as_ref().map_or(0.0, |p| p.mixed_traffic_m),
+                        bus_lane_m: l.path.as_ref().map_or(0.0, |p| p.bus_lane_m),
                         direct_m: l.direct_m,
                         status: l.status,
                         message: l.message.clone(),
@@ -835,6 +867,32 @@ impl StreetLine {
         };
         let length_m = legs.iter().map(|l| l.length_m).sum();
         let time_s = legs.iter().map(|l| l.time_s).sum();
+        let traffic_delay_s: f64 = legs.iter().map(|l| l.traffic_delay_s).sum();
+        let mixed_traffic_m: f64 = legs.iter().map(|l| l.mixed_traffic_m).sum();
+        let bus_lane_m = legs.iter().map(|l| l.bus_lane_m).sum();
+        let mixed_streets = mixed_streets(g, &self.legs);
+        if mixed_traffic_m >= MIXED_WARN_M {
+            let names: Vec<&str> = mixed_streets
+                .iter()
+                .filter(|m| !m.name.is_empty())
+                .map(|m| m.name.as_str())
+                .fold(Vec::new(), |mut v, n| {
+                    if !v.contains(&n) {
+                        v.push(n);
+                    }
+                    v
+                });
+            let along = match names.len() {
+                0 => String::new(),
+                1..=3 => format!(" ({})", names.join(", ")),
+                _ => format!(" ({} and {} more)", names[..3].join(", "), names.len() - 3),
+            };
+            issues.push(format!(
+                "The line runs {:.1} km in the traffic of main roads{along}: traffic jams and gridlock hold the buses up, about {:.0} min per round at peak, and they run late. Give these streets a bus lane in the GIS tab, separated from the traffic to keep cars out of it.",
+                mixed_traffic_m / 1000.0,
+                traffic_delay_s / 60.0
+            ));
+        }
 
         let stops: Vec<usize> = (0..n).filter(|&i| self.points[i].kind.is_stop()).collect();
         let ends: Vec<usize> = (0..n)
@@ -928,6 +986,10 @@ impl StreetLine {
             issues,
             length_m,
             time_s,
+            traffic_delay_s,
+            mixed_traffic_m,
+            bus_lane_m,
+            mixed_streets,
         }
     }
 
@@ -968,6 +1030,29 @@ impl StreetLine {
         }
         groups
     }
+}
+
+/// Purpose: the main roads driven in the general traffic over all legs, longest first.
+fn mixed_streets(g: &RoadGraph, legs: &[Leg]) -> Vec<MixedStreet> {
+    let mut out: Vec<MixedStreet> = Vec::new();
+    for p in legs.iter().filter_map(|l| l.path.as_ref()) {
+        for &a in &p.arcs {
+            let arc = &g.arcs[a as usize];
+            if !arc.main_road || arc.bus_lane {
+                continue;
+            }
+            match out.iter_mut().find(|m| m.way == arc.way) {
+                Some(m) => m.length_m += arc.length_m,
+                None => out.push(MixedStreet {
+                    way: arc.way,
+                    name: arc.name.clone().unwrap_or_default(),
+                    length_m: arc.length_m,
+                }),
+            }
+        }
+    }
+    out.sort_by(|a, b| b.length_m.total_cmp(&a.length_m));
+    out
 }
 
 impl Leg {
