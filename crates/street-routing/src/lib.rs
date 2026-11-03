@@ -9,6 +9,8 @@
 //!   station groups and depot pull-out/pull-in trips.
 //! - [`crossings`]: level crossings with railways and the expected wait of a bus at each,
 //!   from the rail timetable's closures or the service assumed in the track topology.
+//! - [`setup`]: the planner's street setup from the GIS tab (traffic lanes, bus and bike lanes,
+//!   separation, tram share) as tag overrides, and the delay buses lose in main-road traffic.
 //! - [`walk`]: pedestrian graph, walk coverage (the 15-minute walk rule, SDG 11.2.1) and stop
 //!   spacing (ADR-0035).
 //!
@@ -23,6 +25,7 @@ pub mod line;
 pub mod osm;
 pub mod profile;
 pub mod router;
+pub mod setup;
 pub mod walk;
 
 pub use graph::RoadGraph;
@@ -30,4 +33,5 @@ pub use line::{LineView, PointKind, Status, StreetLine};
 pub use osm::parse_osm_xml;
 pub use profile::{Mode, RoutingRules, TrafficSide, VehicleProfile};
 pub use router::{route, Anchor, Path, SearchOptions};
+pub use setup::{apply_setups, StreetSetup, TramShare};
 pub use walk::{WalkGraph, WalkSettings};

@@ -13,7 +13,9 @@ use street_routing::walk::{
     stop_spacing, CoverageRequest, SpacingRequest, StopPoint, SuggestRequest, WalkGraph,
     WalkSettings,
 };
-use street_routing::{parse_osm_xml, Mode, RoadGraph, RoutingRules, VehicleProfile};
+use street_routing::{
+    apply_setups, parse_osm_xml, Mode, RoadGraph, RoutingRules, StreetSetup, VehicleProfile,
+};
 use wasm_bindgen::prelude::*;
 
 fn kind(s: &str) -> Result<PointKind, JsError> {
@@ -38,6 +40,7 @@ pub struct StreetLineEditor {
     proj: Option<LocalProjection>,
     graph: Option<RoadGraph>,
     line: StreetLine,
+    setups: Vec<StreetSetup>,
 }
 
 impl Default for StreetLineEditor {
@@ -55,6 +58,7 @@ impl StreetLineEditor {
             data: OsmData::default(),
             proj: None,
             graph: None,
+            setups: Vec::new(),
             line: StreetLine::new(
                 VehicleProfile::default_for(Mode::Bus),
                 RoutingRules::default(),
@@ -72,10 +76,28 @@ impl StreetLineEditor {
     /// Purpose: rebuild the road network from all streets added so far and re-route the line.
     /// Output: the view, or an error when no street usable by buses has been loaded yet.
     pub fn rebuild(&mut self) -> Result<String, JsError> {
-        let g = RoadGraph::from_osm_with(&self.data, self.proj).map_err(|e| JsError::new(&e))?;
+        let g = if self.setups.is_empty() {
+            RoadGraph::from_osm_with(&self.data, self.proj)
+        } else {
+            let mut data = self.data.clone();
+            apply_setups(&mut data, &self.setups);
+            RoadGraph::from_osm_with(&data, self.proj)
+        }
+        .map_err(|e| JsError::new(&e))?;
         self.proj = Some(g.proj);
         self.line.rebuild(&g);
         self.graph = Some(g);
+        Ok(self.view())
+    }
+
+    /// Purpose: set the planner's street setups from the GIS tab (JSON list of `StreetSetup`).
+    /// Output: the view, re-routed on the changed streets when a network is loaded.
+    /// Side effects: every later rebuild applies them.
+    pub fn set_street_setups(&mut self, json: &str) -> Result<String, JsError> {
+        self.setups = serde_json::from_str(json).map_err(|e| JsError::new(&e.to_string()))?;
+        if self.graph.is_some() {
+            return self.rebuild();
+        }
         Ok(self.view())
     }
 
@@ -224,9 +246,18 @@ impl StreetLineEditor {
     pub fn view(&self) -> String {
         match &self.graph {
             Some(g) => serde_json::to_string(&self.line.view(g)).unwrap_or_default(),
-            None => r#"{"points":[],"legs":[],"directions":[],"station_groups":[],"depot":null,"depot_trips":[],"issues":[],"length_m":0,"time_s":0,"level_crossings":[],"crossing_wait_s":0}"#.to_string(),
+            None => r#"{"points":[],"legs":[],"directions":[],"station_groups":[],"depot":null,"depot_trips":[],"issues":[],"length_m":0,"time_s":0,"traffic_delay_s":0,"mixed_traffic_m":0,"bus_lane_m":0,"mixed_streets":[],"level_crossings":[],"crossing_wait_s":0}"#.to_string(),
         }
     }
+}
+
+/// Purpose: the streets of one OSM XML tile that the GIS tab can set up (JSON list of
+/// `street_routing::setup::StreetInfo`: shape, class, lanes, width, bus and bike lanes, tram rails).
+#[wasm_bindgen]
+pub fn street_infos(osm_xml: &str) -> Result<String, JsError> {
+    let d = parse_osm_xml(osm_xml).map_err(|e| JsError::new(&e))?;
+    serde_json::to_string(&street_routing::setup::street_infos(&d))
+        .map_err(|e| JsError::new(&e.to_string()))
 }
 
 /// Walk network analysis (ADR-0035): 15-minute walk coverage, SDG 11.2.1, catchments and stop spacing

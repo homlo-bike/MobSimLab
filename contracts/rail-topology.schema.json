@@ -523,7 +523,10 @@
         "running",
         "speed_limit_kmh",
         "street",
-        "stops"
+        "stops",
+        "separated",
+        "source",
+        "traffic_delay_share"
       ],
       "properties": {
         "id": {
@@ -547,7 +550,18 @@
         "street": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["way", "name", "class", "width_m", "lanes", "oneway", "bus", "trolley_wire"],
+          "required": [
+            "way",
+            "name",
+            "class",
+            "width_m",
+            "lanes",
+            "oneway",
+            "bus",
+            "trolley_wire",
+            "bike_lane",
+            "bus_lane"
+          ],
           "properties": {
             "way": { "type": "integer" },
             "name": { "type": "string" },
@@ -556,13 +570,28 @@
             "lanes": { "type": "number", "minimum": 0 },
             "oneway": { "type": "boolean" },
             "bus": { "type": "boolean" },
-            "trolley_wire": { "type": "boolean" }
+            "trolley_wire": { "type": "boolean" },
+            "bike_lane": { "type": "boolean", "description": "A bike lane or cycle track along the street." },
+            "bus_lane": { "type": "boolean", "description": "A bus lane along the street." }
           }
         },
         "stops": {
           "type": "array",
           "items": { "type": "integer", "minimum": 1 },
           "description": "Stations (tram stops) on the stretch."
+        },
+        "separated": {
+          "type": "boolean",
+          "description": "The tram's own lane is separated from the traffic by a kerb, barrier or track bed (set in the GIS tab)."
+        },
+        "source": {
+          "enum": ["setup", "osm"],
+          "description": "setup: the planner set how the tram shares the street in the GIS tab; osm: inferred from the street's width in OpenStreetMap."
+        },
+        "traffic_delay_share": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Expected extra running time in traffic at peak, as a share of the running time at the speed limit: street.mixed_traffic_delay_share in a main road's traffic, street.bus_lane_delay_share in a painted lane on a main road, else 0."
         }
       }
     },

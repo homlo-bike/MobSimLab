@@ -4,6 +4,9 @@ import { JourneyPlanner } from "../features/journey-planner/JourneyPlanner";
 import type { StreetLineInput } from "../features/journey-planner/network";
 import { RailwayEditor } from "../features/railways/RailwayEditor";
 import { StreetLineEditor } from "../features/street-lines/StreetLineEditor";
+import { loadSetups, saveSetups } from "../features/street-setup/model";
+import { StreetSetupEditor } from "../features/street-setup/StreetSetupEditor";
+import type { StreetSetup } from "../features/street-setup/types";
 import { useI18n } from "../i18n/i18n";
 import type { MessageKey } from "../i18n/messages";
 import { MapView } from "../map/MapView";
@@ -75,6 +78,13 @@ export function Workspace({
   const [line, setLine] = useState<StreetLineInput | null>(null);
   // The track topology last built in the railway tool, so street lines wait at its level crossings.
   const [railTopology, setRailTopology] = useState<unknown>(null);
+  // Street setups from the GIS tab: they override OSM in the street line tool and the railway editor.
+  const [setups, setSetups] = useState<StreetSetup[]>(() => loadSetups(projectId));
+  useEffect(() => setSetups(loadSetups(projectId)), [projectId]);
+  const changeSetups = (next: StreetSetup[]) => {
+    setSetups(next);
+    saveSetups(projectId, next);
+  };
   if (import.meta.env.DEV) Object.assign(window, { mobsimMap: map });
 
   useEffect(() => {
@@ -194,10 +204,25 @@ export function Workspace({
         <div className={`relative min-h-0 min-w-0 flex-1 ${onMap ? "" : "hidden"}`}>
           <MapView onReady={setMap} />
           {project && tab === "create" && editable && chosen === "street" && (
-            <StreetLineEditor map={map} panel={panel} onLineChange={setLine} railTopology={railTopology} />
+            <StreetLineEditor
+              map={map}
+              panel={panel}
+              onLineChange={setLine}
+              streetSetups={setups}
+              railTopology={railTopology}
+            />
           )}
           {project && tab === "create" && editable && chosen === "rail" && (
-            <RailwayEditor map={map} panel={panel} onTopologyChange={setRailTopology} />
+            <RailwayEditor map={map} panel={panel} streetSetups={setups} onTopologyChange={setRailTopology} />
+          )}
+          {project && tab === "gis" && (
+            <StreetSetupEditor
+              map={map}
+              panel={panel}
+              setups={setups}
+              onChange={changeSetups}
+              editable={editable}
+            />
           )}
           {project && tab === "simulator" && sim === "journey" && (
             <JourneyPlanner
@@ -360,17 +385,17 @@ export function Workspace({
               {tab === "create" && editable && chosen === null && (
                 <p className="px-4 py-5 text-slate-600 md:px-5">{t("create.chooseFirst")}</p>
               )}
+              {/* The street line tool, railway editor, journey planner and street setup render their panels here. */}
+              <div key={`${tab}-${sim}-${chosen}`} ref={setPanel} />
               {tab === "gis" && (
-                <div className="px-4 py-5 md:px-5">
+                <div className="border-t border-slate-200 px-4 py-5 md:px-5">
                   <Placeholder
                     title="gis.title"
                     intro="gis.intro"
-                    items={["gis.areas", "gis.streets", "gis.walk", "gis.spacing"]}
+                    items={["gis.areas", "gis.walk", "gis.spacing"]}
                   />
                 </div>
               )}
-              {/* The street line tool, railway editor and journey planner render their panels here. */}
-              <div key={`${tab}-${sim}-${chosen}`} ref={setPanel} />
             </div>
           </aside>
         )}

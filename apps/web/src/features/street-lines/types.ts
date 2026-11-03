@@ -1,5 +1,7 @@
 /** Types of the JSON returned by the street-routing WebAssembly module (Rust `LineView`). */
 
+import type { StreetSetup } from "../street-setup/types";
+
 export type Mode = "bus" | "brt" | "trolleybus" | "intercity_bus";
 export type PointKind = "via" | "stop" | "end_stop";
 export type Status = "ok" | "warning" | "error";
@@ -49,6 +51,12 @@ export interface LegView {
   /** Expected wait at level crossings on this leg, s (included in `time_s`). */
   crossing_wait_s: number;
   level_crossings: { crossing: number; passes: number; wait_s: number }[];
+  /** Of `time_s`, the expected delay in main-road traffic, s. */
+  traffic_delay_s?: number;
+  /** Metres on main roads in the general traffic. */
+  mixed_traffic_m?: number;
+  /** Metres on main roads in a bus lane. */
+  bus_lane_m?: number;
 }
 
 /** Expected wait of a bus at one level crossing (Rust `crossings::CrossingWait`). */
@@ -116,6 +124,14 @@ export interface LineView {
   level_crossings: LineCrossingView[];
   /** Expected wait at level crossings per circuit, s (included in `time_s`). */
   crossing_wait_s: number;
+  /** Of `time_s`, the expected delay in main-road traffic over the circuit, s. */
+  traffic_delay_s?: number;
+  /** Circuit metres on main roads in the general traffic. */
+  mixed_traffic_m?: number;
+  /** Circuit metres on main roads in a bus lane. */
+  bus_lane_m?: number;
+  /** Main roads driven in the general traffic, longest first. */
+  mixed_streets?: { way: number; name: string; length_m: number }[];
 }
 
 /** The routing engine as the editor sees it. Every edit returns the new line view. */
@@ -141,6 +157,8 @@ export interface StreetEngine {
    * timetable closures (contracts/level-crossing-closures.schema.json, or ""); "" removes them.
    */
   setLevelCrossings(topology: string, closures: string): LineView;
+  /** Applies the planner's street setups from the GIS tab and re-routes. */
+  setStreetSetups(setups: readonly StreetSetup[]): LineView;
   /** Roads the current vehicle may use, as GeoJSON with `oneway`, `wire` and `bus_lane` properties. */
   usableRoads(): object;
   defaultProfile(mode: Mode): VehicleProfile;

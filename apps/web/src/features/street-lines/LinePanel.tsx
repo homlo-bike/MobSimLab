@@ -126,6 +126,38 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   );
 }
 
+/**
+ * Purpose: how much of the circuit runs in main-road traffic or in bus lanes, and the delay that adds to
+ * the running time (street setups from the GIS tab change it).
+ */
+function Reliability({ view }: { view: LineView }) {
+  const mixed = view.mixed_traffic_m ?? 0;
+  const lanes = view.bus_lane_m ?? 0;
+  const delayMin = (view.traffic_delay_s ?? 0) / 60;
+  const streets = (view.mixed_streets ?? []).filter((m) => m.name).slice(0, 4);
+  return (
+    <section
+      aria-label="Reliability"
+      className="flex flex-col gap-1 rounded-md bg-slate-50 p-2 text-xs text-slate-700"
+    >
+      <p>
+        <b className="font-semibold">Reliability:</b> {formatLength(mixed)} in main-road traffic ·{" "}
+        {formatLength(lanes)} in bus lanes
+        {delayMin >= 0.05
+          ? ` · about ${delayMin.toFixed(1)} min of the running time is delay in traffic at peak`
+          : ""}
+        .
+      </p>
+      {mixed > 0 && (
+        <p className="text-slate-600">
+          {streets.length ? `In traffic on ${streets.map((m) => m.name).join(", ")}. ` : ""}Give these streets
+          a bus lane, separated from the traffic, in the GIS tab.
+        </p>
+      )}
+    </section>
+  );
+}
+
 function Stat({ value, label }: { value: string; label: string }) {
   return (
     <div className="rounded-md bg-slate-100 p-2">
@@ -249,6 +281,7 @@ export function LinePanel(props: Props) {
         />
         <Stat value={String(st.vehicles)} label={`Vehicles for a ${timing.headwayMin} min headway`} />
       </div>
+      {view.points.length >= 2 && <Reliability view={view} />}
 
       {(props.status || props.error) && (
         <p

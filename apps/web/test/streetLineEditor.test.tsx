@@ -168,6 +168,7 @@ function fakeEngine(): StreetEngine {
       crossings = topology ? (closures ? "timetable" : "assumed") : null;
       return update(view.points.map((p) => p.kind));
     }),
+    setStreetSetups: vi.fn(() => view),
     usableRoads: () => ({ type: "FeatureCollection", features: [] }),
     defaultProfile: (mode) => ({ ...profile, mode }),
     defaultRules: () => ({

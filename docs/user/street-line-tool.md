@@ -71,3 +71,8 @@ Where the line crosses a railway on the level, buses wait while the barriers or 
 ## Saving
 
 Lines are not stored in the project yet. This arrives with the network design module.
+
+## Traffic and bus lanes
+
+On main roads, buses in the general traffic take longer at peak than in a bus lane, and the running time includes that delay. The **Reliability** line under the totals shows how much of the circuit runs in main-road traffic and in bus lanes. To give a street a bus lane, or to separate one, set it up in the GIS tab ([Streets in the GIS tab](gis-streets.md)); the line is re-routed at once.
+

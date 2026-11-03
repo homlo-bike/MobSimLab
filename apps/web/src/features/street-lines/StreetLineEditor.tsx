@@ -9,6 +9,7 @@ import { DEFAULT_TIMING, MODES, type Timing } from "./modes";
 import { along, circuitPath } from "./summary";
 import { MIN_LOAD_ZOOM, tilesFor } from "./tiles";
 import type { StreetLineInput } from "../journey-planner/network";
+import type { StreetSetup } from "../street-setup/types";
 import { basemapLabels, featuresFromLabels, preferTransitKind } from "../naming/labels";
 import {
   describeChoice,
@@ -58,6 +59,8 @@ function stopPlaces(view: LineView): NamedPlace[] {
     .map((p) => ({ id: `street:${p.id}`, name: p.name, lonlat: p.lonlat }));
 }
 
+const NO_SETUPS: readonly StreetSetup[] = [];
+
 /** The preview runs this many times faster than the timetable. */
 const PREVIEW_SPEEDUP = 30;
 
@@ -77,6 +80,8 @@ interface Props {
    * waits at its level crossings. A topology file loaded in the panel takes its place.
    */
   railTopology?: unknown;
+  /** The planner's street setups from the GIS tab (bus lanes, separation…), over OSM. */
+  streetSetups?: readonly StreetSetup[];
 }
 
 /** A JSON file the planner loaded in the panel. */
@@ -100,6 +105,7 @@ export function StreetLineEditor({
   fetchTile = fetchStreetTile,
   onLineChange,
   railTopology = null,
+  streetSetups = NO_SETUPS,
 }: Props) {
   const engine = useRef<StreetEngine | null>(null);
   const [view, setView] = useState<LineView>(EMPTY_VIEW);
@@ -155,6 +161,13 @@ export function StreetLineEditor({
       engine.current = null;
     };
   }, [loadEngine]);
+
+  // Street setups from the GIS tab: bus lanes and separation change running times and checks.
+  const setupsJson = JSON.stringify(streetSetups);
+  useEffect(() => {
+    if (!profile) return;
+    run((e) => e.setStreetSetups(JSON.parse(setupsJson) as StreetSetup[]));
+  }, [setupsJson, profile !== null, run]);
 
   // Streets: load the tiles on screen whenever the map stops moving, then rebuild once per batch.
   const tiles = useRef(new Set<string>());

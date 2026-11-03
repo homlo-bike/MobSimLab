@@ -92,6 +92,12 @@ pub struct StreetRunningOut {
     pub street: crate::street_running::RunningStreet,
     /// Stations (tram stops) on the stretch.
     pub stops: Vec<u32>,
+    /// The tram's own lane is separated from the traffic (kerb, barrier or track bed).
+    pub separated: bool,
+    /// `setup` (set in the GIS tab) or `osm` (inferred from the street's width).
+    pub source: &'static str,
+    /// Expected extra running time in traffic, share of the running time at the speed limit.
+    pub traffic_delay_share: f64,
 }
 
 /// A signal on a section.
@@ -1104,6 +1110,9 @@ pub fn topology(dz: &Design) -> Topology {
                 ..r.street.clone()
             },
             stops: r.stops.clone(),
+            separated: r.separated,
+            source: r.source,
+            traffic_delay_share: r.traffic_delay_share,
         })
         .collect();
 
