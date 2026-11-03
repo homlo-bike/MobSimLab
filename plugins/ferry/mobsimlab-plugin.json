@@ -1,0 +1,39 @@
+{
+  "$schema": "../../contracts/plugin-manifest.schema.json",
+  "id": "org.mobsimlab.ferry",
+  "name": "Ferries",
+  "description": "Passenger ferries and water buses drawn with the water route kit: piers with berths and gangways, routes over water, speed zones and a berth check (ADR-0037). Car ferries come later.",
+  "version": "0.1.0",
+  "publisher": { "name": "MobSimLab contributors", "url": "https://github.com/homlo-bike/MobSimLab" },
+  "license": "AGPL-3.0-or-later",
+  "dataLicense": "CC-BY-4.0",
+  "engines": { "mobsimlab": ">=0.1 <1", "pluginApi": "1" },
+  "bundled": true,
+  "tiers": ["data"],
+  "contributes": {
+    "modes": [{ "id": "ferry", "file": "modes/ferry.json" }],
+    "contexts": [
+      {
+        "key": "vessel_type",
+        "label": "Vessel type",
+        "options": [
+          { "id": "monohull", "label": "Monohull water bus" },
+          { "id": "catamaran", "label": "Fast catamaran" },
+          { "id": "hydrofoil", "label": "Electric hydrofoil" }
+        ]
+      }
+    ],
+    "parameters": [{ "file": "assumptions/parameters.yaml" }],
+    "sources": [{ "file": "assumptions/sources.yaml" }],
+    "tools": [
+      {
+        "id": "ferry",
+        "label": "Ferry",
+        "hint": "Water buses and crossings: click piers, shape the route over water.",
+        "kit": "water-route",
+        "modes": ["ferry"]
+      }
+    ]
+  },
+  "permissions": ["read:network"]
+}

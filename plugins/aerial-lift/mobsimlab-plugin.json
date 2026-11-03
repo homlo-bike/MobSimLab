@@ -1,0 +1,45 @@
+{
+  "$schema": "../../contracts/plugin-manifest.schema.json",
+  "id": "org.mobsimlab.aerial-lift",
+  "name": "Cable cars",
+  "description": "Urban ropeways: continuous gondolas (MGD, 2S, 3S, funitel, pulsed) and reversible aerial tramways, drawn with the straight spans kit (ADR-0037).",
+  "version": "0.1.0",
+  "publisher": { "name": "MobSimLab contributors", "url": "https://github.com/homlo-bike/MobSimLab" },
+  "license": "AGPL-3.0-or-later",
+  "dataLicense": "CC-BY-4.0",
+  "engines": { "mobsimlab": ">=0.1 <1", "pluginApi": "1" },
+  "bundled": true,
+  "tiers": ["data"],
+  "contributes": {
+    "modes": [
+      { "id": "cable_car", "file": "modes/cable_car.json" },
+      { "id": "aerial_tramway", "file": "modes/aerial_tramway.json" }
+    ],
+    "contexts": [
+      {
+        "key": "ropeway_system",
+        "label": "Ropeway system",
+        "options": [
+          { "id": "mgd", "label": "Monocable detachable gondola (MGD)" },
+          { "id": "2s", "label": "Bicable gondola (2S)" },
+          { "id": "3s", "label": "Tricable gondola (3S)" },
+          { "id": "funitel", "label": "Funitel" },
+          { "id": "pulsed", "label": "Pulsed gondola" },
+          { "id": "reversible", "label": "Aerial tramway (reversible)" }
+        ]
+      }
+    ],
+    "parameters": [{ "file": "assumptions/parameters.yaml" }],
+    "sources": [{ "file": "assumptions/sources.yaml" }],
+    "tools": [
+      {
+        "id": "cable-car",
+        "label": "Cable car",
+        "hint": "Gondolas and aerial tramways: click stations, towers follow.",
+        "kit": "straight-spans",
+        "modes": ["cable_car", "aerial_tramway"]
+      }
+    ]
+  },
+  "permissions": ["read:network"]
+}

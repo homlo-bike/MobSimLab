@@ -1,0 +1,426 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mobsimlab.org/schemas/plugin-manifest/1.json",
+  "title": "MobSimLab plugin manifest (mobsimlab-plugin.json)",
+  "description": "What a plugin contributes to MobSimLab (ADR-0036 §2 and §3). Producer: plugin authors; the bundled plugins live in plugins/. Consumer: tools/plugins/check.py (validation and the web app's generated registry, apps/web/src/plugins/bundled.generated.json), later the install flow. Plugin API major version 1. Contribution points that are not built yet (checks, engines, schematics, importers, exporters, panels, kpis) are reserved: the schema accepts no entries for them yet.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "name",
+    "version",
+    "publisher",
+    "license",
+    "dataLicense",
+    "engines",
+    "tiers",
+    "contributes",
+    "permissions"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "id": {
+      "description": "Reverse-DNS id; everything the plugin contributes is addressed as <id>/<item id>.",
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*(\\.[a-z0-9][a-z0-9-]*){2,}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 60
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 400
+    },
+    "version": {
+      "description": "SemVer.",
+      "type": "string",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z.-]+)?$"
+    },
+    "publisher": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    },
+    "license": {
+      "description": "SPDX licence of the code.",
+      "type": "string",
+      "minLength": 1
+    },
+    "dataLicense": {
+      "description": "SPDX licence of the data contributions; must allow bundling into .mslab exports.",
+      "type": "string",
+      "minLength": 1
+    },
+    "engines": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mobsimlab",
+        "pluginApi"
+      ],
+      "properties": {
+        "mobsimlab": {
+          "description": "Range of MobSimLab versions, such as \">=0.1 <1\".",
+          "type": "string"
+        },
+        "pluginApi": {
+          "const": "1"
+        }
+      }
+    },
+    "bundled": {
+      "description": "Ships with the MobSimLab image and is signed with the release key (ADR-0036 §8).",
+      "type": "boolean"
+    },
+    "tiers": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "data",
+          "compute",
+          "ui"
+        ]
+      }
+    },
+    "contributes": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "modes": {
+          "description": "Transport modes; each file follows plugin-mode.schema.json.",
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/fileItem",
+            "required": [
+              "id",
+              "file"
+            ]
+          }
+        },
+        "contexts": {
+          "description": "New assumption context keys with their options (ADR-0018), such as ropeway_system.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "key",
+              "label",
+              "options"
+            ],
+            "properties": {
+              "key": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]*$"
+              },
+              "label": {
+                "type": "string"
+              },
+              "options": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "id",
+                    "label"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "pattern": "^[a-z0-9][a-z0-9_]*$"
+                    },
+                    "label": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": {
+          "description": "Assumption library entries (assumptions/README.md format), each with sources and a global fallback.",
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/fileItem",
+            "required": [
+              "file"
+            ]
+          }
+        },
+        "sources": {
+          "description": "Source register entries used by the plugin's parameters and vehicles.",
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/fileItem",
+            "required": [
+              "file"
+            ]
+          }
+        },
+        "vehicles": {
+          "description": "Folders of vehicle files per vehicles/schema (ADR-0026).",
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/fileItem",
+            "required": [
+              "dir"
+            ]
+          }
+        },
+        "tools": {
+          "description": "Authoring tools for the Create tab: a core authoring kit with the modes it draws.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "label",
+              "kit",
+              "modes"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]*$"
+              },
+              "label": {
+                "type": "string"
+              },
+              "hint": {
+                "type": "string"
+              },
+              "kit": {
+                "enum": [
+                  "straight-spans",
+                  "water-route"
+                ]
+              },
+              "modes": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "calculations": {
+          "description": "Calculations over the project's network (ADR-0036 §3). Until the sandboxed plugin host exists (Phase 2), only bundled plugins may contribute them, with runtime `bundled-wasm`: the code is a core crate compiled to WebAssembly (tools/wasm/build-<module>.sh, loaded from apps/web/src/wasm/<module>), released and reviewed with MobSimLab. Third-party `component` calculations come with Phase 2.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "label",
+              "runtime",
+              "module",
+              "inputs",
+              "outputs"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]*$"
+              },
+              "label": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "runtime": {
+                "enum": [
+                  "bundled-wasm"
+                ]
+              },
+              "module": {
+                "description": "WebAssembly module name under apps/web/src/wasm/ (bundled-wasm).",
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]*$"
+              },
+              "inputs": {
+                "type": "array",
+                "uniqueItems": true,
+                "items": {
+                  "enum": [
+                    "network",
+                    "street_lines",
+                    "rail_design",
+                    "timetable",
+                    "fleet",
+                    "geodata",
+                    "parameters"
+                  ]
+                }
+              },
+              "outputs": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "enum": [
+                    "grid",
+                    "segments",
+                    "table",
+                    "kpis",
+                    "findings"
+                  ]
+                }
+              },
+              "where": {
+                "description": "Where the app offers it: live while drawing in a tool, or on demand in Analysis.",
+                "type": "array",
+                "uniqueItems": true,
+                "items": {
+                  "enum": [
+                    "street-line-tool",
+                    "railway-tool",
+                    "cable-car-tool",
+                    "ferry-tool",
+                    "analysis"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "checks": {
+          "$ref": "#/$defs/reserved"
+        },
+        "engines": {
+          "$ref": "#/$defs/reserved"
+        },
+        "infrastructure": {
+          "$ref": "#/$defs/reserved"
+        },
+        "catalogues": {
+          "$ref": "#/$defs/reserved"
+        },
+        "kpis": {
+          "$ref": "#/$defs/reserved"
+        },
+        "schematics": {
+          "$ref": "#/$defs/reserved"
+        },
+        "importers": {
+          "$ref": "#/$defs/reserved"
+        },
+        "exporters": {
+          "$ref": "#/$defs/reserved"
+        },
+        "mapLayers": {
+          "description": "Map layers drawn from a calculation's output with a MapLibre style (subset) file.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "label",
+              "calculation",
+              "style"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]*$"
+              },
+              "label": {
+                "type": "string"
+              },
+              "calculation": {
+                "type": "string"
+              },
+              "style": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_./-]+$",
+                "not": {
+                  "pattern": "\\.\\."
+                }
+              }
+            }
+          }
+        },
+        "panels": {
+          "$ref": "#/$defs/reserved"
+        }
+      }
+    },
+    "permissions": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "read:network",
+          "read:timetable",
+          "read:fleet",
+          "read:geodata",
+          "read:results",
+          "write:results",
+          "write:scenario"
+        ]
+      }
+    },
+    "dependsOn": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    }
+  },
+  "$defs": {
+    "fileItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "file": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_./-]+$",
+          "not": {
+            "pattern": "\\.\\."
+          }
+        },
+        "dir": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_./-]+/$",
+          "not": {
+            "pattern": "\\.\\."
+          }
+        }
+      }
+    },
+    "reserved": {
+      "description": "Contribution point of a later phase of ADR-0036; no entries are accepted yet.",
+      "type": "array",
+      "maxItems": 0
+    }
+  }
+}

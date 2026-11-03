@@ -1,0 +1,21 @@
+# Sources of the ferry plugin's parameters (same format as assumptions/sources.yaml).
+# Taken from Research R1 (docs/research/r1-cable-car-and-ferry.md); not yet re-read by a maintainer.
+
+- id: tcrp-238
+  title: TCRP Research Report 238, Quantitative Procedures for Designing and Operating Ferry Services (2023)
+  publisher: Transportation Research Board / National Academies Press
+  url: https://www.nationalacademies.org/read/26748/chapter/5
+  licence: © National Academy of Sciences; free to read; numbers cited as facts
+  access: free
+  retrieved: 2026-11-02
+  checked_via: none
+
+- id: candela-p12-techcrunch
+  title: Candela brings its P-12 electric ferry to Tahoe (30 passengers)
+  publisher: TechCrunch
+  url: https://techcrunch.com/2024/11/21/candela-brings-its-p-12-electric-ferry-to-tahoe-and-adds-another-14m-to-build-more
+  licence: © TechCrunch; numbers cited as facts
+  access: free
+  retrieved: 2026-11-02
+  checked_via: search-snippet
+  kind: secondary

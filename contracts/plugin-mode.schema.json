@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mobsimlab.org/schemas/plugin-mode/1.json",
+  "title": "MobSimLab transport mode contributed by a plugin",
+  "description": "One entry of a plugin's `modes` contribution point (ADR-0036 §3). Producer: plugin authors. Consumer: tools/plugins/check.py, the web app's mode and tool registry, the published timetable (`mode`, GTFS route_type).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "label", "family", "colour", "gtfsRouteType", "kit", "operation"],
+  "properties": {
+    "id": { "description": "Mode id, unique across the core and all plugins.", "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+    "label": { "type": "string", "minLength": 1 },
+    "family": { "enum": ["street", "rail", "guided", "aerial", "water"] },
+    "colour": { "description": "Default line colour (assumption `mode.colour`).", "type": "string", "pattern": "^#[0-9a-f]{6}$" },
+    "gtfsRouteType": { "description": "GTFS route_type (basic or extended).", "type": "integer", "minimum": 0 },
+    "kit": { "description": "Core authoring kit that draws the mode.", "enum": ["straight-spans", "water-route"] },
+    "operation": {
+      "description": "frequency: a belt of vehicles with no timetable; shuttle: vehicles reverse between two ends; timetabled: exact trips.",
+      "enum": ["frequency", "shuttle", "timetabled"]
+    },
+    "contextKey": { "description": "Assumption context key whose option picks the system or vessel type.", "type": "string" },
+    "contexts": { "description": "Options of contextKey this mode uses.", "type": "array", "minItems": 1, "items": { "type": "string" } },
+    "defaultContext": { "type": "string" }
+  }
+}

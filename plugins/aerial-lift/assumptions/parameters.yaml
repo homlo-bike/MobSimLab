@@ -1,0 +1,878 @@
+# Parameters of the aerial-lift plugin (assumptions/README.md format), with the context keys
+# `mode` (cable_car, aerial_tramway) and `ropeway_system`. Every entry starts unverified; the values come from Research R1
+# (docs/research/r1-cable-car-and-ferry.md). Checked by tools/plugins/check.py.
+
+- key: ropeway.line_speed_ms
+  label: Line speed
+  group: Cable cars
+  unit: m/s
+  used_by:
+  - running time
+  - cabin spacing
+  - cabin count
+  values:
+  - context:
+      mode: '*'
+    low: 3
+    central: 5
+    high: 12
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: Fallback spanning pulsed gondolas to aerial tramways; every system has its own entry.
+  - context:
+      mode: cable_car
+      ropeway_system: mgd
+    low: 5
+    central: 6
+    high: 6
+    basis: documented
+    sources:
+    - poma-urban-brochure
+    check: unverified
+    rationale: 'R1 §1.2: monocable detachable gondolas run up to about 6 m/s; urban lines often run slower off-peak
+      to save energy.'
+  - context:
+      mode: cable_car
+      ropeway_system: 2s
+    low: 6
+    central: 6.5
+    high: 7
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: 'R1 §1.2: about 6 to 7 m/s (to verify).'
+  - context:
+      mode: cable_car
+      ropeway_system: 3s
+    low: 6
+    central: 7.5
+    high: 8.5
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: 'R1 §1.2: up to 7.5 to 8.5 m/s (to verify).'
+  - context:
+      mode: cable_car
+      ropeway_system: funitel
+    low: 6
+    central: 6.5
+    high: 7
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: 'R1 §1.2: about 6 to 7 m/s.'
+  - context:
+      mode: cable_car
+      ropeway_system: pulsed
+    low: 4
+    central: 4.5
+    high: 5
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: 'R1 §1.2: 4 to 5 m/s.'
+  - context:
+      mode: aerial_tramway
+      ropeway_system: reversible
+    low: 8
+    central: 10
+    high: 12
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: 'R1 §1.2: up to 10 to 12 m/s (to verify).'
+- key: ropeway.cabin_interval_s
+  label: Cabin interval
+  group: Cable cars
+  unit: s
+  used_by:
+  - capacity
+  - cabin count
+  - published timetable headway
+  values:
+  - context:
+      mode: '*'
+    low: 8
+    central: 12
+    high: 60
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: 'R1 §1.2: a continuous gondola runs a cabin every 8 to 30 s; pulsed groups are further apart.'
+  - context:
+      mode: cable_car
+      ropeway_system: mgd
+    low: 8
+    central: 12
+    high: 30
+    basis: documented
+    sources:
+    - poma-urban-brochure
+    check: unverified
+    rationale: 'R1 §1.2 example: 10-place cabins every 12 s at 6 m/s give 3,000 p/h/dir.'
+  - context:
+      mode: cable_car
+      ropeway_system: 2s
+    low: 15
+    central: 20
+    high: 30
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: '17-place cabins at about 3,000 p/h/dir: 17 × 3600 / 3000 ≈ 20 s.'
+  - context:
+      mode: cable_car
+      ropeway_system: 3s
+    low: 20
+    central: 25
+    high: 40
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: '32-place cabins at about 5,000 p/h/dir: 32 × 3600 / 5000 ≈ 23 s; 25 s with margin.'
+  - context:
+      mode: cable_car
+      ropeway_system: funitel
+    low: 20
+    central: 25
+    high: 35
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: '24-place cabins at about 3,500 p/h/dir: 24 × 3600 / 3500 ≈ 25 s.'
+  - context:
+      mode: cable_car
+      ropeway_system: pulsed
+    low: 30
+    central: 60
+    high: 120
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: Groups of fixed-grip cabins; the rope stops while a group is in the stations.
+- key: ropeway.cabin_capacity
+  label: Cabin capacity
+  group: Cable cars
+  unit: passengers
+  used_by:
+  - capacity
+  - dwell
+  values:
+  - context:
+      mode: '*'
+    low: 4
+    central: 10
+    high: 200
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: Fallback spanning pulsed gondolas to large aerial tramway cabins.
+  - context:
+      mode: cable_car
+      ropeway_system: mgd
+    low: 8
+    central: 10
+    high: 15
+    basis: documented
+    sources:
+    - poma-urban-brochure
+    check: unverified
+    rationale: 'R1 §1.2: 8 to 10 places, up to 15.'
+  - context:
+      mode: cable_car
+      ropeway_system: 2s
+    low: 15
+    central: 17
+    high: 17
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: 'R1 §1.2: 15 to 17 places.'
+  - context:
+      mode: cable_car
+      ropeway_system: 3s
+    low: 30
+    central: 32
+    high: 35
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: 'R1 §1.2: 30 to 35 places.'
+  - context:
+      mode: cable_car
+      ropeway_system: funitel
+    low: 20
+    central: 24
+    high: 30
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: 'R1 §1.2: 20 to 30 places.'
+  - context:
+      mode: cable_car
+      ropeway_system: pulsed
+    low: 4
+    central: 8
+    high: 15
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: 'R1 §1.2: 4 to 15 places.'
+  - context:
+      mode: aerial_tramway
+      ropeway_system: reversible
+    low: 30
+    central: 80
+    high: 200
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: 'R1 §1.2: 30 to 200 places; urban commuter trams carry about 80 (to verify).'
+- key: ropeway.max_span_m
+  label: Span between supports, maximum
+  group: Cable cars
+  unit: m
+  used_by:
+  - span check
+  - automatic towers
+  values:
+  - context:
+      mode: '*'
+    low: 150
+    central: 400
+    high: 3000
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: 'R1 §1.5: a few hundred metres for monocable systems, over 1 km for tricable systems.'
+  - context:
+      mode: cable_car
+      ropeway_system: mgd
+    low: 200
+    central: 400
+    high: 600
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: 'R1 §1.5: MGD spans are a few hundred metres (short spans, many towers).'
+  - context:
+      mode: cable_car
+      ropeway_system: 2s
+    low: 500
+    central: 800
+    high: 1200
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: Separate carrying rope allows longer spans than MGD (to verify).
+  - context:
+      mode: cable_car
+      ropeway_system: 3s
+    low: 1000
+    central: 1500
+    high: 3000
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: 'R1 §1.2: long spans of 1 to 3 km, few towers.'
+  - context:
+      mode: cable_car
+      ropeway_system: funitel
+    low: 400
+    central: 600
+    high: 800
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: Two haul ropes; between MGD and 2S (to verify).
+  - context:
+      mode: cable_car
+      ropeway_system: pulsed
+    low: 150
+    central: 300
+    high: 400
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: Light fixed-grip systems (to verify).
+  - context:
+      mode: aerial_tramway
+      ropeway_system: reversible
+    low: 800
+    central: 1500
+    high: 3000
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: Track ropes allow long spans (to verify).
+- key: ropeway.max_station_angle_deg
+  label: Direction change in a station, maximum
+  group: Cable cars
+  unit: °
+  used_by:
+  - station angle check
+  values:
+  - context:
+      mode: '*'
+    low: 0
+    central: 30
+    high: 90
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: Detachable lines change direction only in stations; how much depends on the station's bullwheels.
+  - context:
+      mode: cable_car
+      ropeway_system: mgd
+    low: 20
+    central: 45
+    high: 90
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: Angle stations of monocable lines turn the rope round horizontal sheaves; urban lines turn up to
+      about 90° (to verify).
+  - context:
+      mode: cable_car
+      ropeway_system: 2s
+    low: 10
+    central: 30
+    high: 60
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: Carrying ropes end in the station; deflection is limited by the cabin rail (to verify).
+  - context:
+      mode: cable_car
+      ropeway_system: 3s
+    low: 10
+    central: 20
+    high: 30
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: Angle stations on tricable lines are rare and expensive (to verify).
+  - context:
+      mode: cable_car
+      ropeway_system: funitel
+    low: 10
+    central: 30
+    high: 60
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: As 2S (to verify).
+  - context:
+      mode: cable_car
+      ropeway_system: pulsed
+    low: 0
+    central: 20
+    high: 45
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: Fixed grips; small deflections only (to verify).
+  - context:
+      mode: aerial_tramway
+      ropeway_system: reversible
+    low: 0
+    central: 0
+    high: 0
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: Aerial tramways run straight between the terminals.
+- key: ropeway.min_clearance_m
+  label: Clearance under the loaded cabin, minimum
+  group: Cable cars
+  unit: m
+  used_by:
+  - clearance check (error below this)
+  values:
+  - context:
+      mode: '*'
+    low: 3
+    central: 5
+    high: 8
+    basis: documented
+    sources:
+    - en-12929-1
+    check: unverified
+    rationale: EN 12929-1 sets the minimum distance between the lowest point of a loaded cabin and the ground, roads
+      and buildings; exact values to verify against the clause and national rules.
+- key: ropeway.recommended_clearance_m
+  label: Clearance under the loaded cabin, recommended
+  group: Cable cars
+  unit: m
+  used_by:
+  - clearance check (warning below this)
+  - automatic towers
+  values:
+  - context:
+      mode: '*'
+    low: 5
+    central: 8
+    high: 15
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: Margin over the minimum for swing in wind, snow and rescue access; automatic towers keep it.
+- key: ropeway.tower_height_m
+  label: Tower height, standard
+  group: Cable cars
+  unit: m
+  used_by:
+  - automatic towers
+  values:
+  - context:
+      mode: '*'
+    low: 15
+    central: 25
+    high: 60
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: Typical urban tower heights (to verify against built lines).
+  - context:
+      mode: cable_car
+      ropeway_system: mgd
+    low: 15
+    central: 25
+    high: 40
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: Many low towers (to verify).
+  - context:
+      mode: cable_car
+      ropeway_system: 2s
+    low: 20
+    central: 35
+    high: 50
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: (to verify)
+  - context:
+      mode: cable_car
+      ropeway_system: 3s
+    low: 40
+    central: 60
+    high: 100
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: Few tall towers for long spans (to verify).
+  - context:
+      mode: cable_car
+      ropeway_system: funitel
+    low: 20
+    central: 30
+    high: 45
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: (to verify)
+  - context:
+      mode: cable_car
+      ropeway_system: pulsed
+    low: 10
+    central: 20
+    high: 30
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: (to verify)
+  - context:
+      mode: aerial_tramway
+      ropeway_system: reversible
+    low: 30
+    central: 50
+    high: 100
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: (to verify)
+- key: ropeway.max_tower_height_m
+  label: Tower height, maximum
+  group: Cable cars
+  unit: m
+  used_by:
+  - tower height check
+  - automatic towers
+  values:
+  - context:
+      mode: '*'
+    low: 30
+    central: 50
+    high: 150
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: Above this towers become a major structure and a landscape issue (to verify).
+  - context:
+      mode: cable_car
+      ropeway_system: mgd
+    low: 35
+    central: 50
+    high: 70
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: (to verify)
+  - context:
+      mode: cable_car
+      ropeway_system: 2s
+    low: 50
+    central: 70
+    high: 100
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: (to verify)
+  - context:
+      mode: cable_car
+      ropeway_system: 3s
+    low: 80
+    central: 120
+    high: 150
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: (to verify)
+  - context:
+      mode: cable_car
+      ropeway_system: funitel
+    low: 40
+    central: 60
+    high: 80
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: (to verify)
+  - context:
+      mode: cable_car
+      ropeway_system: pulsed
+    low: 25
+    central: 35
+    high: 50
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: (to verify)
+  - context:
+      mode: aerial_tramway
+      ropeway_system: reversible
+    low: 60
+    central: 120
+    high: 150
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: (to verify)
+- key: ropeway.station_rope_height_m
+  label: Rope height at a station
+  group: Cable cars
+  unit: m
+  used_by:
+  - profile
+  - clearance check
+  values:
+  - context:
+      mode: '*'
+    low: 5
+    central: 8
+    high: 15
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: Rope height above the station's ground level where cabins enter; elevated stations are higher.
+- key: ropeway.cabin_hang_m
+  label: Rope to cabin bottom
+  group: Cable cars
+  unit: m
+  used_by:
+  - clearance check
+  values:
+  - context:
+      mode: '*'
+    low: 3
+    central: 4
+    high: 6
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: Hanger plus cabin height; large tricable and aerial tramway cabins hang lower.
+  - context:
+      mode: cable_car
+      ropeway_system: 3s
+    low: 4
+    central: 5
+    high: 6
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: Larger cabins (to verify).
+  - context:
+      mode: aerial_tramway
+      ropeway_system: reversible
+    low: 4
+    central: 6
+    high: 8
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: Large cabins and carriage (to verify).
+- key: ropeway.sag_ratio
+  label: Rope sag under load, share of span
+  group: Cable cars
+  unit: share
+  used_by:
+  - profile
+  - clearance check
+  - automatic towers
+  values:
+  - context:
+      mode: '*'
+    low: 0.02
+    central: 0.04
+    high: 0.06
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: Mid-span sag of a loaded rope as a share of the span; depends on rope tension (to verify against
+      EN 12927 design practice).
+- key: ropeway.station_passage_s
+  label: Time through an intermediate station
+  group: Cable cars
+  unit: s
+  used_by:
+  - running time
+  - stopping pattern
+  values:
+  - context:
+      mode: '*'
+    low: 20
+    central: 45
+    high: 90
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: A detached cabin slows to platform speed, passes the platform and reattaches; for an aerial tramway
+      this is the acceleration and braking loss per trip.
+  - context:
+      mode: cable_car
+      ropeway_system: 3s
+    low: 40
+    central: 60
+    high: 90
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: Longer platforms for large cabins (to verify).
+  - context:
+      mode: cable_car
+      ropeway_system: pulsed
+    low: 30
+    central: 60
+    high: 90
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: The rope stops while cabins are in the station (to verify).
+  - context:
+      mode: aerial_tramway
+      ropeway_system: reversible
+    low: 20
+    central: 30
+    high: 60
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: Acceleration and braking loss of a shuttle trip (to verify).
+- key: ropeway.terminal_dwell_s
+  label: Boarding time at an aerial tramway terminal
+  group: Cable cars
+  unit: s
+  used_by:
+  - shuttle cycle
+  - capacity
+  values:
+  - context:
+      mode: '*'
+    low: 30
+    central: 60
+    high: 120
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: Doors, boarding and alighting of a large cabin.
+- key: ropeway.reserve_share
+  label: Spare cabins, share of cabins on the line
+  group: Cable cars
+  unit: share
+  used_by:
+  - cabin count
+  values:
+  - context:
+      mode: '*'
+    low: 0.05
+    central: 0.1
+    high: 0.15
+    basis: educated-guess
+    sources:
+    - mobsimlab-derivation
+    check: unverified
+    rationale: Cabins kept in the garage for maintenance and peak boosts.
+- key: ropeway.wind_slow_kmh
+  label: Wind speed at which the line slows down
+  group: Cable cars
+  unit: km/h
+  used_by:
+  - weather scenarios (planned, ADR-0037 §5a)
+  values:
+  - context:
+      mode: '*'
+    low: 40
+    central: 60
+    high: 80
+    basis: documented
+    sources:
+    - wandernundmehr-wind
+    check: unverified
+    rationale: 'R1 §1.4: slow-down at about 60 to 70 km/h, depending on technology and site.'
+  - context:
+      mode: cable_car
+      ropeway_system: mgd
+    low: 60
+    central: 70
+    high: 70
+    basis: cited
+    sources:
+    - idfm-cable-c1
+    check: unverified
+    rationale: Câble C1 (MGD) slows above 70 km/h.
+  - context:
+      mode: cable_car
+      ropeway_system: 3s
+    low: 70
+    central: 80
+    high: 100
+    basis: documented
+    sources:
+    - wandernundmehr-wind
+    check: unverified
+    rationale: Tricable systems tolerate more wind (to verify).
+- key: ropeway.wind_stop_kmh
+  label: Wind speed at which the line stops
+  group: Cable cars
+  unit: km/h
+  used_by:
+  - weather scenarios (planned, ADR-0037 §5a)
+  values:
+  - context:
+      mode: '*'
+    low: 60
+    central: 80
+    high: 110
+    basis: documented
+    sources:
+    - wandernundmehr-wind
+    check: unverified
+    rationale: 'R1 §1.4: stop at about 60 to 110 km/h depending on technology and site.'
+  - context:
+      mode: cable_car
+      ropeway_system: mgd
+    low: 60
+    central: 90
+    high: 90
+    basis: cited
+    sources:
+    - idfm-cable-c1
+    check: unverified
+    rationale: Câble C1 (MGD) stops above 90 km/h with replacement buses; other MGDs stop at 60 to 70 km/h (wandernundmehr.at).
+  - context:
+      mode: cable_car
+      ropeway_system: 3s
+    low: 90
+    central: 100
+    high: 110
+    basis: documented
+    sources:
+    - wandernundmehr-wind
+    check: unverified
+    rationale: Up to about 100 to 110 km/h.
+- key: ropeway.capacity_ceiling_pphpd
+  label: Capacity ceiling of any ropeway
+  group: Cable cars
+  unit: p/h/dir
+  used_by:
+  - capacity check
+  values:
+  - context:
+      mode: '*'
+    low: 4500
+    central: 6000
+    high: 8000
+    basis: documented
+    sources:
+    - doppelmayr-urban-faq
+    check: unverified
+    rationale: 'R1 §1.2: about 6,000 p/h/dir for any ropeway; Doppelmayr TRI-Line claims up to 8,000.'
