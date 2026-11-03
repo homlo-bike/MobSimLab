@@ -101,7 +101,7 @@ On the street the tram keeps to the street's speed limit (from OpenStreetMap, ot
 
 ## Existing railways
 
-The editor loads the railways already built around your design from OpenStreetMap and draws them in purple under it: solid where in use, dashed where under construction, faint where disused, preserved, in a tunnel or on a bridge.
+Existing railways are off by default. To use them, open **Account and settings → App settings** and turn on **Show existing railways from OpenStreetMap**. The setting is saved to your account. The editor then loads the railways already built around your design from OpenStreetMap and draws them in purple under it: solid where in use, dashed where under construction, faint where disused, preserved, in a tunnel or on a bridge.
 
 - **Join an existing line**: start or end a track on an existing railway. Clicks within a few pixels of it snap onto it. The end then joins the line instead of being an open track end, and the panel lists it under **Existing railways**. A purple dot marks the join.
 - **Checks at a join**: a different gauge is an error, since trains cannot run from one to the other. A different railway system (for example a tram track joining a main line) or a different power supply (overhead line or conductor rail, and the voltage) is a warning: through running needs vehicles built for both. Where the new track meets the line at a sharp angle, rather than running alongside it, there is a warning too. The panel says whether the track continues the existing line at its end or needs a new turnout in it.

@@ -79,6 +79,8 @@ interface Props {
   fetchTile?: TileFetcher;
   /** Railway tile loader (OSM XML) for existing railways; tests inject a fake. */
   fetchRails?: TileFetcher;
+  /** Load and draw existing railways from OpenStreetMap (app setting, off by default). */
+  existingRailways?: boolean;
 }
 
 export interface Selection {
@@ -101,6 +103,7 @@ export function RailwayEditor({
   loadEngine = loadRailEngine,
   fetchTile = fetchStreetTile,
   fetchRails = fetchRailTile,
+  existingRailways = false,
 }: Props) {
   const engine = useRef<RailEngine | null>(null);
   const [ready, setReady] = useState(false);
@@ -151,6 +154,11 @@ export function RailwayEditor({
   const tiles = useRef(new Set<string>());
   useEffect(() => {
     if (!map || !ready) return;
+    // Turning existing railways off forgets them; turning them on reloads the tiles on screen.
+    if (!existingRailways) {
+      engine.current?.clearRails();
+      setStreets((n) => n + 1);
+    }
     let busy = false;
     let again = false;
     let stopped = false;
@@ -162,7 +170,11 @@ export function RailwayEditor({
         return;
       }
       if (map.getZoom() < MIN_LOAD_ZOOM) {
-        setStreetNote(`Zoom in to load streets and existing railways (from zoom ${MIN_LOAD_ZOOM}).`);
+        setStreetNote(
+          existingRailways
+            ? `Zoom in to load streets and existing railways (from zoom ${MIN_LOAD_ZOOM}).`
+            : `Zoom in to load streets and find level crossings (from zoom ${MIN_LOAD_ZOOM}).`,
+        );
         return;
       }
       const b = map.getBounds();
@@ -179,7 +191,10 @@ export function RailwayEditor({
             return f(x!, y!);
           }),
         );
-      const [got, rails] = await Promise.all([fetchAll(fetchTile), fetchAll(fetchRails)]);
+      const [got, rails] = await Promise.all([
+        fetchAll(fetchTile),
+        existingRailways ? fetchAll(fetchRails) : Promise.resolve([]),
+      ]);
       busy = false;
       if (stopped || engine.current !== e) {
         want.forEach((k) => tiles.current.delete(k));
@@ -227,7 +242,7 @@ export function RailwayEditor({
       map.off("moveend", onMove);
       tiles.current.clear();
     };
-  }, [map, ready, fetchTile, fetchRails]);
+  }, [map, ready, fetchTile, fetchRails, existingRailways]);
 
   // A new drawing starts at the map centre.
   useEffect(() => {
@@ -925,6 +940,7 @@ export function RailwayEditor({
       switchOpts={switchOpts}
       error={error}
       streetNote={streetNote}
+      existingRailways={existingRailways}
       actions={panelActions}
     />
   );

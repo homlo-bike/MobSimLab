@@ -72,6 +72,7 @@ export const nl: Messages = {
   "settings.fromProvider": "Naam en e-mail komen van je inlogdienst.",
   "settings.largerTargets": "Grotere aanraakvlakken",
   "settings.reduceMotion": "Minder beweging",
+  "settings.existingRailways": "Bestaande spoorlijnen uit OpenStreetMap tonen",
   "settings.savedToAccount": "Opgeslagen in je account, dus ze gelden ook op je andere apparaten.",
 
   "language.title": "Taal",

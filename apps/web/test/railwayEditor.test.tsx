@@ -422,6 +422,7 @@ describe("Railway editor", () => {
   async function opened(
     fetchTile: (x: number, y: number) => Promise<string> = () => Promise.reject(new Error("offline")),
     fetchRails: (x: number, y: number) => Promise<string> = () => Promise.reject(new Error("offline")),
+    existingRailways = false,
   ) {
     let engine: RailEngine | null = null;
     const { map, handlers } = fakeMap();
@@ -430,6 +431,7 @@ describe("Railway editor", () => {
         map={map}
         fetchTile={fetchTile}
         fetchRails={fetchRails}
+        existingRailways={existingRailways}
         loadEngine={async () => (engine = await loadRailEngine())}
       />,
     );
@@ -486,9 +488,19 @@ describe("Railway editor", () => {
     expect(screen.getAllByText(/Station Road · \d+° · barriers · buses/).length).toBeGreaterThan(0);
   });
 
-  it("loads the existing railways on screen alongside the streets", async () => {
+  it("leaves existing railways alone unless the app setting turns them on", async () => {
     const fetchRails = vi.fn(async () => railTile());
     await opened(undefined, fetchRails);
+    fireEvent.change(screen.getByRole("combobox"), { target: { value: "tram" } });
+    fireEvent.click(screen.getByRole("button", { name: "Example" }));
+    expect(await screen.findByText(/0 errors/)).toBeTruthy();
+    expect(fetchRails).not.toHaveBeenCalled();
+    expect(screen.queryByText(/Existing railways ·/)).toBeNull();
+  });
+
+  it("loads the existing railways on screen alongside the streets", async () => {
+    const fetchRails = vi.fn(async () => railTile());
+    await opened(undefined, fetchRails, true);
     fireEvent.change(screen.getByRole("combobox"), { target: { value: "tram" } });
     fireEvent.click(screen.getByRole("button", { name: "Example" }));
     expect(fetchRails).toHaveBeenCalled();
