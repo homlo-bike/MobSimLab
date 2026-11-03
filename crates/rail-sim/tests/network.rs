@@ -34,6 +34,7 @@ fn crossing(special: bool) -> InfraSpec {
         } else {
             vec![]
         },
+        reopen_s: None,
     });
     spec
 }
