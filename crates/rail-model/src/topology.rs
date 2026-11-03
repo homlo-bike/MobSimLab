@@ -97,6 +97,9 @@ struct TSection {
     speed_kmh: Vec<TRange>,
     #[serde(default)]
     gradient_permille: Vec<TRange>,
+    /// Extra running time in street traffic, share.
+    #[serde(default)]
+    traffic_delay_share: Vec<TRange>,
     /// `line_of_sight`, `fixed_block`, `cbtc` or `etcs_l2`.
     #[serde(default)]
     train_protection: Option<String>,
@@ -645,6 +648,7 @@ fn import(t: Topology, opt: &ImportOptions) -> Result<Imported, String> {
                 line_speed_mps: line,
                 speed_ranges: speed,
                 gradient_ranges: clip(&s.gradient_permille, sub.from, sub.to, 1e-3),
+                traffic_delay_ranges: clip(&s.traffic_delay_share, sub.from, sub.to, 1.0),
                 directions: Directions::Both,
                 usage: if s.usage == "storage" {
                     TrackUse::Storage

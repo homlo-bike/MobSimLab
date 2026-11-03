@@ -167,7 +167,7 @@ describe("Street setup editor", () => {
     tap(100);
     const form = screen.getByRole("region", { name: "Street setup: High Street" });
     expect(within(form).getByText(/Mixed traffic on a main road|Inferred from the street/)).toBeTruthy();
-    expect(within(form).getByText(/Buses run in the traffic of a main road/)).toBeTruthy();
+    expect(within(form).getByText(/Buses and trolleybuses run in the traffic of a main road/)).toBeTruthy();
 
     fireEvent.click(
       within(screen.getByRole("group", { name: "Tram" })).getByRole("button", { name: "Own lane" }),
