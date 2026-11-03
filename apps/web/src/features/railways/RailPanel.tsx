@@ -70,6 +70,8 @@ export interface RailPanelActions {
 interface Props {
   /** Why streets (and so level crossings) are missing, if they are. */
   streetNote?: string | null;
+  /** Existing railways from OpenStreetMap are loaded (app setting). */
+  existingRailways?: boolean;
   doc: Network;
   view: RailView;
   tool: RailTool;
@@ -453,6 +455,35 @@ export function RailPanel(props: Props) {
           )}
         </div>
       </Section>
+
+      {props.existingRailways && (
+        <Section
+          title={`Existing railways · ${view.existing_joins.length} join${view.existing_joins.length === 1 ? "" : "s"}`}
+        >
+          <p className="text-xs text-slate-600">
+            Railways already built, from OpenStreetMap, drawn in purple under the design (
+            {view.existing_count} loaded). Start or end a track on one and it joins it: the editor checks the
+            gauge, the railway system and the power supply there.
+          </p>
+          <ul className="flex flex-col gap-1">
+            {view.existing_joins.map((j) => (
+              <li key={`${j.track}-${j.end}`}>
+                <button
+                  type="button"
+                  onClick={() => a.showIssue(j.lonlat, j.track)}
+                  className="flex w-full items-start gap-2 rounded px-1 py-0.5 text-left hover:bg-slate-100"
+                >
+                  <span style={{ color: COLORS.existing }}>●</span>
+                  <span>
+                    {j.name || "Unnamed railway"} · {j.railway.replace("_", " ")} ·{" "}
+                    {j.continues ? "continues the line" : "new turnout in the existing track"}
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </Section>
+      )}
 
       <Section title={`Street running · ${view.street_running.length}`}>
         <p className="text-xs text-slate-600">

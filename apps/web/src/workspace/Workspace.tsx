@@ -56,6 +56,7 @@ export function Workspace({
   onTab,
   onHome,
   onAbout,
+  existingRailways = false,
 }: {
   api: ProjectsApi;
   projectId: string;
@@ -66,6 +67,8 @@ export function Workspace({
   onTab: (t: Tab) => void;
   onHome: () => void;
   onAbout: () => void;
+  /** Draw existing railways from OpenStreetMap in the railway tool (app setting). */
+  existingRailways?: boolean;
 }) {
   const { t } = useI18n();
   const [project, setProject] = useState<Project | null>(null);
@@ -213,7 +216,13 @@ export function Workspace({
             />
           )}
           {project && tab === "create" && editable && chosen === "rail" && (
-            <RailwayEditor map={map} panel={panel} streetSetups={setups} onTopologyChange={setRailTopology} />
+            <RailwayEditor
+              map={map}
+              panel={panel}
+              streetSetups={setups}
+              existingRailways={existingRailways}
+              onTopologyChange={setRailTopology}
+            />
           )}
           {project && tab === "gis" && (
             <StreetSetupEditor

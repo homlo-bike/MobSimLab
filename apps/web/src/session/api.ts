@@ -19,6 +19,8 @@ export interface Preferences {
   units?: "auto" | "metric" | "imperial";
   largerTargets?: boolean;
   reduceMotion?: boolean;
+  /** Load and draw existing railways from OpenStreetMap in the railway tool (off when absent). */
+  existingRailways?: boolean;
 }
 
 /** Purpose: change some preferences; the others stay. Output: the stored set. */
