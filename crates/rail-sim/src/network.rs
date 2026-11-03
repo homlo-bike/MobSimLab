@@ -32,7 +32,7 @@
 use std::collections::{BTreeMap, BTreeSet};
 
 use rail_dynamics::TrainParams;
-use rail_interlocking::{Handle, Interlocking, Params as IlParams};
+use rail_interlocking::{Handle, Interlocking, Params as IlParams, Refusal};
 use rail_model::{Dir, End, Model, PieceId, RouteId, Step, TdsId};
 use rail_plan::{run_timing, BlockingParams, Plan, RunKind, RunTiming};
 use serde::{Deserialize, Serialize};
@@ -280,6 +280,8 @@ struct Train {
     held_at: Option<usize>,
     delay_s: f64,
     last_eoa: f64,
+    /// Why the interlocking last refused this train's next route.
+    refused: Option<String>,
 }
 
 /// The kernel.
@@ -307,8 +309,17 @@ fn opposite(e: End) -> End {
 }
 
 /// Purpose: steps behind a piece entered in `dir` (walking backwards), using
-/// the current switch positions, for at least `want` metres.
-fn back_steps(m: &Model, il: &Interlocking, first: Step, want: f64) -> Vec<Step> {
+/// the current switch positions, for at least `want` metres. Where the track
+/// branches, a piece of `prefer` (the storage track the train stands on) wins
+/// over the switch position, so two trains stabled on neighbouring sidings
+/// behind one switch are each placed on their own siding.
+fn back_steps(
+    m: &Model,
+    il: &Interlocking,
+    first: Step,
+    want: f64,
+    prefer: Option<usize>,
+) -> Vec<Step> {
     let mut out = Vec::new();
     let (mut piece, mut entry_end) = (first.piece, opposite(first.dir.exit_end()));
     let mut got = 0.0;
@@ -319,7 +330,12 @@ fn back_steps(m: &Model, il: &Interlocking, first: Step, want: f64) -> Vec<Step>
         } else {
             n.iter()
                 .copied()
-                .find(|(_, _, sw)| sw.is_some_and(|(s, pos)| il.switch(s).0 == pos))
+                .find(|(p, _, _)| prefer.is_some_and(|t| m.pieces[*p as usize].track == t))
+                .or_else(|| {
+                    n.iter()
+                        .copied()
+                        .find(|(_, _, sw)| sw.is_some_and(|(s, pos)| il.switch(s).0 == pos))
+                })
         };
         let Some((np, ne, _)) = pick else {
             break;
@@ -339,7 +355,13 @@ fn back_steps(m: &Model, il: &Interlocking, first: Step, want: f64) -> Vec<Step>
     out
 }
 
-fn build_path(m: &Model, il: &Interlocking, routes: &[RouteId], back_m: f64) -> Path {
+fn build_path(
+    m: &Model,
+    il: &Interlocking,
+    routes: &[RouteId],
+    back_m: f64,
+    prefer: Option<usize>,
+) -> Path {
     let mut run_steps: Vec<Step> = Vec::new();
     let mut rs = Vec::new();
     let mut x = 0.0;
@@ -349,7 +371,7 @@ fn build_path(m: &Model, il: &Interlocking, routes: &[RouteId], back_m: f64) -> 
         rs.push((r, x, x + route.length_m));
         x += route.length_m;
     }
-    let back = back_steps(m, il, run_steps[0], back_m);
+    let back = back_steps(m, il, run_steps[0], back_m, prefer);
     let back_len: f64 = back
         .iter()
         .map(|s| m.pieces[s.piece as usize].length_m())
@@ -467,7 +489,12 @@ impl<'m> NetworkSim<'m> {
             let j = stack_pos.get(&v).copied().unwrap_or(0) as f64;
             let s0 = -(p.stop_margin_m + j * (tp.length_m + p.stabling_gap_m));
             let back = tp.length_m - s0 + 50.0;
-            let path = build_path(m, &il, &runs[0].routes, back);
+            let storage = plan
+                .stabling_start
+                .iter()
+                .find(|(_, vs)| vs.contains(&v))
+                .and_then(|(t, _)| m.track(t));
+            let path = build_path(m, &il, &runs[0].routes, back, storage);
             let body = path.cover(m, s0 - tp.length_m, s0);
             let tds: BTreeSet<TdsId> = body
                 .iter()
@@ -494,6 +521,7 @@ impl<'m> NetworkSim<'m> {
                 held_at: None,
                 delay_s: 0.0,
                 last_eoa: s0,
+                refused: None,
             });
         }
         // Planned order of locks per section.
@@ -628,6 +656,52 @@ impl<'m> NetworkSim<'m> {
         })
     }
 
+    /// Purpose: why a standing train cannot get its next route, as text: the
+    /// section and the run the plan puts on it first, or the interlocking.
+    fn blocked_by(&self, ti: usize) -> Option<String> {
+        let tr = &self.trains[ti];
+        if tr.status != Status::Running || tr.v != 0.0 {
+            return None;
+        }
+        let run = &self.names_of(ti);
+        let Some(&(route, _, _)) = tr.path.routes.get(tr.next_route) else {
+            return Some(format!("{run} waits at the end of its authority"));
+        };
+        let me = (ti, tr.k, tr.next_route);
+        for s in &self.m.routes[route as usize].tds {
+            let Some(q) = self.order.get(s) else { continue };
+            let next = self.order_next.get(s).copied().unwrap_or(0);
+            if let Some(x) = q.get(next) {
+                if (x.1, x.2, x.3) != me {
+                    let other = &self.trains[x.1];
+                    let name = other
+                        .runs
+                        .get(x.2)
+                        .map(|r| r.plan_index.to_string())
+                        .unwrap_or_default();
+                    return Some(format!(
+                        "{run} waits on section {} for plan run {name} (train {})",
+                        self.m.tds[*s as usize].id, other.vehicle
+                    ));
+                }
+            }
+        }
+        Some(format!(
+            "{run} waits for the interlocking to set route {}: {}",
+            self.m.routes[route as usize].id,
+            tr.refused.as_deref().unwrap_or("not asked yet")
+        ))
+    }
+
+    fn names_of(&self, ti: usize) -> String {
+        let tr = &self.trains[ti];
+        format!(
+            "train {} (plan run {})",
+            tr.vehicle,
+            tr.runs.get(tr.k).map(|r| r.plan_index).unwrap_or(0)
+        )
+    }
+
     fn locked_in_order(&mut self, ti: usize, route: RouteId) {
         let tr = &self.trains[ti];
         let me = (ti, tr.k, tr.next_route);
@@ -747,8 +821,12 @@ impl<'m> NetworkSim<'m> {
                 t,
                 waiting: waiting.clone(),
             });
+            let why: Vec<String> = (0..self.trains.len())
+                .filter_map(|ti| self.blocked_by(ti))
+                .collect();
             return Err(format!(
-                "deadlock at {t:.0} s: trains {waiting:?} wait for routes"
+                "deadlock at {t:.0} s: trains {waiting:?} wait for routes ({})",
+                why.join("; ")
             ));
         }
         self.t += dt;
@@ -793,10 +871,32 @@ impl<'m> NetworkSim<'m> {
                 Ok(h) => {
                     self.locked_in_order(ti, route);
                     let tr = &mut self.trains[ti];
+                    tr.refused = None;
                     tr.handles[q] = Some(h);
                     tr.next_route += 1;
                 }
-                Err(_) => return,
+                Err(r) => {
+                    let why = match r {
+                        Refusal::Occupied(s) => {
+                            format!("section {} is occupied", self.m.tds[s as usize].id)
+                        }
+                        Refusal::Locked(s) => {
+                            format!("section {} is locked", self.m.tds[s as usize].id)
+                        }
+                        Refusal::SwitchLocked(w) => {
+                            format!("switch {} is locked", self.m.switches[w as usize].id)
+                        }
+                        Refusal::SwitchOccupied(w) => {
+                            format!("switch {} is occupied", self.m.switches[w as usize].id)
+                        }
+                        Refusal::Flank(w) => {
+                            format!("no flank protection at {}", self.m.switches[w as usize].id)
+                        }
+                        Refusal::Unavailable => "the route is out of service".into(),
+                    };
+                    self.trains[ti].refused = Some(why);
+                    return;
+                }
             }
         }
     }
@@ -1010,7 +1110,10 @@ impl<'m> NetworkSim<'m> {
                 v_new = 0.0;
             }
         }
-        if tr.s + ds > eoa + 1e-6 {
+        // A standing train passes nothing: its authority may end behind its
+        // head when a train ahead stands closer than the following margin (a
+        // shunting move on sight into an occupied siding, or a stabling stack).
+        if ds > 1e-9 && tr.s + ds > eoa + 1e-6 {
             return Err(format!(
                 "invariant 2: train {} would pass its end of authority at {:.1} m (authority {:.1} m) at {t:.1} s",
                 tr.vehicle,
@@ -1099,7 +1202,7 @@ impl<'m> NetworkSim<'m> {
             return;
         }
         let back = tr.params.length_m + 400.0;
-        let path = build_path(m, &self.il, &tr.runs[tr.k].routes, back);
+        let path = build_path(m, &self.il, &tr.runs[tr.k].routes, back, None);
         // Where the train stands on the new path: its front in the new direction.
         let mut ends = Vec::new();
         if let Some((pc, c0, c1)) = head_pt {
