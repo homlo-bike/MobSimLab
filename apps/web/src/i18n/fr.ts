@@ -205,14 +205,6 @@ export const fr: Messages = {
 
   "sim.test": "Tester le système",
   "sim.journey": "Temps de trajet A → B",
-  "sim.testTitle": "Tester le système",
-  "sim.testIntro":
-    "Faites tourner le réseau sur une période pour voir s’il fonctionne comme prévu et s’il a assez de capacité.",
-  "sim.runPeriod": "Choisir une période et un type de jour, puis lancer",
-  "sim.verdicts": "Verdicts clairs : ça fonctionne, capacité insuffisante, où des voyageurs restent à quai",
-  "sim.playback": "Lecture avec contrôle de la vitesse",
-  "sim.popups": "Touchez un véhicule, un arrêt ou une ligne pour une fiche",
-  "sim.tryJourney": "Essayer la comparaison des temps de trajet",
 
   "create.chooseTitle": "Que voulez-vous construire en premier ?",
   "create.chooseIntro":

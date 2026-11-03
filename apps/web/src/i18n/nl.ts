@@ -204,14 +204,6 @@ export const nl: Messages = {
 
   "sim.test": "Systeem testen",
   "sim.journey": "Reistijd A → B",
-  "sim.testTitle": "Systeem testen",
-  "sim.testIntro":
-    "Laat het netwerk een periode draaien om te zien of het werkt zoals bedoeld en genoeg capaciteit heeft.",
-  "sim.runPeriod": "Kies een periode en een dagtype en start",
-  "sim.verdicts": "Duidelijke uitkomsten: werkt, te weinig capaciteit, waar reizigers achterblijven",
-  "sim.playback": "Afspelen met snelheidsregeling",
-  "sim.popups": "Tik op een voertuig, halte of lijn voor een infokaart",
-  "sim.tryJourney": "Probeer de reistijdvergelijking",
 
   "create.chooseTitle": "Wat wil je eerst bouwen?",
   "create.chooseIntro":
