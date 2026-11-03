@@ -48,6 +48,12 @@ pub struct Arc {
     pub guideway: bool,
     /// Bus lane or busway (BRT prefers these).
     pub bus_lane: bool,
+    /// Main road (trunk, primary, secondary): its traffic holds up buses outside a separated
+    /// bus lane.
+    pub main_road: bool,
+    /// Extra running time lost in traffic, as a share of the free-flow time
+    /// ([`crate::setup::delay_share`]).
+    pub delay_share: f64,
     /// Overhead trolleybus wire present in this direction.
     pub wire: bool,
     /// Limits from `maxheight`, `maxweight`, `maxlength`.
@@ -110,6 +116,8 @@ struct WayInfo {
     motorway: bool,
     guideway: bool,
     bus_lane: bool,
+    main_road: bool,
+    delay_share: f64,
     wire_fwd: bool,
     wire_bwd: bool,
     minor: bool,
@@ -230,18 +238,7 @@ fn way_info(tags: &Tags) -> Option<WayInfo> {
         fwd = true;
         bwd = true;
     }
-    let bus_lane = matches!(hw, "busway" | "bus_guideway")
-        || ["busway", "busway:left", "busway:right", "busway:both"]
-            .iter()
-            .any(|k| {
-                matches!(
-                    tags.get(*k).map(String::as_str),
-                    Some("lane" | "opposite_lane")
-                )
-            })
-        || tags.keys().any(|k| {
-            k.starts_with("bus:lanes") || k.starts_with("lanes:bus") || k.starts_with("lanes:psv")
-        });
+    let bus_lane = crate::setup::osm_bus_lane(tags);
     let wire_all = yes(tags.get("trolley_wire"));
     let width_m = tags
         .get("width")
@@ -263,6 +260,8 @@ fn way_info(tags: &Tags) -> Option<WayInfo> {
         motorway,
         guideway: hw == "bus_guideway",
         bus_lane,
+        main_road: crate::setup::main_road(hw),
+        delay_share: crate::setup::delay_share(tags),
         wire_fwd: wire_all || yes(tags.get("trolley_wire:forward")),
         wire_bwd: wire_all || yes(tags.get("trolley_wire:backward")),
         minor: matches!(hw, "service" | "living_street" | "pedestrian"),
@@ -387,6 +386,8 @@ impl RoadGraph {
                         motorway: info.motorway,
                         guideway: info.guideway,
                         bus_lane: info.bus_lane,
+                        main_road: info.main_road,
+                        delay_share: info.delay_share,
                         wire,
                         max_height_m: mh,
                         max_weight_t: mw,

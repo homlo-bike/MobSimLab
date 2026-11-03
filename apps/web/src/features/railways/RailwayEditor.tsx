@@ -4,6 +4,7 @@ import { createPortal } from "react-dom";
 import { fetchStreetTile } from "../street-lines/engine";
 import { MIN_LOAD_ZOOM, tilesFor } from "../street-lines/tiles";
 import type { TileFetcher } from "../street-lines/types";
+import type { StreetSetup } from "../street-setup/types";
 import {
   addSignal,
   addStation,
@@ -65,6 +66,8 @@ const HINTS: Record<RailTool, string> = {
   pan: "Drag to move the map.",
 };
 
+const NO_SETUPS: readonly StreetSetup[] = [];
+
 /** The drawing survives closing and reopening the tool during the session. */
 let kept: Network | null = null;
 
@@ -77,6 +80,8 @@ interface Props {
   loadEngine?: RailEngineLoader;
   /** Street tile loader (OSM XML) for level crossings; tests inject a fake. */
   fetchTile?: TileFetcher;
+  /** The planner's street setups from the GIS tab (tram own lane or mixed traffic…), over OSM. */
+  streetSetups?: readonly StreetSetup[];
 }
 
 export interface Selection {
@@ -98,6 +103,7 @@ export function RailwayEditor({
   panel = null,
   loadEngine = loadRailEngine,
   fetchTile = fetchStreetTile,
+  streetSetups = NO_SETUPS,
 }: Props) {
   const engine = useRef<RailEngine | null>(null);
   const [ready, setReady] = useState(false);
@@ -145,6 +151,14 @@ export function RailwayEditor({
   const [streets, setStreets] = useState(0);
   const [streetNote, setStreetNote] = useState<string | null>(null);
   const tiles = useRef(new Set<string>());
+  // Street setups from the GIS tab override OSM for street running; a change rebuilds.
+  const setupsJson = JSON.stringify(streetSetups);
+  useEffect(() => {
+    const e = engine.current;
+    if (!ready || !e) return;
+    e.setStreetSetups(JSON.parse(setupsJson) as StreetSetup[]);
+    setStreets((n) => n + 1);
+  }, [ready, setupsJson]);
   useEffect(() => {
     if (!map || !ready) return;
     let busy = false;

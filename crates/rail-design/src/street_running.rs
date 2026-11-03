@@ -22,7 +22,7 @@ use crate::design::Design;
 use crate::geom::{at_s, BBox, P2};
 use crate::issue::Issue;
 use crate::model::Level;
-use crate::street::Street;
+use crate::street::{Street, TramShare};
 use serde::Serialize;
 
 /// Spacing of the samples along the track, m.
@@ -63,6 +63,10 @@ pub struct RunningStreet {
     pub bus: bool,
     /// A trolleybus wire runs along the street.
     pub trolley_wire: bool,
+    /// A bike lane or cycle track runs along the street.
+    pub bike_lane: bool,
+    /// A bus lane runs along the street.
+    pub bus_lane: bool,
 }
 
 /// A stretch of track running along a street.
@@ -88,6 +92,15 @@ pub struct StreetRunning {
     pub street: RunningStreet,
     /// Stations (tram stops) on the stretch.
     pub stops: Vec<u32>,
+    /// The tram's own lane is separated from the traffic by a kerb, barrier or track bed.
+    pub separated: bool,
+    /// Where the share of the street comes from: `setup` (the planner set the street up in the
+    /// GIS tab) or `osm` (inferred from the street's width in OpenStreetMap).
+    pub source: &'static str,
+    /// Expected extra running time in traffic on the stretch, as a share of the running time at
+    /// the speed limit (`street.mixed_traffic_delay_share` in a main road's traffic,
+    /// `street.bus_lane_delay_share` in a painted lane of a main road, else 0).
+    pub traffic_delay_share: f64,
 }
 
 /// A speed cap on a stretch of chainage: from, to, km/h.
@@ -214,13 +227,14 @@ pub fn street_running(dz: &mut Design, streets: &[Street]) {
             let ntracks = f64::from(g.ntracks.max(1));
             let tram_lane = g.spacing_at(mid) * (ntracks - 1.0) + p.clearance_marker_m;
             let road_lanes = if st.oneway { 1.0 } else { 2.0 } * p.street_lane_width_m;
-            let running = if st.class == "pedestrian" {
-                Running::PedestrianZone
-            } else if width + 0.01 >= tram_lane + road_lanes {
-                Running::Reserved
-            } else {
-                Running::Mixed
+            let running = match st.tram {
+                _ if st.class == "pedestrian" => Running::PedestrianZone,
+                Some(TramShare::OwnLane) => Running::Reserved,
+                Some(TramShare::Mixed) => Running::Mixed,
+                None if width + 0.01 >= tram_lane + road_lanes => Running::Reserved,
+                None => Running::Mixed,
             };
+            let set = st.tram.is_some();
             let limit = if st.walking_pace {
                 p.street_walking_pace_kmh
             } else {
@@ -245,8 +259,20 @@ pub fn street_running(dz: &mut Design, streets: &[Street]) {
             let at = Some(at_s(&g.centre, mid).p);
             let len = b - a;
             let how = match running {
+                Running::Reserved if set => format!(
+                    "in its own lane{} (set in the GIS tab)",
+                    if st.separated {
+                        ", separated from the traffic"
+                    } else {
+                        ""
+                    }
+                ),
                 Running::Reserved => format!(
                     "in its own lane ({tram_lane:.1} m), with a road lane each way beside it"
+                ),
+                Running::Mixed if set => format!(
+                    "in the traffic lanes, shared with cars{} (set in the GIS tab)",
+                    if st.bus { " and buses" } else { "" },
                 ),
                 Running::Mixed => format!(
                     "in the traffic lanes, shared with cars{}: the street is about {width:.1} m wide and a tram lane with road lanes beside it needs {:.1} m",
@@ -264,13 +290,28 @@ pub fn street_running(dz: &mut Design, streets: &[Street]) {
                 st.class.as_str(),
                 "trunk" | "primary" | "secondary" | "trunk_link" | "primary_link"
             );
+            let delay = match running {
+                Running::Mixed if busy => p.street_mixed_traffic_delay_share,
+                Running::Reserved if busy && !st.separated => p.street_bus_lane_delay_share,
+                _ => 0.0,
+            };
             if running == Running::Mixed && busy {
                 iss.push(Issue::warning(
                     format!(
-                        "The tram runs {len:.0} m along {name} {how}. On a main road the tram is held up by traffic and runs late. Give it its own lane (move parking or a road lane), or use traffic signals that let the tram go first."
+                        "The tram runs {len:.0} m along {name} {how}. On a main road the tram is held up in traffic jams and can be stuck in gridlock, so it runs late (about {:.0} % longer here at peak). Give it its own lane, separated from the traffic, in the GIS tab (move parking or a road lane), or use traffic signals that let the tram go first.",
+                        delay * 100.0
                     ),
                     at,
                     g.id,
+                ));
+            } else if running == Running::Reserved && busy && !st.separated {
+                iss.push(Issue::info(
+                    format!(
+                        "The tram runs {len:.0} m along {name} {how}{speed}. The lane is only painted, so turning, parking and loading cars still get in the way (about {:.0} % longer here at peak); a kerb or separate track bed (separation in the GIS tab) keeps them out.",
+                        delay * 100.0
+                    ),
+                    at,
+                    Some(g.id),
                 ));
             } else {
                 iss.push(Issue::info(
@@ -278,6 +319,16 @@ pub fn street_running(dz: &mut Design, streets: &[Street]) {
                     at,
                     Some(g.id),
                 ));
+            }
+            if running == Running::Mixed && !st.bike_lane {
+                let text = format!(
+                    "Cyclists on {name} ride along the tram rails: a wheel caught in the groove is a common cause of falls. A bike lane beside the track (GIS tab) keeps them off the rails."
+                );
+                iss.push(if busy {
+                    Issue::warning(text, at, g.id)
+                } else {
+                    Issue::info(text, at, Some(g.id))
+                });
             }
             for sid in &stops {
                 let (Some(sg), Some(doc)) = (
@@ -326,8 +377,13 @@ pub fn street_running(dz: &mut Design, streets: &[Street]) {
                     oneway: st.oneway,
                     bus: st.bus,
                     trolley_wire: st.trolley_wire,
+                    bike_lane: st.bike_lane,
+                    bus_lane: st.bus_lane,
                 },
                 stops,
+                separated: st.separated && running == Running::Reserved,
+                source: if set { "setup" } else { "osm" },
+                traffic_delay_share: delay,
             });
         }
         if !track_caps.is_empty() {
@@ -472,6 +528,70 @@ mod tests {
             .iter()
             .any(|i| i.severity == Severity::Warning
                 && i.text.contains("shared with cars and buses")));
+    }
+
+    #[test]
+    fn the_gis_setup_overrides_the_width_and_resolves_the_mixed_traffic_warning() {
+        let warned = |dz: &Design| {
+            dz.issues.iter().any(|i| {
+                i.severity == Severity::Warning && i.text.contains("held up in traffic jams")
+            })
+        };
+        // From OSM: a narrow main road, so mixed traffic and a warning.
+        let dz = build_with_streets(&tram_line(RailMode::Tram), None, &[along("secondary", &[])]);
+        assert!(warned(&dz));
+        let r = &dz.street_running[0];
+        assert_eq!((r.source, r.running), ("osm", Running::Mixed));
+        assert!(r.traffic_delay_share > 0.2);
+        // Cyclists ride along the rails without a bike lane.
+        assert!(dz
+            .issues
+            .iter()
+            .any(|i| i.text.contains("Cyclists on Long Street")));
+
+        // Set up in the GIS tab: own lane, separated, with a bike lane.
+        let dz = build_with_streets(
+            &tram_line(RailMode::Tram),
+            None,
+            &[along(
+                "secondary",
+                &[
+                    ("mobsimlab:tram", "own_lane"),
+                    ("mobsimlab:separated", "yes"),
+                    ("mobsimlab:setup", "yes"),
+                    ("cycleway:both", "track"),
+                ],
+            )],
+        );
+        assert!(!warned(&dz), "{:?}", dz.issues);
+        let r = &dz.street_running[0];
+        assert_eq!((r.source, r.running), ("setup", Running::Reserved));
+        assert!(r.separated && r.street.bike_lane);
+        assert_eq!(r.traffic_delay_share, 0.0);
+        assert!(!dz.issues.iter().any(|i| i.text.contains("Cyclists")));
+
+        // Own lane but only painted: no warning, a smaller delay and a hint to separate it.
+        let dz = build_with_streets(
+            &tram_line(RailMode::Tram),
+            None,
+            &[along("secondary", &[("mobsimlab:tram", "own_lane")])],
+        );
+        assert!(!warned(&dz));
+        let r = &dz.street_running[0];
+        assert!(r.traffic_delay_share > 0.0 && r.traffic_delay_share < 0.2);
+        assert!(dz.issues.iter().any(|i| i.text.contains("only painted")));
+
+        // The planner can also say a wide street is mixed traffic.
+        let dz = build_with_streets(
+            &tram_line(RailMode::Tram),
+            None,
+            &[along(
+                "primary",
+                &[("lanes", "4"), ("mobsimlab:tram", "mixed")],
+            )],
+        );
+        assert_eq!(dz.street_running[0].running, Running::Mixed);
+        assert!(warned(&dz));
     }
 
     #[test]
