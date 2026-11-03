@@ -1,3 +1,4 @@
+import type { TileFetcher } from "../street-lines/types";
 import type { RailEngine, RailEngineLoader, RailView } from "./types";
 
 let wasmModule: Promise<typeof import("../../wasm/rail-design/rail_design_wasm.js")> | null = null;
@@ -32,10 +33,24 @@ export const loadRailEngine: RailEngineLoader = async () => {
     topology: () => JSON.parse(d.topology()),
     addStreetTile: (xml) => d.add_street_tile(xml),
     clearStreets: () => d.clear_streets(),
+    addRailTile: (xml) => d.add_rail_tile(xml),
+    clearRails: () => d.clear_rails(),
+    existingSnap: ([lon, lat], maxM) => JSON.parse(d.existing_snap(lon, lat, maxM)),
     setStreetSetups: (s) => d.set_street_setups(JSON.stringify(s)),
     generateSignals: () => JSON.parse(d.generate_signals()),
     signalAnchor: ([lon, lat], maxM) => JSON.parse(d.signal_anchor(lon, lat, maxM)),
     dispose: () => d.free(),
   };
   return engine;
+};
+
+/** Purpose: fetch one railway tile from the API (existing OSM railways, cached server-side). */
+export const fetchRailTile: TileFetcher = async (x, y) => {
+  const res = await fetch(`/api/street-network/rail-tiles/14/${x}/${y}`);
+  if (res.status === 401) throw new Error("Sign in to load existing railways.");
+  if (!res.ok)
+    throw new Error(
+      res.status === 400 ? "Invalid tile" : "OpenStreetMap railways are unavailable right now.",
+    );
+  return res.text();
 };

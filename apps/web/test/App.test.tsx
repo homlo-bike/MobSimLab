@@ -342,6 +342,20 @@ describe("user menu and settings", () => {
     );
   });
 
+  it("keeps existing railways off until the planner turns them on", async () => {
+    const calls = stubApi(owner);
+    render(<App />);
+    fireEvent.click(await screen.findByRole("button", { name: "Account and settings" }));
+    fireEvent.click(screen.getByRole("menuitem", { name: /App settings/ }));
+    const toggle = screen.getByRole("switch", { name: "Show existing railways from OpenStreetMap" });
+    expect(toggle.getAttribute("aria-checked")).toBe("false");
+    fireEvent.click(toggle);
+    expect(toggle.getAttribute("aria-checked")).toBe("true");
+    await waitFor(() =>
+      expect(calls.find((c) => c.url === "/api/auth/preferences")?.body).toEqual({ existingRailways: true }),
+    );
+  });
+
   it("shows the setup wizard to the Owner and sends the CSRF token", async () => {
     const setupOwner = { ...owner, instance: { mode: "setup" as const, name: "MobSimLab" } };
     const calls = stubApi([setupOwner, { ...owner, instance: { mode: "open", name: "Köln" } }]);

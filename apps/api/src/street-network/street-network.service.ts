@@ -56,6 +56,26 @@ export function walkQuery(z: number, x: number, y: number): string {
   );
 }
 
+/** Railway kinds the railway design tool shows as existing infrastructure (crates/rail-design `existing`). */
+const RAIL_KINDS =
+  "rail|light_rail|tram|subway|narrow_gauge|monorail|funicular|construction|disused|preserved";
+
+/**
+ * Purpose: Overpass QL for the railway tracks of one tile with all their nodes (switches, buffer stops,
+ * level crossings and signals carry tags). Ways are returned whole, so neighbouring tiles join up.
+ */
+export function railQuery(z: number, x: number, y: number): string {
+  const b = tileBbox(z, x, y)
+    .map((v) => v.toFixed(7))
+    .join(",");
+  return (
+    `[out:xml][timeout:90][maxsize:67108864];` +
+    `way["railway"~"^(${RAIL_KINDS})$"](${b})->.w;` +
+    `node(w.w)->.n;` +
+    `(.n;.w;);out body;`
+  );
+}
+
 /** Purpose: the zoom-14 tiles `[x, y]` covering a bounding box `[west, south, east, north]`. */
 export function tilesFor(bbox: [number, number, number, number], z = TILE_ZOOM): [number, number][] {
   const n = 2 ** z;
@@ -85,6 +105,11 @@ export class StreetNetworkService {
   /** Purpose: OSM XML for the streets of tile x/y at TILE_ZOOM. Side effects: may call Overpass. */
   tile(x: number, y: number): Promise<string> {
     return this.cached(`road/${x}/${y}`, () => streetQuery(TILE_ZOOM, x, y));
+  }
+
+  /** Purpose: OSM XML for the railway tracks of tile x/y at TILE_ZOOM. Side effects: may call Overpass. */
+  railTile(x: number, y: number): Promise<string> {
+    return this.cached(`rail/${x}/${y}`, () => railQuery(TILE_ZOOM, x, y));
   }
 
   /** Purpose: OSM XML for the walkable ways of tile x/y at TILE_ZOOM. Side effects: may call Overpass. */

@@ -2,7 +2,7 @@ import { Test } from "@nestjs/testing";
 import request from "supertest";
 import { describe, expect, it, vi } from "vitest";
 import { OverpassClient, overpassEndpoint } from "../src/gateway/overpass.client";
-import { streetQuery, tileBbox } from "../src/street-network/street-network.service";
+import { railQuery, streetQuery, tileBbox } from "../src/street-network/street-network.service";
 import { StreetNetworkModule } from "../src/street-network/street-network.module";
 
 const XML = '<osm version="0.6"><node id="1" lat="50" lon="7"/></osm>';
@@ -32,6 +32,32 @@ describe("street tiles", () => {
     expect(q).toContain('way["highway"~"^(motorway|');
     expect(q).toContain('rel(bw.w)["type"="restriction"]');
     expect(q).not.toContain('"building"');
+  });
+
+  it("asks for railway tracks of every kind, not roads", () => {
+    const q = railQuery(14, 8508, 5489);
+    expect(q).toContain('way["railway"~"^(rail|light_rail|tram|subway|');
+    expect(q).toContain("node(w.w)");
+    expect(q).not.toContain('"highway"');
+  });
+
+  it("serves railway tiles apart from street tiles", async () => {
+    const RAIL = '<osm version="0.6"><way id="9"/></osm>';
+    const { fetchImpl, c } = client([RAIL, XML]);
+    const mod = await Test.createTestingModule({ imports: [StreetNetworkModule] })
+      .overrideProvider(OverpassClient)
+      .useValue(c)
+      .compile();
+    const app = mod.createNestApplication();
+    await app.init();
+    const rail = await request(app.getHttpServer()).get("/api/street-network/rail-tiles/14/8508/5489");
+    expect(rail.status).toBe(200);
+    expect(rail.text).toBe(RAIL);
+    const road = await request(app.getHttpServer()).get("/api/street-network/tiles/14/8508/5489");
+    expect(road.text).toBe(XML);
+    expect(fetchImpl).toHaveBeenCalledTimes(2);
+    await request(app.getHttpServer()).get("/api/street-network/rail-tiles/14/x/1").expect(400);
+    await app.close();
   });
 
   it("serves a tile, caches it, and rejects invalid tiles", async () => {

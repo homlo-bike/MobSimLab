@@ -41,6 +41,7 @@ export const preferencesBody = z.strictObject({
   mapStyle: z.string().max(60).optional(),
   largerTargets: z.boolean().optional(),
   reduceMotion: z.boolean().optional(),
+  existingRailways: z.boolean().optional(),
 });
 export type Preferences = z.infer<typeof preferencesBody>;
 
