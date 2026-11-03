@@ -361,6 +361,43 @@ pub struct CrossingOut {
     pub y: f64,
     /// The two tracks.
     pub tracks: [CrossingTrack; 2],
+    /// The slip built into the diamond, if any: trains may also turn between the tracks.
+    pub slip: Option<SlipOut>,
+}
+
+/// A slip in a diamond crossing (`crate::slip`).
+#[derive(Debug, Clone, Serialize)]
+pub struct SlipOut {
+    /// Catalogue element id.
+    pub element: String,
+    /// `single_slip` or `double_slip`.
+    pub kind: crate::params::Element,
+    /// Length from the crossing point to each end of the slip along either track, m.
+    pub half_length_m: f64,
+    /// Permitted speed on the turning routes, km/h.
+    pub diverging_speed_kmh: Option<f64>,
+    /// The turning routes (in both directions).
+    pub routes: Vec<SlipRouteOut>,
+}
+
+/// A turning route through a slip, from one track to the other.
+#[derive(Debug, Clone, Serialize)]
+pub struct SlipRouteOut {
+    /// Where it starts.
+    pub from: SlipEndOut,
+    /// Where it ends.
+    pub to: SlipEndOut,
+}
+
+/// One end of a slip route.
+#[derive(Debug, Clone, Serialize)]
+pub struct SlipEndOut {
+    /// Track id.
+    pub track: u32,
+    /// `ahead` (higher chainage on that track than the crossing) or `behind`.
+    pub side: &'static str,
+    /// The line sections on that side within the slip.
+    pub sections: Vec<String>,
 }
 
 /// The street at a level crossing.
@@ -1063,6 +1100,43 @@ pub fn topology(dz: &Design) -> Topology {
                 x: rd(c.p.x),
                 y: rd(c.p.y),
                 tracks: [side(ga, sa, fa), side(gb, sb, fb)],
+                slip: dz
+                    .slips
+                    .iter()
+                    .find(|s| s.crossing == c.id && s.ok)
+                    .map(|s| {
+                        let end = |e: &crate::slip::SlipEnd| {
+                            let at = if e.track == s.tracks[0] {
+                                s.s[0]
+                            } else {
+                                s.s[1]
+                            };
+                            let (a, b) = if e.ahead {
+                                (at, at + s.half_length_m)
+                            } else {
+                                (at - s.half_length_m, at)
+                            };
+                            SlipEndOut {
+                                track: e.track,
+                                side: if e.ahead { "ahead" } else { "behind" },
+                                sections: over(e.track, a, b),
+                            }
+                        };
+                        SlipOut {
+                            element: s.element.clone(),
+                            kind: s.kind,
+                            half_length_m: rd(s.half_length_m),
+                            diverging_speed_kmh: s.diverging_speed_kmh,
+                            routes: s
+                                .routes
+                                .iter()
+                                .map(|(f, t)| SlipRouteOut {
+                                    from: end(f),
+                                    to: end(t),
+                                })
+                                .collect(),
+                        }
+                    }),
             })
         })
         .collect();
@@ -1724,6 +1798,26 @@ mod tests {
         let plain = topology(&build(&net, None));
         assert!(speeds(&t).contains(&50.0), "{:?}", speeds(&t));
         assert!(!speeds(&plain).contains(&50.0), "{:?}", speeds(&plain));
+    }
+
+    #[test]
+    fn a_slip_lists_its_turning_routes_on_the_crossing() {
+        let t = topology(&build(&crate::sample::sample_slip(7.0, 50.9), None));
+        assert!(t.valid, "{:?}", t.errors);
+        let c = &t.crossings[0];
+        assert!(c.conflict, "a slip is still a diamond: one train at a time");
+        let s = c.slip.as_ref().expect("slip");
+        assert_eq!(s.kind, crate::params::Element::DoubleSlip);
+        assert_eq!(s.routes.len(), 2);
+        assert_eq!(
+            (s.routes[0].from.track, s.routes[0].from.side),
+            (1, "behind")
+        );
+        assert_eq!((s.routes[0].to.track, s.routes[0].to.side), (2, "ahead"));
+        assert!(s
+            .routes
+            .iter()
+            .all(|r| !r.from.sections.is_empty() && !r.to.sections.is_empty()));
     }
 
     #[test]

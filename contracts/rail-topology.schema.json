@@ -351,7 +351,7 @@
     "crossing": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "kind", "conflict", "modes", "angle_deg", "x", "y", "tracks"],
+      "required": ["id", "kind", "conflict", "modes", "angle_deg", "x", "y", "tracks", "slip"],
       "properties": {
         "id": { "type": "string", "pattern": "^x\\d+-\\d+-\\d+$" },
         "kind": {
@@ -373,7 +373,53 @@
           "items": { "$ref": "#/$defs/crossing_track" },
           "minItems": 2,
           "maxItems": 2
+        },
+        "slip": {
+          "description": "The slip built into the diamond, or null: trains may then also turn from one track to the other. The diamond stays a conflict for one train at a time.",
+          "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/slip" }]
         }
+      }
+    },
+    "slip": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["element", "kind", "half_length_m", "diverging_speed_kmh", "routes"],
+      "properties": {
+        "element": { "type": "string", "description": "Catalogue element id (assumptions/switches.yaml)." },
+        "kind": { "enum": ["single_slip", "double_slip"] },
+        "half_length_m": {
+          "$ref": "#/$defs/metres",
+          "description": "From the crossing point to each end along either track."
+        },
+        "diverging_speed_kmh": { "type": ["number", "null"], "exclusiveMinimum": 0 },
+        "routes": {
+          "description": "Turning routes, usable in both directions: one for a single slip, two for a double slip.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["from", "to"],
+            "properties": {
+              "from": { "$ref": "#/$defs/slip_end" },
+              "to": { "$ref": "#/$defs/slip_end" }
+            }
+          },
+          "minItems": 1,
+          "maxItems": 2
+        }
+      }
+    },
+    "slip_end": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["track", "side", "sections"],
+      "properties": {
+        "track": { "type": "integer", "minimum": 1 },
+        "side": {
+          "enum": ["ahead", "behind"],
+          "description": "ahead: the arm at higher chainage on that track than the crossing; behind: the other one."
+        },
+        "sections": { "type": "array", "items": { "$ref": "#/$defs/section_id" } }
       }
     },
     "level_crossing": {
