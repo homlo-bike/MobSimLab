@@ -1,0 +1,12 @@
+{
+  "id": "aerial_tramway",
+  "label": "Aerial tramway",
+  "family": "aerial",
+  "colour": "#9333ea",
+  "gtfsRouteType": 6,
+  "kit": "straight-spans",
+  "operation": "shuttle",
+  "contextKey": "ropeway_system",
+  "contexts": ["reversible"],
+  "defaultContext": "reversible"
+}

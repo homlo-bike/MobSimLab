@@ -1,0 +1,12 @@
+[package]
+name = "mode-kits"
+version = "0.1.0"
+description = "MobSimLab core authoring kits and mesoscopic segment engine for plugin modes: straight spans between stations and supports (cable cars), routes over water between piers (ferries), and a segment engine with resource reservation for berths and single tracks (ADR-0036 §6 and §8, ADR-0037)."
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
