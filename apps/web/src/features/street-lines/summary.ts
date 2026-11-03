@@ -7,6 +7,8 @@ export interface LineStats {
   stops: number;
   endStops: number;
   runMin: number;
+  /** Expected wait at level crossings per circuit, min (part of `runMin`). */
+  crossingMin: number;
   dwellMin: number;
   layoverMin: number;
   cycleMin: number;
@@ -15,7 +17,8 @@ export interface LineStats {
 
 /**
  * Purpose: circuit length, stops, cycle time and vehicles needed for the headway.
- * Cycle = running time + dwell at every stop + layover at every end stop.
+ * Cycle = running time (with the expected wait at level crossings) + dwell at every stop + layover at
+ * every end stop.
  */
 export function lineStats(view: LineView, t: Timing): LineStats {
   const stops = view.points.filter((p) => p.kind !== "via").length;
@@ -25,7 +28,18 @@ export function lineStats(view: LineView, t: Timing): LineStats {
   const layoverMin = endStops * t.layoverMin;
   const cycleMin = runMin + dwellMin + layoverMin;
   const vehicles = view.legs.length && t.headwayMin > 0 ? Math.ceil(cycleMin / t.headwayMin) : 0;
-  return { lengthM: view.length_m, stops, endStops, runMin, dwellMin, layoverMin, cycleMin, vehicles };
+  const crossingMin = (view.crossing_wait_s ?? 0) / 60;
+  return {
+    lengthM: view.length_m,
+    stops,
+    endStops,
+    runMin,
+    crossingMin,
+    dwellMin,
+    layoverMin,
+    cycleMin,
+    vehicles,
+  };
 }
 
 export type Severity = "ok" | "info" | "warn" | "error";

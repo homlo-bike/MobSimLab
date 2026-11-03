@@ -135,6 +135,24 @@ impl StreetLineEditor {
         serde_json::to_string(&RoutingRules::default()).unwrap_or_default()
     }
 
+    /// Purpose: level crossings with railways from the railway tool's track topology export,
+    /// with timetable closures (`rail-plan`'s level crossing closures) or `""` for the service
+    /// assumed in the topology. Every crossing a leg passes adds its expected wait to the
+    /// running time. An empty topology string removes them. Returns the view.
+    pub fn set_level_crossings(
+        &mut self,
+        topology_json: &str,
+        closures_json: &str,
+    ) -> Result<String, JsError> {
+        self.line.level_crossings = if topology_json.trim().is_empty() {
+            Vec::new()
+        } else {
+            street_routing::crossings::from_topology(topology_json, closures_json)
+                .map_err(|e| JsError::new(&e))?
+        };
+        Ok(self.view())
+    }
+
     /// Purpose: insert a point at circuit position `seq` (`seq >= count` appends). Returns the view.
     pub fn insert_point(
         &mut self,
@@ -228,7 +246,7 @@ impl StreetLineEditor {
     pub fn view(&self) -> String {
         match &self.graph {
             Some(g) => serde_json::to_string(&self.line.view(g)).unwrap_or_default(),
-            None => r#"{"points":[],"legs":[],"directions":[],"station_groups":[],"depot":null,"depot_trips":[],"issues":[],"length_m":0,"time_s":0,"traffic_delay_s":0,"mixed_traffic_m":0,"bus_lane_m":0,"mixed_streets":[]}"#.to_string(),
+            None => r#"{"points":[],"legs":[],"directions":[],"station_groups":[],"depot":null,"depot_trips":[],"issues":[],"length_m":0,"time_s":0,"traffic_delay_s":0,"mixed_traffic_m":0,"bus_lane_m":0,"mixed_streets":[],"level_crossings":[],"crossing_wait_s":0}"#.to_string(),
         }
     }
 }

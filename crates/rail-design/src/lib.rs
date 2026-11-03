@@ -21,6 +21,7 @@
 
 pub mod alignment;
 pub mod design;
+pub mod existing;
 pub mod geom;
 pub mod issue;
 pub mod model;
@@ -35,6 +36,6 @@ pub mod switch;
 pub mod topology;
 pub mod view;
 
-pub use design::{build, build_with_streets, Design};
+pub use design::{build, build_with_osm, build_with_streets, Design};
 pub use model::Network;
 pub use params::{defaults, RailMode};

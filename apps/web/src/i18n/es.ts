@@ -73,6 +73,7 @@ export const es: Messages = {
   "settings.fromProvider": "El nombre y el correo vienen de tu proveedor de acceso.",
   "settings.largerTargets": "Botones más grandes",
   "settings.reduceMotion": "Reducir movimiento",
+  "settings.existingRailways": "Mostrar ferrocarriles existentes de OpenStreetMap",
   "settings.savedToAccount": "Se guardan en tu cuenta y te siguen a otros dispositivos.",
 
   "language.title": "Idioma",

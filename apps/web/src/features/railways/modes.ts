@@ -51,6 +51,7 @@ export const COLORS = {
   ok: "#2e7a3a",
   road: "#6f7377",
   tramLane: "#ffffff",
+  existing: "#7d6a9e",
   stopLine: "#ffffff",
   barrier: "#d0342c",
   signalMain: "#d0342c",

@@ -127,6 +127,7 @@ fn level_crossing_closes_and_opens() {
         keep_clear_m: 3.0,
         bus: false,
         special_measures: vec!["line_speed".into()],
+        reopen_s: None,
     });
     let m = Model::compile(&spec).unwrap();
     let mut il = Interlocking::new(&m, Params::default());

@@ -83,6 +83,10 @@ pub struct Design {
     pub level_crossings: Vec<crate::street::LevelCrossing>,
     /// Stretches where tram track runs along a street.
     pub street_running: Vec<crate::street_running::StreetRunning>,
+    /// Existing railways from OpenStreetMap around the design.
+    pub existing: Vec<crate::existing::ExistingGeo>,
+    /// Free track ends that join an existing railway.
+    pub joins: Vec<crate::existing::Join>,
     /// Speed profile per track id.
     pub speeds: BTreeMap<u32, SpeedProfile>,
     /// All findings, errors first.
@@ -239,7 +243,7 @@ fn refers_to_missing(a: &Anchor, net: &Network) -> bool {
 /// Inputs: the document, and the id of a track still being drawn (no open-end warning for it).
 /// Output: the design (pure; no side effects).
 pub fn build(net: &Network, draft: Option<u32>) -> Design {
-    build_with_streets(net, draft, &[])
+    build_with_osm(net, draft, &[], &[])
 }
 
 /// Purpose: build the design and find its level crossings with the given streets (pure).
@@ -248,6 +252,18 @@ pub fn build_with_streets(
     net: &Network,
     draft: Option<u32>,
     streets: &[crate::street::Street],
+) -> Design {
+    build_with_osm(net, draft, streets, &[])
+}
+
+/// Purpose: build the design against what OpenStreetMap already holds around it (pure): level
+/// crossings and street running with the streets, joins to and conflicts with existing railways.
+/// Inputs: the document, the id of a track still being drawn, streets and existing railways.
+pub fn build_with_osm(
+    net: &Network,
+    draft: Option<u32>,
+    streets: &[crate::street::Street],
+    railways: &[crate::existing::ExistingRail],
 ) -> Design {
     let d = defaults();
     let params = net
@@ -364,11 +380,17 @@ pub fn build_with_streets(
         crossings: vec![],
         level_crossings: vec![],
         street_running: vec![],
+        existing: vec![],
+        joins: vec![],
         speeds: BTreeMap::new(),
         issues: switch_errors,
         network: net.clone(),
     };
+    design.existing = crate::existing::locate(&design, railways);
+    // Joins before the checks: an end joining an existing railway is not an open end.
+    design.joins = crate::existing::joins(&design);
     validate(&mut design, draft);
+    crate::existing::check(&mut design);
     // Street running first: the street's speed limit caps the tram's speed, which the level
     // crossings' approach distances use.
     crate::street_running::street_running(&mut design, streets);
@@ -416,7 +438,8 @@ fn validate(dz: &mut Design, draft: Option<u32>) {
             continue;
         };
         let end_at = g.centre.last().map(|q| q.p);
-        if matches!(t.start, Anchor::Free { .. }) && t.usage == TrackUse::Running {
+        let joined = |end: u8| dz.joins.iter().any(|j| j.track == t.id && j.end == end);
+        if matches!(t.start, Anchor::Free { .. }) && t.usage == TrackUse::Running && !joined(0) {
             iss.push(Issue::warning(
                 "Open track start. Connect it to a station or a switch, or set the track to storage to end it at a buffer stop.",
                 g.centre.first().map(|q| q.p),
@@ -430,7 +453,7 @@ fn validate(dz: &mut Design, draft: Option<u32>) {
                 t.id,
             )),
             Some(Anchor::Station { .. }) | Some(Anchor::Switch { .. }) => {}
-            _ if t.usage == TrackUse::Running && draft != Some(t.id) => iss.push(Issue::warning(
+            _ if t.usage == TrackUse::Running && draft != Some(t.id) && !joined(1) => iss.push(Issue::warning(
                 "Open track end. Connect it to a station or a switch, or set the track to storage to end it at a buffer stop.",
                 end_at,
                 t.id,

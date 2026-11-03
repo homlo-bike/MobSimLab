@@ -20,17 +20,43 @@ export class StreetNetworkController {
   @Header("Content-Type", "application/xml; charset=utf-8")
   @Header("Cache-Control", "private, max-age=86400")
   async tile(@Param("x") xs: string, @Param("y") ys: string): Promise<string> {
-    const max = 2 ** TILE_ZOOM;
-    const [x, y] = [xs, ys].map((v) => (/^\d+$/.test(v) ? Number(v) : NaN));
-    if (!Number.isInteger(x) || !Number.isInteger(y) || x! >= max || y! >= max) {
-      throw new BadRequestException("Invalid tile");
-    }
+    const [x, y] = parseTile(xs, ys);
     try {
-      return await this.streets.tile(x!, y!);
+      return await this.streets.tile(x, y);
     } catch (e) {
       if (e instanceof OverpassError)
         throw new HttpException("OpenStreetMap streets are unavailable right now", e.status);
       throw e;
     }
   }
+
+  /**
+   * Purpose: OSM XML with the railway tracks of one web-mercator tile at zoom 14, for the railway
+   * design tool (existing railways new track can join).
+   * Inputs: tile x and y. Output: `application/xml`; 400 for an invalid tile, 502/504 when OSM is unavailable.
+   */
+  @Get(`rail-tiles/${TILE_ZOOM}/:x/:y`)
+  @Requires("instance.read")
+  @Header("Content-Type", "application/xml; charset=utf-8")
+  @Header("Cache-Control", "private, max-age=86400")
+  async railTile(@Param("x") xs: string, @Param("y") ys: string): Promise<string> {
+    const [x, y] = parseTile(xs, ys);
+    try {
+      return await this.streets.railTile(x, y);
+    } catch (e) {
+      if (e instanceof OverpassError)
+        throw new HttpException("OpenStreetMap railways are unavailable right now", e.status);
+      throw e;
+    }
+  }
+}
+
+/** Purpose: tile x and y from the path, or a 400 for an invalid tile. */
+function parseTile(xs: string, ys: string): [number, number] {
+  const max = 2 ** TILE_ZOOM;
+  const [x, y] = [xs, ys].map((v) => (/^\d+$/.test(v) ? Number(v) : NaN));
+  if (!Number.isInteger(x) || !Number.isInteger(y) || x! >= max || y! >= max) {
+    throw new BadRequestException("Invalid tile");
+  }
+  return [x!, y!];
 }
