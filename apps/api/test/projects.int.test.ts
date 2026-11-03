@@ -174,10 +174,75 @@ describe("projects", () => {
     expect((await as("carol").get("/api/projects")).body.projects).toEqual([]);
   });
 
+  const railway = {
+    origin: [8.54, 47.37],
+    mode: "tram",
+    stations: [{ id: 1, name: "Riverside" }],
+    tracks: [],
+    switches: [],
+  };
+
+  it("saves drawings with the project, refuses stale saves and lets readers open them", async () => {
+    const path = `/api/projects/${lakeside}/drawings`;
+    expect((await as("alice").get(path)).body.drawings).toEqual({});
+
+    const first = await as("alice").put(`${path}/railway`, { doc: railway, baseVersion: null });
+    expect(first.status).toBe(200);
+    expect(first.body.drawing).toMatchObject({ kind: "railway", version: 1, schemaVersion: 1, doc: railway });
+    expect(first.body.drawing.updatedBy.id).toBe(browsers.alice?.id);
+
+    // A second tab that also started from nothing is refused and gets the saved drawing back.
+    const stale = await as("alice").put(`${path}/railway`, { doc: railway, baseVersion: null });
+    expect(stale.status).toBe(409);
+    expect(stale.body.current).toMatchObject({ version: 1, doc: railway });
+
+    const moved = { ...railway, stations: [{ id: 1, name: "Old Town" }] };
+    const second = await as("alice").put(`${path}/railway`, { doc: moved, baseVersion: 1 });
+    expect(second.body.drawing.version).toBe(2);
+    expect((await as("alice").put(`${path}/railway`, { doc: railway, baseVersion: 1 })).status).toBe(409);
+
+    await as("alice").put(`${path}/street-setups`, { doc: [{ way: 42, bus_lane: true }], baseVersion: null });
+    const all = (await as("alice").get(path)).body.drawings;
+    expect(Object.keys(all).sort()).toEqual(["railway", "street-setups"]);
+    expect(all.railway.doc).toEqual(moved);
+
+    // Bob is a Viewer now and Carol reaches the project through its link: both read, neither writes.
+    expect((await as("bob").get(path)).body.drawings.railway.version).toBe(2);
+    expect((await as("carol").get(path)).body.drawings.railway.version).toBe(2);
+    expect((await as("bob").put(`${path}/railway`, { doc: railway, baseVersion: 2 })).status).toBe(403);
+
+    // Unknown kinds and documents the editors could not open again are refused.
+    expect((await as("alice").put(`${path}/noise`, { doc: {}, baseVersion: null })).status).toBe(400);
+    expect((await as("alice").put(`${path}/railway`, { doc: { mode: "tram" }, baseVersion: 2 })).status).toBe(
+      400,
+    );
+    expect(
+      (await as("alice").put(`${path}/street-setups`, { doc: [{ way: "x" }], baseVersion: 1 })).status,
+    ).toBe(400);
+    // Drawings may be larger than other requests (100 kB): a 300 kB street setup list saves.
+    const big = Array.from({ length: 6000 }, (_, i) => ({ way: i, note: "x".repeat(40) }));
+    expect((await as("alice").put(`${path}/street-setups`, { doc: big, baseVersion: 1 })).status).toBe(200);
+    // Other routes keep the small limit.
+    expect(
+      (await as("alice").patch(`/api/projects/${lakeside}`, { description: "x".repeat(200_000) })).status,
+    ).toBe(413);
+  });
+
   it("duplicates into a project the caller owns", async () => {
     const dup = await as("bob").post(`/api/projects/${lakeside}/duplicate`);
     expect(dup.status).toBe(201);
     expect(dup.body.project).toMatchObject({ name: "Lakeside 2030 (copy)", myRole: "owner", memberCount: 1 });
+    // The copy starts with the drawings, at version 1, and Bob may change them there.
+    const copied = (await as("bob").get(`/api/projects/${dup.body.project.id}/drawings`)).body.drawings;
+    expect(copied.railway).toMatchObject({ version: 1, doc: { stations: [{ name: "Old Town" }] } });
+    expect(
+      (
+        await as("bob").put(`/api/projects/${dup.body.project.id}/drawings/railway`, {
+          doc: railway,
+          baseVersion: 1,
+        })
+      ).status,
+    ).toBe(200);
     const names = (await as("bob").get("/api/projects")).body.projects.map((p: { name: string }) => p.name);
     expect(names.sort()).toEqual(["Lakeside 2030", "Lakeside 2030 (copy)"]);
   });
@@ -226,6 +291,10 @@ describe("projects", () => {
       "project.member_role_changed",
       "project.member_left",
       "project.link_access_changed",
+      "project.drawing_saved",
+      "project.drawing_saved",
+      "project.drawing_saved",
+      "project.drawing_saved",
       "project.duplicated",
       "project.archived",
       "project.unarchived",

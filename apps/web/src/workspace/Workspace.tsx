@@ -3,8 +3,10 @@ import { type ReactNode, useEffect, useState } from "react";
 import { JourneyPlanner } from "../features/journey-planner/JourneyPlanner";
 import type { StreetLineInput } from "../features/journey-planner/network";
 import { RailwayEditor } from "../features/railways/RailwayEditor";
+import type { Network } from "../features/railways/types";
+import { lineInput, type StreetLinesDoc } from "../features/street-lines/saved";
 import { StreetLineEditor } from "../features/street-lines/StreetLineEditor";
-import { loadSetups, saveSetups } from "../features/street-setup/model";
+import { forgetSetups, loadSetups } from "../features/street-setup/model";
 import { StreetSetupEditor } from "../features/street-setup/StreetSetupEditor";
 import type { StreetSetup } from "../features/street-setup/types";
 import { useI18n } from "../i18n/i18n";
@@ -26,6 +28,7 @@ import { type Tab, TABS } from "../shell/route";
 import { TopBar } from "../shell/TopBar";
 import { Placeholder } from "./Placeholder";
 import { ProjectPreferences } from "./ProjectPreferences";
+import { type Drawings, useDrawings } from "./useDrawings";
 
 const TAB_ICONS: Record<Tab, (p: { size?: number }) => ReactNode> = {
   simulator: PlayIcon,
@@ -37,6 +40,7 @@ const TAB_ICONS: Record<Tab, (p: { size?: number }) => ReactNode> = {
 };
 /** Tabs drawn over the map; the others are full pages. */
 const MAP_TABS: readonly Tab[] = ["simulator", "create", "gis"];
+const NO_SETUPS: StreetSetup[] = [];
 
 type SimView = "test" | "journey";
 type Build = "street" | "rail";
@@ -77,15 +81,9 @@ export function Workspace({
   const [panel, setPanel] = useState<HTMLElement | null>(null);
   const [sim, setSim] = useState<SimView>("test");
   const [build, setBuild] = useState<Build | null>(null);
-  // The street line last drawn, so the journey planner can ride it.
+  // The street line as the tool last routed it, so the journey planner can ride it.
   const [line, setLine] = useState<StreetLineInput | null>(null);
-  // Street setups from the GIS tab: they override OSM in the street line tool and the railway editor.
-  const [setups, setSetups] = useState<StreetSetup[]>(() => loadSetups(projectId));
-  useEffect(() => setSetups(loadSetups(projectId)), [projectId]);
-  const changeSetups = (next: StreetSetup[]) => {
-    setSetups(next);
-    saveSetups(projectId, next);
-  };
+  useEffect(() => setLine(null), [projectId]);
   if (import.meta.env.DEV) Object.assign(window, { mobsimMap: map });
 
   useEffect(() => {
@@ -103,6 +101,22 @@ export function Workspace({
 
   const onMap = MAP_TABS.includes(tab);
   const editable = project ? can.edit(project) : false;
+
+  // What is drawn in the project, saved with it a moment after each change.
+  const drawings = useDrawings(api, projectId, editable);
+  const streetLines = drawings.doc<StreetLinesDoc>("street-lines");
+  const railway = drawings.doc<Network>("railway");
+  // Street setups from the GIS tab: they override OSM in the street line tool and the railway editor.
+  const setups = drawings.doc<StreetSetup[]>("street-setups") ?? NO_SETUPS;
+  const changeSetups = (next: StreetSetup[]) => drawings.set("street-setups", next);
+  // Street setups made before projects saved drawings were kept in this browser: move them to the project once.
+  useEffect(() => {
+    if (!drawings.loaded || !editable) return;
+    const local = loadSetups(projectId);
+    if (local.length && !drawings.doc("street-setups")) drawings.set("street-setups", local);
+    forgetSetups(projectId);
+  }, [drawings.loaded, editable, projectId]);
+  const ridden = line ?? lineInput(streetLines?.lines[0]);
   const hasPanel = onMap && project !== null;
   const tabLabel = (x: Tab) => t(`tab.${x}` as MessageKey);
 
@@ -146,6 +160,7 @@ export function Workspace({
           <span className="tag bg-slate-100 text-slate-700">{t("project.viewOnly")}</span>
         )}
       </span>
+      {project && editable && drawings.loaded && <SaveStatus drawings={drawings} />}
       {tabs}
     </TopBar>
   );
@@ -201,21 +216,62 @@ export function Workspace({
   return (
     <div className="flex h-full flex-col">
       {top}
+      {drawings.clash && (
+        <div
+          role="alert"
+          className="flex flex-wrap items-center gap-3 border-b border-amber-300 bg-amber-50 px-4 py-2.5 text-sm text-amber-950"
+        >
+          <p className="min-w-48 flex-1">
+            {t("save.conflict", {
+              who: drawings.clash.by ?? t("save.someone"),
+              drawing: t(`drawing.${drawings.clash.kind}` as MessageKey),
+            })}
+          </p>
+          <button type="button" className="btn min-h-10" onClick={drawings.keepMine}>
+            {t("save.keepMine")}
+          </button>
+          <button type="button" className="btn btn-pri min-h-10" onClick={drawings.takeTheirs}>
+            {t("save.takeTheirs")}
+          </button>
+        </div>
+      )}
+      {drawings.loadError && (
+        <div
+          role="alert"
+          className="flex flex-wrap items-center gap-3 border-b border-red-200 bg-red-50 px-4 py-2.5 text-sm text-red-900"
+        >
+          <p className="min-w-48 flex-1">{t("save.loadFailed", { error: drawings.loadError })}</p>
+          <button type="button" className="btn min-h-10" onClick={drawings.reload}>
+            {t("save.retry")}
+          </button>
+        </div>
+      )}
       <main className="relative flex min-h-0 flex-1 flex-col md:flex-row">
         <div className={`relative min-h-0 min-w-0 flex-1 ${onMap ? "" : "hidden"}`}>
           <MapView onReady={setMap} />
-          {project && tab === "create" && editable && chosen === "street" && (
-            <StreetLineEditor map={map} panel={panel} onLineChange={setLine} streetSetups={setups} />
+          {project && drawings.loaded && tab === "create" && editable && chosen === "street" && (
+            <StreetLineEditor
+              key={`${projectId}-${drawings.generation("street-lines")}`}
+              map={map}
+              panel={panel}
+              onLineChange={setLine}
+              streetSetups={setups}
+              initial={streetLines?.lines[0] ?? null}
+              onSave={(l) => drawings.set("street-lines", { lines: [l] } satisfies StreetLinesDoc)}
+            />
           )}
-          {project && tab === "create" && editable && chosen === "rail" && (
+          {project && drawings.loaded && tab === "create" && editable && chosen === "rail" && (
             <RailwayEditor
+              key={`${projectId}-${drawings.generation("railway")}`}
               map={map}
               panel={panel}
               streetSetups={setups}
               existingRailways={existingRailways}
+              initial={railway}
+              onDocChange={(d) => drawings.set("railway", d)}
             />
           )}
-          {project && tab === "gis" && (
+          {project && drawings.loaded && tab === "gis" && (
             <StreetSetupEditor
               map={map}
               panel={panel}
@@ -228,7 +284,7 @@ export function Workspace({
             <JourneyPlanner
               map={map}
               panel={panel}
-              streetLine={line && line.view.points.length >= 2 ? line : null}
+              streetLine={ridden && ridden.view.points.length >= 2 ? ridden : null}
             />
           )}
           {project && tab === "create" && editable && chosen === null && (
@@ -402,5 +458,29 @@ export function Workspace({
       </main>
       {bottomTabs}
     </div>
+  );
+}
+
+/** Purpose: how the project's drawings stand against the server, beside the project name. */
+function SaveStatus({ drawings }: { drawings: Drawings }) {
+  const { t } = useI18n();
+  const s = drawings.status;
+  if (s === "conflict") return null;
+  const text =
+    s === "saved"
+      ? t("save.saved")
+      : s === "saving"
+        ? t("save.saving")
+        : s === "offline"
+          ? t("save.offline")
+          : t("save.failed", { error: drawings.error ?? "" });
+  return (
+    <span
+      role="status"
+      title={text}
+      className={`hidden max-w-56 truncate text-xs sm:inline ${s === "failed" || s === "offline" ? "text-red-700" : "text-slate-500"}`}
+    >
+      {text}
+    </span>
   );
 }

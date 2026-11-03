@@ -38,6 +38,7 @@ import {
 } from "../src/features/street-lines/geojson";
 import { clearPlaces, publishPlaces } from "../src/features/naming/registry";
 import { DEFAULT_TIMING } from "../src/features/street-lines/modes";
+import type { SavedStreetLine } from "../src/features/street-lines/saved";
 import { StreetLineEditor } from "../src/features/street-lines/StreetLineEditor";
 import { along, circuitPath, lineChecks, lineStats } from "../src/features/street-lines/summary";
 import { tilesFor, tileX, tileY } from "../src/features/street-lines/tiles";
@@ -243,6 +244,96 @@ describe("Street line editor", () => {
     expect(screen.getByRole("note").textContent).toMatch(/Drag a point/);
     fireEvent.click(screen.getByRole("button", { name: /Pan/ }));
     expect(pressed(/Pan/)).toBe("true");
+  });
+});
+
+describe("Street line saved with the project", () => {
+  const saved: SavedStreetLine = {
+    name: "Harbour shuttle",
+    profile: {
+      mode: "trolleybus",
+      height_m: 3.4,
+      weight_t: 18,
+      length_m: 12,
+      max_speed_kmh: 60,
+      battery_range_m: 5000,
+      doors_both_sides: false,
+    },
+    rules: {
+      traffic_side: "right",
+      detour_warn_m: 500,
+      detour_warn_ratio: 0.25,
+      grouping_distance_m: 150,
+      max_snap_m: 150,
+    },
+    timing: { ...DEFAULT_TIMING, headwayMin: 7.5 },
+    points: [
+      { lonlat: [7.411, 43.731], kind: "end_stop", name: "Harbour" },
+      { lonlat: [7.415, 43.733], kind: "via", name: null },
+      { lonlat: [7.419, 43.734], kind: "stop", name: null },
+    ],
+    depot: [7.412, 43.73],
+    depotStops: { out: 0, in: 0 },
+    view: sampleView(["end_stop", "via", "stop"]),
+  };
+
+  it("routes the saved points again once the streets have loaded, without saving on open", async () => {
+    const engine = fakeEngine();
+    const onSave = vi.fn();
+    const { map, handlers } = fakeMap(15);
+    const fitBounds = vi.fn();
+    Object.assign(map, { fitBounds, jumpTo: vi.fn() });
+    render(
+      <StreetLineEditor
+        map={map}
+        loadEngine={async () => engine}
+        fetchTile={async () => "<osm/>"}
+        initial={saved}
+        onSave={onSave}
+      />,
+    );
+    expect(fitBounds).toHaveBeenCalledWith(
+      [
+        [7.411, 43.73],
+        [7.419, 43.734],
+      ],
+      expect.objectContaining({ maxZoom: 16 }),
+    );
+    await waitFor(() => expect(engine.insertPoint).toHaveBeenCalledTimes(3));
+    expect(engine.setSettings).toHaveBeenCalledWith(saved.profile, saved.rules);
+    expect(engine.insertPoint).toHaveBeenNthCalledWith(1, 0, [7.411, 43.731], "end_stop");
+    expect(engine.insertPoint).toHaveBeenNthCalledWith(3, 2, [7.419, 43.734], "stop");
+    expect(engine.setName).toHaveBeenCalledWith(1, "Harbour");
+    expect(engine.setDepot).toHaveBeenCalledWith([7.412, 43.73]);
+    expect(screen.getByDisplayValue("Harbour shuttle")).toBeTruthy();
+    expect(onSave).not.toHaveBeenCalled();
+
+    // The planner's next change is saved, with the names they gave and the route for the journey planner.
+    act(() => handlers.get("click")!({ lngLat: { lng: 7.42, lat: 43.735 }, point: { x: 10, y: 10 } }));
+    await waitFor(() => expect(onSave).toHaveBeenCalledTimes(1));
+    const line = onSave.mock.calls[0]![0] as SavedStreetLine;
+    expect(line).toMatchObject({ name: "Harbour shuttle", timing: { headwayMin: 7.5 } });
+    expect(line.points[0]).toMatchObject({ name: "Harbour" });
+    expect(line.points.at(-1)).toMatchObject({ kind: "via", name: null });
+    expect(line.view.points).toHaveLength(line.points.length);
+  });
+
+  it("saves a new line only once a point is placed", async () => {
+    const engine = fakeEngine();
+    const onSave = vi.fn();
+    const { map, handlers } = fakeMap(15);
+    render(
+      <StreetLineEditor
+        map={map}
+        loadEngine={async () => engine}
+        fetchTile={async () => "<osm/>"}
+        onSave={onSave}
+      />,
+    );
+    await waitFor(() => expect(engine.rebuild).toHaveBeenCalled());
+    // The fake engine routes three sample points on the first build; a real one starts empty.
+    act(() => handlers.get("click")!({ lngLat: { lng: 7.42, lat: 43.735 }, point: { x: 10, y: 10 } }));
+    await waitFor(() => expect(onSave).toHaveBeenCalled());
   });
 });
 

@@ -8,6 +8,14 @@ Draw bus, BRT, trolleybus and intercity bus lines on the street network. The lay
 2. Zoom in to street level (zoom 13 or closer). The streets for the area on screen load by themselves, and more load as you move the map. There are no files to load. You need to be signed in. Street data © OpenStreetMap contributors, ODbL.
 3. Give the line a **name** and pick the **mode**: Bus, BRT, Trolleybus or Intercity bus. The line takes the mode's colour, and the route is recalculated with that vehicle's rules.
 
+## Saving
+
+The line is saved with the project a moment after each change; there is no Save button. Beside the project name the top bar says **Saving…**, then **Saved**. If the connection drops it says **Not saved yet · trying again** and keeps trying; the browser warns you before you close the page with changes not yet saved. Owners and Editors save; Commenters and Viewers see the project as it was saved.
+
+When you open the tool again, the map moves to the line and its points are routed again from the streets as they are now. The Simulator's journey planner rides the saved line even before you open the tool.
+
+If someone else saved the same drawing while you were changing it, a banner names them and asks which one the project should keep: **Keep mine** saves yours over theirs, **Use theirs** drops your changes and opens theirs. Nothing is saved until you choose. The same goes for the [railway tool](railway-tool.md) and [street setups](gis-streets.md).
+
 ## Tools
 
 | Tool | Key | What it does |
