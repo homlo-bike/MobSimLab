@@ -1,6 +1,6 @@
 import { formatLength } from "./geojson";
 import { MODE_ORDER, MODES, type Timing } from "./modes";
-import { lineChecks, lineStats, type Severity } from "./summary";
+import { lineChecks, lineStats, type Check, type Severity } from "./summary";
 import type { LineView, Mode, PointKind, RoutingRules, VehicleProfile } from "./types";
 
 const KINDS: { id: PointKind; label: string; title: string }[] = [
@@ -49,6 +49,10 @@ interface Props {
   status: string | null;
   error: string | null;
   actions: PanelActions;
+  /** The noise plugin's section (toggle, band, legend), when the plugin is installed. */
+  noise?: React.ReactNode;
+  /** Checks from plugins (noise), added to the line's own. */
+  extraChecks?: Check[];
 }
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
@@ -140,7 +144,10 @@ export function LinePanel(props: Props) {
   const { view, profile, rules, timing, selected, actions: a } = props;
   const mode = MODES[profile.mode];
   const st = lineStats(view, timing);
-  const checks = lineChecks(view);
+  const rank: Record<Severity, number> = { error: 0, warn: 1, ok: 2, info: 3 };
+  const checks = [...lineChecks(view), ...(props.extraChecks ?? [])].sort(
+    (x, y) => rank[x.sev] - rank[y.sev],
+  );
   const stops = view.points.filter((p) => p.kind !== "via");
   const name = (id: number | undefined) => {
     const p = view.points.find((q) => q.id === id);
@@ -216,6 +223,7 @@ export function LinePanel(props: Props) {
         <Stat value={String(st.vehicles)} label={`Vehicles for a ${timing.headwayMin} min headway`} />
       </div>
       {view.points.length >= 2 && <Reliability view={view} />}
+      {props.noise}
 
       {(props.status || props.error) && (
         <p

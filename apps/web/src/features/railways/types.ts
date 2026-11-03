@@ -181,6 +181,8 @@ export interface TrackView {
   mode: RailMode;
   speed: { max_kmh: number; time_s: number; profile: [number, number, number][] } | null;
   centre: LonLat[];
+  /** Tram track embedded in paving (the noise estimate adds the embedded-track correction). */
+  embedded?: boolean;
 }
 
 export interface StationView {
@@ -205,6 +207,8 @@ export interface SwitchView {
   diverging_speed_kmh: number;
   crossing_ratio_n: number;
   radius_m: number;
+  /** Track the switch sits on. */
+  track: number;
   s0: number;
   s1: number;
 }

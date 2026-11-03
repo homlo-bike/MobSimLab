@@ -1,0 +1,19 @@
+{
+  "_comment": "The noise band is drawn as a picture of the receiver grid (raster), coloured in 5 dB bands after ISO 1996-2 / DIN 45682. Colours are applied by the engine (noise::band_colour); this layer sets how the picture is shown.",
+  "layers": [
+    {
+      "id": "noise-band",
+      "type": "raster",
+      "paint": { "raster-opacity": 0.6, "raster-resampling": "nearest", "raster-fade-duration": 0 }
+    }
+  ],
+  "legend": [
+    { "from_db": 45, "color": "#cee4cc" },
+    { "from_db": 50, "color": "#e2f2bf" },
+    { "from_db": 55, "color": "#f3c683" },
+    { "from_db": 60, "color": "#e87e4d" },
+    { "from_db": 65, "color": "#cd463e" },
+    { "from_db": 70, "color": "#a11a4d" },
+    { "from_db": 75, "color": "#75085c" }
+  ]
+}

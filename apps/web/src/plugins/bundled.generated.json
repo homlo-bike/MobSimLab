@@ -984,6 +984,263 @@
           }
         }
       }
+    },
+    {
+      "id": "org.mobsimlab.noise",
+      "name": "Noise map",
+      "description": "Estimated noise of the service lines (ADR-0038): a live noise band while drawing street lines and railways, with checks for curve squeal, bridges and switches. CNOSSOS-EU road emission, free field without buildings for now.",
+      "version": "0.1.0",
+      "publisher": {
+        "name": "MobSimLab contributors",
+        "url": "https://github.com/homlo-bike/MobSimLab"
+      },
+      "license": "AGPL-3.0-or-later",
+      "dataLicense": "CC-BY-4.0",
+      "bundled": true,
+      "tiers": [
+        "data",
+        "compute"
+      ],
+      "permissions": [
+        "read:network",
+        "read:timetable",
+        "read:fleet"
+      ],
+      "modes": [],
+      "contexts": [],
+      "tools": [],
+      "calculations": [
+        {
+          "id": "noise_estimate",
+          "label": "Noise band",
+          "description": "L_den and L_night of the drawn lines at 4 m, free field: band distances either side, a receiver grid for the map and checks.",
+          "runtime": "bundled-wasm",
+          "module": "noise",
+          "inputs": [
+            "street_lines",
+            "rail_design",
+            "timetable",
+            "fleet",
+            "parameters"
+          ],
+          "outputs": [
+            "grid",
+            "segments",
+            "findings"
+          ],
+          "where": [
+            "street-line-tool",
+            "railway-tool",
+            "analysis"
+          ]
+        }
+      ],
+      "mapLayers": [
+        {
+          "id": "noise_band",
+          "label": "Noise band",
+          "calculation": "noise_estimate",
+          "style": {
+            "_comment": "The noise band is drawn as a picture of the receiver grid (raster), coloured in 5 dB bands after ISO 1996-2 / DIN 45682. Colours are applied by the engine (noise::band_colour); this layer sets how the picture is shown.",
+            "layers": [
+              {
+                "id": "noise-band",
+                "type": "raster",
+                "paint": {
+                  "raster-opacity": 0.6,
+                  "raster-resampling": "nearest",
+                  "raster-fade-duration": 0
+                }
+              }
+            ],
+            "legend": [
+              {
+                "from_db": 45,
+                "color": "#cee4cc"
+              },
+              {
+                "from_db": 50,
+                "color": "#e2f2bf"
+              },
+              {
+                "from_db": 55,
+                "color": "#f3c683"
+              },
+              {
+                "from_db": 60,
+                "color": "#e87e4d"
+              },
+              {
+                "from_db": 65,
+                "color": "#cd463e"
+              },
+              {
+                "from_db": 70,
+                "color": "#a11a4d"
+              },
+              {
+                "from_db": 75,
+                "color": "#75085c"
+              }
+            ]
+          }
+        }
+      ],
+      "parameters": {
+        "noise.receiver_height_m": {
+          "label": "Receiver height above ground",
+          "unit": "m"
+        },
+        "noise.day_start_h": {
+          "label": "Start of the day period (L_day)",
+          "unit": "h"
+        },
+        "noise.evening_start_h": {
+          "label": "Start of the evening period (L_evening)",
+          "unit": "h"
+        },
+        "noise.night_start_h": {
+          "label": "Start of the night period (L_night)",
+          "unit": "h"
+        },
+        "noise.evening_penalty_db": {
+          "label": "Evening penalty in L_den",
+          "unit": "dB"
+        },
+        "noise.night_penalty_db": {
+          "label": "Night penalty in L_den",
+          "unit": "dB"
+        },
+        "noise.band_lden_db": {
+          "label": "Noise corridor edge in the editors, L_den",
+          "unit": "dB"
+        },
+        "noise.band_lnight_db": {
+          "label": "Noise corridor edge in the editors, L_night",
+          "unit": "dB"
+        },
+        "noise.who_guideline_lden_db": {
+          "label": "WHO guideline level, L_den",
+          "unit": "dB"
+        },
+        "noise.who_guideline_lnight_db": {
+          "label": "WHO guideline level, L_night",
+          "unit": "dB"
+        },
+        "noise.air_temperature_c": {
+          "label": "Air temperature for atmospheric absorption",
+          "unit": "°C"
+        },
+        "noise.relative_humidity_pct": {
+          "label": "Relative humidity for atmospheric absorption",
+          "unit": "%"
+        },
+        "noise.ground_factor_default": {
+          "label": "Ground factor G where land use is unknown (0 hard, 1 soft)",
+          "unit": "-"
+        },
+        "noise.max_source_distance_m": {
+          "label": "Largest source-to-receiver distance considered",
+          "unit": "m"
+        },
+        "noise.grid_spacing_m": {
+          "label": "Receiver grid spacing",
+          "unit": "m"
+        },
+        "noise.favourable_probability_day": {
+          "label": "Share of favourable propagation conditions, day",
+          "unit": "-"
+        },
+        "noise.favourable_probability_evening": {
+          "label": "Share of favourable propagation conditions, evening",
+          "unit": "-"
+        },
+        "noise.favourable_probability_night": {
+          "label": "Share of favourable propagation conditions, night",
+          "unit": "-"
+        },
+        "noise.reflection_order": {
+          "label": "Reflection order (full map)",
+          "unit": "-"
+        },
+        "noise.building_level_height_m": {
+          "label": "Storey height for buildings without a height",
+          "unit": "m"
+        },
+        "noise.road_source_height_m": {
+          "label": "Road vehicle source height",
+          "unit": "m"
+        },
+        "noise.rail_source_height_m": {
+          "label": "Rail vehicle source height above the rail head",
+          "unit": "m"
+        },
+        "noise.road_stop_zone_m": {
+          "label": "Acceleration and braking zone either side of a stop",
+          "unit": "m"
+        },
+        "noise.electric_road_propulsion_delta_db": {
+          "label": "Electric buses and trolleybuses: change to the propulsion noise term",
+          "unit": "dB"
+        },
+        "noise.rail_passby_db": {
+          "label": "Rail pass-by level L_pAeq,Tp at 7.5 m and 1.2 m at the reference speed, ballasted track",
+          "unit": "dB(A)"
+        },
+        "noise.rail_passby_ref_speed_kmh": {
+          "label": "Reference speed of the rail pass-by level",
+          "unit": "km/h"
+        },
+        "noise.rail_rolling_speed_exponent": {
+          "label": "Rail rolling noise: dB per decade of speed",
+          "unit": "dB"
+        },
+        "noise.rail_squeal_r300_db": {
+          "label": "Curve squeal, railways, radius up to 300 m",
+          "unit": "dB"
+        },
+        "noise.rail_squeal_r500_db": {
+          "label": "Curve squeal, railways, radius 300–500 m",
+          "unit": "dB"
+        },
+        "noise.tram_squeal_r200_db": {
+          "label": "Curve squeal, trams, radius up to 200 m",
+          "unit": "dB"
+        },
+        "noise.squeal_min_length_m": {
+          "label": "Shortest curve that gets the squeal correction",
+          "unit": "m"
+        },
+        "noise.rail_switch_db": {
+          "label": "Switches and crossings: impact noise added over the switch",
+          "unit": "dB"
+        },
+        "noise.rail_bridge_db": {
+          "label": "Elevated track: bridge noise added",
+          "unit": "dB"
+        },
+        "noise.tram_embedded_track_db": {
+          "label": "Trams on embedded street track, compared with ballast",
+          "unit": "dB"
+        },
+        "noise.cable_car_tower_lw_db": {
+          "label": "Cable car tower: sound power while cabins pass the sheaves",
+          "unit": "dB(A)"
+        },
+        "noise.cable_car_station_lw_db": {
+          "label": "Cable car station: sound power of drive, bullwheel and cabin handling",
+          "unit": "dB(A)"
+        },
+        "noise.ferry_cruise_lw_db": {
+          "label": "Ferry at cruise speed: sound power",
+          "unit": "dB(A)"
+        },
+        "noise.ferry_berth_lw_db": {
+          "label": "Ferry at the berth: sound power of engines, auxiliaries and ramp",
+          "unit": "dB(A)"
+        }
+      },
+      "defaults": {}
     }
   ]
 }
