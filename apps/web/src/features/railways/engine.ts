@@ -39,6 +39,7 @@ export const loadRailEngine: RailEngineLoader = async () => {
     setStreetSetups: (s) => d.set_street_setups(JSON.stringify(s)),
     generateSignals: () => JSON.parse(d.generate_signals()),
     signalAnchor: ([lon, lat], maxM) => JSON.parse(d.signal_anchor(lon, lat, maxM)),
+    publishLines: (lines, serviceId) => JSON.parse(d.publish_lines(JSON.stringify(lines), serviceId)),
     dispose: () => d.free(),
   };
   return engine;

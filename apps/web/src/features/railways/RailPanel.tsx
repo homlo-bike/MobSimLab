@@ -1,6 +1,7 @@
 import { update, updateSignal } from "./doc";
 import { COLORS, fmtM, fmtTime, LEVEL_LABEL, LEVELS, POWER, RAIL_MODES } from "./modes";
 import type { Selection } from "./RailwayEditor";
+import { type Publication, ServiceLinesPanel } from "./ServiceLinesPanel";
 import type {
   Level,
   LonLat,
@@ -82,6 +83,13 @@ interface Props {
   switchOpts: NewSwitchOpts;
   error: string | null;
   actions: RailPanelActions;
+  /** Service lines: the last publication, publishing, and picking stops on the map. */
+  service: {
+    publication: Publication | null;
+    publish: () => void;
+    picking: string | null;
+    setPicking: (id: string | null) => void;
+  };
 }
 
 const CHIP: Record<Severity, string> = {
@@ -99,7 +107,7 @@ const VERTEX: Record<string, string> = {
 const field = "rounded border border-slate-300 bg-slate-50 px-2 py-1";
 const input = `${field} min-w-0 max-w-56`;
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+export function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="flex flex-col gap-2 border-t border-slate-200 pt-3">
       <h3 className="text-xs font-semibold tracking-wider text-slate-500 uppercase">{title}</h3>
@@ -117,7 +125,7 @@ function Stat({ value, label }: { value: string; label: string }) {
   );
 }
 
-function Row({ label, children }: { label: string; children: React.ReactNode }) {
+export function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="flex items-center justify-between gap-2">
       <span className="text-slate-700">{label}</span>
@@ -126,7 +134,7 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
   );
 }
 
-function Num({
+export function Num({
   value,
   onChange,
   unit,
@@ -413,6 +421,8 @@ export function RailPanel(props: Props) {
           />
         </Row>
       </Section>
+
+      <ServiceLinesPanel doc={doc} view={view} setDoc={a.setDoc} show={a.showIssue} {...props.service} />
 
       <Section title="Operations">
         <p className="text-xs text-slate-600">
