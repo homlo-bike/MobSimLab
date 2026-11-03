@@ -75,6 +75,31 @@ export function ensureRailLayers(map: MapLibreMap, lat: number): void {
   map.addSource(`${P}issues`, { type: "geojson", data: EMPTY });
   map.addSource(`${P}selection`, { type: "geojson", data: EMPTY });
   const layers: LayerSpecification[] = [];
+  // Existing railways from OpenStreetMap, under the design: solid in use, dashed under
+  // construction, faint when disused or preserved.
+  layers.push({
+    id: `${P}existing`,
+    type: "line",
+    source: `${P}existing`,
+    filter: ["==", ["geometry-type"], "LineString"] as FilterSpecification,
+    layout: { "line-join": "round", "line-cap": "round" },
+    paint: {
+      "line-color": COLORS.existing,
+      "line-width": ["interpolate", ["linear"], ["zoom"], 12, 1.5, 17, 4],
+      "line-opacity": [
+        "case",
+        ["==", ["get", "status"], "active"],
+        ["case", ["<", ["get", "z"], 2], 0.4, 0.75],
+        0.35,
+      ],
+      "line-dasharray": [
+        "case",
+        ["==", ["get", "status"], "construction"],
+        ["literal", [2, 2]],
+        ["literal", [1, 0]],
+      ],
+    },
+  });
   layers.push({
     id: `${P}corridors`,
     type: "line",
@@ -278,6 +303,19 @@ export function ensureRailLayers(map: MapLibreMap, lat: number): void {
       minzoom: 16,
       filter: kindIs("stop_line"),
       paint: { "line-color": COLORS.stopLine, "line-width": metres(0.3, lat, 1.5) },
+    },
+    {
+      // Where new track joins an existing railway.
+      id: `${P}existing-joins`,
+      type: "circle",
+      source: `${P}existing`,
+      filter: kindIs("join"),
+      paint: {
+        "circle-radius": 5,
+        "circle-color": COLORS.existing,
+        "circle-stroke-color": "#ffffff",
+        "circle-stroke-width": 2,
+      },
     },
     {
       // Street running: edges of the tram's own lane (solid) or of its path in traffic (dashed).

@@ -269,7 +269,7 @@ pub fn poly_cross(a: &[P2], b: &[P2], mut f: impl FnMut(Hit, usize, usize)) {
 }
 
 /// Axis-aligned bounding box.
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub struct BBox {
     /// Minimum corner.
     pub min: P2,

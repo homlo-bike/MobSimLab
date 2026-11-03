@@ -73,6 +73,7 @@ export const fr: Messages = {
   "settings.fromProvider": "Le nom et l’e-mail viennent de votre fournisseur d’identité.",
   "settings.largerTargets": "Cibles tactiles plus grandes",
   "settings.reduceMotion": "Réduire les animations",
+  "settings.existingRailways": "Afficher les voies ferrées existantes d’OpenStreetMap",
   "settings.savedToAccount": "Enregistrés dans votre compte, ils vous suivent sur vos autres appareils.",
 
   "language.title": "Langue",
