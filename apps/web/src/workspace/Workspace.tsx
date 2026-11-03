@@ -79,6 +79,8 @@ export function Workspace({
   const [build, setBuild] = useState<Build | null>(null);
   // The street line last drawn, so the journey planner can ride it.
   const [line, setLine] = useState<StreetLineInput | null>(null);
+  // The track topology last built in the railway tool, so street lines wait at its level crossings.
+  const [railTopology, setRailTopology] = useState<unknown>(null);
   // Street setups from the GIS tab: they override OSM in the street line tool and the railway editor.
   const [setups, setSetups] = useState<StreetSetup[]>(() => loadSetups(projectId));
   useEffect(() => setSetups(loadSetups(projectId)), [projectId]);
@@ -205,7 +207,13 @@ export function Workspace({
         <div className={`relative min-h-0 min-w-0 flex-1 ${onMap ? "" : "hidden"}`}>
           <MapView onReady={setMap} />
           {project && tab === "create" && editable && chosen === "street" && (
-            <StreetLineEditor map={map} panel={panel} onLineChange={setLine} streetSetups={setups} />
+            <StreetLineEditor
+              map={map}
+              panel={panel}
+              onLineChange={setLine}
+              streetSetups={setups}
+              railTopology={railTopology}
+            />
           )}
           {project && tab === "create" && editable && chosen === "rail" && (
             <RailwayEditor
@@ -213,6 +221,7 @@ export function Workspace({
               panel={panel}
               streetSetups={setups}
               existingRailways={existingRailways}
+              onTopologyChange={setRailTopology}
             />
           )}
           {project && tab === "gis" && (

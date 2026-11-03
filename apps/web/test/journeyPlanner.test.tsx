@@ -98,6 +98,8 @@ describe("journey planner helpers", () => {
       status: "ok" as const,
       message: null,
       ways: [],
+      crossing_wait_s: 0,
+      level_crossings: [],
     });
     const view: LineView = {
       points: [pt(1, "end_stop", 7), pt(2, "via", 7.001), pt(3, "stop", 7.002), pt(4, "end_stop", 7.003)],
@@ -112,6 +114,8 @@ describe("journey planner helpers", () => {
       issues: [],
       length_m: 400,
       time_s: 220,
+      level_crossings: [],
+      crossing_wait_s: 0,
     };
     const tt = streetLineTimetable({
       name: "7",
