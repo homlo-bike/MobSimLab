@@ -47,6 +47,19 @@ import { metres } from "../src/features/railways/mapLayers";
 import { clearPlaces, publishPlaces } from "../src/features/naming/registry";
 import { fmtM, fmtTime, shiftLevel } from "../src/features/railways/modes";
 import { RailwayEditor } from "../src/features/railways/RailwayEditor";
+import {
+  addLine,
+  engineLines,
+  hhmm,
+  insertStop,
+  lineProblem,
+  moveStop,
+  parseHhmm,
+  removeLine,
+  suggestTrain,
+  trainById,
+  updateLine,
+} from "../src/features/railways/serviceLines";
 import type { Network, RailEngine, RailMode } from "../src/features/railways/types";
 
 beforeAll(async () => {
@@ -596,5 +609,145 @@ describe("Railway editor", () => {
     expect(await screen.findByText("Drawing track")).toBeTruthy();
     fireEvent.keyDown(window, { key: "Escape" });
     await waitFor(() => expect(screen.queryByText("Drawing track")).toBeNull());
+  });
+
+  it("draws a service line on the example, publishes it and hands the trains to the journey planner", async () => {
+    const onPublish = vi.fn();
+    const { map, handlers } = fakeMap();
+    render(<RailwayEditor map={map} loadEngine={loadRailEngine} onPublish={onPublish} />);
+    await waitFor(() => expect(screen.getByRole("button", { name: "Example" })).toBeTruthy());
+    fireEvent.change(screen.getByRole("combobox"), { target: { value: "metro" } });
+    fireEvent.click(screen.getByRole("button", { name: "Example" }));
+    await screen.findByText(/0 errors/);
+    expect(screen.getByText("Service lines · 0")).toBeTruthy();
+
+    fireEvent.click(screen.getByRole("button", { name: "New line" }));
+    expect(await screen.findByText("Service lines · 1")).toBeTruthy();
+    const stops = screen.getByRole("list", { name: "Stops" });
+    expect(stops.textContent).toContain("Riverside");
+    expect(stops.textContent).toContain("Northgate");
+    expect((screen.getByLabelText("Line name") as HTMLInputElement).value).toBe("M1");
+    // A catalogue metro train is chosen, and the headways can be set.
+    expect((screen.getByLabelText("Train") as HTMLSelectElement).value).not.toBe("");
+    fireEvent.change(screen.getByLabelText("Peak headway"), { target: { value: "10" } });
+    fireEvent.change(screen.getByLabelText("Off-peak headway"), { target: { value: "20" } });
+
+    fireEvent.click(screen.getByRole("button", { name: "Publish timetable" }));
+    const done = await screen.findByTestId("lines-published");
+    expect(done.textContent).toMatch(/Published 1 line · \d+ trips/);
+    expect(screen.getByTestId("line-report").textContent).toMatch(
+      /\d+ trips · \d+ trains? · Riverside → Northgate/,
+    );
+    expect(onPublish).toHaveBeenCalledTimes(1);
+    const tt = onPublish.mock.calls[0]![0] as { routes: { route_short_name: string }[]; trips: unknown[] };
+    expect(tt.routes.map((r) => r.route_short_name)).toEqual(["M1"]);
+    expect(tt.trips.length).toBeGreaterThan(50);
+
+    // Editing the line marks the publication out of date.
+    fireEvent.change(screen.getByLabelText("Line name"), { target: { value: "U5" } });
+    expect(screen.getByTestId("lines-published").textContent).toMatch(/changed since publishing/);
+
+    // Picking on the map: a click on a station on the line takes it off, a second click puts it back.
+    fireEvent.click(screen.getByRole("button", { name: "Pick on the map" }));
+    act(() => handlers.get("click")!({ lngLat: { lng: ORIGIN[0], lat: ORIGIN[1] }, point: { x: 0, y: 0 } }));
+    await waitFor(() => expect(screen.getByRole("list", { name: "Stops" }).children).toHaveLength(1));
+    expect(screen.getByText(/Needs at least two stops/)).toBeTruthy();
+    act(() => handlers.get("click")!({ lngLat: { lng: ORIGIN[0], lat: ORIGIN[1] }, point: { x: 0, y: 0 } }));
+    await waitFor(() => expect(screen.getByRole("list", { name: "Stops" }).children).toHaveLength(2));
+  });
+});
+
+describe("service lines", () => {
+  const doc = (): Network => ({
+    ...emptyNetwork("metro", ORIGIN),
+    stations: [
+      {
+        id: 1,
+        name: "West",
+        x: -1000,
+        y: 0,
+        rotation_deg: 0,
+        level: "street",
+        side_platforms: 0,
+        island_platforms: 1,
+        platform_length_m: 120,
+      },
+      {
+        id: 2,
+        name: "Middle",
+        x: 0,
+        y: 50,
+        rotation_deg: 0,
+        level: "street",
+        side_platforms: 0,
+        island_platforms: 1,
+        platform_length_m: 120,
+      },
+      {
+        id: 3,
+        name: "East",
+        x: 1000,
+        y: 0,
+        rotation_deg: 0,
+        level: "street",
+        side_platforms: 0,
+        island_platforms: 1,
+        platform_length_m: 120,
+      },
+      {
+        id: 4,
+        name: "Far East",
+        x: 2000,
+        y: 0,
+        rotation_deg: 0,
+        level: "street",
+        side_platforms: 0,
+        island_platforms: 1,
+        platform_length_m: 120,
+      },
+    ],
+  });
+
+  it("starts a line at the two stations farthest apart, west to east, with a train that fits", () => {
+    const [d, id] = addLine(doc(), 115);
+    const l = d.lines!.find((x) => x.id === id)!;
+    expect(l.stations).toEqual([1, 4]);
+    expect(l.name).toBe("M1");
+    const t = trainById(l.vehicle)!;
+    expect(t.mode).toBe("metro");
+    expect(t.length_m).toBeLessThanOrEqual(115);
+    expect(suggestTrain("metro", 115)!.id).toBe(t.id);
+    const [d2] = addLine(d, 115);
+    expect(d2.lines!.map((x) => x.name)).toEqual(["M1", "M2"]);
+    expect(removeLine(removeLine(d2, "line1"), "line2").lines).toBeNull();
+  });
+
+  it("puts a new stop where it fits along the line, and moves stops", () => {
+    const [d] = addLine(doc(), 115);
+    let l = { ...d.lines![0]!, stations: [1, 3] };
+    l = insertStop(d, l, 2);
+    expect(l.stations).toEqual([1, 2, 3]);
+    l = insertStop(d, l, 4);
+    expect(l.stations).toEqual([1, 2, 3, 4]);
+    expect(insertStop(d, l, 4)).toBe(l);
+    expect(moveStop(l, 0, 1).stations).toEqual([2, 1, 3, 4]);
+    expect(moveStop(l, 0, -1)).toBe(l);
+  });
+
+  it("hands the engine stations by topology id, the train's values and times in seconds", () => {
+    const [d] = addLine(doc(), 115);
+    const [e] = engineLines(d);
+    expect(e!.stations).toEqual(["st1", "st4"]);
+    expect(e!.mode).toBe("metro");
+    expect(e!.first_s).toBe(5 * 3600);
+    expect(e!.last_s).toBe(24 * 3600);
+    expect(e!.peak_headway_s).toBe(240);
+    expect(e!.vehicle).not.toHaveProperty("mode");
+    const broken = updateLine(d, "line1", (l) => ({ ...l, stations: [1] }));
+    expect(lineProblem(broken, broken.lines![0]!)).toBe("Needs at least two stops.");
+    expect(engineLines(broken)).toEqual([]);
+    expect(hhmm(24 * 60 + 30)).toBe("24:30");
+    expect(parseHhmm("5:15")).toBe(315);
+    expect(parseHhmm("28:00")).toBeNull();
   });
 });

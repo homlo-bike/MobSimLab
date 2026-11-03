@@ -343,32 +343,39 @@ export function parseRailTimetable(text: string): { timetable: Timetable } | { e
     (s) => typeof s?.stop_id !== "string" || !Number.isFinite(s.stop_lat) || !Number.isFinite(s.stop_lon),
   );
   if (bad) return { error: "Every stop needs a stop_id, stop_lat and stop_lon." };
-  const p = (id: string) => `rail:${id}`;
+  return { timetable: prefixTimetable({ ...r, stops, trips, frequency_patterns: patterns }, "rail:") };
+}
+
+/**
+ * Purpose: a timetable with `prefix` before every id (stops, parent stations, routes, trips, patterns),
+ * so timetables from different sources cannot collide. Names and station groups stay as they are.
+ */
+export function prefixTimetable(r: Partial<Timetable>, prefix: string): Timetable {
+  const list = <T>(v: T[] | undefined): T[] => (Array.isArray(v) ? v : []);
+  const p = (id: string) => `${prefix}${id}`;
   return {
-    timetable: {
-      stops: stops.map((s) => ({
-        ...s,
-        stop_id: p(s.stop_id),
-        ...(s.parent_station ? { parent_station: p(s.parent_station) } : {}),
-      })),
-      routes: list(r.routes).map((x) => ({ ...x, route_id: p(x.route_id) })),
-      trips: trips.map((t) => ({
-        ...t,
-        trip_id: p(t.trip_id),
-        route_id: p(t.route_id),
-        stop_times: list(t.stop_times).map((st) => ({ ...st, stop_id: p(st.stop_id) })),
-      })),
-      transfers: list(r.transfers).map((x) => ({
-        ...x,
-        from_stop_id: p(x.from_stop_id),
-        to_stop_id: p(x.to_stop_id),
-      })),
-      frequency_patterns: patterns.map((f) => ({
-        ...f,
-        pattern_id: p(f.pattern_id),
-        route_id: p(f.route_id),
-        stops: list(f.stops).map((s) => ({ ...s, stop_id: p(s.stop_id) })),
-      })),
-    },
+    stops: list(r.stops).map((s) => ({
+      ...s,
+      stop_id: p(s.stop_id),
+      ...(s.parent_station ? { parent_station: p(s.parent_station) } : {}),
+    })),
+    routes: list(r.routes).map((x) => ({ ...x, route_id: p(x.route_id) })),
+    trips: list(r.trips).map((t) => ({
+      ...t,
+      trip_id: p(t.trip_id),
+      route_id: p(t.route_id),
+      stop_times: list(t.stop_times).map((st) => ({ ...st, stop_id: p(st.stop_id) })),
+    })),
+    transfers: list(r.transfers).map((x) => ({
+      ...x,
+      from_stop_id: p(x.from_stop_id),
+      to_stop_id: p(x.to_stop_id),
+    })),
+    frequency_patterns: list(r.frequency_patterns).map((f) => ({
+      ...f,
+      pattern_id: p(f.pattern_id),
+      route_id: p(f.route_id),
+      stops: list(f.stops).map((s) => ({ ...s, stop_id: p(s.stop_id) })),
+    })),
   };
 }

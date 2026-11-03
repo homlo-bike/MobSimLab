@@ -118,6 +118,7 @@ jobs:
         with: { python-version: "3.12" }
       - run: uvx ruff check tools/vehicles && uvx ruff format --check tools/vehicles
       - run: uv run --no-project --with jsonschema --with pyyaml python tools/vehicles/check.py
+      - run: python tools/vehicles/rail_trains.py --check
       - run: uv run --no-project --with jsonschema --with pyyaml --with pytest pytest -q tools/vehicles
 
   licence-gate:

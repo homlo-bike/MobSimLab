@@ -356,6 +356,18 @@ describe("JourneyPlanner panel", () => {
     expect(calls[2]!.timetable.routes).toHaveLength(4);
   });
 
+  it("rides the rail lines published in the railway tool, and can leave them out", async () => {
+    const { loader, calls } = fakeLoader();
+    // The railway tool publishes unprefixed ids; the panel keeps them apart from a timetable file.
+    const published = JSON.parse(RAIL_JSON) as Timetable;
+    render(<JourneyPlanner map={null} loadPlanner={loader} railLines={published} />);
+    await waitFor(() => expect(calls.length).toBe(1));
+    expect(calls[0]!.timetable.trips.map((t) => t.trip_id)).toEqual(["lines:S1-0-000"]);
+    const toggle = screen.getByRole("checkbox", { name: /Rail lines from the railway tool: S1 · 1 trips/ });
+    fireEvent.click(toggle);
+    expect(screen.getByText(/No timetable yet/)).toBeTruthy();
+  });
+
   it("says why a rail timetable file was not added", async () => {
     const { loader } = fakeLoader();
     render(<JourneyPlanner map={null} loadPlanner={loader} />);

@@ -123,6 +123,18 @@ Railway operations needs signals. Until you make a signal plan, it gets signals 
 
 Each signal is drawn on the right of the track, with an arm pointing the way it governs: red for main and block signals, white for shunting, yellow for distant signals. Click a signal to change its kind or name, turn it round, or delete it. Drag it along the track to move it. Signals you place with the Signal tool are added to the plan. **Generate again** replaces the plan, and **Remove plan** goes back to generated signals. If you delete or redraw a track, its signals get a warning.
 
+## Service lines
+
+Under **Service lines**, describe the trains that run on the drawing, then publish them to the journey planner.
+
+1. Click **New line**. It starts at the two stations farthest apart, with a catalogue train of the mode that fits the platforms, and the mode's usual headways from 05:00 to 24:00.
+2. **Stops**: add stations from **Add stop…**, or click **Pick on the map** and click stations (a click on a stop already on the line takes it off). A new stop goes where it fits along the line. The arrows change the order; the return trip runs the stops in reverse.
+3. **Train**: a rail vehicle from the vehicle catalogue, and how many units run coupled. The panel shows the train's length, top speed and places, and warns when it is longer than the platforms take.
+4. **First** and **last departure**, and the headway **in the peaks** (07:00–09:00 and 16:00–19:00) and **off-peak**.
+5. Click **Publish timetable**. The timetable planner finds each train's path through the track, its running time from the train's power and speed, and conflict-free departures; trains turn back in the terminal platforms and stable on storage tracks or in the terminals. Each line then shows its trips, trains and end-to-end time, and what could not run and why. The trains are ready in **Simulator → Journey time A → B**.
+
+When the drawing or a line changes, the panel says so; publish again to update the journey planner. The catalogue gives a train's length, top speed, power and capacity; acceleration, braking and running resistance come from the mode's assumptions. A layout without crossovers next to the terminals limits how often trains can run; the line's report says so.
+
 ## Track topology for operations
 
 **Download track topology (JSON)** in the panel saves the drawing as a graph for timetables and train control. It contains track sections, the movements allowed at every switch and join, platform edges, switches, crossings, level crossings with streets, street running, joins to existing railways, signals and depot groups. The format is described in [contracts](../../contracts/README.md). If the design has errors, the file says so (`valid: false`), and the button shows it.

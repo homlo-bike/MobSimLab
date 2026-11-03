@@ -41,6 +41,8 @@ import {
   type RailTool,
 } from "./RailPanel";
 import { RailToolPalette } from "./RailToolPalette";
+import { engineLines, insertStop, updateLine } from "./serviceLines";
+import type { Publication } from "./ServiceLinesPanel";
 import type {
   Anchor,
   ConnectionView,
@@ -51,8 +53,10 @@ import type {
   RailEngineLoader,
   RailMode,
   RailView,
+  ServicePublication,
   Track,
 } from "./types";
+import type { Timetable } from "../journey-planner/types";
 
 const HINTS: Record<RailTool, string> = {
   select:
@@ -70,6 +74,16 @@ const NO_SETUPS: readonly StreetSetup[] = [];
 
 /** The drawing survives closing and reopening the tool during the session. */
 let kept: Network | null = null;
+/** So does the last publication of its service lines, with the drawing it was made from. */
+let keptPublication: { result: ServicePublication | null; error: string | null; key: string } | null = null;
+
+/** Purpose: the timetable of the service lines published last this session, if any. */
+export function publishedTimetable(): Timetable | null {
+  return keptPublication?.result?.timetable ?? null;
+}
+
+/** Purpose: what a publication depends on: the drawing without its view-only parts. */
+const publishKey = (d: Network) => JSON.stringify(d);
 
 interface Props {
   /** The map; `null` until it has loaded. */
@@ -91,6 +105,8 @@ interface Props {
   existingRailways?: boolean;
   /** The planner's street setups from the GIS tab (tram own lane or mixed traffic…), over OSM. */
   streetSetups?: readonly StreetSetup[];
+  /** Called with the published service lines' timetable (`null` when withdrawn), for the journey planner. */
+  onPublish?: (timetable: Timetable | null) => void;
 }
 
 export interface Selection {
@@ -116,6 +132,7 @@ export function RailwayEditor({
   fetchRails = fetchRailTile,
   existingRailways = false,
   streetSetups = NO_SETUPS,
+  onPublish,
 }: Props) {
   const engine = useRef<RailEngine | null>(null);
   const [ready, setReady] = useState(false);
@@ -139,6 +156,8 @@ export function RailwayEditor({
   const [flash, setFlash] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [note, setNote] = useState<string | null>(null);
+  const [published, setPublished] = useState(keptPublication);
+  const [picking, setPicking] = useState<string | null>(null);
 
   useEffect(() => {
     let alive = true;
@@ -393,8 +412,8 @@ export function RailwayEditor({
   );
 
   // Latest state for handlers registered once per map.
-  const latest = useRef({ tool, doc, draft, sel, trackOpts, stationOpts, switchOpts, view, cursor });
-  latest.current = { tool, doc, draft, sel, trackOpts, stationOpts, switchOpts, view, cursor };
+  const latest = useRef({ tool, doc, draft, sel, trackOpts, stationOpts, switchOpts, view, cursor, picking });
+  latest.current = { tool, doc, draft, sel, trackOpts, stationOpts, switchOpts, view, cursor, picking };
   const dragging = useRef<
     | { kind: "station"; id: number; dx: number; dy: number }
     | { kind: "switch"; id: number; track: number; offset: number }
@@ -449,6 +468,21 @@ export function RailwayEditor({
       const ll: LonLat = [ev.lngLat.lng, ev.lngLat.lat];
       const at = e.toLocal(s.doc.origin, ll);
       const params = s.view?.params;
+      // Picking the stops of a service line: a click on a station adds it, or removes it again.
+      const pickLine = s.picking ? s.doc.lines?.find((l) => l.id === s.picking) : null;
+      if (pickLine) {
+        const station = stationAt(map, ev.point, s.doc, s.view);
+        if (station === null) return say("Click a station to add it to the line.");
+        const d = s.doc;
+        setDoc(
+          updateLine(d, pickLine.id, (l) =>
+            l.stations.includes(station)
+              ? { ...l, stations: l.stations.filter((x) => x !== station) }
+              : insertStop(d, l, station),
+          ),
+        );
+        return;
+      }
       if (s.tool === "station") {
         // Next to an existing stop or station it is part of that one; otherwise named from the map.
         const places = [...placesOtherThan("rail"), ...stationPlaces(s.doc, s.view)];
@@ -835,6 +869,28 @@ export function RailwayEditor({
     setTool(t);
   };
 
+  // Publishing: plan the service lines on the drawn track (timetable planner) for the journey planner.
+  const publish = () => {
+    const e = engine.current;
+    if (!e || !doc) return;
+    let next: NonNullable<typeof keptPublication>;
+    try {
+      // The engine plans on its last build: build the drawing without a draft first.
+      e.build(doc, null);
+      const result = e.publishLines(engineLines(doc), "weekday");
+      next = { result, error: null, key: publishKey(doc) };
+      onPublish?.(result.timetable);
+    } catch (err) {
+      next = { result: null, error: err instanceof Error ? err.message : String(err), key: publishKey(doc) };
+      onPublish?.(null);
+    }
+    keptPublication = next;
+    setPublished(next);
+  };
+  const publication: Publication | null = published
+    ? { result: published.result, error: published.error, stale: !!doc && published.key !== publishKey(doc) }
+    : null;
+
   const panelActions = {
     setTool: changeTool,
     setDoc,
@@ -971,6 +1027,7 @@ export function RailwayEditor({
       streetNote={streetNote}
       existingRailways={existingRailways}
       actions={panelActions}
+      service={{ publication, publish, picking, setPicking }}
     />
   );
 
@@ -1003,6 +1060,30 @@ export function RailwayEditor({
       )}
     </>
   );
+}
+
+/**
+ * Purpose: the station under a map click: a drawn station feature, else the station whose centre is
+ * nearest within 30 px. Output: the station id, or `null`.
+ */
+function stationAt(map: MapLibreMap, pt: { x: number; y: number }, doc: Network, view: RailView | null) {
+  const box: [[number, number], [number, number]] = [
+    [pt.x - 6, pt.y - 6],
+    [pt.x + 6, pt.y + 6],
+  ];
+  const layers = HIT_LAYERS.filter((l) => map.getLayer(l));
+  const hit = map
+    .queryRenderedFeatures(box, { layers })
+    .map((h) => Number(h.properties?.ref))
+    .find((r) => doc.stations.some((s) => s.id === r));
+  if (hit) return hit;
+  let best: { id: number; d: number } | null = null;
+  for (const sv of view?.stations ?? []) {
+    const p = map.project(sv.lonlat);
+    const d = Math.hypot(p.x - pt.x, p.y - pt.y);
+    if (d <= 30 && (!best || d < best.d)) best = { id: sv.id, d };
+  }
+  return best?.id ?? null;
 }
 
 /** Purpose: the level new points of a track get (its last point's, else the track's). */

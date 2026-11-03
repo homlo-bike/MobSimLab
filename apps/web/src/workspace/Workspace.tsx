@@ -2,7 +2,8 @@ import type { Map as MapLibreMap } from "maplibre-gl";
 import { type ReactNode, useEffect, useState } from "react";
 import { JourneyPlanner } from "../features/journey-planner/JourneyPlanner";
 import type { StreetLineInput } from "../features/journey-planner/network";
-import { RailwayEditor } from "../features/railways/RailwayEditor";
+import type { Timetable } from "../features/journey-planner/types";
+import { publishedTimetable, RailwayEditor } from "../features/railways/RailwayEditor";
 import { StreetLineEditor } from "../features/street-lines/StreetLineEditor";
 import { loadSetups, saveSetups } from "../features/street-setup/model";
 import { StreetSetupEditor } from "../features/street-setup/StreetSetupEditor";
@@ -81,6 +82,8 @@ export function Workspace({
   const [line, setLine] = useState<StreetLineInput | null>(null);
   // The track topology last built in the railway tool, so street lines wait at its level crossings.
   const [railTopology, setRailTopology] = useState<unknown>(null);
+  // The rail service lines last published in the railway tool, so the journey planner can ride them.
+  const [railLines, setRailLines] = useState<Timetable | null>(publishedTimetable);
   // Street setups from the GIS tab: they override OSM in the street line tool and the railway editor.
   const [setups, setSetups] = useState<StreetSetup[]>(() => loadSetups(projectId));
   useEffect(() => setSetups(loadSetups(projectId)), [projectId]);
@@ -222,6 +225,7 @@ export function Workspace({
               streetSetups={setups}
               existingRailways={existingRailways}
               onTopologyChange={setRailTopology}
+              onPublish={setRailLines}
             />
           )}
           {project && tab === "gis" && (
@@ -238,6 +242,7 @@ export function Workspace({
               map={map}
               panel={panel}
               streetLine={line && line.view.points.length >= 2 ? line : null}
+              railLines={railLines}
             />
           )}
           {project && tab === "create" && editable && chosen === null && (

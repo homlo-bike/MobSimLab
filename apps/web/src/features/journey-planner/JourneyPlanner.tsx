@@ -10,6 +10,7 @@ import {
   mergeTimetables,
   offset,
   parseRailTimetable,
+  prefixTimetable,
   streetLineTimetable,
   type StreetLineInput,
 } from "./network";
@@ -34,6 +35,8 @@ interface Props {
   panel?: HTMLElement | null;
   /** The line drawn in the street line tool, if any. */
   streetLine?: StreetLineInput | null;
+  /** Rail service lines published in the railway tool, if any. */
+  railLines?: Timetable | null;
   /** Planner loader; tests inject a fake. */
   loadPlanner?: PlannerLoader;
 }
@@ -131,10 +134,12 @@ export function JourneyPlanner({
   map,
   panel = null,
   streetLine = null,
+  railLines = null,
   loadPlanner = loadWasmPlanner,
 }: Props) {
   const [exampleAt, setExampleAt] = useState<LonLat | null>(null);
   const [useStreet, setUseStreet] = useState(true);
+  const [useRailLines, setUseRailLines] = useState(true);
   const [rail, setRail] = useState<{ name: string; timetable: Timetable } | null>(null);
   const [railError, setRailError] = useState<string | null>(null);
   const [settings, setSettings] = useState<Partial<Settings>>({});
@@ -154,12 +159,19 @@ export function JourneyPlanner({
     () => (streetLine && useStreet ? streetLineTimetable(streetLine) : null),
     [streetLine, useStreet],
   );
+  const drawnRail = useMemo(
+    () => (railLines && useRailLines && railLines.trips.length ? prefixTimetable(railLines, "lines:") : null),
+    [railLines, useRailLines],
+  );
   const timetable: Timetable | null = useMemo(() => {
-    const parts = [exampleAt ? exampleNetwork(exampleAt) : null, street, rail?.timetable ?? null].filter(
-      (p): p is Timetable => p !== null,
-    );
+    const parts = [
+      exampleAt ? exampleNetwork(exampleAt) : null,
+      street,
+      drawnRail,
+      rail?.timetable ?? null,
+    ].filter((p): p is Timetable => p !== null);
     return parts.length ? mergeTimetables(parts) : null;
-  }, [exampleAt, street, rail]);
+  }, [exampleAt, street, drawnRail, rail]);
 
   const addRailTimetable = async (file: File) => {
     const r = parseRailTimetable(await file.text());
@@ -325,6 +337,14 @@ export function JourneyPlanner({
           {Math.max(1, Math.round(streetLine.headwayMin / 2))} min)
         </label>
       )}
+      {railLines && railLines.trips.length > 0 && (
+        <label className="flex items-center gap-2">
+          <input type="checkbox" checked={useRailLines} onChange={(e) => setUseRailLines(e.target.checked)} />
+          Rail lines from the railway tool: {railLines.routes
+            .map((r) => r.route_short_name)
+            .join(", ")} · {railLines.trips.length} trips
+        </label>
+      )}
       <div className="flex flex-wrap items-center gap-3">
         <label className="flex h-8 cursor-pointer items-center rounded-md border border-slate-300 bg-white px-3 hover:bg-slate-50">
           {rail ? "Replace rail timetable (JSON)" : "Add rail timetable (JSON)"}
@@ -373,9 +393,9 @@ export function JourneyPlanner({
       </div>
       {!timetable && (
         <p className="text-xs text-slate-600">
-          No timetable yet. Draw a street line, add a rail timetable published by the railway operations
-          planner, or place the example city (metro, tram, bus and a regional train with a timed connection)
-          at the centre of the map. Trains and street lines connect at stations of the same name.
+          No timetable yet. Draw a street line, publish rail service lines in the railway tool, add a rail
+          timetable file, or place the example city (metro, tram, bus and a regional train with a timed
+          connection) at the centre of the map. Trains and street lines connect at stations of the same name.
         </p>
       )}
       {summary && (

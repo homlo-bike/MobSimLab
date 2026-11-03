@@ -8,7 +8,8 @@ Benchmark your network: how long does it take to get from A to B, and how does t
 2. Choose the network to route on:
    - the **street line** you drew in the street line tool (draw it first, then open the planner; it runs at its headway off-peak and twice as often in the peaks, 07:00–09:00 and 16:00–19:00, from 05:00 to 00:30), and/or
    - the **example network**: a made-up city with a metro, a tram, a bus and a regional train, placed at the centre of the map. It is there to try the planner before your own timetables exist.
-   - a **rail timetable** published by the railway operations planner: under **Network**, click **Add rail timetable (JSON)** and pick the file (see *Rail timetables* below).
+   - the **rail lines** published in the railway tool (see *Rail timetables* below): they appear under **Network** as *Rail lines from the railway tool*, and the checkbox leaves them out, and/or
+   - a **rail timetable** file: under **Network**, click **Add rail timetable (JSON)** and pick the file.
 3. Click **A**, then click the map; then the same for **B**. Drag the markers to move them.
 4. Pick **Depart at** or **Arrive by** and a time.
 
@@ -23,7 +24,9 @@ Benchmark your network: how long does it take to get from A to B, and how does t
 
 ## Rail timetables
 
-The railway operations planner turns a railway design and its lines into exact, conflict-free trains. To route on them:
+The railway operations planner turns a railway design and its lines into exact, conflict-free trains. Draw the lines in the railway tool under **Service lines** and click **Publish timetable** (see [the railway tool](railway-tool.md#service-lines)); the journey planner then routes on the trains.
+
+A timetable can also be made outside the app, from the command line:
 
 1. In the railway tool, click **Download track topology (JSON)**.
 2. Describe the lines in a `lines.json` file: for each line its calls (station names), train, dwell, turn-back, stabling tracks and service bands (see `crates/rail-plan/examples/publish_journeys.rs`).
