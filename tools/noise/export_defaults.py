@@ -26,7 +26,9 @@ OUT = ROOT / "crates" / "noise" / "data" / "defaults.json"
 
 def assumption_check():
     """tools/assumptions/check.py as a module (its mode list and resolve rule)."""
-    spec = importlib.util.spec_from_file_location("assumption_check", ROOT / "tools" / "assumptions" / "check.py")
+    spec = importlib.util.spec_from_file_location(
+        "assumption_check", ROOT / "tools" / "assumptions" / "check.py"
+    )
     assert spec and spec.loader
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
@@ -43,7 +45,11 @@ def render() -> str:
         row = {}
         for m in ["*", *ac.MODES]:
             v = ac.resolve(p, m)
-            row[m] = [v.get("low", v["central"]), v["central"], v.get("high", v["central"])]
+            row[m] = [
+                v.get("low", v["central"]),
+                v["central"],
+                v.get("high", v["central"]),
+            ]
         glob = row["*"]
         out[p["key"]] = {k: x for k, x in row.items() if k == "*" or x != glob}
     data = {
@@ -60,7 +66,10 @@ def main() -> int:
     text = render()
     if a.check:
         if not OUT.exists() or OUT.read_text(encoding="utf-8") != text:
-            print(f"{OUT.relative_to(ROOT)} is stale; run tools/noise/export_defaults.py", file=sys.stderr)
+            print(
+                f"{OUT.relative_to(ROOT)} is stale; run tools/noise/export_defaults.py",
+                file=sys.stderr,
+            )
             return 1
         print("OK: noise defaults up to date")
         return 0

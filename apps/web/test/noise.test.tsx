@@ -221,7 +221,7 @@ function streetEngine(): StreetEngine {
 
 describe("noise band in the street line tool", () => {
   it("estimates the drawn line when the toggle is on and adds its checks", async () => {
-    const estimate = vi.fn((_: NoiseInput) => RESULT);
+    const estimate = vi.fn<(input: NoiseInput) => NoiseView>(() => RESULT);
     const noise: NoiseEngine = { estimate, image: vi.fn(() => new Uint8Array(32)), dispose: vi.fn() };
     const map = {
       on: vi.fn(),
