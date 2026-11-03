@@ -76,6 +76,7 @@ export const de: Messages = {
   "settings.fromProvider": "Name und E-Mail stammen von Ihrem Anmeldedienst.",
   "settings.largerTargets": "Größere Schaltflächen",
   "settings.reduceMotion": "Bewegung reduzieren",
+  "settings.existingRailways": "Bestehende Bahnstrecken aus OpenStreetMap anzeigen",
   "settings.savedToAccount": "In Ihrem Konto gespeichert, damit sie auf allen Geräten gelten.",
 
   "language.title": "Sprache",

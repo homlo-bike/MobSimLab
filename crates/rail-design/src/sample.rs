@@ -275,6 +275,53 @@ pub fn sample_streets(dz: &crate::design::Design) -> Vec<crate::street::Street> 
     out
 }
 
+/// Purpose: an example existing railway for a built example: the "Valley Line", already built,
+/// which the crossing line (track 7) continues at its end. It is of the crossing line's railway
+/// system, gauge, power and level, so the join is clean. Used by the tests and the topology
+/// example.
+pub fn sample_railways(dz: &crate::design::Design) -> Vec<crate::existing::ExistingRail> {
+    let (Some(g), Some(t)) = (dz.track(7), dz.doc_track(7)) else {
+        return vec![];
+    };
+    let Some(q) = g.centre.last() else {
+        return vec![];
+    };
+    let m = dz.track_mode(7);
+    let p = dz.track_params(7);
+    let ahead = P2::dir(q.h);
+    let coords = [0.0, 150.0, 400.0]
+        .iter()
+        .map(|k| dz.proj.to_lonlat(q.p.add(ahead.mul(*k))))
+        .collect();
+    let kind = match m {
+        RailMode::Tram => "tram",
+        RailMode::LightRail => "light_rail",
+        RailMode::Metro => "subway",
+        _ => "rail",
+    };
+    let electrified = if dz.third_rail(t) {
+        "rail"
+    } else if dz.overhead(t) {
+        "contact_line"
+    } else {
+        "no"
+    };
+    let level = g.level_at(q.s).unwrap_or(t.level);
+    vec![crate::existing::ExistingRail {
+        way: 2001,
+        kind: kind.into(),
+        status: "active".into(),
+        name: "Valley Line".into(),
+        gauge_mm: vec![p.gauge_mm],
+        electrified: electrified.into(),
+        voltage_v: None,
+        maxspeed_kmh: None,
+        service: String::new(),
+        layer: level.order() as i8 - Level::Street.order() as i8,
+        coords,
+    }]
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

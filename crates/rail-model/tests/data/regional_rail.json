@@ -2224,6 +2224,10 @@
       "angle_deg": 89.954,
       "x": -766.097,
       "y": 64.748,
+      "lonlat": [
+        6.9891098,
+        50.9005815
+      ],
       "track": 3,
       "chainage_m": 865.231,
       "rail_zone_m": 3.253,
@@ -2234,6 +2238,13 @@
       "line_speed_kmh": 160.0,
       "warning_time_s": 25.0,
       "approach_m": 1111.111,
+      "road_closure": {
+        "train_length_m": 170.0,
+        "reopen_s": 10.0,
+        "closure_s": 38.898,
+        "assumed_trains_per_hour_peak": 8.0,
+        "assumed_trains_per_hour_off_peak": 4.0
+      },
       "street": {
         "way": 1001,
         "name": "Station Road",
