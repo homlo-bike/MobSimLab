@@ -61,6 +61,16 @@ If someone else saved the same drawing while you were changing it, a banner name
 - **Red dashed leg:** no legal path. A one-way street, turn ban, vehicle limit, or a dead end without a turning circle blocks it.
 - **Red point:** no usable road nearby, or a stop on the wrong side of a one-way street.
 
+## Level crossings
+
+Where the line crosses a railway on the level, buses wait while the barriers or tram signals close the street. The expected wait is added to the running time of every leg that crosses, so the cycle time, the vehicles needed and the journey planner include it. The panel's **Level crossings** section lists each crossing with its wait per pass, closures an hour and how long the street is closed.
+
+- **Where the crossings come from:** the railway drawn in the railway tool (the last design you built in this session), or a track topology file (**Load track topology**, from the railway tool's **Download track topology**).
+- **When trains pass:** without a timetable, the service assumed for the railway: the longest peak headway of its mode in both directions (`timetable.policy_headway_peak_min`, so 8 regional or 24 tram passages an hour), each closing the street for the warning time, the train over the crossing at line speed (the mode's platform length as train length) and the barriers rising (`level_crossing.reopen_s`, 10 s; 5 s for tram signals). With **Load rail timetable closures**, the closures of the planned trains are used instead: `cargo run --release -p rail-plan --example level_crossing_closures -- rail-topology.json lines.json > closures.json`. Trains that stop near the crossing or run slower than line speed close it for longer, and trains meeting there close it once.
+- **The wait:** a bus that arrives at a random moment waits Σ c² / (2 T) on average, for closures c in a period T: the chance of meeting a closure times half its length, the same uniform delay as at a traffic signal (HCM). Running times use the busiest hour of the timetable (or the assumed peak); the off-peak value is shown too.
+- Crossings of one street within each other's stop lines (two railways side by side) are one place to wait.
+- Railway lines own their level crossings and are not delayed by road traffic. Trams drawn in the railway tool cross other railways at diamonds, which the rail timetable handles as conflicts.
+
 ## Directions and depot
 
 - Two **end stops** split the circuit into direction 0 and direction 1 (used for timetables and GTFS). One end stop, or none, makes a circular line.

@@ -83,7 +83,12 @@ export function Workspace({
   const [build, setBuild] = useState<Build | null>(null);
   // The street line as the tool last routed it, so the journey planner can ride it.
   const [line, setLine] = useState<StreetLineInput | null>(null);
-  useEffect(() => setLine(null), [projectId]);
+  // The track topology last built in the railway tool, so street lines wait at its level crossings.
+  const [railTopology, setRailTopology] = useState<unknown>(null);
+  useEffect(() => {
+    setLine(null);
+    setRailTopology(null);
+  }, [projectId]);
   if (import.meta.env.DEV) Object.assign(window, { mobsimMap: map });
 
   useEffect(() => {
@@ -258,6 +263,7 @@ export function Workspace({
               streetSetups={setups}
               initial={streetLines?.lines[0] ?? null}
               onSave={(l) => drawings.set("street-lines", { lines: [l] } satisfies StreetLinesDoc)}
+              railTopology={railTopology}
             />
           )}
           {project && drawings.loaded && tab === "create" && editable && chosen === "rail" && (
@@ -269,6 +275,7 @@ export function Workspace({
               existingRailways={existingRailways}
               initial={railway}
               onDocChange={(d) => drawings.set("railway", d)}
+              onTopologyChange={setRailTopology}
             />
           )}
           {project && drawings.loaded && tab === "gis" && (

@@ -42,6 +42,8 @@ const EMPTY_VIEW: LineView = {
   issues: [],
   length_m: 0,
   time_s: 0,
+  level_crossings: [],
+  crossing_wait_s: 0,
 };
 
 const HINTS: Record<Tool, string> = {
@@ -74,12 +76,23 @@ interface Props {
   fetchTile?: TileFetcher;
   /** Told about the line after every change, so the journey planner can ride it. */
   onLineChange?: (line: StreetLineInput) => void;
+  /**
+   * The track topology last built in the railway tool (contracts/rail-topology.schema.json): the line
+   * waits at its level crossings. A topology file loaded in the panel takes its place.
+   */
+  railTopology?: unknown;
   /** The planner's street setups from the GIS tab (bus lanes, separation…), over OSM. */
   streetSetups?: readonly StreetSetup[];
   /** The line saved with the project; its points are routed again once the streets around it have loaded. */
   initial?: SavedStreetLine | null;
   /** Told about the line after every change the planner makes, so the project can save it. */
   onSave?: (line: SavedStreetLine) => void;
+}
+
+/** A JSON file the planner loaded in the panel. */
+interface LoadedFile {
+  name: string;
+  text: string;
 }
 
 /**
@@ -96,6 +109,7 @@ export function StreetLineEditor({
   loadEngine = loadWasmEngine,
   fetchTile = fetchStreetTile,
   onLineChange,
+  railTopology = null,
   streetSetups = NO_SETUPS,
   initial = null,
   onSave,
@@ -120,6 +134,8 @@ export function StreetLineEditor({
   const [status, setStatus] = useState<string | null>("Starting the routing engine…");
   const [error, setError] = useState<string | null>(null);
   const [note, setNote] = useState<string | null>(null);
+  const [topologyFile, setTopologyFile] = useState<LoadedFile | null>(null);
+  const [closuresFile, setClosuresFile] = useState<LoadedFile | null>(null);
 
   // Latest values for map and keyboard handlers registered once.
   const latest = useRef({ tool, view, selected });
@@ -273,6 +289,15 @@ export function StreetLineEditor({
       map.off("moveend", onMove);
     };
   }, [map, profile !== null, fetchTile, run]);
+
+  // Level crossings: from a loaded topology file, else the railway tool's drawing; with timetable closures
+  // when loaded, else the service the topology assumes.
+  const topologyText = topologyFile?.text ?? (railTopology ? JSON.stringify(railTopology) : "");
+  const closuresText = closuresFile?.text ?? "";
+  useEffect(() => {
+    if (!profile) return;
+    run((e) => e.setLevelCrossings(topologyText, closuresText));
+  }, [profile !== null, topologyText, closuresText, run]);
 
   const color = profile ? MODES[profile.mode].color : MODES.bus.color;
   const lineChanged = useRef(onLineChange);
@@ -563,6 +588,10 @@ export function StreetLineEditor({
     setDepotStops,
     setShowDepot,
     setShowRoads,
+    loadTopology: (name, text) => setTopologyFile({ name, text }),
+    loadClosures: (name, text) => setClosuresFile({ name, text }),
+    clearTopology: () => setTopologyFile(null),
+    clearClosures: () => setClosuresFile(null),
   };
 
   const canPreview = circuitPath(view) !== null;
@@ -584,6 +613,11 @@ export function StreetLineEditor({
       depotStops={shownDepot}
       showDepot={showDepot}
       showRoads={showRoads}
+      crossingSources={{
+        topology: topologyFile?.name ?? (railTopology ? "railway tool drawing" : null),
+        topologyIsFile: topologyFile !== null,
+        closures: closuresFile?.name ?? null,
+      }}
       status={null}
       error={error}
       actions={actions}
