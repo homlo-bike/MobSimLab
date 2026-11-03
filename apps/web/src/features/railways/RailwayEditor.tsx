@@ -5,6 +5,7 @@ import { fetchStreetTile } from "../street-lines/engine";
 import { MIN_LOAD_ZOOM, tilesFor } from "../street-lines/tiles";
 import type { TileFetcher } from "../street-lines/types";
 import {
+  addSignal,
   addStation,
   addSwitch,
   autoLeads,
@@ -15,6 +16,7 @@ import {
   newTrack,
   stationPlaces,
   update,
+  updateSignal,
   type LocalConnection,
 } from "./doc";
 import { loadRailEngine } from "./engine";
@@ -53,12 +55,13 @@ import type {
 
 const HINTS: Record<RailTool, string> = {
   select:
-    "Click a station, track or switch to edit it. Drag stations and track points; drag a switch along its track.",
+    "Click a station, track, switch or signal to edit it. Drag stations and track points; drag a switch or signal along its track.",
   station: "Click on the map to place a station. Then drag it into place and rotate it.",
   track:
     "Click a connection point or the map to start, click to add points, click a connection point or double-click to finish. + / − change the level.",
   turnout: "Click on a track to place a turnout (double junction on double track), then draw the branch.",
   crossover: "Click on a double track to place a crossover.",
+  signal: "Click on a track to place a signal. F turns the selected signal round.",
   pan: "Drag to move the map.",
 };
 
@@ -286,7 +289,10 @@ export function RailwayEditor({
     return () => removeRailLayers(map);
   }, [map, lat]);
   const selection: FeatureCollection = useMemo(() => {
-    const features = (view?.layers.tracks.features ?? []).filter((f) => sel && f.properties.ref === sel.id);
+    const features = [
+      ...(view?.layers.tracks.features ?? []),
+      ...(view?.layers.signals.features ?? []).filter((f) => f.geometry.type === "LineString"),
+    ].filter((f) => sel && f.properties.ref === sel.id);
     return { type: "FeatureCollection", features };
   }, [view, sel]);
   useEffect(() => {
@@ -346,6 +352,7 @@ export function RailwayEditor({
   const dragging = useRef<
     | { kind: "station"; id: number; dx: number; dy: number }
     | { kind: "switch"; id: number; track: number; offset: number }
+    | { kind: "signal"; id: number }
     | { kind: "end" }
     | null
   >(null);
@@ -468,6 +475,12 @@ export function RailwayEditor({
         setDoc(d);
         setTool("track");
         startDraft({ type: "switch", switch: id, leg: 0 }, d, s.trackOpts.level, junction ? 2 : 1);
+      } else if (s.tool === "signal") {
+        const anchor = e.signalAnchor(ll, pxToM(15));
+        if (!anchor) return say("Click on a track, station track or switch leg to place a signal.");
+        const [d, id] = addSignal(s.doc, anchor, 1, "main");
+        setDoc(d);
+        setSel({ id });
       } else if (s.tool === "select") {
         const box: [[number, number], [number, number]] = [
           [ev.point.x - 5, ev.point.y - 5],
@@ -518,6 +531,15 @@ export function RailwayEditor({
         );
         return;
       }
+      if (dr?.kind === "signal") {
+        const anchor = e.signalAnchor(ll, pxToM(30));
+        if (!anchor) return;
+        cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(() =>
+          setDoc((d) => d && updateSignal(d, dr.id, (x) => ({ ...x, at: anchor }))),
+        );
+        return;
+      }
       if (s.tool === "track" && s.draft) {
         const conn = connectionAt(ev.point, s.draft.tracks);
         const at = e.toLocal(s.doc.origin, ll);
@@ -553,6 +575,8 @@ export function RailwayEditor({
         const ch = engine.current.chainage(sw.track, ll);
         if (!Number.isFinite(ch)) return;
         dragging.current = { kind: "switch", id: ref, track: sw.track, offset: ch - sw.s };
+      } else if (kind === "signal") {
+        dragging.current = { kind: "signal", id: ref };
       } else return;
       ev.preventDefault();
       map.dragPan.disable();
@@ -720,6 +744,10 @@ export function RailwayEditor({
         }
       }
       if (ev.key === "Escape") return setSel(null);
+      if (k === "f" && s.sel && s.doc && kindOf(s.doc, s.sel.id) === "signal") {
+        setDoc(updateSignal(s.doc, s.sel.id, (x) => ({ ...x, facing: x.facing === 1 ? -1 : 1 })));
+        return;
+      }
       if ((ev.key === "Delete" || ev.key === "Backspace") && s.sel && s.doc) {
         ev.preventDefault();
         if (s.sel.pi !== undefined) {
@@ -738,6 +766,7 @@ export function RailwayEditor({
         t: "track",
         b: "turnout",
         x: "crossover",
+        g: "signal",
         h: "pan",
       };
       if (tools[k]) setTool(tools[k]);
@@ -839,6 +868,21 @@ export function RailwayEditor({
     showIssue: (at: LonLat | null, ref: number | null) => {
       if (ref) setSel({ id: ref });
       if (at && map) map.easeTo({ center: at, zoom: Math.max(map.getZoom(), 16) });
+    },
+    generateSignals: () => {
+      const e = engine.current;
+      if (!doc || !e) return;
+      // Generate from the design without the current plan, so the new plan replaces it.
+      e.build({ ...doc, signals: null }, null);
+      const generated = e.generateSignals();
+      setDoc({ ...doc, signals: generated });
+      setSel(null);
+      setNote(`${generated.length} signals generated. Move, turn, add or delete them as needed.`);
+    },
+    clearSignals: () => {
+      if (!doc) return;
+      setDoc({ ...doc, signals: null });
+      setSel(null);
     },
     downloadTopology: () => {
       const t = engine.current?.topology();

@@ -660,6 +660,73 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 | all | 50 | 150 | 300 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Distance a driver needs to read a signal aspect before the braking point; lineside signals are typically readable for 10–15 s at line speed. Cab signalling (ETCS L2, CBTC) can set it to 0. |
 | metro, tram, light_rail | 0 | 50 | 150 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Lower speeds and short blocks; CBTC lines use 0. |
 
+### Train control and signalling of a railway system (which signals the railway design tool generates)
+
+`signalling.system` · unit: system · used by: generated signal plan (home and starter signals, block signals or cab-signalling block markers), blocking times
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | – | fixed_block | – | documented | unverified | [db-ril-819](#src-db-ril-819) | Mainline railways run on fixed blocks with lineside main and block signals; overlaps follow DB Ril 819.0202. |
+| tram | – | line_of_sight | – | cited | unverified | [bostrab](#src-bostrab) | Trams drive on sight (BOStrab); signals only protect switches, junctions and crossings with other railways. |
+| metro | fixed_block | cbtc | cbtc | documented | unverified | [tcqsm3](#src-tcqsm3), [vuchic-2007](#src-vuchic-2007) | New and resignalled metro lines use communications-based train control (CBTC); older lines keep fixed blocks with train stops. |
+| high_speed_rail | fixed_block | etcs_l2 | etcs_l2 | cited | unverified | [tsi-ccs](#src-tsi-ccs) | High-speed lines in the EU are equipped with ETCS (TSI CCS); Level 2 uses cab signalling with block marker boards instead of lineside block signals. Older lines use national cab signalling such as LZB. |
+
+### Distance of a signal in front of the switch point (blade tip) it protects
+
+`signalling.signal_before_switch_m` · unit: m · used by: generated signal plan
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 5 | 10 | 50 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | The signal stands just in front of the first switch it protects, so a train waiting at it does not foul the switch; room for the insulated joint or axle counter and the signal mast. Signals facing a switch from its legs stand at the clearance marker (the fouling point in the topology export) instead. |
+
+### Time a train must stand at the exit signal before its overlap is released
+
+`signalling.overlap_release_s` · unit: s · used by: interlocking
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 30 | 60 | 120 | educated-guess | unverified | [db-ril-819](#src-db-ril-819), [mobsimlab-derivation](#src-mobsimlab-derivation) | The overlap is released by time once the train has come to a stand in front of the exit signal (or at once when its next route locks); about one minute is common for electronic interlockings. |
+
+### Delay before a cancelled route is released in front of an approaching train (approach locking)
+
+`signalling.approach_release_s` · unit: s · used by: interlocking, traffic management
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 60 | 120 | 240 | educated-guess | unverified | [db-ril-819](#src-db-ril-819), [mobsimlab-derivation](#src-mobsimlab-derivation) | Time release of an approach-locked route: long enough for a train that has seen the proceed aspect to stop; about two minutes is common. |
+
+### Safety margin behind the rear of the train ahead under moving block
+
+`signalling.moving_block_margin_m` · unit: m · used by: train protection
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 25 | 50 | 100 | educated-guess | unverified | [ieee-1474-1](#src-ieee-1474-1), [mobsimlab-derivation](#src-mobsimlab-derivation) | CBTC and ETCS level 2 keep a safety margin beyond the braking curve to cover position uncertainty and the rear of the train ahead; suppliers use a few tens of metres. |
+
+### Overspeed above the permitted speed before the protection brakes
+
+`signalling.supervision_tolerance_kmh` · unit: km/h · used by: train protection
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 5 | 7.5 | 15 | cited | unverified | [era-subset-026](#src-era-subset-026) | ETCS ceiling speed supervision: the emergency brake intervention lies about 7.5 km/h above the permitted speed at low speeds and grows with speed; CBTC systems use similar margins. |
+
+### Share of the service braking rate the driver model plans with
+
+`sim.ato_brake_share` · unit: share · used by: driver model
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.7 | 0.85 | 1.0 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Drivers and ATO brake below the rate the protection supervises, so normal stops never touch the protection curve. |
+
+### Emergency braking rate as a multiple of the service braking rate
+
+`sim.emergency_brake_factor` · unit: factor · used by: train protection
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 1.2 | 1.3 | 1.5 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Emergency braking is typically 20–50 % stronger than full service braking on multiple units. |
+
 ## Infrastructure standards
 
 ### Track centre distance (double track, open line)
@@ -926,6 +993,22 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 | all | 20 | 25 | 40 | cited | unverified | [us-49cfr234](#src-us-49cfr234) | 49 CFR 234.225 requires at least 20 s of warning; railways usually add a few seconds for barriers to come down, so the central value is 25 s. Countries set their own times. |
 | tram, light_rail | 10 | 15 | 25 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Trams crossing at traffic signals request priority one signal cycle step ahead (amber plus clearance time of the conflicting traffic), about 10–20 s. To be confirmed against local signal timing. |
 
+### Level crossings with barriers: time from triggering until the crossing is proved closed
+
+`level_crossing.barrier_closing_s` · unit: s · used by: interlocking, road closure in simulation
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 10 | 15 | 25 | educated-guess | unverified | [ebo](#src-ebo), [mobsimlab-derivation](#src-mobsimlab-derivation) | Road lights show a few seconds before the barriers start to lower; lowering takes about 6–10 s; the crossing is then proved closed. |
+
+### Level crossings with road traffic signals only: time from triggering until closed
+
+`level_crossing.signal_closing_s` · unit: s · used by: interlocking, road closure in simulation
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 6 | 10 | 15 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Amber then red for road traffic, with a clearing time for vehicles already on the crossing. |
+
 ### Level crossings: time from the train clearing the crossing until road traffic may go again
 
 `level_crossing.reopen_s` · unit: s · used by: road closure per train in the track topology, expected wait of buses at level crossings in street line running times
@@ -1042,6 +1125,22 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 | Context | Low | Central | High | Basis | Check | Sources | Rationale |
 |---|---|---|---|---|---|---|---|
 | all | 1 | 2 | 4 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | One lane per direction is the most common urban street; OSM lanes=* wins when present. |
+
+### Speed limit of a street where OSM has no maxspeed (trams running in the street keep to it)
+
+`street.speed_limit_kmh` · unit: km/h · used by: speed of street-running trams, road traffic
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 30 | 50 | 60 | cited | unverified | [stvo](#src-stvo), [bostrab](#src-bostrab) | 50 km/h is the general limit inside built-up areas (StVO § 3(3)); many towns use 30 km/h on residential streets and some countries 60 km/h. Trams on track embedded in the street run under the road traffic rules (BOStrab), so the street's limit caps their speed there. OSM maxspeed wins when present. |
+
+### Speed in a living street or pedestrian zone (walking pace)
+
+`street.walking_pace_kmh` · unit: km/h · used by: speed of street-running trams, road traffic
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 4 | 7 | 10 | educated-guess | unverified | [stvo](#src-stvo), [mobsimlab-derivation](#src-mobsimlab-derivation) | Living streets and pedestrian zones allow walking pace only (StVO sign 325.1); courts read this as about 4–7 km/h, and trams in pedestrian zones often run at 10–15 km/h by local rule. |
 
 ### Driving side of buses, BRT and trolleybuses
 
@@ -1218,12 +1317,14 @@ and rationale per attribute: [`switches.yaml`](switches.yaml); geometry model:
 | Id | Source | Access | Licence of the source | Retrieved | Checked via |
 |---|---|---|---|---|---|
 | <a id="src-tsi-inf"></a>`tsi-inf` | [Commission Regulation (EU) No 1299/2014, technical specification for interoperability relating to the infrastructure subsystem (TSI INF), consolidated with (EU) 2019/776 and (EU) 2023/1694](https://eur-lex.europa.eu/eli/reg/2014/1299/oj) | free | © European Union; reuse authorised under Commission Decision 2011/833/EU | 2026-10-27 | search-snippet |
+| <a id="src-tsi-ccs"></a>`tsi-ccs` | [Commission Implementing Regulation (EU) 2023/1695, technical specification for interoperability relating to the control-command and signalling subsystems (TSI CCS), ETCS on high-speed lines](https://eur-lex.europa.eu/eli/reg_impl/2023/1695/oj) | free | © European Union; reuse authorised under Commission Decision 2011/833/EU | 2026-11-02 | none |
 | <a id="src-tsi-prm"></a>`tsi-prm` | [Commission Regulation (EU) No 1300/2014, TSI for accessibility for persons with disabilities and persons with reduced mobility (TSI PRM), consolidated with (EU) 2019/772 and (EU) 2023/1695](https://eur-lex.europa.eu/eli/reg/2014/1300/oj) | free | © European Union; reuse authorised under Commission Decision 2011/833/EU | 2026-10-27 | none |
 | <a id="src-tsi-ene"></a>`tsi-ene` | [Commission Regulation (EU) No 1301/2014, TSI for the energy subsystem (TSI ENE)](https://eur-lex.europa.eu/eli/reg/2014/1301/oj) | free | © European Union; reuse authorised under Commission Decision 2011/833/EU | 2026-10-27 | none |
 | <a id="src-eu-reco-2001-290"></a>`eu-reco-2001-290` | [Commission Recommendation 2001/290/EC on the basic parameters of the trans-European high-speed rail system](https://eur-lex.europa.eu/eli/reco/2001/290/oj) | free | © European Union; reuse authorised under Commission Decision 2011/833/EU | 2026-10-27 | search-snippet |
 | <a id="src-eu-dir-96-53"></a>`eu-dir-96-53` | [Council Directive 96/53/EC laying down maximum authorised dimensions and weights for road vehicles (Annex I, 1.2 width and 1.5 turning circle), as amended by Directive (EU) 2015/719](https://eur-lex.europa.eu/eli/dir/1996/53/oj) | free | © European Union; reuse authorised under Commission Decision 2011/833/EU | 2026-10-27 | none |
 | <a id="src-eu-dir-92-6"></a>`eu-dir-92-6` | [Council Directive 92/6/EEC on the installation and use of speed limitation devices for certain categories of motor vehicles (M3 buses set to 100 km/h)](https://eur-lex.europa.eu/eli/dir/1992/6/oj) | free | © European Union; reuse authorised under Commission Decision 2011/833/EU | 2026-10-27 | none |
 | <a id="src-unece-r107"></a>`unece-r107` | [UN Regulation No. 107, uniform provisions concerning the approval of category M2 or M3 vehicles (Annex 3, area per standing passenger by vehicle class)](https://unece.org/transport/vehicle-regulations-wp29/standards/addenda-1958-agreement-regulations-101-120) | free | United Nations document; free to reproduce with attribution | 2026-10-27 | none |
+| <a id="src-stvo"></a>`stvo` | [Straßenverkehrs-Ordnung (StVO), Germany](https://www.gesetze-im-internet.de/stvo_2013/) | free | Official work, no copyright (§ 5 UrhG) | 2026-11-02 | none |
 | <a id="src-ebo"></a>`ebo` | [Eisenbahn-Bau- und Betriebsordnung (EBO), Germany](https://www.gesetze-im-internet.de/ebo/) | free | Official work, no copyright (§ 5 UrhG) | 2026-10-27 | none |
 | <a id="src-us-49cfr234"></a>`us-49cfr234` | [US Code of Federal Regulations, 49 CFR Part 234 (Grade crossing safety), § 234.225: active warning devices give at least 20 seconds of warning before a train arrives](https://www.ecfr.gov/current/title-49/subtitle-B/chapter-II/part-234) | free | US Government work, public domain | 2026-11-02 | none |
 | <a id="src-bostrab"></a>`bostrab` | [Verordnung über den Bau und Betrieb der Straßenbahnen (BOStrab), Germany](https://www.gesetze-im-internet.de/strabbo_1987/) | free | Official work, no copyright (§ 5 UrhG) | 2026-10-27 | search-snippet |
@@ -1240,6 +1341,8 @@ and rationale per attribute: [`switches.yaml`](switches.yaml); geometry model:
 | <a id="src-uic-406"></a>`uic-406` | [UIC Code 406, Capacity, 2nd edition (2013)](https://shop.uic.org/) | paywalled | © UIC; numbers cited as facts | 2026-11-01 | none |
 | <a id="src-pachl-roc"></a>`pachl-roc` | [J. Pachl, Railway Operation and Control, VTD Rail Publishing (blocking time theory, route setting, release and approach times)](https://www.vtd-rail.com/) | paywalled | © the author; numbers cited as facts | 2026-11-01 | none |
 | <a id="src-ceder-2016"></a>`ceder-2016` | [Avishai Ceder, Public Transit Planning and Operation: Modeling, Practice and Behavior, 2nd edition, chapters 3–4 (frequency and headway determination)](https://www.routledge.com/Public-Transit-Planning-and-Operation-Modeling-Practice-and-Behavior-Second-Edition/Ceder/p/book/9781466563919) | paywalled | © Taylor & Francis; only numeric values are quoted | 2026-11-02 | none |
+| <a id="src-era-subset-026"></a>`era-subset-026` | [ERA, ERTMS/ETCS System Requirements Specification, SUBSET-026, chapter 3.13 (speed and distance monitoring) and appendix A.3.1 (ceiling speed supervision values)](https://www.era.europa.eu/era-folder/1-ccs-tsi-and-ertms-specifications) | free | © ERA; numbers cited as facts | 2026-11-02 | none |
+| <a id="src-ieee-1474-1"></a>`ieee-1474-1` | [IEEE 1474.1, Standard for Communications-Based Train Control (CBTC) Performance and Functional Requirements](https://standards.ieee.org/ieee/1474.1/) | paywalled | © IEEE; numbers cited as facts | 2026-11-02 | none |
 | <a id="src-tcqsm3"></a>`tcqsm3` | [TCRP Report 165, Transit Capacity and Quality of Service Manual, 3rd edition (2013)](https://nap.nationalacademies.org/catalog/24766) | free | © National Academy of Sciences; free to read; numbers cited as facts | 2026-10-27 | none |
 | <a id="src-fta-c9030"></a>`fta-c9030` | [FTA Circular 9030.1E, Urbanized Area Formula Program — spare ratio guideline (spares ≤ 20 % of vehicles in maximum service for fleets of 50 or more)](https://www.transit.dot.gov/regulations-and-guidance/fta-circulars/urbanized-area-formula-program-program-guidance-and) | free | US Government work, public domain | 2026-10-27 | search-snippet |
 | <a id="src-tcrp-spare-ratio"></a>`tcrp-spare-ratio` | [TCRP Synthesis / National Academies chapter on bus spare ratios quoting FTA Circular 9030.1C ch. V para 9.a.5](https://nap.nationalacademies.org/read/22409/chapter/2) | free | © National Academy of Sciences; free to read | 2026-10-27 | search-snippet |

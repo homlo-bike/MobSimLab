@@ -14,11 +14,12 @@ The drawing stays while you switch tools or close the railway tool. It is not sa
 
 | Tool | Key | What it does |
 |------|-----|--------------|
-| Select and move | V | Click a station, track or switch to inspect it. Drag a selected station to move it, or its round handle to rotate it. Drag a selected switch along its track. |
+| Select and move | V | Click a station, track, switch or signal to inspect it. Drag a selected station to move it, or its round handle to rotate it. Drag a selected switch or signal along its track. |
 | Station | S | Click the map to place a station with the level and platforms set in the panel. |
 | Track | T | Draw a track (see below). |
 | Turnout | B | Click a straight part of a track to place a turnout, then draw the branch from it. On double track it places a double junction. |
 | Crossover | X | Click a straight part of a double track to place a crossover (or a scissors crossover). |
+| Signal | G | Click a track, station track or switch leg to place a signal. **F** turns the selected signal round. |
 | Pan | H | Move the map without editing. |
 
 **Delete** removes the selected element or point. **Escape** clears the selection or cancels the track being drawn.
@@ -88,9 +89,30 @@ When the map is zoomed in to zoom 13 or closer, the tool loads the streets on sc
 
 Where streets did not load (for example, while signed out), the panel says so and those crossings are not checked.
 
+## Trams in the street
+
+Tram and light rail track at street level is embedded in the street (unless you set the track bed to ballast). Where it runs along a street loaded from OpenStreetMap, the panel lists it under **Street running**:
+
+- **Own lane**: the street is wide enough for the tram's lane and a road lane each way beside it. When zoomed in, solid lines mark the tram lane.
+- **In traffic**: it is not, so cars and buses drive on the track and the tram runs with them. Dashed lines mark where the tram runs. On a main road this is a warning, because the tram is held up and runs late. Give it its own lane, or use traffic signals that let the tram go first.
+- **Pedestrian zone**: the tram runs at walking pace.
+
+On the street the tram keeps to the street's speed limit (from OpenStreetMap, otherwise 50 km/h). Running times, signals and the track topology use the lower speed. Tram stops on the street get a note on how passengers board: from the pavement, or from an island platform in the middle of the street that needs a pedestrian crossing. Where the tram crosses another street at a junction, that is a level crossing with traffic signals (see above).
+
+## Signals
+
+Railway operations needs signals. Until you make a signal plan, it gets signals generated from the design. **Generate signals** in the panel puts that plan on the map, so you can change it:
+
+- In front of every switch, and at the point on each leg where a train is clear of the other track, there is a main signal. Same-level crossings get one on each side. On storage track these are shunting signals.
+- At the ends of platform tracks that lead on, there are starter signals.
+- On plain line, block signals in both directions split the line into blocks no longer than a train needs to stop from line speed, plus the sighting distance and the overlap. Metro (CBTC) and high-speed lines (ETCS Level 2) are signalled in the cab, so these are block markers (blue) instead of signals with lights.
+- Trams drive on sight. They get signals only at switches and crossings with other railways.
+
+Each signal is drawn on the right of the track, with an arm pointing the way it governs: red for main and block signals, white for shunting, yellow for distant signals. Click a signal to change its kind or name, turn it round, or delete it. Drag it along the track to move it. Signals you place with the Signal tool are added to the plan. **Generate again** replaces the plan, and **Remove plan** goes back to generated signals. If you delete or redraw a track, its signals get a warning.
+
 ## Track topology for operations
 
-**Download track topology (JSON)** in the panel saves the drawing as a graph for timetables and train control. It contains track sections, the movements allowed at every switch and join, platform edges, switches, crossings, level crossings with streets and depot groups. The format is described in [contracts](../../contracts/README.md). If the design has errors, the file says so (`valid: false`), and the button shows it.
+**Download track topology (JSON)** in the panel saves the drawing as a graph for timetables and train control. It contains track sections, the movements allowed at every switch and join, platform edges, switches, crossings, level crossings with streets, street running, signals and depot groups. The format is described in [contracts](../../contracts/README.md). If the design has errors, the file says so (`valid: false`), and the button shows it.
 
 ## Checks
 

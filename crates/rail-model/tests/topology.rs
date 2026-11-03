@@ -196,3 +196,25 @@ fn crossing_outside_the_usual_rules_is_imported_with_a_warning() {
         .iter()
         .all(|lc| lc.spec.special_measures.is_empty()));
 }
+
+#[test]
+fn train_protection_is_read_per_section() {
+    let path = format!(
+        "{}/tests/data/regional_rail.json",
+        env!("CARGO_MANIFEST_DIR")
+    );
+    let json: serde_json::Value =
+        serde_json::from_str(&std::fs::read_to_string(path).unwrap()).unwrap();
+    let mut json = json;
+    for s in json["sections"].as_array_mut().unwrap() {
+        s["train_protection"] = "etcs_l2".into();
+    }
+    let imp = import_json(&json.to_string(), &ImportOptions::default()).unwrap();
+    assert!(imp
+        .spec
+        .tracks
+        .iter()
+        .all(|t| t.protection == rail_model::TrainProtection::EtcsL2));
+    json["sections"][0]["train_protection"] = "semaphore".into();
+    assert!(import_json(&json.to_string(), &ImportOptions::default()).is_err());
+}

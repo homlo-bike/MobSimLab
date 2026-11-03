@@ -124,6 +124,10 @@ pub struct ModeParams {
     pub street_lane_width_m: f64,
     /// Lanes of a two-way street where OSM has no `lanes`.
     pub street_lanes: f64,
+    /// Speed limit of a street without an OSM `maxspeed`, km/h.
+    pub street_speed_limit_kmh: f64,
+    /// Walking pace in a living street or pedestrian zone, km/h.
+    pub street_walking_pace_kmh: f64,
     /// Road vehicles stop this far outside a crossing's conflict area, m.
     pub road_stop_clearance_m: f64,
     /// Whether the mode may cross streets on the level (`yes` or `no`).
@@ -141,6 +145,18 @@ pub struct ModeParams {
     pub policy_headway_peak_min: f64,
     /// Longest off-peak headway of a line, min (`timetable.policy_headway_offpeak_min`).
     pub policy_headway_offpeak_min: f64,
+    /// Train control: `line_of_sight`, `fixed_block`, `cbtc` or `etcs_l2`.
+    pub signalling_system: String,
+    /// Distance of a signal in front of the switch point it protects, m.
+    pub signal_before_switch_m: f64,
+    /// Overlap for approach speeds up to 40 km/h, m.
+    pub overlap_31_40_m: f64,
+    /// Overlap for approach speeds of 41–60 km/h, m.
+    pub overlap_41_60_m: f64,
+    /// Overlap above 60 km/h, m.
+    pub overlap_above_60_m: f64,
+    /// Sighting distance added to the braking distance for lineside signals, m.
+    pub sighting_m: f64,
 }
 
 impl ModeParams {

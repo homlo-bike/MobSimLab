@@ -9,6 +9,7 @@
 //!   ramps sized from the maximum gradient.
 //! - [`switch`]: catalogue turnouts, double junctions, crossovers and scissors crossovers.
 //! - [`design`]: builds everything and runs the live checks of 06 §9.2.
+//! - [`signal`]: the signal plan, generated from the design and edited by the planner.
 //! - [`street`]: streets from OpenStreetMap and the level crossings where track crosses them.
 //! - [`view`]: GeoJSON layers, handles and summaries for the map editor.
 //! - [`topology`]: the track graph for railway operations (`contracts/rail-topology.schema.json`).
@@ -26,8 +27,10 @@ pub mod model;
 pub mod params;
 pub mod proj;
 pub mod sample;
+pub mod signal;
 pub mod station;
 pub mod street;
+pub mod street_running;
 pub mod switch;
 pub mod topology;
 pub mod view;

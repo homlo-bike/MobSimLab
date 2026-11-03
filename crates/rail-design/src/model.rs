@@ -88,6 +88,10 @@ pub struct Network {
     /// Switches and crossovers.
     #[serde(default)]
     pub switches: Vec<Switch>,
+    /// The signal plan, once generated and edited by the planner; `None` until then (the
+    /// topology export then generates one).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub signals: Option<Vec<crate::signal::Signal>>,
 }
 
 impl Network {
@@ -101,6 +105,7 @@ impl Network {
             stations: vec![],
             tracks: vec![],
             switches: vec![],
+            signals: None,
         }
     }
     /// Purpose: the next free id.

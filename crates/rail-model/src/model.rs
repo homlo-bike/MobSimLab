@@ -31,6 +31,8 @@ pub type GroupId = u32;
 
 /// A piece reachable from another: (piece, direction entered, switch position used).
 pub type Successor = (PieceId, Dir, Option<(SwitchId, SwitchPosition)>);
+/// A piece end reached from another: (piece, end reached, switch position used).
+pub type Neighbour = (PieceId, End, Option<(SwitchId, SwitchPosition)>);
 /// A route found by the search: steps, switch positions, exit.
 type FoundRoute = (Vec<Step>, Vec<(SwitchId, SwitchPosition)>, RouteExit);
 
@@ -79,6 +81,12 @@ pub struct Switch {
     pub throw_time_s: f64,
     /// Permitted speed on the diverging leg, m/s.
     pub diverging_speed_mps: f64,
+    /// The piece end at the common (toe) leg.
+    pub common: (PieceId, End),
+    /// The piece end at the straight leg.
+    pub straight: (PieceId, End),
+    /// The piece end at the diverging leg.
+    pub diverging: (PieceId, End),
 }
 
 /// Where a signal stands, as the place a train passes it.
@@ -112,6 +120,8 @@ pub struct Signal {
     pub at: SignalAt,
     /// Overlap beyond the signal, metres.
     pub overlap_m: f64,
+    /// Whether it stands at the lineside (false: a cab-signalling block marker).
+    pub lineside: bool,
 }
 
 /// One piece passed in one direction, with an extra speed cap where the
@@ -482,6 +492,9 @@ impl Model {
                             id: id.clone(),
                             throw_time_s: *throw_time_s,
                             diverging_speed_mps: *diverging_speed_mps,
+                            common: c,
+                            straight: s,
+                            diverging: d,
                         });
                     }
                 }
@@ -564,6 +577,7 @@ impl Model {
                 kind: s.kind,
                 at,
                 overlap_m: s.overlap_m.unwrap_or(spec.default_overlap_m),
+                lineside: s.lineside,
             });
         }
 
@@ -1104,6 +1118,20 @@ impl Model {
         let pc = &self.pieces[piece as usize];
         let at_from = matches!((entry, dir), (true, Dir::Up) | (false, Dir::Down));
         (pc.track, if at_from { pc.from_m } else { pc.to_m }, dir)
+    }
+
+    /// Purpose: what a piece end connects to, whatever the allowed directions.
+    /// Output: (piece, end reached, switch position used) for each connection.
+    pub fn neighbours(&self, piece: PieceId, end: End) -> Vec<Neighbour> {
+        self.adj[end_index(piece, end)]
+            .iter()
+            .map(|a| (a.piece, a.end, a.switch))
+            .collect()
+    }
+
+    /// Purpose: the buffer stop at a piece end, if any.
+    pub fn buffer_at(&self, piece: PieceId, end: End) -> Option<&str> {
+        self.buffer_ends.get(&(piece, end)).map(|s| s.as_str())
     }
 
     /// Purpose: whether a piece is on a storage track.

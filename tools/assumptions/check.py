@@ -86,6 +86,8 @@ RAIL_FIELDS = {
     "colour": "mode.colour",
     "street_lane_width_m": "street.lane_width_m",
     "street_lanes": "street.lanes",
+    "street_speed_limit_kmh": "street.speed_limit_kmh",
+    "street_walking_pace_kmh": "street.walking_pace_kmh",
     "road_stop_clearance_m": "crossing.clearance_m",
     "level_crossing_permitted": "level_crossing.permitted",
     "level_crossing_max_speed_kmh": "level_crossing.max_line_speed_kmh",
@@ -94,6 +96,12 @@ RAIL_FIELDS = {
     "level_crossing_reopen_s": "level_crossing.reopen_s",
     "policy_headway_peak_min": "timetable.policy_headway_peak_min",
     "policy_headway_offpeak_min": "timetable.policy_headway_offpeak_min",
+    "signalling_system": "signalling.system",
+    "signal_before_switch_m": "signalling.signal_before_switch_m",
+    "overlap_31_40_m": "signalling.overlap_31_40_m",
+    "overlap_41_60_m": "signalling.overlap_41_60_m",
+    "overlap_above_60_m": "signalling.overlap_above_60_m",
+    "sighting_m": "signalling.sighting_m",
 }
 RAIL_LABELS = {
     "tram": "Tram",

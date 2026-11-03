@@ -114,6 +114,31 @@ pub struct TrackSpec {
     /// Railway system (mode) of the track, for example `metro` or `regional`.
     #[serde(default)]
     pub mode: Option<String>,
+    /// Train protection on the track (`signalling.system`).
+    #[serde(default)]
+    pub protection: TrainProtection,
+}
+
+/// Train protection system of a track (ADR-0032 §4).
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum TrainProtection {
+    /// Driving on sight (trams): no movement authority beyond what the driver sees.
+    LineOfSight,
+    /// Fixed block with lineside signals.
+    #[default]
+    FixedBlock,
+    /// Communications-based train control: moving block.
+    Cbtc,
+    /// ETCS level 2 with moving block.
+    EtcsL2,
+}
+
+impl TrainProtection {
+    /// Purpose: whether trains may follow each other inside a block (moving block).
+    pub fn moving_block(self) -> bool {
+        matches!(self, TrainProtection::Cbtc | TrainProtection::EtcsL2)
+    }
 }
 
 /// Position of a switch.
@@ -189,6 +214,14 @@ pub struct SignalSpec {
     /// Overlap beyond this signal in metres; the network default if absent.
     #[serde(default)]
     pub overlap_m: Option<f64>,
+    /// Whether the signal stands at the lineside (false: a block marker
+    /// under CBTC or ETCS level 2, shown only in the cab).
+    #[serde(default = "yes")]
+    pub lineside: bool,
+}
+
+fn yes() -> bool {
+    true
 }
 
 /// Several tracks that form one train detection section, for example the

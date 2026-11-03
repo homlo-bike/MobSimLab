@@ -810,6 +810,38 @@
       check: unverified
       rationale: Trams crossing at traffic signals request priority one signal cycle step ahead (amber plus clearance time of the conflicting traffic), about 10–20 s. To be confirmed against local signal timing.
 
+- key: level_crossing.barrier_closing_s
+  label: "Level crossings with barriers: time from triggering until the crossing is proved closed"
+  group: Infrastructure standards
+  unit: s
+  used_by: [interlocking, road closure in simulation]
+  values:
+    - context:
+        mode: "*"
+      low: 10
+      central: 15
+      high: 25
+      basis: educated-guess
+      sources: [ebo, mobsimlab-derivation]
+      check: unverified
+      rationale: "Road lights show a few seconds before the barriers start to lower; lowering takes about 6–10 s; the crossing is then proved closed."
+
+- key: level_crossing.signal_closing_s
+  label: "Level crossings with road traffic signals only: time from triggering until closed"
+  group: Infrastructure standards
+  unit: s
+  used_by: [interlocking, road closure in simulation]
+  values:
+    - context:
+        mode: "*"
+      low: 6
+      central: 10
+      high: 15
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: "Amber then red for road traffic, with a clearing time for vehicles already on the crossing."
+
 - key: level_crossing.reopen_s
   label: "Level crossings: time from the train clearing the crossing until road traffic may go again"
   group: Infrastructure standards

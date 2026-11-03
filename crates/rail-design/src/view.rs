@@ -102,6 +102,8 @@ pub fn view(dz: &Design) -> Value {
         "masts",
         "markers",
         "level_crossings",
+        "signals",
+        "street_running",
         "corridors",
         "connections",
     ] {
@@ -538,6 +540,70 @@ pub fn view(dz: &Design) -> Value {
         }
     }
 
+    // Street running: the edges of the tram's own lane (solid) or, in mixed traffic, of the
+    // space the tram sweeps in the traffic lane (dashed).
+    for r in &dz.street_running {
+        let Some(g) = dz.track(r.track) else {
+            continue;
+        };
+        if r.running == crate::street_running::Running::PedestrianZone {
+            continue;
+        }
+        let pts = slice(&g.centre, r.from_m, r.to_m);
+        let z = Level::Street.order();
+        let kind = match r.running {
+            crate::street_running::Running::Reserved => "tram_lane",
+            _ => "shared_lane",
+        };
+        for side in [-1.0, 1.0] {
+            ly.line(
+                "street_running",
+                &offset_line(&pts, side * r.tram_lane_m / 2.0),
+                json!({"kind": kind, "z": z, "ref": r.track, "id": r.id}),
+            );
+        }
+    }
+
+    // Signals of the plan: a post on the right of the track in the direction of travel, and a
+    // short arm pointing that way, so the facing reads on the map.
+    let mut signal_list: Vec<Value> = Vec::new();
+    for sg in net.signals.iter().flatten() {
+        let Some((p, h)) = crate::signal::locate(dz, &sg.at) else {
+            continue;
+        };
+        let dir = P2::dir(h).mul(f64::from(sg.facing.signum()));
+        let right = dir.left().mul(-1.0);
+        let z = match sg.at {
+            crate::signal::SignalAt::Track { track, s, .. } => {
+                dz.track(track).map_or(2, |g| g.order_at(s))
+            }
+            crate::signal::SignalAt::Station { station, .. } => {
+                dz.station(station).map_or(2, |st| st.level.order())
+            }
+            crate::signal::SignalAt::Leg { switch, .. } => dz
+                .switch(switch)
+                .and_then(|sw| dz.track(sw.track).map(|g| g.order_at(sw.s0)))
+                .unwrap_or(2),
+        };
+        let lineside = !(sg.kind == crate::signal::SignalKind::Block
+            && dz
+                .signal_params(&sg.at)
+                .is_some_and(|p| crate::signal::system_of(p) == crate::signal::System::Cab));
+        let props = |kind: &str| json!({"kind": kind, "z": z, "ref": sg.id, "signal": sg.kind, "lineside": lineside});
+        let (foot, head) = (p.add(right.mul(1.6)), p.add(right.mul(3.0)));
+        ly.line("signals", &[foot, head], props("signal_post"));
+        ly.line(
+            "signals",
+            &[head, head.add(dir.mul(2.0))],
+            props("signal_arm"),
+        );
+        ly.point("signals", head, props("signal"));
+        signal_list.push(json!({
+            "id": sg.id, "kind": sg.kind, "name": sg.name, "facing": sg.facing, "at": sg.at,
+            "lineside": lineside, "lonlat": ly.ll(head),
+        }));
+    }
+
     // Track pieces: centre line (beds, sleepers, single-line view), rails, wires and third rail.
     let gaps: Vec<(u32, f64, f64)> = dz
         .switches
@@ -791,6 +857,13 @@ pub fn view(dz: &Design) -> Value {
         })
         .collect();
 
+    let street_running: Vec<Value> = dz.street_running.iter().map(|r| json!({
+            "id": r.id, "track": r.track, "running": r.running, "speed_limit_kmh": r.speed_limit_kmh,
+            "length_m": r.to_m - r.from_m, "street": r.street.name, "class": r.street.class, "bus": r.street.bus,
+            "stops": r.stops,
+            "lonlat": dz.track(r.track).map(|g| ly.ll(crate::geom::at_s(&g.centre, (r.from_m + r.to_m) / 2.0).p)),
+        })).collect::<Vec<_>>();
+
     json!({
         "layers": ly.finish(),
         "connections": conn_out,
@@ -805,6 +878,9 @@ pub fn view(dz: &Design) -> Value {
         "modes": dz.modes.iter().map(|(m, p)| (m.id().to_string(), json!({"params": p, "turnouts": turnouts(*m)}))).collect::<Map<String, Value>>(),
         "crossings": crossings,
         "level_crossings": level_crossings,
+        "signals": signal_list,
+        "street_running": street_running,
+        "signals_planned": net.signals.is_some(),
         "counts": counts,
         "bbox": bbox,
     })

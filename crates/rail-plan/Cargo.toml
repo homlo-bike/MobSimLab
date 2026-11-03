@@ -11,6 +11,8 @@ rust-version.workspace = true
 serde = { version = "1", features = ["derive"] }
 rail-model = { path = "../rail-model" }
 rail-dynamics = { path = "../rail-dynamics" }
+rail-design = { path = "../rail-design" }
+journey-planner = { path = "../journey-planner" }
 
 [dev-dependencies]
 serde_json = "1"

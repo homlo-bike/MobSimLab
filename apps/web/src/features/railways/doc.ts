@@ -9,6 +9,8 @@ import type {
   Network,
   Power,
   RailView,
+  Signal,
+  SignalAt,
   Station,
   Switch,
   SwitchKind,
@@ -30,18 +32,39 @@ const STATION_NAMES = [
   "Westfield",
 ];
 
-/** Purpose: the next free id (ids are unique across stations, tracks and switches). */
+/** Purpose: the next free id (ids are unique across stations, tracks, switches and signals). */
 export function nextId(doc: Network): number {
-  const ids = [...doc.stations, ...doc.tracks, ...doc.switches].map((o) => o.id);
+  const ids = [...doc.stations, ...doc.tracks, ...doc.switches, ...(doc.signals ?? [])].map((o) => o.id);
   return ids.length ? Math.max(...ids) + 1 : 1;
 }
 
 /** Purpose: what kind of element an id belongs to. */
-export function kindOf(doc: Network, id: number): "station" | "track" | "switch" | null {
+export function kindOf(doc: Network, id: number): "station" | "track" | "switch" | "signal" | null {
   if (doc.stations.some((s) => s.id === id)) return "station";
   if (doc.tracks.some((s) => s.id === id)) return "track";
   if (doc.switches.some((s) => s.id === id)) return "switch";
+  if (doc.signals?.some((s) => s.id === id)) return "signal";
   return null;
+}
+
+/**
+ * Purpose: add a signal. A document without a signal plan starts one with this signal (the
+ * generated signals are then no longer used; "Generate signals" fills the plan).
+ * Output: the document and the new signal's id.
+ */
+export function addSignal(
+  doc: Network,
+  at: SignalAt,
+  facing: 1 | -1,
+  kind: Signal["kind"],
+): [Network, number] {
+  const id = nextId(doc);
+  return [{ ...doc, signals: [...(doc.signals ?? []), { id, at, facing, kind, name: "" }] }, id];
+}
+
+/** Purpose: replace one signal by id with an updated copy. */
+export function updateSignal(doc: Network, id: number, f: (s: Signal) => Signal): Network {
+  return { ...doc, signals: (doc.signals ?? []).map((s) => (s.id === id ? f(s) : s)) };
 }
 
 /** Purpose: an empty document for a mode. */
@@ -174,7 +197,7 @@ const refersTo = (a: Anchor | null, kind: "station" | "switch", ids: number[]) =
     (kind === "switch" && a.type === "switch" && ids.includes(a.switch)));
 
 /**
- * Purpose: delete a station, track or switch. Tracks attached to a deleted station or switch
+ * Purpose: delete a station, track, switch or signal. Tracks attached to a deleted station or switch
  * keep their shape: their end becomes a free point where the connection was.
  * Inputs: `anchorAt` gives the local position of an anchor from the current view.
  */
@@ -188,6 +211,7 @@ export function deleteElement(
   let tracks = doc.tracks;
   let switches = doc.switches;
   let goneSwitches: number[] = [];
+  if (kind === "signal") return { ...doc, signals: (doc.signals ?? []).filter((s) => s.id !== id) };
   if (kind === "station") stations = stations.filter((s) => s.id !== id);
   if (kind === "switch") goneSwitches = [id];
   if (kind === "track") {

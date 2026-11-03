@@ -32,6 +32,7 @@ import { JourneyPlanner } from "../src/features/journey-planner/JourneyPlanner";
 import {
   DEFAULT_SERVICE_DAY,
   exampleNetwork,
+  parseRailTimetable,
   servicePeriods,
   streetLineTimetable,
 } from "../src/features/journey-planner/network";
@@ -249,6 +250,59 @@ function fakeLoader() {
   return { loader, calls, plan };
 }
 
+const RAIL_JSON = JSON.stringify({
+  stops: [
+    {
+      stop_id: "p1.0.l",
+      stop_name: "Central",
+      stop_lat: 50.0,
+      stop_lon: 10.0,
+      parent_station: "group:central",
+    },
+    {
+      stop_id: "p2.0.l",
+      stop_name: "Airport",
+      stop_lat: 50.05,
+      stop_lon: 10.1,
+      parent_station: "group:airport",
+    },
+  ],
+  routes: [{ route_id: "S1", route_short_name: "S1", mode: "regional_rail" }],
+  trips: [
+    {
+      trip_id: "S1-0-000",
+      route_id: "S1",
+      stop_times: [
+        { stop_id: "p1.0.l", stop_sequence: 1, arrival_time: 21600, departure_time: 21600, drop_off_type: 1 },
+        { stop_id: "p2.0.l", stop_sequence: 2, arrival_time: 22200, departure_time: 22200, pickup_type: 1 },
+      ],
+    },
+  ],
+});
+
+describe("rail timetables", () => {
+  it("reads a published rail timetable and keeps its ids apart from street lines", () => {
+    const r = parseRailTimetable(RAIL_JSON);
+    if ("error" in r) throw new Error(r.error);
+    const tt = r.timetable;
+    expect(tt.stops.map((s) => s.stop_id)).toEqual(["rail:p1.0.l", "rail:p2.0.l"]);
+    expect(tt.stops[0]!.parent_station).toBe("rail:group:central");
+    expect(tt.stops[0]!.stop_name).toBe("Central");
+    expect(tt.routes[0]!.route_id).toBe("rail:S1");
+    expect(tt.routes[0]!.route_short_name).toBe("S1");
+    expect(tt.trips[0]!.route_id).toBe("rail:S1");
+    expect(tt.trips[0]!.stop_times.map((s) => s.stop_id)).toEqual(["rail:p1.0.l", "rail:p2.0.l"]);
+  });
+
+  it("rejects files that are not timetables", () => {
+    expect(parseRailTimetable("nope")).toEqual({ error: "The file is not JSON." });
+    expect(parseRailTimetable("[]")).toEqual({ error: "The file is not a published timetable." });
+    expect(parseRailTimetable(JSON.stringify({ stops: [] }))).toEqual({
+      error: "The timetable has no stops or no trips.",
+    });
+  });
+});
+
 describe("JourneyPlanner panel", () => {
   it("places the example city, plans A to B and shows the time split and the day profile", async () => {
     const { loader, calls, plan } = fakeLoader();
@@ -279,5 +333,37 @@ describe("JourneyPlanner panel", () => {
     expect((screen.getByLabelText("Time of day") as HTMLInputElement).value).toBe("10:00");
     fireEvent.click(screen.getByRole("button", { name: "Show as table" }));
     expect(screen.getAllByRole("row").length).toBeGreaterThan(100);
+  });
+
+  it("adds a rail timetable file to the network the planner routes on", async () => {
+    const { loader, calls } = fakeLoader();
+    render(<JourneyPlanner map={null} loadPlanner={loader} />);
+    const input = screen.getByLabelText("Rail timetable file");
+    fireEvent.change(input, {
+      target: { files: [new File([RAIL_JSON], "rail-timetable.json", { type: "application/json" })] },
+    });
+    await waitFor(() => expect(calls.length).toBe(1));
+    expect(calls[0]!.timetable.trips.map((t) => t.trip_id)).toEqual(["rail:S1-0-000"]);
+    expect(screen.getByTestId("rail-timetable").textContent).toContain("S1 · 1 trips");
+
+    // With the example city too, both are routed on together.
+    fireEvent.click(screen.getByRole("button", { name: "Place example network here" }));
+    await waitFor(() => expect(calls.length).toBe(2));
+    expect(calls[1]!.timetable.routes.map((r) => r.route_id)).toEqual(["M1", "T2", "3", "R5", "rail:S1"]);
+
+    fireEvent.click(screen.getByRole("button", { name: "Remove rail timetable" }));
+    await waitFor(() => expect(calls.length).toBe(3));
+    expect(calls[2]!.timetable.routes).toHaveLength(4);
+  });
+
+  it("says why a rail timetable file was not added", async () => {
+    const { loader } = fakeLoader();
+    render(<JourneyPlanner map={null} loadPlanner={loader} />);
+    fireEvent.change(screen.getByLabelText("Rail timetable file"), {
+      target: { files: [new File(["{}"], "empty.json")] },
+    });
+    await waitFor(() =>
+      expect(screen.getByText("empty.json: The timetable has no stops or no trips.")).toBeTruthy(),
+    );
   });
 });

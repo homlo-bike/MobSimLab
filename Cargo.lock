@@ -202,6 +202,7 @@ version = "0.1.0"
 dependencies = [
  "serde",
  "serde_json",
+ "unicode-normalization",
 ]
 
 [[package]]
@@ -427,6 +428,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "rail-interlocking"
+version = "0.1.0"
+dependencies = [
+ "proptest",
+ "rail-model",
+ "serde",
+]
+
+[[package]]
 name = "rail-model"
 version = "0.1.0"
 dependencies = [
@@ -439,6 +449,8 @@ dependencies = [
 name = "rail-plan"
 version = "0.1.0"
 dependencies = [
+ "journey-planner",
+ "rail-design",
  "rail-dynamics",
  "rail-model",
  "serde",
@@ -450,6 +462,10 @@ name = "rail-sim"
 version = "0.1.0"
 dependencies = [
  "proptest",
+ "rail-dynamics",
+ "rail-interlocking",
+ "rail-model",
+ "rail-plan",
  "serde",
  "serde_json",
 ]

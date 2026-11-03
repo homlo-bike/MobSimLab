@@ -50,8 +50,14 @@ export const COLORS = {
   info: "#3a6aa0",
   ok: "#2e7a3a",
   road: "#6f7377",
+  tramLane: "#ffffff",
   stopLine: "#ffffff",
   barrier: "#d0342c",
+  signalMain: "#d0342c",
+  signalShunt: "#f8fafc",
+  signalDistant: "#eab308",
+  signalMarker: "#2563eb",
+  signalPost: "#1e293b",
 };
 
 /** Purpose: shift a level up or down by `d` steps, clamped to the five levels. */
