@@ -40,17 +40,20 @@ def load_assumption_check():
     """Import tools/assumptions/check.py as a module, to reuse its rules."""
     path = ROOT / "tools" / "assumptions" / "check.py"
     spec = importlib.util.spec_from_file_location("assumption_check", path)
-    assert spec and spec.loader
+    if not (spec and spec.loader):
+        raise ImportError(path)
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod
 
 
 def read_json(path: Path):
+    """Parse a JSON file."""
     return json.loads(path.read_text(encoding="utf-8"))
 
 
 def read_yaml(path: Path):
+    """Parse a YAML file (an empty file is an empty list)."""
     return yaml.safe_load(path.read_text(encoding="utf-8")) or []
 
 
@@ -60,6 +63,7 @@ def discover(root: Path = PLUGINS) -> list[Path]:
 
 
 def as_list(v) -> list:
+    """A context value as a list."""
     return v if isinstance(v, list) else [v]
 
 
@@ -87,11 +91,18 @@ def resolve(param: dict, mode: str, key: str | None, option: str | None) -> dict
         s = matches(v.get("context") or {}, mode, key, option)
         if s is not None and s > best_score:
             best, best_score = v, s
-    assert best is not None, f"{param['key']}: no entry for {mode}"
+    if best is None:
+        raise ValueError(f"{param['key']}: no entry for {mode}")
     return best
 
 
-def check_plugin(folder: Path, chk, core_sources: dict, core_keys: set[str], seen_modes: dict[str, str]):
+def check_plugin(
+    folder: Path,
+    chk,
+    core_sources: dict,
+    core_keys: set[str],
+    seen_modes: dict[str, str],
+):
     """Validate one plugin. Output: (errors, registry entry)."""
     errors: list[str] = []
     where = folder.name
@@ -175,7 +186,7 @@ def check_plugin(folder: Path, chk, core_sources: dict, core_keys: set[str], see
         p = path_of(item)
         if p:
             for x in read_yaml(p):
-                x["_file"] = str(p.relative_to(ROOT))
+                x["_file"] = str(p)
                 params.append(x)
     saved = chk.MODES
     chk.MODES = list(saved) + sorted(mode_ids)
@@ -209,9 +220,7 @@ def check_plugin(folder: Path, chk, core_sources: dict, core_keys: set[str], see
         per: dict[str, dict] = {}
         for o in m.get("contexts", [None]):
             per[o or "*"] = {
-                prm["key"]: {
-                    f: resolve(prm, m["id"], key, o)[f] for f in ("low", "central", "high")
-                }
+                prm["key"]: {f: resolve(prm, m["id"], key, o)[f] for f in ("low", "central", "high")}
                 for prm in params
             }
         defaults[m["id"]] = per
@@ -231,9 +240,7 @@ def check_plugin(folder: Path, chk, core_sources: dict, core_keys: set[str], see
         "tools": c.get("tools", []),
         "calculations": c.get("calculations", []),
         "mapLayers": layers,
-        "parameters": {
-            prm["key"]: {"label": prm["label"], "unit": prm["unit"]} for prm in params
-        },
+        "parameters": {prm["key"]: {"label": prm["label"], "unit": prm["unit"]} for prm in params},
         "defaults": defaults,
     }
     return errors, entry
@@ -260,10 +267,12 @@ def build(root: Path = PLUGINS) -> tuple[list[str], dict]:
 
 
 def render(registry: dict) -> str:
+    """The registry as the JSON text the web app imports."""
     return json.dumps(registry, indent=2, ensure_ascii=False) + "\n"
 
 
 def main() -> int:
+    """Validate; render or check the registry. Output: the exit code."""
     ap = argparse.ArgumentParser()
     ap.add_argument("--render", action="store_true")
     ap.add_argument("--check-rendered", action="store_true")

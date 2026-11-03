@@ -60,6 +60,9 @@ pub struct SpanSystem {
     pub terminal_dwell_s: f64,
     /// `ropeway.reserve_share`: spare cabins as a share of the cabins on the line.
     pub reserve_share: f64,
+    /// `ropeway.capacity_ceiling_pphpd`: above it the line's capacity is a warning (0: no check).
+    #[serde(default)]
+    pub capacity_ceiling_pphpd: f64,
 }
 
 /// What a station does.
@@ -538,6 +541,19 @@ pub fn build(line: &SpanLine) -> SpanView {
         let cabins = (on_line * (1.0 + sys.reserve_share) - 1e-9).ceil() as u32;
         (iv, sys.cabin_capacity * 3600.0 / iv, spacing, cabins)
     };
+    if n >= 2 && sys.capacity_ceiling_pphpd > 0.0 && capacity_pphpd > sys.capacity_ceiling_pphpd {
+        issues.push(
+            Issue::new(
+                Level::Warning,
+                "capacity.ceiling",
+                format!(
+                    "{:.0} passengers per hour and direction is more than any ropeway carries (about {:.0}).",
+                    capacity_pphpd, sys.capacity_ceiling_pphpd
+                ),
+            )
+            .param("ropeway.capacity_ceiling_pphpd"),
+        );
+    }
     if n >= 2 {
         issues.push(Issue::new(
             Level::Info,
@@ -585,6 +601,7 @@ mod tests {
             station_passage_s: 45.0,
             terminal_dwell_s: 60.0,
             reserve_share: 0.1,
+            capacity_ceiling_pphpd: 6000.0,
         }
     }
 
