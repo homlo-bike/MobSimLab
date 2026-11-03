@@ -205,6 +205,8 @@ pub struct Interlocking<'m> {
     tds: Vec<TdsState>,
     switches: Vec<SwitchState>,
     switch_tds: Vec<TdsId>,
+    /// Sections of each switch's straight and diverging legs at the switch.
+    switch_legs: Vec<(TdsId, TdsId)>,
     /// Flank requirements per route: (route switch, flank switch, position, flank section).
     flank: Vec<Vec<(SwitchId, SwitchId, SwitchPosition, TdsId)>>,
     /// Level crossings on each route's sections: crossing indices.
@@ -298,6 +300,16 @@ impl<'m> Interlocking<'m> {
             .iter()
             .map(|s| m.pieces[s.common.0 as usize].tds)
             .collect();
+        let switch_legs = m
+            .switches
+            .iter()
+            .map(|s| {
+                (
+                    m.pieces[s.straight.0 as usize].tds,
+                    m.pieces[s.diverging.0 as usize].tds,
+                )
+            })
+            .collect();
         let flank = (0..m.routes.len() as RouteId)
             .map(|r| flank_of(m, r))
             .collect();
@@ -335,6 +347,7 @@ impl<'m> Interlocking<'m> {
             tds: vec![TdsState::default(); m.tds.len()],
             switches,
             switch_tds,
+            switch_legs,
             flank,
             route_crossings,
             crossings,
@@ -582,10 +595,7 @@ impl<'m> Interlocking<'m> {
             if !st.locks.is_empty() || !st.flank_locks.is_empty() {
                 return Err(Refusal::SwitchLocked(sw));
             }
-            if !self.tds[self.switch_tds[sw as usize] as usize]
-                .occupants
-                .is_empty()
-            {
+            if self.switch_occupied(sw) {
                 return Err(Refusal::SwitchOccupied(sw));
             }
             throws.push((sw, pos));
@@ -604,11 +614,8 @@ impl<'m> Interlocking<'m> {
                 flank.push((rs, f, q));
                 continue;
             }
-            let free_to_move = st.locks.is_empty()
-                && st.flank_locks.is_empty()
-                && self.tds[self.switch_tds[f as usize] as usize]
-                    .occupants
-                    .is_empty();
+            let free_to_move =
+                st.locks.is_empty() && st.flank_locks.is_empty() && !self.switch_occupied(f);
             if free_to_move {
                 flank.push((rs, f, q));
             } else if !self.tds[ftds as usize].occupants.is_empty()
@@ -755,6 +762,18 @@ impl<'m> Interlocking<'m> {
                 self.active[h].flank.retain(|(rs, _)| *rs != sw);
             }
         }
+    }
+
+    /// Purpose: whether a train may stand on a switch. A train over the switch
+    /// occupies the section of its common leg and the section of one of the
+    /// other legs (the same section where the export gives the switch its own
+    /// detection section). A train that only occupies the common leg's section
+    /// stands in front of the switch, for example at a signal at the switch toe,
+    /// and does not stop it from moving.
+    fn switch_occupied(&self, sw: SwitchId) -> bool {
+        let occ = |t: TdsId| !self.tds[t as usize].occupants.is_empty();
+        let (a, b) = self.switch_legs[sw as usize];
+        occ(self.switch_tds[sw as usize]) && (occ(a) || occ(b))
     }
 
     fn release_all(&mut self, h: Handle) {
@@ -966,7 +985,7 @@ impl<'m> Interlocking<'m> {
         // 3. A switch under a train or locked never moves.
         for (i, st) in self.switches.iter().enumerate() {
             if st.moving_until.is_some() {
-                let occupied = !self.tds[self.switch_tds[i] as usize].occupants.is_empty();
+                let occupied = self.switch_occupied(i as SwitchId);
                 let locked_other = st.locks.iter().chain(st.flank_locks.iter()).any(|&h| {
                     let a = &self.active[h];
                     a.state == RouteState::Locked

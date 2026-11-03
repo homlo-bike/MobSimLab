@@ -14,11 +14,13 @@
 //! - [`report`]: validation, fleet and UIC 406 capacity per hour, maximum capacity.
 //! - [`published`]: the published timetable with GTFS names (text form, for the GTFS export).
 //! - [`journeys`]: the same timetable in the contract's form, with stop positions, for the journey planner.
+//! - [`examples`]: example lines on the example networks (metro line M1).
 #![warn(missing_docs)]
 
 pub mod blocking;
 pub mod conflicts;
 pub mod demand;
+pub mod examples;
 pub mod journeys;
 pub mod line;
 pub mod path;
