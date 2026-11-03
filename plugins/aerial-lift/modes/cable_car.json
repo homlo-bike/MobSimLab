@@ -1,0 +1,12 @@
+{
+  "id": "cable_car",
+  "label": "Cable car",
+  "family": "aerial",
+  "colour": "#7c3aed",
+  "gtfsRouteType": 6,
+  "kit": "straight-spans",
+  "operation": "frequency",
+  "contextKey": "ropeway_system",
+  "contexts": ["mgd", "2s", "3s", "funitel", "pulsed"],
+  "defaultContext": "mgd"
+}
