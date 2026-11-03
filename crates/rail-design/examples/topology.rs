@@ -2,13 +2,22 @@
 //! directory given as the first argument (default: the current directory). CI validates them
 //! against `contracts/rail-topology.schema.json`. Each example has the example street across the
 //! main line, so the level crossings are checked too, and the example existing railway joined by
-//! the crossing line.
+//! the crossing line. A station throat with a double slip is written as `regional_rail_slip.json`.
 
-use rail_design::sample::{sample, sample_railways, sample_streets};
+use rail_design::sample::{sample, sample_railways, sample_slip, sample_streets};
 use rail_design::{build, build_with_osm, topology::topology, RailMode};
 
 fn main() {
     let dir = std::env::args().nth(1).unwrap_or_else(|| ".".into());
+    // A double slip in a station throat.
+    let t = topology(&build(&sample_slip(7.0, 50.9), None));
+    let path = format!("{dir}/regional_rail_slip.json");
+    std::fs::write(&path, serde_json::to_string_pretty(&t).expect("serialise")).expect("write");
+    println!(
+        "{path}: {} slips, valid {}",
+        t.crossings.iter().filter(|c| c.slip.is_some()).count(),
+        t.valid
+    );
     for m in RailMode::ALL {
         let net = sample(m, 7.0, 50.9);
         let plain = build(&net, None);
