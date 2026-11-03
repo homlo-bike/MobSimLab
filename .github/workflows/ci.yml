@@ -52,7 +52,7 @@ jobs:
       - uses: taiki-e/install-action@v2
         with: { tool: wasm-bindgen@0.2.129 }
       - name: Build the street routing, railway design, journey planner and mode kits WebAssembly modules (browser and API)
-        run: tools/wasm/build-street-routing.sh && tools/wasm/build-rail-design.sh && tools/wasm/build-journey-planner.sh && tools/wasm/build-mode-kits.sh && tools/wasm/build-api.sh
+        run: tools/wasm/build-street-routing.sh && tools/wasm/build-rail-design.sh && tools/wasm/build-journey-planner.sh && tools/wasm/build-mode-kits.sh && tools/wasm/build-noise.sh && tools/wasm/build-api.sh
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v5
         with: { node-version-file: .nvmrc, cache: pnpm }
@@ -97,7 +97,7 @@ jobs:
       - run: cargo clippy --workspace --all-targets -- -D warnings
       - run: cargo test --workspace --exclude mobsim-py
       - name: Street routing, railway design, journey planner and mode kits compile to WebAssembly
-        run: rustup target add wasm32-unknown-unknown && cargo build --locked --target wasm32-unknown-unknown -p street-routing-wasm -p rail-design-wasm -p journey-planner-wasm -p mode-kits-wasm
+        run: rustup target add wasm32-unknown-unknown && cargo build --locked --target wasm32-unknown-unknown -p street-routing-wasm -p rail-design-wasm -p journey-planner-wasm -p mode-kits-wasm -p noise-wasm
       - uses: astral-sh/setup-uv@v6
         with: { python-version: "3.12" }
       - name: Railway topology export matches contracts/rail-topology.schema.json
@@ -118,6 +118,8 @@ jobs:
         with: { python-version: "3.12" }
       - run: uvx ruff check tools/plugins && uvx ruff format --check tools/plugins
       - run: uv run --no-project --with jsonschema --with pyyaml python tools/plugins/check.py --check-rendered
+      - name: Noise engine values match the noise plugin's parameters
+        run: uvx ruff check tools/noise && uvx ruff format --check tools/noise && uv run --no-project --with pyyaml python tools/noise/export_defaults.py --check
       - run: uv run --no-project --with jsonschema --with pyyaml --with pytest pytest -q tools/plugins
 
   vehicles:
