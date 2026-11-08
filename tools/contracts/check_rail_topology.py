@@ -69,6 +69,19 @@ def graph_errors(t: dict) -> list[str]:
         for n in j["nodes"]
         if n not in node_ids
     ]
+    refs += [
+        (
+            f"slip in {c['id']}",
+            [
+                x
+                for r in c["slip"]["routes"]
+                for e in (r["from"], r["to"])
+                for x in e["sections"]
+            ],
+        )
+        for c in t["crossings"]
+        if c["slip"]
+    ]
     ids = [g["id"] for g in t["signals"]]
     if len(set(ids)) != len(ids):
         errs.append("duplicate signal ids")

@@ -11,6 +11,7 @@ import type {
   Severity,
   Signal,
   SignalKind,
+  Slip,
   Station,
   Switch,
   Track,
@@ -485,6 +486,8 @@ export function RailPanel(props: Props) {
         </Section>
       )}
 
+      <DiamondSection doc={props.doc} view={view} actions={a} />
+
       <Section title={`Street running · ${view.street_running.length}`}>
         <p className="text-xs text-slate-600">
           Where tram track in the street runs along a street. The tram keeps to the street&apos;s speed limit
@@ -953,6 +956,88 @@ function SwitchInspector({ sw, doc, view, actions: a }: Props & { sw: Switch }) 
         )}
       </div>
       <Remove what="switch" onClick={() => a.remove(sw.id)} />
+    </Section>
+  );
+}
+
+/**
+ * Purpose: the same-level crossings of two alignments. A diamond of two single tracks can be made a
+ * single or double slip from the catalogue, so trains can also turn from one track to the other.
+ */
+function DiamondSection({
+  doc,
+  view,
+  actions: a,
+}: {
+  doc: Network;
+  view: RailView;
+  actions: RailPanelActions;
+}) {
+  const diamonds = view.crossings.filter((c) => c.kind === "diamond");
+  if (!diamonds.length) return null;
+  const slips = doc.slips ?? [];
+  const setSlip = (crossing: string, slip: Slip | null) =>
+    a.setDoc({
+      ...doc,
+      slips: [...slips.filter((s) => s.crossing !== crossing), ...(slip ? [slip] : [])],
+    });
+  return (
+    <Section title={`Diamond crossings · ${diamonds.length}`}>
+      <p className="text-xs text-slate-600">
+        Where two tracks cross on one level. Between two single tracks crossing at the angle of a catalogue
+        slip, the diamond can be a slip: trains can then also turn from one track to the other.
+      </p>
+      <ul className="flex flex-col gap-2">
+        {diamonds.map((c) => {
+          const slip = slips.find((s) => s.crossing === c.id) ?? null;
+          const built = view.slips.find((s) => s.crossing === c.id);
+          const spec = view.slip_elements.find((e) => e.id === slip?.element);
+          return (
+            <li key={c.id} className="flex flex-col gap-1">
+              <button
+                type="button"
+                onClick={() => a.showIssue(c.lonlat, c.tracks[0])}
+                className="rounded px-1 py-0.5 text-left hover:bg-slate-100"
+              >
+                Tracks {c.tracks[0]} and {c.tracks[1]} · {c.angle_deg.toFixed(1)}° (1:{c.ratio_n.toFixed(1)})
+                {built ? (built.ok ? " · slip built" : " · slip not possible here, see checks") : ""}
+              </button>
+              {c.single_tracks && (
+                <label className="flex items-center gap-2 px-1 text-xs">
+                  <span>Trackwork</span>
+                  <select
+                    aria-label={`Trackwork at crossing ${c.id}`}
+                    className="flex-1 rounded border border-slate-300 px-1 py-0.5"
+                    value={slip?.element ?? ""}
+                    onChange={(e) =>
+                      setSlip(
+                        c.id,
+                        e.target.value ? { crossing: c.id, element: e.target.value, side: 0 } : null,
+                      )
+                    }
+                  >
+                    <option value="">Diamond</option>
+                    {view.slip_elements.map((e) => (
+                      <option key={e.id} value={e.id}>
+                        {e.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              )}
+              {slip && spec?.element === "single_slip" && (
+                <button
+                  type="button"
+                  className="btn btn-ghost self-start px-1 text-xs"
+                  onClick={() => setSlip(c.id, { ...slip, side: slip.side === 1 ? 0 : 1 })}
+                >
+                  Turn the slip to the other side
+                </button>
+              )}
+            </li>
+          );
+        })}
+      </ul>
     </Section>
   );
 }

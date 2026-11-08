@@ -322,6 +322,35 @@ pub fn sample_railways(dz: &crate::design::Design) -> Vec<crate::existing::Exist
     }]
 }
 
+/// Purpose: an example station throat with a slip: two single storage tracks crossing at 1:9, with
+/// the catalogue's double slip in the diamond. Used by the tests and the topology example.
+pub fn sample_slip(lon: f64, lat: f64) -> Network {
+    let mut net = Network::new(RailMode::RegionalRail, [lon, lat]);
+    let n: f64 = 9.0;
+    let (c, s) = (n / (1.0 + n * n).sqrt(), 1.0 / (1.0 + n * n).sqrt());
+    let free = |x: f64, y: f64| Anchor::Free { x, y, level: None };
+    for (id, a, b) in [
+        (1, free(-300.0, 0.0), free(300.0, 0.0)),
+        (2, free(-300.0 * c, -300.0 * s), free(300.0 * c, 300.0 * s)),
+    ] {
+        let mut t = track(id, a, Some(b), Level::Street);
+        t.tracks = 1;
+        t.usage = TrackUse::Storage;
+        net.tracks.push(t);
+    }
+    let id = build(&net, None)
+        .crossings
+        .first()
+        .map(|c| c.id.clone())
+        .unwrap_or_default();
+    net.slips.push(crate::slip::Slip {
+        crossing: id,
+        element: "db-dkw-190-1-9".into(),
+        side: 0,
+    });
+    net
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
