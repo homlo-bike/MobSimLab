@@ -13,7 +13,16 @@ import {
   removeLayers,
   selectStreet,
 } from "./mapLayers";
-import { CLASS_LABEL, effective, osmTrafficLanes, upsert, type Verdict, verdicts } from "./model";
+import type { DelayShares } from "../street-lines/types";
+import {
+  CLASS_LABEL,
+  DEFAULT_DELAYS,
+  effective,
+  osmTrafficLanes,
+  upsert,
+  type Verdict,
+  verdicts,
+} from "./model";
 import type { StreetInfo, StreetInfoLoader, StreetSetup, TramShare } from "./types";
 
 interface Props {
@@ -27,6 +36,8 @@ interface Props {
   onChange: (setups: StreetSetup[]) => void;
   /** Whether the planner may change setups (view-only projects only look). */
   editable?: boolean;
+  /** The project's delays in traffic (Project preferences), for the reliability texts. */
+  delays?: DelayShares;
   /** Street tile loader (OSM XML); tests inject a fake. */
   fetchTile?: TileFetcher;
   /** Street parser loader; tests inject a fake. */
@@ -52,6 +63,7 @@ export function StreetSetupEditor({
   setups,
   onChange,
   editable = true,
+  delays = DEFAULT_DELAYS,
   fetchTile = fetchStreetTile,
   loadInfos = loadStreetInfos,
 }: Props) {
@@ -229,6 +241,7 @@ export function StreetSetupEditor({
           info={info}
           setup={setup}
           editable={editable}
+          delays={delays}
           onPatch={change}
           onReset={() => onChange(setups.filter((s) => s.way !== info.way))}
           onClose={() => setSelected(null)}
@@ -289,6 +302,7 @@ function StreetForm({
   info,
   setup,
   editable,
+  delays,
   onPatch,
   onReset,
   onClose,
@@ -296,6 +310,7 @@ function StreetForm({
   info: StreetInfo;
   setup: StreetSetup | undefined;
   editable: boolean;
+  delays: DelayShares;
   onPatch: (p: Partial<StreetSetup>) => void;
   onReset: () => void;
   onClose: () => void;
@@ -309,7 +324,7 @@ function StreetForm({
     info.width_m ? `${info.width_m} m wide` : null,
     info.tram ? "tram rails" : null,
   ].filter(Boolean);
-  const v = verdicts(info, e);
+  const v = verdicts(info, e, delays);
   return (
     <section aria-label={`Street setup: ${info.name || "unnamed street"}`} className="flex flex-col gap-3.5">
       <div className="flex items-start gap-2">

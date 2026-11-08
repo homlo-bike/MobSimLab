@@ -36,6 +36,6 @@ pub mod switch;
 pub mod topology;
 pub mod view;
 
-pub use design::{build, build_with_osm, build_with_streets, Design};
+pub use design::{build, build_with_osm, build_with_streets, build_with_values, Design};
 pub use model::Network;
 pub use params::{defaults, RailMode};

@@ -67,6 +67,9 @@ describe("Street setup model", () => {
     expect(fixed.every((v) => v.level === "ok")).toBe(true);
     const painted = verdicts(HIGH, effective(HIGH, { way: 100, tram: "own_lane" }));
     expect(painted.find((v) => v.who === "Trams")).toMatchObject({ level: "info" });
+    // The project's preferences change the delay the texts quote.
+    const project = verdicts(HIGH, effective(HIGH, undefined), { mixed_traffic: 0.4, bus_lane: 0.05 });
+    expect(project.find((v) => v.who === "Buses")?.text).toMatch(/about 40 % longer/);
   });
 
   it("draws the cross-section kerb to kerb", () => {

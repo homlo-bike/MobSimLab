@@ -606,6 +606,26 @@ mod tests {
     }
 
     #[test]
+    fn the_project_preferences_change_the_delay_in_traffic() {
+        let streets = [along("secondary", &[])];
+        let values = [("street_mixed_traffic_delay_share".to_string(), 0.4)]
+            .into_iter()
+            .collect();
+        let dz = crate::design::build_with_values(
+            &tram_line(RailMode::Tram),
+            None,
+            &streets,
+            &[],
+            &values,
+        );
+        assert!((dz.street_running[0].traffic_delay_share - 0.4).abs() < 1e-9);
+        // Names that are not design values are ignored.
+        let odd = [("no_such_value".to_string(), 1.0)].into_iter().collect();
+        let p = crate::params::defaults().mode(RailMode::Tram).clone();
+        assert_eq!(p.with_values(&odd), p);
+    }
+
+    #[test]
     fn a_pedestrian_zone_limits_the_tram_to_walking_pace() {
         let dz = build_with_streets(
             &tram_line(RailMode::Tram),

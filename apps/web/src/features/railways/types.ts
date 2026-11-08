@@ -397,6 +397,8 @@ export interface RailEngine {
   existingSnap(at: LonLat, maxM: number): ExistingSnap | null;
   /** Applies the planner's street setups from the GIS tab; the next build uses them. */
   setStreetSetups(setups: readonly StreetSetup[]): void;
+  /** Design values the project's preferences change for every mode, by name; the next build uses them. */
+  setValues?(values: Record<string, number>): void;
   /** A signal plan generated from the last build, with ids continuing the document's. */
   generateSignals(): Signal[];
   /** Where a signal placed at a map position would stand, within `maxM`. */
