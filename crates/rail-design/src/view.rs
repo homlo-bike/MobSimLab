@@ -629,6 +629,22 @@ pub fn view(dz: &Design) -> Value {
         .iter()
         .map(|s| (s.track, s.s0 - 4.0, s.s1 + 4.0))
         .collect();
+    // Slip curves in diamond crossings, drawn as track.
+    for sl in dz.slips.iter().filter(|s| s.ok) {
+        let (Some(t), Some(g)) = (dz.doc_track(sl.tracks[0]), dz.track(sl.tracks[0])) else {
+            continue;
+        };
+        let m = dz.track_mode(t.id);
+        let lvl = g.level_at(sl.s[0]).unwrap_or(t.level);
+        for c in &sl.curves {
+            pieces.push((
+                crate::geom::with_headings(c),
+                json!({"kind": "slip", "ref": t.id, "z": lvl.order(), "bed": if dz.embedded(t) {"embedded"} else {"ballast"},
+                       "use": "running", "third": false, "third_side": 0.0, "overhead": dz.overhead(t),
+                       "underground": lvl.underground(), "mode": m, "gauge": dz.params_for(m).gauge_m()}),
+            ));
+        }
+    }
     for (pts, props) in &pieces {
         if pts.len() < 2 {
             continue;
@@ -861,8 +877,16 @@ pub fn view(dz: &Design) -> Value {
 
     let crossings: Vec<Value> = dz.crossings.iter().map(|c| json!({
         "id": c.id, "kind": format!("{:?}", c.kind).to_lowercase(), "tracks": c.tracks, "modes": c.modes,
-        "angle_deg": c.angle.to_degrees(), "lonlat": ly.ll(c.p),
+        "angle_deg": c.angle.to_degrees(), "ratio_n": 1.0 / c.angle.tan().max(1e-6), "lonlat": ly.ll(c.p),
+        "single_tracks": c.tracks.iter().all(|t| dz.track(*t).is_some_and(|g| g.ntracks == 1)),
     })).collect();
+    let slip_elements: Vec<Value> = defaults()
+        .switches
+        .iter()
+        .filter(|s| matches!(s.element, crate::params::Element::SingleSlip | crate::params::Element::DoubleSlip))
+        .map(|s| json!({"id": s.id, "label": s.label, "element": s.element, "crossing_ratio_n": s.crossing_ratio_n,
+                        "typical_modes": s.typical_modes, "diverging_speed_kmh": s.diverging_speed_kmh}))
+        .collect();
 
     let level_crossings: Vec<Value> = dz
         .level_crossings
@@ -896,6 +920,14 @@ pub fn view(dz: &Design) -> Value {
         })
         .collect();
     let existing_count = dz.existing.len();
+    let slips: Vec<Value> = dz
+        .slips
+        .iter()
+        .map(|s| {
+            json!({"crossing": s.crossing, "element": s.element, "kind": s.kind, "tracks": s.tracks,
+                   "routes": s.routes.len(), "diverging_speed_kmh": s.diverging_speed_kmh, "ok": s.ok})
+        })
+        .collect();
 
     json!({
         "layers": ly.finish(),
@@ -914,6 +946,8 @@ pub fn view(dz: &Design) -> Value {
         "signals": signal_list,
         "street_running": street_running,
         "existing_joins": existing_joins,
+        "slips": slips,
+        "slip_elements": slip_elements,
         "existing_count": existing_count,
         "signals_planned": net.signals.is_some(),
         "counts": counts,

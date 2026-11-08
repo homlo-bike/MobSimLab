@@ -8,7 +8,7 @@ Design tram, light rail, metro, commuter, regional, intercity and high-speed rai
 2. Pick the **mode**. Gauge, track spacing, radii, gradients, speeds, platforms and electrification come from the mode. The panel lists the main values; the full set and their sources are in the [assumption library](../../assumptions/DEFAULTS.md).
 3. **Example** draws a sample line for the mode at the centre of the map: two stations, a double track with two curves, a crossover, a turnout to a stabling siding and a crossing line. **Clear** removes everything.
 
-The drawing stays while you switch tools or close the railway tool. It is not saved yet.
+The drawing is saved with the project a moment after each change (see [Saving](street-line-tool.md#saving)). It opens again, with the map on it, for everyone who opens the project.
 
 ## Tools
 
@@ -68,6 +68,7 @@ Double track spreads smoothly to the station's track spacing where it meets a st
 - Switches come from the catalogue for the mode (for example tram 1:5 R50, mainline 1:9 R190, 1:12 R500, high-speed 1:26.5 R2500). Change the element, the side, the direction or the mirror image in the panel.
 - Switches go on straight track only, away from ramps and curves.
 - Tracks that cross on the same level share one piece of trackwork with a diamond crossing. On high-speed lines, or at angles flatter than 1:9, this is an error: put one track on another level instead.
+- **Slips**: where two single tracks cross at the angle of a catalogue slip (1:9 on main lines), the panel's **Diamond crossings** list lets you make the diamond a single slip or a double slip. Trains can then also turn from one track to the other, at the slip's turning speed (40 km/h for the 1:9 slips); straight through, the slip limits the speed to its through speed. A single slip has one turning route; **Turn the slip to the other side** swaps it. The slip needs straight track over its whole length on both tracks; if the tracks cross at another angle, the checks give the angle to aim for. There is no slip in the catalogue for trams yet.
 
 ## On the map
 

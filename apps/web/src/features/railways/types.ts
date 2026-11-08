@@ -126,6 +126,40 @@ export interface Network {
   switches: Switch[];
   /** The signal plan; absent until the planner generates it (operations then gets generated signals). */
   signals?: Signal[] | null;
+  /** Slips the planner put into diamond crossings. */
+  slips?: Slip[];
+}
+
+/** A slip in a diamond crossing. */
+export interface Slip {
+  /** The design's crossing id. */
+  crossing: string;
+  /** Catalogue element (single or double slip). */
+  element: string;
+  /** Single slip: which turning route (0 or 1). */
+  side?: number;
+}
+
+/** A slip element of the catalogue. */
+export interface SlipElementView {
+  id: string;
+  label: string;
+  element: "single_slip" | "double_slip";
+  crossing_ratio_n: number | null;
+  typical_modes: RailMode[];
+  diverging_speed_kmh: number | null;
+}
+
+/** A slip as built. */
+export interface SlipView {
+  crossing: string;
+  element: string;
+  kind: "single_slip" | "double_slip";
+  tracks: [number, number];
+  routes: number;
+  diverging_speed_kmh: number | null;
+  /** Passed the checks and is drawn. */
+  ok: boolean;
 }
 
 export type Severity = "error" | "warning" | "info" | "ok";
@@ -230,6 +264,10 @@ export interface CrossingView {
   tracks: [number, number];
   modes: [RailMode, RailMode];
   angle_deg: number;
+  /** Crossing ratio 1:n. */
+  ratio_n: number;
+  /** Both alignments are single track (a slip is possible). */
+  single_tracks: boolean;
   lonlat: LonLat;
 }
 
@@ -351,6 +389,9 @@ export interface RailView {
   existing_joins: ExistingJoinView[];
   /** Existing railways loaded around the design. */
   existing_count: number;
+  slips: SlipView[];
+  /** The catalogue's slips. */
+  slip_elements: SlipElementView[];
   /** The document holds a signal plan. */
   signals_planned: boolean;
   counts: { errors: number; warnings: number; track_km: number; route_km: number };
