@@ -19,7 +19,7 @@ import type {
 } from "./types";
 
 /** Railway editing tools, as in the mockup. */
-export type RailTool = "select" | "station" | "track" | "turnout" | "crossover" | "signal" | "pan";
+export type RailTool = "select" | "station" | "track" | "turnout" | "crossover" | "signal" | "pan" | "line";
 
 /** Settings for the next track drawn. */
 export interface NewTrackOpts {
@@ -55,13 +55,11 @@ export interface RailPanelActions {
   cancelDraft: () => void;
   remove: (id: number) => void;
   setMode: (m: RailMode) => void;
-  example: () => void;
   clear: () => void;
   showIssue: (at: LonLat | null, ref: number | null) => void;
   /** Rename a station and the stations next to it; a name used farther away gets a number. */
   renameStation: (id: number, name: string) => void;
   fit: () => void;
-  downloadTopology: () => void;
   /** Replace the signal plan with one generated from the design. */
   generateSignals: () => void;
   /** Drop the signal plan (operations then gets generated signals again). */
@@ -89,6 +87,8 @@ interface Props {
     publish: () => void;
     picking: string | null;
     setPicking: (id: string | null) => void;
+    /** Start a new line and pick its stations on the map. */
+    newLine: () => void;
   };
 }
 
@@ -251,13 +251,6 @@ export function RailPanel(props: Props) {
       <div className="flex gap-2">
         <button
           type="button"
-          onClick={a.example}
-          className="flex-1 rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
-        >
-          Example
-        </button>
-        <button
-          type="button"
           onClick={a.fit}
           className="flex-1 rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
         >
@@ -411,33 +404,7 @@ export function RailPanel(props: Props) {
         <SignalInspector sg={doc.signals!.find((s) => s.id === sel.id)!} {...props} />
       )}
 
-      <Section title="Trains">
-        <Row label={`Train length (${p.label})`}>
-          <Num
-            label="Train length"
-            unit="m"
-            value={view.train_length_m}
-            onChange={(v) => a.setDoc({ ...doc, train_length_m: v || null })}
-          />
-        </Row>
-      </Section>
-
       <ServiceLinesPanel doc={doc} view={view} setDoc={a.setDoc} show={a.showIssue} {...props.service} />
-
-      <Section title="Operations">
-        <p className="text-xs text-slate-600">
-          The track graph for timetables and train control: sections, allowed movements, switches, platform
-          edges, crossings, level crossings and depot groups.
-        </p>
-        <button
-          type="button"
-          onClick={a.downloadTopology}
-          disabled={view.tracks.length === 0}
-          className="rounded border border-slate-300 px-2 py-1 hover:bg-slate-100 disabled:opacity-40"
-        >
-          Download track topology (JSON){view.counts.errors > 0 ? " · has errors" : ""}
-        </button>
-      </Section>
 
       <Section title={view.signals_planned ? `Signals · ${view.signals.length}` : "Signals"}>
         <p className="text-xs text-slate-600">

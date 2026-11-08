@@ -53,6 +53,7 @@ import {
   hhmm,
   insertStop,
   lineProblem,
+  linesTrainLength,
   moveStop,
   parseHhmm,
   removeLine,
@@ -69,6 +70,11 @@ beforeAll(async () => {
 });
 
 const ORIGIN: [number, number] = [7, 50.9];
+
+/** The engine's sample drawing of a mode at the origin. */
+function sample(mode: RailMode): Network {
+  return JSON.parse(wasm.RailDesigner.sample(mode, ORIGIN[0], ORIGIN[1])) as Network;
+}
 
 /** One OSM street tile: a north–south street through the origin's longitude. */
 function streetTile(lat0: number, lat1: number, tags: Record<string, string> = {}): string {
@@ -440,17 +446,30 @@ function fakeMap() {
     dragPan: { disable: vi.fn(), enable: vi.fn() },
     fitBounds: vi.fn(),
     easeTo: vi.fn(),
-    project: () => ({ x: 0, y: 0 }),
+    // About a pixel a metre around the origin.
+    project: ([lng, lat]: [number, number]) => ({
+      x: (lng - ORIGIN[0]) * 70_000,
+      y: -(lat - ORIGIN[1]) * 111_000,
+    }),
   };
   return { map: map as unknown as MapLibreMap, handlers };
 }
 
 describe("Railway editor", () => {
-  async function opened(
-    fetchTile: (x: number, y: number) => Promise<string> = () => Promise.reject(new Error("offline")),
-    fetchRails: (x: number, y: number) => Promise<string> = () => Promise.reject(new Error("offline")),
+  /** Open the editor, on the engine's sample drawing of `mode` when one is given. */
+  async function opened({
+    mode,
+    fetchTile = () => Promise.reject(new Error("offline")),
+    fetchRails = () => Promise.reject(new Error("offline")),
     existingRailways = false,
-  ) {
+    onPublish,
+  }: {
+    mode?: RailMode;
+    fetchTile?: (x: number, y: number) => Promise<string>;
+    fetchRails?: (x: number, y: number) => Promise<string>;
+    existingRailways?: boolean;
+    onPublish?: (tt: unknown) => void;
+  } = {}) {
     let engine: RailEngine | null = null;
     const { map, handlers } = fakeMap();
     render(
@@ -459,10 +478,13 @@ describe("Railway editor", () => {
         fetchTile={fetchTile}
         fetchRails={fetchRails}
         existingRailways={existingRailways}
+        initial={mode ? sample(mode) : null}
+        onPublish={onPublish}
         loadEngine={async () => (engine = await loadRailEngine())}
       />,
     );
-    await waitFor(() => expect(screen.getByRole("button", { name: "Example" })).toBeTruthy());
+    await waitFor(() => expect(engine).not.toBeNull());
+    if (mode) await screen.findByText(/0 errors/);
     return { map, handlers, engine: () => engine! };
   }
 
@@ -503,7 +525,10 @@ describe("Railway editor", () => {
         onDocChange={onDocChange}
       />,
     );
-    await waitFor(() => expect(screen.getByRole("button", { name: "Example" })).toBeTruthy());
+    await waitFor(() => expect(screen.getByRole("button", { name: /Station/ })).toBeTruthy());
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 50));
+    });
     expect(onDocChange).not.toHaveBeenCalled();
     expect(map.fitBounds).not.toHaveBeenCalled();
     act(() => handlers.get("click")!({ lngLat: { lng: ORIGIN[0], lat: ORIGIN[1] }, point: { x: 0, y: 0 } }));
@@ -542,10 +567,8 @@ describe("Railway editor", () => {
     clearPlaces();
   });
 
-  it("loads the example, lists its checks and inspects a track", async () => {
-    const { map } = await opened();
-    fireEvent.change(screen.getByRole("combobox"), { target: { value: "tram" } });
-    fireEvent.click(screen.getByRole("button", { name: "Example" }));
+  it("opens a drawing, lists its checks and inspects a track", async () => {
+    const { map } = await opened({ mode: "tram" });
     expect(await screen.findByText(/Diamond crossing/)).toBeTruthy();
     expect(screen.getByText(/0 errors/)).toBeTruthy();
     expect(map.fitBounds).toHaveBeenCalled();
@@ -555,9 +578,7 @@ describe("Railway editor", () => {
 
   it("loads the streets on screen and lists the level crossings with them", async () => {
     const fetchTile = vi.fn(async () => streetTile(50.88, 50.92));
-    await opened(fetchTile);
-    fireEvent.change(screen.getByRole("combobox"), { target: { value: "regional_rail" } });
-    fireEvent.click(screen.getByRole("button", { name: "Example" }));
+    await opened({ mode: "regional_rail", fetchTile });
     expect(fetchTile).toHaveBeenCalled();
     expect(await screen.findByText(/Level crossings · [1-9]/)).toBeTruthy();
     expect(screen.getAllByText(/Station Road · \d+° · barriers · buses/).length).toBeGreaterThan(0);
@@ -565,28 +586,21 @@ describe("Railway editor", () => {
 
   it("leaves existing railways alone unless the app setting turns them on", async () => {
     const fetchRails = vi.fn(async () => railTile());
-    await opened(undefined, fetchRails);
-    fireEvent.change(screen.getByRole("combobox"), { target: { value: "tram" } });
-    fireEvent.click(screen.getByRole("button", { name: "Example" }));
-    expect(await screen.findByText(/0 errors/)).toBeTruthy();
+    await opened({ mode: "tram", fetchRails });
     expect(fetchRails).not.toHaveBeenCalled();
     expect(screen.queryByText(/Existing railways ·/)).toBeNull();
   });
 
   it("loads the existing railways on screen alongside the streets", async () => {
     const fetchRails = vi.fn(async () => railTile());
-    await opened(undefined, fetchRails, true);
-    fireEvent.change(screen.getByRole("combobox"), { target: { value: "tram" } });
-    fireEvent.click(screen.getByRole("button", { name: "Example" }));
+    await opened({ mode: "tram", fetchRails, existingRailways: true });
     expect(fetchRails).toHaveBeenCalled();
     expect(await screen.findByText(/\(1 loaded\)/)).toBeTruthy();
     expect(screen.getByText(/Existing railways · \d+ joins?/)).toBeTruthy();
   });
 
   it("generates signals, lets the planner turn one round and removes the plan", async () => {
-    await opened();
-    fireEvent.change(screen.getByRole("combobox"), { target: { value: "regional_rail" } });
-    fireEvent.click(screen.getByRole("button", { name: "Example" }));
+    await opened({ mode: "regional_rail" });
     fireEvent.click(await screen.findByRole("button", { name: "Generate signals" }));
     expect(await screen.findByText(/Signals · [1-9]/)).toBeTruthy();
     expect(screen.getByRole("status").textContent).toMatch(/signals generated/);
@@ -596,10 +610,7 @@ describe("Railway editor", () => {
   });
 
   it("places a signal on a track with the signal tool and turns it round with F", async () => {
-    const { handlers, engine } = await opened();
-    fireEvent.change(screen.getByRole("combobox"), { target: { value: "regional_rail" } });
-    fireEvent.click(screen.getByRole("button", { name: "Example" }));
-    await screen.findByText(/0 errors/);
+    const { handlers, engine } = await opened({ mode: "regional_rail" });
     fireEvent.keyDown(window, { key: "g" });
     expect(screen.getByRole("button", { name: /Signal/ }).getAttribute("aria-pressed")).toBe("true");
     // A point on the first track of the example.
@@ -623,6 +634,7 @@ describe("Railway editor", () => {
         map={map}
         fetchTile={() => Promise.reject(new Error("offline"))}
         fetchRails={() => Promise.reject(new Error("offline"))}
+        initial={sample("metro")}
         loadEngine={async () => {
           const e = await loadRailEngine();
           const build = e.build;
@@ -634,13 +646,9 @@ describe("Railway editor", () => {
         }}
       />,
     );
-    await waitFor(() => expect(screen.getByRole("button", { name: "Example" })).toBeTruthy());
-    // The drawing outlives the editor, so start from metro whatever an earlier test left.
-    fireEvent.change(screen.getByRole("combobox"), { target: { value: "metro" } });
-    fireEvent.click(screen.getByRole("button", { name: "Example" }));
-    await screen.findByText(/Train length \(Metro\)/);
+    await screen.findByText(/0 errors/);
     fireEvent.change(screen.getByRole("combobox"), { target: { value: "tram" } });
-    expect(await screen.findByText(/Train length \(Tram\)/)).toBeTruthy();
+    await waitFor(() => expect((built as Network | null)?.mode).toBe("tram"));
     const doc = built! as Network;
     expect(doc.mode).toBe("tram");
     expect(doc.stations.every((st) => st.mode === "metro")).toBe(true);
@@ -659,24 +667,65 @@ describe("Railway editor", () => {
     await waitFor(() => expect(screen.queryByText("Drawing track")).toBeNull());
   });
 
-  it("draws a service line on the example, publishes it and hands the trains to the journey planner", async () => {
+  it("creates a service line by clicking its stations in order, publishes it for the journey planner", async () => {
     const onPublish = vi.fn();
+    // The metro sample, and a station of its own that no track joins to the others.
+    const [lone] = addStation(sample("metro"), [3000, 3000], {
+      level: "street",
+      sides: 2,
+      islands: 0,
+      platformLength: 120,
+      name: "Faraway",
+    });
+    let engine: RailEngine | null = null;
     const { map, handlers } = fakeMap();
-    render(<RailwayEditor map={map} loadEngine={loadRailEngine} onPublish={onPublish} />);
-    await waitFor(() => expect(screen.getByRole("button", { name: "Example" })).toBeTruthy());
-    fireEvent.change(screen.getByRole("combobox"), { target: { value: "metro" } });
-    fireEvent.click(screen.getByRole("button", { name: "Example" }));
-    await screen.findByText(/0 errors/);
-    expect(screen.getByText("Service lines · 0")).toBeTruthy();
+    render(
+      <RailwayEditor
+        map={map}
+        fetchTile={() => Promise.reject(new Error("offline"))}
+        initial={lone}
+        onPublish={onPublish}
+        loadEngine={async () => (engine = await loadRailEngine())}
+      />,
+    );
+    await waitFor(() => expect(engine).not.toBeNull());
+    await screen.findByText(/Service lines · 0/);
+    const view = engine!.build(lone, null);
+    const at = (name: string) => {
+      const id = lone.stations.find((x) => x.name === name)!.id;
+      return view.stations.find((x) => x.id === id)!.lonlat;
+    };
+    const click = ([lng, lat]: [number, number]) =>
+      act(() => handlers.get("click")!({ lngLat: { lng, lat }, point: map.project([lng, lat]) }));
 
-    fireEvent.click(screen.getByRole("button", { name: "New line" }));
+    // The tool is at the bottom of the palette; it starts an empty line and asks for the first station.
+    fireEvent.click(screen.getByRole("button", { name: /Create service line/ }));
     expect(await screen.findByText("Service lines · 1")).toBeTruthy();
+    expect(screen.getByRole("status").textContent).toMatch(/Click the first station/);
+    click(at("Riverside"));
+    await waitFor(() => expect(screen.getByRole("list", { name: "Stops" }).children).toHaveLength(1));
+    // A station no track leads to is refused, with the reason.
+    click(at("Faraway"));
+    expect((await screen.findByRole("alert")).textContent).toMatch(
+      /No track leads from Riverside to Faraway/,
+    );
+    expect(screen.getByRole("list", { name: "Stops" }).children).toHaveLength(1);
+    click(at("Northgate"));
+    await waitFor(() => expect(screen.getByRole("list", { name: "Stops" }).children).toHaveLength(2));
+    fireEvent.keyDown(window, { key: "Enter" });
+    expect(screen.getByRole("button", { name: /Select/ }).getAttribute("aria-pressed")).toBe("true");
+
     const stops = screen.getByRole("list", { name: "Stops" });
-    expect(stops.textContent).toContain("Riverside");
-    expect(stops.textContent).toContain("Northgate");
+    expect(stops.textContent).toMatch(/Riverside.*Northgate/);
     expect((screen.getByLabelText("Line name") as HTMLInputElement).value).toBe("M1");
-    // A catalogue metro train is chosen, and the headways can be set.
-    expect((screen.getByLabelText("Train") as HTMLSelectElement).value).not.toBe("");
+    // A catalogue metro train is chosen; its length follows from the units coupled.
+    const train = screen.getByLabelText("Train") as HTMLSelectElement;
+    expect(train.value).not.toBe("");
+    const len = trainById(train.value)!.length_m;
+    expect(screen.getByTestId("train-length").textContent).toContain(fmtM(len));
+    fireEvent.change(screen.getByLabelText("Units coupled"), { target: { value: "2" } });
+    expect(screen.getByTestId("train-length").textContent).toContain(fmtM(len * 2));
+    fireEvent.change(screen.getByLabelText("Units coupled"), { target: { value: "1" } });
     fireEvent.change(screen.getByLabelText("Peak headway"), { target: { value: "10" } });
     fireEvent.change(screen.getByLabelText("Off-peak headway"), { target: { value: "20" } });
 
@@ -694,14 +743,14 @@ describe("Railway editor", () => {
     // Editing the line marks the publication out of date.
     fireEvent.change(screen.getByLabelText("Line name"), { target: { value: "U5" } });
     expect(screen.getByTestId("lines-published").textContent).toMatch(/changed since publishing/);
+  });
 
-    // Picking on the map: a click on a station on the line takes it off, a second click puts it back.
-    fireEvent.click(screen.getByRole("button", { name: "Pick on the map" }));
-    act(() => handlers.get("click")!({ lngLat: { lng: ORIGIN[0], lat: ORIGIN[1] }, point: { x: 0, y: 0 } }));
-    await waitFor(() => expect(screen.getByRole("list", { name: "Stops" }).children).toHaveLength(1));
-    expect(screen.getByText(/Needs at least two stops/)).toBeTruthy();
-    act(() => handlers.get("click")!({ lngLat: { lng: ORIGIN[0], lat: ORIGIN[1] }, point: { x: 0, y: 0 } }));
-    await waitFor(() => expect(screen.getByRole("list", { name: "Stops" }).children).toHaveLength(2));
+  it("drops a new line again when no station was picked", async () => {
+    await opened({ mode: "metro" });
+    fireEvent.click(screen.getByRole("button", { name: /Create service line/ }));
+    expect(await screen.findByText("Service lines · 1")).toBeTruthy();
+    fireEvent.keyDown(window, { key: "Escape" });
+    expect(await screen.findByText("Service lines · 0")).toBeTruthy();
   });
 });
 
@@ -754,6 +803,17 @@ describe("service lines", () => {
         platform_length_m: 120,
       },
     ],
+  });
+
+  it("starts an empty line for the line tool, and sizes platforms to the longest train", () => {
+    const [d, id] = addLine(doc(), 100, { empty: true });
+    const line = d.lines!.find((l) => l.id === id)!;
+    expect(line.stations).toEqual([]);
+    expect(linesTrainLength(emptyNetwork("metro", ORIGIN))).toBeNull();
+    const len = trainById(line.vehicle)!.length_m;
+    expect(linesTrainLength(d)).toBeCloseTo(len, 1);
+    const coupled = updateLine(d, id, (l) => ({ ...l, units: 3 }));
+    expect(linesTrainLength(coupled)).toBeCloseTo(len * 3, 1);
   });
 
   it("starts a line at the two stations farthest apart, west to east, with a train that fits", () => {

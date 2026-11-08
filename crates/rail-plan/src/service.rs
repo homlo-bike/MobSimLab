@@ -14,6 +14,7 @@ use rail_model::{Model, TrackUse};
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 
+use crate::path::{departure_routes, find_path, Place};
 use crate::{
     journey_timetable, plan, Band, Call, Issue, LineSpec, Pick, PlanParams, RouteInfo, RunKind,
 };
@@ -471,4 +472,68 @@ pub fn publish_service(
         lines: reports,
         notes,
     })
+}
+
+/// Whether a train can run from one station to the next of a line.
+#[derive(Clone, Debug, PartialEq, Serialize)]
+pub struct Reach {
+    /// A path exists from a platform of `from` to a platform of `to`.
+    pub ok: bool,
+    /// Why not, in words, when it does not.
+    pub reason: Option<String>,
+}
+
+/// Purpose: check, while the planner picks a line's stations in order, that a train standing at a
+/// platform of station part `from` can reach a platform of station part `to` along the track
+/// (either way out of the platform, through switches the design allows).
+/// Inputs: the topology export (JSON text) and two station part ids (`st<id>`).
+/// Output: the answer; Err when the design cannot be used for operations.
+pub fn station_reachable(topology_json: &str, from: &str, to: &str) -> Result<Reach, String> {
+    let imp = import_json(topology_json, &ImportOptions::default())?;
+    let m =
+        Model::compile(&imp.spec).map_err(|e| format!("the track layout cannot be used: {e:?}"))?;
+    let platforms = |id: &str| -> Option<Vec<u32>> {
+        m.stations
+            .iter()
+            .find(|s| s.id == id)
+            .map(|s| s.platforms.to_vec())
+    };
+    let name = |id: &str| {
+        m.stations
+            .iter()
+            .find(|s| s.id == id)
+            .map_or(id.to_string(), |s| s.name.clone())
+    };
+    let no = |reason: String| Reach {
+        ok: false,
+        reason: Some(reason),
+    };
+    let (Some(a), Some(b)) = (platforms(from), platforms(to)) else {
+        return Err(format!("unknown station {from} or {to}"));
+    };
+    if a.is_empty() || b.is_empty() {
+        let which = if a.is_empty() { from } else { to };
+        return Ok(no(format!("{} has no platform on a track.", name(which))));
+    }
+    let calls = vec![b
+        .iter()
+        .map(|&p| (Place::Platform(p as _), 0.0))
+        .collect::<Vec<_>>()];
+    let p = PlanParams::default();
+    for &pa in &a {
+        for d in [rail_model::Dir::Up, rail_model::Dir::Down] {
+            let start = departure_routes(&m, Place::Platform(pa as _), d);
+            if !start.is_empty() && find_path(&m, &start, &calls, p.max_routes).is_some() {
+                return Ok(Reach {
+                    ok: true,
+                    reason: None,
+                });
+            }
+        }
+    }
+    Ok(no(format!(
+        "No track leads from {} to {}. Join them with track (and switches where lines meet), or pick the stations in the order trains pass them.",
+        name(from),
+        name(to)
+    )))
 }

@@ -139,3 +139,12 @@ fn trains_leave_a_station_whose_exit_signal_stands_beyond_the_platform() {
     );
     assert!(r.trips > 0, "{:?}", r.issues);
 }
+
+#[test]
+fn stations_joined_by_track_are_reachable_in_both_directions() {
+    use rail_plan::station_reachable;
+    let topo = topology();
+    assert!(station_reachable(&topo, "st1", "st2").unwrap().ok);
+    assert!(station_reachable(&topo, "st2", "st1").unwrap().ok);
+    assert!(station_reachable(&topo, "st1", "st9").is_err());
+}

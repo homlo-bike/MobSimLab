@@ -1,10 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { fmtM, fmtTime } from "./modes";
 import { Num, Row, Section } from "./RailPanel";
 import {
-  addLine,
   hhmm,
-  insertStop,
   lineMode,
   lineProblem,
   moveStop,
@@ -32,6 +30,7 @@ interface Props {
   /** The line whose stops map clicks on stations add, if any. */
   picking: string | null;
   setPicking: (id: string | null) => void;
+  newLine: () => void;
   show: (at: LonLat | null, ref: number | null) => void;
 }
 
@@ -59,6 +58,7 @@ export function ServiceLinesPanel({
   publish,
   picking,
   setPicking,
+  newLine,
   show,
 }: Props) {
   const lines = doc.lines ?? [];
@@ -68,18 +68,17 @@ export function ServiceLinesPanel({
   const report = (id: string) => publication?.result?.lines.find((r) => r.id === id) ?? null;
   const trips = publication?.result?.timetable.trips.length ?? 0;
 
-  const add = () => {
-    const [d, id] = addLine(doc, view.train_length_m);
-    setDoc(d);
-    setOpen(id);
-    setPicking(null);
-  };
+  // The line whose stops are being picked on the map is the one open here.
+  useEffect(() => {
+    if (picking) setOpen(picking);
+  }, [picking]);
 
   return (
     <Section title={`Service lines · ${lines.length}`}>
       <p className="text-xs text-slate-600">
-        The lines trains run on this track: their stops, train and headways. Publish to plan the day&apos;s
-        timetable on the drawn track and ride the trains in the journey planner.
+        The lines trains run on this track. Create one with the Create service line tool: click its stations
+        in order. Then choose the train and headways, and publish to plan the day&apos;s timetable on the
+        drawn track and ride the trains in the journey planner.
       </p>
       <ul className="flex flex-col gap-1">
         {lines.map((l) => {
@@ -138,10 +137,10 @@ export function ServiceLinesPanel({
       <div className="flex gap-2">
         <button
           type="button"
-          onClick={add}
+          onClick={newLine}
           className="flex-1 rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
         >
-          New line
+          New service line
         </button>
         <button
           type="button"
@@ -201,11 +200,9 @@ function LineEditor({
   const mode = lineMode(doc, l);
   const trains = trainsFor(mode);
   const train = trainById(l.vehicle);
-  const free = doc.stations.filter((s) => !l.stations.includes(s.id));
   const name = (id: number) => doc.stations.find((s) => s.id === id)?.name ?? `Station ${id}`;
   const lonlat = (id: number) => view.stations.find((s) => s.id === id)?.lonlat ?? null;
   const length = train ? train.length_m * l.units : 0;
-  const tooLong = train !== null && length > view.train_length_m + 0.5;
 
   return (
     <div className="flex flex-col gap-2 border-t border-slate-200 p-2">
@@ -233,12 +230,13 @@ function LineEditor({
           onClick={() => setPicking(!picking)}
           className={`rounded border px-2 py-0.5 text-xs ${picking ? "border-emerald-800 bg-emerald-800 text-white" : "border-slate-300 hover:bg-slate-100"}`}
         >
-          {picking ? "Done picking" : "Pick on the map"}
+          {picking ? "Done" : "Add stops on the map"}
         </button>
       </div>
       {picking && (
         <p className="text-xs text-slate-600">
-          Click stations on the map to add or remove them. A new stop goes where it fits along the line.
+          Click the next station on the map. Each one must be reachable on track from the stop before. Enter
+          or Esc finishes.
         </p>
       )}
       <ol className="flex flex-col gap-0.5" aria-label="Stops">
@@ -281,25 +279,6 @@ function LineEditor({
           </li>
         ))}
       </ol>
-      {free.length > 0 && (
-        <select
-          aria-label="Add stop"
-          value=""
-          onChange={(e) => {
-            const id = Number(e.target.value);
-            if (id) set((x) => insertStop(doc, x, id));
-          }}
-          className={field}
-        >
-          <option value="">Add stop…</option>
-          {free.map((s) => (
-            <option key={s.id} value={s.id}>
-              {s.name}
-            </option>
-          ))}
-        </select>
-      )}
-
       <Row label="Train">
         <select
           aria-label="Train"
@@ -325,10 +304,9 @@ function LineEditor({
         />
       </Row>
       {train && (
-        <p className={`text-xs ${tooLong ? "text-amber-800" : "text-slate-600"}`}>
-          {fmtM(length)} · {Math.round(train.top_speed_kmh)} km/h · {Math.round(train.capacity * l.units)}{" "}
-          places
-          {tooLong ? ` · longer than the ${fmtM(view.train_length_m)} the platforms take` : ""}
+        <p className="text-xs text-slate-600" data-testid="train-length">
+          Train length {fmtM(length)} · {Math.round(train.top_speed_kmh)} km/h ·{" "}
+          {Math.round(train.capacity * l.units)} places
         </p>
       )}
 

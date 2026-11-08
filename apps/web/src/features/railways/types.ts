@@ -474,6 +474,8 @@ export interface RailEngine {
   signalAnchor(at: LonLat, maxM: number): SignalAt | null;
   /** Plan the service lines on the last build and publish them for the journey planner; throws on errors. */
   publishLines(lines: EngineServiceLine[], serviceId: string): ServicePublication;
+  /** Whether trains can run from one station (document id) to another on the last build; throws on errors. */
+  reachable(from: number, to: number): { ok: boolean; reason: string | null };
   dispose(): void;
 }
 

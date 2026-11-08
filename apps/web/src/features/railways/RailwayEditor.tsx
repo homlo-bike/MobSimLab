@@ -41,7 +41,7 @@ import {
   type RailTool,
 } from "./RailPanel";
 import { RailToolPalette } from "./RailToolPalette";
-import { engineLines, insertStop, updateLine } from "./serviceLines";
+import { addLine, engineLines, linesTrainLength, removeLine, updateLine } from "./serviceLines";
 import type { Publication } from "./ServiceLinesPanel";
 import type {
   Anchor,
@@ -68,6 +68,7 @@ const HINTS: Record<RailTool, string> = {
   crossover: "Click on a double track to place a crossover.",
   signal: "Click on a track to place a signal. F turns the selected signal round.",
   pan: "Drag to move the map.",
+  line: "Click the stations of the line in the order trains call at them. Enter or Esc finishes the line.",
 };
 
 const NO_SETUPS: readonly StreetSetup[] = [];
@@ -306,13 +307,15 @@ export function RailwayEditor({
   // The draft with its end at the cursor (or the connection under it).
   const shown = useMemo(() => {
     if (!doc) return null;
-    if (!draft) return { doc, draftId: null };
+    // Platforms are checked against the longest train of the service lines (the mode's default without lines).
+    const withTrains = { ...doc, train_length_m: linesTrainLength(doc) };
+    if (!draft) return { doc: withTrains, draftId: null };
     const end: Anchor | null = cursor?.conn
       ? cursor.conn.anchor
       : cursor
         ? { type: "free", x: cursor.at[0], y: cursor.at[1], level: draftLevel(draft) }
         : null;
-    return { doc: { ...doc, tracks: [...doc.tracks, { ...draft, end }] }, draftId: draft.id };
+    return { doc: { ...withTrains, tracks: [...doc.tracks, { ...draft, end }] }, draftId: draft.id };
   }, [doc, draft, cursor]);
 
   const view: RailView | null = useMemo(() => {
@@ -487,18 +490,31 @@ export function RailwayEditor({
       const ll: LonLat = [ev.lngLat.lng, ev.lngLat.lat];
       const at = e.toLocal(s.doc.origin, ll);
       const params = s.view?.params;
-      // Picking the stops of a service line: a click on a station adds it, or removes it again.
-      const pickLine = s.picking ? s.doc.lines?.find((l) => l.id === s.picking) : null;
-      if (pickLine) {
+      // Creating a service line: each click on a station adds the next stop, if trains can get there.
+      const pickLine = s.tool === "line" && s.picking ? s.doc.lines?.find((l) => l.id === s.picking) : null;
+      if (s.tool === "line") {
+        if (!pickLine) return;
         const station = stationAt(map, ev.point, s.doc, s.view);
         if (station === null) return say("Click a station to add it to the line.");
-        const d = s.doc;
-        setDoc(
-          updateLine(d, pickLine.id, (l) =>
-            l.stations.includes(station)
-              ? { ...l, stations: l.stations.filter((x) => x !== station) }
-              : insertStop(d, l, station),
-          ),
+        const name = s.doc.stations.find((x) => x.id === station)?.name ?? "This station";
+        const last = pickLine.stations[pickLine.stations.length - 1];
+        if (last === station) return say(`${name} is the last stop already. Click the next station.`);
+        if (pickLine.stations.includes(station))
+          return say(`${name} is a stop of this line already. Remove it from the list to change the order.`);
+        if (last !== undefined) {
+          let reach: { ok: boolean; reason: string | null };
+          try {
+            reach = e.reachable(last, station);
+          } catch (err) {
+            return say(err instanceof Error ? err.message : String(err));
+          }
+          if (!reach.ok) return say(reach.reason ?? `Trains cannot reach ${name} from the last stop.`);
+        }
+        setDoc(updateLine(s.doc, pickLine.id, (l) => ({ ...l, stations: [...l.stations, station] })));
+        setNote(
+          pickLine.stations.length === 0
+            ? `${name} is the first stop. Click the next station.`
+            : `${name} added. Click the next station, or press Enter to finish.`,
         );
         return;
       }
@@ -846,6 +862,7 @@ export function RailwayEditor({
           return;
         }
       }
+      if (s.tool === "line" && (ev.key === "Enter" || ev.key === "Escape")) return finishLine();
       if (ev.key === "Escape") return setSel(null);
       if (k === "f" && s.sel && s.doc && kindOf(s.doc, s.sel.id) === "signal") {
         setDoc(updateSignal(s.doc, s.sel.id, (x) => ({ ...x, facing: x.facing === 1 ? -1 : 1 })));
@@ -871,8 +888,9 @@ export function RailwayEditor({
         x: "crossover",
         g: "signal",
         h: "pan",
+        l: "line",
       };
-      if (tools[k]) setTool(tools[k]);
+      if (tools[k]) toolChange.current(tools[k]);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -885,7 +903,45 @@ export function RailwayEditor({
       setDraft(null);
       setCursor(null);
     }
+    if (t === "line" && !(picking && doc?.lines?.some((l) => l.id === picking))) return newLine();
+    if (t !== "line") dropEmptyLine();
     setTool(t);
+  };
+  /** Purpose: start a new line with its stops still to pick, and the line tool to pick them. */
+  const newLine = () => {
+    const d0 = latest.current.doc;
+    if (!d0) return;
+    const [d, id] = addLine(d0, (view?.params.platform_length_m ?? 120) - 5, { empty: true });
+    setDoc(d);
+    setDraft(null);
+    setCursor(null);
+    setPicking(id);
+    setSel(null);
+    setNote("Click the first station of the new line.");
+    setTool("line");
+  };
+  /** Purpose: stop picking; a line left without stops is removed again. */
+  const dropEmptyLine = () => {
+    const { doc: d, picking: id } = latest.current;
+    const line = id ? d?.lines?.find((l) => l.id === id) : null;
+    if (d && line && line.stations.length === 0) setDoc(removeLine(d, line.id));
+    setPicking(null);
+  };
+  const toolChange = useRef(changeTool);
+  toolChange.current = changeTool;
+  /** Purpose: stop picking stops; the line stays open in the panel. */
+  const finishLine = () => {
+    dropEmptyLine();
+    setNote(null);
+    setTool("select");
+  };
+  /** Purpose: pick more stops for an existing line (they are added after its last stop). */
+  const pickFor = (id: string | null) => {
+    if (!id) return finishLine();
+    setDraft(null);
+    setCursor(null);
+    setPicking(id);
+    setTool("line");
   };
 
   // Publishing: plan the service lines on the drawn track (timetable planner) for the journey planner.
@@ -955,24 +1011,6 @@ export function RailwayEditor({
         tracks: doc.tracks.map((t) => ({ ...t, mode: pin(t.mode, tm.get(t.id)) })),
       });
     },
-    example: () => {
-      if (!map || !engine.current || !doc) return;
-      const c = map.getCenter();
-      const d = engine.current.sample(doc.mode, [c.lng, c.lat]);
-      setDoc(d);
-      setSel(null);
-      setDraft(null);
-      setTool("select");
-      const v = engine.current.build(d, null);
-      if (v.bbox)
-        map.fitBounds(
-          [
-            [v.bbox[0], v.bbox[1]],
-            [v.bbox[2], v.bbox[3]],
-          ],
-          { padding: 60, duration: 0 },
-        );
-    },
     clear: () => {
       if (!map) return;
       const c = map.getCenter();
@@ -1008,16 +1046,6 @@ export function RailwayEditor({
       setDoc({ ...doc, signals: null });
       setSel(null);
     },
-    downloadTopology: () => {
-      const t = engine.current?.topology();
-      if (!t) return;
-      const url = URL.createObjectURL(new Blob([JSON.stringify(t, null, 1)], { type: "application/json" }));
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = "rail-topology.json";
-      link.click();
-      URL.revokeObjectURL(url);
-    },
     fit: () => {
       const b = view?.bbox;
       if (b && map)
@@ -1045,7 +1073,7 @@ export function RailwayEditor({
       streetNote={streetNote}
       existingRailways={existingRailways}
       actions={panelActions}
-      service={{ publication, publish, picking, setPicking }}
+      service={{ publication, publish, picking, setPicking: pickFor, newLine }}
     />
   );
 
@@ -1057,6 +1085,7 @@ export function RailwayEditor({
           <p
             className="rounded-full px-3 py-1 text-white"
             style={{ background: flash ? COLORS.error : "#0f172ad9" }}
+            role={flash ? "alert" : undefined}
           >
             {flash ?? "Starting the railway engine…"}
           </p>

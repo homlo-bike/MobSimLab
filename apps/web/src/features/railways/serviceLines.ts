@@ -63,11 +63,15 @@ export function lineMode(doc: Network, line: ServiceLine): RailMode {
 }
 
 /**
- * Purpose: add a line. It starts with the first and last station of the drawing (by position along
- * the longest axis), the suggested train and the mode's headways, 05:00–24:00.
+ * Purpose: add a line. It starts with the two stations farthest apart (none with `empty`, when the
+ * planner picks them), the suggested train and the mode's headways, 05:00–24:00.
  * Output: the document and the new line's id.
  */
-export function addLine(doc: Network, trainLengthM: number): [Network, string] {
+export function addLine(
+  doc: Network,
+  trainLengthM: number,
+  opts: { empty?: boolean } = {},
+): [Network, string] {
   const lines = doc.lines ?? [];
   let n = lines.length + 1;
   const ids = new Set(lines.map((l) => l.id));
@@ -78,7 +82,7 @@ export function addLine(doc: Network, trainLengthM: number): [Network, string] {
   let k = 1;
   while (names.has(`${PREFIX[mode]}${k}`)) k++;
   const [peak, off] = HEADWAYS[mode];
-  const st = endStations(doc);
+  const st = opts.empty ? [] : endStations(doc);
   const train = suggestTrain(mode, trainLengthM);
   const line: ServiceLine = {
     id,
@@ -218,4 +222,16 @@ export function parseHhmm(text: string): number | null {
   const mm = Number(m[2]);
   if (h > 27 || mm > 59) return null;
   return h * 60 + mm;
+}
+
+/**
+ * Purpose: the train length the platforms must take: the longest train (catalogue length × units
+ * coupled) of the service lines, or `null` (the mode's default) when no line has a train.
+ */
+export function linesTrainLength(doc: Network): number | null {
+  const lengths = (doc.lines ?? []).flatMap((l) => {
+    const t = trainById(l.vehicle);
+    return t ? [t.length_m * Math.max(1, Math.round(l.units))] : [];
+  });
+  return lengths.length ? Math.round(Math.max(...lengths) * 10) / 10 : null;
 }
