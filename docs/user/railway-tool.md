@@ -8,7 +8,7 @@ Design tram, light rail, metro, commuter, regional, intercity and high-speed rai
 2. Pick the **mode**. Gauge, track spacing, radii, gradients, speeds, platforms and electrification come from the mode. The panel lists the main values; the full set and their sources are in the [assumption library](../../assumptions/DEFAULTS.md).
 3. **Example** draws a sample line for the mode at the centre of the map: two stations, a double track with two curves, a crossover, a turnout to a stabling siding and a crossing line. **Clear** removes everything.
 
-The drawing stays while you switch tools or close the railway tool. It is not saved yet.
+The drawing is saved with the project a moment after each change (see [Saving](street-line-tool.md#saving)). It opens again, with the map on it, for everyone who opens the project.
 
 ## Tools
 
@@ -101,6 +101,17 @@ To decide instead of the width, set the street up in the GIS tab ([Streets in th
 
 On the street the tram keeps to the street's speed limit (from OpenStreetMap, otherwise 50 km/h). Running times, signals and the track topology use the lower speed. Tram stops on the street get a note on how passengers board: from the pavement, or from an island platform in the middle of the street that needs a pedestrian crossing. Where the tram crosses another street at a junction, that is a level crossing with traffic signals (see above).
 
+## Existing railways
+
+Existing railways are off by default. To use them, open **Account and settings → App settings** and turn on **Show existing railways from OpenStreetMap**. The setting is saved to your account. The editor then loads the railways already built around your design from OpenStreetMap and draws them in purple under it: solid where in use, dashed where under construction, faint where disused, preserved, in a tunnel or on a bridge.
+
+- **Join an existing line**: start or end a track on an existing railway. Clicks within a few pixels of it snap onto it. The end then joins the line instead of being an open track end, and the panel lists it under **Existing railways**. A purple dot marks the join.
+- **Checks at a join**: a different gauge is an error, since trains cannot run from one to the other. A different railway system (for example a tram track joining a main line) or a different power supply (overhead line or conductor rail, and the voltage) is a warning: through running needs vehicles built for both. Where the new track meets the line at a sharp angle, rather than running alongside it, there is a warning too. The panel says whether the track continues the existing line at its end or needs a new turnout in it.
+- **Crossing an existing line** on the same level is a warning: it needs a diamond crossing in someone else's track and a shared interlocking. Take the new track over or under it. A tram crossing a tram line is fine: the panel just notes the diamond.
+- **Drawing on top of an existing line** is a warning: join the existing track instead.
+
+Existing railways cannot be edited, and their stations and signals are not loaded. Where they did not load (for example, while signed out), the panel says so.
+
 ## Signals
 
 Railway operations needs signals. Until you make a signal plan, it gets signals generated from the design. **Generate signals** in the panel puts that plan on the map, so you can change it:
@@ -114,7 +125,7 @@ Each signal is drawn on the right of the track, with an arm pointing the way it 
 
 ## Track topology for operations
 
-**Download track topology (JSON)** in the panel saves the drawing as a graph for timetables and train control. It contains track sections, the movements allowed at every switch and join, platform edges, switches, crossings, level crossings with streets, street running, signals and depot groups. The format is described in [contracts](../../contracts/README.md). If the design has errors, the file says so (`valid: false`), and the button shows it.
+**Download track topology (JSON)** in the panel saves the drawing as a graph for timetables and train control. It contains track sections, the movements allowed at every switch and join, platform edges, switches, crossings, level crossings with streets, street running, joins to existing railways, signals and depot groups. The format is described in [contracts](../../contracts/README.md). If the design has errors, the file says so (`valid: false`), and the button shows it.
 
 ## Checks
 

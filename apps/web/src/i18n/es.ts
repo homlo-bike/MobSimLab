@@ -73,6 +73,7 @@ export const es: Messages = {
   "settings.fromProvider": "El nombre y el correo vienen de tu proveedor de acceso.",
   "settings.largerTargets": "Botones más grandes",
   "settings.reduceMotion": "Reducir movimiento",
+  "settings.existingRailways": "Mostrar ferrocarriles existentes de OpenStreetMap",
   "settings.savedToAccount": "Se guardan en tu cuenta y te siguen a otros dispositivos.",
 
   "language.title": "Idioma",
@@ -192,6 +193,20 @@ export const es: Messages = {
   "project.notFound": "No se encontró el proyecto",
   "project.notFoundHint": "Puede que se haya eliminado o que ya no tengas acceso.",
   "project.toHome": "Volver a los proyectos",
+
+  "save.saved": "Guardado",
+  "save.saving": "Guardando…",
+  "save.offline": "Aún sin guardar · reintentando",
+  "save.failed": "No se guardó: {error}",
+  "save.conflict": "{who} guardó {drawing} mientras lo cambiabas. ¿Qué versión debe conservar el proyecto?",
+  "save.someone": "Otra persona",
+  "save.keepMine": "Conservar la mía",
+  "save.takeTheirs": "Usar la suya",
+  "save.loadFailed": "No se cargaron los dibujos del proyecto: {error}",
+  "save.retry": "Reintentar",
+  "drawing.street-lines": "la línea de autobús",
+  "drawing.railway": "el ferrocarril",
+  "drawing.street-setups": "la configuración de calles",
 
   "tab.label": "Proyecto",
   "tab.simulator": "Simulador",

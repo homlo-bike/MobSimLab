@@ -76,6 +76,7 @@ export const de: Messages = {
   "settings.fromProvider": "Name und E-Mail stammen von Ihrem Anmeldedienst.",
   "settings.largerTargets": "Größere Schaltflächen",
   "settings.reduceMotion": "Bewegung reduzieren",
+  "settings.existingRailways": "Bestehende Bahnstrecken aus OpenStreetMap anzeigen",
   "settings.savedToAccount": "In Ihrem Konto gespeichert, damit sie auf allen Geräten gelten.",
 
   "language.title": "Sprache",
@@ -195,6 +196,21 @@ export const de: Messages = {
   "project.notFound": "Projekt nicht gefunden",
   "project.notFoundHint": "Es wurde vielleicht gelöscht, oder Sie haben keinen Zugriff mehr.",
   "project.toHome": "Zurück zu den Projekten",
+
+  "save.saved": "Gespeichert",
+  "save.saving": "Wird gespeichert…",
+  "save.offline": "Noch nicht gespeichert · neuer Versuch läuft",
+  "save.failed": "Nicht gespeichert: {error}",
+  "save.conflict":
+    "{who} hat {drawing} gespeichert, während Sie daran gearbeitet haben. Welche Fassung soll das Projekt behalten?",
+  "save.someone": "Jemand anderes",
+  "save.keepMine": "Meine behalten",
+  "save.takeTheirs": "Die andere übernehmen",
+  "save.loadFailed": "Die Zeichnungen des Projekts wurden nicht geladen: {error}",
+  "save.retry": "Erneut versuchen",
+  "drawing.street-lines": "die Buslinie",
+  "drawing.railway": "die Bahnanlage",
+  "drawing.street-setups": "die Straßeneinstellungen",
 
   "tab.label": "Projekt",
   "tab.simulator": "Simulator",

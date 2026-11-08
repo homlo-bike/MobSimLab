@@ -21,6 +21,7 @@
     "level_crossings",
     "depot_groups",
     "street_running",
+    "existing_joins",
     "signals",
     "signals_generated"
   ],
@@ -55,6 +56,11 @@
       "description": "Stretches where tram or light rail track embedded in the street runs along a street from OpenStreetMap.",
       "type": "array",
       "items": { "$ref": "#/$defs/street_running" }
+    },
+    "existing_joins": {
+      "description": "Free ends of new track that join an existing railway from OpenStreetMap: where the design meets the existing network.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/existing_join" }
     },
     "signals": {
       "description": "Signals (ADR-0030 point 7): the planner's signal plan, or one generated from the design while the document has none.",
@@ -383,6 +389,7 @@
         "angle_deg",
         "x",
         "y",
+        "lonlat",
         "track",
         "chainage_m",
         "rail_zone_m",
@@ -390,6 +397,7 @@
         "line_speed_kmh",
         "warning_time_s",
         "approach_m",
+        "road_closure",
         "street"
       ],
       "properties": {
@@ -413,6 +421,13 @@
         "angle_deg": { "type": "number", "minimum": 0, "maximum": 90 },
         "x": { "type": "number" },
         "y": { "type": "number" },
+        "lonlat": {
+          "description": "[longitude, latitude] of the crossing point, degrees (WGS84).",
+          "type": "array",
+          "items": { "type": "number" },
+          "minItems": 2,
+          "maxItems": 2
+        },
         "track": { "type": "integer", "minimum": 1 },
         "chainage_m": { "$ref": "#/$defs/metres" },
         "rail_zone_m": {
@@ -429,6 +444,44 @@
         "approach_m": {
           "$ref": "#/$defs/metres",
           "description": "Distance before the crossing, in either direction, where an approaching train starts the warning (warning time at line speed)."
+        },
+        "road_closure": {
+          "description": "How long one train closes the street, and the service assumed until a timetable gives the real closures (contracts/level-crossing-closures.schema.json). The street line tool turns these into the expected wait of buses at the crossing.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "train_length_m",
+            "reopen_s",
+            "closure_s",
+            "assumed_trains_per_hour_peak",
+            "assumed_trains_per_hour_off_peak"
+          ],
+          "properties": {
+            "train_length_m": {
+              "$ref": "#/$defs/metres",
+              "description": "Train length assumed: the mode's usual platform length (mode.platform_length_m)."
+            },
+            "reopen_s": {
+              "type": "number",
+              "minimum": 0,
+              "description": "From the tail clearing the rail zone until road traffic may go: barriers rising, or the intergreen of tram signals (level_crossing.reopen_s)."
+            },
+            "closure_s": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Street closed per train at line speed: warning_time_s + (rail_zone_m + train_length_m) / line speed + reopen_s."
+            },
+            "assumed_trains_per_hour_peak": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Both directions: 2 × 60 / timetable.policy_headway_peak_min of the mode."
+            },
+            "assumed_trains_per_hour_off_peak": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Both directions: 2 × 60 / timetable.policy_headway_offpeak_min of the mode."
+            }
+          }
         },
         "street": {
           "type": "object",
@@ -462,6 +515,30 @@
         "tracks": { "type": "array", "items": { "type": "integer", "minimum": 1 }, "minItems": 1 },
         "sections": { "type": "array", "items": { "$ref": "#/$defs/section_id" }, "minItems": 1 },
         "length_m": { "$ref": "#/$defs/metres" }
+      }
+    },
+    "existing_join": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["track", "end", "nodes", "way", "name", "railway", "continues"],
+      "properties": {
+        "track": { "type": "integer", "minimum": 1 },
+        "end": { "enum": [0, 1], "description": "0: the track's start; 1: its end." },
+        "nodes": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "The end nodes there, one per line of the track."
+        },
+        "way": { "type": "integer", "description": "OSM way id of the existing track." },
+        "name": { "type": "string", "description": "Existing railway's name; empty when unnamed." },
+        "railway": {
+          "type": "string",
+          "description": "OSM railway kind: rail, light_rail, tram, subway, narrow_gauge, monorail or funicular."
+        },
+        "continues": {
+          "type": "boolean",
+          "description": "true: the new track continues the existing way at its end; false: a new turnout goes into the existing track."
+        }
       }
     },
     "street_running": {

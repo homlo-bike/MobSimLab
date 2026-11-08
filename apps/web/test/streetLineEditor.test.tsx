@@ -38,6 +38,7 @@ import {
 } from "../src/features/street-lines/geojson";
 import { clearPlaces, publishPlaces } from "../src/features/naming/registry";
 import { DEFAULT_TIMING } from "../src/features/street-lines/modes";
+import type { SavedStreetLine } from "../src/features/street-lines/saved";
 import { StreetLineEditor } from "../src/features/street-lines/StreetLineEditor";
 import { along, circuitPath, lineChecks, lineStats } from "../src/features/street-lines/summary";
 import { tilesFor, tileX, tileY } from "../src/features/street-lines/tiles";
@@ -66,6 +67,8 @@ function sampleView(kinds: PointKind[]): LineView {
     status: i === 1 ? ("warning" as const) : ("ok" as const),
     message: i === 1 ? "Turning round adds 900 m" : null,
     ways: [1],
+    crossing_wait_s: 0,
+    level_crossings: [] as LineView["legs"][number]["level_crossings"],
   }));
   return {
     points,
@@ -77,6 +80,50 @@ function sampleView(kinds: PointKind[]): LineView {
     issues: [],
     length_m: 400 * points.length,
     time_s: 60 * points.length,
+    level_crossings: [],
+    crossing_wait_s: 0,
+  };
+}
+
+/** The line view with a regional railway level crossing on its first leg. */
+function withCrossing(v: LineView, source: "timetable" | "assumed"): LineView {
+  if (!v.legs.length) return v;
+  const wait = {
+    wait_s: 1.7,
+    off_peak_wait_s: 0.8,
+    closed_share: 0.086,
+    closures_per_hour: 8,
+    mean_closure_s: 39,
+    peak_hour_s: source === "timetable" ? 8 * 3600 : null,
+    source,
+  };
+  const legs = v.legs.map((l, i) =>
+    i === 0
+      ? {
+          ...l,
+          time_s: l.time_s + 1.7,
+          crossing_wait_s: 1.7,
+          level_crossings: [{ crossing: 0, passes: 1, wait_s: 1.7 }],
+        }
+      : l,
+  );
+  return {
+    ...v,
+    legs,
+    time_s: v.time_s + 1.7,
+    crossing_wait_s: 1.7,
+    level_crossings: [
+      {
+        ids: ["lc3-1001-0"],
+        street: "Station Road",
+        modes: ["regional_rail"],
+        protection: "barriers",
+        lonlat: [7, 50],
+        wait,
+        passes: 1,
+        wait_s: 1.7,
+      },
+    ],
   };
 }
 
@@ -92,7 +139,12 @@ function fakeEngine(): StreetEngine {
     battery_range_m: 0,
     doors_both_sides: false,
   };
-  const update = (kinds: PointKind[]) => (view = sampleView(kinds));
+  // Like the engine, keep the level crossings across edits and rebuilds.
+  let crossings: "timetable" | "assumed" | null = null;
+  const update = (kinds: PointKind[]) => {
+    const v = sampleView(kinds);
+    return (view = crossings ? withCrossing(v, crossings) : v);
+  };
   return {
     addOsm: vi.fn(),
     rebuild: vi.fn(() => {
@@ -113,6 +165,10 @@ function fakeEngine(): StreetEngine {
     clearDepot: vi.fn(() => view),
     optimise: vi.fn(() => view),
     setSettings: vi.fn(() => view),
+    setLevelCrossings: vi.fn((topology: string, closures: string) => {
+      crossings = topology ? (closures ? "timetable" : "assumed") : null;
+      return update(view.points.map((p) => p.kind));
+    }),
     setStreetSetups: vi.fn(() => view),
     usableRoads: () => ({ type: "FeatureCollection", features: [] }),
     defaultProfile: (mode) => ({ ...profile, mode }),
@@ -148,11 +204,18 @@ function fakeMap(zoom: number) {
   return { map: map as unknown as MapLibreMap, handlers };
 }
 
-async function opened(zoom = 15) {
+async function opened(zoom = 15, railTopology: unknown = null) {
   const engine = fakeEngine();
   const fetchTile = vi.fn(async (x: number, y: number) => `<osm tile="${x}/${y}"/>`);
   const { map, handlers } = fakeMap(zoom);
-  render(<StreetLineEditor map={map} loadEngine={async () => engine} fetchTile={fetchTile} />);
+  render(
+    <StreetLineEditor
+      map={map}
+      loadEngine={async () => engine}
+      fetchTile={fetchTile}
+      railTopology={railTopology}
+    />,
+  );
   await waitFor(() => expect(screen.getByRole("radiogroup", { name: "Mode" })).toBeTruthy());
   return { engine, fetchTile, handlers };
 }
@@ -234,6 +297,31 @@ describe("Street line editor", () => {
     expect(screen.getByText(/green: overhead wire/)).toBeTruthy();
   });
 
+  it("waits at the railway tool's level crossings and uses rail timetable closures when loaded", async () => {
+    const topology = { schema: "mobsimlab.rail-topology/1", level_crossings: [] };
+    const { engine } = await opened(15, topology);
+    await waitFor(() => expect(engine.rebuild).toHaveBeenCalled());
+    expect(engine.setLevelCrossings).toHaveBeenCalledWith(JSON.stringify(topology), "");
+    await waitFor(() =>
+      expect(screen.getByRole("list", { name: "Level crossings on the line" }).textContent).toMatch(
+        /Station Road · Regional rail · barriers/,
+      ),
+    );
+    expect(screen.getByText(/\+1\.7 s per pass \(peak\)/)).toBeTruthy();
+    expect(screen.getByText(/assumed service$/)).toBeTruthy();
+    expect(screen.getByText(/^Railway: /).textContent).toMatch(
+      /Railway: railway tool drawing\. Closures: assumed service\./,
+    );
+    const closures = JSON.stringify({ schema: "mobsimlab.level-crossing-closures/1", level_crossings: [] });
+    const file = new File([closures], "closures.json", { type: "application/json" });
+    fireEvent.change(screen.getByLabelText("Load rail timetable closures"), { target: { files: [file] } });
+    await waitFor(() =>
+      expect(engine.setLevelCrossings).toHaveBeenLastCalledWith(JSON.stringify(topology), closures),
+    );
+    expect(await screen.findByText(/08:00 busiest hour/)).toBeTruthy();
+    expect(screen.getByText(/^Railway: /).textContent).toMatch(/Closures: closures\.json/);
+  });
+
   it("switches tools from the palette and the keyboard", async () => {
     await opened();
     const pressed = (name: RegExp) => screen.getByRole("button", { name }).getAttribute("aria-pressed");
@@ -246,7 +334,103 @@ describe("Street line editor", () => {
   });
 });
 
+describe("Street line saved with the project", () => {
+  const saved: SavedStreetLine = {
+    name: "Harbour shuttle",
+    profile: {
+      mode: "trolleybus",
+      height_m: 3.4,
+      weight_t: 18,
+      length_m: 12,
+      max_speed_kmh: 60,
+      battery_range_m: 5000,
+      doors_both_sides: false,
+    },
+    rules: {
+      traffic_side: "right",
+      detour_warn_m: 500,
+      detour_warn_ratio: 0.25,
+      grouping_distance_m: 150,
+      max_snap_m: 150,
+    },
+    timing: { ...DEFAULT_TIMING, headwayMin: 7.5 },
+    points: [
+      { lonlat: [7.411, 43.731], kind: "end_stop", name: "Harbour" },
+      { lonlat: [7.415, 43.733], kind: "via", name: null },
+      { lonlat: [7.419, 43.734], kind: "stop", name: null },
+    ],
+    depot: [7.412, 43.73],
+    depotStops: { out: 0, in: 0 },
+    view: sampleView(["end_stop", "via", "stop"]),
+  };
+
+  it("routes the saved points again once the streets have loaded, without saving on open", async () => {
+    const engine = fakeEngine();
+    const onSave = vi.fn();
+    const { map, handlers } = fakeMap(15);
+    const fitBounds = vi.fn();
+    Object.assign(map, { fitBounds, jumpTo: vi.fn() });
+    render(
+      <StreetLineEditor
+        map={map}
+        loadEngine={async () => engine}
+        fetchTile={async () => "<osm/>"}
+        initial={saved}
+        onSave={onSave}
+      />,
+    );
+    expect(fitBounds).toHaveBeenCalledWith(
+      [
+        [7.411, 43.73],
+        [7.419, 43.734],
+      ],
+      expect.objectContaining({ maxZoom: 16 }),
+    );
+    await waitFor(() => expect(engine.insertPoint).toHaveBeenCalledTimes(3));
+    expect(engine.setSettings).toHaveBeenCalledWith(saved.profile, saved.rules);
+    expect(engine.insertPoint).toHaveBeenNthCalledWith(1, 0, [7.411, 43.731], "end_stop");
+    expect(engine.insertPoint).toHaveBeenNthCalledWith(3, 2, [7.419, 43.734], "stop");
+    expect(engine.setName).toHaveBeenCalledWith(1, "Harbour");
+    expect(engine.setDepot).toHaveBeenCalledWith([7.412, 43.73]);
+    expect(screen.getByDisplayValue("Harbour shuttle")).toBeTruthy();
+    expect(onSave).not.toHaveBeenCalled();
+
+    // The planner's next change is saved, with the names they gave and the route for the journey planner.
+    act(() => handlers.get("click")!({ lngLat: { lng: 7.42, lat: 43.735 }, point: { x: 10, y: 10 } }));
+    await waitFor(() => expect(onSave).toHaveBeenCalledTimes(1));
+    const line = onSave.mock.calls[0]![0] as SavedStreetLine;
+    expect(line).toMatchObject({ name: "Harbour shuttle", timing: { headwayMin: 7.5 } });
+    expect(line.points[0]).toMatchObject({ name: "Harbour" });
+    expect(line.points.at(-1)).toMatchObject({ kind: "via", name: null });
+    expect(line.view.points).toHaveLength(line.points.length);
+  });
+
+  it("saves a new line only once a point is placed", async () => {
+    const engine = fakeEngine();
+    const onSave = vi.fn();
+    const { map, handlers } = fakeMap(15);
+    render(
+      <StreetLineEditor
+        map={map}
+        loadEngine={async () => engine}
+        fetchTile={async () => "<osm/>"}
+        onSave={onSave}
+      />,
+    );
+    await waitFor(() => expect(engine.rebuild).toHaveBeenCalled());
+    // The fake engine routes three sample points on the first build; a real one starts empty.
+    act(() => handlers.get("click")!({ lngLat: { lng: 7.42, lat: 43.735 }, point: { x: 10, y: 10 } }));
+    await waitFor(() => expect(onSave).toHaveBeenCalled());
+  });
+});
+
 describe("Line summary", () => {
+  it("counts the expected wait at level crossings in the running time", () => {
+    const s = lineStats(withCrossing(sampleView(["end_stop", "via", "stop"]), "assumed"), DEFAULT_TIMING);
+    expect(s.crossingMin).toBeCloseTo(1.7 / 60);
+    expect(s.runMin).toBeCloseTo(3 + 1.7 / 60);
+  });
+
   it("counts cycle time and vehicles for the headway", () => {
     const s = lineStats(sampleView(["end_stop", "via", "stop"]), DEFAULT_TIMING);
     expect(s).toMatchObject({ stops: 2, endStops: 1, runMin: 3, layoverMin: 5 });

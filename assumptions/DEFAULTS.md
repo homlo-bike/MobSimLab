@@ -1061,6 +1061,15 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 |---|---|---|---|---|---|---|---|
 | all | 6 | 10 | 15 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Amber then red for road traffic, with a clearing time for vehicles already on the crossing. |
 
+### Level crossings: time from the train clearing the crossing until road traffic may go again
+
+`level_crossing.reopen_s` · unit: s · used by: road closure per train in the track topology, expected wait of buses at level crossings in street line running times
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 6 | 10 | 12 | cited | unverified | [mutcd-2009-part8](#src-mutcd-2009-part8) | MUTCD 2009 § 8C.04: gate arms rise to upright in not more than 12 s once the train has cleared and no other train is detected; the lights stop when the arms are up. Barriers rising in about 6–10 s are usual elsewhere. The central value is between the two. |
+| tram, light_rail | 3 | 5 | 8 | educated-guess | unverified | [hcm7](#src-hcm7), [mobsimlab-derivation](#src-mobsimlab-derivation) | Trams in the street cross at traffic signals, so road traffic waits only for the intergreen after the tram has cleared (clearance of the tram's conflict area plus the start of the road green), usually a few seconds. To be confirmed against local signal timing. |
+
 ## Accessibility
 
 ### Level access: largest horizontal gap between platform edge and vehicle floor
@@ -1416,6 +1425,7 @@ and rationale per attribute: [`switches.yaml`](switches.yaml); geometry model:
 | <a id="src-curtius-kniffler"></a>`curtius-kniffler` | [Curtius, E. W.; Kniffler, A. (1950): Neue Erkenntnisse über die Haftung zwischen Treibrad und Schiene. Elektrische Bahnen 20, 201–210 (μ = 0.161 + 7.5/(v + 44), v in km/h)](https://de.wikipedia.org/wiki/Haftreibungsbeiwert) | free | Formula is a fact; Wikipedia text CC BY-SA 4.0 (not copied) | 2026-10-27 | none |
 | <a id="src-sumo-vtype"></a>`sumo-vtype` | [Eclipse SUMO documentation, Definition of Vehicles, Vehicle Types, and Routes (default minGap 2.5 m, tau 1.0 s)](https://sumo.dlr.de/docs/Definition_of_Vehicles%2C_Vehicle_Types%2C_and_Routes.html) | free | EPL-2.0 | 2026-10-27 | search-snippet |
 | <a id="src-mutcd-2009"></a>`mutcd-2009` | [Manual on Uniform Traffic Control Devices, 2009 edition, § 4E.06 (pedestrian clearance walking speed 3.5 ft/s ≈ 1.07 m/s)](https://mutcd.fhwa.dot.gov/) | free | US Government work, public domain | 2026-10-27 | none |
+| <a id="src-mutcd-2009-part8"></a>`mutcd-2009-part8` | [Manual on Uniform Traffic Control Devices, 2009 edition, Part 8 (Traffic Control for Railroad and Light Rail Transit Grade Crossings), § 8C.04 gate arms ascend to upright in not more than 12 s](https://mutcd.fhwa.dot.gov/htm/2009/part8/part8c.htm) | free | US Government work, public domain | 2026-11-02 | search-snippet |
 | <a id="src-hcm7"></a>`hcm7` | [Highway Capacity Manual, 7th edition, pedestrian walking speeds](https://www.trb.org/Main/Blurbs/182013.aspx) | paywalled | © National Academy of Sciences; numbers cited as facts | 2026-10-27 | none |
 | <a id="src-rast06"></a>`rast06` | [FGSV Richtlinien für die Anlage von Stadtstraßen (RASt 06), lane widths](https://www.fgsv-verlag.de/) | paywalled | © FGSV; numbers cited as facts | 2026-10-27 | none |
 | <a id="src-aashto-green-book"></a>`aashto-green-book` | [AASHTO, A Policy on Geometric Design of Highways and Streets (Green Book), 7th edition (12 ft / 3.6 m lanes)](https://store.transportation.org/) | paywalled | © AASHTO; numbers cited as facts | 2026-10-27 | none |

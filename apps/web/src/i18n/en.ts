@@ -69,6 +69,7 @@ export const en = {
   "settings.fromProvider": "Name and e-mail come from your sign-in provider.",
   "settings.largerTargets": "Larger touch targets",
   "settings.reduceMotion": "Reduce motion",
+  "settings.existingRailways": "Show existing railways from OpenStreetMap",
   "settings.savedToAccount": "Saved to your account, so they follow you to other devices.",
 
   "language.title": "Language",
@@ -184,6 +185,20 @@ export const en = {
   "project.notFound": "Project not found",
   "project.notFoundHint": "It may have been deleted, or you no longer have access.",
   "project.toHome": "Back to projects",
+
+  "save.saved": "Saved",
+  "save.saving": "Saving…",
+  "save.offline": "Not saved yet · trying again",
+  "save.failed": "Not saved: {error}",
+  "save.conflict": "{who} saved the {drawing} while you were changing it. Which one should the project keep?",
+  "save.someone": "Someone else",
+  "save.keepMine": "Keep mine",
+  "save.takeTheirs": "Use theirs",
+  "save.loadFailed": "The project's drawings did not load: {error}",
+  "save.retry": "Try again",
+  "drawing.street-lines": "street line",
+  "drawing.railway": "railway",
+  "drawing.street-setups": "street setups",
 
   "tab.label": "Project",
   "tab.simulator": "Simulator",
