@@ -218,3 +218,29 @@ fn train_protection_is_read_per_section() {
     json["sections"][0]["train_protection"] = "semaphore".into();
     assert!(import_json(&json.to_string(), &ImportOptions::default()).is_err());
 }
+
+#[test]
+fn the_design_tools_signal_plan_keeps_its_short_plain_stretches() {
+    // The tram example's export with the design tool's generated signals: a turnout and a
+    // diamond crossing 83 m apart, each bounded by signals at its fouling points. The stretch
+    // between them is shorter than `min_plain_m`, but the plan's signals keep it a section of
+    // its own instead of joining both areas (which would put a signal inside a switch area).
+    let path = format!(
+        "{}/tests/data/tram_signals.json",
+        env!("CARGO_MANIFEST_DIR")
+    );
+    let json = std::fs::read_to_string(path).unwrap();
+    let imp = import_json(&json, &ImportOptions::default()).unwrap();
+    assert!(imp.signals_generated && !imp.spec.signals.is_empty());
+    let m = Model::compile(&imp.spec).unwrap_or_else(|e| panic!("{e:?}"));
+    let sw5 = imp.spec.detection.iter().find(|d| d.id == "sw5").unwrap();
+    assert!(
+        !sw5.tracks.iter().any(|t| t.starts_with("t7.")),
+        "{:?}",
+        sw5.tracks
+    );
+    let first = &imp.spec.signals[0].id;
+    assert!(m
+        .signal(first)
+        .is_some_and(|g| !m.routes_from(g).is_empty()));
+}

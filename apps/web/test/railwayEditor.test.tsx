@@ -37,10 +37,12 @@ import {
   addSwitch,
   autoLeads,
   deleteElement,
+  resetSignals,
   emptyNetwork,
   kindOf,
   newTrack,
   nextId,
+  updateSignal,
 } from "../src/features/railways/doc";
 import { loadRailEngine } from "../src/features/railways/engine";
 import { metres } from "../src/features/railways/mapLayers";
@@ -368,32 +370,40 @@ describe("railway engine (WebAssembly)", () => {
     e.dispose();
   });
 
-  it("generates a signal plan, draws it and exports it as the planner's plan", async () => {
+  it("generates signals from the design and keeps the planner's changes on top", async () => {
     const e = await loadRailEngine();
     const doc = e.sample("regional_rail", ORIGIN);
-    const before = e.build(doc, null);
-    expect(before.signals_planned).toBe(false);
+    const v = e.build(doc, null);
+    expect(v.signals.length).toBeGreaterThan(5);
+    expect(v.signals.every((s) => s.auto)).toBe(true);
+    expect(v.signals_edited).toBe(false);
+    expect(Math.min(...v.signals.map((s) => s.id))).toBe(nextId(doc));
+    expect(v.layers.signals.features.filter((f) => f.properties.kind === "signal")).toHaveLength(
+      v.signals.length,
+    );
     expect((e.topology() as { signals_generated: boolean }).signals_generated).toBe(true);
-    const plan = e.generateSignals();
-    expect(plan.length).toBeGreaterThan(5);
-    expect(Math.min(...plan.map((s) => s.id))).toBe(nextId(doc));
-    const planned = { ...doc, signals: plan };
-    const v = e.build(planned, null);
-    expect(v.signals_planned).toBe(true);
-    expect(v.signals).toHaveLength(plan.length);
-    expect(v.layers.signals.features.filter((f) => f.properties.kind === "signal")).toHaveLength(plan.length);
-    const t = e.topology() as { signals_generated: boolean; signals: { id: string; facing: string }[] };
+    // Deleting a generated signal keeps it out, and says what is then unprotected.
+    const first = v.signals.find((s) => s.kind === "main")!;
+    expect(kindOf(doc, first.id, v.signals)).toBe("signal");
+    const fewer = deleteElement(doc, first.id, () => null, v.signals);
+    expect(fewer.signals_removed).toHaveLength(1);
+    const v2 = e.build(fewer, null);
+    expect(v2.signals).toHaveLength(v.signals.length - 1);
+    expect(v2.signals_edited).toBe(true);
+    expect(v2.issues.some((i) => /^No (signal in front of|starter signal)/.test(i.text))).toBe(true);
+    // Editing a generated signal makes it the planner's, with the same id.
+    const named = updateSignal(doc, first.id, (x) => ({ ...x, name: "A1" }), v.signals);
+    expect(named.signals).toEqual([expect.objectContaining({ id: first.id, name: "A1" })]);
+    const v3 = e.build(named, null);
+    expect(v3.signals).toHaveLength(v.signals.length);
+    expect(v3.signals.find((s) => s.id === first.id)).toMatchObject({ auto: false, name: "A1" });
+    const t = e.topology() as { signals_generated: boolean; signals: { id: string }[] };
     expect(t.signals_generated).toBe(false);
-    expect(t.signals.map((s) => s.id)).toContain(`sg${plan[0]!.id}`);
+    expect(t.signals.map((s) => s.id)).toContain(`sg${first.id}`);
+    expect(resetSignals(named)).not.toHaveProperty("signals");
     // A click beside a track finds where a signal would stand.
-    const at = e.signalAnchor(v.signals[0]!.lonlat, 10);
-    expect(at).not.toBeNull();
+    expect(e.signalAnchor(v.signals[0]!.lonlat, 10)).not.toBeNull();
     expect(e.signalAnchor([ORIGIN[0] + 1, ORIGIN[1]], 10)).toBeNull();
-    // Deleting a signal leaves the others; ids stay unique across all elements.
-    const fewer = deleteElement(planned, plan[0]!.id, () => null);
-    expect(fewer.signals).toHaveLength(plan.length - 1);
-    expect(kindOf(planned, plan[0]!.id)).toBe("signal");
-    expect(nextId(planned)).toBe(Math.max(...plan.map((s) => s.id)) + 1);
     e.dispose();
   });
 
@@ -622,36 +632,26 @@ describe("Railway editor", () => {
     expect(engine).not.toBeNull();
   });
 
-  it("generates signals, lets the planner turn one round and removes the plan", async () => {
-    await opened();
-    fireEvent.change(screen.getByRole("combobox"), { target: { value: "regional_rail" } });
-    fireEvent.click(screen.getByRole("button", { name: "Example" }));
-    fireEvent.click(await screen.findByRole("button", { name: "Generate signals" }));
-    expect(await screen.findByText(/Signals · [1-9]/)).toBeTruthy();
-    expect(screen.getByRole("status").textContent).toMatch(/signals generated/);
-    expect(screen.getByRole("button", { name: "Generate again" })).toBeTruthy();
-    fireEvent.click(screen.getByRole("button", { name: "Remove plan" }));
-    expect(await screen.findByRole("button", { name: "Generate signals" })).toBeTruthy();
-  });
-
-  it("places a signal on a track with the signal tool and turns it round with F", async () => {
+  it("shows generated signals, places one of the planner's, turns it with F and resets", async () => {
     const { handlers, engine } = await opened();
     fireEvent.change(screen.getByRole("combobox"), { target: { value: "regional_rail" } });
     fireEvent.click(screen.getByRole("button", { name: "Example" }));
     await screen.findByText(/0 errors/);
+    expect(screen.getByText(/Signals · [1-9]/)).toBeTruthy();
+    expect(screen.queryByRole("button", { name: /Reset to generated/ })).toBeNull();
     fireEvent.keyDown(window, { key: "g" });
     expect(screen.getByRole("button", { name: /Signal/ }).getAttribute("aria-pressed")).toBe("true");
     // A point on the first track of the example.
-    const e = engine();
-    const plan = e.generateSignals();
-    const v = e.build({ ...e.sample("regional_rail", ORIGIN), signals: plan }, null);
+    const v = engine().build(engine().sample("regional_rail", ORIGIN), null);
     const [lng, lat] = v.signals[0]!.lonlat;
     act(() => handlers.get("click")!({ lngLat: { lng, lat }, point: { x: 0, y: 0 } }));
     expect(await screen.findByRole("button", { name: /Turn round/ })).toBeTruthy();
-    expect(screen.getByText(/^Signals · 1$/)).toBeTruthy();
+    expect(screen.getByText(/ · yours/)).toBeTruthy();
+    expect(screen.getByRole("button", { name: /Reset to generated/ })).toBeTruthy();
     fireEvent.keyDown(window, { key: "f" });
-    fireEvent.click(screen.getByRole("button", { name: /Delete signal/ }));
-    expect(screen.getByText(/^Signals · 0$/)).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: /Reset to generated/ }));
+    expect(screen.getByRole("status").textContent).toMatch(/reset/);
+    expect(screen.queryByRole("button", { name: /Reset to generated/ })).toBeNull();
   });
 
   it("keeps what is drawn in its own railway system when the mode for new elements changes", async () => {

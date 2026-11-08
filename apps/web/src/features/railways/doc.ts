@@ -11,6 +11,7 @@ import type {
   RailView,
   Signal,
   SignalAt,
+  SignalView,
   Station,
   Switch,
   SwitchKind,
@@ -38,18 +39,36 @@ export function nextId(doc: Network): number {
   return ids.length ? Math.max(...ids) + 1 : 1;
 }
 
-/** Purpose: what kind of element an id belongs to. */
-export function kindOf(doc: Network, id: number): "station" | "track" | "switch" | "signal" | null {
+/**
+ * Purpose: what kind of element an id belongs to. Generated signals are not in the document;
+ * pass the view's signals to find them too.
+ */
+export function kindOf(
+  doc: Network,
+  id: number,
+  signals: SignalView[] = [],
+): "station" | "track" | "switch" | "signal" | null {
   if (doc.stations.some((s) => s.id === id)) return "station";
   if (doc.tracks.some((s) => s.id === id)) return "track";
   if (doc.switches.some((s) => s.id === id)) return "switch";
   if (doc.signals?.some((s) => s.id === id)) return "signal";
+  if (signals.some((s) => s.id === id)) return "signal";
   return null;
 }
 
 /**
- * Purpose: add a signal. A document without a signal plan starts one with this signal (the
- * generated signals are then no longer used; "Generate signals" fills the plan).
+ * Purpose: a signal of the plan by id: the planner's from the document, or a generated one from
+ * the view (as a document signal). Output: the signal, or undefined.
+ */
+export function signalById(doc: Network, id: number, signals: SignalView[]): Signal | undefined {
+  const own = doc.signals?.find((s) => s.id === id);
+  if (own) return own;
+  const g = signals.find((s) => s.id === id && s.auto);
+  return g && { id: g.id, at: g.at, facing: g.facing, kind: g.kind, name: g.name };
+}
+
+/**
+ * Purpose: add a signal of the planner's on top of the generated ones.
  * Output: the document and the new signal's id.
  */
 export function addSignal(
@@ -62,9 +81,35 @@ export function addSignal(
   return [{ ...doc, signals: [...(doc.signals ?? []), { id, at, facing, kind, name: "" }] }, id];
 }
 
-/** Purpose: replace one signal by id with an updated copy. */
-export function updateSignal(doc: Network, id: number, f: (s: Signal) => Signal): Network {
-  return { ...doc, signals: (doc.signals ?? []).map((s) => (s.id === id ? f(s) : s)) };
+/**
+ * Purpose: replace one signal by id with an updated copy. Editing a generated signal (found in
+ * `signals`, the view's) makes it the planner's: the copy keeps its id, and its generated
+ * position is recorded as removed so the generator does not put it back.
+ */
+export function updateSignal(
+  doc: Network,
+  id: number,
+  f: (s: Signal) => Signal,
+  signals: SignalView[] = [],
+): Network {
+  if (doc.signals?.some((s) => s.id === id)) {
+    return { ...doc, signals: doc.signals.map((s) => (s.id === id ? f(s) : s)) };
+  }
+  const g = signalById(doc, id, signals);
+  if (!g) return doc;
+  return {
+    ...doc,
+    signals: [...(doc.signals ?? []), f(g)],
+    signals_removed: [...(doc.signals_removed ?? []), { at: g.at, facing: g.facing }],
+  };
+}
+
+/** Purpose: drop the planner's signal changes, so the plan is the generated one again. */
+export function resetSignals(doc: Network): Network {
+  const rest = { ...doc };
+  delete rest.signals;
+  delete rest.signals_removed;
+  return rest;
 }
 
 /** Purpose: an empty document for a mode. */
@@ -205,13 +250,21 @@ export function deleteElement(
   doc: Network,
   id: number,
   anchorAt: (a: Anchor) => [number, number] | null,
+  signals: SignalView[] = [],
 ): Network {
-  const kind = kindOf(doc, id);
+  const kind = kindOf(doc, id, signals);
   let stations = doc.stations;
   let tracks = doc.tracks;
   let switches = doc.switches;
   let goneSwitches: number[] = [];
-  if (kind === "signal") return { ...doc, signals: (doc.signals ?? []).filter((s) => s.id !== id) };
+  if (kind === "signal") {
+    if (doc.signals?.some((s) => s.id === id)) {
+      return { ...doc, signals: doc.signals.filter((s) => s.id !== id) };
+    }
+    // A generated signal: keep it out of the plan.
+    const g = signals.find((s) => s.id === id)!;
+    return { ...doc, signals_removed: [...(doc.signals_removed ?? []), { at: g.at, facing: g.facing }] };
+  }
   if (kind === "station") stations = stations.filter((s) => s.id !== id);
   if (kind === "switch") goneSwitches = [id];
   if (kind === "track") {

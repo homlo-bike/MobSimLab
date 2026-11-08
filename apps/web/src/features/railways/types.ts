@@ -107,7 +107,7 @@ export type SignalAt =
   | { type: "station"; station: number; track: number; x: number }
   | { type: "leg"; switch: number; leg: number; x: number };
 
-/** A signal of the planner's signal plan. `facing` +1 governs trains moving with the chainage. */
+/** A signal of the planner's. `facing` +1 governs trains moving with the chainage. */
 export interface Signal {
   id: number;
   at: SignalAt;
@@ -124,10 +124,21 @@ export interface Network {
   stations: Station[];
   tracks: Track[];
   switches: Switch[];
-  /** The signal plan; absent until the planner generates it (operations then gets generated signals). */
+  /**
+   * The planner's own signals (placed, or generated ones they edited). They come on top of the
+   * signals generated from the design on every build.
+   */
   signals?: Signal[] | null;
+  /** Generated signals the planner removed or replaced: where they stood and which way they faced. */
+  signals_removed?: SignalKey[];
   /** Slips the planner put into diamond crossings. */
   slips?: Slip[];
+}
+
+/** A generated signal the planner removed or replaced. */
+export interface SignalKey {
+  at: SignalAt;
+  facing: 1 | -1;
 }
 
 /** A slip in a diamond crossing. */
@@ -325,7 +336,7 @@ export interface ExistingJoinView {
   lonlat: LonLat;
 }
 
-/** A drawn signal of the plan. */
+/** A drawn signal of the plan: generated (`auto`) or the planner's. */
 export interface SignalView {
   id: number;
   kind: SignalKind;
@@ -335,6 +346,8 @@ export interface SignalView {
   /** False for a block marker under cab signalling. */
   lineside: boolean;
   lonlat: LonLat;
+  /** Generated from the design, not placed or edited by the planner. */
+  auto: boolean;
 }
 
 export interface FeatureCollection {
@@ -388,8 +401,10 @@ export interface RailView {
   slips: SlipView[];
   /** The catalogue's slips. */
   slip_elements: SlipElementView[];
-  /** The document holds a signal plan. */
-  signals_planned: boolean;
+  /** The planner has added, edited or removed signals. */
+  signals_edited: boolean;
+  /** How many generated signals the planner removed or replaced. */
+  signals_removed: number;
   counts: { errors: number; warnings: number; track_km: number; route_km: number };
   bbox: [number, number, number, number] | null;
 }

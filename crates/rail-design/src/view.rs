@@ -583,10 +583,11 @@ pub fn view(dz: &Design) -> Value {
         );
     }
 
-    // Signals of the plan: a post on the right of the track in the direction of travel, and a
+    // Signals of the effective plan: a post on the right of the track in the direction of travel, and a
     // short arm pointing that way, so the facing reads on the map.
     let mut signal_list: Vec<Value> = Vec::new();
-    for sg in net.signals.iter().flatten() {
+    for ps in &dz.signals {
+        let sg = &ps.signal;
         let Some((p, h)) = crate::signal::locate(dz, &sg.at) else {
             continue;
         };
@@ -608,7 +609,7 @@ pub fn view(dz: &Design) -> Value {
             && dz
                 .signal_params(&sg.at)
                 .is_some_and(|p| crate::signal::system_of(p) == crate::signal::System::Cab));
-        let props = |kind: &str| json!({"kind": kind, "z": z, "ref": sg.id, "signal": sg.kind, "lineside": lineside});
+        let props = |kind: &str| json!({"kind": kind, "z": z, "ref": sg.id, "signal": sg.kind, "lineside": lineside, "auto": ps.auto});
         let (foot, head) = (p.add(right.mul(1.6)), p.add(right.mul(3.0)));
         ly.line("signals", &[foot, head], props("signal_post"));
         ly.line(
@@ -619,7 +620,7 @@ pub fn view(dz: &Design) -> Value {
         ly.point("signals", head, props("signal"));
         signal_list.push(json!({
             "id": sg.id, "kind": sg.kind, "name": sg.name, "facing": sg.facing, "at": sg.at,
-            "lineside": lineside, "lonlat": ly.ll(head),
+            "lineside": lineside, "lonlat": ly.ll(head), "auto": ps.auto,
         }));
     }
 
@@ -948,7 +949,8 @@ pub fn view(dz: &Design) -> Value {
         "slips": slips,
         "slip_elements": slip_elements,
         "existing_count": existing_count,
-        "signals_planned": net.signals.is_some(),
+        "signals_edited": net.signals.as_ref().is_some_and(|l| !l.is_empty()) || !net.signals_removed.is_empty(),
+        "signals_removed": net.signals_removed.len(),
         "counts": counts,
         "bbox": bbox,
     })
