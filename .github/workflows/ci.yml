@@ -51,8 +51,8 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - uses: taiki-e/install-action@v2
         with: { tool: wasm-bindgen@0.2.129 }
-      - name: Build the street routing, railway design and journey planner WebAssembly modules (browser and API)
-        run: tools/wasm/build-street-routing.sh && tools/wasm/build-rail-design.sh && tools/wasm/build-journey-planner.sh && tools/wasm/build-api.sh
+      - name: Build the street routing, railway design, journey planner and mode kits WebAssembly modules (browser and API)
+        run: tools/wasm/build-street-routing.sh && tools/wasm/build-rail-design.sh && tools/wasm/build-journey-planner.sh && tools/wasm/build-mode-kits.sh && tools/wasm/build-api.sh
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v5
         with: { node-version-file: .nvmrc, cache: pnpm }
@@ -96,8 +96,8 @@ jobs:
       - run: cargo fmt --all --check
       - run: cargo clippy --workspace --all-targets -- -D warnings
       - run: cargo test --workspace --exclude mobsim-py
-      - name: Street routing, railway design and journey planner compile to WebAssembly
-        run: rustup target add wasm32-unknown-unknown && cargo build --locked --target wasm32-unknown-unknown -p street-routing-wasm -p rail-design-wasm -p journey-planner-wasm
+      - name: Street routing, railway design, journey planner and mode kits compile to WebAssembly
+        run: rustup target add wasm32-unknown-unknown && cargo build --locked --target wasm32-unknown-unknown -p street-routing-wasm -p rail-design-wasm -p journey-planner-wasm -p mode-kits-wasm
       - uses: astral-sh/setup-uv@v6
         with: { python-version: "3.12" }
       - name: Railway topology export matches contracts/rail-topology.schema.json
@@ -108,6 +108,17 @@ jobs:
           uv run --no-project --with jsonschema python tools/contracts/check_rail_topology.py "$RUNNER_TEMP"/topology/*.json
       - name: S2 benchmark (one simulated hour, must not deadlock)
         run: cargo run --release -p rail-sim --bin bench_s2 -- 3600 1.0 | tee bench.json
+
+  plugins:
+    name: Plugins (manifests, modes, parameters, registry up to date)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v6
+        with: { python-version: "3.12" }
+      - run: uvx ruff check tools/plugins && uvx ruff format --check tools/plugins
+      - run: uv run --no-project --with jsonschema --with pyyaml python tools/plugins/check.py --check-rendered
+      - run: uv run --no-project --with jsonschema --with pyyaml --with pytest pytest -q tools/plugins
 
   vehicles:
     name: Vehicle catalogue (schema, sources, core fields)

@@ -1,0 +1,12 @@
+{
+  "id": "ferry",
+  "label": "Ferry",
+  "family": "water",
+  "colour": "#0e7490",
+  "gtfsRouteType": 4,
+  "kit": "water-route",
+  "operation": "timetabled",
+  "contextKey": "vessel_type",
+  "contexts": ["monohull", "catamaran", "hydrofoil"],
+  "defaultContext": "monohull"
+}

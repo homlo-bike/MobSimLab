@@ -1,0 +1,272 @@
+# Parameters of the ferry plugin (assumptions/README.md format), with the context keys
+# `mode` (ferry) and `vessel_type`. Every entry starts unverified; the values come from Research R1
+# (docs/research/r1-cable-car-and-ferry.md). Checked by tools/plugins/check.py.
+
+- key: ferry.service_speed_kn
+  label: Service speed
+  group: Ferries
+  unit: kn
+  used_by:
+    - running time
+  values:
+    - context:
+        mode: "*"
+      low: 8
+      central: 12
+      high: 35
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: "R1 §2.1: water buses run 8 to 25 knots, commuter fast ferries 25 to 35."
+    - context:
+        mode: ferry
+        vessel_type: monohull
+      low: 8
+      central: 12
+      high: 15
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: River and harbour water buses (to verify).
+    - context:
+        mode: ferry
+        vessel_type: catamaran
+      low: 20
+      central: 25
+      high: 35
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: "R1 §2.1: commuter fast ferries, 25 to 35 knots."
+    - context:
+        mode: ferry
+        vessel_type: hydrofoil
+      low: 18
+      central: 22
+      high: 30
+      basis: documented
+      sources:
+        - candela-p12-techcrunch
+      check: unverified
+      rationale:
+        Electric hydrofoils such as the Candela P-12, about 25 knots top speed (to verify); service speed
+        somewhat lower.
+- key: ferry.berthing_s
+  label: Berthing manoeuvre per call
+  group: Ferries
+  unit: s
+  used_by:
+    - running time
+  values:
+    - context:
+        mode: "*"
+      low: 60
+      central: 120
+      high: 300
+      basis: documented
+      sources:
+        - tcrp-238
+      check: unverified
+      rationale: Approach, mooring and leaving per call; TCRP Report 238 treats manoeuvring time (values to verify).
+    - context:
+        mode: ferry
+        vessel_type: hydrofoil
+      low: 60
+      central: 90
+      high: 180
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Small vessel, quick to moor (to verify).
+- key: ferry.boarding_pax_per_min_per_gangway
+  label: Boarding rate per gangway
+  group: Ferries
+  unit: passengers/min
+  used_by:
+    - dwell
+  values:
+    - context:
+        mode: "*"
+      low: 15
+      central: 30
+      high: 50
+      basis: documented
+      sources:
+        - tcrp-238
+      check: unverified
+      rationale: TCRP Report 238 treats gangway throughput as the capacity limit at busy terminals (values to verify).
+- key: ferry.min_dwell_s
+  label: Dwell at a call, minimum
+  group: Ferries
+  unit: s
+  used_by:
+    - dwell
+    - layover
+  values:
+    - context:
+        mode: "*"
+      low: 30
+      central: 60
+      high: 120
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Gangway out and in, with few passengers.
+- key: ferry.passenger_capacity
+  label: Passengers per vessel
+  group: Ferries
+  unit: passengers
+  used_by:
+    - capacity
+    - dwell check
+  values:
+    - context:
+        mode: "*"
+      low: 20
+      central: 250
+      high: 600
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Fallback; use the vessel's certified capacity once the catalogue has ferries.
+    - context:
+        mode: ferry
+        vessel_type: monohull
+      low: 100
+      central: 250
+      high: 600
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Harbour and river water buses (to verify).
+    - context:
+        mode: ferry
+        vessel_type: catamaran
+      low: 150
+      central: 300
+      high: 450
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Commuter catamarans (to verify).
+    - context:
+        mode: ferry
+        vessel_type: hydrofoil
+      low: 20
+      central: 30
+      high: 50
+      basis: cited
+      sources:
+        - candela-p12-techcrunch
+      check: unverified
+      rationale: "Candela P-12: 30 passengers."
+- key: ferry.harbour_speed_kn
+  label: Speed limit in a new speed zone
+  group: Ferries
+  unit: kn
+  used_by:
+    - speed zones
+  values:
+    - context:
+        mode: "*"
+      low: 4
+      central: 6
+      high: 8
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Typical harbour and wash-restricted limits; each zone can have its own.
+- key: ferry.layover_s
+  label: Layover at the ends of a line, minimum
+  group: Ferries
+  unit: s
+  used_by:
+    - vessel blocks
+    - berth check
+  values:
+    - context:
+        mode: "*"
+      low: 180
+      central: 300
+      high: 600
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Recovery time plus turning the vessel round.
+- key: ferry.pax_per_call_share
+  label: Passengers on and off at the busiest call, share of capacity
+  group: Ferries
+  unit: share
+  used_by:
+    - dwell
+  values:
+    - context:
+        mode: "*"
+      low: 0.2
+      central: 0.5
+      high: 1.0
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: "Planning value until demand is modelled: half a vessel load changes at the busiest call."
+- key: ferry.wave_limit_hs_m
+  label: Significant wave height limit
+  group: Ferries
+  unit: m
+  used_by:
+    - weather scenarios (planned, ADR-0037 §5a)
+  values:
+    - context:
+        mode: "*"
+      low: 0.5
+      central: 1.5
+      high: 3
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Each vessel class has its own limit; Directive 2009/45/EC sea areas C and D use 2.5 m and 1.5 m.
+    - context:
+        mode: ferry
+        vessel_type: monohull
+      low: 1
+      central: 1.5
+      high: 2.5
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: (to verify)
+    - context:
+        mode: ferry
+        vessel_type: catamaran
+      low: 1.5
+      central: 2
+      high: 3
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: (to verify)
+    - context:
+        mode: ferry
+        vessel_type: hydrofoil
+      low: 0.5
+      central: 1
+      high: 1.5
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: (to verify)
