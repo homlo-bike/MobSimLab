@@ -63,13 +63,13 @@
       "items": { "$ref": "#/$defs/existing_join" }
     },
     "signals": {
-      "description": "Signals (ADR-0030 point 7): the planner's signal plan, or one generated from the design while the document has none.",
+      "description": "Signals (ADR-0030 point 7): generated from the design, with the planner's own signals and removals on top.",
       "type": "array",
       "items": { "$ref": "#/$defs/signal" }
     },
     "signals_generated": {
       "type": "boolean",
-      "description": "true: the signals were generated on the fly; false: they are the planner's plan."
+      "description": "true: the signals are the generated plan; false: the planner added, changed or removed signals."
     }
   },
   "$defs": {
@@ -685,7 +685,7 @@
         "id": {
           "type": "string",
           "pattern": "^(sg|g)\\d+$",
-          "description": "sg{document id} for a planned signal, g{n} for a generated one (not stable between exports)."
+          "description": "sg{document id} for a signal of the planner's, g{n} for a generated one (not stable between exports)."
         },
         "section": { "$ref": "#/$defs/section_id" },
         "chainage_m": { "$ref": "#/$defs/metres", "description": "Offset from the section's from node." },
