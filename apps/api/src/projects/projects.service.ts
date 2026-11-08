@@ -9,6 +9,7 @@ import {
 import { sql } from "kysely";
 import { AuditService, projectChain } from "../audit/audit.service";
 import { DATABASE, type Database, type InstanceRole, type ProjectRole } from "../db/database";
+import { DRAWING_KINDS, type DrawingKind } from "./drawings";
 
 /** Who is acting, with what they need for the audit record. */
 export interface ProjectActor {
@@ -43,6 +44,16 @@ export interface ProjectMember {
   displayName: string | null;
   email: string | null;
   role: ProjectRole;
+}
+
+/** One saved drawing: the document of one kind, with the version a save must be based on. */
+export interface ProjectDrawing {
+  kind: DrawingKind;
+  schemaVersion: number;
+  doc: unknown;
+  version: number;
+  updatedAt: string;
+  updatedBy: { id: string; displayName: string | null } | null;
 }
 
 /** What each project role may do. Owners manage access, archive and delete. */
@@ -200,6 +211,10 @@ export class ProjectsService {
         .insertInto("project.member")
         .values({ project_id: p.id, user_id: actor.userId, role: "owner", added_by: actor.userId })
         .execute();
+      await sql`
+        INSERT INTO project.drawing (project_id, kind, schema_version, doc, version, updated_by, updated_at)
+        SELECT ${p.id}::uuid, kind, schema_version, doc, 1, ${actor.userId}::uuid, now()
+        FROM project.drawing WHERE project_id = ${id}::uuid`.execute(tx);
       await this.log(actor, id, "project.duplicated", null, { copyId: p.id }, tx);
       await this.log(actor, p.id, "project.created", null, { name: copyName, copiedFrom: id }, tx);
       return p.id;
@@ -355,7 +370,124 @@ export class ProjectsService {
     return this.get(actor, id);
   }
 
+  /** Purpose: every drawing saved in a project the caller may read, by kind. Kinds never saved are absent. */
+  async drawings(actor: ProjectActor, id: string): Promise<Partial<Record<DrawingKind, ProjectDrawing>>> {
+    await this.load(actor, id, "read");
+    const rows = await this.drawingQuery(this.db).where("d.project_id", "=", id).execute();
+    const out: Partial<Record<DrawingKind, ProjectDrawing>> = {};
+    for (const r of rows)
+      if (Object.hasOwn(DRAWING_KINDS, r.kind)) out[r.kind as DrawingKind] = this.drawing(r);
+    return out;
+  }
+
+  /**
+   * Purpose: save one drawing of a project. Owners and Editors (05 §3.2).
+   * Inputs: the kind, the whole document (already checked against its outline), and `baseVersion`: the version
+   * the caller started from, or null when the caller has never seen a saved drawing of this kind.
+   * Output: the saved drawing with its new version.
+   * Side effects: replaces the document and bumps its version and the project's `updated_at`; audit
+   * `project.drawing_saved` (kind, versions and size, not the document). 409 with the current drawing when
+   * someone else saved since `baseVersion` (10 §1.2), so the caller can choose whose drawing to keep.
+   */
+  async saveDrawing(
+    actor: ProjectActor,
+    id: string,
+    kind: DrawingKind,
+    doc: unknown,
+    baseVersion: number | null,
+  ): Promise<ProjectDrawing> {
+    const json = JSON.stringify(doc);
+    await this.db.transaction().execute(async (tx) => {
+      await this.load(actor, id, "edit", tx, true);
+      const cur = await this.drawingQuery(tx)
+        .where("d.project_id", "=", id)
+        .where("d.kind", "=", kind)
+        .executeTakeFirst();
+      if ((cur?.version ?? null) !== baseVersion)
+        throw new ConflictException({
+          message: "someone else saved this drawing since you opened it",
+          current: cur ? this.drawing(cur) : null,
+        });
+      const schemaVersion = DRAWING_KINDS[kind].schemaVersion;
+      const now = new Date();
+      if (cur)
+        await tx
+          .updateTable("project.drawing")
+          .set({
+            doc: json,
+            schema_version: schemaVersion,
+            version: cur.version + 1,
+            updated_by: actor.userId,
+            updated_at: now,
+          })
+          .where("project_id", "=", id)
+          .where("kind", "=", kind)
+          .where("version", "=", cur.version)
+          .execute();
+      else
+        await tx
+          .insertInto("project.drawing")
+          .values({
+            project_id: id,
+            kind,
+            schema_version: schemaVersion,
+            doc: json,
+            updated_by: actor.userId,
+            updated_at: now,
+          })
+          .execute();
+      await tx.updateTable("project.project").set({ updated_at: now }).where("id", "=", id).execute();
+      await this.log(
+        actor,
+        id,
+        "project.drawing_saved",
+        cur ? { kind, version: cur.version } : null,
+        { kind, version: (cur?.version ?? 0) + 1, bytes: Buffer.byteLength(json) },
+        tx,
+      );
+    });
+    const saved = await this.drawingQuery(this.db)
+      .where("d.project_id", "=", id)
+      .where("d.kind", "=", kind)
+      .executeTakeFirstOrThrow();
+    return this.drawing(saved);
+  }
+
   // ---------------------------------------------------------------------------------------------------------
+
+  private drawingQuery(db: Database) {
+    return db
+      .selectFrom("project.drawing as d")
+      .leftJoin("iam.user as du", "du.id", "d.updated_by")
+      .select([
+        "d.kind",
+        "d.schema_version",
+        "d.doc",
+        "d.version",
+        "d.updated_at",
+        "d.updated_by",
+        "du.display_name as updated_by_name",
+      ]);
+  }
+
+  private drawing(r: {
+    kind: string;
+    schema_version: number;
+    doc: unknown;
+    version: number;
+    updated_at: Date;
+    updated_by: string | null;
+    updated_by_name: string | null;
+  }): ProjectDrawing {
+    return {
+      kind: r.kind as DrawingKind,
+      schemaVersion: r.schema_version,
+      doc: r.doc,
+      version: r.version,
+      updatedAt: r.updated_at.toISOString(),
+      updatedBy: r.updated_by ? { id: r.updated_by, displayName: r.updated_by_name } : null,
+    };
+  }
 
   private baseQuery(db: Database = this.db) {
     return db

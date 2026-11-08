@@ -266,9 +266,7 @@ export function StreetSetupEditor({
             ))}
           </ul>
         )}
-        <p className="mt-2 text-xs text-slate-500">
-          Saved in this browser for this project until projects keep their drawings on the server.
-        </p>
+        <p className="mt-2 text-xs text-slate-500">Saved with the project, for everyone who opens it.</p>
       </section>
     </div>
   );

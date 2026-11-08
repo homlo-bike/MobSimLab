@@ -12,6 +12,7 @@ Say how a street is shared, where OpenStreetMap is missing or wrong, or to test 
    - **Separation from traffic**: a kerb, barrier or separate track bed between the bus, tram and bike lanes and the traffic (**Kerb or barrier**), or only paint (**Painted**).
    - **Tram**: for tram track along the street, **Own lane** or **Mixed traffic**. With **OSM**, the railway tool decides from the street's width.
 3. **Reliability and safety** under the settings says what the setup means for buses, trams and cyclists. **Reset to OpenStreetMap** removes the setup.
+4. Setups are saved with the project, for everyone who opens it (see [Saving](street-line-tool.md#saving)). Setups an earlier release kept only in your browser move into the project the first time you open it.
 
 On the map, streets are coloured by how well buses and trams are protected from traffic: green for a separated bus or tram lane, blue for a painted one, orange for a main road where they run in traffic, grey for other streets. Streets you set up have a dark outline and are listed under **Streets set up**; tap one in the list to go to it.
 

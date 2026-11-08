@@ -8,7 +8,7 @@ Design tram, light rail, metro, commuter, regional, intercity and high-speed rai
 2. Pick the **mode**. Gauge, track spacing, radii, gradients, speeds, platforms and electrification come from the mode. The panel lists the main values; the full set and their sources are in the [assumption library](../../assumptions/DEFAULTS.md).
 3. **Example** draws a sample line for the mode at the centre of the map: two stations, a double track with two curves, a crossover, a turnout to a stabling siding and a crossing line. **Clear** removes everything.
 
-The drawing stays while you switch tools or close the railway tool. It is not saved yet.
+The drawing is saved with the project a moment after each change (see [Saving](street-line-tool.md#saving)). It opens again, with the map on it, for everyone who opens the project.
 
 ## Tools
 

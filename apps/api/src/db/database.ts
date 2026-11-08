@@ -151,6 +151,15 @@ export interface DB {
     archived_at: Date | null;
     deleted_at: Date | null;
   };
+  "project.drawing": {
+    project_id: string;
+    kind: string;
+    schema_version: Generated<number>;
+    doc: ColumnType<unknown, string, string>;
+    version: Generated<number>;
+    updated_by: string | null;
+    updated_at: Timestamp;
+  };
   "project.member": {
     project_id: string;
     user_id: string;

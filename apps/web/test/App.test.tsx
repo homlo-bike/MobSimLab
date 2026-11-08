@@ -283,6 +283,64 @@ describe("project workspace", () => {
     expect(await screen.findByRole("heading", { name: "Project not found" })).toBeTruthy();
   });
 
+  it("moves street setups kept in this browser into the project and shows that they are saved", async () => {
+    const setups = [{ way: 42, bus_lane: true }];
+    window.localStorage.setItem(`mobsimlab.streetSetups.${P1}`, JSON.stringify(setups));
+    const calls = stubApi(owner, {
+      [`GET /api/projects/${P1}/drawings`]: { drawings: {} },
+      [`PUT /api/projects/${P1}/drawings/street-setups`]: {
+        drawing: {
+          kind: "street-setups",
+          schemaVersion: 1,
+          doc: setups,
+          version: 1,
+          updatedAt: "2026-11-03T10:00:00Z",
+          updatedBy: { id: "u1", displayName: "Alice Smith" },
+        },
+      },
+    });
+    window.history.replaceState(null, "", `/projects/${P1}/schematic`);
+    render(<App />);
+    await waitFor(
+      () =>
+        expect(
+          calls.find((c) => c.method === "PUT" && c.url.endsWith("/drawings/street-setups")),
+        ).toBeTruthy(),
+      { timeout: 3000 },
+    );
+    const put = calls.find((c) => c.url.endsWith("/drawings/street-setups"));
+    expect(put?.body).toEqual({ doc: setups, baseVersion: null });
+    expect(put?.headers["X-CSRF-Token"]).toBe("csrf-123");
+    expect(window.localStorage.getItem(`mobsimlab.streetSetups.${P1}`)).toBeNull();
+    expect((await screen.findByText("Saved")).getAttribute("role")).toBe("status");
+  });
+
+  it("asks which drawing to keep when someone else saved first", async () => {
+    window.localStorage.setItem(`mobsimlab.streetSetups.${P1}`, JSON.stringify([{ way: 7 }]));
+    const theirs = {
+      kind: "street-setups",
+      schemaVersion: 1,
+      doc: [{ way: 8 }],
+      version: 3,
+      updatedAt: "2026-11-03T10:00:00Z",
+      updatedBy: { id: "u2", displayName: "Ana Kovač" },
+    };
+    stubApi(owner, { [`GET /api/projects/${P1}/drawings`]: { drawings: {} } });
+    const plain = vi.mocked(fetch).getMockImplementation()!;
+    vi.mocked(fetch).mockImplementation(async (url, init) =>
+      String(url).endsWith("/drawings/street-setups")
+        ? new Response(JSON.stringify({ message: "someone else saved", current: theirs }), { status: 409 })
+        : plain(url, init),
+    );
+    window.history.replaceState(null, "", `/projects/${P1}/schematic`);
+    render(<App />);
+    const alert = await screen.findByRole("alert", {}, { timeout: 3000 });
+    expect(alert.textContent).toMatch(/Ana Kovač saved the street setups while you were changing it/);
+    fireEvent.click(within(alert).getByRole("button", { name: "Use theirs" }));
+    expect(screen.queryByRole("alert")).toBeNull();
+    expect(screen.getByText("Saved")).toBeTruthy();
+  });
+
   it("saves project preferences", async () => {
     const calls = stubApi(owner, {
       [`PATCH /api/projects/${P1}`]: { project: project(P1, "Lakeside 2030", "owner") },

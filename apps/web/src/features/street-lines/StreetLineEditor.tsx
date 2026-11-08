@@ -7,6 +7,7 @@ import { drawLine, drawRoads, ensureLayers, HIT_LAYER, removeLayers, setLineColo
 import { depotElement, pointElement, vehicleElement } from "./markers";
 import { DEFAULT_TIMING, MODES, type Timing } from "./modes";
 import { along, circuitPath } from "./summary";
+import { lineBounds, type SavedStreetLine } from "./saved";
 import { MIN_LOAD_ZOOM, tilesFor } from "./tiles";
 import type { StreetLineInput } from "../journey-planner/network";
 import type { StreetSetup } from "../street-setup/types";
@@ -82,6 +83,10 @@ interface Props {
   railTopology?: unknown;
   /** The planner's street setups from the GIS tab (bus lanes, separation…), over OSM. */
   streetSetups?: readonly StreetSetup[];
+  /** The line saved with the project; its points are routed again once the streets around it have loaded. */
+  initial?: SavedStreetLine | null;
+  /** Told about the line after every change the planner makes, so the project can save it. */
+  onSave?: (line: SavedStreetLine) => void;
 }
 
 /** A JSON file the planner loaded in the panel. */
@@ -106,14 +111,20 @@ export function StreetLineEditor({
   onLineChange,
   railTopology = null,
   streetSetups = NO_SETUPS,
+  initial = null,
+  onSave,
 }: Props) {
   const engine = useRef<StreetEngine | null>(null);
+  // The saved line until it has been routed again; nothing is saved before that.
+  const pending = useRef(initial);
+  // Names the planner gave (or the naming rules chose), by point id; other points take the street's name.
+  const named = useRef(new Map<number, string>());
   const [view, setView] = useState<LineView>(EMPTY_VIEW);
   const [ready, setReady] = useState(false);
   const [profile, setProfile] = useState<VehicleProfile | null>(null);
   const [rules, setRules] = useState<RoutingRules | null>(null);
-  const [timing, setTiming] = useState<Timing>(DEFAULT_TIMING);
-  const [lineName, setLineName] = useState("Line 1");
+  const [timing, setTiming] = useState<Timing>(initial?.timing ?? DEFAULT_TIMING);
+  const [lineName, setLineName] = useState(initial?.name ?? "Line 1");
   const [tool, setTool] = useState<Tool>("add");
   const [selected, setSelected] = useState<number | null>(null);
   const [depotStops, setDepotStops] = useState<{ out?: number; in?: number }>({});
@@ -148,8 +159,12 @@ export function StreetLineEditor({
       .then((e) => {
         if (!alive) return e.dispose();
         engine.current = e;
-        setProfile(e.defaultProfile("bus"));
-        setRules(e.defaultRules());
+        const saved = pending.current;
+        const p = saved?.profile ?? e.defaultProfile("bus");
+        const r = saved ? { ...e.defaultRules(), ...saved.rules } : e.defaultRules();
+        if (saved) e.setSettings(p, r);
+        setProfile(p);
+        setRules(r);
         setStatus(null);
       })
       .catch((err) =>
@@ -161,6 +176,44 @@ export function StreetLineEditor({
       engine.current = null;
     };
   }, [loadEngine]);
+
+  // A saved line opens with the map on it, close enough for its streets to load.
+  useEffect(() => {
+    const saved = pending.current;
+    const b = saved && lineBounds(saved);
+    if (!map || !b) return;
+    map.fitBounds(
+      [
+        [b[0], b[1]],
+        [b[2], b[3]],
+      ],
+      { padding: 60, duration: 0, maxZoom: 16 },
+    );
+    if (map.getZoom() < MIN_LOAD_ZOOM)
+      map.jumpTo({ center: saved.points[0]?.lonlat ?? saved.depot!, zoom: MIN_LOAD_ZOOM });
+  }, [map]);
+
+  // Once streets have loaded, route the saved points again, in order, with their kinds, names and depot.
+  useEffect(() => {
+    const saved = pending.current;
+    if (!ready || !saved || !engine.current) return;
+    pending.current = null;
+    run((e) => {
+      let v = e.view();
+      saved.points.forEach((p, i) => {
+        v = e.insertPoint(i, p.lonlat, p.kind);
+        const id = v.points[i]?.id;
+        if (id !== undefined && p.name) {
+          named.current.set(id, p.name);
+          v = e.setName(id, p.name);
+        }
+      });
+      if (saved.depot) v = e.setDepot(saved.depot);
+      const idAt = (i: number | undefined) => (i === undefined ? undefined : v.points[i]?.id);
+      setDepotStops({ out: idAt(saved.depotStops.out), in: idAt(saved.depotStops.in) });
+      return v;
+    });
+  }, [ready, run]);
 
   // Street setups from the GIS tab: bus lanes and separation change running times and checks.
   const setupsJson = JSON.stringify(streetSetups);
@@ -426,6 +479,53 @@ export function StreetLineEditor({
 
   const groupingM = rules?.grouping_distance_m;
 
+  /** Purpose: name a point (empty: the street's name again) and remember it for saving. */
+  const nameIt = (e: StreetEngine, id: number, name: string) => {
+    if (name.trim()) named.current.set(id, name);
+    else named.current.delete(id);
+    return e.setName(id, name);
+  };
+
+  // Save what the planner changed: points, kinds, names, depot, settings and timing. The route goes along
+  // for the journey planner, but routing again on its own (new streets loaded) is not a change to save.
+  const saveTo = useRef(onSave);
+  saveTo.current = onSave;
+  const drawn = useRef(initial !== null);
+  const latestView = useRef(view);
+  latestView.current = view;
+  const ids = new Map(view.points.map((p, i) => [p.id, i]));
+  const saved: Omit<SavedStreetLine, "view"> | null =
+    profile && rules
+      ? {
+          name: lineName,
+          profile,
+          rules,
+          timing,
+          points: view.points.map((p) => ({
+            lonlat: p.lonlat,
+            kind: p.kind,
+            name: named.current.get(p.id) ?? null,
+          })),
+          depot: view.depot,
+          depotStops: {
+            ...(depotStops.out !== undefined && ids.has(depotStops.out) && { out: ids.get(depotStops.out) }),
+            ...(depotStops.in !== undefined && ids.has(depotStops.in) && { in: ids.get(depotStops.in) }),
+          },
+        }
+      : null;
+  const savedKey = saved && pending.current === null ? JSON.stringify(saved) : null;
+  const lastKey = useRef<string | null>(null);
+  useEffect(() => {
+    if (!savedKey || savedKey === lastKey.current) return;
+    const first = lastKey.current === null;
+    lastKey.current = savedKey;
+    const line = JSON.parse(savedKey) as Omit<SavedStreetLine, "view">;
+    drawn.current ||= line.points.length > 0 || line.depot !== null;
+    // Opening the tool is not a change; the first state after opening is only saved for a new drawing.
+    if (first && initial !== null) return;
+    if (drawn.current) saveTo.current?.({ ...line, view: latestView.current });
+  }, [savedKey]);
+
   /** A via point that becomes a stop joins a stop nearby, or is named after what is around it. */
   const setKind = (id: number, kind: PointKind) =>
     run((e) => {
@@ -436,7 +536,7 @@ export function StreetLineEditor({
       const places = [...placesOtherThan("street"), ...stopPlaces(v).filter((q) => q.id !== `street:${id}`)];
       const features = preferTransitKind(featuresFromLabels(basemapLabels(map, p.lonlat), p.lonlat), "bus");
       const choice = nameForNewPlace(p.lonlat, { places, features, fallback: p.name, radiusM: groupingM });
-      if (choice.name !== p.name) v = e.setName(id, choice.name);
+      if (choice.name !== p.name) v = nameIt(e, id, choice.name);
       setNote(describeChoice(choice, "stop"));
       return v;
     });
@@ -445,7 +545,7 @@ export function StreetLineEditor({
   const setPointName = (id: number, name: string) =>
     run((e) => {
       const v0 = latest.current.view;
-      if (!name.trim() || v0.points.find((p) => p.id === id)?.kind === "via") return e.setName(id, name);
+      if (!name.trim() || v0.points.find((p) => p.id === id)?.kind === "via") return nameIt(e, id, name);
       const r = renamePlace(
         `street:${id}`,
         name,
@@ -453,7 +553,7 @@ export function StreetLineEditor({
         groupingM,
       );
       let v = v0;
-      for (const m of r.members) if (m.startsWith("street:")) v = e.setName(Number(m.slice(7)), r.name);
+      for (const m of r.members) if (m.startsWith("street:")) v = nameIt(e, Number(m.slice(7)), r.name);
       setNote(describeClash(r, groupingM));
       return v;
     });
