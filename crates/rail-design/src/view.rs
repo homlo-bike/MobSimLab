@@ -104,6 +104,7 @@ pub fn view(dz: &Design) -> Value {
         "level_crossings",
         "signals",
         "street_running",
+        "existing",
         "corridors",
         "connections",
     ] {
@@ -564,6 +565,24 @@ pub fn view(dz: &Design) -> Value {
         }
     }
 
+    // Existing railways from OpenStreetMap, under the design, and where new track joins them.
+    for e in &dz.existing {
+        let r = &e.rail;
+        ly.line(
+            "existing",
+            &e.pts,
+            json!({"kind": r.kind, "status": r.status, "name": r.name, "way": r.way,
+                   "z": r.level().order(), "electrified": r.electrified, "service": r.service}),
+        );
+    }
+    for j in &dz.joins {
+        ly.point(
+            "existing",
+            j.p,
+            json!({"kind": "join", "ref": j.track, "way": j.way, "continues": j.continues}),
+        );
+    }
+
     // Signals of the plan: a post on the right of the track in the direction of travel, and a
     // short arm pointing that way, so the facing reads on the map.
     let mut signal_list: Vec<Value> = Vec::new();
@@ -866,6 +885,18 @@ pub fn view(dz: &Design) -> Value {
             "lonlat": dz.track(r.track).map(|g| ly.ll(crate::geom::at_s(&g.centre, (r.from_m + r.to_m) / 2.0).p)),
         })).collect::<Vec<_>>();
 
+    let existing_joins: Vec<Value> = dz
+        .joins
+        .iter()
+        .map(|j| {
+            json!({
+                "track": j.track, "end": j.end, "way": j.way, "name": j.name, "railway": j.kind,
+                "continues": j.continues, "angle_deg": j.angle_deg, "lonlat": ly.ll(j.p),
+            })
+        })
+        .collect();
+    let existing_count = dz.existing.len();
+
     json!({
         "layers": ly.finish(),
         "connections": conn_out,
@@ -882,6 +913,8 @@ pub fn view(dz: &Design) -> Value {
         "level_crossings": level_crossings,
         "signals": signal_list,
         "street_running": street_running,
+        "existing_joins": existing_joins,
+        "existing_count": existing_count,
         "signals_planned": net.signals.is_some(),
         "counts": counts,
         "bbox": bbox,

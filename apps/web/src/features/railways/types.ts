@@ -276,6 +276,21 @@ export interface StreetRunningView {
   traffic_delay_share: number;
 }
 
+/** Where a free end of new track joins an existing railway from OpenStreetMap. */
+export interface ExistingJoinView {
+  track: number;
+  /** 0 the track's start, 1 its end. */
+  end: 0 | 1;
+  way: number;
+  name: string;
+  /** OSM railway kind. */
+  railway: string;
+  /** Continues the existing way at its end; otherwise a new turnout goes into the existing track. */
+  continues: boolean;
+  angle_deg: number;
+  lonlat: LonLat;
+}
+
 /** A drawn signal of the plan. */
 export interface SignalView {
   id: number;
@@ -309,6 +324,7 @@ export const LAYER_NAMES = [
   "level_crossings",
   "signals",
   "street_running",
+  "existing",
   "corridors",
   "connections",
 ] as const;
@@ -331,6 +347,10 @@ export interface RailView {
   level_crossings: LevelCrossingView[];
   signals: SignalView[];
   street_running: StreetRunningView[];
+  /** Joins of new track to existing railways. */
+  existing_joins: ExistingJoinView[];
+  /** Existing railways loaded around the design. */
+  existing_count: number;
   /** The document holds a signal plan. */
   signals_planned: boolean;
   counts: { errors: number; warnings: number; track_km: number; route_km: number };
@@ -347,6 +367,18 @@ export interface TrackHit {
   spacing: number;
 }
 
+/** A point on an existing railway from OpenStreetMap that a track end can snap to. */
+export interface ExistingSnap {
+  lonlat: LonLat;
+  /** Direction of the existing track there, degrees anticlockwise from east. */
+  heading_deg: number;
+  /** OSM way id. */
+  way: number;
+  name: string;
+  /** OSM railway kind. */
+  railway: string;
+}
+
 /** The railway engine (WebAssembly), injectable for tests. */
 export interface RailEngine {
   build(doc: Network, draft: number | null): RailView;
@@ -361,6 +393,12 @@ export interface RailEngine {
   addStreetTile(xml: string): number;
   /** Forget all streets. */
   clearStreets(): void;
+  /** Add the existing railways of one OSM XML railway tile, so new track can join them. */
+  addRailTile(xml: string): number;
+  /** Forget all existing railways. */
+  clearRails(): void;
+  /** The nearest point on an existing railway within `maxM`, to snap a track end onto. */
+  existingSnap(at: LonLat, maxM: number): ExistingSnap | null;
   /** Applies the planner's street setups from the GIS tab; the next build uses them. */
   setStreetSetups(setups: readonly StreetSetup[]): void;
   /** A signal plan generated from the last build, with ids continuing the document's. */

@@ -63,6 +63,7 @@ export function Workspace({
   onTab,
   onHome,
   onAbout,
+  existingRailways = false,
 }: {
   api: ProjectsApi;
   projectId: string;
@@ -73,6 +74,8 @@ export function Workspace({
   onTab: (t: Tab) => void;
   onHome: () => void;
   onAbout: () => void;
+  /** Draw existing railways from OpenStreetMap in the railway tool (app setting). */
+  existingRailways?: boolean;
 }) {
   const { t } = useI18n();
   const [project, setProject] = useState<Project | null>(null);
@@ -85,6 +88,8 @@ export function Workspace({
   const [line, setLine] = useState<StreetLineInput | null>(null);
   // Cable car and ferry lines from the plugin tools, per tool, for the journey planner.
   const [pluginLines, setPluginLines] = useState<Record<string, PluginLineInput | null>>({});
+  // The track topology last built in the railway tool, so street lines wait at its level crossings.
+  const [railTopology, setRailTopology] = useState<unknown>(null);
   // Street setups from the GIS tab: they override OSM in the street line tool and the railway editor.
   const [setups, setSetups] = useState<StreetSetup[]>(() => loadSetups(projectId));
   useEffect(() => setSetups(loadSetups(projectId)), [projectId]);
@@ -215,10 +220,22 @@ export function Workspace({
         <div className={`relative min-h-0 min-w-0 flex-1 ${onMap ? "" : "hidden"}`}>
           <MapView onReady={setMap} />
           {project && tab === "create" && editable && chosen === "street" && (
-            <StreetLineEditor map={map} panel={panel} onLineChange={setLine} streetSetups={setups} />
+            <StreetLineEditor
+              map={map}
+              panel={panel}
+              onLineChange={setLine}
+              streetSetups={setups}
+              railTopology={railTopology}
+            />
           )}
           {project && tab === "create" && editable && chosen === "rail" && (
-            <RailwayEditor map={map} panel={panel} streetSetups={setups} />
+            <RailwayEditor
+              map={map}
+              panel={panel}
+              streetSetups={setups}
+              existingRailways={existingRailways}
+              onTopologyChange={setRailTopology}
+            />
           )}
           {project && tab === "create" && editable && chosenPlugin?.kit === "straight-spans" && (
             <SpanLineEditor

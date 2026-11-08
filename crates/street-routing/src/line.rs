@@ -4,6 +4,7 @@
 //! the last point routes back to the first. Points are via points, stops or end
 //! stops. Editing a point re-routes only its two adjacent legs.
 
+use crate::crossings::{passes, CrossingWait, LevelCrossing};
 use crate::geo::dist;
 use crate::graph::RoadGraph;
 use crate::profile::{RoutingRules, TrafficSide, VehicleProfile};
@@ -87,6 +88,8 @@ pub struct StreetLine {
     next_id: u32,
     /// Number of legs routed so far (lets tests check that edits stay local).
     pub legs_routed: usize,
+    /// Level crossings with railways, with the expected wait at each ([`crate::crossings`]).
+    pub level_crossings: Vec<LevelCrossing>,
 }
 
 /// Point as reported to the UI.
@@ -125,8 +128,13 @@ pub struct LegView {
     pub coords: Vec<[f64; 2]>,
     /// Length in metres.
     pub length_m: f64,
-    /// Running time in seconds, including the expected delay in main-road traffic.
+    /// Running time in seconds, including the expected delay in main-road traffic and the
+    /// expected wait at level crossings.
     pub time_s: f64,
+    /// Expected wait at level crossings on this leg, s (part of `time_s`).
+    pub crossing_wait_s: f64,
+    /// Level crossings this leg passes.
+    pub level_crossings: Vec<LegCrossingView>,
     /// Of `time_s`, the expected delay in main-road traffic, s.
     pub traffic_delay_s: f64,
     /// Length on main roads in the general traffic (no bus lane), m.
@@ -141,6 +149,38 @@ pub struct LegView {
     pub message: Option<String>,
     /// OSM way ids driven, in order, without repeats (for exports and checks).
     pub ways: Vec<i64>,
+}
+
+/// A level crossing on one leg.
+#[derive(Debug, Clone, Serialize)]
+pub struct LegCrossingView {
+    /// Index into [`LineView::level_crossings`].
+    pub crossing: usize,
+    /// Times the leg passes it.
+    pub passes: usize,
+    /// Expected wait there on this leg, s.
+    pub wait_s: f64,
+}
+
+/// A level crossing the line passes, with its expected wait.
+#[derive(Debug, Clone, Serialize)]
+pub struct LineCrossingView {
+    /// Topology ids of the level crossings at this place.
+    pub ids: Vec<String>,
+    /// Street name.
+    pub street: String,
+    /// Railway systems.
+    pub modes: Vec<String>,
+    /// `barriers` or `traffic_signals`.
+    pub protection: String,
+    /// Crossing point `[lon, lat]`.
+    pub lonlat: [f64; 2],
+    /// Expected wait per pass and where it comes from.
+    pub wait: CrossingWait,
+    /// Times the circuit passes it.
+    pub passes: usize,
+    /// Expected wait per circuit, s.
+    pub wait_s: f64,
 }
 
 /// One direction of the line between end stops (or the whole circuit).
@@ -178,8 +218,10 @@ pub struct DepotTripView {
     pub coords: Vec<[f64; 2]>,
     /// Length in metres.
     pub length_m: f64,
-    /// Running time in seconds.
+    /// Running time in seconds, with the expected wait at level crossings.
     pub time_s: f64,
+    /// Expected wait at level crossings, s (part of `time_s`).
+    pub crossing_wait_s: f64,
     /// Problem level.
     pub status: Status,
     /// Explanation.
@@ -205,8 +247,12 @@ pub struct LineView {
     pub issues: Vec<String>,
     /// Circuit length in metres.
     pub length_m: f64,
-    /// Circuit running time in seconds.
+    /// Circuit running time in seconds, with the expected wait at level crossings.
     pub time_s: f64,
+    /// Level crossings the circuit passes.
+    pub level_crossings: Vec<LineCrossingView>,
+    /// Expected wait at level crossings per circuit, s (part of `time_s`).
+    pub crossing_wait_s: f64,
     /// Of `time_s`, the expected delay in main-road traffic over the circuit, s.
     pub traffic_delay_s: f64,
     /// Circuit length on main roads in the general traffic, m.
@@ -243,6 +289,7 @@ impl StreetLine {
             depot: None,
             next_id: 1,
             legs_routed: 0,
+            level_crossings: Vec::new(),
         }
     }
 
@@ -756,6 +803,7 @@ impl StreetLine {
             coords: Vec::new(),
             length_m: 0.0,
             time_s: 0.0,
+            crossing_wait_s: 0.0,
             status: Status::Error,
             message: Some(m),
         };
@@ -782,15 +830,23 @@ impl StreetLine {
             })
             .min_by(|x, y| x.time_s.total_cmp(&y.time_s));
         match best {
-            Some(p) => DepotTripView {
-                kind,
-                stop: stop.id,
-                coords: to_lonlat(g, &p.xy),
-                length_m: p.length_m,
-                time_s: p.time_s,
-                status: Status::Ok,
-                message: None,
-            },
+            Some(p) => {
+                let wait: f64 = self
+                    .level_crossings
+                    .iter()
+                    .map(|lc| passes(g, &p, lc) as f64 * lc.wait.wait_s)
+                    .sum();
+                DepotTripView {
+                    kind,
+                    stop: stop.id,
+                    coords: to_lonlat(g, &p.xy),
+                    length_m: p.length_m,
+                    time_s: p.time_s + wait,
+                    crossing_wait_s: wait,
+                    status: Status::Ok,
+                    message: None,
+                }
+            }
             None => fail("No legal path between the depot and this terminal.".into()),
         }
     }
@@ -847,13 +903,32 @@ impl StreetLine {
                             ways.push(w);
                         }
                     }
+                    let level_crossings: Vec<LegCrossingView> =
+                        l.path
+                            .iter()
+                            .flat_map(|p| {
+                                self.level_crossings.iter().enumerate().filter_map(
+                                    move |(k, lc)| {
+                                        let n = passes(g, p, lc);
+                                        (n > 0).then_some(LegCrossingView {
+                                            crossing: k,
+                                            passes: n,
+                                            wait_s: n as f64 * lc.wait.wait_s,
+                                        })
+                                    },
+                                )
+                            })
+                            .collect();
+                    let crossing_wait_s = level_crossings.iter().map(|c| c.wait_s).sum();
                     LegView {
                         index: i,
                         from: self.points[i].id,
                         to: self.points[j].id,
                         coords,
                         length_m: l.path.as_ref().map_or(0.0, |p| p.length_m),
-                        time_s: l.path.as_ref().map_or(0.0, |p| p.time_s),
+                        time_s: l.path.as_ref().map_or(0.0, |p| p.time_s) + crossing_wait_s,
+                        crossing_wait_s,
+                        level_crossings,
                         traffic_delay_s: l.path.as_ref().map_or(0.0, |p| p.traffic_delay_s),
                         mixed_traffic_m: l.path.as_ref().map_or(0.0, |p| p.mixed_traffic_m),
                         bus_lane_m: l.path.as_ref().map_or(0.0, |p| p.bus_lane_m),
@@ -867,6 +942,44 @@ impl StreetLine {
         };
         let length_m = legs.iter().map(|l| l.length_m).sum();
         let time_s = legs.iter().map(|l| l.time_s).sum();
+        let crossing_wait_s = legs.iter().map(|l| l.crossing_wait_s).sum();
+        // Crossings the circuit passes, renumbered in order of first pass.
+        let mut used: Vec<usize> = Vec::new();
+        for l in &legs {
+            for c in &l.level_crossings {
+                if !used.contains(&c.crossing) {
+                    used.push(c.crossing);
+                }
+            }
+        }
+        let mut legs = legs;
+        for l in &mut legs {
+            for c in &mut l.level_crossings {
+                c.crossing = used.iter().position(|&k| k == c.crossing).expect("listed");
+            }
+        }
+        let level_crossings: Vec<LineCrossingView> = used
+            .iter()
+            .enumerate()
+            .map(|(k, &i)| {
+                let lc = &self.level_crossings[i];
+                let on: Vec<&LegCrossingView> = legs
+                    .iter()
+                    .flat_map(|l| &l.level_crossings)
+                    .filter(|c| c.crossing == k)
+                    .collect();
+                LineCrossingView {
+                    ids: lc.ids.clone(),
+                    street: lc.street.clone(),
+                    modes: lc.modes.clone(),
+                    protection: lc.protection.clone(),
+                    lonlat: lc.lonlat,
+                    wait: lc.wait.clone(),
+                    passes: on.iter().map(|c| c.passes).sum(),
+                    wait_s: on.iter().map(|c| c.wait_s).sum(),
+                }
+            })
+            .collect();
         let traffic_delay_s: f64 = legs.iter().map(|l| l.traffic_delay_s).sum();
         let mixed_traffic_m: f64 = legs.iter().map(|l| l.mixed_traffic_m).sum();
         let bus_lane_m = legs.iter().map(|l| l.bus_lane_m).sum();
@@ -986,6 +1099,8 @@ impl StreetLine {
             issues,
             length_m,
             time_s,
+            level_crossings,
+            crossing_wait_s,
             traffic_delay_s,
             mixed_traffic_m,
             bus_lane_m,

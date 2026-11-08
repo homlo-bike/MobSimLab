@@ -210,6 +210,7 @@ function Shell({
           onTab={(tab) => go({ ...route, tab, fresh: route.fresh && tab === "create" }, route.fresh)}
           onHome={home}
           onAbout={about}
+          existingRailways={Boolean(prefs.existingRailways)}
         />
         {setup}
         {overlays}

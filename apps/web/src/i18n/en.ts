@@ -69,6 +69,7 @@ export const en = {
   "settings.fromProvider": "Name and e-mail come from your sign-in provider.",
   "settings.largerTargets": "Larger touch targets",
   "settings.reduceMotion": "Reduce motion",
+  "settings.existingRailways": "Show existing railways from OpenStreetMap",
   "settings.savedToAccount": "Saved to your account, so they follow you to other devices.",
 
   "language.title": "Language",
