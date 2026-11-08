@@ -3,7 +3,7 @@ import type { Map as MapLibreMap } from "maplibre-gl";
 import { useState } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { strips } from "../src/features/street-setup/CrossSection";
-import { effective, loadSetups, saveSetups, upsert, verdicts } from "../src/features/street-setup/model";
+import { effective, forgetSetups, loadSetups, upsert, verdicts } from "../src/features/street-setup/model";
 import { StreetSetupEditor } from "../src/features/street-setup/StreetSetupEditor";
 import type { StreetInfo, StreetSetup } from "../src/features/street-setup/types";
 
@@ -101,9 +101,12 @@ describe("Street setup model", () => {
     list = upsert(list, { way: 1, bus_lane: true, bike_lane: true });
     expect(list).toEqual([{ way: 1, bus_lane: true, bike_lane: true }]);
     expect(upsert(list, { way: 1, bus_lane: null, bike_lane: null })).toEqual([]);
-    saveSetups("p1", list);
+    // Setups an older release kept in this browser are read once, then forgotten.
+    window.localStorage.setItem("mobsimlab.streetSetups.p1", JSON.stringify(list));
     expect(loadSetups("p1")).toEqual(list);
     expect(loadSetups("other")).toEqual([]);
+    forgetSetups("p1");
+    expect(loadSetups("p1")).toEqual([]);
   });
 });
 

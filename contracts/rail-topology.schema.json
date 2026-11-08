@@ -395,6 +395,7 @@
         "angle_deg",
         "x",
         "y",
+        "lonlat",
         "track",
         "chainage_m",
         "rail_zone_m",
@@ -402,6 +403,7 @@
         "line_speed_kmh",
         "warning_time_s",
         "approach_m",
+        "road_closure",
         "street"
       ],
       "properties": {
@@ -425,6 +427,13 @@
         "angle_deg": { "type": "number", "minimum": 0, "maximum": 90 },
         "x": { "type": "number" },
         "y": { "type": "number" },
+        "lonlat": {
+          "description": "[longitude, latitude] of the crossing point, degrees (WGS84).",
+          "type": "array",
+          "items": { "type": "number" },
+          "minItems": 2,
+          "maxItems": 2
+        },
         "track": { "type": "integer", "minimum": 1 },
         "chainage_m": { "$ref": "#/$defs/metres" },
         "rail_zone_m": {
@@ -441,6 +450,44 @@
         "approach_m": {
           "$ref": "#/$defs/metres",
           "description": "Distance before the crossing, in either direction, where an approaching train starts the warning (warning time at line speed)."
+        },
+        "road_closure": {
+          "description": "How long one train closes the street, and the service assumed until a timetable gives the real closures (contracts/level-crossing-closures.schema.json). The street line tool turns these into the expected wait of buses at the crossing.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "train_length_m",
+            "reopen_s",
+            "closure_s",
+            "assumed_trains_per_hour_peak",
+            "assumed_trains_per_hour_off_peak"
+          ],
+          "properties": {
+            "train_length_m": {
+              "$ref": "#/$defs/metres",
+              "description": "Train length assumed: the mode's usual platform length (mode.platform_length_m)."
+            },
+            "reopen_s": {
+              "type": "number",
+              "minimum": 0,
+              "description": "From the tail clearing the rail zone until road traffic may go: barriers rising, or the intergreen of tram signals (level_crossing.reopen_s)."
+            },
+            "closure_s": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Street closed per train at line speed: warning_time_s + (rail_zone_m + train_length_m) / line speed + reopen_s."
+            },
+            "assumed_trains_per_hour_peak": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Both directions: 2 × 60 / timetable.policy_headway_peak_min of the mode."
+            },
+            "assumed_trains_per_hour_off_peak": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Both directions: 2 × 60 / timetable.policy_headway_offpeak_min of the mode."
+            }
+          }
         },
         "street": {
           "type": "object",

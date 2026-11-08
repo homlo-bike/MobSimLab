@@ -16,7 +16,7 @@ use crate::geom::{poly_cross, BBox, Sample, P2};
 use crate::issue::Issue;
 use crate::model::Level;
 use crate::params::defaults;
-use crate::params::RailMode;
+use crate::params::{ModeParams, RailMode};
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 
@@ -277,6 +277,8 @@ pub struct LevelCrossing {
     pub warning_time_s: f64,
     /// Distance before the crossing where an approaching train starts the warning, m.
     pub approach_m: f64,
+    /// How long one train closes the street, with the assumed service until a timetable exists.
+    pub road_closure: RoadClosure,
     /// A trolleybus wire runs along the street.
     pub trolley_wire: bool,
     /// Buses use the street (bus lane, busway or bus access tagged).
@@ -286,6 +288,41 @@ pub struct LevelCrossing {
     /// Why it does not, and so needs special safety measures: `mode` (a railway system that
     /// normally has none), `third_rail`, `motorway`, `line_speed`.
     pub special_measures: Vec<&'static str>,
+}
+
+/// How long one train closes the street at a level crossing, and how often trains are assumed
+/// to pass until a timetable gives the real times (the street line tool's expected wait).
+#[derive(Debug, Clone, Copy, PartialEq, Serialize)]
+pub struct RoadClosure {
+    /// Train length assumed: the mode's usual platform length, m.
+    pub train_length_m: f64,
+    /// From the train clearing the rail zone until road traffic may go, s.
+    pub reopen_s: f64,
+    /// Street closed per train at line speed: warning time + (rail zone + train length) / line
+    /// speed + reopen time, s.
+    pub closure_s: f64,
+    /// Trains over the crossing per hour in the peak, both directions, from the longest peak
+    /// headway of a line of the mode (`timetable.policy_headway_peak_min`).
+    pub assumed_trains_per_hour_peak: f64,
+    /// The same off-peak (`timetable.policy_headway_offpeak_min`).
+    pub assumed_trains_per_hour_off_peak: f64,
+}
+
+impl RoadClosure {
+    /// Purpose: the closure of one train at line speed and the assumed service for a mode.
+    pub fn new(p: &ModeParams, warning_s: f64, rail_zone_m: f64, line_speed_kmh: f64) -> Self {
+        let v = line_speed_kmh.max(5.0) / 3.6;
+        let train_length_m = p.platform_length_m;
+        let reopen_s = p.level_crossing_reopen_s;
+        let per_hour = |min: f64| if min > 0.0 { 2.0 * 60.0 / min } else { 0.0 };
+        RoadClosure {
+            train_length_m,
+            reopen_s,
+            closure_s: warning_s + (rail_zone_m + train_length_m) / v + reopen_s,
+            assumed_trains_per_hour_peak: per_hour(p.policy_headway_peak_min),
+            assumed_trains_per_hour_off_peak: per_hour(p.policy_headway_offpeak_min),
+        }
+    }
 }
 
 /// Street drawn in local metres.
@@ -518,6 +555,7 @@ pub fn level_crossings(dz: &mut Design, streets: &[Street]) {
                     line_speed_kmh: line_speed,
                     warning_time_s: warning,
                     approach_m: warning * line_speed / 3.6,
+                    road_closure: RoadClosure::new(p, warning, rail_zone, line_speed),
                     trolley_wire: st.trolley_wire,
                     bus: st.bus,
                     standard,

@@ -7,6 +7,8 @@
 //! - [`line`]: the route-point tool of ADR-0029: a closed circuit of via points,
 //!   stops and end stops, local re-routing on edits, detour warnings, directions,
 //!   station groups and depot pull-out/pull-in trips.
+//! - [`crossings`]: level crossings with railways and the expected wait of a bus at each,
+//!   from the rail timetable's closures or the service assumed in the track topology.
 //! - [`setup`]: the planner's street setup from the GIS tab (traffic lanes, bus and bike lanes,
 //!   separation, tram share) as tag overrides, and the delay buses lose in main-road traffic.
 //! - [`walk`]: pedestrian graph, walk coverage (the 15-minute walk rule, SDG 11.2.1) and stop
@@ -16,6 +18,7 @@
 //! the map editor, so the planner sees exactly the path the simulation will drive.
 #![warn(missing_docs)]
 
+pub mod crossings;
 pub mod geo;
 pub mod graph;
 pub mod line;

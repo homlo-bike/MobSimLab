@@ -195,6 +195,14 @@ struct TLevelCrossing {
     warning_time_s: f64,
     approach_m: f64,
     street: TStreet,
+    #[serde(default)]
+    road_closure: Option<TRoadClosure>,
+}
+
+/// Road closure values of a level crossing (rail-topology `road_closure`).
+#[derive(Deserialize)]
+struct TRoadClosure {
+    reopen_s: f64,
 }
 
 fn yes() -> bool {
@@ -832,6 +840,7 @@ fn import(t: Topology, opt: &ImportOptions) -> Result<Imported, String> {
             keep_clear_m: lc.street.keep_clear_m,
             bus: lc.street.bus,
             special_measures: lc.special_measures.clone(),
+            reopen_s: lc.road_closure.as_ref().map(|r| r.reopen_s),
         });
     }
 
