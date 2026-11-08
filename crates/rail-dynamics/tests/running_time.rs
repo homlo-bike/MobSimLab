@@ -149,6 +149,23 @@ fn supplement_stretches_running_time_not_dwell() {
 }
 
 #[test]
+fn traffic_delay_lengthens_only_the_street_stretch() {
+    // Start at speed, no stop: 2000 m at 20 m/s is 100 s; the middle 1000 m in traffic +25 %.
+    let opt = RunOptions {
+        start_speed_mps: 20.0,
+        stop_at_end: false,
+        step_m: 1.0,
+    };
+    let p = run(&ideal(1.0, 1.0), &flat(2000.0, 20.0), &[], &opt).unwrap();
+    let q = p.with_delays(&[(500.0, 1500.0, 0.25)]);
+    assert!((q.total_time_s() - 112.5).abs() < 1e-6);
+    assert!((q.time_at(500.0) - 25.0).abs() < 1e-6);
+    assert!((q.time_at(1500.0) - 87.5).abs() < 1e-6);
+    assert_eq!(p.with_delays(&[]), p);
+    assert!((q.with_supplement(0.1).total_time_s() - 123.75).abs() < 1e-6);
+}
+
+#[test]
 fn run_out_without_stopping() {
     let opt = RunOptions {
         start_speed_mps: 20.0,

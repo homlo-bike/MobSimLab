@@ -155,6 +155,7 @@
         "speed_kmh",
         "gradient_permille",
         "radius_m",
+        "traffic_delay_share",
         "platform_edges",
         "geometry"
       ],
@@ -215,6 +216,11 @@
           "items": { "$ref": "#/$defs/range_number" }
         },
         "radius_m": { "type": "array", "items": { "$ref": "#/$defs/range_number" } },
+        "traffic_delay_share": {
+          "description": "Expected extra running time in street traffic, as a share of the running time at the permitted speed (street.mixed_traffic_delay_share in a main road's traffic, street.bus_lane_delay_share in a painted own lane). Only stretches with a delay.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/range_number" }
+        },
         "platform_edges": { "type": "array", "items": { "type": "string" } },
         "geometry": { "type": "array", "items": { "$ref": "#/$defs/point" }, "minItems": 2 }
       }

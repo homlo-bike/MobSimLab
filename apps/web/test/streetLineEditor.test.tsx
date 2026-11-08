@@ -170,6 +170,7 @@ function fakeEngine(): StreetEngine {
       return update(view.points.map((p) => p.kind));
     }),
     setStreetSetups: vi.fn(() => view),
+    setDelayShares: vi.fn(() => view),
     usableRoads: () => ({ type: "FeatureCollection", features: [] }),
     defaultProfile: (mode) => ({ ...profile, mode }),
     defaultRules: () => ({
@@ -230,6 +231,22 @@ describe("Street line editor", () => {
     expect(screen.getByText("Via point 2")).toBeTruthy();
     expect(screen.getByText(/Turning round adds 900 m/)).toBeTruthy();
     expect(screen.queryByText(/OSM XML|Export/)).toBeNull();
+  });
+
+  it("routes with the project's delays in traffic", async () => {
+    const engine = fakeEngine();
+    const { map } = fakeMap(15);
+    render(
+      <StreetLineEditor
+        map={map}
+        loadEngine={async () => engine}
+        fetchTile={async () => "<osm/>"}
+        delays={{ mixed_traffic: 0.4, bus_lane: 0.05 }}
+      />,
+    );
+    await waitFor(() =>
+      expect(engine.setDelayShares).toHaveBeenCalledWith({ mixed_traffic: 0.4, bus_lane: 0.05 }),
+    );
   });
 
   it("asks to zoom in before loading streets", async () => {

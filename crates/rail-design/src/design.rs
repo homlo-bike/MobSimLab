@@ -270,11 +270,24 @@ pub fn build_with_osm(
     streets: &[crate::street::Street],
     railways: &[crate::existing::ExistingRail],
 ) -> Design {
+    build_with_values(net, draft, streets, railways, &BTreeMap::new())
+}
+
+/// Purpose: as [`build_with_osm`], with values the project's preferences set for every mode (by
+/// design value name, for example `street_mixed_traffic_delay_share`; pure).
+pub fn build_with_values(
+    net: &Network,
+    draft: Option<u32>,
+    streets: &[crate::street::Street],
+    railways: &[crate::existing::ExistingRail],
+    values: &BTreeMap<String, f64>,
+) -> Design {
     let d = defaults();
     let params = net
         .params
         .clone()
-        .unwrap_or_else(|| d.mode(net.mode).clone());
+        .unwrap_or_else(|| d.mode(net.mode).clone())
+        .with_values(values);
     let track_modes: BTreeMap<u32, RailMode> = net
         .tracks
         .iter()
@@ -288,7 +301,9 @@ pub fn build_with_osm(
         .filter_map(|s| s.mode)
         .chain(track_modes.values().copied())
     {
-        modes.entry(m).or_insert_with(|| d.mode(m).clone());
+        modes
+            .entry(m)
+            .or_insert_with(|| d.mode(m).with_values(values));
     }
     let mode_params = |m: RailMode| modes.get(&m).unwrap_or(&params);
     let storage_radius = |p: &ModeParams| {

@@ -207,6 +207,7 @@ export const es: Messages = {
   "drawing.street-lines": "la línea de autobús",
   "drawing.railway": "el ferrocarril",
   "drawing.street-setups": "la configuración de calles",
+  "drawing.preferences": "las preferencias del proyecto",
 
   "tab.label": "Proyecto",
   "tab.simulator": "Simulador",
@@ -273,6 +274,13 @@ export const es: Messages = {
   "prefs.save": "Guardar",
   "prefs.saved": "Guardado",
   "prefs.readOnly": "Solo los propietarios y editores pueden cambiar esto.",
+  "prefs.delayTitle": "Tiempo de recorrido en el tráfico",
+  "prefs.delayIntro":
+    "Tiempo de recorrido adicional esperado en hora punta para autobuses, BRT, trolebuses y tranvías en vías principales, como parte del tiempo a la velocidad máxima. Lo usan la herramienta de líneas, la herramienta ferroviaria y la pestaña SIG.",
+  "prefs.delayMixed": "En el tráfico general de una vía principal",
+  "prefs.delayLane": "En un carril bus o tranvía pintado",
+  "prefs.delayDefault": "Biblioteca de supuestos: {value} %",
+  "prefs.delayReset": "Usar el valor de la biblioteca",
   "prefs.moreTitle": "Reglas, vehículos y supuestos",
   "prefs.moreIntro": "Cada variable con su valor mínimo y recomendado, y los vehículos que usa el proyecto.",
   "prefs.rules": "Reglas de diseño por modo, mínimas y recomendadas",

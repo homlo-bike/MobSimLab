@@ -207,6 +207,7 @@ export const nl: Messages = {
   "drawing.street-lines": "de buslijn",
   "drawing.railway": "de spoorlijn",
   "drawing.street-setups": "de straatinstellingen",
+  "drawing.preferences": "de projectvoorkeuren",
 
   "tab.label": "Project",
   "tab.simulator": "Simulator",
@@ -274,6 +275,13 @@ export const nl: Messages = {
   "prefs.save": "Opslaan",
   "prefs.saved": "Opgeslagen",
   "prefs.readOnly": "Alleen eigenaren en bewerkers kunnen dit wijzigen.",
+  "prefs.delayTitle": "Rijtijd in het verkeer",
+  "prefs.delayIntro":
+    "Verwachte extra rijtijd in de spits voor bussen, BRT, trolleybussen en trams op hoofdwegen, als deel van de rijtijd bij de maximumsnelheid. Gebruikt door het lijngereedschap, het spoorgereedschap en het GIS-tabblad.",
+  "prefs.delayMixed": "In het gewone verkeer van een hoofdweg",
+  "prefs.delayLane": "Op een geschilderde bus- of trambaan",
+  "prefs.delayDefault": "Aannamebibliotheek: {value} %",
+  "prefs.delayReset": "Waarde van de bibliotheek gebruiken",
   "prefs.moreTitle": "Regels, voertuigen en aannames",
   "prefs.moreIntro": "Elke variabele met minimum- en aanbevolen waarde, en de voertuigen van het project.",
   "prefs.rules": "Ontwerpregels per vervoerswijze, minimum en aanbevolen",

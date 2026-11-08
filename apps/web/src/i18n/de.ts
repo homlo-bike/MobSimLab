@@ -211,6 +211,7 @@ export const de: Messages = {
   "drawing.street-lines": "die Buslinie",
   "drawing.railway": "die Bahnanlage",
   "drawing.street-setups": "die Straßeneinstellungen",
+  "drawing.preferences": "die Projekteinstellungen",
 
   "tab.label": "Projekt",
   "tab.simulator": "Simulator",
@@ -278,6 +279,13 @@ export const de: Messages = {
   "prefs.save": "Speichern",
   "prefs.saved": "Gespeichert",
   "prefs.readOnly": "Nur Eigentümer und Bearbeiter können das ändern.",
+  "prefs.delayTitle": "Fahrzeit im Verkehr",
+  "prefs.delayIntro":
+    "Erwartete zusätzliche Fahrzeit in der Spitzenstunde für Busse, BRT, Oberleitungsbusse und Straßenbahnen auf Hauptstraßen, als Anteil der Fahrzeit bei der zulässigen Geschwindigkeit. Gilt im Linienwerkzeug, im Gleiswerkzeug und im GIS-Tab.",
+  "prefs.delayMixed": "Im allgemeinen Verkehr einer Hauptstraße",
+  "prefs.delayLane": "Auf einer markierten Bus- oder Straßenbahnspur",
+  "prefs.delayDefault": "Annahmenbibliothek: {value} %",
+  "prefs.delayReset": "Wert der Bibliothek verwenden",
   "prefs.moreTitle": "Regeln, Fahrzeuge und Annahmen",
   "prefs.moreIntro": "Jede Variable mit Mindest- und Richtwert sowie die Fahrzeuge des Projekts.",
   "prefs.rules": "Entwurfsregeln je Verkehrsmittel, Mindest- und Richtwert",

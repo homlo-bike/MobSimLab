@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { fetchStreetTile } from "../street-lines/engine";
 import { MIN_LOAD_ZOOM, tilesFor } from "../street-lines/tiles";
-import type { TileFetcher } from "../street-lines/types";
+import type { DelayShares, TileFetcher } from "../street-lines/types";
 import type { StreetSetup } from "../street-setup/types";
 import {
   addSignal,
@@ -88,6 +88,8 @@ interface Props {
   existingRailways?: boolean;
   /** The planner's street setups from the GIS tab (tram own lane or mixed traffic…), over OSM. */
   streetSetups?: readonly StreetSetup[];
+  /** The project's delays in traffic for trams in streets (Project preferences); the library's when absent. */
+  delays?: DelayShares | null;
   /** The drawing saved with the project, or null to start a new one at the map centre. */
   initial?: Network | null;
   /** Told about the drawing after every change, so the project can save it. */
@@ -117,6 +119,7 @@ export function RailwayEditor({
   fetchRails = fetchRailTile,
   existingRailways = false,
   streetSetups = NO_SETUPS,
+  delays = null,
   initial = null,
   onDocChange,
 }: Props) {
@@ -175,6 +178,18 @@ export function RailwayEditor({
     e.setStreetSetups(JSON.parse(setupsJson) as StreetSetup[]);
     setStreets((n) => n + 1);
   }, [ready, setupsJson]);
+  // The project's delays in traffic: a tram's running time in streets; a change rebuilds.
+  const delaysJson = delays ? JSON.stringify(delays) : "";
+  useEffect(() => {
+    const e = engine.current;
+    if (!ready || !e?.setValues || !delaysJson) return;
+    const d = JSON.parse(delaysJson) as DelayShares;
+    e.setValues({
+      street_mixed_traffic_delay_share: d.mixed_traffic,
+      street_bus_lane_delay_share: d.bus_lane,
+    });
+    setStreets((n) => n + 1);
+  }, [ready, delaysJson]);
   useEffect(() => {
     if (!map || !ready) return;
     // Turning existing railways off forgets them; turning them on reloads the tiles on screen.
