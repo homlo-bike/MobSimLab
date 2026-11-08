@@ -334,6 +334,40 @@ describe("railway engine (WebAssembly)", () => {
     e.dispose();
   });
 
+  it("builds a double slip into a 1:9 diamond and exports its turning routes", async () => {
+    const e = await loadRailEngine();
+    const net = emptyNetwork("regional_rail", ORIGIN);
+    const n = 9;
+    const [c, s] = [n / Math.hypot(1, n), 1 / Math.hypot(1, n)];
+    const opts = {
+      tracks: 1 as const,
+      level: "street" as const,
+      power: "auto" as const,
+      use: "storage" as const,
+    };
+    const t1 = newTrack(net, { type: "free", x: -300, y: 0 }, opts);
+    const n1 = { ...net, tracks: [{ ...t1, end: { type: "free" as const, x: 300, y: 0 } }] };
+    const t2 = newTrack(n1, { type: "free", x: -300 * c, y: -300 * s }, opts);
+    const doc = {
+      ...n1,
+      tracks: [...n1.tracks, { ...t2, end: { type: "free" as const, x: 300 * c, y: 300 * s } }],
+    };
+    const v = e.build(doc, null);
+    const x = v.crossings[0]!;
+    expect(x.ratio_n).toBeCloseTo(9, 1);
+    expect(x.single_tracks).toBe(true);
+    expect(v.slip_elements.map((el) => el.element)).toEqual(
+      expect.arrayContaining(["single_slip", "double_slip"]),
+    );
+    const dkw = v.slip_elements.find((el) => el.element === "double_slip")!;
+    const w = e.build({ ...doc, slips: [{ crossing: x.id, element: dkw.id }] }, null);
+    expect(w.slips[0]).toMatchObject({ kind: "double_slip", routes: 2, ok: true });
+    expect(w.layers.tracks.features.filter((f) => f.properties.kind === "slip")).toHaveLength(2);
+    const topo = e.topology() as { crossings: { slip: { routes: unknown[] } | null }[] };
+    expect(topo.crossings[0]!.slip!.routes).toHaveLength(2);
+    e.dispose();
+  });
+
   it("generates a signal plan, draws it and exports it as the planner's plan", async () => {
     const e = await loadRailEngine();
     const doc = e.sample("regional_rail", ORIGIN);
@@ -533,10 +567,10 @@ describe("Railway editor", () => {
     const { map } = await opened();
     fireEvent.change(screen.getByRole("combobox"), { target: { value: "tram" } });
     fireEvent.click(screen.getByRole("button", { name: "Example" }));
-    expect(await screen.findByText(/Diamond crossing/)).toBeTruthy();
+    expect(await screen.findByText(/Diamond crossing at/)).toBeTruthy();
     expect(screen.getByText(/0 errors/)).toBeTruthy();
     expect(map.fitBounds).toHaveBeenCalled();
-    fireEvent.click(screen.getByText(/Diamond crossing/));
+    fireEvent.click(screen.getByText(/Diamond crossing at/));
     expect(await screen.findByRole("button", { name: /Delete track/ })).toBeTruthy();
   });
 
@@ -568,6 +602,24 @@ describe("Railway editor", () => {
     expect(fetchRails).toHaveBeenCalled();
     expect(await screen.findByText(/\(1 loaded\)/)).toBeTruthy();
     expect(screen.getByText(/Existing railways · \d+ joins?/)).toBeTruthy();
+  });
+
+  it("offers slips for a diamond of two single tracks", async () => {
+    let engine: RailEngine | null = null;
+    const { map } = fakeMap();
+    render(
+      <RailwayEditor
+        map={map}
+        fetchTile={() => Promise.reject(new Error("offline"))}
+        loadEngine={async () => (engine = await loadRailEngine())}
+      />,
+    );
+    fireEvent.change(await screen.findByRole("combobox"), { target: { value: "tram" } });
+    fireEvent.click(screen.getByRole("button", { name: "Example" }));
+    // The tram example's diamond is between double tracks: no slip on offer.
+    expect(await screen.findByText(/Diamond crossings · 1/)).toBeTruthy();
+    expect(screen.queryByRole("combobox", { name: /Trackwork at crossing/ })).toBeNull();
+    expect(engine).not.toBeNull();
   });
 
   it("generates signals, lets the planner turn one round and removes the plan", async () => {
