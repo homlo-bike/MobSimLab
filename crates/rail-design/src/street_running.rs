@@ -543,6 +543,16 @@ mod tests {
         let r = &dz.street_running[0];
         assert_eq!((r.source, r.running), ("osm", Running::Mixed));
         assert!(r.traffic_delay_share > 0.2);
+        // The delay goes with the sections into the running times.
+        let delays = |dz: &Design| {
+            crate::topology::topology(dz)
+                .sections
+                .iter()
+                .flat_map(|s| s.traffic_delay_share.iter().map(|x| x.value))
+                .collect::<Vec<_>>()
+        };
+        let d = delays(&dz);
+        assert!(!d.is_empty() && d.iter().all(|&x| (x - r.traffic_delay_share).abs() < 1e-3));
         // Cyclists ride along the rails without a bike lane.
         assert!(dz
             .issues
@@ -569,6 +579,7 @@ mod tests {
         assert!(r.separated && r.street.bike_lane);
         assert_eq!(r.traffic_delay_share, 0.0);
         assert!(!dz.issues.iter().any(|i| i.text.contains("Cyclists")));
+        assert!(delays(&dz).is_empty());
 
         // Own lane but only painted: no warning, a smaller delay and a hint to separate it.
         let dz = build_with_streets(
@@ -592,6 +603,26 @@ mod tests {
         );
         assert_eq!(dz.street_running[0].running, Running::Mixed);
         assert!(warned(&dz));
+    }
+
+    #[test]
+    fn the_project_preferences_change_the_delay_in_traffic() {
+        let streets = [along("secondary", &[])];
+        let values = [("street_mixed_traffic_delay_share".to_string(), 0.4)]
+            .into_iter()
+            .collect();
+        let dz = crate::design::build_with_values(
+            &tram_line(RailMode::Tram),
+            None,
+            &streets,
+            &[],
+            &values,
+        );
+        assert!((dz.street_running[0].traffic_delay_share - 0.4).abs() < 1e-9);
+        // Names that are not design values are ignored.
+        let odd = [("no_such_value".to_string(), 1.0)].into_iter().collect();
+        let p = crate::params::defaults().mode(RailMode::Tram).clone();
+        assert_eq!(p.with_values(&odd), p);
     }
 
     #[test]

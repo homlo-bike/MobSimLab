@@ -297,3 +297,24 @@ fn starter_route_after_a_stop_is_needed_at_departure_not_on_arrival() {
         "starter route blocked from {starter}, train stands {arrive}..{depart}"
     );
 }
+
+#[test]
+fn street_traffic_delay_lengthens_the_running_time_there() {
+    // Block b2 runs in a main road's traffic: +25 % running time over its 1000 m.
+    let plain = Model::compile(&examples::plain_line(5, 1000.0, 50.0)).unwrap();
+    let mut spec = examples::plain_line(5, 1000.0, 50.0);
+    spec.tracks[2].traffic_delay_ranges = vec![rail_model::Range {
+        from_m: 0.0,
+        to_m: 1000.0,
+        value: 0.25,
+    }];
+    let street = Model::compile(&spec).unwrap();
+    let p = BlockingParams::default();
+    let a = run_timing(&plain, &line_run(&plain, "a", 0.0), 0, &p).unwrap();
+    let b = run_timing(&street, &line_run(&street, "b", 0.0), 0, &p).unwrap();
+    let extra = b.profile.total_time_s() - a.profile.total_time_s();
+    // 1000 m at 50 km/h is 72 s; a quarter of it is 18 s.
+    assert!((extra - 18.0).abs() < 0.5, "extra {extra}");
+    // Before the street the trains are on the same time.
+    assert!((b.profile.time_at(1500.0) - a.profile.time_at(1500.0)).abs() < 1e-6);
+}

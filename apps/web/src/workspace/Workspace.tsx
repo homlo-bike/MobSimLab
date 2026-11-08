@@ -1,5 +1,5 @@
 import type { Map as MapLibreMap } from "maplibre-gl";
-import { type ReactNode, useEffect, useState } from "react";
+import { type ReactNode, useEffect, useMemo, useState } from "react";
 import { JourneyPlanner } from "../features/journey-planner/JourneyPlanner";
 import type { PluginLineInput, StreetLineInput } from "../features/journey-planner/network";
 import { RailwayEditor } from "../features/railways/RailwayEditor";
@@ -33,6 +33,8 @@ import { type Tab, TABS } from "../shell/route";
 import { TopBar } from "../shell/TopBar";
 import { Placeholder } from "./Placeholder";
 import { ProjectPreferences } from "./ProjectPreferences";
+import { delaysFrom, type PreferencesDoc } from "./preferences";
+import type { DelayShares } from "../features/street-lines/types";
 import { type Drawings, useDrawings } from "./useDrawings";
 
 const TAB_ICONS: Record<Tab, (p: { size?: number }) => ReactNode> = {
@@ -124,6 +126,10 @@ export function Workspace({
   // Street setups from the GIS tab: they override OSM in the street line tool and the railway editor.
   const setups = drawings.doc<StreetSetup[]>("street-setups") ?? NO_SETUPS;
   const changeSetups = (next: StreetSetup[]) => drawings.set("street-setups", next);
+  // Project preferences: assumption values the project changes, such as the delays in traffic.
+  const preferences = drawings.doc<PreferencesDoc>("preferences");
+  const delaysJson = JSON.stringify(delaysFrom(preferences));
+  const delays = useMemo(() => JSON.parse(delaysJson) as DelayShares, [delaysJson]);
   // Street setups made before projects saved drawings were kept in this browser: move them to the project once.
   useEffect(() => {
     if (!drawings.loaded || !editable) return;
@@ -275,6 +281,7 @@ export function Workspace({
               panel={panel}
               onLineChange={setLine}
               streetSetups={setups}
+              delays={delays}
               initial={streetLines?.lines[0] ?? null}
               onSave={(l) => drawings.set("street-lines", { lines: [l] } satisfies StreetLinesDoc)}
               railTopology={railTopology}
@@ -286,6 +293,7 @@ export function Workspace({
               map={map}
               panel={panel}
               streetSetups={setups}
+              delays={delays}
               existingRailways={existingRailways}
               initial={railway}
               onDocChange={(d) => drawings.set("railway", d)}
@@ -317,6 +325,7 @@ export function Workspace({
               setups={setups}
               onChange={changeSetups}
               editable={editable}
+              delays={delays}
             />
           )}
           {project && tab === "simulator" && sim === "journey" && (
@@ -390,7 +399,14 @@ export function Workspace({
 
         {!onMap && project && tab === "preferences" && (
           <div className="min-h-0 flex-1">
-            <ProjectPreferences key={project.updatedAt} api={api} project={project} onSaved={setProject} />
+            <ProjectPreferences
+              key={project.updatedAt}
+              api={api}
+              project={project}
+              onSaved={setProject}
+              preferences={drawings.loaded ? preferences : null}
+              onPreferences={drawings.loaded ? (d) => drawings.set("preferences", d) : undefined}
+            />
           </div>
         )}
         {!onMap && tab === "schematic" && (

@@ -353,6 +353,41 @@ describe("project workspace", () => {
     await waitFor(() => expect(calls.some((c) => c.method === "PATCH")).toBe(true));
     expect(calls.find((c) => c.method === "PATCH")?.body).toMatchObject({ name: "Lakeside 2030" });
   });
+
+  it("changes the delay in traffic for the project and goes back to the library value", async () => {
+    const saved = (values: Record<string, number>, version: number) => ({
+      drawing: {
+        kind: "preferences",
+        schemaVersion: 1,
+        doc: { values },
+        version,
+        updatedAt: "2026-11-08T10:00:00Z",
+        updatedBy: { id: "u1", displayName: "Alice Smith" },
+      },
+    });
+    const calls = stubApi(owner, {
+      [`GET /api/projects/${P1}/drawings`]: { drawings: {} },
+      [`PUT /api/projects/${P1}/drawings/preferences`]: saved({ "street.mixed_traffic_delay_share": 0.4 }, 1),
+    });
+    window.history.replaceState(null, "", `/projects/${P1}/preferences`);
+    render(<App />);
+    const mixed = await screen.findByLabelText("In a main road's general traffic");
+    expect((mixed as HTMLInputElement).value).toBe("25");
+    expect(screen.getByText("Assumption library: 8 %")).toBeTruthy();
+    fireEvent.change(mixed, { target: { value: "40" } });
+    await waitFor(
+      () =>
+        expect(calls.find((c) => c.method === "PUT" && c.url.endsWith("/drawings/preferences"))).toBeTruthy(),
+      { timeout: 3000 },
+    );
+    expect(calls.find((c) => c.url.endsWith("/drawings/preferences"))?.body).toEqual({
+      doc: { values: { "street.mixed_traffic_delay_share": 0.4 } },
+      baseVersion: null,
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Use the library value" }));
+    expect((mixed as HTMLInputElement).value).toBe("25");
+    expect(screen.queryByRole("button", { name: "Use the library value" })).toBeNull();
+  });
 });
 
 describe("user menu and settings", () => {

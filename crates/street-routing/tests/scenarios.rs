@@ -577,6 +577,13 @@ fn level_crossings_are_read_from_the_railway_tools_topology_export() {
 
 /// A grid whose bottom row is a main road (High Street), with the planner's street setups.
 fn main_road_graph(setups: &[street_routing::StreetSetup]) -> (RoadGraph, i64) {
+    main_road_graph_with(setups, &street_routing::DelayShares::default())
+}
+
+fn main_road_graph_with(
+    setups: &[street_routing::StreetSetup],
+    delays: &street_routing::DelayShares,
+) -> (RoadGraph, i64) {
     let mut o = Osm::new();
     for r in 0..2 {
         for c in 0..4 {
@@ -597,7 +604,10 @@ fn main_road_graph(setups: &[street_routing::StreetSetup]) -> (RoadGraph, i64) {
     let xml = format!(r#"<osm version="0.6">{}{}</osm>"#, o.nodes, o.ways);
     let mut data = parse_osm_xml(&xml).unwrap();
     street_routing::apply_setups(&mut data, setups);
-    (RoadGraph::from_osm(&data).unwrap(), high)
+    (
+        RoadGraph::from_osm_with_delays(&data, None, delays).unwrap(),
+        high,
+    )
 }
 
 fn high_street_line(g: &RoadGraph) -> StreetLine {
@@ -641,4 +651,24 @@ fn main_road_traffic_delays_buses_until_the_street_gets_a_separated_bus_lane() {
     let v3 = high_street_line(&g3).view(&g3);
     assert!(v3.traffic_delay_s.abs() < 1e-9, "{}", v3.traffic_delay_s);
     assert!(v3.time_s < v2.time_s && v2.time_s < v.time_s);
+}
+
+#[test]
+fn the_project_can_change_the_delay_in_traffic() {
+    let (g, _) = main_road_graph(&[]);
+    let v = high_street_line(&g).view(&g);
+    let doubled = street_routing::DelayShares {
+        mixed_traffic: 0.5,
+        ..Default::default()
+    };
+    let (g2, _) = main_road_graph_with(&[], &doubled);
+    let v2 = high_street_line(&g2).view(&g2);
+    // The library's 25 % becomes 50 %: twice the delay, the same route.
+    assert!(
+        (v2.traffic_delay_s - 2.0 * v.traffic_delay_s).abs() < 1.0,
+        "{} {}",
+        v.traffic_delay_s,
+        v2.traffic_delay_s
+    );
+    assert!((v2.mixed_traffic_m - v.mixed_traffic_m).abs() < 1e-6);
 }

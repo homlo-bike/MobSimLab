@@ -33,5 +33,5 @@ pub use line::{LineView, PointKind, Status, StreetLine};
 pub use osm::parse_osm_xml;
 pub use profile::{Mode, RoutingRules, TrafficSide, VehicleProfile};
 pub use router::{route, Anchor, Path, SearchOptions};
-pub use setup::{apply_setups, StreetSetup, TramShare};
+pub use setup::{apply_setups, DelayShares, StreetSetup, TramShare};
 pub use walk::{WalkGraph, WalkSettings};

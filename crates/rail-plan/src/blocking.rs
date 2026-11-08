@@ -152,6 +152,20 @@ fn segments_from(model: &Model, steps: &[Step], start_m: f64) -> Vec<Segment> {
     out
 }
 
+/// Purpose: where the path runs in street traffic, with the expected delay share there.
+/// Output: (from, to, share) in m from `start_m`, only stretches with a delay.
+fn delays_from(model: &Model, steps: &[Step], start_m: f64) -> Vec<(f64, f64, f64)> {
+    let mut out = Vec::new();
+    let mut y = -start_m;
+    for p in model.profile(steps) {
+        if p.delay_share > 0.0 && y + p.length_m > 0.0 {
+            out.push((y.max(0.0), y + p.length_m, p.delay_share));
+        }
+        y += p.length_m;
+    }
+    out
+}
+
 /// Purpose: cut a segment list to a total length.
 fn truncate(segs: &mut Vec<Segment>, length_m: f64) {
     let mut acc = 0.0;
@@ -202,6 +216,8 @@ pub fn run_timing(
     };
     let mut profile =
         run(&tr.train, &segs, &stops, &opt).map_err(|e| format!("{}: {e}", tr.name))?;
+    // Trams in street traffic: the expected delay at peak (`street.mixed_traffic_delay_share`).
+    profile = profile.with_delays(&delays_from(model, &steps, tr.start_m));
     if tr.supplement_share > 0.0 {
         profile = profile.with_supplement(tr.supplement_share);
     }

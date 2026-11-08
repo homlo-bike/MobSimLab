@@ -19,6 +19,7 @@ fn track(id: &str, length_m: f64, kmh: f64, directions: Directions) -> TrackSpec
         line_speed_mps: kmh / 3.6,
         speed_ranges: vec![],
         gradient_ranges: vec![],
+        traffic_delay_ranges: vec![],
         directions,
         usage: Default::default(),
         mode: None,

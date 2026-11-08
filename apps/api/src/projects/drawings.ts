@@ -21,6 +21,19 @@ const railway = z.looseObject({
 
 const streetSetups = z.array(z.looseObject({ way: z.number().int() })).max(50000);
 
+/** Assumption library values the project changes, by assumption id (for example `street.mixed_traffic_delay_share`). */
+const preferences = z.looseObject({
+  values: z
+    .record(
+      z
+        .string()
+        .regex(/^[a-z][a-z0-9_]*(\.[a-z0-9_]+)+$/)
+        .max(120),
+      z.number().finite(),
+    )
+    .refine((v) => Object.keys(v).length <= 1000, "at most 1000 values"),
+});
+
 /** Drawing kinds with their document outline and current schema version. */
 export const DRAWING_KINDS = {
   /** The street line tool (ADR-0029): bus, BRT, trolleybus and intercity bus lines. */
@@ -29,6 +42,8 @@ export const DRAWING_KINDS = {
   railway: { schema: railway, schemaVersion: 1 },
   /** GIS tab street setups: lanes, bus and bike lanes, separation and tram share per OSM way. */
   "street-setups": { schema: streetSetups, schemaVersion: 1 },
+  /** Project preferences: assumption library values changed for this project (Preferences tab). */
+  preferences: { schema: preferences, schemaVersion: 1 },
 } as const satisfies Record<string, { schema: z.ZodType; schemaVersion: number }>;
 
 export type DrawingKind = keyof typeof DRAWING_KINDS;
