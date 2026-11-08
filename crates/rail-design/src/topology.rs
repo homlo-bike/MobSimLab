@@ -64,13 +64,21 @@ pub struct Topology {
     pub street_running: Vec<StreetRunningOut>,
     /// Where free ends of new track join existing railways from OpenStreetMap.
     pub existing_joins: Vec<ExistingJoinOut>,
-    /// Signals: the planner's plan, or a generated one while the document has none.
+    /// Signals: the generated plan with the planner's changes.
     pub signals: Vec<SignalOut>,
-    /// The signals were generated, not planned.
+    /// The signals are the generated plan, without changes by the planner.
     pub signals_generated: bool,
-    /// The generated plan in document form, for the editor's "Generate signals".
+    /// The whole generated plan in document form, before the planner's changes.
     #[serde(skip)]
     pub generated: Vec<crate::signal::Signal>,
+    /// The effective plan in document form: generated signals not removed or replaced, and the
+    /// planner's own.
+    #[serde(skip)]
+    pub plan: Vec<crate::signal::PlanSignal>,
+    /// What the planner's changes to the generated plan do: missing, misplaced, or helpful
+    /// signals.
+    #[serde(skip)]
+    pub signal_issues: Vec<crate::issue::Issue>,
 }
 
 /// Track running along a street (`crate::street_running`).
@@ -1277,8 +1285,8 @@ pub fn topology(dz: &Design) -> Topology {
         });
     }
 
-    // Signals.
-    let (generated_sec, generated) = generate_signals(
+    // Signals: the generated plan, with the planner's signals and removals on top.
+    let gen = generate_signals(
         dz,
         &segs,
         &sections,
@@ -1289,24 +1297,55 @@ pub fn topology(dz: &Design) -> Topology {
         &level_crossings,
         &platforms,
     );
-    let signals_generated = net.signals.is_none();
-    let placed: Vec<(usize, f64, bool, crate::signal::SignalKind, String)> = match &net.signals {
-        None => generated_sec
+    let planner: Vec<&crate::signal::Signal> = net.signals.iter().flatten().collect();
+    let replaced = |d: &crate::signal::Signal| {
+        planner
             .iter()
-            .enumerate()
-            .map(|(n, g)| (g.seg, g.x, g.to, g.kind, format!("g{n}")))
-            .collect(),
-        Some(list) => list
-            .iter()
-            .filter_map(|sg| {
-                let (seg, x) = to_section(dz, &segs, &sg.at)?;
-                Some((seg, x, sg.facing > 0, sg.kind, format!("sg{}", sg.id)))
-            })
-            .collect(),
+            .any(|p| crate::signal::same_signal(&p.at, p.facing, &d.at, d.facing))
     };
+    let removed = |d: &crate::signal::Signal| {
+        net.signals_removed
+            .iter()
+            .any(|k| crate::signal::same_signal(&k.at, k.facing, &d.at, d.facing))
+    };
+    let signals_generated = planner.is_empty() && net.signals_removed.is_empty();
+    let mut placed: Vec<(usize, f64, bool, crate::signal::SignalKind, String)> = Vec::new();
+    let mut plan: Vec<crate::signal::PlanSignal> = Vec::new();
+    for (n, (g, doc)) in gen.signals.iter().enumerate() {
+        if doc.as_ref().is_some_and(|d| replaced(d) || removed(d)) {
+            continue;
+        }
+        placed.push((g.seg, g.x, g.to, g.kind, format!("g{n}")));
+        if let Some(d) = doc {
+            plan.push(crate::signal::PlanSignal {
+                signal: d.clone(),
+                auto: true,
+            });
+        }
+    }
+    for sg in &planner {
+        plan.push(crate::signal::PlanSignal {
+            signal: (*sg).clone(),
+            auto: false,
+        });
+        if let Some((seg, x)) = to_section(dz, &segs, &sg.at) {
+            placed.push((seg, x, sg.facing > 0, sg.kind, format!("sg{}", sg.id)));
+        }
+    }
+    placed.sort_by(|a, b| {
+        segs[a.0]
+            .id
+            .cmp(&segs[b.0].id)
+            .then(a.1.total_cmp(&b.1))
+            .then(b.2.cmp(&a.2))
+    });
+    let signal_issues = assess_signals(dz, &segs, &sections, &gen, &planner, &placed, &removed);
+    let generated: Vec<crate::signal::Signal> =
+        gen.signals.iter().filter_map(|(_, d)| d.clone()).collect();
     let signals = placed
-        .into_iter()
+        .iter()
         .map(|(seg, x, to, kind, id)| {
+            let (seg, x, to, kind, id) = (*seg, *x, *to, *kind, id.clone());
             let p = dz.params_for(segs[seg].mode);
             let kmh = sections[seg]
                 .speed_kmh
@@ -1352,7 +1391,216 @@ pub fn topology(dz: &Design) -> Topology {
         signals,
         signals_generated,
         generated,
+        plan,
+        signal_issues,
     }
+}
+
+/// Purpose: assess the planner's changes to the generated signal plan (ADR-0033 decision 15).
+///
+/// - A generated signal the planner removed, with nothing in its place: a warning saying what
+///   is then unprotected (a switch or crossing, a platform end) or how long the block grows.
+/// - A signal of the planner's: an error inside a switch, crossing or level crossing area; a
+///   warning when a train stopped at it reaches back into one, when a main signal protecting an
+///   area became another kind, or when the next signal is closer than the braking distance;
+///   otherwise a note on what it adds (shorter blocks, so trains can follow closer).
+///
+/// Output: the issues, at the signals they are about.
+fn assess_signals(
+    dz: &Design,
+    segs: &[Seg],
+    sections: &[Section],
+    gen: &Generated,
+    planner: &[&crate::signal::Signal],
+    placed: &[(usize, f64, bool, crate::signal::SignalKind, String)],
+    removed: &dyn Fn(&crate::signal::Signal) -> bool,
+) -> Vec<crate::issue::Issue> {
+    use crate::issue::{fmt_m, Issue};
+    use crate::signal::{braking_m, label, same_signal, system_of, SignalKind, System};
+    let mut out = Vec::new();
+    let at = |a: &crate::signal::SignalAt| crate::signal::locate(dz, a).map(|x| x.0);
+    let speed = |seg: usize, x: f64| {
+        sections[seg]
+            .speed_kmh
+            .iter()
+            .find(|r| x >= r.from_m - 1e-6 && x <= r.to_m + 1e-6)
+            .map_or(dz.params_for(segs[seg].mode).design_speed_kmh, |r| r.value)
+    };
+    // The next signal of the plan for the same direction on the section, ahead or behind.
+    let next = |seg: usize, x: f64, to: bool, ahead: bool| -> Option<f64> {
+        let d = placed
+            .iter()
+            .filter(|p| p.0 == seg && p.2 == to)
+            .map(|p| if to == ahead { p.1 - x } else { x - p.1 })
+            .filter(|d| *d > 0.5)
+            .fold(f64::INFINITY, f64::min);
+        d.is_finite().then_some(d)
+    };
+    let replaced = |d: &crate::signal::Signal| {
+        planner
+            .iter()
+            .any(|p| same_signal(&p.at, p.facing, &d.at, d.facing))
+    };
+
+    // Removed generated signals.
+    for (g, doc) in &gen.signals {
+        let Some(d) = doc else { continue };
+        if !removed(d) || replaced(d) {
+            continue;
+        }
+        let text = match &g.purpose {
+            Area::Switch(_) | Area::Crossing(_) | Area::LevelCrossing(_) => format!(
+                "No signal in front of {area}: the generated signal there was removed. Trains are not stopped before {area}, so one can run into a train crossing it. Reset the signals, or place a signal at the edge of {area}.",
+                area = g.purpose.label(dz)
+            ),
+            Area::Platform => "No starter signal at the end of a platform track: the generated one was removed. Trains cannot be held at the platform, so the line ahead is not protected. Reset the signals, or place a main signal at the platform end.".into(),
+            Area::Block => {
+                let p = dz.params_for(segs[g.seg].mode);
+                let behind = next(g.seg, g.x, g.to, false).unwrap_or(g.x.min(sections[g.seg].length_m - g.x));
+                let ahead = next(g.seg, g.x, g.to, true).unwrap_or(0.0);
+                format!(
+                    "A block signal was removed: the block grows to {} where {} is enough at {} km/h. Trains must keep further apart, so fewer fit per hour. Reset the signals, or place a block signal there.",
+                    fmt_m(behind + ahead),
+                    fmt_m(crate::signal::block_length_m(p, speed(g.seg, g.x))),
+                    speed(g.seg, g.x).round()
+                )
+            }
+        };
+        out.push(Issue::warning(text, at(&d.at), d.id));
+    }
+
+    // The planner's signals.
+    for sg in planner {
+        let name = label(sg);
+        let Some((seg, x)) = to_section(dz, segs, &sg.at) else {
+            continue;
+        };
+        let to = sg.facing > 0;
+        let here = at(&sg.at);
+        let p = dz.params_for(segs[seg].mode);
+        let sys = system_of(p);
+        let matched = gen.signals.iter().find(|(_, d)| {
+            d.as_ref()
+                .is_some_and(|d| same_signal(&sg.at, sg.facing, &d.at, d.facing))
+        });
+        if let Some(a) = gen.areas[seg]
+            .iter()
+            .find(|(a, b, _)| x > a + 0.5 && x < b - 0.5)
+        {
+            out.push(Issue::error(
+                format!(
+                    "{} stands inside {}. A train stopped at it blocks {} for every other train. Move it to the edge, before it.",
+                    capitalise(&name),
+                    a.2.label(dz),
+                    a.2.label(dz)
+                ),
+                here,
+                sg.id,
+            ));
+            continue;
+        }
+        let train = dz.train_length_for(segs[seg].mode);
+        let (lo, hi) = if to {
+            (x - train, x - 0.5)
+        } else {
+            (x + 0.5, x + train)
+        };
+        if let Some(a) = gen.areas[seg].iter().find(|(a, b, _)| *a < hi && *b > lo) {
+            out.push(Issue::warning(
+                format!(
+                    "A {} train stopped at {} reaches back into {}, so it blocks it while it waits. Move the signal further on, or take it out.",
+                    fmt_m(train),
+                    name,
+                    a.2.label(dz)
+                ),
+                here,
+                sg.id,
+            ));
+            continue;
+        }
+        if let Some((g, _)) = matched {
+            if matches!(g.purpose, Area::Switch(_) | Area::Crossing(_))
+                && g.kind == SignalKind::Main
+                && matches!(sg.kind, SignalKind::Block | SignalKind::Distant)
+            {
+                out.push(Issue::warning(
+                    format!(
+                        "{} protects {} but is not a main signal, so it cannot set a route into it. Make it a main signal.",
+                        capitalise(&name),
+                        g.purpose.label(dz)
+                    ),
+                    here,
+                    sg.id,
+                ));
+            }
+            continue;
+        }
+        // A signal of the planner's own, on plain line.
+        if sys == System::LineOfSight {
+            out.push(Issue::info(
+                format!(
+                    "Trams drive on sight, so {name} does not let them follow each other closer. It is only needed in front of switches and crossings."
+                ),
+                here,
+                Some(sg.id),
+            ));
+            continue;
+        }
+        if !matches!(sg.kind, SignalKind::Main | SignalKind::Block) {
+            continue;
+        }
+        let kmh = speed(seg, x);
+        let brake = braking_m(p, kmh);
+        let ahead = next(seg, x, to, true);
+        let behind = next(seg, x, to, false);
+        if let Some(d) = ahead.filter(|d| *d < brake) {
+            out.push(Issue::warning(
+                format!(
+                    "The next signal is only {} beyond {}, less than the {} a train needs to stop from {} km/h. A train passing {} cannot stop at the next one if it shows stop. Move them apart, or announce it with a distant signal.",
+                    fmt_m(d),
+                    name,
+                    fmt_m(brake),
+                    kmh.round(),
+                    name
+                ),
+                here,
+                sg.id,
+            ));
+        } else if let Some(d) = behind.filter(|d| *d < brake) {
+            out.push(Issue::warning(
+                format!(
+                    "{} is only {} beyond the signal before it, less than the {} a train needs to stop from {} km/h. Move them apart, or announce it with a distant signal.",
+                    capitalise(&name),
+                    fmt_m(d),
+                    fmt_m(brake),
+                    kmh.round()
+                ),
+                here,
+                sg.id,
+            ));
+        } else {
+            let blocks = match (behind, ahead) {
+                (Some(b), Some(a)) => format!(" into blocks of {} and {}", fmt_m(b), fmt_m(a)),
+                _ => String::new(),
+            };
+            out.push(Issue::info(
+                format!(
+                    "{} splits the line{blocks}, so trains can follow each other closer and more fit per hour.",
+                    capitalise(&name)
+                ),
+                here,
+                Some(sg.id),
+            ));
+        }
+    }
+    out
+}
+
+/// Purpose: a sentence's first letter in upper case.
+fn capitalise(s: &str) -> String {
+    let mut c = s.chars();
+    c.next()
+        .map_or(String::new(), |f| f.to_uppercase().chain(c).collect())
 }
 
 /// A generated signal on a section.
@@ -1362,6 +1610,48 @@ struct SecSignal {
     /// Governs trains moving from the section's `from` end towards its `to` end.
     to: bool,
     kind: crate::signal::SignalKind,
+    /// What it is there for.
+    purpose: Area,
+}
+
+/// What a generated signal protects, and what a stretch of section is kept clear for.
+#[derive(Debug, Clone, PartialEq)]
+enum Area {
+    /// A switch's area up to its fouling points (document id).
+    Switch(u32),
+    /// A same-level crossing of two tracks (export id).
+    Crossing(String),
+    /// A level crossing with a street (export id).
+    LevelCrossing(String),
+    /// The end of a platform track (starter signal).
+    Platform,
+    /// Plain line (block signal).
+    Block,
+}
+
+impl Area {
+    /// Purpose: the area in a sentence ("switch 5", "the crossing x3-7-0").
+    fn label(&self, dz: &Design) -> String {
+        match self {
+            Area::Switch(id) => {
+                let _ = dz;
+                format!("switch {id}")
+            }
+            Area::Crossing(id) => format!("the crossing {id}"),
+            Area::LevelCrossing(id) => format!("the level crossing {id}"),
+            Area::Platform => "the platform end".into(),
+            Area::Block => "plain line".into(),
+        }
+    }
+}
+
+/// The generated plan: on sections, in document form, and the areas no train may stand in.
+struct Generated {
+    /// Each generated signal on its section, with the same signal in document form (None when
+    /// it has no document position).
+    signals: Vec<(SecSignal, Option<crate::signal::Signal>)>,
+    /// Per section: switch, crossing and level crossing areas `(from, to, what)`.
+    areas: Vec<Vec<(f64, f64, Area)>>,
 }
 
 /// Purpose: scale from centre-line chainage to distance along a track section.
@@ -1452,7 +1742,7 @@ fn generate_signals(
     crossings: &[CrossingOut],
     level_crossings: &[LevelCrossingOut],
     platforms: &[PlatformEdge],
-) -> (Vec<SecSignal>, Vec<crate::signal::Signal>) {
+) -> Generated {
     use crate::signal::{block_length_m, system_of, SignalKind, System};
     let idx: BTreeMap<&str, usize> = segs
         .iter()
@@ -1462,7 +1752,7 @@ fn generate_signals(
     let len: Vec<f64> = sections.iter().map(|s| s.length_m).collect();
     let storage = |i: usize| sections[i].usage == "storage";
     let params = |i: usize| dz.params_for(segs[i].mode);
-    let mut areas: Vec<Vec<(f64, f64)>> = vec![vec![]; segs.len()];
+    let mut areas: Vec<Vec<(f64, f64, Area)>> = vec![vec![]; segs.len()];
     let mut cands: Vec<SecSignal> = Vec::new();
     let main_kind = |i: usize| {
         if storage(i) {
@@ -1488,7 +1778,7 @@ fn generate_signals(
             };
             if si == ai {
                 let d = f.distance_m.min(len[si]);
-                let (x, to, area) = if e == 0 {
+                let (x, to, (a0, a1)) = if e == 0 {
                     let x = if d == 0.0 {
                         params(si).signal_before_switch_m.min(len[si])
                     } else {
@@ -1503,33 +1793,36 @@ fn generate_signals(
                     };
                     (x, true, (len[si] - d, len[si]))
                 };
-                areas[si].push(area);
+                areas[si].push((a0, a1, Area::Switch(sw.id)));
                 cands.push(SecSignal {
                     seg: si,
                     x,
                     to,
                     kind: main_kind(si),
+                    purpose: Area::Switch(sw.id),
                 });
             } else {
-                areas[si].push((0.0, len[si]));
+                areas[si].push((0.0, len[si], Area::Switch(sw.id)));
                 let far = &node_of[&(si, 1 - e)];
                 let entered_from = node_of.get(&(ai, 0)) == Some(far);
                 let o = f.at_offset_m;
                 if entered_from {
-                    areas[ai].push((0.0, o));
+                    areas[ai].push((0.0, o, Area::Switch(sw.id)));
                     cands.push(SecSignal {
                         seg: ai,
                         x: o,
                         to: false,
                         kind: main_kind(ai),
+                        purpose: Area::Switch(sw.id),
                     });
                 } else {
-                    areas[ai].push((o, len[ai]));
+                    areas[ai].push((o, len[ai], Area::Switch(sw.id)));
                     cands.push(SecSignal {
                         seg: ai,
                         x: o,
                         to: true,
                         kind: main_kind(ai),
+                        purpose: Area::Switch(sw.id),
                     });
                 }
             }
@@ -1547,13 +1840,14 @@ fn generate_signals(
                 };
                 let a = (tr.chainage_m - tr.fouling_before_m - s0) * k;
                 let b = (tr.chainage_m + tr.fouling_after_m - s0) * k;
-                areas[i].push((a.max(0.0), b.min(len[i])));
+                areas[i].push((a.max(0.0), b.min(len[i]), Area::Crossing(c.id.clone())));
                 if a >= 0.0 {
                     cands.push(SecSignal {
                         seg: i,
                         x: a,
                         to: true,
                         kind: main_kind(i),
+                        purpose: Area::Crossing(c.id.clone()),
                     });
                 }
                 if b <= len[i] {
@@ -1562,6 +1856,7 @@ fn generate_signals(
                         x: b,
                         to: false,
                         kind: main_kind(i),
+                        purpose: Area::Crossing(c.id.clone()),
                     });
                 }
             }
@@ -1580,11 +1875,15 @@ fn generate_signals(
                 (lc.chainage_m - lc.rail_zone_m - s0) * k,
                 (lc.chainage_m + lc.rail_zone_m - s0) * k,
             );
-            areas[i].push((a.max(0.0), b.min(len[i])));
+            areas[i].push((
+                a.max(0.0),
+                b.min(len[i]),
+                Area::LevelCrossing(lc.id.clone()),
+            ));
         }
     }
-    let inside = |i: usize, x: f64, areas: &Vec<Vec<(f64, f64)>>| {
-        areas[i].iter().any(|(a, b)| x > a + 0.5 && x < b - 0.5)
+    let inside = |i: usize, x: f64, areas: &Vec<Vec<(f64, f64, Area)>>| {
+        areas[i].iter().any(|(a, b, _)| x > a + 0.5 && x < b - 0.5)
     };
     let mut out: Vec<SecSignal> = Vec::new();
     let push = |out: &mut Vec<SecSignal>, sig: SecSignal| {
@@ -1606,7 +1905,7 @@ fn generate_signals(
         } else {
             (c.x + 0.5, c.x + train)
         };
-        if areas[c.seg].iter().any(|(a, b)| *a < hi && *b > lo) {
+        if areas[c.seg].iter().any(|(a, b, _)| *a < hi && *b > lo) {
             continue;
         }
         push(&mut out, c);
@@ -1633,6 +1932,7 @@ fn generate_signals(
                         x: if e == 1 { len[i] } else { 0.0 },
                         to: e == 1,
                         kind: SignalKind::Main,
+                        purpose: Area::Platform,
                     },
                 );
             }
@@ -1654,7 +1954,7 @@ fn generate_signals(
         for to in [true, false] {
             let mut cuts: Vec<f64> = vec![0.0, len[i]];
             cuts.extend(out.iter().filter(|o| o.seg == i && o.to == to).map(|o| o.x));
-            for (a, b) in &areas[i] {
+            for (a, b, _) in &areas[i] {
                 cuts.push(*a);
                 cuts.push(*b);
             }
@@ -1676,6 +1976,7 @@ fn generate_signals(
                                 x,
                                 to,
                                 kind: SignalKind::Block,
+                                purpose: Area::Block,
                             },
                         );
                     }
@@ -1691,23 +1992,25 @@ fn generate_signals(
             .then(b.to.cmp(&a.to))
     });
     let mut id = crate::signal::next_id(&dz.network);
-    let docs = out
-        .iter()
-        .filter_map(|o| {
-            let at = to_anchor(dz, &segs[o.seg], o.x)?;
+    let signals = out
+        .into_iter()
+        .map(|o| {
             // Leg and line sections run with their source's direction; station tracks too.
-            let sig = crate::signal::Signal {
-                id,
-                at,
-                facing: if o.to { 1 } else { -1 },
-                kind: o.kind,
-                name: String::new(),
-            };
-            id += 1;
-            Some(sig)
+            let doc = to_anchor(dz, &segs[o.seg], o.x).map(|at| {
+                let sig = crate::signal::Signal {
+                    id,
+                    at,
+                    facing: if o.to { 1 } else { -1 },
+                    kind: o.kind,
+                    name: String::new(),
+                };
+                id += 1;
+                sig
+            });
+            (o, doc)
         })
         .collect();
-    (out, docs)
+    Generated { signals, areas }
 }
 
 #[cfg(test)]
@@ -1913,5 +2216,112 @@ mod tests {
                 assert!((a.chainage_m - b.chainage_m).abs() < 0.01, "{a:?} {b:?}");
             }
         }
+    }
+
+    #[test]
+    fn signals_follow_the_design_and_the_planners_changes_are_assessed() {
+        use crate::issue::Severity;
+        use crate::signal::{SignalAt, SignalKey};
+        let net = sample(RailMode::RegionalRail, 7.0, 50.9);
+        let dz = build(&net, None);
+        // Without changes every signal is generated and none is assessed.
+        assert!(!dz.signals.is_empty() && dz.signals.iter().all(|s| s.auto));
+        let about = |dz: &Design, id: u32| -> Vec<(Severity, String)> {
+            dz.issues
+                .iter()
+                .filter(|i| i.ref_id == Some(id))
+                .map(|i| (i.severity, i.text.clone()))
+                .collect()
+        };
+        assert!(dz
+            .signals
+            .iter()
+            .all(|s| about(&dz, s.signal.id).is_empty()));
+
+        // Removing a generated main signal leaves it out and warns what it protected.
+        let main = dz
+            .signals
+            .iter()
+            .find(|s| s.signal.kind == SignalKind::Main)
+            .unwrap()
+            .signal
+            .clone();
+        let mut removed = net.clone();
+        removed.signals_removed.push(SignalKey {
+            at: main.at,
+            facing: main.facing,
+        });
+        let dz2 = build(&removed, None);
+        assert_eq!(dz2.signals.len() + 1, dz.signals.len());
+        assert!(
+            dz2.issues.iter().any(|i| i.severity == Severity::Warning
+                && (i.text.starts_with("No signal in front of")
+                    || i.text.starts_with("No starter signal"))),
+            "{:?}",
+            dz2.issues
+        );
+        let t = topology(&dz2);
+        assert!(!t.signals_generated);
+        assert_eq!(t.signals.len() + 1, topology(&dz).signals.len());
+
+        // A signal inside a switch area is an error.
+        let sw = net.switches[0].id;
+        let mut inside = net.clone();
+        let id = crate::signal::next_id(&inside);
+        inside.signals = Some(vec![crate::signal::Signal {
+            id,
+            at: SignalAt::Leg {
+                switch: sw,
+                leg: 0,
+                x: 3.0,
+            },
+            facing: 1,
+            kind: SignalKind::Main,
+            name: String::new(),
+        }]);
+        let dz3 = build(&inside, None);
+        assert!(
+            about(&dz3, id)
+                .iter()
+                .any(|(s, t)| *s == Severity::Error && t.contains("inside switch")),
+            "{:?}",
+            about(&dz3, id)
+        );
+
+        // A block signal of the planner's 10 m beyond a generated one is too close; one halfway
+        // between two generated ones is assessed too.
+        let blocks: Vec<_> = dz
+            .signals
+            .iter()
+            .filter(|s| s.signal.kind == SignalKind::Block && s.signal.facing == 1)
+            .filter_map(|s| match s.signal.at {
+                SignalAt::Track { track, line, s: c } => Some((track, line, c)),
+                _ => None,
+            })
+            .collect();
+        let (track, line, c) = blocks[0];
+        let mut close = net.clone();
+        let id = crate::signal::next_id(&close);
+        close.signals = Some(vec![crate::signal::Signal {
+            id,
+            at: SignalAt::Track {
+                track,
+                line,
+                s: c + 10.0,
+            },
+            facing: 1,
+            kind: SignalKind::Block,
+            name: "B1".into(),
+        }]);
+        let dz4 = build(&close, None);
+        assert!(
+            about(&dz4, id)
+                .iter()
+                .any(|(s, t)| *s == Severity::Warning && t.contains("B1 is only 10 m")),
+            "{:?}",
+            about(&dz4, id)
+        );
+        // The planner's signal comes on top: the generated one 10 m before it stays.
+        assert_eq!(dz4.signals.len(), dz.signals.len() + 1);
     }
 }

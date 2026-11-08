@@ -96,6 +96,8 @@ pub struct Design {
     pub speeds: BTreeMap<u32, SpeedProfile>,
     /// All findings, errors first.
     pub issues: Vec<Issue>,
+    /// The effective signal plan: generated from this design, with the planner's changes.
+    pub signals: Vec<crate::signal::PlanSignal>,
     /// The document it was built from.
     pub network: Network,
 }
@@ -391,6 +393,7 @@ pub fn build_with_osm(
         speed_caps: BTreeMap::new(),
         speeds: BTreeMap::new(),
         issues: switch_errors,
+        signals: vec![],
         network: net.clone(),
     };
     design.existing = crate::existing::locate(&design, railways);
@@ -404,6 +407,10 @@ pub fn build_with_osm(
     crate::street_running::street_running(&mut design, streets);
     crate::street::level_crossings(&mut design, streets);
     crate::signal::check(&mut design);
+    // Signals follow the design: generated on every build, with the planner's changes on top.
+    let t = crate::topology::topology(&design);
+    design.signals = t.plan;
+    design.issues.extend(t.signal_issues);
     finish_issues(&mut design);
     design
 }

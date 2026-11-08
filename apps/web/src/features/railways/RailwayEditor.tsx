@@ -18,6 +18,7 @@ import {
   stationPlaces,
   update,
   updateSignal,
+  resetSignals,
   type LocalConnection,
 } from "./doc";
 import { fetchRailTile, loadRailEngine } from "./engine";
@@ -51,8 +52,12 @@ import type {
   RailEngineLoader,
   RailMode,
   RailView,
+  SignalView,
   Track,
 } from "./types";
+
+/** Purpose: the drawn signals of a view (generated and the planner's), or none before a build. */
+const sigs = (v: RailView | null | undefined): SignalView[] => v?.signals ?? [];
 
 const HINTS: Record<RailTool, string> = {
   select:
@@ -561,7 +566,7 @@ export function RailwayEditor({
         ];
         const layers = HIT_LAYERS.filter((l) => map.getLayer(l));
         const hits = map.queryRenderedFeatures(box, { layers });
-        const ref = hits.map((h) => Number(h.properties?.ref)).find((r) => kindOf(s.doc!, r));
+        const ref = hits.map((h) => Number(h.properties?.ref)).find((r) => kindOf(s.doc!, r, sigs(s.view)));
         setSel(ref ? { id: ref } : null);
       }
     };
@@ -609,7 +614,9 @@ export function RailwayEditor({
         if (!anchor) return;
         cancelAnimationFrame(frame);
         frame = requestAnimationFrame(() =>
-          setDoc((d) => d && updateSignal(d, dr.id, (x) => ({ ...x, at: anchor }))),
+          setDoc(
+            (d) => d && updateSignal(d, dr.id, (x) => ({ ...x, at: anchor }), sigs(latest.current.view)),
+          ),
         );
         return;
       }
@@ -636,10 +643,10 @@ export function RailwayEditor({
       ];
       const layers = HIT_LAYERS.filter((l) => map.getLayer(l));
       const hits = map.queryRenderedFeatures(box, { layers });
-      const ref = hits.map((h) => Number(h.properties?.ref)).find((r) => kindOf(s.doc!, r));
+      const ref = hits.map((h) => Number(h.properties?.ref)).find((r) => kindOf(s.doc!, r, sigs(s.view)));
       if (!ref || s.sel?.id !== ref) return;
       const ll: LonLat = [ev.lngLat.lng, ev.lngLat.lat];
-      const kind = kindOf(s.doc, ref);
+      const kind = kindOf(s.doc, ref, sigs(s.view));
       if (kind === "station") {
         const st = s.doc.stations.find((x) => x.id === ref)!;
         const at = engine.current.toLocal(s.doc.origin, ll);
@@ -818,8 +825,10 @@ export function RailwayEditor({
         }
       }
       if (ev.key === "Escape") return setSel(null);
-      if (k === "f" && s.sel && s.doc && kindOf(s.doc, s.sel.id) === "signal") {
-        setDoc(updateSignal(s.doc, s.sel.id, (x) => ({ ...x, facing: x.facing === 1 ? -1 : 1 })));
+      if (k === "f" && s.sel && s.doc && kindOf(s.doc, s.sel.id, sigs(s.view)) === "signal") {
+        setDoc(
+          updateSignal(s.doc, s.sel.id, (x) => ({ ...x, facing: x.facing === 1 ? -1 : 1 }), sigs(s.view)),
+        );
         return;
       }
       if ((ev.key === "Delete" || ev.key === "Backspace") && s.sel && s.doc) {
@@ -829,7 +838,7 @@ export function RailwayEditor({
           setDoc(update(s.doc, "tracks", id, (t) => ({ ...t, points: t.points.filter((_, i) => i !== pi) })));
           setSel({ id });
         } else {
-          setDoc(deleteElement(s.doc, s.sel.id, anchorAt));
+          setDoc(deleteElement(s.doc, s.sel.id, anchorAt, sigs(s.view)));
           setSel(null);
         }
         return;
@@ -883,7 +892,7 @@ export function RailwayEditor({
     },
     remove: (id: number) => {
       if (!doc) return;
-      setDoc(deleteElement(doc, id, anchorAt));
+      setDoc(deleteElement(doc, id, anchorAt, sigs(view)));
       setSel(null);
     },
     // The panel's mode is the mode for new stations and tracks. What is already drawn keeps its
@@ -943,20 +952,11 @@ export function RailwayEditor({
       if (ref) setSel({ id: ref });
       if (at && map) map.easeTo({ center: at, zoom: Math.max(map.getZoom(), 16) });
     },
-    generateSignals: () => {
-      const e = engine.current;
-      if (!doc || !e) return;
-      // Generate from the design without the current plan, so the new plan replaces it.
-      e.build({ ...doc, signals: null }, null);
-      const generated = e.generateSignals();
-      setDoc({ ...doc, signals: generated });
-      setSel(null);
-      setNote(`${generated.length} signals generated. Move, turn, add or delete them as needed.`);
-    },
-    clearSignals: () => {
+    resetSignals: () => {
       if (!doc) return;
-      setDoc({ ...doc, signals: null });
+      setDoc(resetSignals(doc));
       setSel(null);
+      setNote("Signals reset to the ones generated from the design.");
     },
     downloadTopology: () => {
       const t = engine.current?.topology();
