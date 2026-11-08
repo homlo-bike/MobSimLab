@@ -119,6 +119,11 @@ export function SettingsDialog({
               on={Boolean(preferences.reduceMotion)}
               onChange={(v) => onChange({ reduceMotion: v })}
             />
+            <Toggle
+              label={t("settings.existingRailways")}
+              on={Boolean(preferences.existingRailways)}
+              onChange={(v) => onChange({ existingRailways: v })}
+            />
           </div>
           <p className="mx-4 mt-2 text-xs text-slate-500">{t("settings.savedToAccount")}</p>
         </div>

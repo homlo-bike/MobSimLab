@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mobsimlab.org/contracts/level-crossing-closures.schema.json",
+  "title": "Level crossing closures",
+  "description": "When each level crossing of a railway design closes the street over a planned service day, produced by crates/rail-plan (closures module; `cargo run -p rail-plan --example level_crossing_closures -- TOPOLOGY.json LINES.json`). The street line tool reads it to add the expected wait at each crossing to bus running times. Times are seconds after midnight of the service day and may pass 86400.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "level_crossings"],
+  "properties": {
+    "schema": { "const": "mobsimlab.level-crossing-closures/1" },
+    "level_crossings": {
+      "description": "Every level crossing of the topology, also those no train uses.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/crossing" }
+    }
+  },
+  "$defs": {
+    "seconds": { "type": "number", "minimum": 0 },
+    "crossing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "way", "street", "closures"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^lc\\d+-\\d+-\\d+$",
+          "description": "Level crossing id of the track topology (contracts/rail-topology.schema.json)."
+        },
+        "way": { "type": "integer", "description": "OSM way id of the street." },
+        "street": { "type": "string" },
+        "closures": {
+          "description": "In time order, without overlaps: trains close together keep the street closed once, also across the lines of a double track.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["start_s", "end_s", "runs"],
+            "properties": {
+              "start_s": {
+                "$ref": "#/$defs/seconds",
+                "description": "The head passes the approach point (approach_m before the crossing), or leaves a stop inside the approach; never later than the warning time before it arrives."
+              },
+              "end_s": {
+                "$ref": "#/$defs/seconds",
+                "description": "The tail clears the rail zone beyond the crossing, plus reopen_s."
+              },
+              "runs": {
+                "type": "array",
+                "items": { "type": "string" },
+                "minItems": 1,
+                "description": "Trip ids of the runs that keep the street closed."
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

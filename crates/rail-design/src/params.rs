@@ -142,6 +142,13 @@ pub struct ModeParams {
     pub level_crossing_min_angle_deg: f64,
     /// Warning time before a train reaches a level crossing, s.
     pub level_crossing_warning_time_s: f64,
+    /// Time from the train clearing a level crossing until road traffic may go again, s.
+    pub level_crossing_reopen_s: f64,
+    /// Longest peak headway of a line, min (`timetable.policy_headway_peak_min`): the
+    /// assumed service at level crossings until a timetable exists.
+    pub policy_headway_peak_min: f64,
+    /// Longest off-peak headway of a line, min (`timetable.policy_headway_offpeak_min`).
+    pub policy_headway_offpeak_min: f64,
     /// Train control: `line_of_sight`, `fixed_block`, `cbtc` or `etcs_l2`.
     pub signalling_system: String,
     /// Distance of a signal in front of the switch point it protects, m.

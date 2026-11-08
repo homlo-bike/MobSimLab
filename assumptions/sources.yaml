@@ -384,6 +384,15 @@
   retrieved: 2026-10-27
   checked_via: none
 
+- id: mutcd-2009-part8
+  title: Manual on Uniform Traffic Control Devices, 2009 edition, Part 8 (Traffic Control for Railroad and Light Rail Transit Grade Crossings), § 8C.04 gate arms ascend to upright in not more than 12 s
+  publisher: US Federal Highway Administration
+  url: https://mutcd.fhwa.dot.gov/htm/2009/part8/part8c.htm
+  licence: US Government work, public domain
+  access: free
+  retrieved: 2026-11-02
+  checked_via: search-snippet
+
 - id: hcm7
   title: Highway Capacity Manual, 7th edition, pedestrian walking speeds
   publisher: Transportation Research Board

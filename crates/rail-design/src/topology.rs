@@ -62,6 +62,8 @@ pub struct Topology {
     pub depot_groups: Vec<DepotGroup>,
     /// Stretches where tram or light rail track runs along a street.
     pub street_running: Vec<StreetRunningOut>,
+    /// Where free ends of new track join existing railways from OpenStreetMap.
+    pub existing_joins: Vec<ExistingJoinOut>,
     /// Signals: the planner's plan, or a generated one while the document has none.
     pub signals: Vec<SignalOut>,
     /// The signals were generated, not planned.
@@ -98,6 +100,26 @@ pub struct StreetRunningOut {
     pub source: &'static str,
     /// Expected extra running time in traffic, share of the running time at the speed limit.
     pub traffic_delay_share: f64,
+}
+
+/// A free end of new track that joins an existing railway (`crate::existing`).
+#[derive(Debug, Clone, Serialize)]
+pub struct ExistingJoinOut {
+    /// Track (alignment) id.
+    pub track: u32,
+    /// 0 the track's start, 1 its end.
+    pub end: u8,
+    /// The `end` nodes there (one per line of the track).
+    pub nodes: Vec<String>,
+    /// OSM way id of the existing track.
+    pub way: i64,
+    /// Existing railway's name, empty when unnamed.
+    pub name: String,
+    /// Its OSM `railway` kind (`rail`, `tram`, `light_rail`, `subway`, ...).
+    pub railway: String,
+    /// The new track continues the existing way at its end; otherwise a new turnout goes into the
+    /// existing track.
+    pub continues: bool,
 }
 
 /// A signal on a section.
@@ -382,6 +404,8 @@ pub struct LevelCrossingOut {
     pub x: f64,
     /// Position, m north.
     pub y: f64,
+    /// Position, `[lon, lat]` degrees, for tools that work on the map (the street line tool).
+    pub lonlat: [f64; 2],
     /// Track id.
     pub track: u32,
     /// Chainage on the track's centre line, m.
@@ -396,6 +420,8 @@ pub struct LevelCrossingOut {
     pub warning_time_s: f64,
     /// Distance before the crossing, in either direction, where a train starts the warning, m.
     pub approach_m: f64,
+    /// How long one train closes the street, and the service assumed until a timetable exists.
+    pub road_closure: crate::street::RoadClosure,
     /// The street.
     pub street: LevelCrossingStreet,
 }
@@ -1057,6 +1083,10 @@ pub fn topology(dz: &Design) -> Topology {
             angle_deg: rd(x.angle.to_degrees()),
             x: rd(x.p.x),
             y: rd(x.p.y),
+            lonlat: {
+                let [lon, lat] = dz.proj.to_lonlat(x.p);
+                [(lon * 1e7).round() / 1e7, (lat * 1e7).round() / 1e7]
+            },
             track: x.track,
             chainage_m: rd(x.s),
             rail_zone_m: rd(x.rail_zone_m),
@@ -1064,6 +1094,15 @@ pub fn topology(dz: &Design) -> Topology {
             line_speed_kmh: rd(x.line_speed_kmh),
             warning_time_s: x.warning_time_s,
             approach_m: rd(x.approach_m),
+            road_closure: crate::street::RoadClosure {
+                train_length_m: rd(x.road_closure.train_length_m),
+                reopen_s: rd(x.road_closure.reopen_s),
+                closure_s: rd(x.road_closure.closure_s),
+                assumed_trains_per_hour_peak: rd(x.road_closure.assumed_trains_per_hour_peak),
+                assumed_trains_per_hour_off_peak: rd(x
+                    .road_closure
+                    .assumed_trains_per_hour_off_peak),
+            },
             street: LevelCrossingStreet {
                 way: x.way,
                 name: x.street.clone(),
@@ -1096,6 +1135,39 @@ pub fn topology(dz: &Design) -> Topology {
             separated: r.separated,
             source: r.source,
             traffic_delay_share: r.traffic_delay_share,
+        })
+        .collect();
+
+    let existing_joins: Vec<ExistingJoinOut> = dz
+        .joins
+        .iter()
+        .map(|j| {
+            let at = dz.track(j.track).and_then(|g| {
+                let q = if j.end == 0 {
+                    g.centre.first()
+                } else {
+                    g.centre.last()
+                }?;
+                Some((
+                    q.p,
+                    g.spacing_at(q.s) * f64::from(g.ntracks.max(1)) / 2.0 + 1.0,
+                ))
+            });
+            ExistingJoinOut {
+                track: j.track,
+                end: j.end,
+                nodes: node_out
+                    .iter()
+                    .filter(|n| {
+                        n.kind == "end" && at.is_some_and(|(p, r)| P2::new(n.x, n.y).dist(p) <= r)
+                    })
+                    .map(|n| n.id.clone())
+                    .collect(),
+                way: j.way,
+                name: j.name.clone(),
+                railway: j.kind.clone(),
+                continues: j.continues,
+            }
         })
         .collect();
 
@@ -1202,6 +1274,7 @@ pub fn topology(dz: &Design) -> Topology {
         level_crossings,
         depot_groups,
         street_running,
+        existing_joins,
         signals,
         signals_generated,
         generated,
@@ -1649,6 +1722,14 @@ mod tests {
         assert_eq!(x.sections.len(), 2, "both lines of the double track");
         assert_eq!(x.street.name, "Station Road");
         assert!(x.approach_m > 500.0);
+        // 25 s warning, a 160 m train over 3 m of rail zone at 160 km/h, 10 s barriers rising.
+        let c = &x.road_closure;
+        let want =
+            x.warning_time_s + (x.rail_zone_m + c.train_length_m) / (160.0 / 3.6) + c.reopen_s;
+        assert!((c.closure_s - want).abs() < 0.01, "{c:?}");
+        assert!(c.assumed_trains_per_hour_peak >= c.assumed_trains_per_hour_off_peak);
+        assert!(c.assumed_trains_per_hour_peak > 0.0);
+        assert!((x.lonlat[0] - 7.0).abs() < 0.05 && (x.lonlat[1] - 50.9).abs() < 0.05);
     }
 
     #[test]
@@ -1668,6 +1749,31 @@ mod tests {
         let plain = topology(&build(&net, None));
         assert!(speeds(&t).contains(&50.0), "{:?}", speeds(&t));
         assert!(!speeds(&plain).contains(&50.0), "{:?}", speeds(&plain));
+    }
+
+    #[test]
+    fn a_join_to_an_existing_railway_names_its_end_nodes() {
+        for mode in RailMode::ALL {
+            let net = sample(mode, 7.0, 50.9);
+            let plain = build(&net, None);
+            let rails = crate::sample::sample_railways(&plain);
+            let dz = crate::design::build_with_osm(&net, None, &[], &rails);
+            let t = topology(&dz);
+            assert_eq!(t.existing_joins.len(), 1, "{mode:?}");
+            let j = &t.existing_joins[0];
+            assert!(j.continues && j.track == 7 && j.end == 1, "{mode:?}");
+            assert_eq!(j.nodes.len(), 2, "{mode:?}: {:?}", j.nodes);
+            assert!(
+                !dz.issues.iter().any(|i| i.ref_id == Some(7)
+                    && matches!(
+                        i.severity,
+                        crate::issue::Severity::Error | crate::issue::Severity::Warning
+                    )
+                    && (i.text.contains("existing") || i.text.starts_with("Open track end"))),
+                "{mode:?}: {:?}",
+                dz.issues
+            );
+        }
     }
 
     #[test]

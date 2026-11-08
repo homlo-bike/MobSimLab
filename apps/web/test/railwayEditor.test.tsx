@@ -69,6 +69,18 @@ function streetTile(lat0: number, lat1: number, tags: Record<string, string> = {
 </osm>`;
 }
 
+/** An OSM railway tile: a tram line from the origin 700 m east along the x axis. */
+function railTile(tags: Record<string, string> = {}): string {
+  const t = { railway: "tram", name: "Harbour Tram", gauge: "1435", electrified: "contact_line", ...tags };
+  return `<osm version="0.6">
+  <node id="11" lon="${ORIGIN[0]}" lat="${ORIGIN[1]}"/>
+  <node id="12" lon="${ORIGIN[0] + 0.01}" lat="${ORIGIN[1]}"/>
+  <way id="200"><nd ref="11"/><nd ref="12"/>${Object.entries(t)
+    .map(([k, v]) => `<tag k="${k}" v="${v}"/>`)
+    .join("")}</way>
+</osm>`;
+}
+
 /** A single storage track along the x axis through the origin, 800 m long. */
 function lineAcross(mode: RailMode): Network {
   const net = emptyNetwork(mode, ORIGIN);
@@ -289,6 +301,39 @@ describe("railway engine (WebAssembly)", () => {
     e.dispose();
   });
 
+  it("joins new track to an existing railway, checks the join and exports it", async () => {
+    const e = await loadRailEngine();
+    expect(e.addRailTile(railTile())).toBe(1);
+    const net = emptyNetwork("tram", ORIGIN);
+    const t = newTrack(
+      net,
+      { type: "free", x: -400, y: 0 },
+      { tracks: 1, level: "street", power: "auto", use: "running" },
+    );
+    const doc = { ...net, tracks: [{ ...t, end: { type: "free" as const, x: 0, y: 0 } }] };
+    const v = e.build(doc, null);
+    expect(v.existing_count).toBe(1);
+    expect(v.existing_joins).toHaveLength(1);
+    expect(v.existing_joins[0]).toMatchObject({ track: t.id, end: 1, name: "Harbour Tram", continues: true });
+    expect(v.issues.some((i) => /Open track end/.test(i.text))).toBe(false);
+    expect(v.layers.existing.features.map((f) => f.properties.kind)).toEqual(["tram", "join"]);
+    const topo = e.topology() as { existing_joins: { way: number; nodes: string[] }[] };
+    expect(topo.existing_joins[0]).toMatchObject({ way: 200 });
+    expect(topo.existing_joins[0]!.nodes).toHaveLength(1);
+    // A click near the existing line snaps onto it.
+    const snap = e.existingSnap([ORIGIN[0] + 0.005, ORIGIN[1] + 0.00002], 10);
+    expect(snap).toMatchObject({ way: 200, railway: "tram" });
+    expect(snap!.lonlat[1]).toBeCloseTo(ORIGIN[1], 6);
+    // Metre gauge cannot take standard gauge trams.
+    e.clearRails();
+    e.addRailTile(railTile({ gauge: "1000" }));
+    const m = e.build(doc, null);
+    expect(m.issues.some((i) => i.severity === "error" && /gauge \(1435 mm\) differs/.test(i.text))).toBe(
+      true,
+    );
+    e.dispose();
+  });
+
   it("generates a signal plan, draws it and exports it as the planner's plan", async () => {
     const e = await loadRailEngine();
     const doc = e.sample("regional_rail", ORIGIN);
@@ -390,6 +435,8 @@ function fakeMap() {
 describe("Railway editor", () => {
   async function opened(
     fetchTile: (x: number, y: number) => Promise<string> = () => Promise.reject(new Error("offline")),
+    fetchRails: (x: number, y: number) => Promise<string> = () => Promise.reject(new Error("offline")),
+    existingRailways = false,
   ) {
     let engine: RailEngine | null = null;
     const { map, handlers } = fakeMap();
@@ -397,6 +444,8 @@ describe("Railway editor", () => {
       <RailwayEditor
         map={map}
         fetchTile={fetchTile}
+        fetchRails={fetchRails}
+        existingRailways={existingRailways}
         loadEngine={async () => (engine = await loadRailEngine())}
       />,
     );
@@ -453,6 +502,26 @@ describe("Railway editor", () => {
     expect(screen.getAllByText(/Station Road · \d+° · barriers · buses/).length).toBeGreaterThan(0);
   });
 
+  it("leaves existing railways alone unless the app setting turns them on", async () => {
+    const fetchRails = vi.fn(async () => railTile());
+    await opened(undefined, fetchRails);
+    fireEvent.change(screen.getByRole("combobox"), { target: { value: "tram" } });
+    fireEvent.click(screen.getByRole("button", { name: "Example" }));
+    expect(await screen.findByText(/0 errors/)).toBeTruthy();
+    expect(fetchRails).not.toHaveBeenCalled();
+    expect(screen.queryByText(/Existing railways ·/)).toBeNull();
+  });
+
+  it("loads the existing railways on screen alongside the streets", async () => {
+    const fetchRails = vi.fn(async () => railTile());
+    await opened(undefined, fetchRails, true);
+    fireEvent.change(screen.getByRole("combobox"), { target: { value: "tram" } });
+    fireEvent.click(screen.getByRole("button", { name: "Example" }));
+    expect(fetchRails).toHaveBeenCalled();
+    expect(await screen.findByText(/\(1 loaded\)/)).toBeTruthy();
+    expect(screen.getByText(/Existing railways · \d+ joins?/)).toBeTruthy();
+  });
+
   it("generates signals, lets the planner turn one round and removes the plan", async () => {
     await opened();
     fireEvent.change(screen.getByRole("combobox"), { target: { value: "regional_rail" } });
@@ -492,6 +561,7 @@ describe("Railway editor", () => {
       <RailwayEditor
         map={map}
         fetchTile={() => Promise.reject(new Error("offline"))}
+        fetchRails={() => Promise.reject(new Error("offline"))}
         loadEngine={async () => {
           const e = await loadRailEngine();
           const build = e.build;
