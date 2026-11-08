@@ -87,6 +87,11 @@ pub struct Design {
     pub existing: Vec<crate::existing::ExistingGeo>,
     /// Free track ends that join an existing railway.
     pub joins: Vec<crate::existing::Join>,
+    /// Slips in diamond crossings.
+    pub slips: Vec<crate::slip::SlipGeo>,
+    /// Speed limits imposed on stretches of track by street running and slips, per track id:
+    /// (from m, to m, km/h).
+    pub speed_caps: BTreeMap<u32, Vec<(f64, f64, f64)>>,
     /// Speed profile per track id.
     pub speeds: BTreeMap<u32, SpeedProfile>,
     /// All findings, errors first.
@@ -382,6 +387,8 @@ pub fn build_with_osm(
         street_running: vec![],
         existing: vec![],
         joins: vec![],
+        slips: vec![],
+        speed_caps: BTreeMap::new(),
         speeds: BTreeMap::new(),
         issues: switch_errors,
         network: net.clone(),
@@ -391,6 +398,7 @@ pub fn build_with_osm(
     design.joins = crate::existing::joins(&design);
     validate(&mut design, draft);
     crate::existing::check(&mut design);
+    crate::slip::check(&mut design);
     // Street running first: the street's speed limit caps the tram's speed, which the level
     // crossings' approach distances use.
     crate::street_running::street_running(&mut design, streets);
@@ -874,7 +882,11 @@ pub(crate) fn cap_speeds(dz: &mut Design, track: u32, caps: &[(f64, f64, f64)]) 
     let (Some(t), Some(g)) = (dz.doc_track(track).cloned(), dz.track(track).cloned()) else {
         return;
     };
-    let sp = speed_profile_capped(dz, &t, &g, caps);
+    // Caps add up: street running and slips may both limit one track.
+    let all = dz.speed_caps.entry(track).or_default();
+    all.extend_from_slice(caps);
+    let all = all.clone();
+    let sp = speed_profile_capped(dz, &t, &g, &all);
     dz.speeds.insert(track, sp);
 }
 

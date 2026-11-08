@@ -1,4 +1,5 @@
 import { get, send } from "../session/api";
+import { type DrawingKind, loadDrawings, saveDrawing } from "./drawings";
 
 export type ProjectRole = "owner" | "editor" | "commenter" | "viewer";
 
@@ -88,6 +89,9 @@ export function projectsApi(csrf: string) {
       send<{ ok: true }>("DELETE", `${one(id)}/members/${encodeURIComponent(userId)}`, csrf),
     setLink: (id: string, linkAccess: boolean) =>
       send<{ project: Project }>("PUT", `${one(id)}/link`, csrf, { linkAccess }).then((r) => r.project),
+    drawings: (id: string) => loadDrawings(id),
+    saveDrawing: <T>(id: string, kind: DrawingKind, doc: T, baseVersion: number | null) =>
+      saveDrawing(csrf, id, kind, doc, baseVersion),
   };
 }
 export type ProjectsApi = ReturnType<typeof projectsApi>;

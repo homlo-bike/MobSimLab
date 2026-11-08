@@ -193,6 +193,21 @@ export const nl: Messages = {
   "project.notFoundHint": "Het is misschien verwijderd, of je hebt geen toegang meer.",
   "project.toHome": "Terug naar projecten",
 
+  "save.saved": "Opgeslagen",
+  "save.saving": "Opslaan…",
+  "save.offline": "Nog niet opgeslagen · probeert opnieuw",
+  "save.failed": "Niet opgeslagen: {error}",
+  "save.conflict":
+    "{who} heeft {drawing} opgeslagen terwijl jij het aanpaste. Welke versie moet het project houden?",
+  "save.someone": "Iemand anders",
+  "save.keepMine": "Mijn versie houden",
+  "save.takeTheirs": "Hun versie gebruiken",
+  "save.loadFailed": "De tekeningen van het project zijn niet geladen: {error}",
+  "save.retry": "Opnieuw proberen",
+  "drawing.street-lines": "de buslijn",
+  "drawing.railway": "de spoorlijn",
+  "drawing.street-setups": "de straatinstellingen",
+
   "tab.label": "Project",
   "tab.simulator": "Simulator",
   "tab.create": "Maken",
