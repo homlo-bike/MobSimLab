@@ -1,0 +1,1720 @@
+{
+  "schema": "mobsimlab.rail-topology/1",
+  "origin": [
+    7.0,
+    50.9
+  ],
+  "mode": "tram",
+  "modes": [
+    "tram"
+  ],
+  "valid": true,
+  "errors": [],
+  "nodes": [
+    {
+      "id": "w4.0",
+      "kind": "switch",
+      "switch": 4,
+      "x": -85.249,
+      "y": 20.703
+    },
+    {
+      "id": "w4.1",
+      "kind": "switch",
+      "switch": 4,
+      "x": -65.181,
+      "y": 39.423
+    },
+    {
+      "id": "w5.0",
+      "kind": "switch",
+      "switch": 5,
+      "x": -49.152,
+      "y": 51.385
+    },
+    {
+      "id": "s1.0.a",
+      "kind": "end",
+      "switch": null,
+      "x": -334.5,
+      "y": -1.5
+    },
+    {
+      "id": "s1.0.b",
+      "kind": "join",
+      "switch": null,
+      "x": -265.5,
+      "y": -1.5
+    },
+    {
+      "id": "s1.1.a",
+      "kind": "end",
+      "switch": null,
+      "x": -334.5,
+      "y": 1.5
+    },
+    {
+      "id": "s1.1.b",
+      "kind": "join",
+      "switch": null,
+      "x": -265.5,
+      "y": 1.5
+    },
+    {
+      "id": "s2.0.a",
+      "kind": "join",
+      "switch": null,
+      "x": 265.5,
+      "y": 148.5
+    },
+    {
+      "id": "s2.0.b",
+      "kind": "end",
+      "switch": null,
+      "x": 334.5,
+      "y": 148.5
+    },
+    {
+      "id": "s2.1.a",
+      "kind": "join",
+      "switch": null,
+      "x": 265.5,
+      "y": 151.5
+    },
+    {
+      "id": "s2.1.b",
+      "kind": "end",
+      "switch": null,
+      "x": 334.5,
+      "y": 151.5
+    },
+    {
+      "id": "t6.0.a",
+      "kind": "join",
+      "switch": null,
+      "x": -38.954,
+      "y": 60.915
+    },
+    {
+      "id": "t6.0.b",
+      "kind": "end",
+      "switch": null,
+      "x": 25.215,
+      "y": 113.569
+    },
+    {
+      "id": "t7.0.a",
+      "kind": "end",
+      "switch": null,
+      "x": 117.061,
+      "y": 8.848
+    },
+    {
+      "id": "t7.0.b",
+      "kind": "end",
+      "switch": null,
+      "x": -40.833,
+      "y": 220.427
+    },
+    {
+      "id": "t7.1.a",
+      "kind": "end",
+      "switch": null,
+      "x": 119.466,
+      "y": 10.643
+    },
+    {
+      "id": "t7.1.b",
+      "kind": "end",
+      "switch": null,
+      "x": -38.429,
+      "y": 222.221
+    }
+  ],
+  "sections": [
+    {
+      "id": "s1.0",
+      "source": {
+        "kind": "station",
+        "ref": 1,
+        "index": 0,
+        "chainage_m": null
+      },
+      "from": "s1.0.a",
+      "to": "s1.0.b",
+      "length_m": 69.0,
+      "mode": "tram",
+      "gauge_mm": 1435.0,
+      "use": "running",
+      "power": {
+        "kind": "overhead",
+        "system": "ocl-750v-dc"
+      },
+      "train_protection": "line_of_sight",
+      "levels": [
+        {
+          "from_m": 0.0,
+          "to_m": 69.0,
+          "value": "street"
+        }
+      ],
+      "speed_kmh": [
+        {
+          "from_m": 0.0,
+          "to_m": 69.0,
+          "value": 60.0
+        }
+      ],
+      "gradient_permille": [],
+      "radius_m": [],
+      "platform_edges": [
+        "p1.0.r"
+      ],
+      "geometry": [
+        [
+          -334.5,
+          -1.5
+        ],
+        [
+          -265.5,
+          -1.5
+        ]
+      ]
+    },
+    {
+      "id": "s1.1",
+      "source": {
+        "kind": "station",
+        "ref": 1,
+        "index": 1,
+        "chainage_m": null
+      },
+      "from": "s1.1.a",
+      "to": "s1.1.b",
+      "length_m": 69.0,
+      "mode": "tram",
+      "gauge_mm": 1435.0,
+      "use": "running",
+      "power": {
+        "kind": "overhead",
+        "system": "ocl-750v-dc"
+      },
+      "train_protection": "line_of_sight",
+      "levels": [
+        {
+          "from_m": 0.0,
+          "to_m": 69.0,
+          "value": "street"
+        }
+      ],
+      "speed_kmh": [
+        {
+          "from_m": 0.0,
+          "to_m": 69.0,
+          "value": 60.0
+        }
+      ],
+      "gradient_permille": [],
+      "radius_m": [],
+      "platform_edges": [
+        "p1.1.l"
+      ],
+      "geometry": [
+        [
+          -334.5,
+          1.5
+        ],
+        [
+          -265.5,
+          1.5
+        ]
+      ]
+    },
+    {
+      "id": "s2.0",
+      "source": {
+        "kind": "station",
+        "ref": 2,
+        "index": 0,
+        "chainage_m": null
+      },
+      "from": "s2.0.a",
+      "to": "s2.0.b",
+      "length_m": 69.0,
+      "mode": "tram",
+      "gauge_mm": 1435.0,
+      "use": "running",
+      "power": {
+        "kind": "overhead",
+        "system": "ocl-750v-dc"
+      },
+      "train_protection": "line_of_sight",
+      "levels": [
+        {
+          "from_m": 0.0,
+          "to_m": 69.0,
+          "value": "street"
+        }
+      ],
+      "speed_kmh": [
+        {
+          "from_m": 0.0,
+          "to_m": 69.0,
+          "value": 60.0
+        }
+      ],
+      "gradient_permille": [],
+      "radius_m": [],
+      "platform_edges": [
+        "p2.0.r"
+      ],
+      "geometry": [
+        [
+          265.5,
+          148.5
+        ],
+        [
+          334.5,
+          148.5
+        ]
+      ]
+    },
+    {
+      "id": "s2.1",
+      "source": {
+        "kind": "station",
+        "ref": 2,
+        "index": 1,
+        "chainage_m": null
+      },
+      "from": "s2.1.a",
+      "to": "s2.1.b",
+      "length_m": 69.0,
+      "mode": "tram",
+      "gauge_mm": 1435.0,
+      "use": "running",
+      "power": {
+        "kind": "overhead",
+        "system": "ocl-750v-dc"
+      },
+      "train_protection": "line_of_sight",
+      "levels": [
+        {
+          "from_m": 0.0,
+          "to_m": 69.0,
+          "value": "street"
+        }
+      ],
+      "speed_kmh": [
+        {
+          "from_m": 0.0,
+          "to_m": 69.0,
+          "value": 60.0
+        }
+      ],
+      "gradient_permille": [],
+      "radius_m": [],
+      "platform_edges": [
+        "p2.1.l"
+      ],
+      "geometry": [
+        [
+          265.5,
+          151.5
+        ],
+        [
+          334.5,
+          151.5
+        ]
+      ]
+    },
+    {
+      "id": "t3.0.0",
+      "source": {
+        "kind": "track",
+        "ref": 3,
+        "index": 0,
+        "chainage_m": [
+          0.0,
+          212.709
+        ]
+      },
+      "from": "s1.1.b",
+      "to": "w4.1",
+      "length_m": 211.748,
+      "mode": "tram",
+      "gauge_mm": 1435.0,
+      "use": "running",
+      "power": {
+        "kind": "overhead",
+        "system": "ocl-750v-dc"
+      },
+      "train_protection": "line_of_sight",
+      "levels": [
+        {
+          "from_m": 0.0,
+          "to_m": 211.747,
+          "value": "street"
+        }
+      ],
+      "speed_kmh": [
+        {
+          "from_m": 0.0,
+          "to_m": 127.421,
+          "value": 60.0
+        },
+        {
+          "from_m": 127.421,
+          "to_m": 171.222,
+          "value": 20.0
+        },
+        {
+          "from_m": 171.222,
+          "to_m": 211.747,
+          "value": 60.0
+        }
+      ],
+      "gradient_permille": [],
+      "radius_m": [
+        {
+          "from_m": 127.794,
+          "to_m": 169.659,
+          "value": 50.0
+        }
+      ],
+      "platform_edges": [],
+      "geometry": [
+        [
+          -265.5,
+          1.5
+        ],
+        [
+          -133.436,
+          1.516
+        ],
+        [
+          -129.789,
+          1.633
+        ],
+        [
+          -127.387,
+          1.814
+        ],
+        [
+          -125.005,
+          2.108
+        ],
+        [
+          -122.641,
+          2.519
+        ],
+        [
+          -120.301,
+          3.046
+        ],
+        [
+          -117.989,
+          3.689
+        ],
+        [
+          -115.712,
+          4.445
+        ],
+        [
+          -113.475,
+          5.313
+        ],
+        [
+          -111.283,
+          6.29
+        ],
+        [
+          -109.143,
+          7.374
+        ],
+        [
+          -107.059,
+          8.563
+        ],
+        [
+          -105.025,
+          9.855
+        ],
+        [
+          -102.032,
+          11.943
+        ],
+        [
+          -65.181,
+          39.423
+        ]
+      ]
+    },
+    {
+      "id": "t3.0.1",
+      "source": {
+        "kind": "track",
+        "ref": 3,
+        "index": 0,
+        "chainage_m": [
+          212.709,
+          232.709
+        ]
+      },
+      "from": "w4.1",
+      "to": "w5.0",
+      "length_m": 20.0,
+      "mode": "tram",
+      "gauge_mm": 1435.0,
+      "use": "running",
+      "power": {
+        "kind": "overhead",
+        "system": "ocl-750v-dc"
+      },
+      "train_protection": "line_of_sight",
+      "levels": [
+        {
+          "from_m": 0.0,
+          "to_m": 20.0,
+          "value": "street"
+        }
+      ],
+      "speed_kmh": [
+        {
+          "from_m": 0.0,
+          "to_m": 11.291,
+          "value": 60.0
+        },
+        {
+          "from_m": 11.291,
+          "to_m": 20.0,
+          "value": 50.0
+        }
+      ],
+      "gradient_permille": [],
+      "radius_m": [],
+      "platform_edges": [],
+      "geometry": [
+        [
+          -65.181,
+          39.423
+        ],
+        [
+          -49.152,
+          51.385
+        ]
+      ]
+    },
+    {
+      "id": "t3.0.2",
+      "source": {
+        "kind": "track",
+        "ref": 3,
+        "index": 0,
+        "chainage_m": [
+          232.709,
+          578.407
+        ]
+      },
+      "from": "w5.0",
+      "to": "s2.1.a",
+      "length_m": 346.659,
+      "mode": "tram",
+      "gauge_mm": 1435.0,
+      "use": "running",
+      "power": {
+        "kind": "overhead",
+        "system": "ocl-750v-dc"
+      },
+      "train_protection": "line_of_sight",
+      "levels": [
+        {
+          "from_m": 0.0,
+          "to_m": 346.659,
+          "value": "street"
+        }
+      ],
+      "speed_kmh": [
+        {
+          "from_m": 0.0,
+          "to_m": 145.695,
+          "value": 50.0
+        },
+        {
+          "from_m": 145.695,
+          "to_m": 189.818,
+          "value": 20.0
+        },
+        {
+          "from_m": 189.818,
+          "to_m": 346.659,
+          "value": 60.0
+        }
+      ],
+      "gradient_permille": [],
+      "radius_m": [
+        {
+          "from_m": 145.672,
+          "to_m": 187.845,
+          "value": 50.0
+        }
+      ],
+      "platform_edges": [],
+      "geometry": [
+        [
+          -49.152,
+          51.385
+        ],
+        [
+          70.271,
+          140.486
+        ],
+        [
+          73.365,
+          142.644
+        ],
+        [
+          75.508,
+          144.005
+        ],
+        [
+          77.721,
+          145.267
+        ],
+        [
+          79.994,
+          146.419
+        ],
+        [
+          82.321,
+          147.457
+        ],
+        [
+          84.696,
+          148.378
+        ],
+        [
+          87.114,
+          149.181
+        ],
+        [
+          89.569,
+          149.863
+        ],
+        [
+          92.055,
+          150.423
+        ],
+        [
+          94.565,
+          150.86
+        ],
+        [
+          97.094,
+          151.171
+        ],
+        [
+          99.624,
+          151.362
+        ],
+        [
+          103.395,
+          151.483
+        ],
+        [
+          265.5,
+          151.5
+        ]
+      ]
+    },
+    {
+      "id": "t3.1.0",
+      "source": {
+        "kind": "track",
+        "ref": 3,
+        "index": 1,
+        "chainage_m": [
+          0.0,
+          185.429
+        ]
+      },
+      "from": "s1.0.b",
+      "to": "w4.0",
+      "length_m": 186.391,
+      "mode": "tram",
+      "gauge_mm": 1435.0,
+      "use": "running",
+      "power": {
+        "kind": "overhead",
+        "system": "ocl-750v-dc"
+      },
+      "train_protection": "line_of_sight",
+      "levels": [
+        {
+          "from_m": 0.0,
+          "to_m": 186.391,
+          "value": "street"
+        }
+      ],
+      "speed_kmh": [
+        {
+          "from_m": 0.0,
+          "to_m": 128.664,
+          "value": 60.0
+        },
+        {
+          "from_m": 128.664,
+          "to_m": 172.892,
+          "value": 20.0
+        },
+        {
+          "from_m": 172.892,
+          "to_m": 186.391,
+          "value": 60.0
+        }
+      ],
+      "gradient_permille": [],
+      "radius_m": [
+        {
+          "from_m": 129.04,
+          "to_m": 171.313,
+          "value": 50.0
+        }
+      ],
+      "platform_edges": [],
+      "geometry": [
+        [
+          -265.5,
+          -1.5
+        ],
+        [
+          -133.395,
+          -1.483
+        ],
+        [
+          -129.624,
+          -1.362
+        ],
+        [
+          -127.094,
+          -1.171
+        ],
+        [
+          -124.565,
+          -0.86
+        ],
+        [
+          -122.055,
+          -0.423
+        ],
+        [
+          -119.569,
+          0.137
+        ],
+        [
+          -117.114,
+          0.819
+        ],
+        [
+          -114.696,
+          1.622
+        ],
+        [
+          -112.321,
+          2.543
+        ],
+        [
+          -109.994,
+          3.581
+        ],
+        [
+          -107.721,
+          4.733
+        ],
+        [
+          -105.508,
+          5.995
+        ],
+        [
+          -103.365,
+          7.356
+        ],
+        [
+          -100.271,
+          9.514
+        ],
+        [
+          -85.249,
+          20.703
+        ]
+      ]
+    },
+    {
+      "id": "t3.1.1",
+      "source": {
+        "kind": "track",
+        "ref": 3,
+        "index": 1,
+        "chainage_m": [
+          185.429,
+          578.407
+        ]
+      },
+      "from": "w4.0",
+      "to": "s2.0.a",
+      "length_m": 392.016,
+      "mode": "tram",
+      "gauge_mm": 1435.0,
+      "use": "running",
+      "power": {
+        "kind": "overhead",
+        "system": "ocl-750v-dc"
+      },
+      "train_protection": "line_of_sight",
+      "levels": [
+        {
+          "from_m": 0.0,
+          "to_m": 392.015,
+          "value": "street"
+        }
+      ],
+      "speed_kmh": [
+        {
+          "from_m": 0.0,
+          "to_m": 38.477,
+          "value": 60.0
+        },
+        {
+          "from_m": 38.477,
+          "to_m": 192.1,
+          "value": 50.0
+        },
+        {
+          "from_m": 192.1,
+          "to_m": 235.992,
+          "value": 20.0
+        },
+        {
+          "from_m": 235.992,
+          "to_m": 392.015,
+          "value": 60.0
+        }
+      ],
+      "gradient_permille": [],
+      "radius_m": [
+        {
+          "from_m": 192.077,
+          "to_m": 234.03,
+          "value": 50.0
+        }
+      ],
+      "platform_edges": [],
+      "geometry": [
+        [
+          -85.249,
+          20.703
+        ],
+        [
+          72.032,
+          138.057
+        ],
+        [
+          75.025,
+          140.145
+        ],
+        [
+          77.059,
+          141.437
+        ],
+        [
+          79.143,
+          142.626
+        ],
+        [
+          81.283,
+          143.71
+        ],
+        [
+          83.475,
+          144.687
+        ],
+        [
+          85.712,
+          145.555
+        ],
+        [
+          87.989,
+          146.311
+        ],
+        [
+          90.301,
+          146.954
+        ],
+        [
+          92.641,
+          147.481
+        ],
+        [
+          95.005,
+          147.892
+        ],
+        [
+          97.387,
+          148.186
+        ],
+        [
+          99.789,
+          148.367
+        ],
+        [
+          103.436,
+          148.484
+        ],
+        [
+          265.5,
+          148.5
+        ]
+      ]
+    },
+    {
+      "id": "t7.0.0",
+      "source": {
+        "kind": "track",
+        "ref": 7,
+        "index": 0,
+        "chainage_m": [
+          0.0,
+          264.0
+        ]
+      },
+      "from": "t7.0.a",
+      "to": "t7.0.b",
+      "length_m": 264.0,
+      "mode": "tram",
+      "gauge_mm": 1435.0,
+      "use": "running",
+      "power": {
+        "kind": "overhead",
+        "system": "ocl-750v-dc"
+      },
+      "train_protection": "line_of_sight",
+      "levels": [
+        {
+          "from_m": 0.0,
+          "to_m": 264.0,
+          "value": "street"
+        }
+      ],
+      "speed_kmh": [
+        {
+          "from_m": 0.0,
+          "to_m": 264.0,
+          "value": 60.0
+        }
+      ],
+      "gradient_permille": [],
+      "radius_m": [],
+      "platform_edges": [],
+      "geometry": [
+        [
+          117.061,
+          8.848
+        ],
+        [
+          -40.833,
+          220.427
+        ]
+      ]
+    },
+    {
+      "id": "t7.1.0",
+      "source": {
+        "kind": "track",
+        "ref": 7,
+        "index": 1,
+        "chainage_m": [
+          0.0,
+          264.0
+        ]
+      },
+      "from": "t7.1.a",
+      "to": "t7.1.b",
+      "length_m": 264.0,
+      "mode": "tram",
+      "gauge_mm": 1435.0,
+      "use": "running",
+      "power": {
+        "kind": "overhead",
+        "system": "ocl-750v-dc"
+      },
+      "train_protection": "line_of_sight",
+      "levels": [
+        {
+          "from_m": 0.0,
+          "to_m": 264.0,
+          "value": "street"
+        }
+      ],
+      "speed_kmh": [
+        {
+          "from_m": 0.0,
+          "to_m": 264.0,
+          "value": 60.0
+        }
+      ],
+      "gradient_permille": [],
+      "radius_m": [],
+      "platform_edges": [],
+      "geometry": [
+        [
+          119.466,
+          10.643
+        ],
+        [
+          -38.429,
+          222.221
+        ]
+      ]
+    },
+    {
+      "id": "t6.0.0",
+      "source": {
+        "kind": "track",
+        "ref": 6,
+        "index": 0,
+        "chainage_m": [
+          0.0,
+          83.215
+        ]
+      },
+      "from": "t6.0.a",
+      "to": "t6.0.b",
+      "length_m": 83.215,
+      "mode": "tram",
+      "gauge_mm": 1435.0,
+      "use": "storage",
+      "power": {
+        "kind": "overhead",
+        "system": "ocl-750v-dc"
+      },
+      "train_protection": "line_of_sight",
+      "levels": [
+        {
+          "from_m": 0.0,
+          "to_m": 83.215,
+          "value": "street"
+        }
+      ],
+      "speed_kmh": [
+        {
+          "from_m": 0.0,
+          "to_m": 40.0,
+          "value": 15.0
+        },
+        {
+          "from_m": 40.0,
+          "to_m": 83.215,
+          "value": 25.0
+        }
+      ],
+      "gradient_permille": [],
+      "radius_m": [
+        {
+          "from_m": 19.096,
+          "to_m": 27.354,
+          "value": 50.0
+        }
+      ],
+      "platform_edges": [],
+      "geometry": [
+        [
+          -38.954,
+          60.915
+        ],
+        [
+          -24.77,
+          75.677
+        ],
+        [
+          -22.239,
+          78.008
+        ],
+        [
+          25.215,
+          113.569
+        ]
+      ]
+    },
+    {
+      "id": "w4.0",
+      "source": {
+        "kind": "switch",
+        "ref": 4,
+        "index": 0,
+        "chainage_m": null
+      },
+      "from": "w4.0",
+      "to": "w4.1",
+      "length_m": 27.491,
+      "mode": "tram",
+      "gauge_mm": 1435.0,
+      "use": "running",
+      "power": {
+        "kind": "overhead",
+        "system": "ocl-750v-dc"
+      },
+      "train_protection": "line_of_sight",
+      "levels": [
+        {
+          "from_m": 0.0,
+          "to_m": 27.491,
+          "value": "street"
+        }
+      ],
+      "speed_kmh": [
+        {
+          "from_m": 0.0,
+          "to_m": 27.491,
+          "value": 15.0
+        }
+      ],
+      "gradient_permille": [],
+      "radius_m": [
+        {
+          "from_m": 0.0,
+          "to_m": 27.491,
+          "value": 50.0
+        }
+      ],
+      "platform_edges": [],
+      "geometry": [
+        [
+          -85.249,
+          20.703
+        ],
+        [
+          -82.032,
+          23.267
+        ],
+        [
+          -79.025,
+          26.094
+        ],
+        [
+          -70.304,
+          35.122
+        ],
+        [
+          -67.211,
+          37.855
+        ],
+        [
+          -65.181,
+          39.423
+        ]
+      ]
+    },
+    {
+      "id": "w5.0",
+      "source": {
+        "kind": "switch",
+        "ref": 5,
+        "index": 0,
+        "chainage_m": null
+      },
+      "from": "w5.0",
+      "to": "t6.0.a",
+      "length_m": 13.981,
+      "mode": "tram",
+      "gauge_mm": 1435.0,
+      "use": "running",
+      "power": {
+        "kind": "overhead",
+        "system": "ocl-750v-dc"
+      },
+      "train_protection": "line_of_sight",
+      "levels": [
+        {
+          "from_m": 0.0,
+          "to_m": 13.981,
+          "value": "street"
+        }
+      ],
+      "speed_kmh": [
+        {
+          "from_m": 0.0,
+          "to_m": 13.981,
+          "value": 15.0
+        }
+      ],
+      "gradient_permille": [],
+      "radius_m": [
+        {
+          "from_m": 0.0,
+          "to_m": 13.981,
+          "value": 50.0
+        }
+      ],
+      "platform_edges": [],
+      "geometry": [
+        [
+          -49.152,
+          51.385
+        ],
+        [
+          -44.528,
+          55.214
+        ],
+        [
+          -42.569,
+          57.147
+        ],
+        [
+          -38.954,
+          60.915
+        ]
+      ]
+    }
+  ],
+  "links": [
+    {
+      "node": "w4.0",
+      "a": {
+        "section": "t3.1.0",
+        "end": "to"
+      },
+      "b": {
+        "section": "t3.1.1",
+        "end": "from"
+      }
+    },
+    {
+      "node": "w4.0",
+      "a": {
+        "section": "t3.1.0",
+        "end": "to"
+      },
+      "b": {
+        "section": "w4.0",
+        "end": "from"
+      }
+    },
+    {
+      "node": "w4.1",
+      "a": {
+        "section": "t3.0.0",
+        "end": "to"
+      },
+      "b": {
+        "section": "t3.0.1",
+        "end": "from"
+      }
+    },
+    {
+      "node": "w4.1",
+      "a": {
+        "section": "t3.0.1",
+        "end": "from"
+      },
+      "b": {
+        "section": "w4.0",
+        "end": "to"
+      }
+    },
+    {
+      "node": "w5.0",
+      "a": {
+        "section": "t3.0.1",
+        "end": "to"
+      },
+      "b": {
+        "section": "t3.0.2",
+        "end": "from"
+      }
+    },
+    {
+      "node": "w5.0",
+      "a": {
+        "section": "t3.0.1",
+        "end": "to"
+      },
+      "b": {
+        "section": "w5.0",
+        "end": "from"
+      }
+    },
+    {
+      "node": "s1.0.b",
+      "a": {
+        "section": "s1.0",
+        "end": "to"
+      },
+      "b": {
+        "section": "t3.1.0",
+        "end": "from"
+      }
+    },
+    {
+      "node": "s1.1.b",
+      "a": {
+        "section": "s1.1",
+        "end": "to"
+      },
+      "b": {
+        "section": "t3.0.0",
+        "end": "from"
+      }
+    },
+    {
+      "node": "s2.0.a",
+      "a": {
+        "section": "s2.0",
+        "end": "from"
+      },
+      "b": {
+        "section": "t3.1.1",
+        "end": "to"
+      }
+    },
+    {
+      "node": "s2.1.a",
+      "a": {
+        "section": "s2.1",
+        "end": "from"
+      },
+      "b": {
+        "section": "t3.0.2",
+        "end": "to"
+      }
+    },
+    {
+      "node": "t6.0.a",
+      "a": {
+        "section": "t6.0.0",
+        "end": "from"
+      },
+      "b": {
+        "section": "w5.0",
+        "end": "to"
+      }
+    }
+  ],
+  "switches": [
+    {
+      "id": 4,
+      "kind": "crossover",
+      "element": "tram-r50",
+      "label": "Crossover with Tram grooved-rail turnout R 50 m (about 1:6) at 3.00 m track centres",
+      "track": 3,
+      "chainage_m": [
+        185.429,
+        212.709
+      ],
+      "nodes": [
+        "w4.0",
+        "w4.1"
+      ],
+      "legs": [
+        "w4.0"
+      ],
+      "conflict_sections": [
+        "w4.0",
+        "t3.0.0",
+        "t3.1.1"
+      ],
+      "diverging_speed_kmh": 15.0,
+      "radius_m": 50.0,
+      "crossing_ratio_n": 6.0,
+      "fouling_points": [
+        {
+          "node": "w4.0",
+          "section": "t3.1.0",
+          "distance_m": 0.0,
+          "at_section": "t3.1.0",
+          "at_offset_m": 186.391
+        },
+        {
+          "node": "w4.0",
+          "section": "t3.1.1",
+          "distance_m": 26.5,
+          "at_section": "t3.1.1",
+          "at_offset_m": 26.5
+        },
+        {
+          "node": "w4.0",
+          "section": "w4.0",
+          "distance_m": 26.5,
+          "at_section": "w4.0",
+          "at_offset_m": 26.5
+        },
+        {
+          "node": "w4.1",
+          "section": "t3.0.0",
+          "distance_m": 26.5,
+          "at_section": "t3.0.0",
+          "at_offset_m": 185.248
+        },
+        {
+          "node": "w4.1",
+          "section": "t3.0.1",
+          "distance_m": 0.0,
+          "at_section": "t3.0.1",
+          "at_offset_m": 0.0
+        },
+        {
+          "node": "w4.1",
+          "section": "w4.0",
+          "distance_m": 26.5,
+          "at_section": "w4.0",
+          "at_offset_m": 0.991
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "kind": "turnout",
+      "element": "tram-r50",
+      "label": "Tram grooved-rail turnout R 50 m (about 1:6)",
+      "track": 3,
+      "chainage_m": [
+        232.709,
+        246.582
+      ],
+      "nodes": [
+        "w5.0"
+      ],
+      "legs": [
+        "w5.0"
+      ],
+      "conflict_sections": [
+        "w5.0",
+        "t3.0.2",
+        "t3.1.1"
+      ],
+      "diverging_speed_kmh": 15.0,
+      "radius_m": 50.0,
+      "crossing_ratio_n": 6.0,
+      "fouling_points": [
+        {
+          "node": "w5.0",
+          "section": "t3.0.1",
+          "distance_m": 0.0,
+          "at_section": "t3.0.1",
+          "at_offset_m": 20.0
+        },
+        {
+          "node": "w5.0",
+          "section": "t3.0.2",
+          "distance_m": 22.5,
+          "at_section": "t3.0.2",
+          "at_offset_m": 22.5
+        },
+        {
+          "node": "w5.0",
+          "section": "w5.0",
+          "distance_m": 22.5,
+          "at_section": "t6.0.0",
+          "at_offset_m": 8.519
+        }
+      ]
+    }
+  ],
+  "platform_edges": [
+    {
+      "id": "p1.0.r",
+      "station": 1,
+      "station_name": "Riverside",
+      "track": 0,
+      "side": "right",
+      "section": "s1.0",
+      "from_m": 12.0,
+      "to_m": 57.0,
+      "length_m": 45.0,
+      "height_mm": 250.0,
+      "mode": "tram"
+    },
+    {
+      "id": "p1.1.l",
+      "station": 1,
+      "station_name": "Riverside",
+      "track": 1,
+      "side": "left",
+      "section": "s1.1",
+      "from_m": 12.0,
+      "to_m": 57.0,
+      "length_m": 45.0,
+      "height_mm": 250.0,
+      "mode": "tram"
+    },
+    {
+      "id": "p2.0.r",
+      "station": 2,
+      "station_name": "Northgate",
+      "track": 0,
+      "side": "right",
+      "section": "s2.0",
+      "from_m": 12.0,
+      "to_m": 57.0,
+      "length_m": 45.0,
+      "height_mm": 250.0,
+      "mode": "tram"
+    },
+    {
+      "id": "p2.1.l",
+      "station": 2,
+      "station_name": "Northgate",
+      "track": 1,
+      "side": "left",
+      "section": "s2.1",
+      "from_m": 12.0,
+      "to_m": 57.0,
+      "length_m": 45.0,
+      "height_mm": 250.0,
+      "mode": "tram"
+    }
+  ],
+  "crossings": [
+    {
+      "id": "x3-7-0",
+      "kind": "diamond",
+      "conflict": true,
+      "modes": [
+        "tram",
+        "tram"
+      ],
+      "angle_deg": 90.0,
+      "x": 39.316,
+      "y": 115.535,
+      "tracks": [
+        {
+          "track": 3,
+          "chainage_m": 341.977,
+          "fouling_before_m": 4.5,
+          "fouling_after_m": 4.5,
+          "sections": [
+            "t3.0.2",
+            "t3.1.1"
+          ]
+        },
+        {
+          "track": 7,
+          "chainage_m": 132.0,
+          "fouling_before_m": 4.5,
+          "fouling_after_m": 4.5,
+          "sections": [
+            "t7.0.0",
+            "t7.1.0"
+          ]
+        }
+      ],
+      "slip": null
+    }
+  ],
+  "level_crossings": [
+    {
+      "id": "lc3-1001-0",
+      "protection": "traffic_signals",
+      "standard": true,
+      "special_measures": [],
+      "mode": "tram",
+      "angle_deg": 89.461,
+      "x": -120.994,
+      "y": 1.339,
+      "lonlat": [
+        6.9982801,
+        50.900012
+      ],
+      "track": 3,
+      "chainage_m": 144.602,
+      "rail_zone_m": 3.278,
+      "sections": [
+        "t3.0.0",
+        "t3.1.0"
+      ],
+      "line_speed_kmh": 20.0,
+      "warning_time_s": 15.0,
+      "approach_m": 83.333,
+      "road_closure": {
+        "train_length_m": 45.0,
+        "reopen_s": 5.0,
+        "closure_s": 28.69,
+        "assumed_trains_per_hour_peak": 24.0,
+        "assumed_trains_per_hour_off_peak": 12.0
+      },
+      "street": {
+        "way": 1001,
+        "name": "Station Road",
+        "class": "secondary",
+        "offset_m": 63.0,
+        "width_m": 6.5,
+        "keep_clear_m": 8.031,
+        "bus": true,
+        "trolley_wire": true
+      }
+    },
+    {
+      "id": "lc7-1002-0",
+      "protection": "traffic_signals",
+      "standard": true,
+      "special_measures": [],
+      "mode": "tram",
+      "angle_deg": 90.0,
+      "x": 39.316,
+      "y": 115.535,
+      "lonlat": [
+        7.0005589,
+        50.9010385
+      ],
+      "track": 7,
+      "chainage_m": 132.0,
+      "rail_zone_m": 6.5,
+      "sections": [
+        "t7.0.0",
+        "t7.1.0"
+      ],
+      "line_speed_kmh": 60.0,
+      "warning_time_s": 15.0,
+      "approach_m": 250.0,
+      "road_closure": {
+        "train_length_m": 45.0,
+        "reopen_s": 5.0,
+        "closure_s": 23.09,
+        "assumed_trains_per_hour_peak": 24.0,
+        "assumed_trains_per_hour_off_peak": 12.0
+      },
+      "street": {
+        "way": 1002,
+        "name": "High Street",
+        "class": "primary",
+        "offset_m": 110.615,
+        "width_m": 13.0,
+        "keep_clear_m": 8.0,
+        "bus": true,
+        "trolley_wire": false
+      }
+    }
+  ],
+  "depot_groups": [
+    {
+      "id": "d6",
+      "tracks": [
+        6
+      ],
+      "sections": [
+        "t6.0.0"
+      ],
+      "length_m": 83.215
+    }
+  ],
+  "street_running": [
+    {
+      "id": "sr3-1002-0",
+      "track": 3,
+      "from_m": 225.0,
+      "to_m": 410.0,
+      "sections": [
+        "t3.0.1",
+        "t3.0.2",
+        "t3.1.1"
+      ],
+      "running": "reserved",
+      "speed_limit_kmh": 50.0,
+      "street": {
+        "way": 1002,
+        "name": "High Street",
+        "class": "primary",
+        "width_m": 13.0,
+        "lanes": 4.0,
+        "oneway": false,
+        "bus": true,
+        "trolley_wire": false,
+        "bike_lane": false,
+        "bus_lane": false
+      },
+      "stops": [],
+      "separated": false,
+      "source": "osm",
+      "traffic_delay_share": 0.08
+    }
+  ],
+  "existing_joins": [
+    {
+      "track": 7,
+      "end": 1,
+      "nodes": [
+        "t7.0.b",
+        "t7.1.b"
+      ],
+      "way": 2001,
+      "name": "Valley Line",
+      "railway": "tram",
+      "continues": true
+    }
+  ],
+  "signals": [
+    {
+      "id": "g0",
+      "section": "t3.0.2",
+      "chainage_m": 22.5,
+      "facing": "from",
+      "kind": "main",
+      "overlap_m": null,
+      "lineside": true
+    },
+    {
+      "id": "g1",
+      "section": "t3.0.2",
+      "chainage_m": 105.059,
+      "facing": "to",
+      "kind": "main",
+      "overlap_m": null,
+      "lineside": true
+    },
+    {
+      "id": "g2",
+      "section": "t3.0.2",
+      "chainage_m": 114.084,
+      "facing": "from",
+      "kind": "main",
+      "overlap_m": null,
+      "lineside": true
+    },
+    {
+      "id": "g3",
+      "section": "t3.1.1",
+      "chainage_m": 26.5,
+      "facing": "from",
+      "kind": "main",
+      "overlap_m": null,
+      "lineside": true
+    },
+    {
+      "id": "g4",
+      "section": "t3.1.1",
+      "chainage_m": 151.676,
+      "facing": "to",
+      "kind": "main",
+      "overlap_m": null,
+      "lineside": true
+    },
+    {
+      "id": "g5",
+      "section": "t3.1.1",
+      "chainage_m": 160.654,
+      "facing": "from",
+      "kind": "main",
+      "overlap_m": null,
+      "lineside": true
+    },
+    {
+      "id": "g6",
+      "section": "t6.0.0",
+      "chainage_m": 8.519,
+      "facing": "from",
+      "kind": "shunting",
+      "overlap_m": null,
+      "lineside": true
+    }
+  ],
+  "signals_generated": true
+}
