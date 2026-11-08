@@ -29,6 +29,7 @@ pub mod params;
 pub mod proj;
 pub mod sample;
 pub mod signal;
+pub mod slip;
 pub mod station;
 pub mod street;
 pub mod street_running;

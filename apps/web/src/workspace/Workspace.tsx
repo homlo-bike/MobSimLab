@@ -2,7 +2,7 @@ import type { Map as MapLibreMap } from "maplibre-gl";
 import { type ReactNode, useEffect, useState } from "react";
 import { CapacityRun } from "../features/capacity/CapacityRun";
 import { JourneyPlanner } from "../features/journey-planner/JourneyPlanner";
-import type { StreetLineInput } from "../features/journey-planner/network";
+import type { PluginLineInput, StreetLineInput } from "../features/journey-planner/network";
 import { RailwayEditor } from "../features/railways/RailwayEditor";
 import type { Network } from "../features/railways/types";
 import { lineInput, type StreetLinesDoc } from "../features/street-lines/saved";
@@ -12,11 +12,16 @@ import { StreetSetupEditor } from "../features/street-setup/StreetSetupEditor";
 import type { StreetSetup } from "../features/street-setup/types";
 import { useI18n } from "../i18n/i18n";
 import type { MessageKey } from "../i18n/messages";
+import { SpanLineEditor } from "../kits/SpanLineEditor";
+import { WaterRouteEditor } from "../kits/WaterRouteEditor";
 import { MapView } from "../map/MapView";
+import { pluginTools } from "../plugins/registry";
 import { can, type Project, type ProjectsApi } from "../projects/api";
 import {
   BackIcon,
   BusIcon,
+  CableIcon,
+  FerryIcon,
   GearIcon,
   LayersIcon,
   PenIcon,
@@ -44,7 +49,9 @@ const MAP_TABS: readonly Tab[] = ["simulator", "create", "gis"];
 const NO_SETUPS: StreetSetup[] = [];
 
 type SimView = "test" | "journey";
-type Build = "street" | "rail";
+/** "street", "rail", or the id of a plugin tool (cable car, ferry…). */
+type Build = string;
+const PLUGIN_TOOLS = pluginTools();
 
 /**
  * One open project (mockups "Project app"): the project name and the six tabs in the top bar (a bottom tab bar on
@@ -84,10 +91,13 @@ export function Workspace({
   const [build, setBuild] = useState<Build | null>(null);
   // The street line as the tool last routed it, so the journey planner can ride it.
   const [line, setLine] = useState<StreetLineInput | null>(null);
+  // Cable car and ferry lines from the plugin tools, per tool, for the journey planner.
+  const [pluginLines, setPluginLines] = useState<Record<string, PluginLineInput | null>>({});
   // The track topology last built in the railway tool, so street lines wait at its level crossings.
   const [railTopology, setRailTopology] = useState<unknown>(null);
   useEffect(() => {
     setLine(null);
+    setPluginLines({});
     setRailTopology(null);
   }, [projectId]);
   if (import.meta.env.DEV) Object.assign(window, { mobsimMap: map });
@@ -210,14 +220,18 @@ export function Workspace({
 
   // Create: a new project starts with the chooser; an existing one with the rail or street tool last used.
   const chosen: Build | null = build ?? (fresh ? null : "street");
+  const chosenPlugin = PLUGIN_TOOLS.find((x) => x.id === chosen) ?? null;
   const panelLabel =
     tab === "simulator"
       ? tabLabel("simulator")
       : tab === "create"
         ? chosen === "rail"
           ? t("create.rail")
-          : t("create.street")
+          : chosenPlugin
+            ? chosenPlugin.label
+            : t("create.street")
         : tabLabel("gis");
+  const pluginLineList = Object.values(pluginLines).filter((l): l is PluginLineInput => l !== null);
 
   return (
     <div className="flex h-full flex-col">
@@ -279,6 +293,24 @@ export function Workspace({
               onTopologyChange={setRailTopology}
             />
           )}
+          {project && tab === "create" && editable && chosenPlugin?.kit === "straight-spans" && (
+            <SpanLineEditor
+              map={map}
+              panel={panel}
+              tool={chosenPlugin}
+              storageKey={`mobsimlab:${chosenPlugin.id}:${projectId}`}
+              onLineChange={(l) => setPluginLines((p) => ({ ...p, [chosenPlugin.id]: l }))}
+            />
+          )}
+          {project && tab === "create" && editable && chosenPlugin?.kit === "water-route" && (
+            <WaterRouteEditor
+              map={map}
+              panel={panel}
+              tool={chosenPlugin}
+              storageKey={`mobsimlab:${chosenPlugin.id}:${projectId}`}
+              onLineChange={(l) => setPluginLines((p) => ({ ...p, [chosenPlugin.id]: l }))}
+            />
+          )}
           {project && drawings.loaded && tab === "gis" && (
             <StreetSetupEditor
               map={map}
@@ -293,6 +325,7 @@ export function Workspace({
               map={map}
               panel={panel}
               streetLine={ridden && ridden.view.points.length >= 2 ? ridden : null}
+              pluginLines={pluginLineList}
             />
           )}
           {project && tab === "create" && editable && chosen === null && (
@@ -304,12 +337,31 @@ export function Workspace({
                 <h2 className="text-2xl font-semibold tracking-tight">{t("create.chooseTitle")}</h2>
                 <p className="mt-1 text-slate-600">{t("create.chooseIntro")}</p>
                 <div className="mt-5 grid gap-3.5 sm:grid-cols-2">
-                  {(
-                    [
-                      ["street", BusIcon, "create.street", "create.streetHint", "bg-blue-100 text-blue-900"],
-                      ["rail", TrainIcon, "create.rail", "create.railHint", "bg-red-100 text-red-900"],
-                    ] as const
-                  ).map(([kind, Icon, title, hint, colour]) => (
+                  {[
+                    ...([
+                      [
+                        "street",
+                        BusIcon,
+                        t("create.street"),
+                        t("create.streetHint"),
+                        "bg-blue-100 text-blue-900",
+                      ],
+                      ["rail", TrainIcon, t("create.rail"), t("create.railHint"), "bg-red-100 text-red-900"],
+                    ] as const),
+                    // Tools contributed by plugins (ADR-0036 §6): cable car and ferry are bundled.
+                    ...PLUGIN_TOOLS.map(
+                      (x) =>
+                        [
+                          x.id,
+                          x.kit === "water-route" ? FerryIcon : CableIcon,
+                          x.label,
+                          x.hint ?? "",
+                          x.kit === "water-route"
+                            ? "bg-cyan-100 text-cyan-900"
+                            : "bg-violet-100 text-violet-900",
+                        ] as const,
+                    ),
+                  ].map(([kind, Icon, title, hint, colour]) => (
                     <button
                       key={kind}
                       type="button"
@@ -319,8 +371,8 @@ export function Workspace({
                       <span className={`flex h-12 w-12 items-center justify-center rounded-xl ${colour}`}>
                         <Icon size={26} />
                       </span>
-                      <span className="text-base font-semibold">{t(title)}</span>
-                      <span className="text-xs text-slate-500">{t(hint)}</span>
+                      <span className="text-base font-semibold">{title}</span>
+                      <span className="text-xs text-slate-500">{hint}</span>
                     </button>
                   ))}
                 </div>
@@ -424,6 +476,17 @@ export function Workspace({
                   >
                     {t("create.rail")}
                   </button>
+                  {PLUGIN_TOOLS.map((x) => (
+                    <button
+                      key={x.id}
+                      type="button"
+                      role="tab"
+                      aria-selected={chosen === x.id}
+                      onClick={() => setBuild(x.id)}
+                    >
+                      {x.label}
+                    </button>
+                  ))}
                 </div>
               </div>
             )}

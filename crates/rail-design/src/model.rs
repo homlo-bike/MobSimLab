@@ -92,6 +92,9 @@ pub struct Network {
     /// topology export then generates one).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub signals: Option<Vec<crate::signal::Signal>>,
+    /// Slips the planner put into diamond crossings.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub slips: Vec<crate::slip::Slip>,
 }
 
 impl Network {
@@ -106,6 +109,7 @@ impl Network {
             tracks: vec![],
             switches: vec![],
             signals: None,
+            slips: vec![],
         }
     }
     /// Purpose: the next free id.

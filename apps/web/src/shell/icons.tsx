@@ -162,3 +162,18 @@ export const TrainIcon = (p: P) => (
     <path d="M5 11h14M8 21l2-4M16 21l-2-4" />
   </Icon>
 );
+export const CableIcon = (p: P) => (
+  <Icon {...p}>
+    <path d="M2 4l20 5" />
+    <path d="M12 6.5V10" />
+    <rect x="7" y="10" width="10" height="9" rx="2" />
+    <path d="M7 14h10" />
+  </Icon>
+);
+export const FerryIcon = (p: P) => (
+  <Icon {...p}>
+    <path d="M4 14h16l-2 4H6z" />
+    <path d="M7 14V9h10v5M10 9V6h4v3" />
+    <path d="M2 21c2 0 2-1 4-1s2 1 4 1 2-1 4-1 2 1 4 1 2-1 4-1" />
+  </Icon>
+);
