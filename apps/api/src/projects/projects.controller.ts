@@ -16,6 +16,7 @@ import {
 import { z } from "zod";
 import { type MslRequest, SessionService } from "../auth/session.service";
 import { Requires } from "../iam/requires";
+import { DRAWING_KINDS, isDrawingKind, MAX_DRAWING_BYTES } from "./drawings";
 import { type ProjectActor, ProjectsService } from "./projects.service";
 
 /** Modes a project can plan for (assumptions/parameters/modes.yaml plus the street modes). */
@@ -63,6 +64,10 @@ const deleteBody = z.strictObject({ confirmName: z.string().max(200) });
 const addMemberBody = z.strictObject({ email: z.email().max(320), role: memberRole });
 const roleBody = z.strictObject({ role: memberRole });
 const linkBody = z.strictObject({ linkAccess: z.boolean() });
+const drawingBody = z.strictObject({
+  doc: z.unknown(),
+  baseVersion: z.number().int().min(1).nullable(),
+});
 
 /** Purpose: parse input with a zod schema; 400 with the issue messages on failure. */
 function parse<T>(schema: z.ZodType<T>, value: unknown): T {
@@ -190,6 +195,35 @@ export class ProjectsController {
   async removeMember(@Param("id") id: string, @Param("userId") userId: string, @Req() req: MslRequest) {
     await this.projects.removeMember(this.actor(req), parse(uuid, id), parse(uuid, userId));
     return { ok: true };
+  }
+
+  /** Purpose: every drawing saved in the project (street lines, railway, street setups), by kind. */
+  @Get(":id/drawings")
+  @Requires("projects.read")
+  async drawings(@Param("id") id: string, @Req() req: MslRequest) {
+    return { drawings: await this.projects.drawings(this.actor(req), parse(uuid, id)) };
+  }
+
+  /**
+   * Purpose: save one drawing. Body: `{ doc, baseVersion }`, where `baseVersion` is the version the caller
+   * loaded (null if none was saved yet). 409 `{ current }` when someone else saved first.
+   */
+  @Put(":id/drawings/:kind")
+  @Requires("projects.read")
+  async saveDrawing(
+    @Param("id") id: string,
+    @Param("kind") kind: string,
+    @Body() body: unknown,
+    @Req() req: MslRequest,
+  ) {
+    if (!isDrawingKind(kind)) throw new BadRequestException(`unknown drawing kind "${kind.slice(0, 40)}"`);
+    const b = parse(drawingBody, body);
+    const doc = parse(DRAWING_KINDS[kind].schema as z.ZodType<unknown>, b.doc);
+    if (Buffer.byteLength(JSON.stringify(doc)) > MAX_DRAWING_BYTES)
+      throw new BadRequestException("the drawing is too large to save");
+    return {
+      drawing: await this.projects.saveDrawing(this.actor(req), parse(uuid, id), kind, doc, b.baseVersion),
+    };
   }
 
   /** Purpose: switch the view-only link on or off. Body: `{ linkAccess }`. */

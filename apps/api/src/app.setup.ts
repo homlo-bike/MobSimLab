@@ -1,5 +1,6 @@
 import type { NestExpressApplication } from "@nestjs/platform-express";
 import cookieParser from "cookie-parser";
+import { json } from "express";
 import helmet from "helmet";
 import type { AppConfig } from "./config/env";
 
@@ -32,4 +33,8 @@ export function configureApp(app: NestExpressApplication, config: AppConfig): vo
     }),
   );
   app.use(cookieParser());
+  // Drawings are whole documents (a railway design can be a few MB); every other route keeps the 100 kB default.
+  // Nest adds no JSON parser of its own once one is registered, so both are registered here.
+  app.use("/api/projects/:id/drawings", json({ limit: "8mb" }));
+  app.use(json({ limit: "100kb" }));
 }

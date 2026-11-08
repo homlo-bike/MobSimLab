@@ -25,6 +25,8 @@ Instead:
 - **Scenarios as branches:** each team member can work in their own scenario; differences are shown as a diff layer and list; changes can be cherry-picked into another scenario or promoted to base.
 - **Comments and mentions:** threads on any object or map location; mentions notify (in-app; e-mail optional via SMTP config).
 
+**Drawings (v1).** Until the network is stored object by object, what the editors draw is saved as one JSON document per project and kind in `project.drawing` (migration 0005): `street-lines`, `railway` and `street-setups` (GIS tab). `GET /api/projects/:id/drawings` returns them all; `PUT /api/projects/:id/drawings/:kind` with `{ doc, baseVersion }` replaces one and returns the new `version`, or 409 with the current drawing when `baseVersion` is stale. The web app saves 0.8 s after the last change, one save per kind at a time, retries lost connections with back-off, and on 409 shows a banner to keep one's own drawing or take the other one. Owners and Editors write; everyone who can read the project reads. The API checks each kind's outline (apps/api/src/projects/drawings.ts) and a size limit of 8 MB; saves are audited as `project.drawing_saved` with versions and size but not the document. Duplicating a project copies its drawings. A new editor adds a kind there and in `apps/web/src/projects/drawings.ts`.
+
 ### 1.3 Change history
 
 Because every write is audited (04 §3.4), each object has a full history view and **undo** for the user's own recent changes (implemented as compensating writes, also audited). Project-level "restore to point in time" creates a new scenario from the audit log state at that time.
