@@ -466,6 +466,54 @@ describe("Railway editor", () => {
     return { map, handlers, engine: () => engine! };
   }
 
+  it("opens the drawing saved with the project and reports each change for saving", async () => {
+    const [saved] = addStation(lineAcross("tram"), [0, 0], {
+      level: "street",
+      sides: 2,
+      islands: 0,
+      platformLength: 40,
+      name: "Old Town",
+    });
+    const onDocChange = vi.fn();
+    const { map } = fakeMap();
+    render(
+      <RailwayEditor
+        map={map}
+        fetchTile={() => Promise.reject(new Error("offline"))}
+        loadEngine={loadRailEngine}
+        initial={saved}
+        onDocChange={onDocChange}
+      />,
+    );
+    await waitFor(() => expect(map.fitBounds).toHaveBeenCalledTimes(1));
+    expect(screen.getAllByText(/Old Town/).length).toBeGreaterThan(0);
+    expect(onDocChange).toHaveBeenLastCalledWith(saved);
+    fireEvent.click(screen.getByRole("button", { name: "Clear" }));
+    expect(onDocChange).toHaveBeenLastCalledWith(expect.objectContaining({ stations: [], tracks: [] }));
+  });
+
+  it("saves a new drawing only once something is drawn", async () => {
+    const onDocChange = vi.fn();
+    const { map, handlers } = fakeMap();
+    render(
+      <RailwayEditor
+        map={map}
+        fetchTile={() => Promise.reject(new Error("offline"))}
+        loadEngine={loadRailEngine}
+        onDocChange={onDocChange}
+      />,
+    );
+    await waitFor(() => expect(screen.getByRole("button", { name: "Example" })).toBeTruthy());
+    expect(onDocChange).not.toHaveBeenCalled();
+    expect(map.fitBounds).not.toHaveBeenCalled();
+    act(() => handlers.get("click")!({ lngLat: { lng: ORIGIN[0], lat: ORIGIN[1] }, point: { x: 0, y: 0 } }));
+    await waitFor(() =>
+      expect(onDocChange).toHaveBeenLastCalledWith(
+        expect.objectContaining({ stations: [expect.anything()] }),
+      ),
+    );
+  });
+
   it("places a station where the planner clicks", async () => {
     const { handlers } = await opened();
     fireEvent.click(screen.getByRole("button", { name: "Clear" }));

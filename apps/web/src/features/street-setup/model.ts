@@ -150,7 +150,7 @@ export function priority(info: StreetInfo, e: Effective): "separated" | "painted
 
 const key = (projectId: string) => `mobsimlab.streetSetups.${projectId}`;
 
-/** Purpose: the project's street setups saved in this browser (empty when storage is unavailable). */
+/** Purpose: street setups an older release kept in this browser (empty when storage is unavailable). */
 export function loadSetups(projectId: string): StreetSetup[] {
   try {
     const raw = localStorage.getItem(key(projectId));
@@ -161,12 +161,12 @@ export function loadSetups(projectId: string): StreetSetup[] {
   }
 }
 
-/** Purpose: save the project's street setups in this browser. Side effects: localStorage, if available. */
-export function saveSetups(projectId: string, setups: readonly StreetSetup[]): void {
+/** Purpose: forget the street setups kept in this browser, once they are saved with the project. */
+export function forgetSetups(projectId: string): void {
   try {
-    localStorage.setItem(key(projectId), JSON.stringify(setups));
+    localStorage.removeItem(key(projectId));
   } catch {
-    // Private mode or storage blocked: the setups last for this session only.
+    // Storage blocked: nothing was kept.
   }
 }
 

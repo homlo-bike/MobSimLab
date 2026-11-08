@@ -72,18 +72,10 @@ const HINTS: Record<RailTool, string> = {
 
 const NO_SETUPS: readonly StreetSetup[] = [];
 
-/** The drawing survives closing and reopening the tool during the session. */
-let kept: Network | null = null;
-/** So does the last publication of its service lines, with the drawing it was made from. */
-let keptPublication: { result: ServicePublication | null; error: string | null; key: string } | null = null;
-
-/** Purpose: the timetable of the service lines published last this session, if any. */
-export function publishedTimetable(): Timetable | null {
-  return keptPublication?.result?.timetable ?? null;
-}
-
 /** Purpose: what a publication depends on: the drawing without its view-only parts. */
 const publishKey = (d: Network) => JSON.stringify(d);
+
+type Published = { result: ServicePublication | null; error: string | null; key: string };
 
 interface Props {
   /** The map; `null` until it has loaded. */
@@ -105,6 +97,10 @@ interface Props {
   existingRailways?: boolean;
   /** The planner's street setups from the GIS tab (tram own lane or mixed traffic…), over OSM. */
   streetSetups?: readonly StreetSetup[];
+  /** The drawing saved with the project, or null to start a new one at the map centre. */
+  initial?: Network | null;
+  /** Told about the drawing after every change, so the project can save it. */
+  onDocChange?: (doc: Network) => void;
   /** Called with the published service lines' timetable (`null` when withdrawn), for the journey planner. */
   onPublish?: (timetable: Timetable | null) => void;
 }
@@ -132,11 +128,13 @@ export function RailwayEditor({
   fetchRails = fetchRailTile,
   existingRailways = false,
   streetSetups = NO_SETUPS,
+  initial = null,
+  onDocChange,
   onPublish,
 }: Props) {
   const engine = useRef<RailEngine | null>(null);
   const [ready, setReady] = useState(false);
-  const [doc, setDoc] = useState<Network | null>(kept);
+  const [doc, setDoc] = useState<Network | null>(initial);
   const [draft, setDraft] = useState<Track | null>(null);
   const [cursor, setCursor] = useState<{ at: [number, number]; conn: ConnectionView | null } | null>(null);
   const [tool, setTool] = useState<RailTool>("station");
@@ -156,7 +154,7 @@ export function RailwayEditor({
   const [flash, setFlash] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [note, setNote] = useState<string | null>(null);
-  const [published, setPublished] = useState(keptPublication);
+  const [published, setPublished] = useState<Published | null>(null);
   const [picking, setPicking] = useState<string | null>(null);
 
   useEffect(() => {
@@ -289,8 +287,14 @@ export function RailwayEditor({
     const c = map.getCenter();
     setDoc(emptyNetwork("metro", [c.lng, c.lat]));
   }, [map, doc]);
+  // Save every change; an empty drawing only once something was drawn or saved before.
+  const docChanged = useRef(onDocChange);
+  docChanged.current = onDocChange;
+  const drawn = useRef(initial !== null);
   useEffect(() => {
-    kept = doc;
+    if (!doc) return;
+    drawn.current ||= doc.stations.length + doc.tracks.length + doc.switches.length > 0;
+    if (drawn.current) docChanged.current?.(doc);
   }, [doc]);
 
   const local = useCallback(
@@ -325,6 +329,21 @@ export function RailwayEditor({
   }, [ready, shown, streets]);
   const lastView = useRef<RailView | null>(null);
   if (view) lastView.current = view;
+
+  // A saved drawing opens with the map on it.
+  const framed = useRef(initial === null);
+  useEffect(() => {
+    if (framed.current || !map || !view) return;
+    framed.current = true;
+    if (view.bbox)
+      map.fitBounds(
+        [
+          [view.bbox[0], view.bbox[1]],
+          [view.bbox[2], view.bbox[3]],
+        ],
+        { padding: 60, duration: 0, maxZoom: 17 },
+      );
+  }, [map, view]);
 
   // Share the topology with the street line tool when the level crossings change (not while drawing).
   const topologyChanged = useRef(onTopologyChange);
@@ -873,7 +892,7 @@ export function RailwayEditor({
   const publish = () => {
     const e = engine.current;
     if (!e || !doc) return;
-    let next: NonNullable<typeof keptPublication>;
+    let next: Published;
     try {
       // The engine plans on its last build: build the drawing without a draft first.
       e.build(doc, null);
@@ -884,7 +903,6 @@ export function RailwayEditor({
       next = { result: null, error: err instanceof Error ? err.message : String(err), key: publishKey(doc) };
       onPublish?.(null);
     }
-    keptPublication = next;
     setPublished(next);
   };
   const publication: Publication | null = published

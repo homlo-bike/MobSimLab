@@ -197,6 +197,22 @@ export const de: Messages = {
   "project.notFoundHint": "Es wurde vielleicht gelöscht, oder Sie haben keinen Zugriff mehr.",
   "project.toHome": "Zurück zu den Projekten",
 
+  "save.saved": "Gespeichert",
+  "save.saving": "Wird gespeichert…",
+  "save.offline": "Noch nicht gespeichert · neuer Versuch läuft",
+  "save.failed": "Nicht gespeichert: {error}",
+  "save.conflict":
+    "{who} hat {drawing} gespeichert, während Sie daran gearbeitet haben. Welche Fassung soll das Projekt behalten?",
+  "save.someone": "Jemand anderes",
+  "save.keepMine": "Meine behalten",
+  "save.takeTheirs": "Die andere übernehmen",
+  "save.loadFailed": "Die Zeichnungen des Projekts wurden nicht geladen: {error}",
+  "save.retry": "Erneut versuchen",
+  "drawing.street-lines": "die Buslinie",
+  "drawing.railway": "die Bahnanlage",
+  "drawing.street-setups": "die Straßeneinstellungen",
+  "drawing.rail-timetable": "den Fahrplan der Bahnlinien",
+
   "tab.label": "Projekt",
   "tab.simulator": "Simulator",
   "tab.create": "Erstellen",
