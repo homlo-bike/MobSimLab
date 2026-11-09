@@ -16,7 +16,8 @@ use rail_design::existing::{nearest_on, rail_from_osm, ExistingRail};
 use rail_design::geom::{nearest, P2};
 use rail_design::proj::LocalTm;
 use rail_design::street::{street_from_osm, Street};
-use rail_design::{build_with_values, Design, Network, RailMode};
+use rail_design::terrain::Terrain;
+use rail_design::{build_with_terrain, Design, Network, RailMode};
 use std::collections::{BTreeMap, HashMap};
 use street_routing::osm::Tags;
 use street_routing::StreetSetup;
@@ -42,6 +43,7 @@ pub struct RailDesigner {
     rails: BTreeMap<i64, ExistingRail>,
     rail_list: Vec<ExistingRail>,
     values: BTreeMap<String, f64>,
+    terrain: Terrain,
 }
 
 impl Default for RailDesigner {
@@ -63,6 +65,7 @@ impl RailDesigner {
             rails: BTreeMap::new(),
             rail_list: Vec::new(),
             values: BTreeMap::new(),
+            terrain: Terrain::new(),
         }
     }
 
@@ -78,16 +81,45 @@ impl RailDesigner {
     /// `draft` is the id of a track still being drawn (0 for none).
     pub fn build(&mut self, doc: &str, draft: u32) -> Result<String, JsError> {
         let net: Network = serde_json::from_str(doc).map_err(js)?;
-        let d = build_with_values(
+        let d = build_with_terrain(
             &net,
             (draft != 0).then_some(draft),
             &self.street_list,
             &self.rail_list,
             &self.values,
+            &self.terrain,
         );
         let v = rail_design::view::view(&d);
         self.design = Some(d);
         Ok(v.to_string())
+    }
+
+    /// Purpose: the terrain tiles the last build needs and that are not loaded yet, as JSON
+    /// `[[x, y], ...]` (see `rail_design::terrain`); empty before the first build.
+    pub fn missing_terrain_tiles(&self) -> String {
+        let tiles = self.design.as_ref().map_or(vec![], |d| {
+            rail_design::terrain::missing_tiles(d, &self.terrain)
+        });
+        serde_json::to_string(&tiles).unwrap_or_else(|_| "[]".into())
+    }
+
+    /// Purpose: the grid points of a terrain tile to fetch heights for, as JSON `[[lon, lat], ...]`
+    /// in the order [`RailDesigner::add_terrain_tile`] expects the heights.
+    pub fn terrain_tile_points(x: i32, y: i32) -> String {
+        serde_json::to_string(&Terrain::tile_points(x, y)).unwrap_or_else(|_| "[]".into())
+    }
+
+    /// Purpose: add a terrain tile's heights (JSON list of metres or null, in the order of
+    /// [`RailDesigner::terrain_tile_points`]). Side effects: the next build gives the tracks
+    /// vertical profiles over it.
+    pub fn add_terrain_tile(&mut self, x: i32, y: i32, heights: &str) -> Result<(), JsError> {
+        let h: Vec<Option<f64>> = serde_json::from_str(heights).map_err(js)?;
+        self.terrain.add_tile(x, y, &h).map_err(js)
+    }
+
+    /// Purpose: forget all terrain tiles. Side effects: the next build uses flat ground.
+    pub fn clear_terrain(&mut self) {
+        self.terrain.clear();
     }
 
     /// Purpose: add the streets of one OSM XML tile, for level crossings. A way already known is

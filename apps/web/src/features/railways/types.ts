@@ -301,6 +301,20 @@ export interface TrackView {
   centre: LonLat[];
   /** Tram track embedded in paving (the noise estimate adds the embedded-track correction). */
   embedded?: boolean;
+  /** Vertical profile from the terrain heights; absent or null until they have loaded. */
+  elevation?: TrackElevation | null;
+}
+
+/** A track's heights in metres above sea level (EGM2008 geoid). */
+export interface TrackElevation {
+  rail_min_m: number;
+  rail_max_m: number;
+  /** Steepest gradient, ‰, positive rising along the track. */
+  steepest_permille: number;
+  /** The mode's maximum gradient, ‰. */
+  max_permille: number;
+  /** [chainage m, smoothed ground m, rail top m], at most about 200 points. */
+  profile: [number, number, number][];
 }
 
 export interface StationView {
@@ -314,6 +328,8 @@ export interface StationView {
   platform_height_mm: number;
   lonlat: LonLat;
   mode: RailMode;
+  /** The station's level rail top and the ground along it, m above sea level; absent or null without terrain. */
+  height?: { rail_m: number; ground_min_m: number; ground_max_m: number } | null;
 }
 
 export interface SwitchView {
@@ -531,6 +547,12 @@ export interface RailEngine {
   addRailTile(xml: string): number;
   /** Forget all existing railways. */
   clearRails(): void;
+  /** Terrain tiles the last build needs and that are not loaded yet, as [x, y]. */
+  missingTerrainTiles?(): [number, number][];
+  /** The grid points of a terrain tile, as [lon, lat], in the order `addTerrainTile` expects. */
+  terrainTilePoints?(x: number, y: number): LonLat[];
+  /** Add a terrain tile's heights (m, null without data); the next build gives the tracks their profiles. */
+  addTerrainTile?(x: number, y: number, heights: (number | null)[]): void;
   /** The nearest point on an existing railway within `maxM`, to snap a track end onto. */
   existingSnap(at: LonLat, maxM: number): ExistingSnap | null;
   /** Applies the planner's street setups from the GIS tab; the next build uses them. */

@@ -876,6 +876,51 @@
       sources: [mobsimlab-derivation]
       check: unverified
       rationale: A bicycle wheel crossing the rails at a flat angle can drop into the flangeway gap or the tram rail's groove and the rider falls; cycle guidance asks for crossings near a right angle and treats flatter than about 60° as a hazard that needs the path realigned. To be confirmed against national cycle design guidance.
+- key: terrain.smoothing_window_m
+  label: "Terrain: window over which the ground under a track is smoothed"
+  group: Infrastructure standards
+  unit: m
+  used_by: [railway design vertical profile of each track from the terrain heights]
+  values:
+    - context:
+        mode: "*"
+      low: 60
+      central: 100
+      high: 200
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: The terrain heights come from Copernicus GLO-30, a surface model on a 30 m grid that includes buildings and trees, with a few metres of vertical noise. A running median over 100 m takes out anything narrower than about 50 m (a building or a row of trees the line passes), and a running mean over the same window the remaining noise. The window is short against the length of a vertical curve (several hundred metres at 2,000 m radius), so real changes of slope stay in the profile. A wider window hides more noise and more of the real ground.
+- key: terrain.tie_in_gradient_share
+  label: "Terrain: share of the maximum gradient a track uses to meet a level station or a switch"
+  group: Infrastructure standards
+  unit: share
+  used_by: [railway design vertical profile where a track meets a level station or a switch]
+  values:
+    - context:
+        mode: "*"
+      low: 0.25
+      central: 0.5
+      high: 1.0
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: Stations are built level, so a track leaving one on sloping ground has to take up the difference between the station's height and the ground beside it. Using half the mode's maximum gradient for this leaves the other half for the slope of the ground the change runs over, so a tie-in alone does not push the track past the maximum. A larger share gives shorter tie-ins but steeper track next to the station.
+- key: terrain.street_level_tolerance_m
+  label: "Terrain: largest height difference between street-level track and the ground"
+  group: Infrastructure standards
+  unit: m
+  used_by: [railway design check of street-level track and stations on sloping ground]
+  values:
+    - context:
+        mode: "*"
+      low: 0.3
+      central: 1.0
+      high: 2.0
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: Street-level track sits in or next to the road surface. Up to about a metre of difference can be taken up by regrading the street and the footways beside it (a kerb is 0.1–0.2 m, a ramp at 6 % covers a metre over about 17 m). Beyond that the street, its junctions and its entrances need to be rebuilt, which the planner should see. Also used for a street-level station, where the ground may fall twice this along the platforms.
 - key: level_crossing.reopen_s
   label: "Level crossings: time from the train clearing the crossing until road traffic may go again"
   group: Infrastructure standards
