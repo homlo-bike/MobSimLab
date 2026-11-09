@@ -335,6 +335,51 @@
       check: unverified
       rationale: "First-order façade reflections are usual CNOSSOS mapping practice."
 
+- key: noise.reflection_max_distance_m
+  label: "Farthest facade that reflects onto a receiver (full map)"
+  group: Noise
+  unit: m
+  used_by: [noise map (full propagation)]
+  values:
+    - context: { mode: "*" }
+      low: 25
+      central: 50
+      high: 100
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: "First-order reflections are searched on the facades within this distance of each map receiver. 50 m covers the opposite side of most urban streets and squares; a farther facade adds little next to the direct sound, and a wider search slows the map down."
+
+- key: noise.facade_reflection_coefficient
+  label: "Share of sound energy a facade reflects"
+  group: Noise
+  unit: "-"
+  used_by: [noise map (full propagation)]
+  values:
+    - context: { mode: "*" }
+      low: 0.4
+      central: 0.8
+      high: 1.0
+      basis: documented
+      sources: [iso-9613-2]
+      check: unverified
+      rationale: "ISO 9613-2 Table 4 gives 1 for flat hard walls without openings, 0.8 for walls of buildings with windows and small additions or bays, and 0.4 for factory walls with half the surface openings, installations or pipes. 0.8 (a reflection loss of about 1 dB) stands for ordinary building facades."
+
+- key: noise.terrain_filter_window_m
+  label: "Width of what is taken out of the surface model as not ground"
+  group: Noise
+  unit: m
+  used_by: [noise map (full propagation)]
+  values:
+    - context: { mode: "*" }
+      low: 30
+      central: 60
+      high: 120
+      basis: educated-guess
+      sources: [zhang-2003-pmf, copernicus-glo30]
+      check: unverified
+      rationale: "Copernicus GLO-30 is a surface model with roofs and tree tops. Samples inside OSM buildings are dropped, then a morphological opening over this window (Zhang et al. 2003) removes anything narrower that stands above its surroundings: other buildings, tree rows, bridges. Hills and embankments wider than the window stay. Too narrow a window keeps large buildings and woods as terrain; too wide flattens small hills."
+
 - key: noise.building_level_height_m
   label: "Storey height for buildings without a height"
   group: Noise

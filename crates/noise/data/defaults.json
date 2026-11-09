@@ -218,6 +218,27 @@
     2
    ]
   },
+  "noise.reflection_max_distance_m": {
+   "*": [
+    25,
+    50,
+    100
+   ]
+  },
+  "noise.facade_reflection_coefficient": {
+   "*": [
+    0.4,
+    0.8,
+    1.0
+   ]
+  },
+  "noise.terrain_filter_window_m": {
+   "*": [
+    30,
+    60,
+    120
+   ]
+  },
   "noise.building_level_height_m": {
    "*": [
     2.8,

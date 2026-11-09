@@ -68,6 +68,11 @@ fn project(mut input: EstimateInput) -> (EstimateInput, Option<Proj>) {
     for b in &mut input.buildings {
         b.ring.iter_mut().for_each(|p| *p = proj.local(*p));
     }
+    // The terrain grid comes in degrees; the projection is linear in each, so it stays a grid.
+    if let Some(t) = &mut input.terrain {
+        let [x0, y0] = proj.local([t.x0, t.y0]);
+        (t.x0, t.y0, t.dx, t.dy) = (x0, y0, t.dx * proj.kx, t.dy * proj.ky);
+    }
     (input, Some(proj))
 }
 
@@ -91,6 +96,7 @@ fn to_json(e: &Estimate, proj: Option<Proj>) -> Value {
         "buildings": exposure(&e.building_levels),
         "building_levels": e.building_levels.iter().map(|l| l.map(|x| if x.is_finite() { Some((x * 10.0).round() / 10.0) } else { None })).collect::<Vec<_>>(),
         "input_level": e.input_level,
+        "terrain": e.terrain,
     })
 }
 
@@ -143,8 +149,9 @@ impl NoiseEstimator {
     }
 
     /// Purpose: estimate the noise of the drawn lines.
-    /// Inputs: `noise::EstimateInput` as JSON with `points` and point source `p` in
-    /// `[lon, lat]`. Output: JSON `{lden, lnight, checks, image, input_level}` (see `to_json`).
+    /// Inputs: `noise::EstimateInput` as JSON with `points`, point source `p` and building rings in
+    /// `[lon, lat]`, and the terrain grid's corner (`x0` longitude, `y0` latitude) and spacing
+    /// (`dx`, `dy`) in degrees. Output: JSON `{lden, lnight, checks, image, input_level}` (see `to_json`).
     /// Side effects: keeps the result for [`NoiseEstimator::image`].
     pub fn estimate(&mut self, input: &str) -> Result<String, JsError> {
         let input: EstimateInput = serde_json::from_str(input).map_err(js)?;
@@ -211,6 +218,50 @@ mod tests {
         assert!(img["coordinates"][0][0].as_f64().unwrap() < 4.35);
         assert!(NoiseEstimator::defaults().contains("noise.rail_track_transfer"));
         assert!(v["buildings"].is_null());
+    }
+
+    #[test]
+    fn terrain_in_degrees_screens_the_map() {
+        // A 10 m high ridge 50 to 130 m north of a tram line, in a 0.0002° grid.
+        let (lat, dlat) = (50.85, 1.0 / 111_195.0);
+        let (nx, ny) = (80, 40);
+        let z: Vec<f64> = (0..ny)
+            .flat_map(|j| {
+                let y = -50.0 + j as f64 * 0.0002 / dlat;
+                (0..nx).map(move |_| {
+                    if (50.0..=130.0).contains(&y) {
+                        10.0
+                    } else {
+                        0.0
+                    }
+                })
+            })
+            .collect();
+        let line = json!({"id": "a", "mode": "tram", "vehicle_length_m": 30,
+            "flows": {"day": 24, "evening": 16, "night": 4}, "speed_kmh": 40,
+            "points": [[4.35, lat], [4.358, lat]]});
+        let terrain = json!({"x0": 4.349, "y0": lat - 50.0 * dlat, "dx": 0.0002, "dy": 0.0002,
+            "nx": nx, "ny": ny, "z": z});
+        // A house 160 m north, behind the ridge.
+        let y = lat + 160.0 * dlat;
+        let house = json!({"ring": [[4.354, y], [4.35406, y], [4.35406, y + 4.0 * dlat], [4.354, y + 4.0 * dlat]], "height_m": 8});
+        let mut n = NoiseEstimator::new();
+        let mut run = |t: Value| -> Value {
+            let input = json!({"lines": [line.clone()], "grid_reach_m": 250, "terrain": t,
+                "buildings": [house.clone()]});
+            serde_json::from_str(&n.estimate(&input.to_string()).unwrap()).unwrap()
+        };
+        let flat = run(Value::Null);
+        let hilly = run(terrain);
+        assert_eq!(flat["terrain"], false);
+        assert_eq!(hilly["terrain"], true);
+        let level = |v: &Value| v["building_levels"][0][0].as_f64().unwrap();
+        assert!(
+            level(&flat) - level(&hilly) > 5.0,
+            "{} {}",
+            level(&flat),
+            level(&hilly)
+        );
     }
 
     #[test]

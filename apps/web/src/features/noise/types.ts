@@ -53,6 +53,21 @@ export interface NoiseBuilding {
   levels?: number;
 }
 
+/**
+ * Ground heights on a regular grid (Copernicus GLO-30 through the terrain API): south-west sample
+ * `x0` longitude, `y0` latitude, spacing `dx`, `dy` in degrees, heights row by row from the
+ * south-west, longitude fastest; null where there is no data.
+ */
+export interface NoiseTerrain {
+  x0: number;
+  y0: number;
+  dx: number;
+  dy: number;
+  nx: number;
+  ny: number;
+  z: (number | null)[];
+}
+
 export interface NoiseInput {
   lines: NoiseLine[];
   grid?: boolean;
@@ -61,6 +76,8 @@ export interface NoiseInput {
   overrides?: Record<string, number>;
   /** Buildings that screen the map (GIS tab noise map). */
   buildings?: NoiseBuilding[];
+  /** Ground heights the map stands on (GIS tab noise map). */
+  terrain?: NoiseTerrain | null;
 }
 
 /** Buildings counted by the reporting band (Directive 2002/49/EC Annex VI) of their most exposed side. */
@@ -104,6 +121,8 @@ export interface NoiseView {
   buildings?: NoiseExposure | null;
   /** `[L_den, L_night]` beside each input building, null where the map does not reach. */
   building_levels?: [number | null, number | null][];
+  /** Whether terrain heights shaped the map (flat ground leaves it false). */
+  terrain?: boolean;
 }
 
 /** The noise engine (WebAssembly), injectable for tests. */
