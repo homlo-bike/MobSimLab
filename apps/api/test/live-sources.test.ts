@@ -59,8 +59,12 @@ describe.skipIf(!live)("live: OpenStreetMap through Overpass", () => {
     "finds the cathedral under a line across it, with a real height",
     async () => {
       const json = await overpass.run(buildingQuery(ACROSS_CATHEDRAL));
+      const parsed = JSON.parse(json) as { remark?: string; elements?: Array<{ type: string; id: number }> };
+      const seen = (parsed.elements ?? []).map((e) => `${e.type}/${e.id}`).join(", ");
       const found = crossings(ACROSS_CATHEDRAL, json);
-      expect(found.length).toBeGreaterThan(0);
+      expect(found.length, `Overpass returned [${seen}]; remark: ${parsed.remark ?? "none"}`).toBeGreaterThan(
+        0,
+      );
       const tallest = found.reduce((a, b) => (b.heightM > a.heightM ? b : a));
       expect(tallest.heightM).toBeGreaterThan(100);
       expect(tallest.estimated).toBe(false);

@@ -1,3 +1,4 @@
+import { OverpassError } from "../gateway/overpass.client";
 import type { LonLat } from "./terrain.service";
 
 /**
@@ -134,7 +135,10 @@ export function crossings(
   bufferM = BUILDING_BUFFER_M,
 ): BuildingCrossing[] {
   if (line.length < 2) return [];
-  const parsed = JSON.parse(overpassJson) as { elements?: OverpassElement[] };
+  const parsed = JSON.parse(overpassJson) as { elements?: OverpassElement[]; remark?: string };
+  // Overpass answers 200 with a remark when a query ran out of time or memory: the list is incomplete.
+  if (parsed.remark && /error/i.test(parsed.remark))
+    throw new OverpassError(`Overpass: ${parsed.remark}`, 502);
   const proj = projector(line[0]!);
   const pts = line.map(proj);
   // Positions along the line every STEP_M metres.
