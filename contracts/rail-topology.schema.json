@@ -680,7 +680,7 @@
     "signal": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "section", "chainage_m", "facing", "kind", "overlap_m", "lineside"],
+      "required": ["id", "section", "chainage_m", "facing", "kind", "overlap_m", "lineside", "speed_kmh"],
       "properties": {
         "id": {
           "type": "string",
@@ -693,11 +693,19 @@
           "enum": ["to", "from"],
           "description": "Direction of travel the signal governs: towards the section's to node, or towards its from node."
         },
-        "kind": { "enum": ["main", "block", "shunting", "distant"] },
+        "kind": {
+          "enum": ["main", "block", "shunting", "distant", "speed", "speed_warning"],
+          "description": "main, block and shunting signals bound routes and blocks; distant signals announce a main signal; speed signals show the line speed from where it drops, speed_warning announces one. Distant and speed signals are passed without stopping."
+        },
         "overlap_m": {
           "type": ["number", "null"],
           "minimum": 0,
-          "description": "Overlap beyond the signal; null where trains drive on sight."
+          "description": "Overlap beyond the signal; null where trains drive on sight, and for distant and speed signals."
+        },
+        "speed_kmh": {
+          "type": ["number", "null"],
+          "exclusiveMinimum": 0,
+          "description": "Speed shown by a speed signal, or announced by a speed warning; null for other kinds."
         },
         "lineside": {
           "type": "boolean",
