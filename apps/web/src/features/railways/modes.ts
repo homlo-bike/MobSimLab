@@ -58,6 +58,7 @@ export const COLORS = {
   signalShunt: "#f8fafc",
   signalDistant: "#eab308",
   signalMarker: "#2563eb",
+  signalSpeed: "#0891b2",
   signalPost: "#1e293b",
 };
 

@@ -63,13 +63,13 @@
       "items": { "$ref": "#/$defs/existing_join" }
     },
     "signals": {
-      "description": "Signals (ADR-0030 point 7): the planner's signal plan, or one generated from the design while the document has none.",
+      "description": "Signals (ADR-0030 point 7): generated from the design, with the planner's own signals and removals on top.",
       "type": "array",
       "items": { "$ref": "#/$defs/signal" }
     },
     "signals_generated": {
       "type": "boolean",
-      "description": "true: the signals were generated on the fly; false: they are the planner's plan."
+      "description": "true: the signals are the generated plan; false: the planner added, changed or removed signals."
     }
   },
   "$defs": {
@@ -155,6 +155,7 @@
         "speed_kmh",
         "gradient_permille",
         "radius_m",
+        "traffic_delay_share",
         "platform_edges",
         "geometry"
       ],
@@ -215,6 +216,11 @@
           "items": { "$ref": "#/$defs/range_number" }
         },
         "radius_m": { "type": "array", "items": { "$ref": "#/$defs/range_number" } },
+        "traffic_delay_share": {
+          "description": "Expected extra running time in street traffic, as a share of the running time at the permitted speed (street.mixed_traffic_delay_share in a main road's traffic, street.bus_lane_delay_share in a painted own lane). Only stretches with a delay.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/range_number" }
+        },
         "platform_edges": { "type": "array", "items": { "type": "string" } },
         "geometry": { "type": "array", "items": { "$ref": "#/$defs/point" }, "minItems": 2 }
       }
@@ -674,12 +680,12 @@
     "signal": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "section", "chainage_m", "facing", "kind", "overlap_m", "lineside"],
+      "required": ["id", "section", "chainage_m", "facing", "kind", "overlap_m", "lineside", "speed_kmh"],
       "properties": {
         "id": {
           "type": "string",
           "pattern": "^(sg|g)\\d+$",
-          "description": "sg{document id} for a planned signal, g{n} for a generated one (not stable between exports)."
+          "description": "sg{document id} for a signal of the planner's, g{n} for a generated one (not stable between exports)."
         },
         "section": { "$ref": "#/$defs/section_id" },
         "chainage_m": { "$ref": "#/$defs/metres", "description": "Offset from the section's from node." },
@@ -687,11 +693,19 @@
           "enum": ["to", "from"],
           "description": "Direction of travel the signal governs: towards the section's to node, or towards its from node."
         },
-        "kind": { "enum": ["main", "block", "shunting", "distant"] },
+        "kind": {
+          "enum": ["main", "block", "shunting", "distant", "speed", "speed_warning"],
+          "description": "main, block and shunting signals bound routes and blocks; distant signals announce a main signal; speed signals show the line speed from where it drops, speed_warning announces one. Distant and speed signals are passed without stopping."
+        },
         "overlap_m": {
           "type": ["number", "null"],
           "minimum": 0,
-          "description": "Overlap beyond the signal; null where trains drive on sight."
+          "description": "Overlap beyond the signal; null where trains drive on sight, and for distant and speed signals."
+        },
+        "speed_kmh": {
+          "type": ["number", "null"],
+          "exclusiveMinimum": 0,
+          "description": "Speed shown by a speed signal, or announced by a speed warning; null for other kinds."
         },
         "lineside": {
           "type": "boolean",

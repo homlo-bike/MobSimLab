@@ -222,9 +222,34 @@ pub fn apply_setups(data: &mut OsmData, setups: &[StreetSetup]) {
     }
 }
 
+/// The expected delay in traffic, as shares of the free-flow running time. A project can change
+/// both in its preferences; the defaults are the assumption library's central values.
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
+#[serde(default)]
+pub struct DelayShares {
+    /// In the general traffic of a main road (`street.mixed_traffic_delay_share`).
+    pub mixed_traffic: f64,
+    /// In a painted bus or tram lane (`street.bus_lane_delay_share`).
+    pub bus_lane: f64,
+}
+
+impl Default for DelayShares {
+    fn default() -> Self {
+        Self {
+            mixed_traffic: MIXED_TRAFFIC_DELAY_SHARE,
+            bus_lane: BUS_LANE_DELAY_SHARE,
+        }
+    }
+}
+
 /// Purpose: the share of extra running time a bus loses on a road (0 off main roads, in a
-/// separated bus lane or on a busway).
+/// separated bus lane or on a busway), with the library's default delays.
 pub fn delay_share(tags: &Tags) -> f64 {
+    delay_share_with(tags, &DelayShares::default())
+}
+
+/// Purpose: as [`delay_share`], with the project's delays.
+pub fn delay_share_with(tags: &Tags, d: &DelayShares) -> f64 {
     let class = tags.get("highway").map_or("", String::as_str);
     if !main_road(class) {
         return 0.0;
@@ -233,10 +258,10 @@ pub fn delay_share(tags: &Tags) -> f64 {
         if separated(tags) {
             0.0
         } else {
-            BUS_LANE_DELAY_SHARE
+            d.bus_lane.max(0.0)
         }
     } else {
-        MIXED_TRAFFIC_DELAY_SHARE
+        d.mixed_traffic.max(0.0)
     }
 }
 
@@ -386,6 +411,11 @@ mod tests {
         assert_eq!(delay_share(&t), MIXED_TRAFFIC_DELAY_SHARE);
         let t = tags(&[("highway", "secondary"), ("busway", "lane")]);
         assert_eq!(delay_share(&t), BUS_LANE_DELAY_SHARE);
+        let project = DelayShares {
+            mixed_traffic: 0.4,
+            bus_lane: 0.1,
+        };
+        assert_eq!(delay_share_with(&t, &project), 0.1);
         let t = tags(&[("highway", "residential")]);
         assert_eq!(delay_share(&t), 0.0);
     }

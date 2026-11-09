@@ -1,6 +1,7 @@
-import { update, updateSignal } from "./doc";
+import { signalById, update, updateSignal } from "./doc";
 import { COLORS, fmtM, fmtTime, LEVEL_LABEL, LEVELS, POWER, RAIL_MODES } from "./modes";
 import type { Selection } from "./RailwayEditor";
+import { type Publication, ServiceLinesPanel } from "./ServiceLinesPanel";
 import type {
   Level,
   LonLat,
@@ -20,7 +21,7 @@ import type {
 } from "./types";
 
 /** Railway editing tools, as in the mockup. */
-export type RailTool = "select" | "station" | "track" | "turnout" | "crossover" | "signal" | "pan";
+export type RailTool = "select" | "station" | "track" | "turnout" | "crossover" | "signal" | "pan" | "line";
 
 /** Settings for the next track drawn. */
 export interface NewTrackOpts {
@@ -56,17 +57,13 @@ export interface RailPanelActions {
   cancelDraft: () => void;
   remove: (id: number) => void;
   setMode: (m: RailMode) => void;
-  example: () => void;
   clear: () => void;
   showIssue: (at: LonLat | null, ref: number | null) => void;
   /** Rename a station and the stations next to it; a name used farther away gets a number. */
   renameStation: (id: number, name: string) => void;
   fit: () => void;
-  downloadTopology: () => void;
-  /** Replace the signal plan with one generated from the design. */
-  generateSignals: () => void;
-  /** Drop the signal plan (operations then gets generated signals again). */
-  clearSignals: () => void;
+  /** Drop the planner's signal changes, so the plan is the generated one again. */
+  resetSignals: () => void;
 }
 
 interface Props {
@@ -88,6 +85,15 @@ interface Props {
   noise?: React.ReactNode;
   /** Checks from plugins (noise), added after the design's own. */
   extraIssues?: IssueView[];
+  /** Service lines: the last publication, publishing, and picking stops on the map. */
+  service: {
+    publication: Publication | null;
+    publish: () => void;
+    picking: string | null;
+    setPicking: (id: string | null) => void;
+    /** Start a new line and pick its stations on the map. */
+    newLine: () => void;
+  };
 }
 
 const CHIP: Record<Severity, string> = {
@@ -105,7 +111,7 @@ const VERTEX: Record<string, string> = {
 const field = "rounded border border-slate-300 bg-slate-50 px-2 py-1";
 const input = `${field} min-w-0 max-w-56`;
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+export function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="flex flex-col gap-2 border-t border-slate-200 pt-3">
       <h3 className="text-xs font-semibold tracking-wider text-slate-500 uppercase">{title}</h3>
@@ -123,7 +129,7 @@ function Stat({ value, label }: { value: string; label: string }) {
   );
 }
 
-function Row({ label, children }: { label: string; children: React.ReactNode }) {
+export function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="flex items-center justify-between gap-2">
       <span className="text-slate-700">{label}</span>
@@ -132,7 +138,7 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
   );
 }
 
-function Num({
+export function Num({
   value,
   onChange,
   unit,
@@ -215,7 +221,7 @@ export function RailPanel(props: Props) {
         ? "track"
         : doc.switches.some((s) => s.id === sel.id)
           ? "switch"
-          : doc.signals?.some((s) => s.id === sel.id)
+          : signalById(doc, sel.id, view.signals)
             ? "signal"
             : null
     : null;
@@ -248,13 +254,6 @@ export function RailPanel(props: Props) {
       </div>
       {props.noise}
       <div className="flex gap-2">
-        <button
-          type="button"
-          onClick={a.example}
-          className="flex-1 rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
-        >
-          Example
-        </button>
         <button
           type="button"
           onClick={a.fit}
@@ -406,61 +405,28 @@ export function RailPanel(props: Props) {
       {kind === "switch" && sel && (
         <SwitchInspector sw={doc.switches.find((s) => s.id === sel.id)!} {...props} />
       )}
-      {kind === "signal" && sel && (
-        <SignalInspector sg={doc.signals!.find((s) => s.id === sel.id)!} {...props} />
-      )}
+      {kind === "signal" && sel && <SignalInspector sg={signalById(doc, sel.id, view.signals)!} {...props} />}
 
-      <Section title="Trains">
-        <Row label={`Train length (${p.label})`}>
-          <Num
-            label="Train length"
-            unit="m"
-            value={view.train_length_m}
-            onChange={(v) => a.setDoc({ ...doc, train_length_m: v || null })}
-          />
-        </Row>
-      </Section>
+      <ServiceLinesPanel doc={doc} view={view} setDoc={a.setDoc} show={a.showIssue} {...props.service} />
 
-      <Section title="Operations">
+      <Section title={view.signals.length ? `Signals · ${view.signals.length}` : "Signals"}>
         <p className="text-xs text-slate-600">
-          The track graph for timetables and train control: sections, allowed movements, switches, platform
-          edges, crossings, level crossings and depot groups.
+          {view.signals.length
+            ? `${signalSummary(view.signals)}. They are generated from the design and follow it as it changes. Click a signal to change or delete it, or use the Signal tool to add one; each change is checked.`
+            : "Signals are generated from the design: at switches, crossings, platform ends and on plain line at line speed."}
         </p>
-        <button
-          type="button"
-          onClick={a.downloadTopology}
-          disabled={view.tracks.length === 0}
-          className="rounded border border-slate-300 px-2 py-1 hover:bg-slate-100 disabled:opacity-40"
-        >
-          Download track topology (JSON){view.counts.errors > 0 ? " · has errors" : ""}
-        </button>
-      </Section>
-
-      <Section title={view.signals_planned ? `Signals · ${view.signals.length}` : "Signals"}>
-        <p className="text-xs text-slate-600">
-          {view.signals_planned
-            ? `${signalSummary(view.signals)}. Click a signal to change it, or use the Signal tool to add one.`
-            : "No signal plan yet: railway operations gets signals generated from the design (switches, crossings, platform ends and block sections at line speed). Generate them to see and edit them."}
-        </p>
-        <div className="flex gap-2">
-          <button
-            type="button"
-            onClick={a.generateSignals}
-            disabled={view.tracks.length === 0}
-            className="flex-1 rounded border border-slate-300 px-2 py-1 hover:bg-slate-100 disabled:opacity-40"
-          >
-            {view.signals_planned ? "Generate again" : "Generate signals"}
-          </button>
-          {view.signals_planned && (
+        {view.signals_edited && (
+          <>
+            <p className="text-xs text-slate-600">{signalEdits(view)}</p>
             <button
               type="button"
-              onClick={a.clearSignals}
-              className="flex-1 rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
+              onClick={a.resetSignals}
+              className="rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
             >
-              Remove plan
+              Reset to generated signals
             </button>
-          )}
-        </div>
+          </>
+        )}
       </Section>
 
       {props.existingRailways && (
@@ -588,6 +554,8 @@ const SIGNAL_KINDS: { id: SignalKind; label: string }[] = [
   { id: "block", label: "Block signal" },
   { id: "shunting", label: "Shunting signal" },
   { id: "distant", label: "Distant signal" },
+  { id: "speed", label: "Speed signal" },
+  { id: "speed_warning", label: "Speed warning" },
 ];
 
 /** Purpose: counts of the plan's signals by kind, for the panel. */
@@ -600,14 +568,27 @@ function signalSummary(list: RailView["signals"]): string {
     markers ? `${markers} block markers (cab signalling)` : "",
     n("shunting") ? `${n("shunting")} shunting` : "",
     n("distant") ? `${n("distant")} distant` : "",
+    n("speed") ? `${n("speed")} speed` : "",
+    n("speed_warning") ? `${n("speed_warning")} speed warnings` : "",
   ];
   return parts.filter(Boolean).join(" · ");
 }
 
+/** Purpose: the planner's changes to the generated signals in a sentence. */
+function signalEdits(view: RailView): string {
+  const own = view.signals.filter((s) => !s.auto).length;
+  const parts = [
+    own ? `${own} of yours` : "",
+    view.signals_removed ? `${view.signals_removed} generated removed or replaced` : "",
+  ].filter(Boolean);
+  return parts.length ? `Your changes: ${parts.join(", ")}.` : "";
+}
+
 /** Purpose: inspector of one signal: kind, name, direction it governs, delete. */
 function SignalInspector({ sg, doc, view, actions: a }: Props & { sg: Signal }) {
-  const set = (f: (x: Signal) => Signal) => a.setDoc(updateSignal(doc, sg.id, f));
+  const set = (f: (x: Signal) => Signal) => a.setDoc(updateSignal(doc, sg.id, f, view.signals));
   const sv = view.signals.find((x) => x.id === sg.id);
+  const notes = view.issues.filter((i) => i.ref_id === sg.id);
   const where =
     sg.at.type === "track"
       ? `on track ${sg.at.track} at ${fmtM(sg.at.s)}`
@@ -620,7 +601,16 @@ function SignalInspector({ sg, doc, view, actions: a }: Props & { sg: Signal }) 
         {where}
         {sv && !sv.lineside ? " · block marker (cab signalling)" : ""}
         {!sv ? " · no longer on a track" : ""}
+        {sv?.auto ? " · generated from the design" : " · yours"}
       </p>
+      {notes.map((i, k) => (
+        <p
+          key={k}
+          className={`text-xs ${i.severity === "error" ? "text-red-700" : i.severity === "warning" ? "text-amber-700" : "text-slate-600"}`}
+        >
+          {i.text}
+        </p>
+      ))}
       <Row label="Kind">
         <select
           value={sg.kind}
@@ -634,6 +624,21 @@ function SignalInspector({ sg, doc, view, actions: a }: Props & { sg: Signal }) 
           ))}
         </select>
       </Row>
+      {(sg.kind === "speed" || sg.kind === "speed_warning") && (
+        <Row label="Speed (km/h)">
+          <input
+            aria-label="Signal speed"
+            type="number"
+            min={5}
+            step={5}
+            value={sg.speed_kmh ?? ""}
+            onChange={(e) =>
+              set((x) => ({ ...x, speed_kmh: e.target.value ? Number(e.target.value) : null }))
+            }
+            className={input}
+          />
+        </Row>
+      )}
       <Row label="Name">
         <input
           aria-label="Signal name"

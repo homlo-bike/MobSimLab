@@ -28,6 +28,7 @@ import type { Flows, Indicator, NoiseEngineLoader } from "../noise/types";
 import { useNoise } from "../noise/useNoise";
 import { loadWasmNoise } from "../noise/engine";
 import type {
+  DelayShares,
   EngineLoader,
   LineView,
   LonLat,
@@ -89,6 +90,8 @@ interface Props {
   railTopology?: unknown;
   /** The planner's street setups from the GIS tab (bus lanes, separation…), over OSM. */
   streetSetups?: readonly StreetSetup[];
+  /** The project's delays in traffic (Project preferences); the library's when absent. */
+  delays?: DelayShares | null;
   /** The line saved with the project; its points are routed again once the streets around it have loaded. */
   initial?: SavedStreetLine | null;
   /** Told about the line after every change the planner makes, so the project can save it. */
@@ -121,6 +124,7 @@ export function StreetLineEditor({
   onLineChange,
   railTopology = null,
   streetSetups = NO_SETUPS,
+  delays = null,
   initial = null,
   onSave,
   loadNoise = loadWasmNoise,
@@ -237,6 +241,13 @@ export function StreetLineEditor({
     if (!profile) return;
     run((e) => e.setStreetSetups(JSON.parse(setupsJson) as StreetSetup[]));
   }, [setupsJson, profile !== null, run]);
+
+  // The project's delays in traffic: running times on main roads and in painted bus lanes.
+  const delaysJson = delays ? JSON.stringify(delays) : "";
+  useEffect(() => {
+    if (!profile || !delaysJson) return;
+    run((e) => (e.setDelayShares ? e.setDelayShares(JSON.parse(delaysJson) as DelayShares) : e.view()));
+  }, [delaysJson, profile !== null, run]);
 
   // Streets: load the tiles on screen whenever the map stops moving, then rebuild once per batch.
   const tiles = useRef(new Set<string>());

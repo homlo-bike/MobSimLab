@@ -105,6 +105,10 @@ pub struct TrackSpec {
     /// Gradient ranges as rise over run in the `Up` direction (0.01 = 1 % up).
     #[serde(default)]
     pub gradient_ranges: Vec<Range>,
+    /// Expected extra running time in street traffic on parts of the track, as a share of the
+    /// running time at the permitted speed (0.25 = a quarter longer); trams in mixed traffic.
+    #[serde(default)]
+    pub traffic_delay_ranges: Vec<Range>,
     /// Allowed directions.
     #[serde(default)]
     pub directions: Directions,

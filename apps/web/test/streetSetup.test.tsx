@@ -67,6 +67,9 @@ describe("Street setup model", () => {
     expect(fixed.every((v) => v.level === "ok")).toBe(true);
     const painted = verdicts(HIGH, effective(HIGH, { way: 100, tram: "own_lane" }));
     expect(painted.find((v) => v.who === "Trams")).toMatchObject({ level: "info" });
+    // The project's preferences change the delay the texts quote.
+    const project = verdicts(HIGH, effective(HIGH, undefined), { mixed_traffic: 0.4, bus_lane: 0.05 });
+    expect(project.find((v) => v.who === "Buses")?.text).toMatch(/about 40 % longer/);
   });
 
   it("draws the cross-section kerb to kerb", () => {
@@ -170,7 +173,7 @@ describe("Street setup editor", () => {
     tap(100);
     const form = screen.getByRole("region", { name: "Street setup: High Street" });
     expect(within(form).getByText(/Mixed traffic on a main road|Inferred from the street/)).toBeTruthy();
-    expect(within(form).getByText(/Buses run in the traffic of a main road/)).toBeTruthy();
+    expect(within(form).getByText(/Buses and trolleybuses run in the traffic of a main road/)).toBeTruthy();
 
     fireEvent.click(
       within(screen.getByRole("group", { name: "Tram" })).getByRole("button", { name: "Own lane" }),

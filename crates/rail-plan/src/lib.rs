@@ -16,6 +16,8 @@
 //!   street line tool's expected wait at each crossing.
 //! - [`published`]: the published timetable with GTFS names (text form, for the GTFS export).
 //! - [`journeys`]: the same timetable in the contract's form, with stop positions, for the journey planner.
+//! - [`service`]: service lines drawn in the railway editor (stops, catalogue train, headways), planned
+//!   and published for the journey planner in one step.
 #![warn(missing_docs)]
 
 pub mod blocking;
@@ -28,6 +30,7 @@ pub mod path;
 pub mod plan;
 pub mod published;
 pub mod report;
+pub mod service;
 
 pub use blocking::{
     route_steps, run_timing, timetable_timing, Blocking, BlockingParams, RunTiming, TrainRun,
@@ -44,3 +47,7 @@ pub use path::{find_path, FoundPath, Place};
 pub use plan::{plan, CallTime, Issue, Plan, PlanParams, PlannedRun, RunKind};
 pub use published::{gtfs_time, publish, Published, StopRow, StopTimeRow, TripRow};
 pub use report::{report, HourCapacity, MaxCapacity, Report};
+pub use service::{
+    line_spec, publish_service, service_bands, station_reachable, train_params, LineReport, Reach,
+    ServiceLine, ServicePublication, ServiceVehicle,
+};

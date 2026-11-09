@@ -222,6 +222,26 @@ describe("projects", () => {
     // Drawings may be larger than other requests (100 kB): a 300 kB street setup list saves.
     const big = Array.from({ length: 6000 }, (_, i) => ({ way: i, note: "x".repeat(40) }));
     expect((await as("alice").put(`${path}/street-setups`, { doc: big, baseVersion: 1 })).status).toBe(200);
+    // Project preferences: assumption values by id, numbers only.
+    const prefs = {
+      values: { "street.mixed_traffic_delay_share": 0.3, "street.bus_lane_delay_share": 0.05 },
+    };
+    expect((await as("alice").put(`${path}/preferences`, { doc: prefs, baseVersion: null })).status).toBe(
+      200,
+    );
+    expect(
+      (
+        await as("alice").put(`${path}/preferences`, {
+          doc: { values: { "street.x": "a lot" } },
+          baseVersion: 1,
+        })
+      ).status,
+    ).toBe(400);
+    expect(
+      (await as("alice").put(`${path}/preferences`, { doc: { values: { "Not An Id": 1 } }, baseVersion: 1 }))
+        .status,
+    ).toBe(400);
+    expect((await as("alice").get(path)).body.drawings.preferences.doc).toEqual(prefs);
     // Other routes keep the small limit.
     expect(
       (await as("alice").patch(`/api/projects/${lakeside}`, { description: "x".repeat(200_000) })).status,
@@ -291,6 +311,7 @@ describe("projects", () => {
       "project.member_role_changed",
       "project.member_left",
       "project.link_access_changed",
+      "project.drawing_saved",
       "project.drawing_saved",
       "project.drawing_saved",
       "project.drawing_saved",
