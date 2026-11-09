@@ -49,6 +49,26 @@ export class StreetNetworkController {
       throw e;
     }
   }
+
+  /**
+   * Purpose: the building footprints of one web-mercator tile at zoom 14, for the noise map in the GIS
+   * tab: JSON `{buildings: [{id, ring: [[lon, lat], …], height_m?, levels?}]}`.
+   * Inputs: tile x and y. Output: 400 for an invalid tile, 502/504 when OSM is unavailable.
+   */
+  @Get(`building-tiles/${TILE_ZOOM}/:x/:y`)
+  @Requires("instance.read")
+  @Header("Content-Type", "application/json; charset=utf-8")
+  @Header("Cache-Control", "private, max-age=86400")
+  async buildingTile(@Param("x") xs: string, @Param("y") ys: string): Promise<string> {
+    const [x, y] = parseTile(xs, ys);
+    try {
+      return await this.streets.buildingTile(x, y);
+    } catch (e) {
+      if (e instanceof OverpassError)
+        throw new HttpException("OpenStreetMap buildings are unavailable right now", e.status);
+      throw e;
+    }
+  }
 }
 
 /** Purpose: tile x and y from the path, or a 400 for an invalid tile. */

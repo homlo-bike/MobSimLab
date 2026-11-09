@@ -22,7 +22,7 @@
         "module": "noise",
         "inputs": ["street_lines", "rail_design", "timetable", "fleet", "parameters"],
         "outputs": ["grid", "segments", "findings"],
-        "where": ["street-line-tool", "railway-tool", "analysis"]
+        "where": ["street-line-tool", "railway-tool", "gis", "analysis"]
       }
     ],
     "mapLayers": [

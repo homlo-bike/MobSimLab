@@ -167,7 +167,7 @@ export function NoiseSection(p: Props) {
           )}
           <p className="text-xs text-slate-500">
             Estimate from planned service: free field, no buildings (no screening), so an upper bound. Service
-            lines only, without general traffic. Values in Project Preferences → Noise.
+            lines only, without general traffic. Values are the noise plugin's assumptions.
           </p>
           {p.error && <p className="rounded bg-red-50 px-2 py-1 text-xs text-red-700">{p.error}</p>}
         </>
