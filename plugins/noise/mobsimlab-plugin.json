@@ -2,7 +2,7 @@
   "$schema": "../../contracts/plugin-manifest.schema.json",
   "id": "org.mobsimlab.noise",
   "name": "Noise map",
-  "description": "Estimated noise of the service lines (ADR-0038): a live noise band while drawing street lines and railways, with checks for curve squeal, bridges and switches. CNOSSOS-EU road emission, free field without buildings for now.",
+  "description": "Estimated noise of the service lines (ADR-0038): a live noise band while drawing street lines and railways, with checks for curve squeal, bridges and switches. CNOSSOS-EU road and railway emission, free field without buildings for now.",
   "version": "0.1.0",
   "publisher": { "name": "MobSimLab contributors", "url": "https://github.com/homlo-bike/MobSimLab" },
   "license": "AGPL-3.0-or-later",
