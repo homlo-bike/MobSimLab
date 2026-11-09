@@ -1,4 +1,4 @@
-import { hasMessage, type Translate, type TranslatePlural, useI18n } from "../../i18n/i18n";
+import { hasMessage, type Translate, type TranslatePlural, useI18n, withNodes } from "../../i18n/i18n";
 import type { MessageKey } from "../../i18n/messages";
 import { signalById, update, updateSignal } from "./doc";
 import { COLORS, fmtM, fmtTime, LEVEL_LABEL, LEVELS, POWER, RAIL_MODES } from "./modes";
@@ -749,8 +749,11 @@ function StationInspector({ st, doc, view, actions: a }: Props & { st: Station }
       )}
       {sv?.height && (
         <p className="text-xs text-slate-600">
-          Level, rails at {sv.height.rail_m.toFixed(1)} m above sea level · ground along it{" "}
-          {sv.height.ground_min_m.toFixed(1)}–{sv.height.ground_max_m.toFixed(1)} m
+          {t("rail.levelHeight", {
+            rail: sv.height.rail_m.toFixed(1),
+            min: sv.height.ground_min_m.toFixed(1),
+            max: sv.height.ground_max_m.toFixed(1),
+          })}
         </p>
       )}
       <Segmented
@@ -968,6 +971,7 @@ function TrackInspector({ t: track, doc, view, sel, actions: a }: Props & { t: T
  * with its height range and steepest gradient.
  */
 function ElevationProfile({ e }: { e: TrackElevation }) {
+  const { t } = useI18n();
   const pts = e.profile;
   if (pts.length < 2) return null;
   const len = pts[pts.length - 1]![0] || 1;
@@ -987,24 +991,31 @@ function ElevationProfile({ e }: { e: TrackElevation }) {
   return (
     <div className="space-y-1">
       <p className="text-xs text-slate-600">
-        Rails {e.rail_min_m.toFixed(1)}–{e.rail_max_m.toFixed(1)} m above sea level · steepest{" "}
-        <span className={steep > e.max_permille + 0.5 ? "font-semibold text-red-700" : undefined}>
-          {steep.toFixed(1)} ‰
-        </span>{" "}
-        (max {e.max_permille} ‰)
+        {withNodes(
+          t("rail.profileRange", {
+            min: e.rail_min_m.toFixed(1),
+            max: e.rail_max_m.toFixed(1),
+            limit: e.max_permille,
+          }),
+          {
+            steep: (
+              <span className={steep > e.max_permille + 0.5 ? "font-semibold text-red-700" : undefined}>
+                {steep.toFixed(1)} ‰
+              </span>
+            ),
+          },
+        )}
       </p>
       <svg
         viewBox={`0 0 ${W} ${H}`}
         className="h-[70px] w-full rounded bg-slate-50"
         role="img"
-        aria-label="Vertical profile: ground and rail top along the track"
+        aria-label={t("rail.profileAria")}
       >
         <path d={line(1)} fill="none" stroke="#a16207" strokeWidth={1} strokeDasharray="3 2" />
         <path d={line(2)} fill="none" stroke="#1e293b" strokeWidth={1.5} />
       </svg>
-      <p className="text-[11px] text-slate-500">
-        Solid: rail top. Dashed: ground (Copernicus GLO-30, smoothed). Heights from a surface model, ±4 m.
-      </p>
+      <p className="text-[11px] text-slate-500">{t("rail.profileLegend")}</p>
     </div>
   );
 }
