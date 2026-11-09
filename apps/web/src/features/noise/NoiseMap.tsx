@@ -15,6 +15,7 @@ import {
 import { loadWasmNoise } from "./engine";
 import { drawNoise, LEGEND, removeNoise } from "./mapLayer";
 import { RAIL_FLOWS, railSources, streetLineSources } from "./sources";
+import { fetchHeights, type HeightsFetcher, loadTerrain, terrainPlan } from "./terrain";
 import type {
   Flows,
   Indicator,
@@ -22,6 +23,7 @@ import type {
   NoiseEngine,
   NoiseEngineLoader,
   NoiseLine,
+  NoiseTerrain,
   NoiseView,
 } from "./types";
 
@@ -42,6 +44,7 @@ interface Props {
   loadNoise?: NoiseEngineLoader;
   loadRail?: RailEngineLoader;
   fetchTile?: BuildingTileFetcher;
+  fetchTerrain?: HeightsFetcher;
 }
 
 /**
@@ -78,15 +81,16 @@ export async function projectSources(
 type Status =
   | { kind: "idle" }
   | { kind: "busy"; step: string }
-  | { kind: "done"; view: NoiseView; buildings: NoiseBuilding[] | null; note: string | null }
+  | { kind: "done"; view: NoiseView; buildings: NoiseBuilding[] | null; notes: string[] }
   | { kind: "error"; text: string };
 
 /**
  * Purpose: the Noise map in the GIS tab (ADR-0038 step N2): L_den or L_night from every saved
- * street line and railway, screened by the OSM buildings round them, with the buildings coloured
- * by the level beside their most exposed side and counted by the Directive's reporting bands.
- * Side effects: loads buildings from the API and the noise and rail engines on demand; draws the
- * noise picture and the buildings on the map while shown.
+ * street line and railway, screened by the OSM buildings round them (over the roofs and round the
+ * ends), with first-order facade reflections and the terrain, the buildings coloured by the level
+ * beside their most exposed side and counted by the Directive's reporting bands.
+ * Side effects: loads buildings and terrain heights from the API and the noise and rail engines on
+ * demand; draws the noise picture and the buildings on the map while shown.
  */
 export function NoiseMap({
   map,
@@ -96,9 +100,11 @@ export function NoiseMap({
   loadNoise = loadWasmNoise,
   loadRail = loadRailEngine,
   fetchTile = fetchBuildingTile,
+  fetchTerrain = fetchHeights,
 }: Props) {
   const [indicator, setIndicator] = useState<Indicator>("lden");
   const [withBuildings, setWithBuildings] = useState(true);
+  const [withTerrain, setWithTerrain] = useState(true);
   const [status, setStatus] = useState<Status>({ kind: "idle" });
   const engine = useRef<NoiseEngine | null>(null);
   const hasLines =
@@ -145,17 +151,33 @@ export function NoiseMap({
         return;
       }
       let buildings: NoiseBuilding[] | null = null;
-      let note: string | null = null;
+      const notes: string[] = [];
+      const points = lines.flatMap((l) => l.points);
       if (withBuildings) {
-        const tiles = buildingTiles(
-          lines.flatMap((l) => l.points),
-          MAP_REACH_M,
-        );
+        const tiles = buildingTiles(points, MAP_REACH_M);
         if (tiles.length > MAX_BUILDING_TILES) {
-          note = `The lines cover too large an area to load its buildings (${tiles.length} tiles, at most ${MAX_BUILDING_TILES}), so this map has no screening.`;
+          notes.push(
+            `The lines cover too large an area to load its buildings (${tiles.length} tiles, at most ${MAX_BUILDING_TILES}), so this map has no screening by buildings.`,
+          );
         } else {
           setStatus({ kind: "busy", step: "Loading OpenStreetMap buildings…" });
           buildings = await loadBuildings(tiles, fetchTile);
+        }
+      }
+      let terrain: NoiseTerrain | null = null;
+      if (withTerrain) {
+        const plan = terrainPlan(points, MAP_REACH_M);
+        if (!plan) {
+          notes.push("The lines cover too large an area to load the terrain, so this map is on flat ground.");
+        } else {
+          setStatus({ kind: "busy", step: "Loading terrain heights…" });
+          try {
+            terrain = await loadTerrain(plan, fetchTerrain);
+          } catch (err) {
+            notes.push(
+              `Terrain heights are unavailable (${err instanceof Error ? err.message : String(err)}), so this map is on flat ground.`,
+            );
+          }
         }
       }
       setStatus({ kind: "busy", step: "Computing the noise map…" });
@@ -167,11 +189,12 @@ export function NoiseMap({
         grid: true,
         grid_reach_m: MAP_REACH_M,
         buildings: buildings ?? [],
+        terrain,
         overrides: Object.fromEntries(
           Object.entries(preferences ?? {}).filter(([k, v]) => k.startsWith("noise.") && Number.isFinite(v)),
         ),
       });
-      setStatus({ kind: "done", view, buildings, note });
+      setStatus({ kind: "done", view, buildings, notes });
     } catch (err) {
       setStatus({ kind: "error", text: err instanceof Error ? err.message : String(err) });
     }
@@ -183,8 +206,8 @@ export function NoiseMap({
     <section className="flex flex-col gap-2" aria-label="Noise map">
       <h3 className="text-xs font-semibold tracking-wider text-slate-500 uppercase">Noise map</h3>
       <p className="text-xs text-slate-600">
-        L_den and L_night at 4 m from every street line and railway in the project, screened by the
-        OpenStreetMap buildings round them.
+        L_den and L_night at 4 m from every street line and railway in the project, past the OpenStreetMap
+        buildings round them and over the terrain.
       </p>
       <div
         role="radiogroup"
@@ -212,6 +235,10 @@ export function NoiseMap({
       <label className="flex items-center gap-2 text-xs">
         <input type="checkbox" checked={withBuildings} onChange={(e) => setWithBuildings(e.target.checked)} />
         Screen with OpenStreetMap buildings
+      </label>
+      <label className="flex items-center gap-2 text-xs">
+        <input type="checkbox" checked={withTerrain} onChange={(e) => setWithTerrain(e.target.checked)} />
+        Use terrain heights (Copernicus GLO-30)
       </label>
       <button
         type="button"
@@ -269,14 +296,23 @@ export function NoiseMap({
               </tbody>
             </table>
           )}
-          {status.note && (
-            <p className="rounded bg-amber-50 px-2 py-1 text-xs text-amber-900">{status.note}</p>
-          )}
+          {status.notes.map((n) => (
+            <p key={n} className="rounded bg-amber-50 px-2 py-1 text-xs text-amber-900">
+              {n}
+            </p>
+          ))}
           <p className="text-xs text-slate-500">
-            Planned service only, without general traffic. Roof screening by buildings (ISO 9613-2), no
-            reflections or paths round building ends. Buildings without a height in OpenStreetMap take 3 m per
-            tagged storey, or 8 m (the noise plugin's assumptions). Building counts stand in for dwellings
-            until population data is added. Buildings © OpenStreetMap contributors.
+            Planned service only, without general traffic. Buildings screen over their roofs and round their
+            ends (ISO 9613-2) and their facades reflect once (first order).{" "}
+            {status.view.terrain
+              ? "Sources, buildings and receivers stand on the terrain, and hills screen; roofs and trees are filtered out of the surface model."
+              : "Flat ground."}{" "}
+            Buildings without a height in OpenStreetMap take 3 m per tagged storey, or 8 m (the noise plugin's
+            assumptions). A building's level leaves out the reflection from its own facade. Building counts
+            stand in for dwellings until population data is added. Buildings © OpenStreetMap contributors.
+            {status.view.terrain
+              ? " Terrain: Copernicus DEM GLO-30 © DLR e.V. and © Airbus Defence and Space GmbH, provided under COPERNICUS by the European Union and ESA."
+              : ""}
           </p>
         </>
       )}

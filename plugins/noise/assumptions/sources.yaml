@@ -98,3 +98,21 @@
   access: free
   retrieved: 2026-11-09
   checked_via: none
+
+- id: zhang-2003-pmf
+  title: "Zhang, K., Chen, S.-C., Whitman, D., Shyu, M.-L., Yan, J., Zhang, C. (2003), A progressive morphological filter for removing nonground measurements from airborne LIDAR data, IEEE Transactions on Geoscience and Remote Sensing 41(4), 872–882"
+  publisher: IEEE
+  url: https://doi.org/10.1109/TGRS.2003.810682
+  licence: © IEEE
+  access: paywalled
+  retrieved: 2026-11-09
+  checked_via: none
+
+- id: copernicus-glo30
+  title: Copernicus DEM GLO-30, a 30 m digital surface model (heights include buildings and tree canopy)
+  publisher: European Space Agency, Copernicus programme
+  url: https://doi.org/10.5270/ESA-c5d3d65
+  licence: © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; free use under the Copernicus DEM licence
+  access: free
+  retrieved: 2026-11-09
+  checked_via: none

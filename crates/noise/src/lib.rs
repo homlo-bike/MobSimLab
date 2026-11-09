@@ -17,6 +17,7 @@
 
 pub mod emission;
 pub mod estimate;
+pub mod ground;
 pub use estimate::{Band, Check, Grid, Severity};
 pub mod params;
 pub mod propagation;
@@ -26,6 +27,7 @@ pub mod screening;
 pub use estimate::{
     estimate, Estimate, EstimateInput, Flows, LineInput, PointSourceInput, Range, RangeKind,
 };
+pub use ground::TerrainInput;
 pub use params::{Library, Mode, Variant};
 pub use screening::BuildingInput;
 

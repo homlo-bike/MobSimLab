@@ -17,6 +17,7 @@ vi.mock("../src/features/noise/mapLayer", () => ({
 
 import { buildingTiles, loadBuildings, MAX_BUILDING_TILES } from "../src/features/noise/buildings";
 import { MAP_REACH_M, NoiseMap, projectSources } from "../src/features/noise/NoiseMap";
+import { MAX_TERRAIN_POINTS, loadTerrain, terrainPlan } from "../src/features/noise/terrain";
 import type { NoiseBuilding, NoiseEngine, NoiseInput, NoiseView } from "../src/features/noise/types";
 import type { RailEngineLoader } from "../src/features/railways/types";
 import type { StreetLinesDoc } from "../src/features/street-lines/saved";
@@ -159,6 +160,50 @@ describe("noise map sources and buildings", () => {
     ).toBeGreaterThan(MAX_BUILDING_TILES);
   });
 
+  it("plans a terrain grid over the lines and their reach, coarser for long lines", () => {
+    const p = terrainPlan(
+      [
+        [7, 50],
+        [7.004, 50],
+      ],
+      MAP_REACH_M,
+    )!;
+    expect(p.spacingM).toBe(30);
+    expect(p.lon0).toBeLessThan(7 - MAP_REACH_M / 111_195 / Math.cos((50 * Math.PI) / 180));
+    expect(p.lat0 + (p.ny - 1) * p.dLat).toBeGreaterThan(50 + MAP_REACH_M / 111_195);
+    const long = terrainPlan(
+      [
+        [7, 50],
+        [7.1, 50.08],
+      ],
+      MAP_REACH_M,
+    )!;
+    expect(long.spacingM).toBeGreaterThan(30);
+    expect(long.nx * long.ny).toBeLessThanOrEqual(MAX_TERRAIN_POINTS);
+    // A 30 km line would need a grid coarser than the terrain is worth.
+    expect(
+      terrainPlan(
+        [
+          [7, 50],
+          [7.4, 50.2],
+        ],
+        MAP_REACH_M,
+      ),
+    ).toBeNull();
+  });
+
+  it("loads the terrain row by row from the south-west in requests of 20,000", async () => {
+    const fetch = vi.fn(async (pts: [number, number][]) => pts.map((p) => (p[1] > 50 ? 100 : null)));
+    const plan = { lon0: 7, lat0: 49.95, dLon: 0.001, dLat: 0.0004, nx: 200, ny: 150, spacingM: 30 };
+    const t = await loadTerrain(plan, fetch);
+    expect(fetch).toHaveBeenCalledTimes(2);
+    expect(t.z).toHaveLength(30_000);
+    expect(fetch.mock.calls[0]![0][1]).toEqual([7.001, 49.95]);
+    expect(t).toMatchObject({ x0: 7, y0: 49.95, dx: 0.001, dy: 0.0004, nx: 200, ny: 150 });
+    expect(t.z[0]).toBeNull();
+    expect(t.z.at(-1)).toBe(100);
+  });
+
   it("keeps a building on a tile edge once", async () => {
     const fetchTile = vi.fn(async (x: number) =>
       x === 1 ? [house("w1", 7)] : [house("w1", 7), house("w2", 7.001)],
@@ -175,8 +220,8 @@ describe("noise map sources and buildings", () => {
 });
 
 describe("noise map in the GIS tab", () => {
-  function setup() {
-    const estimate = vi.fn((input: NoiseInput) => (input ? RESULT : RESULT));
+  function setup(fetchTerrain = vi.fn(async (pts: [number, number][]) => pts.map(() => 120))) {
+    const estimate = vi.fn((input: NoiseInput) => (input ? { ...RESULT, terrain: true } : RESULT));
     const engine: NoiseEngine = {
       estimate,
       image: vi.fn(() => new Uint8Array(16)),
@@ -201,9 +246,10 @@ describe("noise map in the GIS tab", () => {
         loadNoise={async () => engine}
         loadRail={noRail}
         fetchTile={fetchTile}
+        fetchTerrain={fetchTerrain}
       />,
     );
-    return { estimate, fetchTile, map };
+    return { estimate, fetchTile, fetchTerrain, map };
   }
 
   it("computes the map with the buildings round the lines and counts them by band", async () => {
@@ -215,6 +261,9 @@ describe("noise map in the GIS tab", () => {
     expect(input.grid_reach_m).toBe(MAP_REACH_M);
     expect(input.buildings!.map((b) => b.id)).toEqual(["w1", "w2"]);
     expect(input.overrides).toEqual({ "noise.building_default_height_m": 12 });
+    expect(input.terrain).toMatchObject({ dx: expect.any(Number), nx: expect.any(Number) });
+    expect(input.terrain!.z.every((z) => z === 120)).toBe(true);
+    expect(screen.getByText(/stand on the terrain/)).toBeTruthy();
     const table = await screen.findByRole("table", { name: "Buildings by noise band" });
     expect(table.textContent).toContain("55–59 dB");
     expect(table.textContent).toContain("2 of 2 in reach");
@@ -231,5 +280,20 @@ describe("noise map in the GIS tab", () => {
     await waitFor(() => expect(estimate).toHaveBeenCalled());
     expect(fetchTile).not.toHaveBeenCalled();
     expect(estimate.mock.calls[0]![0].buildings).toEqual([]);
+  });
+
+  it("can leave the terrain out, and falls back to flat ground when it fails", async () => {
+    const { estimate, fetchTerrain } = setup();
+    fireEvent.click(screen.getByLabelText("Use terrain heights (Copernicus GLO-30)"));
+    fireEvent.click(screen.getByRole("button", { name: "Compute noise map" }));
+    await waitFor(() => expect(estimate).toHaveBeenCalled());
+    expect(fetchTerrain).not.toHaveBeenCalled();
+    expect(estimate.mock.calls[0]![0].terrain).toBeNull();
+    cleanup();
+    const failing = setup(vi.fn(async () => Promise.reject(new Error("DEM down"))));
+    fireEvent.click(screen.getByRole("button", { name: "Compute noise map" }));
+    await waitFor(() => expect(failing.estimate).toHaveBeenCalled());
+    expect(failing.estimate.mock.calls[0]![0].terrain).toBeNull();
+    expect(await screen.findByText(/Terrain heights are unavailable \(DEM down\)/)).toBeTruthy();
   });
 });

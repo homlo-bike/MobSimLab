@@ -6,12 +6,16 @@
 //! hour on the drawn line, per period.
 
 use crate::emission::{pow10, road_vehicle_lw, RoadCategory};
+use crate::ground::TerrainInput;
 use crate::params::{Library, Mode, Variant, BANDS_HZ, NB, VARIANTS};
 use crate::propagation::{absorption, ground, Propagation};
 use crate::rail::{
     dipole, train_power, vertical_a_db, vertical_b_aero_db, RailSource, TrackState, TrainPower,
 };
-use crate::screening::{barrier_db, BuildingInput, HeightRule, Obstacles, RayScratch};
+use crate::screening::{
+    barrier_db, lateral_db, lateral_db_63, BuildingInput, HeightRule, Lateral, Obstacles,
+    RayScratch, LATERAL_MAX_BUILDINGS,
+};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
@@ -23,6 +27,8 @@ const PROBE_STEP_M: f64 = 20.0;
 const PAIR_FROM_M: f64 = 80.0;
 /// Most grid cells computed for the map picture.
 const MAX_GRID_CELLS: f64 = 40_000.0;
+/// Lateral paths are looked for until those left could add at most this share of the energy.
+const LATERAL_TOLERANCE: f64 = 0.01;
 /// Half chord used to measure a curve radius, m.
 const RADIUS_HALF_CHORD_M: f64 = 15.0;
 
@@ -138,6 +144,10 @@ pub struct EstimateInput {
     /// Buildings that screen the map grid (step N2). The band distances stay free field.
     #[serde(default)]
     pub buildings: Vec<BuildingInput>,
+    /// Ground heights for the map (step N2): sources, receivers and buildings stand on them and
+    /// the ground can screen. `None` is flat ground.
+    #[serde(default)]
+    pub terrain: Option<TerrainInput>,
 }
 
 fn yes() -> bool {
@@ -218,6 +228,8 @@ pub struct Estimate {
     pub building_levels: Vec<[f32; 2]>,
     /// Level of detail of the inputs (ADR-0038 §4).
     pub input_level: &'static str,
+    /// Whether terrain heights shaped the map (a flat or empty grid does not).
+    pub terrain: bool,
 }
 
 /// Period lengths and penalties.
@@ -281,6 +293,8 @@ struct Element {
     table: usize,
     /// Source height above ground, m.
     h: f64,
+    /// Source height above the datum (ground + `h`), m; set once the ground is known.
+    z: f64,
     /// Line index, or `lines + point index`.
     owner: usize,
     /// Band power for one vehicle per hour (lines) or full operation (points), per variant.
@@ -689,6 +703,7 @@ pub fn estimate(input: &EstimateInput) -> Estimate {
                     dipole: None,
                     table: table_of(hs, Vertical::None),
                     h: hs,
+                    z: hs,
                     owner: li,
                     power,
                 });
@@ -713,6 +728,7 @@ pub fn estimate(input: &EstimateInput) -> Estimate {
                     dipole: dir,
                     table: table_of(hs, vert),
                     h: hs,
+                    z: hs,
                     owner: li,
                     power: bands.map(|b| b.map(|x| x * k)),
                 });
@@ -729,9 +745,23 @@ pub fn estimate(input: &EstimateInput) -> Estimate {
             dipole: None,
             table: table_of(ps.height_m.max(0.0), Vertical::None),
             h: ps.height_m.max(0.0),
+            z: ps.height_m.max(0.0),
             owner: n_lines + pi,
             power: [flat; 3],
         });
+    }
+    // Buildings and terrain for the map grid (step N2); sources stand on the ground.
+    let obstacles = Obstacles::new(
+        &input.buildings,
+        HeightRule {
+            level_m: lib.central("noise.building_storey_height_m"),
+            default_m: lib.central("noise.building_default_height_m"),
+        },
+        input.terrain.as_ref().filter(|_| input.grid),
+        lib.central("noise.terrain_filter_window_m"),
+    );
+    for e in &mut elements {
+        e.z = obstacles.ground_at(e.p) + e.h;
     }
     let tables: Vec<TransferTable> = tables_key
         .iter()
@@ -868,14 +898,7 @@ pub fn estimate(input: &EstimateInput) -> Estimate {
     let lden = band(0, th_den, &mut widths);
     let lnight = band(1, th_night, &mut widths);
 
-    // Buildings screen the grid receivers (step N2).
-    let obstacles = Obstacles::new(
-        &input.buildings,
-        HeightRule {
-            level_m: lib.central("noise.building_storey_height_m"),
-            default_m: lib.central("noise.building_default_height_m"),
-        },
-    );
+    // Buildings and terrain screen the grid receivers (step N2).
     let mut building_levels = vec![[f32::NAN; 2]; input.buildings.len()];
     // Central L_den and L_night at a receiver with the roof paths over the buildings.
     // Far from a receiver, neighbouring elements are paired so each pair costs one roof path.
@@ -899,6 +922,7 @@ pub fn estimate(input: &EstimateInput) -> Estimate {
                         Element {
                             p,
                             power,
+                            z: obstacles.ground_at(p) + a.h,
                             ..a.clone()
                         },
                         i,
@@ -915,48 +939,250 @@ pub fn estimate(input: &EstimateInput) -> Estimate {
     }
     let pair_els: Vec<Element> = pairs.iter().map(|x| x.0.clone()).collect();
     let pair_buckets = Buckets::new(&pair_els, 50.0);
-    // Central L_den and L_night at a receiver with the roof paths over the buildings.
-    let screened = |p: [f64; 2], scratch: &mut Vec<[f64; 3]>, ray: &mut RayScratch| -> [f64; 2] {
-        scratch.iter_mut().for_each(|x| *x = [0.0; 3]);
-        let mut add = |e: &Element, d: f64, ray: &mut RayScratch| {
+    // L_den and L_night energy of one unit of an owner's sound.
+    let weight: Vec<[f64; 2]> = flows.iter().map(|f| [periods.den(*f), f[2]]).collect();
+    let rho = lib
+        .central("noise.facade_reflection_coefficient")
+        .clamp(0.0, 1.0);
+    let refl_r = if lib.central("noise.reflection_order") >= 0.5 && rho > 0.0 {
+        lib.central("noise.reflection_max_distance_m").max(0.0)
+    } else {
+        0.0
+    };
+    // Central L_den and L_night at a receiver past the buildings and over the terrain: the path
+    // over the top, the lateral paths round the building ends, and first-order reflections from
+    // the facades near the receiver. `adj` are buildings beside the receiver: the level without
+    // their own facade reflections is returned for each, as the Directive takes the level in
+    // front of a facade without its own reflection.
+    let screened = |p: [f64; 2], adj: &[usize], sc: &mut Scratch| -> ([f64; 2], Vec<[f64; 2]>) {
+        sc.energy.iter_mut().for_each(|x| *x = [0.0; 3]);
+        for o in sc.own.iter_mut() {
+            o.iter_mut().for_each(|x| *x = 0.0);
+        }
+        let zr = obstacles.ground_at(p) + hr;
+        let Scratch {
+            energy,
+            own,
+            ray,
+            near,
+            walls,
+            lateral,
+        } = sc;
+        lateral.clear();
+        // Paths whose lateral paths may count: (pair or element, index, distance, upper bounds of
+        // their L_den and L_night energy).
+        let mut add = |e: &Element, at: (bool, usize), d: f64, ray: &mut RayScratch| {
             let tab = &tables[e.table];
             let idx = tab.index(d);
             let t = &tab.rows[idx];
             let w = &e.power[1];
-            let sum: f64 = match obstacles.screen(e.p, p, e.h, hr, ray) {
+            let sum: f64 = match obstacles.screen(e.p, p, e.z, zr, ray) {
                 None => (0..NB).map(|b| w[b] * t[b]).sum(),
-                Some(sc) => {
+                Some(v) => {
                     // ISO 9613-2: A_bar = D_z − A_gr, not below 0; it replaces the ground term.
-                    let dz = barrier_db(&sc);
+                    let dz = barrier_db(&v.screen);
                     let gr = &tab.ground[idx];
-                    (0..NB)
-                        .map(|b| w[b] * t[b] * pow10(-(dz[b] - gr[b]).max(0.0)))
-                        .sum()
+                    let abar: [f64; NB] = std::array::from_fn(|b| (dz[b] - gr[b]).max(0.0));
+                    if v.buildings {
+                        // Lateral paths keep the ground term. Their single-edge bound gives the
+                        // most they can add; they are found below only where that matters.
+                        // D_z rises with frequency, so the 63 Hz value bounds every band.
+                        let all: f64 = (0..NB).map(|b| w[b] * t[b]).sum();
+                        let ub: f64 = obstacles
+                            .lateral_bounds(e.p, p, e.z, zr, ray)
+                            .iter()
+                            .flatten()
+                            .map(|&z| all * pow10(-lateral_db_63(z)))
+                            .sum::<f64>()
+                            * dipole_at(e, p, d);
+                        let mut ids = [0u32; LATERAL_MAX_BUILDINGS];
+                        if let Some(n) = obstacles.blocking(e.z, zr, ray, &mut ids) {
+                            if ub > 0.0 && n > 0 {
+                                lateral.push(Candidate {
+                                    pair: at.0,
+                                    i: at.1,
+                                    d,
+                                    ub: [ub * weight[e.owner][0], ub * weight[e.owner][1]],
+                                    ids,
+                                    n: n as u8,
+                                });
+                            }
+                        }
+                    }
+                    (0..NB).map(|b| w[b] * t[b] * pow10(-abar[b])).sum()
                 }
             };
-            scratch[e.owner][1] += sum * dipole_at(e, p, d);
+            energy[e.owner][1] += sum * dipole_at(e, p, d);
         };
+        near.clear();
         pair_buckets.near(p, max_d, |k| {
-            let (e, first, n) = &pairs[k];
-            let d = dist(p, e.p);
-            if d > max_d {
-                return;
-            }
-            if d >= PAIR_FROM_M {
-                add(e, d, ray);
-            } else {
-                for f in &elements[*first..*first + *n] {
-                    add(f, dist(p, f.p), ray);
-                }
+            if dist(p, pairs[k].0.p) <= max_d {
+                near.push(k);
             }
         });
-        let mut per = [0.0; 3];
-        for (o, e) in scratch.iter().enumerate() {
-            for k in 0..3 {
-                per[k] += flows[o][k] * e[1];
+        for &k in near.iter() {
+            let (e, first, n) = &pairs[k];
+            let d = dist(p, e.p);
+            if d >= PAIR_FROM_M {
+                add(e, (true, k), d, ray);
+            } else {
+                for (i, f) in elements[*first..*first + *n].iter().enumerate() {
+                    add(f, (false, first + i), dist(p, f.p), ray);
+                }
             }
         }
-        [level(periods.den(per)), level(per[2])]
+        // First-order reflections: the image of the receiver in each facade near it.
+        if refl_r > 0.0 {
+            obstacles.walls_near(p, refl_r, ray, walls);
+            for &wi in walls.iter() {
+                let wl = obstacles.wall(wi);
+                let n = wl.n;
+                let dr = (p[0] - wl.a[0]) * n[0] + (p[1] - wl.a[1]) * n[1];
+                let img = [p[0] - 2.0 * dr * n[0], p[1] - 2.0 * dr * n[1]];
+                let ab = [wl.b[0] - wl.a[0], wl.b[1] - wl.a[1]];
+                let ab2 = ab[0] * ab[0] + ab[1] * ab[1];
+                let slot = adj.iter().position(|&b| b == wl.building);
+                for &k in near.iter() {
+                    let e = &pairs[k].0;
+                    let ds = (e.p[0] - wl.a[0]) * n[0] + (e.p[1] - wl.a[1]) * n[1];
+                    if ds <= 0.05 {
+                        continue;
+                    }
+                    let f = ds / (ds + dr);
+                    let q = [
+                        e.p[0] + (img[0] - e.p[0]) * f,
+                        e.p[1] + (img[1] - e.p[1]) * f,
+                    ];
+                    let lam = ((q[0] - wl.a[0]) * ab[0] + (q[1] - wl.a[1]) * ab[1]) / ab2;
+                    if !(0.0..=1.0).contains(&lam) {
+                        continue;
+                    }
+                    let (d1, d2) = (dist(e.p, q), dist(q, p));
+                    let dt = d1 + d2;
+                    if dt > max_d || d1 < 0.1 {
+                        continue;
+                    }
+                    let zq = e.z + (zr - e.z) * d1 / dt;
+                    if zq >= wl.top {
+                        continue;
+                    }
+                    let q2 = [q[0] + n[0] * 0.05, q[1] + n[1] * 0.05];
+                    if obstacles.blocked(q2, p, zq, zr, ray)
+                        || obstacles.blocked(e.p, q2, e.z, zq, ray)
+                    {
+                        continue;
+                    }
+                    let t = tables[e.table].at(dt);
+                    let w = &e.power[1];
+                    let sum = rho * dipole_at(e, q, d1) * (0..NB).map(|b| w[b] * t[b]).sum::<f64>();
+                    energy[e.owner][1] += sum;
+                    if let Some(s) = slot {
+                        own[s][e.owner] += sum;
+                    }
+                }
+            }
+        }
+        // Lateral paths, largest possible first, until what is left could not add 1 %. First the
+        // corner bounds are tightened to the path round the blocking buildings (no index walk),
+        // then the largest of those are checked for other buildings in the way.
+        let total = |energy: &[[f64; 3]], k: usize| -> f64 {
+            energy.iter().zip(&weight).map(|(e, w)| e[1] * w[k]).sum()
+        };
+        let (mut tot_den, mut tot_night) = (total(energy, 0), total(energy, 1));
+        let small = |rem: [f64; 2], tot: [f64; 2]| {
+            rem[0] <= LATERAL_TOLERANCE * tot[0] && rem[1] <= LATERAL_TOLERANCE * tot[1]
+        };
+        // Energy of the lateral paths; as a bound, from the 63 Hz single-edge value.
+        let energy_of = |e: &Element, d: f64, plan: &[Option<Lateral>; 2], bound: bool| -> f64 {
+            let t = tables[e.table].at(d);
+            let w = &e.power[1];
+            let all: f64 = (0..NB).map(|b| w[b] * t[b]).sum();
+            let mut sum = 0.0;
+            for l in plan.iter().flatten() {
+                let sc = l.screen(zr - e.z);
+                sum += if bound {
+                    all * pow10(-lateral_db_63(sc.z))
+                } else {
+                    let dl = lateral_db(&sc);
+                    (0..NB).map(|b| w[b] * t[b] * pow10(-dl[b])).sum::<f64>()
+                };
+            }
+            sum * dipole_at(e, p, d)
+        };
+        let el = |c: &Candidate| {
+            if c.pair {
+                &pairs[c.i].0
+            } else {
+                &elements[c.i]
+            }
+        };
+        for stage in [false, true] {
+            let mut rem = lateral
+                .iter()
+                .fold([0.0, 0.0], |a, c| [a[0] + c.ub[0], a[1] + c.ub[1]]);
+            lateral.sort_by(|a, b| {
+                b.ub[0]
+                    .total_cmp(&a.ub[0])
+                    .then(b.ub[1].total_cmp(&a.ub[1]))
+            });
+            let mut keep = 0;
+            // The plan paths of one position serve its sources at other heights (rail A and B).
+            let mut plans: Vec<([u64; 2], [Option<Lateral>; 2])> = Vec::new();
+            for k in 0..lateral.len() {
+                if small(rem, [tot_den, tot_night]) {
+                    break;
+                }
+                let c = lateral[k];
+                rem = [rem[0] - c.ub[0], rem[1] - c.ub[1]];
+                let e = el(&c);
+                let key = [e.p[0].to_bits(), e.p[1].to_bits()];
+                let plan = match plans.iter().find(|x| x.0 == key) {
+                    Some(x) => x.1,
+                    None => {
+                        let l = obstacles.lateral(
+                            e.p,
+                            p,
+                            [e.z, zr],
+                            Some(&c.ids[..c.n as usize]),
+                            stage,
+                            ray,
+                        );
+                        plans.push((key, l));
+                        l
+                    }
+                };
+                let sum = energy_of(e, c.d, &plan, !stage);
+                if stage {
+                    energy[e.owner][1] += sum;
+                    tot_den += sum * weight[e.owner][0];
+                    tot_night += sum * weight[e.owner][1];
+                } else if sum > 0.0 {
+                    // Tightened bound, for the second stage.
+                    lateral[keep] = Candidate {
+                        ub: [sum * weight[e.owner][0], sum * weight[e.owner][1]],
+                        ..c
+                    };
+                    keep += 1;
+                }
+            }
+            if !stage {
+                lateral.truncate(keep);
+            }
+        }
+        let lv = |sub: Option<&Vec<f64>>| {
+            let mut per = [0.0; 3];
+            for (o, e) in energy.iter().enumerate() {
+                let x = (e[1] - sub.map_or(0.0, |s| s[o])).max(0.0);
+                for k in 0..3 {
+                    per[k] += flows[o][k] * x;
+                }
+            }
+            [level(periods.den(per)), level(per[2])]
+        };
+        (
+            lv(None),
+            (0..adj.len()).map(|s| lv(Some(&own[s]))).collect(),
+        )
     };
 
     // Map grid round the lines.
@@ -1013,7 +1239,14 @@ pub fn estimate(input: &EstimateInput) -> Estimate {
                 }
             }
         }
-        let mut ray = RayScratch::default();
+        let mut sc = Scratch {
+            energy: vec![[0.0; 3]; flows.len()],
+            own: vec![vec![0.0; flows.len()]; 4],
+            ..Default::default()
+        };
+        // Per computed cell: the level without the own facade reflection of each building beside it.
+        let mut beside: Vec<Vec<(usize, [f32; 2])>> = vec![Vec::new(); nx * ny];
+        let mut adj: Vec<usize> = Vec::with_capacity(4);
         for j in 0..ny {
             for i in 0..nx {
                 let k = j * nx + i;
@@ -1024,13 +1257,28 @@ pub fn estimate(input: &EstimateInput) -> Estimate {
                 let l = if obstacles.is_empty() {
                     levels(c, false, &mut scratch)[1]
                 } else {
-                    screened(c, &mut scratch, &mut ray)
+                    adj.clear();
+                    for (ii, jj) in neighbours(i, j, nx, ny) {
+                        if let Some(b) = inside[jj * nx + ii] {
+                            if !adj.contains(&b) {
+                                adj.push(b);
+                            }
+                        }
+                    }
+                    let (l, without) = screened(c, &adj, &mut sc);
+                    beside[k] = adj
+                        .iter()
+                        .zip(without)
+                        .map(|(&b, w)| (b, [w[0] as f32, w[1] as f32]))
+                        .collect();
+                    l
                 };
                 g_den[k] = l[0] as f32;
                 g_night[k] = l[1] as f32;
             }
         }
-        // Each building takes the highest level of the computed cells round its footprint.
+        // Each building takes the highest level of the computed cells round its footprint,
+        // without the reflection from its own facade.
         if !obstacles.is_empty() {
             for j in 0..ny {
                 for i in 0..nx {
@@ -1038,21 +1286,21 @@ pub fn estimate(input: &EstimateInput) -> Estimate {
                         continue;
                     };
                     let src = obstacles.source(b);
-                    for (di, dj) in [(-1i64, 0i64), (1, 0), (0, -1), (0, 1)] {
-                        let (ii, jj) = (i as i64 + di, j as i64 + dj);
-                        if ii < 0 || jj < 0 || ii >= nx as i64 || jj >= ny as i64 {
-                            continue;
-                        }
-                        let k = jj as usize * nx + ii as usize;
+                    for (ii, jj) in neighbours(i, j, nx, ny) {
+                        let k = jj * nx + ii;
                         if g_den[k].is_nan() {
                             continue;
                         }
+                        let [den, night] = beside[k]
+                            .iter()
+                            .find(|x| x.0 == b)
+                            .map_or([g_den[k], g_night[k]], |x| x.1);
                         let bl = &mut building_levels[src];
-                        if bl[0].is_nan() || g_den[k] > bl[0] {
-                            bl[0] = g_den[k];
+                        if bl[0].is_nan() || den > bl[0] {
+                            bl[0] = den;
                         }
-                        if bl[1].is_nan() || g_night[k] > bl[1] {
-                            bl[1] = g_night[k];
+                        if bl[1].is_nan() || night > bl[1] {
+                            bl[1] = night;
                         }
                     }
                 }
@@ -1079,7 +1327,48 @@ pub fn estimate(input: &EstimateInput) -> Estimate {
         grid,
         building_levels,
         input_level: "planned",
+        terrain: obstacles.has_ground(),
     }
+}
+
+/// Scratch of the screened receivers.
+#[derive(Default)]
+struct Scratch {
+    /// Energy per owner and variant.
+    energy: Vec<[f64; 3]>,
+    /// Central energy of the own facade reflections per building beside the receiver, per owner.
+    own: Vec<Vec<f64>>,
+    ray: RayScratch,
+    /// Paired elements within reach.
+    near: Vec<usize>,
+    /// Walls near the receiver.
+    walls: Vec<usize>,
+    /// Candidate lateral paths.
+    lateral: Vec<Candidate>,
+}
+
+/// A path whose lateral paths may count.
+#[derive(Debug, Clone, Copy)]
+struct Candidate {
+    /// A paired element (else a single one), and its index.
+    pair: bool,
+    i: usize,
+    /// Horizontal distance, m.
+    d: f64,
+    /// Upper bound of the L_den and L_night energy the lateral paths add.
+    ub: [f64; 2],
+    /// Buildings above the line of sight.
+    ids: [u32; LATERAL_MAX_BUILDINGS],
+    n: u8,
+}
+
+/// Purpose: the four grid neighbours of cell (i, j) inside an nx × ny grid.
+fn neighbours(i: usize, j: usize, nx: usize, ny: usize) -> impl Iterator<Item = (usize, usize)> {
+    [(-1i64, 0i64), (1, 0), (0, -1), (0, 1)]
+        .into_iter()
+        .map(move |(di, dj)| (i as i64 + di, j as i64 + dj))
+        .filter(move |&(a, b)| a >= 0 && b >= 0 && a < nx as i64 && b < ny as i64)
+        .map(|(a, b)| (a as usize, b as usize))
 }
 
 /// Distance where the level (relative to the threshold, per probe distance) last falls below 0,
