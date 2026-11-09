@@ -1,3 +1,4 @@
+import { tNow } from "../../i18n/i18n";
 import type {
   ExpressionSpecification,
   GeoJSONSource,
@@ -18,8 +19,8 @@ export type BuildingTileFetcher = (x: number, y: number) => Promise<NoiseBuildin
 /** Purpose: fetch one tile of OSM building footprints from the API (cached server-side). */
 export const fetchBuildingTile: BuildingTileFetcher = async (x, y) => {
   const res = await fetch(`/api/street-network/building-tiles/${BUILDING_TILE_ZOOM}/${x}/${y}`);
-  if (res.status === 401) throw new Error("Sign in to load buildings.");
-  if (!res.ok) throw new Error("OpenStreetMap buildings are unavailable right now.");
+  if (res.status === 401) throw new Error(tNow("noise.signIn"));
+  if (!res.ok) throw new Error(tNow("noise.buildingsDown"));
   return ((await res.json()) as { buildings?: NoiseBuilding[] }).buildings ?? [];
 };
 

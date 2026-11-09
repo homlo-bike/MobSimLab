@@ -1,6 +1,7 @@
 import { Marker, type Map as MapLibreMap, type MapMouseEvent } from "maplibre-gl";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { tNow, useI18n } from "../i18n/i18n";
 import type { PluginLineInput } from "../features/journey-planner/network";
 import { centralValues, contextLabel, findMode, type PluginTool } from "../plugins/registry";
 import { loadKits, vesselType } from "./engine";
@@ -49,7 +50,7 @@ interface Props {
 function emptyDoc(tool: PluginTool): WaterDoc {
   const mode = findMode(tool.modes[0] ?? "")?.mode;
   return {
-    name: "Ferry 1",
+    name: tNow("ferry.defaultName"),
     mode: mode?.id ?? "",
     vessel: mode?.defaultContext ?? "",
     piers: [],
@@ -88,6 +89,7 @@ export function WaterRouteEditor({
   loadKits: load = loadKits,
   onLineChange,
 }: Props) {
+  const { t, tn } = useI18n();
   const [kits, setKits] = useState<Kits | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [doc, setDoc] = useState<WaterDoc>(() => loadLocal(storageKey, emptyDoc(tool)));
@@ -99,7 +101,7 @@ export function WaterRouteEditor({
     let alive = true;
     load().then(
       (k) => alive && setKits(k),
-      (e) => setError(`The ferry kit did not start: ${e instanceof Error ? e.message : String(e)}`),
+      (e) => setError(tNow("ferry.engineFailed", { error: e instanceof Error ? e.message : String(e) })),
     );
     return () => {
       alive = false;
@@ -141,7 +143,7 @@ export function WaterRouteEditor({
     if (!view || view.directions.length < 2) return changed.current?.(null);
     const order = doc.calls.map((c) => c.pier);
     const stops = order.map((p) => ({
-      name: doc.piers[p]?.name || `Pier ${p + 1}`,
+      name: doc.piers[p]?.name || tNow("ferry.pier", { n: p + 1 }),
       lonlat: doc.piers[p]!.lonlat,
     }));
     const n = order.length;
@@ -180,7 +182,7 @@ export function WaterRouteEditor({
   useEffect(() => {
     if (!map) return;
     const markers = doc.piers.map((p, i) => {
-      const el = stationElement(i + 1, p.name || `Pier ${i + 1}`, color, false);
+      const el = stationElement(i + 1, p.name || tNow("ferry.pier", { n: i + 1 }), color, false);
       el.addEventListener("click", (e) => {
         e.stopPropagation();
         // In pier mode, clicking an existing pier calls there again (a loop or a return visit).
@@ -210,7 +212,10 @@ export function WaterRouteEditor({
       if (mode === "pier")
         setDoc((d) => ({
           ...d,
-          piers: [...d.piers, { name: `Pier ${d.piers.length + 1}`, lonlat: p, berths: 1, gangways: 1 }],
+          piers: [
+            ...d.piers,
+            { name: tNow("ferry.pier", { n: d.piers.length + 1 }), lonlat: p, berths: 1, gangways: 1 },
+          ],
           calls: [...d.calls, { pier: d.piers.length, via: [] }],
         }));
       else if (mode === "via")
@@ -232,35 +237,35 @@ export function WaterRouteEditor({
     setDoc((d) => ({ ...d, piers: d.piers.map((x, k) => (k === i ? { ...x, ...patch } : x)) }));
   const where = (i: { station?: number; section?: number }) =>
     i.station !== undefined
-      ? doc.piers[i.station]?.name || `pier ${i.station + 1}`
+      ? doc.piers[i.station]?.name || t("ferry.pierLower", { n: i.station + 1 })
       : i.section !== undefined
-        ? `leg ${i.section + 1}`
+        ? t("ferry.legLower", { n: i.section + 1 })
         : null;
   const modes = tool.modes.map((id) => findMode(id)?.mode).filter((x) => x !== undefined);
   const hints: Record<Tool, string> = {
-    pier: "Click the shore to add the next pier. Click an existing pier to call there again.",
-    via: `Click the water to add a via point to leg ${(leg ?? doc.calls.length - 2) + 1}.`,
-    zone: "Click the corners of a speed zone, then press Finish zone.",
+    pier: t("ferry.hint.pier"),
+    via: t("ferry.hint.via", { n: (leg ?? doc.calls.length - 2) + 1 }),
+    zone: t("ferry.hint.zone"),
   };
   const num = (v: string, min = 0) => Math.max(min, Number(v) || 0);
 
   const body = (
     <div className="flex flex-col gap-3 px-4 pt-1 pb-5 text-sm md:px-5">
       <input
-        aria-label="Line name"
+        aria-label={t("kit.lineName")}
         className="rounded-lg border border-slate-300 px-2.5 py-1.5"
         value={doc.name}
         onChange={(e) => setDoc({ ...doc, name: e.target.value })}
       />
-      <div className="seg" role="tablist" aria-label="Tool">
+      <div className="seg" role="tablist" aria-label={t("kit.tool")}>
         <button type="button" role="tab" aria-selected={mode === "pier"} onClick={() => setMode("pier")}>
-          Piers
+          {t("ferry.piers")}
         </button>
         <button type="button" role="tab" aria-selected={mode === "via"} onClick={() => setMode("via")}>
-          Via points
+          {t("ferry.via")}
         </button>
         <button type="button" role="tab" aria-selected={mode === "zone"} onClick={() => setMode("zone")}>
-          Speed zone
+          {t("ferry.zone")}
         </button>
       </div>
       <p className="text-xs text-slate-500">{hints[mode]}</p>
@@ -276,7 +281,7 @@ export function WaterRouteEditor({
                 zones: [
                   ...d.zones,
                   {
-                    name: `Zone ${d.zones.length + 1}`,
+                    name: tNow("ferry.zoneName", { n: d.zones.length + 1 }),
                     ring: draft,
                     max_kn: values["ferry.harbour_speed_kn"] ?? 6,
                   },
@@ -285,17 +290,17 @@ export function WaterRouteEditor({
               setDraft([]);
             }}
           >
-            Finish zone
+            {t("ferry.finishZone")}
           </button>
           {draft.length > 0 && (
             <button type="button" className="btn min-h-9" onClick={() => setDraft([])}>
-              Cancel
+              {t("ferry.cancel")}
             </button>
           )}
         </div>
       )}
       <label className="flex flex-col gap-1">
-        <span className="text-xs font-medium text-slate-600">Vessel type</span>
+        <span className="text-xs font-medium text-slate-600">{t("ferry.vessel")}</span>
         <select
           className="rounded-lg border border-slate-300 px-2 py-1.5"
           value={`${doc.mode}|${doc.vessel}`}
@@ -315,7 +320,7 @@ export function WaterRouteEditor({
       </label>
       <div className="grid grid-cols-2 gap-2">
         <label className="flex flex-col gap-1">
-          <span className="text-xs font-medium text-slate-600">Every (min)</span>
+          <span className="text-xs font-medium text-slate-600">{t("ferry.every")}</span>
           <input
             type="number"
             min={2}
@@ -325,7 +330,7 @@ export function WaterRouteEditor({
           />
         </label>
         <label className="flex flex-col gap-1">
-          <span className="text-xs font-medium text-slate-600">Service speed (kn)</span>
+          <span className="text-xs font-medium text-slate-600">{t("ferry.speed")}</span>
           <input
             type="number"
             min={1}
@@ -335,7 +340,7 @@ export function WaterRouteEditor({
           />
         </label>
         <label className="flex flex-col gap-1">
-          <span className="text-xs font-medium text-slate-600">Layover at the ends (min)</span>
+          <span className="text-xs font-medium text-slate-600">{t("ferry.layover")}</span>
           <input
             type="number"
             min={0}
@@ -345,7 +350,7 @@ export function WaterRouteEditor({
           />
         </label>
         <label className="flex flex-col gap-1">
-          <span className="text-xs font-medium text-slate-600">On and off at the busiest pier</span>
+          <span className="text-xs font-medium text-slate-600">{t("ferry.pax")}</span>
           <input
             type="number"
             min={0}
@@ -360,24 +365,26 @@ export function WaterRouteEditor({
           {error}
         </p>
       )}
-      {!kits && !error && <p className="text-slate-500">Starting the ferry kit…</p>}
+      {!kits && !error && <p className="text-slate-500">{t("ferry.starting")}</p>}
       {view && view.legs.length > 0 && (
-        <div className="grid grid-cols-2 gap-2" aria-label="Summary">
-          <Stat label="Length" value={fmtLen(view.length_m)} />
-          <Stat label="Trip time" value={fmtDur(view.trip_time_s)} />
-          <Stat label="Vessels" value={String(view.vessels)} />
-          <Stat label="Capacity per direction" value={`${fmtInt(view.capacity_pphpd)} p/h`} />
-          <Stat label="Round trip" value={fmtDur(view.cycle_s)} />
+        <div className="grid grid-cols-2 gap-2" aria-label={t("kit.summary")}>
+          <Stat label={t("kit.length")} value={fmtLen(view.length_m)} />
+          <Stat label={t("kit.tripTime")} value={fmtDur(view.trip_time_s)} />
+          <Stat label={t("ferry.vessels")} value={String(view.vessels)} />
+          <Stat label={t("kit.capacity")} value={t("kit.pph", { n: fmtInt(view.capacity_pphpd) })} />
+          <Stat label={t("ferry.roundTrip")} value={fmtDur(view.cycle_s)} />
           <Stat
-            label="Berth waits (3 h)"
-            value={view.holds ? `${view.holds}, ${fmtDur(view.held_s)}` : "None"}
+            label={t("ferry.berthWaits")}
+            value={
+              view.holds ? t("ferry.holds", { n: view.holds, time: fmtDur(view.held_s) }) : t("ferry.none")
+            }
           />
         </div>
       )}
       {view && <Issues issues={view.issues} where={where} />}
-      <section aria-label="Piers" className="flex flex-col gap-2">
-        <h3 className="font-semibold">Piers</h3>
-        {doc.piers.length === 0 && <p className="text-slate-500">No piers yet.</p>}
+      <section aria-label={t("ferry.piers")} className="flex flex-col gap-2">
+        <h3 className="font-semibold">{t("ferry.piers")}</h3>
+        {doc.piers.length === 0 && <p className="text-slate-500">{t("ferry.noPiers")}</p>}
         {doc.piers.map((p, i) => {
           const use = view?.berths.find((b) => b.pier === i);
           return (
@@ -387,7 +394,7 @@ export function WaterRouteEditor({
                   {i + 1}
                 </span>
                 <input
-                  aria-label={`Pier ${i + 1} name`}
+                  aria-label={t("ferry.pierName", { n: i + 1 })}
                   className="min-w-0 flex-1 rounded border border-slate-300 px-2 py-1"
                   value={p.name}
                   onChange={(e) => setPier(i, { name: e.target.value })}
@@ -397,27 +404,27 @@ export function WaterRouteEditor({
                   className="btn min-h-8 px-2 text-xs"
                   onClick={() => setDoc(removePier(doc, i))}
                 >
-                  Delete
+                  {t("kit.delete")}
                 </button>
               </div>
               <div className="mt-1.5 flex flex-wrap items-center gap-3 text-xs">
                 <label className="flex items-center gap-1">
-                  Berths
+                  {t("ferry.berths")}
                   <input
                     type="number"
                     min={1}
-                    aria-label={`Pier ${i + 1} berths`}
+                    aria-label={t("ferry.berthsOf", { n: i + 1 })}
                     className="w-14 rounded border border-slate-300 px-1.5 py-0.5"
                     value={p.berths}
                     onChange={(e) => setPier(i, { berths: num(e.target.value, 1) })}
                   />
                 </label>
                 <label className="flex items-center gap-1">
-                  Gangways
+                  {t("ferry.gangways")}
                   <input
                     type="number"
                     min={1}
-                    aria-label={`Pier ${i + 1} gangways`}
+                    aria-label={t("ferry.gangwaysOf", { n: i + 1 })}
                     className="w-14 rounded border border-slate-300 px-1.5 py-0.5"
                     value={p.gangways}
                     onChange={(e) => setPier(i, { gangways: num(e.target.value, 1) })}
@@ -425,7 +432,7 @@ export function WaterRouteEditor({
                 </label>
                 {use && (
                   <span className={use.holds ? "text-amber-800" : "text-slate-500"}>
-                    Up to {use.peak} vessel{use.peak === 1 ? "" : "s"} at once
+                    {tn("ferry.upTo", use.peak)}
                   </span>
                 )}
               </div>
@@ -434,8 +441,8 @@ export function WaterRouteEditor({
         })}
       </section>
       {view && view.legs.length > 0 && (
-        <section aria-label="Legs" className="flex flex-col gap-1">
-          <h3 className="font-semibold">Legs</h3>
+        <section aria-label={t("ferry.legs")} className="flex flex-col gap-1">
+          <h3 className="font-semibold">{t("ferry.legs")}</h3>
           {view.legs.map((l, i) => (
             <div key={i} className="flex flex-wrap items-center gap-2 text-xs">
               <button
@@ -446,10 +453,14 @@ export function WaterRouteEditor({
                   setMode("via");
                 }}
               >
-                Leg {i + 1}
+                {t("ferry.leg", { n: i + 1 })}
               </button>
-              {fmtLen(l.length_m)}, {fmtDur(l.time_s)}
-              {l.slow_m > 0 && <span className="text-slate-500">({fmtLen(l.slow_m)} slowed)</span>}
+              {fmtLen(l.length_m)}
+              {t("setup.x.sep")}
+              {fmtDur(l.time_s)}
+              {l.slow_m > 0 && (
+                <span className="text-slate-500">{t("ferry.slowed", { len: fmtLen(l.slow_m) })}</span>
+              )}
               {(doc.calls[i + 1]?.via.length ?? 0) > 0 && (
                 <button
                   type="button"
@@ -461,7 +472,7 @@ export function WaterRouteEditor({
                     }))
                   }
                 >
-                  Clear via points
+                  {t("ferry.clearVia")}
                 </button>
               )}
             </div>
@@ -471,20 +482,20 @@ export function WaterRouteEditor({
             className="self-start text-xs text-red-700 underline"
             onClick={() => setDoc((d) => ({ ...d, calls: d.calls.slice(0, -1) }))}
           >
-            Remove the last call
+            {t("ferry.removeLast")}
           </button>
         </section>
       )}
       {doc.zones.length > 0 && (
-        <section aria-label="Speed zones" className="flex flex-col gap-1">
-          <h3 className="font-semibold">Speed zones</h3>
+        <section aria-label={t("ferry.zones")} className="flex flex-col gap-1">
+          <h3 className="font-semibold">{t("ferry.zones")}</h3>
           {doc.zones.map((z, i) => (
             <div key={i} className="flex items-center gap-2 text-xs">
-              {z.name}, limit
+              {t("ferry.zoneLimit", { name: z.name })}
               <input
                 type="number"
                 min={1}
-                aria-label={`${z.name} speed limit`}
+                aria-label={t("ferry.zoneLimitOf", { name: z.name })}
                 className="w-14 rounded border border-slate-300 px-1.5 py-0.5"
                 value={z.max_kn}
                 onChange={(e) =>
@@ -494,21 +505,24 @@ export function WaterRouteEditor({
                   }))
                 }
               />
-              kn
+              {t("ferry.kn")}
               <button
                 type="button"
                 className="text-red-700 underline"
                 onClick={() => setDoc((d) => ({ ...d, zones: d.zones.filter((_, k) => k !== i) }))}
               >
-                Remove
+                {t("kit.remove")}
               </button>
             </div>
           ))}
         </section>
       )}
       <p className="text-[11px] text-slate-500">
-        Values come from the {found?.plugin.name ?? "ferry"} plugin&apos;s assumptions (
-        {contextLabel(doc.mode, doc.vessel)}). Car ferries come later. The drawing is kept on this device.
+        {t("kit.valuesFrom", {
+          plugin: found?.plugin.name ?? t("ferry.plugin"),
+          context: contextLabel(doc.mode, doc.vessel),
+        })}{" "}
+        {t("ferry.carLater")} {t("kit.keptHere")}
       </p>
     </div>
   );

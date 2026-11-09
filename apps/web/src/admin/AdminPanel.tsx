@@ -1,4 +1,5 @@
 import { type FormEvent, useCallback, useEffect, useState } from "react";
+import { formatDateTime, tNow, useI18n } from "../i18n/i18n";
 import { get, send } from "../session/api";
 
 const ROLES = ["owner", "admin", "user", "viewer", "restricted"] as const;
@@ -43,6 +44,9 @@ interface AuditRecord {
 
 type Tab = "users" | "signup" | "audit";
 
+/** Purpose: a role's name for the admin lists. */
+const roleName = (r: string) => tNow(`admin.role.${r as Role}`);
+
 /**
  * Administration (05 §4): users, sign-up rules with group mappings, and the audit log.
  * Shown to Owners and Admins. Admins are not offered the Owner and Admin roles; the API enforces this too.
@@ -58,6 +62,7 @@ export function AdminPanel({
   csrfToken: string;
   onClose: () => void;
 }) {
+  const { t } = useI18n();
   const [tab, setTab] = useState<Tab>("users");
   const [error, setError] = useState<string | null>(null);
   const offered = role === "owner" ? ROLES : ROLES.filter((r) => r !== "owner" && r !== "admin");
@@ -73,33 +78,33 @@ export function AdminPanel({
 
   return (
     <section
-      aria-label="Administration"
+      aria-label={t("admin.title")}
       className="absolute inset-4 z-20 flex flex-col rounded border border-slate-300 bg-white text-sm shadow-lg"
     >
       <header className="flex items-center gap-3 border-b border-slate-200 px-4 py-2">
-        <h2 className="font-semibold">Administration</h2>
+        <h2 className="font-semibold">{t("admin.title")}</h2>
         <nav role="tablist" className="flex gap-1">
           {(
             [
-              ["users", "Users"],
-              ["signup", "Sign-up rules"],
-              ["audit", "Audit log"],
+              ["users", t("admin.users")],
+              ["signup", t("admin.signup")],
+              ["audit", t("admin.audit")],
             ] as const
-          ).map(([t, label]) => (
+          ).map(([id, label]) => (
             <button
-              key={t}
+              key={id}
               type="button"
               role="tab"
-              aria-selected={tab === t}
-              className={`rounded px-2 py-1 ${tab === t ? "bg-slate-800 text-white" : "hover:bg-slate-100"}`}
-              onClick={() => setTab(t)}
+              aria-selected={tab === id}
+              className={`rounded px-2 py-1 ${tab === id ? "bg-slate-800 text-white" : "hover:bg-slate-100"}`}
+              onClick={() => setTab(id)}
             >
               {label}
             </button>
           ))}
         </nav>
-        <button type="button" className="ml-auto rounded border border-slate-300 px-2 py-1" onClick={onClose}>
-          Close
+        <button type="button" className="ms-auto rounded border border-slate-300 px-2 py-1" onClick={onClose}>
+          {t("agents.close")}
         </button>
       </header>
       {error && (
@@ -127,6 +132,7 @@ interface TabProps {
 const privileged = (r: Role) => r === "owner" || r === "admin";
 
 function Users({ csrfToken, run, offered, userId, actorRole }: TabProps) {
+  const { t } = useI18n();
   const [rows, setRows] = useState<UserRow[]>([]);
   const [q, setQ] = useState("");
   const [showDeleted, setShowDeleted] = useState(false);
@@ -148,8 +154,9 @@ function Users({ csrfToken, run, offered, userId, actorRole }: TabProps) {
   const patch = (u: UserRow, body: object) =>
     act(() => send("PATCH", `/api/admin/users/${u.id}`, csrfToken, body));
   const remove = (u: UserRow) => {
-    const what = u.status === "pending" ? "Reject" : "Delete";
-    const reason = window.prompt(`${what} ${u.email ?? u.id}? Optional reason for the audit log:`);
+    const reason = window.prompt(
+      t(u.status === "pending" ? "admin.rejectPrompt" : "admin.deletePrompt", { who: u.email ?? u.id }),
+    );
     if (reason === null) return;
     void act(() => send("DELETE", `/api/admin/users/${u.id}`, csrfToken, reason ? { reason } : {}));
   };
@@ -158,26 +165,26 @@ function Users({ csrfToken, run, offered, userId, actorRole }: TabProps) {
     <div className="flex flex-col gap-3">
       <div className="flex items-center gap-3">
         <input
-          aria-label="Search users"
-          placeholder="Search name or e-mail"
+          aria-label={t("admin.search")}
+          placeholder={t("admin.searchPlaceholder")}
           className="w-64 rounded border border-slate-300 px-2 py-1"
           value={q}
           onChange={(e) => setQ(e.target.value)}
         />
         <label className="flex items-center gap-1">
           <input type="checkbox" checked={showDeleted} onChange={(e) => setShowDeleted(e.target.checked)} />
-          Show deleted
+          {t("admin.showDeleted")}
         </label>
       </div>
-      <table className="w-full text-left">
+      <table className="w-full text-start">
         <thead className="text-slate-500">
           <tr>
-            <th className="py-1">User</th>
-            <th>IdP groups</th>
-            <th>Status</th>
-            <th>Role</th>
-            <th title="Pinned roles are not changed by group mappings at sign-in">Pinned</th>
-            <th>Last sign-in</th>
+            <th className="py-1">{t("admin.col.user")}</th>
+            <th>{t("admin.col.groups")}</th>
+            <th>{t("admin.col.status")}</th>
+            <th>{t("admin.col.role")}</th>
+            <th title={t("admin.col.pinnedHint")}>{t("admin.col.pinned")}</th>
+            <th>{t("admin.col.lastSignIn")}</th>
             <th />
           </tr>
         </thead>
@@ -188,14 +195,14 @@ function Users({ csrfToken, run, offered, userId, actorRole }: TabProps) {
             return (
               <tr key={u.id} className="border-t border-slate-100">
                 <td className="py-1">
-                  {u.displayName ?? "(removed)"}
+                  {u.displayName ?? t("admin.removed")}
                   <div className="text-slate-500">{u.email}</div>
                 </td>
                 <td>{u.identities.flatMap((i) => i.groups).join(", ")}</td>
-                <td>{u.status}</td>
+                <td>{t(`admin.status.${u.status}`)}</td>
                 <td>
                   <select
-                    aria-label={`Role of ${u.email ?? u.id}`}
+                    aria-label={t("admin.roleOf", { who: u.email ?? u.id })}
                     value={u.role}
                     disabled={locked || u.status !== "active"}
                     onChange={(e) => void patch(u, { role: e.target.value })}
@@ -203,7 +210,7 @@ function Users({ csrfToken, run, offered, userId, actorRole }: TabProps) {
                   >
                     {(locked ? ROLES : offered).map((r) => (
                       <option key={r} value={r}>
-                        {r}
+                        {roleName(r)}
                       </option>
                     ))}
                   </select>
@@ -211,13 +218,13 @@ function Users({ csrfToken, run, offered, userId, actorRole }: TabProps) {
                 <td>
                   <input
                     type="checkbox"
-                    aria-label={`Pin role of ${u.email ?? u.id}`}
+                    aria-label={t("admin.pinRoleOf", { who: u.email ?? u.id })}
                     checked={u.roleOverride}
                     disabled={locked || u.status !== "active"}
                     onChange={(e) => void patch(u, { roleOverride: e.target.checked })}
                   />
                 </td>
-                <td>{u.lastLoginAt ? new Date(u.lastLoginAt).toLocaleString() : "never"}</td>
+                <td>{u.lastLoginAt ? formatDateTime(u.lastLoginAt) : t("agents.never")}</td>
                 <td className="flex gap-2 py-1">
                   {u.status === "pending" && !locked && (
                     <button
@@ -227,7 +234,7 @@ function Users({ csrfToken, run, offered, userId, actorRole }: TabProps) {
                         void act(() => send("POST", `/api/admin/users/${u.id}/approve`, csrfToken, {}))
                       }
                     >
-                      Approve
+                      {t("admin.approve")}
                     </button>
                   )}
                   {!locked && (
@@ -236,7 +243,7 @@ function Users({ csrfToken, run, offered, userId, actorRole }: TabProps) {
                       className="rounded border border-slate-300 px-2"
                       onClick={() => remove(u)}
                     >
-                      {u.status === "pending" ? "Reject" : "Delete"}
+                      {t(u.status === "pending" ? "admin.reject" : "kit.delete")}
                     </button>
                   )}
                 </td>
@@ -245,7 +252,7 @@ function Users({ csrfToken, run, offered, userId, actorRole }: TabProps) {
           })}
         </tbody>
       </table>
-      {rows.length === 0 && <p className="text-slate-500">No users found.</p>}
+      {rows.length === 0 && <p className="text-slate-500">{t("admin.noUsers")}</p>}
     </div>
   );
 }
@@ -257,6 +264,7 @@ const lines = (s: string) =>
     .filter(Boolean);
 
 function SignUp({ csrfToken, run, offered }: TabProps) {
+  const { t } = useI18n();
   const [reg, setReg] = useState<Registration | null>(null);
   const [domains, setDomains] = useState("");
   const [groups, setGroups] = useState("");
@@ -303,33 +311,30 @@ function SignUp({ csrfToken, run, offered }: TabProps) {
 
   return (
     <div className="grid gap-6 md:grid-cols-2">
-      <form onSubmit={save} className="flex flex-col gap-2" aria-label="Sign-up rules">
-        <h3 className="font-semibold">Who may sign up</h3>
+      <form onSubmit={save} className="flex flex-col gap-2" aria-label={t("admin.signup")}>
+        <h3 className="font-semibold">{t("admin.whoMay")}</h3>
         <label className="flex items-center gap-2">
           <input
             type="checkbox"
             checked={reg.autoRegistration}
             onChange={(e) => setReg({ ...reg, autoRegistration: e.target.checked })}
           />
-          Let new people in without approval
+          {t("admin.auto")}
         </label>
         <label className="flex flex-col gap-1">
-          Default role for new people
+          {t("admin.defaultRole")}
           <select
             className="w-40 rounded border border-slate-300 px-1"
             value={reg.defaultRole}
             onChange={(e) => setReg({ ...reg, defaultRole: e.target.value as Registration["defaultRole"] })}
           >
-            <option value="viewer">viewer</option>
-            <option value="user">user</option>
+            <option value="viewer">{roleName("viewer")}</option>
+            <option value="user">{roleName("user")}</option>
           </select>
         </label>
-        <p className="text-slate-500">
-          Leave both lists empty to let anyone from the sign-in provider in. Otherwise a new person needs a
-          verified e-mail in one of the domains or one of the groups; everyone else waits for approval.
-        </p>
+        <p className="text-slate-500">{t("admin.listsHelp")}</p>
         <label className="flex flex-col gap-1">
-          Allowed e-mail domains
+          {t("admin.domains")}
           <textarea
             rows={3}
             className="rounded border border-slate-300 px-2 py-1"
@@ -338,7 +343,7 @@ function SignUp({ csrfToken, run, offered }: TabProps) {
           />
         </label>
         <label className="flex flex-col gap-1">
-          Allowed IdP groups
+          {t("admin.groups")}
           <textarea
             rows={3}
             className="rounded border border-slate-300 px-2 py-1"
@@ -347,23 +352,20 @@ function SignUp({ csrfToken, run, offered }: TabProps) {
           />
         </label>
         <button type="submit" className="w-24 rounded bg-slate-800 px-2 py-1 text-white">
-          Save
+          {t("admin.save")}
         </button>
       </form>
       <div className="flex flex-col gap-2">
-        <h3 className="font-semibold">Group mappings</h3>
-        <p className="text-slate-500">
-          At every sign-in, a person&apos;s role follows their IdP groups: the highest mapped role wins, and
-          &ldquo;restricted&rdquo; wins over everything. Pinned roles are left alone.
-        </p>
+        <h3 className="font-semibold">{t("admin.mappings")}</h3>
+        <p className="text-slate-500">{t("admin.mappingsHelp", { restricted: roleName("restricted") })}</p>
         <ul className="flex flex-col gap-1">
           {mappings.map((m) => (
             <li key={m.id} className="flex items-center gap-2">
-              <span className="font-mono">{m.group}</span> → {m.role}
+              <span className="font-mono">{m.group}</span> → {roleName(m.role)}
               {(offered.includes("admin") || m.role !== "admin") && (
                 <button
                   type="button"
-                  aria-label={`Remove mapping ${m.group}`}
+                  aria-label={t("admin.removeMapping", { group: m.group })}
                   className="rounded border border-slate-300 px-1"
                   onClick={() =>
                     void run(async () => {
@@ -372,15 +374,15 @@ function SignUp({ csrfToken, run, offered }: TabProps) {
                     })
                   }
                 >
-                  Remove
+                  {t("kit.remove")}
                 </button>
               )}
             </li>
           ))}
         </ul>
-        <form onSubmit={addMapping} className="flex items-end gap-2" aria-label="Add group mapping">
+        <form onSubmit={addMapping} className="flex items-end gap-2" aria-label={t("admin.addMapping")}>
           <label className="flex flex-col gap-1">
-            Group
+            {t("admin.group")}
             <input
               required
               maxLength={200}
@@ -390,7 +392,7 @@ function SignUp({ csrfToken, run, offered }: TabProps) {
             />
           </label>
           <label className="flex flex-col gap-1">
-            Role
+            {t("admin.col.role")}
             <select
               className="rounded border border-slate-300 px-1 py-1"
               value={mapRole}
@@ -398,13 +400,13 @@ function SignUp({ csrfToken, run, offered }: TabProps) {
             >
               {mappable.map((r) => (
                 <option key={r} value={r}>
-                  {r}
+                  {roleName(r)}
                 </option>
               ))}
             </select>
           </label>
           <button type="submit" className="rounded bg-slate-800 px-2 py-1 text-white">
-            Add
+            {t("admin.add")}
           </button>
         </form>
       </div>
@@ -413,6 +415,7 @@ function SignUp({ csrfToken, run, offered }: TabProps) {
 }
 
 function Audit({ run }: { run: TabProps["run"] }) {
+  const { t } = useI18n();
   const [records, setRecords] = useState<AuditRecord[]>([]);
   const [brokenAt, setBrokenAt] = useState<number | null>(null);
   const [more, setMore] = useState(true);
@@ -436,27 +439,25 @@ function Audit({ run }: { run: TabProps["run"] }) {
   return (
     <div className="flex flex-col gap-3">
       <p role="status" className={brokenAt === null ? "text-green-800" : "font-semibold text-red-800"}>
-        {brokenAt === null
-          ? "Audit chain verified: no record has been changed or removed."
-          : `Audit chain broken at record ${brokenAt}. Records may have been tampered with.`}
+        {brokenAt === null ? t("admin.chainOk") : t("admin.chainBroken", { n: brokenAt })}
       </p>
-      <table className="w-full text-left">
+      <table className="w-full text-start">
         <thead className="text-slate-500">
           <tr>
             <th className="py-1">#</th>
-            <th>Time</th>
-            <th>Who</th>
-            <th>Action</th>
-            <th>Object</th>
-            <th>Reason</th>
+            <th>{t("jp.time")}</th>
+            <th>{t("admin.col.who")}</th>
+            <th>{t("admin.col.action")}</th>
+            <th>{t("admin.col.object")}</th>
+            <th>{t("admin.col.reason")}</th>
           </tr>
         </thead>
         <tbody>
           {records.map((r) => (
             <tr key={r.seq} className="border-t border-slate-100">
               <td className="py-1">{r.seq}</td>
-              <td>{new Date(r.at).toLocaleString()}</td>
-              <td>{r.actorEmail ?? (r.actorId ? "(removed)" : "system")}</td>
+              <td>{formatDateTime(r.at)}</td>
+              <td>{r.actorEmail ?? t(r.actorId ? "admin.removed" : "admin.system")}</td>
               <td className="font-mono">{r.action}</td>
               <td>
                 {r.objectType} {r.objectId?.slice(0, 8)}
@@ -472,7 +473,7 @@ function Audit({ run }: { run: TabProps["run"] }) {
           className="w-32 rounded border border-slate-300 px-2 py-1"
           onClick={() => void load(records[records.length - 1]?.seq)}
         >
-          Load older
+          {t("admin.older")}
         </button>
       )}
     </div>

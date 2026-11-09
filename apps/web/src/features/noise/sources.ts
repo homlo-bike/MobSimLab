@@ -1,3 +1,4 @@
+import { tNow } from "../../i18n/i18n";
 import type { LineView, VehicleProfile } from "../street-lines/types";
 import type { Network, RailView, TrackView } from "../railways/types";
 import type { Flows, NoiseCheck, NoiseLine, NoiseRange } from "./types";
@@ -25,7 +26,7 @@ export function streetLineSources(
       const speed = l.time_s > 0 ? (l.length_m / l.time_s) * 3.6 : 30;
       return {
         id: `leg-${l.index}`,
-        label: `After point ${l.index + 1}`,
+        label: tNow("noise.afterPoint", { n: l.index + 1 }),
         mode: profile.mode,
         electric: electric || profile.mode === "trolleybus",
         vehicle_length_m: profile.length_m,
@@ -69,7 +70,7 @@ export function railSources(doc: Network, view: RailView, flows: Flows): NoiseLi
       const p = view.modes[t.mode]?.params ?? view.params;
       return {
         id: `track-${t.id}`,
-        label: view.tracks.length > 1 ? `Track ${t.id}` : "",
+        label: view.tracks.length > 1 ? tNow("noise.track", { id: t.id }) : "",
         mode: t.mode,
         vehicle_length_m: view.train_length_m || 100,
         flows: {
@@ -98,5 +99,5 @@ export const RAIL_FLOWS: Record<string, Flows> = {
 
 /** Purpose: noise checks with "Noise: " in front, for an editor's Checks list. */
 export function noiseCheckText(c: NoiseCheck): string {
-  return `Noise: ${c.text}.`;
+  return tNow("noise.check", { text: c.text });
 }

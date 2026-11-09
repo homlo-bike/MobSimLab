@@ -1,3 +1,4 @@
+import { tNow } from "../../i18n/i18n";
 import type { Timing } from "./modes";
 import type { LineView, LonLat } from "./types";
 
@@ -56,22 +57,36 @@ export function lineChecks(view: LineView): Check[] {
   const out: Check[] = [];
   const n = view.points.length;
   for (const p of view.points) {
-    if (p.message) out.push({ sev: "error", text: `Point ${p.seq + 1}: ${p.message}`, point: p.id });
+    if (p.message)
+      out.push({
+        sev: "error",
+        text: tNow("street.check.point", { n: p.seq + 1, message: p.message }),
+        point: p.id,
+      });
   }
   for (const l of view.legs) {
     const from = view.points[l.index]!;
     if (l.status === "error" && !from.message && !view.points[(l.index + 1) % n]?.message) {
-      out.push({ sev: "error", text: `After point ${l.index + 1}: ${l.message}`, point: from.id });
+      out.push({
+        sev: "error",
+        text: tNow("street.check.after", { n: l.index + 1, message: l.message ?? "" }),
+        point: from.id,
+      });
     } else if (l.message) {
       out.push({
         sev: l.status === "warning" ? "warn" : "info",
-        text: `After point ${l.index + 1}: ${l.message}`,
+        text: tNow("street.check.after", { n: l.index + 1, message: l.message }),
         point: from.id,
       });
     }
   }
   for (const t of view.depot_trips) {
-    if (t.status === "error") out.push({ sev: "error", text: `Depot: ${t.message}`, point: t.stop });
+    if (t.status === "error")
+      out.push({
+        sev: "error",
+        text: tNow("street.check.depot", { message: t.message ?? "" }),
+        point: t.stop,
+      });
   }
   for (const i of view.issues) {
     if (i.startsWith("Some legs cannot be driven")) continue;
@@ -81,18 +96,18 @@ export function lineChecks(view: LineView): Check[] {
   if (n < 2) {
     out.push({
       sev: "info",
-      text: "Click on at least two streets to make a line. The last point routes back to the first.",
+      text: tNow("street.check.twoPoints"),
     });
   } else if (!view.points.some((p) => p.kind === "end_stop")) {
     out.push({
       sev: "info",
-      text: "Mark an end stop. End stops hold layover time and split the circuit into directions for the timetable.",
+      text: tNow("street.check.endStop"),
     });
   }
   if (n >= 2 && !out.some((c) => c.sev === "error" || c.sev === "warn")) {
     out.unshift({
       sev: "ok",
-      text: "Every leg is routed legally: no U-turns, every stop approached with its sidewalk on the door side.",
+      text: tNow("street.check.legal"),
     });
   }
   const rank: Record<Severity, number> = { error: 0, warn: 1, ok: 2, info: 3 };

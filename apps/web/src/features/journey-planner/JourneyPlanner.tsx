@@ -1,6 +1,7 @@
 import { Marker, type Map as MapLibreMap, type MapMouseEvent } from "maplibre-gl";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { tNow, useI18n } from "../../i18n/i18n";
 import { loadWasmPlanner } from "./engine";
 import { clock, duration, minutes, PARTS, parseClock } from "./format";
 import { drawJourney, drawNetwork, ensureLayers, removeLayers } from "./mapLayers";
@@ -47,7 +48,8 @@ const PROFILE_END = 25 * 3600;
 const NO_PLUGIN_LINES: readonly PluginLineInput[] = [];
 
 /** Purpose: a headway as "45 s" or "15 min". */
-const formatHeadway = (s: number) => (s < 120 ? `${Math.round(s)} s` : `${Math.round(s / 60)} min`);
+const formatHeadway = (s: number) =>
+  s < 120 ? tNow("jp.s", { n: Math.round(s) }) : tNow("jp.min", { n: Math.round(s / 60) });
 
 const EMPTY_TT: Timetable = { stops: [], routes: [], trips: [], transfers: [], frequency_patterns: [] };
 
@@ -68,8 +70,12 @@ function steps(j: Journey): Step[] {
     } else if (l.type === "walk" && l.kind !== "transfer") {
       const to = l.kind === "access" ? l.to.name : "B";
       const what =
-        l.kind === "direct" ? "Walk all the way to B" : `Walk ${Math.round(l.distance_m)} m to ${to}`;
-      out.push({ kind: "walk", at: l.start_s, text: `${what} · ${duration(l.end_s - l.start_s)}` });
+        l.kind === "direct" ? tNow("jp.walkAll") : tNow("jp.walkTo", { m: Math.round(l.distance_m), to });
+      out.push({
+        kind: "walk",
+        at: l.start_s,
+        text: tNow("jp.stepTime", { what, time: duration(l.end_s - l.start_s) }),
+      });
     } else if (l.type === "walk" || (l.type === "wait" && l.kind === "transfer")) {
       // A change: an optional transfer walk followed by an optional wait.
       const walk = l.type === "walk" ? l : null;
@@ -78,14 +84,18 @@ function steps(j: Journey): Step[] {
       if (walk && wait) i++;
       const where = walk
         ? walk.to.platform_code
-          ? `platform ${walk.to.platform_code}`
+          ? tNow("jp.platform", { code: walk.to.platform_code })
           : walk.to.name
         : (wait!.at.platform_code ?? wait!.at.name);
       const parts = [
-        walk && `${duration(walk.end_s - walk.start_s)} walk`,
-        wait && `${duration(wait.end_s - wait.start_s)} wait`,
+        walk && tNow("jp.walkPart", { time: duration(walk.end_s - walk.start_s) }),
+        wait && tNow("jp.waitPart", { time: duration(wait.end_s - wait.start_s) }),
       ].filter(Boolean);
-      out.push({ kind: "change", at: l.start_s, text: `Change to ${where} · ${parts.join(", ")}` });
+      out.push({
+        kind: "change",
+        at: l.start_s,
+        text: tNow("jp.changeTo", { where, parts: parts.join(tNow("setup.x.sep")) }),
+      });
     }
   }
   return out;
@@ -101,7 +111,7 @@ function median(xs: number[]): number {
 function pinElement(label: string): HTMLElement {
   const el = document.createElement("div");
   el.textContent = label;
-  el.setAttribute("aria-label", `Point ${label}`);
+  el.setAttribute("aria-label", tNow("jp.point", { label }));
   Object.assign(el.style, {
     width: "30px",
     height: "30px",
@@ -127,7 +137,7 @@ function nearName(tt: Timetable | null, p: LonLat): string | null {
     const d = Math.hypot((s.stop_lon - p[0]) * k, s.stop_lat - p[1]) * 111_320;
     if (d <= 1000 && (!best || d < best.d)) best = { d, name: s.stop_name };
   }
-  return best ? `Near ${best.name}` : null;
+  return best ? tNow("jp.near", { name: best.name }) : null;
 }
 
 /**
@@ -144,6 +154,7 @@ export function JourneyPlanner({
   pluginLines = NO_PLUGIN_LINES,
   loadPlanner = loadWasmPlanner,
 }: Props) {
+  const { t, tn } = useI18n();
   const [skipped, setSkipped] = useState<ReadonlySet<string>>(new Set());
   const [useStreet, setUseStreet] = useState(true);
   const [useRailLines, setUseRailLines] = useState(true);
@@ -195,7 +206,7 @@ export function JourneyPlanner({
         setError(null);
       })
       .catch((err) =>
-        setError(`The journey planner did not start: ${err instanceof Error ? err.message : String(err)}`),
+        setError(tNow("jp.engineFailed", { error: err instanceof Error ? err.message : String(err) })),
       );
     return () => {
       alive = false;
@@ -318,16 +329,20 @@ export function JourneyPlanner({
       {streetLine && (
         <label className="flex items-center gap-2">
           <input type="checkbox" checked={useStreet} onChange={(e) => setUseStreet(e.target.checked)} />
-          Street line “{streetLine.name}” (every {streetLine.headwayMin} min, peak every{" "}
-          {Math.max(1, Math.round(streetLine.headwayMin / 2))} min)
+          {t("jp.streetLine", {
+            name: streetLine.name,
+            headway: streetLine.headwayMin,
+            peak: Math.max(1, Math.round(streetLine.headwayMin / 2)),
+          })}
         </label>
       )}
       {railLines && (railLines.trips.length > 0 || railLines.frequency_patterns?.length > 0) && (
         <label className="flex items-center gap-2">
           <input type="checkbox" checked={useRailLines} onChange={(e) => setUseRailLines(e.target.checked)} />
-          Rail lines from the railway tool: {railLines.routes
-            .map((r) => r.route_short_name)
-            .join(", ")} · {railLines.trips.length} trips
+          {t("jp.railLines", {
+            names: railLines.routes.map((r) => r.route_short_name).join(t("setup.x.sep")),
+            trips: railLines.trips.length,
+          })}
         </label>
       )}
       {pluginLines.map((l) => (
@@ -344,23 +359,22 @@ export function JourneyPlanner({
               })
             }
           />
-          {l.mode === "ferry" ? "Ferry" : "Cable car"} “{l.name}” (every {formatHeadway(l.headwayS)})
+          {t(l.mode === "ferry" ? "jp.ferry" : "jp.cableCar", {
+            name: l.name,
+            headway: formatHeadway(l.headwayS),
+          })}
         </label>
       ))}
-      {!timetable && (
-        <p className="text-xs text-slate-600">
-          No timetable yet. Draw a street line, or create and publish rail service lines in the railway tool.
-          Trains and street lines connect at stations of the same name.
-        </p>
-      )}
+      {!timetable && <p className="text-xs text-slate-600">{t("jp.noTimetable")}</p>}
       {summary && (
         <p className="text-xs text-slate-600" data-testid="network-summary">
-          {summary.stops} stops · {summary.routes} lines · {summary.trips} trips
+          {t("jp.summary", { stops: summary.stops, routes: summary.routes, trips: summary.trips })}
           {summary.first_departure_s !== null &&
-            ` · service ${clock(summary.first_departure_s)}–${clock(summary.last_arrival_s ?? 0)}`}
-          {summary.joined_by_name
-            ? ` · ${summary.joined_by_name} ${summary.joined_by_name === 1 ? "stop" : "stops"} joined to a station by name`
-            : ""}
+            t("jp.service", {
+              from: clock(summary.first_departure_s),
+              to: clock(summary.last_arrival_s ?? 0),
+            })}
+          {summary.joined_by_name ? tn("jp.joined", summary.joined_by_name) : ""}
         </p>
       )}
       {summary?.warnings.slice(0, 3).map((w) => (
@@ -375,24 +389,24 @@ export function JourneyPlanner({
     <div className="flex min-h-full flex-col text-sm text-slate-900">
       {/* Question: A, B, time. */}
       <div className="flex flex-col gap-3 border-b border-slate-200 px-5 pb-4 pt-5">
-        <h2 className="text-lg font-semibold">Journey planner</h2>
+        <h2 className="text-lg font-semibold">{t("jp.title")}</h2>
         <div className="flex flex-col overflow-hidden rounded-lg border border-slate-300">
           {(["a", "b"] as const).map((k) => {
             const pos = k === "a" ? a : b;
             const label =
               picking === k
-                ? "Click the map…"
+                ? t("jp.clickMap")
                 : pos
                   ? (nearName(timetable, pos) ?? `${pos[1].toFixed(4)}, ${pos[0].toFixed(4)}`)
-                  : "Pick on the map";
+                  : t("jp.pickMap");
             return (
               <button
                 key={k}
                 type="button"
                 aria-pressed={picking === k}
-                aria-label={`${k.toUpperCase()}: ${label}`}
+                aria-label={t("jp.pointButton", { point: k.toUpperCase(), label })}
                 onClick={() => setPicking(picking === k ? null : k)}
-                className={`flex h-11 items-center gap-2.5 px-3 text-left ${k === "a" ? "border-b border-slate-200" : ""} ${picking === k ? "bg-blue-50" : "bg-white hover:bg-slate-50"}`}
+                className={`flex h-11 items-center gap-2.5 px-3 text-start ${k === "a" ? "border-b border-slate-200" : ""} ${picking === k ? "bg-blue-50" : "bg-white hover:bg-slate-50"}`}
               >
                 <span
                   className={`flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full text-xs font-bold ${k === "a" ? "bg-slate-900 text-white" : "border-2 border-slate-900"}`}
@@ -405,11 +419,11 @@ export function JourneyPlanner({
           })}
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <div role="radiogroup" aria-label="Time" className="flex rounded-lg bg-slate-100 p-[3px]">
+          <div role="radiogroup" aria-label={t("jp.time")} className="flex rounded-lg bg-slate-100 p-[3px]">
             {(
               [
-                ["depart_at", "Depart at"],
-                ["arrive_by", "Arrive by"],
+                ["depart_at", t("jp.departAt")],
+                ["arrive_by", t("jp.arriveBy")],
               ] as const
             ).map(([m, label]) => (
               <button
@@ -425,16 +439,16 @@ export function JourneyPlanner({
             ))}
           </div>
           <label className="flex h-[38px] items-center gap-1.5 rounded-lg border border-slate-300 px-2.5">
-            <span className="text-slate-600">Time</span>
+            <span className="text-slate-600">{t("jp.time")}</span>
             <input
               type="time"
-              aria-label="Time of day"
+              aria-label={t("jp.timeOfDay")}
               value={timeText}
               onChange={(e) => setTimeText(e.target.value)}
               className="w-28 border-0 font-semibold outline-none"
             />
           </label>
-          <span className="text-xs text-slate-600">Weekday</span>
+          <span className="text-xs text-slate-600">{t("jp.weekday")}</span>
         </div>
       </div>
 
@@ -447,35 +461,35 @@ export function JourneyPlanner({
 
         {!timetable && networkControls}
 
-        {timetable && (!a || !b) && (
-          <p className="text-slate-600">Pick A and B on the map to see how long the journey takes.</p>
-        )}
+        {timetable && (!a || !b) && <p className="text-slate-600">{t("jp.pickAB")}</p>}
 
         {plan && !journey && (
           <p role="status" className="text-slate-600">
-            No journey found. B may be more than {settings.max_access_m ?? 1000} m from any stop, or there is
-            no service {arriveBy ? "before" : "after"} this time.
+            {t(arriveBy ? "jp.noJourneyBefore" : "jp.noJourneyAfter", { m: settings.max_access_m ?? 1000 })}
           </p>
         )}
 
         {journey && (
-          <section aria-label="Result" className="flex flex-col gap-3.5">
+          <section aria-label={t("jp.result")} className="flex flex-col gap-3.5">
             <div className="flex items-baseline gap-2.5">
               <span className="text-4xl font-bold tracking-tight tabular-nums" data-testid="total">
                 {duration(journey.total_s)}
               </span>
               <span className="text-[13px] text-slate-600">
-                {clock(journey.depart_s)} → {clock(journey.arrive_s)} · {journey.transfers} change
-                {journey.transfers === 1 ? "" : "s"}
+                {clock(journey.depart_s)} → {clock(journey.arrive_s)} · {tn("jp.changes", journey.transfers)}
               </span>
             </div>
-            <div className="flex h-3.5 gap-0.5 overflow-hidden rounded" role="img" aria-label="Time split">
+            <div
+              className="flex h-3.5 gap-0.5 overflow-hidden rounded"
+              role="img"
+              aria-label={t("jp.timeSplit")}
+            >
               {parts
                 .filter((p) => journey.breakdown[p.key] > 0)
                 .map((p) => (
                   <div
                     key={p.key}
-                    title={`${p.label}: ${duration(journey.breakdown[p.key])}`}
+                    title={t("jp.partTitle", { label: t(p.label), time: duration(journey.breakdown[p.key]) })}
                     style={{
                       width: `${(journey.breakdown[p.key] / journey.total_s) * 100}%`,
                       background: p.color,
@@ -489,7 +503,7 @@ export function JourneyPlanner({
             >
               {parts.map((p) => (
                 <div key={p.key} className="flex flex-col-reverse gap-0.5">
-                  <dt>{p.short}</dt>
+                  <dt>{t(p.short)}</dt>
                   <dd className="flex items-center gap-1 text-[15px] font-semibold tabular-nums text-slate-900">
                     <span
                       className="inline-block h-2 w-2 rounded-sm"
@@ -503,12 +517,11 @@ export function JourneyPlanner({
             </dl>
             {journey.rides > 0 && journey.leave_s > journey.depart_s && (
               <p className="rounded-lg bg-blue-50 px-3 py-2.5 text-[13px] text-blue-900">
-                Leave at {clock(journey.leave_s)} and you won't wait at the stop:{" "}
-                {duration(journey.door_to_door_s)} door to door.
+                {t("jp.leaveAt", { time: clock(journey.leave_s), total: duration(journey.door_to_door_s) })}
               </p>
             )}
             {plan!.journeys.length > 1 && (
-              <div className="flex flex-wrap gap-1.5" role="tablist" aria-label="Alternatives">
+              <div className="flex flex-wrap gap-1.5" role="tablist" aria-label={t("jp.alternatives")}>
                 {plan!.journeys.map((j, i) => (
                   <button
                     key={i}
@@ -518,20 +531,19 @@ export function JourneyPlanner({
                     onClick={() => setChosen(i)}
                     className={`h-7 rounded-md border px-2 text-xs ${i === chosen ? "border-slate-900 bg-slate-900 text-white" : "border-slate-300 hover:bg-slate-50"}`}
                   >
-                    {duration(j.total_s)} ·{" "}
-                    {j.rides === 0 ? "walk" : `${j.transfers} change${j.transfers === 1 ? "" : "s"}`}
+                    {duration(j.total_s)} · {j.rides === 0 ? t("jp.walk") : tn("jp.changes", j.transfers)}
                   </button>
                 ))}
               </div>
             )}
-            <ol aria-label="Itinerary" className="flex flex-col text-[13px]">
+            <ol aria-label={t("jp.itinerary")} className="flex flex-col text-[13px]">
               {steps(journey).map((s, i) => (
                 <li key={i} className="flex gap-3 py-1.5">
                   <span className="w-11 shrink-0 tabular-nums text-slate-600">{clock(s.at)}</span>
                   {s.kind === "ride" ? (
                     <span>
                       <span
-                        className="mr-1 rounded px-1.5 py-px text-xs font-bold text-white"
+                        className="me-1 rounded px-1.5 py-px text-xs font-bold text-white"
                         style={{ background: `#${s.leg.route_color ?? "1f2937"}` }}
                       >
                         {s.leg.route_short_name}
@@ -539,8 +551,8 @@ export function JourneyPlanner({
                       {s.leg.from.name} → <b className="font-semibold">{s.leg.to.name}</b> ·{" "}
                       {duration(s.leg.end_s - s.leg.start_s)}
                       {s.leg.intermediate_stops > 0 &&
-                        `, ${s.leg.intermediate_stops} stop${s.leg.intermediate_stops === 1 ? "" : "s"}`}
-                      {s.leg.guaranteed && <span className="ml-1 text-emerald-700">(timed connection)</span>}
+                        t("setup.x.sep") + tn("jp.stops", s.leg.intermediate_stops)}
+                      {s.leg.guaranteed && <span className="ms-1 text-emerald-700">{t("jp.timed")}</span>}
                     </span>
                   ) : (
                     <span>{s.text}</span>
@@ -553,21 +565,22 @@ export function JourneyPlanner({
 
         {profile.length > 0 && (
           <section
-            aria-label="Through the day"
+            aria-label={t("jp.throughDay")}
             className="flex flex-col gap-2 border-t border-slate-200 pt-3"
           >
             <div className="flex items-baseline gap-2">
-              <h3 className="text-[13px] font-semibold">Through the day</h3>
+              <h3 className="text-[13px] font-semibold">{t("jp.throughDay")}</h3>
               {totals.length > 0 && (
                 <span className="text-xs text-slate-600">
-                  fastest {minutes(Math.min(...totals))} · median {minutes(median(totals))} · slowest{" "}
-                  {minutes(Math.max(...totals))} min
+                  {t("jp.stats", {
+                    fast: minutes(Math.min(...totals)),
+                    median: minutes(median(totals)),
+                    slow: minutes(Math.max(...totals)),
+                  })}
                 </span>
               )}
             </div>
-            <p className="text-xs text-slate-600">
-              Bold: one-hour average. Grey: each departure, which varies with the wait.
-            </p>
+            <p className="text-xs text-slate-600">{t("jp.chartNote")}</p>
             <ProfileChart
               points={profile}
               selected={time}
@@ -576,19 +589,19 @@ export function JourneyPlanner({
             />
             <div className="flex items-center gap-3 text-xs text-slate-600">
               <button type="button" className="underline" onClick={() => setShowTable(!showTable)}>
-                {showTable ? "Hide table" : "Show as table"}
+                {t(showTable ? "jp.hideTable" : "jp.showTable")}
               </button>
-              <label className="ml-auto">
-                every{" "}
+              <label className="ms-auto">
+                {t("jp.every")}{" "}
                 <select
-                  aria-label="Profile step"
+                  aria-label={t("jp.profileStep")}
                   value={stepMin}
                   onChange={(e) => setStepMin(Number(e.target.value))}
                   className="rounded border border-slate-300"
                 >
                   {[5, 10, 15, 30, 60].map((s) => (
                     <option key={s} value={s}>
-                      {s} min
+                      {t("jp.min", { n: s })}
                     </option>
                   ))}
                 </select>
@@ -597,14 +610,14 @@ export function JourneyPlanner({
             {showTable && (
               <table className="w-full text-xs tabular-nums">
                 <thead>
-                  <tr className="text-left text-slate-600">
-                    <th>Time</th>
-                    <th>Total</th>
-                    <th>Walk</th>
-                    <th>Wait</th>
-                    <th>On board</th>
-                    <th>Change</th>
-                    <th>Changes</th>
+                  <tr className="text-start text-slate-600">
+                    <th>{t("jp.time")}</th>
+                    <th>{t("jp.th.total")}</th>
+                    <th>{t("jp.part.walkShort")}</th>
+                    <th>{t("jp.part.waitShort")}</th>
+                    <th>{t("jp.part.onBoard")}</th>
+                    <th>{t("jp.th.change")}</th>
+                    <th>{t("jp.th.changes")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -627,7 +640,7 @@ export function JourneyPlanner({
                           <td>{p.journey.transfers}</td>
                         </>
                       ) : (
-                        <td colSpan={6}>no journey</td>
+                        <td colSpan={6}>{t("jp.noJourney")}</td>
                       )}
                     </tr>
                   ))}
@@ -640,25 +653,25 @@ export function JourneyPlanner({
         <div className="mt-auto flex flex-col gap-2 border-t border-slate-200 pt-3 text-xs">
           {timetable && (
             <details>
-              <summary className="cursor-pointer text-slate-600">Network</summary>
+              <summary className="cursor-pointer text-slate-600">{t("jp.network")}</summary>
               <div className="mt-2">{networkControls}</div>
             </details>
           )}
           <details>
-            <summary className="cursor-pointer text-slate-600">Walking and changing</summary>
+            <summary className="cursor-pointer text-slate-600">{t("jp.walking")}</summary>
             <div className="mt-2 grid grid-cols-2 gap-2">
               {(
                 [
-                  ["walk_speed_kmh", "Walking speed (km/h)", 4.5, 0.1],
-                  ["max_access_m", "Longest walk to a stop (m)", 1000, 50],
-                  ["max_transfer_m", "Longest walk at a change (m)", 400, 50],
-                  ["same_name_station_m", "Same-name stops are one station within (m)", 600, 50],
-                  ["min_change_s", "Change at one stop (s)", 60, 10],
-                  ["max_rides", "Most vehicles", 5, 1],
+                  ["walk_speed_kmh", "jp.set.walkSpeed", 4.5, 0.1],
+                  ["max_access_m", "jp.set.maxAccess", 1000, 50],
+                  ["max_transfer_m", "jp.set.maxTransfer", 400, 50],
+                  ["same_name_station_m", "jp.set.sameName", 600, 50],
+                  ["min_change_s", "jp.set.minChange", 60, 10],
+                  ["max_rides", "jp.set.maxRides", 5, 1],
                 ] as const
               ).map(([key, label, def, stepv]) => (
                 <label key={key} className="flex flex-col gap-0.5">
-                  <span className="text-slate-600">{label}</span>
+                  <span className="text-slate-600">{t(label)}</span>
                   <input
                     type="number"
                     step={stepv}
@@ -673,10 +686,7 @@ export function JourneyPlanner({
                 </label>
               ))}
             </div>
-            <p className="mt-2 text-slate-600">
-              Walks are straight-line distance × 1.3 until the walking network exists. Defaults come from the
-              assumption library.
-            </p>
+            <p className="mt-2 text-slate-600">{t("jp.walkNote")}</p>
           </details>
         </div>
       </div>

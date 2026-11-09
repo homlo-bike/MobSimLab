@@ -1,5 +1,6 @@
 import type { Map as MapLibreMap } from "maplibre-gl";
 import { useEffect, useRef, useState } from "react";
+import { tNow, useI18n } from "../../i18n/i18n";
 import { loadRailEngine } from "../railways/engine";
 import type { Network, RailEngineLoader } from "../railways/types";
 import type { StreetLinesDoc } from "../street-lines/saved";
@@ -60,7 +61,11 @@ export async function projectSources(
     if (l.view.points.length < 2) continue;
     const day = l.timing.headwayMin > 0 ? 60 / l.timing.headwayMin : 0;
     for (const s of streetLineSources(l.view, l.profile, { day, ...STREET_OFF_PEAK }, false))
-      lines.push({ ...s, id: `street-${i}-${s.id}`, label: l.name || `Street line ${i + 1}` });
+      lines.push({
+        ...s,
+        id: `street-${i}-${s.id}`,
+        label: l.name || tNow("noise.streetLine", { n: i + 1 }),
+      });
   }
   if (railway && railway.tracks.length) {
     const engine = await loadRail();
@@ -97,6 +102,7 @@ export function NoiseMap({
   loadRail = loadRailEngine,
   fetchTile = fetchBuildingTile,
 }: Props) {
+  const { t } = useI18n();
   const [indicator, setIndicator] = useState<Indicator>("lden");
   const [withBuildings, setWithBuildings] = useState(true);
   const [status, setStatus] = useState<Status>({ kind: "idle" });
@@ -138,10 +144,10 @@ export function NoiseMap({
 
   async function compute() {
     try {
-      setStatus({ kind: "busy", step: "Collecting the lines…" });
+      setStatus({ kind: "busy", step: tNow("noise.collecting") });
       const lines = await projectSources(streetLines, railway, loadRail);
       if (!lines.length) {
-        setStatus({ kind: "error", text: "Draw a street line or a railway first." });
+        setStatus({ kind: "error", text: tNow("noise.drawFirst") });
         return;
       }
       let buildings: NoiseBuilding[] | null = null;
@@ -152,13 +158,13 @@ export function NoiseMap({
           MAP_REACH_M,
         );
         if (tiles.length > MAX_BUILDING_TILES) {
-          note = `The lines cover too large an area to load its buildings (${tiles.length} tiles, at most ${MAX_BUILDING_TILES}), so this map has no screening.`;
+          note = tNow("noise.tooLarge", { tiles: tiles.length, max: MAX_BUILDING_TILES });
         } else {
-          setStatus({ kind: "busy", step: "Loading OpenStreetMap buildings…" });
+          setStatus({ kind: "busy", step: tNow("noise.loadingBuildings") });
           buildings = await loadBuildings(tiles, fetchTile);
         }
       }
-      setStatus({ kind: "busy", step: "Computing the noise map…" });
+      setStatus({ kind: "busy", step: tNow("noise.computing") });
       // Let the panel show the step before the engine holds the page.
       await new Promise((r) => setTimeout(r, 30));
       engine.current ??= await loadNoise();
@@ -180,20 +186,17 @@ export function NoiseMap({
   const exposure = status.kind === "done" ? status.view.buildings : null;
   const rows = exposure ? exposure[indicator] : null;
   return (
-    <section className="flex flex-col gap-2" aria-label="Noise map">
-      <h3 className="text-xs font-semibold tracking-wider text-slate-500 uppercase">Noise map</h3>
-      <p className="text-xs text-slate-600">
-        L_den and L_night at 4 m from every street line and railway in the project, screened by the
-        OpenStreetMap buildings round them.
-      </p>
+    <section className="flex flex-col gap-2" aria-label={t("noise.map")}>
+      <h3 className="text-xs font-semibold tracking-wider text-slate-500 uppercase">{t("noise.map")}</h3>
+      <p className="text-xs text-slate-600">{t("noise.mapIntro")}</p>
       <div
         role="radiogroup"
-        aria-label="Noise map indicator"
+        aria-label={t("noise.mapIndicator")}
         className="flex rounded border border-slate-300 bg-slate-50 p-0.5"
       >
         {(
           [
-            ["lden", "L_den (day–evening–night)"],
+            ["lden", t("noise.lden")],
             ["lnight", "L_night"],
           ] as const
         ).map(([id, label]) => (
@@ -211,7 +214,7 @@ export function NoiseMap({
       </div>
       <label className="flex items-center gap-2 text-xs">
         <input type="checkbox" checked={withBuildings} onChange={(e) => setWithBuildings(e.target.checked)} />
-        Screen with OpenStreetMap buildings
+        {t("noise.screen")}
       </label>
       <button
         type="button"
@@ -219,9 +222,9 @@ export function NoiseMap({
         disabled={!hasLines || status.kind === "busy"}
         onClick={() => void compute()}
       >
-        {status.kind === "done" ? "Compute again" : "Compute noise map"}
+        {t(status.kind === "done" ? "noise.computeAgain" : "noise.compute")}
       </button>
-      {!hasLines && <p className="text-xs text-slate-500">Draw a street line or a railway first.</p>}
+      {!hasLines && <p className="text-xs text-slate-500">{t("noise.drawFirst")}</p>}
       {status.kind === "busy" && (
         <p role="status" className="text-xs text-slate-600">
           {status.step}
@@ -234,7 +237,7 @@ export function NoiseMap({
         <>
           <div
             className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-slate-600"
-            aria-label="Noise map legend"
+            aria-label={t("noise.mapLegend")}
           >
             {LEGEND.filter((l) => l.from_db >= FROM_DB[indicator]).map((l) => (
               <span key={l.from_db} className="flex items-center gap-1">
@@ -248,22 +251,25 @@ export function NoiseMap({
             <span>dB</span>
           </div>
           {exposure && rows && (
-            <table className="w-full text-xs" aria-label="Buildings by noise band">
-              <caption className="pb-1 text-left text-slate-600">
-                Buildings by the level beside their most exposed side ({exposure.reached} of {exposure.count}{" "}
-                in reach)
+            <table className="w-full text-xs" aria-label={t("noise.table")}>
+              <caption className="pb-1 text-start text-slate-600">
+                {t("noise.tableCaption", { reached: exposure.reached, count: exposure.count })}
               </caption>
               <thead>
-                <tr className="text-left text-slate-500">
+                <tr className="text-start text-slate-500">
                   <th className="font-normal">{indicator === "lden" ? "L_den" : "L_night"}</th>
-                  <th className="text-right font-normal">Buildings</th>
+                  <th className="text-end font-normal">{t("noise.buildings")}</th>
                 </tr>
               </thead>
               <tbody>
                 {rows.from_db.map((from, i) => (
                   <tr key={from} className="border-t border-slate-100">
-                    <td>{i === rows.from_db.length - 1 ? `${from} dB or more` : `${from}–${from + 4} dB`}</td>
-                    <td className="text-right tabular-nums">{rows.buildings[i]}</td>
+                    <td>
+                      {i === rows.from_db.length - 1
+                        ? t("noise.dbOrMore", { db: from })
+                        : t("noise.dbRange", { from, to: from + 4 })}
+                    </td>
+                    <td className="text-end tabular-nums">{rows.buildings[i]}</td>
                   </tr>
                 ))}
               </tbody>
@@ -272,12 +278,7 @@ export function NoiseMap({
           {status.note && (
             <p className="rounded bg-amber-50 px-2 py-1 text-xs text-amber-900">{status.note}</p>
           )}
-          <p className="text-xs text-slate-500">
-            Planned service only, without general traffic. Roof screening by buildings (ISO 9613-2), no
-            reflections or paths round building ends. Buildings without a height in OpenStreetMap take 3 m per
-            tagged storey, or 8 m (the noise plugin's assumptions). Building counts stand in for dwellings
-            until population data is added. Buildings © OpenStreetMap contributors.
-          </p>
+          <p className="text-xs text-slate-500">{t("noise.mapNote")}</p>
         </>
       )}
     </section>

@@ -61,7 +61,7 @@ export function SignIn({
           </g>
         </svg>
         <div className="relative text-xl font-bold">{instanceName}</div>
-        <div className="absolute right-12 bottom-12 left-12">
+        <div className="absolute end-12 bottom-12 start-12">
           <p className="max-w-md text-[34px] leading-tight font-bold tracking-tight">{t("signin.tagline")}</p>
           <p className="mt-2.5 text-slate-300">{t("signin.openSource")}</p>
         </div>

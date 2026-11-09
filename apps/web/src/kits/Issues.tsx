@@ -1,3 +1,4 @@
+import { useI18n } from "../i18n/i18n";
 import type { Issue } from "./types";
 
 const STYLE: Record<Issue["level"], string> = {
@@ -8,16 +9,23 @@ const STYLE: Record<Issue["level"], string> = {
 
 /** Purpose: the kit's live checks as a list, errors first. */
 export function Issues({ issues, where }: { issues: Issue[]; where: (i: Issue) => string | null }) {
+  const { t } = useI18n();
   if (!issues.length) return null;
   const order = { error: 0, warning: 1, info: 2 };
   const sorted = [...issues].sort((a, b) => order[a.level] - order[b.level]);
   return (
-    <ul className="mt-2 flex flex-col gap-1.5" aria-label="Checks">
+    <ul className="mt-2 flex flex-col gap-1.5" aria-label={t("kit.checks")}>
       {sorted.map((i, k) => (
         <li key={k} className={`rounded-lg border px-2.5 py-1.5 text-xs ${STYLE[i.level]}`}>
-          <span className="font-semibold capitalize">{i.level}</span>
-          {where(i) && <span className="font-semibold">, {where(i)}</span>}: {i.message}
-          {i.parameter && <span className="block text-[11px] opacity-75">Parameter {i.parameter}</span>}
+          <span className="font-semibold">
+            {where(i)
+              ? t("kit.issueWhere", { level: t(`severity.${i.level}`), where: where(i)! })
+              : t("kit.issue", { level: t(`severity.${i.level}`) })}
+          </span>{" "}
+          {i.message}
+          {i.parameter && (
+            <span className="block text-[11px] opacity-75">{t("kit.parameter", { name: i.parameter })}</span>
+          )}
         </li>
       ))}
     </ul>

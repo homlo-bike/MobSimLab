@@ -1,6 +1,8 @@
 import { Marker, type Map as MapLibreMap, type MapMouseEvent } from "maplibre-gl";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { tNow, useI18n } from "../../i18n/i18n";
+import type { MessageKey } from "../../i18n/messages";
 import { fetchStreetTile, loadWasmEngine } from "./engine";
 import { LinePanel, type PanelActions } from "./LinePanel";
 import { drawLine, drawRoads, ensureLayers, HIT_LAYER, removeLayers, setLineColor } from "./mapLayers";
@@ -53,11 +55,11 @@ const EMPTY_VIEW: LineView = {
   crossing_wait_s: 0,
 };
 
-const HINTS: Record<Tool, string> = {
-  select: "Drag a point to move it; the route recalculates. Click a point to edit it in the panel.",
-  add: "Click on a street to add the next point. Click on the line to insert a point between two others.",
-  pan: "Drag to move the map.",
-  depot: "Click on the street at the depot gate.",
+const HINTS: Record<Tool, MessageKey> = {
+  select: "street.hint.select",
+  add: "street.hint.add",
+  pan: "rail.hint.pan",
+  depot: "street.hint.depot",
 };
 
 /** Purpose: the stops of a line as named places for stop naming and station groups. */
@@ -130,6 +132,7 @@ export function StreetLineEditor({
   loadNoise = loadWasmNoise,
   noiseAvailable = noiseCalculationIn("street-line-tool"),
 }: Props) {
+  const { t } = useI18n();
   const engine = useRef<StreetEngine | null>(null);
   // The saved line until it has been routed again; nothing is saved before that.
   const pending = useRef(initial);
@@ -140,14 +143,14 @@ export function StreetLineEditor({
   const [profile, setProfile] = useState<VehicleProfile | null>(null);
   const [rules, setRules] = useState<RoutingRules | null>(null);
   const [timing, setTiming] = useState<Timing>(initial?.timing ?? DEFAULT_TIMING);
-  const [lineName, setLineName] = useState(initial?.name ?? "Line 1");
+  const [lineName, setLineName] = useState(initial?.name ?? tNow("street.defaultName"));
   const [tool, setTool] = useState<Tool>("add");
   const [selected, setSelected] = useState<number | null>(null);
   const [depotStops, setDepotStops] = useState<{ out?: number; in?: number }>({});
   const [showDepot, setShowDepot] = useState(true);
   const [showRoads, setShowRoads] = useState(false);
   const [previewing, setPreviewing] = useState(false);
-  const [status, setStatus] = useState<string | null>("Starting the routing engine…");
+  const [status, setStatus] = useState<string | null>(tNow("street.starting"));
   const [error, setError] = useState<string | null>(null);
   const [note, setNote] = useState<string | null>(null);
   const [noiseOn, setNoiseOn] = useState(false);
@@ -188,7 +191,7 @@ export function StreetLineEditor({
         setStatus(null);
       })
       .catch((err) =>
-        setError(`The routing engine did not start: ${err instanceof Error ? err.message : String(err)}`),
+        setError(tNow("street.engineFailed", { error: err instanceof Error ? err.message : String(err) })),
       );
     return () => {
       alive = false;
@@ -274,7 +277,7 @@ export function StreetLineEditor({
       if (!want.length) return;
       busy = true;
       want.forEach((k) => tiles.current.add(k));
-      setStatus("Loading streets…");
+      setStatus(tNow("street.loading"));
       const got = await Promise.allSettled(
         want.map((k) => {
           const [x, y] = k.split("/").map(Number);
@@ -302,7 +305,7 @@ export function StreetLineEditor({
       });
       if (added) run((eng) => eng.rebuild());
       setReady(e.ready());
-      setStatus(failed ? `${reason ?? "Some streets did not load."} Move the map to try again.` : null);
+      setStatus(failed ? `${reason ?? tNow("rail.streetsFailed")} ${tNow("rail.moveMap")}` : null);
       if (again) {
         again = false;
         void load();
@@ -629,12 +632,7 @@ export function StreetLineEditor({
   const noise = useNoise(map, noiseAvailable && noiseOn, noiseInput, indicator, loadNoise, "sl-roads");
 
   const canPreview = circuitPath(view) !== null;
-  const notice =
-    zoomedOut && !ready
-      ? "Zoom in to street level to load streets."
-      : zoomedOut
-        ? "Zoom in to load streets for this area."
-        : status;
+  const notice = zoomedOut && !ready ? t("street.zoomStreet") : zoomedOut ? t("street.zoomArea") : status;
 
   const sidePanel = profile && rules && (
     <LinePanel
@@ -648,7 +646,7 @@ export function StreetLineEditor({
       showDepot={showDepot}
       showRoads={showRoads}
       crossingSources={{
-        topology: topologyFile?.name ?? (railTopology ? "railway tool drawing" : null),
+        topology: topologyFile?.name ?? (railTopology ? t("street.drawingSource") : null),
         topologyIsFile: topologyFile !== null,
         closures: closuresFile?.name ?? null,
       }}
@@ -664,8 +662,8 @@ export function StreetLineEditor({
             setIndicator={setIndicator}
             flows={{ day: dayFlow, ...offPeak }}
             setFlows={(f) => setOffPeak({ evening: f.evening, night: f.night })}
-            flowsLabel="Vehicles per hour, each direction"
-            dayFrom={`Day from the ${timing.headwayMin} min headway.`}
+            flowsLabel={t("street.noiseFlows")}
+            dayFrom={t("street.dayFrom", { headway: timing.headwayMin })}
             electric={{
               value: electric || profile.mode === "trolleybus",
               onChange: setElectric,
@@ -700,7 +698,7 @@ export function StreetLineEditor({
           </p>
         )}
         <p className="rounded-full bg-white/95 px-3 py-1 text-slate-700 shadow" role="note">
-          {HINTS[tool]}
+          {t(HINTS[tool])}
         </p>
       </div>
       {panel ? sidePanel && createPortal(sidePanel, panel) : sidePanel}
