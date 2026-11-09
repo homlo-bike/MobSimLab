@@ -550,6 +550,16 @@ impl Model {
                         dir: Dir::Down,
                     },
                 }
+            } else if s.kind == SignalKind::Distant {
+                // Distant signals do not cut the track: they stand on the piece around them.
+                let k = ps
+                    .iter()
+                    .position(|&p| pieces[p as usize].to_m > s.position_m)
+                    .unwrap_or(ps.len() - 1);
+                SignalAt::Entry {
+                    piece: ps[k],
+                    dir: s.facing,
+                }
             } else {
                 // A cut point: the piece starting here (Up) or ending here (Down).
                 let k = ps

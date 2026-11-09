@@ -6,21 +6,21 @@ Design tram, light rail, metro, commuter, regional, intercity and high-speed rai
 
 1. Click **Railway** in the top bar. The tool palette appears on the map and the railway panel on the right.
 2. Pick the **mode**. Gauge, track spacing, radii, gradients, speeds, platforms and electrification come from the mode. The panel lists the main values; the full set and their sources are in the [assumption library](../../assumptions/DEFAULTS.md).
-3. **Example** draws a sample line for the mode at the centre of the map: two stations, a double track with two curves, a crossover, a turnout to a stabling siding and a crossing line. **Clear** removes everything.
+3. Draw stations and tracks with the tools. **Clear** removes everything.
 
 The drawing is saved with the project a moment after each change (see [Saving](street-line-tool.md#saving)). It opens again, with the map on it, for everyone who opens the project.
 
 ## Tools
 
-| Tool | Key | What it does |
-|------|-----|--------------|
-| Select and move | V | Click a station, track, switch or signal to inspect it. Drag a selected station to move it, or its round handle to rotate it. Drag a selected switch or signal along its track. |
-| Station | S | Click the map to place a station with the level and platforms set in the panel. |
-| Track | T | Draw a track (see below). |
-| Turnout | B | Click a straight part of a track to place a turnout, then draw the branch from it. On double track it places a double junction. |
-| Crossover | X | Click a straight part of a double track to place a crossover (or a scissors crossover). |
-| Signal | G | Click a track, station track or switch leg to place a signal. **F** turns the selected signal round. |
-| Pan | H | Move the map without editing. |
+| Tool            | Key | What it does                                                                                                                                                                    |
+| --------------- | --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Select and move | V   | Click a station, track, switch or signal to inspect it. Drag a selected station to move it, or its round handle to rotate it. Drag a selected switch or signal along its track. |
+| Station         | S   | Click the map to place a station with the level and platforms set in the panel.                                                                                                 |
+| Track           | T   | Draw a track (see below).                                                                                                                                                       |
+| Turnout         | B   | Click a straight part of a track to place a turnout, then draw the branch from it. On double track it places a double junction.                                                 |
+| Crossover       | X   | Click a straight part of a double track to place a crossover (or a scissors crossover).                                                                                         |
+| Signal          | G   | Click a track, station track or switch leg to place a signal. **F** turns the selected signal round.                                                                            |
+| Pan             | H   | Move the map without editing.                                                                                                                                                   |
 
 **Delete** removes the selected element or point. **Escape** clears the selection or cancels the track being drawn.
 
@@ -121,20 +121,31 @@ Signals are generated from the design and drawn on the map. They follow the desi
 - At the ends of platform tracks that lead on, there are starter signals.
 - On plain line, block signals in both directions split the line into blocks no longer than a train needs to stop from line speed, plus the sighting distance and the overlap. Metro (CBTC) and high-speed lines (ETCS Level 2) are signalled in the cab, so these are block markers (blue) instead of signals with lights.
 - Trams drive on sight. They get signals only at switches and crossings with other railways.
+- On lines with lineside signals (fixed block), a main signal that no other signal announces gets a **distant signal** in front of it, at the distance a train needs to stop from line speed plus the sighting distance.
+- On those lines, where the line speed drops along a track (for example before a tight curve), a **speed signal** shows the new speed, and a **speed warning** announces it at the distance a train needs to slow down to it. Under cab signalling the cab shows both, so there are none.
 
-Each signal is drawn on the right of the track, with an arm pointing the way it governs: red for main and block signals, white for shunting, yellow for distant signals. Click a signal to change its kind or name, turn it round, or delete it. Drag it along the track to move it. Signals you place with the Signal tool come on top of the generated ones. A generated signal you change or delete stays as you left it while the rest of the plan keeps following the design. **Reset to generated signals** in the panel drops your changes.
+Each signal is drawn on the right of the track, with an arm pointing the way it governs: red for main and block signals, white for shunting, yellow for distant signals, teal for speed signals and speed warnings. The panel shows a speed signal's speed, and you can change it. Click a signal to change its kind or name, turn it round, or delete it. Drag it along the track to move it. Signals you place with the Signal tool come on top of the generated ones. A generated signal you change or delete stays as you left it while the rest of the plan keeps following the design. **Reset to generated signals** in the panel drops your changes.
 
 Every change is checked, and the result is shown in the issue list and on the signal:
 
-- **Missing signal** (warning): you deleted a generated signal in front of a switch, a crossing or at a platform end, so trains are no longer stopped before it. A deleted block signal makes the block longer than needed, so fewer trains fit per hour.
+- **Missing signal** (warning): you deleted a generated signal in front of a switch, a crossing or at a platform end, so trains are no longer stopped before it. A deleted block signal makes the block longer than needed, so fewer trains fit per hour. A deleted distant signal means trains must approach the main signal ready to stop, and a deleted speed signal leaves a drop in speed unsigned.
 - **Signal in the wrong place**: inside a switch, crossing or level crossing area it is an error, because a train stopped there blocks it. Where a train stopped at it reaches back into such an area, or the next signal is closer than the train's braking distance, it is a warning. A main signal in front of a switch turned into a block or distant signal is a warning too.
 - **Helpful signal** (note): an extra signal on plain line splits the block, so trains can follow each other closer. For trams, which drive on sight, the note says an extra signal does not help.
 
 If you delete or redraw a track, signals of yours on it get a warning.
 
-## Track topology for operations
+## Service lines
 
-**Download track topology (JSON)** in the panel saves the drawing as a graph for timetables and train control. It contains track sections, the movements allowed at every switch and join, platform edges, switches, crossings, level crossings with streets, street running, joins to existing railways, signals and depot groups. The format is described in [contracts](../../contracts/README.md). If the design has errors, the file says so (`valid: false`), and the button shows it.
+A service line is a route trains run on the drawn track: its stops in order, its train and its headways. Publish the lines to ride the trains in the journey planner.
+
+1. Pick **Create service line** at the bottom of the tool palette (key **L**). A new line opens under **Service lines** in the panel.
+2. Click the stations in the order trains call at them. Each station must be reachable on track from the one before, in either direction of running; if it is not, the station is not added and the message says which stations no track joins. Press **Enter** or **Esc** to finish. A line left without stops is removed again.
+3. In the panel, change the stops if needed: the arrows change the order and **×** takes a stop off. **Add stops on the map** picks more stations after the last one, with the same check. The return trip runs the stops in reverse.
+4. **Train**: a rail vehicle from the vehicle catalogue, and how many units run coupled. The train's length follows from the two (catalogue length × units); the panel shows it with the top speed and places. The platforms are checked against the longest train of all lines.
+5. **First** and **last departure**, and the headway **in the peaks** (07:00–09:00 and 16:00–19:00) and **off-peak**. A new line starts with the mode's usual headways from 05:00 to 24:00.
+6. Click **Publish timetable**. The timetable planner finds each train's path through the track, its running time from the train's power and speed, and conflict-free departures; trains turn back in the terminal platforms and stable on storage tracks or in the terminals. Each line then shows its trips, trains and end-to-end time, and what could not run and why. The timetable is saved with the project, and the trains are ready in **Simulator → Journey time A → B**.
+
+When the drawing or a line changes, the panel says so; publish again to update the journey planner. The catalogue gives a train's length, top speed, power and capacity; acceleration, braking and running resistance come from the mode's assumptions. A layout without crossovers next to the terminals limits how often trains can run; the line's report says so.
 
 ## Checks
 
@@ -145,7 +156,7 @@ The panel lists errors and warnings as you draw. Click one to go to it. Among th
 - diamond crossings, and crossings between tracks on different levels without a ramp
 - tracks closer than the clearance marker distance
 - a track running through a station on the same level
-- platforms shorter than the train plus 5 m (set the train length under **Trains**)
+- platforms shorter than the train plus 5 m (the longest train of the service lines, else the mode's usual train)
 - a double-track terminus with no crossover
 - storage tracks shorter than one train
 - open track ends and lost connections
