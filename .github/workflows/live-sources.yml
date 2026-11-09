@@ -1,0 +1,35 @@
+name: Live data sources
+
+# Checks the outside services the app reads (Overpass, Copernicus GLO-30, OpenFreeMap) against the real
+# endpoints: apps/api/test/live-sources.test.ts. Runs when the gateway or its users change, weekly, and
+# on demand. Not part of the required checks, since an outage elsewhere should not block merges.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 5 * * 1"
+  pull_request:
+    paths:
+      - apps/api/src/gateway/**
+      - apps/api/src/terrain/**
+      - apps/api/src/street-network/**
+      - apps/api/test/live-sources.test.ts
+      - .github/workflows/live-sources.yml
+
+permissions:
+  contents: read
+
+jobs:
+  live:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with: { node-version-file: .nvmrc, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - name: Live checks
+        working-directory: apps/api
+        env:
+          MOBSIMLAB_LIVE: "1"
+        run: pnpm exec vitest run test/live-sources.test.ts
