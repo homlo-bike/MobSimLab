@@ -54,6 +54,8 @@ fn every_key_the_crate_reads_exists() {
         "noise.ground_factor_default",
         "noise.max_source_distance_m",
         "noise.grid_spacing_m",
+        "noise.building_storey_height_m",
+        "noise.building_default_height_m",
         "noise.road_source_height_m",
         "noise.rail_source_height_m",
         "noise.road_stop_zone_m",
@@ -341,4 +343,147 @@ fn colours_follow_the_bands() {
     assert_eq!(crate::band_colour(54.9, 55.0), None);
     assert_eq!(crate::band_colour(57.0, 55.0), Some([0xf3, 0xc6, 0x83]));
     assert_eq!(crate::band_colour(80.0, 55.0), Some([0x75, 0x08, 0x5c]));
+}
+
+fn grid_level(e: &Estimate, p: [f64; 2]) -> f32 {
+    let g = e.grid.as_ref().expect("grid");
+    let i = ((p[0] - g.x0) / g.cell).floor();
+    let j = ((p[1] - g.y0) / g.cell).floor();
+    assert!(
+        i >= 0.0 && j >= 0.0 && (i as usize) < g.nx && (j as usize) < g.ny,
+        "{p:?} outside the grid {} {} {}×{} at {} m",
+        g.x0,
+        g.y0,
+        g.nx,
+        g.ny,
+        g.cell
+    );
+    g.lden[j as usize * g.nx + i as usize]
+}
+
+fn rect(x0: f64, y0: f64, x1: f64, y1: f64, h: f64) -> crate::screening::BuildingInput {
+    crate::screening::BuildingInput {
+        ring: vec![[x0, y0], [x1, y0], [x1, y1], [x0, y1], [x0, y0]],
+        height_m: Some(h),
+        levels: None,
+    }
+}
+
+#[test]
+fn barrier_attenuation_follows_iso_9613_2() {
+    use crate::screening::{barrier_db, Screen};
+    let one = Screen {
+        z: 1.0,
+        e: 0.0,
+        dss: 20.0,
+        dsr: 20.0,
+        d: 40.0,
+        edges: 1,
+    };
+    let dz = barrier_db(&one);
+    // 1 kHz: 10 lg(3 + 20/0.34 · 1 · K_met), K_met = exp(−√(20·20·40/2)/2000) ≈ 0.956.
+    let k_met = (-(20.0f64 * 20.0 * 40.0 / 2.0).sqrt() / 2000.0).exp();
+    assert!((dz[4] - 10.0 * (3.0 + 20.0 / 0.34 * k_met).log10()).abs() < 1e-9);
+    assert!(dz.windows(2).all(|w| w[1] >= w[0]), "rises with frequency");
+    assert!(dz.iter().all(|&x| x <= 20.0));
+    // A thick barrier screens more than a thin one with the same path difference, up to 25 dB.
+    let thick = barrier_db(&Screen {
+        e: 10.0,
+        edges: 2,
+        z: 5.0,
+        ..one
+    });
+    assert!(thick.iter().all(|&x| x <= 25.0));
+    assert!(thick[7] > 20.0);
+}
+
+#[test]
+fn a_row_of_buildings_screens_the_map_behind_it() {
+    let mk = |buildings| {
+        estimate(&EstimateInput {
+            lines: vec![line(Mode::Tram, straight(600.0), F, 40.0, 30.0)],
+            buildings,
+            grid: true,
+            grid_reach_m: Some(80.0),
+            ..Default::default()
+        })
+    };
+    let free = mk(vec![]);
+    let built = mk(vec![rect(-100.0, 15.0, 700.0, 30.0, 12.0)]);
+    let behind = [300.0, 45.0];
+    let front = [300.0, -20.0];
+    let (lf, lb) = (grid_level(&free, behind), grid_level(&built, behind));
+    assert!(lf - lb > 10.0, "free {lf}, behind the row {lb}");
+    // The other side has no buildings: the same as free field.
+    assert!((grid_level(&free, front) - grid_level(&built, front)).abs() < 0.01);
+    // Receivers inside the building are not computed; the building takes the level beside it.
+    assert!(grid_level(&built, [300.0, 22.0]).is_nan());
+    let [bl, bn] = built.building_levels[0];
+    assert!(
+        bl > lb && bl.is_finite() && bn.is_finite() && bn < bl,
+        "{bl} {bn}"
+    );
+    // The band distances stay free field.
+    assert_eq!(free.lden.typical_m, built.lden.typical_m);
+}
+
+#[test]
+fn buildings_out_of_the_way_change_nothing() {
+    let mk = |buildings| {
+        estimate(&EstimateInput {
+            lines: vec![line(Mode::Bus, straight(300.0), F, 40.0, 12.0)],
+            buildings,
+            grid: true,
+            grid_reach_m: Some(80.0),
+            ..Default::default()
+        })
+    };
+    let free = mk(vec![]);
+    // Behind the receivers, and degenerate inputs that are dropped.
+    let built = mk(vec![
+        rect(0.0, 400.0, 50.0, 420.0, 20.0),
+        crate::screening::BuildingInput {
+            ring: vec![[0.0, 0.0], [1.0, 1.0]],
+            height_m: Some(10.0),
+            levels: None,
+        },
+    ]);
+    // Equal up to pairing far elements (one path for two 10 m elements beyond 80 m).
+    let (a, b) = (
+        &free.grid.as_ref().unwrap().lden,
+        &built.grid.as_ref().unwrap().lden,
+    );
+    assert_eq!(a.len(), b.len());
+    let worst = a
+        .iter()
+        .zip(b)
+        .map(|(x, y)| {
+            assert_eq!(x.is_nan(), y.is_nan());
+            if x.is_nan() {
+                0.0
+            } else {
+                (x - y).abs()
+            }
+        })
+        .fold(0.0f32, f32::max);
+    assert!(worst < 0.1, "{worst}");
+    assert!(built.building_levels.iter().all(|b| b[0].is_nan()));
+}
+
+#[test]
+fn building_height_from_osm_tags() {
+    use crate::screening::{BuildingInput, HeightRule};
+    let rule = HeightRule {
+        level_m: 3.0,
+        default_m: 9.0,
+    };
+    let b = |height_m, levels| BuildingInput {
+        ring: vec![],
+        height_m,
+        levels,
+    };
+    assert_eq!(b(Some(14.5), Some(2.0)).height(rule), 14.5);
+    assert_eq!(b(None, Some(5.0)).height(rule), 15.0);
+    assert_eq!(b(Some(0.0), None).height(rule), 9.0);
+    assert_eq!(b(None, None).height(rule), 9.0);
 }

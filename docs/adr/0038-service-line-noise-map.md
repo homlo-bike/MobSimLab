@@ -1,6 +1,6 @@
 # ADR-0038: Estimated noise map of service lines with CNOSSOS-EU: a live corridor in the editors, a full map as an analysis layer, exposure into the appraisal
 
-- Status: Proposed; step N1 implemented as the noise plugin (2026-11-03)
+- Status: Proposed; step N1 implemented as the noise plugin (2026-11-03); first part of N2, the GIS noise map with OSM buildings, implemented (2026-11-09)
 - Date: 2026-11-02
 - Deciders: product owner, architecture
 - Related: FR-COST-03, FR-GIS-04, FR-GIS-05, FR-GIS-06, FR-ENV-01..05 (new), ADR-0004 (polyglot runtime), ADR-0005 (SUMO), ADR-0006 (rail kernel), ADR-0013 (scenario overlays), ADR-0014 (results storage), ADR-0018 (assumption engine), ADR-0023 (job queue), ADR-0024 (map rendering), ADR-0028 (declared background traffic), ADR-0029 (street lines), ADR-0031 (routing in the browser), ADR-0033 (railway editor), ADR-0034 (published timetable), [09 §3.3](../architecture/09-planning-models.md)
@@ -123,6 +123,15 @@ The CNOSSOS road coefficients and the railway default database are not Project P
 - **Placeholders accepted** by the product owner (2026-11-03) for electric buses (−8 dB, −12 to −3, on the propulsion term), cable car towers and stations (90 and 95 dB(A)) and ferries (105 and 100 dB(A)); they are marked PLACEHOLDER in the parameter file.
 - **Where the full map lives** (product owner, 2026-11-08): the live band stays in the street line tool and the railway editor; the full noise map with OSM buildings, exposure and the scenario difference goes in the **GIS tab** as the Noise map layer and its panel, instead of a separate tool next to Journey planner (§1.2).
 - **Flows until service lines exist:** street lines use the headway for the day and editable evening and night vehicles per hour; the railway editor uses editable sample trains per hour per track by mode.
+
+## Implementation notes, N2 first part (2026-11-09)
+
+- **Noise map in the GIS tab:** a *Noise map* section computes L_den and L_night at 4 m from every saved street line and the railway design together, on demand, out to 300 m from the lines. The noise picture and the buildings are drawn on the map; the plugin's `noise_estimate` calculation now lists `gis` among its places (the manifest schema gained the value).
+- **Buildings:** footprints come from OpenStreetMap through the API (`/api/street-network/building-tiles/14/x/y`, Overpass, cached like the street tiles; ways and multipolygon outers tagged `building`, not `building=no`, not underground). Height is `height` when tagged, else `building:levels` × `noise.building_storey_height_m` (3 m), else `noise.building_default_height_m` (8 m), both educated guesses in the plugin's parameters. At most 12 zoom-14 tiles per map; beyond that the map is computed without buildings and says so.
+- **Screening:** for each grid receiver and source element the engine finds the buildings the straight path crosses and takes the upper convex hull over their roof edges (the CNOSSOS-EU / ISO 9613-2 vertical path). D_z per band follows ISO 9613-2 clause 7.4 (C2 = 20, C3 for several edges, K_met, limits 20 and 25 dB) and replaces the ground term as A_bar = D_z − A_gr, not below 0. Not yet: lateral paths round building ends, facade reflections, terrain, and the full CNOSSOS-EU homogeneous and favourable split; the panel says so. Beyond 80 m two neighbouring 10 m elements share one path, which changes free-field levels by under 0.1 dB.
+- **Exposure:** receivers inside footprints are not computed; each building takes the highest level of the grid cells beside its footprint (its most exposed side) and is counted in the reporting bands of Directive 2002/49/EC Annex VI (L_den 55–75, L_night 50–70). Buildings stand in for dwellings and people until population data is added. The band distances in the editors stay free field.
+- **Speed:** a 3 km tram line with about 6,300 buildings and an 80,000-cell grid takes about 1.4 s natively (`cargo run --release -p noise --example map_timing`); in the browser it runs on demand, not on every edit.
+- **Flows in the map:** street lines take buses per hour from the headway and the street line tool's default evening and night flows; railway tracks take the sample trains per hour of the design's mode, as in the editor. `noise.*` values in the project's preferences document are passed as overrides.
 
 ## Alternatives considered
 

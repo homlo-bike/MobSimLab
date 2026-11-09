@@ -176,6 +176,20 @@
     20
    ]
   },
+  "noise.building_storey_height_m": {
+   "*": [
+    2.8,
+    3,
+    3.5
+   ]
+  },
+  "noise.building_default_height_m": {
+   "*": [
+    4,
+    8,
+    15
+   ]
+  },
   "noise.favourable_probability_day": {
    "*": [
     0.33,

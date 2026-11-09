@@ -1,6 +1,8 @@
 import type { Map as MapLibreMap } from "maplibre-gl";
 import { type ReactNode, useEffect, useMemo, useState } from "react";
 import { JourneyPlanner } from "../features/journey-planner/JourneyPlanner";
+import { NoiseMap } from "../features/noise/NoiseMap";
+import { noiseCalculationIn } from "../features/noise/plugin";
 import type { PluginLineInput, StreetLineInput } from "../features/journey-planner/network";
 import type { Timetable } from "../features/journey-planner/types";
 import { RailwayEditor } from "../features/railways/RailwayEditor";
@@ -534,6 +536,16 @@ export function Workspace({
               )}
               {/* The street line tool, railway editor, journey planner and street setup render their panels here. */}
               <div key={`${tab}-${sim}-${chosen}`} ref={setPanel} />
+              {tab === "gis" && project && drawings.loaded && noiseCalculationIn("gis") && (
+                <div className="border-t border-slate-200 px-4 py-5 md:px-5">
+                  <NoiseMap
+                    map={map}
+                    streetLines={streetLines}
+                    railway={railway}
+                    preferences={preferences?.values}
+                  />
+                </div>
+              )}
               {tab === "gis" && (
                 <div className="border-t border-slate-200 px-4 py-5 md:px-5">
                   <Placeholder

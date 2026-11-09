@@ -65,6 +65,9 @@ fn project(mut input: EstimateInput) -> (EstimateInput, Option<Proj>) {
     for p in &mut input.point_sources {
         p.p = proj.local(p.p);
     }
+    for b in &mut input.buildings {
+        b.ring.iter_mut().for_each(|p| *p = proj.local(*p));
+    }
     (input, Some(proj))
 }
 
@@ -85,7 +88,37 @@ fn to_json(e: &Estimate, proj: Option<Proj>) -> Value {
         "lnight": band(&e.lnight),
         "checks": e.checks.iter().map(|c| json!({"severity": c.severity, "text": c.text, "at": ll(c.at), "line": c.line})).collect::<Vec<_>>(),
         "image": image,
+        "buildings": exposure(&e.building_levels),
+        "building_levels": e.building_levels.iter().map(|l| l.map(|x| if x.is_finite() { Some((x * 10.0).round() / 10.0) } else { None })).collect::<Vec<_>>(),
         "input_level": e.input_level,
+    })
+}
+
+/// Reporting bands of the Environmental Noise Directive (Annex VI): lower edges, dB.
+const LDEN_BANDS: [f64; 5] = [55.0, 60.0, 65.0, 70.0, 75.0];
+const LNIGHT_BANDS: [f64; 5] = [50.0, 55.0, 60.0, 65.0, 70.0];
+
+/// Purpose: buildings counted by the band of their most exposed side, as the Directive reports
+/// dwellings; `null` without buildings.
+fn exposure(levels: &[[f32; 2]]) -> Value {
+    if levels.is_empty() {
+        return Value::Null;
+    }
+    let count = |k: usize, edges: &[f64; 5]| -> Vec<usize> {
+        let mut out = vec![0usize; edges.len()];
+        for l in levels {
+            let v = l[k] as f64;
+            if let Some(i) = edges.iter().rposition(|&e| v >= e) {
+                out[i] += 1;
+            }
+        }
+        out
+    };
+    json!({
+        "count": levels.len(),
+        "reached": levels.iter().filter(|l| l[0].is_finite()).count(),
+        "lden": {"from_db": LDEN_BANDS, "buildings": count(0, &LDEN_BANDS)},
+        "lnight": {"from_db": LNIGHT_BANDS, "buildings": count(1, &LNIGHT_BANDS)},
     })
 }
 
@@ -177,5 +210,31 @@ mod tests {
         // The picture's west edge is west of the line.
         assert!(img["coordinates"][0][0].as_f64().unwrap() < 4.35);
         assert!(NoiseEstimator::defaults().contains("noise.rail_passby_db"));
+        assert!(v["buildings"].is_null());
+    }
+
+    #[test]
+    fn counts_buildings_by_band() {
+        // A house 20 m north of a busy tram line, 4 m square.
+        let (lat, dlat) = (50.85, 20.0 / 111_195.0);
+        let house = |dy: f64| {
+            let y = lat + dy * dlat;
+            json!({"ring": [[4.357, y], [4.35706, y], [4.35706, y + 0.2 * dlat], [4.357, y + 0.2 * dlat]], "height_m": 8})
+        };
+        let input = json!({"lines": [{"id": "a", "mode": "tram", "vehicle_length_m": 30,
+            "flows": {"day": 30, "evening": 20, "night": 6}, "speed_kmh": 50,
+            "points": [[4.35, lat], [4.365, lat]]}],
+            "grid_reach_m": 200, "buildings": [house(1.0), house(30.0)]});
+        let mut n = NoiseEstimator::new();
+        let v: Value = serde_json::from_str(&n.estimate(&input.to_string()).unwrap()).unwrap();
+        let b = &v["buildings"];
+        assert_eq!(b["count"], 2, "{b}");
+        let total: u64 = b["lden"]["buildings"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|x| x.as_u64().unwrap())
+            .sum();
+        assert_eq!(total, 1, "only the near house is at 55 dB or more: {b}");
     }
 }
