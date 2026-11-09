@@ -507,6 +507,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "rail-sim-wasm"
+version = "0.1.0"
+dependencies = [
+ "rail-model",
+ "rail-plan",
+ "rail-sim",
+ "serde",
+ "serde_json",
+ "wasm-bindgen",
+]
+
+[[package]]
 name = "rand"
 version = "0.10.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"

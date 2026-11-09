@@ -1,0 +1,19 @@
+[package]
+name = "rail-sim-wasm"
+version = "0.1.0"
+description = "WebAssembly bindings of the rail capacity run for the MobSimLab simulator tab"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+rail-model = { path = "../rail-model" }
+rail-plan = { path = "../rail-plan" }
+rail-sim = { path = "../rail-sim" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+wasm-bindgen = "=0.2.129"

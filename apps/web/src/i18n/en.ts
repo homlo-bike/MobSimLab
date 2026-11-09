@@ -214,14 +214,6 @@ export const en = {
 
   "sim.test": "Test the system",
   "sim.journey": "Journey time A → B",
-  "sim.testTitle": "Test the system",
-  "sim.testIntro":
-    "Run the network for a set period to see whether it works as intended and has enough capacity.",
-  "sim.runPeriod": "Pick a period and a day type, then run",
-  "sim.verdicts": "Plain verdicts: works as intended, not enough capacity, where people are left behind",
-  "sim.playback": "Playback with speed control",
-  "sim.popups": "Tap any vehicle, stop or line for a pop-up card",
-  "sim.tryJourney": "Try the journey time benchmark",
 
   "create.chooseTitle": "What do you want to build first?",
   "create.chooseIntro": "You can add the other kind later. Existing routes stay visible while you work.",
