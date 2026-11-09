@@ -62,6 +62,20 @@ describe.skipIf(!live)("live: OpenStreetMap through Overpass", () => {
       const parsed = JSON.parse(json) as { remark?: string; elements?: Array<{ type: string; id: number }> };
       const seen = (parsed.elements ?? []).map((e) => `${e.type}/${e.id}`).join(", ");
       const found = crossings(ACROSS_CATHEDRAL, json);
+      if (!found.length) {
+        // Diagnostics: the same area with a point radius and with a bounding box.
+        const count = async (q: string) =>
+          ((JSON.parse(await overpass.run(q)) as { elements?: unknown[] }).elements ?? []).length;
+        const point = await count(
+          '[out:json];(way["building"](around:60,50.9413,6.9581);rel["building"](around:60,50.9413,6.9581););out ids;',
+        );
+        const box = await count(
+          '[out:json];(way["building"](50.9405,6.9560,50.9420,6.9600);rel["building"](50.9405,6.9560,50.9420,6.9600););out ids;',
+        );
+        throw new Error(
+          `No crossings. Line query: [${seen}], point query: ${point}, bbox query: ${box}. Query: ${buildingQuery(ACROSS_CATHEDRAL)}`,
+        );
+      }
       expect(found.length, `Overpass returned [${seen}]; remark: ${parsed.remark ?? "none"}`).toBeGreaterThan(
         0,
       );
