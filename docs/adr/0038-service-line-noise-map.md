@@ -1,6 +1,6 @@
 # ADR-0038: Estimated noise map of service lines with CNOSSOS-EU: a live corridor in the editors, a full map as an analysis layer, exposure into the appraisal
 
-- Status: Proposed (product owner request 2026-11-02)
+- Status: Proposed; step N1 implemented as the noise plugin (2026-11-03)
 - Date: 2026-11-02
 - Deciders: product owner, architecture
 - Related: FR-COST-03, FR-GIS-04, FR-GIS-05, FR-GIS-06, FR-ENV-01..05 (new), ADR-0004 (polyglot runtime), ADR-0005 (SUMO), ADR-0006 (rail kernel), ADR-0013 (scenario overlays), ADR-0014 (results storage), ADR-0018 (assumption engine), ADR-0023 (job queue), ADR-0024 (map rendering), ADR-0028 (declared background traffic), ADR-0029 (street lines), ADR-0031 (routing in the browser), ADR-0033 (railway editor), ADR-0034 (published timetable), [09 §3.3](../architecture/09-planning-models.md)
@@ -114,6 +114,15 @@ The CNOSSOS road coefficients and the railway default database are not Project P
 | N2 | Full CNOSSOS propagation with buildings and terrain; worker job; **Noise map** tool, map layer, bands, exposure from population; ISO/TR 17534-4 and NoiseModelling tests | Phase 2 OSM buildings, DEM, population rasters |
 | N3 | Inputs from timetables and simulation runs; with-background-traffic view; scenario difference map; appraisal hook (FR-COST-03); report export (contours as GeoJSON and GeoPackage, table as CSV); agent tool | Phases 5–7, 9 |
 | N4 | Ferry and cable car sources and their assumptions; vehicle `noise` block in the catalogue for measured pass-by levels | New modes (sibling thread), vehicle schema |
+
+## Implementation notes (2026-11-03)
+
+- **N1 is delivered as the bundled noise plugin** `org.mobsimlab.noise` (product owner, 2026-11-03: "This should be a plugin as well"), on the plugin model of ADR-0036. The plugin contributes the Noise parameters (`plugins/noise/assumptions/parameters.yaml`, so §5's keys live with the plugin instead of `assumptions/parameters/noise.yaml`), its sources, the calculation `noise_estimate` (runtime `bundled-wasm`, module `noise`) and the map layer `noise_band`. The engine stays the core crate `crates/noise` with `crates/noise-wasm`, as ADR-0036 requires for calculations until the sandboxed host exists. The editors show the Noise section only when the registry lists the calculation for that tool.
+- **Rail emission is interim.** Until the CNOSSOS-EU railway database (Appendix F) is in the crate, each rail mode has a pass-by level at a reference speed (`noise.rail_passby_db`, `noise.rail_passby_ref_speed_kmh`), scaled 30 lg v with a traction floor and aerodynamic noise above 200 km/h, spread over the octave bands with a rolling-noise shape. Its sound power per metre is calibrated through the corridor's own propagation, so a receiver at 7.5 m reproduces the stated pass-by level. Squeal, bridge, switch and embedded-track corrections are applied on top.
+- **Quick-estimate ground effect** uses the ISO 9613-2 general method with one *G*, which assumes favourable propagation throughout: an upper bound, consistent with §2's "no screening" label. CNOSSOS homogeneous/favourable conditions come with the full map (N2).
+- **Placeholders accepted** by the product owner (2026-11-03) for electric buses (−8 dB, −12 to −3, on the propulsion term), cable car towers and stations (90 and 95 dB(A)) and ferries (105 and 100 dB(A)); they are marked PLACEHOLDER in the parameter file.
+- **Where the full map lives** (product owner, 2026-11-08): the live band stays in the street line tool and the railway editor; the full noise map with OSM buildings, exposure and the scenario difference goes in the **GIS tab** as the Noise map layer and its panel, instead of a separate tool next to Journey planner (§1.2).
+- **Flows until service lines exist:** street lines use the headway for the day and editable evening and night vehicles per hour; the railway editor uses editable sample trains per hour per track by mode.
 
 ## Alternatives considered
 

@@ -42,6 +42,12 @@ import {
   type RailTool,
 } from "./RailPanel";
 import { RailToolPalette } from "./RailToolPalette";
+import { loadWasmNoise } from "../noise/engine";
+import { NoiseSection } from "../noise/NoiseSection";
+import { noiseCalculationIn } from "../noise/plugin";
+import { noiseCheckText, RAIL_FLOWS, railSources } from "../noise/sources";
+import type { Flows, Indicator, NoiseEngineLoader } from "../noise/types";
+import { useNoise } from "../noise/useNoise";
 import { addLine, engineLines, linesTrainLength, removeLine, updateLine } from "./serviceLines";
 import type { Publication } from "./ServiceLinesPanel";
 import type {
@@ -109,6 +115,10 @@ interface Props {
   initial?: Network | null;
   /** Told about the drawing after every change, so the project can save it. */
   onDocChange?: (doc: Network) => void;
+  /** Noise engine loader (noise plugin); tests inject a fake. */
+  loadNoise?: NoiseEngineLoader;
+  /** Offer the noise band; defaults to whether the noise plugin is installed. */
+  noiseAvailable?: boolean;
   /** Called with the published service lines' timetable (`null` when withdrawn), for the journey planner. */
   onPublish?: (timetable: Timetable | null) => void;
 }
@@ -139,6 +149,8 @@ export function RailwayEditor({
   delays = null,
   initial = null,
   onDocChange,
+  loadNoise = loadWasmNoise,
+  noiseAvailable = noiseCalculationIn("railway-tool"),
   onPublish,
 }: Props) {
   const engine = useRef<RailEngine | null>(null);
@@ -163,6 +175,9 @@ export function RailwayEditor({
   const [flash, setFlash] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [note, setNote] = useState<string | null>(null);
+  const [noiseOn, setNoiseOn] = useState(false);
+  const [indicator, setIndicator] = useState<Indicator>("lden");
+  const [trainFlows, setTrainFlows] = useState<Flows | null>(null);
   const [published, setPublished] = useState<Published | null>(null);
   const [picking, setPicking] = useState<string | null>(null);
 
@@ -1074,6 +1089,11 @@ export function RailwayEditor({
     },
   };
 
+  const flows = trainFlows ?? RAIL_FLOWS[doc?.mode ?? "tram"] ?? RAIL_FLOWS.tram!;
+  const noiseInput =
+    noiseOn && doc && view && view.tracks.length ? { lines: railSources(doc, view, flows) } : null;
+  const noise = useNoise(map, noiseAvailable && noiseOn, noiseInput, indicator, loadNoise, "rd-corridors");
+
   const sidePanel = doc && view && (
     <RailPanel
       doc={doc}
@@ -1088,6 +1108,27 @@ export function RailwayEditor({
       streetNote={streetNote}
       existingRailways={existingRailways}
       actions={panelActions}
+      noise={
+        noiseAvailable && (
+          <NoiseSection
+            on={noiseOn}
+            setOn={setNoiseOn}
+            indicator={indicator}
+            setIndicator={setIndicator}
+            flows={flows}
+            setFlows={setTrainFlows}
+            flowsLabel="Trains per hour on each track (sample service until rail lines are drawn)"
+            view={noise.view}
+            error={noise.error}
+          />
+        )
+      }
+      extraIssues={noise.view?.checks.map((c) => ({
+        severity: c.severity,
+        text: noiseCheckText(c),
+        at: c.at,
+        ref_id: null,
+      }))}
       service={{ publication, publish, picking, setPicking: pickFor, newLine }}
     />
   );

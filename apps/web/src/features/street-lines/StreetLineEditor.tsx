@@ -21,6 +21,12 @@ import {
 } from "../naming/names";
 import { placesOtherThan, publishPlaces } from "../naming/registry";
 import { ToolPalette, type Tool } from "./ToolPalette";
+import { NoiseSection } from "../noise/NoiseSection";
+import { noiseCalculationIn } from "../noise/plugin";
+import { noiseCheckText, streetLineSources } from "../noise/sources";
+import type { Flows, Indicator, NoiseEngineLoader } from "../noise/types";
+import { useNoise } from "../noise/useNoise";
+import { loadWasmNoise } from "../noise/engine";
 import type {
   DelayShares,
   EngineLoader,
@@ -90,6 +96,10 @@ interface Props {
   initial?: SavedStreetLine | null;
   /** Told about the line after every change the planner makes, so the project can save it. */
   onSave?: (line: SavedStreetLine) => void;
+  /** Noise engine loader (noise plugin); tests inject a fake. */
+  loadNoise?: NoiseEngineLoader;
+  /** Offer the noise band; defaults to whether the noise plugin is installed. */
+  noiseAvailable?: boolean;
 }
 
 /** A JSON file the planner loaded in the panel. */
@@ -117,6 +127,8 @@ export function StreetLineEditor({
   delays = null,
   initial = null,
   onSave,
+  loadNoise = loadWasmNoise,
+  noiseAvailable = noiseCalculationIn("street-line-tool"),
 }: Props) {
   const engine = useRef<StreetEngine | null>(null);
   // The saved line until it has been routed again; nothing is saved before that.
@@ -138,6 +150,10 @@ export function StreetLineEditor({
   const [status, setStatus] = useState<string | null>("Starting the routing engine…");
   const [error, setError] = useState<string | null>(null);
   const [note, setNote] = useState<string | null>(null);
+  const [noiseOn, setNoiseOn] = useState(false);
+  const [indicator, setIndicator] = useState<Indicator>("lden");
+  const [offPeak, setOffPeak] = useState<Omit<Flows, "day">>({ evening: 3, night: 1 });
+  const [electric, setElectric] = useState(false);
   const [topologyFile, setTopologyFile] = useState<LoadedFile | null>(null);
   const [closuresFile, setClosuresFile] = useState<LoadedFile | null>(null);
 
@@ -605,6 +621,13 @@ export function StreetLineEditor({
     clearClosures: () => setClosuresFile(null),
   };
 
+  const dayFlow = timing.headwayMin > 0 ? 60 / timing.headwayMin : 0;
+  const noiseInput =
+    noiseOn && profile && view.legs.length
+      ? { lines: streetLineSources(view, profile, { day: dayFlow, ...offPeak }, electric) }
+      : null;
+  const noise = useNoise(map, noiseAvailable && noiseOn, noiseInput, indicator, loadNoise, "sl-roads");
+
   const canPreview = circuitPath(view) !== null;
   const notice =
     zoomedOut && !ready
@@ -632,6 +655,31 @@ export function StreetLineEditor({
       status={null}
       error={error}
       actions={actions}
+      noise={
+        noiseAvailable && (
+          <NoiseSection
+            on={noiseOn}
+            setOn={setNoiseOn}
+            indicator={indicator}
+            setIndicator={setIndicator}
+            flows={{ day: dayFlow, ...offPeak }}
+            setFlows={(f) => setOffPeak({ evening: f.evening, night: f.night })}
+            flowsLabel="Vehicles per hour, each direction"
+            dayFrom={`Day from the ${timing.headwayMin} min headway.`}
+            electric={{
+              value: electric || profile.mode === "trolleybus",
+              onChange: setElectric,
+              fixed: profile.mode === "trolleybus",
+            }}
+            view={noise.view}
+            error={noise.error}
+          />
+        )
+      }
+      extraChecks={noise.view?.checks.map((c) => ({
+        sev: c.severity === "warning" ? "warn" : "info",
+        text: noiseCheckText(c),
+      }))}
     />
   );
 
