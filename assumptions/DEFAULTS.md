@@ -505,6 +505,58 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 | all | 0.6 | 0.75 | 0.85 | cited | unverified | [uic-406](#src-uic-406) | UIC 406 recommends about 75 % in the peak hour on mixed-traffic lines and 60 % daily; values to be checked against the current edition. |
 | metro, commuter_rail | 0.75 | 0.85 | 0.9 | cited | unverified | [uic-406](#src-uic-406) | UIC 406: dedicated suburban passenger traffic about 85 % in the peak hour. |
 
+### Runs with random primary delays in the stability test
+
+`stability.runs` · unit: count · used by: capacity run stability test
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 4 | 8 | 50 | educated-guess | unverified | [uic-406](#src-uic-406), [mobsimlab-derivation](#src-mobsimlab-derivation) | UIC 406 assesses stability by running the timetable with random delays. Eight seeded runs are enough to tell a stable timetable from one where delays grow, and keep the test interactive in the browser; use more for a published study. |
+
+### Share of trips that start late in the stability test
+
+`stability.delayed_share` · unit: share · used by: capacity run stability test
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.1 | 0.3 | 0.5 | educated-guess | unverified | [db-punctuality](#src-db-punctuality), [mobsimlab-derivation](#src-mobsimlab-derivation) | Mainline departures are often a minute or more late; a third of trips with a primary delay is a demanding but common test assumption. |
+| metro, tram, light_rail | 0.1 | 0.2 | 0.4 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Urban rail has short dwells that overrun often but by little; one trip in five starting late. |
+
+### Mean primary delay of a trip that starts late (exponential distribution)
+
+`stability.primary_delay_mean_s` · unit: s · used by: capacity run stability test
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 60 | 120 | 300 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Primary delays are commonly modelled as exponential (many small, few large); two minutes is a moderate mainline value. |
+| metro, tram, light_rail | 20 | 45 | 90 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Door and boarding overruns on urban rail are typically tens of seconds. |
+
+### Largest primary delay in the stability test
+
+`stability.primary_delay_max_s` · unit: s · used by: capacity run stability test
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 300 | 600 | 1200 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Caps the exponential tail; larger delays are disruptions handled by the traffic management layer, not stability. |
+| metro, tram, light_rail | 120 | 180 | 300 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Beyond about three minutes a metro controller intervenes (holding, short-turning). |
+
+### Time run after the tested period, without new delays, to see whether delays die out
+
+`stability.recovery_s` · unit: s · used by: capacity run stability test
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 900 | 1800 | 3600 | educated-guess | unverified | [uic-406](#src-uic-406), [mobsimlab-derivation](#src-mobsimlab-derivation) | UIC 406 calls a timetable stable when delays decay within the period; half an hour after the period lets the running-time supplements and buffers absorb them. |
+
+### Delays have died out when the mean arrival delay at the end of the recovery time is under this
+
+`stability.residual_delay_s` · unit: s · used by: capacity run stability test, verdict
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 30 | 60 | 120 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Well under the punctuality thresholds (recording.late_threshold_s), so a stable timetable is back on time for passengers. |
+| metro, tram, light_rail | 15 | 30 | 60 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Half a minute is below what a metro passenger notices at a 2–5 minute headway. |
+
 ## Demand
 
 ### Walking speed for walking links between stations

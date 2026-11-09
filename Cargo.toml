@@ -6,6 +6,7 @@ members = [
   "crates/rail-plan",
   "crates/rail-interlocking",
   "crates/rail-sim",
+  "crates/rail-sim-wasm",
   "crates/mobsim-py",
   "crates/street-routing",
   "crates/street-routing-wasm",

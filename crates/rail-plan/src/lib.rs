@@ -18,12 +18,14 @@
 //! - [`journeys`]: the same timetable in the contract's form, with stop positions, for the journey planner.
 //! - [`service`]: service lines drawn in the railway editor (stops, catalogue train, headways), planned
 //!   and published for the journey planner in one step.
+//! - [`examples`]: example lines on the example networks (metro line M1).
 #![warn(missing_docs)]
 
 pub mod blocking;
 pub mod closures;
 pub mod conflicts;
 pub mod demand;
+pub mod examples;
 pub mod journeys;
 pub mod line;
 pub mod path;

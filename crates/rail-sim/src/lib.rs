@@ -10,9 +10,12 @@
 //! `docs/spikes/`. The [`network`] module is the network kernel of ADR-0032
 //! §4: planned days on the compiled network, under the `rail-interlocking`
 //! interlocking, with automatic route setting, train protection and a
-//! driver model.
+//! driver model. The [`capacity`] module is the simulator tab's capacity run:
+//! UIC 406 capacity, a run through the kernel and a stability test with
+//! seeded primary delays, for one period and a sweep of frequencies.
 #![warn(missing_docs)]
 
+pub mod capacity;
 pub mod model;
 pub mod network;
 pub mod scenarios;

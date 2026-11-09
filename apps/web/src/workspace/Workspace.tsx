@@ -1,5 +1,6 @@
 import type { Map as MapLibreMap } from "maplibre-gl";
 import { type ReactNode, useEffect, useMemo, useState } from "react";
+import { CapacityRun } from "../features/capacity/CapacityRun";
 import { JourneyPlanner } from "../features/journey-planner/JourneyPlanner";
 import { NoiseMap } from "../features/noise/NoiseMap";
 import { noiseCalculationIn } from "../features/noise/plugin";
@@ -59,7 +60,7 @@ const PLUGIN_TOOLS = pluginTools();
 
 /**
  * One open project (mockups "Project app"): the project name and the six tabs in the top bar (a bottom tab bar on
- * phones), the map, and a side panel (a bottom sheet on phones). Simulator holds the journey planner; Create holds
+ * phones), the map, and a side panel (a bottom sheet on phones). Simulator holds the capacity run and the journey planner; Create holds
  * the street line tool and the railway editor; the other tabs are placeholders until their tools exist.
  */
 export function Workspace({
@@ -513,18 +514,7 @@ export function Workspace({
               </div>
             )}
             <div className="min-h-0 flex-1 overflow-y-auto">
-              {tab === "simulator" && sim === "test" && (
-                <div className="px-4 pb-5 md:px-5">
-                  <Placeholder
-                    title="sim.testTitle"
-                    intro="sim.testIntro"
-                    items={["sim.runPeriod", "sim.verdicts", "sim.playback", "sim.popups"]}
-                  />
-                  <button type="button" className="btn mt-4 w-full" onClick={() => setSim("journey")}>
-                    {t("sim.tryJourney")}
-                  </button>
-                </div>
-              )}
+              {tab === "simulator" && sim === "test" && <CapacityRun />}
               {tab === "create" && !editable && (
                 <div className="px-4 py-5 md:px-5">
                   <h2 className="text-lg font-semibold">{t("create.readOnlyTitle")}</h2>
