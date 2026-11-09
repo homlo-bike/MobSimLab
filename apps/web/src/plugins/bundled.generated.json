@@ -1031,6 +1031,7 @@
           "where": [
             "street-line-tool",
             "railway-tool",
+            "gis",
             "analysis"
           ]
         }
@@ -1145,6 +1146,14 @@
         },
         "noise.grid_spacing_m": {
           "label": "Receiver grid spacing",
+          "unit": "m"
+        },
+        "noise.building_storey_height_m": {
+          "label": "Height of one storey, for OSM buildings tagged with storeys only",
+          "unit": "m"
+        },
+        "noise.building_default_height_m": {
+          "label": "Height of an OSM building with neither height nor storeys",
           "unit": "m"
         },
         "noise.favourable_probability_day": {

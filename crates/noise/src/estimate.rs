@@ -7,7 +7,8 @@
 
 use crate::emission::{pow10, rail_passby_db, road_vehicle_lw, RoadCategory};
 use crate::params::{Coefficients, Library, Mode, Variant, NB, VARIANTS};
-use crate::propagation::{absorption, Propagation};
+use crate::propagation::{absorption, ground, Propagation};
+use crate::screening::{barrier_db, BuildingInput, HeightRule, Obstacles, RayScratch};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
@@ -15,6 +16,8 @@ use std::collections::HashMap;
 const ELEMENT_M: f64 = 10.0;
 /// Spacing of the band probes along a line, m.
 const PROBE_STEP_M: f64 = 20.0;
+/// Distance from which paired elements stand for their two halves on the screened map, m.
+const PAIR_FROM_M: f64 = 80.0;
 /// Most grid cells computed for the map picture.
 const MAX_GRID_CELLS: f64 = 40_000.0;
 /// Half chord used to measure a curve radius, m.
@@ -128,6 +131,13 @@ pub struct EstimateInput {
     /// Project preference overrides, `noise.*` key → value.
     #[serde(default)]
     pub overrides: HashMap<String, f64>,
+    /// How far the map grid reaches from the sources, m (clamped to the largest source
+    /// distance); `None` follows the band edges, as the editors do.
+    #[serde(default)]
+    pub grid_reach_m: Option<f64>,
+    /// Buildings that screen the map grid (step N2). The band distances stay free field.
+    #[serde(default)]
+    pub buildings: Vec<BuildingInput>,
 }
 
 fn yes() -> bool {
@@ -203,6 +213,9 @@ pub struct Estimate {
     pub checks: Vec<Check>,
     /// The map picture, when asked for.
     pub grid: Option<Grid>,
+    /// Highest L_den and L_night in the grid cells next to each input building (NaN where the
+    /// grid does not reach it or the building was dropped), by input index.
+    pub building_levels: Vec<[f32; 2]>,
     /// Level of detail of the inputs (ADR-0038 §4).
     pub input_level: &'static str,
 }
@@ -252,6 +265,8 @@ struct Element {
     p: [f64; 2],
     /// Index into the transfer tables (source height).
     table: usize,
+    /// Source height above ground, m.
+    h: f64,
     /// Line index, or `lines + point index`.
     owner: usize,
     /// Band power for one vehicle per hour (lines) or full operation (points), per variant.
@@ -263,6 +278,8 @@ struct TransferTable {
     ln_min: f64,
     step: f64,
     rows: Vec<[f64; NB]>,
+    /// Ground attenuation A_gr per band, dB (the barrier term replaces it when screened).
+    ground: Vec<[f64; NB]>,
 }
 
 impl TransferTable {
@@ -270,15 +287,26 @@ impl TransferTable {
         let (min, n) = (0.5f64, 240usize);
         let ln_min = min.ln();
         let step = ((max_d * 1.01).ln() - ln_min) / (n - 1) as f64;
-        let rows = (0..n)
-            .map(|i| prop.transfer((ln_min + step * i as f64).exp(), hs, hr))
+        let d = |i: usize| (ln_min + step * i as f64).exp();
+        let rows = (0..n).map(|i| prop.transfer(d(i), hs, hr)).collect();
+        let ground = (0..n)
+            .map(|i| ground(d(i).max(0.5), hs, hr, prop.g))
             .collect();
-        Self { ln_min, step, rows }
+        Self {
+            ln_min,
+            step,
+            rows,
+            ground,
+        }
+    }
+
+    fn index(&self, d: f64) -> usize {
+        let f = ((d.max(0.5).ln() - self.ln_min) / self.step).round() as usize;
+        f.min(self.rows.len() - 1)
     }
 
     fn at(&self, d: f64) -> &[f64; NB] {
-        let f = ((d.max(0.5).ln() - self.ln_min) / self.step).round() as usize;
-        &self.rows[f.min(self.rows.len() - 1)]
+        &self.rows[self.index(d)]
     }
 }
 
@@ -625,6 +653,7 @@ pub fn estimate(input: &EstimateInput) -> Estimate {
             elements.push(Element {
                 p: q.p,
                 table: table_of(hs),
+                h: hs,
                 owner: li,
                 power,
             });
@@ -638,6 +667,7 @@ pub fn estimate(input: &EstimateInput) -> Estimate {
         elements.push(Element {
             p: ps.p,
             table: table_of(ps.height_m.max(0.0)),
+            h: ps.height_m.max(0.0),
             owner: n_lines + pi,
             power: [flat; 3],
         });
@@ -776,9 +806,103 @@ pub fn estimate(input: &EstimateInput) -> Estimate {
     let lden = band(0, th_den, &mut widths);
     let lnight = band(1, th_night, &mut widths);
 
+    // Buildings screen the grid receivers (step N2).
+    let obstacles = Obstacles::new(
+        &input.buildings,
+        HeightRule {
+            level_m: lib.central("noise.building_storey_height_m"),
+            default_m: lib.central("noise.building_default_height_m"),
+        },
+    );
+    let mut building_levels = vec![[f32::NAN; 2]; input.buildings.len()];
+    // Central L_den and L_night at a receiver with the roof paths over the buildings.
+    // Far from a receiver, neighbouring elements are paired so each pair costs one roof path.
+    let mut pairs: Vec<(Element, usize, usize)> = Vec::new();
+    if !obstacles.is_empty() {
+        let mut i = 0;
+        while i < elements.len() {
+            let a = &elements[i];
+            match elements.get(i + 1) {
+                Some(b)
+                    if b.owner == a.owner
+                        && b.table == a.table
+                        && dist(a.p, b.p) <= 1.5 * ELEMENT_M =>
+                {
+                    let power = std::array::from_fn(|v| {
+                        std::array::from_fn(|k| a.power[v][k] + b.power[v][k])
+                    });
+                    let p = [(a.p[0] + b.p[0]) / 2.0, (a.p[1] + b.p[1]) / 2.0];
+                    pairs.push((
+                        Element {
+                            p,
+                            power,
+                            ..a.clone()
+                        },
+                        i,
+                        2,
+                    ));
+                    i += 2;
+                }
+                _ => {
+                    pairs.push((a.clone(), i, 1));
+                    i += 1;
+                }
+            }
+        }
+    }
+    let pair_els: Vec<Element> = pairs.iter().map(|x| x.0.clone()).collect();
+    let pair_buckets = Buckets::new(&pair_els, 50.0);
+    // Central L_den and L_night at a receiver with the roof paths over the buildings.
+    let screened = |p: [f64; 2], scratch: &mut Vec<[f64; 3]>, ray: &mut RayScratch| -> [f64; 2] {
+        scratch.iter_mut().for_each(|x| *x = [0.0; 3]);
+        let mut add = |e: &Element, d: f64, ray: &mut RayScratch| {
+            let tab = &tables[e.table];
+            let idx = tab.index(d);
+            let t = &tab.rows[idx];
+            let w = &e.power[1];
+            let sum: f64 = match obstacles.screen(e.p, p, e.h, hr, ray) {
+                None => (0..NB).map(|b| w[b] * t[b]).sum(),
+                Some(sc) => {
+                    // ISO 9613-2: A_bar = D_z − A_gr, not below 0; it replaces the ground term.
+                    let dz = barrier_db(&sc);
+                    let gr = &tab.ground[idx];
+                    (0..NB)
+                        .map(|b| w[b] * t[b] * pow10(-(dz[b] - gr[b]).max(0.0)))
+                        .sum()
+                }
+            };
+            scratch[e.owner][1] += sum;
+        };
+        pair_buckets.near(p, max_d, |k| {
+            let (e, first, n) = &pairs[k];
+            let d = dist(p, e.p);
+            if d > max_d {
+                return;
+            }
+            if d >= PAIR_FROM_M {
+                add(e, d, ray);
+            } else {
+                for f in &elements[*first..*first + *n] {
+                    add(f, dist(p, f.p), ray);
+                }
+            }
+        });
+        let mut per = [0.0; 3];
+        for (o, e) in scratch.iter().enumerate() {
+            for k in 0..3 {
+                per[k] += flows[o][k] * e[1];
+            }
+        }
+        [level(periods.den(per)), level(per[2])]
+    };
+
     // Map grid round the lines.
     let grid = if input.grid && !elements.is_empty() {
-        let reach = (lden.max_m.max(lnight.max_m) * 1.3 + 25.0).clamp(30.0, max_d);
+        let reach = input
+            .grid_reach_m
+            .filter(|r| r.is_finite() && *r > 0.0)
+            .unwrap_or(lden.max_m.max(lnight.max_m) * 1.3 + 25.0)
+            .clamp(30.0, max_d);
         let (mut x0, mut y0, mut x1, mut y1) = (f64::MAX, f64::MAX, f64::MIN, f64::MIN);
         for e in &elements {
             x0 = x0.min(e.p[0]);
@@ -813,16 +937,62 @@ pub fn estimate(input: &EstimateInput) -> Estimate {
         }
         let mut g_den = vec![f32::NAN; nx * ny];
         let mut g_night = vec![f32::NAN; nx * ny];
+        // Building each cell centre stands in (receivers there are not computed).
+        let mut inside: Vec<Option<usize>> = vec![None; nx * ny];
+        if !obstacles.is_empty() {
+            for j in 0..ny {
+                for i in 0..nx {
+                    let k = j * nx + i;
+                    if mask[k] {
+                        let c = [x0 + (i as f64 + 0.5) * cell, y0 + (j as f64 + 0.5) * cell];
+                        inside[k] = obstacles.inside(c);
+                    }
+                }
+            }
+        }
+        let mut ray = RayScratch::default();
         for j in 0..ny {
             for i in 0..nx {
                 let k = j * nx + i;
-                if !mask[k] {
+                if !mask[k] || inside[k].is_some() {
                     continue;
                 }
                 let c = [x0 + (i as f64 + 0.5) * cell, y0 + (j as f64 + 0.5) * cell];
-                let l = levels(c, false, &mut scratch)[1];
+                let l = if obstacles.is_empty() {
+                    levels(c, false, &mut scratch)[1]
+                } else {
+                    screened(c, &mut scratch, &mut ray)
+                };
                 g_den[k] = l[0] as f32;
                 g_night[k] = l[1] as f32;
+            }
+        }
+        // Each building takes the highest level of the computed cells round its footprint.
+        if !obstacles.is_empty() {
+            for j in 0..ny {
+                for i in 0..nx {
+                    let Some(b) = inside[j * nx + i] else {
+                        continue;
+                    };
+                    let src = obstacles.source(b);
+                    for (di, dj) in [(-1i64, 0i64), (1, 0), (0, -1), (0, 1)] {
+                        let (ii, jj) = (i as i64 + di, j as i64 + dj);
+                        if ii < 0 || jj < 0 || ii >= nx as i64 || jj >= ny as i64 {
+                            continue;
+                        }
+                        let k = jj as usize * nx + ii as usize;
+                        if g_den[k].is_nan() {
+                            continue;
+                        }
+                        let bl = &mut building_levels[src];
+                        if bl[0].is_nan() || g_den[k] > bl[0] {
+                            bl[0] = g_den[k];
+                        }
+                        if bl[1].is_nan() || g_night[k] > bl[1] {
+                            bl[1] = g_night[k];
+                        }
+                    }
+                }
             }
         }
         Some(Grid {
@@ -844,6 +1014,7 @@ pub fn estimate(input: &EstimateInput) -> Estimate {
         lnight,
         checks,
         grid,
+        building_levels,
         input_level: "planned",
     }
 }

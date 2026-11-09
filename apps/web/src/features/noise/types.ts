@@ -45,10 +45,31 @@ export interface NoiseLine {
   stops_m?: number[];
 }
 
+/** An OSM building footprint (API building tiles); the engine fills a missing height from storeys or a default. */
+export interface NoiseBuilding {
+  id: string;
+  ring: LonLat[];
+  height_m?: number;
+  levels?: number;
+}
+
 export interface NoiseInput {
   lines: NoiseLine[];
   grid?: boolean;
+  /** How far the map reaches from the lines, m; the editors leave it to the band edges. */
+  grid_reach_m?: number;
   overrides?: Record<string, number>;
+  /** Buildings that screen the map (GIS tab noise map). */
+  buildings?: NoiseBuilding[];
+}
+
+/** Buildings counted by the reporting band (Directive 2002/49/EC Annex VI) of their most exposed side. */
+export interface NoiseExposure {
+  count: number;
+  /** Buildings the map reaches. */
+  reached: number;
+  lden: { from_db: number[]; buildings: number[] };
+  lnight: { from_db: number[]; buildings: number[] };
 }
 
 export interface NoiseBand {
@@ -79,6 +100,10 @@ export interface NoiseView {
     coordinates: [LonLat, LonLat, LonLat, LonLat];
   } | null;
   input_level: "planned" | "timetabled" | "simulated";
+  /** With buildings only. */
+  buildings?: NoiseExposure | null;
+  /** `[L_den, L_night]` beside each input building, null where the map does not reach. */
+  building_levels?: [number | null, number | null][];
 }
 
 /** The noise engine (WebAssembly), injectable for tests. */
