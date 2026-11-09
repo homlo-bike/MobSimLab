@@ -14,5 +14,6 @@ export default defineConfig({
     __APP_BUILD__: JSON.stringify(process.env.MOBSIMLAB_BUILD ?? "dev"),
   },
   server: { proxy: { "/api": "http://localhost:8080" } },
-  test: { environment: "jsdom", include: ["test/**/*.test.tsx"] },
+  // The railway editor tests run the WebAssembly engine many times: 2 to 4 s locally, over 5 s on CI runners.
+  test: { environment: "jsdom", include: ["test/**/*.test.tsx"], testTimeout: 20_000 },
 });

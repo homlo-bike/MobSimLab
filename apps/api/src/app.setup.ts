@@ -33,8 +33,10 @@ export function configureApp(app: NestExpressApplication, config: AppConfig): vo
     }),
   );
   app.use(cookieParser());
-  // Drawings are whole documents (a railway design can be a few MB); every other route keeps the 100 kB default.
+  // Drawings are whole documents (a railway design can be a few MB), terrain requests carry every track
+  // of a design; every other route keeps the 100 kB default.
   // Nest adds no JSON parser of its own once one is registered, so both are registered here.
   app.use("/api/projects/:id/drawings", json({ limit: "8mb" }));
+  app.use("/api/terrain", json({ limit: "2mb" }));
   app.use(json({ limit: "100kb" }));
 }
