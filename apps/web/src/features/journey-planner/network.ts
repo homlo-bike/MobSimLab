@@ -186,3 +186,66 @@ export function prefixTimetable(r: Partial<Timetable>, prefix: string): Timetabl
     })),
   };
 }
+
+/** A cable car or ferry line from a plugin tool (ADR-0037), as the planner needs it. */
+export interface PluginLineInput {
+  /** Unique per line, such as `cable-car` or `ferry`. */
+  id: string;
+  name: string;
+  /** Plugin mode id (`cable_car`, `aerial_tramway`, `ferry`). */
+  mode: string;
+  color: string;
+  stops: { name: string; lonlat: [number, number] }[];
+  /** One stopping pattern per direction: index into `stops`, running time from the previous stop, dwell. */
+  directions: { stop: number; run_s: number; dwell_s: number }[][];
+  /** Time between departures, seconds (all day; continuous gondolas use at least 60 s, ADR-0037 §5). */
+  headwayS: number;
+}
+
+/**
+ * Purpose: frequency patterns of a plugin line, one per direction, at the line's headway for the whole
+ * service day. Ids get the `plugin:<id>:` prefix.
+ * Output: a timetable with only this line, or `null` when it has fewer than two stops.
+ */
+export function pluginLineTimetable(
+  line: PluginLineInput,
+  day: ServiceDay = DEFAULT_SERVICE_DAY,
+): Timetable | null {
+  if (line.stops.length < 2) return null;
+  const id = `plugin:${line.id}`;
+  const headway = Math.max(60, Math.round(line.headwayS));
+  const patterns: FrequencyPattern[] = line.directions
+    .filter((d) => d.length >= 2)
+    .map((d, i) => ({
+      pattern_id: `${id}-${i}`,
+      route_id: id,
+      direction_id: i,
+      service_id: "weekday",
+      stops: d.map((s, k) => ({
+        stop_id: `${id}:${s.stop}`,
+        run_time: k === 0 ? 0 : Math.round(s.run_s),
+        dwell_time: Math.round(s.dwell_s),
+      })),
+      periods: servicePeriods(day, headway, headway),
+    }));
+  if (!patterns.length) return null;
+  return {
+    stops: line.stops.map((s, i) => ({
+      stop_id: `${id}:${i}`,
+      stop_name: s.name || `Stop ${i + 1}`,
+      stop_lon: s.lonlat[0],
+      stop_lat: s.lonlat[1],
+    })),
+    routes: [
+      {
+        route_id: id,
+        route_short_name: line.name,
+        mode: line.mode,
+        route_color: line.color.replace("#", ""),
+      },
+    ],
+    trips: [],
+    transfers: [],
+    frequency_patterns: patterns,
+  };
+}

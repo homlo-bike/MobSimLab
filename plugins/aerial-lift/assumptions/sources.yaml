@@ -1,0 +1,48 @@
+# Sources of the aerial-lift plugin's parameters (same format as assumptions/sources.yaml).
+# Taken from Research R1 (docs/research/r1-cable-car-and-ferry.md); not yet re-read by a maintainer.
+
+- id: poma-urban-brochure
+  title: POMA, urban transport brochure (detachable gondola capacity up to 4,500 p/h/dir)
+  publisher: POMA
+  url: https://www.poma.net/wp-content/uploads/2022/06/Brochure-urbaine-EN.pdf
+  licence: © POMA; numbers cited as facts
+  access: free
+  retrieved: 2026-11-02
+  checked_via: search-snippet
+
+- id: doppelmayr-urban-faq
+  title: Doppelmayr, Urban ropeways FAQs (2020)
+  publisher: Doppelmayr Seilbahnen GmbH
+  url: https://www.doppelmayr.com/files/sites/default/data/_general_content/pdfs/2020_Urban_FAQs_ENG.pdf
+  licence: © Doppelmayr; numbers cited as facts
+  access: free
+  retrieved: 2026-11-02
+  checked_via: search-snippet
+
+- id: idfm-cable-c1
+  title: Île-de-France Mobilités, Câble C1, precautions in bad weather (slows above 70 km/h wind, stops above 90 km/h)
+  publisher: Île-de-France Mobilités
+  url: https://www.iledefrance-mobilites.fr/en/le-reseau/projets/cablec1/questions/quelles-seront-les-precautions-prises-en-cas-dintemperies
+  licence: © Île-de-France Mobilités; numbers cited as facts
+  access: free
+  retrieved: 2026-11-02
+  checked_via: search-snippet
+
+- id: wandernundmehr-wind
+  title: Wann fahren Gondeln nicht? (wind limits by ropeway type)
+  publisher: wandernundmehr.at
+  url: https://www.wandernundmehr.at/faq/wann-fahren-gondeln-nicht
+  licence: © wandernundmehr.at; numbers cited as facts
+  access: free
+  retrieved: 2026-11-02
+  checked_via: search-snippet
+  kind: secondary
+
+- id: en-12929-1
+  title: EN 12929-1:2015, Safety requirements for cableway installations designed to carry persons, general requirements
+  publisher: CEN
+  url: https://genorma.com/en/standards/en-12929-1-2015
+  licence: © CEN; numbers cited as facts
+  access: paywalled
+  retrieved: 2026-11-02
+  checked_via: none

@@ -14,7 +14,8 @@ use street_routing::walk::{
     WalkSettings,
 };
 use street_routing::{
-    apply_setups, parse_osm_xml, Mode, RoadGraph, RoutingRules, StreetSetup, VehicleProfile,
+    apply_setups, parse_osm_xml, DelayShares, Mode, RoadGraph, RoutingRules, StreetSetup,
+    VehicleProfile,
 };
 use wasm_bindgen::prelude::*;
 
@@ -41,6 +42,7 @@ pub struct StreetLineEditor {
     graph: Option<RoadGraph>,
     line: StreetLine,
     setups: Vec<StreetSetup>,
+    delays: DelayShares,
 }
 
 impl Default for StreetLineEditor {
@@ -59,6 +61,7 @@ impl StreetLineEditor {
             proj: None,
             graph: None,
             setups: Vec::new(),
+            delays: DelayShares::default(),
             line: StreetLine::new(
                 VehicleProfile::default_for(Mode::Bus),
                 RoutingRules::default(),
@@ -77,11 +80,11 @@ impl StreetLineEditor {
     /// Output: the view, or an error when no street usable by buses has been loaded yet.
     pub fn rebuild(&mut self) -> Result<String, JsError> {
         let g = if self.setups.is_empty() {
-            RoadGraph::from_osm_with(&self.data, self.proj)
+            RoadGraph::from_osm_with_delays(&self.data, self.proj, &self.delays)
         } else {
             let mut data = self.data.clone();
             apply_setups(&mut data, &self.setups);
-            RoadGraph::from_osm_with(&data, self.proj)
+            RoadGraph::from_osm_with_delays(&data, self.proj, &self.delays)
         }
         .map_err(|e| JsError::new(&e))?;
         self.proj = Some(g.proj);
@@ -95,6 +98,23 @@ impl StreetLineEditor {
     /// Side effects: every later rebuild applies them.
     pub fn set_street_setups(&mut self, json: &str) -> Result<String, JsError> {
         self.setups = serde_json::from_str(json).map_err(|e| JsError::new(&e.to_string()))?;
+        if self.graph.is_some() {
+            return self.rebuild();
+        }
+        Ok(self.view())
+    }
+
+    /// Purpose: set the project's delays in traffic (JSON `DelayShares`: `mixed_traffic`,
+    /// `bus_lane`, shares of the free-flow running time; missing values take the library's).
+    /// Output: the view, re-routed when a network is loaded. Side effects: every later rebuild
+    /// uses them.
+    pub fn set_delay_shares(&mut self, json: &str) -> Result<String, JsError> {
+        let d: DelayShares =
+            serde_json::from_str(json).map_err(|e| JsError::new(&e.to_string()))?;
+        if d == self.delays {
+            return Ok(self.view());
+        }
+        self.delays = d;
         if self.graph.is_some() {
             return self.rebuild();
         }

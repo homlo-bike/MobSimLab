@@ -159,11 +159,21 @@ export interface StreetEngine {
   setLevelCrossings(topology: string, closures: string): LineView;
   /** Applies the planner's street setups from the GIS tab and re-routes. */
   setStreetSetups(setups: readonly StreetSetup[]): LineView;
+  /** Uses the project's delays in traffic (shares of the free-flow running time) and re-routes. */
+  setDelayShares?(delays: DelayShares): LineView;
   /** Roads the current vehicle may use, as GeoJSON with `oneway`, `wire` and `bus_lane` properties. */
   usableRoads(): object;
   defaultProfile(mode: Mode): VehicleProfile;
   defaultRules(): RoutingRules;
   dispose(): void;
+}
+
+/** Expected delay in traffic as shares of the free-flow running time (Project preferences). */
+export interface DelayShares {
+  /** In a main road's general traffic (`street.mixed_traffic_delay_share`). */
+  mixed_traffic: number;
+  /** In a painted bus or tram lane (`street.bus_lane_delay_share`). */
+  bus_lane: number;
 }
 
 /** Creates an engine with no streets loaded yet. */

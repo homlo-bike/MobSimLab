@@ -1,4 +1,4 @@
-import { update, updateSignal } from "./doc";
+import { signalById, update, updateSignal } from "./doc";
 import { COLORS, fmtM, fmtTime, LEVEL_LABEL, LEVELS, POWER, RAIL_MODES } from "./modes";
 import type { Selection } from "./RailwayEditor";
 import { type Publication, ServiceLinesPanel } from "./ServiceLinesPanel";
@@ -12,6 +12,7 @@ import type {
   Severity,
   Signal,
   SignalKind,
+  Slip,
   Station,
   Switch,
   Track,
@@ -60,10 +61,8 @@ export interface RailPanelActions {
   /** Rename a station and the stations next to it; a name used farther away gets a number. */
   renameStation: (id: number, name: string) => void;
   fit: () => void;
-  /** Replace the signal plan with one generated from the design. */
-  generateSignals: () => void;
-  /** Drop the signal plan (operations then gets generated signals again). */
-  clearSignals: () => void;
+  /** Drop the planner's signal changes, so the plan is the generated one again. */
+  resetSignals: () => void;
 }
 
 interface Props {
@@ -217,7 +216,7 @@ export function RailPanel(props: Props) {
         ? "track"
         : doc.switches.some((s) => s.id === sel.id)
           ? "switch"
-          : doc.signals?.some((s) => s.id === sel.id)
+          : signalById(doc, sel.id, view.signals)
             ? "signal"
             : null
     : null;
@@ -400,37 +399,28 @@ export function RailPanel(props: Props) {
       {kind === "switch" && sel && (
         <SwitchInspector sw={doc.switches.find((s) => s.id === sel.id)!} {...props} />
       )}
-      {kind === "signal" && sel && (
-        <SignalInspector sg={doc.signals!.find((s) => s.id === sel.id)!} {...props} />
-      )}
+      {kind === "signal" && sel && <SignalInspector sg={signalById(doc, sel.id, view.signals)!} {...props} />}
 
       <ServiceLinesPanel doc={doc} view={view} setDoc={a.setDoc} show={a.showIssue} {...props.service} />
 
-      <Section title={view.signals_planned ? `Signals · ${view.signals.length}` : "Signals"}>
+      <Section title={view.signals.length ? `Signals · ${view.signals.length}` : "Signals"}>
         <p className="text-xs text-slate-600">
-          {view.signals_planned
-            ? `${signalSummary(view.signals)}. Click a signal to change it, or use the Signal tool to add one.`
-            : "No signal plan yet: railway operations gets signals generated from the design (switches, crossings, platform ends and block sections at line speed). Generate them to see and edit them."}
+          {view.signals.length
+            ? `${signalSummary(view.signals)}. They are generated from the design and follow it as it changes. Click a signal to change or delete it, or use the Signal tool to add one; each change is checked.`
+            : "Signals are generated from the design: at switches, crossings, platform ends and on plain line at line speed."}
         </p>
-        <div className="flex gap-2">
-          <button
-            type="button"
-            onClick={a.generateSignals}
-            disabled={view.tracks.length === 0}
-            className="flex-1 rounded border border-slate-300 px-2 py-1 hover:bg-slate-100 disabled:opacity-40"
-          >
-            {view.signals_planned ? "Generate again" : "Generate signals"}
-          </button>
-          {view.signals_planned && (
+        {view.signals_edited && (
+          <>
+            <p className="text-xs text-slate-600">{signalEdits(view)}</p>
             <button
               type="button"
-              onClick={a.clearSignals}
-              className="flex-1 rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
+              onClick={a.resetSignals}
+              className="rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
             >
-              Remove plan
+              Reset to generated signals
             </button>
-          )}
-        </div>
+          </>
+        )}
       </Section>
 
       {props.existingRailways && (
@@ -461,6 +451,8 @@ export function RailPanel(props: Props) {
           </ul>
         </Section>
       )}
+
+      <DiamondSection doc={props.doc} view={view} actions={a} />
 
       <Section title={`Street running · ${view.street_running.length}`}>
         <p className="text-xs text-slate-600">
@@ -572,10 +564,21 @@ function signalSummary(list: RailView["signals"]): string {
   return parts.filter(Boolean).join(" · ");
 }
 
+/** Purpose: the planner's changes to the generated signals in a sentence. */
+function signalEdits(view: RailView): string {
+  const own = view.signals.filter((s) => !s.auto).length;
+  const parts = [
+    own ? `${own} of yours` : "",
+    view.signals_removed ? `${view.signals_removed} generated removed or replaced` : "",
+  ].filter(Boolean);
+  return parts.length ? `Your changes: ${parts.join(", ")}.` : "";
+}
+
 /** Purpose: inspector of one signal: kind, name, direction it governs, delete. */
 function SignalInspector({ sg, doc, view, actions: a }: Props & { sg: Signal }) {
-  const set = (f: (x: Signal) => Signal) => a.setDoc(updateSignal(doc, sg.id, f));
+  const set = (f: (x: Signal) => Signal) => a.setDoc(updateSignal(doc, sg.id, f, view.signals));
   const sv = view.signals.find((x) => x.id === sg.id);
+  const notes = view.issues.filter((i) => i.ref_id === sg.id);
   const where =
     sg.at.type === "track"
       ? `on track ${sg.at.track} at ${fmtM(sg.at.s)}`
@@ -588,7 +591,16 @@ function SignalInspector({ sg, doc, view, actions: a }: Props & { sg: Signal }) 
         {where}
         {sv && !sv.lineside ? " · block marker (cab signalling)" : ""}
         {!sv ? " · no longer on a track" : ""}
+        {sv?.auto ? " · generated from the design" : " · yours"}
       </p>
+      {notes.map((i, k) => (
+        <p
+          key={k}
+          className={`text-xs ${i.severity === "error" ? "text-red-700" : i.severity === "warning" ? "text-amber-700" : "text-slate-600"}`}
+        >
+          {i.text}
+        </p>
+      ))}
       <Row label="Kind">
         <select
           value={sg.kind}
@@ -930,6 +942,88 @@ function SwitchInspector({ sw, doc, view, actions: a }: Props & { sw: Switch }) 
         )}
       </div>
       <Remove what="switch" onClick={() => a.remove(sw.id)} />
+    </Section>
+  );
+}
+
+/**
+ * Purpose: the same-level crossings of two alignments. A diamond of two single tracks can be made a
+ * single or double slip from the catalogue, so trains can also turn from one track to the other.
+ */
+function DiamondSection({
+  doc,
+  view,
+  actions: a,
+}: {
+  doc: Network;
+  view: RailView;
+  actions: RailPanelActions;
+}) {
+  const diamonds = view.crossings.filter((c) => c.kind === "diamond");
+  if (!diamonds.length) return null;
+  const slips = doc.slips ?? [];
+  const setSlip = (crossing: string, slip: Slip | null) =>
+    a.setDoc({
+      ...doc,
+      slips: [...slips.filter((s) => s.crossing !== crossing), ...(slip ? [slip] : [])],
+    });
+  return (
+    <Section title={`Diamond crossings · ${diamonds.length}`}>
+      <p className="text-xs text-slate-600">
+        Where two tracks cross on one level. Between two single tracks crossing at the angle of a catalogue
+        slip, the diamond can be a slip: trains can then also turn from one track to the other.
+      </p>
+      <ul className="flex flex-col gap-2">
+        {diamonds.map((c) => {
+          const slip = slips.find((s) => s.crossing === c.id) ?? null;
+          const built = view.slips.find((s) => s.crossing === c.id);
+          const spec = view.slip_elements.find((e) => e.id === slip?.element);
+          return (
+            <li key={c.id} className="flex flex-col gap-1">
+              <button
+                type="button"
+                onClick={() => a.showIssue(c.lonlat, c.tracks[0])}
+                className="rounded px-1 py-0.5 text-left hover:bg-slate-100"
+              >
+                Tracks {c.tracks[0]} and {c.tracks[1]} · {c.angle_deg.toFixed(1)}° (1:{c.ratio_n.toFixed(1)})
+                {built ? (built.ok ? " · slip built" : " · slip not possible here, see checks") : ""}
+              </button>
+              {c.single_tracks && (
+                <label className="flex items-center gap-2 px-1 text-xs">
+                  <span>Trackwork</span>
+                  <select
+                    aria-label={`Trackwork at crossing ${c.id}`}
+                    className="flex-1 rounded border border-slate-300 px-1 py-0.5"
+                    value={slip?.element ?? ""}
+                    onChange={(e) =>
+                      setSlip(
+                        c.id,
+                        e.target.value ? { crossing: c.id, element: e.target.value, side: 0 } : null,
+                      )
+                    }
+                  >
+                    <option value="">Diamond</option>
+                    {view.slip_elements.map((e) => (
+                      <option key={e.id} value={e.id}>
+                        {e.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              )}
+              {slip && spec?.element === "single_slip" && (
+                <button
+                  type="button"
+                  className="btn btn-ghost self-start px-1 text-xs"
+                  onClick={() => setSlip(c.id, { ...slip, side: slip.side === 1 ? 0 : 1 })}
+                >
+                  Turn the slip to the other side
+                </button>
+              )}
+            </li>
+          );
+        })}
+      </ul>
     </Section>
   );
 }

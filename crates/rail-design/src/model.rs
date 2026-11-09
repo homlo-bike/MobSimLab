@@ -88,10 +88,16 @@ pub struct Network {
     /// Switches and crossovers.
     #[serde(default)]
     pub switches: Vec<Switch>,
-    /// The signal plan, once generated and edited by the planner; `None` until then (the
-    /// topology export then generates one).
+    /// The planner's own signals: placed with the Signal tool, or generated ones they edited.
+    /// They come on top of the generated plan; `None` or empty when there are none.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub signals: Option<Vec<crate::signal::Signal>>,
+    /// Generated signals the planner removed or replaced; they stay out of the plan.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub signals_removed: Vec<crate::signal::SignalKey>,
+    /// Slips the planner put into diamond crossings.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub slips: Vec<crate::slip::Slip>,
 }
 
 impl Network {
@@ -106,6 +112,8 @@ impl Network {
             tracks: vec![],
             switches: vec![],
             signals: None,
+            signals_removed: vec![],
+            slips: vec![],
         }
     }
     /// Purpose: the next free id.

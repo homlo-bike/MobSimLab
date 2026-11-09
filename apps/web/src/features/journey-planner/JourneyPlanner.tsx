@@ -7,7 +7,9 @@ import { drawJourney, drawNetwork, ensureLayers, removeLayers } from "./mapLayer
 import {
   DEFAULT_SERVICE_DAY,
   mergeTimetables,
+  pluginLineTimetable,
   prefixTimetable,
+  type PluginLineInput,
   streetLineTimetable,
   type StreetLineInput,
 } from "./network";
@@ -34,12 +36,19 @@ interface Props {
   streetLine?: StreetLineInput | null;
   /** Rail service lines published in the railway tool, if any. */
   railLines?: Timetable | null;
+  /** Cable car and ferry lines from the plugin tools (ADR-0037). */
+  pluginLines?: readonly PluginLineInput[];
   /** Planner loader; tests inject a fake. */
   loadPlanner?: PlannerLoader;
 }
 
 const PROFILE_START = 4 * 3600;
 const PROFILE_END = 25 * 3600;
+const NO_PLUGIN_LINES: readonly PluginLineInput[] = [];
+
+/** Purpose: a headway as "45 s" or "15 min". */
+const formatHeadway = (s: number) => (s < 120 ? `${Math.round(s)} s` : `${Math.round(s / 60)} min`);
+
 const EMPTY_TT: Timetable = { stops: [], routes: [], trips: [], transfers: [], frequency_patterns: [] };
 
 /** One line of the itinerary: a walk, a ride, or a change (walk and wait between two rides). */
@@ -132,8 +141,10 @@ export function JourneyPlanner({
   panel = null,
   streetLine = null,
   railLines = null,
+  pluginLines = NO_PLUGIN_LINES,
   loadPlanner = loadWasmPlanner,
 }: Props) {
+  const [skipped, setSkipped] = useState<ReadonlySet<string>>(new Set());
   const [useStreet, setUseStreet] = useState(true);
   const [useRailLines, setUseRailLines] = useState(true);
   const [settings, setSettings] = useState<Partial<Settings>>({});
@@ -161,9 +172,10 @@ export function JourneyPlanner({
     [railLines, useRailLines],
   );
   const timetable: Timetable | null = useMemo(() => {
-    const parts = [street, drawnRail].filter((p): p is Timetable => p !== null);
+    const plugin = pluginLines.filter((l) => !skipped.has(l.id)).map((l) => pluginLineTimetable(l));
+    const parts = [street, drawnRail, ...plugin].filter((p): p is Timetable => p !== null);
     return parts.length ? mergeTimetables(parts) : null;
-  }, [street, drawnRail]);
+  }, [street, drawnRail, pluginLines, skipped]);
 
   // Compile the timetable whenever it or the settings change.
   useEffect(() => {
@@ -318,6 +330,23 @@ export function JourneyPlanner({
             .join(", ")} · {railLines.trips.length} trips
         </label>
       )}
+      {pluginLines.map((l) => (
+        <label key={l.id} className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            checked={!skipped.has(l.id)}
+            onChange={(e) =>
+              setSkipped((s) => {
+                const n = new Set(s);
+                if (e.target.checked) n.delete(l.id);
+                else n.add(l.id);
+                return n;
+              })
+            }
+          />
+          {l.mode === "ferry" ? "Ferry" : "Cable car"} “{l.name}” (every {formatHeadway(l.headwayS)})
+        </label>
+      ))}
       {!timetable && (
         <p className="text-xs text-slate-600">
           No timetable yet. Draw a street line, or create and publish rail service lines in the railway tool.

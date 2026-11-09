@@ -108,7 +108,7 @@ export type SignalAt =
   | { type: "station"; station: number; track: number; x: number }
   | { type: "leg"; switch: number; leg: number; x: number };
 
-/** A signal of the planner's signal plan. `facing` +1 governs trains moving with the chainage. */
+/** A signal of the planner's. `facing` +1 governs trains moving with the chainage. */
 export interface Signal {
   id: number;
   at: SignalAt;
@@ -125,10 +125,55 @@ export interface Network {
   stations: Station[];
   tracks: Track[];
   switches: Switch[];
-  /** The signal plan; absent until the planner generates it (operations then gets generated signals). */
+  /**
+   * The planner's own signals (placed, or generated ones they edited). They come on top of the
+   * signals generated from the design on every build.
+   */
   signals?: Signal[] | null;
+  /** Generated signals the planner removed or replaced: where they stood and which way they faced. */
+  signals_removed?: SignalKey[];
+  /** Slips the planner put into diamond crossings. */
+  slips?: Slip[];
   /** Service lines run on the design; absent until the planner adds one. */
   lines?: ServiceLine[] | null;
+}
+
+/** A generated signal the planner removed or replaced. */
+export interface SignalKey {
+  at: SignalAt;
+  facing: 1 | -1;
+}
+
+/** A slip in a diamond crossing. */
+export interface Slip {
+  /** The design's crossing id. */
+  crossing: string;
+  /** Catalogue element (single or double slip). */
+  element: string;
+  /** Single slip: which turning route (0 or 1). */
+  side?: number;
+}
+
+/** A slip element of the catalogue. */
+export interface SlipElementView {
+  id: string;
+  label: string;
+  element: "single_slip" | "double_slip";
+  crossing_ratio_n: number | null;
+  typical_modes: RailMode[];
+  diverging_speed_kmh: number | null;
+}
+
+/** A slip as built. */
+export interface SlipView {
+  crossing: string;
+  element: string;
+  kind: "single_slip" | "double_slip";
+  tracks: [number, number];
+  routes: number;
+  diverging_speed_kmh: number | null;
+  /** Passed the checks and is drawn. */
+  ok: boolean;
 }
 
 /** A rail vehicle of the catalogue (generated into trains.ts by tools/vehicles/rail_trains.py). */
@@ -297,6 +342,10 @@ export interface CrossingView {
   tracks: [number, number];
   modes: [RailMode, RailMode];
   angle_deg: number;
+  /** Crossing ratio 1:n. */
+  ratio_n: number;
+  /** Both alignments are single track (a slip is possible). */
+  single_tracks: boolean;
   lonlat: LonLat;
 }
 
@@ -358,7 +407,7 @@ export interface ExistingJoinView {
   lonlat: LonLat;
 }
 
-/** A drawn signal of the plan. */
+/** A drawn signal of the plan: generated (`auto`) or the planner's. */
 export interface SignalView {
   id: number;
   kind: SignalKind;
@@ -368,6 +417,8 @@ export interface SignalView {
   /** False for a block marker under cab signalling. */
   lineside: boolean;
   lonlat: LonLat;
+  /** Generated from the design, not placed or edited by the planner. */
+  auto: boolean;
 }
 
 export interface FeatureCollection {
@@ -418,8 +469,13 @@ export interface RailView {
   existing_joins: ExistingJoinView[];
   /** Existing railways loaded around the design. */
   existing_count: number;
-  /** The document holds a signal plan. */
-  signals_planned: boolean;
+  slips: SlipView[];
+  /** The catalogue's slips. */
+  slip_elements: SlipElementView[];
+  /** The planner has added, edited or removed signals. */
+  signals_edited: boolean;
+  /** How many generated signals the planner removed or replaced. */
+  signals_removed: number;
   counts: { errors: number; warnings: number; track_km: number; route_km: number };
   bbox: [number, number, number, number] | null;
 }
@@ -468,6 +524,8 @@ export interface RailEngine {
   existingSnap(at: LonLat, maxM: number): ExistingSnap | null;
   /** Applies the planner's street setups from the GIS tab; the next build uses them. */
   setStreetSetups(setups: readonly StreetSetup[]): void;
+  /** Design values the project's preferences change for every mode, by name; the next build uses them. */
+  setValues?(values: Record<string, number>): void;
   /** A signal plan generated from the last build, with ids continuing the document's. */
   generateSignals(): Signal[];
   /** Where a signal placed at a map position would stand, within `maxM`. */

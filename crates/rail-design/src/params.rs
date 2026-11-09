@@ -164,6 +164,27 @@ pub struct ModeParams {
 }
 
 impl ModeParams {
+    /// Purpose: the values with the project's preferences applied.
+    /// Inputs: numbers by field name (for example `street_mixed_traffic_delay_share`); names that
+    /// are not numeric design values, and values that are not finite, are ignored.
+    /// Output: a copy with those fields replaced.
+    pub fn with_values(&self, values: &BTreeMap<String, f64>) -> ModeParams {
+        if values.is_empty() {
+            return self.clone();
+        }
+        let Ok(serde_json::Value::Object(mut o)) = serde_json::to_value(self) else {
+            return self.clone();
+        };
+        for (k, v) in values {
+            if v.is_finite() && o.get(k).is_some_and(serde_json::Value::is_number) {
+                if let Some(n) = serde_json::Number::from_f64(*v) {
+                    o.insert(k.clone(), serde_json::Value::Number(n));
+                }
+            }
+        }
+        serde_json::from_value(serde_json::Value::Object(o)).unwrap_or_else(|_| self.clone())
+    }
+
     /// Purpose: gauge in metres.
     pub fn gauge_m(&self) -> f64 {
         self.gauge_mm / 1000.0

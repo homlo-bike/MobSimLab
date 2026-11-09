@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { fetchStreetTile } from "../street-lines/engine";
 import { MIN_LOAD_ZOOM, tilesFor } from "../street-lines/tiles";
-import type { TileFetcher } from "../street-lines/types";
+import type { DelayShares, TileFetcher } from "../street-lines/types";
 import type { StreetSetup } from "../street-setup/types";
 import {
   addSignal,
@@ -18,6 +18,7 @@ import {
   stationPlaces,
   update,
   updateSignal,
+  resetSignals,
   type LocalConnection,
 } from "./doc";
 import { fetchRailTile, loadRailEngine } from "./engine";
@@ -54,9 +55,13 @@ import type {
   RailMode,
   RailView,
   ServicePublication,
+  SignalView,
   Track,
 } from "./types";
 import type { Timetable } from "../journey-planner/types";
+
+/** Purpose: the drawn signals of a view (generated and the planner's), or none before a build. */
+const sigs = (v: RailView | null | undefined): SignalView[] => v?.signals ?? [];
 
 const HINTS: Record<RailTool, string> = {
   select:
@@ -98,6 +103,8 @@ interface Props {
   existingRailways?: boolean;
   /** The planner's street setups from the GIS tab (tram own lane or mixed traffic…), over OSM. */
   streetSetups?: readonly StreetSetup[];
+  /** The project's delays in traffic for trams in streets (Project preferences); the library's when absent. */
+  delays?: DelayShares | null;
   /** The drawing saved with the project, or null to start a new one at the map centre. */
   initial?: Network | null;
   /** Told about the drawing after every change, so the project can save it. */
@@ -129,6 +136,7 @@ export function RailwayEditor({
   fetchRails = fetchRailTile,
   existingRailways = false,
   streetSetups = NO_SETUPS,
+  delays = null,
   initial = null,
   onDocChange,
   onPublish,
@@ -190,6 +198,18 @@ export function RailwayEditor({
     e.setStreetSetups(JSON.parse(setupsJson) as StreetSetup[]);
     setStreets((n) => n + 1);
   }, [ready, setupsJson]);
+  // The project's delays in traffic: a tram's running time in streets; a change rebuilds.
+  const delaysJson = delays ? JSON.stringify(delays) : "";
+  useEffect(() => {
+    const e = engine.current;
+    if (!ready || !e?.setValues || !delaysJson) return;
+    const d = JSON.parse(delaysJson) as DelayShares;
+    e.setValues({
+      street_mixed_traffic_delay_share: d.mixed_traffic,
+      street_bus_lane_delay_share: d.bus_lane,
+    });
+    setStreets((n) => n + 1);
+  }, [ready, delaysJson]);
   useEffect(() => {
     if (!map || !ready) return;
     // Turning existing railways off forgets them; turning them on reloads the tiles on screen.
@@ -606,7 +626,7 @@ export function RailwayEditor({
         ];
         const layers = HIT_LAYERS.filter((l) => map.getLayer(l));
         const hits = map.queryRenderedFeatures(box, { layers });
-        const ref = hits.map((h) => Number(h.properties?.ref)).find((r) => kindOf(s.doc!, r));
+        const ref = hits.map((h) => Number(h.properties?.ref)).find((r) => kindOf(s.doc!, r, sigs(s.view)));
         setSel(ref ? { id: ref } : null);
       }
     };
@@ -654,7 +674,9 @@ export function RailwayEditor({
         if (!anchor) return;
         cancelAnimationFrame(frame);
         frame = requestAnimationFrame(() =>
-          setDoc((d) => d && updateSignal(d, dr.id, (x) => ({ ...x, at: anchor }))),
+          setDoc(
+            (d) => d && updateSignal(d, dr.id, (x) => ({ ...x, at: anchor }), sigs(latest.current.view)),
+          ),
         );
         return;
       }
@@ -681,10 +703,10 @@ export function RailwayEditor({
       ];
       const layers = HIT_LAYERS.filter((l) => map.getLayer(l));
       const hits = map.queryRenderedFeatures(box, { layers });
-      const ref = hits.map((h) => Number(h.properties?.ref)).find((r) => kindOf(s.doc!, r));
+      const ref = hits.map((h) => Number(h.properties?.ref)).find((r) => kindOf(s.doc!, r, sigs(s.view)));
       if (!ref || s.sel?.id !== ref) return;
       const ll: LonLat = [ev.lngLat.lng, ev.lngLat.lat];
-      const kind = kindOf(s.doc, ref);
+      const kind = kindOf(s.doc, ref, sigs(s.view));
       if (kind === "station") {
         const st = s.doc.stations.find((x) => x.id === ref)!;
         const at = engine.current.toLocal(s.doc.origin, ll);
@@ -864,8 +886,10 @@ export function RailwayEditor({
       }
       if (s.tool === "line" && (ev.key === "Enter" || ev.key === "Escape")) return finishLine();
       if (ev.key === "Escape") return setSel(null);
-      if (k === "f" && s.sel && s.doc && kindOf(s.doc, s.sel.id) === "signal") {
-        setDoc(updateSignal(s.doc, s.sel.id, (x) => ({ ...x, facing: x.facing === 1 ? -1 : 1 })));
+      if (k === "f" && s.sel && s.doc && kindOf(s.doc, s.sel.id, sigs(s.view)) === "signal") {
+        setDoc(
+          updateSignal(s.doc, s.sel.id, (x) => ({ ...x, facing: x.facing === 1 ? -1 : 1 }), sigs(s.view)),
+        );
         return;
       }
       if ((ev.key === "Delete" || ev.key === "Backspace") && s.sel && s.doc) {
@@ -875,7 +899,7 @@ export function RailwayEditor({
           setDoc(update(s.doc, "tracks", id, (t) => ({ ...t, points: t.points.filter((_, i) => i !== pi) })));
           setSel({ id });
         } else {
-          setDoc(deleteElement(s.doc, s.sel.id, anchorAt));
+          setDoc(deleteElement(s.doc, s.sel.id, anchorAt, sigs(s.view)));
           setSel(null);
         }
         return;
@@ -989,7 +1013,7 @@ export function RailwayEditor({
     },
     remove: (id: number) => {
       if (!doc) return;
-      setDoc(deleteElement(doc, id, anchorAt));
+      setDoc(deleteElement(doc, id, anchorAt, sigs(view)));
       setSel(null);
     },
     // The panel's mode is the mode for new stations and tracks. What is already drawn keeps its
@@ -1031,20 +1055,11 @@ export function RailwayEditor({
       if (ref) setSel({ id: ref });
       if (at && map) map.easeTo({ center: at, zoom: Math.max(map.getZoom(), 16) });
     },
-    generateSignals: () => {
-      const e = engine.current;
-      if (!doc || !e) return;
-      // Generate from the design without the current plan, so the new plan replaces it.
-      e.build({ ...doc, signals: null }, null);
-      const generated = e.generateSignals();
-      setDoc({ ...doc, signals: generated });
-      setSel(null);
-      setNote(`${generated.length} signals generated. Move, turn, add or delete them as needed.`);
-    },
-    clearSignals: () => {
+    resetSignals: () => {
       if (!doc) return;
-      setDoc({ ...doc, signals: null });
+      setDoc(resetSignals(doc));
       setSel(null);
+      setNote("Signals reset to the ones generated from the design.");
     },
     fit: () => {
       const b = view?.bbox;

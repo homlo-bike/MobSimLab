@@ -37,10 +37,12 @@ import {
   addSwitch,
   autoLeads,
   deleteElement,
+  resetSignals,
   emptyNetwork,
   kindOf,
   newTrack,
   nextId,
+  updateSignal,
 } from "../src/features/railways/doc";
 import { loadRailEngine } from "../src/features/railways/engine";
 import { metres } from "../src/features/railways/mapLayers";
@@ -353,32 +355,74 @@ describe("railway engine (WebAssembly)", () => {
     e.dispose();
   });
 
-  it("generates a signal plan, draws it and exports it as the planner's plan", async () => {
+  it("builds a double slip into a 1:9 diamond and exports its turning routes", async () => {
+    const e = await loadRailEngine();
+    const net = emptyNetwork("regional_rail", ORIGIN);
+    const n = 9;
+    const [c, s] = [n / Math.hypot(1, n), 1 / Math.hypot(1, n)];
+    const opts = {
+      tracks: 1 as const,
+      level: "street" as const,
+      power: "auto" as const,
+      use: "storage" as const,
+    };
+    const t1 = newTrack(net, { type: "free", x: -300, y: 0 }, opts);
+    const n1 = { ...net, tracks: [{ ...t1, end: { type: "free" as const, x: 300, y: 0 } }] };
+    const t2 = newTrack(n1, { type: "free", x: -300 * c, y: -300 * s }, opts);
+    const doc = {
+      ...n1,
+      tracks: [...n1.tracks, { ...t2, end: { type: "free" as const, x: 300 * c, y: 300 * s } }],
+    };
+    const v = e.build(doc, null);
+    const x = v.crossings[0]!;
+    expect(x.ratio_n).toBeCloseTo(9, 1);
+    expect(x.single_tracks).toBe(true);
+    expect(v.slip_elements.map((el) => el.element)).toEqual(
+      expect.arrayContaining(["single_slip", "double_slip"]),
+    );
+    const dkw = v.slip_elements.find((el) => el.element === "double_slip")!;
+    const w = e.build({ ...doc, slips: [{ crossing: x.id, element: dkw.id }] }, null);
+    expect(w.slips[0]).toMatchObject({ kind: "double_slip", routes: 2, ok: true });
+    expect(w.layers.tracks.features.filter((f) => f.properties.kind === "slip")).toHaveLength(2);
+    const topo = e.topology() as { crossings: { slip: { routes: unknown[] } | null }[] };
+    expect(topo.crossings[0]!.slip!.routes).toHaveLength(2);
+    e.dispose();
+  });
+
+  it("generates signals from the design and keeps the planner's changes on top", async () => {
     const e = await loadRailEngine();
     const doc = e.sample("regional_rail", ORIGIN);
-    const before = e.build(doc, null);
-    expect(before.signals_planned).toBe(false);
+    const v = e.build(doc, null);
+    expect(v.signals.length).toBeGreaterThan(5);
+    expect(v.signals.every((s) => s.auto)).toBe(true);
+    expect(v.signals_edited).toBe(false);
+    expect(Math.min(...v.signals.map((s) => s.id))).toBe(nextId(doc));
+    expect(v.layers.signals.features.filter((f) => f.properties.kind === "signal")).toHaveLength(
+      v.signals.length,
+    );
     expect((e.topology() as { signals_generated: boolean }).signals_generated).toBe(true);
-    const plan = e.generateSignals();
-    expect(plan.length).toBeGreaterThan(5);
-    expect(Math.min(...plan.map((s) => s.id))).toBe(nextId(doc));
-    const planned = { ...doc, signals: plan };
-    const v = e.build(planned, null);
-    expect(v.signals_planned).toBe(true);
-    expect(v.signals).toHaveLength(plan.length);
-    expect(v.layers.signals.features.filter((f) => f.properties.kind === "signal")).toHaveLength(plan.length);
-    const t = e.topology() as { signals_generated: boolean; signals: { id: string; facing: string }[] };
+    // Deleting a generated signal keeps it out, and says what is then unprotected.
+    const first = v.signals.find((s) => s.kind === "main")!;
+    expect(kindOf(doc, first.id, v.signals)).toBe("signal");
+    const fewer = deleteElement(doc, first.id, () => null, v.signals);
+    expect(fewer.signals_removed).toHaveLength(1);
+    const v2 = e.build(fewer, null);
+    expect(v2.signals).toHaveLength(v.signals.length - 1);
+    expect(v2.signals_edited).toBe(true);
+    expect(v2.issues.some((i) => /^No (signal in front of|starter signal)/.test(i.text))).toBe(true);
+    // Editing a generated signal makes it the planner's, with the same id.
+    const named = updateSignal(doc, first.id, (x) => ({ ...x, name: "A1" }), v.signals);
+    expect(named.signals).toEqual([expect.objectContaining({ id: first.id, name: "A1" })]);
+    const v3 = e.build(named, null);
+    expect(v3.signals).toHaveLength(v.signals.length);
+    expect(v3.signals.find((s) => s.id === first.id)).toMatchObject({ auto: false, name: "A1" });
+    const t = e.topology() as { signals_generated: boolean; signals: { id: string }[] };
     expect(t.signals_generated).toBe(false);
-    expect(t.signals.map((s) => s.id)).toContain(`sg${plan[0]!.id}`);
+    expect(t.signals.map((s) => s.id)).toContain(`sg${first.id}`);
+    expect(resetSignals(named)).not.toHaveProperty("signals");
     // A click beside a track finds where a signal would stand.
-    const at = e.signalAnchor(v.signals[0]!.lonlat, 10);
-    expect(at).not.toBeNull();
+    expect(e.signalAnchor(v.signals[0]!.lonlat, 10)).not.toBeNull();
     expect(e.signalAnchor([ORIGIN[0] + 1, ORIGIN[1]], 10)).toBeNull();
-    // Deleting a signal leaves the others; ids stay unique across all elements.
-    const fewer = deleteElement(planned, plan[0]!.id, () => null);
-    expect(fewer.signals).toHaveLength(plan.length - 1);
-    expect(kindOf(planned, plan[0]!.id)).toBe("signal");
-    expect(nextId(planned)).toBe(Math.max(...plan.map((s) => s.id)) + 1);
     e.dispose();
   });
 
@@ -569,10 +613,10 @@ describe("Railway editor", () => {
 
   it("opens a drawing, lists its checks and inspects a track", async () => {
     const { map } = await opened({ mode: "tram" });
-    expect(await screen.findByText(/Diamond crossing/)).toBeTruthy();
+    expect(await screen.findByText(/Diamond crossing at/)).toBeTruthy();
     expect(screen.getByText(/0 errors/)).toBeTruthy();
     expect(map.fitBounds).toHaveBeenCalled();
-    fireEvent.click(screen.getByText(/Diamond crossing/));
+    fireEvent.click(screen.getByText(/Diamond crossing at/));
     expect(await screen.findByRole("button", { name: /Delete track/ })).toBeTruthy();
   });
 
@@ -599,31 +643,31 @@ describe("Railway editor", () => {
     expect(screen.getByText(/Existing railways · \d+ joins?/)).toBeTruthy();
   });
 
-  it("generates signals, lets the planner turn one round and removes the plan", async () => {
-    await opened({ mode: "regional_rail" });
-    fireEvent.click(await screen.findByRole("button", { name: "Generate signals" }));
-    expect(await screen.findByText(/Signals · [1-9]/)).toBeTruthy();
-    expect(screen.getByRole("status").textContent).toMatch(/signals generated/);
-    expect(screen.getByRole("button", { name: "Generate again" })).toBeTruthy();
-    fireEvent.click(screen.getByRole("button", { name: "Remove plan" }));
-    expect(await screen.findByRole("button", { name: "Generate signals" })).toBeTruthy();
+  it("offers slips for a diamond of two single tracks", async () => {
+    const { engine } = await opened({ mode: "tram" });
+    // The tram sample's diamond is between double tracks: no slip on offer.
+    expect(await screen.findByText(/Diamond crossings · 1/)).toBeTruthy();
+    expect(screen.queryByRole("combobox", { name: /Trackwork at crossing/ })).toBeNull();
+    expect(engine()).not.toBeNull();
   });
 
-  it("places a signal on a track with the signal tool and turns it round with F", async () => {
+  it("shows generated signals, places one of the planner's, turns it with F and resets", async () => {
     const { handlers, engine } = await opened({ mode: "regional_rail" });
+    expect(screen.getByText(/Signals · [1-9]/)).toBeTruthy();
+    expect(screen.queryByRole("button", { name: /Reset to generated/ })).toBeNull();
     fireEvent.keyDown(window, { key: "g" });
     expect(screen.getByRole("button", { name: /Signal/ }).getAttribute("aria-pressed")).toBe("true");
     // A point on the first track of the example.
-    const e = engine();
-    const plan = e.generateSignals();
-    const v = e.build({ ...e.sample("regional_rail", ORIGIN), signals: plan }, null);
+    const v = engine().build(engine().sample("regional_rail", ORIGIN), null);
     const [lng, lat] = v.signals[0]!.lonlat;
     act(() => handlers.get("click")!({ lngLat: { lng, lat }, point: { x: 0, y: 0 } }));
     expect(await screen.findByRole("button", { name: /Turn round/ })).toBeTruthy();
-    expect(screen.getByText(/^Signals · 1$/)).toBeTruthy();
+    expect(screen.getByText(/ · yours/)).toBeTruthy();
+    expect(screen.getByRole("button", { name: /Reset to generated/ })).toBeTruthy();
     fireEvent.keyDown(window, { key: "f" });
-    fireEvent.click(screen.getByRole("button", { name: /Delete signal/ }));
-    expect(screen.getByText(/^Signals · 0$/)).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: /Reset to generated/ }));
+    expect(screen.getByRole("status").textContent).toMatch(/reset/);
+    expect(screen.queryByRole("button", { name: /Reset to generated/ })).toBeNull();
   });
 
   it("keeps what is drawn in its own railway system when the mode for new elements changes", async () => {

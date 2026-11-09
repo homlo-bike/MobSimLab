@@ -63,13 +63,13 @@
       "items": { "$ref": "#/$defs/existing_join" }
     },
     "signals": {
-      "description": "Signals (ADR-0030 point 7): the planner's signal plan, or one generated from the design while the document has none.",
+      "description": "Signals (ADR-0030 point 7): generated from the design, with the planner's own signals and removals on top.",
       "type": "array",
       "items": { "$ref": "#/$defs/signal" }
     },
     "signals_generated": {
       "type": "boolean",
-      "description": "true: the signals were generated on the fly; false: they are the planner's plan."
+      "description": "true: the signals are the generated plan; false: the planner added, changed or removed signals."
     }
   },
   "$defs": {
@@ -155,6 +155,7 @@
         "speed_kmh",
         "gradient_permille",
         "radius_m",
+        "traffic_delay_share",
         "platform_edges",
         "geometry"
       ],
@@ -215,6 +216,11 @@
           "items": { "$ref": "#/$defs/range_number" }
         },
         "radius_m": { "type": "array", "items": { "$ref": "#/$defs/range_number" } },
+        "traffic_delay_share": {
+          "description": "Expected extra running time in street traffic, as a share of the running time at the permitted speed (street.mixed_traffic_delay_share in a main road's traffic, street.bus_lane_delay_share in a painted own lane). Only stretches with a delay.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/range_number" }
+        },
         "platform_edges": { "type": "array", "items": { "type": "string" } },
         "geometry": { "type": "array", "items": { "$ref": "#/$defs/point" }, "minItems": 2 }
       }
@@ -351,7 +357,7 @@
     "crossing": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "kind", "conflict", "modes", "angle_deg", "x", "y", "tracks"],
+      "required": ["id", "kind", "conflict", "modes", "angle_deg", "x", "y", "tracks", "slip"],
       "properties": {
         "id": { "type": "string", "pattern": "^x\\d+-\\d+-\\d+$" },
         "kind": {
@@ -373,7 +379,53 @@
           "items": { "$ref": "#/$defs/crossing_track" },
           "minItems": 2,
           "maxItems": 2
+        },
+        "slip": {
+          "description": "The slip built into the diamond, or null: trains may then also turn from one track to the other. The diamond stays a conflict for one train at a time.",
+          "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/slip" }]
         }
+      }
+    },
+    "slip": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["element", "kind", "half_length_m", "diverging_speed_kmh", "routes"],
+      "properties": {
+        "element": { "type": "string", "description": "Catalogue element id (assumptions/switches.yaml)." },
+        "kind": { "enum": ["single_slip", "double_slip"] },
+        "half_length_m": {
+          "$ref": "#/$defs/metres",
+          "description": "From the crossing point to each end along either track."
+        },
+        "diverging_speed_kmh": { "type": ["number", "null"], "exclusiveMinimum": 0 },
+        "routes": {
+          "description": "Turning routes, usable in both directions: one for a single slip, two for a double slip.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["from", "to"],
+            "properties": {
+              "from": { "$ref": "#/$defs/slip_end" },
+              "to": { "$ref": "#/$defs/slip_end" }
+            }
+          },
+          "minItems": 1,
+          "maxItems": 2
+        }
+      }
+    },
+    "slip_end": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["track", "side", "sections"],
+      "properties": {
+        "track": { "type": "integer", "minimum": 1 },
+        "side": {
+          "enum": ["ahead", "behind"],
+          "description": "ahead: the arm at higher chainage on that track than the crossing; behind: the other one."
+        },
+        "sections": { "type": "array", "items": { "$ref": "#/$defs/section_id" } }
       }
     },
     "level_crossing": {
@@ -633,7 +685,7 @@
         "id": {
           "type": "string",
           "pattern": "^(sg|g)\\d+$",
-          "description": "sg{document id} for a planned signal, g{n} for a generated one (not stable between exports)."
+          "description": "sg{document id} for a signal of the planner's, g{n} for a generated one (not stable between exports)."
         },
         "section": { "$ref": "#/$defs/section_id" },
         "chainage_m": { "$ref": "#/$defs/metres", "description": "Offset from the section's from node." },

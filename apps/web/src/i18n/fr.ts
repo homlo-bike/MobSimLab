@@ -209,6 +209,7 @@ export const fr: Messages = {
   "drawing.railway": "le réseau ferré",
   "drawing.street-setups": "les réglages des rues",
   "drawing.rail-timetable": "l'horaire ferroviaire",
+  "drawing.preferences": "les préférences du projet",
 
   "tab.label": "Projet",
   "tab.simulator": "Simulateur",
@@ -276,6 +277,13 @@ export const fr: Messages = {
   "prefs.save": "Enregistrer",
   "prefs.saved": "Enregistré",
   "prefs.readOnly": "Seuls les propriétaires et éditeurs peuvent modifier ceci.",
+  "prefs.delayTitle": "Temps de parcours dans la circulation",
+  "prefs.delayIntro":
+    "Temps de parcours supplémentaire attendu à l'heure de pointe pour les bus, BHNS, trolleybus et tramways sur les axes principaux, en part du temps à la vitesse limite. Utilisé par l'outil de lignes, l'outil ferroviaire et l'onglet SIG.",
+  "prefs.delayMixed": "Dans la circulation générale d'un axe principal",
+  "prefs.delayLane": "Dans une voie bus ou tram marquée",
+  "prefs.delayDefault": "Bibliothèque d'hypothèses : {value} %",
+  "prefs.delayReset": "Utiliser la valeur de la bibliothèque",
   "prefs.moreTitle": "Règles, véhicules et hypothèses",
   "prefs.moreIntro": "Chaque variable avec ses valeurs minimale et recommandée, et les véhicules du projet.",
   "prefs.rules": "Règles de conception par mode, minimales et recommandées",

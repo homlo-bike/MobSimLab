@@ -1,8 +1,10 @@
 //! Signals (ADR-0030 point 7): generated from the design, then edited by the planner.
 //!
-//! The document holds the signal plan once the planner has generated it ([`Network::signals`]).
-//! Until then the topology export generates a plan on the fly (`topology::topology`), so
-//! railway operations always gets signals. Each signal sits on a track line, a station track or
+//! Signals are generated from the design on every build, so the plan follows the design as it
+//! changes. The document holds only the planner's changes: their own signals
+//! ([`Network::signals`], placed or edited) and the generated signals they removed or replaced
+//! ([`Network::signals_removed`]). The effective plan is both together
+//! (`topology::topology`), and each change is assessed against the generated plan. Each signal sits on a track line, a station track or
 //! a switch leg and faces one direction of travel: `facing` +1 governs trains moving with the
 //! chainage (or along the station's axis, or along the leg), −1 against it.
 //!
@@ -85,6 +87,73 @@ pub struct Signal {
     pub name: String,
 }
 
+/// A generated signal the planner removed or replaced: where it stood and which way it faced.
+/// It matches the generated signal at the same place (within [`SIGNAL_MATCH_M`]) on every
+/// later build, so the plan stays removed while the design around it changes.
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
+pub struct SignalKey {
+    /// Where it stood.
+    pub at: SignalAt,
+    /// Which way it faced (+1 / −1, as [`Signal::facing`]).
+    pub facing: i8,
+}
+
+/// How far (m) two signal positions on the same track line, station track or switch leg may
+/// lie apart and still be the same signal: a matching tolerance for generated positions that
+/// shift a little when the design around them changes (ADR-0033 decision 15).
+pub const SIGNAL_MATCH_M: f64 = 5.0;
+
+impl SignalAt {
+    /// Purpose: whether two anchors are on the same track line, station track or switch leg.
+    /// Output: the distance between them along it, or None when they are on different ones.
+    pub fn distance_to(&self, other: &SignalAt) -> Option<f64> {
+        match (*self, *other) {
+            (
+                SignalAt::Track { track, line, s },
+                SignalAt::Track {
+                    track: t2,
+                    line: l2,
+                    s: s2,
+                },
+            ) if track == t2 && line == l2 => Some((s - s2).abs()),
+            (
+                SignalAt::Station { station, track, x },
+                SignalAt::Station {
+                    station: st2,
+                    track: t2,
+                    x: x2,
+                },
+            ) if station == st2 && track == t2 => Some((x - x2).abs()),
+            (
+                SignalAt::Leg { switch, leg, x },
+                SignalAt::Leg {
+                    switch: w2,
+                    leg: l2,
+                    x: x2,
+                },
+            ) if switch == w2 && leg == l2 => Some((x - x2).abs()),
+            _ => None,
+        }
+    }
+}
+
+/// Purpose: whether a signal at `a` facing `fa` is the one at `b` facing `fb`: same facing,
+/// same track line, station track or switch leg, within [`SIGNAL_MATCH_M`].
+pub fn same_signal(a: &SignalAt, fa: i8, b: &SignalAt, fb: i8) -> bool {
+    fa.signum() == fb.signum() && a.distance_to(b).is_some_and(|d| d <= SIGNAL_MATCH_M)
+}
+
+/// A signal of the effective plan: the planner's own signals and the generated ones the
+/// planner has not removed or replaced.
+#[derive(Debug, Clone, PartialEq, Serialize)]
+pub struct PlanSignal {
+    /// The signal (a generated one gets an id after the document's ids).
+    #[serde(flatten)]
+    pub signal: Signal,
+    /// Generated from the design, not placed or edited by the planner.
+    pub auto: bool,
+}
+
 /// Train control of a railway system (`signalling.system`).
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum System {
@@ -120,16 +189,21 @@ pub fn overlap_m(p: &crate::params::ModeParams, kmh: f64) -> Option<f64> {
     })
 }
 
+/// Purpose: distance a train needs to stop from `kmh` with the mode's service braking.
+pub fn braking_m(p: &crate::params::ModeParams, kmh: f64) -> f64 {
+    let v = kmh / 3.6;
+    v * v / (2.0 * p.service_braking_ms2.max(0.1))
+}
+
 /// Purpose: block length on plain line: braking distance at the line speed with the mode's
 /// service braking, plus sighting distance (lineside signals only) and overlap.
 pub fn block_length_m(p: &crate::params::ModeParams, kmh: f64) -> f64 {
-    let v = kmh / 3.6;
     let sighting = if system_of(p) == System::Cab {
         0.0
     } else {
         p.sighting_m
     };
-    v * v / (2.0 * p.service_braking_ms2.max(0.1)) + sighting + overlap_m(p, kmh).unwrap_or(0.0)
+    braking_m(p, kmh) + sighting + overlap_m(p, kmh).unwrap_or(0.0)
 }
 
 /// Purpose: position and heading of travel of a signal's anchor on the built design, or None
@@ -163,6 +237,15 @@ pub fn locate(dz: &Design, at: &SignalAt) -> Option<(P2, f64)> {
             let q = at_s(p, x);
             Some((q.p, q.h))
         }
+    }
+}
+
+/// Purpose: how a signal is called in messages: its name, or its id.
+pub fn label(s: &Signal) -> String {
+    if s.name.is_empty() {
+        format!("signal {}", s.id)
+    } else {
+        format!("signal {}", s.name)
     }
 }
 

@@ -68,6 +68,7 @@ Double track spreads smoothly to the station's track spacing where it meets a st
 - Switches come from the catalogue for the mode (for example tram 1:5 R50, mainline 1:9 R190, 1:12 R500, high-speed 1:26.5 R2500). Change the element, the side, the direction or the mirror image in the panel.
 - Switches go on straight track only, away from ramps and curves.
 - Tracks that cross on the same level share one piece of trackwork with a diamond crossing. On high-speed lines, or at angles flatter than 1:9, this is an error: put one track on another level instead.
+- **Slips**: where two single tracks cross at the angle of a catalogue slip (1:9 on main lines), the panel's **Diamond crossings** list lets you make the diamond a single slip or a double slip. Trains can then also turn from one track to the other, at the slip's turning speed (40 km/h for the 1:9 slips); straight through, the slip limits the speed to its through speed. A single slip has one turning route; **Turn the slip to the other side** swaps it. The slip needs straight track over its whole length on both tracks; if the tracks cross at another angle, the checks give the angle to aim for. There is no slip in the catalogue for trams yet.
 
 ## On the map
 
@@ -114,14 +115,22 @@ Existing railways cannot be edited, and their stations and signals are not loade
 
 ## Signals
 
-Railway operations needs signals. Until you make a signal plan, it gets signals generated from the design. **Generate signals** in the panel puts that plan on the map, so you can change it:
+Signals are generated from the design and drawn on the map. They follow the design: when you add a switch, move a station or lengthen a track, the signals change with it. The generator puts them here:
 
 - In front of every switch, and at the point on each leg where a train is clear of the other track, there is a main signal. Same-level crossings get one on each side. On storage track these are shunting signals.
 - At the ends of platform tracks that lead on, there are starter signals.
 - On plain line, block signals in both directions split the line into blocks no longer than a train needs to stop from line speed, plus the sighting distance and the overlap. Metro (CBTC) and high-speed lines (ETCS Level 2) are signalled in the cab, so these are block markers (blue) instead of signals with lights.
 - Trams drive on sight. They get signals only at switches and crossings with other railways.
 
-Each signal is drawn on the right of the track, with an arm pointing the way it governs: red for main and block signals, white for shunting, yellow for distant signals. Click a signal to change its kind or name, turn it round, or delete it. Drag it along the track to move it. Signals you place with the Signal tool are added to the plan. **Generate again** replaces the plan, and **Remove plan** goes back to generated signals. If you delete or redraw a track, its signals get a warning.
+Each signal is drawn on the right of the track, with an arm pointing the way it governs: red for main and block signals, white for shunting, yellow for distant signals. Click a signal to change its kind or name, turn it round, or delete it. Drag it along the track to move it. Signals you place with the Signal tool come on top of the generated ones. A generated signal you change or delete stays as you left it while the rest of the plan keeps following the design. **Reset to generated signals** in the panel drops your changes.
+
+Every change is checked, and the result is shown in the issue list and on the signal:
+
+- **Missing signal** (warning): you deleted a generated signal in front of a switch, a crossing or at a platform end, so trains are no longer stopped before it. A deleted block signal makes the block longer than needed, so fewer trains fit per hour.
+- **Signal in the wrong place**: inside a switch, crossing or level crossing area it is an error, because a train stopped there blocks it. Where a train stopped at it reaches back into such an area, or the next signal is closer than the train's braking distance, it is a warning. A main signal in front of a switch turned into a block or distant signal is a warning too.
+- **Helpful signal** (note): an extra signal on plain line splits the block, so trains can follow each other closer. For trams, which drive on sight, the note says an extra signal does not help.
+
+If you delete or redraw a track, signals of yours on it get a warning.
 
 ## Service lines
 

@@ -29,6 +29,7 @@ pub mod params;
 pub mod proj;
 pub mod sample;
 pub mod signal;
+pub mod slip;
 pub mod station;
 pub mod street;
 pub mod street_running;
@@ -36,6 +37,6 @@ pub mod switch;
 pub mod topology;
 pub mod view;
 
-pub use design::{build, build_with_osm, build_with_streets, Design};
+pub use design::{build, build_with_osm, build_with_streets, build_with_values, Design};
 pub use model::Network;
 pub use params::{defaults, RailMode};
