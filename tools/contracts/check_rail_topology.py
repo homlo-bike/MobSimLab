@@ -89,6 +89,8 @@ def graph_errors(t: dict) -> list[str]:
         s = sections.get(g["section"])
         if s is not None and g["chainage_m"] > s["length_m"] + 0.01:
             errs.append(f"signal {g['id']}: chainage beyond the end of {g['section']}")
+        if (g["kind"] in ("speed", "speed_warning")) != (g["speed_kmh"] is not None):
+            errs.append(f"signal {g['id']}: speed_kmh belongs to speed signals only")
     for what, ids in refs:
         errs += [f"{what}: unknown section {i}" for i in ids if i not in sections]
     return errs

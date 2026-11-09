@@ -99,7 +99,7 @@ export interface Switch {
   flip: boolean;
 }
 
-export type SignalKind = "main" | "block" | "shunting" | "distant";
+export type SignalKind = "main" | "block" | "shunting" | "distant" | "speed" | "speed_warning";
 
 /** Where a signal stands: on a track line (centre-line chainage), a station track or a switch leg. */
 export type SignalAt =
@@ -114,6 +114,8 @@ export interface Signal {
   facing: 1 | -1;
   kind: SignalKind;
   name: string;
+  /** Speed shown by a speed signal or announced by a speed warning, km/h. */
+  speed_kmh?: number | null;
 }
 
 export interface Network {
@@ -348,6 +350,8 @@ export interface SignalView {
   lonlat: LonLat;
   /** Generated from the design, not placed or edited by the planner. */
   auto: boolean;
+  /** Speed shown by a speed signal or announced by a speed warning, km/h. */
+  speed_kmh?: number | null;
 }
 
 export interface FeatureCollection {

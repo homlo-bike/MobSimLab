@@ -571,6 +571,8 @@ const SIGNAL_KINDS: { id: SignalKind; label: string }[] = [
   { id: "block", label: "Block signal" },
   { id: "shunting", label: "Shunting signal" },
   { id: "distant", label: "Distant signal" },
+  { id: "speed", label: "Speed signal" },
+  { id: "speed_warning", label: "Speed warning" },
 ];
 
 /** Purpose: counts of the plan's signals by kind, for the panel. */
@@ -583,6 +585,8 @@ function signalSummary(list: RailView["signals"]): string {
     markers ? `${markers} block markers (cab signalling)` : "",
     n("shunting") ? `${n("shunting")} shunting` : "",
     n("distant") ? `${n("distant")} distant` : "",
+    n("speed") ? `${n("speed")} speed` : "",
+    n("speed_warning") ? `${n("speed_warning")} speed warnings` : "",
   ];
   return parts.filter(Boolean).join(" · ");
 }
@@ -637,6 +641,21 @@ function SignalInspector({ sg, doc, view, actions: a }: Props & { sg: Signal }) 
           ))}
         </select>
       </Row>
+      {(sg.kind === "speed" || sg.kind === "speed_warning") && (
+        <Row label="Speed (km/h)">
+          <input
+            aria-label="Signal speed"
+            type="number"
+            min={5}
+            step={5}
+            value={sg.speed_kmh ?? ""}
+            onChange={(e) =>
+              set((x) => ({ ...x, speed_kmh: e.target.value ? Number(e.target.value) : null }))
+            }
+            className={input}
+          />
+        </Row>
+      )}
       <Row label="Name">
         <input
           aria-label="Signal name"
