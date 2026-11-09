@@ -23,17 +23,57 @@ export interface BuildingCrossing {
   osmId: number;
 }
 
-interface OverpassWay {
+type Geometry = Array<{ lat: number; lon: number }>;
+
+/** A building way, or a multipolygon relation (large buildings such as cathedrals and stations). */
+interface OverpassElement {
   type: string;
   id: number;
   tags?: Record<string, string>;
-  geometry?: Array<{ lat: number; lon: number }>;
+  geometry?: Geometry;
+  members?: Array<{ type: string; role: string; geometry?: Geometry }>;
+}
+
+/**
+ * Purpose: the outer rings of an element: a way's own ring, or a relation's outer members joined end
+ * to end (OSM splits long outlines into several ways). Inner rings (courtyards) are left out, which
+ * errs on the side of the building.
+ */
+export function outerRings(el: OverpassElement): Geometry[] {
+  if (el.type === "way") return el.geometry && el.geometry.length >= 3 ? [el.geometry] : [];
+  if (el.type !== "relation") return [];
+  const parts = (el.members ?? [])
+    .filter((m) => m.type === "way" && m.role !== "inner" && m.geometry && m.geometry.length >= 2)
+    .map((m) => m.geometry!.slice());
+  const same = (a: { lat: number; lon: number }, b: { lat: number; lon: number }) =>
+    Math.abs(a.lat - b.lat) < 1e-9 && Math.abs(a.lon - b.lon) < 1e-9;
+  const rings: Geometry[] = [];
+  while (parts.length) {
+    const ring = parts.shift()!;
+    let grew = true;
+    while (grew && !same(ring[0]!, ring[ring.length - 1]!)) {
+      grew = false;
+      for (let i = 0; i < parts.length; i++) {
+        const q = parts[i]!;
+        const end = ring[ring.length - 1]!;
+        if (same(end, q[0]!)) ring.push(...q.slice(1));
+        else if (same(end, q[q.length - 1]!)) ring.push(...q.reverse().slice(1));
+        else continue;
+        parts.splice(i, 1);
+        grew = true;
+        break;
+      }
+    }
+    if (ring.length >= 3) rings.push(ring);
+  }
+  return rings;
 }
 
 /** Purpose: Overpass QL for the buildings within `bufferM` of a polyline, with their geometry. */
 export function buildingQuery(line: LonLat[], bufferM = BUILDING_BUFFER_M): string {
   const coords = line.map(([lon, lat]) => `${lat.toFixed(7)},${lon.toFixed(7)}`).join(",");
-  return `[out:json][timeout:60][maxsize:33554432];way["building"](around:${bufferM},${coords});out tags geom;`;
+  const around = `(around:${bufferM},${coords})`;
+  return `[out:json][timeout:60][maxsize:33554432];(way["building"]${around};rel["building"]${around};);out tags geom;`;
 }
 
 /** Purpose: a building's height from its OSM tags, and whether it is estimated. */
@@ -94,7 +134,7 @@ export function crossings(
   bufferM = BUILDING_BUFFER_M,
 ): BuildingCrossing[] {
   if (line.length < 2) return [];
-  const parsed = JSON.parse(overpassJson) as { elements?: OverpassWay[] };
+  const parsed = JSON.parse(overpassJson) as { elements?: OverpassElement[] };
   const proj = projector(line[0]!);
   const pts = line.map(proj);
   // Positions along the line every STEP_M metres.
@@ -112,10 +152,10 @@ export function crossings(
   }
   const out: BuildingCrossing[] = [];
   for (const el of parsed.elements ?? []) {
-    if (el.type !== "way" || !el.geometry || el.geometry.length < 3) continue;
-    const ring = el.geometry.map((g) => proj([g.lon, g.lat]));
-    const xs = ring.map((r) => r[0]);
-    const ys = ring.map((r) => r[1]);
+    const rings = outerRings(el).map((g) => g.map((q) => proj([q.lon, q.lat])));
+    if (!rings.length) continue;
+    const xs = rings.flat().map((r) => r[0]);
+    const ys = rings.flat().map((r) => r[1]);
     const box = [
       Math.min(...xs) - bufferM,
       Math.min(...ys) - bufferM,
@@ -135,7 +175,7 @@ export function crossings(
         p[0] <= box[2]! &&
         p[1] >= box[1]! &&
         p[1] <= box[3]! &&
-        (inside(p, ring) || distToRing(p, ring) <= bufferM);
+        rings.some((ring) => inside(p, ring) || distToRing(p, ring) <= bufferM);
       if (near) {
         from ??= d;
         to = d;

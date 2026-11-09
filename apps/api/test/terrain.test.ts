@@ -213,6 +213,7 @@ describe("buildings along a line", () => {
 
   it("asks Overpass for buildings around the polyline", () => {
     expect(buildingQuery(LINE)).toContain('way["building"](around:6,50.5000000,7.1000000,50.5000000,');
+    expect(buildingQuery(LINE)).toContain('rel["building"](around:6,');
   });
 
   it("finds where the line passes over each building", () => {
@@ -224,6 +225,26 @@ describe("buildings along a line", () => {
     expect(c[0]!.heightM).toBe(32);
     expect(c[1]!.heightM).toBe(14);
     expect(c[2]!.estimated).toBe(true);
+  });
+
+  it("joins the outer ways of a multipolygon building, such as a cathedral", () => {
+    // Building 1's outline split into two ways, the second one reversed, on a relation.
+    const ring = square(1, 200, 30, {}).geometry;
+    const rel = {
+      type: "relation",
+      id: 99,
+      tags: { type: "multipolygon", building: "cathedral", height: "157" },
+      members: [
+        { type: "way", role: "outer", geometry: ring.slice(0, 3) },
+        { type: "way", role: "outer", geometry: ring.slice(2).reverse() },
+        { type: "way", role: "inner", geometry: square(2, 200, 4, {}).geometry },
+      ],
+    };
+    const c = crossings(LINE, JSON.stringify({ elements: [rel] }));
+    expect(c).toHaveLength(1);
+    expect(c[0]!.osmId).toBe(99);
+    expect(c[0]!.heightM).toBe(157);
+    expect(Math.abs(c[0]!.toM - c[0]!.fromM - 42)).toBeLessThanOrEqual(4);
   });
 });
 
