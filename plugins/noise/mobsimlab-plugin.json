@@ -1,0 +1,38 @@
+{
+  "$schema": "../../contracts/plugin-manifest.schema.json",
+  "id": "org.mobsimlab.noise",
+  "name": "Noise map",
+  "description": "Estimated noise of the service lines (ADR-0038): a live noise band while drawing street lines and railways, with checks for curve squeal, bridges and switches. CNOSSOS-EU road emission, free field without buildings for now.",
+  "version": "0.1.0",
+  "publisher": { "name": "MobSimLab contributors", "url": "https://github.com/homlo-bike/MobSimLab" },
+  "license": "AGPL-3.0-or-later",
+  "dataLicense": "CC-BY-4.0",
+  "engines": { "mobsimlab": ">=0.1 <1", "pluginApi": "1" },
+  "bundled": true,
+  "tiers": ["data", "compute"],
+  "contributes": {
+    "parameters": [{ "file": "assumptions/parameters.yaml" }],
+    "sources": [{ "file": "assumptions/sources.yaml" }],
+    "calculations": [
+      {
+        "id": "noise_estimate",
+        "label": "Noise band",
+        "description": "L_den and L_night of the drawn lines at 4 m, free field: band distances either side, a receiver grid for the map and checks.",
+        "runtime": "bundled-wasm",
+        "module": "noise",
+        "inputs": ["street_lines", "rail_design", "timetable", "fleet", "parameters"],
+        "outputs": ["grid", "segments", "findings"],
+        "where": ["street-line-tool", "railway-tool", "gis", "analysis"]
+      }
+    ],
+    "mapLayers": [
+      {
+        "id": "noise_band",
+        "label": "Noise band",
+        "calculation": "noise_estimate",
+        "style": "styles/noise.json"
+      }
+    ]
+  },
+  "permissions": ["read:network", "read:timetable", "read:fleet"]
+}

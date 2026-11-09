@@ -16,7 +16,7 @@ use rail_design::existing::{nearest_on, rail_from_osm, ExistingRail};
 use rail_design::geom::{nearest, P2};
 use rail_design::proj::LocalTm;
 use rail_design::street::{street_from_osm, Street};
-use rail_design::{build_with_osm, Design, Network, RailMode};
+use rail_design::{build_with_values, Design, Network, RailMode};
 use std::collections::{BTreeMap, HashMap};
 use street_routing::osm::Tags;
 use street_routing::StreetSetup;
@@ -41,6 +41,7 @@ pub struct RailDesigner {
     street_list: Vec<Street>,
     rails: BTreeMap<i64, ExistingRail>,
     rail_list: Vec<ExistingRail>,
+    values: BTreeMap<String, f64>,
 }
 
 impl Default for RailDesigner {
@@ -61,18 +62,28 @@ impl RailDesigner {
             street_list: Vec::new(),
             rails: BTreeMap::new(),
             rail_list: Vec::new(),
+            values: BTreeMap::new(),
         }
+    }
+
+    /// Purpose: set design values the project's preferences change for every mode (JSON object of
+    /// numbers by design value name, for example `{"street_mixed_traffic_delay_share": 0.3}`).
+    /// Side effects: the next build uses them.
+    pub fn set_values(&mut self, json: &str) -> Result<(), JsError> {
+        self.values = serde_json::from_str(json).map_err(js)?;
+        Ok(())
     }
 
     /// Purpose: build the design from the document (JSON) and return the view (JSON).
     /// `draft` is the id of a track still being drawn (0 for none).
     pub fn build(&mut self, doc: &str, draft: u32) -> Result<String, JsError> {
         let net: Network = serde_json::from_str(doc).map_err(js)?;
-        let d = build_with_osm(
+        let d = build_with_values(
             &net,
             (draft != 0).then_some(draft),
             &self.street_list,
             &self.rail_list,
+            &self.values,
         );
         let v = rail_design::view::view(&d);
         self.design = Some(d);
@@ -233,6 +244,37 @@ impl RailDesigner {
             serde_json::to_string(&rail_design::topology::topology(d))
                 .unwrap_or_else(|_| "null".into())
         })
+    }
+
+    /// Purpose: plan the service lines drawn in the editor on the last built design and publish them
+    /// for the journey planner (`rail_plan::service`).
+    /// Inputs: JSON list of `rail_plan::ServiceLine`, the day type id.
+    /// Output: JSON `rail_plan::ServicePublication` (timetable, report per line, notes); Err before a
+    /// build, for a design with errors or for a line with fewer than two stops.
+    pub fn publish_lines(&self, lines: &str, service_id: &str) -> Result<String, JsError> {
+        let d = self
+            .design
+            .as_ref()
+            .ok_or_else(|| JsError::new("Nothing is drawn yet."))?;
+        let lines: Vec<rail_plan::ServiceLine> = serde_json::from_str(lines).map_err(js)?;
+        let topo = serde_json::to_string(&rail_design::topology::topology(d)).map_err(js)?;
+        let out =
+            rail_plan::publish_service(&topo, &lines, service_id).map_err(|e| JsError::new(&e))?;
+        serde_json::to_string(&out).map_err(js)
+    }
+
+    /// Purpose: whether a train can run from station `from` to station `to` (document ids) on the
+    /// last built design, for picking a service line's stations in order.
+    /// Output: JSON `rail_plan::Reach`; Err before a build or for a design with errors.
+    pub fn reachable(&self, from: u32, to: u32) -> Result<String, JsError> {
+        let d = self
+            .design
+            .as_ref()
+            .ok_or_else(|| JsError::new("Nothing is drawn yet."))?;
+        let topo = serde_json::to_string(&rail_design::topology::topology(d)).map_err(js)?;
+        let r = rail_plan::station_reachable(&topo, &format!("st{from}"), &format!("st{to}"))
+            .map_err(|e| JsError::new(&e))?;
+        serde_json::to_string(&r).map_err(js)
     }
 
     /// Purpose: a signal plan generated from the last built design (JSON list of document

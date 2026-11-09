@@ -15,8 +15,18 @@ import {
   setKitColor,
   stationElement,
 } from "./mapLayers";
+import { fetchProfiles, sectionGround, type TerrainProfiles } from "../terrain/terrain";
 import { ProfileView } from "./ProfileView";
-import type { Kits, KitsLoader, LonLat, SpanStation, SpanView, StationKind, TowerInput } from "./types";
+import type {
+  GroundSample,
+  Kits,
+  KitsLoader,
+  LonLat,
+  SpanStation,
+  SpanView,
+  StationKind,
+  TowerInput,
+} from "./types";
 
 const PREFIX = "spans";
 
@@ -25,12 +35,53 @@ export interface SpanDoc {
   name: string;
   mode: string;
   system: string;
-  stations: SpanStation[];
+  stations: DocStation[];
   /** Per section: `null` for automatic towers, else the planner's towers. */
   towers: (TowerInput[] | null)[];
   /** Planner's line speed and cabin interval, over the parameter values. */
   lineSpeed: number | null;
   interval: number | null;
+  /** Ground from the terrain model and OpenStreetMap buildings (default); false for typed heights only. */
+  terrain?: boolean;
+}
+
+/** A station of the drawing: `elevation_typed` marks a height the planner typed over the terrain's. */
+type DocStation = SpanStation & { elevation_typed?: boolean };
+
+/** Terrain spacing along a section: ropeway spans are short, so closer than the 50 m default. */
+const TERRAIN_SPACING_M = 25;
+
+/** Loads terrain profiles for the sections; the API by default, a stub in tests. */
+export type TerrainLoader = (lines: LonLat[][]) => Promise<TerrainProfiles>;
+
+const defaultTerrain: TerrainLoader = (lines) =>
+  fetchProfiles(lines, { spacingM: TERRAIN_SPACING_M, buildings: true });
+
+/**
+ * Purpose: the kit's stations and ground from the drawing and the terrain: a station without a typed
+ * height stands on the terrain; each section's ground follows the terrain and the buildings under it.
+ * Inputs: the stations, the terrain profiles of the sections (or null), the section lengths the kit
+ * measures. Output: stations with heights, and ground samples per section (null without terrain).
+ */
+export function withTerrain(
+  stations: DocStation[],
+  terrain: TerrainProfiles | null,
+  lengths: number[],
+): { stations: SpanStation[]; ground: (GroundSample[] | null)[] } {
+  if (!terrain || terrain.lines.length !== Math.max(0, stations.length - 1)) {
+    return { stations, ground: [] };
+  }
+  const at = (i: number) => {
+    const line = i < terrain.lines.length ? terrain.lines[i] : terrain.lines[i - 1];
+    const s = i < terrain.lines.length ? line?.samples[0] : line?.samples[line.samples.length - 1];
+    return s?.elevationM ?? 0;
+  };
+  return {
+    stations: stations.map((s, i) =>
+      s.elevation_typed ? s : { ...s, elevation_m: Math.round(at(i) * 10) / 10 },
+    ),
+    ground: terrain.lines.map((l, i) => sectionGround(l, lengths[i] ?? l.lengthM)),
+  };
 }
 
 type Tool = "add" | "select";
@@ -45,6 +96,7 @@ interface Props {
   loadKits?: KitsLoader;
   /** Told about the line after every change, so the journey planner can ride it. */
   onLineChange?: (line: PluginLineInput | null) => void;
+  loadTerrain?: TerrainLoader;
 }
 
 /** Purpose: an empty drawing for the tool's first mode. */
@@ -91,6 +143,7 @@ export function SpanLineEditor({
   storageKey,
   loadKits: load = loadKits,
   onLineChange,
+  loadTerrain = defaultTerrain,
 }: Props) {
   const [kits, setKits] = useState<Kits | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -124,15 +177,61 @@ export function SpanLineEditor({
     [doc.system, doc.lineSpeed, doc.interval, m?.operation, values],
   );
 
+  // Terrain and buildings under each section, fetched when the stations move.
+  const useTerrain = doc.terrain !== false;
+  const coordsKey = JSON.stringify(doc.stations.map((s) => s.lonlat));
+  const [terrain, setTerrain] = useState<{ key: string; data: TerrainProfiles } | null>(null);
+  const [terrainState, setTerrainState] = useState<"idle" | "loading" | "error">("idle");
+  const [terrainError, setTerrainError] = useState<string | null>(null);
+  useEffect(() => {
+    const coords = JSON.parse(coordsKey) as LonLat[];
+    if (!useTerrain || coords.length < 2) return setTerrainState("idle");
+    let alive = true;
+    setTerrainState("loading");
+    const timer = setTimeout(() => {
+      loadTerrain(coords.slice(1).map((c, i) => [coords[i]!, c])).then(
+        (data) => {
+          if (!alive) return;
+          setTerrain({ key: coordsKey, data });
+          setTerrainState("idle");
+          setTerrainError(null);
+        },
+        (e) => {
+          if (!alive) return;
+          setTerrainState("error");
+          setTerrainError(e instanceof Error ? e.message : String(e));
+        },
+      );
+    }, 400);
+    return () => {
+      alive = false;
+      clearTimeout(timer);
+    };
+  }, [coordsKey, useTerrain, loadTerrain]);
+  const current = useTerrain && terrain?.key === coordsKey ? terrain.data : null;
+
   const view: SpanView | null = useMemo(() => {
     if (!kits) return null;
     try {
-      return kits.buildSpanLine({ stations: doc.stations, system, towers: doc.towers });
+      const flat = { stations: doc.stations, system, towers: doc.towers };
+      if (!current) return kits.buildSpanLine(flat);
+      // Section lengths as the kit measures them, so terrain chainages line up with its own.
+      const lengths = kits.buildSpanLine(flat).sections.map((x) => x.length_m);
+      const { stations, ground } = withTerrain(doc.stations, current, lengths);
+      return kits.buildSpanLine({ stations, system, towers: doc.towers, ground });
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
       return null;
     }
-  }, [kits, doc.stations, doc.towers, system]);
+  }, [kits, doc.stations, doc.towers, system, current]);
+  const heights = useMemo(
+    () => withTerrain(doc.stations, current, []).stations.map((s) => s.elevation_m),
+    [doc.stations, current],
+  );
+  const estimated = (current?.lines ?? []).reduce(
+    (n, l) => n + (l.buildings ?? []).filter((b) => b.estimated).length,
+    0,
+  );
 
   // Journey planner.
   const changed = useRef(onLineChange);
@@ -230,7 +329,7 @@ export function SpanLineEditor({
     };
   }, [map]);
 
-  const update = (i: number, patch: Partial<SpanStation>) =>
+  const update = (i: number, patch: Partial<DocStation>) =>
     setDoc((d) => ({ ...d, stations: d.stations.map((s, k) => (k === i ? { ...s, ...patch } : s)) }));
   const setTowers = (i: number, t: TowerInput[] | null) =>
     setDoc((d) => {
@@ -339,7 +438,35 @@ export function SpanLineEditor({
           <Stat label="Towers" value={String(view.tower_count)} />
         </div>
       )}
+      <label className="flex items-center gap-2 text-xs">
+        <input
+          type="checkbox"
+          checked={useTerrain}
+          onChange={(e) => setDoc({ ...doc, terrain: e.target.checked })}
+        />
+        Ground from terrain and buildings
+        {useTerrain && terrainState === "loading" && <span className="text-slate-500">Loading heights…</span>}
+      </label>
+      {useTerrain && terrainState === "error" && (
+        <p className="rounded-lg border border-amber-300 bg-amber-50 px-2.5 py-1.5 text-xs text-amber-900">
+          Terrain heights did not load ({terrainError}). The ground is a straight line between the station
+          heights.
+        </p>
+      )}
       {view && <ProfileView view={view} color={color} />}
+      {current && (
+        <p className="text-[11px] text-slate-500">
+          Ground: {current.source.name}, a surface model at {current.source.resolutionM} m, about ±
+          {current.source.verticalAccuracyM} m.
+          {current.buildingSource && (
+            <>
+              {" "}
+              Buildings: {current.buildingSource.licence}
+              {estimated > 0 && `; ${estimated} without a height in OSM, assumed 10 m`}.
+            </>
+          )}
+        </p>
+      )}
       {view && <Issues issues={view.issues} where={where} />}
       <section aria-label="Stations" className="flex flex-col gap-2">
         <h3 className="font-semibold">Stations</h3>
@@ -405,11 +532,23 @@ export function SpanLineEditor({
                     type="number"
                     aria-label={`Station ${i + 1} ground height`}
                     className="w-20 rounded border border-slate-300 px-1.5 py-1"
-                    value={s.elevation_m}
-                    onChange={(e) => update(i, { elevation_m: Number(e.target.value) || 0 })}
+                    value={heights[i] ?? s.elevation_m}
+                    onChange={(e) =>
+                      update(i, { elevation_m: Number(e.target.value) || 0, elevation_typed: true })
+                    }
                   />
                   m
                 </label>
+                {current && !s.elevation_typed && <span className="text-slate-500">from terrain</span>}
+                {useTerrain && s.elevation_typed && (
+                  <button
+                    type="button"
+                    className="text-blue-700 underline"
+                    onClick={() => update(i, { elevation_typed: false })}
+                  >
+                    Use terrain
+                  </button>
+                )}
                 {view?.stations[i] && !end && (
                   <span className="text-slate-500">Turns {Math.round(view.stations[i].deflection_deg)}°</span>
                 )}

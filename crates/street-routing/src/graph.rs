@@ -178,7 +178,12 @@ pub fn parse_speed(v: &str) -> Option<f64> {
     }
 }
 
+#[cfg(test)]
 fn way_info(tags: &Tags) -> Option<WayInfo> {
+    way_info_with(tags, &crate::setup::DelayShares::default())
+}
+
+fn way_info_with(tags: &Tags, delays: &crate::setup::DelayShares) -> Option<WayInfo> {
     let hw = tags.get("highway")?.as_str();
     if tags.get("area").map(String::as_str) == Some("yes") {
         return None;
@@ -261,7 +266,7 @@ fn way_info(tags: &Tags) -> Option<WayInfo> {
         guideway: hw == "bus_guideway",
         bus_lane,
         main_road: crate::setup::main_road(hw),
-        delay_share: crate::setup::delay_share(tags),
+        delay_share: crate::setup::delay_share_with(tags, delays),
         wire_fwd: wire_all || yes(tags.get("trolley_wire:forward")),
         wire_bwd: wire_all || yes(tags.get("trolley_wire:backward")),
         minor: matches!(hw, "service" | "living_street" | "pedestrian"),
@@ -301,6 +306,15 @@ impl RoadGraph {
     /// Purpose: build the graph with a fixed projection, so positions stay comparable when the
     /// network is rebuilt with more data. `None` centres the projection on the data.
     pub fn from_osm_with(data: &OsmData, proj: Option<LocalProjection>) -> Result<Self, String> {
+        Self::from_osm_with_delays(data, proj, &crate::setup::DelayShares::default())
+    }
+
+    /// Purpose: as [`RoadGraph::from_osm_with`], with the project's delays in traffic.
+    pub fn from_osm_with_delays(
+        data: &OsmData,
+        proj: Option<LocalProjection>,
+        delays: &crate::setup::DelayShares,
+    ) -> Result<Self, String> {
         let node_by_id: HashMap<i64, usize> = data
             .nodes
             .iter()
@@ -310,7 +324,7 @@ impl RoadGraph {
         let road_ways: Vec<(&crate::osm::RawWay, WayInfo)> = data
             .ways
             .iter()
-            .filter_map(|w| way_info(&w.tags).map(|i| (w, i)))
+            .filter_map(|w| way_info_with(&w.tags, delays).map(|i| (w, i)))
             .collect();
         let (mut lon_sum, mut lat_sum, mut count) = (0.0, 0.0, 0.0);
         for (w, _) in &road_ways {

@@ -1,9 +1,13 @@
+import type { DelayShares } from "../street-lines/types";
 import type { StreetInfo, StreetSetup, TramShare } from "./types";
 
 /** Assumption `street.mixed_traffic_delay_share` (central): extra running time in a main road's traffic. */
 export const MIXED_DELAY = 0.25;
 /** Assumption `street.bus_lane_delay_share` (central): extra running time in a painted bus or tram lane. */
 export const PAINTED_DELAY = 0.08;
+
+/** The assumption library's delays in traffic, used where the project's preferences do not change them. */
+export const DEFAULT_DELAYS: DelayShares = { mixed_traffic: MIXED_DELAY, bus_lane: PAINTED_DELAY };
 
 /** What a street is after the planner's setup: each value from the setup, else from OpenStreetMap. */
 export interface Effective {
@@ -69,7 +73,7 @@ const pct = (x: number) => `${Math.round(x * 100)} %`;
  * Purpose: what the street's setup means for the reliability of buses and trams and for the safety of
  * cyclists, by the same rules the street line tool and the railway editor apply.
  */
-export function verdicts(info: StreetInfo, e: Effective): Verdict[] {
+export function verdicts(info: StreetInfo, e: Effective, delays: DelayShares = DEFAULT_DELAYS): Verdict[] {
   const out: Verdict[] = [];
   const main = info.main_road;
   if (!main) {
@@ -84,13 +88,13 @@ export function verdicts(info: StreetInfo, e: Effective): Verdict[] {
     out.push({
       level: "info",
       who: "Buses",
-      text: `Painted bus lane: turning and parking cars still get in the way, about ${pct(PAINTED_DELAY)} longer running time at peak. Separate it to keep cars out.`,
+      text: `Painted bus lane: turning and parking cars still get in the way, about ${pct(delays.bus_lane)} longer running time for buses and trolleybuses at peak. Separate it to keep cars out.`,
     });
   } else {
     out.push({
       level: "warning",
       who: "Buses",
-      text: `Buses run in the traffic of a main road: about ${pct(MIXED_DELAY)} longer running time at peak, and late when traffic jams. A bus lane fixes it.`,
+      text: `Buses and trolleybuses run in the traffic of a main road: about ${pct(delays.mixed_traffic)} longer running time at peak, and late when traffic jams. A bus lane fixes it.`,
     });
   }
   if (e.hasTram) {
@@ -101,7 +105,7 @@ export function verdicts(info: StreetInfo, e: Effective): Verdict[] {
         level: "info",
         who: "Trams",
         text: main
-          ? `Own lane, painted only: cars still cross and stop in it, about ${pct(PAINTED_DELAY)} longer at peak. Separate it with a kerb or track bed.`
+          ? `Own lane, painted only: cars still cross and stop in it, about ${pct(delays.bus_lane)} longer at peak. Separate it with a kerb or track bed.`
           : "Own lane, painted only.",
       });
     } else if (e.tram === "mixed") {
@@ -109,7 +113,7 @@ export function verdicts(info: StreetInfo, e: Effective): Verdict[] {
         level: main ? "warning" : "info",
         who: "Trams",
         text: main
-          ? `Mixed traffic on a main road: the tram is held up in traffic jams and can be stuck in gridlock, about ${pct(MIXED_DELAY)} longer at peak. Give it its own lane, separated.`
+          ? `Mixed traffic on a main road: the tram is held up in traffic jams and can be stuck in gridlock, about ${pct(delays.mixed_traffic)} longer at peak. The tram timetable counts it in the running time. Give it its own lane, separated.`
           : "Mixed traffic: the tram runs in the traffic lanes.",
       });
     } else {

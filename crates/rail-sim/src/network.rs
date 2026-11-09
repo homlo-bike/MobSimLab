@@ -196,8 +196,8 @@ struct Path {
     steps: Vec<Step>,
     /// Start of each step in path coordinates (0 = first entry signal).
     start: Vec<f64>,
-    /// Speed segments: (start, end, speed, gradient).
-    segs: Vec<(f64, f64, f64, f64)>,
+    /// Speed segments: (start, end, speed, gradient, expected delay share in street traffic).
+    segs: Vec<(f64, f64, f64, f64, f64)>,
     /// Each route of the run: (route, start, end).
     routes: Vec<(RouteId, f64, f64)>,
     /// Level crossings on the run: (index, position).
@@ -386,7 +386,7 @@ fn build_path(
     let mut segs = Vec::new();
     let mut y = -back_len;
     for p in m.profile(&steps) {
-        segs.push((y, y + p.length_m, p.speed_mps, p.gradient));
+        segs.push((y, y + p.length_m, p.speed_mps, p.gradient, p.delay_share));
         y += p.length_m;
     }
     let mut crossings = Vec::new();
@@ -777,7 +777,7 @@ impl<'m> NetworkSim<'m> {
     fn static_speed(&self, tr: &Train, b: f64) -> f64 {
         let path = &tr.path;
         let mut v = tr.params.max_speed_mps;
-        for &(s0, s1, sp, _) in &path.segs {
+        for &(s0, s1, sp, _, _) in &path.segs {
             if s1 > tr.s - tr.params.length_m && s0 <= tr.s {
                 v = v.min(sp);
             } else if s0 > tr.s {
@@ -1032,7 +1032,7 @@ impl<'m> NetworkSim<'m> {
         let v_static = {
             let path = &tr.path;
             let mut v = tr.params.max_speed_mps;
-            for &(s0, s1, sp, _) in &path.segs {
+            for &(s0, s1, sp, _, _) in &path.segs {
                 if s1 > tr.s - tr.params.length_m && s0 <= tr.s {
                     v = v.min(sp);
                 } else if s0 > tr.s {
@@ -1047,7 +1047,10 @@ impl<'m> NetworkSim<'m> {
         let permitted = v_static.min((2.0 * b * (eoa - tr.s).max(0.0)).sqrt());
         let v_drv_static = {
             let mut v = tr.params.max_speed_mps;
-            for &(s0, s1, sp, _) in &tr.path.segs {
+            // In street traffic the driver keeps to the traffic's pace: the speed limit
+            // stretched by the expected delay (`street.mixed_traffic_delay_share`).
+            for &(s0, s1, sp, _, dl) in &tr.path.segs {
+                let sp = sp / (1.0 + dl.max(0.0));
                 if s1 > tr.s - tr.params.length_m && s0 <= tr.s {
                     v = v.min(sp);
                 } else if s0 > tr.s {

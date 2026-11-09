@@ -377,6 +377,8 @@ export function ensureRailLayers(map: MapLibreMap, lat: number): void {
             COLORS.signalShunt,
             "distant",
             COLORS.signalDistant,
+            ["speed", "speed_warning"],
+            COLORS.signalSpeed,
             COLORS.signalMain,
           ],
         ],

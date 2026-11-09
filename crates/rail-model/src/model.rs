@@ -243,6 +243,8 @@ pub struct ProfileSegment {
     pub speed_mps: f64,
     /// Gradient in the direction of travel (rise over run).
     pub gradient: f64,
+    /// Expected extra running time in street traffic, share of the running time (0 off the street).
+    pub delay_share: f64,
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -547,6 +549,16 @@ impl Model {
                         piece: last,
                         dir: Dir::Down,
                     },
+                }
+            } else if s.kind == SignalKind::Distant {
+                // Distant signals do not cut the track: they stand on the piece around them.
+                let k = ps
+                    .iter()
+                    .position(|&p| pieces[p as usize].to_m > s.position_m)
+                    .unwrap_or(ps.len() - 1);
+                SignalAt::Entry {
+                    piece: ps[k],
+                    dir: s.facing,
                 }
             } else {
                 // A cut point: the piece starting here (Up) or ending here (Down).
@@ -985,14 +997,20 @@ impl Model {
     /// Purpose: speed and gradient profile along a sequence of steps.
     /// Inputs: steps in travel order.
     /// Output: segments in travel order; speed = min(line speed, range limits,
-    /// diverging switch cap); gradient signed for the direction of travel.
+    /// diverging switch cap); gradient signed for the direction of travel; the
+    /// expected traffic delay share where the track runs in street traffic.
     pub fn profile(&self, steps: &[Step]) -> Vec<ProfileSegment> {
         let mut out: Vec<ProfileSegment> = Vec::new();
         for st in steps {
             let pc = &self.pieces[st.piece as usize];
             let tr = &self.tracks[pc.track];
             let mut cuts = vec![pc.from_m, pc.to_m];
-            for r in tr.speed_ranges.iter().chain(tr.gradient_ranges.iter()) {
+            for r in tr
+                .speed_ranges
+                .iter()
+                .chain(&tr.gradient_ranges)
+                .chain(&tr.traffic_delay_ranges)
+            {
                 for x in [r.from_m, r.to_m] {
                     if x > pc.from_m + EPS && x < pc.to_m - EPS {
                         cuts.push(x);
@@ -1023,10 +1041,17 @@ impl Model {
                     if st.dir == Dir::Down {
                         g = -g;
                     }
+                    let delay = tr
+                        .traffic_delay_ranges
+                        .iter()
+                        .filter(|r| mid >= r.from_m && mid < r.to_m)
+                        .map(|r| r.value)
+                        .fold(0.0, f64::max);
                     ProfileSegment {
                         length_m: w[1] - w[0],
                         speed_mps: v,
                         gradient: g,
+                        delay_share: delay,
                     }
                 })
                 .collect();
@@ -1037,7 +1062,8 @@ impl Model {
                 match out.last_mut() {
                     Some(l)
                         if (l.speed_mps - s.speed_mps).abs() < EPS
-                            && (l.gradient - s.gradient).abs() < EPS =>
+                            && (l.gradient - s.gradient).abs() < EPS
+                            && (l.delay_share - s.delay_share).abs() < EPS =>
                     {
                         l.length_m += s.length_m
                     }

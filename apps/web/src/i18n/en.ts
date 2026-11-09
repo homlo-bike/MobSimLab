@@ -199,6 +199,8 @@ export const en = {
   "drawing.street-lines": "street line",
   "drawing.railway": "railway",
   "drawing.street-setups": "street setups",
+  "drawing.rail-timetable": "rail timetable",
+  "drawing.preferences": "project preferences",
 
   "tab.label": "Project",
   "tab.simulator": "Simulator",
@@ -256,6 +258,13 @@ export const en = {
   "prefs.save": "Save",
   "prefs.saved": "Saved",
   "prefs.readOnly": "Only Owners and Editors can change these.",
+  "prefs.delayTitle": "Running time in traffic",
+  "prefs.delayIntro":
+    "Expected extra running time at peak for buses, BRT, trolleybuses and trams on main roads, as a share of the running time at the speed limit. Used by the street line tool, the railway tool and the GIS tab.",
+  "prefs.delayMixed": "In a main road's general traffic",
+  "prefs.delayLane": "In a painted bus or tram lane",
+  "prefs.delayDefault": "Assumption library: {value} %",
+  "prefs.delayReset": "Use the library value",
   "prefs.moreTitle": "Rules, vehicles and assumptions",
   "prefs.moreIntro":
     "Every variable with its minimum and recommended value, and the vehicles the project uses.",

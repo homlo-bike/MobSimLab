@@ -26,7 +26,8 @@ vi.mock("maplibre-gl", () => ({
 import * as wasm from "../src/wasm/mode-kits/mode_kits_wasm.js";
 import { pluginLineTimetable, type PluginLineInput } from "../src/features/journey-planner/network";
 import { loadKits, spanSystem, vesselType } from "../src/kits/engine";
-import { SpanLineEditor, removeStation, type SpanDoc } from "../src/kits/SpanLineEditor";
+import { SpanLineEditor, removeStation, type SpanDoc, type TerrainLoader } from "../src/kits/SpanLineEditor";
+import { sectionGround, type TerrainProfiles } from "../src/terrain/terrain";
 import { WaterRouteEditor, removePier, type WaterDoc } from "../src/kits/WaterRouteEditor";
 import {
   centralValues,
@@ -138,7 +139,16 @@ describe("editors", () => {
     };
     localStorage.setItem("k-cable", JSON.stringify(doc));
     const onLine = vi.fn();
-    render(<SpanLineEditor map={null} tool={cableTool} storageKey="k-cable" onLineChange={onLine} />);
+    const noTerrain: TerrainLoader = () => Promise.reject(new Error("offline"));
+    render(
+      <SpanLineEditor
+        map={null}
+        tool={cableTool}
+        storageKey="k-cable"
+        onLineChange={onLine}
+        loadTerrain={noTerrain}
+      />,
+    );
     await screen.findByText("Capacity per direction");
     expect(screen.getByText("3,000 p/h")).toBeTruthy();
     await waitFor(() => expect(onLine).toHaveBeenLastCalledWith(expect.objectContaining({ name: "Rhine" })));
@@ -149,6 +159,88 @@ describe("editors", () => {
     // Making the middle station an angle station without boarding drops it from the stops.
     fireEvent.change(screen.getByLabelText("Station 2 kind"), { target: { value: "angle" } });
     await waitFor(() => expect((onLine.mock.lastCall![0] as PluginLineInput).stops).toHaveLength(2));
+  });
+
+  it("cable car editor stands stations on the terrain and checks clearance over buildings", async () => {
+    const doc: SpanDoc = {
+      name: "Valley",
+      mode: "cable_car",
+      system: "mgd",
+      stations: [
+        { name: "West", lonlat: east(0), kind: "terminal", boarding: false, elevation_m: 0 },
+        { name: "East", lonlat: east(400), kind: "terminal", boarding: false, elevation_m: 0 },
+      ],
+      towers: [[]],
+      lineSpeed: null,
+      interval: null,
+    };
+    localStorage.setItem("k-terrain", JSON.stringify(doc));
+    // A valley 40 m deep between stations at 120 m and 125 m, with a 45 m building at its middle.
+    const samples = Array.from({ length: 17 }, (_, i) => ({
+      distM: i * 25,
+      lon: 0,
+      lat: 0,
+      elevationM: i === 0 ? 120 : i === 16 ? 125 : 80,
+    }));
+    const terrain: TerrainProfiles = {
+      spacingM: 25,
+      lines: [
+        {
+          lengthM: 400,
+          samples,
+          buildings: [{ fromM: 190, toM: 210, heightM: 45, estimated: true, osmId: 1 }],
+        },
+      ],
+      source: {
+        id: "copernicus_glo30",
+        name: "Copernicus DEM GLO-30",
+        kind: "DSM",
+        note: "",
+        resolutionM: 30,
+        verticalAccuracyM: 4,
+        verticalAccuracyNote: "",
+        url: "",
+        licence: "",
+      },
+      buildingSource: { name: "OSM", note: "", licence: "© OpenStreetMap contributors", url: "" },
+    };
+    const loadTerrain = vi.fn<TerrainLoader>(async () => terrain);
+    render(<SpanLineEditor map={null} tool={cableTool} storageKey="k-terrain" loadTerrain={loadTerrain} />);
+    await screen.findByText(/Copernicus DEM GLO-30/);
+    expect(loadTerrain).toHaveBeenCalledWith([[east(0), east(400)]]);
+    expect((screen.getByLabelText("Station 1 ground height") as HTMLInputElement).value).toBe("120");
+    expect((screen.getByLabelText("Station 2 ground height") as HTMLInputElement).value).toBe("125");
+    expect(screen.getAllByText("from terrain")).toHaveLength(2);
+    expect(screen.getByText(/1 without a height in OSM/)).toBeTruthy();
+    expect(screen.getByText(/within .* of the ground; at least/)).toBeTruthy();
+    // A typed height overrides the terrain until the planner goes back to it.
+    fireEvent.change(screen.getByLabelText("Station 1 ground height"), { target: { value: "200" } });
+    await waitFor(() => expect(screen.getAllByText("from terrain")).toHaveLength(1));
+    fireEvent.click(screen.getByText("Use terrain"));
+    await waitFor(() => expect(screen.getAllByText("from terrain")).toHaveLength(2));
+  });
+
+  it("puts buildings on the terrain beside them", () => {
+    const g = sectionGround(
+      {
+        lengthM: 200,
+        samples: [0, 50, 100, 150, 200].map((d) => ({
+          distM: d,
+          lon: 0,
+          lat: 0,
+          elevationM: d === 100 ? 130 : 100,
+        })),
+        buildings: [{ fromM: 90, toM: 110, heightM: 30, estimated: false, osmId: 7 }],
+      },
+      210,
+    );
+    // The DEM sample on the roof is gone; the building stands on the lowest terrain near it.
+    expect(g.some((s) => s.z_m === 130)).toBe(false);
+    const roof = g.filter((s) => s.obstacle_m === 30);
+    expect(roof.length).toBeGreaterThanOrEqual(3);
+    expect(roof.every((s) => s.z_m === 100)).toBe(true);
+    // Chainages scale to the kit's section length.
+    expect(roof[0]!.at_m).toBeCloseTo(94.5, 6);
   });
 
   it("ferry editor shows vessels and the berth check", async () => {

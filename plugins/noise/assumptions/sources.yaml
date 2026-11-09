@@ -1,0 +1,118 @@
+# Sources of the noise plugin's parameters (same format as assumptions/sources.yaml), ADR-0038.
+
+- id: end-2002
+  title: Directive 2002/49/EC relating to the assessment and management of environmental noise (Environmental Noise Directive), Annex I (indicators, periods, 4 m receiver height) and Annex VI (reporting bands)
+  publisher: European Union
+  url: https://eur-lex.europa.eu/eli/dir/2002/49/oj
+  licence: © European Union; reuse authorised under Commission Decision 2011/833/EU
+  access: free
+  retrieved: 2026-11-03
+  checked_via: none
+
+- id: cnossos-2015
+  title: Commission Directive (EU) 2015/996 establishing common noise assessment methods (CNOSSOS-EU), Annex II
+  publisher: European Union
+  url: https://eur-lex.europa.eu/eli/dir/2015/996/oj
+  licence: © European Union; reuse authorised under Commission Decision 2011/833/EU
+  access: free
+  retrieved: 2026-11-03
+  checked_via: none
+
+- id: cnossos-2021
+  title: Commission Delegated Directive (EU) 2021/1226 amending Annex II of Directive 2002/49/EC (CNOSSOS-EU), including the railway and tram squeal table
+  publisher: European Union
+  url: https://eur-lex.europa.eu/eli/dir_del/2021/1226/oj
+  licence: © European Union; reuse authorised under Commission Decision 2011/833/EU
+  access: free
+  retrieved: 2026-11-03
+  checked_via: none
+
+- id: who-noise-2018
+  title: WHO Regional Office for Europe, Environmental Noise Guidelines for the European Region (2018)
+  publisher: World Health Organization
+  url: https://www.who.int/europe/publications/i/item/9789289053563
+  licence: © WHO 2018, CC BY-NC-SA 3.0 IGO
+  access: free
+  retrieved: 2026-11-03
+  checked_via: none
+
+- id: iso-9613-1
+  title: ISO 9613-1:1993, Acoustics — Attenuation of sound during propagation outdoors — Part 1, calculation of the absorption of sound by the atmosphere
+  publisher: International Organization for Standardization
+  url: https://www.iso.org/standard/17426.html
+  licence: © ISO
+  access: paywalled
+  retrieved: 2026-11-03
+  checked_via: none
+
+- id: iso-9613-2
+  title: ISO 9613-2:1996, Acoustics — Attenuation of sound during propagation outdoors — Part 2, general method of calculation (ground effect, clause 7.3.1)
+  publisher: International Organization for Standardization
+  url: https://www.iso.org/standard/20649.html
+  licence: © ISO
+  access: paywalled
+  retrieved: 2026-11-03
+  checked_via: none
+
+- id: iso-3095
+  title: ISO 3095:2013, Acoustics — Railway applications — Measurement of noise emitted by railbound vehicles (pass-by at 7.5 m and 1.2 m)
+  publisher: International Organization for Standardization
+  url: https://www.iso.org/standard/55883.html
+  licence: © ISO
+  access: paywalled
+  retrieved: 2026-11-03
+  checked_via: none
+
+- id: tsi-noi
+  title: Commission Regulation (EU) No 1304/2014, TSI rolling stock — noise (TSI NOI), pass-by limits, as amended by (EU) 2019/774
+  publisher: European Union
+  url: https://eur-lex.europa.eu/eli/reg/2014/1304/oj
+  licence: © European Union; reuse authorised under Commission Decision 2011/833/EU
+  access: free
+  retrieved: 2026-11-03
+  checked_via: none
+
+- id: nzta-rr703
+  title: Waka Kotahi NZ Transport Agency, Research Report 703, Electric bus noise and road user safety
+  publisher: Waka Kotahi NZ Transport Agency
+  url: https://www.nzta.govt.nz/resources/research/reports/703
+  licence: © Waka Kotahi NZ Transport Agency, CC BY 4.0
+  access: free
+  retrieved: 2026-11-03
+  checked_via: none
+
+- id: noisemodelling
+  title: NoiseModelling, open-source CNOSSOS-EU implementation (Université Gustave Eiffel and Cerema), documentation and defaults
+  publisher: Université Gustave Eiffel, Cerema
+  url: https://noisemodelling.readthedocs.io/
+  licence: GPL-3.0 (software); documentation © the authors
+  access: free
+  retrieved: 2026-11-03
+  checked_via: none
+
+- id: burnaby-gondola-noise
+  title: TransLink, Burnaby Mountain Gondola noise modelling technical report (2023)
+  publisher: TransLink
+  url: https://www.translink.ca/-/media/translink/documents/plans-and-projects/rapid-transit/burnaby-mountain-gondola/business-case-engagement-2023/bmg_noise_modelling_tech_report.pdf
+  licence: © TransLink
+  access: free
+  retrieved: 2026-11-03
+  checked_via: none
+
+- id: nomeports
+  title: NoMEPorts, Good Practice Guide on Port Area Noise Mapping and Management (2008)
+  publisher: NoMEPorts project (EU LIFE)
+  url: https://www.ecoports.com/
+  licence: © the NoMEPorts partners
+  access: free
+  retrieved: 2026-11-03
+  checked_via: none
+
+- id: osm-data
+  title: OpenStreetMap buildings (`building=*` ways and multipolygons with `height` and `building:levels`), loaded through the Overpass API
+  publisher: OpenStreetMap contributors
+  url: https://www.openstreetmap.org/copyright
+  licence: Open Database License (ODbL) 1.0
+  access: free
+  retrieved: 2026-11-09
+  checked_via: none

@@ -16,6 +16,8 @@ members = [
   "crates/journey-planner-wasm",
   "crates/mode-kits",
   "crates/mode-kits-wasm",
+  "crates/noise",
+  "crates/noise-wasm",
 ]
 
 [workspace.package]

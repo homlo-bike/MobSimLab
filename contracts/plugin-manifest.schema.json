@@ -244,11 +244,18 @@
                 }
               },
               "where": {
-                "description": "Where the app offers it: live while drawing in a tool, or on demand in Analysis.",
+                "description": "Where the app offers it: live while drawing in a tool, on demand in the GIS tab (maps over the whole project), or in Analysis.",
                 "type": "array",
                 "uniqueItems": true,
                 "items": {
-                  "enum": ["street-line-tool", "railway-tool", "cable-car-tool", "ferry-tool", "analysis"]
+                  "enum": [
+                    "street-line-tool",
+                    "railway-tool",
+                    "cable-car-tool",
+                    "ferry-tool",
+                    "gis",
+                    "analysis"
+                  ]
                 }
               }
             }

@@ -583,10 +583,11 @@ pub fn view(dz: &Design) -> Value {
         );
     }
 
-    // Signals of the plan: a post on the right of the track in the direction of travel, and a
+    // Signals of the effective plan: a post on the right of the track in the direction of travel, and a
     // short arm pointing that way, so the facing reads on the map.
     let mut signal_list: Vec<Value> = Vec::new();
-    for sg in net.signals.iter().flatten() {
+    for ps in &dz.signals {
+        let sg = &ps.signal;
         let Some((p, h)) = crate::signal::locate(dz, &sg.at) else {
             continue;
         };
@@ -608,7 +609,7 @@ pub fn view(dz: &Design) -> Value {
             && dz
                 .signal_params(&sg.at)
                 .is_some_and(|p| crate::signal::system_of(p) == crate::signal::System::Cab));
-        let props = |kind: &str| json!({"kind": kind, "z": z, "ref": sg.id, "signal": sg.kind, "lineside": lineside});
+        let props = |kind: &str| json!({"kind": kind, "z": z, "ref": sg.id, "signal": sg.kind, "lineside": lineside, "auto": ps.auto});
         let (foot, head) = (p.add(right.mul(1.6)), p.add(right.mul(3.0)));
         ly.line("signals", &[foot, head], props("signal_post"));
         ly.line(
@@ -619,7 +620,7 @@ pub fn view(dz: &Design) -> Value {
         ly.point("signals", head, props("signal"));
         signal_list.push(json!({
             "id": sg.id, "kind": sg.kind, "name": sg.name, "facing": sg.facing, "at": sg.at,
-            "lineside": lineside, "lonlat": ly.ll(head),
+            "lineside": lineside, "lonlat": ly.ll(head), "auto": ps.auto, "speed_kmh": sg.speed_kmh,
         }));
     }
 
@@ -826,6 +827,7 @@ pub fn view(dz: &Design) -> Value {
                 "ramps": g.ramps.iter().map(|r| json!({"from": r.from, "to": r.to, "dh_m": r.dh, "length_m": r.length})).collect::<Vec<_>>(),
                 "levels": g.zones.iter().map(|z| json!({"from_m": z.s0, "to_m": z.s1, "level": level_name(z.level)})).collect::<Vec<_>>(),
                 "spread_m": [g.spread_start, g.spread_end],
+                "embedded": dz.doc_track(g.id).is_some_and(|t| dz.embedded(t)),
                 "speed": sp.map(|s| json!({"max_kmh": s.vmax, "time_s": s.time_s,
                     "profile": s.s.iter().zip(&s.limit).zip(&s.v).step_by((s.s.len() / 120).max(1)).map(|((a, b), c)| json!([a, b, c])).collect::<Vec<_>>()})),
                 "centre": slice(&g.centre, 0.0, g.length).iter().step_by((g.centre.len() / 400).max(1)).map(|q| ly.ll(q.p)).collect::<Vec<_>>(),
@@ -837,7 +839,7 @@ pub fn view(dz: &Design) -> Value {
         .switches
         .iter()
         .map(|s| {
-            json!({"id": s.id, "label": s.label, "element": s.element, "kind": s.kind, "length_m": s.s1 - s.s0,
+            json!({"id": s.id, "track": s.track, "label": s.label, "element": s.element, "kind": s.kind, "length_m": s.s1 - s.s0,
                    "diverging_speed_kmh": s.turnout.diverging_kmh, "crossing_ratio_n": s.turnout.n, "radius_m": s.turnout.radius,
                    "s0": s.s0, "s1": s.s1})
         })
@@ -948,7 +950,8 @@ pub fn view(dz: &Design) -> Value {
         "slips": slips,
         "slip_elements": slip_elements,
         "existing_count": existing_count,
-        "signals_planned": net.signals.is_some(),
+        "signals_edited": net.signals.as_ref().is_some_and(|l| !l.is_empty()) || !net.signals_removed.is_empty(),
+        "signals_removed": net.signals_removed.len(),
         "counts": counts,
         "bbox": bbox,
     })
