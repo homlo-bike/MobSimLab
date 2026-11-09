@@ -507,7 +507,7 @@ pub fn view(dz: &Design) -> Value {
         let (a, b) = (deck / sin, x.street_width_m / 2.0 / sin);
         let corner = |i: f64, j: f64| x.p.add(ds.mul(i * a)).add(dt.mul(j * b));
         let z = Level::Street.order();
-        let props = |kind: &str| json!({"kind": kind, "z": z, "ref": x.track, "id": x.id, "standard": x.standard});
+        let props = |kind: &str| json!({"kind": kind, "z": z, "ref": x.track, "id": x.id, "standard": x.standard, "path": x.path});
         ly.polygon(
             "level_crossings",
             &[
@@ -527,7 +527,10 @@ pub fn view(dz: &Design) -> Value {
                 &[c.add(n.mul(-half)), c.add(n.mul(half))],
                 props("stop_line"),
             );
-            if x.protection == crate::street::Protection::Barriers {
+            if matches!(
+                x.protection,
+                crate::street::Protection::Barriers | crate::street::Protection::PathGates
+            ) {
                 // A half barrier across the lane that approaches the crossing (right-hand
                 // traffic), 1 m beyond the stop line.
                 let c = x.p.add(ds.mul(k * (x.keep_clear_m - 1.0)));
@@ -895,7 +898,7 @@ pub fn view(dz: &Design) -> Value {
             json!({
                 "id": x.id, "track": x.track, "mode": x.mode, "street": x.street, "class": x.class,
                 "angle_deg": x.angle.to_degrees(), "protection": x.protection, "standard": x.standard, "special_measures": x.special_measures,
-                "bus": x.bus, "trolley_wire": x.trolley_wire, "keep_clear_m": x.keep_clear_m,
+                "bus": x.bus, "trolley_wire": x.trolley_wire, "keep_clear_m": x.keep_clear_m, "path": x.path,
                 "approach_m": x.approach_m, "lonlat": ly.ll(x.p),
             })
         })

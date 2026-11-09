@@ -142,6 +142,7 @@ fn line_angle(a: P2, b: P2) -> f64 {
 pub fn street_running(dz: &mut Design, streets: &[Street]) {
     let local: Vec<Local> = streets
         .iter()
+        .filter(|s| s.path.is_none())
         .filter(|s| s.layer == 0)
         .map(|st| {
             let pts: Vec<P2> = st

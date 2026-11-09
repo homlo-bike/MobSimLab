@@ -505,8 +505,9 @@ export function RailPanel(props: Props) {
                   {x.standard ? "●" : "▲"}
                 </span>
                 <span>
-                  {x.street || "Unnamed street"} · {Math.round(x.angle_deg)}° ·{" "}
-                  {x.protection === "barriers" ? "barriers" : "traffic signals"}
+                  {x.street || (x.path ? `Unnamed ${x.class}` : "Unnamed street")} · {Math.round(x.angle_deg)}
+                  ° · {x.path ? `${PATH_USERS[x.path]} · ` : ""}
+                  {PROTECTION[x.protection]}
                   {x.bus ? " · buses" : ""}
                   {x.trolley_wire ? " · trolleybus wire" : ""}
                   {x.standard ? "" : " · special safety measures"}
@@ -542,6 +543,17 @@ export function RailPanel(props: Props) {
     </div>
   );
 }
+
+/** Who uses a path crossing the track, for the level crossing list. */
+const PATH_USERS = { foot: "walking", cycle: "cycling", foot_cycle: "walking and cycling" } as const;
+
+/** How a level crossing is protected, for the level crossing list. */
+const PROTECTION = {
+  barriers: "barriers",
+  traffic_signals: "traffic signals",
+  path_gates: "gates",
+  marked: "marked crossing",
+} as const;
 
 const SIGNAL_KINDS: { id: SignalKind; label: string }[] = [
   { id: "main", label: "Main signal" },

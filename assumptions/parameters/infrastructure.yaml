@@ -842,6 +842,38 @@
       check: unverified
       rationale: "Amber then red for road traffic, with a clearing time for vehicles already on the crossing."
 
+- key: level_crossing.path_width_m
+  label: "Level crossings: width of a footpath or cycle path crossing the track, when OpenStreetMap has none"
+  group: Infrastructure standards
+  unit: m
+  used_by:
+    [railway design check of street-level track crossing a footpath or cycle path, rail zone of the crossing in the track topology]
+  values:
+    - context:
+        mode: "*"
+      low: 1.5
+      central: 2.5
+      high: 4.0
+      basis: educated-guess
+      sources: [rast06, mobsimlab-derivation]
+      check: unverified
+      rationale: RASt 06 asks for footways of at least 2.50 m in towns; separate cycle tracks and shared paths are usually 2.0–3.0 m. A path crossing a railway is often narrowed by gates or a maze, so 1.5 m is the low end, and a wide shared path 4 m the high end. Used only when the way has no `width` tag.
+- key: level_crossing.cycle_min_angle_deg
+  label: "Level crossings: smallest angle between track and a path that cyclists use"
+  group: Infrastructure standards
+  unit: degrees
+  used_by:
+    [railway design check of street-level track crossing a cycle path or shared path]
+  values:
+    - context:
+        mode: "*"
+      low: 45
+      central: 60
+      high: 90
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: A bicycle wheel crossing the rails at a flat angle can drop into the flangeway gap or the tram rail's groove and the rider falls; cycle guidance asks for crossings near a right angle and treats flatter than about 60° as a hazard that needs the path realigned. To be confirmed against national cycle design guidance.
 - key: level_crossing.reopen_s
   label: "Level crossings: time from the train clearing the crossing until road traffic may go again"
   group: Infrastructure standards

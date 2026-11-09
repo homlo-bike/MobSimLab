@@ -279,6 +279,25 @@ describe("railway engine (WebAssembly)", () => {
     e.dispose();
   });
 
+  it("finds footpaths and cycle paths crossing the track", async () => {
+    const e = await loadRailEngine();
+    e.addStreetTile(
+      streetTile(50.899, 50.901, { highway: "footway", name: "Mill Path", bus: "no", bicycle: "yes" }),
+    );
+    const v = e.build(lineAcross("regional_rail"), null);
+    expect(v.level_crossings[0]).toMatchObject({
+      street: "Mill Path",
+      protection: "path_gates",
+      path: "foot_cycle",
+    });
+    expect(
+      v.issues.some((i) => /Path crossing with Mill Path for people on foot and cyclists/.test(i.text)),
+    ).toBe(true);
+    const t = e.topology() as { level_crossings: { protection: string; street: { path: string | null } }[] };
+    expect(t.level_crossings[0]).toMatchObject({ protection: "path_gates", street: { path: "foot_cycle" } });
+    e.dispose();
+  });
+
   it("finds a tram running along a street, keeps it to the street's speed limit and exports it", async () => {
     const e = await loadRailEngine();
     e.addStreetTile(streetTile(50.898, 50.902, { highway: "primary", name: "High Street", lanes: "4" }));

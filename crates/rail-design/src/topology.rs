@@ -434,14 +434,18 @@ pub struct LevelCrossingStreet {
     pub bus: bool,
     /// A trolleybus wire runs along the street.
     pub trolley_wire: bool,
+    /// A footpath or cycle path and who uses it (`foot`, `cycle`, `foot_cycle`); null for a
+    /// street with road traffic.
+    pub path: Option<crate::street::PathUse>,
 }
 
-/// A street-level track crossing a street: a conflict between trains and road vehicles.
+/// A street-level track crossing a street or a path: a conflict between trains and road
+/// vehicles, or people on foot and cyclists.
 #[derive(Debug, Clone, Serialize)]
 pub struct LevelCrossingOut {
     /// Id.
     pub id: String,
-    /// `barriers` or `traffic_signals`.
+    /// `barriers` or `traffic_signals` for streets; `path_gates` or `marked` for paths.
     pub protection: crate::street::Protection,
     /// Meets the usual rules for level crossings.
     pub standard: bool,
@@ -1222,6 +1226,7 @@ pub fn topology(dz: &Design) -> Topology {
                 keep_clear_m: rd(x.keep_clear_m),
                 bus: x.bus,
                 trolley_wire: x.trolley_wire,
+                path: x.path,
             },
         })
         .collect();

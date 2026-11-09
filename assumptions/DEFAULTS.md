@@ -1009,6 +1009,22 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 |---|---|---|---|---|---|---|---|
 | all | 6 | 10 | 15 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Amber then red for road traffic, with a clearing time for vehicles already on the crossing. |
 
+### Level crossings: width of a footpath or cycle path crossing the track, when OpenStreetMap has none
+
+`level_crossing.path_width_m` · unit: m · used by: railway design check of street-level track crossing a footpath or cycle path, rail zone of the crossing in the track topology
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 1.5 | 2.5 | 4.0 | educated-guess | unverified | [rast06](#src-rast06), [mobsimlab-derivation](#src-mobsimlab-derivation) | RASt 06 asks for footways of at least 2.50 m in towns; separate cycle tracks and shared paths are usually 2.0–3.0 m. A path crossing a railway is often narrowed by gates or a maze, so 1.5 m is the low end, and a wide shared path 4 m the high end. Used only when the way has no `width` tag. |
+
+### Level crossings: smallest angle between track and a path that cyclists use
+
+`level_crossing.cycle_min_angle_deg` · unit: degrees · used by: railway design check of street-level track crossing a cycle path or shared path
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 45 | 60 | 90 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | A bicycle wheel crossing the rails at a flat angle can drop into the flangeway gap or the tram rail's groove and the rider falls; cycle guidance asks for crossings near a right angle and treats flatter than about 60° as a hazard that needs the path realigned. To be confirmed against national cycle design guidance. |
+
 ### Level crossings: time from the train clearing the crossing until road traffic may go again
 
 `level_crossing.reopen_s` · unit: s · used by: road closure per train in the track topology, expected wait of buses at level crossings in street line running times
