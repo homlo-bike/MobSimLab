@@ -63,6 +63,24 @@ Where a track changes level, the tool adds a ramp next to the deeper or higher e
 
 Double track spreads smoothly to the station's track spacing where it meets a station.
 
+## Heights and gradients
+
+Once a drawing has tracks or stations, the tool loads the ground heights under them. They come from Copernicus GLO-30, the same source the cable car tool uses. Every track then gets a vertical profile:
+
+- The ground along the track is smoothed over 100 m. GLO-30 is a surface model, so this removes buildings and trees the track passes.
+- The rail top is the ground plus the height of the track's level: street level, elevated +1 or +2, or underground −1 or −2. Along a ramp it changes from one level to the other. The gradient follows from the rail top.
+- **Stations are always level.** Their rails sit at the average ground height under the station, plus the station's level. A track that starts or ends at a station, or at a switch on another track, meets that height exactly. It takes up the difference over a length that uses half the mode's maximum gradient.
+
+Select a track to see its profile: the rail top and the ground, the height range, and the steepest gradient against the mode's maximum. Select a station to see its rail height and the ground along it. The track topology for operations carries the gradients, so running times include them.
+
+The checks report:
+
+- **Too steep:** track steeper than the mode's maximum gradient (warning). This is either because of the ground, or because a level station or switch has to be met close by.
+- **Off the ground:** street-level track more than 1 m above or below the ground where it meets a level station or switch (warning). The street has to be regraded there.
+- **Station on a slope:** a street-level station where the ground falls more than 2 m along it (warning). Every station also gets a note with its height.
+
+Heights are accurate to about ±4 m. Without heights, because they have not loaded or the area is outside coverage, tracks keep the flat-ground ramps.
+
 ## Switches and crossings
 
 - Switches come from the catalogue for the mode (for example tram 1:5 R50, mainline 1:9 R190, 1:12 R500, high-speed 1:26.5 R2500). Change the element, the side, the direction or the mirror image in the panel.
@@ -162,3 +180,4 @@ The panel lists errors and warnings as you draw. Click one to go to it. Among th
 - a double-track terminus with no crossover
 - storage tracks shorter than one train
 - open track ends and lost connections
+- gradients steeper than the mode's maximum, street-level track off the ground, and street-level stations on a slope (with terrain heights)

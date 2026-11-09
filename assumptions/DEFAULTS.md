@@ -1025,6 +1025,30 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 |---|---|---|---|---|---|---|---|
 | all | 45 | 60 | 90 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | A bicycle wheel crossing the rails at a flat angle can drop into the flangeway gap or the tram rail's groove and the rider falls; cycle guidance asks for crossings near a right angle and treats flatter than about 60° as a hazard that needs the path realigned. To be confirmed against national cycle design guidance. |
 
+### Terrain: window over which the ground under a track is smoothed
+
+`terrain.smoothing_window_m` · unit: m · used by: railway design vertical profile of each track from the terrain heights
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 60 | 100 | 200 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | The terrain heights come from Copernicus GLO-30, a surface model on a 30 m grid that includes buildings and trees, with a few metres of vertical noise. A running median over 100 m takes out anything narrower than about 50 m (a building or a row of trees the line passes), and a running mean over the same window the remaining noise. The window is short against the length of a vertical curve (several hundred metres at 2,000 m radius), so real changes of slope stay in the profile. A wider window hides more noise and more of the real ground. |
+
+### Terrain: share of the maximum gradient a track uses to meet a level station or a switch
+
+`terrain.tie_in_gradient_share` · unit: share · used by: railway design vertical profile where a track meets a level station or a switch
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.25 | 0.5 | 1.0 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Stations are built level, so a track leaving one on sloping ground has to take up the difference between the station's height and the ground beside it. Using half the mode's maximum gradient for this leaves the other half for the slope of the ground the change runs over, so a tie-in alone does not push the track past the maximum. A larger share gives shorter tie-ins but steeper track next to the station. |
+
+### Terrain: largest height difference between street-level track and the ground
+
+`terrain.street_level_tolerance_m` · unit: m · used by: railway design check of street-level track and stations on sloping ground
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.3 | 1.0 | 2.0 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Street-level track sits in or next to the road surface. Up to about a metre of difference can be taken up by regrading the street and the footways beside it (a kerb is 0.1–0.2 m, a ramp at 6 % covers a metre over about 17 m). Beyond that the street, its junctions and its entrances need to be rebuilt, which the planner should see. Also used for a street-level station, where the ground may fall twice this along the platforms. |
+
 ### Level crossings: time from the train clearing the crossing until road traffic may go again
 
 `level_crossing.reopen_s` · unit: s · used by: road closure per train in the track topology, expected wait of buses at level crossings in street line running times

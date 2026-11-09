@@ -96,6 +96,9 @@ pub struct Design {
     pub speeds: BTreeMap<u32, SpeedProfile>,
     /// All findings, errors first.
     pub issues: Vec<Issue>,
+    /// Heights from the terrain: the tracks' vertical profiles and the stations' levels (empty
+    /// without terrain).
+    pub heights: crate::terrain::Heights,
     /// The effective signal plan: generated from this design, with the planner's changes.
     pub signals: Vec<crate::signal::PlanSignal>,
     /// The document it was built from.
@@ -284,6 +287,26 @@ pub fn build_with_values(
     railways: &[crate::existing::ExistingRail],
     values: &BTreeMap<String, f64>,
 ) -> Design {
+    build_with_terrain(
+        net,
+        draft,
+        streets,
+        railways,
+        values,
+        &crate::terrain::Terrain::new(),
+    )
+}
+
+/// Purpose: as [`build_with_values`], with ground heights: every track gets a vertical profile
+/// from the terrain, stations are level and the gradients are checked (pure).
+pub fn build_with_terrain(
+    net: &Network,
+    draft: Option<u32>,
+    streets: &[crate::street::Street],
+    railways: &[crate::existing::ExistingRail],
+    values: &BTreeMap<String, f64>,
+    terrain: &crate::terrain::Terrain,
+) -> Design {
     let d = defaults();
     let params = net
         .params
@@ -408,6 +431,7 @@ pub fn build_with_values(
         speed_caps: BTreeMap::new(),
         speeds: BTreeMap::new(),
         issues: switch_errors,
+        heights: Default::default(),
         signals: vec![],
         network: net.clone(),
     };
@@ -421,6 +445,7 @@ pub fn build_with_values(
     // crossings' approach distances use.
     crate::street_running::street_running(&mut design, streets);
     crate::street::level_crossings(&mut design, streets);
+    crate::terrain::profiles(&mut design, terrain);
     crate::signal::check(&mut design);
     // Signals follow the design: generated on every build, with the planner's changes on top.
     let t = crate::topology::topology(&design);

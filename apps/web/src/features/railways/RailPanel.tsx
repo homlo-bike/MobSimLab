@@ -6,6 +6,7 @@ import type {
   Level,
   LonLat,
   Network,
+  TrackElevation,
   Power,
   RailMode,
   RailView,
@@ -728,6 +729,12 @@ function StationInspector({ st, doc, view, actions: a }: Props & { st: Station }
           × {fmtM(sv.box_width_m)}
         </p>
       )}
+      {sv?.height && (
+        <p className="text-xs text-slate-600">
+          Level, rails at {sv.height.rail_m.toFixed(1)} m above sea level · ground along it{" "}
+          {sv.height.ground_min_m.toFixed(1)}–{sv.height.ground_max_m.toFixed(1)} m
+        </p>
+      )}
       <Segmented
         label="Station level"
         value={st.level}
@@ -909,6 +916,7 @@ function TrackInspector({ t, doc, view, sel, actions: a }: Props & { t: Track })
           </tbody>
         </table>
       )}
+      {tv?.elevation && <ElevationProfile e={tv.elevation} />}
       {tv && tv.ramps.length > 0 && (
         <ul className="text-xs text-slate-600">
           {tv.ramps.map((r, i) => (
@@ -923,6 +931,52 @@ function TrackInspector({ t, doc, view, sel, actions: a }: Props & { t: Track })
       </p>
       <Remove what="track" onClick={() => a.remove(t.id)} />
     </Section>
+  );
+}
+
+/**
+ * Purpose: a track's vertical profile from the terrain: the ground and the rail top along the track,
+ * with its height range and steepest gradient.
+ */
+function ElevationProfile({ e }: { e: TrackElevation }) {
+  const pts = e.profile;
+  if (pts.length < 2) return null;
+  const len = pts[pts.length - 1]![0] || 1;
+  const zs = pts.flatMap((p) => [p[1], p[2]]);
+  const lo = Math.min(...zs);
+  const hi = Math.max(...zs, lo + 1);
+  const W = 260;
+  const H = 70;
+  const line = (k: 1 | 2) =>
+    pts
+      .map(
+        (p, i) =>
+          `${i ? "L" : "M"}${((p[0] / len) * W).toFixed(1)},${(H - ((p[k] - lo) / (hi - lo)) * H).toFixed(1)}`,
+      )
+      .join(" ");
+  const steep = Math.abs(e.steepest_permille);
+  return (
+    <div className="space-y-1">
+      <p className="text-xs text-slate-600">
+        Rails {e.rail_min_m.toFixed(1)}–{e.rail_max_m.toFixed(1)} m above sea level · steepest{" "}
+        <span className={steep > e.max_permille + 0.5 ? "font-semibold text-red-700" : undefined}>
+          {steep.toFixed(1)} ‰
+        </span>{" "}
+        (max {e.max_permille} ‰)
+      </p>
+      <svg
+        viewBox={`0 0 ${W} ${H}`}
+        className="h-[70px] w-full rounded bg-slate-50"
+        role="img"
+        aria-label="Vertical profile: ground and rail top along the track"
+      >
+        <path d={line(1)} fill="none" stroke="#a16207" strokeWidth={1} strokeDasharray="3 2" />
+        <path d={line(2)} fill="none" stroke="#1e293b" strokeWidth={1.5} />
+      </svg>
+      <p className="text-[11px] text-slate-500">
+        Solid: rail top. Dashed: ground (Copernicus GLO-30, smoothed). Heights from a surface model, ±4 m.
+      </p>
+    </div>
   );
 }
 
