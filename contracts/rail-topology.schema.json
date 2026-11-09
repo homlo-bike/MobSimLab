@@ -459,8 +459,8 @@
           "description": "lc{track}-{OSM way}-{n}."
         },
         "protection": {
-          "description": "barriers: ballasted railway track, barriers and lights; traffic_signals: tram track embedded in the street.",
-          "enum": ["barriers", "traffic_signals"]
+          "description": "Streets: barriers (ballasted railway track, barriers and lights) or traffic_signals (tram track embedded in the street). Paths: path_gates (lights with pedestrian gates or a maze) or marked (tram or light rail: a marked crossing with warning signs).",
+          "enum": ["barriers", "traffic_signals", "path_gates", "marked"]
         },
         "standard": { "type": "boolean", "description": "Meets the usual rules for level crossings." },
         "special_measures": {
@@ -538,7 +538,17 @@
         "street": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["way", "name", "class", "offset_m", "width_m", "keep_clear_m", "bus", "trolley_wire"],
+          "required": [
+            "way",
+            "name",
+            "class",
+            "offset_m",
+            "width_m",
+            "keep_clear_m",
+            "bus",
+            "trolley_wire",
+            "path"
+          ],
           "properties": {
             "way": { "type": "integer", "description": "OSM way id." },
             "name": { "type": "string" },
@@ -553,7 +563,11 @@
               "description": "From the crossing point to each stop line along the street. Road vehicles wait behind it and never stop between the stop lines."
             },
             "bus": { "type": "boolean" },
-            "trolley_wire": { "type": "boolean" }
+            "trolley_wire": { "type": "boolean" },
+            "path": {
+              "enum": ["foot", "cycle", "foot_cycle", null],
+              "description": "A footpath or cycle path (OSM footway, cycleway, path, bridleway) and who uses it; null for a street with road traffic."
+            }
           }
         }
       }

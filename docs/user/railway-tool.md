@@ -76,16 +76,18 @@ Double track spreads smoothly to the station's track spacing where it meets a st
 - Further out, each track is one line, and below zoom 12.5 each alignment is one line.
 - Tracks on the same level merge into one piece of trackwork. Lower levels are drawn under higher ones and paler.
 
-## Level crossings with streets
+## Level crossings with streets and paths
 
-When the map is zoomed in to zoom 13 or closer, the tool loads the streets on screen. These are the same OpenStreetMap streets the street line tool uses. Wherever street-level track crosses a street used by road vehicles, it makes a **level crossing**. The panel lists them under **Level crossings**; click one to go to it.
+When the map is zoomed in to zoom 13 or closer, the tool loads the streets on screen. These are the same OpenStreetMap streets the street line tool uses. Wherever street-level track crosses a street used by road vehicles, or a footpath or cycle path, it makes a **level crossing**. The panel lists them under **Level crossings**; click one to go to it.
 
 - Railway track gets barriers, and tram track embedded in the street gets traffic signals. When zoomed in, the street surface covers the sleepers, the rails stay on top, and the stop lines and barriers are drawn on the street.
 - Buses, trolleybuses, depot runs and cars wait at the stop lines. They never stop on the track.
+- Footpaths, cycle paths, shared paths and bridleways (OpenStreetMap `footway`, `cycleway`, `path`, `bridleway`) crossing railway track get lights with pedestrian gates or a maze. Over tram or light rail track they get a marked crossing with warning signs. The list shows who uses the path (walking, cycling or both, from the path's `foot` and `bicycle` tags). A path without a width in OpenStreetMap is taken as 2.5 m wide.
 - A street on a bridge or in a tunnel, or a track below or above street level, is not a level crossing. A tram running along a street is not crossing it.
 - Warnings for crossings outside the usual rules: a metro or high-speed line crossing a street, a third rail, a line speed above 160 km/h, or a motorway. They can be built, but only with special safety measures, which the warning names: full barriers, obstacle detection, train protection that stops trains while the crossing is not clear, or a gap in the third rail. The panel marks these crossings. Usually a bridge or underpass is the better answer.
 - Other warnings:
   - The street crosses at an angle flatter than 45°.
+  - A path that cyclists use crosses at an angle flatter than 60°: a bicycle wheel can drop into the gap beside the rail.
   - A trolleybus wire crosses the railway's overhead line. A tram line needs an insulated wire crossing. On a 15 or 25 kV main line, trolleybuses cross on battery.
 
 Where streets did not load (for example, while signed out), the panel says so and those crossings are not checked.

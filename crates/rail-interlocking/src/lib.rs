@@ -310,7 +310,9 @@ impl<'m> Interlocking<'m> {
                 trains: BTreeSet::new(),
                 special: !lc.spec.special_measures.is_empty(),
                 road_clear: true,
-                closing_s: if lc.spec.protection == "barriers" {
+                // Barriers and pedestrian gates take the barrier time to close; traffic
+                // signals and marked path crossings the signal time.
+                closing_s: if matches!(lc.spec.protection.as_str(), "barriers" | "path_gates") {
                     p.barrier_closing_s
                 } else {
                     p.signal_closing_s
