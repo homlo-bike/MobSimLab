@@ -1,27 +1,12 @@
+import type { MessageKey } from "../../i18n/messages";
 import type { Mode } from "./types";
 
 /** Display settings per street mode (colours as in the line and track drawing mockup). */
-export const MODES: Record<Mode, { label: string; color: string; profile: string }> = {
-  bus: {
-    label: "Bus",
-    color: "#d2392c",
-    profile: "Routed on the bus road profile: one-way streets, bus lanes, access rules, vehicle limits.",
-  },
-  brt: {
-    label: "BRT",
-    color: "#a3358c",
-    profile: "Prefers bus lanes and busways; may use guided busways.",
-  },
-  trolleybus: {
-    label: "Trolleybus",
-    color: "#1e8a4f",
-    profile: "Follows the overhead wire; stretches without wire need battery range.",
-  },
-  intercity_bus: {
-    label: "Intercity bus",
-    color: "#cf7f00",
-    profile: "May use motorways; stops can be at bus stations.",
-  },
+export const MODES: Record<Mode, { label: MessageKey; color: string; profile: MessageKey }> = {
+  bus: { label: "mode.bus", color: "#d2392c", profile: "street.profile.bus" },
+  brt: { label: "mode.brt", color: "#a3358c", profile: "street.profile.brt" },
+  trolleybus: { label: "mode.trolleybus", color: "#1e8a4f", profile: "street.profile.trolleybus" },
+  intercity_bus: { label: "mode.intercity_bus", color: "#cf7f00", profile: "street.profile.intercity_bus" },
 };
 
 export const MODE_ORDER: Mode[] = ["bus", "brt", "trolleybus", "intercity_bus"];

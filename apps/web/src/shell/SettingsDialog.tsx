@@ -21,7 +21,7 @@ function Toggle({ label, on, onChange }: { label: string; on: boolean; onChange:
         className={`relative h-7 w-12 shrink-0 rounded-full transition-colors ${on ? "bg-blue-700" : "bg-slate-300"}`}
       >
         <span
-          className={`absolute top-[3px] h-[22px] w-[22px] rounded-full bg-white shadow transition-all ${on ? "left-[23px]" : "left-[3px]"}`}
+          className={`absolute top-[3px] h-[22px] w-[22px] rounded-full bg-white shadow transition-all ${on ? "start-[23px]" : "start-[3px]"}`}
         />
       </button>
     </label>
@@ -57,7 +57,7 @@ export function SettingsDialog({
   if (picking)
     return (
       <Dialog title={t("language.title")} onClose={onClose}>
-        <button type="button" className="btn btn-ghost -ml-2 mb-3" onClick={() => setPicking(false)}>
+        <button type="button" className="btn btn-ghost -ms-2 mb-3" onClick={() => setPicking(false)}>
           <BackIcon size={18} />
           {t("settings.back")}
         </button>
@@ -92,7 +92,7 @@ export function SettingsDialog({
             </div>
             <button
               type="button"
-              className={`${row} w-full text-left hover:bg-slate-50`}
+              className={`${row} w-full text-start hover:bg-slate-50`}
               onClick={() => setPicking(true)}
             >
               <span className="flex-1">{t("settings.language")}</span>

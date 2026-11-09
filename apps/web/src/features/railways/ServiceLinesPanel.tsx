@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { type Translate, useI18n } from "../../i18n/i18n";
 import { fmtM, fmtTime } from "./modes";
 import { Num, Row, Section } from "./RailPanel";
 import {
@@ -37,11 +38,11 @@ interface Props {
 const field = "rounded border border-slate-300 bg-slate-50 px-2 py-1";
 
 /** Purpose: "every 4 min, 8 min off-peak". */
-function headways(l: ServiceLine): string {
+function headways(t: Translate, l: ServiceLine): string {
   const f = (m: number) => `${Math.round(m * 10) / 10} min`;
   return l.peak_headway_min === l.offpeak_headway_min
-    ? `every ${f(l.peak_headway_min)}`
-    : `every ${f(l.peak_headway_min)} in the peaks, ${f(l.offpeak_headway_min)} off-peak`;
+    ? t("rail.line.every", { every: f(l.peak_headway_min) })
+    : t("rail.line.everyPeak", { peak: f(l.peak_headway_min), offpeak: f(l.offpeak_headway_min) });
 }
 
 /**
@@ -61,9 +62,10 @@ export function ServiceLinesPanel({
   newLine,
   show,
 }: Props) {
+  const { t, tn } = useI18n();
   const lines = doc.lines ?? [];
   const [open, setOpen] = useState<string | null>(null);
-  const name = (id: number) => doc.stations.find((s) => s.id === id)?.name ?? `Station ${id}`;
+  const name = (id: number) => doc.stations.find((s) => s.id === id)?.name ?? t("rail.stationN", { id });
   const ready = lines.filter((l) => !lineProblem(doc, l));
   const report = (id: string) => publication?.result?.lines.find((r) => r.id === id) ?? null;
   const trips = publication?.result?.timetable.trips.length ?? 0;
@@ -74,12 +76,8 @@ export function ServiceLinesPanel({
   }, [picking]);
 
   return (
-    <Section title={`Service lines · ${lines.length}`}>
-      <p className="text-xs text-slate-600">
-        The lines trains run on this track. Create one with the Create service line tool: click its stations
-        in order. Then choose the train and headways, and publish to plan the day&apos;s timetable on the
-        drawn track and ride the trains in the journey planner.
-      </p>
+    <Section title={`${t("rail.line.title")} · ${lines.length}`}>
+      <p className="text-xs text-slate-600">{t("rail.line.intro")}</p>
       <ul className="flex flex-col gap-1">
         {lines.map((l) => {
           const r = report(l.id);
@@ -93,7 +91,7 @@ export function ServiceLinesPanel({
                   setOpen(open === l.id ? null : l.id);
                   if (picking && picking !== l.id) setPicking(null);
                 }}
-                className="flex w-full items-start gap-2 px-2 py-1.5 text-left hover:bg-slate-50"
+                className="flex w-full items-start gap-2 px-2 py-1.5 text-start hover:bg-slate-50"
               >
                 <span
                   className="mt-0.5 rounded px-1.5 text-xs font-semibold text-white"
@@ -105,11 +103,11 @@ export function ServiceLinesPanel({
                   <span className="block truncate">
                     {l.stations.length >= 2
                       ? `${name(l.stations[0]!)} – ${name(l.stations[l.stations.length - 1]!)}`
-                      : "No stops yet"}
+                      : t("rail.line.noStops")}
                   </span>
                   <span className="block text-xs text-slate-600">
-                    {problem ?? `${l.stations.length} stops · ${headways(l)}`}
-                    {r && !publication?.stale ? ` · ${r.trips} trips` : ""}
+                    {problem ? t(problem) : `${tn("rail.stops", l.stations.length)} · ${headways(t, l)}`}
+                    {r && !publication?.stale ? ` · ${tn("rail.line.trips", r.trips)}` : ""}
                   </span>
                 </span>
               </button>
@@ -140,7 +138,7 @@ export function ServiceLinesPanel({
           onClick={newLine}
           className="flex-1 rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
         >
-          New service line
+          {t("rail.line.new")}
         </button>
         <button
           type="button"
@@ -148,24 +146,29 @@ export function ServiceLinesPanel({
           disabled={ready.length === 0 || view.counts.errors > 0}
           className="flex-1 rounded bg-emerald-800 px-2 py-1 text-white disabled:opacity-40"
         >
-          {publication?.result && !publication.stale ? "Publish again" : "Publish timetable"}
+          {publication?.result && !publication.stale ? t("rail.line.publishAgain") : t("rail.line.publish")}
         </button>
       </div>
       {view.counts.errors > 0 && lines.length > 0 && (
-        <p className="text-xs text-amber-800">Fix the errors under Checks before publishing.</p>
+        <p className="text-xs text-amber-800">{t("rail.line.fixFirst")}</p>
       )}
       {publication?.error && <p className="text-xs text-red-700">{publication.error}</p>}
       {publication?.result && (
         <p className="text-xs text-slate-600" data-testid="lines-published">
           {publication.stale
-            ? "The drawing changed since publishing. Publish again to update the journey planner."
-            : `Published ${publication.result.lines.length} line${publication.result.lines.length === 1 ? "" : "s"} · ${trips} trips. Ride them in Simulator → Journey planner.`}
+            ? t("rail.line.stale")
+            : t("rail.line.published", {
+                lines: tn("rail.line.lines", publication.result.lines.length),
+                trips: tn("rail.line.trips", trips),
+              })}
         </p>
       )}
       {publication?.result && !publication.stale && publication.result.notes.length > 0 && (
         <details className="text-xs text-slate-600">
-          <summary>Notes · {publication.result.notes.length}</summary>
-          <ul className="list-disc pl-4">
+          <summary>
+            {t("rail.line.notes")} · {publication.result.notes.length}
+          </summary>
+          <ul className="list-disc ps-4">
             {publication.result.notes.map((n, i) => (
               <li key={i}>{n}</li>
             ))}
@@ -197,10 +200,11 @@ function LineEditor({
   show: (at: LonLat | null, ref: number | null) => void;
   report: ServicePublication["lines"][number] | null;
 }) {
+  const { t, tn } = useI18n();
   const mode = lineMode(doc, l);
   const trains = trainsFor(mode);
   const train = trainById(l.vehicle);
-  const name = (id: number) => doc.stations.find((s) => s.id === id)?.name ?? `Station ${id}`;
+  const name = (id: number) => doc.stations.find((s) => s.id === id)?.name ?? t("rail.stationN", { id });
   const lonlat = (id: number) => view.stations.find((s) => s.id === id)?.lonlat ?? null;
   const length = train ? train.length_m * l.units : 0;
 
@@ -208,14 +212,14 @@ function LineEditor({
     <div className="flex flex-col gap-2 border-t border-slate-200 p-2">
       <div className="flex gap-2">
         <input
-          aria-label="Line name"
+          aria-label={t("rail.line.name")}
           value={l.name}
           onChange={(e) => set((x) => ({ ...x, name: e.target.value }))}
           className={`${field} min-w-0 flex-1`}
         />
         <input
           type="color"
-          aria-label="Line colour"
+          aria-label={t("rail.line.colour")}
           value={l.color}
           onChange={(e) => set((x) => ({ ...x, color: e.target.value }))}
           className="h-8 w-10 rounded border border-slate-300"
@@ -223,36 +227,31 @@ function LineEditor({
       </div>
 
       <div className="flex items-center justify-between">
-        <span className="text-xs font-semibold text-slate-600">Stops</span>
+        <span className="text-xs font-semibold text-slate-600">{t("rail.line.stops")}</span>
         <button
           type="button"
           aria-pressed={picking}
           onClick={() => setPicking(!picking)}
           className={`rounded border px-2 py-0.5 text-xs ${picking ? "border-emerald-800 bg-emerald-800 text-white" : "border-slate-300 hover:bg-slate-100"}`}
         >
-          {picking ? "Done" : "Add stops on the map"}
+          {picking ? t("common.done") : t("rail.line.addStops")}
         </button>
       </div>
-      {picking && (
-        <p className="text-xs text-slate-600">
-          Click the next station on the map. Each one must be reachable on track from the stop before. Enter
-          or Esc finishes.
-        </p>
-      )}
-      <ol className="flex flex-col gap-0.5" aria-label="Stops">
+      {picking && <p className="text-xs text-slate-600">{t("rail.line.pickHint")}</p>}
+      <ol className="flex flex-col gap-0.5" aria-label={t("rail.line.stops")}>
         {l.stations.map((id, i) => (
           <li key={id} className="flex items-center gap-1">
-            <span className="w-5 text-right text-xs text-slate-500">{i + 1}</span>
+            <span className="w-5 text-end text-xs text-slate-500">{i + 1}</span>
             <button
               type="button"
               onClick={() => show(lonlat(id), id)}
-              className="min-w-0 flex-1 truncate rounded px-1 text-left hover:bg-slate-100"
+              className="min-w-0 flex-1 truncate rounded px-1 text-start hover:bg-slate-100"
             >
               {name(id)}
             </button>
             <button
               type="button"
-              aria-label={`Move ${name(id)} earlier`}
+              aria-label={t("rail.line.earlier", { name: name(id) })}
               disabled={i === 0}
               onClick={() => set((x) => moveStop(x, i, -1))}
               className="rounded px-1 text-slate-600 hover:bg-slate-100 disabled:opacity-30"
@@ -261,7 +260,7 @@ function LineEditor({
             </button>
             <button
               type="button"
-              aria-label={`Move ${name(id)} later`}
+              aria-label={t("rail.line.later", { name: name(id) })}
               disabled={i === l.stations.length - 1}
               onClick={() => set((x) => moveStop(x, i, 1))}
               className="rounded px-1 text-slate-600 hover:bg-slate-100 disabled:opacity-30"
@@ -270,7 +269,7 @@ function LineEditor({
             </button>
             <button
               type="button"
-              aria-label={`Remove ${name(id)}`}
+              aria-label={t("rail.line.remove", { name: name(id) })}
               onClick={() => set((x) => ({ ...x, stations: x.stations.filter((s) => s !== id) }))}
               className="rounded px-1 text-red-700 hover:bg-red-50"
             >
@@ -279,24 +278,24 @@ function LineEditor({
           </li>
         ))}
       </ol>
-      <Row label="Train">
+      <Row label={t("rail.line.train")}>
         <select
-          aria-label="Train"
+          aria-label={t("rail.line.train")}
           value={l.vehicle}
           onChange={(e) => set((x) => ({ ...x, vehicle: e.target.value }))}
           className={`${field} min-w-0 max-w-56`}
         >
-          {!train && <option value="">Choose a train…</option>}
-          {trains.map((t) => (
-            <option key={t.id} value={t.id}>
-              {t.name}
+          {!train && <option value="">{t("rail.line.chooseTrain")}</option>}
+          {trains.map((tr) => (
+            <option key={tr.id} value={tr.id}>
+              {tr.name}
             </option>
           ))}
         </select>
       </Row>
-      <Row label="Units coupled">
+      <Row label={t("rail.line.units")}>
         <Num
-          label="Units coupled"
+          label={t("rail.line.units")}
           unit=""
           min={1}
           value={l.units}
@@ -305,28 +304,31 @@ function LineEditor({
       </Row>
       {train && (
         <p className="text-xs text-slate-600" data-testid="train-length">
-          Train length {fmtM(length)} · {Math.round(train.top_speed_kmh)} km/h ·{" "}
-          {Math.round(train.capacity * l.units)} places
+          {t("rail.line.trainFacts", {
+            length: fmtM(length),
+            speed: Math.round(train.top_speed_kmh),
+            places: Math.round(train.capacity * l.units),
+          })}
         </p>
       )}
 
-      <Row label="First departure">
+      <Row label={t("rail.line.first")}>
         <TimeInput
-          label="First departure"
+          label={t("rail.line.first")}
           value={l.first_min}
           onChange={(v) => set((x) => ({ ...x, first_min: v }))}
         />
       </Row>
-      <Row label="Last departure">
+      <Row label={t("rail.line.last")}>
         <TimeInput
-          label="Last departure"
+          label={t("rail.line.last")}
           value={l.last_min}
           onChange={(v) => set((x) => ({ ...x, last_min: v }))}
         />
       </Row>
-      <Row label="Every, in the peaks">
+      <Row label={t("rail.line.everyPeaks")}>
         <Num
-          label="Peak headway"
+          label={t("rail.line.peakHeadway")}
           unit="min"
           min={1}
           step={0.5}
@@ -334,9 +336,9 @@ function LineEditor({
           onChange={(v) => set((x) => ({ ...x, peak_headway_min: v }))}
         />
       </Row>
-      <Row label="Every, off-peak">
+      <Row label={t("rail.line.everyOffpeak")}>
         <Num
-          label="Off-peak headway"
+          label={t("rail.line.offpeakHeadway")}
           unit="min"
           min={1}
           step={0.5}
@@ -344,20 +346,20 @@ function LineEditor({
           onChange={(v) => set((x) => ({ ...x, offpeak_headway_min: v }))}
         />
       </Row>
-      <p className="text-xs text-slate-500">Peaks 07:00–09:00 and 16:00–19:00.</p>
+      <p className="text-xs text-slate-500">{t("rail.line.peaks")}</p>
 
       {report && (
         <div className="rounded bg-slate-100 p-2 text-xs" data-testid="line-report">
           <p>
-            {report.trips} trips · {report.trains} train{report.trains === 1 ? "" : "s"}
+            {tn("rail.line.trips", report.trips)} · {tn("rail.line.trains", report.trains)}
             {report.outbound_s !== null && l.stations.length >= 2
               ? ` · ${name(l.stations[0]!)} → ${name(l.stations[l.stations.length - 1]!)} ${fmtTime(report.outbound_s)}`
               : ""}
           </p>
           {report.issues.length > 0 && (
-            <ul className="mt-1 list-disc pl-4 text-amber-800">
-              {report.issues.map((t, i) => (
-                <li key={i}>{t}</li>
+            <ul className="mt-1 list-disc ps-4 text-amber-800">
+              {report.issues.map((text, i) => (
+                <li key={i}>{text}</li>
               ))}
             </ul>
           )}
@@ -369,7 +371,7 @@ function LineEditor({
         onClick={remove}
         className="rounded border border-red-300 px-2 py-1 text-red-700 hover:bg-red-50"
       >
-        Delete line
+        {t("rail.line.delete")}
       </button>
     </div>
   );
@@ -397,7 +399,7 @@ function TimeInput({
         if (v !== null) onChange(v);
       }}
       onBlur={() => setText(null)}
-      className="w-20 rounded border border-slate-300 px-1 py-0.5 text-right"
+      className="w-20 rounded border border-slate-300 px-1 py-0.5 text-end"
     />
   );
 }

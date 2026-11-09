@@ -5,6 +5,22 @@ import { anchorOf, Popover } from "./Popover";
 
 const nativeName = (tag: string) => LANGUAGES.find((l) => l.tag === tag)?.native ?? tag;
 
+/** Where people can correct and add translations: the message files in the repository. */
+export const TRANSLATIONS_URL = "https://github.com/homlo-bike/MobSimLab/tree/main/apps/web/src/i18n";
+
+/** Purpose: the note that translations are machine-made, with a link to improve them on GitHub. */
+export function TranslationNote({ className = "" }: { className?: string }) {
+  const { t } = useI18n();
+  return (
+    <p className={`text-xs text-slate-500 ${className}`}>
+      {t("language.disclaimer")}{" "}
+      <a className="text-blue-700 underline" href={TRANSLATIONS_URL} target="_blank" rel="noreferrer">
+        {t("language.improve")}
+      </a>
+    </p>
+  );
+}
+
 /**
  * Compact language menu for the sign-in page: shows the current language and whether it comes from the
  * browser, and lists "Same as this device" plus each language.
@@ -56,6 +72,8 @@ export function LanguageMenu() {
               {l.native}
             </button>
           ))}
+          <hr className="my-1.5 border-slate-200" />
+          <TranslationNote className="max-w-64 px-3 py-1" />
         </Popover>
       )}
     </>
@@ -83,7 +101,7 @@ export function LanguageList({ onPick }: { onPick?: (c: LanguageChoice) => void 
       l.tag === needle,
   );
   const row = (on: boolean) =>
-    `flex min-h-14 w-full items-center gap-3 border-b border-slate-200 bg-white px-4 text-left last:border-b-0 hover:bg-slate-50 ${on ? "font-semibold" : ""}`;
+    `flex min-h-14 w-full items-center gap-3 border-b border-slate-200 bg-white px-4 text-start last:border-b-0 hover:bg-slate-50 ${on ? "font-semibold" : ""}`;
   const radio = (on: boolean) =>
     `h-[22px] w-[22px] shrink-0 rounded-full ${on ? "border-[7px] border-blue-700" : "border-2 border-slate-400"}`;
   return (
@@ -148,6 +166,7 @@ export function LanguageList({ onPick }: { onPick?: (c: LanguageChoice) => void 
         {shown.length === 0 && <p className="px-4 py-3 text-sm text-slate-500">{t("language.none")}</p>}
       </div>
       <p className="mx-4 mt-2.5 text-xs text-slate-500">{t("language.savedNote")}</p>
+      <TranslationNote className="mx-4 mt-2.5" />
     </div>
   );
 }

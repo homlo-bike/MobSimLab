@@ -1,3 +1,4 @@
+import { editorsFr } from "./editors/fr";
 import type { Messages } from "./en";
 
 /** Français. */
@@ -86,6 +87,9 @@ export const fr: Messages = {
   "language.fixed": "Langue fixe",
   "language.none": "Aucune langue ne correspond.",
   "language.savedNote": "Enregistrée dans votre compte, elle vous suit sur vos autres appareils.",
+  "language.disclaimer":
+    "Les traductions autres que l’anglais sont automatiques et peuvent contenir des erreurs. Le texte anglais fait référence.",
+  "language.improve": "Aidez à améliorer les traductions sur GitHub",
 
   "home.title": "Projets",
   "home.search": "Rechercher des projets",
@@ -282,4 +286,6 @@ export const fr: Messages = {
   "prefs.vehicles": "Véhicules utilisés, depuis le catalogue de véhicules",
   "prefs.switches": "Aiguillages, depuis le catalogue d’aiguillages",
   "prefs.calendar": "Calendrier, demande et coûts",
+
+  ...editorsFr,
 };

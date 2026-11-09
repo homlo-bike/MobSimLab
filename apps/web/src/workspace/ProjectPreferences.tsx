@@ -203,7 +203,7 @@ function ShareField({
               commit(e.target.value);
             }}
             onBlur={() => setText(null)}
-            className="text-right"
+            className="text-end"
           />
         </div>
         <span aria-hidden="true">%</span>
