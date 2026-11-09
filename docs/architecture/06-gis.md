@@ -77,6 +77,7 @@ Rasters are clipped to the project area buffered by 2 km, reprojected to the wor
 - Alignment profiles sampled every 50 m (configurable) with bilinear interpolation, plus at every vertex and structure boundary.
 - DEM accuracy stored as metadata and shown next to every gradient result (C-09).
 - Open-Elevation and Elevation-API.eu adapters as fallbacks for areas without imported DEM, with batching (up to provider limit per request) and caching.
+- Built so far: the API reads GLO-30 straight from the public COG bucket with range requests (`apps/api/src/gateway/copernicus-dem.client.ts`, endpoint `MOBSIMLAB_COPERNICUS_URL`) and serves `POST /api/terrain/points` and `POST /api/terrain/profile` (several lines per request, optional OpenStreetMap buildings each line passes over). The web helper `apps/web/src/terrain/terrain.ts` is the one shared source for the railway and cable car tools. Import into PostGIS, GeoTIFF overrides and the fallback adapters come later.
 
 ## 5. External data providers
 

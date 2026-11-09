@@ -830,6 +830,7 @@ pub fn view(dz: &Design) -> Value {
                 "ramps": g.ramps.iter().map(|r| json!({"from": r.from, "to": r.to, "dh_m": r.dh, "length_m": r.length})).collect::<Vec<_>>(),
                 "levels": g.zones.iter().map(|z| json!({"from_m": z.s0, "to_m": z.s1, "level": level_name(z.level)})).collect::<Vec<_>>(),
                 "spread_m": [g.spread_start, g.spread_end],
+                "embedded": dz.doc_track(g.id).is_some_and(|t| dz.embedded(t)),
                 "speed": sp.map(|s| json!({"max_kmh": s.vmax, "time_s": s.time_s,
                     "profile": s.s.iter().zip(&s.limit).zip(&s.v).step_by((s.s.len() / 120).max(1)).map(|((a, b), c)| json!([a, b, c])).collect::<Vec<_>>()})),
                 "centre": slice(&g.centre, 0.0, g.length).iter().step_by((g.centre.len() / 400).max(1)).map(|q| ly.ll(q.p)).collect::<Vec<_>>(),
@@ -841,7 +842,7 @@ pub fn view(dz: &Design) -> Value {
         .switches
         .iter()
         .map(|s| {
-            json!({"id": s.id, "label": s.label, "element": s.element, "kind": s.kind, "length_m": s.s1 - s.s0,
+            json!({"id": s.id, "track": s.track, "label": s.label, "element": s.element, "kind": s.kind, "length_m": s.s1 - s.s0,
                    "diverging_speed_kmh": s.turnout.diverging_kmh, "crossing_ratio_n": s.turnout.n, "radius_m": s.turnout.radius,
                    "s0": s.s0, "s1": s.s1})
         })

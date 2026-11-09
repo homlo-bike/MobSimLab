@@ -8,8 +8,9 @@
 //! geometry for the map, a longitudinal profile, the live checks, and the running time, capacity, cabin
 //! count and stopping pattern that the timetable needs.
 //!
-//! The ground between two stations is a straight line between the station heights the planner gives;
-//! sampling a terrain model and building heights is a later step, and the result says so.
+//! The ground of a section comes from terrain samples when the app supplies them (heights along the
+//! section from the terrain model, plus building heights), and is otherwise a straight line between the
+//! station heights; the result says which sections assume a straight line.
 
 use crate::geo::{self, LonLat, Xy};
 use crate::issue::{Issue, Level};
@@ -116,6 +117,78 @@ pub struct SpanLine {
     /// Per section: `None` (or missing) places towers automatically; `Some` uses the planner's towers.
     #[serde(default)]
     pub towers: Vec<Option<Vec<TowerInput>>>,
+    /// Per section: ground samples along it, or `None` (or missing) for a straight line between the
+    /// station heights.
+    #[serde(default)]
+    pub ground: Vec<Option<Vec<GroundSample>>>,
+}
+
+/// A point of the ground under a section, from the terrain model.
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
+pub struct GroundSample {
+    /// Metres from the section's first station.
+    pub at_m: f64,
+    /// Terrain height, same datum as the station heights.
+    pub z_m: f64,
+    /// Height of a building or other obstacle above the terrain here; the cabin must clear its top.
+    #[serde(default)]
+    pub obstacle_m: f64,
+}
+
+/// The ground of one section: a straight line between the station heights, or the samples.
+struct Ground {
+    len: f64,
+    z0: f64,
+    z1: f64,
+    /// (chainage, terrain, terrain + obstacle), sorted, inside the section.
+    pts: Vec<(f64, f64, f64)>,
+}
+
+impl Ground {
+    fn new(len: f64, z0: f64, z1: f64, samples: Option<&Vec<GroundSample>>) -> Self {
+        let mut pts: Vec<(f64, f64, f64)> = samples
+            .map(|v| {
+                v.iter()
+                    .filter(|g| {
+                        g.at_m.is_finite() && g.z_m.is_finite() && g.at_m >= 0.0 && g.at_m <= len
+                    })
+                    .map(|g| (g.at_m, g.z_m, g.z_m + g.obstacle_m.max(0.0)))
+                    .collect()
+            })
+            .unwrap_or_default();
+        pts.sort_by(|a, b| a.0.total_cmp(&b.0));
+        Ground { len, z0, z1, pts }
+    }
+
+    fn sampled(&self) -> bool {
+        !self.pts.is_empty()
+    }
+
+    /// Terrain and top of obstacles at a chainage. Stations sit at their own heights at the ends.
+    fn at(&self, x: f64) -> (f64, f64) {
+        if self.pts.is_empty() {
+            let z = self.z0 + (self.z1 - self.z0) * x / self.len.max(1e-9);
+            return (z, z);
+        }
+        let first = (0.0, self.z0, self.z0);
+        let last = (self.len, self.z1, self.z1);
+        let mut prev = first;
+        for &p in self.pts.iter().chain(std::iter::once(&last)) {
+            if x <= p.0 {
+                let t = if p.0 - prev.0 > 1e-9 {
+                    (x - prev.0) / (p.0 - prev.0)
+                } else {
+                    1.0
+                };
+                let terrain = prev.1 + (p.1 - prev.1) * t;
+                // An obstacle does not taper between samples: the nearest sample's height stands.
+                let near = if t < 0.5 { prev } else { p };
+                return (terrain, terrain + (near.2 - near.1));
+            }
+            prev = p;
+        }
+        (self.z1, self.z1)
+    }
 }
 
 /// A tower as built.
@@ -133,7 +206,11 @@ pub struct TowerView {
 pub struct ProfilePoint {
     /// Metres from the first station of the line.
     pub at_m: f64,
+    /// Terrain height.
     pub ground_m: f64,
+    /// Height of a building or other obstacle above the terrain here (0 for none).
+    #[serde(default)]
+    pub obstacle_m: f64,
     pub rope_m: f64,
     pub cabin_m: f64,
 }
@@ -195,23 +272,16 @@ pub struct SpanView {
 }
 
 /// Supports of a section: chainage, rope height above datum.
-fn supports(len: f64, z0: f64, z1: f64, h_station: f64, towers: &[(f64, f64)]) -> Vec<(f64, f64)> {
-    let ground = |x: f64| z0 + (z1 - z0) * x / len.max(1e-9);
-    let mut s = vec![(0.0, z0 + h_station)];
-    s.extend(towers.iter().map(|&(x, h)| (x, ground(x) + h)));
-    s.push((len, z1 + h_station));
+fn supports(g: &Ground, h_station: f64, towers: &[(f64, f64)]) -> Vec<(f64, f64)> {
+    let mut s = vec![(0.0, g.z0 + h_station)];
+    s.extend(towers.iter().map(|&(x, h)| (x, g.at(x).0 + h)));
+    s.push((g.len, g.z1 + h_station));
     s
 }
 
 /// Lowest clearance over the section, and profile points (chainage within the section).
-fn clearance(
-    sys: &SpanSystem,
-    len: f64,
-    z0: f64,
-    z1: f64,
-    sup: &[(f64, f64)],
-) -> (f64, Vec<ProfilePoint>) {
-    let ground = |x: f64| z0 + (z1 - z0) * x / len.max(1e-9);
+fn clearance(sys: &SpanSystem, g: &Ground, sup: &[(f64, f64)]) -> (f64, Vec<ProfilePoint>) {
+    let len = g.len;
     let mut min = f64::INFINITY;
     let mut pts = Vec::new();
     for w in sup.windows(2) {
@@ -221,25 +291,35 @@ fn clearance(
             continue;
         }
         let sag = sys.sag_ratio * l;
+        let cabin_at = |u: f64| {
+            let rope = ya + (yb - ya) * u / l - 4.0 * sag * u * (l - u) / (l * l);
+            (rope, rope - sys.cabin_hang_m)
+        };
+        // The cabin is in the station at the ends; clearance there is the station's business.
+        let in_station = |x: f64| x < 1.0 || x > len - 1.0;
         let n = ((l / 10.0).ceil() as usize).clamp(8, 60);
         for i in 0..=n {
             let u = l * i as f64 / n as f64;
-            let rope = ya + (yb - ya) * u / l - 4.0 * sag * u * (l - u) / (l * l);
-            let cabin = rope - sys.cabin_hang_m;
+            let (rope, cabin) = cabin_at(u);
             let x = xa + u;
-            let g = ground(x);
-            // The cabin is in the station at the ends; clearance there is the station's business.
-            let in_station = x < 1.0 || x > len - 1.0;
-            if !in_station {
-                min = min.min(cabin - g);
+            let (terrain, top) = g.at(x);
+            if !in_station(x) {
+                min = min.min(cabin - top);
             }
             if i < n || (xb - len).abs() < 1e-9 {
                 pts.push(ProfilePoint {
                     at_m: x,
-                    ground_m: g,
+                    ground_m: terrain,
+                    obstacle_m: top - terrain,
                     rope_m: rope,
                     cabin_m: cabin,
                 });
+            }
+        }
+        // Every sample too, so a ridge or a building between profile steps is not missed.
+        for &(x, _, top) in g.pts.iter().filter(|p| p.0 > xa && p.0 < xb) {
+            if !in_station(x) {
+                min = min.min(cabin_at(x - xa).1 - top);
             }
         }
     }
@@ -248,15 +328,16 @@ fn clearance(
 
 /// Purpose: automatic towers for one section: the fewest equal spans within the span limit whose lowest
 /// clearance reaches the recommended value, at the standard tower height or taller up to the maximum.
-fn auto_towers(sys: &SpanSystem, len: f64, z0: f64, z1: f64) -> Vec<(f64, f64)> {
+fn auto_towers(sys: &SpanSystem, g: &Ground) -> Vec<(f64, f64)> {
+    let len = g.len;
     let first = (len / sys.max_span_m.max(1.0)).ceil().max(1.0) as usize;
     let last = first.max((len / 30.0).ceil() as usize);
     let place = |n: usize, h: f64| -> Vec<(f64, f64)> {
         (1..n).map(|i| (len * i as f64 / n as f64, h)).collect()
     };
     let ok = |t: &[(f64, f64)]| {
-        let sup = supports(len, z0, z1, sys.station_rope_height_m, t);
-        clearance(sys, len, z0, z1, &sup).0 >= sys.recommended_clearance_m
+        let sup = supports(g, sys.station_rope_height_m, t);
+        clearance(sys, g, &sup).0 >= sys.recommended_clearance_m
     };
     for n in first..=last {
         let low = place(n, sys.tower_height_m);
@@ -374,11 +455,16 @@ pub fn build(line: &SpanLine) -> SpanView {
     // Sections.
     let mut sections = Vec::new();
     let mut profile = Vec::new();
+    let mut assumed: Vec<usize> = Vec::new();
     let mut base = 0.0;
     for i in 0..n.saturating_sub(1) {
         let (a, b) = (xy[i], xy[i + 1]);
         let len = geo::dist(a, b);
         let (z0, z1) = (st[i].elevation_m, st[i + 1].elevation_m);
+        let ground = Ground::new(len, z0, z1, line.ground.get(i).and_then(|g| g.as_ref()));
+        if !ground.sampled() {
+            assumed.push(i);
+        }
         let manual = line.towers.get(i).and_then(|t| t.as_ref());
         let mut tw: Vec<(f64, f64)> = match manual {
             Some(list) => list
@@ -386,11 +472,11 @@ pub fn build(line: &SpanLine) -> SpanView {
                 .filter(|t| t.at_m > 0.0 && t.at_m < len)
                 .map(|t| (t.at_m, t.height_m.unwrap_or(sys.tower_height_m)))
                 .collect(),
-            None => auto_towers(sys, len, z0, z1),
+            None => auto_towers(sys, &ground),
         };
         tw.sort_by(|p, q| p.0.total_cmp(&q.0));
-        let sup = supports(len, z0, z1, sys.station_rope_height_m, &tw);
-        let (min_c, pts) = clearance(sys, len, z0, z1, &sup);
+        let sup = supports(&ground, sys.station_rope_height_m, &tw);
+        let (min_c, pts) = clearance(sys, &ground, &sup);
         profile.extend(pts.into_iter().map(|p| ProfilePoint {
             at_m: base + p.at_m,
             ..p
@@ -554,12 +640,23 @@ pub fn build(line: &SpanLine) -> SpanView {
             .param("ropeway.capacity_ceiling_pphpd"),
         );
     }
-    if n >= 2 {
+    if n >= 2 && assumed.len() == n - 1 {
         issues.push(Issue::new(
             Level::Info,
             "ground.assumed",
-            "Ground is a straight line between the station heights you entered. Terrain and building heights are not checked yet.",
+            "Ground is a straight line between the station heights. Terrain and building heights are not checked.",
         ));
+    } else {
+        for &i in &assumed {
+            issues.push(
+                Issue::new(
+                    Level::Info,
+                    "ground.assumed",
+                    "No terrain heights for this section; the ground is a straight line between the station heights.",
+                )
+                .at_section(i),
+            );
+        }
     }
     let tower_count = sections.iter().map(|s| s.towers.len()).sum();
     SpanView {
@@ -626,6 +723,7 @@ mod tests {
             ],
             system: mgd(),
             towers: vec![],
+            ground: vec![],
         };
         let v = build(&line);
         assert!((v.length_m - 1800.0).abs() < 1.0);
@@ -651,6 +749,7 @@ mod tests {
             ],
             system: mgd(),
             towers: vec![],
+            ground: vec![],
         };
         let v = build(&line);
         let s = &v.sections[0];
@@ -677,6 +776,7 @@ mod tests {
             ],
             system: mgd(),
             towers: vec![Some(vec![])],
+            ground: vec![],
         };
         let v = build(&line);
         assert!(v.issues.iter().any(|i| i.code == "span.too_long"));
@@ -694,6 +794,7 @@ mod tests {
             ],
             system: mgd(),
             towers: vec![],
+            ground: vec![],
         };
         let v = build(&line);
         let e = v
@@ -720,6 +821,7 @@ mod tests {
             ],
             system: sys,
             towers: vec![],
+            ground: vec![],
         };
         let v = build(&line);
         // 100 s at line speed + 30 s acceleration and braking; departures every 130 + 60 s.
@@ -737,10 +839,121 @@ mod tests {
             stations: vec![st(0.0, 0.0, StationKind::Terminal), s1],
             system: mgd(),
             towers: vec![],
+            ground: vec![],
         };
         let v = build(&line);
         let last = v.profile.last().unwrap();
         assert!((last.ground_m - 150.0).abs() < 1e-6);
         assert!((last.rope_m - 158.0).abs() < 1e-6);
+    }
+
+    /// Samples every 50 m at height `z`, with a building of `building` m at the middle.
+    fn valley(len: f64, z: f64, building: f64) -> Vec<GroundSample> {
+        let n = (len / 50.0) as usize;
+        (1..n)
+            .map(|i| GroundSample {
+                at_m: i as f64 * 50.0,
+                z_m: z,
+                obstacle_m: if i == n / 2 { building } else { 0.0 },
+            })
+            .collect()
+    }
+
+    fn ridge(at: f64, z: f64) -> Vec<GroundSample> {
+        [(at - 50.0, 0.0), (at, z), (at + 50.0, 0.0)]
+            .map(|(at_m, z_m)| GroundSample {
+                at_m,
+                z_m,
+                obstacle_m: 0.0,
+            })
+            .to_vec()
+    }
+
+    #[test]
+    fn sampled_ridge_and_buildings_set_clearance_and_towers() {
+        let flat = SpanLine {
+            stations: vec![
+                st(0.0, 0.0, StationKind::Terminal),
+                st(400.0, 0.0, StationKind::Terminal),
+            ],
+            system: mgd(),
+            towers: vec![Some(vec![])],
+            ground: vec![],
+        };
+        assert!(build(&flat)
+            .issues
+            .iter()
+            .any(|i| i.code == "ground.assumed"));
+
+        // Stations on the valley sides, 40 m above its floor: the span clears the floor.
+        let open = SpanLine {
+            ground: vec![Some(valley(400.0, -40.0, 0.0))],
+            ..flat.clone()
+        };
+        let v = build(&open);
+        assert!(!v
+            .issues
+            .iter()
+            .any(|i| i.code.starts_with("clearance") || i.code == "ground.assumed"));
+
+        // A 45 m building in the middle of the valley: the cabin no longer clears it.
+        let building = SpanLine {
+            ground: vec![Some(valley(400.0, -40.0, 45.0))],
+            ..flat.clone()
+        };
+        let v = build(&building);
+        assert!(
+            v.issues.iter().any(|i| i.code == "clearance.min"),
+            "{:?}",
+            v.issues
+        );
+        let top = v.profile.iter().map(|p| p.obstacle_m).fold(0.0, f64::max);
+        assert!((top - 45.0).abs() < 1e-9);
+
+        // A 40 m ridge on a longer line: automatic towers stand on it and keep the clearance.
+        let hill = SpanLine {
+            stations: vec![
+                st(0.0, 0.0, StationKind::Terminal),
+                st(1200.0, 0.0, StationKind::Terminal),
+            ],
+            towers: vec![],
+            ground: vec![Some(ridge(600.0, 40.0))],
+            ..flat.clone()
+        };
+        let v = build(&hill);
+        assert!(v.tower_count >= 1);
+        assert!(
+            !v.issues.iter().any(|i| i.code.starts_with("clearance")),
+            "{:?}",
+            v.issues
+        );
+        let peak = v
+            .profile
+            .iter()
+            .map(|p| p.ground_m)
+            .fold(f64::MIN, f64::max);
+        assert!((peak - 40.0).abs() < 1e-9);
+    }
+
+    #[test]
+    fn sections_without_samples_are_flagged_one_by_one() {
+        let line = SpanLine {
+            stations: vec![
+                st(0.0, 0.0, StationKind::Terminal),
+                st(500.0, 0.0, StationKind::Intermediate),
+                st(1000.0, 0.0, StationKind::Terminal),
+            ],
+            system: mgd(),
+            towers: vec![],
+            ground: vec![Some(ridge(250.0, 5.0)), None],
+        };
+        let v = build(&line);
+        let flagged: Vec<_> = v
+            .issues
+            .iter()
+            .filter(|i| i.code == "ground.assumed")
+            .collect();
+        assert_eq!(flagged.len(), 1);
+        assert_eq!(flagged[0].section, Some(1));
     }
 }

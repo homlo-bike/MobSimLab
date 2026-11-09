@@ -47,10 +47,19 @@ export interface TowerInput {
   height_m?: number | null;
 }
 
+/** A point of the ground under a section, from the terrain model (crates/mode-kits `GroundSample`). */
+export interface GroundSample {
+  at_m: number;
+  z_m: number;
+  obstacle_m: number;
+}
+
 export interface SpanLine {
   stations: SpanStation[];
   system: SpanSystem;
   towers: (TowerInput[] | null)[];
+  /** Per section: ground samples, or null for a straight line between the station heights. */
+  ground?: (GroundSample[] | null)[];
 }
 
 export interface SpanView {
@@ -62,7 +71,7 @@ export interface SpanView {
     min_clearance_m: number;
     manual: boolean;
   }[];
-  profile: { at_m: number; ground_m: number; rope_m: number; cabin_m: number }[];
+  profile: { at_m: number; ground_m: number; obstacle_m: number; rope_m: number; cabin_m: number }[];
   length_m: number;
   trip_time_s: number;
   headway_s: number;
