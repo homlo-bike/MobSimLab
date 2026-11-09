@@ -1,3 +1,4 @@
+import { useI18n } from "../i18n/i18n";
 import type { SpanView } from "./types";
 
 /**
@@ -5,6 +6,7 @@ import type { SpanView } from "./types";
  * stations and towers, drawn to a common vertical scale.
  */
 export function ProfileView({ view, color }: { view: SpanView; color: string }) {
+  const { t } = useI18n();
   const pts = view.profile;
   if (pts.length < 2) return null;
   const W = 340;
@@ -50,7 +52,8 @@ export function ProfileView({ view, color }: { view: SpanView; color: string }) 
         viewBox={`0 0 ${W} ${H}`}
         className="w-full rounded-lg border border-slate-200 bg-white"
         role="img"
-        aria-label="Longitudinal profile: ground, rope and loaded cabin"
+        aria-label={t("cable.profile")}
+        direction="ltr"
       >
         <path d={ground} fill="#e2e8f0" />
         {blocks.map((b, i) => (
@@ -83,8 +86,9 @@ export function ProfileView({ view, color }: { view: SpanView; color: string }) 
         <path d={path("rope_m")} fill="none" stroke={color} strokeWidth={2} />
       </svg>
       <figcaption className="mt-1 text-[11px] text-slate-500">
-        Rope (solid) and bottom of a loaded cabin (dashed) over the ground
-        {blocks.length > 0 ? " and buildings" : ""}, {Math.round(hi - lo)} m high.
+        {t(blocks.length > 0 ? "cable.profileCaptionBuildings" : "cable.profileCaption", {
+          m: Math.round(hi - lo),
+        })}
       </figcaption>
     </figure>
   );

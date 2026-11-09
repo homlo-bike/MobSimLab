@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useI18n, withNodes } from "../i18n/i18n";
 import { get, type Me, send } from "../session/api";
 
 interface Details {
@@ -14,6 +15,7 @@ interface Details {
  * sign in first and come back here.
  */
 export function ConsentPage({ me }: { me: Me | null }) {
+  const { t } = useI18n();
   const request = new URLSearchParams(window.location.search).get("request") ?? "";
   const [d, setD] = useState<Details | null>(null);
   const [kept, setKept] = useState<string[]>([]);
@@ -52,19 +54,19 @@ export function ConsentPage({ me }: { me: Me | null }) {
   const back = `${window.location.pathname}${window.location.search}`;
   return (
     <section
-      aria-label="Connect an AI agent"
+      aria-label={t("consent.title")}
       className="mx-auto mt-10 w-full max-w-lg rounded border border-slate-300 bg-white p-6 text-sm shadow"
     >
-      <h1 className="mb-3 text-lg font-semibold">Connect an AI agent</h1>
-      {!request && <p>This link is incomplete. Start the connection again in your AI app.</p>}
+      <h1 className="mb-3 text-lg font-semibold">{t("consent.title")}</h1>
+      {!request && <p>{t("consent.incomplete")}</p>}
       {request && !signedIn && (
         <p>
-          Sign in to MobSimLab to decide whether the app may connect.{" "}
+          {t("consent.signInFirst")}{" "}
           <a
             className="rounded bg-slate-800 px-2 py-1 text-white"
             href={`/api/auth/login?return_to=${encodeURIComponent(back)}`}
           >
-            Sign in
+            {t("consent.signIn")}
           </a>
         </p>
       )}
@@ -76,21 +78,18 @@ export function ConsentPage({ me }: { me: Me | null }) {
       {d && (
         <>
           <p className="mb-3">
-            <strong>{d.client.name}</strong> wants to work with MobSimLab as{" "}
-            <strong>{me?.user?.displayName ?? me?.user?.email}</strong>. After you answer, you go back to{" "}
-            <code>{d.client.redirectHost}</code>.
-            {!d.client.verified && (
-              <span className="block text-slate-600">
-                The app registered itself; MobSimLab cannot confirm who runs it. Only continue if you started
-                this connection.
-              </span>
-            )}
+            {withNodes(t("consent.wants"), {
+              app: <strong>{d.client.name}</strong>,
+              user: <strong>{me?.user?.displayName ?? me?.user?.email}</strong>,
+              host: <code>{d.client.redirectHost}</code>,
+            })}
+            {!d.client.verified && <span className="block text-slate-600">{t("consent.unverified")}</span>}
           </p>
           {d.reason ? (
             <p className="mb-3 rounded border border-amber-300 bg-amber-50 px-2 py-1">{d.reason}</p>
           ) : (
             <fieldset className="mb-4">
-              <legend className="mb-1 font-medium">It may:</legend>
+              <legend className="mb-1 font-medium">{t("consent.mayLegend")}</legend>
               {d.scopes.map((s) => (
                 <label key={s.id} className="flex items-start gap-2 py-0.5">
                   <input
@@ -103,10 +102,7 @@ export function ConsentPage({ me }: { me: Me | null }) {
                   <span>{s.label}</span>
                 </label>
               ))}
-              <p className="mt-2 text-slate-600">
-                It works only in its own scenarios and can never change the base network, sharing or users.
-                You can disconnect it at any time under AI agents in the account menu.
-              </p>
+              <p className="mt-2 text-slate-600">{t("consent.limits")}</p>
             </fieldset>
           )}
           <div className="flex gap-2">
@@ -116,7 +112,7 @@ export function ConsentPage({ me }: { me: Me | null }) {
               onClick={() => void answer(true)}
               className="rounded bg-blue-700 px-3 py-1 text-white disabled:opacity-50"
             >
-              Allow
+              {t("consent.allow")}
             </button>
             <button
               type="button"
@@ -124,7 +120,7 @@ export function ConsentPage({ me }: { me: Me | null }) {
               onClick={() => void answer(false)}
               className="rounded border border-slate-300 px-3 py-1"
             >
-              Deny
+              {t("consent.deny")}
             </button>
           </div>
         </>

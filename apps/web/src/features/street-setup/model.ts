@@ -1,3 +1,5 @@
+import { tNow } from "../../i18n/i18n";
+import type { MessageKey } from "../../i18n/en";
 import type { DelayShares } from "../street-lines/types";
 import type { StreetInfo, StreetSetup, TramShare } from "./types";
 
@@ -67,7 +69,7 @@ export interface Verdict {
   text: string;
 }
 
-const pct = (x: number) => `${Math.round(x * 100)} %`;
+const pct = (x: number) => ({ pct: Math.round(x * 100) });
 
 /**
  * Purpose: what the street's setup means for the reliability of buses and trams and for the safety of
@@ -80,54 +82,50 @@ export function verdicts(info: StreetInfo, e: Effective, delays: DelayShares = D
     out.push({
       level: "ok",
       who: "Buses",
-      text: "No delay in traffic is assumed on this kind of street; it counts on main roads.",
+      text: tNow("setup.v.busNoDelay"),
     });
   } else if (e.busLane && e.separated) {
-    out.push({ level: "ok", who: "Buses", text: "Separated bus lane: traffic jams do not hold buses up." });
+    out.push({ level: "ok", who: "Buses", text: tNow("setup.v.busSeparated") });
   } else if (e.busLane) {
     out.push({
       level: "info",
       who: "Buses",
-      text: `Painted bus lane: turning and parking cars still get in the way, about ${pct(delays.bus_lane)} longer running time for buses and trolleybuses at peak. Separate it to keep cars out.`,
+      text: tNow("setup.v.busPainted", pct(delays.bus_lane)),
     });
   } else {
     out.push({
       level: "warning",
       who: "Buses",
-      text: `Buses and trolleybuses run in the traffic of a main road: about ${pct(delays.mixed_traffic)} longer running time at peak, and late when traffic jams. A bus lane fixes it.`,
+      text: tNow("setup.v.busMixed", pct(delays.mixed_traffic)),
     });
   }
   if (e.hasTram) {
     if (e.tram === "own_lane" && e.separated) {
-      out.push({ level: "ok", who: "Trams", text: "Own lane, separated from the traffic: reliable." });
+      out.push({ level: "ok", who: "Trams", text: tNow("setup.v.tramSeparated") });
     } else if (e.tram === "own_lane") {
       out.push({
         level: "info",
         who: "Trams",
-        text: main
-          ? `Own lane, painted only: cars still cross and stop in it, about ${pct(delays.bus_lane)} longer at peak. Separate it with a kerb or track bed.`
-          : "Own lane, painted only.",
+        text: main ? tNow("setup.v.tramPaintedMain", pct(delays.bus_lane)) : tNow("setup.v.tramPainted"),
       });
     } else if (e.tram === "mixed") {
       out.push({
         level: main ? "warning" : "info",
         who: "Trams",
-        text: main
-          ? `Mixed traffic on a main road: the tram is held up in traffic jams and can be stuck in gridlock, about ${pct(delays.mixed_traffic)} longer at peak. The tram timetable counts it in the running time. Give it its own lane, separated.`
-          : "Mixed traffic: the tram runs in the traffic lanes.",
+        text: main ? tNow("setup.v.tramMixedMain", pct(delays.mixed_traffic)) : tNow("setup.v.tramMixed"),
       });
     } else {
       out.push({
         level: "info",
         who: "Trams",
-        text: "Inferred from the street's width in the railway editor: own lane where the street is wide enough, else mixed traffic. Set it here to decide.",
+        text: tNow("setup.v.tramInferred"),
       });
     }
     if (e.tram === "mixed" && !e.bikeLane) {
       out.push({
         level: main ? "warning" : "info",
         who: "Cyclists",
-        text: "Cyclists ride along the tram rails: a wheel caught in the groove is a common cause of falls. Add a bike lane.",
+        text: tNow("setup.v.bikeRails"),
       });
     }
   }
@@ -135,9 +133,7 @@ export function verdicts(info: StreetInfo, e: Effective, delays: DelayShares = D
     out.push({
       level: "info",
       who: "Cyclists",
-      text: e.busLane
-        ? "No bike lane: cyclists share the bus lane with buses."
-        : "No bike lane: cyclists ride in the traffic of a main road.",
+      text: e.busLane ? tNow("setup.v.bikeBusLane") : tNow("setup.v.bikeTraffic"),
     });
   }
   return out;
@@ -174,22 +170,22 @@ export function forgetSetups(projectId: string): void {
   }
 }
 
-/** Human labels of OSM highway classes. */
-export const CLASS_LABEL: Record<string, string> = {
-  trunk: "Trunk road",
-  trunk_link: "Trunk road link",
-  primary: "Main road",
-  primary_link: "Main road link",
-  secondary: "Main road (secondary)",
-  secondary_link: "Main road link",
-  tertiary: "Local main street",
-  tertiary_link: "Local main street link",
-  unclassified: "Minor road",
-  residential: "Residential street",
-  living_street: "Living street",
-  service: "Service road",
-  busway: "Busway",
-  road: "Road",
-  pedestrian: "Pedestrian zone",
-  motorway_link: "Motorway link",
+/** Message keys of the labels of OSM highway classes. */
+export const CLASS_LABEL: Record<string, MessageKey> = {
+  trunk: "setup.class.trunk",
+  trunk_link: "setup.class.trunk_link",
+  primary: "setup.class.primary",
+  primary_link: "setup.class.primary_link",
+  secondary: "setup.class.secondary",
+  secondary_link: "setup.class.primary_link",
+  tertiary: "setup.class.tertiary",
+  tertiary_link: "setup.class.tertiary_link",
+  unclassified: "setup.class.unclassified",
+  residential: "setup.class.residential",
+  living_street: "setup.class.living_street",
+  service: "setup.class.service",
+  busway: "setup.class.busway",
+  road: "setup.class.road",
+  pedestrian: "setup.class.pedestrian",
+  motorway_link: "setup.class.motorway_link",
 };

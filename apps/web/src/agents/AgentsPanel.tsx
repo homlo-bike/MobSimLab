@@ -1,5 +1,6 @@
 import type { Map as MapLibreMap } from "maplibre-gl";
 import { type FormEvent, useCallback, useEffect, useState } from "react";
+import { formatDateTime, tNow, useI18n } from "../i18n/i18n";
 import { get, send } from "../session/api";
 import { clearScenario, type ScenarioView, showScenario } from "./scenarioLayer";
 
@@ -34,7 +35,7 @@ interface Coverage {
   layer: object;
 }
 
-const when = (s: string | null) => (s ? new Date(s).toLocaleString() : "never");
+const when = (s: string | null) => (s ? formatDateTime(s) : tNow("agents.never"));
 
 /**
  * AI agents (ADR-0035): how to connect Claude or another MCP client, the connected agents with their recent
@@ -52,6 +53,7 @@ export function AgentsPanel({
   map: MapLibreMap | null;
   onClose: () => void;
 }) {
+  const { t } = useI18n();
   const [info, setInfo] = useState<Info | null>(null);
   const [connections, setConnections] = useState<Connection[]>([]);
   const [scenarios, setScenarios] = useState<ScenarioRow[]>([]);
@@ -108,7 +110,7 @@ export function AgentsPanel({
       setShown({ id, coverage: null });
       if (map) showScenario(map, s, null);
       const c = await get<Coverage>(`/api/agents/scenarios/${id}/coverage`).catch((e: Error) => {
-        setError(`Coverage not available: ${e.message}`);
+        setError(tNow("agents.noCoverage", { error: e.message }));
         return null;
       });
       setShown({ id, coverage: c });
@@ -122,13 +124,13 @@ export function AgentsPanel({
 
   return (
     <section
-      aria-label="AI agents"
-      className="absolute inset-y-4 left-4 z-20 flex w-[34rem] max-w-[calc(100%-2rem)] flex-col rounded border border-slate-300 bg-white text-sm shadow-lg"
+      aria-label={t("agents.title")}
+      className="absolute inset-y-4 start-4 z-20 flex w-[34rem] max-w-[calc(100%-2rem)] flex-col rounded border border-slate-300 bg-white text-sm shadow-lg"
     >
       <header className="flex items-center gap-3 border-b border-slate-200 px-4 py-2">
-        <h2 className="font-semibold">AI agents</h2>
-        <button type="button" className="ml-auto rounded border border-slate-300 px-2 py-0.5" onClick={close}>
-          Close
+        <h2 className="font-semibold">{t("agents.title")}</h2>
+        <button type="button" className="ms-auto rounded border border-slate-300 px-2 py-0.5" onClick={close}>
+          {t("agents.close")}
         </button>
       </header>
       <div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-4 py-3">
@@ -137,32 +139,29 @@ export function AgentsPanel({
             {error}
           </p>
         )}
-        {!allowed && (
-          <p>Only Editors and above can connect AI agents. Ask an administrator for the Editor role.</p>
-        )}
+        {!allowed && <p>{t("agents.notAllowed")}</p>}
         {allowed && info && (
-          <section aria-label="Connect">
-            <h3 className="mb-1 font-medium">Connect Claude or another MCP app</h3>
-            <p className="mb-1">
-              Add a custom connector with this address, then sign in and choose what it may do. MobSimLab
-              never runs or pays for an AI model; the agent uses your own AI account.
-            </p>
+          <section aria-label={t("agents.connect")}>
+            <h3 className="mb-1 font-medium">{t("agents.connectTitle")}</h3>
+            <p className="mb-1">{t("agents.connectHelp")}</p>
             <code className="block rounded bg-slate-100 px-2 py-1 select-all">{info.mcpUrl}</code>
           </section>
         )}
         {allowed && (
-          <section aria-label="Connected agents">
-            <h3 className="mb-1 font-medium">Connected agents and tokens</h3>
-            {connections.length === 0 && <p className="text-slate-600">Nothing connected yet.</p>}
+          <section aria-label={t("agents.connected")}>
+            <h3 className="mb-1 font-medium">{t("agents.connectedTitle")}</h3>
+            {connections.length === 0 && <p className="text-slate-600">{t("agents.nothing")}</p>}
             <ul className="space-y-2">
               {connections.map((c) => (
                 <li key={c.id} className="rounded border border-slate-200 px-2 py-1">
                   <div className="flex items-center gap-2">
                     <strong>{c.name}</strong>
-                    <span className="text-slate-500">{c.kind === "pat" ? "access token" : "app"}</span>
+                    <span className="text-slate-500">
+                      {t(c.kind === "pat" ? "agents.kindToken" : "agents.kindApp")}
+                    </span>
                     <button
                       type="button"
-                      className="ml-auto rounded border border-slate-300 px-2 py-0.5"
+                      className="ms-auto rounded border border-slate-300 px-2 py-0.5"
                       onClick={() =>
                         void run(async () => {
                           await send("DELETE", `/api/agents/connections/${c.id}`, csrfToken);
@@ -170,16 +169,18 @@ export function AgentsPanel({
                         })
                       }
                     >
-                      Disconnect
+                      {t("agents.disconnect")}
                     </button>
                   </div>
                   <div className="text-slate-600">
-                    {c.scopes.join(", ")} · last used {when(c.lastUsedAt)}
-                    {c.expiresAt && ` · expires ${when(c.expiresAt)}`}
+                    {t("agents.lastUsed", { scopes: c.scopes.join(", "), when: when(c.lastUsedAt) })}
+                    {c.expiresAt && t("agents.expires", { when: when(c.expiresAt) })}
                   </div>
                   {c.recentActions.length > 0 && (
                     <div className="text-slate-600">
-                      Recent: {c.recentActions.map((a) => a.tool ?? a.action).join(", ")}
+                      {t("agents.recent", {
+                        list: c.recentActions.map((a) => a.tool ?? a.action).join(", "),
+                      })}
                     </div>
                   )}
                 </li>
@@ -188,18 +189,18 @@ export function AgentsPanel({
           </section>
         )}
         {allowed && info && (
-          <section aria-label="Personal access token">
-            <h3 className="mb-1 font-medium">Personal access token (scripts, CI)</h3>
+          <section aria-label={t("agents.pat")}>
+            <h3 className="mb-1 font-medium">{t("agents.patTitle")}</h3>
             {newToken && (
               <p className="mb-2 rounded border border-amber-300 bg-amber-50 px-2 py-1">
-                Copy it now; it is not shown again: <code className="select-all break-all">{newToken}</code>
+                {t("agents.copyNow")} <code className="select-all break-all">{newToken}</code>
               </p>
             )}
             <form onSubmit={createToken} className="flex flex-wrap items-center gap-2">
               <input
                 name="name"
                 required
-                placeholder="Name"
+                placeholder={t("agents.name")}
                 className="rounded border border-slate-300 px-2 py-0.5"
               />
               {info.scopes.map((s) => (
@@ -209,7 +210,7 @@ export function AgentsPanel({
                 </label>
               ))}
               <label className="flex items-center gap-1">
-                days
+                {t("agents.days")}
                 <input
                   name="days"
                   type="number"
@@ -220,15 +221,15 @@ export function AgentsPanel({
                 />
               </label>
               <button type="submit" className="rounded bg-slate-800 px-2 py-0.5 text-white">
-                Create
+                {t("agents.create")}
               </button>
             </form>
           </section>
         )}
         {allowed && (
-          <section aria-label="Agent scenarios">
-            <h3 className="mb-1 font-medium">Scenarios</h3>
-            {scenarios.length === 0 && <p className="text-slate-600">No scenarios yet.</p>}
+          <section aria-label={t("agents.scenarios")}>
+            <h3 className="mb-1 font-medium">{t("agents.scenariosTitle")}</h3>
+            {scenarios.length === 0 && <p className="text-slate-600">{t("agents.noScenarios")}</p>}
             <ul className="space-y-1">
               {scenarios.map((s) => (
                 <li key={s.id} className="flex items-center gap-2">
@@ -237,7 +238,7 @@ export function AgentsPanel({
                       className="rounded bg-violet-100 px-1 text-xs text-violet-800"
                       title={s.client_name ?? ""}
                     >
-                      Agent
+                      {t("agents.agent")}
                     </span>
                   )}
                   <span className="min-w-0 flex-1 truncate" title={s.description}>
@@ -248,7 +249,7 @@ export function AgentsPanel({
                     className="rounded border border-slate-300 px-2 py-0.5"
                     onClick={() => void show(s.id)}
                   >
-                    Show
+                    {t("agents.show")}
                   </button>
                   <button
                     type="button"
@@ -260,22 +261,25 @@ export function AgentsPanel({
                       })
                     }
                   >
-                    Delete
+                    {t("kit.delete")}
                   </button>
                 </li>
               ))}
             </ul>
             {shown?.coverage && (
               <p className="mt-2 rounded border border-slate-200 bg-slate-50 px-2 py-1">
-                {shown.coverage.report.headline} (crow flies: {shown.coverage.report.crow_flies_share_pct} %).
-                Demand: {shown.coverage.report.demand}. Map: green within 5 min, yellow 10, orange 15.
+                {t("agents.coverage", {
+                  headline: shown.coverage.report.headline,
+                  crow: shown.coverage.report.crow_flies_share_pct,
+                  demand: shown.coverage.report.demand,
+                })}
               </p>
             )}
           </section>
         )}
         {admin && registration !== null && (
-          <section aria-label="Agent settings">
-            <h3 className="mb-1 font-medium">Instance settings</h3>
+          <section aria-label={t("agents.settings")}>
+            <h3 className="mb-1 font-medium">{t("agents.settingsTitle")}</h3>
             <label className="flex items-center gap-2">
               <input
                 type="checkbox"
@@ -294,7 +298,7 @@ export function AgentsPanel({
                   })
                 }
               />
-              Let AI apps register themselves (OAuth Dynamic Client Registration)
+              {t("agents.registration")}
             </label>
           </section>
         )}
