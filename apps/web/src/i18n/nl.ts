@@ -207,6 +207,7 @@ export const nl: Messages = {
   "drawing.street-lines": "de buslijn",
   "drawing.railway": "de spoorlijn",
   "drawing.street-setups": "de straatinstellingen",
+  "drawing.rail-timetable": "de dienstregeling van de spoorlijnen",
   "drawing.preferences": "de projectvoorkeuren",
 
   "tab.label": "Project",

@@ -2,6 +2,7 @@ import type { Map as MapLibreMap } from "maplibre-gl";
 import { type ReactNode, useEffect, useMemo, useState } from "react";
 import { JourneyPlanner } from "../features/journey-planner/JourneyPlanner";
 import type { PluginLineInput, StreetLineInput } from "../features/journey-planner/network";
+import type { Timetable } from "../features/journey-planner/types";
 import { RailwayEditor } from "../features/railways/RailwayEditor";
 import type { Network } from "../features/railways/types";
 import { lineInput, type StreetLinesDoc } from "../features/street-lines/saved";
@@ -123,6 +124,8 @@ export function Workspace({
   const drawings = useDrawings(api, projectId, editable);
   const streetLines = drawings.doc<StreetLinesDoc>("street-lines");
   const railway = drawings.doc<Network>("railway");
+  // The trains of the rail service lines as last published in the railway tool, for the journey planner.
+  const railLines = drawings.doc<Timetable>("rail-timetable");
   // Street setups from the GIS tab: they override OSM in the street line tool and the railway editor.
   const setups = drawings.doc<StreetSetup[]>("street-setups") ?? NO_SETUPS;
   const changeSetups = (next: StreetSetup[]) => drawings.set("street-setups", next);
@@ -298,6 +301,7 @@ export function Workspace({
               initial={railway}
               onDocChange={(d) => drawings.set("railway", d)}
               onTopologyChange={setRailTopology}
+              onPublish={(tt) => tt && drawings.set("rail-timetable", tt)}
             />
           )}
           {project && tab === "create" && editable && chosenPlugin?.kit === "straight-spans" && (
@@ -333,6 +337,7 @@ export function Workspace({
               map={map}
               panel={panel}
               streetLine={ridden && ridden.view.points.length >= 2 ? ridden : null}
+              railLines={railLines}
               pluginLines={pluginLineList}
             />
           )}

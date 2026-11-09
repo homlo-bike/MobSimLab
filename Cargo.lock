@@ -432,6 +432,7 @@ name = "rail-design-wasm"
 version = "0.1.0"
 dependencies = [
  "rail-design",
+ "rail-plan",
  "serde_json",
  "street-routing",
  "wasm-bindgen",

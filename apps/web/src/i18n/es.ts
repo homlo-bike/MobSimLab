@@ -207,6 +207,7 @@ export const es: Messages = {
   "drawing.street-lines": "la línea de autobús",
   "drawing.railway": "el ferrocarril",
   "drawing.street-setups": "la configuración de calles",
+  "drawing.rail-timetable": "el horario ferroviario",
   "drawing.preferences": "las preferencias del proyecto",
 
   "tab.label": "Proyecto",

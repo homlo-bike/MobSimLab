@@ -246,6 +246,37 @@ impl RailDesigner {
         })
     }
 
+    /// Purpose: plan the service lines drawn in the editor on the last built design and publish them
+    /// for the journey planner (`rail_plan::service`).
+    /// Inputs: JSON list of `rail_plan::ServiceLine`, the day type id.
+    /// Output: JSON `rail_plan::ServicePublication` (timetable, report per line, notes); Err before a
+    /// build, for a design with errors or for a line with fewer than two stops.
+    pub fn publish_lines(&self, lines: &str, service_id: &str) -> Result<String, JsError> {
+        let d = self
+            .design
+            .as_ref()
+            .ok_or_else(|| JsError::new("Nothing is drawn yet."))?;
+        let lines: Vec<rail_plan::ServiceLine> = serde_json::from_str(lines).map_err(js)?;
+        let topo = serde_json::to_string(&rail_design::topology::topology(d)).map_err(js)?;
+        let out =
+            rail_plan::publish_service(&topo, &lines, service_id).map_err(|e| JsError::new(&e))?;
+        serde_json::to_string(&out).map_err(js)
+    }
+
+    /// Purpose: whether a train can run from station `from` to station `to` (document ids) on the
+    /// last built design, for picking a service line's stations in order.
+    /// Output: JSON `rail_plan::Reach`; Err before a build or for a design with errors.
+    pub fn reachable(&self, from: u32, to: u32) -> Result<String, JsError> {
+        let d = self
+            .design
+            .as_ref()
+            .ok_or_else(|| JsError::new("Nothing is drawn yet."))?;
+        let topo = serde_json::to_string(&rail_design::topology::topology(d)).map_err(js)?;
+        let r = rail_plan::station_reachable(&topo, &format!("st{from}"), &format!("st{to}"))
+            .map_err(|e| JsError::new(&e))?;
+        serde_json::to_string(&r).map_err(js)
+    }
+
     /// Purpose: a signal plan generated from the last built design (JSON list of document
     /// signals, ids continuing the document's), for "Generate signals". "[]" before a build.
     pub fn generate_signals(&self) -> String {

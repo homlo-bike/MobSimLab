@@ -1,12 +1,13 @@
 import { get } from "../session/api";
 
 /** What a project keeps drawings of (apps/api/src/projects/drawings.ts). */
-export type DrawingKind = "street-lines" | "railway" | "street-setups" | "preferences";
+export type DrawingKind = "street-lines" | "railway" | "street-setups" | "preferences" | "rail-timetable";
 export const DRAWING_KINDS: readonly DrawingKind[] = [
   "street-lines",
   "railway",
   "street-setups",
   "preferences",
+  "rail-timetable",
 ];
 
 /** One saved drawing as the API returns it. */

@@ -211,6 +211,7 @@ export const de: Messages = {
   "drawing.street-lines": "die Buslinie",
   "drawing.railway": "die Bahnanlage",
   "drawing.street-setups": "die Straßeneinstellungen",
+  "drawing.rail-timetable": "den Fahrplan der Bahnlinien",
   "drawing.preferences": "die Projekteinstellungen",
 
   "tab.label": "Projekt",
