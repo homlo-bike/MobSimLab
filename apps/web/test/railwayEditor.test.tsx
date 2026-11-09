@@ -801,7 +801,7 @@ describe("Railway editor", () => {
     // Editing the line marks the publication out of date.
     fireEvent.change(screen.getByLabelText("Line name"), { target: { value: "U5" } });
     expect(screen.getByTestId("lines-published").textContent).toMatch(/changed since publishing/);
-  }, 20_000); // runs the railway engine several times: about 2.5 s locally, over 5 s on CI runners
+  });
 
   it("drops a new line again when no station was picked", async () => {
     await opened({ mode: "metro" });
