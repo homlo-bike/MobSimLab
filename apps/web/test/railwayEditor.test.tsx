@@ -426,6 +426,20 @@ describe("railway engine (WebAssembly)", () => {
     e.dispose();
   });
 
+  it("generates distant and speed signals on lineside lines", async () => {
+    const e = await loadRailEngine();
+    const v = e.build(e.sample("light_rail", ORIGIN), null);
+    const speed = v.signals.filter((s) => s.kind === "speed");
+    expect(speed.length).toBeGreaterThan(0);
+    expect(speed.every((s) => (s.speed_kmh ?? 0) > 0)).toBe(true);
+    expect(v.signals.some((s) => s.kind === "speed_warning")).toBe(true);
+    const t = e.topology() as { signals: { kind: string; speed_kmh: number | null }[] };
+    expect(t.signals.filter((s) => s.kind === "speed").every((s) => s.speed_kmh !== null)).toBe(true);
+    const c = e.build(e.sample("commuter_rail", ORIGIN), null);
+    expect(c.signals.some((s) => s.kind === "distant")).toBe(true);
+    e.dispose();
+  });
+
   it("reports a curve tighter than the minimum radius", async () => {
     const e = await loadRailEngine();
     const doc: Network = {

@@ -36,6 +36,10 @@ pub enum SignalKind {
     Shunting,
     /// Distant signal announcing a main signal.
     Distant,
+    /// Speed signal where the line speed drops, showing the new speed (`speed_kmh`).
+    Speed,
+    /// Announces a speed signal at braking distance before it (`speed_kmh`: the coming speed).
+    SpeedWarning,
 }
 
 /// Where a signal stands.
@@ -85,6 +89,9 @@ pub struct Signal {
     /// Name shown on the map, empty for none.
     #[serde(default)]
     pub name: String,
+    /// Speed shown by a speed signal or its announcement, km/h.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub speed_kmh: Option<f64>,
 }
 
 /// A generated signal the planner removed or replaced: where it stood and which way it faced.
@@ -260,7 +267,7 @@ pub fn check(dz: &mut Design) {
         if locate(dz, &s.at).is_none() {
             iss.push(Issue::warning(
                 format!(
-                    "Signal {} is no longer on a track (its track, station or switch changed). Delete it, or generate the signals again.",
+                    "Signal {} is no longer on a track (its track, station or switch changed). Delete it, or reset the signals.",
                     if s.name.is_empty() { s.id.to_string() } else { s.name.clone() }
                 ),
                 None,

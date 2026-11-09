@@ -64,7 +64,9 @@ export function signalById(doc: Network, id: number, signals: SignalView[]): Sig
   const own = doc.signals?.find((s) => s.id === id);
   if (own) return own;
   const g = signals.find((s) => s.id === id && s.auto);
-  return g && { id: g.id, at: g.at, facing: g.facing, kind: g.kind, name: g.name };
+  return (
+    g && { id: g.id, at: g.at, facing: g.facing, kind: g.kind, name: g.name, speed_kmh: g.speed_kmh ?? null }
+  );
 }
 
 /**

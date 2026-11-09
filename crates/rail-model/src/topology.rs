@@ -213,6 +213,12 @@ fn yes() -> bool {
     true
 }
 
+/// Purpose: whether a signal kind of the export bounds routes and train detection (main, block
+/// and shunting signals), unlike distant and speed signals, which trains pass without stopping.
+fn bounds_routes(kind: &str) -> bool {
+    matches!(kind, "main" | "block" | "shunting")
+}
+
 #[derive(Deserialize)]
 struct TSignal {
     id: String,
@@ -560,7 +566,7 @@ fn import(t: Topology, opt: &ImportOptions) -> Result<Imported, String> {
     // Where the export's signal plan puts signals on each section: the design tool owns signal
     // placement (ADR-0030 point 7), so a stretch it bounds with signals stays a stretch.
     let mut planned: HashMap<&str, Vec<f64>> = HashMap::new();
-    for g in &t.signals {
+    for g in t.signals.iter().filter(|g| bounds_routes(&g.kind)) {
         planned
             .entry(g.section.as_str())
             .or_default()
@@ -873,7 +879,9 @@ fn import(t: Topology, opt: &ImportOptions) -> Result<Imported, String> {
     let generate = t.signals.is_empty() && opt.generate_signals;
     let signals_generated = generate || (t.signals_generated && !t.signals.is_empty());
     if !t.signals.is_empty() {
-        for s in &t.signals {
+        // Speed signals and their warnings are passed at the section's speed limit, which the
+        // export already carries: the model needs no element for them.
+        for s in t.signals.iter().filter(|s| !s.kind.starts_with("speed")) {
             let i = sec(&s.section)?;
             let k = subs[i]
                 .iter()

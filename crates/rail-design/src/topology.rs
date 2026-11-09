@@ -141,12 +141,15 @@ pub struct SignalOut {
     pub chainage_m: f64,
     /// Direction of travel it governs: `to` (from `from` towards `to`) or `from`.
     pub facing: &'static str,
-    /// `main`, `block`, `shunting` or `distant`.
+    /// `main`, `block`, `shunting`, `distant`, `speed` or `speed_warning`.
     pub kind: crate::signal::SignalKind,
-    /// Overlap beyond the signal, m; null when trains drive on sight.
+    /// Overlap beyond the signal, m; null when trains drive on sight, and for distant and speed
+    /// signals, which trains pass without stopping.
     pub overlap_m: Option<f64>,
     /// A lineside signal with lights; false for a block marker under cab signalling.
     pub lineside: bool,
+    /// Speed shown by a speed signal or announced by a speed warning, km/h; null otherwise.
+    pub speed_kmh: Option<f64>,
 }
 
 /// Where section ends meet.
@@ -499,6 +502,18 @@ struct Seg {
     /// Chainage on that track's centre line where the segment starts and ends.
     span: Option<[f64; 2]>,
 }
+
+/// A signal of the effective plan on a section: section index, offset, governs towards the
+/// `to` end, kind, export id and the speed it shows.
+#[allow(clippy::type_complexity)]
+type Placed = (
+    usize,
+    f64,
+    bool,
+    crate::signal::SignalKind,
+    String,
+    Option<f64>,
+);
 
 type NodeAt = (String, P2, Vec<(usize, usize)>);
 
@@ -1322,13 +1337,13 @@ pub fn topology(dz: &Design) -> Topology {
             .any(|k| crate::signal::same_signal(&k.at, k.facing, &d.at, d.facing))
     };
     let signals_generated = planner.is_empty() && net.signals_removed.is_empty();
-    let mut placed: Vec<(usize, f64, bool, crate::signal::SignalKind, String)> = Vec::new();
+    let mut placed: Vec<Placed> = Vec::new();
     let mut plan: Vec<crate::signal::PlanSignal> = Vec::new();
     for (n, (g, doc)) in gen.signals.iter().enumerate() {
         if doc.as_ref().is_some_and(|d| replaced(d) || removed(d)) {
             continue;
         }
-        placed.push((g.seg, g.x, g.to, g.kind, format!("g{n}")));
+        placed.push((g.seg, g.x, g.to, g.kind, format!("g{n}"), g.speed_kmh));
         if let Some(d) = doc {
             plan.push(crate::signal::PlanSignal {
                 signal: d.clone(),
@@ -1342,7 +1357,14 @@ pub fn topology(dz: &Design) -> Topology {
             auto: false,
         });
         if let Some((seg, x)) = to_section(dz, &segs, &sg.at) {
-            placed.push((seg, x, sg.facing > 0, sg.kind, format!("sg{}", sg.id)));
+            placed.push((
+                seg,
+                x,
+                sg.facing > 0,
+                sg.kind,
+                format!("sg{}", sg.id),
+                sg.speed_kmh,
+            ));
         }
     }
     placed.sort_by(|a, b| {
@@ -1357,8 +1379,8 @@ pub fn topology(dz: &Design) -> Topology {
         gen.signals.iter().filter_map(|(_, d)| d.clone()).collect();
     let signals = placed
         .iter()
-        .map(|(seg, x, to, kind, id)| {
-            let (seg, x, to, kind, id) = (*seg, *x, *to, *kind, id.clone());
+        .map(|(seg, x, to, kind, id, speed_kmh)| {
+            let (seg, x, to, kind, id, speed_kmh) = (*seg, *x, *to, *kind, id.clone(), *speed_kmh);
             let p = dz.params_for(segs[seg].mode);
             let kmh = sections[seg]
                 .speed_kmh
@@ -1371,9 +1393,19 @@ pub fn topology(dz: &Design) -> Topology {
                 chainage_m: rd(x),
                 facing: if to { "to" } else { "from" },
                 kind,
-                overlap_m: crate::signal::overlap_m(p, kmh),
+                overlap_m: if matches!(
+                    kind,
+                    crate::signal::SignalKind::Main
+                        | crate::signal::SignalKind::Block
+                        | crate::signal::SignalKind::Shunting
+                ) {
+                    crate::signal::overlap_m(p, kmh)
+                } else {
+                    None
+                },
                 lineside: !(kind == crate::signal::SignalKind::Block
                     && crate::signal::system_of(p) == crate::signal::System::Cab),
+                speed_kmh,
             }
         })
         .collect();
@@ -1425,7 +1457,7 @@ fn assess_signals(
     sections: &[Section],
     gen: &Generated,
     planner: &[&crate::signal::Signal],
-    placed: &[(usize, f64, bool, crate::signal::SignalKind, String)],
+    placed: &[Placed],
     removed: &dyn Fn(&crate::signal::Signal) -> bool,
 ) -> Vec<crate::issue::Issue> {
     use crate::issue::{fmt_m, Issue};
@@ -1443,7 +1475,9 @@ fn assess_signals(
     let next = |seg: usize, x: f64, to: bool, ahead: bool| -> Option<f64> {
         let d = placed
             .iter()
-            .filter(|p| p.0 == seg && p.2 == to)
+            .filter(|p| {
+                p.0 == seg && p.2 == to && matches!(p.3, SignalKind::Main | SignalKind::Block)
+            })
             .map(|p| if to == ahead { p.1 - x } else { x - p.1 })
             .filter(|d| *d > 0.5)
             .fold(f64::INFINITY, f64::min);
@@ -1478,6 +1512,11 @@ fn assess_signals(
                     speed(g.seg, g.x).round()
                 )
             }
+            Area::Distant => "A distant signal was removed: trains get no warning that the main signal ahead may show stop, so they must approach it slowly enough to stop on sight. Reset the signals, or place a distant signal at braking distance before it.".into(),
+            Area::Speed => format!(
+                "A speed signal was removed: the drop to {} km/h is not signed, so a driver may run into it too fast. Reset the signals, or place a speed signal there.",
+                g.speed_kmh.unwrap_or(0.0).round()
+            ),
         };
         out.push(Issue::warning(text, at(&d.at), d.id));
     }
@@ -1609,6 +1648,14 @@ fn assess_signals(
     out
 }
 
+/// Purpose: the line speed at a distance along a section, km/h (None outside its ranges).
+fn speed_at(s: &Section, x: f64) -> Option<f64> {
+    s.speed_kmh
+        .iter()
+        .find(|r| x >= r.from_m - 1e-6 && x <= r.to_m + 1e-6)
+        .map(|r| r.value)
+}
+
 /// Purpose: a sentence's first letter in upper case.
 fn capitalise(s: &str) -> String {
     let mut c = s.chars();
@@ -1625,6 +1672,8 @@ struct SecSignal {
     kind: crate::signal::SignalKind,
     /// What it is there for.
     purpose: Area,
+    /// Speed shown by a speed signal, km/h.
+    speed_kmh: Option<f64>,
 }
 
 /// What a generated signal protects, and what a stretch of section is kept clear for.
@@ -1640,6 +1689,10 @@ enum Area {
     Platform,
     /// Plain line (block signal).
     Block,
+    /// Announcing a main signal at braking distance (distant signal).
+    Distant,
+    /// A drop in line speed (speed signal, or its announcement).
+    Speed,
 }
 
 impl Area {
@@ -1654,6 +1707,8 @@ impl Area {
             Area::LevelCrossing(id) => format!("the level crossing {id}"),
             Area::Platform => "the platform end".into(),
             Area::Block => "plain line".into(),
+            Area::Distant => "the approach to a main signal".into(),
+            Area::Speed => "a speed restriction".into(),
         }
     }
 }
@@ -1813,6 +1868,7 @@ fn generate_signals(
                     to,
                     kind: main_kind(si),
                     purpose: Area::Switch(sw.id),
+                    speed_kmh: None,
                 });
             } else {
                 areas[si].push((0.0, len[si], Area::Switch(sw.id)));
@@ -1827,6 +1883,7 @@ fn generate_signals(
                         to: false,
                         kind: main_kind(ai),
                         purpose: Area::Switch(sw.id),
+                        speed_kmh: None,
                     });
                 } else {
                     areas[ai].push((o, len[ai], Area::Switch(sw.id)));
@@ -1836,6 +1893,7 @@ fn generate_signals(
                         to: true,
                         kind: main_kind(ai),
                         purpose: Area::Switch(sw.id),
+                        speed_kmh: None,
                     });
                 }
             }
@@ -1861,6 +1919,7 @@ fn generate_signals(
                         to: true,
                         kind: main_kind(i),
                         purpose: Area::Crossing(c.id.clone()),
+                        speed_kmh: None,
                     });
                 }
                 if b <= len[i] {
@@ -1870,6 +1929,7 @@ fn generate_signals(
                         to: false,
                         kind: main_kind(i),
                         purpose: Area::Crossing(c.id.clone()),
+                        speed_kmh: None,
                     });
                 }
             }
@@ -1946,6 +2006,7 @@ fn generate_signals(
                         to: e == 1,
                         kind: SignalKind::Main,
                         purpose: Area::Platform,
+                        speed_kmh: None,
                     },
                 );
             }
@@ -1990,10 +2051,96 @@ fn generate_signals(
                                 to,
                                 kind: SignalKind::Block,
                                 purpose: Area::Block,
+                                speed_kmh: None,
                             },
                         );
                     }
                 }
+            }
+        }
+    }
+    // Distant signals: a main signal with no main or block signal of its direction within a
+    // block length behind it on its section is announced at braking distance plus sighting
+    // distance (lineside fixed block only; under cab signalling the cab announces it).
+    let mut distant = Vec::new();
+    for o in out.iter().filter(|o| o.kind == SignalKind::Main) {
+        let p = params(o.seg);
+        if storage(o.seg) || system_of(p) != System::FixedBlock {
+            continue;
+        }
+        let kmh = speed_at(&sections[o.seg], o.x).unwrap_or(p.design_speed_kmh);
+        let back = |x: f64| if o.to { o.x - x } else { x - o.x };
+        let block = block_length_m(p, kmh);
+        let announced = out.iter().any(|q| {
+            q.seg == o.seg
+                && q.to == o.to
+                && matches!(q.kind, SignalKind::Main | SignalKind::Block)
+                && back(q.x) > 0.5
+                && back(q.x) <= block
+        });
+        let d = crate::signal::braking_m(p, kmh) + p.sighting_m;
+        let x = if o.to { o.x - d } else { o.x + d };
+        if announced || x < 0.0 || x > len[o.seg] || inside(o.seg, x, &areas) {
+            continue;
+        }
+        distant.push(SecSignal {
+            seg: o.seg,
+            x,
+            to: o.to,
+            kind: SignalKind::Distant,
+            purpose: Area::Distant,
+            speed_kmh: None,
+        });
+    }
+    for d in distant {
+        push(&mut out, d);
+    }
+    // Speed signals where the line speed drops along a section, and their announcement at
+    // braking distance from the higher speed to the lower (lineside fixed block only).
+    for i in 0..segs.len() {
+        let p = params(i);
+        if segs[i].source.kind != "track" || storage(i) || system_of(p) != System::FixedBlock {
+            continue;
+        }
+        let r = &sections[i].speed_kmh;
+        for w in r.windows(2) {
+            let (v1, v2) = (w[0].value, w[1].value);
+            if (v1 - v2).abs() < 1.0 {
+                continue;
+            }
+            // Trains moving to the `to` end slow down at the start of w[1]; trains moving the
+            // other way at the end of w[0].
+            let (to, x, high, low) = if v2 < v1 {
+                (true, w[1].from_m, v1, v2)
+            } else {
+                (false, w[0].to_m, v2, v1)
+            };
+            let b = p.service_braking_ms2.max(0.1);
+            let d = ((high / 3.6).powi(2) - (low / 3.6).powi(2)) / (2.0 * b) + p.sighting_m;
+            push(
+                &mut out,
+                SecSignal {
+                    seg: i,
+                    x,
+                    to,
+                    kind: SignalKind::Speed,
+                    purpose: Area::Speed,
+                    speed_kmh: Some(low),
+                },
+            );
+            let xw = if to { x - d } else { x + d };
+            if (0.0..=len[i]).contains(&xw) {
+                push(
+                    &mut out,
+                    SecSignal {
+                        seg: i,
+                        x: xw,
+                        to,
+                        kind: SignalKind::SpeedWarning,
+                        purpose: Area::Speed,
+                        speed_kmh: Some(low),
+                    },
+                );
             }
         }
     }
@@ -2016,6 +2163,7 @@ fn generate_signals(
                     facing: if o.to { 1 } else { -1 },
                     kind: o.kind,
                     name: String::new(),
+                    speed_kmh: o.speed_kmh,
                 };
                 id += 1;
                 sig
@@ -2291,6 +2439,7 @@ mod tests {
             facing: 1,
             kind: SignalKind::Main,
             name: String::new(),
+            speed_kmh: None,
         }]);
         let dz3 = build(&inside, None);
         assert!(
@@ -2325,6 +2474,7 @@ mod tests {
             facing: 1,
             kind: SignalKind::Block,
             name: "B1".into(),
+            speed_kmh: None,
         }]);
         let dz4 = build(&close, None);
         assert!(
@@ -2336,5 +2486,48 @@ mod tests {
         );
         // The planner's signal comes on top: the generated one 10 m before it stays.
         assert_eq!(dz4.signals.len(), dz.signals.len() + 1);
+    }
+
+    #[test]
+    fn lineside_lines_get_distant_and_speed_signals() {
+        let speeds = |m: RailMode| {
+            let dz = build(&sample(m, 7.0, 50.9), None);
+            let t = topology(&dz);
+            (dz, t)
+        };
+        // Light rail: curves below line speed are signed, and announced from the higher speed.
+        let (dz, t) = speeds(RailMode::LightRail);
+        let sp: Vec<_> = dz
+            .signals
+            .iter()
+            .filter(|s| s.signal.kind == SignalKind::Speed)
+            .collect();
+        assert!(!sp.is_empty());
+        assert!(sp
+            .iter()
+            .all(|s| s.signal.speed_kmh.is_some_and(|v| v > 0.0)));
+        assert!(dz
+            .signals
+            .iter()
+            .any(|s| s.signal.kind == SignalKind::SpeedWarning));
+        assert!(t
+            .signals
+            .iter()
+            .filter(|s| s.kind == SignalKind::Speed)
+            .all(|s| s.speed_kmh.is_some() && s.overlap_m.is_none()));
+        // Commuter rail: main signals without a signal a block length before them get a distant.
+        let (dz, _) = speeds(RailMode::CommuterRail);
+        assert!(dz
+            .signals
+            .iter()
+            .any(|s| s.signal.kind == SignalKind::Distant));
+        // Cab signalling and driving on sight need neither.
+        for m in [RailMode::Metro, RailMode::Tram] {
+            let (dz, _) = speeds(m);
+            assert!(dz.signals.iter().all(|s| !matches!(
+                s.signal.kind,
+                SignalKind::Distant | SignalKind::Speed | SignalKind::SpeedWarning
+            )));
+        }
     }
 }

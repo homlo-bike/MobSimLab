@@ -620,7 +620,7 @@ pub fn view(dz: &Design) -> Value {
         ly.point("signals", head, props("signal"));
         signal_list.push(json!({
             "id": sg.id, "kind": sg.kind, "name": sg.name, "facing": sg.facing, "at": sg.at,
-            "lineside": lineside, "lonlat": ly.ll(head), "auto": ps.auto,
+            "lineside": lineside, "lonlat": ly.ll(head), "auto": ps.auto, "speed_kmh": sg.speed_kmh,
         }));
     }
 
