@@ -148,6 +148,12 @@ pub struct ModeParams {
     pub level_crossing_path_width_m: f64,
     /// Smallest angle between track and a path that cyclists use, degrees.
     pub level_crossing_cycle_min_angle_deg: f64,
+    /// Window over which the ground under a track is smoothed, m.
+    pub terrain_smoothing_window_m: f64,
+    /// Share of the maximum gradient a track uses to tie in to a level station or a switch.
+    pub terrain_tie_in_gradient_share: f64,
+    /// Largest height difference between street-level track and the ground, m.
+    pub terrain_street_level_tolerance_m: f64,
     /// Longest peak headway of a line, min (`timetable.policy_headway_peak_min`): the
     /// assumed service at level crossings until a timetable exists.
     pub policy_headway_peak_min: f64,

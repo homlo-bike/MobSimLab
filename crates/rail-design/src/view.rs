@@ -811,6 +811,8 @@ pub fn view(dz: &Design) -> Value {
                 "layout": layout.join(" "), "box_length_m": st.half_len * 2.0, "box_width_m": st.half_w * 2.0,
                 "platform_height_mm": dz.params_for(dz.station_mode(doc)).platform_height_mm, "lonlat": ly.ll(st.centre),
                 "mode": dz.station_mode(doc),
+                "height": dz.heights.stations.get(&st.id).map(|h| json!({
+                    "rail_m": h.rail_m, "ground_min_m": h.ground_min_m, "ground_max_m": h.ground_max_m})),
             })
         })
         .collect();
@@ -833,6 +835,17 @@ pub fn view(dz: &Design) -> Value {
                 "embedded": dz.doc_track(g.id).is_some_and(|t| dz.embedded(t)),
                 "speed": sp.map(|s| json!({"max_kmh": s.vmax, "time_s": s.time_s,
                     "profile": s.s.iter().zip(&s.limit).zip(&s.v).step_by((s.s.len() / 120).max(1)).map(|((a, b), c)| json!([a, b, c])).collect::<Vec<_>>()})),
+                "elevation": dz.heights.tracks.get(&g.id).map(|h| {
+                    let (lo, hi) = h.rail.iter().fold((f64::INFINITY, f64::NEG_INFINITY), |(a, b), v| (a.min(*v), b.max(*v)));
+                    json!({
+                        "rail_min_m": lo, "rail_max_m": hi, "steepest_permille": h.steepest(),
+                        "max_permille": dz.track_params(g.id).max_gradient_permille,
+                        // Chainage, smoothed ground, rail top; at most about 200 points.
+                        "profile": h.s.iter().zip(&h.ground_smooth).zip(&h.rail).enumerate()
+                            .filter(|(i, _)| i % (h.s.len() / 200).max(1) == 0 || *i + 1 == h.s.len())
+                            .map(|(_, ((a, b), c))| json!([a, b, c])).collect::<Vec<_>>(),
+                    })
+                }),
                 "centre": slice(&g.centre, 0.0, g.length).iter().step_by((g.centre.len() / 400).max(1)).map(|q| ly.ll(q.p)).collect::<Vec<_>>(),
             })
         })

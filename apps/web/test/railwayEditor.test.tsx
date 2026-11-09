@@ -298,6 +298,32 @@ describe("railway engine (WebAssembly)", () => {
     e.dispose();
   });
 
+  it("gives tracks a vertical profile from the terrain and keeps stations level", async () => {
+    const e = await loadRailEngine();
+    const net = sample("regional_rail");
+    e.build(net, null);
+    // Ground rising 3 ‰ to the east (1° of longitude is about 70 km at 50.9° N).
+    for (let pass = 0; pass < 3; pass++) {
+      for (const [x, y] of e.missingTerrainTiles!())
+        e.addTerrainTile!(
+          x,
+          y,
+          e.terrainTilePoints!(x, y).map(([lon]) => 100 + 0.003 * (lon - ORIGIN[0]) * 70_200),
+        );
+      e.build(net, null);
+    }
+    expect(e.missingTerrainTiles!()).toEqual([]);
+    const v = e.build(net, null);
+    for (const st of v.stations) expect(st.height?.rail_m).toBeGreaterThan(90);
+    const tv = v.tracks.find((t) => t.elevation)!;
+    expect(tv.elevation!.profile.length).toBeGreaterThan(10);
+    expect(Math.abs(tv.elevation!.steepest_permille)).toBeLessThanOrEqual(tv.elevation!.max_permille + 0.5);
+    expect(v.issues.some((i) => /is level with its rails at/.test(i.text))).toBe(true);
+    const topo = e.topology() as { sections: { gradient_permille: unknown[] }[] };
+    expect(topo.sections.some((s) => s.gradient_permille.length > 0)).toBe(true);
+    e.dispose();
+  });
+
   it("finds a tram running along a street, keeps it to the street's speed limit and exports it", async () => {
     const e = await loadRailEngine();
     e.addStreetTile(streetTile(50.898, 50.902, { highway: "primary", name: "High Street", lanes: "4" }));

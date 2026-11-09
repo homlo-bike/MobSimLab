@@ -11,6 +11,7 @@
 //! - [`design`]: builds everything and runs the live checks of 06 §9.2.
 //! - [`signal`]: the signal plan, generated from the design and edited by the planner.
 //! - [`street`]: streets from OpenStreetMap and the level crossings where track crosses them.
+//! - [`terrain`]: ground heights, the tracks' vertical profiles and gradients, level stations.
 //! - [`view`]: GeoJSON layers, handles and summaries for the map editor.
 //! - [`topology`]: the track graph for railway operations (`contracts/rail-topology.schema.json`).
 //! - [`params`]: rail modes, design values and the switch catalogue from the assumption library.
@@ -34,9 +35,12 @@ pub mod station;
 pub mod street;
 pub mod street_running;
 pub mod switch;
+pub mod terrain;
 pub mod topology;
 pub mod view;
 
-pub use design::{build, build_with_osm, build_with_streets, build_with_values, Design};
+pub use design::{
+    build, build_with_osm, build_with_streets, build_with_terrain, build_with_values, Design,
+};
 pub use model::Network;
 pub use params::{defaults, RailMode};
