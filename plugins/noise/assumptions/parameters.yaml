@@ -365,20 +365,370 @@
       check: unverified
       rationale: "CNOSSOS-EU places the road line source 0.05 m above the road surface."
 
-- key: noise.rail_source_height_m
-  label: "Rail vehicle source height above the rail head"
+- key: noise.rail_source_height_a_m
+  label: "Rail source A height above the rail head (rolling, impact, squeal, bridge, low traction)"
   group: Noise
   unit: m
-  used_by: [noise corridor in the editors]
+  used_by: [noise corridor in the editors, noise map]
   values:
     - context: { mode: "*" }
-      low: 0.05
+      low: 0.5
       central: 0.5
+      high: 0.5
+      basis: cited
+      sources: [cnossos-2015]
+      check: read
+      rationale: "CNOSSOS-EU Annex II 2.3.1, Figure 2.3.a: source A at 0.5 m above the plane of the rail heads."
+
+- key: noise.rail_source_height_b_m
+  label: "Rail source B height above the rail head (roof traction, pantograph, aerodynamic)"
+  group: Noise
+  unit: m
+  used_by: [noise corridor in the editors, noise map]
+  values:
+    - context: { mode: "*" }
+      low: 4
+      central: 4
       high: 4
+      basis: cited
+      sources: [cnossos-2015]
+      check: read
+      rationale: "CNOSSOS-EU Annex II 2.3.1, Figure 2.3.a: source B at 4.0 m above the plane of the rail heads."
+
+- key: noise.rail_min_roughness_speed_kmh
+  label: "Lowest speed used for the rail rolling noise roughness"
+  group: Noise
+  unit: km/h
+  used_by: [noise corridor in the editors, noise map]
+  values:
+    - context: { mode: "*" }
+      low: 50
+      central: 50
+      high: 50
+      basis: cited
+      sources: [cnossos-2015]
+      check: read
+      rationale: "CNOSSOS-EU Annex II 2.3.2 (rolling noise): a minimum speed of 50 km/h is used for the total effective roughness, to cover braking and impact noise at low speed; it does not change the vehicle flow. Impact noise is not modelled below this speed."
+    - context: { mode: [tram, light_rail] }
+      low: 30
+      central: 30
+      high: 30
+      basis: cited
+      sources: [cnossos-2015]
+      check: read
+      rationale: "CNOSSOS-EU Annex II 2.3.2: 30 km/h for trams and light metro."
+
+- key: noise.rail_aero_from_kmh
+  label: "Speed above which aerodynamic noise is added"
+  group: Noise
+  unit: km/h
+  used_by: [noise corridor in the editors, noise map]
+  values:
+    - context: { mode: "*" }
+      low: 200
+      central: 200
+      high: 200
+      basis: cited
+      sources: [cnossos-2015]
+      check: read
+      rationale: "CNOSSOS-EU Annex II 2.3.2 (aerodynamic noise): only relevant above 200 km/h. The Table G-6 values are then added at sources A and B with alpha 50 (L_W = L_W,0 + 50 lg(v/300))."
+
+- key: noise.rail_vehicle_length_m
+  label: "Rail vehicle length used to count vehicles in a train"
+  group: Noise
+  unit: m
+  used_by: [noise corridor in the editors, noise map]
+  values:
+    - context: { mode: "*" }
+      low: 25
+      central: 25
+      high: 25
       basis: educated-guess
       sources: [cnossos-2015, mobsimlab-derivation]
       check: unverified
-      rationale: "CNOSSOS-EU uses two railway sources, at 0.05 m (rolling and impact) and 4 m (pantograph and aerodynamic). The quick estimate uses one source at 0.5 m, between the two and nearer the dominant rolling noise."
+      rationale: "CNOSSOS-EU counts vehicles (sub-units of a train). The train length the editors give is divided by this length to get the number of vehicles; 25 m is a usual mainline multiple-unit car."
+    - context: { mode: [tram, light_rail] }
+      low: 30
+      central: 30
+      high: 30
+      basis: educated-guess
+      sources: [cnossos-2015, mobsimlab-derivation]
+      check: unverified
+      rationale: "Articulated trams and light rail vehicles cannot be split, so CNOSSOS-EU treats each as one vehicle; 30 m is a usual unit length, so a double unit counts as two."
+    - context: { mode: metro }
+      low: 20
+      central: 20
+      high: 20
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: "Usual metro car length."
+    - context: { mode: long_distance_rail }
+      low: 26.4
+      central: 26.4
+      high: 26.4
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: "UIC-X/Z passenger coach length."
+
+- key: noise.rail_axles_per_vehicle
+  label: "Axles per rail vehicle"
+  group: Noise
+  unit: axles
+  used_by: [noise corridor in the editors, noise map]
+  values:
+    - context: { mode: "*" }
+      low: 4
+      central: 4
+      high: 4
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: "Two two-axle bogies per car. Rolling noise grows 10 lg(N_a) with the axle count (CNOSSOS-EU formulas 2.3.8 to 2.3.10)."
+    - context: { mode: [tram, light_rail] }
+      low: 4
+      central: 6
+      high: 8
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: "A 30 m articulated low-floor tram runs on two to four bogies (some with independent wheels); three bogies is common."
+
+- key: noise.rail_powered_vehicle_share
+  label: "Share of rail vehicles that carry traction equipment (multiple units)"
+  group: Noise
+  unit: share
+  used_by: [noise corridor in the editors, noise map]
+  values:
+    - context: { mode: "*" }
+      low: 0.5
+      central: 0.5
+      high: 0.75
+      basis: educated-guess
+      sources: [cnossos-2015, mobsimlab-derivation]
+      check: unverified
+      rationale: "The Table G-5 traction values are per vehicle. In a multiple unit only some cars carry motors and converters; half is usual for EMUs and high-speed trains with distributed traction."
+    - context: { mode: [tram, light_rail] }
+      low: 1
+      central: 1
+      high: 1
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: "Each tram or light rail vehicle is self-propelled."
+    - context: { mode: long_distance_rail }
+      low: 0
+      central: 0
+      high: 0
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: "Locomotive-hauled: the coaches have no traction; the locomotive is counted by noise.rail_locomotives_per_train."
+
+- key: noise.rail_locomotives_per_train
+  label: "Locomotives per train"
+  group: Noise
+  unit: count
+  used_by: [noise corridor in the editors, noise map]
+  values:
+    - context: { mode: "*" }
+      low: 0
+      central: 0
+      high: 0
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: "Multiple units have no locomotive."
+    - context: { mode: long_distance_rail }
+      low: 1
+      central: 1
+      high: 1
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: "One locomotive hauls the coaches; its traction noise comes from noise.rail_traction."
+
+- key: noise.rail_traction
+  label: "Traction noise source (CNOSSOS-EU Table G-5)"
+  group: Noise
+  unit: id
+  kind: enum
+  options: [emu, dmu, electric_loco, diesel_loco_800kw, diesel_loco_2200kw]
+  used_by: [noise corridor in the editors, noise map]
+  values:
+    - context: { mode: "*" }
+      low: emu
+      central: emu
+      high: emu
+      basis: educated-guess
+      sources: [cnossos-2015, cnossos-2021]
+      check: read
+      rationale: "Electric multiple unit, per powered vehicle, split between source A and source B as the table gives."
+    - context: { mode: regional_rail }
+      low: emu
+      central: emu
+      high: dmu
+      basis: educated-guess
+      sources: [cnossos-2015, cnossos-2021]
+      check: read
+      rationale: "Regional fleets mix electric and diesel multiple units; the high end assumes diesel."
+    - context: { mode: long_distance_rail }
+      low: electric_loco
+      central: electric_loco
+      high: diesel_loco_2200kw
+      basis: educated-guess
+      sources: [cnossos-2015, cnossos-2021]
+      check: read
+      rationale: "Electric locomotive; the high end is a 2 200 kW diesel locomotive (Table G-5 with the 6 300 Hz row corrected by 2021/1226)."
+
+- key: noise.rail_wheel_roughness
+  label: "Wheel roughness by brake type (CNOSSOS-EU Table G-1)"
+  group: Noise
+  unit: id
+  kind: enum
+  options: [cast_iron, composite, disc]
+  used_by: [noise corridor in the editors, noise map]
+  values:
+    - context: { mode: "*" }
+      low: disc
+      central: disc
+      high: composite
+      basis: educated-guess
+      sources: [cnossos-2015]
+      check: read
+      rationale: "Passenger rolling stock is disc braked; the high end allows for composite tread brakes, which leave rougher wheels. Table G-1 starts at 1 000 mm; longer wavelengths take the 1 000 mm value."
+
+- key: noise.rail_rail_roughness
+  label: "Rail roughness (CNOSSOS-EU Table G-1, as replaced by 2021/1226)"
+  group: Noise
+  unit: id
+  kind: enum
+  options: [e, m]
+  used_by: [noise corridor in the editors, noise map]
+  values:
+    - context: { mode: "*" }
+      low: e
+      central: m
+      high: m
+      basis: cited
+      sources: [cnossos-2021]
+      check: read
+      rationale: "M: average network, normally maintained. The low end is E, well maintained and very smooth (EN ISO 3095 reference)."
+
+- key: noise.rail_contact_filter
+  label: "Contact filter by wheel load and diameter (CNOSSOS-EU Table G-2, as replaced by 2021/1226)"
+  group: Noise
+  unit: id
+  kind: enum
+  options:
+    [
+      wheel_load_50kn_d360,
+      wheel_load_50kn_d680,
+      wheel_load_50kn_d920,
+      wheel_load_25kn_d920,
+      wheel_load_100kn_d920,
+    ]
+  used_by: [noise corridor in the editors, noise map]
+  values:
+    - context: { mode: "*" }
+      low: wheel_load_50kn_d920
+      central: wheel_load_50kn_d920
+      high: wheel_load_50kn_d920
+      basis: educated-guess
+      sources: [cnossos-2021]
+      check: read
+      rationale: "Passenger cars with 920 mm wheels; 50 kN wheel load is the nearest table entry for 10–14 t axle loads."
+    - context: { mode: [tram, light_rail] }
+      low: wheel_load_50kn_d680
+      central: wheel_load_50kn_d680
+      high: wheel_load_50kn_d680
+      basis: educated-guess
+      sources: [cnossos-2021]
+      check: read
+      rationale: "Low-floor vehicles have small wheels (about 600–680 mm)."
+
+- key: noise.rail_wheel_transfer
+  label: "Wheel transfer function by wheel diameter (CNOSSOS-EU Table G-3)"
+  group: Noise
+  unit: id
+  kind: enum
+  options: [d920, d840, d680, d1200]
+  used_by: [noise corridor in the editors, noise map]
+  values:
+    - context: { mode: "*" }
+      low: d920
+      central: d920
+      high: d920
+      basis: educated-guess
+      sources: [cnossos-2015]
+      check: read
+      rationale: "920 mm wheels, no noise measure."
+    - context: { mode: [tram, light_rail] }
+      low: d680
+      central: d680
+      high: d680
+      basis: educated-guess
+      sources: [cnossos-2015]
+      check: read
+      rationale: "Small wheels of low-floor vehicles."
+    - context: { mode: metro }
+      low: d840
+      central: d840
+      high: d840
+      basis: educated-guess
+      sources: [cnossos-2015]
+      check: read
+      rationale: "Metro wheels are usually about 840 mm."
+
+- key: noise.rail_track_transfer
+  label: "Track transfer function by sleeper and rail pad (CNOSSOS-EU Table G-3, as replaced by 2021/1226)"
+  group: Noise
+  unit: id
+  kind: enum
+  options: [mono_soft, mono_medium, mono_hard, bi_soft, bi_medium, bi_hard, wooden, direct_fastening_bridge]
+  used_by: [noise corridor in the editors, noise map]
+  values:
+    - context: { mode: "*" }
+      low: mono_hard
+      central: mono_medium
+      high: mono_soft
+      basis: educated-guess
+      sources: [cnossos-2021]
+      check: read
+      rationale: "Ballasted track on concrete mono-block sleepers with medium rail pads (250–800 MN/m). Soft pads let the rail radiate more; hard pads less. Bridges keep this track: the bridge structure is added as its own source."
+
+- key: noise.rail_bridge_transfer
+  label: "Bridge transfer function (CNOSSOS-EU Table G-7, as replaced by 2021/1226)"
+  group: Noise
+  unit: id
+  kind: enum
+  options: [plus10, plus15]
+  used_by: [noise corridor in the editors, noise map]
+  values:
+    - context: { mode: "*" }
+      low: plus10
+      central: plus10
+      high: plus15
+      basis: cited
+      sources: [cnossos-2021]
+      check: read
+      rationale: "Table G-7 gives two bridge transfer functions, headed +10 dB(A) and +15 dB(A). Bridge noise is an extra omnidirectional source at A: L_W,0,bridge = L_R,TOT + L_H,bridge + 10 lg(N_a) (formula 2.3.18 as replaced)."
+
+- key: noise.rail_impact_extent_m
+  label: "Impact noise from a switch or joint: extent before and after it"
+  group: Noise
+  unit: m
+  used_by: [noise corridor in the editors, noise map]
+  values:
+    - context: { mode: "*" }
+      low: 50
+      central: 50
+      high: 50
+      basis: cited
+      sources: [cnossos-2015]
+      check: read
+      rationale: "CNOSSOS-EU Annex II 2.3.2 (impact noise): the impact roughness raises the emission from 50 m before to 50 m after the joint or switch, at a joint density of one per 100 m (Table G-4 single switch/joint/crossing)."
 
 - key: noise.road_stop_zone_m
   label: "Acceleration and braking zone either side of a stop"
@@ -410,131 +760,6 @@
       check: secondary
       rationale: "PLACEHOLDER awaiting the product owner's value (asked 2026-11-03). NZTA RR 703 found electric buses about 8 dB quieter at 10 km/h and no different at 30 km/h; applying the change to the CNOSSOS propulsion term only reproduces that fade-out because rolling noise dominates with speed. CNOSSOS-EU has no electric category yet."
 
-- key: noise.rail_passby_db
-  label: "Rail pass-by level L_pAeq,Tp at 7.5 m and 1.2 m at the reference speed, ballasted track"
-  group: Noise
-  unit: dB(A)
-  used_by: [noise corridor in the editors]
-  values:
-    - context: { mode: "*" }
-      low: 74
-      central: 78
-      high: 82
-      basis: educated-guess
-      sources: [tsi-noi, iso-3095, mobsimlab-derivation]
-      check: unverified
-      rationale: "Interim rail emission until the CNOSSOS-EU railway database (Appendix F) is in the crate: one measured-style pass-by level per mode, scaled with speed. Fallback for a mode without its own entry."
-    - context: { mode: tram }
-      low: 72
-      central: 75
-      high: 79
-      basis: educated-guess
-      sources: [iso-3095, mobsimlab-derivation]
-      check: unverified
-      rationale: "Modern low-floor trams measured to ISO 3095 at 40 km/h typically fall between the low and high values; reference speed 40 km/h."
-    - context: { mode: light_rail }
-      low: 73
-      central: 77
-      high: 81
-      basis: educated-guess
-      sources: [iso-3095, mobsimlab-derivation]
-      check: unverified
-      rationale: "Light rail vehicles at 50 km/h on ballast, between trams and metro."
-    - context: { mode: metro }
-      low: 75
-      central: 79
-      high: 83
-      basis: educated-guess
-      sources: [iso-3095, mobsimlab-derivation]
-      check: unverified
-      rationale: "Metro trains on surface ballasted track at 60 km/h; rubber-tyred metro is several dB quieter and needs its own measured value."
-    - context: { mode: commuter_rail }
-      low: 74
-      central: 77
-      high: 80
-      basis: documented
-      sources: [tsi-noi]
-      check: unverified
-      rationale: "TSI NOI limits electric multiple units to 80 dB at 80 km/h; recent EMUs measure 3–6 dB below the limit. Reference speed 80 km/h."
-    - context: { mode: regional_rail }
-      low: 74
-      central: 78
-      high: 81
-      basis: documented
-      sources: [tsi-noi]
-      check: unverified
-      rationale: "TSI NOI: EMU 80 dB and DMU 81 dB at 80 km/h; regional fleets mix both. Reference speed 80 km/h."
-    - context: { mode: long_distance_rail }
-      low: 76
-      central: 80
-      high: 84
-      basis: documented
-      sources: [tsi-noi]
-      check: unverified
-      rationale: "Locomotive-hauled trains: TSI NOI limits 84 dB for electric locomotives and 79 dB for coaches at 80 km/h. Reference speed 80 km/h."
-    - context: { mode: high_speed_rail }
-      low: 75
-      central: 78
-      high: 80
-      basis: documented
-      sources: [tsi-noi]
-      check: unverified
-      rationale: "High-speed EMUs at 80 km/h are within the TSI NOI EMU limit (80 dB); aerodynamic noise above about 200 km/h is added by the speed law."
-
-- key: noise.rail_passby_ref_speed_kmh
-  label: "Reference speed of the rail pass-by level"
-  group: Noise
-  unit: km/h
-  used_by: [noise corridor in the editors]
-  values:
-    - context: { mode: "*" }
-      low: 80
-      central: 80
-      high: 80
-      basis: cited
-      sources: [tsi-noi]
-      check: unverified
-      rationale: "TSI NOI states pass-by limits at 80 km/h."
-    - context: { mode: tram }
-      low: 40
-      central: 40
-      high: 40
-      basis: documented
-      sources: [iso-3095]
-      check: unverified
-      rationale: "Usual measurement speed for trams."
-    - context: { mode: light_rail }
-      low: 50
-      central: 50
-      high: 50
-      basis: documented
-      sources: [iso-3095]
-      check: unverified
-      rationale: "Usual measurement speed for light rail."
-    - context: { mode: metro }
-      low: 60
-      central: 60
-      high: 60
-      basis: documented
-      sources: [iso-3095]
-      check: unverified
-      rationale: "Usual measurement speed for metro trains."
-
-- key: noise.rail_rolling_speed_exponent
-  label: "Rail rolling noise: dB per decade of speed"
-  group: Noise
-  unit: dB
-  used_by: [noise corridor in the editors]
-  values:
-    - context: { mode: "*" }
-      low: 25
-      central: 30
-      high: 35
-      basis: documented
-      sources: [cnossos-2015]
-      check: unverified
-      rationale: "Rolling noise grows about 30 lg(v/v0) between about 30 and 200 km/h; below that traction and auxiliaries keep a floor (taken 10 dB under the reference pass-by level)."
-
 - key: noise.rail_squeal_r300_db
   label: "Curve squeal, railways, radius up to 300 m"
   group: Noise
@@ -547,8 +772,8 @@
       high: 10
       basis: cited
       sources: [cnossos-2021]
-      check: secondary
-      rationale: "Directive (EU) 2021/1226, railway squeal table: +8 dB for R ≤ 300 m on at least 50 m of track (read in the German and Spanish texts). Low and high are sensitivity values for lubricated and badly squealing curves."
+      check: read
+      rationale: "Directive (EU) 2021/1226, Annex point (4)(b), squeal table: trains +8 dB for curves with R ≤ 300 m and at least 50 m of track (and switch turnouts with R ≤ 300 m), added to the rolling noise in all bands. Low and high are sensitivity values for lubricated and badly squealing curves."
 
 - key: noise.rail_squeal_r500_db
   label: "Curve squeal, railways, radius 300–500 m"
@@ -562,8 +787,8 @@
       high: 8
       basis: cited
       sources: [cnossos-2021]
-      check: secondary
-      rationale: "Directive (EU) 2021/1226: +5 dB for 300 < R ≤ 500 m."
+      check: read
+      rationale: "Directive (EU) 2021/1226, Annex point (4)(b): trains +5 dB for curves with 300 m < R ≤ 500 m and at least 50 m of track."
 
 - key: noise.tram_squeal_r200_db
   label: "Curve squeal, trams, radius up to 200 m"
@@ -577,8 +802,8 @@
       high: 8
       basis: cited
       sources: [cnossos-2021]
-      check: secondary
-      rationale: "Directive (EU) 2021/1226: trams +5 dB for R ≤ 200 m."
+      check: read
+      rationale: "Directive (EU) 2021/1226, Annex point (4)(b): trams +5 dB for curves and switch turnouts with R ≤ 200 m."
 
 - key: noise.squeal_min_length_m
   label: "Shortest curve that gets the squeal correction"
@@ -592,53 +817,23 @@
       high: 50
       basis: cited
       sources: [cnossos-2021]
-      check: secondary
-      rationale: "The squeal correction applies to curves of at least 50 m length."
-
-- key: noise.rail_switch_db
-  label: "Switches and crossings: impact noise added over the switch"
-  group: Noise
-  unit: dB
-  used_by: [noise corridor in the editors]
-  values:
-    - context: { mode: "*" }
-      low: 2
-      central: 4
-      high: 6
-      basis: educated-guess
-      sources: [cnossos-2015, mobsimlab-derivation]
-      check: unverified
-      rationale: "CNOSSOS-EU adds impact noise from the joint density; a turnout with two or three joints and a rigid crossing over about 30–60 m raises the local emission by a few dB. Interim until the impact term of the railway database is in the crate."
-
-- key: noise.rail_bridge_db
-  label: "Elevated track: bridge noise added"
-  group: Noise
-  unit: dB
-  used_by: [noise corridor in the editors]
-  values:
-    - context: { mode: "*" }
-      low: 1
-      central: 3
-      high: 9
-      basis: educated-guess
-      sources: [cnossos-2015, mobsimlab-derivation]
-      check: unverified
-      rationale: "CNOSSOS-EU adds a bridge correction per structure type: small for heavy concrete viaducts with ballast, up to about +9 dB for steel bridges with direct fastening. Central for a concrete viaduct."
+      check: read
+      rationale: "Directive (EU) 2021/1226, Annex point (4)(b): the train squeal values apply to curves with l_track ≥ 50 m."
 
 - key: noise.tram_embedded_track_db
-  label: "Trams on embedded street track, compared with ballast"
+  label: "Trams on embedded street track: added to the track part of rolling noise"
   group: Noise
   unit: dB
-  used_by: [noise corridor in the editors]
+  used_by: [noise corridor in the editors, noise map]
   values:
     - context: { mode: "*" }
       low: 0
       central: 2
       high: 5
       basis: educated-guess
-      sources: [cnossos-2021, mobsimlab-derivation]
+      sources: [cnossos-2015, mobsimlab-derivation]
       check: unverified
-      rationale: "Embedded track in paving radiates more than ballast and reflects; grass track would be quieter. The CNOSSOS-EU 2021 tram superstructure entries give the exact correction once the railway database is in the crate."
+      rationale: "Embedded track in paving radiates more than ballast and reflects; grass track would be quieter. CNOSSOS-EU lists embedded track (track base code T, Table 2.3.b) but gives no transfer function for it in Appendix G, so this MobSimLab correction is added to the track radiation of the ballasted track transfer function."
 
 - key: noise.cable_car_tower_lw_db
   label: "Cable car tower: sound power while cabins pass the sheaves"

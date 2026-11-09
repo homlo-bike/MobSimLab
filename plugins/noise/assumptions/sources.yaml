@@ -10,22 +10,22 @@
   checked_via: none
 
 - id: cnossos-2015
-  title: Commission Directive (EU) 2015/996 establishing common noise assessment methods (CNOSSOS-EU), Annex II
+  title: Commission Directive (EU) 2015/996 establishing common noise assessment methods (CNOSSOS-EU), Annex II (section 2.3 railway noise and Appendix G railway source database)
   publisher: European Union
   url: https://eur-lex.europa.eu/eli/dir/2015/996/oj
   licence: © European Union; reuse authorised under Commission Decision 2011/833/EU
   access: free
-  retrieved: 2026-11-03
-  checked_via: none
+  retrieved: 2026-11-09
+  checked_via: direct
 
 - id: cnossos-2021
-  title: Commission Delegated Directive (EU) 2021/1226 amending Annex II of Directive 2002/49/EC (CNOSSOS-EU), including the railway and tram squeal table
+  title: Commission Delegated Directive (EU) 2021/1226 amending Annex II of Directive 2002/49/EC (CNOSSOS-EU), including the railway squeal table, vertical directivity, bridge noise and the replaced Appendix G tables
   publisher: European Union
   url: https://eur-lex.europa.eu/eli/dir_del/2021/1226/oj
   licence: © European Union; reuse authorised under Commission Decision 2011/833/EU
   access: free
-  retrieved: 2026-11-03
-  checked_via: none
+  retrieved: 2026-11-09
+  checked_via: direct
 
 - id: who-noise-2018
   title: WHO Regional Office for Europe, Environmental Noise Guidelines for the European Region (2018)
@@ -51,24 +51,6 @@
   url: https://www.iso.org/standard/20649.html
   licence: © ISO
   access: paywalled
-  retrieved: 2026-11-03
-  checked_via: none
-
-- id: iso-3095
-  title: ISO 3095:2013, Acoustics — Railway applications — Measurement of noise emitted by railbound vehicles (pass-by at 7.5 m and 1.2 m)
-  publisher: International Organization for Standardization
-  url: https://www.iso.org/standard/55883.html
-  licence: © ISO
-  access: paywalled
-  retrieved: 2026-11-03
-  checked_via: none
-
-- id: tsi-noi
-  title: Commission Regulation (EU) No 1304/2014, TSI rolling stock — noise (TSI NOI), pass-by limits, as amended by (EU) 2019/774
-  publisher: European Union
-  url: https://eur-lex.europa.eu/eli/reg/2014/1304/oj
-  licence: © European Union; reuse authorised under Commission Decision 2011/833/EU
-  access: free
   retrieved: 2026-11-03
   checked_via: none
 

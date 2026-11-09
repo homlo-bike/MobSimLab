@@ -2,13 +2,9 @@
 //!
 //! - Road modes: CNOSSOS-EU rolling and propulsion terms for the bus categories, with the
 //!   acceleration correction near stops and the electric propulsion change (ADR-0038 §2).
-//! - Rail modes: an interim model until the CNOSSOS-EU railway database is in the crate: a
-//!   pass-by level per mode at a reference speed (`noise.rail_passby_db`), scaled with speed
-//!   (rolling noise, a traction floor, aerodynamic noise above 200 km/h), spread over the bands
-//!   with a rolling-noise shape and converted to sound power per metre by the same propagation
-//!   the corridor uses, so a receiver at 7.5 m reproduces the stated pass-by level.
+//! - Rail modes: the CNOSSOS-EU railway source in [`crate::rail`].
 
-use crate::params::{Coefficients, Library, Mode, RoadCoefficients, Variant, NB};
+use crate::params::{Coefficients, Mode, RoadCoefficients, NB};
 
 /// CNOSSOS-EU road category of a bus.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -59,32 +55,6 @@ pub fn road_vehicle_lw(
             c.a_p[i] + c.b_p[i] * (v - 70.0) / 70.0 + propulsion_delta_db + c.c_p_junction * accel;
         db_sum(r, p) + aw[i]
     })
-}
-
-/// Purpose: A-weighted pass-by level L_pAeq,Tp at 7.5 m of a rail vehicle at `v_kmh`.
-/// Inputs: mode, speed, variant of the assumption ranges. Output: dB(A).
-pub fn rail_passby_db(lib: &Library, mode: Mode, v_kmh: f64, var: Variant) -> f64 {
-    let p = lib.get("noise.rail_passby_db", Some(mode), var);
-    let v0 = lib.get(
-        "noise.rail_passby_ref_speed_kmh",
-        Some(mode),
-        Variant::Central,
-    );
-    let k = lib.get(
-        "noise.rail_rolling_speed_exponent",
-        Some(mode),
-        Variant::Central,
-    );
-    let v = v_kmh.max(5.0);
-    let rolling = p + k * (v.max(20.0) / v0).log10();
-    let traction = p - 10.0;
-    let mut e = pow10(rolling) + pow10(traction);
-    if v > 200.0 {
-        // Aerodynamic noise equals rolling noise at 300 km/h and grows 50 lg(v).
-        let aero = p + k * (300.0 / v0).log10() + 50.0 * (v / 300.0).log10();
-        e += pow10(aero);
-    }
-    10.0 * e.log10()
 }
 
 /// Purpose: energetic sum of two levels, dB.

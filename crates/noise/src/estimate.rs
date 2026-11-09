@@ -5,9 +5,12 @@
 //! All coordinates are local metres (x east, y north). Flows are vehicles (buses or trains) per
 //! hour on the drawn line, per period.
 
-use crate::emission::{pow10, rail_passby_db, road_vehicle_lw, RoadCategory};
-use crate::params::{Coefficients, Library, Mode, Variant, NB, VARIANTS};
+use crate::emission::{pow10, road_vehicle_lw, RoadCategory};
+use crate::params::{Library, Mode, Variant, BANDS_HZ, NB, VARIANTS};
 use crate::propagation::{absorption, ground, Propagation};
+use crate::rail::{
+    dipole, train_power, vertical_a_db, vertical_b_aero_db, RailSource, TrackState, TrainPower,
+};
 use crate::screening::{barrier_db, BuildingInput, HeightRule, Obstacles, RayScratch};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -22,9 +25,6 @@ const PAIR_FROM_M: f64 = 80.0;
 const MAX_GRID_CELLS: f64 = 40_000.0;
 /// Half chord used to measure a curve radius, m.
 const RADIUS_HALF_CHORD_M: f64 = 15.0;
-/// Pass-by measurement position (ISO 3095, TSI NOI): distance and height, m.
-const PASSBY_DISTANCE_M: f64 = 7.5;
-const PASSBY_HEIGHT_M: f64 = 1.2;
 
 /// Vehicles per hour in each period.
 #[derive(Debug, Clone, Copy, Default, Serialize, Deserialize, PartialEq)]
@@ -259,11 +259,25 @@ fn level(e: f64) -> f64 {
     }
 }
 
+/// Vertical directivity of a source class (CNOSSOS-EU railway, 2.3.16 and 2.3.17).
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum Vertical {
+    /// Omnidirectional in the vertical plane.
+    None,
+    /// Railway source A.
+    RailA,
+    /// Railway aerodynamic source B.
+    AeroB,
+}
+
 /// A source element: a short piece of line, or a point source.
 #[derive(Debug, Clone)]
 struct Element {
     p: [f64; 2],
-    /// Index into the transfer tables (source height).
+    /// Direction of travel (unit vector) for the horizontal dipole, or `None` for
+    /// omnidirectional sources.
+    dipole: Option<[f64; 2]>,
+    /// Index into the transfer tables (source height and vertical directivity).
     table: usize,
     /// Source height above ground, m.
     h: f64,
@@ -283,12 +297,26 @@ struct TransferTable {
 }
 
 impl TransferTable {
-    fn new(prop: &Propagation, hs: f64, hr: f64, max_d: f64) -> Self {
+    fn new(prop: &Propagation, hs: f64, vert: Vertical, hr: f64, max_d: f64) -> Self {
         let (min, n) = (0.5f64, 240usize);
         let ln_min = min.ln();
         let step = ((max_d * 1.01).ln() - ln_min) / (n - 1) as f64;
         let d = |i: usize| (ln_min + step * i as f64).exp();
-        let rows = (0..n).map(|i| prop.transfer(d(i), hs, hr)).collect();
+        let rows = (0..n)
+            .map(|i| {
+                let mut t = prop.transfer(d(i), hs, hr);
+                // Elevation of the receiver seen from the source, positive upwards.
+                let psi = (hr - hs).atan2(d(i));
+                for (b, x) in t.iter_mut().enumerate() {
+                    *x *= pow10(match vert {
+                        Vertical::None => 0.0,
+                        Vertical::RailA => vertical_a_db(psi, BANDS_HZ[b]),
+                        Vertical::AeroB => vertical_b_aero_db(psi),
+                    });
+                }
+                t
+            })
+            .collect();
         let ground = (0..n)
             .map(|i| ground(d(i).max(0.5), hs, hr, prop.g))
             .collect();
@@ -444,11 +472,14 @@ struct Piece {
     s: f64,
     len: f64,
     p: [f64; 2],
+    /// Direction of the line, unit vector.
+    dir: [f64; 2],
     v: f64,
     height: f64,
     underground: bool,
     bridge: bool,
     embedded: bool,
+    /// Within a switch or crossing range (rail: extended by the impact extent either side).
     switch: bool,
     radius: f64,
     squeal: Squeal,
@@ -460,20 +491,31 @@ fn pieces(line: &LineInput, path: &Path, lib: &Library) -> Vec<Piece> {
     let n = (len / ELEMENT_M).ceil().max(1.0) as usize;
     let dl = len / n as f64;
     let v_default = line.speed_kmh.unwrap_or(30.0);
+    let impact_ext = if line.mode.is_road() {
+        0.0
+    } else {
+        lib.central("noise.rail_impact_extent_m").max(0.0)
+    };
     let mut out: Vec<Piece> = (0..n)
         .map(|i| {
             let s = (i as f64 + 0.5) * dl;
-            let (p, _) = path.at(s);
+            let (p, dir) = path.at(s);
             let in_range = |k: RangeKind| {
+                let ext = if k == RangeKind::Switch {
+                    impact_ext
+                } else {
+                    0.0
+                };
                 line.ranges
                     .iter()
-                    .find(|r| r.kind == k && r.from_m <= s && s <= r.to_m)
+                    .find(|r| r.kind == k && r.from_m - ext <= s && s <= r.to_m + ext)
             };
             let bridge = in_range(RangeKind::Bridge);
             Piece {
                 s,
                 len: dl,
                 p,
+                dir,
                 v: if line.speed.is_empty() {
                     v_default
                 } else {
@@ -532,6 +574,40 @@ fn pieces(line: &LineInput, path: &Path, lib: &Library) -> Vec<Piece> {
     out
 }
 
+/// Purpose: the CNOSSOS-EU track state of a rail piece: speed, squeal excess, joint density of
+/// a switch (one per 100 m, Table G-4), bridge and embedded track.
+fn rail_state(q: &Piece, mode: Mode, lib: &Library, var: Variant) -> TrackState {
+    let m = Some(mode);
+    TrackState {
+        v_kmh: q.v,
+        squeal_db: match q.squeal {
+            Squeal::None => 0.0,
+            Squeal::R300 => lib.get("noise.rail_squeal_r300_db", m, var),
+            Squeal::R500 => lib.get("noise.rail_squeal_r500_db", m, var),
+            Squeal::Tram200 => lib.get("noise.tram_squeal_r200_db", m, var),
+        },
+        joint_density: if q.switch { 0.01 } else { 0.0 },
+        bridge: q.bridge,
+        track_db: if q.embedded && mode.is_tram() {
+            lib.get("noise.tram_embedded_track_db", m, var)
+        } else {
+            0.0
+        },
+    }
+}
+
+/// Purpose: horizontal dipole factor of an element seen from receiver `p` (1 when omni).
+fn dipole_at(e: &Element, p: [f64; 2], d: f64) -> f64 {
+    match e.dipole {
+        None => 1.0,
+        Some(u) if d > 1e-9 => {
+            let r = [(p[0] - e.p[0]) / d, (p[1] - e.p[1]) / d];
+            dipole(u[0] * r[1] - u[1] * r[0])
+        }
+        Some(_) => 1.0,
+    }
+}
+
 /// Purpose: the editors' quick noise estimate.
 /// Inputs: the lines and point sources (local metres), whether to compute the map grid, and
 /// project overrides. Output: band distances, checks and the grid. No side effects;
@@ -554,42 +630,20 @@ pub fn estimate(input: &EstimateInput) -> Estimate {
     };
     let hr = lib.central("noise.receiver_height_m");
     let max_d = lib.central("noise.max_source_distance_m").max(50.0);
-    let coef = Coefficients::builtin();
-    let shape = coef.rail_shape();
-
-    // Rail calibration: band power per metre that gives the pass-by level at 7.5 m.
-    let rail_hs = lib.central("noise.rail_source_height_m");
+    let rail_ha = lib.central("noise.rail_source_height_a_m");
+    let rail_hb = lib.central("noise.rail_source_height_b_m");
     let road_hs = lib.central("noise.road_source_height_m");
-    let rail_cal_db = {
-        let mut sum = 0.0;
-        let mut x = 0.0;
-        while x < max_d.max(1000.0) {
-            let dx = if x < 50.0 {
-                0.25
-            } else if x < 300.0 {
-                1.0
-            } else {
-                4.0
-            };
-            let xm = x + dx / 2.0;
-            let t = prop.transfer(
-                (PASSBY_DISTANCE_M.powi(2) + xm * xm).sqrt(),
-                rail_hs,
-                PASSBY_HEIGHT_M,
-            );
-            sum += 2.0 * dx * (0..NB).map(|b| pow10(shape[b]) * t[b]).sum::<f64>();
-            x += dx;
-        }
-        10.0 * sum.log10()
-    };
 
-    let mut heights: Vec<f64> = Vec::new();
-    let mut table_of = |h: f64| -> usize {
+    let mut tables_key: Vec<(f64, Vertical)> = Vec::new();
+    let mut table_of = |h: f64, v: Vertical| -> usize {
         let h = (h * 20.0).round() / 20.0;
-        heights.iter().position(|&x| x == h).unwrap_or_else(|| {
-            heights.push(h);
-            heights.len() - 1
-        })
+        tables_key
+            .iter()
+            .position(|&x| x == (h, v))
+            .unwrap_or_else(|| {
+                tables_key.push((h, v));
+                tables_key.len() - 1
+            })
     };
 
     let paths: Vec<Path> = input.lines.iter().map(|l| Path::new(&l.points)).collect();
@@ -606,12 +660,16 @@ pub fn estimate(input: &EstimateInput) -> Estimate {
         let zone = lib.central("noise.road_stop_zone_m").max(1.0);
         let len_v = line.vehicle_length_m.max(1.0);
         let cat = RoadCategory::of(line.mode, len_v);
+        let trains: Option<[RailSource; 3]> =
+            (!road).then(|| VARIANTS.map(|var| RailSource::new(lib, line.mode, len_v, var)));
         for q in &ps {
             if q.underground {
                 continue;
             }
-            let power: [[f64; NB]; 3] = VARIANTS.map(|var| {
-                if road {
+            // Per vehicle per hour: sound power per metre is L_W + 10 lg(Q / 1000 v), formula 2.3.2.
+            let k = q.len / (1000.0 * q.v);
+            let Some(trains) = &trains else {
+                let power: [[f64; NB]; 3] = VARIANTS.map(|var| {
                     let delta = if electric {
                         lib.get(
                             "noise.electric_road_propulsion_delta_db",
@@ -623,40 +681,42 @@ pub fn estimate(input: &EstimateInput) -> Estimate {
                     };
                     let accel = (1.0 - q.stop_dist / zone).max(0.0);
                     let lw = road_vehicle_lw(cat, q.v, delta, accel);
-                    let k = q.len / (1000.0 * q.v);
                     lw.map(|b| pow10(b) * k)
-                } else {
-                    let mut corr = 0.0;
-                    corr += match q.squeal {
-                        Squeal::None => 0.0,
-                        Squeal::R300 => lib.get("noise.rail_squeal_r300_db", Some(line.mode), var),
-                        Squeal::R500 => lib.get("noise.rail_squeal_r500_db", Some(line.mode), var),
-                        Squeal::Tram200 => {
-                            lib.get("noise.tram_squeal_r200_db", Some(line.mode), var)
-                        }
-                    };
-                    if q.bridge {
-                        corr += lib.get("noise.rail_bridge_db", Some(line.mode), var);
-                    }
-                    if q.switch {
-                        corr += lib.get("noise.rail_switch_db", Some(line.mode), var);
-                    }
-                    if q.embedded && line.mode.is_tram() {
-                        corr += lib.get("noise.tram_embedded_track_db", Some(line.mode), var);
-                    }
-                    let lp = rail_passby_db(lib, line.mode, q.v, var) + corr - rail_cal_db;
-                    let k = len_v / (1000.0 * q.v) * q.len;
-                    shape.map(|b| pow10(lp + b) * k)
+                });
+                let hs = road_hs + q.height;
+                elements.push(Element {
+                    p: q.p,
+                    dipole: None,
+                    table: table_of(hs, Vertical::None),
+                    h: hs,
+                    owner: li,
+                    power,
+                });
+                continue;
+            };
+            let tp: [TrainPower; 3] = std::array::from_fn(|v| {
+                let var = VARIANTS[v];
+                train_power(&trains[v], &rail_state(q, line.mode, lib, var))
+            });
+            for (bands, hs, vert, dir) in [
+                (tp.map(|t| t.a), rail_ha, Vertical::RailA, Some(q.dir)),
+                (tp.map(|t| t.a_bridge), rail_ha, Vertical::None, None),
+                (tp.map(|t| t.b), rail_hb, Vertical::None, Some(q.dir)),
+                (tp.map(|t| t.b_aero), rail_hb, Vertical::AeroB, Some(q.dir)),
+            ] {
+                if bands.iter().all(|b| b.iter().all(|&x| x <= 0.0)) {
+                    continue;
                 }
-            });
-            let hs = if road { road_hs } else { rail_hs } + q.height;
-            elements.push(Element {
-                p: q.p,
-                table: table_of(hs),
-                h: hs,
-                owner: li,
-                power,
-            });
+                let hs = hs + q.height;
+                elements.push(Element {
+                    p: q.p,
+                    dipole: dir,
+                    table: table_of(hs, vert),
+                    h: hs,
+                    owner: li,
+                    power: bands.map(|b| b.map(|x| x * k)),
+                });
+            }
         }
         line_pieces.push(ps);
     }
@@ -666,15 +726,16 @@ pub fn estimate(input: &EstimateInput) -> Estimate {
         let flat = [w / NB as f64; NB];
         elements.push(Element {
             p: ps.p,
-            table: table_of(ps.height_m.max(0.0)),
+            dipole: None,
+            table: table_of(ps.height_m.max(0.0), Vertical::None),
             h: ps.height_m.max(0.0),
             owner: n_lines + pi,
             power: [flat; 3],
         });
     }
-    let tables: Vec<TransferTable> = heights
+    let tables: Vec<TransferTable> = tables_key
         .iter()
-        .map(|&h| TransferTable::new(&prop, h, hr, max_d))
+        .map(|&(h, v)| TransferTable::new(&prop, h, v, hr, max_d))
         .collect();
     let buckets = Buckets::new(&elements, 50.0);
 
@@ -700,12 +761,13 @@ pub fn estimate(input: &EstimateInput) -> Estimate {
                 return;
             }
             let t = tables[e.table].at(d);
+            let dp = dipole_at(e, p, d);
             let acc = &mut scratch[e.owner];
             for (v, a) in acc.iter_mut().enumerate() {
                 if !all && v != 1 {
                     continue;
                 }
-                *a += (0..NB).map(|b| e.power[v][b] * t[b]).sum::<f64>();
+                *a += dp * (0..NB).map(|b| e.power[v][b] * t[b]).sum::<f64>();
             }
         });
         std::array::from_fn(|v| {
@@ -826,6 +888,7 @@ pub fn estimate(input: &EstimateInput) -> Estimate {
                 Some(b)
                     if b.owner == a.owner
                         && b.table == a.table
+                        && b.dipole.is_some() == a.dipole.is_some()
                         && dist(a.p, b.p) <= 1.5 * ELEMENT_M =>
                 {
                     let power = std::array::from_fn(|v| {
@@ -871,7 +934,7 @@ pub fn estimate(input: &EstimateInput) -> Estimate {
                         .sum()
                 }
             };
-            scratch[e.owner][1] += sum;
+            scratch[e.owner][1] += sum * dipole_at(e, p, d);
         };
         pair_buckets.near(p, max_d, |k| {
             let (e, first, n) = &pairs[k];
@@ -1020,12 +1083,14 @@ pub fn estimate(input: &EstimateInput) -> Estimate {
 }
 
 /// Distance where the level (relative to the threshold, per probe distance) last falls below 0,
-/// interpolated in log distance; 0 when the nearest probe is already below.
+/// interpolated in log distance; 0 when no probe is above.
 fn edge_distance(dists: &[f64], rel: &[f64]) -> f64 {
-    if !rel.first().is_some_and(|r| *r >= 0.0) {
+    // The level can rise over the first metres (the railway source A directivity points away
+    // from receivers steeply above the track): the band starts at the first probe above it.
+    let Some(first) = rel.iter().position(|r| *r >= 0.0) else {
         return 0.0;
-    }
-    for i in 1..rel.len() {
+    };
+    for i in first + 1..rel.len() {
         if rel[i].is_nan() || rel[i] < 0.0 {
             let (a, b) = (rel[i - 1], rel[i]);
             let f = if b.is_finite() && a - b > 0.0 {
@@ -1148,17 +1213,33 @@ fn checks(
             }
         }
         if !l.mode.is_road() {
+            // Increase of the train's sound power on a piece when a state flag is set, dB, at the
+            // low, central and high end of the ranges.
+            let excess = |q: &Piece, with: fn(&mut TrackState)| -> [f64; 3] {
+                std::array::from_fn(|v| {
+                    let var = VARIANTS[v];
+                    let src = RailSource::new(lib, l.mode, l.vehicle_length_m, var);
+                    let mut st = rail_state(q, l.mode, lib, var);
+                    st.bridge = false;
+                    st.joint_density = 0.0;
+                    let base = train_power(&src, &st).total_db();
+                    with(&mut st);
+                    train_power(&src, &st).total_db() - base
+                })
+            };
             for (a, b) in runs(ps, |q| q.bridge && !q.underground) {
                 let len = ps[a..=b].iter().map(|q| q.len).sum::<f64>();
+                let db = excess(&ps[(a + b) / 2], |st| st.bridge = true);
                 out.push(Check {
                     severity: Severity::Info,
                     text: named(
                         l,
                         format!(
-                            "Elevated over {}: bridge noise {} dB for a concrete viaduct; a steel bridge can add up to {} dB",
+                            "Elevated over {}: bridge structure noise {} dB ({} to {} dB, CNOSSOS-EU bridge transfer functions)",
                             fmt_m(len),
-                            fmt_db(lib.get("noise.rail_bridge_db", Some(l.mode), Variant::Central)),
-                            fmt_db(lib.get("noise.rail_bridge_db", Some(l.mode), Variant::High))
+                            fmt_db(db[1]),
+                            fmt_db(db[0]),
+                            fmt_db(db[2])
                         ),
                     ),
                     at: Some(path.at((ps[a].s + ps[b].s) / 2.0).0),
@@ -1166,17 +1247,34 @@ fn checks(
                 });
             }
             let sw = runs(ps, |q| q.switch && !q.underground);
-            if let Some(&(a, _)) = sw.first() {
+            if let Some(&(a, b)) = sw.first() {
+                let db = excess(&ps[(a + b) / 2], |st| st.joint_density = 0.01)[1];
+                let ext = lib.central("noise.rail_impact_extent_m");
                 out.push(Check {
                     severity: Severity::Info,
                     text: named(
                         l,
-                        format!(
-                            "{} {}: impact noise {} dB over each",
-                            sw.len(),
-                            if sw.len() == 1 { "switch" } else { "switches" },
-                            fmt_db(lib.get("noise.rail_switch_db", Some(l.mode), Variant::Central))
-                        ),
+                        if db > 0.0 {
+                            format!(
+                                "{} {}: impact noise {} dB from {} before to {} after each",
+                                sw.len(),
+                                if sw.len() == 1 { "switch" } else { "switches" },
+                                fmt_db(db),
+                                fmt_m(ext),
+                                fmt_m(ext)
+                            )
+                        } else {
+                            format!(
+                                "{} {}: no impact noise below {} km/h (CNOSSOS-EU)",
+                                sw.len(),
+                                if sw.len() == 1 { "switch" } else { "switches" },
+                                lib.get(
+                                    "noise.rail_min_roughness_speed_kmh",
+                                    Some(l.mode),
+                                    Variant::Central
+                                )
+                            )
+                        },
                     ),
                     at: Some(ps[a].p),
                     line: Some(l.id.clone()),

@@ -194,7 +194,7 @@ mod tests {
     #[test]
     fn estimates_in_lon_lat() {
         let input = json!({"lines": [{"id": "a", "mode": "tram", "vehicle_length_m": 30,
-            "flows": {"day": 12, "evening": 8, "night": 2}, "speed_kmh": 40,
+            "flows": {"day": 24, "evening": 16, "night": 4}, "speed_kmh": 40,
             "points": [[4.35, 50.85], [4.365, 50.85]]}]});
         let mut n = NoiseEstimator::new();
         let v: Value = serde_json::from_str(&n.estimate(&input.to_string()).unwrap()).unwrap();
@@ -209,7 +209,7 @@ mod tests {
         assert!(px.chunks(4).any(|p| p[3] == 160));
         // The picture's west edge is west of the line.
         assert!(img["coordinates"][0][0].as_f64().unwrap() < 4.35);
-        assert!(NoiseEstimator::defaults().contains("noise.rail_passby_db"));
+        assert!(NoiseEstimator::defaults().contains("noise.rail_track_transfer"));
         assert!(v["buildings"].is_null());
     }
 

@@ -1,15 +1,17 @@
 //! MobSimLab noise estimate of service lines (ADR-0038).
 //!
 //! Step N1: the quick estimate the street line tool and the railway editor show while a line is
-//! drawn. Sources are the drawn lines (CNOSSOS-EU road emission for buses, an interim pass-by
-//! model for rail until the CNOSSOS-EU railway database is added), propagation is free field
+//! drawn. Sources are the drawn lines (CNOSSOS-EU road emission for buses, the CNOSSOS-EU railway
+//! source database for rail), propagation is free field
 //! over flat ground (ISO 9613-1 absorption, ISO 9613-2 ground effect, no buildings), and the
 //! indicators are L_den and L_night at 4 m. Pure functions, deterministic, SI units; the values
-//! come from `assumptions/parameters/noise.yaml` through `data/defaults.json`.
+//! come from `plugins/noise/assumptions/parameters.yaml` through `data/defaults.json`, the
+//! CNOSSOS-EU tables from `data/cnossos-road.json` and `data/cnossos-rail.json`.
 //!
 //! Modules:
 //! - [`params`]: assumption values and coefficients.
-//! - [`emission`]: road and rail emission.
+//! - [`emission`]: road emission.
+//! - [`rail`]: CNOSSOS-EU railway emission and directivity.
 //! - [`propagation`]: divergence, absorption, ground.
 //! - [`estimate`]: the corridor, the map grid and the checks.
 
@@ -18,6 +20,7 @@ pub mod estimate;
 pub use estimate::{Band, Check, Grid, Severity};
 pub mod params;
 pub mod propagation;
+pub mod rail;
 pub mod screening;
 
 pub use estimate::{
