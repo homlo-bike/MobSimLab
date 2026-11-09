@@ -201,6 +201,7 @@ export const en = {
   "drawing.street-setups": "street setups",
   "drawing.rail-timetable": "rail timetable",
   "drawing.preferences": "project preferences",
+  "drawing.costs": "cost settings",
 
   "tab.label": "Project",
   "tab.simulator": "Simulator",
@@ -248,8 +249,9 @@ export const en = {
   "tables.summary": "Summary",
   "tables.infrastructure": "Lines, stations, track length, bridges, tunnels (cut and cover or TBM)",
   "tables.service": "Frequency, operating hours, fleet, projected passengers",
-  "tables.costs": "Costs and performance",
   "tables.compare": "Compare scenarios side by side",
+  "tables.more": "More tables",
+  "tables.moreIntro": "Still to come in this tab.",
 
   "prefs.title": "Project preferences",
   "prefs.intro": "Details and settings that apply to the whole project.",

@@ -17,8 +17,10 @@ import type {
   Slip,
   Station,
   Switch,
+  Structure,
   Track,
   TrackUse,
+  TunnelMethod,
 } from "./types";
 
 /** Railway editing tools, as in the mockup. */
@@ -779,6 +781,21 @@ function StationInspector({ st, doc, view, actions: a }: Props & { st: Station }
   );
 }
 
+/** Construction methods for a track's underground stretches (cost estimate). */
+const TUNNEL_OPTS: { id: TunnelMethod; label: string }[] = [
+  { id: "auto", label: "Auto (cut and cover; TBM on the deeper level)" },
+  { id: "cut_and_cover", label: "Cut and cover" },
+  { id: "tbm", label: "Bored tunnel (TBM)" },
+];
+
+/** Structures for a track's elevated stretches (cost estimate). */
+const STRUCTURE_OPTS: { id: Structure; label: string }[] = [
+  { id: "auto", label: "Auto (elevated for tram and metro, viaduct for main lines)" },
+  { id: "elevated", label: "Elevated guideway" },
+  { id: "viaduct", label: "Viaduct" },
+  { id: "bridge", label: "Bridge" },
+];
+
 function TrackInspector({ t, doc, view, sel, actions: a }: Props & { t: Track }) {
   const tv = view.tracks.find((x) => x.id === t.id);
   const set = (f: (x: Track) => Track) => a.setDoc(update(doc, "tracks", t.id, f));
@@ -839,6 +856,38 @@ function TrackInspector({ t, doc, view, sel, actions: a }: Props & { t: Track })
           <option value="embedded">Embedded in street</option>
         </select>
       </Row>
+      {tv?.levels.some((z) => z.level === "underground" || z.level === "underground2") && (
+        <Row label="Tunnel built by">
+          <select
+            aria-label="Tunnel built by"
+            value={t.tunnel ?? "auto"}
+            onChange={(e) => set((x) => ({ ...x, tunnel: e.target.value as TunnelMethod }))}
+            className={input}
+          >
+            {TUNNEL_OPTS.map((o) => (
+              <option key={o.id} value={o.id}>
+                {o.label}
+              </option>
+            ))}
+          </select>
+        </Row>
+      )}
+      {tv?.levels.some((z) => z.level === "elevated" || z.level === "elevated2") && (
+        <Row label="Raised on">
+          <select
+            aria-label="Raised on"
+            value={t.structure ?? "auto"}
+            onChange={(e) => set((x) => ({ ...x, structure: e.target.value as Structure }))}
+            className={input}
+          >
+            {STRUCTURE_OPTS.map((o) => (
+              <option key={o.id} value={o.id}>
+                {o.label}
+              </option>
+            ))}
+          </select>
+        </Row>
+      )}
       <Segmented<TrackUse>
         label="Use"
         value={t.use}

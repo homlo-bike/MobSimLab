@@ -210,6 +210,7 @@ export const fr: Messages = {
   "drawing.street-setups": "les réglages des rues",
   "drawing.rail-timetable": "l'horaire ferroviaire",
   "drawing.preferences": "les préférences du projet",
+  "drawing.costs": "les réglages des coûts",
 
   "tab.label": "Projet",
   "tab.simulator": "Simulateur",
@@ -259,8 +260,9 @@ export const fr: Messages = {
   "tables.summary": "Synthèse",
   "tables.infrastructure": "Lignes, gares, longueur de voie, ponts, tunnels (tranchée couverte ou tunnelier)",
   "tables.service": "Fréquence, amplitude horaire, parc, voyageurs prévus",
-  "tables.costs": "Coûts et performance",
   "tables.compare": "Comparer des scénarios côte à côte",
+  "tables.more": "Autres tableaux",
+  "tables.moreIntro": "À venir dans cet onglet.",
 
   "prefs.title": "Préférences du projet",
   "prefs.intro": "Informations et réglages qui s’appliquent à tout le projet.",

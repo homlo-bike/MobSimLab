@@ -225,6 +225,34 @@ pub enum Bed {
     Embedded,
 }
 
+/// How the underground stretches of a track are built (for the cost estimate).
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum TunnelMethod {
+    /// Cut and cover on the first underground level, bored (TBM) on the second.
+    #[default]
+    Auto,
+    /// Dug from the surface and covered again.
+    CutAndCover,
+    /// Bored with a tunnel boring machine.
+    Tbm,
+}
+
+/// What carries the elevated stretches of a track (for the cost estimate).
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum Structure {
+    /// An elevated guideway for tram, light rail and metro; a viaduct for main-line railways.
+    #[default]
+    Auto,
+    /// An elevated guideway on columns, usually along a street.
+    Elevated,
+    /// A long multi-span viaduct across open land or a valley.
+    Viaduct,
+    /// A bridge over a river, road or railway.
+    Bridge,
+}
+
 /// Running direction of one track relative to the drawing direction.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -281,6 +309,12 @@ pub struct Track {
     /// Track bed at street level.
     #[serde(default)]
     pub bed: Bed,
+    /// How the underground stretches are built.
+    #[serde(default, skip_serializing_if = "is_default")]
+    pub tunnel: TunnelMethod,
+    /// What carries the elevated stretches.
+    #[serde(default, skip_serializing_if = "is_default")]
+    pub structure: Structure,
     /// Straight run out of the start anchor before the first curve, m.
     #[serde(default = "default_lead")]
     pub lead_start_m: f64,
@@ -300,6 +334,10 @@ pub struct Track {
     /// switch), else the network's mode. Tracks of different modes may cross on one level.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<RailMode>,
+}
+
+fn is_default<T: Default + PartialEq>(v: &T) -> bool {
+    *v == T::default()
 }
 
 fn default_lead() -> f64 {
@@ -346,4 +384,30 @@ pub struct Switch {
 
 fn one() -> i8 {
     1
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn construction_types_default_to_auto_and_round_trip() {
+        let json =
+            r#"{"id":1,"start":{"type":"free","x":0,"y":0},"tracks":2,"level":"underground"}"#;
+        let t: Track = serde_json::from_str(json).unwrap();
+        assert_eq!(t.tunnel, TunnelMethod::Auto);
+        assert_eq!(t.structure, Structure::Auto);
+        let out = serde_json::to_value(&t).unwrap();
+        assert!(out.get("tunnel").is_none() && out.get("structure").is_none());
+
+        let json = r#"{"id":1,"start":{"type":"free","x":0,"y":0},"tracks":2,"level":"elevated","tunnel":"tbm","structure":"bridge"}"#;
+        let t: Track = serde_json::from_str(json).unwrap();
+        assert_eq!(
+            (t.tunnel, t.structure),
+            (TunnelMethod::Tbm, Structure::Bridge)
+        );
+        let out = serde_json::to_value(&t).unwrap();
+        assert_eq!(out["tunnel"], "tbm");
+        assert_eq!(out["structure"], "bridge");
+    }
 }

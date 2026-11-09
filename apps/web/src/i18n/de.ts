@@ -213,6 +213,7 @@ export const de: Messages = {
   "drawing.street-setups": "die Straßeneinstellungen",
   "drawing.rail-timetable": "den Fahrplan der Bahnlinien",
   "drawing.preferences": "die Projekteinstellungen",
+  "drawing.costs": "die Kosteneinstellungen",
 
   "tab.label": "Projekt",
   "tab.simulator": "Simulator",
@@ -262,8 +263,9 @@ export const de: Messages = {
   "tables.summary": "Übersicht",
   "tables.infrastructure": "Linien, Stationen, Gleislänge, Brücken, Tunnel (offene Bauweise oder TBM)",
   "tables.service": "Takt, Betriebszeiten, Flotte, erwartete Fahrgäste",
-  "tables.costs": "Kosten und Leistung",
   "tables.compare": "Szenarien nebeneinander vergleichen",
+  "tables.more": "Weitere Tabellen",
+  "tables.moreIntro": "Folgt noch in diesem Tab.",
 
   "prefs.title": "Projekteinstellungen",
   "prefs.intro": "Angaben und Einstellungen, die für das ganze Projekt gelten.",
