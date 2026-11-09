@@ -70,11 +70,36 @@ export function outerRings(el: OverpassElement): Geometry[] {
   return rings;
 }
 
-/** Purpose: Overpass QL for the buildings within `bufferM` of a polyline, with their geometry. */
+/** Length of the line pieces whose bounding boxes the building query asks for. */
+const CHUNK_M = 400;
+
+/**
+ * Purpose: Overpass QL for the buildings near a polyline, with their geometry: one bounding box per
+ * piece of up to 400 m, padded by `bufferM`; `crossings` then keeps those the line really passes over.
+ * (A polyline `around` filter misses a building the line crosses when none of the building's nodes is
+ * within the radius, which is the usual case for a large building, so it is not used.)
+ */
 export function buildingQuery(line: LonLat[], bufferM = BUILDING_BUFFER_M): string {
-  const coords = line.map(([lon, lat]) => `${lat.toFixed(7)},${lon.toFixed(7)}`).join(",");
-  const around = `(around:${bufferM},${coords})`;
-  return `[out:json][timeout:60][maxsize:33554432];(way["building"]${around};rel["building"]${around};);out tags geom;`;
+  const boxes: string[] = [];
+  const pad = (lat: number) => [bufferM / 111_320, bufferM / (111_320 * Math.cos((lat * Math.PI) / 180))];
+  for (let i = 1; i < line.length; i++) {
+    const [a, b] = [line[i - 1]!, line[i]!];
+    const k = 111_320;
+    const len = Math.hypot((b[0] - a[0]) * k * Math.cos((a[1] * Math.PI) / 180), (b[1] - a[1]) * k);
+    const n = Math.max(1, Math.ceil(len / CHUNK_M));
+    for (let j = 0; j < n; j++) {
+      const p = [a[0] + ((b[0] - a[0]) * j) / n, a[1] + ((b[1] - a[1]) * j) / n];
+      const q = [a[0] + ((b[0] - a[0]) * (j + 1)) / n, a[1] + ((b[1] - a[1]) * (j + 1)) / n];
+      const [dLat, dLon] = pad((p[1]! + q[1]!) / 2);
+      const s = Math.min(p[1]!, q[1]!) - dLat!;
+      const w = Math.min(p[0]!, q[0]!) - dLon!;
+      const nn = Math.max(p[1]!, q[1]!) + dLat!;
+      const e = Math.max(p[0]!, q[0]!) + dLon!;
+      boxes.push([s, w, nn, e].map((v) => v.toFixed(7)).join(","));
+    }
+  }
+  const parts = boxes.flatMap((bb) => [`way["building"](${bb});`, `rel["building"](${bb});`]).join("");
+  return `[out:json][timeout:60][maxsize:33554432];(${parts});out tags geom;`;
 }
 
 /** Purpose: a building's height from its OSM tags, and whether it is estimated. */

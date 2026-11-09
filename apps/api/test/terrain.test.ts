@@ -211,9 +211,12 @@ describe("buildings along a line", () => {
     expect(buildingHeight({})).toEqual({ heightM: 10, estimated: true });
   });
 
-  it("asks Overpass for buildings around the polyline", () => {
-    expect(buildingQuery(LINE)).toContain('way["building"](around:6,50.5000000,7.1000000,50.5000000,');
-    expect(buildingQuery(LINE)).toContain('rel["building"](around:6,');
+  it("asks Overpass for the buildings in padded boxes along the line", () => {
+    const q = buildingQuery(LINE);
+    // 500 m in two pieces of 250 m, each a box padded by 6 m.
+    expect(q.match(/way\["building"\]\(/g)).toHaveLength(2);
+    expect(q.match(/rel\["building"\]\(/g)).toHaveLength(2);
+    expect(q).toContain('way["building"](50.4999461,7.0999153,50.5000539,');
   });
 
   it("finds where the line passes over each building", () => {
