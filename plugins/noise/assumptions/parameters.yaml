@@ -245,6 +245,36 @@
       check: unverified
       rationale: "Typical spacing of urban strategic maps. The editor coarsens the grid for very long lines so the corridor still recomputes on each edit."
 
+- key: noise.building_storey_height_m
+  label: "Height of one storey, for OSM buildings tagged with storeys only"
+  group: Noise
+  unit: m
+  used_by: [noise map]
+  values:
+    - context: { mode: "*" }
+      low: 2.8
+      central: 3
+      high: 3.5
+      basis: educated-guess
+      sources: [mobsimlab-derivation, osm-data]
+      check: unverified
+      rationale: "OSM buildings carry `height` (used as given) or `building:levels`; storeys × this value gives the screen height. 3 m is a common floor-to-floor height of housing; offices and older buildings are taller."
+
+- key: noise.building_default_height_m
+  label: "Height of an OSM building with neither height nor storeys"
+  group: Noise
+  unit: m
+  used_by: [noise map]
+  values:
+    - context: { mode: "*" }
+      low: 4
+      central: 8
+      high: 15
+      basis: educated-guess
+      sources: [mobsimlab-derivation, osm-data]
+      check: unverified
+      rationale: "Most OSM buildings have no height tag. 8 m stands for a two-to-three-storey building; the low end (a single storey or shed) screens less, which is the cautious side for the map. Any building at least 2 to 3 m above the line of sight already gives most of the roof screening."
+
 - key: noise.favourable_probability_day
   label: "Share of favourable propagation conditions, day"
   group: Noise

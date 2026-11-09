@@ -188,6 +188,7 @@ describe("noise sources", () => {
   it("is offered where the noise plugin's manifest says", () => {
     expect(noiseCalculationIn("street-line-tool")).toBe(true);
     expect(noiseCalculationIn("railway-tool")).toBe(true);
+    expect(noiseCalculationIn("gis")).toBe(true);
     expect(noiseCalculationIn("ferry-tool")).toBe(false);
   });
 });

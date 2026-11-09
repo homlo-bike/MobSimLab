@@ -18,11 +18,13 @@ pub mod estimate;
 pub use estimate::{Band, Check, Grid, Severity};
 pub mod params;
 pub mod propagation;
+pub mod screening;
 
 pub use estimate::{
     estimate, Estimate, EstimateInput, Flows, LineInput, PointSourceInput, Range, RangeKind,
 };
 pub use params::{Library, Mode, Variant};
+pub use screening::BuildingInput;
 
 /// Map colour of a level, following the ISO 1996-2 / DIN 45682 convention for 5 dB bands, or
 /// `None` below `from_db`. Output: `[r, g, b]`.
