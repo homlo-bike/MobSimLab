@@ -847,7 +847,10 @@
   group: Infrastructure standards
   unit: m
   used_by:
-    [railway design check of street-level track crossing a footpath or cycle path, rail zone of the crossing in the track topology]
+    [
+      railway design check of street-level track crossing a footpath or cycle path,
+      rail zone of the crossing in the track topology,
+    ]
   values:
     - context:
         mode: "*"
@@ -862,8 +865,7 @@
   label: "Level crossings: smallest angle between track and a path that cyclists use"
   group: Infrastructure standards
   unit: degrees
-  used_by:
-    [railway design check of street-level track crossing a cycle path or shared path]
+  used_by: [railway design check of street-level track crossing a cycle path or shared path]
   values:
     - context:
         mode: "*"

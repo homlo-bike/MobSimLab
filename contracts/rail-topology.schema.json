@@ -538,7 +538,17 @@
         "street": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["way", "name", "class", "offset_m", "width_m", "keep_clear_m", "bus", "trolley_wire", "path"],
+          "required": [
+            "way",
+            "name",
+            "class",
+            "offset_m",
+            "width_m",
+            "keep_clear_m",
+            "bus",
+            "trolley_wire",
+            "path"
+          ],
           "properties": {
             "way": { "type": "integer", "description": "OSM way id." },
             "name": { "type": "string" },
