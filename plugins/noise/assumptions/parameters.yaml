@@ -621,7 +621,14 @@
   group: Noise
   unit: id
   kind: enum
-  options: [wheel_load_50kn_d360, wheel_load_50kn_d680, wheel_load_50kn_d920, wheel_load_25kn_d920, wheel_load_100kn_d920]
+  options:
+    [
+      wheel_load_50kn_d360,
+      wheel_load_50kn_d680,
+      wheel_load_50kn_d920,
+      wheel_load_25kn_d920,
+      wheel_load_100kn_d920,
+    ]
   used_by: [noise corridor in the editors, noise map]
   values:
     - context: { mode: "*" }
