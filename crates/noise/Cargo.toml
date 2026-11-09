@@ -1,7 +1,7 @@
 [package]
 name = "noise"
 version = "0.1.0"
-description = "MobSimLab noise estimate of service lines (ADR-0038): CNOSSOS-EU road emission, interim rail emission from pass-by levels, free-field propagation (ISO 9613-1 absorption, ISO 9613-2 ground), L_den and L_night, the editor noise corridor and its checks."
+description = "MobSimLab noise estimate of service lines (ADR-0038): CNOSSOS-EU road and railway emission, free-field propagation (ISO 9613-1 absorption, ISO 9613-2 ground), L_den and L_night, the editor noise corridor and its checks."
 edition.workspace = true
 license.workspace = true
 repository.workspace = true

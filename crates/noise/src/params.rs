@@ -1,5 +1,5 @@
-//! Assumption values (`assumptions/parameters/noise.yaml`, exported to `data/defaults.json`) and the
-//! CNOSSOS-EU road coefficient file (`data/cnossos-road.json`).
+//! Assumption values (`plugins/noise/assumptions/parameters.yaml`, exported to
+//! `data/defaults.json`) and the CNOSSOS-EU road coefficient file (`data/cnossos-road.json`).
 
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -87,12 +87,16 @@ pub const VARIANTS: [Variant; 3] = [Variant::Low, Variant::Central, Variant::Hig
 #[derive(Deserialize)]
 struct DefaultsFile {
     params: HashMap<String, HashMap<String, [f64; 3]>>,
+    #[serde(default)]
+    enums: HashMap<String, HashMap<String, [String; 3]>>,
 }
 
 /// The noise assumption values: `[low, central, high]` per key, per mode with a `*` fallback.
+/// Numbers in `params`, choices from a list (enum parameters) in `enums`.
 #[derive(Debug, Clone)]
 pub struct Library {
     params: HashMap<String, HashMap<String, [f64; 3]>>,
+    enums: HashMap<String, HashMap<String, [String; 3]>>,
 }
 
 impl Library {
@@ -103,7 +107,10 @@ impl Library {
         LIB.get_or_init(|| {
             let f: DefaultsFile = serde_json::from_str(include_str!("../data/defaults.json"))
                 .expect("crates/noise/data/defaults.json");
-            Library { params: f.params }
+            Library {
+                params: f.params,
+                enums: f.enums,
+            }
         })
     }
 
@@ -125,6 +132,20 @@ impl Library {
         self.range(key, mode)[v as usize]
     }
 
+    /// Purpose: the choice of enum parameter `key` for `mode` at the given variant.
+    /// Panics on an unknown key: every key the crate reads is checked by a test.
+    pub fn choice(&self, key: &str, mode: Option<Mode>, v: Variant) -> &str {
+        let row = self
+            .enums
+            .get(key)
+            .unwrap_or_else(|| panic!("unknown noise enum parameter {key}"));
+        let r = mode
+            .and_then(|m| row.get(m.id()))
+            .or_else(|| row.get("*"))
+            .unwrap_or_else(|| panic!("{key} has no global value"));
+        &r[v as usize]
+    }
+
     /// Purpose: the central value of `key` with no mode context.
     pub fn central(&self, key: &str) -> f64 {
         self.get(key, None, Variant::Central)
@@ -138,9 +159,14 @@ impl Library {
         row.insert("*".into(), [value; 3]);
     }
 
-    /// Purpose: every key with its global range, for the panel and tests.
+    /// Purpose: every key (numbers and enums), for the panel and tests.
     pub fn keys(&self) -> Vec<&str> {
-        let mut k: Vec<&str> = self.params.keys().map(String::as_str).collect();
+        let mut k: Vec<&str> = self
+            .params
+            .keys()
+            .chain(self.enums.keys())
+            .map(String::as_str)
+            .collect();
         k.sort_unstable();
         k
     }
@@ -165,11 +191,6 @@ pub struct RoadCoefficients {
     pub c_p_junction: f64,
 }
 
-#[derive(Debug, Clone, Deserialize)]
-struct Shape {
-    values: [f64; NB],
-}
-
 /// The coefficient file.
 #[derive(Debug, Clone, Deserialize)]
 pub struct Coefficients {
@@ -177,7 +198,6 @@ pub struct Coefficients {
     pub a_weighting_db: [f64; NB],
     /// Road categories by name (`medium_heavy`, `heavy`).
     pub categories: HashMap<String, RoadCoefficients>,
-    rail_spectrum_shape_db: Shape,
 }
 
 impl Coefficients {
@@ -188,12 +208,5 @@ impl Coefficients {
             serde_json::from_str(include_str!("../data/cnossos-road.json"))
                 .expect("crates/noise/data/cnossos-road.json")
         })
-    }
-
-    /// Purpose: the A-weighted rail spectrum shape, normalised so its bands sum to 0 dB.
-    pub fn rail_shape(&self) -> [f64; NB] {
-        let v = self.rail_spectrum_shape_db.values;
-        let tot = 10.0 * v.iter().map(|x| 10f64.powf(x / 10.0)).sum::<f64>().log10();
-        v.map(|x| x - tot)
     }
 }
