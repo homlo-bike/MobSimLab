@@ -18,12 +18,12 @@ If someone else saved the same drawing while you were changing it, a banner name
 
 ## Tools
 
-| Tool | Key | What it does |
-|------|-----|--------------|
-| Select and move | V | Click a point to select it; drag it to move it. Click the empty map to clear the selection. |
-| Add point | P | Click a street to add the next point. Click on the line to insert a point between two others. |
-| Pan | H | Move the map without editing. |
-| Preview run | | A vehicle drives the circuit, stopping at every stop. Escape stops it. |
+| Tool            | Key | What it does                                                                                  |
+| --------------- | --- | --------------------------------------------------------------------------------------------- |
+| Select and move | V   | Click a point to select it; drag it to move it. Click the empty map to clear the selection.   |
+| Add point       | P   | Click a street to add the next point. Click on the line to insert a point between two others. |
+| Pan             | H   | Move the map without editing.                                                                 |
+| Preview run     |     | A vehicle drives the circuit, stopping at every stop. Escape stops it.                        |
 
 **Delete** removes the selected point. **Escape** clears the selection.
 
@@ -36,7 +36,7 @@ If someone else saved the same drawing while you were changing it, a banner name
 
 ## The panel
 
-- **Stat tiles:** circuit length; stops and end stops; cycle time (running time + dwell at every stop + layover at every end stop); vehicles needed for the headway. Headway, dwell and layover are under *Rules*.
+- **Stat tiles:** circuit length; stops and end stops; cycle time (running time + dwell at every stop + layover at every end stop); vehicles needed for the headway. Headway, dwell and layover are under _Rules_.
 - **Route points:** the circuit in order with the length of each leg. The arrow back to point 1 is the closing leg.
 - **Checks:** problems first, then advice. Click a check to select the point it is about.
 
@@ -49,7 +49,7 @@ If someone else saved the same drawing while you were changing it, a banner name
 
 ## Stop and station names
 
-- A new stop (a point you make a stop or end stop) or a new station that is within **150 m** of an existing stop or station takes its name: they are one stop or station for passengers. The street line tool uses the station distance under *Rules* (150 m by default); railway stations are measured to the platform, not the centre. This works across the tools, so a bus stop beside a railway station takes the station's name.
+- A new stop (a point you make a stop or end stop) or a new station that is within **150 m** of an existing stop or station takes its name: they are one stop or station for passengers. The street line tool uses the station distance under _Rules_ (150 m by default); railway stations are measured to the platform, not the centre. This works across the tools, so a bus stop beside a railway station takes the station's name.
 - With nothing that close, the name comes from the map around it (within 500 m): a station or stop already on the map, a landmark, the district, a facility, a street corner ("A / B"), a main street, a street, then a local place name. The note at the bottom of the map says what the name came from.
 - Names are unique otherwise. If the best name is already used farther away, the next suggestion is used, or the name gets its district or street, "Market (Old Town)", or a number, "Market 2".
 - Renaming a stop or station renames the ones next to it too. A name already used farther away gets a number, and the note says so.
@@ -65,7 +65,7 @@ If someone else saved the same drawing while you were changing it, a banner name
 
 Where the line crosses a railway on the level, buses wait while the barriers or tram signals close the street. The expected wait is added to the running time of every leg that crosses, so the cycle time, the vehicles needed and the journey planner include it. The panel's **Level crossings** section lists each crossing with its wait per pass, closures an hour and how long the street is closed.
 
-- **Where the crossings come from:** the railway drawn in the railway tool (the last design you built in this session), or a track topology file (**Load track topology**, from the railway tool's **Download track topology**).
+- **Where the crossings come from:** the railway drawn in the railway tool (the last design you built in this session), or a track topology file (**Load track topology**).
 - **When trains pass:** without a timetable, the service assumed for the railway: the longest peak headway of its mode in both directions (`timetable.policy_headway_peak_min`, so 8 regional or 24 tram passages an hour), each closing the street for the warning time, the train over the crossing at line speed (the mode's platform length as train length) and the barriers rising (`level_crossing.reopen_s`, 10 s; 5 s for tram signals). With **Load rail timetable closures**, the closures of the planned trains are used instead: `cargo run --release -p rail-plan --example level_crossing_closures -- rail-topology.json lines.json > closures.json`. Trains that stop near the crossing or run slower than line speed close it for longer, and trains meeting there close it once.
 - **The wait:** a bus that arrives at a random moment waits Σ c² / (2 T) on average, for closures c in a period T: the chance of meeting a closure times half its length, the same uniform delay as at a traffic signal (HCM). Running times use the busiest hour of the timetable (or the assumed peak); the off-peak value is shown too.
 - Crossings of one street within each other's stop lines (two railways side by side) are one place to wait.
@@ -83,4 +83,3 @@ Lines are not stored in the project yet. This arrives with the network design mo
 ## Traffic and bus lanes
 
 On main roads, buses in the general traffic take longer at peak than in a bus lane, and the running time includes that delay. The **Reliability** line under the totals shows how much of the circuit runs in main-road traffic and in bus lanes. To give a street a bus lane, or to separate one, set it up in the GIS tab ([Streets in the GIS tab](gis-streets.md)); the line is re-routed at once.
-

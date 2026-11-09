@@ -1,5 +1,6 @@
 /** The railway design document (Rust `rail_design::model`) and the view returned by the engine. */
 
+import type { Timetable } from "../journey-planner/types";
 import type { StreetSetup } from "../street-setup/types";
 
 export type RailMode =
@@ -99,7 +100,7 @@ export interface Switch {
   flip: boolean;
 }
 
-export type SignalKind = "main" | "block" | "shunting" | "distant";
+export type SignalKind = "main" | "block" | "shunting" | "distant" | "speed" | "speed_warning";
 
 /** Where a signal stands: on a track line (centre-line chainage), a station track or a switch leg. */
 export type SignalAt =
@@ -107,13 +108,15 @@ export type SignalAt =
   | { type: "station"; station: number; track: number; x: number }
   | { type: "leg"; switch: number; leg: number; x: number };
 
-/** A signal of the planner's signal plan. `facing` +1 governs trains moving with the chainage. */
+/** A signal of the planner's. `facing` +1 governs trains moving with the chainage. */
 export interface Signal {
   id: number;
   at: SignalAt;
   facing: 1 | -1;
   kind: SignalKind;
   name: string;
+  /** Speed shown by a speed signal or announced by a speed warning, km/h. */
+  speed_kmh?: number | null;
 }
 
 export interface Network {
@@ -124,10 +127,23 @@ export interface Network {
   stations: Station[];
   tracks: Track[];
   switches: Switch[];
-  /** The signal plan; absent until the planner generates it (operations then gets generated signals). */
+  /**
+   * The planner's own signals (placed, or generated ones they edited). They come on top of the
+   * signals generated from the design on every build.
+   */
   signals?: Signal[] | null;
+  /** Generated signals the planner removed or replaced: where they stood and which way they faced. */
+  signals_removed?: SignalKey[];
   /** Slips the planner put into diamond crossings. */
   slips?: Slip[];
+  /** Service lines run on the design; absent until the planner adds one. */
+  lines?: ServiceLine[] | null;
+}
+
+/** A generated signal the planner removed or replaced. */
+export interface SignalKey {
+  at: SignalAt;
+  facing: 1 | -1;
 }
 
 /** A slip in a diamond crossing. */
@@ -160,6 +176,74 @@ export interface SlipView {
   diverging_speed_kmh: number | null;
   /** Passed the checks and is drawn. */
   ok: boolean;
+}
+
+/** A rail vehicle of the catalogue (generated into trains.ts by tools/vehicles/rail_trains.py). */
+export interface CatalogueTrain {
+  id: string;
+  name: string;
+  mode: RailMode;
+  length_m: number;
+  top_speed_kmh: number;
+  power_kw: number | null;
+  empty_mass_t: number | null;
+  /** Seats plus standing places at the mode's planning density. */
+  capacity: number;
+}
+
+/** A service line of the design: the stations it stops at, its train and its headways. */
+export interface ServiceLine {
+  id: string;
+  name: string;
+  /** "#rrggbb". */
+  color: string;
+  /** Station ids of the document, first terminal to last; the return runs them in reverse. */
+  stations: number[];
+  /** Catalogue train id (trains.ts). */
+  vehicle: string;
+  /** Units coupled per train. */
+  units: number;
+  /** First departure, minutes after midnight. */
+  first_min: number;
+  /** Last departure, minutes after midnight (may pass 24:00). */
+  last_min: number;
+  peak_headway_min: number;
+  offpeak_headway_min: number;
+  /** Dwell at intermediate stops, s; the mode's when absent. */
+  dwell_s?: number | null;
+}
+
+/** What publishing found for one line (Rust `rail_plan::LineReport`). */
+export interface LineReport {
+  id: string;
+  trips: number;
+  outbound_s: number | null;
+  return_s: number | null;
+  trains: number;
+  issues: string[];
+}
+
+/** Published service lines (Rust `rail_plan::ServicePublication`). */
+export interface ServicePublication {
+  timetable: Timetable;
+  lines: LineReport[];
+  notes: string[];
+}
+
+/** A service line as the engine takes it (Rust `rail_plan::ServiceLine`). */
+export interface EngineServiceLine {
+  id: string;
+  name: string;
+  color: string;
+  stations: string[];
+  vehicle: Omit<CatalogueTrain, "mode">;
+  units: number;
+  mode: RailMode;
+  first_s: number;
+  last_s: number;
+  peak_headway_s: number;
+  offpeak_headway_s: number;
+  dwell_s: number | null;
 }
 
 export type Severity = "error" | "warning" | "info" | "ok";
@@ -329,7 +413,7 @@ export interface ExistingJoinView {
   lonlat: LonLat;
 }
 
-/** A drawn signal of the plan. */
+/** A drawn signal of the plan: generated (`auto`) or the planner's. */
 export interface SignalView {
   id: number;
   kind: SignalKind;
@@ -339,6 +423,10 @@ export interface SignalView {
   /** False for a block marker under cab signalling. */
   lineside: boolean;
   lonlat: LonLat;
+  /** Generated from the design, not placed or edited by the planner. */
+  auto: boolean;
+  /** Speed shown by a speed signal or announced by a speed warning, km/h. */
+  speed_kmh?: number | null;
 }
 
 export interface FeatureCollection {
@@ -392,8 +480,10 @@ export interface RailView {
   slips: SlipView[];
   /** The catalogue's slips. */
   slip_elements: SlipElementView[];
-  /** The document holds a signal plan. */
-  signals_planned: boolean;
+  /** The planner has added, edited or removed signals. */
+  signals_edited: boolean;
+  /** How many generated signals the planner removed or replaced. */
+  signals_removed: number;
   counts: { errors: number; warnings: number; track_km: number; route_km: number };
   bbox: [number, number, number, number] | null;
 }
@@ -442,10 +532,16 @@ export interface RailEngine {
   existingSnap(at: LonLat, maxM: number): ExistingSnap | null;
   /** Applies the planner's street setups from the GIS tab; the next build uses them. */
   setStreetSetups(setups: readonly StreetSetup[]): void;
+  /** Design values the project's preferences change for every mode, by name; the next build uses them. */
+  setValues?(values: Record<string, number>): void;
   /** A signal plan generated from the last build, with ids continuing the document's. */
   generateSignals(): Signal[];
   /** Where a signal placed at a map position would stand, within `maxM`. */
   signalAnchor(at: LonLat, maxM: number): SignalAt | null;
+  /** Plan the service lines on the last build and publish them for the journey planner; throws on errors. */
+  publishLines(lines: EngineServiceLine[], serviceId: string): ServicePublication;
+  /** Whether trains can run from one station (document id) to another on the last build; throws on errors. */
+  reachable(from: number, to: number): { ok: boolean; reason: string | null };
   dispose(): void;
 }
 

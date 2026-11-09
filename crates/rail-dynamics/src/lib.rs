@@ -177,13 +177,41 @@ impl SpeedProfile {
     /// times stay as they were. Speeds are kept from the minimum-time run
     /// (the driver model uses the extra time to coast).
     pub fn with_supplement(&self, share: f64) -> SpeedProfile {
-        let k = 1.0 + share;
+        let mut p = self.stretched(|_| 1.0 + share);
+        p.supplement_share = share;
+        p
+    }
+
+    /// Purpose: add the expected delay in street traffic where a tram shares the road.
+    /// Inputs: stretches of the path (from, to in m from the path start, share of the running
+    /// time there, for example 0.25 for a quarter longer).
+    /// Output: a profile whose running intervals inside the stretches are longer by their share;
+    /// dwell times and speeds stay as they were. Without stretches, the profile unchanged.
+    pub fn with_delays(&self, stretches: &[(f64, f64, f64)]) -> SpeedProfile {
+        if stretches.iter().all(|s| s.2 <= 0.0) {
+            return self.clone();
+        }
+        let pos = &self.position_m;
+        let mut p = self.stretched(|i| {
+            let mid = 0.5 * (pos[i - 1] + pos[i]);
+            1.0 + stretches
+                .iter()
+                .filter(|s| mid >= s.0 && mid < s.1)
+                .map(|s| s.2.max(0.0))
+                .fold(0.0, f64::max)
+        });
+        p.supplement_share = self.supplement_share;
+        p
+    }
+
+    /// Purpose: lengthen each running interval (grid point `i - 1` to `i`) by `factor(i)`.
+    fn stretched(&self, factor: impl Fn(usize) -> f64) -> SpeedProfile {
         let n = self.position_m.len();
         let mut arrive = vec![0.0; n];
         let mut depart = vec![0.0; n];
         depart[0] = self.depart_s[0] - self.arrive_s[0];
         for i in 1..n {
-            arrive[i] = depart[i - 1] + (self.arrive_s[i] - self.depart_s[i - 1]) * k;
+            arrive[i] = depart[i - 1] + (self.arrive_s[i] - self.depart_s[i - 1]) * factor(i);
             depart[i] = arrive[i] + (self.depart_s[i] - self.arrive_s[i]);
         }
         let stops = self
@@ -204,7 +232,7 @@ impl SpeedProfile {
             arrive_s: arrive,
             depart_s: depart,
             stops,
-            supplement_share: share,
+            supplement_share: 0.0,
         }
     }
 }

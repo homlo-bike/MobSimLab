@@ -218,3 +218,56 @@ fn train_protection_is_read_per_section() {
     json["sections"][0]["train_protection"] = "semaphore".into();
     assert!(import_json(&json.to_string(), &ImportOptions::default()).is_err());
 }
+
+#[test]
+fn the_design_tools_signal_plan_keeps_its_short_plain_stretches() {
+    // The tram example's export with the design tool's generated signals: a turnout and a
+    // diamond crossing 83 m apart, each bounded by signals at its fouling points. The stretch
+    // between them is shorter than `min_plain_m`, but the plan's signals keep it a section of
+    // its own instead of joining both areas (which would put a signal inside a switch area).
+    let path = format!(
+        "{}/tests/data/tram_signals.json",
+        env!("CARGO_MANIFEST_DIR")
+    );
+    let json = std::fs::read_to_string(path).unwrap();
+    let imp = import_json(&json, &ImportOptions::default()).unwrap();
+    assert!(imp.signals_generated && !imp.spec.signals.is_empty());
+    let m = Model::compile(&imp.spec).unwrap_or_else(|e| panic!("{e:?}"));
+    let sw5 = imp.spec.detection.iter().find(|d| d.id == "sw5").unwrap();
+    assert!(
+        !sw5.tracks.iter().any(|t| t.starts_with("t7.")),
+        "{:?}",
+        sw5.tracks
+    );
+    let first = &imp.spec.signals[0].id;
+    assert!(m
+        .signal(first)
+        .is_some_and(|g| !m.routes_from(g).is_empty()));
+}
+
+#[test]
+fn distant_and_speed_signals_stand_between_route_signals() {
+    // A distant signal mid-section stands on the piece around it without cutting the track,
+    // and speed signals need no element: the section's speed limit carries the speed.
+    let path = format!(
+        "{}/tests/data/tram_signals.json",
+        env!("CARGO_MANIFEST_DIR")
+    );
+    let mut json: serde_json::Value =
+        serde_json::from_str(&std::fs::read_to_string(path).unwrap()).unwrap();
+    let extra = [("d1", "distant", None), ("v1", "speed", Some(30.0))];
+    for (id, kind, speed) in extra {
+        json["signals"]
+            .as_array_mut()
+            .unwrap()
+            .push(serde_json::json!({
+                "id": id, "section": "t3.0.2", "chainage_m": 200.0, "facing": "to", "kind": kind,
+                "overlap_m": null, "lineside": true, "speed_kmh": speed
+            }));
+    }
+    let imp = import_json(&json.to_string(), &ImportOptions::default()).unwrap();
+    assert!(imp.spec.signals.iter().any(|s| s.id == "d1"));
+    assert!(!imp.spec.signals.iter().any(|s| s.id == "v1"));
+    let m = Model::compile(&imp.spec).unwrap_or_else(|e| panic!("{e:?}"));
+    assert!(m.signal("d1").is_some_and(|g| m.routes_from(g).is_empty()));
+}

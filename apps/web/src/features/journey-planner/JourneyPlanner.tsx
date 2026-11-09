@@ -6,11 +6,9 @@ import { clock, duration, minutes, PARTS, parseClock } from "./format";
 import { drawJourney, drawNetwork, ensureLayers, removeLayers } from "./mapLayers";
 import {
   DEFAULT_SERVICE_DAY,
-  exampleNetwork,
   mergeTimetables,
-  offset,
-  parseRailTimetable,
   pluginLineTimetable,
+  prefixTimetable,
   type PluginLineInput,
   streetLineTimetable,
   type StreetLineInput,
@@ -36,6 +34,8 @@ interface Props {
   panel?: HTMLElement | null;
   /** The line drawn in the street line tool, if any. */
   streetLine?: StreetLineInput | null;
+  /** Rail service lines published in the railway tool, if any. */
+  railLines?: Timetable | null;
   /** Cable car and ferry lines from the plugin tools (ADR-0037). */
   pluginLines?: readonly PluginLineInput[];
   /** Planner loader; tests inject a fake. */
@@ -140,14 +140,13 @@ export function JourneyPlanner({
   map,
   panel = null,
   streetLine = null,
+  railLines = null,
   pluginLines = NO_PLUGIN_LINES,
   loadPlanner = loadWasmPlanner,
 }: Props) {
   const [skipped, setSkipped] = useState<ReadonlySet<string>>(new Set());
-  const [exampleAt, setExampleAt] = useState<LonLat | null>(null);
   const [useStreet, setUseStreet] = useState(true);
-  const [rail, setRail] = useState<{ name: string; timetable: Timetable } | null>(null);
-  const [railError, setRailError] = useState<string | null>(null);
+  const [useRailLines, setUseRailLines] = useState(true);
   const [settings, setSettings] = useState<Partial<Settings>>({});
   const [engine, setEngine] = useState<PlannerEngine | null>(null);
   const [summary, setSummary] = useState<NetworkSummary | null>(null);
@@ -165,26 +164,18 @@ export function JourneyPlanner({
     () => (streetLine && useStreet ? streetLineTimetable(streetLine) : null),
     [streetLine, useStreet],
   );
+  const drawnRail = useMemo(
+    () =>
+      railLines && useRailLines && (railLines.trips.length || railLines.frequency_patterns?.length)
+        ? prefixTimetable(railLines, "lines:")
+        : null,
+    [railLines, useRailLines],
+  );
   const timetable: Timetable | null = useMemo(() => {
     const plugin = pluginLines.filter((l) => !skipped.has(l.id)).map((l) => pluginLineTimetable(l));
-    const parts = [
-      exampleAt ? exampleNetwork(exampleAt) : null,
-      street,
-      rail?.timetable ?? null,
-      ...plugin,
-    ].filter((p): p is Timetable => p !== null);
+    const parts = [street, drawnRail, ...plugin].filter((p): p is Timetable => p !== null);
     return parts.length ? mergeTimetables(parts) : null;
-  }, [exampleAt, street, rail, pluginLines, skipped]);
-
-  const addRailTimetable = async (file: File) => {
-    const r = parseRailTimetable(await file.text());
-    if ("error" in r) {
-      setRailError(`${file.name}: ${r.error}`);
-      return;
-    }
-    setRailError(null);
-    setRail({ name: file.name, timetable: r.timetable });
-  };
+  }, [street, drawnRail, pluginLines, skipped]);
 
   // Compile the timetable whenever it or the settings change.
   useEffect(() => {
@@ -318,15 +309,6 @@ export function JourneyPlanner({
     [],
   );
 
-  const placeExample = () => {
-    const c = map?.getCenter?.();
-    const center: LonLat = c ? [c.lng, c.lat] : [10, 50];
-    setExampleAt(center);
-    setA(offset(center, -2600, -300));
-    setB(offset(center, 300, 1650));
-    map?.flyTo?.({ center, zoom: 12 });
-  };
-
   const totals = profile.flatMap((p) => (p.journey ? [p.journey.total_s] : []));
   const arriveBy = mode === "arrive_by";
   const parts = journey ? PARTS.filter((p) => p.key !== "early_arrival_s" || arriveBy) : [];
@@ -338,6 +320,14 @@ export function JourneyPlanner({
           <input type="checkbox" checked={useStreet} onChange={(e) => setUseStreet(e.target.checked)} />
           Street line “{streetLine.name}” (every {streetLine.headwayMin} min, peak every{" "}
           {Math.max(1, Math.round(streetLine.headwayMin / 2))} min)
+        </label>
+      )}
+      {railLines && (railLines.trips.length > 0 || railLines.frequency_patterns?.length > 0) && (
+        <label className="flex items-center gap-2">
+          <input type="checkbox" checked={useRailLines} onChange={(e) => setUseRailLines(e.target.checked)} />
+          Rail lines from the railway tool: {railLines.routes
+            .map((r) => r.route_short_name)
+            .join(", ")} · {railLines.trips.length} trips
         </label>
       )}
       {pluginLines.map((l) => (
@@ -357,57 +347,10 @@ export function JourneyPlanner({
           {l.mode === "ferry" ? "Ferry" : "Cable car"} “{l.name}” (every {formatHeadway(l.headwayS)})
         </label>
       ))}
-      <div className="flex flex-wrap items-center gap-3">
-        <label className="flex h-8 cursor-pointer items-center rounded-md border border-slate-300 bg-white px-3 hover:bg-slate-50">
-          {rail ? "Replace rail timetable (JSON)" : "Add rail timetable (JSON)"}
-          <input
-            type="file"
-            accept="application/json,.json"
-            className="sr-only"
-            aria-label="Rail timetable file"
-            onChange={(e) => {
-              const f = e.target.files?.[0];
-              e.target.value = "";
-              if (f) void addRailTimetable(f);
-            }}
-          />
-        </label>
-        {rail && (
-          <button type="button" onClick={() => setRail(null)} className="text-xs text-slate-600 underline">
-            Remove rail timetable
-          </button>
-        )}
-      </div>
-      {rail && (
-        <p className="text-xs text-slate-600" data-testid="rail-timetable">
-          Rail: {rail.name} · {rail.timetable.routes.map((r) => r.route_short_name).join(", ") || "no lines"}{" "}
-          · {rail.timetable.trips.length} trips
-        </p>
-      )}
-      {railError && <p className="text-xs text-red-700">{railError}</p>}
-      <div className="flex flex-wrap items-center gap-3">
-        <button
-          type="button"
-          onClick={placeExample}
-          className="h-8 rounded-md border border-slate-300 bg-white px-3 hover:bg-slate-50"
-        >
-          {exampleAt ? "Move example network here" : "Place example network here"}
-        </button>
-        {exampleAt && (
-          <button
-            type="button"
-            onClick={() => setExampleAt(null)}
-            className="text-xs text-slate-600 underline"
-          >
-            Remove example
-          </button>
-        )}
-      </div>
       {!timetable && (
         <p className="text-xs text-slate-600">
-          No timetable yet. Draw a street line, add a rail timetable published by the railway operations
-          planner, or place the example city (metro, tram, bus and a regional train with a timed connection)
-          at the centre of the map. Trains and street lines connect at stations of the same name.
+          No timetable yet. Draw a street line, or create and publish rail service lines in the railway tool.
+          Trains and street lines connect at stations of the same name.
         </p>
       )}
       {summary && (

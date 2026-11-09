@@ -195,7 +195,9 @@ pub fn find_path(
 /// Purpose: the routes a train standing at a place can start on in a direction.
 /// Inputs: the place and the direction of travel. The start signal is the
 /// signal on the place's track facing that direction that is nearest the
-/// place's far end in that direction, within 30 m beyond it.
+/// place's far end in that direction: from 30 m back inside the place to
+/// anywhere ahead on the track (a station track's exit signal can stand
+/// beyond the platform, at the end of the overrun the mode keeps).
 /// Output: the routes from that signal (empty if there is none).
 pub fn departure_routes(m: &Model, place: Place, dir: Dir) -> Vec<RouteId> {
     let (track, from, to) = place.range(m);
@@ -205,7 +207,11 @@ pub fn departure_routes(m: &Model, place: Place, dir: Dir) -> Vec<RouteId> {
             continue;
         }
         let (t, c, d) = m.signal_location(s);
-        if t != track || d != dir || c < from - 30.0 || c > to + 30.0 {
+        let ahead = match dir {
+            Dir::Up => c >= from - 30.0,
+            Dir::Down => c <= to + 30.0,
+        };
+        if t != track || d != dir || !ahead {
             continue;
         }
         // Distance of the signal from the far end, measured in travel direction.

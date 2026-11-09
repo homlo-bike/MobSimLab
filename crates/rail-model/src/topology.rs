@@ -34,6 +34,10 @@ use crate::spec::{
 /// The schema id this importer reads.
 pub const SCHEMA: &str = "mobsimlab.rail-topology/1";
 
+/// How far (m) a planned signal may sit from a switch or crossing area's edge and still count
+/// as standing at it: a geometric tolerance for the export's rounding of chainages (ADR-0033).
+pub const SIGNAL_SNAP_M: f64 = 0.5;
+
 #[derive(Deserialize)]
 struct Topology {
     schema: String,
@@ -97,6 +101,9 @@ struct TSection {
     speed_kmh: Vec<TRange>,
     #[serde(default)]
     gradient_permille: Vec<TRange>,
+    /// Extra running time in street traffic, share.
+    #[serde(default)]
+    traffic_delay_share: Vec<TRange>,
     /// `line_of_sight`, `fixed_block`, `cbtc` or `etcs_l2`.
     #[serde(default)]
     train_protection: Option<String>,
@@ -204,6 +211,12 @@ struct TRoadClosure {
 
 fn yes() -> bool {
     true
+}
+
+/// Purpose: whether a signal kind of the export bounds routes and train detection (main, block
+/// and shunting signals), unlike distant and speed signals, which trains pass without stopping.
+fn bounds_routes(kind: &str) -> bool {
+    matches!(kind, "main" | "block" | "shunting")
 }
 
 #[derive(Deserialize)]
@@ -550,6 +563,16 @@ fn import(t: Topology, opt: &ImportOptions) -> Result<Imported, String> {
         }
     }
 
+    // Where the export's signal plan puts signals on each section: the design tool owns signal
+    // placement (ADR-0030 point 7), so a stretch it bounds with signals stays a stretch.
+    let mut planned: HashMap<&str, Vec<f64>> = HashMap::new();
+    for g in t.signals.iter().filter(|g| bounds_routes(&g.kind)) {
+        planned
+            .entry(g.section.as_str())
+            .or_default()
+            .push(g.chainage_m);
+    }
+
     // 2. Split sections into sub-tracks; merge overlapping zones.
     let mut subs: Vec<Vec<Sub>> = Vec::with_capacity(t.sections.len());
     for (i, s) in t.sections.iter().enumerate() {
@@ -600,9 +623,20 @@ fn import(t: Topology, opt: &ImportOptions) -> Result<Imported, String> {
         }
         // A short plain stretch between two areas of the same section (for
         // example between the two switches of a crossover and a turnout) is
-        // no place for a signal: it joins both areas.
+        // no place for a signal: it joins both areas. Unless the export's
+        // signal plan puts a signal on it or at its ends: then the plan's
+        // detection boundaries stand.
+        let signalled = |from: f64, to: f64| {
+            planned.get(s.id.as_str()).is_some_and(|v| {
+                v.iter()
+                    .any(|&c| c >= from - SIGNAL_SNAP_M && c <= to + SIGNAL_SNAP_M)
+            })
+        };
         for k in 1..out.len().saturating_sub(1) {
-            if out[k].group.is_none() && out[k].to - out[k].from < opt.min_plain_m {
+            if out[k].group.is_none()
+                && out[k].to - out[k].from < opt.min_plain_m
+                && !signalled(out[k].from, out[k].to)
+            {
                 if let (Some(a), Some(b)) = (out[k - 1].group.clone(), out[k + 1].group.clone()) {
                     groups.union(&a, &b);
                     out[k].group = Some(a);
@@ -653,6 +687,7 @@ fn import(t: Topology, opt: &ImportOptions) -> Result<Imported, String> {
                 line_speed_mps: line,
                 speed_ranges: speed,
                 gradient_ranges: clip(&s.gradient_permille, sub.from, sub.to, 1e-3),
+                traffic_delay_ranges: clip(&s.traffic_delay_share, sub.from, sub.to, 1.0),
                 directions: Directions::Both,
                 usage: if s.usage == "storage" {
                     TrackUse::Storage
@@ -844,14 +879,31 @@ fn import(t: Topology, opt: &ImportOptions) -> Result<Imported, String> {
     let generate = t.signals.is_empty() && opt.generate_signals;
     let signals_generated = generate || (t.signals_generated && !t.signals.is_empty());
     if !t.signals.is_empty() {
-        for s in &t.signals {
+        // Speed signals and their warnings are passed at the section's speed limit, which the
+        // export already carries: the model needs no element for them.
+        for s in t.signals.iter().filter(|s| !s.kind.starts_with("speed")) {
             let i = sec(&s.section)?;
-            let sub = subs[i]
+            let k = subs[i]
                 .iter()
-                .find(|x| s.chainage_m >= x.from - 1e-6 && s.chainage_m <= x.to + 1e-6)
+                .position(|x| s.chainage_m >= x.from - 1e-6 && s.chainage_m <= x.to + 1e-6)
                 .ok_or_else(|| {
                     format!("signal {}: chainage outside section {}", s.id, s.section)
                 })?;
+            // A planned signal just inside a switch or crossing area marks that area's edge:
+            // the export rounds chainages, so the plan and the area's own fouling points can
+            // differ by centimetres. It goes at the edge, on the plain stretch beside it.
+            let area = &subs[i][k];
+            let (sub, at) =
+                if area.group.is_some() && s.chainage_m - area.from <= SIGNAL_SNAP_M && k > 0 {
+                    (&subs[i][k - 1], area.from)
+                } else if area.group.is_some()
+                    && area.to - s.chainage_m <= SIGNAL_SNAP_M
+                    && k + 1 < subs[i].len()
+                {
+                    (&subs[i][k + 1], area.to)
+                } else {
+                    (area, s.chainage_m)
+                };
             let kind = match s.kind.as_str() {
                 "main" => SignalKind::Main,
                 "block" => SignalKind::Block,
@@ -862,7 +914,7 @@ fn import(t: Topology, opt: &ImportOptions) -> Result<Imported, String> {
             spec.signals.push(SignalSpec {
                 id: s.id.clone(),
                 track: sub.id.clone(),
-                position_m: s.chainage_m - sub.from,
+                position_m: at - sub.from,
                 facing: if s.facing == "to" { Dir::Up } else { Dir::Down },
                 kind,
                 overlap_m: s.overlap_m,

@@ -19,7 +19,27 @@ const railway = z.looseObject({
   switches: z.array(z.looseObject({ id: z.number() })).max(20000),
 });
 
+/** The published trains of the railway tool's service lines (`contracts/published-timetable.schema.json`). */
+const railTimetable = z.looseObject({
+  stops: z.array(z.looseObject({ stop_id: z.string() })).max(50000),
+  routes: z.array(z.looseObject({ route_id: z.string() })).max(2000),
+  trips: z.array(z.looseObject({ trip_id: z.string() })).max(100000),
+});
+
 const streetSetups = z.array(z.looseObject({ way: z.number().int() })).max(50000);
+
+/** Assumption library values the project changes, by assumption id (for example `street.mixed_traffic_delay_share`). */
+const preferences = z.looseObject({
+  values: z
+    .record(
+      z
+        .string()
+        .regex(/^[a-z][a-z0-9_]*(\.[a-z0-9_]+)+$/)
+        .max(120),
+      z.number().finite(),
+    )
+    .refine((v) => Object.keys(v).length <= 1000, "at most 1000 values"),
+});
 
 /** Drawing kinds with their document outline and current schema version. */
 export const DRAWING_KINDS = {
@@ -29,6 +49,10 @@ export const DRAWING_KINDS = {
   railway: { schema: railway, schemaVersion: 1 },
   /** GIS tab street setups: lanes, bus and bike lanes, separation and tram share per OSM way. */
   "street-setups": { schema: streetSetups, schemaVersion: 1 },
+  /** The trains of the railway tool's service lines as last published, for the journey planner. */
+  "rail-timetable": { schema: railTimetable, schemaVersion: 1 },
+  /** Project preferences: assumption library values changed for this project (Preferences tab). */
+  preferences: { schema: preferences, schemaVersion: 1 },
 } as const satisfies Record<string, { schema: z.ZodType; schemaVersion: number }>;
 
 export type DrawingKind = keyof typeof DRAWING_KINDS;
