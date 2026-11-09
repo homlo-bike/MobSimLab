@@ -144,6 +144,10 @@ pub struct ModeParams {
     pub level_crossing_warning_time_s: f64,
     /// Time from the train clearing a level crossing until road traffic may go again, s.
     pub level_crossing_reopen_s: f64,
+    /// Width of a footpath or cycle path crossing the track when OpenStreetMap has none, m.
+    pub level_crossing_path_width_m: f64,
+    /// Smallest angle between track and a path that cyclists use, degrees.
+    pub level_crossing_cycle_min_angle_deg: f64,
     /// Longest peak headway of a line, min (`timetable.policy_headway_peak_min`): the
     /// assumed service at level crossings until a timetable exists.
     pub policy_headway_peak_min: f64,

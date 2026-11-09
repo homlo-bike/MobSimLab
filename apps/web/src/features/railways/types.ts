@@ -363,7 +363,10 @@ export interface LevelCrossingView {
   street: string;
   class: string;
   angle_deg: number;
-  protection: "barriers" | "traffic_signals";
+  /** Streets: barriers or traffic signals; footpaths and cycle paths: gates or a marked crossing. */
+  protection: "barriers" | "traffic_signals" | "path_gates" | "marked";
+  /** A footpath or cycle path and who uses it; null for a street with road traffic. */
+  path: "foot" | "cycle" | "foot_cycle" | null;
   /** Meets the usual rules; otherwise `special_measures` says why it needs special safety measures. */
   standard: boolean;
   special_measures: ("mode" | "third_rail" | "motorway" | "line_speed")[];

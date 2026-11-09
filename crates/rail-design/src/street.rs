@@ -1,5 +1,5 @@
 //! Streets and level crossings: where street-level railway track crosses a street that road
-//! vehicles use (buses, BRT, trolleybuses, depot runs, cars).
+//! vehicles use (buses, BRT, trolleybuses, depot runs, cars), or a footpath or cycle path.
 //!
 //! Streets are not part of the railway document. They come from OpenStreetMap, the same tiles the
 //! street line tool routes on (ADR-0031), and are passed to [`crate::design::build_with_streets`].
@@ -71,8 +71,61 @@ pub struct Street {
     /// The planner set the street up in the GIS tab (`mobsimlab:setup`).
     #[serde(default)]
     pub setup: bool,
+    /// A footpath or cycle path without motor traffic, and who uses it; None for a road.
+    #[serde(default)]
+    pub path: Option<PathUse>,
     /// Shape, `[lon, lat]` degrees.
     pub coords: Vec<[f64; 2]>,
+}
+
+/// Who uses a footpath or cycle path.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum PathUse {
+    /// People on foot.
+    Foot,
+    /// Cyclists.
+    Cycle,
+    /// Both.
+    FootCycle,
+}
+
+impl PathUse {
+    /// Purpose: whether cyclists use the path.
+    pub fn cycle(self) -> bool {
+        matches!(self, PathUse::Cycle | PathUse::FootCycle)
+    }
+    /// Purpose: the users in words ("people on foot and cyclists").
+    pub fn label(self) -> &'static str {
+        match self {
+            PathUse::Foot => "people on foot",
+            PathUse::Cycle => "cyclists",
+            PathUse::FootCycle => "people on foot and cyclists",
+        }
+    }
+}
+
+/// Path classes without motor traffic that form level crossings with the track.
+const PATH_CLASSES: [&str; 4] = ["footway", "cycleway", "path", "bridleway"];
+
+/// Purpose: who uses a path way, from its class and its `foot` / `bicycle` tags.
+fn path_use(class: &str, tags: &BTreeMap<String, String>) -> Option<PathUse> {
+    let allowed = |k: &str, default: bool| match tags.get(k).map(String::as_str) {
+        Some("no" | "private" | "dismount") => false,
+        Some(_) => true,
+        None => default,
+    };
+    let (foot, cycle) = match class {
+        "footway" | "bridleway" => (allowed("foot", true), allowed("bicycle", false)),
+        "cycleway" => (allowed("foot", false), allowed("bicycle", true)),
+        _ => (allowed("foot", true), allowed("bicycle", true)),
+    };
+    match (foot, cycle) {
+        (true, true) => Some(PathUse::FootCycle),
+        (true, false) => Some(PathUse::Foot),
+        (false, true) => Some(PathUse::Cycle),
+        (false, false) => None,
+    }
 }
 
 /// How a tram shares the street, as the planner sets it in the GIS tab.
@@ -132,15 +185,23 @@ fn number(v: Option<&String>) -> Option<f64> {
     n.parse().ok().filter(|x: &f64| *x > 0.0)
 }
 
-/// Purpose: a street from an OSM way's tags and shape, or None when the way is not a road used
-/// by motor vehicles (or is too short).
+/// Purpose: a street from an OSM way's tags and shape: a road used by motor vehicles, a
+/// pedestrian zone, or a footpath or cycle path (`path` set). None for other ways and ways too
+/// short to cross anything.
 pub fn street_from_osm(
     way: i64,
     tags: &BTreeMap<String, String>,
     coords: Vec<[f64; 2]>,
 ) -> Option<Street> {
     let class = tags.get("highway")?;
-    if !(ROAD_CLASSES.contains(&class.as_str()) || class == PEDESTRIAN) || coords.len() < 2 {
+    let path = if PATH_CLASSES.contains(&class.as_str()) {
+        Some(path_use(class, tags)?)
+    } else {
+        None
+    };
+    if !(ROAD_CLASSES.contains(&class.as_str()) || class == PEDESTRIAN || path.is_some())
+        || coords.len() < 2
+    {
         return None;
     }
     if tags.get("area").is_some_and(|v| v == "yes") {
@@ -219,6 +280,7 @@ pub fn street_from_osm(
             _ => None,
         },
         setup: tags.get("mobsimlab:setup").is_some_and(|v| v == "yes"),
+        path,
         coords,
     })
 }
@@ -231,6 +293,11 @@ pub enum Protection {
     Barriers,
     /// Traffic signals stop road traffic for the tram (track embedded in the street).
     TrafficSignals,
+    /// A footpath or cycle path: lights with pedestrian gates or a maze close it before a train.
+    PathGates,
+    /// A footpath or cycle path over tram or light rail track: a marked crossing with warning
+    /// signs, where people look out for the tram.
+    Marked,
 }
 
 /// A street-level track crossing a street.
@@ -283,6 +350,8 @@ pub struct LevelCrossing {
     pub trolley_wire: bool,
     /// Buses use the street (bus lane, busway or bus access tagged).
     pub bus: bool,
+    /// A footpath or cycle path, and who uses it; null for a street with road traffic.
+    pub path: Option<PathUse>,
     /// The crossing meets the usual rules for level crossings.
     pub standard: bool,
     /// Why it does not, and so needs special safety measures: `mode` (a railway system that
@@ -399,10 +468,12 @@ pub fn level_crossings(dz: &mut Design, streets: &[Street]) {
                 }
                 let order = g.order_at(s);
                 let level = g.level_at(s);
-                let name = if st.name.is_empty() {
-                    format!("an unnamed {} street", st.class.replace('_', " "))
-                } else {
+                let name = if !st.name.is_empty() {
                     st.name.clone()
+                } else if st.path.is_some() {
+                    format!("an unnamed {}", st.class.replace('_', " "))
+                } else {
+                    format!("an unnamed {} street", st.class.replace('_', " "))
                 };
                 if level.is_none() && order == Level::Street.order() {
                     iss.push(Issue::error(
@@ -432,7 +503,11 @@ pub fn level_crossings(dz: &mut Design, streets: &[Street]) {
                 } else {
                     p.street_lanes
                 });
-                let width = st.width_m.unwrap_or(lanes * p.street_lane_width_m);
+                let width = st.width_m.unwrap_or(if st.path.is_some() {
+                    p.level_crossing_path_width_m
+                } else {
+                    lanes * p.street_lane_width_m
+                });
                 // The track's swept zone: both lines of a double track plus half the clearance
                 // marker distance outside each.
                 let ext = g.spacing_at(s) / 2.0 + p.clearance_marker_m / 2.0;
@@ -445,18 +520,20 @@ pub fn level_crossings(dz: &mut Design, streets: &[Street]) {
                     })
                     .unwrap_or(p.design_speed_kmh);
                 let warning = p.level_crossing_warning_time_s;
-                let protection = if embedded {
-                    Protection::TrafficSignals
-                } else {
-                    Protection::Barriers
+                let protection = match (st.path, embedded) {
+                    (Some(_), _) if mode.street_running() => Protection::Marked,
+                    (Some(_), _) => Protection::PathGates,
+                    (None, true) => Protection::TrafficSignals,
+                    (None, false) => Protection::Barriers,
                 };
                 // Crossings outside the usual rules are possible with special safety measures,
                 // so they are warnings that say which measures, not errors.
                 let mut special: Vec<(&'static str, String)> = Vec::new();
                 if p.level_crossing_permitted == "no" {
                     special.push(("mode", format!(
-                        "{} track crosses {name} on the level. {} lines normally have no level crossings. This one needs full barriers, obstacle detection and train protection that stops trains while the crossing is not clear. Consider taking the track under or over the street.",
-                        p.label, p.label
+                        "{} track crosses {name} on the level. {} lines normally have no level crossings. This one needs full barriers, obstacle detection and train protection that stops trains while the crossing is not clear. Consider {}.",
+                        p.label, p.label,
+                        if st.path.is_some() { "a footbridge or an underpass" } else { "taking the track under or over the street" }
                     )));
                 }
                 if third_rail {
@@ -482,7 +559,16 @@ pub fn level_crossings(dz: &mut Design, streets: &[Street]) {
                         .into_iter()
                         .map(|(_, text)| Issue::warning(text, Some(h.p), g.id)),
                 );
-                if !(mode.street_running() && embedded) && h.angle < min_angle {
+                let cycle_angle = p.level_crossing_cycle_min_angle_deg;
+                if st.path.is_some_and(|u| u.cycle()) && deg < cycle_angle {
+                    iss.push(Issue::warning(
+                        format!(
+                            "{name} crosses the track at {deg:.0}°, flatter than {cycle_angle:.0}°: a bicycle wheel can drop into the gap beside the rail and the rider falls. Bend the path so it meets the track nearer a right angle."
+                        ),
+                        Some(h.p),
+                        g.id,
+                    ));
+                } else if !(mode.street_running() && embedded) && h.angle < min_angle {
                     iss.push(Issue::warning(
                         format!(
                             "{name} crosses the track at {deg:.0}°, flatter than {:.0}°: the crossing is long and drivers cannot see along the line. Cross nearer to a right angle.",
@@ -522,14 +608,23 @@ pub fn level_crossings(dz: &mut Design, streets: &[Street]) {
                         Protection::TrafficSignals => {
                             "traffic signals stop road traffic for the tram".to_string()
                         }
+                        Protection::PathGates => format!(
+                            "lights and pedestrian gates or a maze close the path {warning:.0} s before a train"
+                        ),
+                        Protection::Marked => {
+                            "a marked crossing with warning signs, where people look out for the tram".to_string()
+                        }
                     };
-                    iss.push(Issue::info(
-                        format!(
+                    let text = match st.path {
+                        Some(u) => format!(
+                            "Path crossing with {name} for {} at {deg:.0}°: {how}. They wait {keep_clear:.1} m from the crossing point.",
+                            u.label()
+                        ),
+                        None => format!(
                             "Level crossing with {name} at {deg:.0}°: {how}. Buses and other road vehicles wait {keep_clear:.1} m from the crossing point and never stop on the track."
                         ),
-                        Some(h.p),
-                        Some(g.id),
-                    ));
+                    };
+                    iss.push(Issue::info(text, Some(h.p), Some(g.id)));
                 }
                 let n = out
                     .iter()
@@ -558,6 +653,7 @@ pub fn level_crossings(dz: &mut Design, streets: &[Street]) {
                     road_closure: RoadClosure::new(p, warning, rail_zone, line_speed),
                     trolley_wire: st.trolley_wire,
                     bus: st.bus,
+                    path: st.path,
                     standard,
                     special_measures,
                 });
@@ -707,9 +803,10 @@ mod tests {
         assert!(dz.level_crossings[0]
             .special_measures
             .contains(&"line_speed"));
+        // Steps are no level crossing (footways and cycle paths are, see below).
         assert!(street_from_osm(
             1,
-            &BTreeMap::from([("highway".into(), "footway".into())]),
+            &BTreeMap::from([("highway".into(), "steps".into())]),
             vec![[0.0, 0.0], [0.0, 1.0]]
         )
         .is_none());
@@ -741,5 +838,61 @@ mod tests {
             &[street("tertiary", 80.0, &[])],
         );
         assert_eq!(dz.level_crossings[0].protection, Protection::TrafficSignals);
+    }
+
+    #[test]
+    fn footpaths_and_cycle_paths_cross_the_track_too() {
+        // A footway over a regional line: lights and pedestrian gates, the default path width.
+        let dz = build_with_streets(
+            &line(RailMode::RegionalRail, Level::Street),
+            None,
+            &[street("footway", 90.0, &[])],
+        );
+        assert!(errors(&dz).is_empty(), "{:?}", errors(&dz));
+        let x = &dz.level_crossings[0];
+        assert_eq!(x.protection, Protection::PathGates);
+        assert_eq!(x.path, Some(PathUse::Foot));
+        let p = dz.params_for(RailMode::RegionalRail);
+        assert!((x.street_width_m - p.level_crossing_path_width_m).abs() < 1e-9);
+        assert!(issues(&dz, Severity::Info)
+            .iter()
+            .any(|t| t.starts_with("Path crossing with Mill Lane for people on foot")));
+        // A shared path over tram track at a flat angle: a marked crossing, and a warning for
+        // cyclists' wheels.
+        let dz = build_with_streets(
+            &line(RailMode::Tram, Level::Street),
+            None,
+            &[street("path", 50.0, &[])],
+        );
+        let x = &dz.level_crossings[0];
+        assert_eq!(x.protection, Protection::Marked);
+        assert_eq!(x.path, Some(PathUse::FootCycle));
+        assert!(issues(&dz, Severity::Warning)
+            .iter()
+            .any(|t| t.contains("bicycle wheel")));
+        // Who may use a path follows its tags; a path nobody may use is no crossing.
+        let t = |class: &str, tags: &[(&str, &str)]| {
+            let m: BTreeMap<String, String> = tags
+                .iter()
+                .map(|(k, v)| (k.to_string(), v.to_string()))
+                .chain([("highway".to_string(), class.to_string())])
+                .collect();
+            street_from_osm(1, &m, vec![[7.0, 50.9], [7.001, 50.9]]).and_then(|s| s.path)
+        };
+        assert_eq!(
+            t("footway", &[("bicycle", "yes")]),
+            Some(PathUse::FootCycle)
+        );
+        assert_eq!(t("cycleway", &[]), Some(PathUse::Cycle));
+        assert_eq!(t("residential", &[]), None);
+        assert!(street_from_osm(
+            1,
+            &[("highway", "path"), ("foot", "no"), ("bicycle", "no")]
+                .iter()
+                .map(|(k, v)| (k.to_string(), v.to_string()))
+                .collect(),
+            vec![[7.0, 50.9], [7.001, 50.9]]
+        )
+        .is_none());
     }
 }

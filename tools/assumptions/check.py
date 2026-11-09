@@ -96,6 +96,8 @@ RAIL_FIELDS = {
     "level_crossing_min_angle_deg": "level_crossing.min_angle_deg",
     "level_crossing_warning_time_s": "level_crossing.warning_time_s",
     "level_crossing_reopen_s": "level_crossing.reopen_s",
+    "level_crossing_path_width_m": "level_crossing.path_width_m",
+    "level_crossing_cycle_min_angle_deg": "level_crossing.cycle_min_angle_deg",
     "policy_headway_peak_min": "timetable.policy_headway_peak_min",
     "policy_headway_offpeak_min": "timetable.policy_headway_offpeak_min",
     "signalling_system": "signalling.system",
