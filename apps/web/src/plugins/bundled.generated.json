@@ -988,7 +988,7 @@
     {
       "id": "org.mobsimlab.noise",
       "name": "Noise map",
-      "description": "Estimated noise of the service lines (ADR-0038): a live noise band while drawing street lines and railways, with checks for curve squeal, bridges and switches. CNOSSOS-EU road emission, free field without buildings for now.",
+      "description": "Estimated noise of the service lines (ADR-0038): a live noise band while drawing street lines and railways, with checks for curve squeal, bridges and switches. CNOSSOS-EU road and railway emission, free field without buildings for now.",
       "version": "0.1.0",
       "publisher": {
         "name": "MobSimLab contributors",
@@ -1180,8 +1180,68 @@
           "label": "Road vehicle source height",
           "unit": "m"
         },
-        "noise.rail_source_height_m": {
-          "label": "Rail vehicle source height above the rail head",
+        "noise.rail_source_height_a_m": {
+          "label": "Rail source A height above the rail head (rolling, impact, squeal, bridge, low traction)",
+          "unit": "m"
+        },
+        "noise.rail_source_height_b_m": {
+          "label": "Rail source B height above the rail head (roof traction, pantograph, aerodynamic)",
+          "unit": "m"
+        },
+        "noise.rail_min_roughness_speed_kmh": {
+          "label": "Lowest speed used for the rail rolling noise roughness",
+          "unit": "km/h"
+        },
+        "noise.rail_aero_from_kmh": {
+          "label": "Speed above which aerodynamic noise is added",
+          "unit": "km/h"
+        },
+        "noise.rail_vehicle_length_m": {
+          "label": "Rail vehicle length used to count vehicles in a train",
+          "unit": "m"
+        },
+        "noise.rail_axles_per_vehicle": {
+          "label": "Axles per rail vehicle",
+          "unit": "axles"
+        },
+        "noise.rail_powered_vehicle_share": {
+          "label": "Share of rail vehicles that carry traction equipment (multiple units)",
+          "unit": "share"
+        },
+        "noise.rail_locomotives_per_train": {
+          "label": "Locomotives per train",
+          "unit": "count"
+        },
+        "noise.rail_traction": {
+          "label": "Traction noise source (CNOSSOS-EU Table G-5)",
+          "unit": "id"
+        },
+        "noise.rail_wheel_roughness": {
+          "label": "Wheel roughness by brake type (CNOSSOS-EU Table G-1)",
+          "unit": "id"
+        },
+        "noise.rail_rail_roughness": {
+          "label": "Rail roughness (CNOSSOS-EU Table G-1, as replaced by 2021/1226)",
+          "unit": "id"
+        },
+        "noise.rail_contact_filter": {
+          "label": "Contact filter by wheel load and diameter (CNOSSOS-EU Table G-2, as replaced by 2021/1226)",
+          "unit": "id"
+        },
+        "noise.rail_wheel_transfer": {
+          "label": "Wheel transfer function by wheel diameter (CNOSSOS-EU Table G-3)",
+          "unit": "id"
+        },
+        "noise.rail_track_transfer": {
+          "label": "Track transfer function by sleeper and rail pad (CNOSSOS-EU Table G-3, as replaced by 2021/1226)",
+          "unit": "id"
+        },
+        "noise.rail_bridge_transfer": {
+          "label": "Bridge transfer function (CNOSSOS-EU Table G-7, as replaced by 2021/1226)",
+          "unit": "id"
+        },
+        "noise.rail_impact_extent_m": {
+          "label": "Impact noise from a switch or joint: extent before and after it",
           "unit": "m"
         },
         "noise.road_stop_zone_m": {
@@ -1190,18 +1250,6 @@
         },
         "noise.electric_road_propulsion_delta_db": {
           "label": "Electric buses and trolleybuses: change to the propulsion noise term",
-          "unit": "dB"
-        },
-        "noise.rail_passby_db": {
-          "label": "Rail pass-by level L_pAeq,Tp at 7.5 m and 1.2 m at the reference speed, ballasted track",
-          "unit": "dB(A)"
-        },
-        "noise.rail_passby_ref_speed_kmh": {
-          "label": "Reference speed of the rail pass-by level",
-          "unit": "km/h"
-        },
-        "noise.rail_rolling_speed_exponent": {
-          "label": "Rail rolling noise: dB per decade of speed",
           "unit": "dB"
         },
         "noise.rail_squeal_r300_db": {
@@ -1220,16 +1268,8 @@
           "label": "Shortest curve that gets the squeal correction",
           "unit": "m"
         },
-        "noise.rail_switch_db": {
-          "label": "Switches and crossings: impact noise added over the switch",
-          "unit": "dB"
-        },
-        "noise.rail_bridge_db": {
-          "label": "Elevated track: bridge noise added",
-          "unit": "dB"
-        },
         "noise.tram_embedded_track_db": {
-          "label": "Trams on embedded street track, compared with ballast",
+          "label": "Trams on embedded street track: added to the track part of rolling noise",
           "unit": "dB"
         },
         "noise.cable_car_tower_lw_db": {
