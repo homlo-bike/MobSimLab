@@ -9,6 +9,7 @@ import type {
   Power,
   RailMode,
   RailView,
+  IssueView,
   Severity,
   Signal,
   SignalKind,
@@ -80,6 +81,10 @@ interface Props {
   switchOpts: NewSwitchOpts;
   error: string | null;
   actions: RailPanelActions;
+  /** The noise plugin's section (toggle, band, legend), when the plugin is installed. */
+  noise?: React.ReactNode;
+  /** Checks from plugins (noise), added after the design's own. */
+  extraIssues?: IssueView[];
   /** Service lines: the last publication, publishing, and picking stops on the map. */
   service: {
     publication: Publication | null;
@@ -220,7 +225,7 @@ export function RailPanel(props: Props) {
             ? "signal"
             : null
     : null;
-  const issues = view.issues;
+  const issues = [...view.issues, ...(props.extraIssues ?? [])];
 
   return (
     <div className="flex flex-col gap-3 p-4 text-sm">
@@ -247,6 +252,7 @@ export function RailPanel(props: Props) {
         <Stat value={String(doc.stations.length)} label="Stations" />
         <Stat value={String(doc.switches.length)} label="Switches" />
       </div>
+      {props.noise}
       <div className="flex gap-2">
         <button
           type="button"
