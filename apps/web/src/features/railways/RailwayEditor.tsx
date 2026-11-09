@@ -42,6 +42,8 @@ import {
   type RailTool,
 } from "./RailPanel";
 import { RailToolPalette } from "./RailToolPalette";
+import { addLine, engineLines, linesTrainLength, removeLine, updateLine } from "./serviceLines";
+import type { Publication } from "./ServiceLinesPanel";
 import type {
   Anchor,
   ConnectionView,
@@ -52,9 +54,11 @@ import type {
   RailEngineLoader,
   RailMode,
   RailView,
+  ServicePublication,
   SignalView,
   Track,
 } from "./types";
+import type { Timetable } from "../journey-planner/types";
 
 /** Purpose: the drawn signals of a view (generated and the planner's), or none before a build. */
 const sigs = (v: RailView | null | undefined): SignalView[] => v?.signals ?? [];
@@ -69,9 +73,15 @@ const HINTS: Record<RailTool, string> = {
   crossover: "Click on a double track to place a crossover.",
   signal: "Click on a track to place a signal. F turns the selected signal round.",
   pan: "Drag to move the map.",
+  line: "Click the stations of the line in the order trains call at them. Enter or Esc finishes the line.",
 };
 
 const NO_SETUPS: readonly StreetSetup[] = [];
+
+/** Purpose: what a publication depends on: the drawing without its view-only parts. */
+const publishKey = (d: Network) => JSON.stringify(d);
+
+type Published = { result: ServicePublication | null; error: string | null; key: string };
 
 interface Props {
   /** The map; `null` until it has loaded. */
@@ -99,6 +109,8 @@ interface Props {
   initial?: Network | null;
   /** Told about the drawing after every change, so the project can save it. */
   onDocChange?: (doc: Network) => void;
+  /** Called with the published service lines' timetable (`null` when withdrawn), for the journey planner. */
+  onPublish?: (timetable: Timetable | null) => void;
 }
 
 export interface Selection {
@@ -127,6 +139,7 @@ export function RailwayEditor({
   delays = null,
   initial = null,
   onDocChange,
+  onPublish,
 }: Props) {
   const engine = useRef<RailEngine | null>(null);
   const [ready, setReady] = useState(false);
@@ -150,6 +163,8 @@ export function RailwayEditor({
   const [flash, setFlash] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [note, setNote] = useState<string | null>(null);
+  const [published, setPublished] = useState<Published | null>(null);
+  const [picking, setPicking] = useState<string | null>(null);
 
   useEffect(() => {
     let alive = true;
@@ -312,13 +327,15 @@ export function RailwayEditor({
   // The draft with its end at the cursor (or the connection under it).
   const shown = useMemo(() => {
     if (!doc) return null;
-    if (!draft) return { doc, draftId: null };
+    // Platforms are checked against the longest train of the service lines (the mode's default without lines).
+    const withTrains = { ...doc, train_length_m: linesTrainLength(doc) };
+    if (!draft) return { doc: withTrains, draftId: null };
     const end: Anchor | null = cursor?.conn
       ? cursor.conn.anchor
       : cursor
         ? { type: "free", x: cursor.at[0], y: cursor.at[1], level: draftLevel(draft) }
         : null;
-    return { doc: { ...doc, tracks: [...doc.tracks, { ...draft, end }] }, draftId: draft.id };
+    return { doc: { ...withTrains, tracks: [...doc.tracks, { ...draft, end }] }, draftId: draft.id };
   }, [doc, draft, cursor]);
 
   const view: RailView | null = useMemo(() => {
@@ -437,8 +454,8 @@ export function RailwayEditor({
   );
 
   // Latest state for handlers registered once per map.
-  const latest = useRef({ tool, doc, draft, sel, trackOpts, stationOpts, switchOpts, view, cursor });
-  latest.current = { tool, doc, draft, sel, trackOpts, stationOpts, switchOpts, view, cursor };
+  const latest = useRef({ tool, doc, draft, sel, trackOpts, stationOpts, switchOpts, view, cursor, picking });
+  latest.current = { tool, doc, draft, sel, trackOpts, stationOpts, switchOpts, view, cursor, picking };
   const dragging = useRef<
     | { kind: "station"; id: number; dx: number; dy: number }
     | { kind: "switch"; id: number; track: number; offset: number }
@@ -493,6 +510,34 @@ export function RailwayEditor({
       const ll: LonLat = [ev.lngLat.lng, ev.lngLat.lat];
       const at = e.toLocal(s.doc.origin, ll);
       const params = s.view?.params;
+      // Creating a service line: each click on a station adds the next stop, if trains can get there.
+      const pickLine = s.tool === "line" && s.picking ? s.doc.lines?.find((l) => l.id === s.picking) : null;
+      if (s.tool === "line") {
+        if (!pickLine) return;
+        const station = stationAt(map, ev.point, s.doc, s.view);
+        if (station === null) return say("Click a station to add it to the line.");
+        const name = s.doc.stations.find((x) => x.id === station)?.name ?? "This station";
+        const last = pickLine.stations[pickLine.stations.length - 1];
+        if (last === station) return say(`${name} is the last stop already. Click the next station.`);
+        if (pickLine.stations.includes(station))
+          return say(`${name} is a stop of this line already. Remove it from the list to change the order.`);
+        if (last !== undefined) {
+          let reach: { ok: boolean; reason: string | null };
+          try {
+            reach = e.reachable(last, station);
+          } catch (err) {
+            return say(err instanceof Error ? err.message : String(err));
+          }
+          if (!reach.ok) return say(reach.reason ?? `Trains cannot reach ${name} from the last stop.`);
+        }
+        setDoc(updateLine(s.doc, pickLine.id, (l) => ({ ...l, stations: [...l.stations, station] })));
+        setNote(
+          pickLine.stations.length === 0
+            ? `${name} is the first stop. Click the next station.`
+            : `${name} added. Click the next station, or press Enter to finish.`,
+        );
+        return;
+      }
       if (s.tool === "station") {
         // Next to an existing stop or station it is part of that one; otherwise named from the map.
         const places = [...placesOtherThan("rail"), ...stationPlaces(s.doc, s.view)];
@@ -839,6 +884,7 @@ export function RailwayEditor({
           return;
         }
       }
+      if (s.tool === "line" && (ev.key === "Enter" || ev.key === "Escape")) return finishLine();
       if (ev.key === "Escape") return setSel(null);
       if (k === "f" && s.sel && s.doc && kindOf(s.doc, s.sel.id, sigs(s.view)) === "signal") {
         setDoc(
@@ -866,8 +912,9 @@ export function RailwayEditor({
         x: "crossover",
         g: "signal",
         h: "pan",
+        l: "line",
       };
-      if (tools[k]) setTool(tools[k]);
+      if (tools[k]) toolChange.current(tools[k]);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -880,8 +927,67 @@ export function RailwayEditor({
       setDraft(null);
       setCursor(null);
     }
+    if (t === "line" && !(picking && doc?.lines?.some((l) => l.id === picking))) return newLine();
+    if (t !== "line") dropEmptyLine();
     setTool(t);
   };
+  /** Purpose: start a new line with its stops still to pick, and the line tool to pick them. */
+  const newLine = () => {
+    const d0 = latest.current.doc;
+    if (!d0) return;
+    const [d, id] = addLine(d0, (view?.params.platform_length_m ?? 120) - 5, { empty: true });
+    setDoc(d);
+    setDraft(null);
+    setCursor(null);
+    setPicking(id);
+    setSel(null);
+    setNote("Click the first station of the new line.");
+    setTool("line");
+  };
+  /** Purpose: stop picking; a line left without stops is removed again. */
+  const dropEmptyLine = () => {
+    const { doc: d, picking: id } = latest.current;
+    const line = id ? d?.lines?.find((l) => l.id === id) : null;
+    if (d && line && line.stations.length === 0) setDoc(removeLine(d, line.id));
+    setPicking(null);
+  };
+  const toolChange = useRef(changeTool);
+  toolChange.current = changeTool;
+  /** Purpose: stop picking stops; the line stays open in the panel. */
+  const finishLine = () => {
+    dropEmptyLine();
+    setNote(null);
+    setTool("select");
+  };
+  /** Purpose: pick more stops for an existing line (they are added after its last stop). */
+  const pickFor = (id: string | null) => {
+    if (!id) return finishLine();
+    setDraft(null);
+    setCursor(null);
+    setPicking(id);
+    setTool("line");
+  };
+
+  // Publishing: plan the service lines on the drawn track (timetable planner) for the journey planner.
+  const publish = () => {
+    const e = engine.current;
+    if (!e || !doc) return;
+    let next: Published;
+    try {
+      // The engine plans on its last build: build the drawing without a draft first.
+      e.build(doc, null);
+      const result = e.publishLines(engineLines(doc), "weekday");
+      next = { result, error: null, key: publishKey(doc) };
+      onPublish?.(result.timetable);
+    } catch (err) {
+      next = { result: null, error: err instanceof Error ? err.message : String(err), key: publishKey(doc) };
+      onPublish?.(null);
+    }
+    setPublished(next);
+  };
+  const publication: Publication | null = published
+    ? { result: published.result, error: published.error, stale: !!doc && published.key !== publishKey(doc) }
+    : null;
 
   const panelActions = {
     setTool: changeTool,
@@ -929,24 +1035,6 @@ export function RailwayEditor({
         tracks: doc.tracks.map((t) => ({ ...t, mode: pin(t.mode, tm.get(t.id)) })),
       });
     },
-    example: () => {
-      if (!map || !engine.current || !doc) return;
-      const c = map.getCenter();
-      const d = engine.current.sample(doc.mode, [c.lng, c.lat]);
-      setDoc(d);
-      setSel(null);
-      setDraft(null);
-      setTool("select");
-      const v = engine.current.build(d, null);
-      if (v.bbox)
-        map.fitBounds(
-          [
-            [v.bbox[0], v.bbox[1]],
-            [v.bbox[2], v.bbox[3]],
-          ],
-          { padding: 60, duration: 0 },
-        );
-    },
     clear: () => {
       if (!map) return;
       const c = map.getCenter();
@@ -972,16 +1060,6 @@ export function RailwayEditor({
       setDoc(resetSignals(doc));
       setSel(null);
       setNote("Signals reset to the ones generated from the design.");
-    },
-    downloadTopology: () => {
-      const t = engine.current?.topology();
-      if (!t) return;
-      const url = URL.createObjectURL(new Blob([JSON.stringify(t, null, 1)], { type: "application/json" }));
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = "rail-topology.json";
-      link.click();
-      URL.revokeObjectURL(url);
     },
     fit: () => {
       const b = view?.bbox;
@@ -1010,6 +1088,7 @@ export function RailwayEditor({
       streetNote={streetNote}
       existingRailways={existingRailways}
       actions={panelActions}
+      service={{ publication, publish, picking, setPicking: pickFor, newLine }}
     />
   );
 
@@ -1021,6 +1100,7 @@ export function RailwayEditor({
           <p
             className="rounded-full px-3 py-1 text-white"
             style={{ background: flash ? COLORS.error : "#0f172ad9" }}
+            role={flash ? "alert" : undefined}
           >
             {flash ?? "Starting the railway engine…"}
           </p>
@@ -1042,6 +1122,30 @@ export function RailwayEditor({
       )}
     </>
   );
+}
+
+/**
+ * Purpose: the station under a map click: a drawn station feature, else the station whose centre is
+ * nearest within 30 px. Output: the station id, or `null`.
+ */
+function stationAt(map: MapLibreMap, pt: { x: number; y: number }, doc: Network, view: RailView | null) {
+  const box: [[number, number], [number, number]] = [
+    [pt.x - 6, pt.y - 6],
+    [pt.x + 6, pt.y + 6],
+  ];
+  const layers = HIT_LAYERS.filter((l) => map.getLayer(l));
+  const hit = map
+    .queryRenderedFeatures(box, { layers })
+    .map((h) => Number(h.properties?.ref))
+    .find((r) => doc.stations.some((s) => s.id === r));
+  if (hit) return hit;
+  let best: { id: number; d: number } | null = null;
+  for (const sv of view?.stations ?? []) {
+    const p = map.project(sv.lonlat);
+    const d = Math.hypot(p.x - pt.x, p.y - pt.y);
+    if (d <= 30 && (!best || d < best.d)) best = { id: sv.id, d };
+  }
+  return best?.id ?? null;
 }
 
 /** Purpose: the level new points of a track get (its last point's, else the track's). */

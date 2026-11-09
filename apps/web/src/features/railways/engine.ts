@@ -40,6 +40,8 @@ export const loadRailEngine: RailEngineLoader = async () => {
     setValues: (v) => d.set_values(JSON.stringify(v)),
     generateSignals: () => JSON.parse(d.generate_signals()),
     signalAnchor: ([lon, lat], maxM) => JSON.parse(d.signal_anchor(lon, lat, maxM)),
+    reachable: (from, to) => JSON.parse(d.reachable(from, to)),
+    publishLines: (lines, serviceId) => JSON.parse(d.publish_lines(JSON.stringify(lines), serviceId)),
     dispose: () => d.free(),
   };
   return engine;
