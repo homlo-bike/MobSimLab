@@ -4,3 +4,5 @@
 8d70e4b528e72270723d9c8c2db1e9d7faddd47b:apps/api/test/support/app.ts:generic-api-key:11
 # False positive: the parameter id "noise.tram_squeal_r200_db" (curve squeal, trams, R <= 200 m) matches the generic key pattern.
 7b04992a245cc71c25b67b6599ac3763941ea256:plugins/noise/assumptions/parameters.yaml:generic-api-key:538
+# False positive: the parameter id "benefit.floor_m2_per_person" matches the generic key pattern.
+09a5518d34c214bd657f4edd6e07731978c46654:assumptions/parameters/benefits.yaml:generic-api-key:225
