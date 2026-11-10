@@ -131,7 +131,7 @@ export function areasQuery(lon: number, lat: number): string {
     `(rel(pivot.a)["boundary"="administrative"]["admin_level"~"^([6-9]|1[01])$"];` +
     `rel(pivot.a)["place"~"^(${PLACE_KINDS})$"];` +
     `way(pivot.a)["place"~"^(${PLACE_KINDS})$"];` +
-    `way(pivot.a)["landuse"]["name"];);out tags geom;`
+    `way(pivot.a)["landuse"]["name"];);out geom;`
   );
 }
 
