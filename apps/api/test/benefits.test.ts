@@ -70,6 +70,8 @@ describe("OpenStreetMap areas", () => {
   it("builds the query", () => {
     const q = areasQuery(2.35, 48.85);
     expect(q).toContain("is_in(48.850000,2.350000)");
+    // Relations need their members' geometry: `out tags geom` leaves the members out.
+    expect(q.endsWith("out geom;")).toBe(true);
     expect(q).toContain(
       '"place"~"^(city|town|village|borough|suburb|quarter|neighbourhood|district|city_block)$"',
     );
