@@ -16,13 +16,14 @@ const SQUARE: [number, number][] = [
 ];
 
 /** A fake WorldPop host: answers at once, through a task, or with an error, by the polygon's first longitude. */
-function fakeWorldPop(fail: Set<number> = new Set()) {
+function fakeWorldPop(fail: Set<number> = new Set(), html: Set<number> = new Set()) {
   const calls: string[] = [];
   let polls = 0;
   const fetchImpl = (async (url: string | URL) => {
     const u = String(url);
     calls.push(u);
     if (fail.has(calls.length)) return new Response("busy", { status: 503 });
+    if (html.has(calls.length)) return new Response("<html>Bad gateway</html>", { status: 200 });
     const json = (b: unknown) => new Response(JSON.stringify(b), { status: 200 });
     if (u.includes("/tasks/t1")) {
       polls++;
@@ -81,6 +82,12 @@ describe("WorldPop client", () => {
     expect(await client.population(shift(1))).toBe(4321.5);
     expect(calls.filter((c) => c.includes("/tasks/t1"))).toHaveLength(2);
     await expect(client.population(shift(2))).rejects.toBeInstanceOf(WorldPopError);
+  });
+
+  it("retries an HTML error page answered with status 200", async () => {
+    const { client, calls } = fakeWorldPop(new Set(), new Set([1]));
+    expect(await client.population(SQUARE)).toBe(1234.25);
+    expect(calls).toHaveLength(2);
   });
 });
 
@@ -143,6 +150,11 @@ describe("OpenStreetMap areas", () => {
       ["w2", "Quarter", "quarter", null],
       ["r1", "City", "administrative", 8],
     ]);
+  });
+
+  it("refuses an answer Overpass cut short", () => {
+    const json = JSON.stringify({ elements: [], remark: "runtime error: Query run out of memory" });
+    expect(() => parseAreas(json)).toThrow(/out of memory/);
   });
 });
 
