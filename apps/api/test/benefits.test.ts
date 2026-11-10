@@ -2,10 +2,18 @@ import { Test } from "@nestjs/testing";
 import request from "supertest";
 import { describe, expect, it } from "vitest";
 import { BenefitsModule } from "../src/benefits/benefits.module";
-import { areasQuery, joinRings, parseAreas, ringAreaKm2, thin } from "../src/benefits/benefits.service";
+import {
+  areasQuery,
+  groupAreas,
+  inRing,
+  joinRings,
+  parseAreas,
+  ringAreaKm2,
+  thin,
+} from "../src/benefits/benefits.service";
 import { OverpassClient } from "../src/gateway/overpass.client";
 import { WorldBankClient } from "../src/gateway/worldbank.client";
-import { ringGeoJson, WorldPopClient, WorldPopError, worldPopEndpoint } from "../src/gateway/worldpop.client";
+import { type Bbox, PopulationService } from "../src/population/population.service";
 
 const SQUARE: [number, number][] = [
   [7, 50],
@@ -15,79 +23,46 @@ const SQUARE: [number, number][] = [
   [7, 50],
 ];
 
-/** A fake WorldPop host: answers at once, through a task, or with an error, by the polygon's first longitude. */
-function fakeWorldPop(fail: Set<number> = new Set(), html: Set<number> = new Set()) {
-  const calls: string[] = [];
-  let polls = 0;
-  const fetchImpl = (async (url: string | URL) => {
-    const u = String(url);
-    calls.push(u);
-    if (fail.has(calls.length)) return new Response("busy", { status: 503 });
-    if (html.has(calls.length)) return new Response("<html>Bad gateway</html>", { status: 200 });
-    const json = (b: unknown) => new Response(JSON.stringify(b), { status: 200 });
-    if (u.includes("/tasks/t1")) {
-      polls++;
-      return json(
-        polls < 2
-          ? { status: "started", taskid: "t1" }
-          : { status: "finished", error: false, data: { total_population: 4321.5 } },
-      );
-    }
-    const geo = decodeURIComponent(new URL(u).searchParams.get("geojson") ?? "");
-    if (geo.includes("[8,")) return json({ status: "created", taskid: "t1" });
-    if (geo.includes("[9,")) return json({ status: "finished", error: true, error_message: "outside" });
-    return json({ status: "finished", error: false, data: { total_population: 1234.25 } });
-  }) as typeof fetch;
-  const client = new WorldPopClient({
-    fetchImpl,
-    sleep: async () => {},
-    endpoint: "https://wp.test/v1",
-    backoffMs: [1],
-  });
-  return { client, calls };
+/** A fake population grid: one person per cell east of 8°, a country file still loading further east. */
+function fakePopulation() {
+  const boxes: Bbox[] = [];
+  const svc = {
+    grid: async (bbox: Bbox) => {
+      boxes.push(bbox);
+      if (bbox[0] > 8.5)
+        return {
+          status: "loading",
+          reason: "The WorldPop grid of XYZ is being downloaded",
+          countries: ["XYZ"],
+        };
+      const d = 1 / 1200;
+      const x0 = Math.floor(bbox[0] / d) * d;
+      const y0 = Math.floor(bbox[1] / d) * d;
+      const nx = Math.ceil((bbox[2] - x0) / d);
+      const ny = Math.ceil((bbox[3] - y0) / d);
+      return {
+        status: "ready",
+        grid: { x0, y0, dx: d, dy: d, nx, ny, people: new Array<number>(nx * ny).fill(1) },
+        source: { licence: "CC BY 4.0", year: 2026, countries: ["DEU"] },
+      };
+    },
+  } as unknown as PopulationService;
+  return { svc, boxes };
 }
 
 const shift = (dx: number) => SQUARE.map(([x, y]) => [x + dx, y] as [number, number]);
 
-describe("WorldPop client", () => {
-  it("accepts only https endpoints", () => {
-    expect(worldPopEndpoint({})).toBe("https://api.worldpop.org/v1");
-    expect(() => worldPopEndpoint({ MOBSIMLAB_WORLDPOP_URL: "http://wp.example" })).toThrow();
-  });
-
-  it("closes rings and rounds coordinates", () => {
-    const g = JSON.parse(
-      ringGeoJson([
-        [7.123456789, 50],
-        [7.2, 50],
-        [7.2, 50.1],
-      ]),
-    );
-    const c = g.features[0].geometry.coordinates[0];
-    expect(c[0]).toEqual([7.12346, 50]);
-    expect(c[c.length - 1]).toEqual(c[0]);
-  });
-
-  it("reads an immediate answer and caches it", async () => {
-    const { client, calls } = fakeWorldPop();
-    expect(await client.population(SQUARE)).toBe(1234.25);
-    expect(calls[0]).toContain("dataset=wpgppop");
-    expect(calls[0]).toContain("year=2020");
-    await client.population(SQUARE);
-    expect(calls).toHaveLength(1);
-  });
-
-  it("polls a task until it is finished, retries a busy host and reports errors", async () => {
-    const { client, calls } = fakeWorldPop(new Set([1]));
-    expect(await client.population(shift(1))).toBe(4321.5);
-    expect(calls.filter((c) => c.includes("/tasks/t1"))).toHaveLength(2);
-    await expect(client.population(shift(2))).rejects.toBeInstanceOf(WorldPopError);
-  });
-
-  it("retries an HTML error page answered with status 200", async () => {
-    const { client, calls } = fakeWorldPop(new Set(), new Set([1]));
-    expect(await client.population(SQUARE)).toBe(1234.25);
-    expect(calls).toHaveLength(2);
+describe("population of station areas", () => {
+  it("tests points in rings and groups nearby areas into one grid box", () => {
+    expect(inRing(7.005, 50.005, SQUARE)).toBe(true);
+    expect(inRing(7.02, 50.005, SQUARE)).toBe(false);
+    const g = groupAreas([
+      { id: "a", ring: SQUARE },
+      { id: "b", ring: shift(0.05) },
+      { id: "c", ring: shift(2) },
+    ]);
+    expect(g.map((x) => x.areas.map((a) => a.id))).toEqual([["a", "b"], ["c"]]);
+    expect(g[0]!.box[2]).toBeCloseTo(7.06);
   });
 });
 
@@ -163,9 +138,8 @@ describe("benefit routes", () => {
     const wb = {
       countries: async () => [{ iso3: "FRA", iso2: "FR", name: "France" }],
       latest: async (_c: string, ind: string) => ({ year: 2024, value: ind === "SP.POP.TOTL" ? 68e6 : 42 }),
-      range: async () => [{ year: 2020, value: 67e6 }],
     } as unknown as WorldBankClient;
-    const { client } = fakeWorldPop();
+    const { svc, boxes } = fakePopulation();
     const overpass = {
       run: async () =>
         JSON.stringify({
@@ -182,8 +156,8 @@ describe("benefit routes", () => {
     const mod = await Test.createTestingModule({ imports: [BenefitsModule] })
       .overrideProvider(WorldBankClient)
       .useValue(wb)
-      .overrideProvider(WorldPopClient)
-      .useValue(client)
+      .overrideProvider(PopulationService)
+      .useValue(svc)
       .overrideProvider(OverpassClient)
       .useValue(overpass)
       .compile();
@@ -196,7 +170,6 @@ describe("benefit routes", () => {
       iso3: "FRA",
       gdpPerCapita: { year: 2024, value: 42 },
       population: { value: 68e6 },
-      populationWorldPopYear: { year: 2020, value: 67e6 },
     });
     await http().get("/api/benefits/indicators?code=ZZZ").expect(404);
 
@@ -209,7 +182,10 @@ describe("benefit routes", () => {
         ],
       })
       .expect(200);
-    expect(pop.body).toMatchObject({ year: 2020, populations: { a: 1234.25, b: null }, failed: 1 });
+    // 0.01° × 0.01° holds 12 × 12 cells of 3 arc seconds.
+    expect(pop.body).toMatchObject({ year: 2026, populations: { a: 144, b: null }, failed: 1 });
+    expect(pop.body.reasons[0]).toContain("being downloaded");
+    expect(boxes).toHaveLength(2);
     await http().post("/api/benefits/population").send({ areas: [] }).expect(400);
     await http()
       .post("/api/benefits/population")

@@ -94,8 +94,8 @@ export function buildingQuery(z: number, x: number, y: number): string {
 
 /**
  * One building as the noise map and the benefit tables take it: outer ring `[lon, lat]`, what OSM says of
- * its height, and what it is used for (`use`: the `building` value, or `shop`, `office` or
- * `amenity:<value>` when the building is only tagged `building=yes` with one of those).
+ * its height, whether it holds homes (`homes`), and what it is used for (`use`: the `building` value, or
+ * `shop`, `office` or `amenity:<value>` when the building is only tagged `building=yes` with one of those).
  */
 export interface BuildingFootprint {
   id: string;
@@ -103,6 +103,8 @@ export interface BuildingFootprint {
   height_m?: number;
   levels?: number;
   use?: string;
+  /** True when tagged as housing, false when tagged as another use, absent when not said (`building=yes`). */
+  homes?: boolean;
 }
 
 /** Purpose: what a building is used for, from its OSM tags (see `BuildingFootprint.use`). */
@@ -113,6 +115,38 @@ export function buildingUse(t: Record<string, string>): string {
   if (t.office) return "office";
   if (t.amenity) return `amenity:${t.amenity.toLowerCase()}`;
   return "yes";
+}
+
+/** `building=*` values that are housing (OSM wiki, Key:building, "Accommodation"). */
+const HOME_BUILDINGS = new Set([
+  "apartments",
+  "bungalow",
+  "cabin",
+  "detached",
+  "dormitory",
+  "farm",
+  "ger",
+  "house",
+  "houseboat",
+  "residential",
+  "semidetached_house",
+  "static_caravan",
+  "stilt_house",
+  "terrace",
+  "tree_house",
+  "trullo",
+]);
+
+/**
+ * Purpose: whether a building holds homes, from its `building` value: true for housing, false
+ * for any other named use (shop, office, garage, church…), undefined for `yes` and unknown values
+ * used only as building parts or construction states.
+ */
+export function buildingHomes(tags: Record<string, string>): boolean | undefined {
+  const v = (tags.building ?? "").trim().toLowerCase();
+  if (HOME_BUILDINGS.has(v)) return true;
+  if (v === "" || v === "yes" || v === "construction" || v === "no") return undefined;
+  return false;
 }
 
 interface OverpassElement {
@@ -152,6 +186,7 @@ export function footprints(json: string): BuildingFootprint[] {
       height_m: osmNumber(t.height),
       levels: osmNumber(t["building:levels"]),
       use: buildingUse(t),
+      homes: buildingHomes(t),
     };
     const rings =
       e.type === "way"

@@ -39,6 +39,7 @@ fn main() {
                     ],
                     height_m: Some(12.0),
                     levels: None,
+                    homes: None,
                 });
             }
             x += 80.0;
@@ -47,20 +48,26 @@ fn main() {
     }
     // Keep the line's street clear.
     buildings.retain(|b| b.ring.iter().all(|p| p[1].abs() > 12.0 || p[0] > 1500.0));
-    for with in [false, true] {
+    for (with, refl) in [(false, true), (true, false), (true, true)] {
         let input = EstimateInput {
             lines: vec![line.clone()],
             grid: true,
             grid_reach_m: Some(300.0),
             buildings: if with { buildings.clone() } else { vec![] },
+            overrides: if refl {
+                Default::default()
+            } else {
+                [("noise.reflection_order".to_string(), 0.0)].into()
+            },
             ..Default::default()
         };
         let t = Instant::now();
         let e = estimate(&input);
         let g = e.grid.unwrap();
         println!(
-            "buildings {:>5}: {:.2} s, grid {}×{} at {:.1} m",
+            "buildings {:>5}, reflections {}: {:.2} s, grid {}×{} at {:.1} m",
             input.buildings.len(),
+            if refl { "on " } else { "off" },
             t.elapsed().as_secs_f64(),
             g.nx,
             g.ny,

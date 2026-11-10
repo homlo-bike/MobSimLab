@@ -51,6 +51,37 @@ export interface NoiseBuilding {
   ring: LonLat[];
   height_m?: number;
   levels?: number;
+  /** True when OSM tags it as housing, false for another use, absent when not said. */
+  homes?: boolean;
+}
+
+/**
+ * Ground heights on a regular grid (Copernicus GLO-30 through the terrain API): south-west sample
+ * `x0` longitude, `y0` latitude, spacing `dx`, `dy` in degrees, heights row by row from the
+ * south-west, longitude fastest; null where there is no data.
+ */
+export interface NoiseTerrain {
+  x0: number;
+  y0: number;
+  dx: number;
+  dy: number;
+  nx: number;
+  ny: number;
+  z: (number | null)[];
+}
+
+/**
+ * People per cell (WorldPop through the population API): south-west corner `x0` longitude, `y0`
+ * latitude, cell size `dx`, `dy` in degrees, rows from the south, longitude fastest.
+ */
+export interface NoisePopulation {
+  x0: number;
+  y0: number;
+  dx: number;
+  dy: number;
+  nx: number;
+  ny: number;
+  people: number[];
 }
 
 export interface NoiseInput {
@@ -61,15 +92,24 @@ export interface NoiseInput {
   overrides?: Record<string, number>;
   /** Buildings that screen the map (GIS tab noise map). */
   buildings?: NoiseBuilding[];
+  /** Ground heights the map stands on (GIS tab noise map). */
+  terrain?: NoiseTerrain | null;
+  /** People per cell, shared among the buildings; null estimates them from the building size. */
+  population?: NoisePopulation | null;
 }
 
-/** Buildings counted by the reporting band (Directive 2002/49/EC Annex VI) of their most exposed side. */
+/**
+ * Buildings, and the people living in them, counted by the reporting band (Directive 2002/49/EC
+ * Annex VI) of their most exposed side.
+ */
 export interface NoiseExposure {
   count: number;
   /** Buildings the map reaches. */
   reached: number;
-  lden: { from_db: number[]; buildings: number[] };
-  lnight: { from_db: number[]; buildings: number[] };
+  lden: { from_db: number[]; buildings: number[]; people: number[] };
+  lnight: { from_db: number[]; buildings: number[]; people: number[] };
+  /** Residents: the source used, all of them, those in buildings the map reaches, and grid people in cells without a home building. */
+  people: { source: "grid" | "building_size"; total: number; reached: number; unplaced: number } | null;
 }
 
 export interface NoiseBand {
@@ -104,6 +144,8 @@ export interface NoiseView {
   buildings?: NoiseExposure | null;
   /** `[L_den, L_night]` beside each input building, null where the map does not reach. */
   building_levels?: [number | null, number | null][];
+  /** Whether terrain heights shaped the map (flat ground leaves it false). */
+  terrain?: boolean;
 }
 
 /** The noise engine (WebAssembly), injectable for tests. */

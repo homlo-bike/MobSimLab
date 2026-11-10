@@ -14,14 +14,16 @@ export interface BenefitIndicators {
   employmentRatio: { year: number; value: number } | null;
   under15Share: { year: number; value: number } | null;
   population: { year: number; value: number } | null;
-  populationWorldPopYear: { year: number; value: number } | null;
   source: { name: string; licence: string; url: string };
 }
 
 export interface PopulationAnswer {
-  year: number;
+  /** The WorldPop year of the counts; null when no station area was answered. */
+  year: number | null;
   populations: Record<string, number | null>;
   failed: number;
+  /** Why station areas were not answered, e.g. a country grid still downloading to the server. */
+  reasons: string[];
   source: { name: string; licence: string; url: string };
 }
 
@@ -134,12 +136,9 @@ export async function loadTiles(
 export function countryFigures(ind: BenefitIndicators | null): CountryFigures {
   const share = (v: { value: number } | null | undefined) =>
     v && Number.isFinite(v.value) ? v.value / 100 : null;
-  const now = ind?.population?.value;
-  const then = ind?.populationWorldPopYear?.value;
   return {
     gdpPerCapita: ind?.gdpPerCapita?.value ?? null,
     employmentRatio15: share(ind?.employmentRatio),
     under15: share(ind?.under15Share),
-    popGrowth: now && then ? now / then : 1,
   };
 }

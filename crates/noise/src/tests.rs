@@ -506,6 +506,7 @@ fn rect(x0: f64, y0: f64, x1: f64, y1: f64, h: f64) -> crate::screening::Buildin
         ring: vec![[x0, y0], [x1, y0], [x1, y1], [x0, y1], [x0, y0]],
         height_m: Some(h),
         levels: None,
+        homes: None,
     }
 }
 
@@ -554,8 +555,9 @@ fn a_row_of_buildings_screens_the_map_behind_it() {
     let front = [300.0, -20.0];
     let (lf, lb) = (grid_level(&free, behind), grid_level(&built, behind));
     assert!(lf - lb > 10.0, "free {lf}, behind the row {lb}");
-    // The other side has no buildings: the same as free field.
-    assert!((grid_level(&free, front) - grid_level(&built, front)).abs() < 0.01);
+    // The other side has no buildings, but the row's facade reflects the line back to it.
+    let gain = grid_level(&built, front) - grid_level(&free, front);
+    assert!(gain > 0.3 && gain < 3.5, "reflection gain {gain}");
     // Receivers inside the building are not computed; the building takes the level beside it.
     assert!(grid_level(&built, [300.0, 22.0]).is_nan());
     let [bl, bn] = built.building_levels[0];
@@ -586,6 +588,7 @@ fn buildings_out_of_the_way_change_nothing() {
             ring: vec![[0.0, 0.0], [1.0, 1.0]],
             height_m: Some(10.0),
             levels: None,
+            homes: None,
         },
     ]);
     // Equal up to pairing far elements (one path for two 10 m elements beyond 80 m).
@@ -621,9 +624,271 @@ fn building_height_from_osm_tags() {
         ring: vec![],
         height_m,
         levels,
+        homes: None,
     };
     assert_eq!(b(Some(14.5), Some(2.0)).height(rule), 14.5);
     assert_eq!(b(None, Some(5.0)).height(rule), 15.0);
     assert_eq!(b(Some(0.0), None).height(rule), 9.0);
     assert_eq!(b(None, None).height(rule), 9.0);
+}
+
+fn with_overrides(input: EstimateInput, kv: &[(&str, f64)]) -> EstimateInput {
+    EstimateInput {
+        overrides: kv.iter().map(|(k, v)| (k.to_string(), *v)).collect(),
+        ..input
+    }
+}
+
+fn map_input(buildings: Vec<crate::screening::BuildingInput>) -> EstimateInput {
+    EstimateInput {
+        lines: vec![line(Mode::Tram, straight(600.0), F, 40.0, 30.0)],
+        buildings,
+        grid: true,
+        grid_reach_m: Some(80.0),
+        ..Default::default()
+    }
+}
+
+#[test]
+fn facade_reflections_follow_the_reflection_settings() {
+    let row = || vec![rect(-100.0, 15.0, 700.0, 30.0, 12.0)];
+    let front = [300.0, -20.0];
+    let free = estimate(&map_input(vec![]));
+    let off = estimate(&with_overrides(
+        map_input(row()),
+        &[("noise.reflection_order", 0.0)],
+    ));
+    let on = estimate(&map_input(row()));
+    let hard = estimate(&with_overrides(
+        map_input(row()),
+        &[("noise.facade_reflection_coefficient", 1.0)],
+    ));
+    let (lf, l0, l1, lh) = (
+        grid_level(&free, front),
+        grid_level(&off, front),
+        grid_level(&on, front),
+        grid_level(&hard, front),
+    );
+    assert!(
+        (lf - l0).abs() < 0.01,
+        "no reflections: free field {lf}, {l0}"
+    );
+    assert!(l1 > l0 + 0.3 && lh > l1, "{l0} {l1} {lh}");
+    // A hard wall at most doubles the energy of the paths it mirrors: under 3 dB here.
+    assert!(lh - l0 < 3.0, "{l0} {lh}");
+    // The building's own facade does not count in its level (the Directive's incident level).
+    let (b0, b1) = (off.building_levels[0][0], on.building_levels[0][0]);
+    assert!((b0 - b1).abs() < 0.05, "own reflection excluded: {b0} {b1}");
+}
+
+#[test]
+fn sound_goes_round_the_ends_of_a_short_building() {
+    // The same 10 m deep, 12 m high block, 20 m or 300 m long, 20 m from the line.
+    let behind = [300.0, 45.0];
+    let short = estimate(&map_input(vec![rect(290.0, 20.0, 310.0, 30.0, 12.0)]));
+    let long = estimate(&map_input(vec![rect(150.0, 20.0, 450.0, 30.0, 12.0)]));
+    let (ls, ll) = (grid_level(&short, behind), grid_level(&long, behind));
+    assert!(ls > ll + 1.0, "short {ls}, long {ll}");
+    let free = estimate(&map_input(vec![]));
+    assert!(grid_level(&free, behind) > ls, "still screened");
+}
+
+#[test]
+fn lateral_paths_go_round_the_corners() {
+    use crate::screening::{HeightRule, Obstacles, RayScratch};
+    let rule = HeightRule {
+        level_m: 3.0,
+        default_m: 8.0,
+    };
+    let o = Obstacles::new(&[rect(-5.0, 15.0, 5.0, 25.0, 10.0)], rule, None, 60.0);
+    let mut sc = RayScratch::default();
+    let (s, r) = ([0.0, 0.0], [0.0, 40.0]);
+    let v = o.screen(s, r, 0.5, 4.0, &mut sc).expect("screened");
+    assert!(v.buildings && v.screen.edges == 2, "{v:?}");
+    let sides = o.lateral(s, r, [0.5, 4.0], None, true, &mut sc);
+    let expect = 2.0 * 250f64.sqrt() + 10.0;
+    for l in sides {
+        let l = l.expect("both sides open");
+        assert!((l.plan - expect).abs() < 1e-9, "{l:?}");
+        assert_eq!(l.edges, 2);
+        assert!((l.e - 10.0).abs() < 1e-9);
+    }
+    // A second building closing the left side is gone round as well.
+    let o = Obstacles::new(
+        &[
+            rect(-5.0, 15.0, 5.0, 25.0, 10.0),
+            rect(-8.0, 0.0, -1.0, 12.0, 10.0),
+        ],
+        rule,
+        None,
+        60.0,
+    );
+    o.screen(s, r, 0.5, 4.0, &mut sc).expect("screened");
+    let [a, b] = o.lateral(s, r, [0.5, 4.0], None, true, &mut sc);
+    let (a, b) = (a.expect("left"), b.expect("right"));
+    assert!(a.plan > b.plan + 5.0, "{a:?} {b:?}");
+}
+
+/// A terrain grid from −200 m to 800 m east and −200 m to 400 m north at 10 m.
+fn terrain(z: impl Fn(f64, f64) -> f64) -> crate::ground::TerrainInput {
+    let (nx, ny) = (101, 61);
+    let mut v = Vec::with_capacity(nx * ny);
+    for j in 0..ny {
+        for i in 0..nx {
+            v.push(Some(z(-200.0 + i as f64 * 10.0, -200.0 + j as f64 * 10.0)));
+        }
+    }
+    crate::ground::TerrainInput {
+        x0: -200.0,
+        y0: -200.0,
+        dx: 10.0,
+        dy: 10.0,
+        nx,
+        ny,
+        z: v,
+    }
+}
+
+#[test]
+fn surface_model_filter_keeps_hills_and_drops_buildings_and_trees() {
+    use crate::ground::Ground;
+    // A 20 m wide tower block of 30 m on 100 m ground, and a 200 m wide plateau 10 m higher.
+    let t = terrain(|x, y| {
+        let tower = (x - 100.0).abs() <= 10.0 && (y - 100.0).abs() <= 10.0;
+        let plateau = (x - 500.0).abs() <= 100.0 && (y - 100.0).abs() <= 100.0;
+        100.0 + if tower { 30.0 } else { 0.0 } + if plateau { 10.0 } else { 0.0 }
+    });
+    let g = Ground::new(&t, &[], 60.0).expect("ground");
+    assert!(
+        (g.at([100.0, 100.0]) - 100.0).abs() < 0.01,
+        "{}",
+        g.at([100.0, 100.0])
+    );
+    assert!((g.at([500.0, 100.0]) - 110.0).abs() < 0.01);
+    assert!((g.at([-100.0, -100.0]) - 100.0).abs() < 0.01);
+    // A building footprint drops its samples even without the opening.
+    let ring = [[85.0, 85.0], [115.0, 85.0], [115.0, 115.0], [85.0, 115.0]];
+    let g = Ground::new(&t, &[&ring], 0.0).expect("ground");
+    assert!((g.at([100.0, 100.0]) - 100.0).abs() < 0.01);
+    // Flat or empty grids give no terrain.
+    let flat = terrain(|_, _| 250.0);
+    let o = crate::screening::Obstacles::new(
+        &[],
+        crate::screening::HeightRule {
+            level_m: 3.0,
+            default_m: 8.0,
+        },
+        Some(&flat),
+        60.0,
+    );
+    assert!(!o.has_ground() && o.is_empty());
+    let mut empty = flat.clone();
+    empty.z.iter_mut().for_each(|z| *z = None);
+    assert!(Ground::new(&empty, &[], 60.0).is_none());
+}
+
+#[test]
+fn a_hill_screens_and_a_slope_does_not() {
+    let base = || map_input(vec![]);
+    let free = estimate(&EstimateInput {
+        grid_reach_m: Some(200.0),
+        ..base()
+    });
+    // A 100 m wide embankment 10 m high between the line and the receivers 160 m north.
+    let ridge = estimate(&EstimateInput {
+        grid_reach_m: Some(200.0),
+        terrain: Some(terrain(|_, y| {
+            if (30.0..=130.0).contains(&y) {
+                10.0
+            } else {
+                0.0
+            }
+        })),
+        ..base()
+    });
+    let behind = [300.0, 165.0];
+    let (lf, lr) = (grid_level(&free, behind), grid_level(&ridge, behind));
+    assert!(lf - lr > 5.0, "free {lf}, behind the ridge {lr}");
+    // On an even 5 % slope the line of sight stays clear: the same as flat ground.
+    let slope = estimate(&EstimateInput {
+        grid_reach_m: Some(200.0),
+        terrain: Some(terrain(|_, y| 50.0 + 0.05 * y)),
+        ..base()
+    });
+    let worst = free
+        .grid
+        .as_ref()
+        .unwrap()
+        .lden
+        .iter()
+        .zip(&slope.grid.as_ref().unwrap().lden)
+        .filter(|(a, _)| !a.is_nan())
+        .map(|(a, b)| (a - b).abs())
+        .fold(0.0f32, f32::max);
+    assert!(worst < 0.01, "{worst}");
+}
+
+#[test]
+fn people_from_the_building_size_skip_other_uses_and_sheds() {
+    use crate::population::{residents, PeopleRule, PeopleSource};
+    use crate::screening::HeightRule;
+    let rule = PeopleRule {
+        height: HeightRule {
+            level_m: 3.0,
+            default_m: 8.0,
+        },
+        floor_area_per_person_m2: 50.0,
+        min_footprint_m2: 30.0,
+    };
+    let mut flats = rect(0.0, 0.0, 20.0, 10.0, 0.0);
+    (flats.height_m, flats.levels) = (None, Some(5.0));
+    let mut shop = rect(30.0, 0.0, 50.0, 10.0, 6.0);
+    shop.homes = Some(false);
+    let shed = rect(60.0, 0.0, 65.0, 4.0, 3.0);
+    // No height or storeys: 8 m ÷ 3 m gives 3 storeys.
+    let mut house = rect(70.0, 0.0, 80.0, 10.0, 0.0);
+    house.height_m = None;
+    let r = residents(&[flats, shop, shed, house], None, rule);
+    assert_eq!(r.source, PeopleSource::BuildingSize);
+    assert_eq!(r.people, vec![20.0, 0.0, 0.0, 6.0]);
+}
+
+#[test]
+fn grid_people_are_shared_by_floor_area_within_their_cell() {
+    use crate::population::{residents, PeopleRule, PeopleSource, PopulationInput};
+    use crate::screening::HeightRule;
+    let rule = PeopleRule {
+        height: HeightRule {
+            level_m: 3.0,
+            default_m: 8.0,
+        },
+        floor_area_per_person_m2: 50.0,
+        min_footprint_m2: 30.0,
+    };
+    // Two 100 m cells: 40 people west, 7 east. West: a one-storey and a three-storey house
+    // of the same footprint and a shop; east: only a shed.
+    let grid = PopulationInput {
+        x0: 0.0,
+        y0: 0.0,
+        dx: 100.0,
+        dy: 100.0,
+        nx: 2,
+        ny: 1,
+        people: vec![40.0, 7.0],
+    };
+    let mut shop = rect(60.0, 10.0, 90.0, 40.0, 4.0);
+    shop.homes = Some(false);
+    let r = residents(
+        &[
+            rect(10.0, 10.0, 20.0, 20.0, 3.0),
+            rect(30.0, 10.0, 40.0, 20.0, 9.0),
+            shop,
+            rect(150.0, 50.0, 153.0, 53.0, 3.0),
+        ],
+        Some(&grid),
+        rule,
+    );
+    assert_eq!(r.source, PeopleSource::Grid);
+    assert_eq!(r.people, vec![10.0, 30.0, 0.0, 0.0]);
+    assert_eq!(r.unplaced, 7.0);
 }

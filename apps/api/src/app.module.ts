@@ -13,6 +13,7 @@ import type { AppConfig } from "./config/env";
 import { HealthController } from "./health/health.controller";
 import { StreetNetworkModule } from "./street-network/street-network.module";
 import { BenefitsModule } from "./benefits/benefits.module";
+import { PopulationModule } from "./population/population.module";
 import { EconomyModule } from "./economy/economy.module";
 import { TerrainModule } from "./terrain/terrain.module";
 import { AccessGuard } from "./iam/access.guard";
@@ -35,6 +36,7 @@ export class AppModule {
         ConfigModule.forRoot(config),
         StreetNetworkModule,
         TerrainModule,
+        PopulationModule,
         EconomyModule,
         BenefitsModule,
         AgentsModule,

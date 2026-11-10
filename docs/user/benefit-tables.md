@@ -6,7 +6,7 @@ Below the cost tables, the **Tables** tab estimates what the lines do for the ec
 
 1. **Stations and their catchments.** Every station of a street line or a published rail service line gets the area within walking distance (`mode.catchment_m`: 400 m for buses up to 800 m for metro and rail).
 2. **People, jobs and places** in each catchment, from the first source that has them:
-   - population from a [region](gis-regions.md) you entered, else WorldPop (100 m grid, 2020, brought to today with the World Bank's population growth), else the floor area of homes in OpenStreetMap;
+   - population from a [region](gis-regions.md) you entered, else WorldPop (100 m grid, current year), else the floor area of homes in OpenStreetMap;
    - jobs from a region, else the floor area of offices, shops, industry and public buildings in OpenStreetMap;
    - schools, universities and colleges, hospitals, clinics and doctors from OpenStreetMap;
    - GDP per person, the share of residents with a job and the share of children from a region, else the World Bank for the project's country.

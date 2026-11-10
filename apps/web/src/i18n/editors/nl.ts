@@ -551,20 +551,44 @@ export const editorsNl = {
   "noise.computing": "Geluidskaart berekenen…",
   "noise.map": "Geluidskaart",
   "noise.mapIntro":
-    "L_den en L_night op 4 m bij elke straatlijn en spoorlijn in het project, afgeschermd door de OpenStreetMap-gebouwen eromheen.",
+    "L_den en L_night op 4 m van elke straatlijn en spoorlijn in het project, voorbij de OpenStreetMap-gebouwen eromheen en over het terrein.",
   "noise.mapIndicator": "Indicator van de geluidskaart",
   "noise.screen": "Afschermen met OpenStreetMap-gebouwen",
   "noise.compute": "Geluidskaart berekenen",
   "noise.computeAgain": "Opnieuw berekenen",
   "noise.mapLegend": "Legenda van de geluidskaart",
-  "noise.table": "Gebouwen per geluidsband",
+  "noise.table": "Gebouwen en bewoners per geluidsband",
   "noise.tableCaption":
-    "Gebouwen naar het niveau bij hun meest blootgestelde gevel ({reached} van {count} binnen bereik)",
+    "Gebouwen en hun bewoners naar het niveau aan de meest belaste gevel ({reached} van {count} gebouwen binnen bereik)",
   "noise.buildings": "Gebouwen",
   "noise.dbOrMore": "{db} dB of meer",
   "noise.dbRange": "{from}–{to} dB",
   "noise.mapNote":
-    "Alleen de geplande dienst, zonder het overige verkeer. Afscherming door gebouwen over de daken (ISO 9613-2), geen reflecties en geen paden om gebouwhoeken. Gebouwen zonder hoogte in OpenStreetMap krijgen 3 m per opgegeven verdieping, of 8 m (aannames van de geluidsplug-in). Aantallen gebouwen staan voor woningen tot er bevolkingsgegevens zijn. Gebouwen © OpenStreetMap-bijdragers.",
+    "Alleen de geplande dienst, zonder algemeen verkeer. Gebouwen schermen af over hun daken en rond hun uiteinden (ISO 9613-2) en hun gevels reflecteren eenmaal (eerste orde). Gebouwen zonder hoogte in OpenStreetMap krijgen 3 m per opgegeven verdieping, of 8 m (aannames van de geluidsplug-in). Het niveau van een gebouw laat de reflectie van de eigen gevel weg. Gebouwen © OpenStreetMap-bijdragers.",
+  "noise.terrain": "Terreinhoogten gebruiken (Copernicus GLO-30)",
+  "noise.terrainTooLarge":
+    "De lijnen beslaan een te groot gebied om het terrein te laden, dus deze kaart is berekend op vlak terrein.",
+  "noise.loadingTerrain": "Terreinhoogten laden…",
+  "noise.terrainDown":
+    "Terreinhoogten zijn niet beschikbaar ({error}), dus deze kaart is berekend op vlak terrein.",
+  "noise.loadingPopulation": "WorldPop-bevolking laden…",
+  "noise.popDownloading":
+    "Het WorldPop-bevolkingsraster van {countries} wordt naar de server gedownload. Tot het er is, worden de bewoners geschat uit de gebouwgrootte; bereken over een paar minuten opnieuw om WorldPop te gebruiken.",
+  "noise.popUnavailable":
+    "WorldPop-bevolking is niet beschikbaar ({reason}), dus de bewoners worden geschat uit de gebouwgrootte.",
+  "noise.residents": "Bewoners",
+  "noise.popGrid":
+    "Bewoners uit WorldPop {year} ({countries}): de mensen van elke cel van 100 m verdeeld over de woningen erin naar vloeroppervlak. {reached} van {total} bewoners van de geladen gebouwen wonen binnen bereik.",
+  "noise.popUnplaced":
+    "{n} mensen uit het raster wonen in cellen zonder gekarteerde woning en worden niet meegeteld.",
+  "noise.popSize":
+    "Bewoners geschat uit de gebouwgrootte: vloeroppervlak (grondvlak × verdiepingen) ÷ het vloeroppervlak per persoon uit de aannames van de geluidsplug-in. {reached} van {total} wonen binnen bereik.",
+  "noise.popNoHomes":
+    "Gebouwen die in OpenStreetMap een ander gebruik hebben (winkels, kantoren, garages, kerken…) en zeer kleine gebouwen hebben geen bewoners.",
+  "noise.onTerrain":
+    "Bronnen, gebouwen en ontvangers staan op het terrein, en heuvels schermen af; daken en bomen worden uit het oppervlaktemodel gefilterd. Terrein: Copernicus DEM GLO-30 © DLR e.V. en © Airbus Defence and Space GmbH, beschikbaar gesteld onder COPERNICUS door de Europese Unie en ESA.",
+  "noise.flat": "Vlak terrein.",
+  "noise.popCredit": "Bevolking: WorldPop, University of Southampton (doi:10.5258/SOTON/WP00839), CC BY 4.0.",
 
   "jp.title": "Reisplanner",
   "jp.s": "{n} s",

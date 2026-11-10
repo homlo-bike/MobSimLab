@@ -139,7 +139,6 @@ const COUNTRY: CountryFigures = {
   gdpPerCapita: 40_000,
   employmentRatio15: 0.55,
   under15: 0.15,
-  popGrowth: 1.02,
 };
 
 function worldpop(tt: Timetable, people = 5000): Record<string, number | null> {
@@ -446,15 +445,13 @@ describe("data for the benefit tables", () => {
         employmentRatio: { year: 2024, value: 62 },
         under15Share: { year: 2024, value: 15 },
         population: { year: 2024, value: 18e6 },
-        populationWorldPopYear: { year: 2020, value: 17.4e6 },
         source: { name: "", licence: "", url: "" },
       }),
-    ).toEqual({ gdpPerCapita: 60000, employmentRatio15: 0.62, under15: 0.15, popGrowth: 18 / 17.4 });
+    ).toEqual({ gdpPerCapita: 60000, employmentRatio15: 0.62, under15: 0.15 });
     expect(countryFigures(null)).toEqual({
       gdpPerCapita: null,
       employmentRatio15: null,
       under15: null,
-      popGrowth: 1,
     });
     const tiles = catchmentTiles([{ at: C, radius: 800 }]);
     expect(tiles.length).toBeGreaterThan(0);
@@ -478,13 +475,13 @@ function fakeApi(over: Partial<BenefitsApi> = {}): BenefitsApi {
       employmentRatio: { year: 2024, value: 62 },
       under15Share: { year: 2024, value: 15 },
       population: { year: 2024, value: 18e6 },
-      populationWorldPopYear: { year: 2020, value: 17.4e6 },
       source: { name: "World Bank", licence: "CC BY 4.0", url: "" },
     }),
     population: async (areas) => ({
-      year: 2020,
+      year: 2026,
       populations: Object.fromEntries(areas.map((a) => [a.id, 4000])),
       failed: 0,
+      reasons: [],
       source: { name: "WorldPop", licence: "CC BY 4.0", url: "" },
     }),
     buildingTile: async () => buildings(),

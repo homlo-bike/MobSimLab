@@ -522,19 +522,43 @@ export const editorsVi = {
   "noise.computing": "Đang tính bản đồ tiếng ồn…",
   "noise.map": "Bản đồ tiếng ồn",
   "noise.mapIntro":
-    "L_den và L_night ở độ cao 4 m từ mọi tuyến đường phố và đường ray trong dự án, được che chắn bởi các công trình OpenStreetMap xung quanh.",
+    "L_den và L_night ở độ cao 4 m từ mọi tuyến đường phố và đường sắt trong dự án, qua các công trình OpenStreetMap xung quanh và trên địa hình.",
   "noise.mapIndicator": "Chỉ số bản đồ tiếng ồn",
   "noise.screen": "Che chắn bằng công trình OpenStreetMap",
   "noise.compute": "Tính bản đồ tiếng ồn",
   "noise.computeAgain": "Tính lại",
   "noise.mapLegend": "Chú giải bản đồ tiếng ồn",
-  "noise.table": "Công trình theo dải tiếng ồn",
-  "noise.tableCaption": "Công trình theo mức ở mặt ồn nhất ({reached} trên {count} bị ảnh hưởng)",
+  "noise.table": "Công trình và cư dân theo dải tiếng ồn",
+  "noise.tableCaption":
+    "Công trình và cư dân theo mức ồn cạnh mặt chịu ảnh hưởng nhiều nhất ({reached} trên {count} công trình trong tầm)",
   "noise.buildings": "Công trình",
   "noise.dbOrMore": "{db} dB trở lên",
   "noise.dbRange": "{from}–{to} dB",
   "noise.mapNote":
-    "Chỉ dịch vụ dự kiến, không tính dòng xe chung. Chỉ che chắn qua mái (ISO 9613-2): không phản xạ và không có đường vòng qua cạnh công trình. Công trình không có chiều cao trong OpenStreetMap được tính 3 m mỗi tầng ghi nhận, hoặc 8 m (giả định của plugin tiếng ồn). Số công trình thay cho số hộ cho đến khi có dữ liệu dân số. Công trình © những người đóng góp OpenStreetMap.",
+    "Chỉ dịch vụ dự kiến, không gồm giao thông chung. Công trình che chắn qua mái và vòng quanh hai đầu (ISO 9613-2), mặt tiền phản xạ một lần (bậc một). Công trình không có chiều cao trong OpenStreetMap được tính 3 m mỗi tầng ghi nhận, hoặc 8 m (giả định của plugin tiếng ồn). Mức ồn của một công trình không tính phản xạ từ mặt tiền của chính nó. Công trình © những người đóng góp OpenStreetMap.",
+  "noise.terrain": "Dùng độ cao địa hình (Copernicus GLO-30)",
+  "noise.terrainTooLarge":
+    "Các tuyến trải trên vùng quá rộng để tải địa hình, nên bản đồ này được tính trên mặt đất bằng phẳng.",
+  "noise.loadingTerrain": "Đang tải độ cao địa hình…",
+  "noise.terrainDown":
+    "Không có độ cao địa hình ({error}), nên bản đồ này được tính trên mặt đất bằng phẳng.",
+  "noise.loadingPopulation": "Đang tải dân số WorldPop…",
+  "noise.popDownloading":
+    "Lưới dân số WorldPop của {countries} đang được tải về máy chủ. Trong lúc đó, cư dân được ước tính theo kích thước công trình; hãy tính lại sau vài phút để dùng WorldPop.",
+  "noise.popUnavailable":
+    "Không có dân số WorldPop ({reason}), nên cư dân được ước tính theo kích thước công trình.",
+  "noise.residents": "Cư dân",
+  "noise.popGrid":
+    "Cư dân theo WorldPop {year} ({countries}): dân số mỗi ô 100 m được chia cho các nhà ở trong ô theo diện tích sàn. {reached} trên {total} cư dân của các công trình đã tải sống trong tầm.",
+  "noise.popUnplaced": "{n} người trong lưới sống ở các ô không có nhà ở trên bản đồ và không được tính.",
+  "noise.popSize":
+    "Cư dân ước tính theo kích thước công trình: diện tích sàn (diện tích chiếm đất × số tầng) ÷ diện tích sàn mỗi người trong giả định của plugin tiếng ồn. {reached} trên {total} sống trong tầm.",
+  "noise.popNoHomes":
+    "Công trình được gắn trong OpenStreetMap với mục đích khác (cửa hàng, văn phòng, nhà để xe, nhà thờ…) và công trình rất nhỏ không có cư dân.",
+  "noise.onTerrain":
+    "Nguồn, công trình và điểm thu đặt trên địa hình, và đồi che chắn; mái nhà và cây được lọc khỏi mô hình bề mặt. Địa hình: Copernicus DEM GLO-30 © DLR e.V. và © Airbus Defence and Space GmbH, do Liên minh châu Âu và ESA cung cấp trong khuôn khổ COPERNICUS.",
+  "noise.flat": "Mặt đất bằng phẳng.",
+  "noise.popCredit": "Dân số: WorldPop, University of Southampton (doi:10.5258/SOTON/WP00839), CC BY 4.0.",
   "jp.title": "Hành trình",
   "jp.s": "{n} giây",
   "jp.min": "{n} phút",

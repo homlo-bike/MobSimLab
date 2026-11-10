@@ -21,9 +21,9 @@ the sources and methods; the product owner approved its approach.
    the journey planner) form a zone whose catchment is the largest `mode.catchment_m` of the modes calling there.
    Every 50 m cell within a catchment belongs to the nearest station.
 2. **People, jobs and places per zone**, by the first source that has them:
-   - population: a region's population density; else WorldPop (Global 100 m, 2020, statistics API, one request
-     per catchment circle, spread evenly over the circle's cells and brought to today with the World Bank's
-     population growth); else the floor area of homes in OpenStreetMap ÷ floor area per person;
+   - population: a region's population density; else WorldPop (the constrained 100 m grid of the population API,
+     ADR-0038, for the current year: the cells whose centre lies in each catchment circle, spread evenly over
+     the circle's 50 m cells); else the floor area of homes in OpenStreetMap ÷ floor area per person;
    - jobs: a region's jobs (as a density); else non-residential floor area of OpenStreetMap buildings ÷ floor
      area per job by use (office, retail, industrial, public). Buildings tagged only `building=yes` follow the
      region's primary land use, or count as homes in a set share;
@@ -60,7 +60,7 @@ the sources and methods; the product owner approved its approach.
 | Option | Why not |
 |--------|---------|
 | Accessibility from every 100 m population cell | Many more journey planner runs; the station zones already capture where transit changes access. Cells can come later behind the same functions. |
-| Download WorldPop or GHSL rasters into PostGIS | Needs the raster import of 06-gis §3, not built yet; the statistics API answers per catchment. |
+| WorldPop's statistics API per catchment | A second WorldPop client next to the population grid the noise map already downloads; slower and a 2020 count. |
 | Subnational GDP (Kummu et al. 2025) | A 1 km grid download not yet imported; regions can give GDP per person meanwhile. |
 | OECD input-output multipliers per country | Not yet read into the library; the multiplier is a parameter with a Type I–Type II range. |
 | Add land value and earnings to the BCR | Double counting (EU CBA Guide, UK TAG). |
@@ -72,4 +72,5 @@ the sources and methods; the product owner approved its approach.
 - Outside regions with entered values, jobs come from building floor area and land values from GDP per person;
   both are wide educated guesses, and the tables say where each number comes from.
 - The WorldPop and OpenStreetMap requests run through the outbound gateway and are cached; the live-sources
-  workflow checks WorldPop, the place tiles and the area lookup.
+  workflow checks the WorldPop grid, the place tiles and the area lookup. The first request for a country
+  waits while its WorldPop grid downloads to the server; until then its stations use homes' floor area.

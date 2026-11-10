@@ -1,7 +1,12 @@
 import { Injectable } from "@nestjs/common";
 import { OverpassClient, OverpassError } from "../gateway/overpass.client";
 import { type IndicatorValue, WorldBankClient, WorldBankError } from "../gateway/worldbank.client";
-import { WORLDPOP_SOURCE, WORLDPOP_YEAR, WorldPopClient } from "../gateway/worldpop.client";
+import {
+  type Bbox,
+  MAX_SIDE_DEG,
+  POPULATION_SOURCE,
+  PopulationService,
+} from "../population/population.service";
 
 /** World Bank indicators the benefit tables use (ADR-0040). */
 export const BENEFIT_INDICATORS = {
@@ -29,8 +34,6 @@ export interface BenefitIndicators {
   employmentRatio: IndicatorValue | null;
   under15Share: IndicatorValue | null;
   population: IndicatorValue | null;
-  /** Total population in the WorldPop year, to bring WorldPop counts to the latest year. */
-  populationWorldPopYear: IndicatorValue | null;
   source: typeof BENEFIT_INDICATOR_SOURCE;
 }
 
@@ -40,12 +43,66 @@ export interface PopulationArea {
   ring: [number, number][];
 }
 
-/** Answer of the population request: people per area (null where WorldPop failed). */
+/** Answer of the population request: people per area (null where WorldPop could not answer). */
 export interface PopulationAnswer {
-  year: number;
+  /** The WorldPop year of the counts (null when no area was answered). */
+  year: number | null;
   populations: Record<string, number | null>;
   failed: number;
-  source: typeof WORLDPOP_SOURCE;
+  /** Why areas were not answered, e.g. a country grid still downloading to the server. */
+  reasons: string[];
+  source: typeof POPULATION_SOURCE;
+}
+
+/** Purpose: whether a point `[lon, lat]` lies inside a ring (even–odd rule). */
+export function inRing(x: number, y: number, ring: [number, number][]): boolean {
+  let inside = false;
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    const [xi, yi] = ring[i]!;
+    const [xj, yj] = ring[j]!;
+    if (yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) inside = !inside;
+  }
+  return inside;
+}
+
+/** Purpose: the box `[west, south, east, north]` around a ring. */
+export function ringBox(ring: [number, number][]): Bbox {
+  const xs = ring.map((p) => p[0]);
+  const ys = ring.map((p) => p[1]);
+  return [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)];
+}
+
+/**
+ * Purpose: areas grouped so that each group's box stays within the population grid's largest side,
+ * so that nearby station catchments share one grid request.
+ */
+export function groupAreas(
+  areas: PopulationArea[],
+  maxSide = MAX_SIDE_DEG * 0.95,
+): { box: Bbox; areas: PopulationArea[] }[] {
+  const groups: { box: Bbox; areas: PopulationArea[] }[] = [];
+  const sorted = areas.map((a) => ({ a, b: ringBox(a.ring) })).sort((p, q) => p.b[0] - q.b[0]);
+  for (const { a, b } of sorted) {
+    const g = groups.find((g) => {
+      const u: Bbox = [
+        Math.min(g.box[0], b[0]),
+        Math.min(g.box[1], b[1]),
+        Math.max(g.box[2], b[2]),
+        Math.max(g.box[3], b[3]),
+      ];
+      return u[2] - u[0] <= maxSide && u[3] - u[1] <= maxSide;
+    });
+    if (g) {
+      g.box = [
+        Math.min(g.box[0], b[0]),
+        Math.min(g.box[1], b[1]),
+        Math.max(g.box[2], b[2]),
+        Math.max(g.box[3], b[3]),
+      ];
+      g.areas.push(a);
+    } else groups.push({ box: [...b], areas: [a] });
+  }
+  return groups;
 }
 
 /** An OpenStreetMap area (administrative boundary or named place) that contains a point. */
@@ -187,7 +244,7 @@ export function parseAreas(body: string): OsmArea[] {
 export class BenefitsService {
   constructor(
     private readonly worldBank: WorldBankClient,
-    private readonly worldPop: WorldPopClient,
+    private readonly population_: PopulationService,
     private readonly overpass: OverpassClient,
   ) {}
 
@@ -198,12 +255,11 @@ export class BenefitsService {
     const country = all.find((x) => x.iso3 === c || x.iso2 === c);
     if (!country) throw new WorldBankError("The World Bank has no data for this country", 404);
     const iso3 = country.iso3;
-    const [gdpPerCapita, employmentRatio, under15Share, population, popRange] = await Promise.all([
+    const [gdpPerCapita, employmentRatio, under15Share, population] = await Promise.all([
       this.worldBank.latest(iso3, BENEFIT_INDICATORS.gdpPerCapita),
       this.worldBank.latest(iso3, BENEFIT_INDICATORS.employment),
       this.worldBank.latest(iso3, BENEFIT_INDICATORS.under15),
       this.worldBank.latest(iso3, BENEFIT_INDICATORS.population),
-      this.worldBank.range(iso3, BENEFIT_INDICATORS.population, WORLDPOP_YEAR, WORLDPOP_YEAR),
     ]);
     return {
       iso3,
@@ -211,26 +267,50 @@ export class BenefitsService {
       employmentRatio,
       under15Share,
       population,
-      populationWorldPopYear: popRange[0] ?? null,
       source: BENEFIT_INDICATOR_SOURCE,
     };
   }
 
-  /** Purpose: the WorldPop population of each area; an area WorldPop cannot answer gets null. */
+  /**
+   * Purpose: the WorldPop population of each area, summed over the 100 m cells whose centre lies inside
+   * it (the population grid of ADR-0038); an area WorldPop cannot answer yet gets null.
+   */
   async population(areas: PopulationArea[]): Promise<PopulationAnswer> {
     const populations: Record<string, number | null> = {};
+    const reasons = new Set<string>();
     let failed = 0;
-    await Promise.all(
-      areas.map(async (a) => {
-        try {
-          populations[a.id] = await this.worldPop.population(a.ring);
-        } catch {
-          populations[a.id] = null;
-          failed++;
-        }
-      }),
-    );
-    return { year: WORLDPOP_YEAR, populations, failed, source: WORLDPOP_SOURCE };
+    let year: number | null = null;
+    for (const g of groupAreas(areas)) {
+      const pad = 0.001;
+      const box: Bbox = [g.box[0] - pad, g.box[1] - pad, g.box[2] + pad, g.box[3] + pad];
+      let ans: Awaited<ReturnType<PopulationService["grid"]>>;
+      try {
+        ans = await this.population_.grid(box);
+      } catch (e) {
+        ans = { status: "unavailable", reason: e instanceof Error ? e.message : String(e) };
+      }
+      if (ans.status !== "ready") {
+        reasons.add(ans.reason);
+        for (const a of g.areas) populations[a.id] = null;
+        failed += g.areas.length;
+        continue;
+      }
+      year = ans.source.year;
+      const { x0, y0, dx, dy, nx, ny, people } = ans.grid;
+      for (const a of g.areas) {
+        const [w, s, e, n] = ringBox(a.ring);
+        const i0 = Math.max(0, Math.floor((w - x0) / dx));
+        const i1 = Math.min(nx - 1, Math.ceil((e - x0) / dx));
+        const j0 = Math.max(0, Math.floor((s - y0) / dy));
+        const j1 = Math.min(ny - 1, Math.ceil((n - y0) / dy));
+        let sum = 0;
+        for (let j = j0; j <= j1; j++)
+          for (let i = i0; i <= i1; i++)
+            if (inRing(x0 + (i + 0.5) * dx, y0 + (j + 0.5) * dy, a.ring)) sum += people[j * nx + i] ?? 0;
+        populations[a.id] = sum;
+      }
+    }
+    return { year, populations, failed, reasons: [...reasons], source: POPULATION_SOURCE };
   }
 
   /** Purpose: the OpenStreetMap areas (boundaries, neighbourhoods, named places) that contain a point. */
