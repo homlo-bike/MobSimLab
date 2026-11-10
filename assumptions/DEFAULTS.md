@@ -22,6 +22,7 @@ Schema and contribution rules: [README.md](README.md).
 - [Accessibility](#accessibility)
 - [Depots and streets](#depots-and-streets)
 - [Energy and climate](#energy-and-climate)
+- [Cost](#cost)
 - [Energy supply systems](#energy-supply-systems)
 - [Switches and crossings](#switches-and-crossings)
 - [Sources](#sources)
@@ -1351,6 +1352,293 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 |---|---|---|---|---|---|---|---|
 | all | 32 | 38 | 45 | cited | secondary | [orr-ole-heat](#src-orr-ole-heat) | ORR: UK legacy overhead line equipment is designed for −18 °C to +38 °C; modern auto-tensioned systems and hot-climate designs go higher. |
 
+## Cost
+
+### Civil works at street level or on its own formation, double track
+
+`cost.civil.at_grade_per_km` · unit: US$ million per route-km (2023, PPP) · used by: construction cost: civil works
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 3 | 7 | 15 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation), [transit-costs-project](#src-transit-costs-project) | Earthworks, drainage, minor structures and utility diversions for a segregated double track at grade. Transit Costs Project data show at-grade lines cost a fraction of tunnelled ones. |
+| tram | 5 | 11 | 20 | documented | secondary | [railwaypro-besancon](#src-railwaypro-besancon), [bathtrams-uk-costs](#src-bathtrams-uk-costs), [mobsimlab-derivation](#src-mobsimlab-derivation) | Street reconstruction kerb to kerb and utility diversions. French tram lines average about €25–30 million per km all in (Besançon €17.5 million); about a third of that is street works, converted at about 0.73 € per international $ (2023). |
+| light_rail | 4 | 9 | 18 | documented | unverified | [railwaypro-besancon](#src-railwaypro-besancon), [mobsimlab-derivation](#src-mobsimlab-derivation) | As tram with more own right of way and less street reconstruction. |
+| metro | 5 | 10 | 20 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation), [transit-costs-project](#src-transit-costs-project) | Fully segregated formation with fencing and grade separation of every road; rare at grade. |
+| high_speed_rail | 6 | 12 | 22 | documented | secondary | [worldbank-china-hsr](#src-worldbank-china-hsr), [uic-hsr-cost](#src-uic-hsr-cost), [mobsimlab-derivation](#src-mobsimlab-derivation) | Earthworks of a 300–350 km/h formation. The World Bank puts Chinese HSR at about US$ 17–21 million per km all in and European lines at US$ 25–39 million per km; UIC reports about €45.5 million per km on average including structures. |
+
+### Elevated guideway on columns, double track
+
+`cost.civil.elevated_per_km` · unit: US$ million per route-km (2023, PPP) · used by: construction cost: civil works
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 20 | 40 | 80 | documented | unverified | [fta-relative-costs](#src-fta-relative-costs), [transit-costs-project](#src-transit-costs-project), [mobsimlab-derivation](#src-mobsimlab-derivation) | FTA comparison quoted by the City of Toronto: underground costs about twice elevated and four times surface per km. Taken as about half the cut and cover value. |
+
+### Viaduct (long multi-span structure), double track
+
+`cost.civil.viaduct_per_km` · unit: US$ million per route-km (2023, PPP) · used by: construction cost: civil works
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 12 | 30 | 70 | documented | secondary | [worldbank-china-hsr](#src-worldbank-china-hsr), [mobsimlab-derivation](#src-mobsimlab-derivation) | World Bank: Chinese double-track HSR viaducts cost about RMB 57–73 million per km (US$ 9–12 million, 2014 prices); European and North American costs are two to five times higher. |
+
+### Bridge over a river, road or railway, double track
+
+`cost.civil.bridge_per_km` · unit: US$ million per route-km (2023, PPP) · used by: construction cost: civil works
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 30 | 70 | 160 | educated-guess | unverified | [worldbank-china-hsr](#src-worldbank-china-hsr), [mobsimlab-derivation](#src-mobsimlab-derivation) | Longer spans and deeper foundations than a viaduct; about two to three times the viaduct cost per metre of deck. |
+
+### Ramp between levels (trough or embankment), double track
+
+`cost.civil.ramp_per_km` · unit: US$ million per route-km (2023, PPP) · used by: construction cost: civil works
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 15 | 35 | 80 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Retained cut (U-trough) or retained embankment; between at-grade and cut and cover costs. |
+
+### Cut and cover tunnel, double track
+
+`cost.civil.cut_and_cover_per_km` · unit: US$ million per route-km (2023, PPP) · used by: construction cost: civil works
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 35 | 70 | 150 | documented | unverified | [transit-costs-project](#src-transit-costs-project), [fta-relative-costs](#src-fta-relative-costs), [mobsimlab-derivation](#src-mobsimlab-derivation) | Transit Costs Project: low-cost countries (Spain, Italy, Turkey, Sweden) keep costs down partly with cut and cover; tunnelled lines there cost about US$ 150–250 million per km all in, including stations, systems and soft costs. |
+
+### Bored tunnel (TBM), double track
+
+`cost.civil.tbm_per_km` · unit: US$ million per route-km (2023, PPP) · used by: construction cost: civil works
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 40 | 80 | 200 | documented | unverified | [transit-costs-project](#src-transit-costs-project), [mobsimlab-derivation](#src-mobsimlab-derivation) | Tunnel boring, segments, cross passages and shafts, without stations. Transit Costs Project: tunnel depth and method are among the largest cost drivers; high values for poor ground or dense cities. |
+| high_speed_rail | 25 | 50 | 120 | documented | secondary | [worldbank-china-hsr](#src-worldbank-china-hsr), [mobsimlab-derivation](#src-mobsimlab-derivation) | World Bank: Chinese HSR tunnels about US$ 10–15 million per km; long rural tunnels cost less per km than urban metro tunnels. |
+
+### Track, power supply, signalling and communications, double track
+
+`cost.systems_per_km` · unit: US$ million per route-km (2023, PPP) · used by: construction cost: railway systems
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 4 | 8 | 15 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation), [transit-costs-project](#src-transit-costs-project) | Rails, sleepers or slab, overhead line or third rail, substations, signalling and telecoms per route-km. |
+| tram | 4 | 7 | 12 | documented | unverified | [bathtrams-uk-costs](#src-bathtrams-uk-costs), [mobsimlab-derivation](#src-mobsimlab-derivation) | Embedded track, overhead line and substations; German extensions cost about £9.4 million per km for track, stops and wires. |
+| light_rail | 5 | 9 | 15 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | As tram with signalling on segregated sections. |
+| metro | 10 | 20 | 35 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation), [transit-costs-project](#src-transit-costs-project) | Slab track, third rail or rigid overhead line, CBTC signalling, platform screen doors on new lines, tunnel ventilation. |
+| high_speed_rail | 5 | 9 | 15 | documented | unverified | [worldbank-china-hsr](#src-worldbank-china-hsr), [mobsimlab-derivation](#src-mobsimlab-derivation) | Slab or ballast track for 300 km/h, 25 kV, ETCS level 2. |
+
+### Single track, share of the double track cost per km
+
+`cost.single_track_share` · unit: share · used by: construction cost: civil works, construction cost: railway systems
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.5 | 0.6 | 0.7 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | One track saves rails and part of the formation, but not drainage, fencing and most structures. |
+
+### Station or stop at street level
+
+`cost.station.at_grade` · unit: US$ million per station (2023, PPP) · used by: construction cost: stations
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 2 | 5 | 15 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Platforms, shelters, access and passenger information at street level. |
+| tram | 0.5 | 1.5 | 4 | documented | unverified | [bathtrams-uk-costs](#src-bathtrams-uk-costs), [mobsimlab-derivation](#src-mobsimlab-derivation) | Two side platforms, shelters, ticket machines, level boarding. |
+| light_rail | 0.8 | 2 | 5 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Longer platforms than tram. |
+| metro | 4 | 8 | 20 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Long platforms, fare gates, a footbridge or underpass for access. |
+| long_distance_rail | 5 | 10 | 30 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Long platforms, waiting rooms, step-free access. |
+| high_speed_rail | 10 | 30 | 100 | educated-guess | unverified | [worldbank-china-hsr](#src-worldbank-china-hsr), [mobsimlab-derivation](#src-mobsimlab-derivation) | New HSR stations range from simple through stations to large terminals. |
+
+### Elevated station
+
+`cost.station.elevated` · unit: US$ million per station (2023, PPP) · used by: construction cost: stations
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 8 | 20 | 50 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation), [transit-costs-project](#src-transit-costs-project) | Platform deck, lifts, escalators and stairs. |
+
+### Underground station on the first level (cut and cover box)
+
+`cost.station.underground` · unit: US$ million per station (2023, PPP) · used by: construction cost: stations
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 30 | 60 | 150 | documented | unverified | [transit-costs-project](#src-transit-costs-project), [mobsimlab-derivation](#src-mobsimlab-derivation) | Transit Costs Project: stations are the largest single cost item of tunnelled lines; shallow boxes are far cheaper than deep mined stations. |
+
+### Underground station on the second level (deep)
+
+`cost.station.underground_deep` · unit: US$ million per station (2023, PPP) · used by: construction cost: stations
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 60 | 120 | 300 | documented | unverified | [transit-costs-project](#src-transit-costs-project), [mobsimlab-derivation](#src-mobsimlab-derivation) | Deep boxes or mined caverns with long escalator shafts; Transit Costs Project names depth and station size as main cost drivers. |
+
+### Switch or crossing, each
+
+`cost.switch_each` · unit: US$ million each (2023, PPP) · used by: construction cost: railway systems
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.3 | 0.6 | 1.2 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Turnout with points machine, heating and signalling interface; a crossover counts as one placed element. |
+| tram | 0.2 | 0.4 | 0.8 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Grooved-rail turnout embedded in the street. |
+| high_speed_rail | 1 | 2 | 4 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | High-speed turnouts with movable crossing nose. |
+
+### Depot and stabling per metre of rail fleet
+
+`cost.depot_per_train_m` · unit: US$ million per m of train (2023, PPP) · used by: construction cost: depots
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.02 | 0.04 | 0.08 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Stabling, workshop and wash plant; about US$ 1.2 million per 30 m tram or 4 million per 100 m metro train. |
+
+### Bus depot per bus
+
+`cost.depot_per_bus` · unit: US$ million per bus (2023, PPP) · used by: construction cost: depots
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.1 | 0.25 | 0.5 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Parking, workshop, washing, fuelling or charging, per bus. |
+
+### Rail vehicles per metre of train
+
+`cost.vehicle_per_train_m` · unit: US$ million per m (2023, market) · used by: construction cost: vehicles
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.07 | 0.11 | 0.15 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Electric multiple units cost about US$ 7–10 million for 70–80 m. |
+| tram | 0.08 | 0.12 | 0.16 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | A 30–35 m low-floor tram costs about US$ 3–5 million. |
+| light_rail | 0.08 | 0.12 | 0.16 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | As tram. |
+| metro | 0.08 | 0.12 | 0.18 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Metro cars cost about US$ 2–3.5 million per 20 m car; driverless trains at the high end. |
+| long_distance_rail | 0.08 | 0.12 | 0.16 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Locomotive-hauled or multiple-unit intercity trains. |
+| high_speed_rail | 0.12 | 0.17 | 0.22 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | A 200 m high-speed train costs about US$ 30–40 million. |
+
+### Road vehicle, each
+
+`cost.vehicle_each` · unit: US$ million each (2023, market) · used by: construction cost: vehicles
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.3 | 0.45 | 0.75 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | 12 m city bus; diesel about US$ 0.3 million, battery about twice that. |
+| brt | 0.45 | 0.7 | 1.0 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | 18 m articulated bus. |
+| trolleybus | 0.7 | 0.9 | 1.3 | documented | unverified | [uitp-trolleybus-tco](#src-uitp-trolleybus-tco), [mobsimlab-derivation](#src-mobsimlab-derivation) | 12–18 m trolleybus with traction battery. |
+| intercity_bus | 0.3 | 0.45 | 0.6 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Coach. |
+
+### Bus stop or station, each
+
+`cost.street.stop_each` · unit: US$ million each (2023, PPP) · used by: construction cost: stations
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.01 | 0.03 | 0.08 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Pole, shelter, kerb raised for level boarding. |
+| brt | 0.5 | 1.5 | 4 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Enclosed BRT station with platforms and off-board fare collection. |
+| intercity_bus | 0.02 | 0.05 | 0.15 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Stop with shelter and information; bus stations not included. |
+
+### Bus lane, per km of lane in one direction
+
+`cost.street.bus_lane_per_km` · unit: US$ million per km (2023, PPP) · used by: construction cost: civil works
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.1 | 0.3 | 0.8 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Marking, signs and signal changes on an existing carriageway. |
+| brt | 2 | 4 | 10 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Busway with new pavement, separators and junction works, per direction. |
+
+### Trolleybus overhead wires, per route-km (both directions)
+
+`cost.street.trolley_wire_per_km` · unit: US$ million per route-km (2023, PPP) · used by: construction cost: railway systems
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 1.5 | 2.5 | 4 | documented | unverified | [uitp-trolleybus-tco](#src-uitp-trolleybus-tco), [mobsimlab-derivation](#src-mobsimlab-derivation) | Two pairs of trolley wires with poles and substations. |
+
+### Design, project management and supervision
+
+`cost.engineering_share` · unit: share of construction · used by: construction cost: soft costs
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.1 | 0.15 | 0.25 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation), [transit-costs-project](#src-transit-costs-project) | Usual range of owner and consultant costs; the Transit Costs Project finds consultant-heavy delivery at the high end. |
+
+### Contingency (risk and optimism bias)
+
+`cost.contingency_share` · unit: share of construction · used by: construction cost: soft costs
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.1 | 0.25 | 0.45 | documented | unverified | [flyvbjerg-2003](#src-flyvbjerg-2003), [mobsimlab-derivation](#src-mobsimlab-derivation) | Flyvbjerg et al. found rail projects overrun their estimates by about 45 % on average; 25 % is a usual planning allowance. |
+
+### Road vehicle operating cost per vehicle-hour
+
+`cost.opex.vehicle_hour` · unit: US$ per hour (2023, PPP) · used by: operating cost: service
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 60 | 90 | 130 | documented | unverified | [sandnes-benchmarking](#src-sandnes-benchmarking), [mobsimlab-derivation](#src-mobsimlab-derivation) | Driver, fuel or energy, maintenance and depot costs per vehicle-hour in service for European city buses. |
+| brt | 70 | 100 | 140 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Articulated vehicles, stations to run. |
+| trolleybus | 70 | 100 | 150 | documented | unverified | [uitp-trolleybus-tco](#src-uitp-trolleybus-tco), [mobsimlab-derivation](#src-mobsimlab-derivation) | As bus with wire maintenance. |
+| intercity_bus | 50 | 75 | 110 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Higher speeds and fewer staff hours per km. |
+
+### Rail crew and train-related cost per train-hour
+
+`cost.opex.train_hour` · unit: US$ per hour (2023, PPP) · used by: operating cost: service
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 80 | 120 | 180 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Driver and, on main lines, a guard, with relief and overheads. |
+| tram | 50 | 70 | 100 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | One driver. |
+| light_rail | 50 | 70 | 100 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | One driver. |
+| metro | 30 | 60 | 100 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | One driver; low end for driverless lines with roaming staff. |
+| long_distance_rail | 100 | 150 | 220 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Driver and on-board staff. |
+| high_speed_rail | 120 | 180 | 260 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Driver and on-board staff. |
+
+### Rail running cost per car-km (per 25 m of train)
+
+`cost.opex.car_km` · unit: US$ per car-km (2023, PPP) · used by: operating cost: service
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 1.5 | 2.5 | 4 | educated-guess | unverified | [pedestrian-observations-opex](#src-pedestrian-observations-opex), [mobsimlab-derivation](#src-mobsimlab-derivation) | Traction energy, vehicle maintenance and cleaning. |
+| metro | 2 | 3.5 | 6 | documented | unverified | [pedestrian-observations-opex](#src-pedestrian-observations-opex), [mobsimlab-derivation](#src-mobsimlab-derivation) | Berlin and London metro operating costs are about US$ 6–7 per car-km all in (2024); the train-hour value covers the crew. |
+| high_speed_rail | 2.5 | 4 | 6 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | High energy use at 300 km/h. |
+
+### Infrastructure maintenance and operation per year
+
+`cost.opex.infrastructure_share` · unit: share of infrastructure construction per year · used by: operating cost: infrastructure
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.008 | 0.015 | 0.025 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Track, structures, stations, systems and depots maintained and staffed; about 1–2 % of the construction cost a year. |
+
+### Administration and overheads
+
+`cost.opex.overhead_share` · unit: share of operating cost · used by: operating cost: overheads
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.08 | 0.15 | 0.25 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Management, planning, ticketing and customer service. |
+
+### Service hours per day of a street line
+
+`cost.service_hours_per_day` · unit: h · used by: operating cost: street lines
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 16 | 18 | 20 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Usual city service from about 05:30 to 23:30 at the line's headway. |
+
+### Operating days per year, as weekday equivalents
+
+`cost.days_per_year` · unit: days · used by: operating cost: service
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 280 | 300 | 330 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | 365 days with lighter weekend and holiday service count as about 300 weekdays. |
+
+### Price base year of the cost values
+
+`cost.price_base_year` · unit: year · used by: cost tables: conversion to today's prices
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 2023 | 2023 | 2023 | cited | secondary | [transit-costs-project](#src-transit-costs-project), [worldbank-wdi](#src-worldbank-wdi) | The Transit Costs Project states costs in 2023 PPP dollars. The tables scale them to the latest year with the World Bank US GDP deflator (NY.GDP.DEFL.ZS) and to the country with its PPP conversion factor (PA.NUS.PPP) or, for vehicles, its exchange rate (PA.NUS.FCRF). |
+
 ## Energy supply systems
 
 Vehicles list the supply systems they support (`supplySystems`); a section can only be run by a vehicle
@@ -1510,3 +1798,14 @@ and rationale per attribute: [`switches.yaml`](switches.yaml); geometry model:
 | <a id="src-salzburger-lokalbahn"></a>`salzburger-lokalbahn` | [Salzburger Lokalbahn (Salzburg AG / Schiene Salzburg), line electrified at 1000 V DC](https://www.salzburg-ag.at/) | free | © Salzburg AG; numbers cited as facts | 2026-10-27 | none |
 | <a id="src-moreno-2021"></a>`moreno-2021` | [Moreno, Allam, Chabaud, Gall, Pratlong: Introducing the “15-Minute City”: Sustainability, Resilience and Place Identity in Future Post-Pandemic Cities. Smart Cities 4(1), 93–111 (2021)](https://doi.org/10.3390/smartcities4010006) | free | CC BY 4.0 | 2026-11-02 | none |
 | <a id="src-itdp-pnft"></a>`itdp-pnft` | [ITDP, People Near Frequent Transit (share of people living within 500 m of transit running at least every 15 minutes)](https://www.itdp.org/rapid-transit-database/) | free | © ITDP; numbers cited as facts | 2026-11-02 | none |
+| <a id="src-transit-costs-project"></a>`transit-costs-project` | [Transit Costs Project (NYU Marron Institute): Final Report and construction cost database, costs per km in 2023 PPP dollars by construction method](https://transitcosts.com/final-report/) | free | © Transit Costs Project; numbers cited as facts | 2026-11-09 | search-snippet |
+| <a id="src-worldbank-china-hsr"></a>`worldbank-china-hsr` | [World Bank: High-Speed Railways in China: A Look at Construction Costs (China Transport Topics No. 9, 2014)](https://www.worldbank.org/en/news/press-release/2014/07/10/cost-of-high-speed-rail-in-china-one-third-lower-than-in-other-countries) | free | CC BY 3.0 IGO | 2026-11-09 | search-snippet |
+| <a id="src-uic-hsr-cost"></a>`uic-hsr-cost` | [UIC study on high-speed rail financing: average construction cost about €45.5 million per km (as reported by Railway PRO)](https://www.railwaypro.com/wp/study-high-speed-rail-lines-cost-an-average-of-eur-45-5-million-per-kilometer/) | free | © Railway PRO; numbers cited as facts | 2026-11-09 | search-snippet |
+| <a id="src-fta-relative-costs"></a>`fta-relative-costs` | [City of Toronto, Executive Committee background file CC20.1 appendix 3.7, quoting the US FTA on relative costs of surface, elevated and underground transit](https://www.toronto.ca/legdocs/mmis/2012/cc/bgrd/CC20_1_app3_7.pdf) | free | © City of Toronto; numbers cited as facts | 2026-11-09 | search-snippet |
+| <a id="src-railwaypro-besancon"></a>`railwaypro-besancon` | [Railway PRO: France: Besançon inaugurates “low cost” tram line (€254 million for 14.5 km; French average €25–30 million per km)](https://railwaypro.com/wp/france-besancon-inaugurates-low-cost-tram-line) | free | © Railway PRO; numbers cited as facts | 2026-11-09 | search-snippet |
+| <a id="src-bathtrams-uk-costs"></a>`bathtrams-uk-costs` | [Bath Trams: UK tram track installation costs (£20–30 million per route-km) and German extension costs per km](https://bathtrams.uk/?p=6821) | free | © Bath Trams; numbers cited as facts | 2026-11-09 | search-snippet |
+| <a id="src-uitp-trolleybus-tco"></a>`uitp-trolleybus-tco` | [UITP: Trolleybus Total Cost of Ownership, summary (2026), 17 systems](https://www.uitp.org/wp-content/uploads/sites/7/2026/06/20260611_Trolleybus-Total-Cost-Ownership_Summary.pdf) | free | © UITP; numbers cited as facts | 2026-11-09 | none |
+| <a id="src-sandnes-benchmarking"></a>`sandnes-benchmarking` | [Benchmarking of public transport operating costs (Sandnes municipality background report, 2016)](https://sandnes.kommune.no/globalassets/tekniskeiendom/samfunnsplan/kommuneplan-2019-2035/bakgrunn-for-kp/sandnes-benchmarking-final-report-14042016.pdf) | free | © Sandnes kommune; numbers cited as facts | 2026-11-09 | none |
+| <a id="src-pedestrian-observations-opex"></a>`pedestrian-observations-opex` | [Pedestrian Observations (Alon Levy): Quick Note on Subway Operating Costs (2026), costs per car-km of Berlin, London and New York](https://pedestrianobservations.com/2026/05/22/quick-note-on-subway-operating-costs/) | free | © the author; numbers cited as facts | 2026-11-09 | search-snippet |
+| <a id="src-flyvbjerg-2003"></a>`flyvbjerg-2003` | [Flyvbjerg, Skamris Holm, Buhl: How common and how large are cost overruns in transport infrastructure projects? Transport Reviews 23(1), 71–88 (2003)](https://doi.org/10.1080/01441640309904) | paywalled | © Taylor & Francis; numbers cited as facts | 2026-11-09 | none |
+| <a id="src-worldbank-wdi"></a>`worldbank-wdi` | [World Bank World Development Indicators API: PA.NUS.PPP (PPP conversion factor, GDP), PA.NUS.FCRF (official exchange rate), NY.GDP.DEFL.ZS (GDP deflator)](https://datahelpdesk.worldbank.org/knowledgebase/articles/889392-about-the-indicators-api-documentation) | free | CC BY 4.0 | 2026-11-09 | none |

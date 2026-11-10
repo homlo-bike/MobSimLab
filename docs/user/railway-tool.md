@@ -63,6 +63,8 @@ Where a track changes level, the tool adds a ramp next to the deeper or higher e
 
 Double track spreads smoothly to the station's track spacing where it meets a station.
 
+For the cost estimate in the Tables tab ([Cost tables](cost-tables.md)), a track with underground stretches has **Tunnel built by** (Auto, Cut and cover, Bored tunnel (TBM)) and a track with elevated stretches has **Raised on** (Auto, Elevated guideway, Viaduct, Bridge). Auto builds the first underground level by cut and cover and the second with a TBM, and raises tram, light rail and metro track on an elevated guideway and main-line track on a viaduct. To cost one part of a line differently, draw it as its own track.
+
 ## Heights and gradients
 
 Once a drawing has tracks or stations, the tool loads the ground heights under them. They come from Copernicus GLO-30, the same source the cable car tool uses. Every track then gets a vertical profile:

@@ -214,6 +214,7 @@ export const zu: Messages = {
   "drawing.street-setups": "ukusethwa kwemigwaqo",
   "drawing.rail-timetable": "uhlelo lwezikhathi lwesitimela",
   "drawing.preferences": "okuthandwayo kwephrojekthi",
+  "drawing.costs": "izilungiselelo zezindleko",
 
   "tab.label": "Iphrojekthi",
   "tab.simulator": "Isilingisi",
@@ -265,8 +266,9 @@ export const zu: Messages = {
   "tables.summary": "Isifinyezo",
   "tables.infrastructure": "Imigqa, iziteshi, ubude bukajantshi, amabhuloho, imigudu (imba uvale noma i-TBM)",
   "tables.service": "Imvamisa, amahora okusebenza, izimoto, abagibeli abalindelekile",
-  "tables.costs": "Izindleko nokusebenza",
   "tables.compare": "Qhathanisa izimo eceleni",
+  "tables.more": "Amathebula amaningi",
+  "tables.moreIntro": "Kuzofika maduze kuleli thebhu.",
 
   "prefs.title": "Okuthandwayo kwephrojekthi",
   "prefs.intro": "Imininingwane nezilungiselelo ezisebenza kuyo yonke iphrojekthi.",

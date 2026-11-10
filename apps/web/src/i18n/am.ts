@@ -204,6 +204,7 @@ export const am: Messages = {
   "drawing.street-setups": "የመንገድ ቅንብሮች",
   "drawing.rail-timetable": "የባቡር የጊዜ ሰሌዳ",
   "drawing.preferences": "የፕሮጀክት ምርጫዎች",
+  "drawing.costs": "የወጪ ቅንብሮች",
 
   "tab.label": "ፕሮጀክት",
   "tab.simulator": "ማስመሰያ",
@@ -250,8 +251,9 @@ export const am: Messages = {
   "tables.summary": "ማጠቃለያ",
   "tables.infrastructure": "መስመሮች፣ ጣቢያዎች፣ የሐዲድ ርዝመት፣ ድልድዮች፣ ዋሻዎች (ቆፍሮ መሸፈን ወይም TBM)",
   "tables.service": "ድግግሞሽ፣ የሥራ ሰዓታት፣ ተሽከርካሪዎች፣ የሚገመቱ ተሳፋሪዎች",
-  "tables.costs": "ወጪዎች እና አፈጻጸም",
   "tables.compare": "ሁኔታዎችን ጎን ለጎን አወዳድር",
+  "tables.more": "ተጨማሪ ሰንጠረዦች",
+  "tables.moreIntro": "ወደዚህ ትር ገና የሚመጡ።",
 
   "prefs.title": "የፕሮጀክት ምርጫዎች",
   "prefs.intro": "ለመላው ፕሮጀክቱ የሚመለከቱ ዝርዝሮች እና ቅንብሮች።",

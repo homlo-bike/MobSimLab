@@ -211,6 +211,7 @@ export const kk: Messages = {
   "drawing.street-setups": "көше баптаулары",
   "drawing.rail-timetable": "пойыз кестесі",
   "drawing.preferences": "жоба параметрлері",
+  "drawing.costs": "шығын баптаулары",
 
   "tab.label": "Жоба",
   "tab.simulator": "Симулятор",
@@ -258,8 +259,9 @@ export const kk: Messages = {
   "tables.summary": "Қорытынды",
   "tables.infrastructure": "Бағыттар, станциялар, жол ұзындығы, көпірлер, туннельдер (ашық әдіс немесе TBM)",
   "tables.service": "Жиілік, жұмыс сағаттары, парк, күтілетін жолаушылар",
-  "tables.costs": "Шығындар мен тиімділік",
   "tables.compare": "Сценарийлерді қатар салыстыру",
+  "tables.more": "Қосымша кестелер",
+  "tables.moreIntro": "Бұл қойындыға кейін қосылады.",
 
   "prefs.title": "Жоба параметрлері",
   "prefs.intro": "Бүкіл жобаға қатысты мәліметтер мен баптаулар.",

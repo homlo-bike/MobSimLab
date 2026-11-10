@@ -1,6 +1,6 @@
 name: Live data sources
 
-# Checks the outside services the app reads (Overpass, Copernicus GLO-30, OpenFreeMap) against the real
+# Checks the outside services the app reads (Overpass, Copernicus GLO-30, OpenFreeMap, World Bank) against the real
 # endpoints: apps/api/test/live-sources.test.ts. Runs when the gateway or its users change, weekly, and
 # on demand. Not part of the required checks, since an outage elsewhere should not block merges.
 on:
@@ -11,6 +11,7 @@ on:
     paths:
       - apps/api/src/gateway/**
       - apps/api/src/terrain/**
+      - apps/api/src/economy/**
       - apps/api/src/street-network/**
       - apps/api/test/live-sources.test.ts
       - .github/workflows/live-sources.yml

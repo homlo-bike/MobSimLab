@@ -1,6 +1,7 @@
 import type { Map as MapLibreMap } from "maplibre-gl";
 import { type ReactNode, useEffect, useMemo, useState } from "react";
 import { CapacityRun } from "../features/capacity/CapacityRun";
+import { CostTables, type CostsDoc } from "../features/costs/CostTables";
 import { JourneyPlanner } from "../features/journey-planner/JourneyPlanner";
 import { NoiseMap } from "../features/noise/NoiseMap";
 import { noiseCalculationIn } from "../features/noise/plugin";
@@ -61,7 +62,8 @@ const PLUGIN_TOOLS = pluginTools();
 /**
  * One open project (mockups "Project app"): the project name and the six tabs in the top bar (a bottom tab bar on
  * phones), the map, and a side panel (a bottom sheet on phones). Simulator holds the capacity run and the journey planner; Create holds
- * the street line tool and the railway editor; the other tabs are placeholders until their tools exist.
+ * the street line tool and the railway editor; Tables holds the cost tables; the other tabs are placeholders
+ * until their tools exist.
  */
 export function Workspace({
   api,
@@ -428,19 +430,32 @@ export function Workspace({
           </div>
         )}
         {!onMap && tab === "tables" && (
-          <div className="min-h-0 flex-1">
-            <Placeholder
-              page
-              title="tables.title"
-              intro="tables.intro"
-              items={[
-                "tables.summary",
-                "tables.infrastructure",
-                "tables.service",
-                "tables.costs",
-                "tables.compare",
-              ]}
-            />
+          <div className="min-h-0 flex-1 overflow-y-auto bg-slate-50">
+            <section aria-label={t("tables.title")} className="mx-auto max-w-5xl px-4 py-6 md:px-8 md:py-10">
+              <h1 className="text-2xl font-semibold tracking-tight">{t("tables.title")}</h1>
+              <p className="mt-1 text-slate-600">{t("tables.intro")}</p>
+              {project && drawings.loaded ? (
+                <CostTables
+                  railway={railway}
+                  streetLines={streetLines}
+                  preferences={preferences}
+                  onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
+                  costs={drawings.doc<CostsDoc>("costs")}
+                  onCosts={editable ? (d) => drawings.set("costs", d) : undefined}
+                />
+              ) : (
+                <p role="status" className="mt-6 text-slate-500">
+                  {t("common.loading")}
+                </p>
+              )}
+              <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-4 md:p-6">
+                <Placeholder
+                  title="tables.more"
+                  intro="tables.moreIntro"
+                  items={["tables.summary", "tables.infrastructure", "tables.service", "tables.compare"]}
+                />
+              </div>
+            </section>
           </div>
         )}
         {!project && !missing && (
