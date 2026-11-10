@@ -71,6 +71,8 @@ Rasters are clipped to the project area buffered by 2 km, reprojected to the wor
 
 **Jobs:** there is no global open jobs grid. Jobs are estimated from land use and POIs with sourced job-density assumptions (per m² of commercial/industrial floor area, per school/hospital), clearly marked as assumptions, and replaceable by uploaded employment data.
 
+**Regions (ADR-0040).** Until the raster import exists, the benefit tables read population per catchment from the WorldPop statistics API and jobs from OpenStreetMap building floor area. Planners can draw regions or import OpenStreetMap areas (`GET /api/benefits/osm-areas`) and give them land use, land value, tax revenue, population density, jobs, GDP per person and employment; these take priority over the sourced values (drawing kind `regions`).
+
 ## 4. Elevation
 
 - Copernicus GLO-30 DEM tiles (downloaded via gateway, licence recorded) imported per project area; user GeoTIFF overrides (e.g. LiDAR DTM).

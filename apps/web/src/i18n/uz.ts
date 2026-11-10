@@ -215,6 +215,8 @@ export const uz: Messages = {
   "drawing.rail-timetable": "poyezdlar jadvali",
   "drawing.preferences": "loyiha sozlamalari",
   "drawing.costs": "xarajat sozlamalari",
+  "drawing.benefits": "foyda formulalari",
+  "drawing.regions": "hududlar",
 
   "tab.label": "Loyiha",
   "tab.simulator": "Simulyator",
@@ -253,6 +255,8 @@ export const uz: Messages = {
   "schematic.export": "Chop etish va ekranlar uchun eksport",
 
   "gis.title": "GIS",
+  "gis.streetsView": "Koʻchalar",
+  "gis.regionsView": "Hududlar",
   "gis.intro": "Hisob-kitoblar foydalanadigan maʼlumotlarni qoʻshing yoki tahrirlang.",
   "gis.areas": "Hudud chizing yoki OpenStreetMap dan import qiling",
   "gis.streets": "Koʻcha tuzilishi: avtobus, velosiped va tramvay yoʻlaklari, tezliklar, havo simlari",

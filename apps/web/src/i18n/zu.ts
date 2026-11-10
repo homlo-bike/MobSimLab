@@ -215,6 +215,8 @@ export const zu: Messages = {
   "drawing.rail-timetable": "uhlelo lwezikhathi lwesitimela",
   "drawing.preferences": "okuthandwayo kwephrojekthi",
   "drawing.costs": "izilungiselelo zezindleko",
+  "drawing.benefits": "amafomula ezinzuzo",
+  "drawing.regions": "izifunda",
 
   "tab.label": "Iphrojekthi",
   "tab.simulator": "Isilingisi",
@@ -253,6 +255,8 @@ export const zu: Messages = {
   "schematic.export": "Thumela ngaphandle ukuze uphrinte nezikrini",
 
   "gis.title": "GIS",
+  "gis.streetsView": "Imigwaqo",
+  "gis.regionsView": "Izifunda",
   "gis.intro": "Engeza noma uhlele ulwazi olusetshenziswa izibalo.",
   "gis.areas": "Dweba indawo noma ungenise eyodwa kusuka ku-OpenStreetMap",
   "gis.streets":

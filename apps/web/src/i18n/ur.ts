@@ -213,6 +213,8 @@ export const ur: Messages = {
   "drawing.rail-timetable": "ریل کا ٹائم ٹیبل",
   "drawing.preferences": "منصوبے کی ترجیحات",
   "drawing.costs": "لاگت کی ترتیبات",
+  "drawing.benefits": "فوائد کے فارمولے",
+  "drawing.regions": "علاقے",
 
   "tab.label": "منصوبہ",
   "tab.simulator": "سمیولیٹر",
@@ -249,6 +251,8 @@ export const ur: Messages = {
   "schematic.export": "پرنٹ اور اسکرینوں کے لیے برآمد",
 
   "gis.title": "GIS",
+  "gis.streetsView": "سڑکیں",
+  "gis.regionsView": "علاقے",
   "gis.intro": "وہ معلومات شامل کریں یا ان میں ترمیم کریں جو حسابات استعمال کرتے ہیں۔",
   "gis.areas": "علاقہ بنائیں یا OpenStreetMap سے درآمد کریں",
   "gis.streets": "سڑکوں کی ترتیب: بس، سائیکل اور ٹرام لین، رفتار، اوپری تاریں",

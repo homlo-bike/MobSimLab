@@ -213,6 +213,8 @@ export const uk: Messages = {
   "drawing.rail-timetable": "розклад залізниці",
   "drawing.preferences": "параметри проєкту",
   "drawing.costs": "налаштування витрат",
+  "drawing.benefits": "формули вигод",
+  "drawing.regions": "райони",
 
   "tab.label": "Проєкт",
   "tab.simulator": "Симулятор",
@@ -250,6 +252,8 @@ export const uk: Messages = {
   "schematic.export": "Експорт для друку й екрана",
 
   "gis.title": "ГІС",
+  "gis.streetsView": "Вулиці",
+  "gis.regionsView": "Райони",
   "gis.intro": "Додавайте й редагуйте відомості, що використовуються в розрахунках.",
   "gis.areas": "Малюйте території або імпортуйте з OpenStreetMap",
   "gis.streets":

@@ -1,0 +1,881 @@
+# Benefit estimate parameters (ADR-0040): access for people, ridership, GDP growth, resident earnings,
+# land value uplift and the stimulated economy. Schema: assumptions/README.md.
+#
+# Money values come from the project's country (World Bank GDP per capita in local currency) or from regions
+# entered in the GIS tab, which take priority. These parameters are shares, elasticities and ratios.
+
+- key: benefit.uplift_inner_share
+  label: "Land value: share of the catchment where the full uplift applies"
+  group: Benefits
+  unit: share
+  used_by:
+    - "land value uplift: distance decay"
+  values:
+    - context:
+        mode: "*"
+      low: 0.4
+      central: 0.5
+      high: 0.6
+      basis: documented
+      sources:
+        - debrezion-2007
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        Uplift is strongest within about 400 m of a rail station and fades to nothing at about 800 m; the
+        full uplift applies within this share of the mode's catchment (mode.catchment_m), then falls linearly to zero
+        at the catchment edge.
+- key: benefit.time_limit.jobs
+  label: "Access: longest public transport trip to count jobs as reachable"
+  group: Benefits
+  unit: min
+  used_by:
+    - "access for people: places reachable"
+  values:
+    - context:
+        mode: "*"
+      low: 30
+      central: 45
+      high: 60
+      basis: educated-guess
+      sources: &id001
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        45 minutes is a common commuting threshold in cumulative-opportunity accessibility studies; 30 and
+        60 are the usual sensitivity values.
+- key: benefit.time_limit.school
+  label: "Access: longest public transport trip to count schools as reachable"
+  group: Benefits
+  unit: min
+  used_by:
+    - "access for people: places reachable"
+  values:
+    - context:
+        mode: "*"
+      low: 20
+      central: 30
+      high: 45
+      basis: educated-guess
+      sources: *id001
+      check: unverified
+      rationale: A school trip of about 30 minutes; shorter for young pupils.
+- key: benefit.time_limit.university
+  label: "Access: longest public transport trip to count universities and colleges as reachable"
+  group: Benefits
+  unit: min
+  used_by:
+    - "access for people: places reachable"
+  values:
+    - context:
+        mode: "*"
+      low: 30
+      central: 45
+      high: 60
+      basis: educated-guess
+      sources: *id001
+      check: unverified
+      rationale: Same threshold as jobs.
+- key: benefit.time_limit.hospital
+  label: "Access: longest public transport trip to count hospitals as reachable"
+  group: Benefits
+  unit: min
+  used_by:
+    - "access for people: places reachable"
+  values:
+    - context:
+        mode: "*"
+      low: 20
+      central: 30
+      high: 45
+      basis: educated-guess
+      sources: *id001
+      check: unverified
+      rationale: 30 minutes to a hospital is a usual access standard in health accessibility studies.
+- key: benefit.time_limit.clinic
+  label: "Access: longest public transport trip to count clinics and doctors as reachable"
+  group: Benefits
+  unit: min
+  used_by:
+    - "access for people: places reachable"
+  values:
+    - context:
+        mode: "*"
+      low: 15
+      central: 20
+      high: 30
+      basis: educated-guess
+      sources: *id001
+      check: unverified
+      rationale: Primary care should be closer than hospitals.
+- key: benefit.access_decay_per_min
+  label: "Access: weight of a destination falls by this factor per minute (exp(−β·t))"
+  group: Benefits
+  unit: 1/min
+  used_by:
+    - resident earnings from job access
+  values:
+    - context:
+        mode: "*"
+      low: 0.03
+      central: 0.05
+      high: 0.08
+      basis: educated-guess
+      sources: *id001
+      check: unverified
+      rationale:
+        Negative-exponential accessibility; β = 0.05/min halves the weight of a job every 14 minutes, in
+        the range used for commuting in European accessibility studies.
+- key: benefit.ed_decay
+  label: "Productivity: distance decay of effective density (1/t^α)"
+  group: Benefits
+  unit: exponent
+  used_by:
+    - "GDP growth: effective density"
+  values:
+    - context:
+        mode: "*"
+      low: 0.8
+      central: 1.0
+      high: 1.8
+      basis: documented
+      sources:
+        - dft-agglomeration-2018
+      check: unverified
+      rationale:
+        Effective density weights jobs by 1 / (generalised time)^α. UK appraisal guidance uses α = 1 for
+        most sectors and up to 1.8 for some; to be checked against TAG A2.4.
+- key: benefit.elasticity_agglomeration
+  label: "Productivity: agglomeration elasticity (GDP per worker to effective density)"
+  group: Benefits
+  unit: elasticity
+  used_by:
+    - GDP growth
+  values:
+    - context:
+        mode: "*"
+      low: 0.02
+      central: 0.04
+      high: 0.07
+      basis: cited
+      sources:
+        - dft-agglomeration-2018
+      check: unverified
+      rationale:
+        A DfT evidence review reports mean agglomeration elasticities usually between 0.02 and 0.05; the
+        high value covers business services in large cities.
+- key: benefit.elasticity_job_access
+  label: "Earnings: elasticity of wages to job accessibility from home"
+  group: Benefits
+  unit: elasticity
+  used_by:
+    - resident earnings from job access
+  values:
+    - context:
+        mode: "*"
+      low: 0.007
+      central: 0.015
+      high: 0.04
+      basis: cited
+      sources:
+        - isacsson-2015
+      check: unverified
+      rationale:
+        "Stockholm micro-data: 0.007 for accessibility measured from home and 0.015 for workers who change
+        work place; US metropolitan studies find larger values (high)."
+- key: benefit.labour_income_share
+  label: "Earnings: labour income share of GDP"
+  group: Benefits
+  unit: share
+  used_by:
+    - resident earnings from job access
+  values:
+    - context:
+        mode: "*"
+      low: 0.4
+      central: 0.52
+      high: 0.6
+      basis: documented
+      sources:
+        - ilostat-labour-share
+      check: unverified
+      rationale:
+        ILO estimates the global labour income share at a little over half of GDP; national values range
+        from about 0.4 to 0.6.
+- key: benefit.age_18_24_share
+  label: "Education: share of the population aged 18 to 24"
+  group: Benefits
+  unit: share
+  used_by:
+    - "access for people: universities"
+  values:
+    - context:
+        mode: "*"
+      low: 0.07
+      central: 0.09
+      high: 0.13
+      basis: educated-guess
+      sources:
+        - worldbank-benefit-wdi
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        Seven one-year cohorts are about 8–9 % of the population in ageing countries and up to 13 % in young
+        ones.
+- key: benefit.floor_m2_per_person
+  label: "Population fallback: residential floor area per person"
+  group: Benefits
+  unit: m²
+  used_by:
+    - population near stations when WorldPop is unavailable
+  values:
+    - context:
+        mode: "*"
+      low: 20
+      central: 35
+      high: 50
+      basis: educated-guess
+      sources: *id001
+      check: unverified
+      rationale:
+        Dwelling floor area per person ranges from under 20 m² in dense low-income cities to about 40–50
+        m² in Western Europe and North America.
+- key: benefit.unknown_building_residential_share
+  label: "Buildings tagged only 'building=yes': share counted as homes"
+  group: Benefits
+  unit: share
+  used_by:
+    - population and jobs from buildings
+  values:
+    - context:
+        mode: "*"
+      low: 0.5
+      central: 0.7
+      high: 0.85
+      basis: educated-guess
+      sources: *id001
+      check: unverified
+      rationale:
+        Most untagged buildings in OpenStreetMap are houses or blocks of flats; the rest are shops, offices
+        and sheds.
+- key: benefit.default_levels
+  label: "Buildings without height or levels in OpenStreetMap: number of floors"
+  group: Benefits
+  unit: floors
+  used_by:
+    - population and jobs from buildings
+    - land value uplift
+  values:
+    - context:
+        mode: "*"
+      low: 1
+      central: 2
+      high: 4
+      basis: educated-guess
+      sources: *id001
+      check: unverified
+      rationale: Typical low-rise building; replaced by building:levels or height ÷ 3 m where OSM has them.
+- key: benefit.m2_per_job.office
+  label: "Jobs from buildings: floor area per job, offices"
+  group: Benefits
+  unit: m²
+  used_by:
+    - jobs near stations
+  values:
+    - context:
+        mode: "*"
+      low: 12
+      central: 18
+      high: 25
+      basis: documented
+      sources:
+        - hca-employment-density-2015
+      check: unverified
+      rationale:
+        Employment densities per use class (net internal area per full-time job) raised by about 20 % for
+        gross floor area and vacancy.
+- key: benefit.m2_per_job.retail
+  label: "Jobs from buildings: floor area per job, shops"
+  group: Benefits
+  unit: m²
+  used_by:
+    - jobs near stations
+  values:
+    - context:
+        mode: "*"
+      low: 15
+      central: 25
+      high: 40
+      basis: documented
+      sources:
+        - hca-employment-density-2015
+      check: unverified
+      rationale:
+        Employment densities per use class (net internal area per full-time job) raised by about 20 % for
+        gross floor area and vacancy.
+- key: benefit.m2_per_job.industrial
+  label: "Jobs from buildings: floor area per job, industry and warehouses"
+  group: Benefits
+  unit: m²
+  used_by:
+    - jobs near stations
+  values:
+    - context:
+        mode: "*"
+      low: 35
+      central: 60
+      high: 100
+      basis: documented
+      sources:
+        - hca-employment-density-2015
+      check: unverified
+      rationale:
+        Employment densities per use class (net internal area per full-time job) raised by about 20 % for
+        gross floor area and vacancy.
+- key: benefit.m2_per_job.public
+  label: "Jobs from buildings: floor area per job, schools, hospitals and public buildings"
+  group: Benefits
+  unit: m²
+  used_by:
+    - jobs near stations
+  values:
+    - context:
+        mode: "*"
+      low: 25
+      central: 40
+      high: 60
+      basis: documented
+      sources:
+        - hca-employment-density-2015
+      check: unverified
+      rationale:
+        Employment densities per use class (net internal area per full-time job) raised by about 20 % for
+        gross floor area and vacancy.
+- key: benefit.ridership.resident_share
+  label: "Ridership: share of residents near a station who use the line on a weekday"
+  group: Benefits
+  unit: share
+  used_by:
+    - ridership formula
+  values:
+    - context:
+        mode: "*"
+      low: 0.05
+      central: 0.12
+      high: 0.25
+      basis: educated-guess
+      sources: *id001
+      check: unverified
+      rationale: Starting point for the ridership formula; replace with local mode share data.
+    - context:
+        mode:
+          - bus
+          - trolleybus
+      low: 0.03
+      central: 0.08
+      high: 0.15
+      basis: educated-guess
+      sources: *id001
+      check: unverified
+      rationale: Bus lines attract a smaller share of the people living near them than rail.
+    - context:
+        mode:
+          - intercity_bus
+          - long_distance_rail
+          - high_speed_rail
+      low: 0.005
+      central: 0.02
+      high: 0.05
+      basis: educated-guess
+      sources: *id001
+      check: unverified
+      rationale: Long-distance services are used occasionally, not daily.
+    - context:
+        mode: metro
+      low: 0.1
+      central: 0.2
+      high: 0.3
+      basis: educated-guess
+      sources: *id001
+      check: unverified
+      rationale: Metro catchments in large cities reach transit mode shares of a third or more.
+- key: benefit.ridership.trips_per_user
+  label: "Ridership: trips per user per weekday"
+  group: Benefits
+  unit: trips
+  used_by:
+    - ridership formula
+  values:
+    - context:
+        mode: "*"
+      low: 1.6
+      central: 2.0
+      high: 2.4
+      basis: educated-guess
+      sources: *id001
+      check: unverified
+      rationale: A return trip, with some users making one-way or extra trips.
+- key: benefit.ridership.days_per_year
+  label: "Ridership: weekday equivalents per year"
+  group: Benefits
+  unit: days
+  used_by:
+    - ridership formula
+  values:
+    - context:
+        mode: "*"
+      low: 280
+      central: 300
+      high: 330
+      basis: educated-guess
+      sources: *id001
+      check: unverified
+      rationale:
+        Annual ridership is usually 280–330 times average weekday ridership, as weekends and holidays carry
+        less.
+- key: benefit.uplift.residential
+  label: "Land value: uplift near a new station, homes"
+  group: Benefits
+  unit: share
+  used_by:
+    - land value uplift
+  values:
+    - context:
+        mode: "*"
+      low: 0
+      central: 0
+      high: 0.01
+      basis: educated-guess
+      sources:
+        - rennert-2022
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Ordinary bus lines show no reliable effect on property values.
+    - context:
+        mode: metro
+      low: 0.01
+      central: 0.04
+      high: 0.1
+      basis: documented
+      sources:
+        - debrezion-2007
+        - rennert-2022
+        - mohammad-2013
+      check: unverified
+      rationale:
+        "Debrezion et al. (2007): about 4.2 % for homes and 16.4 % for commercial property in a rail station
+        zone; Rennert (2022) finds −7.4 to +9.6 points across over 200 cases. Mode adjustment is mild because reviews
+        find no significant difference between BRT, light rail and metro."
+    - context:
+        mode: commuter_rail
+      low: 0.01
+      central: 0.04
+      high: 0.1
+      basis: documented
+      sources:
+        - debrezion-2007
+        - rennert-2022
+        - mohammad-2013
+      check: unverified
+      rationale:
+        "Debrezion et al. (2007): about 4.2 % for homes and 16.4 % for commercial property in a rail station
+        zone; Rennert (2022) finds −7.4 to +9.6 points across over 200 cases. Mode adjustment is mild because reviews
+        find no significant difference between BRT, light rail and metro."
+    - context:
+        mode: regional_rail
+      low: 0.01
+      central: 0.04
+      high: 0.1
+      basis: documented
+      sources:
+        - debrezion-2007
+        - rennert-2022
+        - mohammad-2013
+      check: unverified
+      rationale:
+        "Debrezion et al. (2007): about 4.2 % for homes and 16.4 % for commercial property in a rail station
+        zone; Rennert (2022) finds −7.4 to +9.6 points across over 200 cases. Mode adjustment is mild because reviews
+        find no significant difference between BRT, light rail and metro."
+    - context:
+        mode: long_distance_rail
+      low: 0.0
+      central: 0.02
+      high: 0.05
+      basis: documented
+      sources:
+        - debrezion-2007
+        - rennert-2022
+        - mohammad-2013
+      check: unverified
+      rationale:
+        "Debrezion et al. (2007): about 4.2 % for homes and 16.4 % for commercial property in a rail station
+        zone; Rennert (2022) finds −7.4 to +9.6 points across over 200 cases. Mode adjustment is mild because reviews
+        find no significant difference between BRT, light rail and metro."
+    - context:
+        mode: high_speed_rail
+      low: 0.0
+      central: 0.02
+      high: 0.05
+      basis: documented
+      sources:
+        - debrezion-2007
+        - rennert-2022
+        - mohammad-2013
+      check: unverified
+      rationale:
+        "Debrezion et al. (2007): about 4.2 % for homes and 16.4 % for commercial property in a rail station
+        zone; Rennert (2022) finds −7.4 to +9.6 points across over 200 cases. Mode adjustment is mild because reviews
+        find no significant difference between BRT, light rail and metro."
+    - context:
+        mode: light_rail
+      low: 0.0
+      central: 0.03
+      high: 0.08
+      basis: documented
+      sources:
+        - debrezion-2007
+        - rennert-2022
+        - mohammad-2013
+      check: unverified
+      rationale:
+        "Debrezion et al. (2007): about 4.2 % for homes and 16.4 % for commercial property in a rail station
+        zone; Rennert (2022) finds −7.4 to +9.6 points across over 200 cases. Mode adjustment is mild because reviews
+        find no significant difference between BRT, light rail and metro."
+    - context:
+        mode: tram
+      low: 0.0
+      central: 0.03
+      high: 0.08
+      basis: documented
+      sources:
+        - debrezion-2007
+        - rennert-2022
+        - mohammad-2013
+      check: unverified
+      rationale:
+        "Debrezion et al. (2007): about 4.2 % for homes and 16.4 % for commercial property in a rail station
+        zone; Rennert (2022) finds −7.4 to +9.6 points across over 200 cases. Mode adjustment is mild because reviews
+        find no significant difference between BRT, light rail and metro."
+    - context:
+        mode: brt
+      low: 0.0
+      central: 0.02
+      high: 0.06
+      basis: documented
+      sources:
+        - debrezion-2007
+        - rennert-2022
+        - mohammad-2013
+      check: unverified
+      rationale:
+        "Debrezion et al. (2007): about 4.2 % for homes and 16.4 % for commercial property in a rail station
+        zone; Rennert (2022) finds −7.4 to +9.6 points across over 200 cases. Mode adjustment is mild because reviews
+        find no significant difference between BRT, light rail and metro."
+- key: benefit.uplift.commercial
+  label: "Land value: uplift near a new station, shops, offices and other work places"
+  group: Benefits
+  unit: share
+  used_by:
+    - land value uplift
+  values:
+    - context:
+        mode: "*"
+      low: 0
+      central: 0
+      high: 0.01
+      basis: educated-guess
+      sources:
+        - rennert-2022
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Ordinary bus lines show no reliable effect on property values.
+    - context:
+        mode: metro
+      low: 0.04
+      central: 0.12
+      high: 0.2
+      basis: documented
+      sources:
+        - debrezion-2007
+        - rennert-2022
+        - mohammad-2013
+      check: unverified
+      rationale:
+        "Debrezion et al. (2007): about 4.2 % for homes and 16.4 % for commercial property in a rail station
+        zone; Rennert (2022) finds −7.4 to +9.6 points across over 200 cases. Mode adjustment is mild because reviews
+        find no significant difference between BRT, light rail and metro."
+    - context:
+        mode: commuter_rail
+      low: 0.04
+      central: 0.12
+      high: 0.2
+      basis: documented
+      sources:
+        - debrezion-2007
+        - rennert-2022
+        - mohammad-2013
+      check: unverified
+      rationale:
+        "Debrezion et al. (2007): about 4.2 % for homes and 16.4 % for commercial property in a rail station
+        zone; Rennert (2022) finds −7.4 to +9.6 points across over 200 cases. Mode adjustment is mild because reviews
+        find no significant difference between BRT, light rail and metro."
+    - context:
+        mode: regional_rail
+      low: 0.04
+      central: 0.12
+      high: 0.2
+      basis: documented
+      sources:
+        - debrezion-2007
+        - rennert-2022
+        - mohammad-2013
+      check: unverified
+      rationale:
+        "Debrezion et al. (2007): about 4.2 % for homes and 16.4 % for commercial property in a rail station
+        zone; Rennert (2022) finds −7.4 to +9.6 points across over 200 cases. Mode adjustment is mild because reviews
+        find no significant difference between BRT, light rail and metro."
+    - context:
+        mode: long_distance_rail
+      low: 0.0
+      central: 0.05
+      high: 0.15
+      basis: documented
+      sources:
+        - debrezion-2007
+        - rennert-2022
+        - mohammad-2013
+      check: unverified
+      rationale:
+        "Debrezion et al. (2007): about 4.2 % for homes and 16.4 % for commercial property in a rail station
+        zone; Rennert (2022) finds −7.4 to +9.6 points across over 200 cases. Mode adjustment is mild because reviews
+        find no significant difference between BRT, light rail and metro."
+    - context:
+        mode: high_speed_rail
+      low: 0.0
+      central: 0.05
+      high: 0.15
+      basis: documented
+      sources:
+        - debrezion-2007
+        - rennert-2022
+        - mohammad-2013
+      check: unverified
+      rationale:
+        "Debrezion et al. (2007): about 4.2 % for homes and 16.4 % for commercial property in a rail station
+        zone; Rennert (2022) finds −7.4 to +9.6 points across over 200 cases. Mode adjustment is mild because reviews
+        find no significant difference between BRT, light rail and metro."
+    - context:
+        mode: light_rail
+      low: 0.02
+      central: 0.08
+      high: 0.15
+      basis: documented
+      sources:
+        - debrezion-2007
+        - rennert-2022
+        - mohammad-2013
+      check: unverified
+      rationale:
+        "Debrezion et al. (2007): about 4.2 % for homes and 16.4 % for commercial property in a rail station
+        zone; Rennert (2022) finds −7.4 to +9.6 points across over 200 cases. Mode adjustment is mild because reviews
+        find no significant difference between BRT, light rail and metro."
+    - context:
+        mode: tram
+      low: 0.02
+      central: 0.08
+      high: 0.15
+      basis: documented
+      sources:
+        - debrezion-2007
+        - rennert-2022
+        - mohammad-2013
+      check: unverified
+      rationale:
+        "Debrezion et al. (2007): about 4.2 % for homes and 16.4 % for commercial property in a rail station
+        zone; Rennert (2022) finds −7.4 to +9.6 points across over 200 cases. Mode adjustment is mild because reviews
+        find no significant difference between BRT, light rail and metro."
+    - context:
+        mode: brt
+      low: 0.0
+      central: 0.05
+      high: 0.12
+      basis: documented
+      sources:
+        - debrezion-2007
+        - rennert-2022
+        - mohammad-2013
+      check: unverified
+      rationale:
+        "Debrezion et al. (2007): about 4.2 % for homes and 16.4 % for commercial property in a rail station
+        zone; Rennert (2022) finds −7.4 to +9.6 points across over 200 cases. Mode adjustment is mild because reviews
+        find no significant difference between BRT, light rail and metro."
+- key: benefit.value_per_m2_gdp_ratio
+  label: "Land value fallback: value of 1 m² of homes as a share of GDP per person"
+  group: Benefits
+  unit: share
+  used_by:
+    - land value uplift where no region gives a value
+  values:
+    - context:
+        mode: "*"
+      low: 0.03
+      central: 0.07
+      high: 0.15
+      basis: educated-guess
+      sources: *id001
+      check: unverified
+      rationale:
+        "Average home prices per m² divided by GDP per person: about 0.03 in the United States, 0.07 in France
+        and Germany, 0.1 or more in China and fast-growing cities. Deliberately wide; enter a region value where known."
+- key: benefit.commercial_value_factor
+  label: "Land value fallback: value of 1 m² of work places relative to homes"
+  group: Benefits
+  unit: ratio
+  used_by:
+    - land value uplift where no region gives a value
+  values:
+    - context:
+        mode: "*"
+      low: 0.8
+      central: 1.2
+      high: 1.8
+      basis: educated-guess
+      sources: *id001
+      check: unverified
+      rationale: Offices and shops in station areas are usually worth somewhat more per m² than homes.
+- key: benefit.property_tax_rate
+  label: "Tax: recurrent property tax as a share of property value per year"
+  group: Benefits
+  unit: share
+  used_by:
+    - extra property tax from land value uplift
+  values:
+    - context:
+        mode: "*"
+      low: 0.002
+      central: 0.005
+      high: 0.012
+      basis: educated-guess
+      sources: *id001
+      check: unverified
+      rationale:
+        Effective recurrent property tax rates range from about 0.2 % to over 1 % of market value a year;
+        a region's tax revenue replaces this where entered.
+- key: benefit.domestic_share.civil
+  label: "Stimulated economy: share of spending on civil works, stations and depots that stays in the country"
+  group: Benefits
+  unit: share
+  used_by:
+    - stimulated economy
+  values:
+    - context:
+        mode: "*"
+      low: 0.75
+      central: 0.85
+      high: 0.95
+      basis: educated-guess
+      sources: *id001
+      check: unverified
+      rationale: Construction is mostly local labour and materials.
+- key: benefit.domestic_share.systems
+  label: "Stimulated economy: share of spending on track, power and signalling that stays in the country"
+  group: Benefits
+  unit: share
+  used_by:
+    - stimulated economy
+  values:
+    - context:
+        mode: "*"
+      low: 0.4
+      central: 0.6
+      high: 0.8
+      basis: educated-guess
+      sources: *id001
+      check: unverified
+      rationale: Signalling and power equipment is often imported.
+- key: benefit.domestic_share.vehicles
+  label: "Stimulated economy: share of spending on vehicles that stays in the country"
+  group: Benefits
+  unit: share
+  used_by:
+    - stimulated economy
+  values:
+    - context:
+        mode: "*"
+      low: 0.1
+      central: 0.4
+      high: 0.8
+      basis: educated-guess
+      sources: *id001
+      check: unverified
+      rationale: Most countries import their trains and buses; high where they are built locally.
+- key: benefit.domestic_share.operating
+  label: "Stimulated economy: share of spending on operation and upkeep that stays in the country"
+  group: Benefits
+  unit: share
+  used_by:
+    - stimulated economy
+  values:
+    - context:
+        mode: "*"
+      low: 0.85
+      central: 0.9
+      high: 0.95
+      basis: educated-guess
+      sources: *id001
+      check: unverified
+      rationale: Staff and energy are mostly domestic.
+- key: benefit.va_multiplier.construction
+  label: "Stimulated economy: GDP generated per unit of domestic construction spending"
+  group: Benefits
+  unit: ratio
+  used_by:
+    - stimulated economy
+  values:
+    - context:
+        mode: "*"
+      low: 0.6
+      central: 0.85
+      high: 1.5
+      basis: documented
+      sources:
+        - oecd-icio
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        Direct plus supply-chain value added per unit of domestic final demand is a little under 1 (Type
+        I, input-output tables); adding household spending (Type II) gives about 1.2–1.5.
+- key: benefit.va_multiplier.operation
+  label: "Stimulated economy: GDP generated per unit of domestic operating spending"
+  group: Benefits
+  unit: ratio
+  used_by:
+    - stimulated economy
+  values:
+    - context:
+        mode: "*"
+      low: 0.7
+      central: 0.9
+      high: 1.5
+      basis: documented
+      sources:
+        - oecd-icio
+        - mobsimlab-derivation
+      check: unverified
+      rationale: As for construction; services have a higher direct value-added share.
+- key: benefit.construction_productivity_ratio
+  label: "Stimulated economy: GDP per worker in the jobs supported, relative to the national average"
+  group: Benefits
+  unit: ratio
+  used_by:
+    - "stimulated economy: job-years"
+  values:
+    - context:
+        mode: "*"
+      low: 0.6
+      central: 0.8
+      high: 1.1
+      basis: educated-guess
+      sources: *id001
+      check: unverified
+      rationale: Construction output per worker is usually a little below the economy average.

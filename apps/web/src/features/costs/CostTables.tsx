@@ -43,6 +43,8 @@ interface Props {
   onPreferences?: (doc: PreferencesDoc) => void;
   costs: CostsDoc | null;
   onCosts?: (doc: CostsDoc) => void;
+  /** Told the estimate, the prices and the country code whenever they change (the benefit tables use them). */
+  onEstimate?: (e: Estimate, prices: Prices, country: string | null) => void;
   /** Tests inject these. */
   loadRail?: RailEngineLoader;
   api?: EconomyApi;
@@ -85,6 +87,7 @@ export function CostTables({
   onPreferences,
   costs,
   onCosts,
+  onEstimate,
   loadRail = loadRailEngine,
   api = DEFAULT_API,
 }: Props) {
@@ -183,6 +186,9 @@ export function CostTables({
       }),
     [railway, rail, streetLines, prefs, prices],
   );
+  useEffect(() => {
+    onEstimate?.(est, prices, code ?? null);
+  }, [est, prices, code, onEstimate]);
   const shownCurrency = usd ? "USD" : prices.currency;
   const k = usd ? 1 / prices.fx : 1;
   const money = (v: number) => fmtMoney(v * k, shownCurrency);
