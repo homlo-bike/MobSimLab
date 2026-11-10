@@ -15,6 +15,10 @@ export type Level = "underground2" | "underground" | "street" | "elevated" | "el
 export type Power = "auto" | "overhead" | "third_rail" | "none";
 export type TrackUse = "running" | "storage";
 export type Bed = "auto" | "ballast" | "embedded";
+/** How underground stretches are built; auto: cut and cover on the first level, TBM on the second. */
+export type TunnelMethod = "auto" | "cut_and_cover" | "tbm";
+/** What carries elevated stretches; auto: elevated guideway for tram, light rail and metro, else viaduct. */
+export type Structure = "auto" | "elevated" | "viaduct" | "bridge";
 export type SwitchKind = "turnout" | "double_junction" | "crossover" | "scissors";
 export type LonLat = [number, number];
 
@@ -80,6 +84,10 @@ export interface Track {
   power: Power;
   use: TrackUse;
   bed: Bed;
+  /** How the track's underground stretches are built (cost estimate); absent = auto. */
+  tunnel?: TunnelMethod;
+  /** What carries the track's elevated stretches (cost estimate); absent = auto. */
+  structure?: Structure;
   lead_start_m: number;
   lead_end_m: number;
   radius_start_m?: number | null;

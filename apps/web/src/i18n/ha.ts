@@ -211,6 +211,7 @@ export const ha: Messages = {
   "drawing.street-setups": "tsarin tituna",
   "drawing.rail-timetable": "jadawalin jirgin ƙasa",
   "drawing.preferences": "zaɓuɓɓukan aiki",
+  "drawing.costs": "saitunan kuɗi",
 
   "tab.label": "Aiki",
   "tab.simulator": "Mai kwaikwayo",
@@ -260,8 +261,9 @@ export const ha: Messages = {
   "tables.summary": "Taƙaitawa",
   "tables.infrastructure": "Layuka, tashoshi, tsawon dogo, gadoji, ramuka (tona da rufe ko TBM)",
   "tables.service": "Yawan zuwa, sa'o'in aiki, ababen hawa, fasinjojin da ake hasashe",
-  "tables.costs": "Kuɗi da aiki",
   "tables.compare": "Kwatanta yanayi gefe da gefe",
+  "tables.more": "Ƙarin teburori",
+  "tables.moreIntro": "Za su zo a wannan shafin nan gaba.",
 
   "prefs.title": "Zaɓuɓɓukan aiki",
   "prefs.intro": "Bayanai da saitunan da suka shafi dukan aikin.",

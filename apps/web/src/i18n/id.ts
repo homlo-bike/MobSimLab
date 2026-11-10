@@ -212,6 +212,7 @@ export const id: Messages = {
   "drawing.street-setups": "pengaturan jalan",
   "drawing.rail-timetable": "jadwal kereta",
   "drawing.preferences": "preferensi proyek",
+  "drawing.costs": "pengaturan biaya",
 
   "tab.label": "Proyek",
   "tab.simulator": "Simulator",
@@ -261,8 +262,9 @@ export const id: Messages = {
   "tables.summary": "Ringkasan",
   "tables.infrastructure": "Jalur, stasiun, panjang rel, jembatan, terowongan (galian terbuka atau TBM)",
   "tables.service": "Frekuensi, jam layanan, armada, perkiraan penumpang",
-  "tables.costs": "Biaya dan kinerja",
   "tables.compare": "Bandingkan skenario berdampingan",
+  "tables.more": "Tabel lainnya",
+  "tables.moreIntro": "Segera hadir di tab ini.",
 
   "prefs.title": "Preferensi proyek",
   "prefs.intro": "Detail dan pengaturan yang berlaku untuk seluruh proyek.",

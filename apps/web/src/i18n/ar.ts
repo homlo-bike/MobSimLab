@@ -204,6 +204,7 @@ export const ar: Messages = {
   "drawing.street-setups": "إعدادات الشوارع",
   "drawing.rail-timetable": "جدول مواعيد القطارات",
   "drawing.preferences": "تفضيلات المشروع",
+  "drawing.costs": "إعدادات التكاليف",
 
   "tab.label": "المشروع",
   "tab.simulator": "المحاكي",
@@ -251,8 +252,9 @@ export const ar: Messages = {
   "tables.summary": "الملخص",
   "tables.infrastructure": "الخطوط والمحطات وطول السكك والجسور والأنفاق (حفر وردم أو آلة حفر الأنفاق)",
   "tables.service": "التردد وساعات التشغيل والأسطول والركاب المتوقعون",
-  "tables.costs": "التكاليف والأداء",
   "tables.compare": "مقارنة السيناريوهات جنبًا إلى جنب",
+  "tables.more": "جداول أخرى",
+  "tables.moreIntro": "ستُضاف لاحقًا إلى هذا التبويب.",
 
   "prefs.title": "تفضيلات المشروع",
   "prefs.intro": "التفاصيل والإعدادات التي تنطبق على المشروع كله.",

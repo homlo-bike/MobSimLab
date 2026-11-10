@@ -212,6 +212,7 @@ export const ur: Messages = {
   "drawing.street-setups": "سڑکوں کی ترتیب",
   "drawing.rail-timetable": "ریل کا ٹائم ٹیبل",
   "drawing.preferences": "منصوبے کی ترجیحات",
+  "drawing.costs": "لاگت کی ترتیبات",
 
   "tab.label": "منصوبہ",
   "tab.simulator": "سمیولیٹر",
@@ -259,8 +260,9 @@ export const ur: Messages = {
   "tables.summary": "خلاصہ",
   "tables.infrastructure": "لائنیں، اسٹیشن، پٹری کی لمبائی، پل، سرنگیں (کھود کر ڈھانپنا یا TBM)",
   "tables.service": "تعدد، اوقات کار، بیڑا، متوقع مسافر",
-  "tables.costs": "لاگت اور کارکردگی",
   "tables.compare": "منظرناموں کا ساتھ ساتھ موازنہ کریں",
+  "tables.more": "مزید جدولیں",
+  "tables.moreIntro": "اس ٹیب میں جلد آئیں گی۔",
 
   "prefs.title": "منصوبے کی ترجیحات",
   "prefs.intro": "تفصیلات اور ترتیبات جو پورے منصوبے پر لاگو ہوتی ہیں۔",

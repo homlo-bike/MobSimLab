@@ -805,3 +805,107 @@
   access: free
   retrieved: 2026-11-02
   checked_via: none
+
+- id: transit-costs-project
+  title: "Transit Costs Project (NYU Marron Institute): Final Report and construction cost database, costs per km in 2023 PPP dollars by construction method"
+  publisher: New York University Marron Institute of Urban Management
+  url: https://transitcosts.com/final-report/
+  licence: © Transit Costs Project; numbers cited as facts
+  access: free
+  retrieved: 2026-11-09
+  checked_via: search-snippet
+
+- id: worldbank-china-hsr
+  title: "World Bank: High-Speed Railways in China: A Look at Construction Costs (China Transport Topics No. 9, 2014)"
+  publisher: World Bank
+  url: https://www.worldbank.org/en/news/press-release/2014/07/10/cost-of-high-speed-rail-in-china-one-third-lower-than-in-other-countries
+  licence: CC BY 3.0 IGO
+  access: free
+  retrieved: 2026-11-09
+  checked_via: search-snippet
+
+- id: uic-hsr-cost
+  title: "UIC study on high-speed rail financing: average construction cost about €45.5 million per km (as reported by Railway PRO)"
+  publisher: Railway PRO (reporting a UIC study)
+  url: https://www.railwaypro.com/wp/study-high-speed-rail-lines-cost-an-average-of-eur-45-5-million-per-kilometer/
+  licence: © Railway PRO; numbers cited as facts
+  access: free
+  retrieved: 2026-11-09
+  checked_via: search-snippet
+  kind: secondary
+
+- id: fta-relative-costs
+  title: "City of Toronto, Executive Committee background file CC20.1 appendix 3.7, quoting the US FTA on relative costs of surface, elevated and underground transit"
+  publisher: City of Toronto
+  url: https://www.toronto.ca/legdocs/mmis/2012/cc/bgrd/CC20_1_app3_7.pdf
+  licence: © City of Toronto; numbers cited as facts
+  access: free
+  retrieved: 2026-11-09
+  checked_via: search-snippet
+  kind: secondary
+
+- id: railwaypro-besancon
+  title: "Railway PRO: France: Besançon inaugurates “low cost” tram line (€254 million for 14.5 km; French average €25–30 million per km)"
+  publisher: Railway PRO
+  url: https://railwaypro.com/wp/france-besancon-inaugurates-low-cost-tram-line
+  licence: © Railway PRO; numbers cited as facts
+  access: free
+  retrieved: 2026-11-09
+  checked_via: search-snippet
+  kind: secondary
+
+- id: bathtrams-uk-costs
+  title: "Bath Trams: UK tram track installation costs (£20–30 million per route-km) and German extension costs per km"
+  publisher: Bath Trams
+  url: https://bathtrams.uk/?p=6821
+  licence: © Bath Trams; numbers cited as facts
+  access: free
+  retrieved: 2026-11-09
+  checked_via: search-snippet
+  kind: secondary
+
+- id: uitp-trolleybus-tco
+  title: "UITP: Trolleybus Total Cost of Ownership, summary (2026), 17 systems"
+  publisher: UITP
+  url: https://www.uitp.org/wp-content/uploads/sites/7/2026/06/20260611_Trolleybus-Total-Cost-Ownership_Summary.pdf
+  licence: © UITP; numbers cited as facts
+  access: free
+  retrieved: 2026-11-09
+  checked_via: none
+
+- id: sandnes-benchmarking
+  title: "Benchmarking of public transport operating costs (Sandnes municipality background report, 2016)"
+  publisher: Sandnes kommune
+  url: https://sandnes.kommune.no/globalassets/tekniskeiendom/samfunnsplan/kommuneplan-2019-2035/bakgrunn-for-kp/sandnes-benchmarking-final-report-14042016.pdf
+  licence: © Sandnes kommune; numbers cited as facts
+  access: free
+  retrieved: 2026-11-09
+  checked_via: none
+
+- id: pedestrian-observations-opex
+  title: "Pedestrian Observations (Alon Levy): Quick Note on Subway Operating Costs (2026), costs per car-km of Berlin, London and New York"
+  publisher: Pedestrian Observations
+  url: https://pedestrianobservations.com/2026/05/22/quick-note-on-subway-operating-costs/
+  licence: © the author; numbers cited as facts
+  access: free
+  retrieved: 2026-11-09
+  checked_via: search-snippet
+  kind: secondary
+
+- id: flyvbjerg-2003
+  title: "Flyvbjerg, Skamris Holm, Buhl: How common and how large are cost overruns in transport infrastructure projects? Transport Reviews 23(1), 71–88 (2003)"
+  publisher: Taylor & Francis
+  url: https://doi.org/10.1080/01441640309904
+  licence: © Taylor & Francis; numbers cited as facts
+  access: paywalled
+  retrieved: 2026-11-09
+  checked_via: none
+
+- id: worldbank-wdi
+  title: "World Bank World Development Indicators API: PA.NUS.PPP (PPP conversion factor, GDP), PA.NUS.FCRF (official exchange rate), NY.GDP.DEFL.ZS (GDP deflator)"
+  publisher: World Bank
+  url: https://datahelpdesk.worldbank.org/knowledgebase/articles/889392-about-the-indicators-api-documentation
+  licence: CC BY 4.0
+  access: free
+  retrieved: 2026-11-09
+  checked_via: none

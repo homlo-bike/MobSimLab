@@ -210,6 +210,7 @@ export const sw: Messages = {
   "drawing.street-setups": "mipangilio ya barabara",
   "drawing.rail-timetable": "ratiba ya reli",
   "drawing.preferences": "mapendeleo ya mradi",
+  "drawing.costs": "mipangilio ya gharama",
 
   "tab.label": "Mradi",
   "tab.simulator": "Kiigaji",
@@ -259,8 +260,9 @@ export const sw: Messages = {
   "tables.summary": "Muhtasari",
   "tables.infrastructure": "Njia, stesheni, urefu wa reli, madaraja, mahandaki (kuchimba na kufunika au TBM)",
   "tables.service": "Marudio, saa za huduma, magari, abiria wanaotarajiwa",
-  "tables.costs": "Gharama na utendaji",
   "tables.compare": "Linganisha matukio kando kwa kando",
+  "tables.more": "Majedwali zaidi",
+  "tables.moreIntro": "Yatakuja hivi karibuni kwenye kichupo hiki.",
 
   "prefs.title": "Mapendeleo ya mradi",
   "prefs.intro": "Maelezo na mipangilio inayohusu mradi mzima.",

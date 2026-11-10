@@ -204,6 +204,7 @@ export const zh: Messages = {
   "drawing.street-setups": "街道设置",
   "drawing.rail-timetable": "铁路时刻表",
   "drawing.preferences": "项目偏好设置",
+  "drawing.costs": "费用设置",
 
   "tab.label": "项目",
   "tab.simulator": "模拟器",
@@ -249,8 +250,9 @@ export const zh: Messages = {
   "tables.summary": "摘要",
   "tables.infrastructure": "线路、车站、轨道长度、桥梁、隧道（明挖或盾构）",
   "tables.service": "发车频率、运营时间、车队、预计客流",
-  "tables.costs": "成本和性能",
   "tables.compare": "并排比较方案",
+  "tables.more": "更多表格",
+  "tables.moreIntro": "即将在此标签页提供。",
 
   "prefs.title": "项目偏好设置",
   "prefs.intro": "适用于整个项目的详细信息和设置。",

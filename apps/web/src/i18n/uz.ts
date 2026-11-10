@@ -214,6 +214,7 @@ export const uz: Messages = {
   "drawing.street-setups": "koʻchalar sozlamasi",
   "drawing.rail-timetable": "poyezdlar jadvali",
   "drawing.preferences": "loyiha sozlamalari",
+  "drawing.costs": "xarajat sozlamalari",
 
   "tab.label": "Loyiha",
   "tab.simulator": "Simulyator",
@@ -264,8 +265,9 @@ export const uz: Messages = {
   "tables.infrastructure":
     "Yoʻnalishlar, stansiyalar, rels uzunligi, koʻpriklar, tunnellar (ochiq usul yoki TBM)",
   "tables.service": "Qatnov chastotasi, ish soatlari, park, kutilayotgan yoʻlovchilar",
-  "tables.costs": "Xarajatlar va samaradorlik",
   "tables.compare": "Ssenariylarni yonma-yon taqqoslash",
+  "tables.more": "Boshqa jadvallar",
+  "tables.moreIntro": "Tez orada ushbu bo‘limda.",
 
   "prefs.title": "Loyiha sozlamalari",
   "prefs.intro": "Butun loyihaga tegishli maʼlumotlar va sozlamalar.",

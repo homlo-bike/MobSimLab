@@ -212,6 +212,7 @@ export const ru: Messages = {
   "drawing.street-setups": "профили улиц",
   "drawing.rail-timetable": "расписание поездов",
   "drawing.preferences": "параметры проекта",
+  "drawing.costs": "настройки затрат",
 
   "tab.label": "Проект",
   "tab.simulator": "Симулятор",
@@ -261,8 +262,9 @@ export const ru: Messages = {
   "tables.summary": "Сводка",
   "tables.infrastructure": "Линии, станции, длина путей, мосты, тоннели (открытым способом или ТПМК)",
   "tables.service": "Интервалы, часы работы, парк, прогноз пассажиропотока",
-  "tables.costs": "Затраты и показатели",
   "tables.compare": "Сравнение сценариев",
+  "tables.more": "Другие таблицы",
+  "tables.moreIntro": "Скоро появятся на этой вкладке.",
 
   "prefs.title": "Параметры проекта",
   "prefs.intro": "Сведения и настройки, которые действуют для всего проекта.",
