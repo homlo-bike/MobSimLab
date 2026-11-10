@@ -205,6 +205,7 @@ export const am: Messages = {
   "drawing.rail-timetable": "የባቡር የጊዜ ሰሌዳ",
   "drawing.preferences": "የፕሮጀክት ምርጫዎች",
   "drawing.costs": "የወጪ ቅንብሮች",
+  "drawing.scenarios": "የተቀመጡ ሁኔታዎች",
   "drawing.benefits": "የጥቅም ቀመሮች",
   "drawing.regions": "ክልሎች",
 
@@ -252,12 +253,6 @@ export const am: Messages = {
 
   "tables.title": "ሰንጠረዦች",
   "tables.intro": "ስለ ፕሮጀክቱ ያሉ ሁሉም ስሌቶች፣ ምን ያህል ጥሩ እንደሚሠራ ለመገመት።",
-  "tables.summary": "ማጠቃለያ",
-  "tables.infrastructure": "መስመሮች፣ ጣቢያዎች፣ የሐዲድ ርዝመት፣ ድልድዮች፣ ዋሻዎች (ቆፍሮ መሸፈን ወይም TBM)",
-  "tables.service": "ድግግሞሽ፣ የሥራ ሰዓታት፣ ተሽከርካሪዎች፣ የሚገመቱ ተሳፋሪዎች",
-  "tables.compare": "ሁኔታዎችን ጎን ለጎን አወዳድር",
-  "tables.more": "ተጨማሪ ሰንጠረዦች",
-  "tables.moreIntro": "ወደዚህ ትር ገና የሚመጡ።",
 
   "prefs.title": "የፕሮጀክት ምርጫዎች",
   "prefs.intro": "ለመላው ፕሮጀክቱ የሚመለከቱ ዝርዝሮች እና ቅንብሮች።",

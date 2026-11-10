@@ -211,6 +211,7 @@ export const vi: Messages = {
   "drawing.rail-timetable": "lịch tàu",
   "drawing.preferences": "tùy chọn dự án",
   "drawing.costs": "cài đặt chi phí",
+  "drawing.scenarios": "các kịch bản đã lưu",
   "drawing.benefits": "công thức lợi ích",
   "drawing.regions": "khu vực",
 
@@ -262,12 +263,6 @@ export const vi: Messages = {
 
   "tables.title": "Bảng",
   "tables.intro": "Mọi tính toán để ước lượng hiệu quả của dự án.",
-  "tables.summary": "Tóm tắt",
-  "tables.infrastructure": "Tuyến, ga, chiều dài đường ray, cầu, hầm (đào hở hoặc TBM)",
-  "tables.service": "Tần suất, giờ hoạt động, đội phương tiện, hành khách dự kiến",
-  "tables.compare": "So sánh các kịch bản cạnh nhau",
-  "tables.more": "Thêm bảng",
-  "tables.moreIntro": "Sắp có trong thẻ này.",
 
   "prefs.title": "Tùy chọn dự án",
   "prefs.intro": "Chi tiết và cài đặt áp dụng cho toàn bộ dự án.",

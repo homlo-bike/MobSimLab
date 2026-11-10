@@ -522,6 +522,40 @@
       check: unverified
       rationale: Reserved seating; standing only in exceptional loads.
 
+- key: mode.vehicle_capacity
+  label: Passenger places per street vehicle, seats plus standing at the planning density
+  group: Modes
+  unit: passengers
+  used_by: ["Tables tab: capacity per hour of street lines"]
+  values:
+    - context:
+        mode: "*"
+      low: 60
+      central: 75
+      high: 90
+      basis: documented
+      sources: [tcqsm3, unece-r107]
+      check: unverified
+      rationale: A standard 12 m city bus has about 30 to 40 seats and room for 30 to 50 standing at 4 persons/m² (mode.standing_density_ppm2); rail lines use the capacity of the chosen catalogue train instead.
+    - context:
+        mode: brt
+      low: 100
+      central: 120
+      high: 150
+      basis: documented
+      sources: [tcqsm3]
+      check: unverified
+      rationale: BRT usually runs 18 m articulated buses with about 40 to 50 seats and 60 to 100 standing at the planning density.
+    - context:
+        mode: intercity_bus
+      low: 45
+      central: 50
+      high: 57
+      basis: documented
+      sources: [unece-r107]
+      check: unverified
+      rationale: Class III coaches of 12 to 13 m carry seated passengers only, typically 45 to 57 seats.
+
 - key: mode.colour
   label: Vehicle and line colour (default)
   group: Modes

@@ -215,6 +215,7 @@ export const zu: Messages = {
   "drawing.rail-timetable": "uhlelo lwezikhathi lwesitimela",
   "drawing.preferences": "okuthandwayo kwephrojekthi",
   "drawing.costs": "izilungiselelo zezindleko",
+  "drawing.scenarios": "izimo ezigciniwe",
   "drawing.benefits": "amafomula ezinzuzo",
   "drawing.regions": "izifunda",
 
@@ -267,12 +268,6 @@ export const zu: Messages = {
   "tables.title": "Amatafula",
   "tables.intro":
     "Zonke izibalo mayelana nephrojekthi, ukuze kulinganiswe ukuthi izosebenza kahle kangakanani.",
-  "tables.summary": "Isifinyezo",
-  "tables.infrastructure": "Imigqa, iziteshi, ubude bukajantshi, amabhuloho, imigudu (imba uvale noma i-TBM)",
-  "tables.service": "Imvamisa, amahora okusebenza, izimoto, abagibeli abalindelekile",
-  "tables.compare": "Qhathanisa izimo eceleni",
-  "tables.more": "Amathebula amaningi",
-  "tables.moreIntro": "Kuzofika maduze kuleli thebhu.",
 
   "prefs.title": "Okuthandwayo kwephrojekthi",
   "prefs.intro": "Imininingwane nezilungiselelo ezisebenza kuyo yonke iphrojekthi.",

@@ -212,6 +212,7 @@ export const kk: Messages = {
   "drawing.rail-timetable": "пойыз кестесі",
   "drawing.preferences": "жоба параметрлері",
   "drawing.costs": "шығын баптаулары",
+  "drawing.scenarios": "сақталған сценарийлер",
   "drawing.benefits": "пайда формулалары",
   "drawing.regions": "аймақтар",
 
@@ -260,12 +261,6 @@ export const kk: Messages = {
 
   "tables.title": "Кестелер",
   "tables.intro": "Жобаның қаншалықты жақсы жұмыс істейтінін бағалау үшін ол туралы әр есептеу.",
-  "tables.summary": "Қорытынды",
-  "tables.infrastructure": "Бағыттар, станциялар, жол ұзындығы, көпірлер, туннельдер (ашық әдіс немесе TBM)",
-  "tables.service": "Жиілік, жұмыс сағаттары, парк, күтілетін жолаушылар",
-  "tables.compare": "Сценарийлерді қатар салыстыру",
-  "tables.more": "Қосымша кестелер",
-  "tables.moreIntro": "Бұл қойындыға кейін қосылады.",
 
   "prefs.title": "Жоба параметрлері",
   "prefs.intro": "Бүкіл жобаға қатысты мәліметтер мен баптаулар.",

@@ -213,6 +213,7 @@ export const tr: Messages = {
   "drawing.rail-timetable": "tren tarifesi",
   "drawing.preferences": "proje tercihleri",
   "drawing.costs": "maliyet ayarları",
+  "drawing.scenarios": "kaydedilen senaryolar",
   "drawing.benefits": "fayda formülleri",
   "drawing.regions": "bölgeler",
 
@@ -261,12 +262,6 @@ export const tr: Messages = {
 
   "tables.title": "Tablolar",
   "tables.intro": "Projenin performansını tahmin etmek için tüm hesaplar.",
-  "tables.summary": "Özet",
-  "tables.infrastructure": "Hatlar, istasyonlar, ray uzunluğu, köprüler, tüneller (aç-kapa veya TBM)",
-  "tables.service": "Sefer sıklığı, hizmet saatleri, filo, tahmini yolcu",
-  "tables.compare": "Senaryoları yan yana karşılaştır",
-  "tables.more": "Diğer tablolar",
-  "tables.moreIntro": "Yakında bu sekmede.",
 
   "prefs.title": "Proje tercihleri",
   "prefs.intro": "Tüm projeye uygulanan ayrıntılar ve ayarlar.",

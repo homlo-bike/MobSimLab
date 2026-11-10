@@ -209,6 +209,7 @@ export const fa: Messages = {
   "drawing.rail-timetable": "جدول زمانی ریلی",
   "drawing.preferences": "ترجیحات پروژه",
   "drawing.costs": "تنظیمات هزینه",
+  "drawing.scenarios": "سناریوهای ذخیره‌شده",
   "drawing.benefits": "فرمول‌های منافع",
   "drawing.regions": "مناطق",
 
@@ -258,12 +259,6 @@ export const fa: Messages = {
 
   "tables.title": "جدول‌ها",
   "tables.intro": "همهٔ محاسبات برای برآورد عملکرد پروژه.",
-  "tables.summary": "خلاصه",
-  "tables.infrastructure": "خطوط، ایستگاه‌ها، طول ریل، پل‌ها، تونل‌ها (روباز یا TBM)",
-  "tables.service": "تواتر، ساعات خدمت، ناوگان، مسافران پیش‌بینی‌شده",
-  "tables.compare": "مقایسهٔ سناریوها کنار هم",
-  "tables.more": "جدول‌های بیشتر",
-  "tables.moreIntro": "به‌زودی در این زبانه.",
 
   "prefs.title": "ترجیحات پروژه",
   "prefs.intro": "جزئیات و تنظیماتی که برای کل پروژه اعمال می‌شوند.",

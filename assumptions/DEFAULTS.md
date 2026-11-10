@@ -40,6 +40,7 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 | Dwell time at a stop (s) | 30 | 20 | 30 | 180 | 25 | 30 | 30 | 45 | 60 | 120 | 120 |
 | Spare vehicles, share of the vehicles in peak service (fleet) (share) | 0.15 | 0.15 | 0.15 | 0.15 | 0.15 | 0.15 | 0.12 | 0.12 | 0.12 | 0.1 | 0.1 |
 | Standing places, passengers per square metre of standing area (persons/m²) | 4 | 4 | 4 | 0 | 4 | 4 | 4 | 4 | 2 | 0 | 0 |
+| Passenger places per street vehicle, seats plus standing at the planning density (passengers) | 75 | 120 | 75 | 50 | 75 | 75 | 75 | 75 | 75 | 75 | 75 |
 | Vehicle and line colour (default) (hex colour) | #8E3A8C | #C2185B | #6A8E23 | #7B5E3B | #D32F2F | #E65100 | #1565C0 | #2E7D32 | #546E7A | #37474F | #212121 |
 | Catchment, walking distance to a stop (m) | 400 | 600 | 400 | 1500 | 500 | 800 | 800 | 1000 | 2000 | 2000 | 2000 |
 | Distance between consecutive stops or stations along a line (guidance range) (m) | 400 | 800 | 400 | 10000 | 500 | 1000 | 1000 | 3000 | 6000 | 60000 | 60000 |
@@ -151,6 +152,16 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 | tram, light_rail, metro, commuter_rail | 3 | 4 | 6 | documented | unverified | [en-15663](#src-en-15663), [tcqsm3](#src-tcqsm3) | EN 15663 reference loads for urban/suburban service; 6/m² as crush. |
 | regional_rail | 1 | 2 | 4 | documented | unverified | [en-15663](#src-en-15663) | Mostly seated. |
 | long_distance_rail, high_speed_rail | 0 | 0 | 2 | documented | unverified | [en-15663](#src-en-15663) | Reserved seating; standing only in exceptional loads. |
+
+### Passenger places per street vehicle, seats plus standing at the planning density
+
+`mode.vehicle_capacity` · unit: passengers · used by: Tables tab: capacity per hour of street lines
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 60 | 75 | 90 | documented | unverified | [tcqsm3](#src-tcqsm3), [unece-r107](#src-unece-r107) | A standard 12 m city bus has about 30 to 40 seats and room for 30 to 50 standing at 4 persons/m² (mode.standing_density_ppm2); rail lines use the capacity of the chosen catalogue train instead. |
+| brt | 100 | 120 | 150 | documented | unverified | [tcqsm3](#src-tcqsm3) | BRT usually runs 18 m articulated buses with about 40 to 50 seats and 60 to 100 standing at the planning density. |
+| intercity_bus | 45 | 50 | 57 | documented | unverified | [unece-r107](#src-unece-r107) | Class III coaches of 12 to 13 m carry seated passengers only, typically 45 to 57 seats. |
 
 ### Vehicle and line colour (default)
 

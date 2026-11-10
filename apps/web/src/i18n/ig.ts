@@ -212,6 +212,7 @@ export const ig: Messages = {
   "drawing.rail-timetable": "usoro oge ụgbọ oloko",
   "drawing.preferences": "mmasị ọrụ",
   "drawing.costs": "ntọala ego",
+  "drawing.scenarios": "ọnọdụ echekwara",
   "drawing.benefits": "usoro uru",
   "drawing.regions": "mpaghara",
 
@@ -261,12 +262,6 @@ export const ig: Messages = {
 
   "tables.title": "Tebụl",
   "tables.intro": "Ngụkọ niile gbasara ọrụ ahụ, iji tụọ otú ọ ga-esi rụọ ọrụ.",
-  "tables.summary": "Nchịkọta",
-  "tables.infrastructure": "Ahịrị, ọdụ, ogologo ụzọ ígwè, àkwà mmiri, ọwara (gwuo ma kpuchie ma ọ bụ TBM)",
-  "tables.service": "Ugboro ole, oge ọrụ, ụgbọ, ndị njem a tụrụ anya",
-  "tables.compare": "Tụnyere ọnọdụ n'akụkụ n'akụkụ",
-  "tables.more": "Tebụl ndị ọzọ",
-  "tables.moreIntro": "Ga-abịa n'ime taabụ a n'oge na-adịghị anya.",
 
   "prefs.title": "Mmasị ọrụ",
   "prefs.intro": "Nkọwa na ntọala metụtara ọrụ ahụ niile.",

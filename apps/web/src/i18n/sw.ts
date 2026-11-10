@@ -211,6 +211,7 @@ export const sw: Messages = {
   "drawing.rail-timetable": "ratiba ya reli",
   "drawing.preferences": "mapendeleo ya mradi",
   "drawing.costs": "mipangilio ya gharama",
+  "drawing.scenarios": "hali zilizohifadhiwa",
   "drawing.benefits": "fomula za manufaa",
   "drawing.regions": "maeneo",
 
@@ -261,12 +262,6 @@ export const sw: Messages = {
 
   "tables.title": "Majedwali",
   "tables.intro": "Kila hesabu kuhusu mradi, kukadiria utakavyofanya kazi.",
-  "tables.summary": "Muhtasari",
-  "tables.infrastructure": "Njia, stesheni, urefu wa reli, madaraja, mahandaki (kuchimba na kufunika au TBM)",
-  "tables.service": "Marudio, saa za huduma, magari, abiria wanaotarajiwa",
-  "tables.compare": "Linganisha matukio kando kwa kando",
-  "tables.more": "Majedwali zaidi",
-  "tables.moreIntro": "Yatakuja hivi karibuni kwenye kichupo hiki.",
 
   "prefs.title": "Mapendeleo ya mradi",
   "prefs.intro": "Maelezo na mipangilio inayohusu mradi mzima.",

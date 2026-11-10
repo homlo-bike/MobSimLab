@@ -214,6 +214,7 @@ export const nl: Messages = {
   "drawing.rail-timetable": "de dienstregeling van de spoorlijnen",
   "drawing.preferences": "de projectvoorkeuren",
   "drawing.costs": "de kosteninstellingen",
+  "drawing.scenarios": "de opgeslagen scenario’s",
   "drawing.benefits": "de batenformules",
   "drawing.regions": "de gebieden",
 
@@ -263,13 +264,6 @@ export const nl: Messages = {
 
   "tables.title": "Tabellen",
   "tables.intro": "Alle berekeningen over het project, om te schatten hoe goed het zal presteren.",
-  "tables.summary": "Overzicht",
-  "tables.infrastructure":
-    "Lijnen, stations, spoorlengte, bruggen, tunnels (open bouwput of tunnelboormachine)",
-  "tables.service": "Frequentie, bedieningstijden, vloot, verwachte reizigers",
-  "tables.compare": "Scenario’s naast elkaar vergelijken",
-  "tables.more": "Meer tabellen",
-  "tables.moreIntro": "Komt nog in dit tabblad.",
 
   "prefs.title": "Projectvoorkeuren",
   "prefs.intro": "Gegevens en instellingen die voor het hele project gelden.",

@@ -20,7 +20,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "apps" / "web" / "src" / "features" / "costs" / "defaults.generated.json"
-EXTRA = {"mode.spare_share"}
+EXTRA = {"mode.spare_share", "mode.vehicle_capacity"}
 
 
 def assumption_check():
