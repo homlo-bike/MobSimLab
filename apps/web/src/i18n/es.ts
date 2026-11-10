@@ -259,9 +259,6 @@ export const es: Messages = {
 
   "tables.title": "Tablas",
   "tables.intro": "Todos los cálculos del proyecto, para estimar lo bien que funcionará.",
-  "tables.summary": "Resumen",
-  "tables.infrastructure": "Líneas, estaciones, longitud de vía, puentes, túneles (falso túnel o tuneladora)",
-  "tables.service": "Frecuencia, horario de servicio, flota, viajeros previstos",
   "tables.compare": "Comparar escenarios lado a lado",
   "tables.more": "Más tablas",
   "tables.moreIntro": "Llegarán más adelante a esta pestaña.",

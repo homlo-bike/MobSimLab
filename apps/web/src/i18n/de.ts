@@ -264,9 +264,6 @@ export const de: Messages = {
 
   "tables.title": "Tabellen",
   "tables.intro": "Alle Berechnungen zum Projekt, um abzuschätzen, wie gut es funktionieren wird.",
-  "tables.summary": "Übersicht",
-  "tables.infrastructure": "Linien, Stationen, Gleislänge, Brücken, Tunnel (offene Bauweise oder TBM)",
-  "tables.service": "Takt, Betriebszeiten, Flotte, erwartete Fahrgäste",
   "tables.compare": "Szenarien nebeneinander vergleichen",
   "tables.more": "Weitere Tabellen",
   "tables.moreIntro": "Folgt noch in diesem Tab.",

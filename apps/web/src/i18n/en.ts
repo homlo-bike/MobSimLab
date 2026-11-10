@@ -251,9 +251,6 @@ export const en = {
 
   "tables.title": "Tables",
   "tables.intro": "Every calculation about the project, to estimate how well it will perform.",
-  "tables.summary": "Summary",
-  "tables.infrastructure": "Lines, stations, track length, bridges, tunnels (cut and cover or TBM)",
-  "tables.service": "Frequency, operating hours, fleet, projected passengers",
   "tables.compare": "Compare scenarios side by side",
   "tables.more": "More tables",
   "tables.moreIntro": "Still to come in this tab.",

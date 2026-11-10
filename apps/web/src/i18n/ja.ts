@@ -254,9 +254,6 @@ export const ja: Messages = {
 
   "tables.title": "表",
   "tables.intro": "プロジェクトの性能を見積もるための、あらゆる計算。",
-  "tables.summary": "概要",
-  "tables.infrastructure": "路線、駅、線路延長、橋梁、トンネル（開削または TBM）",
-  "tables.service": "運行頻度、運行時間、車両数、予測旅客数",
   "tables.compare": "シナリオを並べて比較",
   "tables.more": "その他の表",
   "tables.moreIntro": "このタブに今後追加予定です。",

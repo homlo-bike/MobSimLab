@@ -257,9 +257,6 @@ export const tr: Messages = {
 
   "tables.title": "Tablolar",
   "tables.intro": "Projenin performansını tahmin etmek için tüm hesaplar.",
-  "tables.summary": "Özet",
-  "tables.infrastructure": "Hatlar, istasyonlar, ray uzunluğu, köprüler, tüneller (aç-kapa veya TBM)",
-  "tables.service": "Sefer sıklığı, hizmet saatleri, filo, tahmini yolcu",
   "tables.compare": "Senaryoları yan yana karşılaştır",
   "tables.more": "Diğer tablolar",
   "tables.moreIntro": "Yakında bu sekmede.",

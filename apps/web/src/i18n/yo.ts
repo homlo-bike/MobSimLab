@@ -255,9 +255,6 @@ export const yo: Messages = {
 
   "tables.title": "Àwọn tábìlì",
   "tables.intro": "Gbogbo ìṣirò nípa iṣẹ́ àkànṣe náà, láti ṣe àfojúsùn bí yóò ṣe ṣiṣẹ́ tó.",
-  "tables.summary": "Àkópọ̀",
-  "tables.infrastructure": "Àwọn ìlà, ibùdókọ̀, gígùn ojú irin, afárá, ihò abẹ́lẹ̀ (gbẹ́ kí o bò tàbí TBM)",
-  "tables.service": "Ìgbàkúgbà, wákàtí iṣẹ́, àwọn ọkọ̀, èrò tí a fojú sùn",
   "tables.compare": "Fi àwọn ìṣẹ̀lẹ̀ wé ara wọn lẹ́gbẹ̀ẹ́ ara wọn",
   "tables.more": "Àwọn tábìlì míì",
   "tables.moreIntro": "Wọ́n ń bọ̀ sí táàbù yìí láìpẹ́.",

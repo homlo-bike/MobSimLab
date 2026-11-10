@@ -259,9 +259,6 @@ export const pt: Messages = {
 
   "tables.title": "Tabelas",
   "tables.intro": "Todos os cálculos do projeto, para estimar seu desempenho.",
-  "tables.summary": "Resumo",
-  "tables.infrastructure": "Linhas, estações, extensão de via, pontes, túneis (vala a céu aberto ou TBM)",
-  "tables.service": "Frequência, horário de operação, frota, passageiros previstos",
   "tables.compare": "Comparar cenários lado a lado",
   "tables.more": "Mais tabelas",
   "tables.moreIntro": "Em breve neste separador.",

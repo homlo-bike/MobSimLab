@@ -562,6 +562,27 @@
      0.15
     ]
    }
+  },
+  "mode.vehicle_capacity": {
+   "label": "Passenger places per street vehicle, seats plus standing at the planning density",
+   "unit": "passengers",
+   "values": {
+    "*": [
+     60,
+     75,
+     90
+    ],
+    "brt": [
+     100,
+     120,
+     150
+    ],
+    "intercity_bus": [
+     45,
+     50,
+     57
+    ]
+   }
   }
  }
 }

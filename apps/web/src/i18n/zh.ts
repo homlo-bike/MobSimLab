@@ -247,9 +247,6 @@ export const zh: Messages = {
 
   "tables.title": "表格",
   "tables.intro": "有关项目的所有计算，用于评估其表现。",
-  "tables.summary": "摘要",
-  "tables.infrastructure": "线路、车站、轨道长度、桥梁、隧道（明挖或盾构）",
-  "tables.service": "发车频率、运营时间、车队、预计客流",
   "tables.compare": "并排比较方案",
   "tables.more": "更多表格",
   "tables.moreIntro": "即将在此标签页提供。",

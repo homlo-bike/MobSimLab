@@ -257,9 +257,6 @@ export const ur: Messages = {
 
   "tables.title": "جدولیں",
   "tables.intro": "منصوبے کے بارے میں ہر حساب، یہ اندازہ لگانے کے لیے کہ یہ کتنی اچھی کارکردگی دکھائے گا۔",
-  "tables.summary": "خلاصہ",
-  "tables.infrastructure": "لائنیں، اسٹیشن، پٹری کی لمبائی، پل، سرنگیں (کھود کر ڈھانپنا یا TBM)",
-  "tables.service": "تعدد، اوقات کار، بیڑا، متوقع مسافر",
   "tables.compare": "منظرناموں کا ساتھ ساتھ موازنہ کریں",
   "tables.more": "مزید جدولیں",
   "tables.moreIntro": "اس ٹیب میں جلد آئیں گی۔",

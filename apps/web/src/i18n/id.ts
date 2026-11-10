@@ -259,9 +259,6 @@ export const id: Messages = {
 
   "tables.title": "Tabel",
   "tables.intro": "Semua perhitungan untuk memperkirakan kinerja proyek.",
-  "tables.summary": "Ringkasan",
-  "tables.infrastructure": "Jalur, stasiun, panjang rel, jembatan, terowongan (galian terbuka atau TBM)",
-  "tables.service": "Frekuensi, jam layanan, armada, perkiraan penumpang",
   "tables.compare": "Bandingkan skenario berdampingan",
   "tables.more": "Tabel lainnya",
   "tables.moreIntro": "Segera hadir di tab ini.",

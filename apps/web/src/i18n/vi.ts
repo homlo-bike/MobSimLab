@@ -258,9 +258,6 @@ export const vi: Messages = {
 
   "tables.title": "Bảng",
   "tables.intro": "Mọi tính toán để ước lượng hiệu quả của dự án.",
-  "tables.summary": "Tóm tắt",
-  "tables.infrastructure": "Tuyến, ga, chiều dài đường ray, cầu, hầm (đào hở hoặc TBM)",
-  "tables.service": "Tần suất, giờ hoạt động, đội phương tiện, hành khách dự kiến",
   "tables.compare": "So sánh các kịch bản cạnh nhau",
   "tables.more": "Thêm bảng",
   "tables.moreIntro": "Sắp có trong thẻ này.",

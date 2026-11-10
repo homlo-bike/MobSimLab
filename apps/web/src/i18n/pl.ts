@@ -258,9 +258,6 @@ export const pl: Messages = {
 
   "tables.title": "Tabele",
   "tables.intro": "Wszystkie obliczenia do oszacowania działania projektu.",
-  "tables.summary": "Podsumowanie",
-  "tables.infrastructure": "Linie, stacje, długość torów, mosty, tunele (odkrywkowe lub TBM)",
-  "tables.service": "Częstotliwość, godziny kursowania, tabor, prognozowani pasażerowie",
   "tables.compare": "Porównaj scenariusze obok siebie",
   "tables.more": "Więcej tabel",
   "tables.moreIntro": "Pojawią się wkrótce w tej karcie.",

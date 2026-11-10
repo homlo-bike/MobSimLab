@@ -258,9 +258,6 @@ export const ha: Messages = {
 
   "tables.title": "Teburori",
   "tables.intro": "Kowace ƙididdiga game da aikin, don kimanta yadda zai yi aiki.",
-  "tables.summary": "Taƙaitawa",
-  "tables.infrastructure": "Layuka, tashoshi, tsawon dogo, gadoji, ramuka (tona da rufe ko TBM)",
-  "tables.service": "Yawan zuwa, sa'o'in aiki, ababen hawa, fasinjojin da ake hasashe",
   "tables.compare": "Kwatanta yanayi gefe da gefe",
   "tables.more": "Ƙarin teburori",
   "tables.moreIntro": "Za su zo a wannan shafin nan gaba.",

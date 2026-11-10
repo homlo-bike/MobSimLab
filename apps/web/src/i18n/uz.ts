@@ -261,10 +261,6 @@ export const uz: Messages = {
 
   "tables.title": "Jadvallar",
   "tables.intro": "Loyiha qanchalik yaxshi ishlashini baholash uchun u haqidagi har bir hisob-kitob.",
-  "tables.summary": "Xulosa",
-  "tables.infrastructure":
-    "Yoʻnalishlar, stansiyalar, rels uzunligi, koʻpriklar, tunnellar (ochiq usul yoki TBM)",
-  "tables.service": "Qatnov chastotasi, ish soatlari, park, kutilayotgan yoʻlovchilar",
   "tables.compare": "Ssenariylarni yonma-yon taqqoslash",
   "tables.more": "Boshqa jadvallar",
   "tables.moreIntro": "Tez orada ushbu bo‘limda.",

@@ -258,9 +258,6 @@ export const it: Messages = {
 
   "tables.title": "Tabelle",
   "tables.intro": "Tutti i calcoli per stimare le prestazioni del progetto.",
-  "tables.summary": "Riepilogo",
-  "tables.infrastructure": "Linee, stazioni, lunghezza dei binari, ponti, gallerie (artificiali o TBM)",
-  "tables.service": "Frequenza, orario di servizio, flotta, passeggeri previsti",
   "tables.compare": "Confronta scenari affiancati",
   "tables.more": "Altre tabelle",
   "tables.moreIntro": "In arrivo in questa scheda.",

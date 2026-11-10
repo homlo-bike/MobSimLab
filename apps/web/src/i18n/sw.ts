@@ -257,9 +257,6 @@ export const sw: Messages = {
 
   "tables.title": "Majedwali",
   "tables.intro": "Kila hesabu kuhusu mradi, kukadiria utakavyofanya kazi.",
-  "tables.summary": "Muhtasari",
-  "tables.infrastructure": "Njia, stesheni, urefu wa reli, madaraja, mahandaki (kuchimba na kufunika au TBM)",
-  "tables.service": "Marudio, saa za huduma, magari, abiria wanaotarajiwa",
   "tables.compare": "Linganisha matukio kando kwa kando",
   "tables.more": "Majedwali zaidi",
   "tables.moreIntro": "Yatakuja hivi karibuni kwenye kichupo hiki.",
