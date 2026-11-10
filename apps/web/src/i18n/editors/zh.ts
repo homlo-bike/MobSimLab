@@ -511,19 +511,39 @@ export const editorsZh = {
   "noise.computing": "正在计算噪声地图…",
   "noise.map": "噪声地图",
   "noise.mapIntro":
-    "项目中每条街道线路和铁路在 4 米高度处的 L_den 和 L_night，计入周围 OpenStreetMap 建筑物的遮挡。",
+    "项目中每条街道线路和铁路在 4 m 高处的 L_den 和 L_night，考虑周边 OpenStreetMap 建筑物和地形。",
   "noise.mapIndicator": "噪声地图指标",
   "noise.screen": "用 OpenStreetMap 建筑物遮挡",
   "noise.compute": "计算噪声地图",
   "noise.computeAgain": "重新计算",
   "noise.mapLegend": "噪声地图图例",
-  "noise.table": "按噪声带统计的建筑物",
-  "noise.tableCaption": "按最受影响一侧的声级统计的建筑物（共 {count} 栋，其中 {reached} 栋在范围内）",
+  "noise.table": "按噪声带统计的建筑物和居民",
+  "noise.tableCaption": "按最受影响一侧旁的声级统计的建筑物及其居民（{count} 栋中 {reached} 栋在范围内）",
   "noise.buildings": "建筑物",
   "noise.dbOrMore": "{db} dB 及以上",
   "noise.dbRange": "{from}–{to} dB",
   "noise.mapNote":
-    "仅计计划运营，不含一般交通。建筑物越过屋顶的遮挡（ISO 9613-2），不计反射和绕过建筑物端部的路径。OpenStreetMap 中没有高度的建筑物按每个标注楼层 3 米计算，或按 8 米计算（噪声插件的假设）。在加入人口数据之前，以建筑物数量代替住户数量。建筑物 © OpenStreetMap 贡献者。",
+    "仅计划的服务，不含一般交通。建筑物从屋顶上方和两端绕射遮挡（ISO 9613-2），其立面反射一次（一阶）。OpenStreetMap 中没有高度的建筑物按每个标注楼层 3 m 计算，或取 8 m（噪声插件的假设）。建筑物的声级不含其自身立面的反射。建筑物 © OpenStreetMap 贡献者。",
+  "noise.terrain": "使用地形高程（Copernicus GLO-30）",
+  "noise.terrainTooLarge": "线路覆盖的范围太大，无法加载地形，因此此地图按平地计算。",
+  "noise.loadingTerrain": "正在加载地形高程…",
+  "noise.terrainDown": "地形高程不可用（{error}），因此此地图按平地计算。",
+  "noise.loadingPopulation": "正在加载 WorldPop 人口…",
+  "noise.popDownloading":
+    "{countries} 的 WorldPop 人口网格正在下载到服务器。在此之前，居民按建筑物大小估算；几分钟后重新计算即可使用 WorldPop。",
+  "noise.popUnavailable": "WorldPop 人口不可用（{reason}），因此居民按建筑物大小估算。",
+  "noise.residents": "居民",
+  "noise.popGrid":
+    "居民来自 WorldPop {year}（{countries}）：每个 100 m 网格的人口按建筑面积分配到其中的住宅。已加载建筑物的 {total} 名居民中有 {reached} 名在范围内。",
+  "noise.popUnplaced": "网格中有 {n} 人住在没有已绘住宅的网格单元中，未计入。",
+  "noise.popSize":
+    "居民按建筑物大小估算：建筑面积（占地 × 层数）÷ 噪声插件假设中的人均建筑面积。{total} 人中有 {reached} 人在范围内。",
+  "noise.popNoHomes":
+    "在 OpenStreetMap 中标为其他用途（商店、办公、车库、教堂…）的建筑物以及很小的建筑物没有居民。",
+  "noise.onTerrain":
+    "声源、建筑物和接收点位于地形上，山丘起遮挡作用；屋顶和树木已从地表模型中滤除。地形：Copernicus DEM GLO-30 © DLR e.V. 和 © Airbus Defence and Space GmbH，由欧盟和欧空局在 COPERNICUS 框架下提供。",
+  "noise.flat": "平地。",
+  "noise.popCredit": "人口：WorldPop, University of Southampton (doi:10.5258/SOTON/WP00839), CC BY 4.0.",
 
   "jp.title": "出行规划",
   "jp.s": "{n} 秒",

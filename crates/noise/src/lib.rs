@@ -14,11 +14,14 @@
 //! - [`rail`]: CNOSSOS-EU railway emission and directivity.
 //! - [`propagation`]: divergence, absorption, ground.
 //! - [`estimate`]: the corridor, the map grid and the checks.
+//! - [`population`]: people per building for the exposure counts.
 
 pub mod emission;
 pub mod estimate;
+pub mod ground;
 pub use estimate::{Band, Check, Grid, Severity};
 pub mod params;
+pub mod population;
 pub mod propagation;
 pub mod rail;
 pub mod screening;
@@ -26,7 +29,9 @@ pub mod screening;
 pub use estimate::{
     estimate, Estimate, EstimateInput, Flows, LineInput, PointSourceInput, Range, RangeKind,
 };
+pub use ground::TerrainInput;
 pub use params::{Library, Mode, Variant};
+pub use population::{PeopleSource, PopulationInput, Residents};
 pub use screening::BuildingInput;
 
 /// Map colour of a level, following the ISO 1996-2 / DIN 45682 convention for 5 dB bands, or

@@ -1,7 +1,12 @@
+import { mkdtemp, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { CopernicusDemClient } from "../src/gateway/copernicus-dem.client";
 import { countryQuery, parseCountry } from "../src/economy/economy.service";
 import { OverpassClient } from "../src/gateway/overpass.client";
+import { WorldPopClient } from "../src/gateway/worldpop.client";
+import { PopulationService } from "../src/population/population.service";
 import { WorldBankClient } from "../src/gateway/worldbank.client";
 import { railQuery, streetQuery, walkQuery } from "../src/street-network/street-network.service";
 import { buildingQuery, crossings } from "../src/terrain/buildings";
@@ -9,7 +14,7 @@ import { TerrainService } from "../src/terrain/terrain.service";
 
 /**
  * Live checks of the outside data sources the app depends on: Overpass (streets, walkways, railways,
- * buildings), the Copernicus GLO-30 bucket and the OpenFreeMap basemap. They talk to the real services,
+ * buildings), the Copernicus GLO-30 bucket, the WorldPop population grid and the OpenFreeMap basemap. They talk to the real services,
  * so they run only with MOBSIMLAB_LIVE=1 (the "Live data sources" workflow), never in the normal suite.
  */
 const live = process.env.MOBSIMLAB_LIVE === "1";
@@ -119,6 +124,32 @@ describe.skipIf(!live)("live: Copernicus GLO-30", () => {
       );
       expect(line!.length).toBeGreaterThan(25);
       expect(line!.every((s) => s.elevationM !== null && s.elevationM > 50)).toBe(true);
+    },
+    T,
+  );
+});
+
+describe.skipIf(!live)("live: WorldPop population grid", () => {
+  it(
+    "downloads Luxembourg and finds people in the city centre",
+    async () => {
+      const cacheDir = await mkdtemp(join(tmpdir(), "worldpop-live-"));
+      try {
+        const worldpop = new WorldPopClient({ cacheDir });
+        const entry = await worldpop.entry("LUX");
+        expect(entry?.url).toMatch(/^https:\/\/data\.worldpop\.org\/.+\.tif$/);
+        const svc = new PopulationService(new OverpassClient(), worldpop);
+        // Luxembourg City, about 1 km square: some thousands of people.
+        const a = await svc.grid([6.125, 49.605, 6.14, 49.615], 110_000);
+        expect(a.status).toBe("ready");
+        if (a.status !== "ready") return;
+        expect(a.source.countries).toEqual(["LUX"]);
+        const total = a.grid.people.reduce((s, v) => s + v, 0);
+        expect(total).toBeGreaterThan(1_000);
+        expect(total).toBeLessThan(50_000);
+      } finally {
+        await rm(cacheDir, { recursive: true, force: true });
+      }
     },
     T,
   );

@@ -519,19 +519,40 @@ export const editorsKo = {
   "noise.computing": "소음 지도 계산 중…",
   "noise.map": "소음 지도",
   "noise.mapIntro":
-    "프로젝트의 모든 도로 노선과 철도 선로에 의한 높이 4 m의 L_den과 L_night. 주변 OpenStreetMap 건물의 차폐를 고려합니다.",
+    "프로젝트의 모든 도로 노선과 철도에서 높이 4 m의 L_den과 L_night. 주변 OpenStreetMap 건물과 지형을 반영합니다.",
   "noise.mapIndicator": "소음 지도 지표",
   "noise.screen": "OpenStreetMap 건물로 차폐",
   "noise.compute": "소음 지도 계산",
   "noise.computeAgain": "다시 계산",
   "noise.mapLegend": "소음 지도 범례",
-  "noise.table": "소음 띠별 건물",
-  "noise.tableCaption": "가장 시끄러운 면의 수준별 건물 수({count}개 중 {reached}개에 도달)",
+  "noise.table": "소음 띠별 건물과 거주자",
+  "noise.tableCaption":
+    "가장 많이 노출된 면의 소음도별 건물과 거주자 (건물 {count}개 중 {reached}개가 범위 안)",
   "noise.buildings": "건물",
   "noise.dbOrMore": "{db} dB 이상",
   "noise.dbRange": "{from}–{to} dB",
   "noise.mapNote":
-    "계획 운행만 포함하며 일반 교통은 제외합니다. 지붕 위로의 차폐만(ISO 9613-2) 고려하고 반사나 건물 모서리를 도는 경로는 고려하지 않습니다. OpenStreetMap에 높이가 없는 건물은 기록된 층마다 3 m, 또는 8 m로 간주합니다(소음 플러그인 가정값). 인구 데이터가 추가되기 전까지는 건물 수를 주거지 대용으로 사용합니다. 건물 © OpenStreetMap contributors.",
+    "계획된 운행만이며 일반 교통은 제외합니다. 건물은 지붕 위와 끝을 돌아 차폐하고(ISO 9613-2) 외벽은 한 번 반사합니다(1차). OpenStreetMap에 높이가 없는 건물은 표시된 층마다 3 m, 또는 8 m로 합니다(소음 플러그인 가정). 건물의 소음도에는 자기 외벽의 반사가 빠져 있습니다. 건물 © OpenStreetMap 기여자.",
+  "noise.terrain": "지형 높이 사용 (Copernicus GLO-30)",
+  "noise.terrainTooLarge": "노선 범위가 너무 넓어 지형을 불러올 수 없으므로 이 지도는 평지로 계산했습니다.",
+  "noise.loadingTerrain": "지형 높이 불러오는 중…",
+  "noise.terrainDown": "지형 높이를 사용할 수 없으므로({error}) 이 지도는 평지로 계산했습니다.",
+  "noise.loadingPopulation": "WorldPop 인구 불러오는 중…",
+  "noise.popDownloading":
+    "{countries}의 WorldPop 인구 격자를 서버로 내려받는 중입니다. 그때까지 거주자는 건물 크기로 추정합니다. WorldPop을 쓰려면 몇 분 뒤 다시 계산하세요.",
+  "noise.popUnavailable": "WorldPop 인구를 사용할 수 없으므로({reason}) 거주자는 건물 크기로 추정합니다.",
+  "noise.residents": "거주자",
+  "noise.popGrid":
+    "WorldPop {year}({countries}) 거주자: 100 m 격자마다의 인구를 연면적에 따라 격자 안 주택에 나눴습니다. 불러온 건물의 거주자 {total}명 중 {reached}명이 범위 안에 삽니다.",
+  "noise.popUnplaced": "격자의 {n}명은 지도에 주택이 없는 격자에 살아 집계하지 않았습니다.",
+  "noise.popSize":
+    "거주자는 건물 크기로 추정: 연면적(건축 면적 × 층수) ÷ 소음 플러그인 가정의 1인당 연면적. {total}명 중 {reached}명이 범위 안에 삽니다.",
+  "noise.popNoHomes":
+    "OpenStreetMap에서 다른 용도(상점, 사무실, 차고, 교회 등)로 표시된 건물과 아주 작은 건물에는 거주자가 없습니다.",
+  "noise.onTerrain":
+    "음원, 건물, 수음점은 지형 위에 있고 언덕이 차폐합니다. 지붕과 나무는 표면 모델에서 걸러 냈습니다. 지형: Copernicus DEM GLO-30 © DLR e.V. 및 © Airbus Defence and Space GmbH, 유럽연합과 ESA가 COPERNICUS에 따라 제공.",
+  "noise.flat": "평지.",
+  "noise.popCredit": "인구: WorldPop, University of Southampton (doi:10.5258/SOTON/WP00839), CC BY 4.0.",
   "jp.title": "경로 검색",
   "jp.s": "{n}초",
   "jp.min": "{n}분",

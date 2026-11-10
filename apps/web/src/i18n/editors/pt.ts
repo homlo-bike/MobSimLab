@@ -552,19 +552,43 @@ export const editorsPt = {
   "noise.computing": "Calculando o mapa de ruído…",
   "noise.map": "Mapa de ruído",
   "noise.mapIntro":
-    "L_den e L_night a 4 m de cada linha em rua e ferrovia do projeto, com a barreira dos edifícios do OpenStreetMap em volta.",
+    "L_den e L_night a 4 m de cada linha de rua e ferrovia do projeto, passando pelos edifícios do OpenStreetMap ao redor e sobre o relevo.",
   "noise.mapIndicator": "Indicador do mapa de ruído",
   "noise.screen": "Barreira pelos edifícios do OpenStreetMap",
   "noise.compute": "Calcular mapa de ruído",
   "noise.computeAgain": "Calcular de novo",
   "noise.mapLegend": "Legenda do mapa de ruído",
-  "noise.table": "Edifícios por faixa de ruído",
-  "noise.tableCaption": "Edifícios pelo nível junto à fachada mais exposta ({reached} de {count} ao alcance)",
+  "noise.table": "Edifícios e moradores por faixa de ruído",
+  "noise.tableCaption":
+    "Edifícios e seus moradores pelo nível junto à fachada mais exposta ({reached} de {count} edifícios ao alcance)",
   "noise.buildings": "Edifícios",
   "noise.dbOrMore": "{db} dB ou mais",
   "noise.dbRange": "{from}–{to} dB",
   "noise.mapNote":
-    "Só o serviço planejado, sem o tráfego geral. Barreira dos edifícios por cima dos telhados (ISO 9613-2), sem reflexões nem caminhos em volta das pontas dos edifícios. Edifícios sem altura no OpenStreetMap contam 3 m por andar indicado, ou 8 m (premissas do módulo de ruído). O número de edifícios substitui o de domicílios até que dados de população sejam adicionados. Edifícios © colaboradores do OpenStreetMap.",
+    "Apenas o serviço planejado, sem tráfego geral. Os edifícios fazem barreira por cima dos telhados e ao redor das extremidades (ISO 9613-2) e suas fachadas refletem uma vez (primeira ordem). Edifícios sem altura no OpenStreetMap recebem 3 m por andar indicado, ou 8 m (premissas do plugin de ruído). O nível de um edifício exclui a reflexão na própria fachada. Edifícios © colaboradores do OpenStreetMap.",
+  "noise.terrain": "Usar alturas do relevo (Copernicus GLO-30)",
+  "noise.terrainTooLarge":
+    "As linhas cobrem uma área grande demais para carregar o relevo, então este mapa é calculado em terreno plano.",
+  "noise.loadingTerrain": "Carregando as alturas do relevo…",
+  "noise.terrainDown":
+    "As alturas do relevo não estão disponíveis ({error}), então este mapa é calculado em terreno plano.",
+  "noise.loadingPopulation": "Carregando a população do WorldPop…",
+  "noise.popDownloading":
+    "A grade de população do WorldPop de {countries} está sendo baixada para o servidor. Até lá, os moradores são estimados pelo tamanho dos edifícios; calcule novamente em alguns minutos para usar o WorldPop.",
+  "noise.popUnavailable":
+    "A população do WorldPop não está disponível ({reason}), então os moradores são estimados pelo tamanho dos edifícios.",
+  "noise.residents": "Moradores",
+  "noise.popGrid":
+    "Moradores do WorldPop {year} ({countries}): as pessoas de cada célula de 100 m repartidas entre suas moradias pela área construída. {reached} de {total} moradores dos edifícios carregados vivem ao alcance.",
+  "noise.popUnplaced": "{n} pessoas da grade vivem em células sem moradia mapeada e não são contadas.",
+  "noise.popSize":
+    "Moradores estimados pelo tamanho do edifício: área construída (projeção × andares) ÷ a área por pessoa das premissas do plugin de ruído. {reached} de {total} vivem ao alcance.",
+  "noise.popNoHomes":
+    "Edifícios marcados no OpenStreetMap com outro uso (lojas, escritórios, garagens, igrejas…) e os muito pequenos não têm moradores.",
+  "noise.onTerrain":
+    "Fontes, edifícios e receptores ficam sobre o relevo, e as colinas fazem barreira; telhados e árvores são filtrados do modelo de superfície. Relevo: Copernicus DEM GLO-30 © DLR e.V. e © Airbus Defence and Space GmbH, fornecido no âmbito do COPERNICUS pela União Europeia e pela ESA.",
+  "noise.flat": "Terreno plano.",
+  "noise.popCredit": "População: WorldPop, University of Southampton (doi:10.5258/SOTON/WP00839), CC BY 4.0.",
 
   "jp.title": "Planejador de viagens",
   "jp.s": "{n} s",

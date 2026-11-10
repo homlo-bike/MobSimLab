@@ -553,20 +553,43 @@ export const editorsEs = {
   "noise.computing": "Calculando el mapa de ruido…",
   "noise.map": "Mapa de ruido",
   "noise.mapIntro":
-    "L_den y L_night a 4 m de cada línea por calle y ferrocarril del proyecto, apantallados por los edificios de OpenStreetMap cercanos.",
+    "L_den y L_night a 4 m de cada línea de calle y ferrocarril del proyecto, tras los edificios de OpenStreetMap que los rodean y sobre el terreno.",
   "noise.mapIndicator": "Indicador del mapa de ruido",
   "noise.screen": "Apantallar con los edificios de OpenStreetMap",
   "noise.compute": "Calcular mapa de ruido",
   "noise.computeAgain": "Volver a calcular",
   "noise.mapLegend": "Leyenda del mapa de ruido",
-  "noise.table": "Edificios por banda de ruido",
+  "noise.table": "Edificios y residentes por banda de ruido",
   "noise.tableCaption":
-    "Edificios según el nivel junto a su fachada más expuesta ({reached} de {count} al alcance)",
+    "Edificios y sus residentes por el nivel junto a la fachada más expuesta ({reached} de {count} edificios al alcance)",
   "noise.buildings": "Edificios",
   "noise.dbOrMore": "{db} dB o más",
   "noise.dbRange": "{from}–{to} dB",
   "noise.mapNote":
-    "Solo el servicio previsto, sin el tráfico general. Apantallamiento de los edificios por encima de los tejados (ISO 9613-2), sin reflexiones ni rodeos por los extremos de los edificios. Los edificios sin altura en OpenStreetMap cuentan 3 m por planta indicada, u 8 m (hipótesis del módulo de ruido). El número de edificios sustituye al de viviendas hasta que se añadan datos de población. Edificios © colaboradores de OpenStreetMap.",
+    "Solo el servicio previsto, sin tráfico general. Los edificios apantallan por encima de sus tejados y alrededor de sus extremos (ISO 9613-2) y sus fachadas reflejan una vez (primer orden). Los edificios sin altura en OpenStreetMap toman 3 m por planta indicada, u 8 m (supuestos del plugin de ruido). El nivel de un edificio excluye la reflexión en su propia fachada. Edificios © colaboradores de OpenStreetMap.",
+  "noise.terrain": "Usar alturas del terreno (Copernicus GLO-30)",
+  "noise.terrainTooLarge":
+    "Las líneas cubren una zona demasiado grande para cargar el terreno, así que este mapa se calcula sobre terreno llano.",
+  "noise.loadingTerrain": "Cargando las alturas del terreno…",
+  "noise.terrainDown":
+    "Las alturas del terreno no están disponibles ({error}), así que este mapa se calcula sobre terreno llano.",
+  "noise.loadingPopulation": "Cargando la población de WorldPop…",
+  "noise.popDownloading":
+    "La malla de población de WorldPop de {countries} se está descargando en el servidor. Mientras tanto, los residentes se estiman a partir del tamaño de los edificios; vuelva a calcular en unos minutos para usar WorldPop.",
+  "noise.popUnavailable":
+    "La población de WorldPop no está disponible ({reason}), así que los residentes se estiman a partir del tamaño de los edificios.",
+  "noise.residents": "Residentes",
+  "noise.popGrid":
+    "Residentes de WorldPop {year} ({countries}): las personas de cada celda de 100 m repartidas entre sus viviendas según la superficie construida. {reached} de {total} residentes de los edificios cargados viven al alcance.",
+  "noise.popUnplaced": "{n} personas de la malla viven en celdas sin vivienda cartografiada y no se cuentan.",
+  "noise.popSize":
+    "Residentes estimados a partir del tamaño del edificio: superficie construida (huella × plantas) ÷ la superficie por persona de los supuestos del plugin de ruido. {reached} de {total} viven al alcance.",
+  "noise.popNoHomes":
+    "Los edificios marcados en OpenStreetMap con otro uso (tiendas, oficinas, garajes, iglesias…) y los muy pequeños no tienen residentes.",
+  "noise.onTerrain":
+    "Las fuentes, los edificios y los receptores se apoyan en el terreno, y las colinas apantallan; los tejados y árboles se filtran del modelo de superficie. Terreno: Copernicus DEM GLO-30 © DLR e.V. y © Airbus Defence and Space GmbH, facilitado en el marco de COPERNICUS por la Unión Europea y la ESA.",
+  "noise.flat": "Terreno llano.",
+  "noise.popCredit": "Población: WorldPop, University of Southampton (doi:10.5258/SOTON/WP00839), CC BY 4.0.",
 
   "jp.title": "Planificador de viajes",
   "jp.s": "{n} s",

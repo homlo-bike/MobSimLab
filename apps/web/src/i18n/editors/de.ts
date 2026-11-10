@@ -560,20 +560,45 @@ export const editorsDe = {
   "noise.computing": "Lärmkarte wird berechnet…",
   "noise.map": "Lärmkarte",
   "noise.mapIntro":
-    "L_den und L_night in 4 m Höhe für jede Straßenlinie und Bahnstrecke im Projekt, abgeschirmt durch die umliegenden OpenStreetMap-Gebäude.",
+    "L_den und L_night in 4 m Höhe für jede Straßenlinie und Bahnstrecke im Projekt, über die umliegenden OpenStreetMap-Gebäude und das Gelände hinweg.",
   "noise.mapIndicator": "Indikator der Lärmkarte",
   "noise.screen": "Mit OpenStreetMap-Gebäuden abschirmen",
   "noise.compute": "Lärmkarte berechnen",
   "noise.computeAgain": "Erneut berechnen",
   "noise.mapLegend": "Legende der Lärmkarte",
-  "noise.table": "Gebäude nach Lärmband",
+  "noise.table": "Gebäude und Bewohner nach Lärmband",
   "noise.tableCaption":
-    "Gebäude nach dem Pegel an ihrer am stärksten belasteten Seite ({reached} von {count} in Reichweite)",
+    "Gebäude und ihre Bewohner nach dem Pegel an der am stärksten belasteten Seite ({reached} von {count} Gebäuden in Reichweite)",
   "noise.buildings": "Gebäude",
   "noise.dbOrMore": "{db} dB oder mehr",
   "noise.dbRange": "{from}–{to} dB",
   "noise.mapNote":
-    "Nur geplantes Angebot, ohne allgemeinen Verkehr. Abschirmung über Dächer durch Gebäude (ISO 9613-2), keine Reflexionen und keine Wege um Gebäudeenden. Gebäude ohne Höhe in OpenStreetMap erhalten 3 m je erfasstem Geschoss oder 8 m (Annahmen des Lärm-Plugins). Gebäudezahlen stehen für Wohnungen, bis Bevölkerungsdaten hinzukommen. Gebäude © OpenStreetMap-Mitwirkende.",
+    "Nur geplantes Angebot, ohne allgemeinen Verkehr. Gebäude schirmen über ihre Dächer und um ihre Enden ab (ISO 9613-2), ihre Fassaden reflektieren einmal (erste Ordnung). Gebäude ohne Höhe in OpenStreetMap erhalten 3 m je erfasstem Geschoss oder 8 m (Annahmen des Lärm-Plugins). Der Pegel eines Gebäudes lässt die Reflexion an seiner eigenen Fassade weg. Gebäude © OpenStreetMap-Mitwirkende.",
+  "noise.terrain": "Geländehöhen verwenden (Copernicus GLO-30)",
+  "noise.terrainTooLarge":
+    "Die Linien decken ein zu großes Gebiet ab, um das Gelände zu laden, daher ist diese Karte auf ebenem Boden berechnet.",
+  "noise.loadingTerrain": "Geländehöhen werden geladen…",
+  "noise.terrainDown":
+    "Geländehöhen sind nicht verfügbar ({error}), daher ist diese Karte auf ebenem Boden berechnet.",
+  "noise.loadingPopulation": "WorldPop-Bevölkerung wird geladen…",
+  "noise.popDownloading":
+    "Das WorldPop-Bevölkerungsraster von {countries} wird auf den Server heruntergeladen. Bis dahin werden die Bewohner aus der Gebäudegröße geschätzt; berechnen Sie in einigen Minuten erneut, um WorldPop zu verwenden.",
+  "noise.popUnavailable":
+    "WorldPop-Bevölkerung ist nicht verfügbar ({reason}), daher werden die Bewohner aus der Gebäudegröße geschätzt.",
+  "noise.residents": "Bewohner",
+  "noise.popGrid":
+    "Bewohner aus WorldPop {year} ({countries}): die Menschen jeder 100-m-Zelle, nach Geschossfläche auf ihre Wohngebäude verteilt. {reached} von {total} Bewohnern der geladenen Gebäude wohnen in Reichweite.",
+  "noise.popUnplaced":
+    "{n} Menschen des Rasters wohnen in Zellen ohne erfasstes Wohngebäude und werden nicht gezählt.",
+  "noise.popSize":
+    "Bewohner aus der Gebäudegröße geschätzt: Geschossfläche (Grundfläche × Geschosse) ÷ Geschossfläche je Person aus den Annahmen des Lärm-Plugins. {reached} von {total} wohnen in Reichweite.",
+  "noise.popNoHomes":
+    "Gebäude, die in OpenStreetMap als andere Nutzung erfasst sind (Läden, Büros, Garagen, Kirchen…), und sehr kleine Gebäude haben keine Bewohner.",
+  "noise.onTerrain":
+    "Quellen, Gebäude und Empfänger stehen auf dem Gelände, und Hügel schirmen ab; Dächer und Bäume werden aus dem Oberflächenmodell herausgefiltert. Gelände: Copernicus DEM GLO-30 © DLR e.V. und © Airbus Defence and Space GmbH, bereitgestellt im Rahmen von COPERNICUS durch die Europäische Union und die ESA.",
+  "noise.flat": "Ebener Boden.",
+  "noise.popCredit":
+    "Bevölkerung: WorldPop, University of Southampton (doi:10.5258/SOTON/WP00839), CC BY 4.0.",
 
   "jp.title": "Reiseplaner",
   "jp.s": "{n} s",
