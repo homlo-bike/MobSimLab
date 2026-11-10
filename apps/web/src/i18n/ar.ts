@@ -205,6 +205,7 @@ export const ar: Messages = {
   "drawing.rail-timetable": "جدول مواعيد القطارات",
   "drawing.preferences": "تفضيلات المشروع",
   "drawing.costs": "إعدادات التكاليف",
+  "drawing.scenarios": "السيناريوهات المحفوظة",
 
   "tab.label": "المشروع",
   "tab.simulator": "المحاكي",
@@ -249,9 +250,6 @@ export const ar: Messages = {
 
   "tables.title": "الجداول",
   "tables.intro": "كل الحسابات الخاصة بالمشروع، لتقدير مدى جودة أدائه.",
-  "tables.compare": "مقارنة السيناريوهات جنبًا إلى جنب",
-  "tables.more": "جداول أخرى",
-  "tables.moreIntro": "ستُضاف لاحقًا إلى هذا التبويب.",
 
   "prefs.title": "تفضيلات المشروع",
   "prefs.intro": "التفاصيل والإعدادات التي تنطبق على المشروع كله.",

@@ -212,6 +212,7 @@ export const hi: Messages = {
   "drawing.rail-timetable": "रेल समय-सारणी",
   "drawing.preferences": "प्रोजेक्ट प्राथमिकताएँ",
   "drawing.costs": "लागत सेटिंग्स",
+  "drawing.scenarios": "सहेजे गए परिदृश्य",
 
   "tab.label": "प्रोजेक्ट",
   "tab.simulator": "सिम्युलेटर",
@@ -256,9 +257,6 @@ export const hi: Messages = {
 
   "tables.title": "तालिकाएँ",
   "tables.intro": "प्रोजेक्ट से जुड़ी हर गणना, यह अनुमान लगाने के लिए कि यह कितना अच्छा प्रदर्शन करेगा।",
-  "tables.compare": "परिदृश्यों की साथ-साथ तुलना करें",
-  "tables.more": "और तालिकाएँ",
-  "tables.moreIntro": "इस टैब में जल्द आएँगी।",
 
   "prefs.title": "प्रोजेक्ट प्राथमिकताएँ",
   "prefs.intro": "पूरे प्रोजेक्ट पर लागू होने वाले विवरण और सेटिंग्स।",

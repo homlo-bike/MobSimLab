@@ -47,6 +47,36 @@ async function loadTerrain(engine: RailEngine, fetchHeights: HeightsFetcher): Pr
 }
 
 /**
+ * Purpose: build a railway design and publish its service lines on a weekday, without terrain.
+ * Output: the engine's view and the report of each line it could publish. Side effects: loads the rail engine.
+ */
+export async function buildRailway(
+  railway: Network,
+  loadRail: RailEngineLoader = loadRailEngine,
+): Promise<Omit<RailBuild, "terrain">> {
+  const engine = await loadRail();
+  try {
+    const view = engine.build(railway, null);
+    return { view, reports: publish(engine, railway) };
+  } finally {
+    engine.dispose();
+  }
+}
+
+/** Purpose: the reports of the lines the engine could publish; none when publishing fails. */
+function publish(engine: RailEngine, railway: Network): Record<string, LineReport> {
+  const reports: Record<string, LineReport> = {};
+  const lines = engineLines(railway);
+  if (lines.length)
+    try {
+      for (const r of engine.publishLines(lines, "weekday").lines) reports[r.id] = r;
+    } catch {
+      // Lines that cannot be published show without service.
+    }
+  return reports;
+}
+
+/**
  * Purpose: build the project's railway for the network tables: the design with terrain heights (for the
  * steepest gradients) and the service lines as published on a weekday.
  * Inputs: the railway document; the engine loader and height source (tests inject them).
@@ -79,14 +109,7 @@ export function useRailBuild(
           if (!ok) terrain = "failed";
           view = engine.build(railway, null);
         }
-        const reports: Record<string, LineReport> = {};
-        const lines = engineLines(railway);
-        if (lines.length)
-          try {
-            for (const r of engine.publishLines(lines, "weekday").lines) reports[r.id] = r;
-          } catch {
-            // Lines that cannot be published show without service.
-          }
+        const reports = publish(engine, railway);
         if (live) setBuild({ view, reports, terrain });
       } finally {
         engine.dispose();

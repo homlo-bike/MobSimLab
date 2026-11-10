@@ -214,6 +214,7 @@ export const es: Messages = {
   "drawing.rail-timetable": "el horario ferroviario",
   "drawing.preferences": "las preferencias del proyecto",
   "drawing.costs": "los ajustes de costes",
+  "drawing.scenarios": "los escenarios guardados",
 
   "tab.label": "Proyecto",
   "tab.simulator": "Simulador",
@@ -259,9 +260,6 @@ export const es: Messages = {
 
   "tables.title": "Tablas",
   "tables.intro": "Todos los cálculos del proyecto, para estimar lo bien que funcionará.",
-  "tables.compare": "Comparar escenarios lado a lado",
-  "tables.more": "Más tablas",
-  "tables.moreIntro": "Llegarán más adelante a esta pestaña.",
 
   "prefs.title": "Preferencias del proyecto",
   "prefs.intro": "Datos y ajustes que se aplican a todo el proyecto.",

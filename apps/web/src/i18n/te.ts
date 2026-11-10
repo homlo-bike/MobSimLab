@@ -213,6 +213,7 @@ export const te: Messages = {
   "drawing.rail-timetable": "రైలు సమయపట్టిక",
   "drawing.preferences": "ప్రాజెక్టు ప్రాధాన్యతలు",
   "drawing.costs": "ఖర్చు సెట్టింగ్‌లు",
+  "drawing.scenarios": "సేవ్ చేసిన దృశ్యాలు",
 
   "tab.label": "ప్రాజెక్టు",
   "tab.simulator": "సిమ్యులేటర్",
@@ -258,9 +259,6 @@ export const te: Messages = {
 
   "tables.title": "పట్టికలు",
   "tables.intro": "ప్రాజెక్టు గురించి ప్రతి లెక్క, అది ఎంత బాగా పనిచేస్తుందో అంచనా వేయడానికి.",
-  "tables.compare": "దృశ్యాలను పక్కపక్కనే పోల్చండి",
-  "tables.more": "మరిన్ని పట్టికలు",
-  "tables.moreIntro": "ఈ ట్యాబ్‌లో త్వరలో వస్తాయి.",
 
   "prefs.title": "ప్రాజెక్టు ప్రాధాన్యతలు",
   "prefs.intro": "మొత్తం ప్రాజెక్టుకు వర్తించే వివరాలు మరియు సెట్టింగ్‌లు.",

@@ -213,6 +213,7 @@ export const ru: Messages = {
   "drawing.rail-timetable": "расписание поездов",
   "drawing.preferences": "параметры проекта",
   "drawing.costs": "настройки затрат",
+  "drawing.scenarios": "сохранённые сценарии",
 
   "tab.label": "Проект",
   "tab.simulator": "Симулятор",
@@ -259,9 +260,6 @@ export const ru: Messages = {
 
   "tables.title": "Таблицы",
   "tables.intro": "Все расчёты по проекту для оценки его эффективности.",
-  "tables.compare": "Сравнение сценариев",
-  "tables.more": "Другие таблицы",
-  "tables.moreIntro": "Скоро появятся на этой вкладке.",
 
   "prefs.title": "Параметры проекта",
   "prefs.intro": "Сведения и настройки, которые действуют для всего проекта.",

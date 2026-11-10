@@ -211,6 +211,7 @@ export const mr: Messages = {
   "drawing.rail-timetable": "रेल्वे वेळापत्रक",
   "drawing.preferences": "प्रकल्पाची प्राधान्ये",
   "drawing.costs": "खर्च सेटिंग्ज",
+  "drawing.scenarios": "जतन केलेली परिस्थिती",
 
   "tab.label": "प्रकल्प",
   "tab.simulator": "सिम्युलेटर",
@@ -255,9 +256,6 @@ export const mr: Messages = {
 
   "tables.title": "तक्ते",
   "tables.intro": "प्रकल्पाविषयी प्रत्येक गणना, तो किती चांगली कामगिरी करेल याचा अंदाज घेण्यासाठी.",
-  "tables.compare": "परिस्थितींची शेजारी शेजारी तुलना करा",
-  "tables.more": "आणखी तक्ते",
-  "tables.moreIntro": "या टॅबमध्ये लवकरच येत आहेत.",
 
   "prefs.title": "प्रकल्पाची प्राधान्ये",
   "prefs.intro": "संपूर्ण प्रकल्पाला लागू होणारे तपशील आणि सेटिंग्ज.",

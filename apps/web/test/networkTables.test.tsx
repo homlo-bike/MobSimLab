@@ -1,5 +1,5 @@
 import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { estimate } from "../src/features/costs/model";
 import { BASE_PRICES } from "../src/features/costs/economy";
 import { libraryValue } from "../src/features/costs/params";
@@ -9,6 +9,14 @@ import type { LineView } from "../src/features/street-lines/types";
 import { lineFacts } from "../src/features/tables/lineFacts";
 import { NetworkTables } from "../src/features/tables/NetworkTables";
 import { quantities } from "../src/features/tables/quantities";
+import {
+  figures,
+  MAX_SCENARIOS,
+  type ScenariosDoc,
+  withoutScenario,
+  withScenario,
+} from "../src/features/tables/scenarioModel";
+import { Scenarios } from "../src/features/tables/Scenarios";
 
 afterEach(cleanup);
 
@@ -307,5 +315,69 @@ describe("network tables", () => {
   it("says when there is nothing to measure", () => {
     render(<NetworkTables railway={null} streetLines={null} preferences={null} />);
     expect(screen.getByText(/Nothing to measure yet/)).toBeTruthy();
+  });
+});
+
+describe("scenarios", () => {
+  it("measures a design and keeps named copies, at most 20", () => {
+    const f = figures(railway(), { view: railView(), reports: { M1: REPORT } }, STREET, {});
+    expect(f).toMatchObject({ lines: 2, railKm: 3, streetKm: 3, trackKm: 5, stations: 3, stops: 3 });
+    expect(f.tunnelKm).toBeCloseTo(1.3);
+    expect(f.bridgeKm).toBeCloseTo(1);
+    expect(f.construction).toBeGreaterThan(0);
+    expect(f.operating).toBeGreaterThan(0);
+
+    let n = 0;
+    const now = new Date("2026-11-10T12:00:00Z");
+    let doc = withScenario(null, "  Base  ", railway(), STREET, now, () => `s${++n}`);
+    expect(doc.scenarios[0]).toMatchObject({ id: "s1", name: "Base", savedAt: now.toISOString() });
+    expect(doc.scenarios[0]!.railway).not.toBe(railway());
+    expect(withScenario(doc, "   ", null, null).scenarios).toHaveLength(1);
+    for (let i = 0; i < 25; i++) doc = withScenario(doc, `S${i}`, null, null, now, () => `x${i}`);
+    expect(doc.scenarios).toHaveLength(MAX_SCENARIOS);
+    expect(withoutScenario(doc, "s1").scenarios).toHaveLength(MAX_SCENARIOS - 1);
+  });
+
+  it("saves the current design and compares it with the saved ones", async () => {
+    const onChange = vi.fn();
+    const saved = withScenario(
+      null,
+      "Without the spur",
+      null,
+      STREET,
+      new Date("2026-11-09T10:00:00Z"),
+      () => "a",
+    );
+    render(
+      <Scenarios
+        railway={railway()}
+        streetLines={STREET}
+        preferences={{ values: {} }}
+        doc={saved}
+        onChange={onChange}
+        loadRail={loadRail}
+      />,
+    );
+    const table = await screen.findByRole("region", { name: "Scenarios side by side" });
+    expect(within(table).getByText("Without the spur")).toBeTruthy();
+    const row = () => within(table).getByRole("rowheader", { name: "Railway route length" }).closest("tr")!;
+    await waitFor(() => expect(row().textContent).toContain("3 km"));
+    await waitFor(() => expect(row().textContent).toContain("−100 % vs current"));
+
+    fireEvent.change(screen.getByLabelText("Scenario name"), { target: { value: "With spur" } });
+    fireEvent.click(screen.getByRole("button", { name: "Save current design" }));
+    const doc = onChange.mock.calls[0]![0] as ScenariosDoc;
+    expect(doc.scenarios.map((s) => s.name)).toEqual(["Without the spur", "With spur"]);
+    expect(doc.scenarios[1]!.railway!.tracks).toHaveLength(2);
+
+    vi.spyOn(window, "confirm").mockReturnValue(true);
+    fireEvent.click(within(table).getByRole("button", { name: "Delete Without the spur" }));
+    expect((onChange.mock.calls[1]![0] as ScenariosDoc).scenarios).toEqual([]);
+  });
+
+  it("shows no form to a viewer", () => {
+    render(<Scenarios railway={null} streetLines={null} preferences={null} doc={null} />);
+    expect(screen.getByText("No scenarios saved yet.")).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Save current design" })).toBeNull();
   });
 });

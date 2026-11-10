@@ -211,6 +211,7 @@ export const bn: Messages = {
   "drawing.rail-timetable": "রেলের সময়সূচি",
   "drawing.preferences": "প্রকল্পের পছন্দ",
   "drawing.costs": "খরচের সেটিংস",
+  "drawing.scenarios": "সংরক্ষিত পরিস্থিতি",
 
   "tab.label": "প্রকল্প",
   "tab.simulator": "সিমুলেটর",
@@ -256,9 +257,6 @@ export const bn: Messages = {
 
   "tables.title": "সারণি",
   "tables.intro": "প্রকল্প সম্পর্কে সব গণনা, এটি কতটা ভালো কাজ করবে তা অনুমানের জন্য।",
-  "tables.compare": "পরিস্থিতিগুলো পাশাপাশি তুলনা করুন",
-  "tables.more": "আরও সারণি",
-  "tables.moreIntro": "এই ট্যাবে শীঘ্রই আসছে।",
 
   "prefs.title": "প্রকল্পের পছন্দ",
   "prefs.intro": "পুরো প্রকল্পে প্রযোজ্য বিবরণ ও সেটিংস।",

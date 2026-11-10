@@ -215,6 +215,7 @@ export const uz: Messages = {
   "drawing.rail-timetable": "poyezdlar jadvali",
   "drawing.preferences": "loyiha sozlamalari",
   "drawing.costs": "xarajat sozlamalari",
+  "drawing.scenarios": "saqlangan ssenariylar",
 
   "tab.label": "Loyiha",
   "tab.simulator": "Simulyator",
@@ -261,9 +262,6 @@ export const uz: Messages = {
 
   "tables.title": "Jadvallar",
   "tables.intro": "Loyiha qanchalik yaxshi ishlashini baholash uchun u haqidagi har bir hisob-kitob.",
-  "tables.compare": "Ssenariylarni yonma-yon taqqoslash",
-  "tables.more": "Boshqa jadvallar",
-  "tables.moreIntro": "Tez orada ushbu bo‘limda.",
 
   "prefs.title": "Loyiha sozlamalari",
   "prefs.intro": "Butun loyihaga tegishli maʼlumotlar va sozlamalar.",

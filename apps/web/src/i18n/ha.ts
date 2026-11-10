@@ -212,6 +212,7 @@ export const ha: Messages = {
   "drawing.rail-timetable": "jadawalin jirgin ƙasa",
   "drawing.preferences": "zaɓuɓɓukan aiki",
   "drawing.costs": "saitunan kuɗi",
+  "drawing.scenarios": "yanayin da aka adana",
 
   "tab.label": "Aiki",
   "tab.simulator": "Mai kwaikwayo",
@@ -258,9 +259,6 @@ export const ha: Messages = {
 
   "tables.title": "Teburori",
   "tables.intro": "Kowace ƙididdiga game da aikin, don kimanta yadda zai yi aiki.",
-  "tables.compare": "Kwatanta yanayi gefe da gefe",
-  "tables.more": "Ƙarin teburori",
-  "tables.moreIntro": "Za su zo a wannan shafin nan gaba.",
 
   "prefs.title": "Zaɓuɓɓukan aiki",
   "prefs.intro": "Bayanai da saitunan da suka shafi dukan aikin.",

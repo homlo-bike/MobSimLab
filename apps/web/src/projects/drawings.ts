@@ -2,7 +2,7 @@ import { get } from "../session/api";
 
 /** What a project keeps drawings of (apps/api/src/projects/drawings.ts). */
 export type DrawingKind =
-  "street-lines" | "railway" | "street-setups" | "preferences" | "rail-timetable" | "costs";
+  "street-lines" | "railway" | "street-setups" | "preferences" | "rail-timetable" | "costs" | "scenarios";
 export const DRAWING_KINDS: readonly DrawingKind[] = [
   "street-lines",
   "railway",
@@ -10,6 +10,7 @@ export const DRAWING_KINDS: readonly DrawingKind[] = [
   "preferences",
   "rail-timetable",
   "costs",
+  "scenarios",
 ];
 
 /** One saved drawing as the API returns it. */

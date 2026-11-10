@@ -209,6 +209,7 @@ export const fa: Messages = {
   "drawing.rail-timetable": "جدول زمانی ریلی",
   "drawing.preferences": "ترجیحات پروژه",
   "drawing.costs": "تنظیمات هزینه",
+  "drawing.scenarios": "سناریوهای ذخیره‌شده",
 
   "tab.label": "پروژه",
   "tab.simulator": "شبیه‌ساز",
@@ -254,9 +255,6 @@ export const fa: Messages = {
 
   "tables.title": "جدول‌ها",
   "tables.intro": "همهٔ محاسبات برای برآورد عملکرد پروژه.",
-  "tables.compare": "مقایسهٔ سناریوها کنار هم",
-  "tables.more": "جدول‌های بیشتر",
-  "tables.moreIntro": "به‌زودی در این زبانه.",
 
   "prefs.title": "ترجیحات پروژه",
   "prefs.intro": "جزئیات و تنظیماتی که برای کل پروژه اعمال می‌شوند.",

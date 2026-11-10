@@ -214,6 +214,7 @@ export const ta: Messages = {
   "drawing.rail-timetable": "ரயில் கால அட்டவணை",
   "drawing.preferences": "திட்ட விருப்பங்கள்",
   "drawing.costs": "செலவு அமைப்புகள்",
+  "drawing.scenarios": "சேமித்த சூழ்நிலைகள்",
 
   "tab.label": "திட்டம்",
   "tab.simulator": "உருவகப்படுத்தி",
@@ -262,9 +263,6 @@ export const ta: Messages = {
 
   "tables.title": "அட்டவணைகள்",
   "tables.intro": "திட்டம் எவ்வளவு நன்றாகச் செயல்படும் என மதிப்பிட, அதைப் பற்றிய ஒவ்வொரு கணக்கீடும்.",
-  "tables.compare": "சூழ்நிலைகளை அருகருகே ஒப்பிடு",
-  "tables.more": "மேலும் அட்டவணைகள்",
-  "tables.moreIntro": "இந்தத் தாவலில் விரைவில் வரும்.",
 
   "prefs.title": "திட்ட விருப்பங்கள்",
   "prefs.intro": "முழுத் திட்டத்திற்கும் பொருந்தும் விவரங்களும் அமைப்புகளும்.",

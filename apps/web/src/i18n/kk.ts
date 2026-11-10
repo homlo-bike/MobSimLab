@@ -212,6 +212,7 @@ export const kk: Messages = {
   "drawing.rail-timetable": "пойыз кестесі",
   "drawing.preferences": "жоба параметрлері",
   "drawing.costs": "шығын баптаулары",
+  "drawing.scenarios": "сақталған сценарийлер",
 
   "tab.label": "Жоба",
   "tab.simulator": "Симулятор",
@@ -256,9 +257,6 @@ export const kk: Messages = {
 
   "tables.title": "Кестелер",
   "tables.intro": "Жобаның қаншалықты жақсы жұмыс істейтінін бағалау үшін ол туралы әр есептеу.",
-  "tables.compare": "Сценарийлерді қатар салыстыру",
-  "tables.more": "Қосымша кестелер",
-  "tables.moreIntro": "Бұл қойындыға кейін қосылады.",
 
   "prefs.title": "Жоба параметрлері",
   "prefs.intro": "Бүкіл жобаға қатысты мәліметтер мен баптаулар.",

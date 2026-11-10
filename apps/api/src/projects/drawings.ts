@@ -50,6 +50,24 @@ const costs = z.looseObject({
     .optional(),
 });
 
+/**
+ * Tables tab scenarios: named copies of the railway design and the street lines, kept to compare with the
+ * current design.
+ */
+const scenarios = z.looseObject({
+  scenarios: z
+    .array(
+      z.looseObject({
+        id: z.string().min(1).max(64),
+        name: z.string().trim().min(1).max(120),
+        savedAt: z.string().max(40),
+        railway: railway.nullable(),
+        streetLines: streetLines.nullable(),
+      }),
+    )
+    .max(20),
+});
+
 /** Drawing kinds with their document outline and current schema version. */
 export const DRAWING_KINDS = {
   /** The street line tool (ADR-0029): bus, BRT, trolleybus and intercity bus lines. */
@@ -64,6 +82,8 @@ export const DRAWING_KINDS = {
   preferences: { schema: preferences, schemaVersion: 1 },
   /** Cost tables settings (ADR-0039): the country chosen for prices. */
   costs: { schema: costs, schemaVersion: 1 },
+  /** Tables tab: saved copies of the design to compare side by side. */
+  scenarios: { schema: scenarios, schemaVersion: 1 },
 } as const satisfies Record<string, { schema: z.ZodType; schemaVersion: number }>;
 
 export type DrawingKind = keyof typeof DRAWING_KINDS;

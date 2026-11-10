@@ -215,6 +215,7 @@ export const fr: Messages = {
   "drawing.rail-timetable": "l'horaire ferroviaire",
   "drawing.preferences": "les préférences du projet",
   "drawing.costs": "les réglages des coûts",
+  "drawing.scenarios": "les scénarios enregistrés",
 
   "tab.label": "Projet",
   "tab.simulator": "Simulateur",
@@ -261,9 +262,6 @@ export const fr: Messages = {
 
   "tables.title": "Tableaux",
   "tables.intro": "Tous les calculs du projet, pour estimer ses performances.",
-  "tables.compare": "Comparer des scénarios côte à côte",
-  "tables.more": "Autres tableaux",
-  "tables.moreIntro": "À venir dans cet onglet.",
 
   "prefs.title": "Préférences du projet",
   "prefs.intro": "Informations et réglages qui s’appliquent à tout le projet.",

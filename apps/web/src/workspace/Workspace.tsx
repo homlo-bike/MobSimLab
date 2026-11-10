@@ -5,6 +5,8 @@ import { CostTables, type CostsDoc } from "../features/costs/CostTables";
 import { JourneyPlanner } from "../features/journey-planner/JourneyPlanner";
 import { NoiseMap } from "../features/noise/NoiseMap";
 import { NetworkTables } from "../features/tables/NetworkTables";
+import { Scenarios } from "../features/tables/Scenarios";
+import type { ScenariosDoc } from "../features/tables/scenarioModel";
 import { noiseCalculationIn } from "../features/noise/plugin";
 import type { PluginLineInput, StreetLineInput } from "../features/journey-planner/network";
 import type { Timetable } from "../features/journey-planner/types";
@@ -446,15 +448,19 @@ export function Workspace({
                     costs={drawings.doc<CostsDoc>("costs")}
                     onCosts={editable ? (d) => drawings.set("costs", d) : undefined}
                   />
+                  <Scenarios
+                    railway={railway}
+                    streetLines={streetLines}
+                    preferences={preferences}
+                    doc={drawings.doc<ScenariosDoc>("scenarios")}
+                    onChange={editable ? (d) => drawings.set("scenarios", d) : undefined}
+                  />
                 </>
               ) : (
                 <p role="status" className="mt-6 text-slate-500">
                   {t("common.loading")}
                 </p>
               )}
-              <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-4 md:p-6">
-                <Placeholder title="tables.more" intro="tables.moreIntro" items={["tables.compare"]} />
-              </div>
             </section>
           </div>
         )}
