@@ -380,6 +380,36 @@
       check: unverified
       rationale: "Copernicus GLO-30 is a surface model with roofs and tree tops. Samples inside OSM buildings are dropped, then a morphological opening over this window (Zhang et al. 2003) removes anything narrower that stands above its surroundings: other buildings, tree rows, bridges. Hills and embankments wider than the window stay. Too narrow a window keeps large buildings and woods as terrain; too wide flattens small hills."
 
+- key: noise.floor_area_per_person_m2
+  label: "Floor area per resident, for people counts from the building size"
+  group: Noise
+  unit: m²
+  used_by: [noise map (population exposure)]
+  values:
+    - context: { mode: "*" }
+      low: 35
+      central: 55
+      high: 75
+      basis: educated-guess
+      sources: [mobsimlab-derivation, osm-data]
+      check: unverified
+      rationale: "Used only where the WorldPop grid cannot be loaded: people in a building = footprint × storeys ÷ this value. Dwellings in western Europe offer roughly 40 to 50 m² of living space per person; the gross floor area of a building (walls, stairs, common parts, ground-floor uses) is about a quarter larger. Buildings tagged in OSM as another use (shop, office, garage, church…) get no residents."
+
+- key: noise.population_min_footprint_m2
+  label: "Smallest building footprint that may hold homes"
+  group: Noise
+  unit: m²
+  used_by: [noise map (population exposure)]
+  values:
+    - context: { mode: "*" }
+      low: 20
+      central: 30
+      high: 50
+      basis: educated-guess
+      sources: [mobsimlab-derivation, osm-data, worldpop-r2025a]
+      check: unverified
+      rationale: "Most OSM buildings are tagged only building=yes; below this footprint they are taken to be garages, sheds and kiosks and get no residents, from the WorldPop grid or from the building size."
+
 - key: noise.building_level_height_m
   label: "Storey height for buildings without a height"
   group: Noise

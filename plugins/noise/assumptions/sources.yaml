@@ -116,3 +116,12 @@
   access: free
   retrieved: 2026-11-09
   checked_via: none
+
+- id: worldpop-r2025a
+  title: "Bondarenko M. et al. (2025), Constrained estimates of 2015-2030 total number of people per grid square at a resolution of 3 arc seconds (about 100 m), R2025A v1. WorldPop, University of Southampton. DOI 10.5258/SOTON/WP00839"
+  publisher: WorldPop, School of Geography and Environmental Science, University of Southampton
+  url: https://doi.org/10.5258/SOTON/WP00839
+  licence: Creative Commons Attribution 4.0 International (CC BY 4.0)
+  access: free
+  retrieved: 2026-11-10
+  checked_via: none

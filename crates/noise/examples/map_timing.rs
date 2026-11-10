@@ -39,6 +39,7 @@ fn main() {
                     ],
                     height_m: Some(12.0),
                     levels: None,
+                    homes: None,
                 });
             }
             x += 80.0;

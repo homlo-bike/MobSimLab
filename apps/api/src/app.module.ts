@@ -12,6 +12,7 @@ import { ConfigModule } from "./config/config.module";
 import type { AppConfig } from "./config/env";
 import { HealthController } from "./health/health.controller";
 import { StreetNetworkModule } from "./street-network/street-network.module";
+import { PopulationModule } from "./population/population.module";
 import { TerrainModule } from "./terrain/terrain.module";
 import { AccessGuard } from "./iam/access.guard";
 import { RateLimitService } from "./iam/rate-limit.service";
@@ -29,7 +30,13 @@ export class AppModule {
   static forRoot(config: AppConfig): DynamicModule {
     return {
       module: AppModule,
-      imports: [ConfigModule.forRoot(config), StreetNetworkModule, TerrainModule, AgentsModule],
+      imports: [
+        ConfigModule.forRoot(config),
+        StreetNetworkModule,
+        TerrainModule,
+        PopulationModule,
+        AgentsModule,
+      ],
       controllers: [HealthController, AuthController, SetupController, AdminController, ProjectsController],
       providers: [
         AuditService,

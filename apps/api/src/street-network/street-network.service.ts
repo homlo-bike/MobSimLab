@@ -92,12 +92,46 @@ export function buildingQuery(z: number, x: number, y: number): string {
   );
 }
 
-/** One building as the noise map takes it: outer ring `[lon, lat]` and what OSM says of its height. */
+/** One building as the noise map takes it: outer ring `[lon, lat]` and what OSM says of its height and use. */
 export interface BuildingFootprint {
   id: string;
   ring: [number, number][];
   height_m?: number;
   levels?: number;
+  /** True when tagged as housing, false when tagged as another use, absent when not said (`building=yes`). */
+  homes?: boolean;
+}
+
+/** `building=*` values that are housing (OSM wiki, Key:building, "Accommodation"). */
+const HOME_BUILDINGS = new Set([
+  "apartments",
+  "bungalow",
+  "cabin",
+  "detached",
+  "dormitory",
+  "farm",
+  "ger",
+  "house",
+  "houseboat",
+  "residential",
+  "semidetached_house",
+  "static_caravan",
+  "stilt_house",
+  "terrace",
+  "tree_house",
+  "trullo",
+]);
+
+/**
+ * Purpose: whether a building holds homes, from its `building` value: true for housing, false
+ * for any other named use (shop, office, garage, church…), undefined for `yes` and unknown values
+ * used only as building parts or construction states.
+ */
+export function buildingHomes(tags: Record<string, string>): boolean | undefined {
+  const v = (tags.building ?? "").trim().toLowerCase();
+  if (HOME_BUILDINGS.has(v)) return true;
+  if (v === "" || v === "yes" || v === "construction" || v === "no") return undefined;
+  return false;
 }
 
 interface OverpassElement {
@@ -133,7 +167,11 @@ export function footprints(json: string): BuildingFootprint[] {
   for (const e of els) {
     const t = e.tags ?? {};
     if (t.location === "underground" || Number(t.layer) < 0) continue;
-    const height = { height_m: osmNumber(t.height), levels: osmNumber(t["building:levels"]) };
+    const height = {
+      height_m: osmNumber(t.height),
+      levels: osmNumber(t["building:levels"]),
+      homes: buildingHomes(t),
+    };
     const rings =
       e.type === "way"
         ? [ring(e.geometry)]

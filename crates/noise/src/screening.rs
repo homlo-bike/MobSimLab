@@ -67,6 +67,10 @@ pub struct BuildingInput {
     /// Storeys above ground (OSM `building:levels`), when known.
     #[serde(default)]
     pub levels: Option<f64>,
+    /// What OSM says of its use: `Some(true)` housing, `Some(false)` another use (shop, office,
+    /// garage, church…), `None` not said (`building=yes`). Only for population exposure.
+    #[serde(default)]
+    pub homes: Option<bool>,
 }
 
 /// How a building's height is taken when OSM does not give it.
