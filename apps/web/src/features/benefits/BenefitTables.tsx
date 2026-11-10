@@ -337,7 +337,7 @@ function Sources({
   else items.push("World Bank figures: waiting for the project's country (from the cost tables).");
   if (pop)
     items.push(
-      `WorldPop ${pop.year} population, brought to today with the World Bank's population growth${pop.failed ? `; ${pop.failed} station areas did not answer` : ""}. ${pop.source.licence}.`,
+      `WorldPop ${pop.year ?? ""} population (100 m grid)${pop.failed ? `; ${pop.failed} station areas use homes' floor area instead${pop.reasons.length ? ` (${pop.reasons.join("; ")})` : ""}` : ""}. ${pop.source.licence}.`,
     );
   else if (popError)
     items.push(`WorldPop is unavailable (${popError}); population comes from homes' floor area.`);

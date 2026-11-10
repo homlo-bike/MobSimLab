@@ -1,6 +1,6 @@
 import type { Map as MapLibreMap } from "maplibre-gl";
 import { useEffect, useRef, useState } from "react";
-import { tNow, useI18n } from "../../i18n/i18n";
+import { formatInt, tNow, useI18n } from "../../i18n/i18n";
 import { loadRailEngine } from "../railways/engine";
 import type { Network, RailEngineLoader } from "../railways/types";
 import type { StreetLinesDoc } from "../street-lines/saved";
@@ -16,6 +16,8 @@ import {
 import { loadWasmNoise } from "./engine";
 import { drawNoise, LEGEND, removeNoise } from "./mapLayer";
 import { RAIL_FLOWS, railSources, streetLineSources } from "./sources";
+import { buildingsBbox, fetchPopulation, type PopulationFetcher, type PopulationSource } from "./population";
+import { fetchHeights, type HeightsFetcher, loadTerrain, terrainPlan } from "./terrain";
 import type {
   Flows,
   Indicator,
@@ -23,6 +25,8 @@ import type {
   NoiseEngine,
   NoiseEngineLoader,
   NoiseLine,
+  NoisePopulation,
+  NoiseTerrain,
   NoiseView,
 } from "./types";
 
@@ -43,6 +47,8 @@ interface Props {
   loadNoise?: NoiseEngineLoader;
   loadRail?: RailEngineLoader;
   fetchTile?: BuildingTileFetcher;
+  fetchTerrain?: HeightsFetcher;
+  fetchPeople?: PopulationFetcher;
 }
 
 /**
@@ -61,11 +67,7 @@ export async function projectSources(
     if (l.view.points.length < 2) continue;
     const day = l.timing.headwayMin > 0 ? 60 / l.timing.headwayMin : 0;
     for (const s of streetLineSources(l.view, l.profile, { day, ...STREET_OFF_PEAK }, false))
-      lines.push({
-        ...s,
-        id: `street-${i}-${s.id}`,
-        label: l.name || tNow("noise.streetLine", { n: i + 1 }),
-      });
+      lines.push({ ...s, id: `street-${i}-${s.id}`, label: l.name || `Street line ${i + 1}` });
   }
   if (railway && railway.tracks.length) {
     const engine = await loadRail();
@@ -83,15 +85,23 @@ export async function projectSources(
 type Status =
   | { kind: "idle" }
   | { kind: "busy"; step: string }
-  | { kind: "done"; view: NoiseView; buildings: NoiseBuilding[] | null; note: string | null }
+  | {
+      kind: "done";
+      view: NoiseView;
+      buildings: NoiseBuilding[] | null;
+      notes: string[];
+      people: PopulationSource | null;
+    }
   | { kind: "error"; text: string };
 
 /**
  * Purpose: the Noise map in the GIS tab (ADR-0038 step N2): L_den or L_night from every saved
- * street line and railway, screened by the OSM buildings round them, with the buildings coloured
- * by the level beside their most exposed side and counted by the Directive's reporting bands.
- * Side effects: loads buildings from the API and the noise and rail engines on demand; draws the
- * noise picture and the buildings on the map while shown.
+ * street line and railway, screened by the OSM buildings round them (over the roofs and round the
+ * ends), with first-order facade reflections and the terrain, the buildings coloured by the level
+ * beside their most exposed side, and the buildings and their residents (WorldPop, else the
+ * building size) counted by the Directive's reporting bands.
+ * Side effects: loads buildings, terrain heights and the population grid from the API and the noise and rail engines on
+ * demand; draws the noise picture and the buildings on the map while shown.
  */
 export function NoiseMap({
   map,
@@ -101,10 +111,13 @@ export function NoiseMap({
   loadNoise = loadWasmNoise,
   loadRail = loadRailEngine,
   fetchTile = fetchBuildingTile,
+  fetchTerrain = fetchHeights,
+  fetchPeople = fetchPopulation,
 }: Props) {
   const { t } = useI18n();
   const [indicator, setIndicator] = useState<Indicator>("lden");
   const [withBuildings, setWithBuildings] = useState(true);
+  const [withTerrain, setWithTerrain] = useState(true);
   const [status, setStatus] = useState<Status>({ kind: "idle" });
   const engine = useRef<NoiseEngine | null>(null);
   const hasLines =
@@ -151,17 +164,48 @@ export function NoiseMap({
         return;
       }
       let buildings: NoiseBuilding[] | null = null;
-      let note: string | null = null;
+      const notes: string[] = [];
+      const points = lines.flatMap((l) => l.points);
       if (withBuildings) {
-        const tiles = buildingTiles(
-          lines.flatMap((l) => l.points),
-          MAP_REACH_M,
-        );
+        const tiles = buildingTiles(points, MAP_REACH_M);
         if (tiles.length > MAX_BUILDING_TILES) {
-          note = tNow("noise.tooLarge", { tiles: tiles.length, max: MAX_BUILDING_TILES });
+          notes.push(tNow("noise.tooLarge", { tiles: tiles.length, max: MAX_BUILDING_TILES }));
         } else {
           setStatus({ kind: "busy", step: tNow("noise.loadingBuildings") });
           buildings = await loadBuildings(tiles, fetchTile);
+        }
+      }
+      let terrain: NoiseTerrain | null = null;
+      if (withTerrain) {
+        const plan = terrainPlan(points, MAP_REACH_M);
+        if (!plan) {
+          notes.push(tNow("noise.terrainTooLarge"));
+        } else {
+          setStatus({ kind: "busy", step: tNow("noise.loadingTerrain") });
+          try {
+            terrain = await loadTerrain(plan, fetchTerrain);
+          } catch (err) {
+            notes.push(
+              tNow("noise.terrainDown", { error: err instanceof Error ? err.message : String(err) }),
+            );
+          }
+        }
+      }
+      let population: NoisePopulation | null = null;
+      let people: PopulationSource | null = null;
+      const bbox = buildings?.length ? buildingsBbox(buildings) : null;
+      if (bbox) {
+        setStatus({ kind: "busy", step: tNow("noise.loadingPopulation") });
+        try {
+          const a = await fetchPeople(bbox);
+          if (a.status === "ready") [population, people] = [a.grid, a.source];
+          else if (a.status === "loading")
+            notes.push(tNow("noise.popDownloading", { countries: a.countries.join(", ") }));
+          else notes.push(tNow("noise.popUnavailable", { reason: a.reason }));
+        } catch (err) {
+          notes.push(
+            tNow("noise.popUnavailable", { reason: err instanceof Error ? err.message : String(err) }),
+          );
         }
       }
       setStatus({ kind: "busy", step: tNow("noise.computing") });
@@ -173,11 +217,13 @@ export function NoiseMap({
         grid: true,
         grid_reach_m: MAP_REACH_M,
         buildings: buildings ?? [],
+        terrain,
+        population,
         overrides: Object.fromEntries(
           Object.entries(preferences ?? {}).filter(([k, v]) => k.startsWith("noise.") && Number.isFinite(v)),
         ),
       });
-      setStatus({ kind: "done", view, buildings, note });
+      setStatus({ kind: "done", view, buildings, notes, people });
     } catch (err) {
       setStatus({ kind: "error", text: err instanceof Error ? err.message : String(err) });
     }
@@ -215,6 +261,10 @@ export function NoiseMap({
       <label className="flex items-center gap-2 text-xs">
         <input type="checkbox" checked={withBuildings} onChange={(e) => setWithBuildings(e.target.checked)} />
         {t("noise.screen")}
+      </label>
+      <label className="flex items-center gap-2 text-xs">
+        <input type="checkbox" checked={withTerrain} onChange={(e) => setWithTerrain(e.target.checked)} />
+        {t("noise.terrain")}
       </label>
       <button
         type="button"
@@ -259,6 +309,7 @@ export function NoiseMap({
                 <tr className="text-start text-slate-500">
                   <th className="font-normal">{indicator === "lden" ? "L_den" : "L_night"}</th>
                   <th className="text-end font-normal">{t("noise.buildings")}</th>
+                  {exposure.people && <th className="text-end font-normal">{t("noise.residents")}</th>}
                 </tr>
               </thead>
               <tbody>
@@ -270,17 +321,49 @@ export function NoiseMap({
                         : t("noise.dbRange", { from, to: from + 4 })}
                     </td>
                     <td className="text-end tabular-nums">{rows.buildings[i]}</td>
+                    {exposure.people && (
+                      <td className="text-end tabular-nums">{peopleText(rows.people[i] ?? 0)}</td>
+                    )}
                   </tr>
                 ))}
               </tbody>
             </table>
           )}
-          {status.note && (
-            <p className="rounded bg-amber-50 px-2 py-1 text-xs text-amber-900">{status.note}</p>
+          {exposure?.people && (
+            <p className="text-xs text-slate-600">
+              {exposure.people.source === "grid" && status.people
+                ? t("noise.popGrid", {
+                    year: status.people.year,
+                    countries: status.people.countries.join(", "),
+                    reached: peopleText(exposure.people.reached),
+                    total: peopleText(exposure.people.total),
+                  })
+                : t("noise.popSize", {
+                    reached: peopleText(exposure.people.reached),
+                    total: peopleText(exposure.people.total),
+                  })}
+              {exposure.people.source === "grid" && exposure.people.unplaced >= 1
+                ? ` ${t("noise.popUnplaced", { n: peopleText(exposure.people.unplaced) })}`
+                : ""}{" "}
+              {t("noise.popNoHomes")}
+            </p>
           )}
-          <p className="text-xs text-slate-500">{t("noise.mapNote")}</p>
+          {status.notes.map((n) => (
+            <p key={n} className="rounded bg-amber-50 px-2 py-1 text-xs text-amber-900">
+              {n}
+            </p>
+          ))}
+          <p className="text-xs text-slate-500">
+            {t("noise.mapNote")} {t(status.view.terrain ? "noise.onTerrain" : "noise.flat")}
+            {status.people ? ` ${t("noise.popCredit")}` : ""}
+          </p>
         </>
       )}
     </section>
   );
+}
+
+/** Purpose: a people count as the Directive reports it, rounded to the nearest hundred above 100. */
+function peopleText(n: number): string {
+  return formatInt(n >= 100 ? Math.round(n / 100) * 100 : n);
 }

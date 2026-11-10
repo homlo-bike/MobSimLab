@@ -520,19 +520,40 @@ export const editorsJa = {
   "noise.computing": "騒音マップを計算中…",
   "noise.map": "騒音マップ",
   "noise.mapIntro":
-    "プロジェクト内のすべての道路路線と鉄道線路による高さ 4 m での L_den と L_night。周囲の OpenStreetMap の建物による遮蔽を考慮します。",
+    "プロジェクト内のすべての路線と鉄道から高さ 4 m での L_den と L_night。周囲の OpenStreetMap の建物と地形を考慮します。",
   "noise.mapIndicator": "騒音マップの指標",
   "noise.screen": "OpenStreetMap の建物で遮蔽",
   "noise.compute": "騒音マップを計算",
   "noise.computeAgain": "再計算",
   "noise.mapLegend": "騒音マップの凡例",
-  "noise.table": "騒音帯別の建物数",
-  "noise.tableCaption": "最も騒音を受ける面のレベル別の建物数（{count} 棟中 {reached} 棟に到達）",
+  "noise.table": "騒音帯別の建物数と居住者数",
+  "noise.tableCaption": "最も影響を受ける側の騒音レベル別の建物と居住者（{count} 棟中 {reached} 棟が範囲内）",
   "noise.buildings": "建物",
   "noise.dbOrMore": "{db} dB 以上",
   "noise.dbRange": "{from}–{to} dB",
   "noise.mapNote":
-    "計画運行のみで一般交通は含みません。屋根越しの遮蔽（ISO 9613-2）のみで、反射や建物の端を回り込む経路は考慮しません。OpenStreetMap に高さのない建物は、記録された階数ごとに 3 m、または 8 m とみなします（騒音プラグインの前提値）。人口データが追加されるまでは、建物数を住居の代わりとして使います。建物 © OpenStreetMap contributors。",
+    "計画した運行のみで、一般交通は含みません。建物は屋根の上と端の周りで遮蔽し（ISO 9613-2）、その外壁は一回反射します（一次）。OpenStreetMap に高さのない建物は登録階数 1 階あたり 3 m、または 8 m とします（騒音プラグインの仮定）。建物のレベルには自らの外壁での反射を含みません。建物 © OpenStreetMap 貢献者。",
+  "noise.terrain": "地形の高さを使う（Copernicus GLO-30）",
+  "noise.terrainTooLarge": "路線の範囲が広すぎて地形を読み込めないため、この地図は平地で計算しています。",
+  "noise.loadingTerrain": "地形の高さを読み込み中…",
+  "noise.terrainDown": "地形の高さを利用できません（{error}）。そのためこの地図は平地で計算しています。",
+  "noise.loadingPopulation": "WorldPop の人口を読み込み中…",
+  "noise.popDownloading":
+    "{countries} の WorldPop 人口グリッドをサーバーにダウンロード中です。それまでは居住者を建物の大きさから推計します。WorldPop を使うには数分後に再計算してください。",
+  "noise.popUnavailable":
+    "WorldPop の人口を利用できません（{reason}）。そのため居住者は建物の大きさから推計します。",
+  "noise.residents": "居住者",
+  "noise.popGrid":
+    "WorldPop {year}（{countries}）による居住者：100 m セルごとの人口を床面積に応じてセル内の住宅に配分。読み込んだ建物の居住者 {total} 人のうち {reached} 人が範囲内に住んでいます。",
+  "noise.popUnplaced": "グリッドの {n} 人は住宅が地図にないセルに住んでおり、数えていません。",
+  "noise.popSize":
+    "居住者は建物の大きさから推計：床面積（建築面積 × 階数）÷ 騒音プラグインの仮定による 1 人あたり床面積。{total} 人のうち {reached} 人が範囲内に住んでいます。",
+  "noise.popNoHomes":
+    "OpenStreetMap で他の用途（店舗、事務所、車庫、教会など）とされた建物と、ごく小さな建物には居住者はいません。",
+  "noise.onTerrain":
+    "音源、建物、受音点は地形の上にあり、丘が遮蔽します。屋根と樹木は地表モデルから除いています。地形：Copernicus DEM GLO-30 © DLR e.V. および © Airbus Defence and Space GmbH、欧州連合と ESA が COPERNICUS のもとで提供。",
+  "noise.flat": "平地。",
+  "noise.popCredit": "人口：WorldPop, University of Southampton (doi:10.5258/SOTON/WP00839), CC BY 4.0.",
   "jp.title": "経路検索",
   "jp.s": "{n}秒",
   "jp.min": "{n}分",

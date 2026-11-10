@@ -591,19 +591,44 @@ export const editorsPl = {
   "noise.computing": "Obliczanie mapy hałasu…",
   "noise.map": "Mapa hałasu",
   "noise.mapIntro":
-    "L_den i L_night na wysokości 4 m od wszystkich linii drogowych i torów kolejowych w projekcie, z ekranowaniem przez okoliczne budynki OpenStreetMap.",
+    "L_den i L_night na wysokości 4 m od każdej linii ulicznej i kolejowej w projekcie, za otaczającymi budynkami OpenStreetMap i nad terenem.",
   "noise.mapIndicator": "Wskaźnik mapy hałasu",
   "noise.screen": "Ekranuj budynkami OpenStreetMap",
   "noise.compute": "Oblicz mapę hałasu",
   "noise.computeAgain": "Oblicz ponownie",
   "noise.mapLegend": "Legenda mapy hałasu",
-  "noise.table": "Budynki według pasa hałasu",
-  "noise.tableCaption": "Budynki według poziomu na najgłośniejszej elewacji (objęte: {reached} z {count})",
+  "noise.table": "Budynki i mieszkańcy według pasa hałasu",
+  "noise.tableCaption":
+    "Budynki i ich mieszkańcy według poziomu przy najbardziej narażonej elewacji ({reached} z {count} budynków w zasięgu)",
   "noise.buildings": "Budynki",
   "noise.dbOrMore": "{db} dB lub więcej",
   "noise.dbRange": "{from}–{to} dB",
   "noise.mapNote":
-    "Tylko planowany ruch, bez ogólnego ruchu. Tylko ekranowanie ponad dachami (ISO 9613-2): bez odbić i bez dróg wokół narożników budynków. Budynki bez wysokości w OpenStreetMap liczone są jako 3 m na zapisaną kondygnację albo 8 m (założenie wtyczki hałasu). Liczba budynków zastępuje mieszkania, dopóki nie zostaną dodane dane o ludności. Budynki © współtwórcy OpenStreetMap.",
+    "Tylko planowana obsługa, bez ruchu ogólnego. Budynki ekranują ponad dachami i wokół swoich krańców (ISO 9613-2), a ich elewacje odbijają raz (pierwszy rząd). Budynki bez wysokości w OpenStreetMap otrzymują 3 m na podaną kondygnację lub 8 m (założenia wtyczki hałasu). Poziom budynku pomija odbicie od jego własnej elewacji. Budynki © współtwórcy OpenStreetMap.",
+  "noise.terrain": "Uwzględnij wysokości terenu (Copernicus GLO-30)",
+  "noise.terrainTooLarge":
+    "Linie obejmują zbyt duży obszar, by wczytać teren, więc ta mapa jest liczona dla płaskiego terenu.",
+  "noise.loadingTerrain": "Wczytywanie wysokości terenu…",
+  "noise.terrainDown":
+    "Wysokości terenu są niedostępne ({error}), więc ta mapa jest liczona dla płaskiego terenu.",
+  "noise.loadingPopulation": "Wczytywanie ludności WorldPop…",
+  "noise.popDownloading":
+    "Siatka ludności WorldPop dla {countries} jest pobierana na serwer. Do tego czasu mieszkańcy są szacowani z wielkości budynków; przelicz ponownie za kilka minut, aby użyć WorldPop.",
+  "noise.popUnavailable":
+    "Ludność WorldPop jest niedostępna ({reason}), więc mieszkańcy są szacowani z wielkości budynków.",
+  "noise.residents": "Mieszkańcy",
+  "noise.popGrid":
+    "Mieszkańcy z WorldPop {year} ({countries}): ludzie z każdej komórki 100 m rozdzieleni między jej budynki mieszkalne według powierzchni kondygnacji. {reached} z {total} mieszkańców wczytanych budynków mieszka w zasięgu.",
+  "noise.popUnplaced":
+    "{n} osób z siatki mieszka w komórkach bez naniesionego mieszkania i nie jest liczonych.",
+  "noise.popSize":
+    "Mieszkańcy szacowani z wielkości budynku: powierzchnia kondygnacji (obrys × kondygnacje) ÷ powierzchnia na osobę z założeń wtyczki hałasu. {reached} z {total} mieszka w zasięgu.",
+  "noise.popNoHomes":
+    "Budynki oznaczone w OpenStreetMap jako inne użytkowanie (sklepy, biura, garaże, kościoły…) oraz bardzo małe nie mają mieszkańców.",
+  "noise.onTerrain":
+    "Źródła, budynki i odbiorniki stoją na terenie, a wzgórza ekranują; dachy i drzewa są odfiltrowane z modelu powierzchni. Teren: Copernicus DEM GLO-30 © DLR e.V. i © Airbus Defence and Space GmbH, udostępniony w ramach COPERNICUS przez Unię Europejską i ESA.",
+  "noise.flat": "Płaski teren.",
+  "noise.popCredit": "Ludność: WorldPop, University of Southampton (doi:10.5258/SOTON/WP00839), CC BY 4.0.",
   "jp.title": "Podróże",
   "jp.s": "{n} s",
   "jp.min": "{n} min",

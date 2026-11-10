@@ -555,19 +555,45 @@ export const editorsIt = {
   "noise.computing": "Calcolo della mappa del rumore…",
   "noise.map": "Mappa del rumore",
   "noise.mapIntro":
-    "L_den e L_night a 4 m di altezza da tutte le linee su strada e i binari del progetto, schermati dagli edifici circostanti di OpenStreetMap.",
+    "L_den e L_night a 4 m da ogni linea stradale e ferroviaria del progetto, oltre gli edifici di OpenStreetMap circostanti e sul terreno.",
   "noise.mapIndicator": "Indicatore della mappa del rumore",
   "noise.screen": "Scherma con gli edifici di OpenStreetMap",
   "noise.compute": "Calcola la mappa del rumore",
   "noise.computeAgain": "Ricalcola",
   "noise.mapLegend": "Legenda della mappa del rumore",
-  "noise.table": "Edifici per fascia di rumore",
-  "noise.tableCaption": "Edifici per livello sulla facciata più esposta ({reached} su {count} raggiunti)",
+  "noise.table": "Edifici e residenti per fascia di rumore",
+  "noise.tableCaption":
+    "Edifici e i loro residenti per il livello presso la facciata più esposta ({reached} di {count} edifici in portata)",
   "noise.buildings": "Edifici",
   "noise.dbOrMore": "{db} dB o più",
   "noise.dbRange": "{from}–{to} dB",
   "noise.mapNote":
-    "Solo il servizio previsto, senza traffico generale. Solo schermatura sopra i tetti (ISO 9613-2): niente riflessioni né percorsi attorno agli spigoli degli edifici. Gli edifici senza altezza in OpenStreetMap valgono 3 m per piano registrato, oppure 8 m (ipotesi del plugin rumore). Il numero di edifici sostituisce le abitazioni finché non arrivano i dati sulla popolazione. Edifici © contributori di OpenStreetMap.",
+    "Solo il servizio previsto, senza traffico generale. Gli edifici schermano sopra i tetti e attorno alle estremità (ISO 9613-2) e le loro facciate riflettono una volta (primo ordine). Gli edifici senza altezza in OpenStreetMap hanno 3 m per piano indicato, oppure 8 m (ipotesi del plugin rumore). Il livello di un edificio esclude la riflessione sulla propria facciata. Edifici © contributori di OpenStreetMap.",
+  "noise.terrain": "Usa le quote del terreno (Copernicus GLO-30)",
+  "noise.terrainTooLarge":
+    "Le linee coprono un'area troppo grande per caricare il terreno, quindi questa mappa è calcolata su terreno piano.",
+  "noise.loadingTerrain": "Caricamento delle quote del terreno…",
+  "noise.terrainDown":
+    "Le quote del terreno non sono disponibili ({error}), quindi questa mappa è calcolata su terreno piano.",
+  "noise.loadingPopulation": "Caricamento della popolazione WorldPop…",
+  "noise.popDownloading":
+    "La griglia di popolazione WorldPop di {countries} è in download sul server. Nel frattempo i residenti sono stimati dalla dimensione degli edifici; ricalcola tra qualche minuto per usare WorldPop.",
+  "noise.popUnavailable":
+    "La popolazione WorldPop non è disponibile ({reason}), quindi i residenti sono stimati dalla dimensione degli edifici.",
+  "noise.residents": "Residenti",
+  "noise.popGrid":
+    "Residenti da WorldPop {year} ({countries}): le persone di ogni cella di 100 m ripartite tra le sue abitazioni in base alla superficie di piano. {reached} di {total} residenti degli edifici caricati vivono in portata.",
+  "noise.popUnplaced":
+    "{n} persone della griglia vivono in celle senza abitazioni mappate e non sono contate.",
+  "noise.popSize":
+    "Residenti stimati dalla dimensione dell'edificio: superficie di piano (impronta × piani) ÷ la superficie per persona delle ipotesi del plugin rumore. {reached} di {total} vivono in portata.",
+  "noise.popNoHomes":
+    "Gli edifici indicati in OpenStreetMap con un altro uso (negozi, uffici, garage, chiese…) e quelli molto piccoli non hanno residenti.",
+  "noise.onTerrain":
+    "Sorgenti, edifici e ricettori poggiano sul terreno e le colline schermano; tetti e alberi sono filtrati dal modello di superficie. Terreno: Copernicus DEM GLO-30 © DLR e.V. e © Airbus Defence and Space GmbH, fornito nell'ambito di COPERNICUS dall'Unione europea e dall'ESA.",
+  "noise.flat": "Terreno piano.",
+  "noise.popCredit":
+    "Popolazione: WorldPop, University of Southampton (doi:10.5258/SOTON/WP00839), CC BY 4.0.",
   "jp.title": "Viaggi",
   "jp.s": "{n} s",
   "jp.min": "{n} min",

@@ -524,19 +524,43 @@ export const editorsIg = {
   "noise.computing": "Na-agụkọ maapụ mkpọtụ…",
   "noise.map": "Maapụ mkpọtụ",
   "noise.mapIntro":
-    "L_den na L_night n'ịdị elu m 4 site n'ahịrị okporo ụzọ na ụzọ ígwè ọ bụla n'ọrụ ahụ, ụlọ OpenStreetMap gbara ha gburugburu na-egbochi.",
+    "L_den na L_night n'ịdị elu m 4 site n'ahịrị okporo ụzọ na ụzọ ụgbọ oloko ọ bụla n'ọrụ ahụ, gafere ụlọ OpenStreetMap gbara ha gburugburu na n'elu ala.",
   "noise.mapIndicator": "Ihe ngosi maapụ mkpọtụ",
   "noise.screen": "Gbochie site n'ụlọ OpenStreetMap",
   "noise.compute": "Gụkọọ maapụ mkpọtụ",
   "noise.computeAgain": "Gụkọọ ọzọ",
   "noise.mapLegend": "Nkọwa maapụ mkpọtụ",
-  "noise.table": "Ụlọ site na mpaghara mkpọtụ",
-  "noise.tableCaption": "Ụlọ site n'ọkwa n'akụkụ ha kacha ekpughe ({reached} n'ime {count} eruru)",
+  "noise.table": "Ụlọ na ndị bi na ya site na mpaghara mkpọtụ",
+  "noise.tableCaption":
+    "Ụlọ na ndị bi na ha site n'ọkwa n'akụkụ akụkụ kacha nwee mkpọtụ (ụlọ {reached} n'ime {count} dị n'ime nso)",
   "noise.buildings": "Ụlọ",
   "noise.dbOrMore": "{db} dB ma ọ bụ karịa",
   "noise.dbRange": "{from}–{to} dB",
   "noise.mapNote":
-    "Naanị ọrụ a haziri, ọ bụghị okporo ụzọ jupụtara n'ozuzu. Mgbochi n'elu ụlọ (ISO 9613-2), enweghị ntụgharị ụda ma ọ bụ ụzọ gburugburu nsọtụ ụlọ. Ụlọ na-enweghị ịdị elu na OpenStreetMap na-ewe m 3 maka ọkwa ọ bụla a kpọrọ aha, ma ọ bụ m 8 (echiche ngwa mgbakwunye mkpọtụ). Ọnụ ọgụgụ ụlọ na-anọchi anya ebe obibi ruo mgbe etinyere data ọnụ ọgụgụ ndị mmadụ. Ụlọ © ndị nyere aka na OpenStreetMap.",
+    "Ọrụ a haziri naanị, na-enweghị okporo ụzọ izugbe. Ụlọ na-egbochi n'elu ụlọ ha na gburugburu nsọtụ ha (ISO 9613-2), ihu mgbidi ha na-atụgharị ụda otu ugboro (ọkwa mbụ). Ụlọ na-enweghị ịdị elu na OpenStreetMap na-ewere m 3 maka ala ọ bụla edere, ma ọ bụ m 8 (echiche plugin mkpọtụ). Ọkwa ụlọ anaghị agụnye ntụgharị si n'ihu mgbidi nke ya. Ụlọ © ndị nyere aka na OpenStreetMap.",
+  "noise.terrain": "Jiri ịdị elu ala (Copernicus GLO-30)",
+  "noise.terrainTooLarge":
+    "Ahịrị ndị ahụ kpuchiri mpaghara buru oke ibu iji bugo ala, ya mere a gbakọrọ maapụ a n'ala dị larịị.",
+  "noise.loadingTerrain": "Na-ebugo ịdị elu ala…",
+  "noise.terrainDown": "Ịdị elu ala adịghị ({error}), ya mere a gbakọrọ maapụ a n'ala dị larịị.",
+  "noise.loadingPopulation": "Na-ebugo ọnụ ọgụgụ mmadụ WorldPop…",
+  "noise.popDownloading":
+    "A na-ebudata grid ọnụ ọgụgụ mmadụ WorldPop nke {countries} na sava. Ruo mgbe ọ ga-adị, a na-eme atụmatụ ndị bi na ya site n'ịdị ukwuu ụlọ; gbakọọ ọzọ mgbe nkeji ole na ole gasịrị iji jiri WorldPop.",
+  "noise.popUnavailable":
+    "Ọnụ ọgụgụ mmadụ WorldPop adịghị ({reason}), ya mere a na-eme atụmatụ ndị bi na ya site n'ịdị ukwuu ụlọ.",
+  "noise.residents": "Ndị bi na ya",
+  "noise.popGrid":
+    "Ndị bi na ya si WorldPop {year} ({countries}): e kesara ndị mmadụ nọ n'igbe m 100 ọ bụla n'ụlọ obibi ya dị ka mbara ala ụlọ si dị. {reached} n'ime ndị {total} bi n'ụlọ ndị e bugoro bi n'ime nso.",
+  "noise.popUnplaced": "Mmadụ {n} nọ na grid bi n'igbe ndị na-enweghị ụlọ obibi na maapụ, a gụghị ha.",
+  "noise.popSize":
+    "E mere atụmatụ ndị bi na ya site n'ịdị ukwuu ụlọ: mbara ala ụlọ (mbara ntọala × ala) ÷ mbara ala ụlọ maka onye ọ bụla n'echiche plugin mkpọtụ. {reached} n'ime {total} bi n'ime nso.",
+  "noise.popNoHomes":
+    "Ụlọ a kara akara na OpenStreetMap maka ojiji ọzọ (ụlọ ahịa, ụlọ ọrụ, ebe a na-adọba ụgbọ ala, ụka…) na ụlọ ndị dị nnọọ obere enweghị ndị bi na ha.",
+  "noise.onTerrain":
+    "Isi iyi ụda, ụlọ na ndị nnata guzo n'elu ala, ugwu na-egbochikwa; e wepụrụ elu ụlọ na osisi n'ụdị elu ala. Ala: Copernicus DEM GLO-30 © DLR e.V. na © Airbus Defence and Space GmbH, nke European Union na ESA nyere n'okpuru COPERNICUS.",
+  "noise.flat": "Ala dị larịị.",
+  "noise.popCredit":
+    "Ọnụ ọgụgụ mmadụ: WorldPop, University of Southampton (doi:10.5258/SOTON/WP00839), CC BY 4.0.",
   "jp.title": "Onye nhazi njem",
   "jp.s": "{n} sekọnd",
   "jp.min": "{n} nkeji",

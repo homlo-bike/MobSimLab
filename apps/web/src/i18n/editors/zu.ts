@@ -561,20 +561,45 @@ export const editorsZu = {
   "noise.computing": "Ibala imephu yomsindo…",
   "noise.map": "Imephu yomsindo",
   "noise.mapIntro":
-    "I-L_den ne-L_night ngobude obungu-4 m kusuka kumugqa womgwaqo nojantshi ngamunye ephrojekthini, kuvikelwa izakhiwo ze-OpenStreetMap ezizungezile.",
+    "L_den ne-L_night ekuphakameni okungu-4 m kusukela kuwo wonke umugqa womgwaqo nojantshi ephrojekthini, ngale kwezakhiwo ze-OpenStreetMap ezizungezile naphezu komhlaba.",
   "noise.mapIndicator": "Isikhombi semephu yomsindo",
   "noise.screen": "Vikela ngezakhiwo ze-OpenStreetMap",
   "noise.compute": "Bala imephu yomsindo",
   "noise.computeAgain": "Bala futhi",
   "noise.mapLegend": "Incazelo yemephu yomsindo",
-  "noise.table": "Izakhiwo ngebhande lomsindo",
+  "noise.table": "Izakhiwo nezakhamuzi ngebhande lomsindo",
   "noise.tableCaption":
-    "Izakhiwo ngezinga ohlangothini lwazo oluvezwe kakhulu ({reached} kwezingu-{count} ezifinyelelwayo)",
+    "Izakhiwo nezakhamuzi zazo ngezinga eceleni kohlangothi oluthinteka kakhulu (izakhiwo ezingu-{reached} kwezingu-{count} zisebangeni)",
   "noise.buildings": "Izakhiwo",
   "noise.dbOrMore": "{db} dB noma ngaphezulu",
   "noise.dbRange": "{from}–{to} dB",
   "noise.mapNote":
-    "Isevisi ehleliwe kuphela, hhayi isiminyaminya esijwayelekile. Ukuvikelwa phezu kophahla lwezakhiwo (ISO 9613-2), akukho ukubonakaliswa noma izindlela ezizungeza imiphetho yezakhiwo. Izakhiwo ezingenabude ku-OpenStreetMap zithatha u-3 m esitezini ngasinye esiqanjiwe, noma u-8 m (imicabango yesengezo somsindo). Inani lezakhiwo limele izindawo zokuhlala kuze kungezwe idatha yabantu. Izakhiwo © abanikeli be-OpenStreetMap.",
+    "Isevisi ehleliwe kuphela, ngaphandle kwethrafikhi evamile. Izakhiwo zivikela ngaphezu kophahla lwazo nasemaceleni emikhawulo yazo (ISO 9613-2) futhi izindonga zazo zangaphambili zibuyisela umsindo kanye (izinga lokuqala). Izakhiwo ezingenakho ukuphakama ku-OpenStreetMap zithatha u-3 m esitezi ngasinye esibhaliwe, noma u-8 m (izinkolelo ze-plugin yomsindo). Izinga lesakhiwo alifaki ukubuya komsindo odongeni lwaso lwangaphambili. Izakhiwo © abanikeli be-OpenStreetMap.",
+  "noise.terrain": "Sebenzisa ukuphakama komhlaba (Copernicus GLO-30)",
+  "noise.terrainTooLarge":
+    "Imigqa imboza indawo enkulu kakhulu ukuthi kulayishwe umhlaba, ngakho le mephu ibalwe emhlabeni oyisicaba.",
+  "noise.loadingTerrain": "Ilayisha ukuphakama komhlaba…",
+  "noise.terrainDown":
+    "Ukuphakama komhlaba akutholakali ({error}), ngakho le mephu ibalwe emhlabeni oyisicaba.",
+  "noise.loadingPopulation": "Ilayisha inani labantu le-WorldPop…",
+  "noise.popDownloading":
+    "Igridi yenani labantu le-WorldPop ka-{countries} iyadawunilodwa iya kuseva. Ize ifike, izakhamuzi zilinganiswa ngobukhulu bezakhiwo; bala futhi emva kwemizuzu embalwa ukuze usebenzise i-WorldPop.",
+  "noise.popUnavailable":
+    "Inani labantu le-WorldPop alitholakali ({reason}), ngakho izakhamuzi zilinganiswa ngobukhulu bezakhiwo.",
+  "noise.residents": "Izakhamuzi",
+  "noise.popGrid":
+    "Izakhamuzi ezivela ku-WorldPop {year} ({countries}): abantu besikwele ngasinye esingu-100 m bahlukaniswe phakathi kwezindlu zaso ngokwendawo yaphansi. Izakhamuzi ezingu-{reached} kwezingu-{total} zezakhiwo ezilayishiwe zihlala ebangeni.",
+  "noise.popUnplaced":
+    "Abantu abangu-{n} begridi bahlala ezikweleni ezingenayo indlu emephini futhi ababalwa.",
+  "noise.popSize":
+    "Izakhamuzi zilinganiswe ngobukhulu besakhiwo: indawo yaphansi (indawo yesisekelo × izitezi) ÷ indawo yaphansi ngomuntu ngamunye ezinkolelweni ze-plugin yomsindo. Abangu-{reached} kwabangu-{total} bahlala ebangeni.",
+  "noise.popNoHomes":
+    "Izakhiwo ezimakwe ku-OpenStreetMap njengezinye izinjongo (izitolo, amahhovisi, amagaraji, amasonto…) nezakhiwo ezincane kakhulu azinazo izakhamuzi.",
+  "noise.onTerrain":
+    "Imithombo, izakhiwo nabamukeli bami phezu komhlaba, futhi amagquma ayavikela; uphahla nezihlahla kuhlungwe kumodeli yobuso. Umhlaba: Copernicus DEM GLO-30 © DLR e.V. kanye ne-© Airbus Defence and Space GmbH, kunikezwe ngaphansi kwe-COPERNICUS yi-European Union ne-ESA.",
+  "noise.flat": "Umhlaba oyisicaba.",
+  "noise.popCredit":
+    "Inani labantu: WorldPop, University of Southampton (doi:10.5258/SOTON/WP00839), CC BY 4.0.",
   "jp.title": "Umhleli wohambo",
   "jp.s": "{n} imizuzwana",
   "jp.min": "{n} imiz",

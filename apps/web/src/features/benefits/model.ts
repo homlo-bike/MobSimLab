@@ -40,8 +40,6 @@ export interface CountryFigures {
   /** Employed people as a share of the population aged 15 and over. */
   employmentRatio15: number | null;
   under15: number | null;
-  /** Population now ÷ population in the WorldPop year. */
-  popGrowth: number;
 }
 
 /** Spending of one line (or of a mode's shared items), low/medium/high, project currency. */
@@ -379,9 +377,8 @@ export function prepare(input: PrepareInput): Prepared {
       const wp = c.circles.map((i) => input.worldpop[st[i]!.id]);
       if (wp.every((v) => typeof v === "number" && Number.isFinite(v))) {
         pop =
-          (c.circles.reduce((a, i, k) => a + (wp[k] as number) / Math.max(1, nCells.get(i) ?? 1), 0) /
-            c.circles.length) *
-          country.popGrowth;
+          c.circles.reduce((a, i, k) => a + (wp[k] as number) / Math.max(1, nCells.get(i) ?? 1), 0) /
+          c.circles.length;
         popSource.worldpop++;
       } else {
         pop = (cellHomes.get(c.key) ?? 0) / floorPerPerson;

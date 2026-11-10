@@ -527,19 +527,44 @@ export const editorsYo = {
   "noise.computing": "Ó ń ṣírò máàpù ariwo…",
   "noise.map": "Máàpù ariwo",
   "noise.mapIntro":
-    "L_den àti L_night ní gíga 4 m láti ìlà òpópónà àti ojú irin kọ̀ọ̀kan nínú iṣẹ́ àkànṣe náà, tí àwọn ilé OpenStreetMap tó yí wọn ká ń dènà.",
+    "L_den àti L_night ní gíga 4 m láti gbogbo ìlà òpópónà àti ojú irin nínú iṣẹ́ àkànṣe náà, kọjá àwọn ilé OpenStreetMap tó yí wọn ká àti lórí ilẹ̀.",
   "noise.mapIndicator": "Atọ́ka máàpù ariwo",
   "noise.screen": "Dènà pẹ̀lú àwọn ilé OpenStreetMap",
   "noise.compute": "Ṣírò máàpù ariwo",
   "noise.computeAgain": "Tún un ṣírò",
   "noise.mapLegend": "Àlàyé máàpù ariwo",
-  "noise.table": "Àwọn ilé nípa agbègbè ariwo",
-  "noise.tableCaption": "Àwọn ilé nípa ìpele ní ẹ̀gbẹ́ wọn tó farahàn jù ({reached} nínú {count} tí a dé)",
+  "noise.table": "Àwọn ilé àti olùgbé nípa agbègbè ariwo",
+  "noise.tableCaption":
+    "Àwọn ilé àti olùgbé wọn nípa ìwọ̀n lẹ́gbẹ̀ẹ́ ẹ̀gbẹ́ tí ariwo kàn jù ({reached} nínú {count} ilé wà ní àrọ́wọ́tó)",
   "noise.buildings": "Àwọn ilé",
   "noise.dbOrMore": "{db} dB tàbí jù bẹ́ẹ̀ lọ",
   "noise.dbRange": "{from}–{to} dB",
   "noise.mapNote":
-    "Iṣẹ́ tí a ṣètò nìkan, kì í ṣe súnkẹrẹ-fàkẹrẹ gbogbogbò. Ìdènà òkè òrùlé ilé (ISO 9613-2), kò sí àtúnyọ tàbí ọ̀nà yí etí ilé ká. Àwọn ilé tí kò ní gíga lórí OpenStreetMap gba 3 m fún àjà kọ̀ọ̀kan tí a dárúkọ, tàbí 8 m (àròsọ ohun-èlò àfikún ariwo). Iye àwọn ilé dúró fún ibùgbé títí a ó fi fi dátà iye ènìyàn kún un. Àwọn ilé © àwọn olùkópa OpenStreetMap.",
+    "Iṣẹ́ tí a gbèrò nìkan, láìsí ìrìnnà gbogbogbò. Àwọn ilé ń dènà lórí òrùlé wọn àti yíká òpin wọn (ISO 9613-2), ògiri iwájú wọn sì ń dá ohùn padà lẹ́ẹ̀kan (ìpele kìíní). Àwọn ilé tí kò ní gíga nínú OpenStreetMap ń gba 3 m fún àjà kọ̀ọ̀kan tí a kọ sílẹ̀, tàbí 8 m (àwọn àròjinlẹ̀ plugin ariwo). Ìwọ̀n ilé kan kò ka ìdápadà ohùn láti ògiri iwájú tirẹ̀. Àwọn ilé © àwọn olùkópa OpenStreetMap.",
+  "noise.terrain": "Lo gíga ilẹ̀ (Copernicus GLO-30)",
+  "noise.terrainTooLarge":
+    "Àwọn ìlà náà bo agbègbè tó tóbi jù láti gbé ilẹ̀ wọlé, nítorí náà a ṣírò máàpù yìí lórí ilẹ̀ pẹrẹsẹ.",
+  "noise.loadingTerrain": "Ó ń gbé gíga ilẹ̀ wọlé…",
+  "noise.terrainDown": "Gíga ilẹ̀ kò sí ({error}), nítorí náà a ṣírò máàpù yìí lórí ilẹ̀ pẹrẹsẹ.",
+  "noise.loadingPopulation": "Ó ń gbé iye ènìyàn WorldPop wọlé…",
+  "noise.popDownloading":
+    "A ń ṣe ìgbàsílẹ̀ àwọ̀n iye ènìyàn WorldPop ti {countries} sí sáfà. Títí yóò fi dé, a ń fojú díwọ̀n olùgbé láti ìtóbi ilé; ṣírò lẹ́ẹ̀kan sí i ní ìṣẹ́jú díẹ̀ láti lo WorldPop.",
+  "noise.popUnavailable":
+    "Iye ènìyàn WorldPop kò sí ({reason}), nítorí náà a ń fojú díwọ̀n olùgbé láti ìtóbi ilé.",
+  "noise.residents": "Olùgbé",
+  "noise.popGrid":
+    "Olùgbé láti WorldPop {year} ({countries}): a pín àwọn ènìyàn inú àpótí 100 m kọ̀ọ̀kan sí àwọn ilé gbígbé rẹ̀ gẹ́gẹ́ bí àyè ilẹ̀ àjà. {reached} nínú {total} olùgbé àwọn ilé tí a gbé wọlé ń gbé ní àrọ́wọ́tó.",
+  "noise.popUnplaced":
+    "Ènìyàn {n} nínú àwọ̀n náà ń gbé nínú àwọn àpótí tí kò ní ilé gbígbé lórí máàpù, a kò sì kà wọ́n.",
+  "noise.popSize":
+    "A fojú díwọ̀n olùgbé láti ìtóbi ilé: àyè ilẹ̀ àjà (àyè ìpìlẹ̀ × àwọn àjà) ÷ àyè ilẹ̀ àjà fún ènìyàn kan nínú àwọn àròjinlẹ̀ plugin ariwo. {reached} nínú {total} ń gbé ní àrọ́wọ́tó.",
+  "noise.popNoHomes":
+    "Àwọn ilé tí a sàmì sí nínú OpenStreetMap fún ìlò mìíràn (ṣọ́ọ̀bù, ọ́fíìsì, gáréèjì, ṣọ́ọ̀ṣì…) àti àwọn ilé kéékèèké gan-an kò ní olùgbé.",
+  "noise.onTerrain":
+    "Àwọn orísun, ilé àti olùgbà dúró lórí ilẹ̀, àwọn òkè sì ń dènà; a ti sẹ́ òrùlé àti igi kúrò nínú àwòṣe ojú ilẹ̀. Ilẹ̀: Copernicus DEM GLO-30 © DLR e.V. àti © Airbus Defence and Space GmbH, tí European Union àti ESA pèsè lábẹ́ COPERNICUS.",
+  "noise.flat": "Ilẹ̀ pẹrẹsẹ.",
+  "noise.popCredit":
+    "Iye ènìyàn: WorldPop, University of Southampton (doi:10.5258/SOTON/WP00839), CC BY 4.0.",
   "jp.title": "Olùṣètò ìrìn-àjò",
   "jp.s": "{n} ìṣẹ́jú-àáyá",
   "jp.min": "{n} ìṣẹ́jú",

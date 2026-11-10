@@ -546,19 +546,43 @@ export const editorsId = {
   "noise.computing": "Menghitung peta kebisingan…",
   "noise.map": "Peta kebisingan",
   "noise.mapIntro":
-    "L_den dan L_night pada ketinggian 4 m dari setiap jalur jalan dan rel dalam proyek, diredam oleh bangunan OpenStreetMap di sekitarnya.",
+    "L_den dan L_night pada ketinggian 4 m dari setiap jalur jalan dan rel di proyek, melewati bangunan OpenStreetMap di sekitarnya dan di atas medan.",
   "noise.mapIndicator": "Indikator peta kebisingan",
   "noise.screen": "Redam dengan bangunan OpenStreetMap",
   "noise.compute": "Hitung peta kebisingan",
   "noise.computeAgain": "Hitung ulang",
   "noise.mapLegend": "Legenda peta kebisingan",
-  "noise.table": "Bangunan per pita kebisingan",
-  "noise.tableCaption": "Bangunan menurut tingkat di fasad paling bising ({reached} dari {count} terjangkau)",
+  "noise.table": "Bangunan dan penghuni per pita kebisingan",
+  "noise.tableCaption":
+    "Bangunan dan penghuninya menurut tingkat di sisi paling terpapar ({reached} dari {count} bangunan dalam jangkauan)",
   "noise.buildings": "Bangunan",
   "noise.dbOrMore": "{db} dB atau lebih",
   "noise.dbRange": "{from}–{to} dB",
   "noise.mapNote":
-    "Hanya layanan yang direncanakan, tanpa lalu lintas umum. Hanya peredaman di atas atap (ISO 9613-2): tanpa pantulan dan tanpa jalur di sekitar ujung bangunan. Bangunan tanpa tinggi di OpenStreetMap dianggap 3 m per lantai tercatat, atau 8 m (asumsi plugin kebisingan). Jumlah bangunan menggantikan tempat tinggal sampai data penduduk ditambahkan. Bangunan © kontributor OpenStreetMap.",
+    "Hanya layanan yang direncanakan, tanpa lalu lintas umum. Bangunan meredam di atas atap dan di sekitar ujungnya (ISO 9613-2) dan fasadnya memantul sekali (orde pertama). Bangunan tanpa tinggi di OpenStreetMap diberi 3 m per lantai yang ditandai, atau 8 m (asumsi plugin kebisingan). Tingkat sebuah bangunan tidak menyertakan pantulan dari fasadnya sendiri. Bangunan © kontributor OpenStreetMap.",
+  "noise.terrain": "Gunakan ketinggian medan (Copernicus GLO-30)",
+  "noise.terrainTooLarge":
+    "Jalur mencakup wilayah yang terlalu luas untuk memuat medan, sehingga peta ini dihitung di tanah datar.",
+  "noise.loadingTerrain": "Memuat ketinggian medan…",
+  "noise.terrainDown":
+    "Ketinggian medan tidak tersedia ({error}), sehingga peta ini dihitung di tanah datar.",
+  "noise.loadingPopulation": "Memuat penduduk WorldPop…",
+  "noise.popDownloading":
+    "Grid penduduk WorldPop untuk {countries} sedang diunduh ke server. Sampai selesai, penghuni diperkirakan dari ukuran bangunan; hitung lagi dalam beberapa menit untuk memakai WorldPop.",
+  "noise.popUnavailable":
+    "Penduduk WorldPop tidak tersedia ({reason}), sehingga penghuni diperkirakan dari ukuran bangunan.",
+  "noise.residents": "Penghuni",
+  "noise.popGrid":
+    "Penghuni dari WorldPop {year} ({countries}): penduduk tiap sel 100 m dibagi ke hunian di dalamnya menurut luas lantai. {reached} dari {total} penghuni bangunan yang dimuat tinggal dalam jangkauan.",
+  "noise.popUnplaced": "{n} orang dari grid tinggal di sel tanpa hunian yang dipetakan dan tidak dihitung.",
+  "noise.popSize":
+    "Penghuni diperkirakan dari ukuran bangunan: luas lantai (tapak × lantai) ÷ luas lantai per orang dari asumsi plugin kebisingan. {reached} dari {total} tinggal dalam jangkauan.",
+  "noise.popNoHomes":
+    "Bangunan yang ditandai di OpenStreetMap untuk penggunaan lain (toko, kantor, garasi, gereja…) dan bangunan yang sangat kecil tidak berpenghuni.",
+  "noise.onTerrain":
+    "Sumber, bangunan, dan penerima berdiri di atas medan, dan bukit meredam; atap dan pohon disaring dari model permukaan. Medan: Copernicus DEM GLO-30 © DLR e.V. dan © Airbus Defence and Space GmbH, disediakan dalam COPERNICUS oleh Uni Eropa dan ESA.",
+  "noise.flat": "Tanah datar.",
+  "noise.popCredit": "Penduduk: WorldPop, University of Southampton (doi:10.5258/SOTON/WP00839), CC BY 4.0.",
   "jp.title": "Perjalanan",
   "jp.s": "{n} d",
   "jp.min": "{n} mnt",

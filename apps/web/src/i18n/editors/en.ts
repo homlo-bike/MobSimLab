@@ -552,20 +552,43 @@ export const editorsEn = {
   "noise.computing": "Computing the noise map…",
   "noise.map": "Noise map",
   "noise.mapIntro":
-    "L_den and L_night at 4 m from every street line and railway in the project, screened by the OpenStreetMap buildings round them.",
+    "L_den and L_night at 4 m from every street line and railway in the project, past the OpenStreetMap buildings round them and over the terrain.",
   "noise.mapIndicator": "Noise map indicator",
   "noise.screen": "Screen with OpenStreetMap buildings",
   "noise.compute": "Compute noise map",
   "noise.computeAgain": "Compute again",
   "noise.mapLegend": "Noise map legend",
-  "noise.table": "Buildings by noise band",
+  "noise.table": "Buildings and residents by noise band",
   "noise.tableCaption":
-    "Buildings by the level beside their most exposed side ({reached} of {count} in reach)",
+    "Buildings and their residents by the level beside the most exposed side ({reached} of {count} buildings in reach)",
   "noise.buildings": "Buildings",
   "noise.dbOrMore": "{db} dB or more",
   "noise.dbRange": "{from}–{to} dB",
   "noise.mapNote":
-    "Planned service only, without general traffic. Roof screening by buildings (ISO 9613-2), no reflections or paths round building ends. Buildings without a height in OpenStreetMap take 3 m per tagged storey, or 8 m (the noise plugin's assumptions). Building counts stand in for dwellings until population data is added. Buildings © OpenStreetMap contributors.",
+    "Planned service only, without general traffic. Buildings screen over their roofs and round their ends (ISO 9613-2) and their facades reflect once (first order). Buildings without a height in OpenStreetMap take 3 m per tagged storey, or 8 m (the noise plugin's assumptions). A building's level leaves out the reflection from its own facade. Buildings © OpenStreetMap contributors.",
+  "noise.terrain": "Use terrain heights (Copernicus GLO-30)",
+  "noise.terrainTooLarge":
+    "The lines cover too large an area to load the terrain, so this map is on flat ground.",
+  "noise.loadingTerrain": "Loading terrain heights…",
+  "noise.terrainDown": "Terrain heights are unavailable ({error}), so this map is on flat ground.",
+  "noise.loadingPopulation": "Loading WorldPop population…",
+  "noise.popDownloading":
+    "WorldPop's population grid of {countries} is being downloaded to the server. Until it is there, residents are estimated from the building size; compute again in a few minutes to use WorldPop.",
+  "noise.popUnavailable":
+    "WorldPop population is not available ({reason}), so residents are estimated from the building size.",
+  "noise.residents": "Residents",
+  "noise.popGrid":
+    "Residents from WorldPop {year} ({countries}): the people of each 100 m cell shared among its homes by floor area. {reached} of {total} residents of the buildings loaded live in reach.",
+  "noise.popUnplaced": "{n} people of the grid live in cells without a mapped home and are not counted.",
+  "noise.popSize":
+    "Residents estimated from the building size: floor area (footprint × storeys) ÷ the floor area per person in the noise plugin's assumptions. {reached} of {total} live in reach.",
+  "noise.popNoHomes":
+    "Buildings tagged in OpenStreetMap as another use (shops, offices, garages, churches…) and very small ones have no residents.",
+  "noise.onTerrain":
+    "Sources, buildings and receivers stand on the terrain, and hills screen; roofs and trees are filtered out of the surface model. Terrain: Copernicus DEM GLO-30 © DLR e.V. and © Airbus Defence and Space GmbH, provided under COPERNICUS by the European Union and ESA.",
+  "noise.flat": "Flat ground.",
+  "noise.popCredit":
+    "Population: WorldPop, University of Southampton (doi:10.5258/SOTON/WP00839), CC BY 4.0.",
   "jp.title": "Journey planner",
   "jp.s": "{n} s",
   "jp.min": "{n} min",

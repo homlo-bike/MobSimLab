@@ -69,9 +69,11 @@ Every population layer stores `source`, `confidence` (user-set or derived from s
 
 Rasters are clipped to the project area buffered by 2 km, reprojected to the working CRS, and stored as tiled `raster`. Zone aggregation uses area-weighted `ST_SummaryStats`.
 
+- Built so far: the API reads WorldPop's constrained 100 m grid (release R2025A, the current year or the nearest one it has) for the noise map's population exposure (ADR-0038). WorldPop's file server does not answer byte ranges, so each country's GeoTIFF is downloaded once into `MOBSIMLAB_DATA_DIR/worldpop` (the `/data` volume; at most `MOBSIMLAB_WORLDPOP_MAX_FILE_MB`, default 2,000, per file and `MOBSIMLAB_WORLDPOP_CACHE_MB`, default 6,000, in all, least recently used first out) and read tile by tile (`apps/api/src/gateway/worldpop.client.ts`, catalogue `MOBSIMLAB_WORLDPOP_API`). The countries of an area come from OpenStreetMap through Overpass. `POST /api/population/grid` answers the people per cell over a box, or `loading` while a country is still downloading. Import into PostGIS per project area comes later.
+
 **Jobs:** there is no global open jobs grid. Jobs are estimated from land use and POIs with sourced job-density assumptions (per m² of commercial/industrial floor area, per school/hospital), clearly marked as assumptions, and replaceable by uploaded employment data.
 
-**Regions (ADR-0040).** Until the raster import exists, the benefit tables read population per catchment from the WorldPop statistics API and jobs from OpenStreetMap building floor area. Planners can draw regions or import OpenStreetMap areas (`GET /api/benefits/osm-areas`) and give them land use, land value, tax revenue, population density, jobs, GDP per person and employment; these take priority over the sourced values (drawing kind `regions`).
+**Regions (ADR-0040).** The benefit tables read population per station catchment from the same WorldPop grid (`POST /api/benefits/population` sums its cells) and jobs from OpenStreetMap building floor area. Planners can draw regions or import OpenStreetMap areas (`GET /api/benefits/osm-areas`) and give them land use, land value, tax revenue, population density, jobs, GDP per person and employment; these take priority over the sourced values (drawing kind `regions`).
 
 ## 4. Elevation
 
