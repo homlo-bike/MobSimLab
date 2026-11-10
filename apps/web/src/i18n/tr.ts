@@ -213,6 +213,8 @@ export const tr: Messages = {
   "drawing.rail-timetable": "tren tarifesi",
   "drawing.preferences": "proje tercihleri",
   "drawing.costs": "maliyet ayarları",
+  "drawing.benefits": "fayda formülleri",
+  "drawing.regions": "bölgeler",
 
   "tab.label": "Proje",
   "tab.simulator": "Simülatör",
@@ -249,6 +251,8 @@ export const tr: Messages = {
   "schematic.export": "Baskı ve ekran için dışa aktar",
 
   "gis.title": "CBS",
+  "gis.streetsView": "Sokaklar",
+  "gis.regionsView": "Bölgeler",
   "gis.intro": "Hesaplarda kullanılan bilgileri ekleyin ve düzenleyin.",
   "gis.areas": "Alan çizin veya OpenStreetMap'ten içe aktarın",
   "gis.streets": "Sokak düzeni: otobüs, bisiklet ve tramvay şeritleri, hızlar, havai hat",

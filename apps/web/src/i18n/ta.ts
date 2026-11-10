@@ -214,6 +214,8 @@ export const ta: Messages = {
   "drawing.rail-timetable": "ரயில் கால அட்டவணை",
   "drawing.preferences": "திட்ட விருப்பங்கள்",
   "drawing.costs": "செலவு அமைப்புகள்",
+  "drawing.benefits": "பயன் சூத்திரங்கள்",
+  "drawing.regions": "பகுதிகள்",
 
   "tab.label": "திட்டம்",
   "tab.simulator": "உருவகப்படுத்தி",
@@ -254,6 +256,8 @@ export const ta: Messages = {
   "schematic.export": "அச்சு மற்றும் திரைகளுக்கு ஏற்றுமதி",
 
   "gis.title": "GIS",
+  "gis.streetsView": "தெருக்கள்",
+  "gis.regionsView": "பகுதிகள்",
   "gis.intro": "கணக்கீடுகள் பயன்படுத்தும் தகவலைச் சேர்க்கவும் அல்லது திருத்தவும்.",
   "gis.areas": "பகுதியை வரையுங்கள் அல்லது OpenStreetMap இலிருந்து இறக்குமதி செய்யுங்கள்",
   "gis.streets": "தெரு அமைப்பு: பேருந்து, மிதிவண்டி மற்றும் டிராம் பாதைகள், வேகங்கள், மேல்நிலைக் கம்பிகள்",

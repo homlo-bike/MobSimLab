@@ -211,6 +211,8 @@ export const yo: Messages = {
   "drawing.rail-timetable": "àkókò ìrìn ọkọ̀ ojú irin",
   "drawing.preferences": "àwọn àyànfẹ́ iṣẹ́ àkànṣe",
   "drawing.costs": "ètò iye owó",
+  "drawing.benefits": "àwọn àgbékalẹ̀ àǹfààní",
+  "drawing.regions": "àwọn agbègbè",
 
   "tab.label": "Iṣẹ́ àkànṣe",
   "tab.simulator": "Afarawé",
@@ -247,6 +249,8 @@ export const yo: Messages = {
   "schematic.export": "Gbé jáde fún títẹ̀ àti ojú ìbojú",
 
   "gis.title": "GIS",
+  "gis.streetsView": "Àwọn òpópónà",
+  "gis.regionsView": "Àwọn agbègbè",
   "gis.intro": "Fi kún tàbí ṣàtúnṣe ìsọfúnni tí àwọn ìṣirò ń lò.",
   "gis.areas": "Ya agbègbè kan tàbí gbé ọ̀kan wọlé láti OpenStreetMap",
   "gis.streets": "Ìṣètò òpópónà: ọ̀nà bọ́ọ̀sì, kẹ̀kẹ́ àti tírámù, ìyára, wáyà òkè",

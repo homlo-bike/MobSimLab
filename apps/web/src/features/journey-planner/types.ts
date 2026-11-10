@@ -207,3 +207,19 @@ export interface PlannerEngine {
 
 /** Compiles a timetable into a planner. */
 export type PlannerLoader = (timetable: Timetable, settings: Partial<Settings>) => Promise<PlannerEngine>;
+
+/** Earliest arrival at every stop from one point (accessibility, benefit tables). */
+export interface Reach {
+  stop_ids: string[];
+  /** Seconds after midnight, or null where the stop cannot be reached. */
+  arrive_s: (number | null)[];
+}
+
+/** A compiled timetable that answers "how soon can I be at each stop". */
+export interface ReachEngine {
+  reach(from: LonLat, t0: number): Reach;
+  dispose(): void;
+}
+
+/** Compiles a timetable for reach questions. */
+export type ReachLoader = (timetable: Timetable, settings: Partial<Settings>) => Promise<ReachEngine>;
