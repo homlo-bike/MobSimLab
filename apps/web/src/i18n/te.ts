@@ -212,6 +212,7 @@ export const te: Messages = {
   "drawing.street-setups": "వీధి అమరికలు",
   "drawing.rail-timetable": "రైలు సమయపట్టిక",
   "drawing.preferences": "ప్రాజెక్టు ప్రాధాన్యతలు",
+  "drawing.costs": "ఖర్చు సెట్టింగ్‌లు",
 
   "tab.label": "ప్రాజెక్టు",
   "tab.simulator": "సిమ్యులేటర్",
@@ -260,8 +261,9 @@ export const te: Messages = {
   "tables.summary": "సారాంశం",
   "tables.infrastructure": "మార్గాలు, స్టేషన్లు, పట్టాల పొడవు, వంతెనలు, సొరంగాలు (తవ్వి కప్పడం లేదా TBM)",
   "tables.service": "తరచుదనం, సేవా గంటలు, వాహన సముదాయం, అంచనా ప్రయాణికులు",
-  "tables.costs": "ఖర్చులు మరియు పనితీరు",
   "tables.compare": "దృశ్యాలను పక్కపక్కనే పోల్చండి",
+  "tables.more": "మరిన్ని పట్టికలు",
+  "tables.moreIntro": "ఈ ట్యాబ్‌లో త్వరలో వస్తాయి.",
 
   "prefs.title": "ప్రాజెక్టు ప్రాధాన్యతలు",
   "prefs.intro": "మొత్తం ప్రాజెక్టుకు వర్తించే వివరాలు మరియు సెట్టింగ్‌లు.",

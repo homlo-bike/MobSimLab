@@ -213,6 +213,7 @@ export const nl: Messages = {
   "drawing.street-setups": "de straatinstellingen",
   "drawing.rail-timetable": "de dienstregeling van de spoorlijnen",
   "drawing.preferences": "de projectvoorkeuren",
+  "drawing.costs": "de kosteninstellingen",
 
   "tab.label": "Project",
   "tab.simulator": "Simulator",
@@ -262,8 +263,9 @@ export const nl: Messages = {
   "tables.infrastructure":
     "Lijnen, stations, spoorlengte, bruggen, tunnels (open bouwput of tunnelboormachine)",
   "tables.service": "Frequentie, bedieningstijden, vloot, verwachte reizigers",
-  "tables.costs": "Kosten en prestaties",
   "tables.compare": "Scenario’s naast elkaar vergelijken",
+  "tables.more": "Meer tabellen",
+  "tables.moreIntro": "Komt nog in dit tabblad.",
 
   "prefs.title": "Projectvoorkeuren",
   "prefs.intro": "Gegevens en instellingen die voor het hele project gelden.",

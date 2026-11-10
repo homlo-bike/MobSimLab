@@ -210,6 +210,7 @@ export const mr: Messages = {
   "drawing.street-setups": "रस्त्यांची रचना",
   "drawing.rail-timetable": "रेल्वे वेळापत्रक",
   "drawing.preferences": "प्रकल्पाची प्राधान्ये",
+  "drawing.costs": "खर्च सेटिंग्ज",
 
   "tab.label": "प्रकल्प",
   "tab.simulator": "सिम्युलेटर",
@@ -257,8 +258,9 @@ export const mr: Messages = {
   "tables.summary": "सारांश",
   "tables.infrastructure": "मार्ग, स्थानके, रुळांची लांबी, पूल, बोगदे (खोदून झाकणे किंवा TBM)",
   "tables.service": "वारंवारता, सेवेचे तास, ताफा, अपेक्षित प्रवासी",
-  "tables.costs": "खर्च आणि कामगिरी",
   "tables.compare": "परिस्थितींची शेजारी शेजारी तुलना करा",
+  "tables.more": "आणखी तक्ते",
+  "tables.moreIntro": "या टॅबमध्ये लवकरच येत आहेत.",
 
   "prefs.title": "प्रकल्पाची प्राधान्ये",
   "prefs.intro": "संपूर्ण प्रकल्पाला लागू होणारे तपशील आणि सेटिंग्ज.",

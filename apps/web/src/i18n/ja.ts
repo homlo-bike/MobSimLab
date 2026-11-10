@@ -209,6 +209,7 @@ export const ja: Messages = {
   "drawing.street-setups": "道路設定",
   "drawing.rail-timetable": "鉄道時刻表",
   "drawing.preferences": "プロジェクト設定",
+  "drawing.costs": "費用の設定",
 
   "tab.label": "プロジェクト",
   "tab.simulator": "シミュレーター",
@@ -256,8 +257,9 @@ export const ja: Messages = {
   "tables.summary": "概要",
   "tables.infrastructure": "路線、駅、線路延長、橋梁、トンネル（開削または TBM）",
   "tables.service": "運行頻度、運行時間、車両数、予測旅客数",
-  "tables.costs": "費用と性能",
   "tables.compare": "シナリオを並べて比較",
+  "tables.more": "その他の表",
+  "tables.moreIntro": "このタブに今後追加予定です。",
 
   "prefs.title": "プロジェクト設定",
   "prefs.intro": "プロジェクト全体に適用される詳細と設定。",

@@ -123,6 +123,8 @@ OD matrices (OMX format, open standard) per mode and period, link loads, line lo
 
 Every unit cost is an `AssumedValue` with currency and price-base year. Conversions: World Bank GDP deflators and PPP factors (with source and retrieval date) to the project currency and base year.
 
+Built (ADR-0039): the Tables tab costs construction (by construction type, set per track in the railway tool), vehicles, depots and operation per mode, per line and in total, low/medium/high, from `assumptions/parameters/costs.yaml` (2023 PPP dollars), converted with the World Bank PPP factor, exchange rate and US GDP deflator. Lifecycle, revenue and appraisal are not built yet.
+
 ### 3.2 Appraisal methods
 
 | Method | Definition used |

@@ -213,6 +213,7 @@ export const ta: Messages = {
   "drawing.street-setups": "தெரு அமைப்புகள்",
   "drawing.rail-timetable": "ரயில் கால அட்டவணை",
   "drawing.preferences": "திட்ட விருப்பங்கள்",
+  "drawing.costs": "செலவு அமைப்புகள்",
 
   "tab.label": "திட்டம்",
   "tab.simulator": "உருவகப்படுத்தி",
@@ -265,8 +266,9 @@ export const ta: Messages = {
   "tables.infrastructure":
     "வழித்தடங்கள், நிலையங்கள், தண்டவாள நீளம், பாலங்கள், சுரங்கங்கள் (தோண்டி மூடுதல் அல்லது TBM)",
   "tables.service": "அடிக்கடி இயக்கம், சேவை நேரம், வாகனத் தொகுப்பு, எதிர்பார்க்கப்படும் பயணிகள்",
-  "tables.costs": "செலவுகள் மற்றும் செயல்திறன்",
   "tables.compare": "சூழ்நிலைகளை அருகருகே ஒப்பிடு",
+  "tables.more": "மேலும் அட்டவணைகள்",
+  "tables.moreIntro": "இந்தத் தாவலில் விரைவில் வரும்.",
 
   "prefs.title": "திட்ட விருப்பங்கள்",
   "prefs.intro": "முழுத் திட்டத்திற்கும் பொருந்தும் விவரங்களும் அமைப்புகளும்.",
