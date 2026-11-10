@@ -100,7 +100,17 @@ function railView(): RailView {
   } as unknown as RailView;
 }
 
-const REPORT: LineReport = { id: "M1", trips: 200, outbound_s: 240, return_s: 240, trains: 4, issues: [] };
+const REPORT: LineReport = {
+  id: "M1",
+  trips: 200,
+  outbound_s: 240,
+  return_s: 240,
+  trains: 4,
+  issues: [],
+  stations: [],
+  shifted: [],
+  unplaced: [],
+};
 
 function streetView(): LineView {
   const points = (["end_stop", "stop", "end_stop"] as const).map((kind, seq) => ({

@@ -104,6 +104,31 @@ fn a_line_drawn_on_the_design_reaches_the_journey_planner() {
 }
 
 #[test]
+fn the_report_gives_station_distances_for_the_time_distance_graph() {
+    let out = publish_service(&topology(), &[shuttle()], "weekday").unwrap();
+    let r = &out.lines[0];
+    // st1 (Riverside) is the first terminal.
+    let names: Vec<&str> = r.stations.iter().map(|s| s.name.as_str()).collect();
+    assert_eq!(names, ["Riverside", "Northgate"], "{:?}", r.stations);
+    assert_eq!(r.stations[0].km, 0.0);
+    let km = r.stations[1].km;
+    assert!(km > 0.1 && km < 20.0, "{km}");
+    // Every station id is the parent station of a published stop.
+    for s in &r.stations {
+        assert!(
+            out.timetable
+                .stops
+                .iter()
+                .any(|x| x.parent_station.as_deref() == Some(s.station_id.as_str())),
+            "{}",
+            s.station_id
+        );
+    }
+    // An easy service: nothing moved or dropped.
+    assert!(r.unplaced.is_empty(), "{:?}", r.unplaced);
+}
+
+#[test]
 fn a_line_with_one_stop_or_an_unknown_station_is_refused() {
     let mut l = shuttle();
     l.stations.truncate(1);

@@ -229,6 +229,20 @@ export interface LineReport {
   return_s: number | null;
   trains: number;
   issues: string[];
+  /** Stations of the first outbound trip with their distance along the track, for the time-distance graph. */
+  stations: StationKm[];
+  /** Trips moved from their clock-face departure to keep clear of other trains. */
+  shifted: { trip: string; by_s: number }[];
+  /** Trips that could not run, with the reason and, for a conflict, the trip in the way. */
+  unplaced: { trip: string; reason: string; blocked_by: string | null }[];
+}
+
+/** A station of a line and its distance from the first terminal along the track (Rust `rail_plan::StationKm`). */
+export interface StationKm {
+  /** The timetable's station id (`group:<key>`, the stops' `parent_station`). */
+  station_id: string;
+  name: string;
+  km: number;
 }
 
 /** Published service lines (Rust `rail_plan::ServicePublication`). */

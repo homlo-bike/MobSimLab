@@ -13,6 +13,7 @@ import {
   trainsFor,
   updateLine,
 } from "./serviceLines";
+import { TimeDistanceGraph } from "./TimeDistanceGraph";
 import type { LonLat, Network, RailView, ServiceLine, ServicePublication } from "./types";
 
 /** The last publication, and whether the drawing changed since. */
@@ -126,6 +127,7 @@ export function ServiceLinesPanel({
                   setPicking={(on) => setPicking(on ? l.id : null)}
                   show={show}
                   report={publication?.stale ? null : r}
+                  published={publication?.stale ? null : (publication?.result ?? null)}
                 />
               )}
             </li>
@@ -189,6 +191,7 @@ function LineEditor({
   setPicking,
   show,
   report,
+  published,
 }: {
   doc: Network;
   view: RailView;
@@ -199,8 +202,11 @@ function LineEditor({
   setPicking: (on: boolean) => void;
   show: (at: LonLat | null, ref: number | null) => void;
   report: ServicePublication["lines"][number] | null;
+  /** The publication the report comes from, for the time-distance graph. */
+  published: ServicePublication | null;
 }) {
   const { t, tn } = useI18n();
+  const [graph, setGraph] = useState(false);
   const mode = lineMode(doc, l);
   const trains = trainsFor(mode);
   const train = trainById(l.vehicle);
@@ -363,7 +369,24 @@ function LineEditor({
               ))}
             </ul>
           )}
+          {published && report.trips > 0 && (
+            <button
+              type="button"
+              onClick={() => setGraph(true)}
+              className="mt-1.5 rounded border border-slate-300 bg-white px-2 py-0.5 hover:bg-slate-50"
+            >
+              {t("rail.tdg.open")}
+            </button>
+          )}
         </div>
+      )}
+      {graph && published && (
+        <TimeDistanceGraph
+          publication={published}
+          lineId={l.id}
+          lineName={l.name || l.id}
+          onClose={() => setGraph(false)}
+        />
       )}
 
       <button

@@ -169,6 +169,16 @@ A service line is a route trains run on the drawn track: its stops in order, its
 
 When the drawing or a line changes, the panel says so; publish again to update the journey planner. The catalogue gives a train's length, top speed, power and capacity; acceleration, braking and running resistance come from the mode's assumptions. A layout without crossovers next to the terminals limits how often trains can run; the line's report says so.
 
+### Time-distance graph
+
+After publishing, open a line and click **Time-distance graph** under its report. The graph shows the line's stations down the side, at their distance along the track from the first terminal, and the time of day across. Each train is one line: solid towards the last terminal, dashed on the way back. A steeper line is a faster train and a flat part is a stop. Choose the **morning peak** (06:30–09:30), **midday** (11:00–13:00), **evening peak** (15:30–19:30) or the **whole day**.
+
+The graph also shows conflicts with other trains:
+
+- Trains of other lines that run between two or more of the line's stations are drawn thin and grey.
+- A departure the planner moved from its clock-face time to keep clear of another train is drawn in amber.
+- Under **Conflicts**, each moved departure is listed with how far it moved, and each trip that could not run is listed with the reason and the train in its way.
+
 ## Checks
 
 The panel lists errors and warnings as you draw. Click one to go to it. Among them:
