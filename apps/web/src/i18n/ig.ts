@@ -213,6 +213,8 @@ export const ig: Messages = {
   "drawing.preferences": "mmasị ọrụ",
   "drawing.costs": "ntọala ego",
   "drawing.scenarios": "ọnọdụ echekwara",
+  "drawing.benefits": "usoro uru",
+  "drawing.regions": "mpaghara",
 
   "tab.label": "Ọrụ",
   "tab.simulator": "Ihe ịṅomi",
@@ -250,6 +252,8 @@ export const ig: Messages = {
   "schematic.export": "Bupụ maka mbipụta na ihuenyo",
 
   "gis.title": "GIS",
+  "gis.streetsView": "Okporo ụzọ",
+  "gis.regionsView": "Mpaghara",
   "gis.intro": "Tinye ma ọ bụ dezie ozi ngụkọ na-eji.",
   "gis.areas": "See mpaghara ma ọ bụ bubata otu site na OpenStreetMap",
   "gis.streets": "Nhazi okporo ụzọ: ụzọ bọs, igwe kwụ otu ebe na tram, ọsọ, waya elu",

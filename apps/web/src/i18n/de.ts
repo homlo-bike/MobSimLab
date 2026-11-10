@@ -219,6 +219,8 @@ export const de: Messages = {
   "drawing.preferences": "die Projekteinstellungen",
   "drawing.costs": "die Kosteneinstellungen",
   "drawing.scenarios": "die gespeicherten Szenarien",
+  "drawing.benefits": "die Nutzenformeln",
+  "drawing.regions": "die Gebiete",
 
   "tab.label": "Projekt",
   "tab.simulator": "Simulator",
@@ -262,6 +264,8 @@ export const de: Messages = {
   "gis.streets": "Straßenaufteilung: Bus-, Rad- und Straßenbahnspuren, Geschwindigkeiten, Oberleitungen",
   "gis.walk": "Abdeckung in 15 Gehminuten und Lücken",
   "gis.spacing": "Haltestellenabstände",
+  "gis.streetsView": "Straßen",
+  "gis.regionsView": "Gebiete",
 
   "tables.title": "Tabellen",
   "tables.intro": "Alle Berechnungen zum Projekt, um abzuschätzen, wie gut es funktionieren wird.",

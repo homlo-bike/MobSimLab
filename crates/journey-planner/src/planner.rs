@@ -762,6 +762,115 @@ impl Planner {
         result
     }
 
+    /// Purpose: earliest arrival at every stop when leaving `from` at `t0`, by walking or by any number of
+    /// vehicles up to `max_rides` (the RAPTOR rounds without a destination, used for accessibility).
+    /// Output: one entry per stop, in the order of [`Planner::stop_ids`]; `None` where the stop cannot be
+    /// reached. Walking from the origin goes up to `max_access_m`.
+    pub fn reach(&self, from: [f64; 2], t0: u32) -> Vec<Option<u32>> {
+        let n = self.stops.len();
+        let oxy = self.xy(from);
+        let k_max = self.settings.max_rides.max(1);
+        // Earliest arrival by vehicle and on foot, overall and in the previous round.
+        let mut best_v = vec![INF; n];
+        let mut best_f = vec![INF; n];
+        let mut prev_v = vec![INF; n];
+        let mut prev_f = vec![INF; n];
+        let mut marked = vec![false; n];
+        for (i, s) in self.stops.iter().enumerate() {
+            let d = self.dist((s.x, s.y), oxy);
+            if d <= self.settings.max_access_m {
+                let a = t0 + self.settings.walk_s(d);
+                prev_f[i] = a;
+                best_f[i] = a;
+                marked[i] = true;
+            }
+        }
+        for k in 1..=k_max {
+            let mut scan: HashMap<usize, usize> = HashMap::new();
+            for p in (0..n).filter(|&p| marked[p]) {
+                for &(r, i) in &self.stop_routes[p] {
+                    scan.entry(r).and_modify(|e| *e = (*e).min(i)).or_insert(i);
+                }
+            }
+            marked.iter_mut().for_each(|m| *m = false);
+            let mut cur_v = vec![INF; n];
+            let mut cur_f = vec![INF; n];
+            let mut improved = Vec::new();
+            for (r, start) in scan {
+                let route = &self.routes[r];
+                let mut cur: Option<usize> = None;
+                for i in start..route.stops.len() {
+                    let p = route.stops[i];
+                    if let Some(t) = cur {
+                        let trip = &route.trips[t];
+                        let a = trip.arr[i];
+                        if trip.alight[i] && a < best_v[p] {
+                            cur_v[p] = a;
+                            best_v[p] = a;
+                            improved.push(p);
+                        }
+                    }
+                    let from_vehicle = if k > 1 && prev_v[p] != INF && self.stops[p].change_s != INF
+                    {
+                        prev_v[p].saturating_add(self.stops[p].change_s)
+                    } else {
+                        INF
+                    };
+                    let ready = prev_f[p].min(from_vehicle);
+                    if ready == INF {
+                        continue;
+                    }
+                    if let Some(t) = cur {
+                        if route.trips[t].dep[i] < ready {
+                            continue;
+                        }
+                    }
+                    let mut j = route.trips.partition_point(|t| t.dep[i] < ready);
+                    while j < route.trips.len() && !route.trips[j].board[i] {
+                        j += 1;
+                    }
+                    if j < route.trips.len() && cur.map_or(true, |t| j < t) {
+                        cur = Some(j);
+                    }
+                }
+            }
+            improved.sort_unstable();
+            improved.dedup();
+            for &p in &improved {
+                marked[p] = true;
+                for f in &self.footpaths[p] {
+                    let a = cur_v[p].saturating_add(f.dur);
+                    if a < best_f[f.to]
+                        && a < best_v[f.to].saturating_add(self.stops[f.to].change_s)
+                    {
+                        cur_f[f.to] = a;
+                        best_f[f.to] = a;
+                        marked[f.to] = true;
+                    }
+                }
+            }
+            prev_v = cur_v;
+            prev_f = cur_f;
+            if !marked.iter().any(|&m| m) {
+                break;
+            }
+        }
+        (0..n)
+            .map(|i| {
+                let a = best_v[i].min(best_f[i]);
+                (a != INF).then_some(a)
+            })
+            .collect()
+    }
+
+    /// Purpose: the stop ids in the order [`Planner::reach`] answers.
+    pub fn stop_ids(&self) -> Vec<String> {
+        self.stops
+            .iter()
+            .map(|s| s.place.stop_id.clone().unwrap_or_default())
+            .collect()
+    }
+
     /// Purpose: walk back from a vehicle arrival at `p` in round `k` to the origin.
     /// Output: legs without waits, in travel order (times of walks are filled by `timed`).
     fn reconstruct(

@@ -213,6 +213,8 @@ export const it: Messages = {
   "drawing.preferences": "le preferenze del progetto",
   "drawing.costs": "le impostazioni dei costi",
   "drawing.scenarios": "gli scenari salvati",
+  "drawing.benefits": "le formule dei benefici",
+  "drawing.regions": "le aree",
 
   "tab.label": "Progetto",
   "tab.simulator": "Simulatore",
@@ -251,6 +253,8 @@ export const it: Messages = {
   "schematic.export": "Esporta per stampa e schermo",
 
   "gis.title": "GIS",
+  "gis.streetsView": "Strade",
+  "gis.regionsView": "Aree",
   "gis.intro": "Aggiungi e modifica le informazioni usate nei calcoli.",
   "gis.areas": "Disegna aree o importale da OpenStreetMap",
   "gis.streets": "Configurazione stradale: corsie bus, ciclabili e tram, velocità, linea aerea",

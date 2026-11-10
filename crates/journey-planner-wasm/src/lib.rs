@@ -51,6 +51,13 @@ impl JourneyPlanner {
         Ok(json(&self.planner.profile(&q)))
     }
 
+    /// Purpose: earliest arrival at every stop when leaving `[lon, lat]` at `t0` (seconds after midnight).
+    /// Output: JSON `{"stop_ids": [...], "arrive_s": [s or null, ...]}` in the same order.
+    pub fn reach(&self, lon: f64, lat: f64, t0: u32) -> String {
+        let arrive = self.planner.reach([lon, lat], t0);
+        json(&serde_json::json!({ "stop_ids": self.planner.stop_ids(), "arrive_s": arrive }))
+    }
+
     /// Purpose: the default settings, as JSON.
     pub fn default_settings() -> String {
         json(&Settings::default())

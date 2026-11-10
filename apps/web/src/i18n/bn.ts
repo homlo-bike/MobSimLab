@@ -212,6 +212,8 @@ export const bn: Messages = {
   "drawing.preferences": "প্রকল্পের পছন্দ",
   "drawing.costs": "খরচের সেটিংস",
   "drawing.scenarios": "সংরক্ষিত পরিস্থিতি",
+  "drawing.benefits": "সুফলের সূত্র",
+  "drawing.regions": "অঞ্চল",
 
   "tab.label": "প্রকল্প",
   "tab.simulator": "সিমুলেটর",
@@ -249,6 +251,8 @@ export const bn: Messages = {
   "schematic.export": "মুদ্রণ ও পর্দার জন্য রপ্তানি",
 
   "gis.title": "GIS",
+  "gis.streetsView": "রাস্তা",
+  "gis.regionsView": "অঞ্চল",
   "gis.intro": "গণনায় ব্যবহৃত তথ্য যোগ বা সম্পাদনা করুন।",
   "gis.areas": "একটি এলাকা আঁকুন বা OpenStreetMap থেকে আমদানি করুন",
   "gis.streets": "রাস্তার বিন্যাস: বাস, সাইকেল ও ট্রাম লেন, গতি, উপরের তার",

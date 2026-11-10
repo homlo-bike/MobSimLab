@@ -215,6 +215,8 @@ export const nl: Messages = {
   "drawing.preferences": "de projectvoorkeuren",
   "drawing.costs": "de kosteninstellingen",
   "drawing.scenarios": "de opgeslagen scenario’s",
+  "drawing.benefits": "de batenformules",
+  "drawing.regions": "de gebieden",
 
   "tab.label": "Project",
   "tab.simulator": "Simulator",
@@ -257,6 +259,8 @@ export const nl: Messages = {
   "gis.streets": "Straatprofiel: bus-, fiets- en trambanen, snelheden, bovenleiding",
   "gis.walk": "Bereik binnen 15 minuten lopen en gaten",
   "gis.spacing": "Halteafstand",
+  "gis.streetsView": "Straten",
+  "gis.regionsView": "Gebieden",
 
   "tables.title": "Tabellen",
   "tables.intro": "Alle berekeningen over het project, om te schatten hoe goed het zal presteren.",

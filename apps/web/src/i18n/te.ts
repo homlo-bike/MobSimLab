@@ -214,6 +214,8 @@ export const te: Messages = {
   "drawing.preferences": "ప్రాజెక్టు ప్రాధాన్యతలు",
   "drawing.costs": "ఖర్చు సెట్టింగ్‌లు",
   "drawing.scenarios": "సేవ్ చేసిన దృశ్యాలు",
+  "drawing.benefits": "ప్రయోజన సూత్రాలు",
+  "drawing.regions": "ప్రాంతాలు",
 
   "tab.label": "ప్రాజెక్టు",
   "tab.simulator": "సిమ్యులేటర్",
@@ -251,6 +253,8 @@ export const te: Messages = {
   "schematic.export": "ముద్రణ మరియు తెరల కోసం ఎగుమతి",
 
   "gis.title": "GIS",
+  "gis.streetsView": "వీధులు",
+  "gis.regionsView": "ప్రాంతాలు",
   "gis.intro": "లెక్కలు ఉపయోగించే సమాచారాన్ని జోడించండి లేదా సవరించండి.",
   "gis.areas": "ప్రాంతాన్ని గీయండి లేదా OpenStreetMap నుండి దిగుమతి చేయండి",
   "gis.streets": "వీధి అమరిక: బస్సు, సైకిల్ మరియు ట్రామ్ లేన్‌లు, వేగాలు, పై తీగలు",

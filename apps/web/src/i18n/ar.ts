@@ -206,6 +206,8 @@ export const ar: Messages = {
   "drawing.preferences": "تفضيلات المشروع",
   "drawing.costs": "إعدادات التكاليف",
   "drawing.scenarios": "السيناريوهات المحفوظة",
+  "drawing.benefits": "صيغ المنافع",
+  "drawing.regions": "المناطق",
 
   "tab.label": "المشروع",
   "tab.simulator": "المحاكي",
@@ -242,6 +244,8 @@ export const ar: Messages = {
   "schematic.export": "التصدير للطباعة والشاشات",
 
   "gis.title": "GIS",
+  "gis.streetsView": "الشوارع",
+  "gis.regionsView": "المناطق",
   "gis.intro": "أضف أو عدّل المعلومات التي تستخدمها الحسابات.",
   "gis.areas": "ارسم منطقة أو استوردها من OpenStreetMap",
   "gis.streets": "تخطيط الشوارع: مسارات الحافلات والدراجات والترام، السرعات، الأسلاك العلوية",

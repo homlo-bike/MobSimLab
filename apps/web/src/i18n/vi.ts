@@ -212,6 +212,8 @@ export const vi: Messages = {
   "drawing.preferences": "tùy chọn dự án",
   "drawing.costs": "cài đặt chi phí",
   "drawing.scenarios": "các kịch bản đã lưu",
+  "drawing.benefits": "công thức lợi ích",
+  "drawing.regions": "khu vực",
 
   "tab.label": "Dự án",
   "tab.simulator": "Mô phỏng",
@@ -251,6 +253,8 @@ export const vi: Messages = {
   "schematic.export": "Xuất để in và hiển thị màn hình",
 
   "gis.title": "GIS",
+  "gis.streetsView": "Đường phố",
+  "gis.regionsView": "Khu vực",
   "gis.intro": "Thêm và chỉnh sửa thông tin dùng trong tính toán.",
   "gis.areas": "Vẽ khu vực hoặc nhập từ OpenStreetMap",
   "gis.streets": "Cấu trúc đường phố: làn xe buýt, xe đạp và tàu điện, tốc độ, dây điện trên cao",

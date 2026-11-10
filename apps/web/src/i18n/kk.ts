@@ -213,6 +213,8 @@ export const kk: Messages = {
   "drawing.preferences": "жоба параметрлері",
   "drawing.costs": "шығын баптаулары",
   "drawing.scenarios": "сақталған сценарийлер",
+  "drawing.benefits": "пайда формулалары",
+  "drawing.regions": "аймақтар",
 
   "tab.label": "Жоба",
   "tab.simulator": "Симулятор",
@@ -249,6 +251,8 @@ export const kk: Messages = {
   "schematic.export": "Басып шығару мен экрандарға экспорттау",
 
   "gis.title": "GIS",
+  "gis.streetsView": "Көшелер",
+  "gis.regionsView": "Аймақтар",
   "gis.intro": "Есептеулер пайдаланатын ақпаратты қосыңыз немесе өңдеңіз.",
   "gis.areas": "Аумақ сызыңыз немесе OpenStreetMap-тан импорттаңыз",
   "gis.streets": "Көше құрылымы: автобус, велосипед және трамвай жолақтары, жылдамдықтар, түйіспе желісі",

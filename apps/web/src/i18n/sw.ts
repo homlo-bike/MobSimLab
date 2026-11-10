@@ -212,6 +212,8 @@ export const sw: Messages = {
   "drawing.preferences": "mapendeleo ya mradi",
   "drawing.costs": "mipangilio ya gharama",
   "drawing.scenarios": "hali zilizohifadhiwa",
+  "drawing.benefits": "fomula za manufaa",
+  "drawing.regions": "maeneo",
 
   "tab.label": "Mradi",
   "tab.simulator": "Kiigaji",
@@ -250,6 +252,8 @@ export const sw: Messages = {
   "schematic.export": "Hamisha kwa uchapishaji na skrini",
 
   "gis.title": "GIS",
+  "gis.streetsView": "Barabara",
+  "gis.regionsView": "Maeneo",
   "gis.intro": "Ongeza au hariri taarifa ambazo hesabu zinatumia.",
   "gis.areas": "Chora eneo au lilete kutoka OpenStreetMap",
   "gis.streets": "Mpangilio wa barabara: njia za basi, baiskeli na tramu, kasi, nyaya za juu",

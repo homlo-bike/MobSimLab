@@ -213,6 +213,8 @@ export const ha: Messages = {
   "drawing.preferences": "zaɓuɓɓukan aiki",
   "drawing.costs": "saitunan kuɗi",
   "drawing.scenarios": "yanayin da aka adana",
+  "drawing.benefits": "dabarun fa'idodi",
+  "drawing.regions": "yankuna",
 
   "tab.label": "Aiki",
   "tab.simulator": "Mai kwaikwayo",
@@ -251,6 +253,8 @@ export const ha: Messages = {
   "schematic.export": "Fitarwa don bugawa da allo",
 
   "gis.title": "GIS",
+  "gis.streetsView": "Tituna",
+  "gis.regionsView": "Yankuna",
   "gis.intro": "Ƙara ko gyara bayanan da ƙididdiga ke amfani da su.",
   "gis.areas": "Zana yanki ko shigo da ɗaya daga OpenStreetMap",
   "gis.streets": "Tsarin titi: hanyoyin bas, keke da tram, gudu, wayoyin sama",

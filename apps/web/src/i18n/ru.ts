@@ -214,6 +214,8 @@ export const ru: Messages = {
   "drawing.preferences": "параметры проекта",
   "drawing.costs": "настройки затрат",
   "drawing.scenarios": "сохранённые сценарии",
+  "drawing.benefits": "формулы выгод",
+  "drawing.regions": "районы",
 
   "tab.label": "Проект",
   "tab.simulator": "Симулятор",
@@ -252,6 +254,8 @@ export const ru: Messages = {
   "schematic.export": "Экспорт для печати и экранов",
 
   "gis.title": "ГИС",
+  "gis.streetsView": "Улицы",
+  "gis.regionsView": "Районы",
   "gis.intro": "Добавляйте и изменяйте данные, которые используются в расчётах.",
   "gis.areas": "Нарисуйте территорию или импортируйте её из OpenStreetMap",
   "gis.streets": "Профиль улиц: полосы для автобусов, велосипедов и трамваев, скорости, контактная сеть",

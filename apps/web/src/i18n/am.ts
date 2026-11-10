@@ -206,6 +206,8 @@ export const am: Messages = {
   "drawing.preferences": "የፕሮጀክት ምርጫዎች",
   "drawing.costs": "የወጪ ቅንብሮች",
   "drawing.scenarios": "የተቀመጡ ሁኔታዎች",
+  "drawing.benefits": "የጥቅም ቀመሮች",
+  "drawing.regions": "ክልሎች",
 
   "tab.label": "ፕሮጀክት",
   "tab.simulator": "ማስመሰያ",
@@ -241,6 +243,8 @@ export const am: Messages = {
   "schematic.export": "ለህትመት እና ለማያ ገጾች ላክ",
 
   "gis.title": "GIS",
+  "gis.streetsView": "መንገዶች",
+  "gis.regionsView": "ክልሎች",
   "gis.intro": "ስሌቶች የሚጠቀሙበትን መረጃ ያክሉ ወይም ያርትዑ።",
   "gis.areas": "አካባቢ ይሳሉ ወይም ከ OpenStreetMap ያስገቡ",
   "gis.streets": "የመንገድ አቀማመጥ፦ የአውቶቡስ፣ የብስክሌት እና የትራም መስመሮች፣ ፍጥነቶች፣ የላይ ሽቦዎች",

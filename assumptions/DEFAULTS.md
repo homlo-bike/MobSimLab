@@ -23,6 +23,7 @@ Schema and contribution rules: [README.md](README.md).
 - [Depots and streets](#depots-and-streets)
 - [Energy and climate](#energy-and-climate)
 - [Cost](#cost)
+- [Benefits](#benefits)
 - [Energy supply systems](#energy-supply-systems)
 - [Switches and crossings](#switches-and-crossings)
 - [Sources](#sources)
@@ -1650,6 +1651,299 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 |---|---|---|---|---|---|---|---|
 | all | 2023 | 2023 | 2023 | cited | secondary | [transit-costs-project](#src-transit-costs-project), [worldbank-wdi](#src-worldbank-wdi) | The Transit Costs Project states costs in 2023 PPP dollars. The tables scale them to the latest year with the World Bank US GDP deflator (NY.GDP.DEFL.ZS) and to the country with its PPP conversion factor (PA.NUS.PPP) or, for vehicles, its exchange rate (PA.NUS.FCRF). |
 
+## Benefits
+
+### Land value: share of the catchment where the full uplift applies
+
+`benefit.uplift_inner_share` · unit: share · used by: land value uplift: distance decay
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.4 | 0.5 | 0.6 | documented | unverified | [debrezion-2007](#src-debrezion-2007), [mobsimlab-derivation](#src-mobsimlab-derivation) | Uplift is strongest within about 400 m of a rail station and fades to nothing at about 800 m; the full uplift applies within this share of the mode's catchment (mode.catchment_m), then falls linearly to zero at the catchment edge. |
+
+### Access: longest public transport trip to count jobs as reachable
+
+`benefit.time_limit.jobs` · unit: min · used by: access for people: places reachable
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 30 | 45 | 60 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | 45 minutes is a common commuting threshold in cumulative-opportunity accessibility studies; 30 and 60 are the usual sensitivity values. |
+
+### Access: longest public transport trip to count schools as reachable
+
+`benefit.time_limit.school` · unit: min · used by: access for people: places reachable
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 20 | 30 | 45 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | A school trip of about 30 minutes; shorter for young pupils. |
+
+### Access: longest public transport trip to count universities and colleges as reachable
+
+`benefit.time_limit.university` · unit: min · used by: access for people: places reachable
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 30 | 45 | 60 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Same threshold as jobs. |
+
+### Access: longest public transport trip to count hospitals as reachable
+
+`benefit.time_limit.hospital` · unit: min · used by: access for people: places reachable
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 20 | 30 | 45 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | 30 minutes to a hospital is a usual access standard in health accessibility studies. |
+
+### Access: longest public transport trip to count clinics and doctors as reachable
+
+`benefit.time_limit.clinic` · unit: min · used by: access for people: places reachable
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 15 | 20 | 30 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Primary care should be closer than hospitals. |
+
+### Access: weight of a destination falls by this factor per minute (exp(−β·t))
+
+`benefit.access_decay_per_min` · unit: 1/min · used by: resident earnings from job access
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.03 | 0.05 | 0.08 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Negative-exponential accessibility; β = 0.05/min halves the weight of a job every 14 minutes, in the range used for commuting in European accessibility studies. |
+
+### Productivity: distance decay of effective density (1/t^α)
+
+`benefit.ed_decay` · unit: exponent · used by: GDP growth: effective density
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.8 | 1.0 | 1.8 | documented | unverified | [dft-agglomeration-2018](#src-dft-agglomeration-2018) | Effective density weights jobs by 1 / (generalised time)^α. UK appraisal guidance uses α = 1 for most sectors and up to 1.8 for some; to be checked against TAG A2.4. |
+
+### Productivity: agglomeration elasticity (GDP per worker to effective density)
+
+`benefit.elasticity_agglomeration` · unit: elasticity · used by: GDP growth
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.02 | 0.04 | 0.07 | cited | unverified | [dft-agglomeration-2018](#src-dft-agglomeration-2018) | A DfT evidence review reports mean agglomeration elasticities usually between 0.02 and 0.05; the high value covers business services in large cities. |
+
+### Earnings: elasticity of wages to job accessibility from home
+
+`benefit.elasticity_job_access` · unit: elasticity · used by: resident earnings from job access
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.007 | 0.015 | 0.04 | cited | unverified | [isacsson-2015](#src-isacsson-2015) | Stockholm micro-data: 0.007 for accessibility measured from home and 0.015 for workers who change work place; US metropolitan studies find larger values (high). |
+
+### Earnings: labour income share of GDP
+
+`benefit.labour_income_share` · unit: share · used by: resident earnings from job access
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.4 | 0.52 | 0.6 | documented | unverified | [ilostat-labour-share](#src-ilostat-labour-share) | ILO estimates the global labour income share at a little over half of GDP; national values range from about 0.4 to 0.6. |
+
+### Education: share of the population aged 18 to 24
+
+`benefit.age_18_24_share` · unit: share · used by: access for people: universities
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.07 | 0.09 | 0.13 | educated-guess | unverified | [worldbank-benefit-wdi](#src-worldbank-benefit-wdi), [mobsimlab-derivation](#src-mobsimlab-derivation) | Seven one-year cohorts are about 8–9 % of the population in ageing countries and up to 13 % in young ones. |
+
+### Population fallback: residential floor area per person
+
+`benefit.floor_m2_per_person` · unit: m² · used by: population near stations when WorldPop is unavailable
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 20 | 35 | 50 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Dwelling floor area per person ranges from under 20 m² in dense low-income cities to about 40–50 m² in Western Europe and North America. |
+
+### Buildings tagged only 'building=yes': share counted as homes
+
+`benefit.unknown_building_residential_share` · unit: share · used by: population and jobs from buildings
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.5 | 0.7 | 0.85 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Most untagged buildings in OpenStreetMap are houses or blocks of flats; the rest are shops, offices and sheds. |
+
+### Buildings without height or levels in OpenStreetMap: number of floors
+
+`benefit.default_levels` · unit: floors · used by: population and jobs from buildings, land value uplift
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 1 | 2 | 4 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Typical low-rise building; replaced by building:levels or height ÷ 3 m where OSM has them. |
+
+### Jobs from buildings: floor area per job, offices
+
+`benefit.m2_per_job.office` · unit: m² · used by: jobs near stations
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 12 | 18 | 25 | documented | unverified | [hca-employment-density-2015](#src-hca-employment-density-2015) | Employment densities per use class (net internal area per full-time job) raised by about 20 % for gross floor area and vacancy. |
+
+### Jobs from buildings: floor area per job, shops
+
+`benefit.m2_per_job.retail` · unit: m² · used by: jobs near stations
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 15 | 25 | 40 | documented | unverified | [hca-employment-density-2015](#src-hca-employment-density-2015) | Employment densities per use class (net internal area per full-time job) raised by about 20 % for gross floor area and vacancy. |
+
+### Jobs from buildings: floor area per job, industry and warehouses
+
+`benefit.m2_per_job.industrial` · unit: m² · used by: jobs near stations
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 35 | 60 | 100 | documented | unverified | [hca-employment-density-2015](#src-hca-employment-density-2015) | Employment densities per use class (net internal area per full-time job) raised by about 20 % for gross floor area and vacancy. |
+
+### Jobs from buildings: floor area per job, schools, hospitals and public buildings
+
+`benefit.m2_per_job.public` · unit: m² · used by: jobs near stations
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 25 | 40 | 60 | documented | unverified | [hca-employment-density-2015](#src-hca-employment-density-2015) | Employment densities per use class (net internal area per full-time job) raised by about 20 % for gross floor area and vacancy. |
+
+### Ridership: share of residents near a station who use the line on a weekday
+
+`benefit.ridership.resident_share` · unit: share · used by: ridership formula
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.05 | 0.12 | 0.25 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Starting point for the ridership formula; replace with local mode share data. |
+| bus, trolleybus | 0.03 | 0.08 | 0.15 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Bus lines attract a smaller share of the people living near them than rail. |
+| intercity_bus, long_distance_rail, high_speed_rail | 0.005 | 0.02 | 0.05 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Long-distance services are used occasionally, not daily. |
+| metro | 0.1 | 0.2 | 0.3 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Metro catchments in large cities reach transit mode shares of a third or more. |
+
+### Ridership: trips per user per weekday
+
+`benefit.ridership.trips_per_user` · unit: trips · used by: ridership formula
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 1.6 | 2.0 | 2.4 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | A return trip, with some users making one-way or extra trips. |
+
+### Ridership: weekday equivalents per year
+
+`benefit.ridership.days_per_year` · unit: days · used by: ridership formula
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 280 | 300 | 330 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Annual ridership is usually 280–330 times average weekday ridership, as weekends and holidays carry less. |
+
+### Land value: uplift near a new station, homes
+
+`benefit.uplift.residential` · unit: share · used by: land value uplift
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0 | 0 | 0.01 | educated-guess | unverified | [rennert-2022](#src-rennert-2022), [mobsimlab-derivation](#src-mobsimlab-derivation) | Ordinary bus lines show no reliable effect on property values. |
+| metro | 0.01 | 0.04 | 0.1 | documented | unverified | [debrezion-2007](#src-debrezion-2007), [rennert-2022](#src-rennert-2022), [mohammad-2013](#src-mohammad-2013) | Debrezion et al. (2007): about 4.2 % for homes and 16.4 % for commercial property in a rail station zone; Rennert (2022) finds −7.4 to +9.6 points across over 200 cases. Mode adjustment is mild because reviews find no significant difference between BRT, light rail and metro. |
+| commuter_rail | 0.01 | 0.04 | 0.1 | documented | unverified | [debrezion-2007](#src-debrezion-2007), [rennert-2022](#src-rennert-2022), [mohammad-2013](#src-mohammad-2013) | Debrezion et al. (2007): about 4.2 % for homes and 16.4 % for commercial property in a rail station zone; Rennert (2022) finds −7.4 to +9.6 points across over 200 cases. Mode adjustment is mild because reviews find no significant difference between BRT, light rail and metro. |
+| regional_rail | 0.01 | 0.04 | 0.1 | documented | unverified | [debrezion-2007](#src-debrezion-2007), [rennert-2022](#src-rennert-2022), [mohammad-2013](#src-mohammad-2013) | Debrezion et al. (2007): about 4.2 % for homes and 16.4 % for commercial property in a rail station zone; Rennert (2022) finds −7.4 to +9.6 points across over 200 cases. Mode adjustment is mild because reviews find no significant difference between BRT, light rail and metro. |
+| long_distance_rail | 0.0 | 0.02 | 0.05 | documented | unverified | [debrezion-2007](#src-debrezion-2007), [rennert-2022](#src-rennert-2022), [mohammad-2013](#src-mohammad-2013) | Debrezion et al. (2007): about 4.2 % for homes and 16.4 % for commercial property in a rail station zone; Rennert (2022) finds −7.4 to +9.6 points across over 200 cases. Mode adjustment is mild because reviews find no significant difference between BRT, light rail and metro. |
+| high_speed_rail | 0.0 | 0.02 | 0.05 | documented | unverified | [debrezion-2007](#src-debrezion-2007), [rennert-2022](#src-rennert-2022), [mohammad-2013](#src-mohammad-2013) | Debrezion et al. (2007): about 4.2 % for homes and 16.4 % for commercial property in a rail station zone; Rennert (2022) finds −7.4 to +9.6 points across over 200 cases. Mode adjustment is mild because reviews find no significant difference between BRT, light rail and metro. |
+| light_rail | 0.0 | 0.03 | 0.08 | documented | unverified | [debrezion-2007](#src-debrezion-2007), [rennert-2022](#src-rennert-2022), [mohammad-2013](#src-mohammad-2013) | Debrezion et al. (2007): about 4.2 % for homes and 16.4 % for commercial property in a rail station zone; Rennert (2022) finds −7.4 to +9.6 points across over 200 cases. Mode adjustment is mild because reviews find no significant difference between BRT, light rail and metro. |
+| tram | 0.0 | 0.03 | 0.08 | documented | unverified | [debrezion-2007](#src-debrezion-2007), [rennert-2022](#src-rennert-2022), [mohammad-2013](#src-mohammad-2013) | Debrezion et al. (2007): about 4.2 % for homes and 16.4 % for commercial property in a rail station zone; Rennert (2022) finds −7.4 to +9.6 points across over 200 cases. Mode adjustment is mild because reviews find no significant difference between BRT, light rail and metro. |
+| brt | 0.0 | 0.02 | 0.06 | documented | unverified | [debrezion-2007](#src-debrezion-2007), [rennert-2022](#src-rennert-2022), [mohammad-2013](#src-mohammad-2013) | Debrezion et al. (2007): about 4.2 % for homes and 16.4 % for commercial property in a rail station zone; Rennert (2022) finds −7.4 to +9.6 points across over 200 cases. Mode adjustment is mild because reviews find no significant difference between BRT, light rail and metro. |
+
+### Land value: uplift near a new station, shops, offices and other work places
+
+`benefit.uplift.commercial` · unit: share · used by: land value uplift
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0 | 0 | 0.01 | educated-guess | unverified | [rennert-2022](#src-rennert-2022), [mobsimlab-derivation](#src-mobsimlab-derivation) | Ordinary bus lines show no reliable effect on property values. |
+| metro | 0.04 | 0.12 | 0.2 | documented | unverified | [debrezion-2007](#src-debrezion-2007), [rennert-2022](#src-rennert-2022), [mohammad-2013](#src-mohammad-2013) | Debrezion et al. (2007): about 4.2 % for homes and 16.4 % for commercial property in a rail station zone; Rennert (2022) finds −7.4 to +9.6 points across over 200 cases. Mode adjustment is mild because reviews find no significant difference between BRT, light rail and metro. |
+| commuter_rail | 0.04 | 0.12 | 0.2 | documented | unverified | [debrezion-2007](#src-debrezion-2007), [rennert-2022](#src-rennert-2022), [mohammad-2013](#src-mohammad-2013) | Debrezion et al. (2007): about 4.2 % for homes and 16.4 % for commercial property in a rail station zone; Rennert (2022) finds −7.4 to +9.6 points across over 200 cases. Mode adjustment is mild because reviews find no significant difference between BRT, light rail and metro. |
+| regional_rail | 0.04 | 0.12 | 0.2 | documented | unverified | [debrezion-2007](#src-debrezion-2007), [rennert-2022](#src-rennert-2022), [mohammad-2013](#src-mohammad-2013) | Debrezion et al. (2007): about 4.2 % for homes and 16.4 % for commercial property in a rail station zone; Rennert (2022) finds −7.4 to +9.6 points across over 200 cases. Mode adjustment is mild because reviews find no significant difference between BRT, light rail and metro. |
+| long_distance_rail | 0.0 | 0.05 | 0.15 | documented | unverified | [debrezion-2007](#src-debrezion-2007), [rennert-2022](#src-rennert-2022), [mohammad-2013](#src-mohammad-2013) | Debrezion et al. (2007): about 4.2 % for homes and 16.4 % for commercial property in a rail station zone; Rennert (2022) finds −7.4 to +9.6 points across over 200 cases. Mode adjustment is mild because reviews find no significant difference between BRT, light rail and metro. |
+| high_speed_rail | 0.0 | 0.05 | 0.15 | documented | unverified | [debrezion-2007](#src-debrezion-2007), [rennert-2022](#src-rennert-2022), [mohammad-2013](#src-mohammad-2013) | Debrezion et al. (2007): about 4.2 % for homes and 16.4 % for commercial property in a rail station zone; Rennert (2022) finds −7.4 to +9.6 points across over 200 cases. Mode adjustment is mild because reviews find no significant difference between BRT, light rail and metro. |
+| light_rail | 0.02 | 0.08 | 0.15 | documented | unverified | [debrezion-2007](#src-debrezion-2007), [rennert-2022](#src-rennert-2022), [mohammad-2013](#src-mohammad-2013) | Debrezion et al. (2007): about 4.2 % for homes and 16.4 % for commercial property in a rail station zone; Rennert (2022) finds −7.4 to +9.6 points across over 200 cases. Mode adjustment is mild because reviews find no significant difference between BRT, light rail and metro. |
+| tram | 0.02 | 0.08 | 0.15 | documented | unverified | [debrezion-2007](#src-debrezion-2007), [rennert-2022](#src-rennert-2022), [mohammad-2013](#src-mohammad-2013) | Debrezion et al. (2007): about 4.2 % for homes and 16.4 % for commercial property in a rail station zone; Rennert (2022) finds −7.4 to +9.6 points across over 200 cases. Mode adjustment is mild because reviews find no significant difference between BRT, light rail and metro. |
+| brt | 0.0 | 0.05 | 0.12 | documented | unverified | [debrezion-2007](#src-debrezion-2007), [rennert-2022](#src-rennert-2022), [mohammad-2013](#src-mohammad-2013) | Debrezion et al. (2007): about 4.2 % for homes and 16.4 % for commercial property in a rail station zone; Rennert (2022) finds −7.4 to +9.6 points across over 200 cases. Mode adjustment is mild because reviews find no significant difference between BRT, light rail and metro. |
+
+### Land value fallback: value of 1 m² of homes as a share of GDP per person
+
+`benefit.value_per_m2_gdp_ratio` · unit: share · used by: land value uplift where no region gives a value
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.03 | 0.07 | 0.15 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Average home prices per m² divided by GDP per person: about 0.03 in the United States, 0.07 in France and Germany, 0.1 or more in China and fast-growing cities. Deliberately wide; enter a region value where known. |
+
+### Land value fallback: value of 1 m² of work places relative to homes
+
+`benefit.commercial_value_factor` · unit: ratio · used by: land value uplift where no region gives a value
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.8 | 1.2 | 1.8 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Offices and shops in station areas are usually worth somewhat more per m² than homes. |
+
+### Tax: recurrent property tax as a share of property value per year
+
+`benefit.property_tax_rate` · unit: share · used by: extra property tax from land value uplift
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.002 | 0.005 | 0.012 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Effective recurrent property tax rates range from about 0.2 % to over 1 % of market value a year; a region's tax revenue replaces this where entered. |
+
+### Stimulated economy: share of spending on civil works, stations and depots that stays in the country
+
+`benefit.domestic_share.civil` · unit: share · used by: stimulated economy
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.75 | 0.85 | 0.95 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Construction is mostly local labour and materials. |
+
+### Stimulated economy: share of spending on track, power and signalling that stays in the country
+
+`benefit.domestic_share.systems` · unit: share · used by: stimulated economy
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.4 | 0.6 | 0.8 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Signalling and power equipment is often imported. |
+
+### Stimulated economy: share of spending on vehicles that stays in the country
+
+`benefit.domestic_share.vehicles` · unit: share · used by: stimulated economy
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.1 | 0.4 | 0.8 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Most countries import their trains and buses; high where they are built locally. |
+
+### Stimulated economy: share of spending on operation and upkeep that stays in the country
+
+`benefit.domestic_share.operating` · unit: share · used by: stimulated economy
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.85 | 0.9 | 0.95 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Staff and energy are mostly domestic. |
+
+### Stimulated economy: GDP generated per unit of domestic construction spending
+
+`benefit.va_multiplier.construction` · unit: ratio · used by: stimulated economy
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.6 | 0.85 | 1.5 | documented | unverified | [oecd-icio](#src-oecd-icio), [mobsimlab-derivation](#src-mobsimlab-derivation) | Direct plus supply-chain value added per unit of domestic final demand is a little under 1 (Type I, input-output tables); adding household spending (Type II) gives about 1.2–1.5. |
+
+### Stimulated economy: GDP generated per unit of domestic operating spending
+
+`benefit.va_multiplier.operation` · unit: ratio · used by: stimulated economy
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.7 | 0.9 | 1.5 | documented | unverified | [oecd-icio](#src-oecd-icio), [mobsimlab-derivation](#src-mobsimlab-derivation) | As for construction; services have a higher direct value-added share. |
+
+### Stimulated economy: GDP per worker in the jobs supported, relative to the national average
+
+`benefit.construction_productivity_ratio` · unit: ratio · used by: stimulated economy: job-years
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.6 | 0.8 | 1.1 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Construction output per worker is usually a little below the economy average. |
+
 ## Energy supply systems
 
 Vehicles list the supply systems they support (`supplySystems`); a section can only be run by a vehicle
@@ -1820,3 +2114,12 @@ and rationale per attribute: [`switches.yaml`](switches.yaml); geometry model:
 | <a id="src-pedestrian-observations-opex"></a>`pedestrian-observations-opex` | [Pedestrian Observations (Alon Levy): Quick Note on Subway Operating Costs (2026), costs per car-km of Berlin, London and New York](https://pedestrianobservations.com/2026/05/22/quick-note-on-subway-operating-costs/) | free | © the author; numbers cited as facts | 2026-11-09 | search-snippet |
 | <a id="src-flyvbjerg-2003"></a>`flyvbjerg-2003` | [Flyvbjerg, Skamris Holm, Buhl: How common and how large are cost overruns in transport infrastructure projects? Transport Reviews 23(1), 71–88 (2003)](https://doi.org/10.1080/01441640309904) | paywalled | © Taylor & Francis; numbers cited as facts | 2026-11-09 | none |
 | <a id="src-worldbank-wdi"></a>`worldbank-wdi` | [World Bank World Development Indicators API: PA.NUS.PPP (PPP conversion factor, GDP), PA.NUS.FCRF (official exchange rate), NY.GDP.DEFL.ZS (GDP deflator)](https://datahelpdesk.worldbank.org/knowledgebase/articles/889392-about-the-indicators-api-documentation) | free | CC BY 4.0 | 2026-11-09 | none |
+| <a id="src-dft-agglomeration-2018"></a>`dft-agglomeration-2018` | [Department for Transport (UK): Agglomeration elasticities: existing evidence and future priorities (2018), with TAG unit A2.4 productivity impacts](https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/706671/agglomeration-elasticities-existing-evidence-and-future-priorities.pdf) | free | Open Government Licence v3.0 | 2026-11-09 | search-snippet |
+| <a id="src-isacsson-2015"></a>`isacsson-2015` | [Isacsson, Börjesson, Andersson, Anderstig: The impact of accessibility on labour earnings (CTS Working Paper 2015:18, Stockholm)](https://swopec.hhs.se/ctswps/abs/ctswps2015_018.htm) | free | © the authors; numbers cited as facts | 2026-11-09 | search-snippet |
+| <a id="src-debrezion-2007"></a>`debrezion-2007` | [Debrezion, Pels, Rietveld: The impact of railway stations on residential and commercial property value: a meta-analysis (Journal of Real Estate Finance and Economics 35, 2007)](https://research.vu.nl/en/publications/the-impact-of-railway-stations-on-residential-and-commercial-prop/) | paywalled | © the authors; numbers cited as facts | 2026-11-09 | search-snippet |
+| <a id="src-rennert-2022"></a>`rennert-2022` | [Rennert: A meta-analysis of the impact of rail stations on property values: applying a transit planning lens (Transportation Research Part A 163, 2022)](https://ideas.repec.org/a/eee/transa/v163y2022icp165-180.html) | paywalled | © the author; numbers cited as facts | 2026-11-09 | search-snippet |
+| <a id="src-mohammad-2013"></a>`mohammad-2013` | [Mohammad, Graham, Melo, Anderson: A meta-analysis of the impact of rail projects on land and property values (Transportation Research Part A 50, 2013)](https://econpapers.repec.org/RePEc:eee:transa:v:50:y:2013:i:c:p:158-170) | paywalled | © the authors; numbers cited as facts | 2026-11-09 | search-snippet |
+| <a id="src-ilostat-labour-share"></a>`ilostat-labour-share` | [ILOSTAT: labour income share as a percent of GDP (SDG indicator 10.4.1), ILO modelled estimates](https://ilostat.ilo.org/topics/labour-income/) | free | CC BY 4.0 | 2026-11-09 | none |
+| <a id="src-hca-employment-density-2015"></a>`hca-employment-density-2015` | [Homes and Communities Agency (UK): Employment Density Guide, 3rd edition (2015)](https://www.gov.uk/government/publications/employment-density-guide) | free | Open Government Licence v3.0 | 2026-11-09 | none |
+| <a id="src-oecd-icio"></a>`oecd-icio` | [OECD Inter-Country Input-Output tables (value added and imports per unit of final demand by industry)](https://www.oecd.org/en/data/datasets/inter-country-input-output-tables.html) | free | CC BY 4.0 | 2026-11-09 | none |
+| <a id="src-worldbank-benefit-wdi"></a>`worldbank-benefit-wdi` | [World Bank World Development Indicators API: NY.GDP.PCAP.CN (GDP per capita, local currency), SL.EMP.TOTL.SP.ZS (employment to population ratio 15+), SP.POP.0014.TO.ZS (population 0–14), SP.POP.TOTL (population)](https://datahelpdesk.worldbank.org/knowledgebase/articles/889392-about-the-indicators-api-documentation) | free | CC BY 4.0 | 2026-11-09 | none |

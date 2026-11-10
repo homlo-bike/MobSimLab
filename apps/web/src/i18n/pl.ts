@@ -214,6 +214,8 @@ export const pl: Messages = {
   "drawing.preferences": "preferencje projektu",
   "drawing.costs": "ustawienia kosztów",
   "drawing.scenarios": "zapisane scenariusze",
+  "drawing.benefits": "formuły korzyści",
+  "drawing.regions": "obszary",
 
   "tab.label": "Projekt",
   "tab.simulator": "Symulator",
@@ -251,6 +253,8 @@ export const pl: Messages = {
   "schematic.export": "Eksport do druku i na ekran",
 
   "gis.title": "GIS",
+  "gis.streetsView": "Ulice",
+  "gis.regionsView": "Obszary",
   "gis.intro": "Dodawaj i edytuj informacje używane w obliczeniach.",
   "gis.areas": "Rysuj obszary lub importuj je z OpenStreetMap",
   "gis.streets": "Układ ulic: buspasy, drogi rowerowe i torowiska, prędkości, sieć trakcyjna",

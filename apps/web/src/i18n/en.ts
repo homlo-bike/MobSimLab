@@ -208,6 +208,8 @@ export const en = {
   "drawing.preferences": "project preferences",
   "drawing.costs": "cost settings",
   "drawing.scenarios": "saved scenarios",
+  "drawing.benefits": "benefit formulas",
+  "drawing.regions": "regions",
 
   "tab.label": "Project",
   "tab.simulator": "Simulator",
@@ -249,6 +251,8 @@ export const en = {
   "gis.streets": "Street layout: bus, bike and tram lanes, speeds, overhead wires",
   "gis.walk": "15-minute walk coverage and gaps",
   "gis.spacing": "Stop spacing",
+  "gis.streetsView": "Streets",
+  "gis.regionsView": "Regions",
 
   "tables.title": "Tables",
   "tables.intro": "Every calculation about the project, to estimate how well it will perform.",
