@@ -352,6 +352,7 @@ describe("noise map in the GIS tab", () => {
           ({
             status: "loading",
             reason: "The WorldPop grid of DEU is being downloaded to the server",
+            countries: ["DEU"],
           }) as const,
       ),
       sized,
@@ -359,7 +360,9 @@ describe("noise map in the GIS tab", () => {
     fireEvent.click(screen.getByRole("button", { name: "Compute noise map" }));
     await waitFor(() => expect(loading.estimate).toHaveBeenCalled());
     expect(loading.estimate.mock.calls[0]![0].population).toBeNull();
-    expect(await screen.findByText(/being downloaded to the server\. Until it is there/)).toBeTruthy();
+    expect(
+      await screen.findByText(/population grid of DEU is being downloaded to the server\. Until it is there/),
+    ).toBeTruthy();
     expect(screen.getByText(/Residents estimated from the building size/)).toBeTruthy();
     cleanup();
     const failing = setup(
@@ -371,7 +374,7 @@ describe("noise map in the GIS tab", () => {
     await waitFor(() => expect(failing.estimate).toHaveBeenCalled());
     expect(
       await screen.findByText(
-        /WorldPop population is unavailable \(WorldPop is unavailable right now\), so residents/,
+        /WorldPop population is not available \(WorldPop is unavailable right now\), so residents/,
       ),
     ).toBeTruthy();
   });

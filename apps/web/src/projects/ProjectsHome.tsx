@@ -239,12 +239,12 @@ export function ProjectsHome({
       >
         <button
           type="button"
-          className="flex min-h-15 min-w-0 flex-1 items-center gap-3 text-left focus-visible:outline-2 focus-visible:outline-blue-700 md:block md:w-full"
+          className="flex min-h-15 min-w-0 flex-1 items-center gap-3 text-start focus-visible:outline-2 focus-visible:outline-blue-700 md:block md:w-full"
           onClick={() => open(p)}
           aria-describedby={`meta-${p.id}`}
         >
           <Thumb id={p.id} className="h-10 w-14 shrink-0 rounded-lg md:h-24 md:w-full md:rounded-none" />
-          <span className="block min-w-0 md:px-3 md:pt-2.5 md:pb-3 md:pr-12">
+          <span className="block min-w-0 md:px-3 md:pt-2.5 md:pb-3 md:pe-12">
             <span className="block truncate font-semibold">{p.name}</span>
             <span id={`meta-${p.id}`} className="flex items-center gap-1 truncate text-xs text-slate-500">
               {shelfOf(p) === "viewOnly" && <EyeIcon size={14} />}
@@ -257,7 +257,7 @@ export function ProjectsHome({
         </button>
         <button
           type="button"
-          className="icon-btn md:absolute md:right-1 md:bottom-1.5"
+          className="icon-btn md:absolute md:end-1 md:bottom-1.5"
           aria-label={t("home.actionsFor", { name: p.name })}
           aria-haspopup="menu"
           onClick={(e) => openMenu(p, e, false)}
@@ -381,7 +381,7 @@ export function ProjectsHome({
       {canCreate && (
         <button
           type="button"
-          className="fixed right-4 bottom-6 z-10 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-700 text-white shadow-lg shadow-blue-700/35 md:hidden"
+          className="fixed end-4 bottom-6 z-10 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-700 text-white shadow-lg shadow-blue-700/35 md:hidden"
           aria-label={t("home.new")}
           onClick={() => setDialog({ kind: "new" })}
         >

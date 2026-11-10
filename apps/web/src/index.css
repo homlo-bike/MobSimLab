@@ -62,7 +62,7 @@ body,
     @apply z-50 min-w-56 rounded-xl border border-slate-200 bg-white p-1.5 shadow-xl;
   }
   .menu-item {
-    @apply flex min-h-11 w-full items-center gap-2.5 rounded-lg px-3 text-left font-medium text-slate-900 no-underline hover:bg-slate-100 focus-visible:bg-slate-100 focus-visible:outline-none;
+    @apply flex min-h-11 w-full items-center gap-2.5 rounded-lg px-3 text-start font-medium text-slate-900 no-underline hover:bg-slate-100 focus-visible:bg-slate-100 focus-visible:outline-none;
   }
   .tag {
     @apply inline-flex h-[22px] items-center gap-1 rounded-full px-2 text-xs font-semibold whitespace-nowrap;

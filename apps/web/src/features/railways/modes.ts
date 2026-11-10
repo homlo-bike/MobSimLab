@@ -1,34 +1,35 @@
+import type { MessageKey } from "../../i18n/messages";
 import type { Level, Power, RailMode } from "./types";
 
-/** Rail modes in display order. Design values come from the engine (assumption library). */
-export const RAIL_MODES: { id: RailMode; label: string }[] = [
-  { id: "tram", label: "Tram" },
-  { id: "light_rail", label: "Light rail" },
-  { id: "metro", label: "Metro" },
-  { id: "commuter_rail", label: "Commuter rail" },
-  { id: "regional_rail", label: "Regional rail" },
-  { id: "long_distance_rail", label: "Intercity" },
-  { id: "high_speed_rail", label: "High-speed rail" },
+/** Rail modes in display order, with their message keys. Design values come from the engine (assumption library). */
+export const RAIL_MODES: { id: RailMode; label: MessageKey }[] = [
+  { id: "tram", label: "mode.tram" },
+  { id: "light_rail", label: "mode.light_rail" },
+  { id: "metro", label: "mode.metro" },
+  { id: "commuter_rail", label: "mode.commuter_rail" },
+  { id: "regional_rail", label: "mode.regional_rail" },
+  { id: "long_distance_rail", label: "rail.mode.long_distance_rail" },
+  { id: "high_speed_rail", label: "mode.high_speed_rail" },
 ];
 
-/** Levels lowest first, with the short labels of the mockup. */
-export const LEVELS: { id: Level; short: string; label: string }[] = [
-  { id: "underground2", short: "−2", label: "Underground −2" },
-  { id: "underground", short: "−1", label: "Underground −1" },
-  { id: "street", short: "Street", label: "Street level" },
-  { id: "elevated", short: "+1", label: "Elevated +1" },
-  { id: "elevated2", short: "+2", label: "Elevated +2" },
+/** Levels lowest first, with the short labels of the mockup (message keys where they are words). */
+export const LEVELS: { id: Level; short: string | MessageKey; label: MessageKey }[] = [
+  { id: "underground2", short: "−2", label: "rail.level.underground2" },
+  { id: "underground", short: "−1", label: "rail.level.underground" },
+  { id: "street", short: "rail.level.streetShort", label: "rail.level.street" },
+  { id: "elevated", short: "+1", label: "rail.level.elevated" },
+  { id: "elevated2", short: "+2", label: "rail.level.elevated2" },
 ];
 
-export const LEVEL_LABEL: Record<Level, string> = Object.fromEntries(
+export const LEVEL_LABEL: Record<Level, MessageKey> = Object.fromEntries(
   LEVELS.map((l) => [l.id, l.label]),
-) as Record<Level, string>;
+) as Record<Level, MessageKey>;
 
-export const POWER: { id: Power; label: string }[] = [
-  { id: "auto", label: "Mode default" },
-  { id: "overhead", label: "Overhead" },
-  { id: "third_rail", label: "Third rail" },
-  { id: "none", label: "None" },
+export const POWER: { id: Power; label: MessageKey }[] = [
+  { id: "auto", label: "rail.power.auto" },
+  { id: "overhead", label: "rail.power.overhead" },
+  { id: "third_rail", label: "rail.power.third_rail" },
+  { id: "none", label: "rail.power.none" },
 ];
 
 /** Drawing colours (mockup tokens, light theme). */

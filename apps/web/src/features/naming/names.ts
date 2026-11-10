@@ -10,6 +10,7 @@
  * - Names are unique otherwise: a name already used farther away gets its district or street as a
  *   qualifier, "Market (Old Town)", or else a number, "Market 2".
  */
+import { tNow } from "../../i18n/i18n";
 import type { FeatureCategory, LonLat, NameFeature } from "./labels";
 
 /** Stops and stations closer than this form one station group (06-gis §9.3 default, 150 m). */
@@ -146,7 +147,7 @@ export function suggestNames(
     const q = f.category === "district" ? streets[0] : (district ?? streets.find((s) => s.name !== name));
     candidates.push({
       name,
-      source: `${f.category.replace("_", " ")}: ${name}`,
+      source: tNow("naming.source", { category: tNow(`naming.cat.${f.category}`), name }),
       distanceM: Math.round(d),
       priority: CATEGORY_PRIORITY[f.category],
       ...(q && q.name !== name ? { qualifier: q.name } : {}),
@@ -157,7 +158,7 @@ export function suggestNames(
   if (a && b && a.d <= 60 && b.d <= 60)
     candidates.push({
       name: `${a.name} / ${b.name}`,
-      source: `intersection: ${a.name} and ${b.name}`,
+      source: tNow("naming.intersection", { a: a.name, b: b.name }),
       distanceM: Math.round(Math.max(a.d, b.d)),
       priority: CATEGORY_PRIORITY.intersection,
       ...(district ? { qualifier: district.name } : {}),
@@ -258,15 +259,15 @@ export function renamePlace(
 
 /** Purpose: a short sentence for the planner about a chosen name. */
 export function describeChoice(c: NameChoice, kind: "stop" | "station"): string {
-  if (c.reason === "joined") return `Named “${c.name}”: it is one ${kind} with the ${kind} next to it.`;
-  if (c.reason === "suggested") return `Named “${c.name}” after the nearby ${c.source}.`;
-  return `Named “${c.name}”: nothing else is named nearby on the map. You can rename it.`;
+  if (c.reason === "joined") return tNow(`naming.joined.${kind}`, { name: c.name });
+  if (c.reason === "suggested") return tNow("naming.suggested", { name: c.name, source: c.source ?? "" });
+  return tNow("naming.fallback", { name: c.name });
 }
 
 /** Purpose: a short sentence for the planner about a rename that clashed. */
 export function describeClash(r: Rename, radiusM = STATION_GROUPING_M): string | null {
   if (!r.clash) return null;
   const d = r.clash.distanceM;
-  const away = d >= 1000 ? `${(d / 1000).toFixed(1)} km` : `${d} m`;
-  return `“${r.clash.wanted}” is already the name of a stop or station ${away} away, so this one is called “${r.name}”. Only stops and stations within ${radiusM} m of each other share a name.`;
+  const away = d >= 1000 ? tNow("noise.km", { n: (d / 1000).toFixed(1) }) : tNow("noise.m", { n: d });
+  return tNow("naming.clash", { wanted: r.clash.wanted, away, name: r.name, radius: radiusM });
 }

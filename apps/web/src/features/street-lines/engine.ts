@@ -1,3 +1,4 @@
+import { tNow } from "../../i18n/i18n";
 import type { StreetInfo, StreetInfoLoader } from "../street-setup/types";
 import type {
   EngineLoader,
@@ -70,8 +71,8 @@ export const loadStreetInfos: StreetInfoLoader = async () => {
 /** Purpose: fetch one street tile from the API (OSM streets, fetched and cached server-side). */
 export const fetchStreetTile: TileFetcher = async (x, y) => {
   const res = await fetch(`/api/street-network/tiles/14/${x}/${y}`);
-  if (res.status === 401) throw new Error("Sign in to load streets.");
+  if (res.status === 401) throw new Error(tNow("street.osmUnauthorised"));
   if (!res.ok)
-    throw new Error(res.status === 400 ? "Invalid tile" : "OpenStreetMap streets are unavailable right now.");
+    throw new Error(res.status === 400 ? tNow("rail.osmInvalidTile") : tNow("street.osmUnavailable"));
   return res.text();
 };

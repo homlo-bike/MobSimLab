@@ -1,3 +1,5 @@
+import { editorsEn } from "./editors/en";
+
 /** English: the source language. Every other language must have every key (the type checker enforces it). */
 export const en = {
   "common.cancel": "Cancel",
@@ -82,6 +84,9 @@ export const en = {
   "language.fixed": "Fixed language",
   "language.none": "No language matches.",
   "language.savedNote": "Saved to your account, so it follows you to other devices.",
+  "language.disclaimer":
+    "Translations other than English are machine-made and may contain mistakes. The English text is the reference.",
+  "language.improve": "Help improve the translations on GitHub",
 
   "home.title": "Projects",
   "home.search": "Search projects",
@@ -272,7 +277,18 @@ export const en = {
   "prefs.vehicles": "Vehicles used, from the vehicle catalogue",
   "prefs.switches": "Track switches, from the switch catalogue",
   "prefs.calendar": "Calendar, demand and costs",
+
+  ...editorsEn,
 } as const;
 
 export type MessageKey = keyof typeof en;
-export type Messages = Record<MessageKey, string>;
+
+/**
+ * Keys with plural forms. English has `x.one` and `x.other`; every language must have `x.other`, and may add
+ * the forms its grammar needs (`x.zero`, `x.one`, `x.two`, `x.few`, `x.many`, as Intl.PluralRules names them).
+ */
+export type PluralKey = MessageKey extends infer K ? (K extends `${infer B}.other` ? B : never) : never;
+type PluralForm = `${PluralKey}.${"zero" | "one" | "two" | "few" | "many"}`;
+
+/** A language's messages: every non-plural key, the `other` form of each plural, and any other forms it needs. */
+export type Messages = Record<Exclude<MessageKey, PluralForm>, string> & Partial<Record<PluralForm, string>>;

@@ -1,3 +1,4 @@
+import type { MessageKey } from "../../i18n/messages";
 /**
  * Service lines of the railway design (ADR-0032 §2): pure edits of `doc.lines` and the conversion to
  * the engine's form. The engine plans them on the design (timetable planner) and publishes the trips
@@ -161,14 +162,14 @@ export function moveStop(line: ServiceLine, i: number, by: number): ServiceLine 
 }
 
 /**
- * Purpose: what is wrong with a line before it can be published, in words; `null` when it can be.
+ * Purpose: what is wrong with a line before it can be published, as a message key; `null` when it can be.
  */
-export function lineProblem(doc: Network, line: ServiceLine): string | null {
+export function lineProblem(doc: Network, line: ServiceLine): MessageKey | null {
   const known = line.stations.filter((id) => doc.stations.some((s) => s.id === id));
-  if (known.length < 2) return "Needs at least two stops.";
-  if (!trainById(line.vehicle)) return "Choose a train.";
-  if (line.last_min <= line.first_min) return "The last departure must be after the first.";
-  if (line.peak_headway_min < 1 || line.offpeak_headway_min < 1) return "Headways must be at least 1 min.";
+  if (known.length < 2) return "rail.line.needsStops";
+  if (!trainById(line.vehicle)) return "rail.line.needsTrain";
+  if (line.last_min <= line.first_min) return "rail.line.lastAfterFirst";
+  if (line.peak_headway_min < 1 || line.offpeak_headway_min < 1) return "rail.line.headwayMin";
   return null;
 }
 
