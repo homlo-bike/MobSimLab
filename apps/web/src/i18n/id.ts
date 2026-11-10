@@ -213,6 +213,8 @@ export const id: Messages = {
   "drawing.rail-timetable": "jadwal kereta",
   "drawing.preferences": "preferensi proyek",
   "drawing.costs": "pengaturan biaya",
+  "drawing.benefits": "rumus manfaat",
+  "drawing.regions": "wilayah",
 
   "tab.label": "Proyek",
   "tab.simulator": "Simulator",
@@ -251,6 +253,8 @@ export const id: Messages = {
   "schematic.export": "Ekspor untuk cetak dan layar",
 
   "gis.title": "GIS",
+  "gis.streetsView": "Jalan",
+  "gis.regionsView": "Wilayah",
   "gis.intro": "Tambahkan dan edit informasi yang digunakan dalam perhitungan.",
   "gis.areas": "Gambar wilayah atau impor dari OpenStreetMap",
   "gis.streets": "Susunan jalan: lajur bus, sepeda, dan trem, kecepatan, kabel atas",

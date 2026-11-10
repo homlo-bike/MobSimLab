@@ -209,6 +209,8 @@ export const fa: Messages = {
   "drawing.rail-timetable": "جدول زمانی ریلی",
   "drawing.preferences": "ترجیحات پروژه",
   "drawing.costs": "تنظیمات هزینه",
+  "drawing.benefits": "فرمول‌های منافع",
+  "drawing.regions": "مناطق",
 
   "tab.label": "پروژه",
   "tab.simulator": "شبیه‌ساز",
@@ -246,6 +248,8 @@ export const fa: Messages = {
   "schematic.export": "خروجی برای چاپ و نمایشگر",
 
   "gis.title": "GIS",
+  "gis.streetsView": "خیابان‌ها",
+  "gis.regionsView": "مناطق",
   "gis.intro": "اطلاعاتی را که در محاسبات استفاده می‌شود اضافه و ویرایش کنید.",
   "gis.areas": "ترسیم محدوده‌ها یا وارد کردن از OpenStreetMap",
   "gis.streets": "ساختار خیابان: خطوط اتوبوس، دوچرخه و تراموا، سرعت، سیم بالاسری",

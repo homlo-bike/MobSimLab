@@ -4,8 +4,12 @@ import { describe, expect, it, vi } from "vitest";
 import { OverpassClient, overpassEndpoint } from "../src/gateway/overpass.client";
 import {
   buildingQuery,
+  buildingUse,
   footprints,
   osmNumber,
+  placeKind,
+  placeQuery,
+  places,
   railQuery,
   streetQuery,
   tileBbox,
@@ -148,8 +152,41 @@ describe("street tiles", () => {
     expect(f.map((b) => b.id)).toEqual(["w1", "w2", "r5"]);
     expect(f[0]).toMatchObject({ height_m: 15 });
     expect(f[0]).not.toHaveProperty("levels");
-    expect(f[1]).toMatchObject({ levels: 2 });
+    expect(f[1]).toMatchObject({ levels: 2, use: "house" });
+    expect(f[0]).toMatchObject({ use: "yes" });
     expect(f[2]!.ring[0]).toEqual([7.04, 50]);
+  });
+
+  it("names what a building is used for", () => {
+    expect(buildingUse({ building: "Apartments" })).toBe("apartments");
+    expect(buildingUse({ building: "yes", shop: "bakery" })).toBe("shop");
+    expect(buildingUse({ building: "yes", office: "company" })).toBe("office");
+    expect(buildingUse({ building: "yes", amenity: "School" })).toBe("amenity:school");
+    expect(buildingUse({})).toBe("yes");
+  });
+
+  it("reads schools, universities, hospitals and clinics", () => {
+    expect(placeQuery(14, 8508, 5489)).toContain(
+      'nwr["amenity"~"^(school|kindergarten|college|university|hospital|clinic|doctors)$"]',
+    );
+    const json = JSON.stringify({
+      elements: [
+        { type: "node", id: 1, lat: 50, lon: 7, tags: { amenity: "school", name: "A" } },
+        { type: "way", id: 2, center: { lat: 50.1, lon: 7.1 }, tags: { amenity: "university" } },
+        { type: "relation", id: 3, center: { lat: 50.2, lon: 7.2 }, tags: { healthcare: "hospital" } },
+        { type: "node", id: 4, lat: 50.3, lon: 7.3, tags: { amenity: "doctors" } },
+        { type: "node", id: 5, lat: 50.4, lon: 7.4, tags: { amenity: "bench" } },
+        { type: "way", id: 6, tags: { amenity: "clinic" } },
+      ],
+    });
+    expect(places(json)).toEqual([
+      { id: "n1", kind: "school", lonlat: [7, 50], name: "A" },
+      { id: "w2", kind: "university", lonlat: [7.1, 50.1] },
+      { id: "r3", kind: "hospital", lonlat: [7.2, 50.2] },
+      { id: "n4", kind: "clinic", lonlat: [7.3, 50.3] },
+    ]);
+    expect(placeKind({ amenity: "kindergarten" })).toBe("school");
+    expect(placeKind({ healthcare: "centre" })).toBe("clinic");
   });
 
   it("serves building tiles as footprints", async () => {
