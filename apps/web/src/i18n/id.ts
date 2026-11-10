@@ -213,6 +213,7 @@ export const id: Messages = {
   "drawing.rail-timetable": "jadwal kereta",
   "drawing.preferences": "preferensi proyek",
   "drawing.costs": "pengaturan biaya",
+  "drawing.scenarios": "skenario tersimpan",
   "drawing.benefits": "rumus manfaat",
   "drawing.regions": "wilayah",
 
@@ -263,12 +264,6 @@ export const id: Messages = {
 
   "tables.title": "Tabel",
   "tables.intro": "Semua perhitungan untuk memperkirakan kinerja proyek.",
-  "tables.summary": "Ringkasan",
-  "tables.infrastructure": "Jalur, stasiun, panjang rel, jembatan, terowongan (galian terbuka atau TBM)",
-  "tables.service": "Frekuensi, jam layanan, armada, perkiraan penumpang",
-  "tables.compare": "Bandingkan skenario berdampingan",
-  "tables.more": "Tabel lainnya",
-  "tables.moreIntro": "Segera hadir di tab ini.",
 
   "prefs.title": "Preferensi proyek",
   "prefs.intro": "Detail dan pengaturan yang berlaku untuk seluruh proyek.",

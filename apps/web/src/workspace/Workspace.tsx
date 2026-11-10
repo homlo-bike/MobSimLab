@@ -11,6 +11,9 @@ import type { Estimate as CostEstimate } from "../features/costs/model";
 import { CostTables, type CostsDoc } from "../features/costs/CostTables";
 import { JourneyPlanner } from "../features/journey-planner/JourneyPlanner";
 import { NoiseMap } from "../features/noise/NoiseMap";
+import { NetworkTables } from "../features/tables/NetworkTables";
+import { Scenarios } from "../features/tables/Scenarios";
+import type { ScenariosDoc } from "../features/tables/scenarioModel";
 import { noiseCalculationIn } from "../features/noise/plugin";
 import type { PluginLineInput, StreetLineInput } from "../features/journey-planner/network";
 import type { Timetable } from "../features/journey-planner/types";
@@ -71,7 +74,7 @@ const PLUGIN_TOOLS = pluginTools();
 /**
  * One open project (mockups "Project app"): the project name and the six tabs in the top bar (a bottom tab bar on
  * phones), the map, and a side panel (a bottom sheet on phones). Simulator holds the capacity run and the journey planner; Create holds
- * the street line tool and the railway editor; Tables holds the cost tables; the other tabs are placeholders
+ * the street line tool and the railway editor; Tables holds the network and cost tables; the other tabs are placeholders
  * until their tools exist.
  */
 export function Workspace({
@@ -480,15 +483,18 @@ export function Workspace({
               <h1 className="text-2xl font-semibold tracking-tight">{t("tables.title")}</h1>
               <p className="mt-1 text-slate-600">{t("tables.intro")}</p>
               {project && drawings.loaded ? (
-                <CostTables
-                  railway={railway}
-                  streetLines={streetLines}
-                  preferences={preferences}
-                  onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
-                  costs={drawings.doc<CostsDoc>("costs")}
-                  onCosts={editable ? (d) => drawings.set("costs", d) : undefined}
-                  onEstimate={onCostEstimate}
-                />
+                <>
+                  <NetworkTables railway={railway} streetLines={streetLines} preferences={preferences} />
+                  <CostTables
+                    railway={railway}
+                    streetLines={streetLines}
+                    preferences={preferences}
+                    onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
+                    costs={drawings.doc<CostsDoc>("costs")}
+                    onCosts={editable ? (d) => drawings.set("costs", d) : undefined}
+                    onEstimate={onCostEstimate}
+                  />
+                </>
               ) : (
                 <p role="status" className="mt-6 text-slate-500">
                   {t("common.loading")}
@@ -505,13 +511,15 @@ export function Workspace({
                   costs={costInfo}
                 />
               )}
-              <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-4 md:p-6">
-                <Placeholder
-                  title="tables.more"
-                  intro="tables.moreIntro"
-                  items={["tables.summary", "tables.infrastructure", "tables.service", "tables.compare"]}
+              {project && drawings.loaded && (
+                <Scenarios
+                  railway={railway}
+                  streetLines={streetLines}
+                  preferences={preferences}
+                  doc={drawings.doc<ScenariosDoc>("scenarios")}
+                  onChange={editable ? (d) => drawings.set("scenarios", d) : undefined}
                 />
-              </div>
+              )}
             </section>
           </div>
         )}

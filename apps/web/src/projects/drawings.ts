@@ -9,7 +9,8 @@ export type DrawingKind =
   | "rail-timetable"
   | "costs"
   | "benefits"
-  | "regions";
+  | "regions"
+  | "scenarios";
 export const DRAWING_KINDS: readonly DrawingKind[] = [
   "street-lines",
   "railway",
@@ -17,6 +18,7 @@ export const DRAWING_KINDS: readonly DrawingKind[] = [
   "preferences",
   "rail-timetable",
   "costs",
+  "scenarios",
   "benefits",
   "regions",
 ];

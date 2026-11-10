@@ -207,6 +207,7 @@ export const en = {
   "drawing.rail-timetable": "rail timetable",
   "drawing.preferences": "project preferences",
   "drawing.costs": "cost settings",
+  "drawing.scenarios": "saved scenarios",
   "drawing.benefits": "benefit formulas",
   "drawing.regions": "regions",
 
@@ -255,12 +256,6 @@ export const en = {
 
   "tables.title": "Tables",
   "tables.intro": "Every calculation about the project, to estimate how well it will perform.",
-  "tables.summary": "Summary",
-  "tables.infrastructure": "Lines, stations, track length, bridges, tunnels (cut and cover or TBM)",
-  "tables.service": "Frequency, operating hours, fleet, projected passengers",
-  "tables.compare": "Compare scenarios side by side",
-  "tables.more": "More tables",
-  "tables.moreIntro": "Still to come in this tab.",
 
   "prefs.title": "Project preferences",
   "prefs.intro": "Details and settings that apply to the whole project.",

@@ -50,6 +50,24 @@ const costs = z.looseObject({
     .optional(),
 });
 
+/**
+ * Tables tab scenarios: named copies of the railway design and the street lines, kept to compare with the
+ * current design.
+ */
+const scenarios = z.looseObject({
+  scenarios: z
+    .array(
+      z.looseObject({
+        id: z.string().min(1).max(64),
+        name: z.string().trim().min(1).max(120),
+        savedAt: z.string().max(40),
+        railway: railway.nullable(),
+        streetLines: streetLines.nullable(),
+      }),
+    )
+    .max(20),
+});
+
 /** Benefit tables settings (ADR-0040): the project's own formulas, by formula id. */
 const benefits = z.looseObject({
   formulas: z
@@ -92,6 +110,8 @@ export const DRAWING_KINDS = {
   preferences: { schema: preferences, schemaVersion: 1 },
   /** Cost tables settings (ADR-0039): the country chosen for prices. */
   costs: { schema: costs, schemaVersion: 1 },
+  /** Tables tab: saved copies of the design to compare side by side. */
+  scenarios: { schema: scenarios, schemaVersion: 1 },
   /** Benefit tables settings (ADR-0040): the project's own formulas. */
   benefits: { schema: benefits, schemaVersion: 1 },
   /** GIS tab regions with their own values (land use, land value, tax, population, jobs…). */

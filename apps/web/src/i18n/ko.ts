@@ -209,6 +209,7 @@ export const ko: Messages = {
   "drawing.rail-timetable": "철도 시간표",
   "drawing.preferences": "프로젝트 환경설정",
   "drawing.costs": "비용 설정",
+  "drawing.scenarios": "저장된 시나리오",
   "drawing.benefits": "편익 산식",
   "drawing.regions": "지역",
 
@@ -257,12 +258,6 @@ export const ko: Messages = {
 
   "tables.title": "표",
   "tables.intro": "프로젝트 성능을 추정하기 위한 모든 계산.",
-  "tables.summary": "요약",
-  "tables.infrastructure": "노선, 역, 선로 연장, 교량, 터널(개착 또는 TBM)",
-  "tables.service": "배차, 운행 시간, 차량 수, 예상 승객 수",
-  "tables.compare": "시나리오 나란히 비교",
-  "tables.more": "추가 표",
-  "tables.moreIntro": "이 탭에 곧 추가됩니다.",
 
   "prefs.title": "프로젝트 환경설정",
   "prefs.intro": "프로젝트 전체에 적용되는 세부 정보와 설정.",
