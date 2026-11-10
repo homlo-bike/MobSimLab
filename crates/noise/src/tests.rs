@@ -506,6 +506,7 @@ fn rect(x0: f64, y0: f64, x1: f64, y1: f64, h: f64) -> crate::screening::Buildin
         ring: vec![[x0, y0], [x1, y0], [x1, y1], [x0, y1], [x0, y0]],
         height_m: Some(h),
         levels: None,
+        homes: None,
     }
 }
 
@@ -587,6 +588,7 @@ fn buildings_out_of_the_way_change_nothing() {
             ring: vec![[0.0, 0.0], [1.0, 1.0]],
             height_m: Some(10.0),
             levels: None,
+            homes: None,
         },
     ]);
     // Equal up to pairing far elements (one path for two 10 m elements beyond 80 m).
@@ -622,6 +624,7 @@ fn building_height_from_osm_tags() {
         ring: vec![],
         height_m,
         levels,
+        homes: None,
     };
     assert_eq!(b(Some(14.5), Some(2.0)).height(rule), 14.5);
     assert_eq!(b(None, Some(5.0)).height(rule), 15.0);
@@ -823,4 +826,69 @@ fn a_hill_screens_and_a_slope_does_not() {
         .map(|(a, b)| (a - b).abs())
         .fold(0.0f32, f32::max);
     assert!(worst < 0.01, "{worst}");
+}
+
+#[test]
+fn people_from_the_building_size_skip_other_uses_and_sheds() {
+    use crate::population::{residents, PeopleRule, PeopleSource};
+    use crate::screening::HeightRule;
+    let rule = PeopleRule {
+        height: HeightRule {
+            level_m: 3.0,
+            default_m: 8.0,
+        },
+        floor_area_per_person_m2: 50.0,
+        min_footprint_m2: 30.0,
+    };
+    let mut flats = rect(0.0, 0.0, 20.0, 10.0, 0.0);
+    (flats.height_m, flats.levels) = (None, Some(5.0));
+    let mut shop = rect(30.0, 0.0, 50.0, 10.0, 6.0);
+    shop.homes = Some(false);
+    let shed = rect(60.0, 0.0, 65.0, 4.0, 3.0);
+    // No height or storeys: 8 m ÷ 3 m gives 3 storeys.
+    let mut house = rect(70.0, 0.0, 80.0, 10.0, 0.0);
+    house.height_m = None;
+    let r = residents(&[flats, shop, shed, house], None, rule);
+    assert_eq!(r.source, PeopleSource::BuildingSize);
+    assert_eq!(r.people, vec![20.0, 0.0, 0.0, 6.0]);
+}
+
+#[test]
+fn grid_people_are_shared_by_floor_area_within_their_cell() {
+    use crate::population::{residents, PeopleRule, PeopleSource, PopulationInput};
+    use crate::screening::HeightRule;
+    let rule = PeopleRule {
+        height: HeightRule {
+            level_m: 3.0,
+            default_m: 8.0,
+        },
+        floor_area_per_person_m2: 50.0,
+        min_footprint_m2: 30.0,
+    };
+    // Two 100 m cells: 40 people west, 7 east. West: a one-storey and a three-storey house
+    // of the same footprint and a shop; east: only a shed.
+    let grid = PopulationInput {
+        x0: 0.0,
+        y0: 0.0,
+        dx: 100.0,
+        dy: 100.0,
+        nx: 2,
+        ny: 1,
+        people: vec![40.0, 7.0],
+    };
+    let mut shop = rect(60.0, 10.0, 90.0, 40.0, 4.0);
+    shop.homes = Some(false);
+    let r = residents(
+        &[
+            rect(10.0, 10.0, 20.0, 20.0, 3.0),
+            rect(30.0, 10.0, 40.0, 20.0, 9.0),
+            shop,
+            rect(150.0, 50.0, 153.0, 53.0, 3.0),
+        ],
+        Some(&grid),
+        rule,
+    );
+    assert_eq!(r.source, PeopleSource::Grid);
+    assert_eq!(r.people, vec![10.0, 30.0, 0.0, 0.0]);
+    assert_eq!(r.unplaced, 7.0);
 }

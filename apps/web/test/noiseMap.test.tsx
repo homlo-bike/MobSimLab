@@ -17,6 +17,7 @@ vi.mock("../src/features/noise/mapLayer", () => ({
 
 import { buildingTiles, loadBuildings, MAX_BUILDING_TILES } from "../src/features/noise/buildings";
 import { MAP_REACH_M, NoiseMap, projectSources } from "../src/features/noise/NoiseMap";
+import { buildingsBbox, type PopulationAnswer } from "../src/features/noise/population";
 import { MAX_TERRAIN_POINTS, loadTerrain, terrainPlan } from "../src/features/noise/terrain";
 import type { NoiseBuilding, NoiseEngine, NoiseInput, NoiseView } from "../src/features/noise/types";
 import type { RailEngineLoader } from "../src/features/railways/types";
@@ -117,8 +118,9 @@ const RESULT: NoiseView = {
   buildings: {
     count: 2,
     reached: 2,
-    lden: { from_db: [55, 60, 65, 70, 75], buildings: [1, 1, 0, 0, 0] },
-    lnight: { from_db: [50, 55, 60, 65, 70], buildings: [2, 0, 0, 0, 0] },
+    lden: { from_db: [55, 60, 65, 70, 75], buildings: [1, 1, 0, 0, 0], people: [12, 340, 0, 0, 0] },
+    lnight: { from_db: [50, 55, 60, 65, 70], buildings: [2, 0, 0, 0, 0], people: [352, 0, 0, 0, 0] },
+    people: { source: "grid", total: 352, reached: 352, unplaced: 4 },
   },
   building_levels: [
     [58.2, 51],
@@ -220,8 +222,28 @@ describe("noise map sources and buildings", () => {
 });
 
 describe("noise map in the GIS tab", () => {
-  function setup(fetchTerrain = vi.fn(async (pts: [number, number][]) => pts.map(() => 120))) {
-    const estimate = vi.fn((input: NoiseInput) => (input ? { ...RESULT, terrain: true } : RESULT));
+  const GRID = { x0: 7, y0: 50, dx: 1 / 1200, dy: 1 / 1200, nx: 2, ny: 1, people: [30, 5] };
+  const READY: PopulationAnswer = {
+    status: "ready",
+    grid: GRID,
+    source: {
+      name: "WorldPop",
+      dataset: "R2025A",
+      url: "https://doi.org/10.5258/SOTON/WP00839",
+      licence: "CC BY 4.0",
+      year: 2026,
+      countries: ["DEU"],
+      citation: "Bondarenko et al. 2025",
+    },
+  };
+  function setup(
+    fetchTerrain = vi.fn(async (pts: [number, number][]) => pts.map(() => 120)),
+    fetchPeople = vi.fn<(bbox: [number, number, number, number]) => Promise<PopulationAnswer>>(
+      async () => READY,
+    ),
+    result: NoiseView = RESULT,
+  ) {
+    const estimate = vi.fn((input: NoiseInput) => (input ? { ...result, terrain: true } : result));
     const engine: NoiseEngine = {
       estimate,
       image: vi.fn(() => new Uint8Array(16)),
@@ -247,9 +269,10 @@ describe("noise map in the GIS tab", () => {
         loadRail={noRail}
         fetchTile={fetchTile}
         fetchTerrain={fetchTerrain}
+        fetchPeople={fetchPeople}
       />,
     );
-    return { estimate, fetchTile, fetchTerrain, map };
+    return { estimate, fetchTile, fetchTerrain, fetchPeople, map };
   }
 
   it("computes the map with the buildings round the lines and counts them by band", async () => {
@@ -264,13 +287,17 @@ describe("noise map in the GIS tab", () => {
     expect(input.terrain).toMatchObject({ dx: expect.any(Number), nx: expect.any(Number) });
     expect(input.terrain!.z.every((z) => z === 120)).toBe(true);
     expect(screen.getByText(/stand on the terrain/)).toBeTruthy();
-    const table = await screen.findByRole("table", { name: "Buildings by noise band" });
+    const table = await screen.findByRole("table", { name: "Buildings and residents by noise band" });
     expect(table.textContent).toContain("55–59 dB");
-    expect(table.textContent).toContain("2 of 2 in reach");
+    expect(table.textContent).toContain("2 of 2 buildings in reach");
+    // Residents rounded as the Directive reports them: to the hundred above 100.
+    expect(table.textContent).toContain("300");
     expect(drawNoise).toHaveBeenCalled();
     expect(map.addSource).toHaveBeenCalledWith("noise-buildings", expect.anything());
     fireEvent.click(screen.getByRole("radio", { name: "L_night" }));
-    expect(screen.getByRole("table", { name: "Buildings by noise band" }).textContent).toContain("50–54 dB");
+    expect(
+      screen.getByRole("table", { name: "Buildings and residents by noise band" }).textContent,
+    ).toContain("50–54 dB");
   });
 
   it("can leave the buildings out", async () => {
@@ -295,5 +322,66 @@ describe("noise map in the GIS tab", () => {
     await waitFor(() => expect(failing.estimate).toHaveBeenCalled());
     expect(failing.estimate.mock.calls[0]![0].terrain).toBeNull();
     expect(await screen.findByText(/Terrain heights are unavailable \(DEM down\)/)).toBeTruthy();
+  });
+
+  it("shares WorldPop's people among the buildings and says so", async () => {
+    const { estimate, fetchPeople } = setup();
+    fireEvent.click(screen.getByRole("button", { name: "Compute noise map" }));
+    await waitFor(() => expect(estimate).toHaveBeenCalled());
+    const bbox = fetchPeople.mock.calls[0]![0];
+    expect(bbox[0]).toBeCloseTo(7.001, 6);
+    expect(bbox[2]).toBeCloseTo(7.0021, 6);
+    expect(estimate.mock.calls[0]![0].population).toEqual(GRID);
+    expect(await screen.findByText(/Residents from WorldPop 2026 \(DEU\)/)).toBeTruthy();
+    expect(screen.getByText(/4 people of the grid live in cells without a mapped home/)).toBeTruthy();
+    expect(screen.getByText(/Population: WorldPop/)).toBeTruthy();
+  });
+
+  it("falls back to the building size while WorldPop downloads or when it fails", async () => {
+    const sized: NoiseView = {
+      ...RESULT,
+      buildings: {
+        ...RESULT.buildings!,
+        people: { source: "building_size", total: 20, reached: 20, unplaced: 0 },
+      },
+    };
+    const loading = setup(
+      undefined,
+      vi.fn(
+        async () =>
+          ({
+            status: "loading",
+            reason: "The WorldPop grid of DEU is being downloaded to the server",
+          }) as const,
+      ),
+      sized,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Compute noise map" }));
+    await waitFor(() => expect(loading.estimate).toHaveBeenCalled());
+    expect(loading.estimate.mock.calls[0]![0].population).toBeNull();
+    expect(await screen.findByText(/being downloaded to the server\. Until it is there/)).toBeTruthy();
+    expect(screen.getByText(/Residents estimated from the building size/)).toBeTruthy();
+    cleanup();
+    const failing = setup(
+      undefined,
+      vi.fn(async () => Promise.reject(new Error("WorldPop is unavailable right now"))),
+      sized,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Compute noise map" }));
+    await waitFor(() => expect(failing.estimate).toHaveBeenCalled());
+    expect(
+      await screen.findByText(
+        /WorldPop population is unavailable \(WorldPop is unavailable right now\), so residents/,
+      ),
+    ).toBeTruthy();
+  });
+
+  it("asks for no population without buildings", async () => {
+    const { estimate, fetchPeople } = setup();
+    fireEvent.click(screen.getByLabelText("Screen with OpenStreetMap buildings"));
+    fireEvent.click(screen.getByRole("button", { name: "Compute noise map" }));
+    await waitFor(() => expect(estimate).toHaveBeenCalled());
+    expect(fetchPeople).not.toHaveBeenCalled();
+    expect(buildingsBbox([])).toBeNull();
   });
 });

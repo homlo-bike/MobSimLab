@@ -8,6 +8,7 @@
 use crate::emission::{pow10, road_vehicle_lw, RoadCategory};
 use crate::ground::TerrainInput;
 use crate::params::{Library, Mode, Variant, BANDS_HZ, NB, VARIANTS};
+use crate::population::{residents, PeopleRule, PopulationInput, Residents};
 use crate::propagation::{absorption, ground, Propagation};
 use crate::rail::{
     dipole, train_power, vertical_a_db, vertical_b_aero_db, RailSource, TrackState, TrainPower,
@@ -148,6 +149,10 @@ pub struct EstimateInput {
     /// the ground can screen. `None` is flat ground.
     #[serde(default)]
     pub terrain: Option<TerrainInput>,
+    /// People per cell of a population grid (step N2, WorldPop), shared among the buildings for
+    /// the exposure counts. `None` estimates the people from the building size.
+    #[serde(default)]
+    pub population: Option<PopulationInput>,
 }
 
 fn yes() -> bool {
@@ -230,6 +235,8 @@ pub struct Estimate {
     pub input_level: &'static str,
     /// Whether terrain heights shaped the map (a flat or empty grid does not).
     pub terrain: bool,
+    /// People living in each input building (`None` without buildings).
+    pub residents: Option<Residents>,
 }
 
 /// Period lengths and penalties.
@@ -1328,6 +1335,20 @@ pub fn estimate(input: &EstimateInput) -> Estimate {
         building_levels,
         input_level: "planned",
         terrain: obstacles.has_ground(),
+        residents: (!input.buildings.is_empty()).then(|| {
+            residents(
+                &input.buildings,
+                input.population.as_ref(),
+                PeopleRule {
+                    height: HeightRule {
+                        level_m: lib.central("noise.building_storey_height_m"),
+                        default_m: lib.central("noise.building_default_height_m"),
+                    },
+                    floor_area_per_person_m2: lib.central("noise.floor_area_per_person_m2"),
+                    min_footprint_m2: lib.central("noise.population_min_footprint_m2"),
+                },
+            )
+        }),
     }
 }
 

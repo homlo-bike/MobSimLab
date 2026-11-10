@@ -1,6 +1,6 @@
 # ADR-0038: Estimated noise map of service lines with CNOSSOS-EU: a live corridor in the editors, a full map as an analysis layer, exposure into the appraisal
 
-- Status: Proposed; step N1 implemented as the noise plugin (2026-11-03); first part of N2, the GIS noise map with OSM buildings, implemented (2026-11-09); lateral diffraction, facade reflections and terrain added to it (2026-11-09)
+- Status: Proposed; step N1 implemented as the noise plugin (2026-11-03); first part of N2, the GIS noise map with OSM buildings, implemented (2026-11-09); lateral diffraction, facade reflections and terrain added to it (2026-11-09); population exposure from WorldPop added (2026-11-10)
 - Date: 2026-11-02
 - Deciders: product owner, architecture
 - Related: FR-COST-03, FR-GIS-04, FR-GIS-05, FR-GIS-06, FR-ENV-01..05 (new), ADR-0004 (polyglot runtime), ADR-0005 (SUMO), ADR-0006 (rail kernel), ADR-0013 (scenario overlays), ADR-0014 (results storage), ADR-0018 (assumption engine), ADR-0023 (job queue), ADR-0024 (map rendering), ADR-0028 (declared background traffic), ADR-0029 (street lines), ADR-0031 (routing in the browser), ADR-0033 (railway editor), ADR-0034 (published timetable), [09 §3.3](../architecture/09-planning-models.md)
@@ -143,13 +143,23 @@ The CNOSSOS road coefficients and the railway default database are not Project P
 
 ## Implementation notes, N2 later steps: round the ends, reflections, terrain (2026-11-09)
 
-Approved by the product owner (2026-11-09, "All the above": diffraction round building ends, reflections, terrain, population exposure). Population exposure follows separately.
+Approved by the product owner (2026-11-09, "All the above": diffraction round building ends, reflections, terrain, population exposure). Population exposure is in the next section.
 
 - **Lateral paths** (`screening::Obstacles::lateral`): when buildings stand above the line of sight, the two paths round their left and right ends are found in plan as the convex chain over their corners, extended round any other building the chain runs into (at most 3 times, and at most `LATERAL_MAX_BUILDINGS` = 4 buildings; beyond that the side counts as closed). Each adds energetically to the path over the roofs with ISO 9613-2 7.4: D_z with C3 for several corners, K_met = 1, the 20/25 dB limits, and the ground term kept. To keep the map fast, every screened path first gets a cheap upper bound of what its lateral paths could add (through the farthest corner, at 63 Hz); per receiver the largest bounds are tightened to the chain round the blocking buildings and then checked, until what is left could add at most 1 % of the receiver's energy (0.04 dB). Positions with several source heights (railway sources A and B) share one plan path.
 - **Reflections** (first order, `noise.reflection_order` ≥ 1; a value of 2 is computed as 1): for each grid receiver the facade walls within `noise.reflection_max_distance_m` (50 m) that face it give an image receiver; a source element whose path to the image crosses the wall, below the roof, reflects with `noise.facade_reflection_coefficient` (0.8, ISO 9613-2 Table 4) when both legs are clear. Ground, absorption and directivity use the unfolded length. A building's level (its most exposed side) leaves out the reflection from its own facade, as the Directive's facade level is the incident sound.
 - **Terrain**: the GIS tab loads ground heights over the map area from the shared terrain API (Copernicus GLO-30), at 30 m, coarser for long lines (at most 40,000 heights; beyond 90 m spacing the map stays on flat ground and says so). GLO-30 is a surface model, so the engine drops the samples inside OSM buildings, removes anything narrower than `noise.terrain_filter_window_m` (60 m) by a morphological opening (Zhang et al. 2003) and fills the gaps. Sources, receivers (4 m above their ground) and buildings then stand on this ground, and the ground along each path joins the roofs in the vertical path, so hills and embankments screen. The ground effect keeps the source and receiver heights above their own ground (the mean plane through the ends), and the vertical directivity of the railway sources stays relative to the horizontal. A terrain grid flatter than 0.5 m is ignored.
 - **Not yet:** paths that combine reflection and diffraction (a reflected path counts only when both legs are clear), second-order reflections, and the CNOSSOS-EU homogeneous and favourable split.
 - **Speed:** `cargo run --release -p noise --example map_timing` (3 km tram, 6,278 buildings in a block grid, 43,000 cells at 10 m) takes 2.3 s natively with everything on, against 1.8 s with roof screening only. Open layouts of detached houses cost more, because there the paths round the ends matter and are checked: a 1.2 km bus line among 87 houses on a 5 m grid takes 2.3 s natively (0.9 s before) and about 6 s in the browser.
+
+## Implementation notes, N2 later steps: population exposure (2026-11-10)
+
+The product owner chose the source (2026-11-09, "Both, WorldPop first"): WorldPop spread over the buildings where it can be loaded, the building size where it cannot, and the map says which was used.
+
+- **WorldPop** (constrained estimates 2015–2030, 3 arc seconds, R2025A v1, CC BY 4.0; the current year, else the nearest): the GIS tab asks the API for the people per cell over the buildings it loaded (`POST /api/population/grid`). The API finds the countries of the area from OpenStreetMap, downloads each country's GeoTIFF once to the server (WorldPop's file server does not answer byte ranges; Germany is 117 MB, the United States 1.5 GB) and sums the cells of the area. While a file is still downloading the API answers `loading` after 20 s and the map uses the building size, saying so.
+- **Spreading** (`noise::population`): the people of each cell are shared among the buildings whose centre lies in the cell and that may hold homes, by floor area (footprint × storeys: OSM `building:levels`, else the height ÷ `noise.building_storey_height_m`, at least one). A building may hold homes unless its OSM `building` value names another use (shop, office, garage, church…; `yes` and housing values count) and when its footprint is at least `noise.population_min_footprint_m2` (30 m²). People in a cell without such a building are reported as not counted.
+- **Building size**, where WorldPop cannot be loaded: floor area ÷ `noise.floor_area_per_person_m2` (55 m², an educated guess).
+- **Counting**: each building's residents fall in the reporting band of the level beside its most exposed side (Annex VI), next to the building counts; the panel shows residents rounded to the hundred above 100, the total in reach and the source used.
+- **Not yet:** dwellings (the Directive's other count), quiet facades, and the exposure-response relations of Directive (EU) 2020/367 (highly annoyed, highly sleep disturbed).
 
 ## Alternatives considered
 
@@ -184,6 +194,7 @@ Approved by the product owner (2026-11-09, "All the above": diffraction round bu
 - ISO 9613-1:1993, atmospheric absorption of sound.
 - Zhang, K. et al. (2003), A progressive morphological filter for removing nonground measurements from airborne LIDAR data, IEEE TGRS 41(4), 872–882. https://doi.org/10.1109/TGRS.2003.810682
 - Copernicus DEM GLO-30. https://doi.org/10.5270/ESA-c5d3d65
+- Bondarenko, M. et al. (2025), Constrained estimates of 2015–2030 total number of people per grid square, 3 arc seconds, R2025A v1. WorldPop, University of Southampton. https://doi.org/10.5258/SOTON/WP00839
 - NoiseModelling, Université Gustave Eiffel and Cerema, GPL-3.0. https://noisemodelling.readthedocs.io/
 - Commission Regulation (EU) No 1304/2014 (TSI NOI), pass-by limits, as amended by (EU) 2019/774. https://eur-lex.europa.eu/eli/reg/2014/1304/oj
 - Waka Kotahi NZ Transport Agency, Research Report 703, *Electric bus noise and road user safety*. https://www.nzta.govt.nz/resources/research/reports/703

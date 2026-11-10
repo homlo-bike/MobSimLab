@@ -1184,6 +1184,14 @@
           "label": "Width of what is taken out of the surface model as not ground",
           "unit": "m"
         },
+        "noise.floor_area_per_person_m2": {
+          "label": "Floor area per resident, for people counts from the building size",
+          "unit": "m²"
+        },
+        "noise.population_min_footprint_m2": {
+          "label": "Smallest building footprint that may hold homes",
+          "unit": "m²"
+        },
         "noise.building_level_height_m": {
           "label": "Storey height for buildings without a height",
           "unit": "m"

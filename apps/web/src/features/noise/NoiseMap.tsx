@@ -15,6 +15,7 @@ import {
 import { loadWasmNoise } from "./engine";
 import { drawNoise, LEGEND, removeNoise } from "./mapLayer";
 import { RAIL_FLOWS, railSources, streetLineSources } from "./sources";
+import { buildingsBbox, fetchPopulation, type PopulationFetcher, type PopulationSource } from "./population";
 import { fetchHeights, type HeightsFetcher, loadTerrain, terrainPlan } from "./terrain";
 import type {
   Flows,
@@ -23,6 +24,7 @@ import type {
   NoiseEngine,
   NoiseEngineLoader,
   NoiseLine,
+  NoisePopulation,
   NoiseTerrain,
   NoiseView,
 } from "./types";
@@ -45,6 +47,7 @@ interface Props {
   loadRail?: RailEngineLoader;
   fetchTile?: BuildingTileFetcher;
   fetchTerrain?: HeightsFetcher;
+  fetchPeople?: PopulationFetcher;
 }
 
 /**
@@ -81,15 +84,22 @@ export async function projectSources(
 type Status =
   | { kind: "idle" }
   | { kind: "busy"; step: string }
-  | { kind: "done"; view: NoiseView; buildings: NoiseBuilding[] | null; notes: string[] }
+  | {
+      kind: "done";
+      view: NoiseView;
+      buildings: NoiseBuilding[] | null;
+      notes: string[];
+      people: PopulationSource | null;
+    }
   | { kind: "error"; text: string };
 
 /**
  * Purpose: the Noise map in the GIS tab (ADR-0038 step N2): L_den or L_night from every saved
  * street line and railway, screened by the OSM buildings round them (over the roofs and round the
  * ends), with first-order facade reflections and the terrain, the buildings coloured by the level
- * beside their most exposed side and counted by the Directive's reporting bands.
- * Side effects: loads buildings and terrain heights from the API and the noise and rail engines on
+ * beside their most exposed side, and the buildings and their residents (WorldPop, else the
+ * building size) counted by the Directive's reporting bands.
+ * Side effects: loads buildings, terrain heights and the population grid from the API and the noise and rail engines on
  * demand; draws the noise picture and the buildings on the map while shown.
  */
 export function NoiseMap({
@@ -101,6 +111,7 @@ export function NoiseMap({
   loadRail = loadRailEngine,
   fetchTile = fetchBuildingTile,
   fetchTerrain = fetchHeights,
+  fetchPeople = fetchPopulation,
 }: Props) {
   const [indicator, setIndicator] = useState<Indicator>("lden");
   const [withBuildings, setWithBuildings] = useState(true);
@@ -180,6 +191,27 @@ export function NoiseMap({
           }
         }
       }
+      let population: NoisePopulation | null = null;
+      let people: PopulationSource | null = null;
+      const bbox = buildings?.length ? buildingsBbox(buildings) : null;
+      if (bbox) {
+        setStatus({ kind: "busy", step: "Loading WorldPop population…" });
+        const fallback =
+          "so residents are estimated from the building size (floor area ÷ floor area per person).";
+        try {
+          const a = await fetchPeople(bbox);
+          if (a.status === "ready") [population, people] = [a.grid, a.source];
+          else if (a.status === "loading")
+            notes.push(
+              `${a.reason}. Until it is there, residents are estimated from the building size (floor area ÷ floor area per person); compute again in a few minutes to use WorldPop.`,
+            );
+          else notes.push(`WorldPop population is not available here (${a.reason}), ${fallback}`);
+        } catch (err) {
+          notes.push(
+            `WorldPop population is unavailable (${err instanceof Error ? err.message : String(err)}), ${fallback}`,
+          );
+        }
+      }
       setStatus({ kind: "busy", step: "Computing the noise map…" });
       // Let the panel show the step before the engine holds the page.
       await new Promise((r) => setTimeout(r, 30));
@@ -190,11 +222,12 @@ export function NoiseMap({
         grid_reach_m: MAP_REACH_M,
         buildings: buildings ?? [],
         terrain,
+        population,
         overrides: Object.fromEntries(
           Object.entries(preferences ?? {}).filter(([k, v]) => k.startsWith("noise.") && Number.isFinite(v)),
         ),
       });
-      setStatus({ kind: "done", view, buildings, notes });
+      setStatus({ kind: "done", view, buildings, notes, people });
     } catch (err) {
       setStatus({ kind: "error", text: err instanceof Error ? err.message : String(err) });
     }
@@ -275,15 +308,16 @@ export function NoiseMap({
             <span>dB</span>
           </div>
           {exposure && rows && (
-            <table className="w-full text-xs" aria-label="Buildings by noise band">
+            <table className="w-full text-xs" aria-label="Buildings and residents by noise band">
               <caption className="pb-1 text-left text-slate-600">
-                Buildings by the level beside their most exposed side ({exposure.reached} of {exposure.count}{" "}
-                in reach)
+                Buildings and their residents by the level beside the most exposed side ({exposure.reached} of{" "}
+                {exposure.count} buildings in reach)
               </caption>
               <thead>
                 <tr className="text-left text-slate-500">
                   <th className="font-normal">{indicator === "lden" ? "L_den" : "L_night"}</th>
                   <th className="text-right font-normal">Buildings</th>
+                  {exposure.people && <th className="text-right font-normal">Residents</th>}
                 </tr>
               </thead>
               <tbody>
@@ -291,10 +325,22 @@ export function NoiseMap({
                   <tr key={from} className="border-t border-slate-100">
                     <td>{i === rows.from_db.length - 1 ? `${from} dB or more` : `${from}–${from + 4} dB`}</td>
                     <td className="text-right tabular-nums">{rows.buildings[i]}</td>
+                    {exposure.people && (
+                      <td className="text-right tabular-nums">{peopleText(rows.people[i] ?? 0)}</td>
+                    )}
                   </tr>
                 ))}
               </tbody>
             </table>
+          )}
+          {exposure?.people && (
+            <p className="text-xs text-slate-600">
+              {exposure.people.source === "grid" && status.people
+                ? `Residents from WorldPop ${status.people.year} (${status.people.countries.join(", ")}): the people of each 100 m cell shared among its homes by floor area. ${peopleText(exposure.people.reached)} of ${peopleText(exposure.people.total)} residents of the buildings loaded live in reach.${exposure.people.unplaced >= 1 ? ` ${peopleText(exposure.people.unplaced)} people of the grid live in cells without a mapped home and are not counted.` : ""}`
+                : `Residents estimated from the building size: floor area (footprint × storeys) ÷ the floor area per person in the noise plugin's assumptions. ${peopleText(exposure.people.reached)} of ${peopleText(exposure.people.total)} live in reach.`}{" "}
+              Buildings tagged in OpenStreetMap as another use (shops, offices, garages, churches…) and very
+              small ones have no residents.
+            </p>
           )}
           {status.notes.map((n) => (
             <p key={n} className="rounded bg-amber-50 px-2 py-1 text-xs text-amber-900">
@@ -308,8 +354,11 @@ export function NoiseMap({
               ? "Sources, buildings and receivers stand on the terrain, and hills screen; roofs and trees are filtered out of the surface model."
               : "Flat ground."}{" "}
             Buildings without a height in OpenStreetMap take 3 m per tagged storey, or 8 m (the noise plugin's
-            assumptions). A building's level leaves out the reflection from its own facade. Building counts
-            stand in for dwellings until population data is added. Buildings © OpenStreetMap contributors.
+            assumptions). A building's level leaves out the reflection from its own facade. Buildings ©
+            OpenStreetMap contributors.
+            {status.people
+              ? ` Population: WorldPop, University of Southampton (doi:10.5258/SOTON/WP00839), CC BY 4.0.`
+              : ""}
             {status.view.terrain
               ? " Terrain: Copernicus DEM GLO-30 © DLR e.V. and © Airbus Defence and Space GmbH, provided under COPERNICUS by the European Union and ESA."
               : ""}
@@ -318,4 +367,10 @@ export function NoiseMap({
       )}
     </section>
   );
+}
+
+/** Purpose: a people count as the Directive reports it, rounded to the nearest hundred above 100. */
+function peopleText(n: number): string {
+  const r = n >= 100 ? Math.round(n / 100) * 100 : Math.round(n);
+  return r.toLocaleString("en-GB");
 }
