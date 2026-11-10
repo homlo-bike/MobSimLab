@@ -13,7 +13,7 @@ Tiles for the whole project: the number of lines and modes, route length (railwa
 
 ## Service and fleet
 
-One row per line, rail service lines first: length, stops, average stop spacing, trip time end to end with the stops, average speed (length over trip time), how often it runs (peak, and off peak for rail lines), service hours with the first and last departure, trips a day in both directions, fleet with spares and the vehicles at the peak, places per vehicle or train, and capacity an hour in one direction at the peak headway. Click a column heading to sort.
+One row per line, rail service lines first: length, stops, average stop spacing, trip time end to end with the stops, average speed (length over trip time), how often it runs (peak, and off peak for rail lines), service hours with the first and last departure, trips a day in both directions, fleet with spares and the vehicles at the peak, places per vehicle or train, and capacity an hour in one direction at the peak headway. Capacity is places an hour in one direction. Click a column heading to sort.
 
 - Rail line lengths are straight between the stations the line calls at, as in the cost tables. Trip times, trips and trains come from publishing the lines' timetables on a weekday.
 - Fleet and vehicle-km are the same numbers the cost tables use. Rail fleets count units: 4 trains of 2 coupled units are a fleet of 8.

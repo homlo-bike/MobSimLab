@@ -115,7 +115,7 @@ export function lineFacts(input: LineFactsInput): LineFact[] {
       vehicle: train ? (units > 1 ? `${train.name} × ${units}` : train.name) : null,
       placesPerVehicle: places,
       placesAssumed: false,
-      capacityPerHour: l.peak_headway_min > 0 ? (60 / l.peak_headway_min) * places : 0,
+      capacityPerHour: running && l.peak_headway_min > 0 ? (60 / l.peak_headway_min) * places : 0,
       hoursPerYear: s.hoursPerYear,
       kmPerYear: s.kmPerYear,
       problem: running

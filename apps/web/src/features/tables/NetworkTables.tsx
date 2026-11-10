@@ -1,4 +1,4 @@
-import { type ReactNode, useMemo, useState } from "react";
+import { Fragment, type ReactNode, useMemo, useState } from "react";
 import {
   card,
   fmtQty,
@@ -119,7 +119,7 @@ function Summary({ facts, q }: { facts: LineFact[]; q: Quantities }) {
         The size of the project and the service it runs, from the railway design, its service lines and the
         street lines.
       </p>
-      <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
         <Tile
           title="Lines"
           value={int(facts.length)}
@@ -351,18 +351,7 @@ function Infrastructure({ q, terrain }: { q: Quantities; terrain: "ready" | "fai
 }
 
 type FactKey =
-  | "name"
-  | "length"
-  | "stops"
-  | "spacing"
-  | "trip"
-  | "speed"
-  | "headway"
-  | "hours"
-  | "trips"
-  | "fleet"
-  | "places"
-  | "capacity";
+  "name" | "length" | "stops" | "trip" | "headway" | "hours" | "trips" | "fleet" | "places" | "capacity";
 
 /** Purpose: the service and fleet of each line, sortable by any column. */
 function ServiceAndFleet({ facts }: { facts: LineFact[] }) {
@@ -375,12 +364,8 @@ function ServiceAndFleet({ facts }: { facts: LineFact[] }) {
         return f.lengthKm;
       case "stops":
         return f.stops;
-      case "spacing":
-        return f.spacingM ?? 0;
       case "trip":
         return f.tripMin ?? 0;
-      case "speed":
-        return f.speedKmh ?? 0;
       case "headway":
         return f.peakHeadwayMin ?? 0;
       case "hours":
@@ -418,74 +403,89 @@ function ServiceAndFleet({ facts }: { facts: LineFact[] }) {
       ) : (
         <section className={card} aria-label="Service and fleet per line">
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[64rem] text-sm">
+            <table className="w-full min-w-[50rem] text-sm">
               <thead>
                 <tr className="border-b border-slate-200">
                   {H("Line", "name", false)}
                   {H("Length", "length")}
                   {H("Stops", "stops")}
-                  {H("Stop spacing", "spacing")}
                   {H("Trip time", "trip")}
-                  {H("Average speed", "speed")}
                   {H("Every", "headway")}
                   {H("Service hours", "hours")}
-                  {H("Trips a day", "trips")}
+                  {H("Trips", "trips")}
                   {H("Fleet", "fleet")}
-                  {H("Places per vehicle", "places")}
-                  {H("Capacity an hour", "capacity")}
+                  {H("Places", "places")}
+                  {H("Capacity", "capacity")}
                 </tr>
               </thead>
               <tbody>
                 {rows.map((f) => (
-                  <tr key={f.id} className="border-b border-slate-100">
-                    <td className={td}>
-                      <span className="flex items-center gap-2">
-                        <span
-                          aria-hidden="true"
-                          className="inline-block h-3 w-3 shrink-0 rounded-full"
-                          style={{ background: f.color }}
-                        />
-                        <span className="font-medium">{f.name}</span>
-                      </span>
-                      {sub(f.problem ? `${modeLabel(f.mode)}. ${f.problem}` : modeLabel(f.mode))}
-                    </td>
-                    <td className={num}>{km(f.lengthKm)}</td>
-                    <td className={num}>{int(f.stops)}</td>
-                    <td className={num}>{f.spacingM === null ? dash : `${int(f.spacingM)} m`}</td>
-                    <td className={num}>{f.tripMin === null ? dash : `${fmtQty(f.tripMin)} min`}</td>
-                    <td className={num}>{f.speedKmh === null ? dash : `${fmtQty(f.speedKmh)} km/h`}</td>
-                    <td className={num}>
-                      {f.peakHeadwayMin === null ? dash : `${fmtQty(f.peakHeadwayMin)} min`}
-                      {f.offpeakHeadwayMin !== null && sub(`off peak ${fmtQty(f.offpeakHeadwayMin)} min`)}
-                    </td>
-                    <td className={num}>
-                      {`${fmtQty(f.serviceHours)} h`}
-                      {f.firstMin !== null && f.lastMin !== null
-                        ? sub(`${hhmm(f.firstMin)}–${hhmm(f.lastMin)}`)
-                        : sub("assumed")}
-                    </td>
-                    <td className={num}>{int(f.tripsPerDay)}</td>
-                    <td className={num}>
-                      {int(f.fleet)}
-                      {sub(`${int(f.inService)} at the peak`)}
-                    </td>
-                    <td className={num}>
-                      {int(f.placesPerVehicle)}
-                      {sub(f.vehicle ?? "assumed")}
-                    </td>
-                    <td className={num}>
-                      {int(f.capacityPerHour)}
-                      {sub("one direction")}
-                    </td>
-                  </tr>
+                  <Fragment key={f.id}>
+                    <tr className={f.problem ? "" : "border-b border-slate-100"}>
+                      <td className={`${td} min-w-[9rem]`}>
+                        <span className="flex items-center gap-2">
+                          <span
+                            aria-hidden="true"
+                            className="inline-block h-3 w-3 shrink-0 rounded-full"
+                            style={{ background: f.color }}
+                          />
+                          <span className="font-medium">{f.name}</span>
+                        </span>
+                        {sub(f.vehicle ? `${modeLabel(f.mode)}, ${f.vehicle}` : modeLabel(f.mode))}
+                      </td>
+                      <td className={num}>{km(f.lengthKm)}</td>
+                      <td className={num}>
+                        {int(f.stops)}
+                        {f.spacingM !== null && sub(`every ${int(f.spacingM)} m`)}
+                      </td>
+                      <td className={num}>
+                        {f.tripMin === null ? dash : `${fmtQty(f.tripMin)} min`}
+                        {f.speedKmh !== null && sub(`${fmtQty(f.speedKmh)} km/h`)}
+                      </td>
+                      <td className={num}>
+                        {f.peakHeadwayMin === null ? dash : `${fmtQty(f.peakHeadwayMin)} min`}
+                        {f.offpeakHeadwayMin !== null && sub(`off peak ${fmtQty(f.offpeakHeadwayMin)} min`)}
+                      </td>
+                      <td className={num}>
+                        {`${fmtQty(f.serviceHours)} h`}
+                        {f.firstMin !== null && f.lastMin !== null
+                          ? sub(`${hhmm(f.firstMin)}–${hhmm(f.lastMin)}`)
+                          : sub("assumed")}
+                      </td>
+                      <td className={num}>
+                        {int(f.tripsPerDay)}
+                        {sub("a day")}
+                      </td>
+                      <td className={num}>
+                        {int(f.fleet)}
+                        {sub(`${int(f.inService)} at the peak`)}
+                      </td>
+                      <td className={num}>
+                        {int(f.placesPerVehicle)}
+                        {sub(f.placesAssumed ? "assumed" : "per train")}
+                      </td>
+                      <td className={num}>
+                        {int(f.capacityPerHour)}
+                        {sub("per hour")}
+                      </td>
+                    </tr>
+                    {f.problem && (
+                      <tr className="border-b border-slate-100">
+                        <td colSpan={10} className="px-2 pb-2 text-xs text-amber-800">
+                          No service figures yet: {f.problem}
+                        </td>
+                      </tr>
+                    )}
+                  </Fragment>
                 ))}
               </tbody>
             </table>
           </div>
           <ul className="mt-3 list-disc ps-5 text-xs text-slate-500">
             <li>
-              Rail lengths are straight between the stations a line calls at, as in the cost tables. Trip time
-              includes the stops; average speed is length over trip time.
+              Capacity is places an hour in one direction. Rail lengths are straight between the stations a
+              line calls at, as in the cost tables. Trip time includes the stops; the speed under it is length
+              over trip time, and the distance under the stops is the average stop spacing.
             </li>
             <li>
               Rail fleets count units: a line of 4 trains of 2 coupled units has a fleet of 8. Spares come
