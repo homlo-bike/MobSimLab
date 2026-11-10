@@ -205,6 +205,7 @@ export const ar: Messages = {
   "drawing.rail-timetable": "جدول مواعيد القطارات",
   "drawing.preferences": "تفضيلات المشروع",
   "drawing.costs": "إعدادات التكاليف",
+  "drawing.schematic": "المخطط",
 
   "tab.label": "المشروع",
   "tab.simulator": "المحاكي",

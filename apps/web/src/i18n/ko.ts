@@ -209,6 +209,7 @@ export const ko: Messages = {
   "drawing.rail-timetable": "철도 시간표",
   "drawing.preferences": "프로젝트 환경설정",
   "drawing.costs": "비용 설정",
+  "drawing.schematic": "노선도",
 
   "tab.label": "프로젝트",
   "tab.simulator": "시뮬레이터",

@@ -212,6 +212,7 @@ export const ig: Messages = {
   "drawing.rail-timetable": "usoro oge ụgbọ oloko",
   "drawing.preferences": "mmasị ọrụ",
   "drawing.costs": "ntọala ego",
+  "drawing.schematic": "map eserese",
 
   "tab.label": "Ọrụ",
   "tab.simulator": "Ihe ịṅomi",

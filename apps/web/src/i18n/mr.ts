@@ -211,6 +211,7 @@ export const mr: Messages = {
   "drawing.rail-timetable": "रेल्वे वेळापत्रक",
   "drawing.preferences": "प्रकल्पाची प्राधान्ये",
   "drawing.costs": "खर्च सेटिंग्ज",
+  "drawing.schematic": "आराखडा नकाशा",
 
   "tab.label": "प्रकल्प",
   "tab.simulator": "सिम्युलेटर",

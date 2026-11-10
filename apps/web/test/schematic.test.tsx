@@ -80,7 +80,9 @@ describe("schematic network", () => {
       expect(Math.hypot(dx, dy)).toBeGreaterThan(unit * 0.3);
     }
     // Most sections come out straight.
-    const straight = edgesOf(net).filter(([a, b]) => octi(pos[b]![0] - pos[a]![0], pos[b]![1] - pos[a]![1], 0.01));
+    const straight = edgesOf(net).filter(([a, b]) =>
+      octi(pos[b]![0] - pos[a]![0], pos[b]![1] - pos[a]![1], 0.01),
+    );
     expect(straight.length / edgesOf(net).length).toBeGreaterThan(0.8);
 
     const key = net.stations[0]!.key;
@@ -106,8 +108,26 @@ describe("schematic network", () => {
     expect(m1.station.filter(Boolean)).toHaveLength(lines[0]!.stops.length);
     for (let k = 1; k < m1.pts.length; k++)
       expect(octi(m1.pts[k]![0] - m1.pts[k - 1]![0], m1.pts[k]![1] - m1.pts[k - 1]![1], 0.05)).toBe(true);
-    expect(pathD([[0, 0], [10, 0], [10, 10]], 4)).toBe("M0 0L6 0Q10 0 10 4L10 10");
-    expect(pathD([[0, 0], [10, 0], [10, 10]], 0)).toBe("M0 0L10 0L10 10");
+    expect(
+      pathD(
+        [
+          [0, 0],
+          [10, 0],
+          [10, 10],
+        ],
+        4,
+      ),
+    ).toBe("M0 0L6 0Q10 0 10 4L10 10");
+    expect(
+      pathD(
+        [
+          [0, 0],
+          [10, 0],
+          [10, 10],
+        ],
+        0,
+      ),
+    ).toBe("M0 0L10 0L10 10");
   });
 
   it("places a name where it does not cover another name or a line", () => {
@@ -127,7 +147,9 @@ describe("schematic network", () => {
     );
     // East of Alpha is Beta's dot and the line: Alpha takes another place.
     expect(at.get(0)).not.toBe(0);
-    expect(placeLabels([{ i: 0, at: [0, 0], name: "A", r: 5, neighbours: [] }], [], new Map([[0, 3]]), 13).get(0)).toBe(3);
+    expect(
+      placeLabels([{ i: 0, at: [0, 0], name: "A", r: 5, neighbours: [] }], [], new Map([[0, 3]]), 13).get(0),
+    ).toBe(3);
   });
 
   it("names export files after the project", () => {
@@ -140,7 +162,13 @@ describe("Schematic tab", () => {
   it("draws the network with a legend, hides layers, and saves a name place", () => {
     const onDoc = vi.fn();
     render(
-      <Schematic railway={RAILWAY} streetLines={STREET_LINES} doc={null} onDoc={onDoc} projectName="Amstelstad" />,
+      <Schematic
+        railway={RAILWAY}
+        streetLines={STREET_LINES}
+        doc={null}
+        onDoc={onDoc}
+        projectName="Amstelstad"
+      />,
     );
     const map = screen.getByRole("img", { name: "Schematic network map" });
     expect(within(map).getByText("M1 · Metro")).toBeTruthy();
@@ -173,12 +201,16 @@ describe("Schematic tab", () => {
     fireEvent.change(screen.getByRole("combobox"), { target: { value: "rail:M2" } });
     const strip = screen.getByRole("img", { name: "Strip map of line M2" });
     const names = [...strip.querySelectorAll("text")].map((t) => t.textContent);
-    expect(names).toEqual(expect.arrayContaining(["Noorderhaven", "Centraal", "Zuidas", "M1", "R5", "Bus 22"]));
+    expect(names).toEqual(
+      expect.arrayContaining(["Noorderhaven", "Centraal", "Zuidas", "M1", "R5", "Bus 22"]),
+    );
   });
 
   it("says how to get lines when there are none", () => {
     const onCreate = vi.fn();
-    render(<Schematic railway={null} streetLines={null} doc={null} projectName="Empty" onCreate={onCreate} />);
+    render(
+      <Schematic railway={null} streetLines={null} doc={null} projectName="Empty" onCreate={onCreate} />,
+    );
     fireEvent.click(screen.getByRole("button", { name: "Go to Create" }));
     expect(onCreate).toHaveBeenCalled();
   });

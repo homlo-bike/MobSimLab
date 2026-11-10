@@ -543,7 +543,8 @@ export const editorsEn = {
     "Drag a station to move it; it stays where you put it when lines change. Click a station to place its name.",
   "schematic.readOnly": "You can look at and export this diagram. Only editors can move stations.",
   "schematic.reset": "Reset layout",
-  "schematic.resetConfirm": "Put every station back where the automatic layout places it, and every name in its automatic place?",
+  "schematic.resetConfirm":
+    "Put every station back where the automatic layout places it, and every name in its automatic place?",
   "schematic.station": "Station",
   "schematic.linesHere": "Lines here: {lines}",
   "schematic.label": "Name position",

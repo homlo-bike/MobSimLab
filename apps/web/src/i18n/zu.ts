@@ -215,6 +215,7 @@ export const zu: Messages = {
   "drawing.rail-timetable": "uhlelo lwezikhathi lwesitimela",
   "drawing.preferences": "okuthandwayo kwephrojekthi",
   "drawing.costs": "izilungiselelo zezindleko",
+  "drawing.schematic": "imephu yomdwebo",
 
   "tab.label": "Iphrojekthi",
   "tab.simulator": "Isilingisi",

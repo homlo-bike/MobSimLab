@@ -215,6 +215,7 @@ export const uz: Messages = {
   "drawing.rail-timetable": "poyezdlar jadvali",
   "drawing.preferences": "loyiha sozlamalari",
   "drawing.costs": "xarajat sozlamalari",
+  "drawing.schematic": "sxema",
 
   "tab.label": "Loyiha",
   "tab.simulator": "Simulyator",

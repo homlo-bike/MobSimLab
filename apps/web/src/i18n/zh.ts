@@ -205,6 +205,7 @@ export const zh: Messages = {
   "drawing.rail-timetable": "铁路时刻表",
   "drawing.preferences": "项目偏好设置",
   "drawing.costs": "费用设置",
+  "drawing.schematic": "示意图",
 
   "tab.label": "项目",
   "tab.simulator": "模拟器",

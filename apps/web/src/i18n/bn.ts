@@ -211,6 +211,7 @@ export const bn: Messages = {
   "drawing.rail-timetable": "রেলের সময়সূচি",
   "drawing.preferences": "প্রকল্পের পছন্দ",
   "drawing.costs": "খরচের সেটিংস",
+  "drawing.schematic": "নকশা মানচিত্র",
 
   "tab.label": "প্রকল্প",
   "tab.simulator": "সিমুলেটর",

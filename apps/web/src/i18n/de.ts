@@ -218,6 +218,7 @@ export const de: Messages = {
   "drawing.rail-timetable": "den Fahrplan der Bahnlinien",
   "drawing.preferences": "die Projekteinstellungen",
   "drawing.costs": "die Kosteneinstellungen",
+  "drawing.schematic": "das Schema",
 
   "tab.label": "Projekt",
   "tab.simulator": "Simulator",

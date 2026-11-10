@@ -211,6 +211,7 @@ export const yo: Messages = {
   "drawing.rail-timetable": "àkókò ìrìn ọkọ̀ ojú irin",
   "drawing.preferences": "àwọn àyànfẹ́ iṣẹ́ àkànṣe",
   "drawing.costs": "ètò iye owó",
+  "drawing.schematic": "máàpù àwòrán",
 
   "tab.label": "Iṣẹ́ àkànṣe",
   "tab.simulator": "Afarawé",

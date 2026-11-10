@@ -213,6 +213,7 @@ export const id: Messages = {
   "drawing.rail-timetable": "jadwal kereta",
   "drawing.preferences": "preferensi proyek",
   "drawing.costs": "pengaturan biaya",
+  "drawing.schematic": "skema",
 
   "tab.label": "Proyek",
   "tab.simulator": "Simulator",

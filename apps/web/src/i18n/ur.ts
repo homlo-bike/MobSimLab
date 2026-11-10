@@ -213,6 +213,7 @@ export const ur: Messages = {
   "drawing.rail-timetable": "ریل کا ٹائم ٹیبل",
   "drawing.preferences": "منصوبے کی ترجیحات",
   "drawing.costs": "لاگت کی ترتیبات",
+  "drawing.schematic": "خاکہ نقشہ",
 
   "tab.label": "منصوبہ",
   "tab.simulator": "سمیولیٹر",

@@ -213,6 +213,7 @@ export const te: Messages = {
   "drawing.rail-timetable": "రైలు సమయపట్టిక",
   "drawing.preferences": "ప్రాజెక్టు ప్రాధాన్యతలు",
   "drawing.costs": "ఖర్చు సెట్టింగ్‌లు",
+  "drawing.schematic": "రేఖాచిత్రం",
 
   "tab.label": "ప్రాజెక్టు",
   "tab.simulator": "సిమ్యులేటర్",

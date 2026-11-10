@@ -213,6 +213,7 @@ export const uk: Messages = {
   "drawing.rail-timetable": "розклад залізниці",
   "drawing.preferences": "параметри проєкту",
   "drawing.costs": "налаштування витрат",
+  "drawing.schematic": "схему",
 
   "tab.label": "Проєкт",
   "tab.simulator": "Симулятор",

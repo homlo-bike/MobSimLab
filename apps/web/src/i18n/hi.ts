@@ -212,6 +212,7 @@ export const hi: Messages = {
   "drawing.rail-timetable": "रेल समय-सारणी",
   "drawing.preferences": "प्रोजेक्ट प्राथमिकताएँ",
   "drawing.costs": "लागत सेटिंग्स",
+  "drawing.schematic": "योजनाबद्ध मानचित्र",
 
   "tab.label": "प्रोजेक्ट",
   "tab.simulator": "सिम्युलेटर",

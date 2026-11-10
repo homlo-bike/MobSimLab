@@ -213,6 +213,7 @@ export const ru: Messages = {
   "drawing.rail-timetable": "расписание поездов",
   "drawing.preferences": "параметры проекта",
   "drawing.costs": "настройки затрат",
+  "drawing.schematic": "схему",
 
   "tab.label": "Проект",
   "tab.simulator": "Симулятор",

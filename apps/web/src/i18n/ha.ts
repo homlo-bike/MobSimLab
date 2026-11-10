@@ -212,6 +212,7 @@ export const ha: Messages = {
   "drawing.rail-timetable": "jadawalin jirgin ƙasa",
   "drawing.preferences": "zaɓuɓɓukan aiki",
   "drawing.costs": "saitunan kuɗi",
+  "drawing.schematic": "taswirar zane",
 
   "tab.label": "Aiki",
   "tab.simulator": "Mai kwaikwayo",

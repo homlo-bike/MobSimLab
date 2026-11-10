@@ -205,6 +205,7 @@ export const am: Messages = {
   "drawing.rail-timetable": "የባቡር የጊዜ ሰሌዳ",
   "drawing.preferences": "የፕሮጀክት ምርጫዎች",
   "drawing.costs": "የወጪ ቅንብሮች",
+  "drawing.schematic": "ንድፍ ካርታ",
 
   "tab.label": "ፕሮጀክት",
   "tab.simulator": "ማስመሰያ",

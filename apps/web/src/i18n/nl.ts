@@ -214,6 +214,7 @@ export const nl: Messages = {
   "drawing.rail-timetable": "de dienstregeling van de spoorlijnen",
   "drawing.preferences": "de projectvoorkeuren",
   "drawing.costs": "de kosteninstellingen",
+  "drawing.schematic": "het schema",
 
   "tab.label": "Project",
   "tab.simulator": "Simulator",

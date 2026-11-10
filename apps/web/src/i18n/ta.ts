@@ -214,6 +214,7 @@ export const ta: Messages = {
   "drawing.rail-timetable": "ரயில் கால அட்டவணை",
   "drawing.preferences": "திட்ட விருப்பங்கள்",
   "drawing.costs": "செலவு அமைப்புகள்",
+  "drawing.schematic": "திட்ட வரைபடம்",
 
   "tab.label": "திட்டம்",
   "tab.simulator": "உருவகப்படுத்தி",

@@ -213,6 +213,7 @@ export const tr: Messages = {
   "drawing.rail-timetable": "tren tarifesi",
   "drawing.preferences": "proje tercihleri",
   "drawing.costs": "maliyet ayarları",
+  "drawing.schematic": "şema",
 
   "tab.label": "Proje",
   "tab.simulator": "Simülatör",

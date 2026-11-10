@@ -214,6 +214,7 @@ export const es: Messages = {
   "drawing.rail-timetable": "el horario ferroviario",
   "drawing.preferences": "las preferencias del proyecto",
   "drawing.costs": "los ajustes de costes",
+  "drawing.schematic": "el plano esquemático",
 
   "tab.label": "Proyecto",
   "tab.simulator": "Simulador",

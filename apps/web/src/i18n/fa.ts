@@ -209,6 +209,7 @@ export const fa: Messages = {
   "drawing.rail-timetable": "جدول زمانی ریلی",
   "drawing.preferences": "ترجیحات پروژه",
   "drawing.costs": "تنظیمات هزینه",
+  "drawing.schematic": "نقشهٔ شماتیک",
 
   "tab.label": "پروژه",
   "tab.simulator": "شبیه‌ساز",

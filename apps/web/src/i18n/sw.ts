@@ -211,6 +211,7 @@ export const sw: Messages = {
   "drawing.rail-timetable": "ratiba ya reli",
   "drawing.preferences": "mapendeleo ya mradi",
   "drawing.costs": "mipangilio ya gharama",
+  "drawing.schematic": "ramani ya mchoro",
 
   "tab.label": "Mradi",
   "tab.simulator": "Kiigaji",

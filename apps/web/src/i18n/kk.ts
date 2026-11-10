@@ -212,6 +212,7 @@ export const kk: Messages = {
   "drawing.rail-timetable": "пойыз кестесі",
   "drawing.preferences": "жоба параметрлері",
   "drawing.costs": "шығын баптаулары",
+  "drawing.schematic": "сызбаны",
 
   "tab.label": "Жоба",
   "tab.simulator": "Симулятор",

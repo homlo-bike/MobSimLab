@@ -211,6 +211,7 @@ export const vi: Messages = {
   "drawing.rail-timetable": "lịch tàu",
   "drawing.preferences": "tùy chọn dự án",
   "drawing.costs": "cài đặt chi phí",
+  "drawing.schematic": "sơ đồ",
 
   "tab.label": "Dự án",
   "tab.simulator": "Mô phỏng",

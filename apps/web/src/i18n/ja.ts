@@ -210,6 +210,7 @@ export const ja: Messages = {
   "drawing.rail-timetable": "鉄道時刻表",
   "drawing.preferences": "プロジェクト設定",
   "drawing.costs": "費用の設定",
+  "drawing.schematic": "路線図",
 
   "tab.label": "プロジェクト",
   "tab.simulator": "シミュレーター",
