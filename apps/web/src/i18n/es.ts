@@ -214,6 +214,8 @@ export const es: Messages = {
   "drawing.rail-timetable": "el horario ferroviario",
   "drawing.preferences": "las preferencias del proyecto",
   "drawing.costs": "los ajustes de costes",
+  "drawing.benefits": "las fórmulas de beneficios",
+  "drawing.regions": "las regiones",
 
   "tab.label": "Proyecto",
   "tab.simulator": "Simulador",
@@ -256,6 +258,8 @@ export const es: Messages = {
   "gis.streets": "Sección de las calles: carriles bus, bici y tranvía, velocidades, catenaria",
   "gis.walk": "Cobertura a 15 minutos a pie y huecos",
   "gis.spacing": "Distancia entre paradas",
+  "gis.streetsView": "Calles",
+  "gis.regionsView": "Regiones",
 
   "tables.title": "Tablas",
   "tables.intro": "Todos los cálculos del proyecto, para estimar lo bien que funcionará.",

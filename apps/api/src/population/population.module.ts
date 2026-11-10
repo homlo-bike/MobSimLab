@@ -12,5 +12,6 @@ import { PopulationService } from "./population.service";
     { provide: OverpassClient, useFactory: () => new OverpassClient() },
     { provide: WorldPopClient, useFactory: () => new WorldPopClient() },
   ],
+  exports: [PopulationService],
 })
 export class PopulationModule {}

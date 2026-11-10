@@ -150,6 +150,8 @@ Default methodology follows the **EU Guide to Cost-Benefit Analysis of Investmen
 | Health | Active travel (walk/cycle access) via HEAT-style method (WHO) |
 | Congestion | Δ road delay from assignment × value of time |
 
+**Wider economic and social benefits (ADR-0040).** Until the demand model exists, the Tables tab estimates ridership, GDP growth from agglomeration (TAG A2.4), resident earnings from job access, land value uplift, property tax, construction and operation impacts and access to jobs, education and healthcare from public transport travel times with and without each line (journey planner `reach`), WorldPop, OpenStreetMap buildings and places, and World Bank figures. Formulas and parameters are editable per project; values entered for GIS regions take priority. Only GDP growth is an appraisal benefit; the rest is shown as wider context so nothing is counted twice.
+
 Default externality unit values from the EU Handbook on the External Costs of Transport (cited, versioned), all overridable.
 
 ### 3.4 Sensitivity

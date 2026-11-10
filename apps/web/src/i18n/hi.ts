@@ -212,6 +212,8 @@ export const hi: Messages = {
   "drawing.rail-timetable": "रेल समय-सारणी",
   "drawing.preferences": "प्रोजेक्ट प्राथमिकताएँ",
   "drawing.costs": "लागत सेटिंग्स",
+  "drawing.benefits": "लाभ के सूत्र",
+  "drawing.regions": "क्षेत्र",
 
   "tab.label": "प्रोजेक्ट",
   "tab.simulator": "सिम्युलेटर",
@@ -248,6 +250,8 @@ export const hi: Messages = {
   "schematic.export": "प्रिंट और स्क्रीन के लिए निर्यात",
 
   "gis.title": "GIS",
+  "gis.streetsView": "सड़कें",
+  "gis.regionsView": "क्षेत्र",
   "gis.intro": "गणनाओं में इस्तेमाल होने वाली जानकारी जोड़ें या संपादित करें।",
   "gis.areas": "क्षेत्र बनाएँ या OpenStreetMap से आयात करें",
   "gis.streets": "सड़क लेआउट: बस, साइकिल और ट्राम लेन, गति, ऊपरी तार",

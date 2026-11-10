@@ -92,14 +92,29 @@ export function buildingQuery(z: number, x: number, y: number): string {
   );
 }
 
-/** One building as the noise map takes it: outer ring `[lon, lat]` and what OSM says of its height and use. */
+/**
+ * One building as the noise map and the benefit tables take it: outer ring `[lon, lat]`, what OSM says of
+ * its height, whether it holds homes (`homes`), and what it is used for (`use`: the `building` value, or
+ * `shop`, `office` or `amenity:<value>` when the building is only tagged `building=yes` with one of those).
+ */
 export interface BuildingFootprint {
   id: string;
   ring: [number, number][];
   height_m?: number;
   levels?: number;
+  use?: string;
   /** True when tagged as housing, false when tagged as another use, absent when not said (`building=yes`). */
   homes?: boolean;
+}
+
+/** Purpose: what a building is used for, from its OSM tags (see `BuildingFootprint.use`). */
+export function buildingUse(t: Record<string, string>): string {
+  const b = (t.building ?? "yes").toLowerCase();
+  if (b !== "yes") return b;
+  if (t.shop) return "shop";
+  if (t.office) return "office";
+  if (t.amenity) return `amenity:${t.amenity.toLowerCase()}`;
+  return "yes";
 }
 
 /** `building=*` values that are housing (OSM wiki, Key:building, "Accommodation"). */
@@ -170,6 +185,7 @@ export function footprints(json: string): BuildingFootprint[] {
     const height = {
       height_m: osmNumber(t.height),
       levels: osmNumber(t["building:levels"]),
+      use: buildingUse(t),
       homes: buildingHomes(t),
     };
     const rings =
@@ -180,6 +196,77 @@ export function footprints(json: string): BuildingFootprint[] {
             .map((m) => ring(m.geometry));
     rings.forEach((r, i) => {
       if (r) out.push({ id: `${e.type[0]}${e.id}${i ? `-${i}` : ""}`, ring: r, ...clean(height) });
+    });
+  }
+  return out;
+}
+
+/** Kinds of place the benefit tables count: schools, universities and colleges, hospitals and clinics. */
+export type PlaceKind = "school" | "university" | "hospital" | "clinic";
+
+/** One school, university, hospital or clinic: a point (the centre of an area) and its name. */
+export interface PlacePoint {
+  id: string;
+  kind: PlaceKind;
+  lonlat: [number, number];
+  name?: string;
+}
+
+const PLACE_AMENITY = "school|kindergarten|college|university|hospital|clinic|doctors";
+const PLACE_HEALTHCARE = "hospital|clinic|centre|doctor";
+
+/**
+ * Purpose: Overpass QL for the schools, universities, hospitals and clinics of one tile (nodes, ways and
+ * relations, with their centre), for the benefit tables (ADR-0040).
+ */
+export function placeQuery(z: number, x: number, y: number): string {
+  const b = tileBbox(z, x, y)
+    .map((v) => v.toFixed(7))
+    .join(",");
+  return (
+    `[out:json][timeout:90][maxsize:33554432];` +
+    `(nwr["amenity"~"^(${PLACE_AMENITY})$"](${b});` +
+    `nwr["healthcare"~"^(${PLACE_HEALTHCARE})$"](${b}););` +
+    `out tags center;`
+  );
+}
+
+/** Purpose: the kind of place from OSM tags, or null when it is none of the counted kinds. */
+export function placeKind(t: Record<string, string>): PlaceKind | null {
+  const a = t.amenity;
+  const h = t.healthcare;
+  if (a === "school" || a === "kindergarten") return "school";
+  if (a === "college" || a === "university") return "university";
+  if (a === "hospital" || h === "hospital") return "hospital";
+  if (a === "clinic" || a === "doctors" || h === "clinic" || h === "centre" || h === "doctor")
+    return "clinic";
+  return null;
+}
+
+/** Purpose: the places in an Overpass JSON answer (`out tags center`). */
+export function places(json: string): PlacePoint[] {
+  const els =
+    (
+      JSON.parse(json) as {
+        elements?: (OverpassElement & {
+          lat?: number;
+          lon?: number;
+          center?: { lat: number; lon: number };
+        })[];
+      }
+    ).elements ?? [];
+  const r7 = (v: number) => Math.round(v * 1e7) / 1e7;
+  const out: PlacePoint[] = [];
+  for (const e of els) {
+    const kind = placeKind(e.tags ?? {});
+    const at = e.center ?? (e.lat !== undefined && e.lon !== undefined ? { lat: e.lat, lon: e.lon } : null);
+    if (!kind || !at) continue;
+    const name = e.tags?.name;
+    out.push({
+      id: `${e.type[0]}${e.id}`,
+      kind,
+      lonlat: [r7(at.lon), r7(at.lat)],
+      ...(name ? { name } : {}),
     });
   }
   return out;
@@ -239,6 +326,18 @@ export class StreetNetworkService {
       `building/${x}/${y}`,
       () => buildingQuery(TILE_ZOOM, x, y),
       (json) => JSON.stringify({ buildings: footprints(json) }),
+    );
+  }
+
+  /**
+   * Purpose: the schools, universities, hospitals and clinics of tile x/y at TILE_ZOOM as JSON
+   * `{places: PlacePoint[]}`. Side effects: may call Overpass.
+   */
+  placeTile(x: number, y: number): Promise<string> {
+    return this.cached(
+      `place/${x}/${y}`,
+      () => placeQuery(TILE_ZOOM, x, y),
+      (json) => JSON.stringify({ places: places(json) }),
     );
   }
 

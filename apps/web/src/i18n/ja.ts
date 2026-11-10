@@ -210,6 +210,8 @@ export const ja: Messages = {
   "drawing.rail-timetable": "鉄道時刻表",
   "drawing.preferences": "プロジェクト設定",
   "drawing.costs": "費用の設定",
+  "drawing.benefits": "便益の計算式",
+  "drawing.regions": "地域",
 
   "tab.label": "プロジェクト",
   "tab.simulator": "シミュレーター",
@@ -246,6 +248,8 @@ export const ja: Messages = {
   "schematic.export": "印刷・画面用に書き出し",
 
   "gis.title": "GIS",
+  "gis.streetsView": "道路",
+  "gis.regionsView": "地域",
   "gis.intro": "計算に使う情報を追加・編集します。",
   "gis.areas": "地域を描くか OpenStreetMap から取り込む",
   "gis.streets": "道路構成：バス・自転車・路面電車レーン、速度、架線",

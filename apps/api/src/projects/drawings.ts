@@ -50,6 +50,34 @@ const costs = z.looseObject({
     .optional(),
 });
 
+/** Benefit tables settings (ADR-0040): the project's own formulas, by formula id. */
+const benefits = z.looseObject({
+  formulas: z
+    .record(
+      z
+        .string()
+        .regex(/^[a-z_]+$/)
+        .max(40),
+      z.string().max(2000),
+    )
+    .refine((v) => Object.keys(v).length <= 50, "at most 50 formulas")
+    .optional(),
+});
+
+/** Regions drawn or imported in the GIS tab, with values that take priority in the benefit tables. */
+const regions = z.looseObject({
+  regions: z
+    .array(
+      z.looseObject({
+        id: z.string().min(1).max(100),
+        name: z.string().max(200),
+        ring: z.array(point).min(4).max(5000),
+        values: z.record(z.string().max(40), z.union([z.number().finite(), z.string().max(40)])),
+      }),
+    )
+    .max(500),
+});
+
 /** Drawing kinds with their document outline and current schema version. */
 export const DRAWING_KINDS = {
   /** The street line tool (ADR-0029): bus, BRT, trolleybus and intercity bus lines. */
@@ -64,6 +92,10 @@ export const DRAWING_KINDS = {
   preferences: { schema: preferences, schemaVersion: 1 },
   /** Cost tables settings (ADR-0039): the country chosen for prices. */
   costs: { schema: costs, schemaVersion: 1 },
+  /** Benefit tables settings (ADR-0040): the project's own formulas. */
+  benefits: { schema: benefits, schemaVersion: 1 },
+  /** GIS tab regions with their own values (land use, land value, tax, population, jobs…). */
+  regions: { schema: regions, schemaVersion: 1 },
 } as const satisfies Record<string, { schema: z.ZodType; schemaVersion: number }>;
 
 export type DrawingKind = keyof typeof DRAWING_KINDS;

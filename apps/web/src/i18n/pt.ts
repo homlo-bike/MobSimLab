@@ -214,6 +214,8 @@ export const pt: Messages = {
   "drawing.rail-timetable": "o horário ferroviário",
   "drawing.preferences": "as preferências do projeto",
   "drawing.costs": "as definições de custos",
+  "drawing.benefits": "as fórmulas de benefícios",
+  "drawing.regions": "as regiões",
 
   "tab.label": "Projeto",
   "tab.simulator": "Simulador",
@@ -251,6 +253,8 @@ export const pt: Messages = {
   "schematic.export": "Exportar para impressão e telas",
 
   "gis.title": "SIG",
+  "gis.streetsView": "Ruas",
+  "gis.regionsView": "Regiões",
   "gis.intro": "Adicione ou edite as informações usadas nos cálculos.",
   "gis.areas": "Desenhe uma área ou importe uma do OpenStreetMap",
   "gis.streets": "Configuração das ruas: faixas de ônibus, bicicleta e bonde, velocidades, rede aérea",

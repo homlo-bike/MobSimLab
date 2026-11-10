@@ -205,6 +205,8 @@ export const zh: Messages = {
   "drawing.rail-timetable": "铁路时刻表",
   "drawing.preferences": "项目偏好设置",
   "drawing.costs": "费用设置",
+  "drawing.benefits": "效益公式",
+  "drawing.regions": "区域",
 
   "tab.label": "项目",
   "tab.simulator": "模拟器",
@@ -239,6 +241,8 @@ export const zh: Messages = {
   "schematic.export": "导出用于印刷和屏幕",
 
   "gis.title": "GIS",
+  "gis.streetsView": "街道",
+  "gis.regionsView": "区域",
   "gis.intro": "添加或编辑计算所用的信息。",
   "gis.areas": "绘制区域或从 OpenStreetMap 导入",
   "gis.streets": "街道布局：公交、自行车和有轨电车车道，车速，架空线",
