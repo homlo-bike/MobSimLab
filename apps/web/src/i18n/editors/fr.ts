@@ -564,20 +564,45 @@ export const editorsFr = {
   "noise.computing": "Calcul de la carte de bruit…",
   "noise.map": "Carte de bruit",
   "noise.mapIntro":
-    "L_den et L_night à 4 m de chaque ligne sur rue et voie ferrée du projet, avec l’écran des bâtiments OpenStreetMap alentour.",
+    "L_den et L_night à 4 m de chaque ligne routière et ferroviaire du projet, au-delà des bâtiments OpenStreetMap qui les entourent et sur le relief.",
   "noise.mapIndicator": "Indicateur de la carte de bruit",
   "noise.screen": "Écran par les bâtiments OpenStreetMap",
   "noise.compute": "Calculer la carte de bruit",
   "noise.computeAgain": "Recalculer",
   "noise.mapLegend": "Légende de la carte de bruit",
-  "noise.table": "Bâtiments par bande de bruit",
+  "noise.table": "Bâtiments et habitants par bande de bruit",
   "noise.tableCaption":
-    "Bâtiments selon le niveau au droit de leur façade la plus exposée ({reached} sur {count} à portée)",
+    "Bâtiments et leurs habitants selon le niveau devant la façade la plus exposée ({reached} sur {count} bâtiments à portée)",
   "noise.buildings": "Bâtiments",
   "noise.dbOrMore": "{db} dB ou plus",
   "noise.dbRange": "{from}–{to} dB",
   "noise.mapNote":
-    "Service prévu seulement, sans la circulation générale. Écran des bâtiments par-dessus les toits (ISO 9613-2), sans réflexions ni contournement des bâtiments. Les bâtiments sans hauteur dans OpenStreetMap comptent 3 m par étage renseigné, ou 8 m (hypothèses du module de bruit). Le nombre de bâtiments remplace celui des logements en attendant les données de population. Bâtiments © contributeurs d’OpenStreetMap.",
+    "Service prévu seulement, sans trafic général. Les bâtiments font écran par-dessus leurs toits et autour de leurs extrémités (ISO 9613-2) et leurs façades réfléchissent une fois (premier ordre). Les bâtiments sans hauteur dans OpenStreetMap prennent 3 m par étage indiqué, ou 8 m (hypothèses du plugin bruit). Le niveau d’un bâtiment exclut la réflexion sur sa propre façade. Bâtiments © contributeurs d’OpenStreetMap.",
+  "noise.terrain": "Utiliser les altitudes du relief (Copernicus GLO-30)",
+  "noise.terrainTooLarge":
+    "Les lignes couvrent une zone trop grande pour charger le relief : cette carte est donc calculée sur terrain plat.",
+  "noise.loadingTerrain": "Chargement des altitudes du relief…",
+  "noise.terrainDown":
+    "Les altitudes du relief sont indisponibles ({error}) : cette carte est donc calculée sur terrain plat.",
+  "noise.loadingPopulation": "Chargement de la population WorldPop…",
+  "noise.popDownloading":
+    "La grille de population WorldPop de {countries} est en cours de téléchargement sur le serveur. En attendant, les habitants sont estimés d’après la taille des bâtiments ; relancez le calcul dans quelques minutes pour utiliser WorldPop.",
+  "noise.popUnavailable":
+    "La population WorldPop n’est pas disponible ({reason}) : les habitants sont donc estimés d’après la taille des bâtiments.",
+  "noise.residents": "Habitants",
+  "noise.popGrid":
+    "Habitants selon WorldPop {year} ({countries}) : la population de chaque maille de 100 m répartie entre ses logements selon la surface de plancher. {reached} des {total} habitants des bâtiments chargés vivent à portée.",
+  "noise.popUnplaced":
+    "{n} personnes de la grille vivent dans des mailles sans logement cartographié et ne sont pas comptées.",
+  "noise.popSize":
+    "Habitants estimés d’après la taille du bâtiment : surface de plancher (emprise × étages) ÷ la surface par personne des hypothèses du plugin bruit. {reached} sur {total} vivent à portée.",
+  "noise.popNoHomes":
+    "Les bâtiments indiqués dans OpenStreetMap pour un autre usage (commerces, bureaux, garages, églises…) et les très petits n’ont pas d’habitants.",
+  "noise.onTerrain":
+    "Sources, bâtiments et récepteurs reposent sur le relief, et les collines font écran ; toits et arbres sont filtrés du modèle de surface. Relief : Copernicus DEM GLO-30 © DLR e.V. et © Airbus Defence and Space GmbH, fourni dans le cadre de COPERNICUS par l’Union européenne et l’ESA.",
+  "noise.flat": "Terrain plat.",
+  "noise.popCredit":
+    "Population : WorldPop, University of Southampton (doi:10.5258/SOTON/WP00839), CC BY 4.0.",
 
   "jp.title": "Calculateur d’itinéraire",
   "jp.s": "{n} s",

@@ -543,20 +543,44 @@ export const editorsHa = {
   "noise.computing": "Ana lissafa taswirar hayaniya…",
   "noise.map": "Taswirar hayaniya",
   "noise.mapIntro":
-    "L_den da L_night a tsayin m 4 daga kowane layin titi da dogo a cikin aikin, gine-ginen OpenStreetMap da ke kewaye da su suna ba da kariya.",
+    "L_den da L_night a tsayin m 4 daga kowace layin titi da layin dogo a cikin aikin, ta wuce gine-ginen OpenStreetMap da ke kewaye da su da kuma saman ƙasa.",
   "noise.mapIndicator": "Ma'aunin taswirar hayaniya",
   "noise.screen": "Kariya da gine-ginen OpenStreetMap",
   "noise.compute": "Lissafa taswirar hayaniya",
   "noise.computeAgain": "Sake lissafawa",
   "noise.mapLegend": "Mabuɗin taswirar hayaniya",
-  "noise.table": "Gine-gine bisa yankin hayaniya",
+  "noise.table": "Gine-gine da mazauna bisa yankin hayaniya",
   "noise.tableCaption":
-    "Gine-gine bisa matakin a gefensu mafi fallasa ({reached} daga cikin {count} da aka kai)",
+    "Gine-gine da mazaunansu bisa matakin da ke gefen da ya fi fuskantar hayaniya (gine-gine {reached} cikin {count} na cikin isa)",
   "noise.buildings": "Gine-gine",
   "noise.dbOrMore": "{db} dB ko fiye",
   "noise.dbRange": "{from}–{to} dB",
   "noise.mapNote":
-    "Sabis da aka tsara kawai, ba cunkoson gama-gari ba. Kariyar saman rufin gine-gine (ISO 9613-2), babu tunani ko hanyoyi a kewayen gefunan gine-gine. Gine-ginen da ba su da tsayi a OpenStreetMap suna ɗaukar m 3 a kowane bene da aka ambata, ko m 8 (zato na ƙarin manhajar hayaniya). Adadin gine-gine yana tsaye a madadin gidaje har sai an ƙara bayanan yawan jama'a. Gine-gine © masu ba da gudummawa ga OpenStreetMap.",
+    "Sabis ɗin da aka tsara kawai, ba tare da zirga-zirgar gama gari ba. Gine-gine suna karewa ta saman rufinsu da kewayen ƙarshensu (ISO 9613-2) kuma bangonsu na gaba yana mayar da sauti sau ɗaya (mataki na farko). Gine-ginen da ba su da tsayi a OpenStreetMap ana ba su m 3 ga kowane bene da aka rubuta, ko m 8 (zato na plugin ɗin hayaniya). Matakin gini ba ya haɗa da mayar da sauti daga bangonsa na gaba. Gine-gine © masu bayar da gudummawa ga OpenStreetMap.",
+  "noise.terrain": "Yi amfani da tsayin ƙasa (Copernicus GLO-30)",
+  "noise.terrainTooLarge":
+    "Layukan sun rufe yanki mai girma sosai don loda saman ƙasa, don haka an lissafa wannan taswira a kan ƙasa mai faɗi.",
+  "noise.loadingTerrain": "Ana loda tsayin ƙasa…",
+  "noise.terrainDown": "Babu tsayin ƙasa ({error}), don haka an lissafa wannan taswira a kan ƙasa mai faɗi.",
+  "noise.loadingPopulation": "Ana loda yawan jama'a na WorldPop…",
+  "noise.popDownloading":
+    "Ana sauke grid ɗin yawan jama'a na WorldPop na {countries} zuwa sabar. Har sai ya kammala, ana ƙiyasta mazauna daga girman gine-gine; sake lissafawa bayan 'yan mintuna don amfani da WorldPop.",
+  "noise.popUnavailable":
+    "Babu yawan jama'a na WorldPop ({reason}), don haka ana ƙiyasta mazauna daga girman gine-gine.",
+  "noise.residents": "Mazauna",
+  "noise.popGrid":
+    "Mazauna daga WorldPop {year} ({countries}): an raba mutanen kowane akwati na m 100 tsakanin gidajensa bisa faɗin bene. Mazauna {reached} cikin {total} na gine-ginen da aka loda suna zaune a cikin isa.",
+  "noise.popUnplaced":
+    "Mutane {n} na grid suna zaune a akwatunan da babu gida a taswira kuma ba a ƙirga su ba.",
+  "noise.popSize":
+    "An ƙiyasta mazauna daga girman gini: faɗin bene (faɗin tushe × benaye) ÷ faɗin bene ga kowane mutum a cikin zaton plugin ɗin hayaniya. {reached} cikin {total} suna zaune a cikin isa.",
+  "noise.popNoHomes":
+    "Gine-ginen da aka yi wa alama a OpenStreetMap don wani amfani (shaguna, ofisoshi, garejoji, coci-coci…) da ƙananan gine-gine sosai ba su da mazauna.",
+  "noise.onTerrain":
+    "Tushen sauti, gine-gine da masu karɓa suna tsaye a kan saman ƙasa, kuma tuddai suna karewa; an tace rufi da bishiyoyi daga samfurin saman. Saman ƙasa: Copernicus DEM GLO-30 © DLR e.V. da © Airbus Defence and Space GmbH, Tarayyar Turai da ESA suka samar ƙarƙashin COPERNICUS.",
+  "noise.flat": "Ƙasa mai faɗi.",
+  "noise.popCredit":
+    "Yawan jama'a: WorldPop, University of Southampton (doi:10.5258/SOTON/WP00839), CC BY 4.0.",
   "jp.title": "Mai tsara tafiya",
   "jp.s": "daƙ {n}",
   "jp.min": "min {n}",

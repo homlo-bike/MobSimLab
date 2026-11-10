@@ -550,20 +550,45 @@ export const editorsSw = {
   "noise.computing": "Inakokotoa ramani ya kelele…",
   "noise.map": "Ramani ya kelele",
   "noise.mapIntro":
-    "L_den na L_night kwa m 4 kutoka kila njia ya barabarani na reli katika mradi, ikizuiwa na majengo ya OpenStreetMap yanayozizunguka.",
+    "L_den na L_night kwa urefu wa m 4 kutoka kila njia ya barabara na reli katika mradi, kupita majengo ya OpenStreetMap yanayozizunguka na juu ya ardhi.",
   "noise.mapIndicator": "Kiashiria cha ramani ya kelele",
   "noise.screen": "Zuia kwa majengo ya OpenStreetMap",
   "noise.compute": "Kokotoa ramani ya kelele",
   "noise.computeAgain": "Kokotoa tena",
   "noise.mapLegend": "Ufunguo wa ramani ya kelele",
-  "noise.table": "Majengo kwa ukanda wa kelele",
+  "noise.table": "Majengo na wakazi kwa ukanda wa kelele",
   "noise.tableCaption":
-    "Majengo kwa kiwango kando ya upande wao ulio wazi zaidi ({reached} kati ya {count} yanayofikiwa)",
+    "Majengo na wakazi wake kwa kiwango kando ya upande ulioathirika zaidi (majengo {reached} kati ya {count} yanafikiwa)",
   "noise.buildings": "Majengo",
   "noise.dbOrMore": "{db} dB au zaidi",
   "noise.dbRange": "{from}–{to} dB",
   "noise.mapNote":
-    "Huduma iliyopangwa tu, bila msongamano wa jumla. Kizuizi cha paa la majengo (ISO 9613-2), bila miakisiko wala njia kuzunguka ncha za majengo. Majengo yasiyo na urefu kwenye OpenStreetMap huchukua m 3 kwa kila ghorofa iliyotajwa, au m 8 (dhana za programu-jalizi ya kelele). Idadi ya majengo husimama badala ya makazi hadi data ya idadi ya watu iongezwe. Majengo © wachangiaji wa OpenStreetMap.",
+    "Huduma iliyopangwa tu, bila trafiki ya jumla. Majengo yanazuia juu ya paa zake na kuzunguka ncha zake (ISO 9613-2) na kuta zake za mbele zinaakisi mara moja (daraja la kwanza). Majengo yasiyo na urefu katika OpenStreetMap yanapewa m 3 kwa kila ghorofa iliyoandikwa, au m 8 (dhana za programu-jalizi ya kelele). Kiwango cha jengo hakijumuishi uakisi wa ukuta wake wa mbele. Majengo © wachangiaji wa OpenStreetMap.",
+  "noise.terrain": "Tumia miinuko ya ardhi (Copernicus GLO-30)",
+  "noise.terrainTooLarge":
+    "Njia zinashughulikia eneo kubwa mno kupakia ardhi, hivyo ramani hii imekokotolewa kwenye ardhi tambarare.",
+  "noise.loadingTerrain": "Inapakia miinuko ya ardhi…",
+  "noise.terrainDown":
+    "Miinuko ya ardhi haipatikani ({error}), hivyo ramani hii imekokotolewa kwenye ardhi tambarare.",
+  "noise.loadingPopulation": "Inapakia idadi ya watu ya WorldPop…",
+  "noise.popDownloading":
+    "Gridi ya idadi ya watu ya WorldPop ya {countries} inapakuliwa kwenye seva. Hadi ikamilike, wakazi wanakadiriwa kutokana na ukubwa wa majengo; kokotoa tena baada ya dakika chache ili kutumia WorldPop.",
+  "noise.popUnavailable":
+    "Idadi ya watu ya WorldPop haipatikani ({reason}), hivyo wakazi wanakadiriwa kutokana na ukubwa wa majengo.",
+  "noise.residents": "Wakazi",
+  "noise.popGrid":
+    "Wakazi kutoka WorldPop {year} ({countries}): watu wa kila kisanduku cha m 100 wamegawanywa kwa makazi yake kulingana na eneo la sakafu. Wakazi {reached} kati ya {total} wa majengo yaliyopakiwa wanaishi ndani ya ufikio.",
+  "noise.popUnplaced":
+    "Watu {n} wa gridi wanaishi katika visanduku visivyo na makazi kwenye ramani na hawahesabiwi.",
+  "noise.popSize":
+    "Wakazi wamekadiriwa kutokana na ukubwa wa jengo: eneo la sakafu (eneo la msingi × ghorofa) ÷ eneo la sakafu kwa mtu katika dhana za programu-jalizi ya kelele. {reached} kati ya {total} wanaishi ndani ya ufikio.",
+  "noise.popNoHomes":
+    "Majengo yaliyowekwa alama katika OpenStreetMap kwa matumizi mengine (maduka, ofisi, gereji, makanisa…) na majengo madogo sana hayana wakazi.",
+  "noise.onTerrain":
+    "Vyanzo, majengo na vipokezi vimesimama juu ya ardhi, na vilima vinazuia; paa na miti vimechujwa kutoka kwenye modeli ya uso. Ardhi: Copernicus DEM GLO-30 © DLR e.V. na © Airbus Defence and Space GmbH, imetolewa chini ya COPERNICUS na Umoja wa Ulaya na ESA.",
+  "noise.flat": "Ardhi tambarare.",
+  "noise.popCredit":
+    "Idadi ya watu: WorldPop, University of Southampton (doi:10.5258/SOTON/WP00839), CC BY 4.0.",
   "jp.title": "Kipanga safari",
   "jp.s": "sek {n}",
   "jp.min": "dak {n}",

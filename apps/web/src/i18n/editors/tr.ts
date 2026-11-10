@@ -529,20 +529,43 @@ export const editorsTr = {
   "noise.computing": "Gürültü haritası hesaplanıyor…",
   "noise.map": "Gürültü haritası",
   "noise.mapIntro":
-    "Projedeki tüm karayolu hatları ve demiryolu raylarından 4 m yükseklikte L_den ve L_night; çevredeki OpenStreetMap binalarıyla perdelenmiş.",
+    "Projedeki her sokak hattı ve demiryolundan 4 m yükseklikte L_den ve L_night, çevredeki OpenStreetMap binalarının ötesinde ve arazi üzerinde.",
   "noise.mapIndicator": "Gürültü haritası göstergesi",
   "noise.screen": "OpenStreetMap binalarıyla perdele",
   "noise.compute": "Gürültü haritasını hesapla",
   "noise.computeAgain": "Yeniden hesapla",
   "noise.mapLegend": "Gürültü haritası açıklaması",
-  "noise.table": "Gürültü bandına göre binalar",
+  "noise.table": "Gürültü bandına göre binalar ve sakinler",
   "noise.tableCaption":
-    "En gürültülü cephedeki seviyeye göre binalar ({count} binadan {reached} tanesine ulaşılıyor)",
+    "Binalar ve sakinleri, en çok maruz kalan cephenin yanındaki düzeye göre (erişimdeki bina: {reached} / {count})",
   "noise.buildings": "Binalar",
   "noise.dbOrMore": "{db} dB veya üstü",
   "noise.dbRange": "{from}–{to} dB",
   "noise.mapNote":
-    "Yalnızca planlanan hizmet, genel trafik yok. Yalnızca çatı üstü perdeleme (ISO 9613-2): yansıma yok ve bina kenarlarından dolanan yol yok. OpenStreetMap'te yüksekliği olmayan binalar kayıtlı kat başına 3 m veya 8 m sayılır (gürültü eklentisi varsayımı). Nüfus verisi eklenene kadar bina sayısı konutların yerine geçer. Binalar © OpenStreetMap katkıcıları.",
+    "Yalnızca planlanan hizmet, genel trafik hariç. Binalar çatılarının üstünden ve uçlarının çevresinden perdeler (ISO 9613-2), cepheleri bir kez yansıtır (birinci derece). OpenStreetMap'te yüksekliği olmayan binalar belirtilen kat başına 3 m ya da 8 m alır (gürültü eklentisinin varsayımları). Bir binanın düzeyi kendi cephesindeki yansımayı dışarıda bırakır. Binalar © OpenStreetMap katkıcıları.",
+  "noise.terrain": "Arazi yüksekliklerini kullan (Copernicus GLO-30)",
+  "noise.terrainTooLarge":
+    "Hatlar araziyi yüklemek için çok büyük bir alanı kapsıyor, bu yüzden bu harita düz zeminde hesaplandı.",
+  "noise.loadingTerrain": "Arazi yükseklikleri yükleniyor…",
+  "noise.terrainDown":
+    "Arazi yükseklikleri kullanılamıyor ({error}), bu yüzden bu harita düz zeminde hesaplandı.",
+  "noise.loadingPopulation": "WorldPop nüfusu yükleniyor…",
+  "noise.popDownloading":
+    "{countries} için WorldPop nüfus ızgarası sunucuya indiriliyor. Hazır olana kadar sakinler bina büyüklüğünden tahmin edilir; WorldPop'u kullanmak için birkaç dakika sonra yeniden hesaplayın.",
+  "noise.popUnavailable":
+    "WorldPop nüfusu kullanılamıyor ({reason}), bu yüzden sakinler bina büyüklüğünden tahmin edilir.",
+  "noise.residents": "Sakinler",
+  "noise.popGrid":
+    "WorldPop {year} sakinleri ({countries}): her 100 m'lik hücrenin nüfusu, kat alanına göre içindeki konutlara paylaştırıldı. Yüklenen binalardaki {total} sakinden {reached} kişi erişim içinde yaşıyor.",
+  "noise.popUnplaced": "Izgaradaki {n} kişi haritada konut bulunmayan hücrelerde yaşıyor ve sayılmıyor.",
+  "noise.popSize":
+    "Sakinler bina büyüklüğünden tahmin edildi: kat alanı (taban alanı × kat) ÷ gürültü eklentisi varsayımlarındaki kişi başına kat alanı. {total} kişiden {reached} kişi erişim içinde yaşıyor.",
+  "noise.popNoHomes":
+    "OpenStreetMap'te başka bir kullanımla (dükkân, ofis, garaj, kilise…) işaretlenmiş binalarda ve çok küçük binalarda sakin yoktur.",
+  "noise.onTerrain":
+    "Kaynaklar, binalar ve alıcılar arazinin üzerinde durur ve tepeler perdeler; çatılar ve ağaçlar yüzey modelinden süzülür. Arazi: Copernicus DEM GLO-30 © DLR e.V. ve © Airbus Defence and Space GmbH, COPERNICUS kapsamında Avrupa Birliği ve ESA tarafından sağlanmıştır.",
+  "noise.flat": "Düz zemin.",
+  "noise.popCredit": "Nüfus: WorldPop, University of Southampton (doi:10.5258/SOTON/WP00839), CC BY 4.0.",
   "jp.title": "Yolculuklar",
   "jp.s": "{n} sn",
   "jp.min": "{n} dk",

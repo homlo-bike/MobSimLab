@@ -555,19 +555,43 @@ export const editorsUz = {
   "noise.computing": "Shovqin xaritasi hisoblanmoqda…",
   "noise.map": "Shovqin xaritasi",
   "noise.mapIntro":
-    "Loyihadagi har bir koʻcha liniyasi va rels yoʻlidan 4 m balandlikda L_den va L_night, atrofdagi OpenStreetMap binolari toʻsigʻi bilan.",
+    "Loyihadagi har bir koʻcha liniyasi va temir yoʻldan 4 m balandlikdagi L_den va L_night, atrofdagi OpenStreetMap binolari ortida va relyef ustida.",
   "noise.mapIndicator": "Shovqin xaritasi koʻrsatkichi",
   "noise.screen": "OpenStreetMap binolari bilan toʻsish",
   "noise.compute": "Shovqin xaritasini hisoblash",
   "noise.computeAgain": "Qayta hisoblash",
   "noise.mapLegend": "Shovqin xaritasi belgilari",
-  "noise.table": "Shovqin chizigʻi boʻyicha binolar",
-  "noise.tableCaption": "Eng ochiq tomondagi daraja boʻyicha binolar ({count} tadan {reached} tasiga yetdi)",
+  "noise.table": "Shovqin chizigʻi boʻyicha binolar va aholi",
+  "noise.tableCaption":
+    "Eng koʻp taʼsirlangan tomon yonidagi daraja boʻyicha binolar va ularning aholisi ({count} ta binodan {reached} tasi qamrovda)",
   "noise.buildings": "Binolar",
   "noise.dbOrMore": "{db} dB yoki koʻp",
   "noise.dbRange": "{from}–{to} dB",
   "noise.mapNote":
-    "Faqat rejalashtirilgan xizmat, umumiy oqim emas. Bino tomlari ustidan toʻsish (ISO 9613-2), aks-sado yoki bino qirralari atrofidagi yoʻllar yoʻq. OpenStreetMap da balandligi yoʻq binolar har bir qayd etilgan qavat uchun 3 m yoki 8 m deb olinadi (shovqin plagini farazi). Aholi maʼlumotlari qoʻshilguncha binolar soni turar joylarni ifodalaydi. Binolar © OpenStreetMap hissadorlari.",
+    "Faqat rejalashtirilgan xizmat, umumiy transportsiz. Binolar tomlari ustidan va uchlari atrofidan toʻsadi (ISO 9613-2), fasadlari bir marta qaytaradi (birinchi tartib). OpenStreetMap’da balandligi yoʻq binolarga har bir koʻrsatilgan qavat uchun 3 m yoki 8 m olinadi (shovqin plaginining farazlari). Bino darajasiga uning oʻz fasadidan qaytish kirmaydi. Binolar © OpenStreetMap hissadorlari.",
+  "noise.terrain": "Relyef balandliklaridan foydalanish (Copernicus GLO-30)",
+  "noise.terrainTooLarge":
+    "Liniyalar relyefni yuklab boʻlmaydigan darajada katta hududni qamraydi, shuning uchun bu xarita tekis yerda hisoblangan.",
+  "noise.loadingTerrain": "Relyef balandliklari yuklanmoqda…",
+  "noise.terrainDown":
+    "Relyef balandliklari mavjud emas ({error}), shuning uchun bu xarita tekis yerda hisoblangan.",
+  "noise.loadingPopulation": "WorldPop aholisi yuklanmoqda…",
+  "noise.popDownloading":
+    "{countries} uchun WorldPop aholi toʻri serverga yuklab olinmoqda. U tayyor boʻlguncha aholi bino oʻlchamidan baholanadi; WorldPop’dan foydalanish uchun bir necha daqiqadan keyin qayta hisoblang.",
+  "noise.popUnavailable":
+    "WorldPop aholisi mavjud emas ({reason}), shuning uchun aholi bino oʻlchamidan baholanadi.",
+  "noise.residents": "Aholi",
+  "noise.popGrid":
+    "WorldPop {year} ({countries}) boʻyicha aholi: har bir 100 m katakdagi odamlar qavat maydoniga koʻra undagi uylarga taqsimlangan. Yuklangan binolarning {total} nafar aholisidan {reached} nafari qamrovda yashaydi.",
+  "noise.popUnplaced": "Toʻrdagi {n} kishi xaritada uy yoʻq kataklarda yashaydi va hisobga olinmaydi.",
+  "noise.popSize":
+    "Aholi bino oʻlchamidan baholangan: qavat maydoni (asos maydoni × qavatlar) ÷ shovqin plaginining farazlaridagi kishi boshiga qavat maydoni. {total} nafardan {reached} nafari qamrovda yashaydi.",
+  "noise.popNoHomes":
+    "OpenStreetMap’da boshqa maqsadda (doʻkonlar, ofislar, garajlar, cherkovlar…) belgilangan binolarda va juda kichik binolarda aholi yoʻq.",
+  "noise.onTerrain":
+    "Manbalar, binolar va qabul nuqtalari relyef ustida turadi, tepaliklar toʻsadi; tomlar va daraxtlar sirt modelidan chiqarib tashlangan. Relyef: Copernicus DEM GLO-30 © DLR e.V. va © Airbus Defence and Space GmbH, Yevropa Ittifoqi va ESA tomonidan COPERNICUS doirasida taqdim etilgan.",
+  "noise.flat": "Tekis yer.",
+  "noise.popCredit": "Aholi: WorldPop, University of Southampton (doi:10.5258/SOTON/WP00839), CC BY 4.0.",
   "jp.title": "Safar rejalashtiruvchisi",
   "jp.s": "{n} soniya",
   "jp.min": "{n} daq",

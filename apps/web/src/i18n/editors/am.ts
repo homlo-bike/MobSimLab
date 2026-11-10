@@ -536,19 +536,39 @@ export const editorsAm = {
   "noise.computing": "የጫጫታ ካርታውን በማስላት ላይ…",
   "noise.map": "የጫጫታ ካርታ",
   "noise.mapIntro":
-    "L_den እና L_night በ4 ሜ ከፍታ ከፕሮጀክቱ እያንዳንዱ የመንገድ መስመር እና ሐዲድ፣ በዙሪያቸው ባሉ የ OpenStreetMap ሕንፃዎች የተከለለ።",
+    "በፕሮጀክቱ ውስጥ ካለ እያንዳንዱ የመንገድ መስመርና የባቡር መስመር በ4 ሜ ከፍታ ላይ L_den እና L_night፣ በዙሪያቸው ያሉትን የ OpenStreetMap ሕንፃዎች አልፎ በመሬቱ ገጽታ ላይ።",
   "noise.mapIndicator": "የጫጫታ ካርታ አመልካች",
   "noise.screen": "በ OpenStreetMap ሕንፃዎች ከልል",
   "noise.compute": "የጫጫታ ካርታ አስላ",
   "noise.computeAgain": "እንደገና አስላ",
   "noise.mapLegend": "የጫጫታ ካርታ መግለጫ",
-  "noise.table": "ሕንፃዎች በጫጫታ ቀጠና",
-  "noise.tableCaption": "ሕንፃዎች በጣም በተጋለጠው ጎናቸው ባለው ደረጃ ({count} ከሚደረሱት ውስጥ {reached})",
+  "noise.table": "ሕንፃዎችና ነዋሪዎች በጫጫታ ቀጠና",
+  "noise.tableCaption": "ሕንፃዎችና ነዋሪዎቻቸው በጣም በተጋለጠው ጎን አጠገብ ባለው ደረጃ ({count} ሕንፃዎች ውስጥ {reached} በክልል ውስጥ)",
   "noise.buildings": "ሕንፃዎች",
   "noise.dbOrMore": "{db} dB ወይም ከዚያ በላይ",
   "noise.dbRange": "{from}–{to} dB",
   "noise.mapNote":
-    "የታቀደ አገልግሎት ብቻ፣ አጠቃላይ ትራፊክ አይደለም። በሕንፃዎች ጣሪያ ላይ መከለያ (ISO 9613-2)፣ ነጸብራቆች ወይም በሕንፃ ጠርዞች ዙሪያ መንገዶች የሉም። በ OpenStreetMap ላይ ከፍታ የሌላቸው ሕንፃዎች ለእያንዳንዱ የተጠቀሰ ፎቅ 3 ሜ፣ ወይም 8 ሜ ይወስዳሉ (የጫጫታ ተሰኪው ግምቶች)። የሕዝብ ብዛት ውሂብ እስኪታከል ድረስ የሕንፃዎች ብዛት በመኖሪያ ቤቶች ምትክ ይቆማል። ሕንፃዎች © የ OpenStreetMap አስተዋጽዖ አበርካቾች።",
+    "የታቀደው አገልግሎት ብቻ፣ ያለ አጠቃላይ ትራፊክ። ሕንፃዎች በጣሪያቸው ላይና በጫፎቻቸው ዙሪያ ይከልላሉ (ISO 9613-2)፣ የፊት ገጽታቸውም አንድ ጊዜ ያንጸባርቃል (የመጀመሪያ ደረጃ)። በ OpenStreetMap ከፍታ የሌላቸው ሕንፃዎች ለእያንዳንዱ የተመዘገበ ፎቅ 3 ሜ፣ ወይም 8 ሜ ይወስዳሉ (የጫጫታ ተሰኪው ግምቶች)። የሕንፃ ደረጃ ከራሱ የፊት ገጽታ የሚመጣውን ነጸብራቅ አያካትትም። ሕንፃዎች © የ OpenStreetMap አበርካቾች።",
+  "noise.terrain": "የመሬት ከፍታዎችን ተጠቀም (Copernicus GLO-30)",
+  "noise.terrainTooLarge": "መስመሮቹ የመሬቱን ገጽታ ለመጫን በጣም ሰፊ አካባቢ ይሸፍናሉ፣ ስለዚህ ይህ ካርታ በጠፍጣፋ መሬት ላይ ተሰልቷል።",
+  "noise.loadingTerrain": "የመሬት ከፍታዎችን በመጫን ላይ…",
+  "noise.terrainDown": "የመሬት ከፍታዎች አይገኙም ({error})፣ ስለዚህ ይህ ካርታ በጠፍጣፋ መሬት ላይ ተሰልቷል።",
+  "noise.loadingPopulation": "የ WorldPop የሕዝብ ብዛት በመጫን ላይ…",
+  "noise.popDownloading":
+    "የ {countries} የ WorldPop የሕዝብ ፍርግርግ ወደ አገልጋዩ እየወረደ ነው። እስኪደርስ ድረስ ነዋሪዎች ከሕንፃው መጠን ይገመታሉ፤ WorldPop ለመጠቀም ከጥቂት ደቂቃዎች በኋላ እንደገና አስሉ።",
+  "noise.popUnavailable": "የ WorldPop የሕዝብ ብዛት አይገኝም ({reason})፣ ስለዚህ ነዋሪዎች ከሕንፃው መጠን ይገመታሉ።",
+  "noise.residents": "ነዋሪዎች",
+  "noise.popGrid":
+    "ነዋሪዎች ከ WorldPop {year} ({countries})፦ የእያንዳንዱ 100 ሜ ሕዋስ ሰዎች በወለል ስፋት መሠረት በውስጡ ላሉ መኖሪያዎች ተከፋፍለዋል። ከተጫኑት ሕንፃዎች {total} ነዋሪዎች ውስጥ {reached} በክልል ውስጥ ይኖራሉ።",
+  "noise.popUnplaced": "የፍርግርጉ {n} ሰዎች በካርታው ላይ መኖሪያ በሌለባቸው ሕዋሳት ይኖራሉ እና አልተቆጠሩም።",
+  "noise.popSize":
+    "ነዋሪዎች ከሕንፃው መጠን ተገምተዋል፦ የወለል ስፋት (የመሠረት ስፋት × ፎቆች) ÷ በጫጫታ ተሰኪው ግምቶች ውስጥ ያለው የአንድ ሰው የወለል ስፋት። ከ {total} ውስጥ {reached} በክልል ውስጥ ይኖራሉ።",
+  "noise.popNoHomes":
+    "በ OpenStreetMap ለሌላ አገልግሎት (ሱቆች፣ ቢሮዎች፣ ጋራዦች፣ ቤተ ክርስቲያናት…) የተመዘገቡ ሕንፃዎችና በጣም ትናንሽ ሕንፃዎች ነዋሪ የላቸውም።",
+  "noise.onTerrain":
+    "ምንጮች፣ ሕንፃዎችና ተቀባዮች በመሬቱ ገጽታ ላይ ይቆማሉ፣ ኮረብታዎችም ይከልላሉ፤ ጣሪያዎችና ዛፎች ከገጽታ ሞዴሉ ተጣርተዋል። የመሬት ገጽታ፦ Copernicus DEM GLO-30 © DLR e.V. እና © Airbus Defence and Space GmbH፣ በአውሮፓ ኅብረትና በ ESA በ COPERNICUS ስር የቀረበ።",
+  "noise.flat": "ጠፍጣፋ መሬት።",
+  "noise.popCredit": "የሕዝብ ብዛት፦ WorldPop, University of Southampton (doi:10.5258/SOTON/WP00839), CC BY 4.0.",
   "jp.title": "የጉዞ እቅድ አውጪ",
   "jp.s": "{n} ሰከንድ",
   "jp.min": "{n} ደቂቃ",

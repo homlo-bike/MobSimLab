@@ -1172,6 +1172,26 @@
           "label": "Reflection order (full map)",
           "unit": "-"
         },
+        "noise.reflection_max_distance_m": {
+          "label": "Farthest facade that reflects onto a receiver (full map)",
+          "unit": "m"
+        },
+        "noise.facade_reflection_coefficient": {
+          "label": "Share of sound energy a facade reflects",
+          "unit": "-"
+        },
+        "noise.terrain_filter_window_m": {
+          "label": "Width of what is taken out of the surface model as not ground",
+          "unit": "m"
+        },
+        "noise.floor_area_per_person_m2": {
+          "label": "Floor area per resident, for people counts from the building size",
+          "unit": "m²"
+        },
+        "noise.population_min_footprint_m2": {
+          "label": "Smallest building footprint that may hold homes",
+          "unit": "m²"
+        },
         "noise.building_level_height_m": {
           "label": "Storey height for buildings without a height",
           "unit": "m"
