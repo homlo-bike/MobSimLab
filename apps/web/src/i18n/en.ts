@@ -207,6 +207,7 @@ export const en = {
   "drawing.rail-timetable": "rail timetable",
   "drawing.preferences": "project preferences",
   "drawing.costs": "cost settings",
+  "drawing.schematic": "schematic",
 
   "tab.label": "Project",
   "tab.simulator": "Simulator",
@@ -237,10 +238,6 @@ export const en = {
 
   "schematic.title": "Schematic",
   "schematic.intro": "View and edit the transport map, and look at one line on its own.",
-  "schematic.network": "Network map with lines drawn schematically",
-  "schematic.line": "One line: its strip map and connections",
-  "schematic.layers": "Layers, dragging and curves",
-  "schematic.export": "Export for print and screens",
 
   "gis.title": "GIS",
   "gis.intro": "Add or edit the information that calculations use.",

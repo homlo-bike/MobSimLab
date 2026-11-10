@@ -244,10 +244,6 @@ export const vi: Messages = {
 
   "schematic.title": "Sơ đồ",
   "schematic.intro": "Xem và chỉnh sửa sơ đồ, hoặc chỉ xem một tuyến.",
-  "schematic.network": "Bản đồ mạng lưới với các tuyến được sơ đồ hóa",
-  "schematic.line": "Một tuyến: sơ đồ dải kèm điểm chuyển tuyến",
-  "schematic.layers": "Lớp, kéo thả và đường cong",
-  "schematic.export": "Xuất để in và hiển thị màn hình",
 
   "gis.title": "GIS",
   "gis.intro": "Thêm và chỉnh sửa thông tin dùng trong tính toán.",

@@ -243,10 +243,6 @@ export const sw: Messages = {
 
   "schematic.title": "Mchoro",
   "schematic.intro": "Tazama na hariri ramani ya usafiri, na uangalie njia moja peke yake.",
-  "schematic.network": "Ramani ya mtandao yenye njia zilizochorwa kimchoro",
-  "schematic.line": "Njia moja: ramani yake ya mstari na miunganiko",
-  "schematic.layers": "Matabaka, kuburuta na mikunjo",
-  "schematic.export": "Hamisha kwa uchapishaji na skrini",
 
   "gis.title": "GIS",
   "gis.intro": "Ongeza au hariri taarifa ambazo hesabu zinatumia.",

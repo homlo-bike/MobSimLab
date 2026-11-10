@@ -239,10 +239,6 @@ export const ko: Messages = {
 
   "schematic.title": "노선도",
   "schematic.intro": "노선도를 보고 편집하거나 한 노선만 볼 수 있습니다.",
-  "schematic.network": "도식화된 노선이 있는 네트워크 지도",
-  "schematic.line": "한 노선: 띠 형태 노선도와 환승",
-  "schematic.layers": "레이어, 드래그, 곡선",
-  "schematic.export": "인쇄 및 화면용 내보내기",
 
   "gis.title": "GIS",
   "gis.intro": "계산에 쓰이는 정보를 추가하고 편집합니다.",

@@ -50,6 +50,18 @@ const costs = z.looseObject({
     .optional(),
 });
 
+/** Schematic edits (ADR-0040): stations the planner moved, label places and display switches. */
+const schematic = z.looseObject({
+  origin: point.optional(),
+  pins: z
+    .record(z.string().max(300), point)
+    .refine((v) => Object.keys(v).length <= 20000, "at most 20000 pins"),
+  labels: z
+    .record(z.string().max(300), z.number().int().min(0).max(7))
+    .refine((v) => Object.keys(v).length <= 20000, "at most 20000 labels"),
+  hidden: z.array(z.string().max(40)).max(20).optional(),
+});
+
 /** Drawing kinds with their document outline and current schema version. */
 export const DRAWING_KINDS = {
   /** The street line tool (ADR-0029): bus, BRT, trolleybus and intercity bus lines. */
@@ -64,6 +76,8 @@ export const DRAWING_KINDS = {
   preferences: { schema: preferences, schemaVersion: 1 },
   /** Cost tables settings (ADR-0039): the country chosen for prices. */
   costs: { schema: costs, schemaVersion: 1 },
+  /** Schematic tab (ADR-0040): the planner's edits of the network diagram. */
+  schematic: { schema: schematic, schemaVersion: 1 },
 } as const satisfies Record<string, { schema: z.ZodType; schemaVersion: number }>;
 
 export type DrawingKind = keyof typeof DRAWING_KINDS;

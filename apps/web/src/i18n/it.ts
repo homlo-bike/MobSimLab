@@ -244,10 +244,6 @@ export const it: Messages = {
 
   "schematic.title": "Schema",
   "schematic.intro": "Visualizza e modifica la mappa schematica, oppure guarda una sola linea.",
-  "schematic.network": "Mappa della rete con linee schematizzate",
-  "schematic.line": "Una linea: mappa a striscia con interscambi",
-  "schematic.layers": "Livelli, trascinamento e curve",
-  "schematic.export": "Esporta per stampa e schermo",
 
   "gis.title": "GIS",
   "gis.intro": "Aggiungi e modifica le informazioni usate nei calcoli.",

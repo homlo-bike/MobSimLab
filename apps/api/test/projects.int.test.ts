@@ -242,6 +242,23 @@ describe("projects", () => {
         .status,
     ).toBe(400);
     expect((await as("alice").get(path)).body.drawings.preferences.doc).toEqual(prefs);
+    // Schematic edits: moved stations as points, name places 0 to 7.
+    const schematic = { origin: [4.9, 52.37], pins: { centraal: [120, -40] }, labels: { centraal: 2 } };
+    expect((await as("alice").put(`${path}/schematic`, { doc: schematic, baseVersion: null })).status).toBe(
+      200,
+    );
+    expect(
+      (
+        await as("alice").put(`${path}/schematic`, {
+          doc: { pins: { centraal: "here" }, labels: {} },
+          baseVersion: 1,
+        })
+      ).status,
+    ).toBe(400);
+    expect(
+      (await as("alice").put(`${path}/schematic`, { doc: { pins: {}, labels: { a: 9 } }, baseVersion: 1 }))
+        .status,
+    ).toBe(400);
     // Other routes keep the small limit.
     expect(
       (await as("alice").patch(`/api/projects/${lakeside}`, { description: "x".repeat(200_000) })).status,

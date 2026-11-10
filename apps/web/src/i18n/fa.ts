@@ -240,10 +240,6 @@ export const fa: Messages = {
 
   "schematic.title": "نقشهٔ شماتیک",
   "schematic.intro": "نقشهٔ شماتیک را ببینید و ویرایش کنید، یا فقط یک خط را ببینید.",
-  "schematic.network": "نقشهٔ شبکه با خطوط شماتیک",
-  "schematic.line": "یک خط: نقشهٔ نواری با تبادل‌ها",
-  "schematic.layers": "لایه‌ها، کشیدن و قوس‌ها",
-  "schematic.export": "خروجی برای چاپ و نمایشگر",
 
   "gis.title": "GIS",
   "gis.intro": "اطلاعاتی را که در محاسبات استفاده می‌شود اضافه و ویرایش کنید.",

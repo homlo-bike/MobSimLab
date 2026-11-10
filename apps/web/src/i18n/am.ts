@@ -234,10 +234,6 @@ export const am: Messages = {
 
   "schematic.title": "ሥዕላዊ ካርታ",
   "schematic.intro": "የትራንስፖርት ካርታውን ይመልከቱ እና ያርትዑ፣ እና አንድን መስመር ለብቻው ይመልከቱ።",
-  "schematic.network": "መስመሮች በሥዕላዊ መንገድ የተሳሉበት የአውታር ካርታ",
-  "schematic.line": "አንድ መስመር፦ የመስመር ካርታው እና ግንኙነቶቹ",
-  "schematic.layers": "ንብርብሮች፣ መጎተት እና ኩርባዎች",
-  "schematic.export": "ለህትመት እና ለማያ ገጾች ላክ",
 
   "gis.title": "GIS",
   "gis.intro": "ስሌቶች የሚጠቀሙበትን መረጃ ያክሉ ወይም ያርትዑ።",

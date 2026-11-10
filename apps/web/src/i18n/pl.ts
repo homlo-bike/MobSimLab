@@ -244,10 +244,6 @@ export const pl: Messages = {
 
   "schematic.title": "Schemat",
   "schematic.intro": "Przeglądaj i edytuj mapę schematyczną lub obejrzyj jedną linię.",
-  "schematic.network": "Mapa sieci ze schematycznymi liniami",
-  "schematic.line": "Jedna linia: mapa paskowa z przesiadkami",
-  "schematic.layers": "Warstwy, przeciąganie i łuki",
-  "schematic.export": "Eksport do druku i na ekran",
 
   "gis.title": "GIS",
   "gis.intro": "Dodawaj i edytuj informacje używane w obliczeniach.",

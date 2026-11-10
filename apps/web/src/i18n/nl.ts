@@ -245,10 +245,6 @@ export const nl: Messages = {
 
   "schematic.title": "Schema",
   "schematic.intro": "De netkaart bekijken en bewerken, en één lijn apart bekijken.",
-  "schematic.network": "Netkaart met schematisch getekende lijnen",
-  "schematic.line": "Eén lijn: lijnfilm en overstappen",
-  "schematic.layers": "Lagen, slepen en bochten",
-  "schematic.export": "Exporteren voor druk en schermen",
 
   "gis.title": "GIS",
   "gis.intro": "Voeg informatie toe die de berekeningen gebruiken, of bewerk die.",

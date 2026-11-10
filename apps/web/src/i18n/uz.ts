@@ -247,10 +247,6 @@ export const uz: Messages = {
 
   "schematic.title": "Sxema",
   "schematic.intro": "Transport xaritasini koʻring va tahrirlang, bitta yoʻnalishni alohida koʻring.",
-  "schematic.network": "Yoʻnalishlar sxematik chizilgan tarmoq xaritasi",
-  "schematic.line": "Bitta yoʻnalish: uning tasmali xaritasi va ulanishlari",
-  "schematic.layers": "Qatlamlar, sudrash va egriliklar",
-  "schematic.export": "Chop etish va ekranlar uchun eksport",
 
   "gis.title": "GIS",
   "gis.intro": "Hisob-kitoblar foydalanadigan maʼlumotlarni qoʻshing yoki tahrirlang.",

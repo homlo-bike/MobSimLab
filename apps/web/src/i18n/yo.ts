@@ -241,10 +241,6 @@ export const yo: Messages = {
 
   "schematic.title": "Àwòrán àtòjọ",
   "schematic.intro": "Wo kí o sì ṣàtúnṣe máàpù ìrìnnà, kí o sì wo ìlà kan ní òun nìkan.",
-  "schematic.network": "Máàpù nẹ́tíwọ̀ọ̀kì pẹ̀lú àwọn ìlà tí a yà ní àtòjọ",
-  "schematic.line": "Ìlà kan: máàpù rẹ̀ àti àwọn ìsopọ̀ rẹ̀",
-  "schematic.layers": "Àwọn ìpele, fífà àti àwọn ìtẹ̀",
-  "schematic.export": "Gbé jáde fún títẹ̀ àti ojú ìbojú",
 
   "gis.title": "GIS",
   "gis.intro": "Fi kún tàbí ṣàtúnṣe ìsọfúnni tí àwọn ìṣirò ń lò.",

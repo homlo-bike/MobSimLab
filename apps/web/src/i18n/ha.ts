@@ -244,10 +244,6 @@ export const ha: Messages = {
 
   "schematic.title": "Taswirar zane",
   "schematic.intro": "Kalli ka gyara taswirar sufuri, kuma ka kalli layi ɗaya shi kaɗai.",
-  "schematic.network": "Taswirar hanyar sadarwa tare da layukan da aka zana a sauƙaƙe",
-  "schematic.line": "Layi ɗaya: taswirar tsirinsa da haɗe-haɗensa",
-  "schematic.layers": "Matakai, ja da lanƙwasa",
-  "schematic.export": "Fitarwa don bugawa da allo",
 
   "gis.title": "GIS",
   "gis.intro": "Ƙara ko gyara bayanan da ƙididdiga ke amfani da su.",

@@ -245,10 +245,6 @@ export const id: Messages = {
 
   "schematic.title": "Skema",
   "schematic.intro": "Lihat dan edit peta skema, atau lihat satu jalur saja.",
-  "schematic.network": "Peta jaringan dengan jalur skematis",
-  "schematic.line": "Satu jalur: peta jalur berbentuk pita dengan perpindahan",
-  "schematic.layers": "Lapisan, seret, dan lengkungan",
-  "schematic.export": "Ekspor untuk cetak dan layar",
 
   "gis.title": "GIS",
   "gis.intro": "Tambahkan dan edit informasi yang digunakan dalam perhitungan.",

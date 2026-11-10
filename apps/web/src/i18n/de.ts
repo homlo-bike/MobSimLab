@@ -250,10 +250,6 @@ export const de: Messages = {
 
   "schematic.title": "Schema",
   "schematic.intro": "Den Liniennetzplan ansehen und bearbeiten und einzelne Linien betrachten.",
-  "schematic.network": "Liniennetzplan in schematischer Darstellung",
-  "schematic.line": "Eine Linie: Linienband und Anschlüsse",
-  "schematic.layers": "Ebenen, Verschieben und Kurven",
-  "schematic.export": "Export für Druck und Bildschirme",
 
   "gis.title": "GIS",
   "gis.intro": "Informationen hinzufügen oder bearbeiten, die in die Berechnungen eingehen.",

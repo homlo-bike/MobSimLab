@@ -243,10 +243,6 @@ export const tr: Messages = {
 
   "schematic.title": "Şematik",
   "schematic.intro": "Şematik haritayı görüntüleyin ve düzenleyin ya da yalnızca bir hatta bakın.",
-  "schematic.network": "Şematik hatlarla ağ haritası",
-  "schematic.line": "Tek hat: aktarmalı şerit harita",
-  "schematic.layers": "Katmanlar, sürükleme ve eğriler",
-  "schematic.export": "Baskı ve ekran için dışa aktar",
 
   "gis.title": "CBS",
   "gis.intro": "Hesaplarda kullanılan bilgileri ekleyin ve düzenleyin.",

@@ -245,10 +245,6 @@ export const pt: Messages = {
 
   "schematic.title": "Esquema",
   "schematic.intro": "Veja e edite o mapa de transporte e veja uma linha isoladamente.",
-  "schematic.network": "Mapa da rede com linhas desenhadas de forma esquemática",
-  "schematic.line": "Uma linha: seu diagrama e conexões",
-  "schematic.layers": "Camadas, arrastar e curvas",
-  "schematic.export": "Exportar para impressão e telas",
 
   "gis.title": "SIG",
   "gis.intro": "Adicione ou edite as informações usadas nos cálculos.",

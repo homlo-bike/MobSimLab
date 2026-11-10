@@ -43,3 +43,4 @@ All ADRs below were accepted on 2026-10-27. New ADRs start as Proposed. Template
 | [0037](0037-cable-car-and-ferry-lines.md) | Cable car and ferry service lines: two new mode families drawn station-first, frequency-based gondolas and timetabled ferries with berths | Proposed |
 | [0038](0038-service-line-noise-map.md) | Estimated noise map of service lines with CNOSSOS-EU: live corridor in the editors, full map as an analysis layer, exposure into the appraisal | Proposed (N1 built as the noise plugin; N2 GIS map with OSM buildings started) |
 | [0039](0039-cost-estimate.md) | Construction and operating cost tables from sourced unit costs (low, medium, high), construction types set in the railway editor and World Bank price levels | Proposed (first version built) |
+| [0040](0040-schematic-layout-in-browser.md) | Schematic diagrams laid out in the browser first, LOOM kept for the large-network layout | Proposed (first version built) |

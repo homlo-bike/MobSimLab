@@ -243,10 +243,6 @@ export const ig: Messages = {
 
   "schematic.title": "Maapụ eserese",
   "schematic.intro": "Lee ma dezie maapụ njem, ma lee otu ahịrị n'onwe ya.",
-  "schematic.network": "Maapụ netwọk nwere ahịrị ese n'ụzọ eserese",
-  "schematic.line": "Otu ahịrị: maapụ ya na njikọ ya",
-  "schematic.layers": "Ọkwa, ịdọkpụ na ngbanwe",
-  "schematic.export": "Bupụ maka mbipụta na ihuenyo",
 
   "gis.title": "GIS",
   "gis.intro": "Tinye ma ọ bụ dezie ozi ngụkọ na-eji.",

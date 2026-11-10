@@ -235,10 +235,6 @@ export const ar: Messages = {
 
   "schematic.title": "المخطط",
   "schematic.intro": "اعرض خريطة النقل وعدّلها، واطّلع على خط واحد بمفرده.",
-  "schematic.network": "خريطة الشبكة مع الخطوط مرسومة بشكل تخطيطي",
-  "schematic.line": "خط واحد: مخططه الشريطي ونقاط الاتصال",
-  "schematic.layers": "الطبقات والسحب والمنحنيات",
-  "schematic.export": "التصدير للطباعة والشاشات",
 
   "gis.title": "GIS",
   "gis.intro": "أضف أو عدّل المعلومات التي تستخدمها الحسابات.",

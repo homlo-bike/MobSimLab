@@ -231,3 +231,5 @@ Implementation: `crates/rail-design` (document model, alignment fitting, station
 - **Storage:** the result becomes an editable `Diagram` (nodes = stations with diagram coordinates and label placement; edges = line bundles with ordered lines and control points). It keeps links to network objects, so renames and new stations propagate; a "re-layout" preserves user-pinned nodes.
 - **Editing (SVG in the browser):** drag stations (with snapping to octilinear angles, optional), curve edges (cubic Béziers with corner radius), simplify lines, toggle layers, edit labels, add water/landmark shapes.
 - **Export:** SVG and PDF with attribution block; PNG for quick sharing.
+
+Built so far (ADR-0040): the Schematic tab lays the diagram out in the browser (octilinear relaxation) instead of LOOM, with mode layers, dragging, rounded corners, name places, a strip map per line and SVG, PNG and print or PDF export. LOOM and water bodies are still to come. How to use it: [Schematic](../user/schematic.md).

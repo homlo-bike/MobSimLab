@@ -245,10 +245,6 @@ export const es: Messages = {
 
   "schematic.title": "Esquema",
   "schematic.intro": "Ver y editar el plano de la red y ver cada línea por separado.",
-  "schematic.network": "Plano de la red con las líneas en forma esquemática",
-  "schematic.line": "Una línea: su diagrama y correspondencias",
-  "schematic.layers": "Capas, arrastrar y curvas",
-  "schematic.export": "Exportar para impresión y pantallas",
 
   "gis.title": "SIG",
   "gis.intro": "Añade o edita la información que usan los cálculos.",

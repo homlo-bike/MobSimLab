@@ -247,10 +247,6 @@ export const fr: Messages = {
 
   "schematic.title": "Schéma",
   "schematic.intro": "Voir et modifier le plan du réseau, et regarder chaque ligne séparément.",
-  "schematic.network": "Plan du réseau avec les lignes en schéma",
-  "schematic.line": "Une ligne : son thermomètre et ses correspondances",
-  "schematic.layers": "Calques, glisser-déposer et courbes",
-  "schematic.export": "Export pour l’impression et les écrans",
 
   "gis.title": "SIG",
   "gis.intro": "Ajoutez ou modifiez les informations utilisées par les calculs.",
