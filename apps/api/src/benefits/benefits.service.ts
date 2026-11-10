@@ -71,7 +71,7 @@ export function areasQuery(lon: number, lat: number): string {
   const f = (x: number) => x.toFixed(6);
   return (
     `[out:json][timeout:60][maxsize:67108864];is_in(${f(lat)},${f(lon)})->.a;` +
-    `(rel(pivot.a)["boundary"="administrative"]["admin_level"~"^([4-9]|1[01])$"];` +
+    `(rel(pivot.a)["boundary"="administrative"]["admin_level"~"^([6-9]|1[01])$"];` +
     `rel(pivot.a)["place"~"^(${PLACE_KINDS})$"];` +
     `way(pivot.a)["place"~"^(${PLACE_KINDS})$"];` +
     `way(pivot.a)["landuse"]["name"];);out tags geom;`
@@ -146,6 +146,10 @@ export function parseAreas(body: string): OsmArea[] {
   } catch {
     throw new OverpassError("Overpass answered something other than JSON", 502);
   }
+  // Overpass answers 200 with a remark when a query ran out of time or memory: the list is incomplete.
+  const remark = (doc as { remark?: unknown }).remark;
+  if (typeof remark === "string" && /error/i.test(remark))
+    throw new OverpassError(`Overpass: ${remark}`, 502);
   const r6 = (v: number) => Math.round(v * 1e6) / 1e6;
   const pts = (g: El["geometry"]): Pt[] =>
     (g ?? []).filter((p): p is { lat: number; lon: number } => !!p).map((p) => [r6(p.lon), r6(p.lat)]);

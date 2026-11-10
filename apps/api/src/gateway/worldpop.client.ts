@@ -188,7 +188,8 @@ export class WorldPopClient {
       try {
         return JSON.parse(text) as unknown;
       } catch {
-        throw new WorldPopError("WorldPop answered something other than JSON", 502);
+        // WorldPop answers an HTML error page with status 200 when it is overloaded: try again.
+        throw new WorldPopError("retry: WorldPop answered something other than JSON", 502);
       }
     } catch (e) {
       if (e instanceof WorldPopError) throw e;
