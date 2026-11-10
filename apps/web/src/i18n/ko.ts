@@ -208,6 +208,7 @@ export const ko: Messages = {
   "drawing.street-setups": "도로 설정",
   "drawing.rail-timetable": "철도 시간표",
   "drawing.preferences": "프로젝트 환경설정",
+  "drawing.costs": "비용 설정",
 
   "tab.label": "프로젝트",
   "tab.simulator": "시뮬레이터",
@@ -255,8 +256,9 @@ export const ko: Messages = {
   "tables.summary": "요약",
   "tables.infrastructure": "노선, 역, 선로 연장, 교량, 터널(개착 또는 TBM)",
   "tables.service": "배차, 운행 시간, 차량 수, 예상 승객 수",
-  "tables.costs": "비용과 성능",
   "tables.compare": "시나리오 나란히 비교",
+  "tables.more": "추가 표",
+  "tables.moreIntro": "이 탭에 곧 추가됩니다.",
 
   "prefs.title": "프로젝트 환경설정",
   "prefs.intro": "프로젝트 전체에 적용되는 세부 정보와 설정.",

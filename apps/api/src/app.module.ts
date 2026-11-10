@@ -13,6 +13,7 @@ import type { AppConfig } from "./config/env";
 import { HealthController } from "./health/health.controller";
 import { StreetNetworkModule } from "./street-network/street-network.module";
 import { PopulationModule } from "./population/population.module";
+import { EconomyModule } from "./economy/economy.module";
 import { TerrainModule } from "./terrain/terrain.module";
 import { AccessGuard } from "./iam/access.guard";
 import { RateLimitService } from "./iam/rate-limit.service";
@@ -35,6 +36,7 @@ export class AppModule {
         StreetNetworkModule,
         TerrainModule,
         PopulationModule,
+        EconomyModule,
         AgentsModule,
       ],
       controllers: [HealthController, AuthController, SetupController, AdminController, ProjectsController],

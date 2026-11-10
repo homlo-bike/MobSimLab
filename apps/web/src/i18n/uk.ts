@@ -212,6 +212,7 @@ export const uk: Messages = {
   "drawing.street-setups": "налаштування вулиць",
   "drawing.rail-timetable": "розклад залізниці",
   "drawing.preferences": "параметри проєкту",
+  "drawing.costs": "налаштування витрат",
 
   "tab.label": "Проєкт",
   "tab.simulator": "Симулятор",
@@ -261,8 +262,9 @@ export const uk: Messages = {
   "tables.summary": "Підсумок",
   "tables.infrastructure": "Лінії, станції, довжина колій, мости, тунелі (відкритий спосіб або ТПМК)",
   "tables.service": "Частота, години роботи, рухомий склад, прогнозовані пасажири",
-  "tables.costs": "Витрати й ефективність",
   "tables.compare": "Порівняти сценарії поруч",
+  "tables.more": "Інші таблиці",
+  "tables.moreIntro": "Невдовзі з'являться на цій вкладці.",
 
   "prefs.title": "Параметри проєкту",
   "prefs.intro": "Відомості й налаштування для всього проєкту.",

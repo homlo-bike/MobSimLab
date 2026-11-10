@@ -211,6 +211,7 @@ export const it: Messages = {
   "drawing.street-setups": "le configurazioni stradali",
   "drawing.rail-timetable": "l'orario ferroviario",
   "drawing.preferences": "le preferenze del progetto",
+  "drawing.costs": "le impostazioni dei costi",
 
   "tab.label": "Progetto",
   "tab.simulator": "Simulatore",
@@ -260,8 +261,9 @@ export const it: Messages = {
   "tables.summary": "Riepilogo",
   "tables.infrastructure": "Linee, stazioni, lunghezza dei binari, ponti, gallerie (artificiali o TBM)",
   "tables.service": "Frequenza, orario di servizio, flotta, passeggeri previsti",
-  "tables.costs": "Costi e prestazioni",
   "tables.compare": "Confronta scenari affiancati",
+  "tables.more": "Altre tabelle",
+  "tables.moreIntro": "In arrivo in questa scheda.",
 
   "prefs.title": "Preferenze del progetto",
   "prefs.intro": "Dettagli e impostazioni che valgono per tutto il progetto.",

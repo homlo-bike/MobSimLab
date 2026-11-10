@@ -210,6 +210,7 @@ export const yo: Messages = {
   "drawing.street-setups": "ètò òpópónà",
   "drawing.rail-timetable": "àkókò ìrìn ọkọ̀ ojú irin",
   "drawing.preferences": "àwọn àyànfẹ́ iṣẹ́ àkànṣe",
+  "drawing.costs": "ètò iye owó",
 
   "tab.label": "Iṣẹ́ àkànṣe",
   "tab.simulator": "Afarawé",
@@ -257,8 +258,9 @@ export const yo: Messages = {
   "tables.summary": "Àkópọ̀",
   "tables.infrastructure": "Àwọn ìlà, ibùdókọ̀, gígùn ojú irin, afárá, ihò abẹ́lẹ̀ (gbẹ́ kí o bò tàbí TBM)",
   "tables.service": "Ìgbàkúgbà, wákàtí iṣẹ́, àwọn ọkọ̀, èrò tí a fojú sùn",
-  "tables.costs": "Iye owó àti iṣẹ́",
   "tables.compare": "Fi àwọn ìṣẹ̀lẹ̀ wé ara wọn lẹ́gbẹ̀ẹ́ ara wọn",
+  "tables.more": "Àwọn tábìlì míì",
+  "tables.moreIntro": "Wọ́n ń bọ̀ sí táàbù yìí láìpẹ́.",
 
   "prefs.title": "Àwọn àyànfẹ́ iṣẹ́ àkànṣe",
   "prefs.intro": "Àwọn àlàyé àti ètò tó kan gbogbo iṣẹ́ àkànṣe náà.",

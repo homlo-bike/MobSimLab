@@ -35,6 +35,8 @@ fn track(id: u32, start: Anchor, end: Option<Anchor>, level: Level) -> Track {
         power: Power::Auto,
         usage: TrackUse::Running,
         bed: Bed::Auto,
+        tunnel: Default::default(),
+        structure: Default::default(),
         lead_start_m: 30.0,
         lead_end_m: 30.0,
         radius_start_m: None,

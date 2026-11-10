@@ -41,6 +41,15 @@ const preferences = z.looseObject({
     .refine((v) => Object.keys(v).length <= 1000, "at most 1000 values"),
 });
 
+/** Cost tables settings: the country whose prices apply (ISO 3166-1 alpha-3), when the planner chose one. */
+const costs = z.looseObject({
+  country: z
+    .string()
+    .regex(/^[A-Z]{3}$/)
+    .nullable()
+    .optional(),
+});
+
 /** Drawing kinds with their document outline and current schema version. */
 export const DRAWING_KINDS = {
   /** The street line tool (ADR-0029): bus, BRT, trolleybus and intercity bus lines. */
@@ -53,6 +62,8 @@ export const DRAWING_KINDS = {
   "rail-timetable": { schema: railTimetable, schemaVersion: 1 },
   /** Project preferences: assumption library values changed for this project (Preferences tab). */
   preferences: { schema: preferences, schemaVersion: 1 },
+  /** Cost tables settings (ADR-0039): the country chosen for prices. */
+  costs: { schema: costs, schemaVersion: 1 },
 } as const satisfies Record<string, { schema: z.ZodType; schemaVersion: number }>;
 
 export type DrawingKind = keyof typeof DRAWING_KINDS;

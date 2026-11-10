@@ -212,6 +212,7 @@ export const tr: Messages = {
   "drawing.street-setups": "sokak düzenleri",
   "drawing.rail-timetable": "tren tarifesi",
   "drawing.preferences": "proje tercihleri",
+  "drawing.costs": "maliyet ayarları",
 
   "tab.label": "Proje",
   "tab.simulator": "Simülatör",
@@ -259,8 +260,9 @@ export const tr: Messages = {
   "tables.summary": "Özet",
   "tables.infrastructure": "Hatlar, istasyonlar, ray uzunluğu, köprüler, tüneller (aç-kapa veya TBM)",
   "tables.service": "Sefer sıklığı, hizmet saatleri, filo, tahmini yolcu",
-  "tables.costs": "Maliyet ve performans",
   "tables.compare": "Senaryoları yan yana karşılaştır",
+  "tables.more": "Diğer tablolar",
+  "tables.moreIntro": "Yakında bu sekmede.",
 
   "prefs.title": "Proje tercihleri",
   "prefs.intro": "Tüm projeye uygulanan ayrıntılar ve ayarlar.",

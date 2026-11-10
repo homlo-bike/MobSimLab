@@ -211,6 +211,7 @@ export const hi: Messages = {
   "drawing.street-setups": "सड़क सेटअप",
   "drawing.rail-timetable": "रेल समय-सारणी",
   "drawing.preferences": "प्रोजेक्ट प्राथमिकताएँ",
+  "drawing.costs": "लागत सेटिंग्स",
 
   "tab.label": "प्रोजेक्ट",
   "tab.simulator": "सिम्युलेटर",
@@ -258,8 +259,9 @@ export const hi: Messages = {
   "tables.summary": "सारांश",
   "tables.infrastructure": "लाइनें, स्टेशन, पटरी की लंबाई, पुल, सुरंगें (कट एंड कवर या TBM)",
   "tables.service": "आवृत्ति, संचालन घंटे, बेड़ा, अनुमानित यात्री",
-  "tables.costs": "लागत और प्रदर्शन",
   "tables.compare": "परिदृश्यों की साथ-साथ तुलना करें",
+  "tables.more": "और तालिकाएँ",
+  "tables.moreIntro": "इस टैब में जल्द आएँगी।",
 
   "prefs.title": "प्रोजेक्ट प्राथमिकताएँ",
   "prefs.intro": "पूरे प्रोजेक्ट पर लागू होने वाले विवरण और सेटिंग्स।",

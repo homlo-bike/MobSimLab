@@ -1,0 +1,1013 @@
+# Construction and operating cost unit values (09-planning-models §3, ADR-0039). Schema: assumptions/README.md.
+#
+# Prices are 2023 international dollars at purchasing power parity (the Transit Costs Project basis),
+# except vehicles, which are traded internationally and are in 2023 US dollars at market exchange rates.
+# The cost tables convert both to the project's country and the latest year with World Bank indicators
+# (PPP conversion factor, exchange rate, US GDP deflator).
+# Construction values are before design, management and contingency, which are added as shares.
+
+- key: cost.civil.at_grade_per_km
+  label: Civil works at street level or on its own formation, double track
+  group: Cost
+  unit: US$ million per route-km (2023, PPP)
+  used_by:
+    - "construction cost: civil works"
+  values:
+    - context:
+        mode: "*"
+      low: 3
+      central: 7
+      high: 15
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+        - transit-costs-project
+      check: unverified
+      rationale:
+        Earthworks, drainage, minor structures and utility diversions for a segregated double track at grade.
+        Transit Costs Project data show at-grade lines cost a fraction of tunnelled ones.
+    - context:
+        mode: tram
+      low: 5
+      central: 11
+      high: 20
+      basis: documented
+      sources:
+        - railwaypro-besancon
+        - bathtrams-uk-costs
+        - mobsimlab-derivation
+      check: secondary
+      rationale:
+        Street reconstruction kerb to kerb and utility diversions. French tram lines average about €25–30
+        million per km all in (Besançon €17.5 million); about a third of that is street works, converted at about
+        0.73 € per international $ (2023).
+    - context:
+        mode: light_rail
+      low: 4
+      central: 9
+      high: 18
+      basis: documented
+      sources:
+        - railwaypro-besancon
+        - mobsimlab-derivation
+      check: unverified
+      rationale: As tram with more own right of way and less street reconstruction.
+    - context:
+        mode: metro
+      low: 5
+      central: 10
+      high: 20
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+        - transit-costs-project
+      check: unverified
+      rationale: Fully segregated formation with fencing and grade separation of every road; rare at grade.
+    - context:
+        mode: high_speed_rail
+      low: 6
+      central: 12
+      high: 22
+      basis: documented
+      sources:
+        - worldbank-china-hsr
+        - uic-hsr-cost
+        - mobsimlab-derivation
+      check: secondary
+      rationale:
+        Earthworks of a 300–350 km/h formation. The World Bank puts Chinese HSR at about US$ 17–21 million
+        per km all in and European lines at US$ 25–39 million per km; UIC reports about €45.5 million per km on average
+        including structures.
+
+- key: cost.civil.elevated_per_km
+  label: Elevated guideway on columns, double track
+  group: Cost
+  unit: US$ million per route-km (2023, PPP)
+  used_by:
+    - "construction cost: civil works"
+  values:
+    - context:
+        mode: "*"
+      low: 20
+      central: 40
+      high: 80
+      basis: documented
+      sources:
+        - fta-relative-costs
+        - transit-costs-project
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        "FTA comparison quoted by the City of Toronto: underground costs about twice elevated and four times
+        surface per km. Taken as about half the cut and cover value."
+
+- key: cost.civil.viaduct_per_km
+  label: Viaduct (long multi-span structure), double track
+  group: Cost
+  unit: US$ million per route-km (2023, PPP)
+  used_by:
+    - "construction cost: civil works"
+  values:
+    - context:
+        mode: "*"
+      low: 12
+      central: 30
+      high: 70
+      basis: documented
+      sources:
+        - worldbank-china-hsr
+        - mobsimlab-derivation
+      check: secondary
+      rationale:
+        "World Bank: Chinese double-track HSR viaducts cost about RMB 57–73 million per km (US$ 9–12 million,
+        2014 prices); European and North American costs are two to five times higher."
+
+- key: cost.civil.bridge_per_km
+  label: Bridge over a river, road or railway, double track
+  group: Cost
+  unit: US$ million per route-km (2023, PPP)
+  used_by:
+    - "construction cost: civil works"
+  values:
+    - context:
+        mode: "*"
+      low: 30
+      central: 70
+      high: 160
+      basis: educated-guess
+      sources:
+        - worldbank-china-hsr
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        Longer spans and deeper foundations than a viaduct; about two to three times the viaduct cost per
+        metre of deck.
+
+- key: cost.civil.ramp_per_km
+  label: Ramp between levels (trough or embankment), double track
+  group: Cost
+  unit: US$ million per route-km (2023, PPP)
+  used_by:
+    - "construction cost: civil works"
+  values:
+    - context:
+        mode: "*"
+      low: 15
+      central: 35
+      high: 80
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Retained cut (U-trough) or retained embankment; between at-grade and cut and cover costs.
+
+- key: cost.civil.cut_and_cover_per_km
+  label: Cut and cover tunnel, double track
+  group: Cost
+  unit: US$ million per route-km (2023, PPP)
+  used_by:
+    - "construction cost: civil works"
+  values:
+    - context:
+        mode: "*"
+      low: 35
+      central: 70
+      high: 150
+      basis: documented
+      sources:
+        - transit-costs-project
+        - fta-relative-costs
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        "Transit Costs Project: low-cost countries (Spain, Italy, Turkey, Sweden) keep costs down partly
+        with cut and cover; tunnelled lines there cost about US$ 150–250 million per km all in, including stations,
+        systems and soft costs."
+
+- key: cost.civil.tbm_per_km
+  label: Bored tunnel (TBM), double track
+  group: Cost
+  unit: US$ million per route-km (2023, PPP)
+  used_by:
+    - "construction cost: civil works"
+  values:
+    - context:
+        mode: "*"
+      low: 40
+      central: 80
+      high: 200
+      basis: documented
+      sources:
+        - transit-costs-project
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        "Tunnel boring, segments, cross passages and shafts, without stations. Transit Costs Project: tunnel
+        depth and method are among the largest cost drivers; high values for poor ground or dense cities."
+    - context:
+        mode: high_speed_rail
+      low: 25
+      central: 50
+      high: 120
+      basis: documented
+      sources:
+        - worldbank-china-hsr
+        - mobsimlab-derivation
+      check: secondary
+      rationale:
+        "World Bank: Chinese HSR tunnels about US$ 10–15 million per km; long rural tunnels cost less per
+        km than urban metro tunnels."
+
+- key: cost.systems_per_km
+  label: Track, power supply, signalling and communications, double track
+  group: Cost
+  unit: US$ million per route-km (2023, PPP)
+  used_by:
+    - "construction cost: railway systems"
+  values:
+    - context:
+        mode: "*"
+      low: 4
+      central: 8
+      high: 15
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+        - transit-costs-project
+      check: unverified
+      rationale: Rails, sleepers or slab, overhead line or third rail, substations, signalling and telecoms per route-km.
+    - context:
+        mode: tram
+      low: 4
+      central: 7
+      high: 12
+      basis: documented
+      sources:
+        - bathtrams-uk-costs
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        Embedded track, overhead line and substations; German extensions cost about £9.4 million per km for
+        track, stops and wires.
+    - context:
+        mode: light_rail
+      low: 5
+      central: 9
+      high: 15
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: As tram with signalling on segregated sections.
+    - context:
+        mode: metro
+      low: 10
+      central: 20
+      high: 35
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+        - transit-costs-project
+      check: unverified
+      rationale:
+        Slab track, third rail or rigid overhead line, CBTC signalling, platform screen doors on new lines,
+        tunnel ventilation.
+    - context:
+        mode: high_speed_rail
+      low: 5
+      central: 9
+      high: 15
+      basis: documented
+      sources:
+        - worldbank-china-hsr
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Slab or ballast track for 300 km/h, 25 kV, ETCS level 2.
+
+- key: cost.single_track_share
+  label: Single track, share of the double track cost per km
+  group: Cost
+  unit: share
+  used_by:
+    - "construction cost: civil works"
+    - "construction cost: railway systems"
+  values:
+    - context:
+        mode: "*"
+      low: 0.5
+      central: 0.6
+      high: 0.7
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: One track saves rails and part of the formation, but not drainage, fencing and most structures.
+
+- key: cost.station.at_grade
+  label: Station or stop at street level
+  group: Cost
+  unit: US$ million per station (2023, PPP)
+  used_by:
+    - "construction cost: stations"
+  values:
+    - context:
+        mode: "*"
+      low: 2
+      central: 5
+      high: 15
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Platforms, shelters, access and passenger information at street level.
+    - context:
+        mode: tram
+      low: 0.5
+      central: 1.5
+      high: 4
+      basis: documented
+      sources:
+        - bathtrams-uk-costs
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Two side platforms, shelters, ticket machines, level boarding.
+    - context:
+        mode: light_rail
+      low: 0.8
+      central: 2
+      high: 5
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Longer platforms than tram.
+    - context:
+        mode: metro
+      low: 4
+      central: 8
+      high: 20
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Long platforms, fare gates, a footbridge or underpass for access.
+    - context:
+        mode: long_distance_rail
+      low: 5
+      central: 10
+      high: 30
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Long platforms, waiting rooms, step-free access.
+    - context:
+        mode: high_speed_rail
+      low: 10
+      central: 30
+      high: 100
+      basis: educated-guess
+      sources:
+        - worldbank-china-hsr
+        - mobsimlab-derivation
+      check: unverified
+      rationale: New HSR stations range from simple through stations to large terminals.
+
+- key: cost.station.elevated
+  label: Elevated station
+  group: Cost
+  unit: US$ million per station (2023, PPP)
+  used_by:
+    - "construction cost: stations"
+  values:
+    - context:
+        mode: "*"
+      low: 8
+      central: 20
+      high: 50
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+        - transit-costs-project
+      check: unverified
+      rationale: Platform deck, lifts, escalators and stairs.
+
+- key: cost.station.underground
+  label: Underground station on the first level (cut and cover box)
+  group: Cost
+  unit: US$ million per station (2023, PPP)
+  used_by:
+    - "construction cost: stations"
+  values:
+    - context:
+        mode: "*"
+      low: 30
+      central: 60
+      high: 150
+      basis: documented
+      sources:
+        - transit-costs-project
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        "Transit Costs Project: stations are the largest single cost item of tunnelled lines; shallow boxes
+        are far cheaper than deep mined stations."
+
+- key: cost.station.underground_deep
+  label: Underground station on the second level (deep)
+  group: Cost
+  unit: US$ million per station (2023, PPP)
+  used_by:
+    - "construction cost: stations"
+  values:
+    - context:
+        mode: "*"
+      low: 60
+      central: 120
+      high: 300
+      basis: documented
+      sources:
+        - transit-costs-project
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        Deep boxes or mined caverns with long escalator shafts; Transit Costs Project names depth and station
+        size as main cost drivers.
+
+- key: cost.switch_each
+  label: Switch or crossing, each
+  group: Cost
+  unit: US$ million each (2023, PPP)
+  used_by:
+    - "construction cost: railway systems"
+  values:
+    - context:
+        mode: "*"
+      low: 0.3
+      central: 0.6
+      high: 1.2
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Turnout with points machine, heating and signalling interface; a crossover counts as one placed element.
+    - context:
+        mode: tram
+      low: 0.2
+      central: 0.4
+      high: 0.8
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Grooved-rail turnout embedded in the street.
+    - context:
+        mode: high_speed_rail
+      low: 1
+      central: 2
+      high: 4
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: High-speed turnouts with movable crossing nose.
+
+- key: cost.depot_per_train_m
+  label: Depot and stabling per metre of rail fleet
+  group: Cost
+  unit: US$ million per m of train (2023, PPP)
+  used_by:
+    - "construction cost: depots"
+  values:
+    - context:
+        mode: "*"
+      low: 0.02
+      central: 0.04
+      high: 0.08
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        Stabling, workshop and wash plant; about US$ 1.2 million per 30 m tram or 4 million per 100 m metro
+        train.
+
+- key: cost.depot_per_bus
+  label: Bus depot per bus
+  group: Cost
+  unit: US$ million per bus (2023, PPP)
+  used_by:
+    - "construction cost: depots"
+  values:
+    - context:
+        mode: "*"
+      low: 0.1
+      central: 0.25
+      high: 0.5
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Parking, workshop, washing, fuelling or charging, per bus.
+
+- key: cost.vehicle_per_train_m
+  label: Rail vehicles per metre of train
+  group: Cost
+  unit: US$ million per m (2023, market)
+  used_by:
+    - "construction cost: vehicles"
+  values:
+    - context:
+        mode: "*"
+      low: 0.07
+      central: 0.11
+      high: 0.15
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Electric multiple units cost about US$ 7–10 million for 70–80 m.
+    - context:
+        mode: tram
+      low: 0.08
+      central: 0.12
+      high: 0.16
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: A 30–35 m low-floor tram costs about US$ 3–5 million.
+    - context:
+        mode: light_rail
+      low: 0.08
+      central: 0.12
+      high: 0.16
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: As tram.
+    - context:
+        mode: metro
+      low: 0.08
+      central: 0.12
+      high: 0.18
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Metro cars cost about US$ 2–3.5 million per 20 m car; driverless trains at the high end.
+    - context:
+        mode: long_distance_rail
+      low: 0.08
+      central: 0.12
+      high: 0.16
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Locomotive-hauled or multiple-unit intercity trains.
+    - context:
+        mode: high_speed_rail
+      low: 0.12
+      central: 0.17
+      high: 0.22
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: A 200 m high-speed train costs about US$ 30–40 million.
+
+- key: cost.vehicle_each
+  label: Road vehicle, each
+  group: Cost
+  unit: US$ million each (2023, market)
+  used_by:
+    - "construction cost: vehicles"
+  values:
+    - context:
+        mode: "*"
+      low: 0.3
+      central: 0.45
+      high: 0.75
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: 12 m city bus; diesel about US$ 0.3 million, battery about twice that.
+    - context:
+        mode: brt
+      low: 0.45
+      central: 0.7
+      high: 1.0
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: 18 m articulated bus.
+    - context:
+        mode: trolleybus
+      low: 0.7
+      central: 0.9
+      high: 1.3
+      basis: documented
+      sources:
+        - uitp-trolleybus-tco
+        - mobsimlab-derivation
+      check: unverified
+      rationale: 12–18 m trolleybus with traction battery.
+    - context:
+        mode: intercity_bus
+      low: 0.3
+      central: 0.45
+      high: 0.6
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Coach.
+
+- key: cost.street.stop_each
+  label: Bus stop or station, each
+  group: Cost
+  unit: US$ million each (2023, PPP)
+  used_by:
+    - "construction cost: stations"
+  values:
+    - context:
+        mode: "*"
+      low: 0.01
+      central: 0.03
+      high: 0.08
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Pole, shelter, kerb raised for level boarding.
+    - context:
+        mode: brt
+      low: 0.5
+      central: 1.5
+      high: 4
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Enclosed BRT station with platforms and off-board fare collection.
+    - context:
+        mode: intercity_bus
+      low: 0.02
+      central: 0.05
+      high: 0.15
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Stop with shelter and information; bus stations not included.
+
+- key: cost.street.bus_lane_per_km
+  label: Bus lane, per km of lane in one direction
+  group: Cost
+  unit: US$ million per km (2023, PPP)
+  used_by:
+    - "construction cost: civil works"
+  values:
+    - context:
+        mode: "*"
+      low: 0.1
+      central: 0.3
+      high: 0.8
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Marking, signs and signal changes on an existing carriageway.
+    - context:
+        mode: brt
+      low: 2
+      central: 4
+      high: 10
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Busway with new pavement, separators and junction works, per direction.
+
+- key: cost.street.trolley_wire_per_km
+  label: Trolleybus overhead wires, per route-km (both directions)
+  group: Cost
+  unit: US$ million per route-km (2023, PPP)
+  used_by:
+    - "construction cost: railway systems"
+  values:
+    - context:
+        mode: "*"
+      low: 1.5
+      central: 2.5
+      high: 4
+      basis: documented
+      sources:
+        - uitp-trolleybus-tco
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Two pairs of trolley wires with poles and substations.
+
+- key: cost.engineering_share
+  label: Design, project management and supervision
+  group: Cost
+  unit: share of construction
+  used_by:
+    - "construction cost: soft costs"
+  values:
+    - context:
+        mode: "*"
+      low: 0.1
+      central: 0.15
+      high: 0.25
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+        - transit-costs-project
+      check: unverified
+      rationale:
+        Usual range of owner and consultant costs; the Transit Costs Project finds consultant-heavy delivery
+        at the high end.
+
+- key: cost.contingency_share
+  label: Contingency (risk and optimism bias)
+  group: Cost
+  unit: share of construction
+  used_by:
+    - "construction cost: soft costs"
+  values:
+    - context:
+        mode: "*"
+      low: 0.1
+      central: 0.25
+      high: 0.45
+      basis: documented
+      sources:
+        - flyvbjerg-2003
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        Flyvbjerg et al. found rail projects overrun their estimates by about 45 % on average; 25 % is a
+        usual planning allowance.
+
+- key: cost.opex.vehicle_hour
+  label: Road vehicle operating cost per vehicle-hour
+  group: Cost
+  unit: US$ per hour (2023, PPP)
+  used_by:
+    - "operating cost: service"
+  values:
+    - context:
+        mode: "*"
+      low: 60
+      central: 90
+      high: 130
+      basis: documented
+      sources:
+        - sandnes-benchmarking
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        Driver, fuel or energy, maintenance and depot costs per vehicle-hour in service for European city
+        buses.
+    - context:
+        mode: brt
+      low: 70
+      central: 100
+      high: 140
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Articulated vehicles, stations to run.
+    - context:
+        mode: trolleybus
+      low: 70
+      central: 100
+      high: 150
+      basis: documented
+      sources:
+        - uitp-trolleybus-tco
+        - mobsimlab-derivation
+      check: unverified
+      rationale: As bus with wire maintenance.
+    - context:
+        mode: intercity_bus
+      low: 50
+      central: 75
+      high: 110
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Higher speeds and fewer staff hours per km.
+
+- key: cost.opex.train_hour
+  label: Rail crew and train-related cost per train-hour
+  group: Cost
+  unit: US$ per hour (2023, PPP)
+  used_by:
+    - "operating cost: service"
+  values:
+    - context:
+        mode: "*"
+      low: 80
+      central: 120
+      high: 180
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Driver and, on main lines, a guard, with relief and overheads.
+    - context:
+        mode: tram
+      low: 50
+      central: 70
+      high: 100
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: One driver.
+    - context:
+        mode: light_rail
+      low: 50
+      central: 70
+      high: 100
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: One driver.
+    - context:
+        mode: metro
+      low: 30
+      central: 60
+      high: 100
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: One driver; low end for driverless lines with roaming staff.
+    - context:
+        mode: long_distance_rail
+      low: 100
+      central: 150
+      high: 220
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Driver and on-board staff.
+    - context:
+        mode: high_speed_rail
+      low: 120
+      central: 180
+      high: 260
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Driver and on-board staff.
+
+- key: cost.opex.car_km
+  label: Rail running cost per car-km (per 25 m of train)
+  group: Cost
+  unit: US$ per car-km (2023, PPP)
+  used_by:
+    - "operating cost: service"
+  values:
+    - context:
+        mode: "*"
+      low: 1.5
+      central: 2.5
+      high: 4
+      basis: educated-guess
+      sources:
+        - pedestrian-observations-opex
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Traction energy, vehicle maintenance and cleaning.
+    - context:
+        mode: metro
+      low: 2
+      central: 3.5
+      high: 6
+      basis: documented
+      sources:
+        - pedestrian-observations-opex
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        Berlin and London metro operating costs are about US$ 6–7 per car-km all in (2024); the train-hour
+        value covers the crew.
+    - context:
+        mode: high_speed_rail
+      low: 2.5
+      central: 4
+      high: 6
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: High energy use at 300 km/h.
+
+- key: cost.opex.infrastructure_share
+  label: Infrastructure maintenance and operation per year
+  group: Cost
+  unit: share of infrastructure construction per year
+  used_by:
+    - "operating cost: infrastructure"
+  values:
+    - context:
+        mode: "*"
+      low: 0.008
+      central: 0.015
+      high: 0.025
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        Track, structures, stations, systems and depots maintained and staffed; about 1–2 % of the construction
+        cost a year.
+
+- key: cost.opex.overhead_share
+  label: Administration and overheads
+  group: Cost
+  unit: share of operating cost
+  used_by:
+    - "operating cost: overheads"
+  values:
+    - context:
+        mode: "*"
+      low: 0.08
+      central: 0.15
+      high: 0.25
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Management, planning, ticketing and customer service.
+
+- key: cost.service_hours_per_day
+  label: Service hours per day of a street line
+  group: Cost
+  unit: h
+  used_by:
+    - "operating cost: street lines"
+  values:
+    - context:
+        mode: "*"
+      low: 16
+      central: 18
+      high: 20
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Usual city service from about 05:30 to 23:30 at the line's headway.
+
+- key: cost.days_per_year
+  label: Operating days per year, as weekday equivalents
+  group: Cost
+  unit: days
+  used_by:
+    - "operating cost: service"
+  values:
+    - context:
+        mode: "*"
+      low: 280
+      central: 300
+      high: 330
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: 365 days with lighter weekend and holiday service count as about 300 weekdays.
+
+- key: cost.price_base_year
+  label: Price base year of the cost values
+  group: Cost
+  unit: year
+  used_by:
+    - "cost tables: conversion to today's prices"
+  values:
+    - context:
+        mode: "*"
+      low: 2023
+      central: 2023
+      high: 2023
+      basis: cited
+      sources:
+        - transit-costs-project
+        - worldbank-wdi
+      check: secondary
+      rationale:
+        The Transit Costs Project states costs in 2023 PPP dollars. The tables scale them to the latest year
+        with the World Bank US GDP deflator (NY.GDP.DEFL.ZS) and to the country with its PPP conversion factor (PA.NUS.PPP)
+        or, for vehicles, its exchange rate (PA.NUS.FCRF).

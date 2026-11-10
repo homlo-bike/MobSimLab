@@ -208,6 +208,7 @@ export const fa: Messages = {
   "drawing.street-setups": "پیکربندی خیابان‌ها",
   "drawing.rail-timetable": "جدول زمانی ریلی",
   "drawing.preferences": "ترجیحات پروژه",
+  "drawing.costs": "تنظیمات هزینه",
 
   "tab.label": "پروژه",
   "tab.simulator": "شبیه‌ساز",
@@ -256,8 +257,9 @@ export const fa: Messages = {
   "tables.summary": "خلاصه",
   "tables.infrastructure": "خطوط، ایستگاه‌ها، طول ریل، پل‌ها، تونل‌ها (روباز یا TBM)",
   "tables.service": "تواتر، ساعات خدمت، ناوگان، مسافران پیش‌بینی‌شده",
-  "tables.costs": "هزینه و عملکرد",
   "tables.compare": "مقایسهٔ سناریوها کنار هم",
+  "tables.more": "جدول‌های بیشتر",
+  "tables.moreIntro": "به‌زودی در این زبانه.",
 
   "prefs.title": "ترجیحات پروژه",
   "prefs.intro": "جزئیات و تنظیماتی که برای کل پروژه اعمال می‌شوند.",

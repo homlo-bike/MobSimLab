@@ -210,6 +210,7 @@ export const vi: Messages = {
   "drawing.street-setups": "cấu hình đường phố",
   "drawing.rail-timetable": "lịch tàu",
   "drawing.preferences": "tùy chọn dự án",
+  "drawing.costs": "cài đặt chi phí",
 
   "tab.label": "Dự án",
   "tab.simulator": "Mô phỏng",
@@ -260,8 +261,9 @@ export const vi: Messages = {
   "tables.summary": "Tóm tắt",
   "tables.infrastructure": "Tuyến, ga, chiều dài đường ray, cầu, hầm (đào hở hoặc TBM)",
   "tables.service": "Tần suất, giờ hoạt động, đội phương tiện, hành khách dự kiến",
-  "tables.costs": "Chi phí và hiệu quả",
   "tables.compare": "So sánh các kịch bản cạnh nhau",
+  "tables.more": "Thêm bảng",
+  "tables.moreIntro": "Sắp có trong thẻ này.",
 
   "prefs.title": "Tùy chọn dự án",
   "prefs.intro": "Chi tiết và cài đặt áp dụng cho toàn bộ dự án.",

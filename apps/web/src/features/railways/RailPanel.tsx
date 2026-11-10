@@ -19,8 +19,10 @@ import type {
   Slip,
   Station,
   Switch,
+  Structure,
   Track,
   TrackUse,
+  TunnelMethod,
 } from "./types";
 
 /** Railway editing tools, as in the mockup. */
@@ -800,6 +802,12 @@ function StationInspector({ st, doc, view, actions: a }: Props & { st: Station }
   );
 }
 
+/** Construction methods for a track's underground stretches (cost estimate), as message keys. */
+const TUNNEL_OPTS: TunnelMethod[] = ["auto", "cut_and_cover", "tbm"];
+
+/** Structures for a track's elevated stretches (cost estimate). */
+const STRUCTURE_OPTS: Structure[] = ["auto", "elevated", "viaduct", "bridge"];
+
 function TrackInspector({ t: track, doc, view, sel, actions: a }: Props & { t: Track }) {
   const { t: tr } = useI18n();
   const t = track;
@@ -862,6 +870,38 @@ function TrackInspector({ t: track, doc, view, sel, actions: a }: Props & { t: T
           <option value="embedded">{tr("rail.bed.embedded")}</option>
         </select>
       </Row>
+      {tv?.levels.some((z) => z.level === "underground" || z.level === "underground2") && (
+        <Row label={tr("rail.tunnel")}>
+          <select
+            aria-label={tr("rail.tunnel")}
+            value={t.tunnel ?? "auto"}
+            onChange={(e) => set((x) => ({ ...x, tunnel: e.target.value as TunnelMethod }))}
+            className={input}
+          >
+            {TUNNEL_OPTS.map((o) => (
+              <option key={o} value={o}>
+                {tr(`rail.tunnel.${o}`)}
+              </option>
+            ))}
+          </select>
+        </Row>
+      )}
+      {tv?.levels.some((z) => z.level === "elevated" || z.level === "elevated2") && (
+        <Row label={tr("rail.structure")}>
+          <select
+            aria-label={tr("rail.structure")}
+            value={t.structure ?? "auto"}
+            onChange={(e) => set((x) => ({ ...x, structure: e.target.value as Structure }))}
+            className={input}
+          >
+            {STRUCTURE_OPTS.map((o) => (
+              <option key={o} value={o}>
+                {tr(`rail.structure.${o}`)}
+              </option>
+            ))}
+          </select>
+        </Row>
+      )}
       <Segmented<TrackUse>
         label={tr("rail.use")}
         value={t.use}

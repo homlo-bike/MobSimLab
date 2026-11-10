@@ -84,6 +84,8 @@ jobs:
       - uses: astral-sh/setup-uv@v6
         with: { python-version: "3.12" }
       - run: uv run --no-project --with pyyaml python tools/assumptions/check.py --check-rendered
+      - name: Cost tables values match the assumption library
+        run: uvx ruff check tools/costs && uvx ruff format --check tools/costs && uv run --no-project --with pyyaml python tools/costs/export_defaults.py --check
 
   rust:
     name: Kernels (fmt, clippy, test, S2 smoke benchmark)

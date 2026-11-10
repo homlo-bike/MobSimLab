@@ -3,9 +3,11 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { CopernicusDemClient } from "../src/gateway/copernicus-dem.client";
+import { countryQuery, parseCountry } from "../src/economy/economy.service";
 import { OverpassClient } from "../src/gateway/overpass.client";
 import { WorldPopClient } from "../src/gateway/worldpop.client";
 import { PopulationService } from "../src/population/population.service";
+import { WorldBankClient } from "../src/gateway/worldbank.client";
 import { railQuery, streetQuery, walkQuery } from "../src/street-network/street-network.service";
 import { buildingQuery, crossings } from "../src/terrain/buildings";
 import { TerrainService } from "../src/terrain/terrain.service";
@@ -168,6 +170,34 @@ describe.skipIf(!live)("live: OpenFreeMap basemap", () => {
       );
       expect(tile.status).toBe(200);
       expect((await tile.arrayBuffer()).byteLength).toBeGreaterThan(1_000);
+    },
+    T,
+  );
+});
+
+describe.skipIf(!live)("live: World Bank indicators and the country of a point", () => {
+  const worldBank = new WorldBankClient();
+
+  it(
+    "returns the PPP factor, exchange rate and US deflator the cost tables use",
+    async () => {
+      const ppp = await worldBank.latest("DEU", "PA.NUS.PPP");
+      expect(ppp?.value).toBeGreaterThan(0.4);
+      expect(ppp?.value).toBeLessThan(1.2);
+      const fx = await worldBank.latest("DEU", "PA.NUS.FCRF");
+      expect(fx?.value).toBeGreaterThan(0.6);
+      const deflator = await worldBank.range("USA", "NY.GDP.DEFL.ZS", 2023, new Date().getUTCFullYear());
+      expect(deflator[0]?.year).toBe(2023);
+      expect((await worldBank.countries()).some((c) => c.iso3 === "KEN")).toBe(true);
+    },
+    T,
+  );
+
+  it(
+    "finds the country of a point in the OpenStreetMap boundaries",
+    async () => {
+      const at = parseCountry(await new OverpassClient().run(countryQuery(6.9583, 50.9413)));
+      expect(at.iso3 ?? at.iso2).toMatch(/^DEU?$/);
     },
     T,
   );
