@@ -401,6 +401,52 @@ describe("cost tables", () => {
     expect(onCosts).toHaveBeenCalledWith({ country: "DEU" });
   });
 
+  it("draws the charts, sorts lines and opens and closes groups", async () => {
+    render(
+      <CostTables
+        railway={railway()}
+        streetLines={STREET}
+        preferences={{ values: {} }}
+        costs={null}
+        loadRail={loadRail}
+        api={fakeApi()}
+      />,
+    );
+    const chart = await screen.findByRole("figure", { name: "Construction cost by mode and cost group" });
+    await waitFor(() => expect(within(chart).getAllByRole("img").length).toBeGreaterThan(3));
+    fireEvent.focus(within(chart).getAllByRole("img")[0]!);
+    expect(screen.getByRole("tooltip").textContent).toContain("Track and structures");
+    expect(screen.getByRole("figure", { name: "Construction cost by infrastructure type" })).toBeTruthy();
+
+    // Sort lines by name: A–Z, then Z–A.
+    const byLine = screen.getByRole("region", { name: "Per line" });
+    const names = () =>
+      within(byLine)
+        .getAllByRole("row")
+        .slice(1)
+        .map((r) => r.querySelector("td")!.textContent);
+    fireEvent.click(within(byLine).getByRole("button", { name: /^Line/ }));
+    expect(names()).toEqual(["M1", "Route 7"]);
+    fireEvent.click(within(byLine).getByRole("button", { name: /^Line/ }));
+    expect(names()).toEqual(["Route 7", "M1"]);
+
+    // Item lists start closed; a group opens on its own and with "Expand all"; a mode closes.
+    const build = screen.getByRole("region", { name: "Construction by infrastructure type" });
+    expect(within(build).queryByText("Main, double track")).toBeNull();
+    fireEvent.click(within(build).getByRole("button", { name: /Tunnel, bored \(TBM\)/ }));
+    expect(within(build).getByText("Main, double track")).toBeTruthy();
+    fireEvent.click(within(build).getByRole("button", { name: "Expand all" }));
+    expect(within(build).getAllByText("Main, double track").length).toBeGreaterThan(1);
+    fireEvent.click(within(build).getByRole("button", { name: "Collapse all" }));
+    expect(within(build).queryByText("Main, double track")).toBeNull();
+    fireEvent.click(within(build).getByRole("button", { name: /^Metro/ }));
+    expect(within(build).queryByRole("button", { name: /Tunnel, bored/ })).toBeNull();
+    fireEvent.click(within(build).getByRole("button", { name: "Largest first" }));
+    expect(within(build).getByRole("button", { name: "Largest first" }).getAttribute("aria-pressed")).toBe(
+      "true",
+    );
+  });
+
   it("says when there is nothing to cost", async () => {
     render(
       <CostTables

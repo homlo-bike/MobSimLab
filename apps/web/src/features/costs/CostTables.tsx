@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { type ReactNode, useEffect, useMemo, useState } from "react";
 import { loadRailEngine } from "../railways/engine";
 import { RAIL_MODES } from "../railways/modes";
 import { engineLines } from "../railways/serviceLines";
@@ -15,6 +15,7 @@ import {
   pricesFrom,
   type WbCountry,
 } from "./economy";
+import { BarList, CompositionChart, InlineBar, totalsOf } from "./charts";
 import {
   CATEGORY_LABEL,
   type Category,
@@ -242,6 +243,23 @@ export function CostTables({
                 sub={`low to high ${range(operating)}`}
               />
             </div>
+            <section className={card} aria-labelledby="cost-where">
+              <h3 id="cost-where" className="caps m-0">
+                Where the construction money goes
+              </h3>
+              <div className="mt-3 grid gap-6 md:grid-cols-2">
+                <CompositionChart est={est} money={money} labelOf={modeLabel} />
+                <BarList
+                  label="Construction cost by infrastructure type"
+                  money={money}
+                  rows={CONSTRUCTION.map((c) => ({
+                    id: c,
+                    label: CATEGORY_LABEL[c],
+                    value: sum(est.items.filter((x) => x.category === c).map((x) => x.amount)),
+                  }))}
+                />
+              </div>
+            </section>
             <ByMode est={est} money={money} range={range} />
             <ByLine est={est} money={money} range={range} />
             <Breakdown
@@ -250,7 +268,23 @@ export function CostTables({
               est={est}
               money={money}
             />
-            <Breakdown title="Operating cost a year" cats={OPERATING} est={est} money={money} />
+            <Breakdown
+              title="Operating cost a year"
+              cats={OPERATING}
+              est={est}
+              money={money}
+              chart={
+                <BarList
+                  label="Operating cost a year by kind"
+                  money={money}
+                  rows={OPERATING.map((c) => ({
+                    id: c,
+                    label: CATEGORY_LABEL[c],
+                    value: sum(est.items.filter((x) => x.category === c).map((x) => x.amount)),
+                  }))}
+                />
+              }
+            />
             {est.notes.length > 0 && (
               <ul className="mt-4 list-disc pl-5 text-sm text-slate-600">
                 {est.notes.map((n) => (
@@ -293,6 +327,56 @@ const th = "px-2 py-1.5 text-left font-medium text-slate-600";
 const td = "px-2 py-1.5 align-top";
 const num = "px-2 py-1.5 text-right align-top tabular-nums whitespace-nowrap";
 
+/** Sort state of a table: a column and a direction. */
+type Sort<K extends string> = { key: K; dir: 1 | -1 } | null;
+
+/** Purpose: a column header that sorts the table: first click largest (or A–Z) first, then reverse, then off. */
+function SortHeader<K extends string>({
+  label,
+  k,
+  sort,
+  setSort,
+  right = false,
+}: {
+  label: string;
+  k: K;
+  sort: Sort<K>;
+  setSort: (s: Sort<K>) => void;
+  right?: boolean;
+}) {
+  const on = sort?.key === k;
+  const next: Sort<K> = !on ? { key: k, dir: -1 } : sort.dir === -1 ? { key: k, dir: 1 } : null;
+  return (
+    <th
+      className={`${th} ${right ? "text-right" : ""}`}
+      aria-sort={on ? (sort.dir === 1 ? "ascending" : "descending") : "none"}
+    >
+      <button
+        type="button"
+        className={`inline-flex items-center gap-1 font-medium hover:text-slate-900 ${on ? "text-slate-900" : ""}`}
+        onClick={() => setSort(next)}
+      >
+        {label}
+        <span aria-hidden="true" className={`text-[10px] ${on ? "" : "text-slate-300"}`}>
+          {on ? (sort.dir === -1 ? "▼" : "▲") : "▼"}
+        </span>
+      </button>
+    </th>
+  );
+}
+
+/** Purpose: rows ordered by a sort; text compares A–Z, numbers by size. */
+function sorted<T, K extends string>(rows: T[], sort: Sort<K>, value: (r: T, k: K) => number | string): T[] {
+  if (!sort) return rows;
+  return [...rows].sort((a, b) => {
+    const x = value(a, sort.key);
+    const y = value(b, sort.key);
+    const c = typeof x === "number" && typeof y === "number" ? x - y : String(x).localeCompare(String(y));
+    // The first click (dir −1) puts numbers largest first and text A–Z.
+    return typeof x === "number" ? c * sort.dir : -c * sort.dir;
+  });
+}
+
 function ByMode({
   est,
   money,
@@ -302,16 +386,15 @@ function ByMode({
   money: (v: number) => string;
   range: (t: Triple) => string;
 }) {
-  const rows = est.modes.map((m) => {
-    const xs = est.items.filter((x) => x.mode === m);
-    return {
-      mode: m,
-      c: sum(xs.filter((x) => isConstruction(x.category)).map((x) => x.amount)),
-      o: sum(xs.filter((x) => !isConstruction(x.category)).map((x) => x.amount)),
-    };
-  });
-  const c = sum(rows.map((r) => r.c));
-  const o = sum(rows.map((r) => r.o));
+  const [sort, setSort] = useState<Sort<"mode" | "c" | "o">>(null);
+  const base = est.modes.map((m) => ({ mode: m, ...totalsOf(est, (_, mode) => mode === m) }));
+  const rows = sorted(base, sort, (r, k) =>
+    k === "mode" ? modeLabel(r.mode) : k === "c" ? r.construction[1] : r.operating[1],
+  );
+  const c = sum(base.map((r) => r.construction));
+  const o = sum(base.map((r) => r.operating));
+  const maxC = Math.max(...base.map((r) => r.construction[1]));
+  const maxO = Math.max(...base.map((r) => r.operating[1]));
   return (
     <section className={card} aria-labelledby="cost-by-mode">
       <h3 id="cost-by-mode" className="caps m-0">
@@ -321,9 +404,9 @@ function ByMode({
         <table className="w-full min-w-[20rem] text-sm">
           <thead>
             <tr className="border-b border-slate-200">
-              <th className={th}>Mode</th>
-              <th className={`${th} text-right`}>Construction</th>
-              <th className={`${th} text-right`}>Operating a year</th>
+              <SortHeader label="Mode" k="mode" sort={sort} setSort={setSort} />
+              <SortHeader label="Construction" k="c" sort={sort} setSort={setSort} right />
+              <SortHeader label="Operating a year" k="o" sort={sort} setSort={setSort} right />
             </tr>
           </thead>
           <tbody>
@@ -331,12 +414,14 @@ function ByMode({
               <tr key={r.mode} className="border-b border-slate-100">
                 <td className={td}>{modeLabel(r.mode)}</td>
                 <td className={num}>
-                  {money(r.c[1])}
-                  <span className="block text-xs text-slate-500">{range(r.c)}</span>
+                  {money(r.construction[1])}
+                  <span className="block text-xs text-slate-500">{range(r.construction)}</span>
+                  {base.length > 1 && <InlineBar value={r.construction[1]} max={maxC} />}
                 </td>
                 <td className={num}>
-                  {money(r.o[1])}
-                  <span className="block text-xs text-slate-500">{range(r.o)}</span>
+                  {money(r.operating[1])}
+                  <span className="block text-xs text-slate-500">{range(r.operating)}</span>
+                  {base.length > 1 && <InlineBar value={r.operating[1]} max={maxO} />}
                 </td>
               </tr>
             ))}
@@ -358,6 +443,8 @@ function ByMode({
   );
 }
 
+type LineKey = "name" | "mode" | "km" | "fleet" | "c" | "o";
+
 function ByLine({
   est,
   money,
@@ -367,9 +454,56 @@ function ByLine({
   money: (v: number) => string;
   range: (t: Triple) => string;
 }) {
+  const [sort, setSort] = useState<Sort<LineKey>>(null);
   const totals = perLine(est);
   const unassigned = [...totals.entries()].filter(([id]) => id.startsWith(":"));
   if (!est.lines.length && !unassigned.length) return null;
+  const zero: Triple = [0, 0, 0];
+  const base = [
+    ...est.lines.map((l) => ({
+      id: l.id,
+      name: l.name,
+      mode: l.mode,
+      color: l.color as string | null,
+      km: l.lengthKm as number | null,
+      fleet: l.fleet,
+      c: totals.get(l.id)?.construction ?? null,
+      o: totals.get(l.id)?.operating ?? null,
+    })),
+    ...unassigned.map(([id, t]) => ({
+      id,
+      name: "Not used by a line yet",
+      mode: id.slice(1),
+      color: null,
+      km: null,
+      fleet: 0,
+      c: t.construction,
+      o: t.operating,
+    })),
+  ];
+  const rows = sorted(base, sort, (r, k) =>
+    k === "name"
+      ? r.name
+      : k === "mode"
+        ? modeLabel(r.mode)
+        : k === "km"
+          ? (r.km ?? 0)
+          : k === "fleet"
+            ? r.fleet
+            : ((k === "c" ? r.c : r.o) ?? zero)[1],
+  );
+  const maxC = Math.max(...base.map((r) => r.c?.[1] ?? 0));
+  const maxO = Math.max(...base.map((r) => r.o?.[1] ?? 0));
+  const cell = (t: Triple | null, max: number) =>
+    t ? (
+      <>
+        {money(t[1])}
+        <span className="block text-xs text-slate-500">{range(t)}</span>
+        {base.length > 1 && <InlineBar value={t[1]} max={max} />}
+      </>
+    ) : (
+      "–"
+    );
   return (
     <section className={card} aria-labelledby="cost-by-line">
       <h3 id="cost-by-line" className="caps m-0">
@@ -377,61 +511,38 @@ function ByLine({
       </h3>
       <p className="mt-1 text-xs text-slate-500">
         Rail lines that share track split its cost by their train-km. Construction includes the line's
-        vehicles and depot places; operating covers the service, upkeep and overheads.
+        vehicles and depot places; operating covers the service, upkeep and overheads. Click a column to sort.
       </p>
       <div className="mt-2 overflow-x-auto">
         <table className="w-full min-w-[40rem] text-sm">
           <thead>
             <tr className="border-b border-slate-200">
-              <th className={th}>Line</th>
-              <th className={th}>Mode</th>
-              <th className={`${th} text-right`}>Length</th>
-              <th className={`${th} text-right`}>Fleet</th>
-              <th className={`${th} text-right`}>Construction</th>
-              <th className={`${th} text-right`}>Operating a year</th>
+              <SortHeader label="Line" k="name" sort={sort} setSort={setSort} />
+              <SortHeader label="Mode" k="mode" sort={sort} setSort={setSort} />
+              <SortHeader label="Length" k="km" sort={sort} setSort={setSort} right />
+              <SortHeader label="Fleet" k="fleet" sort={sort} setSort={setSort} right />
+              <SortHeader label="Construction" k="c" sort={sort} setSort={setSort} right />
+              <SortHeader label="Operating a year" k="o" sort={sort} setSort={setSort} right />
             </tr>
           </thead>
           <tbody>
-            {est.lines.map((l) => {
-              const t = totals.get(l.id);
-              return (
-                <tr key={l.id} className="border-b border-slate-100">
-                  <td className={td}>
+            {rows.map((r) => (
+              <tr key={r.id} className={`border-b border-slate-100 ${r.color ? "" : "text-slate-600"}`}>
+                <td className={td}>
+                  {r.color && (
                     <span
                       className="mr-1.5 inline-block h-2.5 w-2.5 rounded-full"
-                      style={{ background: l.color }}
+                      style={{ background: r.color }}
                       aria-hidden="true"
                     />
-                    {l.name}
-                  </td>
-                  <td className={td}>{modeLabel(l.mode)}</td>
-                  <td className={num}>{fmtQty(l.lengthKm)} km</td>
-                  <td className={num}>{l.fleet || "–"}</td>
-                  <td className={num}>
-                    {t ? money(t.construction[1]) : "–"}
-                    {t && <span className="block text-xs text-slate-500">{range(t.construction)}</span>}
-                  </td>
-                  <td className={num}>
-                    {t ? money(t.operating[1]) : "–"}
-                    {t && <span className="block text-xs text-slate-500">{range(t.operating)}</span>}
-                  </td>
-                </tr>
-              );
-            })}
-            {unassigned.map(([id, t]) => (
-              <tr key={id} className="border-b border-slate-100 text-slate-600">
-                <td className={td}>Not used by a line yet</td>
-                <td className={td}>{modeLabel(id.slice(1))}</td>
-                <td className={num} />
-                <td className={num} />
-                <td className={num}>
-                  {money(t.construction[1])}
-                  <span className="block text-xs text-slate-500">{range(t.construction)}</span>
+                  )}
+                  {r.name}
                 </td>
-                <td className={num}>
-                  {money(t.operating[1])}
-                  <span className="block text-xs text-slate-500">{range(t.operating)}</span>
-                </td>
+                <td className={td}>{modeLabel(r.mode)}</td>
+                <td className={num}>{r.km === null ? "" : `${fmtQty(r.km)} km`}</td>
+                <td className={num}>{r.color ? r.fleet || "–" : ""}</td>
+                <td className={num}>{cell(r.c, maxC)}</td>
+                <td className={num}>{cell(r.o, maxO)}</td>
               </tr>
             ))}
           </tbody>
@@ -441,28 +552,94 @@ function ByLine({
   );
 }
 
+/** Purpose: a small chevron that turns when its group opens. */
+function Chevron({ open }: { open: boolean }) {
+  return (
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 12 12"
+      aria-hidden="true"
+      className={`shrink-0 transition-transform ${open ? "rotate-90" : ""}`}
+    >
+      <path d="M4 2l4 4-4 4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 function Breakdown({
   title,
   cats,
   est,
   money,
+  chart,
 }: {
   title: string;
   cats: Category[];
   est: Estimate;
   money: (v: number) => string;
+  chart?: ReactNode;
 }) {
   const id = `cost-${title.replace(/\W+/g, "-").toLowerCase()}`;
+  // Modes start open, item lists closed; "largest first" orders groups and items by the medium estimate.
+  const [closedModes, setClosedModes] = useState<Set<string>>(new Set());
+  const [openCats, setOpenCats] = useState<Set<string>>(new Set());
+  const [largest, setLargest] = useState(false);
   const modes = est.modes.filter((m) => est.items.some((x) => x.mode === m && cats.includes(x.category)));
   if (!modes.length) return null;
   const all = est.items.filter((x) => cats.includes(x.category));
   const total = sum(all.map((x) => x.amount));
+  const toggle = (set: Set<string>, key: string, apply: (s: Set<string>) => void) => {
+    const next = new Set(set);
+    if (next.has(key)) next.delete(key);
+    else next.add(key);
+    apply(next);
+  };
+  const catKeys = modes.flatMap((m) =>
+    cats.filter((c) => all.some((x) => x.mode === m && x.category === c)).map((c) => `${m}|${c}`),
+  );
+  const allOpen = closedModes.size === 0 && catKeys.every((k) => openCats.has(k));
+  const orderedModes = largest
+    ? [...modes].sort(
+        (a, b) =>
+          sum(all.filter((x) => x.mode === b).map((x) => x.amount))[1] -
+          sum(all.filter((x) => x.mode === a).map((x) => x.amount))[1],
+      )
+    : modes;
   return (
     <section className={card} aria-labelledby={id}>
-      <h3 id={id} className="caps m-0">
-        {title}
-      </h3>
-      <div className="mt-2 overflow-x-auto">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h3 id={id} className="caps m-0">
+          {title}
+        </h3>
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="seg" role="group" aria-label={`Order of ${title}`}>
+            <button type="button" aria-pressed={!largest} onClick={() => setLargest(false)}>
+              Usual order
+            </button>
+            <button type="button" aria-pressed={largest} onClick={() => setLargest(true)}>
+              Largest first
+            </button>
+          </div>
+          <button
+            type="button"
+            className="btn min-h-9 text-sm"
+            onClick={() => {
+              if (allOpen) {
+                setClosedModes(new Set());
+                setOpenCats(new Set());
+              } else {
+                setClosedModes(new Set());
+                setOpenCats(new Set(catKeys));
+              }
+            }}
+          >
+            {allOpen ? "Collapse all" : "Expand all"}
+          </button>
+        </div>
+      </div>
+      {chart && <div className="mt-4">{chart}</div>}
+      <div className="mt-4 overflow-x-auto">
         <table className="w-full min-w-[44rem] text-sm">
           <thead>
             <tr className="border-b border-slate-200">
@@ -474,45 +651,69 @@ function Breakdown({
               <th className={`${th} text-right`}>High</th>
             </tr>
           </thead>
-          {modes.map((m) => {
+          {orderedModes.map((m) => {
             const xs = all.filter((x) => x.mode === m);
             const sub = sum(xs.map((x) => x.amount));
+            const open = !closedModes.has(m);
+            const groups = cats
+              .map((c) => ({ c, ys: xs.filter((x) => x.category === c) }))
+              .filter((g) => g.ys.length)
+              .map((g) => ({ ...g, s: sum(g.ys.map((x) => x.amount)) }));
+            if (largest) groups.sort((a, b) => b.s[1] - a.s[1]);
             return (
               <tbody key={m}>
                 <tr className="bg-slate-50">
-                  <th colSpan={6} className={`${th} text-slate-900`}>
-                    {modeLabel(m)}
+                  <th colSpan={3} className={`${th} text-slate-900`}>
+                    <button
+                      type="button"
+                      aria-expanded={open}
+                      className="flex items-center gap-1.5 font-semibold"
+                      onClick={() => toggle(closedModes, m, setClosedModes)}
+                    >
+                      <Chevron open={open} />
+                      {modeLabel(m)}
+                      <span className="font-normal text-slate-500">· {groups.length} groups</span>
+                    </button>
                   </th>
+                  <td className={`${num} font-semibold`}>{money(sub[0])}</td>
+                  <td className={`${num} font-semibold`}>{money(sub[1])}</td>
+                  <td className={`${num} font-semibold`}>{money(sub[2])}</td>
                 </tr>
-                {cats.flatMap((c) => {
-                  const ys = xs.filter((x) => x.category === c);
-                  if (!ys.length) return [];
-                  const s = sum(ys.map((x) => x.amount));
-                  return [
-                    <tr key={c} className="border-b border-slate-100">
-                      <td className={`${td} font-medium`}>{CATEGORY_LABEL[c]}</td>
-                      <td className={num} />
-                      <td className={num} />
-                      <td className={num}>{money(s[0])}</td>
-                      <td className={`${num} font-medium`}>{money(s[1])}</td>
-                      <td className={num}>{money(s[2])}</td>
-                    </tr>,
-                    ...ys.map((x, i) => <ItemRow key={`${c}-${i}`} x={x} money={money} est={est} />),
-                  ];
-                })}
-                <tr className="border-b border-slate-300 font-semibold">
-                  <td className={td}>{modeLabel(m)} total</td>
-                  <td className={num} />
-                  <td className={num} />
-                  <td className={num}>{money(sub[0])}</td>
-                  <td className={num}>{money(sub[1])}</td>
-                  <td className={num}>{money(sub[2])}</td>
-                </tr>
+                {open &&
+                  groups.flatMap(({ c, ys, s }) => {
+                    const key = `${m}|${c}`;
+                    const catOpen = openCats.has(key);
+                    const items = largest ? [...ys].sort((a, b) => b.amount[1] - a.amount[1]) : ys;
+                    return [
+                      <tr key={c} className="border-b border-slate-100">
+                        <td className={td} colSpan={3}>
+                          <button
+                            type="button"
+                            aria-expanded={catOpen}
+                            className="flex items-center gap-1.5 pl-2 text-left font-medium"
+                            onClick={() => toggle(openCats, key, setOpenCats)}
+                          >
+                            <Chevron open={catOpen} />
+                            {CATEGORY_LABEL[c]}
+                            <span className="font-normal text-slate-500">
+                              · {ys.length} {ys.length === 1 ? "item" : "items"}
+                            </span>
+                          </button>
+                        </td>
+                        <td className={num}>{money(s[0])}</td>
+                        <td className={`${num} font-medium`}>{money(s[1])}</td>
+                        <td className={num}>{money(s[2])}</td>
+                      </tr>,
+                      ...(catOpen
+                        ? items.map((x, i) => <ItemRow key={`${c}-${i}`} x={x} money={money} est={est} />)
+                        : []),
+                    ];
+                  })}
               </tbody>
             );
           })}
           <tfoot>
-            <tr className="font-semibold">
+            <tr className="border-t border-slate-300 font-semibold">
               <td className={td}>Total</td>
               <td className={num} />
               <td className={num} />
@@ -531,7 +732,7 @@ function ItemRow({ x, money, est }: { x: CostItem; money: (v: number) => string;
   const line = x.line ? est.lines.find((l) => l.id === x.line)?.name : null;
   return (
     <tr className="border-b border-slate-100 text-slate-600">
-      <td className={`${td} pl-5`}>
+      <td className={`${td} pl-10`}>
         {x.label}
         {line && <span className="text-slate-400"> · {line}</span>}
       </td>
