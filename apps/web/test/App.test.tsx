@@ -19,7 +19,7 @@ vi.mock("maplibre-gl", () => {
 
 import { App } from "../src/App";
 import { MESSAGES } from "../src/i18n/messages";
-import { resolveLanguage } from "../src/i18n/i18n";
+import { resolveLanguage, translatePlural } from "../src/i18n/i18n";
 import { DEFAULT_BASEMAP } from "../src/map/basemaps";
 import type { Project } from "../src/projects/api";
 import type { Me } from "../src/session/api";
@@ -141,9 +141,26 @@ describe("sign-in page", () => {
     expect(await screen.findByRole("heading", { name: "Anmelden" })).toBeTruthy();
     expect(document.documentElement.lang).toBe("de");
     fireEvent.click(screen.getByRole("button", { name: /Deutsch \(vom Gerät\)/ }));
+    // The menu says translations are machine-made and links to the message files on GitHub.
+    expect(screen.getByRole("link", { name: /Übersetzungen zu verbessern/ }).getAttribute("href")).toMatch(
+      /^https:\/\/github\.com\/homlo-bike\/MobSimLab\/.*i18n$/,
+    );
     fireEvent.click(screen.getByRole("menuitemradio", { name: "Français" }));
     expect(await screen.findByRole("heading", { name: "Se connecter" })).toBeTruthy();
     expect(window.localStorage.getItem("mobsimlab.language")).toBe("fr");
+  });
+
+  it("lays the page out right to left in Arabic and back again", async () => {
+    languages = ["ar-EG", "en"];
+    stubApi(signedOut);
+    render(<App />);
+    expect(await screen.findByRole("heading", { name: "تسجيل الدخول" })).toBeTruthy();
+    expect(document.documentElement.lang).toBe("ar");
+    expect(document.documentElement.dir).toBe("rtl");
+    fireEvent.click(screen.getByRole("button", { name: /العربية \(من الجهاز\)/ }));
+    fireEvent.click(screen.getByRole("menuitemradio", { name: "中文（简体）" }));
+    expect(await screen.findByRole("heading", { name: "登录" })).toBeTruthy();
+    expect(document.documentElement.dir).toBe("ltr");
   });
 
   it("opens the About dialog with the version, licence and source link", async () => {
@@ -483,21 +500,35 @@ describe("building blocks", () => {
 
   it("resolves the language from the choice and the browser", () => {
     expect(resolveLanguage("system", ["fr-CA", "en"])).toBe("fr");
-    expect(resolveLanguage("system", ["ja", "nl-BE"])).toBe("nl");
-    expect(resolveLanguage("system", ["ja"])).toBe("en");
+    expect(resolveLanguage("system", ["th", "nl-BE"])).toBe("nl");
+    expect(resolveLanguage("system", ["th"])).toBe("en");
     expect(resolveLanguage("de", ["fr"])).toBe("de");
     expect(resolveLanguage("xx", ["fr"])).toBe("en");
+    expect(resolveLanguage("system", ["zh-CN"])).toBe("zh");
+    expect(resolveLanguage("system", ["pt-BR"])).toBe("pt");
   });
 
   it("has every message translated and keeps placeholders", () => {
     for (const [lang, messages] of Object.entries(MESSAGES)) {
       for (const [key, text] of Object.entries(MESSAGES.en)) {
+        // Plural forms other than `other` are optional: each language has the forms its grammar needs.
+        if (/\.(zero|one|two|few|many)$/.test(key)) continue;
         const other = (messages as Record<string, string>)[key];
         expect(other, `${lang} ${key}`).toBeTruthy();
         const holes = (s: string) => [...s.matchAll(/\{(\w+)\}/g)].map((m) => m[1]).sort();
         expect(holes(other ?? ""), `${lang} ${key}`).toEqual(holes(text));
       }
     }
+  });
+
+  it("picks the plural form the language needs", () => {
+    expect(translatePlural("en", "rail.stations", 1)).toBe("1 station");
+    expect(translatePlural("en", "rail.stations", 1200)).toBe("1,200 stations");
+    expect(translatePlural("ru", "rail.stations", 1)).toBe("1 станция");
+    expect(translatePlural("ru", "rail.stations", 3)).toBe("3 станции");
+    expect(translatePlural("ru", "rail.stations", 5)).toBe("5 станций");
+    expect(translatePlural("ar", "rail.stations", 2)).toBe("محطتان");
+    expect(translatePlural("zh", "rail.stations", 2)).toBe("2 个车站");
   });
 
   it("credits OpenStreetMap on the default basemap", () => {

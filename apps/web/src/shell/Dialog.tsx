@@ -80,7 +80,7 @@ export function Dialog({
           </div>
           <button
             type="button"
-            className="icon-btn -mt-1 -mr-2"
+            className="icon-btn -mt-1 -me-2"
             aria-label={t("common.close")}
             onClick={onClose}
           >

@@ -1,6 +1,7 @@
 import { Marker, type Map as MapLibreMap, type MapMouseEvent } from "maplibre-gl";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { tNow, useI18n } from "../i18n/i18n";
 import type { PluginLineInput } from "../features/journey-planner/network";
 import { centralValues, contextLabel, findMode, type PluginTool } from "../plugins/registry";
 import { loadKits, spanSystem } from "./engine";
@@ -103,7 +104,7 @@ interface Props {
 function emptyDoc(tool: PluginTool): SpanDoc {
   const mode = findMode(tool.modes[0] ?? "")?.mode;
   return {
-    name: "Cable car 1",
+    name: tNow("cable.defaultName"),
     mode: mode?.id ?? "",
     system: mode?.defaultContext ?? "",
     stations: [],
@@ -145,6 +146,7 @@ export function SpanLineEditor({
   onLineChange,
   loadTerrain = defaultTerrain,
 }: Props) {
+  const { t, tn } = useI18n();
   const [kits, setKits] = useState<Kits | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [doc, setDoc] = useState<SpanDoc>(() => loadLocal(storageKey, emptyDoc(tool)));
@@ -155,7 +157,7 @@ export function SpanLineEditor({
     let alive = true;
     load().then(
       (k) => alive && setKits(k),
-      (e) => setError(`The cable car kit did not start: ${e instanceof Error ? e.message : String(e)}`),
+      (e) => setError(tNow("cable.engineFailed", { error: e instanceof Error ? e.message : String(e) })),
     );
     return () => {
       alive = false;
@@ -239,7 +241,7 @@ export function SpanLineEditor({
   useEffect(() => {
     if (!view || view.stops.length < 2) return changed.current?.(null);
     const stops = view.stops.map((s) => ({
-      name: doc.stations[s.station]?.name || `Station ${s.station + 1}`,
+      name: doc.stations[s.station]?.name || tNow("cable.station", { n: s.station + 1 }),
       lonlat: doc.stations[s.station]!.lonlat,
     }));
     const fwd = view.stops.map((s, k) => ({ stop: k, run_s: s.run_s, dwell_s: s.dwell_s }));
@@ -285,7 +287,7 @@ export function SpanLineEditor({
   useEffect(() => {
     if (!map) return;
     const markers = doc.stations.map((s, i) => {
-      const el = stationElement(i + 1, s.name || `Station ${i + 1}`, color, selected === i);
+      const el = stationElement(i + 1, s.name || tNow("cable.station", { n: i + 1 }), color, selected === i);
       el.addEventListener("click", (e) => {
         e.stopPropagation();
         setSelected(i);
@@ -313,7 +315,7 @@ export function SpanLineEditor({
         stations: [
           ...d.stations,
           {
-            name: `Station ${d.stations.length + 1}`,
+            name: tNow("cable.station", { n: d.stations.length + 1 }),
             lonlat,
             kind: "intermediate",
             boarding: false,
@@ -341,9 +343,9 @@ export function SpanLineEditor({
 
   const where = (i: { station?: number; section?: number }) =>
     i.station !== undefined
-      ? doc.stations[i.station]?.name || `station ${i.station + 1}`
+      ? doc.stations[i.station]?.name || t("cable.stationLower", { n: i.station + 1 })
       : i.section !== undefined
-        ? `section ${i.section + 1}`
+        ? t("cable.section", { n: i.section + 1 })
         : null;
 
   const modes = tool.modes.map((id) => findMode(id)?.mode).filter((x) => x !== undefined);
@@ -352,14 +354,14 @@ export function SpanLineEditor({
     <div className="flex flex-col gap-3 px-4 pt-1 pb-5 text-sm md:px-5">
       <div className="flex flex-wrap items-center gap-2">
         <input
-          aria-label="Line name"
+          aria-label={t("kit.lineName")}
           className="min-w-0 flex-1 rounded-lg border border-slate-300 px-2.5 py-1.5"
           value={doc.name}
           onChange={(e) => setDoc({ ...doc, name: e.target.value })}
         />
-        <div className="seg" role="tablist" aria-label="Tool">
+        <div className="seg" role="tablist" aria-label={t("kit.tool")}>
           <button type="button" role="tab" aria-selected={mode === "add"} onClick={() => setMode("add")}>
-            Add stations
+            {t("cable.addStations")}
           </button>
           <button
             type="button"
@@ -367,17 +369,15 @@ export function SpanLineEditor({
             aria-selected={mode === "select"}
             onClick={() => setMode("select")}
           >
-            Select
+            {t("kit.select")}
           </button>
         </div>
       </div>
       <p className="text-xs text-slate-500">
-        {mode === "add"
-          ? "Click the map to add the next station. Drag a station to move it."
-          : "Click a station to edit it. Drag a station to move it."}
+        {mode === "add" ? t("cable.hint.add") : t("cable.hint.select")}
       </p>
       <label className="flex flex-col gap-1">
-        <span className="text-xs font-medium text-slate-600">Mode and system</span>
+        <span className="text-xs font-medium text-slate-600">{t("cable.modeSystem")}</span>
         <select
           className="rounded-lg border border-slate-300 px-2 py-1.5"
           value={`${doc.mode}|${doc.system}`}
@@ -397,7 +397,7 @@ export function SpanLineEditor({
       </label>
       <div className="grid grid-cols-2 gap-2">
         <label className="flex flex-col gap-1">
-          <span className="text-xs font-medium text-slate-600">Line speed (m/s)</span>
+          <span className="text-xs font-medium text-slate-600">{t("cable.lineSpeed")}</span>
           <input
             type="number"
             min={1}
@@ -410,7 +410,7 @@ export function SpanLineEditor({
         </label>
         {!reversible && (
           <label className="flex flex-col gap-1">
-            <span className="text-xs font-medium text-slate-600">Cabin interval (s)</span>
+            <span className="text-xs font-medium text-slate-600">{t("cable.cabinInterval")}</span>
             <input
               type="number"
               min={5}
@@ -427,15 +427,18 @@ export function SpanLineEditor({
           {error}
         </p>
       )}
-      {!kits && !error && <p className="text-slate-500">Starting the cable car kit…</p>}
+      {!kits && !error && <p className="text-slate-500">{t("cable.starting")}</p>}
       {view && doc.stations.length >= 2 && (
-        <div className="grid grid-cols-2 gap-2" aria-label="Summary">
-          <Stat label="Length" value={fmtLen(view.length_m)} />
-          <Stat label="Trip time" value={fmtDur(view.trip_time_s)} />
-          <Stat label={reversible ? "Departure every" : "Cabin every"} value={fmtDur(view.headway_s)} />
-          <Stat label="Capacity per direction" value={`${fmtInt(view.capacity_pphpd)} p/h`} />
-          <Stat label="Cabins" value={String(view.cabins)} />
-          <Stat label="Towers" value={String(view.tower_count)} />
+        <div className="grid grid-cols-2 gap-2" aria-label={t("kit.summary")}>
+          <Stat label={t("kit.length")} value={fmtLen(view.length_m)} />
+          <Stat label={t("kit.tripTime")} value={fmtDur(view.trip_time_s)} />
+          <Stat
+            label={t(reversible ? "cable.departureEvery" : "cable.cabinEvery")}
+            value={fmtDur(view.headway_s)}
+          />
+          <Stat label={t("kit.capacity")} value={t("kit.pph", { n: fmtInt(view.capacity_pphpd) })} />
+          <Stat label={t("cable.cabins")} value={String(view.cabins)} />
+          <Stat label={t("cable.towers")} value={String(view.tower_count)} />
         </div>
       )}
       <label className="flex items-center gap-2 text-xs">
@@ -444,33 +447,35 @@ export function SpanLineEditor({
           checked={useTerrain}
           onChange={(e) => setDoc({ ...doc, terrain: e.target.checked })}
         />
-        Ground from terrain and buildings
-        {useTerrain && terrainState === "loading" && <span className="text-slate-500">Loading heights…</span>}
+        {t("cable.terrain")}
+        {useTerrain && terrainState === "loading" && (
+          <span className="text-slate-500">{t("cable.loadingHeights")}</span>
+        )}
       </label>
       {useTerrain && terrainState === "error" && (
         <p className="rounded-lg border border-amber-300 bg-amber-50 px-2.5 py-1.5 text-xs text-amber-900">
-          Terrain heights did not load ({terrainError}). The ground is a straight line between the station
-          heights.
+          {t("cable.terrainFailed", { error: terrainError ?? "" })}
         </p>
       )}
       {view && <ProfileView view={view} color={color} />}
       {current && (
         <p className="text-[11px] text-slate-500">
-          Ground: {current.source.name}, a surface model at {current.source.resolutionM} m, about ±
-          {current.source.verticalAccuracyM} m.
-          {current.buildingSource && (
-            <>
-              {" "}
-              Buildings: {current.buildingSource.licence}
-              {estimated > 0 && `; ${estimated} without a height in OSM, assumed 10 m`}.
-            </>
-          )}
+          {t("cable.ground", {
+            name: current.source.name,
+            res: current.source.resolutionM,
+            acc: current.source.verticalAccuracyM,
+          })}
+          {current.buildingSource &&
+            " " +
+              (estimated > 0
+                ? tn("cable.buildingsEstimated", estimated, { licence: current.buildingSource.licence })
+                : t("cable.buildings", { licence: current.buildingSource.licence }))}
         </p>
       )}
       {view && <Issues issues={view.issues} where={where} />}
-      <section aria-label="Stations" className="flex flex-col gap-2">
-        <h3 className="font-semibold">Stations</h3>
-        {doc.stations.length === 0 && <p className="text-slate-500">No stations yet.</p>}
+      <section aria-label={t("cable.stations")} className="flex flex-col gap-2">
+        <h3 className="font-semibold">{t("cable.stations")}</h3>
+        {doc.stations.length === 0 && <p className="text-slate-500">{t("cable.noStations")}</p>}
         {doc.stations.map((s, i) => {
           const end = i === 0 || i === doc.stations.length - 1;
           const sec = view?.sections[i];
@@ -484,7 +489,7 @@ export function SpanLineEditor({
                   {i + 1}
                 </span>
                 <input
-                  aria-label={`Station ${i + 1} name`}
+                  aria-label={t("cable.stationName", { n: i + 1 })}
                   className="min-w-0 flex-1 rounded border border-slate-300 px-2 py-1"
                   value={s.name}
                   onChange={(e) => update(i, { name: e.target.value })}
@@ -493,27 +498,27 @@ export function SpanLineEditor({
                 <button
                   type="button"
                   className="btn min-h-8 px-2 text-xs"
-                  aria-label={`Delete station ${i + 1}`}
+                  aria-label={t("cable.deleteStation", { n: i + 1 })}
                   onClick={() => {
                     setDoc(removeStation(doc, i));
                     setSelected(null);
                   }}
                 >
-                  Delete
+                  {t("kit.delete")}
                 </button>
               </div>
               <div className="mt-1.5 flex flex-wrap items-center gap-2 text-xs">
                 {end ? (
-                  <span className="tag bg-slate-100 text-slate-700">Terminal</span>
+                  <span className="tag bg-slate-100 text-slate-700">{t("cable.terminal")}</span>
                 ) : (
                   <select
-                    aria-label={`Station ${i + 1} kind`}
+                    aria-label={t("cable.stationKind", { n: i + 1 })}
                     className="rounded border border-slate-300 px-1.5 py-1"
                     value={s.kind === "angle" ? "angle" : "intermediate"}
                     onChange={(e) => update(i, { kind: e.target.value as StationKind })}
                   >
-                    <option value="intermediate">Intermediate (boarding)</option>
-                    <option value="angle">Angle station</option>
+                    <option value="intermediate">{t("cable.intermediate")}</option>
+                    <option value="angle">{t("cable.angle")}</option>
                   </select>
                 )}
                 {!end && s.kind === "angle" && (
@@ -523,43 +528,49 @@ export function SpanLineEditor({
                       checked={s.boarding}
                       onChange={(e) => update(i, { boarding: e.target.checked })}
                     />
-                    Boarding
+                    {t("cable.boarding")}
                   </label>
                 )}
                 <label className="flex items-center gap-1">
-                  Ground height
+                  {t("cable.groundHeight")}
                   <input
                     type="number"
-                    aria-label={`Station ${i + 1} ground height`}
+                    aria-label={t("cable.groundHeightOf", { n: i + 1 })}
                     className="w-20 rounded border border-slate-300 px-1.5 py-1"
                     value={heights[i] ?? s.elevation_m}
                     onChange={(e) =>
                       update(i, { elevation_m: Number(e.target.value) || 0, elevation_typed: true })
                     }
                   />
-                  m
+                  {t("kit.m")}
                 </label>
-                {current && !s.elevation_typed && <span className="text-slate-500">from terrain</span>}
+                {current && !s.elevation_typed && (
+                  <span className="text-slate-500">{t("cable.fromTerrain")}</span>
+                )}
                 {useTerrain && s.elevation_typed && (
                   <button
                     type="button"
                     className="text-blue-700 underline"
                     onClick={() => update(i, { elevation_typed: false })}
                   >
-                    Use terrain
+                    {t("cable.useTerrain")}
                   </button>
                 )}
                 {view?.stations[i] && !end && (
-                  <span className="text-slate-500">Turns {Math.round(view.stations[i].deflection_deg)}°</span>
+                  <span className="text-slate-500">
+                    {t("cable.turns", { deg: Math.round(view.stations[i].deflection_deg) })}
+                  </span>
                 )}
               </div>
               {sec && i < doc.stations.length - 1 && (
                 <div className="mt-2 border-t border-slate-100 pt-1.5 text-xs">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="font-medium">
-                      To {i + 2}: {fmtLen(sec.length_m)}, {sec.towers.length} tower
-                      {sec.towers.length === 1 ? "" : "s"} {sec.manual ? "(yours)" : "(automatic)"}, clearance{" "}
-                      {Math.round(sec.min_clearance_m)} m
+                      {tn(sec.manual ? "cable.sectionYours" : "cable.sectionAuto", sec.towers.length, {
+                        to: i + 2,
+                        len: fmtLen(sec.length_m),
+                        clearance: Math.round(sec.min_clearance_m),
+                      })}
                     </span>
                     {sec.manual ? (
                       <button
@@ -567,7 +578,7 @@ export function SpanLineEditor({
                         className="text-blue-700 underline"
                         onClick={() => setTowers(i, null)}
                       >
-                        Back to automatic
+                        {t("cable.backToAuto")}
                       </button>
                     ) : (
                       <button
@@ -580,20 +591,20 @@ export function SpanLineEditor({
                           )
                         }
                       >
-                        Edit towers
+                        {t("cable.editTowers")}
                       </button>
                     )}
                   </div>
                   {sec.manual && (
                     <div className="mt-1 flex flex-col gap-1">
-                      {(doc.towers[i] ?? []).map((t, k) => (
+                      {(doc.towers[i] ?? []).map((tw, k) => (
                         <div key={k} className="flex items-center gap-1.5">
-                          Tower at
+                          {t("cable.towerAt")}
                           <input
                             type="number"
-                            aria-label={`Section ${i + 1} tower ${k + 1} position`}
+                            aria-label={t("cable.towerPosition", { section: i + 1, tower: k + 1 })}
                             className="w-20 rounded border border-slate-300 px-1.5 py-0.5"
-                            value={Math.round(t.at_m)}
+                            value={Math.round(tw.at_m)}
                             onChange={(e) =>
                               setTowers(
                                 i,
@@ -603,12 +614,12 @@ export function SpanLineEditor({
                               )
                             }
                           />
-                          m, height
+                          {t("cable.mHeight")}
                           <input
                             type="number"
-                            aria-label={`Section ${i + 1} tower ${k + 1} height`}
+                            aria-label={t("cable.towerHeight", { section: i + 1, tower: k + 1 })}
                             className="w-16 rounded border border-slate-300 px-1.5 py-0.5"
-                            value={Math.round(t.height_m ?? system.tower_height_m)}
+                            value={Math.round(tw.height_m ?? system.tower_height_m)}
                             onChange={(e) =>
                               setTowers(
                                 i,
@@ -618,7 +629,7 @@ export function SpanLineEditor({
                               )
                             }
                           />
-                          m
+                          {t("kit.m")}
                           <button
                             type="button"
                             className="text-red-700 underline"
@@ -629,7 +640,7 @@ export function SpanLineEditor({
                               )
                             }
                           >
-                            Remove
+                            {t("kit.remove")}
                           </button>
                         </div>
                       ))}
@@ -643,7 +654,7 @@ export function SpanLineEditor({
                           ])
                         }
                       >
-                        Add tower
+                        {t("cable.addTower")}
                       </button>
                     </div>
                   )}
@@ -654,8 +665,11 @@ export function SpanLineEditor({
         })}
       </section>
       <p className="text-[11px] text-slate-500">
-        Values come from the {found?.plugin.name ?? "cable car"} plugin&apos;s assumptions (
-        {contextLabel(doc.mode, doc.system)}). The drawing is kept on this device.
+        {t("kit.valuesFrom", {
+          plugin: found?.plugin.name ?? t("cable.plugin"),
+          context: contextLabel(doc.mode, doc.system),
+        })}{" "}
+        {t("kit.keptHere")}
       </p>
     </div>
   );

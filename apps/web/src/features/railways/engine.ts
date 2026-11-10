@@ -1,3 +1,4 @@
+import { tNow } from "../../i18n/i18n";
 import type { TileFetcher } from "../street-lines/types";
 import type { RailEngine, RailEngineLoader, RailView } from "./types";
 
@@ -53,10 +54,8 @@ export const loadRailEngine: RailEngineLoader = async () => {
 /** Purpose: fetch one railway tile from the API (existing OSM railways, cached server-side). */
 export const fetchRailTile: TileFetcher = async (x, y) => {
   const res = await fetch(`/api/street-network/rail-tiles/14/${x}/${y}`);
-  if (res.status === 401) throw new Error("Sign in to load existing railways.");
+  if (res.status === 401) throw new Error(tNow("rail.osmUnauthorised"));
   if (!res.ok)
-    throw new Error(
-      res.status === 400 ? "Invalid tile" : "OpenStreetMap railways are unavailable right now.",
-    );
+    throw new Error(res.status === 400 ? tNow("rail.osmInvalidTile") : tNow("rail.osmUnavailable"));
   return res.text();
 };

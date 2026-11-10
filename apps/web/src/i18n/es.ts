@@ -1,3 +1,4 @@
+import { editorsEs } from "./editors/es";
 import type { Messages } from "./en";
 
 /** Español. */
@@ -86,6 +87,9 @@ export const es: Messages = {
   "language.fixed": "Idioma fijo",
   "language.none": "Ningún idioma coincide.",
   "language.savedNote": "Se guarda en tu cuenta y te sigue a otros dispositivos.",
+  "language.disclaimer":
+    "Las traducciones distintas del inglés son automáticas y pueden contener errores. El texto en inglés es la referencia.",
+  "language.improve": "Ayuda a mejorar las traducciones en GitHub",
 
   "home.title": "Proyectos",
   "home.search": "Buscar proyectos",
@@ -282,4 +286,6 @@ export const es: Messages = {
   "prefs.vehicles": "Vehículos usados, del catálogo de vehículos",
   "prefs.switches": "Desvíos, del catálogo de desvíos",
   "prefs.calendar": "Calendario, demanda y costes",
+
+  ...editorsEs,
 };

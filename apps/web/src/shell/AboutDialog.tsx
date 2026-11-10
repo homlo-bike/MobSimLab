@@ -37,7 +37,7 @@ export function AboutDialog({ instanceName, onClose }: { instanceName: string; o
       onClose={onClose}
       footer={
         <>
-          <button type="button" className="btn mr-auto" onClick={() => void copy()}>
+          <button type="button" className="btn me-auto" onClick={() => void copy()}>
             {copied ? t("about.copied") : t("about.copy")}
           </button>
           <button type="button" className="btn btn-dark" onClick={onClose}>

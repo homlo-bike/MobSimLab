@@ -1,6 +1,8 @@
 import { Marker, type Map as MapLibreMap, type MapMouseEvent } from "maplibre-gl";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { tNow, useI18n } from "../../i18n/i18n";
+import type { MessageKey } from "../../i18n/messages";
 import { fetchStreetTile } from "../street-lines/engine";
 import { MIN_LOAD_ZOOM, tilesFor } from "../street-lines/tiles";
 import type { DelayShares, TileFetcher } from "../street-lines/types";
@@ -70,17 +72,15 @@ import type { Timetable } from "../journey-planner/types";
 /** Purpose: the drawn signals of a view (generated and the planner's), or none before a build. */
 const sigs = (v: RailView | null | undefined): SignalView[] => v?.signals ?? [];
 
-const HINTS: Record<RailTool, string> = {
-  select:
-    "Click a station, track, switch or signal to edit it. Drag stations and track points; drag a switch or signal along its track.",
-  station: "Click on the map to place a station. Then drag it into place and rotate it.",
-  track:
-    "Click a connection point or the map to start, click to add points, click a connection point or double-click to finish. + / − change the level.",
-  turnout: "Click on a track to place a turnout (double junction on double track), then draw the branch.",
-  crossover: "Click on a double track to place a crossover.",
-  signal: "Click on a track to place a signal. F turns the selected signal round.",
-  pan: "Drag to move the map.",
-  line: "Click the stations of the line in the order trains call at them. Enter or Esc finishes the line.",
+const HINTS: Record<RailTool, MessageKey> = {
+  select: "rail.hint.select",
+  station: "rail.hint.station",
+  track: "rail.hint.track",
+  turnout: "rail.hint.turnout",
+  crossover: "rail.hint.crossover",
+  signal: "rail.hint.signal",
+  pan: "rail.hint.pan",
+  line: "rail.hint.line",
 };
 
 const NO_SETUPS: readonly StreetSetup[] = [];
@@ -165,6 +165,7 @@ export function RailwayEditor({
   noiseAvailable = noiseCalculationIn("railway-tool"),
   onPublish,
 }: Props) {
+  const { t } = useI18n();
   const engine = useRef<RailEngine | null>(null);
   const [ready, setReady] = useState(false);
   const [doc, setDoc] = useState<Network | null>(initial);
@@ -202,7 +203,7 @@ export function RailwayEditor({
         setReady(true);
       })
       .catch((err) =>
-        setError(`The railway engine did not start: ${err instanceof Error ? err.message : String(err)}`),
+        setError(tNow("rail.engineFailed", { error: err instanceof Error ? err.message : String(err) })),
       );
     return () => {
       alive = false;
@@ -257,8 +258,8 @@ export function RailwayEditor({
       if (map.getZoom() < MIN_LOAD_ZOOM) {
         setStreetNote(
           existingRailways
-            ? `Zoom in to load streets and existing railways (from zoom ${MIN_LOAD_ZOOM}).`
-            : `Zoom in to load streets and find level crossings (from zoom ${MIN_LOAD_ZOOM}).`,
+            ? tNow("rail.zoomInRails", { zoom: MIN_LOAD_ZOOM })
+            : tNow("rail.zoomInStreets", { zoom: MIN_LOAD_ZOOM }),
         );
         return;
       }
@@ -295,7 +296,7 @@ export function RailwayEditor({
           added++;
         } catch (err) {
           tiles.current.delete(want[i]!);
-          reason ??= err instanceof Error ? err.message : "Some streets did not load.";
+          reason ??= err instanceof Error ? err.message : tNow("rail.streetsFailed");
         }
       });
       rails.forEach((r, i) => {
@@ -305,15 +306,15 @@ export function RailwayEditor({
           added++;
         } catch (err) {
           tiles.current.delete(want[i]!);
-          railReason ??= err instanceof Error ? err.message : "Some existing railways did not load.";
+          railReason ??= err instanceof Error ? err.message : tNow("rail.railsFailed");
         }
       });
       if (added) setStreets((n) => n + 1);
       const notes = [
-        reason && `${reason} Level crossings are only found where streets have loaded.`,
-        railReason && `${railReason} New track only joins existing railways where they have loaded.`,
+        reason && `${reason} ${tNow("rail.crossingsWhereLoaded")}`,
+        railReason && `${railReason} ${tNow("rail.joinsWhereLoaded")}`,
       ].filter(Boolean);
-      setStreetNote(notes.length ? `${notes.join(" ")} Move the map to try again.` : null);
+      setStreetNote(notes.length ? `${notes.join(" ")} ${tNow("rail.moveMap")}` : null);
       if (again) {
         again = false;
         void load();
@@ -594,12 +595,11 @@ export function RailwayEditor({
       if (s.tool === "line") {
         if (!pickLine) return;
         const station = stationAt(map, ev.point, s.doc, s.view);
-        if (station === null) return say("Click a station to add it to the line.");
-        const name = s.doc.stations.find((x) => x.id === station)?.name ?? "This station";
+        if (station === null) return say(tNow("rail.pick.clickStation"));
+        const name = s.doc.stations.find((x) => x.id === station)?.name ?? tNow("rail.pick.thisStation");
         const last = pickLine.stations[pickLine.stations.length - 1];
-        if (last === station) return say(`${name} is the last stop already. Click the next station.`);
-        if (pickLine.stations.includes(station))
-          return say(`${name} is a stop of this line already. Remove it from the list to change the order.`);
+        if (last === station) return say(tNow("rail.pick.lastAlready", { name }));
+        if (pickLine.stations.includes(station)) return say(tNow("rail.pick.already", { name }));
         if (last !== undefined) {
           let reach: { ok: boolean; reason: string | null };
           try {
@@ -607,13 +607,13 @@ export function RailwayEditor({
           } catch (err) {
             return say(err instanceof Error ? err.message : String(err));
           }
-          if (!reach.ok) return say(reach.reason ?? `Trains cannot reach ${name} from the last stop.`);
+          if (!reach.ok) return say(reach.reason ?? tNow("rail.pick.unreachable", { name }));
         }
         setDoc(updateLine(s.doc, pickLine.id, (l) => ({ ...l, stations: [...l.stations, station] })));
         setNote(
           pickLine.stations.length === 0
-            ? `${name} is the first stop. Click the next station.`
-            : `${name} added. Click the next station, or press Enter to finish.`,
+            ? tNow("rail.pick.first", { name })
+            : tNow("rail.pick.added", { name }),
         );
         return;
       }
@@ -655,8 +655,8 @@ export function RailwayEditor({
         setDraft(next);
       } else if (s.tool === "turnout" || s.tool === "crossover") {
         const hit = e.nearestTrack(ll, pxToM(10));
-        if (!hit) return say("Click on a track to place a switch.");
-        if (!hit.straight) return say("Catalogue switches go on straight track. Click on a straight part.");
+        if (!hit) return say(tNow("rail.say.clickTrackSwitch"));
+        if (!hit.straight) return say(tNow("rail.say.straightOnly"));
         // The panel's element is from the catalogue of the mode for new elements; a track of
         // another railway system gets its own mode's default turnout.
         const trackMode = s.view?.tracks.find((t) => t.id === hit.track)?.mode ?? s.doc.mode;
@@ -667,7 +667,7 @@ export function RailwayEditor({
           params?.default_turnout ??
           "";
         if (s.tool === "crossover") {
-          if (hit.tracks !== 2) return say("Crossovers join two parallel tracks. Pick a double track.");
+          if (hit.tracks !== 2) return say(tNow("rail.say.doubleOnly"));
           const t = (catalogue?.turnouts ?? s.view?.turnouts)?.find((x) => x.id === element);
           const len = t ? 2 * (t.length_a_m ?? 0) + hit.spacing * (t.crossing_ratio_n ?? 0) : 0;
           const [d, id] = addSwitch(s.doc, {
@@ -694,7 +694,7 @@ export function RailwayEditor({
         startDraft({ type: "switch", switch: id, leg: 0 }, d, s.trackOpts.level, junction ? 2 : 1);
       } else if (s.tool === "signal") {
         const anchor = e.signalAnchor(ll, pxToM(15));
-        if (!anchor) return say("Click on a track, station track or switch leg to place a signal.");
+        if (!anchor) return say(tNow("rail.say.clickTrackSignal"));
         const [d, id] = addSignal(s.doc, anchor, 1, "main");
         setDoc(d);
         setSel({ id });
@@ -1020,7 +1020,7 @@ export function RailwayEditor({
     setCursor(null);
     setPicking(id);
     setSel(null);
-    setNote("Click the first station of the new line.");
+    setNote(tNow("rail.pick.start"));
     setTool("line");
   };
   /** Purpose: stop picking; a line left without stops is removed again. */
@@ -1138,7 +1138,7 @@ export function RailwayEditor({
       if (!doc) return;
       setDoc(resetSignals(doc));
       setSel(null);
-      setNote("Signals reset to the ones generated from the design.");
+      setNote(tNow("rail.signalsReset"));
     },
     fit: () => {
       const b = view?.bbox;
@@ -1181,7 +1181,7 @@ export function RailwayEditor({
             setIndicator={setIndicator}
             flows={flows}
             setFlows={setTrainFlows}
-            flowsLabel="Trains per hour on each track (sample service until rail lines are drawn)"
+            flowsLabel={t("rail.noiseFlows")}
             view={noise.view}
             error={noise.error}
           />
@@ -1207,7 +1207,7 @@ export function RailwayEditor({
             style={{ background: flash ? COLORS.error : "#0f172ad9" }}
             role={flash ? "alert" : undefined}
           >
-            {flash ?? "Starting the railway engine…"}
+            {flash ?? t("rail.starting")}
           </p>
         )}
         {note && (
@@ -1216,7 +1216,7 @@ export function RailwayEditor({
           </p>
         )}
         <p className="rounded-full bg-white/95 px-3 py-1 text-slate-700 shadow" role="note">
-          {HINTS[tool]}
+          {t(HINTS[tool])}
         </p>
       </div>
       {panel ? sidePanel && createPortal(sidePanel, panel) : sidePanel}
@@ -1262,7 +1262,12 @@ function draftLevel(t: Track) {
 function handleElement(kind: string, selected: boolean): HTMLElement {
   const el = document.createElement("div");
   el.setAttribute("role", "button");
-  el.setAttribute("aria-label", kind === "rotate" ? "Rotate station" : `Track ${kind.replace("_", " ")}`);
+  el.setAttribute(
+    "aria-label",
+    kind === "rotate"
+      ? tNow("rail.handle.rotate")
+      : tNow("rail.handle.track", { kind: kind.replace("_", " ") }),
+  );
   const lead = kind === "lead_start" || kind === "lead_end";
   Object.assign(el.style, {
     width: kind === "rotate" ? "16px" : "13px",
@@ -1276,10 +1281,10 @@ function handleElement(kind: string, selected: boolean): HTMLElement {
   });
   el.title =
     kind === "rotate"
-      ? "Drag to rotate the station"
+      ? tNow("rail.handle.rotateHint")
       : lead
-        ? "Drag to lengthen or shorten the straight out of the connection"
-        : "Drag to move; click to select";
+        ? tNow("rail.handle.leadHint")
+        : tNow("rail.handle.moveHint");
   return el;
 }
 

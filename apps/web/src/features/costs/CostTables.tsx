@@ -1,5 +1,6 @@
 import { type ReactNode, useEffect, useMemo, useState } from "react";
 import { loadRailEngine } from "../railways/engine";
+import { en } from "../../i18n/en";
 import { RAIL_MODES } from "../railways/modes";
 import { engineLines } from "../railways/serviceLines";
 import type { LineReport, Network, RailEngineLoader, RailView } from "../railways/types";
@@ -52,11 +53,10 @@ const BASE_YEAR = libraryValue("cost.price_base_year", "*")[1];
 
 /** Purpose: a mode's name for the tables. */
 export function modeLabel(mode: string): string {
-  return (
-    RAIL_MODES.find((m) => m.id === mode)?.label ??
-    STREET_MODES[mode as keyof typeof STREET_MODES]?.label ??
-    mode.replace(/_/g, " ")
-  );
+  // The cost tables are in English for now, so mode names come from the English messages.
+  const key =
+    RAIL_MODES.find((m) => m.id === mode)?.label ?? STREET_MODES[mode as keyof typeof STREET_MODES]?.label;
+  return key ? en[key] : mode.replace(/_/g, " ");
 }
 
 /** Purpose: money in a short form, such as "€1.2 bn" or "1.2 bn local currency". */

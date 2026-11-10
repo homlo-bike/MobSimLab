@@ -1,12 +1,14 @@
+import { type Translate, useI18n } from "../../i18n/i18n";
+import type { MessageKey } from "../../i18n/messages";
 import { formatLength } from "./geojson";
 import { MODE_ORDER, MODES, type Timing } from "./modes";
 import { lineChecks, lineStats, type Check, type Severity } from "./summary";
 import type { LineView, Mode, PointKind, RoutingRules, VehicleProfile } from "./types";
 
-const KINDS: { id: PointKind; label: string; title: string }[] = [
-  { id: "via", label: "Via", title: "Via point: shapes the path, no passengers" },
-  { id: "stop", label: "Stop", title: "Stop on the sidewalk, served from the door side" },
-  { id: "end_stop", label: "End stop", title: "End stop: layover; splits the line into directions" },
+const KINDS: { id: PointKind; label: MessageKey; title: MessageKey }[] = [
+  { id: "via", label: "street.kind.via", title: "street.kind.viaTitle" },
+  { id: "stop", label: "street.kind.stop", title: "street.kind.stopTitle" },
+  { id: "end_stop", label: "street.kind.end_stop", title: "street.kind.endTitle" },
 ];
 
 const CHIP: Record<Severity, string> = {
@@ -51,21 +53,24 @@ export interface CrossingSources {
   closures: string | null;
 }
 
-const RAIL_MODE: Record<string, string> = {
-  tram: "Tram",
-  light_rail: "Light rail",
-  metro: "Metro",
-  commuter_rail: "Commuter rail",
-  regional_rail: "Regional rail",
-  long_distance_rail: "Intercity",
-  high_speed_rail: "High-speed rail",
+const RAIL_MODE: Record<string, MessageKey> = {
+  tram: "mode.tram",
+  light_rail: "mode.light_rail",
+  metro: "mode.metro",
+  commuter_rail: "mode.commuter_rail",
+  regional_rail: "mode.regional_rail",
+  long_distance_rail: "rail.mode.long_distance_rail",
+  high_speed_rail: "mode.high_speed_rail",
 };
 
-const SOURCE: Record<"timetable" | "assumed" | "mixed", string> = {
-  timetable: "rail timetable",
-  assumed: "assumed service",
-  mixed: "timetable and assumed service",
+const SOURCE: Record<"timetable" | "assumed" | "mixed", MessageKey> = {
+  timetable: "street.source.timetable",
+  assumed: "street.source.assumed",
+  mixed: "street.source.mixed",
 };
+
+/** Purpose: the label of a severity chip in the current language. */
+const sevLabel = (t: Translate, s: Severity) => t(s === "warn" ? "severity.warning" : `severity.${s}`);
 
 /** Purpose: seconds with one decimal under a minute, else whole minutes and seconds. */
 function seconds(s: number): string {
@@ -135,27 +140,27 @@ function Section({ title, children }: { title: string; children: React.ReactNode
  * the running time (street setups from the GIS tab change it).
  */
 function Reliability({ view }: { view: LineView }) {
+  const { t } = useI18n();
   const mixed = view.mixed_traffic_m ?? 0;
   const lanes = view.bus_lane_m ?? 0;
   const delayMin = (view.traffic_delay_s ?? 0) / 60;
   const streets = (view.mixed_streets ?? []).filter((m) => m.name).slice(0, 4);
   return (
     <section
-      aria-label="Reliability"
+      aria-label={t("street.reliability")}
       className="flex flex-col gap-1 rounded-md bg-slate-50 p-2 text-xs text-slate-700"
     >
       <p>
-        <b className="font-semibold">Reliability:</b> {formatLength(mixed)} in main-road traffic ·{" "}
-        {formatLength(lanes)} in bus lanes
-        {delayMin >= 0.05
-          ? ` · about ${delayMin.toFixed(1)} min of the running time is delay in traffic at peak`
-          : ""}
-        .
+        <b className="font-semibold">{t("street.reliability")}:</b>{" "}
+        {t("street.reliabilityFacts", { mixed: formatLength(mixed), lanes: formatLength(lanes) })}
+        {delayMin >= 0.05 ? ` · ${t("street.reliabilityDelay", { min: delayMin.toFixed(1) })}` : ""}.
       </p>
       {mixed > 0 && (
         <p className="text-slate-600">
-          {streets.length ? `In traffic on ${streets.map((m) => m.name).join(", ")}. ` : ""}Give these streets
-          a bus lane, separated from the traffic, in the GIS tab.
+          {streets.length
+            ? `${t("street.inTrafficOn", { streets: streets.map((m) => m.name).join(", ") })} `
+            : ""}
+          {t("street.giveBusLane")}
         </p>
       )}
     </section>
@@ -194,7 +199,7 @@ function NumberField({
           step={step}
           value={value}
           onChange={(e) => onChange(Math.max(0, Number(e.target.value) || 0))}
-          className="w-20 rounded border border-slate-300 px-1 py-0.5 text-right"
+          className="w-20 rounded border border-slate-300 px-1 py-0.5 text-end"
         />
         <span className="w-6 text-slate-500">{unit}</span>
       </span>
@@ -207,6 +212,7 @@ function NumberField({
  * name and mode, stat tiles, route points in circuit order, checks, depot runs and rules.
  */
 export function LinePanel(props: Props) {
+  const { t } = useI18n();
   const { view, profile, rules, timing, selected, actions: a } = props;
   const mode = MODES[profile.mode];
   const st = lineStats(view, timing);
@@ -227,9 +233,9 @@ export function LinePanel(props: Props) {
 
   return (
     <div className="flex flex-col gap-3 p-4 text-sm">
-      <h2 className="text-xl font-semibold">{props.lineName || "Untitled line"}</h2>
+      <h2 className="text-xl font-semibold">{props.lineName || t("street.untitled")}</h2>
       <label className="flex flex-col gap-1">
-        <span className="text-xs text-slate-600">Line name</span>
+        <span className="text-xs text-slate-600">{t("rail.line.name")}</span>
         <input
           value={props.lineName}
           onChange={(e) => a.setName(e.target.value)}
@@ -237,10 +243,10 @@ export function LinePanel(props: Props) {
         />
       </label>
       <div className="flex flex-col gap-1">
-        <span className="text-xs text-slate-600">Mode</span>
+        <span className="text-xs text-slate-600">{t("street.mode")}</span>
         <div
           role="radiogroup"
-          aria-label="Mode"
+          aria-label={t("street.mode")}
           className="flex rounded border border-slate-300 bg-slate-50 p-0.5"
         >
           {MODE_ORDER.map((m) => (
@@ -253,14 +259,14 @@ export function LinePanel(props: Props) {
               className={`flex-1 rounded px-1 py-1 text-xs ${profile.mode === m ? "bg-white font-semibold shadow" : "text-slate-600"}`}
               style={profile.mode === m ? { color: MODES[m].color } : undefined}
             >
-              {MODES[m].label}
+              {t(MODES[m].label)}
             </button>
           ))}
         </div>
-        <p className="text-xs text-slate-600">{mode.profile}</p>
+        <p className="text-xs text-slate-600">{t(mode.profile)}</p>
         {profile.mode === "trolleybus" && (
           <NumberField
-            label="Battery range"
+            label={t("street.battery")}
             value={profile.battery_range_m}
             unit="m"
             step={100}
@@ -274,19 +280,27 @@ export function LinePanel(props: Props) {
               checked={profile.doors_both_sides}
               onChange={(e) => a.setProfile({ ...profile, doors_both_sides: e.target.checked })}
             />
-            Doors on both sides
+            {t("street.doorsBoth")}
           </label>
         )}
       </div>
 
       <div className="grid grid-cols-2 gap-2 border-t border-slate-200 pt-3">
-        <Stat value={formatLength(st.lengthM)} label="Circuit length" />
-        <Stat value={String(st.stops)} label={`Stops (${st.endStops} end)`} />
+        <Stat value={formatLength(st.lengthM)} label={t("street.stat.length")} />
+        <Stat value={String(st.stops)} label={t("street.stat.stops", { end: st.endStops })} />
         <Stat
           value={`${Math.round(st.cycleMin)} min`}
-          label={`Cycle: ${Math.round(st.runMin)} run${st.crossingMin > 0 ? ` (${st.crossingMin < 1 ? "<1" : Math.round(st.crossingMin)} at level crossings)` : ""}, ${Math.round(st.dwellMin)} dwell, ${Math.round(st.layoverMin)} layover`}
+          label={t("street.stat.cycle", {
+            run: Math.round(st.runMin),
+            crossings:
+              st.crossingMin > 0
+                ? ` ${t("street.stat.atCrossings", { min: st.crossingMin < 1 ? "<1" : Math.round(st.crossingMin) })}`
+                : "",
+            dwell: Math.round(st.dwellMin),
+            layover: Math.round(st.layoverMin),
+          })}
         />
-        <Stat value={String(st.vehicles)} label={`Vehicles for a ${timing.headwayMin} min headway`} />
+        <Stat value={String(st.vehicles)} label={t("street.stat.vehicles", { headway: timing.headwayMin })} />
       </div>
       {view.points.length >= 2 && <Reliability view={view} />}
       {props.noise}
@@ -300,10 +314,8 @@ export function LinePanel(props: Props) {
         </p>
       )}
 
-      <Section title="Route points · circuit order">
-        {view.points.length === 0 && (
-          <p className="text-slate-600">No points yet. Choose Add point and click on a street.</p>
-        )}
+      <Section title={t("street.points")}>
+        {view.points.length === 0 && <p className="text-slate-600">{t("street.noPoints")}</p>}
         <ol className="flex flex-col">
           {view.points.map((p) => {
             const leg = view.legs[p.seq];
@@ -330,11 +342,11 @@ export function LinePanel(props: Props) {
                     </span>
                   )}
                   <span className={`flex-1 truncate ${p.kind === "via" ? "text-slate-500" : ""}`}>
-                    {p.kind === "via" ? `Via point ${p.seq + 1}` : p.name}
+                    {p.kind === "via" ? t("street.viaN", { n: p.seq + 1 }) : p.name}
                   </span>
                   {p.kind === "end_stop" && (
                     <span className="rounded-full border border-slate-300 px-1.5 text-xs text-slate-500">
-                      end
+                      {t("street.end")}
                     </span>
                   )}
                   {leg && (
@@ -350,10 +362,10 @@ export function LinePanel(props: Props) {
                   )}
                 </div>
                 {sel && (
-                  <div className="mt-1 flex flex-col gap-1 pl-7">
+                  <div className="mt-1 flex flex-col gap-1 ps-7">
                     {p.kind !== "via" && (
                       <input
-                        aria-label={`Name of point ${p.seq + 1}`}
+                        aria-label={t("street.pointName", { n: p.seq + 1 })}
                         className="rounded border border-slate-300 px-1 py-0.5"
                         defaultValue={p.name}
                         key={p.name}
@@ -361,27 +373,31 @@ export function LinePanel(props: Props) {
                       />
                     )}
                     <div className="flex items-center gap-1">
-                      <span role="group" aria-label={`Kind of point ${p.seq + 1}`} className="flex">
+                      <span
+                        role="group"
+                        aria-label={t("street.pointKind", { n: p.seq + 1 })}
+                        className="flex"
+                      >
                         {KINDS.map((k) => (
                           <button
                             key={k.id}
                             type="button"
-                            title={k.title}
+                            title={t(k.title)}
                             aria-pressed={p.kind === k.id}
                             onClick={() => a.setKind(p.id, k.id)}
-                            className={`border border-slate-300 px-1.5 py-0.5 text-xs first:rounded-l last:rounded-r ${p.kind === k.id ? "bg-slate-800 text-white" : "bg-white"}`}
+                            className={`border border-slate-300 px-1.5 py-0.5 text-xs first:rounded-s last:rounded-e ${p.kind === k.id ? "bg-slate-800 text-white" : "bg-white"}`}
                           >
-                            {k.label}
+                            {t(k.label)}
                           </button>
                         ))}
                       </span>
                       <button
                         type="button"
-                        aria-label={`Delete point ${p.seq + 1}`}
-                        className="ml-auto text-xs text-slate-500 hover:text-red-700"
+                        aria-label={t("street.deletePoint", { n: p.seq + 1 })}
+                        className="ms-auto text-xs text-slate-500 hover:text-red-700"
                         onClick={() => a.deletePoint(p.id)}
                       >
-                        Delete
+                        {t("street.delete")}
                       </button>
                     </div>
                   </div>
@@ -390,16 +406,16 @@ export function LinePanel(props: Props) {
             );
           })}
         </ol>
-        {view.points.length > 1 && <p className="pl-7 text-xs text-slate-500">↺ back to point 1</p>}
+        {view.points.length > 1 && <p className="ps-7 text-xs text-slate-500">↺ {t("street.backTo1")}</p>}
         <div className="flex gap-2">
           <button
             type="button"
             className="rounded border border-slate-300 px-2 py-1 hover:bg-slate-100 disabled:opacity-40"
             disabled={view.points.length < 2}
             onClick={a.optimise}
-            title="Choose the travel direction at every via point for the shortest circuit"
+            title={t("street.optimiseTitle")}
           >
-            Optimise
+            {t("street.optimise")}
           </button>
           <button
             type="button"
@@ -407,13 +423,13 @@ export function LinePanel(props: Props) {
             disabled={view.points.length === 0}
             onClick={a.clear}
           >
-            Clear line
+            {t("street.clearLine")}
           </button>
         </div>
       </Section>
 
-      <Section title="Checks">
-        <ul className="flex flex-col gap-1.5" aria-label="Checks">
+      <Section title={t("rail.checks")}>
+        <ul className="flex flex-col gap-1.5" aria-label={t("rail.checks")}>
           {checks.map((c) => (
             <li
               key={c.text}
@@ -421,7 +437,7 @@ export function LinePanel(props: Props) {
               onClick={() => c.point !== undefined && a.select(c.point)}
             >
               <span className={`h-fit rounded px-1 text-[10px] font-bold uppercase ${CHIP[c.sev]}`}>
-                {c.sev}
+                {sevLabel(t, c.sev)}
               </span>
               <span className="text-xs">{c.text}</span>
             </li>
@@ -429,29 +445,34 @@ export function LinePanel(props: Props) {
         </ul>
       </Section>
 
-      <Section title={`Level crossings · ${view.level_crossings.length}`}>
-        <p className="text-xs text-slate-600">
-          Where the line crosses a railway on the level, the expected wait for the street to open is added to
-          the running time: the busiest hour of the rail timetable, or the service assumed for the railway
-          until there is one.
-        </p>
+      <Section title={`${t("rail.levelCrossings")} · ${view.level_crossings.length}`}>
+        <p className="text-xs text-slate-600">{t("street.crossingsNote")}</p>
         {view.level_crossings.length > 0 && (
-          <ul className="flex flex-col gap-1.5" aria-label="Level crossings on the line">
+          <ul className="flex flex-col gap-1.5" aria-label={t("street.crossingsOnLine")}>
             {view.level_crossings.map((x) => (
               <li key={x.ids.join()} className="flex flex-col">
                 <span>
-                  <b>{x.street || "Unnamed street"}</b> · {x.modes.map((m) => RAIL_MODE[m] ?? m).join(", ")} ·{" "}
-                  {x.protection === "barriers" ? "barriers" : "traffic signals"}
-                  {x.passes > 1 ? ` · passed ${x.passes}×` : ""}
+                  <b>{x.street || t("rail.unnamedStreet")}</b> ·{" "}
+                  {x.modes.map((m) => (RAIL_MODE[m] ? t(RAIL_MODE[m]!) : m)).join(", ")} ·{" "}
+                  {x.protection === "barriers" ? t("rail.barriers") : t("rail.trafficSignals")}
+                  {x.passes > 1 ? ` · ${t("street.passed", { n: x.passes })}` : ""}
                 </span>
                 <span className="text-xs text-slate-600">
-                  +{seconds(x.wait.wait_s)} per pass
-                  {x.wait.peak_hour_s !== null
-                    ? ` (${clock(x.wait.peak_hour_s)} busiest hour)`
-                    : " (peak)"}, {seconds(x.wait.off_peak_wait_s)} off-peak ·{" "}
-                  {Math.round(x.wait.closures_per_hour)} closures an hour of{" "}
-                  {Math.round(x.wait.mean_closure_s)} s, closed {Math.round(x.wait.closed_share * 100)} % ·{" "}
-                  {SOURCE[x.wait.source]}
+                  {t("street.wait", {
+                    wait: seconds(x.wait.wait_s),
+                    when:
+                      x.wait.peak_hour_s !== null
+                        ? t("street.busiestHour", { time: clock(x.wait.peak_hour_s) })
+                        : t("street.peak"),
+                    offpeak: seconds(x.wait.off_peak_wait_s),
+                  })}{" "}
+                  ·{" "}
+                  {t("street.closures", {
+                    n: Math.round(x.wait.closures_per_hour),
+                    s: Math.round(x.wait.mean_closure_s),
+                    share: Math.round(x.wait.closed_share * 100),
+                  })}{" "}
+                  · {t(SOURCE[x.wait.source])}
                 </span>
               </li>
             ))}
@@ -459,61 +480,61 @@ export function LinePanel(props: Props) {
         )}
         <p className="text-xs text-slate-600">
           {props.crossingSources?.topology
-            ? `Railway: ${props.crossingSources.topology}. Closures: ${props.crossingSources.closures ?? "assumed service"}.`
-            : "No railway yet. Draw one in the railway tool, or load its track topology."}
+            ? t("street.railwaySource", {
+                railway: props.crossingSources.topology,
+                closures: props.crossingSources.closures ?? t("street.source.assumed"),
+              })
+            : t("street.noRailway")}
           {props.crossingSources?.topology && view.level_crossings.length === 0 && view.legs.length > 0
-            ? " The line crosses none of its level crossings."
+            ? ` ${t("street.crossesNone")}`
             : ""}
         </p>
         <div className="flex flex-wrap gap-2">
-          <FileButton label="Load track topology" onLoad={a.loadTopology} />
+          <FileButton label={t("street.loadTopology")} onLoad={a.loadTopology} />
           {props.crossingSources?.topologyIsFile && (
             <button
               type="button"
               className="rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
               onClick={a.clearTopology}
             >
-              Use the railway tool drawing
+              {t("street.useDrawing")}
             </button>
           )}
-          <FileButton label="Load rail timetable closures" onLoad={a.loadClosures} />
+          <FileButton label={t("street.loadClosures")} onLoad={a.loadClosures} />
           {props.crossingSources?.closures && (
             <button
               type="button"
               className="rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
               onClick={a.clearClosures}
             >
-              Use the assumed service
+              {t("street.useAssumed")}
             </button>
           )}
         </div>
       </Section>
 
-      <Section title="Depot runs">
-        <p className="text-xs text-slate-600">
-          Vehicles start and end the day in the depot. Pull-out and pull-in are routed with the same rules and
-          run without passengers.
-        </p>
+      <Section title={t("street.depotRuns")}>
+        <p className="text-xs text-slate-600">{t("street.depotNote")}</p>
         {!view.depot ? (
           <button
             type="button"
             className="w-fit rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
             onClick={a.placeDepot}
           >
-            Place depot gate on the map
+            {t("street.placeDepot")}
           </button>
         ) : (
           <>
-            {terminals.length === 0 && (
-              <p className="text-xs text-slate-600">Add stops to route the depot runs.</p>
-            )}
+            {terminals.length === 0 && <p className="text-xs text-slate-600">{t("street.addStopsDepot")}</p>}
             {terminals.length > 0 &&
               (["pull_out", "pull_in"] as const).map((kind) => {
                 const chosen = kind === "pull_out" ? outStop : inStop;
-                const t = trip(kind, chosen);
+                const tr = trip(kind, chosen);
                 return (
                   <label key={kind} className="flex items-center gap-2">
-                    <span className="w-20">{kind === "pull_out" ? "Pull-out to" : "Pull-in from"}</span>
+                    <span className="w-20">
+                      {kind === "pull_out" ? t("street.pullOut") : t("street.pullIn")}
+                    </span>
                     <select
                       value={chosen}
                       onChange={(e) =>
@@ -530,8 +551,8 @@ export function LinePanel(props: Props) {
                         </option>
                       ))}
                     </select>
-                    <span className={`font-mono text-xs ${t?.status === "error" ? "text-red-700" : ""}`}>
-                      {t?.status === "ok" ? formatLength(t.length_m) : "no path"}
+                    <span className={`font-mono text-xs ${tr?.status === "error" ? "text-red-700" : ""}`}>
+                      {tr?.status === "ok" ? formatLength(tr.length_m) : t("street.noPath")}
                     </span>
                   </label>
                 );
@@ -542,7 +563,7 @@ export function LinePanel(props: Props) {
                 checked={props.showDepot}
                 onChange={(e) => a.setShowDepot(e.target.checked)}
               />
-              Show depot runs on the map
+              {t("street.showDepot")}
             </label>
             <div className="flex gap-2">
               <button
@@ -550,14 +571,14 @@ export function LinePanel(props: Props) {
                 className="rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
                 onClick={a.placeDepot}
               >
-                Move depot gate
+                {t("street.moveDepot")}
               </button>
               <button
                 type="button"
                 className="rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
                 onClick={a.removeDepot}
               >
-                Remove depot
+                {t("street.removeDepot")}
               </button>
             </div>
           </>
@@ -565,9 +586,9 @@ export function LinePanel(props: Props) {
         {stops.length === 0 && view.depot && null}
       </Section>
 
-      <Section title="Rules">
+      <Section title={t("street.rules")}>
         <label className="flex items-center justify-between gap-2">
-          <span>Traffic</span>
+          <span>{t("street.traffic")}</span>
           <select
             value={rules.traffic_side}
             onChange={(e) =>
@@ -575,39 +596,39 @@ export function LinePanel(props: Props) {
             }
             className="rounded border border-slate-300 p-0.5"
           >
-            <option value="right">Right-hand</option>
-            <option value="left">Left-hand</option>
+            <option value="right">{t("street.rightHand")}</option>
+            <option value="left">{t("street.leftHand")}</option>
           </select>
         </label>
         <NumberField
-          label="Stops within this distance form one station"
+          label={t("street.grouping")}
           value={rules.grouping_distance_m}
           unit="m"
           step={10}
           onChange={(v) => a.setRules({ ...rules, grouping_distance_m: v })}
         />
         <NumberField
-          label="Warn when turning round adds more than"
+          label={t("street.detourWarn")}
           value={rules.detour_warn_m}
           unit="m"
           step={50}
           onChange={(v) => a.setRules({ ...rules, detour_warn_m: v })}
         />
         <NumberField
-          label="Headway"
+          label={t("street.headway")}
           value={timing.headwayMin}
           unit="min"
           onChange={(v) => a.setTiming({ ...timing, headwayMin: v })}
         />
         <NumberField
-          label="Dwell per stop"
+          label={t("street.dwell")}
           value={timing.dwellS}
           unit="s"
           step={5}
           onChange={(v) => a.setTiming({ ...timing, dwellS: v })}
         />
         <NumberField
-          label="Layover per end stop"
+          label={t("street.layover")}
           value={timing.layoverMin}
           unit="min"
           onChange={(v) => a.setTiming({ ...timing, layoverMin: v })}
@@ -618,12 +639,10 @@ export function LinePanel(props: Props) {
             checked={props.showRoads}
             onChange={(e) => a.setShowRoads(e.target.checked)}
           />
-          Show roads this vehicle may use{profile.mode === "trolleybus" ? " (green: overhead wire)" : ""}
+          {t("street.showRoads")}
+          {profile.mode === "trolleybus" ? ` ${t("street.greenWire")}` : ""}
         </label>
-        <p className="text-xs text-slate-500">
-          Buses never U-turn or reverse; they go round the block. A stop is served only by vehicles with its
-          sidewalk on the door side. Street data © OpenStreetMap contributors.
-        </p>
+        <p className="text-xs text-slate-500">{t("street.rulesNote")}</p>
       </Section>
     </div>
   );

@@ -1,6 +1,8 @@
 import type { Map as MapLibreMap, MapMouseEvent } from "maplibre-gl";
 import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import type { MessageKey } from "../../i18n/en";
+import { type Translate, type TranslatePlural, tNow, useI18n } from "../../i18n/i18n";
 import { fetchStreetTile, loadStreetInfos } from "../street-lines/engine";
 import { MIN_LOAD_ZOOM, tilesFor } from "../street-lines/tiles";
 import type { TileFetcher } from "../street-lines/types";
@@ -44,6 +46,12 @@ interface Props {
   loadInfos?: StreetInfoLoader;
 }
 
+const WHO: Record<Verdict["who"], MessageKey> = {
+  Buses: "setup.who.buses",
+  Trams: "setup.who.trams",
+  Cyclists: "setup.who.cyclists",
+};
+
 const LEVEL_STYLE: Record<Verdict["level"], { mark: string; cls: string }> = {
   ok: { mark: "✓", cls: "bg-emerald-100 text-emerald-800" },
   info: { mark: "i", cls: "bg-blue-100 text-blue-800" },
@@ -70,7 +78,8 @@ export function StreetSetupEditor({
   const [parse, setParse] = useState<((xml: string) => StreetInfo[]) | null>(null);
   const [infos, setInfos] = useState<Map<number, StreetInfo>>(new Map());
   const [selected, setSelected] = useState<number | null>(null);
-  const [note, setNote] = useState<string | null>("Loading streets…");
+  const { t, tn } = useI18n();
+  const [note, setNote] = useState<string | null>(() => tNow("street.loading"));
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -78,7 +87,7 @@ export function StreetSetupEditor({
     loadInfos()
       .then((p) => alive && setParse(() => p))
       .catch((err) =>
-        setError(`The street engine did not start: ${err instanceof Error ? err.message : String(err)}`),
+        setError(tNow("setup.engineFailed", { error: err instanceof Error ? err.message : String(err) })),
       );
     return () => {
       alive = false;
@@ -99,7 +108,7 @@ export function StreetSetupEditor({
         return;
       }
       if (map.getZoom() < MIN_LOAD_ZOOM) {
-        setNote(`Zoom in to street level to load streets (from zoom ${MIN_LOAD_ZOOM}).`);
+        setNote(tNow("setup.zoomIn", { zoom: MIN_LOAD_ZOOM }));
         return;
       }
       const b = map.getBounds();
@@ -112,7 +121,7 @@ export function StreetSetupEditor({
       }
       busy = true;
       want.forEach((k) => tiles.current.add(k));
-      setNote("Loading streets…");
+      setNote(tNow("street.loading"));
       const got = await Promise.allSettled(
         want.map((k) => {
           const [x, y] = k.split("/").map(Number);
@@ -129,7 +138,7 @@ export function StreetSetupEditor({
           found.push(...parse(r.value));
         } catch (err) {
           tiles.current.delete(want[i]!);
-          reason ??= err instanceof Error ? err.message : "Some streets did not load.";
+          reason ??= err instanceof Error ? err.message : tNow("setup.someFailed");
         }
       });
       if (found.length)
@@ -142,7 +151,7 @@ export function StreetSetupEditor({
           }
           return next;
         });
-      setNote(reason ? `${reason} Move the map to try again.` : null);
+      setNote(reason ? tNow("setup.tryAgain", { reason }) : null);
       if (again) {
         again = false;
         void load();
@@ -218,12 +227,8 @@ export function StreetSetupEditor({
   const body = (
     <div className="flex flex-col gap-4 px-4 pt-1 pb-6 md:px-5">
       <div>
-        <h2 className="text-lg font-semibold">Streets</h2>
-        <p className={`mt-1 text-sm text-slate-600 ${info ? "hidden md:block" : ""}`}>
-          Tap a street to say how it is shared: traffic lanes, bus and bike lanes, separation and trams. Your
-          setup overrides OpenStreetMap in the street line tool and the railway editor, for running times and
-          the reliability and safety checks.
-        </p>
+        <h2 className="text-lg font-semibold">{t("setup.title")}</h2>
+        <p className={`mt-1 text-sm text-slate-600 ${info ? "hidden md:block" : ""}`}>{t("setup.intro")}</p>
       </div>
       {error && (
         <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800">
@@ -247,21 +252,21 @@ export function StreetSetupEditor({
           onClose={() => setSelected(null)}
         />
       ) : selected !== null ? (
-        <p className="text-sm text-slate-600">Move the map to this street to load it.</p>
+        <p className="text-sm text-slate-600">{t("setup.moveToLoad")}</p>
       ) : (
         <p className="rounded-xl border border-dashed border-slate-300 px-3.5 py-3 text-sm text-slate-600">
-          No street selected. Tap a street on the map.
+          {t("setup.noneSelected")}
         </p>
       )}
 
       <Legend />
 
-      <section aria-label="Streets set up">
+      <section aria-label={t("setup.listLabel")}>
         <h3 className="text-xs font-semibold tracking-wider text-slate-500 uppercase">
-          Streets set up · {setups.length}
+          {t("setup.listTitle", { count: setups.length })}
         </h3>
         {listed.length === 0 ? (
-          <p className="mt-1 text-sm text-slate-600">None yet: every street follows OpenStreetMap.</p>
+          <p className="mt-1 text-sm text-slate-600">{t("setup.listEmpty")}</p>
         ) : (
           <ul className="mt-1 flex flex-col">
             {listed.map((s) => (
@@ -270,16 +275,18 @@ export function StreetSetupEditor({
                   type="button"
                   onClick={() => show(s)}
                   aria-current={s.way === selected ? "true" : undefined}
-                  className="flex min-h-11 w-full items-center gap-2 rounded-lg px-2 text-left hover:bg-slate-100 aria-[current=true]:bg-amber-50"
+                  className="flex min-h-11 w-full items-center gap-2 rounded-lg px-2 text-start hover:bg-slate-100 aria-[current=true]:bg-amber-50"
                 >
-                  <span className="min-w-0 flex-1 truncate font-medium">{s.name || `Street ${s.way}`}</span>
-                  <span className="shrink-0 text-xs text-slate-500">{summary(s)}</span>
+                  <span className="min-w-0 flex-1 truncate font-medium">
+                    {s.name || t("setup.streetNum", { way: s.way })}
+                  </span>
+                  <span className="shrink-0 text-xs text-slate-500">{summary(s, t, tn)}</span>
                 </button>
               </li>
             ))}
           </ul>
         )}
-        <p className="mt-2 text-xs text-slate-500">Saved with the project, for everyone who opens it.</p>
+        <p className="mt-2 text-xs text-slate-500">{t("setup.saved")}</p>
       </section>
     </div>
   );
@@ -288,13 +295,13 @@ export function StreetSetupEditor({
 }
 
 /** Purpose: a short list of what a setup sets, for the list of streets. */
-function summary(s: StreetSetup): string {
+function summary(s: StreetSetup, t: Translate, tn: TranslatePlural): string {
   const parts: string[] = [];
-  if (s.traffic_lanes != null) parts.push(`${s.traffic_lanes} lanes`);
-  if (s.bus_lane != null) parts.push(s.bus_lane ? "bus lane" : "no bus lane");
-  if (s.bike_lane != null) parts.push(s.bike_lane ? "bike lane" : "no bike lane");
-  if (s.separated != null) parts.push(s.separated ? "separated" : "painted");
-  if (s.tram != null) parts.push(s.tram === "own_lane" ? "tram own lane" : "tram in traffic");
+  if (s.traffic_lanes != null) parts.push(tn("setup.sum.lanes", s.traffic_lanes));
+  if (s.bus_lane != null) parts.push(t(s.bus_lane ? "setup.sum.busLane" : "setup.sum.noBusLane"));
+  if (s.bike_lane != null) parts.push(t(s.bike_lane ? "setup.sum.bikeLane" : "setup.sum.noBikeLane"));
+  if (s.separated != null) parts.push(t(s.separated ? "setup.sum.separated" : "setup.sum.painted"));
+  if (s.tram != null) parts.push(t(s.tram === "own_lane" ? "setup.sum.tramOwn" : "setup.sum.tramMixed"));
   return parts.join(" · ");
 }
 
@@ -315,25 +322,34 @@ function StreetForm({
   onReset: () => void;
   onClose: () => void;
 }) {
+  const { t } = useI18n();
   const e = effective(info, setup);
   const osmLanes = osmTrafficLanes(info);
   const facts = [
-    CLASS_LABEL[info.class] ?? info.class,
-    info.oneway ? "one-way" : null,
-    info.maxspeed_kmh ? `${Math.round(info.maxspeed_kmh)} km/h` : null,
-    info.width_m ? `${info.width_m} m wide` : null,
-    info.tram ? "tram rails" : null,
+    CLASS_LABEL[info.class] ? t(CLASS_LABEL[info.class]!) : info.class,
+    info.oneway ? t("setup.oneway") : null,
+    info.maxspeed_kmh ? t("setup.speed", { speed: Math.round(info.maxspeed_kmh) }) : null,
+    info.width_m ? t("setup.width", { width: info.width_m }) : null,
+    info.tram ? t("setup.tramRails") : null,
   ].filter(Boolean);
   const v = verdicts(info, e, delays);
   return (
-    <section aria-label={`Street setup: ${info.name || "unnamed street"}`} className="flex flex-col gap-3.5">
+    <section
+      aria-label={t("setup.formLabel", { name: info.name || t("setup.unnamedLower") })}
+      className="flex flex-col gap-3.5"
+    >
       <div className="flex items-start gap-2">
         <div className="min-w-0 flex-1">
-          <h3 className="truncate text-base font-semibold">{info.name || "Unnamed street"}</h3>
+          <h3 className="truncate text-base font-semibold">{info.name || t("setup.unnamed")}</h3>
           <p className="text-xs text-slate-500">{facts.join(" · ")}</p>
         </div>
-        {setup && <span className="tag shrink-0 bg-slate-900 text-white">Set up</span>}
-        <button type="button" className="icon-btn -mt-2 -mr-2" aria-label="Close street" onClick={onClose}>
+        {setup && <span className="tag shrink-0 bg-slate-900 text-white">{t("setup.setUp")}</span>}
+        <button
+          type="button"
+          className="icon-btn -mt-2 -me-2"
+          aria-label={t("setup.close")}
+          onClick={onClose}
+        >
           ✕
         </button>
       </div>
@@ -341,24 +357,27 @@ function StreetForm({
       <CrossSection e={e} oneway={info.oneway} />
 
       <fieldset disabled={!editable} className="flex flex-col gap-3.5">
-        <Row label="Traffic lanes" hint={`Both directions, without bus or tram lanes. OSM: ${osmLanes}`}>
+        <Row label={t("setup.trafficLanes")} hint={t("setup.trafficHint", { lanes: osmLanes })}>
           <div className="flex items-center gap-1">
             <button
               type="button"
               className="icon-btn border border-slate-300"
-              aria-label="Fewer traffic lanes"
+              aria-label={t("setup.fewer")}
               disabled={e.trafficLanes <= 1}
               onClick={() => onPatch({ traffic_lanes: e.trafficLanes - 1 })}
             >
               −
             </button>
-            <output aria-label="Traffic lanes" className="w-8 text-center text-lg font-semibold tabular-nums">
+            <output
+              aria-label={t("setup.trafficLanes")}
+              className="w-8 text-center text-lg font-semibold tabular-nums"
+            >
               {e.trafficLanes}
             </output>
             <button
               type="button"
               className="icon-btn border border-slate-300"
-              aria-label="More traffic lanes"
+              aria-label={t("setup.more")}
               disabled={e.trafficLanes >= 8}
               onClick={() => onPatch({ traffic_lanes: e.trafficLanes + 1 })}
             >
@@ -367,68 +386,64 @@ function StreetForm({
           </div>
         </Row>
         <Choice
-          label="Bus lane"
+          label={t("setup.busLane")}
           value={setup?.bus_lane ?? null}
-          osm={info.bus_lane ? "yes" : "no"}
+          osm={t(info.bus_lane ? "setup.osmYes" : "setup.osmNo")}
           options={[
-            [true, "Yes"],
-            [false, "No"],
+            [true, t("setup.yes")],
+            [false, t("setup.no")],
           ]}
           onPick={(x) => onPatch({ bus_lane: x })}
         />
         <Choice
-          label="Bike lane"
+          label={t("setup.bikeLane")}
           value={setup?.bike_lane ?? null}
-          osm={info.bike_lane ? "yes" : "no"}
+          osm={t(info.bike_lane ? "setup.osmYes" : "setup.osmNo")}
           options={[
-            [true, "Yes"],
-            [false, "No"],
+            [true, t("setup.yes")],
+            [false, t("setup.no")],
           ]}
           onPick={(x) => onPatch({ bike_lane: x })}
         />
         <Choice
-          label="Separation from traffic"
-          hint="A kerb, barrier or separate track bed between the bus, tram and bike lanes and the traffic."
+          label={t("setup.separation")}
+          hint={t("setup.separationHint")}
           value={setup?.separated ?? null}
-          osm={info.class === "busway" ? "yes" : "none"}
+          osm={t(info.class === "busway" ? "setup.osmYes" : "setup.osmNone")}
           options={[
-            [true, "Kerb or barrier"],
-            [false, "Painted"],
+            [true, t("setup.kerb")],
+            [false, t("setup.painted")],
           ]}
           onPick={(x) => onPatch({ separated: x })}
         />
         <Choice<TramShare>
-          label="Tram"
-          hint={
-            info.tram
-              ? "Tram rails run in this street."
-              : "For a tram the railway editor runs along this street."
-          }
+          label={t("setup.tram")}
+          hint={t(info.tram ? "setup.tramHintRails" : "setup.tramHintEditor")}
           value={setup?.tram ?? null}
-          osm="by width"
+          osm={t("setup.osmByWidth")}
           options={[
-            ["own_lane", "Own lane"],
-            ["mixed", "Mixed traffic"],
+            ["own_lane", t("setup.ownLane")],
+            ["mixed", t("setup.mixed")],
           ]}
           onPick={(x) => onPatch({ tram: x })}
         />
       </fieldset>
 
-      <section aria-label="Reliability and safety">
+      <section aria-label={t("setup.reliability")}>
         <h4 className="text-xs font-semibold tracking-wider text-slate-500 uppercase">
-          Reliability and safety
+          {t("setup.reliability")}
         </h4>
         <ul className="mt-1.5 flex flex-col gap-1.5">
           {v.map((x, i) => (
             <li key={i} className="flex items-start gap-2 text-sm">
               <span
                 className={`mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-xs font-bold ${LEVEL_STYLE[x.level].cls}`}
-                aria-label={x.level}
+                aria-label={t(`severity.${x.level}`)}
               >
                 {LEVEL_STYLE[x.level].mark}
               </span>
               <span>
-                <b className="font-semibold">{x.who}:</b> {x.text}
+                <b className="font-semibold">{t("setup.who", { who: t(WHO[x.who]) })}</b> {x.text}
               </span>
             </li>
           ))}
@@ -437,7 +452,7 @@ function StreetForm({
 
       {editable && setup && (
         <button type="button" className="btn w-full" onClick={onReset}>
-          Reset to OpenStreetMap
+          {t("setup.reset")}
         </button>
       )}
     </section>
@@ -472,13 +487,14 @@ function Choice<T extends string | boolean>({
   options: [T, string][];
   onPick: (v: T | null) => void;
 }) {
+  const { t } = useI18n();
   return (
     <div role="group" aria-label={label}>
       <div className="font-medium">{label}</div>
       {hint && <div className="text-xs text-slate-500">{hint}</div>}
       <div className="seg mt-1.5 [&>button]:min-h-11 [&>button]:px-1.5 [&>button]:text-sm [&>button]:leading-tight [&>button]:whitespace-normal">
         <button type="button" aria-pressed={value === null} onClick={() => onPick(null)}>
-          OSM <span className="block text-xs font-normal opacity-75">{osm}</span>
+          {t("setup.osm")} <span className="block text-xs font-normal opacity-75">{osm}</span>
         </button>
         {options.map(([v, l]) => (
           <button key={String(v)} type="button" aria-pressed={value === v} onClick={() => onPick(v)}>
@@ -491,23 +507,24 @@ function Choice<T extends string | boolean>({
 }
 
 function Legend() {
-  const items: [keyof typeof PRIORITY_COLOR, string][] = [
-    ["separated", "Bus or tram lane, separated"],
-    ["painted", "Bus or tram lane, painted"],
-    ["mixed", "Main road, transit in traffic"],
-    ["other", "Other streets"],
+  const { t } = useI18n();
+  const items: [keyof typeof PRIORITY_COLOR, MessageKey][] = [
+    ["separated", "setup.legend.separated"],
+    ["painted", "setup.legend.painted"],
+    ["mixed", "setup.legend.mixed"],
+    ["other", "setup.legend.other"],
   ];
   return (
-    <ul aria-label="Map legend" className="grid grid-cols-2 gap-x-3 gap-y-1 text-xs text-slate-600">
+    <ul aria-label={t("setup.legend")} className="grid grid-cols-2 gap-x-3 gap-y-1 text-xs text-slate-600">
       {items.map(([k, l]) => (
         <li key={k} className="flex items-center gap-1.5">
           <span className="inline-block h-1.5 w-5 rounded-full" style={{ background: PRIORITY_COLOR[k] }} />
-          {l}
+          {t(l)}
         </li>
       ))}
       <li className="col-span-2 flex items-center gap-1.5">
-        <span className="inline-block h-2.5 w-5 rounded-full border-2 border-slate-900 bg-white" /> Set up by
-        you
+        <span className="inline-block h-2.5 w-5 rounded-full border-2 border-slate-900 bg-white" />{" "}
+        {t("setup.legend.yours")}
       </li>
     </ul>
   );

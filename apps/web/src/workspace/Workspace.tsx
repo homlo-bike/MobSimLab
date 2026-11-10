@@ -152,7 +152,7 @@ export function Workspace({
   const tabs = (
     <nav
       aria-label={t("tab.label")}
-      className="hidden h-full items-stretch gap-0.5 self-stretch md:ml-2 md:flex"
+      className="hidden h-full items-stretch gap-0.5 self-stretch md:ms-2 md:flex"
     >
       {TABS.map((x) => {
         const Icon = TAB_ICONS[x];
@@ -383,7 +383,7 @@ export function Workspace({
                     <button
                       key={kind}
                       type="button"
-                      className="flex flex-col gap-2.5 rounded-2xl border-[1.5px] border-slate-200 bg-white p-4 text-left hover:border-blue-700 hover:ring-[3px] hover:ring-blue-100 focus-visible:border-blue-700 focus-visible:ring-[3px] focus-visible:ring-blue-100 focus-visible:outline-none"
+                      className="flex flex-col gap-2.5 rounded-2xl border-[1.5px] border-slate-200 bg-white p-4 text-start hover:border-blue-700 hover:ring-[3px] hover:ring-blue-100 focus-visible:border-blue-700 focus-visible:ring-[3px] focus-visible:ring-blue-100 focus-visible:outline-none"
                       onClick={() => setBuild(kind)}
                     >
                       <span className={`flex h-12 w-12 items-center justify-center rounded-xl ${colour}`}>
@@ -467,7 +467,7 @@ export function Workspace({
         {hasPanel && (
           <aside
             aria-label={panelLabel}
-            className={`flex max-h-[55%] shrink-0 flex-col overflow-hidden rounded-t-2xl border-t border-slate-200 bg-white shadow-[0_-4px_20px_rgba(15,23,42,.12)] md:max-h-none md:rounded-none md:border-t-0 md:border-l md:shadow-none ${tab === "simulator" && sim === "journey" ? "md:w-[26rem]" : "md:w-96"}`}
+            className={`flex max-h-[55%] shrink-0 flex-col overflow-hidden rounded-t-2xl border-t border-slate-200 bg-white shadow-[0_-4px_20px_rgba(15,23,42,.12)] md:max-h-none md:rounded-none md:border-t-0 md:border-s md:shadow-none ${tab === "simulator" && sim === "journey" ? "md:w-[26rem]" : "md:w-96"}`}
           >
             <div
               className="mx-auto mt-2 h-1.5 w-10 shrink-0 rounded-full bg-slate-300 md:hidden"

@@ -1,3 +1,5 @@
+import { hasMessage, type Translate, type TranslatePlural, useI18n, withNodes } from "../../i18n/i18n";
+import type { MessageKey } from "../../i18n/messages";
 import { signalById, update, updateSignal } from "./doc";
 import { COLORS, fmtM, fmtTime, LEVEL_LABEL, LEVELS, POWER, RAIL_MODES } from "./modes";
 import type { Selection } from "./RailwayEditor";
@@ -105,11 +107,11 @@ const CHIP: Record<Severity, string> = {
   warning: COLORS.warn,
   error: COLORS.error,
 };
-const VERTEX: Record<string, string> = {
-  leadstart: "Out of start",
-  lead_start: "Out of start",
-  leadend: "Into end",
-  lead_end: "Into end",
+const VERTEX: Record<string, MessageKey> = {
+  leadstart: "rail.curve.outOfStart",
+  lead_start: "rail.curve.outOfStart",
+  leadend: "rail.curve.intoEnd",
+  lead_end: "rail.curve.intoEnd",
 };
 const field = "rounded border border-slate-300 bg-slate-50 px-2 py-1";
 const input = `${field} min-w-0 max-w-56`;
@@ -168,7 +170,7 @@ export function Num({
           const v = Number(e.target.value);
           if (Number.isFinite(v)) onChange(Math.max(min, v));
         }}
-        className="w-20 rounded border border-slate-300 px-1 py-0.5 text-right"
+        className="w-20 rounded border border-slate-300 px-1 py-0.5 text-end"
       />
       <span className="w-7 text-slate-500">{unit}</span>
     </span>
@@ -208,13 +210,16 @@ function Segmented<T extends string | number>({
   );
 }
 
-const LEVEL_OPTS = LEVELS.map((l) => ({ id: l.id, label: l.short }));
+/** Purpose: the level options with their short labels ("−1", "Street", "+1") in the current language. */
+const levelOpts = (t: Translate) =>
+  LEVELS.map((l) => ({ id: l.id, label: hasMessage(l.short) ? t(l.short) : l.short }));
 
 /**
  * Purpose: the railway side panel, laid out like the railways tab of the mockup: mode and its
  * design values, settings for new elements, the inspector for the selection, and live checks.
  */
 export function RailPanel(props: Props) {
+  const { t, tn } = useI18n();
   const { doc, view, tool, sel, draft, actions: a } = props;
   const p = view.params;
   const kind = sel
@@ -232,28 +237,35 @@ export function RailPanel(props: Props) {
 
   return (
     <div className="flex flex-col gap-3 p-4 text-sm">
-      <h2 className="text-xl font-semibold">Railway</h2>
+      <h2 className="text-xl font-semibold">{t("rail.title")}</h2>
       <label className="flex flex-col gap-1">
-        <span className="text-xs text-slate-600">Mode for new stations and tracks</span>
+        <span className="text-xs text-slate-600">{t("rail.modeForNew")}</span>
         <select value={doc.mode} onChange={(e) => a.setMode(e.target.value as RailMode)} className={field}>
           {RAIL_MODES.map((m) => (
             <option key={m.id} value={m.id}>
-              {m.label}
+              {t(m.label)}
             </option>
           ))}
         </select>
       </label>
       <p className="text-xs text-slate-600">
-        Gauge {p.gauge_mm} mm · track centres {p.track_centre_m} m · min radius {p.min_radius_m} m
-        (recommended {p.recommended_radius_m} m) · max gradient {p.max_gradient_permille} ‰ · design speed{" "}
-        {p.design_speed_kmh} km/h · platforms {p.platform_length_m} m at {p.platform_height_mm} mm ·{" "}
-        {String(p.electrification).replace("_", " ")}
+        {t("rail.params", {
+          gauge: p.gauge_mm,
+          centres: p.track_centre_m,
+          minRadius: p.min_radius_m,
+          radius: p.recommended_radius_m,
+          gradient: p.max_gradient_permille,
+          speed: p.design_speed_kmh,
+          platform: p.platform_length_m,
+          height: p.platform_height_mm,
+          power: electrification(t, String(p.electrification)),
+        })}
       </p>
       <div className="grid grid-cols-2 gap-2">
-        <Stat value={`${view.counts.route_km.toFixed(2)} km`} label="Route" />
-        <Stat value={`${view.counts.track_km.toFixed(2)} km`} label="Track" />
-        <Stat value={String(doc.stations.length)} label="Stations" />
-        <Stat value={String(doc.switches.length)} label="Switches" />
+        <Stat value={`${view.counts.route_km.toFixed(2)} km`} label={t("rail.stat.route")} />
+        <Stat value={`${view.counts.track_km.toFixed(2)} km`} label={t("rail.stat.track")} />
+        <Stat value={String(doc.stations.length)} label={t("rail.stat.stations")} />
+        <Stat value={String(doc.switches.length)} label={t("rail.stat.switches")} />
       </div>
       {props.noise}
       <div className="flex gap-2">
@@ -262,28 +274,28 @@ export function RailPanel(props: Props) {
           onClick={a.fit}
           className="flex-1 rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
         >
-          Zoom to all
+          {t("rail.zoomAll")}
         </button>
         <button
           type="button"
           onClick={a.clear}
           className="flex-1 rounded border border-slate-300 px-2 py-1 hover:bg-red-50"
         >
-          Clear
+          {t("rail.clear")}
         </button>
       </div>
 
       {tool === "station" && (
-        <Section title="New station">
+        <Section title={t("rail.newStation")}>
           <Segmented
-            label="Station level"
+            label={t("rail.stationLevel")}
             value={props.stationOpts.level}
-            options={LEVEL_OPTS}
+            options={levelOpts(t)}
             onChange={(level) => a.setStationOpts({ ...props.stationOpts, level })}
           />
-          <Row label="Side platforms">
+          <Row label={t("rail.sidePlatforms")}>
             <Num
-              label="Side platforms"
+              label={t("rail.sidePlatforms")}
               unit=""
               value={props.stationOpts.sides}
               onChange={(sides) =>
@@ -291,9 +303,9 @@ export function RailPanel(props: Props) {
               }
             />
           </Row>
-          <Row label="Island platforms">
+          <Row label={t("rail.islandPlatforms")}>
             <Num
-              label="Island platforms"
+              label={t("rail.islandPlatforms")}
               unit=""
               value={props.stationOpts.islands}
               onChange={(islands) =>
@@ -305,23 +317,23 @@ export function RailPanel(props: Props) {
       )}
 
       {(tool === "track" || draft) && (
-        <Section title={draft ? "Drawing track" : "New track"}>
+        <Section title={draft ? t("rail.drawingTrack") : t("rail.newTrack")}>
           <Segmented<1 | 2>
-            label="Tracks"
+            label={t("rail.tracks")}
             value={props.trackOpts.tracks}
             options={[
-              { id: 1, label: "Single" },
-              { id: 2, label: "Double" },
+              { id: 1, label: t("rail.single") },
+              { id: 2, label: t("rail.double") },
             ]}
             onChange={(tracks) => a.setTrackOpts({ ...props.trackOpts, tracks })}
           />
           <Segmented
-            label="Level"
+            label={t("rail.level")}
             value={props.trackOpts.level}
-            options={LEVEL_OPTS}
+            options={levelOpts(t)}
             onChange={(level) => a.setTrackOpts({ ...props.trackOpts, level })}
           />
-          <Row label="Electrification">
+          <Row label={t("rail.electrification")}>
             <select
               value={props.trackOpts.power}
               onChange={(e) => a.setTrackOpts({ ...props.trackOpts, power: e.target.value as Power })}
@@ -329,17 +341,17 @@ export function RailPanel(props: Props) {
             >
               {POWER.map((o) => (
                 <option key={o.id} value={o.id}>
-                  {o.label}
+                  {t(o.label)}
                 </option>
               ))}
             </select>
           </Row>
           <Segmented<TrackUse>
-            label="Use"
+            label={t("rail.use")}
             value={props.trackOpts.use}
             options={[
-              { id: "running", label: "Running" },
-              { id: "storage", label: "Storage" },
+              { id: "running", label: t("rail.running") },
+              { id: "storage", label: t("rail.storage") },
             ]}
             onChange={(use) => a.setTrackOpts({ ...props.trackOpts, use })}
           />
@@ -350,14 +362,14 @@ export function RailPanel(props: Props) {
                 onClick={a.finishDraft}
                 className="flex-1 rounded bg-emerald-800 px-2 py-1 text-white"
               >
-                Finish (Enter)
+                {t("rail.finish")}
               </button>
               <button
                 type="button"
                 onClick={a.cancelDraft}
                 className="flex-1 rounded border border-slate-300 px-2 py-1"
               >
-                Cancel (Esc)
+                {t("rail.cancel")}
               </button>
             </div>
           )}
@@ -365,8 +377,8 @@ export function RailPanel(props: Props) {
       )}
 
       {(tool === "turnout" || tool === "crossover") && (
-        <Section title={tool === "turnout" ? "New turnout" : "New crossover"}>
-          <Row label="Element">
+        <Section title={tool === "turnout" ? t("rail.newTurnout") : t("rail.newCrossover")}>
+          <Row label={t("rail.element")}>
             <select
               value={props.switchOpts.element ?? p.default_turnout}
               onChange={(e) => a.setSwitchOpts({ ...props.switchOpts, element: e.target.value })}
@@ -386,7 +398,7 @@ export function RailPanel(props: Props) {
                 checked={props.switchOpts.junction}
                 onChange={(e) => a.setSwitchOpts({ ...props.switchOpts, junction: e.target.checked })}
               />
-              Double junction on double track
+              {t("rail.doubleJunction")}
             </label>
           ) : (
             <label className="flex items-center gap-2">
@@ -395,7 +407,7 @@ export function RailPanel(props: Props) {
                 checked={props.switchOpts.scissors}
                 onChange={(e) => a.setSwitchOpts({ ...props.switchOpts, scissors: e.target.checked })}
               />
-              Scissors crossover
+              {t("rail.scissors")}
             </label>
           )}
         </Section>
@@ -412,47 +424,43 @@ export function RailPanel(props: Props) {
 
       <ServiceLinesPanel doc={doc} view={view} setDoc={a.setDoc} show={a.showIssue} {...props.service} />
 
-      <Section title={view.signals.length ? `Signals · ${view.signals.length}` : "Signals"}>
+      <Section
+        title={view.signals.length ? `${t("rail.signals")} · ${view.signals.length}` : t("rail.signals")}
+      >
         <p className="text-xs text-slate-600">
           {view.signals.length
-            ? `${signalSummary(view.signals)}. They are generated from the design and follow it as it changes. Click a signal to change or delete it, or use the Signal tool to add one; each change is checked.`
-            : "Signals are generated from the design: at switches, crossings, platform ends and on plain line at line speed."}
+            ? t("rail.signalsSome", { summary: signalSummary(tn, view.signals) })
+            : t("rail.signalsNone")}
         </p>
         {view.signals_edited && (
           <>
-            <p className="text-xs text-slate-600">{signalEdits(view)}</p>
+            <p className="text-xs text-slate-600">{signalEdits(t, tn, view)}</p>
             <button
               type="button"
               onClick={a.resetSignals}
               className="rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
             >
-              Reset to generated signals
+              {t("rail.resetSignals")}
             </button>
           </>
         )}
       </Section>
 
       {props.existingRailways && (
-        <Section
-          title={`Existing railways · ${view.existing_joins.length} join${view.existing_joins.length === 1 ? "" : "s"}`}
-        >
-          <p className="text-xs text-slate-600">
-            Railways already built, from OpenStreetMap, drawn in purple under the design (
-            {view.existing_count} loaded). Start or end a track on one and it joins it: the editor checks the
-            gauge, the railway system and the power supply there.
-          </p>
+        <Section title={`${t("rail.existing")} · ${tn("rail.joins", view.existing_joins.length)}`}>
+          <p className="text-xs text-slate-600">{t("rail.existingNote", { count: view.existing_count })}</p>
           <ul className="flex flex-col gap-1">
             {view.existing_joins.map((j) => (
               <li key={`${j.track}-${j.end}`}>
                 <button
                   type="button"
                   onClick={() => a.showIssue(j.lonlat, j.track)}
-                  className="flex w-full items-start gap-2 rounded px-1 py-0.5 text-left hover:bg-slate-100"
+                  className="flex w-full items-start gap-2 rounded px-1 py-0.5 text-start hover:bg-slate-100"
                 >
                   <span style={{ color: COLORS.existing }}>●</span>
                   <span>
-                    {j.name || "Unnamed railway"} · {j.railway.replace("_", " ")} ·{" "}
-                    {j.continues ? "continues the line" : "new turnout in the existing track"}
+                    {j.name || t("rail.unnamedRailway")} · {j.railway.replace("_", " ")} ·{" "}
+                    {j.continues ? t("rail.continues") : t("rail.newTurnoutExisting")}
                   </span>
                 </button>
               </li>
@@ -463,32 +471,29 @@ export function RailPanel(props: Props) {
 
       <DiamondSection doc={props.doc} view={view} actions={a} />
 
-      <Section title={`Street running · ${view.street_running.length}`}>
-        <p className="text-xs text-slate-600">
-          Where tram track in the street runs along a street. The tram keeps to the street&apos;s speed limit
-          there. It needs its own lane, or it runs in the traffic and is held up by it.
-        </p>
+      <Section title={`${t("rail.streetRunning")} · ${view.street_running.length}`}>
+        <p className="text-xs text-slate-600">{t("rail.streetRunningNote")}</p>
         <ul className="flex flex-col gap-1">
           {view.street_running.map((r) => (
             <li key={r.id}>
               <button
                 type="button"
                 onClick={() => a.showIssue(r.lonlat, r.track)}
-                className="flex w-full items-start gap-2 rounded px-1 py-0.5 text-left hover:bg-slate-100"
+                className="flex w-full items-start gap-2 rounded px-1 py-0.5 text-start hover:bg-slate-100"
               >
                 <span style={{ color: r.running === "mixed" ? COLORS.warn : COLORS.info }}>
                   {r.running === "mixed" ? "▲" : "●"}
                 </span>
                 <span>
-                  {r.street || "Unnamed street"} · {fmtM(r.length_m)} ·{" "}
+                  {r.street || t("rail.unnamedStreet")} · {fmtM(r.length_m)} ·{" "}
                   {r.running === "reserved"
-                    ? "own lane"
+                    ? t("rail.ownLane")
                     : r.running === "mixed"
-                      ? "in traffic"
-                      : "pedestrian zone"}{" "}
+                      ? t("rail.inTraffic")
+                      : t("rail.pedestrianZone")}{" "}
                   · {Math.round(r.speed_limit_kmh)} km/h
-                  {r.bus ? " · buses" : ""}
-                  {r.stops.length ? ` · ${r.stops.length} stop${r.stops.length > 1 ? "s" : ""}` : ""}
+                  {r.bus ? ` · ${t("rail.buses")}` : ""}
+                  {r.stops.length ? ` · ${tn("rail.stops", r.stops.length)}` : ""}
                 </span>
               </button>
             </li>
@@ -496,11 +501,8 @@ export function RailPanel(props: Props) {
         </ul>
       </Section>
 
-      <Section title={`Level crossings · ${view.level_crossings.length}`}>
-        <p className="text-xs text-slate-600">
-          Where street-level track crosses a street that buses, trolleybuses and other road vehicles use. The
-          railway closes the street before each train; road vehicles wait at the stop lines.
-        </p>
+      <Section title={`${t("rail.levelCrossings")} · ${view.level_crossings.length}`}>
+        <p className="text-xs text-slate-600">{t("rail.levelCrossingsNote")}</p>
         {props.streetNote && <p className="text-xs text-amber-800">{props.streetNote}</p>}
         <ul className="flex flex-col gap-1">
           {view.level_crossings.map((x) => (
@@ -508,18 +510,18 @@ export function RailPanel(props: Props) {
               <button
                 type="button"
                 onClick={() => a.showIssue(x.lonlat, x.track)}
-                className="flex w-full items-start gap-2 rounded px-1 py-0.5 text-left hover:bg-slate-100"
+                className="flex w-full items-start gap-2 rounded px-1 py-0.5 text-start hover:bg-slate-100"
               >
                 <span style={{ color: x.standard ? COLORS.info : COLORS.warn }}>
                   {x.standard ? "●" : "▲"}
                 </span>
                 <span>
-                  {x.street || (x.path ? `Unnamed ${x.class}` : "Unnamed street")} · {Math.round(x.angle_deg)}
-                  ° · {x.path ? `${PATH_USERS[x.path]} · ` : ""}
-                  {PROTECTION[x.protection]}
-                  {x.bus ? " · buses" : ""}
-                  {x.trolley_wire ? " · trolleybus wire" : ""}
-                  {x.standard ? "" : " · special safety measures"}
+                  {x.street || (x.path ? t("rail.unnamedPath") : t("rail.unnamedStreet"))} ·{" "}
+                  {Math.round(x.angle_deg)}° · {x.path ? `${t(PATH_USERS[x.path])} · ` : ""}
+                  {t(PROTECTION[x.protection])}
+                  {x.bus ? ` · ${t("rail.buses")}` : ""}
+                  {x.trolley_wire ? ` · ${t("rail.trolleyWire")}` : ""}
+                  {x.standard ? "" : ` · ${t("rail.specialSafety")}`}
                 </span>
               </button>
             </li>
@@ -527,7 +529,9 @@ export function RailPanel(props: Props) {
         </ul>
       </Section>
 
-      <Section title={`Checks · ${view.counts.errors} errors · ${view.counts.warnings} warnings`}>
+      <Section
+        title={`${t("rail.checks")} · ${tn("rail.errors", view.counts.errors)} · ${tn("rail.warnings", view.counts.warnings)}`}
+      >
         {props.error && <p className="text-red-700">{props.error}</p>}
         <ul className="flex flex-col gap-1">
           {issues.map((i, n) => (
@@ -536,12 +540,12 @@ export function RailPanel(props: Props) {
                 type="button"
                 disabled={!i.at && !i.ref_id}
                 onClick={() => a.showIssue(i.at, i.ref_id)}
-                className="flex w-full items-start gap-2 rounded px-1 py-0.5 text-left hover:bg-slate-100 disabled:hover:bg-transparent"
+                className="flex w-full items-start gap-2 rounded px-1 py-0.5 text-start hover:bg-slate-100 disabled:hover:bg-transparent"
               >
                 <span
                   className="mt-1.5 h-2 w-2 shrink-0 rounded-full"
                   style={{ background: CHIP[i.severity] }}
-                  aria-label={i.severity}
+                  aria-label={t(`severity.${i.severity}`)}
                 />
                 <span>{i.text}</span>
               </button>
@@ -554,69 +558,80 @@ export function RailPanel(props: Props) {
 }
 
 /** Who uses a path crossing the track, for the level crossing list. */
-const PATH_USERS = { foot: "walking", cycle: "cycling", foot_cycle: "walking and cycling" } as const;
+const PATH_USERS = {
+  foot: "rail.pathUsers.foot",
+  cycle: "rail.pathUsers.cycle",
+  foot_cycle: "rail.pathUsers.foot_cycle",
+} as const satisfies Record<string, MessageKey>;
 
 /** How a level crossing is protected, for the level crossing list. */
 const PROTECTION = {
-  barriers: "barriers",
-  traffic_signals: "traffic signals",
-  path_gates: "gates",
-  marked: "marked crossing",
-} as const;
+  barriers: "rail.barriers",
+  traffic_signals: "rail.trafficSignals",
+  path_gates: "rail.gates",
+  marked: "rail.markedCrossing",
+} as const satisfies Record<string, MessageKey>;
 
-const SIGNAL_KINDS: { id: SignalKind; label: string }[] = [
-  { id: "main", label: "Main signal" },
-  { id: "block", label: "Block signal" },
-  { id: "shunting", label: "Shunting signal" },
-  { id: "distant", label: "Distant signal" },
-  { id: "speed", label: "Speed signal" },
-  { id: "speed_warning", label: "Speed warning" },
+const SIGNAL_KINDS: { id: SignalKind; label: MessageKey }[] = [
+  { id: "main", label: "rail.signal.main" },
+  { id: "block", label: "rail.signal.block" },
+  { id: "shunting", label: "rail.signal.shunting" },
+  { id: "distant", label: "rail.signal.distant" },
+  { id: "speed", label: "rail.signal.speed" },
+  { id: "speed_warning", label: "rail.signal.speed_warning" },
 ];
 
+/** Purpose: the electrification of a mode in words ("overhead", "third rail"), else the engine's id. */
+function electrification(t: Translate, id: string): string {
+  const key = `rail.power.${id}`;
+  return hasMessage(key) ? t(key).toLowerCase() : id.replace("_", " ");
+}
+
 /** Purpose: counts of the plan's signals by kind, for the panel. */
-function signalSummary(list: RailView["signals"]): string {
+function signalSummary(tn: TranslatePlural, list: RailView["signals"]): string {
   const n = (k: SignalKind) => list.filter((s) => s.kind === k).length;
   const markers = list.filter((s) => !s.lineside).length;
   const parts = [
-    `${n("main")} main`,
-    `${n("block") - markers} block`,
-    markers ? `${markers} block markers (cab signalling)` : "",
-    n("shunting") ? `${n("shunting")} shunting` : "",
-    n("distant") ? `${n("distant")} distant` : "",
-    n("speed") ? `${n("speed")} speed` : "",
-    n("speed_warning") ? `${n("speed_warning")} speed warnings` : "",
+    tn("rail.count.main", n("main")),
+    tn("rail.count.block", n("block") - markers),
+    markers ? tn("rail.count.markers", markers) : "",
+    n("shunting") ? tn("rail.count.shunting", n("shunting")) : "",
+    n("distant") ? tn("rail.count.distant", n("distant")) : "",
+    n("speed") ? tn("rail.count.speed", n("speed")) : "",
+    n("speed_warning") ? tn("rail.count.speedWarning", n("speed_warning")) : "",
   ];
   return parts.filter(Boolean).join(" · ");
 }
 
 /** Purpose: the planner's changes to the generated signals in a sentence. */
-function signalEdits(view: RailView): string {
+function signalEdits(t: Translate, tn: TranslatePlural, view: RailView): string {
   const own = view.signals.filter((s) => !s.auto).length;
   const parts = [
-    own ? `${own} of yours` : "",
-    view.signals_removed ? `${view.signals_removed} generated removed or replaced` : "",
+    own ? tn("rail.edits.own", own) : "",
+    view.signals_removed ? tn("rail.edits.removed", view.signals_removed) : "",
   ].filter(Boolean);
-  return parts.length ? `Your changes: ${parts.join(", ")}.` : "";
+  return parts.length ? t("rail.edits", { list: parts.join(", ") }) : "";
 }
 
 /** Purpose: inspector of one signal: kind, name, direction it governs, delete. */
 function SignalInspector({ sg, doc, view, actions: a }: Props & { sg: Signal }) {
+  const { t } = useI18n();
   const set = (f: (x: Signal) => Signal) => a.setDoc(updateSignal(doc, sg.id, f, view.signals));
   const sv = view.signals.find((x) => x.id === sg.id);
   const notes = view.issues.filter((i) => i.ref_id === sg.id);
   const where =
     sg.at.type === "track"
-      ? `on track ${sg.at.track} at ${fmtM(sg.at.s)}`
+      ? t("rail.signalOnTrack", { track: sg.at.track, at: fmtM(sg.at.s) })
       : sg.at.type === "station"
-        ? `on a station track`
-        : `on a switch leg`;
+        ? t("rail.signalOnStation")
+        : t("rail.signalOnSwitch");
   return (
-    <Section title={sg.name || SIGNAL_KINDS.find((k) => k.id === sg.kind)!.label}>
+    <Section title={sg.name || t(SIGNAL_KINDS.find((k) => k.id === sg.kind)!.label)}>
       <p className="text-xs text-slate-600">
         {where}
-        {sv && !sv.lineside ? " · block marker (cab signalling)" : ""}
-        {!sv ? " · no longer on a track" : ""}
-        {sv?.auto ? " · generated from the design" : " · yours"}
+        {sv && !sv.lineside ? ` · ${t("rail.blockMarker")}` : ""}
+        {!sv ? ` · ${t("rail.notOnTrack")}` : ""}
+        {sv?.auto ? ` · ${t("rail.generated")}` : ` · ${t("rail.yours")}`}
       </p>
       {notes.map((i, k) => (
         <p
@@ -626,7 +641,7 @@ function SignalInspector({ sg, doc, view, actions: a }: Props & { sg: Signal }) 
           {i.text}
         </p>
       ))}
-      <Row label="Kind">
+      <Row label={t("rail.kind")}>
         <select
           value={sg.kind}
           onChange={(e) => set((x) => ({ ...x, kind: e.target.value as SignalKind }))}
@@ -634,15 +649,15 @@ function SignalInspector({ sg, doc, view, actions: a }: Props & { sg: Signal }) 
         >
           {SIGNAL_KINDS.map((k) => (
             <option key={k.id} value={k.id}>
-              {k.label}
+              {t(k.label)}
             </option>
           ))}
         </select>
       </Row>
       {(sg.kind === "speed" || sg.kind === "speed_warning") && (
-        <Row label="Speed (km/h)">
+        <Row label={t("rail.speedKmh")}>
           <input
-            aria-label="Signal speed"
+            aria-label={t("rail.signalSpeed")}
             type="number"
             min={5}
             step={5}
@@ -654,9 +669,9 @@ function SignalInspector({ sg, doc, view, actions: a }: Props & { sg: Signal }) 
           />
         </Row>
       )}
-      <Row label="Name">
+      <Row label={t("rail.name")}>
         <input
-          aria-label="Signal name"
+          aria-label={t("rail.signalName")}
           value={sg.name}
           onChange={(e) => set((x) => ({ ...x, name: e.target.value }))}
           className={input}
@@ -667,13 +682,14 @@ function SignalInspector({ sg, doc, view, actions: a }: Props & { sg: Signal }) 
         className="rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
         onClick={() => set((x) => ({ ...x, facing: x.facing === 1 ? -1 : 1 }))}
       >
-        Turn round (F)
+        {t("rail.turnRound")}
       </button>
-      <Remove what="signal" onClick={() => a.remove(sg.id)} />
+      <Remove what={t("rail.deleteSignal")} onClick={() => a.remove(sg.id)} />
     </Section>
   );
 }
 
+/** `what` is the whole button text, such as "Delete signal (Del)". */
 function Remove({ onClick, what }: { onClick: () => void; what: string }) {
   return (
     <button
@@ -681,7 +697,7 @@ function Remove({ onClick, what }: { onClick: () => void; what: string }) {
       onClick={onClick}
       className="rounded border border-red-300 px-2 py-1 text-red-700 hover:bg-red-50"
     >
-      Delete {what} (Del)
+      {what}
     </button>
   );
 }
@@ -691,17 +707,18 @@ function Remove({ onClick, what }: { onClick: () => void; what: string }) {
  * drawing; `null` follows the mode for new elements.
  */
 function ModeRow({ value, onChange }: { value: RailMode; onChange: (m: RailMode) => void }) {
+  const { t } = useI18n();
   return (
-    <Row label="Railway system">
+    <Row label={t("rail.system")}>
       <select
-        aria-label="Railway system"
+        aria-label={t("rail.system")}
         value={value}
         onChange={(e) => onChange(e.target.value as RailMode)}
         className={input}
       >
         {RAIL_MODES.map((m) => (
           <option key={m.id} value={m.id}>
-            {m.label}
+            {t(m.label)}
           </option>
         ))}
       </select>
@@ -710,12 +727,13 @@ function ModeRow({ value, onChange }: { value: RailMode; onChange: (m: RailMode)
 }
 
 function StationInspector({ st, doc, view, actions: a }: Props & { st: Station }) {
+  const { t, tn } = useI18n();
   const sv = view.stations.find((s) => s.id === st.id);
   const set = (f: (s: Station) => Station) => a.setDoc(update(doc, "stations", st.id, f));
   return (
-    <Section title="Station">
+    <Section title={t("rail.station")}>
       <input
-        aria-label="Station name"
+        aria-label={t("rail.stationName")}
         value={st.name}
         onChange={(e) => set((s) => ({ ...s, name: e.target.value }))}
         onBlur={(e) => a.renameStation(st.id, e.target.value)}
@@ -727,84 +745,80 @@ function StationInspector({ st, doc, view, actions: a }: Props & { st: Station }
       />
       {sv && (
         <p className="text-xs text-slate-600">
-          {sv.layout} · {sv.tracks} tracks · {sv.platform_edges} platform edges · box {fmtM(sv.box_length_m)}{" "}
-          × {fmtM(sv.box_width_m)}
+          {sv.layout} · {tn("rail.tracksCount", sv.tracks)} · {tn("rail.edges", sv.platform_edges)} ·{" "}
+          {t("rail.box", { length: fmtM(sv.box_length_m), width: fmtM(sv.box_width_m) })}
         </p>
       )}
       {sv?.height && (
         <p className="text-xs text-slate-600">
-          Level, rails at {sv.height.rail_m.toFixed(1)} m above sea level · ground along it{" "}
-          {sv.height.ground_min_m.toFixed(1)}–{sv.height.ground_max_m.toFixed(1)} m
+          {t("rail.levelHeight", {
+            rail: sv.height.rail_m.toFixed(1),
+            min: sv.height.ground_min_m.toFixed(1),
+            max: sv.height.ground_max_m.toFixed(1),
+          })}
         </p>
       )}
       <Segmented
-        label="Station level"
+        label={t("rail.stationLevel")}
         value={st.level}
-        options={LEVEL_OPTS}
+        options={levelOpts(t)}
         onChange={(level) => set((s) => ({ ...s, level }))}
       />
-      <Row label="Side platforms">
+      <Row label={t("rail.sidePlatforms")}>
         <Num
-          label="Side platforms"
+          label={t("rail.sidePlatforms")}
           unit=""
           value={st.side_platforms}
           onChange={(v) => set((s) => ({ ...s, side_platforms: Math.min(2, Math.round(v)) }))}
         />
       </Row>
-      <Row label="Island platforms">
+      <Row label={t("rail.islandPlatforms")}>
         <Num
-          label="Island platforms"
+          label={t("rail.islandPlatforms")}
           unit=""
           value={st.island_platforms}
           onChange={(v) => set((s) => ({ ...s, island_platforms: Math.min(4, Math.round(v)) }))}
         />
       </Row>
-      <Row label="Platform length">
+      <Row label={t("rail.platformLength")}>
         <Num
-          label="Platform length"
+          label={t("rail.platformLength")}
           unit="m"
           min={20}
           value={st.platform_length_m}
           onChange={(v) => set((s) => ({ ...s, platform_length_m: v }))}
         />
       </Row>
-      <Row label="Rotation">
+      <Row label={t("rail.rotation")}>
         <Num
-          label="Rotation"
+          label={t("rail.rotation")}
           unit="°"
           value={st.rotation_deg}
           onChange={(v) => set((s) => ({ ...s, rotation_deg: v % 360 }))}
         />
       </Row>
-      <Remove what="station" onClick={() => a.remove(st.id)} />
+      <Remove what={t("rail.deleteStation")} onClick={() => a.remove(st.id)} />
     </Section>
   );
 }
 
-/** Construction methods for a track's underground stretches (cost estimate). */
-const TUNNEL_OPTS: { id: TunnelMethod; label: string }[] = [
-  { id: "auto", label: "Auto (cut and cover; TBM on the deeper level)" },
-  { id: "cut_and_cover", label: "Cut and cover" },
-  { id: "tbm", label: "Bored tunnel (TBM)" },
-];
+/** Construction methods for a track's underground stretches (cost estimate), as message keys. */
+const TUNNEL_OPTS: TunnelMethod[] = ["auto", "cut_and_cover", "tbm"];
 
 /** Structures for a track's elevated stretches (cost estimate). */
-const STRUCTURE_OPTS: { id: Structure; label: string }[] = [
-  { id: "auto", label: "Auto (elevated for tram and metro, viaduct for main lines)" },
-  { id: "elevated", label: "Elevated guideway" },
-  { id: "viaduct", label: "Viaduct" },
-  { id: "bridge", label: "Bridge" },
-];
+const STRUCTURE_OPTS: Structure[] = ["auto", "elevated", "viaduct", "bridge"];
 
-function TrackInspector({ t, doc, view, sel, actions: a }: Props & { t: Track }) {
+function TrackInspector({ t: track, doc, view, sel, actions: a }: Props & { t: Track }) {
+  const { t: tr } = useI18n();
+  const t = track;
   const tv = view.tracks.find((x) => x.id === t.id);
   const set = (f: (x: Track) => Track) => a.setDoc(update(doc, "tracks", t.id, f));
   const pi = sel?.pi !== undefined ? t.points[sel.pi] : undefined;
   return (
-    <Section title={t.name || `Track ${t.id}`}>
+    <Section title={t.name || tr("rail.trackN", { id: t.id })}>
       <input
-        aria-label="Track name"
-        placeholder="Name"
+        aria-label={tr("rail.trackName")}
+        placeholder={tr("rail.name")}
         value={t.name}
         onChange={(e) => set((x) => ({ ...x, name: e.target.value }))}
         className={field}
@@ -812,27 +826,27 @@ function TrackInspector({ t, doc, view, sel, actions: a }: Props & { t: Track })
       <ModeRow value={tv?.mode ?? t.mode ?? doc.mode} onChange={(m) => set((x) => ({ ...x, mode: m }))} />
       {tv && (
         <p className="text-xs text-slate-600">
-          {fmtM(tv.length_m)} · {tv.tracks === 2 ? "double" : "single"} track
+          {fmtM(tv.length_m)} · {tv.tracks === 2 ? tr("rail.doubleTrack") : tr("rail.singleTrack")}
           {tv.speed &&
-            ` · up to ${Math.round(tv.speed.max_kmh)} km/h · ${fmtTime(tv.speed.time_s)} end to end`}
+            ` · ${tr("rail.trackSpeed", { speed: Math.round(tv.speed.max_kmh), time: fmtTime(tv.speed.time_s) })}`}
         </p>
       )}
       <Segmented<1 | 2>
-        label="Tracks"
+        label={tr("rail.tracks")}
         value={t.tracks}
         options={[
-          { id: 1, label: "Single" },
-          { id: 2, label: "Double" },
+          { id: 1, label: tr("rail.single") },
+          { id: 2, label: tr("rail.double") },
         ]}
         onChange={(tracks) => set((x) => ({ ...x, tracks }))}
       />
       <Segmented
-        label="Level"
+        label={tr("rail.level")}
         value={t.level}
-        options={LEVEL_OPTS}
+        options={levelOpts(tr)}
         onChange={(level) => set((x) => ({ ...x, level }))}
       />
-      <Row label="Electrification">
+      <Row label={tr("rail.electrification")}>
         <select
           value={t.power}
           onChange={(e) => set((x) => ({ ...x, power: e.target.value as Power }))}
@@ -840,78 +854,78 @@ function TrackInspector({ t, doc, view, sel, actions: a }: Props & { t: Track })
         >
           {POWER.map((o) => (
             <option key={o.id} value={o.id}>
-              {o.label}
+              {tr(o.label)}
             </option>
           ))}
         </select>
       </Row>
-      <Row label="Track bed">
+      <Row label={tr("rail.bed")}>
         <select
           value={t.bed}
           onChange={(e) => set((x) => ({ ...x, bed: e.target.value as Track["bed"] }))}
           className={input}
         >
-          <option value="auto">Mode default</option>
-          <option value="ballast">Ballast</option>
-          <option value="embedded">Embedded in street</option>
+          <option value="auto">{tr("rail.power.auto")}</option>
+          <option value="ballast">{tr("rail.bed.ballast")}</option>
+          <option value="embedded">{tr("rail.bed.embedded")}</option>
         </select>
       </Row>
       {tv?.levels.some((z) => z.level === "underground" || z.level === "underground2") && (
-        <Row label="Tunnel built by">
+        <Row label={tr("rail.tunnel")}>
           <select
-            aria-label="Tunnel built by"
+            aria-label={tr("rail.tunnel")}
             value={t.tunnel ?? "auto"}
             onChange={(e) => set((x) => ({ ...x, tunnel: e.target.value as TunnelMethod }))}
             className={input}
           >
             {TUNNEL_OPTS.map((o) => (
-              <option key={o.id} value={o.id}>
-                {o.label}
+              <option key={o} value={o}>
+                {tr(`rail.tunnel.${o}`)}
               </option>
             ))}
           </select>
         </Row>
       )}
       {tv?.levels.some((z) => z.level === "elevated" || z.level === "elevated2") && (
-        <Row label="Raised on">
+        <Row label={tr("rail.structure")}>
           <select
-            aria-label="Raised on"
+            aria-label={tr("rail.structure")}
             value={t.structure ?? "auto"}
             onChange={(e) => set((x) => ({ ...x, structure: e.target.value as Structure }))}
             className={input}
           >
             {STRUCTURE_OPTS.map((o) => (
-              <option key={o.id} value={o.id}>
-                {o.label}
+              <option key={o} value={o}>
+                {tr(`rail.structure.${o}`)}
               </option>
             ))}
           </select>
         </Row>
       )}
       <Segmented<TrackUse>
-        label="Use"
+        label={tr("rail.use")}
         value={t.use}
         options={[
-          { id: "running", label: "Running" },
-          { id: "storage", label: "Storage" },
+          { id: "running", label: tr("rail.running") },
+          { id: "storage", label: tr("rail.storage") },
         ]}
         onChange={(use) => set((x) => ({ ...x, use }))}
       />
       {pi && sel?.pi !== undefined && (
         <div className="flex flex-col gap-2 rounded border border-amber-300 bg-amber-50 p-2">
-          <b>Point {sel.pi + 1}</b>
+          <b>{tr("rail.pointN", { n: sel.pi + 1 })}</b>
           <Segmented
-            label="Point level"
+            label={tr("rail.pointLevel")}
             value={pi.level ?? t.level}
-            options={LEVEL_OPTS}
+            options={levelOpts(tr)}
             onChange={(level) =>
               set((x) => ({ ...x, points: x.points.map((q, i) => (i === sel.pi ? { ...q, level } : q)) }))
             }
           />
-          <Row label="Radius (empty = largest that fits)">
+          <Row label={tr("rail.radiusEmpty")}>
             <input
               type="number"
-              aria-label="Curve radius"
+              aria-label={tr("rail.curveRadius")}
               value={pi.radius_m ?? ""}
               min={0}
               onChange={(e) => {
@@ -921,7 +935,7 @@ function TrackInspector({ t, doc, view, sel, actions: a }: Props & { t: Track })
                   points: x.points.map((q, i) => (i === sel.pi ? { ...q, radius_m: v } : q)),
                 }));
               }}
-              className="w-20 rounded border border-slate-300 px-1 py-0.5 text-right"
+              className="w-20 rounded border border-slate-300 px-1 py-0.5 text-end"
             />
           </Row>
           <button
@@ -932,7 +946,7 @@ function TrackInspector({ t, doc, view, sel, actions: a }: Props & { t: Track })
               a.select({ id: t.id });
             }}
           >
-            Remove point
+            {tr("rail.removePoint")}
           </button>
         </div>
       )}
@@ -940,11 +954,11 @@ function TrackInspector({ t, doc, view, sel, actions: a }: Props & { t: Track })
         <table className="w-full text-xs">
           <thead className="text-slate-500">
             <tr>
-              <th className="text-left">Curve</th>
-              <th className="text-right">R</th>
-              <th className="text-right">Transition</th>
-              <th className="text-right">Cant</th>
-              <th className="text-right">Speed</th>
+              <th className="text-start">{tr("rail.curve")}</th>
+              <th className="text-end">R</th>
+              <th className="text-end">{tr("rail.transition")}</th>
+              <th className="text-end">{tr("rail.cant")}</th>
+              <th className="text-end">{tr("rail.speed")}</th>
             </tr>
           </thead>
           <tbody>
@@ -955,11 +969,17 @@ function TrackInspector({ t, doc, view, sel, actions: a }: Props & { t: Track })
                 onClick={() => c.pi !== null && a.select({ id: t.id, pi: c.pi })}
                 style={{ color: c.radius_m < view.params.min_radius_m ? COLORS.error : undefined }}
               >
-                <td>{c.pi !== null ? `Point ${c.pi + 1}` : (VERTEX[c.kind] ?? c.kind)}</td>
-                <td className="text-right font-mono">{Math.round(c.radius_m)} m</td>
-                <td className="text-right font-mono">{Math.round(c.transition_m)} m</td>
-                <td className="text-right font-mono">{Math.round(c.cant_mm)} mm</td>
-                <td className="text-right font-mono">{Math.round(c.speed_kmh)} km/h</td>
+                <td>
+                  {c.pi !== null
+                    ? tr("rail.pointN", { n: c.pi + 1 })
+                    : VERTEX[c.kind]
+                      ? tr(VERTEX[c.kind]!)
+                      : c.kind}
+                </td>
+                <td className="text-end font-mono">{Math.round(c.radius_m)} m</td>
+                <td className="text-end font-mono">{Math.round(c.transition_m)} m</td>
+                <td className="text-end font-mono">{Math.round(c.cant_mm)} mm</td>
+                <td className="text-end font-mono">{Math.round(c.speed_kmh)} km/h</td>
               </tr>
             ))}
           </tbody>
@@ -970,15 +990,18 @@ function TrackInspector({ t, doc, view, sel, actions: a }: Props & { t: Track })
         <ul className="text-xs text-slate-600">
           {tv.ramps.map((r, i) => (
             <li key={i}>
-              Ramp {LEVEL_LABEL[r.from]} → {LEVEL_LABEL[r.to]}: {r.dh_m.toFixed(1)} m over {fmtM(r.length_m)}
+              {tr("rail.ramp", {
+                from: tr(LEVEL_LABEL[r.from]),
+                to: tr(LEVEL_LABEL[r.to]),
+                dh: r.dh_m.toFixed(1),
+                length: fmtM(r.length_m),
+              })}
             </li>
           ))}
         </ul>
       )}
-      <p className="text-xs text-slate-500">
-        Click a point to edit it. Drag the square handles to change the straight out of a station or switch.
-      </p>
-      <Remove what="track" onClick={() => a.remove(t.id)} />
+      <p className="text-xs text-slate-500">{tr("rail.trackHint")}</p>
+      <Remove what={tr("rail.deleteTrack")} onClick={() => a.remove(t.id)} />
     </Section>
   );
 }
@@ -988,6 +1011,7 @@ function TrackInspector({ t, doc, view, sel, actions: a }: Props & { t: Track })
  * with its height range and steepest gradient.
  */
 function ElevationProfile({ e }: { e: TrackElevation }) {
+  const { t } = useI18n();
   const pts = e.profile;
   if (pts.length < 2) return null;
   const len = pts[pts.length - 1]![0] || 1;
@@ -1007,40 +1031,53 @@ function ElevationProfile({ e }: { e: TrackElevation }) {
   return (
     <div className="space-y-1">
       <p className="text-xs text-slate-600">
-        Rails {e.rail_min_m.toFixed(1)}–{e.rail_max_m.toFixed(1)} m above sea level · steepest{" "}
-        <span className={steep > e.max_permille + 0.5 ? "font-semibold text-red-700" : undefined}>
-          {steep.toFixed(1)} ‰
-        </span>{" "}
-        (max {e.max_permille} ‰)
+        {withNodes(
+          t("rail.profileRange", {
+            min: e.rail_min_m.toFixed(1),
+            max: e.rail_max_m.toFixed(1),
+            limit: e.max_permille,
+          }),
+          {
+            steep: (
+              <span className={steep > e.max_permille + 0.5 ? "font-semibold text-red-700" : undefined}>
+                {steep.toFixed(1)} ‰
+              </span>
+            ),
+          },
+        )}
       </p>
       <svg
         viewBox={`0 0 ${W} ${H}`}
         className="h-[70px] w-full rounded bg-slate-50"
         role="img"
-        aria-label="Vertical profile: ground and rail top along the track"
+        aria-label={t("rail.profileAria")}
       >
         <path d={line(1)} fill="none" stroke="#a16207" strokeWidth={1} strokeDasharray="3 2" />
         <path d={line(2)} fill="none" stroke="#1e293b" strokeWidth={1.5} />
       </svg>
-      <p className="text-[11px] text-slate-500">
-        Solid: rail top. Dashed: ground (Copernicus GLO-30, smoothed). Heights from a surface model, ±4 m.
-      </p>
+      <p className="text-[11px] text-slate-500">{t("rail.profileLegend")}</p>
     </div>
   );
 }
 
 function SwitchInspector({ sw, doc, view, actions: a }: Props & { sw: Switch }) {
+  const { t } = useI18n();
   const sv = view.switches.find((x) => x.id === sw.id);
   const set = (f: (x: Switch) => Switch) => a.setDoc(update(doc, "switches", sw.id, f));
   return (
-    <Section title={sv?.label ?? "Switch"}>
+    <Section title={sv?.label ?? t("rail.switch")}>
       {sv && (
         <p className="text-xs text-slate-600">
-          {fmtM(sv.length_m)} long · 1:{sv.crossing_ratio_n} · R {Math.round(sv.radius_m)} m ·{" "}
-          {Math.round(sv.diverging_speed_kmh)} km/h diverging · at {fmtM(sv.s0)}
+          {t("rail.switchFacts", {
+            length: fmtM(sv.length_m),
+            ratio: sv.crossing_ratio_n,
+            radius: Math.round(sv.radius_m),
+            speed: Math.round(sv.diverging_speed_kmh),
+            at: fmtM(sv.s0),
+          })}
         </p>
       )}
-      <Row label="Element">
+      <Row label={t("rail.element")}>
         <select
           value={sw.element}
           onChange={(e) => set((x) => ({ ...x, element: e.target.value }))}
@@ -1053,8 +1090,13 @@ function SwitchInspector({ sw, doc, view, actions: a }: Props & { sw: Switch }) 
           ))}
         </select>
       </Row>
-      <Row label="Position along track">
-        <Num label="Switch position" unit="m" value={sw.s} onChange={(s) => set((x) => ({ ...x, s }))} />
+      <Row label={t("rail.positionAlong")}>
+        <Num
+          label={t("rail.switchPosition")}
+          unit="m"
+          value={sw.s}
+          onChange={(s) => set((x) => ({ ...x, s }))}
+        />
       </Row>
       <div className="flex gap-2">
         <button
@@ -1062,14 +1104,14 @@ function SwitchInspector({ sw, doc, view, actions: a }: Props & { sw: Switch }) 
           className="flex-1 rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
           onClick={() => set((x) => ({ ...x, side: x.side === 1 ? -1 : 1 }))}
         >
-          Other side
+          {t("rail.otherSide")}
         </button>
         <button
           type="button"
           className="flex-1 rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
           onClick={() => set((x) => ({ ...x, direction: x.direction === 1 ? -1 : 1 }))}
         >
-          Reverse
+          {t("rail.reverse")}
         </button>
         {sw.kind !== "turnout" && (
           <button
@@ -1077,11 +1119,11 @@ function SwitchInspector({ sw, doc, view, actions: a }: Props & { sw: Switch }) 
             className="flex-1 rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
             onClick={() => set((x) => ({ ...x, flip: !x.flip }))}
           >
-            Mirror
+            {t("rail.mirror")}
           </button>
         )}
       </div>
-      <Remove what="switch" onClick={() => a.remove(sw.id)} />
+      <Remove what={t("rail.deleteSwitch")} onClick={() => a.remove(sw.id)} />
     </Section>
   );
 }
@@ -1099,6 +1141,7 @@ function DiamondSection({
   view: RailView;
   actions: RailPanelActions;
 }) {
+  const { t } = useI18n();
   const diamonds = view.crossings.filter((c) => c.kind === "diamond");
   if (!diamonds.length) return null;
   const slips = doc.slips ?? [];
@@ -1108,11 +1151,8 @@ function DiamondSection({
       slips: [...slips.filter((s) => s.crossing !== crossing), ...(slip ? [slip] : [])],
     });
   return (
-    <Section title={`Diamond crossings · ${diamonds.length}`}>
-      <p className="text-xs text-slate-600">
-        Where two tracks cross on one level. Between two single tracks crossing at the angle of a catalogue
-        slip, the diamond can be a slip: trains can then also turn from one track to the other.
-      </p>
+    <Section title={`${t("rail.diamonds")} · ${diamonds.length}`}>
+      <p className="text-xs text-slate-600">{t("rail.diamondsNote")}</p>
       <ul className="flex flex-col gap-2">
         {diamonds.map((c) => {
           const slip = slips.find((s) => s.crossing === c.id) ?? null;
@@ -1123,16 +1163,21 @@ function DiamondSection({
               <button
                 type="button"
                 onClick={() => a.showIssue(c.lonlat, c.tracks[0])}
-                className="rounded px-1 py-0.5 text-left hover:bg-slate-100"
+                className="rounded px-1 py-0.5 text-start hover:bg-slate-100"
               >
-                Tracks {c.tracks[0]} and {c.tracks[1]} · {c.angle_deg.toFixed(1)}° (1:{c.ratio_n.toFixed(1)})
-                {built ? (built.ok ? " · slip built" : " · slip not possible here, see checks") : ""}
+                {t("rail.diamondTracks", {
+                  a: c.tracks[0],
+                  b: c.tracks[1],
+                  angle: c.angle_deg.toFixed(1),
+                  ratio: c.ratio_n.toFixed(1),
+                })}
+                {built ? (built.ok ? ` · ${t("rail.slipBuilt")}` : ` · ${t("rail.slipNotPossible")}`) : ""}
               </button>
               {c.single_tracks && (
                 <label className="flex items-center gap-2 px-1 text-xs">
-                  <span>Trackwork</span>
+                  <span>{t("rail.trackwork")}</span>
                   <select
-                    aria-label={`Trackwork at crossing ${c.id}`}
+                    aria-label={t("rail.trackworkAt", { id: c.id })}
                     className="flex-1 rounded border border-slate-300 px-1 py-0.5"
                     value={slip?.element ?? ""}
                     onChange={(e) =>
@@ -1142,7 +1187,7 @@ function DiamondSection({
                       )
                     }
                   >
-                    <option value="">Diamond</option>
+                    <option value="">{t("rail.diamond")}</option>
                     {view.slip_elements.map((e) => (
                       <option key={e.id} value={e.id}>
                         {e.label}
@@ -1157,7 +1202,7 @@ function DiamondSection({
                   className="btn btn-ghost self-start px-1 text-xs"
                   onClick={() => setSlip(c.id, { ...slip, side: slip.side === 1 ? 0 : 1 })}
                 >
-                  Turn the slip to the other side
+                  {t("rail.turnSlip")}
                 </button>
               )}
             </li>

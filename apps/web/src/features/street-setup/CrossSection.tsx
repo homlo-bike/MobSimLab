@@ -1,3 +1,5 @@
+import { useI18n } from "../../i18n/i18n";
+import type { MessageKey } from "../../i18n/en";
 import type { Effective } from "./model";
 
 type Strip = { kind: "walk" | "bike" | "bus" | "car" | "tram" | "kerb"; dir?: "up" | "down" };
@@ -19,12 +21,12 @@ const STYLE: Record<Strip["kind"], string> = {
   tram: "bg-stone-200",
   kerb: "bg-slate-600",
 };
-const LABEL: Record<Exclude<Strip["kind"], "kerb">, string> = {
-  walk: "pavement",
-  bike: "bike lane",
-  bus: "bus lane",
-  car: "traffic lane",
-  tram: "tram lane",
+const LABEL: Record<Exclude<Strip["kind"], "kerb">, MessageKey> = {
+  walk: "setup.x.walk",
+  bike: "setup.x.bike",
+  bus: "setup.x.bus",
+  car: "setup.x.car",
+  tram: "setup.x.tram",
 };
 
 /** Purpose: the strips across the street, kerb to kerb, from the effective setup. */
@@ -64,29 +66,32 @@ function innermost(list: Strip[], oneway: boolean): Set<number> {
  * the traffic lanes mark a tram in mixed traffic.
  */
 export function CrossSection({ e, oneway }: { e: Effective; oneway: boolean }) {
+  const { t } = useI18n();
   const list = strips(e, oneway);
   const rails = e.tram === "mixed" ? innermost(list, oneway) : new Set<number>();
   const label = list
     .filter((s) => s.kind !== "kerb")
-    .map((s) => LABEL[s.kind as keyof typeof LABEL])
-    .join(", ");
+    .map((s) => t(LABEL[s.kind as keyof typeof LABEL]))
+    .join(t("setup.x.sep"));
   return (
     <div
       role="img"
-      aria-label={`Cross-section: ${label}`}
+      aria-label={t("setup.x.label", { list: label })}
+      // A drawing of the street, kerb to kerb: it keeps its sides in right-to-left languages.
+      dir="ltr"
       className="flex h-14 w-full shrink-0 overflow-hidden rounded-lg border border-slate-200"
     >
       {list.map((s, i) => (
         <div
           key={i}
           className={`relative flex min-w-0 items-center justify-center overflow-hidden text-[10px] font-bold ${STYLE[s.kind]} ${
-            s.kind === "car" && list[i + 1]?.kind === "car" ? "border-r-2 border-dashed border-r-white" : ""
+            s.kind === "car" && list[i + 1]?.kind === "car" ? "border-e-2 border-dashed border-e-white" : ""
           }`}
           style={{ flex: `${WIDTH[s.kind]} 1 0` }}
         >
           {(s.kind === "tram" || rails.has(i)) && <Rails double={s.kind === "tram"} />}
-          {s.kind === "bus" && "BUS"}
-          {s.kind === "bike" && <span className="[writing-mode:vertical-rl]">BIKE</span>}
+          {s.kind === "bus" && t("setup.x.busMark")}
+          {s.kind === "bike" && <span className="[writing-mode:vertical-rl]">{t("setup.x.bikeMark")}</span>}
           {s.kind === "car" && <span className="relative text-base">{s.dir === "up" ? "↑" : "↓"}</span>}
         </div>
       ))}

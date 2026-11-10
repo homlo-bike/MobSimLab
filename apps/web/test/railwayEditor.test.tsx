@@ -955,7 +955,7 @@ describe("service lines", () => {
     expect(e!.peak_headway_s).toBe(240);
     expect(e!.vehicle).not.toHaveProperty("mode");
     const broken = updateLine(d, "line1", (l) => ({ ...l, stations: [1] }));
-    expect(lineProblem(broken, broken.lines![0]!)).toBe("Needs at least two stops.");
+    expect(lineProblem(broken, broken.lines![0]!)).toBe("rail.line.needsStops");
     expect(engineLines(broken)).toEqual([]);
     expect(hhmm(24 * 60 + 30)).toBe("24:30");
     expect(parseHhmm("5:15")).toBe(315);
