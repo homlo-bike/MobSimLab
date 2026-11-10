@@ -1,3 +1,4 @@
+import { useI18n } from "../../i18n/i18n";
 import { useState } from "react";
 import { clock, duration, PARTS } from "./format";
 import type { ProfilePoint } from "./types";
@@ -26,6 +27,7 @@ function niceStep(max: number): number {
  * the split of that journey; clicking plans that time. Times without a journey break the line.
  */
 export function ProfileChart({ points, selected, peaks, onSelect }: Props) {
+  const { t } = useI18n();
   const [hover, setHover] = useState<number | null>(null);
   if (!points.length) return null;
   const maxS = Math.max(60, ...points.map((p) => p.journey?.total_s ?? 0));
@@ -70,7 +72,9 @@ export function ProfileChart({ points, selected, peaks, onSelect }: Props) {
         viewBox={`0 0 ${W} ${HGT}`}
         className="w-full"
         role="img"
-        aria-label="Journey time through the day: every asked time and the one-hour average; peak hours are shaded"
+        aria-label={t("jp.chart")}
+        // A time axis: it runs left to right in every language.
+        direction="ltr"
         onMouseLeave={() => setHover(null)}
       >
         {peaks.map(([a, b]) => {
@@ -80,7 +84,7 @@ export function ProfileChart({ points, selected, peaks, onSelect }: Props) {
             <g key={a}>
               <rect x={xa} y={PAD.t} width={xb - xa} height={ih} fill="#f1f5f9" />
               <text x={xa + 3} y={PAD.t + 9} fontSize={8} fill="#64748b">
-                peak
+                {t("jp.peak")}
               </text>
             </g>
           ) : null;
@@ -144,14 +148,14 @@ export function ProfileChart({ points, selected, peaks, onSelect }: Props) {
           style={{ left: `${Math.min(58, (hover! / points.length) * 100)}%` }}
         >
           <div className="font-semibold">
-            {clock(hp.time_s)} · {hp.journey ? duration(hp.journey.total_s) : "no journey"}
+            {clock(hp.time_s)} · {hp.journey ? duration(hp.journey.total_s) : t("jp.noJourney")}
           </div>
           {hp.journey &&
             PARTS.filter((p) => hp.journey!.breakdown[p.key] > 0).map((p) => (
               <div key={p.key} className="flex items-center gap-1.5">
                 <span className="inline-block h-2 w-2 rounded-sm" style={{ background: p.color }} />
-                <span className="text-slate-600">{p.short}</span>
-                <span className="ml-auto pl-2 tabular-nums">{duration(hp.journey!.breakdown[p.key])}</span>
+                <span className="text-slate-600">{t(p.short)}</span>
+                <span className="ms-auto ps-2 tabular-nums">{duration(hp.journey!.breakdown[p.key])}</span>
               </div>
             ))}
         </div>

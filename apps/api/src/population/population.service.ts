@@ -26,7 +26,8 @@ export type PopulationAnswer =
       grid: { x0: number; y0: number; dx: number; dy: number; nx: number; ny: number; people: number[] };
       source: typeof POPULATION_SOURCE & { year: number; countries: string[]; citation: string };
     }
-  | { status: "loading" | "unavailable"; reason: string };
+  | { status: "loading"; reason: string; countries: string[] }
+  | { status: "unavailable"; reason: string };
 
 /**
  * Purpose: Overpass QL for the countries (ISO 3166-1 alpha-3) at the corners and the centre of a box.
@@ -101,6 +102,7 @@ export class PopulationService {
       return {
         status: "loading",
         reason: `The WorldPop grid of ${entries.map((e) => e.iso3).join(", ")} is being downloaded to the server`,
+        countries: entries.map((e) => e.iso3),
       };
     }
     const grid = emptyGrid(bbox);

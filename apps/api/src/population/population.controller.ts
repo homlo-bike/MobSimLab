@@ -26,7 +26,7 @@ export class PopulationController {
    * Purpose: people per cell over a box.
    * Inputs: { bbox: [west, south, east, north] }, at most 0.3° on a side.
    * Output: { status: "ready", grid: { x0, y0, dx, dy, nx, ny, people }, source } or
-   * { status: "loading" | "unavailable", reason }; 502/504 when OpenStreetMap cannot place the area.
+   * { status: "loading", reason, countries } or { status: "unavailable", reason }; 502/504 when OpenStreetMap cannot place the area.
    */
   @Post("grid")
   @HttpCode(200)

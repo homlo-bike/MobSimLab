@@ -99,7 +99,7 @@ export function NewProjectDialog({
     }
   };
   const opt = (on: boolean) =>
-    `flex min-h-11 w-full items-start gap-3 rounded-xl border-[1.5px] px-3.5 py-3 text-left ${on ? "border-blue-700 bg-blue-50" : "border-slate-200 bg-white hover:bg-slate-50"}`;
+    `flex min-h-11 w-full items-start gap-3 rounded-xl border-[1.5px] px-3.5 py-3 text-start ${on ? "border-blue-700 bg-blue-50" : "border-slate-200 bg-white hover:bg-slate-50"}`;
   const dot = (on: boolean) =>
     `mt-0.5 h-5 w-5 shrink-0 rounded-full ${on ? "border-[6px] border-blue-700" : "border-2 border-slate-400"}`;
   return (

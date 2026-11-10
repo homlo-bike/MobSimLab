@@ -1,3 +1,4 @@
+import { tNow } from "../../i18n/i18n";
 import type { Map as MapLibreMap } from "maplibre-gl";
 import { useEffect, useRef, useState } from "react";
 import { loadWasmNoise } from "./engine";
@@ -40,7 +41,7 @@ export function useNoise(
         setReady(true);
       })
       .catch((err) =>
-        setError(`The noise engine did not start: ${err instanceof Error ? err.message : String(err)}`),
+        setError(tNow("noise.engineFailed", { error: err instanceof Error ? err.message : String(err) })),
       );
     return () => {
       alive = false;

@@ -1,4 +1,5 @@
 import { type FormEvent, useState } from "react";
+import { useI18n } from "../i18n/i18n";
 import { send } from "../session/api";
 
 /**
@@ -14,6 +15,7 @@ export function SetupPanel({
   csrfToken: string;
   onFinished: () => void;
 }) {
+  const { t } = useI18n();
   const [value, setValue] = useState(name);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -35,16 +37,14 @@ export function SetupPanel({
 
   return (
     <section
-      aria-label="Setup"
+      aria-label={t("setup.wizard")}
       className="absolute top-4 left-4 z-10 w-80 rounded border border-slate-300 bg-white p-4 text-sm shadow"
     >
-      <h2 className="mb-2 font-semibold">Set up this instance</h2>
-      <p className="mb-3 text-slate-600">
-        You are the Owner. Other people cannot sign in until you finish setup.
-      </p>
+      <h2 className="mb-2 font-semibold">{t("setup.wizardTitle")}</h2>
+      <p className="mb-3 text-slate-600">{t("setup.wizardIntro")}</p>
       <form onSubmit={(e) => void finish(e)} className="flex flex-col gap-2">
         <label className="flex flex-col gap-1">
-          Instance name
+          {t("setup.instanceName")}
           <input
             className="rounded border border-slate-300 px-2 py-1"
             value={value}
@@ -63,7 +63,7 @@ export function SetupPanel({
           disabled={busy}
           className="rounded bg-slate-800 px-2 py-1 text-white disabled:opacity-50"
         >
-          Finish setup
+          {t("setup.finish")}
         </button>
       </form>
     </section>

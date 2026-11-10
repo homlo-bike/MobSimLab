@@ -1,3 +1,4 @@
+import { editorsNl } from "./editors/nl";
 import type { Messages } from "./en";
 
 /** Nederlands. */
@@ -85,6 +86,9 @@ export const nl: Messages = {
   "language.fixed": "Vaste taal",
   "language.none": "Geen taal gevonden.",
   "language.savedNote": "Opgeslagen in je account, dus ze geldt ook op je andere apparaten.",
+  "language.disclaimer":
+    "Vertalingen anders dan Engels zijn machinaal gemaakt en kunnen fouten bevatten. De Engelse tekst is leidend.",
+  "language.improve": "Help de vertalingen te verbeteren op GitHub",
 
   "home.title": "Projecten",
   "home.search": "Projecten zoeken",
@@ -281,4 +285,6 @@ export const nl: Messages = {
   "prefs.vehicles": "Gebruikte voertuigen, uit de voertuigcatalogus",
   "prefs.switches": "Wissels, uit de wisselcatalogus",
   "prefs.calendar": "Kalender, vraag en kosten",
+
+  ...editorsNl,
 };

@@ -14,7 +14,8 @@ export interface PopulationSource {
 /** The API's answer: the grid, or why there is none. */
 export type PopulationAnswer =
   | { status: "ready"; grid: NoisePopulation; source: PopulationSource }
-  | { status: "loading" | "unavailable"; reason: string };
+  | { status: "loading"; reason: string; countries: string[] }
+  | { status: "unavailable"; reason: string };
 
 /** Fetches people per cell over `[west, south, east, north]`. */
 export type PopulationFetcher = (bbox: [number, number, number, number]) => Promise<PopulationAnswer>;

@@ -1,7 +1,15 @@
 import type { ReactNode } from "react";
 
 /** Stroke icons drawn inline so they take the text colour. Decorative: always `aria-hidden`. */
-function Icon({ children, size = 20 }: { children: ReactNode; size?: number }) {
+function Icon({
+  children,
+  size = 20,
+  className = "",
+}: {
+  children: ReactNode;
+  size?: number;
+  className?: string;
+}) {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -13,7 +21,7 @@ function Icon({ children, size = 20 }: { children: ReactNode; size?: number }) {
       strokeWidth={1.8}
       strokeLinecap="round"
       strokeLinejoin="round"
-      className="shrink-0"
+      className={`shrink-0 ${className}`}
     >
       {children}
     </svg>
@@ -62,8 +70,9 @@ export const EyeIcon = (p: P) => (
     <circle cx="12" cy="12" r="3" />
   </Icon>
 );
+/** Points to where reading starts, so it is mirrored in right-to-left languages. */
 export const BackIcon = (p: P) => (
-  <Icon {...p}>
+  <Icon {...p} className="rtl:-scale-x-100">
     <path d="m15 6-6 6 6 6" />
   </Icon>
 );

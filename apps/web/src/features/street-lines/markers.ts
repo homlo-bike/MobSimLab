@@ -1,3 +1,4 @@
+import { tNow } from "../../i18n/i18n";
 import type { PointView } from "./types";
 
 /**
@@ -12,7 +13,7 @@ export function pointElement(
 ): HTMLElement {
   const el = document.createElement("div");
   el.setAttribute("role", "button");
-  el.setAttribute("aria-label", `Point ${p.seq + 1}: ${p.name}`);
+  el.setAttribute("aria-label", tNow("street.marker", { n: p.seq + 1, name: p.name }));
   el.title = `${p.seq + 1}. ${p.name}${p.message ? ` — ${p.message}` : ""}`;
   const via = p.kind === "via";
   const error = p.status === "error";
@@ -56,7 +57,7 @@ export function pointElement(
 export function depotElement(): HTMLElement {
   const el = document.createElement("div");
   el.textContent = "D";
-  el.title = "Depot gate";
+  el.title = tNow("street.depotGate");
   Object.assign(el.style, {
     width: "24px",
     height: "24px",

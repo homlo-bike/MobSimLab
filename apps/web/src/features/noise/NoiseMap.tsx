@@ -1,5 +1,6 @@
 import type { Map as MapLibreMap } from "maplibre-gl";
 import { useEffect, useRef, useState } from "react";
+import { formatInt, tNow, useI18n } from "../../i18n/i18n";
 import { loadRailEngine } from "../railways/engine";
 import type { Network, RailEngineLoader } from "../railways/types";
 import type { StreetLinesDoc } from "../street-lines/saved";
@@ -113,6 +114,7 @@ export function NoiseMap({
   fetchTerrain = fetchHeights,
   fetchPeople = fetchPopulation,
 }: Props) {
+  const { t } = useI18n();
   const [indicator, setIndicator] = useState<Indicator>("lden");
   const [withBuildings, setWithBuildings] = useState(true);
   const [withTerrain, setWithTerrain] = useState(true);
@@ -155,10 +157,10 @@ export function NoiseMap({
 
   async function compute() {
     try {
-      setStatus({ kind: "busy", step: "Collecting the lines…" });
+      setStatus({ kind: "busy", step: tNow("noise.collecting") });
       const lines = await projectSources(streetLines, railway, loadRail);
       if (!lines.length) {
-        setStatus({ kind: "error", text: "Draw a street line or a railway first." });
+        setStatus({ kind: "error", text: tNow("noise.drawFirst") });
         return;
       }
       let buildings: NoiseBuilding[] | null = null;
@@ -167,11 +169,9 @@ export function NoiseMap({
       if (withBuildings) {
         const tiles = buildingTiles(points, MAP_REACH_M);
         if (tiles.length > MAX_BUILDING_TILES) {
-          notes.push(
-            `The lines cover too large an area to load its buildings (${tiles.length} tiles, at most ${MAX_BUILDING_TILES}), so this map has no screening by buildings.`,
-          );
+          notes.push(tNow("noise.tooLarge", { tiles: tiles.length, max: MAX_BUILDING_TILES }));
         } else {
-          setStatus({ kind: "busy", step: "Loading OpenStreetMap buildings…" });
+          setStatus({ kind: "busy", step: tNow("noise.loadingBuildings") });
           buildings = await loadBuildings(tiles, fetchTile);
         }
       }
@@ -179,14 +179,14 @@ export function NoiseMap({
       if (withTerrain) {
         const plan = terrainPlan(points, MAP_REACH_M);
         if (!plan) {
-          notes.push("The lines cover too large an area to load the terrain, so this map is on flat ground.");
+          notes.push(tNow("noise.terrainTooLarge"));
         } else {
-          setStatus({ kind: "busy", step: "Loading terrain heights…" });
+          setStatus({ kind: "busy", step: tNow("noise.loadingTerrain") });
           try {
             terrain = await loadTerrain(plan, fetchTerrain);
           } catch (err) {
             notes.push(
-              `Terrain heights are unavailable (${err instanceof Error ? err.message : String(err)}), so this map is on flat ground.`,
+              tNow("noise.terrainDown", { error: err instanceof Error ? err.message : String(err) }),
             );
           }
         }
@@ -195,24 +195,20 @@ export function NoiseMap({
       let people: PopulationSource | null = null;
       const bbox = buildings?.length ? buildingsBbox(buildings) : null;
       if (bbox) {
-        setStatus({ kind: "busy", step: "Loading WorldPop population…" });
-        const fallback =
-          "so residents are estimated from the building size (floor area ÷ floor area per person).";
+        setStatus({ kind: "busy", step: tNow("noise.loadingPopulation") });
         try {
           const a = await fetchPeople(bbox);
           if (a.status === "ready") [population, people] = [a.grid, a.source];
           else if (a.status === "loading")
-            notes.push(
-              `${a.reason}. Until it is there, residents are estimated from the building size (floor area ÷ floor area per person); compute again in a few minutes to use WorldPop.`,
-            );
-          else notes.push(`WorldPop population is not available here (${a.reason}), ${fallback}`);
+            notes.push(tNow("noise.popDownloading", { countries: a.countries.join(", ") }));
+          else notes.push(tNow("noise.popUnavailable", { reason: a.reason }));
         } catch (err) {
           notes.push(
-            `WorldPop population is unavailable (${err instanceof Error ? err.message : String(err)}), ${fallback}`,
+            tNow("noise.popUnavailable", { reason: err instanceof Error ? err.message : String(err) }),
           );
         }
       }
-      setStatus({ kind: "busy", step: "Computing the noise map…" });
+      setStatus({ kind: "busy", step: tNow("noise.computing") });
       // Let the panel show the step before the engine holds the page.
       await new Promise((r) => setTimeout(r, 30));
       engine.current ??= await loadNoise();
@@ -236,20 +232,17 @@ export function NoiseMap({
   const exposure = status.kind === "done" ? status.view.buildings : null;
   const rows = exposure ? exposure[indicator] : null;
   return (
-    <section className="flex flex-col gap-2" aria-label="Noise map">
-      <h3 className="text-xs font-semibold tracking-wider text-slate-500 uppercase">Noise map</h3>
-      <p className="text-xs text-slate-600">
-        L_den and L_night at 4 m from every street line and railway in the project, past the OpenStreetMap
-        buildings round them and over the terrain.
-      </p>
+    <section className="flex flex-col gap-2" aria-label={t("noise.map")}>
+      <h3 className="text-xs font-semibold tracking-wider text-slate-500 uppercase">{t("noise.map")}</h3>
+      <p className="text-xs text-slate-600">{t("noise.mapIntro")}</p>
       <div
         role="radiogroup"
-        aria-label="Noise map indicator"
+        aria-label={t("noise.mapIndicator")}
         className="flex rounded border border-slate-300 bg-slate-50 p-0.5"
       >
         {(
           [
-            ["lden", "L_den (day–evening–night)"],
+            ["lden", t("noise.lden")],
             ["lnight", "L_night"],
           ] as const
         ).map(([id, label]) => (
@@ -267,11 +260,11 @@ export function NoiseMap({
       </div>
       <label className="flex items-center gap-2 text-xs">
         <input type="checkbox" checked={withBuildings} onChange={(e) => setWithBuildings(e.target.checked)} />
-        Screen with OpenStreetMap buildings
+        {t("noise.screen")}
       </label>
       <label className="flex items-center gap-2 text-xs">
         <input type="checkbox" checked={withTerrain} onChange={(e) => setWithTerrain(e.target.checked)} />
-        Use terrain heights (Copernicus GLO-30)
+        {t("noise.terrain")}
       </label>
       <button
         type="button"
@@ -279,9 +272,9 @@ export function NoiseMap({
         disabled={!hasLines || status.kind === "busy"}
         onClick={() => void compute()}
       >
-        {status.kind === "done" ? "Compute again" : "Compute noise map"}
+        {t(status.kind === "done" ? "noise.computeAgain" : "noise.compute")}
       </button>
-      {!hasLines && <p className="text-xs text-slate-500">Draw a street line or a railway first.</p>}
+      {!hasLines && <p className="text-xs text-slate-500">{t("noise.drawFirst")}</p>}
       {status.kind === "busy" && (
         <p role="status" className="text-xs text-slate-600">
           {status.step}
@@ -294,7 +287,7 @@ export function NoiseMap({
         <>
           <div
             className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-slate-600"
-            aria-label="Noise map legend"
+            aria-label={t("noise.mapLegend")}
           >
             {LEGEND.filter((l) => l.from_db >= FROM_DB[indicator]).map((l) => (
               <span key={l.from_db} className="flex items-center gap-1">
@@ -308,25 +301,28 @@ export function NoiseMap({
             <span>dB</span>
           </div>
           {exposure && rows && (
-            <table className="w-full text-xs" aria-label="Buildings and residents by noise band">
-              <caption className="pb-1 text-left text-slate-600">
-                Buildings and their residents by the level beside the most exposed side ({exposure.reached} of{" "}
-                {exposure.count} buildings in reach)
+            <table className="w-full text-xs" aria-label={t("noise.table")}>
+              <caption className="pb-1 text-start text-slate-600">
+                {t("noise.tableCaption", { reached: exposure.reached, count: exposure.count })}
               </caption>
               <thead>
-                <tr className="text-left text-slate-500">
+                <tr className="text-start text-slate-500">
                   <th className="font-normal">{indicator === "lden" ? "L_den" : "L_night"}</th>
-                  <th className="text-right font-normal">Buildings</th>
-                  {exposure.people && <th className="text-right font-normal">Residents</th>}
+                  <th className="text-end font-normal">{t("noise.buildings")}</th>
+                  {exposure.people && <th className="text-end font-normal">{t("noise.residents")}</th>}
                 </tr>
               </thead>
               <tbody>
                 {rows.from_db.map((from, i) => (
                   <tr key={from} className="border-t border-slate-100">
-                    <td>{i === rows.from_db.length - 1 ? `${from} dB or more` : `${from}–${from + 4} dB`}</td>
-                    <td className="text-right tabular-nums">{rows.buildings[i]}</td>
+                    <td>
+                      {i === rows.from_db.length - 1
+                        ? t("noise.dbOrMore", { db: from })
+                        : t("noise.dbRange", { from, to: from + 4 })}
+                    </td>
+                    <td className="text-end tabular-nums">{rows.buildings[i]}</td>
                     {exposure.people && (
-                      <td className="text-right tabular-nums">{peopleText(rows.people[i] ?? 0)}</td>
+                      <td className="text-end tabular-nums">{peopleText(rows.people[i] ?? 0)}</td>
                     )}
                   </tr>
                 ))}
@@ -336,10 +332,20 @@ export function NoiseMap({
           {exposure?.people && (
             <p className="text-xs text-slate-600">
               {exposure.people.source === "grid" && status.people
-                ? `Residents from WorldPop ${status.people.year} (${status.people.countries.join(", ")}): the people of each 100 m cell shared among its homes by floor area. ${peopleText(exposure.people.reached)} of ${peopleText(exposure.people.total)} residents of the buildings loaded live in reach.${exposure.people.unplaced >= 1 ? ` ${peopleText(exposure.people.unplaced)} people of the grid live in cells without a mapped home and are not counted.` : ""}`
-                : `Residents estimated from the building size: floor area (footprint × storeys) ÷ the floor area per person in the noise plugin's assumptions. ${peopleText(exposure.people.reached)} of ${peopleText(exposure.people.total)} live in reach.`}{" "}
-              Buildings tagged in OpenStreetMap as another use (shops, offices, garages, churches…) and very
-              small ones have no residents.
+                ? t("noise.popGrid", {
+                    year: status.people.year,
+                    countries: status.people.countries.join(", "),
+                    reached: peopleText(exposure.people.reached),
+                    total: peopleText(exposure.people.total),
+                  })
+                : t("noise.popSize", {
+                    reached: peopleText(exposure.people.reached),
+                    total: peopleText(exposure.people.total),
+                  })}
+              {exposure.people.source === "grid" && exposure.people.unplaced >= 1
+                ? ` ${t("noise.popUnplaced", { n: peopleText(exposure.people.unplaced) })}`
+                : ""}{" "}
+              {t("noise.popNoHomes")}
             </p>
           )}
           {status.notes.map((n) => (
@@ -348,20 +354,8 @@ export function NoiseMap({
             </p>
           ))}
           <p className="text-xs text-slate-500">
-            Planned service only, without general traffic. Buildings screen over their roofs and round their
-            ends (ISO 9613-2) and their facades reflect once (first order).{" "}
-            {status.view.terrain
-              ? "Sources, buildings and receivers stand on the terrain, and hills screen; roofs and trees are filtered out of the surface model."
-              : "Flat ground."}{" "}
-            Buildings without a height in OpenStreetMap take 3 m per tagged storey, or 8 m (the noise plugin's
-            assumptions). A building's level leaves out the reflection from its own facade. Buildings ©
-            OpenStreetMap contributors.
-            {status.people
-              ? ` Population: WorldPop, University of Southampton (doi:10.5258/SOTON/WP00839), CC BY 4.0.`
-              : ""}
-            {status.view.terrain
-              ? " Terrain: Copernicus DEM GLO-30 © DLR e.V. and © Airbus Defence and Space GmbH, provided under COPERNICUS by the European Union and ESA."
-              : ""}
+            {t("noise.mapNote")} {t(status.view.terrain ? "noise.onTerrain" : "noise.flat")}
+            {status.people ? ` ${t("noise.popCredit")}` : ""}
           </p>
         </>
       )}
@@ -371,6 +365,5 @@ export function NoiseMap({
 
 /** Purpose: a people count as the Directive reports it, rounded to the nearest hundred above 100. */
 function peopleText(n: number): string {
-  const r = n >= 100 ? Math.round(n / 100) * 100 : Math.round(n);
-  return r.toLocaleString("en-GB");
+  return formatInt(n >= 100 ? Math.round(n / 100) * 100 : n);
 }
