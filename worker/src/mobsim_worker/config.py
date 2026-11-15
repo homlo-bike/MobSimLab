@@ -19,6 +19,8 @@ class WorkerConfig:
 
     Attributes:
         db_host: PostgreSQL host name.
+        db_port: PostgreSQL port.
+        db_name: Database name.
         db_password: Password of the restricted ``mobsimlab_worker`` role.
         data_dir: Writable directory for run inputs and outputs.
     """
@@ -26,6 +28,8 @@ class WorkerConfig:
     db_host: str
     db_password: str
     data_dir: Path
+    db_port: int = 5432
+    db_name: str = "mobsimlab"
 
 
 def secret_problem(name: str, value: str, min_len: int = 24) -> str | None:
@@ -74,8 +78,20 @@ def load_config(env: dict[str, str] | None = None) -> WorkerConfig:
     else:
         if p := secret_problem("db_worker_password", password):
             problems.append(p)
+    db_port = 5432
+    try:
+        db_port = int(env.get("MOBSIMLAB_DB_PORT", "5432"))
+        if not 1 <= db_port <= 65535:
+            raise ValueError
+    except ValueError:
+        problems.append("MOBSIMLAB_DB_PORT must be a port number")
+    db_name = env.get("MOBSIMLAB_DB_NAME", "mobsimlab") or "mobsimlab"
     if problems:
         raise ConfigError("MobSimLab worker refuses to start:\n - " + "\n - ".join(problems))
     return WorkerConfig(
-        db_host=db_host, db_password=password, data_dir=Path(env.get("MOBSIMLAB_DATA_DIR", "/data"))
+        db_host=db_host,
+        db_password=password,
+        data_dir=Path(env.get("MOBSIMLAB_DATA_DIR", "/data")),
+        db_port=db_port,
+        db_name=db_name,
     )

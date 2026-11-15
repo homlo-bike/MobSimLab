@@ -24,6 +24,11 @@
     "onlyBuiltDependencies": [
       "@swc/core",
       "esbuild"
-    ]
+    ],
+    "overrides": {
+      "cron-parser": "5.10.3",
+      "rrule-temporal": "2.2.8",
+      "serialize-error": "13.0.2"
+    }
   }
 }
