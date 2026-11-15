@@ -488,7 +488,12 @@ export function Workspace({
               <p className="mt-1 text-slate-600">{t("tables.intro")}</p>
               {project && drawings.loaded ? (
                 <>
-                  <NetworkTables railway={railway} streetLines={streetLines} preferences={preferences} />
+                  <NetworkTables
+                    railway={railway}
+                    streetLines={streetLines}
+                    preferences={preferences}
+                    onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
+                  />
                   <CostTables
                     railway={railway}
                     streetLines={streetLines}

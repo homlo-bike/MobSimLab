@@ -244,7 +244,7 @@
                 }
               },
               "where": {
-                "description": "Where the app offers it: live while drawing in a tool, on demand in the GIS tab (maps over the whole project), or in Analysis.",
+                "description": "Where the app offers it: live while drawing in a tool, on demand in the GIS tab (maps over the whole project), in the Tables tab (tables over the whole project), or in Analysis.",
                 "type": "array",
                 "uniqueItems": true,
                 "items": {
@@ -254,6 +254,7 @@
                     "cable-car-tool",
                     "ferry-tool",
                     "gis",
+                    "tables",
                     "analysis"
                   ]
                 }
