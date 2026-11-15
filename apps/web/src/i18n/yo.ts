@@ -1,4 +1,5 @@
 import { editorsYo } from "./editors/yo";
+import { cargoBikeYo } from "./cargo-bike/yo";
 import type { Messages } from "./en";
 
 /** Yorùbá. */
@@ -284,4 +285,5 @@ export const yo: Messages = {
   "prefs.calendar": "Kàlẹ́ńdà, ìbéèrè àti iye owó",
 
   ...editorsYo,
+  ...cargoBikeYo,
 };

@@ -1,4 +1,5 @@
 import { editorsUk } from "./editors/uk";
+import { cargoBikeUk } from "./cargo-bike/uk";
 import type { Messages } from "./en";
 
 /** Українська */
@@ -287,4 +288,5 @@ export const uk: Messages = {
   "prefs.calendar": "Календар, попит і витрати",
 
   ...editorsUk,
+  ...cargoBikeUk,
 };

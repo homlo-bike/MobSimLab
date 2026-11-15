@@ -1,0 +1,52 @@
+{
+  "_comment": "The range map (area reachable out and back on one charge) and the trip there and back, coloured by the kind of street. Class ids come from crates/cargo-bike (Class).",
+  "layers": [
+    {
+      "id": "cargo-bike-range-fill",
+      "type": "fill",
+      "source": "range",
+      "paint": { "fill-color": "#16a34a", "fill-opacity": 0.12 }
+    },
+    {
+      "id": "cargo-bike-range-line",
+      "type": "line",
+      "source": "range",
+      "paint": { "line-color": "#15803d", "line-width": 2, "line-dasharray": [2, 1.5] }
+    },
+    {
+      "id": "cargo-bike-trip-casing",
+      "type": "line",
+      "source": "trip",
+      "layout": { "line-cap": "round", "line-join": "round" },
+      "paint": { "line-color": "#ffffff", "line-width": 8 }
+    },
+    {
+      "id": "cargo-bike-trip",
+      "type": "line",
+      "source": "trip",
+      "layout": { "line-cap": "round", "line-join": "round" },
+      "paint": {
+        "line-width": 5,
+        "line-color": [
+          "match",
+          ["get", "class"],
+          "separated",
+          "#15803d",
+          "lane",
+          "#65a30d",
+          "quiet",
+          "#2563eb",
+          "mixed",
+          "#dc2626",
+          "#64748b"
+        ]
+      }
+    }
+  ],
+  "legend": [
+    { "class": "separated", "color": "#15803d" },
+    { "class": "lane", "color": "#65a30d" },
+    { "class": "quiet", "color": "#2563eb" },
+    { "class": "mixed", "color": "#dc2626" }
+  ]
+}

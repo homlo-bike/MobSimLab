@@ -1,4 +1,5 @@
 import { editorsEn } from "./editors/en";
+import { cargoBikeEn } from "./cargo-bike/en";
 
 /** English: the source language. Every other language must have every key (the type checker enforces it). */
 export const en = {
@@ -280,6 +281,7 @@ export const en = {
   "prefs.calendar": "Calendar, demand and costs",
 
   ...editorsEn,
+  ...cargoBikeEn,
 } as const;
 
 export type MessageKey = keyof typeof en;

@@ -1,4 +1,5 @@
 import { editorsId } from "./editors/id";
+import { cargoBikeId } from "./cargo-bike/id";
 import type { Messages } from "./en";
 
 /** Bahasa Indonesia */
@@ -288,4 +289,5 @@ export const id: Messages = {
   "prefs.calendar": "Kalender, permintaan, dan biaya",
 
   ...editorsId,
+  ...cargoBikeId,
 };

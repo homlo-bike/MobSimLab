@@ -1,4 +1,5 @@
 import { editorsAm } from "./editors/am";
+import { cargoBikeAm } from "./cargo-bike/am";
 import type { Messages } from "./en";
 
 /** Amharic. */
@@ -276,4 +277,5 @@ export const am: Messages = {
   "prefs.calendar": "የቀን መቁጠሪያ፣ ፍላጎት እና ወጪዎች",
 
   ...editorsAm,
+  ...cargoBikeAm,
 };

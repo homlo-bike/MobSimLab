@@ -1,4 +1,5 @@
 import { editorsHi } from "./editors/hi";
+import { cargoBikeHi } from "./cargo-bike/hi";
 import type { Messages } from "./en";
 
 /** हिन्दी। */
@@ -284,4 +285,5 @@ export const hi: Messages = {
   "prefs.calendar": "कैलेंडर, माँग और लागत",
 
   ...editorsHi,
+  ...cargoBikeHi,
 };

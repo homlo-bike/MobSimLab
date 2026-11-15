@@ -1,0 +1,86 @@
+# Sources of the cargo bike plugin's parameters (same format as assumptions/sources.yaml).
+
+- id: homlo-kit-2026
+  title: MobSimLab product owner, DIY cargo bike kit (generic electric cargo tricycle) specification and price, project thread of 2026-11-10
+  publisher: MobSimLab project
+  url: https://github.com/homlo-bike/MobSimLab
+  licence: CC-BY-4.0
+  access: free
+  retrieved: 2026-11-15
+  checked_via: direct
+  note: "35 kg bike, 80 kg load, 90 kg rider, 900 Wh battery, 250 W Bafang mid-drive motor, default price €4,000."
+
+- id: eu-168-2013
+  title: Regulation (EU) No 168/2013 on the approval and market surveillance of two- or three-wheel vehicles and quadricycles, Article 2(2)(h) (pedal cycles with pedal assistance up to 0.25 kW, cut off at 25 km/h)
+  publisher: European Union
+  url: https://eur-lex.europa.eu/eli/reg/2013/168/oj
+  licence: © European Union; reuse authorised under Commission Decision 2011/833/EU
+  access: free
+  retrieved: 2026-11-15
+  checked_via: search-snippet
+
+- id: bafang-m420
+  title: Bafang M420 mid-drive motor (M400 range), product page — 250 W rated, 80 N·m, assistance to 25 km/h
+  publisher: Bafang Electric (Suzhou) Co., Ltd.
+  url: https://bafang-e.com/en/products/motors/m-series/m420
+  licence: © Bafang; numeric values only
+  access: free
+  retrieved: 2026-11-15
+  checked_via: search-snippet
+
+- id: hollandbikeshop-m420
+  title: Bafang M420 middle motor unit 43 V 250 W, retailer data sheet (efficiency about 80 %)
+  publisher: Holland Bike Shop
+  url: https://hollandbikeshop.com/en-gb/bicycle-parts-electric-bicycle/bafang-e-bike-parts/bafang-motor-parts/bafang-motor/bafang-m420-middle-motor-unit-43v-250w-black-silver-606707/
+  licence: © Holland Bike Shop; numeric values only
+  access: free
+  retrieved: 2026-11-15
+  checked_via: search-snippet
+  kind: secondary
+
+- id: tengattini-bigazzi-2018
+  title: Tengattini S., Bigazzi A. (2018), Physical characteristics and resistance parameters of typical urban cyclists, Journal of Sports Sciences 36(20), doi:10.1080/02640414.2018.1458587 (coast-down tests of 557 cyclists in Vancouver)
+  publisher: Taylor & Francis
+  url: https://doi.org/10.1080/02640414.2018.1458587
+  licence: © the authors; numeric values only
+  access: paywalled
+  retrieved: 2026-11-15
+  checked_via: search-snippet
+  note: "Mean rolling resistance coefficient 0.0077 (SD 0.0036) and effective frontal area 0.559 m² (SD 0.170) for utilitarian bicycles; cargo tricycles are heavier and wider."
+
+- id: eurostat-electricity-2024
+  title: Eurostat news, Household electricity prices in the EU stable in 2024 (second half of 2024, Germany €39.43 per 100 kWh, EU €28.72)
+  publisher: Eurostat
+  url: https://ec.europa.eu/eurostat/de/web/products-eurostat-news/w/ddn-20250506-2
+  licence: © European Union; reuse authorised under Commission Decision 2011/833/EU
+  access: free
+  retrieved: 2026-11-15
+  checked_via: search-snippet
+
+- id: eu-oil-bulletin
+  title: European Commission, Weekly Oil Bulletin (Euro-super 95 consumer prices with taxes per Member State, 2024)
+  publisher: European Commission
+  url: https://energy.ec.europa.eu/data-and-analysis/weekly-oil-bulletin_en
+  licence: © European Union; reuse authorised under Commission Decision 2011/833/EU
+  access: free
+  retrieved: 2026-11-15
+  checked_via: search-snippet
+
+- id: adac-autokosten
+  title: ADAC Autokosten (monthly cost of ownership per model, split into fixed costs, workshop, running costs and depreciation)
+  publisher: ADAC e.V.
+  url: https://www.adac.de/rund-ums-fahrzeug/auto-kaufen-verkaufen/autokosten/
+  licence: © ADAC; numeric values only
+  access: free
+  retrieved: 2026-11-15
+  checked_via: search-snippet
+  note: "Small cars cost about €355–490 a month in total in recent ADAC tables, for example fixed costs €96, workshop €37, running costs €83 and depreciation €139 a month for one small car."
+
+- id: boeing-2019
+  title: Boeing G. (2019), Urban spatial order, street network orientation, configuration and entropy, Applied Network Science 4:67 (average circuity of city street networks about 1.03–1.3), doi:10.1007/s41109-019-0189-1
+  publisher: Springer Nature
+  url: https://doi.org/10.1007/s41109-019-0189-1
+  licence: CC BY 4.0
+  access: free
+  retrieved: 2026-11-15
+  checked_via: none
