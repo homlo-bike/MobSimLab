@@ -1,4 +1,4 @@
-import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import type { Map as MapLibreMap } from "maplibre-gl";
@@ -842,6 +842,19 @@ describe("Railway editor", () => {
     const tt = onPublish.mock.calls[0]![0] as { routes: { route_short_name: string }[]; trips: unknown[] };
     expect(tt.routes.map((r) => r.route_short_name)).toEqual(["M1"]);
     expect(tt.trips.length).toBeGreaterThan(50);
+
+    // The time-distance graph draws the line's trains between its two stations, morning peak first.
+    fireEvent.click(screen.getByRole("button", { name: "Time-distance graph" }));
+    const dialog = await screen.findByRole("dialog", { name: "Time-distance graph · M1" });
+    expect(within(dialog).getByRole("img", { name: "Time-distance graph of M1" })).toBeTruthy();
+    const peak = within(dialog).getAllByTestId(/^tdg-trip-/).length;
+    expect(peak).toBeGreaterThan(10);
+    expect(dialog.textContent).toMatch(/Riverside.*Northgate/);
+    expect(dialog.textContent).toMatch(/Conflicts · \d+/);
+    fireEvent.click(within(dialog).getByRole("tab", { name: "Whole day" }));
+    expect(within(dialog).getAllByTestId(/^tdg-trip-/).length).toBe(tt.trips.length);
+    fireEvent.click(within(dialog).getByRole("button", { name: "Close" }));
+    expect(screen.queryByRole("dialog")).toBeNull();
 
     // Editing the line marks the publication out of date.
     fireEvent.change(screen.getByLabelText("Line name"), { target: { value: "U5" } });
