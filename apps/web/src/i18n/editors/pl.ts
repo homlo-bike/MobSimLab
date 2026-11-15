@@ -656,12 +656,9 @@ export const editorsPl = {
   "schematic.area.dragHint": "Przeciągnij białe narożniki na mapie, aby zmienić kształt.",
   "schematic.facts": "Kursowanie",
   "schematic.fact.vehicles": "Pojazdy w ruchu",
-  "schematic.fact.peak": "Szczyt",
-  "schematic.fact.offPeak": "Poza szczytem",
   "schematic.fact.hours": "Pierwszy i ostatni odjazd",
   "schematic.fact.roundTrip": "Obieg",
   "schematic.fact.length": "Długość",
-  "schematic.every": "co {n} min",
   "schematic.minutes": "{n} min",
   "schematic.km": "{n} km",
   "schematic.metres": "{n} m",
@@ -690,6 +687,20 @@ export const editorsPl = {
   "schematic.popup.lines.few": "{count} linie zatrzymują się tutaj",
   "schematic.popup.lines.many": "{count} linii zatrzymuje się tutaj",
   "schematic.popup.lines.other": "{count} linii zatrzymuje się tutaj",
+  "schematic.fact.headwayPeak": "Częstotliwość, szczyt",
+  "schematic.fact.headwayOffPeak": "Częstotliwość, poza szczytem",
+  "schematic.fact.speed": "Średnia prędkość",
+  "schematic.fact.stepFree": "Stacje bez schodów",
+  "schematic.ofTotal": "{n} z {total}",
+  "schematic.kmh": "{n} km/h",
+  "schematic.stepFree.list": "Bez schodów: {stations}",
+  "schematic.stepFree.none":
+    "Żadna stacja tej linii nie jest jeszcze zapisana jako bez schodów (dostęp bez schodów, winda lub pochylnia w Tworzeniu).",
+  "schematic.transfer": "{line} · {n} min",
+  "schematic.transferNote":
+    "Minuty na kolorowych etykietach: szacowany czas dojścia przy przesiadce na tę linię.",
+  "schematic.distNote":
+    "Pod linią: odległość między przystankami, wzdłuż ulicy dla linii ulicznych, w innych przypadkach w linii prostej. Średnia prędkość: odległość przez czas jazdy.",
 
   "noise.title": "Hałas",
   "noise.showBand": "Pokaż pas hałasu",

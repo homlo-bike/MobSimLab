@@ -622,12 +622,9 @@ export const editorsDe = {
   "schematic.area.dragHint": "Ziehen Sie die weißen Ecken im Plan, um die Form zu ändern.",
   "schematic.facts": "Betrieb",
   "schematic.fact.vehicles": "Fahrzeuge im Einsatz",
-  "schematic.fact.peak": "Hauptverkehrszeit",
-  "schematic.fact.offPeak": "Nebenverkehrszeit",
   "schematic.fact.hours": "Erste und letzte Abfahrt",
   "schematic.fact.roundTrip": "Umlauf",
   "schematic.fact.length": "Länge",
-  "schematic.every": "alle {n} min",
   "schematic.minutes": "{n} min",
   "schematic.km": "{n} km",
   "schematic.metres": "{n} m",
@@ -655,6 +652,20 @@ export const editorsDe = {
   "schematic.rotate.none": "Keine",
   "schematic.popup.lines.one": "{count} Linie hält hier",
   "schematic.popup.lines.other": "{count} Linien halten hier",
+  "schematic.fact.headwayPeak": "Takt, Hauptverkehrszeit",
+  "schematic.fact.headwayOffPeak": "Takt, Nebenverkehrszeit",
+  "schematic.fact.speed": "Durchschnittsgeschwindigkeit",
+  "schematic.fact.stepFree": "Stufenfreie Stationen",
+  "schematic.ofTotal": "{n} von {total}",
+  "schematic.kmh": "{n} km/h",
+  "schematic.stepFree.list": "Stufenfrei: {stations}",
+  "schematic.stepFree.none":
+    "Noch ist keine Station dieser Linie als stufenfrei erfasst (stufenfreier Zugang, Aufzug oder Rampe unter Erstellen).",
+  "schematic.transfer": "{line} · {n} min",
+  "schematic.transferNote":
+    "Minuten auf den farbigen Schildern: geschätzter Fußweg zum Umsteigen in diese Linie.",
+  "schematic.distNote":
+    "Unter der Linie: Abstand der Halte, bei Straßenlinien entlang der Straße, sonst in Luftlinie. Durchschnittsgeschwindigkeit: Strecke durch Fahrzeit.",
 
   "noise.title": "Lärm",
   "noise.showBand": "Lärmband anzeigen",

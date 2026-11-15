@@ -339,8 +339,9 @@ describe("Schematic tab", () => {
       expect.arrayContaining([
         "Vehicles in service",
         "1",
-        "every 5 min",
-        "every 10 min",
+        "Headway, peak hours",
+        "5 min",
+        "10 min",
         "2 min",
         "2.5 min",
         "1.5 min",
@@ -350,7 +351,14 @@ describe("Schematic tab", () => {
     expect(
       await within(strip).findByText("Ground height at the stations, metres above sea level"),
     ).toBeTruthy();
-    expect(texts().filter((x) => /^\d+ m$/.test(x ?? ""))).toHaveLength(4);
+    expect(texts().filter((x) => /^-?\d+ m$/.test(x ?? "")).length).toBeGreaterThanOrEqual(4);
+    // Distances along the street (none given in the legs here, so in a straight line), average speed and the
+    // walk to change at an interchange.
+    expect(texts()).toEqual(expect.arrayContaining(["Average speed", "Step-free stations", "0 of 4"]));
+    expect(texts().some((x) => /^M1 · \d+ min$/.test(x ?? ""))).toBe(true);
+    expect(texts().join(" ")).toContain(
+      "No station on this line is recorded as step-free yet (step-free access, lift or ramp in Create).",
+    );
 
     // The metro runs underground between its stations.
     fireEvent.change(screen.getByRole("combobox"), { target: { value: "rail:M1" } });
@@ -418,9 +426,10 @@ describe("Schematic tab", () => {
     fireEvent.change(screen.getByRole("combobox"), { target: { value: "rail:M2" } });
     const strip = screen.getByRole("img", { name: "Strip map of line M2" });
     const names = [...strip.querySelectorAll("text")].map((t) => t.textContent);
-    expect(names).toEqual(
-      expect.arrayContaining(["Noorderhaven", "Centraal", "Zuidas", "M1", "R5", "Bus 22"]),
-    );
+    expect(names).toEqual(expect.arrayContaining(["Noorderhaven", "Centraal", "Zuidas"]));
+    // Each connection carries the walk to change: same station 1 min, the bus stop 10 m away also 1 min.
+    for (const other of ["M1", "R5", "Bus 22"])
+      expect(names.some((x) => new RegExp(`^${other} · \\d+ min$`).test(x ?? ""))).toBe(true);
   });
 
   it("says how to get lines when there are none", () => {
@@ -571,5 +580,26 @@ describe("station features", () => {
     expect(onChange).toHaveBeenLastCalledWith(["elevator", "escalator"]);
     fireEvent.click(within(group).getByRole("button", { name: "station.symbol.escalator" }));
     expect(onChange).toHaveBeenLastCalledWith([]);
+  });
+});
+
+describe("strip map extras", () => {
+  it("measures sections, walks to change and step-free stations", async () => {
+    const { isStepFree, transferS } = await import("../src/features/schematic/lines");
+    const net = schematicNetwork(RAILWAY, STREET_LINES);
+    const m1 = net.lines.find((l) => l.id === "rail:M1")!;
+    // Westpark to Museumplein: 1500 m east and 200 m north.
+    expect(m1.distM[0]).toBeCloseTo(Math.hypot(1500, 200), -1);
+    const pijp = net.stations.find((s) => s.name === "De Pijp")!;
+    const [rail, bus] = [
+      pijp.parts.find((p) => p.source === "rail")!,
+      pijp.parts.find((p) => p.source === "street")!,
+    ];
+    // About 14 m apart, one level up from the underground platform: the minimum change plus a minute.
+    expect(transferS(rail, bus)).toBe(120);
+    expect(isStepFree(pijp)).toBe(false);
+    expect(
+      isStepFree({ ...pijp, parts: pijp.parts.map((p) => ({ ...p, features: ["elevator" as const] })) }),
+    ).toBe(true);
   });
 });

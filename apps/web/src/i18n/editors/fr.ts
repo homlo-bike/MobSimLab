@@ -626,12 +626,9 @@ export const editorsFr = {
   "schematic.area.dragHint": "Faites glisser les sommets blancs sur le plan pour modifier la forme.",
   "schematic.facts": "Service",
   "schematic.fact.vehicles": "Véhicules en service",
-  "schematic.fact.peak": "Heures de pointe",
-  "schematic.fact.offPeak": "Heures creuses",
   "schematic.fact.hours": "Premier et dernier départ",
   "schematic.fact.roundTrip": "Rotation",
   "schematic.fact.length": "Longueur",
-  "schematic.every": "toutes les {n} min",
   "schematic.minutes": "{n} min",
   "schematic.km": "{n} km",
   "schematic.metres": "{n} m",
@@ -659,6 +656,20 @@ export const editorsFr = {
   "schematic.rotate.none": "Aucune",
   "schematic.popup.lines.one": "{count} ligne s’arrête ici",
   "schematic.popup.lines.other": "{count} lignes s’arrêtent ici",
+  "schematic.fact.headwayPeak": "Intervalle, heures de pointe",
+  "schematic.fact.headwayOffPeak": "Intervalle, heures creuses",
+  "schematic.fact.speed": "Vitesse moyenne",
+  "schematic.fact.stepFree": "Stations de plain-pied",
+  "schematic.ofTotal": "{n} sur {total}",
+  "schematic.kmh": "{n} km/h",
+  "schematic.stepFree.list": "De plain-pied : {stations}",
+  "schematic.stepFree.none":
+    "Aucune station de cette ligne n’est encore saisie de plain-pied (accès de plain-pied, ascenseur ou rampe dans Créer).",
+  "schematic.transfer": "{line} · {n} min",
+  "schematic.transferNote":
+    "Minutes sur les étiquettes colorées : marche estimée pour la correspondance vers cette ligne.",
+  "schematic.distNote":
+    "Sous la ligne : distance entre arrêts, par la rue pour les lignes routières, sinon à vol d’oiseau. Vitesse moyenne : distance divisée par le temps de parcours.",
 
   "noise.title": "Bruit",
   "noise.showBand": "Afficher la bande de bruit",

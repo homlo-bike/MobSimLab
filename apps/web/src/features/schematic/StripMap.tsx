@@ -21,7 +21,18 @@ import {
   useFooter,
 } from "./common";
 import type { StationHeights } from "./details";
-import { linesAt, type SchematicLine, type SchematicNetwork } from "./lines";
+import { isStepFree, linesAt, type SchematicLine, type SchematicNetwork, transferS } from "./lines";
+
+/** Purpose: a text cut into lines of at most `perLine` characters, at spaces. */
+function wrap(text: string, perLine: number): string[] {
+  const out: string[] = [];
+  for (const word of text.split(" ")) {
+    const last = out[out.length - 1];
+    if (last !== undefined && `${last} ${word}`.length <= perLine) out[out.length - 1] = `${last} ${word}`;
+    else out.push(word);
+  }
+  return out;
+}
 
 /** Purpose: minutes after midnight as hh:mm. */
 function clock(min: number): string {
@@ -78,12 +89,40 @@ export function StripMap({
   const n = line.stops.length;
   const s = line.service;
   const none = t("schematic.unknown");
+  // Average speed while driving: distance over driving time, on the sections where both are known.
+  let runM = 0;
+  let runS = 0;
+  line.runS.forEach((r, k) => {
+    if (r === null) return;
+    runM += line.distM[k] ?? 0;
+    runS += r;
+  });
+  const speedKmh = runS > 0 && runM > 0 ? (runM / runS) * 3.6 : null;
+  const stopNames = [...new Set(line.stops)];
+  const stepFree = stopNames
+    .filter((st) => isStepFree(net.stations[st]!))
+    .map((st) => net.stations[st]!.name);
+  const dist = (m: number) =>
+    m < 1000
+      ? t("schematic.metres", { n: fmt(Math.round(m / 10) * 10) })
+      : t("schematic.km", { n: fmt(m / 1000, 1) });
+  // The walk to change from this line to another at a station, minutes.
+  const walkMin = (k: number, other: SchematicLine): number | null => {
+    const st = net.stations[line.stops[k]!]!;
+    const mine = st.parts.find((p) => p.id === line.partIds[k]);
+    const j = other.stops.indexOf(line.stops[k]!);
+    const theirs = st.parts.find((p) => p.id === other.partIds[j]);
+    return mine && theirs ? Math.max(1, Math.round(transferS(mine, theirs) / 60)) : null;
+  };
   const facts: [string, string][] = [
     [t("schematic.fact.vehicles"), s.vehicles !== null ? fmt(s.vehicles) : none],
-    [t("schematic.fact.peak"), s.peakMin !== null ? t("schematic.every", { n: fmt(s.peakMin, 1) }) : none],
     [
-      t("schematic.fact.offPeak"),
-      s.offPeakMin !== null ? t("schematic.every", { n: fmt(s.offPeakMin, 1) }) : none,
+      t("schematic.fact.headwayPeak"),
+      s.peakMin !== null ? t("schematic.minutes", { n: fmt(s.peakMin, 1) }) : none,
+    ],
+    [
+      t("schematic.fact.headwayOffPeak"),
+      s.offPeakMin !== null ? t("schematic.minutes", { n: fmt(s.offPeakMin, 1) }) : none,
     ],
     ...(s.firstMin !== null && s.lastMin !== null
       ? ([[t("schematic.fact.hours"), `${clock(s.firstMin)}–${clock(s.lastMin)}`]] as [string, string][])
@@ -93,6 +132,8 @@ export function StripMap({
       s.roundTripMin !== null ? t("schematic.minutes", { n: fmt(s.roundTripMin) }) : none,
     ],
     [t("schematic.fact.length"), t("schematic.km", { n: fmt(s.lengthKm, 1) })],
+    [t("schematic.fact.speed"), speedKmh !== null ? t("schematic.kmh", { n: fmt(speedKmh) }) : none],
+    [t("schematic.fact.stepFree"), t("schematic.ofTotal", { n: stepFree.length, total: stopNames.length })],
   ];
   const width = Math.max(560, left * 2 + (n - 1) * step + 60);
   const factW = 150;
@@ -106,9 +147,21 @@ export function StripMap({
   const perRow = 5;
   const symRows = Math.max(0, ...syms.map((x) => Math.ceil(x.length / perRow)));
   const symTop = bandY + 26 + maxConn * 24;
-  const levelTop = symTop + symRows * 20 + (symRows ? 18 : 6);
+  const levelTop = symTop + symRows * 20 + (symRows ? 18 : 14);
   const used = LEVEL_BANDS.filter((b) => line.levels.some((sec) => sec.some((x) => bandOf(x.level) === b)));
-  const elevTop = levelTop + 58;
+  const stepTop = levelTop + 62;
+  const stepText = stepFree.length
+    ? t("schematic.stepFree.list", { stations: stepFree.join(", ") })
+    : t("schematic.stepFree.none");
+  const stepLines = wrap(stepText, Math.max(30, Math.floor((width - left) / 6.2)));
+  // The notes under the drawing, wrapped to its width.
+  const notes = [
+    conn.some((c) => c.length) ? t("schematic.connections") : t("schematic.noConnections"),
+    t("schematic.transferNote"),
+    t("schematic.timeNote"),
+    t("schematic.distNote"),
+  ].flatMap((x) => wrap(x, Math.max(30, Math.floor((width - left) / 5.2))));
+  const elevTop = stepTop + stepLines.length * 15 + 22;
   const elevH = 60;
   const known = line.stops.map((st) => heights?.[st] ?? null);
   const hs = known.filter((h): h is number => h !== null);
@@ -116,7 +169,7 @@ export function StripMap({
   const hMax = hs.length ? Math.max(...hs) : 0;
   const yOf = (h: number) =>
     elevTop + 22 + (hMax > hMin ? (1 - (h - hMin) / (hMax - hMin)) * elevH : elevH / 2);
-  const height = elevTop + 22 + elevH + 76;
+  const height = elevTop + 22 + elevH + 40 + notes.length * 17 + 20;
   const fg = textOn(line.color);
   const xOf = (k: number) => left + k * step;
   const badgeW = Math.max(56, line.name.length * 11 + 24);
@@ -189,6 +242,19 @@ export function StripMap({
           </text>
         ),
       )}
+      {/* Distance between stops, under the band. */}
+      {line.distM.map((m, k) => (
+        <text
+          key={`dist-${k}`}
+          x={(xOf(k) + xOf(k + 1)) / 2}
+          y={bandY + 18}
+          fontSize={10}
+          fill="#64748b"
+          textAnchor="middle"
+        >
+          {dist(m)}
+        </text>
+      ))}
       {line.stops.map((st, k) => {
         const x = xOf(k);
         const station = net.stations[st]!;
@@ -215,7 +281,9 @@ export function StripMap({
               {station.name}
             </text>
             {c.map((o, j) => {
-              const w = Math.max(30, o.name.length * 7.5 + 14);
+              const walk = walkMin(k, o);
+              const label = walk !== null ? t("schematic.transfer", { line: o.name, n: walk }) : o.name;
+              const w = Math.max(30, label.length * 6.8 + 14);
               return (
                 <g key={o.id}>
                   <rect x={x - w / 2} y={bandY + 22 + j * 24} width={w} height={19} rx={9.5} fill={o.color} />
@@ -227,7 +295,7 @@ export function StripMap({
                     textAnchor="middle"
                     fill={textOn(o.color)}
                   >
-                    {o.name}
+                    {label}
                   </text>
                 </g>
               );
@@ -292,6 +360,16 @@ export function StripMap({
         </g>
       ))}
 
+      {/* Which stations are step-free. */}
+      <text x={left / 2} y={stepTop} fontSize={10.5} fill="#64748b">
+        {t("schematic.fact.stepFree")}
+      </text>
+      {stepLines.map((l, i) => (
+        <text key={`sf-${i}`} x={left / 2} y={stepTop + 16 + i * 15} fontSize={12} fill={INK}>
+          {l}
+        </text>
+      ))}
+
       {/* Ground height at each station. */}
       <text x={left / 2} y={elevTop} fontSize={10.5} fill="#64748b">
         {heights === null
@@ -320,12 +398,17 @@ export function StripMap({
         ),
       )}
 
-      <text x={left / 2} y={height - 50} fontSize={11} fill={MUTED}>
-        {conn.some((c) => c.length) ? t("schematic.connections") : t("schematic.noConnections")}
-      </text>
-      <text x={left / 2} y={height - 32} fontSize={10} fill="#64748b">
-        {t("schematic.timeNote")}
-      </text>
+      {notes.map((x, i) => (
+        <text
+          key={`note-${i}`}
+          x={left / 2}
+          y={height - 36 - (notes.length - 1 - i) * 17}
+          fontSize={10}
+          fill="#64748b"
+        >
+          {x}
+        </text>
+      ))}
       <text x={left / 2} y={height - 14} fontSize={10} fill="#64748b">
         {footer}
       </text>

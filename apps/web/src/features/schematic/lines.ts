@@ -54,6 +54,8 @@ export interface StationPart {
   /** Rail station level; null elsewhere. */
   level: Level | null;
   features: StationFeature[];
+  /** Where the stop or platform is. */
+  lonlat: LonLat;
 }
 
 /** One station of the diagram: one or more stops of lines merged into one place. */
@@ -107,6 +109,11 @@ export interface SchematicLine {
    * where it is not known yet (rail lines until the engine has run, `details.ts`).
    */
   runS: (number | null)[];
+  /**
+   * Per section: the distance between the two stops, m: along the routed street for street lines, else in a
+   * straight line between the stops.
+   */
+  distM: number[];
   /** Per stop: the drawn stop or station it comes from (`StationPart.id`). */
   partIds: string[];
 }
@@ -137,8 +144,9 @@ interface RawLine {
   name: string;
   mode: string;
   color: string;
-  /** `t`: running time from the first stop, s (null when not known). */
-  stops: { name: string; lonlat: LonLat; part: StationPart; t: number | null }[];
+  /** `t`: running time from the first stop, s; `d`: distance along the route from the first stop, m (null when
+   * not known). */
+  stops: { name: string; lonlat: LonLat; part: StationPart; t: number | null; d?: number | null }[];
   service: LineService;
 }
 
@@ -174,8 +182,9 @@ function rawLines(
           platforms: s.side_platforms + s.island_platforms,
           level: s.level,
           features: cleanFeatures(s.features),
+          lonlat: offset(railway.origin, s.x, s.y),
         };
-        return [{ name: s.name, lonlat: offset(railway.origin, s.x, s.y), part, t: null }];
+        return [{ name: s.name, lonlat: part.lonlat, part, t: null }];
       });
       out.push({
         id: `rail:${l.id}`,
@@ -199,10 +208,17 @@ function rawLines(
     const pts = l.view?.points ?? [];
     // Running time from the first point to each point, s, along the routed legs (the first pass only).
     const at = new Map<number, number>();
-    if (pts[0]) at.set(pts[0].id, 0);
+    const along = new Map<number, number>();
+    if (pts[0]) {
+      at.set(pts[0].id, 0);
+      along.set(pts[0].id, 0);
+    }
     for (const leg of [...(l.view?.legs ?? [])].sort((a, b) => a.index - b.index)) {
       const from = at.get(leg.from);
-      if (from !== undefined && !at.has(leg.to)) at.set(leg.to, from + leg.time_s);
+      if (from !== undefined && !at.has(leg.to)) {
+        at.set(leg.to, from + leg.time_s);
+        along.set(leg.to, (along.get(leg.from) ?? 0) + (leg.length_m ?? 0));
+      }
     }
     // The saved points are in the same order as the routed ones; they carry the stops' facilities.
     const stops = pts.flatMap((p, k) =>
@@ -219,8 +235,10 @@ function rawLines(
                 platforms: null,
                 level: null,
                 features: cleanFeatures(l.points?.[k]?.features),
+                lonlat: p.lonlat,
               },
               t: at.get(p.id) ?? null,
+              d: l.view?.legs?.some((g) => g.length_m) ? (along.get(p.id) ?? null) : null,
             },
           ],
     );
@@ -264,6 +282,7 @@ function rawLines(
         platforms: null,
         level: null,
         features: [],
+        lonlat: s.lonlat,
       };
       return [{ name: s.name, lonlat: s.lonlat, part, t: times[j] ?? null }];
     });
@@ -344,7 +363,13 @@ export function schematicNetwork(
     return add(stations.length - 1);
   };
   for (const l of rawLines(railway, streetLines, pluginLines)) {
-    const at = l.stops.map((s) => ({ st: stationFor(s.name, s.lonlat, s.part), part: s.part, t: s.t }));
+    const at = l.stops.map((s) => ({
+      st: stationFor(s.name, s.lonlat, s.part),
+      part: s.part,
+      t: s.t,
+      d: s.d ?? null,
+      lonlat: s.lonlat,
+    }));
     const kept = at.filter((x, i) => i === 0 || x.st !== at[i - 1]!.st);
     if (kept.length < 2) continue;
     lines.push({
@@ -359,6 +384,10 @@ export function schematicNetwork(
       runS: kept.slice(1).map((x, i) => {
         const a = kept[i]!.t;
         return a !== null && x.t !== null && x.t > a ? x.t - a : null;
+      }),
+      distM: kept.slice(1).map((x, i) => {
+        const a = kept[i]!;
+        return a.d !== null && x.d !== null && x.d > a.d ? x.d - a.d : distanceM(a.lonlat, x.lonlat);
       }),
       partIds: kept.map((x) => x.part.id),
     });
@@ -393,4 +422,39 @@ export function baseLevels(
 /** Purpose: the lines that call at a station, in the order of the network's lines. */
 export function linesAt(net: SchematicNetwork, station: number): SchematicLine[] {
   return net.lines.filter((l) => l.stops.includes(station));
+}
+
+/** Walking as the journey planner assumes it (crates/journey-planner settings). */
+export const WALK = { speedKmh: 4.5, detour: 1.3, minChangeS: 60, levelChangeS: 60 } as const;
+
+const LEVEL_NUMBER: Record<string, number> = {
+  underground2: -2,
+  underground: -1,
+  street: 0,
+  elevated: 1,
+  elevated2: 2,
+};
+
+/**
+ * Purpose: the estimated walk to change from one stop or platform to another at an interchange, s: the
+ * straight distance times the detour factor at walking speed, at least the minimum change time, plus a minute per
+ * level climbed or descended (street and plugin stops count as street level).
+ */
+export function transferS(a: StationPart, b: StationPart): number {
+  const walk = (distanceM(a.lonlat, b.lonlat) * WALK.detour) / (WALK.speedKmh / 3.6);
+  const levels = Math.abs(
+    (LEVEL_NUMBER[a.level ?? "street"] ?? 0) - (LEVEL_NUMBER[b.level ?? "street"] ?? 0),
+  );
+  return Math.max(WALK.minChangeS, walk) + levels * WALK.levelChangeS;
+}
+
+/** Features that make a stop reachable without steps. */
+const STEP_FREE: readonly StationFeature[] = ["step_free", "elevator", "ramp"];
+
+/**
+ * Purpose: whether a station is step-free as recorded in Create: every stop or platform of it has step-free
+ * access, a lift or a ramp.
+ */
+export function isStepFree(st: SchematicStation): boolean {
+  return st.parts.length > 0 && st.parts.every((p) => p.features.some((f) => STEP_FREE.includes(f)));
 }

@@ -613,12 +613,9 @@ export const editorsNl = {
   "schematic.area.dragHint": "Sleep de witte hoeken op de kaart om de vorm te wijzigen.",
   "schematic.facts": "Dienst",
   "schematic.fact.vehicles": "Voertuigen in dienst",
-  "schematic.fact.peak": "Spits",
-  "schematic.fact.offPeak": "Dal",
   "schematic.fact.hours": "Eerste en laatste vertrek",
   "schematic.fact.roundTrip": "Omloop",
   "schematic.fact.length": "Lengte",
-  "schematic.every": "elke {n} min",
   "schematic.minutes": "{n} min",
   "schematic.km": "{n} km",
   "schematic.metres": "{n} m",
@@ -646,6 +643,20 @@ export const editorsNl = {
   "schematic.rotate.none": "Geen",
   "schematic.popup.lines.one": "{count} lijn stopt hier",
   "schematic.popup.lines.other": "{count} lijnen stoppen hier",
+  "schematic.fact.headwayPeak": "Interval, spits",
+  "schematic.fact.headwayOffPeak": "Interval, dal",
+  "schematic.fact.speed": "Gemiddelde snelheid",
+  "schematic.fact.stepFree": "Drempelvrije stations",
+  "schematic.ofTotal": "{n} van {total}",
+  "schematic.kmh": "{n} km/u",
+  "schematic.stepFree.list": "Drempelvrij: {stations}",
+  "schematic.stepFree.none":
+    "Nog geen station van deze lijn is als drempelvrij ingevoerd (drempelvrije toegang, lift of hellingbaan bij Maken).",
+  "schematic.transfer": "{line} · {n} min",
+  "schematic.transferNote":
+    "Minuten op de gekleurde labels: geschatte looptijd om over te stappen op die lijn.",
+  "schematic.distNote":
+    "Onder de lijn: afstand tussen haltes, langs de straat voor straatlijnen, anders hemelsbreed. Gemiddelde snelheid: afstand gedeeld door rijtijd.",
 
   "noise.title": "Geluid",
   "noise.showBand": "Geluidsband tonen",

@@ -611,12 +611,9 @@ export const editorsSw = {
   "schematic.area.dragHint": "Buruta pembe nyeupe kwenye ramani kubadilisha umbo.",
   "schematic.facts": "Huduma",
   "schematic.fact.vehicles": "Magari kazini",
-  "schematic.fact.peak": "Saa za msongamano",
-  "schematic.fact.offPeak": "Saa za kawaida",
   "schematic.fact.hours": "Kuondoka kwa kwanza na kwa mwisho",
   "schematic.fact.roundTrip": "Mzunguko kamili",
   "schematic.fact.length": "Urefu",
-  "schematic.every": "kila dak {n}",
   "schematic.minutes": "dak {n}",
   "schematic.km": "km {n}",
   "schematic.metres": "m {n}",
@@ -644,6 +641,20 @@ export const editorsSw = {
   "schematic.rotate.none": "Hakuna",
   "schematic.popup.lines.one": "Mstari {count} unasimama hapa",
   "schematic.popup.lines.other": "Mistari {count} inasimama hapa",
+  "schematic.fact.headwayPeak": "Muda kati ya safari, saa za msongamano",
+  "schematic.fact.headwayOffPeak": "Muda kati ya safari, saa za kawaida",
+  "schematic.fact.speed": "Kasi ya wastani",
+  "schematic.fact.stepFree": "Stesheni bila ngazi",
+  "schematic.ofTotal": "{n} kati ya {total}",
+  "schematic.kmh": "km/saa {n}",
+  "schematic.stepFree.list": "Bila ngazi: {stations}",
+  "schematic.stepFree.none":
+    "Bado hakuna stesheni ya mstari huu iliyowekwa kuwa bila ngazi (kuingia bila ngazi, lifti au mteremko katika Unda).",
+  "schematic.transfer": "{line} · dak {n}",
+  "schematic.transferNote":
+    "Dakika kwenye lebo za rangi: muda unaokadiriwa wa kutembea kubadilisha kwenda mstari huo.",
+  "schematic.distNote":
+    "Chini ya mstari: umbali kati ya vituo, kufuata barabara kwa mistari ya barabarani, vinginevyo kwa mstari ulionyooka. Kasi ya wastani: umbali kwa muda wa kuendesha.",
 
   "noise.title": "Kelele",
   "noise.showBand": "Onyesha ukanda wa kelele",

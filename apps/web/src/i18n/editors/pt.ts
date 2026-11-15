@@ -612,12 +612,9 @@ export const editorsPt = {
   "schematic.area.dragHint": "Arraste os vértices brancos no mapa para mudar a forma.",
   "schematic.facts": "Operação",
   "schematic.fact.vehicles": "Veículos em serviço",
-  "schematic.fact.peak": "Horário de pico",
-  "schematic.fact.offPeak": "Fora do pico",
   "schematic.fact.hours": "Primeira e última partida",
   "schematic.fact.roundTrip": "Ciclo completo",
   "schematic.fact.length": "Extensão",
-  "schematic.every": "a cada {n} min",
   "schematic.minutes": "{n} min",
   "schematic.km": "{n} km",
   "schematic.metres": "{n} m",
@@ -645,6 +642,20 @@ export const editorsPt = {
   "schematic.rotate.none": "Nenhuma",
   "schematic.popup.lines.one": "{count} linha para aqui",
   "schematic.popup.lines.other": "{count} linhas param aqui",
+  "schematic.fact.headwayPeak": "Intervalo, pico",
+  "schematic.fact.headwayOffPeak": "Intervalo, fora do pico",
+  "schematic.fact.speed": "Velocidade média",
+  "schematic.fact.stepFree": "Estações sem degraus",
+  "schematic.ofTotal": "{n} de {total}",
+  "schematic.kmh": "{n} km/h",
+  "schematic.stepFree.list": "Sem degraus: {stations}",
+  "schematic.stepFree.none":
+    "Nenhuma estação desta linha está registrada como sem degraus (acesso sem degraus, elevador ou rampa em Criar).",
+  "schematic.transfer": "{line} · {n} min",
+  "schematic.transferNote":
+    "Minutos nas etiquetas coloridas: caminhada estimada para baldear para essa linha.",
+  "schematic.distNote":
+    "Sob a linha: distância entre paradas, pela rua nas linhas de rua, senão em linha reta. Velocidade média: distância dividida pelo tempo de percurso.",
 
   "noise.title": "Ruído",
   "noise.showBand": "Mostrar faixa de ruído",

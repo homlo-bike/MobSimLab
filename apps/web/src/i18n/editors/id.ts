@@ -605,12 +605,9 @@ export const editorsId = {
   "schematic.area.dragHint": "Seret sudut putih di peta untuk mengubah bentuk.",
   "schematic.facts": "Layanan",
   "schematic.fact.vehicles": "Kendaraan beroperasi",
-  "schematic.fact.peak": "Jam sibuk",
-  "schematic.fact.offPeak": "Di luar jam sibuk",
   "schematic.fact.hours": "Keberangkatan pertama dan terakhir",
   "schematic.fact.roundTrip": "Satu putaran",
   "schematic.fact.length": "Panjang",
-  "schematic.every": "tiap {n} mnt",
   "schematic.minutes": "{n} mnt",
   "schematic.km": "{n} km",
   "schematic.metres": "{n} m",
@@ -636,6 +633,20 @@ export const editorsId = {
   "schematic.rotate": "Rotasi nama",
   "schematic.rotate.none": "Tidak ada",
   "schematic.popup.lines.other": "{count} jalur berhenti di sini",
+  "schematic.fact.headwayPeak": "Selang, jam sibuk",
+  "schematic.fact.headwayOffPeak": "Selang, di luar jam sibuk",
+  "schematic.fact.speed": "Kecepatan rata-rata",
+  "schematic.fact.stepFree": "Stasiun tanpa tangga",
+  "schematic.ofTotal": "{n} dari {total}",
+  "schematic.kmh": "{n} km/j",
+  "schematic.stepFree.list": "Tanpa tangga: {stations}",
+  "schematic.stepFree.none":
+    "Belum ada stasiun di jalur ini yang dicatat tanpa tangga (akses tanpa tangga, lift, atau ramp di Buat).",
+  "schematic.transfer": "{line} · {n} mnt",
+  "schematic.transferNote":
+    "Menit pada label berwarna: perkiraan waktu jalan kaki untuk pindah ke jalur itu.",
+  "schematic.distNote":
+    "Di bawah jalur: jarak antarhalte, menyusuri jalan untuk jalur jalan, selain itu garis lurus. Kecepatan rata-rata: jarak dibagi waktu tempuh.",
 
   "noise.title": "Kebisingan",
   "noise.showBand": "Tampilkan pita kebisingan",

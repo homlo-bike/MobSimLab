@@ -614,12 +614,9 @@ export const editorsEs = {
   "schematic.area.dragHint": "Arrastre los vértices blancos en el mapa para cambiar la forma.",
   "schematic.facts": "Servicio",
   "schematic.fact.vehicles": "Vehículos en servicio",
-  "schematic.fact.peak": "Hora punta",
-  "schematic.fact.offPeak": "Hora valle",
   "schematic.fact.hours": "Primera y última salida",
   "schematic.fact.roundTrip": "Vuelta completa",
   "schematic.fact.length": "Longitud",
-  "schematic.every": "cada {n} min",
   "schematic.minutes": "{n} min",
   "schematic.km": "{n} km",
   "schematic.metres": "{n} m",
@@ -647,6 +644,20 @@ export const editorsEs = {
   "schematic.rotate.none": "Ninguno",
   "schematic.popup.lines.one": "{count} línea para aquí",
   "schematic.popup.lines.other": "{count} líneas paran aquí",
+  "schematic.fact.headwayPeak": "Intervalo, hora punta",
+  "schematic.fact.headwayOffPeak": "Intervalo, hora valle",
+  "schematic.fact.speed": "Velocidad media",
+  "schematic.fact.stepFree": "Estaciones sin escalones",
+  "schematic.ofTotal": "{n} de {total}",
+  "schematic.kmh": "{n} km/h",
+  "schematic.stepFree.list": "Sin escalones: {stations}",
+  "schematic.stepFree.none":
+    "Aún no hay ninguna estación de esta línea registrada sin escalones (acceso sin escalones, ascensor o rampa en Crear).",
+  "schematic.transfer": "{line} · {n} min",
+  "schematic.transferNote":
+    "Minutos en las etiquetas de color: caminata estimada para transbordar a esa línea.",
+  "schematic.distNote":
+    "Bajo la línea: distancia entre paradas, por la calle en líneas de calle, si no en línea recta. Velocidad media: distancia entre tiempo de marcha.",
 
   "noise.title": "Ruido",
   "noise.showBand": "Mostrar banda de ruido",

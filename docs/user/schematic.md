@@ -36,12 +36,13 @@ Station features (step-free access, ramp, lift, escalator, tactile paving, toile
 
 ## Strip map
 
-Choose **Strip map** and a line (or click a line on the network map): its stations in order on a straight band, with the lines you can change to at each station as coloured labels underneath, and the station symbols. Above the band, between each pair of stops, is the estimated driving time without the stop itself.
+Choose **Strip map** and a line (or click a line on the network map): its stations in order on a straight band, with the lines you can change to at each station as coloured labels underneath, and the station symbols. Above the band, between each pair of stops, is the estimated driving time without the stop itself; under it, the distance between them (along the street for street lines, else in a straight line). Each coloured label also gives the estimated walk to change to that line: the distance between the two stops or platforms times 1.3 at 4.5 km/h, at least a minute, plus a minute per level up or down, as in the journey planner.
 
 Below the band:
 
-- **Service**: vehicles in service, minutes between departures in the peak and off-peak, first and last departure, round trip and length. Street lines run at half their headway in the peak, as in the journey planner.
+- **Service**: vehicles in service, headway in the peak and off-peak, first and last departure, round trip, length, average speed (distance over driving time) and how many stations are step-free. Street lines run at half their headway in the peak, as in the journey planner.
 - **Runs at**: which parts are underground, at street level, elevated or on a ramp (cable cars in the air, ferries on the water).
+- **Step-free stations**: the stations where every stop or platform has step-free access, a lift or a ramp recorded in Create.
 - **Ground height** at each station, in metres above sea level.
 
 For rail lines the vehicles, round trip, driving times and levels come from the railway tool's built track and timetable; until track is drawn they show as –.

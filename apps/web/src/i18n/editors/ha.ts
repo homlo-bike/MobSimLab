@@ -603,12 +603,9 @@ export const editorsHa = {
   "schematic.area.dragHint": "Ja farin kusurwoyi a taswira don canza fasali.",
   "schematic.facts": "Aiki",
   "schematic.fact.vehicles": "Motocin da ke aiki",
-  "schematic.fact.peak": "Lokacin cunkoso",
-  "schematic.fact.offPeak": "Lokacin da ba cunkoso",
   "schematic.fact.hours": "Tashi na farko da na ƙarshe",
   "schematic.fact.roundTrip": "Zagaye ɗaya",
   "schematic.fact.length": "Tsawo",
-  "schematic.every": "kowane minti {n}",
   "schematic.minutes": "minti {n}",
   "schematic.km": "km {n}",
   "schematic.metres": "m {n}",
@@ -635,6 +632,20 @@ export const editorsHa = {
   "schematic.rotate.none": "Babu",
   "schematic.popup.lines.one": "Layi {count} yana tsayawa a nan",
   "schematic.popup.lines.other": "Layuka {count} suna tsayawa a nan",
+  "schematic.fact.headwayPeak": "Tazara, lokacin cunkoso",
+  "schematic.fact.headwayOffPeak": "Tazara, lokacin da ba cunkoso",
+  "schematic.fact.speed": "Matsakaicin gudu",
+  "schematic.fact.stepFree": "Tashoshi ba tare da matakala ba",
+  "schematic.ofTotal": "{n} cikin {total}",
+  "schematic.kmh": "km/h {n}",
+  "schematic.stepFree.list": "Ba matakala: {stations}",
+  "schematic.stepFree.none":
+    "Babu tasha a wannan layi da aka rubuta ba matakala ba tukuna (shiga ba matakala, lif ko gangara a Ƙirƙira).",
+  "schematic.transfer": "{line} · minti {n}",
+  "schematic.transferNote":
+    "Mintuna a kan alamomin launi: kimanin lokacin tafiya da ƙafa don canjawa zuwa wannan layi.",
+  "schematic.distNote":
+    "A ƙarƙashin layi: nisa tsakanin tashoshi, bin titi ga layukan titi, in ba haka ba a mike. Matsakaicin gudu: nisa raba lokacin tuƙi.",
 
   "noise.title": "Hayaniya",
   "noise.showBand": "Nuna yankin hayaniya",

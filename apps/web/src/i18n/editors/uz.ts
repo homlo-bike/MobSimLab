@@ -616,12 +616,9 @@ export const editorsUz = {
   "schematic.area.dragHint": "Shaklni o‘zgartirish uchun xaritadagi oq burchaklarni torting.",
   "schematic.facts": "Harakat",
   "schematic.fact.vehicles": "Liniyadagi transport",
-  "schematic.fact.peak": "Tig‘iz soatlar",
-  "schematic.fact.offPeak": "Tig‘iz bo‘lmagan soatlar",
   "schematic.fact.hours": "Birinchi va oxirgi jo‘nash",
   "schematic.fact.roundTrip": "Aylanma",
   "schematic.fact.length": "Uzunligi",
-  "schematic.every": "har {n} daqiqada",
   "schematic.minutes": "{n} daq",
   "schematic.km": "{n} km",
   "schematic.metres": "{n} m",
@@ -649,6 +646,20 @@ export const editorsUz = {
   "schematic.rotate.none": "Yo‘q",
   "schematic.popup.lines.one": "Bu yerda {count} liniya to‘xtaydi",
   "schematic.popup.lines.other": "Bu yerda {count} liniya to‘xtaydi",
+  "schematic.fact.headwayPeak": "Interval, tig‘iz soat",
+  "schematic.fact.headwayOffPeak": "Interval, tig‘iz bo‘lmagan",
+  "schematic.fact.speed": "O‘rtacha tezlik",
+  "schematic.fact.stepFree": "Zinapoyasiz bekatlar",
+  "schematic.ofTotal": "{total} tadan {n}",
+  "schematic.kmh": "{n} km/soat",
+  "schematic.stepFree.list": "Zinapoyasiz: {stations}",
+  "schematic.stepFree.none":
+    "Bu liniyada hali zinapoyasiz deb yozilgan bekat yo‘q (Yaratish bo‘limida zinapoyasiz kirish, lift yoki pandus).",
+  "schematic.transfer": "{line} · {n} daq",
+  "schematic.transferNote":
+    "Rangli yorliqlardagi daqiqalar: o‘sha liniyaga o‘tish uchun taxminiy piyoda vaqti.",
+  "schematic.distNote":
+    "Liniya ostida: bekatlar orasidagi masofa, ko‘cha liniyalarida ko‘cha bo‘ylab, aks holda to‘g‘ri chiziqda. O‘rtacha tezlik: masofa ÷ yurish vaqti.",
 
   "noise.title": "Shovqin",
   "noise.showBand": "Shovqin chizigʻini koʻrsatish",

@@ -57,8 +57,12 @@ stations), and ADR-0025 already names a simpler octilinear layout as the fallbac
    name, a kind (tariff zone, dashed outline; landmark such as the old town, solid outline) and a colour, and can
    drag the corners later. Corners are saved in the diagram's own metres (like moved stations), so an area stays
    where it was drawn on the diagram.
-10. **Strip map details**, drawn in the SVG so they export: vehicles in service, minutes between departures in
-    the peak and off-peak, first and last departure, round trip and length; the estimated driving time between
+10. **Strip map details**, drawn in the SVG so they export: vehicles in service, headways in the peak and
+    off-peak, first and last departure, round trip, length, average speed (distance over driving time) and the
+    step-free stations (every stop or platform with step-free access, a lift or a ramp); the distance between
+    stops (along the routed street for street lines, else straight); the walk to change at each interchange
+    (straight distance × 1.3 at 4.5 km/h, at least 60 s, plus 60 s per level, the journey planner's
+    settings); the estimated driving time between
     each pair of stops (without the stop itself: street lines from the routed legs, plugin lines from their runs,
     rail lines from the published timetable); what each section runs on (underground, street level, elevated,
     ramp; rail from the built track's levels, sampled along the line between the stations; street lines on the

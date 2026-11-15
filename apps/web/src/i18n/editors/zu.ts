@@ -622,12 +622,9 @@ export const editorsZu = {
   "schematic.area.dragHint": "Hudula amakhona amhlophe emephini ukuze ushintshe isimo.",
   "schematic.facts": "Isevisi",
   "schematic.fact.vehicles": "Izimoto ezisebenzayo",
-  "schematic.fact.peak": "Isikhathi esiminyene",
-  "schematic.fact.offPeak": "Isikhathi esingaminyene",
   "schematic.fact.hours": "Ukusuka kokuqala nokokugcina",
   "schematic.fact.roundTrip": "Umjikelezo ophelele",
   "schematic.fact.length": "Ubude",
-  "schematic.every": "njalo ngemizuzu engu-{n}",
   "schematic.minutes": "imizuzu engu-{n}",
   "schematic.km": "{n} km",
   "schematic.metres": "{n} m",
@@ -655,6 +652,20 @@ export const editorsZu = {
   "schematic.rotate.none": "Lutho",
   "schematic.popup.lines.one": "Umugqa o-{count} uma lapha",
   "schematic.popup.lines.other": "Imigqa engu-{count} ima lapha",
+  "schematic.fact.headwayPeak": "Isikhawu, isikhathi esiminyene",
+  "schematic.fact.headwayOffPeak": "Isikhawu, isikhathi esingaminyene",
+  "schematic.fact.speed": "Ijubane elimaphakathi",
+  "schematic.fact.stepFree": "Iziteshi ezingenazitebhisi",
+  "schematic.ofTotal": "{n} kwezingu-{total}",
+  "schematic.kmh": "{n} km/h",
+  "schematic.stepFree.list": "Azinazitebhisi: {stations}",
+  "schematic.stepFree.none":
+    "Asikho isiteshi kulo mugqa esibhalwe njengesingenazitebhisi okwamanje (ukungena ngaphandle kwezitebhisi, ilifti noma irampu ku-Dala).",
+  "schematic.transfer": "{line} · imiz. {n}",
+  "schematic.transferNote":
+    "Imizuzu kumalebula anemibala: isikhathi esilinganisiwe sokuhamba ngezinyawo ukushintshela kulowo mugqa.",
+  "schematic.distNote":
+    "Ngaphansi komugqa: ibanga phakathi kwezitobhi, ngomgwaqo kwemigqa yomgwaqo, kungenjalo ngomugqa oqondile. Ijubane elimaphakathi: ibanga lihlukaniswe ngesikhathi sokushayela.",
 
   "noise.title": "Umsindo",
   "noise.showBand": "Bonisa ibhande lomsindo",
