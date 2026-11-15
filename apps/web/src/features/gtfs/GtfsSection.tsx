@@ -1,7 +1,7 @@
 import type { Map as MapLibreMap } from "maplibre-gl";
 import { useState } from "react";
 import { useI18n } from "../../i18n/i18n";
-import { pluginConverter, PLUGINS, type Plugin } from "../../plugins/registry";
+import { activePlugins, pluginConverter, type Plugin } from "../../plugins/registry";
 import type { Timetable } from "../journey-planner/types";
 import { loadWasmGtfs } from "./engine";
 import type { GtfsEngineLoader, GtfsFeed, GtfsNetworkDoc } from "./types";
@@ -12,7 +12,7 @@ export const MAX_FEEDS = 5;
 export const MAX_DOC_BYTES = 8 * 1024 * 1024 - 64 * 1024;
 
 /** Purpose: whether the GTFS plugin is present (its importer and exporter). */
-export function gtfsAvailable(plugins: readonly Plugin[] = PLUGINS) {
+export function gtfsAvailable(plugins: readonly Plugin[] = activePlugins()) {
   return {
     importer: pluginConverter("importers", "gtfs_import", plugins),
     exporter: pluginConverter("exporters", "gtfs_export", plugins),
@@ -25,7 +25,7 @@ export const isoDate = (d: string) =>
 const gtfsDate = (d: string) => d.replaceAll("-", "");
 
 /** Purpose: the GTFS route type of every plugin mode, for modes the core does not know. */
-export function pluginRouteTypes(plugins: readonly Plugin[] = PLUGINS): Record<string, number> {
+export function pluginRouteTypes(plugins: readonly Plugin[] = activePlugins()): Record<string, number> {
   return Object.fromEntries(plugins.flatMap((p) => p.modes.map((m) => [m.id, m.gtfsRouteType])));
 }
 

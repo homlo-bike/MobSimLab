@@ -1,4 +1,5 @@
 import { editorsNl } from "./editors/nl";
+import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
 /** Nederlands. */
@@ -287,4 +288,5 @@ export const nl: Messages = {
   "prefs.calendar": "Kalender, vraag en kosten",
 
   ...editorsNl,
+  ...PLUGIN_MESSAGES.nl,
 };

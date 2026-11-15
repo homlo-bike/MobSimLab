@@ -1,4 +1,5 @@
 import { editorsId } from "./editors/id";
+import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
 /** Bahasa Indonesia */
@@ -288,4 +289,5 @@ export const id: Messages = {
   "prefs.calendar": "Kalender, permintaan, dan biaya",
 
   ...editorsId,
+  ...PLUGIN_MESSAGES.id,
 };
