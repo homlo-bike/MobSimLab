@@ -19,7 +19,13 @@ import type { MessageKey } from "../i18n/messages";
 import { SpanLineEditor } from "../kits/SpanLineEditor";
 import { WaterRouteEditor } from "../kits/WaterRouteEditor";
 import { MapView } from "../map/MapView";
-import { pluginTools } from "../plugins/registry";
+import {
+  PLUGINS,
+  type ProjectPlugin,
+  pluginsOfProject,
+  pluginTools,
+  setActivePlugins,
+} from "../plugins/registry";
 import { can, type Project, type ProjectsApi } from "../projects/api";
 import {
   BackIcon,
@@ -57,7 +63,6 @@ const NO_SETUPS: StreetSetup[] = [];
 type SimView = "test" | "journey";
 /** "street", "rail", or the id of a plugin tool (cable car, ferry…). */
 type Build = string;
-const PLUGIN_TOOLS = pluginTools();
 
 /**
  * One open project (mockups "Project app"): the project name and the six tabs in the top bar (a bottom tab bar on
@@ -114,6 +119,28 @@ export function Workspace({
     setMissing(false);
     api.get(projectId).then(setProject, () => setMissing(true));
   }, [api, projectId]);
+
+  // The plugins this project uses (ADR-0036 §9): bundled ones it has not turned off and installed ones it has
+  // turned on. Until they load, the bundled plugins are used.
+  const [plugins, setPlugins] = useState<ProjectPlugin[] | null>(null);
+  useEffect(() => {
+    setPlugins(null);
+    let live = true;
+    api.plugins(projectId).then(
+      (list) => live && setPlugins(list),
+      () => live && setPlugins([]),
+    );
+    return () => {
+      live = false;
+    };
+  }, [api, projectId]);
+  const activePlugins = useMemo(() => (plugins ? pluginsOfProject(plugins) : PLUGINS), [plugins]);
+  // The registry's helpers (modes, tools, calculations) read the open project's plugins.
+  setActivePlugins(activePlugins);
+  useEffect(() => () => setActivePlugins(PLUGINS), []);
+  const PLUGIN_TOOLS = useMemo(() => pluginTools(activePlugins), [activePlugins]);
+  const setPlugin = async (pluginId: string, enabled: boolean, version?: string) =>
+    setPlugins(await api.setPlugin(projectId, pluginId, enabled, version));
 
   useEffect(() => {
     if (project) document.title = `${project.name} · ${brand}`;
@@ -416,6 +443,8 @@ export function Workspace({
               onSaved={setProject}
               preferences={drawings.loaded ? preferences : null}
               onPreferences={drawings.loaded ? (d) => drawings.set("preferences", d) : undefined}
+              plugins={plugins}
+              onSetPlugin={setPlugin}
             />
           </div>
         )}
