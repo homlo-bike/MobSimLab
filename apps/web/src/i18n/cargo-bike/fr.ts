@@ -89,6 +89,35 @@ export const cargoBikeFr = {
   "cb.changed": "modifié",
   "cb.reset": "Revenir aux valeurs par défaut",
   "cb.viewOnly": "Vous pouvez seulement consulter ce projet : les modifications ne sont pas enregistrées.",
+  "cb.gaps": "Discontinuités cyclables",
+  "cb.gapsSummary":
+    "{km} km de l'aller-retour ({share}) se font sur des axes principaux dans la circulation, sans aménagement cyclable. Les tronçons les plus longs d'abord ; cliquez pour le voir sur la carte.",
+  "cb.noGaps": "Tout l'aller-retour emprunte une bande cyclable, une piste cyclable ou une rue calme.",
+  "cb.gapUnnamed": "Voie sans nom ({highway})",
+  "cb.amenities": "Recharge et stationnement sécurisé",
+  "cb.amenitiesLoading": "Recherche des bornes de recharge et des parkings vélo le long de l'itinéraire…",
+  "cb.amenitiesFailed":
+    "Les bornes de recharge et les parkings vélo n'ont pas pu être chargés depuis OpenStreetMap pour le moment.",
+  "cb.noAmenities":
+    "OpenStreetMap ne connaît aucune borne de recharge vélo ni parking vélo sécurisé à moins de {m} m de l'itinéraire.",
+  "cb.amenity.charging": "Recharge vélo",
+  "cb.amenity.secure_parking": "Parking vélo sécurisé",
+  "cb.amenity.cargo_parking": "Parking vélo cargo",
+  "cb.amenityAt": "À {km} km du départ, à {off} m de l'itinéraire",
+  "cb.amenityCapacity": "{n} places",
+  "cb.amenityFree": "gratuit",
+  "cb.amenityFee": "payant",
+  "cb.amenitiesNote":
+    "D'OpenStreetMap : bornes de recharge vélo, consignes, abris fermés, vélostations, parkings surveillés et pour vélos cargos. Les simples arceaux ne sont pas inclus.",
+  "cb.impact": "Climat et santé",
+  "cb.co2Saved": "{kg} kg de CO₂ en moins par an qu'en voiture.",
+  "cb.co2Detail":
+    "Carburant de la voiture {car} kg de CO₂, électricité du vélo cargo {bike} kg de CO₂ par an.",
+  "cb.kcalTrip": "Calories brûlées par aller-retour",
+  "cb.kcalYear": "Calories brûlées par an",
+  "cb.activeWeek": "Vélo par semaine",
+  "cb.activeOfTarget": "{share} des {target} minutes d'activité hebdomadaire recommandées par l'OMS",
+  "cb.impactValues": "Valeurs climat et santé",
   "cb.error.too_far":
     "La destination est trop loin pour un itinéraire par les rues (environ 40 km au plus). Utilisez la carte d’autonomie pour les longues distances.",
   "cb.error.no_streets": "Aucune rue praticable à vélo n’a été trouvée ici.",

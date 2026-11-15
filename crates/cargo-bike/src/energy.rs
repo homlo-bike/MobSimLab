@@ -35,6 +35,8 @@ pub struct Piece {
 pub struct PieceRide {
     /// Battery energy, Wh.
     pub battery_wh: f64,
+    /// Rider's own pedalling energy at the crank, Wh.
+    pub rider_wh: f64,
     /// Riding time, s.
     pub time_s: f64,
     /// Speed, m/s.
@@ -61,6 +63,7 @@ pub fn ride_piece(b: &Bike, p: &Piece) -> PieceRide {
     if p.len_m <= 0.0 {
         return PieceRide {
             battery_wh: 0.0,
+            rider_wh: 0.0,
             time_s: 0.0,
             speed_ms: 0.0,
         };
@@ -91,9 +94,11 @@ pub fn ride_piece(b: &Bike, p: &Piece) -> PieceRide {
     };
     let crank = (wheel_power(b, v, sin, cos) / b.drive_eff).max(0.0);
     let time_s = p.len_m / v;
-    let battery_wh = motor_part(b, crank) / b.motor_eff * time_s / 3600.0;
+    let motor = motor_part(b, crank);
+    let battery_wh = motor / b.motor_eff * time_s / 3600.0;
     PieceRide {
         battery_wh,
+        rider_wh: (crank - motor).max(0.0) * time_s / 3600.0,
         time_s,
         speed_ms: v,
     }
@@ -101,9 +106,18 @@ pub fn ride_piece(b: &Bike, p: &Piece) -> PieceRide {
 
 /// Purpose: battery energy of starting again after one stop on a street class.
 pub fn stop_wh(b: &Bike, class: Class) -> f64 {
+    b.assist_share * stop_crank_wh(b, class) / b.motor_eff
+}
+
+/// Purpose: the rider's own energy at the crank to start again after one stop, Wh.
+pub fn stop_rider_wh(b: &Bike, class: Class) -> f64 {
+    (1.0 - b.assist_share).max(0.0) * stop_crank_wh(b, class)
+}
+
+/// Purpose: crank energy to bring the bike back to cruising speed after a stop, Wh.
+fn stop_crank_wh(b: &Bike, class: Class) -> f64 {
     let v = b.speed_ms[class.index()].min(b.cutoff_ms);
-    let crank = 0.5 * b.mass_kg * v * v / b.drive_eff;
-    b.assist_share * crank / b.motor_eff / 3600.0
+    0.5 * b.mass_kg * v * v / b.drive_eff / 3600.0
 }
 
 /// One way of a trip, ridden.
@@ -117,6 +131,8 @@ pub struct Leg {
     pub descent_m: f64,
     /// Battery energy, Wh.
     pub battery_wh: f64,
+    /// Rider's own pedalling energy at the crank, Wh (for the calories burned).
+    pub rider_wh: f64,
     /// Riding time without stops, s.
     pub time_s: f64,
     /// Metres per street class: separated, lane, quiet, mixed.
@@ -167,6 +183,7 @@ pub fn ride(b: &Bike, pieces: &[Piece], extra_stops: f64, start_z: f64) -> Leg {
         leg.distance_m += p.len_m;
         leg.time_s += r.time_s;
         leg.battery_wh += r.battery_wh;
+        leg.rider_wh += r.rider_wh;
         leg.class_m[p.class.index()] += p.len_m;
         if p.dz_m > 0.0 {
             leg.climb_m += p.dz_m;
@@ -182,6 +199,7 @@ pub fn ride(b: &Bike, pieces: &[Piece], extra_stops: f64, start_z: f64) -> Leg {
         let s = b.stops_per_m[p.class.index()] * p.len_m;
         leg.stops += s;
         stops_wh += s * stop_wh(b, p.class);
+        leg.rider_wh += s * stop_rider_wh(b, p.class);
         z += p.dz_m;
         since += p.len_m;
         if since >= 100.0 || leg.profile.is_empty() {
@@ -197,6 +215,7 @@ pub fn ride(b: &Bike, pieces: &[Piece], extra_stops: f64, start_z: f64) -> Leg {
         .unwrap_or(Class::Quiet);
     leg.stops += extra_stops;
     stops_wh += extra_stops * stop_wh(b, common);
+    leg.rider_wh += extra_stops * stop_rider_wh(b, common);
     leg.battery_wh += stops_wh;
     if let Some(last) = leg.profile.last_mut() {
         if (last[0] - leg.distance_m).abs() > 1e-6 {
@@ -227,6 +246,9 @@ mod tests {
         let wh_km = leg.battery_wh / 10.0;
         // Loaded e-cargo bikes use about 6–15 Wh/km in town.
         assert!((5.0..15.0).contains(&wh_km), "{wh_km} Wh/km");
+        // The rider gives the rest of the crank energy: 40 % on the flat with a 60 % assist share.
+        let share = leg.rider_wh / (leg.rider_wh + leg.battery_wh * b.motor_eff);
+        assert!((share - (1.0 - b.assist_share)).abs() < 0.02, "{share}");
     }
 
     #[test]

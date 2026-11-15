@@ -25,6 +25,16 @@ export interface ParamDefault {
   high: number;
 }
 
+/** A section of a route in main-road traffic without a bike lane (crates/cargo-bike `Gap`). */
+export interface Gap {
+  /** Indices of its first and last point in the route's `coords`. */
+  from: number;
+  to: number;
+  length_m: number;
+  name: string | null;
+  highway: string;
+}
+
 /** A route one way (crates/cargo-bike `Route`). */
 export interface Route {
   coords: LonLat[];
@@ -32,6 +42,8 @@ export interface Route {
   length_m: number;
   signals: number;
   stop_signs: number;
+  /** Bike-lane gaps, longest first. */
+  gaps: Gap[];
 }
 
 /** One way of a trip, ridden (crates/cargo-bike `Leg`). */
@@ -40,6 +52,8 @@ export interface Leg {
   climb_m: number;
   descent_m: number;
   battery_wh: number;
+  /** Rider's own pedalling energy, Wh. */
+  rider_wh: number;
   time_s: number;
   /** Metres on separated tracks, bike lanes, quiet streets and main roads in traffic. */
   class_m: [number, number, number, number];
@@ -63,6 +77,7 @@ export interface Trip {
   wh_per_km: number;
   range_km: number;
   time_s: number;
+  rider_wh: number;
 }
 
 /** How far the bike gets out and back along one bearing (crates/cargo-bike `Reach`). */
@@ -76,6 +91,26 @@ export interface Reach {
 
 export type SavingsLineId = "purchase" | "energy" | "tax" | "insurance" | "parking" | "maintenance";
 
+/** CO₂ and health of a year of trips by cargo bike instead of car (crates/cargo-bike `Impact`). */
+export interface Impact {
+  car_co2_kg: number;
+  bike_co2_kg: number;
+  co2_saved_kg: number;
+  kcal_per_trip: number;
+  kcal_per_year: number;
+  active_min_per_week: number;
+  /** Share of the recommended weekly activity (can be above 1). */
+  active_share: number;
+}
+
+/** One round trip as the savings need it (crates/cargo-bike `PerTrip`). */
+export interface PerTrip {
+  km: number;
+  whPerKm: number;
+  riderWh: number;
+  timeS: number;
+}
+
 /** The savings table (crates/cargo-bike `Savings`), per year in the local currency. */
 export interface Savings {
   km_per_year: number;
@@ -87,8 +122,30 @@ export interface Savings {
   payback_years: number | null;
   fuel_l_per_year: number;
   electricity_kwh_per_year: number;
+  impact: Impact;
   values: Record<string, number>;
 }
+
+/** A bicycle charging point or a secure or cargo bike parking from OSM (API `bike-amenity-tiles`). */
+export interface BikeAmenity {
+  id: string;
+  kind: "charging" | "secure_parking" | "cargo_parking";
+  lonlat: LonLat;
+  name?: string;
+  hours?: string;
+  fee?: string;
+  capacity?: string;
+}
+
+/** An amenity near the route: how far off the route and how far along it from the start. */
+export interface AmenityNear {
+  amenity: BikeAmenity;
+  offM: number;
+  alongM: number;
+}
+
+/** Amenities this close to the route are listed. */
+export const AMENITY_REACH_M = 300;
 
 /** Local currency units per EUR: at the market exchange rate (purchase prices) and by price level. */
 export interface Conversion {
@@ -200,4 +257,72 @@ export function conversionFrom(
 /** Purpose: whether a parameter is an amount of money (shown in the local currency). */
 export function isMoney(p: ParamDefault | undefined): boolean {
   return !!p && p.unit.startsWith("EUR");
+}
+
+/**
+ * Purpose: the zoom-14 tiles within `bufferM` of a route, for the charging points and parkings along it.
+ * Output: tiles `[x, y]` without repeats.
+ */
+export function routeTiles(coords: LonLat[], bufferM = AMENITY_REACH_M): [number, number][] {
+  const seen = new Set<string>();
+  const out: [number, number][] = [];
+  const add = (p: LonLat) => {
+    const tile = tileOf(p);
+    const k = tile.join("/");
+    if (!seen.has(k)) {
+      seen.add(k);
+      out.push(tile);
+    }
+  };
+  coords.forEach((a, i) => {
+    const b = coords[i + 1] ?? a;
+    const steps = Math.max(1, Math.ceil(distanceM(a, b) / 200));
+    for (let s = 0; s < steps; s++) {
+      const p: LonLat = [a[0] + ((b[0] - a[0]) * s) / steps, a[1] + ((b[1] - a[1]) * s) / steps];
+      add(p);
+      for (const bearing of [0, 90, 180, 270]) add(destinationPoint(p, bearing, bufferM));
+    }
+  });
+  return out;
+}
+
+/**
+ * Purpose: the amenities within `reachM` of a route, ordered along it from the start.
+ * Inputs: the route's points and the amenities (repeats by id are dropped).
+ */
+export function amenitiesAlong(
+  coords: LonLat[],
+  amenities: BikeAmenity[],
+  reachM = AMENITY_REACH_M,
+): AmenityNear[] {
+  if (coords.length === 0) return [];
+  const lat0 = rad(coords[0]![1]);
+  const xy = ([lon, lat]: LonLat): [number, number] => [
+    EARTH_R * rad(lon) * Math.cos(lat0),
+    EARTH_R * rad(lat),
+  ];
+  const pts = coords.map(xy);
+  const cum = [0];
+  for (let i = 1; i < pts.length; i++)
+    cum.push(cum[i - 1]! + Math.hypot(pts[i]![0] - pts[i - 1]![0], pts[i]![1] - pts[i - 1]![1]));
+  const seen = new Set<string>();
+  const out: AmenityNear[] = [];
+  for (const a of amenities) {
+    if (seen.has(a.id)) continue;
+    seen.add(a.id);
+    const [px, py] = xy(a.lonlat);
+    let best = { offM: Infinity, alongM: 0 };
+    for (let i = 0; i < pts.length; i++) {
+      const [ax, ay] = pts[i]!;
+      const [bx, by] = pts[i + 1] ?? pts[i]!;
+      const dx = bx - ax;
+      const dy = by - ay;
+      const l2 = dx * dx + dy * dy;
+      const t = l2 > 0 ? Math.max(0, Math.min(1, ((px - ax) * dx + (py - ay) * dy) / l2)) : 0;
+      const d = Math.hypot(px - (ax + t * dx), py - (ay + t * dy));
+      if (d < best.offM) best = { offM: d, alongM: cum[i]! + t * Math.sqrt(l2) };
+    }
+    if (best.offM <= reachM) out.push({ amenity: a, ...best });
+  }
+  return out.sort((a, b) => a.alongM - b.alongM);
 }

@@ -1666,7 +1666,7 @@
           "label": "Cargo bike trip and range",
           "calculation": "cargo_bike_range",
           "style": {
-            "_comment": "The range map (area reachable out and back on one charge) and the trip there and back, coloured by the kind of street. Class ids come from crates/cargo-bike (Class).",
+            "_comment": "The range map (area reachable out and back on one charge), the trip there and back coloured by the kind of street, the bike-lane gap picked in the tab, and the charging points and bike parkings along the route. Class ids come from crates/cargo-bike (Class), amenity kinds from the API's bike-amenity tiles.",
             "layers": [
               {
                 "id": "cargo-bike-range-fill",
@@ -1688,6 +1688,20 @@
                     2,
                     1.5
                   ]
+                }
+              },
+              {
+                "id": "cargo-bike-gap",
+                "type": "line",
+                "source": "gap",
+                "layout": {
+                  "line-cap": "round",
+                  "line-join": "round"
+                },
+                "paint": {
+                  "line-color": "#facc15",
+                  "line-width": 18,
+                  "line-opacity": 0.7
                 }
               },
               {
@@ -1730,6 +1744,30 @@
                     "#64748b"
                   ]
                 }
+              },
+              {
+                "id": "cargo-bike-amenity",
+                "type": "circle",
+                "source": "amenity",
+                "paint": {
+                  "circle-radius": 7,
+                  "circle-stroke-width": 2,
+                  "circle-stroke-color": "#ffffff",
+                  "circle-color": [
+                    "match",
+                    [
+                      "get",
+                      "kind"
+                    ],
+                    "charging",
+                    "#d97706",
+                    "secure_parking",
+                    "#7c3aed",
+                    "cargo_parking",
+                    "#0e7490",
+                    "#64748b"
+                  ]
+                }
               }
             ],
             "legend": [
@@ -1748,6 +1786,20 @@
               {
                 "class": "mixed",
                 "color": "#dc2626"
+              }
+            ],
+            "amenities": [
+              {
+                "kind": "charging",
+                "color": "#d97706"
+              },
+              {
+                "kind": "secure_parking",
+                "color": "#7c3aed"
+              },
+              {
+                "kind": "cargo_parking",
+                "color": "#0e7490"
               }
             ]
           }
@@ -1948,6 +2000,22 @@
         "cargo_bike.savings.car_maintenance_eur_km": {
           "label": "Car maintenance and tyres per km (2024 EUR)",
           "unit": "EUR/km"
+        },
+        "cargo_bike.savings.fuel_co2_kg_l": {
+          "label": "Car CO₂ per litre of petrol (well to wheel)",
+          "unit": "kg/l"
+        },
+        "cargo_bike.savings.grid_co2_kg_kwh": {
+          "label": "CO₂ per kWh of mains electricity",
+          "unit": "kg/kWh"
+        },
+        "cargo_bike.savings.rider_efficiency": {
+          "label": "Rider's gross efficiency (pedalling energy per food energy)",
+          "unit": "share"
+        },
+        "cargo_bike.savings.active_min_week_target": {
+          "label": "Recommended physical activity per week",
+          "unit": "min/week"
         }
       },
       "defaults": {}

@@ -109,6 +109,26 @@ export class StreetNetworkController {
       throw e;
     }
   }
+
+  /**
+   * Purpose: the bicycle charging points and the secure or cargo bike parkings of one zoom-14 tile, for the
+   * cargo bike plugin: JSON `{amenities: [{id, kind, lonlat, name?, hours?, fee?, capacity?}]}`.
+   * Inputs: tile x and y. Output: 400 for an invalid tile, 502/504 when OSM is unavailable.
+   */
+  @Get(`bike-amenity-tiles/${TILE_ZOOM}/:x/:y`)
+  @Requires("instance.read")
+  @Header("Content-Type", "application/json; charset=utf-8")
+  @Header("Cache-Control", "private, max-age=86400")
+  async bikeAmenityTile(@Param("x") xs: string, @Param("y") ys: string): Promise<string> {
+    const [x, y] = parseTile(xs, ys);
+    try {
+      return await this.streets.bikeAmenityTile(x, y);
+    } catch (e) {
+      if (e instanceof OverpassError)
+        throw new HttpException("OpenStreetMap bike parkings are unavailable right now", e.status);
+      throw e;
+    }
+  }
 }
 
 /** Purpose: tile x and y from the path, or a 400 for an invalid tile. */

@@ -1,14 +1,17 @@
 import type { GeoJSONSource, Map as MapLibreMap } from "maplibre-gl";
 import { pluginMapLayers } from "../../plugins/registry";
-import type { LonLat, Reach, Route, StreetClass } from "./model";
+import type { AmenityNear, BikeAmenity, LonLat, Reach, Route, StreetClass } from "./model";
 
 const TRIP_SOURCE = "cargo-bike-trip";
 const RANGE_SOURCE = "cargo-bike-range";
+const GAP_SOURCE = "cargo-bike-gap";
+const AMENITY_SOURCE = "cargo-bike-amenity";
+const SOURCES = { trip: TRIP_SOURCE, range: RANGE_SOURCE, gap: GAP_SOURCE, amenity: AMENITY_SOURCE } as const;
 
 interface LayerStyle {
   id: string;
-  type: "fill" | "line";
-  source: "trip" | "range";
+  type: "fill" | "line" | "circle";
+  source: keyof typeof SOURCES;
   layout?: Record<string, unknown>;
   paint: Record<string, unknown>;
 }
@@ -17,6 +20,7 @@ interface LayerStyle {
 const style = (pluginMapLayers("cargo_bike_range")[0]?.style ?? { layers: [], legend: [] }) as unknown as {
   layers: LayerStyle[];
   legend: { class: StreetClass; color: string }[];
+  amenities?: { kind: BikeAmenity["kind"]; color: string }[];
 };
 
 /** Purpose: the colour of a street class on the map and in the tab's legend. */
@@ -24,11 +28,19 @@ export function classColour(c: StreetClass): string {
   return style.legend.find((l) => l.class === c)?.color ?? "#64748b";
 }
 
-/** A GeoJSON feature of the trip (a line) or the range map (a polygon). */
+/** Purpose: the colour of a kind of charging point or bike parking on the map and in the tab. */
+export function amenityColour(k: BikeAmenity["kind"]): string {
+  return style.amenities?.find((a) => a.kind === k)?.color ?? "#64748b";
+}
+
+/** A GeoJSON feature of the trip (a line), the range map (a polygon) or an amenity (a point). */
 interface Feature {
   type: "Feature";
   properties: Record<string, unknown>;
-  geometry: { type: "LineString"; coordinates: LonLat[] } | { type: "Polygon"; coordinates: LonLat[][] };
+  geometry:
+    | { type: "LineString"; coordinates: LonLat[] }
+    | { type: "Polygon"; coordinates: LonLat[][] }
+    | { type: "Point"; coordinates: LonLat };
 }
 
 /** Purpose: a route as line pieces of one street class each. */
@@ -66,7 +78,7 @@ function setData(map: MapLibreMap, id: string, features: Feature[]) {
   }
   map.addSource(id, { type: "geojson", data: data as never });
   for (const l of style.layers) {
-    if ((l.source === "trip" ? TRIP_SOURCE : RANGE_SOURCE) !== id) continue;
+    if (SOURCES[l.source] !== id) continue;
     map.addLayer({ id: l.id, type: l.type, source: id, layout: l.layout ?? {}, paint: l.paint } as never);
   }
 }
@@ -79,23 +91,35 @@ export function drawCargoBike(
   map: MapLibreMap,
   trip: { go: Route; back: Route } | null,
   reach: Reach[] | null,
+  extra: { gap?: LonLat[] | null; amenities?: AmenityNear[] | null } = {},
 ): void {
   if (!map.isStyleLoaded?.() && !map.getSource?.(TRIP_SOURCE)) {
-    map.once?.("load", () => drawCargoBike(map, trip, reach));
+    map.once?.("load", () => drawCargoBike(map, trip, reach, extra));
     return;
   }
+  // Sources whose layers sit below the trip are added first.
+  setData(map, GAP_SOURCE, extra.gap?.length ? [line("mixed", extra.gap, "gap")] : []);
   setData(map, RANGE_SOURCE, reach?.length ? [rangePolygon(reach)] : []);
   setData(
     map,
     TRIP_SOURCE,
     trip ? [...routeFeatures(trip.back, "back"), ...routeFeatures(trip.go, "go")] : [],
   );
+  setData(
+    map,
+    AMENITY_SOURCE,
+    (extra.amenities ?? []).map(({ amenity: a }) => ({
+      type: "Feature",
+      properties: { kind: a.kind, name: a.name ?? "" },
+      geometry: { type: "Point", coordinates: a.lonlat },
+    })),
+  );
 }
 
 /** Purpose: remove the plugin's layers and sources from the map. */
 export function clearCargoBike(map: MapLibreMap): void {
   for (const l of [...style.layers].reverse()) if (map.getLayer?.(l.id)) map.removeLayer(l.id);
-  for (const id of [TRIP_SOURCE, RANGE_SOURCE]) if (map.getSource?.(id)) map.removeSource(id);
+  for (const id of Object.values(SOURCES)) if (map.getSource?.(id)) map.removeSource(id);
 }
 
 /** Purpose: the range map's area: the turning points of every bearing, closed. */

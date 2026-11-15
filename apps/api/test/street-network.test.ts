@@ -3,6 +3,9 @@ import request from "supertest";
 import { describe, expect, it, vi } from "vitest";
 import { OverpassClient, overpassEndpoint } from "../src/gateway/overpass.client";
 import {
+  bikeAmenities,
+  bikeAmenityKind,
+  bikeAmenityQuery,
   buildingQuery,
   buildingUse,
   footprints,
@@ -85,6 +88,55 @@ describe("street tiles", () => {
     expect(ok.text).toBe(WALK);
     expect(fetchImpl).toHaveBeenCalledTimes(1);
     await request(app.getHttpServer()).get("/api/street-network/walk-tiles/14/x/1").expect(400);
+    await app.close();
+  });
+
+  it("finds bicycle charging points and secure or cargo bike parkings", () => {
+    const q = bikeAmenityQuery(14, 8508, 5489);
+    expect(q).toContain('["amenity"="charging_station"]["bicycle"~"^(yes|designated)$"]');
+    expect(q).toContain('["bicycle_parking"~"^(lockers|shed|building)$"]');
+    expect(bikeAmenityKind({ amenity: "charging_station" })).toBeNull();
+    expect(bikeAmenityKind({ amenity: "bicycle_parking", bicycle_parking: "stands" })).toBeNull();
+    expect(bikeAmenityKind({ amenity: "bicycle_parking", supervised: "yes" })).toBe("secure_parking");
+    expect(
+      bikeAmenityKind({ amenity: "bicycle_parking", bicycle_parking: "lockers", "capacity:cargo_bike": "4" }),
+    ).toBe("cargo_parking");
+    const json = JSON.stringify({
+      elements: [
+        {
+          type: "node",
+          id: 1,
+          lat: 50.1,
+          lon: 7.1,
+          tags: { amenity: "charging_station", bicycle: "yes", fee: "no" },
+        },
+        {
+          type: "way",
+          id: 2,
+          center: { lat: 50.2, lon: 7.2 },
+          tags: { amenity: "bicycle_parking", bicycle_parking: "shed", name: "Radstation", capacity: "40" },
+        },
+        { type: "node", id: 3, lat: 50.3, lon: 7.3, tags: { amenity: "bicycle_parking" } },
+      ],
+    });
+    expect(bikeAmenities(json)).toEqual([
+      { id: "n1", kind: "charging", lonlat: [7.1, 50.1], fee: "no" },
+      { id: "w2", kind: "secure_parking", lonlat: [7.2, 50.2], name: "Radstation", capacity: "40" },
+    ]);
+  });
+
+  it("serves bike amenity tiles as JSON", async () => {
+    const { c } = client([JSON.stringify({ elements: [] })]);
+    const mod = await Test.createTestingModule({ imports: [StreetNetworkModule] })
+      .overrideProvider(OverpassClient)
+      .useValue(c)
+      .compile();
+    const app = mod.createNestApplication();
+    await app.init();
+    const ok = await request(app.getHttpServer()).get("/api/street-network/bike-amenity-tiles/14/8508/5489");
+    expect(ok.status).toBe(200);
+    expect(JSON.parse(ok.text)).toEqual({ amenities: [] });
+    await request(app.getHttpServer()).get("/api/street-network/bike-amenity-tiles/14/x/1").expect(400);
     await app.close();
   });
 

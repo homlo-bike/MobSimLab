@@ -7,7 +7,7 @@
 
 use cargo_bike::network::{BikeGraph, Route};
 use cargo_bike::params::{defaults as plugin_defaults, Bike, Values};
-use cargo_bike::savings::{savings as savings_table, Conversion};
+use cargo_bike::savings::{savings as savings_table, Conversion, PerTrip};
 use cargo_bike::trip::{range_map as reach, ride_route, trip as round_trip, Profile, Ray};
 use serde_json::{json, Value};
 use std::collections::HashMap;
@@ -140,7 +140,8 @@ pub fn range_map(request_json: &str) -> Result<String, JsError> {
 }
 
 /// Purpose: the savings table.
-/// Input: `{round_trip_km, wh_per_km, values?, conversion?: {fx, ppp}}`. Output: the `Savings`.
+/// Input: `{round_trip_km, wh_per_km, rider_wh?, time_s?, values?, conversion?: {fx, ppp}}`.
+/// Output: the `Savings` with its CO₂ and health `impact`.
 #[wasm_bindgen]
 pub fn savings(request_json: &str) -> Result<String, JsError> {
     let req = parse(request_json)?;
@@ -152,7 +153,13 @@ pub fn savings(request_json: &str) -> Result<String, JsError> {
         .transpose()
         .map_err(js)?
         .unwrap_or_default();
-    let s = savings_table(num("round_trip_km"), num("wh_per_km"), &values(&req), conv);
+    let trip = PerTrip {
+        km: num("round_trip_km"),
+        wh_per_km: num("wh_per_km"),
+        rider_wh: num("rider_wh"),
+        time_s: num("time_s"),
+    };
+    let s = savings_table(trip, &values(&req), conv);
     serde_json::to_string(&s).map_err(js)
 }
 

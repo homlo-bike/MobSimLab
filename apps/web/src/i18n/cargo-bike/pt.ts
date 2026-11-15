@@ -90,6 +90,36 @@ export const cargoBikePt = {
   "cb.changed": "alterado",
   "cb.reset": "Repor os valores por omissão",
   "cb.viewOnly": "Só pode ver este projeto: as alterações não são guardadas.",
+  "cb.gaps": "Falhas na rede ciclável",
+  "cb.gapsSummary":
+    "{km} km da viagem de ida e volta ({share}) são em vias principais com trânsito e sem ciclofaixa. Os trechos mais longos primeiro; escolha um para vê-lo no mapa.",
+  "cb.noGaps": "Toda a viagem tem ciclofaixa, ciclovia ou rua tranquila.",
+  "cb.gapUnnamed": "Via sem nome ({highway})",
+  "cb.amenities": "Carregamento e estacionamento seguro",
+  "cb.amenitiesLoading":
+    "A procurar pontos de carregamento e estacionamentos de bicicletas ao longo da rota…",
+  "cb.amenitiesFailed":
+    "Neste momento não foi possível carregar os pontos de carregamento e estacionamentos do OpenStreetMap.",
+  "cb.noAmenities":
+    "O OpenStreetMap não tem nenhum ponto de carregamento de bicicletas nem estacionamento seguro a menos de {m} m da rota.",
+  "cb.amenity.charging": "Carregamento de bicicletas",
+  "cb.amenity.secure_parking": "Estacionamento seguro de bicicletas",
+  "cb.amenity.cargo_parking": "Estacionamento de bicicletas de carga",
+  "cb.amenityAt": "A {km} km do início, a {off} m da rota",
+  "cb.amenityCapacity": "{n} lugares",
+  "cb.amenityFree": "grátis",
+  "cb.amenityFee": "pago",
+  "cb.amenitiesNote":
+    "Do OpenStreetMap: postos de carregamento de bicicletas, cacifos, abrigos fechados, bicicletários, estacionamentos vigiados e para bicicletas de carga. Suportes simples não são incluídos.",
+  "cb.impact": "Clima e saúde",
+  "cb.co2Saved": "{kg} kg a menos de CO₂ por ano do que de carro.",
+  "cb.co2Detail":
+    "Combustível do carro {car} kg de CO₂, eletricidade da bicicleta de carga {bike} kg de CO₂ por ano.",
+  "cb.kcalTrip": "Calorias queimadas por viagem de ida e volta",
+  "cb.kcalYear": "Calorias queimadas por ano",
+  "cb.activeWeek": "Bicicleta por semana",
+  "cb.activeOfTarget": "{share} dos {target} minutos de atividade semanal recomendados pela OMS",
+  "cb.impactValues": "Valores de clima e saúde",
   "cb.error.too_far":
     "O destino está longe demais para uma rota pelas ruas (cerca de 40 km no máximo). Use o mapa de autonomia para distâncias maiores.",
   "cb.error.no_streets": "Não foram encontradas ruas por onde uma bicicleta possa andar.",

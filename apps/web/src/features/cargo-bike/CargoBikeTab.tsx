@@ -7,8 +7,10 @@ import { currencyOf } from "../costs/currencies";
 import { economyApi, type EconomyApi } from "../costs/economy";
 import type { StreetSetup } from "../street-setup/types";
 import { cargoBikeEngine, type CargoBikeEngine, TripError } from "./engine";
-import { classColour, clearCargoBike, drawCargoBike } from "./mapLayer";
+import { amenityColour, classColour, clearCargoBike, drawCargoBike } from "./mapLayer";
 import {
+  AMENITY_REACH_M,
+  type AmenityNear,
   type CargoBikeDoc,
   CLASSES,
   type Conversion,
@@ -29,6 +31,15 @@ type Pick = "start" | "destination" | null;
 const BIKE_KEYS = ["bike_mass_kg", "load_kg", "rider_mass_kg", "battery_wh", "motor_rated_w"];
 /** Savings inputs shown above the table. */
 const USE_KEYS = ["savings.trips_per_week", "savings.weeks_per_year"];
+/** Values of the climate and health figures, shown apart from the prices. */
+const IMPACT_KEYS = [
+  "savings.fuel_co2_kg_l",
+  "savings.grid_co2_kg_kwh",
+  "savings.rider_efficiency",
+  "savings.active_min_week_target",
+];
+/** Gaps and amenities listed at most. */
+const LIST_MAX = 10;
 /** Price base year of the plugin's money values (German reference prices). */
 const PRICE_YEAR = 2024;
 
@@ -115,6 +126,9 @@ export function CargoBikeTab({
     conv: null,
   });
   const [savings, setSavings] = useState<Savings | null>(null);
+  const [amenities, setAmenities] = useState<AmenityNear[] | null>(null);
+  const [amenityState, setAmenityState] = useState<"loading" | "failed" | null>(null);
+  const [gap, setGap] = useState<LonLat[] | null>(null);
 
   useEffect(() => {
     engine.defaults().then(setDefaults, (e: unknown) => setError(String(e)));
@@ -159,7 +173,13 @@ export function CargoBikeTab({
       return;
     }
     let live = true;
-    engine.savings(trip.trip.distance_m / 1000, trip.trip.wh_per_km, values, country.conv).then(
+    const perTrip = {
+      km: trip.trip.distance_m / 1000,
+      whPerKm: trip.trip.wh_per_km,
+      riderWh: trip.trip.rider_wh,
+      timeS: trip.trip.time_s,
+    };
+    engine.savings(perTrip, values, country.conv).then(
       (s) => live && setSavings(s),
       (e: unknown) => live && setError(String(e)),
     );
@@ -167,6 +187,26 @@ export function CargoBikeTab({
       live = false;
     };
   }, [engine, trip, values, country.conv]);
+
+  // Charging points and secure parkings along the trip, once it is ridden.
+  useEffect(() => {
+    setAmenities(null);
+    setGap(null);
+    if (!trip) return;
+    let live = true;
+    setAmenityState("loading");
+    engine.amenities([...trip.go.coords, ...trip.back.coords]).then(
+      (a) => {
+        if (!live) return;
+        setAmenities(a);
+        setAmenityState(null);
+      },
+      () => live && setAmenityState("failed"),
+    );
+    return () => {
+      live = false;
+    };
+  }, [engine, trip]);
 
   // Picking points on the map.
   const pickRef = useRef<Pick>(null);
@@ -235,8 +275,20 @@ export function CargoBikeTab({
     [map],
   );
   useEffect(() => {
-    if (map) drawCargoBike(map, trip, reach);
-  }, [map, trip, reach]);
+    if (map) drawCargoBike(map, trip, reach, { gap, amenities });
+  }, [map, trip, reach, gap, amenities]);
+  const showOnMap = (coords: LonLat[]) => {
+    if (!map || coords.length === 0) return;
+    const lons = coords.map((c) => c[0]);
+    const lats = coords.map((c) => c[1]);
+    map.fitBounds?.(
+      [
+        [Math.min(...lons), Math.min(...lats)],
+        [Math.max(...lons), Math.max(...lats)],
+      ],
+      { padding: 80, maxZoom: 17 },
+    );
+  };
   // A moved point makes the old answers wrong.
   const destKey = destination ? destination.join(",") : "";
   useEffect(() => setTrip(null), [startKey, destKey]);
@@ -327,7 +379,102 @@ export function CargoBikeTab({
   );
   const allKeys = Object.keys(defaults ?? {});
   const modelKeys = allKeys.filter((k) => !k.startsWith("savings.") && !BIKE_KEYS.includes(k));
-  const savingsKeys = allKeys.filter((k) => k.startsWith("savings.") && !USE_KEYS.includes(k));
+  const savingsKeys = allKeys.filter(
+    (k) => k.startsWith("savings.") && !USE_KEYS.includes(k) && !IMPACT_KEYS.includes(k),
+  );
+
+  const gapsSection = (r: Trip) => {
+    if (!trip) return null;
+    const list = (["go", "back"] as const)
+      .flatMap((dir) =>
+        trip[dir].gaps.map((g) => ({ dir, g, coords: trip[dir].coords.slice(g.from, g.to + 1) })),
+      )
+      .sort((a, b) => b.g.length_m - a.g.length_m)
+      .slice(0, LIST_MAX);
+    const mixed = r.go.class_m[3] + r.back.class_m[3];
+    return (
+      <section aria-label={t("cb.gaps")} className="mt-4">
+        <h3 className="text-sm font-semibold">{t("cb.gaps")}</h3>
+        <p className="mt-1 text-sm text-slate-600">
+          {list.length
+            ? t("cb.gapsSummary", { km: km(mixed), share: pct(r.distance_m > 0 ? mixed / r.distance_m : 0) })
+            : t("cb.noGaps")}
+        </p>
+        {list.length > 0 && (
+          <ul className="mt-2 divide-y divide-slate-100 rounded-xl border border-slate-200">
+            {list.map(({ dir, g, coords }) => (
+              <li key={`${dir}-${g.from}`}>
+                <button
+                  type="button"
+                  className="flex w-full items-center gap-2 px-3 py-2 text-start text-sm hover:bg-slate-50"
+                  onClick={() => {
+                    setGap(coords);
+                    showOnMap(coords);
+                  }}
+                >
+                  <span
+                    aria-hidden
+                    className="h-2.5 w-2.5 shrink-0 rounded-full"
+                    style={{ background: classColour("mixed") }}
+                  />
+                  <span className="min-w-0 flex-1 truncate">
+                    {g.name ?? t("cb.gapUnnamed", { highway: g.highway })}
+                  </span>
+                  <span className="text-xs text-slate-500">{t(dir === "go" ? "cb.go" : "cb.back")}</span>
+                  <span className="w-16 text-end tabular-nums">{Math.round(g.length_m)} m</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+    );
+  };
+
+  const amenitySection = () => (
+    <section aria-label={t("cb.amenities")} className="mt-4">
+      <h3 className="text-sm font-semibold">{t("cb.amenities")}</h3>
+      {amenityState === "loading" && (
+        <p className="mt-1 text-sm text-slate-600">{t("cb.amenitiesLoading")}</p>
+      )}
+      {amenityState === "failed" && <p className="mt-1 text-sm text-slate-600">{t("cb.amenitiesFailed")}</p>}
+      {amenities && amenities.length === 0 && (
+        <p className="mt-1 text-sm text-slate-600">{t("cb.noAmenities", { m: AMENITY_REACH_M })}</p>
+      )}
+      {amenities && amenities.length > 0 && (
+        <ul className="mt-2 divide-y divide-slate-100 rounded-xl border border-slate-200">
+          {amenities.slice(0, LIST_MAX).map(({ amenity: a, offM, alongM }) => (
+            <li key={a.id}>
+              <button
+                type="button"
+                className="flex w-full items-start gap-2 px-3 py-2 text-start text-sm hover:bg-slate-50"
+                onClick={() => showOnMap([a.lonlat])}
+              >
+                <span
+                  aria-hidden
+                  className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full"
+                  style={{ background: amenityColour(a.kind) }}
+                />
+                <span className="min-w-0 flex-1">
+                  <span className="block font-medium">
+                    {t(`cb.amenity.${a.kind}` as MessageKey)}
+                    {a.name ? ` · ${a.name}` : ""}
+                  </span>
+                  <span className="block text-xs text-slate-500">
+                    {t("cb.amenityAt", { km: km(alongM), off: Math.round(offM) })}
+                    {a.capacity ? ` · ${t("cb.amenityCapacity", { n: a.capacity })}` : ""}
+                    {a.fee ? ` · ${t(a.fee === "no" ? "cb.amenityFree" : "cb.amenityFee")}` : ""}
+                    {a.hours ? ` · ${a.hours}` : ""}
+                  </span>
+                </span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+      <p className="mt-1 text-xs text-slate-500">{t("cb.amenitiesNote")}</p>
+    </section>
+  );
 
   const pointRow = (which: "start" | "destination", pos: LonLat | null) => (
     <div className="flex items-center gap-2 py-1">
@@ -419,6 +566,8 @@ export function CargoBikeTab({
             </table>
             <StreetMix trip={r} />
             <BatteryChart trip={r} />
+            {gapsSection(r)}
+            {amenitySection()}
             {r.go.steep_m + r.back.steep_m > 50 && (
               <p className="mt-2 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-950">
                 {t("cb.steep", {
@@ -562,7 +711,46 @@ export function CargoBikeTab({
                 </dd>
               </div>
             </dl>
+            <section aria-label={t("cb.impact")} className="mt-4">
+              <h3 className="text-sm font-semibold">{t("cb.impact")}</h3>
+              <p className="mt-1 rounded-xl bg-green-50 px-3 py-2.5 text-sm font-medium text-green-900">
+                {t("cb.co2Saved", { kg: Math.round(savings.impact.co2_saved_kg) })}
+              </p>
+              <p className="mt-1 text-xs text-slate-500">
+                {t("cb.co2Detail", {
+                  car: Math.round(savings.impact.car_co2_kg),
+                  bike: Math.round(savings.impact.bike_co2_kg),
+                })}
+              </p>
+              <dl className="mt-2 grid grid-cols-2 gap-2 text-sm">
+                <div className="rounded-lg bg-slate-50 px-2.5 py-2">
+                  <dt className="text-xs text-slate-500">{t("cb.kcalTrip")}</dt>
+                  <dd className="font-semibold tabular-nums">
+                    {Math.round(savings.impact.kcal_per_trip)} kcal
+                  </dd>
+                </div>
+                <div className="rounded-lg bg-slate-50 px-2.5 py-2">
+                  <dt className="text-xs text-slate-500">{t("cb.kcalYear")}</dt>
+                  <dd className="font-semibold tabular-nums">
+                    {Math.round(savings.impact.kcal_per_year).toLocaleString()} kcal
+                  </dd>
+                </div>
+                <div className="col-span-2 rounded-lg bg-slate-50 px-2.5 py-2">
+                  <dt className="text-xs text-slate-500">{t("cb.activeWeek")}</dt>
+                  <dd className="font-semibold tabular-nums">
+                    {t("cb.minutes", { n: Math.round(savings.impact.active_min_per_week) })}
+                  </dd>
+                  <dd className="text-xs text-slate-500">
+                    {t("cb.activeOfTarget", {
+                      share: pct(savings.impact.active_share),
+                      target: savings.values["savings.active_min_week_target"] ?? 150,
+                    })}
+                  </dd>
+                </div>
+              </dl>
+            </section>
             {fieldGroup(t("cb.prices"), savingsKeys, savings.values)}
+            {fieldGroup(t("cb.impactValues"), IMPACT_KEYS, savings.values)}
             <p className="mt-2 text-xs text-slate-500">{t("cb.savingsNote", { year: PRICE_YEAR })}</p>
           </section>
         )

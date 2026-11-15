@@ -115,6 +115,8 @@ pub struct Trip {
     pub range_km: f64,
     /// Riding time both ways without stops, s.
     pub time_s: f64,
+    /// Rider's own pedalling energy both ways, Wh.
+    pub rider_wh: f64,
 }
 
 /// Purpose: the round trip from two ridden legs.
@@ -128,6 +130,7 @@ pub fn trip(go: Leg, back: Leg, bike: &Bike) -> Trip {
     };
     Trip {
         time_s: go.time_s + back.time_s,
+        rider_wh: go.rider_wh + back.rider_wh,
         distance_m,
         battery_wh,
         usable_wh: bike.usable_wh,
@@ -251,6 +254,7 @@ mod tests {
             length_m: len,
             signals: 2,
             stop_signs: 0,
+            gaps: Vec::new(),
         }
     }
 

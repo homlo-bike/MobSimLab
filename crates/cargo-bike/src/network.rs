@@ -145,7 +145,27 @@ struct Edge {
     to: u32,
     len_m: f64,
     class: Class,
+    /// Index into `BikeGraph::streets`.
+    street: u32,
 }
+
+/// A section of a route in main-road traffic without a bike lane: a gap in the bike network.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct Gap {
+    /// Index of its first point in the route's `coords`.
+    pub from: usize,
+    /// Index of its last point in the route's `coords`.
+    pub to: usize,
+    /// Length, m.
+    pub length_m: f64,
+    /// Street name (or road number) of its longest part, when OSM has one.
+    pub name: Option<String>,
+    /// OSM `highway` value of its longest part (`primary`, `secondary`, ...).
+    pub highway: String,
+}
+
+/// Gaps shorter than this are left out (a junction crossed in traffic is not a missing bike lane).
+pub const MIN_GAP_M: f64 = 50.0;
 
 /// The bike network: nodes with their position and stop signs, and directed edges.
 #[derive(Debug, Default)]
@@ -154,6 +174,8 @@ pub struct BikeGraph {
     /// 0 none, 1 traffic signal, 2 stop sign.
     control: Vec<u8>,
     adj: Vec<Vec<Edge>>,
+    /// `(name or ref, highway)` of the ways, shared by their edges.
+    streets: Vec<(Option<String>, String)>,
 }
 
 /// A route one way: its line, the street class of each segment and the signals and stop signs on it.
@@ -169,6 +191,9 @@ pub struct Route {
     pub signals: u32,
     /// Stop signs passed.
     pub stop_signs: u32,
+    /// Sections in main-road traffic without a bike lane, longest first.
+    #[serde(default)]
+    pub gaps: Vec<Gap>,
 }
 
 #[derive(Copy, Clone, PartialEq)]
@@ -192,6 +217,7 @@ impl BikeGraph {
         let nodes: HashMap<i64, &street_routing::osm::RawNode> =
             data.nodes.iter().map(|n| (n.id, n)).collect();
         let mut index: HashMap<i64, u32> = HashMap::new();
+        let mut street_ids: HashMap<(Option<String>, String), u32> = HashMap::new();
         let mut node = |g: &mut BikeGraph, id: i64| -> Option<u32> {
             if let Some(i) = index.get(&id) {
                 return Some(*i);
@@ -214,6 +240,15 @@ impl BikeGraph {
                 continue;
             };
             let (fwd, bwd) = directions(&w.tags);
+            let name = [tag(&w.tags, "name"), tag(&w.tags, "ref")]
+                .into_iter()
+                .find(|v| !v.is_empty())
+                .map(str::to_string);
+            let key = (name, tag(&w.tags, "highway").to_string());
+            let street = *street_ids.entry(key.clone()).or_insert_with(|| {
+                g.streets.push(key);
+                (g.streets.len() - 1) as u32
+            });
             let mut prev: Option<u32> = None;
             for id in &w.nodes {
                 let Some(b) = node(&mut g, *id) else {
@@ -227,6 +262,7 @@ impl BikeGraph {
                             to: b,
                             len_m,
                             class,
+                            street,
                         });
                     }
                     if bwd {
@@ -234,6 +270,7 @@ impl BikeGraph {
                             to: a,
                             len_m,
                             class,
+                            street,
                         });
                     }
                 }
@@ -314,6 +351,7 @@ impl BikeGraph {
             length_m: 0.0,
             signals: 0,
             stop_signs: 0,
+            gaps: Vec::new(),
         };
         for (_, e) in &edges {
             r.coords.push(self.pos[e.to as usize]);
@@ -328,8 +366,46 @@ impl BikeGraph {
         // Signals often sit on several nodes of one junction (one per carriageway); count each junction
         // once by merging signals closer than 30 m along the route.
         r.signals = merged_signals(self, &edges);
+        r.gaps = gaps(self, &edges);
         Some(r)
     }
+}
+
+/// Purpose: the runs of main-road edges without a bike lane, at least MIN_GAP_M long, longest first.
+fn gaps(g: &BikeGraph, edges: &[(u32, Edge)]) -> Vec<Gap> {
+    let mut out = Vec::new();
+    let mut i = 0;
+    while i < edges.len() {
+        if edges[i].1.class != Class::Mixed {
+            i += 1;
+            continue;
+        }
+        let start = i;
+        let mut by_street: HashMap<u32, f64> = HashMap::new();
+        let mut length_m = 0.0;
+        while i < edges.len() && edges[i].1.class == Class::Mixed {
+            length_m += edges[i].1.len_m;
+            *by_street.entry(edges[i].1.street).or_default() += edges[i].1.len_m;
+            i += 1;
+        }
+        if length_m < MIN_GAP_M {
+            continue;
+        }
+        let main = by_street
+            .into_iter()
+            .max_by(|a, b| a.1.total_cmp(&b.1).then(b.0.cmp(&a.0)))
+            .map_or(0, |(s, _)| s);
+        let (name, highway) = g.streets.get(main as usize).cloned().unwrap_or_default();
+        out.push(Gap {
+            from: start,
+            to: i,
+            length_m,
+            name,
+            highway,
+        });
+    }
+    out.sort_by(|a, b| b.length_m.total_cmp(&a.length_m));
+    out
 }
 
 fn merged_signals(g: &BikeGraph, edges: &[(u32, Edge)]) -> u32 {
@@ -418,5 +494,32 @@ mod tests {
             directions(&tags(&[("junction", "roundabout")])),
             (true, false)
         );
+    }
+
+    #[test]
+    fn route_prefers_the_cycle_track_and_lists_the_main_road_gap() {
+        // A–B on a primary road (no lane), B–C on a cycle track, and a direct primary road A–C.
+        let xml = r#"<osm version="0.6">
+          <node id="1" lat="0" lon="0"/><node id="2" lat="0" lon="0.002"/>
+          <node id="3" lat="0" lon="0.004"/><node id="4" lat="0.0005" lon="0.004"/>
+          <way id="10"><nd ref="1"/><nd ref="2"/>
+            <tag k="highway" v="primary"/><tag k="name" v="Hauptstraße"/></way>
+          <way id="11"><nd ref="2"/><nd ref="3"/><tag k="highway" v="cycleway"/></way>
+          <way id="12"><nd ref="3"/><nd ref="4"/><tag k="highway" v="residential"/></way>
+        </osm>"#;
+        let g = BikeGraph::from_osm(&street_routing::osm::parse_osm_xml(xml).unwrap());
+        let (a, _) = g.nearest([0.0, 0.0]).unwrap();
+        let (d, _) = g.nearest([0.004, 0.0005]).unwrap();
+        let r = g.route(a, d, &Bike::default()).unwrap();
+        assert_eq!(
+            r.classes,
+            vec![Class::Mixed, Class::Separated, Class::Quiet]
+        );
+        assert_eq!(r.gaps.len(), 1);
+        let gap = &r.gaps[0];
+        assert_eq!((gap.from, gap.to), (0, 1));
+        assert_eq!(gap.name.as_deref(), Some("Hauptstraße"));
+        assert_eq!(gap.highway, "primary");
+        assert!((gap.length_m - 222.4).abs() < 1.0, "{}", gap.length_m);
     }
 }

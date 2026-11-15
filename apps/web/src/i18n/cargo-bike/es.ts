@@ -90,6 +90,35 @@ export const cargoBikeEs = {
   "cb.changed": "cambiado",
   "cb.reset": "Volver a los valores por defecto",
   "cb.viewOnly": "Solo puedes ver este proyecto: los cambios no se guardan.",
+  "cb.gaps": "Huecos en la red ciclista",
+  "cb.gapsSummary":
+    "{km} km del viaje de ida y vuelta ({share}) van por vías principales con tráfico y sin carril bici. Primero los tramos más largos; elige uno para verlo en el mapa.",
+  "cb.noGaps": "Todo el viaje tiene carril bici, vía ciclista o calle tranquila.",
+  "cb.gapUnnamed": "Vía sin nombre ({highway})",
+  "cb.amenities": "Carga y aparcamiento seguro",
+  "cb.amenitiesLoading": "Buscando puntos de carga y aparcamientos de bicis a lo largo de la ruta…",
+  "cb.amenitiesFailed":
+    "Ahora mismo no se pudieron cargar los puntos de carga ni los aparcamientos desde OpenStreetMap.",
+  "cb.noAmenities":
+    "OpenStreetMap no tiene ningún punto de carga para bicis ni aparcamiento seguro a menos de {m} m de la ruta.",
+  "cb.amenity.charging": "Carga de bicis",
+  "cb.amenity.secure_parking": "Aparcamiento seguro de bicis",
+  "cb.amenity.cargo_parking": "Aparcamiento de bicis de carga",
+  "cb.amenityAt": "A {km} km del inicio, a {off} m de la ruta",
+  "cb.amenityCapacity": "{n} plazas",
+  "cb.amenityFree": "gratis",
+  "cb.amenityFee": "de pago",
+  "cb.amenitiesNote":
+    "De OpenStreetMap: estaciones de carga para bicis, consignas, casetas, biciestaciones, aparcamientos vigilados y para bicis de carga. No se incluyen los soportes simples.",
+  "cb.impact": "Clima y salud",
+  "cb.co2Saved": "{kg} kg menos de CO₂ al año que en coche.",
+  "cb.co2Detail":
+    "Combustible del coche {car} kg de CO₂, electricidad de la bici de carga {bike} kg de CO₂ al año.",
+  "cb.kcalTrip": "Calorías quemadas por viaje de ida y vuelta",
+  "cb.kcalYear": "Calorías quemadas al año",
+  "cb.activeWeek": "Bici por semana",
+  "cb.activeOfTarget": "{share} de los {target} minutos de actividad semanal que recomienda la OMS",
+  "cb.impactValues": "Valores de clima y salud",
   "cb.error.too_far":
     "El destino está demasiado lejos para una ruta por calles (unos 40 km como máximo). Usa el mapa de autonomía para distancias mayores.",
   "cb.error.no_streets": "Aquí no se han encontrado calles por las que pueda ir una bici.",
