@@ -36,7 +36,7 @@ export const RAILWAY: Network = {
   stations: [
     station(1, "Westpark", -3000, 0),
     station(2, "Museumplein", -1500, 200),
-    station(3, "Centraal", 0, 0),
+    { ...station(3, "Centraal", 0, 0), features: ["elevator", "escalator"] },
     station(4, "Oosterdok", 1400, -300),
     station(5, "Amstel Oost", 3000, -200),
     station(6, "Noorderhaven", 200, 2500),
@@ -76,7 +76,16 @@ export const STREET_LINES: StreetLinesDoc = {
           pt(2, "De Pijp", 310, -1290),
           pt(3, "Oosterdok", 1410, -290),
         ],
+        // Running times between the stops, s.
+        legs: [
+          { index: 0, from: 0, to: 1, time_s: 120 },
+          { index: 1, from: 1, to: 2, time_s: 150 },
+          { index: 2, from: 2, to: 3, time_s: 90 },
+        ],
+        length_m: 9000,
+        time_s: 360,
       },
+      timing: { headwayMin: 10, dwellS: 20, layoverMin: 5 },
     } as unknown as SavedStreetLine,
   ],
 };

@@ -259,6 +259,42 @@ describe("projects", () => {
       (await as("alice").put(`${path}/schematic`, { doc: { pins: {}, labels: { a: 9 } }, baseVersion: 1 }))
         .status,
     ).toBe(400);
+    // Statuses, name rotations and drawn areas (tariff zones, landmarks).
+    const extras = {
+      ...schematic,
+      statuses: { centraal: ["central_station", "airport"] },
+      rotate: { centraal: -45 },
+      areas: [
+        {
+          id: "a1",
+          name: "Zone A",
+          kind: "zone",
+          color: "#dc2626",
+          points: [
+            [0, 0],
+            [100, 0],
+            [0, 100],
+          ],
+        },
+      ],
+    };
+    expect((await as("alice").put(`${path}/schematic`, { doc: extras, baseVersion: 1 })).status).toBe(200);
+    expect(
+      (
+        await as("alice").put(`${path}/schematic`, {
+          doc: { ...extras, statuses: { centraal: ["castle"] } },
+          baseVersion: 2,
+        })
+      ).status,
+    ).toBe(400);
+    expect(
+      (
+        await as("alice").put(`${path}/schematic`, {
+          doc: { ...extras, areas: [{ ...extras.areas[0], points: [[0, 0]] }] },
+          baseVersion: 2,
+        })
+      ).status,
+    ).toBe(400);
     // Tables tab scenarios: named copies of the design, at most 20.
     const scenario = (id: string) => ({
       id,

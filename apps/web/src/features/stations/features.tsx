@@ -50,9 +50,14 @@ interface Glyph {
 }
 
 const GLYPHS: Record<StationFeature | StationStatus, Glyph> = {
-  central_station: { d: "M7 4h10a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zM5 11h14M9 17l-2 4M15 17l2 4" },
+  central_station: {
+    d: "M7 4h10a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zM5 11h14M9 17l-2 4M15 17l2 4",
+  },
   bus_station: { d: "M6 4h12a2 2 0 0 1 2 2v11H4V6a2 2 0 0 1 2-2zM4 12h16M7 17v3M17 17v3" },
-  airport: { d: "M21 14v-2l-8-5V3.5a1 1 0 0 0-2 0V7l-8 5v2l8-2.5V17l-2 1.5V20l3-1 3 1v-1.5L13 17v-5.5z", fill: true },
+  airport: {
+    d: "M21 14v-2l-8-5V3.5a1 1 0 0 0-2 0V7l-8 5v2l8-2.5V17l-2 1.5V20l3-1 3 1v-1.5L13 17v-5.5z",
+    fill: true,
+  },
   seaport: { d: "M12 7v14M8 10h8M5 14a7 7 0 0 0 14 0M12 3a2 2 0 1 0 0 4a2 2 0 1 0 0-4" },
   park_and_ride: { d: "M8 20V4h5a4 4 0 0 1 0 8H8" },
   hospital: { d: "M12 5v14M5 12h14" },
@@ -62,7 +67,9 @@ const GLYPHS: Record<StationFeature | StationStatus, Glyph> = {
   ramp: { d: "M3 19h18L3 10z" },
   elevator: { d: "M5 3h14v18H5zM9 9l3-3 3 3M9 15l3 3 3-3" },
   escalator: { d: "M3 19h5l8-12h5M8 13v6" },
-  tactile_paving: { d: "M7 7h.01M12 7h.01M17 7h.01M7 12h.01M12 12h.01M17 12h.01M7 17h.01M12 17h.01M17 17h.01" },
+  tactile_paving: {
+    d: "M7 7h.01M12 7h.01M17 7h.01M7 12h.01M12 12h.01M17 12h.01M7 17h.01M12 17h.01M17 17h.01",
+  },
   toilets: { d: "", text: "WC" },
   bike_parking: { d: "M6 17a3 3 0 1 0 0 .1M18 17a3 3 0 1 0 0 .1M6 17l4-7h5l3 7M10 10l3 7M9 7h3" },
 };
@@ -162,7 +169,11 @@ export function SymbolPicker<T extends StationFeature | StationStatus>({
             key={id}
             type="button"
             aria-pressed={on}
-            onClick={() => onChange(on ? value.filter((x) => x !== id) : options.filter((x) => x === id || value.includes(x)))}
+            onClick={() =>
+              onChange(
+                on ? value.filter((x) => x !== id) : options.filter((x) => x === id || value.includes(x)),
+              )
+            }
             className={`inline-flex min-h-8 items-center gap-1.5 rounded-full border px-2 py-0.5 text-xs font-medium ${on ? "border-blue-300 bg-blue-50 text-blue-800" : "border-slate-300 bg-white text-slate-700 hover:bg-slate-50"}`}
           >
             <SymbolIcon id={id} size={18} />

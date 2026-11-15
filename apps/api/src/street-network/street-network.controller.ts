@@ -131,7 +131,9 @@ export function parseBbox(v: string | undefined): Bbox {
     e! - w! > MAX_WATER_SPAN_DEG ||
     nn! - s! > MAX_WATER_SPAN_DEG
   )
-    throw new BadRequestException(`bbox must be west,south,east,north and at most ${MAX_WATER_SPAN_DEG}° on a side`);
+    throw new BadRequestException(
+      `bbox must be west,south,east,north and at most ${MAX_WATER_SPAN_DEG}° on a side`,
+    );
   const down = (x: number) => Math.floor(x * 100) / 100;
   const up = (x: number) => Math.ceil(x * 100) / 100;
   return [down(w!), down(s!), up(e!), up(nn!)];

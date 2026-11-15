@@ -1,97 +1,53 @@
-import {
-  type CSSProperties,
-  type PointerEvent as ReactPointerEvent,
-  type ReactNode,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useI18n } from "../../i18n/i18n";
-import type { MessageKey } from "../../i18n/messages";
-import { findMode } from "../../plugins/registry";
 import type { PluginLineInput } from "../journey-planner/network";
-import { RAIL_MODES } from "../railways/modes";
-import type { Network } from "../railways/types";
-import { MODES } from "../street-lines/modes";
+import type { Network, RailEngineLoader } from "../railways/types";
 import type { StreetLinesDoc } from "../street-lines/saved";
-import type { LonLat } from "../street-lines/types";
+import type { HeightsFetcher } from "../tables/railBuild";
+import { EMPTY_SCHEMATIC, LAYER_LABEL, type SchematicArea, type SchematicDoc, useModeLabel } from "./common";
+import { useSchematicDetails } from "./details";
 import { download, fileName, pngBlob, printSvg, svgText } from "./export";
-import { defaultOrigin, layout, type Pt, snapToNeighbours } from "./layout";
-import {
-  type Layer,
-  LAYERS,
-  linesAt,
-  type SchematicLine,
-  type SchematicNetwork,
-  schematicNetwork,
-} from "./lines";
-import { bundles, LABEL_DIRS, offsetPolyline, pathD, placeLabels } from "./paths";
+import { defaultOrigin } from "./layout";
+import { LAYERS, schematicNetwork } from "./lines";
+import { type AreaDraft, NetworkMap } from "./NetworkMap";
+import { StripMap } from "./StripMap";
+import { loadWater, waterBox, type WaterLoader, type WaterShapes } from "./water";
 
-/** The planner's edits of the diagram, saved with the project (drawing kind "schematic"). */
-export interface SchematicDoc {
-  /** Origin of the pinned positions; set when the first station is moved. */
-  origin?: LonLat;
-  /** Stations the planner moved: station key → metres east and north of `origin`. */
-  pins: Record<string, Pt>;
-  /** Label place per station key (index into the eight directions, clockwise from east). */
-  labels: Record<string, number>;
-  /** Straighten sections to 45° steps (default on). */
-  straighten?: boolean;
-  /** Round the corners (default on). */
-  curves?: boolean;
-  /** Snap to 45° from a neighbour while dragging (default on). */
-  snap?: boolean;
-  /** Mode layers switched off. */
-  hidden?: Layer[];
-}
+export { EMPTY_SCHEMATIC, type SchematicArea, type SchematicDoc };
 
-export const EMPTY_SCHEMATIC: SchematicDoc = { pins: {}, labels: {} };
+/** Colours offered for tariff zones and landmarks. */
+const AREA_COLORS = ["#dc2626", "#2563eb", "#16a34a", "#9333ea", "#ea580c", "#0891b2", "#78716c"];
 
-/** Screen pixels per diagram unit (the typical distance between stations). */
-const PX = 110;
-const PAD = 70;
-const LINE_W = 6;
-const GAP = 7;
-const LABEL_SIZE = 13;
-const FONT = "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif";
-const INK = "#1e293b";
-
-const LAYER_LABEL: Record<Layer, MessageKey> = {
-  bus: "schematic.layer.bus",
-  brt: "schematic.layer.brt",
-  tram: "schematic.layer.tram",
-  metro: "schematic.layer.metro",
-  regional: "schematic.layer.regional",
-  long_distance: "schematic.layer.long_distance",
-  other: "schematic.layer.other",
-};
-
-/** Purpose: the label of a mode id (rail, street or plugin mode). */
-function useModeLabel(): (mode: string) => string {
-  const { t } = useI18n();
-  return (mode) => {
-    const rail = RAIL_MODES.find((m) => m.id === mode);
-    if (rail) return t(rail.label);
-    const street = MODES[mode as keyof typeof MODES];
-    if (street) return t(street.label);
-    return findMode(mode)?.mode.label ?? mode;
-  };
-}
-
-/** Purpose: black or white, whichever reads better on a colour. */
-function textOn(hex: string): string {
-  const m = /^#?([0-9a-f]{6})$/i.exec(hex);
-  if (!m) return "#ffffff";
-  const n = parseInt(m[1]!, 16);
-  const lum = (0.299 * ((n >> 16) & 255) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)) / 255;
-  return lum > 0.6 ? "#0f172a" : "#ffffff";
+/**
+ * Purpose: the water around a network, fetched once per box while water is switched on.
+ * Output: the shapes, or null while loading, when off, or when OpenStreetMap is unavailable.
+ */
+function useWater(points: string, on: boolean, load: WaterLoader): WaterShapes | null {
+  const [water, setWater] = useState<WaterShapes | null>(null);
+  useEffect(() => {
+    let live = true;
+    const box = on ? waterBox(JSON.parse(points) as [number, number][]) : null;
+    if (!box) {
+      setWater(null);
+      return;
+    }
+    load(box)
+      .then((w) => live && setWater(w))
+      .catch(() => live && setWater(null));
+    return () => {
+      live = false;
+    };
+  }, [points, on, load]);
+  return water;
 }
 
 /**
  * The Schematic tab (ADR-0025, ADR-0041; FR-SCH-01..03): the network map with every line drawn schematically
  * (45° sections, lines side by side where they share a section, rounded corners), mode layers to show or hide,
- * stations to drag and labels to place, a strip map per line with its connections, and export as SVG, PNG and
- * print or PDF. Edits are saved with the project when `onDoc` is given; without it the diagram is view only.
+ * stations to drag, click and label, status and feature symbols, water and the planner's tariff zones and
+ * landmarks; a strip map per line with its connections, driving times, service, levels and ground heights;
+ * and export as SVG, PNG and print or PDF. Edits are saved with the project when `onDoc` is given; without it
+ * the diagram is view only.
  */
 export function Schematic({
   railway,
@@ -101,6 +57,9 @@ export function Schematic({
   onDoc,
   projectName,
   onCreate,
+  loadRail,
+  fetchHeights,
+  waterLoader = loadWater,
 }: {
   railway: Network | null | undefined;
   streetLines: StreetLinesDoc | null | undefined;
@@ -110,28 +69,62 @@ export function Schematic({
   projectName: string;
   /** Opens the Create tab (shown when there are no lines yet). */
   onCreate?: () => void;
+  /** Tests inject the rail engine, the terrain heights and the water. */
+  loadRail?: RailEngineLoader;
+  fetchHeights?: HeightsFetcher;
+  waterLoader?: WaterLoader;
 }) {
   const { t, tn } = useI18n();
   const modeLabel = useModeLabel();
   const d = doc ?? EMPTY_SCHEMATIC;
   // The plugin lines arrive as a new list on every render of the workspace: compare their content.
   const pluginJson = JSON.stringify(pluginLines);
-  const net = useMemo(
+  const base = useMemo(
     () => schematicNetwork(railway, streetLines, JSON.parse(pluginJson) as PluginLineInput[]),
     [railway, streetLines, pluginJson],
   );
+  const { net, heights } = useSchematicDetails(base, railway, loadRail, fetchHeights);
   const [view, setView] = useState<"network" | "line">("network");
   const [lineId, setLineId] = useState<string | null>(null);
   const [zoom, setZoom] = useState<number | null>(null);
   const [selected, setSelected] = useState<number | null>(null);
+  const [draft, setDraft] = useState<AreaDraft | null>(null);
+  const [areaId, setAreaId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const svgRef = useRef<SVGSVGElement>(null);
+  const water = useWater(
+    JSON.stringify(base.stations.map((s) => s.lonlat)),
+    view === "network" && d.water !== false,
+    waterLoader,
+  );
 
-  const selStation = view === "network" && selected !== null ? (net.stations[selected] ?? null) : null;
   const line = net.lines.find((l) => l.id === lineId) ?? net.lines[0] ?? null;
   const present = LAYERS.filter((l) => net.lines.some((x) => x.layer === l));
   const hidden = new Set(d.hidden ?? []);
   const set = (patch: Partial<SchematicDoc>) => onDoc?.({ ...d, ...patch });
+  const areas = d.areas ?? [];
+  const area = areas.find((a) => a.id === areaId) ?? null;
+  const setArea = (patch: Partial<SchematicArea>) =>
+    set({ areas: areas.map((a) => (a.id === areaId ? { ...a, ...patch } : a)) });
+  const openLine = (id: string) => {
+    setLineId(id);
+    setSelected(null);
+    setView("line");
+  };
+  const finishArea = () => {
+    if (!draft || draft.points.length < 3) return;
+    const id = `a${Date.now().toString(36)}`;
+    const next: SchematicArea = {
+      id,
+      name: t("schematic.area.defaultName", { n: areas.length + 1 }),
+      kind: "zone",
+      color: AREA_COLORS[areas.length % AREA_COLORS.length]!,
+      points: draft.points,
+    };
+    set({ origin: d.origin ?? defaultOrigin(net), areas: [...areas, next], showAreas: true });
+    setDraft(null);
+    setAreaId(id);
+  };
 
   const exportAs = async (kind: "svg" | "png" | "print") => {
     const svg = svgRef.current;
@@ -209,6 +202,11 @@ export function Schematic({
               modeLabel={modeLabel}
               selected={selected}
               onSelect={setSelected}
+              onLine={openLine}
+              water={water}
+              draft={draft}
+              onDraft={setDraft}
+              selectedArea={areaId}
             />
           ) : (
             line && (
@@ -216,6 +214,8 @@ export function Schematic({
                 svgRef={svgRef}
                 net={net}
                 line={line}
+                doc={d}
+                heights={heights}
                 zoom={zoom}
                 modeLabel={modeLabel}
                 title={projectName}
@@ -237,141 +237,20 @@ export function Schematic({
           >
             {t("schematic.view.network")}
           </button>
-          <button type="button" role="tab" aria-selected={view === "line"} onClick={() => setView("line")}>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={view === "line"}
+            onClick={() => {
+              setDraft(null);
+              setView("line");
+            }}
+          >
             {t("schematic.view.line")}
           </button>
         </div>
 
-        {view === "network" ? (
-          <>
-            {selStation && (
-              <section
-                aria-label={t("schematic.station")}
-                className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3.5"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="caps">{t("schematic.station")}</p>
-                    <h2 className="text-lg font-semibold">{selStation.name}</h2>
-                    <p className="text-sm text-slate-600">
-                      {t("schematic.linesHere", {
-                        lines: linesAt(net, selected!)
-                          .map((l) => l.name)
-                          .join(", "),
-                      })}
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    className="icon-btn"
-                    aria-label={t("common.close")}
-                    onClick={() => setSelected(null)}
-                  >
-                    ×
-                  </button>
-                </div>
-                {onDoc && (
-                  <div className="flex flex-wrap items-end gap-3">
-                    <label className="flex min-w-48 flex-1 flex-col gap-1.5">
-                      <span className="caps">{t("schematic.label")}</span>
-                      <span className="field">
-                        <select
-                          value={d.labels[selStation.key] ?? "auto"}
-                          onChange={(e) => {
-                            const labels = { ...d.labels };
-                            if (e.target.value === "auto") delete labels[selStation.key];
-                            else labels[selStation.key] = Number(e.target.value);
-                            set({ labels });
-                          }}
-                        >
-                          <option value="auto">{t("schematic.label.auto")}</option>
-                          {LABEL_DIRS.map((_, k) => (
-                            <option key={k} value={k}>
-                              {t(`schematic.label.${k}` as MessageKey)}
-                            </option>
-                          ))}
-                        </select>
-                      </span>
-                    </label>
-                    {selStation.key in d.pins && (
-                      <button
-                        type="button"
-                        className="btn"
-                        onClick={() => {
-                          const pins = { ...d.pins };
-                          delete pins[selStation.key];
-                          set({ pins });
-                        }}
-                      >
-                        {t("schematic.unpin")}
-                      </button>
-                    )}
-                  </div>
-                )}
-              </section>
-            )}
-            {present.length > 1 && (
-              <fieldset>
-                <legend className="caps mb-2">{t("schematic.layers")}</legend>
-                <div className="flex flex-wrap gap-1.5">
-                  {present.map((l) => (
-                    <button
-                      key={l}
-                      type="button"
-                      className="chip"
-                      aria-pressed={!hidden.has(l)}
-                      onClick={() => {
-                        const next = new Set(hidden);
-                        if (next.has(l)) next.delete(l);
-                        else next.add(l);
-                        if (onDoc) set({ hidden: LAYERS.filter((x) => next.has(x)) });
-                      }}
-                      disabled={!onDoc}
-                    >
-                      {t(LAYER_LABEL[l])}
-                    </button>
-                  ))}
-                </div>
-              </fieldset>
-            )}
-            <fieldset className="flex flex-col gap-2">
-              <legend className="caps mb-2">{t("schematic.drawing")}</legend>
-              {(
-                [
-                  ["straighten", "schematic.straighten"],
-                  ["curves", "schematic.curves"],
-                  ["snap", "schematic.snap"],
-                ] as const
-              ).map(([k, label]) => (
-                <label key={k} className="flex min-h-9 items-center gap-2.5 text-sm">
-                  <input
-                    type="checkbox"
-                    className="h-4 w-4"
-                    checked={d[k] !== false}
-                    disabled={!onDoc}
-                    onChange={(e) => set({ [k]: e.target.checked })}
-                  />
-                  {t(label)}
-                </label>
-              ))}
-            </fieldset>
-            <p className="text-sm text-slate-600">
-              {onDoc ? t("schematic.dragHint") : t("schematic.readOnly")}
-            </p>
-            {onDoc && Object.keys(d.pins).length > 0 && (
-              <button
-                type="button"
-                className="btn"
-                onClick={() => {
-                  if (window.confirm(t("schematic.resetConfirm")))
-                    set({ pins: {}, labels: {}, origin: undefined });
-                }}
-              >
-                {t("schematic.reset")}
-              </button>
-            )}
-          </>
-        ) : (
+        {view === "line" && (
           <label className="flex flex-col gap-1.5">
             <span className="caps">{t("schematic.pickLine")}</span>
             <span className="field">
@@ -384,6 +263,195 @@ export function Schematic({
               </select>
             </span>
           </label>
+        )}
+
+        {view === "network" && present.length > 1 && (
+          <fieldset>
+            <legend className="caps mb-2">{t("schematic.layers")}</legend>
+            <div className="flex flex-wrap gap-1.5">
+              {present.map((l) => (
+                <button
+                  key={l}
+                  type="button"
+                  className="chip"
+                  aria-pressed={!hidden.has(l)}
+                  onClick={() => {
+                    const next = new Set(hidden);
+                    if (next.has(l)) next.delete(l);
+                    else next.add(l);
+                    if (onDoc) set({ hidden: LAYERS.filter((x) => next.has(x)) });
+                  }}
+                  disabled={!onDoc}
+                >
+                  {t(LAYER_LABEL[l])}
+                </button>
+              ))}
+            </div>
+          </fieldset>
+        )}
+        <fieldset className="flex flex-col gap-1">
+          <legend className="caps mb-2">{t("schematic.drawing")}</legend>
+          {(
+            [
+              ...(view === "network"
+                ? ([
+                    ["straighten", "schematic.straighten"],
+                    ["curves", "schematic.curves"],
+                    ["snap", "schematic.snap"],
+                  ] as const)
+                : []),
+              ["symbols", "schematic.showStatuses"],
+              ["features", "schematic.showFeatures"],
+              ...(view === "network"
+                ? ([
+                    ["water", "schematic.showWater"],
+                    ["showAreas", "schematic.showAreas"],
+                  ] as const)
+                : []),
+            ] as const
+          ).map(([k, label]) => (
+            <label key={k} className="flex min-h-9 items-center gap-2.5 text-sm">
+              <input
+                type="checkbox"
+                className="h-4 w-4"
+                checked={d[k] !== false}
+                disabled={!onDoc}
+                onChange={(e) => set({ [k]: e.target.checked })}
+              />
+              {t(label)}
+            </label>
+          ))}
+        </fieldset>
+
+        {view === "network" && (
+          <>
+            <section aria-label={t("schematic.areas")} className="flex flex-col gap-2">
+              <h2 className="caps">{t("schematic.areas")}</h2>
+              {areas.length > 0 && (
+                <ul className="flex flex-col gap-1">
+                  {areas.map((a) => (
+                    <li key={a.id}>
+                      <button
+                        type="button"
+                        aria-pressed={a.id === areaId}
+                        className={`flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-start text-sm ${a.id === areaId ? "bg-blue-50 font-semibold" : "hover:bg-slate-50"}`}
+                        onClick={() => setAreaId(a.id === areaId ? null : a.id)}
+                      >
+                        <span
+                          className="h-3.5 w-5 shrink-0 rounded-sm border-2"
+                          style={{ borderColor: a.color, background: `${a.color}22` }}
+                        />
+                        {a.name}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {area && onDoc && (
+                <div className="flex flex-col gap-2 rounded-xl border border-slate-200 bg-slate-50 p-3">
+                  <label className="flex flex-col gap-1">
+                    <span className="text-xs text-slate-500">{t("schematic.area.name")}</span>
+                    <span className="field">
+                      <input
+                        value={area.name}
+                        maxLength={80}
+                        onChange={(e) => setArea({ name: e.target.value })}
+                      />
+                    </span>
+                  </label>
+                  <label className="flex flex-col gap-1">
+                    <span className="text-xs text-slate-500">{t("schematic.area.kind")}</span>
+                    <span className="field">
+                      <select
+                        value={area.kind}
+                        onChange={(e) => setArea({ kind: e.target.value as SchematicArea["kind"] })}
+                      >
+                        <option value="zone">{t("schematic.area.zone")}</option>
+                        <option value="landmark">{t("schematic.area.landmark")}</option>
+                      </select>
+                    </span>
+                  </label>
+                  <div role="group" aria-label={t("schematic.area.color")} className="flex flex-wrap gap-1.5">
+                    {AREA_COLORS.map((c) => (
+                      <button
+                        key={c}
+                        type="button"
+                        aria-label={c}
+                        aria-pressed={area.color === c}
+                        className={`h-7 w-7 rounded-full border-2 ${area.color === c ? "border-slate-900" : "border-white"}`}
+                        style={{ background: c }}
+                        onClick={() => setArea({ color: c })}
+                      />
+                    ))}
+                  </div>
+                  <p className="text-xs text-slate-600">{t("schematic.area.dragHint")}</p>
+                  <button
+                    type="button"
+                    className="btn self-start"
+                    onClick={() => {
+                      set({ areas: areas.filter((a) => a.id !== areaId) });
+                      setAreaId(null);
+                    }}
+                  >
+                    {t("schematic.area.remove")}
+                  </button>
+                </div>
+              )}
+              {onDoc &&
+                (draft ? (
+                  <div className="flex flex-col gap-2 rounded-xl border border-blue-200 bg-blue-50 p-3">
+                    <p className="text-sm">{t("schematic.area.drawHint")}</p>
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        className="btn btn-pri"
+                        disabled={draft.points.length < 3}
+                        onClick={finishArea}
+                      >
+                        {t("schematic.area.finish")}
+                      </button>
+                      <button
+                        type="button"
+                        className="btn"
+                        disabled={!draft.points.length}
+                        onClick={() => setDraft({ points: draft.points.slice(0, -1) })}
+                      >
+                        {t("schematic.area.undo")}
+                      </button>
+                      <button type="button" className="btn" onClick={() => setDraft(null)}>
+                        {t("common.cancel")}
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    className="btn self-start"
+                    onClick={() => {
+                      setSelected(null);
+                      setAreaId(null);
+                      setDraft({ points: [] });
+                    }}
+                  >
+                    {t("schematic.area.draw")}
+                  </button>
+                ))}
+            </section>
+            <p className="text-sm text-slate-600">
+              {onDoc ? t("schematic.dragHint") : t("schematic.readOnly")}
+            </p>
+            {onDoc && Object.keys(d.pins).length > 0 && (
+              <button
+                type="button"
+                className="btn"
+                onClick={() => {
+                  if (window.confirm(t("schematic.resetConfirm"))) set({ pins: {}, labels: {} });
+                }}
+              >
+                {t("schematic.reset")}
+              </button>
+            )}
+          </>
         )}
 
         <div>
@@ -410,411 +478,5 @@ export function Schematic({
         </p>
       </aside>
     </div>
-  );
-}
-
-/** Purpose: the on-screen size of a diagram: fitted to the page width (zoom null), or at a zoom. */
-function sized(width: number, height: number, zoom: number | null): CSSProperties {
-  return zoom === null
-    ? { width: "100%", maxWidth: width, height: "auto" }
-    : { width: width * zoom, height: height * zoom };
-}
-
-/** Purpose: the diagram's title, legend and footer, under the drawing. Output: SVG elements and their height. */
-function legend(
-  lines: readonly SchematicLine[],
-  width: number,
-  top: number,
-  modeLabel: (m: string) => string,
-  footer: string,
-): { node: ReactNode; height: number } {
-  const colW = 230;
-  const cols = Math.max(1, Math.floor((width - PAD) / colW));
-  const rows = Math.ceil(lines.length / cols);
-  const height = 30 + rows * 26 + 34;
-  return {
-    height,
-    node: (
-      <g fontFamily={FONT}>
-        {lines.map((l, i) => {
-          const x = PAD / 2 + (i % cols) * colW;
-          const y = top + 20 + Math.floor(i / cols) * 26;
-          return (
-            <g key={l.id}>
-              <rect x={x} y={y} width={36} height={16} rx={4} fill={l.color} />
-              <text
-                x={x + 18}
-                y={y + 12}
-                fontSize={10}
-                fontWeight={700}
-                textAnchor="middle"
-                fill={textOn(l.color)}
-              >
-                {l.name.length > 5 ? "" : l.name}
-              </text>
-              <text x={x + 44} y={y + 12.5} fontSize={12} fill={INK}>
-                {l.name} · {modeLabel(l.mode)}
-              </text>
-            </g>
-          );
-        })}
-        <text x={PAD / 2} y={top + height - 10} fontSize={10} fill="#64748b">
-          {footer}
-        </text>
-      </g>
-    ),
-  };
-}
-
-function useFooter(title: string): string {
-  const { t, language } = useI18n();
-  const date = new Intl.DateTimeFormat(language, { dateStyle: "medium" }).format(new Date());
-  return t("schematic.footer", { project: title, date });
-}
-
-/** The network diagram: every visible line, stations to drag, labels to place. */
-function NetworkMap({
-  svgRef,
-  net,
-  doc,
-  hidden,
-  zoom,
-  editable,
-  onDoc,
-  title,
-  modeLabel,
-  selected,
-  onSelect,
-}: {
-  svgRef: React.RefObject<SVGSVGElement | null>;
-  net: SchematicNetwork;
-  doc: SchematicDoc;
-  hidden: Set<Layer>;
-  /** Screen zoom; null fits the width of the page. */
-  zoom: number | null;
-  selected: number | null;
-  onSelect: (i: number | null) => void;
-  editable: boolean;
-  onDoc: (patch: Partial<SchematicDoc>) => void;
-  title: string;
-  modeLabel: (m: string) => string;
-}) {
-  const { t } = useI18n();
-  const footer = useFooter(title);
-  const origin = doc.origin ?? defaultOrigin(net);
-  const straighten = doc.straighten !== false;
-  const curves = doc.curves !== false;
-  const snap = doc.snap !== false;
-  const [ox, oy] = origin;
-  const { pos, unit } = useMemo(
-    () => layout(net, [ox, oy], doc.pins, straighten),
-    [net, ox, oy, doc.pins, straighten],
-  );
-  const [drag, setDrag] = useState<{ i: number; at: Pt } | null>(null);
-
-  const lines = net.lines.filter((l) => !hidden.has(l.layer));
-  const shown = new Set(lines.flatMap((l) => l.stops));
-  const world = pos.map((p, i) => (drag?.i === i ? drag.at : p));
-  const pts = [...shown].map((i) => world[i]!);
-  const xs = pts.map((p) => p[0]);
-  const ys = pts.map((p) => p[1]);
-  const minX = Math.min(...xs, 0);
-  const maxY = Math.max(...ys, 0);
-  const s = PX / unit;
-  // Keep the frame from the layout (not the drag) so the drawing does not jump while dragging.
-  const fxs = [...shown].map((i) => pos[i]![0]);
-  const fys = [...shown].map((i) => pos[i]![1]);
-  const fMinX = fxs.length ? Math.min(...fxs) : minX;
-  const fMaxX = fxs.length ? Math.max(...fxs) : minX;
-  const fMinY = fys.length ? Math.min(...fys) : maxY;
-  const fMaxY = fys.length ? Math.max(...fys) : maxY;
-  const screen = (p: Pt): Pt => [(p[0] - fMinX) * s + PAD + 60, (fMaxY - p[1]) * s + PAD + 40];
-  const sp = world.map(screen);
-  const width = Math.max(480, (fMaxX - fMinX) * s + 2 * PAD + 120);
-  const drawH = (fMaxY - fMinY) * s + 2 * PAD + 80;
-  const leg = legend(lines, width, drawH, modeLabel, footer);
-  const height = drawH + leg.height;
-
-  const bundle = bundles(lines);
-  const neighbours = (i: number): number[] => {
-    const out = new Set<number>();
-    for (const l of lines)
-      l.stops.forEach((x, k) => {
-        if (x !== i) return;
-        if (k > 0) out.add(l.stops[k - 1]!);
-        if (k < l.stops.length - 1) out.add(l.stops[k + 1]!);
-      });
-    out.delete(i);
-    return [...out];
-  };
-
-  const toWorld = (e: ReactPointerEvent): Pt | null => {
-    const svg = svgRef.current;
-    const m = svg?.getScreenCTM();
-    if (!svg || !m) return null;
-    const p = new DOMPoint(e.clientX, e.clientY).matrixTransform(m.inverse());
-    return [(p.x - PAD - 60) / s + fMinX, fMaxY - (p.y - PAD - 40) / s];
-  };
-  const onMove = (e: ReactPointerEvent) => {
-    if (!drag) return;
-    const w = toWorld(e);
-    if (!w) return;
-    const at = snap
-      ? snapToNeighbours(
-          w,
-          neighbours(drag.i).map((n) => world[n]!),
-          unit * 0.35,
-        )
-      : w;
-    setDrag({ i: drag.i, at });
-  };
-  const onUp = () => {
-    if (!drag) return;
-    const st = net.stations[drag.i]!;
-    const moved = Math.hypot(drag.at[0] - pos[drag.i]![0], drag.at[1] - pos[drag.i]![1]) > unit * 0.02;
-    if (moved) {
-      // The station stays where it was put; the others are laid out around it again.
-      onDoc({ origin, pins: { ...doc.pins, [st.key]: drag.at } });
-    }
-    setDrag(null);
-  };
-
-  const drawn = lines.map((l) => ({ line: l, ...offsetPolyline(l, sp, bundle, GAP, straighten) }));
-  const radiusOf = (i: number): number => {
-    const nb = neighbours(i);
-    const most = Math.max(
-      1,
-      ...nb.map((n) => bundle.get(`${Math.min(i, n)}-${Math.max(i, n)}`)?.length ?? 1),
-    );
-    return Math.max(5, ((most - 1) * GAP) / 2 + 5);
-  };
-  const stationList = [...shown].map((i) => ({
-    i,
-    at: sp[i]!,
-    name: net.stations[i]!.name,
-    r: radiusOf(i),
-    neighbours: neighbours(i).map((n) => sp[n]!),
-  }));
-  const fixedLabels = new Map<number, number>();
-  for (const st of stationList) {
-    const k = doc.labels[net.stations[st.i]!.key];
-    if (k !== undefined) fixedLabels.set(st.i, k);
-  }
-  const labelDir = placeLabels(
-    stationList,
-    drawn.map((x) => x.pts),
-    fixedLabels,
-    LABEL_SIZE,
-  );
-  const sel = selected !== null && shown.has(selected) ? selected : null;
-
-  return (
-    <div className="flex flex-col gap-3">
-      <svg
-        ref={svgRef}
-        role="img"
-        aria-label={t("schematic.diagramAria")}
-        width={Math.round(width)}
-        height={Math.round(height)}
-        viewBox={`0 0 ${Math.round(width)} ${Math.round(height)}`}
-        style={{ ...sized(width, height, zoom), touchAction: drag ? "none" : undefined }}
-        className="max-w-none rounded-xl bg-white shadow-sm"
-        onPointerMove={onMove}
-        onPointerUp={onUp}
-        onPointerCancel={() => setDrag(null)}
-      >
-        <rect width={width} height={height} fill="#ffffff" />
-        <text x={PAD / 2} y={36} fontFamily={FONT} fontSize={20} fontWeight={700} fill={INK}>
-          {title}
-        </text>
-        <g fill="none" strokeLinecap="round" strokeLinejoin="round">
-          {drawn.map(({ line: l, pts: p, station }) => (
-            <path
-              key={l.id}
-              d={pathD(p, (k) => (!curves ? 0 : station[k] ? GAP * 1.5 : PX * 0.4))}
-              stroke={l.color}
-              strokeWidth={LINE_W}
-            >
-              <title>{l.name}</title>
-            </path>
-          ))}
-        </g>
-        {[...shown].map((i) => {
-          const st = net.stations[i]!;
-          const at = sp[i]!;
-          const here = lines.filter((l) => l.stops.includes(i));
-          const r = radiusOf(i);
-          const dirK = labelDir.get(i) ?? 0;
-          const [ux, uy] = LABEL_DIRS[dirK]!;
-          const lx = at[0] + ux * (r + 7);
-          const ly = at[1] + uy * (r + 7);
-          const anchor = ux > 0.3 ? "start" : ux < -0.3 ? "end" : "middle";
-          const base = uy > 0.3 ? "hanging" : uy < -0.3 ? "auto" : "central";
-          const interchange = here.length > 1;
-          return (
-            <g key={st.key}>
-              {sel === i && (
-                <circle data-ui="" cx={at[0]} cy={at[1]} r={r + 6} fill="#bfdbfe" opacity={0.8} />
-              )}
-              <circle
-                cx={at[0]}
-                cy={at[1]}
-                r={r}
-                fill="#ffffff"
-                stroke={interchange ? INK : (here[0]?.color ?? INK)}
-                strokeWidth={interchange ? 2.5 : 3}
-                style={editable ? { cursor: drag?.i === i ? "grabbing" : "grab" } : { cursor: "pointer" }}
-                onPointerDown={(e) => {
-                  onSelect(i);
-                  if (!editable) return;
-                  e.preventDefault();
-                  (e.currentTarget.ownerSVGElement as SVGSVGElement | null)?.setPointerCapture(e.pointerId);
-                  setDrag({ i, at: world[i]! });
-                }}
-              >
-                <title>{st.name}</title>
-              </circle>
-              <text
-                x={lx}
-                y={ly}
-                fontFamily={FONT}
-                fontSize={LABEL_SIZE}
-                fontWeight={interchange ? 700 : 500}
-                fill={INK}
-                textAnchor={anchor}
-                dominantBaseline={base}
-                stroke="#ffffff"
-                strokeWidth={3}
-                paintOrder="stroke"
-                style={{ cursor: "pointer", userSelect: "none" }}
-                onClick={() => onSelect(i)}
-              >
-                {st.name}
-              </text>
-            </g>
-          );
-        })}
-        <g transform="translate(0 0)">{leg.node}</g>
-      </svg>
-    </div>
-  );
-}
-
-/** One line on its own: a straight band with its stations in order and the lines to change to at each. */
-function StripMap({
-  svgRef,
-  net,
-  line,
-  zoom,
-  modeLabel,
-  title,
-}: {
-  svgRef: React.RefObject<SVGSVGElement | null>;
-  net: SchematicNetwork;
-  line: SchematicLine;
-  zoom: number | null;
-  modeLabel: (m: string) => string;
-  title: string;
-}) {
-  const { t } = useI18n();
-  const footer = useFooter(title);
-  const step = 110;
-  const left = 70;
-  const bandY = 190;
-  const conn = line.stops.map((s) => linesAt(net, s).filter((l) => l.id !== line.id));
-  const maxConn = Math.max(0, ...conn.map((c) => c.length));
-  const width = Math.max(520, left * 2 + (line.stops.length - 1) * step + 60);
-  const height = bandY + 50 + maxConn * 24 + 70;
-  const fg = textOn(line.color);
-  return (
-    <svg
-      ref={svgRef}
-      role="img"
-      aria-label={t("schematic.stripAria", { line: line.name })}
-      width={width}
-      height={height}
-      viewBox={`0 0 ${width} ${height}`}
-      style={sized(width, height, zoom)}
-      className="max-w-none rounded-xl bg-white shadow-sm"
-      fontFamily={FONT}
-    >
-      <rect width={width} height={height} fill="#ffffff" />
-      <rect
-        x={left / 2}
-        y={20}
-        rx={8}
-        width={Math.max(56, line.name.length * 11 + 24)}
-        height={32}
-        fill={line.color}
-      />
-      <text x={left / 2 + 12} y={42} fontSize={18} fontWeight={700} fill={fg}>
-        {line.name}
-      </text>
-      <text x={left / 2 + Math.max(56, line.name.length * 11 + 24) + 12} y={42} fontSize={14} fill="#475569">
-        {modeLabel(line.mode)} · {net.stations[line.stops[0]!]!.name} –{" "}
-        {net.stations[line.stops[line.stops.length - 1]!]!.name}
-      </text>
-      <line
-        x1={left}
-        x2={left + (line.stops.length - 1) * step}
-        y1={bandY}
-        y2={bandY}
-        stroke={line.color}
-        strokeWidth={10}
-        strokeLinecap="round"
-      />
-      {line.stops.map((s, k) => {
-        const x = left + k * step;
-        const st = net.stations[s]!;
-        const c = conn[k]!;
-        const end = k === 0 || k === line.stops.length - 1;
-        return (
-          <g key={`${s}-${k}`}>
-            <circle
-              cx={x}
-              cy={bandY}
-              r={c.length ? 9 : 7}
-              fill="#ffffff"
-              stroke={c.length ? INK : line.color}
-              strokeWidth={c.length ? 3 : 3.5}
-            />
-            <text
-              x={x}
-              y={bandY - 20}
-              fontSize={13}
-              fontWeight={end || c.length ? 700 : 500}
-              fill={INK}
-              transform={`rotate(-40 ${x} ${bandY - 20})`}
-            >
-              {st.name}
-            </text>
-            {c.map((o, j) => {
-              const w = Math.max(30, o.name.length * 7.5 + 14);
-              return (
-                <g key={o.id}>
-                  <rect x={x - w / 2} y={bandY + 22 + j * 24} width={w} height={19} rx={9.5} fill={o.color} />
-                  <text
-                    x={x}
-                    y={bandY + 35.5 + j * 24}
-                    fontSize={11}
-                    fontWeight={700}
-                    textAnchor="middle"
-                    fill={textOn(o.color)}
-                  >
-                    {o.name}
-                  </text>
-                </g>
-              );
-            })}
-          </g>
-        );
-      })}
-      <text x={left / 2} y={height - 34} fontSize={11} fill="#475569">
-        {conn.some((c) => c.length) ? t("schematic.connections") : t("schematic.noConnections")}
-      </text>
-      <text x={left / 2} y={height - 14} fontSize={10} fill="#64748b">
-        {footer}
-      </text>
-    </svg>
   );
 }

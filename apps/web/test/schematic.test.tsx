@@ -173,23 +173,240 @@ describe("Schematic tab", () => {
     const map = screen.getByRole("img", { name: "Schematic network map" });
     expect(within(map).getByText("M1 · Metro")).toBeTruthy();
     expect(within(map).getByText("Bus 22 · Bus")).toBeTruthy();
-    expect(map.querySelectorAll("path")).toHaveLength(4);
+    expect(map.querySelectorAll(`path[stroke-width="6"]`)).toHaveLength(4);
 
     fireEvent.click(screen.getByRole("button", { name: "Bus" }));
     expect(onDoc).toHaveBeenLastCalledWith(expect.objectContaining({ hidden: ["bus"] }));
 
     fireEvent.click(within(map).getByText("Centraal", { selector: "text" }));
-    const station = screen.getByRole("region", { name: "Station" });
-    expect(within(station).getByText("Lines here: M1, M2")).toBeTruthy();
-    fireEvent.change(within(station).getByRole("combobox"), { target: { value: "6" } });
+    const station = screen.getByRole("dialog", { name: "Centraal" });
+    fireEvent.change(within(station).getByRole("combobox", { name: "Name position" }), {
+      target: { value: "6" },
+    });
     expect(onDoc).toHaveBeenLastCalledWith(expect.objectContaining({ labels: { centraal: 6 } }));
+  });
+
+  it("opens a station pop-up with its stops, platforms, lines, features and status", () => {
+    const onDoc = vi.fn();
+    render(
+      <Schematic railway={RAILWAY} streetLines={STREET_LINES} doc={null} onDoc={onDoc} projectName="A" />,
+    );
+    const map = screen.getByRole("img", { name: "Schematic network map" });
+    fireEvent.click(within(map).getByText("Centraal", { selector: "text" }));
+    const pop = screen.getByRole("dialog", { name: "Centraal" });
+    // One railway station with one island platform; M1 and M2 call there.
+    expect(within(pop).getByText("Stops").nextSibling?.textContent).toBe("1");
+    expect(within(pop).getByText("Platforms").nextSibling?.textContent).toBe("1");
+    expect(within(pop).getByText("2 lines call here")).toBeTruthy();
+    expect(within(pop).getByText("Lift")).toBeTruthy();
+    expect(within(pop).getByText("Escalator")).toBeTruthy();
+    // The features from Create are drawn as symbols on the map too.
+    expect(map.querySelector("title")).toBeTruthy();
+    expect([...map.querySelectorAll("title")].map((x) => x.textContent)).toEqual(
+      expect.arrayContaining(["Lift", "Escalator"]),
+    );
+
+    fireEvent.click(within(pop).getByRole("button", { name: "Central station" }));
+    expect(onDoc).toHaveBeenLastCalledWith(
+      expect.objectContaining({ statuses: { centraal: ["central_station"] } }),
+    );
+    fireEvent.change(within(pop).getByRole("combobox", { name: "Name rotation" }), {
+      target: { value: "-45" },
+    });
+    expect(onDoc).toHaveBeenLastCalledWith(expect.objectContaining({ rotate: { centraal: -45 } }));
+
+    // Esc closes it.
+    fireEvent.keyDown(document, { key: "Escape" });
+    expect(screen.queryByRole("dialog")).toBeNull();
+
+    // A line in the pop-up opens its strip map.
+    fireEvent.click(within(map).getByText("Centraal", { selector: "text" }));
+    fireEvent.click(within(screen.getByRole("dialog")).getByRole("button", { name: "M2" }));
+    expect(screen.getByRole("img", { name: "Strip map of line M2" })).toBeTruthy();
+  });
+
+  it("draws statuses, rotated names and areas from the saved edits, and hides them on request", () => {
+    const doc: SchematicDoc = {
+      pins: {},
+      labels: {},
+      origin: [4.9, 52.37],
+      statuses: { centraal: ["airport"] },
+      rotate: { "amstel oost": 90 },
+      areas: [
+        {
+          id: "a1",
+          name: "Old town",
+          kind: "landmark",
+          color: "#dc2626",
+          points: [
+            [-500, -500],
+            [500, -500],
+            [0, 500],
+          ],
+        },
+      ],
+    };
+    const { rerender } = render(
+      <Schematic railway={RAILWAY} streetLines={STREET_LINES} doc={doc} projectName="A" />,
+    );
+    const map = () => screen.getByRole("img", { name: "Schematic network map" });
+    const titles = () => [...map().querySelectorAll("title")].map((x) => x.textContent);
+    expect(titles()).toContain("Airport");
+    expect(within(map()).getAllByText("Old town")).toHaveLength(1);
+    expect(within(map()).getByText("Old town · Landmark")).toBeTruthy();
+    const amstel = within(map()).getByText("Amstel Oost", { selector: "text" });
+    expect(amstel.getAttribute("transform")).toMatch(/^rotate\(-90 /);
+
+    rerender(
+      <Schematic
+        railway={RAILWAY}
+        streetLines={STREET_LINES}
+        doc={{ ...doc, symbols: false, features: false, showAreas: false }}
+        projectName="A"
+      />,
+    );
+    expect(titles()).not.toContain("Airport");
+    expect(titles()).not.toContain("Lift");
+    expect(within(map()).queryByText("Old town")).toBeNull();
+  });
+
+  it("edits, draws and removes tariff zones and landmarks in the panel", () => {
+    const onDoc = vi.fn();
+    const doc: SchematicDoc = {
+      pins: {},
+      labels: {},
+      areas: [
+        {
+          id: "a1",
+          name: "Zone A",
+          kind: "zone",
+          color: "#dc2626",
+          points: [
+            [0, 0],
+            [100, 0],
+            [0, 100],
+          ],
+        },
+      ],
+    };
+    render(
+      <Schematic railway={RAILWAY} streetLines={STREET_LINES} doc={doc} onDoc={onDoc} projectName="A" />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Zone A" }));
+    fireEvent.change(screen.getByRole("textbox", { name: "Name" }), { target: { value: "Zone B" } });
+    expect(onDoc).toHaveBeenLastCalledWith(
+      expect.objectContaining({ areas: [expect.objectContaining({ id: "a1", name: "Zone B" })] }),
+    );
+    fireEvent.change(screen.getByRole("combobox", { name: "Kind" }), { target: { value: "landmark" } });
+    expect(onDoc).toHaveBeenLastCalledWith(
+      expect.objectContaining({ areas: [expect.objectContaining({ kind: "landmark" })] }),
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Remove area" }));
+    expect(onDoc).toHaveBeenLastCalledWith(expect.objectContaining({ areas: [] }));
+
+    fireEvent.click(screen.getByRole("button", { name: "Draw an area" }));
+    expect(screen.getByText(/Click the map to add corners/)).toBeTruthy();
+    expect((screen.getByRole("button", { name: "Finish" }) as HTMLButtonElement).disabled).toBe(true);
+    fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
+    expect(screen.queryByRole("button", { name: "Finish" })).toBeNull();
+  });
+
+  it("opens a line's strip map when the line is clicked on the network map", () => {
+    render(<Schematic railway={RAILWAY} streetLines={STREET_LINES} doc={null} projectName="A" />);
+    const map = screen.getByRole("img", { name: "Schematic network map" });
+    fireEvent.click(map.querySelector('[data-line="street:0"]')!);
+    expect(screen.getByRole("img", { name: "Strip map of line Bus 22" })).toBeTruthy();
+  });
+
+  it("shows service, driving times, levels and ground heights under the strip map", async () => {
+    const fetchHeights = vi.fn(async (pts: [number, number][]) => pts.map((_, i) => 2 + i));
+    render(
+      <Schematic
+        railway={RAILWAY}
+        streetLines={STREET_LINES}
+        doc={null}
+        projectName="A"
+        fetchHeights={fetchHeights}
+        waterLoader={async () => ({ areas: [], rivers: [], sea: [] })}
+      />,
+    );
+    fireEvent.click(screen.getByRole("tab", { name: "Strip map" }));
+    fireEvent.change(screen.getByRole("combobox"), { target: { value: "street:0" } });
+    const strip = screen.getByRole("img", { name: "Strip map of line Bus 22" });
+    const texts = () => [...strip.querySelectorAll("text")].map((t) => t.textContent);
+    // Bus 22: one bus at a 10 minute headway (5 in the peak), driving 2, 2.5 and 1.5 minutes between stops.
+    expect(texts()).toEqual(
+      expect.arrayContaining([
+        "Vehicles in service",
+        "1",
+        "every 5 min",
+        "every 10 min",
+        "2 min",
+        "2.5 min",
+        "1.5 min",
+        "Street level",
+      ]),
+    );
+    expect(
+      await within(strip).findByText("Ground height at the stations, metres above sea level"),
+    ).toBeTruthy();
+    expect(texts().filter((x) => /^\d+ m$/.test(x ?? ""))).toHaveLength(4);
+
+    // The metro runs underground between its stations.
+    fireEvent.change(screen.getByRole("combobox"), { target: { value: "rail:M1" } });
+    const m1 = screen.getByRole("img", { name: "Strip map of line M1" });
+    expect(within(m1).getByText("Underground", { selector: "text" })).toBeTruthy();
+    expect(within(m1).getByText("05:00–00:00")).toBeTruthy();
+  });
+
+  it("draws sea, lakes and rivers under the lines, and leaves them out when switched off", async () => {
+    const waterLoader = vi.fn(async () => ({
+      areas: [
+        [
+          [4.88, 52.36],
+          [4.89, 52.36],
+          [4.89, 52.37],
+          [4.88, 52.36],
+        ] as [number, number][],
+      ],
+      rivers: [
+        {
+          line: [
+            [4.85, 52.35],
+            [4.95, 52.38],
+          ] as [number, number][],
+          kind: "river" as const,
+        },
+      ],
+      sea: [],
+    }));
+    const onDoc = vi.fn();
+    render(
+      <Schematic
+        railway={RAILWAY}
+        streetLines={STREET_LINES}
+        doc={null}
+        onDoc={onDoc}
+        projectName="A"
+        waterLoader={waterLoader}
+        fetchHeights={async (p) => p.map(() => null)}
+      />,
+    );
+    const map = screen.getByRole("img", { name: "Schematic network map" });
+    const water = await within(map).findByLabelText("Water");
+    expect(water.querySelectorAll("path")).toHaveLength(2);
+    const [box] = waterLoader.mock.calls[0]! as unknown as [[number, number, number, number]];
+    expect(box[0]).toBeLessThan(4.86);
+    expect(box[3]).toBeGreaterThan(52.39);
+    fireEvent.click(screen.getByRole("checkbox", { name: "Sea, lakes and rivers" }));
+    expect(onDoc).toHaveBeenLastCalledWith(expect.objectContaining({ water: false }));
   });
 
   it("leaves hidden layers out of the drawing", () => {
     const doc: SchematicDoc = { pins: {}, labels: {}, hidden: ["bus", "regional"] };
     render(<Schematic railway={RAILWAY} streetLines={STREET_LINES} doc={doc} projectName="Amstelstad" />);
     const map = screen.getByRole("img", { name: "Schematic network map" });
-    expect(map.querySelectorAll("path")).toHaveLength(2);
+    expect(map.querySelectorAll(`path[stroke-width="6"]`)).toHaveLength(2);
     expect(within(map).queryByText("Vondelpark")).toBeNull();
     // View only: no editing.
     expect(screen.getByText(/Only editors can move stations/)).toBeTruthy();
@@ -213,5 +430,146 @@ describe("Schematic tab", () => {
     );
     fireEvent.click(screen.getByRole("button", { name: "Go to Create" }));
     expect(onCreate).toHaveBeenCalled();
+  });
+});
+
+describe("schematic details", () => {
+  it("adds the rail engine's trains, round trip, running times and track levels", async () => {
+    const { withRailDetails, sectionLevels } = await import("../src/features/schematic/details");
+    const { offset } = await import("../src/features/journey-planner/network");
+    const net = schematicNetwork(RAILWAY, STREET_LINES);
+    const at = (x: number, y: number) => offset(RAILWAY.origin, x, y);
+    // M1's first section, Westpark to Museumplein: half underground, then up a ramp to street level.
+    const track = {
+      length_m: 1600,
+      centre: [at(-3000, 0), at(-1500, 200)],
+      levels: [
+        { from_m: 0, to_m: 800, level: "underground" as const },
+        { from_m: 800, to_m: 1000, level: "ramp" as const },
+        { from_m: 1000, to_m: 1600, level: "street" as const },
+      ],
+    };
+    const lv = sectionLevels(at(-3000, 0), at(-1500, 200), [track as never])!;
+    expect(lv.map((x) => x.level)).toEqual(["underground", "ramp", "street"]);
+    expect(lv.reduce((a, x) => a + x.share, 0)).toBeCloseTo(1, 9);
+    expect(sectionLevels(at(5000, 5000), at(6000, 5000), [track as never])).toBeNull();
+
+    const timetable = {
+      stops: [
+        { stop_id: "p1", stop_name: "Westpark", stop_lat: 0, stop_lon: 0 },
+        { stop_id: "p2", stop_name: "Museumplein", stop_lat: 0, stop_lon: 0 },
+      ],
+      routes: [],
+      transfers: [],
+      frequency_patterns: [],
+      trips: [
+        {
+          trip_id: "t1",
+          route_id: "M1",
+          stop_times: [
+            { stop_id: "p1", stop_sequence: 1, arrival_time: 18000, departure_time: 18020 },
+            { stop_id: "p2", stop_sequence: 2, arrival_time: 18110, departure_time: 18130 },
+          ],
+        },
+      ],
+    };
+    const build = {
+      view: { tracks: [track] },
+      reports: { M1: { id: "M1", trips: 10, outbound_s: 900, return_s: 960, trains: 7, issues: [] } },
+      timetable,
+      terrain: "none" as const,
+    };
+    const out = withRailDetails(net, RAILWAY, build as never);
+    const m1 = out.lines.find((l) => l.id === "rail:M1")!;
+    expect(m1.service.vehicles).toBe(7);
+    expect(m1.service.roundTripMin).toBe(31);
+    expect(m1.runS[0]).toBe(90);
+    expect(m1.runS[1]).toBeNull();
+    expect(m1.levels[0]!.map((x) => x.level)).toEqual(["underground", "ramp", "street"]);
+    // Without a build nothing changes.
+    expect(withRailDetails(net, RAILWAY, null)).toBe(net);
+  });
+
+  it("gives street and plugin lines their driving times between stops", () => {
+    const bus = schematicNetwork(null, STREET_LINES).lines[0]!;
+    expect(bus.runS).toEqual([120, 150, 90]);
+    expect(bus.service.vehicles).toBe(1);
+    const cable = schematicNetwork(null, null, [
+      {
+        id: "c",
+        name: "C",
+        mode: "cable_car",
+        color: "#000000",
+        stops: [
+          { name: "A", lonlat: [4.9, 52.37] },
+          { name: "B", lonlat: [4.91, 52.37] },
+          { name: "C", lonlat: [4.92, 52.37] },
+        ],
+        directions: [
+          [
+            { stop: 0, run_s: 0, dwell_s: 0 },
+            { stop: 1, run_s: 200, dwell_s: 30 },
+            { stop: 2, run_s: 100, dwell_s: 0 },
+          ],
+        ],
+        headwayS: 60,
+      },
+    ]).lines[0]!;
+    expect(cable.runS).toEqual([200, 100]);
+    expect(cable.levels[0]).toEqual([{ level: "aerial", share: 1 }]);
+  });
+
+  it("fetches water for the network's box and bends it along with the stations", async () => {
+    const { waterBox, warp } = await import("../src/features/schematic/water");
+    expect(waterBox([])).toBeNull();
+    const b = waterBox([
+      [4.8, 52.3],
+      [5.0, 52.4],
+    ])!;
+    expect(b[0]).toBeCloseTo(4.76, 6);
+    expect(b[3]).toBeCloseTo(52.42, 6);
+    // Never more than 1° a side.
+    const wide = waterBox([
+      [4, 52],
+      [7, 52.1],
+    ])!;
+    expect(wide[2] - wide[0]).toBeLessThanOrEqual(1);
+    // A station moved 100 m east takes the water at its place with it; far away water moves less.
+    const f = warp(
+      [4.9, 52.37],
+      [
+        [4.9, 52.37],
+        [4.95, 52.37],
+      ],
+      [
+        [100, 0],
+        [3400, 0],
+      ],
+    );
+    expect(f([4.9, 52.37])[0]).toBeCloseTo(100, 6);
+  });
+});
+
+describe("station features", () => {
+  it("keeps known features in a fixed order and switches them with the picker", async () => {
+    const { cleanFeatures, SymbolPicker, STATION_FEATURES } =
+      await import("../src/features/stations/features");
+    expect(cleanFeatures(["escalator", "lift?", "ramp", "ramp"])).toEqual(["ramp", "escalator"]);
+    expect(cleanFeatures("ramp")).toEqual([]);
+    const onChange = vi.fn();
+    render(
+      <SymbolPicker
+        options={STATION_FEATURES}
+        value={["escalator"]}
+        label="Features"
+        onChange={onChange}
+        t={(k) => k}
+      />,
+    );
+    const group = screen.getByRole("group", { name: "Features" });
+    fireEvent.click(within(group).getByRole("button", { name: "station.symbol.elevator" }));
+    expect(onChange).toHaveBeenLastCalledWith(["elevator", "escalator"]);
+    fireEvent.click(within(group).getByRole("button", { name: "station.symbol.escalator" }));
+    expect(onChange).toHaveBeenLastCalledWith([]);
   });
 });

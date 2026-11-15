@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { fetchElevations } from "../../terrain/terrain";
 import { loadRailEngine } from "../railways/engine";
 import { engineLines } from "../railways/serviceLines";
+import type { Timetable } from "../journey-planner/types";
 import type { LineReport, LonLat, Network, RailEngine, RailEngineLoader, RailView } from "../railways/types";
 
 /** Ground heights at points, m (null without data); tests inject one. */
@@ -11,6 +12,8 @@ export type HeightsFetcher = (points: LonLat[]) => Promise<(number | null)[]>;
 export interface RailBuild {
   view: RailView;
   reports: Record<string, LineReport>;
+  /** The published weekday timetable (absent when publishing failed): running times between stations. */
+  timetable?: Timetable;
   /** "ready": gradients come from the terrain; "failed": the heights did not load; "none": the engine has no terrain. */
   terrain: "ready" | "failed" | "none";
 }
@@ -57,23 +60,28 @@ export async function buildRailway(
   const engine = await loadRail();
   try {
     const view = engine.build(railway, null);
-    return { view, reports: publish(engine, railway) };
+    return { view, ...publish(engine, railway) };
   } finally {
     engine.dispose();
   }
 }
 
-/** Purpose: the reports of the lines the engine could publish; none when publishing fails. */
-function publish(engine: RailEngine, railway: Network): Record<string, LineReport> {
+/** Purpose: the reports of the lines the engine could publish and their timetable; none when publishing fails. */
+function publish(
+  engine: RailEngine,
+  railway: Network,
+): { reports: Record<string, LineReport>; timetable?: Timetable } {
   const reports: Record<string, LineReport> = {};
   const lines = engineLines(railway);
   if (lines.length)
     try {
-      for (const r of engine.publishLines(lines, "weekday").lines) reports[r.id] = r;
+      const pub = engine.publishLines(lines, "weekday");
+      for (const r of pub.lines) reports[r.id] = r;
+      return { reports, timetable: pub.timetable };
     } catch {
       // Lines that cannot be published show without service.
     }
-  return reports;
+  return { reports };
 }
 
 /**
@@ -109,8 +117,8 @@ export function useRailBuild(
           if (!ok) terrain = "failed";
           view = engine.build(railway, null);
         }
-        const reports = publish(engine, railway);
-        if (live) setBuild({ view, reports, terrain });
+        const published = publish(engine, railway);
+        if (live) setBuild({ view, ...published, terrain });
       } finally {
         engine.dispose();
       }

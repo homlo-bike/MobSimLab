@@ -21,14 +21,30 @@ When the project has no lines yet, the tab says so and offers **Go to Create**.
 - **Round the corners**: rounded bends between stations.
 - **Snap to 45° while dragging**: a dragged station lines up with its neighbours.
 - **Drag a station** to move it. It stays where you put it, also when lines are added; the others are laid out around it. **Reset layout** puts every station back.
-- **Click a station** to see the lines there and choose where its name goes (**Name position**: automatic or one of eight places). **Let the layout place it** forgets a move.
+- **Click a station** to open its pop-up: how many stops and platforms it has, the lines that call there (click one to open its strip map), the features recorded in Create, and its **Special status** (central station, central bus station, airport, seaport, park and ride, hospital, university, stadium). There you also choose where its name goes (**Name position**) and turn a long name (**Name rotation**, −90° to 90°). **Let the layout place it** forgets a move. Esc, a click outside or × closes the pop-up.
+- **Click a line** to open its strip map.
+- **Status symbols** and **Station feature symbols** show or hide the symbols next to station names.
+- **Sea, lakes and rivers**: water from OpenStreetMap around the network, bent along with the stations so it stays where it belongs between them.
+- **Tariff zones and landmarks**: **Draw an area**, click the map at each corner, then **Finish**. Pick the area in the list to change its name, kind (tariff zone or landmark), colour, or remove it; drag its white corners on the map to change its shape.
 - Use **−**, **+** and **Fit** to zoom.
 
-Moves, name places, layers and switches are saved with the project. People who can only view the project see the map and can export it, but cannot change it.
+Moves, name places and rotations, statuses, areas, layers and switches are saved with the project. People who can only view the project see the map and can export it, but cannot change it.
+
+## Station features
+
+Station features (step-free access, ramp, lift, escalator, tactile paving, toilets, bike parking) are recorded where the station is made: in the railway tool's station panel, and on a selected stop in the street line tool, under **Features**. The Schematic tab reads them; it does not change them.
 
 ## Strip map
 
-Choose **Strip map** and a line: its stations in order on a straight band, with the lines you can change to at each station as coloured labels underneath.
+Choose **Strip map** and a line (or click a line on the network map): its stations in order on a straight band, with the lines you can change to at each station as coloured labels underneath, and the station symbols. Above the band, between each pair of stops, is the estimated driving time without the stop itself.
+
+Below the band:
+
+- **Service**: vehicles in service, minutes between departures in the peak and off-peak, first and last departure, round trip and length. Street lines run at half their headway in the peak, as in the journey planner.
+- **Runs at**: which parts are underground, at street level, elevated or on a ramp (cable cars in the air, ferries on the water).
+- **Ground height** at each station, in metres above sea level.
+
+For rail lines the vehicles, round trip, driving times and levels come from the railway tool's built track and timetable; until track is drawn they show as –.
 
 ## Export
 
@@ -36,9 +52,8 @@ Choose **Strip map** and a line: its stations in order on a straight band, with 
 - **PNG**: an image at twice the screen size, for slides and messages.
 - **Print or PDF**: opens the print dialog with only the map; choose *Save as PDF* there for a PDF.
 
-Each export carries the project name, a legend of the lines and the date. It exports what is on screen: the network map with the layers that are on, or the strip map of the chosen line.
+Each export carries the project name, a legend of the lines, water, areas and symbols, and the date. It exports what is on screen: the network map with the layers that are on, or the strip map of the chosen line.
 
 ## Not yet
 
-- Rivers, lakes and landmarks on the map.
 - The LOOM layout for large networks (ADR-0025).

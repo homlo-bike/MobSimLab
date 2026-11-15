@@ -102,6 +102,13 @@ export interface SchematicLine {
    * start from the two stations' levels and are refined from the built tracks (`details.ts`).
    */
   levels: { level: SectionLevel; share: number }[][];
+  /**
+   * Per section: the estimated running time between the two stops, seconds, without the stop itself; null
+   * where it is not known yet (rail lines until the engine has run, `details.ts`).
+   */
+  runS: (number | null)[];
+  /** Per stop: the drawn stop or station it comes from (`StationPart.id`). */
+  partIds: string[];
 }
 
 export interface SchematicNetwork {
@@ -130,7 +137,8 @@ interface RawLine {
   name: string;
   mode: string;
   color: string;
-  stops: { name: string; lonlat: LonLat; part: StationPart }[];
+  /** `t`: running time from the first stop, s (null when not known). */
+  stops: { name: string; lonlat: LonLat; part: StationPart; t: number | null }[];
   service: LineService;
 }
 
@@ -167,7 +175,7 @@ function rawLines(
           level: s.level,
           features: cleanFeatures(s.features),
         };
-        return [{ name: s.name, lonlat: offset(railway.origin, s.x, s.y), part }];
+        return [{ name: s.name, lonlat: offset(railway.origin, s.x, s.y), part, t: null }];
       });
       out.push({
         id: `rail:${l.id}`,
@@ -189,6 +197,13 @@ function rawLines(
   }
   (streetLines?.lines ?? []).forEach((l, i) => {
     const pts = l.view?.points ?? [];
+    // Running time from the first point to each point, s, along the routed legs (the first pass only).
+    const at = new Map<number, number>();
+    if (pts[0]) at.set(pts[0].id, 0);
+    for (const leg of [...(l.view?.legs ?? [])].sort((a, b) => a.index - b.index)) {
+      const from = at.get(leg.from);
+      if (from !== undefined && !at.has(leg.to)) at.set(leg.to, from + leg.time_s);
+    }
     // The saved points are in the same order as the routed ones; they carry the stops' facilities.
     const stops = pts.flatMap((p, k) =>
       p.kind === "via"
@@ -205,6 +220,7 @@ function rawLines(
                 level: null,
                 features: cleanFeatures(l.points?.[k]?.features),
               },
+              t: at.get(p.id) ?? null,
             },
           ],
     );
@@ -229,8 +245,16 @@ function rawLines(
     });
   });
   for (const l of pluginLines) {
-    const order = l.directions[0]?.map((d) => d.stop) ?? l.stops.map((_, i) => i);
-    const stops = order.flatMap((k) => {
+    const dir = l.directions[0];
+    const order = dir?.map((d) => d.stop) ?? l.stops.map((_, i) => i);
+    // Running time from the first stop: the runs before each stop (stops not counted).
+    const times: (number | null)[] = [];
+    let run = 0;
+    dir?.forEach((d, j) => {
+      run += j === 0 ? 0 : d.run_s;
+      times.push(run);
+    });
+    const stops = order.flatMap((k, j) => {
       const s = l.stops[k];
       if (!s) return [];
       const part: StationPart = {
@@ -241,7 +265,7 @@ function rawLines(
         level: null,
         features: [],
       };
-      return [{ name: s.name, lonlat: s.lonlat, part }];
+      return [{ name: s.name, lonlat: s.lonlat, part, t: times[j] ?? null }];
     });
     const cycleS = l.directions.reduce((a, d) => a + d.reduce((b, x) => b + x.run_s + x.dwell_s, 0), 0);
     const headwayMin = Math.max(1, l.headwayS) / 60;
@@ -320,7 +344,7 @@ export function schematicNetwork(
     return add(stations.length - 1);
   };
   for (const l of rawLines(railway, streetLines, pluginLines)) {
-    const at = l.stops.map((s) => ({ st: stationFor(s.name, s.lonlat, s.part), part: s.part }));
+    const at = l.stops.map((s) => ({ st: stationFor(s.name, s.lonlat, s.part), part: s.part, t: s.t }));
     const kept = at.filter((x, i) => i === 0 || x.st !== at[i - 1]!.st);
     if (kept.length < 2) continue;
     lines.push({
@@ -332,6 +356,11 @@ export function schematicNetwork(
       stops: kept.map((x) => x.st),
       service: l.service,
       levels: kept.slice(1).map((x, i) => baseLevels(l.mode, kept[i]!.part, x.part)),
+      runS: kept.slice(1).map((x, i) => {
+        const a = kept[i]!.t;
+        return a !== null && x.t !== null && x.t > a ? x.t - a : null;
+      }),
+      partIds: kept.map((x) => x.part.id),
     });
   }
   return { stations: stations.map(({ key, name, lonlat, parts }) => ({ key, name, lonlat, parts })), lines };
@@ -341,7 +370,11 @@ export function schematicNetwork(
  * Purpose: what a section runs on before the tracks are known: street lines on the street, cable cars in the
  * air, ferries on the water; rail sections half at each end station's level (all at one level when equal).
  */
-export function baseLevels(mode: string, a: StationPart, b: StationPart): { level: SectionLevel; share: number }[] {
+export function baseLevels(
+  mode: string,
+  a: StationPart,
+  b: StationPart,
+): { level: SectionLevel; share: number }[] {
   if (a.source === "rail" && a.level && b.level)
     return a.level === b.level
       ? [{ level: a.level, share: 1 }]

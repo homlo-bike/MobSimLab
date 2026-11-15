@@ -51,6 +51,16 @@ const costs = z.looseObject({
 });
 
 /** Schematic edits (ADR-0041): stations the planner moved, label places and display switches. */
+const STATION_STATUSES = [
+  "central_station",
+  "bus_station",
+  "airport",
+  "seaport",
+  "park_and_ride",
+  "hospital",
+  "university",
+  "stadium",
+] as const;
 const schematic = z.looseObject({
   origin: point.optional(),
   pins: z
@@ -60,6 +70,26 @@ const schematic = z.looseObject({
     .record(z.string().max(300), z.number().int().min(0).max(7))
     .refine((v) => Object.keys(v).length <= 20000, "at most 20000 labels"),
   hidden: z.array(z.string().max(40)).max(20).optional(),
+  rotate: z
+    .record(z.string().max(300), z.number().min(-90).max(90))
+    .refine((v) => Object.keys(v).length <= 20000, "at most 20000 rotations")
+    .optional(),
+  statuses: z
+    .record(z.string().max(300), z.array(z.enum(STATION_STATUSES)).max(STATION_STATUSES.length))
+    .refine((v) => Object.keys(v).length <= 20000, "at most 20000 stations with a status")
+    .optional(),
+  areas: z
+    .array(
+      z.looseObject({
+        id: z.string().min(1).max(64),
+        name: z.string().max(80),
+        kind: z.enum(["zone", "landmark"]),
+        color: z.string().regex(/^#[0-9a-fA-F]{6}$/),
+        points: z.array(point).min(3).max(500),
+      }),
+    )
+    .max(200)
+    .optional(),
 });
 
 /**

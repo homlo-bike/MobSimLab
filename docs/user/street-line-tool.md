@@ -31,6 +31,7 @@ If someone else saved the same drawing while you were changing it, a banner name
 
 - Points are routed in order, and the last point is always routed back to the first. The line is a closed circuit: what one vehicle drives in one full cycle. Arrows on the line show the direction of travel.
 - New points are **via** points (small circles): they shape the path and carry no passengers. Select a point, in the list or on the map, to make it a **Stop** or an **End stop**, rename it, or delete it. Stops show as numbered squares with their name. A stop takes the street name until you rename it.
+- A selected stop has **Features** to mark what it has (step-free access, ramp, lift, escalator, tactile paving, toilets, bike parking). The [Schematic](schematic.md) tab shows them as symbols.
 - Each stop shows its bus bay to scale on the sidewalk where it is served.
 - **Optimise** chooses the travel direction at every via point for the shortest whole circuit. **Clear line** removes all points.
 

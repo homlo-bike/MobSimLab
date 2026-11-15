@@ -78,7 +78,8 @@ export function simplify(line: readonly Pt[], tol: number): Pt[] {
     let bestD = tol;
     for (let k = i + 1; k < j; k++) {
       const [px, py] = line[k]!;
-      const d = len < 1e-12 ? Math.hypot(px - ax, py - ay) : Math.abs(dy * px - dx * py + bx * ay - by * ax) / len;
+      const d =
+        len < 1e-12 ? Math.hypot(px - ax, py - ay) : Math.abs(dy * px - dx * py + bx * ay - by * ax) / len;
       if (d > bestD) {
         bestD = d;
         best = k;
@@ -230,7 +231,13 @@ export function seaRings(chains: readonly Pt[][], b: Bbox): Pt[][] {
   if (!pieces.length) {
     if (!islands.length) return [];
     // Only islands: the box is sea around them.
-    const box: Pt[] = [[b[0], b[3]], [b[2], b[3]], [b[2], b[1]], [b[0], b[1]], [b[0], b[3]]];
+    const box: Pt[] = [
+      [b[0], b[3]],
+      [b[2], b[3]],
+      [b[2], b[1]],
+      [b[0], b[1]],
+      [b[0], b[3]],
+    ];
     return [box, ...islands];
   }
   const entries = pieces.map((p) => edgeParam(p[0]!, b));
