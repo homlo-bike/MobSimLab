@@ -4,6 +4,8 @@ import { DELAY_PREFS, MAX_DELAY_SHARE, type PreferencesDoc, prefValue, withPref 
 import { can, type Project, type ProjectsApi } from "../projects/api";
 import { ModePicker } from "../projects/ProjectDialogs";
 import { Placeholder } from "./Placeholder";
+import type { ProjectPlugin } from "../plugins/registry";
+import { ProjectPlugins } from "./ProjectPlugins";
 
 /**
  * Preferences tab (mockup "Project preferences"): the project's name, description, study area and modes, which
@@ -15,6 +17,8 @@ export function ProjectPreferences({
   onSaved,
   preferences = null,
   onPreferences,
+  plugins = null,
+  onSetPlugin,
 }: {
   api: ProjectsApi;
   project: Project;
@@ -23,6 +27,10 @@ export function ProjectPreferences({
   preferences?: PreferencesDoc | null;
   /** Told about each change to the preferences; the project saves it. */
   onPreferences?: (doc: PreferencesDoc) => void;
+  /** The plugins the project can use (ADR-0036 §9); null while loading. */
+  plugins?: readonly ProjectPlugin[] | null;
+  /** Turn a plugin on or off for the project (Owners). */
+  onSetPlugin?: (pluginId: string, enabled: boolean, version?: string) => Promise<void>;
 }) {
   const { t } = useI18n();
   const editable = can.edit(project);
@@ -140,6 +148,9 @@ export function ProjectPreferences({
           </div>
           {!editable && <p className="mt-3 text-sm text-slate-500">{t("prefs.readOnly")}</p>}
         </section>
+        {onSetPlugin && (
+          <ProjectPlugins plugins={plugins} manage={can.manage(project)} onSet={onSetPlugin} />
+        )}
         <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-4 md:p-6">
           <Placeholder
             title="prefs.moreTitle"

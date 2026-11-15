@@ -27,6 +27,7 @@ describe("permission policy", () => {
       "projects.create": "owner,admin,user",
       "agents.connect": "owner,admin,user",
       "agents.manage": "owner,admin",
+      "plugins.manage": "owner,admin",
     });
   });
 

@@ -14,6 +14,7 @@ export const ACTIONS = [
   "projects.create",
   "agents.connect", // connect AI agents, manage one's connections, tokens and agent scenarios (ADR-0035)
   "agents.manage", // instance settings for agent connections
+  "plugins.manage", // install and remove plugins, manage trusted publisher keys (ADR-0036 §9)
 ] as const;
 export type Action = (typeof ACTIONS)[number];
 
@@ -32,6 +33,8 @@ export const POLICY: Record<Action, readonly InstanceRole[]> = {
   // Product owner 2026-11-01: Viewers cannot connect agents.
   "agents.connect": ["owner", "admin", "user"],
   "agents.manage": ["owner", "admin"],
+  // Product owner 2026-11-02 (ADR-0036): Admins install plugins; Owners hold every Admin right.
+  "plugins.manage": ["owner", "admin"],
 };
 
 /** The minimum an actor needs for a permission decision. */
