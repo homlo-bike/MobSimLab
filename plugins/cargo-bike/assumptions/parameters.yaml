@@ -1,0 +1,891 @@
+# Parameters of the cargo bike plugin (Cargo bike tab). Schema: assumptions/README.md.
+# Exported to crates/cargo-bike/data/defaults.json by tools/cargo-bike/export_defaults.py.
+# Savings values are German reference prices of 2024 in EUR; the tab scales them to the country of the start point.
+
+- key: cargo_bike.bike_mass_kg
+  label: Cargo bike mass
+  group: Cargo bike
+  unit: kg
+  used_by:
+    - cargo bike range
+  values:
+    - context:
+        mode: "*"
+      low: 35
+      central: 35
+      high: 35
+      basis: documented
+      sources:
+        - homlo-kit-2026
+      check: unverified
+      rationale: Generic DIY cargo tricycle kit with battery, as specified by the product owner.
+- key: cargo_bike.load_kg
+  label: Load carried
+  group: Cargo bike
+  unit: kg
+  used_by:
+    - cargo bike range
+  values:
+    - context:
+        mode: "*"
+      low: 0
+      central: 80
+      high: 150
+      basis: documented
+      sources:
+        - homlo-kit-2026
+      check: unverified
+      rationale: Default load of the kit's planning case; the load is carried both ways.
+- key: cargo_bike.rider_mass_kg
+  label: Rider mass
+  group: Cargo bike
+  unit: kg
+  used_by:
+    - cargo bike range
+  values:
+    - context:
+        mode: "*"
+      low: 60
+      central: 90
+      high: 120
+      basis: documented
+      sources:
+        - homlo-kit-2026
+      check: unverified
+      rationale: Default rider of the kit's planning case.
+- key: cargo_bike.battery_wh
+  label: Battery capacity
+  group: Cargo bike
+  unit: Wh
+  used_by:
+    - cargo bike range
+  values:
+    - context:
+        mode: "*"
+      low: 500
+      central: 900
+      high: 1800
+      basis: documented
+      sources:
+        - homlo-kit-2026
+      check: unverified
+      rationale: Nominal battery energy of the kit; up to two 900 Wh batteries.
+- key: cargo_bike.battery_usable_share
+  label: Usable share of the battery
+  group: Cargo bike
+  unit: share
+  used_by:
+    - cargo bike range
+  values:
+    - context:
+        mode: "*"
+      low: 0.8
+      central: 0.9
+      high: 0.95
+      basis: educated-guess
+      sources:
+        - homlo-kit-2026
+      check: unverified
+      rationale:
+        The battery management system stops before the cells are empty and capacity falls with age and cold;
+        90 % of the nominal energy is a common planning value for a battery in good condition.
+- key: cargo_bike.motor_rated_w
+  label: Motor power (mechanical, sustained)
+  group: Cargo bike
+  unit: W
+  used_by:
+    - cargo bike range
+  values:
+    - context:
+        mode: "*"
+      low: 250
+      central: 250
+      high: 500
+      basis: cited
+      sources:
+        - eu-168-2013
+        - bafang-m420
+      check: unverified
+      rationale:
+        A pedelec motor is limited to 0.25 kW continuous rated power (Regulation (EU) 168/2013, Art. 2(2)(h));
+        the Bafang M400 range is rated 250 W. Short peaks above it are not counted, so long climbs are not overestimated.
+- key: cargo_bike.motor_efficiency
+  label: Motor and controller efficiency
+  group: Cargo bike
+  unit: share
+  used_by:
+    - cargo bike range
+  values:
+    - context:
+        mode: "*"
+      low: 0.75
+      central: 0.8
+      high: 0.85
+      basis: cited
+      sources:
+        - hollandbikeshop-m420
+      check: unverified
+      rationale: Retailer data sheet of the Bafang M420 gives about 80 %.
+- key: cargo_bike.drivetrain_efficiency
+  label: Drivetrain efficiency (chain and gears)
+  group: Cargo bike
+  unit: share
+  used_by:
+    - cargo bike range
+  values:
+    - context:
+        mode: "*"
+      low: 0.9
+      central: 0.95
+      high: 0.97
+      basis: educated-guess
+      sources:
+        - tengattini-bigazzi-2018
+      check: unverified
+      rationale:
+        A clean bicycle chain drive loses a few per cent; a tricycle's longer chain and differential lose
+        a little more.
+- key: cargo_bike.assist_cutoff_kmh
+  label: Assistance cut-off speed
+  group: Cargo bike
+  unit: km/h
+  used_by:
+    - cargo bike range
+  values:
+    - context:
+        mode: "*"
+      low: 25
+      central: 25
+      high: 25
+      basis: cited
+      sources:
+        - eu-168-2013
+      check: unverified
+      rationale: Pedal assistance must cut off at 25 km/h.
+- key: cargo_bike.assist_share
+  label: Share of the pedalling power the motor gives
+  group: Cargo bike
+  unit: share
+  used_by:
+    - cargo bike range
+  values:
+    - context:
+        mode: "*"
+      low: 0.4
+      central: 0.6
+      high: 0.8
+      basis: educated-guess
+      sources:
+        - bafang-m420
+      check: unverified
+      rationale:
+        A mid-drive in a middle assistance level gives about as much again as the rider (60 % of the total);
+        the motor is capped at its rated power.
+- key: cargo_bike.rider_power_w
+  label: Rider's sustained pedalling power
+  group: Cargo bike
+  unit: W
+  used_by:
+    - cargo bike range
+  values:
+    - context:
+        mode: "*"
+      low: 60
+      central: 100
+      high: 150
+      basis: educated-guess
+      sources:
+        - tengattini-bigazzi-2018
+      check: unverified
+      rationale:
+        An everyday rider holds about 100 W for an hour without getting out of breath; on a climb that needs
+        more the bike slows down.
+- key: cargo_bike.rolling_resistance
+  label: Rolling resistance coefficient
+  group: Cargo bike
+  unit: ratio
+  used_by:
+    - cargo bike range
+  values:
+    - context:
+        mode: "*"
+      low: 0.007
+      central: 0.01
+      high: 0.015
+      basis: educated-guess
+      sources:
+        - tengattini-bigazzi-2018
+      check: unverified
+      rationale:
+        Utilitarian bicycles average 0.0077; a loaded tricycle on three wider tyres, often at lower pressure,
+        rolls harder.
+- key: cargo_bike.drag_area_m2
+  label: Drag area (Cd·A)
+  group: Cargo bike
+  unit: m²
+  used_by:
+    - cargo bike range
+  values:
+    - context:
+        mode: "*"
+      low: 0.6
+      central: 0.9
+      high: 1.2
+      basis: educated-guess
+      sources:
+        - tengattini-bigazzi-2018
+      check: unverified
+      rationale:
+        Upright city cyclists average 0.56 m²; the cargo box and its load in front of the rider add about
+        half as much again.
+- key: cargo_bike.air_density
+  label: Air density
+  group: Cargo bike
+  unit: kg/m³
+  used_by:
+    - cargo bike range
+  values:
+    - context:
+        mode: "*"
+      low: 1.15
+      central: 1.2
+      high: 1.25
+      basis: educated-guess
+      sources:
+        - tengattini-bigazzi-2018
+      check: unverified
+      rationale: Air at about 20 °C near sea level.
+- key: cargo_bike.speed_separated_kmh
+  label: Cruising speed on a separated cycle track or cycle path
+  group: Cargo bike
+  unit: km/h
+  used_by:
+    - cargo bike range
+  values:
+    - context:
+        mode: "*"
+      low: 15
+      central: 20
+      high: 24
+      basis: educated-guess
+      sources:
+        - eu-168-2013
+      check: unverified
+      rationale: Below the 25 km/h assistance cut-off; a loaded tricycle rides steadily where it has its own track.
+- key: cargo_bike.speed_lane_kmh
+  label: Cruising speed in a painted bike lane
+  group: Cargo bike
+  unit: km/h
+  used_by:
+    - cargo bike range
+  values:
+    - context:
+        mode: "*"
+      low: 14
+      central: 19
+      high: 23
+      basis: educated-guess
+      sources:
+        - eu-168-2013
+      check: unverified
+      rationale: "Slightly slower than on a separated track: parked cars, doors and turning traffic."
+- key: cargo_bike.speed_quiet_kmh
+  label: Cruising speed on quiet streets without a bike lane
+  group: Cargo bike
+  unit: km/h
+  used_by:
+    - cargo bike range
+  values:
+    - context:
+        mode: "*"
+      low: 12
+      central: 17
+      high: 22
+      basis: educated-guess
+      sources:
+        - eu-168-2013
+      check: unverified
+      rationale: "Residential and service streets, tracks: junctions every block and shared space."
+- key: cargo_bike.speed_mixed_kmh
+  label: Cruising speed in main-road traffic without a bike lane
+  group: Cargo bike
+  unit: km/h
+  used_by:
+    - cargo bike range
+  values:
+    - context:
+        mode: "*"
+      low: 10
+      central: 15
+      high: 20
+      basis: educated-guess
+      sources:
+        - eu-168-2013
+      check: unverified
+      rationale: A wide, slow tricycle in general traffic on main roads keeps to the kerb and is held up by traffic.
+- key: cargo_bike.stops_per_km_separated
+  label: Stops per km on separated cycle tracks
+  group: Cargo bike
+  unit: 1/km
+  used_by:
+    - cargo bike range
+  values:
+    - context:
+        mode: "*"
+      low: 0.2
+      central: 0.5
+      high: 1
+      basis: educated-guess
+      sources:
+        - tengattini-bigazzi-2018
+      check: unverified
+      rationale: Crossings with priority for the track; few stops.
+- key: cargo_bike.stops_per_km_lane
+  label: Stops per km in painted bike lanes
+  group: Cargo bike
+  unit: 1/km
+  used_by:
+    - cargo bike range
+  values:
+    - context:
+        mode: "*"
+      low: 0.5
+      central: 1
+      high: 2
+      basis: educated-guess
+      sources:
+        - tengattini-bigazzi-2018
+      check: unverified
+      rationale: Junctions on main roads without a signal of their own.
+- key: cargo_bike.stops_per_km_quiet
+  label: Stops per km on quiet streets
+  group: Cargo bike
+  unit: 1/km
+  used_by:
+    - cargo bike range
+  values:
+    - context:
+        mode: "*"
+      low: 0.5
+      central: 1.5
+      high: 3
+      basis: educated-guess
+      sources:
+        - tengattini-bigazzi-2018
+      check: unverified
+      rationale: Give-way and right-before-left junctions every block.
+- key: cargo_bike.stops_per_km_mixed
+  label: Stops per km in main-road traffic
+  group: Cargo bike
+  unit: 1/km
+  used_by:
+    - cargo bike range
+  values:
+    - context:
+        mode: "*"
+      low: 1
+      central: 2.5
+      high: 4
+      basis: educated-guess
+      sources:
+        - tengattini-bigazzi-2018
+      check: unverified
+      rationale: Queues, turning cars and junctions in general traffic.
+- key: cargo_bike.signal_stop_share
+  label: Share of traffic signals that stop the bike
+  group: Cargo bike
+  unit: share
+  used_by:
+    - cargo bike range
+  values:
+    - context:
+        mode: "*"
+      low: 0.3
+      central: 0.5
+      high: 0.7
+      basis: educated-guess
+      sources:
+        - tengattini-bigazzi-2018
+      check: unverified
+      rationale: About half of the signals on a route show red on arrival. Counted in addition to the stops per km.
+- key: cargo_bike.route_factor_separated
+  label: "Route choice weight: separated cycle track"
+  group: Cargo bike
+  unit: ratio
+  used_by:
+    - cargo bike range
+  values:
+    - context:
+        mode: "*"
+      low: 1
+      central: 1
+      high: 1
+      basis: educated-guess
+      sources:
+        - homlo-kit-2026
+      check: unverified
+      rationale:
+        "The route prefers streets with bike infrastructure: each metre counts this many metres. Separated
+        tracks are the reference."
+- key: cargo_bike.route_factor_lane
+  label: "Route choice weight: painted bike lane"
+  group: Cargo bike
+  unit: ratio
+  used_by:
+    - cargo bike range
+  values:
+    - context:
+        mode: "*"
+      low: 1
+      central: 1.1
+      high: 1.3
+      basis: educated-guess
+      sources:
+        - homlo-kit-2026
+      check: unverified
+      rationale: Accepts a 10 % detour to ride on a separated track instead of a painted lane.
+- key: cargo_bike.route_factor_quiet
+  label: "Route choice weight: quiet street"
+  group: Cargo bike
+  unit: ratio
+  used_by:
+    - cargo bike range
+  values:
+    - context:
+        mode: "*"
+      low: 1
+      central: 1.2
+      high: 1.5
+      basis: educated-guess
+      sources:
+        - homlo-kit-2026
+      check: unverified
+      rationale: Accepts a 20 % detour to ride on a bike lane or track instead.
+- key: cargo_bike.route_factor_mixed
+  label: "Route choice weight: main road without bike lane"
+  group: Cargo bike
+  unit: ratio
+  used_by:
+    - cargo bike range
+  values:
+    - context:
+        mode: "*"
+      low: 1.2
+      central: 2
+      high: 3
+      basis: educated-guess
+      sources:
+        - homlo-kit-2026
+      check: unverified
+      rationale:
+        Avoids main-road traffic without a bike lane where a reasonable alternative exists (up to twice as
+        long).
+- key: cargo_bike.detour_factor
+  label: Street distance over straight-line distance (range map)
+  group: Cargo bike
+  unit: ratio
+  used_by:
+    - cargo bike range
+  values:
+    - context:
+        mode: "*"
+      low: 1.1
+      central: 1.3
+      high: 1.5
+      basis: cited
+      sources:
+        - boeing-2019
+      check: unverified
+      rationale:
+        Street network circuity of cities is about 1.03–1.3; a bike route that prefers bike lanes takes a
+        bit more. Used by the range map, which follows straight bearings.
+- key: cargo_bike.elevation_smoothing_m
+  label: Height smoothing window
+  group: Cargo bike
+  unit: m
+  used_by:
+    - cargo bike range
+  values:
+    - context:
+        mode: "*"
+      low: 50
+      central: 100
+      high: 200
+      basis: educated-guess
+      sources:
+        - tengattini-bigazzi-2018
+      check: unverified
+      rationale:
+        The Copernicus GLO-30 surface model has about ±4 m of noise and buildings and trees in it; averaging
+        the heights over 100 m keeps the real hills and drops the noise.
+- key: cargo_bike.savings.trips_per_week
+  label: Round trips per week
+  group: Cargo bike
+  unit: 1/week
+  used_by:
+    - cargo bike savings
+  values:
+    - context:
+        mode: "*"
+      low: 1
+      central: 5
+      high: 14
+      basis: educated-guess
+      sources:
+        - homlo-kit-2026
+      check: unverified
+      rationale: A cargo bike used for a weekday commute or delivery round; change it to the real use.
+- key: cargo_bike.savings.weeks_per_year
+  label: Weeks of use per year
+  group: Cargo bike
+  unit: weeks
+  used_by:
+    - cargo bike savings
+  values:
+    - context:
+        mode: "*"
+      low: 30
+      central: 46
+      high: 52
+      basis: educated-guess
+      sources:
+        - homlo-kit-2026
+      check: unverified
+      rationale: A working year without holidays and the worst weather weeks.
+- key: cargo_bike.savings.bike_price_eur
+  label: Cargo bike purchase price (2024 EUR)
+  group: Cargo bike
+  unit: EUR
+  used_by:
+    - cargo bike savings
+  values:
+    - context:
+        mode: "*"
+      low: 2000
+      central: 4000
+      high: 8000
+      basis: documented
+      sources:
+        - homlo-kit-2026
+      check: unverified
+      rationale:
+        Default price of the DIY generic cargo tricycle kit; converted to the local currency at the market
+        exchange rate.
+- key: cargo_bike.savings.bike_lifetime_years
+  label: Cargo bike lifetime
+  group: Cargo bike
+  unit: years
+  used_by:
+    - cargo bike savings
+  values:
+    - context:
+        mode: "*"
+      low: 5
+      central: 8
+      high: 12
+      basis: educated-guess
+      sources:
+        - homlo-kit-2026
+      check: unverified
+      rationale:
+        Frame and motor last about eight years of daily use; the battery is replaced once in that time (in
+        the maintenance cost).
+- key: cargo_bike.savings.bike_maintenance_eur
+  label: Cargo bike maintenance per year (2024 EUR)
+  group: Cargo bike
+  unit: EUR/year
+  used_by:
+    - cargo bike savings
+  values:
+    - context:
+        mode: "*"
+      low: 80
+      central: 200
+      high: 400
+      basis: educated-guess
+      sources:
+        - homlo-kit-2026
+      check: unverified
+      rationale: Chain, brake pads and tyres, one service a year and a share of a replacement battery.
+- key: cargo_bike.savings.bike_insurance_eur
+  label: Cargo bike insurance per year (2024 EUR)
+  group: Cargo bike
+  unit: EUR/year
+  used_by:
+    - cargo bike savings
+  values:
+    - context:
+        mode: "*"
+      low: 0
+      central: 80
+      high: 200
+      basis: educated-guess
+      sources:
+        - adac-autokosten
+      check: unverified
+      rationale: Theft and damage cover for an e-bike in Germany costs about €50–150 a year.
+- key: cargo_bike.savings.electricity_eur_kwh
+  label: Household electricity price (2024 EUR)
+  group: Cargo bike
+  unit: EUR/kWh
+  used_by:
+    - cargo bike savings
+  values:
+    - context:
+        mode: "*"
+      low: 0.29
+      central: 0.39
+      high: 0.45
+      basis: cited
+      sources:
+        - eurostat-electricity-2024
+      check: unverified
+      rationale: "Germany, second half of 2024: €39.43 per 100 kWh (EU €28.72)."
+- key: cargo_bike.savings.charger_efficiency
+  label: Charger efficiency
+  group: Cargo bike
+  unit: share
+  used_by:
+    - cargo bike savings
+  values:
+    - context:
+        mode: "*"
+      low: 0.8
+      central: 0.85
+      high: 0.9
+      basis: educated-guess
+      sources:
+        - homlo-kit-2026
+      check: unverified
+      rationale: Mains energy that ends up in the battery.
+- key: cargo_bike.savings.car_price_eur
+  label: Car purchase price (2024 EUR)
+  group: Cargo bike
+  unit: EUR
+  used_by:
+    - cargo bike savings
+  values:
+    - context:
+        mode: "*"
+      low: 12000
+      central: 20000
+      high: 35000
+      basis: educated-guess
+      sources:
+        - adac-autokosten
+      check: unverified
+      rationale: A new small car or small van in Germany; converted to the local currency at the market exchange rate.
+- key: cargo_bike.savings.car_years
+  label: Years the car is kept
+  group: Cargo bike
+  unit: years
+  used_by:
+    - cargo bike savings
+  values:
+    - context:
+        mode: "*"
+      low: 4
+      central: 8
+      high: 12
+      basis: educated-guess
+      sources:
+        - adac-autokosten
+      check: unverified
+      rationale: Typical first-owner holding period.
+- key: cargo_bike.savings.car_residual_share
+  label: Car resale value at the end, share of the price
+  group: Cargo bike
+  unit: share
+  used_by:
+    - cargo bike savings
+  values:
+    - context:
+        mode: "*"
+      low: 0.15
+      central: 0.3
+      high: 0.45
+      basis: educated-guess
+      sources:
+        - adac-autokosten
+      check: unverified
+      rationale:
+        A car loses most of its value in the first years; ADAC's depreciation for small cars is about €140
+        a month.
+- key: cargo_bike.savings.car_fuel_l_100km
+  label: Car fuel consumption
+  group: Cargo bike
+  unit: l/100 km
+  used_by:
+    - cargo bike savings
+  values:
+    - context:
+        mode: "*"
+      low: 4.5
+      central: 6.5
+      high: 9
+      basis: educated-guess
+      sources:
+        - adac-autokosten
+      check: unverified
+      rationale: Real-world consumption of a small petrol car in town, where cold starts and stop-and-go raise it.
+- key: cargo_bike.savings.fuel_eur_l
+  label: Petrol price (2024 EUR)
+  group: Cargo bike
+  unit: EUR/l
+  used_by:
+    - cargo bike savings
+  values:
+    - context:
+        mode: "*"
+      low: 1.6
+      central: 1.75
+      high: 1.9
+      basis: cited
+      sources:
+        - eu-oil-bulletin
+      check: unverified
+      rationale: Euro-super 95 in Germany during 2024 was about €1.70–1.85 per litre.
+- key: cargo_bike.savings.car_tax_eur
+  label: Car tax per year (2024 EUR)
+  group: Cargo bike
+  unit: EUR/year
+  used_by:
+    - cargo bike savings
+  values:
+    - context:
+        mode: "*"
+      low: 0
+      central: 100
+      high: 300
+      basis: educated-guess
+      sources:
+        - adac-autokosten
+      check: unverified
+      rationale: German vehicle tax of a small petrol car (engine size and CO₂ based).
+- key: cargo_bike.savings.car_insurance_eur
+  label: Car insurance per year (2024 EUR)
+  group: Cargo bike
+  unit: EUR/year
+  used_by:
+    - cargo bike savings
+  values:
+    - context:
+        mode: "*"
+      low: 300
+      central: 600
+      high: 1200
+      basis: educated-guess
+      sources:
+        - adac-autokosten
+      check: unverified
+      rationale:
+        Liability and partial cover of a small car; ADAC's fixed costs of about €96 a month include tax and
+        insurance.
+- key: cargo_bike.savings.car_parking_eur
+  label: Car parking per year (2024 EUR)
+  group: Cargo bike
+  unit: EUR/year
+  used_by:
+    - cargo bike savings
+  values:
+    - context:
+        mode: "*"
+      low: 0
+      central: 400
+      high: 2000
+      basis: educated-guess
+      sources:
+        - adac-autokosten
+      check: unverified
+      rationale: A residents' permit costs little, a garage or a parking space in a city €50–150 a month.
+- key: cargo_bike.savings.car_maintenance_eur_km
+  label: Car maintenance and tyres per km (2024 EUR)
+  group: Cargo bike
+  unit: EUR/km
+  used_by:
+    - cargo bike savings
+  values:
+    - context:
+        mode: "*"
+      low: 0.03
+      central: 0.06
+      high: 0.1
+      basis: educated-guess
+      sources:
+        - adac-autokosten
+      check: unverified
+      rationale: ADAC's workshop costs of about €37 a month for a small car at 10,000–15,000 km a year.
+- key: cargo_bike.savings.fuel_co2_kg_l
+  label: Car CO₂ per litre of petrol (well to wheel)
+  group: Cargo bike
+  unit: kg/l
+  used_by:
+    - cargo bike savings
+  values:
+    - context:
+        mode: "*"
+      low: 2.08
+      central: 2.66
+      high: 2.8
+      basis: cited
+      sources:
+        - desnz-ghg-2024
+      check: unverified
+      rationale:
+        "UK government conversion factors: about 2.08 kg CO₂e per litre burnt (E10 pump petrol) plus about
+        0.6 kg for producing and delivering it."
+- key: cargo_bike.savings.grid_co2_kg_kwh
+  label: CO₂ per kWh of mains electricity
+  group: Cargo bike
+  unit: kg/kWh
+  used_by:
+    - cargo bike savings
+  values:
+    - context:
+        mode: "*"
+      low: 0.02
+      central: 0.353
+      high: 0.9
+      basis: cited
+      sources:
+        - uba-strommix-2024
+      check: unverified
+      rationale:
+        "German electricity mix of 2024: 353 g CO₂ per kWh consumed. Set the value of the start point's
+        country or of a green tariff."
+- key: cargo_bike.savings.rider_efficiency
+  label: Rider's gross efficiency (pedalling energy per food energy)
+  group: Cargo bike
+  unit: share
+  used_by:
+    - cargo bike savings
+  values:
+    - context:
+        mode: "*"
+      low: 0.18
+      central: 0.22
+      high: 0.25
+      basis: educated-guess
+      sources:
+        - tengattini-bigazzi-2018
+      check: unverified
+      rationale: Muscles turn about a fifth of the food energy they burn into work at the pedals; the rest is heat.
+- key: cargo_bike.savings.active_min_week_target
+  label: Recommended physical activity per week
+  group: Cargo bike
+  unit: min/week
+  used_by:
+    - cargo bike savings
+  values:
+    - context:
+        mode: "*"
+      low: 150
+      central: 150
+      high: 300
+      basis: cited
+      sources:
+        - who-pa-2020
+      check: unverified
+      rationale:
+        WHO recommends at least 150–300 minutes of moderate activity a week for adults; everyday cycling
+        counts.

@@ -22,6 +22,8 @@ members = [
   "crates/energy-wasm",
   "crates/gtfs",
   "crates/gtfs-wasm",
+  "crates/cargo-bike",
+  "crates/cargo-bike-wasm",
 ]
 
 [workspace.package]
