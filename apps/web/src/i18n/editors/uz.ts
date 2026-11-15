@@ -600,6 +600,12 @@ export const editorsUz = {
     "{countries} uchun WorldPop aholi toʻri serverga yuklab olinmoqda. U tayyor boʻlguncha aholi bino oʻlchamidan baholanadi; WorldPop’dan foydalanish uchun bir necha daqiqadan keyin qayta hisoblang.",
   "noise.popUnavailable":
     "WorldPop aholisi mavjud emas ({reason}), shuning uchun aholi bino oʻlchamidan baholanadi.",
+  "noise.cancelled": "Shovqin xaritasi bekor qilindi.",
+  "noise.popWaiting":
+    "{countries} uchun WorldPop aholi to‘ri serverga yuklanmoqda: {received} / {total} MB. Bu har bir mamlakat uchun bir marta bo‘ladi.",
+  "noise.popWaitingUnknown":
+    "{countries} uchun WorldPop aholi to‘ri serverga yuklanmoqda: hozircha {received} MB. Bu har bir mamlakat uchun bir marta bo‘ladi.",
+  "noise.popSkip": "O‘rniga bino hajmidan foydalanish",
   "noise.residents": "Aholi",
   "noise.popGrid":
     "WorldPop {year} ({countries}) boʻyicha aholi: har bir 100 m katakdagi odamlar qavat maydoniga koʻra undagi uylarga taqsimlangan. Yuklangan binolarning {total} nafar aholisidan {reached} nafari qamrovda yashaydi.",

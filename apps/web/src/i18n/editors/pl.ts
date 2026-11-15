@@ -636,6 +636,12 @@ export const editorsPl = {
     "Siatka ludności WorldPop dla {countries} jest pobierana na serwer. Do tego czasu mieszkańcy są szacowani z wielkości budynków; przelicz ponownie za kilka minut, aby użyć WorldPop.",
   "noise.popUnavailable":
     "Ludność WorldPop jest niedostępna ({reason}), więc mieszkańcy są szacowani z wielkości budynków.",
+  "noise.cancelled": "Mapa hałasu została anulowana.",
+  "noise.popWaiting":
+    "Pobieranie na serwer siatki ludności WorldPop dla {countries}: {received} z {total} MB. Dzieje się to raz dla każdego kraju.",
+  "noise.popWaitingUnknown":
+    "Pobieranie na serwer siatki ludności WorldPop dla {countries}: dotąd {received} MB. Dzieje się to raz dla każdego kraju.",
+  "noise.popSkip": "Zamiast tego użyj wielkości budynku",
   "noise.residents": "Mieszkańcy",
   "noise.popGrid":
     "Mieszkańcy z WorldPop {year} ({countries}): ludzie z każdej komórki 100 m rozdzieleni między jej budynki mieszkalne według powierzchni kondygnacji. {reached} z {total} mieszkańców wczytanych budynków mieszka w zasięgu.",

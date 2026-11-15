@@ -552,6 +552,12 @@ export const editorsZh = {
   "noise.popDownloading":
     "{countries} 的 WorldPop 人口网格正在下载到服务器。在此之前，居民按建筑物大小估算；几分钟后重新计算即可使用 WorldPop。",
   "noise.popUnavailable": "WorldPop 人口不可用（{reason}），因此居民按建筑物大小估算。",
+  "noise.cancelled": "噪声地图已取消。",
+  "noise.popWaiting":
+    "正在将 {countries} 的 WorldPop 人口网格下载到服务器：{received} / {total} MB。每个国家只需下载一次。",
+  "noise.popWaitingUnknown":
+    "正在将 {countries} 的 WorldPop 人口网格下载到服务器：已下载 {received} MB。每个国家只需下载一次。",
+  "noise.popSkip": "改用建筑大小",
   "noise.residents": "居民",
   "noise.popGrid":
     "居民来自 WorldPop {year}（{countries}）：每个 100 m 网格的人口按建筑面积分配到其中的住宅。已加载建筑物的 {total} 名居民中有 {reached} 名在范围内。",

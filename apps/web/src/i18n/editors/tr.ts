@@ -574,6 +574,12 @@ export const editorsTr = {
     "{countries} için WorldPop nüfus ızgarası sunucuya indiriliyor. Hazır olana kadar sakinler bina büyüklüğünden tahmin edilir; WorldPop'u kullanmak için birkaç dakika sonra yeniden hesaplayın.",
   "noise.popUnavailable":
     "WorldPop nüfusu kullanılamıyor ({reason}), bu yüzden sakinler bina büyüklüğünden tahmin edilir.",
+  "noise.cancelled": "Gürültü haritası iptal edildi.",
+  "noise.popWaiting":
+    "{countries} için WorldPop nüfus ızgarası sunucuya indiriliyor: {received}/{total} MB. Bu her ülke için bir kez olur.",
+  "noise.popWaitingUnknown":
+    "{countries} için WorldPop nüfus ızgarası sunucuya indiriliyor: şimdiye kadar {received} MB. Bu her ülke için bir kez olur.",
+  "noise.popSkip": "Bunun yerine bina boyutunu kullan",
   "noise.residents": "Sakinler",
   "noise.popGrid":
     "WorldPop {year} sakinleri ({countries}): her 100 m'lik hücrenin nüfusu, kat alanına göre içindeki konutlara paylaştırıldı. Yüklenen binalardaki {total} sakinden {reached} kişi erişim içinde yaşıyor.",

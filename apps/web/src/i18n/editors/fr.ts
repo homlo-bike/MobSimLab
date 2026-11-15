@@ -609,6 +609,12 @@ export const editorsFr = {
     "La grille de population WorldPop de {countries} est en cours de téléchargement sur le serveur. En attendant, les habitants sont estimés d’après la taille des bâtiments ; relancez le calcul dans quelques minutes pour utiliser WorldPop.",
   "noise.popUnavailable":
     "La population WorldPop n’est pas disponible ({reason}) : les habitants sont donc estimés d’après la taille des bâtiments.",
+  "noise.cancelled": "La carte de bruit a été annulée.",
+  "noise.popWaiting":
+    "Téléchargement sur le serveur de la grille de population WorldPop de {countries} : {received} sur {total} Mo. Cela n’a lieu qu’une fois par pays.",
+  "noise.popWaitingUnknown":
+    "Téléchargement sur le serveur de la grille de population WorldPop de {countries} : {received} Mo pour l’instant. Cela n’a lieu qu’une fois par pays.",
+  "noise.popSkip": "Utiliser plutôt la taille des bâtiments",
   "noise.residents": "Habitants",
   "noise.popGrid":
     "Habitants selon WorldPop {year} ({countries}) : la population de chaque maille de 100 m répartie entre ses logements selon la surface de plancher. {reached} des {total} habitants des bâtiments chargés vivent à portée.",

@@ -577,6 +577,12 @@ export const editorsAm = {
   "noise.popDownloading":
     "የ {countries} የ WorldPop የሕዝብ ፍርግርግ ወደ አገልጋዩ እየወረደ ነው። እስኪደርስ ድረስ ነዋሪዎች ከሕንፃው መጠን ይገመታሉ፤ WorldPop ለመጠቀም ከጥቂት ደቂቃዎች በኋላ እንደገና አስሉ።",
   "noise.popUnavailable": "የ WorldPop የሕዝብ ብዛት አይገኝም ({reason})፣ ስለዚህ ነዋሪዎች ከሕንፃው መጠን ይገመታሉ።",
+  "noise.cancelled": "የጫጫታ ካርታው ተሰርዟል።",
+  "noise.popWaiting":
+    "የ{countries} WorldPop የሕዝብ ፍርግርግ ወደ አገልጋዩ እየወረደ ነው፦ {received} ከ{total} MB። ይህ ለእያንዳንዱ አገር አንድ ጊዜ ይሆናል።",
+  "noise.popWaitingUnknown":
+    "የ{countries} WorldPop የሕዝብ ፍርግርግ ወደ አገልጋዩ እየወረደ ነው፦ እስካሁን {received} MB። ይህ ለእያንዳንዱ አገር አንድ ጊዜ ይሆናል።",
+  "noise.popSkip": "በምትኩ የሕንፃውን መጠን ተጠቀም",
   "noise.residents": "ነዋሪዎች",
   "noise.popGrid":
     "ነዋሪዎች ከ WorldPop {year} ({countries})፦ የእያንዳንዱ 100 ሜ ሕዋስ ሰዎች በወለል ስፋት መሠረት በውስጡ ላሉ መኖሪያዎች ተከፋፍለዋል። ከተጫኑት ሕንፃዎች {total} ነዋሪዎች ውስጥ {reached} በክልል ውስጥ ይኖራሉ።",

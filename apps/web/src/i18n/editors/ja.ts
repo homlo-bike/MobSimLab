@@ -562,6 +562,12 @@ export const editorsJa = {
     "{countries} の WorldPop 人口グリッドをサーバーにダウンロード中です。それまでは居住者を建物の大きさから推計します。WorldPop を使うには数分後に再計算してください。",
   "noise.popUnavailable":
     "WorldPop の人口を利用できません（{reason}）。そのため居住者は建物の大きさから推計します。",
+  "noise.cancelled": "騒音マップを取り消しました。",
+  "noise.popWaiting":
+    "{countries} の WorldPop 人口グリッドをサーバーにダウンロード中：{received}/{total} MB。国ごとに一度だけ行われます。",
+  "noise.popWaitingUnknown":
+    "{countries} の WorldPop 人口グリッドをサーバーにダウンロード中：これまでに {received} MB。国ごとに一度だけ行われます。",
+  "noise.popSkip": "代わりに建物の大きさを使う",
   "noise.residents": "居住者",
   "noise.popGrid":
     "WorldPop {year}（{countries}）による居住者：100 m セルごとの人口を床面積に応じてセル内の住宅に配分。読み込んだ建物の居住者 {total} 人のうち {reached} 人が範囲内に住んでいます。",

@@ -596,6 +596,12 @@ export const editorsNl = {
     "Het WorldPop-bevolkingsraster van {countries} wordt naar de server gedownload. Tot het er is, worden de bewoners geschat uit de gebouwgrootte; bereken over een paar minuten opnieuw om WorldPop te gebruiken.",
   "noise.popUnavailable":
     "WorldPop-bevolking is niet beschikbaar ({reason}), dus de bewoners worden geschat uit de gebouwgrootte.",
+  "noise.cancelled": "De geluidskaart is geannuleerd.",
+  "noise.popWaiting":
+    "Het WorldPop-bevolkingsraster van {countries} wordt naar de server gedownload: {received} van {total} MB. Dit gebeurt één keer per land.",
+  "noise.popWaitingUnknown":
+    "Het WorldPop-bevolkingsraster van {countries} wordt naar de server gedownload: tot nu toe {received} MB. Dit gebeurt één keer per land.",
+  "noise.popSkip": "In plaats daarvan de gebouwgrootte gebruiken",
   "noise.residents": "Bewoners",
   "noise.popGrid":
     "Bewoners uit WorldPop {year} ({countries}): de mensen van elke cel van 100 m verdeeld over de woningen erin naar vloeroppervlak. {reached} van {total} bewoners van de geladen gebouwen wonen binnen bereik.",

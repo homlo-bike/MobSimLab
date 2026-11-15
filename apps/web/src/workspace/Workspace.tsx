@@ -46,12 +46,16 @@ import {
   LayersIcon,
   PenIcon,
   PlayIcon,
+  PrintIcon,
   SchematicIcon,
   TableIcon,
   TrainIcon,
 } from "../shell/icons";
 import { type Tab, TABS } from "../shell/route";
+import { HelpMenu } from "../shell/HelpMenu";
 import { TopBar } from "../shell/TopBar";
+import { PROJECT_TOUR, Tour } from "../shell/Tour";
+import { PrintReport } from "./PrintReport";
 import { Placeholder } from "./Placeholder";
 import { ProjectPreferences } from "./ProjectPreferences";
 import { delaysFrom, type PreferencesDoc } from "./preferences";
@@ -131,6 +135,8 @@ export function Workspace({
   const [pluginLines, setPluginLines] = useState<Record<string, PluginLineInput | null>>({});
   // The track topology last built in the railway tool, so street lines wait at its level crossings.
   const [railTopology, setRailTopology] = useState<unknown>(null);
+  const [touring, setTouring] = useState(false);
+  const [printing, setPrinting] = useState(false);
   useEffect(() => {
     setLine(null);
     setPluginLines({});
@@ -205,6 +211,7 @@ export function Workspace({
   const tabs = (
     <nav
       aria-label={t("tab.label")}
+      data-tour="tabs"
       className="hidden h-full items-stretch gap-0.5 self-stretch md:ms-2 md:flex"
     >
       {TABS.map((x) => {
@@ -214,6 +221,7 @@ export function Workspace({
             key={x}
             href={`/projects/${projectId}/${x}`}
             aria-current={tab === x ? "page" : undefined}
+            data-tour={`tab-${x}`}
             onClick={(e) => {
               if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
               e.preventDefault();
@@ -232,7 +240,30 @@ export function Workspace({
   );
 
   const top = (
-    <TopBar brand={brand} onHome={onHome} onAbout={onAbout} account={account}>
+    <TopBar
+      brand={brand}
+      onHome={onHome}
+      onAbout={onAbout}
+      account={account}
+      actions={
+        project && (
+          <>
+            <button
+              type="button"
+              className="icon-btn hidden sm:inline-flex"
+              aria-label={t("print.title")}
+              title={t("print.title")}
+              aria-haspopup="dialog"
+              data-tour="print"
+              onClick={() => setPrinting(true)}
+            >
+              <PrintIcon />
+            </button>
+            <HelpMenu onTour={() => setTouring(true)} />
+          </>
+        )
+      }
+    >
       <button type="button" className="icon-btn md:hidden" aria-label={t("project.back")} onClick={onHome}>
         <BackIcon />
       </button>
@@ -250,6 +281,7 @@ export function Workspace({
   const bottomTabs = (
     <nav
       aria-label={t("tab.label")}
+      data-tour="tabs"
       className="flex h-16 shrink-0 border-t border-slate-200 bg-white md:hidden"
     >
       {TABS.map((x) => {
@@ -259,6 +291,7 @@ export function Workspace({
             key={x}
             type="button"
             aria-current={tab === x ? "page" : undefined}
+            data-tour={`tab-${x}`}
             onClick={() => onTab(x)}
             className={`flex min-w-0 flex-1 flex-col items-center justify-center gap-0.5 text-[11px] font-medium ${tab === x ? "text-blue-700" : "text-slate-500"}`}
           >
@@ -561,6 +594,7 @@ export function Workspace({
         {hasPanel && (
           <aside
             aria-label={panelLabel}
+            data-tour="panel"
             className={`flex max-h-[55%] shrink-0 flex-col overflow-hidden rounded-t-2xl border-t border-slate-200 bg-white shadow-[0_-4px_20px_rgba(15,23,42,.12)] md:max-h-none md:rounded-none md:border-t-0 md:border-s md:shadow-none ${tab === "simulator" && sim === "journey" ? "md:w-[26rem]" : "md:w-96"}`}
           >
             <div
@@ -677,6 +711,26 @@ export function Workspace({
         )}
       </main>
       {bottomTabs}
+      {touring && <Tour steps={PROJECT_TOUR} onTab={onTab} onClose={() => setTouring(false)} />}
+      {printing && project && (
+        <PrintReport
+          projectName={project.name}
+          areaName={project.areaName}
+          map={map}
+          mapOnScreen={onMap}
+          onClose={() => setPrinting(false)}
+          tables={
+            drawings.loaded && (
+              <CostTables
+                railway={railway}
+                streetLines={streetLines}
+                preferences={preferences}
+                costs={drawings.doc<CostsDoc>("costs")}
+              />
+            )
+          }
+        />
+      )}
     </div>
   );
 }
@@ -698,6 +752,7 @@ function SaveStatus({ drawings }: { drawings: Drawings }) {
     <span
       role="status"
       title={text}
+      data-tour="save"
       className={`hidden max-w-56 truncate text-xs sm:inline ${s === "failed" || s === "offline" ? "text-red-700" : "text-slate-500"}`}
     >
       {text}

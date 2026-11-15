@@ -600,6 +600,12 @@ export const editorsIt = {
     "La griglia di popolazione WorldPop di {countries} è in download sul server. Nel frattempo i residenti sono stimati dalla dimensione degli edifici; ricalcola tra qualche minuto per usare WorldPop.",
   "noise.popUnavailable":
     "La popolazione WorldPop non è disponibile ({reason}), quindi i residenti sono stimati dalla dimensione degli edifici.",
+  "noise.cancelled": "La mappa del rumore è stata annullata.",
+  "noise.popWaiting":
+    "Download sul server della griglia di popolazione WorldPop di {countries}: {received} di {total} MB. Avviene una volta per paese.",
+  "noise.popWaitingUnknown":
+    "Download sul server della griglia di popolazione WorldPop di {countries}: finora {received} MB. Avviene una volta per paese.",
+  "noise.popSkip": "Usa invece la dimensione degli edifici",
   "noise.residents": "Residenti",
   "noise.popGrid":
     "Residenti da WorldPop {year} ({countries}): le persone di ogni cella di 100 m ripartite tra le sue abitazioni in base alla superficie di piano. {reached} di {total} residenti degli edifici caricati vivono in portata.",

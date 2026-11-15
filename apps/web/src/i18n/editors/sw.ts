@@ -595,6 +595,12 @@ export const editorsSw = {
     "Gridi ya idadi ya watu ya WorldPop ya {countries} inapakuliwa kwenye seva. Hadi ikamilike, wakazi wanakadiriwa kutokana na ukubwa wa majengo; kokotoa tena baada ya dakika chache ili kutumia WorldPop.",
   "noise.popUnavailable":
     "Idadi ya watu ya WorldPop haipatikani ({reason}), hivyo wakazi wanakadiriwa kutokana na ukubwa wa majengo.",
+  "noise.cancelled": "Ramani ya kelele imeghairiwa.",
+  "noise.popWaiting":
+    "Inapakua gridi ya idadi ya watu ya WorldPop ya {countries} kwenye seva: {received} kati ya {total} MB. Hii hutokea mara moja kwa kila nchi.",
+  "noise.popWaitingUnknown":
+    "Inapakua gridi ya idadi ya watu ya WorldPop ya {countries} kwenye seva: {received} MB hadi sasa. Hii hutokea mara moja kwa kila nchi.",
+  "noise.popSkip": "Tumia ukubwa wa jengo badala yake",
   "noise.residents": "Wakazi",
   "noise.popGrid":
     "Wakazi kutoka WorldPop {year} ({countries}): watu wa kila kisanduku cha m 100 wamegawanywa kwa makazi yake kulingana na eneo la sakafu. Wakazi {reached} kati ya {total} wa majengo yaliyopakiwa wanaishi ndani ya ufikio.",
