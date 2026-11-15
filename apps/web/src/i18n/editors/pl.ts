@@ -1104,4 +1104,68 @@ export const editorsPl = {
   "rail.profileAria": "Profil podłużny: teren i główka szyny wzdłuż toru",
   "rail.profileLegend":
     "Ciągła: główka szyny. Przerywana: teren (Copernicus GLO-30, wygładzony). Wysokości z modelu powierzchni, ±4 m.",
+
+  "walk.title": "Pieszo do przystanku",
+  "walk.intro":
+    "Jaka część obszaru wokół linii leży w krótkiej odległości pieszo od przystanku lub stacji, ulicami i ścieżkami, z oczekiwaniem na każdym przejściu z sygnalizacją.",
+  "walk.minutes": "Limit dojścia, minuty",
+  "walk.stepFree": "Bez stopni (bez schodów)",
+  "walk.compute": "Oblicz dostępność pieszą",
+  "walk.computeAgain": "Oblicz ponownie",
+  "walk.drawFirst": "Najpierw narysuj linię uliczną lub linię kolejową ze stacjami.",
+  "walk.collecting": "Zbieranie przystanków i stacji…",
+  "walk.loadingTiles": "Wczytywanie ścieżek pieszych ({done} z {count} kafelków mapy)…",
+  "walk.loadingPopulation": "Wczytywanie miejsc zamieszkania…",
+  "walk.computing": "Mierzenie dojść pieszych…",
+  "walk.tooLarge":
+    "Przystanki rozciągają się na {tiles} kafelków mapy; naraz wczytuje się najwyżej {max} (około 12 km × 12 km).",
+  "walk.osmUnavailable": "Ścieżki piesze OpenStreetMap są teraz niedostępne. Spróbuj ponownie za minutę.",
+  "walk.headlinePeople":
+    "{share} % z {total} mieszkańców wokół linii mieszka w odległości do {minutes} minut pieszo od przystanku lub stacji.",
+  "walk.headlineStreets":
+    "{share} % ulic dostępnych pieszo wokół linii leży w odległości do {minutes} minut pieszo od przystanku lub stacji.",
+  "walk.crowFlies": "W linii prostej byłoby to {share} %: ulice i ścieżki wydłużają dojścia.",
+  "walk.bands": "Dojście do najbliższego przystanku",
+  "walk.band": "{from}–{to} min",
+  "walk.bandOver": "{from} min lub więcej",
+  "walk.residents": "Mieszkańcy",
+  "walk.streets": "Ulice",
+  "walk.gaps": "Największe luki",
+  "walk.gapsIntro":
+    "Miejsca z największą liczbą osób poza limitem dojścia, od największych. Dotknij, aby tam przejść.",
+  "walk.gapsIntroStreets":
+    "Miejsca z największą długością ulic poza limitem dojścia, od największych. Dotknij, aby tam przejść.",
+  "walk.gapPeople": "{people} mieszkańców",
+  "walk.gapStreets": "{metres} m ulicy",
+  "walk.gapWalk": "{minutes} min pieszo do najbliższego przystanku",
+  "walk.gapUnreachable": "żaden przystanek nie jest osiągalny pieszo",
+  "walk.noGaps": "Brak luk: cały obszar mieści się w limicie dojścia.",
+  "walk.showOnMap": "Pokaż na mapie",
+  "walk.legend": "Minuty pieszo do najbliższego przystanku",
+  "walk.offNetwork": "Za daleko od ścieżki pieszej, pominięte: {stops}.",
+  "walk.popDownloading":
+    "Ludność kraju {countries} jest jeszcze pobierana na serwer; do tego czasu ulice zastępują ludzi.",
+  "walk.popUnavailable": "Brak danych o ludności ({reason}); ulice zastępują ludzi.",
+  "walk.popCredit": "Mieszkańcy: WorldPop {year} ({countries}), CC BY 4.0.",
+  "walk.note":
+    "Obszar to prostokąt wokół przystanków powiększony o dystans przebyty w limicie. Nachylenia nie są jeszcze uwzględniane.",
+  "spacing.title": "Odległość między przystankami",
+  "spacing.intro":
+    "Odległość między kolejnymi przystankami wzdłuż linii w porównaniu z typowym zakresem dla środka transportu. Zbyt bliskie przystanki spowalniają linię; zbyt odległe oznaczają długie dojścia.",
+  "spacing.none":
+    "Najpierw narysuj linię uliczną lub kolejową linię komunikacyjną z co najmniej dwiema stacjami.",
+  "spacing.loading": "Mierzenie odległości między przystankami…",
+  "spacing.direction": "kierunek {n}",
+  "spacing.summary": "Mediana {median} m · najkrótsza {min} m · najdłuższa {max} m",
+  "spacing.guidance": "Typowo dla tego środka transportu: {low}–{high} m",
+  "spacing.allOk": "Wszystkie przystanki mieszczą się w typowym zakresie.",
+  "spacing.flags": "{short} za blisko, {long} za daleko od siebie",
+  "spacing.short": "za blisko",
+  "spacing.long": "za daleko od siebie",
+  "spacing.pair": "{from} → {to}",
+  "spacing.along": "{metres} m",
+  "spacing.onFoot": "{metres} m pieszo",
+  "spacing.straight": "Mierzone w linii prostej między stacjami.",
+  "spacing.onFootHint":
+    "Oblicz powyżej dostępność pieszą, aby dodać odległość pieszo między oznaczonymi przystankami.",
 } satisfies EditorMessages;

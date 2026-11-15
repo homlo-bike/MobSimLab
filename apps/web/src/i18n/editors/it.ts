@@ -1051,4 +1051,69 @@ export const editorsIt = {
   "rail.profileAria": "Profilo longitudinale: terreno e piano del ferro lungo il binario",
   "rail.profileLegend":
     "Continua: piano del ferro. Tratteggiata: terreno (Copernicus GLO-30, smussato). Quote da un modello di superficie, ±4 m.",
+
+  "walk.title": "A piedi fino a una fermata",
+  "walk.intro":
+    "Quanta parte dell'area intorno alle linee è a breve distanza a piedi da una fermata o stazione, lungo strade e percorsi pedonali, con un'attesa a ogni attraversamento semaforizzato.",
+  "walk.minutes": "Limite a piedi, minuti",
+  "walk.stepFree": "Senza gradini (escludi le scale)",
+  "walk.compute": "Calcola la copertura a piedi",
+  "walk.computeAgain": "Ricalcola",
+  "walk.drawFirst": "Disegna prima una linea su strada o una ferrovia con stazioni.",
+  "walk.collecting": "Raccolta di fermate e stazioni…",
+  "walk.loadingTiles": "Caricamento dei percorsi pedonali ({done} di {count} riquadri)…",
+  "walk.loadingPopulation": "Caricamento di dove vivono le persone…",
+  "walk.computing": "Misurazione dei percorsi a piedi…",
+  "walk.tooLarge":
+    "Le fermate occupano {tiles} riquadri della mappa; se ne caricano al massimo {max} (circa 12 km × 12 km) alla volta.",
+  "walk.osmUnavailable":
+    "I percorsi pedonali di OpenStreetMap non sono disponibili ora. Riprova tra un minuto.",
+  "walk.headlinePeople":
+    "Il {share} % dei {total} residenti intorno alle linee vive entro {minutes} minuti a piedi da una fermata o stazione.",
+  "walk.headlineStreets":
+    "Il {share} % delle strade percorribili a piedi intorno alle linee è entro {minutes} minuti a piedi da una fermata o stazione.",
+  "walk.crowFlies": "In linea d'aria sarebbe il {share} %: strade e percorsi allungano i tragitti.",
+  "walk.bands": "A piedi fino alla fermata più vicina",
+  "walk.band": "{from}–{to} min",
+  "walk.bandOver": "{from} min o più",
+  "walk.residents": "Residenti",
+  "walk.streets": "Strade",
+  "walk.gaps": "Lacune maggiori",
+  "walk.gapsIntro":
+    "Luoghi con più persone oltre il limite a piedi, dal più grande. Toccane uno per andarci.",
+  "walk.gapsIntroStreets":
+    "Luoghi con più strade oltre il limite a piedi, dal più grande. Toccane uno per andarci.",
+  "walk.gapPeople": "{people} residenti",
+  "walk.gapStreets": "{metres} m di strada",
+  "walk.gapWalk": "{minutes} min a piedi fino alla fermata più vicina",
+  "walk.gapUnreachable": "nessuna fermata raggiungibile a piedi",
+  "walk.noGaps": "Nessuna lacuna: tutta l'area è entro il limite a piedi.",
+  "walk.showOnMap": "Mostra sulla mappa",
+  "walk.legend": "Minuti a piedi fino alla fermata più vicina",
+  "walk.offNetwork": "Troppo lontane da un percorso pedonale, escluse: {stops}.",
+  "walk.popDownloading":
+    "La popolazione di {countries} è ancora in download sul server; fino ad allora le strade sostituiscono le persone.",
+  "walk.popUnavailable": "Nessun dato sulla popolazione ({reason}); le strade sostituiscono le persone.",
+  "walk.popCredit": "Residenti: WorldPop {year} ({countries}), CC BY 4.0.",
+  "walk.note":
+    "L'area è il rettangolo intorno alle fermate più la distanza percorsa nel limite. Le pendenze non sono ancora considerate.",
+  "spacing.title": "Distanza tra fermate",
+  "spacing.intro":
+    "Distanza tra fermate consecutive lungo la linea, rispetto all'intervallo usuale del modo. Fermate troppo vicine rallentano la linea; troppo distanti significano lunghe camminate.",
+  "spacing.none":
+    "Disegna prima una linea su strada, o una linea di servizio ferroviario con almeno due stazioni.",
+  "spacing.loading": "Misurazione della distanza tra fermate…",
+  "spacing.direction": "direzione {n}",
+  "spacing.summary": "Mediana {median} m · più corta {min} m · più lunga {max} m",
+  "spacing.guidance": "Usuale per questo modo: {low}–{high} m",
+  "spacing.allOk": "Tutte le fermate sono nell'intervallo usuale.",
+  "spacing.flags": "{short} troppo vicine, {long} troppo distanti",
+  "spacing.short": "troppo vicine",
+  "spacing.long": "troppo distanti",
+  "spacing.pair": "{from} → {to}",
+  "spacing.along": "{metres} m",
+  "spacing.onFoot": "{metres} m a piedi",
+  "spacing.straight": "Misurata in linea d'aria tra le stazioni.",
+  "spacing.onFootHint":
+    "Calcola sopra la copertura a piedi per aggiungere la distanza a piedi tra le fermate segnalate.",
 } satisfies EditorMessages;

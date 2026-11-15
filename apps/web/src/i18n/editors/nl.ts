@@ -1046,4 +1046,69 @@ export const editorsNl = {
   "rail.profileAria": "Hoogteprofiel: maaiveld en bovenkant spoor langs het spoor",
   "rail.profileLegend":
     "Doorgetrokken: bovenkant spoor. Gestreept: maaiveld (Copernicus GLO-30, afgevlakt). Hoogtes uit een oppervlaktemodel, ±4 m.",
+
+  "walk.title": "Lopen naar een halte",
+  "walk.intro":
+    "Hoeveel van het gebied rond de lijnen op korte loopafstand van een halte of station ligt, via straten en voetpaden, met wachttijd bij elke oversteek met verkeerslichten.",
+  "walk.minutes": "Looptijdgrens, minuten",
+  "walk.stepFree": "Drempelvrij (zonder trappen)",
+  "walk.compute": "Loopdekking berekenen",
+  "walk.computeAgain": "Opnieuw berekenen",
+  "walk.drawFirst": "Teken eerst een straatlijn of een spoorlijn met stations.",
+  "walk.collecting": "Haltes en stations verzamelen…",
+  "walk.loadingTiles": "Voetpaden laden ({done} van {count} kaarttegels)…",
+  "walk.loadingPopulation": "Laden waar mensen wonen…",
+  "walk.computing": "Looproutes meten…",
+  "walk.tooLarge":
+    "De haltes liggen verspreid over {tiles} kaarttegels; er worden er hoogstens {max} (ongeveer 12 km × 12 km) tegelijk geladen.",
+  "walk.osmUnavailable":
+    "OpenStreetMap-voetpaden zijn nu niet beschikbaar. Probeer het over een minuut opnieuw.",
+  "walk.headlinePeople":
+    "{share} % van de {total} inwoners rond de lijnen woont binnen {minutes} minuten lopen van een halte of station.",
+  "walk.headlineStreets":
+    "{share} % van de beloopbare straten rond de lijnen ligt binnen {minutes} minuten lopen van een halte of station.",
+  "walk.crowFlies":
+    "In een rechte lijn zou het {share} % zijn: straten en voetpaden maken looproutes langer.",
+  "walk.bands": "Lopen naar de dichtstbijzijnde halte",
+  "walk.band": "{from}–{to} min",
+  "walk.bandOver": "{from} min of meer",
+  "walk.residents": "Inwoners",
+  "walk.streets": "Straten",
+  "walk.gaps": "Grootste gaten",
+  "walk.gapsIntro":
+    "Plekken met de meeste mensen buiten de looptijdgrens, grootste eerst. Tik er een aan om erheen te gaan.",
+  "walk.gapsIntroStreets":
+    "Plekken met de meeste straat buiten de looptijdgrens, grootste eerst. Tik er een aan om erheen te gaan.",
+  "walk.gapPeople": "{people} inwoners",
+  "walk.gapStreets": "{metres} m straat",
+  "walk.gapWalk": "{minutes} min lopen naar de dichtstbijzijnde halte",
+  "walk.gapUnreachable": "geen halte te voet bereikbaar",
+  "walk.noGaps": "Geen gaten: alles in het gebied ligt binnen de looptijdgrens.",
+  "walk.showOnMap": "Op de kaart tonen",
+  "walk.legend": "Minuten lopen naar de dichtstbijzijnde halte",
+  "walk.offNetwork": "Te ver van een voetpad, weggelaten: {stops}.",
+  "walk.popDownloading":
+    "De bevolking van {countries} wordt nog naar de server gedownload; tot dan staan de straten voor de mensen.",
+  "walk.popUnavailable": "Geen bevolkingsgegevens ({reason}); de straten staan voor de mensen.",
+  "walk.popCredit": "Inwoners: WorldPop {year} ({countries}), CC BY 4.0.",
+  "walk.note":
+    "Het gebied is de rechthoek rond de haltes plus de afstand die binnen de grens wordt gelopen. Hellingen tellen nog niet mee.",
+  "spacing.title": "Halteafstand",
+  "spacing.intro":
+    "Afstand tussen opeenvolgende haltes langs de lijn, vergeleken met het gebruikelijke bereik voor de modaliteit. Haltes te dicht bij elkaar vertragen de lijn; te ver uit elkaar betekent lange looproutes.",
+  "spacing.none": "Teken eerst een straatlijn, of een spoordienstlijn met minstens twee stations.",
+  "spacing.loading": "Halteafstand meten…",
+  "spacing.direction": "richting {n}",
+  "spacing.summary": "Mediaan {median} m · kortste {min} m · langste {max} m",
+  "spacing.guidance": "Gebruikelijk voor deze modaliteit: {low}–{high} m",
+  "spacing.allOk": "Alle haltes liggen binnen het gebruikelijke bereik.",
+  "spacing.flags": "{short} te dichtbij, {long} te ver uit elkaar",
+  "spacing.short": "te dichtbij",
+  "spacing.long": "te ver uit elkaar",
+  "spacing.pair": "{from} → {to}",
+  "spacing.along": "{metres} m",
+  "spacing.onFoot": "{metres} m te voet",
+  "spacing.straight": "Gemeten in een rechte lijn tussen stations.",
+  "spacing.onFootHint":
+    "Bereken hierboven de loopdekking om de loopafstand tussen gemarkeerde haltes toe te voegen.",
 } satisfies EditorMessages;

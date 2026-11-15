@@ -1048,4 +1048,69 @@ export const editorsPt = {
   "rail.profileAria": "Perfil longitudinal: terreno e topo do trilho ao longo da via",
   "rail.profileLegend":
     "Contínua: topo do trilho. Tracejada: terreno (Copernicus GLO-30, suavizado). Alturas de um modelo de superfície, ±4 m.",
+
+  "walk.title": "A pé até uma paragem",
+  "walk.intro":
+    "Quanto da área em redor das linhas fica a uma curta caminhada de uma paragem ou estação, por ruas e caminhos pedonais, com uma espera em cada passadeira com semáforo.",
+  "walk.minutes": "Limite a pé, minutos",
+  "walk.stepFree": "Sem degraus (excluir escadas)",
+  "walk.compute": "Calcular a cobertura a pé",
+  "walk.computeAgain": "Calcular de novo",
+  "walk.drawFirst": "Desenhe primeiro uma linha de rua ou uma ferrovia com estações.",
+  "walk.collecting": "A reunir as paragens e estações…",
+  "walk.loadingTiles": "A carregar caminhos pedonais ({done} de {count} mosaicos)…",
+  "walk.loadingPopulation": "A carregar onde as pessoas vivem…",
+  "walk.computing": "A medir as caminhadas…",
+  "walk.tooLarge":
+    "As paragens espalham-se por {tiles} mosaicos do mapa; no máximo {max} (cerca de 12 km × 12 km) são carregados de cada vez.",
+  "walk.osmUnavailable":
+    "Os caminhos pedonais do OpenStreetMap não estão disponíveis agora. Tente de novo dentro de um minuto.",
+  "walk.headlinePeople":
+    "{share} % dos {total} residentes em redor das linhas vivem a menos de {minutes} minutos a pé de uma paragem ou estação.",
+  "walk.headlineStreets":
+    "{share} % das ruas percorríveis a pé em redor das linhas estão a menos de {minutes} minutos a pé de uma paragem ou estação.",
+  "walk.crowFlies": "Em linha reta seriam {share} %: as ruas e caminhos tornam as caminhadas mais longas.",
+  "walk.bands": "A pé até à paragem mais próxima",
+  "walk.band": "{from}–{to} min",
+  "walk.bandOver": "{from} min ou mais",
+  "walk.residents": "Residentes",
+  "walk.streets": "Ruas",
+  "walk.gaps": "Maiores lacunas",
+  "walk.gapsIntro":
+    "Locais com mais pessoas além do limite a pé, do maior para o menor. Toque num para ir até lá.",
+  "walk.gapsIntroStreets":
+    "Locais com mais rua além do limite a pé, do maior para o menor. Toque num para ir até lá.",
+  "walk.gapPeople": "{people} residentes",
+  "walk.gapStreets": "{metres} m de rua",
+  "walk.gapWalk": "{minutes} min a pé até à paragem mais próxima",
+  "walk.gapUnreachable": "nenhuma paragem acessível a pé",
+  "walk.noGaps": "Sem lacunas: toda a área está dentro do limite a pé.",
+  "walk.showOnMap": "Mostrar no mapa",
+  "walk.legend": "Minutos a pé até à paragem mais próxima",
+  "walk.offNetwork": "Demasiado longe de um caminho pedonal, excluídas: {stops}.",
+  "walk.popDownloading":
+    "A população de {countries} ainda está a ser descarregada para o servidor; até lá, as ruas representam as pessoas.",
+  "walk.popUnavailable": "Sem dados de população ({reason}); as ruas representam as pessoas.",
+  "walk.popCredit": "Residentes: WorldPop {year} ({countries}), CC BY 4.0.",
+  "walk.note":
+    "A área é o retângulo em redor das paragens mais a distância percorrida no limite. Os declives ainda não são contados.",
+  "spacing.title": "Distância entre paragens",
+  "spacing.intro":
+    "Distância entre paragens consecutivas ao longo da linha, face ao intervalo habitual do modo. Paragens demasiado próximas atrasam a linha; demasiado afastadas obrigam a longas caminhadas.",
+  "spacing.none":
+    "Desenhe primeiro uma linha de rua, ou uma linha de serviço ferroviário com pelo menos duas estações.",
+  "spacing.loading": "A medir a distância entre paragens…",
+  "spacing.direction": "sentido {n}",
+  "spacing.summary": "Mediana {median} m · mais curta {min} m · mais longa {max} m",
+  "spacing.guidance": "Habitual para este modo: {low}–{high} m",
+  "spacing.allOk": "Todas as paragens estão dentro do intervalo habitual.",
+  "spacing.flags": "{short} demasiado próximas, {long} demasiado afastadas",
+  "spacing.short": "demasiado próximas",
+  "spacing.long": "demasiado afastadas",
+  "spacing.pair": "{from} → {to}",
+  "spacing.along": "{metres} m",
+  "spacing.onFoot": "{metres} m a pé",
+  "spacing.straight": "Medido em linha reta entre estações.",
+  "spacing.onFootHint":
+    "Calcule acima a cobertura a pé para acrescentar a distância a pé entre as paragens assinaladas.",
 } satisfies EditorMessages;

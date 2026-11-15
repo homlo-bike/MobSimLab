@@ -1034,6 +1034,68 @@ export const editorsEn = {
   "capacity.notFit.other": "{count} trips do not fit",
   "capacity.dieOutRow": "die out",
   "capacity.pileUpRow": "pile up",
+
+  "walk.title": "Walk to a stop",
+  "walk.intro":
+    "How much of the area round the lines is within a short walk of a stop or station, along streets and footpaths, with a wait at each signalised crossing.",
+  "walk.minutes": "Walk limit, minutes",
+  "walk.stepFree": "Step-free (leave out steps)",
+  "walk.compute": "Calculate walk coverage",
+  "walk.computeAgain": "Calculate again",
+  "walk.drawFirst": "Draw a street line or a railway with stations first.",
+  "walk.collecting": "Collecting the stops and stations…",
+  "walk.loadingTiles": "Loading footpaths ({done} of {count} map tiles)…",
+  "walk.loadingPopulation": "Loading where people live…",
+  "walk.computing": "Measuring the walks…",
+  "walk.tooLarge":
+    "The stops spread over {tiles} map tiles; at most {max} (about 12 km × 12 km) are loaded at once.",
+  "walk.osmUnavailable": "OpenStreetMap footpaths are unavailable right now. Try again in a minute.",
+  "walk.headlinePeople":
+    "{share} % of the {total} residents round the lines live within a {minutes}-minute walk of a stop or station.",
+  "walk.headlineStreets":
+    "{share} % of the walkable streets round the lines are within a {minutes}-minute walk of a stop or station.",
+  "walk.crowFlies": "In a straight line it would be {share} %: streets and footpaths make walks longer.",
+  "walk.bands": "Walk to the nearest stop",
+  "walk.band": "{from}–{to} min",
+  "walk.bandOver": "{from} min or more",
+  "walk.residents": "Residents",
+  "walk.streets": "Streets",
+  "walk.gaps": "Largest gaps",
+  "walk.gapsIntro": "Places with the most people beyond the walk limit, largest first. Tap one to go to it.",
+  "walk.gapsIntroStreets":
+    "Places with the most street beyond the walk limit, largest first. Tap one to go to it.",
+  "walk.gapPeople": "{people} residents",
+  "walk.gapStreets": "{metres} m of street",
+  "walk.gapWalk": "{minutes} min walk to the nearest stop",
+  "walk.gapUnreachable": "no stop reachable on foot",
+  "walk.noGaps": "No gaps: everything in the area is within the walk limit.",
+  "walk.showOnMap": "Show on the map",
+  "walk.legend": "Minutes on foot to the nearest stop",
+  "walk.offNetwork": "Too far from a footpath, left out: {stops}.",
+  "walk.popDownloading":
+    "The population of {countries} is still downloading to the server; the streets stand in for people until then.",
+  "walk.popUnavailable": "No population data ({reason}); the streets stand in for people.",
+  "walk.popCredit": "Residents: WorldPop {year} ({countries}), CC BY 4.0.",
+  "walk.note":
+    "The area is the box round the stops plus the distance walked in the limit. Slopes are not counted yet.",
+  "spacing.title": "Stop spacing",
+  "spacing.intro":
+    "Distance between consecutive stops along the line, against the usual range for the mode. Stops too close slow the line down; stops too far apart mean long walks.",
+  "spacing.none": "Draw a street line, or a rail service line with at least two stations, first.",
+  "spacing.loading": "Measuring the stop spacing…",
+  "spacing.direction": "direction {n}",
+  "spacing.summary": "Median {median} m · shortest {min} m · longest {max} m",
+  "spacing.guidance": "Usual for this mode: {low}–{high} m",
+  "spacing.allOk": "All stops are within the usual range.",
+  "spacing.flags": "{short} too close, {long} too far apart",
+  "spacing.short": "too close",
+  "spacing.long": "too far apart",
+  "spacing.pair": "{from} → {to}",
+  "spacing.along": "{metres} m",
+  "spacing.onFoot": "{metres} m on foot",
+  "spacing.straight": "Measured in a straight line between stations.",
+  "spacing.onFootHint":
+    "Calculate the walk coverage above to add the distance on foot between flagged stops.",
 } as const;
 
 /** Keys of the editor messages. */

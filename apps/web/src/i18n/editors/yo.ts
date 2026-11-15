@@ -1007,4 +1007,66 @@ export const editorsYo = {
   "rail.profileAria": "Àwòrán gígùn: ilẹ̀ àti orí irin ní gígùn ojú ọ̀nà",
   "rail.profileLegend":
     "Ìlà kíkún: orí irin. Ìlà ẹlẹ́gbẹ́: ilẹ̀ (Copernicus GLO-30, a mú un dán). Gíga láti àwòṣe ojú ilẹ̀, ±4 m.",
+
+  "walk.title": "Rírìn dé ibùdókọ̀",
+  "walk.intro":
+    "Iye agbègbè yíká àwọn ìlà tí ó wà ní ìrìn kúkúrú sí ibùdókọ̀ tàbí ibùdó, lójú òpópónà àti ọ̀nà ẹlẹ́sẹ̀, pẹ̀lú ìdúró ní gbogbo ìrékọjá oníná.",
+  "walk.minutes": "Ààlà ìrìn, ìṣẹ́jú",
+  "walk.stepFree": "Láìsí àtẹ̀gùn",
+  "walk.compute": "Ṣírò àrọ́wọ́tó ẹlẹ́sẹ̀",
+  "walk.computeAgain": "Ṣírò lẹ́ẹ̀kan sí i",
+  "walk.drawFirst": "Kọ́kọ́ ya ìlà òpópónà tàbí ojú irin tí ó ní àwọn ibùdó.",
+  "walk.collecting": "À ń kó àwọn ibùdókọ̀ àti ibùdó jọ…",
+  "walk.loadingTiles": "À ń gbé ọ̀nà ẹlẹ́sẹ̀ wọlé ({done} nínú àwo máàpù {count})…",
+  "walk.loadingPopulation": "À ń gbé ibi tí ènìyàn ń gbé wọlé…",
+  "walk.computing": "À ń wọn àwọn ìrìn…",
+  "walk.tooLarge":
+    "Àwọn ibùdókọ̀ tàn ká àwo máàpù {tiles}; {max} péré (ní nǹkan bí km 12 × km 12) ni a ń gbé wọlé lẹ́ẹ̀kan.",
+  "walk.osmUnavailable": "Ọ̀nà ẹlẹ́sẹ̀ OpenStreetMap kò sí lọ́wọ́lọ́wọ́. Gbìyànjú lẹ́ẹ̀kan sí i lẹ́yìn ìṣẹ́jú kan.",
+  "walk.headlinePeople":
+    "{share} % nínú olùgbé {total} yíká àwọn ìlà ń gbé láàrin ìrìn ìṣẹ́jú {minutes} sí ibùdókọ̀ tàbí ibùdó.",
+  "walk.headlineStreets":
+    "{share} % nínú òpópónà tí a lè rìn yíká àwọn ìlà wà láàrin ìrìn ìṣẹ́jú {minutes} sí ibùdókọ̀ tàbí ibùdó.",
+  "walk.crowFlies": "Ní ìlà títọ́ yóò jẹ́ {share} %: òpópónà àti ọ̀nà ń mú ìrìn gùn sí i.",
+  "walk.bands": "Rírìn dé ibùdókọ̀ tó súnmọ́ jù",
+  "walk.band": "ìṣẹ́jú {from}–{to}",
+  "walk.bandOver": "ìṣẹ́jú {from} tàbí jù bẹ́ẹ̀ lọ",
+  "walk.residents": "Olùgbé",
+  "walk.streets": "Òpópónà",
+  "walk.gaps": "Àlàfo tó tóbi jù",
+  "walk.gapsIntro":
+    "Ibi tí ènìyàn pọ̀ jù ré kọjá ààlà ìrìn, èyí tó tóbi jù lákọ̀ọ́kọ́. Fọwọ́ kan ọ̀kan láti lọ síbẹ̀.",
+  "walk.gapsIntroStreets":
+    "Ibi tí òpópónà pọ̀ jù ré kọjá ààlà ìrìn, èyí tó tóbi jù lákọ̀ọ́kọ́. Fọwọ́ kan ọ̀kan láti lọ síbẹ̀.",
+  "walk.gapPeople": "olùgbé {people}",
+  "walk.gapStreets": "m {metres} òpópónà",
+  "walk.gapWalk": "ìrìn ìṣẹ́jú {minutes} sí ibùdókọ̀ tó súnmọ́ jù",
+  "walk.gapUnreachable": "kò sí ibùdókọ̀ tí a lè rìn dé",
+  "walk.noGaps": "Kò sí àlàfo: gbogbo agbègbè wà láàrin ààlà ìrìn.",
+  "walk.showOnMap": "Fihàn lórí máàpù",
+  "walk.legend": "Ìṣẹ́jú ìrìn sí ibùdókọ̀ tó súnmọ́ jù",
+  "walk.offNetwork": "Wọ́n jìnnà jù sí ọ̀nà ẹlẹ́sẹ̀, a fi wọ́n sílẹ̀: {stops}.",
+  "walk.popDownloading":
+    "Iye ènìyàn {countries} ṣì ń wọlé sí olupin; títí di ìgbà náà òpópónà ló dúró fún ènìyàn.",
+  "walk.popUnavailable": "Kò sí dátà iye ènìyàn ({reason}); òpópónà ló dúró fún ènìyàn.",
+  "walk.popCredit": "Olùgbé: WorldPop {year} ({countries}), CC BY 4.0.",
+  "walk.note":
+    "Agbègbè náà ni àpótí yíká àwọn ibùdókọ̀ pẹ̀lú ìjìnnà tí a rìn láàrin ààlà. A kò tíì ka gẹ̀rẹ́gẹ̀rẹ́.",
+  "spacing.title": "Àlàfo láàrin ibùdókọ̀",
+  "spacing.intro":
+    "Ìjìnnà láàrin àwọn ibùdókọ̀ tó tẹ̀lé ara wọn lórí ìlà, ní ìfiwéra pẹ̀lú ìwọ̀n àṣà fún irú ọkọ̀ náà. Ibùdókọ̀ tó súnmọ́ ara jù ń dá ìlà dúró; tó jìnnà jù túmọ̀ sí ìrìn gígùn.",
+  "spacing.none": "Kọ́kọ́ ya ìlà òpópónà, tàbí ìlà iṣẹ́ ojú irin tó ní ó kéré tán ibùdó méjì.",
+  "spacing.loading": "À ń wọn àlàfo láàrin ibùdókọ̀…",
+  "spacing.direction": "ìhà {n}",
+  "spacing.summary": "Àárín m {median} · tó kéré jù m {min} · tó gùn jù m {max}",
+  "spacing.guidance": "Àṣà fún irú èyí: m {low}–{high}",
+  "spacing.allOk": "Gbogbo ibùdókọ̀ wà láàrin ìwọ̀n àṣà.",
+  "spacing.flags": "{short} súnmọ́ jù, {long} jìnnà jù",
+  "spacing.short": "súnmọ́ jù",
+  "spacing.long": "jìnnà jù",
+  "spacing.pair": "{from} → {to}",
+  "spacing.along": "m {metres}",
+  "spacing.onFoot": "m {metres} ní ẹsẹ̀",
+  "spacing.straight": "A wọ̀n ní ìlà títọ́ láàrin àwọn ibùdó.",
+  "spacing.onFootHint": "Ṣírò àrọ́wọ́tó ẹlẹ́sẹ̀ lókè láti fi ìjìnnà ẹsẹ̀ kún un láàrin àwọn ibùdókọ̀ tí a sàmì sí.",
 } satisfies EditorMessages;
