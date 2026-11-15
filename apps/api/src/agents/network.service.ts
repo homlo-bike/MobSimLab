@@ -12,12 +12,15 @@ import {
   STREET_MODES,
   stopsBbox,
 } from "./scenario";
+import type { DestinationPoint } from "./destinations";
 import { streetRouting, type WalkAnalysisWasm } from "./wasm";
 
 /** OSM tiles by kind. The street network service fetches them through the outbound gateway (ADR-0017). */
 export interface TileSource {
   tile(x: number, y: number): Promise<string>;
   walkTile(x: number, y: number): Promise<string>;
+  /** JSON `{destinations: DestinationPoint[]}` for the 15-minute city preset. */
+  destinationTile(x: number, y: number): Promise<string>;
 }
 export const TILE_SOURCE = Symbol("TILE_SOURCE");
 
@@ -70,12 +73,16 @@ export class NetworkService {
   }
 
   /**
-   * Purpose: the walk graph covering a bounding box, built once per tile set and kept in a small cache.
+   * Purpose: the walk graph (or, with `cycle`, the graph of ways open to bicycles) covering a bounding box,
+   * built once per tile set and kept in a small cache. Both are built from the walk tiles.
    * Side effects: fetches walk tiles (cached by the street network service).
    */
-  async walkGraph(bbox: [number, number, number, number]): Promise<WalkAnalysisWasm> {
+  async walkGraph(
+    bbox: [number, number, number, number],
+    profile: "walk" | "cycle" = "walk",
+  ): Promise<WalkAnalysisWasm> {
     const t = this.tileList(bbox);
-    const key = t.map(([x, y]) => `${x}/${y}`).join(",");
+    const key = `${profile}:${t.map(([x, y]) => `${x}/${y}`).join(",")}`;
     const hit = this.walk.get(key);
     if (hit) {
       this.walk.delete(key);
@@ -85,6 +92,7 @@ export class NetworkService {
     const xmls = await Promise.all(t.map(([x, y]) => this.tiles.walkTile(x, y)));
     const w = new (streetRouting().WalkAnalysis)();
     try {
+      w.set_profile(profile);
       for (const xml of xmls) w.add_osm(xml);
       w.build();
     } catch (e) {
@@ -98,6 +106,25 @@ export class NetworkService {
       this.walk.delete(old);
     }
     return w;
+  }
+
+  /**
+   * Purpose: the daily-needs destinations from OpenStreetMap inside a bounding box (15-minute city preset).
+   * Side effects: fetches destination tiles (cached by the street network service).
+   */
+  async destinations(bbox: [number, number, number, number]): Promise<DestinationPoint[]> {
+    const t = this.tileList(bbox);
+    const seen = new Set<string>();
+    const out: DestinationPoint[] = [];
+    for (const body of await Promise.all(t.map(([x, y]) => this.tiles.destinationTile(x, y)))) {
+      for (const d of (JSON.parse(body) as { destinations: DestinationPoint[] }).destinations) {
+        const [lon, lat] = d.lonlat;
+        if (seen.has(d.id) || lon < bbox[0] || lon > bbox[2] || lat < bbox[1] || lat > bbox[3]) continue;
+        seen.add(d.id);
+        out.push(d);
+      }
+    }
+    return out;
   }
 
   /**

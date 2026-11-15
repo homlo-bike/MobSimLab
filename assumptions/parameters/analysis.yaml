@@ -47,3 +47,19 @@
       sources: [hcm7]
       check: unverified
       rationale: "HCM average pedestrian delay at a signalised crossing d = (C − g)² / (2C). C = 90 s with a 30 s walk interval gives 20 s; a 60 s cycle with 25 s walk gives about 10 s; a 120 s cycle with 20 s walk gives about 42 s."
+
+- key: analysis.cycle_speed_kmh
+  label: "Cycling speed for the 15-minute city by bicycle, including stops at junctions"
+  group: Analysis
+  unit: km/h
+  used_by: [15-minute city destination counts, agent tools]
+  values:
+    - context:
+        mode: "*"
+      low: 12
+      central: 15
+      high: 18
+      basis: documented
+      sources: [moreno-2021, mobsimlab-derivation]
+      check: unverified
+      rationale: "Average urban cycling speed door to door, with waits at junctions folded in, as used for the bicycle variant of the 15-minute city (Moreno et al. 2021 count destinations within 15 minutes on foot or by bicycle). 12 km/h is a cautious value for older or casual riders, 18 km/h a commuter on a fast cycle network. Signalised crossings add walk.crossing_delay_s on top, as for walking."

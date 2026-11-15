@@ -6,12 +6,13 @@
 //! browser, so dragging a point re-routes instantly, and it is the same code the simulation
 //! worker uses.
 
+use street_routing::access::{MatrixRequest, PtalRequest, ReachCountRequest};
 use street_routing::geo::LocalProjection;
 use street_routing::line::{PointKind, StreetLine};
 use street_routing::osm::OsmData;
 use street_routing::walk::{
-    stop_spacing, CoverageRequest, SpacingRequest, StopPoint, SuggestRequest, WalkGraph,
-    WalkSettings,
+    stop_spacing, CoverageRequest, NetworkProfile, SpacingRequest, StopPoint, SuggestRequest,
+    WalkGraph, WalkSettings,
 };
 use street_routing::{
     apply_setups, parse_osm_xml, DelayShares, Mode, RoadGraph, RoutingRules, StreetSetup,
@@ -287,6 +288,7 @@ pub fn street_infos(osm_xml: &str) -> Result<String, JsError> {
 pub struct WalkAnalysis {
     data: OsmData,
     graph: Option<WalkGraph>,
+    profile: NetworkProfile,
 }
 
 impl Default for WalkAnalysis {
@@ -307,7 +309,15 @@ impl WalkAnalysis {
         Self {
             data: OsmData::default(),
             graph: None,
+            profile: NetworkProfile::Walk,
         }
+    }
+
+    /// Purpose: build the next graph from walkable ways (`walk`, the default) or from ways open to
+    /// bicycles (`cycle`, for the 15-minute city by bicycle). Call before `build`.
+    pub fn set_profile(&mut self, profile: &str) -> Result<(), JsError> {
+        self.profile = parse_json("profile", &format!("\"{profile}\""))?;
+        Ok(())
     }
 
     /// Purpose: add walkable ways (OSM XML for one tile). Call `build` after a batch.
@@ -321,7 +331,10 @@ impl WalkAnalysis {
     /// Output: an error when no walkable way has been loaded.
     pub fn build(&mut self) -> Result<(), JsError> {
         let proj = self.graph.as_ref().map(|g| g.proj);
-        self.graph = Some(WalkGraph::from_osm(&self.data, proj).map_err(|e| JsError::new(&e))?);
+        self.graph = Some(
+            WalkGraph::from_osm_profile(&self.data, proj, self.profile)
+                .map_err(|e| JsError::new(&e))?,
+        );
         Ok(())
     }
 
@@ -356,6 +369,28 @@ impl WalkAnalysis {
         let g = self.graph.as_ref().ok_or_else(no_walk_graph)?;
         let req: SuggestRequest = parse_json("suggestion request", request_json)?;
         Ok(serde_json::to_string(&g.suggest_stops(&req)).unwrap_or_default())
+    }
+
+    /// Purpose: TfL PTAL on the walk network (JSON `access::PtalRequest`). Output: JSON `PtalResult`.
+    pub fn ptal(&self, request_json: &str) -> Result<String, JsError> {
+        let g = self.graph.as_ref().ok_or_else(no_walk_graph)?;
+        let req: PtalRequest = parse_json("PTAL request", request_json)?;
+        Ok(serde_json::to_string(&g.ptal(&req)).unwrap_or_default())
+    }
+
+    /// Purpose: destinations per category within a time limit of each origin (JSON
+    /// `access::ReachCountRequest`). Output: JSON `ReachCountResult`.
+    pub fn reach_counts(&self, request_json: &str) -> Result<String, JsError> {
+        let g = self.graph.as_ref().ok_or_else(no_walk_graph)?;
+        let req: ReachCountRequest = parse_json("destination request", request_json)?;
+        Ok(serde_json::to_string(&g.reach_counts(&req)).unwrap_or_default())
+    }
+
+    /// Purpose: sparse travel-cost matrix (JSON `access::MatrixRequest`). Output: JSON `MatrixResult`.
+    pub fn matrix(&self, request_json: &str) -> Result<String, JsError> {
+        let g = self.graph.as_ref().ok_or_else(no_walk_graph)?;
+        let req: MatrixRequest = parse_json("matrix request", request_json)?;
+        Ok(serde_json::to_string(&g.matrix(&req)).unwrap_or_default())
     }
 
     /// Purpose: stop spacing along a route and on foot (JSON `walk::SpacingRequest`).
