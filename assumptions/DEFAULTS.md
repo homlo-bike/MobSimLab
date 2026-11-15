@@ -630,6 +630,14 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 |---|---|---|---|---|---|---|---|
 | all | 10 | 20 | 40 | documented | unverified | [hcm7](#src-hcm7) | HCM average pedestrian delay at a signalised crossing d = (C − g)² / (2C). C = 90 s with a 30 s walk interval gives 20 s; a 60 s cycle with 25 s walk gives about 10 s; a 120 s cycle with 20 s walk gives about 42 s. |
 
+### Cycling speed for the 15-minute city by bicycle, including stops at junctions
+
+`analysis.cycle_speed_kmh` · unit: km/h · used by: 15-minute city destination counts, agent tools
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 12 | 15 | 18 | documented | unverified | [moreno-2021](#src-moreno-2021), [mobsimlab-derivation](#src-mobsimlab-derivation) | Average urban cycling speed door to door, with waits at junctions folded in, as used for the bicycle variant of the 15-minute city (Moreno et al. 2021 count destinations within 15 minutes on foot or by bicycle). 12 km/h is a cautious value for older or casual riders, 18 km/h a commuter on a fast cycle network. Signalised crossings add walk.crossing_delay_s on top, as for walking. |
+
 ## Simulation
 
 ### Wheel–rail adhesion for starting, when a vehicle gives no starting tractive effort (simulation)

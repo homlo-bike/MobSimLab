@@ -16,6 +16,11 @@ export interface WalkAnalysisWasm {
   catchment(stopsJson: string, maxMinutes: number, settingsJson: string): string;
   spacing(requestJson: string): string;
   suggest_stops(requestJson: string): string;
+  /** `walk` (default) or `cycle`; call before `build`. */
+  set_profile(profile: string): void;
+  ptal(requestJson: string): string;
+  reach_counts(requestJson: string): string;
+  matrix(requestJson: string): string;
   free(): void;
 }
 
@@ -41,6 +46,8 @@ interface StreetRoutingModule {
 /** Journey planner (crates/journey-planner) over a published timetable. */
 export interface JourneyPlannerWasm {
   plan(queryJson: string): string;
+  /** JSON `{stop_ids, arrive_s}`: earliest arrival at every stop leaving [lon, lat] at t0. */
+  reach(lon: number, lat: number, t0: number): string;
   summary(): string;
   free(): void;
 }
