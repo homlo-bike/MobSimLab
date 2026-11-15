@@ -1,4 +1,5 @@
 import { editorsZu } from "./editors/zu";
+import { cargoBikeZu } from "./cargo-bike/zu";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -293,5 +294,6 @@ export const zu: Messages = {
   "prefs.calendar": "Ikhalenda, isidingo nezindleko",
 
   ...editorsZu,
+  ...cargoBikeZu,
   ...PLUGIN_MESSAGES.zu,
 };

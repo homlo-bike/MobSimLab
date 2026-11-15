@@ -96,6 +96,28 @@ const regions = z.looseObject({
     .max(500),
 });
 
+/** Cargo bike tab (plugins/cargo-bike): start point, destination and the values the project changed. */
+const cargoBike = z.looseObject({
+  start: point.nullable().optional(),
+  destination: point.nullable().optional(),
+  values: z
+    .record(
+      z
+        .string()
+        .regex(/^[a-z_.]+$/)
+        .max(60),
+      z.number().finite(),
+    )
+    .refine((v) => Object.keys(v).length <= 100, "at most 100 values")
+    .optional(),
+  kit: z
+    .string()
+    .regex(/^[a-z0-9-]+$/)
+    .max(40)
+    .nullable()
+    .optional(),
+});
+
 /** Drawing kinds with their document outline and current schema version. */
 export const DRAWING_KINDS = {
   /** The street line tool (ADR-0029): bus, BRT, trolleybus and intercity bus lines. */
@@ -116,6 +138,8 @@ export const DRAWING_KINDS = {
   benefits: { schema: benefits, schemaVersion: 1 },
   /** GIS tab regions with their own values (land use, land value, tax, population, jobs…). */
   regions: { schema: regions, schemaVersion: 1 },
+  /** Cargo bike tab of the cargo bike plugin: start point, destination and the project's own values. */
+  "cargo-bike": { schema: cargoBike, schemaVersion: 1 },
 } as const satisfies Record<string, { schema: z.ZodType; schemaVersion: number }>;
 
 export type DrawingKind = keyof typeof DRAWING_KINDS;

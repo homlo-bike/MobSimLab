@@ -20,6 +20,7 @@ COPY tools/wasm tools/wasm
 RUN tools/wasm/build-street-routing.sh && tools/wasm/build-rail-design.sh && tools/wasm/build-rail-sim.sh && tools/wasm/build-journey-planner.sh \
  && tools/wasm/build-mode-kits.sh \
  && tools/wasm/build-noise.sh \
+ && tools/wasm/build-cargo-bike.sh \
  && tools/wasm/build-api.sh
 
 # ---- 1. Web SPA and API (Node) ------------------------------------------------

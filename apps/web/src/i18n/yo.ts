@@ -1,4 +1,5 @@
 import { editorsYo } from "./editors/yo";
+import { cargoBikeYo } from "./cargo-bike/yo";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -285,5 +286,6 @@ export const yo: Messages = {
   "prefs.calendar": "Kàlẹ́ńdà, ìbéèrè àti iye owó",
 
   ...editorsYo,
+  ...cargoBikeYo,
   ...PLUGIN_MESSAGES.yo,
 };
