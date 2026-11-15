@@ -25,16 +25,19 @@ export const loadKits: KitsLoader = async () => {
 };
 
 /**
- * Purpose: a ropeway system for the straight spans kit from the plugin's parameter values
- * (`ropeway.*`, resolved for the mode and ropeway system), with the planner's overrides on top.
+ * Purpose: a system for the straight spans kit from the plugin's parameter values (`<prefix>.*`, resolved
+ * for the mode and system: `ropeway.*` for cable cars, `people_mover.*` for people movers), with the
+ * planner's overrides on top. `carrier` is "cabin" for ropeways and "train" for guideway modes.
  */
 export function spanSystem(
   id: string,
   operation: SpanSystem["operation"],
   v: Record<string, number>,
   over: Partial<SpanSystem> = {},
+  prefix = "ropeway",
+  carrier: NonNullable<SpanSystem["carrier"]> = "cabin",
 ): SpanSystem {
-  const p = (k: string, d: number) => v[`ropeway.${k}`] ?? d;
+  const p = (k: string, d: number) => v[`${prefix}.${k}`] ?? d;
   return {
     id,
     operation,
@@ -54,6 +57,8 @@ export function spanSystem(
     terminal_dwell_s: p("terminal_dwell_s", 60),
     reserve_share: p("reserve_share", 0.1),
     capacity_ceiling_pphpd: p("capacity_ceiling_pphpd", 0),
+    carrier,
+    parameter_prefix: prefix,
     ...over,
   };
 }

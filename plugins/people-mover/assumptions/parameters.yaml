@@ -1,0 +1,385 @@
+# Parameters of the people mover plugin (assumptions/README.md format), with the context keys `mode`
+# (people_mover, people_mover_shuttle) and `apm_system`. The names follow the straight spans kit: `tower` is a pier,
+# `cabin` a train, `rope` the running level. Every entry starts unverified. Checked by tools/plugins/check.py.
+
+- key: people_mover.line_speed_ms
+  label: Line speed
+  group: People movers
+  unit: m/s
+  used_by:
+    - running time
+    - train count
+  values:
+    - context:
+        mode: "*"
+      low: 8
+      central: 10
+      high: 12.5
+      basis: documented
+      sources:
+        - dcc-venice-people-mover
+        - doppelmayr-mexico-airport-shuttle
+      check: unverified
+      rationale: Built Cable Liner systems run at 8 m/s (Venice) to 12.5 m/s (Mexico City airport).
+    - context:
+        mode: people_mover
+        apm_system: pinched_loop
+      low: 8
+      central: 10
+      high: 14
+      basis: documented
+      sources:
+        - dcc-mandalay-bay-tram
+        - dcc-oakland-airport-connector
+      check: unverified
+      rationale: Mandalay Bay runs at 36 km/h (10 m/s); the Oakland Airport Connector is designed for up to 50 km/h.
+    - context:
+        mode: people_mover_shuttle
+        apm_system: shuttle
+      low: 8
+      central: 10.5
+      high: 12.5
+      basis: documented
+      sources:
+        - doppelmayr-citycenter-shuttle
+        - dcc-venice-people-mover
+        - doppelmayr-mexico-airport-shuttle
+      check: unverified
+      rationale: CityCenter 10.5 m/s, Venice 8 m/s, Mexico City airport 12.5 m/s.
+- key: people_mover.cabin_interval_s
+  label: Headway between trains
+  group: People movers
+  unit: s
+  used_by:
+    - capacity
+    - train count
+    - published timetable headway
+  values:
+    - context:
+        mode: "*"
+      low: 120
+      central: 240
+      high: 300
+      basis: documented
+      sources:
+        - dcc-mandalay-bay-tram
+        - dcc-oakland-airport-connector
+      check: unverified
+      rationale: Pinched loops run a train every 220 s (Mandalay Bay) to 280 s (Oakland); a brochure gives 120 s.
+    - context:
+        mode: people_mover
+        apm_system: pinched_loop
+      low: 120
+      central: 240
+      high: 300
+      basis: documented
+      sources:
+        - dcc-mandalay-bay-tram
+        - dcc-oakland-airport-connector
+      check: unverified
+      rationale: Mandalay Bay 220 s, Oakland Airport Connector 280 s. Shuttles take their headway from the round trip.
+- key: people_mover.cabin_capacity
+  label: Train capacity
+  group: People movers
+  unit: passengers
+  used_by:
+    - capacity
+  values:
+    - context:
+        mode: "*"
+      low: 50
+      central: 120
+      high: 200
+      basis: documented
+      sources:
+        - doppelmayr-citycenter-shuttle
+        - dcc-venice-people-mover
+      check: unverified
+      rationale: Trains of built systems carry about 50 (one cabin) to 200 passengers.
+    - context:
+        mode: people_mover
+        apm_system: pinched_loop
+      low: 60
+      central: 113
+      high: 148
+      basis: documented
+      sources:
+        - dcc-oakland-airport-connector
+      check: unverified
+      rationale: "Oakland: 3-car trains of 113 passengers, 4-car trains of 148 as the expansion option."
+    - context:
+        mode: people_mover_shuttle
+        apm_system: shuttle
+      low: 50
+      central: 132
+      high: 200
+      basis: documented
+      sources:
+        - doppelmayr-citycenter-shuttle
+        - dcc-venice-people-mover
+      check: unverified
+      rationale: CityCenter trains carry 132, Venice trains about 200.
+- key: people_mover.max_span_m
+  label: Span between piers, maximum
+  group: People movers
+  unit: m
+  used_by:
+    - automatic piers
+    - span check
+  values:
+    - context:
+        mode: "*"
+      low: 25
+      central: 40
+      high: 67
+      basis: educated-guess
+      sources:
+        - wikipedia-cable-liner
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        The guideway can span over 67 m; urban viaducts are usually built with 25 to 40 m spans, so 40 m
+        is the default and 67 m the limit.
+- key: people_mover.max_station_angle_deg
+  label: Direction change at a curve point, maximum
+  group: People movers
+  unit: °
+  used_by:
+    - angle check
+  values:
+    - context:
+        mode: "*"
+      low: 10
+      central: 30
+      high: 60
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        The rope is led round curves on sheaves, so the guideway can turn (Oakland's line curves); the kit
+        only bends at stations and curve points, so a curve point stands for a whole curve.
+- key: people_mover.min_clearance_m
+  label: Clearance under the guideway, minimum
+  group: People movers
+  unit: m
+  used_by:
+    - clearance check
+  values:
+    - context:
+        mode: "*"
+      low: 4.0
+      central: 4.5
+      high: 5.0
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Usual minimum headroom over roads; check the national rule where the guideway crosses a street.
+- key: people_mover.recommended_clearance_m
+  label: Clearance under the guideway, recommended
+  group: People movers
+  unit: m
+  used_by:
+    - automatic piers
+    - clearance check
+  values:
+    - context:
+        mode: "*"
+      low: 5.0
+      central: 5.5
+      high: 6.0
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Headroom over roads with room for resurfacing and tall vehicles.
+- key: people_mover.tower_height_m
+  label: Running level above the ground on a pier, standard
+  group: People movers
+  unit: m
+  used_by:
+    - automatic piers
+    - profile
+  values:
+    - context:
+        mode: "*"
+      low: 6
+      central: 8
+      high: 12
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Running level of an elevated guideway with a 2 m deep beam and 5.5 m headroom under it, plus a margin.
+- key: people_mover.max_tower_height_m
+  label: Running level above the ground on a pier, maximum
+  group: People movers
+  unit: m
+  used_by:
+    - automatic piers
+    - pier check
+  values:
+    - context:
+        mode: "*"
+      low: 15
+      central: 20
+      high: 30
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Above about 20 m, piers become costly and stations need long lifts; a pier above it is a warning.
+- key: people_mover.station_rope_height_m
+  label: Running level above the ground at a station
+  group: People movers
+  unit: m
+  used_by:
+    - profile
+    - clearance
+  values:
+    - context:
+        mode: "*"
+      low: 0
+      central: 8
+      high: 12
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        Most cable-hauled people movers have elevated stations at the guideway's level; 0 for a station at
+        grade.
+- key: people_mover.cabin_hang_m
+  label: Running level to the underside of the guideway
+  group: People movers
+  unit: m
+  used_by:
+    - clearance
+  values:
+    - context:
+        mode: "*"
+      low: 1.5
+      central: 2
+      high: 3
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Depth of the guideway beam or truss below the running level; the clearance is measured from its underside.
+- key: people_mover.sag_ratio
+  label: Deflection of the guideway, share of span
+  group: People movers
+  unit: share
+  used_by:
+    - clearance
+  values:
+    - context:
+        mode: "*"
+      low: 0
+      central: 0
+      high: 0.001
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: "A rigid beam, not a rope: deflection under load is a few millimetres and is ignored."
+- key: people_mover.station_passage_s
+  label: Stop at a station, or acceleration and braking loss of a shuttle
+  group: People movers
+  unit: s
+  used_by:
+    - running time
+  values:
+    - context:
+        mode: "*"
+      low: 20
+      central: 40
+      high: 60
+      basis: documented
+      sources:
+        - dcc-venice-people-mover
+        - dcc-mandalay-bay-tram
+      check: unverified
+      rationale: Dwell of 30 s (Venice) to 50 s (Mandalay Bay).
+    - context:
+        mode: people_mover
+        apm_system: pinched_loop
+      low: 30
+      central: 40
+      high: 50
+      basis: documented
+      sources:
+        - dcc-venice-people-mover
+        - dcc-mandalay-bay-tram
+      check: unverified
+      rationale: "Detached trains stop in each intermediate station: 30 s to 50 s dwell."
+    - context:
+        mode: people_mover_shuttle
+        apm_system: shuttle
+      low: 15
+      central: 20
+      high: 30
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        Accelerating to 10.5 m/s and braking at about 0.7 m/s² loses about v/a = 15 s per trip, plus creeping
+        into the station.
+- key: people_mover.terminal_dwell_s
+  label: Dwell at a terminal
+  group: People movers
+  unit: s
+  used_by:
+    - running time
+    - train count
+    - headway of a shuttle
+  values:
+    - context:
+        mode: "*"
+      low: 30
+      central: 40
+      high: 60
+      basis: documented
+      sources:
+        - dcc-venice-people-mover
+        - dcc-mandalay-bay-tram
+      check: unverified
+      rationale: Terminal dwell of 30 s (Venice) to 50 s (Mandalay Bay); a pinched loop also reverses there.
+- key: people_mover.reserve_share
+  label: Spare trains, share of trains in service
+  group: People movers
+  unit: share
+  used_by:
+    - train count
+  values:
+    - context:
+        mode: "*"
+      low: 0
+      central: 0
+      high: 0.25
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Built systems keep no spare train (Oakland runs all four); a long loop may add one.
+- key: people_mover.capacity_ceiling_pphpd
+  label: Capacity ceiling of any cable-hauled people mover
+  group: People movers
+  unit: p/h/dir
+  used_by:
+    - capacity check
+  values:
+    - context:
+        mode: "*"
+      low: 3000
+      central: 7000
+      high: 8000
+      basis: documented
+      sources:
+        - wikipedia-cable-liner
+      check: unverified
+      rationale:
+        The manufacturer claims up to 7,000 passengers per hour and direction; built systems carry 1,500
+        to 3,000.
