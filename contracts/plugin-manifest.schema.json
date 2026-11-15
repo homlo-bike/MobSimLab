@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://mobsimlab.org/schemas/plugin-manifest/1.json",
   "title": "MobSimLab plugin manifest (mobsimlab-plugin.json)",
-  "description": "What a plugin contributes to MobSimLab (ADR-0036 §2 and §3). Producer: plugin authors; the bundled plugins live in plugins/. Consumer: tools/plugins/check.py (validation and the web app's generated registry, apps/web/src/plugins/bundled.generated.json), later the install flow. Plugin API major version 1. Contribution points that are not built yet (checks, engines, schematics, importers, exporters, panels, kpis) are reserved: the schema accepts no entries for them yet.",
+  "description": "What a plugin contributes to MobSimLab (ADR-0036 §2 and §3). Producer: plugin authors; the bundled plugins live in plugins/. Consumer: tools/plugins/check.py (validation and the web app's generated registry, apps/web/src/plugins/bundled.generated.json), later the install flow. Plugin API major version 1. Bundled plugins may also add project tabs (`tabs`). Contribution points that are not built yet (checks, engines, schematics, importers, exporters, panels, kpis) are reserved: the schema accepts no entries for them yet.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -244,7 +244,7 @@
                 }
               },
               "where": {
-                "description": "Where the app offers it: live while drawing in a tool, on demand in the GIS tab (maps over the whole project), or in Analysis.",
+                "description": "Where the app offers it: live while drawing in a tool, on demand in the GIS tab (maps over the whole project), or in Analysis. `plugin-tab`: in a tab the plugin contributes (`tabs`).",
                 "type": "array",
                 "uniqueItems": true,
                 "items": {
@@ -254,7 +254,8 @@
                     "cable-car-tool",
                     "ferry-tool",
                     "gis",
-                    "analysis"
+                    "analysis",
+                    "plugin-tab"
                   ]
                 }
               }
@@ -315,6 +316,37 @@
         },
         "panels": {
           "$ref": "#/$defs/reserved"
+        },
+        "tabs": {
+          "description": "Project tabs after the core ones (Simulator … Preferences). Until the UI tier exists (ADR-0036 §6), only bundled plugins may contribute tabs: `view` names a view built into the web app (apps/web/src/features/<view>), reviewed and released with MobSimLab, and the tab shows the plugin's own calculations.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "label", "view"],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]*$"
+              },
+              "label": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 30
+              },
+              "view": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]*$"
+              },
+              "calculations": {
+                "type": "array",
+                "uniqueItems": true,
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
         }
       }
     },

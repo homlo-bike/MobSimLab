@@ -1,4 +1,5 @@
 import { editorsAr } from "./editors/ar";
+import { cargoBikeAr } from "./cargo-bike/ar";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -278,5 +279,6 @@ export const ar: Messages = {
   "prefs.calendar": "التقويم والطلب والتكاليف",
 
   ...editorsAr,
+  ...cargoBikeAr,
   ...PLUGIN_MESSAGES.ar,
 };

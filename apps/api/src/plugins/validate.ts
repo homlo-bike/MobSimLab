@@ -76,6 +76,8 @@ export interface PluginEntry {
   contexts: { key: string; label: string; options: { id: string; label: string }[] }[];
   tools: { id: string; label: string; hint?: string; kit: string; modes: string[] }[];
   calculations: unknown[];
+  /** Project tabs (bundled plugins only); the web app ships each tab's view. */
+  tabs: { id: string; label: string; view: string; calculations: string[] }[];
   mapLayers: unknown[];
   parameters: Record<string, { label: string; unit: string }>;
   defaults: Record<string, Record<string, Record<string, Range>>>;
@@ -397,6 +399,7 @@ export function checkPlugin(
       vehicles?: { dir: string }[];
       tools?: PluginEntry["tools"];
       calculations?: { id: string }[];
+      tabs?: PluginEntry["tabs"];
       mapLayers?: { id: string; calculation: string; style: string }[];
     };
   };
@@ -412,6 +415,7 @@ export function checkPlugin(
         );
     if (c.calculations?.length)
       errors.push(`${pid}: only bundled plugins may contribute calculations for now`);
+    if (c.tabs?.length) errors.push(`${pid}: only bundled plugins may contribute tabs for now`);
     if (m.publisher.url !== undefined && !/^https:\/\/[^\s]+$/.test(m.publisher.url))
       errors.push(`${pid}: the publisher URL must start with https://`);
     for (const [what, lic] of [
@@ -553,6 +557,7 @@ export function checkPlugin(
     contexts: [...contexts.values()],
     tools: c.tools ?? [],
     calculations: c.calculations ?? [],
+    tabs: c.tabs ?? [],
     mapLayers: layers,
     parameters: Object.fromEntries(
       params.map((p) => [p.key!, { label: p.label as string, unit: p.unit as string }]),
