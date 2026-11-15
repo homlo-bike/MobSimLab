@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { OverpassClient } from "../gateway/overpass.client";
+import { type Bbox, waterQuery, waterShapes } from "./water";
 
 /** Street tiles use this web-mercator zoom: about 2.4 km × 2.4 km at the equator, 1.5 km at 50° N. */
 export const TILE_ZOOM = 14;
@@ -239,6 +240,19 @@ export class StreetNetworkService {
       `building/${x}/${y}`,
       () => buildingQuery(TILE_ZOOM, x, y),
       (json) => JSON.stringify({ buildings: footprints(json) }),
+    );
+  }
+
+  /**
+   * Purpose: sea, lakes and rivers inside a box as JSON `WaterShapes` (water.ts), for the Schematic tab.
+   * Inputs: `[west, south, east, north]`, already checked and rounded by the controller.
+   * Side effects: may call Overpass.
+   */
+  water(b: Bbox): Promise<string> {
+    return this.cached(
+      `water/${b.join(",")}`,
+      () => waterQuery(b),
+      (json) => JSON.stringify(waterShapes(json, b)),
     );
   }
 

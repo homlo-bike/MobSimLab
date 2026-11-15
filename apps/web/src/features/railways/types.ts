@@ -59,6 +59,8 @@ export interface Station {
   platform_length_m: number;
   /** Railway system; absent = the network's mode. */
   mode?: RailMode | null;
+  /** Facilities (step-free access, elevators and so on; `stations/features.tsx`), shown in the Schematic tab. */
+  features?: string[];
 }
 
 export type Anchor =

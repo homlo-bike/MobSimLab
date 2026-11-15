@@ -1,7 +1,8 @@
-import { BadRequestException, Controller, Get, Header, HttpException, Param } from "@nestjs/common";
+import { BadRequestException, Controller, Get, Header, HttpException, Param, Query } from "@nestjs/common";
 import { OverpassError } from "../gateway/overpass.client";
 import { Requires } from "../iam/requires";
 import { StreetNetworkService, TILE_ZOOM } from "./street-network.service";
+import { type Bbox, MAX_WATER_SPAN_DEG } from "./water";
 
 /**
  * Street tiles for the map editor. Read-only public OSM data, but members only: each uncached tile
@@ -69,6 +70,51 @@ export class StreetNetworkController {
       throw e;
     }
   }
+
+  /**
+   * Purpose: sea, lakes and rivers from OSM inside a box, simplified, for the Schematic tab's network map:
+   * JSON `{areas, rivers, sea}` (water.ts). Inputs: `bbox=west,south,east,north`, at most 1° a side.
+   * Output: 400 for an invalid box, 502/504 when OSM is unavailable.
+   */
+  @Get("water")
+  @Requires("instance.read")
+  @Header("Content-Type", "application/json; charset=utf-8")
+  @Header("Cache-Control", "private, max-age=86400")
+  async water(@Query("bbox") bbox: string | undefined): Promise<string> {
+    const b = parseBbox(bbox);
+    try {
+      return await this.streets.water(b);
+    } catch (e) {
+      if (e instanceof OverpassError)
+        throw new HttpException("OpenStreetMap water is unavailable right now", e.status);
+      throw e;
+    }
+  }
+}
+
+/**
+ * Purpose: a water box from `west,south,east,north`, rounded outward to 0.01° so nearby requests share the
+ * cache; a 400 when it is not a valid box or larger than MAX_WATER_SPAN_DEG on a side.
+ */
+export function parseBbox(v: string | undefined): Bbox {
+  const n = (v ?? "").split(",").map((x) => (/^-?\d+(\.\d+)?$/.test(x.trim()) ? Number(x) : NaN));
+  const [w, s, e, nn] = n;
+  if (
+    n.length !== 4 ||
+    n.some((x) => !Number.isFinite(x)) ||
+    w! < -180 ||
+    e! > 180 ||
+    s! < -85 ||
+    nn! > 85 ||
+    w! >= e! ||
+    s! >= nn! ||
+    e! - w! > MAX_WATER_SPAN_DEG ||
+    nn! - s! > MAX_WATER_SPAN_DEG
+  )
+    throw new BadRequestException(`bbox must be west,south,east,north and at most ${MAX_WATER_SPAN_DEG}° on a side`);
+  const down = (x: number) => Math.floor(x * 100) / 100;
+  const up = (x: number) => Math.ceil(x * 100) / 100;
+  return [down(w!), down(s!), up(e!), up(nn!)];
 }
 
 /** Purpose: tile x and y from the path, or a 400 for an invalid tile. */
