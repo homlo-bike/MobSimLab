@@ -1,4 +1,5 @@
 import { editorsTe } from "./editors/te";
+import { cargoBikeTe } from "./cargo-bike/te";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -287,5 +288,6 @@ export const te: Messages = {
   "prefs.calendar": "క్యాలెండర్, డిమాండ్ మరియు ఖర్చులు",
 
   ...editorsTe,
+  ...cargoBikeTe,
   ...PLUGIN_MESSAGES.te,
 };
