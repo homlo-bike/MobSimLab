@@ -1,4 +1,5 @@
 import { editorsPt } from "./editors/pt";
+import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
 /** Português (Brazilian spelling, the most widely used). */
@@ -287,4 +288,5 @@ export const pt: Messages = {
   "prefs.calendar": "Calendário, demanda e custos",
 
   ...editorsPt,
+  ...PLUGIN_MESSAGES.pt,
 };

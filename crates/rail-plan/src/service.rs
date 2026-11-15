@@ -102,6 +102,44 @@ pub struct LineReport {
     pub trains: usize,
     /// What went wrong or was changed, in words.
     pub issues: Vec<String>,
+    /// The stations of the first outbound trip with their distance from the first terminal along the
+    /// track, for the time-distance graph. Empty when no outbound trip runs.
+    pub stations: Vec<StationKm>,
+    /// Trips moved from their clock-face departure to keep clear of other trains.
+    pub shifted: Vec<ShiftedTrip>,
+    /// Trips that could not run, with the reason and, for a conflict, the train in the way.
+    pub unplaced: Vec<UnplacedTrip>,
+}
+
+/// A station of a line and its distance along the track (time-distance graph).
+#[derive(Clone, Debug, PartialEq, Serialize)]
+pub struct StationKm {
+    /// The journey planner's station id (`group:<key>`, the stops' `parent_station`).
+    pub station_id: String,
+    /// Station name.
+    pub name: String,
+    /// Distance from the first terminal along the track, km.
+    pub km: f64,
+}
+
+/// A departure the planner moved to keep clear of other trains.
+#[derive(Clone, Debug, PartialEq, Serialize)]
+pub struct ShiftedTrip {
+    /// Trip id.
+    pub trip: String,
+    /// By how much, s (positive = later).
+    pub by_s: f64,
+}
+
+/// A trip the planner could not run.
+#[derive(Clone, Debug, PartialEq, Serialize)]
+pub struct UnplacedTrip {
+    /// Trip id.
+    pub trip: String,
+    /// Why, in words.
+    pub reason: String,
+    /// The trip in the way, for a conflict.
+    pub blocked_by: Option<String>,
 }
 
 /// The published timetable and the per-line report.
@@ -399,6 +437,13 @@ pub fn publish_service(
                 return_s: first(1),
                 trains: trains.len(),
                 issues: Vec::new(),
+                stations: service()
+                    .filter(|r| r.direction == 0)
+                    .min_by(|a, b| a.depart_s().total_cmp(&b.depart_s()))
+                    .map(|r| station_km(&m, r))
+                    .unwrap_or_default(),
+                shifted: Vec::new(),
+                unplaced: Vec::new(),
             }
         })
         .collect();
@@ -410,11 +455,32 @@ pub fn publish_service(
     for issue in &p.issues {
         let line = issue_line(issue, &ids);
         match (issue, line) {
-            (Issue::Shifted { .. }, Some(i)) => shifted[i] += 1,
-            (Issue::Unplaced { trip, reason, .. }, Some(i)) => unplaced[i]
-                .entry(reason.clone())
-                .or_default()
-                .push(trip.clone()),
+            (Issue::Shifted { run, by_s }, Some(i)) => {
+                shifted[i] += 1;
+                reports[i].shifted.push(ShiftedTrip {
+                    trip: run.clone(),
+                    by_s: *by_s,
+                });
+            }
+            (
+                Issue::Unplaced {
+                    trip,
+                    reason,
+                    blocked_by,
+                    ..
+                },
+                Some(i),
+            ) => {
+                reports[i].unplaced.push(UnplacedTrip {
+                    trip: trip.clone(),
+                    reason: reason.clone(),
+                    blocked_by: blocked_by.clone(),
+                });
+                unplaced[i]
+                    .entry(reason.clone())
+                    .or_default()
+                    .push(trip.clone())
+            }
             (_, Some(i)) => reports[i].issues.push(issue_text(issue, &names)),
             (_, None) => notes.push(issue_text(issue, &names)),
         }
@@ -472,6 +538,41 @@ pub fn publish_service(
         lines: reports,
         notes,
     })
+}
+
+/// Purpose: the stopping stations of a run with their distance from its origin along the path.
+/// The origin is at 0, intermediate stops at the run's stop positions and the destination at the end
+/// of the path; the rows match the stop times the journey timetable publishes for the run.
+fn station_km(m: &Model, r: &crate::PlannedRun) -> Vec<StationKm> {
+    let n = r.calls.len();
+    let origin = r.run.start_m;
+    let mut k = 0;
+    let mut out = Vec::new();
+    for (i, c) in r.calls.iter().enumerate() {
+        if !c.stop {
+            continue;
+        }
+        let pos = if i == 0 {
+            origin
+        } else if i + 1 == n {
+            r.run.end_m.unwrap_or(origin)
+        } else {
+            let p = r.run.stops.get(k).map_or(origin, |s| s.position_m);
+            k += 1;
+            p
+        };
+        let Place::Platform(p) = c.place else {
+            continue;
+        };
+        let st = &m.stations[m.platforms[p as usize].station as usize];
+        let g = &m.groups[st.group as usize];
+        out.push(StationKm {
+            station_id: format!("group:{}", g.key),
+            name: g.name.clone(),
+            km: ((pos - origin) / 1000.0).max(0.0),
+        });
+    }
+    out
 }
 
 /// Whether a train can run from one station to the next of a line.

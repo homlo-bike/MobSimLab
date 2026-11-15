@@ -19,6 +19,7 @@ export function testConfig(over: Partial<AppConfig> = {}): AppConfig {
     publicUrl: new URL("http://127.0.0.1:8080"),
     db: { host: "127.0.0.1", port: 5432, name: "mobsimlab" },
     rateLimits: { authPerMinute: 1000, writesPerMinute: 1000 },
+    developmentMode: false,
     secrets: { ...TEST_SECRETS },
     ...over,
   };
