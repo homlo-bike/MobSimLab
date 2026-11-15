@@ -12,7 +12,7 @@ The result says what share of the residents round the lines live within the walk
 
 **Largest gaps** lists the ten places, in blocks of about 200 m, with the most people beyond the walk limit, with the walk to the nearest stop. Tap one to go to it on the map, where it is a numbered red circle.
 
-On the map, the footpaths are coloured by the minutes on foot to the nearest stop: green within 5, yellow within 10, orange within 15 and red beyond. **Show on the map** turns the layer off and on.
+On the map, a soft shaded area shows the minutes on foot to the nearest stop: green within 5, yellow within 10, orange within 15. Where there is no shading, the walk is longer than the limit. **Show on the map** turns the layer off and on.
 
 The area measured is the box round all the stops plus the distance walked in the limit; at most about 12 km × 12 km is loaded at once. Where the population of the country is still downloading to the server, or there is none, the walkable street length stands in for people, and the panel says so. Slopes are not counted yet.
 
