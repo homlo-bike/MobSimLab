@@ -101,6 +101,7 @@
       "importers": [],
       "exporters": [],
       "mapLayers": [],
+      "tabs": [],
       "parameters": {
         "ropeway.line_speed_ms": {
           "label": "Line speed",
@@ -735,6 +736,3475 @@
       }
     },
     {
+      "id": "org.mobsimlab.cargo-bike",
+      "name": "Cargo bike",
+      "description": "How far an electric cargo tricycle gets out and back on one battery charge, over the hills and preferring bike lanes, and what it saves against a car (purchase, fuel, tax, insurance, parking, maintenance), in its own tab.",
+      "version": "0.1.0",
+      "publisher": {
+        "name": "MobSimLab contributors",
+        "url": "https://github.com/homlo-bike/MobSimLab"
+      },
+      "license": "AGPL-3.0-or-later",
+      "dataLicense": "CC-BY-4.0",
+      "bundled": true,
+      "tiers": [
+        "data",
+        "compute"
+      ],
+      "permissions": [
+        "read:geodata"
+      ],
+      "modes": [],
+      "contexts": [],
+      "tools": [],
+      "calculations": [
+        {
+          "id": "cargo_bike_range",
+          "label": "Cargo bike range",
+          "description": "Round trip from a start point to a destination on bike-usable streets (preferring bike lanes) with the battery used over the terrain, and a range map of how far the bike gets out and back in every direction.",
+          "runtime": "bundled-wasm",
+          "module": "cargo-bike",
+          "inputs": [
+            "geodata",
+            "parameters"
+          ],
+          "outputs": [
+            "segments",
+            "kpis"
+          ],
+          "where": [
+            "plugin-tab"
+          ]
+        },
+        {
+          "id": "cargo_bike_savings",
+          "label": "Cargo bike savings",
+          "description": "Yearly cost of the cargo bike against a car for the same trips: purchase, energy, tax, insurance, parking and maintenance, in the currency of the start point's country.",
+          "runtime": "bundled-wasm",
+          "module": "cargo-bike",
+          "inputs": [
+            "parameters"
+          ],
+          "outputs": [
+            "table"
+          ],
+          "where": [
+            "plugin-tab"
+          ]
+        }
+      ],
+      "importers": [],
+      "exporters": [],
+      "mapLayers": [
+        {
+          "id": "cargo_bike_route",
+          "label": "Cargo bike trip and range",
+          "calculation": "cargo_bike_range",
+          "style": {
+            "_comment": "The range map (area reachable out and back on one charge), the trip there and back coloured by the kind of street, the bike-lane gap picked in the tab, and the charging points and bike parkings along the route. Class ids come from crates/cargo-bike (Class), amenity kinds from the API's bike-amenity tiles.",
+            "layers": [
+              {
+                "id": "cargo-bike-range-fill",
+                "type": "fill",
+                "source": "range",
+                "paint": {
+                  "fill-color": "#16a34a",
+                  "fill-opacity": 0.12
+                }
+              },
+              {
+                "id": "cargo-bike-range-line",
+                "type": "line",
+                "source": "range",
+                "paint": {
+                  "line-color": "#15803d",
+                  "line-width": 2,
+                  "line-dasharray": [
+                    2,
+                    1.5
+                  ]
+                }
+              },
+              {
+                "id": "cargo-bike-gap",
+                "type": "line",
+                "source": "gap",
+                "layout": {
+                  "line-cap": "round",
+                  "line-join": "round"
+                },
+                "paint": {
+                  "line-color": "#facc15",
+                  "line-width": 18,
+                  "line-opacity": 0.7
+                }
+              },
+              {
+                "id": "cargo-bike-trip-casing",
+                "type": "line",
+                "source": "trip",
+                "layout": {
+                  "line-cap": "round",
+                  "line-join": "round"
+                },
+                "paint": {
+                  "line-color": "#ffffff",
+                  "line-width": 8
+                }
+              },
+              {
+                "id": "cargo-bike-trip",
+                "type": "line",
+                "source": "trip",
+                "layout": {
+                  "line-cap": "round",
+                  "line-join": "round"
+                },
+                "paint": {
+                  "line-width": 5,
+                  "line-color": [
+                    "match",
+                    [
+                      "get",
+                      "class"
+                    ],
+                    "separated",
+                    "#15803d",
+                    "lane",
+                    "#65a30d",
+                    "quiet",
+                    "#2563eb",
+                    "mixed",
+                    "#dc2626",
+                    "#64748b"
+                  ]
+                }
+              },
+              {
+                "id": "cargo-bike-amenity",
+                "type": "circle",
+                "source": "amenity",
+                "paint": {
+                  "circle-radius": 7,
+                  "circle-stroke-width": 2,
+                  "circle-stroke-color": "#ffffff",
+                  "circle-color": [
+                    "match",
+                    [
+                      "get",
+                      "kind"
+                    ],
+                    "charging",
+                    "#d97706",
+                    "secure_parking",
+                    "#7c3aed",
+                    "cargo_parking",
+                    "#0e7490",
+                    "#64748b"
+                  ]
+                }
+              }
+            ],
+            "legend": [
+              {
+                "class": "separated",
+                "color": "#15803d"
+              },
+              {
+                "class": "lane",
+                "color": "#65a30d"
+              },
+              {
+                "class": "quiet",
+                "color": "#2563eb"
+              },
+              {
+                "class": "mixed",
+                "color": "#dc2626"
+              }
+            ],
+            "amenities": [
+              {
+                "kind": "charging",
+                "color": "#d97706"
+              },
+              {
+                "kind": "secure_parking",
+                "color": "#7c3aed"
+              },
+              {
+                "kind": "cargo_parking",
+                "color": "#0e7490"
+              }
+            ]
+          }
+        }
+      ],
+      "tabs": [
+        {
+          "id": "cargo-bike",
+          "label": "Cargo bike",
+          "view": "cargo-bike",
+          "calculations": [
+            "cargo_bike_range",
+            "cargo_bike_savings"
+          ]
+        }
+      ],
+      "parameters": {
+        "cargo_bike.bike_mass_kg": {
+          "label": "Cargo bike mass",
+          "unit": "kg"
+        },
+        "cargo_bike.load_kg": {
+          "label": "Load carried",
+          "unit": "kg"
+        },
+        "cargo_bike.rider_mass_kg": {
+          "label": "Rider mass",
+          "unit": "kg"
+        },
+        "cargo_bike.battery_wh": {
+          "label": "Battery capacity",
+          "unit": "Wh"
+        },
+        "cargo_bike.battery_usable_share": {
+          "label": "Usable share of the battery",
+          "unit": "share"
+        },
+        "cargo_bike.motor_rated_w": {
+          "label": "Motor power (mechanical, sustained)",
+          "unit": "W"
+        },
+        "cargo_bike.motor_efficiency": {
+          "label": "Motor and controller efficiency",
+          "unit": "share"
+        },
+        "cargo_bike.drivetrain_efficiency": {
+          "label": "Drivetrain efficiency (chain and gears)",
+          "unit": "share"
+        },
+        "cargo_bike.assist_cutoff_kmh": {
+          "label": "Assistance cut-off speed",
+          "unit": "km/h"
+        },
+        "cargo_bike.assist_share": {
+          "label": "Share of the pedalling power the motor gives",
+          "unit": "share"
+        },
+        "cargo_bike.rider_power_w": {
+          "label": "Rider's sustained pedalling power",
+          "unit": "W"
+        },
+        "cargo_bike.rolling_resistance": {
+          "label": "Rolling resistance coefficient",
+          "unit": "ratio"
+        },
+        "cargo_bike.drag_area_m2": {
+          "label": "Drag area (Cd·A)",
+          "unit": "m²"
+        },
+        "cargo_bike.air_density": {
+          "label": "Air density",
+          "unit": "kg/m³"
+        },
+        "cargo_bike.speed_separated_kmh": {
+          "label": "Cruising speed on a separated cycle track or cycle path",
+          "unit": "km/h"
+        },
+        "cargo_bike.speed_lane_kmh": {
+          "label": "Cruising speed in a painted bike lane",
+          "unit": "km/h"
+        },
+        "cargo_bike.speed_quiet_kmh": {
+          "label": "Cruising speed on quiet streets without a bike lane",
+          "unit": "km/h"
+        },
+        "cargo_bike.speed_mixed_kmh": {
+          "label": "Cruising speed in main-road traffic without a bike lane",
+          "unit": "km/h"
+        },
+        "cargo_bike.stops_per_km_separated": {
+          "label": "Stops per km on separated cycle tracks",
+          "unit": "1/km"
+        },
+        "cargo_bike.stops_per_km_lane": {
+          "label": "Stops per km in painted bike lanes",
+          "unit": "1/km"
+        },
+        "cargo_bike.stops_per_km_quiet": {
+          "label": "Stops per km on quiet streets",
+          "unit": "1/km"
+        },
+        "cargo_bike.stops_per_km_mixed": {
+          "label": "Stops per km in main-road traffic",
+          "unit": "1/km"
+        },
+        "cargo_bike.signal_stop_share": {
+          "label": "Share of traffic signals that stop the bike",
+          "unit": "share"
+        },
+        "cargo_bike.route_factor_separated": {
+          "label": "Route choice weight: separated cycle track",
+          "unit": "ratio"
+        },
+        "cargo_bike.route_factor_lane": {
+          "label": "Route choice weight: painted bike lane",
+          "unit": "ratio"
+        },
+        "cargo_bike.route_factor_quiet": {
+          "label": "Route choice weight: quiet street",
+          "unit": "ratio"
+        },
+        "cargo_bike.route_factor_mixed": {
+          "label": "Route choice weight: main road without bike lane",
+          "unit": "ratio"
+        },
+        "cargo_bike.detour_factor": {
+          "label": "Street distance over straight-line distance (range map)",
+          "unit": "ratio"
+        },
+        "cargo_bike.elevation_smoothing_m": {
+          "label": "Height smoothing window",
+          "unit": "m"
+        },
+        "cargo_bike.savings.trips_per_week": {
+          "label": "Round trips per week",
+          "unit": "1/week"
+        },
+        "cargo_bike.savings.weeks_per_year": {
+          "label": "Weeks of use per year",
+          "unit": "weeks"
+        },
+        "cargo_bike.savings.bike_price_eur": {
+          "label": "Cargo bike purchase price (2024 EUR)",
+          "unit": "EUR"
+        },
+        "cargo_bike.savings.bike_lifetime_years": {
+          "label": "Cargo bike lifetime",
+          "unit": "years"
+        },
+        "cargo_bike.savings.bike_maintenance_eur": {
+          "label": "Cargo bike maintenance per year (2024 EUR)",
+          "unit": "EUR/year"
+        },
+        "cargo_bike.savings.bike_insurance_eur": {
+          "label": "Cargo bike insurance per year (2024 EUR)",
+          "unit": "EUR/year"
+        },
+        "cargo_bike.savings.electricity_eur_kwh": {
+          "label": "Household electricity price (2024 EUR)",
+          "unit": "EUR/kWh"
+        },
+        "cargo_bike.savings.charger_efficiency": {
+          "label": "Charger efficiency",
+          "unit": "share"
+        },
+        "cargo_bike.savings.car_price_eur": {
+          "label": "Car purchase price (2024 EUR)",
+          "unit": "EUR"
+        },
+        "cargo_bike.savings.car_years": {
+          "label": "Years the car is kept",
+          "unit": "years"
+        },
+        "cargo_bike.savings.car_residual_share": {
+          "label": "Car resale value at the end, share of the price",
+          "unit": "share"
+        },
+        "cargo_bike.savings.car_fuel_l_100km": {
+          "label": "Car fuel consumption",
+          "unit": "l/100 km"
+        },
+        "cargo_bike.savings.fuel_eur_l": {
+          "label": "Petrol price (2024 EUR)",
+          "unit": "EUR/l"
+        },
+        "cargo_bike.savings.car_tax_eur": {
+          "label": "Car tax per year (2024 EUR)",
+          "unit": "EUR/year"
+        },
+        "cargo_bike.savings.car_insurance_eur": {
+          "label": "Car insurance per year (2024 EUR)",
+          "unit": "EUR/year"
+        },
+        "cargo_bike.savings.car_parking_eur": {
+          "label": "Car parking per year (2024 EUR)",
+          "unit": "EUR/year"
+        },
+        "cargo_bike.savings.car_maintenance_eur_km": {
+          "label": "Car maintenance and tyres per km (2024 EUR)",
+          "unit": "EUR/km"
+        },
+        "cargo_bike.savings.fuel_co2_kg_l": {
+          "label": "Car CO₂ per litre of petrol (well to wheel)",
+          "unit": "kg/l"
+        },
+        "cargo_bike.savings.grid_co2_kg_kwh": {
+          "label": "CO₂ per kWh of mains electricity",
+          "unit": "kg/kWh"
+        },
+        "cargo_bike.savings.rider_efficiency": {
+          "label": "Rider's gross efficiency (pedalling energy per food energy)",
+          "unit": "share"
+        },
+        "cargo_bike.savings.active_min_week_target": {
+          "label": "Recommended physical activity per week",
+          "unit": "min/week"
+        }
+      },
+      "defaults": {
+        "brt": {
+          "*": {
+            "cargo_bike.bike_mass_kg": {
+              "low": 35,
+              "central": 35,
+              "high": 35
+            },
+            "cargo_bike.load_kg": {
+              "low": 0,
+              "central": 80,
+              "high": 150
+            },
+            "cargo_bike.rider_mass_kg": {
+              "low": 60,
+              "central": 90,
+              "high": 120
+            },
+            "cargo_bike.battery_wh": {
+              "low": 500,
+              "central": 900,
+              "high": 1800
+            },
+            "cargo_bike.battery_usable_share": {
+              "low": 0.8,
+              "central": 0.9,
+              "high": 0.95
+            },
+            "cargo_bike.motor_rated_w": {
+              "low": 250,
+              "central": 250,
+              "high": 500
+            },
+            "cargo_bike.motor_efficiency": {
+              "low": 0.75,
+              "central": 0.8,
+              "high": 0.85
+            },
+            "cargo_bike.drivetrain_efficiency": {
+              "low": 0.9,
+              "central": 0.95,
+              "high": 0.97
+            },
+            "cargo_bike.assist_cutoff_kmh": {
+              "low": 25,
+              "central": 25,
+              "high": 25
+            },
+            "cargo_bike.assist_share": {
+              "low": 0.4,
+              "central": 0.6,
+              "high": 0.8
+            },
+            "cargo_bike.rider_power_w": {
+              "low": 60,
+              "central": 100,
+              "high": 150
+            },
+            "cargo_bike.rolling_resistance": {
+              "low": 0.007,
+              "central": 0.01,
+              "high": 0.015
+            },
+            "cargo_bike.drag_area_m2": {
+              "low": 0.6,
+              "central": 0.9,
+              "high": 1.2
+            },
+            "cargo_bike.air_density": {
+              "low": 1.15,
+              "central": 1.2,
+              "high": 1.25
+            },
+            "cargo_bike.speed_separated_kmh": {
+              "low": 15,
+              "central": 20,
+              "high": 24
+            },
+            "cargo_bike.speed_lane_kmh": {
+              "low": 14,
+              "central": 19,
+              "high": 23
+            },
+            "cargo_bike.speed_quiet_kmh": {
+              "low": 12,
+              "central": 17,
+              "high": 22
+            },
+            "cargo_bike.speed_mixed_kmh": {
+              "low": 10,
+              "central": 15,
+              "high": 20
+            },
+            "cargo_bike.stops_per_km_separated": {
+              "low": 0.2,
+              "central": 0.5,
+              "high": 1
+            },
+            "cargo_bike.stops_per_km_lane": {
+              "low": 0.5,
+              "central": 1,
+              "high": 2
+            },
+            "cargo_bike.stops_per_km_quiet": {
+              "low": 0.5,
+              "central": 1.5,
+              "high": 3
+            },
+            "cargo_bike.stops_per_km_mixed": {
+              "low": 1,
+              "central": 2.5,
+              "high": 4
+            },
+            "cargo_bike.signal_stop_share": {
+              "low": 0.3,
+              "central": 0.5,
+              "high": 0.7
+            },
+            "cargo_bike.route_factor_separated": {
+              "low": 1,
+              "central": 1,
+              "high": 1
+            },
+            "cargo_bike.route_factor_lane": {
+              "low": 1,
+              "central": 1.1,
+              "high": 1.3
+            },
+            "cargo_bike.route_factor_quiet": {
+              "low": 1,
+              "central": 1.2,
+              "high": 1.5
+            },
+            "cargo_bike.route_factor_mixed": {
+              "low": 1.2,
+              "central": 2,
+              "high": 3
+            },
+            "cargo_bike.detour_factor": {
+              "low": 1.1,
+              "central": 1.3,
+              "high": 1.5
+            },
+            "cargo_bike.elevation_smoothing_m": {
+              "low": 50,
+              "central": 100,
+              "high": 200
+            },
+            "cargo_bike.savings.trips_per_week": {
+              "low": 1,
+              "central": 5,
+              "high": 14
+            },
+            "cargo_bike.savings.weeks_per_year": {
+              "low": 30,
+              "central": 46,
+              "high": 52
+            },
+            "cargo_bike.savings.bike_price_eur": {
+              "low": 2000,
+              "central": 4000,
+              "high": 8000
+            },
+            "cargo_bike.savings.bike_lifetime_years": {
+              "low": 5,
+              "central": 8,
+              "high": 12
+            },
+            "cargo_bike.savings.bike_maintenance_eur": {
+              "low": 80,
+              "central": 200,
+              "high": 400
+            },
+            "cargo_bike.savings.bike_insurance_eur": {
+              "low": 0,
+              "central": 80,
+              "high": 200
+            },
+            "cargo_bike.savings.electricity_eur_kwh": {
+              "low": 0.29,
+              "central": 0.39,
+              "high": 0.45
+            },
+            "cargo_bike.savings.charger_efficiency": {
+              "low": 0.8,
+              "central": 0.85,
+              "high": 0.9
+            },
+            "cargo_bike.savings.car_price_eur": {
+              "low": 12000,
+              "central": 20000,
+              "high": 35000
+            },
+            "cargo_bike.savings.car_years": {
+              "low": 4,
+              "central": 8,
+              "high": 12
+            },
+            "cargo_bike.savings.car_residual_share": {
+              "low": 0.15,
+              "central": 0.3,
+              "high": 0.45
+            },
+            "cargo_bike.savings.car_fuel_l_100km": {
+              "low": 4.5,
+              "central": 6.5,
+              "high": 9
+            },
+            "cargo_bike.savings.fuel_eur_l": {
+              "low": 1.6,
+              "central": 1.75,
+              "high": 1.9
+            },
+            "cargo_bike.savings.car_tax_eur": {
+              "low": 0,
+              "central": 100,
+              "high": 300
+            },
+            "cargo_bike.savings.car_insurance_eur": {
+              "low": 300,
+              "central": 600,
+              "high": 1200
+            },
+            "cargo_bike.savings.car_parking_eur": {
+              "low": 0,
+              "central": 400,
+              "high": 2000
+            },
+            "cargo_bike.savings.car_maintenance_eur_km": {
+              "low": 0.03,
+              "central": 0.06,
+              "high": 0.1
+            },
+            "cargo_bike.savings.fuel_co2_kg_l": {
+              "low": 2.08,
+              "central": 2.66,
+              "high": 2.8
+            },
+            "cargo_bike.savings.grid_co2_kg_kwh": {
+              "low": 0.02,
+              "central": 0.353,
+              "high": 0.9
+            },
+            "cargo_bike.savings.rider_efficiency": {
+              "low": 0.18,
+              "central": 0.22,
+              "high": 0.25
+            },
+            "cargo_bike.savings.active_min_week_target": {
+              "low": 150,
+              "central": 150,
+              "high": 300
+            }
+          }
+        },
+        "bus": {
+          "*": {
+            "cargo_bike.bike_mass_kg": {
+              "low": 35,
+              "central": 35,
+              "high": 35
+            },
+            "cargo_bike.load_kg": {
+              "low": 0,
+              "central": 80,
+              "high": 150
+            },
+            "cargo_bike.rider_mass_kg": {
+              "low": 60,
+              "central": 90,
+              "high": 120
+            },
+            "cargo_bike.battery_wh": {
+              "low": 500,
+              "central": 900,
+              "high": 1800
+            },
+            "cargo_bike.battery_usable_share": {
+              "low": 0.8,
+              "central": 0.9,
+              "high": 0.95
+            },
+            "cargo_bike.motor_rated_w": {
+              "low": 250,
+              "central": 250,
+              "high": 500
+            },
+            "cargo_bike.motor_efficiency": {
+              "low": 0.75,
+              "central": 0.8,
+              "high": 0.85
+            },
+            "cargo_bike.drivetrain_efficiency": {
+              "low": 0.9,
+              "central": 0.95,
+              "high": 0.97
+            },
+            "cargo_bike.assist_cutoff_kmh": {
+              "low": 25,
+              "central": 25,
+              "high": 25
+            },
+            "cargo_bike.assist_share": {
+              "low": 0.4,
+              "central": 0.6,
+              "high": 0.8
+            },
+            "cargo_bike.rider_power_w": {
+              "low": 60,
+              "central": 100,
+              "high": 150
+            },
+            "cargo_bike.rolling_resistance": {
+              "low": 0.007,
+              "central": 0.01,
+              "high": 0.015
+            },
+            "cargo_bike.drag_area_m2": {
+              "low": 0.6,
+              "central": 0.9,
+              "high": 1.2
+            },
+            "cargo_bike.air_density": {
+              "low": 1.15,
+              "central": 1.2,
+              "high": 1.25
+            },
+            "cargo_bike.speed_separated_kmh": {
+              "low": 15,
+              "central": 20,
+              "high": 24
+            },
+            "cargo_bike.speed_lane_kmh": {
+              "low": 14,
+              "central": 19,
+              "high": 23
+            },
+            "cargo_bike.speed_quiet_kmh": {
+              "low": 12,
+              "central": 17,
+              "high": 22
+            },
+            "cargo_bike.speed_mixed_kmh": {
+              "low": 10,
+              "central": 15,
+              "high": 20
+            },
+            "cargo_bike.stops_per_km_separated": {
+              "low": 0.2,
+              "central": 0.5,
+              "high": 1
+            },
+            "cargo_bike.stops_per_km_lane": {
+              "low": 0.5,
+              "central": 1,
+              "high": 2
+            },
+            "cargo_bike.stops_per_km_quiet": {
+              "low": 0.5,
+              "central": 1.5,
+              "high": 3
+            },
+            "cargo_bike.stops_per_km_mixed": {
+              "low": 1,
+              "central": 2.5,
+              "high": 4
+            },
+            "cargo_bike.signal_stop_share": {
+              "low": 0.3,
+              "central": 0.5,
+              "high": 0.7
+            },
+            "cargo_bike.route_factor_separated": {
+              "low": 1,
+              "central": 1,
+              "high": 1
+            },
+            "cargo_bike.route_factor_lane": {
+              "low": 1,
+              "central": 1.1,
+              "high": 1.3
+            },
+            "cargo_bike.route_factor_quiet": {
+              "low": 1,
+              "central": 1.2,
+              "high": 1.5
+            },
+            "cargo_bike.route_factor_mixed": {
+              "low": 1.2,
+              "central": 2,
+              "high": 3
+            },
+            "cargo_bike.detour_factor": {
+              "low": 1.1,
+              "central": 1.3,
+              "high": 1.5
+            },
+            "cargo_bike.elevation_smoothing_m": {
+              "low": 50,
+              "central": 100,
+              "high": 200
+            },
+            "cargo_bike.savings.trips_per_week": {
+              "low": 1,
+              "central": 5,
+              "high": 14
+            },
+            "cargo_bike.savings.weeks_per_year": {
+              "low": 30,
+              "central": 46,
+              "high": 52
+            },
+            "cargo_bike.savings.bike_price_eur": {
+              "low": 2000,
+              "central": 4000,
+              "high": 8000
+            },
+            "cargo_bike.savings.bike_lifetime_years": {
+              "low": 5,
+              "central": 8,
+              "high": 12
+            },
+            "cargo_bike.savings.bike_maintenance_eur": {
+              "low": 80,
+              "central": 200,
+              "high": 400
+            },
+            "cargo_bike.savings.bike_insurance_eur": {
+              "low": 0,
+              "central": 80,
+              "high": 200
+            },
+            "cargo_bike.savings.electricity_eur_kwh": {
+              "low": 0.29,
+              "central": 0.39,
+              "high": 0.45
+            },
+            "cargo_bike.savings.charger_efficiency": {
+              "low": 0.8,
+              "central": 0.85,
+              "high": 0.9
+            },
+            "cargo_bike.savings.car_price_eur": {
+              "low": 12000,
+              "central": 20000,
+              "high": 35000
+            },
+            "cargo_bike.savings.car_years": {
+              "low": 4,
+              "central": 8,
+              "high": 12
+            },
+            "cargo_bike.savings.car_residual_share": {
+              "low": 0.15,
+              "central": 0.3,
+              "high": 0.45
+            },
+            "cargo_bike.savings.car_fuel_l_100km": {
+              "low": 4.5,
+              "central": 6.5,
+              "high": 9
+            },
+            "cargo_bike.savings.fuel_eur_l": {
+              "low": 1.6,
+              "central": 1.75,
+              "high": 1.9
+            },
+            "cargo_bike.savings.car_tax_eur": {
+              "low": 0,
+              "central": 100,
+              "high": 300
+            },
+            "cargo_bike.savings.car_insurance_eur": {
+              "low": 300,
+              "central": 600,
+              "high": 1200
+            },
+            "cargo_bike.savings.car_parking_eur": {
+              "low": 0,
+              "central": 400,
+              "high": 2000
+            },
+            "cargo_bike.savings.car_maintenance_eur_km": {
+              "low": 0.03,
+              "central": 0.06,
+              "high": 0.1
+            },
+            "cargo_bike.savings.fuel_co2_kg_l": {
+              "low": 2.08,
+              "central": 2.66,
+              "high": 2.8
+            },
+            "cargo_bike.savings.grid_co2_kg_kwh": {
+              "low": 0.02,
+              "central": 0.353,
+              "high": 0.9
+            },
+            "cargo_bike.savings.rider_efficiency": {
+              "low": 0.18,
+              "central": 0.22,
+              "high": 0.25
+            },
+            "cargo_bike.savings.active_min_week_target": {
+              "low": 150,
+              "central": 150,
+              "high": 300
+            }
+          }
+        },
+        "commuter_rail": {
+          "*": {
+            "cargo_bike.bike_mass_kg": {
+              "low": 35,
+              "central": 35,
+              "high": 35
+            },
+            "cargo_bike.load_kg": {
+              "low": 0,
+              "central": 80,
+              "high": 150
+            },
+            "cargo_bike.rider_mass_kg": {
+              "low": 60,
+              "central": 90,
+              "high": 120
+            },
+            "cargo_bike.battery_wh": {
+              "low": 500,
+              "central": 900,
+              "high": 1800
+            },
+            "cargo_bike.battery_usable_share": {
+              "low": 0.8,
+              "central": 0.9,
+              "high": 0.95
+            },
+            "cargo_bike.motor_rated_w": {
+              "low": 250,
+              "central": 250,
+              "high": 500
+            },
+            "cargo_bike.motor_efficiency": {
+              "low": 0.75,
+              "central": 0.8,
+              "high": 0.85
+            },
+            "cargo_bike.drivetrain_efficiency": {
+              "low": 0.9,
+              "central": 0.95,
+              "high": 0.97
+            },
+            "cargo_bike.assist_cutoff_kmh": {
+              "low": 25,
+              "central": 25,
+              "high": 25
+            },
+            "cargo_bike.assist_share": {
+              "low": 0.4,
+              "central": 0.6,
+              "high": 0.8
+            },
+            "cargo_bike.rider_power_w": {
+              "low": 60,
+              "central": 100,
+              "high": 150
+            },
+            "cargo_bike.rolling_resistance": {
+              "low": 0.007,
+              "central": 0.01,
+              "high": 0.015
+            },
+            "cargo_bike.drag_area_m2": {
+              "low": 0.6,
+              "central": 0.9,
+              "high": 1.2
+            },
+            "cargo_bike.air_density": {
+              "low": 1.15,
+              "central": 1.2,
+              "high": 1.25
+            },
+            "cargo_bike.speed_separated_kmh": {
+              "low": 15,
+              "central": 20,
+              "high": 24
+            },
+            "cargo_bike.speed_lane_kmh": {
+              "low": 14,
+              "central": 19,
+              "high": 23
+            },
+            "cargo_bike.speed_quiet_kmh": {
+              "low": 12,
+              "central": 17,
+              "high": 22
+            },
+            "cargo_bike.speed_mixed_kmh": {
+              "low": 10,
+              "central": 15,
+              "high": 20
+            },
+            "cargo_bike.stops_per_km_separated": {
+              "low": 0.2,
+              "central": 0.5,
+              "high": 1
+            },
+            "cargo_bike.stops_per_km_lane": {
+              "low": 0.5,
+              "central": 1,
+              "high": 2
+            },
+            "cargo_bike.stops_per_km_quiet": {
+              "low": 0.5,
+              "central": 1.5,
+              "high": 3
+            },
+            "cargo_bike.stops_per_km_mixed": {
+              "low": 1,
+              "central": 2.5,
+              "high": 4
+            },
+            "cargo_bike.signal_stop_share": {
+              "low": 0.3,
+              "central": 0.5,
+              "high": 0.7
+            },
+            "cargo_bike.route_factor_separated": {
+              "low": 1,
+              "central": 1,
+              "high": 1
+            },
+            "cargo_bike.route_factor_lane": {
+              "low": 1,
+              "central": 1.1,
+              "high": 1.3
+            },
+            "cargo_bike.route_factor_quiet": {
+              "low": 1,
+              "central": 1.2,
+              "high": 1.5
+            },
+            "cargo_bike.route_factor_mixed": {
+              "low": 1.2,
+              "central": 2,
+              "high": 3
+            },
+            "cargo_bike.detour_factor": {
+              "low": 1.1,
+              "central": 1.3,
+              "high": 1.5
+            },
+            "cargo_bike.elevation_smoothing_m": {
+              "low": 50,
+              "central": 100,
+              "high": 200
+            },
+            "cargo_bike.savings.trips_per_week": {
+              "low": 1,
+              "central": 5,
+              "high": 14
+            },
+            "cargo_bike.savings.weeks_per_year": {
+              "low": 30,
+              "central": 46,
+              "high": 52
+            },
+            "cargo_bike.savings.bike_price_eur": {
+              "low": 2000,
+              "central": 4000,
+              "high": 8000
+            },
+            "cargo_bike.savings.bike_lifetime_years": {
+              "low": 5,
+              "central": 8,
+              "high": 12
+            },
+            "cargo_bike.savings.bike_maintenance_eur": {
+              "low": 80,
+              "central": 200,
+              "high": 400
+            },
+            "cargo_bike.savings.bike_insurance_eur": {
+              "low": 0,
+              "central": 80,
+              "high": 200
+            },
+            "cargo_bike.savings.electricity_eur_kwh": {
+              "low": 0.29,
+              "central": 0.39,
+              "high": 0.45
+            },
+            "cargo_bike.savings.charger_efficiency": {
+              "low": 0.8,
+              "central": 0.85,
+              "high": 0.9
+            },
+            "cargo_bike.savings.car_price_eur": {
+              "low": 12000,
+              "central": 20000,
+              "high": 35000
+            },
+            "cargo_bike.savings.car_years": {
+              "low": 4,
+              "central": 8,
+              "high": 12
+            },
+            "cargo_bike.savings.car_residual_share": {
+              "low": 0.15,
+              "central": 0.3,
+              "high": 0.45
+            },
+            "cargo_bike.savings.car_fuel_l_100km": {
+              "low": 4.5,
+              "central": 6.5,
+              "high": 9
+            },
+            "cargo_bike.savings.fuel_eur_l": {
+              "low": 1.6,
+              "central": 1.75,
+              "high": 1.9
+            },
+            "cargo_bike.savings.car_tax_eur": {
+              "low": 0,
+              "central": 100,
+              "high": 300
+            },
+            "cargo_bike.savings.car_insurance_eur": {
+              "low": 300,
+              "central": 600,
+              "high": 1200
+            },
+            "cargo_bike.savings.car_parking_eur": {
+              "low": 0,
+              "central": 400,
+              "high": 2000
+            },
+            "cargo_bike.savings.car_maintenance_eur_km": {
+              "low": 0.03,
+              "central": 0.06,
+              "high": 0.1
+            },
+            "cargo_bike.savings.fuel_co2_kg_l": {
+              "low": 2.08,
+              "central": 2.66,
+              "high": 2.8
+            },
+            "cargo_bike.savings.grid_co2_kg_kwh": {
+              "low": 0.02,
+              "central": 0.353,
+              "high": 0.9
+            },
+            "cargo_bike.savings.rider_efficiency": {
+              "low": 0.18,
+              "central": 0.22,
+              "high": 0.25
+            },
+            "cargo_bike.savings.active_min_week_target": {
+              "low": 150,
+              "central": 150,
+              "high": 300
+            }
+          }
+        },
+        "funicular": {
+          "*": {
+            "cargo_bike.bike_mass_kg": {
+              "low": 35,
+              "central": 35,
+              "high": 35
+            },
+            "cargo_bike.load_kg": {
+              "low": 0,
+              "central": 80,
+              "high": 150
+            },
+            "cargo_bike.rider_mass_kg": {
+              "low": 60,
+              "central": 90,
+              "high": 120
+            },
+            "cargo_bike.battery_wh": {
+              "low": 500,
+              "central": 900,
+              "high": 1800
+            },
+            "cargo_bike.battery_usable_share": {
+              "low": 0.8,
+              "central": 0.9,
+              "high": 0.95
+            },
+            "cargo_bike.motor_rated_w": {
+              "low": 250,
+              "central": 250,
+              "high": 500
+            },
+            "cargo_bike.motor_efficiency": {
+              "low": 0.75,
+              "central": 0.8,
+              "high": 0.85
+            },
+            "cargo_bike.drivetrain_efficiency": {
+              "low": 0.9,
+              "central": 0.95,
+              "high": 0.97
+            },
+            "cargo_bike.assist_cutoff_kmh": {
+              "low": 25,
+              "central": 25,
+              "high": 25
+            },
+            "cargo_bike.assist_share": {
+              "low": 0.4,
+              "central": 0.6,
+              "high": 0.8
+            },
+            "cargo_bike.rider_power_w": {
+              "low": 60,
+              "central": 100,
+              "high": 150
+            },
+            "cargo_bike.rolling_resistance": {
+              "low": 0.007,
+              "central": 0.01,
+              "high": 0.015
+            },
+            "cargo_bike.drag_area_m2": {
+              "low": 0.6,
+              "central": 0.9,
+              "high": 1.2
+            },
+            "cargo_bike.air_density": {
+              "low": 1.15,
+              "central": 1.2,
+              "high": 1.25
+            },
+            "cargo_bike.speed_separated_kmh": {
+              "low": 15,
+              "central": 20,
+              "high": 24
+            },
+            "cargo_bike.speed_lane_kmh": {
+              "low": 14,
+              "central": 19,
+              "high": 23
+            },
+            "cargo_bike.speed_quiet_kmh": {
+              "low": 12,
+              "central": 17,
+              "high": 22
+            },
+            "cargo_bike.speed_mixed_kmh": {
+              "low": 10,
+              "central": 15,
+              "high": 20
+            },
+            "cargo_bike.stops_per_km_separated": {
+              "low": 0.2,
+              "central": 0.5,
+              "high": 1
+            },
+            "cargo_bike.stops_per_km_lane": {
+              "low": 0.5,
+              "central": 1,
+              "high": 2
+            },
+            "cargo_bike.stops_per_km_quiet": {
+              "low": 0.5,
+              "central": 1.5,
+              "high": 3
+            },
+            "cargo_bike.stops_per_km_mixed": {
+              "low": 1,
+              "central": 2.5,
+              "high": 4
+            },
+            "cargo_bike.signal_stop_share": {
+              "low": 0.3,
+              "central": 0.5,
+              "high": 0.7
+            },
+            "cargo_bike.route_factor_separated": {
+              "low": 1,
+              "central": 1,
+              "high": 1
+            },
+            "cargo_bike.route_factor_lane": {
+              "low": 1,
+              "central": 1.1,
+              "high": 1.3
+            },
+            "cargo_bike.route_factor_quiet": {
+              "low": 1,
+              "central": 1.2,
+              "high": 1.5
+            },
+            "cargo_bike.route_factor_mixed": {
+              "low": 1.2,
+              "central": 2,
+              "high": 3
+            },
+            "cargo_bike.detour_factor": {
+              "low": 1.1,
+              "central": 1.3,
+              "high": 1.5
+            },
+            "cargo_bike.elevation_smoothing_m": {
+              "low": 50,
+              "central": 100,
+              "high": 200
+            },
+            "cargo_bike.savings.trips_per_week": {
+              "low": 1,
+              "central": 5,
+              "high": 14
+            },
+            "cargo_bike.savings.weeks_per_year": {
+              "low": 30,
+              "central": 46,
+              "high": 52
+            },
+            "cargo_bike.savings.bike_price_eur": {
+              "low": 2000,
+              "central": 4000,
+              "high": 8000
+            },
+            "cargo_bike.savings.bike_lifetime_years": {
+              "low": 5,
+              "central": 8,
+              "high": 12
+            },
+            "cargo_bike.savings.bike_maintenance_eur": {
+              "low": 80,
+              "central": 200,
+              "high": 400
+            },
+            "cargo_bike.savings.bike_insurance_eur": {
+              "low": 0,
+              "central": 80,
+              "high": 200
+            },
+            "cargo_bike.savings.electricity_eur_kwh": {
+              "low": 0.29,
+              "central": 0.39,
+              "high": 0.45
+            },
+            "cargo_bike.savings.charger_efficiency": {
+              "low": 0.8,
+              "central": 0.85,
+              "high": 0.9
+            },
+            "cargo_bike.savings.car_price_eur": {
+              "low": 12000,
+              "central": 20000,
+              "high": 35000
+            },
+            "cargo_bike.savings.car_years": {
+              "low": 4,
+              "central": 8,
+              "high": 12
+            },
+            "cargo_bike.savings.car_residual_share": {
+              "low": 0.15,
+              "central": 0.3,
+              "high": 0.45
+            },
+            "cargo_bike.savings.car_fuel_l_100km": {
+              "low": 4.5,
+              "central": 6.5,
+              "high": 9
+            },
+            "cargo_bike.savings.fuel_eur_l": {
+              "low": 1.6,
+              "central": 1.75,
+              "high": 1.9
+            },
+            "cargo_bike.savings.car_tax_eur": {
+              "low": 0,
+              "central": 100,
+              "high": 300
+            },
+            "cargo_bike.savings.car_insurance_eur": {
+              "low": 300,
+              "central": 600,
+              "high": 1200
+            },
+            "cargo_bike.savings.car_parking_eur": {
+              "low": 0,
+              "central": 400,
+              "high": 2000
+            },
+            "cargo_bike.savings.car_maintenance_eur_km": {
+              "low": 0.03,
+              "central": 0.06,
+              "high": 0.1
+            },
+            "cargo_bike.savings.fuel_co2_kg_l": {
+              "low": 2.08,
+              "central": 2.66,
+              "high": 2.8
+            },
+            "cargo_bike.savings.grid_co2_kg_kwh": {
+              "low": 0.02,
+              "central": 0.353,
+              "high": 0.9
+            },
+            "cargo_bike.savings.rider_efficiency": {
+              "low": 0.18,
+              "central": 0.22,
+              "high": 0.25
+            },
+            "cargo_bike.savings.active_min_week_target": {
+              "low": 150,
+              "central": 150,
+              "high": 300
+            }
+          }
+        },
+        "high_speed_rail": {
+          "*": {
+            "cargo_bike.bike_mass_kg": {
+              "low": 35,
+              "central": 35,
+              "high": 35
+            },
+            "cargo_bike.load_kg": {
+              "low": 0,
+              "central": 80,
+              "high": 150
+            },
+            "cargo_bike.rider_mass_kg": {
+              "low": 60,
+              "central": 90,
+              "high": 120
+            },
+            "cargo_bike.battery_wh": {
+              "low": 500,
+              "central": 900,
+              "high": 1800
+            },
+            "cargo_bike.battery_usable_share": {
+              "low": 0.8,
+              "central": 0.9,
+              "high": 0.95
+            },
+            "cargo_bike.motor_rated_w": {
+              "low": 250,
+              "central": 250,
+              "high": 500
+            },
+            "cargo_bike.motor_efficiency": {
+              "low": 0.75,
+              "central": 0.8,
+              "high": 0.85
+            },
+            "cargo_bike.drivetrain_efficiency": {
+              "low": 0.9,
+              "central": 0.95,
+              "high": 0.97
+            },
+            "cargo_bike.assist_cutoff_kmh": {
+              "low": 25,
+              "central": 25,
+              "high": 25
+            },
+            "cargo_bike.assist_share": {
+              "low": 0.4,
+              "central": 0.6,
+              "high": 0.8
+            },
+            "cargo_bike.rider_power_w": {
+              "low": 60,
+              "central": 100,
+              "high": 150
+            },
+            "cargo_bike.rolling_resistance": {
+              "low": 0.007,
+              "central": 0.01,
+              "high": 0.015
+            },
+            "cargo_bike.drag_area_m2": {
+              "low": 0.6,
+              "central": 0.9,
+              "high": 1.2
+            },
+            "cargo_bike.air_density": {
+              "low": 1.15,
+              "central": 1.2,
+              "high": 1.25
+            },
+            "cargo_bike.speed_separated_kmh": {
+              "low": 15,
+              "central": 20,
+              "high": 24
+            },
+            "cargo_bike.speed_lane_kmh": {
+              "low": 14,
+              "central": 19,
+              "high": 23
+            },
+            "cargo_bike.speed_quiet_kmh": {
+              "low": 12,
+              "central": 17,
+              "high": 22
+            },
+            "cargo_bike.speed_mixed_kmh": {
+              "low": 10,
+              "central": 15,
+              "high": 20
+            },
+            "cargo_bike.stops_per_km_separated": {
+              "low": 0.2,
+              "central": 0.5,
+              "high": 1
+            },
+            "cargo_bike.stops_per_km_lane": {
+              "low": 0.5,
+              "central": 1,
+              "high": 2
+            },
+            "cargo_bike.stops_per_km_quiet": {
+              "low": 0.5,
+              "central": 1.5,
+              "high": 3
+            },
+            "cargo_bike.stops_per_km_mixed": {
+              "low": 1,
+              "central": 2.5,
+              "high": 4
+            },
+            "cargo_bike.signal_stop_share": {
+              "low": 0.3,
+              "central": 0.5,
+              "high": 0.7
+            },
+            "cargo_bike.route_factor_separated": {
+              "low": 1,
+              "central": 1,
+              "high": 1
+            },
+            "cargo_bike.route_factor_lane": {
+              "low": 1,
+              "central": 1.1,
+              "high": 1.3
+            },
+            "cargo_bike.route_factor_quiet": {
+              "low": 1,
+              "central": 1.2,
+              "high": 1.5
+            },
+            "cargo_bike.route_factor_mixed": {
+              "low": 1.2,
+              "central": 2,
+              "high": 3
+            },
+            "cargo_bike.detour_factor": {
+              "low": 1.1,
+              "central": 1.3,
+              "high": 1.5
+            },
+            "cargo_bike.elevation_smoothing_m": {
+              "low": 50,
+              "central": 100,
+              "high": 200
+            },
+            "cargo_bike.savings.trips_per_week": {
+              "low": 1,
+              "central": 5,
+              "high": 14
+            },
+            "cargo_bike.savings.weeks_per_year": {
+              "low": 30,
+              "central": 46,
+              "high": 52
+            },
+            "cargo_bike.savings.bike_price_eur": {
+              "low": 2000,
+              "central": 4000,
+              "high": 8000
+            },
+            "cargo_bike.savings.bike_lifetime_years": {
+              "low": 5,
+              "central": 8,
+              "high": 12
+            },
+            "cargo_bike.savings.bike_maintenance_eur": {
+              "low": 80,
+              "central": 200,
+              "high": 400
+            },
+            "cargo_bike.savings.bike_insurance_eur": {
+              "low": 0,
+              "central": 80,
+              "high": 200
+            },
+            "cargo_bike.savings.electricity_eur_kwh": {
+              "low": 0.29,
+              "central": 0.39,
+              "high": 0.45
+            },
+            "cargo_bike.savings.charger_efficiency": {
+              "low": 0.8,
+              "central": 0.85,
+              "high": 0.9
+            },
+            "cargo_bike.savings.car_price_eur": {
+              "low": 12000,
+              "central": 20000,
+              "high": 35000
+            },
+            "cargo_bike.savings.car_years": {
+              "low": 4,
+              "central": 8,
+              "high": 12
+            },
+            "cargo_bike.savings.car_residual_share": {
+              "low": 0.15,
+              "central": 0.3,
+              "high": 0.45
+            },
+            "cargo_bike.savings.car_fuel_l_100km": {
+              "low": 4.5,
+              "central": 6.5,
+              "high": 9
+            },
+            "cargo_bike.savings.fuel_eur_l": {
+              "low": 1.6,
+              "central": 1.75,
+              "high": 1.9
+            },
+            "cargo_bike.savings.car_tax_eur": {
+              "low": 0,
+              "central": 100,
+              "high": 300
+            },
+            "cargo_bike.savings.car_insurance_eur": {
+              "low": 300,
+              "central": 600,
+              "high": 1200
+            },
+            "cargo_bike.savings.car_parking_eur": {
+              "low": 0,
+              "central": 400,
+              "high": 2000
+            },
+            "cargo_bike.savings.car_maintenance_eur_km": {
+              "low": 0.03,
+              "central": 0.06,
+              "high": 0.1
+            },
+            "cargo_bike.savings.fuel_co2_kg_l": {
+              "low": 2.08,
+              "central": 2.66,
+              "high": 2.8
+            },
+            "cargo_bike.savings.grid_co2_kg_kwh": {
+              "low": 0.02,
+              "central": 0.353,
+              "high": 0.9
+            },
+            "cargo_bike.savings.rider_efficiency": {
+              "low": 0.18,
+              "central": 0.22,
+              "high": 0.25
+            },
+            "cargo_bike.savings.active_min_week_target": {
+              "low": 150,
+              "central": 150,
+              "high": 300
+            }
+          }
+        },
+        "intercity_bus": {
+          "*": {
+            "cargo_bike.bike_mass_kg": {
+              "low": 35,
+              "central": 35,
+              "high": 35
+            },
+            "cargo_bike.load_kg": {
+              "low": 0,
+              "central": 80,
+              "high": 150
+            },
+            "cargo_bike.rider_mass_kg": {
+              "low": 60,
+              "central": 90,
+              "high": 120
+            },
+            "cargo_bike.battery_wh": {
+              "low": 500,
+              "central": 900,
+              "high": 1800
+            },
+            "cargo_bike.battery_usable_share": {
+              "low": 0.8,
+              "central": 0.9,
+              "high": 0.95
+            },
+            "cargo_bike.motor_rated_w": {
+              "low": 250,
+              "central": 250,
+              "high": 500
+            },
+            "cargo_bike.motor_efficiency": {
+              "low": 0.75,
+              "central": 0.8,
+              "high": 0.85
+            },
+            "cargo_bike.drivetrain_efficiency": {
+              "low": 0.9,
+              "central": 0.95,
+              "high": 0.97
+            },
+            "cargo_bike.assist_cutoff_kmh": {
+              "low": 25,
+              "central": 25,
+              "high": 25
+            },
+            "cargo_bike.assist_share": {
+              "low": 0.4,
+              "central": 0.6,
+              "high": 0.8
+            },
+            "cargo_bike.rider_power_w": {
+              "low": 60,
+              "central": 100,
+              "high": 150
+            },
+            "cargo_bike.rolling_resistance": {
+              "low": 0.007,
+              "central": 0.01,
+              "high": 0.015
+            },
+            "cargo_bike.drag_area_m2": {
+              "low": 0.6,
+              "central": 0.9,
+              "high": 1.2
+            },
+            "cargo_bike.air_density": {
+              "low": 1.15,
+              "central": 1.2,
+              "high": 1.25
+            },
+            "cargo_bike.speed_separated_kmh": {
+              "low": 15,
+              "central": 20,
+              "high": 24
+            },
+            "cargo_bike.speed_lane_kmh": {
+              "low": 14,
+              "central": 19,
+              "high": 23
+            },
+            "cargo_bike.speed_quiet_kmh": {
+              "low": 12,
+              "central": 17,
+              "high": 22
+            },
+            "cargo_bike.speed_mixed_kmh": {
+              "low": 10,
+              "central": 15,
+              "high": 20
+            },
+            "cargo_bike.stops_per_km_separated": {
+              "low": 0.2,
+              "central": 0.5,
+              "high": 1
+            },
+            "cargo_bike.stops_per_km_lane": {
+              "low": 0.5,
+              "central": 1,
+              "high": 2
+            },
+            "cargo_bike.stops_per_km_quiet": {
+              "low": 0.5,
+              "central": 1.5,
+              "high": 3
+            },
+            "cargo_bike.stops_per_km_mixed": {
+              "low": 1,
+              "central": 2.5,
+              "high": 4
+            },
+            "cargo_bike.signal_stop_share": {
+              "low": 0.3,
+              "central": 0.5,
+              "high": 0.7
+            },
+            "cargo_bike.route_factor_separated": {
+              "low": 1,
+              "central": 1,
+              "high": 1
+            },
+            "cargo_bike.route_factor_lane": {
+              "low": 1,
+              "central": 1.1,
+              "high": 1.3
+            },
+            "cargo_bike.route_factor_quiet": {
+              "low": 1,
+              "central": 1.2,
+              "high": 1.5
+            },
+            "cargo_bike.route_factor_mixed": {
+              "low": 1.2,
+              "central": 2,
+              "high": 3
+            },
+            "cargo_bike.detour_factor": {
+              "low": 1.1,
+              "central": 1.3,
+              "high": 1.5
+            },
+            "cargo_bike.elevation_smoothing_m": {
+              "low": 50,
+              "central": 100,
+              "high": 200
+            },
+            "cargo_bike.savings.trips_per_week": {
+              "low": 1,
+              "central": 5,
+              "high": 14
+            },
+            "cargo_bike.savings.weeks_per_year": {
+              "low": 30,
+              "central": 46,
+              "high": 52
+            },
+            "cargo_bike.savings.bike_price_eur": {
+              "low": 2000,
+              "central": 4000,
+              "high": 8000
+            },
+            "cargo_bike.savings.bike_lifetime_years": {
+              "low": 5,
+              "central": 8,
+              "high": 12
+            },
+            "cargo_bike.savings.bike_maintenance_eur": {
+              "low": 80,
+              "central": 200,
+              "high": 400
+            },
+            "cargo_bike.savings.bike_insurance_eur": {
+              "low": 0,
+              "central": 80,
+              "high": 200
+            },
+            "cargo_bike.savings.electricity_eur_kwh": {
+              "low": 0.29,
+              "central": 0.39,
+              "high": 0.45
+            },
+            "cargo_bike.savings.charger_efficiency": {
+              "low": 0.8,
+              "central": 0.85,
+              "high": 0.9
+            },
+            "cargo_bike.savings.car_price_eur": {
+              "low": 12000,
+              "central": 20000,
+              "high": 35000
+            },
+            "cargo_bike.savings.car_years": {
+              "low": 4,
+              "central": 8,
+              "high": 12
+            },
+            "cargo_bike.savings.car_residual_share": {
+              "low": 0.15,
+              "central": 0.3,
+              "high": 0.45
+            },
+            "cargo_bike.savings.car_fuel_l_100km": {
+              "low": 4.5,
+              "central": 6.5,
+              "high": 9
+            },
+            "cargo_bike.savings.fuel_eur_l": {
+              "low": 1.6,
+              "central": 1.75,
+              "high": 1.9
+            },
+            "cargo_bike.savings.car_tax_eur": {
+              "low": 0,
+              "central": 100,
+              "high": 300
+            },
+            "cargo_bike.savings.car_insurance_eur": {
+              "low": 300,
+              "central": 600,
+              "high": 1200
+            },
+            "cargo_bike.savings.car_parking_eur": {
+              "low": 0,
+              "central": 400,
+              "high": 2000
+            },
+            "cargo_bike.savings.car_maintenance_eur_km": {
+              "low": 0.03,
+              "central": 0.06,
+              "high": 0.1
+            },
+            "cargo_bike.savings.fuel_co2_kg_l": {
+              "low": 2.08,
+              "central": 2.66,
+              "high": 2.8
+            },
+            "cargo_bike.savings.grid_co2_kg_kwh": {
+              "low": 0.02,
+              "central": 0.353,
+              "high": 0.9
+            },
+            "cargo_bike.savings.rider_efficiency": {
+              "low": 0.18,
+              "central": 0.22,
+              "high": 0.25
+            },
+            "cargo_bike.savings.active_min_week_target": {
+              "low": 150,
+              "central": 150,
+              "high": 300
+            }
+          }
+        },
+        "light_rail": {
+          "*": {
+            "cargo_bike.bike_mass_kg": {
+              "low": 35,
+              "central": 35,
+              "high": 35
+            },
+            "cargo_bike.load_kg": {
+              "low": 0,
+              "central": 80,
+              "high": 150
+            },
+            "cargo_bike.rider_mass_kg": {
+              "low": 60,
+              "central": 90,
+              "high": 120
+            },
+            "cargo_bike.battery_wh": {
+              "low": 500,
+              "central": 900,
+              "high": 1800
+            },
+            "cargo_bike.battery_usable_share": {
+              "low": 0.8,
+              "central": 0.9,
+              "high": 0.95
+            },
+            "cargo_bike.motor_rated_w": {
+              "low": 250,
+              "central": 250,
+              "high": 500
+            },
+            "cargo_bike.motor_efficiency": {
+              "low": 0.75,
+              "central": 0.8,
+              "high": 0.85
+            },
+            "cargo_bike.drivetrain_efficiency": {
+              "low": 0.9,
+              "central": 0.95,
+              "high": 0.97
+            },
+            "cargo_bike.assist_cutoff_kmh": {
+              "low": 25,
+              "central": 25,
+              "high": 25
+            },
+            "cargo_bike.assist_share": {
+              "low": 0.4,
+              "central": 0.6,
+              "high": 0.8
+            },
+            "cargo_bike.rider_power_w": {
+              "low": 60,
+              "central": 100,
+              "high": 150
+            },
+            "cargo_bike.rolling_resistance": {
+              "low": 0.007,
+              "central": 0.01,
+              "high": 0.015
+            },
+            "cargo_bike.drag_area_m2": {
+              "low": 0.6,
+              "central": 0.9,
+              "high": 1.2
+            },
+            "cargo_bike.air_density": {
+              "low": 1.15,
+              "central": 1.2,
+              "high": 1.25
+            },
+            "cargo_bike.speed_separated_kmh": {
+              "low": 15,
+              "central": 20,
+              "high": 24
+            },
+            "cargo_bike.speed_lane_kmh": {
+              "low": 14,
+              "central": 19,
+              "high": 23
+            },
+            "cargo_bike.speed_quiet_kmh": {
+              "low": 12,
+              "central": 17,
+              "high": 22
+            },
+            "cargo_bike.speed_mixed_kmh": {
+              "low": 10,
+              "central": 15,
+              "high": 20
+            },
+            "cargo_bike.stops_per_km_separated": {
+              "low": 0.2,
+              "central": 0.5,
+              "high": 1
+            },
+            "cargo_bike.stops_per_km_lane": {
+              "low": 0.5,
+              "central": 1,
+              "high": 2
+            },
+            "cargo_bike.stops_per_km_quiet": {
+              "low": 0.5,
+              "central": 1.5,
+              "high": 3
+            },
+            "cargo_bike.stops_per_km_mixed": {
+              "low": 1,
+              "central": 2.5,
+              "high": 4
+            },
+            "cargo_bike.signal_stop_share": {
+              "low": 0.3,
+              "central": 0.5,
+              "high": 0.7
+            },
+            "cargo_bike.route_factor_separated": {
+              "low": 1,
+              "central": 1,
+              "high": 1
+            },
+            "cargo_bike.route_factor_lane": {
+              "low": 1,
+              "central": 1.1,
+              "high": 1.3
+            },
+            "cargo_bike.route_factor_quiet": {
+              "low": 1,
+              "central": 1.2,
+              "high": 1.5
+            },
+            "cargo_bike.route_factor_mixed": {
+              "low": 1.2,
+              "central": 2,
+              "high": 3
+            },
+            "cargo_bike.detour_factor": {
+              "low": 1.1,
+              "central": 1.3,
+              "high": 1.5
+            },
+            "cargo_bike.elevation_smoothing_m": {
+              "low": 50,
+              "central": 100,
+              "high": 200
+            },
+            "cargo_bike.savings.trips_per_week": {
+              "low": 1,
+              "central": 5,
+              "high": 14
+            },
+            "cargo_bike.savings.weeks_per_year": {
+              "low": 30,
+              "central": 46,
+              "high": 52
+            },
+            "cargo_bike.savings.bike_price_eur": {
+              "low": 2000,
+              "central": 4000,
+              "high": 8000
+            },
+            "cargo_bike.savings.bike_lifetime_years": {
+              "low": 5,
+              "central": 8,
+              "high": 12
+            },
+            "cargo_bike.savings.bike_maintenance_eur": {
+              "low": 80,
+              "central": 200,
+              "high": 400
+            },
+            "cargo_bike.savings.bike_insurance_eur": {
+              "low": 0,
+              "central": 80,
+              "high": 200
+            },
+            "cargo_bike.savings.electricity_eur_kwh": {
+              "low": 0.29,
+              "central": 0.39,
+              "high": 0.45
+            },
+            "cargo_bike.savings.charger_efficiency": {
+              "low": 0.8,
+              "central": 0.85,
+              "high": 0.9
+            },
+            "cargo_bike.savings.car_price_eur": {
+              "low": 12000,
+              "central": 20000,
+              "high": 35000
+            },
+            "cargo_bike.savings.car_years": {
+              "low": 4,
+              "central": 8,
+              "high": 12
+            },
+            "cargo_bike.savings.car_residual_share": {
+              "low": 0.15,
+              "central": 0.3,
+              "high": 0.45
+            },
+            "cargo_bike.savings.car_fuel_l_100km": {
+              "low": 4.5,
+              "central": 6.5,
+              "high": 9
+            },
+            "cargo_bike.savings.fuel_eur_l": {
+              "low": 1.6,
+              "central": 1.75,
+              "high": 1.9
+            },
+            "cargo_bike.savings.car_tax_eur": {
+              "low": 0,
+              "central": 100,
+              "high": 300
+            },
+            "cargo_bike.savings.car_insurance_eur": {
+              "low": 300,
+              "central": 600,
+              "high": 1200
+            },
+            "cargo_bike.savings.car_parking_eur": {
+              "low": 0,
+              "central": 400,
+              "high": 2000
+            },
+            "cargo_bike.savings.car_maintenance_eur_km": {
+              "low": 0.03,
+              "central": 0.06,
+              "high": 0.1
+            },
+            "cargo_bike.savings.fuel_co2_kg_l": {
+              "low": 2.08,
+              "central": 2.66,
+              "high": 2.8
+            },
+            "cargo_bike.savings.grid_co2_kg_kwh": {
+              "low": 0.02,
+              "central": 0.353,
+              "high": 0.9
+            },
+            "cargo_bike.savings.rider_efficiency": {
+              "low": 0.18,
+              "central": 0.22,
+              "high": 0.25
+            },
+            "cargo_bike.savings.active_min_week_target": {
+              "low": 150,
+              "central": 150,
+              "high": 300
+            }
+          }
+        },
+        "long_distance_rail": {
+          "*": {
+            "cargo_bike.bike_mass_kg": {
+              "low": 35,
+              "central": 35,
+              "high": 35
+            },
+            "cargo_bike.load_kg": {
+              "low": 0,
+              "central": 80,
+              "high": 150
+            },
+            "cargo_bike.rider_mass_kg": {
+              "low": 60,
+              "central": 90,
+              "high": 120
+            },
+            "cargo_bike.battery_wh": {
+              "low": 500,
+              "central": 900,
+              "high": 1800
+            },
+            "cargo_bike.battery_usable_share": {
+              "low": 0.8,
+              "central": 0.9,
+              "high": 0.95
+            },
+            "cargo_bike.motor_rated_w": {
+              "low": 250,
+              "central": 250,
+              "high": 500
+            },
+            "cargo_bike.motor_efficiency": {
+              "low": 0.75,
+              "central": 0.8,
+              "high": 0.85
+            },
+            "cargo_bike.drivetrain_efficiency": {
+              "low": 0.9,
+              "central": 0.95,
+              "high": 0.97
+            },
+            "cargo_bike.assist_cutoff_kmh": {
+              "low": 25,
+              "central": 25,
+              "high": 25
+            },
+            "cargo_bike.assist_share": {
+              "low": 0.4,
+              "central": 0.6,
+              "high": 0.8
+            },
+            "cargo_bike.rider_power_w": {
+              "low": 60,
+              "central": 100,
+              "high": 150
+            },
+            "cargo_bike.rolling_resistance": {
+              "low": 0.007,
+              "central": 0.01,
+              "high": 0.015
+            },
+            "cargo_bike.drag_area_m2": {
+              "low": 0.6,
+              "central": 0.9,
+              "high": 1.2
+            },
+            "cargo_bike.air_density": {
+              "low": 1.15,
+              "central": 1.2,
+              "high": 1.25
+            },
+            "cargo_bike.speed_separated_kmh": {
+              "low": 15,
+              "central": 20,
+              "high": 24
+            },
+            "cargo_bike.speed_lane_kmh": {
+              "low": 14,
+              "central": 19,
+              "high": 23
+            },
+            "cargo_bike.speed_quiet_kmh": {
+              "low": 12,
+              "central": 17,
+              "high": 22
+            },
+            "cargo_bike.speed_mixed_kmh": {
+              "low": 10,
+              "central": 15,
+              "high": 20
+            },
+            "cargo_bike.stops_per_km_separated": {
+              "low": 0.2,
+              "central": 0.5,
+              "high": 1
+            },
+            "cargo_bike.stops_per_km_lane": {
+              "low": 0.5,
+              "central": 1,
+              "high": 2
+            },
+            "cargo_bike.stops_per_km_quiet": {
+              "low": 0.5,
+              "central": 1.5,
+              "high": 3
+            },
+            "cargo_bike.stops_per_km_mixed": {
+              "low": 1,
+              "central": 2.5,
+              "high": 4
+            },
+            "cargo_bike.signal_stop_share": {
+              "low": 0.3,
+              "central": 0.5,
+              "high": 0.7
+            },
+            "cargo_bike.route_factor_separated": {
+              "low": 1,
+              "central": 1,
+              "high": 1
+            },
+            "cargo_bike.route_factor_lane": {
+              "low": 1,
+              "central": 1.1,
+              "high": 1.3
+            },
+            "cargo_bike.route_factor_quiet": {
+              "low": 1,
+              "central": 1.2,
+              "high": 1.5
+            },
+            "cargo_bike.route_factor_mixed": {
+              "low": 1.2,
+              "central": 2,
+              "high": 3
+            },
+            "cargo_bike.detour_factor": {
+              "low": 1.1,
+              "central": 1.3,
+              "high": 1.5
+            },
+            "cargo_bike.elevation_smoothing_m": {
+              "low": 50,
+              "central": 100,
+              "high": 200
+            },
+            "cargo_bike.savings.trips_per_week": {
+              "low": 1,
+              "central": 5,
+              "high": 14
+            },
+            "cargo_bike.savings.weeks_per_year": {
+              "low": 30,
+              "central": 46,
+              "high": 52
+            },
+            "cargo_bike.savings.bike_price_eur": {
+              "low": 2000,
+              "central": 4000,
+              "high": 8000
+            },
+            "cargo_bike.savings.bike_lifetime_years": {
+              "low": 5,
+              "central": 8,
+              "high": 12
+            },
+            "cargo_bike.savings.bike_maintenance_eur": {
+              "low": 80,
+              "central": 200,
+              "high": 400
+            },
+            "cargo_bike.savings.bike_insurance_eur": {
+              "low": 0,
+              "central": 80,
+              "high": 200
+            },
+            "cargo_bike.savings.electricity_eur_kwh": {
+              "low": 0.29,
+              "central": 0.39,
+              "high": 0.45
+            },
+            "cargo_bike.savings.charger_efficiency": {
+              "low": 0.8,
+              "central": 0.85,
+              "high": 0.9
+            },
+            "cargo_bike.savings.car_price_eur": {
+              "low": 12000,
+              "central": 20000,
+              "high": 35000
+            },
+            "cargo_bike.savings.car_years": {
+              "low": 4,
+              "central": 8,
+              "high": 12
+            },
+            "cargo_bike.savings.car_residual_share": {
+              "low": 0.15,
+              "central": 0.3,
+              "high": 0.45
+            },
+            "cargo_bike.savings.car_fuel_l_100km": {
+              "low": 4.5,
+              "central": 6.5,
+              "high": 9
+            },
+            "cargo_bike.savings.fuel_eur_l": {
+              "low": 1.6,
+              "central": 1.75,
+              "high": 1.9
+            },
+            "cargo_bike.savings.car_tax_eur": {
+              "low": 0,
+              "central": 100,
+              "high": 300
+            },
+            "cargo_bike.savings.car_insurance_eur": {
+              "low": 300,
+              "central": 600,
+              "high": 1200
+            },
+            "cargo_bike.savings.car_parking_eur": {
+              "low": 0,
+              "central": 400,
+              "high": 2000
+            },
+            "cargo_bike.savings.car_maintenance_eur_km": {
+              "low": 0.03,
+              "central": 0.06,
+              "high": 0.1
+            },
+            "cargo_bike.savings.fuel_co2_kg_l": {
+              "low": 2.08,
+              "central": 2.66,
+              "high": 2.8
+            },
+            "cargo_bike.savings.grid_co2_kg_kwh": {
+              "low": 0.02,
+              "central": 0.353,
+              "high": 0.9
+            },
+            "cargo_bike.savings.rider_efficiency": {
+              "low": 0.18,
+              "central": 0.22,
+              "high": 0.25
+            },
+            "cargo_bike.savings.active_min_week_target": {
+              "low": 150,
+              "central": 150,
+              "high": 300
+            }
+          }
+        },
+        "metro": {
+          "*": {
+            "cargo_bike.bike_mass_kg": {
+              "low": 35,
+              "central": 35,
+              "high": 35
+            },
+            "cargo_bike.load_kg": {
+              "low": 0,
+              "central": 80,
+              "high": 150
+            },
+            "cargo_bike.rider_mass_kg": {
+              "low": 60,
+              "central": 90,
+              "high": 120
+            },
+            "cargo_bike.battery_wh": {
+              "low": 500,
+              "central": 900,
+              "high": 1800
+            },
+            "cargo_bike.battery_usable_share": {
+              "low": 0.8,
+              "central": 0.9,
+              "high": 0.95
+            },
+            "cargo_bike.motor_rated_w": {
+              "low": 250,
+              "central": 250,
+              "high": 500
+            },
+            "cargo_bike.motor_efficiency": {
+              "low": 0.75,
+              "central": 0.8,
+              "high": 0.85
+            },
+            "cargo_bike.drivetrain_efficiency": {
+              "low": 0.9,
+              "central": 0.95,
+              "high": 0.97
+            },
+            "cargo_bike.assist_cutoff_kmh": {
+              "low": 25,
+              "central": 25,
+              "high": 25
+            },
+            "cargo_bike.assist_share": {
+              "low": 0.4,
+              "central": 0.6,
+              "high": 0.8
+            },
+            "cargo_bike.rider_power_w": {
+              "low": 60,
+              "central": 100,
+              "high": 150
+            },
+            "cargo_bike.rolling_resistance": {
+              "low": 0.007,
+              "central": 0.01,
+              "high": 0.015
+            },
+            "cargo_bike.drag_area_m2": {
+              "low": 0.6,
+              "central": 0.9,
+              "high": 1.2
+            },
+            "cargo_bike.air_density": {
+              "low": 1.15,
+              "central": 1.2,
+              "high": 1.25
+            },
+            "cargo_bike.speed_separated_kmh": {
+              "low": 15,
+              "central": 20,
+              "high": 24
+            },
+            "cargo_bike.speed_lane_kmh": {
+              "low": 14,
+              "central": 19,
+              "high": 23
+            },
+            "cargo_bike.speed_quiet_kmh": {
+              "low": 12,
+              "central": 17,
+              "high": 22
+            },
+            "cargo_bike.speed_mixed_kmh": {
+              "low": 10,
+              "central": 15,
+              "high": 20
+            },
+            "cargo_bike.stops_per_km_separated": {
+              "low": 0.2,
+              "central": 0.5,
+              "high": 1
+            },
+            "cargo_bike.stops_per_km_lane": {
+              "low": 0.5,
+              "central": 1,
+              "high": 2
+            },
+            "cargo_bike.stops_per_km_quiet": {
+              "low": 0.5,
+              "central": 1.5,
+              "high": 3
+            },
+            "cargo_bike.stops_per_km_mixed": {
+              "low": 1,
+              "central": 2.5,
+              "high": 4
+            },
+            "cargo_bike.signal_stop_share": {
+              "low": 0.3,
+              "central": 0.5,
+              "high": 0.7
+            },
+            "cargo_bike.route_factor_separated": {
+              "low": 1,
+              "central": 1,
+              "high": 1
+            },
+            "cargo_bike.route_factor_lane": {
+              "low": 1,
+              "central": 1.1,
+              "high": 1.3
+            },
+            "cargo_bike.route_factor_quiet": {
+              "low": 1,
+              "central": 1.2,
+              "high": 1.5
+            },
+            "cargo_bike.route_factor_mixed": {
+              "low": 1.2,
+              "central": 2,
+              "high": 3
+            },
+            "cargo_bike.detour_factor": {
+              "low": 1.1,
+              "central": 1.3,
+              "high": 1.5
+            },
+            "cargo_bike.elevation_smoothing_m": {
+              "low": 50,
+              "central": 100,
+              "high": 200
+            },
+            "cargo_bike.savings.trips_per_week": {
+              "low": 1,
+              "central": 5,
+              "high": 14
+            },
+            "cargo_bike.savings.weeks_per_year": {
+              "low": 30,
+              "central": 46,
+              "high": 52
+            },
+            "cargo_bike.savings.bike_price_eur": {
+              "low": 2000,
+              "central": 4000,
+              "high": 8000
+            },
+            "cargo_bike.savings.bike_lifetime_years": {
+              "low": 5,
+              "central": 8,
+              "high": 12
+            },
+            "cargo_bike.savings.bike_maintenance_eur": {
+              "low": 80,
+              "central": 200,
+              "high": 400
+            },
+            "cargo_bike.savings.bike_insurance_eur": {
+              "low": 0,
+              "central": 80,
+              "high": 200
+            },
+            "cargo_bike.savings.electricity_eur_kwh": {
+              "low": 0.29,
+              "central": 0.39,
+              "high": 0.45
+            },
+            "cargo_bike.savings.charger_efficiency": {
+              "low": 0.8,
+              "central": 0.85,
+              "high": 0.9
+            },
+            "cargo_bike.savings.car_price_eur": {
+              "low": 12000,
+              "central": 20000,
+              "high": 35000
+            },
+            "cargo_bike.savings.car_years": {
+              "low": 4,
+              "central": 8,
+              "high": 12
+            },
+            "cargo_bike.savings.car_residual_share": {
+              "low": 0.15,
+              "central": 0.3,
+              "high": 0.45
+            },
+            "cargo_bike.savings.car_fuel_l_100km": {
+              "low": 4.5,
+              "central": 6.5,
+              "high": 9
+            },
+            "cargo_bike.savings.fuel_eur_l": {
+              "low": 1.6,
+              "central": 1.75,
+              "high": 1.9
+            },
+            "cargo_bike.savings.car_tax_eur": {
+              "low": 0,
+              "central": 100,
+              "high": 300
+            },
+            "cargo_bike.savings.car_insurance_eur": {
+              "low": 300,
+              "central": 600,
+              "high": 1200
+            },
+            "cargo_bike.savings.car_parking_eur": {
+              "low": 0,
+              "central": 400,
+              "high": 2000
+            },
+            "cargo_bike.savings.car_maintenance_eur_km": {
+              "low": 0.03,
+              "central": 0.06,
+              "high": 0.1
+            },
+            "cargo_bike.savings.fuel_co2_kg_l": {
+              "low": 2.08,
+              "central": 2.66,
+              "high": 2.8
+            },
+            "cargo_bike.savings.grid_co2_kg_kwh": {
+              "low": 0.02,
+              "central": 0.353,
+              "high": 0.9
+            },
+            "cargo_bike.savings.rider_efficiency": {
+              "low": 0.18,
+              "central": 0.22,
+              "high": 0.25
+            },
+            "cargo_bike.savings.active_min_week_target": {
+              "low": 150,
+              "central": 150,
+              "high": 300
+            }
+          }
+        },
+        "regional_rail": {
+          "*": {
+            "cargo_bike.bike_mass_kg": {
+              "low": 35,
+              "central": 35,
+              "high": 35
+            },
+            "cargo_bike.load_kg": {
+              "low": 0,
+              "central": 80,
+              "high": 150
+            },
+            "cargo_bike.rider_mass_kg": {
+              "low": 60,
+              "central": 90,
+              "high": 120
+            },
+            "cargo_bike.battery_wh": {
+              "low": 500,
+              "central": 900,
+              "high": 1800
+            },
+            "cargo_bike.battery_usable_share": {
+              "low": 0.8,
+              "central": 0.9,
+              "high": 0.95
+            },
+            "cargo_bike.motor_rated_w": {
+              "low": 250,
+              "central": 250,
+              "high": 500
+            },
+            "cargo_bike.motor_efficiency": {
+              "low": 0.75,
+              "central": 0.8,
+              "high": 0.85
+            },
+            "cargo_bike.drivetrain_efficiency": {
+              "low": 0.9,
+              "central": 0.95,
+              "high": 0.97
+            },
+            "cargo_bike.assist_cutoff_kmh": {
+              "low": 25,
+              "central": 25,
+              "high": 25
+            },
+            "cargo_bike.assist_share": {
+              "low": 0.4,
+              "central": 0.6,
+              "high": 0.8
+            },
+            "cargo_bike.rider_power_w": {
+              "low": 60,
+              "central": 100,
+              "high": 150
+            },
+            "cargo_bike.rolling_resistance": {
+              "low": 0.007,
+              "central": 0.01,
+              "high": 0.015
+            },
+            "cargo_bike.drag_area_m2": {
+              "low": 0.6,
+              "central": 0.9,
+              "high": 1.2
+            },
+            "cargo_bike.air_density": {
+              "low": 1.15,
+              "central": 1.2,
+              "high": 1.25
+            },
+            "cargo_bike.speed_separated_kmh": {
+              "low": 15,
+              "central": 20,
+              "high": 24
+            },
+            "cargo_bike.speed_lane_kmh": {
+              "low": 14,
+              "central": 19,
+              "high": 23
+            },
+            "cargo_bike.speed_quiet_kmh": {
+              "low": 12,
+              "central": 17,
+              "high": 22
+            },
+            "cargo_bike.speed_mixed_kmh": {
+              "low": 10,
+              "central": 15,
+              "high": 20
+            },
+            "cargo_bike.stops_per_km_separated": {
+              "low": 0.2,
+              "central": 0.5,
+              "high": 1
+            },
+            "cargo_bike.stops_per_km_lane": {
+              "low": 0.5,
+              "central": 1,
+              "high": 2
+            },
+            "cargo_bike.stops_per_km_quiet": {
+              "low": 0.5,
+              "central": 1.5,
+              "high": 3
+            },
+            "cargo_bike.stops_per_km_mixed": {
+              "low": 1,
+              "central": 2.5,
+              "high": 4
+            },
+            "cargo_bike.signal_stop_share": {
+              "low": 0.3,
+              "central": 0.5,
+              "high": 0.7
+            },
+            "cargo_bike.route_factor_separated": {
+              "low": 1,
+              "central": 1,
+              "high": 1
+            },
+            "cargo_bike.route_factor_lane": {
+              "low": 1,
+              "central": 1.1,
+              "high": 1.3
+            },
+            "cargo_bike.route_factor_quiet": {
+              "low": 1,
+              "central": 1.2,
+              "high": 1.5
+            },
+            "cargo_bike.route_factor_mixed": {
+              "low": 1.2,
+              "central": 2,
+              "high": 3
+            },
+            "cargo_bike.detour_factor": {
+              "low": 1.1,
+              "central": 1.3,
+              "high": 1.5
+            },
+            "cargo_bike.elevation_smoothing_m": {
+              "low": 50,
+              "central": 100,
+              "high": 200
+            },
+            "cargo_bike.savings.trips_per_week": {
+              "low": 1,
+              "central": 5,
+              "high": 14
+            },
+            "cargo_bike.savings.weeks_per_year": {
+              "low": 30,
+              "central": 46,
+              "high": 52
+            },
+            "cargo_bike.savings.bike_price_eur": {
+              "low": 2000,
+              "central": 4000,
+              "high": 8000
+            },
+            "cargo_bike.savings.bike_lifetime_years": {
+              "low": 5,
+              "central": 8,
+              "high": 12
+            },
+            "cargo_bike.savings.bike_maintenance_eur": {
+              "low": 80,
+              "central": 200,
+              "high": 400
+            },
+            "cargo_bike.savings.bike_insurance_eur": {
+              "low": 0,
+              "central": 80,
+              "high": 200
+            },
+            "cargo_bike.savings.electricity_eur_kwh": {
+              "low": 0.29,
+              "central": 0.39,
+              "high": 0.45
+            },
+            "cargo_bike.savings.charger_efficiency": {
+              "low": 0.8,
+              "central": 0.85,
+              "high": 0.9
+            },
+            "cargo_bike.savings.car_price_eur": {
+              "low": 12000,
+              "central": 20000,
+              "high": 35000
+            },
+            "cargo_bike.savings.car_years": {
+              "low": 4,
+              "central": 8,
+              "high": 12
+            },
+            "cargo_bike.savings.car_residual_share": {
+              "low": 0.15,
+              "central": 0.3,
+              "high": 0.45
+            },
+            "cargo_bike.savings.car_fuel_l_100km": {
+              "low": 4.5,
+              "central": 6.5,
+              "high": 9
+            },
+            "cargo_bike.savings.fuel_eur_l": {
+              "low": 1.6,
+              "central": 1.75,
+              "high": 1.9
+            },
+            "cargo_bike.savings.car_tax_eur": {
+              "low": 0,
+              "central": 100,
+              "high": 300
+            },
+            "cargo_bike.savings.car_insurance_eur": {
+              "low": 300,
+              "central": 600,
+              "high": 1200
+            },
+            "cargo_bike.savings.car_parking_eur": {
+              "low": 0,
+              "central": 400,
+              "high": 2000
+            },
+            "cargo_bike.savings.car_maintenance_eur_km": {
+              "low": 0.03,
+              "central": 0.06,
+              "high": 0.1
+            },
+            "cargo_bike.savings.fuel_co2_kg_l": {
+              "low": 2.08,
+              "central": 2.66,
+              "high": 2.8
+            },
+            "cargo_bike.savings.grid_co2_kg_kwh": {
+              "low": 0.02,
+              "central": 0.353,
+              "high": 0.9
+            },
+            "cargo_bike.savings.rider_efficiency": {
+              "low": 0.18,
+              "central": 0.22,
+              "high": 0.25
+            },
+            "cargo_bike.savings.active_min_week_target": {
+              "low": 150,
+              "central": 150,
+              "high": 300
+            }
+          }
+        },
+        "tram": {
+          "*": {
+            "cargo_bike.bike_mass_kg": {
+              "low": 35,
+              "central": 35,
+              "high": 35
+            },
+            "cargo_bike.load_kg": {
+              "low": 0,
+              "central": 80,
+              "high": 150
+            },
+            "cargo_bike.rider_mass_kg": {
+              "low": 60,
+              "central": 90,
+              "high": 120
+            },
+            "cargo_bike.battery_wh": {
+              "low": 500,
+              "central": 900,
+              "high": 1800
+            },
+            "cargo_bike.battery_usable_share": {
+              "low": 0.8,
+              "central": 0.9,
+              "high": 0.95
+            },
+            "cargo_bike.motor_rated_w": {
+              "low": 250,
+              "central": 250,
+              "high": 500
+            },
+            "cargo_bike.motor_efficiency": {
+              "low": 0.75,
+              "central": 0.8,
+              "high": 0.85
+            },
+            "cargo_bike.drivetrain_efficiency": {
+              "low": 0.9,
+              "central": 0.95,
+              "high": 0.97
+            },
+            "cargo_bike.assist_cutoff_kmh": {
+              "low": 25,
+              "central": 25,
+              "high": 25
+            },
+            "cargo_bike.assist_share": {
+              "low": 0.4,
+              "central": 0.6,
+              "high": 0.8
+            },
+            "cargo_bike.rider_power_w": {
+              "low": 60,
+              "central": 100,
+              "high": 150
+            },
+            "cargo_bike.rolling_resistance": {
+              "low": 0.007,
+              "central": 0.01,
+              "high": 0.015
+            },
+            "cargo_bike.drag_area_m2": {
+              "low": 0.6,
+              "central": 0.9,
+              "high": 1.2
+            },
+            "cargo_bike.air_density": {
+              "low": 1.15,
+              "central": 1.2,
+              "high": 1.25
+            },
+            "cargo_bike.speed_separated_kmh": {
+              "low": 15,
+              "central": 20,
+              "high": 24
+            },
+            "cargo_bike.speed_lane_kmh": {
+              "low": 14,
+              "central": 19,
+              "high": 23
+            },
+            "cargo_bike.speed_quiet_kmh": {
+              "low": 12,
+              "central": 17,
+              "high": 22
+            },
+            "cargo_bike.speed_mixed_kmh": {
+              "low": 10,
+              "central": 15,
+              "high": 20
+            },
+            "cargo_bike.stops_per_km_separated": {
+              "low": 0.2,
+              "central": 0.5,
+              "high": 1
+            },
+            "cargo_bike.stops_per_km_lane": {
+              "low": 0.5,
+              "central": 1,
+              "high": 2
+            },
+            "cargo_bike.stops_per_km_quiet": {
+              "low": 0.5,
+              "central": 1.5,
+              "high": 3
+            },
+            "cargo_bike.stops_per_km_mixed": {
+              "low": 1,
+              "central": 2.5,
+              "high": 4
+            },
+            "cargo_bike.signal_stop_share": {
+              "low": 0.3,
+              "central": 0.5,
+              "high": 0.7
+            },
+            "cargo_bike.route_factor_separated": {
+              "low": 1,
+              "central": 1,
+              "high": 1
+            },
+            "cargo_bike.route_factor_lane": {
+              "low": 1,
+              "central": 1.1,
+              "high": 1.3
+            },
+            "cargo_bike.route_factor_quiet": {
+              "low": 1,
+              "central": 1.2,
+              "high": 1.5
+            },
+            "cargo_bike.route_factor_mixed": {
+              "low": 1.2,
+              "central": 2,
+              "high": 3
+            },
+            "cargo_bike.detour_factor": {
+              "low": 1.1,
+              "central": 1.3,
+              "high": 1.5
+            },
+            "cargo_bike.elevation_smoothing_m": {
+              "low": 50,
+              "central": 100,
+              "high": 200
+            },
+            "cargo_bike.savings.trips_per_week": {
+              "low": 1,
+              "central": 5,
+              "high": 14
+            },
+            "cargo_bike.savings.weeks_per_year": {
+              "low": 30,
+              "central": 46,
+              "high": 52
+            },
+            "cargo_bike.savings.bike_price_eur": {
+              "low": 2000,
+              "central": 4000,
+              "high": 8000
+            },
+            "cargo_bike.savings.bike_lifetime_years": {
+              "low": 5,
+              "central": 8,
+              "high": 12
+            },
+            "cargo_bike.savings.bike_maintenance_eur": {
+              "low": 80,
+              "central": 200,
+              "high": 400
+            },
+            "cargo_bike.savings.bike_insurance_eur": {
+              "low": 0,
+              "central": 80,
+              "high": 200
+            },
+            "cargo_bike.savings.electricity_eur_kwh": {
+              "low": 0.29,
+              "central": 0.39,
+              "high": 0.45
+            },
+            "cargo_bike.savings.charger_efficiency": {
+              "low": 0.8,
+              "central": 0.85,
+              "high": 0.9
+            },
+            "cargo_bike.savings.car_price_eur": {
+              "low": 12000,
+              "central": 20000,
+              "high": 35000
+            },
+            "cargo_bike.savings.car_years": {
+              "low": 4,
+              "central": 8,
+              "high": 12
+            },
+            "cargo_bike.savings.car_residual_share": {
+              "low": 0.15,
+              "central": 0.3,
+              "high": 0.45
+            },
+            "cargo_bike.savings.car_fuel_l_100km": {
+              "low": 4.5,
+              "central": 6.5,
+              "high": 9
+            },
+            "cargo_bike.savings.fuel_eur_l": {
+              "low": 1.6,
+              "central": 1.75,
+              "high": 1.9
+            },
+            "cargo_bike.savings.car_tax_eur": {
+              "low": 0,
+              "central": 100,
+              "high": 300
+            },
+            "cargo_bike.savings.car_insurance_eur": {
+              "low": 300,
+              "central": 600,
+              "high": 1200
+            },
+            "cargo_bike.savings.car_parking_eur": {
+              "low": 0,
+              "central": 400,
+              "high": 2000
+            },
+            "cargo_bike.savings.car_maintenance_eur_km": {
+              "low": 0.03,
+              "central": 0.06,
+              "high": 0.1
+            },
+            "cargo_bike.savings.fuel_co2_kg_l": {
+              "low": 2.08,
+              "central": 2.66,
+              "high": 2.8
+            },
+            "cargo_bike.savings.grid_co2_kg_kwh": {
+              "low": 0.02,
+              "central": 0.353,
+              "high": 0.9
+            },
+            "cargo_bike.savings.rider_efficiency": {
+              "low": 0.18,
+              "central": 0.22,
+              "high": 0.25
+            },
+            "cargo_bike.savings.active_min_week_target": {
+              "low": 150,
+              "central": 150,
+              "high": 300
+            }
+          }
+        },
+        "trolleybus": {
+          "*": {
+            "cargo_bike.bike_mass_kg": {
+              "low": 35,
+              "central": 35,
+              "high": 35
+            },
+            "cargo_bike.load_kg": {
+              "low": 0,
+              "central": 80,
+              "high": 150
+            },
+            "cargo_bike.rider_mass_kg": {
+              "low": 60,
+              "central": 90,
+              "high": 120
+            },
+            "cargo_bike.battery_wh": {
+              "low": 500,
+              "central": 900,
+              "high": 1800
+            },
+            "cargo_bike.battery_usable_share": {
+              "low": 0.8,
+              "central": 0.9,
+              "high": 0.95
+            },
+            "cargo_bike.motor_rated_w": {
+              "low": 250,
+              "central": 250,
+              "high": 500
+            },
+            "cargo_bike.motor_efficiency": {
+              "low": 0.75,
+              "central": 0.8,
+              "high": 0.85
+            },
+            "cargo_bike.drivetrain_efficiency": {
+              "low": 0.9,
+              "central": 0.95,
+              "high": 0.97
+            },
+            "cargo_bike.assist_cutoff_kmh": {
+              "low": 25,
+              "central": 25,
+              "high": 25
+            },
+            "cargo_bike.assist_share": {
+              "low": 0.4,
+              "central": 0.6,
+              "high": 0.8
+            },
+            "cargo_bike.rider_power_w": {
+              "low": 60,
+              "central": 100,
+              "high": 150
+            },
+            "cargo_bike.rolling_resistance": {
+              "low": 0.007,
+              "central": 0.01,
+              "high": 0.015
+            },
+            "cargo_bike.drag_area_m2": {
+              "low": 0.6,
+              "central": 0.9,
+              "high": 1.2
+            },
+            "cargo_bike.air_density": {
+              "low": 1.15,
+              "central": 1.2,
+              "high": 1.25
+            },
+            "cargo_bike.speed_separated_kmh": {
+              "low": 15,
+              "central": 20,
+              "high": 24
+            },
+            "cargo_bike.speed_lane_kmh": {
+              "low": 14,
+              "central": 19,
+              "high": 23
+            },
+            "cargo_bike.speed_quiet_kmh": {
+              "low": 12,
+              "central": 17,
+              "high": 22
+            },
+            "cargo_bike.speed_mixed_kmh": {
+              "low": 10,
+              "central": 15,
+              "high": 20
+            },
+            "cargo_bike.stops_per_km_separated": {
+              "low": 0.2,
+              "central": 0.5,
+              "high": 1
+            },
+            "cargo_bike.stops_per_km_lane": {
+              "low": 0.5,
+              "central": 1,
+              "high": 2
+            },
+            "cargo_bike.stops_per_km_quiet": {
+              "low": 0.5,
+              "central": 1.5,
+              "high": 3
+            },
+            "cargo_bike.stops_per_km_mixed": {
+              "low": 1,
+              "central": 2.5,
+              "high": 4
+            },
+            "cargo_bike.signal_stop_share": {
+              "low": 0.3,
+              "central": 0.5,
+              "high": 0.7
+            },
+            "cargo_bike.route_factor_separated": {
+              "low": 1,
+              "central": 1,
+              "high": 1
+            },
+            "cargo_bike.route_factor_lane": {
+              "low": 1,
+              "central": 1.1,
+              "high": 1.3
+            },
+            "cargo_bike.route_factor_quiet": {
+              "low": 1,
+              "central": 1.2,
+              "high": 1.5
+            },
+            "cargo_bike.route_factor_mixed": {
+              "low": 1.2,
+              "central": 2,
+              "high": 3
+            },
+            "cargo_bike.detour_factor": {
+              "low": 1.1,
+              "central": 1.3,
+              "high": 1.5
+            },
+            "cargo_bike.elevation_smoothing_m": {
+              "low": 50,
+              "central": 100,
+              "high": 200
+            },
+            "cargo_bike.savings.trips_per_week": {
+              "low": 1,
+              "central": 5,
+              "high": 14
+            },
+            "cargo_bike.savings.weeks_per_year": {
+              "low": 30,
+              "central": 46,
+              "high": 52
+            },
+            "cargo_bike.savings.bike_price_eur": {
+              "low": 2000,
+              "central": 4000,
+              "high": 8000
+            },
+            "cargo_bike.savings.bike_lifetime_years": {
+              "low": 5,
+              "central": 8,
+              "high": 12
+            },
+            "cargo_bike.savings.bike_maintenance_eur": {
+              "low": 80,
+              "central": 200,
+              "high": 400
+            },
+            "cargo_bike.savings.bike_insurance_eur": {
+              "low": 0,
+              "central": 80,
+              "high": 200
+            },
+            "cargo_bike.savings.electricity_eur_kwh": {
+              "low": 0.29,
+              "central": 0.39,
+              "high": 0.45
+            },
+            "cargo_bike.savings.charger_efficiency": {
+              "low": 0.8,
+              "central": 0.85,
+              "high": 0.9
+            },
+            "cargo_bike.savings.car_price_eur": {
+              "low": 12000,
+              "central": 20000,
+              "high": 35000
+            },
+            "cargo_bike.savings.car_years": {
+              "low": 4,
+              "central": 8,
+              "high": 12
+            },
+            "cargo_bike.savings.car_residual_share": {
+              "low": 0.15,
+              "central": 0.3,
+              "high": 0.45
+            },
+            "cargo_bike.savings.car_fuel_l_100km": {
+              "low": 4.5,
+              "central": 6.5,
+              "high": 9
+            },
+            "cargo_bike.savings.fuel_eur_l": {
+              "low": 1.6,
+              "central": 1.75,
+              "high": 1.9
+            },
+            "cargo_bike.savings.car_tax_eur": {
+              "low": 0,
+              "central": 100,
+              "high": 300
+            },
+            "cargo_bike.savings.car_insurance_eur": {
+              "low": 300,
+              "central": 600,
+              "high": 1200
+            },
+            "cargo_bike.savings.car_parking_eur": {
+              "low": 0,
+              "central": 400,
+              "high": 2000
+            },
+            "cargo_bike.savings.car_maintenance_eur_km": {
+              "low": 0.03,
+              "central": 0.06,
+              "high": 0.1
+            },
+            "cargo_bike.savings.fuel_co2_kg_l": {
+              "low": 2.08,
+              "central": 2.66,
+              "high": 2.8
+            },
+            "cargo_bike.savings.grid_co2_kg_kwh": {
+              "low": 0.02,
+              "central": 0.353,
+              "high": 0.9
+            },
+            "cargo_bike.savings.rider_efficiency": {
+              "low": 0.18,
+              "central": 0.22,
+              "high": 0.25
+            },
+            "cargo_bike.savings.active_min_week_target": {
+              "low": 150,
+              "central": 150,
+              "high": 300
+            }
+          }
+        }
+      }
+    },
+    {
       "id": "org.mobsimlab.energy",
       "name": "Energy and emissions",
       "description": "Traction energy and greenhouse gas emissions of every line a year, per mode and for the network, from the vehicle-km each line runs: electricity at the substation or charger, diesel in litres, and CO2e from the grid's emission intensity and diesel well-to-wheel. Shown in the Tables tab.",
@@ -784,6 +4254,7 @@
       "importers": [],
       "exporters": [],
       "mapLayers": [],
+      "tabs": [],
       "parameters": {
         "energy.electric_share": {
           "label": "Share of vehicle-km run on electricity",
@@ -1548,6 +5019,7 @@
       "importers": [],
       "exporters": [],
       "mapLayers": [],
+      "tabs": [],
       "parameters": {
         "ferry.service_speed_kn": {
           "label": "Service speed",
@@ -1790,6 +5262,7 @@
         }
       ],
       "mapLayers": [],
+      "tabs": [],
       "parameters": {},
       "defaults": {}
     },
@@ -1897,6 +5370,7 @@
           }
         }
       ],
+      "tabs": [],
       "parameters": {
         "noise.receiver_height_m": {
           "label": "Receiver height above ground",
@@ -5516,6 +8990,7 @@
       "importers": [],
       "exporters": [],
       "mapLayers": [],
+      "tabs": [],
       "parameters": {
         "drt.speed_kmh": {
           "label": "Average driving speed in the zone",
@@ -5679,6 +9154,7 @@
       "importers": [],
       "exporters": [],
       "mapLayers": [],
+      "tabs": [],
       "parameters": {
         "people_mover.line_speed_ms": {
           "label": "Line speed",

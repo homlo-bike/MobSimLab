@@ -272,6 +272,85 @@ export function places(json: string): PlacePoint[] {
   return out;
 }
 
+/** A charging point or a secure bike parking for the cargo bike plugin. */
+export type BikeAmenityKind = "charging" | "secure_parking" | "cargo_parking";
+
+export interface BikeAmenity {
+  id: string;
+  kind: BikeAmenityKind;
+  lonlat: [number, number];
+  name?: string;
+  /** OSM `opening_hours`, `fee` and `capacity`, when tagged. */
+  hours?: string;
+  fee?: string;
+  capacity?: string;
+}
+
+/**
+ * Purpose: Overpass QL for the bicycle charging points and the bike parkings of one tile that are secure
+ * (lockers, sheds, bike stations, supervised) or take cargo bikes, with their centre.
+ */
+export function bikeAmenityQuery(z: number, x: number, y: number): string {
+  const b = tileBbox(z, x, y)
+    .map((v) => v.toFixed(7))
+    .join(",");
+  return (
+    `[out:json][timeout:90][maxsize:33554432];` +
+    `(nwr["amenity"="charging_station"]["bicycle"~"^(yes|designated)$"](${b});` +
+    `nwr["amenity"="bicycle_parking"]["bicycle_parking"~"^(lockers|shed|building)$"](${b});` +
+    `nwr["amenity"="bicycle_parking"]["supervised"="yes"](${b});` +
+    `nwr["amenity"="bicycle_parking"]["cargo_bike"~"^(yes|designated)$"](${b});` +
+    `nwr["amenity"="bicycle_parking"]["capacity:cargo_bike"](${b}););` +
+    `out tags center;`
+  );
+}
+
+/** Purpose: what a charging point or bike parking offers a cargo bike, or null when it is none of them. */
+export function bikeAmenityKind(t: Record<string, string>): BikeAmenityKind | null {
+  if (t.amenity === "charging_station")
+    return t.bicycle === "yes" || t.bicycle === "designated" ? "charging" : null;
+  if (t.amenity !== "bicycle_parking") return null;
+  const cargoCapacity = Number(t["capacity:cargo_bike"] ?? 0);
+  if (t.cargo_bike === "yes" || t.cargo_bike === "designated" || cargoCapacity > 0) return "cargo_parking";
+  if (["lockers", "shed", "building"].includes(t.bicycle_parking ?? "") || t.supervised === "yes")
+    return "secure_parking";
+  return null;
+}
+
+/** Purpose: the charging points and bike parkings in an Overpass JSON answer (`out tags center`). */
+export function bikeAmenities(json: string): BikeAmenity[] {
+  const els =
+    (
+      JSON.parse(json) as {
+        elements?: (OverpassElement & {
+          lat?: number;
+          lon?: number;
+          center?: { lat: number; lon: number };
+        })[];
+      }
+    ).elements ?? [];
+  const r7 = (v: number) => Math.round(v * 1e7) / 1e7;
+  const out: BikeAmenity[] = [];
+  for (const e of els) {
+    const t = e.tags ?? {};
+    const kind = bikeAmenityKind(t);
+    const at = e.center ?? (e.lat !== undefined && e.lon !== undefined ? { lat: e.lat, lon: e.lon } : null);
+    if (!kind || !at) continue;
+    out.push({
+      id: `${e.type[0]}${e.id}`,
+      kind,
+      lonlat: [r7(at.lon), r7(at.lat)],
+      ...clean({
+        name: t.name || t.operator || undefined,
+        hours: t.opening_hours,
+        fee: t.fee,
+        capacity: t["capacity:cargo_bike"] ?? t.capacity,
+      }),
+    });
+  }
+  return out;
+}
+
 function clean<T extends object>(o: T): Partial<T> {
   return Object.fromEntries(Object.entries(o).filter(([, v]) => v !== undefined)) as Partial<T>;
 }
@@ -338,6 +417,18 @@ export class StreetNetworkService {
       `place/${x}/${y}`,
       () => placeQuery(TILE_ZOOM, x, y),
       (json) => JSON.stringify({ places: places(json) }),
+    );
+  }
+
+  /**
+   * Purpose: the bicycle charging points and secure or cargo bike parkings of tile x/y at TILE_ZOOM as
+   * JSON `{amenities: BikeAmenity[]}`, for the cargo bike plugin. Side effects: may call Overpass.
+   */
+  bikeAmenityTile(x: number, y: number): Promise<string> {
+    return this.cached(
+      `bike-amenity/${x}/${y}`,
+      () => bikeAmenityQuery(TILE_ZOOM, x, y),
+      (json) => JSON.stringify({ amenities: bikeAmenities(json) }),
     );
   }
 

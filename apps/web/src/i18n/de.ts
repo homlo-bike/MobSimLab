@@ -1,4 +1,5 @@
 import { editorsDe } from "./editors/de";
+import { cargoBikeDe } from "./cargo-bike/de";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -293,5 +294,6 @@ export const de: Messages = {
   "prefs.calendar": "Kalender, Nachfrage und Kosten",
 
   ...editorsDe,
+  ...cargoBikeDe,
   ...PLUGIN_MESSAGES.de,
 };
