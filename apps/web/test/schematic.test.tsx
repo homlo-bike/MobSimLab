@@ -365,7 +365,7 @@ describe("Schematic tab", () => {
     // Distances along the street (none given in the legs here, so in a straight line), average speed and the
     // walk to change at an interchange.
     expect(texts()).toEqual(expect.arrayContaining(["Average speed", "Step-free stations", "0 of 4"]));
-    expect(texts().some((x) => /^M1 · \d+ min$/.test(x ?? ""))).toBe(true);
+    expect(texts()).toEqual(expect.arrayContaining(["M1", "M2"]));
     expect(texts().join(" ")).toContain(
       "No station on this line is recorded as step-free yet (step-free access, lift or ramp in Create).",
     );
@@ -442,9 +442,34 @@ describe("Schematic tab", () => {
     const strip = screen.getByRole("img", { name: "Strip map of line M2" });
     const names = [...strip.querySelectorAll("text")].map((t) => t.textContent);
     expect(names).toEqual(expect.arrayContaining(["Noorderhaven", "Centraal", "Zuidas"]));
-    // Each connection carries the walk to change: same station 1 min, the bus stop 10 m away also 1 min.
-    for (const other of ["M1", "R5", "Bus 22"])
-      expect(names.some((x) => new RegExp(`^${other} · \\d+ min$`).test(x ?? ""))).toBe(true);
+    // The lines to change to, one group per mode with its sign and the shortest walk to that mode.
+    expect(names).toEqual(expect.arrayContaining(["M1", "R5", "Bus 22", "1 min"]));
+    const signs = [...strip.querySelectorAll("g > title")].map((t) => t.textContent);
+    expect(signs).toEqual(expect.arrayContaining(["Metro", "Regional rail", "Bus"]));
+  });
+
+  it("groups many lines to change to by mode, wrapping long groups", async () => {
+    const { connectionRows } = await import("../src/features/schematic/StripMap");
+    const mk = (id: string, mode: string) =>
+      ({ ...schematicNetwork(RAILWAY, STREET_LINES).lines[0]!, id, name: id, mode }) as const;
+    const hub = [
+      ...["RE1", "RE2", "RE5", "RE7"].map((x) => mk(x, "regional_rail")),
+      mk("U2", "metro"),
+      mk("U4", "metro"),
+      ...Array.from({ length: 10 }, (_, i) => mk(String(10 + i), "bus")),
+    ];
+    const rows = connectionRows(
+      hub,
+      () => 2,
+      (n) => `${n} min`,
+      142,
+    );
+    // Regional, metro, then the ten buses over several rows: far fewer rows than lines.
+    expect(rows[0]![0]).toMatchObject({ kind: "mode", layer: "regional" });
+    expect(rows.find((r) => r[0]?.kind === "mode" && r[0].layer === "metro")).toBeTruthy();
+    expect(rows.length).toBeLessThan(8);
+    for (const r of rows) for (const it of r) expect(it.x + it.w).toBeLessThanOrEqual(142);
+    expect(rows.flat().filter((it) => it.kind === "walk")).toHaveLength(3);
   });
 
   it("says how to get lines when there are none", () => {

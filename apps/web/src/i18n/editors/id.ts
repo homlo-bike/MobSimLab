@@ -641,9 +641,8 @@ export const editorsId = {
   "schematic.stepFree.list": "Tanpa tangga: {stations}",
   "schematic.stepFree.none":
     "Belum ada stasiun di jalur ini yang dicatat tanpa tangga (akses tanpa tangga, lift, atau ramp di Buat).",
-  "schematic.transfer": "{line} · {n} mnt",
   "schematic.transferNote":
-    "Menit pada label berwarna: perkiraan waktu jalan kaki untuk pindah ke jalur itu.",
+    "Jalur untuk pindah dikelompokkan per moda; menit setelah tiap kelompok: perkiraan jalan kaki terpendek ke moda itu.",
   "schematic.estNote":
     "~ sebelum menit: perkiraan kasar waktu tempuh dari jarak antarhalte serta kecepatan dan percepatan biasa moda itu, di bagian yang belum punya waktu di jadwal. Kecepatan rata-rata tidak menghitung bagian itu.",
   "schematic.row.profile":

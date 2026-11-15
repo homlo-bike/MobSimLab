@@ -652,9 +652,8 @@ export const editorsEs = {
   "schematic.stepFree.list": "Sin escalones: {stations}",
   "schematic.stepFree.none":
     "Aún no hay ninguna estación de esta línea registrada sin escalones (acceso sin escalones, ascensor o rampa en Crear).",
-  "schematic.transfer": "{line} · {n} min",
   "schematic.transferNote":
-    "Minutos en las etiquetas de color: caminata estimada para transbordar a esa línea.",
+    "Las líneas de transbordo se agrupan por modo; los minutos tras cada grupo: la caminata estimada más corta a ese modo.",
   "schematic.estNote":
     "~ antes de los minutos: tiempo de marcha aproximado según la distancia entre paradas y la velocidad y aceleración habituales del modo, donde el horario aún no tiene tiempo. La velocidad media no cuenta esos tramos.",
   "schematic.row.profile":

@@ -651,8 +651,8 @@ export const editorsEn = {
   "schematic.stepFree.list": "Step-free: {stations}",
   "schematic.stepFree.none":
     "No station on this line is recorded as step-free yet (step-free access, lift or ramp in Create).",
-  "schematic.transfer": "{line} · {n} min",
-  "schematic.transferNote": "Minutes on the coloured labels: estimated walk to change to that line.",
+  "schematic.transferNote":
+    "Lines to change to are grouped by mode; the minutes after each group: the shortest estimated walk to that mode.",
   "schematic.estNote":
     "~ before the minutes: a rough driving time from the distance between stops and the usual speed and acceleration of the mode, where the timetable has no time yet. Average speed leaves those sections out.",
   "schematic.row.profile":

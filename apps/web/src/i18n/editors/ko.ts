@@ -612,8 +612,8 @@ export const editorsKo = {
   "schematic.stepFree.list": "무단차: {stations}",
   "schematic.stepFree.none":
     "이 노선에는 아직 무단차로 기록된 역이 없습니다(만들기에서 무단차 접근, 엘리베이터, 경사로 기록).",
-  "schematic.transfer": "{line} · {n}분",
-  "schematic.transferNote": "색 라벨의 분: 그 노선으로 갈아타는 예상 도보 시간.",
+  "schematic.transferNote":
+    "환승 노선은 수단별로 묶었습니다. 각 묶음 뒤의 분: 그 수단까지 가장 짧은 예상 도보 시간.",
   "schematic.estNote":
     "분 앞의 ~: 시간표에 아직 시간이 없는 구간은 정류장 간 거리와 해당 수단의 일반적인 속도·가속도로 낸 대략적인 주행 시간입니다. 평균 속도에서는 이 구간을 뺍니다.",
   "schematic.row.profile": "노선을 따라 본 지형 측면도, 길이와 높이 같은 축척, {step} m마다 측정",

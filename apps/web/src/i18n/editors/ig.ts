@@ -617,8 +617,8 @@ export const editorsIg = {
   "schematic.stepFree.list": "Enweghị steepụ: {stations}",
   "schematic.stepFree.none":
     "Ọ dịbeghị ọdụ n'ahịrị a e debere na ọ nweghị steepụ (ụzọ na-enweghị steepụ, igwe mbuli ma ọ bụ ụzọ mgbada na Mepụta).",
-  "schematic.transfer": "{line} · nkeji {n}",
-  "schematic.transferNote": "Nkeji na akara agba: oge ije a tụrụ atụ iji gbanwee gaa n'ahịrị ahụ.",
+  "schematic.transferNote":
+    "E chịkọtara ahịrị mgbanwe dị ka ụdị njem si dị; nkeji mgbe otu ọ bụla gasịrị: ije kacha mkpụmkpụ a tụrụ atụ ruo ụdị ahụ.",
   "schematic.estNote":
     "~ tupu nkeji: oge ịnya a tụrụ atụ site n'anya n'etiti ọdụ na ọsọ na ngwa ngwa ụdị njem ahụ na-emekarị, ebe usoro oge enweghị oge ugbu a. Ọsọ nkezi anaghị agụ akụkụ ndị ahụ.",
   "schematic.row.profile":

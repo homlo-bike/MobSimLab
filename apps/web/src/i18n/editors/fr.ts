@@ -664,9 +664,8 @@ export const editorsFr = {
   "schematic.stepFree.list": "De plain-pied : {stations}",
   "schematic.stepFree.none":
     "Aucune station de cette ligne n’est encore saisie de plain-pied (accès de plain-pied, ascenseur ou rampe dans Créer).",
-  "schematic.transfer": "{line} · {n} min",
   "schematic.transferNote":
-    "Minutes sur les étiquettes colorées : marche estimée pour la correspondance vers cette ligne.",
+    "Les lignes en correspondance sont groupées par mode ; les minutes après chaque groupe : la marche estimée la plus courte vers ce mode.",
   "schematic.estNote":
     "~ devant les minutes : temps de parcours approximatif d’après la distance entre arrêts et la vitesse et l’accélération habituelles du mode, là où l’horaire n’a pas encore de temps. La vitesse moyenne ignore ces sections.",
   "schematic.row.profile":

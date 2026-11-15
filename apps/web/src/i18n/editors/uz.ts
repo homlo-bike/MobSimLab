@@ -654,9 +654,8 @@ export const editorsUz = {
   "schematic.stepFree.list": "Zinapoyasiz: {stations}",
   "schematic.stepFree.none":
     "Bu liniyada hali zinapoyasiz deb yozilgan bekat yo‘q (Yaratish bo‘limida zinapoyasiz kirish, lift yoki pandus).",
-  "schematic.transfer": "{line} · {n} daq",
   "schematic.transferNote":
-    "Rangli yorliqlardagi daqiqalar: o‘sha liniyaga o‘tish uchun taxminiy piyoda vaqti.",
+    "O‘tish liniyalari transport turi bo‘yicha guruhlangan; har guruhdan keyingi daqiqa: o‘sha turga eng qisqa taxminiy piyoda vaqt.",
   "schematic.estNote":
     "Daqiqalar oldidagi ~: jadvalda hali vaqt bo‘lmagan joyda bekatlar orasidagi masofa va transport turining odatiy tezligi hamda tezlanishidan taxminiy yurish vaqti. O‘rtacha tezlik bu qismlarni hisobga olmaydi.",
   "schematic.row.profile":

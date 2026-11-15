@@ -660,9 +660,8 @@ export const editorsZu = {
   "schematic.stepFree.list": "Azinazitebhisi: {stations}",
   "schematic.stepFree.none":
     "Asikho isiteshi kulo mugqa esibhalwe njengesingenazitebhisi okwamanje (ukungena ngaphandle kwezitebhisi, ilifti noma irampu ku-Dala).",
-  "schematic.transfer": "{line} · imiz. {n}",
   "schematic.transferNote":
-    "Imizuzu kumalebula anemibala: isikhathi esilinganisiwe sokuhamba ngezinyawo ukushintshela kulowo mugqa.",
+    "Imigqa yokushintsha ihlelwe ngohlobo lokuthutha; imizuzu ngemva kweqembu ngalinye: isikhathi esifushane kakhulu esilinganisiwe sokuhamba ngezinyawo kuya kulolo hlobo.",
   "schematic.estNote":
     "~ ngaphambi kwemizuzu: isikhathi sokushayela esilinganiselwe kusukela ebangeni phakathi kwezitobhi nejubane nokusheshisa okujwayelekile kohlobo lokuthutha, lapho uhlelo lwesikhathi lungenaso isikhathi okwamanje. Ijubane elimaphakathi aliyibali leyo mingxenye.",
   "schematic.row.profile":

@@ -649,9 +649,8 @@ export const editorsSw = {
   "schematic.stepFree.list": "Bila ngazi: {stations}",
   "schematic.stepFree.none":
     "Bado hakuna stesheni ya mstari huu iliyowekwa kuwa bila ngazi (kuingia bila ngazi, lifti au mteremko katika Unda).",
-  "schematic.transfer": "{line} · dak {n}",
   "schematic.transferNote":
-    "Dakika kwenye lebo za rangi: muda unaokadiriwa wa kutembea kubadilisha kwenda mstari huo.",
+    "Mistari ya kubadilisha imepangwa kwa aina ya usafiri; dakika baada ya kila kundi: muda mfupi zaidi unaokadiriwa wa kutembea hadi aina hiyo.",
   "schematic.estNote":
     "~ kabla ya dakika: muda wa kuendesha unaokadiriwa kutoka umbali kati ya vituo na kasi na mchapuko wa kawaida wa njia hiyo ya usafiri, pale ratiba haina muda bado. Kasi ya wastani haihesabu sehemu hizo.",
   "schematic.row.profile":

@@ -652,8 +652,8 @@ export const editorsIt = {
   "schematic.stepFree.list": "Senza gradini: {stations}",
   "schematic.stepFree.none":
     "Nessuna stazione di questa linea è ancora registrata senza gradini (accesso senza gradini, ascensore o rampa in Crea).",
-  "schematic.transfer": "{line} · {n} min",
-  "schematic.transferNote": "Minuti sulle etichette colorate: cammino stimato per il cambio su quella linea.",
+  "schematic.transferNote":
+    "Le linee di interscambio sono raggruppate per modo; i minuti dopo ogni gruppo: il cammino stimato più breve verso quel modo.",
   "schematic.estNote":
     "~ prima dei minuti: tempo di marcia approssimato dalla distanza tra le fermate e dalla velocità e accelerazione abituali del modo, dove l’orario non ha ancora un tempo. La velocità media esclude quelle tratte.",
   "schematic.row.profile":

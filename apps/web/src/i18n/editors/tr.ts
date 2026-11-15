@@ -628,8 +628,8 @@ export const editorsTr = {
   "schematic.stepFree.list": "Basamaksız: {stations}",
   "schematic.stepFree.none":
     "Bu hatta henüz basamaksız olarak kaydedilmiş istasyon yok (Oluştur’da basamaksız erişim, asansör veya rampa).",
-  "schematic.transfer": "{line} · {n} dk",
-  "schematic.transferNote": "Renkli etiketlerdeki dakikalar: o hatta aktarma için tahmini yürüme süresi.",
+  "schematic.transferNote":
+    "Aktarma hatları türe göre gruplanır; her grubun ardındaki dakika: o türe en kısa tahmini yürüme süresi.",
   "schematic.estNote":
     "Dakikaların önündeki ~: tarifede henüz süre olmayan yerlerde, duraklar arası mesafeden ve türün olağan hız ve ivmesinden kaba sürüş süresi. Ortalama hız bu bölümleri saymaz.",
   "schematic.row.profile":

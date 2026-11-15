@@ -651,9 +651,8 @@ export const editorsNl = {
   "schematic.stepFree.list": "Drempelvrij: {stations}",
   "schematic.stepFree.none":
     "Nog geen station van deze lijn is als drempelvrij ingevoerd (drempelvrije toegang, lift of hellingbaan bij Maken).",
-  "schematic.transfer": "{line} · {n} min",
   "schematic.transferNote":
-    "Minuten op de gekleurde labels: geschatte looptijd om over te stappen op die lijn.",
+    "Overstaplijnen zijn gegroepeerd per modaliteit; de minuten na elke groep: de kortste geschatte looptijd naar die modaliteit.",
   "schematic.estNote":
     "~ voor de minuten: ruwe rijtijd uit de afstand tussen haltes en de gebruikelijke snelheid en versnelling van de modaliteit, waar de dienstregeling nog geen tijd heeft. De gemiddelde snelheid laat die delen weg.",
   "schematic.row.profile":

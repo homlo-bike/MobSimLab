@@ -616,8 +616,8 @@ export const editorsVi = {
   "schematic.stepFree.list": "Không bậc: {stations}",
   "schematic.stepFree.none":
     "Chưa có ga nào của tuyến được ghi là không bậc (lối vào không bậc, thang máy hoặc dốc trong Tạo).",
-  "schematic.transfer": "{line} · {n} phút",
-  "schematic.transferNote": "Số phút trên nhãn màu: thời gian đi bộ ước tính để chuyển sang tuyến đó.",
+  "schematic.transferNote":
+    "Các tuyến chuyển được nhóm theo phương thức; số phút sau mỗi nhóm: thời gian đi bộ ước tính ngắn nhất đến phương thức đó.",
   "schematic.estNote":
     "~ trước số phút: thời gian chạy ước lượng từ khoảng cách giữa các điểm dừng và tốc độ, gia tốc thường gặp của phương thức, ở đoạn lịch chạy chưa có thời gian. Tốc độ trung bình bỏ qua các đoạn đó.",
   "schematic.row.profile":

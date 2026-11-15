@@ -613,8 +613,8 @@ export const editorsJa = {
   "schematic.stepFree.list": "段差なし：{stations}",
   "schematic.stepFree.none":
     "この路線には段差なしと登録された駅がまだありません（作成で段差なしアクセス、エレベーター、スロープを登録）。",
-  "schematic.transfer": "{line} · {n} 分",
-  "schematic.transferNote": "色付きラベルの分数：その路線へ乗り換える推定徒歩時間。",
+  "schematic.transferNote":
+    "乗り換え路線は交通手段ごとにまとめています。各グループの後の分数：その手段への最短の推定徒歩時間。",
   "schematic.estNote":
     "分の前の ~：時刻表にまだ時間がない区間は、停留所間の距離とその交通手段の通常の速度・加速度から求めた概算の走行時間です。平均速度にはこれらの区間を含めません。",
   "schematic.row.profile": "路線沿いの地形の側面図（長さと高さは同じ縮尺、{step} m ごとに計測）",

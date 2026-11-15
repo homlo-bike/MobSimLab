@@ -660,9 +660,8 @@ export const editorsDe = {
   "schematic.stepFree.list": "Stufenfrei: {stations}",
   "schematic.stepFree.none":
     "Noch ist keine Station dieser Linie als stufenfrei erfasst (stufenfreier Zugang, Aufzug oder Rampe unter Erstellen).",
-  "schematic.transfer": "{line} · {n} min",
   "schematic.transferNote":
-    "Minuten auf den farbigen Schildern: geschätzter Fußweg zum Umsteigen in diese Linie.",
+    "Umsteigelinien sind nach Verkehrsmittel gruppiert; die Minuten nach jeder Gruppe: kürzester geschätzter Fußweg zu diesem Verkehrsmittel.",
   "schematic.estNote":
     "~ vor den Minuten: grobe Fahrzeit aus dem Abstand der Halte und der üblichen Geschwindigkeit und Beschleunigung des Verkehrsmittels, wo der Fahrplan noch keine Zeit hat. Die Durchschnittsgeschwindigkeit lässt diese Abschnitte aus.",
   "schematic.row.profile":

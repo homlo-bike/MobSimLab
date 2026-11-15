@@ -12,6 +12,7 @@ import {
   INK,
   LEVEL_BANDS,
   LEVEL_COLOR,
+  LAYER_LABEL,
   LEVEL_LABEL,
   type LevelBand,
   MUTED,
@@ -21,7 +22,15 @@ import {
   useFooter,
 } from "./common";
 import { type LineProfile, PROFILE_STEP_M } from "./details";
-import { isStepFree, linesAt, type SchematicLine, type SchematicNetwork, transferS } from "./lines";
+import {
+  isStepFree,
+  type Layer,
+  layerOf,
+  linesAt,
+  type SchematicLine,
+  type SchematicNetwork,
+  transferS,
+} from "./lines";
 
 /** Purpose: a text cut into lines of at most `perLine` characters, at spaces. */
 function wrap(text: string, perLine: number): string[] {
@@ -118,6 +127,94 @@ function groundD(
   return { line: lines.join(" "), area: areas.join(" ") };
 }
 
+/** Connections are listed from the longest-reaching mode down. */
+const CONN_ORDER: readonly Layer[] = ["long_distance", "regional", "metro", "tram", "brt", "bus", "other"];
+
+/** Px from one row of connections to the next. */
+const CONN_ROW = 21;
+
+type ConnItem =
+  | { kind: "mode"; layer: Layer; x: number; w: number }
+  | { kind: "line"; line: SchematicLine; x: number; w: number }
+  | { kind: "walk"; layer: Layer; text: string; x: number; w: number };
+
+/**
+ * Purpose: the lines to change to at a station, laid out in rows of at most `widthPx`: one group per mode (in
+ * this order), each starting on a new row with the mode's sign, then its lines, then the shortest walk to
+ * any of them. Lines that do not fit continue on the next row, under the first line.
+ */
+export function connectionRows(
+  lines: readonly SchematicLine[],
+  walk: (l: SchematicLine) => number | null,
+  minutes: (n: number) => string,
+  widthPx: number,
+): ConnItem[][] {
+  const rows: ConnItem[][] = [];
+  for (const layer of CONN_ORDER) {
+    const group = lines.filter((l) => layerOf(l.mode) === layer);
+    if (!group.length) continue;
+    let row: ConnItem[] = [{ kind: "mode", layer, x: 0, w: 17 }];
+    rows.push(row);
+    let x = 20;
+    const place = (item: ConnItem) => {
+      if (x + item.w > widthPx && row.length > 1) {
+        row = [];
+        rows.push(row);
+        x = 20;
+      }
+      row.push({ ...item, x });
+      x += item.w + 3;
+    };
+    for (const l of group) place({ kind: "line", line: l, x: 0, w: Math.max(22, l.name.length * 6.4 + 12) });
+    const ws = group.map(walk).filter((w): w is number => w !== null);
+    if (ws.length) {
+      const text = minutes(Math.min(...ws));
+      place({ kind: "walk", layer, text, x: 0, w: text.length * 5.6 + 4 });
+    }
+  }
+  return rows;
+}
+
+/** Purpose: a small sign for a mode: a vehicle drawn in white on a dark square, `x`/`y` its top left. */
+function ModeSign({ layer, x, y, title }: { layer: Layer; x: number; y: number; title: string }) {
+  const body =
+    layer === "bus" || layer === "brt" ? (
+      <>
+        <rect x={3.5} y={3} width={10} height={9} rx={2} fill="#fff" />
+        <rect x={5} y={4.5} width={7} height={3} fill="#334155" />
+        <circle cx={6} cy={13} r={1.3} fill="#fff" />
+        <circle cx={11} cy={13} r={1.3} fill="#fff" />
+      </>
+    ) : layer === "tram" ? (
+      <>
+        <path d="M5 2.5 L8.5 4.5 L12 2.5" stroke="#fff" strokeWidth={1} fill="none" />
+        <rect x={4} y={4.5} width={9} height={8.5} rx={1.5} fill="#fff" />
+        <rect x={5.5} y={6} width={6} height={2.5} fill="#334155" />
+      </>
+    ) : layer === "metro" ? (
+      <>
+        <rect x={4} y={3} width={9} height={9.5} rx={3} fill="#fff" />
+        <rect x={5.5} y={5} width={6} height={2.5} fill="#334155" />
+        <path d="M5 15 L6.5 12.5 M12 15 L10.5 12.5" stroke="#fff" strokeWidth={1.2} />
+      </>
+    ) : layer === "other" ? (
+      <circle cx={8.5} cy={8.5} r={4} fill="#fff" />
+    ) : (
+      <>
+        <path d="M4 12.5 V5.5 Q4 3 7 3 H10 Q13 3 13 5.5 V12.5 Z" fill="#fff" />
+        <rect x={5.5} y={5} width={6} height={2.5} fill="#334155" />
+        <path d="M3 15 H14" stroke="#fff" strokeWidth={1.2} />
+      </>
+    );
+  return (
+    <g transform={`translate(${x} ${y})`}>
+      <title>{title}</title>
+      <rect width={17} height={17} rx={4} fill="#334155" />
+      {body}
+    </g>
+  );
+}
+
 /** Purpose: the symbols to draw at a station: its statuses, then its features, as the drawing options say. */
 export function symbolsAt(
   net: SchematicNetwork,
@@ -157,7 +254,9 @@ export function StripMap({
   const footer = useFooter(title);
   const fmt = (v: number, digits = 0) =>
     new Intl.NumberFormat(language, { maximumFractionDigits: digits }).format(v);
-  const step = 110;
+  // The lines to change to at each stop; stations spread out when one of them has many.
+  const conn = line.stops.map((st) => linesAt(net, st).filter((l) => l.id !== line.id));
+  const step = Math.max(...conn.map((c) => c.length)) > 5 ? 150 : 110;
   const left = 70;
   const n = line.stops.length;
   const s = line.service;
@@ -213,12 +312,19 @@ export function StripMap({
   const factsTop = 74;
   const factsH = Math.ceil(facts.length / factCols) * 40;
   const bandY = factsTop + factsH + 150;
-  const conn = line.stops.map((st) => linesAt(net, st).filter((l) => l.id !== line.id));
-  const maxConn = Math.max(0, ...conn.map((c) => c.length));
+  const connRows = conn.map((c, k) =>
+    connectionRows(
+      c,
+      (o) => walkMin(k, o),
+      (m) => t("schematic.minutes", { n: m }),
+      step - 8,
+    ),
+  );
+  const maxConn = Math.max(0, ...connRows.map((r) => r.length));
   const syms = line.stops.map((st) => symbolsAt(net, st, doc));
   const perRow = 5;
   const symRows = Math.max(0, ...syms.map((x) => Math.ceil(x.length / perRow)));
-  const symTop = bandY + 26 + maxConn * 24;
+  const symTop = bandY + 26 + maxConn * CONN_ROW;
   const levelTop = symTop + symRows * 20 + (symRows ? 18 : 14);
   const used = LEVEL_BANDS.filter((b) => line.levels.some((sec) => sec.some((x) => bandOf(x.level) === b)));
   const stepTop = levelTop + 62;
@@ -354,26 +460,44 @@ export function StripMap({
             >
               {station.name}
             </text>
-            {c.map((o, j) => {
-              const walk = walkMin(k, o);
-              const label = walk !== null ? t("schematic.transfer", { line: o.name, n: walk }) : o.name;
-              const w = Math.max(30, label.length * 6.8 + 14);
-              return (
-                <g key={o.id}>
-                  <rect x={x - w / 2} y={bandY + 22 + j * 24} width={w} height={19} rx={9.5} fill={o.color} />
-                  <text
-                    x={x}
-                    y={bandY + 35.5 + j * 24}
-                    fontSize={11}
-                    fontWeight={700}
-                    textAnchor="middle"
-                    fill={textOn(o.color)}
-                  >
-                    {label}
-                  </text>
-                </g>
-              );
-            })}
+            {/* The lines to change to, one group per mode: its sign, the lines and the shortest walk. */}
+            {connRows[k]!.map((row, r) =>
+              row.map((it) => {
+                const ix = x - (step - 8) / 2 + it.x;
+                const iy = bandY + 22 + r * CONN_ROW;
+                if (it.kind === "mode")
+                  return (
+                    <ModeSign
+                      key={`m-${it.layer}`}
+                      layer={it.layer}
+                      x={ix}
+                      y={iy}
+                      title={t(LAYER_LABEL[it.layer])}
+                    />
+                  );
+                if (it.kind === "walk")
+                  return (
+                    <text key={`w-${it.layer}`} x={ix + 2} y={iy + 12.5} fontSize={10} fill="#64748b">
+                      {it.text}
+                    </text>
+                  );
+                return (
+                  <g key={it.line.id}>
+                    <rect x={ix} y={iy} width={it.w} height={17} rx={8.5} fill={it.line.color} />
+                    <text
+                      x={ix + it.w / 2}
+                      y={iy + 12.5}
+                      fontSize={10.5}
+                      fontWeight={700}
+                      textAnchor="middle"
+                      fill={textOn(it.line.color)}
+                    >
+                      {it.line.name}
+                    </text>
+                  </g>
+                );
+              }),
+            )}
             {syms[k]!.map((id, j) => {
               const row = Math.floor(j / perRow);
               const inRow = Math.min(perRow, syms[k]!.length - row * perRow);

@@ -650,9 +650,8 @@ export const editorsPt = {
   "schematic.stepFree.list": "Sem degraus: {stations}",
   "schematic.stepFree.none":
     "Nenhuma estação desta linha está registrada como sem degraus (acesso sem degraus, elevador ou rampa em Criar).",
-  "schematic.transfer": "{line} · {n} min",
   "schematic.transferNote":
-    "Minutos nas etiquetas coloridas: caminhada estimada para baldear para essa linha.",
+    "As linhas de baldeação são agrupadas por modo; os minutos após cada grupo: a caminhada estimada mais curta até esse modo.",
   "schematic.estNote":
     "~ antes dos minutos: tempo de percurso aproximado pela distância entre paradas e pela velocidade e aceleração habituais do modo, onde o horário ainda não tem tempo. A velocidade média deixa esses trechos de fora.",
   "schematic.row.profile":

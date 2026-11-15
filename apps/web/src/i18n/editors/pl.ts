@@ -695,9 +695,8 @@ export const editorsPl = {
   "schematic.stepFree.list": "Bez schodów: {stations}",
   "schematic.stepFree.none":
     "Żadna stacja tej linii nie jest jeszcze zapisana jako bez schodów (dostęp bez schodów, winda lub pochylnia w Tworzeniu).",
-  "schematic.transfer": "{line} · {n} min",
   "schematic.transferNote":
-    "Minuty na kolorowych etykietach: szacowany czas dojścia przy przesiadce na tę linię.",
+    "Linie do przesiadki są pogrupowane według środka transportu; minuty po każdej grupie: najkrótsze szacowane dojście do niego.",
   "schematic.estNote":
     "~ przed minutami: przybliżony czas jazdy z odległości między przystankami oraz zwykłej prędkości i przyspieszenia danego środka transportu, gdzie rozkład nie ma jeszcze czasu. Średnia prędkość pomija te odcinki.",
   "schematic.row.profile":

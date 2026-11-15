@@ -620,8 +620,8 @@ export const editorsYo = {
   "schematic.stepFree.list": "Láìsí àtẹ̀gùn: {stations}",
   "schematic.stepFree.none":
     "Kò sí ibùdókọ̀ kankan lórí ìlà yìí tí a ti kọ pé kò ní àtẹ̀gùn (ìwọlé láìsí àtẹ̀gùn, ẹ̀rọ agbéniga tàbí ọ̀nà ìdagẹ̀rẹ̀ ní Ṣẹ̀dá).",
-  "schematic.transfer": "{line} · ìṣẹ́jú {n}",
-  "schematic.transferNote": "Ìṣẹ́jú lórí àwọn àmì aláwọ̀: àkókò ìrìn ẹsẹ̀ tí a fojú dá láti yí sí ìlà náà.",
+  "schematic.transferNote":
+    "A kó àwọn ìlà tí a lè yí sí jọ ní ìbámu pẹ̀lú ọ̀nà ìrìnnà; ìṣẹ́jú lẹ́yìn ẹgbẹ́ kọ̀ọ̀kan: ìrìn ẹsẹ̀ tó kúrú jù tí a fojú dá sí ọ̀nà náà.",
   "schematic.estNote":
     "~ ṣáájú ìṣẹ́jú: àkókò ìwakọ̀ tí a fojú dá láti ijìnnà láàrin àwọn ibùdó àti ìyára àti ìmúyára àṣà ọ̀nà ìrìnnà náà, níbi tí àtòjọ àkókò kò tíì ní àkókò. Ìyára àpapọ̀ kò ka àwọn apá yẹn.",
   "schematic.row.profile":

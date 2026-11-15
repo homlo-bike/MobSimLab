@@ -640,9 +640,8 @@ export const editorsHa = {
   "schematic.stepFree.list": "Ba matakala: {stations}",
   "schematic.stepFree.none":
     "Babu tasha a wannan layi da aka rubuta ba matakala ba tukuna (shiga ba matakala, lif ko gangara a Ƙirƙira).",
-  "schematic.transfer": "{line} · minti {n}",
   "schematic.transferNote":
-    "Mintuna a kan alamomin launi: kimanin lokacin tafiya da ƙafa don canjawa zuwa wannan layi.",
+    "An tara layukan canjawa bisa irin sufuri; mintunan bayan kowane rukuni: mafi gajeren kimanin lokacin tafiya da ƙafa zuwa wannan irin.",
   "schematic.estNote":
     "~ kafin mintuna: kimanin lokacin tuƙi daga nisa tsakanin tashoshi da saurin da hanzarin da aka saba na irin sufurin, inda jadawali bai da lokaci tukuna. Matsakaicin gudu bai ƙirga waɗannan sassan ba.",
   "schematic.row.profile":
