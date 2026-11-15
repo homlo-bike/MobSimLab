@@ -21,6 +21,7 @@ Choose under **Show** whether the tables are for **All lines**, one mode or one 
 - **In the appraisal**: GDP growth a year from bringing jobs and people closer together (agglomeration, as in the UK's TAG A2.4). This is the benefit that can be added to a cost–benefit appraisal.
 - **Wider context, not added to the appraisal**: earnings of residents from better access to jobs, land value uplift near stations, property tax from that uplift, and GDP and job-years from building and running the lines (from the cost tables). They describe the same benefit from other sides, so adding them up would count it more than once.
 - **Access for people**: per kind of place (jobs, schools, universities and colleges, hospitals, clinics and doctors), how many people gain access within the time limit, and how many a resident reaches on average before and with the lines.
+- **People and jobs near each station**: for each station of the chosen line, mode or all lines, the walking distance used and the people living and jobs within it, most people first. Where stations are close together, each place counts once, for the nearer station.
 - **Per line**: weekday riders, GDP growth and the people gaining access to jobs, per line.
 - **Data sources**: where each number came from, and which regions you entered took priority.
 

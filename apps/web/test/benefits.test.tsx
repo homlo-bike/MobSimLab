@@ -1,6 +1,6 @@
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { BenefitTables } from "../src/features/benefits/BenefitTables";
+import { BenefitTables, stationRows } from "../src/features/benefits/BenefitTables";
 import type { BenefitsApi, OsmArea } from "../src/features/benefits/data";
 import { catchmentTiles, countryFigures, loadTiles } from "../src/features/benefits/data";
 import { compile, FormulaError, formulaProblem } from "../src/features/benefits/formula";
@@ -361,6 +361,28 @@ describe("benefit estimate", () => {
     expect(again.e.rows[4]!.values).toEqual(total.values);
   });
 
+  it("lists the people and jobs near each station, per line, mode and in total", async () => {
+    const { P } = await run();
+    const all = stationRows(P, { id: "total", scope: "total", mode: null });
+    expect(all).toHaveLength(P.zones.length);
+    // Most people first; the numbers are the zones' own.
+    for (let i = 1; i < all.length; i++) expect(all[i - 1]!.pop).toBeGreaterThanOrEqual(all[i]!.pop);
+    const central = all.find((r) => r.name === "Central")!;
+    const zone = P.zones.find((z) => z.name === "Central")!;
+    expect(central.pop).toBe(zone.pop);
+    expect(central.jobs).toBe(zone.jobs);
+    expect(central.radius).toBe(zone.radius);
+    expect(central.lines.map((l) => l.name)).toContain("M1");
+    // One line: only its stations.
+    const m1 = stationRows(P, { id: "rail:M1", scope: "line", mode: "metro" });
+    expect(m1.length).toBeGreaterThan(0);
+    expect(m1.length).toBeLessThanOrEqual(all.length);
+    expect(m1.every((r) => r.lines.some((l) => l.id === "rail:M1"))).toBe(true);
+    // A mode: the stations of its lines.
+    const metro = stationRows(P, { id: "mode:metro", scope: "mode", mode: "metro" });
+    expect(metro.map((r) => r.id).sort()).toEqual(m1.map((r) => r.id).sort());
+  });
+
   it("uses the project's formulas and parameters", async () => {
     const base = await run();
     const own = await run({ doc: { formulas: { ridership_daily: "pop * 0.5" } } });
@@ -514,6 +536,11 @@ describe("benefit tables", () => {
     );
     expect(await screen.findByRole("heading", { name: "Ridership" }, { timeout: 5000 })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "Access for people" })).toBeTruthy();
+    const near = screen
+      .getByRole("heading", { name: "People and jobs near each station" })
+      .closest("section")!;
+    expect(near.querySelectorAll("tbody tr").length).toBeGreaterThan(1);
+    expect(near.textContent).toContain("Central");
     expect(screen.getAllByText("Land and property value uplift").length).toBeGreaterThan(0);
     expect(screen.getByRole("option", { name: "M1" })).toBeTruthy();
     expect(screen.getByRole("option", { name: "All Metro lines" })).toBeTruthy();
