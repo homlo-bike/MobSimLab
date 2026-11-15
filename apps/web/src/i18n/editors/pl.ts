@@ -663,6 +663,22 @@ export const editorsPl = {
   "jp.cableCar": "Kolej linowa „{name}” (co {headway})",
   "jp.noTimetable":
     "Brak rozkładu. Narysuj linię drogową albo utwórz i opublikuj połączenie w narzędziu kolejowym. Pociągi i linie drogowe łączą się na stacjach o tej samej nazwie.",
+  "jp.gtfs.title": "Istniejąca sieć (GTFS)",
+  "jp.gtfs.intro":
+    "Zaimportuj feed GTFS (zip), aby jeździć dzisiejszymi autobusami i pociągami razem z twoimi liniami. Odczytywany jest jeden dzień kursowania.",
+  "jp.gtfs.pick": "Importuj feed GTFS…",
+  "jp.gtfs.inView": "Tylko kursy z przystankiem w widoku mapy",
+  "jp.gtfs.date": "Dzień kursowania",
+  "jp.gtfs.dateHint": "Puste: środa z największą liczbą kursów",
+  "jp.gtfs.reading": "Odczytywanie {name}…",
+  "jp.gtfs.feed": "{name}: linie {routes}, przystanki {stops}, kursy {trips} w dniu {date}",
+  "jp.gtfs.remove": "Usuń",
+  "jp.gtfs.failed": "Nie udało się odczytać feedu: {error}",
+  "jp.gtfs.tooLarge":
+    "Feed jest za duży dla projektu ({mb} MB, najwyżej {max} MB). Przybliż mapę do obszaru badań i zaimportuj tylko kursy z widoku mapy.",
+  "jp.gtfs.export": "Pobierz moje linie jako GTFS",
+  "jp.gtfs.exportFailed": "Nie udało się zapisać feedu GTFS: {error}",
+  "jp.gtfs.outside": "Pominięte kursy poza widokiem mapy: {n}",
   "jp.summary": "Przystanki: {stops} · linie: {routes} · kursy: {trips}",
   "jp.service": " · kursuje {from}–{to}",
   "jp.joined.one": " · {count} przystanek połączony ze stacją według nazwy",

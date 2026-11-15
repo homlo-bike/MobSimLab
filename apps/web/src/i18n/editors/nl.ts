@@ -624,6 +624,22 @@ export const editorsNl = {
   "jp.cableCar": "Kabelbaan ‘{name}’ (elke {headway})",
   "jp.noTimetable":
     "Nog geen dienstregeling. Teken een straatlijn, of maak en publiceer spoorlijnen in het spoorhulpmiddel. Treinen en straatlijnen sluiten aan op stations met dezelfde naam.",
+  "jp.gtfs.title": "Bestaand netwerk (GTFS)",
+  "jp.gtfs.intro":
+    "Importeer een GTFS-feed (zip) om met de huidige bussen en treinen samen met uw lijnen te reizen. Eén dienstdag wordt gelezen.",
+  "jp.gtfs.pick": "GTFS-feed importeren…",
+  "jp.gtfs.inView": "Alleen ritten die in de kaartweergave stoppen",
+  "jp.gtfs.date": "Dienstdag",
+  "jp.gtfs.dateHint": "Leeg: de drukste woensdag",
+  "jp.gtfs.reading": "{name} wordt gelezen…",
+  "jp.gtfs.feed": "{name}: {routes} lijnen, {stops} haltes, {trips} ritten op {date}",
+  "jp.gtfs.remove": "Verwijderen",
+  "jp.gtfs.failed": "De feed kon niet worden gelezen: {error}",
+  "jp.gtfs.tooLarge":
+    "De feed is te groot voor het project ({mb} MB, hoogstens {max} MB). Zoom de kaart in op het studiegebied en importeer alleen de ritten in de kaartweergave.",
+  "jp.gtfs.export": "Mijn lijnen als GTFS downloaden",
+  "jp.gtfs.exportFailed": "De GTFS-feed kon niet worden geschreven: {error}",
+  "jp.gtfs.outside": "Ritten buiten de kaartweergave weggelaten: {n}",
   "jp.summary": "{stops} haltes · {routes} lijnen · {trips} ritten",
   "jp.service": " · dienst {from}–{to}",
   "jp.joined.one": " · {count} halte op naam aan een station gekoppeld",

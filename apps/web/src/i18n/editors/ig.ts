@@ -596,6 +596,22 @@ export const editorsIg = {
   "jp.cableCar": "Ụgbọ eriri “{name}” (kwa {headway})",
   "jp.noTimetable":
     "Enwebeghị usoro oge. See ahịrị okporo ụzọ, ma ọ bụ mepụta ma bipụta ahịrị ọrụ ụzọ ígwè na ngwá ọrụ ụzọ ígwè. Ụgbọ oloko na ahịrị okporo ụzọ na-ezute n'ọdụ nwere otu aha.",
+  "jp.gtfs.title": "Netwọk dị adị (GTFS)",
+  "jp.gtfs.intro":
+    "Bubata nri GTFS (zip) ka ị banye ụgbọ ala na ụgbọ oloko nke taa ya na ahịrị gị. A na-agụ otu ụbọchị ọrụ.",
+  "jp.gtfs.pick": "Bubata nri GTFS…",
+  "jp.gtfs.inView": "Naanị njem ndị na-akwụsị n'ime ihe a na-ahụ na map",
+  "jp.gtfs.date": "Ụbọchị ọrụ",
+  "jp.gtfs.dateHint": "Efu: Wenezde nwere njem kachasị",
+  "jp.gtfs.reading": "A na-agụ {name}…",
+  "jp.gtfs.feed": "{name}: ahịrị {routes}, ebe nkwụsị {stops}, njem {trips} na {date}",
+  "jp.gtfs.remove": "Wepụ",
+  "jp.gtfs.failed": "Enweghị ike ịgụ nri ahụ: {error}",
+  "jp.gtfs.tooLarge":
+    "Nri ahụ buru ibu nke ukwuu maka ọrụ a ({mb} MB, kacha {max} MB). Bugharịa map gaa n'ebe nyocha ma bubata naanị njem dị n'ihe a na-ahụ.",
+  "jp.gtfs.export": "Budata ahịrị m dị ka GTFS",
+  "jp.gtfs.exportFailed": "Enweghị ike ide nri GTFS: {error}",
+  "jp.gtfs.outside": "Njem ndị nọ n'èzí map a hapụrụ: {n}",
   "jp.summary": "ebe nkwụsị {stops} · ụzọ {routes} · njem {trips}",
   "jp.service": " · ọrụ {from}–{to}",
   "jp.joined.other": " · ebe nkwụsị {count} ejikọtara n'ọdụ site n'aha",

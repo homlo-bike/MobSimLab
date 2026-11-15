@@ -600,6 +600,22 @@ export const editorsTr = {
   "jp.cableCar": "Teleferik “{name}” (her {headway})",
   "jp.noTimetable":
     "Henüz tarife yok. Bir karayolu hattı çizin veya raylı araçta bir sefer oluşturup yayımlayın. Trenler ve karayolu hatları aynı adlı istasyonlarda birleşir.",
+  "jp.gtfs.title": "Mevcut ağ (GTFS)",
+  "jp.gtfs.intro":
+    "Bugünkü otobüs ve trenlere hatlarınızla birlikte binmek için bir GTFS akışı (zip) içe aktarın. Bir hizmet günü okunur.",
+  "jp.gtfs.pick": "GTFS akışını içe aktar…",
+  "jp.gtfs.inView": "Yalnızca harita görünümünde duran seferler",
+  "jp.gtfs.date": "Hizmet günü",
+  "jp.gtfs.dateHint": "Boş: en yoğun çarşamba",
+  "jp.gtfs.reading": "{name} okunuyor…",
+  "jp.gtfs.feed": "{name}: {routes} hat, {stops} durak, {date} tarihinde {trips} sefer",
+  "jp.gtfs.remove": "Kaldır",
+  "jp.gtfs.failed": "Akış okunamadı: {error}",
+  "jp.gtfs.tooLarge":
+    "Akış proje için çok büyük ({mb} MB, en fazla {max} MB). Haritayı çalışma alanına yakınlaştırın ve yalnızca görünümdeki seferlerle içe aktarın.",
+  "jp.gtfs.export": "Hatlarımı GTFS olarak indir",
+  "jp.gtfs.exportFailed": "GTFS akışı yazılamadı: {error}",
+  "jp.gtfs.outside": "Harita görünümü dışında bırakılan seferler: {n}",
   "jp.summary": "{stops} durak · {routes} hat · {trips} sefer",
   "jp.service": " · hizmet {from}–{to}",
   "jp.joined.other": " · {count} durak adlarına göre istasyonlarla birleştirildi",

@@ -625,6 +625,22 @@ export const editorsPt = {
   "jp.cableCar": "Teleférico “{name}” (a cada {headway})",
   "jp.noTimetable":
     "Ainda não há tabela horária. Desenhe uma linha em rua, ou crie e publique linhas ferroviárias na ferramenta ferroviária. Trens e linhas em rua se conectam em estações de mesmo nome.",
+  "jp.gtfs.title": "Rede existente (GTFS)",
+  "jp.gtfs.intro":
+    "Importe um feed GTFS (zip) para usar os ônibus e trens atuais junto com suas linhas. Um dia de serviço é lido.",
+  "jp.gtfs.pick": "Importar feed GTFS…",
+  "jp.gtfs.inView": "Só viagens que param na vista do mapa",
+  "jp.gtfs.date": "Dia de serviço",
+  "jp.gtfs.dateHint": "Vazio: a quarta-feira com mais viagens",
+  "jp.gtfs.reading": "Lendo {name}…",
+  "jp.gtfs.feed": "{name}: {routes} linhas, {stops} paradas, {trips} viagens em {date}",
+  "jp.gtfs.remove": "Remover",
+  "jp.gtfs.failed": "Não foi possível ler o feed: {error}",
+  "jp.gtfs.tooLarge":
+    "O feed é grande demais para o projeto ({mb} MB, no máximo {max} MB). Aproxime o mapa da área de estudo e importe só as viagens da vista.",
+  "jp.gtfs.export": "Baixar minhas linhas como GTFS",
+  "jp.gtfs.exportFailed": "Não foi possível gravar o feed GTFS: {error}",
+  "jp.gtfs.outside": "Viagens fora da vista do mapa deixadas de fora: {n}",
   "jp.summary": "{stops} paradas · {routes} linhas · {trips} viagens",
   "jp.service": " · operação {from}–{to}",
   "jp.joined.one": " · {count} parada ligada a uma estação pelo nome",

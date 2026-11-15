@@ -635,6 +635,22 @@ export const editorsDe = {
   "jp.cableCar": "Seilbahn „{name}“ (alle {headway})",
   "jp.noTimetable":
     "Noch kein Fahrplan. Zeichnen Sie eine Straßenlinie oder erstellen und veröffentlichen Sie Bahnlinien im Bahnwerkzeug. Züge und Straßenlinien sind an gleichnamigen Stationen verbunden.",
+  "jp.gtfs.title": "Bestehendes Netz (GTFS)",
+  "jp.gtfs.intro":
+    "Importieren Sie einen GTFS-Feed (zip), um die heutigen Busse und Bahnen zusammen mit Ihren Linien zu fahren. Ein Betriebstag wird gelesen.",
+  "jp.gtfs.pick": "GTFS-Feed importieren…",
+  "jp.gtfs.inView": "Nur Fahrten mit Halt im Kartenausschnitt",
+  "jp.gtfs.date": "Betriebstag",
+  "jp.gtfs.dateHint": "Leer: der Mittwoch mit den meisten Fahrten",
+  "jp.gtfs.reading": "{name} wird gelesen…",
+  "jp.gtfs.feed": "{name}: {routes} Linien, {stops} Haltestellen, {trips} Fahrten am {date}",
+  "jp.gtfs.remove": "Entfernen",
+  "jp.gtfs.failed": "Der Feed konnte nicht gelesen werden: {error}",
+  "jp.gtfs.tooLarge":
+    "Der Feed ist zu groß für das Projekt ({mb} MB, höchstens {max} MB). Zoomen Sie die Karte auf das Untersuchungsgebiet und importieren Sie nur die Fahrten im Kartenausschnitt.",
+  "jp.gtfs.export": "Meine Linien als GTFS herunterladen",
+  "jp.gtfs.exportFailed": "Der GTFS-Feed konnte nicht geschrieben werden: {error}",
+  "jp.gtfs.outside": "Fahrten außerhalb des Kartenausschnitts weggelassen: {n}",
   "jp.summary": "{stops} Haltestellen · {routes} Linien · {trips} Fahrten",
   "jp.service": " · Betrieb {from}–{to}",
   "jp.joined.one": " · {count} Haltestelle über den Namen mit einer Station verbunden",

@@ -587,6 +587,22 @@ export const editorsKo = {
   "jp.cableCar": "케이블카 '{name}'({headway}마다)",
   "jp.noTimetable":
     "아직 시간표가 없습니다. 도로 노선을 그리거나 철도 도구에서 계통을 만들고 게시하세요. 열차와 도로 노선은 같은 이름의 역에서 연결됩니다.",
+  "jp.gtfs.title": "기존 노선망(GTFS)",
+  "jp.gtfs.intro":
+    "GTFS 피드(zip)를 가져오면 현재 버스와 열차를 내 노선과 함께 탈 수 있습니다. 운행일 하루를 읽습니다.",
+  "jp.gtfs.pick": "GTFS 피드 가져오기…",
+  "jp.gtfs.inView": "지도 화면에 정차하는 운행만",
+  "jp.gtfs.date": "운행일",
+  "jp.gtfs.dateHint": "비워 두면: 운행이 가장 많은 수요일",
+  "jp.gtfs.reading": "{name} 읽는 중…",
+  "jp.gtfs.feed": "{name}: 노선 {routes}개, 정류장 {stops}개, {date} 운행 {trips}회",
+  "jp.gtfs.remove": "제거",
+  "jp.gtfs.failed": "피드를 읽지 못했습니다: {error}",
+  "jp.gtfs.tooLarge":
+    "피드가 너무 커서 프로젝트에 저장할 수 없습니다({mb} MB, 최대 {max} MB). 지도를 연구 지역으로 확대하고 화면 안의 운행만 가져오세요.",
+  "jp.gtfs.export": "내 노선을 GTFS로 다운로드",
+  "jp.gtfs.exportFailed": "GTFS 피드를 쓰지 못했습니다: {error}",
+  "jp.gtfs.outside": "지도 화면 밖이라 제외한 운행: {n}",
   "jp.summary": "정류장 {stops} · 노선 {routes} · {trips}회",
   "jp.service": " · 운행 {from}–{to}",
   "jp.joined.other": " · 이름으로 역에 묶은 정류장 {count}",

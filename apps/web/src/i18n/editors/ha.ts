@@ -616,6 +616,22 @@ export const editorsHa = {
   "jp.cableCar": "Motar waya “{name}” (kowane {headway})",
   "jp.noTimetable":
     "Babu jadawali tukuna. Zana layin titi, ko ƙirƙira ka wallafa layukan sabis na dogo a kayan aikin dogo. Jiragen ƙasa da layukan titi suna haɗuwa a tashoshi masu suna ɗaya.",
+  "jp.gtfs.title": "Hanyar sufuri da ke akwai (GTFS)",
+  "jp.gtfs.intro":
+    "Shigo da ciyarwar GTFS (zip) don hawa motocin bas da jiragen ƙasa na yau tare da layukanka. Ana karanta rana ɗaya ta aiki.",
+  "jp.gtfs.pick": "Shigo da ciyarwar GTFS…",
+  "jp.gtfs.inView": "Tafiye-tafiyen da ke tsayawa a cikin taswirar da ake gani kawai",
+  "jp.gtfs.date": "Ranar aiki",
+  "jp.gtfs.dateHint": "Babu komai: Laraba mafi yawan tafiye-tafiye",
+  "jp.gtfs.reading": "Ana karanta {name}…",
+  "jp.gtfs.feed": "{name}: layuka {routes}, tasha {stops}, tafiye-tafiye {trips} a {date}",
+  "jp.gtfs.remove": "Cire",
+  "jp.gtfs.failed": "Ba a iya karanta ciyarwar ba: {error}",
+  "jp.gtfs.tooLarge":
+    "Ciyarwar ta yi girma da yawa ga aikin ({mb} MB, mafi yawa {max} MB). Zuƙo taswirar zuwa yankin nazari ka shigo da tafiye-tafiyen da ake gani kawai.",
+  "jp.gtfs.export": "Sauke layukana a matsayin GTFS",
+  "jp.gtfs.exportFailed": "Ba a iya rubuta ciyarwar GTFS ba: {error}",
+  "jp.gtfs.outside": "Tafiye-tafiyen wajen taswirar da aka bari: {n}",
   "jp.summary": "tashoshi {stops} · hanyoyi {routes} · tafiye-tafiye {trips}",
   "jp.service": " · sabis {from}–{to}",
   "jp.joined.one": " · tasha {count} an haɗa ta da tasha bisa suna",

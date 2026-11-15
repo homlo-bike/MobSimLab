@@ -624,6 +624,22 @@ export const editorsEn = {
   "jp.cableCar": "Cable car “{name}” (every {headway})",
   "jp.noTimetable":
     "No timetable yet. Draw a street line, or create and publish rail service lines in the railway tool. Trains and street lines connect at stations of the same name.",
+  "jp.gtfs.title": "Existing network (GTFS)",
+  "jp.gtfs.intro":
+    "Import a GTFS feed (zip) to ride today's buses and trains together with your lines. One service day is read.",
+  "jp.gtfs.pick": "Import GTFS feed…",
+  "jp.gtfs.inView": "Only trips that stop in the map view",
+  "jp.gtfs.date": "Service day",
+  "jp.gtfs.dateHint": "Empty: the busiest Wednesday",
+  "jp.gtfs.reading": "Reading {name}…",
+  "jp.gtfs.feed": "{name}: {routes} lines, {stops} stops, {trips} trips on {date}",
+  "jp.gtfs.remove": "Remove",
+  "jp.gtfs.failed": "The feed could not be read: {error}",
+  "jp.gtfs.tooLarge":
+    "The feed is too large to keep in the project ({mb} MB, at most {max} MB). Zoom the map to the study area and import it with only the trips in the map view.",
+  "jp.gtfs.export": "Download my lines as GTFS",
+  "jp.gtfs.exportFailed": "The GTFS feed could not be written: {error}",
+  "jp.gtfs.outside": "Trips outside the map view left out: {n}",
   "jp.summary": "{stops} stops · {routes} lines · {trips} trips",
   "jp.service": " · service {from}–{to}",
   "jp.joined.one": " · {count} stop joined to a station by name",

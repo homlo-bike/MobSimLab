@@ -627,6 +627,22 @@ export const editorsUz = {
   "jp.cableCar": "Osma yoʻl “{name}” (har {headway})",
   "jp.noTimetable":
     "Hali jadval yoʻq. Koʻcha liniyasini chizing yoki temir yoʻl vositasida relsli xizmat liniyasini yaratib eʼlon qiling. Poyezdlar va koʻcha liniyalari bir xil nomli stansiyalarda uchrashadi.",
+  "jp.gtfs.title": "Mavjud tarmoq (GTFS)",
+  "jp.gtfs.intro":
+    "Bugungi avtobus va poyezdlarda o‘z liniyalaringiz bilan birga yurish uchun GTFS lentasini (zip) import qiling. Bitta xizmat kuni o‘qiladi.",
+  "jp.gtfs.pick": "GTFS lentasini import qilish…",
+  "jp.gtfs.inView": "Faqat xarita ko‘rinishida to‘xtaydigan reyslar",
+  "jp.gtfs.date": "Xizmat kuni",
+  "jp.gtfs.dateHint": "Bo‘sh: eng ko‘p reysli chorshanba",
+  "jp.gtfs.reading": "{name} o‘qilmoqda…",
+  "jp.gtfs.feed": "{name}: {routes} liniya, {stops} bekat, {date} kuni {trips} reys",
+  "jp.gtfs.remove": "O‘chirish",
+  "jp.gtfs.failed": "Lentani o‘qib bo‘lmadi: {error}",
+  "jp.gtfs.tooLarge":
+    "Lenta loyiha uchun juda katta ({mb} MB, ko‘pi bilan {max} MB). Xaritani tadqiqot hududiga yaqinlashtiring va faqat ko‘rinishdagi reyslarni import qiling.",
+  "jp.gtfs.export": "Liniyalarimni GTFS sifatida yuklab olish",
+  "jp.gtfs.exportFailed": "GTFS lentasini yozib bo‘lmadi: {error}",
+  "jp.gtfs.outside": "Xarita ko‘rinishidan tashqarida qoldirilgan reyslar: {n}",
   "jp.summary": "{stops} ta bekat · {routes} ta yoʻnalish · {trips} ta qatnov",
   "jp.service": " · xizmat {from}–{to}",
   "jp.joined.one": " · {count} ta bekat nom boʻyicha stansiyaga ulangan",

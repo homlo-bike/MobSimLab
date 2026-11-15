@@ -600,6 +600,22 @@ export const editorsYo = {
   "jp.cableCar": "Ọkọ̀ okùn “{name}” (ní gbogbo {headway})",
   "jp.noTimetable":
     "Kò tíì sí àkókò ìrìn. Ya ìlà òpópónà kan, tàbí ṣẹ̀dá kí o sì tẹ àwọn ìlà iṣẹ́ ojú irin jáde nínú irinṣẹ́ ojú irin. Àwọn ọkọ̀ ojú irin àti ìlà òpópónà ń pàdé ní àwọn ibùdókọ̀ tó ní orúkọ kan náà.",
+  "jp.gtfs.title": "Nẹtiwọọki tó wà (GTFS)",
+  "jp.gtfs.intro":
+    "Kó ìfúnni GTFS (zip) wọlé láti wọ bọ́ọ̀sì àti ọkọ̀ ojú irin òde òní pẹ̀lú àwọn ìlà rẹ. Ọjọ́ iṣẹ́ kan ni a ń kà.",
+  "jp.gtfs.pick": "Kó ìfúnni GTFS wọlé…",
+  "jp.gtfs.inView": "Àwọn ìrìn àjò tó dúró nínú ìwò máàpù nìkan",
+  "jp.gtfs.date": "Ọjọ́ iṣẹ́",
+  "jp.gtfs.dateHint": "Òfo: Ọjọ́rú tó ní ìrìn àjò jùlọ",
+  "jp.gtfs.reading": "À ń ka {name}…",
+  "jp.gtfs.feed": "{name}: ìlà {routes}, ibùdókọ̀ {stops}, ìrìn àjò {trips} ní {date}",
+  "jp.gtfs.remove": "Yọ kúrò",
+  "jp.gtfs.failed": "A kò lè ka ìfúnni náà: {error}",
+  "jp.gtfs.tooLarge":
+    "Ìfúnni náà tóbi jù fún iṣẹ́ àkànṣe ({mb} MB, èyí tó pọ̀ jù {max} MB). Sún máàpù mọ́ agbègbè ìwádìí kí o sì kó àwọn ìrìn àjò inú ìwò nìkan wọlé.",
+  "jp.gtfs.export": "Ṣe ìgbàsílẹ̀ àwọn ìlà mi gẹ́gẹ́ bí GTFS",
+  "jp.gtfs.exportFailed": "A kò lè kọ ìfúnni GTFS: {error}",
+  "jp.gtfs.outside": "Àwọn ìrìn àjò lóde ìwò máàpù tí a fi sílẹ̀: {n}",
   "jp.summary": "ibùdókọ̀ {stops} · ọ̀nà {routes} · ìrìn-àjò {trips}",
   "jp.service": " · iṣẹ́ {from}–{to}",
   "jp.joined.other": " · ibùdókọ̀ {count} ni a so mọ́ ibùdókọ̀ nípa orúkọ",

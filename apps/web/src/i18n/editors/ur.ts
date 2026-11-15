@@ -615,6 +615,22 @@ export const editorsUr = {
   "jp.cableCar": "کیبل کار “{name}” (ہر {headway})",
   "jp.noTimetable":
     "ابھی کوئی ٹائم ٹیبل نہیں۔ سڑک لائن بنائیں، یا ریلوے کے آلے میں ریل سروس لائن بنا کر شائع کریں۔ ٹرینیں اور سڑک لائنیں ایک ہی نام کے اسٹیشنوں پر ملتی ہیں۔",
+  "jp.gtfs.title": "موجودہ نیٹ ورک (GTFS)",
+  "jp.gtfs.intro":
+    "آج کی بسوں اور ٹرینوں پر اپنی لائنوں کے ساتھ سفر کے لیے GTFS فیڈ (zip) درآمد کریں۔ ایک سروس دن پڑھا جاتا ہے۔",
+  "jp.gtfs.pick": "GTFS فیڈ درآمد کریں…",
+  "jp.gtfs.inView": "صرف وہ سفر جو نقشے کے منظر میں رکتے ہیں",
+  "jp.gtfs.date": "سروس کا دن",
+  "jp.gtfs.dateHint": "خالی: سب سے مصروف بدھ",
+  "jp.gtfs.reading": "{name} پڑھا جا رہا ہے…",
+  "jp.gtfs.feed": "{name}: {routes} لائنیں، {stops} اسٹاپ، {date} کو {trips} سفر",
+  "jp.gtfs.remove": "ہٹائیں",
+  "jp.gtfs.failed": "فیڈ پڑھی نہ جا سکی: {error}",
+  "jp.gtfs.tooLarge":
+    "فیڈ پروجیکٹ کے لیے بہت بڑی ہے ({mb} MB، زیادہ سے زیادہ {max} MB)۔ نقشے کو مطالعے کے علاقے پر زوم کریں اور صرف منظر کے سفر درآمد کریں۔",
+  "jp.gtfs.export": "میری لائنیں GTFS کے طور پر ڈاؤن لوڈ کریں",
+  "jp.gtfs.exportFailed": "GTFS فیڈ لکھی نہ جا سکی: {error}",
+  "jp.gtfs.outside": "نقشے کے منظر سے باہر چھوڑے گئے سفر: {n}",
   "jp.summary": "{stops} اسٹاپ · {routes} راستے · {trips} سفر",
   "jp.service": " · سروس {from}–{to}",
   "jp.joined.one": " · {count} اسٹاپ نام سے اسٹیشن سے جڑا",

@@ -165,6 +165,12 @@ def check_plugin(
     calc_ids = {x["id"] for x in c.get("calculations", [])}
     if calc_ids and not manifest.get("bundled"):
         errors.append(f"{pid}: only bundled plugins may contribute calculations until the plugin host exists")
+    converters = c.get("importers", []) + c.get("exporters", [])
+    if converters and not manifest.get("bundled"):
+        errors.append(f"{pid}: only bundled plugins may contribute importers and exporters until the plugin host exists")
+    conv_ids = [x["id"] for x in converters]
+    for cid in sorted({x for x in conv_ids if conv_ids.count(x) > 1}):
+        errors.append(f"{pid}: importer or exporter id {cid} is used twice")
     layers = []
     for layer in c.get("mapLayers", []):
         if layer["calculation"] not in calc_ids:
@@ -225,7 +231,7 @@ def check_plugin(
                 for prm in params
             }
         defaults[m["id"]] = per
-    if not modes:
+    if not modes and params:
         # A plugin without modes of its own (a calculation) gives values per core mode, so the app can
         # resolve them for each line of the project.
         for mid in chk.MODES:
@@ -250,6 +256,8 @@ def check_plugin(
         "contexts": list(contexts.values()),
         "tools": c.get("tools", []),
         "calculations": c.get("calculations", []),
+        "importers": c.get("importers", []),
+        "exporters": c.get("exporters", []),
         "mapLayers": layers,
         "parameters": {prm["key"]: {"label": prm["label"], "unit": prm["unit"]} for prm in params},
         "defaults": defaults,
