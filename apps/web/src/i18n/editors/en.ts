@@ -1034,6 +1034,23 @@ export const editorsEn = {
   "capacity.notFit.other": "{count} trips do not fit",
   "capacity.dieOutRow": "die out",
   "capacity.pileUpRow": "pile up",
+  "capacity.runServer": "Run on the server and save",
+  "capacity.serverHint":
+    "The server runs it even if you close this tab, and saves it to the project so every member can open it.",
+  "capacity.saved": "Saved runs",
+  "capacity.savedNone": "No saved runs in this project yet.",
+  "capacity.savedBy": "{who}, {when}",
+  "capacity.someone": "Someone",
+  "capacity.status.queued": "Waiting",
+  "capacity.status.running": "Running",
+  "capacity.status.done": "Done",
+  "capacity.status.failed": "Failed",
+  "capacity.status.cancelled": "Stopped",
+  "capacity.viewing": "Saved run of {when}",
+  "capacity.close": "Close",
+  "capacity.stoppedEarly": "This run was stopped before the end; these are the results it found until then.",
+  "capacity.waiting": "Waiting for the server to start the run…",
+  "capacity.stopping": "Stopping after the current step…",
 } as const;
 
 /** Keys of the editor messages. */

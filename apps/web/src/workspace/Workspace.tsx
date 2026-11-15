@@ -175,6 +175,11 @@ export function Workspace({
 
   const onMap = MAP_TABS.includes(tab);
   const editable = project ? can.edit(project) : false;
+  const projectKey = project?.id ?? null;
+  const runs = useMemo(
+    () => (projectKey && typeof api.runs === "function" ? api.runs(projectKey) : null),
+    [api, projectKey],
+  );
 
   // What is drawn in the project, saved with it a moment after each change.
   const drawings = useDrawings(api, projectId, editable);
@@ -645,7 +650,7 @@ export function Workspace({
               </div>
             )}
             <div className="min-h-0 flex-1 overflow-y-auto">
-              {tab === "simulator" && sim === "test" && <CapacityRun />}
+              {tab === "simulator" && sim === "test" && <CapacityRun runs={runs} canRun={editable} />}
               {tab === "create" && !editable && (
                 <div className="px-4 py-5 md:px-5">
                   <h2 className="text-lg font-semibold">{t("create.readOnlyTitle")}</h2>
