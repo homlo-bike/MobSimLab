@@ -1,6 +1,7 @@
 import { type FormEvent, useCallback, useEffect, useState } from "react";
 import { formatDateTime, tNow, useI18n } from "../i18n/i18n";
 import { get, send } from "../session/api";
+import { PluginsAdmin } from "./PluginsAdmin";
 
 const ROLES = ["owner", "admin", "user", "viewer", "restricted"] as const;
 type Role = (typeof ROLES)[number];
@@ -42,7 +43,7 @@ interface AuditRecord {
   reason: string | null;
 }
 
-type Tab = "users" | "signup" | "audit";
+type Tab = "users" | "signup" | "plugins" | "audit";
 
 /** Purpose: a role's name for the admin lists. */
 const roleName = (r: string) => tNow(`admin.role.${r as Role}`);
@@ -88,6 +89,7 @@ export function AdminPanel({
             [
               ["users", t("admin.users")],
               ["signup", t("admin.signup")],
+              ["plugins", t("admin.plugins")],
               ["audit", t("admin.audit")],
             ] as const
           ).map(([id, label]) => (
@@ -115,6 +117,7 @@ export function AdminPanel({
       <div className="flex-1 overflow-auto p-4">
         {tab === "users" && <Users {...props} />}
         {tab === "signup" && <SignUp {...props} />}
+        {tab === "plugins" && <PluginsAdmin csrfToken={csrfToken} run={run} actorRole={role} />}
         {tab === "audit" && <Audit run={run} />}
       </div>
     </section>

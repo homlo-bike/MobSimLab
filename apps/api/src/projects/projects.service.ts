@@ -57,7 +57,7 @@ export interface ProjectDrawing {
 }
 
 /** What each project role may do. Owners manage access, archive and delete. */
-type ProjectAction = "read" | "edit" | "manage";
+export type ProjectAction = "read" | "edit" | "manage";
 const ALLOWED: Record<ProjectAction, readonly ProjectRole[]> = {
   read: ["owner", "editor", "commenter", "viewer"],
   edit: ["owner", "editor"],
@@ -215,6 +215,10 @@ export class ProjectsService {
         INSERT INTO project.drawing (project_id, kind, schema_version, doc, version, updated_by, updated_at)
         SELECT ${p.id}::uuid, kind, schema_version, doc, 1, ${actor.userId}::uuid, now()
         FROM project.drawing WHERE project_id = ${id}::uuid`.execute(tx);
+      await sql`
+        INSERT INTO project.plugin (project_id, plugin_id, enabled, version, updated_by, updated_at)
+        SELECT ${p.id}::uuid, plugin_id, enabled, version, ${actor.userId}::uuid, now()
+        FROM project.plugin WHERE project_id = ${id}::uuid`.execute(tx);
       await this.log(actor, id, "project.duplicated", null, { copyId: p.id }, tx);
       await this.log(actor, p.id, "project.created", null, { name: copyName, copiedFrom: id }, tx);
       return p.id;
@@ -513,6 +517,32 @@ export class ProjectsService {
         ),
       ])
       .where("p.deleted_at", "is", null);
+  }
+
+  /**
+   * Purpose: check that the caller may perform `action` on a project, for other services (plugins per project).
+   * Output: the caller's effective role. 404 when the caller cannot read the project, 403 when the role is too low.
+   */
+  async access(
+    actor: ProjectActor,
+    id: string,
+    action: ProjectAction,
+    db: Database = this.db,
+    lock = false,
+  ): Promise<ProjectRole> {
+    return (await this.load(actor, id, action, db, lock)).role;
+  }
+
+  /** Purpose: append to a project's audit chain, for other services acting on the project. */
+  async logProject(
+    actor: ProjectActor,
+    id: string,
+    action: string,
+    before: unknown,
+    after: unknown,
+    db: Database,
+  ): Promise<void> {
+    await this.log(actor, id, action, before, after, db);
   }
 
   /**

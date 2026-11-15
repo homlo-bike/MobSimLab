@@ -1,5 +1,6 @@
 import { editorsKo } from "./editors/ko";
 import { cargoBikeKo } from "./cargo-bike/ko";
+import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
 /** 한국어 */
@@ -283,4 +284,5 @@ export const ko: Messages = {
 
   ...editorsKo,
   ...cargoBikeKo,
+  ...PLUGIN_MESSAGES.ko,
 };
