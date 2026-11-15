@@ -18,6 +18,8 @@ members = [
   "crates/mode-kits-wasm",
   "crates/noise",
   "crates/noise-wasm",
+  "crates/energy",
+  "crates/energy-wasm",
 ]
 
 [workspace.package]

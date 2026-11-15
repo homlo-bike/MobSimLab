@@ -5,6 +5,7 @@ Plugins add modes, parameters, tools and calculations to MobSimLab ([ADR-0036](.
 | Folder | Id | Adds |
 |--------|----|------|
 | [aerial-lift](aerial-lift/) | `org.mobsimlab.aerial-lift` | Modes `cable_car` (MGD, 2S, 3S, funitel, pulsed) and `aerial_tramway`, context key `ropeway_system`, `ropeway.*` parameters, the **Cable car** tool on the straight spans kit ([ADR-0037](../docs/adr/0037-cable-car-and-ferry-lines.md)) |
+| [energy](energy/) | `org.mobsimlab.energy` | Calculation `energy_emissions` (module `crates/energy`, built by `tools/wasm/build-energy.sh`): electricity, diesel and CO2e a year per line, per mode and for the network, from each line's vehicle-km; `energy.*` parameters per core mode; shown in the Tables tab, where the project sets the grid's emission intensity and the battery bus share |
 | [ferry](ferry/) | `org.mobsimlab.ferry` | Mode `ferry`, context key `vessel_type` (monohull, catamaran, hydrofoil), `ferry.*` parameters, the **Ferry** tool on the water route kit. Car ferries come later. |
 | [noise](noise/) | `org.mobsimlab.noise` | The noise map: calculation `noise_estimate` and map layer `noise_band` ([ADR-0038](../docs/adr/0038-service-line-noise-map.md)) |
 | [people-mover](people-mover/) | `org.mobsimlab.people-mover` | Modes `people_mover` (pinched loop with detachable trains) and `people_mover_shuttle` (two trains on a fixed rope), context key `apm_system`, `people_mover.*` parameters, the **People mover** tool on the straight spans kit: cable-hauled trains on an elevated guideway with piers ([ADR-0037 §7](../docs/adr/0037-cable-car-and-ferry-lines.md)) |
@@ -26,7 +27,7 @@ Install, enable per project, signatures and the public registry (ADR-0036 Phase 
 uv run --no-project --with jsonschema --with pyyaml python tools/plugins/check.py --render
 ```
 
-validates every plugin and writes `apps/web/src/plugins/bundled.generated.json`, which the web app reads through `apps/web/src/plugins/registry.ts` (modes, tools, calculations, and parameter values resolved per mode and context option). CI runs it with `--check-rendered`.
+validates every plugin and writes `apps/web/src/plugins/bundled.generated.json`, which the web app reads through `apps/web/src/plugins/registry.ts` (modes, tools, calculations, and parameter values resolved per mode and context option; a plugin without modes of its own gets its values per core mode). CI runs it with `--check-rendered`.
 
 ## What the kits check, and what not yet
 

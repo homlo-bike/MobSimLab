@@ -14,6 +14,7 @@ the assumption library's rules (ADR-0018), extended by the plugin's modes and co
 
 --render writes apps/web/src/plugins/bundled.generated.json: per plugin its manifest summary, modes,
 contexts, tools, parameter labels and the resolved values per mode and context option (low, central, high).
+A plugin without modes of its own (a calculation such as the energy estimate) gets its values per core mode.
 """
 
 from __future__ import annotations
@@ -224,6 +225,16 @@ def check_plugin(
                 for prm in params
             }
         defaults[m["id"]] = per
+    if not modes:
+        # A plugin without modes of its own (a calculation) gives values per core mode, so the app can
+        # resolve them for each line of the project.
+        for mid in chk.MODES:
+            defaults[mid] = {
+                "*": {
+                    prm["key"]: {f: resolve(prm, mid, None, None)[f] for f in ("low", "central", "high")}
+                    for prm in params
+                }
+            }
     entry = {
         "id": pid,
         "name": manifest["name"],
