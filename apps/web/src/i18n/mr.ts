@@ -1,4 +1,5 @@
 import { editorsMr } from "./editors/mr";
+import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
 /** मराठी */
@@ -283,4 +284,5 @@ export const mr: Messages = {
   "prefs.calendar": "दिनदर्शिका, मागणी आणि खर्च",
 
   ...editorsMr,
+  ...PLUGIN_MESSAGES.mr,
 };

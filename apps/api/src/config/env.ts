@@ -39,6 +39,11 @@ export interface AppConfig {
    * address is the TCP peer. Needed for per-IP rate limits and audit IP hashes behind a TLS proxy.
    */
   trustedProxies?: string[];
+  /**
+   * Development mode (ADR-0036 §9): only then may an Owner allow unsigned plugins. Never set it on an instance
+   * that holds real plans.
+   */
+  developmentMode: boolean;
   /** Token-bucket limits (05 §3.5), in requests per minute. */
   rateLimits: { authPerMinute: number; writesPerMinute: number };
   secrets: Record<ApiSecretName, string>;
@@ -70,6 +75,7 @@ const envSchema = z.object({
   MOBSIMLAB_OIDC_CLIENT_ID: z.preprocess(emptyToUndefined, z.string().min(1).optional()),
   MOBSIMLAB_OIDC_ALLOW_INSECURE_HTTP: z.enum(["true", "false"]).default("false"),
   MOBSIMLAB_TRUSTED_PROXIES: z.preprocess(emptyToUndefined, z.string().min(1).optional()),
+  MOBSIMLAB_DEVELOPMENT_MODE: z.enum(["true", "false"]).default("false"),
   MOBSIMLAB_RATE_LIMIT_AUTH: z.coerce.number().int().min(1).max(10_000).default(10),
   MOBSIMLAB_RATE_LIMIT_WRITES: z.coerce.number().int().min(1).max(100_000).default(120),
 });
@@ -162,6 +168,7 @@ export function loadConfig(
           }
         : undefined,
     trustedProxies: d.MOBSIMLAB_TRUSTED_PROXIES ? splitList(d.MOBSIMLAB_TRUSTED_PROXIES) : undefined,
+    developmentMode: d.MOBSIMLAB_DEVELOPMENT_MODE === "true",
     rateLimits: {
       authPerMinute: d.MOBSIMLAB_RATE_LIMIT_AUTH,
       writesPerMinute: d.MOBSIMLAB_RATE_LIMIT_WRITES,

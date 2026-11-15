@@ -1,6 +1,6 @@
 import type { NestExpressApplication } from "@nestjs/platform-express";
 import cookieParser from "cookie-parser";
-import { json } from "express";
+import { json, raw } from "express";
 import helmet from "helmet";
 import type { AppConfig } from "./config/env";
 
@@ -38,5 +38,7 @@ export function configureApp(app: NestExpressApplication, config: AppConfig): vo
   // Nest adds no JSON parser of its own once one is registered, so both are registered here.
   app.use("/api/projects/:id/drawings", json({ limit: "8mb" }));
   app.use("/api/terrain", json({ limit: "2mb" }));
+  // Plugin packages (ADR-0036 §9) are uploaded as the raw .msplugin file, at most 10 MB.
+  app.use("/api/admin/plugins", raw({ type: "application/octet-stream", limit: "10mb" }));
   app.use(json({ limit: "100kb" }));
 }
