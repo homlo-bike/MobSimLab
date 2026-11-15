@@ -645,8 +645,8 @@ export const editorsId = {
   "schematic.transfer": "{line} · {n} mnt",
   "schematic.transferNote":
     "Menit pada label berwarna: perkiraan waktu jalan kaki untuk pindah ke jalur itu.",
-  "schematic.distNote":
-    "Di bawah jalur: jarak antarhalte, menyusuri jalan untuk jalur jalan, selain itu garis lurus. Kecepatan rata-rata: jarak dibagi waktu tempuh.",
+  "schematic.estNote":
+    "~ sebelum menit: perkiraan kasar waktu tempuh dari jarak antarhalte serta kecepatan dan percepatan biasa moda itu, di bagian yang belum punya waktu di jadwal. Kecepatan rata-rata tidak menghitung bagian itu.",
 
   "noise.title": "Kebisingan",
   "noise.showBand": "Tampilkan pita kebisingan",

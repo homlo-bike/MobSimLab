@@ -664,8 +664,8 @@ export const editorsZu = {
   "schematic.transfer": "{line} · imiz. {n}",
   "schematic.transferNote":
     "Imizuzu kumalebula anemibala: isikhathi esilinganisiwe sokuhamba ngezinyawo ukushintshela kulowo mugqa.",
-  "schematic.distNote":
-    "Ngaphansi komugqa: ibanga phakathi kwezitobhi, ngomgwaqo kwemigqa yomgwaqo, kungenjalo ngomugqa oqondile. Ijubane elimaphakathi: ibanga lihlukaniswe ngesikhathi sokushayela.",
+  "schematic.estNote":
+    "~ ngaphambi kwemizuzu: isikhathi sokushayela esilinganiselwe kusukela ebangeni phakathi kwezitobhi nejubane nokusheshisa okujwayelekile kohlobo lokuthutha, lapho uhlelo lwesikhathi lungenaso isikhathi okwamanje. Ijubane elimaphakathi aliyibali leyo mingxenye.",
 
   "noise.title": "Umsindo",
   "noise.showBand": "Bonisa ibhande lomsindo",

@@ -655,8 +655,8 @@ export const editorsIt = {
     "Nessuna stazione di questa linea è ancora registrata senza gradini (accesso senza gradini, ascensore o rampa in Crea).",
   "schematic.transfer": "{line} · {n} min",
   "schematic.transferNote": "Minuti sulle etichette colorate: cammino stimato per il cambio su quella linea.",
-  "schematic.distNote":
-    "Sotto la linea: distanza tra le fermate, lungo la strada per le linee stradali, altrimenti in linea d’aria. Velocità media: distanza diviso tempo di marcia.",
+  "schematic.estNote":
+    "~ prima dei minuti: tempo di marcia approssimato dalla distanza tra le fermate e dalla velocità e accelerazione abituali del modo, dove l’orario non ha ancora un tempo. La velocità media esclude quelle tratte.",
 
   "noise.title": "Rumore",
   "noise.showBand": "Mostra la fascia di rumore",

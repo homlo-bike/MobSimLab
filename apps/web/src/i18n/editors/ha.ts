@@ -644,8 +644,8 @@ export const editorsHa = {
   "schematic.transfer": "{line} · minti {n}",
   "schematic.transferNote":
     "Mintuna a kan alamomin launi: kimanin lokacin tafiya da ƙafa don canjawa zuwa wannan layi.",
-  "schematic.distNote":
-    "A ƙarƙashin layi: nisa tsakanin tashoshi, bin titi ga layukan titi, in ba haka ba a mike. Matsakaicin gudu: nisa raba lokacin tuƙi.",
+  "schematic.estNote":
+    "~ kafin mintuna: kimanin lokacin tuƙi daga nisa tsakanin tashoshi da saurin da hanzarin da aka saba na irin sufurin, inda jadawali bai da lokaci tukuna. Matsakaicin gudu bai ƙirga waɗannan sassan ba.",
 
   "noise.title": "Hayaniya",
   "noise.showBand": "Nuna yankin hayaniya",

@@ -114,6 +114,11 @@ export interface SchematicLine {
    * straight line between the stops.
    */
   distM: number[];
+  /**
+   * Per section: a rough driving time from the distance and the mode's usual top speed and acceleration, s, for
+   * where `runS` is not known yet.
+   */
+  runEstS: number[];
   /** Per stop: the drawn stop or station it comes from (`StationPart.id`). */
   partIds: string[];
 }
@@ -385,12 +390,15 @@ export function schematicNetwork(
         const a = kept[i]!.t;
         return a !== null && x.t !== null && x.t > a ? x.t - a : null;
       }),
+      runEstS: [],
       distM: kept.slice(1).map((x, i) => {
         const a = kept[i]!;
         return a.d !== null && x.d !== null && x.d > a.d ? x.d - a.d : distanceM(a.lonlat, x.lonlat);
       }),
       partIds: kept.map((x) => x.part.id),
     });
+    const last = lines[lines.length - 1]!;
+    last.runEstS = last.distM.map((m) => estimateRunS(l.mode, m));
   }
   return { stations: stations.map(({ key, name, lonlat, parts }) => ({ key, name, lonlat, parts })), lines };
 }
@@ -457,4 +465,33 @@ const STEP_FREE: readonly StationFeature[] = ["step_free", "elevator", "ramp"];
  */
 export function isStepFree(st: SchematicStation): boolean {
   return st.parts.length > 0 && st.parts.every((p) => p.features.some((f) => STEP_FREE.includes(f)));
+}
+
+/** Usual top speed (km/h) and acceleration (m/s²) per mode: the central values of the assumption library. */
+const MOTION: Record<string, [number, number]> = {
+  bus: [60, 1.2],
+  brt: [70, 1.2],
+  trolleybus: [60, 1.2],
+  intercity_bus: [100, 0.8],
+  tram: [60, 1.2],
+  light_rail: [80, 1.1],
+  metro: [80, 1.1],
+  commuter_rail: [120, 0.9],
+  regional_rail: [160, 0.8],
+  long_distance_rail: [200, 0.5],
+  high_speed_rail: [300, 0.4],
+};
+
+/** Track or road is longer than the straight line between stops by about this much. */
+const DETOUR = 1.15;
+
+/**
+ * Purpose: a rough driving time between two stops, s: accelerate to the mode's usual top speed, run, and brake
+ * at the same rate, over the straight distance times 1.15 (shorter sections never reach top speed).
+ */
+export function estimateRunS(mode: string, straightM: number): number {
+  const [kmh, a] = MOTION[mode] ?? [80, 1.0];
+  const v = kmh / 3.6;
+  const d = straightM * DETOUR;
+  return d >= (v * v) / a ? d / v + v / a : 2 * Math.sqrt(d / a);
 }

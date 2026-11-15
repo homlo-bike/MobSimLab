@@ -654,8 +654,8 @@ export const editorsEn = {
     "No station on this line is recorded as step-free yet (step-free access, lift or ramp in Create).",
   "schematic.transfer": "{line} · {n} min",
   "schematic.transferNote": "Minutes on the coloured labels: estimated walk to change to that line.",
-  "schematic.distNote":
-    "Under the line: distance between stops, along the street for street lines, else in a straight line. Average speed: distance over driving time.",
+  "schematic.estNote":
+    "~ before the minutes: a rough driving time from the distance between stops and the usual speed and acceleration of the mode, where the timetable has no time yet. Average speed leaves those sections out.",
 
   "noise.title": "Noise",
   "noise.showBand": "Show noise band",

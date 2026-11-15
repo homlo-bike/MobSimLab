@@ -654,8 +654,8 @@ export const editorsPt = {
   "schematic.transfer": "{line} · {n} min",
   "schematic.transferNote":
     "Minutos nas etiquetas coloridas: caminhada estimada para baldear para essa linha.",
-  "schematic.distNote":
-    "Sob a linha: distância entre paradas, pela rua nas linhas de rua, senão em linha reta. Velocidade média: distância dividida pelo tempo de percurso.",
+  "schematic.estNote":
+    "~ antes dos minutos: tempo de percurso aproximado pela distância entre paradas e pela velocidade e aceleração habituais do modo, onde o horário ainda não tem tempo. A velocidade média deixa esses trechos de fora.",
 
   "noise.title": "Ruído",
   "noise.showBand": "Mostrar faixa de ruído",

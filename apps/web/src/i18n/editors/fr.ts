@@ -668,8 +668,8 @@ export const editorsFr = {
   "schematic.transfer": "{line} · {n} min",
   "schematic.transferNote":
     "Minutes sur les étiquettes colorées : marche estimée pour la correspondance vers cette ligne.",
-  "schematic.distNote":
-    "Sous la ligne : distance entre arrêts, par la rue pour les lignes routières, sinon à vol d’oiseau. Vitesse moyenne : distance divisée par le temps de parcours.",
+  "schematic.estNote":
+    "~ devant les minutes : temps de parcours approximatif d’après la distance entre arrêts et la vitesse et l’accélération habituelles du mode, là où l’horaire n’a pas encore de temps. La vitesse moyenne ignore ces sections.",
 
   "noise.title": "Bruit",
   "noise.showBand": "Afficher la bande de bruit",

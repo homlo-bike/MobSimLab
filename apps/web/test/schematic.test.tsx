@@ -365,6 +365,11 @@ describe("Schematic tab", () => {
     const m1 = screen.getByRole("img", { name: "Strip map of line M1" });
     expect(within(m1).getByText("Underground", { selector: "text" })).toBeTruthy();
     expect(within(m1).getByText("05:00–00:00")).toBeTruthy();
+    // Without a timetable yet, every section still has a rough driving time, marked "~", and no distances.
+    const m1Texts = [...m1.querySelectorAll("text")].map((t) => t.textContent ?? "");
+    expect(m1Texts.filter((x) => /^~\d+(\.5)? min$/.test(x)).length).toBe(4);
+    expect(m1Texts.filter((x) => /\d km$/.test(x))).toHaveLength(1); // the length, no section distances
+    expect(m1Texts.join(" ")).toContain("~ before the minutes");
   });
 
   it("draws sea, lakes and rivers under the lines, and leaves them out when switched off", async () => {
@@ -584,6 +589,16 @@ describe("station features", () => {
 });
 
 describe("strip map extras", () => {
+  it("estimates driving times from the mode and draws the height axis in round steps", async () => {
+    const { estimateRunS } = await import("../src/features/schematic/lines");
+    const { heightAxis } = await import("../src/features/schematic/StripMap");
+    // A metro (80 km/h, 1.1 m/s²) over 1500 m in a straight line: 1725 m of track, top speed reached.
+    expect(estimateRunS("metro", 1500)).toBeCloseTo(1725 / (80 / 3.6) + 80 / 3.6 / 1.1, 5);
+    // A short tram hop never reaches top speed.
+    expect(estimateRunS("tram", 200)).toBeCloseTo(2 * Math.sqrt(230 / 1.2), 5);
+    expect(heightAxis([2, 3, 5])).toEqual({ lo: 0, hi: 30, ticks: [0, 10, 20, 30] });
+    expect(heightAxis([120, 410]).ticks).toEqual([100, 200, 300, 400, 500]);
+  });
   it("measures sections, walks to change and step-free stations", async () => {
     const { isStepFree, transferS } = await import("../src/features/schematic/lines");
     const net = schematicNetwork(RAILWAY, STREET_LINES);

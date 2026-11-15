@@ -623,8 +623,8 @@ export const editorsYo = {
     "Kò sí ibùdókọ̀ kankan lórí ìlà yìí tí a ti kọ pé kò ní àtẹ̀gùn (ìwọlé láìsí àtẹ̀gùn, ẹ̀rọ agbéniga tàbí ọ̀nà ìdagẹ̀rẹ̀ ní Ṣẹ̀dá).",
   "schematic.transfer": "{line} · ìṣẹ́jú {n}",
   "schematic.transferNote": "Ìṣẹ́jú lórí àwọn àmì aláwọ̀: àkókò ìrìn ẹsẹ̀ tí a fojú dá láti yí sí ìlà náà.",
-  "schematic.distNote":
-    "Lábẹ́ ìlà: ijìnnà láàrin àwọn ibùdó, lẹ́gbẹ̀ẹ́ òpópónà fún ìlà òpópónà, bí bẹ́ẹ̀ kọ́ ní ìlà tààrà. Ìyára àpapọ̀: ijìnnà pín sí àkókò ìwakọ̀.",
+  "schematic.estNote":
+    "~ ṣáájú ìṣẹ́jú: àkókò ìwakọ̀ tí a fojú dá láti ijìnnà láàrin àwọn ibùdó àti ìyára àti ìmúyára àṣà ọ̀nà ìrìnnà náà, níbi tí àtòjọ àkókò kò tíì ní àkókò. Ìyára àpapọ̀ kò ka àwọn apá yẹn.",
 
   "noise.title": "Ariwo",
   "noise.showBand": "Fi agbègbè ariwo hàn",

@@ -59,15 +59,17 @@ stations), and ADR-0025 already names a simpler octilinear layout as the fallbac
    where it was drawn on the diagram.
 10. **Strip map details**, drawn in the SVG so they export: vehicles in service, headways in the peak and
     off-peak, first and last departure, round trip, length, average speed (distance over driving time) and the
-    step-free stations (every stop or platform with step-free access, a lift or a ramp); the distance between
-    stops (along the routed street for street lines, else straight); the walk to change at each interchange
+    step-free stations (every stop or platform with step-free access, a lift or a ramp); the walk to change at each interchange
     (straight distance × 1.3 at 4.5 km/h, at least 60 s, plus 60 s per level, the journey planner's
     settings); the estimated driving time between
     each pair of stops (without the stop itself: street lines from the routed legs, plugin lines from their runs,
-    rail lines from the published timetable); what each section runs on (underground, street level, elevated,
+    rail lines from the published timetable; where none is known yet, a rough time marked "~" from the
+    straight distance × 1.15 and the mode's central top speed and acceleration from the assumption library,
+    accelerating and braking at the same rate, left out of the average speed); what each section runs on (underground, street level, elevated,
     ramp; rail from the built track's levels, sampled along the line between the stations; street lines on the
     street, cable cars in the air, ferries on the water); and the ground height at each station from the terrain
-    service. Rail figures need drawn track: until then they show as –. Street lines run at half their headway in
+    service, drawn as a profile chart with a height axis in round steps (at least 20 m tall so flat lines stay
+    flat) and the height of each station in a row under it. Rail figures need drawn track: until then they show as –. Street lines run at half their headway in
     the peak, as in the journey planner.
 
 ## Consequences

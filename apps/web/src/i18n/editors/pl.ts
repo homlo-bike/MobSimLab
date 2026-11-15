@@ -699,8 +699,8 @@ export const editorsPl = {
   "schematic.transfer": "{line} · {n} min",
   "schematic.transferNote":
     "Minuty na kolorowych etykietach: szacowany czas dojścia przy przesiadce na tę linię.",
-  "schematic.distNote":
-    "Pod linią: odległość między przystankami, wzdłuż ulicy dla linii ulicznych, w innych przypadkach w linii prostej. Średnia prędkość: odległość przez czas jazdy.",
+  "schematic.estNote":
+    "~ przed minutami: przybliżony czas jazdy z odległości między przystankami oraz zwykłej prędkości i przyspieszenia danego środka transportu, gdzie rozkład nie ma jeszcze czasu. Średnia prędkość pomija te odcinki.",
 
   "noise.title": "Hałas",
   "noise.showBand": "Pokaż pas hałasu",

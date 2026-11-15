@@ -653,8 +653,8 @@ export const editorsSw = {
   "schematic.transfer": "{line} · dak {n}",
   "schematic.transferNote":
     "Dakika kwenye lebo za rangi: muda unaokadiriwa wa kutembea kubadilisha kwenda mstari huo.",
-  "schematic.distNote":
-    "Chini ya mstari: umbali kati ya vituo, kufuata barabara kwa mistari ya barabarani, vinginevyo kwa mstari ulionyooka. Kasi ya wastani: umbali kwa muda wa kuendesha.",
+  "schematic.estNote":
+    "~ kabla ya dakika: muda wa kuendesha unaokadiriwa kutoka umbali kati ya vituo na kasi na mchapuko wa kawaida wa njia hiyo ya usafiri, pale ratiba haina muda bado. Kasi ya wastani haihesabu sehemu hizo.",
 
   "noise.title": "Kelele",
   "noise.showBand": "Onyesha ukanda wa kelele",

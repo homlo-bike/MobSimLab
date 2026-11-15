@@ -656,8 +656,8 @@ export const editorsEs = {
   "schematic.transfer": "{line} · {n} min",
   "schematic.transferNote":
     "Minutos en las etiquetas de color: caminata estimada para transbordar a esa línea.",
-  "schematic.distNote":
-    "Bajo la línea: distancia entre paradas, por la calle en líneas de calle, si no en línea recta. Velocidad media: distancia entre tiempo de marcha.",
+  "schematic.estNote":
+    "~ antes de los minutos: tiempo de marcha aproximado según la distancia entre paradas y la velocidad y aceleración habituales del modo, donde el horario aún no tiene tiempo. La velocidad media no cuenta esos tramos.",
 
   "noise.title": "Ruido",
   "noise.showBand": "Mostrar banda de ruido",

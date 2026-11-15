@@ -655,8 +655,8 @@ export const editorsNl = {
   "schematic.transfer": "{line} · {n} min",
   "schematic.transferNote":
     "Minuten op de gekleurde labels: geschatte looptijd om over te stappen op die lijn.",
-  "schematic.distNote":
-    "Onder de lijn: afstand tussen haltes, langs de straat voor straatlijnen, anders hemelsbreed. Gemiddelde snelheid: afstand gedeeld door rijtijd.",
+  "schematic.estNote":
+    "~ voor de minuten: ruwe rijtijd uit de afstand tussen haltes en de gebruikelijke snelheid en versnelling van de modaliteit, waar de dienstregeling nog geen tijd heeft. De gemiddelde snelheid laat die delen weg.",
 
   "noise.title": "Geluid",
   "noise.showBand": "Geluidsband tonen",

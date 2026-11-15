@@ -631,8 +631,8 @@ export const editorsTr = {
     "Bu hatta henüz basamaksız olarak kaydedilmiş istasyon yok (Oluştur’da basamaksız erişim, asansör veya rampa).",
   "schematic.transfer": "{line} · {n} dk",
   "schematic.transferNote": "Renkli etiketlerdeki dakikalar: o hatta aktarma için tahmini yürüme süresi.",
-  "schematic.distNote":
-    "Hattın altında: duraklar arası mesafe, sokak hatlarında sokak boyunca, diğerlerinde kuş uçuşu. Ortalama hız: mesafe bölü sürüş süresi.",
+  "schematic.estNote":
+    "Dakikaların önündeki ~: tarifede henüz süre olmayan yerlerde, duraklar arası mesafeden ve türün olağan hız ve ivmesinden kaba sürüş süresi. Ortalama hız bu bölümleri saymaz.",
 
   "noise.title": "Gürültü",
   "noise.showBand": "Gürültü bandını göster",

@@ -664,8 +664,8 @@ export const editorsDe = {
   "schematic.transfer": "{line} · {n} min",
   "schematic.transferNote":
     "Minuten auf den farbigen Schildern: geschätzter Fußweg zum Umsteigen in diese Linie.",
-  "schematic.distNote":
-    "Unter der Linie: Abstand der Halte, bei Straßenlinien entlang der Straße, sonst in Luftlinie. Durchschnittsgeschwindigkeit: Strecke durch Fahrzeit.",
+  "schematic.estNote":
+    "~ vor den Minuten: grobe Fahrzeit aus dem Abstand der Halte und der üblichen Geschwindigkeit und Beschleunigung des Verkehrsmittels, wo der Fahrplan noch keine Zeit hat. Die Durchschnittsgeschwindigkeit lässt diese Abschnitte aus.",
 
   "noise.title": "Lärm",
   "noise.showBand": "Lärmband anzeigen",

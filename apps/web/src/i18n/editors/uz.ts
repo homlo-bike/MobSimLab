@@ -658,8 +658,8 @@ export const editorsUz = {
   "schematic.transfer": "{line} · {n} daq",
   "schematic.transferNote":
     "Rangli yorliqlardagi daqiqalar: o‘sha liniyaga o‘tish uchun taxminiy piyoda vaqti.",
-  "schematic.distNote":
-    "Liniya ostida: bekatlar orasidagi masofa, ko‘cha liniyalarida ko‘cha bo‘ylab, aks holda to‘g‘ri chiziqda. O‘rtacha tezlik: masofa ÷ yurish vaqti.",
+  "schematic.estNote":
+    "Daqiqalar oldidagi ~: jadvalda hali vaqt bo‘lmagan joyda bekatlar orasidagi masofa va transport turining odatiy tezligi hamda tezlanishidan taxminiy yurish vaqti. O‘rtacha tezlik bu qismlarni hisobga olmaydi.",
 
   "noise.title": "Shovqin",
   "noise.showBand": "Shovqin chizigʻini koʻrsatish",

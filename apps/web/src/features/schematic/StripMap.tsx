@@ -45,6 +45,31 @@ function minutes(v: number): number {
   return v < 10 ? Math.round(v * 2) / 2 : Math.round(v);
 }
 
+/**
+ * Purpose: the height axis of the profile: round limits around the heights and three to five ticks between
+ * them, at least 10 m apart so a flat line does not look steep.
+ */
+export function heightAxis(hs: readonly number[]): { lo: number; hi: number; ticks: number[] } {
+  if (!hs.length) return { lo: 0, hi: 10, ticks: [0, 10] };
+  const min = Math.min(...hs);
+  const max = Math.max(...hs);
+  const span = Math.max(20, max - min);
+  const raw = span / 3;
+  const mag = 10 ** Math.floor(Math.log10(raw));
+  const step = ([1, 2, 2.5, 5, 10].map((m) => m * mag).find((x) => x >= raw) ?? 10 * mag) as number;
+  const mid = (min + max) / 2;
+  let lo = Math.floor(Math.min(min, mid - span / 2) / step) * step;
+  let hi = Math.ceil(Math.max(max, mid + span / 2) / step) * step;
+  if (hi <= lo) hi = lo + step;
+  if (lo < 0 && min >= 0) {
+    hi -= lo;
+    lo = 0;
+  }
+  const ticks: number[] = [];
+  for (let v = lo; v <= hi + step / 1000; v += step) ticks.push(Math.round(v * 100) / 100);
+  return { lo, hi, ticks };
+}
+
 /** Purpose: the symbols to draw at a station: its statuses, then its features, as the drawing options say. */
 export function symbolsAt(
   net: SchematicNetwork,
@@ -102,10 +127,9 @@ export function StripMap({
   const stepFree = stopNames
     .filter((st) => isStepFree(net.stations[st]!))
     .map((st) => net.stations[st]!.name);
-  const dist = (m: number) =>
-    m < 1000
-      ? t("schematic.metres", { n: fmt(Math.round(m / 10) * 10) })
-      : t("schematic.km", { n: fmt(m / 1000, 1) });
+  // Driving time per section: the worked-out time, else a rough one from the distance and the mode.
+  const run = line.runS.map((r, k) => (r !== null ? r : (line.runEstS[k] ?? null)));
+  const estimated = line.runS.some((r, k) => r === null && line.runEstS[k] !== undefined);
   // The walk to change from this line to another at a station, minutes.
   const walkMin = (k: number, other: SchematicLine): number | null => {
     const st = net.stations[line.stops[k]!]!;
@@ -159,23 +183,26 @@ export function StripMap({
     conn.some((c) => c.length) ? t("schematic.connections") : t("schematic.noConnections"),
     t("schematic.transferNote"),
     t("schematic.timeNote"),
-    t("schematic.distNote"),
+    ...(estimated ? [t("schematic.estNote")] : []),
   ].flatMap((x) => wrap(x, Math.max(30, Math.floor((width - left) / 5.2))));
+  // The height profile: a chart with a height axis, the ground filled in, a guide at every station and the
+  // height of each station in a row under it.
   const elevTop = stepTop + stepLines.length * 15 + 22;
-  const elevH = 60;
   const known = line.stops.map((st) => heights?.[st] ?? null);
   const hs = known.filter((h): h is number => h !== null);
-  const hMin = hs.length ? Math.min(...hs) : 0;
-  const hMax = hs.length ? Math.max(...hs) : 0;
-  const yOf = (h: number) =>
-    elevTop + 22 + (hMax > hMin ? (1 - (h - hMin) / (hMax - hMin)) * elevH : elevH / 2);
-  const height = elevTop + 22 + elevH + 40 + notes.length * 17 + 20;
+  const axis = heightAxis(hs);
+  const chartTop = elevTop + 16;
+  const chartH = hs.length ? 96 : 0;
+  const chartBottom = chartTop + chartH;
+  const yOf = (h: number) => chartBottom - ((h - axis.lo) / (axis.hi - axis.lo)) * chartH;
+  const height = (hs.length ? chartBottom + 30 : elevTop + 10) + 30 + notes.length * 17 + 20;
   const fg = textOn(line.color);
   const xOf = (k: number) => left + k * step;
   const badgeW = Math.max(56, line.name.length * 11 + 24);
   const elevPts = known
-    .map((h, k) => (h === null ? null : `${xOf(k)},${yOf(h).toFixed(1)}`))
-    .filter((p): p is string => p !== null);
+    .map((h, k) => (h === null ? null : ([xOf(k), yOf(h)] as const)))
+    .filter((p): p is readonly [number, number] => p !== null);
+  const ground = elevPts.map(([x, y]) => `${x},${y.toFixed(1)}`).join(" ");
 
   return (
     <svg
@@ -226,35 +253,22 @@ export function StripMap({
         strokeWidth={10}
         strokeLinecap="round"
       />
-      {/* Estimated driving time between stops, over the band. */}
-      {line.runS.map((r, k) =>
+      {/* Driving time between stops, over the band; "~" where it is a rough estimate. */}
+      {run.map((r, k) =>
         r === null ? null : (
           <text
             key={`run-${k}`}
             x={(xOf(k) + xOf(k + 1)) / 2}
             y={bandY - 10}
-            fontSize={10.5}
+            fontSize={11}
             fontWeight={600}
             fill={MUTED}
             textAnchor="middle"
           >
-            {t("schematic.minutes", { n: fmt(minutes(r / 60), 1) })}
+            {(line.runS[k] === null ? "~" : "") + t("schematic.minutes", { n: fmt(minutes(r / 60), 1) })}
           </text>
         ),
       )}
-      {/* Distance between stops, under the band. */}
-      {line.distM.map((m, k) => (
-        <text
-          key={`dist-${k}`}
-          x={(xOf(k) + xOf(k + 1)) / 2}
-          y={bandY + 18}
-          fontSize={10}
-          fill="#64748b"
-          textAnchor="middle"
-        >
-          {dist(m)}
-        </text>
-      ))}
       {line.stops.map((st, k) => {
         const x = xOf(k);
         const station = net.stations[st]!;
@@ -378,24 +392,70 @@ export function StripMap({
             ? t("schematic.row.elevation")
             : t("schematic.row.elevationNone")}
       </text>
-      {elevPts.length > 1 && (
-        <polyline
-          points={elevPts.join(" ")}
-          fill="none"
-          stroke="#94a3b8"
-          strokeWidth={2}
-          strokeLinejoin="round"
-        />
-      )}
-      {known.map((h, k) =>
-        h === null ? null : (
-          <g key={`h-${k}`}>
-            <circle cx={xOf(k)} cy={yOf(h)} r={3} fill="#64748b" />
-            <text x={xOf(k)} y={yOf(h) - 7} fontSize={10.5} textAnchor="middle" fill={INK}>
-              {t("schematic.metres", { n: fmt(h) })}
+      {hs.length > 0 && (
+        <g aria-label={t("schematic.row.elevation")}>
+          {axis.ticks.map((v) => (
+            <g key={`tick-${v}`}>
+              <line x1={left} x2={xOf(n - 1)} y1={yOf(v)} y2={yOf(v)} stroke="#e2e8f0" strokeWidth={1} />
+              <text x={left - 8} y={yOf(v) + 3.5} fontSize={9.5} textAnchor="end" fill="#64748b">
+                {t("schematic.metres", { n: fmt(v) })}
+              </text>
+            </g>
+          ))}
+          {line.stops.map((_, k) => (
+            <line
+              key={`guide-${k}`}
+              x1={xOf(k)}
+              x2={xOf(k)}
+              y1={chartTop}
+              y2={chartBottom}
+              stroke="#cbd5e1"
+              strokeWidth={1}
+              strokeDasharray="2 3"
+            />
+          ))}
+          {elevPts.length > 1 && (
+            <>
+              <polygon
+                points={`${elevPts[0]![0]},${chartBottom} ${ground} ${elevPts[elevPts.length - 1]![0]},${chartBottom}`}
+                fill={line.color}
+                fillOpacity={0.14}
+              />
+              <polyline
+                points={ground}
+                fill="none"
+                stroke={line.color}
+                strokeWidth={2.5}
+                strokeLinejoin="round"
+              />
+            </>
+          )}
+          {elevPts.map(([x, y]) => (
+            <circle
+              key={`hp-${x}`}
+              cx={x}
+              cy={y}
+              r={3.5}
+              fill="#ffffff"
+              stroke={line.color}
+              strokeWidth={2}
+            />
+          ))}
+          <line x1={left} x2={xOf(n - 1)} y1={chartBottom} y2={chartBottom} stroke="#94a3b8" />
+          {known.map((h, k) => (
+            <text
+              key={`h-${k}`}
+              x={xOf(k)}
+              y={chartBottom + 18}
+              fontSize={11}
+              fontWeight={600}
+              textAnchor="middle"
+              fill={h === null ? "#94a3b8" : INK}
+            >
+              {h === null ? "–" : t("schematic.metres", { n: fmt(h) })}
             </text>
-          </g>
-        ),
+          ))}
+        </g>
       )}
 
       {notes.map((x, i) => (

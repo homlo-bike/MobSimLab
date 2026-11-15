@@ -620,8 +620,8 @@ export const editorsIg = {
     "Ọ dịbeghị ọdụ n'ahịrị a e debere na ọ nweghị steepụ (ụzọ na-enweghị steepụ, igwe mbuli ma ọ bụ ụzọ mgbada na Mepụta).",
   "schematic.transfer": "{line} · nkeji {n}",
   "schematic.transferNote": "Nkeji na akara agba: oge ije a tụrụ atụ iji gbanwee gaa n'ahịrị ahụ.",
-  "schematic.distNote":
-    "N'okpuru ahịrị: anya n'etiti ọdụ, n'okporo ụzọ maka ahịrị okporo ụzọ, ma ọ bụghị ya n'ahịrị kwụ ọtọ. Ọsọ nkezi: anya kewaa oge ịnya.",
+  "schematic.estNote":
+    "~ tupu nkeji: oge ịnya a tụrụ atụ site n'anya n'etiti ọdụ na ọsọ na ngwa ngwa ụdị njem ahụ na-emekarị, ebe usoro oge enweghị oge ugbu a. Ọsọ nkezi anaghị agụ akụkụ ndị ahụ.",
 
   "noise.title": "Mkpọtụ",
   "noise.showBand": "Gosi mpaghara mkpọtụ",

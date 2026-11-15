@@ -605,8 +605,8 @@ export const editorsZh = {
   "schematic.stepFree.none": "本线尚无车站记录为无台阶（在创建中设置无台阶通行、电梯或坡道）。",
   "schematic.transfer": "{line} · {n} 分钟",
   "schematic.transferNote": "彩色标签上的分钟数：换乘该线路的估计步行时间。",
-  "schematic.distNote":
-    "线路下方：站间距离，地面公交沿道路计算，其他按直线计算。平均速度：距离除以行驶时间。",
+  "schematic.estNote":
+    "分钟前的 ~：时刻表尚无时间时，按站间距离及该方式的常规速度和加速度粗略估算的行驶时间。平均速度不计这些区段。",
 
   "noise.title": "噪声",
   "noise.showBand": "显示噪声带",
