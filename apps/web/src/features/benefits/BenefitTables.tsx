@@ -33,6 +33,8 @@ import {
   type Estimate,
   type Metric,
   type PlaceIn,
+  type Prepared,
+  type Zone,
   prepare,
   type Row,
   type ZoneAccess,
@@ -295,6 +297,7 @@ export function BenefitTables({
                 value={value}
               />
               <AccessTable row={row} />
+              {prepared && <PerStation prepared={prepared} row={row} />}
               <PerLine est={est} money={money} />
             </>
           )}
@@ -443,6 +446,84 @@ function AccessTable({ row }: { row: Row }) {
                 <td className={num}>{fmtCount(a.before[k])}</td>
                 <td className={`${num} font-semibold`}>{fmtCount(a.after[k])}</td>
                 <td className={num}>{fmtCount(a.gaining[k])}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  );
+}
+
+/**
+ * Purpose: the stations of a scope (one line, all lines of a mode, or all lines), most people first, with
+ * the people and jobs within walking distance of each. Each 50 m cell counts once, for its nearest station.
+ */
+export function stationRows(prepared: Prepared, row: Pick<Row, "id" | "scope" | "mode">) {
+  const lines = new Map(prepared.net.lines.map((l) => [l.id, l]));
+  const inScope = (z: Zone) =>
+    row.scope === "total" ||
+    (row.scope === "line"
+      ? z.lines.includes(row.id)
+      : z.lines.some((id) => lines.get(id)?.mode === row.mode));
+  return prepared.zones
+    .filter(inScope)
+    .map((z) => ({
+      id: z.id,
+      name: z.name,
+      lines: z.lines.flatMap((id) => {
+        const l = lines.get(id);
+        return l ? [{ id, name: l.name, color: l.color }] : [];
+      }),
+      radius: z.radius,
+      pop: z.pop,
+      jobs: z.jobs,
+    }))
+    .sort((a, b) => b.pop - a.pop || b.jobs - a.jobs || a.name.localeCompare(b.name));
+}
+
+function PerStation({ prepared, row }: { prepared: Prepared; row: Row }) {
+  const rows = stationRows(prepared, row);
+  if (!rows.length) return null;
+  return (
+    <section className={card} aria-labelledby="benefit-per-station">
+      <h3 id="benefit-per-station" className="caps m-0">
+        People and jobs near each station
+      </h3>
+      <p className="mt-1 text-xs text-slate-500">
+        People living and jobs within walking distance of each station, most people first. Where two stations
+        are close, each place counts once, for the nearer station.
+      </p>
+      <div className="mt-2 max-h-[28rem] overflow-auto">
+        <table className="w-full min-w-[34rem] text-sm">
+          <thead className="sticky top-0 bg-white">
+            <tr className="border-b border-slate-200">
+              <th className={th}>Station</th>
+              <th className={th}>Lines</th>
+              <th className={`${th} text-right`}>Walking distance</th>
+              <th className={`${th} text-right`}>People</th>
+              <th className={`${th} text-right`}>Jobs</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r) => (
+              <tr key={r.id} className="border-b border-slate-100">
+                <td className={td}>{r.name}</td>
+                <td className={td}>
+                  {r.lines.map((l) => (
+                    <span key={l.id} className="mr-2 inline-flex items-center gap-1 whitespace-nowrap">
+                      <span
+                        className="inline-block h-2.5 w-2.5 rounded-full"
+                        style={{ background: l.color }}
+                        aria-hidden="true"
+                      />
+                      {l.name}
+                    </span>
+                  ))}
+                </td>
+                <td className={num}>{Math.round(r.radius)} m</td>
+                <td className={`${num} font-semibold`}>{fmtCount(r.pop)}</td>
+                <td className={num}>{fmtCount(r.jobs)}</td>
               </tr>
             ))}
           </tbody>
