@@ -20,6 +20,7 @@
     "cookie-parser": "^1.4.7",
     "express": "^5.1.0",
     "helmet": "^8.3.0",
+    "highs": "1.15.4",
     "kysely": "^0.29.7",
     "openid-client": "^6.8.8",
     "pg": "^8.23.1",

@@ -43,6 +43,7 @@ AGENT_GLOBAL_FIELDS = {
     "walk_speed_kmh": "demand.walk_speed_kmh",
     "crossing_delay_s": "walk.crossing_delay_s",
     "walk_rule_minutes": "analysis.walk_rule_minutes",
+    "cycle_speed_kmh": "analysis.cycle_speed_kmh",
     "frequent_headway_min": "analysis.frequent_headway_min",
     "min_change_s": "journey.min_change_s",
 }
