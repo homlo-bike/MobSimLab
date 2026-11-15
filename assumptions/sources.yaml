@@ -909,3 +909,84 @@
   access: free
   retrieved: 2026-11-09
   checked_via: none
+
+- id: dft-agglomeration-2018
+  title: "Department for Transport (UK): Agglomeration elasticities: existing evidence and future priorities (2018), with TAG unit A2.4 productivity impacts"
+  publisher: UK Department for Transport
+  url: https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/706671/agglomeration-elasticities-existing-evidence-and-future-priorities.pdf
+  licence: Open Government Licence v3.0
+  access: free
+  retrieved: 2026-11-09
+  checked_via: search-snippet
+
+- id: isacsson-2015
+  title: "Isacsson, Börjesson, Andersson, Anderstig: The impact of accessibility on labour earnings (CTS Working Paper 2015:18, Stockholm)"
+  publisher: Centre for Transport Studies, Stockholm
+  url: https://swopec.hhs.se/ctswps/abs/ctswps2015_018.htm
+  licence: © the authors; numbers cited as facts
+  access: free
+  retrieved: 2026-11-09
+  checked_via: search-snippet
+
+- id: debrezion-2007
+  title: "Debrezion, Pels, Rietveld: The impact of railway stations on residential and commercial property value: a meta-analysis (Journal of Real Estate Finance and Economics 35, 2007)"
+  publisher: Springer
+  url: https://research.vu.nl/en/publications/the-impact-of-railway-stations-on-residential-and-commercial-prop/
+  licence: © the authors; numbers cited as facts
+  access: paywalled
+  retrieved: 2026-11-09
+  checked_via: search-snippet
+
+- id: rennert-2022
+  title: "Rennert: A meta-analysis of the impact of rail stations on property values: applying a transit planning lens (Transportation Research Part A 163, 2022)"
+  publisher: Elsevier
+  url: https://ideas.repec.org/a/eee/transa/v163y2022icp165-180.html
+  licence: © the author; numbers cited as facts
+  access: paywalled
+  retrieved: 2026-11-09
+  checked_via: search-snippet
+
+- id: mohammad-2013
+  title: "Mohammad, Graham, Melo, Anderson: A meta-analysis of the impact of rail projects on land and property values (Transportation Research Part A 50, 2013)"
+  publisher: Elsevier
+  url: https://econpapers.repec.org/RePEc:eee:transa:v:50:y:2013:i:c:p:158-170
+  licence: © the authors; numbers cited as facts
+  access: paywalled
+  retrieved: 2026-11-09
+  checked_via: search-snippet
+
+- id: ilostat-labour-share
+  title: "ILOSTAT: labour income share as a percent of GDP (SDG indicator 10.4.1), ILO modelled estimates"
+  publisher: International Labour Organization
+  url: https://ilostat.ilo.org/topics/labour-income/
+  licence: CC BY 4.0
+  access: free
+  retrieved: 2026-11-09
+  checked_via: none
+
+- id: hca-employment-density-2015
+  title: "Homes and Communities Agency (UK): Employment Density Guide, 3rd edition (2015)"
+  publisher: Homes and Communities Agency
+  url: https://www.gov.uk/government/publications/employment-density-guide
+  licence: Open Government Licence v3.0
+  access: free
+  retrieved: 2026-11-09
+  checked_via: none
+
+- id: oecd-icio
+  title: "OECD Inter-Country Input-Output tables (value added and imports per unit of final demand by industry)"
+  publisher: OECD
+  url: https://www.oecd.org/en/data/datasets/inter-country-input-output-tables.html
+  licence: CC BY 4.0
+  access: free
+  retrieved: 2026-11-09
+  checked_via: none
+
+- id: worldbank-benefit-wdi
+  title: "World Bank World Development Indicators API: NY.GDP.PCAP.CN (GDP per capita, local currency), SL.EMP.TOTL.SP.ZS (employment to population ratio 15+), SP.POP.0014.TO.ZS (population 0–14), SP.POP.TOTL (population)"
+  publisher: World Bank
+  url: https://datahelpdesk.worldbank.org/knowledgebase/articles/889392-about-the-indicators-api-documentation
+  licence: CC BY 4.0
+  access: free
+  retrieved: 2026-11-09
+  checked_via: none

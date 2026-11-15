@@ -212,6 +212,9 @@ export const hi: Messages = {
   "drawing.rail-timetable": "रेल समय-सारणी",
   "drawing.preferences": "प्रोजेक्ट प्राथमिकताएँ",
   "drawing.costs": "लागत सेटिंग्स",
+  "drawing.scenarios": "सहेजे गए परिदृश्य",
+  "drawing.benefits": "लाभ के सूत्र",
+  "drawing.regions": "क्षेत्र",
 
   "tab.label": "प्रोजेक्ट",
   "tab.simulator": "सिम्युलेटर",
@@ -248,6 +251,8 @@ export const hi: Messages = {
   "schematic.export": "प्रिंट और स्क्रीन के लिए निर्यात",
 
   "gis.title": "GIS",
+  "gis.streetsView": "सड़कें",
+  "gis.regionsView": "क्षेत्र",
   "gis.intro": "गणनाओं में इस्तेमाल होने वाली जानकारी जोड़ें या संपादित करें।",
   "gis.areas": "क्षेत्र बनाएँ या OpenStreetMap से आयात करें",
   "gis.streets": "सड़क लेआउट: बस, साइकिल और ट्राम लेन, गति, ऊपरी तार",
@@ -256,12 +261,6 @@ export const hi: Messages = {
 
   "tables.title": "तालिकाएँ",
   "tables.intro": "प्रोजेक्ट से जुड़ी हर गणना, यह अनुमान लगाने के लिए कि यह कितना अच्छा प्रदर्शन करेगा।",
-  "tables.summary": "सारांश",
-  "tables.infrastructure": "लाइनें, स्टेशन, पटरी की लंबाई, पुल, सुरंगें (कट एंड कवर या TBM)",
-  "tables.service": "आवृत्ति, संचालन घंटे, बेड़ा, अनुमानित यात्री",
-  "tables.compare": "परिदृश्यों की साथ-साथ तुलना करें",
-  "tables.more": "और तालिकाएँ",
-  "tables.moreIntro": "इस टैब में जल्द आएँगी।",
 
   "prefs.title": "प्रोजेक्ट प्राथमिकताएँ",
   "prefs.intro": "पूरे प्रोजेक्ट पर लागू होने वाले विवरण और सेटिंग्स।",

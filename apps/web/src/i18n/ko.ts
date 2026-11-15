@@ -209,6 +209,9 @@ export const ko: Messages = {
   "drawing.rail-timetable": "철도 시간표",
   "drawing.preferences": "프로젝트 환경설정",
   "drawing.costs": "비용 설정",
+  "drawing.scenarios": "저장된 시나리오",
+  "drawing.benefits": "편익 산식",
+  "drawing.regions": "지역",
 
   "tab.label": "프로젝트",
   "tab.simulator": "시뮬레이터",
@@ -245,6 +248,8 @@ export const ko: Messages = {
   "schematic.export": "인쇄 및 화면용 내보내기",
 
   "gis.title": "GIS",
+  "gis.streetsView": "도로",
+  "gis.regionsView": "지역",
   "gis.intro": "계산에 쓰이는 정보를 추가하고 편집합니다.",
   "gis.areas": "지역을 그리거나 OpenStreetMap에서 가져오기",
   "gis.streets": "도로 구성: 버스·자전거·트램 차로, 속도, 가선",
@@ -253,12 +258,6 @@ export const ko: Messages = {
 
   "tables.title": "표",
   "tables.intro": "프로젝트 성능을 추정하기 위한 모든 계산.",
-  "tables.summary": "요약",
-  "tables.infrastructure": "노선, 역, 선로 연장, 교량, 터널(개착 또는 TBM)",
-  "tables.service": "배차, 운행 시간, 차량 수, 예상 승객 수",
-  "tables.compare": "시나리오 나란히 비교",
-  "tables.more": "추가 표",
-  "tables.moreIntro": "이 탭에 곧 추가됩니다.",
 
   "prefs.title": "프로젝트 환경설정",
   "prefs.intro": "프로젝트 전체에 적용되는 세부 정보와 설정.",

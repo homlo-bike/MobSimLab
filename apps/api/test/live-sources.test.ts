@@ -8,7 +8,14 @@ import { OverpassClient } from "../src/gateway/overpass.client";
 import { WorldPopClient } from "../src/gateway/worldpop.client";
 import { PopulationService } from "../src/population/population.service";
 import { WorldBankClient } from "../src/gateway/worldbank.client";
-import { railQuery, streetQuery, walkQuery } from "../src/street-network/street-network.service";
+import { areasQuery, parseAreas } from "../src/benefits/benefits.service";
+import {
+  placeQuery,
+  places,
+  railQuery,
+  streetQuery,
+  walkQuery,
+} from "../src/street-network/street-network.service";
 import { buildingQuery, crossings } from "../src/terrain/buildings";
 import { TerrainService } from "../src/terrain/terrain.service";
 
@@ -198,6 +205,19 @@ describe.skipIf(!live)("live: World Bank indicators and the country of a point",
     async () => {
       const at = parseCountry(await new OverpassClient().run(countryQuery(6.9583, 50.9413)));
       expect(at.iso3 ?? at.iso2).toMatch(/^DEU?$/);
+    },
+    T,
+  );
+});
+
+describe.skipIf(!live)("live: benefit tables sources (OpenStreetMap places and areas)", () => {
+  it(
+    "Overpass lists schools or clinics in a tile and the areas around a point",
+    async () => {
+      const overpass = new OverpassClient();
+      expect(places(await overpass.run(placeQuery(14, ...TILE))).length).toBeGreaterThan(0);
+      const areas = parseAreas(await overpass.run(areasQuery(6.958, 50.941)));
+      expect(areas.some((a) => a.name.includes("Köln"))).toBe(true);
     },
     T,
   );

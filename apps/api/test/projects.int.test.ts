@@ -242,6 +242,30 @@ describe("projects", () => {
         .status,
     ).toBe(400);
     expect((await as("alice").get(path)).body.drawings.preferences.doc).toEqual(prefs);
+    // Tables tab scenarios: named copies of the design, at most 20.
+    const scenario = (id: string) => ({
+      id,
+      name: `Scenario ${id}`,
+      savedAt: "2026-11-10T12:00:00.000Z",
+      railway: null,
+      streetLines: { lines: [] },
+    });
+    expect(
+      (await as("alice").put(`${path}/scenarios`, { doc: { scenarios: [scenario("a")] }, baseVersion: null }))
+        .status,
+    ).toBe(200);
+    const many = Array.from({ length: 21 }, (_, i) => scenario(String(i)));
+    expect(
+      (await as("alice").put(`${path}/scenarios`, { doc: { scenarios: many }, baseVersion: 1 })).status,
+    ).toBe(400);
+    expect(
+      (
+        await as("alice").put(`${path}/scenarios`, {
+          doc: { scenarios: [{ ...scenario("b"), name: " " }] },
+          baseVersion: 1,
+        })
+      ).status,
+    ).toBe(400);
     // Other routes keep the small limit.
     expect(
       (await as("alice").patch(`/api/projects/${lakeside}`, { description: "x".repeat(200_000) })).status,
@@ -315,6 +339,8 @@ describe("projects", () => {
       "project.drawing_saved",
       "project.drawing_saved",
       "project.drawing_saved",
+      "project.drawing_saved",
+      // The scenarios drawing saved in the drawings test.
       "project.drawing_saved",
       "project.duplicated",
       "project.archived",
