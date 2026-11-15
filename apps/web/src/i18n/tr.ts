@@ -1,5 +1,6 @@
 import { editorsTr } from "./editors/tr";
 import { cargoBikeTr } from "./cargo-bike/tr";
+import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
 /** Türkçe */
@@ -287,4 +288,5 @@ export const tr: Messages = {
 
   ...editorsTr,
   ...cargoBikeTr,
+  ...PLUGIN_MESSAGES.tr,
 };

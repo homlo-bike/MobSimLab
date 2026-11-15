@@ -18,7 +18,31 @@ Plugins add modes, parameters, tools and calculations to MobSimLab ([ADR-0036](.
 | `vehicles` | Accepted by the schema; the cable car and ferry catalogue folders come with sourced vehicles. |
 | `checks`, `engines`, `infrastructure`, `catalogues`, `kpis`, `schematics`, `importers`, `exporters`, `panels` | Reserved for later phases; the schema accepts no entries yet. |
 
-Install, enable per project, signatures and the public registry (ADR-0036 Phase 1) are not built yet. Bundled plugins are always available.
+## Installing plugins and turning them on per project
+
+Built in ADR-0036 Phase 1 (see *Phase 1 as built* in the ADR):
+
+- **Admins and Owners install** a plugin under *Administration → Plugins* by uploading a `.msplugin` file. MobSimLab checks it first and shows the publisher, the signature, what it adds, what it may read and its licences; nothing is stored until **Install** is pressed. Several versions of a plugin can be installed side by side. Removing a version that projects use asks for confirmation, turns it off in those projects and keeps their drawings.
+- **Project Owners turn plugins on or off** under *Preferences → Plugins* and pick the version of an installed plugin. Bundled plugins are on in every project until its Owner turns one off; installed plugins are off until turned on. Turning a plugin off hides its tools and keeps what was drawn with it. A copied project keeps its plugin choices.
+- **Installed plugins are data plugins for now**: modes, contexts, tools on the core kits, parameters and sources. Calculations, map layers and the compute and UI tiers stay with bundled plugins until the sandboxed plugin host (Phase 2) exists, and the install check refuses them.
+- Installs, removals, keys and per-project changes are in the audit log.
+
+## Making a third-party plugin
+
+1. Lay the plugin out like the folders here: `mobsimlab-plugin.json` at the top, with the files it names. Do not set `"bundled"`. Use a reverse-DNS id of your own (`org.example.water-taxi`), mode and parameter ids that no other plugin uses, and licences from the licence gate's list (`tools/license-gate/policy.json`).
+2. List every file with its SHA-256 in `SHA256SUMS`, as `sha256sum` writes it, and sign that list with your ECDSA P-256 or Ed25519 key:
+
+   ```sh
+   cd water-taxi
+   find . -type f ! -name 'SHA256SUMS*' | sed 's|^\./||' | sort | xargs sha256sum > SHA256SUMS
+   openssl dgst -sha256 -sign publisher.key SHA256SUMS | base64 -w0 > SHA256SUMS.sig
+   # or: cosign sign-blob --key cosign.key SHA256SUMS > SHA256SUMS.sig
+   zip -r ../water-taxi-1.0.0.msplugin .
+   ```
+
+3. Give the Admins of the instance your public key (`openssl pkey -in publisher.key -pubout`, or `cosign.pub`). They add it under *Trusted publishers*; only packages signed with a trusted key install. In development mode (`MOBSIMLAB_DEVELOPMENT_MODE=true`) an Owner can allow unsigned packages for testing.
+
+A package may hold at most 500 files, 5 MB per file and 25 MB unpacked (10 MB as uploaded). The API checks it with the same rules as `tools/plugins/check.py` (`apps/api/src/plugins/validate.ts`; a test keeps the two in step).
 
 ## Checking and the web registry
 

@@ -14,7 +14,9 @@ the assumption library's rules (ADR-0018), extended by the plugin's modes and co
 
 --render writes apps/web/src/plugins/bundled.generated.json: per plugin its manifest summary, modes,
 contexts, tools, tabs, parameter labels and the resolved values per mode and context option
-(low, central, high).
+(low, central, high). It also writes apps/api/src/plugins/core.generated.json, which the API uses to check
+plugins an Admin uploads: the manifest and mode schemas, the core mode ids, parameter keys and source ids,
+and the bundled plugins.
 """
 
 from __future__ import annotations
@@ -32,6 +34,8 @@ ROOT = Path(__file__).resolve().parents[2]
 PLUGINS = ROOT / "plugins"
 CONTRACTS = ROOT / "contracts"
 OUT = ROOT / "apps" / "web" / "src" / "plugins" / "bundled.generated.json"
+# What the API needs to check uploaded plugins (ADR-0036 §9): contracts, core ids, bundled plugins.
+API_OUT = ROOT / "apps" / "api" / "src" / "plugins" / "core.generated.json"
 MANIFEST = "mobsimlab-plugin.json"
 # Core mode ids that plugins may not reuse: the assumption library's modes plus the railway tool's.
 EXTRA_CORE_MODES = ["funicular"]
@@ -289,6 +293,21 @@ def render(registry: dict) -> str:
     return json.dumps(registry, indent=2, ensure_ascii=False) + "\n"
 
 
+def core_for_api(registry: dict) -> dict:
+    """What the API's plugin install check needs: contracts, core ids and the bundled plugins."""
+    chk = load_assumption_check()
+    return {
+        "pluginApi": "1",
+        "manifestSchema": read_json(CONTRACTS / "plugin-manifest.schema.json"),
+        "modeSchema": read_json(CONTRACTS / "plugin-mode.schema.json"),
+        "coreModes": sorted(set(chk.MODES) | set(EXTRA_CORE_MODES)),
+        "tractions": list(chk.TRACTIONS),
+        "coreParameterKeys": sorted(p["key"] for p in chk.load_parameters()),
+        "coreSourceIds": sorted(chk.load_sources()),
+        "bundled": registry["plugins"],
+    }
+
+
 def main() -> int:
     """Validate; render or check the registry. Output: the exit code."""
     ap = argparse.ArgumentParser()
@@ -299,13 +318,14 @@ def main() -> int:
     if errors:
         print("\n".join(errors), file=sys.stderr)
         return 1
-    text = render(registry)
-    if args.render:
-        OUT.parent.mkdir(parents=True, exist_ok=True)
-        OUT.write_text(text, encoding="utf-8")
-    if args.check_rendered and (not OUT.exists() or OUT.read_text(encoding="utf-8") != text):
-        print(f"{OUT.relative_to(ROOT)} is stale; run with --render", file=sys.stderr)
-        return 1
+    outputs = {OUT: render(registry), API_OUT: render(core_for_api(registry))}
+    for path, text in outputs.items():
+        if args.render:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(text, encoding="utf-8")
+        if args.check_rendered and (not path.exists() or path.read_text(encoding="utf-8") != text):
+            print(f"{path.relative_to(ROOT)} is stale; run with --render", file=sys.stderr)
+            return 1
     n_modes = sum(len(p["modes"]) for p in registry["plugins"])
     print(f"OK: {len(registry['plugins'])} plugins, {n_modes} modes")
     return 0

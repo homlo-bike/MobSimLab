@@ -31,7 +31,14 @@ import type { MessageKey } from "../i18n/messages";
 import { SpanLineEditor } from "../kits/SpanLineEditor";
 import { WaterRouteEditor } from "../kits/WaterRouteEditor";
 import { MapView } from "../map/MapView";
-import { pluginTabs, pluginTools } from "../plugins/registry";
+import {
+  PLUGINS,
+  pluginTabs,
+  type ProjectPlugin,
+  pluginsOfProject,
+  pluginTools,
+  setActivePlugins,
+} from "../plugins/registry";
 import { can, type Project, type ProjectsApi } from "../projects/api";
 import {
   BackIcon,
@@ -78,7 +85,6 @@ type GisView = "streets" | "regions";
 const NO_REGIONS: Region[] = [];
 /** "street", "rail", or the id of a plugin tool (cable car, ferry…). */
 type Build = string;
-const PLUGIN_TOOLS = pluginTools();
 
 /**
  * One open project (mockups "Project app"): the project name and the six tabs in the top bar (a bottom tab bar on
@@ -148,6 +154,33 @@ export function Workspace({
     api.get(projectId).then(setProject, () => setMissing(true));
   }, [api, projectId]);
 
+  // The plugins this project uses (ADR-0036 §9): bundled ones it has not turned off and installed ones it has
+  // turned on. Until they load, the bundled plugins are used.
+  const [plugins, setPlugins] = useState<ProjectPlugin[] | null>(null);
+  useEffect(() => {
+    setPlugins(null);
+    let live = true;
+    api.plugins(projectId).then(
+      (list) => live && setPlugins(list),
+      () => live && setPlugins([]),
+    );
+    return () => {
+      live = false;
+    };
+  }, [api, projectId]);
+  const activePlugins = useMemo(() => (plugins ? pluginsOfProject(plugins) : PLUGINS), [plugins]);
+  // The registry's helpers (modes, tools, calculations) read the open project's plugins.
+  setActivePlugins(activePlugins);
+  useEffect(() => () => setActivePlugins(PLUGINS), []);
+  const PLUGIN_TOOLS = useMemo(() => pluginTools(activePlugins), [activePlugins]);
+  // Plugin tabs show only while their plugin is on for the project.
+  const projectTabs = useMemo(() => {
+    const on = new Set(pluginTabs(activePlugins).map((x) => x.id));
+    return TABS.filter((x) => !PLUGIN_TABS.some((p) => p.id === x) || on.has(x));
+  }, [activePlugins]);
+  const setPlugin = async (pluginId: string, enabled: boolean, version?: string) =>
+    setPlugins(await api.setPlugin(projectId, pluginId, enabled, version));
+
   useEffect(() => {
     if (project) document.title = `${project.name} · ${brand}`;
     return () => {
@@ -182,7 +215,7 @@ export function Workspace({
   }, [drawings.loaded, editable, projectId]);
   const ridden = line ?? lineInput(streetLines?.lines[0]);
   const hasPanel = onMap && project !== null;
-  const pluginTab = PLUGIN_TABS.find((x) => x.id === tab) ?? null;
+  const pluginTab = projectTabs.includes(tab) ? (PLUGIN_TABS.find((x) => x.id === tab) ?? null) : null;
   const tabLabel = (x: Tab) => {
     const p = PLUGIN_TABS.find((y) => y.id === x);
     if (!p) return t(`tab.${x}` as MessageKey);
@@ -196,7 +229,7 @@ export function Workspace({
       aria-label={t("tab.label")}
       className="hidden h-full items-stretch gap-0.5 self-stretch md:ms-2 md:flex"
     >
-      {TABS.map((x) => {
+      {projectTabs.map((x) => {
         const Icon = tabIcon(x);
         return (
           <a
@@ -241,7 +274,7 @@ export function Workspace({
       aria-label={t("tab.label")}
       className="flex h-16 shrink-0 border-t border-slate-200 bg-white md:hidden"
     >
-      {TABS.map((x) => {
+      {projectTabs.map((x) => {
         const Icon = tabIcon(x);
         return (
           <button
@@ -490,6 +523,8 @@ export function Workspace({
               onSaved={setProject}
               preferences={drawings.loaded ? preferences : null}
               onPreferences={drawings.loaded ? (d) => drawings.set("preferences", d) : undefined}
+              plugins={plugins}
+              onSetPlugin={setPlugin}
             />
           </div>
         )}
