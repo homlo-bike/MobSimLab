@@ -656,9 +656,8 @@ export const editorsIt = {
   "schematic.transferNote": "Minuti sulle etichette colorate: cammino stimato per il cambio su quella linea.",
   "schematic.estNote":
     "~ prima dei minuti: tempo di marcia approssimato dalla distanza tra le fermate e dalla velocità e accelerazione abituali del modo, dove l’orario non ha ancora un tempo. La velocità media esclude quelle tratte.",
-  "schematic.row.profile": "Terreno lungo la linea, ogni {step} m, metri sul livello del mare",
-  "schematic.scaleTrue": "Lunghezza e altezza nella stessa scala",
-  "schematic.scale": "Lunghezza e altezza in una scala, altezze esagerate {n} volte",
+  "schematic.row.profile":
+    "Vista laterale del terreno lungo la linea, lunghezza e altezza nella stessa scala, misurato ogni {step} m",
   "schematic.row.gradient": "Pendenza tra le stazioni: media e i {step} m più ripidi",
   "schematic.gradientMax": "max {n}",
   "schematic.percent": "{n}%",

@@ -657,9 +657,8 @@ export const editorsEs = {
     "Minutos en las etiquetas de color: caminata estimada para transbordar a esa línea.",
   "schematic.estNote":
     "~ antes de los minutos: tiempo de marcha aproximado según la distancia entre paradas y la velocidad y aceleración habituales del modo, donde el horario aún no tiene tiempo. La velocidad media no cuenta esos tramos.",
-  "schematic.row.profile": "Terreno a lo largo de la línea, cada {step} m, metros sobre el nivel del mar",
-  "schematic.scaleTrue": "Longitud y altura a la misma escala",
-  "schematic.scale": "Longitud y altura a una escala, alturas {n} veces exageradas",
+  "schematic.row.profile":
+    "Vista lateral del terreno a lo largo de la línea, longitud y altura a la misma escala, medido cada {step} m",
   "schematic.row.gradient": "Pendiente entre estaciones: media y los {step} m más empinados",
   "schematic.gradientMax": "máx. {n}",
   "schematic.percent": "{n} %",

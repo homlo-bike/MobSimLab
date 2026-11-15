@@ -659,9 +659,8 @@ export const editorsUz = {
     "Rangli yorliqlardagi daqiqalar: o‘sha liniyaga o‘tish uchun taxminiy piyoda vaqti.",
   "schematic.estNote":
     "Daqiqalar oldidagi ~: jadvalda hali vaqt bo‘lmagan joyda bekatlar orasidagi masofa va transport turining odatiy tezligi hamda tezlanishidan taxminiy yurish vaqti. O‘rtacha tezlik bu qismlarni hisobga olmaydi.",
-  "schematic.row.profile": "Liniya bo‘ylab yer, har {step} m, dengiz sathidan metr",
-  "schematic.scaleTrue": "Uzunlik va balandlik bir xil masshtabda",
-  "schematic.scale": "Uzunlik va balandlik bir masshtabda, balandliklar {n} marta kattalashtirilgan",
+  "schematic.row.profile":
+    "Liniya bo‘ylab yerning yon ko‘rinishi, uzunlik va balandlik bir xil masshtabda, har {step} m o‘lchangan",
   "schematic.row.gradient": "Bekatlar orasidagi qiyalik: o‘rtacha va eng tik {step} m",
   "schematic.gradientMax": "ko‘pi bilan {n}",
   "schematic.percent": "{n}%",

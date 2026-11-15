@@ -606,9 +606,7 @@ export const editorsZh = {
   "schematic.transferNote": "彩色标签上的分钟数：换乘该线路的估计步行时间。",
   "schematic.estNote":
     "分钟前的 ~：时刻表尚无时间时，按站间距离及该方式的常规速度和加速度粗略估算的行驶时间。平均速度不计这些区段。",
-  "schematic.row.profile": "沿线地形，每 {step} 米，海拔（米）",
-  "schematic.scaleTrue": "长度与高度同一比例",
-  "schematic.scale": "长度与高度同一比例，高度放大 {n} 倍",
+  "schematic.row.profile": "沿线地形侧视图，长度与高度同一比例，每 {step} 米取样",
   "schematic.row.gradient": "站间坡度：平均值及最陡的 {step} 米",
   "schematic.gradientMax": "最大 {n}",
   "schematic.percent": "{n}%",

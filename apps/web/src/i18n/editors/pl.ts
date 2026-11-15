@@ -700,9 +700,8 @@ export const editorsPl = {
     "Minuty na kolorowych etykietach: szacowany czas dojścia przy przesiadce na tę linię.",
   "schematic.estNote":
     "~ przed minutami: przybliżony czas jazdy z odległości między przystankami oraz zwykłej prędkości i przyspieszenia danego środka transportu, gdzie rozkład nie ma jeszcze czasu. Średnia prędkość pomija te odcinki.",
-  "schematic.row.profile": "Teren wzdłuż linii, co {step} m, metry n.p.m.",
-  "schematic.scaleTrue": "Długość i wysokość w tej samej skali",
-  "schematic.scale": "Długość i wysokość w jednej skali, wysokości przewyższone {n} razy",
+  "schematic.row.profile":
+    "Widok z boku terenu wzdłuż linii, długość i wysokość w tej samej skali, pomiar co {step} m",
   "schematic.row.gradient": "Nachylenie między stacjami: średnie i najbardziej strome {step} m",
   "schematic.gradientMax": "maks. {n}",
   "schematic.percent": "{n}%",

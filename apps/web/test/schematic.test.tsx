@@ -349,7 +349,9 @@ describe("Schematic tab", () => {
       ]),
     );
     expect(
-      await within(strip).findByText("Ground along the line, every 50 m, metres above sea level"),
+      await within(strip).findByText(
+        "Side view of the ground along the line, length and height to the same scale, sampled every 50 m",
+      ),
     ).toBeTruthy();
     // The ground is sampled every 50 m along the routed street, and each section gets its gradient.
     const sampled = fetchHeights.mock.calls.at(-1)![0];
@@ -358,7 +360,8 @@ describe("Schematic tab", () => {
       expect.arrayContaining(["Gradient between stations: average, and the steepest 50 m"]),
     );
     expect(texts().filter((x) => /^[+−-]?[\d.]+%$/.test(x ?? "")).length).toBe(3);
-    expect(texts().some((x) => /^Length and height to (one|the same) scale/.test(x ?? ""))).toBe(true);
+    // A side view without scales: no metres or km written on it.
+    expect(texts().filter((x) => /^-?[\d.]+ (m|km)$/.test(x ?? ""))).toEqual(["4.5 km"]);
     // Distances along the street (none given in the legs here, so in a straight line), average speed and the
     // walk to change at an interchange.
     expect(texts()).toEqual(expect.arrayContaining(["Average speed", "Step-free stations", "0 of 4"]));
@@ -614,20 +617,17 @@ describe("strip map extras", () => {
     expect(chart.gradients[0]!.average).toBeCloseTo(2, 5);
     expect(chart.gradients[0]!.steepest).toBeCloseTo(2, 5);
     expect(chart.gradients[1]!.average).toBeCloseTo(0, 5);
-    // 0 to 20 m over 1230 m in 440 px: heights drawn 10 times taller keep the chart under 140 px.
-    expect(chart.exaggeration).toBe(10);
+    // Length and height to the same scale: 20 m of climb over 1230 m in 440 px.
+    expect(chart.reliefPx).toBeCloseTo((20 * 440) / 1230, 5);
     expect(chart.stationH).toEqual([0, 20, 20]);
   });
 
-  it("estimates driving times from the mode and draws the height axis in round steps", async () => {
+  it("estimates driving times from the mode", async () => {
     const { estimateRunS } = await import("../src/features/schematic/lines");
-    const { heightAxis } = await import("../src/features/schematic/StripMap");
     // A metro (80 km/h, 1.1 m/s²) over 1500 m in a straight line: 1725 m of track, top speed reached.
     expect(estimateRunS("metro", 1500)).toBeCloseTo(1725 / (80 / 3.6) + 80 / 3.6 / 1.1, 5);
     // A short tram hop never reaches top speed.
     expect(estimateRunS("tram", 200)).toBeCloseTo(2 * Math.sqrt(230 / 1.2), 5);
-    expect(heightAxis([2, 3, 5])).toEqual({ lo: 0, hi: 30, ticks: [0, 10, 20, 30] });
-    expect(heightAxis([120, 410]).ticks).toEqual([100, 200, 300, 400, 500]);
   });
   it("measures sections, walks to change and step-free stations", async () => {
     const { isStepFree, transferS } = await import("../src/features/schematic/lines");

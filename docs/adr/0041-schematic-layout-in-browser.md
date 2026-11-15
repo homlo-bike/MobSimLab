@@ -69,9 +69,8 @@ stations), and ADR-0025 already names a simpler octilinear layout as the fallbac
     ramp; rail from the built track's levels, sampled along the line between the stations; street lines on the
     street, cable cars in the air, ferries on the water); and the ground along the line from the terrain
     service, sampled every 50 m (further apart only beyond 19 000 samples) along the routed street, the built
-    track between the two stations, or else the straight line. The profile draws length and height to one
-    scale, with the heights drawn a stated round number of times taller (1, 2, 5, 10 …) so the chart stays at
-    most 140 px tall; dotted guides lead from each station on the band to its real place along the line. Under
+    track between the two stations, or else the straight line. The profile is a side view of the ground as if sliced along the line: length and height to the same
+    scale, with no axes, as long as the band above, earth-coloured, with the stations marked on the surface.Under
     it, each section's gradient: the average (rise over length, in running direction) and the steepest between
     neighbouring samples. Rail figures need drawn track: until then they show as –. Street lines run at half their headway in
     the peak, as in the journey planner.

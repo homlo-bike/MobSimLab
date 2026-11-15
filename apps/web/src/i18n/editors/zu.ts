@@ -665,9 +665,8 @@ export const editorsZu = {
     "Imizuzu kumalebula anemibala: isikhathi esilinganisiwe sokuhamba ngezinyawo ukushintshela kulowo mugqa.",
   "schematic.estNote":
     "~ ngaphambi kwemizuzu: isikhathi sokushayela esilinganiselwe kusukela ebangeni phakathi kwezitobhi nejubane nokusheshisa okujwayelekile kohlobo lokuthutha, lapho uhlelo lwesikhathi lungenaso isikhathi okwamanje. Ijubane elimaphakathi aliyibali leyo mingxenye.",
-  "schematic.row.profile": "Umhlabathi eduze komugqa, njalo ngo-{step} m, amamitha ngaphezu kolwandle",
-  "schematic.scaleTrue": "Ubude nokuphakama esikalini esifanayo",
-  "schematic.scale": "Ubude nokuphakama esikalini esisodwa, ukuphakama kukhuliswe izikhathi ezingu-{n}",
+  "schematic.row.profile":
+    "Ukubuka eceleni komhlabathi eduze komugqa, ubude nokuphakama esikalini esifanayo, kulinganiswe njalo ngo-{step} m",
   "schematic.row.gradient":
     "Ukuthambeka phakathi kweziteshi: okumaphakathi kanye no-{step} m oluwumqansa kakhulu",
   "schematic.gradientMax": "okuphezulu {n}",

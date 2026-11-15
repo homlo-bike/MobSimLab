@@ -616,9 +616,7 @@ export const editorsKo = {
   "schematic.transferNote": "색 라벨의 분: 그 노선으로 갈아타는 예상 도보 시간.",
   "schematic.estNote":
     "분 앞의 ~: 시간표에 아직 시간이 없는 구간은 정류장 간 거리와 해당 수단의 일반적인 속도·가속도로 낸 대략적인 주행 시간입니다. 평균 속도에서는 이 구간을 뺍니다.",
-  "schematic.row.profile": "노선을 따라 {step} m마다 잰 지형, 해발 m",
-  "schematic.scaleTrue": "길이와 높이 같은 축척",
-  "schematic.scale": "길이와 높이 같은 축척, 높이 {n}배 과장",
+  "schematic.row.profile": "노선을 따라 본 지형 측면도, 길이와 높이 같은 축척, {step} m마다 측정",
   "schematic.row.gradient": "역 간 경사: 평균과 가장 가파른 {step} m",
   "schematic.gradientMax": "최대 {n}",
   "schematic.percent": "{n}%",

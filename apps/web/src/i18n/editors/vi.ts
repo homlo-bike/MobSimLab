@@ -620,9 +620,8 @@ export const editorsVi = {
   "schematic.transferNote": "Số phút trên nhãn màu: thời gian đi bộ ước tính để chuyển sang tuyến đó.",
   "schematic.estNote":
     "~ trước số phút: thời gian chạy ước lượng từ khoảng cách giữa các điểm dừng và tốc độ, gia tốc thường gặp của phương thức, ở đoạn lịch chạy chưa có thời gian. Tốc độ trung bình bỏ qua các đoạn đó.",
-  "schematic.row.profile": "Địa hình dọc tuyến, mỗi {step} m, mét trên mực nước biển",
-  "schematic.scaleTrue": "Chiều dài và độ cao cùng tỉ lệ",
-  "schematic.scale": "Chiều dài và độ cao cùng một tỉ lệ, độ cao phóng đại {n} lần",
+  "schematic.row.profile":
+    "Mặt cắt nhìn ngang địa hình dọc tuyến, chiều dài và độ cao cùng tỉ lệ, đo mỗi {step} m",
   "schematic.row.gradient": "Độ dốc giữa các ga: trung bình và {step} m dốc nhất",
   "schematic.gradientMax": "tối đa {n}",
   "schematic.percent": "{n}%",

@@ -624,9 +624,8 @@ export const editorsYo = {
   "schematic.transferNote": "Ìṣẹ́jú lórí àwọn àmì aláwọ̀: àkókò ìrìn ẹsẹ̀ tí a fojú dá láti yí sí ìlà náà.",
   "schematic.estNote":
     "~ ṣáájú ìṣẹ́jú: àkókò ìwakọ̀ tí a fojú dá láti ijìnnà láàrin àwọn ibùdó àti ìyára àti ìmúyára àṣà ọ̀nà ìrìnnà náà, níbi tí àtòjọ àkókò kò tíì ní àkókò. Ìyára àpapọ̀ kò ka àwọn apá yẹn.",
-  "schematic.row.profile": "Ilẹ̀ lẹ́gbẹ̀ẹ́ ìlà, ní gbogbo {step} m, mítà lókè òkun",
-  "schematic.scaleTrue": "Gígùn àti gíga ní ìwọ̀n kan náà",
-  "schematic.scale": "Gígùn àti gíga ní ìwọ̀n kan, a fẹ gíga sí ìlọ́po {n}",
+  "schematic.row.profile":
+    "Ìwòye ẹ̀gbẹ́ ilẹ̀ lẹ́gbẹ̀ẹ́ ìlà, gígùn àti gíga ní ìwọ̀n kan náà, a wọ̀n ní gbogbo {step} m",
   "schematic.row.gradient": "Ìdagẹ̀rẹ̀ láàrin ibùdókọ̀: àpapọ̀ àti {step} m tó ga jù",
   "schematic.gradientMax": "tó pọ̀ jù {n}",
   "schematic.percent": "{n}%",

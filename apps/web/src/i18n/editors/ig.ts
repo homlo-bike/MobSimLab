@@ -621,9 +621,8 @@ export const editorsIg = {
   "schematic.transferNote": "Nkeji na akara agba: oge ije a tụrụ atụ iji gbanwee gaa n'ahịrị ahụ.",
   "schematic.estNote":
     "~ tupu nkeji: oge ịnya a tụrụ atụ site n'anya n'etiti ọdụ na ọsọ na ngwa ngwa ụdị njem ahụ na-emekarị, ebe usoro oge enweghị oge ugbu a. Ọsọ nkezi anaghị agụ akụkụ ndị ahụ.",
-  "schematic.row.profile": "Ala n'akụkụ ahịrị, kwa {step} m, mita karịa oke osimiri",
-  "schematic.scaleTrue": "Ogologo na ịdị elu n'otu ọnụ ọgụgụ",
-  "schematic.scale": "Ogologo na ịdị elu n'otu ọnụ ọgụgụ, ịdị elu mere ugboro {n}",
+  "schematic.row.profile":
+    "Nlele n'akụkụ nke ala n'akụkụ ahịrị, ogologo na ịdị elu n'otu ọnụ ọgụgụ, a tụrụ kwa {step} m",
   "schematic.row.gradient": "Mkpọda n'etiti ọdụ: nkezi na {step} m kachasị mkpọda",
   "schematic.gradientMax": "kacha {n}",
   "schematic.percent": "{n}%",

@@ -635,9 +635,7 @@ export const editorsAm = {
   "schematic.transferNote": "በቀለም መለያዎች ላይ ያሉ ደቂቃዎች፦ ወደዚያ መስመር ለመቀየር የሚገመት የእግር ጉዞ ጊዜ።",
   "schematic.estNote":
     "ከደቂቃዎቹ በፊት ~፦ የጊዜ ሰሌዳው ገና ጊዜ በሌለበት፣ ከፌርማታዎች ርቀት እና ከትራንስፖርቱ የተለመደ ፍጥነትና ማፋጠን የተገመተ ግምታዊ የጉዞ ጊዜ። አማካይ ፍጥነት እነዚህን ክፍሎች አይቆጥርም።",
-  "schematic.row.profile": "በመስመሩ አጠገብ ያለ መሬት፣ በየ{step} ሜ፣ ከባሕር ጠለል በላይ ሜትር",
-  "schematic.scaleTrue": "ርዝመትና ከፍታ በአንድ ልኬት",
-  "schematic.scale": "ርዝመትና ከፍታ በአንድ ልኬት፣ ከፍታዎች {n} እጥፍ ተጋንነዋል",
+  "schematic.row.profile": "በመስመሩ አጠገብ ያለ መሬት የጎን እይታ፣ ርዝመትና ከፍታ በአንድ ልኬት፣ በየ{step} ሜ የተለካ",
   "schematic.row.gradient": "በጣቢያዎች መካከል ያለ ዝንባሌ፦ አማካይ እና በጣም ቁልቁል {step} ሜ",
   "schematic.gradientMax": "ከፍተኛ {n}",
   "schematic.percent": "{n}%",

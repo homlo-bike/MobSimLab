@@ -45,56 +45,24 @@ function minutes(v: number): number {
   return v < 10 ? Math.round(v * 2) / 2 : Math.round(v);
 }
 
-/**
- * Purpose: the height axis of the profile: round limits around the heights and three to five ticks between
- * them, at least 10 m apart so a flat line does not look steep.
- */
-export function heightAxis(hs: readonly number[]): { lo: number; hi: number; ticks: number[] } {
-  if (!hs.length) return { lo: 0, hi: 10, ticks: [0, 10] };
-  const min = Math.min(...hs);
-  const max = Math.max(...hs);
-  const span = Math.max(20, max - min);
-  const raw = span / 3;
-  const mag = 10 ** Math.floor(Math.log10(raw));
-  const step = ([1, 2, 2.5, 5, 10].map((m) => m * mag).find((x) => x >= raw) ?? 10 * mag) as number;
-  const mid = (min + max) / 2;
-  let lo = Math.floor(Math.min(min, mid - span / 2) / step) * step;
-  let hi = Math.ceil(Math.max(max, mid + span / 2) / step) * step;
-  if (hi <= lo) hi = lo + step;
-  if (lo < 0 && min >= 0) {
-    hi -= lo;
-    lo = 0;
-  }
-  const ticks: number[] = [];
-  for (let v = lo; v <= hi + step / 1000; v += step) ticks.push(Math.round(v * 100) / 100);
-  return { lo, hi, ticks };
-}
-
-/** Px a gradient profile may be tall at most. */
-const MAX_CHART_PX = 140;
+/** Px of ground drawn under the lowest point of the slice. */
+const SOIL_PX = 16;
+export const EARTH = "#dccbab";
+export const EARTH_LINE = "#8a6a3f";
 
 /**
- * Purpose: how to draw a line's ground profile: one scale for length and height, with the heights drawn a
- * round number of times larger (1, 2, 5, 10, 20 …) so the chart stays at most `MAX_CHART_PX` tall; the
- * height and km ticks; the height at each stop; and per section the average gradient (rise over length, in
- * running direction) and the steepest between neighbouring samples, %. Output: null without any height.
+ * Purpose: how to draw a line's ground as a side view of a slice along the line: length and height to the
+ * same scale; the height at each stop; and per section the average gradient (rise over length, in running
+ * direction) and the steepest between neighbouring samples, %. Output: null without any height.
  */
 export function profileChart(profile: LineProfile, widthPx: number) {
   const known = profile.h.filter((h): h is number => h !== null);
   const total = profile.d[profile.d.length - 1] ?? 0;
   if (!known.length || total <= 0) return null;
   const pxPerM = widthPx / total;
-  const axis = heightAxis(known);
-  const range = axis.hi - axis.lo;
-  let exaggeration = 1;
-  for (const e of [1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000])
-    if (range * pxPerM * e <= MAX_CHART_PX) exaggeration = e;
-  const heightPx = Math.max(24, range * pxPerM * exaggeration);
-  const kmRaw = total / 1000 / Math.max(1, Math.floor(widthPx / 80));
-  const kmMag = 10 ** Math.floor(Math.log10(kmRaw));
-  const kmStep = [1, 2, 5, 10].map((m) => m * kmMag).find((x) => x >= kmRaw) ?? 10 * kmMag;
-  const kmTicks: number[] = [];
-  for (let k = 0; k <= total / 1000 + 1e-9; k += kmStep) kmTicks.push(Math.round(k * 1000) / 1000);
+  const lo = Math.min(...known);
+  const hi = Math.max(...known);
+  const reliefPx = (hi - lo) * pxPerM;
   const at = profile.stationD.map((m) => profile.d.indexOf(m));
   const stationH = at.map((i) => (i >= 0 ? (profile.h[i] ?? null) : null));
   const gradients = profile.stationD.slice(1).map((end, k) => {
@@ -116,7 +84,7 @@ export function profileChart(profile: LineProfile, widthPx: number) {
     }
     return { average: ((b - a) / len) * 100, steepest: steepest * 100 };
   });
-  return { pxPerM, exaggeration, heightPx, lo: axis.lo, ticks: axis.ticks, kmTicks, stationH, gradients };
+  return { pxPerM, lo, hi, reliefPx, stationH, gradients };
 }
 
 /**
@@ -265,17 +233,16 @@ export function StripMap({
     t("schematic.timeNote"),
     ...(estimated ? [t("schematic.estNote")] : []),
   ].flatMap((x) => wrap(x, Math.max(30, Math.floor((width - left) / 5.2))));
-  // The ground along the line: length and height to one scale (heights drawn a stated number of times
-  // larger), with the gradient of each section under it.
+  // The ground along the line as if sliced and seen from the side (length and height to the same scale),
+  // with the gradient of each section under it.
   const elevTop = stepTop + stepLines.length * 15 + 22;
   const chartLeft = left;
-  const chartRight = width - 40;
+  const chartRight = left + (n - 1) * step; // as long as the band above
   const chart = profile ? profileChart(profile, chartRight - chartLeft) : null;
-  const chartTop = elevTop + 34;
-  const chartBottom = chartTop + (chart?.heightPx ?? 0);
+  const chartTop = elevTop + 30;
+  const chartBottom = chartTop + (chart ? chart.reliefPx + SOIL_PX : 0);
   const px = (m: number) => chartLeft + m * (chart?.pxPerM ?? 0);
-  const py = (h: number) =>
-    chartBottom - (h - (chart?.lo ?? 0)) * (chart?.pxPerM ?? 0) * (chart?.exaggeration ?? 1);
+  const py = (h: number) => chartTop + ((chart?.hi ?? 0) - h) * (chart?.pxPerM ?? 0);
   // Gradient labels at the middle of each section, moved to a second row where they would overlap.
   const gradRow: number[] = [];
   const lastEnd: number[] = [-Infinity, -Infinity];
@@ -285,7 +252,7 @@ export function StripMap({
     lastEnd[row] = mid + 30;
     gradRow.push(row);
   });
-  const gradTop = chartBottom + 36;
+  const gradTop = chartBottom + 26;
   const height =
     (chart ? gradTop + 18 + (gradRow.includes(1) ? 2 : 1) * 26 : elevTop + 10) + 30 + notes.length * 17 + 20;
   const fg = textOn(line.color);
@@ -487,19 +454,6 @@ export function StripMap({
       </text>
       {chart && profile && (
         <g aria-label={t("schematic.row.profile", { step: PROFILE_STEP_M })}>
-          <text x={left / 2} y={elevTop + 14} fontSize={10} fill="#94a3b8">
-            {chart.exaggeration === 1
-              ? t("schematic.scaleTrue")
-              : t("schematic.scale", { n: fmt(chart.exaggeration) })}
-          </text>
-          {chart.ticks.map((v) => (
-            <g key={`tick-${v}`}>
-              <line x1={chartLeft} x2={chartRight} y1={py(v)} y2={py(v)} stroke="#e2e8f0" strokeWidth={1} />
-              <text x={chartLeft - 8} y={py(v) + 3.5} fontSize={9.5} textAnchor="end" fill="#64748b">
-                {t("schematic.metres", { n: fmt(v) })}
-              </text>
-            </g>
-          ))}
           {/* Each station: from its place on the band above to its place along the line. */}
           {profile.stationD.map((m, k) => (
             <g key={`guide-${k}`}>
@@ -507,24 +461,15 @@ export function StripMap({
                 x1={xOf(k)}
                 y1={elevTop + 20}
                 x2={px(m)}
-                y2={chartTop}
-                stroke="#cbd5e1"
-                strokeWidth={1}
-                strokeDasharray="2 3"
-              />
-              <line
-                x1={px(m)}
-                x2={px(m)}
-                y1={chartTop}
-                y2={chartBottom}
+                y2={py(chart.stationH[k] ?? chart.hi) - 5}
                 stroke="#cbd5e1"
                 strokeWidth={1}
                 strokeDasharray="2 3"
               />
             </g>
           ))}
-          <path d={ground.area} fill={line.color} fillOpacity={0.14} stroke="none" />
-          <path d={ground.line} fill="none" stroke={line.color} strokeWidth={2} strokeLinejoin="round" />
+          <path d={ground.area} fill={EARTH} stroke="none" />
+          <path d={ground.line} fill="none" stroke={EARTH_LINE} strokeWidth={1.5} strokeLinejoin="round" />
           {profile.stationD.map((m, k) => {
             const h = chart.stationH[k];
             return h === null || h === undefined ? null : (
@@ -532,26 +477,13 @@ export function StripMap({
                 key={`hp-${k}`}
                 cx={px(m)}
                 cy={py(h)}
-                r={3.5}
-                fill="#ffffff"
-                stroke={line.color}
-                strokeWidth={2}
+                r={4}
+                fill={line.color}
+                stroke="#ffffff"
+                strokeWidth={1.5}
               />
             );
           })}
-          <line x1={chartLeft} x2={chartRight} y1={chartBottom} y2={chartBottom} stroke="#94a3b8" />
-          {chart.kmTicks.map((km) => (
-            <text
-              key={`km-${km}`}
-              x={px(km * 1000)}
-              y={chartBottom + 13}
-              fontSize={9.5}
-              textAnchor="middle"
-              fill="#64748b"
-            >
-              {t("schematic.km", { n: fmt(km, 1) })}
-            </text>
-          ))}
           <text x={left / 2} y={gradTop} fontSize={10.5} fill="#64748b">
             {t("schematic.row.gradient", { step: PROFILE_STEP_M })}
           </text>

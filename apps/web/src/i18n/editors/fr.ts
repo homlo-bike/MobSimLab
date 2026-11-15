@@ -669,9 +669,8 @@ export const editorsFr = {
     "Minutes sur les étiquettes colorées : marche estimée pour la correspondance vers cette ligne.",
   "schematic.estNote":
     "~ devant les minutes : temps de parcours approximatif d’après la distance entre arrêts et la vitesse et l’accélération habituelles du mode, là où l’horaire n’a pas encore de temps. La vitesse moyenne ignore ces sections.",
-  "schematic.row.profile": "Terrain le long de la ligne, tous les {step} m, mètres au-dessus de la mer",
-  "schematic.scaleTrue": "Longueur et hauteur à la même échelle",
-  "schematic.scale": "Longueur et hauteur à une échelle, hauteurs exagérées {n} fois",
+  "schematic.row.profile":
+    "Vue de côté du terrain le long de la ligne, longueur et hauteur à la même échelle, mesuré tous les {step} m",
   "schematic.row.gradient": "Pente entre stations : moyenne et les {step} m les plus raides",
   "schematic.gradientMax": "max. {n}",
   "schematic.percent": "{n} %",
