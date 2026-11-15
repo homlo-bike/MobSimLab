@@ -1,4 +1,5 @@
 import { editorsSw } from "./editors/sw";
+import { cargoBikeSw } from "./cargo-bike/sw";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -287,5 +288,6 @@ export const sw: Messages = {
   "prefs.calendar": "Kalenda, mahitaji na gharama",
 
   ...editorsSw,
+  ...cargoBikeSw,
   ...PLUGIN_MESSAGES.sw,
 };

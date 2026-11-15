@@ -1,8 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
+import { pluginTabs } from "../plugins/registry";
 
-/** The project tabs, in the order the top bar shows them. */
-export const TABS = ["simulator", "create", "schematic", "gis", "tables", "preferences"] as const;
-export type Tab = (typeof TABS)[number];
+/** The app's own project tabs, in the order the top bar shows them. */
+export const CORE_TABS = ["simulator", "create", "schematic", "gis", "tables", "preferences"] as const;
+export type CoreTab = (typeof CORE_TABS)[number];
+/** A core tab, or the id of a tab a plugin adds (such as "cargo-bike"). */
+export type Tab = CoreTab | (string & {});
+/** Every project tab: the core tabs, then the plugins' tabs (ADR-0036 §3, `tabs`). */
+export const TABS: readonly Tab[] = [...CORE_TABS, ...pluginTabs().map((t) => t.id)];
 
 /** Where the app is. Paths: `/`, `/projects/<id>/<tab>`, `/agents/consent`. */
 export type Route =
@@ -15,7 +20,7 @@ export type Route =
  */
 export function parseRoute(pathname: string, search = ""): Route {
   if (pathname === "/agents/consent") return { page: "consent" };
-  const m = /^\/projects\/([0-9a-fA-F-]{36})(?:\/([a-z]+))?\/?$/.exec(pathname);
+  const m = /^\/projects\/([0-9a-fA-F-]{36})(?:\/([a-z][a-z-]*))?\/?$/.exec(pathname);
   if (m?.[1]) {
     const tab = TABS.find((t) => t === m[2]) ?? "simulator";
     return { page: "project", id: m[1], tab, fresh: new URLSearchParams(search).get("new") === "1" };
