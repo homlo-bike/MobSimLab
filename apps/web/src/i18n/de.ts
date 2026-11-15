@@ -1,4 +1,5 @@
 import { editorsDe } from "./editors/de";
+import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
 /** Deutsch. */
@@ -292,4 +293,5 @@ export const de: Messages = {
   "prefs.calendar": "Kalender, Nachfrage und Kosten",
 
   ...editorsDe,
+  ...PLUGIN_MESSAGES.de,
 };
