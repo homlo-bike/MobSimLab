@@ -8,3 +8,6 @@
 09a5518d34c214bd657f4edd6e07731978c46654:assumptions/parameters/benefits.yaml:generic-api-key:225
 # False positive: the parameter id "noise.floor_area_per_person_m2" (floor area per resident, m²) matches the generic key pattern.
 0581acbab9798ae880b4c1ae0328799bf05326f3:plugins/noise/assumptions/parameters.yaml:generic-api-key:383
+# False positive: the parameter ids "energy.diesel_ttw_kg_co2e_per_l" and "energy.diesel_wtt_kg_co2e_per_l" (diesel tank-to-wheel and well-to-tank CO2e per litre) match the generic key pattern.
+fc34963b8c8a857867828be5232426bb28d88b28:plugins/energy/assumptions/parameters.yaml:generic-api-key:304
+fc34963b8c8a857867828be5232426bb28d88b28:plugins/energy/assumptions/parameters.yaml:generic-api-key:321
