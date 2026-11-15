@@ -1,4 +1,5 @@
 import { editorsUz } from "./editors/uz";
+import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
 /** Oʻzbekcha */
@@ -290,4 +291,5 @@ export const uz: Messages = {
   "prefs.calendar": "Kalendar, talab va xarajatlar",
 
   ...editorsUz,
+  ...PLUGIN_MESSAGES.uz,
 };
