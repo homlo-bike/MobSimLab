@@ -630,7 +630,6 @@ export const editorsUz = {
   "schematic.level.aerial": "Havoda",
   "schematic.level.water": "Suvda",
   "schematic.row.level": "Sathi",
-  "schematic.row.elevation": "Bekatlarda yer balandligi, dengiz sathidan metr",
   "schematic.row.elevationLoading": "Yer balandliklari yuklanmoqda…",
   "schematic.row.elevationNone": "Bu yerda yer balandliklari mavjud emas.",
   "schematic.timeNote":
@@ -660,6 +659,12 @@ export const editorsUz = {
     "Rangli yorliqlardagi daqiqalar: o‘sha liniyaga o‘tish uchun taxminiy piyoda vaqti.",
   "schematic.estNote":
     "Daqiqalar oldidagi ~: jadvalda hali vaqt bo‘lmagan joyda bekatlar orasidagi masofa va transport turining odatiy tezligi hamda tezlanishidan taxminiy yurish vaqti. O‘rtacha tezlik bu qismlarni hisobga olmaydi.",
+  "schematic.row.profile": "Liniya bo‘ylab yer, har {step} m, dengiz sathidan metr",
+  "schematic.scaleTrue": "Uzunlik va balandlik bir xil masshtabda",
+  "schematic.scale": "Uzunlik va balandlik bir masshtabda, balandliklar {n} marta kattalashtirilgan",
+  "schematic.row.gradient": "Bekatlar orasidagi qiyalik: o‘rtacha va eng tik {step} m",
+  "schematic.gradientMax": "ko‘pi bilan {n}",
+  "schematic.percent": "{n}%",
 
   "noise.title": "Shovqin",
   "noise.showBand": "Shovqin chizigʻini koʻrsatish",

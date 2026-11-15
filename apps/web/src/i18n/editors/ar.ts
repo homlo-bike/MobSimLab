@@ -666,7 +666,6 @@ export const editorsAr = {
   "schematic.level.aerial": "في الهواء",
   "schematic.level.water": "على الماء",
   "schematic.row.level": "المستوى",
-  "schematic.row.elevation": "ارتفاع الأرض عند المحطات بالأمتار فوق سطح البحر",
   "schematic.row.elevationLoading": "جارٍ تحميل ارتفاعات الأرض…",
   "schematic.row.elevationNone": "ارتفاعات الأرض غير متاحة هنا.",
   "schematic.timeNote": "الدقائق فوق الخط: زمن القيادة المقدَّر بين المحطات دون زمن التوقف.",
@@ -697,6 +696,12 @@ export const editorsAr = {
   "schematic.transferNote": "الدقائق على الملصقات الملونة: زمن المشي المقدَّر للتحويل إلى ذلك الخط.",
   "schematic.estNote":
     "~ قبل الدقائق: زمن قيادة تقريبي من المسافة بين المحطات والسرعة والتسارع المعتادين للوسيلة، حيث لا يوجد زمن في الجدول بعد. متوسط السرعة لا يحتسب هذه المقاطع.",
+  "schematic.row.profile": "الأرض على طول الخط، كل {step} م، أمتار فوق سطح البحر",
+  "schematic.scaleTrue": "الطول والارتفاع بالمقياس نفسه",
+  "schematic.scale": "الطول والارتفاع بمقياس واحد، الارتفاعات مضخمة {n} مرة",
+  "schematic.row.gradient": "الانحدار بين المحطات: المتوسط وأشد {step} م انحدارًا",
+  "schematic.gradientMax": "حتى {n}",
+  "schematic.percent": "{n}٪",
 
   "noise.title": "الضوضاء",
   "noise.showBand": "إظهار نطاق الضوضاء",

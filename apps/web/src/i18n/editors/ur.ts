@@ -618,7 +618,6 @@ export const editorsUr = {
   "schematic.level.aerial": "ہوا میں",
   "schematic.level.water": "پانی پر",
   "schematic.row.level": "سطح",
-  "schematic.row.elevation": "اسٹیشنوں پر زمین کی بلندی، سطح سمندر سے میٹر",
   "schematic.row.elevationLoading": "زمین کی بلندیاں لوڈ ہو رہی ہیں…",
   "schematic.row.elevationNone": "یہاں زمین کی بلندیاں دستیاب نہیں ہیں۔",
   "schematic.timeNote": "لائن کے اوپر منٹ: اسٹاپ پر رکنے کے بغیر اسٹاپوں کے درمیان اندازاً چلنے کا وقت۔",
@@ -645,6 +644,12 @@ export const editorsUr = {
   "schematic.transferNote": "رنگین لیبلوں پر منٹ: اس لائن میں تبدیلی کے لیے اندازاً پیدل وقت۔",
   "schematic.estNote":
     "منٹوں سے پہلے ~: جہاں ٹائم ٹیبل میں ابھی وقت نہیں، وہاں اسٹاپوں کے فاصلے اور ذریعے کی معمول کی رفتار اور اسراع سے اندازاً چلنے کا وقت۔ اوسط رفتار ان حصوں کو شامل نہیں کرتی۔",
+  "schematic.row.profile": "لائن کے ساتھ زمین، ہر {step} میٹر، سطح سمندر سے میٹر",
+  "schematic.scaleTrue": "لمبائی اور اونچائی ایک ہی پیمانے پر",
+  "schematic.scale": "لمبائی اور اونچائی ایک پیمانے پر، اونچائیاں {n} گنا بڑھا کر",
+  "schematic.row.gradient": "اسٹیشنوں کے درمیان ڈھلان: اوسط اور سب سے تیز {step} میٹر",
+  "schematic.gradientMax": "زیادہ سے زیادہ {n}",
+  "schematic.percent": "{n}%",
 
   "noise.title": "شور",
   "noise.showBand": "شور کی پٹی دکھائیں",

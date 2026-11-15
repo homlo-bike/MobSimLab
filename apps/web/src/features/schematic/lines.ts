@@ -121,6 +121,11 @@ export interface SchematicLine {
   runEstS: number[];
   /** Per stop: the drawn stop or station it comes from (`StationPart.id`). */
   partIds: string[];
+  /**
+   * Per section: the way the line runs between the two stops: the routed street for street lines, the built
+   * track for rail lines once the engine has run (`details.ts`), else the straight line between the stops.
+   */
+  paths: LonLat[][];
 }
 
 export interface SchematicNetwork {
@@ -151,7 +156,15 @@ interface RawLine {
   color: string;
   /** `t`: running time from the first stop, s; `d`: distance along the route from the first stop, m (null when
    * not known). */
-  stops: { name: string; lonlat: LonLat; part: StationPart; t: number | null; d?: number | null }[];
+  stops: {
+    name: string;
+    lonlat: LonLat;
+    part: StationPart;
+    t: number | null;
+    d?: number | null;
+    /** The routed way from the previous stop to this one, when known. */
+    path?: LonLat[];
+  }[];
   service: LineService;
 }
 
@@ -225,6 +238,20 @@ function rawLines(
         along.set(leg.to, (along.get(leg.from) ?? 0) + (leg.length_m ?? 0));
       }
     }
+    // The routed way into each stop from the stop before it, through the via points.
+    const into = new Map<number, LonLat[]>();
+    for (const leg of [...(l.view?.legs ?? [])].sort((a, b) => a.index - b.index))
+      if (!into.has(leg.to)) into.set(leg.to, leg.coords);
+    const pathTo: (LonLat[] | undefined)[] = [];
+    let pending: LonLat[] | undefined = [];
+    pts.forEach((p, k) => {
+      const c = k === 0 ? [] : into.get(p.id);
+      pending = pending && c ? [...pending, ...c] : undefined;
+      if (p.kind !== "via") {
+        pathTo[k] = k === 0 || !pending?.length ? undefined : pending;
+        pending = [];
+      }
+    });
     // The saved points are in the same order as the routed ones; they carry the stops' facilities.
     const stops = pts.flatMap((p, k) =>
       p.kind === "via"
@@ -244,6 +271,7 @@ function rawLines(
               },
               t: at.get(p.id) ?? null,
               d: l.view?.legs?.some((g) => g.length_m) ? (along.get(p.id) ?? null) : null,
+              path: pathTo[k],
             },
           ],
     );
@@ -312,13 +340,22 @@ function rawLines(
     });
   }
   return out
-    .map((l) => ({
-      ...l,
-      stops: l.stops.filter(
-        (s, i, a) =>
-          i === 0 || norm(s.name) !== norm(a[i - 1]!.name) || distanceM(s.lonlat, a[i - 1]!.lonlat) > 1,
-      ),
-    }))
+    .map((l) => {
+      // A stop repeated right after itself is dropped; its way in joins the next stop's.
+      const stops: RawLine["stops"] = [];
+      let carry: LonLat[] | undefined = [];
+      l.stops.forEach((s, i) => {
+        const prev = l.stops[i - 1];
+        const repeat = prev && norm(s.name) === norm(prev.name) && distanceM(s.lonlat, prev.lonlat) <= 1;
+        const path = i === 0 ? [] : carry && s.path ? [...carry, ...s.path] : undefined;
+        if (repeat) carry = path;
+        else {
+          stops.push({ ...s, path: i === 0 ? undefined : path });
+          carry = [];
+        }
+      });
+      return { ...l, stops };
+    })
     .filter((l) => l.stops.length >= 2);
 }
 
@@ -374,8 +411,10 @@ export function schematicNetwork(
       t: s.t,
       d: s.d ?? null,
       lonlat: s.lonlat,
+      path: s.path,
     }));
-    const kept = at.filter((x, i) => i === 0 || x.st !== at[i - 1]!.st);
+    const keptAt = at.flatMap((x, i) => (i === 0 || x.st !== at[i - 1]!.st ? [i] : []));
+    const kept = keptAt.map((i) => at[i]!);
     if (kept.length < 2) continue;
     lines.push({
       id: l.id,
@@ -396,6 +435,14 @@ export function schematicNetwork(
         return a.d !== null && x.d !== null && x.d > a.d ? x.d - a.d : distanceM(a.lonlat, x.lonlat);
       }),
       partIds: kept.map((x) => x.part.id),
+      paths: keptAt.slice(1).map((i, k) => {
+        // The routed ways of the stops from the previous kept one, or the straight line.
+        const from = keptAt[k]!;
+        const parts = at.slice(from + 1, i + 1).map((x) => x.path);
+        return parts.every((x) => x?.length)
+          ? (parts as LonLat[][]).flat()
+          : [at[from]!.lonlat, at[i]!.lonlat];
+      }),
     });
     const last = lines[lines.length - 1]!;
     last.runEstS = last.distM.map((m) => estimateRunS(l.mode, m));

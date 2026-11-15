@@ -640,7 +640,6 @@ export const editorsFr = {
   "schematic.level.aerial": "Dans les airs",
   "schematic.level.water": "Sur l’eau",
   "schematic.row.level": "Circule",
-  "schematic.row.elevation": "Altitude du sol aux stations, en mètres au-dessus du niveau de la mer",
   "schematic.row.elevationLoading": "Chargement des altitudes…",
   "schematic.row.elevationNone": "Les altitudes du sol ne sont pas disponibles ici.",
   "schematic.timeNote":
@@ -670,6 +669,12 @@ export const editorsFr = {
     "Minutes sur les étiquettes colorées : marche estimée pour la correspondance vers cette ligne.",
   "schematic.estNote":
     "~ devant les minutes : temps de parcours approximatif d’après la distance entre arrêts et la vitesse et l’accélération habituelles du mode, là où l’horaire n’a pas encore de temps. La vitesse moyenne ignore ces sections.",
+  "schematic.row.profile": "Terrain le long de la ligne, tous les {step} m, mètres au-dessus de la mer",
+  "schematic.scaleTrue": "Longueur et hauteur à la même échelle",
+  "schematic.scale": "Longueur et hauteur à une échelle, hauteurs exagérées {n} fois",
+  "schematic.row.gradient": "Pente entre stations : moyenne et les {step} m les plus raides",
+  "schematic.gradientMax": "max. {n}",
+  "schematic.percent": "{n} %",
 
   "noise.title": "Bruit",
   "noise.showBand": "Afficher la bande de bruit",

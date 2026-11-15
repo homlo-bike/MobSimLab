@@ -636,7 +636,6 @@ export const editorsDe = {
   "schematic.level.aerial": "In der Luft",
   "schematic.level.water": "Auf dem Wasser",
   "schematic.row.level": "Verläuft",
-  "schematic.row.elevation": "Geländehöhe an den Stationen, Meter über dem Meeresspiegel",
   "schematic.row.elevationLoading": "Geländehöhen werden geladen…",
   "schematic.row.elevationNone": "Geländehöhen sind hier nicht verfügbar.",
   "schematic.timeNote":
@@ -666,6 +665,12 @@ export const editorsDe = {
     "Minuten auf den farbigen Schildern: geschätzter Fußweg zum Umsteigen in diese Linie.",
   "schematic.estNote":
     "~ vor den Minuten: grobe Fahrzeit aus dem Abstand der Halte und der üblichen Geschwindigkeit und Beschleunigung des Verkehrsmittels, wo der Fahrplan noch keine Zeit hat. Die Durchschnittsgeschwindigkeit lässt diese Abschnitte aus.",
+  "schematic.row.profile": "Gelände entlang der Linie, alle {step} m, Meter über dem Meer",
+  "schematic.scaleTrue": "Länge und Höhe im selben Maßstab",
+  "schematic.scale": "Länge und Höhe in einem Maßstab, Höhen {n}-fach überhöht",
+  "schematic.row.gradient": "Steigung zwischen den Stationen: Mittel und steilste {step} m",
+  "schematic.gradientMax": "max. {n}",
+  "schematic.percent": "{n} %",
 
   "noise.title": "Lärm",
   "noise.showBand": "Lärmband anzeigen",

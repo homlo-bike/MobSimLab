@@ -582,7 +582,6 @@ export const editorsZh = {
   "schematic.level.aerial": "空中",
   "schematic.level.water": "水上",
   "schematic.row.level": "线路位置",
-  "schematic.row.elevation": "车站地面高程（海拔，米）",
   "schematic.row.elevationLoading": "正在加载地面高程…",
   "schematic.row.elevationNone": "此处无法获取地面高程。",
   "schematic.timeNote": "线路上方的分钟数：站间估计行驶时间，不含停站时间。",
@@ -607,6 +606,12 @@ export const editorsZh = {
   "schematic.transferNote": "彩色标签上的分钟数：换乘该线路的估计步行时间。",
   "schematic.estNote":
     "分钟前的 ~：时刻表尚无时间时，按站间距离及该方式的常规速度和加速度粗略估算的行驶时间。平均速度不计这些区段。",
+  "schematic.row.profile": "沿线地形，每 {step} 米，海拔（米）",
+  "schematic.scaleTrue": "长度与高度同一比例",
+  "schematic.scale": "长度与高度同一比例，高度放大 {n} 倍",
+  "schematic.row.gradient": "站间坡度：平均值及最陡的 {step} 米",
+  "schematic.gradientMax": "最大 {n}",
+  "schematic.percent": "{n}%",
 
   "noise.title": "噪声",
   "noise.showBand": "显示噪声带",

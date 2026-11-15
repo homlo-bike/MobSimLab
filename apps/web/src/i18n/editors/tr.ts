@@ -604,7 +604,6 @@ export const editorsTr = {
   "schematic.level.aerial": "Havada",
   "schematic.level.water": "Su üzerinde",
   "schematic.row.level": "Seviye",
-  "schematic.row.elevation": "İstasyonlarda zemin yüksekliği, deniz seviyesinden metre",
   "schematic.row.elevationLoading": "Zemin yükseklikleri yükleniyor…",
   "schematic.row.elevationNone": "Zemin yükseklikleri burada mevcut değil.",
   "schematic.timeNote":
@@ -633,6 +632,12 @@ export const editorsTr = {
   "schematic.transferNote": "Renkli etiketlerdeki dakikalar: o hatta aktarma için tahmini yürüme süresi.",
   "schematic.estNote":
     "Dakikaların önündeki ~: tarifede henüz süre olmayan yerlerde, duraklar arası mesafeden ve türün olağan hız ve ivmesinden kaba sürüş süresi. Ortalama hız bu bölümleri saymaz.",
+  "schematic.row.profile": "Hat boyunca arazi, her {step} m'de, deniz seviyesinden metre",
+  "schematic.scaleTrue": "Uzunluk ve yükseklik aynı ölçekte",
+  "schematic.scale": "Uzunluk ve yükseklik tek ölçekte, yükseklikler {n} kat abartılı",
+  "schematic.row.gradient": "İstasyonlar arası eğim: ortalama ve en dik {step} m",
+  "schematic.gradientMax": "en çok {n}",
+  "schematic.percent": "%{n}",
 
   "noise.title": "Gürültü",
   "noise.showBand": "Gürültü bandını göster",

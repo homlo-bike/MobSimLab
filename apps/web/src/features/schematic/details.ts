@@ -12,10 +12,22 @@ import { loadRailEngine } from "../railways/engine";
 import type { LonLat, Network, RailEngineLoader, TrackView } from "../railways/types";
 import { type HeightsFetcher, type RailBuild, useRailBuild } from "../tables/railBuild";
 import { project, type Pt } from "./layout";
-import type { SchematicLine, SchematicNetwork, SectionLevel } from "./lines";
+import { distanceM, type SchematicLine, type SchematicNetwork, type SectionLevel } from "./lines";
 
-/** Ground heights of the diagram's stations, m above sea level (null where unknown), by station index. */
-export type StationHeights = (number | null)[];
+/**
+ * The ground along a line, sampled every `PROFILE_STEP_M` along the way it runs: distance from the first stop,
+ * m, and the ground height there, m above sea level (null where unknown). `stationD`: each stop's distance.
+ */
+export interface LineProfile {
+  d: number[];
+  h: (number | null)[];
+  stationD: number[];
+}
+
+/** The profile samples the ground this often along the line, m. */
+export const PROFILE_STEP_M = 50;
+/** At most this many samples per line (the terrain service takes 20 000 a request). */
+const MAX_PROFILE_SAMPLES = 19_000;
 
 const defaultHeights: HeightsFetcher = (points) => fetchElevations(points).then((r) => r.elevationsM);
 
@@ -92,6 +104,99 @@ export function sectionLevels(
   return out.map((x) => ({ level: x.level, share: x.share / found.length }));
 }
 
+/** Purpose: a point a share of the way between two points. */
+function lerp(a: LonLat, b: LonLat, f: number): LonLat {
+  return [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f];
+}
+
+/** Purpose: the part of a polyline between two distances along it (metres, `pts` its projected form). */
+function slicePath(ll: readonly LonLat[], pts: readonly Pt[], from: number, to: number): LonLat[] {
+  const lo = Math.min(from, to);
+  const hi = Math.max(from, to);
+  const out: LonLat[] = [];
+  let run = 0;
+  for (let i = 1; i < pts.length; i++) {
+    const len = Math.hypot(pts[i]![0] - pts[i - 1]![0], pts[i]![1] - pts[i - 1]![1]);
+    const a = run;
+    const b = run + len;
+    if (b >= lo && a <= hi && len > 0) {
+      if (!out.length) out.push(lerp(ll[i - 1]!, ll[i]!, Math.max(0, (lo - a) / len)));
+      out.push(b <= hi ? ll[i]! : lerp(ll[i - 1]!, ll[i]!, (hi - a) / len));
+    }
+    run = b;
+  }
+  return from <= to ? out : out.reverse();
+}
+
+/**
+ * Purpose: the way a rail section runs on the built track: the part of the track that passes both stations,
+ * from one to the other. Output: null when no track passes near both.
+ */
+export function trackPath(a: LonLat, b: LonLat, tracks: readonly TrackView[]): LonLat[] | null {
+  const pb = project(a, b);
+  let best: { score: number; path: LonLat[] } | null = null;
+  for (const tr of tracks) {
+    if (tr.centre.length < 2) continue;
+    const pts = tr.centre.map((c) => project(a, c));
+    const na = nearestOn(pts, [0, 0]);
+    const nb = nearestOn(pts, pb);
+    if (na.d > NEAR_TRACK_M || nb.d > NEAR_TRACK_M || Math.abs(na.along - nb.along) < 1) continue;
+    const score = na.d + nb.d;
+    if (!best || score < best.score)
+      best = { score, path: [a, ...slicePath(tr.centre, pts, na.along, nb.along), b] };
+  }
+  return best?.path ?? null;
+}
+
+/**
+ * Purpose: points along a line every `PROFILE_STEP_M` (further apart on very long lines), each section
+ * starting at its stop. Output: the points, their distance from the first stop and each stop's distance.
+ */
+export function profilePoints(paths: readonly LonLat[][]): {
+  points: LonLat[];
+  d: number[];
+  stationD: number[];
+} {
+  const segLen = (p: readonly LonLat[]) => p.slice(1).reduce((m, x, i) => m + distanceM(p[i]!, x), 0);
+  const total = paths.reduce((m, p) => m + segLen(p), 0);
+  const step = Math.max(PROFILE_STEP_M, total / MAX_PROFILE_SAMPLES);
+  const points: LonLat[] = [];
+  const d: number[] = [];
+  const stationD: number[] = [0];
+  let base = 0;
+  paths.forEach((p, k) => {
+    if (k === 0 && p[0]) {
+      points.push(p[0]);
+      d.push(0);
+    }
+    let run = 0;
+    let next = step;
+    for (let i = 1; i < p.length; i++) {
+      const len = distanceM(p[i - 1]!, p[i]!);
+      while (len > 0 && next < run + len) {
+        points.push(lerp(p[i - 1]!, p[i]!, (next - run) / len));
+        d.push(base + next);
+        next += step;
+      }
+      run += len;
+    }
+    // Every stop gets a sample of its own; one closer than a fifth of a step replaces the last.
+    const end = p[p.length - 1];
+    if (end) {
+      const lastD = d[d.length - 1]!;
+      if (d.length > 1 && lastD > base && base + run - lastD < step / 5) {
+        points.pop();
+        d.pop();
+      }
+      points.push(end);
+      d.push(base + run);
+    }
+    base += run;
+    stationD.push(base);
+  });
+  return { points, d, stationD };
+}
+
 /**
  * Purpose: running time between two named stations in a published timetable: from leaving the first to
  * arriving at the second, on the first trip of the line that calls at both in a row (either direction).
@@ -158,37 +263,53 @@ export function withRailDetails(
         const b = where(l.partIds[k + 1]!);
         return (a && b && sectionLevels(a, b, build.view.tracks)) || lv;
       }),
+      paths: l.paths.map((p, k) => {
+        const a = where(l.partIds[k]!);
+        const b = where(l.partIds[k + 1]!);
+        return (a && b && trackPath(a, b, build.view.tracks)) || p;
+      }),
     };
   });
   return { ...net, lines };
 }
 
 /**
- * Purpose: the strip map's extra facts: the network with the rail engine's details, and the ground height
- * at every station. Inputs: the network, the railway design, the engine loader and the height source (tests
- * inject both). Side effects: loads the rail engine and fetches terrain heights.
+ * Purpose: the strip map's extra facts: the network with the rail engine's details. Inputs: the network, the
+ * railway design, the engine loader and the height source the engine uses (tests inject both). Side effects:
+ * loads the rail engine.
  */
 export function useSchematicDetails(
   net: SchematicNetwork,
   railway: Network | null | undefined,
   loadRail: RailEngineLoader = loadRailEngine,
   fetchHeights: HeightsFetcher = defaultHeights,
-): { net: SchematicNetwork; heights: StationHeights | null } {
+): SchematicNetwork {
   const { build } = useRailBuild(railway ?? null, loadRail, fetchHeights);
-  const detailed = useMemo(() => withRailDetails(net, railway, build), [net, railway, build]);
-  const [heights, setHeights] = useState<StationHeights | null>(null);
-  const pts = JSON.stringify(net.stations.map((s) => s.lonlat));
+  return useMemo(() => withRailDetails(net, railway, build), [net, railway, build]);
+}
+
+/**
+ * Purpose: the ground along a line, for the strip map's height profile. Inputs: the line (null when no strip
+ * map is open) and the height source. Output: null while loading. Side effects: fetches terrain heights.
+ */
+export function useLineProfile(
+  line: SchematicLine | null,
+  fetchHeights: HeightsFetcher = defaultHeights,
+): LineProfile | null {
+  const [profile, setProfile] = useState<LineProfile | null>(null);
+  const paths = JSON.stringify(line?.paths ?? null);
   useEffect(() => {
     let live = true;
-    const points = JSON.parse(pts) as LonLat[];
-    setHeights(null);
-    if (!points.length) return;
+    setProfile(null);
+    const p = JSON.parse(paths) as LonLat[][] | null;
+    if (!p?.length) return;
+    const { points, d, stationD } = profilePoints(p);
     fetchHeights(points)
-      .then((h) => live && setHeights(h))
-      .catch(() => live && setHeights(points.map(() => null)));
+      .then((h) => live && setProfile({ d, h, stationD }))
+      .catch(() => live && setProfile({ d, h: points.map(() => null), stationD }));
     return () => {
       live = false;
     };
-  }, [pts, fetchHeights]);
-  return { net: detailed, heights };
+  }, [paths, fetchHeights]);
+  return profile;
 }

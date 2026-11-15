@@ -617,7 +617,6 @@ export const editorsHa = {
   "schematic.level.aerial": "A sama",
   "schematic.level.water": "A kan ruwa",
   "schematic.row.level": "Mataki",
-  "schematic.row.elevation": "Tsayin ƙasa a tashoshi, mita sama da teku",
   "schematic.row.elevationLoading": "Ana loda tsayin ƙasa…",
   "schematic.row.elevationNone": "Babu tsayin ƙasa a nan.",
   "schematic.timeNote":
@@ -646,6 +645,12 @@ export const editorsHa = {
     "Mintuna a kan alamomin launi: kimanin lokacin tafiya da ƙafa don canjawa zuwa wannan layi.",
   "schematic.estNote":
     "~ kafin mintuna: kimanin lokacin tuƙi daga nisa tsakanin tashoshi da saurin da hanzarin da aka saba na irin sufurin, inda jadawali bai da lokaci tukuna. Matsakaicin gudu bai ƙirga waɗannan sassan ba.",
+  "schematic.row.profile": "Ƙasa a gefen layi, kowane m {step}, mita sama da teku",
+  "schematic.scaleTrue": "Tsawo da tsayi a ma'auni ɗaya",
+  "schematic.scale": "Tsawo da tsayi a ma'auni ɗaya, an ƙara tsayi sau {n}",
+  "schematic.row.gradient": "Gangara tsakanin tashoshi: matsakaici da m {step} mafi tsauri",
+  "schematic.gradientMax": "mafi yawa {n}",
+  "schematic.percent": "{n}%",
 
   "noise.title": "Hayaniya",
   "noise.showBand": "Nuna yankin hayaniya",

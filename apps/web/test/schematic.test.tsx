@@ -349,9 +349,16 @@ describe("Schematic tab", () => {
       ]),
     );
     expect(
-      await within(strip).findByText("Ground height at the stations, metres above sea level"),
+      await within(strip).findByText("Ground along the line, every 50 m, metres above sea level"),
     ).toBeTruthy();
-    expect(texts().filter((x) => /^-?\d+ m$/.test(x ?? "")).length).toBeGreaterThanOrEqual(4);
+    // The ground is sampled every 50 m along the routed street, and each section gets its gradient.
+    const sampled = fetchHeights.mock.calls.at(-1)![0];
+    expect(sampled.length).toBeGreaterThan(20);
+    expect(texts()).toEqual(
+      expect.arrayContaining(["Gradient between stations: average, and the steepest 50 m"]),
+    );
+    expect(texts().filter((x) => /^[+−-]?[\d.]+%$/.test(x ?? "")).length).toBe(3);
+    expect(texts().some((x) => /^Length and height to (one|the same) scale/.test(x ?? ""))).toBe(true);
     // Distances along the street (none given in the legs here, so in a straight line), average speed and the
     // walk to change at an interchange.
     expect(texts()).toEqual(expect.arrayContaining(["Average speed", "Step-free stations", "0 of 4"]));
@@ -589,6 +596,29 @@ describe("station features", () => {
 });
 
 describe("strip map extras", () => {
+  it("samples the ground every 50 m and works out gradients and one scale for length and height", async () => {
+    const { profilePoints } = await import("../src/features/schematic/details");
+    const { profileChart } = await import("../src/features/schematic/StripMap");
+    // Two sections due north, 1000 m and 230 m long.
+    const north = (m: number): [number, number] => [5, 52 + m / 111_320];
+    const p = profilePoints([
+      [north(0), north(1000)],
+      [north(1000), north(1230)],
+    ]);
+    expect(p.stationD.map(Math.round)).toEqual([0, 1000, 1230]);
+    expect(p.d.length).toBe(1 + 20 + 5);
+    expect(p.d.slice(0, 3).map(Math.round)).toEqual([0, 50, 100]);
+    // Climbing 1 m every 50 m on the first section, flat on the second.
+    const h = p.d.map((m) => Math.min(m, 1000) / 50);
+    const chart = profileChart({ ...p, h }, 440)!;
+    expect(chart.gradients[0]!.average).toBeCloseTo(2, 5);
+    expect(chart.gradients[0]!.steepest).toBeCloseTo(2, 5);
+    expect(chart.gradients[1]!.average).toBeCloseTo(0, 5);
+    // 0 to 20 m over 1230 m in 440 px: heights drawn 10 times taller keep the chart under 140 px.
+    expect(chart.exaggeration).toBe(10);
+    expect(chart.stationH).toEqual([0, 20, 20]);
+  });
+
   it("estimates driving times from the mode and draws the height axis in round steps", async () => {
     const { estimateRunS } = await import("../src/features/schematic/lines");
     const { heightAxis } = await import("../src/features/schematic/StripMap");

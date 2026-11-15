@@ -640,7 +640,6 @@ export const editorsTa = {
   "schematic.level.aerial": "வான்வழி",
   "schematic.level.water": "நீர்வழி",
   "schematic.row.level": "மட்டம்",
-  "schematic.row.elevation": "நிலையங்களில் தரை உயரம், கடல் மட்டத்திலிருந்து மீட்டர்",
   "schematic.row.elevationLoading": "தரை உயரங்கள் ஏற்றப்படுகின்றன…",
   "schematic.row.elevationNone": "இங்கு தரை உயரங்கள் கிடைக்கவில்லை.",
   "schematic.timeNote":
@@ -669,6 +668,12 @@ export const editorsTa = {
   "schematic.transferNote": "வண்ண லேபிள்களில் நிமிடங்கள்: அந்த வழித்தடத்துக்கு மாற மதிப்பிடப்பட்ட நடை நேரம்.",
   "schematic.estNote":
     "நிமிடங்களுக்கு முன் ~: கால அட்டவணையில் இன்னும் நேரம் இல்லாத இடங்களில், நிறுத்தங்களுக்கு இடையேயான தூரம் மற்றும் அந்த முறையின் வழக்கமான வேகம், முடுக்கம் கொண்டு தோராயமான பயண நேரம். சராசரி வேகம் இப்பகுதிகளை சேர்க்காது.",
+  "schematic.row.profile": "வழித்தடம் நெடுக நிலம், ஒவ்வொரு {step} மீ, கடல் மட்டத்திலிருந்து மீட்டர்",
+  "schematic.scaleTrue": "நீளமும் உயரமும் ஒரே அளவுகோலில்",
+  "schematic.scale": "நீளமும் உயரமும் ஒரே அளவுகோலில், உயரங்கள் {n} மடங்கு பெரிதாக்கப்பட்டவை",
+  "schematic.row.gradient": "நிலையங்களுக்கு இடையே சரிவு: சராசரி மற்றும் மிகச் செங்குத்தான {step} மீ",
+  "schematic.gradientMax": "அதிகபட்சம் {n}",
+  "schematic.percent": "{n}%",
 
   "noise.title": "இரைச்சல்",
   "noise.showBand": "இரைச்சல் பட்டையைக் காட்டு",

@@ -599,7 +599,6 @@ export const editorsYo = {
   "schematic.level.aerial": "Lójú òfurufú",
   "schematic.level.water": "Lórí omi",
   "schematic.row.level": "Ìpele",
-  "schematic.row.elevation": "Gíga ilẹ̀ ní àwọn ibùdókọ̀, mítà lókè òkun",
   "schematic.row.elevationLoading": "Ń gbé gíga ilẹ̀ wọlé…",
   "schematic.row.elevationNone": "Gíga ilẹ̀ kò sí níbí.",
   "schematic.timeNote": "Ìṣẹ́jú lókè ìlà: àkókò ìwakọ̀ tí a fojú dá láàrin àwọn ibùdó, láìka àkókò ìdúró.",
@@ -625,6 +624,12 @@ export const editorsYo = {
   "schematic.transferNote": "Ìṣẹ́jú lórí àwọn àmì aláwọ̀: àkókò ìrìn ẹsẹ̀ tí a fojú dá láti yí sí ìlà náà.",
   "schematic.estNote":
     "~ ṣáájú ìṣẹ́jú: àkókò ìwakọ̀ tí a fojú dá láti ijìnnà láàrin àwọn ibùdó àti ìyára àti ìmúyára àṣà ọ̀nà ìrìnnà náà, níbi tí àtòjọ àkókò kò tíì ní àkókò. Ìyára àpapọ̀ kò ka àwọn apá yẹn.",
+  "schematic.row.profile": "Ilẹ̀ lẹ́gbẹ̀ẹ́ ìlà, ní gbogbo {step} m, mítà lókè òkun",
+  "schematic.scaleTrue": "Gígùn àti gíga ní ìwọ̀n kan náà",
+  "schematic.scale": "Gígùn àti gíga ní ìwọ̀n kan, a fẹ gíga sí ìlọ́po {n}",
+  "schematic.row.gradient": "Ìdagẹ̀rẹ̀ láàrin ibùdókọ̀: àpapọ̀ àti {step} m tó ga jù",
+  "schematic.gradientMax": "tó pọ̀ jù {n}",
+  "schematic.percent": "{n}%",
 
   "noise.title": "Ariwo",
   "noise.showBand": "Fi agbègbè ariwo hàn",

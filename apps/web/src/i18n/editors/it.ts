@@ -629,7 +629,6 @@ export const editorsIt = {
   "schematic.level.aerial": "In aria",
   "schematic.level.water": "Sull’acqua",
   "schematic.row.level": "Corre",
-  "schematic.row.elevation": "Quota del terreno alle stazioni, metri sul livello del mare",
   "schematic.row.elevationLoading": "Caricamento quote del terreno…",
   "schematic.row.elevationNone": "Le quote del terreno non sono disponibili qui.",
   "schematic.timeNote": "Minuti sopra la linea: tempo di marcia stimato tra le fermate, senza la sosta.",
@@ -657,6 +656,12 @@ export const editorsIt = {
   "schematic.transferNote": "Minuti sulle etichette colorate: cammino stimato per il cambio su quella linea.",
   "schematic.estNote":
     "~ prima dei minuti: tempo di marcia approssimato dalla distanza tra le fermate e dalla velocità e accelerazione abituali del modo, dove l’orario non ha ancora un tempo. La velocità media esclude quelle tratte.",
+  "schematic.row.profile": "Terreno lungo la linea, ogni {step} m, metri sul livello del mare",
+  "schematic.scaleTrue": "Lunghezza e altezza nella stessa scala",
+  "schematic.scale": "Lunghezza e altezza in una scala, altezze esagerate {n} volte",
+  "schematic.row.gradient": "Pendenza tra le stazioni: media e i {step} m più ripidi",
+  "schematic.gradientMax": "max {n}",
+  "schematic.percent": "{n}%",
 
   "noise.title": "Rumore",
   "noise.showBand": "Mostra la fascia di rumore",

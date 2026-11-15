@@ -5,7 +5,7 @@ import type { Network, RailEngineLoader } from "../railways/types";
 import type { StreetLinesDoc } from "../street-lines/saved";
 import type { HeightsFetcher } from "../tables/railBuild";
 import { EMPTY_SCHEMATIC, LAYER_LABEL, type SchematicArea, type SchematicDoc, useModeLabel } from "./common";
-import { useSchematicDetails } from "./details";
+import { useLineProfile, useSchematicDetails } from "./details";
 import { download, fileName, pngBlob, printSvg, svgText } from "./export";
 import { defaultOrigin } from "./layout";
 import { LAYERS, schematicNetwork } from "./lines";
@@ -83,7 +83,7 @@ export function Schematic({
     () => schematicNetwork(railway, streetLines, JSON.parse(pluginJson) as PluginLineInput[]),
     [railway, streetLines, pluginJson],
   );
-  const { net, heights } = useSchematicDetails(base, railway, loadRail, fetchHeights);
+  const net = useSchematicDetails(base, railway, loadRail, fetchHeights);
   const [view, setView] = useState<"network" | "line">("network");
   const [lineId, setLineId] = useState<string | null>(null);
   const [zoom, setZoom] = useState<number | null>(null);
@@ -99,6 +99,7 @@ export function Schematic({
   );
 
   const line = net.lines.find((l) => l.id === lineId) ?? net.lines[0] ?? null;
+  const profile = useLineProfile(view === "line" ? line : null, fetchHeights);
   const present = LAYERS.filter((l) => net.lines.some((x) => x.layer === l));
   const hidden = new Set(d.hidden ?? []);
   const set = (patch: Partial<SchematicDoc>) => onDoc?.({ ...d, ...patch });
@@ -215,7 +216,7 @@ export function Schematic({
                 net={net}
                 line={line}
                 doc={d}
-                heights={heights}
+                profile={profile}
                 zoom={zoom}
                 modeLabel={modeLabel}
                 title={projectName}

@@ -625,7 +625,6 @@ export const editorsSw = {
   "schematic.level.aerial": "Angani",
   "schematic.level.water": "Majini",
   "schematic.row.level": "Kiwango",
-  "schematic.row.elevation": "Kimo cha ardhi kwenye stesheni, mita juu ya usawa wa bahari",
   "schematic.row.elevationLoading": "Inapakia vimo vya ardhi…",
   "schematic.row.elevationNone": "Vimo vya ardhi havipatikani hapa.",
   "schematic.timeNote":
@@ -655,6 +654,12 @@ export const editorsSw = {
     "Dakika kwenye lebo za rangi: muda unaokadiriwa wa kutembea kubadilisha kwenda mstari huo.",
   "schematic.estNote":
     "~ kabla ya dakika: muda wa kuendesha unaokadiriwa kutoka umbali kati ya vituo na kasi na mchapuko wa kawaida wa njia hiyo ya usafiri, pale ratiba haina muda bado. Kasi ya wastani haihesabu sehemu hizo.",
+  "schematic.row.profile": "Ardhi kando ya mstari, kila m {step}, mita juu ya usawa wa bahari",
+  "schematic.scaleTrue": "Urefu na kimo kwa kipimo kimoja",
+  "schematic.scale": "Urefu na kimo kwa kipimo kimoja, vimo vimekuzwa mara {n}",
+  "schematic.row.gradient": "Mwinuko kati ya stesheni: wastani na m {step} zenye mwinuko zaidi",
+  "schematic.gradientMax": "juu {n}",
+  "schematic.percent": "{n}%",
 
   "noise.title": "Kelele",
   "noise.showBand": "Onyesha ukanda wa kelele",

@@ -619,7 +619,6 @@ export const editorsId = {
   "schematic.level.aerial": "Di udara",
   "schematic.level.water": "Di air",
   "schematic.row.level": "Posisi",
-  "schematic.row.elevation": "Ketinggian tanah di stasiun, meter di atas permukaan laut",
   "schematic.row.elevationLoading": "Memuat ketinggian tanah…",
   "schematic.row.elevationNone": "Ketinggian tanah tidak tersedia di sini.",
   "schematic.timeNote": "Menit di atas jalur: perkiraan waktu tempuh antarhalte, tanpa waktu berhenti.",
@@ -647,6 +646,12 @@ export const editorsId = {
     "Menit pada label berwarna: perkiraan waktu jalan kaki untuk pindah ke jalur itu.",
   "schematic.estNote":
     "~ sebelum menit: perkiraan kasar waktu tempuh dari jarak antarhalte serta kecepatan dan percepatan biasa moda itu, di bagian yang belum punya waktu di jadwal. Kecepatan rata-rata tidak menghitung bagian itu.",
+  "schematic.row.profile": "Medan sepanjang jalur, tiap {step} m, meter di atas permukaan laut",
+  "schematic.scaleTrue": "Panjang dan tinggi dengan skala sama",
+  "schematic.scale": "Panjang dan tinggi dengan satu skala, tinggi dibesarkan {n} kali",
+  "schematic.row.gradient": "Kelandaian antarstasiun: rata-rata dan {step} m tercuram",
+  "schematic.gradientMax": "maks. {n}",
+  "schematic.percent": "{n}%",
 
   "noise.title": "Kebisingan",
   "noise.showBand": "Tampilkan pita kebisingan",

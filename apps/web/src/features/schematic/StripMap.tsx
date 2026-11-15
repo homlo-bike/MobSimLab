@@ -20,7 +20,7 @@ import {
   textOn,
   useFooter,
 } from "./common";
-import type { StationHeights } from "./details";
+import { type LineProfile, PROFILE_STEP_M } from "./details";
 import { isStepFree, linesAt, type SchematicLine, type SchematicNetwork, transferS } from "./lines";
 
 /** Purpose: a text cut into lines of at most `perLine` characters, at spaces. */
@@ -70,6 +70,86 @@ export function heightAxis(hs: readonly number[]): { lo: number; hi: number; tic
   return { lo, hi, ticks };
 }
 
+/** Px a gradient profile may be tall at most. */
+const MAX_CHART_PX = 140;
+
+/**
+ * Purpose: how to draw a line's ground profile: one scale for length and height, with the heights drawn a
+ * round number of times larger (1, 2, 5, 10, 20 …) so the chart stays at most `MAX_CHART_PX` tall; the
+ * height and km ticks; the height at each stop; and per section the average gradient (rise over length, in
+ * running direction) and the steepest between neighbouring samples, %. Output: null without any height.
+ */
+export function profileChart(profile: LineProfile, widthPx: number) {
+  const known = profile.h.filter((h): h is number => h !== null);
+  const total = profile.d[profile.d.length - 1] ?? 0;
+  if (!known.length || total <= 0) return null;
+  const pxPerM = widthPx / total;
+  const axis = heightAxis(known);
+  const range = axis.hi - axis.lo;
+  let exaggeration = 1;
+  for (const e of [1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000])
+    if (range * pxPerM * e <= MAX_CHART_PX) exaggeration = e;
+  const heightPx = Math.max(24, range * pxPerM * exaggeration);
+  const kmRaw = total / 1000 / Math.max(1, Math.floor(widthPx / 80));
+  const kmMag = 10 ** Math.floor(Math.log10(kmRaw));
+  const kmStep = [1, 2, 5, 10].map((m) => m * kmMag).find((x) => x >= kmRaw) ?? 10 * kmMag;
+  const kmTicks: number[] = [];
+  for (let k = 0; k <= total / 1000 + 1e-9; k += kmStep) kmTicks.push(Math.round(k * 1000) / 1000);
+  const at = profile.stationD.map((m) => profile.d.indexOf(m));
+  const stationH = at.map((i) => (i >= 0 ? (profile.h[i] ?? null) : null));
+  const gradients = profile.stationD.slice(1).map((end, k) => {
+    const from = at[k]!;
+    const to = at[k + 1]!;
+    const a = stationH[k];
+    const b = stationH[k + 1];
+    const len = end - profile.stationD[k]!;
+    if (from < 0 || to < 0 || a === null || a === undefined || b === null || b === undefined || len <= 0)
+      return null;
+    let steepest = 0;
+    for (let i = from + 1; i <= to; i++) {
+      const h0 = profile.h[i - 1];
+      const h1 = profile.h[i];
+      const dd = profile.d[i]! - profile.d[i - 1]!;
+      if (h0 === null || h0 === undefined || h1 === null || h1 === undefined || dd < PROFILE_STEP_M / 2)
+        continue;
+      if (Math.abs(h1 - h0) / dd > Math.abs(steepest)) steepest = (h1 - h0) / dd;
+    }
+    return { average: ((b - a) / len) * 100, steepest: steepest * 100 };
+  });
+  return { pxPerM, exaggeration, heightPx, lo: axis.lo, ticks: axis.ticks, kmTicks, stationH, gradients };
+}
+
+/**
+ * Purpose: the SVG paths of the ground: its line, and the area under it down to `baseY`, both broken where
+ * heights are unknown.
+ */
+function groundD(
+  profile: LineProfile,
+  px: (m: number) => number,
+  py: (h: number) => number,
+  baseY: number,
+): { line: string; area: string } {
+  const runs: [number, number][][] = [];
+  let cur: [number, number][] = [];
+  profile.h.forEach((h, i) => {
+    if (h === null) {
+      if (cur.length) runs.push(cur);
+      cur = [];
+    } else cur.push([px(profile.d[i]!), py(h)]);
+  });
+  if (cur.length) runs.push(cur);
+  const lines = runs
+    .filter((r) => r.length > 1)
+    .map((r) => r.map(([x, y], i) => `${i ? "L" : "M"} ${x.toFixed(1)},${y.toFixed(1)}`).join(" "));
+  const areas = runs
+    .filter((r) => r.length > 1)
+    .map(
+      (r, k) =>
+        `${lines[k]} L ${r[r.length - 1]![0].toFixed(1)},${baseY} L ${r[0]![0].toFixed(1)},${baseY} Z`,
+    );
+  return { line: lines.join(" "), area: areas.join(" ") };
+}
+
 /** Purpose: the symbols to draw at a station: its statuses, then its features, as the drawing options say. */
 export function symbolsAt(
   net: SchematicNetwork,
@@ -90,7 +170,7 @@ export function StripMap({
   net,
   line,
   doc,
-  heights,
+  profile,
   zoom,
   modeLabel,
   title,
@@ -99,8 +179,8 @@ export function StripMap({
   net: SchematicNetwork;
   line: SchematicLine;
   doc: SchematicDoc;
-  /** Ground height per station index; null while loading. */
-  heights: StationHeights | null;
+  /** The ground along the line; null while loading. */
+  profile: LineProfile | null;
   zoom: number | null;
   modeLabel: (m: string) => string;
   title: string;
@@ -185,24 +265,37 @@ export function StripMap({
     t("schematic.timeNote"),
     ...(estimated ? [t("schematic.estNote")] : []),
   ].flatMap((x) => wrap(x, Math.max(30, Math.floor((width - left) / 5.2))));
-  // The height profile: a chart with a height axis, the ground filled in, a guide at every station and the
-  // height of each station in a row under it.
+  // The ground along the line: length and height to one scale (heights drawn a stated number of times
+  // larger), with the gradient of each section under it.
   const elevTop = stepTop + stepLines.length * 15 + 22;
-  const known = line.stops.map((st) => heights?.[st] ?? null);
-  const hs = known.filter((h): h is number => h !== null);
-  const axis = heightAxis(hs);
-  const chartTop = elevTop + 16;
-  const chartH = hs.length ? 96 : 0;
-  const chartBottom = chartTop + chartH;
-  const yOf = (h: number) => chartBottom - ((h - axis.lo) / (axis.hi - axis.lo)) * chartH;
-  const height = (hs.length ? chartBottom + 30 : elevTop + 10) + 30 + notes.length * 17 + 20;
+  const chartLeft = left;
+  const chartRight = width - 40;
+  const chart = profile ? profileChart(profile, chartRight - chartLeft) : null;
+  const chartTop = elevTop + 34;
+  const chartBottom = chartTop + (chart?.heightPx ?? 0);
+  const px = (m: number) => chartLeft + m * (chart?.pxPerM ?? 0);
+  const py = (h: number) =>
+    chartBottom - (h - (chart?.lo ?? 0)) * (chart?.pxPerM ?? 0) * (chart?.exaggeration ?? 1);
+  // Gradient labels at the middle of each section, moved to a second row where they would overlap.
+  const gradRow: number[] = [];
+  const lastEnd: number[] = [-Infinity, -Infinity];
+  chart?.gradients.forEach((g, k) => {
+    const mid = px((profile!.stationD[k]! + profile!.stationD[k + 1]!) / 2);
+    const row = mid - 30 >= lastEnd[0]! ? 0 : mid - 30 >= lastEnd[1]! ? 1 : 0;
+    lastEnd[row] = mid + 30;
+    gradRow.push(row);
+  });
+  const gradTop = chartBottom + 36;
+  const height =
+    (chart ? gradTop + 18 + (gradRow.includes(1) ? 2 : 1) * 26 : elevTop + 10) + 30 + notes.length * 17 + 20;
   const fg = textOn(line.color);
   const xOf = (k: number) => left + k * step;
   const badgeW = Math.max(56, line.name.length * 11 + 24);
-  const elevPts = known
-    .map((h, k) => (h === null ? null : ([xOf(k), yOf(h)] as const)))
-    .filter((p): p is readonly [number, number] => p !== null);
-  const ground = elevPts.map(([x, y]) => `${x},${y.toFixed(1)}`).join(" ");
+  const ground = chart && profile ? groundD(profile, px, py, chartBottom) : { line: "", area: "" };
+  const pct = (v: number) =>
+    t("schematic.percent", {
+      n: new Intl.NumberFormat(language, { maximumFractionDigits: 1, signDisplay: "exceptZero" }).format(v),
+    });
 
   return (
     <svg
@@ -384,77 +477,98 @@ export function StripMap({
         </text>
       ))}
 
-      {/* Ground height at each station. */}
+      {/* The ground along the line. */}
       <text x={left / 2} y={elevTop} fontSize={10.5} fill="#64748b">
-        {heights === null
+        {profile === null
           ? t("schematic.row.elevationLoading")
-          : hs.length
-            ? t("schematic.row.elevation")
+          : chart
+            ? t("schematic.row.profile", { step: PROFILE_STEP_M })
             : t("schematic.row.elevationNone")}
       </text>
-      {hs.length > 0 && (
-        <g aria-label={t("schematic.row.elevation")}>
-          {axis.ticks.map((v) => (
+      {chart && profile && (
+        <g aria-label={t("schematic.row.profile", { step: PROFILE_STEP_M })}>
+          <text x={left / 2} y={elevTop + 14} fontSize={10} fill="#94a3b8">
+            {chart.exaggeration === 1
+              ? t("schematic.scaleTrue")
+              : t("schematic.scale", { n: fmt(chart.exaggeration) })}
+          </text>
+          {chart.ticks.map((v) => (
             <g key={`tick-${v}`}>
-              <line x1={left} x2={xOf(n - 1)} y1={yOf(v)} y2={yOf(v)} stroke="#e2e8f0" strokeWidth={1} />
-              <text x={left - 8} y={yOf(v) + 3.5} fontSize={9.5} textAnchor="end" fill="#64748b">
+              <line x1={chartLeft} x2={chartRight} y1={py(v)} y2={py(v)} stroke="#e2e8f0" strokeWidth={1} />
+              <text x={chartLeft - 8} y={py(v) + 3.5} fontSize={9.5} textAnchor="end" fill="#64748b">
                 {t("schematic.metres", { n: fmt(v) })}
               </text>
             </g>
           ))}
-          {line.stops.map((_, k) => (
-            <line
-              key={`guide-${k}`}
-              x1={xOf(k)}
-              x2={xOf(k)}
-              y1={chartTop}
-              y2={chartBottom}
-              stroke="#cbd5e1"
-              strokeWidth={1}
-              strokeDasharray="2 3"
-            />
-          ))}
-          {elevPts.length > 1 && (
-            <>
-              <polygon
-                points={`${elevPts[0]![0]},${chartBottom} ${ground} ${elevPts[elevPts.length - 1]![0]},${chartBottom}`}
-                fill={line.color}
-                fillOpacity={0.14}
+          {/* Each station: from its place on the band above to its place along the line. */}
+          {profile.stationD.map((m, k) => (
+            <g key={`guide-${k}`}>
+              <line
+                x1={xOf(k)}
+                y1={elevTop + 20}
+                x2={px(m)}
+                y2={chartTop}
+                stroke="#cbd5e1"
+                strokeWidth={1}
+                strokeDasharray="2 3"
               />
-              <polyline
-                points={ground}
-                fill="none"
+              <line
+                x1={px(m)}
+                x2={px(m)}
+                y1={chartTop}
+                y2={chartBottom}
+                stroke="#cbd5e1"
+                strokeWidth={1}
+                strokeDasharray="2 3"
+              />
+            </g>
+          ))}
+          <path d={ground.area} fill={line.color} fillOpacity={0.14} stroke="none" />
+          <path d={ground.line} fill="none" stroke={line.color} strokeWidth={2} strokeLinejoin="round" />
+          {profile.stationD.map((m, k) => {
+            const h = chart.stationH[k];
+            return h === null || h === undefined ? null : (
+              <circle
+                key={`hp-${k}`}
+                cx={px(m)}
+                cy={py(h)}
+                r={3.5}
+                fill="#ffffff"
                 stroke={line.color}
-                strokeWidth={2.5}
-                strokeLinejoin="round"
+                strokeWidth={2}
               />
-            </>
-          )}
-          {elevPts.map(([x, y]) => (
-            <circle
-              key={`hp-${x}`}
-              cx={x}
-              cy={y}
-              r={3.5}
-              fill="#ffffff"
-              stroke={line.color}
-              strokeWidth={2}
-            />
-          ))}
-          <line x1={left} x2={xOf(n - 1)} y1={chartBottom} y2={chartBottom} stroke="#94a3b8" />
-          {known.map((h, k) => (
+            );
+          })}
+          <line x1={chartLeft} x2={chartRight} y1={chartBottom} y2={chartBottom} stroke="#94a3b8" />
+          {chart.kmTicks.map((km) => (
             <text
-              key={`h-${k}`}
-              x={xOf(k)}
-              y={chartBottom + 18}
-              fontSize={11}
-              fontWeight={600}
+              key={`km-${km}`}
+              x={px(km * 1000)}
+              y={chartBottom + 13}
+              fontSize={9.5}
               textAnchor="middle"
-              fill={h === null ? "#94a3b8" : INK}
+              fill="#64748b"
             >
-              {h === null ? "–" : t("schematic.metres", { n: fmt(h) })}
+              {t("schematic.km", { n: fmt(km, 1) })}
             </text>
           ))}
+          <text x={left / 2} y={gradTop} fontSize={10.5} fill="#64748b">
+            {t("schematic.row.gradient", { step: PROFILE_STEP_M })}
+          </text>
+          {chart.gradients.map((g, k) => {
+            const x = px((profile.stationD[k]! + profile.stationD[k + 1]!) / 2);
+            const y = gradTop + 18 + gradRow[k]! * 26;
+            return g === null ? null : (
+              <g key={`grad-${k}`}>
+                <text x={x} y={y} fontSize={11.5} fontWeight={700} textAnchor="middle" fill={INK}>
+                  {pct(g.average)}
+                </text>
+                <text x={x} y={y + 11} fontSize={9.5} textAnchor="middle" fill="#64748b">
+                  {t("schematic.gradientMax", { n: pct(g.steepest) })}
+                </text>
+              </g>
+            );
+          })}
         </g>
       )}
 

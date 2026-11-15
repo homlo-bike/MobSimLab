@@ -621,7 +621,6 @@ export const editorsKk = {
   "schematic.level.aerial": "Әуеде",
   "schematic.level.water": "Суда",
   "schematic.row.level": "Деңгейі",
-  "schematic.row.elevation": "Станциялардағы жер биіктігі, теңіз деңгейінен метр",
   "schematic.row.elevationLoading": "Жер биіктіктері жүктелуде…",
   "schematic.row.elevationNone": "Мұнда жер биіктіктері қолжетімсіз.",
   "schematic.timeNote":
@@ -650,6 +649,12 @@ export const editorsKk = {
   "schematic.transferNote": "Түсті белгілердегі минуттар: сол желіге ауысуға жаяу жүрудің болжамды уақыты.",
   "schematic.estNote":
     "Минут алдындағы ~: кестеде әлі уақыт жоқ жерде аялдамалар арасындағы қашықтық пен көлік түрінің әдеттегі жылдамдығы мен үдеуінен алынған шамамен жүру уақыты. Орташа жылдамдық бұл бөліктерді есептемейді.",
+  "schematic.row.profile": "Желі бойындағы жер бедері, әр {step} м, теңіз деңгейінен метр",
+  "schematic.scaleTrue": "Ұзындық пен биіктік бір масштабта",
+  "schematic.scale": "Ұзындық пен биіктік бір масштабта, биіктік {n} есе үлкейтілген",
+  "schematic.row.gradient": "Станциялар арасындағы еңіс: орташа және ең тік {step} м",
+  "schematic.gradientMax": "ең көбі {n}",
+  "schematic.percent": "{n}%",
 
   "noise.title": "Шу",
   "noise.showBand": "Шу белдеуін көрсету",

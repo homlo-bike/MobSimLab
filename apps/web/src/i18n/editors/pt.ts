@@ -626,7 +626,6 @@ export const editorsPt = {
   "schematic.level.aerial": "Pelo ar",
   "schematic.level.water": "Sobre a água",
   "schematic.row.level": "Corre",
-  "schematic.row.elevation": "Altitude do terreno nas estações, metros acima do nível do mar",
   "schematic.row.elevationLoading": "Carregando altitudes do terreno…",
   "schematic.row.elevationNone": "As altitudes do terreno não estão disponíveis aqui.",
   "schematic.timeNote":
@@ -656,6 +655,12 @@ export const editorsPt = {
     "Minutos nas etiquetas coloridas: caminhada estimada para baldear para essa linha.",
   "schematic.estNote":
     "~ antes dos minutos: tempo de percurso aproximado pela distância entre paradas e pela velocidade e aceleração habituais do modo, onde o horário ainda não tem tempo. A velocidade média deixa esses trechos de fora.",
+  "schematic.row.profile": "Terreno ao longo da linha, a cada {step} m, metros acima do nível do mar",
+  "schematic.scaleTrue": "Comprimento e altura na mesma escala",
+  "schematic.scale": "Comprimento e altura numa escala, alturas exageradas {n} vezes",
+  "schematic.row.gradient": "Inclinação entre estações: média e os {step} m mais íngremes",
+  "schematic.gradientMax": "máx. {n}",
+  "schematic.percent": "{n}%",
 
   "noise.title": "Ruído",
   "noise.showBand": "Mostrar faixa de ruído",

@@ -636,7 +636,6 @@ export const editorsZu = {
   "schematic.level.aerial": "Emoyeni",
   "schematic.level.water": "Emanzini",
   "schematic.row.level": "Izinga",
-  "schematic.row.elevation": "Ukuphakama komhlabathi eziteshini, amamitha ngaphezu kolwandle",
   "schematic.row.elevationLoading": "Kulayishwa ukuphakama komhlabathi…",
   "schematic.row.elevationNone": "Ukuphakama komhlabathi akutholakali lapha.",
   "schematic.timeNote":
@@ -666,6 +665,13 @@ export const editorsZu = {
     "Imizuzu kumalebula anemibala: isikhathi esilinganisiwe sokuhamba ngezinyawo ukushintshela kulowo mugqa.",
   "schematic.estNote":
     "~ ngaphambi kwemizuzu: isikhathi sokushayela esilinganiselwe kusukela ebangeni phakathi kwezitobhi nejubane nokusheshisa okujwayelekile kohlobo lokuthutha, lapho uhlelo lwesikhathi lungenaso isikhathi okwamanje. Ijubane elimaphakathi aliyibali leyo mingxenye.",
+  "schematic.row.profile": "Umhlabathi eduze komugqa, njalo ngo-{step} m, amamitha ngaphezu kolwandle",
+  "schematic.scaleTrue": "Ubude nokuphakama esikalini esifanayo",
+  "schematic.scale": "Ubude nokuphakama esikalini esisodwa, ukuphakama kukhuliswe izikhathi ezingu-{n}",
+  "schematic.row.gradient":
+    "Ukuthambeka phakathi kweziteshi: okumaphakathi kanye no-{step} m oluwumqansa kakhulu",
+  "schematic.gradientMax": "okuphezulu {n}",
+  "schematic.percent": "{n}%",
 
   "noise.title": "Umsindo",
   "noise.showBand": "Bonisa ibhande lomsindo",

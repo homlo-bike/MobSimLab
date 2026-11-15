@@ -670,7 +670,6 @@ export const editorsPl = {
   "schematic.level.aerial": "W powietrzu",
   "schematic.level.water": "Po wodzie",
   "schematic.row.level": "Przebieg",
-  "schematic.row.elevation": "Wysokość terenu przy stacjach, metry n.p.m.",
   "schematic.row.elevationLoading": "Wczytywanie wysokości terenu…",
   "schematic.row.elevationNone": "Wysokości terenu nie są tu dostępne.",
   "schematic.timeNote": "Minuty nad linią: szacowany czas jazdy między przystankami, bez postoju.",
@@ -701,6 +700,12 @@ export const editorsPl = {
     "Minuty na kolorowych etykietach: szacowany czas dojścia przy przesiadce na tę linię.",
   "schematic.estNote":
     "~ przed minutami: przybliżony czas jazdy z odległości między przystankami oraz zwykłej prędkości i przyspieszenia danego środka transportu, gdzie rozkład nie ma jeszcze czasu. Średnia prędkość pomija te odcinki.",
+  "schematic.row.profile": "Teren wzdłuż linii, co {step} m, metry n.p.m.",
+  "schematic.scaleTrue": "Długość i wysokość w tej samej skali",
+  "schematic.scale": "Długość i wysokość w jednej skali, wysokości przewyższone {n} razy",
+  "schematic.row.gradient": "Nachylenie między stacjami: średnie i najbardziej strome {step} m",
+  "schematic.gradientMax": "maks. {n}",
+  "schematic.percent": "{n}%",
 
   "noise.title": "Hałas",
   "noise.showBand": "Pokaż pas hałasu",

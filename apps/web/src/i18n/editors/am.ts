@@ -609,7 +609,6 @@ export const editorsAm = {
   "schematic.level.aerial": "በአየር",
   "schematic.level.water": "በውሃ ላይ",
   "schematic.row.level": "ደረጃ",
-  "schematic.row.elevation": "በጣቢያዎች ያለው የመሬት ከፍታ፣ ከባሕር ወለል በሜትር",
   "schematic.row.elevationLoading": "የመሬት ከፍታ እየተጫነ ነው…",
   "schematic.row.elevationNone": "የመሬት ከፍታ እዚህ አይገኝም።",
   "schematic.timeNote": "ከመስመሩ በላይ ያሉ ደቂቃዎች፦ የቆሙበትን ጊዜ ሳይጨምር በፌርማታዎች መካከል የሚገመት የጉዞ ጊዜ።",
@@ -636,6 +635,12 @@ export const editorsAm = {
   "schematic.transferNote": "በቀለም መለያዎች ላይ ያሉ ደቂቃዎች፦ ወደዚያ መስመር ለመቀየር የሚገመት የእግር ጉዞ ጊዜ።",
   "schematic.estNote":
     "ከደቂቃዎቹ በፊት ~፦ የጊዜ ሰሌዳው ገና ጊዜ በሌለበት፣ ከፌርማታዎች ርቀት እና ከትራንስፖርቱ የተለመደ ፍጥነትና ማፋጠን የተገመተ ግምታዊ የጉዞ ጊዜ። አማካይ ፍጥነት እነዚህን ክፍሎች አይቆጥርም።",
+  "schematic.row.profile": "በመስመሩ አጠገብ ያለ መሬት፣ በየ{step} ሜ፣ ከባሕር ጠለል በላይ ሜትር",
+  "schematic.scaleTrue": "ርዝመትና ከፍታ በአንድ ልኬት",
+  "schematic.scale": "ርዝመትና ከፍታ በአንድ ልኬት፣ ከፍታዎች {n} እጥፍ ተጋንነዋል",
+  "schematic.row.gradient": "በጣቢያዎች መካከል ያለ ዝንባሌ፦ አማካይ እና በጣም ቁልቁል {step} ሜ",
+  "schematic.gradientMax": "ከፍተኛ {n}",
+  "schematic.percent": "{n}%",
 
   "noise.title": "ጫጫታ",
   "noise.showBand": "የጫጫታ ቀጠናን አሳይ",

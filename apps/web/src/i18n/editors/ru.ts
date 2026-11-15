@@ -675,7 +675,6 @@ export const editorsRu = {
   "schematic.level.aerial": "По воздуху",
   "schematic.level.water": "По воде",
   "schematic.row.level": "Уровень",
-  "schematic.row.elevation": "Высота земли у станций, метры над уровнем моря",
   "schematic.row.elevationLoading": "Загрузка высот рельефа…",
   "schematic.row.elevationNone": "Высоты рельефа здесь недоступны.",
   "schematic.timeNote": "Минуты над линией: расчётное время в пути между остановками, без стоянки.",
@@ -705,6 +704,12 @@ export const editorsRu = {
   "schematic.transferNote": "Минуты на цветных метках: расчётное время пешей пересадки на эту линию.",
   "schematic.estNote":
     "~ перед минутами: приблизительное время в пути по расстоянию между остановками и обычной скорости и ускорению вида транспорта, где в расписании ещё нет времени. Средняя скорость эти участки не учитывает.",
+  "schematic.row.profile": "Рельеф вдоль линии, каждые {step} м, метры над уровнем моря",
+  "schematic.scaleTrue": "Длина и высота в одном масштабе",
+  "schematic.scale": "Длина и высота в одном масштабе, высоты увеличены в {n} раз",
+  "schematic.row.gradient": "Уклон между станциями: средний и самые крутые {step} м",
+  "schematic.gradientMax": "макс. {n}",
+  "schematic.percent": "{n} %",
 
   "noise.title": "Шум",
   "noise.showBand": "Показать шумовую полосу",

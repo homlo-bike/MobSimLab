@@ -627,7 +627,6 @@ export const editorsEn = {
   "schematic.level.aerial": "In the air",
   "schematic.level.water": "On water",
   "schematic.row.level": "Runs at",
-  "schematic.row.elevation": "Ground height at the stations, metres above sea level",
   "schematic.row.elevationLoading": "Loading ground heights…",
   "schematic.row.elevationNone": "Ground heights are not available here.",
   "schematic.timeNote":
@@ -656,6 +655,12 @@ export const editorsEn = {
   "schematic.transferNote": "Minutes on the coloured labels: estimated walk to change to that line.",
   "schematic.estNote":
     "~ before the minutes: a rough driving time from the distance between stops and the usual speed and acceleration of the mode, where the timetable has no time yet. Average speed leaves those sections out.",
+  "schematic.row.profile": "Ground along the line, every {step} m, metres above sea level",
+  "schematic.scaleTrue": "Length and height to the same scale",
+  "schematic.scale": "Length and height to one scale, heights drawn {n} times taller",
+  "schematic.row.gradient": "Gradient between stations: average, and the steepest {step} m",
+  "schematic.gradientMax": "max {n}",
+  "schematic.percent": "{n}%",
 
   "noise.title": "Noise",
   "noise.showBand": "Show noise band",

@@ -43,7 +43,7 @@ Below the band:
 - **Service**: vehicles in service, headway in the peak and off-peak, first and last departure, round trip, length, average speed (distance over driving time, on sections whose time is known) and how many stations are step-free. Street lines run at half their headway in the peak, as in the journey planner.
 - **Runs at**: which parts are underground, at street level, elevated or on a ramp (cable cars in the air, ferries on the water).
 - **Step-free stations**: the stations where every stop or platform has step-free access, a lift or a ramp recorded in Create.
-- **Ground height**: a profile chart of the ground at each station, in metres above sea level, with the height of each station written under it.
+- **Ground along the line**: the ground height every 50 m along the street route or the built track (a straight line between stations until there is one), drawn with length and height to one scale. Heights are drawn a stated number of times taller so hills show; dotted guides lead from each station to its place along the line. Under it, the **gradient** of each section: the average in running direction and the steepest 50 m.
 
 For rail lines the vehicles, round trip, driving times and levels come from the railway tool's built track and timetable; until track is drawn they show as –.
 

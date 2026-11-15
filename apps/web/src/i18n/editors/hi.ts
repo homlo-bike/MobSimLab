@@ -617,7 +617,6 @@ export const editorsHi = {
   "schematic.level.aerial": "हवा में",
   "schematic.level.water": "पानी पर",
   "schematic.row.level": "स्तर",
-  "schematic.row.elevation": "स्टेशनों पर ज़मीन की ऊँचाई, समुद्र तल से मीटर",
   "schematic.row.elevationLoading": "ज़मीन की ऊँचाई लोड हो रही है…",
   "schematic.row.elevationNone": "यहाँ ज़मीन की ऊँचाई उपलब्ध नहीं है।",
   "schematic.timeNote": "लाइन के ऊपर मिनट: पड़ावों के बीच अनुमानित चलने का समय, रुकने का समय छोड़कर।",
@@ -644,6 +643,12 @@ export const editorsHi = {
   "schematic.transferNote": "रंगीन लेबलों पर मिनट: उस लाइन में बदलने के लिए अनुमानित पैदल समय।",
   "schematic.estNote":
     "मिनट से पहले ~: जहाँ समय-सारणी में अभी समय नहीं है, वहाँ पड़ावों के बीच दूरी और साधन की सामान्य गति व त्वरण से मोटा चलने का समय। औसत गति इन खंडों को नहीं गिनती।",
+  "schematic.row.profile": "लाइन के साथ ज़मीन, हर {step} मी, समुद्र तल से मीटर",
+  "schematic.scaleTrue": "लंबाई और ऊँचाई एक ही पैमाने पर",
+  "schematic.scale": "लंबाई और ऊँचाई एक पैमाने पर, ऊँचाइयाँ {n} गुना बढ़ाकर",
+  "schematic.row.gradient": "स्टेशनों के बीच ढलान: औसत और सबसे खड़ी {step} मी",
+  "schematic.gradientMax": "अधिकतम {n}",
+  "schematic.percent": "{n}%",
 
   "noise.title": "शोर",
   "noise.showBand": "शोर पट्टी दिखाएँ",

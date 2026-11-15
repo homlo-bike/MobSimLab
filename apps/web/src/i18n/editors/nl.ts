@@ -627,7 +627,6 @@ export const editorsNl = {
   "schematic.level.aerial": "Door de lucht",
   "schematic.level.water": "Over water",
   "schematic.row.level": "Ligt",
-  "schematic.row.elevation": "Maaiveldhoogte bij de stations, meter boven zeeniveau",
   "schematic.row.elevationLoading": "Maaiveldhoogtes laden…",
   "schematic.row.elevationNone": "Maaiveldhoogtes zijn hier niet beschikbaar.",
   "schematic.timeNote":
@@ -657,6 +656,12 @@ export const editorsNl = {
     "Minuten op de gekleurde labels: geschatte looptijd om over te stappen op die lijn.",
   "schematic.estNote":
     "~ voor de minuten: ruwe rijtijd uit de afstand tussen haltes en de gebruikelijke snelheid en versnelling van de modaliteit, waar de dienstregeling nog geen tijd heeft. De gemiddelde snelheid laat die delen weg.",
+  "schematic.row.profile": "Terrein langs de lijn, elke {step} m, meter boven zeeniveau",
+  "schematic.scaleTrue": "Lengte en hoogte op dezelfde schaal",
+  "schematic.scale": "Lengte en hoogte op één schaal, hoogten {n} keer overdreven",
+  "schematic.row.gradient": "Helling tussen stations: gemiddeld en de steilste {step} m",
+  "schematic.gradientMax": "max. {n}",
+  "schematic.percent": "{n}%",
 
   "noise.title": "Geluid",
   "noise.showBand": "Geluidsband tonen",

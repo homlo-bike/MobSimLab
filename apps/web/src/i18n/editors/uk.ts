@@ -673,7 +673,6 @@ export const editorsUk = {
   "schematic.level.aerial": "Повітрям",
   "schematic.level.water": "По воді",
   "schematic.row.level": "Рівень",
-  "schematic.row.elevation": "Висота землі біля станцій, метри над рівнем моря",
   "schematic.row.elevationLoading": "Завантаження висот рельєфу…",
   "schematic.row.elevationNone": "Висоти рельєфу тут недоступні.",
   "schematic.timeNote": "Хвилини над лінією: орієнтовний час руху між зупинками, без стоянки.",
@@ -703,6 +702,12 @@ export const editorsUk = {
   "schematic.transferNote": "Хвилини на кольорових мітках: орієнтовний час пішої пересадки на цю лінію.",
   "schematic.estNote":
     "~ перед хвилинами: приблизний час руху за відстанню між зупинками та звичайною швидкістю й прискоренням виду транспорту, де в розкладі ще немає часу. Середня швидкість ці ділянки не враховує.",
+  "schematic.row.profile": "Рельєф уздовж лінії, кожні {step} м, метри над рівнем моря",
+  "schematic.scaleTrue": "Довжина й висота в одному масштабі",
+  "schematic.scale": "Довжина й висота в одному масштабі, висоти збільшено в {n} разів",
+  "schematic.row.gradient": "Ухил між станціями: середній і найкрутіші {step} м",
+  "schematic.gradientMax": "макс. {n}",
+  "schematic.percent": "{n} %",
 
   "noise.title": "Шум",
   "noise.showBand": "Показати смугу шуму",

@@ -67,9 +67,13 @@ stations), and ADR-0025 already names a simpler octilinear layout as the fallbac
     straight distance × 1.15 and the mode's central top speed and acceleration from the assumption library,
     accelerating and braking at the same rate, left out of the average speed); what each section runs on (underground, street level, elevated,
     ramp; rail from the built track's levels, sampled along the line between the stations; street lines on the
-    street, cable cars in the air, ferries on the water); and the ground height at each station from the terrain
-    service, drawn as a profile chart with a height axis in round steps (at least 20 m tall so flat lines stay
-    flat) and the height of each station in a row under it. Rail figures need drawn track: until then they show as –. Street lines run at half their headway in
+    street, cable cars in the air, ferries on the water); and the ground along the line from the terrain
+    service, sampled every 50 m (further apart only beyond 19 000 samples) along the routed street, the built
+    track between the two stations, or else the straight line. The profile draws length and height to one
+    scale, with the heights drawn a stated round number of times taller (1, 2, 5, 10 …) so the chart stays at
+    most 140 px tall; dotted guides lead from each station on the band to its real place along the line. Under
+    it, each section's gradient: the average (rise over length, in running direction) and the steepest between
+    neighbouring samples. Rail figures need drawn track: until then they show as –. Street lines run at half their headway in
     the peak, as in the journey planner.
 
 ## Consequences

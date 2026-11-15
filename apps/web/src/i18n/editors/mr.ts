@@ -619,7 +619,6 @@ export const editorsMr = {
   "schematic.level.aerial": "हवेतून",
   "schematic.level.water": "पाण्यावरून",
   "schematic.row.level": "पातळी",
-  "schematic.row.elevation": "स्थानकांवर जमिनीची उंची, समुद्रसपाटीपासून मीटर",
   "schematic.row.elevationLoading": "जमिनीची उंची लोड होत आहे…",
   "schematic.row.elevationNone": "येथे जमिनीची उंची उपलब्ध नाही.",
   "schematic.timeNote": "मार्गावरील मिनिटे: थांब्यांदरम्यान अंदाजे प्रवास वेळ, थांबण्याचा वेळ वगळून.",
@@ -647,6 +646,12 @@ export const editorsMr = {
   "schematic.transferNote": "रंगीत लेबलांवरील मिनिटे: त्या मार्गावर बदलण्यासाठी अंदाजे चालण्याचा वेळ.",
   "schematic.estNote":
     "मिनिटांपूर्वी ~: जिथे वेळापत्रकात अद्याप वेळ नाही, तिथे थांब्यांमधील अंतर आणि साधनाचा नेहमीचा वेग व त्वरण यावरून अंदाजे प्रवास वेळ. सरासरी वेग हे भाग धरत नाही.",
+  "schematic.row.profile": "मार्गालगतची जमीन, दर {step} मी, समुद्रसपाटीपासून मीटर",
+  "schematic.scaleTrue": "लांबी व उंची एकाच प्रमाणात",
+  "schematic.scale": "लांबी व उंची एका प्रमाणात, उंची {n} पट वाढवून",
+  "schematic.row.gradient": "स्थानकांमधील उतार: सरासरी व सर्वात तीव्र {step} मी",
+  "schematic.gradientMax": "कमाल {n}",
+  "schematic.percent": "{n}%",
 
   "noise.title": "आवाज",
   "noise.showBand": "आवाजाचा पट्टा दाखवा",

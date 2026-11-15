@@ -600,7 +600,6 @@ export const editorsFa = {
   "schematic.level.aerial": "در هوا",
   "schematic.level.water": "روی آب",
   "schematic.row.level": "تراز",
-  "schematic.row.elevation": "ارتفاع زمین در ایستگاه‌ها، متر از سطح دریا",
   "schematic.row.elevationLoading": "در حال بارگیری ارتفاع زمین…",
   "schematic.row.elevationNone": "ارتفاع زمین اینجا در دسترس نیست.",
   "schematic.timeNote": "دقیقه‌ها روی خط: زمان تخمینی حرکت بین ایستگاه‌ها، بدون زمان توقف.",
@@ -628,6 +627,12 @@ export const editorsFa = {
   "schematic.transferNote": "دقیقه‌ها روی برچسب‌های رنگی: زمان تخمینی پیاده‌روی برای تعویض به آن خط.",
   "schematic.estNote":
     "~ پیش از دقیقه‌ها: زمان حرکت تقریبی از فاصله بین ایستگاه‌ها و سرعت و شتاب معمول آن نوع حمل‌ونقل، جایی که جدول زمانی هنوز زمانی ندارد. سرعت میانگین این بخش‌ها را حساب نمی‌کند.",
+  "schematic.row.profile": "زمین در امتداد خط، هر {step} متر، متر از سطح دریا",
+  "schematic.scaleTrue": "طول و ارتفاع با یک مقیاس",
+  "schematic.scale": "طول و ارتفاع با یک مقیاس، ارتفاع‌ها {n} برابر بزرگ‌نمایی",
+  "schematic.row.gradient": "شیب بین ایستگاه‌ها: میانگین و پرشیب‌ترین {step} متر",
+  "schematic.gradientMax": "حداکثر {n}",
+  "schematic.percent": "{n}٪",
 
   "noise.title": "صدا",
   "noise.showBand": "نمایش نوار صدا",

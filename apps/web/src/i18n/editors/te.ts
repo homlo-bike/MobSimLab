@@ -622,7 +622,6 @@ export const editorsTe = {
   "schematic.level.aerial": "గాలిలో",
   "schematic.level.water": "నీటిపై",
   "schematic.row.level": "స్థాయి",
-  "schematic.row.elevation": "స్టేషన్ల వద్ద నేల ఎత్తు, సముద్ర మట్టం నుండి మీటర్లు",
   "schematic.row.elevationLoading": "నేల ఎత్తులు లోడ్ అవుతున్నాయి…",
   "schematic.row.elevationNone": "ఇక్కడ నేల ఎత్తులు అందుబాటులో లేవు.",
   "schematic.timeNote": "లైన్ పై నిమిషాలు: ఆగే సమయం లేకుండా స్టాప్‌ల మధ్య అంచనా ప్రయాణ సమయం.",
@@ -650,6 +649,12 @@ export const editorsTe = {
   "schematic.transferNote": "రంగు లేబుళ్లపై నిమిషాలు: ఆ లైన్‌కు మారడానికి అంచనా నడక సమయం.",
   "schematic.estNote":
     "నిమిషాల ముందు ~: టైమ్‌టేబుల్‌లో ఇంకా సమయం లేని చోట, స్టాప్‌ల మధ్య దూరం మరియు ఆ రవాణా సాధారణ వేగం, త్వరణం నుంచి సుమారు ప్రయాణ సమయం. సగటు వేగం ఈ భాగాలను లెక్కించదు.",
+  "schematic.row.profile": "లైన్ వెంబడి నేల, ప్రతి {step} మీ, సముద్ర మట్టం నుంచి మీటర్లు",
+  "schematic.scaleTrue": "పొడవు, ఎత్తు ఒకే స్కేల్‌లో",
+  "schematic.scale": "పొడవు, ఎత్తు ఒకే స్కేల్‌లో, ఎత్తులు {n} రెట్లు పెంచి",
+  "schematic.row.gradient": "స్టేషన్ల మధ్య వాలు: సగటు, అత్యంత నిటారైన {step} మీ",
+  "schematic.gradientMax": "గరిష్ఠం {n}",
+  "schematic.percent": "{n}%",
 
   "noise.title": "శబ్దం",
   "noise.showBand": "శబ్ద పట్టీని చూపండి",

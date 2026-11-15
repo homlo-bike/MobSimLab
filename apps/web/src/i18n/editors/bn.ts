@@ -615,7 +615,6 @@ export const editorsBn = {
   "schematic.level.aerial": "আকাশপথে",
   "schematic.level.water": "জলপথে",
   "schematic.row.level": "স্তর",
-  "schematic.row.elevation": "স্টেশনে ভূমির উচ্চতা, সমুদ্রপৃষ্ঠ থেকে মিটার",
   "schematic.row.elevationLoading": "ভূমির উচ্চতা লোড হচ্ছে…",
   "schematic.row.elevationNone": "এখানে ভূমির উচ্চতা পাওয়া যায় না।",
   "schematic.timeNote": "লাইনের উপরের মিনিট: থামার সময় বাদে স্টপের মধ্যে আনুমানিক চলার সময়।",
@@ -642,6 +641,12 @@ export const editorsBn = {
   "schematic.transferNote": "রঙিন লেবেলের মিনিট: সেই লাইনে বদলাতে আনুমানিক হাঁটার সময়।",
   "schematic.estNote":
     "মিনিটের আগে ~: যেখানে সময়সূচিতে এখনও সময় নেই, সেখানে স্টপের দূরত্ব এবং মাধ্যমের স্বাভাবিক গতি ও ত্বরণ থেকে আনুমানিক চলার সময়। গড় গতি এই অংশগুলো বাদ দেয়।",
+  "schematic.row.profile": "লাইন বরাবর ভূমি, প্রতি {step} মি, সমুদ্রপৃষ্ঠ থেকে মিটার",
+  "schematic.scaleTrue": "দৈর্ঘ্য ও উচ্চতা একই স্কেলে",
+  "schematic.scale": "দৈর্ঘ্য ও উচ্চতা এক স্কেলে, উচ্চতা {n} গুণ বাড়িয়ে",
+  "schematic.row.gradient": "স্টেশনের মধ্যে ঢাল: গড় ও সবচেয়ে খাড়া {step} মি",
+  "schematic.gradientMax": "সর্বোচ্চ {n}",
+  "schematic.percent": "{n}%",
 
   "noise.title": "শব্দ",
   "noise.showBand": "শব্দের বলয় দেখান",
