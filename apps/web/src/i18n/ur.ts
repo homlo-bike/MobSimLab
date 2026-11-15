@@ -1,4 +1,5 @@
 import { editorsUr } from "./editors/ur";
+import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
 /** اردو */
@@ -286,4 +287,5 @@ export const ur: Messages = {
   "prefs.calendar": "کیلنڈر، طلب اور لاگت",
 
   ...editorsUr,
+  ...PLUGIN_MESSAGES.ur,
 };

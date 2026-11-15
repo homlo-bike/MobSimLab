@@ -1,4 +1,5 @@
 import { editorsTr } from "./editors/tr";
+import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
 /** Türkçe */
@@ -285,4 +286,5 @@ export const tr: Messages = {
   "prefs.calendar": "Takvim, talep ve maliyetler",
 
   ...editorsTr,
+  ...PLUGIN_MESSAGES.tr,
 };

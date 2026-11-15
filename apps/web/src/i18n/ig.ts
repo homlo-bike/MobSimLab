@@ -1,4 +1,5 @@
 import { editorsIg } from "./editors/ig";
+import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
 /** Igbo. */
@@ -286,4 +287,5 @@ export const ig: Messages = {
   "prefs.calendar": "Kalenda, ọchịchọ na ọnụ ahịa",
 
   ...editorsIg,
+  ...PLUGIN_MESSAGES.ig,
 };
