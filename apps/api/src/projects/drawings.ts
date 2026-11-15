@@ -110,6 +110,12 @@ const cargoBike = z.looseObject({
     )
     .refine((v) => Object.keys(v).length <= 100, "at most 100 values")
     .optional(),
+  kit: z
+    .string()
+    .regex(/^[a-z0-9-]+$/)
+    .max(40)
+    .nullable()
+    .optional(),
 });
 
 /** Drawing kinds with their document outline and current schema version. */

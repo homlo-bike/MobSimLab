@@ -1,7 +1,7 @@
 //! The plugin's assumption values (`plugins/cargo-bike/assumptions/parameters.yaml`, exported to
 //! `data/defaults.json` by `tools/cargo-bike/export_defaults.py`), with the project's own values on top.
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, HashMap};
 use std::sync::OnceLock;
 
@@ -23,17 +23,42 @@ pub struct Default3 {
 #[derive(Deserialize)]
 struct DefaultsFile {
     params: BTreeMap<String, Default3>,
+    default_kit: String,
+    kits: Vec<Kit>,
+}
+
+/// A kit preset (`plugins/cargo-bike/kits.json`): parameter values it sets, by key without the prefix.
+/// Money values are 2024 EUR like the parameters'.
+#[derive(Debug, Clone, Deserialize, Serialize, PartialEq)]
+pub struct Kit {
+    /// Id kept in the project.
+    pub id: String,
+    /// Name shown when the language has none of its own.
+    pub label: String,
+    /// 2 or 3.
+    pub wheels: u8,
+    /// Parameter values.
+    pub values: BTreeMap<String, f64>,
+}
+
+fn file() -> &'static DefaultsFile {
+    static F: OnceLock<DefaultsFile> = OnceLock::new();
+    F.get_or_init(|| {
+        serde_json::from_str(include_str!("../data/defaults.json"))
+            .expect("data/defaults.json is valid")
+    })
+}
+
+/// Purpose: the kit presets and the id of the one the parameters' defaults describe.
+pub fn kits() -> (&'static str, &'static [Kit]) {
+    let f = file();
+    (&f.default_kit, &f.kits)
 }
 
 /// Purpose: every parameter of the plugin with its low, central and high value, by key without the
 /// `cargo_bike.` prefix (for example `battery_wh` or `savings.fuel_eur_l`).
 pub fn defaults() -> &'static BTreeMap<String, Default3> {
-    static D: OnceLock<BTreeMap<String, Default3>> = OnceLock::new();
-    D.get_or_init(|| {
-        let f: DefaultsFile = serde_json::from_str(include_str!("../data/defaults.json"))
-            .expect("data/defaults.json is valid");
-        f.params
-    })
+    &file().params
 }
 
 /// The values a calculation uses: the central defaults, replaced by the project's own where it set them.
@@ -188,5 +213,14 @@ mod tests {
         let b = Bike::from_values(&Values::new(&own));
         assert_eq!(b.mass_kg, 35.0 + 90.0);
         assert_eq!(b.battery_wh, 500.0);
+    }
+
+    #[test]
+    fn the_default_kit_matches_the_defaults() {
+        let (id, kits) = kits();
+        let kit = kits.iter().find(|k| k.id == id).expect("default kit");
+        for (k, v) in &kit.values {
+            assert_eq!(defaults()[k].central, *v, "{k}");
+        }
     }
 }

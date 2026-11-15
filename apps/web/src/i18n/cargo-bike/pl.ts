@@ -116,6 +116,14 @@ export const cargoBikePl = {
   "cb.activeWeek": "Jazda rowerem tygodniowo",
   "cb.activeOfTarget": "{share} z {target} minut aktywności tygodniowo zalecanych przez WHO",
   "cb.impactValues": "Wartości klimatu i zdrowia",
+  "cb.kit": "Zestaw",
+  "cb.kitSummary": "Akumulator {battery} Wh · {mass} kg · {price}",
+  "cb.kitNote":
+    "Przykładowe zestawy z szacunkowymi cenami. Wartość zmieniona niżej pozostaje, dopóki zostajesz przy zestawie; wybór innego zestawu ustawia jego wartości.",
+  "cb.kit.trike-500": "Trójkołowy rower cargo, 500 Wh",
+  "cb.kit.trike-900": "Trójkołowy rower cargo, 900 Wh",
+  "cb.kit.trike-1800": "Trójkołowy rower cargo, 2 × 900 Wh",
+  "cb.kit.bike-900": "Dwukołowy rower cargo, 900 Wh",
   "cb.error.too_far":
     "Cel jest za daleko na trasę ulicami (najwyżej około 40 km). Dla dłuższych odległości użyj mapy zasięgu.",
   "cb.error.no_streets": "Nie znaleziono tu ulic, po których może jechać rower.",

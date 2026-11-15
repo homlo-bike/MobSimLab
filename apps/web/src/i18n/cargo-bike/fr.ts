@@ -118,6 +118,14 @@ export const cargoBikeFr = {
   "cb.activeWeek": "Vélo par semaine",
   "cb.activeOfTarget": "{share} des {target} minutes d'activité hebdomadaire recommandées par l'OMS",
   "cb.impactValues": "Valeurs climat et santé",
+  "cb.kit": "Kit",
+  "cb.kitSummary": "Batterie {battery} Wh · {mass} kg · {price}",
+  "cb.kitNote":
+    "Kits d'exemple aux prix estimés. Une valeur modifiée ci-dessous le reste tant que vous gardez le kit ; choisir un autre kit applique ses valeurs.",
+  "cb.kit.trike-500": "Triporteur, 500 Wh",
+  "cb.kit.trike-900": "Triporteur, 900 Wh",
+  "cb.kit.trike-1800": "Triporteur, 2 × 900 Wh",
+  "cb.kit.bike-900": "Vélo cargo deux roues, 900 Wh",
   "cb.error.too_far":
     "La destination est trop loin pour un itinéraire par les rues (environ 40 km au plus). Utilisez la carte d’autonomie pour les longues distances.",
   "cb.error.no_streets": "Aucune rue praticable à vélo n’a été trouvée ici.",

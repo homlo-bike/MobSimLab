@@ -10,6 +10,7 @@ import {
   type AmenityNear,
   type BikeAmenity,
   type Conversion,
+  type Kit,
   corridorTiles,
   type LonLat,
   MAX_TILES,
@@ -48,6 +49,8 @@ export class TripError extends Error {
 /** What the tab needs from the network and the engine; tests pass their own. */
 export interface CargoBikeEngine {
   defaults(): Promise<Record<string, ParamDefault>>;
+  /** The kit presets and the id of the one the defaults describe. */
+  kits(): Promise<{ default: string; kits: Kit[] }>;
   trip(
     start: LonLat,
     destination: LonLat,
@@ -97,6 +100,11 @@ export function cargoBikeEngine(): CargoBikeEngine {
     async defaults() {
       const wasm = await initWasm();
       return JSON.parse(wasm.defaults()) as Record<string, ParamDefault>;
+    },
+
+    async kits() {
+      const wasm = await initWasm();
+      return JSON.parse(wasm.kits()) as { default: string; kits: Kit[] };
     },
 
     async trip(start, destination, values, setups, onProgress) {

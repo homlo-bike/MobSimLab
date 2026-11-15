@@ -117,6 +117,14 @@ export const cargoBikeZu = {
   "cb.activeWeek": "Ukugibela ibhayisikili ngesonto",
   "cb.activeOfTarget": "{share} yemizuzu engu-{target} yokuzivocavoca ngesonto enconywa yi-WHO",
   "cb.impactValues": "Amanani esimo sezulu nempilo",
+  "cb.kit": "Ikhithi",
+  "cb.kitSummary": "Ibhethri {battery} Wh · {mass} kg · {price}",
+  "cb.kitNote":
+    "Amakhithi esibonelo anamanani alinganiselwe. Inani olishintsha ngezansi lihlala lishintshiwe uma usagcina ikhithi; ukukhetha enye kufaka amanani ayo.",
+  "cb.kit.trike-500": "Ibhayisikili lempahla elinamasondo amathathu, 500 Wh",
+  "cb.kit.trike-900": "Ibhayisikili lempahla elinamasondo amathathu, 900 Wh",
+  "cb.kit.trike-1800": "Ibhayisikili lempahla elinamasondo amathathu, 2 × 900 Wh",
+  "cb.kit.bike-900": "Ibhayisikili lempahla elinamasondo amabili, 900 Wh",
   "cb.error.too_far":
     "Lapho uya khona kukude kakhulu ukuthi kube nomzila womgwaqo (cishe ama-km angu-40 okungenani). Sebenzisa imephu yebanga emabangeni amade.",
   "cb.error.no_streets": "Ayitholakalanga imigwaqo ibhayisikili elingahamba kuyo lapha.",

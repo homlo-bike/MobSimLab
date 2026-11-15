@@ -116,6 +116,14 @@ export const cargoBikeSw = {
   "cb.activeWeek": "Kuendesha baiskeli kwa wiki",
   "cb.activeOfTarget": "{share} ya dakika {target} za mazoezi kwa wiki zinazopendekezwa na WHO",
   "cb.impactValues": "Thamani za hali ya hewa na afya",
+  "cb.kit": "Kifurushi",
+  "cb.kitSummary": "Betri {battery} Wh · kg {mass} · {price}",
+  "cb.kitNote":
+    "Vifurushi vya mfano vyenye bei za makadirio. Thamani unayobadilisha hapa chini inabaki ukibaki na kifurushi hicho; kuchagua kingine kunaweka thamani zake.",
+  "cb.kit.trike-500": "Baiskeli ya magurudumu matatu ya mizigo, 500 Wh",
+  "cb.kit.trike-900": "Baiskeli ya magurudumu matatu ya mizigo, 900 Wh",
+  "cb.kit.trike-1800": "Baiskeli ya magurudumu matatu ya mizigo, 2 × 900 Wh",
+  "cb.kit.bike-900": "Baiskeli ya mizigo ya magurudumu mawili, 900 Wh",
   "cb.error.too_far":
     "Unakoenda ni mbali mno kwa njia ya barabara (takriban km 40 zaidi). Tumia ramani ya umbali kwa umbali mrefu zaidi.",
   "cb.error.no_streets": "Hakuna barabara inayoruhusu baiskeli iliyopatikana hapa.",

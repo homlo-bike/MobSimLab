@@ -117,6 +117,14 @@ export const cargoBikeIg = {
   "cb.activeWeek": "Ịnyịnya ígwè kwa izu",
   "cb.activeOfTarget": "{share} nke nkeji {target} mmega ahụ kwa izu WHO na-atụ aro",
   "cb.impactValues": "Ụkpụrụ ihu igwe na ahụike",
+  "cb.kit": "Ngwa",
+  "cb.kitSummary": "Batrị {battery} Wh · {mass} kg · {price}",
+  "cb.kitNote":
+    "Ngwa ihe atụ nwere ọnụahịa atụmatụ. Uru ị gbanwere n'okpuru ga-anọgide ma ọ bụrụ na ị ka na-eji ngwa ahụ; ịhọrọ ọzọ ga-etinye uru nke ya.",
+  "cb.kit.trike-500": "Ịnyịnya ígwè ibu nwere ụkwụ atọ, 500 Wh",
+  "cb.kit.trike-900": "Ịnyịnya ígwè ibu nwere ụkwụ atọ, 900 Wh",
+  "cb.kit.trike-1800": "Ịnyịnya ígwè ibu nwere ụkwụ atọ, 2 × 900 Wh",
+  "cb.kit.bike-900": "Ịnyịnya ígwè ibu nwere ụkwụ abụọ, 900 Wh",
   "cb.error.too_far":
     "Ebe a na-aga dị anya nke ukwuu maka ụzọ okporo ụzọ (ihe dị ka km 40 kacha). Jiri map nke anya maka anya dị ogologo.",
   "cb.error.no_streets": "Ahụghị okporo ụzọ ịnyịnya ígwè nwere ike ịga ebe a.",

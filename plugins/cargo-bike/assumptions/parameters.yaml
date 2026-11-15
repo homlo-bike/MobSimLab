@@ -64,12 +64,12 @@
         mode: "*"
       low: 500
       central: 900
-      high: 1500
+      high: 1800
       basis: documented
       sources:
         - homlo-kit-2026
       check: unverified
-      rationale: Nominal battery energy of the kit.
+      rationale: Nominal battery energy of the kit; up to two 900 Wh batteries.
 - key: cargo_bike.battery_usable_share
   label: Usable share of the battery
   group: Cargo bike

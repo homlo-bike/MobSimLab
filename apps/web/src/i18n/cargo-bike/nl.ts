@@ -116,6 +116,14 @@ export const cargoBikeNl = {
   "cb.activeWeek": "Fietsen per week",
   "cb.activeOfTarget": "{share} van de {target} minuten beweging per week die de WHO aanraadt",
   "cb.impactValues": "Waarden voor klimaat en gezondheid",
+  "cb.kit": "Bouwpakket",
+  "cb.kitSummary": "Accu {battery} Wh · {mass} kg · {price}",
+  "cb.kitNote":
+    "Voorbeeldpakketten met geschatte prijzen. Een waarde die je hieronder wijzigt blijft gewijzigd zolang je het pakket houdt; een ander pakket zet zijn eigen waarden.",
+  "cb.kit.trike-500": "Bakdriewieler, 500 Wh",
+  "cb.kit.trike-900": "Bakdriewieler, 900 Wh",
+  "cb.kit.trike-1800": "Bakdriewieler, 2 × 900 Wh",
+  "cb.kit.bike-900": "Tweewielige bakfiets, 900 Wh",
   "cb.error.too_far":
     "De bestemming is te ver voor een route over straat (hooguit ongeveer 40 km). Gebruik de bereikkaart voor grotere afstanden.",
   "cb.error.no_streets": "Hier zijn geen straten gevonden waar een fiets mag rijden.",

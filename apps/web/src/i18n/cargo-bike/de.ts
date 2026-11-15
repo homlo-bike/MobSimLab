@@ -117,6 +117,14 @@ export const cargoBikeDe = {
   "cb.activeWeek": "Radfahren pro Woche",
   "cb.activeOfTarget": "{share} der {target} Minuten Bewegung pro Woche, die die WHO empfiehlt",
   "cb.impactValues": "Werte für Klima und Gesundheit",
+  "cb.kit": "Bausatz",
+  "cb.kitSummary": "Akku {battery} Wh · {mass} kg · {price}",
+  "cb.kitNote":
+    "Beispiel-Bausätze mit geschätzten Preisen. Ein unten geänderter Wert bleibt geändert, solange der Bausatz bleibt; ein anderer Bausatz setzt seine Werte.",
+  "cb.kit.trike-500": "Lastendreirad, 500 Wh",
+  "cb.kit.trike-900": "Lastendreirad, 900 Wh",
+  "cb.kit.trike-1800": "Lastendreirad, 2 × 900 Wh",
+  "cb.kit.bike-900": "Zweirädriges Lastenrad, 900 Wh",
   "cb.error.too_far":
     "Das Ziel ist für eine Straßenroute zu weit (höchstens etwa 40 km). Für längere Strecken die Reichweitenkarte nutzen.",
   "cb.error.no_streets": "Hier wurden keine Straßen gefunden, die ein Rad befahren darf.",

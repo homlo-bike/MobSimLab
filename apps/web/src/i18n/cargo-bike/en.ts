@@ -118,6 +118,14 @@ export const cargoBikeEn = {
   "cb.activeWeek": "Cycling per week",
   "cb.activeOfTarget": "{share} of the {target} minutes of activity a week the WHO recommends",
   "cb.impactValues": "Climate and health values",
+  "cb.kit": "Kit",
+  "cb.kitSummary": "{battery} Wh battery · {mass} kg · {price}",
+  "cb.kitNote":
+    "Example kits with estimated prices. A value you change below stays changed when you keep the kit; choosing another kit sets its values.",
+  "cb.kit.trike-500": "Cargo trike, 500 Wh",
+  "cb.kit.trike-900": "Cargo trike, 900 Wh",
+  "cb.kit.trike-1800": "Cargo trike, 2 × 900 Wh",
+  "cb.kit.bike-900": "Two-wheel cargo bike, 900 Wh",
   "cb.error.too_far":
     "The destination is too far for a street route (about 40 km at most). Use the range map for longer distances.",
   "cb.error.no_streets": "No streets a bike may ride were found here.",

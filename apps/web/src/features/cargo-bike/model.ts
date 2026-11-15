@@ -14,6 +14,37 @@ export interface CargoBikeDoc {
   destination?: LonLat | null;
   /** The project's own values, by parameter key without `cargo_bike.`; money in the local currency. */
   values?: Record<string, number>;
+  /** The kit preset chosen (`plugins/cargo-bike/kits.json`); the project's own values come on top. */
+  kit?: string | null;
+}
+
+/** A kit preset (crates/cargo-bike `Kit`): parameter values by key without `cargo_bike.`, money in 2024 EUR. */
+export interface Kit {
+  id: string;
+  label: string;
+  wheels: number;
+  values: Record<string, number>;
+}
+
+/** Keys converted from EUR at the exchange rate (purchase prices); other money keys follow the price level. */
+export const FX_KEYS = ["savings.bike_price_eur", "savings.car_price_eur"];
+
+/**
+ * Purpose: a kit's values in the start point's prices: money at the exchange rate (purchase prices) or by
+ * price level, like the parameters' defaults (crates/cargo-bike `local_values`).
+ */
+export function kitValues(
+  kit: Kit | undefined,
+  defaults: Record<string, ParamDefault> | null,
+  conv: Conversion | null,
+): Record<string, number> {
+  if (!kit) return {};
+  return Object.fromEntries(
+    Object.entries(kit.values).map(([k, v]) => [
+      k,
+      isMoney(defaults?.[k]) ? v * (FX_KEYS.includes(k) ? (conv?.fx ?? 1) : (conv?.ppp ?? 1)) : v,
+    ]),
+  );
 }
 
 /** One parameter of the plugin (crates/cargo-bike/data/defaults.json). */

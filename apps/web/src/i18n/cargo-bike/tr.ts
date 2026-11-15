@@ -117,6 +117,14 @@ export const cargoBikeTr = {
   "cb.activeWeek": "Haftalık bisiklet",
   "cb.activeOfTarget": "DSÖ'nün önerdiği haftalık {target} dakika hareketin {share} kadarı",
   "cb.impactValues": "İklim ve sağlık değerleri",
+  "cb.kit": "Kit",
+  "cb.kitSummary": "Batarya {battery} Wh · {mass} kg · {price}",
+  "cb.kitNote":
+    "Tahmini fiyatlı örnek kitler. Aşağıda değiştirdiğiniz değer kiti koruduğunuz sürece kalır; başka bir kit seçmek onun değerlerini uygular.",
+  "cb.kit.trike-500": "Kargo üç tekerlekli, 500 Wh",
+  "cb.kit.trike-900": "Kargo üç tekerlekli, 900 Wh",
+  "cb.kit.trike-1800": "Kargo üç tekerlekli, 2 × 900 Wh",
+  "cb.kit.bike-900": "İki tekerlekli kargo bisikleti, 900 Wh",
   "cb.error.too_far":
     "Varış, sokaklardan bir rota için çok uzak (en çok yaklaşık 40 km). Daha uzun mesafeler için menzil haritasını kullanın.",
   "cb.error.no_streets": "Burada bisikletle girilebilecek sokak bulunamadı.",

@@ -113,6 +113,14 @@ export const cargoBikeVi = {
   "cb.activeWeek": "Đạp xe mỗi tuần",
   "cb.activeOfTarget": "{share} trong {target} phút vận động mỗi tuần mà WHO khuyến nghị",
   "cb.impactValues": "Giá trị khí hậu và sức khỏe",
+  "cb.kit": "Bộ kit",
+  "cb.kitSummary": "Pin {battery} Wh · {mass} kg · {price}",
+  "cb.kitNote":
+    "Bộ kit ví dụ với giá ước tính. Giá trị bạn đổi bên dưới được giữ khi vẫn dùng bộ kit đó; chọn bộ kit khác sẽ dùng giá trị của nó.",
+  "cb.kit.trike-500": "Xe ba bánh chở hàng, 500 Wh",
+  "cb.kit.trike-900": "Xe ba bánh chở hàng, 900 Wh",
+  "cb.kit.trike-1800": "Xe ba bánh chở hàng, 2 × 900 Wh",
+  "cb.kit.bike-900": "Xe đạp chở hàng hai bánh, 900 Wh",
   "cb.error.too_far":
     "Điểm đến quá xa cho một tuyến theo đường phố (tối đa khoảng 40 km). Dùng bản đồ tầm hoạt động cho quãng đường dài hơn.",
   "cb.error.no_streets": "Không tìm thấy đường nào xe đạp được phép đi ở đây.",
