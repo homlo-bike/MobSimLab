@@ -213,6 +213,9 @@ export const te: Messages = {
   "drawing.rail-timetable": "రైలు సమయపట్టిక",
   "drawing.preferences": "ప్రాజెక్టు ప్రాధాన్యతలు",
   "drawing.costs": "ఖర్చు సెట్టింగ్‌లు",
+  "drawing.scenarios": "సేవ్ చేసిన దృశ్యాలు",
+  "drawing.benefits": "ప్రయోజన సూత్రాలు",
+  "drawing.regions": "ప్రాంతాలు",
 
   "tab.label": "ప్రాజెక్టు",
   "tab.simulator": "సిమ్యులేటర్",
@@ -250,6 +253,8 @@ export const te: Messages = {
   "schematic.export": "ముద్రణ మరియు తెరల కోసం ఎగుమతి",
 
   "gis.title": "GIS",
+  "gis.streetsView": "వీధులు",
+  "gis.regionsView": "ప్రాంతాలు",
   "gis.intro": "లెక్కలు ఉపయోగించే సమాచారాన్ని జోడించండి లేదా సవరించండి.",
   "gis.areas": "ప్రాంతాన్ని గీయండి లేదా OpenStreetMap నుండి దిగుమతి చేయండి",
   "gis.streets": "వీధి అమరిక: బస్సు, సైకిల్ మరియు ట్రామ్ లేన్‌లు, వేగాలు, పై తీగలు",
@@ -258,12 +263,6 @@ export const te: Messages = {
 
   "tables.title": "పట్టికలు",
   "tables.intro": "ప్రాజెక్టు గురించి ప్రతి లెక్క, అది ఎంత బాగా పనిచేస్తుందో అంచనా వేయడానికి.",
-  "tables.summary": "సారాంశం",
-  "tables.infrastructure": "మార్గాలు, స్టేషన్లు, పట్టాల పొడవు, వంతెనలు, సొరంగాలు (తవ్వి కప్పడం లేదా TBM)",
-  "tables.service": "తరచుదనం, సేవా గంటలు, వాహన సముదాయం, అంచనా ప్రయాణికులు",
-  "tables.compare": "దృశ్యాలను పక్కపక్కనే పోల్చండి",
-  "tables.more": "మరిన్ని పట్టికలు",
-  "tables.moreIntro": "ఈ ట్యాబ్‌లో త్వరలో వస్తాయి.",
 
   "prefs.title": "ప్రాజెక్టు ప్రాధాన్యతలు",
   "prefs.intro": "మొత్తం ప్రాజెక్టుకు వర్తించే వివరాలు మరియు సెట్టింగ్‌లు.",

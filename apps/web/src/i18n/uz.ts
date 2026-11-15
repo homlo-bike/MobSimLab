@@ -215,6 +215,9 @@ export const uz: Messages = {
   "drawing.rail-timetable": "poyezdlar jadvali",
   "drawing.preferences": "loyiha sozlamalari",
   "drawing.costs": "xarajat sozlamalari",
+  "drawing.scenarios": "saqlangan ssenariylar",
+  "drawing.benefits": "foyda formulalari",
+  "drawing.regions": "hududlar",
 
   "tab.label": "Loyiha",
   "tab.simulator": "Simulyator",
@@ -253,6 +256,8 @@ export const uz: Messages = {
   "schematic.export": "Chop etish va ekranlar uchun eksport",
 
   "gis.title": "GIS",
+  "gis.streetsView": "Koʻchalar",
+  "gis.regionsView": "Hududlar",
   "gis.intro": "Hisob-kitoblar foydalanadigan maʼlumotlarni qoʻshing yoki tahrirlang.",
   "gis.areas": "Hudud chizing yoki OpenStreetMap dan import qiling",
   "gis.streets": "Koʻcha tuzilishi: avtobus, velosiped va tramvay yoʻlaklari, tezliklar, havo simlari",
@@ -261,13 +266,6 @@ export const uz: Messages = {
 
   "tables.title": "Jadvallar",
   "tables.intro": "Loyiha qanchalik yaxshi ishlashini baholash uchun u haqidagi har bir hisob-kitob.",
-  "tables.summary": "Xulosa",
-  "tables.infrastructure":
-    "Yoʻnalishlar, stansiyalar, rels uzunligi, koʻpriklar, tunnellar (ochiq usul yoki TBM)",
-  "tables.service": "Qatnov chastotasi, ish soatlari, park, kutilayotgan yoʻlovchilar",
-  "tables.compare": "Ssenariylarni yonma-yon taqqoslash",
-  "tables.more": "Boshqa jadvallar",
-  "tables.moreIntro": "Tez orada ushbu bo‘limda.",
 
   "prefs.title": "Loyiha sozlamalari",
   "prefs.intro": "Butun loyihaga tegishli maʼlumotlar va sozlamalar.",

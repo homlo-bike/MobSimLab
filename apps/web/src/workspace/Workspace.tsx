@@ -1,9 +1,19 @@
 import type { Map as MapLibreMap } from "maplibre-gl";
-import { type ReactNode, useEffect, useMemo, useState } from "react";
+import { type ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import { BenefitTables } from "../features/benefits/BenefitTables";
+import type { BenefitsDoc } from "../features/benefits/formulas";
+import { RegionEditor } from "../features/benefits/RegionEditor";
+import type { Region, RegionsDoc } from "../features/benefits/regions";
+import { projectTimetable } from "../features/benefits/timetable";
 import { CapacityRun } from "../features/capacity/CapacityRun";
+import type { Prices } from "../features/costs/economy";
+import type { Estimate as CostEstimate } from "../features/costs/model";
 import { CostTables, type CostsDoc } from "../features/costs/CostTables";
 import { JourneyPlanner } from "../features/journey-planner/JourneyPlanner";
 import { NoiseMap } from "../features/noise/NoiseMap";
+import { NetworkTables } from "../features/tables/NetworkTables";
+import { Scenarios } from "../features/tables/Scenarios";
+import type { ScenariosDoc } from "../features/tables/scenarioModel";
 import { noiseCalculationIn } from "../features/noise/plugin";
 import type { PluginLineInput, StreetLineInput } from "../features/journey-planner/network";
 import type { Timetable } from "../features/journey-planner/types";
@@ -61,13 +71,15 @@ const MAP_TABS: readonly Tab[] = ["simulator", "create", "gis"];
 const NO_SETUPS: StreetSetup[] = [];
 
 type SimView = "test" | "journey";
+type GisView = "streets" | "regions";
+const NO_REGIONS: Region[] = [];
 /** "street", "rail", or the id of a plugin tool (cable car, ferry…). */
 type Build = string;
 
 /**
  * One open project (mockups "Project app"): the project name and the six tabs in the top bar (a bottom tab bar on
  * phones), the map, and a side panel (a bottom sheet on phones). Simulator holds the capacity run and the journey planner; Create holds
- * the street line tool and the railway editor; Tables holds the cost tables; the other tabs are placeholders
+ * the street line tool and the railway editor; Tables holds the network and cost tables; the other tabs are placeholders
  * until their tools exist.
  */
 export function Workspace({
@@ -100,6 +112,18 @@ export function Workspace({
   const [map, setMap] = useState<MapLibreMap | null>(null);
   const [panel, setPanel] = useState<HTMLElement | null>(null);
   const [sim, setSim] = useState<SimView>("test");
+  const [gis, setGis] = useState<GisView>("streets");
+  // The cost tables' estimate, currency and country, for the benefit tables.
+  const [costInfo, setCostInfo] = useState<{
+    estimate: CostEstimate;
+    currency: string | null;
+    country: string | null;
+  } | null>(null);
+  const onCostEstimate = useCallback(
+    (estimate: CostEstimate, prices: Prices, country: string | null) =>
+      setCostInfo({ estimate, currency: prices.currency, country }),
+    [],
+  );
   const [build, setBuild] = useState<Build | null>(null);
   // The street line as the tool last routed it, so the journey planner can ride it.
   const [line, setLine] = useState<StreetLineInput | null>(null);
@@ -161,6 +185,8 @@ export function Workspace({
   // Street setups from the GIS tab: they override OSM in the street line tool and the railway editor.
   const setups = drawings.doc<StreetSetup[]>("street-setups") ?? NO_SETUPS;
   const changeSetups = (next: StreetSetup[]) => drawings.set("street-setups", next);
+  // GIS tab regions: their values take priority in the benefit tables.
+  const regions = drawings.doc<RegionsDoc>("regions")?.regions ?? NO_REGIONS;
   // Project preferences: assumption values the project changes, such as the delays in traffic.
   const preferences = drawings.doc<PreferencesDoc>("preferences");
   const delaysJson = JSON.stringify(delaysFrom(preferences));
@@ -242,6 +268,18 @@ export function Workspace({
         );
       })}
     </nav>
+  );
+
+  // The whole published network for the benefit tables, with the cost tables' line ids.
+  const pluginKey = JSON.stringify(pluginLines);
+  const networkTimetable = useMemo(
+    () =>
+      projectTimetable(
+        streetLines?.lines ?? [],
+        railLines ?? null,
+        Object.values(pluginLines).filter((l): l is PluginLineInput => l !== null),
+      ),
+    [streetLines, railLines, pluginKey],
   );
 
   if (missing)
@@ -354,7 +392,17 @@ export function Workspace({
               onLineChange={(l) => setPluginLines((p) => ({ ...p, [chosenPlugin.id]: l }))}
             />
           )}
-          {project && drawings.loaded && tab === "gis" && (
+          {project && drawings.loaded && tab === "gis" && gis === "regions" && (
+            <RegionEditor
+              map={map}
+              panel={panel}
+              regions={regions}
+              onChange={(next) => drawings.set("regions", { regions: next } satisfies RegionsDoc)}
+              editable={editable}
+              currency={costInfo?.currency ?? null}
+            />
+          )}
+          {project && drawings.loaded && tab === "gis" && gis === "streets" && (
             <StreetSetupEditor
               map={map}
               panel={panel}
@@ -464,26 +512,43 @@ export function Workspace({
               <h1 className="text-2xl font-semibold tracking-tight">{t("tables.title")}</h1>
               <p className="mt-1 text-slate-600">{t("tables.intro")}</p>
               {project && drawings.loaded ? (
-                <CostTables
-                  railway={railway}
-                  streetLines={streetLines}
-                  preferences={preferences}
-                  onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
-                  costs={drawings.doc<CostsDoc>("costs")}
-                  onCosts={editable ? (d) => drawings.set("costs", d) : undefined}
-                />
+                <>
+                  <NetworkTables railway={railway} streetLines={streetLines} preferences={preferences} />
+                  <CostTables
+                    railway={railway}
+                    streetLines={streetLines}
+                    preferences={preferences}
+                    onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
+                    costs={drawings.doc<CostsDoc>("costs")}
+                    onCosts={editable ? (d) => drawings.set("costs", d) : undefined}
+                    onEstimate={onCostEstimate}
+                  />
+                </>
               ) : (
                 <p role="status" className="mt-6 text-slate-500">
                   {t("common.loading")}
                 </p>
               )}
-              <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-4 md:p-6">
-                <Placeholder
-                  title="tables.more"
-                  intro="tables.moreIntro"
-                  items={["tables.summary", "tables.infrastructure", "tables.service", "tables.compare"]}
+              {project && drawings.loaded && (
+                <BenefitTables
+                  timetable={networkTimetable}
+                  regions={regions}
+                  preferences={preferences}
+                  onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
+                  doc={drawings.doc<BenefitsDoc>("benefits")}
+                  onDoc={editable ? (d) => drawings.set("benefits", d) : undefined}
+                  costs={costInfo}
                 />
-              </div>
+              )}
+              {project && drawings.loaded && (
+                <Scenarios
+                  railway={railway}
+                  streetLines={streetLines}
+                  preferences={preferences}
+                  doc={drawings.doc<ScenariosDoc>("scenarios")}
+                  onChange={editable ? (d) => drawings.set("scenarios", d) : undefined}
+                />
+              )}
             </section>
           </div>
         )}
@@ -520,6 +585,28 @@ export function Workspace({
                     onClick={() => setSim("journey")}
                   >
                     {t("sim.journey")}
+                  </button>
+                </div>
+              </div>
+            )}
+            {tab === "gis" && (
+              <div className="shrink-0 px-4 pt-3 pb-2 md:px-5 md:pt-5">
+                <div className="seg" role="tablist" aria-label={tabLabel("gis")}>
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={gis === "streets"}
+                    onClick={() => setGis("streets")}
+                  >
+                    {t("gis.streetsView")}
+                  </button>
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={gis === "regions"}
+                    onClick={() => setGis("regions")}
+                  >
+                    {t("gis.regionsView")}
                   </button>
                 </div>
               </div>
@@ -569,7 +656,7 @@ export function Workspace({
                 <p className="px-4 py-5 text-slate-600 md:px-5">{t("create.chooseFirst")}</p>
               )}
               {/* The street line tool, railway editor, journey planner and street setup render their panels here. */}
-              <div key={`${tab}-${sim}-${chosen}`} ref={setPanel} />
+              <div key={`${tab}-${sim}-${chosen}-${gis}`} ref={setPanel} />
               {tab === "gis" && project && drawings.loaded && noiseCalculationIn("gis") && (
                 <div className="border-t border-slate-200 px-4 py-5 md:px-5">
                   <NoiseMap
@@ -582,11 +669,7 @@ export function Workspace({
               )}
               {tab === "gis" && (
                 <div className="border-t border-slate-200 px-4 py-5 md:px-5">
-                  <Placeholder
-                    title="gis.title"
-                    intro="gis.intro"
-                    items={["gis.areas", "gis.walk", "gis.spacing"]}
-                  />
+                  <Placeholder title="gis.title" intro="gis.intro" items={["gis.walk", "gis.spacing"]} />
                 </div>
               )}
             </div>

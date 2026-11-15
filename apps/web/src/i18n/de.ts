@@ -218,6 +218,9 @@ export const de: Messages = {
   "drawing.rail-timetable": "den Fahrplan der Bahnlinien",
   "drawing.preferences": "die Projekteinstellungen",
   "drawing.costs": "die Kosteneinstellungen",
+  "drawing.scenarios": "die gespeicherten Szenarien",
+  "drawing.benefits": "die Nutzenformeln",
+  "drawing.regions": "die Gebiete",
 
   "tab.label": "Projekt",
   "tab.simulator": "Simulator",
@@ -261,15 +264,11 @@ export const de: Messages = {
   "gis.streets": "Straßenaufteilung: Bus-, Rad- und Straßenbahnspuren, Geschwindigkeiten, Oberleitungen",
   "gis.walk": "Abdeckung in 15 Gehminuten und Lücken",
   "gis.spacing": "Haltestellenabstände",
+  "gis.streetsView": "Straßen",
+  "gis.regionsView": "Gebiete",
 
   "tables.title": "Tabellen",
   "tables.intro": "Alle Berechnungen zum Projekt, um abzuschätzen, wie gut es funktionieren wird.",
-  "tables.summary": "Übersicht",
-  "tables.infrastructure": "Linien, Stationen, Gleislänge, Brücken, Tunnel (offene Bauweise oder TBM)",
-  "tables.service": "Takt, Betriebszeiten, Flotte, erwartete Fahrgäste",
-  "tables.compare": "Szenarien nebeneinander vergleichen",
-  "tables.more": "Weitere Tabellen",
-  "tables.moreIntro": "Folgt noch in diesem Tab.",
 
   "prefs.title": "Projekteinstellungen",
   "prefs.intro": "Angaben und Einstellungen, die für das ganze Projekt gelten.",

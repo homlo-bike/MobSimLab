@@ -213,6 +213,9 @@ export const ru: Messages = {
   "drawing.rail-timetable": "расписание поездов",
   "drawing.preferences": "параметры проекта",
   "drawing.costs": "настройки затрат",
+  "drawing.scenarios": "сохранённые сценарии",
+  "drawing.benefits": "формулы выгод",
+  "drawing.regions": "районы",
 
   "tab.label": "Проект",
   "tab.simulator": "Симулятор",
@@ -251,6 +254,8 @@ export const ru: Messages = {
   "schematic.export": "Экспорт для печати и экранов",
 
   "gis.title": "ГИС",
+  "gis.streetsView": "Улицы",
+  "gis.regionsView": "Районы",
   "gis.intro": "Добавляйте и изменяйте данные, которые используются в расчётах.",
   "gis.areas": "Нарисуйте территорию или импортируйте её из OpenStreetMap",
   "gis.streets": "Профиль улиц: полосы для автобусов, велосипедов и трамваев, скорости, контактная сеть",
@@ -259,12 +264,6 @@ export const ru: Messages = {
 
   "tables.title": "Таблицы",
   "tables.intro": "Все расчёты по проекту для оценки его эффективности.",
-  "tables.summary": "Сводка",
-  "tables.infrastructure": "Линии, станции, длина путей, мосты, тоннели (открытым способом или ТПМК)",
-  "tables.service": "Интервалы, часы работы, парк, прогноз пассажиропотока",
-  "tables.compare": "Сравнение сценариев",
-  "tables.more": "Другие таблицы",
-  "tables.moreIntro": "Скоро появятся на этой вкладке.",
 
   "prefs.title": "Параметры проекта",
   "prefs.intro": "Сведения и настройки, которые действуют для всего проекта.",

@@ -211,6 +211,9 @@ export const vi: Messages = {
   "drawing.rail-timetable": "lịch tàu",
   "drawing.preferences": "tùy chọn dự án",
   "drawing.costs": "cài đặt chi phí",
+  "drawing.scenarios": "các kịch bản đã lưu",
+  "drawing.benefits": "công thức lợi ích",
+  "drawing.regions": "khu vực",
 
   "tab.label": "Dự án",
   "tab.simulator": "Mô phỏng",
@@ -250,6 +253,8 @@ export const vi: Messages = {
   "schematic.export": "Xuất để in và hiển thị màn hình",
 
   "gis.title": "GIS",
+  "gis.streetsView": "Đường phố",
+  "gis.regionsView": "Khu vực",
   "gis.intro": "Thêm và chỉnh sửa thông tin dùng trong tính toán.",
   "gis.areas": "Vẽ khu vực hoặc nhập từ OpenStreetMap",
   "gis.streets": "Cấu trúc đường phố: làn xe buýt, xe đạp và tàu điện, tốc độ, dây điện trên cao",
@@ -258,12 +263,6 @@ export const vi: Messages = {
 
   "tables.title": "Bảng",
   "tables.intro": "Mọi tính toán để ước lượng hiệu quả của dự án.",
-  "tables.summary": "Tóm tắt",
-  "tables.infrastructure": "Tuyến, ga, chiều dài đường ray, cầu, hầm (đào hở hoặc TBM)",
-  "tables.service": "Tần suất, giờ hoạt động, đội phương tiện, hành khách dự kiến",
-  "tables.compare": "So sánh các kịch bản cạnh nhau",
-  "tables.more": "Thêm bảng",
-  "tables.moreIntro": "Sắp có trong thẻ này.",
 
   "prefs.title": "Tùy chọn dự án",
   "prefs.intro": "Chi tiết và cài đặt áp dụng cho toàn bộ dự án.",

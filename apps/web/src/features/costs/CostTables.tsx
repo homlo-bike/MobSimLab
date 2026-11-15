@@ -43,6 +43,8 @@ interface Props {
   onPreferences?: (doc: PreferencesDoc) => void;
   costs: CostsDoc | null;
   onCosts?: (doc: CostsDoc) => void;
+  /** Told the estimate, the prices and the country code whenever they change (the benefit tables use them). */
+  onEstimate?: (e: Estimate, prices: Prices, country: string | null) => void;
   /** Tests inject these. */
   loadRail?: RailEngineLoader;
   api?: EconomyApi;
@@ -67,7 +69,7 @@ export function fmtMoney(v: number, currency: string | null): string {
 }
 
 /** Purpose: a quantity with sensible decimals. */
-function fmtQty(q: number): string {
+export function fmtQty(q: number): string {
   return new Intl.NumberFormat("en", { maximumFractionDigits: q < 10 ? 2 : q < 1000 ? 1 : 0 }).format(q);
 }
 
@@ -85,6 +87,7 @@ export function CostTables({
   onPreferences,
   costs,
   onCosts,
+  onEstimate,
   loadRail = loadRailEngine,
   api = DEFAULT_API,
 }: Props) {
@@ -183,6 +186,9 @@ export function CostTables({
       }),
     [railway, rail, streetLines, prefs, prices],
   );
+  useEffect(() => {
+    onEstimate?.(est, prices, code ?? null);
+  }, [est, prices, code, onEstimate]);
   const shownCurrency = usd ? "USD" : prices.currency;
   const k = usd ? 1 / prices.fx : 1;
   const money = (v: number) => fmtMoney(v * k, shownCurrency);
@@ -312,7 +318,7 @@ export function CostTables({
   );
 }
 
-function Tile({ title, value, sub }: { title: string; value: string; sub: string }) {
+export function Tile({ title, value, sub }: { title: string; value: string; sub: string }) {
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-4">
       <p className="caps m-0">{title}</p>
@@ -322,16 +328,16 @@ function Tile({ title, value, sub }: { title: string; value: string; sub: string
   );
 }
 
-const card = "mt-6 rounded-2xl border border-slate-200 bg-white p-4 md:p-6";
-const th = "px-2 py-1.5 text-left font-medium text-slate-600";
-const td = "px-2 py-1.5 align-top";
-const num = "px-2 py-1.5 text-right align-top tabular-nums whitespace-nowrap";
+export const card = "mt-6 rounded-2xl border border-slate-200 bg-white p-4 md:p-6";
+export const th = "px-2 py-1.5 text-left font-medium text-slate-600";
+export const td = "px-2 py-1.5 align-top";
+export const num = "px-2 py-1.5 text-right align-top tabular-nums whitespace-nowrap";
 
 /** Sort state of a table: a column and a direction. */
-type Sort<K extends string> = { key: K; dir: 1 | -1 } | null;
+export type Sort<K extends string> = { key: K; dir: 1 | -1 } | null;
 
 /** Purpose: a column header that sorts the table: first click largest (or A–Z) first, then reverse, then off. */
-function SortHeader<K extends string>({
+export function SortHeader<K extends string>({
   label,
   k,
   sort,
@@ -366,7 +372,11 @@ function SortHeader<K extends string>({
 }
 
 /** Purpose: rows ordered by a sort; text compares A–Z, numbers by size. */
-function sorted<T, K extends string>(rows: T[], sort: Sort<K>, value: (r: T, k: K) => number | string): T[] {
+export function sorted<T, K extends string>(
+  rows: T[],
+  sort: Sort<K>,
+  value: (r: T, k: K) => number | string,
+): T[] {
   if (!sort) return rows;
   return [...rows].sort((a, b) => {
     const x = value(a, sort.key);
