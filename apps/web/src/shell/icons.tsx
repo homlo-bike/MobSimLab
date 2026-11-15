@@ -204,3 +204,12 @@ export const CompassIcon = (p: P) => (
     <path d="m15.5 8.5-2 5-5 2 2-5z" />
   </Icon>
 );
+/** A cargo tricycle: box in front on two wheels, rider's wheel behind. */
+export const CargoBikeIcon = (p: P) => (
+  <Icon {...p}>
+    <rect x="2.5" y="8" width="8" height="6" rx="1" />
+    <circle cx="5" cy="17.5" r="2.5" />
+    <circle cx="19" cy="17.5" r="2.5" />
+    <path d="M10.5 14h4l4.5 3.5M14.5 14l-1.5-6h2.5M13 8l-1.5-2.5" />
+  </Icon>
+);

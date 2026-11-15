@@ -1,4 +1,5 @@
 import { editorsYo } from "./editors/yo";
+import { cargoBikeYo } from "./cargo-bike/yo";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -350,5 +351,6 @@ export const yo: Messages = {
   "print.print": "Tẹ̀ jáde…",
 
   ...editorsYo,
+  ...cargoBikeYo,
   ...PLUGIN_MESSAGES.yo,
 };

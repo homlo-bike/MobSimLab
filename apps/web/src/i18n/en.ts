@@ -1,4 +1,5 @@
 import { editorsEn } from "./editors/en";
+import { cargoBikeEn } from "./cargo-bike/en";
 import { pluginsEn } from "./plugins";
 
 /** English: the source language. Every other language must have every key (the type checker enforces it). */
@@ -345,6 +346,7 @@ export const en = {
   "print.print": "Print…",
 
   ...editorsEn,
+  ...cargoBikeEn,
   ...pluginsEn,
 } as const;
 

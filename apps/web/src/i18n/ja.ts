@@ -1,4 +1,5 @@
 import { editorsJa } from "./editors/ja";
+import { cargoBikeJa } from "./cargo-bike/ja";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -346,5 +347,6 @@ export const ja: Messages = {
   "print.print": "印刷…",
 
   ...editorsJa,
+  ...cargoBikeJa,
   ...PLUGIN_MESSAGES.ja,
 };

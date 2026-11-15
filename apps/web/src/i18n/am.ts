@@ -1,4 +1,5 @@
 import { editorsAm } from "./editors/am";
+import { cargoBikeAm } from "./cargo-bike/am";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -339,5 +340,6 @@ export const am: Messages = {
   "print.print": "አትም…",
 
   ...editorsAm,
+  ...cargoBikeAm,
   ...PLUGIN_MESSAGES.am,
 };

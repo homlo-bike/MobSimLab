@@ -1,4 +1,5 @@
 import { editorsVi } from "./editors/vi";
+import { cargoBikeVi } from "./cargo-bike/vi";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -350,5 +351,6 @@ export const vi: Messages = {
   "print.print": "In…",
 
   ...editorsVi,
+  ...cargoBikeVi,
   ...PLUGIN_MESSAGES.vi,
 };

@@ -1,4 +1,5 @@
 import { editorsIt } from "./editors/it";
+import { cargoBikeIt } from "./cargo-bike/it";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -351,5 +352,6 @@ export const it: Messages = {
   "print.print": "Stampa…",
 
   ...editorsIt,
+  ...cargoBikeIt,
   ...PLUGIN_MESSAGES.it,
 };

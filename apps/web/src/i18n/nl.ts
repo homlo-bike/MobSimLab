@@ -1,4 +1,5 @@
 import { editorsNl } from "./editors/nl";
+import { cargoBikeNl } from "./cargo-bike/nl";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -354,5 +355,6 @@ export const nl: Messages = {
   "print.print": "Afdrukken…",
 
   ...editorsNl,
+  ...cargoBikeNl,
   ...PLUGIN_MESSAGES.nl,
 };

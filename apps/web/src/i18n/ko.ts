@@ -1,4 +1,5 @@
 import { editorsKo } from "./editors/ko";
+import { cargoBikeKo } from "./cargo-bike/ko";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -344,5 +345,6 @@ export const ko: Messages = {
   "print.print": "인쇄…",
 
   ...editorsKo,
+  ...cargoBikeKo,
   ...PLUGIN_MESSAGES.ko,
 };

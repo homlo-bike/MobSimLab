@@ -1,4 +1,5 @@
 import { editorsKk } from "./editors/kk";
+import { cargoBikeKk } from "./cargo-bike/kk";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -351,5 +352,6 @@ export const kk: Messages = {
   "print.print": "Басып шығару…",
 
   ...editorsKk,
+  ...cargoBikeKk,
   ...PLUGIN_MESSAGES.kk,
 };

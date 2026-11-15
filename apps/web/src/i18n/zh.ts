@@ -1,4 +1,5 @@
 import { editorsZh } from "./editors/zh";
+import { cargoBikeZh } from "./cargo-bike/zh";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -336,5 +337,6 @@ export const zh: Messages = {
   "print.print": "打印…",
 
   ...editorsZh,
+  ...cargoBikeZh,
   ...PLUGIN_MESSAGES.zh,
 };

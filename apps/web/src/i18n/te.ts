@@ -1,4 +1,5 @@
 import { editorsTe } from "./editors/te";
+import { cargoBikeTe } from "./cargo-bike/te";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -350,5 +351,6 @@ export const te: Messages = {
   "print.print": "ముద్రించు…",
 
   ...editorsTe,
+  ...cargoBikeTe,
   ...PLUGIN_MESSAGES.te,
 };

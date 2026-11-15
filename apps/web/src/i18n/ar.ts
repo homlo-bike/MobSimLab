@@ -1,4 +1,5 @@
 import { editorsAr } from "./editors/ar";
+import { cargoBikeAr } from "./cargo-bike/ar";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -341,5 +342,6 @@ export const ar: Messages = {
   "print.print": "طباعة…",
 
   ...editorsAr,
+  ...cargoBikeAr,
   ...PLUGIN_MESSAGES.ar,
 };

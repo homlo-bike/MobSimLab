@@ -1,4 +1,5 @@
 import { editorsMr } from "./editors/mr";
+import { cargoBikeMr } from "./cargo-bike/mr";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -347,5 +348,6 @@ export const mr: Messages = {
   "print.print": "छापा…",
 
   ...editorsMr,
+  ...cargoBikeMr,
   ...PLUGIN_MESSAGES.mr,
 };

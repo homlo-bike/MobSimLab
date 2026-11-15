@@ -1,4 +1,5 @@
 import { editorsBn } from "./editors/bn";
+import { cargoBikeBn } from "./cargo-bike/bn";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -347,5 +348,6 @@ export const bn: Messages = {
   "print.print": "মুদ্রণ…",
 
   ...editorsBn,
+  ...cargoBikeBn,
   ...PLUGIN_MESSAGES.bn,
 };

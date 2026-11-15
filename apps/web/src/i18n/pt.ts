@@ -1,4 +1,5 @@
 import { editorsPt } from "./editors/pt";
+import { cargoBikePt } from "./cargo-bike/pt";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -355,5 +356,6 @@ export const pt: Messages = {
   "print.print": "Imprimir…",
 
   ...editorsPt,
+  ...cargoBikePt,
   ...PLUGIN_MESSAGES.pt,
 };

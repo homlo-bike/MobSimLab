@@ -1,4 +1,5 @@
 import { editorsUz } from "./editors/uz";
+import { cargoBikeUz } from "./cargo-bike/uz";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -358,5 +359,6 @@ export const uz: Messages = {
   "print.print": "Chop etish…",
 
   ...editorsUz,
+  ...cargoBikeUz,
   ...PLUGIN_MESSAGES.uz,
 };

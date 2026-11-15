@@ -1,4 +1,5 @@
 import { editorsId } from "./editors/id";
+import { cargoBikeId } from "./cargo-bike/id";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -354,5 +355,6 @@ export const id: Messages = {
   "print.print": "Cetak…",
 
   ...editorsId,
+  ...cargoBikeId,
   ...PLUGIN_MESSAGES.id,
 };

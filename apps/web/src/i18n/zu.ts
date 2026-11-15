@@ -1,4 +1,5 @@
 import { editorsZu } from "./editors/zu";
+import { cargoBikeZu } from "./cargo-bike/zu";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -359,5 +360,6 @@ export const zu: Messages = {
   "print.print": "Phrinta…",
 
   ...editorsZu,
+  ...cargoBikeZu,
   ...PLUGIN_MESSAGES.zu,
 };

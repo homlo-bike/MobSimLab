@@ -1,4 +1,5 @@
 import { editorsTa } from "./editors/ta";
+import { cargoBikeTa } from "./cargo-bike/ta";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -360,5 +361,6 @@ export const ta: Messages = {
   "print.print": "அச்சிடு…",
 
   ...editorsTa,
+  ...cargoBikeTa,
   ...PLUGIN_MESSAGES.ta,
 };

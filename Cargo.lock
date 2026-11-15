@@ -70,6 +70,26 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fc652a48c352aef3ea3aed32080501cf3ef6ed5da78602a020c991775b0aff04"
 
 [[package]]
+name = "cargo-bike"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "street-routing",
+]
+
+[[package]]
+name = "cargo-bike-wasm"
+version = "0.1.0"
+dependencies = [
+ "cargo-bike",
+ "serde",
+ "serde_json",
+ "street-routing",
+ "wasm-bindgen",
+]
+
+[[package]]
 name = "cfg-if"
 version = "1.0.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"

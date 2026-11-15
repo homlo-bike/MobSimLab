@@ -1,4 +1,5 @@
 import { editorsDe } from "./editors/de";
+import { cargoBikeDe } from "./cargo-bike/de";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -360,5 +361,6 @@ export const de: Messages = {
   "print.print": "Drucken…",
 
   ...editorsDe,
+  ...cargoBikeDe,
   ...PLUGIN_MESSAGES.de,
 };

@@ -1,4 +1,5 @@
 import { editorsHi } from "./editors/hi";
+import { cargoBikeHi } from "./cargo-bike/hi";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -350,5 +351,6 @@ export const hi: Messages = {
   "print.print": "प्रिंट…",
 
   ...editorsHi,
+  ...cargoBikeHi,
   ...PLUGIN_MESSAGES.hi,
 };
