@@ -1047,4 +1047,68 @@ export const editorsUz = {
   "rail.profileAria": "Bo‘ylama profil: yo‘l bo‘ylab yer va rels ustki qismi",
   "rail.profileLegend":
     "Yaxlit: rels ustki qismi. Uzuq: yer (Copernicus GLO-30, tekislangan). Balandliklar sirt modelidan, ±4 m.",
+
+  "walk.title": "Bekatgacha piyoda",
+  "walk.intro":
+    "Liniyalar atrofidagi hududning qancha qismi ko'chalar va piyodalar yo'llari orqali bekat yoki stansiyadan qisqa piyoda masofada, har bir svetoforli o'tishda kutish bilan.",
+  "walk.minutes": "Piyoda chegarasi, daqiqa",
+  "walk.stepFree": "Zinasiz",
+  "walk.compute": "Piyoda qamrovni hisoblash",
+  "walk.computeAgain": "Qayta hisoblash",
+  "walk.drawFirst": "Avval ko'cha liniyasi yoki stansiyali temir yo'l chizing.",
+  "walk.collecting": "Bekatlar va stansiyalar yig'ilmoqda…",
+  "walk.loadingTiles": "Piyoda yo'llari yuklanmoqda ({count} ta xarita plitasidan {done})…",
+  "walk.loadingPopulation": "Odamlar qayerda yashashi yuklanmoqda…",
+  "walk.computing": "Piyoda yo'llar o'lchanmoqda…",
+  "walk.tooLarge":
+    "Bekatlar {tiles} ta xarita plitasiga yoyilgan; bir vaqtda ko'pi bilan {max} ta (taxminan 12 km × 12 km) yuklanadi.",
+  "walk.osmUnavailable":
+    "OpenStreetMap piyoda yo'llari hozir mavjud emas. Bir daqiqadan so'ng qayta urinib ko'ring.",
+  "walk.headlinePeople":
+    "Liniyalar atrofidagi {total} aholining {share} % bekat yoki stansiyadan {minutes} daqiqalik piyoda masofada yashaydi.",
+  "walk.headlineStreets":
+    "Liniyalar atrofidagi piyoda yuriladigan ko'chalarning {share} % bekat yoki stansiyadan {minutes} daqiqalik piyoda masofada.",
+  "walk.crowFlies": "To'g'ri chiziqda {share} % bo'lardi: ko'chalar va yo'llar yurishni uzaytiradi.",
+  "walk.bands": "Eng yaqin bekatgacha piyoda",
+  "walk.band": "{from}–{to} daq",
+  "walk.bandOver": "{from} daq yoki ko'proq",
+  "walk.residents": "Aholi",
+  "walk.streets": "Ko'chalar",
+  "walk.gaps": "Eng katta bo'shliqlar",
+  "walk.gapsIntro":
+    "Piyoda chegarasidan tashqarida eng ko'p odam bo'lgan joylar, eng kattasi birinchi. U yerga o'tish uchun birini bosing.",
+  "walk.gapsIntroStreets":
+    "Piyoda chegarasidan tashqarida eng ko'p ko'cha bo'lgan joylar, eng kattasi birinchi. U yerga o'tish uchun birini bosing.",
+  "walk.gapPeople": "{people} aholi",
+  "walk.gapStreets": "{metres} m ko'cha",
+  "walk.gapWalk": "eng yaqin bekatgacha {minutes} daq piyoda",
+  "walk.gapUnreachable": "piyoda yetib boriladigan bekat yo'q",
+  "walk.noGaps": "Bo'shliq yo'q: butun hudud piyoda chegarasida.",
+  "walk.showOnMap": "Xaritada ko'rsatish",
+  "walk.legend": "Eng yaqin bekatgacha piyoda daqiqalar",
+  "walk.offNetwork": "Piyoda yo'lidan juda uzoq, hisobga olinmadi: {stops}.",
+  "walk.popDownloading":
+    "{countries} aholisi hali serverga yuklanmoqda; shu vaqtgacha ko'chalar odamlar o'rnini bosadi.",
+  "walk.popUnavailable": "Aholi ma'lumoti yo'q ({reason}); ko'chalar odamlar o'rnini bosadi.",
+  "walk.popCredit": "Aholi: WorldPop {year} ({countries}), CC BY 4.0.",
+  "walk.note":
+    "Hudud — bekatlar atrofidagi to'rtburchak va chegara ichida yuriladigan masofa. Qiyaliklar hozircha hisobga olinmaydi.",
+  "spacing.title": "Bekatlar oralig'i",
+  "spacing.intro":
+    "Liniya bo'ylab ketma-ket bekatlar orasidagi masofa, transport turining odatiy oralig'i bilan solishtirilgan. Juda yaqin bekatlar liniyani sekinlashtiradi; juda uzoq bo'lsa, uzoq yurish kerak.",
+  "spacing.none": "Avval ko'cha liniyasini yoki kamida ikki stansiyali temir yo'l xizmat liniyasini chizing.",
+  "spacing.loading": "Bekatlar oralig'i o'lchanmoqda…",
+  "spacing.direction": "{n}-yo'nalish",
+  "spacing.summary": "Mediana {median} m · eng qisqa {min} m · eng uzun {max} m",
+  "spacing.guidance": "Bu tur uchun odatiy: {low}–{high} m",
+  "spacing.allOk": "Barcha bekatlar odatiy oraliqda.",
+  "spacing.flags": "{short} juda yaqin, {long} juda uzoq",
+  "spacing.short": "juda yaqin",
+  "spacing.long": "juda uzoq",
+  "spacing.pair": "{from} → {to}",
+  "spacing.along": "{metres} m",
+  "spacing.onFoot": "piyoda {metres} m",
+  "spacing.straight": "Stansiyalar orasida to'g'ri chiziq bo'yicha o'lchangan.",
+  "spacing.onFootHint":
+    "Belgilangan bekatlar orasidagi piyoda masofani qo'shish uchun yuqorida piyoda qamrovni hisoblang.",
 } satisfies EditorMessages;

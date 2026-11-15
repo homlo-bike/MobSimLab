@@ -1011,4 +1011,68 @@ export const editorsTr = {
   "rail.profileAria": "Boy kesit: hat boyunca arazi ve ray üstü",
   "rail.profileLegend":
     "Düz çizgi: ray üstü. Kesikli: arazi (Copernicus GLO-30, yumuşatılmış). Yükseklikler bir yüzey modelinden, ±4 m.",
+
+  "walk.title": "Durağa yürüme",
+  "walk.intro":
+    "Hatların çevresindeki alanın ne kadarının bir durağa veya istasyona sokaklar ve yaya yolları üzerinden kısa yürüme mesafesinde olduğu; her sinyalli geçitte bekleme dahil.",
+  "walk.minutes": "Yürüme sınırı, dakika",
+  "walk.stepFree": "Basamaksız (merdivenler hariç)",
+  "walk.compute": "Yürüme kapsamını hesapla",
+  "walk.computeAgain": "Yeniden hesapla",
+  "walk.drawFirst": "Önce bir sokak hattı veya istasyonlu bir demiryolu çizin.",
+  "walk.collecting": "Duraklar ve istasyonlar toplanıyor…",
+  "walk.loadingTiles": "Yaya yolları yükleniyor ({count} harita karosundan {done})…",
+  "walk.loadingPopulation": "İnsanların yaşadığı yerler yükleniyor…",
+  "walk.computing": "Yürüyüşler ölçülüyor…",
+  "walk.tooLarge":
+    "Duraklar {tiles} harita karosuna yayılıyor; bir seferde en fazla {max} (yaklaşık 12 km × 12 km) yüklenir.",
+  "walk.osmUnavailable":
+    "OpenStreetMap yaya yolları şu anda kullanılamıyor. Bir dakika sonra yeniden deneyin.",
+  "walk.headlinePeople":
+    "Hatların çevresindeki {total} sakinin %{share} kadarı bir durağa veya istasyona en fazla {minutes} dakika yürüme mesafesinde yaşıyor.",
+  "walk.headlineStreets":
+    "Hatların çevresindeki yürünebilir sokakların %{share} kadarı bir durağa veya istasyona en fazla {minutes} dakika yürüme mesafesinde.",
+  "walk.crowFlies": "Kuş uçuşu %{share} olurdu: sokaklar ve yollar yürüyüşü uzatır.",
+  "walk.bands": "En yakın durağa yürüme",
+  "walk.band": "{from}–{to} dk",
+  "walk.bandOver": "{from} dk veya daha fazla",
+  "walk.residents": "Sakinler",
+  "walk.streets": "Sokaklar",
+  "walk.gaps": "En büyük boşluklar",
+  "walk.gapsIntro":
+    "Yürüme sınırının ötesinde en çok insanın bulunduğu yerler, en büyüğü önce. Gitmek için birine dokunun.",
+  "walk.gapsIntroStreets":
+    "Yürüme sınırının ötesinde en çok sokağın bulunduğu yerler, en büyüğü önce. Gitmek için birine dokunun.",
+  "walk.gapPeople": "{people} sakin",
+  "walk.gapStreets": "{metres} m sokak",
+  "walk.gapWalk": "en yakın durağa {minutes} dk yürüme",
+  "walk.gapUnreachable": "yürüyerek ulaşılabilen durak yok",
+  "walk.noGaps": "Boşluk yok: alanın tamamı yürüme sınırı içinde.",
+  "walk.showOnMap": "Haritada göster",
+  "walk.legend": "En yakın durağa yürüme dakikası",
+  "walk.offNetwork": "Bir yaya yoluna çok uzak, hariç tutuldu: {stops}.",
+  "walk.popDownloading":
+    "{countries} nüfusu hâlâ sunucuya indiriliyor; o zamana kadar sokaklar insanların yerini tutuyor.",
+  "walk.popUnavailable": "Nüfus verisi yok ({reason}); sokaklar insanların yerini tutuyor.",
+  "walk.popCredit": "Sakinler: WorldPop {year} ({countries}), CC BY 4.0.",
+  "walk.note":
+    "Alan, durakların çevresindeki dikdörtgen artı sınır içinde yürünen mesafedir. Eğimler henüz hesaba katılmıyor.",
+  "spacing.title": "Duraklar arası mesafe",
+  "spacing.intro":
+    "Hat boyunca ardışık duraklar arasındaki mesafe, türün olağan aralığıyla karşılaştırılarak. Çok yakın duraklar hattı yavaşlatır; çok uzak duraklar uzun yürüyüş demektir.",
+  "spacing.none": "Önce bir sokak hattı veya en az iki istasyonlu bir demiryolu servis hattı çizin.",
+  "spacing.loading": "Duraklar arası mesafe ölçülüyor…",
+  "spacing.direction": "yön {n}",
+  "spacing.summary": "Medyan {median} m · en kısa {min} m · en uzun {max} m",
+  "spacing.guidance": "Bu tür için olağan: {low}–{high} m",
+  "spacing.allOk": "Tüm duraklar olağan aralıkta.",
+  "spacing.flags": "{short} çok yakın, {long} çok uzak",
+  "spacing.short": "çok yakın",
+  "spacing.long": "çok uzak",
+  "spacing.pair": "{from} → {to}",
+  "spacing.along": "{metres} m",
+  "spacing.onFoot": "yürüyerek {metres} m",
+  "spacing.straight": "İstasyonlar arasında düz çizgiyle ölçüldü.",
+  "spacing.onFootHint":
+    "İşaretli duraklar arasındaki yürüme mesafesini eklemek için yukarıda yürüme kapsamını hesaplayın.",
 } satisfies EditorMessages;
