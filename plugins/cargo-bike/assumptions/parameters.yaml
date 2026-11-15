@@ -815,3 +815,77 @@
         - adac-autokosten
       check: unverified
       rationale: ADAC's workshop costs of about €37 a month for a small car at 10,000–15,000 km a year.
+- key: cargo_bike.savings.fuel_co2_kg_l
+  label: Car CO₂ per litre of petrol (well to wheel)
+  group: Cargo bike
+  unit: kg/l
+  used_by:
+    - cargo bike savings
+  values:
+    - context:
+        mode: "*"
+      low: 2.08
+      central: 2.66
+      high: 2.8
+      basis: cited
+      sources:
+        - desnz-ghg-2024
+      check: unverified
+      rationale:
+        "UK government conversion factors: about 2.08 kg CO₂e per litre burnt (E10 pump petrol) plus about
+        0.6 kg for producing and delivering it."
+- key: cargo_bike.savings.grid_co2_kg_kwh
+  label: CO₂ per kWh of mains electricity
+  group: Cargo bike
+  unit: kg/kWh
+  used_by:
+    - cargo bike savings
+  values:
+    - context:
+        mode: "*"
+      low: 0.02
+      central: 0.353
+      high: 0.9
+      basis: cited
+      sources:
+        - uba-strommix-2024
+      check: unverified
+      rationale:
+        "German electricity mix of 2024: 353 g CO₂ per kWh consumed. Set the value of the start point's
+        country or of a green tariff."
+- key: cargo_bike.savings.rider_efficiency
+  label: Rider's gross efficiency (pedalling energy per food energy)
+  group: Cargo bike
+  unit: share
+  used_by:
+    - cargo bike savings
+  values:
+    - context:
+        mode: "*"
+      low: 0.18
+      central: 0.22
+      high: 0.25
+      basis: educated-guess
+      sources:
+        - tengattini-bigazzi-2018
+      check: unverified
+      rationale: Muscles turn about a fifth of the food energy they burn into work at the pedals; the rest is heat.
+- key: cargo_bike.savings.active_min_week_target
+  label: Recommended physical activity per week
+  group: Cargo bike
+  unit: min/week
+  used_by:
+    - cargo bike savings
+  values:
+    - context:
+        mode: "*"
+      low: 150
+      central: 150
+      high: 300
+      basis: cited
+      sources:
+        - who-pa-2020
+      check: unverified
+      rationale:
+        WHO recommends at least 150–300 minutes of moderate activity a week for adults; everyday cycling
+        counts.

@@ -90,6 +90,35 @@ export const cargoBikeIt = {
   "cb.changed": "modificato",
   "cb.reset": "Torna ai valori predefiniti",
   "cb.viewOnly": "Puoi solo visualizzare questo progetto: le modifiche non vengono salvate.",
+  "cb.gaps": "Lacune nella rete ciclabile",
+  "cb.gapsSummary":
+    "{km} km del giro di andata e ritorno ({share}) sono su strade principali nel traffico senza pista ciclabile. Prima i tratti più lunghi; scegline uno per vederlo sulla mappa.",
+  "cb.noGaps": "Tutto il giro ha una corsia ciclabile, una pista ciclabile o una strada tranquilla.",
+  "cb.gapUnnamed": "Strada senza nome ({highway})",
+  "cb.amenities": "Ricarica e parcheggio sicuro",
+  "cb.amenitiesLoading": "Ricerca di punti di ricarica e parcheggi per bici lungo il percorso…",
+  "cb.amenitiesFailed":
+    "Al momento non è stato possibile caricare punti di ricarica e parcheggi da OpenStreetMap.",
+  "cb.noAmenities":
+    "OpenStreetMap non ha punti di ricarica per bici né parcheggi sicuri entro {m} m dal percorso.",
+  "cb.amenity.charging": "Ricarica bici",
+  "cb.amenity.secure_parking": "Parcheggio bici sicuro",
+  "cb.amenity.cargo_parking": "Parcheggio per cargo bike",
+  "cb.amenityAt": "A {km} km dalla partenza, a {off} m dal percorso",
+  "cb.amenityCapacity": "{n} posti",
+  "cb.amenityFree": "gratuito",
+  "cb.amenityFee": "a pagamento",
+  "cb.amenitiesNote":
+    "Da OpenStreetMap: stazioni di ricarica per bici, armadietti, box, velostazioni, parcheggi custoditi e per cargo bike. Le semplici rastrelliere non sono incluse.",
+  "cb.impact": "Clima e salute",
+  "cb.co2Saved": "{kg} kg di CO₂ in meno all'anno rispetto all'auto.",
+  "cb.co2Detail":
+    "Carburante dell'auto {car} kg di CO₂, elettricità della cargo bike {bike} kg di CO₂ all'anno.",
+  "cb.kcalTrip": "Calorie bruciate per giro",
+  "cb.kcalYear": "Calorie bruciate all'anno",
+  "cb.activeWeek": "Bici a settimana",
+  "cb.activeOfTarget": "{share} dei {target} minuti di attività settimanale raccomandati dall'OMS",
+  "cb.impactValues": "Valori di clima e salute",
   "cb.error.too_far":
     "La destinazione è troppo lontana per un percorso su strada (circa 40 km al massimo). Usa la mappa dell'autonomia per distanze maggiori.",
   "cb.error.no_streets": "Qui non sono state trovate strade percorribili in bici.",

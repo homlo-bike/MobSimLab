@@ -71,6 +71,40 @@ pub struct Line {
     pub saving: f64,
 }
 
+/// One round trip as the savings need it.
+#[derive(Debug, Clone, Copy, Default, Deserialize, Serialize, PartialEq)]
+pub struct PerTrip {
+    /// Round trip length, km.
+    pub km: f64,
+    /// Battery energy per km, Wh/km.
+    pub wh_per_km: f64,
+    /// Rider's own pedalling energy for the round trip, Wh.
+    #[serde(default)]
+    pub rider_wh: f64,
+    /// Riding time of the round trip, s.
+    #[serde(default)]
+    pub time_s: f64,
+}
+
+/// CO₂ and health of a year of trips by cargo bike instead of car.
+#[derive(Debug, Clone, Serialize, PartialEq)]
+pub struct Impact {
+    /// CO₂ of the car's fuel per year, kg.
+    pub car_co2_kg: f64,
+    /// CO₂ of the bike's electricity per year, kg.
+    pub bike_co2_kg: f64,
+    /// Car minus bike, kg per year.
+    pub co2_saved_kg: f64,
+    /// Food energy the rider burns on one round trip, kcal.
+    pub kcal_per_trip: f64,
+    /// Food energy per year, kcal.
+    pub kcal_per_year: f64,
+    /// Minutes of cycling per week.
+    pub active_min_per_week: f64,
+    /// Share of the recommended weekly activity those minutes give (can be above 1).
+    pub active_share: f64,
+}
+
 /// The savings table.
 #[derive(Debug, Clone, Serialize, PartialEq)]
 pub struct Savings {
@@ -93,24 +127,42 @@ pub struct Savings {
     pub fuel_l_per_year: f64,
     /// Electricity per year, kWh.
     pub electricity_kwh_per_year: f64,
+    /// CO₂ and health.
+    pub impact: Impact,
     /// The values used, in local prices.
     pub values: HashMap<String, f64>,
 }
 
 /// Purpose: the yearly savings of riding the cargo bike instead of keeping a car.
-/// Inputs: the round trip length (km) and its battery energy per km; the project's own values and the
-/// conversion to local prices.
-pub fn savings(
-    round_trip_km: f64,
-    wh_per_km: f64,
-    own: &HashMap<String, f64>,
-    conv: Conversion,
-) -> Savings {
+/// Inputs: the round trip (length, battery energy per km, rider energy and time); the project's own
+/// values and the conversion to local prices.
+pub fn savings(trip: PerTrip, own: &HashMap<String, f64>, conv: Conversion) -> Savings {
     let v = local_values(own, conv);
     let g = |k: &str| v.get(k).copied().unwrap_or(0.0).max(0.0);
-    let km = round_trip_km.max(0.0) * g("savings.trips_per_week") * g("savings.weeks_per_year");
+    let trips_week = g("savings.trips_per_week");
+    let trips_year = trips_week * g("savings.weeks_per_year");
+    let km = trip.km.max(0.0) * trips_year;
     let fuel_l = km * g("savings.car_fuel_l_100km") / 100.0;
-    let kwh = km * wh_per_km.max(0.0) / 1000.0 / g("savings.charger_efficiency").max(0.05);
+    let kwh = km * trip.wh_per_km.max(0.0) / 1000.0 / g("savings.charger_efficiency").max(0.05);
+    // 1 Wh = 0.8598 kcal; the body burns 1 / efficiency of food energy per unit of work.
+    let kcal_per_trip = trip.rider_wh.max(0.0) * 0.8598 / g("savings.rider_efficiency").max(0.05);
+    let active_min_per_week = trip.time_s.max(0.0) / 60.0 * trips_week;
+    let target = g("savings.active_min_week_target");
+    let car_co2_kg = fuel_l * g("savings.fuel_co2_kg_l");
+    let bike_co2_kg = kwh * g("savings.grid_co2_kg_kwh");
+    let impact = Impact {
+        car_co2_kg,
+        bike_co2_kg,
+        co2_saved_kg: car_co2_kg - bike_co2_kg,
+        kcal_per_trip,
+        kcal_per_year: kcal_per_trip * trips_year,
+        active_min_per_week,
+        active_share: if target > 0.0 {
+            active_min_per_week / target
+        } else {
+            0.0
+        },
+    };
     let car_years = g("savings.car_years").max(1.0);
     let bike_years = g("savings.bike_lifetime_years").max(1.0);
     let car_dep =
@@ -159,6 +211,7 @@ pub fn savings(
         payback_years: (running > 0.0).then(|| g("savings.bike_price_eur") / running),
         fuel_l_per_year: fuel_l,
         electricity_kwh_per_year: kwh,
+        impact,
         lines,
         values: v,
     }
@@ -170,13 +223,26 @@ mod tests {
 
     #[test]
     fn a_daily_cargo_bike_saves_against_a_small_car() {
-        let s = savings(20.0, 9.0, &HashMap::new(), Conversion::default());
+        let trip = PerTrip {
+            km: 20.0,
+            wh_per_km: 9.0,
+            rider_wh: 120.0,
+            time_s: 4800.0,
+        };
+        let s = savings(trip, &HashMap::new(), Conversion::default());
         // 20 km × 5 trips × 46 weeks.
         assert!((s.km_per_year - 4600.0).abs() < 1e-9);
         assert!(s.saving_total > 0.0);
         let energy = s.lines.iter().find(|l| l.id == "energy").unwrap();
         assert!(energy.car > 10.0 * energy.bike);
         assert!(s.payback_years.unwrap() < 4.0);
+        // 4600 km × 6.5 l/100 km × 2.66 kg/l ≈ 795 kg against about 15 kg for the electricity.
+        assert!((s.impact.car_co2_kg - 4600.0 * 0.065 * 2.66).abs() < 1e-6);
+        assert!(s.impact.co2_saved_kg > 0.9 * s.impact.car_co2_kg);
+        // 120 Wh at the pedals ≈ 103 kcal of work ≈ 470 kcal burnt; 80 min × 5 trips = 400 min a week.
+        assert!((s.impact.kcal_per_trip - 120.0 * 0.8598 / 0.22).abs() < 1e-6);
+        assert!((s.impact.active_min_per_week - 400.0).abs() < 1e-9);
+        assert!(s.impact.active_share > 1.0);
     }
 
     #[test]

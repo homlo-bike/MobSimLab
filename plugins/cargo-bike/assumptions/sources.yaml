@@ -84,3 +84,33 @@
   access: free
   retrieved: 2026-11-15
   checked_via: none
+
+- id: desnz-ghg-2024
+  title: UK Government greenhouse gas reporting conversion factors 2024 — fuels (petrol, average biofuel blend) and well-to-tank fuels
+  publisher: Department for Energy Security and Net Zero (DESNZ)
+  url: https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2024
+  licence: Open Government Licence v3.0
+  access: free
+  retrieved: 2026-11-16
+  checked_via: search-snippet
+  note: "About 2.08 kg CO₂e per litre burnt and about 0.6 kg CO₂e per litre well to tank."
+
+- id: uba-strommix-2024
+  title: CO₂-Emissionen pro Kilowattstunde Strom 2024
+  publisher: Umweltbundesamt
+  url: https://www.umweltbundesamt.de/themen/co2-emissionen-pro-kilowattstunde-strom-2024
+  licence: © Umweltbundesamt; numeric values only
+  access: free
+  retrieved: 2026-11-16
+  checked_via: search-snippet
+  note: "353 g CO₂ per kWh of electricity consumed in Germany in 2024 (379 g in 2023)."
+
+- id: who-pa-2020
+  title: WHO guidelines on physical activity and sedentary behaviour (2020)
+  publisher: World Health Organization
+  url: https://www.who.int/publications/i/item/9789240015128
+  licence: CC BY-NC-SA 3.0 IGO
+  access: free
+  retrieved: 2026-11-16
+  checked_via: search-snippet
+  note: "Adults: at least 150–300 minutes of moderate-intensity aerobic physical activity a week."

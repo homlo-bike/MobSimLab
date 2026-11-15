@@ -322,6 +322,34 @@
    "low": 0.03,
    "central": 0.06,
    "high": 0.1
+  },
+  "savings.fuel_co2_kg_l": {
+   "label": "Car CO₂ per litre of petrol (well to wheel)",
+   "unit": "kg/l",
+   "low": 2.08,
+   "central": 2.66,
+   "high": 2.8
+  },
+  "savings.grid_co2_kg_kwh": {
+   "label": "CO₂ per kWh of mains electricity",
+   "unit": "kg/kWh",
+   "low": 0.02,
+   "central": 0.353,
+   "high": 0.9
+  },
+  "savings.rider_efficiency": {
+   "label": "Rider's gross efficiency (pedalling energy per food energy)",
+   "unit": "share",
+   "low": 0.18,
+   "central": 0.22,
+   "high": 0.25
+  },
+  "savings.active_min_week_target": {
+   "label": "Recommended physical activity per week",
+   "unit": "min/week",
+   "low": 150,
+   "central": 150,
+   "high": 300
   }
  }
 }

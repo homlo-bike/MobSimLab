@@ -6,14 +6,19 @@
 import { fetchProfiles, type TerrainProfiles } from "../../terrain/terrain";
 import type { StreetSetup } from "../street-setup/types";
 import {
+  amenitiesAlong,
+  type AmenityNear,
+  type BikeAmenity,
   type Conversion,
   corridorTiles,
   type LonLat,
   MAX_TILES,
   type ParamDefault,
+  type PerTrip,
   type Reach,
   rayEnds,
   type Route,
+  routeTiles,
   type Savings,
   thin,
   type Trip,
@@ -51,13 +56,13 @@ export interface CargoBikeEngine {
     onProgress?: (done: number, total: number) => void,
   ): Promise<{ trip: Trip; go: Route; back: Route; snapM: [number, number] }>;
   rangeMap(origin: LonLat, values: Record<string, number>, radiusM?: number): Promise<{ reach: Reach[] }>;
-  savings(
-    roundTripKm: number,
-    whPerKm: number,
-    values: Record<string, number>,
-    conv: Conversion | null,
-  ): Promise<Savings>;
+  savings(trip: PerTrip, values: Record<string, number>, conv: Conversion | null): Promise<Savings>;
+  /** Charging points and secure or cargo bike parkings along a route, in order from its start. */
+  amenities(coords: LonLat[]): Promise<AmenityNear[]>;
 }
+
+/** Most amenity tiles one route loads. */
+const MAX_AMENITY_TILES = 120;
 
 /** Purpose: fetch one walk tile (OSM XML) from the API. */
 async function fetchWalkTile(x: number, y: number): Promise<string> {
@@ -149,13 +154,33 @@ export function cargoBikeEngine(): CargoBikeEngine {
       return JSON.parse(wasm.range_map(JSON.stringify({ origin, rays, values }))) as { reach: Reach[] };
     },
 
-    async savings(roundTripKm, whPerKm, values, conv) {
+    async amenities(coords) {
+      const tiles = routeTiles(coords);
+      if (tiles.length > MAX_AMENITY_TILES) throw new TripError("too_far");
+      const lists = await pool(
+        tiles,
+        6,
+        async ([x, y]) => {
+          const res = await fetch(`/api/street-network/bike-amenity-tiles/14/${x}/${y}`, {
+            credentials: "same-origin",
+          });
+          if (!res.ok) throw new TripError("tiles", `bike amenity tile ${x}/${y}: ${res.status}`);
+          return ((await res.json()) as { amenities: BikeAmenity[] }).amenities;
+        },
+        () => {},
+      );
+      return amenitiesAlong(coords, lists.flat());
+    },
+
+    async savings(trip, values, conv) {
       const wasm = await initWasm();
       return JSON.parse(
         wasm.savings(
           JSON.stringify({
-            round_trip_km: roundTripKm,
-            wh_per_km: whPerKm,
+            round_trip_km: trip.km,
+            wh_per_km: trip.whPerKm,
+            rider_wh: trip.riderWh,
+            time_s: trip.timeS,
             values,
             conversion: conv ?? { fx: 1, ppp: 1 },
           }),
