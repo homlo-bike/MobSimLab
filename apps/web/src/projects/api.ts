@@ -1,3 +1,4 @@
+import type { ProjectPlugin } from "../plugins/registry";
 import { get, send } from "../session/api";
 import { type DrawingKind, loadDrawings, saveDrawing } from "./drawings";
 
@@ -89,6 +90,17 @@ export function projectsApi(csrf: string) {
       send<{ ok: true }>("DELETE", `${one(id)}/members/${encodeURIComponent(userId)}`, csrf),
     setLink: (id: string, linkAccess: boolean) =>
       send<{ project: Project }>("PUT", `${one(id)}/link`, csrf, { linkAccess }).then((r) => r.project),
+    /** The plugins the project can use, with whether each is on (ADR-0036 §9). */
+    plugins: (id: string) =>
+      get<{ plugins?: ProjectPlugin[] }>(`${one(id)}/plugins`).then((r) => r.plugins ?? []),
+    /** Turn a plugin on or off for the project (Owners), pinning the version of an installed plugin. */
+    setPlugin: (id: string, pluginId: string, enabled: boolean, version?: string) =>
+      send<{ plugins: ProjectPlugin[] }>(
+        "PUT",
+        `${one(id)}/plugins/${encodeURIComponent(pluginId)}`,
+        csrf,
+        version ? { enabled, version } : { enabled },
+      ).then((r) => r.plugins),
     drawings: (id: string) => loadDrawings(id),
     saveDrawing: <T>(id: string, kind: DrawingKind, doc: T, baseVersion: number | null) =>
       saveDrawing(csrf, id, kind, doc, baseVersion),
