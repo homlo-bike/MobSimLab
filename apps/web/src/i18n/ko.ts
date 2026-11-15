@@ -1,4 +1,5 @@
 import { editorsKo } from "./editors/ko";
+import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
 /** 한국어 */
@@ -281,4 +282,5 @@ export const ko: Messages = {
   "prefs.calendar": "달력, 수요, 비용",
 
   ...editorsKo,
+  ...PLUGIN_MESSAGES.ko,
 };

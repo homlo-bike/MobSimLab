@@ -76,6 +76,7 @@ describe("loadConfig", () => {
     const d = loadConfig(env, reader);
     expect(d.trustedProxies).toBeUndefined();
     expect(d.rateLimits).toEqual({ authPerMinute: 10, writesPerMinute: 120 });
+    expect(d.developmentMode).toBe(false);
     const c = loadConfig(
       { ...env, MOBSIMLAB_TRUSTED_PROXIES: "loopback, 172.16.0.0/12", MOBSIMLAB_RATE_LIMIT_AUTH: "20" },
       reader,
