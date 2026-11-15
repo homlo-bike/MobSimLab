@@ -167,7 +167,9 @@ def check_plugin(
         errors.append(f"{pid}: only bundled plugins may contribute calculations until the plugin host exists")
     converters = c.get("importers", []) + c.get("exporters", [])
     if converters and not manifest.get("bundled"):
-        errors.append(f"{pid}: only bundled plugins may contribute importers and exporters until the plugin host exists")
+        errors.append(
+            f"{pid}: only bundled plugins may contribute importers and exporters until the plugin host exists"
+        )
     conv_ids = [x["id"] for x in converters]
     for cid in sorted({x for x in conv_ids if conv_ids.count(x) > 1}):
         errors.append(f"{pid}: importer or exporter id {cid} is used twice")
