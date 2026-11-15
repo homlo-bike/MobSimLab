@@ -29,7 +29,9 @@ describe("plugin checks (ADR-0036)", () => {
     for (const p of BUNDLED) {
       const dir = readdirSync(join(REPO, "plugins")).find((d) => {
         try {
-          return JSON.parse(readFileSync(join(REPO, "plugins", d, "mobsimlab-plugin.json"), "utf8")).id === p.id;
+          return (
+            JSON.parse(readFileSync(join(REPO, "plugins", d, "mobsimlab-plugin.json"), "utf8")).id === p.id
+          );
         } catch {
           return false;
         }
@@ -45,14 +47,23 @@ describe("plugin checks (ADR-0036)", () => {
     expect(r.ok ? null : r.errors).toBeNull();
     if (r.ok) {
       expect(r.entry.bundled).toBe(false);
-      expect(r.entry.defaults.water_taxi?.["*"]?.["water_taxi.speed_kn"]).toEqual({ low: 8, central: 12, high: 20 });
+      expect(r.entry.defaults.water_taxi?.["*"]?.["water_taxi.speed_kn"]).toEqual({
+        low: 8,
+        central: 12,
+        high: 20,
+      });
       expect(r.entry.tools[0]?.kit).toBe("water-route");
     }
   });
 
   it("refuses code, a bundled flag, other licences and clashes with other plugins", () => {
     const bad = checkPlugin(
-      samplePlugin({ bundled: true, tiers: ["data", "compute"], license: "Proprietary", engines: { mobsimlab: ">=2", pluginApi: "1" } }),
+      samplePlugin({
+        bundled: true,
+        tiers: ["data", "compute"],
+        license: "Proprietary",
+        engines: { mobsimlab: ">=2", pluginApi: "1" },
+      }),
       [],
     );
     expect(bad.ok).toBe(false);
@@ -63,7 +74,12 @@ describe("plugin checks (ADR-0036)", () => {
     expect(errs).toContain("made for MobSimLab >=2");
 
     const clash = checkPlugin(samplePlugin({}, "org.example.other"), [
-      { id: "org.example.water-taxi", version: "1.0.0", modes: ["water_taxi"], parameters: ["water_taxi.speed_kn"] },
+      {
+        id: "org.example.water-taxi",
+        version: "1.0.0",
+        modes: ["water_taxi"],
+        parameters: ["water_taxi.speed_kn"],
+      },
     ]);
     expect(clash.ok ? [] : clash.errors).toEqual([
       "org.example.other: mode water_taxi is also contributed by org.example.water-taxi",
@@ -71,7 +87,12 @@ describe("plugin checks (ADR-0036)", () => {
     ]);
     // Another version of the same plugin may reuse its own ids.
     const update = checkPlugin(samplePlugin({ version: "1.1.0" }), [
-      { id: "org.example.water-taxi", version: "1.0.0", modes: ["water_taxi"], parameters: ["water_taxi.speed_kn"] },
+      {
+        id: "org.example.water-taxi",
+        version: "1.0.0",
+        modes: ["water_taxi"],
+        parameters: ["water_taxi.speed_kn"],
+      },
     ]);
     expect(update.ok).toBe(true);
     const core = checkPlugin(samplePlugin(), [...BUNDLED.map(claims)]);
@@ -148,8 +169,15 @@ describe("plugin packages", () => {
 
     const byEc = signed(samplePlugin(), ec.privateKey);
     checkChecksums(byEc);
-    expect(checkSignature(byEc, keys)).toEqual({ status: "trusted", keyId: "k1", keyName: "Example Transit Lab" });
-    expect(checkSignature(signed(samplePlugin(), ed.privateKey), keys)).toMatchObject({ status: "trusted", keyId: "k2" });
+    expect(checkSignature(byEc, keys)).toEqual({
+      status: "trusted",
+      keyId: "k1",
+      keyName: "Example Transit Lab",
+    });
+    expect(checkSignature(signed(samplePlugin(), ed.privateKey), keys)).toMatchObject({
+      status: "trusted",
+      keyId: "k2",
+    });
     expect(checkSignature(byEc, keys.slice(1))).toEqual({ status: "untrusted" });
     expect(checkSignature(signed(samplePlugin()), keys)).toEqual({ status: "unsigned" });
     expect(checkSignature(samplePlugin(), keys)).toEqual({ status: "unsigned" });

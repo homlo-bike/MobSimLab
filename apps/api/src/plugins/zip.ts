@@ -46,7 +46,8 @@ export function unzip(buf: Buffer): Map<string, Buffer> {
   let total = 0;
   let p = cdOffset;
   for (let n = 0; n < count; n++) {
-    if (p + 46 > eocd || buf.readUInt32LE(p) !== 0x02014b50) throw new PackageError("the ZIP directory is damaged");
+    if (p + 46 > eocd || buf.readUInt32LE(p) !== 0x02014b50)
+      throw new PackageError("the ZIP directory is damaged");
     const flags = buf.readUInt16LE(p + 8);
     const method = buf.readUInt16LE(p + 10);
     const compressed = buf.readUInt32LE(p + 20);
@@ -59,7 +60,8 @@ export function unzip(buf: Buffer): Map<string, Buffer> {
     p += 46 + nameLen + extraLen + commentLen;
     if (name.endsWith("/")) continue;
     if (flags & 0x1) throw new PackageError(`${name}: encrypted files are not supported`);
-    if (!SAFE_PATH.test(name) || name.length > 200) throw new PackageError(`${name.slice(0, 80)}: not an allowed file name`);
+    if (!SAFE_PATH.test(name) || name.length > 200)
+      throw new PackageError(`${name.slice(0, 80)}: not an allowed file name`);
     if (files.has(name)) throw new PackageError(`${name}: the package has this file twice`);
     if (size > ZIP_LIMITS.fileBytes) throw new PackageError(`${name}: larger than 5 MB unpacked`);
     total += size;
@@ -79,7 +81,8 @@ export function unzip(buf: Buffer): Map<string, Buffer> {
         throw new PackageError(`${name}: could not be unpacked`);
       }
     } else throw new PackageError(`${name}: compression method ${method} is not supported`);
-    if (data.length !== size) throw new PackageError(`${name}: the unpacked size does not match the ZIP directory`);
+    if (data.length !== size)
+      throw new PackageError(`${name}: the unpacked size does not match the ZIP directory`);
     files.set(name, data);
   }
   return files;

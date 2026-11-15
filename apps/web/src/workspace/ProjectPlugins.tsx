@@ -15,8 +15,16 @@ export const PERMISSION_LABELS: Record<string, MessageKey> = {
 };
 
 /** Purpose: what a plugin adds, as one line: modes, tools, calculations, map layers and parameters. */
-export function addsLine(c: ProjectPlugin["contributes"], t: (k: MessageKey, v?: Record<string, string | number>) => string) {
-  const parts = [...c.modes, ...c.tools.filter((x) => !c.modes.includes(x)), ...c.calculations, ...c.mapLayers];
+export function addsLine(
+  c: ProjectPlugin["contributes"],
+  t: (k: MessageKey, v?: Record<string, string | number>) => string,
+) {
+  const parts = [
+    ...c.modes,
+    ...c.tools.filter((x) => !c.modes.includes(x)),
+    ...c.calculations,
+    ...c.mapLayers,
+  ];
   if (c.parameters > 0) parts.push(t("plugins.parameters", { count: c.parameters }));
   return [...new Set(parts)].join(" · ");
 }
@@ -52,7 +60,10 @@ export function ProjectPlugins({
     }
   };
   return (
-    <section aria-labelledby="pp-plugins" className="mt-6 rounded-2xl border border-slate-200 bg-white p-4 md:p-6">
+    <section
+      aria-labelledby="pp-plugins"
+      className="mt-6 rounded-2xl border border-slate-200 bg-white p-4 md:p-6"
+    >
       <h2 id="pp-plugins" className="caps m-0">
         {t("plugins.title")}
       </h2>
@@ -69,7 +80,10 @@ export function ProjectPlugins({
           {plugins.map((p) => {
             const switchId = `pp-plugin-${p.id}`;
             return (
-              <li key={p.id} className="flex flex-wrap items-start gap-x-3 gap-y-1 border-t border-slate-100 py-3 first:border-t-0">
+              <li
+                key={p.id}
+                className="flex flex-wrap items-start gap-x-3 gap-y-1 border-t border-slate-100 py-3 first:border-t-0"
+              >
                 <div className="min-w-48 flex-1">
                   <label htmlFor={switchId} className="font-semibold">
                     {p.name}
@@ -80,16 +94,22 @@ export function ProjectPlugins({
                     {t("plugins.versionN", { version: p.version })}
                   </div>
                   {p.description && <p className="m-0 mt-1 text-sm text-slate-600">{p.description}</p>}
-                  <p className="m-0 mt-1 text-xs text-slate-500">{t("plugins.adds", { list: addsLine(p.contributes, t) })}</p>
+                  <p className="m-0 mt-1 text-xs text-slate-500">
+                    {t("plugins.adds", { list: addsLine(p.contributes, t) })}
+                  </p>
                   {p.permissions.length > 0 && (
                     <p className="m-0 mt-0.5 text-xs text-slate-500">
                       {t("plugins.uses", {
-                        list: p.permissions.map((x) => (PERMISSION_LABELS[x] ? t(PERMISSION_LABELS[x]) : x)).join(", "),
+                        list: p.permissions
+                          .map((x) => (PERMISSION_LABELS[x] ? t(PERMISSION_LABELS[x]) : x))
+                          .join(", "),
                       })}
                     </p>
                   )}
                   {p.missing && (
-                    <p className="m-0 mt-1 text-sm text-amber-800">{t("plugins.missing", { version: p.version })}</p>
+                    <p className="m-0 mt-1 text-sm text-amber-800">
+                      {t("plugins.missing", { version: p.version })}
+                    </p>
                   )}
                 </div>
                 <div className="flex items-center gap-2">
@@ -118,7 +138,11 @@ export function ProjectPlugins({
                     checked={p.enabled}
                     disabled={!manage || busy !== null || (!p.bundled && p.versions.length === 0)}
                     onChange={(e) =>
-                      void run(p.id, e.target.checked, p.bundled || !p.versions.includes(p.version) ? undefined : p.version)
+                      void run(
+                        p.id,
+                        e.target.checked,
+                        p.bundled || !p.versions.includes(p.version) ? undefined : p.version,
+                      )
                     }
                   />
                 </div>

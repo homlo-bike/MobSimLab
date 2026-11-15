@@ -45,7 +45,8 @@ describe("plugins", () => {
     };
   };
 
-  const pkg = (over: Record<string, unknown> = {}, id?: string) => zip(signed(samplePlugin(over, id), lab.privateKey));
+  const pkg = (over: Record<string, unknown> = {}, id?: string) =>
+    zip(signed(samplePlugin(over, id), lab.privateKey));
 
   beforeAll(async () => {
     db = await startDatabase();
@@ -95,17 +96,28 @@ describe("plugins", () => {
     expect(untrusted.status).toBe(400);
     expect(untrusted.body.problems.join()).toContain("does not trust");
 
-    expect((await as("dave").post("/api/admin/plugin-keys", { name: "Lab", publicKey: "nope" })).status).toBe(400);
-    const key = await as("dave").post("/api/admin/plugin-keys", { name: "Example Transit Lab", publicKey: labPem });
+    expect((await as("dave").post("/api/admin/plugin-keys", { name: "Lab", publicKey: "nope" })).status).toBe(
+      400,
+    );
+    const key = await as("dave").post("/api/admin/plugin-keys", {
+      name: "Example Transit Lab",
+      publicKey: labPem,
+    });
     expect(key.status).toBe(201);
-    expect((await as("dave").post("/api/admin/plugin-keys", { name: "Again", publicKey: labPem })).status).toBe(409);
+    expect(
+      (await as("dave").post("/api/admin/plugin-keys", { name: "Again", publicKey: labPem })).status,
+    ).toBe(409);
 
     const look = await as("dave").upload("/api/admin/plugins/inspect", pkg());
     expect(look.body.inspection).toMatchObject({
       signature: "trusted",
       signer: "Example Transit Lab",
       problems: [],
-      plugin: { id: "org.example.water-taxi", version: "1.0.0", contributes: { modes: ["Water taxi"], parameters: 1 } },
+      plugin: {
+        id: "org.example.water-taxi",
+        version: "1.0.0",
+        contributes: { modes: ["Water taxi"], parameters: 1 },
+      },
     });
     const ok = await as("dave").upload("/api/admin/plugins", pkg());
     expect(ok.status).toBe(201);
@@ -118,7 +130,9 @@ describe("plugins", () => {
     expect(broken.body.problems).toEqual(["the file is not a ZIP package"]);
 
     const audit = await db.superuser();
-    const { rows } = await audit.query("SELECT action FROM audit.record WHERE chain = 'instance' AND action LIKE 'plugin.%' ORDER BY seq");
+    const { rows } = await audit.query(
+      "SELECT action FROM audit.record WHERE chain = 'instance' AND action LIKE 'plugin.%' ORDER BY seq",
+    );
     await audit.end();
     expect(rows.map((r) => r.action)).toEqual(["plugin.key_added", "plugin.installed", "plugin.installed"]);
   });
@@ -129,30 +143,49 @@ describe("plugins", () => {
     project = (await as("bob").post("/api/projects", { name: "Harbour" })).body.project.id;
     await as("bob").post(`/api/projects/${project}/members`, { email: "alice@example.org", role: "editor" });
     const list = (await as("bob").get(`/api/projects/${project}/plugins`)).body.plugins;
-    expect(list.find((p: { id: string }) => p.id === "org.mobsimlab.ferry")).toMatchObject({ bundled: true, enabled: true });
+    expect(list.find((p: { id: string }) => p.id === "org.mobsimlab.ferry")).toMatchObject({
+      bundled: true,
+      enabled: true,
+    });
     const taxi = list.find((p: { id: string }) => p.id === "org.example.water-taxi");
     expect(taxi).toMatchObject({ enabled: false, versions: ["1.0.0", "1.1.0"], version: "1.1.0" });
     expect(taxi.entry).toBeUndefined();
 
     // An Editor cannot change plugins.
-    expect((await as("alice").put(`/api/projects/${project}/plugins/org.example.water-taxi`, { enabled: true })).status).toBe(403);
+    expect(
+      (await as("alice").put(`/api/projects/${project}/plugins/org.example.water-taxi`, { enabled: true }))
+        .status,
+    ).toBe(403);
 
-    const on = await as("bob").put(`/api/projects/${project}/plugins/org.example.water-taxi`, { enabled: true, version: "1.0.0" });
+    const on = await as("bob").put(`/api/projects/${project}/plugins/org.example.water-taxi`, {
+      enabled: true,
+      version: "1.0.0",
+    });
     expect(on.status).toBe(200);
     const t = on.body.plugins.find((p: { id: string }) => p.id === "org.example.water-taxi");
     expect(t).toMatchObject({ enabled: true, version: "1.0.0" });
     expect(t.entry.modes[0].id).toBe("water_taxi");
     expect(
-      (await as("bob").put(`/api/projects/${project}/plugins/org.example.water-taxi`, { enabled: true, version: "9.9.9" })).status,
+      (
+        await as("bob").put(`/api/projects/${project}/plugins/org.example.water-taxi`, {
+          enabled: true,
+          version: "9.9.9",
+        })
+      ).status,
     ).toBe(400);
 
-    const off = await as("bob").put(`/api/projects/${project}/plugins/org.mobsimlab.noise`, { enabled: false });
+    const off = await as("bob").put(`/api/projects/${project}/plugins/org.mobsimlab.noise`, {
+      enabled: false,
+    });
     expect(off.body.plugins.find((p: { id: string }) => p.id === "org.mobsimlab.noise").enabled).toBe(false);
 
     // A copy keeps the project's plugin choices.
     const copy = (await as("bob").post(`/api/projects/${project}/duplicate`)).body.project.id;
     const copied = (await as("bob").get(`/api/projects/${copy}/plugins`)).body.plugins;
-    expect(copied.find((p: { id: string }) => p.id === "org.example.water-taxi")).toMatchObject({ enabled: true, version: "1.0.0" });
+    expect(copied.find((p: { id: string }) => p.id === "org.example.water-taxi")).toMatchObject({
+      enabled: true,
+      version: "1.0.0",
+    });
     expect(copied.find((p: { id: string }) => p.id === "org.mobsimlab.noise").enabled).toBe(false);
   });
 
@@ -161,7 +194,9 @@ describe("plugins", () => {
     expect(used.status).toBe(409);
     expect(used.body.projects.length).toBe(2);
     expect((await as("dave").del("/api/admin/plugins/org.example.water-taxi/1.1.0")).status).toBe(200);
-    expect((await as("dave").del("/api/admin/plugins/org.example.water-taxi/1.0.0", { force: true })).status).toBe(200);
+    expect(
+      (await as("dave").del("/api/admin/plugins/org.example.water-taxi/1.0.0", { force: true })).status,
+    ).toBe(200);
     const list = (await as("bob").get(`/api/projects/${project}/plugins`)).body.plugins;
     expect(list.find((p: { id: string }) => p.id === "org.example.water-taxi")).toMatchObject({
       enabled: false,
@@ -179,8 +214,13 @@ describe("plugins", () => {
     const dev = await createApp({ ...config, developmentMode: true });
     try {
       await login("alice", dev);
-      expect((await as("alice", dev).put("/api/admin/plugin-settings", { allowUnsigned: true })).status).toBe(200);
-      const res = await as("alice", dev).upload("/api/admin/plugins", zip(samplePlugin({ version: "2.0.0" })));
+      expect((await as("alice", dev).put("/api/admin/plugin-settings", { allowUnsigned: true })).status).toBe(
+        200,
+      );
+      const res = await as("alice", dev).upload(
+        "/api/admin/plugins",
+        zip(samplePlugin({ version: "2.0.0" })),
+      );
       expect(res.status).toBe(201);
       expect(res.body.plugin.signature).toEqual({ status: "unsigned", signer: null });
       // Outside development mode the setting has no effect.

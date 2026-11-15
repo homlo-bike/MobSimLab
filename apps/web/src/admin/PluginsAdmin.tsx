@@ -58,9 +58,14 @@ async function upload<T>(path: string, csrfToken: string, file: Blob): Promise<T
     headers: { "Content-Type": "application/octet-stream", "X-CSRF-Token": csrfToken },
     body: file,
   });
-  const body = (await res.json().catch(() => ({}))) as T & { message?: string | string[]; problems?: string[] };
+  const body = (await res.json().catch(() => ({}))) as T & {
+    message?: string | string[];
+    problems?: string[];
+  };
   if (!res.ok && !body.problems)
-    throw new Error(Array.isArray(body.message) ? body.message.join("; ") : (body.message ?? `${path}: ${res.status}`));
+    throw new Error(
+      Array.isArray(body.message) ? body.message.join("; ") : (body.message ?? `${path}: ${res.status}`),
+    );
   return body;
 }
 
@@ -98,7 +103,9 @@ export function PluginsAdmin({
     setInspection(null);
     if (f)
       void run(async () =>
-        setInspection((await upload<{ inspection: Inspection }>("/api/admin/plugins/inspect", csrfToken, f)).inspection),
+        setInspection(
+          (await upload<{ inspection: Inspection }>("/api/admin/plugins/inspect", csrfToken, f)).inspection,
+        ),
       );
   };
   const install = () =>
@@ -116,7 +123,8 @@ export function PluginsAdmin({
   const remove = (p: PluginRow) =>
     void run(async () => {
       const path = `/api/admin/plugins/${encodeURIComponent(p.id)}/${encodeURIComponent(p.version)}`;
-      if (p.projects > 0 && !window.confirm(t("plugins.removeConfirm", { name: p.name, count: p.projects }))) return;
+      if (p.projects > 0 && !window.confirm(t("plugins.removeConfirm", { name: p.name, count: p.projects })))
+        return;
       await send("DELETE", path, csrfToken, { force: p.projects > 0 });
       await load();
     });
@@ -130,7 +138,11 @@ export function PluginsAdmin({
     });
   };
   const sigText = (s: Inspection["signature"], signer: string | null) =>
-    s === "trusted" ? t("plugins.signedBy", { name: signer ?? "" }) : s === "untrusted" ? t("plugins.untrusted") : t("plugins.unsigned");
+    s === "trusted"
+      ? t("plugins.signedBy", { name: signer ?? "" })
+      : s === "untrusted"
+        ? t("plugins.untrusted")
+        : t("plugins.unsigned");
 
   const details = (p: PluginRow) => (
     <>
@@ -147,7 +159,9 @@ export function PluginsAdmin({
           })}
         </p>
       )}
-      <p className="m-0 text-xs text-slate-500">{t("plugins.licences", { code: p.license, data: p.dataLicense })}</p>
+      <p className="m-0 text-xs text-slate-500">
+        {t("plugins.licences", { code: p.license, data: p.dataLicense })}
+      </p>
     </>
   );
 
@@ -187,7 +201,11 @@ export function PluginsAdmin({
                   </ul>
                 </div>
               ) : (
-                <button type="button" className="w-28 rounded bg-slate-800 px-2 py-1 text-white" onClick={install}>
+                <button
+                  type="button"
+                  className="w-28 rounded bg-slate-800 px-2 py-1 text-white"
+                  onClick={install}
+                >
                   {t("plugins.install")}
                 </button>
               )}
@@ -201,7 +219,10 @@ export function PluginsAdmin({
           {data.installed.length === 0 && <p className="m-0 text-slate-500">{t("plugins.none")}</p>}
           <ul className="m-0 flex list-none flex-col gap-3 p-0">
             {data.installed.map((p) => (
-              <li key={`${p.id}@${p.version}`} className="flex flex-col gap-0.5 border-t border-slate-100 pt-2">
+              <li
+                key={`${p.id}@${p.version}`}
+                className="flex flex-col gap-0.5 border-t border-slate-100 pt-2"
+              >
                 <div className="flex items-center gap-2">
                   <span className="font-semibold">{p.name}</span>
                   <button
@@ -297,7 +318,9 @@ export function PluginsAdmin({
               checked={data.allowUnsigned}
               onChange={(e) =>
                 void run(async () => {
-                  await send("PUT", "/api/admin/plugin-settings", csrfToken, { allowUnsigned: e.target.checked });
+                  await send("PUT", "/api/admin/plugin-settings", csrfToken, {
+                    allowUnsigned: e.target.checked,
+                  });
                   await load();
                 })
               }

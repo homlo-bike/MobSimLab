@@ -86,7 +86,13 @@ export interface ProjectPlugin {
   version: string;
   versions: string[];
   permissions: string[];
-  contributes: { modes: string[]; tools: string[]; parameters: number; calculations: string[]; mapLayers: string[] };
+  contributes: {
+    modes: string[];
+    tools: string[];
+    parameters: number;
+    calculations: string[];
+    mapLayers: string[];
+  };
   missing: boolean;
   /** Registry entry of an installed plugin the project has turned on. */
   entry?: Plugin;
@@ -135,7 +141,9 @@ export function findMode(
 }
 
 /** Purpose: the Create tab's plugin tools, in plugin order. */
-export function pluginTools(plugins: readonly Plugin[] = activePlugins()): (PluginTool & { plugin: string })[] {
+export function pluginTools(
+  plugins: readonly Plugin[] = activePlugins(),
+): (PluginTool & { plugin: string })[] {
   return plugins.flatMap((p) => p.tools.map((t) => ({ ...t, plugin: p.id })));
 }
 
@@ -152,12 +160,19 @@ export function pluginCalculation(
 }
 
 /** Purpose: the map layers drawn from a calculation. */
-export function pluginMapLayers(calculation: string, plugins: readonly Plugin[] = activePlugins()): PluginMapLayer[] {
+export function pluginMapLayers(
+  calculation: string,
+  plugins: readonly Plugin[] = activePlugins(),
+): PluginMapLayer[] {
   return plugins.flatMap((p) => (p.mapLayers ?? []).filter((l) => l.calculation === calculation));
 }
 
 /** Purpose: the label of a context option, such as "Tricable gondola (3S)" for `3s`. */
-export function contextLabel(modeId: string, option: string, plugins: readonly Plugin[] = activePlugins()): string {
+export function contextLabel(
+  modeId: string,
+  option: string,
+  plugins: readonly Plugin[] = activePlugins(),
+): string {
   const f = findMode(modeId, plugins);
   const key = f?.mode.contextKey;
   return f?.plugin.contexts.find((c) => c.key === key)?.options.find((o) => o.id === option)?.label ?? option;

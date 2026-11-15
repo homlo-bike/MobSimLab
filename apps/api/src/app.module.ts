@@ -43,7 +43,14 @@ export class AppModule {
         BenefitsModule,
         AgentsModule,
       ],
-      controllers: [HealthController, AuthController, SetupController, AdminController, ProjectsController, PluginsController],
+      controllers: [
+        HealthController,
+        AuthController,
+        SetupController,
+        AdminController,
+        ProjectsController,
+        PluginsController,
+      ],
       providers: [
         AuditService,
         AuthService,

@@ -94,7 +94,12 @@ export interface OtherPlugin {
 
 /** Purpose: what a plugin entry adds that others must not reuse. */
 export function claims(p: PluginEntry): OtherPlugin {
-  return { id: p.id, version: p.version, modes: p.modes.map((m) => m.id), parameters: Object.keys(p.parameters) };
+  return {
+    id: p.id,
+    version: p.version,
+    modes: p.modes.map((m) => m.id),
+    parameters: Object.keys(p.parameters),
+  };
 }
 
 const ajv = new Ajv2020({ allErrors: true, strict: false, validateFormats: false });
@@ -194,7 +199,18 @@ const BASES = ["cited", "documented", "educated-guess"];
 const CHECKS = ["read", "secondary", "unverified"];
 const ACCESS = ["free", "paywalled", "on-request"];
 const CHECKED_VIA = ["direct", "search-snippet", "none"];
-const SOURCE_FIELDS = new Set(["id", "title", "publisher", "url", "licence", "access", "retrieved", "checked_via", "kind", "note"]);
+const SOURCE_FIELDS = new Set([
+  "id",
+  "title",
+  "publisher",
+  "url",
+  "licence",
+  "access",
+  "retrieved",
+  "checked_via",
+  "kind",
+  "note",
+]);
 const PARAM_FIELDS = new Set(["key", "label", "group", "unit", "kind", "options", "used_by", "values"]);
 const VALUE_FIELDS = new Set(["context", "low", "central", "high", "basis", "sources", "check", "rationale"]);
 const show = (v: unknown) => JSON.stringify(v);
@@ -216,7 +232,8 @@ function validateAssumptions(
     if (extra.length) errors.push(`source ${sid}: unknown fields ${show(extra.sort())}`);
     for (const f of ["title", "url", "licence", "access", "retrieved", "checked_via"])
       if (!s[f]) errors.push(`source ${sid}: missing ${f}`);
-    if (!ACCESS.includes(s.access as string)) errors.push(`source ${sid}: access must be one of ${show(ACCESS)}`);
+    if (!ACCESS.includes(s.access as string))
+      errors.push(`source ${sid}: access must be one of ${show(ACCESS)}`);
     if (!CHECKED_VIA.includes(s.checked_via as string))
       errors.push(`source ${sid}: checked_via must be one of ${show(CHECKED_VIA)}`);
     if (s.kind !== undefined && s.kind !== "primary" && s.kind !== "secondary")
@@ -247,7 +264,11 @@ function validateAssumptions(
         continue;
       }
       const ctx = (isRecord(v.context) ? v.context : {}) as Ctx;
-      const id = show(Object.entries(ctx).map(([k, x]) => [k, asList(x)]).sort());
+      const id = show(
+        Object.entries(ctx)
+          .map(([k, x]) => [k, asList(x)])
+          .sort(),
+      );
       const where = `${key} ${show(ctx)}`;
       if (seenCtx.has(id)) errors.push(`${where}: duplicate context`);
       seenCtx.add(id);
@@ -270,8 +291,11 @@ function validateAssumptions(
       }
       if (!("central" in v)) errors.push(`${where}: missing central`);
       if (kind === "number") {
-        const nums = (["low", "central", "high"] as const).map((k) => v[k]).filter((n) => n !== undefined && n !== null);
-        if (nums.some((n) => typeof n !== "number")) errors.push(`${where}: low/central/high must be numbers`);
+        const nums = (["low", "central", "high"] as const)
+          .map((k) => v[k])
+          .filter((n) => n !== undefined && n !== null);
+        if (nums.some((n) => typeof n !== "number"))
+          errors.push(`${where}: low/central/high must be numbers`);
         else if (
           v.low !== undefined &&
           v.low !== null &&
@@ -292,7 +316,8 @@ function validateAssumptions(
 }
 
 /** Result of checking a plugin: errors for the Admin, or the registry entry. */
-export type CheckResult = { ok: true; manifest: Record<string, unknown>; entry: PluginEntry } | { ok: false; errors: string[] };
+export type CheckResult =
+  { ok: true; manifest: Record<string, unknown>; entry: PluginEntry } | { ok: false; errors: string[] };
 
 /**
  * Purpose: check a plugin package's contents with the same rules as tools/plugins/check.py (ADR-0036 §2, §3,
@@ -344,9 +369,11 @@ export function checkPlugin(
   };
 
   const manifest = json(MANIFEST);
-  if (!isRecord(manifest)) return { ok: false, errors: errors.length ? errors : [`${MANIFEST} must be an object`] };
+  if (!isRecord(manifest))
+    return { ok: false, errors: errors.length ? errors : [`${MANIFEST} must be an object`] };
   if (!validateManifest(manifest)) {
-    for (const e of validateManifest.errors ?? []) errors.push(`${MANIFEST}: ${e.instancePath || "/"}: ${e.message}`);
+    for (const e of validateManifest.errors ?? [])
+      errors.push(`${MANIFEST}: ${e.instancePath || "/"}: ${e.message}`);
     return { ok: false, errors };
   }
   const m = manifest as {
@@ -380,8 +407,11 @@ export function checkPlugin(
     if (m.bundled) errors.push(`${pid}: only plugins that ship with MobSimLab may say "bundled"`);
     for (const t of m.tiers)
       if (t !== "data")
-        errors.push(`${pid}: the ${t} tier is not supported for installed plugins yet; only data plugins can be installed`);
-    if (c.calculations?.length) errors.push(`${pid}: only bundled plugins may contribute calculations for now`);
+        errors.push(
+          `${pid}: the ${t} tier is not supported for installed plugins yet; only data plugins can be installed`,
+        );
+    if (c.calculations?.length)
+      errors.push(`${pid}: only bundled plugins may contribute calculations for now`);
     if (m.publisher.url !== undefined && !/^https:\/\/[^\s]+$/.test(m.publisher.url))
       errors.push(`${pid}: the publisher URL must start with https://`);
     for (const [what, lic] of [
@@ -405,7 +435,8 @@ export function checkPlugin(
     const mode = json(item.file);
     if (mode === null) continue;
     if (!validateMode(mode)) {
-      for (const e of validateMode.errors ?? []) errors.push(`${pid}: ${item.file}: ${e.instancePath || "/"}: ${e.message}`);
+      for (const e of validateMode.errors ?? [])
+        errors.push(`${pid}: ${item.file}: ${e.instancePath || "/"}: ${e.message}`);
       continue;
     }
     const md = mode as PluginMode;
@@ -418,9 +449,11 @@ export function checkPlugin(
     if (key) {
       const ctx = contexts.get(key);
       const opts = new Set((ctx?.options ?? []).map((o) => o.id));
-      if (!ctx) errors.push(`${pid}: mode ${item.id} uses context key ${key}, which the plugin does not declare`);
+      if (!ctx)
+        errors.push(`${pid}: mode ${item.id} uses context key ${key}, which the plugin does not declare`);
       for (const o of md.contexts ?? [])
-        if (!opts.has(o)) errors.push(`${pid}: mode ${item.id}: context option ${o} is not an option of ${key}`);
+        if (!opts.has(o))
+          errors.push(`${pid}: mode ${item.id}: context option ${o} is not an option of ${key}`);
       if (!(md.contexts ?? []).includes(md.defaultContext ?? ""))
         errors.push(`${pid}: mode ${item.id}: defaultContext must be one of its contexts`);
     }
@@ -429,8 +462,10 @@ export function checkPlugin(
   const kits = new Map(modes.map((x) => [x.id, x.kit]));
   for (const t of c.tools ?? [])
     for (const mid of t.modes) {
-      if (!kits.has(mid)) errors.push(`${pid}: tool ${t.id} draws ${mid}, which the plugin does not contribute`);
-      else if (kits.get(mid) !== t.kit) errors.push(`${pid}: tool ${t.id} uses kit ${t.kit}, mode ${mid} needs ${kits.get(mid)}`);
+      if (!kits.has(mid))
+        errors.push(`${pid}: tool ${t.id} draws ${mid}, which the plugin does not contribute`);
+      else if (kits.get(mid) !== t.kit)
+        errors.push(`${pid}: tool ${t.id} uses kit ${t.kit}, mode ${mid} needs ${kits.get(mid)}`);
     }
 
   const calcIds = new Set((c.calculations ?? []).map((x) => x.id));
@@ -451,7 +486,8 @@ export function checkPlugin(
         errors.push(`${pid}: ${item.file}: every source needs an id`);
         continue;
       }
-      if (CORE.coreSourceIds.includes(s.id) || s.id in sources) errors.push(`${pid}: source ${s.id} is defined twice`);
+      if (CORE.coreSourceIds.includes(s.id) || s.id in sources)
+        errors.push(`${pid}: source ${s.id} is defined twice`);
       const { id, ...rest } = s;
       sources[id as string] = rest;
     }
@@ -474,11 +510,14 @@ export function checkPlugin(
         if (!allowed.has(k)) errors.push(`${pid}: ${p.key}: unknown context key ${k}`);
         else if (contexts.has(k)) {
           const opts = new Set(contexts.get(k)!.options.map((o) => o.id));
-          for (const o of asList(val)) if (!opts.has(o as string)) errors.push(`${pid}: ${p.key}: ${String(o)} is not an option of ${k}`);
+          for (const o of asList(val))
+            if (!opts.has(o as string))
+              errors.push(`${pid}: ${p.key}: ${String(o)} is not an option of ${k}`);
         }
       }
   }
-  for (const sid of Object.keys(sources).sort()) if (!used.has(sid)) errors.push(`${pid}: source ${sid} defined but never used`);
+  for (const sid of Object.keys(sources).sort())
+    if (!used.has(sid)) errors.push(`${pid}: source ${sid} defined but never used`);
   if (errors.length) return { ok: false, errors };
 
   const defaults: PluginEntry["defaults"] = {};
@@ -515,7 +554,9 @@ export function checkPlugin(
     tools: c.tools ?? [],
     calculations: c.calculations ?? [],
     mapLayers: layers,
-    parameters: Object.fromEntries(params.map((p) => [p.key!, { label: p.label as string, unit: p.unit as string }])),
+    parameters: Object.fromEntries(
+      params.map((p) => [p.key!, { label: p.label as string, unit: p.unit as string }]),
+    ),
     defaults,
   };
   return { ok: true, manifest, entry };

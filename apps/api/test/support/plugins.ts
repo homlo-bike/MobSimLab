@@ -2,7 +2,10 @@ import { sign } from "node:crypto";
 import { CHECKSUMS, sha256, SIGNATURE } from "../../src/plugins/signature";
 
 /** A small third-party data plugin: one ferry-like mode on the water route kit. */
-export function samplePlugin(over: Record<string, unknown> = {}, id = "org.example.water-taxi"): Map<string, Buffer> {
+export function samplePlugin(
+  over: Record<string, unknown> = {},
+  id = "org.example.water-taxi",
+): Map<string, Buffer> {
   const manifest = {
     id,
     name: "Water taxis",
@@ -77,13 +80,22 @@ export function samplePlugin(over: Record<string, unknown> = {}, id = "org.examp
 }
 
 /** Purpose: add SHA256SUMS and, with a private key, its signature. */
-export function signed(files: Map<string, Buffer>, privateKey?: Parameters<typeof sign>[2]): Map<string, Buffer> {
+export function signed(
+  files: Map<string, Buffer>,
+  privateKey?: Parameters<typeof sign>[2],
+): Map<string, Buffer> {
   const out = new Map(files);
   const list = [...files].map(([p, b]) => `${sha256(b)}  ${p}\n`).join("");
   out.set(CHECKSUMS, Buffer.from(list));
   if (privateKey) {
-    const ed = typeof privateKey === "object" && "asymmetricKeyType" in privateKey && privateKey.asymmetricKeyType === "ed25519";
-    out.set(SIGNATURE, Buffer.from(sign(ed ? null : "sha256", Buffer.from(list), privateKey).toString("base64")));
+    const ed =
+      typeof privateKey === "object" &&
+      "asymmetricKeyType" in privateKey &&
+      privateKey.asymmetricKeyType === "ed25519";
+    out.set(
+      SIGNATURE,
+      Buffer.from(sign(ed ? null : "sha256", Buffer.from(list), privateKey).toString("base64")),
+    );
   }
   return out;
 }
