@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://mobsimlab.org/schemas/plugin-manifest/1.json",
   "title": "MobSimLab plugin manifest (mobsimlab-plugin.json)",
-  "description": "What a plugin contributes to MobSimLab (ADR-0036 §2 and §3). Producer: plugin authors; the bundled plugins live in plugins/. Consumer: tools/plugins/check.py (validation and the web app's generated registry, apps/web/src/plugins/bundled.generated.json), later the install flow. Plugin API major version 1. Contribution points that are not built yet (checks, engines, schematics, importers, exporters, panels, kpis) are reserved: the schema accepts no entries for them yet.",
+  "description": "What a plugin contributes to MobSimLab (ADR-0036 §2 and §3). Producer: plugin authors; the bundled plugins live in plugins/. Consumer: tools/plugins/check.py (validation and the web app's generated registry, apps/web/src/plugins/bundled.generated.json), later the install flow. Plugin API major version 1. Contribution points that are not built yet (checks, engines, schematics, panels, kpis) are reserved: the schema accepts no entries for them yet.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -281,10 +281,14 @@
           "$ref": "#/$defs/reserved"
         },
         "importers": {
-          "$ref": "#/$defs/reserved"
+          "description": "Converters from a file format into a published contract (ADR-0036 §3), offered where the contract is used.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/converter" }
         },
         "exporters": {
-          "$ref": "#/$defs/reserved"
+          "description": "Converters from a published contract into a file format (ADR-0036 §3), offered where the contract is used.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/converter" }
         },
         "mapLayers": {
           "description": "Map layers drawn from a calculation's output with a MapLibre style (subset) file.",
@@ -363,6 +367,48 @@
           "not": {
             "pattern": "\\.\\."
           }
+        }
+      }
+    },
+    "converter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label", "format", "contract", "runtime", "module", "function", "maxBytes"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+        "label": { "type": "string" },
+        "description": { "type": "string" },
+        "format": {
+          "description": "File format, such as gtfs.",
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]*$"
+        },
+        "extensions": {
+          "description": "File name endings the app offers, such as .zip.",
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^\\.[a-z0-9]+$" }
+        },
+        "contract": {
+          "description": "The published contract read or written.",
+          "enum": ["published-timetable"]
+        },
+        "runtime": { "enum": ["bundled-wasm"] },
+        "module": {
+          "description": "WebAssembly module name under apps/web/src/wasm/ (bundled-wasm).",
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*$"
+        },
+        "function": {
+          "description": "Exported function of the module: JSON in, JSON out.",
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "maxBytes": {
+          "description": "Largest file the app passes in (import) or may write (export).",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 268435456
         }
       }
     },

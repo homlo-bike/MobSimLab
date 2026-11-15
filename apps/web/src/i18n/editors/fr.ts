@@ -639,6 +639,22 @@ export const editorsFr = {
   "jp.cableCar": "Téléphérique « {name} » (toutes les {headway})",
   "jp.noTimetable":
     "Pas encore d’horaire. Dessinez une ligne sur rue, ou créez et publiez des lignes ferroviaires dans l’outil ferroviaire. Trains et lignes sur rue se connectent aux stations de même nom.",
+  "jp.gtfs.title": "Réseau existant (GTFS)",
+  "jp.gtfs.intro":
+    "Importez un flux GTFS (zip) pour emprunter les bus et trains actuels avec vos lignes. Un jour de service est lu.",
+  "jp.gtfs.pick": "Importer un flux GTFS…",
+  "jp.gtfs.inView": "Seulement les courses qui desservent la vue de la carte",
+  "jp.gtfs.date": "Jour de service",
+  "jp.gtfs.dateHint": "Vide : le mercredi le plus chargé",
+  "jp.gtfs.reading": "Lecture de {name}…",
+  "jp.gtfs.feed": "{name} : {routes} lignes, {stops} arrêts, {trips} courses le {date}",
+  "jp.gtfs.remove": "Retirer",
+  "jp.gtfs.failed": "Le flux n’a pas pu être lu : {error}",
+  "jp.gtfs.tooLarge":
+    "Le flux est trop volumineux pour le projet ({mb} Mo, au plus {max} Mo). Zoomez la carte sur la zone d’étude et importez seulement les courses de la vue.",
+  "jp.gtfs.export": "Télécharger mes lignes en GTFS",
+  "jp.gtfs.exportFailed": "Le flux GTFS n’a pas pu être écrit : {error}",
+  "jp.gtfs.outside": "Courses hors de la vue de la carte écartées : {n}",
   "jp.summary": "{stops} arrêts · {routes} lignes · {trips} courses",
   "jp.service": " · service {from}–{to}",
   "jp.joined.one": " · {count} arrêt relié à une station par son nom",

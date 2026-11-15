@@ -624,6 +624,22 @@ export const editorsSw = {
   "jp.cableCar": "Gari la kamba “{name}” (kila {headway})",
   "jp.noTimetable":
     "Bado hakuna ratiba. Chora njia ya barabarani, au unda na uchapishe njia za huduma za reli kwenye zana ya reli. Treni na njia za barabarani huungana kwenye stesheni zenye jina moja.",
+  "jp.gtfs.title": "Mtandao uliopo (GTFS)",
+  "jp.gtfs.intro":
+    "Leta mlisho wa GTFS (zip) ili kusafiri kwa mabasi na treni za leo pamoja na laini zako. Siku moja ya huduma husomwa.",
+  "jp.gtfs.pick": "Leta mlisho wa GTFS…",
+  "jp.gtfs.inView": "Safari zinazosimama ndani ya mwonekano wa ramani tu",
+  "jp.gtfs.date": "Siku ya huduma",
+  "jp.gtfs.dateHint": "Tupu: Jumatano yenye safari nyingi zaidi",
+  "jp.gtfs.reading": "Inasoma {name}…",
+  "jp.gtfs.feed": "{name}: laini {routes}, vituo {stops}, safari {trips} tarehe {date}",
+  "jp.gtfs.remove": "Ondoa",
+  "jp.gtfs.failed": "Mlisho haukuweza kusomwa: {error}",
+  "jp.gtfs.tooLarge":
+    "Mlisho ni mkubwa mno kuhifadhiwa kwenye mradi ({mb} MB, kiwango cha juu {max} MB). Kuza ramani hadi eneo la utafiti na uleta safari za mwonekano tu.",
+  "jp.gtfs.export": "Pakua laini zangu kama GTFS",
+  "jp.gtfs.exportFailed": "Mlisho wa GTFS haukuweza kuandikwa: {error}",
+  "jp.gtfs.outside": "Safari nje ya mwonekano wa ramani zilizoachwa: {n}",
   "jp.summary": "vituo {stops} · njia {routes} · safari {trips}",
   "jp.service": " · huduma {from}–{to}",
   "jp.joined.one": " · kituo {count} kimeunganishwa na stesheni kwa jina",

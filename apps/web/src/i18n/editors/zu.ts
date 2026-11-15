@@ -636,6 +636,22 @@ export const editorsZu = {
   "jp.cableCar": "Imoto yentambo “{name}” (njalo ngo-{headway})",
   "jp.noTimetable":
     "Alukho uhlelo lwezikhathi okwamanje. Dweba umugqa womgwaqo, noma udale futhi ushicilele imigqa yesevisi kajantshi ethuluzini likajantshi. Izitimela nemigqa yomgwaqo kuhlangana eziteshini ezinegama elifanayo.",
+  "jp.gtfs.title": "Inethiwekhi ekhona (GTFS)",
+  "jp.gtfs.intro":
+    "Ngenisa okuphakelayo kwe-GTFS (zip) ukuze ugibele amabhasi nezitimela zanamuhla kanye nemigqa yakho. Kufundwa usuku olulodwa lwesevisi.",
+  "jp.gtfs.pick": "Ngenisa okuphakelayo kwe-GTFS…",
+  "jp.gtfs.inView": "Uhambo olumayo ngaphakathi kombukiso webalazwe kuphela",
+  "jp.gtfs.date": "Usuku lwesevisi",
+  "jp.gtfs.dateHint": "Akunalutho: uLwesithathu olunohambo oluningi",
+  "jp.gtfs.reading": "Kufundwa i-{name}…",
+  "jp.gtfs.feed": "{name}: imigqa engu-{routes}, iziteshi ezingu-{stops}, uhambo olungu-{trips} ngo-{date}",
+  "jp.gtfs.remove": "Susa",
+  "jp.gtfs.failed": "Okuphakelayo akukwazanga ukufundwa: {error}",
+  "jp.gtfs.tooLarge":
+    "Okuphakelayo kukhulu kakhulu ukugcinwa kuphrojekthi ({mb} MB, okuningi {max} MB). Sondeza ibalazwe endaweni yocwaningo bese ungenisa uhambo olusembukisweni kuphela.",
+  "jp.gtfs.export": "Landa imigqa yami njenge-GTFS",
+  "jp.gtfs.exportFailed": "Okuphakelayo kwe-GTFS akukwazanga ukubhalwa: {error}",
+  "jp.gtfs.outside": "Uhambo olungaphandle kombukiso webalazwe olushiywe ngaphandle: {n}",
   "jp.summary": "iziteshi ezingu-{stops} · imizila engu-{routes} · uhambo olungu-{trips}",
   "jp.service": " · isevisi {from}–{to}",
   "jp.joined.one": " · isiteshi esingu-{count} sixhunywe nesiteshi ngegama",

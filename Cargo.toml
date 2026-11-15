@@ -20,6 +20,8 @@ members = [
   "crates/noise-wasm",
   "crates/energy",
   "crates/energy-wasm",
+  "crates/gtfs",
+  "crates/gtfs-wasm",
 ]
 
 [workspace.package]

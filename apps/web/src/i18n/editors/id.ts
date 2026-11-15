@@ -618,6 +618,22 @@ export const editorsId = {
   "jp.cableCar": "Kereta gantung “{name}” (setiap {headway})",
   "jp.noTimetable":
     "Belum ada jadwal. Gambar jalur jalan, atau buat dan terbitkan layanan di alat rel. Kereta dan jalur jalan terhubung di stasiun dengan nama yang sama.",
+  "jp.gtfs.title": "Jaringan yang ada (GTFS)",
+  "jp.gtfs.intro":
+    "Impor feed GTFS (zip) untuk naik bus dan kereta saat ini bersama jalur Anda. Satu hari layanan dibaca.",
+  "jp.gtfs.pick": "Impor feed GTFS…",
+  "jp.gtfs.inView": "Hanya perjalanan yang berhenti di tampilan peta",
+  "jp.gtfs.date": "Hari layanan",
+  "jp.gtfs.dateHint": "Kosong: Rabu dengan perjalanan terbanyak",
+  "jp.gtfs.reading": "Membaca {name}…",
+  "jp.gtfs.feed": "{name}: {routes} jalur, {stops} halte, {trips} perjalanan pada {date}",
+  "jp.gtfs.remove": "Hapus",
+  "jp.gtfs.failed": "Feed tidak dapat dibaca: {error}",
+  "jp.gtfs.tooLarge":
+    "Feed terlalu besar untuk proyek ({mb} MB, paling banyak {max} MB). Perbesar peta ke area studi dan impor hanya perjalanan di tampilan peta.",
+  "jp.gtfs.export": "Unduh jalur saya sebagai GTFS",
+  "jp.gtfs.exportFailed": "Feed GTFS tidak dapat ditulis: {error}",
+  "jp.gtfs.outside": "Perjalanan di luar tampilan peta yang dilewati: {n}",
   "jp.summary": "{stops} halte · {routes} jalur · {trips} perjalanan",
   "jp.service": " · layanan {from}–{to}",
   "jp.joined.one": " · {count} halte digabung ke stasiun berdasarkan nama",

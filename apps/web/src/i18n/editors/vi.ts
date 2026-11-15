@@ -594,6 +594,22 @@ export const editorsVi = {
   "jp.cableCar": "Cáp treo “{name}” (mỗi {headway})",
   "jp.noTimetable":
     "Chưa có lịch chạy. Hãy vẽ tuyến đường phố, hoặc tạo và xuất bản tuyến trong công cụ đường sắt. Tàu và tuyến đường phố kết nối tại các ga cùng tên.",
+  "jp.gtfs.title": "Mạng lưới hiện có (GTFS)",
+  "jp.gtfs.intro":
+    "Nhập nguồn GTFS (zip) để đi xe buýt và tàu hiện nay cùng với tuyến của bạn. Đọc một ngày vận hành.",
+  "jp.gtfs.pick": "Nhập nguồn GTFS…",
+  "jp.gtfs.inView": "Chỉ các chuyến dừng trong khung bản đồ",
+  "jp.gtfs.date": "Ngày vận hành",
+  "jp.gtfs.dateHint": "Để trống: thứ Tư có nhiều chuyến nhất",
+  "jp.gtfs.reading": "Đang đọc {name}…",
+  "jp.gtfs.feed": "{name}: {routes} tuyến, {stops} điểm dừng, {trips} chuyến ngày {date}",
+  "jp.gtfs.remove": "Gỡ bỏ",
+  "jp.gtfs.failed": "Không đọc được nguồn: {error}",
+  "jp.gtfs.tooLarge":
+    "Nguồn quá lớn để lưu trong dự án ({mb} MB, tối đa {max} MB). Hãy phóng bản đồ vào khu vực nghiên cứu và chỉ nhập các chuyến trong khung.",
+  "jp.gtfs.export": "Tải tuyến của tôi dạng GTFS",
+  "jp.gtfs.exportFailed": "Không ghi được nguồn GTFS: {error}",
+  "jp.gtfs.outside": "Số chuyến ngoài khung bản đồ bị bỏ qua: {n}",
   "jp.summary": "{stops} điểm dừng · {routes} tuyến · {trips} chuyến",
   "jp.service": " · hoạt động {from}–{to}",
   "jp.joined.other": " · {count} điểm dừng được gộp vào ga theo tên",

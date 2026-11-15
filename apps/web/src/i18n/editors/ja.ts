@@ -588,6 +588,22 @@ export const editorsJa = {
   "jp.cableCar": "ロープウェイ「{name}」（{headway}ごと）",
   "jp.noTimetable":
     "まだ時刻表がありません。道路路線を描くか、鉄道ツールで運行系統を作成して公開してください。列車と道路路線は同じ名前の駅で接続されます。",
+  "jp.gtfs.title": "既存ネットワーク（GTFS）",
+  "jp.gtfs.intro":
+    "GTFS フィード（zip）を読み込むと、現在のバスや列車にあなたの路線と一緒に乗れます。1 日分の運行日を読み込みます。",
+  "jp.gtfs.pick": "GTFS フィードを読み込む…",
+  "jp.gtfs.inView": "地図の表示範囲に停車する便のみ",
+  "jp.gtfs.date": "運行日",
+  "jp.gtfs.dateHint": "空欄：便数が最も多い水曜日",
+  "jp.gtfs.reading": "{name} を読み込み中…",
+  "jp.gtfs.feed": "{name}：{routes} 路線、{stops} 停留所、{date} の {trips} 便",
+  "jp.gtfs.remove": "削除",
+  "jp.gtfs.failed": "フィードを読み込めませんでした：{error}",
+  "jp.gtfs.tooLarge":
+    "フィードが大きすぎてプロジェクトに保存できません（{mb} MB、上限 {max} MB）。地図を調査範囲に拡大し、表示範囲の便だけを読み込んでください。",
+  "jp.gtfs.export": "自分の路線を GTFS でダウンロード",
+  "jp.gtfs.exportFailed": "GTFS フィードを書き出せませんでした：{error}",
+  "jp.gtfs.outside": "地図の表示範囲外で除外した便：{n}",
   "jp.summary": "停留所 {stops} · 系統 {routes} · {trips}本",
   "jp.service": " · 運行 {from}–{to}",
   "jp.joined.other": " · 名前で駅に結び付けた停留所 {count}",

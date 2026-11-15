@@ -16,6 +16,7 @@ import { Scenarios } from "../features/tables/Scenarios";
 import type { ScenariosDoc } from "../features/tables/scenarioModel";
 import { noiseCalculationIn } from "../features/noise/plugin";
 import type { PluginLineInput, StreetLineInput } from "../features/journey-planner/network";
+import type { GtfsFeed, GtfsNetworkDoc } from "../features/gtfs/types";
 import type { Timetable } from "../features/journey-planner/types";
 import { RailwayEditor } from "../features/railways/RailwayEditor";
 import type { Network } from "../features/railways/types";
@@ -67,6 +68,7 @@ const NO_SETUPS: StreetSetup[] = [];
 type SimView = "test" | "journey";
 type GisView = "streets" | "regions";
 const NO_REGIONS: Region[] = [];
+const NO_FEEDS: GtfsFeed[] = [];
 /** "street", "rail", or the id of a plugin tool (cable car, ferry…). */
 type Build = string;
 const PLUGIN_TOOLS = pluginTools();
@@ -155,6 +157,8 @@ export function Workspace({
   const railway = drawings.doc<Network>("railway");
   // The trains of the rail service lines as last published in the railway tool, for the journey planner.
   const railLines = drawings.doc<Timetable>("rail-timetable");
+  // Existing networks imported from GTFS feeds (GTFS plugin), for the journey planner.
+  const gtfsFeeds = drawings.doc<GtfsNetworkDoc>("gtfs-network")?.feeds ?? NO_FEEDS;
   // Street setups from the GIS tab: they override OSM in the street line tool and the railway editor.
   const setups = drawings.doc<StreetSetup[]>("street-setups") ?? NO_SETUPS;
   const changeSetups = (next: StreetSetup[]) => drawings.set("street-setups", next);
@@ -393,6 +397,9 @@ export function Workspace({
               streetLine={ridden && ridden.view.points.length >= 2 ? ridden : null}
               railLines={railLines}
               pluginLines={pluginLineList}
+              gtfsFeeds={gtfsFeeds}
+              {...(editable ? { onGtfsFeeds: (d: GtfsNetworkDoc) => drawings.set("gtfs-network", d) } : {})}
+              projectName={project.name}
             />
           )}
           {project && tab === "create" && editable && chosen === null && (

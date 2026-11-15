@@ -37,6 +37,20 @@ export interface PluginCalculation {
   where?: string[];
 }
 
+/** An importer or exporter a bundled plugin adds: a file format to or from a published contract. */
+export interface PluginConverter {
+  id: string;
+  label: string;
+  description?: string;
+  format: string;
+  extensions?: string[];
+  contract: "published-timetable";
+  runtime: "bundled-wasm";
+  module: string;
+  function: string;
+  maxBytes: number;
+}
+
 /** A map layer drawn from a calculation's output. */
 export interface PluginMapLayer {
   id: string;
@@ -68,6 +82,8 @@ export interface Plugin {
   contexts: { key: string; label: string; options: { id: string; label: string }[] }[];
   tools: PluginTool[];
   calculations?: PluginCalculation[];
+  importers?: PluginConverter[];
+  exporters?: PluginConverter[];
   mapLayers?: PluginMapLayer[];
   parameters: Record<string, { label: string; unit: string }>;
   /** mode id → context option ("*" without one) → parameter key → range. */
@@ -106,6 +122,19 @@ export function pluginCalculation(
 ): (PluginCalculation & { plugin: string }) | null {
   for (const p of plugins) {
     const c = p.calculations?.find((x) => x.id === id);
+    if (c) return { ...c, plugin: p.id };
+  }
+  return null;
+}
+
+/** Purpose: an importer or exporter by id, so the app offers it only when its plugin is present. */
+export function pluginConverter(
+  kind: "importers" | "exporters",
+  id: string,
+  plugins: readonly Plugin[] = PLUGINS,
+): (PluginConverter & { plugin: string }) | null {
+  for (const p of plugins) {
+    const c = p[kind]?.find((x) => x.id === id);
     if (c) return { ...c, plugin: p.id };
   }
   return null;

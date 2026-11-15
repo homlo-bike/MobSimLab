@@ -98,6 +98,8 @@
         }
       ],
       "calculations": [],
+      "importers": [],
+      "exporters": [],
       "mapLayers": [],
       "parameters": {
         "ropeway.line_speed_ms": {
@@ -779,6 +781,8 @@
           ]
         }
       ],
+      "importers": [],
+      "exporters": [],
       "mapLayers": [],
       "parameters": {
         "energy.electric_share": {
@@ -1487,6 +1491,8 @@
         }
       ],
       "calculations": [],
+      "importers": [],
+      "exporters": [],
       "mapLayers": [],
       "parameters": {
         "ferry.service_speed_kn": {
@@ -1673,6 +1679,67 @@
       }
     },
     {
+      "id": "org.mobsimlab.gtfs",
+      "name": "GTFS import and export",
+      "description": "Reads a GTFS feed (zip) into the project as an existing network for one service day, cut to the map view if asked, so the journey planner rides it with the planned lines; and writes the project's lines as a GTFS feed for other tools.",
+      "version": "0.1.0",
+      "publisher": {
+        "name": "MobSimLab contributors",
+        "url": "https://github.com/homlo-bike/MobSimLab"
+      },
+      "license": "AGPL-3.0-or-later",
+      "dataLicense": "CC-BY-4.0",
+      "bundled": true,
+      "tiers": [
+        "data",
+        "compute"
+      ],
+      "permissions": [
+        "read:network",
+        "read:timetable",
+        "write:scenario"
+      ],
+      "modes": [],
+      "contexts": [],
+      "tools": [],
+      "calculations": [],
+      "importers": [
+        {
+          "id": "gtfs_import",
+          "label": "GTFS feed",
+          "description": "Stops, routes and the trips of one service day (the busiest Wednesday unless a date is given), with frequencies.txt as frequency patterns and route types as modes.",
+          "format": "gtfs",
+          "extensions": [
+            ".zip"
+          ],
+          "contract": "published-timetable",
+          "runtime": "bundled-wasm",
+          "module": "gtfs",
+          "function": "import_gtfs",
+          "maxBytes": 104857600
+        }
+      ],
+      "exporters": [
+        {
+          "id": "gtfs_export",
+          "label": "GTFS feed",
+          "description": "The project's lines as a weekday GTFS feed: exact trips, frequency lines as frequencies.txt, stations for stop groups.",
+          "format": "gtfs",
+          "extensions": [
+            ".zip"
+          ],
+          "contract": "published-timetable",
+          "runtime": "bundled-wasm",
+          "module": "gtfs",
+          "function": "export_gtfs",
+          "maxBytes": 104857600
+        }
+      ],
+      "mapLayers": [],
+      "parameters": {},
+      "defaults": {}
+    },
+    {
       "id": "org.mobsimlab.noise",
       "name": "Noise map",
       "description": "Estimated noise of the service lines (ADR-0038): a live noise band while drawing street lines and railways, with checks for curve squeal, bridges and switches. CNOSSOS-EU road and railway emission, free field without buildings for now.",
@@ -1723,6 +1790,8 @@
           ]
         }
       ],
+      "importers": [],
+      "exporters": [],
       "mapLayers": [
         {
           "id": "noise_band",
@@ -5147,6 +5216,8 @@
         }
       ],
       "calculations": [],
+      "importers": [],
+      "exporters": [],
       "mapLayers": [],
       "parameters": {
         "people_mover.line_speed_ms": {

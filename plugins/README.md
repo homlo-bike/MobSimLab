@@ -7,6 +7,7 @@ Plugins add modes, parameters, tools and calculations to MobSimLab ([ADR-0036](.
 | [aerial-lift](aerial-lift/) | `org.mobsimlab.aerial-lift` | Modes `cable_car` (MGD, 2S, 3S, funitel, pulsed) and `aerial_tramway`, context key `ropeway_system`, `ropeway.*` parameters, the **Cable car** tool on the straight spans kit ([ADR-0037](../docs/adr/0037-cable-car-and-ferry-lines.md)) |
 | [energy](energy/) | `org.mobsimlab.energy` | Calculation `energy_emissions` (module `crates/energy`, built by `tools/wasm/build-energy.sh`): electricity, diesel and CO2e a year per line, per mode and for the network, from each line's vehicle-km; `energy.*` parameters per core mode; shown in the Tables tab, where the project sets the grid's emission intensity and the battery bus share |
 | [ferry](ferry/) | `org.mobsimlab.ferry` | Mode `ferry`, context key `vessel_type` (monohull, catamaran, hydrofoil), `ferry.*` parameters, the **Ferry** tool on the water route kit. Car ferries come later. |
+| [gtfs](gtfs/) | `org.mobsimlab.gtfs` | Importer `gtfs_import` and exporter `gtfs_export` (module `crates/gtfs`, built by `tools/wasm/build-gtfs.sh`) for the published timetable. In the journey planner a GTFS feed (zip) becomes the project's existing network for one service day (the busiest Wednesday unless a date is given), cut to the map view if asked and kept as the `gtfs-network` drawing; the project's own lines download as a weekday GTFS feed |
 | [noise](noise/) | `org.mobsimlab.noise` | The noise map: calculation `noise_estimate` and map layer `noise_band` ([ADR-0038](../docs/adr/0038-service-line-noise-map.md)) |
 | [people-mover](people-mover/) | `org.mobsimlab.people-mover` | Modes `people_mover` (pinched loop with detachable trains) and `people_mover_shuttle` (two trains on a fixed rope), context key `apm_system`, `people_mover.*` parameters, the **People mover** tool on the straight spans kit: cable-hauled trains on an elevated guideway with piers ([ADR-0037 §7](../docs/adr/0037-cable-car-and-ferry-lines.md)) |
 
@@ -16,8 +17,9 @@ Plugins add modes, parameters, tools and calculations to MobSimLab ([ADR-0036](.
 |--------------|--------|
 | `modes`, `contexts`, `parameters`, `sources`, `tools` | Built. Parameters follow the assumption library rules (ADR-0018) with the plugin's modes and context keys. Tools use a core authoring kit: `straight-spans` or `water-route` (`crates/mode-kits`). |
 | `calculations`, `mapLayers` | Built for bundled plugins only, with runtime `bundled-wasm`: the code is a core crate compiled to WebAssembly by `tools/wasm/build-<module>.sh`. Sandboxed third-party components come with the plugin host (ADR-0036 Phase 2). |
+| `importers`, `exporters` | Built for bundled plugins only, with runtime `bundled-wasm`: a module function converts between a file format and a published contract (today `published-timetable`), JSON in and out; the app unzips and zips. |
 | `vehicles` | Accepted by the schema; the cable car and ferry catalogue folders come with sourced vehicles. |
-| `checks`, `engines`, `infrastructure`, `catalogues`, `kpis`, `schematics`, `importers`, `exporters`, `panels` | Reserved for later phases; the schema accepts no entries yet. |
+| `checks`, `engines`, `infrastructure`, `catalogues`, `kpis`, `schematics`, `panels` | Reserved for later phases; the schema accepts no entries yet. |
 
 Install, enable per project, signatures and the public registry (ADR-0036 Phase 1) are not built yet. Bundled plugins are always available.
 

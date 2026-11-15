@@ -596,6 +596,22 @@ export const editorsFa = {
   "jp.cableCar": "تله‌کابین «{name}» (هر {headway})",
   "jp.noTimetable":
     "هنوز جدول زمانی نیست. یک خط خیابانی ترسیم کنید، یا در ابزار ریلی سرویسی بسازید و منتشر کنید. قطارها و خطوط خیابانی در ایستگاه‌های هم‌نام به هم وصل می‌شوند.",
+  "jp.gtfs.title": "شبکه موجود (GTFS)",
+  "jp.gtfs.intro":
+    "یک فید GTFS (zip) وارد کنید تا با اتوبوس‌ها و قطارهای امروز همراه خطوط خود سفر کنید. یک روز خدمت خوانده می‌شود.",
+  "jp.gtfs.pick": "وارد کردن فید GTFS…",
+  "jp.gtfs.inView": "فقط سفرهایی که در نمای نقشه توقف دارند",
+  "jp.gtfs.date": "روز خدمت",
+  "jp.gtfs.dateHint": "خالی: پرسفرترین چهارشنبه",
+  "jp.gtfs.reading": "در حال خواندن {name}…",
+  "jp.gtfs.feed": "{name}: {routes} خط، {stops} ایستگاه، {trips} سفر در {date}",
+  "jp.gtfs.remove": "حذف",
+  "jp.gtfs.failed": "فید خوانده نشد: {error}",
+  "jp.gtfs.tooLarge":
+    "فید برای پروژه خیلی بزرگ است ({mb} مگابایت، حداکثر {max} مگابایت). نقشه را روی محدوده مطالعه بزرگ کنید و فقط سفرهای نما را وارد کنید.",
+  "jp.gtfs.export": "دانلود خطوط من به‌صورت GTFS",
+  "jp.gtfs.exportFailed": "فید GTFS نوشته نشد: {error}",
+  "jp.gtfs.outside": "سفرهای بیرون از نمای نقشه که کنار گذاشته شدند: {n}",
   "jp.summary": "{stops} ایستگاه · {routes} خط · {trips} سفر",
   "jp.service": " · سرویس {from}–{to}",
   "jp.joined.other": " · {count} ایستگاه بر اساس نام به ایستگاه‌ها پیوست",
