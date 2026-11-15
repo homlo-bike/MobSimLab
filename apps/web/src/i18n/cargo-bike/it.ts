@@ -119,6 +119,14 @@ export const cargoBikeIt = {
   "cb.activeWeek": "Bici a settimana",
   "cb.activeOfTarget": "{share} dei {target} minuti di attività settimanale raccomandati dall'OMS",
   "cb.impactValues": "Valori di clima e salute",
+  "cb.kit": "Kit",
+  "cb.kitSummary": "Batteria {battery} Wh · {mass} kg · {price}",
+  "cb.kitNote":
+    "Kit di esempio con prezzi stimati. Un valore cambiato qui sotto resta finché tieni il kit; scegliere un altro kit imposta i suoi valori.",
+  "cb.kit.trike-500": "Triciclo cargo, 500 Wh",
+  "cb.kit.trike-900": "Triciclo cargo, 900 Wh",
+  "cb.kit.trike-1800": "Triciclo cargo, 2 × 900 Wh",
+  "cb.kit.bike-900": "Cargo bike a due ruote, 900 Wh",
   "cb.error.too_far":
     "La destinazione è troppo lontana per un percorso su strada (circa 40 km al massimo). Usa la mappa dell'autonomia per distanze maggiori.",
   "cb.error.no_streets": "Qui non sono state trovate strade percorribili in bici.",

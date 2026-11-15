@@ -115,6 +115,14 @@ export const cargoBikeHa = {
   "cb.activeWeek": "Hawan keke a mako",
   "cb.activeOfTarget": "{share} na mintuna {target} na motsa jiki a mako da WHO ke ba da shawara",
   "cb.impactValues": "Ƙimomin yanayi da lafiya",
+  "cb.kit": "Kayan haɗi",
+  "cb.kitSummary": "Batir {battery} Wh · kilo {mass} · {price}",
+  "cb.kitNote":
+    "Misalan kayan haɗi tare da kimanin farashi. Ƙimar da ka canza a ƙasa tana nan muddin ka ci gaba da kayan; zaɓar wani na saka nasa ƙimomi.",
+  "cb.kit.trike-500": "Keken kaya mai ƙafa uku, 500 Wh",
+  "cb.kit.trike-900": "Keken kaya mai ƙafa uku, 900 Wh",
+  "cb.kit.trike-1800": "Keken kaya mai ƙafa uku, 2 × 900 Wh",
+  "cb.kit.bike-900": "Keken kaya mai ƙafa biyu, 900 Wh",
   "cb.error.too_far":
     "Inda za a je ya yi nisa sosai don hanyar titi (kusan km 40 a mafi yawa). Yi amfani da taswirar nisa don nisa mafi tsawo.",
   "cb.error.no_streets": "Ba a sami titunan da keke zai iya bi a nan ba.",

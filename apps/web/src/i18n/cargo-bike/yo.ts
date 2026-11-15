@@ -114,6 +114,14 @@ export const cargoBikeYo = {
   "cb.activeWeek": "Gígun kẹ̀kẹ́ ní ọ̀sẹ̀",
   "cb.activeOfTarget": "{share} nínú ìṣẹ́jú {target} ìdárayá ní ọ̀sẹ̀ tí WHO dámọ̀ràn",
   "cb.impactValues": "Àwọn iye ojú ọjọ́ àti ìlera",
+  "cb.kit": "Ohun èlò",
+  "cb.kitSummary": "Bátírì {battery} Wh · {mass} kg · {price}",
+  "cb.kitNote":
+    "Àpẹẹrẹ ohun èlò pẹ̀lú iye owó àfojúsùn. Iye tí o yí padà nísàlẹ̀ yóò dúró bí o bá ṣì ń lo ohun èlò náà; yíyan òmíràn yóò fi iye tirẹ̀ sí i.",
+  "cb.kit.trike-500": "Kẹ̀kẹ́ ẹrù ẹlẹ́sẹ̀ mẹ́ta, 500 Wh",
+  "cb.kit.trike-900": "Kẹ̀kẹ́ ẹrù ẹlẹ́sẹ̀ mẹ́ta, 900 Wh",
+  "cb.kit.trike-1800": "Kẹ̀kẹ́ ẹrù ẹlẹ́sẹ̀ mẹ́ta, 2 × 900 Wh",
+  "cb.kit.bike-900": "Kẹ̀kẹ́ ẹrù ẹlẹ́sẹ̀ méjì, 900 Wh",
   "cb.error.too_far":
     "Ibi tí a ń lọ jìnnà jù fún ọ̀nà òpópónà (nǹkan bí km 40 jù lọ). Lo máàpù ìjìnnà fún ìjìnnà gígùn.",
   "cb.error.no_streets": "A kò rí òpópónà tí kẹ̀kẹ́ lè gbà níbí.",

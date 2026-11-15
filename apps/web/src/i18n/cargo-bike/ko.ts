@@ -114,6 +114,14 @@ export const cargoBikeKo = {
   "cb.activeWeek": "주간 자전거 타기",
   "cb.activeOfTarget": "WHO가 권장하는 주 {target}분 신체 활동의 {share}",
   "cb.impactValues": "기후와 건강 값",
+  "cb.kit": "키트",
+  "cb.kitSummary": "배터리 {battery} Wh · {mass} kg · {price}",
+  "cb.kitNote":
+    "예상 가격의 예시 키트입니다. 같은 키트를 유지하면 아래에서 바꾼 값이 그대로 남고, 다른 키트를 고르면 그 키트의 값이 적용됩니다.",
+  "cb.kit.trike-500": "카고 트라이크, 500 Wh",
+  "cb.kit.trike-900": "카고 트라이크, 900 Wh",
+  "cb.kit.trike-1800": "카고 트라이크, 2 × 900 Wh",
+  "cb.kit.bike-900": "두 바퀴 카고바이크, 900 Wh",
   "cb.error.too_far":
     "목적지가 너무 멀어 도로 경로를 계산할 수 없습니다(최대 약 40 km). 더 먼 거리는 주행 가능 지도를 사용하세요.",
   "cb.error.no_streets": "이곳에서는 자전거가 다닐 수 있는 도로를 찾지 못했습니다.",

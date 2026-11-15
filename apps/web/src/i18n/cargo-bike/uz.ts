@@ -117,6 +117,14 @@ export const cargoBikeUz = {
   "cb.activeWeek": "Haftalik velosipedda yurish",
   "cb.activeOfTarget": "JSST tavsiya etgan haftalik {target} daqiqa faollikning {share} qismi",
   "cb.impactValues": "Iqlim va salomatlik qiymatlari",
+  "cb.kit": "To'plam",
+  "cb.kitSummary": "Batareya {battery} Wh · {mass} kg · {price}",
+  "cb.kitNote":
+    "Taxminiy narxli namuna to'plamlar. Pastda o'zgartirgan qiymatingiz to'plam o'zgarmaguncha saqlanadi; boshqa to'plam tanlansa, uning qiymatlari qo'yiladi.",
+  "cb.kit.trike-500": "Yuk uch g'ildiraklisi, 500 Wh",
+  "cb.kit.trike-900": "Yuk uch g'ildiraklisi, 900 Wh",
+  "cb.kit.trike-1800": "Yuk uch g'ildiraklisi, 2 × 900 Wh",
+  "cb.kit.bike-900": "Ikki g'ildirakli yuk velosipedi, 900 Wh",
   "cb.error.too_far":
     "Manzil ko‘cha yo‘nalishi uchun juda uzoq (ko‘pi bilan taxminan 40 km). Uzoqroq masofalar uchun masofa xaritasidan foydalaning.",
   "cb.error.no_streets": "Bu yerda velosipedda yurish mumkin bo‘lgan ko‘chalar topilmadi.",

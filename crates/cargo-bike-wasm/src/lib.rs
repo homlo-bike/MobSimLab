@@ -163,6 +163,13 @@ pub fn savings(request_json: &str) -> Result<String, JsError> {
     serde_json::to_string(&s).map_err(js)
 }
 
+/// Purpose: the kit presets: `{default, kits: [{id, label, wheels, values}]}`.
+#[wasm_bindgen]
+pub fn kits() -> String {
+    let (default, kits) = cargo_bike::params::kits();
+    json!({"default": default, "kits": kits}).to_string()
+}
+
 /// Purpose: the plugin's parameters with label, unit, low, central and high (keys without the prefix).
 #[wasm_bindgen]
 pub fn defaults() -> String {

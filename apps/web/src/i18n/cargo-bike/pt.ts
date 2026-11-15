@@ -120,6 +120,14 @@ export const cargoBikePt = {
   "cb.activeWeek": "Bicicleta por semana",
   "cb.activeOfTarget": "{share} dos {target} minutos de atividade semanal recomendados pela OMS",
   "cb.impactValues": "Valores de clima e saúde",
+  "cb.kit": "Kit",
+  "cb.kitSummary": "Bateria {battery} Wh · {mass} kg · {price}",
+  "cb.kitNote":
+    "Kits de exemplo com preços estimados. Um valor alterado abaixo mantém-se enquanto ficar com o kit; escolher outro kit define os valores dele.",
+  "cb.kit.trike-500": "Triciclo de carga, 500 Wh",
+  "cb.kit.trike-900": "Triciclo de carga, 900 Wh",
+  "cb.kit.trike-1800": "Triciclo de carga, 2 × 900 Wh",
+  "cb.kit.bike-900": "Bicicleta de carga de duas rodas, 900 Wh",
   "cb.error.too_far":
     "O destino está longe demais para uma rota pelas ruas (cerca de 40 km no máximo). Use o mapa de autonomia para distâncias maiores.",
   "cb.error.no_streets": "Não foram encontradas ruas por onde uma bicicleta possa andar.",

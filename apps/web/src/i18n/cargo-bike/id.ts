@@ -116,6 +116,14 @@ export const cargoBikeId = {
   "cb.activeWeek": "Bersepeda per minggu",
   "cb.activeOfTarget": "{share} dari {target} menit aktivitas per minggu yang dianjurkan WHO",
   "cb.impactValues": "Nilai iklim dan kesehatan",
+  "cb.kit": "Kit",
+  "cb.kitSummary": "Baterai {battery} Wh · {mass} kg · {price}",
+  "cb.kitNote":
+    "Contoh kit dengan harga perkiraan. Nilai yang Anda ubah di bawah tetap berubah selama kit sama; memilih kit lain memakai nilainya.",
+  "cb.kit.trike-500": "Sepeda roda tiga kargo, 500 Wh",
+  "cb.kit.trike-900": "Sepeda roda tiga kargo, 900 Wh",
+  "cb.kit.trike-1800": "Sepeda roda tiga kargo, 2 × 900 Wh",
+  "cb.kit.bike-900": "Sepeda kargo roda dua, 900 Wh",
   "cb.error.too_far":
     "Tujuan terlalu jauh untuk rute jalan (paling jauh sekitar 40 km). Gunakan peta jangkauan untuk jarak lebih jauh.",
   "cb.error.no_streets": "Tidak ditemukan jalan yang boleh dilalui sepeda di sini.",

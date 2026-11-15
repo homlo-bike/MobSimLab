@@ -34,6 +34,7 @@ import {
   corridorTiles,
   destinationPoint,
   distanceM,
+  type Kit,
   type Leg,
   type LonLat,
   MAX_TILES,
@@ -129,11 +130,10 @@ describe("cargo bike tab in the shell", () => {
   });
 });
 
-const DEFAULTS = (
-  JSON.parse(readFileSync(resolve(__dirname, "../../../crates/cargo-bike/data/defaults.json"), "utf8")) as {
-    params: Record<string, ParamDefault>;
-  }
-).params;
+const DEFAULTS_FILE = JSON.parse(
+  readFileSync(resolve(__dirname, "../../../crates/cargo-bike/data/defaults.json"), "utf8"),
+) as { params: Record<string, ParamDefault>; default_kit: string; kits: Kit[] };
+const DEFAULTS = DEFAULTS_FILE.params;
 
 function leg(m: number, wh: number): Leg {
   return {
@@ -219,6 +219,7 @@ function setup(over: Partial<CargoBikeEngine> = {}) {
   };
   const engine: CargoBikeEngine = {
     defaults: vi.fn(async () => DEFAULTS),
+    kits: vi.fn(async () => ({ default: DEFAULTS_FILE.default_kit, kits: DEFAULTS_FILE.kits })),
     trip: vi.fn(async () => ({ trip: TRIP, go: route, back: route, snapM: [5, 5] as [number, number] })),
     rangeMap: vi.fn(async () => ({ reach: [] })),
     savings: vi.fn(async () => SAVINGS),
@@ -248,11 +249,18 @@ function setup(over: Partial<CargoBikeEngine> = {}) {
 describe("cargo bike tab", () => {
   it("rides the round trip and shows whether it fits in one charge", async () => {
     const { engine } = setup();
+    await screen.findByRole("combobox", { name: /Kit/ });
     fireEvent.click(screen.getByRole("button", { name: "Calculate the trip there and back" }));
     const result = await screen.findByRole("region", { name: /trip/i });
     expect(within(result).getByText(/Fits in one charge/)).toBeTruthy();
     expect(within(result).getByText("12.0 km")).toBeTruthy();
-    expect(engine.trip).toHaveBeenCalledWith(KOBLENZ, [7.65, 50.38], {}, [], expect.any(Function));
+    expect(engine.trip).toHaveBeenCalledWith(
+      KOBLENZ,
+      [7.65, 50.38],
+      { bike_mass_kg: 35, battery_wh: 900, "savings.bike_price_eur": 4000 },
+      [],
+      expect.any(Function),
+    );
   });
 
   it("explains a destination that is too far", async () => {
@@ -272,7 +280,7 @@ describe("cargo bike tab", () => {
       expect(engine.trip).toHaveBeenCalledWith(
         expect.anything(),
         expect.anything(),
-        { battery_wh: 1200 },
+        expect.objectContaining({ battery_wh: 1200, bike_mass_kg: 35 }),
         [],
         expect.any(Function),
       ),
@@ -288,7 +296,7 @@ describe("cargo bike tab", () => {
     expect(economy.countryAt).toHaveBeenCalledWith(KOBLENZ);
     expect(engine.savings).toHaveBeenCalledWith(
       { km: 12, whPerKm: 7.5, riderWh: 45, timeS: 2400 },
-      {},
+      { bike_mass_kg: 35, battery_wh: 900, "savings.bike_price_eur": 4000 },
       expect.objectContaining({ fx: 1, ppp: 1 }),
     );
     expect(within(section).getByText(/saves .*1,650/)).toBeTruthy();
@@ -309,5 +317,25 @@ describe("cargo bike tab", () => {
     expect(await within(near).findByText(/Secure bike parking · Radstation/)).toBeTruthy();
     expect(within(near).getByText(/0.7 km into the trip, 7 m off the route · 40 places · fee/)).toBeTruthy();
     expect(engine.amenities).toHaveBeenCalledWith([...TRIP_ROUTE, ...TRIP_ROUTE]);
+  });
+
+  it("sets the range and the price together from a kit preset, with the project's own values on top", async () => {
+    const { engine, onDoc } = setup();
+    const kit = await screen.findByRole("combobox", { name: /Kit/ });
+    expect((kit as HTMLSelectElement).value).toBe("trike-900");
+    expect(screen.getByText(/900 Wh battery · 35 kg · €4,000/)).toBeTruthy();
+    fireEvent.change(kit, { target: { value: "trike-1800" } });
+    expect(onDoc).toHaveBeenLastCalledWith(expect.objectContaining({ kit: "trike-1800", values: {} }));
+    expect(screen.getByText(/1800 Wh battery · 40 kg · €4,700/)).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Calculate the trip there and back" }));
+    await waitFor(() =>
+      expect(engine.trip).toHaveBeenLastCalledWith(
+        expect.anything(),
+        expect.anything(),
+        { bike_mass_kg: 40, battery_wh: 1800, "savings.bike_price_eur": 4700 },
+        [],
+        expect.any(Function),
+      ),
+    );
   });
 });

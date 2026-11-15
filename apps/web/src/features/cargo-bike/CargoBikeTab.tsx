@@ -16,6 +16,8 @@ import {
   type Conversion,
   conversionFrom,
   isMoney,
+  type Kit,
+  kitValues,
   type LonLat,
   type ParamDefault,
   type Reach,
@@ -129,9 +131,11 @@ export function CargoBikeTab({
   const [amenities, setAmenities] = useState<AmenityNear[] | null>(null);
   const [amenityState, setAmenityState] = useState<"loading" | "failed" | null>(null);
   const [gap, setGap] = useState<LonLat[] | null>(null);
+  const [kits, setKits] = useState<{ default: string; kits: Kit[] } | null>(null);
 
   useEffect(() => {
     engine.defaults().then(setDefaults, (e: unknown) => setError(String(e)));
+    engine.kits().then(setKits, (e: unknown) => setError(String(e)));
   }, [engine]);
 
   // The country of the start point sets the currency and the price level of the savings.
@@ -166,6 +170,12 @@ export function CargoBikeTab({
   }, [economy, startKey]);
   const currency = country.conv ? (country.currency ?? "EUR") : "EUR";
 
+  // The kit preset's values, in the start point's prices, with the project's own values on top.
+  const kitId = local.kit ?? kits?.default ?? null;
+  const kit = kits?.kits.find((k) => k.id === kitId);
+  const kitVals = useMemo(() => kitValues(kit, defaults, country.conv), [kit, defaults, country.conv]);
+  const effective = useMemo(() => ({ ...kitVals, ...values }), [kitVals, values]);
+
   // Savings follow the trip, the values and the country.
   useEffect(() => {
     if (!trip) {
@@ -179,14 +189,14 @@ export function CargoBikeTab({
       riderWh: trip.trip.rider_wh,
       timeS: trip.trip.time_s,
     };
-    engine.savings(perTrip, values, country.conv).then(
+    engine.savings(perTrip, effective, country.conv).then(
       (s) => live && setSavings(s),
       (e: unknown) => live && setError(String(e)),
     );
     return () => {
       live = false;
     };
-  }, [engine, trip, values, country.conv]);
+  }, [engine, trip, effective, country.conv]);
 
   // Charging points and secure parkings along the trip, once it is ridden.
   useEffect(() => {
@@ -299,7 +309,7 @@ export function CargoBikeTab({
     setError(null);
     setBusy(t("cb.loadingStreets", { done: 0, total: 0 }));
     try {
-      const r = await engine.trip(start, destination, values, setups, (done, total) =>
+      const r = await engine.trip(start, destination, effective, setups, (done, total) =>
         setBusy(t("cb.loadingStreets", { done, total })),
       );
       setTrip(r);
@@ -318,13 +328,56 @@ export function CargoBikeTab({
     setError(null);
     setBusy(t("cb.loadingTerrain"));
     try {
-      setReach((await engine.rangeMap(start, values)).reach);
+      setReach((await engine.rangeMap(start, effective)).reach);
     } catch (e) {
       setError(t("cb.error.failed", { error: e instanceof Error ? e.message : String(e) }));
     } finally {
       setBusy(null);
     }
   };
+
+  const chooseKit = (id: string) => {
+    const next = kits?.kits.find((k) => k.id === id);
+    // The kit's own values replace what the project had set for the same keys.
+    const own = Object.fromEntries(Object.entries(values).filter(([k]) => !(next && k in next.values)));
+    update({ ...local, kit: id, values: own });
+  };
+  const kitLabel = (k: Kit) => {
+    const key = `cb.kit.${k.id}` as MessageKey;
+    const label = t(key);
+    return label === key ? k.label : label;
+  };
+  const kitPicker = () =>
+    kits &&
+    defaults && (
+      <div className="mt-3 rounded-xl border border-slate-200 px-3 py-2">
+        <label className="flex items-center justify-between gap-3 text-sm">
+          <span className="font-semibold">{t("cb.kit")}</span>
+          <select
+            className="min-h-9 min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-2 text-sm"
+            value={kitId ?? ""}
+            onChange={(e) => chooseKit(e.target.value)}
+          >
+            {kits.kits.map((k) => (
+              <option key={k.id} value={k.id}>
+                {kitLabel(k)}
+              </option>
+            ))}
+          </select>
+        </label>
+        <p className="mt-1 text-xs text-slate-500">
+          {t("cb.kitSummary", {
+            battery: Math.round(effective.battery_wh ?? defaults.battery_wh?.central ?? 0),
+            mass: Math.round(effective.bike_mass_kg ?? defaults.bike_mass_kg?.central ?? 0),
+            price: money(
+              effective["savings.bike_price_eur"] ??
+                (defaults["savings.bike_price_eur"]?.central ?? 0) * (country.conv?.fx ?? 1),
+            ),
+          })}
+        </p>
+        <p className="mt-1 text-xs text-slate-500">{t("cb.kitNote")}</p>
+      </div>
+    );
 
   const setValue = (key: string, v: number | null) => {
     const next = { ...values };
@@ -346,7 +399,7 @@ export function CargoBikeTab({
     if (!d) return null;
     const unit = isMoney(d) ? d.unit.replace("EUR", currency) : d.unit;
     const own = values[key];
-    const value = own ?? shown ?? d.central;
+    const value = own ?? shown ?? kitVals[key] ?? d.central;
     return (
       <label key={key} className="flex items-center justify-between gap-3 py-1">
         <span className="min-w-0 flex-1 text-sm text-slate-700">
@@ -769,6 +822,7 @@ export function CargoBikeTab({
           </button>
         ))}
       </div>
+      {kitPicker()}
       {view === "trip" && tripView()}
       {view === "range" && rangeView()}
       {view === "savings" && savingsView()}

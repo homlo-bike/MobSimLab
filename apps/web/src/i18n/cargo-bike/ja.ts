@@ -115,6 +115,14 @@ export const cargoBikeJa = {
   "cb.activeWeek": "週あたりの自転車",
   "cb.activeOfTarget": "WHO が勧める週 {target} 分の身体活動の {share}",
   "cb.impactValues": "気候と健康の値",
+  "cb.kit": "キット",
+  "cb.kitSummary": "バッテリー {battery} Wh · {mass} kg · {price}",
+  "cb.kitNote":
+    "価格は概算の例示キットです。同じキットのままなら下で変えた値は保たれ、別のキットを選ぶとその値になります。",
+  "cb.kit.trike-500": "カーゴトライク 500 Wh",
+  "cb.kit.trike-900": "カーゴトライク 900 Wh",
+  "cb.kit.trike-1800": "カーゴトライク 2 × 900 Wh",
+  "cb.kit.bike-900": "二輪カーゴバイク 900 Wh",
   "cb.error.too_far":
     "目的地が遠すぎて道路ルートを計算できません（最大約 40 km）。長距離には航続マップを使ってください。",
   "cb.error.no_streets": "ここでは自転車が通れる道路が見つかりませんでした。",
