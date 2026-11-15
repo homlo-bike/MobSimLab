@@ -35,9 +35,9 @@ function set(map: MapLibreMap, id: string, data: Data): boolean {
 }
 
 /**
- * Purpose: draw the walk analysis: the walk network coloured by minutes to the nearest stop (5-minute
- * bands), the gaps as numbered red circles, and the stop pairs flagged by the stop spacing check (too
- * short dashed purple, too long red). Pass null to leave a part out.
+ * Purpose: draw the walk analysis: a soft shaded area round the stops coloured by minutes to the nearest
+ * stop (5-minute bands, from the walk network), the gaps as numbered red circles, and the stop pairs
+ * flagged by the stop spacing check (too short dashed purple, too long red). Pass null to leave a part out.
  * Side effects: adds or updates the `walk-*` sources and layers.
  */
 export function drawWalk(
@@ -48,14 +48,22 @@ export function drawWalk(
   if (set(map, CATCHMENT, (what.catchment ?? empty) as Data)) {
     const steps: unknown[] = [BAND_COLORS[0]];
     BAND_COLORS.slice(1).forEach((c, i) => steps.push((i + 1) * 5, c));
+    // A soft shaded area rather than coloured streets: wide, blurred, see-through strokes that merge
+    // into one patch per band, nearer bands drawn on top.
+    const width = ["interpolate", ["exponential", 2], ["zoom"], 11, 9, 14, 60, 17, 450];
     map.addLayer({
       id: CATCHMENT,
       type: "line",
       source: CATCHMENT,
-      layout: { "line-cap": "round" },
+      layout: {
+        "line-cap": "round",
+        "line-join": "round",
+        "line-sort-key": ["-", 100, ["get", "minutes"]] as never,
+      },
       paint: {
-        "line-width": ["interpolate", ["linear"], ["zoom"], 12, 1.5, 17, 5] as never,
-        "line-opacity": 0.8,
+        "line-width": width as never,
+        "line-blur": ["interpolate", ["exponential", 2], ["zoom"], 11, 7, 14, 45, 17, 340] as never,
+        "line-opacity": 0.32,
         "line-color": ["step", ["get", "minutes"], ...steps] as never,
       },
     });
