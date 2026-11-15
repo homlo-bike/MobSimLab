@@ -12,6 +12,8 @@ export interface PluginMode {
   contextKey?: string;
   contexts?: string[];
   defaultContext?: string;
+  /** Prefix of the plugin parameters that feed the kit (default `ropeway` or `ferry`). */
+  parameterPrefix?: string;
 }
 
 /** An authoring tool for the Create tab: a core kit with the modes it draws. */

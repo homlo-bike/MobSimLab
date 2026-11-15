@@ -1,0 +1,57 @@
+# Sources of the people mover plugin's parameters (same format as assumptions/sources.yaml).
+# Figures from the manufacturer's reference sheets of built Cable Liner systems; not yet re-read by a maintainer.
+
+- id: dcc-venice-people-mover
+  title: Doppelmayr Cable Car, People Mover Venezia (830 m, 2 trains, 8 m/s, headway 240 s, dwell 30 s, 3,000 p/h/dir)
+  publisher: Doppelmayr Cable Car GmbH
+  url: https://dcc.at/references/people-mover-venezia
+  licence: © Doppelmayr; numbers cited as facts
+  access: free
+  retrieved: 2026-11-10
+  checked_via: search-snippet
+
+- id: dcc-mandalay-bay-tram
+  title: Doppelmayr Cable Car, Las Vegas Mandalay Bay Tram (4 stations, 36 km/h, headway 220 s, dwell 50 s)
+  publisher: Doppelmayr Cable Car GmbH
+  url: https://dcc.at/references/las-vegas-mandalay-bay-tram
+  licence: © Doppelmayr; numbers cited as facts
+  access: free
+  retrieved: 2026-11-10
+  checked_via: search-snippet
+
+- id: dcc-oakland-airport-connector
+  title: Doppelmayr Cable Car, Oakland Airport Connector (pinched loop, 4 trains of 113 passengers, headway 280 s, about 1,500 p/h/dir)
+  publisher: Doppelmayr Cable Car GmbH
+  url: https://dcc.at/references/oakland-airport-connector
+  licence: © Doppelmayr; numbers cited as facts
+  access: free
+  retrieved: 2026-11-10
+  checked_via: search-snippet
+
+- id: doppelmayr-citycenter-shuttle
+  title: Doppelmayr, CLS MGM CityCenter Shuttle (650 m, 2 trains of 132 passengers, 10.5 m/s, 3,000 p/h/dir)
+  publisher: Doppelmayr Seilbahnen GmbH
+  url: https://doppelmayr.com/fi/tuotteet/viitteet/cls-mgm-citycenter-shuttle
+  licence: © Doppelmayr; numbers cited as facts
+  access: free
+  retrieved: 2026-11-10
+  checked_via: search-snippet
+
+- id: doppelmayr-mexico-airport-shuttle
+  title: Doppelmayr press release, Cable Liner Shuttle for Mexico City airport (3,025 m, one train of four cabins, 12.5 m/s)
+  publisher: Doppelmayr Seilbahnen GmbH
+  url: https://newsroom.doppelmayr.com/en/doppelmayr/press/cable-liner-shuttle-for-largest-airport-in-mexico
+  licence: © Doppelmayr; numbers cited as facts
+  access: free
+  retrieved: 2026-11-10
+  checked_via: search-snippet
+
+- id: wikipedia-cable-liner
+  title: Wikipedia, Cable Liner (manufacturer claims up to 4 km and 7,000 p/h/dir; spans over 67 m between supports)
+  publisher: Wikipedia contributors
+  url: https://en.wikipedia.org/wiki/Cable_Liner
+  licence: CC BY-SA 4.0; numbers cited as facts
+  access: free
+  retrieved: 2026-11-10
+  checked_via: search-snippet
+  kind: secondary

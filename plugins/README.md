@@ -6,6 +6,8 @@ Plugins add modes, parameters, tools and calculations to MobSimLab ([ADR-0036](.
 |--------|----|------|
 | [aerial-lift](aerial-lift/) | `org.mobsimlab.aerial-lift` | Modes `cable_car` (MGD, 2S, 3S, funitel, pulsed) and `aerial_tramway`, context key `ropeway_system`, `ropeway.*` parameters, the **Cable car** tool on the straight spans kit ([ADR-0037](../docs/adr/0037-cable-car-and-ferry-lines.md)) |
 | [ferry](ferry/) | `org.mobsimlab.ferry` | Mode `ferry`, context key `vessel_type` (monohull, catamaran, hydrofoil), `ferry.*` parameters, the **Ferry** tool on the water route kit. Car ferries come later. |
+| [noise](noise/) | `org.mobsimlab.noise` | The noise map: calculation `noise_estimate` and map layer `noise_band` ([ADR-0038](../docs/adr/0038-service-line-noise-map.md)) |
+| [people-mover](people-mover/) | `org.mobsimlab.people-mover` | Modes `people_mover` (pinched loop with detachable trains) and `people_mover_shuttle` (two trains on a fixed rope), context key `apm_system`, `people_mover.*` parameters, the **People mover** tool on the straight spans kit: cable-hauled trains on an elevated guideway with piers ([ADR-0037 §7](../docs/adr/0037-cable-car-and-ferry-lines.md)) |
 
 ## What a plugin can contribute today
 
@@ -28,6 +30,6 @@ validates every plugin and writes `apps/web/src/plugins/bundled.generated.json`,
 
 ## What the kits check, and what not yet
 
-- **Straight spans kit:** straight sections, automatic towers within the span limit that keep the recommended clearance under the loaded cabin with rope sag, span, clearance, tower height, station angle and capacity checks, running time, cabin interval or shuttle cycle, capacity and cabin count. The ground is a straight line between the station heights the planner types in; terrain and building heights come later.
+- **Straight spans kit:** used for ropeways (cabins on towers) and cable-hauled people movers (trains on a guideway carried by piers; the mode's `parameterPrefix` names its parameters, and trains are counted from the round trip because they stop in stations). Straight sections, automatic towers within the span limit that keep the recommended clearance under the loaded cabin with rope sag, span, clearance, tower height, station angle and capacity checks, running time, cabin interval or shuttle cycle, capacity and cabin count. The ground is a straight line between the station heights the planner types in; terrain and building heights come later.
 - **Water route kit:** legs through the planner's via points, speed zones, berthing manoeuvre, dwell from gangway throughput, vessel blocks, and a berth check that runs three hours of service on the segment engine with each pier's berths as a reservable resource. Routing on an OSM water graph, bridges, locks and depth come later.
 - Lines from both tools ride in the journey planner as frequency patterns. Drawings are kept in the browser per project until projects store drawings.

@@ -29,7 +29,7 @@ import type { MessageKey } from "../i18n/messages";
 import { SpanLineEditor } from "../kits/SpanLineEditor";
 import { WaterRouteEditor } from "../kits/WaterRouteEditor";
 import { MapView } from "../map/MapView";
-import { pluginTools } from "../plugins/registry";
+import { findMode, pluginTools } from "../plugins/registry";
 import { can, type Project, type ProjectsApi } from "../projects/api";
 import {
   BackIcon,
@@ -349,6 +349,7 @@ export function Workspace({
           )}
           {project && tab === "create" && editable && chosenPlugin?.kit === "straight-spans" && (
             <SpanLineEditor
+              key={`${projectId}-${chosenPlugin.id}`}
               map={map}
               panel={panel}
               tool={chosenPlugin}
@@ -415,18 +416,21 @@ export function Workspace({
                       ["rail", TrainIcon, t("create.rail"), t("create.railHint"), "bg-red-100 text-red-900"],
                     ] as const),
                     // Tools contributed by plugins (ADR-0036 §6): cable car and ferry are bundled.
-                    ...PLUGIN_TOOLS.map(
-                      (x) =>
-                        [
-                          x.id,
-                          x.kit === "water-route" ? FerryIcon : CableIcon,
-                          x.label,
-                          x.hint ?? "",
-                          x.kit === "water-route"
-                            ? "bg-cyan-100 text-cyan-900"
+                    ...PLUGIN_TOOLS.map((x) => {
+                      // A guideway tool (people mover) gets the train icon, a ropeway the cable car.
+                      const guided = x.modes.some((m) => findMode(m)?.mode.family === "guided");
+                      return [
+                        x.id,
+                        x.kit === "water-route" ? FerryIcon : guided ? TrainIcon : CableIcon,
+                        x.label,
+                        x.hint ?? "",
+                        x.kit === "water-route"
+                          ? "bg-cyan-100 text-cyan-900"
+                          : guided
+                            ? "bg-teal-100 text-teal-900"
                             : "bg-violet-100 text-violet-900",
-                        ] as const,
-                    ),
+                      ] as const;
+                    }),
                   ].map(([kind, Icon, title, hint, colour]) => (
                     <button
                       key={kind}

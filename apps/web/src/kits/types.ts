@@ -30,6 +30,10 @@ export interface SpanSystem {
   terminal_dwell_s: number;
   reserve_share: number;
   capacity_ceiling_pphpd?: number;
+  /** Cabins on a rope (default) or people mover trains on a guideway: the words and the vehicle count. */
+  carrier?: "cabin" | "train";
+  /** Prefix of the plugin parameters the findings name (default `ropeway`). */
+  parameter_prefix?: string;
 }
 
 export type StationKind = "terminal" | "intermediate" | "angle";

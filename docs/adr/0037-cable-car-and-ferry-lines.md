@@ -105,6 +105,7 @@ Follow the ranking in [R1 §3](../research/r1-cable-car-and-ferry.md#3-other-pub
 
 - **Funicular** ships with this work as a rail mode (`funicular`, GTFS 7) in the railway tool: steep-gradient single track with a passing loop and two counterweighted cars, timetabled as a shuttle.
 - **Next:** automated people mover (a rail mode with a guideway system; cable-driven APMs use the straight spans kit), rack railway (rail mode with rack sections), public lifts and outdoor escalators (walk links with capacity and wait), trackless tram (street mode, catalogue only).
+- **Built (2026-11-10):** cable-hauled people movers as the bundled plugin `org.mobsimlab.people-mover` on the straight spans kit: a pinched loop with detachable trains that stop in every station (`people_mover`) and a shuttle with two trains on a fixed rope (`people_mover_shuttle`). The kit takes a `carrier` (cabins on towers, or trains on a guideway carried by piers, where the "rope" is the running level, the "cabin bottom" the underside of the guideway and sag is zero) and counts trains from the round trip time instead of the spacing on the rope. Values come from Doppelmayr's Cable Liner references (Venice, Las Vegas, Oakland, Mexico City). Self-propelled people movers stay a later rail mode.
 - **Separate ADR later:** demand-responsive transport and on-demand pods or water taxis, which need a dispatch model.
 - **Excluded** (product owner, 2026-11-02): monorail, air taxis (eVTOL) and hyperloop, because they are not economically sustainable as public transport.
 
