@@ -5,14 +5,16 @@
 export const pluginsEn = {
   "admin.plugins": "Plugins",
   "plugins.title": "Plugins",
-  "plugins.intro": "Plugins add transport modes, tools and calculations. Turn on the ones this project uses; turning one off hides its tools and keeps what was drawn with it.",
+  "plugins.intro":
+    "Plugins add transport modes, tools and calculations. Turn on the ones this project uses; turning one off hides its tools and keeps what was drawn with it.",
   "plugins.bundled": "Comes with MobSimLab",
   "plugins.by": "By {publisher}",
   "plugins.versionN": "Version {version}",
   "plugins.adds": "Adds: {list}",
   "plugins.uses": "Uses: {list}",
   "plugins.parameters": "{count} assumption values",
-  "plugins.missing": "Version {version} was removed from this MobSimLab. Pick another version to use it again.",
+  "plugins.missing":
+    "Version {version} was removed from this MobSimLab. Pick another version to use it again.",
   "plugins.versionOf": "Version of {name}",
   "plugins.useIn": "Use {name} in this project",
   "plugins.ownerOnly": "Only the project's Owner can turn plugins on or off.",
@@ -24,7 +26,8 @@ export const pluginsEn = {
   "plugins.perm.writeResults": "saves its own results",
   "plugins.perm.writeScenario": "proposes changes to the scenario",
   "plugins.installTitle": "Install a plugin",
-  "plugins.installIntro": "Upload a .msplugin file. MobSimLab checks it and shows what it adds before you install it. Installed plugins can add modes, tools, parameters and sources; plugins with their own code come later.",
+  "plugins.installIntro":
+    "Upload a .msplugin file. MobSimLab checks it and shows what it adds before you install it. Installed plugins can add modes, tools, parameters and sources; plugins with their own code come later.",
   "plugins.choose": "Choose a .msplugin file",
   "plugins.problems": "This plugin cannot be installed:",
   "plugins.install": "Install",
@@ -34,7 +37,8 @@ export const pluginsEn = {
   "plugins.inProjects": "Used in {count} projects",
   "plugins.bundledTitle": "Bundled with MobSimLab",
   "plugins.keys": "Trusted publishers",
-  "plugins.keysIntro": "A plugin installs only when its publisher signed it with one of these keys (ECDSA P-256 or Ed25519, PEM).",
+  "plugins.keysIntro":
+    "A plugin installs only when its publisher signed it with one of these keys (ECDSA P-256 or Ed25519, PEM).",
   "plugins.noKeys": "No trusted keys yet.",
   "plugins.removeKey": "Stop trusting {name}",
   "plugins.addKey": "Add key",
@@ -45,7 +49,8 @@ export const pluginsEn = {
   "plugins.untrusted": "Signed with a key this instance does not trust",
   "plugins.unsigned": "Not signed",
   "plugins.licences": "Licences: code {code}, data {data}",
-  "plugins.removeConfirm": "{name} is turned on in {count} projects. Remove it anyway? It is turned off in them and their drawings are kept."
+  "plugins.removeConfirm":
+    "{name} is turned on in {count} projects. Remove it anyway? It is turned off in them and their drawings are kept.",
 } as const;
 
 /** Keys of the plugin messages. */
@@ -56,17 +61,20 @@ export const PLUGIN_MESSAGES = {
   de: {
     "admin.plugins": "Plugins",
     "plugins.title": "Plugins",
-    "plugins.intro": "Plugins fügen Verkehrsmittel, Werkzeuge und Berechnungen hinzu. Schalten Sie die ein, die dieses Projekt nutzt; ausgeschaltet verschwinden ihre Werkzeuge, Gezeichnetes bleibt erhalten.",
+    "plugins.intro":
+      "Plugins fügen Verkehrsmittel, Werkzeuge und Berechnungen hinzu. Schalten Sie die ein, die dieses Projekt nutzt; ausgeschaltet verschwinden ihre Werkzeuge, Gezeichnetes bleibt erhalten.",
     "plugins.bundled": "Gehört zu MobSimLab",
     "plugins.by": "Von {publisher}",
     "plugins.versionN": "Version {version}",
     "plugins.adds": "Fügt hinzu: {list}",
     "plugins.uses": "Nutzt: {list}",
     "plugins.parameters": "{count} Annahmewerte",
-    "plugins.missing": "Version {version} wurde aus diesem MobSimLab entfernt. Wählen Sie eine andere Version, um es wieder zu nutzen.",
+    "plugins.missing":
+      "Version {version} wurde aus diesem MobSimLab entfernt. Wählen Sie eine andere Version, um es wieder zu nutzen.",
     "plugins.versionOf": "Version von {name}",
     "plugins.useIn": "{name} in diesem Projekt nutzen",
-    "plugins.ownerOnly": "Nur die Eigentümerin oder der Eigentümer des Projekts kann Plugins ein- oder ausschalten.",
+    "plugins.ownerOnly":
+      "Nur die Eigentümerin oder der Eigentümer des Projekts kann Plugins ein- oder ausschalten.",
     "plugins.perm.readNetwork": "das Netz des Projekts",
     "plugins.perm.readTimetable": "den Fahrplan",
     "plugins.perm.readFleet": "Fahrzeuge und Flotte",
@@ -75,7 +83,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "speichert eigene Ergebnisse",
     "plugins.perm.writeScenario": "schlägt Änderungen am Szenario vor",
     "plugins.installTitle": "Plugin installieren",
-    "plugins.installIntro": "Laden Sie eine .msplugin-Datei hoch. MobSimLab prüft sie und zeigt vor der Installation, was sie hinzufügt. Installierte Plugins können Verkehrsmittel, Werkzeuge, Parameter und Quellen hinzufügen; Plugins mit eigenem Code folgen später.",
+    "plugins.installIntro":
+      "Laden Sie eine .msplugin-Datei hoch. MobSimLab prüft sie und zeigt vor der Installation, was sie hinzufügt. Installierte Plugins können Verkehrsmittel, Werkzeuge, Parameter und Quellen hinzufügen; Plugins mit eigenem Code folgen später.",
     "plugins.choose": "Eine .msplugin-Datei wählen",
     "plugins.problems": "Dieses Plugin kann nicht installiert werden:",
     "plugins.install": "Installieren",
@@ -85,7 +94,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.inProjects": "In {count} Projekten genutzt",
     "plugins.bundledTitle": "Mit MobSimLab geliefert",
     "plugins.keys": "Vertrauenswürdige Herausgeber",
-    "plugins.keysIntro": "Ein Plugin wird nur installiert, wenn sein Herausgeber es mit einem dieser Schlüssel signiert hat (ECDSA P-256 oder Ed25519, PEM).",
+    "plugins.keysIntro":
+      "Ein Plugin wird nur installiert, wenn sein Herausgeber es mit einem dieser Schlüssel signiert hat (ECDSA P-256 oder Ed25519, PEM).",
     "plugins.noKeys": "Noch keine vertrauenswürdigen Schlüssel.",
     "plugins.removeKey": "{name} nicht mehr vertrauen",
     "plugins.addKey": "Schlüssel hinzufügen",
@@ -96,19 +106,22 @@ export const PLUGIN_MESSAGES = {
     "plugins.untrusted": "Mit einem Schlüssel signiert, dem diese Instanz nicht vertraut",
     "plugins.unsigned": "Nicht signiert",
     "plugins.licences": "Lizenzen: Code {code}, Daten {data}",
-    "plugins.removeConfirm": "{name} ist in {count} Projekten eingeschaltet. Trotzdem entfernen? Es wird dort ausgeschaltet, die Zeichnungen bleiben erhalten."
+    "plugins.removeConfirm":
+      "{name} ist in {count} Projekten eingeschaltet. Trotzdem entfernen? Es wird dort ausgeschaltet, die Zeichnungen bleiben erhalten.",
   },
   fr: {
     "admin.plugins": "Extensions",
     "plugins.title": "Extensions",
-    "plugins.intro": "Les extensions ajoutent des modes de transport, des outils et des calculs. Activez celles que ce projet utilise ; désactivée, une extension masque ses outils et conserve ce qui a été dessiné.",
+    "plugins.intro":
+      "Les extensions ajoutent des modes de transport, des outils et des calculs. Activez celles que ce projet utilise ; désactivée, une extension masque ses outils et conserve ce qui a été dessiné.",
     "plugins.bundled": "Fournie avec MobSimLab",
     "plugins.by": "Par {publisher}",
     "plugins.versionN": "Version {version}",
     "plugins.adds": "Ajoute : {list}",
     "plugins.uses": "Utilise : {list}",
     "plugins.parameters": "{count} valeurs d'hypothèse",
-    "plugins.missing": "La version {version} a été retirée de ce MobSimLab. Choisissez une autre version pour l'utiliser à nouveau.",
+    "plugins.missing":
+      "La version {version} a été retirée de ce MobSimLab. Choisissez une autre version pour l'utiliser à nouveau.",
     "plugins.versionOf": "Version de {name}",
     "plugins.useIn": "Utiliser {name} dans ce projet",
     "plugins.ownerOnly": "Seul le propriétaire du projet peut activer ou désactiver les extensions.",
@@ -120,7 +133,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "enregistre ses propres résultats",
     "plugins.perm.writeScenario": "propose des modifications du scénario",
     "plugins.installTitle": "Installer une extension",
-    "plugins.installIntro": "Envoyez un fichier .msplugin. MobSimLab le vérifie et montre ce qu'il ajoute avant l'installation. Les extensions installées peuvent ajouter des modes, des outils, des paramètres et des sources ; celles avec leur propre code viendront plus tard.",
+    "plugins.installIntro":
+      "Envoyez un fichier .msplugin. MobSimLab le vérifie et montre ce qu'il ajoute avant l'installation. Les extensions installées peuvent ajouter des modes, des outils, des paramètres et des sources ; celles avec leur propre code viendront plus tard.",
     "plugins.choose": "Choisir un fichier .msplugin",
     "plugins.problems": "Cette extension ne peut pas être installée :",
     "plugins.install": "Installer",
@@ -130,30 +144,35 @@ export const PLUGIN_MESSAGES = {
     "plugins.inProjects": "Utilisée dans {count} projets",
     "plugins.bundledTitle": "Fournies avec MobSimLab",
     "plugins.keys": "Éditeurs de confiance",
-    "plugins.keysIntro": "Une extension s'installe seulement si son éditeur l'a signée avec l'une de ces clés (ECDSA P-256 ou Ed25519, PEM).",
+    "plugins.keysIntro":
+      "Une extension s'installe seulement si son éditeur l'a signée avec l'une de ces clés (ECDSA P-256 ou Ed25519, PEM).",
     "plugins.noKeys": "Aucune clé de confiance pour l'instant.",
     "plugins.removeKey": "Ne plus faire confiance à {name}",
     "plugins.addKey": "Ajouter la clé",
     "plugins.keyName": "Nom de l'éditeur",
     "plugins.keyPem": "Clé publique",
-    "plugins.allowUnsigned": "Autoriser les extensions non signées (mode développement, propriétaires seulement)",
+    "plugins.allowUnsigned":
+      "Autoriser les extensions non signées (mode développement, propriétaires seulement)",
     "plugins.signedBy": "Signée par {name}",
     "plugins.untrusted": "Signée avec une clé à laquelle cette instance ne fait pas confiance",
     "plugins.unsigned": "Non signée",
     "plugins.licences": "Licences : code {code}, données {data}",
-    "plugins.removeConfirm": "{name} est activée dans {count} projets. La retirer quand même ? Elle y sera désactivée et les dessins seront conservés."
+    "plugins.removeConfirm":
+      "{name} est activée dans {count} projets. La retirer quand même ? Elle y sera désactivée et les dessins seront conservés.",
   },
   es: {
     "admin.plugins": "Complementos",
     "plugins.title": "Complementos",
-    "plugins.intro": "Los complementos añaden modos de transporte, herramientas y cálculos. Active los que usa este proyecto; al desactivar uno se ocultan sus herramientas y se conserva lo dibujado.",
+    "plugins.intro":
+      "Los complementos añaden modos de transporte, herramientas y cálculos. Active los que usa este proyecto; al desactivar uno se ocultan sus herramientas y se conserva lo dibujado.",
     "plugins.bundled": "Incluido en MobSimLab",
     "plugins.by": "De {publisher}",
     "plugins.versionN": "Versión {version}",
     "plugins.adds": "Añade: {list}",
     "plugins.uses": "Usa: {list}",
     "plugins.parameters": "{count} valores de supuestos",
-    "plugins.missing": "La versión {version} se eliminó de este MobSimLab. Elija otra versión para volver a usarlo.",
+    "plugins.missing":
+      "La versión {version} se eliminó de este MobSimLab. Elija otra versión para volver a usarlo.",
     "plugins.versionOf": "Versión de {name}",
     "plugins.useIn": "Usar {name} en este proyecto",
     "plugins.ownerOnly": "Solo el propietario del proyecto puede activar o desactivar complementos.",
@@ -165,7 +184,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "guarda sus propios resultados",
     "plugins.perm.writeScenario": "propone cambios al escenario",
     "plugins.installTitle": "Instalar un complemento",
-    "plugins.installIntro": "Suba un archivo .msplugin. MobSimLab lo comprueba y muestra lo que añade antes de instalarlo. Los complementos instalados pueden añadir modos, herramientas, parámetros y fuentes; los que traen su propio código llegarán más adelante.",
+    "plugins.installIntro":
+      "Suba un archivo .msplugin. MobSimLab lo comprueba y muestra lo que añade antes de instalarlo. Los complementos instalados pueden añadir modos, herramientas, parámetros y fuentes; los que traen su propio código llegarán más adelante.",
     "plugins.choose": "Elegir un archivo .msplugin",
     "plugins.problems": "Este complemento no se puede instalar:",
     "plugins.install": "Instalar",
@@ -175,7 +195,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.inProjects": "Usado en {count} proyectos",
     "plugins.bundledTitle": "Incluidos en MobSimLab",
     "plugins.keys": "Editores de confianza",
-    "plugins.keysIntro": "Un complemento solo se instala si su editor lo firmó con una de estas claves (ECDSA P-256 o Ed25519, PEM).",
+    "plugins.keysIntro":
+      "Un complemento solo se instala si su editor lo firmó con una de estas claves (ECDSA P-256 o Ed25519, PEM).",
     "plugins.noKeys": "Aún no hay claves de confianza.",
     "plugins.removeKey": "Dejar de confiar en {name}",
     "plugins.addKey": "Añadir clave",
@@ -186,19 +207,22 @@ export const PLUGIN_MESSAGES = {
     "plugins.untrusted": "Firmado con una clave en la que esta instancia no confía",
     "plugins.unsigned": "Sin firma",
     "plugins.licences": "Licencias: código {code}, datos {data}",
-    "plugins.removeConfirm": "{name} está activado en {count} proyectos. ¿Quitarlo de todos modos? Se desactivará en ellos y los dibujos se conservarán."
+    "plugins.removeConfirm":
+      "{name} está activado en {count} proyectos. ¿Quitarlo de todos modos? Se desactivará en ellos y los dibujos se conservarán.",
   },
   pt: {
     "admin.plugins": "Plugins",
     "plugins.title": "Plugins",
-    "plugins.intro": "Plugins adicionam modos de transporte, ferramentas e cálculos. Ative os que este projeto usa; ao desativar um, as ferramentas somem e o que foi desenhado é mantido.",
+    "plugins.intro":
+      "Plugins adicionam modos de transporte, ferramentas e cálculos. Ative os que este projeto usa; ao desativar um, as ferramentas somem e o que foi desenhado é mantido.",
     "plugins.bundled": "Vem com o MobSimLab",
     "plugins.by": "Por {publisher}",
     "plugins.versionN": "Versão {version}",
     "plugins.adds": "Adiciona: {list}",
     "plugins.uses": "Usa: {list}",
     "plugins.parameters": "{count} valores de premissas",
-    "plugins.missing": "A versão {version} foi removida deste MobSimLab. Escolha outra versão para usá-lo de novo.",
+    "plugins.missing":
+      "A versão {version} foi removida deste MobSimLab. Escolha outra versão para usá-lo de novo.",
     "plugins.versionOf": "Versão de {name}",
     "plugins.useIn": "Usar {name} neste projeto",
     "plugins.ownerOnly": "Só o proprietário do projeto pode ativar ou desativar plugins.",
@@ -210,7 +234,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "salva os próprios resultados",
     "plugins.perm.writeScenario": "propõe mudanças no cenário",
     "plugins.installTitle": "Instalar um plugin",
-    "plugins.installIntro": "Envie um arquivo .msplugin. O MobSimLab o verifica e mostra o que ele adiciona antes da instalação. Plugins instalados podem adicionar modos, ferramentas, parâmetros e fontes; plugins com código próprio virão depois.",
+    "plugins.installIntro":
+      "Envie um arquivo .msplugin. O MobSimLab o verifica e mostra o que ele adiciona antes da instalação. Plugins instalados podem adicionar modos, ferramentas, parâmetros e fontes; plugins com código próprio virão depois.",
     "plugins.choose": "Escolher um arquivo .msplugin",
     "plugins.problems": "Este plugin não pode ser instalado:",
     "plugins.install": "Instalar",
@@ -220,7 +245,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.inProjects": "Usado em {count} projetos",
     "plugins.bundledTitle": "Incluídos no MobSimLab",
     "plugins.keys": "Editores confiáveis",
-    "plugins.keysIntro": "Um plugin só é instalado se o editor o assinou com uma destas chaves (ECDSA P-256 ou Ed25519, PEM).",
+    "plugins.keysIntro":
+      "Um plugin só é instalado se o editor o assinou com uma destas chaves (ECDSA P-256 ou Ed25519, PEM).",
     "plugins.noKeys": "Nenhuma chave confiável ainda.",
     "plugins.removeKey": "Deixar de confiar em {name}",
     "plugins.addKey": "Adicionar chave",
@@ -231,19 +257,22 @@ export const PLUGIN_MESSAGES = {
     "plugins.untrusted": "Assinado com uma chave em que esta instância não confia",
     "plugins.unsigned": "Sem assinatura",
     "plugins.licences": "Licenças: código {code}, dados {data}",
-    "plugins.removeConfirm": "{name} está ativado em {count} projetos. Remover mesmo assim? Ele será desativado neles e os desenhos serão mantidos."
+    "plugins.removeConfirm":
+      "{name} está ativado em {count} projetos. Remover mesmo assim? Ele será desativado neles e os desenhos serão mantidos.",
   },
   it: {
     "admin.plugins": "Plugin",
     "plugins.title": "Plugin",
-    "plugins.intro": "I plugin aggiungono modi di trasporto, strumenti e calcoli. Attiva quelli usati da questo progetto; disattivandone uno i suoi strumenti spariscono e ciò che è stato disegnato resta.",
+    "plugins.intro":
+      "I plugin aggiungono modi di trasporto, strumenti e calcoli. Attiva quelli usati da questo progetto; disattivandone uno i suoi strumenti spariscono e ciò che è stato disegnato resta.",
     "plugins.bundled": "Incluso in MobSimLab",
     "plugins.by": "Di {publisher}",
     "plugins.versionN": "Versione {version}",
     "plugins.adds": "Aggiunge: {list}",
     "plugins.uses": "Usa: {list}",
     "plugins.parameters": "{count} valori di ipotesi",
-    "plugins.missing": "La versione {version} è stata rimossa da questo MobSimLab. Scegli un'altra versione per usarlo di nuovo.",
+    "plugins.missing":
+      "La versione {version} è stata rimossa da questo MobSimLab. Scegli un'altra versione per usarlo di nuovo.",
     "plugins.versionOf": "Versione di {name}",
     "plugins.useIn": "Usa {name} in questo progetto",
     "plugins.ownerOnly": "Solo il proprietario del progetto può attivare o disattivare i plugin.",
@@ -255,7 +284,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "salva i propri risultati",
     "plugins.perm.writeScenario": "propone modifiche allo scenario",
     "plugins.installTitle": "Installa un plugin",
-    "plugins.installIntro": "Carica un file .msplugin. MobSimLab lo controlla e mostra cosa aggiunge prima dell'installazione. I plugin installati possono aggiungere modi, strumenti, parametri e fonti; quelli con codice proprio arriveranno più avanti.",
+    "plugins.installIntro":
+      "Carica un file .msplugin. MobSimLab lo controlla e mostra cosa aggiunge prima dell'installazione. I plugin installati possono aggiungere modi, strumenti, parametri e fonti; quelli con codice proprio arriveranno più avanti.",
     "plugins.choose": "Scegli un file .msplugin",
     "plugins.problems": "Questo plugin non può essere installato:",
     "plugins.install": "Installa",
@@ -265,7 +295,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.inProjects": "Usato in {count} progetti",
     "plugins.bundledTitle": "Inclusi in MobSimLab",
     "plugins.keys": "Editori fidati",
-    "plugins.keysIntro": "Un plugin si installa solo se l'editore l'ha firmato con una di queste chiavi (ECDSA P-256 o Ed25519, PEM).",
+    "plugins.keysIntro":
+      "Un plugin si installa solo se l'editore l'ha firmato con una di queste chiavi (ECDSA P-256 o Ed25519, PEM).",
     "plugins.noKeys": "Nessuna chiave fidata.",
     "plugins.removeKey": "Non fidarti più di {name}",
     "plugins.addKey": "Aggiungi chiave",
@@ -276,19 +307,22 @@ export const PLUGIN_MESSAGES = {
     "plugins.untrusted": "Firmato con una chiave di cui questa istanza non si fida",
     "plugins.unsigned": "Non firmato",
     "plugins.licences": "Licenze: codice {code}, dati {data}",
-    "plugins.removeConfirm": "{name} è attivo in {count} progetti. Rimuoverlo comunque? Verrà disattivato lì e i disegni resteranno."
+    "plugins.removeConfirm":
+      "{name} è attivo in {count} progetti. Rimuoverlo comunque? Verrà disattivato lì e i disegni resteranno.",
   },
   nl: {
     "admin.plugins": "Plug-ins",
     "plugins.title": "Plug-ins",
-    "plugins.intro": "Plug-ins voegen vervoerswijzen, gereedschappen en berekeningen toe. Zet aan wat dit project gebruikt; uitzetten verbergt de gereedschappen en bewaart wat ermee getekend is.",
+    "plugins.intro":
+      "Plug-ins voegen vervoerswijzen, gereedschappen en berekeningen toe. Zet aan wat dit project gebruikt; uitzetten verbergt de gereedschappen en bewaart wat ermee getekend is.",
     "plugins.bundled": "Hoort bij MobSimLab",
     "plugins.by": "Door {publisher}",
     "plugins.versionN": "Versie {version}",
     "plugins.adds": "Voegt toe: {list}",
     "plugins.uses": "Gebruikt: {list}",
     "plugins.parameters": "{count} aannamewaarden",
-    "plugins.missing": "Versie {version} is uit deze MobSimLab verwijderd. Kies een andere versie om hem weer te gebruiken.",
+    "plugins.missing":
+      "Versie {version} is uit deze MobSimLab verwijderd. Kies een andere versie om hem weer te gebruiken.",
     "plugins.versionOf": "Versie van {name}",
     "plugins.useIn": "{name} in dit project gebruiken",
     "plugins.ownerOnly": "Alleen de eigenaar van het project kan plug-ins aan- of uitzetten.",
@@ -300,7 +334,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "bewaart eigen resultaten",
     "plugins.perm.writeScenario": "stelt wijzigingen in het scenario voor",
     "plugins.installTitle": "Plug-in installeren",
-    "plugins.installIntro": "Upload een .msplugin-bestand. MobSimLab controleert het en laat zien wat het toevoegt voordat u installeert. Geïnstalleerde plug-ins kunnen vervoerswijzen, gereedschappen, parameters en bronnen toevoegen; plug-ins met eigen code volgen later.",
+    "plugins.installIntro":
+      "Upload een .msplugin-bestand. MobSimLab controleert het en laat zien wat het toevoegt voordat u installeert. Geïnstalleerde plug-ins kunnen vervoerswijzen, gereedschappen, parameters en bronnen toevoegen; plug-ins met eigen code volgen later.",
     "plugins.choose": "Kies een .msplugin-bestand",
     "plugins.problems": "Deze plug-in kan niet worden geïnstalleerd:",
     "plugins.install": "Installeren",
@@ -310,7 +345,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.inProjects": "Gebruikt in {count} projecten",
     "plugins.bundledTitle": "Meegeleverd met MobSimLab",
     "plugins.keys": "Vertrouwde uitgevers",
-    "plugins.keysIntro": "Een plug-in wordt alleen geïnstalleerd als de uitgever hem met een van deze sleutels heeft ondertekend (ECDSA P-256 of Ed25519, PEM).",
+    "plugins.keysIntro":
+      "Een plug-in wordt alleen geïnstalleerd als de uitgever hem met een van deze sleutels heeft ondertekend (ECDSA P-256 of Ed25519, PEM).",
     "plugins.noKeys": "Nog geen vertrouwde sleutels.",
     "plugins.removeKey": "{name} niet meer vertrouwen",
     "plugins.addKey": "Sleutel toevoegen",
@@ -321,19 +357,22 @@ export const PLUGIN_MESSAGES = {
     "plugins.untrusted": "Ondertekend met een sleutel die deze instantie niet vertrouwt",
     "plugins.unsigned": "Niet ondertekend",
     "plugins.licences": "Licenties: code {code}, gegevens {data}",
-    "plugins.removeConfirm": "{name} staat aan in {count} projecten. Toch verwijderen? Hij wordt daar uitgezet en de tekeningen blijven bewaard."
+    "plugins.removeConfirm":
+      "{name} staat aan in {count} projecten. Toch verwijderen? Hij wordt daar uitgezet en de tekeningen blijven bewaard.",
   },
   pl: {
     "admin.plugins": "Wtyczki",
     "plugins.title": "Wtyczki",
-    "plugins.intro": "Wtyczki dodają środki transportu, narzędzia i obliczenia. Włącz te, których używa ten projekt; wyłączenie ukrywa narzędzia i zachowuje to, co narysowano.",
+    "plugins.intro":
+      "Wtyczki dodają środki transportu, narzędzia i obliczenia. Włącz te, których używa ten projekt; wyłączenie ukrywa narzędzia i zachowuje to, co narysowano.",
     "plugins.bundled": "Dołączona do MobSimLab",
     "plugins.by": "Od {publisher}",
     "plugins.versionN": "Wersja {version}",
     "plugins.adds": "Dodaje: {list}",
     "plugins.uses": "Korzysta z: {list}",
     "plugins.parameters": "Wartości założeń: {count}",
-    "plugins.missing": "Wersję {version} usunięto z tego MobSimLab. Wybierz inną wersję, aby znów jej używać.",
+    "plugins.missing":
+      "Wersję {version} usunięto z tego MobSimLab. Wybierz inną wersję, aby znów jej używać.",
     "plugins.versionOf": "Wersja {name}",
     "plugins.useIn": "Używaj {name} w tym projekcie",
     "plugins.ownerOnly": "Tylko właściciel projektu może włączać i wyłączać wtyczki.",
@@ -345,7 +384,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "zapisuje własne wyniki",
     "plugins.perm.writeScenario": "proponuje zmiany scenariusza",
     "plugins.installTitle": "Zainstaluj wtyczkę",
-    "plugins.installIntro": "Prześlij plik .msplugin. MobSimLab sprawdza go i pokazuje, co dodaje, zanim go zainstalujesz. Zainstalowane wtyczki mogą dodawać środki transportu, narzędzia, parametry i źródła; wtyczki z własnym kodem pojawią się później.",
+    "plugins.installIntro":
+      "Prześlij plik .msplugin. MobSimLab sprawdza go i pokazuje, co dodaje, zanim go zainstalujesz. Zainstalowane wtyczki mogą dodawać środki transportu, narzędzia, parametry i źródła; wtyczki z własnym kodem pojawią się później.",
     "plugins.choose": "Wybierz plik .msplugin",
     "plugins.problems": "Tej wtyczki nie można zainstalować:",
     "plugins.install": "Zainstaluj",
@@ -355,7 +395,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.inProjects": "Projekty, które jej używają: {count}",
     "plugins.bundledTitle": "Dołączone do MobSimLab",
     "plugins.keys": "Zaufani wydawcy",
-    "plugins.keysIntro": "Wtyczka zainstaluje się tylko wtedy, gdy wydawca podpisał ją jednym z tych kluczy (ECDSA P-256 lub Ed25519, PEM).",
+    "plugins.keysIntro":
+      "Wtyczka zainstaluje się tylko wtedy, gdy wydawca podpisał ją jednym z tych kluczy (ECDSA P-256 lub Ed25519, PEM).",
     "plugins.noKeys": "Brak zaufanych kluczy.",
     "plugins.removeKey": "Przestań ufać {name}",
     "plugins.addKey": "Dodaj klucz",
@@ -366,19 +407,22 @@ export const PLUGIN_MESSAGES = {
     "plugins.untrusted": "Podpisana kluczem, któremu ta instancja nie ufa",
     "plugins.unsigned": "Niepodpisana",
     "plugins.licences": "Licencje: kod {code}, dane {data}",
-    "plugins.removeConfirm": "{name} jest włączona w projektach: {count}. Usunąć mimo to? Zostanie tam wyłączona, a rysunki zostaną zachowane."
+    "plugins.removeConfirm":
+      "{name} jest włączona w projektach: {count}. Usunąć mimo to? Zostanie tam wyłączona, a rysunki zostaną zachowane.",
   },
   ru: {
     "admin.plugins": "Плагины",
     "plugins.title": "Плагины",
-    "plugins.intro": "Плагины добавляют виды транспорта, инструменты и расчёты. Включите те, что нужны проекту; при выключении инструменты скрываются, а нарисованное сохраняется.",
+    "plugins.intro":
+      "Плагины добавляют виды транспорта, инструменты и расчёты. Включите те, что нужны проекту; при выключении инструменты скрываются, а нарисованное сохраняется.",
     "plugins.bundled": "Входит в MobSimLab",
     "plugins.by": "Издатель: {publisher}",
     "plugins.versionN": "Версия {version}",
     "plugins.adds": "Добавляет: {list}",
     "plugins.uses": "Использует: {list}",
     "plugins.parameters": "Значений допущений: {count}",
-    "plugins.missing": "Версия {version} удалена из этого MobSimLab. Выберите другую версию, чтобы снова пользоваться плагином.",
+    "plugins.missing":
+      "Версия {version} удалена из этого MobSimLab. Выберите другую версию, чтобы снова пользоваться плагином.",
     "plugins.versionOf": "Версия {name}",
     "plugins.useIn": "Использовать {name} в этом проекте",
     "plugins.ownerOnly": "Включать и выключать плагины может только владелец проекта.",
@@ -390,7 +434,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "сохраняет свои результаты",
     "plugins.perm.writeScenario": "предлагает изменения сценария",
     "plugins.installTitle": "Установить плагин",
-    "plugins.installIntro": "Загрузите файл .msplugin. MobSimLab проверит его и покажет, что он добавляет, до установки. Установленные плагины могут добавлять виды транспорта, инструменты, параметры и источники; плагины со своим кодом появятся позже.",
+    "plugins.installIntro":
+      "Загрузите файл .msplugin. MobSimLab проверит его и покажет, что он добавляет, до установки. Установленные плагины могут добавлять виды транспорта, инструменты, параметры и источники; плагины со своим кодом появятся позже.",
     "plugins.choose": "Выбрать файл .msplugin",
     "plugins.problems": "Этот плагин нельзя установить:",
     "plugins.install": "Установить",
@@ -400,7 +445,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.inProjects": "Используется в проектах: {count}",
     "plugins.bundledTitle": "Входят в MobSimLab",
     "plugins.keys": "Доверенные издатели",
-    "plugins.keysIntro": "Плагин устанавливается, только если издатель подписал его одним из этих ключей (ECDSA P-256 или Ed25519, PEM).",
+    "plugins.keysIntro":
+      "Плагин устанавливается, только если издатель подписал его одним из этих ключей (ECDSA P-256 или Ed25519, PEM).",
     "plugins.noKeys": "Доверенных ключей пока нет.",
     "plugins.removeKey": "Больше не доверять {name}",
     "plugins.addKey": "Добавить ключ",
@@ -411,19 +457,22 @@ export const PLUGIN_MESSAGES = {
     "plugins.untrusted": "Подписан ключом, которому этот экземпляр не доверяет",
     "plugins.unsigned": "Не подписан",
     "plugins.licences": "Лицензии: код {code}, данные {data}",
-    "plugins.removeConfirm": "{name} включён в проектах: {count}. Всё равно удалить? Он будет там выключен, чертежи сохранятся."
+    "plugins.removeConfirm":
+      "{name} включён в проектах: {count}. Всё равно удалить? Он будет там выключен, чертежи сохранятся.",
   },
   uk: {
     "admin.plugins": "Плагіни",
     "plugins.title": "Плагіни",
-    "plugins.intro": "Плагіни додають види транспорту, інструменти та розрахунки. Увімкніть ті, що потрібні проєкту; вимкнення ховає інструменти й зберігає намальоване.",
+    "plugins.intro":
+      "Плагіни додають види транспорту, інструменти та розрахунки. Увімкніть ті, що потрібні проєкту; вимкнення ховає інструменти й зберігає намальоване.",
     "plugins.bundled": "Входить до MobSimLab",
     "plugins.by": "Видавець: {publisher}",
     "plugins.versionN": "Версія {version}",
     "plugins.adds": "Додає: {list}",
     "plugins.uses": "Використовує: {list}",
     "plugins.parameters": "Значень припущень: {count}",
-    "plugins.missing": "Версію {version} видалено з цього MobSimLab. Виберіть іншу версію, щоб знову користуватися плагіном.",
+    "plugins.missing":
+      "Версію {version} видалено з цього MobSimLab. Виберіть іншу версію, щоб знову користуватися плагіном.",
     "plugins.versionOf": "Версія {name}",
     "plugins.useIn": "Використовувати {name} у цьому проєкті",
     "plugins.ownerOnly": "Вмикати й вимикати плагіни може лише власник проєкту.",
@@ -435,7 +484,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "зберігає власні результати",
     "plugins.perm.writeScenario": "пропонує зміни сценарію",
     "plugins.installTitle": "Установити плагін",
-    "plugins.installIntro": "Завантажте файл .msplugin. MobSimLab перевірить його й покаже, що він додає, до встановлення. Установлені плагіни можуть додавати види транспорту, інструменти, параметри й джерела; плагіни з власним кодом з'являться пізніше.",
+    "plugins.installIntro":
+      "Завантажте файл .msplugin. MobSimLab перевірить його й покаже, що він додає, до встановлення. Установлені плагіни можуть додавати види транспорту, інструменти, параметри й джерела; плагіни з власним кодом з'являться пізніше.",
     "plugins.choose": "Вибрати файл .msplugin",
     "plugins.problems": "Цей плагін не можна встановити:",
     "plugins.install": "Установити",
@@ -445,7 +495,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.inProjects": "Використовується в проєктах: {count}",
     "plugins.bundledTitle": "Входять до MobSimLab",
     "plugins.keys": "Довірені видавці",
-    "plugins.keysIntro": "Плагін встановлюється, лише якщо видавець підписав його одним із цих ключів (ECDSA P-256 або Ed25519, PEM).",
+    "plugins.keysIntro":
+      "Плагін встановлюється, лише якщо видавець підписав його одним із цих ключів (ECDSA P-256 або Ed25519, PEM).",
     "plugins.noKeys": "Довірених ключів ще немає.",
     "plugins.removeKey": "Більше не довіряти {name}",
     "plugins.addKey": "Додати ключ",
@@ -456,19 +507,22 @@ export const PLUGIN_MESSAGES = {
     "plugins.untrusted": "Підписано ключем, якому цей екземпляр не довіряє",
     "plugins.unsigned": "Не підписано",
     "plugins.licences": "Ліцензії: код {code}, дані {data}",
-    "plugins.removeConfirm": "{name} увімкнено в проєктах: {count}. Усе одно видалити? Його там буде вимкнено, креслення збережуться."
+    "plugins.removeConfirm":
+      "{name} увімкнено в проєктах: {count}. Усе одно видалити? Його там буде вимкнено, креслення збережуться.",
   },
   tr: {
     "admin.plugins": "Eklentiler",
     "plugins.title": "Eklentiler",
-    "plugins.intro": "Eklentiler ulaşım türleri, araçlar ve hesaplamalar ekler. Bu projenin kullandıklarını açın; kapatılan eklentinin araçları gizlenir, çizilenler korunur.",
+    "plugins.intro":
+      "Eklentiler ulaşım türleri, araçlar ve hesaplamalar ekler. Bu projenin kullandıklarını açın; kapatılan eklentinin araçları gizlenir, çizilenler korunur.",
     "plugins.bundled": "MobSimLab ile gelir",
     "plugins.by": "Yayıncı: {publisher}",
     "plugins.versionN": "Sürüm {version}",
     "plugins.adds": "Ekler: {list}",
     "plugins.uses": "Kullanır: {list}",
     "plugins.parameters": "{count} varsayım değeri",
-    "plugins.missing": "{version} sürümü bu MobSimLab'den kaldırıldı. Yeniden kullanmak için başka bir sürüm seçin.",
+    "plugins.missing":
+      "{version} sürümü bu MobSimLab'den kaldırıldı. Yeniden kullanmak için başka bir sürüm seçin.",
     "plugins.versionOf": "{name} sürümü",
     "plugins.useIn": "{name} eklentisini bu projede kullan",
     "plugins.ownerOnly": "Eklentileri yalnızca proje sahibi açıp kapatabilir.",
@@ -480,7 +534,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "kendi sonuçlarını kaydeder",
     "plugins.perm.writeScenario": "senaryoda değişiklik önerir",
     "plugins.installTitle": "Eklenti kur",
-    "plugins.installIntro": "Bir .msplugin dosyası yükleyin. MobSimLab dosyayı denetler ve kurmadan önce ne eklediğini gösterir. Kurulan eklentiler ulaşım türleri, araçlar, parametreler ve kaynaklar ekleyebilir; kendi kodunu getiren eklentiler daha sonra gelecek.",
+    "plugins.installIntro":
+      "Bir .msplugin dosyası yükleyin. MobSimLab dosyayı denetler ve kurmadan önce ne eklediğini gösterir. Kurulan eklentiler ulaşım türleri, araçlar, parametreler ve kaynaklar ekleyebilir; kendi kodunu getiren eklentiler daha sonra gelecek.",
     "plugins.choose": "Bir .msplugin dosyası seçin",
     "plugins.problems": "Bu eklenti kurulamaz:",
     "plugins.install": "Kur",
@@ -490,7 +545,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.inProjects": "{count} projede kullanılıyor",
     "plugins.bundledTitle": "MobSimLab ile gelenler",
     "plugins.keys": "Güvenilen yayıncılar",
-    "plugins.keysIntro": "Bir eklenti yalnızca yayıncısı onu bu anahtarlardan biriyle imzaladıysa kurulur (ECDSA P-256 veya Ed25519, PEM).",
+    "plugins.keysIntro":
+      "Bir eklenti yalnızca yayıncısı onu bu anahtarlardan biriyle imzaladıysa kurulur (ECDSA P-256 veya Ed25519, PEM).",
     "plugins.noKeys": "Henüz güvenilen anahtar yok.",
     "plugins.removeKey": "{name} için güveni kaldır",
     "plugins.addKey": "Anahtar ekle",
@@ -501,12 +557,14 @@ export const PLUGIN_MESSAGES = {
     "plugins.untrusted": "Bu kurulumun güvenmediği bir anahtarla imzalanmış",
     "plugins.unsigned": "İmzasız",
     "plugins.licences": "Lisanslar: kod {code}, veri {data}",
-    "plugins.removeConfirm": "{name} {count} projede açık. Yine de kaldırılsın mı? Oralarda kapatılır, çizimler korunur."
+    "plugins.removeConfirm":
+      "{name} {count} projede açık. Yine de kaldırılsın mı? Oralarda kapatılır, çizimler korunur.",
   },
   ar: {
     "admin.plugins": "الإضافات",
     "plugins.title": "الإضافات",
-    "plugins.intro": "تضيف الإضافات وسائل نقل وأدوات وحسابات. فعّل ما يستخدمه هذا المشروع؛ إيقاف إضافة يخفي أدواتها ويحتفظ بما رُسم بها.",
+    "plugins.intro":
+      "تضيف الإضافات وسائل نقل وأدوات وحسابات. فعّل ما يستخدمه هذا المشروع؛ إيقاف إضافة يخفي أدواتها ويحتفظ بما رُسم بها.",
     "plugins.bundled": "مرفقة مع MobSimLab",
     "plugins.by": "الناشر: {publisher}",
     "plugins.versionN": "الإصدار {version}",
@@ -525,7 +583,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "تحفظ نتائجها الخاصة",
     "plugins.perm.writeScenario": "تقترح تغييرات على السيناريو",
     "plugins.installTitle": "تثبيت إضافة",
-    "plugins.installIntro": "ارفع ملف ‎.msplugin. يفحصه MobSimLab ويعرض ما يضيفه قبل التثبيت. يمكن للإضافات المثبتة إضافة وسائل نقل وأدوات ومعاملات ومصادر؛ أما الإضافات ذات الشيفرة الخاصة فستأتي لاحقًا.",
+    "plugins.installIntro":
+      "ارفع ملف ‎.msplugin. يفحصه MobSimLab ويعرض ما يضيفه قبل التثبيت. يمكن للإضافات المثبتة إضافة وسائل نقل وأدوات ومعاملات ومصادر؛ أما الإضافات ذات الشيفرة الخاصة فستأتي لاحقًا.",
     "plugins.choose": "اختر ملف ‎.msplugin",
     "plugins.problems": "لا يمكن تثبيت هذه الإضافة:",
     "plugins.install": "تثبيت",
@@ -535,7 +594,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.inProjects": "مستخدمة في {count} من المشاريع",
     "plugins.bundledTitle": "مرفقة مع MobSimLab",
     "plugins.keys": "الناشرون الموثوقون",
-    "plugins.keysIntro": "لا تُثبَّت الإضافة إلا إذا وقّعها ناشرها بأحد هذه المفاتيح (ECDSA P-256 أو Ed25519، بصيغة PEM).",
+    "plugins.keysIntro":
+      "لا تُثبَّت الإضافة إلا إذا وقّعها ناشرها بأحد هذه المفاتيح (ECDSA P-256 أو Ed25519، بصيغة PEM).",
     "plugins.noKeys": "لا توجد مفاتيح موثوقة بعد.",
     "plugins.removeKey": "إلغاء الثقة في {name}",
     "plugins.addKey": "إضافة مفتاح",
@@ -546,12 +606,14 @@ export const PLUGIN_MESSAGES = {
     "plugins.untrusted": "موقعة بمفتاح لا تثق به هذه النسخة",
     "plugins.unsigned": "غير موقعة",
     "plugins.licences": "التراخيص: الشيفرة {code}، البيانات {data}",
-    "plugins.removeConfirm": "{name} مفعّلة في {count} من المشاريع. أتريد إزالتها رغم ذلك؟ ستُوقف فيها وتبقى الرسومات محفوظة."
+    "plugins.removeConfirm":
+      "{name} مفعّلة في {count} من المشاريع. أتريد إزالتها رغم ذلك؟ ستُوقف فيها وتبقى الرسومات محفوظة.",
   },
   fa: {
     "admin.plugins": "افزونه‌ها",
     "plugins.title": "افزونه‌ها",
-    "plugins.intro": "افزونه‌ها شیوه‌های حمل‌ونقل، ابزارها و محاسبات اضافه می‌کنند. آن‌هایی را که این پروژه به کار می‌برد روشن کنید؛ خاموش کردن، ابزارها را پنهان می‌کند و آنچه کشیده شده می‌ماند.",
+    "plugins.intro":
+      "افزونه‌ها شیوه‌های حمل‌ونقل، ابزارها و محاسبات اضافه می‌کنند. آن‌هایی را که این پروژه به کار می‌برد روشن کنید؛ خاموش کردن، ابزارها را پنهان می‌کند و آنچه کشیده شده می‌ماند.",
     "plugins.bundled": "همراه MobSimLab",
     "plugins.by": "ناشر: {publisher}",
     "plugins.versionN": "نسخه {version}",
@@ -570,7 +632,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "نتایج خود را ذخیره می‌کند",
     "plugins.perm.writeScenario": "تغییراتی در سناریو پیشنهاد می‌دهد",
     "plugins.installTitle": "نصب افزونه",
-    "plugins.installIntro": "یک پرونده ‎.msplugin بارگذاری کنید. MobSimLab آن را بررسی می‌کند و پیش از نصب نشان می‌دهد چه اضافه می‌کند. افزونه‌های نصب‌شده می‌توانند شیوه‌ها، ابزارها، پارامترها و منابع اضافه کنند؛ افزونه‌های دارای کد خود بعداً می‌آیند.",
+    "plugins.installIntro":
+      "یک پرونده ‎.msplugin بارگذاری کنید. MobSimLab آن را بررسی می‌کند و پیش از نصب نشان می‌دهد چه اضافه می‌کند. افزونه‌های نصب‌شده می‌توانند شیوه‌ها، ابزارها، پارامترها و منابع اضافه کنند؛ افزونه‌های دارای کد خود بعداً می‌آیند.",
     "plugins.choose": "یک پرونده ‎.msplugin انتخاب کنید",
     "plugins.problems": "این افزونه قابل نصب نیست:",
     "plugins.install": "نصب",
@@ -580,7 +643,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.inProjects": "در {count} پروژه استفاده می‌شود",
     "plugins.bundledTitle": "همراه MobSimLab",
     "plugins.keys": "ناشران مورد اعتماد",
-    "plugins.keysIntro": "افزونه فقط وقتی نصب می‌شود که ناشرش آن را با یکی از این کلیدها امضا کرده باشد (ECDSA P-256 یا Ed25519، PEM).",
+    "plugins.keysIntro":
+      "افزونه فقط وقتی نصب می‌شود که ناشرش آن را با یکی از این کلیدها امضا کرده باشد (ECDSA P-256 یا Ed25519، PEM).",
     "plugins.noKeys": "هنوز کلید مورد اعتمادی نیست.",
     "plugins.removeKey": "لغو اعتماد به {name}",
     "plugins.addKey": "افزودن کلید",
@@ -591,19 +655,22 @@ export const PLUGIN_MESSAGES = {
     "plugins.untrusted": "امضاشده با کلیدی که این نمونه به آن اعتماد ندارد",
     "plugins.unsigned": "امضانشده",
     "plugins.licences": "مجوزها: کد {code}، داده {data}",
-    "plugins.removeConfirm": "{name} در {count} پروژه روشن است. با این حال حذف شود؟ در آن‌ها خاموش می‌شود و نقشه‌ها می‌مانند."
+    "plugins.removeConfirm":
+      "{name} در {count} پروژه روشن است. با این حال حذف شود؟ در آن‌ها خاموش می‌شود و نقشه‌ها می‌مانند.",
   },
   ur: {
     "admin.plugins": "پلگ اِنز",
     "plugins.title": "پلگ اِنز",
-    "plugins.intro": "پلگ اِنز نقل و حمل کے طریقے، اوزار اور حسابات شامل کرتے ہیں۔ جو یہ منصوبہ استعمال کرتا ہے انہیں آن کریں؛ بند کرنے پر اوزار چھپ جاتے ہیں اور بنایا گیا کام محفوظ رہتا ہے۔",
+    "plugins.intro":
+      "پلگ اِنز نقل و حمل کے طریقے، اوزار اور حسابات شامل کرتے ہیں۔ جو یہ منصوبہ استعمال کرتا ہے انہیں آن کریں؛ بند کرنے پر اوزار چھپ جاتے ہیں اور بنایا گیا کام محفوظ رہتا ہے۔",
     "plugins.bundled": "MobSimLab کے ساتھ آتا ہے",
     "plugins.by": "ناشر: {publisher}",
     "plugins.versionN": "ورژن {version}",
     "plugins.adds": "شامل کرتا ہے: {list}",
     "plugins.uses": "استعمال کرتا ہے: {list}",
     "plugins.parameters": "مفروضات کی {count} قدریں",
-    "plugins.missing": "ورژن {version} اس MobSimLab سے ہٹا دیا گیا۔ دوبارہ استعمال کے لیے کوئی اور ورژن چنیں۔",
+    "plugins.missing":
+      "ورژن {version} اس MobSimLab سے ہٹا دیا گیا۔ دوبارہ استعمال کے لیے کوئی اور ورژن چنیں۔",
     "plugins.versionOf": "{name} کا ورژن",
     "plugins.useIn": "اس منصوبے میں {name} استعمال کریں",
     "plugins.ownerOnly": "صرف منصوبے کا مالک پلگ اِنز آن یا بند کر سکتا ہے۔",
@@ -615,7 +682,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "اپنے نتائج محفوظ کرتا ہے",
     "plugins.perm.writeScenario": "منظرنامے میں تبدیلیاں تجویز کرتا ہے",
     "plugins.installTitle": "پلگ اِن انسٹال کریں",
-    "plugins.installIntro": "‎.msplugin فائل اپ لوڈ کریں۔ MobSimLab اسے جانچتا ہے اور انسٹال سے پہلے دکھاتا ہے کہ یہ کیا شامل کرتا ہے۔ انسٹال شدہ پلگ اِنز طریقے، اوزار، پیرامیٹر اور ماخذ شامل کر سکتے ہیں؛ اپنے کوڈ والے پلگ اِنز بعد میں آئیں گے۔",
+    "plugins.installIntro":
+      "‎.msplugin فائل اپ لوڈ کریں۔ MobSimLab اسے جانچتا ہے اور انسٹال سے پہلے دکھاتا ہے کہ یہ کیا شامل کرتا ہے۔ انسٹال شدہ پلگ اِنز طریقے، اوزار، پیرامیٹر اور ماخذ شامل کر سکتے ہیں؛ اپنے کوڈ والے پلگ اِنز بعد میں آئیں گے۔",
     "plugins.choose": "‎.msplugin فائل چنیں",
     "plugins.problems": "یہ پلگ اِن انسٹال نہیں ہو سکتا:",
     "plugins.install": "انسٹال کریں",
@@ -625,7 +693,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.inProjects": "{count} منصوبوں میں استعمال",
     "plugins.bundledTitle": "MobSimLab کے ساتھ شامل",
     "plugins.keys": "قابلِ اعتماد ناشر",
-    "plugins.keysIntro": "پلگ اِن صرف تب انسٹال ہوتا ہے جب ناشر نے اسے ان میں سے کسی کلید سے دستخط کیا ہو (ECDSA P-256 یا Ed25519، PEM)۔",
+    "plugins.keysIntro":
+      "پلگ اِن صرف تب انسٹال ہوتا ہے جب ناشر نے اسے ان میں سے کسی کلید سے دستخط کیا ہو (ECDSA P-256 یا Ed25519، PEM)۔",
     "plugins.noKeys": "ابھی کوئی قابلِ اعتماد کلید نہیں۔",
     "plugins.removeKey": "{name} پر اعتماد ختم کریں",
     "plugins.addKey": "کلید شامل کریں",
@@ -636,19 +705,22 @@ export const PLUGIN_MESSAGES = {
     "plugins.untrusted": "ایسی کلید سے دستخط شدہ جس پر یہ انسٹینس اعتماد نہیں کرتا",
     "plugins.unsigned": "غیر دستخط شدہ",
     "plugins.licences": "لائسنس: کوڈ {code}، ڈیٹا {data}",
-    "plugins.removeConfirm": "{name} {count} منصوبوں میں آن ہے۔ پھر بھی ہٹائیں؟ وہاں بند ہو جائے گا اور ڈرائنگز محفوظ رہیں گی۔"
+    "plugins.removeConfirm":
+      "{name} {count} منصوبوں میں آن ہے۔ پھر بھی ہٹائیں؟ وہاں بند ہو جائے گا اور ڈرائنگز محفوظ رہیں گی۔",
   },
   hi: {
     "admin.plugins": "प्लगइन",
     "plugins.title": "प्लगइन",
-    "plugins.intro": "प्लगइन परिवहन साधन, टूल और गणनाएँ जोड़ते हैं। इस परियोजना में जो चाहिए उन्हें चालू करें; बंद करने पर टूल छिप जाते हैं और बनाया गया काम बना रहता है।",
+    "plugins.intro":
+      "प्लगइन परिवहन साधन, टूल और गणनाएँ जोड़ते हैं। इस परियोजना में जो चाहिए उन्हें चालू करें; बंद करने पर टूल छिप जाते हैं और बनाया गया काम बना रहता है।",
     "plugins.bundled": "MobSimLab के साथ आता है",
     "plugins.by": "प्रकाशक: {publisher}",
     "plugins.versionN": "संस्करण {version}",
     "plugins.adds": "जोड़ता है: {list}",
     "plugins.uses": "उपयोग करता है: {list}",
     "plugins.parameters": "{count} धारणा मान",
-    "plugins.missing": "संस्करण {version} इस MobSimLab से हटा दिया गया। फिर से उपयोग के लिए दूसरा संस्करण चुनें।",
+    "plugins.missing":
+      "संस्करण {version} इस MobSimLab से हटा दिया गया। फिर से उपयोग के लिए दूसरा संस्करण चुनें।",
     "plugins.versionOf": "{name} का संस्करण",
     "plugins.useIn": "इस परियोजना में {name} का उपयोग करें",
     "plugins.ownerOnly": "केवल परियोजना का स्वामी प्लगइन चालू या बंद कर सकता है।",
@@ -660,7 +732,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "अपने परिणाम सहेजता है",
     "plugins.perm.writeScenario": "परिदृश्य में बदलाव सुझाता है",
     "plugins.installTitle": "प्लगइन इंस्टॉल करें",
-    "plugins.installIntro": ".msplugin फ़ाइल अपलोड करें। MobSimLab उसे जाँचता है और इंस्टॉल से पहले दिखाता है कि वह क्या जोड़ता है। इंस्टॉल किए गए प्लगइन साधन, टूल, पैरामीटर और स्रोत जोड़ सकते हैं; अपने कोड वाले प्लगइन बाद में आएँगे।",
+    "plugins.installIntro":
+      ".msplugin फ़ाइल अपलोड करें। MobSimLab उसे जाँचता है और इंस्टॉल से पहले दिखाता है कि वह क्या जोड़ता है। इंस्टॉल किए गए प्लगइन साधन, टूल, पैरामीटर और स्रोत जोड़ सकते हैं; अपने कोड वाले प्लगइन बाद में आएँगे।",
     "plugins.choose": ".msplugin फ़ाइल चुनें",
     "plugins.problems": "यह प्लगइन इंस्टॉल नहीं हो सकता:",
     "plugins.install": "इंस्टॉल करें",
@@ -670,7 +743,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.inProjects": "{count} परियोजनाओं में उपयोग",
     "plugins.bundledTitle": "MobSimLab के साथ शामिल",
     "plugins.keys": "विश्वसनीय प्रकाशक",
-    "plugins.keysIntro": "प्लगइन तभी इंस्टॉल होता है जब प्रकाशक ने उसे इनमें से किसी कुंजी से हस्ताक्षरित किया हो (ECDSA P-256 या Ed25519, PEM)।",
+    "plugins.keysIntro":
+      "प्लगइन तभी इंस्टॉल होता है जब प्रकाशक ने उसे इनमें से किसी कुंजी से हस्ताक्षरित किया हो (ECDSA P-256 या Ed25519, PEM)।",
     "plugins.noKeys": "अभी कोई विश्वसनीय कुंजी नहीं।",
     "plugins.removeKey": "{name} पर भरोसा हटाएँ",
     "plugins.addKey": "कुंजी जोड़ें",
@@ -681,12 +755,14 @@ export const PLUGIN_MESSAGES = {
     "plugins.untrusted": "ऐसी कुंजी से हस्ताक्षरित जिस पर यह इंस्टेंस भरोसा नहीं करता",
     "plugins.unsigned": "हस्ताक्षर नहीं",
     "plugins.licences": "लाइसेंस: कोड {code}, डेटा {data}",
-    "plugins.removeConfirm": "{name} {count} परियोजनाओं में चालू है। फिर भी हटाएँ? वहाँ यह बंद हो जाएगा और ड्रॉइंग बनी रहेंगी।"
+    "plugins.removeConfirm":
+      "{name} {count} परियोजनाओं में चालू है। फिर भी हटाएँ? वहाँ यह बंद हो जाएगा और ड्रॉइंग बनी रहेंगी।",
   },
   mr: {
     "admin.plugins": "प्लगइन",
     "plugins.title": "प्लगइन",
-    "plugins.intro": "प्लगइन वाहतूक प्रकार, साधने आणि गणना जोडतात. या प्रकल्पाला लागणारे चालू करा; बंद केल्यावर साधने लपतात आणि काढलेले जपले जाते.",
+    "plugins.intro":
+      "प्लगइन वाहतूक प्रकार, साधने आणि गणना जोडतात. या प्रकल्पाला लागणारे चालू करा; बंद केल्यावर साधने लपतात आणि काढलेले जपले जाते.",
     "plugins.bundled": "MobSimLab सोबत येतो",
     "plugins.by": "प्रकाशक: {publisher}",
     "plugins.versionN": "आवृत्ती {version}",
@@ -705,7 +781,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "स्वतःचे निकाल जतन करतो",
     "plugins.perm.writeScenario": "परिस्थितीत बदल सुचवतो",
     "plugins.installTitle": "प्लगइन स्थापित करा",
-    "plugins.installIntro": ".msplugin फाइल अपलोड करा. MobSimLab ती तपासते आणि स्थापनेपूर्वी ती काय जोडते ते दाखवते. स्थापित प्लगइन प्रकार, साधने, पॅरामीटर आणि स्रोत जोडू शकतात; स्वतःचा कोड असलेले प्लगइन नंतर येतील.",
+    "plugins.installIntro":
+      ".msplugin फाइल अपलोड करा. MobSimLab ती तपासते आणि स्थापनेपूर्वी ती काय जोडते ते दाखवते. स्थापित प्लगइन प्रकार, साधने, पॅरामीटर आणि स्रोत जोडू शकतात; स्वतःचा कोड असलेले प्लगइन नंतर येतील.",
     "plugins.choose": ".msplugin फाइल निवडा",
     "plugins.problems": "हा प्लगइन स्थापित करता येत नाही:",
     "plugins.install": "स्थापित करा",
@@ -715,7 +792,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.inProjects": "{count} प्रकल्पांत वापर",
     "plugins.bundledTitle": "MobSimLab सोबत आलेले",
     "plugins.keys": "विश्वासू प्रकाशक",
-    "plugins.keysIntro": "प्रकाशकाने यापैकी एका कीने स्वाक्षरी केली असेल तरच प्लगइन स्थापित होतो (ECDSA P-256 किंवा Ed25519, PEM).",
+    "plugins.keysIntro":
+      "प्रकाशकाने यापैकी एका कीने स्वाक्षरी केली असेल तरच प्लगइन स्थापित होतो (ECDSA P-256 किंवा Ed25519, PEM).",
     "plugins.noKeys": "अजून विश्वासू की नाहीत.",
     "plugins.removeKey": "{name} वरील विश्वास काढा",
     "plugins.addKey": "की जोडा",
@@ -726,19 +804,22 @@ export const PLUGIN_MESSAGES = {
     "plugins.untrusted": "या इन्स्टन्सचा विश्वास नसलेल्या कीने स्वाक्षरी",
     "plugins.unsigned": "स्वाक्षरी नाही",
     "plugins.licences": "परवाने: कोड {code}, डेटा {data}",
-    "plugins.removeConfirm": "{name} {count} प्रकल्पांत चालू आहे. तरीही काढायचा? तिथे तो बंद होईल आणि रेखाचित्रे जपली जातील."
+    "plugins.removeConfirm":
+      "{name} {count} प्रकल्पांत चालू आहे. तरीही काढायचा? तिथे तो बंद होईल आणि रेखाचित्रे जपली जातील.",
   },
   bn: {
     "admin.plugins": "প্লাগইন",
     "plugins.title": "প্লাগইন",
-    "plugins.intro": "প্লাগইন পরিবহন মাধ্যম, টুল ও গণনা যোগ করে। এই প্রকল্প যেগুলো ব্যবহার করে সেগুলো চালু করুন; বন্ধ করলে টুল লুকিয়ে যায় এবং আঁকা কাজ থেকে যায়।",
+    "plugins.intro":
+      "প্লাগইন পরিবহন মাধ্যম, টুল ও গণনা যোগ করে। এই প্রকল্প যেগুলো ব্যবহার করে সেগুলো চালু করুন; বন্ধ করলে টুল লুকিয়ে যায় এবং আঁকা কাজ থেকে যায়।",
     "plugins.bundled": "MobSimLab-এর সঙ্গে আসে",
     "plugins.by": "প্রকাশক: {publisher}",
     "plugins.versionN": "সংস্করণ {version}",
     "plugins.adds": "যোগ করে: {list}",
     "plugins.uses": "ব্যবহার করে: {list}",
     "plugins.parameters": "{count}টি অনুমান মান",
-    "plugins.missing": "সংস্করণ {version} এই MobSimLab থেকে সরানো হয়েছে। আবার ব্যবহার করতে অন্য সংস্করণ বেছে নিন।",
+    "plugins.missing":
+      "সংস্করণ {version} এই MobSimLab থেকে সরানো হয়েছে। আবার ব্যবহার করতে অন্য সংস্করণ বেছে নিন।",
     "plugins.versionOf": "{name}-এর সংস্করণ",
     "plugins.useIn": "এই প্রকল্পে {name} ব্যবহার করুন",
     "plugins.ownerOnly": "শুধু প্রকল্পের মালিক প্লাগইন চালু বা বন্ধ করতে পারেন।",
@@ -750,7 +831,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "নিজের ফলাফল সংরক্ষণ করে",
     "plugins.perm.writeScenario": "পরিস্থিতিতে পরিবর্তন প্রস্তাব করে",
     "plugins.installTitle": "প্লাগইন ইনস্টল করুন",
-    "plugins.installIntro": ".msplugin ফাইল আপলোড করুন। MobSimLab সেটি যাচাই করে এবং ইনস্টলের আগে দেখায় এটি কী যোগ করে। ইনস্টল করা প্লাগইন মাধ্যম, টুল, প্যারামিটার ও উৎস যোগ করতে পারে; নিজস্ব কোডসহ প্লাগইন পরে আসবে।",
+    "plugins.installIntro":
+      ".msplugin ফাইল আপলোড করুন। MobSimLab সেটি যাচাই করে এবং ইনস্টলের আগে দেখায় এটি কী যোগ করে। ইনস্টল করা প্লাগইন মাধ্যম, টুল, প্যারামিটার ও উৎস যোগ করতে পারে; নিজস্ব কোডসহ প্লাগইন পরে আসবে।",
     "plugins.choose": ".msplugin ফাইল বেছে নিন",
     "plugins.problems": "এই প্লাগইন ইনস্টল করা যাবে না:",
     "plugins.install": "ইনস্টল করুন",
@@ -760,7 +842,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.inProjects": "{count}টি প্রকল্পে ব্যবহৃত",
     "plugins.bundledTitle": "MobSimLab-এর সঙ্গে আসা",
     "plugins.keys": "বিশ্বস্ত প্রকাশক",
-    "plugins.keysIntro": "প্রকাশক এই কীগুলোর একটি দিয়ে স্বাক্ষর করলে তবেই প্লাগইন ইনস্টল হয় (ECDSA P-256 বা Ed25519, PEM)।",
+    "plugins.keysIntro":
+      "প্রকাশক এই কীগুলোর একটি দিয়ে স্বাক্ষর করলে তবেই প্লাগইন ইনস্টল হয় (ECDSA P-256 বা Ed25519, PEM)।",
     "plugins.noKeys": "এখনও কোনো বিশ্বস্ত কী নেই।",
     "plugins.removeKey": "{name}-এর ওপর আস্থা তুলে নিন",
     "plugins.addKey": "কী যোগ করুন",
@@ -771,19 +854,22 @@ export const PLUGIN_MESSAGES = {
     "plugins.untrusted": "এমন কী দিয়ে স্বাক্ষরিত যাতে এই ইনস্ট্যান্স আস্থা রাখে না",
     "plugins.unsigned": "স্বাক্ষরহীন",
     "plugins.licences": "লাইসেন্স: কোড {code}, ডেটা {data}",
-    "plugins.removeConfirm": "{name} {count}টি প্রকল্পে চালু। তবুও সরাবেন? সেখানে এটি বন্ধ হবে এবং আঁকা থেকে যাবে।"
+    "plugins.removeConfirm":
+      "{name} {count}টি প্রকল্পে চালু। তবুও সরাবেন? সেখানে এটি বন্ধ হবে এবং আঁকা থেকে যাবে।",
   },
   te: {
     "admin.plugins": "ప్లగిన్‌లు",
     "plugins.title": "ప్లగిన్‌లు",
-    "plugins.intro": "ప్లగిన్‌లు రవాణా విధానాలు, సాధనాలు, గణనలను జోడిస్తాయి. ఈ ప్రాజెక్ట్ వాడేవాటిని ఆన్ చేయండి; ఆఫ్ చేస్తే సాధనాలు దాగుతాయి, గీసినది అలాగే ఉంటుంది.",
+    "plugins.intro":
+      "ప్లగిన్‌లు రవాణా విధానాలు, సాధనాలు, గణనలను జోడిస్తాయి. ఈ ప్రాజెక్ట్ వాడేవాటిని ఆన్ చేయండి; ఆఫ్ చేస్తే సాధనాలు దాగుతాయి, గీసినది అలాగే ఉంటుంది.",
     "plugins.bundled": "MobSimLab తో వస్తుంది",
     "plugins.by": "ప్రచురణకర్త: {publisher}",
     "plugins.versionN": "వెర్షన్ {version}",
     "plugins.adds": "జోడిస్తుంది: {list}",
     "plugins.uses": "వాడుతుంది: {list}",
     "plugins.parameters": "{count} అంచనా విలువలు",
-    "plugins.missing": "వెర్షన్ {version} ఈ MobSimLab నుండి తీసివేయబడింది. మళ్లీ వాడటానికి వేరే వెర్షన్ ఎంచుకోండి.",
+    "plugins.missing":
+      "వెర్షన్ {version} ఈ MobSimLab నుండి తీసివేయబడింది. మళ్లీ వాడటానికి వేరే వెర్షన్ ఎంచుకోండి.",
     "plugins.versionOf": "{name} వెర్షన్",
     "plugins.useIn": "ఈ ప్రాజెక్ట్‌లో {name} వాడండి",
     "plugins.ownerOnly": "ప్రాజెక్ట్ యజమాని మాత్రమే ప్లగిన్‌లను ఆన్ లేదా ఆఫ్ చేయగలరు.",
@@ -795,7 +881,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "తన ఫలితాలను సేవ్ చేస్తుంది",
     "plugins.perm.writeScenario": "దృశ్యంలో మార్పులను సూచిస్తుంది",
     "plugins.installTitle": "ప్లగిన్ ఇన్‌స్టాల్ చేయండి",
-    "plugins.installIntro": ".msplugin ఫైల్‌ను అప్‌లోడ్ చేయండి. MobSimLab దాన్ని తనిఖీ చేసి, ఇన్‌స్టాల్ చేయకముందే అది ఏమి జోడిస్తుందో చూపిస్తుంది. ఇన్‌స్టాల్ అయిన ప్లగిన్‌లు విధానాలు, సాధనాలు, పారామితులు, మూలాలు జోడించగలవు; సొంత కోడ్ ఉన్న ప్లగిన్‌లు తర్వాత వస్తాయి.",
+    "plugins.installIntro":
+      ".msplugin ఫైల్‌ను అప్‌లోడ్ చేయండి. MobSimLab దాన్ని తనిఖీ చేసి, ఇన్‌స్టాల్ చేయకముందే అది ఏమి జోడిస్తుందో చూపిస్తుంది. ఇన్‌స్టాల్ అయిన ప్లగిన్‌లు విధానాలు, సాధనాలు, పారామితులు, మూలాలు జోడించగలవు; సొంత కోడ్ ఉన్న ప్లగిన్‌లు తర్వాత వస్తాయి.",
     "plugins.choose": ".msplugin ఫైల్ ఎంచుకోండి",
     "plugins.problems": "ఈ ప్లగిన్‌ను ఇన్‌స్టాల్ చేయలేము:",
     "plugins.install": "ఇన్‌స్టాల్ చేయండి",
@@ -805,7 +892,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.inProjects": "{count} ప్రాజెక్ట్‌లలో వాడుతున్నారు",
     "plugins.bundledTitle": "MobSimLab తో వచ్చినవి",
     "plugins.keys": "నమ్మకమైన ప్రచురణకర్తలు",
-    "plugins.keysIntro": "ప్రచురణకర్త వీటిలో ఒక కీతో సంతకం చేస్తేనే ప్లగిన్ ఇన్‌స్టాల్ అవుతుంది (ECDSA P-256 లేదా Ed25519, PEM).",
+    "plugins.keysIntro":
+      "ప్రచురణకర్త వీటిలో ఒక కీతో సంతకం చేస్తేనే ప్లగిన్ ఇన్‌స్టాల్ అవుతుంది (ECDSA P-256 లేదా Ed25519, PEM).",
     "plugins.noKeys": "ఇంకా నమ్మకమైన కీలు లేవు.",
     "plugins.removeKey": "{name}పై నమ్మకం తీసివేయండి",
     "plugins.addKey": "కీ జోడించండి",
@@ -816,19 +904,22 @@ export const PLUGIN_MESSAGES = {
     "plugins.untrusted": "ఈ ఇన్‌స్టెన్స్ నమ్మని కీతో సంతకం చేయబడింది",
     "plugins.unsigned": "సంతకం లేదు",
     "plugins.licences": "లైసెన్సులు: కోడ్ {code}, డేటా {data}",
-    "plugins.removeConfirm": "{name} {count} ప్రాజెక్ట్‌లలో ఆన్‌లో ఉంది. అయినా తీసివేయాలా? అక్కడ అది ఆఫ్ అవుతుంది, డ్రాయింగ్‌లు ఉంటాయి."
+    "plugins.removeConfirm":
+      "{name} {count} ప్రాజెక్ట్‌లలో ఆన్‌లో ఉంది. అయినా తీసివేయాలా? అక్కడ అది ఆఫ్ అవుతుంది, డ్రాయింగ్‌లు ఉంటాయి.",
   },
   ta: {
     "admin.plugins": "செருகுநிரல்கள்",
     "plugins.title": "செருகுநிரல்கள்",
-    "plugins.intro": "செருகுநிரல்கள் போக்குவரத்து முறைகள், கருவிகள், கணக்கீடுகளைச் சேர்க்கின்றன. இந்தத் திட்டம் பயன்படுத்துபவற்றை இயக்குங்கள்; அணைத்தால் கருவிகள் மறையும், வரைந்தவை இருக்கும்.",
+    "plugins.intro":
+      "செருகுநிரல்கள் போக்குவரத்து முறைகள், கருவிகள், கணக்கீடுகளைச் சேர்க்கின்றன. இந்தத் திட்டம் பயன்படுத்துபவற்றை இயக்குங்கள்; அணைத்தால் கருவிகள் மறையும், வரைந்தவை இருக்கும்.",
     "plugins.bundled": "MobSimLab உடன் வருகிறது",
     "plugins.by": "வெளியீட்டாளர்: {publisher}",
     "plugins.versionN": "பதிப்பு {version}",
     "plugins.adds": "சேர்க்கிறது: {list}",
     "plugins.uses": "பயன்படுத்துகிறது: {list}",
     "plugins.parameters": "{count} அனுமான மதிப்புகள்",
-    "plugins.missing": "பதிப்பு {version} இந்த MobSimLab இலிருந்து நீக்கப்பட்டது. மீண்டும் பயன்படுத்த வேறு பதிப்பைத் தேர்ந்தெடுங்கள்.",
+    "plugins.missing":
+      "பதிப்பு {version} இந்த MobSimLab இலிருந்து நீக்கப்பட்டது. மீண்டும் பயன்படுத்த வேறு பதிப்பைத் தேர்ந்தெடுங்கள்.",
     "plugins.versionOf": "{name} பதிப்பு",
     "plugins.useIn": "இந்தத் திட்டத்தில் {name} பயன்படுத்து",
     "plugins.ownerOnly": "திட்ட உரிமையாளர் மட்டுமே செருகுநிரல்களை இயக்கவோ அணைக்கவோ முடியும்.",
@@ -840,7 +931,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "தன் முடிவுகளைச் சேமிக்கிறது",
     "plugins.perm.writeScenario": "சூழ்நிலையில் மாற்றங்களை முன்மொழிகிறது",
     "plugins.installTitle": "செருகுநிரலை நிறுவு",
-    "plugins.installIntro": ".msplugin கோப்பைப் பதிவேற்றுங்கள். MobSimLab அதைச் சரிபார்த்து, நிறுவும் முன் அது என்ன சேர்க்கிறது என்பதைக் காட்டும். நிறுவிய செருகுநிரல்கள் முறைகள், கருவிகள், அளவுருக்கள், மூலங்களைச் சேர்க்கலாம்; சொந்த நிரல் கொண்டவை பின்னர் வரும்.",
+    "plugins.installIntro":
+      ".msplugin கோப்பைப் பதிவேற்றுங்கள். MobSimLab அதைச் சரிபார்த்து, நிறுவும் முன் அது என்ன சேர்க்கிறது என்பதைக் காட்டும். நிறுவிய செருகுநிரல்கள் முறைகள், கருவிகள், அளவுருக்கள், மூலங்களைச் சேர்க்கலாம்; சொந்த நிரல் கொண்டவை பின்னர் வரும்.",
     "plugins.choose": ".msplugin கோப்பைத் தேர்ந்தெடு",
     "plugins.problems": "இந்தச் செருகுநிரலை நிறுவ முடியாது:",
     "plugins.install": "நிறுவு",
@@ -850,7 +942,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.inProjects": "{count} திட்டங்களில் பயன்பாட்டில்",
     "plugins.bundledTitle": "MobSimLab உடன் வந்தவை",
     "plugins.keys": "நம்பகமான வெளியீட்டாளர்கள்",
-    "plugins.keysIntro": "வெளியீட்டாளர் இவற்றில் ஒரு விசையால் கையொப்பமிட்டால் மட்டுமே செருகுநிரல் நிறுவப்படும் (ECDSA P-256 அல்லது Ed25519, PEM).",
+    "plugins.keysIntro":
+      "வெளியீட்டாளர் இவற்றில் ஒரு விசையால் கையொப்பமிட்டால் மட்டுமே செருகுநிரல் நிறுவப்படும் (ECDSA P-256 அல்லது Ed25519, PEM).",
     "plugins.noKeys": "இன்னும் நம்பகமான விசைகள் இல்லை.",
     "plugins.removeKey": "{name} மீதான நம்பிக்கையை நீக்கு",
     "plugins.addKey": "விசையைச் சேர்",
@@ -861,12 +954,14 @@ export const PLUGIN_MESSAGES = {
     "plugins.untrusted": "இந்த நிகழ்வு நம்பாத விசையால் கையொப்பமிடப்பட்டது",
     "plugins.unsigned": "கையொப்பமில்லை",
     "plugins.licences": "உரிமங்கள்: நிரல் {code}, தரவு {data}",
-    "plugins.removeConfirm": "{name} {count} திட்டங்களில் இயக்கத்தில் உள்ளது. இருந்தாலும் நீக்கவா? அங்கு அணைக்கப்படும், வரைபடங்கள் இருக்கும்."
+    "plugins.removeConfirm":
+      "{name} {count} திட்டங்களில் இயக்கத்தில் உள்ளது. இருந்தாலும் நீக்கவா? அங்கு அணைக்கப்படும், வரைபடங்கள் இருக்கும்.",
   },
   zh: {
     "admin.plugins": "插件",
     "plugins.title": "插件",
-    "plugins.intro": "插件可添加交通方式、工具和计算。请开启本项目使用的插件；关闭后其工具会隐藏，已绘制的内容会保留。",
+    "plugins.intro":
+      "插件可添加交通方式、工具和计算。请开启本项目使用的插件；关闭后其工具会隐藏，已绘制的内容会保留。",
     "plugins.bundled": "随 MobSimLab 提供",
     "plugins.by": "发布者：{publisher}",
     "plugins.versionN": "版本 {version}",
@@ -885,7 +980,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "保存自己的结果",
     "plugins.perm.writeScenario": "提出对情景的修改",
     "plugins.installTitle": "安装插件",
-    "plugins.installIntro": "上传 .msplugin 文件。MobSimLab 会先检查它，并在安装前显示它添加的内容。已安装的插件可以添加交通方式、工具、参数和来源；带有自身代码的插件将在以后支持。",
+    "plugins.installIntro":
+      "上传 .msplugin 文件。MobSimLab 会先检查它，并在安装前显示它添加的内容。已安装的插件可以添加交通方式、工具、参数和来源；带有自身代码的插件将在以后支持。",
     "plugins.choose": "选择 .msplugin 文件",
     "plugins.problems": "无法安装此插件：",
     "plugins.install": "安装",
@@ -906,19 +1002,22 @@ export const PLUGIN_MESSAGES = {
     "plugins.untrusted": "使用本实例不信任的密钥签名",
     "plugins.unsigned": "未签名",
     "plugins.licences": "许可：代码 {code}，数据 {data}",
-    "plugins.removeConfirm": "{name} 已在 {count} 个项目中开启。仍要移除吗？它将在这些项目中关闭，绘图会保留。"
+    "plugins.removeConfirm":
+      "{name} 已在 {count} 个项目中开启。仍要移除吗？它将在这些项目中关闭，绘图会保留。",
   },
   ja: {
     "admin.plugins": "プラグイン",
     "plugins.title": "プラグイン",
-    "plugins.intro": "プラグインは交通手段、ツール、計算を追加します。このプロジェクトで使うものをオンにしてください。オフにするとツールは隠れ、描いた内容は残ります。",
+    "plugins.intro":
+      "プラグインは交通手段、ツール、計算を追加します。このプロジェクトで使うものをオンにしてください。オフにするとツールは隠れ、描いた内容は残ります。",
     "plugins.bundled": "MobSimLab に付属",
     "plugins.by": "発行者: {publisher}",
     "plugins.versionN": "バージョン {version}",
     "plugins.adds": "追加: {list}",
     "plugins.uses": "使用: {list}",
     "plugins.parameters": "前提値 {count} 件",
-    "plugins.missing": "バージョン {version} はこの MobSimLab から削除されました。再び使うには別のバージョンを選んでください。",
+    "plugins.missing":
+      "バージョン {version} はこの MobSimLab から削除されました。再び使うには別のバージョンを選んでください。",
     "plugins.versionOf": "{name} のバージョン",
     "plugins.useIn": "このプロジェクトで {name} を使う",
     "plugins.ownerOnly": "プラグインをオン・オフできるのはプロジェクトのオーナーだけです。",
@@ -930,7 +1029,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "独自の結果を保存",
     "plugins.perm.writeScenario": "シナリオへの変更を提案",
     "plugins.installTitle": "プラグインをインストール",
-    "plugins.installIntro": ".msplugin ファイルをアップロードしてください。MobSimLab が確認し、インストール前に追加内容を表示します。インストールしたプラグインは交通手段、ツール、パラメーター、出典を追加できます。独自のコードを持つプラグインは今後対応します。",
+    "plugins.installIntro":
+      ".msplugin ファイルをアップロードしてください。MobSimLab が確認し、インストール前に追加内容を表示します。インストールしたプラグインは交通手段、ツール、パラメーター、出典を追加できます。独自のコードを持つプラグインは今後対応します。",
     "plugins.choose": ".msplugin ファイルを選択",
     "plugins.problems": "このプラグインはインストールできません:",
     "plugins.install": "インストール",
@@ -940,7 +1040,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.inProjects": "{count} 件のプロジェクトで使用中",
     "plugins.bundledTitle": "MobSimLab に付属",
     "plugins.keys": "信頼する発行者",
-    "plugins.keysIntro": "発行者がこれらの鍵のいずれかで署名したプラグインだけがインストールされます（ECDSA P-256 または Ed25519、PEM）。",
+    "plugins.keysIntro":
+      "発行者がこれらの鍵のいずれかで署名したプラグインだけがインストールされます（ECDSA P-256 または Ed25519、PEM）。",
     "plugins.noKeys": "信頼する鍵はまだありません。",
     "plugins.removeKey": "{name} の信頼を取り消す",
     "plugins.addKey": "鍵を追加",
@@ -951,19 +1052,22 @@ export const PLUGIN_MESSAGES = {
     "plugins.untrusted": "このインスタンスが信頼しない鍵で署名",
     "plugins.unsigned": "署名なし",
     "plugins.licences": "ライセンス: コード {code}、データ {data}",
-    "plugins.removeConfirm": "{name} は {count} 件のプロジェクトでオンです。それでも削除しますか？それらではオフになり、図面は残ります。"
+    "plugins.removeConfirm":
+      "{name} は {count} 件のプロジェクトでオンです。それでも削除しますか？それらではオフになり、図面は残ります。",
   },
   ko: {
     "admin.plugins": "플러그인",
     "plugins.title": "플러그인",
-    "plugins.intro": "플러그인은 교통수단, 도구, 계산을 추가합니다. 이 프로젝트에서 쓰는 것을 켜세요. 끄면 도구가 숨겨지고 그린 내용은 유지됩니다.",
+    "plugins.intro":
+      "플러그인은 교통수단, 도구, 계산을 추가합니다. 이 프로젝트에서 쓰는 것을 켜세요. 끄면 도구가 숨겨지고 그린 내용은 유지됩니다.",
     "plugins.bundled": "MobSimLab에 포함",
     "plugins.by": "게시자: {publisher}",
     "plugins.versionN": "버전 {version}",
     "plugins.adds": "추가: {list}",
     "plugins.uses": "사용: {list}",
     "plugins.parameters": "가정값 {count}개",
-    "plugins.missing": "버전 {version}이(가) 이 MobSimLab에서 제거되었습니다. 다시 쓰려면 다른 버전을 선택하세요.",
+    "plugins.missing":
+      "버전 {version}이(가) 이 MobSimLab에서 제거되었습니다. 다시 쓰려면 다른 버전을 선택하세요.",
     "plugins.versionOf": "{name} 버전",
     "plugins.useIn": "이 프로젝트에서 {name} 사용",
     "plugins.ownerOnly": "프로젝트 소유자만 플러그인을 켜거나 끌 수 있습니다.",
@@ -975,7 +1079,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "자체 결과 저장",
     "plugins.perm.writeScenario": "시나리오 변경 제안",
     "plugins.installTitle": "플러그인 설치",
-    "plugins.installIntro": ".msplugin 파일을 올리세요. MobSimLab이 확인하고 설치 전에 무엇을 추가하는지 보여 줍니다. 설치한 플러그인은 교통수단, 도구, 매개변수, 출처를 추가할 수 있으며, 자체 코드가 있는 플러그인은 나중에 지원됩니다.",
+    "plugins.installIntro":
+      ".msplugin 파일을 올리세요. MobSimLab이 확인하고 설치 전에 무엇을 추가하는지 보여 줍니다. 설치한 플러그인은 교통수단, 도구, 매개변수, 출처를 추가할 수 있으며, 자체 코드가 있는 플러그인은 나중에 지원됩니다.",
     "plugins.choose": ".msplugin 파일 선택",
     "plugins.problems": "이 플러그인은 설치할 수 없습니다:",
     "plugins.install": "설치",
@@ -985,7 +1090,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.inProjects": "{count}개 프로젝트에서 사용 중",
     "plugins.bundledTitle": "MobSimLab에 포함",
     "plugins.keys": "신뢰하는 게시자",
-    "plugins.keysIntro": "게시자가 다음 키 중 하나로 서명한 플러그인만 설치됩니다(ECDSA P-256 또는 Ed25519, PEM).",
+    "plugins.keysIntro":
+      "게시자가 다음 키 중 하나로 서명한 플러그인만 설치됩니다(ECDSA P-256 또는 Ed25519, PEM).",
     "plugins.noKeys": "아직 신뢰하는 키가 없습니다.",
     "plugins.removeKey": "{name} 신뢰 해제",
     "plugins.addKey": "키 추가",
@@ -996,12 +1102,14 @@ export const PLUGIN_MESSAGES = {
     "plugins.untrusted": "이 인스턴스가 신뢰하지 않는 키로 서명됨",
     "plugins.unsigned": "서명 없음",
     "plugins.licences": "라이선스: 코드 {code}, 데이터 {data}",
-    "plugins.removeConfirm": "{name}이(가) {count}개 프로젝트에서 켜져 있습니다. 그래도 제거할까요? 해당 프로젝트에서 꺼지고 도면은 유지됩니다."
+    "plugins.removeConfirm":
+      "{name}이(가) {count}개 프로젝트에서 켜져 있습니다. 그래도 제거할까요? 해당 프로젝트에서 꺼지고 도면은 유지됩니다.",
   },
   vi: {
     "admin.plugins": "Plugin",
     "plugins.title": "Plugin",
-    "plugins.intro": "Plugin bổ sung phương thức giao thông, công cụ và phép tính. Bật những plugin dự án này dùng; khi tắt, công cụ bị ẩn và những gì đã vẽ vẫn được giữ.",
+    "plugins.intro":
+      "Plugin bổ sung phương thức giao thông, công cụ và phép tính. Bật những plugin dự án này dùng; khi tắt, công cụ bị ẩn và những gì đã vẽ vẫn được giữ.",
     "plugins.bundled": "Đi kèm MobSimLab",
     "plugins.by": "Của {publisher}",
     "plugins.versionN": "Phiên bản {version}",
@@ -1020,7 +1128,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "lưu kết quả riêng",
     "plugins.perm.writeScenario": "đề xuất thay đổi kịch bản",
     "plugins.installTitle": "Cài đặt plugin",
-    "plugins.installIntro": "Tải lên tệp .msplugin. MobSimLab sẽ kiểm tra và cho biết nó bổ sung gì trước khi cài. Plugin đã cài có thể thêm phương thức, công cụ, tham số và nguồn; plugin có mã riêng sẽ có sau.",
+    "plugins.installIntro":
+      "Tải lên tệp .msplugin. MobSimLab sẽ kiểm tra và cho biết nó bổ sung gì trước khi cài. Plugin đã cài có thể thêm phương thức, công cụ, tham số và nguồn; plugin có mã riêng sẽ có sau.",
     "plugins.choose": "Chọn tệp .msplugin",
     "plugins.problems": "Không thể cài plugin này:",
     "plugins.install": "Cài đặt",
@@ -1030,7 +1139,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.inProjects": "Dùng trong {count} dự án",
     "plugins.bundledTitle": "Đi kèm MobSimLab",
     "plugins.keys": "Nhà phát hành tin cậy",
-    "plugins.keysIntro": "Plugin chỉ được cài khi nhà phát hành đã ký bằng một trong các khóa này (ECDSA P-256 hoặc Ed25519, PEM).",
+    "plugins.keysIntro":
+      "Plugin chỉ được cài khi nhà phát hành đã ký bằng một trong các khóa này (ECDSA P-256 hoặc Ed25519, PEM).",
     "plugins.noKeys": "Chưa có khóa tin cậy nào.",
     "plugins.removeKey": "Ngừng tin cậy {name}",
     "plugins.addKey": "Thêm khóa",
@@ -1041,19 +1151,22 @@ export const PLUGIN_MESSAGES = {
     "plugins.untrusted": "Được ký bằng khóa mà phiên bản này không tin cậy",
     "plugins.unsigned": "Chưa ký",
     "plugins.licences": "Giấy phép: mã {code}, dữ liệu {data}",
-    "plugins.removeConfirm": "{name} đang bật trong {count} dự án. Vẫn gỡ? Nó sẽ bị tắt ở đó và bản vẽ được giữ lại."
+    "plugins.removeConfirm":
+      "{name} đang bật trong {count} dự án. Vẫn gỡ? Nó sẽ bị tắt ở đó và bản vẽ được giữ lại.",
   },
   id: {
     "admin.plugins": "Plugin",
     "plugins.title": "Plugin",
-    "plugins.intro": "Plugin menambahkan moda transportasi, alat, dan perhitungan. Aktifkan yang dipakai proyek ini; menonaktifkan plugin menyembunyikan alatnya dan menyimpan apa yang sudah digambar.",
+    "plugins.intro":
+      "Plugin menambahkan moda transportasi, alat, dan perhitungan. Aktifkan yang dipakai proyek ini; menonaktifkan plugin menyembunyikan alatnya dan menyimpan apa yang sudah digambar.",
     "plugins.bundled": "Bawaan MobSimLab",
     "plugins.by": "Oleh {publisher}",
     "plugins.versionN": "Versi {version}",
     "plugins.adds": "Menambahkan: {list}",
     "plugins.uses": "Menggunakan: {list}",
     "plugins.parameters": "{count} nilai asumsi",
-    "plugins.missing": "Versi {version} telah dihapus dari MobSimLab ini. Pilih versi lain untuk memakainya lagi.",
+    "plugins.missing":
+      "Versi {version} telah dihapus dari MobSimLab ini. Pilih versi lain untuk memakainya lagi.",
     "plugins.versionOf": "Versi {name}",
     "plugins.useIn": "Gunakan {name} di proyek ini",
     "plugins.ownerOnly": "Hanya pemilik proyek yang dapat mengaktifkan atau menonaktifkan plugin.",
@@ -1065,7 +1178,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "menyimpan hasilnya sendiri",
     "plugins.perm.writeScenario": "mengusulkan perubahan skenario",
     "plugins.installTitle": "Pasang plugin",
-    "plugins.installIntro": "Unggah berkas .msplugin. MobSimLab memeriksanya dan menunjukkan apa yang ditambahkan sebelum dipasang. Plugin terpasang dapat menambah moda, alat, parameter, dan sumber; plugin dengan kode sendiri menyusul nanti.",
+    "plugins.installIntro":
+      "Unggah berkas .msplugin. MobSimLab memeriksanya dan menunjukkan apa yang ditambahkan sebelum dipasang. Plugin terpasang dapat menambah moda, alat, parameter, dan sumber; plugin dengan kode sendiri menyusul nanti.",
     "plugins.choose": "Pilih berkas .msplugin",
     "plugins.problems": "Plugin ini tidak dapat dipasang:",
     "plugins.install": "Pasang",
@@ -1075,7 +1189,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.inProjects": "Dipakai di {count} proyek",
     "plugins.bundledTitle": "Bawaan MobSimLab",
     "plugins.keys": "Penerbit tepercaya",
-    "plugins.keysIntro": "Plugin hanya terpasang jika penerbitnya menandatanganinya dengan salah satu kunci ini (ECDSA P-256 atau Ed25519, PEM).",
+    "plugins.keysIntro":
+      "Plugin hanya terpasang jika penerbitnya menandatanganinya dengan salah satu kunci ini (ECDSA P-256 atau Ed25519, PEM).",
     "plugins.noKeys": "Belum ada kunci tepercaya.",
     "plugins.removeKey": "Berhenti memercayai {name}",
     "plugins.addKey": "Tambah kunci",
@@ -1086,19 +1201,22 @@ export const PLUGIN_MESSAGES = {
     "plugins.untrusted": "Ditandatangani dengan kunci yang tidak dipercaya instans ini",
     "plugins.unsigned": "Tanpa tanda tangan",
     "plugins.licences": "Lisensi: kode {code}, data {data}",
-    "plugins.removeConfirm": "{name} aktif di {count} proyek. Tetap hapus? Plugin akan dinonaktifkan di sana dan gambar tetap disimpan."
+    "plugins.removeConfirm":
+      "{name} aktif di {count} proyek. Tetap hapus? Plugin akan dinonaktifkan di sana dan gambar tetap disimpan.",
   },
   sw: {
     "admin.plugins": "Programu-jalizi",
     "plugins.title": "Programu-jalizi",
-    "plugins.intro": "Programu-jalizi huongeza njia za usafiri, zana na hesabu. Washa zile ambazo mradi huu unatumia; ukizima moja, zana zake hufichwa na michoro hubaki.",
+    "plugins.intro":
+      "Programu-jalizi huongeza njia za usafiri, zana na hesabu. Washa zile ambazo mradi huu unatumia; ukizima moja, zana zake hufichwa na michoro hubaki.",
     "plugins.bundled": "Huja na MobSimLab",
     "plugins.by": "Na {publisher}",
     "plugins.versionN": "Toleo {version}",
     "plugins.adds": "Huongeza: {list}",
     "plugins.uses": "Hutumia: {list}",
     "plugins.parameters": "Thamani za dhana {count}",
-    "plugins.missing": "Toleo {version} limeondolewa kwenye MobSimLab hii. Chagua toleo jingine ili kuitumia tena.",
+    "plugins.missing":
+      "Toleo {version} limeondolewa kwenye MobSimLab hii. Chagua toleo jingine ili kuitumia tena.",
     "plugins.versionOf": "Toleo la {name}",
     "plugins.useIn": "Tumia {name} katika mradi huu",
     "plugins.ownerOnly": "Ni mmiliki wa mradi pekee anayeweza kuwasha au kuzima programu-jalizi.",
@@ -1110,7 +1228,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "huhifadhi matokeo yake",
     "plugins.perm.writeScenario": "hupendekeza mabadiliko ya hali",
     "plugins.installTitle": "Sakinisha programu-jalizi",
-    "plugins.installIntro": "Pakia faili ya .msplugin. MobSimLab huikagua na kuonyesha inachoongeza kabla ya kusakinisha. Programu-jalizi zilizosakinishwa zinaweza kuongeza njia, zana, vigezo na vyanzo; zile zenye msimbo wao zitakuja baadaye.",
+    "plugins.installIntro":
+      "Pakia faili ya .msplugin. MobSimLab huikagua na kuonyesha inachoongeza kabla ya kusakinisha. Programu-jalizi zilizosakinishwa zinaweza kuongeza njia, zana, vigezo na vyanzo; zile zenye msimbo wao zitakuja baadaye.",
     "plugins.choose": "Chagua faili ya .msplugin",
     "plugins.problems": "Programu-jalizi hii haiwezi kusakinishwa:",
     "plugins.install": "Sakinisha",
@@ -1120,7 +1239,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.inProjects": "Inatumika katika miradi {count}",
     "plugins.bundledTitle": "Zinazokuja na MobSimLab",
     "plugins.keys": "Wachapishaji wanaoaminika",
-    "plugins.keysIntro": "Programu-jalizi husakinishwa tu ikiwa mchapishaji aliisaini kwa mojawapo ya funguo hizi (ECDSA P-256 au Ed25519, PEM).",
+    "plugins.keysIntro":
+      "Programu-jalizi husakinishwa tu ikiwa mchapishaji aliisaini kwa mojawapo ya funguo hizi (ECDSA P-256 au Ed25519, PEM).",
     "plugins.noKeys": "Bado hakuna funguo zinazoaminika.",
     "plugins.removeKey": "Acha kumwamini {name}",
     "plugins.addKey": "Ongeza ufunguo",
@@ -1131,12 +1251,14 @@ export const PLUGIN_MESSAGES = {
     "plugins.untrusted": "Imesainiwa kwa ufunguo ambao mfumo huu hauuamini",
     "plugins.unsigned": "Haijasainiwa",
     "plugins.licences": "Leseni: msimbo {code}, data {data}",
-    "plugins.removeConfirm": "{name} imewashwa katika miradi {count}. Iondoe hata hivyo? Itazimwa humo na michoro itabaki."
+    "plugins.removeConfirm":
+      "{name} imewashwa katika miradi {count}. Iondoe hata hivyo? Itazimwa humo na michoro itabaki.",
   },
   ha: {
     "admin.plugins": "Ƙarin manhajoji",
     "plugins.title": "Ƙarin manhajoji",
-    "plugins.intro": "Ƙarin manhajoji suna ƙara hanyoyin sufuri, kayan aiki da lissafi. Kunna waɗanda wannan aiki ke amfani da su; idan aka kashe ɗaya, kayan aikinsa za su ɓoye kuma zane zai kasance.",
+    "plugins.intro":
+      "Ƙarin manhajoji suna ƙara hanyoyin sufuri, kayan aiki da lissafi. Kunna waɗanda wannan aiki ke amfani da su; idan aka kashe ɗaya, kayan aikinsa za su ɓoye kuma zane zai kasance.",
     "plugins.bundled": "Yana zuwa tare da MobSimLab",
     "plugins.by": "Daga {publisher}",
     "plugins.versionN": "Siga {version}",
@@ -1155,7 +1277,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "yana ajiye sakamakonsa",
     "plugins.perm.writeScenario": "yana ba da shawarar sauye-sauye ga yanayi",
     "plugins.installTitle": "Saka ƙarin manhaja",
-    "plugins.installIntro": "Ɗora fayil ɗin .msplugin. MobSimLab zai bincika shi ya nuna abin da yake ƙarawa kafin a saka. Ƙarin manhajojin da aka saka na iya ƙara hanyoyi, kayan aiki, sigogi da tushe; waɗanda ke da nasu lambar za su zo daga baya.",
+    "plugins.installIntro":
+      "Ɗora fayil ɗin .msplugin. MobSimLab zai bincika shi ya nuna abin da yake ƙarawa kafin a saka. Ƙarin manhajojin da aka saka na iya ƙara hanyoyi, kayan aiki, sigogi da tushe; waɗanda ke da nasu lambar za su zo daga baya.",
     "plugins.choose": "Zaɓi fayil ɗin .msplugin",
     "plugins.problems": "Ba za a iya saka wannan ƙarin manhaja ba:",
     "plugins.install": "Saka",
@@ -1165,7 +1288,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.inProjects": "Ana amfani da shi a ayyuka {count}",
     "plugins.bundledTitle": "Waɗanda ke zuwa tare da MobSimLab",
     "plugins.keys": "Masu wallafa amintattu",
-    "plugins.keysIntro": "Ƙarin manhaja yana sakuwa ne kawai idan mai wallafa ya sa hannu da ɗaya daga cikin waɗannan maɓallai (ECDSA P-256 ko Ed25519, PEM).",
+    "plugins.keysIntro":
+      "Ƙarin manhaja yana sakuwa ne kawai idan mai wallafa ya sa hannu da ɗaya daga cikin waɗannan maɓallai (ECDSA P-256 ko Ed25519, PEM).",
     "plugins.noKeys": "Babu amintattun maɓallai tukuna.",
     "plugins.removeKey": "Daina amincewa da {name}",
     "plugins.addKey": "Ƙara maɓalli",
@@ -1176,12 +1300,14 @@ export const PLUGIN_MESSAGES = {
     "plugins.untrusted": "An sa hannu da maɓallin da wannan tsarin ba ya amincewa da shi",
     "plugins.unsigned": "Ba a sa hannu ba",
     "plugins.licences": "Lasisi: lamba {code}, bayanai {data}",
-    "plugins.removeConfirm": "{name} yana kunne a ayyuka {count}. A cire shi duk da haka? Za a kashe shi a can kuma zane zai kasance."
+    "plugins.removeConfirm":
+      "{name} yana kunne a ayyuka {count}. A cire shi duk da haka? Za a kashe shi a can kuma zane zai kasance.",
   },
   am: {
     "admin.plugins": "ተሰኪዎች",
     "plugins.title": "ተሰኪዎች",
-    "plugins.intro": "ተሰኪዎች የትራንስፖርት ዓይነቶችን፣ መሣሪያዎችንና ስሌቶችን ያክላሉ። ይህ ፕሮጀክት የሚጠቀምባቸውን ያብሩ፤ ሲጠፋ መሣሪያዎቹ ይደበቃሉ፣ የተሳለው ይቀመጣል።",
+    "plugins.intro":
+      "ተሰኪዎች የትራንስፖርት ዓይነቶችን፣ መሣሪያዎችንና ስሌቶችን ያክላሉ። ይህ ፕሮጀክት የሚጠቀምባቸውን ያብሩ፤ ሲጠፋ መሣሪያዎቹ ይደበቃሉ፣ የተሳለው ይቀመጣል።",
     "plugins.bundled": "ከMobSimLab ጋር ይመጣል",
     "plugins.by": "አሳታሚ፦ {publisher}",
     "plugins.versionN": "ሥሪት {version}",
@@ -1200,7 +1326,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "የራሱን ውጤቶች ያስቀምጣል",
     "plugins.perm.writeScenario": "በሁኔታው ላይ ለውጦችን ያቀርባል",
     "plugins.installTitle": "ተሰኪ ይጫኑ",
-    "plugins.installIntro": "የ.msplugin ፋይል ይስቀሉ። MobSimLab ይፈትሸውና ከመጫንዎ በፊት ምን እንደሚያክል ያሳያል። የተጫኑ ተሰኪዎች ዓይነቶችን፣ መሣሪያዎችን፣ መለኪያዎችንና ምንጮችን ማከል ይችላሉ፤ የራሳቸው ኮድ ያላቸው ተሰኪዎች ወደፊት ይመጣሉ።",
+    "plugins.installIntro":
+      "የ.msplugin ፋይል ይስቀሉ። MobSimLab ይፈትሸውና ከመጫንዎ በፊት ምን እንደሚያክል ያሳያል። የተጫኑ ተሰኪዎች ዓይነቶችን፣ መሣሪያዎችን፣ መለኪያዎችንና ምንጮችን ማከል ይችላሉ፤ የራሳቸው ኮድ ያላቸው ተሰኪዎች ወደፊት ይመጣሉ።",
     "plugins.choose": "የ.msplugin ፋይል ይምረጡ",
     "plugins.problems": "ይህ ተሰኪ ሊጫን አይችልም፦",
     "plugins.install": "ጫን",
@@ -1221,12 +1348,13 @@ export const PLUGIN_MESSAGES = {
     "plugins.untrusted": "ይህ ሥርዓት በማያምነው ቁልፍ የተፈረመ",
     "plugins.unsigned": "ያልተፈረመ",
     "plugins.licences": "ፈቃዶች፦ ኮድ {code}፣ መረጃ {data}",
-    "plugins.removeConfirm": "{name} በ{count} ፕሮጀክቶች በርቷል። ቢሆንም ይወገድ? እዚያ ይጠፋል፣ ስዕሎቹ ይቀመጣሉ።"
+    "plugins.removeConfirm": "{name} በ{count} ፕሮጀክቶች በርቷል። ቢሆንም ይወገድ? እዚያ ይጠፋል፣ ስዕሎቹ ይቀመጣሉ።",
   },
   yo: {
     "admin.plugins": "Àwọn àfikún",
     "plugins.title": "Àwọn àfikún",
-    "plugins.intro": "Àwọn àfikún ń ṣàfikún ọ̀nà ìrìnàjò, irinṣẹ́ àti ìṣirò. Tan àwọn tí iṣẹ́ yìí ń lò; tí o bá pa ọ̀kan, irinṣẹ́ rẹ̀ á fara pamọ́, ohun tí a yà á wà.",
+    "plugins.intro":
+      "Àwọn àfikún ń ṣàfikún ọ̀nà ìrìnàjò, irinṣẹ́ àti ìṣirò. Tan àwọn tí iṣẹ́ yìí ń lò; tí o bá pa ọ̀kan, irinṣẹ́ rẹ̀ á fara pamọ́, ohun tí a yà á wà.",
     "plugins.bundled": "Ó wá pẹ̀lú MobSimLab",
     "plugins.by": "Láti ọwọ́ {publisher}",
     "plugins.versionN": "Ẹ̀yà {version}",
@@ -1245,7 +1373,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "ó ń fi èsì tirẹ̀ pamọ́",
     "plugins.perm.writeScenario": "ó ń dábàá àyípadà sí ipò",
     "plugins.installTitle": "Fi àfikún sórí",
-    "plugins.installIntro": "Gbé fáìlì .msplugin sókè. MobSimLab á ṣàyẹ̀wò rẹ̀, á sì fi ohun tó ń ṣàfikún hàn kí o tó fi sórí. Àwọn àfikún tí a fi sórí lè ṣàfikún ọ̀nà, irinṣẹ́, pàrámítà àti orísun; àwọn tó ní kóòdù tiwọn á dé lẹ́yìn náà.",
+    "plugins.installIntro":
+      "Gbé fáìlì .msplugin sókè. MobSimLab á ṣàyẹ̀wò rẹ̀, á sì fi ohun tó ń ṣàfikún hàn kí o tó fi sórí. Àwọn àfikún tí a fi sórí lè ṣàfikún ọ̀nà, irinṣẹ́, pàrámítà àti orísun; àwọn tó ní kóòdù tiwọn á dé lẹ́yìn náà.",
     "plugins.choose": "Yan fáìlì .msplugin",
     "plugins.problems": "A kò lè fi àfikún yìí sórí:",
     "plugins.install": "Fi sórí",
@@ -1255,7 +1384,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.inProjects": "A ń lò ó nínú iṣẹ́ {count}",
     "plugins.bundledTitle": "Àwọn tó wá pẹ̀lú MobSimLab",
     "plugins.keys": "Àwọn atẹ̀jáde tí a gbẹ́kẹ̀lé",
-    "plugins.keysIntro": "Àfikún kan máa ń wọlé nìkan tí atẹ̀jáde rẹ̀ bá fi ọ̀kan nínú àwọn kọ́kọ́rọ́ yìí buwọ́lù ú (ECDSA P-256 tàbí Ed25519, PEM).",
+    "plugins.keysIntro":
+      "Àfikún kan máa ń wọlé nìkan tí atẹ̀jáde rẹ̀ bá fi ọ̀kan nínú àwọn kọ́kọ́rọ́ yìí buwọ́lù ú (ECDSA P-256 tàbí Ed25519, PEM).",
     "plugins.noKeys": "Kò sí kọ́kọ́rọ́ tí a gbẹ́kẹ̀lé síbẹ̀.",
     "plugins.removeKey": "Dẹ́kun gbígbẹ́kẹ̀lé {name}",
     "plugins.addKey": "Ṣàfikún kọ́kọ́rọ́",
@@ -1266,12 +1396,14 @@ export const PLUGIN_MESSAGES = {
     "plugins.untrusted": "A fi kọ́kọ́rọ́ tí ètò yìí kò gbẹ́kẹ̀lé buwọ́lù ú",
     "plugins.unsigned": "A kò buwọ́lù ú",
     "plugins.licences": "Ìwé àṣẹ: kóòdù {code}, dátà {data}",
-    "plugins.removeConfirm": "{name} wà ní títàn nínú iṣẹ́ {count}. Ṣé kí a yọ ọ́ síbẹ̀? A ó pa á níbẹ̀, àwọn àwòrán á wà."
+    "plugins.removeConfirm":
+      "{name} wà ní títàn nínú iṣẹ́ {count}. Ṣé kí a yọ ọ́ síbẹ̀? A ó pa á níbẹ̀, àwọn àwòrán á wà.",
   },
   ig: {
     "admin.plugins": "Ngwa mgbakwunye",
     "plugins.title": "Ngwa mgbakwunye",
-    "plugins.intro": "Ngwa mgbakwunye na-agbakwunye ụzọ njem, ngwaọrụ na ngụkọ. Gbanye ndị ọrụ a na-eji; ọ bụrụ na i gbanyụọ otu, ngwaọrụ ya na-ezo, ihe e sere na-adịgide.",
+    "plugins.intro":
+      "Ngwa mgbakwunye na-agbakwunye ụzọ njem, ngwaọrụ na ngụkọ. Gbanye ndị ọrụ a na-eji; ọ bụrụ na i gbanyụọ otu, ngwaọrụ ya na-ezo, ihe e sere na-adịgide.",
     "plugins.bundled": "Na-abịa na MobSimLab",
     "plugins.by": "Site n'aka {publisher}",
     "plugins.versionN": "Ụdị {version}",
@@ -1290,7 +1422,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "na-echekwa nsonaazụ nke ya",
     "plugins.perm.writeScenario": "na-atụ aro mgbanwe n'ọnọdụ",
     "plugins.installTitle": "Wụnye ngwa mgbakwunye",
-    "plugins.installIntro": "Bulite faịlụ .msplugin. MobSimLab na-enyocha ya ma gosi ihe ọ na-agbakwunye tupu i wụnye ya. Ngwa mgbakwunye ewụnyere nwere ike ịgbakwunye ụzọ, ngwaọrụ, paramita na isi mmalite; ndị nwere koodu nke ha ga-abịa ma emechaa.",
+    "plugins.installIntro":
+      "Bulite faịlụ .msplugin. MobSimLab na-enyocha ya ma gosi ihe ọ na-agbakwunye tupu i wụnye ya. Ngwa mgbakwunye ewụnyere nwere ike ịgbakwunye ụzọ, ngwaọrụ, paramita na isi mmalite; ndị nwere koodu nke ha ga-abịa ma emechaa.",
     "plugins.choose": "Họrọ faịlụ .msplugin",
     "plugins.problems": "Enweghị ike ịwụnye ngwa mgbakwunye a:",
     "plugins.install": "Wụnye",
@@ -1300,7 +1433,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.inProjects": "A na-eji ya n'ọrụ {count}",
     "plugins.bundledTitle": "Ndị na-abịa na MobSimLab",
     "plugins.keys": "Ndị mbipụta a tụkwasịrị obi",
-    "plugins.keysIntro": "A na-ewụnye ngwa mgbakwunye naanị ma ọ bụrụ na onye mbipụta ya ji otu n'ime igodo ndị a bịanye aka (ECDSA P-256 ma ọ bụ Ed25519, PEM).",
+    "plugins.keysIntro":
+      "A na-ewụnye ngwa mgbakwunye naanị ma ọ bụrụ na onye mbipụta ya ji otu n'ime igodo ndị a bịanye aka (ECDSA P-256 ma ọ bụ Ed25519, PEM).",
     "plugins.noKeys": "Enwebeghị igodo a tụkwasịrị obi.",
     "plugins.removeKey": "Kwụsị ịtụkwasị {name} obi",
     "plugins.addKey": "Tinye igodo",
@@ -1311,19 +1445,22 @@ export const PLUGIN_MESSAGES = {
     "plugins.untrusted": "Ejiri igodo usoro a na-atụkwasịghị obi bịanye aka",
     "plugins.unsigned": "Enweghị mbinye aka",
     "plugins.licences": "Ikikere: koodu {code}, data {data}",
-    "plugins.removeConfirm": "{name} gbanyere n'ọrụ {count}. Wepụ ya n'agbanyeghị? A ga-agbanyụ ya ebe ahụ, ihe osise ga-adịgide."
+    "plugins.removeConfirm":
+      "{name} gbanyere n'ọrụ {count}. Wepụ ya n'agbanyeghị? A ga-agbanyụ ya ebe ahụ, ihe osise ga-adịgide.",
   },
   zu: {
     "admin.plugins": "Ama-plugin",
     "plugins.title": "Ama-plugin",
-    "plugins.intro": "Ama-plugin engeza izindlela zokuthutha, amathuluzi nezibalo. Vula lawo asetshenziswa yile phrojekthi; uma ucisha elilodwa, amathuluzi alo ayafihlwa futhi okudwetshiwe kuyagcinwa.",
+    "plugins.intro":
+      "Ama-plugin engeza izindlela zokuthutha, amathuluzi nezibalo. Vula lawo asetshenziswa yile phrojekthi; uma ucisha elilodwa, amathuluzi alo ayafihlwa futhi okudwetshiwe kuyagcinwa.",
     "plugins.bundled": "Iza ne-MobSimLab",
     "plugins.by": "Ngu-{publisher}",
     "plugins.versionN": "Inguqulo {version}",
     "plugins.adds": "Yengeza: {list}",
     "plugins.uses": "Isebenzisa: {list}",
     "plugins.parameters": "Amanani okucabanga angu-{count}",
-    "plugins.missing": "Inguqulo {version} isusiwe kule MobSimLab. Khetha enye inguqulo ukuze uyisebenzise futhi.",
+    "plugins.missing":
+      "Inguqulo {version} isusiwe kule MobSimLab. Khetha enye inguqulo ukuze uyisebenzise futhi.",
     "plugins.versionOf": "Inguqulo ka-{name}",
     "plugins.useIn": "Sebenzisa u-{name} kule phrojekthi",
     "plugins.ownerOnly": "Umnikazi wephrojekthi kuphela ongavula noma acishe ama-plugin.",
@@ -1335,7 +1472,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "igcina imiphumela yayo",
     "plugins.perm.writeScenario": "iphakamisa izinguquko esimweni",
     "plugins.installTitle": "Faka i-plugin",
-    "plugins.installIntro": "Layisha ifayela le-.msplugin. I-MobSimLab iyalihlola futhi ikhombise ukuthi lengezani ngaphambi kokulifaka. Ama-plugin afakiwe angengeza izindlela, amathuluzi, amapharamitha nemithombo; lawo anekhodi yawo azofika kamuva.",
+    "plugins.installIntro":
+      "Layisha ifayela le-.msplugin. I-MobSimLab iyalihlola futhi ikhombise ukuthi lengezani ngaphambi kokulifaka. Ama-plugin afakiwe angengeza izindlela, amathuluzi, amapharamitha nemithombo; lawo anekhodi yawo azofika kamuva.",
     "plugins.choose": "Khetha ifayela le-.msplugin",
     "plugins.problems": "Le plugin ayikwazi ukufakwa:",
     "plugins.install": "Faka",
@@ -1345,7 +1483,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.inProjects": "Isetshenziswa kumaphrojekthi angu-{count}",
     "plugins.bundledTitle": "Eza ne-MobSimLab",
     "plugins.keys": "Abashicileli abathembekile",
-    "plugins.keysIntro": "I-plugin ifakwa kuphela uma umshicileli wayo eyisayine ngesinye salezi zihluthulelo (ECDSA P-256 noma Ed25519, PEM).",
+    "plugins.keysIntro":
+      "I-plugin ifakwa kuphela uma umshicileli wayo eyisayine ngesinye salezi zihluthulelo (ECDSA P-256 noma Ed25519, PEM).",
     "plugins.noKeys": "Azikho izihluthulelo ezithembekile okwamanje.",
     "plugins.removeKey": "Yeka ukuthemba u-{name}",
     "plugins.addKey": "Engeza isihluthulelo",
@@ -1356,19 +1495,22 @@ export const PLUGIN_MESSAGES = {
     "plugins.untrusted": "Isayinwe ngesihluthulelo esingathenjwa yilesi sistimu",
     "plugins.unsigned": "Ayisayiniwe",
     "plugins.licences": "Amalayisensi: ikhodi {code}, idatha {data}",
-    "plugins.removeConfirm": "U-{name} uvuliwe kumaphrojekthi angu-{count}. Ususe noma kunjalo? Uzocishwa lapho futhi imidwebo izogcinwa."
+    "plugins.removeConfirm":
+      "U-{name} uvuliwe kumaphrojekthi angu-{count}. Ususe noma kunjalo? Uzocishwa lapho futhi imidwebo izogcinwa.",
   },
   uz: {
     "admin.plugins": "Plaginlar",
     "plugins.title": "Plaginlar",
-    "plugins.intro": "Plaginlar transport turlari, vositalar va hisob-kitoblarni qo'shadi. Bu loyiha ishlatadiganlarini yoqing; o'chirilganda vositalari yashiriladi, chizilganlar saqlanadi.",
+    "plugins.intro":
+      "Plaginlar transport turlari, vositalar va hisob-kitoblarni qo'shadi. Bu loyiha ishlatadiganlarini yoqing; o'chirilganda vositalari yashiriladi, chizilganlar saqlanadi.",
     "plugins.bundled": "MobSimLab bilan keladi",
     "plugins.by": "Nashriyotchi: {publisher}",
     "plugins.versionN": "Versiya {version}",
     "plugins.adds": "Qo'shadi: {list}",
     "plugins.uses": "Foydalanadi: {list}",
     "plugins.parameters": "Taxmin qiymatlari: {count}",
-    "plugins.missing": "{version} versiyasi bu MobSimLab'dan olib tashlandi. Qayta ishlatish uchun boshqa versiyani tanlang.",
+    "plugins.missing":
+      "{version} versiyasi bu MobSimLab'dan olib tashlandi. Qayta ishlatish uchun boshqa versiyani tanlang.",
     "plugins.versionOf": "{name} versiyasi",
     "plugins.useIn": "{name} plaginini bu loyihada ishlatish",
     "plugins.ownerOnly": "Plaginlarni faqat loyiha egasi yoqishi yoki o'chirishi mumkin.",
@@ -1380,7 +1522,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "o'z natijalarini saqlaydi",
     "plugins.perm.writeScenario": "ssenariyga o'zgarishlar taklif qiladi",
     "plugins.installTitle": "Plagin o'rnatish",
-    "plugins.installIntro": ".msplugin faylini yuklang. MobSimLab uni tekshiradi va o'rnatishdan oldin nimani qo'shishini ko'rsatadi. O'rnatilgan plaginlar transport turlari, vositalar, parametrlar va manbalar qo'sha oladi; o'z kodiga ega plaginlar keyinroq keladi.",
+    "plugins.installIntro":
+      ".msplugin faylini yuklang. MobSimLab uni tekshiradi va o'rnatishdan oldin nimani qo'shishini ko'rsatadi. O'rnatilgan plaginlar transport turlari, vositalar, parametrlar va manbalar qo'sha oladi; o'z kodiga ega plaginlar keyinroq keladi.",
     "plugins.choose": ".msplugin faylini tanlang",
     "plugins.problems": "Bu plaginni o'rnatib bo'lmaydi:",
     "plugins.install": "O'rnatish",
@@ -1390,7 +1533,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.inProjects": "{count} ta loyihada ishlatiladi",
     "plugins.bundledTitle": "MobSimLab bilan kelganlar",
     "plugins.keys": "Ishonchli nashriyotchilar",
-    "plugins.keysIntro": "Plagin faqat nashriyotchi uni shu kalitlardan biri bilan imzolagan bo'lsa o'rnatiladi (ECDSA P-256 yoki Ed25519, PEM).",
+    "plugins.keysIntro":
+      "Plagin faqat nashriyotchi uni shu kalitlardan biri bilan imzolagan bo'lsa o'rnatiladi (ECDSA P-256 yoki Ed25519, PEM).",
     "plugins.noKeys": "Hali ishonchli kalitlar yo'q.",
     "plugins.removeKey": "{name} ga ishonchni bekor qilish",
     "plugins.addKey": "Kalit qo'shish",
@@ -1401,19 +1545,22 @@ export const PLUGIN_MESSAGES = {
     "plugins.untrusted": "Bu nusxa ishonmaydigan kalit bilan imzolangan",
     "plugins.unsigned": "Imzolanmagan",
     "plugins.licences": "Litsenziyalar: kod {code}, ma'lumotlar {data}",
-    "plugins.removeConfirm": "{name} {count} ta loyihada yoqilgan. Baribir olib tashlansinmi? U yerda o'chiriladi, chizmalar saqlanadi."
+    "plugins.removeConfirm":
+      "{name} {count} ta loyihada yoqilgan. Baribir olib tashlansinmi? U yerda o'chiriladi, chizmalar saqlanadi.",
   },
   kk: {
     "admin.plugins": "Плагиндер",
     "plugins.title": "Плагиндер",
-    "plugins.intro": "Плагиндер көлік түрлерін, құралдар мен есептеулерді қосады. Осы жоба қолданатындарын қосыңыз; өшірілсе, құралдары жасырылады, сызылғандар сақталады.",
+    "plugins.intro":
+      "Плагиндер көлік түрлерін, құралдар мен есептеулерді қосады. Осы жоба қолданатындарын қосыңыз; өшірілсе, құралдары жасырылады, сызылғандар сақталады.",
     "plugins.bundled": "MobSimLab-пен бірге келеді",
     "plugins.by": "Баспагер: {publisher}",
     "plugins.versionN": "Нұсқа {version}",
     "plugins.adds": "Қосады: {list}",
     "plugins.uses": "Пайдаланады: {list}",
     "plugins.parameters": "Болжам мәндері: {count}",
-    "plugins.missing": "{version} нұсқасы осы MobSimLab-тен жойылды. Қайта қолдану үшін басқа нұсқаны таңдаңыз.",
+    "plugins.missing":
+      "{version} нұсқасы осы MobSimLab-тен жойылды. Қайта қолдану үшін басқа нұсқаны таңдаңыз.",
     "plugins.versionOf": "{name} нұсқасы",
     "plugins.useIn": "{name} плагинін осы жобада қолдану",
     "plugins.ownerOnly": "Плагиндерді тек жоба иесі қосып не өшіре алады.",
@@ -1425,7 +1572,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "өз нәтижелерін сақтайды",
     "plugins.perm.writeScenario": "сценарийге өзгерістер ұсынады",
     "plugins.installTitle": "Плагин орнату",
-    "plugins.installIntro": ".msplugin файлын жүктеңіз. MobSimLab оны тексеріп, орнатпас бұрын не қосатынын көрсетеді. Орнатылған плагиндер көлік түрлерін, құралдарды, параметрлер мен дереккөздерді қоса алады; өз коды бар плагиндер кейін келеді.",
+    "plugins.installIntro":
+      ".msplugin файлын жүктеңіз. MobSimLab оны тексеріп, орнатпас бұрын не қосатынын көрсетеді. Орнатылған плагиндер көлік түрлерін, құралдарды, параметрлер мен дереккөздерді қоса алады; өз коды бар плагиндер кейін келеді.",
     "plugins.choose": ".msplugin файлын таңдаңыз",
     "plugins.problems": "Бұл плагинді орнату мүмкін емес:",
     "plugins.install": "Орнату",
@@ -1435,7 +1583,8 @@ export const PLUGIN_MESSAGES = {
     "plugins.inProjects": "{count} жобада қолданылады",
     "plugins.bundledTitle": "MobSimLab-пен бірге келгендер",
     "plugins.keys": "Сенімді баспагерлер",
-    "plugins.keysIntro": "Плагин баспагері оны осы кілттердің бірімен қол қойса ғана орнатылады (ECDSA P-256 немесе Ed25519, PEM).",
+    "plugins.keysIntro":
+      "Плагин баспагері оны осы кілттердің бірімен қол қойса ғана орнатылады (ECDSA P-256 немесе Ed25519, PEM).",
     "plugins.noKeys": "Әзірге сенімді кілттер жоқ.",
     "plugins.removeKey": "{name} сенімін алып тастау",
     "plugins.addKey": "Кілт қосу",
@@ -1446,6 +1595,7 @@ export const PLUGIN_MESSAGES = {
     "plugins.untrusted": "Бұл дана сенбейтін кілтпен қол қойылған",
     "plugins.unsigned": "Қол қойылмаған",
     "plugins.licences": "Лицензиялар: код {code}, деректер {data}",
-    "plugins.removeConfirm": "{name} {count} жобада қосулы. Сонда да жою керек пе? Онда өшіріледі, сызбалар сақталады."
+    "plugins.removeConfirm":
+      "{name} {count} жобада қосулы. Сонда да жою керек пе? Онда өшіріледі, сызбалар сақталады.",
   },
 } satisfies Record<string, Record<PluginKey, string>>;

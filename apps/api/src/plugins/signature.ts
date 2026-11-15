@@ -15,9 +15,7 @@ export interface TrustedKey {
 
 /** How a package is signed. */
 export type SignatureStatus =
-  | { status: "trusted"; keyId: string; keyName: string }
-  | { status: "unsigned" }
-  | { status: "untrusted" };
+  { status: "trusted"; keyId: string; keyName: string } | { status: "unsigned" } | { status: "untrusted" };
 
 /** Purpose: SHA-256 of bytes as lower-case hex. */
 export const sha256 = (b: Buffer | string): string => createHash("sha256").update(b).digest("hex");
@@ -78,7 +76,10 @@ export function checkChecksums(files: ReadonlyMap<string, Buffer>): Record<strin
  * Inputs: the unpacked files (checksums already checked) and the trusted keys.
  * Output: trusted (with the key), unsigned (no signature file) or untrusted (a signature no trusted key verifies).
  */
-export function checkSignature(files: ReadonlyMap<string, Buffer>, keys: readonly TrustedKey[]): SignatureStatus {
+export function checkSignature(
+  files: ReadonlyMap<string, Buffer>,
+  keys: readonly TrustedKey[],
+): SignatureStatus {
   const sig = files.get(SIGNATURE);
   const list = files.get(CHECKSUMS);
   if (!sig || !list) return { status: "unsigned" };

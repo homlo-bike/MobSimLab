@@ -148,9 +148,7 @@ export function ProjectPreferences({
           </div>
           {!editable && <p className="mt-3 text-sm text-slate-500">{t("prefs.readOnly")}</p>}
         </section>
-        {onSetPlugin && (
-          <ProjectPlugins plugins={plugins} manage={can.manage(project)} onSet={onSetPlugin} />
-        )}
+        {onSetPlugin && <ProjectPlugins plugins={plugins} manage={can.manage(project)} onSet={onSetPlugin} />}
         <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-4 md:p-6">
           <Placeholder
             title="prefs.moreTitle"

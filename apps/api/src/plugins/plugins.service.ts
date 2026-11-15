@@ -164,7 +164,13 @@ export class PluginsService {
       .map((r) => {
         const e = r.entry as PluginEntry;
         return {
-          ...summary(e, ((r.manifest as { dependsOn?: Record<string, string> }).dependsOn ?? {}) as Record<string, string>),
+          ...summary(
+            e,
+            ((r.manifest as { dependsOn?: Record<string, string> }).dependsOn ?? {}) as Record<
+              string,
+              string
+            >,
+          ),
           signature: { status: r.signature, signer: r.signer_name },
           sha256: r.sha256,
           sizeBytes: r.size_bytes,
@@ -175,7 +181,9 @@ export class PluginsService {
       })
       .sort((a, b) => a.id.localeCompare(b.id) || compareVersions(b.version, a.version));
     return {
-      bundled: BUNDLED.map((e) => ({ ...summary(e), projects: use.get(`${e.id}@`) ?? 0 }) satisfies PluginSummary),
+      bundled: BUNDLED.map(
+        (e) => ({ ...summary(e), projects: use.get(`${e.id}@`) ?? 0 }) satisfies PluginSummary,
+      ),
       installed,
       keys: keys.map((k) => ({
         id: k.id,
@@ -207,7 +215,10 @@ export class PluginsService {
       await tx.selectFrom("iam.instance").select("id").forUpdate().executeTakeFirstOrThrow();
       const { inspection, entry, manifest, sig } = await this.check(actor, buf, tx);
       if (!entry || !manifest || inspection.problems.length > 0)
-        throw new BadRequestException({ message: "the plugin cannot be installed", problems: inspection.problems });
+        throw new BadRequestException({
+          message: "the plugin cannot be installed",
+          problems: inspection.problems,
+        });
       const trusted = sig?.status === "trusted";
       await tx
         .insertInto("plugin.package")
@@ -300,7 +311,11 @@ export class PluginsService {
           tx,
         );
       }
-      await tx.deleteFrom("plugin.package").where("plugin_id", "=", id).where("version", "=", version).execute();
+      await tx
+        .deleteFrom("plugin.package")
+        .where("plugin_id", "=", id)
+        .where("version", "=", version)
+        .execute();
       await this.audit.append(
         {
           action: "plugin.uninstalled",
@@ -394,7 +409,10 @@ export class PluginsService {
         .select("allow_unsigned_plugins")
         .forUpdate()
         .executeTakeFirstOrThrow();
-      await tx.updateTable("iam.instance").set({ allow_unsigned_plugins: allow, updated_at: new Date() }).execute();
+      await tx
+        .updateTable("iam.instance")
+        .set({ allow_unsigned_plugins: allow, updated_at: new Date() })
+        .execute();
       await this.audit.append(
         {
           action: "instance.plugin_unsigned_updated",
@@ -444,19 +462,23 @@ export class PluginsService {
       } else {
         pinned = version ?? (cur.missing || !cur.enabled ? latest(cur.versions) : cur.version) ?? null;
         if (!pinned || !cur.versions.includes(pinned))
-          throw new BadRequestException(`version ${version ?? ""} of ${pluginId} is not installed`.replace("  ", " "));
+          throw new BadRequestException(
+            `version ${version ?? ""} of ${pluginId} is not installed`.replace("  ", " "),
+          );
       }
       if (enabled) {
         const deps = cur.bundled
           ? {}
-          : (((
-              await tx
-                .selectFrom("plugin.package")
-                .select("manifest")
-                .where("plugin_id", "=", pluginId)
-                .where("version", "=", pinned!)
-                .executeTakeFirstOrThrow()
-            ).manifest as { dependsOn?: Record<string, string> }).dependsOn ?? {});
+          : ((
+              (
+                await tx
+                  .selectFrom("plugin.package")
+                  .select("manifest")
+                  .where("plugin_id", "=", pluginId)
+                  .where("version", "=", pinned!)
+                  .executeTakeFirstOrThrow()
+              ).manifest as { dependsOn?: Record<string, string> }
+            ).dependsOn ?? {});
         for (const [dep, range] of Object.entries(deps)) {
           const d = list.find((p) => p.id === dep);
           if (!d || !d.enabled || !satisfies(d.version, range))
@@ -464,7 +486,8 @@ export class PluginsService {
         }
       } else {
         const needs = await this.dependents(tx, list, pluginId);
-        if (needs.length) throw new ConflictException(`${needs.join(", ")} needs this plugin; turn it off first`);
+        if (needs.length)
+          throw new ConflictException(`${needs.join(", ")} needs this plugin; turn it off first`);
       }
       const before = { plugin: pluginId, version: cur.version, enabled: cur.enabled };
       const after = { plugin: pluginId, version: pinned ?? cur.version, enabled };
@@ -487,7 +510,11 @@ export class PluginsService {
           }),
         )
         .execute();
-      await tx.updateTable("project.project").set({ updated_at: new Date() }).where("id", "=", projectId).execute();
+      await tx
+        .updateTable("project.project")
+        .set({ updated_at: new Date() })
+        .where("id", "=", projectId)
+        .execute();
       await this.projects.logProject(
         actor,
         projectId,
@@ -509,7 +536,11 @@ export class PluginsService {
     const rows = await db
       .selectFrom("plugin.package")
       .select(["plugin_id", "version", "manifest"])
-      .where("plugin_id", "in", on.map((p) => p.id))
+      .where(
+        "plugin_id",
+        "in",
+        on.map((p) => p.id),
+      )
       .execute();
     return on
       .filter((p) => {
@@ -539,14 +570,20 @@ export class PluginsService {
       missing: false,
     }));
     const byId = new Map<string, { version: string; entry: PluginEntry }[]>();
-    for (const p of pkgs) byId.set(p.plugin_id, [...(byId.get(p.plugin_id) ?? []), { version: p.version, entry: p.entry as PluginEntry }]);
+    for (const p of pkgs)
+      byId.set(p.plugin_id, [
+        ...(byId.get(p.plugin_id) ?? []),
+        { version: p.version, entry: p.entry as PluginEntry },
+      ]);
     const ids = new Set([...byId.keys(), ...rows.filter((r) => r.version !== null).map((r) => r.plugin_id)]);
     for (const id of [...ids].sort()) {
       if (BUNDLED.some((b) => b.id === id)) continue;
       const versions = (byId.get(id) ?? []).map((v) => v.version).sort(compareVersions);
       const row = choice.get(id);
       const wanted = row?.version ?? latest(versions);
-      const found = byId.get(id)?.find((v) => v.version === wanted) ?? byId.get(id)?.find((v) => v.version === latest(versions));
+      const found =
+        byId.get(id)?.find((v) => v.version === wanted) ??
+        byId.get(id)?.find((v) => v.version === latest(versions));
       const missing = Boolean(row?.version) && !versions.includes(row!.version!);
       if (!found && !row) continue;
       const e = found?.entry;
@@ -561,7 +598,9 @@ export class PluginsService {
         version: wanted ?? "",
         versions,
         permissions: e?.permissions ?? [],
-        contributes: e ? contributions(e) : { modes: [], tools: [], parameters: 0, calculations: [], mapLayers: [] },
+        contributes: e
+          ? contributions(e)
+          : { modes: [], tools: [], parameters: 0, calculations: [], mapLayers: [] },
         missing,
         ...(enabled && e ? { entry: e } : {}),
       });
@@ -584,7 +623,8 @@ export class PluginsService {
       .executeTakeFirstOrThrow();
     const out = new Map<string, number>();
     for (const r of rows)
-      if (r.enabled) out.set(`${r.plugin_id}@${r.version ?? ""}`, (out.get(`${r.plugin_id}@${r.version ?? ""}`) ?? 0) + 1);
+      if (r.enabled)
+        out.set(`${r.plugin_id}@${r.version ?? ""}`, (out.get(`${r.plugin_id}@${r.version ?? ""}`) ?? 0) + 1);
     // Bundled plugins are on in every project that did not turn them off.
     for (const b of BUNDLED) {
       const off = rows.filter((r) => r.plugin_id === b.id && !r.enabled).length;
@@ -602,7 +642,13 @@ export class PluginsService {
     const problems: string[] = [];
     const hash = sha256(buf);
     const fail = (message: string) => ({
-      inspection: { plugin: null, signature: null, signer: null, sha256: hash, problems: [message] } as Inspection,
+      inspection: {
+        plugin: null,
+        signature: null,
+        signer: null,
+        sha256: hash,
+        problems: [message],
+      } as Inspection,
       entry: null,
       manifest: null,
       sig: null,
@@ -624,12 +670,16 @@ export class PluginsService {
       files,
       keys.map((k) => ({ id: k.id, name: k.name, publicKey: k.public_key })),
     );
-    const others: OtherPlugin[] = [...BUNDLED.map(claims), ...installed.map((r) => claims(r.entry as PluginEntry))];
+    const others: OtherPlugin[] = [
+      ...BUNDLED.map(claims),
+      ...installed.map((r) => claims(r.entry as PluginEntry)),
+    ];
     const result = checkPlugin(files, others);
     if (!result.ok) problems.push(...result.errors);
     const entry = result.ok ? result.entry : null;
     if (entry) {
-      if (BUNDLED.some((b) => b.id === entry.id)) problems.push(`${entry.id} ships with MobSimLab and cannot be installed again`);
+      if (BUNDLED.some((b) => b.id === entry.id))
+        problems.push(`${entry.id} ships with MobSimLab and cannot be installed again`);
       if (installed.some((r) => r.plugin_id === entry.id && r.version === entry.version))
         problems.push(`${entry.id} ${entry.version} is already installed`);
     }
@@ -637,11 +687,15 @@ export class PluginsService {
     if (sig.status === "unsigned" && !unsignedOk)
       problems.push("the package is not signed; ask the publisher for a signed package");
     if (sig.status === "untrusted" && !unsignedOk)
-      problems.push("the package is signed with a key this instance does not trust; add the publisher's key first");
+      problems.push(
+        "the package is signed with a key this instance does not trust; add the publisher's key first",
+      );
     const manifest = result.ok ? result.manifest : null;
     return {
       inspection: {
-        plugin: entry ? { ...summary(entry, (manifest?.dependsOn ?? {}) as Record<string, string>), projects: 0 } : null,
+        plugin: entry
+          ? { ...summary(entry, (manifest?.dependsOn ?? {}) as Record<string, string>), projects: 0 }
+          : null,
         signature: sig.status,
         signer: sig.status === "trusted" ? sig.keyName : null,
         sha256: hash,
