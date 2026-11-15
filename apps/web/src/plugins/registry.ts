@@ -7,8 +7,8 @@ export interface PluginMode {
   family: "street" | "rail" | "guided" | "aerial" | "water";
   colour: string;
   gtfsRouteType: number;
-  kit: "straight-spans" | "water-route";
-  operation: "frequency" | "shuttle" | "timetabled";
+  kit: "straight-spans" | "water-route" | "service-zone";
+  operation: "frequency" | "shuttle" | "timetabled" | "on_demand";
   contextKey?: string;
   contexts?: string[];
   defaultContext?: string;
@@ -21,7 +21,7 @@ export interface PluginTool {
   id: string;
   label: string;
   hint?: string;
-  kit: "straight-spans" | "water-route";
+  kit: "straight-spans" | "water-route" | "service-zone";
   modes: string[];
 }
 

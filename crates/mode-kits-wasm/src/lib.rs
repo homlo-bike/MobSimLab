@@ -1,7 +1,7 @@
-//! WebAssembly bindings of `mode-kits` for the cable car and ferry tools.
+//! WebAssembly bindings of `mode-kits` for the cable car, people mover, ferry and on-demand bus tools.
 //!
 //! Stateless: the editor sends the whole line after every edit and gets the built line back as JSON
-//! (`mode_kits::spans::SpanView`, `mode_kits::water::WaterView`, `mode_kits::segment::SimOutput`).
+//! (`mode_kits::spans::SpanView`, `mode_kits::water::WaterView`, `mode_kits::zone::ZoneView`, `mode_kits::segment::SimOutput`).
 
 use wasm_bindgen::prelude::*;
 
@@ -31,4 +31,12 @@ pub fn build_water_line(input: &str) -> Result<String, JsError> {
 pub fn simulate_segments(input: &str) -> Result<String, JsError> {
     let sim: mode_kits::segment::SimInput = serde_json::from_str(input).map_err(js)?;
     serde_json::to_string(&mode_kits::segment::simulate(&sim)).map_err(js)
+}
+
+/// Purpose: estimate an on-demand service with the service zone kit.
+/// Input: `mode_kits::zone::ZoneInput` as JSON. Output: `ZoneView` as JSON.
+#[wasm_bindgen]
+pub fn estimate_zone(input: &str) -> Result<String, JsError> {
+    let zone: mode_kits::zone::ZoneInput = serde_json::from_str(input).map_err(js)?;
+    serde_json::to_string(&mode_kits::zone::estimate(&zone)).map_err(js)
 }

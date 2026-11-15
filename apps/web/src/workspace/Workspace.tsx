@@ -29,6 +29,7 @@ import { useI18n } from "../i18n/i18n";
 import type { MessageKey } from "../i18n/messages";
 import { SpanLineEditor } from "../kits/SpanLineEditor";
 import { WaterRouteEditor } from "../kits/WaterRouteEditor";
+import { type DemandZone, ZoneEditor } from "../kits/ZoneEditor";
 import { MapView } from "../map/MapView";
 import { findMode, pluginTools } from "../plugins/registry";
 import { can, type Project, type ProjectsApi } from "../projects/api";
@@ -126,6 +127,8 @@ export function Workspace({
   const [line, setLine] = useState<StreetLineInput | null>(null);
   // Cable car and ferry lines from the plugin tools, per tool, for the journey planner.
   const [pluginLines, setPluginLines] = useState<Record<string, PluginLineInput | null>>({});
+  // On-demand zones from the service zone kit, for the journey planner.
+  const [demandZones, setDemandZones] = useState<Record<string, DemandZone | null>>({});
   // The track topology last built in the railway tool, so street lines wait at its level crossings.
   const [railTopology, setRailTopology] = useState<unknown>(null);
   useEffect(() => {
@@ -287,6 +290,7 @@ export function Workspace({
             : t("create.street")
         : tabLabel("gis");
   const pluginLineList = Object.values(pluginLines).filter((l): l is PluginLineInput => l !== null);
+  const demandZoneList = Object.values(demandZones).filter((z): z is DemandZone => z !== null);
 
   return (
     <div className="flex h-full flex-col">
@@ -361,6 +365,16 @@ export function Workspace({
               onLineChange={(l) => setPluginLines((p) => ({ ...p, [chosenPlugin.id]: l }))}
             />
           )}
+          {project && tab === "create" && editable && chosenPlugin?.kit === "service-zone" && (
+            <ZoneEditor
+              key={`${projectId}-${chosenPlugin.id}`}
+              map={map}
+              panel={panel}
+              tool={chosenPlugin}
+              storageKey={`mobsimlab:${chosenPlugin.id}:${projectId}`}
+              onZoneChange={(z) => setDemandZones((p) => ({ ...p, [chosenPlugin.id]: z }))}
+            />
+          )}
           {project && tab === "create" && editable && chosenPlugin?.kit === "water-route" && (
             <WaterRouteEditor
               map={map}
@@ -397,6 +411,7 @@ export function Workspace({
               streetLine={ridden && ridden.view.points.length >= 2 ? ridden : null}
               railLines={railLines}
               pluginLines={pluginLineList}
+              demandZones={demandZoneList}
               gtfsFeeds={gtfsFeeds}
               {...(editable ? { onGtfsFeeds: (d: GtfsNetworkDoc) => drawings.set("gtfs-network", d) } : {})}
               projectName={project.name}
@@ -428,14 +443,22 @@ export function Workspace({
                       const guided = x.modes.some((m) => findMode(m)?.mode.family === "guided");
                       return [
                         x.id,
-                        x.kit === "water-route" ? FerryIcon : guided ? TrainIcon : CableIcon,
+                        x.kit === "water-route"
+                          ? FerryIcon
+                          : x.kit === "service-zone"
+                            ? BusIcon
+                            : guided
+                              ? TrainIcon
+                              : CableIcon,
                         x.label,
                         x.hint ?? "",
                         x.kit === "water-route"
                           ? "bg-cyan-100 text-cyan-900"
-                          : guided
-                            ? "bg-teal-100 text-teal-900"
-                            : "bg-violet-100 text-violet-900",
+                          : x.kit === "service-zone"
+                            ? "bg-purple-100 text-purple-900"
+                            : guided
+                              ? "bg-teal-100 text-teal-900"
+                              : "bg-violet-100 text-violet-900",
                       ] as const;
                     }),
                   ].map(([kind, Icon, title, hint, colour]) => (

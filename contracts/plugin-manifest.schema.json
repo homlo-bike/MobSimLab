@@ -182,7 +182,7 @@
                 "type": "string"
               },
               "kit": {
-                "enum": ["straight-spans", "water-route"]
+                "enum": ["straight-spans", "water-route", "service-zone"]
               },
               "modes": {
                 "type": "array",

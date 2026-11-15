@@ -26,11 +26,11 @@
     },
     "kit": {
       "description": "Core authoring kit that draws the mode.",
-      "enum": ["straight-spans", "water-route"]
+      "enum": ["straight-spans", "water-route", "service-zone"]
     },
     "operation": {
-      "description": "frequency: a belt of vehicles with no timetable; shuttle: vehicles reverse between two ends; timetabled: exact trips.",
-      "enum": ["frequency", "shuttle", "timetabled"]
+      "description": "frequency: a belt of vehicles with no timetable; shuttle: vehicles reverse between two ends; timetabled: exact trips; on_demand: vehicles answer ride requests inside a zone.",
+      "enum": ["frequency", "shuttle", "timetabled", "on_demand"]
     },
     "contextKey": {
       "description": "Assumption context key whose option picks the system or vessel type.",

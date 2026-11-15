@@ -1,0 +1,143 @@
+# Parameters of the on-demand bus plugin (assumptions/README.md format), with the context key `mode`.
+# Every entry starts unverified. Checked by tools/plugins/check.py.
+
+- key: drt.speed_kmh
+  label: Average driving speed in the zone
+  group: Operations
+  unit: km/h
+  used_by:
+    - service-zone-kit
+  values:
+    - context:
+        mode: "*"
+      low: 15
+      central: 25
+      high: 35
+      basis: documented
+      sources:
+        - acceq-drt-planning
+      check: unverified
+      rationale: Driving speed between stops on urban streets; 15 in a dense centre, 35 in suburbs and villages.
+- key: drt.network_factor
+  label: Street distance over straight distance
+  group: Operations
+  unit: ratio
+  used_by:
+    - service-zone-kit
+  values:
+    - context:
+        mode: "*"
+      low: 1.15
+      central: 1.25
+      high: 1.4
+      basis: documented
+      sources:
+        - umn-transit-circuity
+      check: unverified
+      rationale: Road networks average about 1.2; short trips and rivers or rail lines in the zone raise it.
+- key: drt.stop_dwell_s
+  label: Time stopped for a pick-up or drop-off
+  group: Operations
+  unit: s
+  used_by:
+    - service-zone-kit
+  values:
+    - context:
+        mode: "*"
+      low: 20
+      central: 32
+      high: 60
+      basis: documented
+      sources:
+        - acceq-drt-planning
+      check: unverified
+      rationale: Pulling over, the rider boarding or alighting and pulling out; wheelchair boarding takes longer.
+- key: drt.vehicle_places
+  label: Passenger places per vehicle
+  group: Operations
+  unit: places
+  used_by:
+    - service-zone-kit
+  values:
+    - context:
+        mode: "*"
+      low: 6
+      central: 8
+      high: 16
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Most on-demand services run minibuses or vans with 6 to 8 seats; rural services sometimes 16-seat buses.
+- key: drt.target_utilisation
+  label: Busy share of the fleet that keeps waits short
+  group: Operations
+  unit: share
+  used_by:
+    - service-zone-kit
+  values:
+    - context:
+        mode: "*"
+      low: 0.75
+      central: 0.85
+      high: 0.9
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Above this share too few vehicles are free near new requests and the wait grows quickly (the
+        estimate divides the drive to the nearest vehicle by one minus the busy share).
+- key: drt.pooling_detour_share
+  label: Extra ride time from sharing, over the direct trip
+  group: Operations
+  unit: share
+  used_by:
+    - service-zone-kit
+  values:
+    - context:
+        mode: "*"
+      low: 0.1
+      central: 0.2
+      high: 0.5
+      basis: documented
+      sources:
+        - mpg-autonomous-ridepooling-germany
+        - moia-ride-pooling-small-towns
+      check: unverified
+      rationale:
+        A simulation of pooled services across Germany found 17.5 % on average; services allow up to 50 %
+        plus 10 min for a single rider.
+- key: drt.max_wait_s
+  label: Recommended longest average wait
+  group: Operations
+  unit: s
+  used_by:
+    - service-zone-kit
+  values:
+    - context:
+        mode: "*"
+      low: 600
+      central: 600
+      high: 1200
+      basis: documented
+      sources:
+        - moia-ride-pooling-small-towns
+      check: unverified
+      rationale: Services promise a pick-up within about 10 min; rural services accept longer waits.
+- key: drt.riders_per_request
+  label: Riders per booking
+  group: Demand
+  unit: riders
+  used_by:
+    - service-zone-kit
+  values:
+    - context:
+        mode: "*"
+      low: 1
+      central: 1.1
+      high: 1.3
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Most bookings are for one person; families and friends book together now and then.
