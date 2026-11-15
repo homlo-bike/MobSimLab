@@ -1,4 +1,5 @@
 import { editorsUr } from "./editors/ur";
+import { cargoBikeUr } from "./cargo-bike/ur";
 import type { Messages } from "./en";
 
 /** اردو */
@@ -286,4 +287,5 @@ export const ur: Messages = {
   "prefs.calendar": "کیلنڈر، طلب اور لاگت",
 
   ...editorsUr,
+  ...cargoBikeUr,
 };

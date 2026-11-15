@@ -1,4 +1,5 @@
 import { editorsZu } from "./editors/zu";
+import { cargoBikeZu } from "./cargo-bike/zu";
 import type { Messages } from "./en";
 
 /** isiZulu. */
@@ -292,4 +293,5 @@ export const zu: Messages = {
   "prefs.calendar": "Ikhalenda, isidingo nezindleko",
 
   ...editorsZu,
+  ...cargoBikeZu,
 };

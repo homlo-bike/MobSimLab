@@ -1,0 +1,56 @@
+{
+  "$schema": "../../contracts/plugin-manifest.schema.json",
+  "id": "org.mobsimlab.cargo-bike",
+  "name": "Cargo bike",
+  "description": "How far an electric cargo tricycle gets out and back on one battery charge, over the hills and preferring bike lanes, and what it saves against a car (purchase, fuel, tax, insurance, parking, maintenance), in its own tab.",
+  "version": "0.1.0",
+  "publisher": { "name": "MobSimLab contributors", "url": "https://github.com/homlo-bike/MobSimLab" },
+  "license": "AGPL-3.0-or-later",
+  "dataLicense": "CC-BY-4.0",
+  "engines": { "mobsimlab": ">=0.1 <1", "pluginApi": "1" },
+  "bundled": true,
+  "tiers": ["data", "compute"],
+  "contributes": {
+    "parameters": [{ "file": "assumptions/parameters.yaml" }],
+    "sources": [{ "file": "assumptions/sources.yaml" }],
+    "calculations": [
+      {
+        "id": "cargo_bike_range",
+        "label": "Cargo bike range",
+        "description": "Round trip from a start point to a destination on bike-usable streets (preferring bike lanes) with the battery used over the terrain, and a range map of how far the bike gets out and back in every direction.",
+        "runtime": "bundled-wasm",
+        "module": "cargo-bike",
+        "inputs": ["geodata", "parameters"],
+        "outputs": ["segments", "kpis"],
+        "where": ["plugin-tab"]
+      },
+      {
+        "id": "cargo_bike_savings",
+        "label": "Cargo bike savings",
+        "description": "Yearly cost of the cargo bike against a car for the same trips: purchase, energy, tax, insurance, parking and maintenance, in the currency of the start point's country.",
+        "runtime": "bundled-wasm",
+        "module": "cargo-bike",
+        "inputs": ["parameters"],
+        "outputs": ["table"],
+        "where": ["plugin-tab"]
+      }
+    ],
+    "mapLayers": [
+      {
+        "id": "cargo_bike_route",
+        "label": "Cargo bike trip and range",
+        "calculation": "cargo_bike_range",
+        "style": "styles/cargo-bike.json"
+      }
+    ],
+    "tabs": [
+      {
+        "id": "cargo-bike",
+        "label": "Cargo bike",
+        "view": "cargo-bike",
+        "calculations": ["cargo_bike_range", "cargo_bike_savings"]
+      }
+    ]
+  },
+  "permissions": ["read:geodata"]
+}

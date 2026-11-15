@@ -1,4 +1,5 @@
 import { editorsFa } from "./editors/fa";
+import { cargoBikeFa } from "./cargo-bike/fa";
 import type { Messages } from "./en";
 
 /** فارسی */
@@ -282,4 +283,5 @@ export const fa: Messages = {
   "prefs.calendar": "تقویم، تقاضا و هزینه‌ها",
 
   ...editorsFa,
+  ...cargoBikeFa,
 };

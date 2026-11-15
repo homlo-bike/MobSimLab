@@ -1,4 +1,5 @@
 import { editorsFr } from "./editors/fr";
+import { cargoBikeFr } from "./cargo-bike/fr";
 import type { Messages } from "./en";
 
 /** Français. */
@@ -289,4 +290,5 @@ export const fr: Messages = {
   "prefs.calendar": "Calendrier, demande et coûts",
 
   ...editorsFr,
+  ...cargoBikeFr,
 };

@@ -71,6 +71,23 @@ describe("street tiles", () => {
     await app.close();
   });
 
+  it("serves walk tiles (with paths and cycle tracks) for the cargo bike plugin", async () => {
+    const WALK = '<osm version="0.6"><way id="7"/></osm>';
+    const { fetchImpl, c } = client([WALK]);
+    const mod = await Test.createTestingModule({ imports: [StreetNetworkModule] })
+      .overrideProvider(OverpassClient)
+      .useValue(c)
+      .compile();
+    const app = mod.createNestApplication();
+    await app.init();
+    const ok = await request(app.getHttpServer()).get("/api/street-network/walk-tiles/14/8508/5489");
+    expect(ok.status).toBe(200);
+    expect(ok.text).toBe(WALK);
+    expect(fetchImpl).toHaveBeenCalledTimes(1);
+    await request(app.getHttpServer()).get("/api/street-network/walk-tiles/14/x/1").expect(400);
+    await app.close();
+  });
+
   it("serves a tile, caches it, and rejects invalid tiles", async () => {
     const { fetchImpl, c } = client([XML]);
     const mod = await Test.createTestingModule({ imports: [StreetNetworkModule] })

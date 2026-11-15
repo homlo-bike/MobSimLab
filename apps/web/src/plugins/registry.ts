@@ -43,6 +43,14 @@ export interface PluginMapLayer {
   style: unknown;
 }
 
+/** A project tab a bundled plugin adds after the core tabs; `view` names a view built into the web app. */
+export interface PluginTab {
+  id: string;
+  label: string;
+  view: string;
+  calculations?: string[];
+}
+
 /** Low, central and high value of an assumption parameter. */
 export interface Range {
   low: number;
@@ -67,6 +75,7 @@ export interface Plugin {
   tools: PluginTool[];
   calculations?: PluginCalculation[];
   mapLayers?: PluginMapLayer[];
+  tabs?: PluginTab[];
   parameters: Record<string, { label: string; unit: string }>;
   /** mode id → context option ("*" without one) → parameter key → range. */
   defaults: Record<string, Record<string, Record<string, Range>>>;
@@ -95,6 +104,11 @@ export function findMode(
 /** Purpose: the Create tab's plugin tools, in plugin order. */
 export function pluginTools(plugins: readonly Plugin[] = PLUGINS): (PluginTool & { plugin: string })[] {
   return plugins.flatMap((p) => p.tools.map((t) => ({ ...t, plugin: p.id })));
+}
+
+/** Purpose: the project tabs the plugins add, in plugin order. */
+export function pluginTabs(plugins: readonly Plugin[] = PLUGINS): (PluginTab & { plugin: string })[] {
+  return plugins.flatMap((p) => (p.tabs ?? []).map((t) => ({ ...t, plugin: p.id })));
 }
 
 /** Purpose: a calculation by id, so editors show it only when its plugin is present. */

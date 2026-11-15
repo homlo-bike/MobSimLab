@@ -1,4 +1,5 @@
 import { editorsHa } from "./editors/ha";
+import { cargoBikeHa } from "./cargo-bike/ha";
 import type { Messages } from "./en";
 
 /** Hausa. */
@@ -287,4 +288,5 @@ export const ha: Messages = {
   "prefs.calendar": "Kalanda, buƙata da kuɗi",
 
   ...editorsHa,
+  ...cargoBikeHa,
 };

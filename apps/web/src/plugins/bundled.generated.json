@@ -99,6 +99,7 @@
       ],
       "calculations": [],
       "mapLayers": [],
+      "tabs": [],
       "parameters": {
         "ropeway.line_speed_ms": {
           "label": "Line speed",
@@ -733,6 +734,356 @@
       }
     },
     {
+      "id": "org.mobsimlab.cargo-bike",
+      "name": "Cargo bike",
+      "description": "How far an electric cargo tricycle gets out and back on one battery charge, over the hills and preferring bike lanes, and what it saves against a car (purchase, fuel, tax, insurance, parking, maintenance), in its own tab.",
+      "version": "0.1.0",
+      "publisher": {
+        "name": "MobSimLab contributors",
+        "url": "https://github.com/homlo-bike/MobSimLab"
+      },
+      "license": "AGPL-3.0-or-later",
+      "dataLicense": "CC-BY-4.0",
+      "bundled": true,
+      "tiers": [
+        "data",
+        "compute"
+      ],
+      "permissions": [
+        "read:geodata"
+      ],
+      "modes": [],
+      "contexts": [],
+      "tools": [],
+      "calculations": [
+        {
+          "id": "cargo_bike_range",
+          "label": "Cargo bike range",
+          "description": "Round trip from a start point to a destination on bike-usable streets (preferring bike lanes) with the battery used over the terrain, and a range map of how far the bike gets out and back in every direction.",
+          "runtime": "bundled-wasm",
+          "module": "cargo-bike",
+          "inputs": [
+            "geodata",
+            "parameters"
+          ],
+          "outputs": [
+            "segments",
+            "kpis"
+          ],
+          "where": [
+            "plugin-tab"
+          ]
+        },
+        {
+          "id": "cargo_bike_savings",
+          "label": "Cargo bike savings",
+          "description": "Yearly cost of the cargo bike against a car for the same trips: purchase, energy, tax, insurance, parking and maintenance, in the currency of the start point's country.",
+          "runtime": "bundled-wasm",
+          "module": "cargo-bike",
+          "inputs": [
+            "parameters"
+          ],
+          "outputs": [
+            "table"
+          ],
+          "where": [
+            "plugin-tab"
+          ]
+        }
+      ],
+      "mapLayers": [
+        {
+          "id": "cargo_bike_route",
+          "label": "Cargo bike trip and range",
+          "calculation": "cargo_bike_range",
+          "style": {
+            "_comment": "The range map (area reachable out and back on one charge) and the trip there and back, coloured by the kind of street. Class ids come from crates/cargo-bike (Class).",
+            "layers": [
+              {
+                "id": "cargo-bike-range-fill",
+                "type": "fill",
+                "source": "range",
+                "paint": {
+                  "fill-color": "#16a34a",
+                  "fill-opacity": 0.12
+                }
+              },
+              {
+                "id": "cargo-bike-range-line",
+                "type": "line",
+                "source": "range",
+                "paint": {
+                  "line-color": "#15803d",
+                  "line-width": 2,
+                  "line-dasharray": [
+                    2,
+                    1.5
+                  ]
+                }
+              },
+              {
+                "id": "cargo-bike-trip-casing",
+                "type": "line",
+                "source": "trip",
+                "layout": {
+                  "line-cap": "round",
+                  "line-join": "round"
+                },
+                "paint": {
+                  "line-color": "#ffffff",
+                  "line-width": 8
+                }
+              },
+              {
+                "id": "cargo-bike-trip",
+                "type": "line",
+                "source": "trip",
+                "layout": {
+                  "line-cap": "round",
+                  "line-join": "round"
+                },
+                "paint": {
+                  "line-width": 5,
+                  "line-color": [
+                    "match",
+                    [
+                      "get",
+                      "class"
+                    ],
+                    "separated",
+                    "#15803d",
+                    "lane",
+                    "#65a30d",
+                    "quiet",
+                    "#2563eb",
+                    "mixed",
+                    "#dc2626",
+                    "#64748b"
+                  ]
+                }
+              }
+            ],
+            "legend": [
+              {
+                "class": "separated",
+                "color": "#15803d"
+              },
+              {
+                "class": "lane",
+                "color": "#65a30d"
+              },
+              {
+                "class": "quiet",
+                "color": "#2563eb"
+              },
+              {
+                "class": "mixed",
+                "color": "#dc2626"
+              }
+            ]
+          }
+        }
+      ],
+      "tabs": [
+        {
+          "id": "cargo-bike",
+          "label": "Cargo bike",
+          "view": "cargo-bike",
+          "calculations": [
+            "cargo_bike_range",
+            "cargo_bike_savings"
+          ]
+        }
+      ],
+      "parameters": {
+        "cargo_bike.bike_mass_kg": {
+          "label": "Cargo bike mass",
+          "unit": "kg"
+        },
+        "cargo_bike.load_kg": {
+          "label": "Load carried",
+          "unit": "kg"
+        },
+        "cargo_bike.rider_mass_kg": {
+          "label": "Rider mass",
+          "unit": "kg"
+        },
+        "cargo_bike.battery_wh": {
+          "label": "Battery capacity",
+          "unit": "Wh"
+        },
+        "cargo_bike.battery_usable_share": {
+          "label": "Usable share of the battery",
+          "unit": "share"
+        },
+        "cargo_bike.motor_rated_w": {
+          "label": "Motor power (mechanical, sustained)",
+          "unit": "W"
+        },
+        "cargo_bike.motor_efficiency": {
+          "label": "Motor and controller efficiency",
+          "unit": "share"
+        },
+        "cargo_bike.drivetrain_efficiency": {
+          "label": "Drivetrain efficiency (chain and gears)",
+          "unit": "share"
+        },
+        "cargo_bike.assist_cutoff_kmh": {
+          "label": "Assistance cut-off speed",
+          "unit": "km/h"
+        },
+        "cargo_bike.assist_share": {
+          "label": "Share of the pedalling power the motor gives",
+          "unit": "share"
+        },
+        "cargo_bike.rider_power_w": {
+          "label": "Rider's sustained pedalling power",
+          "unit": "W"
+        },
+        "cargo_bike.rolling_resistance": {
+          "label": "Rolling resistance coefficient",
+          "unit": "ratio"
+        },
+        "cargo_bike.drag_area_m2": {
+          "label": "Drag area (Cd·A)",
+          "unit": "m²"
+        },
+        "cargo_bike.air_density": {
+          "label": "Air density",
+          "unit": "kg/m³"
+        },
+        "cargo_bike.speed_separated_kmh": {
+          "label": "Cruising speed on a separated cycle track or cycle path",
+          "unit": "km/h"
+        },
+        "cargo_bike.speed_lane_kmh": {
+          "label": "Cruising speed in a painted bike lane",
+          "unit": "km/h"
+        },
+        "cargo_bike.speed_quiet_kmh": {
+          "label": "Cruising speed on quiet streets without a bike lane",
+          "unit": "km/h"
+        },
+        "cargo_bike.speed_mixed_kmh": {
+          "label": "Cruising speed in main-road traffic without a bike lane",
+          "unit": "km/h"
+        },
+        "cargo_bike.stops_per_km_separated": {
+          "label": "Stops per km on separated cycle tracks",
+          "unit": "1/km"
+        },
+        "cargo_bike.stops_per_km_lane": {
+          "label": "Stops per km in painted bike lanes",
+          "unit": "1/km"
+        },
+        "cargo_bike.stops_per_km_quiet": {
+          "label": "Stops per km on quiet streets",
+          "unit": "1/km"
+        },
+        "cargo_bike.stops_per_km_mixed": {
+          "label": "Stops per km in main-road traffic",
+          "unit": "1/km"
+        },
+        "cargo_bike.signal_stop_share": {
+          "label": "Share of traffic signals that stop the bike",
+          "unit": "share"
+        },
+        "cargo_bike.route_factor_separated": {
+          "label": "Route choice weight: separated cycle track",
+          "unit": "ratio"
+        },
+        "cargo_bike.route_factor_lane": {
+          "label": "Route choice weight: painted bike lane",
+          "unit": "ratio"
+        },
+        "cargo_bike.route_factor_quiet": {
+          "label": "Route choice weight: quiet street",
+          "unit": "ratio"
+        },
+        "cargo_bike.route_factor_mixed": {
+          "label": "Route choice weight: main road without bike lane",
+          "unit": "ratio"
+        },
+        "cargo_bike.detour_factor": {
+          "label": "Street distance over straight-line distance (range map)",
+          "unit": "ratio"
+        },
+        "cargo_bike.elevation_smoothing_m": {
+          "label": "Height smoothing window",
+          "unit": "m"
+        },
+        "cargo_bike.savings.trips_per_week": {
+          "label": "Round trips per week",
+          "unit": "1/week"
+        },
+        "cargo_bike.savings.weeks_per_year": {
+          "label": "Weeks of use per year",
+          "unit": "weeks"
+        },
+        "cargo_bike.savings.bike_price_eur": {
+          "label": "Cargo bike purchase price (2024 EUR)",
+          "unit": "EUR"
+        },
+        "cargo_bike.savings.bike_lifetime_years": {
+          "label": "Cargo bike lifetime",
+          "unit": "years"
+        },
+        "cargo_bike.savings.bike_maintenance_eur": {
+          "label": "Cargo bike maintenance per year (2024 EUR)",
+          "unit": "EUR/year"
+        },
+        "cargo_bike.savings.bike_insurance_eur": {
+          "label": "Cargo bike insurance per year (2024 EUR)",
+          "unit": "EUR/year"
+        },
+        "cargo_bike.savings.electricity_eur_kwh": {
+          "label": "Household electricity price (2024 EUR)",
+          "unit": "EUR/kWh"
+        },
+        "cargo_bike.savings.charger_efficiency": {
+          "label": "Charger efficiency",
+          "unit": "share"
+        },
+        "cargo_bike.savings.car_price_eur": {
+          "label": "Car purchase price (2024 EUR)",
+          "unit": "EUR"
+        },
+        "cargo_bike.savings.car_years": {
+          "label": "Years the car is kept",
+          "unit": "years"
+        },
+        "cargo_bike.savings.car_residual_share": {
+          "label": "Car resale value at the end, share of the price",
+          "unit": "share"
+        },
+        "cargo_bike.savings.car_fuel_l_100km": {
+          "label": "Car fuel consumption",
+          "unit": "l/100 km"
+        },
+        "cargo_bike.savings.fuel_eur_l": {
+          "label": "Petrol price (2024 EUR)",
+          "unit": "EUR/l"
+        },
+        "cargo_bike.savings.car_tax_eur": {
+          "label": "Car tax per year (2024 EUR)",
+          "unit": "EUR/year"
+        },
+        "cargo_bike.savings.car_insurance_eur": {
+          "label": "Car insurance per year (2024 EUR)",
+          "unit": "EUR/year"
+        },
+        "cargo_bike.savings.car_parking_eur": {
+          "label": "Car parking per year (2024 EUR)",
+          "unit": "EUR/year"
+        },
+        "cargo_bike.savings.car_maintenance_eur_km": {
+          "label": "Car maintenance and tyres per km (2024 EUR)",
+          "unit": "EUR/km"
+        }
+      },
+      "defaults": {}
+    },
+    {
       "id": "org.mobsimlab.ferry",
       "name": "Ferries",
       "description": "Passenger ferries and water buses drawn with the water route kit: piers with berths and gangways, routes over water, speed zones and a berth check (ADR-0037). Car ferries come later.",
@@ -801,6 +1152,7 @@
       ],
       "calculations": [],
       "mapLayers": [],
+      "tabs": [],
       "parameters": {
         "ferry.service_speed_kn": {
           "label": "Service speed",
@@ -1087,6 +1439,7 @@
           }
         }
       ],
+      "tabs": [],
       "parameters": {
         "noise.receiver_height_m": {
           "label": "Receiver height above ground",

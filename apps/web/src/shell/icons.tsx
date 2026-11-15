@@ -186,3 +186,12 @@ export const FerryIcon = (p: P) => (
     <path d="M2 21c2 0 2-1 4-1s2 1 4 1 2-1 4-1 2 1 4 1 2-1 4-1" />
   </Icon>
 );
+/** A cargo tricycle: box in front on two wheels, rider's wheel behind. */
+export const CargoBikeIcon = (p: P) => (
+  <Icon {...p}>
+    <rect x="2.5" y="8" width="8" height="6" rx="1" />
+    <circle cx="5" cy="17.5" r="2.5" />
+    <circle cx="19" cy="17.5" r="2.5" />
+    <path d="M10.5 14h4l4.5 3.5M14.5 14l-1.5-6h2.5M13 8l-1.5-2.5" />
+  </Icon>
+);

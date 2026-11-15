@@ -5,6 +5,8 @@ import type { BenefitsDoc } from "../features/benefits/formulas";
 import { RegionEditor } from "../features/benefits/RegionEditor";
 import type { Region, RegionsDoc } from "../features/benefits/regions";
 import { projectTimetable } from "../features/benefits/timetable";
+import { CargoBikeTab } from "../features/cargo-bike/CargoBikeTab";
+import type { CargoBikeDoc } from "../features/cargo-bike/model";
 import { CapacityRun } from "../features/capacity/CapacityRun";
 import type { Prices } from "../features/costs/economy";
 import type { Estimate as CostEstimate } from "../features/costs/model";
@@ -29,12 +31,13 @@ import type { MessageKey } from "../i18n/messages";
 import { SpanLineEditor } from "../kits/SpanLineEditor";
 import { WaterRouteEditor } from "../kits/WaterRouteEditor";
 import { MapView } from "../map/MapView";
-import { pluginTools } from "../plugins/registry";
+import { pluginTabs, pluginTools } from "../plugins/registry";
 import { can, type Project, type ProjectsApi } from "../projects/api";
 import {
   BackIcon,
   BusIcon,
   CableIcon,
+  CargoBikeIcon,
   FerryIcon,
   GearIcon,
   LayersIcon,
@@ -44,7 +47,7 @@ import {
   TableIcon,
   TrainIcon,
 } from "../shell/icons";
-import { type Tab, TABS } from "../shell/route";
+import { type CoreTab, type Tab, TABS } from "../shell/route";
 import { TopBar } from "../shell/TopBar";
 import { Placeholder } from "./Placeholder";
 import { ProjectPreferences } from "./ProjectPreferences";
@@ -52,7 +55,8 @@ import { delaysFrom, type PreferencesDoc } from "./preferences";
 import type { DelayShares } from "../features/street-lines/types";
 import { type Drawings, useDrawings } from "./useDrawings";
 
-const TAB_ICONS: Record<Tab, (p: { size?: number }) => ReactNode> = {
+type IconFn = (p: { size?: number }) => ReactNode;
+const TAB_ICONS: Record<CoreTab, IconFn> = {
   simulator: PlayIcon,
   create: PenIcon,
   schematic: SchematicIcon,
@@ -60,8 +64,13 @@ const TAB_ICONS: Record<Tab, (p: { size?: number }) => ReactNode> = {
   tables: TableIcon,
   preferences: GearIcon,
 };
-/** Tabs drawn over the map; the others are full pages. */
-const MAP_TABS: readonly Tab[] = ["simulator", "create", "gis"];
+/** Icons of the views plugin tabs show (the view id of the tab). */
+const VIEW_ICONS: Record<string, IconFn> = { "cargo-bike": CargoBikeIcon };
+const PLUGIN_TABS = pluginTabs();
+const tabIcon = (x: Tab): IconFn =>
+  TAB_ICONS[x as CoreTab] ?? VIEW_ICONS[PLUGIN_TABS.find((p) => p.id === x)?.view ?? ""] ?? LayersIcon;
+/** Tabs drawn over the map; the others are full pages. The plugins' tabs all use the map. */
+const MAP_TABS: readonly Tab[] = ["simulator", "create", "gis", ...PLUGIN_TABS.map((x) => x.id)];
 const NO_SETUPS: StreetSetup[] = [];
 
 type SimView = "test" | "journey";
@@ -173,7 +182,14 @@ export function Workspace({
   }, [drawings.loaded, editable, projectId]);
   const ridden = line ?? lineInput(streetLines?.lines[0]);
   const hasPanel = onMap && project !== null;
-  const tabLabel = (x: Tab) => t(`tab.${x}` as MessageKey);
+  const pluginTab = PLUGIN_TABS.find((x) => x.id === tab) ?? null;
+  const tabLabel = (x: Tab) => {
+    const p = PLUGIN_TABS.find((y) => y.id === x);
+    if (!p) return t(`tab.${x}` as MessageKey);
+    const key = `plugin.${p.view}.tab` as MessageKey;
+    const label = t(key);
+    return label === key ? p.label : label;
+  };
 
   const tabs = (
     <nav
@@ -181,7 +197,7 @@ export function Workspace({
       className="hidden h-full items-stretch gap-0.5 self-stretch md:ms-2 md:flex"
     >
       {TABS.map((x) => {
-        const Icon = TAB_ICONS[x];
+        const Icon = tabIcon(x);
         return (
           <a
             key={x}
@@ -226,7 +242,7 @@ export function Workspace({
       className="flex h-16 shrink-0 border-t border-slate-200 bg-white md:hidden"
     >
       {TABS.map((x) => {
-        const Icon = TAB_ICONS[x];
+        const Icon = tabIcon(x);
         return (
           <button
             key={x}
@@ -281,7 +297,7 @@ export function Workspace({
           : chosenPlugin
             ? chosenPlugin.label
             : t("create.street")
-        : tabLabel("gis");
+        : tabLabel(pluginTab ? pluginTab.id : "gis");
   const pluginLineList = Object.values(pluginLines).filter((l): l is PluginLineInput => l !== null);
 
   return (
@@ -383,6 +399,16 @@ export function Workspace({
               onChange={changeSetups}
               editable={editable}
               delays={delays}
+            />
+          )}
+          {project && drawings.loaded && pluginTab?.view === "cargo-bike" && (
+            <CargoBikeTab
+              key={`${projectId}-${drawings.generation("cargo-bike")}`}
+              map={map}
+              panel={panel}
+              doc={drawings.doc<CargoBikeDoc>("cargo-bike")}
+              onDoc={editable ? (d) => drawings.set("cargo-bike", d) : undefined}
+              setups={setups}
             />
           )}
           {project && tab === "simulator" && sim === "journey" && (
