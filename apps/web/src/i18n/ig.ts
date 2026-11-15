@@ -1,4 +1,5 @@
 import { editorsIg } from "./editors/ig";
+import { cargoBikeIg } from "./cargo-bike/ig";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -287,5 +288,6 @@ export const ig: Messages = {
   "prefs.calendar": "Kalenda, ọchịchọ na ọnụ ahịa",
 
   ...editorsIg,
+  ...cargoBikeIg,
   ...PLUGIN_MESSAGES.ig,
 };
