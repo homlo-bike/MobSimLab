@@ -139,12 +139,12 @@ fn is_signal(t: &Tags) -> bool {
 
 /// A point snapped to the walk network.
 #[derive(Debug, Clone, Copy)]
-struct Snap {
-    edge: u32,
+pub(crate) struct Snap {
+    pub(crate) edge: u32,
     /// Position along the edge, 0 at `a`.
-    t: f64,
+    pub(crate) t: f64,
     /// Straight distance from the point to the network.
-    off_m: f64,
+    pub(crate) off_m: f64,
 }
 
 /// Total-ordered f64 for the priority queue (costs are never NaN).
@@ -164,9 +164,57 @@ impl Ord for Cost {
 
 /// Cost to the nearest source for every node, and which source it was.
 #[derive(Debug, Clone)]
-struct Field {
-    cost: Vec<f64>,
-    src: Vec<u32>,
+pub(crate) struct Field {
+    pub(crate) cost: Vec<f64>,
+    pub(crate) src: Vec<u32>,
+}
+
+impl Field {
+    /// Purpose: a field with every node unreached.
+    pub(crate) fn empty(n: usize) -> Self {
+        Field {
+            cost: vec![f64::INFINITY; n],
+            src: vec![u32::MAX; n],
+        }
+    }
+}
+
+/// Which ways a graph is built from: walkable ways, or ways people may cycle along.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
+#[serde(rename_all = "snake_case")]
+pub enum NetworkProfile {
+    /// [`walk_way`]: footways, sidewalks on streets, paths, steps.
+    #[default]
+    Walk,
+    /// [`cycle_way`]: streets, cycleways and paths open to bicycles; no steps, no motorways.
+    Cycle,
+}
+
+/// Purpose: whether people may cycle along a way (the cycle variant of [`walk_way`], for the
+/// 15-minute city by bicycle). Output: `Some(false)` when cycling is allowed (never steps), `None`
+/// otherwise (motorways, trunk roads unless `bicycle=yes`, `bicycle=no`, footways and pedestrian
+/// zones unless signed for bicycles, private ways).
+pub fn cycle_way(t: &Tags) -> Option<bool> {
+    let hw = tag(t, "highway")?;
+    let bike = tag(t, "bicycle");
+    let bike_yes = matches!(bike, Some("yes" | "designated" | "permissive"));
+    if matches!(
+        bike,
+        Some("no" | "private" | "use_sidepath" | "dismount" | "discouraged")
+    ) {
+        return None;
+    }
+    if matches!(tag(t, "access"), Some("no" | "private")) && !bike_yes {
+        return None;
+    }
+    let ok = match hw {
+        "cycleway" | "living_street" | "residential" | "service" | "unclassified" | "tertiary"
+        | "tertiary_link" | "secondary" | "secondary_link" | "primary" | "primary_link"
+        | "track" | "road" | "path" | "busway" => true,
+        "trunk" | "trunk_link" | "footway" | "pedestrian" | "bridleway" | "corridor" => bike_yes,
+        _ => false,
+    };
+    ok.then_some(false)
 }
 
 /// A stop or station given to an analysis.
@@ -302,6 +350,21 @@ impl WalkGraph {
     /// Inputs: data; an optional projection (`None` centres it on the data).
     /// Output: the graph, or an error when the data holds no walkable way.
     pub fn from_osm(data: &OsmData, proj: Option<LocalProjection>) -> Result<Self, String> {
+        Self::from_osm_profile(data, proj, NetworkProfile::Walk)
+    }
+
+    /// Purpose: build the walk graph, or the cycle graph, from OSM data.
+    /// Inputs: data; an optional projection (`None` centres it on the data); which ways to use.
+    /// Output: the graph, or an error when the data holds no usable way.
+    pub fn from_osm_profile(
+        data: &OsmData,
+        proj: Option<LocalProjection>,
+        profile: NetworkProfile,
+    ) -> Result<Self, String> {
+        let keep = match profile {
+            NetworkProfile::Walk => walk_way,
+            NetworkProfile::Cycle => cycle_way,
+        };
         let node_by_id: HashMap<i64, usize> = data
             .nodes
             .iter()
@@ -311,7 +374,7 @@ impl WalkGraph {
         let ways: Vec<(&crate::osm::RawWay, bool)> = data
             .ways
             .iter()
-            .filter_map(|w| walk_way(&w.tags).map(|s| (w, s)))
+            .filter_map(|w| keep(&w.tags).map(|s| (w, s)))
             .collect();
         let (mut lon, mut lat, mut n) = (0.0, 0.0, 0.0);
         for (w, _) in &ways {
@@ -322,7 +385,12 @@ impl WalkGraph {
             }
         }
         if n == 0.0 {
-            return Err("No walkable streets or paths in this area.".into());
+            return Err(match profile {
+                NetworkProfile::Walk => "No walkable streets or paths in this area.".into(),
+                NetworkProfile::Cycle => {
+                    "No streets or paths open to bicycles in this area.".into()
+                }
+            });
         }
         let proj = proj.unwrap_or_else(|| LocalProjection::new(lon / n, lat / n));
         let mut g = WalkGraph {
@@ -384,7 +452,7 @@ impl WalkGraph {
         !(s.step_free && self.edges[e as usize].steps)
     }
 
-    fn snap(&self, lon: f64, lat: f64, s: &WalkSettings) -> Option<Snap> {
+    pub(crate) fn snap(&self, lon: f64, lat: f64, s: &WalkSettings) -> Option<Snap> {
         let p = self.proj.to_xy(lon, lat);
         let c = cell(p.0, p.1);
         let reach = (s.max_snap_m / CELL_M).ceil() as i32;
@@ -412,7 +480,7 @@ impl WalkGraph {
     }
 
     /// Cost of walking `m` metres in the metric (no crossing delay).
-    fn along(m: f64, metric: Metric, s: &WalkSettings) -> f64 {
+    pub(crate) fn along(m: f64, metric: Metric, s: &WalkSettings) -> f64 {
         match metric {
             Metric::Time => m / s.speed_ms(),
             Metric::Distance => m,
@@ -420,18 +488,35 @@ impl WalkGraph {
     }
 
     /// Multi-source Dijkstra from snapped sources, stopping beyond `limit`.
-    fn field(
+    pub(crate) fn field(
         &self,
         sources: &[(u32, Snap)],
         metric: Metric,
         s: &WalkSettings,
         limit: f64,
     ) -> Field {
-        let n = self.nodes.len();
-        let mut f = Field {
-            cost: vec![f64::INFINITY; n],
-            src: vec![u32::MAX; n],
-        };
+        let mut f = Field::empty(self.nodes.len());
+        let mut touched = Vec::new();
+        self.field_into(sources, metric, s, limit, &mut f, &mut touched);
+        f
+    }
+
+    /// Purpose: the same Dijkstra into a reused field: only the nodes the previous search reached
+    /// (`touched`) are reset, so many small searches on a large graph stay cheap.
+    pub(crate) fn field_into(
+        &self,
+        sources: &[(u32, Snap)],
+        metric: Metric,
+        s: &WalkSettings,
+        limit: f64,
+        f: &mut Field,
+        touched: &mut Vec<u32>,
+    ) {
+        for &n in touched.iter() {
+            f.cost[n as usize] = f64::INFINITY;
+            f.src[n as usize] = u32::MAX;
+        }
+        touched.clear();
         let mut heap = BinaryHeap::new();
         for &(src, sn) in sources {
             let e = &self.edges[sn.edge as usize];
@@ -441,6 +526,9 @@ impl WalkGraph {
                     c += s.crossing_delay_s;
                 }
                 if c < f.cost[node as usize] {
+                    if f.cost[node as usize].is_infinite() {
+                        touched.push(node);
+                    }
                     f.cost[node as usize] = c;
                     f.src[node as usize] = src;
                     heap.push((Cost(c), node));
@@ -462,17 +550,19 @@ impl WalkGraph {
                     nc += s.crossing_delay_s;
                 }
                 if nc < f.cost[v as usize] {
+                    if f.cost[v as usize].is_infinite() {
+                        touched.push(v);
+                    }
                     f.cost[v as usize] = nc;
                     f.src[v as usize] = f.src[u as usize];
                     heap.push((Cost(nc), v));
                 }
             }
         }
-        f
     }
 
     /// Cost from the nearest source to a snapped point (including same-edge sources).
-    fn value(
+    pub(crate) fn value(
         &self,
         f: &Field,
         p: Snap,
@@ -872,6 +962,52 @@ impl WalkGraph {
             .iter()
             .map(|p| self.proj.to_xy(p.lon, p.lat))
             .collect();
+        let instance = req.return_instance.then(|| {
+            let mut index: HashMap<usize, usize> = HashMap::new();
+            let mut weights = Vec::new();
+            let usable: Vec<&(usize, Vec<usize>)> = cand
+                .iter()
+                .filter(|(ci, _)| {
+                    let c = &req.candidates[*ci];
+                    let xy = self.proj.to_xy(c.lon, c.lat);
+                    placed.iter().all(|q| dist(xy, *q) >= req.min_spacing_m)
+                })
+                .collect();
+            let cover: Vec<Vec<usize>> = usable
+                .iter()
+                .map(|(_, cov)| {
+                    cov.iter()
+                        .map(|pi| {
+                            *index.entry(*pi).or_insert_with(|| {
+                                weights.push(points[pts[*pi].0].weight);
+                                weights.len() - 1
+                            })
+                        })
+                        .collect()
+                })
+                .collect();
+            let xy: Vec<(f64, f64)> = usable
+                .iter()
+                .map(|(ci, _)| {
+                    let c = &req.candidates[*ci];
+                    self.proj.to_xy(c.lon, c.lat)
+                })
+                .collect();
+            let mut conflicts = Vec::new();
+            for a in 0..xy.len() {
+                for b in a + 1..xy.len() {
+                    if dist(xy[a], xy[b]) < req.min_spacing_m {
+                        conflicts.push([a, b]);
+                    }
+                }
+            }
+            CoveringInstance {
+                weights,
+                candidates: usable.iter().map(|(ci, _)| *ci).collect(),
+                cover,
+                conflicts,
+            }
+        });
         let mut suggestions = Vec::new();
         let mut after = before;
         for _ in 0..req.k {
@@ -912,6 +1048,7 @@ impl WalkGraph {
             covered_before: before,
             covered_after: after,
             suggestions,
+            instance,
         }
     }
 
@@ -960,6 +1097,24 @@ pub struct SuggestRequest {
     /// Walking settings.
     #[serde(default)]
     pub settings: WalkSettings,
+    /// Also return the covering problem itself, for an exact solver (ADR-0035 §6).
+    #[serde(default)]
+    pub return_instance: bool,
+}
+
+/// The maximal covering problem behind a suggestion, for an exact MIP solver: choose at most `k`
+/// candidates, never two in `conflicts`, to maximise the summed `weights` of the points covered.
+#[derive(Debug, Clone, Serialize)]
+pub struct CoveringInstance {
+    /// Weight of each demand point not yet covered by an existing stop.
+    pub weights: Vec<f64>,
+    /// Index into the request's candidates of each usable candidate (it covers something and is far
+    /// enough from every existing stop).
+    pub candidates: Vec<usize>,
+    /// For each usable candidate, the points (indices into `weights`) it covers.
+    pub cover: Vec<Vec<usize>>,
+    /// Pairs of usable candidates (indices into `candidates`) closer than the minimum spacing.
+    pub conflicts: Vec<[usize; 2]>,
 }
 
 /// One suggested stop.
@@ -988,6 +1143,9 @@ pub struct SuggestResult {
     pub covered_after: f64,
     /// Chosen stops in order.
     pub suggestions: Vec<Suggestion>,
+    /// The covering problem, when asked for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub instance: Option<CoveringInstance>,
 }
 
 fn round6(v: f64) -> f64 {
