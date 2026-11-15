@@ -8,7 +8,8 @@ Usage:
 
 --render also writes crates/rail-design/data/defaults.json, the central values the railway design tool
 uses per rail mode, with the switches and crossings catalogue (ADR-0030, ADR-0032), and
-apps/api/src/agents/defaults.json, the values the agent tools and walk analysis use (ADR-0035).
+apps/api/src/agents/defaults.json, the values the agent tools and walk analysis use (ADR-0035), with a
+copy for the GIS tab's walk coverage and stop spacing (apps/web/src/features/walk/defaults.generated.json).
 """
 
 from __future__ import annotations
@@ -26,6 +27,10 @@ LIB = ROOT / "assumptions"
 OUT = LIB / "DEFAULTS.md"
 RAIL_OUT = ROOT / "crates" / "rail-design" / "data" / "defaults.json"
 AGENT_OUT = ROOT / "apps" / "api" / "src" / "agents" / "defaults.json"
+# The same values for the walk coverage and stop spacing in the web app's GIS tab.
+WALK_OUT = (
+    ROOT / "apps" / "web" / "src" / "features" / "walk" / "defaults.generated.json"
+)
 # Field of the agent export -> parameter key (central value per mode; `*_range` adds low and high).
 AGENT_MODE_FIELDS = {
     "max_speed_kmh": "mode.max_speed_kmh",
@@ -848,8 +853,10 @@ def main() -> int:
         RAIL_OUT.write_text(rail, encoding="utf-8")
         AGENT_OUT.parent.mkdir(parents=True, exist_ok=True)
         AGENT_OUT.write_text(agents, encoding="utf-8")
+        WALK_OUT.parent.mkdir(parents=True, exist_ok=True)
+        WALK_OUT.write_text(agents, encoding="utf-8")
     if args.check_rendered:
-        for path, want in ((OUT, text), (RAIL_OUT, rail), (AGENT_OUT, agents)):
+        for path, want in ((OUT, text), (RAIL_OUT, rail), (AGENT_OUT, agents), (WALK_OUT, agents)):
             if not path.exists() or path.read_text(encoding="utf-8") != want:
                 print(
                     f"{path.relative_to(ROOT)} is stale; run with --render",

@@ -1018,4 +1018,69 @@ export const editorsId = {
   "rail.profileAria": "Profil memanjang: tanah dan kepala rel di sepanjang jalur",
   "rail.profileLegend":
     "Garis penuh: kepala rel. Putus-putus: tanah (Copernicus GLO-30, dihaluskan). Ketinggian dari model permukaan, ±4 m.",
+
+  "walk.title": "Berjalan ke halte",
+  "walk.intro":
+    "Seberapa banyak area di sekitar jalur yang berada dalam jarak jalan kaki singkat dari halte atau stasiun, melalui jalan dan jalur pejalan kaki, dengan waktu tunggu di setiap penyeberangan berlampu.",
+  "walk.minutes": "Batas jalan kaki, menit",
+  "walk.stepFree": "Tanpa anak tangga (kecualikan tangga)",
+  "walk.compute": "Hitung cakupan jalan kaki",
+  "walk.computeAgain": "Hitung lagi",
+  "walk.drawFirst": "Gambar dulu jalur jalan atau jalur rel dengan stasiun.",
+  "walk.collecting": "Mengumpulkan halte dan stasiun…",
+  "walk.loadingTiles": "Memuat jalur pejalan kaki ({done} dari {count} petak peta)…",
+  "walk.loadingPopulation": "Memuat tempat tinggal penduduk…",
+  "walk.computing": "Mengukur perjalanan kaki…",
+  "walk.tooLarge":
+    "Halte tersebar di {tiles} petak peta; paling banyak {max} (sekitar 12 km × 12 km) dimuat sekaligus.",
+  "walk.osmUnavailable":
+    "Jalur pejalan kaki OpenStreetMap sedang tidak tersedia. Coba lagi dalam satu menit.",
+  "walk.headlinePeople":
+    "{share} % dari {total} penduduk di sekitar jalur tinggal dalam {minutes} menit berjalan kaki dari halte atau stasiun.",
+  "walk.headlineStreets":
+    "{share} % jalan yang dapat dilalui pejalan kaki di sekitar jalur berada dalam {minutes} menit berjalan kaki dari halte atau stasiun.",
+  "walk.crowFlies":
+    "Dalam garis lurus akan menjadi {share} %: jalan dan jalur membuat perjalanan lebih panjang.",
+  "walk.bands": "Berjalan ke halte terdekat",
+  "walk.band": "{from}–{to} mnt",
+  "walk.bandOver": "{from} mnt atau lebih",
+  "walk.residents": "Penduduk",
+  "walk.streets": "Jalan",
+  "walk.gaps": "Celah terbesar",
+  "walk.gapsIntro":
+    "Tempat dengan penduduk terbanyak di luar batas jalan kaki, terbesar lebih dulu. Ketuk salah satu untuk menuju ke sana.",
+  "walk.gapsIntroStreets":
+    "Tempat dengan jalan terbanyak di luar batas jalan kaki, terbesar lebih dulu. Ketuk salah satu untuk menuju ke sana.",
+  "walk.gapPeople": "{people} penduduk",
+  "walk.gapStreets": "{metres} m jalan",
+  "walk.gapWalk": "{minutes} mnt berjalan ke halte terdekat",
+  "walk.gapUnreachable": "tidak ada halte yang terjangkau dengan berjalan kaki",
+  "walk.noGaps": "Tidak ada celah: seluruh area berada dalam batas jalan kaki.",
+  "walk.showOnMap": "Tampilkan di peta",
+  "walk.legend": "Menit berjalan kaki ke halte terdekat",
+  "walk.offNetwork": "Terlalu jauh dari jalur pejalan kaki, tidak dihitung: {stops}.",
+  "walk.popDownloading":
+    "Data penduduk {countries} masih diunduh ke server; sampai saat itu jalan menggantikan penduduk.",
+  "walk.popUnavailable": "Tidak ada data penduduk ({reason}); jalan menggantikan penduduk.",
+  "walk.popCredit": "Penduduk: WorldPop {year} ({countries}), CC BY 4.0.",
+  "walk.note":
+    "Area adalah kotak di sekitar halte ditambah jarak yang ditempuh dalam batas. Kemiringan belum diperhitungkan.",
+  "spacing.title": "Jarak antarhalte",
+  "spacing.intro":
+    "Jarak antara halte berurutan di sepanjang jalur, dibandingkan dengan rentang biasa untuk moda tersebut. Halte terlalu dekat memperlambat jalur; terlalu jauh berarti berjalan kaki lama.",
+  "spacing.none": "Gambar dulu jalur jalan, atau jalur layanan rel dengan minimal dua stasiun.",
+  "spacing.loading": "Mengukur jarak antarhalte…",
+  "spacing.direction": "arah {n}",
+  "spacing.summary": "Median {median} m · terpendek {min} m · terpanjang {max} m",
+  "spacing.guidance": "Biasa untuk moda ini: {low}–{high} m",
+  "spacing.allOk": "Semua halte berada dalam rentang biasa.",
+  "spacing.flags": "{short} terlalu dekat, {long} terlalu jauh",
+  "spacing.short": "terlalu dekat",
+  "spacing.long": "terlalu jauh",
+  "spacing.pair": "{from} → {to}",
+  "spacing.along": "{metres} m",
+  "spacing.onFoot": "{metres} m berjalan kaki",
+  "spacing.straight": "Diukur dalam garis lurus antarstasiun.",
+  "spacing.onFootHint":
+    "Hitung cakupan jalan kaki di atas untuk menambahkan jarak jalan kaki antara halte yang ditandai.",
 } satisfies EditorMessages;

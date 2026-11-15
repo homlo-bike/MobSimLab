@@ -1,5 +1,7 @@
 # Streets in the GIS tab
 
+The GIS tab also measures the [walk coverage and stop spacing](gis-walk.md).
+
 Say how a street is shared, where OpenStreetMap is missing or wrong, or to test a change such as a new bus lane. Your setup overrides OpenStreetMap in the [street line tool](street-line-tool.md) and the [railway tool](railway-tool.md), for running times and for the reliability and safety checks.
 
 ## Set up a street

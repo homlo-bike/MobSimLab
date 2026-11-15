@@ -51,6 +51,26 @@ export class StreetNetworkController {
   }
 
   /**
+   * Purpose: OSM XML with the walkable ways of one web-mercator tile at zoom 14 (footways, sidewalks,
+   * paths, pedestrian zones, steps and crossings), for the walk coverage and stop spacing in the GIS tab.
+   * Inputs: tile x and y. Output: `application/xml`; 400 for an invalid tile, 502/504 when OSM is unavailable.
+   */
+  @Get(`walk-tiles/${TILE_ZOOM}/:x/:y`)
+  @Requires("instance.read")
+  @Header("Content-Type", "application/xml; charset=utf-8")
+  @Header("Cache-Control", "private, max-age=86400")
+  async walkTile(@Param("x") xs: string, @Param("y") ys: string): Promise<string> {
+    const [x, y] = parseTile(xs, ys);
+    try {
+      return await this.streets.walkTile(x, y);
+    } catch (e) {
+      if (e instanceof OverpassError)
+        throw new HttpException("OpenStreetMap footpaths are unavailable right now", e.status);
+      throw e;
+    }
+  }
+
+  /**
    * Purpose: the building footprints of one web-mercator tile at zoom 14, for the noise map in the GIS
    * tab: JSON `{buildings: [{id, ring: [[lon, lat], …], height_m?, levels?}]}`.
    * Inputs: tile x and y. Output: 400 for an invalid tile, 502/504 when OSM is unavailable.

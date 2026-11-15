@@ -986,4 +986,66 @@ export const editorsIg = {
   "rail.profileAria": "Profaịlụ ogologo: ala na elu ígwè n’ogologo ụzọ",
   "rail.profileLegend":
     "Ahịrị zuru oke: elu ígwè. Ahịrị kewara: ala (Copernicus GLO-30, emere ka ọ dị nro). Ịdị elu sitere na ụdị elu ala, ±4 m.",
+
+  "walk.title": "Ije ụkwụ ruo ebe nkwụsị",
+  "walk.intro":
+    "Ole n'ime mpaghara gburugburu ahịrị ndị ahụ dị n'ije ụkwụ dị mkpụmkpụ site n'ebe nkwụsị ma ọ bụ ọdụ, n'okporo ụzọ na ụzọ ndị na-eji ụkwụ, gụnyere nchere n'ebe ọ bụla a na-agafe nwere ọkụ.",
+  "walk.minutes": "Oke ije ụkwụ, nkeji",
+  "walk.stepFree": "Na-enweghị steepụ",
+  "walk.compute": "Gbakọọ nnweta ije ụkwụ",
+  "walk.computeAgain": "Gbakọọ ọzọ",
+  "walk.drawFirst": "Buru ụzọ see ahịrị okporo ụzọ ma ọ bụ ụzọ ụgbọ oloko nwere ọdụ.",
+  "walk.collecting": "A na-achịkọta ebe nkwụsị na ọdụ…",
+  "walk.loadingTiles": "A na-ebunye ụzọ ndị na-eji ụkwụ ({done} n'ime taịlụ maapụ {count})…",
+  "walk.loadingPopulation": "A na-ebunye ebe ndị mmadụ bi…",
+  "walk.computing": "A na-atụ ije ụkwụ…",
+  "walk.tooLarge":
+    "Ebe nkwụsị gbasara n'elu taịlụ maapụ {tiles}; ọ bụ naanị {max} (ihe dị ka km 12 × km 12) ka a na-ebunye otu oge.",
+  "walk.osmUnavailable": "Ụzọ ndị na-eji ụkwụ OpenStreetMap adịghị ugbu a. Nwaa ọzọ mgbe otu nkeji gasịrị.",
+  "walk.headlinePeople":
+    "{share} % nke ndị bi {total} gburugburu ahịrị ndị ahụ bi n'ime ije ụkwụ nkeji {minutes} site n'ebe nkwụsị ma ọ bụ ọdụ.",
+  "walk.headlineStreets":
+    "{share} % nke okporo ụzọ a na-ejegharị gburugburu ahịrị ndị ahụ dị n'ime ije ụkwụ nkeji {minutes} site n'ebe nkwụsị ma ọ bụ ọdụ.",
+  "walk.crowFlies": "N'ahịrị kwụ ọtọ ọ ga-abụ {share} %: okporo ụzọ na ụzọ na-eme ka ije ogologo.",
+  "walk.bands": "Ije ụkwụ ruo ebe nkwụsị kacha nso",
+  "walk.band": "nkeji {from}–{to}",
+  "walk.bandOver": "nkeji {from} ma ọ bụ karịa",
+  "walk.residents": "Ndị bi",
+  "walk.streets": "Okporo ụzọ",
+  "walk.gaps": "Oghere kachasị ukwuu",
+  "walk.gapsIntro":
+    "Ebe nwere ndị mmadụ kachasị n'ofe oke ije ụkwụ, nke kachasị ukwuu mbụ. Pịa otu iji gaa ebe ahụ.",
+  "walk.gapsIntroStreets":
+    "Ebe nwere okporo ụzọ kachasị n'ofe oke ije ụkwụ, nke kachasị ukwuu mbụ. Pịa otu iji gaa ebe ahụ.",
+  "walk.gapPeople": "ndị bi {people}",
+  "walk.gapStreets": "m {metres} nke okporo ụzọ",
+  "walk.gapWalk": "ije ụkwụ nkeji {minutes} ruo ebe nkwụsị kacha nso",
+  "walk.gapUnreachable": "enweghị ebe nkwụsị a ga-eji ụkwụ ruo",
+  "walk.noGaps": "Enweghị oghere: mpaghara niile dị n'ime oke ije ụkwụ.",
+  "walk.showOnMap": "Gosi na maapụ",
+  "walk.legend": "Nkeji ije ụkwụ ruo ebe nkwụsị kacha nso",
+  "walk.offNetwork": "Ha dị anya nke ukwuu site n'ụzọ ndị na-eji ụkwụ, a hapụrụ ha: {stops}.",
+  "walk.popDownloading":
+    "A ka na-ebudata ọnụọgụ mmadụ {countries} n'ihe nkesa; ruo mgbe ahụ okporo ụzọ na-anọchi anya ndị mmadụ.",
+  "walk.popUnavailable": "Enweghị data ọnụọgụ mmadụ ({reason}); okporo ụzọ na-anọchi anya ndị mmadụ.",
+  "walk.popCredit": "Ndị bi: WorldPop {year} ({countries}), CC BY 4.0.",
+  "walk.note":
+    "Mpaghara ahụ bụ igbe gburugburu ebe nkwụsị gbakwunyere anya a na-eje n'ime oke. A gụbeghị mkpọda.",
+  "spacing.title": "Oghere n'etiti ebe nkwụsị",
+  "spacing.intro":
+    "Anya dị n'etiti ebe nkwụsị na-esochi ibe ha n'ahịrị, ma e jiri ya tụnyere oke a na-ahụkarị maka ụdị njem ahụ. Ebe nkwụsị dị nso nke ukwuu na-eme ka ahịrị ahụ dị nwayọ; ndị dị anya nke ukwuu pụtara ije ogologo.",
+  "spacing.none": "Buru ụzọ see ahịrị okporo ụzọ, ma ọ bụ ahịrị ọrụ ụgbọ oloko nwere opekata mpe ọdụ abụọ.",
+  "spacing.loading": "A na-atụ oghere n'etiti ebe nkwụsị…",
+  "spacing.direction": "ụzọ {n}",
+  "spacing.summary": "Etiti m {median} · nke kacha nta m {min} · nke kacha ogologo m {max}",
+  "spacing.guidance": "Nke a na-ahụkarị maka ụdị a: m {low}–{high}",
+  "spacing.allOk": "Ebe nkwụsị niile dị n'ime oke a na-ahụkarị.",
+  "spacing.flags": "{short} dị nso nke ukwuu, {long} dị anya nke ukwuu",
+  "spacing.short": "dị nso nke ukwuu",
+  "spacing.long": "dị anya nke ukwuu",
+  "spacing.pair": "{from} → {to}",
+  "spacing.along": "m {metres}",
+  "spacing.onFoot": "m {metres} n'ụkwụ",
+  "spacing.straight": "A tụrụ ya n'ahịrị kwụ ọtọ n'etiti ọdụ.",
+  "spacing.onFootHint": "Gbakọọ nnweta ije ụkwụ n'elu iji tinye anya ije ụkwụ n'etiti ebe nkwụsị akara.",
 } satisfies EditorMessages;

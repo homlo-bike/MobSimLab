@@ -1049,4 +1049,69 @@ export const editorsFr = {
   "rail.profileAria": "Profil en long : terrain et dessus du rail le long de la voie",
   "rail.profileLegend":
     "Trait plein : dessus du rail. Tirets : terrain (Copernicus GLO-30, lissé). Altitudes d’un modèle de surface, ±4 m.",
+
+  "walk.title": "À pied jusqu'à un arrêt",
+  "walk.intro":
+    "Quelle part de la zone autour des lignes se trouve à courte distance à pied d'un arrêt ou d'une gare, par les rues et chemins piétons, avec une attente à chaque traversée à feux.",
+  "walk.minutes": "Limite de marche, minutes",
+  "walk.stepFree": "Sans marches (escaliers exclus)",
+  "walk.compute": "Calculer la couverture à pied",
+  "walk.computeAgain": "Recalculer",
+  "walk.drawFirst": "Dessinez d'abord une ligne sur rue ou une voie ferrée avec des stations.",
+  "walk.collecting": "Collecte des arrêts et des stations…",
+  "walk.loadingTiles": "Chargement des chemins piétons ({done} sur {count} tuiles)…",
+  "walk.loadingPopulation": "Chargement des lieux d'habitation…",
+  "walk.computing": "Mesure des trajets à pied…",
+  "walk.tooLarge":
+    "Les arrêts s'étendent sur {tiles} tuiles de carte ; au plus {max} (environ 12 km × 12 km) sont chargées à la fois.",
+  "walk.osmUnavailable":
+    "Les chemins piétons OpenStreetMap sont indisponibles pour le moment. Réessayez dans une minute.",
+  "walk.headlinePeople":
+    "{share} % des {total} habitants autour des lignes vivent à moins de {minutes} minutes à pied d'un arrêt ou d'une gare.",
+  "walk.headlineStreets":
+    "{share} % des rues praticables à pied autour des lignes sont à moins de {minutes} minutes à pied d'un arrêt ou d'une gare.",
+  "walk.crowFlies": "À vol d'oiseau, ce serait {share} % : les rues et chemins allongent les trajets.",
+  "walk.bands": "Marche jusqu'à l'arrêt le plus proche",
+  "walk.band": "{from}–{to} min",
+  "walk.bandOver": "{from} min ou plus",
+  "walk.residents": "Habitants",
+  "walk.streets": "Rues",
+  "walk.gaps": "Plus grandes lacunes",
+  "walk.gapsIntro":
+    "Lieux comptant le plus de personnes au-delà de la limite de marche, du plus grand au plus petit. Touchez-en un pour y aller.",
+  "walk.gapsIntroStreets":
+    "Lieux comptant le plus de rues au-delà de la limite de marche, du plus grand au plus petit. Touchez-en un pour y aller.",
+  "walk.gapPeople": "{people} habitants",
+  "walk.gapStreets": "{metres} m de rue",
+  "walk.gapWalk": "{minutes} min à pied jusqu'à l'arrêt le plus proche",
+  "walk.gapUnreachable": "aucun arrêt accessible à pied",
+  "walk.noGaps": "Aucune lacune : toute la zone est dans la limite de marche.",
+  "walk.showOnMap": "Afficher sur la carte",
+  "walk.legend": "Minutes à pied jusqu'à l'arrêt le plus proche",
+  "walk.offNetwork": "Trop loin d'un chemin piéton, exclus : {stops}.",
+  "walk.popDownloading":
+    "La population de {countries} est encore en cours de téléchargement sur le serveur ; les rues remplacent les habitants d'ici là.",
+  "walk.popUnavailable": "Pas de données de population ({reason}) ; les rues remplacent les habitants.",
+  "walk.popCredit": "Habitants : WorldPop {year} ({countries}), CC BY 4.0.",
+  "walk.note":
+    "La zone est le rectangle autour des arrêts plus la distance parcourue dans la limite. Les pentes ne sont pas encore prises en compte.",
+  "spacing.title": "Interstation",
+  "spacing.intro":
+    "Distance entre arrêts consécutifs le long de la ligne, comparée à la plage habituelle du mode. Des arrêts trop proches ralentissent la ligne ; trop éloignés, ils imposent de longues marches.",
+  "spacing.none":
+    "Dessinez d'abord une ligne sur rue, ou une ligne de service ferroviaire avec au moins deux stations.",
+  "spacing.loading": "Mesure de l'interstation…",
+  "spacing.direction": "sens {n}",
+  "spacing.summary": "Médiane {median} m · plus courte {min} m · plus longue {max} m",
+  "spacing.guidance": "Habituel pour ce mode : {low}–{high} m",
+  "spacing.allOk": "Tous les arrêts sont dans la plage habituelle.",
+  "spacing.flags": "{short} trop proches, {long} trop éloignés",
+  "spacing.short": "trop proches",
+  "spacing.long": "trop éloignés",
+  "spacing.pair": "{from} → {to}",
+  "spacing.along": "{metres} m",
+  "spacing.onFoot": "{metres} m à pied",
+  "spacing.straight": "Mesuré à vol d'oiseau entre les stations.",
+  "spacing.onFootHint":
+    "Calculez la couverture à pied ci-dessus pour ajouter la distance à pied entre les arrêts signalés.",
 } satisfies EditorMessages;

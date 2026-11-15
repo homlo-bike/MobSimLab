@@ -9,6 +9,7 @@ import { CapacityRun } from "../features/capacity/CapacityRun";
 import type { Prices } from "../features/costs/economy";
 import type { Estimate as CostEstimate } from "../features/costs/model";
 import { CostTables, type CostsDoc } from "../features/costs/CostTables";
+import { WalkAnalysis } from "../features/walk/WalkAnalysis";
 import { JourneyPlanner } from "../features/journey-planner/JourneyPlanner";
 import { NoiseMap } from "../features/noise/NoiseMap";
 import { NetworkTables } from "../features/tables/NetworkTables";
@@ -628,6 +629,16 @@ export function Workspace({
               )}
               {/* The street line tool, railway editor, journey planner and street setup render their panels here. */}
               <div key={`${tab}-${sim}-${chosen}-${gis}`} ref={setPanel} />
+              {tab === "gis" && project && drawings.loaded && (
+                <div className="border-t border-slate-200 px-4 py-5 md:px-5">
+                  <WalkAnalysis
+                    map={map}
+                    streetLines={streetLines}
+                    railway={railway}
+                    preferences={preferences?.values}
+                  />
+                </div>
+              )}
               {tab === "gis" && project && drawings.loaded && noiseCalculationIn("gis") && (
                 <div className="border-t border-slate-200 px-4 py-5 md:px-5">
                   <NoiseMap
@@ -636,11 +647,6 @@ export function Workspace({
                     railway={railway}
                     preferences={preferences?.values}
                   />
-                </div>
-              )}
-              {tab === "gis" && (
-                <div className="border-t border-slate-200 px-4 py-5 md:px-5">
-                  <Placeholder title="gis.title" intro="gis.intro" items={["gis.walk", "gis.spacing"]} />
                 </div>
               )}
             </div>

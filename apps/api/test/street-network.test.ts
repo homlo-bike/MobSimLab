@@ -71,6 +71,27 @@ describe("street tiles", () => {
     await app.close();
   });
 
+  it("serves walk tiles apart from street tiles", async () => {
+    const WALK = '<osm version="0.6"><way id="3"><tag k="highway" v="footway"/></way></osm>';
+    const { fetchImpl, c } = client([WALK, XML]);
+    const mod = await Test.createTestingModule({ imports: [StreetNetworkModule] })
+      .overrideProvider(OverpassClient)
+      .useValue(c)
+      .compile();
+    const app = mod.createNestApplication();
+    await app.init();
+    const walk = await request(app.getHttpServer()).get("/api/street-network/walk-tiles/14/8508/5489");
+    expect(walk.status).toBe(200);
+    expect(walk.headers["content-type"]).toContain("application/xml");
+    expect(walk.text).toBe(WALK);
+    await request(app.getHttpServer()).get("/api/street-network/walk-tiles/14/8508/5489").expect(200);
+    const road = await request(app.getHttpServer()).get("/api/street-network/tiles/14/8508/5489");
+    expect(road.text).toBe(XML);
+    expect(fetchImpl).toHaveBeenCalledTimes(2);
+    await request(app.getHttpServer()).get("/api/street-network/walk-tiles/14/1/x").expect(400);
+    await app.close();
+  });
+
   it("serves a tile, caches it, and rejects invalid tiles", async () => {
     const { fetchImpl, c } = client([XML]);
     const mod = await Test.createTestingModule({ imports: [StreetNetworkModule] })

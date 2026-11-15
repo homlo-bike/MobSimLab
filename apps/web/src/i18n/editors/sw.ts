@@ -1023,4 +1023,68 @@ export const editorsSw = {
   "rail.profileAria": "Wasifu wa urefu: ardhi na juu ya reli kando ya njia",
   "rail.profileLegend":
     "Mstari kamili: juu ya reli. Mistari mifupi: ardhi (Copernicus GLO-30, iliyolainishwa). Miinuko kutoka modeli ya uso, ±4 m.",
+
+  "walk.title": "Kutembea hadi kituo",
+  "walk.intro":
+    "Ni kiasi gani cha eneo karibu na njia kilicho umbali mfupi wa kutembea kutoka kituo, kupitia barabara na njia za waenda kwa miguu, pamoja na kusubiri kwenye kila kivuko chenye taa.",
+  "walk.minutes": "Kikomo cha kutembea, dakika",
+  "walk.stepFree": "Bila ngazi",
+  "walk.compute": "Kokotoa ufikiaji kwa miguu",
+  "walk.computeAgain": "Kokotoa tena",
+  "walk.drawFirst": "Chora kwanza njia ya barabarani au reli yenye stesheni.",
+  "walk.collecting": "Inakusanya vituo na stesheni…",
+  "walk.loadingTiles": "Inapakia njia za miguu (vigae {done} kati ya {count})…",
+  "walk.loadingPopulation": "Inapakia mahali watu wanapoishi…",
+  "walk.computing": "Inapima matembezi…",
+  "walk.tooLarge":
+    "Vituo vimeenea kwenye vigae {tiles} vya ramani; vigae {max} tu (takriban km 12 × km 12) hupakiwa kwa wakati mmoja.",
+  "walk.osmUnavailable":
+    "Njia za miguu za OpenStreetMap hazipatikani sasa. Jaribu tena baada ya dakika moja.",
+  "walk.headlinePeople":
+    "{share} % ya wakazi {total} karibu na njia wanaishi ndani ya dakika {minutes} za kutembea kutoka kituo.",
+  "walk.headlineStreets":
+    "{share} % ya barabara zinazopitika kwa miguu karibu na njia ziko ndani ya dakika {minutes} za kutembea kutoka kituo.",
+  "walk.crowFlies": "Kwa mstari ulionyooka ingekuwa {share} %: barabara na njia hurefusha matembezi.",
+  "walk.bands": "Kutembea hadi kituo kilicho karibu",
+  "walk.band": "dak {from}–{to}",
+  "walk.bandOver": "dak {from} au zaidi",
+  "walk.residents": "Wakazi",
+  "walk.streets": "Barabara",
+  "walk.gaps": "Mapengo makubwa zaidi",
+  "walk.gapsIntro":
+    "Mahali penye watu wengi zaidi nje ya kikomo cha kutembea, kubwa kwanza. Gusa mojawapo kwenda huko.",
+  "walk.gapsIntroStreets":
+    "Mahali penye barabara nyingi zaidi nje ya kikomo cha kutembea, kubwa kwanza. Gusa mojawapo kwenda huko.",
+  "walk.gapPeople": "wakazi {people}",
+  "walk.gapStreets": "m {metres} za barabara",
+  "walk.gapWalk": "dak {minutes} kutembea hadi kituo kilicho karibu",
+  "walk.gapUnreachable": "hakuna kituo kinachofikika kwa miguu",
+  "walk.noGaps": "Hakuna mapengo: eneo lote liko ndani ya kikomo cha kutembea.",
+  "walk.showOnMap": "Onyesha kwenye ramani",
+  "walk.legend": "Dakika za kutembea hadi kituo kilicho karibu",
+  "walk.offNetwork": "Mbali sana na njia ya miguu, vimeachwa: {stops}.",
+  "walk.popDownloading":
+    "Idadi ya watu wa {countries} bado inapakuliwa kwenye seva; hadi hapo barabara zinasimama badala ya watu.",
+  "walk.popUnavailable": "Hakuna data ya idadi ya watu ({reason}); barabara zinasimama badala ya watu.",
+  "walk.popCredit": "Wakazi: WorldPop {year} ({countries}), CC BY 4.0.",
+  "walk.note":
+    "Eneo ni mstatili unaozunguka vituo pamoja na umbali unaotembewa ndani ya kikomo. Miteremko bado haihesabiwi.",
+  "spacing.title": "Nafasi kati ya vituo",
+  "spacing.intro":
+    "Umbali kati ya vituo vinavyofuatana kando ya njia, ukilinganishwa na kiwango cha kawaida cha aina ya usafiri. Vituo vilivyo karibu sana hupunguza kasi ya njia; vilivyo mbali sana humaanisha matembezi marefu.",
+  "spacing.none": "Chora kwanza njia ya barabarani, au njia ya huduma ya reli yenye angalau stesheni mbili.",
+  "spacing.loading": "Inapima nafasi kati ya vituo…",
+  "spacing.direction": "mwelekeo {n}",
+  "spacing.summary": "Wastani wa kati m {median} · mfupi zaidi m {min} · mrefu zaidi m {max}",
+  "spacing.guidance": "Kawaida kwa aina hii: m {low}–{high}",
+  "spacing.allOk": "Vituo vyote viko ndani ya kiwango cha kawaida.",
+  "spacing.flags": "{short} karibu sana, {long} mbali sana",
+  "spacing.short": "karibu sana",
+  "spacing.long": "mbali sana",
+  "spacing.pair": "{from} → {to}",
+  "spacing.along": "m {metres}",
+  "spacing.onFoot": "m {metres} kwa miguu",
+  "spacing.straight": "Imepimwa kwa mstari ulionyooka kati ya stesheni.",
+  "spacing.onFootHint":
+    "Kokotoa ufikiaji kwa miguu hapo juu ili kuongeza umbali wa kutembea kati ya vituo vilivyowekwa alama.",
 } satisfies EditorMessages;
