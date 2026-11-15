@@ -395,6 +395,9 @@ describe("projects", () => {
       "project.drawing_saved",
       // The scenarios drawing saved in the drawings test.
       "project.drawing_saved",
+      // The two schematic drawings saved in the drawings test.
+      "project.drawing_saved",
+      "project.drawing_saved",
       "project.duplicated",
       "project.archived",
       "project.unarchived",
