@@ -216,6 +216,9 @@ export const fr: Messages = {
   "drawing.preferences": "les préférences du projet",
   "drawing.costs": "les réglages des coûts",
   "drawing.schematic": "le plan schématique",
+  "drawing.scenarios": "les scénarios enregistrés",
+  "drawing.benefits": "les formules des bénéfices",
+  "drawing.regions": "les régions",
 
   "tab.label": "Projet",
   "tab.simulator": "Simulateur",
@@ -255,15 +258,11 @@ export const fr: Messages = {
   "gis.streets": "Profil des rues : voies bus, vélo et tramway, vitesses, lignes aériennes",
   "gis.walk": "Couverture à 15 minutes à pied et zones non desservies",
   "gis.spacing": "Interstation",
+  "gis.streetsView": "Rues",
+  "gis.regionsView": "Régions",
 
   "tables.title": "Tableaux",
   "tables.intro": "Tous les calculs du projet, pour estimer ses performances.",
-  "tables.summary": "Synthèse",
-  "tables.infrastructure": "Lignes, gares, longueur de voie, ponts, tunnels (tranchée couverte ou tunnelier)",
-  "tables.service": "Fréquence, amplitude horaire, parc, voyageurs prévus",
-  "tables.compare": "Comparer des scénarios côte à côte",
-  "tables.more": "Autres tableaux",
-  "tables.moreIntro": "À venir dans cet onglet.",
 
   "prefs.title": "Préférences du projet",
   "prefs.intro": "Informations et réglages qui s’appliquent à tout le projet.",

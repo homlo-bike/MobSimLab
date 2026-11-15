@@ -212,6 +212,9 @@ export const yo: Messages = {
   "drawing.preferences": "àwọn àyànfẹ́ iṣẹ́ àkànṣe",
   "drawing.costs": "ètò iye owó",
   "drawing.schematic": "máàpù àwòrán",
+  "drawing.scenarios": "àwọn ìṣẹ̀lẹ̀ tí a fipamọ́",
+  "drawing.benefits": "àwọn àgbékalẹ̀ àǹfààní",
+  "drawing.regions": "àwọn agbègbè",
 
   "tab.label": "Iṣẹ́ àkànṣe",
   "tab.simulator": "Afarawé",
@@ -244,6 +247,8 @@ export const yo: Messages = {
   "schematic.intro": "Wo kí o sì ṣàtúnṣe máàpù ìrìnnà, kí o sì wo ìlà kan ní òun nìkan.",
 
   "gis.title": "GIS",
+  "gis.streetsView": "Àwọn òpópónà",
+  "gis.regionsView": "Àwọn agbègbè",
   "gis.intro": "Fi kún tàbí ṣàtúnṣe ìsọfúnni tí àwọn ìṣirò ń lò.",
   "gis.areas": "Ya agbègbè kan tàbí gbé ọ̀kan wọlé láti OpenStreetMap",
   "gis.streets": "Ìṣètò òpópónà: ọ̀nà bọ́ọ̀sì, kẹ̀kẹ́ àti tírámù, ìyára, wáyà òkè",
@@ -252,12 +257,6 @@ export const yo: Messages = {
 
   "tables.title": "Àwọn tábìlì",
   "tables.intro": "Gbogbo ìṣirò nípa iṣẹ́ àkànṣe náà, láti ṣe àfojúsùn bí yóò ṣe ṣiṣẹ́ tó.",
-  "tables.summary": "Àkópọ̀",
-  "tables.infrastructure": "Àwọn ìlà, ibùdókọ̀, gígùn ojú irin, afárá, ihò abẹ́lẹ̀ (gbẹ́ kí o bò tàbí TBM)",
-  "tables.service": "Ìgbàkúgbà, wákàtí iṣẹ́, àwọn ọkọ̀, èrò tí a fojú sùn",
-  "tables.compare": "Fi àwọn ìṣẹ̀lẹ̀ wé ara wọn lẹ́gbẹ̀ẹ́ ara wọn",
-  "tables.more": "Àwọn tábìlì míì",
-  "tables.moreIntro": "Wọ́n ń bọ̀ sí táàbù yìí láìpẹ́.",
 
   "prefs.title": "Àwọn àyànfẹ́ iṣẹ́ àkànṣe",
   "prefs.intro": "Àwọn àlàyé àti ètò tó kan gbogbo iṣẹ́ àkànṣe náà.",

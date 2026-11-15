@@ -88,7 +88,7 @@ function textOn(hex: string): string {
 }
 
 /**
- * The Schematic tab (ADR-0025, ADR-0040; FR-SCH-01..03): the network map with every line drawn schematically
+ * The Schematic tab (ADR-0025, ADR-0041; FR-SCH-01..03): the network map with every line drawn schematically
  * (45° sections, lines side by side where they share a section, rounded corners), mode layers to show or hide,
  * stations to drag and labels to place, a strip map per line with its connections, and export as SVG, PNG and
  * print or PDF. Edits are saved with the project when `onDoc` is given; without it the diagram is view only.

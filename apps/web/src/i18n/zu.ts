@@ -216,6 +216,9 @@ export const zu: Messages = {
   "drawing.preferences": "okuthandwayo kwephrojekthi",
   "drawing.costs": "izilungiselelo zezindleko",
   "drawing.schematic": "imephu yomdwebo",
+  "drawing.scenarios": "izimo ezigciniwe",
+  "drawing.benefits": "amafomula ezinzuzo",
+  "drawing.regions": "izifunda",
 
   "tab.label": "Iphrojekthi",
   "tab.simulator": "Isilingisi",
@@ -250,6 +253,8 @@ export const zu: Messages = {
   "schematic.intro": "Buka futhi uhlele imephu yezokuthutha, futhi ubuke umugqa owodwa wodwa.",
 
   "gis.title": "GIS",
+  "gis.streetsView": "Imigwaqo",
+  "gis.regionsView": "Izifunda",
   "gis.intro": "Engeza noma uhlele ulwazi olusetshenziswa izibalo.",
   "gis.areas": "Dweba indawo noma ungenise eyodwa kusuka ku-OpenStreetMap",
   "gis.streets":
@@ -260,12 +265,6 @@ export const zu: Messages = {
   "tables.title": "Amatafula",
   "tables.intro":
     "Zonke izibalo mayelana nephrojekthi, ukuze kulinganiswe ukuthi izosebenza kahle kangakanani.",
-  "tables.summary": "Isifinyezo",
-  "tables.infrastructure": "Imigqa, iziteshi, ubude bukajantshi, amabhuloho, imigudu (imba uvale noma i-TBM)",
-  "tables.service": "Imvamisa, amahora okusebenza, izimoto, abagibeli abalindelekile",
-  "tables.compare": "Qhathanisa izimo eceleni",
-  "tables.more": "Amathebula amaningi",
-  "tables.moreIntro": "Kuzofika maduze kuleli thebhu.",
 
   "prefs.title": "Okuthandwayo kwephrojekthi",
   "prefs.intro": "Imininingwane nezilungiselelo ezisebenza kuyo yonke iphrojekthi.",

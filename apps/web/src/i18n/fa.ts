@@ -210,6 +210,9 @@ export const fa: Messages = {
   "drawing.preferences": "ترجیحات پروژه",
   "drawing.costs": "تنظیمات هزینه",
   "drawing.schematic": "نقشهٔ شماتیک",
+  "drawing.scenarios": "سناریوهای ذخیره‌شده",
+  "drawing.benefits": "فرمول‌های منافع",
+  "drawing.regions": "مناطق",
 
   "tab.label": "پروژه",
   "tab.simulator": "شبیه‌ساز",
@@ -243,6 +246,8 @@ export const fa: Messages = {
   "schematic.intro": "نقشهٔ شماتیک را ببینید و ویرایش کنید، یا فقط یک خط را ببینید.",
 
   "gis.title": "GIS",
+  "gis.streetsView": "خیابان‌ها",
+  "gis.regionsView": "مناطق",
   "gis.intro": "اطلاعاتی را که در محاسبات استفاده می‌شود اضافه و ویرایش کنید.",
   "gis.areas": "ترسیم محدوده‌ها یا وارد کردن از OpenStreetMap",
   "gis.streets": "ساختار خیابان: خطوط اتوبوس، دوچرخه و تراموا، سرعت، سیم بالاسری",
@@ -251,12 +256,6 @@ export const fa: Messages = {
 
   "tables.title": "جدول‌ها",
   "tables.intro": "همهٔ محاسبات برای برآورد عملکرد پروژه.",
-  "tables.summary": "خلاصه",
-  "tables.infrastructure": "خطوط، ایستگاه‌ها، طول ریل، پل‌ها، تونل‌ها (روباز یا TBM)",
-  "tables.service": "تواتر، ساعات خدمت، ناوگان، مسافران پیش‌بینی‌شده",
-  "tables.compare": "مقایسهٔ سناریوها کنار هم",
-  "tables.more": "جدول‌های بیشتر",
-  "tables.moreIntro": "به‌زودی در این زبانه.",
 
   "prefs.title": "ترجیحات پروژه",
   "prefs.intro": "جزئیات و تنظیماتی که برای کل پروژه اعمال می‌شوند.",

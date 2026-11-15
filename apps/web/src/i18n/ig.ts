@@ -213,6 +213,9 @@ export const ig: Messages = {
   "drawing.preferences": "mmasị ọrụ",
   "drawing.costs": "ntọala ego",
   "drawing.schematic": "map eserese",
+  "drawing.scenarios": "ọnọdụ echekwara",
+  "drawing.benefits": "usoro uru",
+  "drawing.regions": "mpaghara",
 
   "tab.label": "Ọrụ",
   "tab.simulator": "Ihe ịṅomi",
@@ -246,6 +249,8 @@ export const ig: Messages = {
   "schematic.intro": "Lee ma dezie maapụ njem, ma lee otu ahịrị n'onwe ya.",
 
   "gis.title": "GIS",
+  "gis.streetsView": "Okporo ụzọ",
+  "gis.regionsView": "Mpaghara",
   "gis.intro": "Tinye ma ọ bụ dezie ozi ngụkọ na-eji.",
   "gis.areas": "See mpaghara ma ọ bụ bubata otu site na OpenStreetMap",
   "gis.streets": "Nhazi okporo ụzọ: ụzọ bọs, igwe kwụ otu ebe na tram, ọsọ, waya elu",
@@ -254,12 +259,6 @@ export const ig: Messages = {
 
   "tables.title": "Tebụl",
   "tables.intro": "Ngụkọ niile gbasara ọrụ ahụ, iji tụọ otú ọ ga-esi rụọ ọrụ.",
-  "tables.summary": "Nchịkọta",
-  "tables.infrastructure": "Ahịrị, ọdụ, ogologo ụzọ ígwè, àkwà mmiri, ọwara (gwuo ma kpuchie ma ọ bụ TBM)",
-  "tables.service": "Ugboro ole, oge ọrụ, ụgbọ, ndị njem a tụrụ anya",
-  "tables.compare": "Tụnyere ọnọdụ n'akụkụ n'akụkụ",
-  "tables.more": "Tebụl ndị ọzọ",
-  "tables.moreIntro": "Ga-abịa n'ime taabụ a n'oge na-adịghị anya.",
 
   "prefs.title": "Mmasị ọrụ",
   "prefs.intro": "Nkọwa na ntọala metụtara ọrụ ahụ niile.",

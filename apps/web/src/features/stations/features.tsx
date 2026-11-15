@@ -1,5 +1,5 @@
 /**
- * Station features and special statuses (ADR-0040 §7): what planners record about a station or stop in the
+ * Station features and special statuses (ADR-0041 §7): what planners record about a station or stop in the
  * Create tab (step-free access, ramps, elevators, escalators and so on) and the special role they can give it
  * in the Schematic tab (central station, central bus station, airport, seaport and so on). Each has a symbol
  * drawn the same way on the maps, in exports and in the panels.

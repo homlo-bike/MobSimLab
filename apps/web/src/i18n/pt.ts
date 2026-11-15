@@ -215,6 +215,9 @@ export const pt: Messages = {
   "drawing.preferences": "as preferências do projeto",
   "drawing.costs": "as definições de custos",
   "drawing.schematic": "o esquema",
+  "drawing.scenarios": "os cenários guardados",
+  "drawing.benefits": "as fórmulas de benefícios",
+  "drawing.regions": "as regiões",
 
   "tab.label": "Projeto",
   "tab.simulator": "Simulador",
@@ -248,6 +251,8 @@ export const pt: Messages = {
   "schematic.intro": "Veja e edite o mapa de transporte e veja uma linha isoladamente.",
 
   "gis.title": "SIG",
+  "gis.streetsView": "Ruas",
+  "gis.regionsView": "Regiões",
   "gis.intro": "Adicione ou edite as informações usadas nos cálculos.",
   "gis.areas": "Desenhe uma área ou importe uma do OpenStreetMap",
   "gis.streets": "Configuração das ruas: faixas de ônibus, bicicleta e bonde, velocidades, rede aérea",
@@ -256,12 +261,6 @@ export const pt: Messages = {
 
   "tables.title": "Tabelas",
   "tables.intro": "Todos os cálculos do projeto, para estimar seu desempenho.",
-  "tables.summary": "Resumo",
-  "tables.infrastructure": "Linhas, estações, extensão de via, pontes, túneis (vala a céu aberto ou TBM)",
-  "tables.service": "Frequência, horário de operação, frota, passageiros previstos",
-  "tables.compare": "Comparar cenários lado a lado",
-  "tables.more": "Mais tabelas",
-  "tables.moreIntro": "Em breve neste separador.",
 
   "prefs.title": "Preferências do projeto",
   "prefs.intro": "Detalhes e configurações que valem para todo o projeto.",

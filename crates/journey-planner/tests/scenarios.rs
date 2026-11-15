@@ -393,3 +393,44 @@ fn st(stop: &str, seq: u32, arr: u32, dep: u32) -> StopTime {
         drop_off_type: 0,
     }
 }
+
+#[test]
+fn reach_matches_the_fastest_journey_to_every_stop() {
+    let p = Planner::new(&network(), Settings::default());
+    let t0 = 10 * H + 2 * M;
+    let from = ll(0.0, 0.0);
+    let ids = p.stop_ids();
+    let arrive = p.reach(from, t0);
+    assert_eq!(ids.len(), arrive.len());
+    let at = |id: &str| arrive[ids.iter().position(|s| s == id).unwrap()];
+    // West is where we stand.
+    assert_eq!(at("s1"), Some(t0));
+    // East: the 10:10 metro, 2 + 2 min with a 30 s dwell at Central.
+    assert_eq!(at("s3"), Some(10 * H + 10 * M + 120 + 30 + 120));
+    // Each stop's time equals the journey planner's arrival at that stop (destination = the stop).
+    for id in ["c_m", "n", "s3"] {
+        let s = network()
+            .stops
+            .into_iter()
+            .find(|s| s.stop_id == id)
+            .unwrap();
+        let j = depart(&p, from, [s.stop_lon, s.stop_lat], t0);
+        assert_eq!(
+            at(id),
+            Some(j[0].arrive_s),
+            "{id}: reach and plan agree ({j:?})"
+        );
+    }
+    // The tram platform: the change walk between the two platforms (52 s plus 60 s level change).
+    assert_eq!(at("c_t"), at("c_m").map(|a| a + 112));
+}
+
+#[test]
+fn reach_leaves_unreachable_stops_empty() {
+    let mut tt = network();
+    tt.stops.push(stop("far", "Far away", 50_000.0, 0.0, None));
+    let p = Planner::new(&tt, Settings::default());
+    let ids = p.stop_ids();
+    let arrive = p.reach(ll(0.0, 0.0), 10 * H);
+    assert_eq!(arrive[ids.iter().position(|s| s == "far").unwrap()], None);
+}

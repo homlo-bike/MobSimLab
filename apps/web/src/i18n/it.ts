@@ -213,6 +213,9 @@ export const it: Messages = {
   "drawing.preferences": "le preferenze del progetto",
   "drawing.costs": "le impostazioni dei costi",
   "drawing.schematic": "lo schema",
+  "drawing.scenarios": "gli scenari salvati",
+  "drawing.benefits": "le formule dei benefici",
+  "drawing.regions": "le aree",
 
   "tab.label": "Progetto",
   "tab.simulator": "Simulatore",
@@ -247,6 +250,8 @@ export const it: Messages = {
   "schematic.intro": "Visualizza e modifica la mappa schematica, oppure guarda una sola linea.",
 
   "gis.title": "GIS",
+  "gis.streetsView": "Strade",
+  "gis.regionsView": "Aree",
   "gis.intro": "Aggiungi e modifica le informazioni usate nei calcoli.",
   "gis.areas": "Disegna aree o importale da OpenStreetMap",
   "gis.streets": "Configurazione stradale: corsie bus, ciclabili e tram, velocità, linea aerea",
@@ -255,12 +260,6 @@ export const it: Messages = {
 
   "tables.title": "Tabelle",
   "tables.intro": "Tutti i calcoli per stimare le prestazioni del progetto.",
-  "tables.summary": "Riepilogo",
-  "tables.infrastructure": "Linee, stazioni, lunghezza dei binari, ponti, gallerie (artificiali o TBM)",
-  "tables.service": "Frequenza, orario di servizio, flotta, passeggeri previsti",
-  "tables.compare": "Confronta scenari affiancati",
-  "tables.more": "Altre tabelle",
-  "tables.moreIntro": "In arrivo in questa scheda.",
 
   "prefs.title": "Preferenze del progetto",
   "prefs.intro": "Dettagli e impostazioni che valgono per tutto il progetto.",

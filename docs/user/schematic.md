@@ -1,6 +1,6 @@
 # Schematic
 
-The **Schematic** tab draws the project's lines as a transport map: sections run straight or at 45°, lines that share a section run side by side, and every station that two lines share is an interchange. It also shows each line on its own as a strip map. The design is in [ADR-0040](../adr/0040-schematic-layout-in-browser.md).
+The **Schematic** tab draws the project's lines as a transport map: sections run straight or at 45°, lines that share a section run side by side, and every station that two lines share is an interchange. It also shows each line on its own as a strip map. The design is in [ADR-0041](../adr/0041-schematic-layout-in-browser.md).
 
 ## What it draws
 

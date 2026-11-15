@@ -213,6 +213,9 @@ export const ha: Messages = {
   "drawing.preferences": "zaɓuɓɓukan aiki",
   "drawing.costs": "saitunan kuɗi",
   "drawing.schematic": "taswirar zane",
+  "drawing.scenarios": "yanayin da aka adana",
+  "drawing.benefits": "dabarun fa'idodi",
+  "drawing.regions": "yankuna",
 
   "tab.label": "Aiki",
   "tab.simulator": "Mai kwaikwayo",
@@ -247,6 +250,8 @@ export const ha: Messages = {
   "schematic.intro": "Kalli ka gyara taswirar sufuri, kuma ka kalli layi ɗaya shi kaɗai.",
 
   "gis.title": "GIS",
+  "gis.streetsView": "Tituna",
+  "gis.regionsView": "Yankuna",
   "gis.intro": "Ƙara ko gyara bayanan da ƙididdiga ke amfani da su.",
   "gis.areas": "Zana yanki ko shigo da ɗaya daga OpenStreetMap",
   "gis.streets": "Tsarin titi: hanyoyin bas, keke da tram, gudu, wayoyin sama",
@@ -255,12 +260,6 @@ export const ha: Messages = {
 
   "tables.title": "Teburori",
   "tables.intro": "Kowace ƙididdiga game da aikin, don kimanta yadda zai yi aiki.",
-  "tables.summary": "Taƙaitawa",
-  "tables.infrastructure": "Layuka, tashoshi, tsawon dogo, gadoji, ramuka (tona da rufe ko TBM)",
-  "tables.service": "Yawan zuwa, sa'o'in aiki, ababen hawa, fasinjojin da ake hasashe",
-  "tables.compare": "Kwatanta yanayi gefe da gefe",
-  "tables.more": "Ƙarin teburori",
-  "tables.moreIntro": "Za su zo a wannan shafin nan gaba.",
 
   "prefs.title": "Zaɓuɓɓukan aiki",
   "prefs.intro": "Bayanai da saitunan da suka shafi dukan aikin.",

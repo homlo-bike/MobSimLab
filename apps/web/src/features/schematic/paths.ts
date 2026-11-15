@@ -1,6 +1,6 @@
 /**
  * Drawing geometry of a schematic: lines that share a section run side by side in a fixed order, and corners
- * are rounded when curves are on (ADR-0040). All coordinates are screen coordinates (y down).
+ * are rounded when curves are on (ADR-0041). All coordinates are screen coordinates (y down).
  */
 import type { Pt } from "./layout";
 import type { SchematicLine } from "./lines";

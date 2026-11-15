@@ -212,6 +212,9 @@ export const bn: Messages = {
   "drawing.preferences": "প্রকল্পের পছন্দ",
   "drawing.costs": "খরচের সেটিংস",
   "drawing.schematic": "নকশা মানচিত্র",
+  "drawing.scenarios": "সংরক্ষিত পরিস্থিতি",
+  "drawing.benefits": "সুফলের সূত্র",
+  "drawing.regions": "অঞ্চল",
 
   "tab.label": "প্রকল্প",
   "tab.simulator": "সিমুলেটর",
@@ -245,6 +248,8 @@ export const bn: Messages = {
   "schematic.intro": "পরিবহন মানচিত্র দেখুন ও সম্পাদনা করুন, এবং একটি লাইন আলাদাভাবে দেখুন।",
 
   "gis.title": "GIS",
+  "gis.streetsView": "রাস্তা",
+  "gis.regionsView": "অঞ্চল",
   "gis.intro": "গণনায় ব্যবহৃত তথ্য যোগ বা সম্পাদনা করুন।",
   "gis.areas": "একটি এলাকা আঁকুন বা OpenStreetMap থেকে আমদানি করুন",
   "gis.streets": "রাস্তার বিন্যাস: বাস, সাইকেল ও ট্রাম লেন, গতি, উপরের তার",
@@ -253,12 +258,6 @@ export const bn: Messages = {
 
   "tables.title": "সারণি",
   "tables.intro": "প্রকল্প সম্পর্কে সব গণনা, এটি কতটা ভালো কাজ করবে তা অনুমানের জন্য।",
-  "tables.summary": "সারসংক্ষেপ",
-  "tables.infrastructure": "লাইন, স্টেশন, রেলের দৈর্ঘ্য, সেতু, সুড়ঙ্গ (কাট অ্যান্ড কভার বা TBM)",
-  "tables.service": "ফ্রিকোয়েন্সি, পরিচালনার সময়, বহর, অনুমিত যাত্রী",
-  "tables.compare": "পরিস্থিতিগুলো পাশাপাশি তুলনা করুন",
-  "tables.more": "আরও সারণি",
-  "tables.moreIntro": "এই ট্যাবে শীঘ্রই আসছে।",
 
   "prefs.title": "প্রকল্পের পছন্দ",
   "prefs.intro": "পুরো প্রকল্পে প্রযোজ্য বিবরণ ও সেটিংস।",

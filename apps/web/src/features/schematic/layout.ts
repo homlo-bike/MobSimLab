@@ -1,5 +1,5 @@
 /**
- * Schematic layout in the browser (ADR-0025 fallback, ADR-0040): stations start at their geographic place and
+ * Schematic layout in the browser (ADR-0025 fallback, ADR-0041): stations start at their geographic place and
  * are moved until every edge runs at a multiple of 45° (octilinear), edges are not too short, and stations
  * keep apart. Stations the planner dragged stay where they put them. Positions are metres east and north of
  * the diagram's origin, so a dragged station keeps its place when lines are added.

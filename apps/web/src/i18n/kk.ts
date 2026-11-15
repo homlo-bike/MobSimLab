@@ -213,6 +213,9 @@ export const kk: Messages = {
   "drawing.preferences": "жоба параметрлері",
   "drawing.costs": "шығын баптаулары",
   "drawing.schematic": "сызбаны",
+  "drawing.scenarios": "сақталған сценарийлер",
+  "drawing.benefits": "пайда формулалары",
+  "drawing.regions": "аймақтар",
 
   "tab.label": "Жоба",
   "tab.simulator": "Симулятор",
@@ -245,6 +248,8 @@ export const kk: Messages = {
   "schematic.intro": "Көлік картасын қарап, өңдеңіз және бір бағытты бөлек қараңыз.",
 
   "gis.title": "GIS",
+  "gis.streetsView": "Көшелер",
+  "gis.regionsView": "Аймақтар",
   "gis.intro": "Есептеулер пайдаланатын ақпаратты қосыңыз немесе өңдеңіз.",
   "gis.areas": "Аумақ сызыңыз немесе OpenStreetMap-тан импорттаңыз",
   "gis.streets": "Көше құрылымы: автобус, велосипед және трамвай жолақтары, жылдамдықтар, түйіспе желісі",
@@ -253,12 +258,6 @@ export const kk: Messages = {
 
   "tables.title": "Кестелер",
   "tables.intro": "Жобаның қаншалықты жақсы жұмыс істейтінін бағалау үшін ол туралы әр есептеу.",
-  "tables.summary": "Қорытынды",
-  "tables.infrastructure": "Бағыттар, станциялар, жол ұзындығы, көпірлер, туннельдер (ашық әдіс немесе TBM)",
-  "tables.service": "Жиілік, жұмыс сағаттары, парк, күтілетін жолаушылар",
-  "tables.compare": "Сценарийлерді қатар салыстыру",
-  "tables.more": "Қосымша кестелер",
-  "tables.moreIntro": "Бұл қойындыға кейін қосылады.",
 
   "prefs.title": "Жоба параметрлері",
   "prefs.intro": "Бүкіл жобаға қатысты мәліметтер мен баптаулар.",

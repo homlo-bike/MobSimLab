@@ -73,6 +73,8 @@ Rasters are clipped to the project area buffered by 2 km, reprojected to the wor
 
 **Jobs:** there is no global open jobs grid. Jobs are estimated from land use and POIs with sourced job-density assumptions (per m² of commercial/industrial floor area, per school/hospital), clearly marked as assumptions, and replaceable by uploaded employment data.
 
+**Regions (ADR-0040).** The benefit tables read population per station catchment from the same WorldPop grid (`POST /api/benefits/population` sums its cells) and jobs from OpenStreetMap building floor area. Planners can draw regions or import OpenStreetMap areas (`GET /api/benefits/osm-areas`) and give them land use, land value, tax revenue, population density, jobs, GDP per person and employment; these take priority over the sourced values (drawing kind `regions`).
+
 ## 4. Elevation
 
 - Copernicus GLO-30 DEM tiles (downloaded via gateway, licence recorded) imported per project area; user GeoTIFF overrides (e.g. LiDAR DTM).
@@ -232,4 +234,4 @@ Implementation: `crates/rail-design` (document model, alignment fitting, station
 - **Editing (SVG in the browser):** drag stations (with snapping to octilinear angles, optional), curve edges (cubic Béziers with corner radius), simplify lines, toggle layers, edit labels, add water/landmark shapes.
 - **Export:** SVG and PDF with attribution block; PNG for quick sharing.
 
-Built so far (ADR-0040): the Schematic tab lays the diagram out in the browser (octilinear relaxation) instead of LOOM, with mode layers, dragging, rounded corners, name places, a strip map per line and SVG, PNG and print or PDF export. LOOM and water bodies are still to come. How to use it: [Schematic](../user/schematic.md).
+Built so far (ADR-0041): the Schematic tab lays the diagram out in the browser (octilinear relaxation) instead of LOOM, with mode layers, dragging, rounded corners, name places, a strip map per line and SVG, PNG and print or PDF export. LOOM and water bodies are still to come. How to use it: [Schematic](../user/schematic.md).

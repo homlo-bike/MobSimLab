@@ -212,6 +212,9 @@ export const sw: Messages = {
   "drawing.preferences": "mapendeleo ya mradi",
   "drawing.costs": "mipangilio ya gharama",
   "drawing.schematic": "ramani ya mchoro",
+  "drawing.scenarios": "hali zilizohifadhiwa",
+  "drawing.benefits": "fomula za manufaa",
+  "drawing.regions": "maeneo",
 
   "tab.label": "Mradi",
   "tab.simulator": "Kiigaji",
@@ -246,6 +249,8 @@ export const sw: Messages = {
   "schematic.intro": "Tazama na hariri ramani ya usafiri, na uangalie njia moja peke yake.",
 
   "gis.title": "GIS",
+  "gis.streetsView": "Barabara",
+  "gis.regionsView": "Maeneo",
   "gis.intro": "Ongeza au hariri taarifa ambazo hesabu zinatumia.",
   "gis.areas": "Chora eneo au lilete kutoka OpenStreetMap",
   "gis.streets": "Mpangilio wa barabara: njia za basi, baiskeli na tramu, kasi, nyaya za juu",
@@ -254,12 +259,6 @@ export const sw: Messages = {
 
   "tables.title": "Majedwali",
   "tables.intro": "Kila hesabu kuhusu mradi, kukadiria utakavyofanya kazi.",
-  "tables.summary": "Muhtasari",
-  "tables.infrastructure": "Njia, stesheni, urefu wa reli, madaraja, mahandaki (kuchimba na kufunika au TBM)",
-  "tables.service": "Marudio, saa za huduma, magari, abiria wanaotarajiwa",
-  "tables.compare": "Linganisha matukio kando kwa kando",
-  "tables.more": "Majedwali zaidi",
-  "tables.moreIntro": "Yatakuja hivi karibuni kwenye kichupo hiki.",
 
   "prefs.title": "Mapendeleo ya mradi",
   "prefs.intro": "Maelezo na mipangilio inayohusu mradi mzima.",

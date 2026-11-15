@@ -206,6 +206,9 @@ export const zh: Messages = {
   "drawing.preferences": "项目偏好设置",
   "drawing.costs": "费用设置",
   "drawing.schematic": "示意图",
+  "drawing.scenarios": "已保存的方案",
+  "drawing.benefits": "效益公式",
+  "drawing.regions": "区域",
 
   "tab.label": "项目",
   "tab.simulator": "模拟器",
@@ -236,6 +239,8 @@ export const zh: Messages = {
   "schematic.intro": "查看和编辑交通图，并单独查看一条线路。",
 
   "gis.title": "GIS",
+  "gis.streetsView": "街道",
+  "gis.regionsView": "区域",
   "gis.intro": "添加或编辑计算所用的信息。",
   "gis.areas": "绘制区域或从 OpenStreetMap 导入",
   "gis.streets": "街道布局：公交、自行车和有轨电车车道，车速，架空线",
@@ -244,12 +249,6 @@ export const zh: Messages = {
 
   "tables.title": "表格",
   "tables.intro": "有关项目的所有计算，用于评估其表现。",
-  "tables.summary": "摘要",
-  "tables.infrastructure": "线路、车站、轨道长度、桥梁、隧道（明挖或盾构）",
-  "tables.service": "发车频率、运营时间、车队、预计客流",
-  "tables.compare": "并排比较方案",
-  "tables.more": "更多表格",
-  "tables.moreIntro": "即将在此标签页提供。",
 
   "prefs.title": "项目偏好设置",
   "prefs.intro": "适用于整个项目的详细信息和设置。",

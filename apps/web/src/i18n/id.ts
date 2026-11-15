@@ -214,6 +214,9 @@ export const id: Messages = {
   "drawing.preferences": "preferensi proyek",
   "drawing.costs": "pengaturan biaya",
   "drawing.schematic": "skema",
+  "drawing.scenarios": "skenario tersimpan",
+  "drawing.benefits": "rumus manfaat",
+  "drawing.regions": "wilayah",
 
   "tab.label": "Proyek",
   "tab.simulator": "Simulator",
@@ -248,6 +251,8 @@ export const id: Messages = {
   "schematic.intro": "Lihat dan edit peta skema, atau lihat satu jalur saja.",
 
   "gis.title": "GIS",
+  "gis.streetsView": "Jalan",
+  "gis.regionsView": "Wilayah",
   "gis.intro": "Tambahkan dan edit informasi yang digunakan dalam perhitungan.",
   "gis.areas": "Gambar wilayah atau impor dari OpenStreetMap",
   "gis.streets": "Susunan jalan: lajur bus, sepeda, dan trem, kecepatan, kabel atas",
@@ -256,12 +261,6 @@ export const id: Messages = {
 
   "tables.title": "Tabel",
   "tables.intro": "Semua perhitungan untuk memperkirakan kinerja proyek.",
-  "tables.summary": "Ringkasan",
-  "tables.infrastructure": "Jalur, stasiun, panjang rel, jembatan, terowongan (galian terbuka atau TBM)",
-  "tables.service": "Frekuensi, jam layanan, armada, perkiraan penumpang",
-  "tables.compare": "Bandingkan skenario berdampingan",
-  "tables.more": "Tabel lainnya",
-  "tables.moreIntro": "Segera hadir di tab ini.",
 
   "prefs.title": "Preferensi proyek",
   "prefs.intro": "Detail dan pengaturan yang berlaku untuk seluruh proyek.",

@@ -1,5 +1,5 @@
 /**
- * Sea, lakes and rivers for the Schematic tab (ADR-0040 §8): OSM water inside a bounding box, simplified and
+ * Sea, lakes and rivers for the Schematic tab (ADR-0041 §8): OSM water inside a bounding box, simplified and
  * ready to draw. Lakes and river areas are polygons; rivers and canals without an area are centre lines; the
  * sea is built from the coastline (land on the left of each way, water on the right) and the box edge.
  * Data © OpenStreetMap contributors, ODbL.

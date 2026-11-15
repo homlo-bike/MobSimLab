@@ -212,6 +212,9 @@ export const mr: Messages = {
   "drawing.preferences": "प्रकल्पाची प्राधान्ये",
   "drawing.costs": "खर्च सेटिंग्ज",
   "drawing.schematic": "आराखडा नकाशा",
+  "drawing.scenarios": "जतन केलेली परिस्थिती",
+  "drawing.benefits": "लाभाची सूत्रे",
+  "drawing.regions": "प्रदेश",
 
   "tab.label": "प्रकल्प",
   "tab.simulator": "सिम्युलेटर",
@@ -244,6 +247,8 @@ export const mr: Messages = {
   "schematic.intro": "वाहतूक नकाशा पाहा आणि संपादित करा, आणि एक मार्ग स्वतंत्रपणे पाहा.",
 
   "gis.title": "GIS",
+  "gis.streetsView": "रस्ते",
+  "gis.regionsView": "प्रदेश",
   "gis.intro": "गणनेसाठी वापरली जाणारी माहिती जोडा किंवा संपादित करा.",
   "gis.areas": "क्षेत्र काढा किंवा OpenStreetMap वरून आयात करा",
   "gis.streets": "रस्त्यांची रचना: बस, सायकल आणि ट्राम मार्गिका, वेग, वरच्या तारा",
@@ -252,12 +257,6 @@ export const mr: Messages = {
 
   "tables.title": "तक्ते",
   "tables.intro": "प्रकल्पाविषयी प्रत्येक गणना, तो किती चांगली कामगिरी करेल याचा अंदाज घेण्यासाठी.",
-  "tables.summary": "सारांश",
-  "tables.infrastructure": "मार्ग, स्थानके, रुळांची लांबी, पूल, बोगदे (खोदून झाकणे किंवा TBM)",
-  "tables.service": "वारंवारता, सेवेचे तास, ताफा, अपेक्षित प्रवासी",
-  "tables.compare": "परिस्थितींची शेजारी शेजारी तुलना करा",
-  "tables.more": "आणखी तक्ते",
-  "tables.moreIntro": "या टॅबमध्ये लवकरच येत आहेत.",
 
   "prefs.title": "प्रकल्पाची प्राधान्ये",
   "prefs.intro": "संपूर्ण प्रकल्पाला लागू होणारे तपशील आणि सेटिंग्ज.",

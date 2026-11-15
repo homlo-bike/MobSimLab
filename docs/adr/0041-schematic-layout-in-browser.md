@@ -1,4 +1,4 @@
-# ADR-0040: Schematic diagrams laid out in the browser first, LOOM kept for the large-network layout
+# ADR-0041: Schematic diagrams laid out in the browser first, LOOM kept for the large-network layout
 
 - Status: Proposed (first version built: Schematic tab)
 - Date: 2026-11-10
