@@ -1,0 +1,10 @@
+{
+  "id": "on_demand_bus",
+  "label": "On-demand bus",
+  "family": "street",
+  "colour": "#9333ea",
+  "gtfsRouteType": 715,
+  "kit": "service-zone",
+  "operation": "on_demand",
+  "parameterPrefix": "drt"
+}

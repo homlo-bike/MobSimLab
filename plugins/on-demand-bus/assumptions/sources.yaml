@@ -1,0 +1,38 @@
+# Sources of the on-demand bus plugin's parameters (same format as assumptions/sources.yaml).
+# Figures from search snippets of the documents below; not yet re-read by a maintainer.
+
+- id: acceq-drt-planning
+  title: AccEq-DRT, planning demand-responsive transit to reduce inequality of accessibility (DRT bus at 25 km/h, 32 s lost per pick-up or drop-off)
+  publisher: arXiv
+  url: https://arxiv.org/abs/2310.04348
+  licence: © the authors; numbers cited as facts
+  access: free
+  retrieved: 2026-11-15
+  checked_via: search-snippet
+
+- id: mpg-autonomous-ridepooling-germany
+  title: Simulation of autonomous ridepooling across Germany (mean detour 17.5 %, mean occupancy 1.67, average wait about 10 min)
+  publisher: Max Planck Society (Communications in Transportation Research)
+  url: https://pure.mpg.de/pubman/item/item_3497842_2/component/file_3497843/1-s2.0-S2772586323000126-main.pdf
+  licence: CC BY 4.0
+  access: free
+  retrieved: 2026-11-15
+  checked_via: search-snippet
+
+- id: moia-ride-pooling-small-towns
+  title: MOIA, ride pooling efficiency in large and small towns (service with a maximum wait of 10 min and a maximum detour of 10 min plus 50 % of the travel time)
+  publisher: MOIA
+  url: https://www.moia.io/mobility_analytics/studies/2103_Ride-pooling_efficiency_in_large_and_small_towns.pdf
+  licence: © MOIA; numbers cited as facts
+  access: free
+  retrieved: 2026-11-15
+  checked_via: search-snippet
+
+- id: umn-transit-circuity
+  title: Transit circuity (cites an average road network circuity of about 1.2, Newell 1980, and Ballou, Rahardja and Sakai 2002)
+  publisher: University of Minnesota
+  url: https://conservancy.umn.edu/bitstream/handle/11299/180057/TransitCircuity.pdf?sequence=1
+  licence: © the authors; numbers cited as facts
+  access: free
+  retrieved: 2026-11-15
+  checked_via: search-snippet
