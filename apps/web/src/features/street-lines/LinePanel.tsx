@@ -1,4 +1,15 @@
+import { useState } from "react";
 import { cleanFeatures, STATION_FEATURES, SymbolPicker } from "../stations/features";
+import { DayTypeChoice } from "../timetables/DayTypeChoice";
+import {
+  type DayService,
+  editDay,
+  hasOwnDay,
+  shownDay,
+  streetWeekday,
+  withDay,
+} from "../timetables/dayTypes";
+import type { DayTypeId } from "../../workspace/calendar";
 import { type Translate, useI18n } from "../../i18n/i18n";
 import type { MessageKey } from "../../i18n/messages";
 import { TimeInput } from "../railways/ServiceLinesPanel";
@@ -239,15 +250,30 @@ export function LinePanel(props: Props) {
   const { t } = useI18n();
   const vehiclesOff = useVehiclesOff();
   const { view, profile, rules, timing, selected, actions: a } = props;
+  // The day type whose times and headways the fields below show and change.
+  const [day, setDay] = useState<DayTypeId>("weekday");
+  const weekday = streetWeekday(timing);
+  const shown = shownDay(weekday, timing.days, day);
+  const setDayService = (patch: Partial<DayService>) => {
+    const next = editDay(weekday, timing.days, day, patch);
+    a.setTiming({
+      ...timing,
+      firstMin: next.weekday.firstMin,
+      lastMin: next.weekday.lastMin,
+      headwayMin: next.weekday.peakHeadwayMin,
+      offPeakHeadwayMin: next.weekday.offPeakHeadwayMin,
+      days: next.days,
+    });
+  };
   const mode = MODES[profile.mode];
   const st = lineStats(view, timing);
   const rank: Record<Severity, number> = { error: 0, warn: 1, ok: 2, info: 3 };
   const vehicle = vehicleById(props.vehicle);
   const serviceChecks: Check[] = [
-    ...(timing.lastMin <= timing.firstMin
+    ...(shown.lastMin <= shown.firstMin
       ? [{ sev: "error" as const, text: t("rail.line.lastAfterFirst") }]
       : []),
-    ...(timing.headwayMin < 1 || timing.offPeakHeadwayMin < 1
+    ...(shown.peakHeadwayMin < 1 || shown.offPeakHeadwayMin < 1
       ? [{ sev: "error" as const, text: t("rail.line.headwayMin") }]
       : []),
   ];
@@ -708,13 +734,22 @@ export function LinePanel(props: Props) {
           step={50}
           onChange={(v) => a.setRules({ ...rules, detour_warn_m: v })}
         />
+        <DayTypeChoice
+          day={day}
+          onDay={setDay}
+          own={hasOwnDay(timing.days, day)}
+          onOwn={(own) =>
+            day !== "weekday" &&
+            a.setTiming({ ...timing, days: withDay(timing.days, day, own ? shown : null) })
+          }
+        />
         <label className="flex items-center justify-between gap-2">
           <span>{t("rail.line.first")}</span>
           <span className="flex items-center gap-1">
             <TimeInput
               label={t("rail.line.first")}
-              value={timing.firstMin}
-              onChange={(v) => a.setTiming({ ...timing, firstMin: v })}
+              value={shown.firstMin}
+              onChange={(v) => setDayService({ firstMin: v })}
             />
             <span className="w-6" />
           </span>
@@ -724,23 +759,23 @@ export function LinePanel(props: Props) {
           <span className="flex items-center gap-1">
             <TimeInput
               label={t("rail.line.last")}
-              value={timing.lastMin}
-              onChange={(v) => a.setTiming({ ...timing, lastMin: v })}
+              value={shown.lastMin}
+              onChange={(v) => setDayService({ lastMin: v })}
             />
             <span className="w-6" />
           </span>
         </label>
         <NumberField
           label={t("rail.line.peakHeadway")}
-          value={timing.headwayMin}
+          value={shown.peakHeadwayMin}
           unit="min"
-          onChange={(v) => a.setTiming({ ...timing, headwayMin: v })}
+          onChange={(v) => setDayService({ peakHeadwayMin: v })}
         />
         <NumberField
           label={t("rail.line.offpeakHeadway")}
-          value={timing.offPeakHeadwayMin}
+          value={shown.offPeakHeadwayMin}
           unit="min"
-          onChange={(v) => a.setTiming({ ...timing, offPeakHeadwayMin: v })}
+          onChange={(v) => setDayService({ offPeakHeadwayMin: v })}
         />
         <NumberField
           label={t("street.dwell")}

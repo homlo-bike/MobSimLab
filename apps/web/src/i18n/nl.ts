@@ -2,6 +2,7 @@ import { roadNl } from "./road/nl";
 import { editorsNl } from "./editors/nl";
 import { cargoBikeNl } from "./cargo-bike/nl";
 import { depotsNl } from "./depots/nl";
+import { timetablesNl } from "./timetables/nl";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -392,6 +393,7 @@ export const nl: Messages = {
   ...editorsNl,
   ...cargoBikeNl,
   ...depotsNl,
+  ...timetablesNl,
   ...roadNl,
   ...PLUGIN_MESSAGES.nl,
 };
