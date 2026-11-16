@@ -90,6 +90,7 @@ import { PrintReport } from "./PrintReport";
 import { ProjectPreferences } from "./ProjectPreferences";
 import {
   delaysFrom,
+  designTextsFrom,
   designValuesFrom,
   type PreferencesDoc,
   sameNameStationM,
@@ -323,6 +324,8 @@ export function Workspace({
   const delays = useMemo(() => JSON.parse(delaysJson) as DelayShares, [delaysJson]);
   const rulesJson = JSON.stringify(designValuesFrom(preferences));
   const designValues = useMemo(() => JSON.parse(rulesJson) as Record<string, number>, [rulesJson]);
+  const textsJson = JSON.stringify(designTextsFrom(preferences));
+  const designTexts = useMemo(() => JSON.parse(textsJson) as Record<string, string>, [textsJson]);
   const switchJson = JSON.stringify(switchChoiceFrom(preferences));
   const switchChoice = useMemo(
     () => JSON.parse(switchJson) as ReturnType<typeof switchChoiceFrom>,
@@ -648,6 +651,7 @@ export function Workspace({
               streetSetups={setups}
               delays={delays}
               designValues={designValues}
+              designTexts={designTexts}
               prefValues={preferences?.values}
               switchChoice={switchChoice}
               existingRailways={existingRailways}
