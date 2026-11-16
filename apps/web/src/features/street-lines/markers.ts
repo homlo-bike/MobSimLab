@@ -2,8 +2,10 @@ import { tNow } from "../../i18n/i18n";
 import type { PointView } from "./types";
 
 /**
- * Purpose: DOM element for a route point: a numbered square in the line colour for stops,
- * a small hollow circle for via points; the station name beside the first stop of a group.
+ * Purpose: DOM element for a route point, drawn as in the line and track drawing mockup: a numbered circle in
+ * the line colour for stops, a numbered rounded square for end stops (both with a white edge), a small white
+ * circle edged in the line colour for via points; a dashed ring when selected, a red ring on an error; the
+ * station name beside the first stop of a group.
  */
 export function pointElement(
   p: PointView,
@@ -16,19 +18,26 @@ export function pointElement(
   el.setAttribute("aria-label", tNow("street.marker", { n: p.seq + 1, name: p.name }));
   el.title = `${p.seq + 1}. ${p.name}${p.message ? ` — ${p.message}` : ""}`;
   const via = p.kind === "via";
+  const end = p.kind === "end_stop";
   const error = p.status === "error";
-  const size = via ? 14 : 22;
+  const size = via ? (selected ? 13 : 10) : end ? 21 : 19;
+  const rings = [
+    ...(error ? ["0 0 0 4px #ffffff", `0 0 0 6.5px ${ERROR}`] : []),
+    "0 1px 2px rgba(0,0,0,.35)",
+  ];
   Object.assign(el.style, {
     position: "relative",
     width: `${size}px`,
     height: `${size}px`,
     boxSizing: "border-box",
-    borderRadius: via ? "50%" : "5px",
-    background: via ? "#ffffff" : error ? "#dc2626" : color,
-    border: via ? `3px solid ${error ? "#dc2626" : color}` : "2px solid #ffffff",
-    boxShadow: selected ? "0 0 0 3px #f59e0b, 0 1px 3px rgba(0,0,0,.4)" : "0 1px 3px rgba(0,0,0,.4)",
+    borderRadius: end ? "3px" : "50%",
+    background: via ? "#ffffff" : color,
+    border: via ? `2.2px solid ${color}` : "2px solid #ffffff",
+    boxShadow: rings.join(", "),
+    outline: selected ? `2.5px dashed ${ACCENT}` : "none",
+    outlineOffset: via ? "3px" : "4px",
     color: "#ffffff",
-    font: "700 11px/18px system-ui, sans-serif",
+    font: `600 11px/${size - 4}px "IBM Plex Mono", ui-monospace, monospace`,
     textAlign: "center",
     cursor: "pointer",
     userSelect: "none",
@@ -39,12 +48,12 @@ export function pointElement(
     span.textContent = label;
     Object.assign(span.style, {
       position: "absolute",
-      left: `${size + 4}px`,
+      left: `${size + 5}px`,
       top: "50%",
       transform: "translateY(-50%)",
       whiteSpace: "nowrap",
-      color: "#1f2937",
-      font: "600 12px system-ui, sans-serif",
+      color: "#1b2125",
+      font: "600 12px Barlow, system-ui, sans-serif",
       textShadow: "0 0 3px #fff, 0 0 3px #fff, 0 0 3px #fff",
       pointerEvents: "none",
     });
@@ -52,6 +61,10 @@ export function pointElement(
   }
   return el;
 }
+
+/** The mockup's accent (selection) and error colours. */
+const ACCENT = "#0c6a60";
+const ERROR = "#bf3a2b";
 
 /** Purpose: DOM element for the depot gate. */
 export function depotElement(): HTMLElement {
