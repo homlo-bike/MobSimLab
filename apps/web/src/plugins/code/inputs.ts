@@ -62,7 +62,8 @@ export function readOutput(text: string): PluginOutput {
   } catch {
     throw new Error("the plugin did not return JSON");
   }
-  if (typeof v !== "object" || v === null || Array.isArray(v)) throw new Error("the plugin returned no result");
+  if (typeof v !== "object" || v === null || Array.isArray(v))
+    throw new Error("the plugin returned no result");
   const o = v as Record<string, unknown>;
   const out: PluginOutput = {};
   const t = o.table as { columns?: unknown; rows?: unknown } | undefined;
@@ -76,7 +77,11 @@ export function readOutput(text: string): PluginOutput {
       rows: t.rows
         .slice(0, 10_000)
         .filter(Array.isArray)
-        .map((r: unknown[]) => r.slice(0, 50).map((x) => (typeof x === "object" && x !== null ? JSON.stringify(x).slice(0, 200) : x))),
+        .map((r: unknown[]) =>
+          r
+            .slice(0, 50)
+            .map((x) => (typeof x === "object" && x !== null ? JSON.stringify(x).slice(0, 200) : x)),
+        ),
     };
   if (Array.isArray(o.kpis))
     out.kpis = o.kpis.slice(0, 50).map((k: Record<string, unknown>) => ({

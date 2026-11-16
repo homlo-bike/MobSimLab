@@ -60,7 +60,13 @@ export function PluginOutputView({ output }: { output: PluginOutput }) {
           {output.findings.map((f, i) => (
             <li
               key={i}
-              className={f.level === "error" ? "text-red-700" : f.level === "warning" ? "text-amber-700" : "text-slate-700"}
+              className={
+                f.level === "error"
+                  ? "text-red-700"
+                  : f.level === "warning"
+                    ? "text-amber-700"
+                    : "text-slate-700"
+              }
             >
               {f.message}
               {f.rule ? <span className="text-slate-500"> ({f.rule})</span> : null}
@@ -107,7 +113,13 @@ export function PluginOutputView({ output }: { output: PluginOutput }) {
  * Calculate button, its output and the plugin's log. Renders nothing when no such calculation is on.
  * Inputs: the project's data the calculations may be given; `createWorker` for tests.
  */
-export function PluginCalculations({ data, createWorker }: { data: PluginProjectData; createWorker?: WorkerFactory }) {
+export function PluginCalculations({
+  data,
+  createWorker,
+}: {
+  data: PluginProjectData;
+  createWorker?: WorkerFactory;
+}) {
   const { t } = useI18n();
   const calcs = componentCalculations("tables");
   const [state, setState] = useState<
@@ -155,7 +167,9 @@ export function PluginCalculations({ data, createWorker }: { data: PluginProject
             {s.logs && s.logs.length > 0 && (
               <details className="mt-2 text-xs text-slate-500">
                 <summary>{t("pcode.log", { count: s.logs.length })}</summary>
-                <pre className="m-0 whitespace-pre-wrap">{s.logs.map(([l, m]) => `${l}: ${m}`).join("\n")}</pre>
+                <pre className="m-0 whitespace-pre-wrap">
+                  {s.logs.map(([l, m]) => `${l}: ${m}`).join("\n")}
+                </pre>
               </details>
             )}
           </article>

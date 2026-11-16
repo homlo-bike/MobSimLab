@@ -56,7 +56,9 @@ function modules(c: PluginCall): Promise<Record<string, ArrayBuffer>> {
       const names = ((await list.json()) as string[]).filter((n) => n.endsWith(".wasm"));
       const out: Record<string, ArrayBuffer> = {};
       for (const n of names) {
-        const r = await fetch(codeUrl(c.projectId, c.pluginId, c.component, n), { credentials: "same-origin" });
+        const r = await fetch(codeUrl(c.projectId, c.pluginId, c.component, n), {
+          credentials: "same-origin",
+        });
         if (!r.ok) throw new Error(`the plugin's code is not available (${r.status})`);
         out[n] = await r.arrayBuffer();
       }
@@ -78,7 +80,10 @@ export function clearPluginCode(): void {
  * in the modules and its time limit on the worker. Output: what the plugin returned or its message; a crash or a
  * run over the time limit comes back as `{ ok: false, crashed: true }`.
  */
-export async function runPluginCode(c: PluginCall, createWorker: WorkerFactory = defaultWorker): Promise<PluginCallResult> {
+export async function runPluginCode(
+  c: PluginCall,
+  createWorker: WorkerFactory = defaultWorker,
+): Promise<PluginCallResult> {
   const mods = await modules(c);
   const worker = createWorker();
   return new Promise<PluginCallResult>((resolve) => {
@@ -99,12 +104,21 @@ export async function runPluginCode(c: PluginCall, createWorker: WorkerFactory =
       }
       clearTimeout(timer);
       worker.terminate();
-      resolve(m.ok ? { ok: true, value: m.value, logs: m.logs } : { ok: false, error: m.error, crashed: m.crashed, logs: m.logs });
+      resolve(
+        m.ok
+          ? { ok: true, value: m.value, logs: m.logs }
+          : { ok: false, error: m.error, crashed: m.crashed, logs: m.logs },
+      );
     };
     worker.onerror = (e) => {
       clearTimeout(timer);
       worker.terminate();
-      resolve({ ok: false, crashed: true, error: `the plugin code stopped: ${e.message || "out of memory?"}`, logs: [] });
+      resolve({
+        ok: false,
+        crashed: true,
+        error: `the plugin code stopped: ${e.message || "out of memory?"}`,
+        logs: [],
+      });
     };
     // Copies, so the cache keeps its bytes.
     const copies = Object.fromEntries(Object.entries(mods).map(([k, v]) => [k, v.slice(0)]));

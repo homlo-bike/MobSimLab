@@ -893,7 +893,9 @@ export function Workspace({
                 />
               )}
               {project && drawings.loaded && (
-                <PluginCalculations data={{ timetable: networkTimetable, streetLines: streetLines?.lines ?? [] }} />
+                <PluginCalculations
+                  data={{ timetable: networkTimetable, streetLines: streetLines?.lines ?? [] }}
+                />
               )}
               {project && drawings.loaded && (
                 <FareTables

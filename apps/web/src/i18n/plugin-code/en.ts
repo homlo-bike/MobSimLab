@@ -18,7 +18,8 @@ export const pluginCodeEn = {
   "pcode.importFailed": "{plugin} could not read the file: {error}",
   "pcode.exportFailed": "{plugin} could not write the file: {error}",
   "pcode.frameTitle": "{tab}, a page of the {plugin} plugin",
-  "pcode.frameNote": "This page comes from the {plugin} plugin by {publisher}. It cannot reach the internet or your account.",
+  "pcode.frameNote":
+    "This page comes from the {plugin} plugin by {publisher}. It cannot reach the internet or your account.",
   "pcode.runsCode": "Runs its own code in a sandbox",
   "pcode.limits": "Limits for plugin code",
   "pcode.limitsIntro":

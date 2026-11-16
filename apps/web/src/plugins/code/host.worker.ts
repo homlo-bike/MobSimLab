@@ -88,12 +88,19 @@ scope.onmessage = async (e: MessageEvent<HostRequest>) => {
           log: (level: string, message: string) => {
             if (logs.length < 200) logs.push([String(level), String(message).slice(0, 500)]);
           },
-          progress: (done: number) => post({ type: "progress", done: Math.max(0, Math.min(1, done)) } satisfies HostReply),
+          progress: (done: number) =>
+            post({ type: "progress", done: Math.max(0, Math.min(1, done)) } satisfies HostReply),
         },
       },
     );
   } catch (err) {
-    post({ type: "done", ok: false, crashed: true, error: `the plugin code could not start: ${message(err)}`, logs });
+    post({
+      type: "done",
+      ok: false,
+      crashed: true,
+      error: `the plugin code could not start: ${message(err)}`,
+      logs,
+    });
     return;
   }
   try {
@@ -105,8 +112,16 @@ scope.onmessage = async (e: MessageEvent<HostRequest>) => {
     post({ type: "done", ok: true, value: value as string, logs } satisfies HostReply);
   } catch (err) {
     // The plugin's `err(message)` arrives as a thrown string; anything else is a trap.
-    if (typeof err === "string") post({ type: "done", ok: false, crashed: false, error: err.slice(0, 1000), logs });
-    else post({ type: "done", ok: false, crashed: true, error: `the plugin code stopped: ${message(err)}`, logs });
+    if (typeof err === "string")
+      post({ type: "done", ok: false, crashed: false, error: err.slice(0, 1000), logs });
+    else
+      post({
+        type: "done",
+        ok: false,
+        crashed: true,
+        error: `the plugin code stopped: ${message(err)}`,
+        logs,
+      });
   }
 };
 

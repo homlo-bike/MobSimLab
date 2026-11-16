@@ -23,5 +23,6 @@ export const pluginCodeZh = {
   "pcode.time": "时间（秒）",
   "pcode.saveLimits": "保存限制",
   "pcode.saved": "已保存。",
-  "pcode.installIntro": "上传 .msplugin 文件。MobSimLab 会检查它，并在安装前显示它添加的内容。插件可以添加交通方式、工具、参数和来源，并在无法联网的沙箱中运行自己的代码（计算、导入、导出和标签页）。",
+  "pcode.installIntro":
+    "上传 .msplugin 文件。MobSimLab 会检查它，并在安装前显示它添加的内容。插件可以添加交通方式、工具、参数和来源，并在无法联网的沙箱中运行自己的代码（计算、导入、导出和标签页）。",
 } satisfies PluginCodeMessages;

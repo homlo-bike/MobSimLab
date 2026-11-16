@@ -23,7 +23,7 @@ interface host {
 interface types {
   /// One file going into an importer or coming out of an exporter.
   record file {
-    /// Path inside the uploaded ZIP, or the name of the file to write; `/` separates folders.
+    /// The name of the uploaded file, or of the file to write; `/` separates folders.
     name: string,
     data: list<u8>,
   }
@@ -46,8 +46,7 @@ world importer {
   import host;
   use types.{file};
 
-  /// `files`: the uploaded file, or the files inside it when it is a ZIP. `options`: JSON
-  /// `{ "bbox"?: [west, south, east, north], "date"?: "YYYY-MM-DD" }`.
+  /// `files`: the uploaded file. `options`: a JSON object for later options; `{}` today.
   /// Returns JSON `{ "timetable": <published-timetable>, "summary": { … } }`, or an error message for the person.
   export import-files: func(id: string, files: list<file>, options: string) -> result<string, string>;
 }
