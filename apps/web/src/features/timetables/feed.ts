@@ -15,6 +15,7 @@ import {
 import type { Timetable } from "../journey-planner/types";
 import { lineInput, type SavedStreetLine } from "../street-lines/saved";
 import { DAY_TYPES, type DayTypeId, holidaysFor, type ServiceCalendar } from "../../workspace/calendar";
+import { patternDepartures } from "./blocks";
 import { dayServiceOf, lineDay, streetTimingFor, streetWeekday } from "./dayTypes";
 import { type DayPublications, publishDays } from "./railPublish";
 
@@ -120,4 +121,43 @@ export async function projectFeed({
     ];
   }
   return mergeDays(parts);
+}
+
+/** Each line's service on a day type as a share of its weekday service, by line key (`rail:<id>`, `street:<i>`). */
+export type DayShares = Record<string, Record<DayTypeId, number>>;
+
+/**
+ * Purpose: how much each line runs on each day type compared with a weekday: its trips on the day over its trips
+ * on a weekday (1 when it has no weekday trips), for the day figures of the calendar runs. Rail lines count the
+ * trips of their publications; street lines those of their timetable on the day.
+ */
+export function dayShares(
+  railway: Network | null,
+  streetLines: readonly SavedStreetLine[],
+  cal: ServiceCalendar,
+  publications: DayPublications,
+): DayShares {
+  const out: DayShares = {};
+  const shares = (trips: Record<DayTypeId, number>) =>
+    Object.fromEntries(DAY_TYPES.map((d) => [d, trips.weekday > 0 ? trips[d] / trips.weekday : 1])) as Record<
+      DayTypeId,
+      number
+    >;
+  for (const l of railway?.lines ?? []) {
+    const trips = Object.fromEntries(
+      DAY_TYPES.map((d) => [d, publications[d]?.lines.find((r) => r.id === l.id)?.trips ?? 0]),
+    ) as Record<DayTypeId, number>;
+    out[`rail:${l.id}`] = shares(trips);
+  }
+  streetLines.forEach((s, i) => {
+    const trips = Object.fromEntries(
+      DAY_TYPES.map((d) => {
+        const tt = streetDay(s, d, cal)?.timetable;
+        const n = (tt?.frequency_patterns ?? []).reduce((k, p) => k + patternDepartures(p.periods).length, 0);
+        return [d, n + (tt?.trips.length ?? 0)];
+      }),
+    ) as Record<DayTypeId, number>;
+    out[`street:${i}`] = shares(trips);
+  });
+  return out;
 }

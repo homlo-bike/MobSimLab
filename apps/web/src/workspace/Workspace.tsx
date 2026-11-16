@@ -1291,6 +1291,7 @@ export function Workspace({
                   api={calendarRuns}
                   canRun={editable}
                   railway={railway}
+                  streetLines={savedStreet}
                   preferences={preferences}
                   onPreferences={
                     editable && drawings.loaded ? (d) => drawings.set("preferences", d) : undefined
