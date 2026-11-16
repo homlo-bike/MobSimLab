@@ -54,7 +54,7 @@ const HEX = /^#[0-9a-f]{6}$/i;
 
 /** Purpose: whether the project changes any value of a parameter (any mode, any traction). */
 function changedParam(p: LibraryParam, doc: PreferencesDoc | null): boolean {
-  const own = (id: string) => id === p.key || id.startsWith(`${p.key}.`);
+  const own = (id: string) => id === p.id || id.startsWith(`${p.id}.`);
   return Object.keys(doc?.values ?? {}).some(own) || Object.keys(doc?.choices ?? {}).some(own);
 }
 
@@ -126,7 +126,7 @@ export function ParametersSection({
         {params.flatMap((p) => {
           const rows = [
             <ParamField
-              key={`${mode}-${p.key}`}
+              key={`${mode}-${p.id}`}
               param={p}
               mode={mode}
               preferences={preferences}
@@ -139,7 +139,7 @@ export function ParametersSection({
             for (const tr of Object.keys(p.traction ?? {}))
               rows.push(
                 <ParamField
-                  key={`${p.key}-${tr}`}
+                  key={`${p.id}-${tr}`}
                   param={p}
                   mode="*"
                   traction={tr}
@@ -179,11 +179,11 @@ function ParamField({
   const id = useId();
   // What the planner is typing; the saved value shows again once the field is left.
   const [text, setText] = useState<string | null>(null);
-  const prefId = paramPrefId(p.key, mode, traction);
+  const prefId = paramPrefId(p.id, mode, traction);
   const lib = paramLibrary(p, mode, traction);
   const isNumber = p.kind === "number" && Array.isArray(lib);
   const own = isNumber ? prefValue(preferences, prefId) : choiceValue(preferences, prefId);
-  const allId = paramPrefId(p.key, "*");
+  const allId = paramPrefId(p.id, "*");
   const fromAll =
     own === undefined && mode !== "*" && !traction
       ? isNumber

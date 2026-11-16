@@ -319,6 +319,9 @@ export const fa: Messages = {
   "prefs.traction.hydrogen": "هیدروژن",
   "prefs.traction.cng": "گاز طبیعی (CNG)",
   "prefs.traction.electric": "برقی",
+  "prefs.accessTitle": "دسترس‌پذیری سکو",
+  "prefs.accessIntro":
+    "حدود پله و فاصله میان سکو و قطار (TSI PRM) و ارتفاع کف برای قطارهایی که در کاتالوگ ندارند. خطوط در هر ایستگاه با این‌ها بررسی می‌شوند.",
   "prefs.vehiclesTitle": "وسایل نقلیه",
   "prefs.vehiclesIntro":
     "وسایل نقلیهٔ کاتالوگ که این پروژه برای هر شیوه به کار می‌برد. ابزارهای خط خیابانی و راه‌آهن فقط موارد علامت‌خورده را نشان می‌دهند.",

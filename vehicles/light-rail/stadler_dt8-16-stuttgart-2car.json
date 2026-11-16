@@ -43,6 +43,16 @@
       "wp-de-ssb-dt-8"
     ]
   },
+  "floorHeight": {
+    "value": 1000,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "documented",
+    "sources": [
+      "wp-ssb-dt-8"
+    ],
+    "rationale": "The SSB DT 8 family has a 1000 mm floor (high-floor Stadtbahn platforms); taken as the same for the DT 8.16."
+  },
   "consist": {
     "bidirectional": {
       "value": true,

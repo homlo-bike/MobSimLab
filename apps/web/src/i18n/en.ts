@@ -318,6 +318,9 @@ export const en = {
   "prefs.traction.hydrogen": "hydrogen",
   "prefs.traction.cng": "natural gas (CNG)",
   "prefs.traction.electric": "electric",
+  "prefs.accessTitle": "Platform accessibility",
+  "prefs.accessIntro":
+    "Step and gap limits between platform and train (TSI PRM), and the floor height used for trains that have none in the vehicle catalogue. Service lines are checked against these at every stop.",
   "prefs.vehiclesTitle": "Vehicles",
   "prefs.vehiclesIntro":
     "The catalogue vehicles this project uses, per mode. The street line and railway tools only offer the ticked ones.",

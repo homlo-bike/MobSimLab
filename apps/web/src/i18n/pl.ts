@@ -324,6 +324,9 @@ export const pl: Messages = {
   "prefs.traction.hydrogen": "wodór",
   "prefs.traction.cng": "gaz ziemny (CNG)",
   "prefs.traction.electric": "elektryczny",
+  "prefs.accessTitle": "Dostępność peronów",
+  "prefs.accessIntro":
+    "Limity stopnia i szczeliny między peronem a pociągiem (TSI PRM) oraz wysokość podłogi dla pociągów bez tej wartości w katalogu. Linie są sprawdzane na każdym przystanku.",
   "prefs.vehiclesTitle": "Pojazdy",
   "prefs.vehiclesIntro":
     "Pojazdy z katalogu używane w tym projekcie, dla każdego środka transportu. Narzędzia linii ulicznych i kolejowych pokazują tylko zaznaczone.",

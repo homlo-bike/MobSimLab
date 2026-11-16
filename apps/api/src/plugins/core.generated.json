@@ -815,6 +815,7 @@
     "platform.island_width_m",
     "platform.max_gradient_pct",
     "platform.side_width_m",
+    "platform.stopping_tolerance_m",
     "recording.late_threshold_s",
     "road.battery_capacity_kwh",
     "road.off_peak_traffic_share",
@@ -877,6 +878,7 @@
     "track.centre_distance_m",
     "track.clearance_marker_centre_distance_m",
     "track.running_side",
+    "vehicle.floor_height_mm",
     "walk.crossing_delay_s"
   ],
   "coreSourceIds": [

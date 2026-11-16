@@ -321,6 +321,9 @@ export const mr: Messages = {
   "prefs.traction.hydrogen": "हायड्रोजन",
   "prefs.traction.cng": "नैसर्गिक वायू (CNG)",
   "prefs.traction.electric": "विद्युत",
+  "prefs.accessTitle": "फलाट सुलभता",
+  "prefs.accessIntro":
+    "फलाट आणि गाडीमधील पायरी व फटीच्या मर्यादा (TSI PRM), आणि सूचीत नसलेल्या गाड्यांसाठी तळ उंची. मार्ग प्रत्येक थांब्यावर तपासले जातात.",
   "prefs.vehiclesTitle": "वाहने",
   "prefs.vehiclesIntro":
     "हा प्रकल्प प्रत्येक साधनासाठी वापरत असलेली सूचीतील वाहने. रस्ता मार्ग आणि रेल्वे साधने फक्त निवडलेली वाहने दाखवतात.",

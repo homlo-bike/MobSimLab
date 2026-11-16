@@ -57,7 +57,7 @@ def render() -> str:
                 for t in ac.as_list(v["context"]["traction"]):
                     traction[t] = value(v, kind)
         row = {
-            "key": p["key"],
+            "id": p["key"],
             "label": p["label"],
             "group": p["group"],
             "unit": p.get("unit", ""),
