@@ -309,7 +309,15 @@ export const ru: Messages = {
   "prefs.vehiclesAll": "Использовать все",
   "prefs.vehiclesFacts": "{length} м · {places} мест · {speed} км/ч",
   "prefs.vehiclesLast": "Для каждого вида транспорта остаётся хотя бы одно средство.",
-  "prefs.switches": "Стрелочные переводы из каталога стрелок",
+  "prefs.switchesTitle": "Стрелочные переводы",
+  "prefs.switchesIntro":
+    "Стрелочные переводы и пересечения из каталога, которые редактор железных дорог предлагает для каждого вида рельсового транспорта, и перевод по умолчанию для новых.",
+  "prefs.switchesTurnouts": "Стрелочные переводы",
+  "prefs.switchesSlips": "Перекрёстные переводы",
+  "prefs.switchesDefault": "По умолчанию",
+  "prefs.switchesFacts": "1:{n} · R {radius} м · {speed} км/ч на боковой путь",
+  "prefs.switchesLast":
+    "Перевод по умолчанию остаётся в работе. Чтобы убрать его, сначала выберите другой по умолчанию.",
   "prefs.calendar": "Календарь, спрос и затраты",
 
   "job.stepOf": "Шаг {step} из {steps}",

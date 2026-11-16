@@ -6,11 +6,16 @@ import {
   prefValue,
   usedVehicles,
   vehiclesOffFrom,
+  switchChoiceFrom,
+  withDefaultTurnout,
   withPref,
+  withSwitches,
   withVehicles,
+  LIBRARY_DEFAULT_TURNOUT,
 } from "../src/workspace/preferences";
 import { addLine, trainsFor } from "../src/features/railways/serviceLines";
 import type { Network } from "../src/features/railways/types";
+import { effectiveDefault } from "../src/workspace/SwitchChoice";
 import { chosenCurrency, convertTo, RATE_PREF, withCurrency } from "../src/features/costs/currency";
 import { countryOfCurrency, CURRENCY_CODES } from "../src/features/costs/currencies";
 
@@ -69,6 +74,24 @@ describe("project preferences", () => {
     const off = new Set(metros.map((t) => t.id).filter((id) => id !== metros[0]!.id || id === suggested));
     const [d] = addLine(doc, 1000, { empty: true, vehiclesOff: off });
     expect(off.has(d.lines![0]!.vehicle)).toBe(false);
+  });
+
+  it("keeps the switches the project leaves out and its default turnouts", () => {
+    expect(switchChoiceFrom(null)).toEqual({ off: [], default_turnout: {} });
+    let doc = withSwitches(null, ["tram-r25", "db-dkw-190-1-9"], false);
+    doc = withDefaultTurnout(doc, "tram", "tram-r100");
+    expect(doc.switches).toEqual({
+      off: ["db-dkw-190-1-9", "tram-r25"],
+      default_turnout: { tram: "tram-r100" },
+    });
+    // Choosing the library's default, and using all again, removes the choice.
+    doc = withDefaultTurnout(doc, "tram", LIBRARY_DEFAULT_TURNOUT.tram!);
+    expect(withSwitches(doc, ["tram-r25", "db-dkw-190-1-9"], true)).toEqual({ values: {} });
+    // The default the editor uses: the project's, else the library's, else the first in use.
+    const turnouts = ["tram-r25", "tram-r50", "tram-r100"].map((id) => ({ id }) as never);
+    expect(effectiveDefault("tram", turnouts, new Set(), "tram-r100")).toBe("tram-r100");
+    expect(effectiveDefault("tram", turnouts, new Set(["tram-r100"]), "tram-r100")).toBe("tram-r50");
+    expect(effectiveDefault("tram", turnouts, new Set(["tram-r50"]), undefined)).toBe("tram-r25");
   });
 
   it("keeps one project currency and converts any amount to it through the US dollar", () => {

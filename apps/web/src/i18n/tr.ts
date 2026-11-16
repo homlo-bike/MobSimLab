@@ -306,7 +306,14 @@ export const tr: Messages = {
   "prefs.vehiclesAll": "Hepsini kullan",
   "prefs.vehiclesFacts": "{length} m · {places} yer · {speed} km/sa",
   "prefs.vehiclesLast": "Her tür için en az bir araç kullanımda kalır.",
-  "prefs.switches": "Makaslar (makas kataloğundan)",
+  "prefs.switchesTitle": "Makaslar",
+  "prefs.switchesIntro":
+    "Demiryolu düzenleyicisinin her raylı tür için sunduğu katalogdaki makas ve geçitler ile yeni makasların başlangıç makası.",
+  "prefs.switchesTurnouts": "Makaslar",
+  "prefs.switchesSlips": "Geçitlerdeki çapraz makaslar",
+  "prefs.switchesDefault": "Varsayılan",
+  "prefs.switchesFacts": "1:{n} · R {radius} m · sapan yolda {speed} km/sa",
+  "prefs.switchesLast": "Varsayılan makas kullanımda kalır. Çıkarmak için önce başka bir varsayılan seçin.",
   "prefs.calendar": "Takvim, talep ve maliyetler",
 
   "job.stepOf": "Adım {step}/{steps}",

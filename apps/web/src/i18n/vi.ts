@@ -307,7 +307,14 @@ export const vi: Messages = {
   "prefs.vehiclesAll": "Dùng tất cả",
   "prefs.vehiclesFacts": "{length} m · {places} chỗ · {speed} km/h",
   "prefs.vehiclesLast": "Mỗi phương thức luôn giữ ít nhất một phương tiện.",
-  "prefs.switches": "Ghi (từ danh mục ghi)",
+  "prefs.switchesTitle": "Ghi",
+  "prefs.switchesIntro":
+    "Các ghi và giao cắt trong danh mục mà trình chỉnh sửa đường sắt đưa ra theo từng phương thức, và ghi mặc định cho ghi mới.",
+  "prefs.switchesTurnouts": "Ghi",
+  "prefs.switchesSlips": "Ghi chéo trong giao cắt",
+  "prefs.switchesDefault": "Mặc định",
+  "prefs.switchesFacts": "1:{n} · R {radius} m · {speed} km/h nhánh rẽ",
+  "prefs.switchesLast": "Ghi mặc định luôn được dùng. Để bỏ, hãy chọn ghi mặc định khác trước.",
   "prefs.calendar": "Lịch, nhu cầu và chi phí",
 
   "job.stepOf": "Bước {step}/{steps}",

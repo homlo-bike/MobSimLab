@@ -304,7 +304,14 @@ export const mr: Messages = {
   "prefs.vehiclesAll": "सर्व वापरा",
   "prefs.vehiclesFacts": "{length} मी · {places} जागा · {speed} किमी/ता",
   "prefs.vehiclesLast": "प्रत्येक साधनासाठी किमान एक वाहन वापरात राहते.",
-  "prefs.switches": "रुळांचे स्विच, स्विच सूचीतून",
+  "prefs.switchesTitle": "रूळबदल",
+  "prefs.switchesIntro":
+    "सूचीतील रूळबदल आणि क्रॉसिंग जे रेल्वे संपादक प्रत्येक रेल्वे साधनासाठी देतो, आणि नवे रूळबदल ज्याने सुरू होतात तो.",
+  "prefs.switchesTurnouts": "रूळबदल",
+  "prefs.switchesSlips": "क्रॉसिंगमधील स्लिप",
+  "prefs.switchesDefault": "पूर्वनिर्धारित",
+  "prefs.switchesFacts": "1:{n} · R {radius} मी · वळणाऱ्या मार्गावर {speed} किमी/ता",
+  "prefs.switchesLast": "पूर्वनिर्धारित रूळबदल वापरात राहतो. तो वगळण्यासाठी आधी दुसरा निवडा.",
   "prefs.calendar": "दिनदर्शिका, मागणी आणि खर्च",
 
   "job.stepOf": "पायरी {step} / {steps}",

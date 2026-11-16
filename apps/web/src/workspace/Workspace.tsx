@@ -82,7 +82,13 @@ import { TopBar } from "../shell/TopBar";
 import { PROJECT_TOUR, Tour } from "../shell/Tour";
 import { PrintReport } from "./PrintReport";
 import { ProjectPreferences } from "./ProjectPreferences";
-import { delaysFrom, designValuesFrom, type PreferencesDoc, vehiclesOffFrom } from "./preferences";
+import {
+  delaysFrom,
+  designValuesFrom,
+  type PreferencesDoc,
+  switchChoiceFrom,
+  vehiclesOffFrom,
+} from "./preferences";
 import { VehiclesOffContext } from "./projectVehicles";
 import type { DelayShares } from "../features/street-lines/types";
 import { type Drawings, useDrawings } from "./useDrawings";
@@ -278,6 +284,11 @@ export function Workspace({
   const delays = useMemo(() => JSON.parse(delaysJson) as DelayShares, [delaysJson]);
   const rulesJson = JSON.stringify(designValuesFrom(preferences));
   const designValues = useMemo(() => JSON.parse(rulesJson) as Record<string, number>, [rulesJson]);
+  const switchJson = JSON.stringify(switchChoiceFrom(preferences));
+  const switchChoice = useMemo(
+    () => JSON.parse(switchJson) as ReturnType<typeof switchChoiceFrom>,
+    [switchJson],
+  );
   const offJson = JSON.stringify([...vehiclesOffFrom(preferences)]);
   const vehiclesOff = useMemo(
     () => new Set(JSON.parse(offJson) as string[]) as ReadonlySet<string>,
@@ -598,6 +609,7 @@ export function Workspace({
               streetSetups={setups}
               delays={delays}
               designValues={designValues}
+              switchChoice={switchChoice}
               existingRailways={existingRailways}
               initial={railway}
               onDocChange={(d) => drawings.set("railway", d)}

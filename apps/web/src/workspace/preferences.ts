@@ -12,6 +12,8 @@ export interface PreferencesDoc {
   currency?: string;
   /** Catalogue vehicles the project does not use (ids); the line tools leave them out. Absent: all are used. */
   vehiclesOff?: string[];
+  /** Switches and crossings the project does not use, and its default turnout per rail mode; absent: all, library's. */
+  switches?: { off?: string[]; default_turnout?: Record<string, string> };
 }
 
 /** The delays in traffic a project can change, with the library's values. */
@@ -124,4 +126,75 @@ export function usedVehicles<T extends { id: string }>(
 ): T[] {
   const used = list.filter((v) => !off.has(v.id) || v.id === keep);
   return used.some((v) => !off.has(v.id)) ? used : [...list];
+}
+
+/** A switch or crossing of the catalogue the railway editor places (turnouts and slips). */
+export interface CatalogueSwitch {
+  id: string;
+  label: string;
+  element: "turnout" | "single_slip" | "double_slip";
+  typical_modes: string[];
+  crossing_ratio_n: number | null;
+  radius_m: number | null;
+  diverging_speed_kmh: number | null;
+}
+
+/** Turnouts and slips of the switches and crossings catalogue (tools/design-rules/export_defaults.py). */
+export const CATALOGUE_SWITCHES = (rulesData as unknown as { switches: CatalogueSwitch[] }).switches;
+/** The library's default turnout per rail mode. */
+export const LIBRARY_DEFAULT_TURNOUT = (rulesData as unknown as { default_turnout: Record<string, string> })
+  .default_turnout;
+
+/** Purpose: the project's choice from the switches and crossings catalogue, as the rail engine takes it. */
+export function switchChoiceFrom(doc: PreferencesDoc | null | undefined): {
+  off: string[];
+  default_turnout: Record<string, string>;
+} {
+  const s = doc?.switches;
+  const off = Array.isArray(s?.off) ? s.off.filter((x) => typeof x === "string") : [];
+  const dt: Record<string, string> = {};
+  for (const [m, id] of Object.entries(s?.default_turnout ?? {})) if (typeof id === "string") dt[m] = id;
+  return { off: [...new Set(off)].sort(), default_turnout: dt };
+}
+
+/** Purpose: the document with the switch choice replaced; an empty choice is removed. */
+function withSwitchChoice(
+  doc: PreferencesDoc | null | undefined,
+  c: { off: string[]; default_turnout: Record<string, string> },
+): PreferencesDoc {
+  const next: PreferencesDoc = { ...(doc ?? {}), values: { ...(doc?.values ?? {}) } };
+  const sw: NonNullable<PreferencesDoc["switches"]> = {};
+  if (c.off.length) sw.off = [...c.off].sort();
+  if (Object.keys(c.default_turnout).length) sw.default_turnout = c.default_turnout;
+  if (sw.off || sw.default_turnout) next.switches = sw;
+  else delete next.switches;
+  return next;
+}
+
+/** Purpose: the document with catalogue switches used (`on`) or not. */
+export function withSwitches(
+  doc: PreferencesDoc | null | undefined,
+  ids: readonly string[],
+  on: boolean,
+): PreferencesDoc {
+  const c = switchChoiceFrom(doc);
+  const off = new Set(c.off);
+  for (const id of ids) {
+    if (on) off.delete(id);
+    else off.add(id);
+  }
+  return withSwitchChoice(doc, { ...c, off: [...off] });
+}
+
+/** Purpose: the document with a mode's default turnout set, or back to the library's (`null`). */
+export function withDefaultTurnout(
+  doc: PreferencesDoc | null | undefined,
+  mode: string,
+  id: string | null,
+): PreferencesDoc {
+  const c = switchChoiceFrom(doc);
+  const dt = { ...c.default_turnout };
+  if (id === null || id === LIBRARY_DEFAULT_TURNOUT[mode]) delete dt[mode];
+  else dt[mode] = id;
+  return withSwitchChoice(doc, { ...c, default_turnout: dt });
 }

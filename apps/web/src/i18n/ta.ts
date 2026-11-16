@@ -312,7 +312,15 @@ export const ta: Messages = {
   "prefs.vehiclesAll": "அனைத்தையும் பயன்படுத்து",
   "prefs.vehiclesFacts": "{length} மீ · {places} இடங்கள் · {speed} கிமீ/ம",
   "prefs.vehiclesLast": "ஒவ்வொரு முறைக்கும் குறைந்தது ஒரு வாகனம் பயன்பாட்டில் இருக்கும்.",
-  "prefs.switches": "தண்டவாள சுவிட்சுகள், சுவிட்சுப் பட்டியலிலிருந்து",
+  "prefs.switchesTitle": "பாயிண்ட்கள்",
+  "prefs.switchesIntro":
+    "ஒவ்வொரு ரயில் முறைக்கும் ரயில்பாதை திருத்தி வழங்கும் பட்டியலின் பாயிண்ட்கள், குறுக்குகள், மற்றும் புதிய பாயிண்ட்கள் தொடங்கும் பாயிண்ட்.",
+  "prefs.switchesTurnouts": "பாயிண்ட்கள்",
+  "prefs.switchesSlips": "குறுக்குகளில் ஸ்லிப்கள்",
+  "prefs.switchesDefault": "இயல்புநிலை",
+  "prefs.switchesFacts": "1:{n} · R {radius} மீ · திருப்பு பாதையில் {speed} கிமீ/ம",
+  "prefs.switchesLast":
+    "இயல்புநிலை பாயிண்ட் பயன்பாட்டில் இருக்கும். அதை நீக்க, முதலில் வேறொன்றைத் தேர்ந்தெடுக்கவும்.",
   "prefs.calendar": "நாட்காட்டி, தேவை மற்றும் செலவுகள்",
 
   "job.stepOf": "படி {step} / {steps}",

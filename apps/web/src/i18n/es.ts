@@ -308,7 +308,15 @@ export const es: Messages = {
   "prefs.vehiclesAll": "Usar todos",
   "prefs.vehiclesFacts": "{length} m · {places} plazas · {speed} km/h",
   "prefs.vehiclesLast": "Cada modo mantiene al menos un vehículo en uso.",
-  "prefs.switches": "Desvíos, del catálogo de desvíos",
+  "prefs.switchesTitle": "Desvíos",
+  "prefs.switchesIntro":
+    "Los desvíos y cruces del catálogo que ofrece el editor ferroviario, por modo ferroviario, y el desvío con el que empiezan los nuevos.",
+  "prefs.switchesTurnouts": "Desvíos",
+  "prefs.switchesSlips": "Escapes en cruces",
+  "prefs.switchesDefault": "Predeterminado",
+  "prefs.switchesFacts": "1:{n} · R {radius} m · {speed} km/h por la desviada",
+  "prefs.switchesLast":
+    "El desvío predeterminado sigue en uso. Para quitarlo, elija antes otro predeterminado.",
   "prefs.calendar": "Calendario, demanda y costes",
 
   "job.stepOf": "Paso {step} de {steps}",

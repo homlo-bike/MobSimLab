@@ -295,7 +295,14 @@ export const am: Messages = {
   "prefs.vehiclesAll": "ሁሉንም ተጠቀም",
   "prefs.vehiclesFacts": "{length} ሜ · {places} ቦታዎች · {speed} ኪሜ/ሰ",
   "prefs.vehiclesLast": "ለእያንዳንዱ ዓይነት ቢያንስ አንድ ተሽከርካሪ በጥቅም ላይ ይቆያል።",
-  "prefs.switches": "የሐዲድ መቀየሪያዎች፣ ከመቀየሪያ ካታሎግ",
+  "prefs.switchesTitle": "ማዞሪያዎች",
+  "prefs.switchesIntro":
+    "የባቡር መስመር አርታዒው ለእያንዳንዱ የባቡር ዓይነት የሚያቀርባቸው ከካታሎጉ የተወሰዱ ማዞሪያዎችና መጋጠሚያዎች፣ እና አዲስ ማዞሪያዎች የሚጀምሩበት ማዞሪያ።",
+  "prefs.switchesTurnouts": "ማዞሪያዎች",
+  "prefs.switchesSlips": "በመጋጠሚያዎች ውስጥ ያሉ ማዞሪያዎች",
+  "prefs.switchesDefault": "ነባሪ",
+  "prefs.switchesFacts": "1:{n} · R {radius} ሜ · {speed} ኪሜ/ሰ በማዞሪያ",
+  "prefs.switchesLast": "ነባሪው ማዞሪያ በጥቅም ላይ ይቆያል። ለማስወገድ መጀመሪያ ሌላ ነባሪ ይምረጡ።",
   "prefs.calendar": "የቀን መቁጠሪያ፣ ፍላጎት እና ወጪዎች",
 
   "job.stepOf": "ደረጃ {step} ከ{steps}",

@@ -311,7 +311,15 @@ export const uz: Messages = {
   "prefs.vehiclesAll": "Hammasini ishlatish",
   "prefs.vehiclesFacts": "{length} m · {places} o'rin · {speed} km/soat",
   "prefs.vehiclesLast": "Har bir tur uchun kamida bitta vosita ishlatilib qoladi.",
-  "prefs.switches": "Rels strelkalari, strelkalar katalogidan",
+  "prefs.switchesTitle": "Strelkalar",
+  "prefs.switchesIntro":
+    "Temir yo'l muharriri har bir relsli tur uchun taklif qiladigan katalogdagi strelkalar va kesishmalar hamda yangi strelkalar boshlanadigan strelka.",
+  "prefs.switchesTurnouts": "Strelkalar",
+  "prefs.switchesSlips": "Kesishmalardagi o'tkazgichlar",
+  "prefs.switchesDefault": "Standart",
+  "prefs.switchesFacts": "1:{n} · R {radius} m · burilishda {speed} km/soat",
+  "prefs.switchesLast":
+    "Standart strelka ishlatilib qoladi. Uni olib tashlash uchun avval boshqasini tanlang.",
   "prefs.calendar": "Kalendar, talab va xarajatlar",
 
   "job.stepOf": "{steps} qadamdan {step}-qadam",
