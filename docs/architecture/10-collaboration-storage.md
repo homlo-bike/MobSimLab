@@ -51,22 +51,23 @@ A ZIP container, versioned, readable with standard tools:
 
 ```text
 project.mslab
-├── manifest.json            format version, app version, project id, created, checksums, licences summary
-├── project.json             project metadata, preferences, custom field schemas
-├── scenarios/<id>.json      scenario metadata
-├── data/<entity>.ndjson     one JSON object per line per entity type (nodes, edges, stations, lines, …)
-│                            geometry as GeoJSON in EPSG:4326 + local CRS definition
-├── vehicles/<mode>/*.json   custom vehicle types (same schema as catalogue)
-├── assumptions.json         assumption instances + overrides
-├── sources.json             source registry entries used by this project
-├── attachments/             user uploads (optional, user chooses)
-├── runs/<runId>/            optional: run results (large)
-├── ATTRIBUTION.md           generated: all sources and licences contained
-└── signatures/ (optional)   detached signature for integrity
+├── manifest.json            format version, app version, project id and name, date, what is included,
+│                            SHA-256 and size of every other file
+├── project.json             name, description, area, modes
+├── plugins.json             plugins switched on or off for the project (bundled, or installed with a version)
+├── data/<kind>.json         one saved drawing per tool (railway, street-lines, depots, preferences, scenarios, …):
+│                            kind, schema version, document as the tool saves it (geometry in EPSG:4326)
+├── runs/<runId>/            optional: finished simulation runs (run.json, network.txt, lines.txt,
+│                            replay.json.gz for road runs)
+└── ATTRIBUTION.md           generated: contents and the sources the project refers to
 ```
 
+Format 1.0.0 (2026-11-16) has no custom vehicles, attachments, sources registry or signatures yet, because
+projects cannot hold them; they come as a later minor version (`vehicles/<mode>/*.json`, `attachments/`,
+`sources.json`, `signatures/`).
+
 - JSON Schemas for every file are published, so other tools can read and write `.mslab`.
-- **Import** validates schemas, checks checksums, applies forward migrations (`format 1.x → current`), remaps IDs only on conflict (UUIDv7 makes conflicts rare), and runs in the sandboxed tool-runner with zip-bomb limits.
+- **Import** always creates a new project owned by the person who opens it, with new ids. It runs in the sandboxed tool-runner (`apps/api/src/tool-runner`) with ZIP limits (200 MB file, 5000 entries, 70 MB per file, 512 MB unpacked, compression ratio), checks the checksums and every file against its schema, and applies forward migrations (`apps/api/src/mslab/migrations.mts`); the API then checks every drawing again against the editor's outline. Drawings of tools or plugins this instance lacks are left out and listed.
 - Reference data (OSM, rasters) is **not** included by default (size, and it can be re-imported); the manifest records what was used (source, timestamp, bbox) so it can be rebuilt. Optional "full export" includes it.
 
 ### 2.3 Other import/export formats

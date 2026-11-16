@@ -2,6 +2,7 @@ import { roadUk } from "./road/uk";
 import { editorsUk } from "./editors/uk";
 import { cargoBikeUk } from "./cargo-bike/uk";
 import { depotsUk } from "./depots/uk";
+import { mslabUk } from "./mslab/uk";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -389,6 +390,7 @@ export const uk: Messages = {
   ...editorsUk,
   ...cargoBikeUk,
   ...depotsUk,
+  ...mslabUk,
   ...roadUk,
   ...PLUGIN_MESSAGES.uk,
 };
