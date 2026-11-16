@@ -1146,7 +1146,14 @@ export const editorsVi = {
     "Chạy một khoảng thời gian trong ngày qua bộ lập biểu đồ chạy tàu và khóa liên động. Xem mỗi tuyến đường sắt có vừa với đường ray, chạy đúng giờ và phục hồi sau trễ không, và có thể chở bao nhiêu tàu.",
   "capacity.network": "Mạng lưới",
   "capacity.example": "Metro mẫu",
-  "capacity.mine": "Đường sắt của tôi",
+  "capacity.mine": "Từ tệp",
+  "capacity.drawn": "Vẽ trong dự án này",
+  "capacity.drawnText": "Các tuyến {names} trên đường sắt vẽ trong công cụ đường sắt, như đã lưu.",
+  "capacity.drawn.noTrack": "Chưa có gì được vẽ trong công cụ đường sắt.",
+  "capacity.drawn.noLines":
+    "Chưa có tuyến nào sẵn sàng để kiểm tra. Trong công cụ đường sắt, hãy cho một tuyến ít nhất hai điểm dừng và một đoàn tàu.",
+  "capacity.drawn.errors": "Đường sắt đã vẽ có lỗi. Hãy sửa chúng trong công cụ đường sắt trước.",
+  "capacity.building": "Đang dựng đường sắt đã vẽ…",
   "capacity.exampleText":
     "Tuyến M1 Westpark – Eastgate: năm ga, mỗi đầu một depot, 5 phút một chuyến giờ cao điểm và 10 phút một chuyến các giờ khác.",
   "capacity.topologyFile": "Cấu trúc đường ray (JSON)",

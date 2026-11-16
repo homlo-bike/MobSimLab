@@ -1188,7 +1188,14 @@ export const editorsEn = {
     "Run a period of the day through the timetable planner and the interlocking. See whether every rail line fits the tracks, runs on time and recovers from delays, and how many trains it could carry.",
   "capacity.network": "Network",
   "capacity.example": "Example metro",
-  "capacity.mine": "My railway",
+  "capacity.mine": "From files",
+  "capacity.drawn": "Drawn in this project",
+  "capacity.drawnText": "Lines {names} on the railway drawn in the railway tool, as saved.",
+  "capacity.drawn.noTrack": "Nothing is drawn in the railway tool yet.",
+  "capacity.drawn.noLines":
+    "No service line is ready to test. In the railway tool, give a line at least two stops and a train.",
+  "capacity.drawn.errors": "The drawn railway has errors. Fix them in the railway tool first.",
+  "capacity.building": "Building the drawn railway…",
   "capacity.exampleText":
     "Line M1 Westpark – Eastgate: five stations, a depot at each end, every 5 min in the peaks and every 10 min otherwise.",
   "capacity.topologyFile": "Track topology (JSON)",

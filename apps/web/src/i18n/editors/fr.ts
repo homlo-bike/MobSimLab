@@ -1219,7 +1219,16 @@ export const editorsFr = {
     "Faites passer une période de la journée par le planificateur d’horaires et l’enclenchement. Voyez si chaque ligne ferroviaire tient sur les voies, circule à l’heure et se remet des retards, et combien de trains elle pourrait faire circuler.",
   "capacity.network": "Réseau",
   "capacity.example": "Métro d’exemple",
-  "capacity.mine": "Mon réseau ferré",
+  "capacity.mine": "Depuis des fichiers",
+  "capacity.drawn": "Dessiné dans ce projet",
+  "capacity.drawnText":
+    "Lignes {names} sur le réseau ferré dessiné dans l’outil ferroviaire, tel qu’enregistré.",
+  "capacity.drawn.noTrack": "Rien n’est encore dessiné dans l’outil ferroviaire.",
+  "capacity.drawn.noLines":
+    "Aucune ligne n’est prête pour le test. Dans l’outil ferroviaire, donnez à une ligne au moins deux arrêts et un train.",
+  "capacity.drawn.errors":
+    "Le réseau ferré dessiné contient des erreurs. Corrigez-les d’abord dans l’outil ferroviaire.",
+  "capacity.building": "Construction du réseau ferré dessiné…",
   "capacity.exampleText":
     "Ligne M1 Westpark – Eastgate : cinq stations, un dépôt à chaque bout, toutes les 5 min aux heures de pointe et toutes les 10 min le reste du temps.",
   "capacity.topologyFile": "Topologie des voies (JSON)",

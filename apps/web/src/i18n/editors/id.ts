@@ -1183,7 +1183,14 @@ export const editorsId = {
     "Jalankan satu periode dalam sehari melalui perencana jadwal dan interlocking. Lihat apakah setiap jalur rel muat di rel, tepat waktu, dan pulih dari keterlambatan, serta berapa banyak kereta yang dapat dilayaninya.",
   "capacity.network": "Jaringan",
   "capacity.example": "Contoh metro",
-  "capacity.mine": "Jalur rel saya",
+  "capacity.mine": "Dari berkas",
+  "capacity.drawn": "Digambar di proyek ini",
+  "capacity.drawnText": "Jalur {names} pada rel yang digambar di alat rel, seperti yang disimpan.",
+  "capacity.drawn.noTrack": "Belum ada yang digambar di alat rel.",
+  "capacity.drawn.noLines":
+    "Belum ada jalur yang siap diuji. Di alat rel, beri satu jalur paling sedikit dua perhentian dan sebuah kereta.",
+  "capacity.drawn.errors": "Rel yang digambar memiliki kesalahan. Perbaiki dulu di alat rel.",
+  "capacity.building": "Membangun rel yang digambar…",
   "capacity.exampleText":
     "Jalur M1 Westpark – Eastgate: lima stasiun, depo di tiap ujung, tiap 5 mnt saat puncak dan tiap 10 mnt di luar itu.",
   "capacity.topologyFile": "Topologi rel (JSON)",

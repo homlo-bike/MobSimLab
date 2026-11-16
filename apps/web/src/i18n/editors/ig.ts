@@ -1148,7 +1148,14 @@ export const editorsIg = {
     "Gafee otu oge n’ụbọchị site na onye nhazi usoro oge na interlocking. Hụ ma ahịrị ụgbọ oloko ọ bụla dabara n’ụzọ ígwè, na-aga n’oge ma na-agbake site n’igbu oge, na ụgbọ ole ọ nwere ike ibu.",
   "capacity.network": "Netwọk",
   "capacity.example": "Metro ihe atụ",
-  "capacity.mine": "Ụzọ ụgbọ oloko m",
+  "capacity.mine": "Site na faịlụ",
+  "capacity.drawn": "Esere n’ọrụ a",
+  "capacity.drawnText": "Ahịrị {names} n’ụzọ ụgbọ oloko e sere na ngwá ụzọ ụgbọ oloko, dị ka e chekwara ya.",
+  "capacity.drawn.noTrack": "Ọ dịbeghị ihe e sere na ngwá ụzọ ụgbọ oloko.",
+  "capacity.drawn.noLines":
+    "Ọ dịghị ahịrị dị njikere maka nnwale. Na ngwá ụzọ ụgbọ oloko, nye otu ahịrị ọ dịkarịa ala ebe nkwụsị abụọ na ụgbọ oloko.",
+  "capacity.drawn.errors": "Ụzọ ụgbọ oloko e sere nwere njehie. Buru ụzọ dozie ha na ngwá ụzọ ụgbọ oloko.",
+  "capacity.building": "A na-ewu ụzọ ụgbọ oloko e sere…",
   "capacity.exampleText":
     "Ahịrị M1 Westpark – Eastgate: ọdụ ise, ebe nchekwa n’isi nke ọ bụla, kwa nkeji 5 n’oge njupụta na kwa nkeji 10 n’oge ndị ọzọ.",
   "capacity.topologyFile": "Nhazi ụzọ ígwè (JSON)",

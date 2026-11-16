@@ -1150,7 +1150,14 @@ export const editorsYo = {
     "Gbé àkókò kan nínú ọjọ́ kọjá nínú olùṣètò àkókò-ìrìn àti interlocking. Wò bóyá ìlà ojú irin kọ̀ọ̀kan bá àwọn irin mu, ń lọ ní àsìkò, ó sì ń bọ́ lọ́wọ́ ìdádúró, àti iye ọkọ̀ tí ó lè gbé.",
   "capacity.network": "Nẹ́tíwọ̀ọ̀kì",
   "capacity.example": "Mẹ́tírò àpẹẹrẹ",
-  "capacity.mine": "Ojú irin mi",
+  "capacity.mine": "Láti inú fáìlì",
+  "capacity.drawn": "Tí a yà nínú iṣẹ́ yìí",
+  "capacity.drawnText": "Àwọn ìlà {names} lórí ojú irin tí a yà nínú irinṣẹ́ ojú irin, bí a ṣe fi pamọ́.",
+  "capacity.drawn.noTrack": "Kò sí ohun tí a tíì yà nínú irinṣẹ́ ojú irin.",
+  "capacity.drawn.noLines":
+    "Kò sí ìlà tí ó ṣetán fún ìdánwò. Nínú irinṣẹ́ ojú irin, fún ìlà kan ní ó kéré tán ibùdókọ̀ méjì àti ọkọ̀ ojú irin kan.",
+  "capacity.drawn.errors": "Ojú irin tí a yà ní àṣìṣe. Kọ́kọ́ ṣàtúnṣe wọn nínú irinṣẹ́ ojú irin.",
+  "capacity.building": "À ń kọ́ ojú irin tí a yà…",
   "capacity.exampleText":
     "Ìlà M1 Westpark – Eastgate: ibùdókọ̀ márùn-ún, ibi-ìpamọ́ ní òpin kọ̀ọ̀kan, ní gbogbo ìṣẹ́jú 5 nígbà ìkún àti ní gbogbo ìṣẹ́jú 10 ní àsìkò mìíràn.",
   "capacity.topologyFile": "Ìtòlẹ́sẹẹsẹ ojú irin (JSON)",

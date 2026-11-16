@@ -1198,7 +1198,15 @@ export const editorsIt = {
     "Fai passare un periodo della giornata attraverso il pianificatore dell’orario e l’apparato di sicurezza. Scopri se ogni linea ferroviaria sta sui binari, è puntuale e recupera i ritardi, e quanti treni potrebbe portare.",
   "capacity.network": "Rete",
   "capacity.example": "Metro di esempio",
-  "capacity.mine": "La mia ferrovia",
+  "capacity.mine": "Da file",
+  "capacity.drawn": "Disegnata in questo progetto",
+  "capacity.drawnText": "Linee {names} sulla ferrovia disegnata nello strumento ferroviario, come salvata.",
+  "capacity.drawn.noTrack": "Nello strumento ferroviario non è ancora disegnato nulla.",
+  "capacity.drawn.noLines":
+    "Nessuna linea è pronta per il test. Nello strumento ferroviario, assegna a una linea almeno due fermate e un treno.",
+  "capacity.drawn.errors":
+    "La ferrovia disegnata contiene errori. Correggili prima nello strumento ferroviario.",
+  "capacity.building": "Costruzione della ferrovia disegnata…",
   "capacity.exampleText":
     "Linea M1 Westpark – Eastgate: cinque stazioni, un deposito a ogni capo, ogni 5 min nelle ore di punta e ogni 10 min negli altri orari.",
   "capacity.topologyFile": "Topologia dei binari (JSON)",
