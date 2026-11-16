@@ -1,4 +1,5 @@
 import { roadAr } from "./road/ar";
+import { calendarAr } from "./calendar/ar";
 import { editorsAr } from "./editors/ar";
 import { cargoBikeAr } from "./cargo-bike/ar";
 import { commentsAr } from "./comments/ar";
@@ -488,5 +489,6 @@ export const ar: Messages = {
   ...pluginCodeAr,
   ...populationAr,
   ...roadAr,
+  ...calendarAr,
   ...PLUGIN_MESSAGES.ar,
 };

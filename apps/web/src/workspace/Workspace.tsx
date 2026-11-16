@@ -112,6 +112,8 @@ import {
 import { VehiclesOffContext } from "./projectVehicles";
 import type { DelayShares } from "../features/street-lines/types";
 import { type Drawings, useDrawings } from "./useDrawings";
+import { CalendarRun } from "../features/calendar-run/CalendarRun";
+import type { EnergyEstimate } from "../features/energy/types";
 import { setPluginRuntime } from "../plugins/code/context";
 import { PluginCalculations } from "../plugins/code/PluginCalculations";
 import { PluginFrame } from "../plugins/code/PluginFrame";
@@ -140,7 +142,7 @@ const MAP_TABS: readonly Tab[] = ["simulator", "create", "gis", ...PLUGIN_TABS.m
 const NO_SETUPS: StreetSetup[] = [];
 const NO_STREET_LINES: SavedStreetLine[] = [];
 
-type SimView = "test" | "journey" | "road";
+type SimView = "test" | "journey" | "road" | "calendar";
 type GisView = "streets" | "regions" | "zones" | "population";
 const NO_REGIONS: Region[] = [];
 const NO_FEEDS: GtfsFeed[] = [];
@@ -227,6 +229,12 @@ export function Workspace({
     [benefitEst],
   );
   const onBenefitEstimate = useCallback((e: BenefitEstimate | null) => setBenefitEst(e), []);
+  // The energy section's estimate (energy a year), for the calendar runs.
+  const [energyEst, setEnergyEst] = useState<EnergyEstimate | null>(null);
+  const tableFigures = useMemo(
+    () => ({ estimate: costInfo?.estimate ?? null, riders, energy: energyEst }),
+    [costInfo?.estimate, riders, energyEst],
+  );
   const farePrices = useMemo(
     () => (costInfo ? { currency: costInfo.currency, perIntl: costInfo.perIntl } : null),
     [costInfo?.currency, costInfo?.perIntl],
@@ -323,6 +331,10 @@ export function Workspace({
     () => (projectKey && typeof api.roadRuns === "function" ? api.roadRuns(projectKey) : null),
     [api, projectKey],
   );
+  const calendarRuns = useMemo(
+    () => (projectKey && typeof api.calendarRuns === "function" ? api.calendarRuns(projectKey) : null),
+    [api, projectKey],
+  );
   const demandRuns = useMemo(
     () => (projectKey && typeof api.demandRuns === "function" ? api.demandRuns(projectKey) : null),
     [api, projectKey],
@@ -399,6 +411,9 @@ export function Workspace({
   const depotsDoc = drawings.doc<DepotsDoc>("depots");
   // The currency all money is shown in, and its exchange rate (Project preferences).
   const currencyState = useProjectCurrency(preferences, ECONOMY);
+  // The country at the project's location, for the calendar's public holidays (Project preferences).
+  const place = railway?.origin ?? streetLines?.lines[0]?.points[0]?.lonlat ?? null;
+  const placeCountry = usePlaceCountry(place);
   const currency = currencyState.currency;
   const delaysJson = JSON.stringify(delaysFrom(preferences));
   const delays = useMemo(() => JSON.parse(delaysJson) as DelayShares, [delaysJson]);
@@ -946,6 +961,8 @@ export function Workspace({
               plugins={plugins}
               onSetPlugin={setPlugin}
               currency={currencyState}
+              country={placeCountry}
+              place={place}
             />
           </div>
         )}
@@ -989,6 +1006,7 @@ export function Workspace({
                     preferences={preferences}
                     onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
                     riders={riders}
+                    onEnergy={setEnergyEst}
                   />
                   <TimetableTables
                     railway={railway}
@@ -1117,6 +1135,14 @@ export function Workspace({
                   >
                     {t("sim.road")}
                   </button>
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={sim === "calendar"}
+                    onClick={() => setSim("calendar")}
+                  >
+                    {t("calrun.tab")}
+                  </button>
                 </div>
               </div>
             )}
@@ -1238,6 +1264,21 @@ export function Workspace({
                   prefs={preferences?.values}
                 />
               )}
+              {tab === "simulator" && sim === "calendar" && (
+                <CalendarRun
+                  api={calendarRuns}
+                  canRun={editable}
+                  railway={railway}
+                  preferences={preferences}
+                  onPreferences={
+                    editable && drawings.loaded ? (d) => drawings.set("preferences", d) : undefined
+                  }
+                  tables={tableFigures}
+                  currency={costInfo?.currency ?? null}
+                  onOpenTables={() => onTab("tables")}
+                  onOpenPreferences={() => onTab("preferences")}
+                />
+              )}
               {tab === "create" && !editable && (
                 <div className="px-4 py-5 md:px-5">
                   <h2 className="text-lg font-semibold">{t("create.readOnlyTitle")}</h2>
@@ -1343,4 +1384,26 @@ function SaveStatus({ drawings }: { drawings: Drawings }) {
       {text}
     </span>
   );
+}
+
+/**
+ * Purpose: the ISO alpha-2 code of the country at a place (rounded to about a kilometre, asked once per place),
+ * or null while unknown or at sea.
+ */
+function usePlaceCountry(place: readonly [number, number] | null): string | null {
+  const [code, setCode] = useState<{ key: string; iso2: string | null } | null>(null);
+  const key = place ? `${place[0].toFixed(2)},${place[1].toFixed(2)}` : null;
+  useEffect(() => {
+    if (!place || !key || code?.key === key) return;
+    let stop = false;
+    ECONOMY.countryAt([place[0], place[1]])
+      .then((c) => {
+        if (!stop) setCode({ key, iso2: c.iso2 });
+      })
+      .catch(() => {});
+    return () => {
+      stop = true;
+    };
+  }, [key]);
+  return code && code.key === key ? code.iso2 : null;
 }

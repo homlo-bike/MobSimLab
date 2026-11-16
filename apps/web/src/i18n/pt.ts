@@ -1,4 +1,5 @@
 import { roadPt } from "./road/pt";
+import { calendarPt } from "./calendar/pt";
 import { editorsPt } from "./editors/pt";
 import { cargoBikePt } from "./cargo-bike/pt";
 import { commentsPt } from "./comments/pt";
@@ -504,5 +505,6 @@ export const pt: Messages = {
   ...pluginCodePt,
   ...populationPt,
   ...roadPt,
+  ...calendarPt,
   ...PLUGIN_MESSAGES.pt,
 };

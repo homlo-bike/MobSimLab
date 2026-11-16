@@ -1,4 +1,5 @@
 import { roadKk } from "./road/kk";
+import { calendarKk } from "./calendar/kk";
 import { editorsKk } from "./editors/kk";
 import { cargoBikeKk } from "./cargo-bike/kk";
 import { commentsKk } from "./comments/kk";
@@ -499,5 +500,6 @@ export const kk: Messages = {
   ...pluginCodeKk,
   ...populationKk,
   ...roadKk,
+  ...calendarKk,
   ...PLUGIN_MESSAGES.kk,
 };

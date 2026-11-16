@@ -19,6 +19,7 @@ import { Requires } from "../iam/requires";
 import type { ProjectActor } from "../projects/projects.service";
 import { capacityParams } from "./params";
 import { roadParams, roadScenario } from "./road";
+import { calendarParams, calendarPlan } from "./calendar";
 import { RunsService } from "./runs.service";
 
 const uuid = z.uuid();
@@ -29,18 +30,20 @@ const text = z
   .min(2)
   .max(8 * 1024 * 1024);
 
+const networkBody = z.discriminatedUnion("kind", [
+  z.strictObject({ kind: z.literal("example") }),
+  z.strictObject({
+    kind: z.literal("files"),
+    topology: text,
+    topologyName: inputName,
+    lines: text,
+    linesName: inputName,
+  }),
+]);
+
 const capacityBody = z.strictObject({
   kind: z.literal("capacity"),
-  network: z.discriminatedUnion("kind", [
-    z.strictObject({ kind: z.literal("example") }),
-    z.strictObject({
-      kind: z.literal("files"),
-      topology: text,
-      topologyName: inputName,
-      lines: text,
-      linesName: inputName,
-    }),
-  ]),
+  network: networkBody,
   params: capacityParams,
   sweep: z.boolean(),
 });
@@ -50,6 +53,14 @@ const roadBody = z.strictObject({
   kind: z.literal("road"),
   params: roadParams,
   scenario: roadScenario,
+});
+
+/** A calendar run: the rail network (null without rail service), the rail settings and the plan (./calendar.ts). */
+const calendarBody = z.strictObject({
+  kind: z.literal("calendar"),
+  network: networkBody.nullable(),
+  params: calendarParams,
+  plan: calendarPlan,
 });
 
 const count = z.number().int().min(0).max(10_000_000);
@@ -101,7 +112,7 @@ const demandBody = z.strictObject({
     .optional(),
 });
 
-const startBody = z.discriminatedUnion("kind", [capacityBody, roadBody, demandBody]);
+const startBody = z.discriminatedUnion("kind", [capacityBody, roadBody, demandBody, calendarBody]);
 const fileName = z.string().regex(/^[a-z0-9][a-z0-9._-]{0,63}$/);
 
 /** Purpose: parse input with a zod schema; 400 with the issue messages on failure. */
@@ -144,6 +155,7 @@ export class RunsController {
    * Purpose: start a run on the background worker. Body: `{ kind: "capacity", network, params, sweep }`, where
    * `network` is `{ kind: "example" }` or `{ kind: "files", topology, topologyName, lines, linesName }`; or
    * `{ kind: "road", params, scenario }` for the road simulation (./road.ts); or
+   * `{ kind: "calendar", network, params, plan }` for many years, a date or a row of dates (./calendar.ts).
    * `{ kind: "demand", bundle, values, summary }` for the demand model.
    */
   @Post()

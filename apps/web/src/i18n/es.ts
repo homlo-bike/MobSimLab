@@ -1,4 +1,5 @@
 import { roadEs } from "./road/es";
+import { calendarEs } from "./calendar/es";
 import { editorsEs } from "./editors/es";
 import { cargoBikeEs } from "./cargo-bike/es";
 import { commentsEs } from "./comments/es";
@@ -504,5 +505,6 @@ export const es: Messages = {
   ...pluginCodeEs,
   ...populationEs,
   ...roadEs,
+  ...calendarEs,
   ...PLUGIN_MESSAGES.es,
 };
