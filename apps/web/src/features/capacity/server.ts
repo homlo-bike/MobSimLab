@@ -7,7 +7,8 @@ export type RunStatus = "queued" | "running" | "done" | "failed" | "cancelled";
 /** One saved run in the project's list. */
 export interface SavedRun {
   id: string;
-  kind: "capacity";
+  /** `sweep`: a settings sweep an agent started; the panel lists only capacity runs. */
+  kind: "capacity" | "sweep";
   status: RunStatus;
   network: { kind: "example" } | { kind: "files"; topologyName: string; linesName: string };
   params: Partial<CapacityParams> & { from_s: number; to_s: number };
@@ -59,7 +60,9 @@ export interface RunsApi {
 export function projectRuns(projectId: string, csrf: string): RunsApi {
   const base = `/api/projects/${encodeURIComponent(projectId)}/simulation-runs`;
   return {
-    list: async () => (await get<{ runs?: SavedRun[] }>(base)).runs ?? [],
+    // The project's list also holds settings sweeps that agents start (ADR-0035 §7); this panel shows capacity runs.
+    list: async () =>
+      ((await get<{ runs?: SavedRun[] }>(base)).runs ?? []).filter((r) => r.kind === "capacity"),
     get: async (id) => (await get<{ run: SavedRunDetail }>(`${base}/${encodeURIComponent(id)}`)).run,
     start: async (network, params, sweep) =>
       (await send<{ run: SavedRunDetail }>("POST", base, csrf, { kind: "capacity", network, params, sweep }))

@@ -222,7 +222,7 @@ describe.skipIf(!WASM)("AI agent integration (ADR-0035)", () => {
     // The wrong verifier did not burn the code, so the right one still works once.
     expect(ok.status).toBe(200);
     expect(ok.body.token_type).toBe("Bearer");
-    expect(ok.body.scope).toBe("project:read analysis:run scenario:write");
+    expect(ok.body.scope).toBe("project:read analysis:run scenario:write simulation:run");
     tokens = ok.body;
     const again = await exchange(code, verifier);
     expect(again.body.error).toBe("invalid_grant");
@@ -242,6 +242,7 @@ describe.skipIf(!WASM)("AI agent integration (ADR-0035)", () => {
         "accessibility_to_destinations",
         "apply_changes",
         "benchmark_scenarios",
+        "cancel_run",
         "coverage_report",
         "create_scenario",
         "delete_agent_scenario",
@@ -249,10 +250,16 @@ describe.skipIf(!WASM)("AI agent integration (ADR-0035)", () => {
         "export_gtfs",
         "find_coverage_gaps",
         "get_assumptions",
+        "get_run_status",
         "get_scenario",
+        "list_projects",
+        "list_runs",
         "list_scenarios",
         "measure_stop_spacing",
         "plan_journey",
+        "rerun",
+        "run_sweep",
+        "start_run",
         "suggest_stop_locations",
         "validate_scenario",
         "walk_catchment",
