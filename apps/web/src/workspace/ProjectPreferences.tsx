@@ -9,6 +9,7 @@ import { ProjectPlugins } from "./ProjectPlugins";
 import { DesignRulesSection } from "./DesignRules";
 import { VehicleChoiceSection } from "./VehicleChoice";
 import { SwitchChoiceSection } from "./SwitchChoice";
+import { ParametersSection } from "./Parameters";
 import { roadValue } from "../features/road-sim/params";
 import { DemandParamsSection } from "./DemandParams";
 import { StationsSection } from "./StationsSection";
@@ -210,6 +211,11 @@ export function ProjectPreferences({
         />
         <CurrencySection
           state={currency}
+          preferences={preferences}
+          editable={editable && !!onPreferences}
+          onPreferences={(d) => onPreferences?.(d)}
+        />
+        <ParametersSection
           preferences={preferences}
           editable={editable && !!onPreferences}
           onPreferences={(d) => onPreferences?.(d)}

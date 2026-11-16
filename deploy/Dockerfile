@@ -102,6 +102,7 @@ ENV PATH="/app/venv/bin:/command:${PATH}" \
     NODE_ENV=production \
     MOBSIMLAB_WEB_DIR=/app/web \
     MOBSIMLAB_PORT=8080 \
+    MOBSIMLAB_LOG_DIR=/data/logs \
     S6_READ_ONLY_ROOT=1 \
     S6_BEHAVIOUR_IF_STAGE2_FAILS=2 \
     S6_CMD_WAIT_FOR_SERVICES_MAXTIME=120000

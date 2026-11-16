@@ -29,7 +29,7 @@ export type RunStatus = (typeof RUN_STATUSES)[number];
 
 /**
  * Kinds of simulation run: the rail capacity run, a sweep of its settings (0008_agent_runs.sql), the road
- * simulation (0009_road_runs.sql) and the demand model (0010_demand_runs.sql).
+ * simulation (0009_road_runs.sql) and the demand model (0012_demand_runs.sql).
  */
 export type RunKind = "capacity" | "sweep" | "road" | "demand";
 
@@ -197,7 +197,7 @@ export interface DB {
     data: Buffer;
     created_at: Generated<Date>;
   };
-  /** Files a run saves next to its result, such as a demand run's OD matrices (0010_demand_runs.sql). */
+  /** Files a run saves next to its result, such as a demand run's OD matrices (0012_demand_runs.sql). */
   "simulation.run_file": {
     run_id: string;
     name: string;
@@ -253,6 +253,20 @@ export interface DB {
     before: unknown;
     after: unknown;
     reason: string | null;
+  };
+  /** WARN+ log entries, one partition per day (0010_logs.sql). The app role may only insert. */
+  "logs.entry": {
+    id: Generated<string>;
+    at: ColumnType<Date, string | undefined, never>;
+    level: string;
+    origin: string;
+    module: string | null;
+    message: string;
+    request_id: string | null;
+    user_id: string | null;
+    project_id: string | null;
+    run_id: string | null;
+    context: ColumnType<unknown, string | null, never>;
   };
 }
 
