@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import DEFAULTS from "./defaults.json";
+import { values } from "./values";
 import { NetworkError, NetworkService } from "./network.service";
 import {
   clockS,
@@ -91,8 +91,8 @@ export class AnalysisService {
 
   private settings(o: { stepFree?: boolean; walkSpeedKmh?: number }): WalkSettings {
     return {
-      walk_speed_kmh: o.walkSpeedKmh ?? DEFAULTS.walk_speed_kmh,
-      crossing_delay_s: DEFAULTS.crossing_delay_s,
+      walk_speed_kmh: o.walkSpeedKmh ?? values().walk_speed_kmh,
+      crossing_delay_s: values().crossing_delay_s,
       step_free: o.stepFree ?? false,
       max_snap_m: 250,
     };
@@ -101,15 +101,15 @@ export class AnalysisService {
   /** Purpose: the coverage groups of a preset, and a sentence saying exactly what is measured. */
   groups(doc: ScenarioDoc, o: CoverageOptions): { groups: Group[]; basis: string; keys: string[] } {
     const period = o.period ?? "peak";
-    const minutes = o.minutes ?? DEFAULTS.walk_rule_minutes;
+    const minutes = o.minutes ?? values().walk_rule_minutes;
     const served = (pred: (l: Line) => boolean) => {
       const ids = new Set(
         doc.lines.filter((l) => headwayIn(l, period) !== null && pred(l)).flatMap((l) => l.stop_ids),
       );
       return doc.stops.flatMap((s, i) => (ids.has(s.id) ? [i] : []));
     };
-    const speed = o.walkSpeedKmh ?? DEFAULTS.walk_speed_kmh;
-    const walk = `walk at ${speed} km/h on the street network, ${DEFAULTS.crossing_delay_s} s per signalised crossing${o.stepFree ? ", step-free" : ""}`;
+    const speed = o.walkSpeedKmh ?? values().walk_speed_kmh;
+    const walk = `walk at ${speed} km/h on the street network, ${values().crossing_delay_s} s per signalised crossing${o.stepFree ? ", step-free" : ""}`;
     const when = period === "peak" ? "stops with peak service" : "stops with off-peak service";
     switch (o.preset) {
       case "walk_minutes":
@@ -126,7 +126,7 @@ export class AnalysisService {
           keys: ["analysis.walk_rule_minutes", "demand.walk_speed_kmh", "walk.crossing_delay_s"],
         };
       case "frequent_only": {
-        const h = o.maxHeadwayMin ?? DEFAULTS.frequent_headway_min;
+        const h = o.maxHeadwayMin ?? values().frequent_headway_min;
         return {
           groups: [
             {
@@ -353,7 +353,7 @@ export class AnalysisService {
     k: number,
     o: { lineId?: string; minutes?: number; demand?: DemandPoint[]; returnInstance?: boolean },
   ) {
-    const minutes = o.minutes ?? DEFAULTS.walk_rule_minutes;
+    const minutes = o.minutes ?? values().walk_rule_minutes;
     const lines = doc.lines.filter((l) => !o.lineId || l.id === o.lineId);
     if (lines.length === 0)
       throw new NetworkError(o.lineId ? `no line ${o.lineId}` : "The scenario has no lines.");

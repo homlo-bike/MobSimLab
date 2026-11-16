@@ -1,8 +1,13 @@
 import { roadUk } from "./road/uk";
+import { calendarUk } from "./calendar/uk";
 import { editorsUk } from "./editors/uk";
 import { cargoBikeUk } from "./cargo-bike/uk";
+import { commentsUk } from "./comments/uk";
 import { depotsUk } from "./depots/uk";
 import { fleetUk } from "./fleet/uk";
+import { timetablesUk } from "./timetables/uk";
+import { mslabUk } from "./mslab/uk";
+import { pluginCodeUk } from "./plugin-code/uk";
 import { populationUk } from "./population/uk";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -105,6 +110,7 @@ export const uk: Messages = {
   "home.shared": "Надані мені",
   "home.sharedEdit": "Надані мені · можна редагувати",
   "home.viewOnly": "Лише перегляд",
+  "home.public": "Публічні проєкти",
   "home.archived": "В архіві",
   "home.none": "Тут нічого немає.",
   "home.edited": "Змінено {when}",
@@ -168,7 +174,7 @@ export const uk: Messages = {
 
   "share.title": "Поділитися «{name}»",
   "share.rolesNote":
-    "Власники керують доступом. Редактори змінюють мережу. Коментатори й глядачі лише переглядають.",
+    "Власники керують доступом. Редактори змінюють мережу. Коментатори її коментують. Глядачі лише переглядають.",
   "share.invite": "Запросити електронною поштою",
   "share.emailPlaceholder": "Пошта, з якою вони входять",
   "share.inviteRole": "Роль запрошеної особи",
@@ -178,11 +184,16 @@ export const uk: Messages = {
   "share.roleOf": "Роль: {name}",
   "share.remove": "Вилучити: {name}",
   "share.leave": "Вийти",
-  "share.link": "Посилання лише для перегляду",
-  "share.linkOn": "Відкрити може будь-хто, хто ввійшов у цей MobSimLab",
-  "share.linkOff": "Вимкнено: відкрити можуть лише люди вище",
-  "share.linkTurnOn": "Увімкнути",
-  "share.linkTurnOff": "Вимкнути",
+  "share.visibility": "Хто може відкрити",
+  "share.private": "Приватний: відкрити можуть лише люди вище",
+  "share.public":
+    "Публічний: будь-хто, хто ввійшов у цей MobSimLab, може знайти й відкрити його лише для перегляду",
+  "share.makePublic": "Зробити публічним",
+  "share.makePrivate": "Зробити приватним",
+  "share.licenceTitle": "Перш ніж зробити його публічним",
+  "share.licenceNote":
+    "Цей проєкт використовує дані OpenStreetMap. Їх буде поширено за ліцензією Open Database License (ODbL), © учасники OpenStreetMap. Робіть його публічним, лише якщо все інше в ньому теж можна поширювати.",
+  "share.confirmPublic": "Зрозуміло, зробити публічним",
   "share.copyLink": "Копіювати посилання",
   "share.copied": "Скопійовано",
 
@@ -199,6 +210,8 @@ export const uk: Messages = {
 
   "project.back": "Назад до проєктів",
   "project.viewOnly": "Лише перегляд",
+  "project.public": "Публічний",
+  "project.publicNote": "Публічний проєкт. Дані карти © учасники OpenStreetMap, ODbL.",
   "project.notFound": "Проєкт не знайдено",
   "project.notFoundHint": "Можливо, його видалено або у вас більше немає доступу.",
   "project.toHome": "Назад до проєктів",
@@ -258,6 +271,7 @@ export const uk: Messages = {
   "gis.title": "ГІС",
   "gis.streetsView": "Вулиці",
   "gis.regionsView": "Райони",
+  "gis.zonesView": "Зони попиту",
   "gis.intro": "Додавайте й редагуйте відомості, що використовуються в розрахунках.",
   "gis.areas": "Малюйте території або імпортуйте з OpenStreetMap",
   "gis.streets":
@@ -282,6 +296,7 @@ export const uk: Messages = {
   "prefs.delayLane": "На лише нанесеній смузі для автобусів чи трамваїв",
   "prefs.delayDefault": "Бібліотека припущень: {value} %",
   "prefs.delayReset": "Використати значення з бібліотеки",
+  "prefs.reason": "Причина цього значення (необов’язково)",
   "prefs.stationsTitle": "Станції",
   "prefs.stationsIntro":
     "Зупинки з однаковою назвою в межах цієї відстані вважаються однією станцією на схемі мережі, у планувальнику поїздок і в таблицях вигод та пасажирів.",
@@ -307,6 +322,21 @@ export const uk: Messages = {
   "prefs.rulesChanged": "змінено: {count}",
   "prefs.rulesLibrary": "Бібліотека припущень: {value} {unit}",
   "prefs.rulesLibraryRange": "Бібліотека припущень: {value} {unit} (діапазон {low}–{high})",
+  "prefs.demandTitle": "Модель попиту",
+  "prefs.demandIntro":
+    "Усі значення, які використовує модель попиту, крок за кроком: зони, генерація поїздок, періоди доби, розподіл, вибір виду транспорту та призначення. Змініть значення для цього проєкту або залиште значення з бібліотеки припущень.",
+  "prefs.demandStep": "Крок моделі",
+  "prefs.demandSearch": "Пошук значень",
+  "prefs.demandNone": "Немає відповідних значень.",
+  "prefs.demandStep.zones": "Зони",
+  "prefs.demandStep.generation": "Генерація поїздок",
+  "prefs.demandStep.periods": "Періоди доби",
+  "prefs.demandStep.distribution": "Розподіл поїздок",
+  "prefs.demandStep.mode_choice": "Вибір виду транспорту",
+  "prefs.demandStep.catchment": "Зона доступності",
+  "prefs.demandStep.assignment": "Призначення",
+  "prefs.demandStep.calibration": "Калібрування",
+  "prefs.demandAll": "Усі кроки",
   "prefs.paramsTitle": "Усі параметри",
   "prefs.paramsIntro":
     "Кожне значення бібліотеки припущень. Задайте своє для всіх видів транспорту або для одного; значення для виду транспорту важливіше за значення для всіх. Значення бібліотеки показано поруч.",
@@ -326,11 +356,60 @@ export const uk: Messages = {
   "prefs.group.cost": "Витрати",
   "prefs.group.benefits": "Вигоди",
   "prefs.group.fares": "Тарифи",
+  "prefs.group.noise": "Шум",
   "prefs.traction.battery": "акумулятор",
   "prefs.traction.diesel": "дизель",
   "prefs.traction.hydrogen": "водень",
   "prefs.traction.cng": "природний газ (КПГ)",
   "prefs.traction.electric": "електричний",
+  "report.title": "Звіт про припущення",
+  "report.intro":
+    "Кожне значення з бібліотеки припущень, яке використовує цей проєкт: значення, діапазон бібліотеки, джерело та чи змінив його проєкт. Завантажте його як CSV або надрукуйте чи збережіть як PDF.",
+  "report.csv": "Завантажити CSV",
+  "report.changedOnly": "Лише змінені значення",
+  "report.noneChanged": "У цій групі немає змінених значень.",
+  "report.loadError": "Не вдалося завантажити джерела. Перезавантажте сторінку, щоб спробувати ще раз.",
+  "report.changed": "змінено",
+  "report.yes": "Так",
+  "report.no": "Ні",
+  "report.basis.cited": "цитовано",
+  "report.basis.documented": "задокументовано",
+  "report.basis.guess": "обґрунтована оцінка",
+  "report.check.read": "перевірено за джерелом",
+  "report.check.secondary": "перевірено через вторинне джерело",
+  "report.check.unverified": "ще не перевірено за джерелом",
+  "report.sources": "Джерела:",
+  "report.usedBy": "Використовується в: {list}",
+  "report.other": "Інші налаштування",
+  "report.currency": "Валюта",
+  "report.currencyCountry": "Кожен інструмент показує валюту країни",
+  "report.rate": "Обмінний курс за US$",
+  "report.rateWorldBank": "Офіційний курс Світового банку",
+  "report.vehiclesOff": "Транспортні засоби, що не використовуються",
+  "report.switchesOff": "Стрілочні переводи, що не використовуються",
+  "report.allUsed": "Використовуються всі",
+  "report.turnout": "Стрілочний перевід за замовчуванням",
+  "report.col.group": "Група",
+  "report.col.parameter": "Параметр",
+  "report.col.id": "Ідентифікатор",
+  "report.col.mode": "Вид транспорту",
+  "report.col.value": "Використане значення",
+  "report.col.unit": "Одиниця",
+  "report.col.changed": "Змінено",
+  "report.col.libLow": "Бібліотека: мінімум",
+  "report.col.libCentral": "Бібліотека: середнє",
+  "report.col.libHigh": "Бібліотека: максимум",
+  "report.col.basis": "Підстава",
+  "report.col.check": "Перевірка",
+  "report.col.sources": "Джерела",
+  "report.col.reasoning": "Обґрунтування",
+  "report.col.usedBy": "Використовується в",
+  "report.col.reason": "Причина",
+  "report.col.changedBy": "Хто змінив",
+  "report.col.changedAt": "Дата зміни",
+  "report.changedBy": "Змінено: {name}, {date}",
+  "report.changedOn": "Змінено {date}",
+  "report.reason": "Причина: {reason}",
   "prefs.accessTitle": "Доступність платформ",
   "prefs.accessIntro":
     "Межі сходинки й зазору між платформою та поїздом (TSI PRM) і висота підлоги для поїздів без неї в каталозі. Лінії перевіряються на кожній зупинці.",
@@ -423,7 +502,12 @@ export const uk: Messages = {
   ...cargoBikeUk,
   ...depotsUk,
   ...fleetUk,
+  ...timetablesUk,
+  ...commentsUk,
+  ...mslabUk,
+  ...pluginCodeUk,
   ...populationUk,
   ...roadUk,
+  ...calendarUk,
   ...PLUGIN_MESSAGES.uk,
 };

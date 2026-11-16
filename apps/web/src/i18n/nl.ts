@@ -1,8 +1,13 @@
 import { roadNl } from "./road/nl";
+import { calendarNl } from "./calendar/nl";
 import { editorsNl } from "./editors/nl";
 import { cargoBikeNl } from "./cargo-bike/nl";
+import { commentsNl } from "./comments/nl";
 import { depotsNl } from "./depots/nl";
 import { fleetNl } from "./fleet/nl";
+import { timetablesNl } from "./timetables/nl";
+import { mslabNl } from "./mslab/nl";
+import { pluginCodeNl } from "./plugin-code/nl";
 import { populationNl } from "./population/nl";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -105,6 +110,7 @@ export const nl: Messages = {
   "home.shared": "Met mij gedeeld",
   "home.sharedEdit": "Met mij gedeeld · je kunt bewerken",
   "home.viewOnly": "Alleen bekijken",
+  "home.public": "Openbare projecten",
   "home.archived": "Gearchiveerd",
   "home.none": "Niets hier.",
   "home.edited": "Bewerkt {when}",
@@ -168,7 +174,7 @@ export const nl: Messages = {
 
   "share.title": "‘{name}’ delen",
   "share.rolesNote":
-    "Eigenaren beheren de toegang. Bewerkers wijzigen het netwerk. Commentatoren en kijkers kijken alleen mee.",
+    "Eigenaren beheren de toegang. Bewerkers wijzigen het netwerk. Commentatoren geven er opmerkingen bij. Kijkers kijken alleen mee.",
   "share.invite": "Uitnodigen per e-mail",
   "share.emailPlaceholder": "E-mail waarmee iemand inlogt",
   "share.inviteRole": "Rol voor de uitgenodigde persoon",
@@ -178,11 +184,16 @@ export const nl: Messages = {
   "share.roleOf": "Rol van {name}",
   "share.remove": "{name} verwijderen",
   "share.leave": "Verlaten",
-  "share.link": "Link om te bekijken",
-  "share.linkOn": "Iedereen die op deze MobSimLab is ingelogd kan het openen",
-  "share.linkOff": "Uit: alleen de personen hierboven kunnen het openen",
-  "share.linkTurnOn": "Aanzetten",
-  "share.linkTurnOff": "Uitzetten",
+  "share.visibility": "Wie het kan openen",
+  "share.private": "Privé: alleen de mensen hierboven kunnen het openen",
+  "share.public":
+    "Openbaar: iedereen die bij deze MobSimLab is aangemeld, kan het vinden en alleen-lezen openen",
+  "share.makePublic": "Openbaar maken",
+  "share.makePrivate": "Privé maken",
+  "share.licenceTitle": "Voordat u het openbaar maakt",
+  "share.licenceNote":
+    "Dit project gebruikt gegevens van OpenStreetMap. Die worden gedeeld onder de Open Database License (ODbL), © OpenStreetMap-bijdragers. Maak het alleen openbaar als al het andere erin ook gedeeld mag worden.",
+  "share.confirmPublic": "Begrepen, openbaar maken",
   "share.copyLink": "Link kopiëren",
   "share.copied": "Gekopieerd",
 
@@ -199,6 +210,8 @@ export const nl: Messages = {
 
   "project.back": "Terug naar projecten",
   "project.viewOnly": "Alleen bekijken",
+  "project.public": "Openbaar",
+  "project.publicNote": "Openbaar project. Kaartgegevens © OpenStreetMap-bijdragers, ODbL.",
   "project.notFound": "Project niet gevonden",
   "project.notFoundHint": "Het is misschien verwijderd, of je hebt geen toegang meer.",
   "project.toHome": "Terug naar projecten",
@@ -264,6 +277,7 @@ export const nl: Messages = {
   "gis.spacing": "Halteafstand",
   "gis.streetsView": "Straten",
   "gis.regionsView": "Gebieden",
+  "gis.zonesView": "Vraagzones",
 
   "tables.title": "Tabellen",
   "tables.intro": "Alle berekeningen over het project, om te schatten hoe goed het zal presteren.",
@@ -282,6 +296,7 @@ export const nl: Messages = {
   "prefs.delayLane": "Op een geschilderde bus- of trambaan",
   "prefs.delayDefault": "Aannamebibliotheek: {value} %",
   "prefs.delayReset": "Waarde van de bibliotheek gebruiken",
+  "prefs.reason": "Reden voor deze waarde (optioneel)",
   "prefs.stationsTitle": "Stations",
   "prefs.stationsIntro":
     "Haltes met dezelfde naam binnen deze afstand tellen als één station in de netkaart, de reisplanner en de baten- en reizigerstabellen.",
@@ -307,6 +322,21 @@ export const nl: Messages = {
   "prefs.rulesChanged": "{count} gewijzigd",
   "prefs.rulesLibrary": "Aannamebibliotheek: {value} {unit}",
   "prefs.rulesLibraryRange": "Aannamebibliotheek: {value} {unit} (bereik {low}–{high})",
+  "prefs.demandTitle": "Vraagmodel",
+  "prefs.demandIntro":
+    "Elke waarde die het vraagmodel gebruikt, stap voor stap: zones, ritgeneratie, tijdvakken, ritdistributie, vervoerwijzekeuze en toedeling. Wijzig een waarde voor dit project of houd die van de aannamebibliotheek.",
+  "prefs.demandStep": "Modelstap",
+  "prefs.demandSearch": "Waarden zoeken",
+  "prefs.demandNone": "Geen waarde gevonden.",
+  "prefs.demandStep.zones": "Zones",
+  "prefs.demandStep.generation": "Ritgeneratie",
+  "prefs.demandStep.periods": "Tijdvakken",
+  "prefs.demandStep.distribution": "Ritdistributie",
+  "prefs.demandStep.mode_choice": "Vervoerwijzekeuze",
+  "prefs.demandStep.catchment": "Invloedsgebied",
+  "prefs.demandStep.assignment": "Toedeling",
+  "prefs.demandStep.calibration": "Kalibratie",
+  "prefs.demandAll": "Alle stappen",
   "prefs.paramsTitle": "Alle parameters",
   "prefs.paramsIntro":
     "Elke waarde uit de aannamebibliotheek. Stel je eigen waarde in voor alle modaliteiten of voor één; een waarde voor één modaliteit gaat voor die voor alle. De waarde van de bibliotheek staat ernaast.",
@@ -326,11 +356,61 @@ export const nl: Messages = {
   "prefs.group.cost": "Kosten",
   "prefs.group.benefits": "Baten",
   "prefs.group.fares": "Tarieven",
+  "prefs.group.noise": "Geluid",
   "prefs.traction.battery": "batterij",
   "prefs.traction.diesel": "diesel",
   "prefs.traction.hydrogen": "waterstof",
   "prefs.traction.cng": "aardgas (CNG)",
   "prefs.traction.electric": "elektrisch",
+  "report.title": "Aannamerapport",
+  "report.intro":
+    "Elke waarde uit de aannamebibliotheek die dit project gebruikt: de waarde, het bereik van de bibliotheek, waar de waarde vandaan komt en of het project haar heeft gewijzigd. Download het als CSV, of druk het af of sla het op als PDF.",
+  "report.csv": "CSV downloaden",
+  "report.changedOnly": "Alleen gewijzigde waarden",
+  "report.noneChanged": "Geen waarde in deze groep is gewijzigd.",
+  "report.loadError":
+    "De bronnen konden niet worden geladen. Laad de pagina opnieuw om het nog eens te proberen.",
+  "report.changed": "gewijzigd",
+  "report.yes": "Ja",
+  "report.no": "Nee",
+  "report.basis.cited": "geciteerd",
+  "report.basis.documented": "gedocumenteerd",
+  "report.basis.guess": "onderbouwde schatting",
+  "report.check.read": "gecontroleerd aan de bron",
+  "report.check.secondary": "gecontroleerd via een secundaire bron",
+  "report.check.unverified": "nog niet aan de bron gecontroleerd",
+  "report.sources": "Bronnen:",
+  "report.usedBy": "Gebruikt door: {list}",
+  "report.other": "Overige keuzes",
+  "report.currency": "Valuta",
+  "report.currencyCountry": "Elk hulpmiddel toont de valuta van het land",
+  "report.rate": "Wisselkoers per US$",
+  "report.rateWorldBank": "Officiële koers van de Wereldbank",
+  "report.vehiclesOff": "Niet gebruikte voertuigen",
+  "report.switchesOff": "Niet gebruikte wissels",
+  "report.allUsed": "Alle gebruikt",
+  "report.turnout": "Standaardwissel",
+  "report.col.group": "Groep",
+  "report.col.parameter": "Parameter",
+  "report.col.id": "Id",
+  "report.col.mode": "Modaliteit",
+  "report.col.value": "Gebruikte waarde",
+  "report.col.unit": "Eenheid",
+  "report.col.changed": "Gewijzigd",
+  "report.col.libLow": "Bibliotheek laag",
+  "report.col.libCentral": "Bibliotheek midden",
+  "report.col.libHigh": "Bibliotheek hoog",
+  "report.col.basis": "Grondslag",
+  "report.col.check": "Controle",
+  "report.col.sources": "Bronnen",
+  "report.col.reasoning": "Onderbouwing",
+  "report.col.usedBy": "Gebruikt door",
+  "report.col.reason": "Reden",
+  "report.col.changedBy": "Gewijzigd door",
+  "report.col.changedAt": "Gewijzigd op",
+  "report.changedBy": "Gewijzigd door {name} op {date}",
+  "report.changedOn": "Gewijzigd op {date}",
+  "report.reason": "Reden: {reason}",
   "prefs.accessTitle": "Toegankelijkheid van perrons",
   "prefs.accessIntro":
     "Grenzen voor trede en kier tussen perron en trein (TSI PRM) en de vloerhoogte voor treinen zonder waarde in de voertuigcatalogus. Lijnen worden bij elke halte gecontroleerd.",
@@ -423,7 +503,12 @@ export const nl: Messages = {
   ...cargoBikeNl,
   ...depotsNl,
   ...fleetNl,
+  ...timetablesNl,
+  ...commentsNl,
+  ...mslabNl,
+  ...pluginCodeNl,
   ...populationNl,
   ...roadNl,
+  ...calendarNl,
   ...PLUGIN_MESSAGES.nl,
 };

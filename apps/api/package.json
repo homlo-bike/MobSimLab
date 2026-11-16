@@ -12,6 +12,7 @@
     "start": "node dist/main.js"
   },
   "dependencies": {
+    "@bytecodealliance/jco-transpile": "0.23.0",
     "@modelcontextprotocol/sdk": "^1.32.2",
     "@nestjs/common": "^12.3.2",
     "@nestjs/core": "^12.3.2",

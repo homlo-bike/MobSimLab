@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { CostTables, fmtMoney } from "../src/features/costs/CostTables";
 import { currencyOf } from "../src/features/costs/currencies";
 import { type CountryEconomy, type EconomyApi, pricesFrom } from "../src/features/costs/economy";
-import { CAR_M, estimate, perLine, structureOf, sum } from "../src/features/costs/model";
+import { estimate, perLine, structureOf, sum } from "../src/features/costs/model";
 import { libraryValue, paramValue } from "../src/features/costs/params";
 import type { LineReport, Network, RailEngine, RailView, TrackView } from "../src/features/railways/types";
 import type { StreetLinesDoc } from "../src/features/street-lines/saved";
@@ -272,7 +272,17 @@ describe("estimate", () => {
     expect(veh.quantity).toBe(Math.ceil(4 * (1 + spare)));
     expect(veh.rate[1]).toBeCloseTo(libraryValue("cost.vehicle_per_train_m", "metro")[1] * 1e6 * 116.2);
     const carKm = e.items.find((x) => x.param === "cost.opex.car_km")!;
-    expect(carKm.quantity).toBeCloseTo(line.kmPerYear * (116.2 / CAR_M));
+    const carM = libraryValue("cost.opex.car_length_m", "metro")[1];
+    expect(carKm.quantity).toBeCloseTo(line.kmPerYear * (116.2 / carM));
+    const shorter = estimate({
+      railway: railway(),
+      view: railView(),
+      reports: { M1: REPORT },
+      streetLines: [],
+      prefs: { "cost.opex.car_length_m": 20 },
+      prices: UNIT,
+    }).items.find((x) => x.param === "cost.opex.car_km")!;
+    expect(shorter.quantity).toBeCloseTo(line.kmPerYear * (116.2 / 20));
     expect(e.items.some((x) => x.category === "engineering")).toBe(true);
     expect(e.items.some((x) => x.category === "overheads")).toBe(true);
   });

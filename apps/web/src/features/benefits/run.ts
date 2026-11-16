@@ -29,7 +29,7 @@ export async function accessByScenario(
   for (const s of scenarios(P.net)) {
     const part = scenarioTimetable(tt, s);
     if (!part) {
-      out.set(s.key, access(P.zones, matrix(P.zones, stopsOf, null), prefs));
+      out.set(s.key, access(P.zones, matrix(P.zones, stopsOf, null, P.walk), prefs));
       continue;
     }
     const engine = await load(part, {});
@@ -38,7 +38,7 @@ export async function accessByScenario(
         const r = engine.reach(from, t0);
         return new Map(r.stop_ids.map((id, i) => [id, r.arrive_s[i] ?? null]));
       };
-      out.set(s.key, access(P.zones, matrix(P.zones, stopsOf, reach), prefs));
+      out.set(s.key, access(P.zones, matrix(P.zones, stopsOf, reach, P.walk), prefs));
     } finally {
       engine.dispose();
     }

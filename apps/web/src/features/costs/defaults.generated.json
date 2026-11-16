@@ -451,8 +451,19 @@
     ]
    }
   },
+  "cost.opex.car_length_m": {
+   "label": "Rail running cost: length of train counted as one car",
+   "unit": "m",
+   "values": {
+    "*": [
+     20,
+     25,
+     27
+    ]
+   }
+  },
   "cost.opex.car_km": {
-   "label": "Rail running cost per car-km (per 25 m of train)",
+   "label": "Rail running cost per car-km (per car of cost.opex.car_length_m)",
    "unit": "US$ per car-km (2023, PPP)",
    "values": {
     "*": [
@@ -581,6 +592,17 @@
      45,
      50,
      57
+    ]
+   }
+  },
+  "timetable.max_terminal_wait_min": {
+   "label": "Longest a vehicle waits at a terminal for its next trip before it returns to the depot instead",
+   "unit": "min",
+   "values": {
+    "*": [
+     10,
+     20,
+     45
     ]
    }
   }
