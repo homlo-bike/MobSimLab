@@ -576,6 +576,11 @@ export interface Estimate {
   rows: Row[];
   notes: string[];
   draws: number;
+  /**
+   * Weekday boardings of each line at each of its stations with the central parameter values, by line id
+   * and station name (the fare revenue table spreads a line's trips between its stations with them).
+   */
+  stations: Record<string, Record<string, number>>;
 }
 
 export interface EstimateInput {
@@ -902,7 +907,27 @@ export function estimate(input: EstimateInput): Estimate {
   }));
   if (!nationalGdpPerWorker)
     notes.push("Job-years cannot be estimated without the country's GDP per person.");
-  return { rows, notes, draws };
+  const stationName = new Map(P.net.stations.map((s) => [s.id, s.name]));
+  const stations: Estimate["stations"] = {};
+  for (const l of lines) {
+    const out: Record<string, number> = {};
+    for (const id of l.stations) {
+      const z = P.zones[zoneIdx.get(id) ?? -1];
+      if (!z) continue;
+      const k = stationLines.get(id) ?? 1;
+      const v = fns.ridership_daily({
+        pop: z.pop / k,
+        jobs: z.jobs / k,
+        students: z.students / k,
+        resident_share: central("benefit.ridership.resident_share", l.mode, prefs),
+        trips_per_user: central("benefit.ridership.trips_per_user", l.mode, prefs),
+      });
+      const name = stationName.get(id) ?? id;
+      if (Number.isFinite(v)) out[name] = (out[name] ?? 0) + Math.max(0, v);
+    }
+    stations[l.id] = out;
+  }
+  return { rows, notes, draws, stations };
 }
 
 /** Purpose: the formula definition of a metric (for labels and units). */
