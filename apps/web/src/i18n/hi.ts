@@ -3,6 +3,7 @@ import { editorsHi } from "./editors/hi";
 import { cargoBikeHi } from "./cargo-bike/hi";
 import { depotsHi } from "./depots/hi";
 import { mslabHi } from "./mslab/hi";
+import { pluginCodeHi } from "./plugin-code/hi";
 import { populationHi } from "./population/hi";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -256,6 +257,7 @@ export const hi: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "सड़कें",
   "gis.regionsView": "क्षेत्र",
+  "gis.zonesView": "मांग क्षेत्र",
   "gis.intro": "गणनाओं में इस्तेमाल होने वाली जानकारी जोड़ें या संपादित करें।",
   "gis.areas": "क्षेत्र बनाएँ या OpenStreetMap से आयात करें",
   "gis.streets": "सड़क लेआउट: बस, साइकिल और ट्राम लेन, गति, ऊपरी तार",
@@ -305,6 +307,21 @@ export const hi: Messages = {
   "prefs.rulesChanged": "बदले गए: {count}",
   "prefs.rulesLibrary": "धारणा पुस्तकालय: {value} {unit}",
   "prefs.rulesLibraryRange": "धारणा पुस्तकालय: {value} {unit} (सीमा {low}–{high})",
+  "prefs.demandTitle": "मांग मॉडल",
+  "prefs.demandIntro":
+    "मांग मॉडल जो भी मान इस्तेमाल करता है, चरण दर चरण: ज़ोन, यात्रा उत्पादन, समय अवधियाँ, वितरण, साधन चयन और असाइनमेंट। इस परियोजना के लिए कोई मान बदलें, या धारणा पुस्तकालय का मान रखें।",
+  "prefs.demandStep": "मॉडल चरण",
+  "prefs.demandSearch": "मान खोजें",
+  "prefs.demandNone": "कोई मान मेल नहीं खाता।",
+  "prefs.demandStep.zones": "ज़ोन",
+  "prefs.demandStep.generation": "यात्रा उत्पादन",
+  "prefs.demandStep.periods": "समय अवधियाँ",
+  "prefs.demandStep.distribution": "यात्रा वितरण",
+  "prefs.demandStep.mode_choice": "साधन चयन",
+  "prefs.demandStep.catchment": "पहुँच क्षेत्र",
+  "prefs.demandStep.assignment": "असाइनमेंट",
+  "prefs.demandStep.calibration": "अंशांकन",
+  "prefs.demandAll": "सभी चरण",
   "prefs.paramsTitle": "सभी पैरामीटर",
   "prefs.paramsIntro":
     "मान्यता लाइब्रेरी का हर मान। सभी साधनों या एक साधन के लिए अपना मान रखें; एक साधन का मान सभी साधनों वाले मान से ऊपर है। लाइब्रेरी का मान साथ में दिखता है।",
@@ -419,6 +436,7 @@ export const hi: Messages = {
   ...cargoBikeHi,
   ...depotsHi,
   ...mslabHi,
+  ...pluginCodeHi,
   ...populationHi,
   ...roadHi,
   ...PLUGIN_MESSAGES.hi,

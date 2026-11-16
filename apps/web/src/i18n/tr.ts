@@ -3,6 +3,7 @@ import { editorsTr } from "./editors/tr";
 import { cargoBikeTr } from "./cargo-bike/tr";
 import { depotsTr } from "./depots/tr";
 import { mslabTr } from "./mslab/tr";
+import { pluginCodeTr } from "./plugin-code/tr";
 import { populationTr } from "./population/tr";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -257,6 +258,7 @@ export const tr: Messages = {
   "gis.title": "CBS",
   "gis.streetsView": "Sokaklar",
   "gis.regionsView": "Bölgeler",
+  "gis.zonesView": "Talep bölgeleri",
   "gis.intro": "Hesaplarda kullanılan bilgileri ekleyin ve düzenleyin.",
   "gis.areas": "Alan çizin veya OpenStreetMap'ten içe aktarın",
   "gis.streets": "Sokak düzeni: otobüs, bisiklet ve tramvay şeritleri, hızlar, havai hat",
@@ -306,6 +308,21 @@ export const tr: Messages = {
   "prefs.rulesChanged": "{count} değiştirildi",
   "prefs.rulesLibrary": "Varsayımlar kitaplığı: {value} {unit}",
   "prefs.rulesLibraryRange": "Varsayımlar kitaplığı: {value} {unit} (aralık {low}–{high})",
+  "prefs.demandTitle": "Talep modeli",
+  "prefs.demandIntro":
+    "Talep modelinin kullandığı her değer, adım adım: bölgeler, yolculuk üretimi, zaman dilimleri, dağılım, ulaşım türü seçimi ve atama. Bu proje için bir değeri değiştirin ya da varsayım kütüphanesinin değerini koruyun.",
+  "prefs.demandStep": "Model adımı",
+  "prefs.demandSearch": "Değerlerde ara",
+  "prefs.demandNone": "Eşleşen değer yok.",
+  "prefs.demandStep.zones": "Bölgeler",
+  "prefs.demandStep.generation": "Yolculuk üretimi",
+  "prefs.demandStep.periods": "Zaman dilimleri",
+  "prefs.demandStep.distribution": "Yolculuk dağılımı",
+  "prefs.demandStep.mode_choice": "Ulaşım türü seçimi",
+  "prefs.demandStep.catchment": "Erişim alanı",
+  "prefs.demandStep.assignment": "Atama",
+  "prefs.demandStep.calibration": "Kalibrasyon",
+  "prefs.demandAll": "Tüm adımlar",
   "prefs.paramsTitle": "Tüm parametreler",
   "prefs.paramsIntro":
     "Varsayım kütüphanesinin her değeri. Tüm türler veya tek bir tür için kendi değerinizi girin; bir türün değeri tüm türler için olandan önce gelir. Kütüphanenin değeri yanında kalır.",
@@ -422,6 +439,7 @@ export const tr: Messages = {
   ...cargoBikeTr,
   ...depotsTr,
   ...mslabTr,
+  ...pluginCodeTr,
   ...populationTr,
   ...roadTr,
   ...PLUGIN_MESSAGES.tr,

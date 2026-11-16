@@ -3,6 +3,7 @@ import { editorsTa } from "./editors/ta";
 import { cargoBikeTa } from "./cargo-bike/ta";
 import { depotsTa } from "./depots/ta";
 import { mslabTa } from "./mslab/ta";
+import { pluginCodeTa } from "./plugin-code/ta";
 import { populationTa } from "./population/ta";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -262,6 +263,7 @@ export const ta: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "தெருக்கள்",
   "gis.regionsView": "பகுதிகள்",
+  "gis.zonesView": "தேவை மண்டலங்கள்",
   "gis.intro": "கணக்கீடுகள் பயன்படுத்தும் தகவலைச் சேர்க்கவும் அல்லது திருத்தவும்.",
   "gis.areas": "பகுதியை வரையுங்கள் அல்லது OpenStreetMap இலிருந்து இறக்குமதி செய்யுங்கள்",
   "gis.streets": "தெரு அமைப்பு: பேருந்து, மிதிவண்டி மற்றும் டிராம் பாதைகள், வேகங்கள், மேல்நிலைக் கம்பிகள்",
@@ -312,6 +314,21 @@ export const ta: Messages = {
   "prefs.rulesChanged": "மாற்றப்பட்டவை: {count}",
   "prefs.rulesLibrary": "அனுமானங்களின் நூலகம்: {value} {unit}",
   "prefs.rulesLibraryRange": "அனுமானங்களின் நூலகம்: {value} {unit} (வரம்பு {low}–{high})",
+  "prefs.demandTitle": "தேவை மாதிரி",
+  "prefs.demandIntro":
+    "தேவை மாதிரி பயன்படுத்தும் ஒவ்வொரு மதிப்பும், படிப்படியாக: மண்டலங்கள், பயண உருவாக்கம், நேரப் பகுதிகள், பகிர்வு, போக்குவரத்து முறைத் தேர்வு மற்றும் ஒதுக்கீடு. இந்தத் திட்டத்துக்கு ஒரு மதிப்பை மாற்றுங்கள், அல்லது அனுமான நூலகத்தின் மதிப்பை வைத்திருங்கள்.",
+  "prefs.demandStep": "மாதிரிப் படி",
+  "prefs.demandSearch": "மதிப்புகளைத் தேடுங்கள்",
+  "prefs.demandNone": "எந்த மதிப்பும் பொருந்தவில்லை.",
+  "prefs.demandStep.zones": "மண்டலங்கள்",
+  "prefs.demandStep.generation": "பயண உருவாக்கம்",
+  "prefs.demandStep.periods": "நேரப் பகுதிகள்",
+  "prefs.demandStep.distribution": "பயணப் பகிர்வு",
+  "prefs.demandStep.mode_choice": "போக்குவரத்து முறைத் தேர்வு",
+  "prefs.demandStep.catchment": "அணுகல் பகுதி",
+  "prefs.demandStep.assignment": "ஒதுக்கீடு",
+  "prefs.demandStep.calibration": "அளவுத்திருத்தம்",
+  "prefs.demandAll": "எல்லாப் படிகளும்",
   "prefs.paramsTitle": "அனைத்து அளவுருக்கள்",
   "prefs.paramsIntro":
     "அனுமான நூலகத்தின் ஒவ்வொரு மதிப்பும். அனைத்து முறைகளுக்கும் அல்லது ஒரு முறைக்கும் உங்கள் மதிப்பை அமைக்கவும்; ஒரு முறையின் மதிப்பு அனைத்துக்குமான மதிப்பை விட முன்னுரிமை பெறும். நூலக மதிப்பு அருகில் இருக்கும்.",
@@ -430,6 +447,7 @@ export const ta: Messages = {
   ...cargoBikeTa,
   ...depotsTa,
   ...mslabTa,
+  ...pluginCodeTa,
   ...populationTa,
   ...roadTa,
   ...PLUGIN_MESSAGES.ta,

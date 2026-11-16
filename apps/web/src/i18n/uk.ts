@@ -3,6 +3,7 @@ import { editorsUk } from "./editors/uk";
 import { cargoBikeUk } from "./cargo-bike/uk";
 import { depotsUk } from "./depots/uk";
 import { mslabUk } from "./mslab/uk";
+import { pluginCodeUk } from "./plugin-code/uk";
 import { populationUk } from "./population/uk";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -258,6 +259,7 @@ export const uk: Messages = {
   "gis.title": "ГІС",
   "gis.streetsView": "Вулиці",
   "gis.regionsView": "Райони",
+  "gis.zonesView": "Зони попиту",
   "gis.intro": "Додавайте й редагуйте відомості, що використовуються в розрахунках.",
   "gis.areas": "Малюйте території або імпортуйте з OpenStreetMap",
   "gis.streets":
@@ -308,6 +310,21 @@ export const uk: Messages = {
   "prefs.rulesChanged": "змінено: {count}",
   "prefs.rulesLibrary": "Бібліотека припущень: {value} {unit}",
   "prefs.rulesLibraryRange": "Бібліотека припущень: {value} {unit} (діапазон {low}–{high})",
+  "prefs.demandTitle": "Модель попиту",
+  "prefs.demandIntro":
+    "Усі значення, які використовує модель попиту, крок за кроком: зони, генерація поїздок, періоди доби, розподіл, вибір виду транспорту та призначення. Змініть значення для цього проєкту або залиште значення з бібліотеки припущень.",
+  "prefs.demandStep": "Крок моделі",
+  "prefs.demandSearch": "Пошук значень",
+  "prefs.demandNone": "Немає відповідних значень.",
+  "prefs.demandStep.zones": "Зони",
+  "prefs.demandStep.generation": "Генерація поїздок",
+  "prefs.demandStep.periods": "Періоди доби",
+  "prefs.demandStep.distribution": "Розподіл поїздок",
+  "prefs.demandStep.mode_choice": "Вибір виду транспорту",
+  "prefs.demandStep.catchment": "Зона доступності",
+  "prefs.demandStep.assignment": "Призначення",
+  "prefs.demandStep.calibration": "Калібрування",
+  "prefs.demandAll": "Усі кроки",
   "prefs.paramsTitle": "Усі параметри",
   "prefs.paramsIntro":
     "Кожне значення бібліотеки припущень. Задайте своє для всіх видів транспорту або для одного; значення для виду транспорту важливіше за значення для всіх. Значення бібліотеки показано поруч.",
@@ -424,6 +441,7 @@ export const uk: Messages = {
   ...cargoBikeUk,
   ...depotsUk,
   ...mslabUk,
+  ...pluginCodeUk,
   ...populationUk,
   ...roadUk,
   ...PLUGIN_MESSAGES.uk,

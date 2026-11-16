@@ -3,6 +3,7 @@ import { editorsKk } from "./editors/kk";
 import { cargoBikeKk } from "./cargo-bike/kk";
 import { depotsKk } from "./depots/kk";
 import { mslabKk } from "./mslab/kk";
+import { pluginCodeKk } from "./plugin-code/kk";
 import { populationKk } from "./population/kk";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -256,6 +257,7 @@ export const kk: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "Көшелер",
   "gis.regionsView": "Аймақтар",
+  "gis.zonesView": "Сұраныс аймақтары",
   "gis.intro": "Есептеулер пайдаланатын ақпаратты қосыңыз немесе өңдеңіз.",
   "gis.areas": "Аумақ сызыңыз немесе OpenStreetMap-тан импорттаңыз",
   "gis.streets": "Көше құрылымы: автобус, велосипед және трамвай жолақтары, жылдамдықтар, түйіспе желісі",
@@ -305,6 +307,21 @@ export const kk: Messages = {
   "prefs.rulesChanged": "өзгертілген: {count}",
   "prefs.rulesLibrary": "Болжамдар кітапханасы: {value} {unit}",
   "prefs.rulesLibraryRange": "Болжамдар кітапханасы: {value} {unit} (ауқым {low}–{high})",
+  "prefs.demandTitle": "Сұраныс моделі",
+  "prefs.demandIntro":
+    "Сұраныс моделі қолданатын әрбір мән, қадам бойынша: аймақтар, сапарлардың пайда болуы, уақыт кезеңдері, бөлу, көлік түрін таңдау және жүктеу. Осы жоба үшін мәнді өзгертіңіз немесе болжамдар кітапханасының мәнін қалдырыңыз.",
+  "prefs.demandStep": "Модель қадамы",
+  "prefs.demandSearch": "Мәндерді іздеу",
+  "prefs.demandNone": "Сәйкес мән жоқ.",
+  "prefs.demandStep.zones": "Аймақтар",
+  "prefs.demandStep.generation": "Сапарлардың пайда болуы",
+  "prefs.demandStep.periods": "Уақыт кезеңдері",
+  "prefs.demandStep.distribution": "Сапарларды бөлу",
+  "prefs.demandStep.mode_choice": "Көлік түрін таңдау",
+  "prefs.demandStep.catchment": "Қолжетімділік аймағы",
+  "prefs.demandStep.assignment": "Жүктеу",
+  "prefs.demandStep.calibration": "Калибрлеу",
+  "prefs.demandAll": "Барлық қадамдар",
   "prefs.paramsTitle": "Барлық параметрлер",
   "prefs.paramsIntro":
     "Болжамдар кітапханасының әр мәні. Барлық көлік түрлеріне немесе біреуіне өз мәніңізді қойыңыз; бір түрдің мәні барлығына арналған мәннен басым. Кітапхана мәні қасында тұрады.",
@@ -421,6 +438,7 @@ export const kk: Messages = {
   ...cargoBikeKk,
   ...depotsKk,
   ...mslabKk,
+  ...pluginCodeKk,
   ...populationKk,
   ...roadKk,
   ...PLUGIN_MESSAGES.kk,
