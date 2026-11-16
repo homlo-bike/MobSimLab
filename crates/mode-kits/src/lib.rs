@@ -7,10 +7,14 @@
 //!
 //! - [`spans`]: the **straight spans kit**: stations clicked in order, straight sections, towers placed
 //!   automatically within the span limit, rope sag and clearance, angle checks, running time, capacity and
-//!   cabin count. Used by the aerial-lift plugin for cable cars and aerial tramways.
+//!   cabin count. Used by the aerial-lift plugin for cable cars and aerial tramways, and by the people mover
+//!   plugin for cable-hauled trains on a guideway (carrier `train`).
 //! - [`water`]: the **water route kit**: an ordered list of pier calls with via points, speed zones,
 //!   berthing manoeuvre, dwell from gangway throughput, vessel blocks and a berth check that runs the
 //!   service on the segment engine. Used by the ferry plugin.
+//! - [`zone`]: the **service zone kit**: an on-demand service in a drawn zone, with the fleet needed,
+//!   wait, ride and door-to-door time from continuous-approximation formulas. Used by the on-demand bus
+//!   plugin.
 //! - [`segment`]: the **mesoscopic segment engine**: vehicles run from call to call with fixed running and
 //!   dwell times, and hold until a reservable resource (a berth, a lock, a single track) is free.
 //! - [`issue`]: findings shared by the kits (error, warning, info).
@@ -20,5 +24,6 @@ pub mod issue;
 pub mod segment;
 pub mod spans;
 pub mod water;
+pub mod zone;
 
 pub use issue::{Issue, Level};

@@ -1,0 +1,57 @@
+# Sources of the energy plugin's parameters (same format as assumptions/sources.yaml).
+# Figures from search snippets of the documents below; not yet re-read by a maintainer.
+
+- id: eea-electricity-ghg-intensity
+  title: EEA indicator, greenhouse gas emission intensity of electricity generation, EU level (2023 about 20 % below 2022)
+  publisher: European Environment Agency
+  url: https://www.eea.europa.eu/en/analysis/indicators/greenhouse-gas-emission-intensity-of-1/greenhouse-gas-emission-intensity-of-electricity-generation-eu-level
+  licence: CC BY 4.0
+  access: free
+  retrieved: 2026-11-15
+  checked_via: search-snippet
+
+- id: desnz-ghg-conversion-factors-2024
+  title: UK DESNZ, greenhouse gas reporting conversion factors 2024 (diesel per litre, tank-to-wheel and well-to-tank)
+  publisher: Department for Energy Security and Net Zero
+  url: https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2024
+  licence: Open Government Licence v3.0
+  access: free
+  retrieved: 2026-11-15
+  checked_via: search-snippet
+
+- id: viriciti-ebus-consumption
+  title: ViriCiti fleet study, real energy use of battery electric buses (12 m about 1.15 kWh/km over 10 months, 14 % more in cold weather)
+  publisher: Vision Mobility
+  url: https://vision-mobility.de/en/news/study-viriciti-determines-real-energy-consumption-of-electric-buses-58523.html
+  licence: © Vision Mobility; numbers cited as facts
+  access: free
+  retrieved: 2026-11-15
+  checked_via: search-snippet
+  kind: secondary
+
+- id: thermal-science-ebus-review
+  title: Review of battery electric bus energy use in city service (12 m 1.3 to 1.7 kWh/km; a diesel bus 3.90 kWh/km of fuel)
+  publisher: Thermal Science (University of Kragujevac repository)
+  url: https://scidar.kg.ac.rs/bitstream/123456789/15550/1/TSCI220709156M.pdf
+  licence: © the authors; numbers cited as facts
+  access: free
+  retrieved: 2026-11-15
+  checked_via: search-snippet
+
+- id: tianjin-metro-traction-energy
+  title: Traction electricity use of Tianjin Metro lines, median about 2.0 kWh per car-km (Energy Science & Engineering, 2023)
+  publisher: Wiley (open access)
+  url: https://doaj.org/article/8ba1bd3955994b31a608c6a9dfd8141d
+  licence: CC BY 4.0
+  access: free
+  retrieved: 2026-11-15
+  checked_via: search-snippet
+
+- id: lille-tram-energy-simulation
+  title: Lille tram network energy simulation (391.7 kWh for 126 tram-km in one hour, about 3.1 kWh per tram-km)
+  publisher: Université de Lille, CUMIN
+  url: https://cumin.univ-lille.fr/fileadmin/user_upload/cumin/Documents/News/3_CUMIN-HANKOUR-LAKHDARI-REZOUG-2024.pdf
+  licence: © the authors; numbers cited as facts
+  access: free
+  retrieved: 2026-11-15
+  checked_via: search-snippet

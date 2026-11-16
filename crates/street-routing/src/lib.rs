@@ -18,6 +18,7 @@
 //! the map editor, so the planner sees exactly the path the simulation will drive.
 #![warn(missing_docs)]
 
+pub mod access;
 pub mod crossings;
 pub mod geo;
 pub mod graph;
