@@ -15,6 +15,7 @@ import { StreetNetworkModule } from "./street-network/street-network.module";
 import { BenefitsModule } from "./benefits/benefits.module";
 import { PopulationModule } from "./population/population.module";
 import { EconomyModule } from "./economy/economy.module";
+import { CalendarModule } from "./calendar/calendar.module";
 import { PlacesModule } from "./places/places.module";
 import { TerrainModule } from "./terrain/terrain.module";
 import { AccessGuard } from "./iam/access.guard";
@@ -43,6 +44,7 @@ export class AppModule {
         TerrainModule,
         PopulationModule,
         EconomyModule,
+        CalendarModule,
         BenefitsModule,
         PlacesModule,
         SimulationModule,
