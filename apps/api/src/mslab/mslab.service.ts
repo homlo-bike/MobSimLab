@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { BadRequestException, Inject, Injectable, Logger } from "@nestjs/common";
+import { BadRequestException, ForbiddenException, Inject, Injectable, Logger } from "@nestjs/common";
 import { z } from "zod";
 import { DATABASE, type Database } from "../db/database";
 import { BUNDLED } from "../plugins/validate";
@@ -142,7 +142,8 @@ export class MslabService {
   ) {}
 
   /**
-   * Purpose: the project as a `.mslab` file. Anyone who can open the project may save a copy.
+   * Purpose: the project as a `.mslab` file. Members may save a copy; people who see the project only because it
+   * is public may not (403), as they may not duplicate it.
    * Inputs: `includeRuns` adds the finished simulation runs. Output: the file name and bytes.
    * Side effects: audit `project.exported` (runs included, size).
    */
@@ -151,7 +152,8 @@ export class MslabService {
     id: string,
     includeRuns: boolean,
   ): Promise<{ fileName: string; bytes: Buffer }> {
-    await this.projects.access(actor, id, "read");
+    if ((await this.projects.get(actor, id)).viaPublic)
+      throw new ForbiddenException("public projects are read-only; ask the owner for access");
     const p = await this.db
       .selectFrom("project.project")
       .select(["id", "name", "description", "area_name", "modes", "created_at", "updated_at"])

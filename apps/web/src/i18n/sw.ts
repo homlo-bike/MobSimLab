@@ -105,6 +105,7 @@ export const sw: Messages = {
   "home.shared": "Imeshirikiwa nami",
   "home.sharedEdit": "Imeshirikiwa nami · unaweza kuhariri",
   "home.viewOnly": "Kutazama tu",
+  "home.public": "Miradi ya umma",
   "home.archived": "Imehifadhiwa kumbukumbu",
   "home.none": "Hakuna kitu hapa.",
   "home.edited": "Ilihaririwa {when}",
@@ -177,11 +178,16 @@ export const sw: Messages = {
   "share.roleOf": "Jukumu la {name}",
   "share.remove": "Ondoa {name}",
   "share.leave": "Ondoka",
-  "share.link": "Kiungo cha kutazama tu",
-  "share.linkOn": "Yeyote aliyeingia kwenye MobSimLab hii anaweza kukifungua",
-  "share.linkOff": "Kimezimwa: watu walio juu tu ndio wanaweza kukifungua",
-  "share.linkTurnOn": "Washa",
-  "share.linkTurnOff": "Zima",
+  "share.visibility": "Nani anaweza kuufungua",
+  "share.private": "Binafsi: watu walio hapo juu tu wanaweza kuufungua",
+  "share.public":
+    "Ya umma: yeyote aliyeingia kwenye MobSimLab hii anaweza kuupata na kuufungua kwa kusoma tu",
+  "share.makePublic": "Fanya uwe wa umma",
+  "share.makePrivate": "Fanya uwe binafsi",
+  "share.licenceTitle": "Kabla ya kuufanya wa umma",
+  "share.licenceNote":
+    "Mradi huu unatumia data kutoka OpenStreetMap. Itashirikiwa chini ya Open Database License (ODbL), © wachangiaji wa OpenStreetMap. Ufanye wa umma tu ikiwa kila kitu kingine ndani yake kinaweza kushirikiwa pia.",
+  "share.confirmPublic": "Nimeelewa, ufanye wa umma",
   "share.copyLink": "Nakili kiungo",
   "share.copied": "Imenakiliwa",
 
@@ -198,6 +204,8 @@ export const sw: Messages = {
 
   "project.back": "Rudi kwenye miradi",
   "project.viewOnly": "Kutazama tu",
+  "project.public": "Ya umma",
+  "project.publicNote": "Mradi wa umma. Data ya ramani © wachangiaji wa OpenStreetMap, ODbL.",
   "project.notFound": "Mradi haukupatikana",
   "project.notFoundHint": "Huenda umefutwa, au huna ufikiaji tena.",
   "project.toHome": "Rudi kwenye miradi",

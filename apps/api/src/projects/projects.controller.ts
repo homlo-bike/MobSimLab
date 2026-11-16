@@ -15,6 +15,7 @@ import {
 } from "@nestjs/common";
 import { z } from "zod";
 import { type MslRequest, SessionService } from "../auth/session.service";
+import { PROJECT_VISIBILITIES } from "../db/database";
 import { Requires } from "../iam/requires";
 import { DRAWING_KINDS, isDrawingKind, MAX_DRAWING_BYTES } from "./drawings";
 import { type ProjectActor, ProjectsService } from "./projects.service";
@@ -44,7 +45,10 @@ const modes = z
   .transform((m) => [...new Set(m)]);
 const memberRole = z.enum(["editor", "commenter", "viewer"]);
 
-const listQuery = z.strictObject({ archived: z.enum(["true", "false"]).optional() });
+const listQuery = z.strictObject({
+  archived: z.enum(["true", "false"]).optional(),
+  public: z.enum(["true", "false"]).optional(),
+});
 const createBody = z.strictObject({
   name,
   description: description.optional(),
@@ -63,7 +67,10 @@ const duplicateBody = z.strictObject({ name: name.optional() });
 const deleteBody = z.strictObject({ confirmName: z.string().max(200) });
 const addMemberBody = z.strictObject({ email: z.email().max(320), role: memberRole });
 const roleBody = z.strictObject({ role: memberRole });
-const linkBody = z.strictObject({ linkAccess: z.boolean() });
+const visibilityBody = z.strictObject({
+  visibility: z.enum(PROJECT_VISIBILITIES),
+  licenceAccepted: z.boolean().optional(),
+});
 const historyQuery = z.strictObject({
   id: z
     .string()
@@ -107,11 +114,15 @@ export class ProjectsController {
     };
   }
 
-  /** Purpose: the caller's projects. Query: `archived=true` lists archived projects instead. */
+  /**
+   * Purpose: the caller's projects. Query: `archived=true` lists archived projects instead; `public=true` lists
+   * the public projects the caller is not a member of.
+   */
   @Get()
   @Requires("projects.read")
   async list(@Query() query: unknown, @Req() req: MslRequest) {
     const q = parse(listQuery, query);
+    if (q.public === "true") return { projects: await this.projects.listPublic(this.actor(req)) };
     return { projects: await this.projects.list(this.actor(req), q.archived === "true") };
   }
 
@@ -252,11 +263,21 @@ export class ProjectsController {
     };
   }
 
-  /** Purpose: switch the view-only link on or off. Body: `{ linkAccess }`. */
-  @Put(":id/link")
+  /**
+   * Purpose: make the project public or private. Body: `{ visibility, licenceAccepted? }`; making it public needs
+   * `licenceAccepted: true`.
+   */
+  @Put(":id/visibility")
   @Requires("projects.read")
-  async setLink(@Param("id") id: string, @Body() body: unknown, @Req() req: MslRequest) {
-    const { linkAccess } = parse(linkBody, body);
-    return { project: await this.projects.setLinkAccess(this.actor(req), parse(uuid, id), linkAccess) };
+  async setVisibility(@Param("id") id: string, @Body() body: unknown, @Req() req: MslRequest) {
+    const b = parse(visibilityBody, body);
+    return {
+      project: await this.projects.setVisibility(
+        this.actor(req),
+        parse(uuid, id),
+        b.visibility,
+        b.licenceAccepted === true,
+      ),
+    };
   }
 }
