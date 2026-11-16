@@ -192,3 +192,13 @@ function splitList(v: string | undefined): string[] {
     .map((s) => s.trim())
     .filter(Boolean);
 }
+
+/**
+ * Purpose: whether the operator named the first Owner (MOBSIMLAB_BOOTSTRAP_OWNER_EMAIL or _SUBJECT). Without one,
+ * setup mode refuses every sign-in, so nobody else who can sign in at the provider can claim the instance first.
+ */
+export function bootstrapOwnerSet(
+  config: Pick<AppConfig, "bootstrapOwnerEmail" | "bootstrapOwnerSubject">,
+): boolean {
+  return Boolean(config.bootstrapOwnerEmail || config.bootstrapOwnerSubject);
+}

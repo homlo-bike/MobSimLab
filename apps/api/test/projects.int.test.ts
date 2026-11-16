@@ -2,6 +2,7 @@ import type { NestExpressApplication } from "@nestjs/platform-express";
 import request from "supertest";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import type { AppConfig } from "../src/config/env";
+import { MAX_OPEN_RUNS_PER_USER } from "../src/simulation/runs.service";
 import { createApp, testConfig } from "./support/app";
 import { startDatabase, type TestDatabase } from "./support/database";
 import { cookieValue, signIn, startIdp, type TestIdp } from "./support/idp";
@@ -150,6 +151,28 @@ describe("projects", () => {
       (await as("alice").put(`/api/projects/${lakeside}/members/${browsers.alice?.id}`, { role: "viewer" }))
         .status,
     ).toBe(409);
+  });
+
+  it("shares only with e-mail addresses the sign-in provider verified", async () => {
+    // Security review (L4): an account at a provider that does not verify e-mails must not receive another
+    // person's invitations by claiming their address.
+    const fake = await signIn(app, idp, "mallory", { email: "dave@example.org", email_verified: false });
+    expect(fake.headers.location).toBe("/");
+    const created = await as("alice").post("/api/projects", { name: "Verified sharing", modes: ["bus"] });
+    const id = created.body.project.id as string;
+    const refused = await as("alice").post(`/api/projects/${id}/members`, {
+      email: "dave@example.org",
+      role: "viewer",
+    });
+    expect(refused.status).toBe(404);
+    await login("dave");
+    const added = await as("alice").post(`/api/projects/${id}/members`, {
+      email: "Dave@Example.org",
+      role: "viewer",
+    });
+    expect(added.status).toBe(201);
+    const ids = added.body.members.map((m: { userId: string }) => m.userId);
+    expect(ids).toContain(browsers.dave?.id);
   });
 
   it("lets a member leave and the owner remove members", async () => {
@@ -555,5 +578,25 @@ describe("projects", () => {
     });
     expect((await as("bob").put("/api/auth/preferences", { language: "<script>" })).status).toBe(400);
     expect((await as("bob").put("/api/auth/preferences", { colour: "red" })).status).toBe(400);
+  });
+
+  it("holds each person to a limit of runs queued or running at once", async () => {
+    // Security review (L2): one member must not be able to fill the worker queue for everyone.
+    const created = await as("alice").post("/api/projects", { name: "Run limit", modes: ["metro"] });
+    const id = created.body.project.id as string;
+    const sql = await db.superuser();
+    const insert = (status: string) =>
+      sql.query<{ id: string }>(
+        `INSERT INTO simulation.run (project_id, kind, status, input, network, lines, created_by)
+         VALUES ($1, 'capacity', $2, '{}', 'example:metro', '', $3) RETURNING id`,
+        [id, status, browsers.alice?.id],
+      );
+    const done = (await insert("done")).rows[0]!.id;
+    for (let i = 0; i < MAX_OPEN_RUNS_PER_USER; i++) await insert("queued");
+    const res = await as("alice").post(`/api/projects/${id}/simulation-runs/${done}/rerun`, {});
+    expect(res.status).toBe(429);
+    expect(res.body.message).toContain(`the limit is ${MAX_OPEN_RUNS_PER_USER}`);
+    await sql.query("DELETE FROM simulation.run WHERE project_id = $1", [id]);
+    await sql.end();
   });
 });

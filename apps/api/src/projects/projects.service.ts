@@ -349,9 +349,16 @@ export class ProjectsService {
         .selectFrom("iam.user")
         .select(["id", "status", "instance_role"])
         .where(sql`lower(email)`, "=", email.toLowerCase())
+        // Only an address the sign-in provider verified: anyone could put another person's e-mail on an
+        // account at a provider that does not check it.
+        .where("email_verified", "=", true)
         .where("status", "=", "active")
+        .orderBy("last_login_at", "desc")
         .executeTakeFirst();
-      if (!user) throw new NotFoundException("nobody with that e-mail has signed in to this MobSimLab yet");
+      if (!user)
+        throw new NotFoundException(
+          "nobody with that verified e-mail has signed in to this MobSimLab yet; they need to sign in once, with a provider that verifies e-mail addresses",
+        );
       if (user.instance_role === "restricted") throw new ConflictException("that account is restricted");
       const existing = await tx
         .selectFrom("project.member")

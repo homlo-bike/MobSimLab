@@ -52,6 +52,8 @@ const FLOW_MS = 10 * 60 * 1000;
 @Controller("api/auth")
 export class AuthController {
   private readonly log = new Logger(AuthController.name);
+  /** Refused sign-ins (WARN, so they are also kept in the database for 30 days). */
+  private readonly security = new Logger("security");
 
   constructor(
     private readonly oidc: OidcService,
@@ -156,7 +158,10 @@ export class AuthController {
   @Public()
   @AuthRateLimit()
   async callback(@Req() req: MslRequest, @Res() res: Response): Promise<void> {
-    const fail = (reason: string) => res.redirect(302, `/?signin=${encodeURIComponent(reason)}`);
+    const fail = (reason: string) => {
+      this.security.warn(`sign-in refused: ${reason} (client ${this.sessions.ipHash(req.ip) ?? "unknown"})`);
+      res.redirect(302, `/?signin=${encodeURIComponent(reason)}`);
+    };
     res.clearCookie(FLOW_COOKIE, { ...this.sessions.cookieOptions(), path: "/api/auth" });
     const state = typeof req.query.state === "string" ? req.query.state : "";
     const cookieState = (req.cookies as Record<string, string> | undefined)?.[FLOW_COOKIE];

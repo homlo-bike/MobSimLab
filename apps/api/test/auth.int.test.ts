@@ -75,14 +75,37 @@ describe("sign-in, setup mode and audit", () => {
     expect((await request(server()).get("/api/setup")).status).toBe(401);
   });
 
-  it("makes exactly one Owner when two people sign in at the same time", async () => {
+  it("refuses every sign-in in setup mode while no first Owner is named", async () => {
+    // Security review (M1): without MOBSIMLAB_BOOTSTRAP_OWNER_EMAIL or _SUBJECT, whoever signed in first at the
+    // provider would own the instance.
+    const unnamed = testConfig({
+      ...config,
+      bootstrapOwnerEmail: undefined,
+      bootstrapOwnerSubject: undefined,
+    });
+    const saved = app;
+    app = await createApp(unnamed);
+    try {
+      expect((await signIn("alice")).headers.location).toBe("/?signin=not_bootstrap_owner");
+    } finally {
+      await app.close();
+      app = saved;
+    }
+    const sql = await db.superuser();
+    const owners = await sql.query("SELECT 1 FROM iam.user WHERE instance_role = 'owner'");
+    await sql.end();
+    expect(owners.rowCount).toBe(0);
+  });
+
+  it("makes exactly one Owner, the named one, when two people sign in at the same time", async () => {
     const [a, b] = await Promise.all([signIn("alice"), signIn("bob")]);
-    const locations = [a.headers.location, b.headers.location].sort();
-    expect(locations).toEqual(["/", "/?signin=setup_in_progress"]);
+    expect(a.headers.location).toBe("/");
+    // Bob is refused either way: as not the named person, or because the Owner exists already.
+    expect(["/?signin=setup_in_progress", "/?signin=not_bootstrap_owner"]).toContain(b.headers.location);
     const sql = await db.superuser();
     const owners = await sql.query("SELECT email FROM iam.user WHERE instance_role = 'owner'");
     await sql.end();
-    expect(owners.rowCount).toBe(1);
+    expect(owners.rows).toEqual([{ email: "alice@example.org" }]);
   });
 
   it("lets the Owner sign in again during setup and refuses others", async () => {
@@ -225,7 +248,14 @@ describe("sign-in, setup mode and audit", () => {
     });
     expect(await resetOwner(k)).toBe(1);
     await k.destroy();
-    const res = await signIn("erin");
+    // Only the named person (alice) may claim the instance again, and not while her account is Restricted.
+    expect((await signIn("erin")).headers.location).toBe("/?signin=not_bootstrap_owner");
+    const sql = await db.superuser();
+    await sql.query("UPDATE iam.user SET instance_role = 'restricted' WHERE email = 'alice@example.org'");
+    expect((await signIn("alice")).headers.location).toBe("/?signin=not_bootstrap_owner");
+    await sql.query("UPDATE iam.user SET instance_role = 'admin' WHERE email = 'alice@example.org'");
+    await sql.end();
+    const res = await signIn("alice");
     expect(res.headers.location).toBe("/");
     expect((await me(session(res))).user.role).toBe("owner");
   });

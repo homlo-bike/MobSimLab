@@ -3,13 +3,15 @@ import {
   GbfsClient,
   GbfsError,
   gbfsStations,
+  publicAddress,
   gbfsUrlAllowed,
   stationInformationUrl,
 } from "../src/gateway/gbfs.client";
 import { bikeAccess, bikeAccessQuery } from "../src/street-network/street-network.service";
 
-const feed = (body: unknown, status = 200) =>
-  ({ ok: status < 400, status, text: async () => JSON.stringify(body) }) as unknown as Response;
+const feed = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status });
+/** Test feeds live at a public address (example.org's). */
+const PUBLIC = { resolveImpl: async () => ["93.184.215.14"] };
 
 describe("bike parkings and shared-bike stations from OpenStreetMap", () => {
   it("asks for both amenities with their centre", () => {
@@ -79,6 +81,7 @@ describe("GBFS feeds", () => {
   it("follows the auto-discovery file to the stations, without redirects", async () => {
     const calls: { url: string; init?: RequestInit }[] = [];
     const client = new GbfsClient({
+      ...PUBLIC,
       fetchImpl: (async (url: string, init?: RequestInit) => {
         calls.push({ url, init });
         return url.endsWith("gbfs.json")
@@ -92,14 +95,45 @@ describe("GBFS feeds", () => {
   });
 
   it("says why a feed cannot be read", async () => {
-    const notFound = new GbfsClient({ fetchImpl: (async () => feed({}, 404)) as typeof fetch });
+    const notFound = new GbfsClient({ ...PUBLIC, fetchImpl: (async () => feed({}, 404)) as typeof fetch });
     await expect(notFound.stations("https://g.example/gbfs.json")).rejects.toThrow("answered 404");
     const internal = new GbfsClient({
+      ...PUBLIC,
       fetchImpl: (async () =>
         feed({
           data: { feeds: [{ name: "station_information", url: "https://10.0.0.1/si.json" }] },
         })) as typeof fetch,
     });
     await expect(internal.stations("https://g.example/gbfs.json")).rejects.toThrow("public server");
+  });
+
+  it("refuses names that resolve inside the server's network, and oversized answers (security review)", async () => {
+    let fetched = 0;
+    const counting = (async () => {
+      fetched++;
+      return feed({ data: { stations: [] } });
+    }) as unknown as typeof fetch;
+    for (const ip of [
+      "169.254.169.254",
+      "10.1.2.3",
+      "127.0.0.1",
+      "::1",
+      "fd00::1",
+      "::ffff:192.168.1.1",
+      "::ffff:a9fe:a9fe",
+    ]) {
+      const c = new GbfsClient({ resolveImpl: async () => ["93.184.215.14", ip], fetchImpl: counting });
+      await expect(c.stations("https://bikes.example.org/gbfs.json")).rejects.toThrow("public server");
+    }
+    expect(fetched).toBe(0);
+    expect(publicAddress("93.184.215.14")).toBe(true);
+    expect(publicAddress("::ffff:93.184.215.14")).toBe(true);
+    expect(publicAddress("2606:2800:21f:cb07:6820:80da:af6b:8b2c")).toBe(true);
+    const huge = new GbfsClient({
+      ...PUBLIC,
+      maxBytes: 1000,
+      fetchImpl: (async () => new Response("x".repeat(5000))) as unknown as typeof fetch,
+    });
+    await expect(huge.stations("https://bikes.example.org/gbfs.json")).rejects.toThrow("too large");
   });
 });
