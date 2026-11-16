@@ -30,9 +30,11 @@ jobs:
       PGUSER: postgres
       PGPASSWORD: ci-only-throwaway-${{ github.run_id }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
       - run: sudo apt-get update && sudo apt-get install -y osm2pgsql osmium-tool postgresql-client
       - name: Run S3
-        run: tools/osm/s3_benchmark.sh "${{ inputs.region }}" "${{ inputs.bbox }}" | tee s3-report.txt
-      - uses: actions/upload-artifact@v4
+        # Inputs pass through the environment, never into the script text (no shell injection).
+        env: { REGION: "${{ inputs.region }}", BBOX: "${{ inputs.bbox }}" }
+        run: tools/osm/s3_benchmark.sh "$REGION" "$BBOX" | tee s3-report.txt
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with: { name: s3-report, path: s3-report.txt }

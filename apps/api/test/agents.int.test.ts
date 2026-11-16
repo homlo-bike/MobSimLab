@@ -191,6 +191,10 @@ describe.skipIf(!WASM)("AI agent integration (ADR-0035)", () => {
     expect(r.headers["www-authenticate"]).toContain(
       'resource_metadata="http://127.0.0.1:8080/.well-known/oauth-protected-resource/mcp"',
     );
+    // The hint names every scope, so agents that follow it can also reach simulation runs.
+    expect(r.headers["www-authenticate"]).toContain(
+      'scope="project:read analysis:run scenario:write simulation:run"',
+    );
   });
 
   it("registers a client dynamically, without cookies or Origin", async () => {
@@ -495,6 +499,63 @@ describe.skipIf(!WASM)("AI agent integration (ADR-0035)", () => {
     const full = await connect("alice");
     tokens = (await exchange(new URL(full.decision.body.redirect).searchParams.get("code")!, full.verifier))
       .body;
+  });
+
+  it("never issues tokens twice for one code or refresh token sent at the same moment", async () => {
+    // Security review (M3): the single-use check and the "used" mark are one statement.
+    const statuses = async (send: () => request.Test) => {
+      const all = await Promise.all(Array.from({ length: 8 }, send));
+      return { ok: all.filter((r) => r.status === 200), all };
+    };
+    const c = await connect("alice");
+    const code = new URL(c.decision.body.redirect).searchParams.get("code")!;
+    const viaCode = await statuses(() =>
+      request(server()).post("/oauth/token").type("form").send({
+        grant_type: "authorization_code",
+        code,
+        code_verifier: c.verifier,
+        client_id: clientId,
+        redirect_uri: REDIRECT,
+      }),
+    );
+    expect(viaCode.ok.length).toBeLessThanOrEqual(1);
+    // The others were replays, which revoke the connection, so whatever was issued no longer works.
+    for (const r of viaCode.ok) expect((await mcp(r.body.access_token, "tools/list")).status).toBe(401);
+
+    const d = await connect("alice");
+    const fresh = (await exchange(new URL(d.decision.body.redirect).searchParams.get("code")!, d.verifier))
+      .body;
+    const viaRefresh = await statuses(() =>
+      request(server())
+        .post("/oauth/token")
+        .type("form")
+        .send({ grant_type: "refresh_token", refresh_token: fresh.refresh_token, client_id: clientId }),
+    );
+    expect(viaRefresh.ok.length).toBeLessThanOrEqual(1);
+    expect((await mcp(fresh.access_token, "tools/list")).status).toBe(401);
+    for (const r of viaRefresh.ok) expect((await mcp(r.body.access_token, "tools/list")).status).toBe(401);
+
+    const e = await connect("alice");
+    tokens = (await exchange(new URL(e.decision.body.redirect).searchParams.get("code")!, e.verifier)).body;
+    expect(tokens.access_token).toMatch(/^msl_at_/);
+  });
+
+  it("deletes self-registered clients nobody connected within a day", async () => {
+    const unused = await request(server())
+      .post("/oauth/register")
+      .send({ redirect_uris: [REDIRECT], client_name: "Abandoned" });
+    expect(unused.status).toBe(201);
+    const sql = await db.superuser();
+    await sql.query("UPDATE agent.client SET created_at = now() - interval '2 days'");
+    await request(server())
+      .post("/oauth/register")
+      .send({ redirect_uris: [REDIRECT], client_name: "Next" });
+    const { rows } = await sql.query<{ id: string }>("SELECT id FROM agent.client");
+    await sql.end();
+    const ids = rows.map((r) => r.id);
+    expect(ids).not.toContain(unused.body.client_id);
+    // The client alice connected stays, however old it is.
+    expect(ids).toContain(clientId);
   });
 
   it("rotates refresh tokens and revokes the connection on reuse", async () => {

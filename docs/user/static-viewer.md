@@ -42,7 +42,11 @@ projects/index.json          the list of projects the viewer shows
 projects/<file>.mslab        the project files you added
 projects/<project id>/       each file unpacked (what the viewer reads)
 tools/add-projects.mjs       adds or removes projects without this repository
+_headers                     security headers for Cloudflare Pages (the same policy the server sends)
 ```
+
+Everything in the site is public, including the `.mslab` files: add only projects you are happy to publish. On a
+host other than Cloudflare Pages, set the headers in `_headers` in that host's own configuration.
 
 ## 3. Upload to Cloudflare Pages
 

@@ -36,6 +36,18 @@ const WASM = [
   "street-routing",
 ];
 
+/** Cloudflare Pages `_headers`: every path gets these. Keep the CSP in step with apps/api/src/app.setup.ts. */
+const MAP_ORIGINS = "https://tiles.openfreemap.org https://tiles.maps.eox.at";
+const HEADERS = `/*
+  Content-Security-Policy: default-src 'self'; img-src 'self' data: blob: ${MAP_ORIGINS}; connect-src 'self' ${MAP_ORIGINS}; worker-src 'self' blob:; style-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Cross-Origin-Opener-Policy: same-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), bluetooth=(), interest-cohort=()
+`;
+
 function args(argv) {
   const out = { projects: join(root, "static-projects"), skipApp: false };
   for (let i = 0; i < argv.length; i++) {
@@ -118,6 +130,10 @@ function main() {
     console.error("apps/web/dist-static has no app yet; run without --skip-app.");
     process.exit(1);
   }
+
+  // Security headers for Cloudflare Pages (security review): the same policy the MobSimLab server sends
+  // (apps/api/src/app.setup.ts), so the viewer loads only its own files and the basemap tiles.
+  writeFileSync(join(site, "_headers"), HEADERS);
 
   // The script that adds projects travels with the site, so new projects can be added without this repository.
   mkdirSync(join(site, "tools"), { recursive: true });

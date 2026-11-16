@@ -6,9 +6,15 @@ ARG NODE_VERSION=22
 ARG PYTHON_VERSION=3.12
 ARG RUST_VERSION=1.97
 ARG S6_OVERLAY_VERSION=3.2.1.0
+# Base images are pinned by digest as well as tag (security review), so a re-pushed tag cannot change a release
+# build. To update one, change the version above and its digest here together:
+#   docker buildx imagetools inspect <image>:<tag>   (the first "Digest:" line, the multi-platform index)
+ARG RUST_DIGEST=sha256:2775a09d208ff0d7c1f50490c45b62db929e87ba1dcbc3f2132ac71a704bcdd3
+ARG NODE_DIGEST=sha256:e9f565d32859f0cbfb52125eafe8be39390f24dac302dc3cdf566e8ba3ab21ee
+ARG PYTHON_DIGEST=sha256:935c3c5b12357a7e10caa9c1e6ca5692344d97cf229832ef584be2cec9fc03df
 
 # ---- 0. Street routing, railway design and journey planner compiled to WebAssembly
-FROM rust:${RUST_VERSION}-slim-bookworm AS wasm-build
+FROM rust:${RUST_VERSION}-slim-bookworm@${RUST_DIGEST} AS wasm-build
 ARG WASM_BINDGEN_VERSION=0.2.129
 RUN apt-get update && apt-get install -y --no-install-recommends pkg-config libssl-dev && rm -rf /var/lib/apt/lists/*
 RUN rustup target add wasm32-unknown-unknown \
@@ -27,7 +33,7 @@ RUN tools/wasm/build-street-routing.sh && tools/wasm/build-rail-design.sh && too
  && tools/wasm/build-api.sh
 
 # ---- 1. Web SPA and API (Node) ------------------------------------------------
-FROM node:${NODE_VERSION}-bookworm-slim AS node-build
+FROM node:${NODE_VERSION}-bookworm-slim@${NODE_DIGEST} AS node-build
 WORKDIR /src
 RUN corepack enable
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json ./
@@ -44,7 +50,7 @@ RUN pnpm -r build \
  && cp -r apps/web/dist /out/web
 
 # ---- 2. Rust kernels as a Python wheel --------------------------------------
-FROM rust:${RUST_VERSION}-slim-bookworm AS rust-build
+FROM rust:${RUST_VERSION}-slim-bookworm@${RUST_DIGEST} AS rust-build
 RUN apt-get update && apt-get install -y --no-install-recommends python3 python3-venv && rm -rf /var/lib/apt/lists/*
 RUN python3 -m venv /opt/maturin && /opt/maturin/bin/pip install --no-cache-dir "maturin>=1.9,<2"
 WORKDIR /src
@@ -53,8 +59,8 @@ COPY crates crates
 RUN /opt/maturin/bin/maturin build --release -m crates/mobsim-py/Cargo.toml -o /wheels
 
 # ---- 3. Python worker virtualenv --------------------------------------------
-FROM python:${PYTHON_VERSION}-slim-bookworm AS py-build
-COPY --from=ghcr.io/astral-sh/uv:0.11 /uv /usr/local/bin/uv
+FROM python:${PYTHON_VERSION}-slim-bookworm@${PYTHON_DIGEST} AS py-build
+COPY --from=ghcr.io/astral-sh/uv:0.11@sha256:77280f2f771df71f90786c314fe1bbc1e023feac652969bbf139c280babf2eb7 /uv /usr/local/bin/uv
 ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy UV_PYTHON_DOWNLOADS=never
 WORKDIR /src/worker
 COPY worker/pyproject.toml worker/uv.lock ./
@@ -64,7 +70,7 @@ COPY --from=rust-build /wheels /wheels
 RUN VIRTUAL_ENV=/app/venv uv pip install --no-deps . /wheels/*.whl
 
 # ---- 4. Runtime ----------------------------------------------------------------
-FROM python:${PYTHON_VERSION}-slim-bookworm AS runtime
+FROM python:${PYTHON_VERSION}-slim-bookworm@${PYTHON_DIGEST} AS runtime
 ARG S6_OVERLAY_VERSION
 ARG TARGETARCH
 LABEL org.opencontainers.image.source="https://github.com/homlo-bike/MobSimLab" \

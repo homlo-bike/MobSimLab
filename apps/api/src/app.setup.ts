@@ -1,10 +1,13 @@
 import type { NestExpressApplication } from "@nestjs/platform-express";
 import { populationSettings } from "./population/layers.service";
 import cookieParser from "cookie-parser";
-import { json, raw } from "express";
+import { json, type NextFunction, raw, type Request, type Response } from "express";
 import helmet from "helmet";
 import type { AppConfig } from "./config/env";
 import { requestLogContext } from "./logging/context";
+
+/** The only other sites the browser loads from: the basemap tile servers. The static viewer's `_headers` matches. */
+export const MAP_ORIGINS = ["https://tiles.openfreemap.org", "https://tiles.maps.eox.at"];
 
 /**
  * Purpose: HTTP middleware shared by the server and the tests: security headers and CSP (05 §3.4) and
@@ -14,13 +17,19 @@ import { requestLogContext } from "./logging/context";
 export function configureApp(app: NestExpressApplication, config: AppConfig): void {
   app.disable("x-powered-by");
   app.set("trust proxy", config.trustedProxies ?? false);
+  // HTTPS only (security review): when the public address is https and a trusted proxy reports that the browser
+  // came over plain http, send it to the https address. Without MOBSIMLAB_TRUSTED_PROXIES nothing is redirected
+  // (an untrusted X-Forwarded-Proto means nothing), nor are requests that came without a proxy (the health check).
+  if (config.publicUrl.protocol === "https:" && config.trustedProxies)
+    app.use(redirectToHttps(config.publicUrl));
   app.use(
     helmet({
       contentSecurityPolicy: {
         directives: {
           "default-src": ["'self'"],
-          "img-src": ["'self'", "data:", "blob:", "https://tiles.openfreemap.org"],
-          "connect-src": ["'self'", "https://tiles.openfreemap.org"],
+          // Basemaps: OpenFreeMap styles and tiles, and EOX's Sentinel-2 aerial imagery (apps/web/src/map/basemaps.ts).
+          "img-src": ["'self'", "data:", "blob:", ...MAP_ORIGINS],
+          "connect-src": ["'self'", ...MAP_ORIGINS],
           "worker-src": ["'self'", "blob:"],
           "style-src": ["'self'"],
           // WebAssembly street router (ADR-0031) needs wasm compilation, not general eval.
@@ -34,6 +43,19 @@ export function configureApp(app: NestExpressApplication, config: AppConfig): vo
       referrerPolicy: { policy: "strict-origin-when-cross-origin" },
     }),
   );
+  // Browser features the app never uses are switched off; clipboard writes (copy link) stay allowed.
+  app.use((_req: Request, res: Response, next: NextFunction) => {
+    res.setHeader(
+      "Permissions-Policy",
+      "camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), bluetooth=(), interest-cohort=()",
+    );
+    next();
+  });
+  // API answers carry people's projects and settings: no browser or proxy keeps them unless a route says so.
+  app.use(["/api", "/oauth", "/mcp"], (_req: Request, res: Response, next: NextFunction) => {
+    res.setHeader("Cache-Control", "no-store");
+    next();
+  });
   app.use(cookieParser());
   // Drawings are whole documents (a railway design can be a few MB), terrain requests carry every track
   // of a design, a simulation run carries the topology and lines it runs; every other route keeps the
@@ -61,4 +83,18 @@ export function configureApp(app: NestExpressApplication, config: AppConfig): vo
   // After the body parsers, whose stream callbacks would lose the context: every log entry of the request
   // carries its request ID (ADR-0022).
   app.use(requestLogContext);
+}
+
+/**
+ * Purpose: middleware that redirects a request the trusted reverse proxy received over plain http to the same path
+ * on the https public address (308 keeps the method and body). Only `X-Forwarded-Proto` from a trusted proxy
+ * counts (Express `req.protocol`), so a direct request is never redirected.
+ */
+export function redirectToHttps(publicUrl: URL) {
+  return (req: Request, res: Response, next: NextFunction): void => {
+    if (req.protocol !== "http" || !req.header("x-forwarded-proto")) return next();
+    // The path is appended as text, so a path such as `//other.host/` stays on this host (no open redirect).
+    const path = req.originalUrl.startsWith("/") ? req.originalUrl : `/${req.originalUrl}`;
+    res.redirect(308, `${publicUrl.origin}${path}`);
+  };
 }

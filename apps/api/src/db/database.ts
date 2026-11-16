@@ -66,6 +66,7 @@ export interface DB {
   "iam.user": {
     id: Generated<string>;
     email: string | null;
+    email_verified: Generated<boolean>;
     display_name: string | null;
     instance_role: InstanceRole;
     status: "pending" | "active" | "deleted";
