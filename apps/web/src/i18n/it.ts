@@ -324,6 +324,9 @@ export const it: Messages = {
   "prefs.traction.hydrogen": "idrogeno",
   "prefs.traction.cng": "metano (CNG)",
   "prefs.traction.electric": "elettrico",
+  "prefs.accessTitle": "Accessibilità dei marciapiedi",
+  "prefs.accessIntro":
+    "Limiti di gradino e distanza tra marciapiede e treno (STI PMR) e altezza del pavimento usata per i treni che non l'hanno nel catalogo. Le linee sono verificate a ogni fermata.",
   "prefs.vehiclesTitle": "Veicoli",
   "prefs.vehiclesIntro":
     "I veicoli del catalogo usati da questo progetto, per modo. Gli strumenti per linee stradali e ferroviarie propongono solo quelli spuntati.",

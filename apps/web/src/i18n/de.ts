@@ -330,6 +330,9 @@ export const de: Messages = {
   "prefs.traction.hydrogen": "Wasserstoff",
   "prefs.traction.cng": "Erdgas (CNG)",
   "prefs.traction.electric": "elektrisch",
+  "prefs.accessTitle": "Barrierefreiheit am Bahnsteig",
+  "prefs.accessIntro":
+    "Grenzwerte für Stufe und Spalt zwischen Bahnsteig und Zug (TSI PRM) sowie die Fußbodenhöhe für Züge ohne Angabe im Fahrzeugkatalog. Linien werden an jedem Halt daran geprüft.",
   "prefs.vehiclesTitle": "Fahrzeuge",
   "prefs.vehiclesIntro":
     "Die Katalogfahrzeuge, die dieses Projekt je Verkehrsmittel einsetzt. Linien- und Gleiseditor bieten nur die angehakten an.",

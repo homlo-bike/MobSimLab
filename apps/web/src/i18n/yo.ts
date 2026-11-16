@@ -322,6 +322,9 @@ export const yo: Messages = {
   "prefs.traction.hydrogen": "hydrogen",
   "prefs.traction.cng": "gáàsì àdánidá (CNG)",
   "prefs.traction.electric": "iná mànàmáná",
+  "prefs.accessTitle": "Ìráyè pèpéle",
+  "prefs.accessIntro":
+    "Ààlà àtẹ̀gùn àti àlàfo láàrin pèpéle àti ọkọ̀ (TSI PRM), àti gíga ilẹ̀ fún ọkọ̀ tí kò ní nínú àkójọ. A ń ṣàyẹ̀wò àwọn ìlà ní gbogbo ibùdó.",
   "prefs.vehiclesTitle": "Àwọn ọkọ̀",
   "prefs.vehiclesIntro":
     "Àwọn ọkọ̀ inú àkójọ tí iṣẹ́ àkànṣe yìí ń lò, fún irú kọ̀ọ̀kan. Àwọn irinṣẹ́ ọ̀nà òpópónà àti ojú irin ń fi àwọn tí a sàmì sí nìkan hàn.",

@@ -104,11 +104,11 @@ describe("project preferences", () => {
     expect(LIBRARY_PARAMS.length).toBeGreaterThan(200);
     expect(PARAM_GROUPS[0]).toBe("Modes");
     // The Switches section sets the default turnout.
-    expect(LIBRARY_PARAMS.some((p) => p.key === "switch.default_turnout")).toBe(false);
-    const dwell = LIBRARY_PARAMS.find((p) => p.key === "mode.dwell_s")!;
+    expect(LIBRARY_PARAMS.some((p) => p.id === "switch.default_turnout")).toBe(false);
+    const dwell = LIBRARY_PARAMS.find((p) => p.id === "mode.dwell_s")!;
     expect(paramLibrary(dwell, "tram")).toEqual([15, 25, 45]);
     expect(paramLibrary(dwell, "bus")).toEqual([15, 30, 60]);
-    const refuel = LIBRARY_PARAMS.find((p) => p.key === "operations.refuel_time_min")!;
+    const refuel = LIBRARY_PARAMS.find((p) => p.id === "operations.refuel_time_min")!;
     expect(paramLibrary(refuel, "*", "hydrogen")).toEqual([7, 10, 20]);
     expect(paramPrefId("mode.dwell_s", "*")).toBe("mode.dwell_s");
     expect(paramPrefId("mode.dwell_s", "tram")).toBe("mode.dwell_s.tram");

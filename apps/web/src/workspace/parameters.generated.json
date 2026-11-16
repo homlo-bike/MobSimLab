@@ -16,7 +16,7 @@
  ],
  "params": [
   {
-   "key": "mode.min_curve_radius_m",
+   "id": "mode.min_curve_radius_m",
    "label": "Curve radius, minimum",
    "group": "Modes",
    "unit": "m",
@@ -85,7 +85,7 @@
    }
   },
   {
-   "key": "mode.recommended_curve_radius_m",
+   "id": "mode.recommended_curve_radius_m",
    "label": "Curve radius, recommended",
    "group": "Modes",
    "unit": "m",
@@ -154,7 +154,7 @@
    }
   },
   {
-   "key": "mode.max_speed_kmh",
+   "id": "mode.max_speed_kmh",
    "label": "Maximum speed",
    "group": "Modes",
    "unit": "km/h",
@@ -223,7 +223,7 @@
    }
   },
   {
-   "key": "mode.dwell_s",
+   "id": "mode.dwell_s",
    "label": "Dwell time at a stop",
    "group": "Modes",
    "unit": "s",
@@ -282,7 +282,7 @@
    }
   },
   {
-   "key": "mode.spare_share",
+   "id": "mode.spare_share",
    "label": "Spare vehicles, share of the vehicles in peak service (fleet)",
    "group": "Modes",
    "unit": "share",
@@ -321,7 +321,7 @@
    }
   },
   {
-   "key": "mode.standing_density_ppm2",
+   "id": "mode.standing_density_ppm2",
    "label": "Standing places, passengers per square metre of standing area",
    "group": "Modes",
    "unit": "persons/m²",
@@ -390,7 +390,7 @@
    }
   },
   {
-   "key": "mode.vehicle_capacity",
+   "id": "mode.vehicle_capacity",
    "label": "Passenger places per street vehicle, seats plus standing at the planning density",
    "group": "Modes",
    "unit": "passengers",
@@ -414,7 +414,7 @@
    }
   },
   {
-   "key": "mode.colour",
+   "id": "mode.colour",
    "label": "Vehicle and line colour (default)",
    "group": "Modes",
    "unit": "hex colour",
@@ -435,7 +435,7 @@
    }
   },
   {
-   "key": "mode.catchment_m",
+   "id": "mode.catchment_m",
    "label": "Catchment, walking distance to a stop",
    "group": "Modes",
    "unit": "m",
@@ -504,7 +504,7 @@
    }
   },
   {
-   "key": "mode.stop_spacing_m",
+   "id": "mode.stop_spacing_m",
    "label": "Distance between consecutive stops or stations along a line (guidance range)",
    "group": "Modes",
    "unit": "m",
@@ -573,7 +573,7 @@
    }
   },
   {
-   "key": "mode.right_of_way",
+   "id": "mode.right_of_way",
    "label": "Structure and right of way (category A, B or C)",
    "group": "Modes",
    "unit": "category",
@@ -595,7 +595,7 @@
    ]
   },
   {
-   "key": "mode.platform_height_mm",
+   "id": "mode.platform_height_mm",
    "label": "Platform height above rail (rail) or kerb height above road (road modes)",
    "group": "Modes",
    "unit": "mm",
@@ -664,7 +664,7 @@
    }
   },
   {
-   "key": "mode.platform_length_m",
+   "id": "mode.platform_length_m",
    "label": "Platform length (usable)",
    "group": "Modes",
    "unit": "m",
@@ -733,7 +733,7 @@
    }
   },
   {
-   "key": "mode.min_headway_s",
+   "id": "mode.min_headway_s",
    "label": "Following distance, minimum headway between vehicles on the same track or lane",
    "group": "Modes",
    "unit": "s",
@@ -802,7 +802,7 @@
    }
   },
   {
-   "key": "mode.acceleration_ms2",
+   "id": "mode.acceleration_ms2",
    "label": "Acceleration (initial, at low speed)",
    "group": "Modes",
    "unit": "m/s²",
@@ -871,7 +871,7 @@
    }
   },
   {
-   "key": "mode.service_braking_ms2",
+   "id": "mode.service_braking_ms2",
    "label": "Service braking deceleration",
    "group": "Modes",
    "unit": "m/s²",
@@ -940,7 +940,7 @@
    }
   },
   {
-   "key": "mode.emergency_braking_ms2",
+   "id": "mode.emergency_braking_ms2",
    "label": "Emergency braking deceleration (mean)",
    "group": "Modes",
    "unit": "m/s²",
@@ -984,7 +984,7 @@
    }
   },
   {
-   "key": "mode.new_track_gauge_mm",
+   "id": "mode.new_track_gauge_mm",
    "label": "Track gauge (new track and drawing of the rails)",
    "group": "Modes",
    "unit": "mm",
@@ -1008,7 +1008,7 @@
    }
   },
   {
-   "key": "mode.new_track_electrification",
+   "id": "mode.new_track_electrification",
    "label": "Electrification of new track or wire",
    "group": "Modes",
    "unit": "system",
@@ -1041,7 +1041,7 @@
    ]
   },
   {
-   "key": "mode.crossing_priority_rank",
+   "id": "mode.crossing_priority_rank",
    "label": "Crossing priority (lower rank goes first at an at-grade crossing)",
    "group": "Modes",
    "unit": "rank",
@@ -1110,7 +1110,7 @@
    }
   },
   {
-   "key": "mode.max_gradient_permille",
+   "id": "mode.max_gradient_permille",
    "label": "Gradient of running track, maximum",
    "group": "Modes",
    "unit": "‰",
@@ -1159,7 +1159,7 @@
    }
   },
   {
-   "key": "timetable.recovery_share",
+   "id": "timetable.recovery_share",
    "label": "Recovery time in the planned timetable, as a share of the running time",
    "group": "Operations",
    "unit": "share",
@@ -1228,7 +1228,7 @@
    }
   },
   {
-   "key": "timetable.layover_min",
+   "id": "timetable.layover_min",
    "label": "Layover at each terminal before the vehicle turns back",
    "group": "Operations",
    "unit": "min",
@@ -1267,7 +1267,7 @@
    }
   },
   {
-   "key": "recording.late_threshold_s",
+   "id": "recording.late_threshold_s",
    "label": "A call counts as late from this delay on (recording)",
    "group": "Operations",
    "unit": "s",
@@ -1331,7 +1331,7 @@
    }
   },
   {
-   "key": "operations.depot_run_speed_kmh",
+   "id": "operations.depot_run_speed_kmh",
    "label": "Speed of empty runs between a line and its depot tracks",
    "group": "Operations",
    "unit": "km/h",
@@ -1375,7 +1375,7 @@
    }
   },
   {
-   "key": "operations.refuel_time_min",
+   "id": "operations.refuel_time_min",
    "label": "Time to refuel a vehicle at the depot during the day",
    "group": "Operations",
    "unit": "min",
@@ -1401,7 +1401,7 @@
    }
   },
   {
-   "key": "operations.energy_reserve_share",
+   "id": "operations.energy_reserve_share",
    "label": "Energy reserve kept in the battery or tank, share of its capacity (energy planning)",
    "group": "Operations",
    "unit": "share",
@@ -1437,7 +1437,7 @@
    }
   },
   {
-   "key": "timetable.min_buffer_s",
+   "id": "timetable.min_buffer_s",
    "label": "Minimum buffer time between the blocking times of two trains on one section",
    "group": "Operations",
    "unit": "s",
@@ -1466,7 +1466,7 @@
    }
   },
   {
-   "key": "timetable.target_load_factor",
+   "id": "timetable.target_load_factor",
    "label": "Planned load at the maximum load point, as a share of the train's capacity",
    "group": "Operations",
    "unit": "share",
@@ -1480,7 +1480,7 @@
    }
   },
   {
-   "key": "timetable.policy_headway_peak_min",
+   "id": "timetable.policy_headway_peak_min",
    "label": "Longest headway allowed in the peak, whatever the demand",
    "group": "Operations",
    "unit": "min",
@@ -1509,7 +1509,7 @@
    }
   },
   {
-   "key": "timetable.policy_headway_offpeak_min",
+   "id": "timetable.policy_headway_offpeak_min",
    "label": "Longest headway allowed off-peak, whatever the demand",
    "group": "Operations",
    "unit": "min",
@@ -1538,7 +1538,7 @@
    }
   },
   {
-   "key": "timetable.terminal_separation_s",
+   "id": "timetable.terminal_separation_s",
    "label": "Least time between an arrival and a departure crossing in a terminal throat",
    "group": "Operations",
    "unit": "s",
@@ -1552,7 +1552,7 @@
    }
   },
   {
-   "key": "dwell.door_open_close_s",
+   "id": "dwell.door_open_close_s",
    "label": "Door opening and closing time within a dwell",
    "group": "Operations",
    "unit": "s",
@@ -1566,7 +1566,7 @@
    }
   },
   {
-   "key": "dwell.board_s_per_pax",
+   "id": "dwell.board_s_per_pax",
    "label": "Boarding time per passenger per door channel",
    "group": "Operations",
    "unit": "s",
@@ -1580,7 +1580,7 @@
    }
   },
   {
-   "key": "dwell.alight_s_per_pax",
+   "id": "dwell.alight_s_per_pax",
    "label": "Alighting time per passenger per door channel",
    "group": "Operations",
    "unit": "s",
@@ -1594,7 +1594,7 @@
    }
   },
   {
-   "key": "capacity.occupancy_limit_share",
+   "id": "capacity.occupancy_limit_share",
    "label": "Recommended capacity consumption limit in the peak hour (UIC 406)",
    "group": "Operations",
    "unit": "share",
@@ -1618,7 +1618,7 @@
    }
   },
   {
-   "key": "stability.runs",
+   "id": "stability.runs",
    "label": "Runs with random primary delays in the stability test",
    "group": "Operations",
    "unit": "count",
@@ -1632,7 +1632,7 @@
    }
   },
   {
-   "key": "stability.delayed_share",
+   "id": "stability.delayed_share",
    "label": "Share of trips that start late in the stability test",
    "group": "Operations",
    "unit": "share",
@@ -1661,7 +1661,7 @@
    }
   },
   {
-   "key": "stability.primary_delay_mean_s",
+   "id": "stability.primary_delay_mean_s",
    "label": "Mean primary delay of a trip that starts late (exponential distribution)",
    "group": "Operations",
    "unit": "s",
@@ -1690,7 +1690,7 @@
    }
   },
   {
-   "key": "stability.primary_delay_max_s",
+   "id": "stability.primary_delay_max_s",
    "label": "Largest primary delay in the stability test",
    "group": "Operations",
    "unit": "s",
@@ -1719,7 +1719,7 @@
    }
   },
   {
-   "key": "stability.recovery_s",
+   "id": "stability.recovery_s",
    "label": "Time run after the tested period, without new delays, to see whether delays die out",
    "group": "Operations",
    "unit": "s",
@@ -1733,7 +1733,7 @@
    }
   },
   {
-   "key": "stability.residual_delay_s",
+   "id": "stability.residual_delay_s",
    "label": "Delays have died out when the mean arrival delay at the end of the recovery time is under this",
    "group": "Operations",
    "unit": "s",
@@ -1762,7 +1762,7 @@
    }
   },
   {
-   "key": "demand.walk_speed_kmh",
+   "id": "demand.walk_speed_kmh",
    "label": "Walking speed for walking links between stations",
    "group": "Demand",
    "unit": "km/h",
@@ -1776,7 +1776,7 @@
    }
   },
   {
-   "key": "journey.walk_detour_factor",
+   "id": "journey.walk_detour_factor",
    "label": "Journey planner: walking distance over straight-line distance",
    "group": "Demand",
    "unit": "ratio",
@@ -1790,7 +1790,7 @@
    }
   },
   {
-   "key": "journey.min_change_s",
+   "id": "journey.min_change_s",
    "label": "Journey planner: minimum time to change vehicles at the same stop",
    "group": "Demand",
    "unit": "s",
@@ -1804,7 +1804,7 @@
    }
   },
   {
-   "key": "journey.level_change_s",
+   "id": "journey.level_change_s",
    "label": "Journey planner: added time to change platform within one station (stairs, lifts)",
    "group": "Demand",
    "unit": "s",
@@ -1818,7 +1818,7 @@
    }
   },
   {
-   "key": "analysis.walk_rule_minutes",
+   "id": "analysis.walk_rule_minutes",
    "label": "Walk rule: largest walk to the nearest stop or station, in minutes (headline coverage figure)",
    "group": "Analysis",
    "unit": "min",
@@ -1832,7 +1832,7 @@
    }
   },
   {
-   "key": "analysis.frequent_headway_min",
+   "id": "analysis.frequent_headway_min",
    "label": "Frequent service: longest headway for a stop to count in the frequent-only coverage",
    "group": "Analysis",
    "unit": "min",
@@ -1846,7 +1846,7 @@
    }
   },
   {
-   "key": "walk.crossing_delay_s",
+   "id": "walk.crossing_delay_s",
    "label": "Average wait at a signalised pedestrian crossing",
    "group": "Analysis",
    "unit": "s",
@@ -1860,7 +1860,7 @@
    }
   },
   {
-   "key": "analysis.cycle_speed_kmh",
+   "id": "analysis.cycle_speed_kmh",
    "label": "Cycling speed for the 15-minute city by bicycle, including stops at junctions",
    "group": "Analysis",
    "unit": "km/h",
@@ -1874,7 +1874,7 @@
    }
   },
   {
-   "key": "sim.start_adhesion",
+   "id": "sim.start_adhesion",
    "label": "Wheel–rail adhesion for starting, when a vehicle gives no starting tractive effort (simulation)",
    "group": "Simulation",
    "unit": "coefficient",
@@ -1898,7 +1898,7 @@
    }
   },
   {
-   "key": "sim.time_gap_s",
+   "id": "sim.time_gap_s",
    "label": "Time gap to the vehicle ahead, buses and trams driving on sight (simulation)",
    "group": "Simulation",
    "unit": "s",
@@ -1922,7 +1922,7 @@
    }
   },
   {
-   "key": "sim.min_gap_stopped_m",
+   "id": "sim.min_gap_stopped_m",
    "label": "Minimum gap to the vehicle ahead when stopped, buses and trams (simulation)",
    "group": "Simulation",
    "unit": "m",
@@ -1946,7 +1946,7 @@
    }
   },
   {
-   "key": "sim.rail_min_following_distance_m",
+   "id": "sim.rail_min_following_distance_m",
    "label": "Minimum distance between following metro and commuter trains (simulation)",
    "group": "Simulation",
    "unit": "m",
@@ -1960,7 +1960,7 @@
    }
   },
   {
-   "key": "signalling.overlap_31_40_m",
+   "id": "signalling.overlap_31_40_m",
    "label": "Signal overlap before the clearance point, 31–40 km/h (metro and commuter rail)",
    "group": "Simulation",
    "unit": "m",
@@ -1974,7 +1974,7 @@
    }
   },
   {
-   "key": "signalling.overlap_41_60_m",
+   "id": "signalling.overlap_41_60_m",
    "label": "Signal overlap before the clearance point, 41–60 km/h (metro and commuter rail)",
    "group": "Simulation",
    "unit": "m",
@@ -1988,7 +1988,7 @@
    }
   },
   {
-   "key": "signalling.overlap_above_60_m",
+   "id": "signalling.overlap_above_60_m",
    "label": "Signal overlap before the clearance point, above 60 km/h (metro and commuter rail)",
    "group": "Simulation",
    "unit": "m",
@@ -2002,7 +2002,7 @@
    }
   },
   {
-   "key": "signalling.route_setting_s",
+   "id": "signalling.route_setting_s",
    "label": "Route setting time before switch throwing (electronic interlocking)",
    "group": "Simulation",
    "unit": "s",
@@ -2016,7 +2016,7 @@
    }
   },
   {
-   "key": "signalling.sight_reaction_s",
+   "id": "signalling.sight_reaction_s",
    "label": "Driver sight and reaction time at the approach point",
    "group": "Simulation",
    "unit": "s",
@@ -2030,7 +2030,7 @@
    }
   },
   {
-   "key": "signalling.release_s",
+   "id": "signalling.release_s",
    "label": "Route release time after the train has cleared a section",
    "group": "Simulation",
    "unit": "s",
@@ -2044,7 +2044,7 @@
    }
   },
   {
-   "key": "signalling.sighting_m",
+   "id": "signalling.sighting_m",
    "label": "Sighting distance added to the braking distance for the approach",
    "group": "Simulation",
    "unit": "m",
@@ -2073,7 +2073,7 @@
    }
   },
   {
-   "key": "signalling.system",
+   "id": "signalling.system",
    "label": "Train control and signalling of a railway system (which signals the railway design tool generates)",
    "group": "Simulation",
    "unit": "system",
@@ -2092,7 +2092,7 @@
    ]
   },
   {
-   "key": "signalling.signal_before_switch_m",
+   "id": "signalling.signal_before_switch_m",
    "label": "Distance of a signal in front of the switch point (blade tip) it protects",
    "group": "Simulation",
    "unit": "m",
@@ -2106,7 +2106,7 @@
    }
   },
   {
-   "key": "signalling.overlap_release_s",
+   "id": "signalling.overlap_release_s",
    "label": "Time a train must stand at the exit signal before its overlap is released",
    "group": "Simulation",
    "unit": "s",
@@ -2120,7 +2120,7 @@
    }
   },
   {
-   "key": "signalling.approach_release_s",
+   "id": "signalling.approach_release_s",
    "label": "Delay before a cancelled route is released in front of an approaching train (approach locking)",
    "group": "Simulation",
    "unit": "s",
@@ -2134,7 +2134,7 @@
    }
   },
   {
-   "key": "signalling.moving_block_margin_m",
+   "id": "signalling.moving_block_margin_m",
    "label": "Safety margin behind the rear of the train ahead under moving block",
    "group": "Simulation",
    "unit": "m",
@@ -2148,7 +2148,7 @@
    }
   },
   {
-   "key": "signalling.supervision_tolerance_kmh",
+   "id": "signalling.supervision_tolerance_kmh",
    "label": "Overspeed above the permitted speed before the protection brakes",
    "group": "Simulation",
    "unit": "km/h",
@@ -2162,7 +2162,7 @@
    }
   },
   {
-   "key": "sim.ato_brake_share",
+   "id": "sim.ato_brake_share",
    "label": "Share of the service braking rate the driver model plans with",
    "group": "Simulation",
    "unit": "share",
@@ -2176,7 +2176,7 @@
    }
   },
   {
-   "key": "sim.emergency_brake_factor",
+   "id": "sim.emergency_brake_factor",
    "label": "Emergency braking rate as a multiple of the service braking rate",
    "group": "Simulation",
    "unit": "factor",
@@ -2190,7 +2190,7 @@
    }
   },
   {
-   "key": "track.centre_distance_m",
+   "id": "track.centre_distance_m",
    "label": "Track centre distance (double track, open line)",
    "group": "Infrastructure standards",
    "unit": "m",
@@ -2224,7 +2224,7 @@
    }
   },
   {
-   "key": "track.clearance_marker_centre_distance_m",
+   "id": "track.clearance_marker_centre_distance_m",
    "label": "Track centre distance at the clearance marker of converging tracks (where a waiting train must stand clear)",
    "group": "Infrastructure standards",
    "unit": "m",
@@ -2253,7 +2253,7 @@
    }
   },
   {
-   "key": "station.track_suggest_distance_m",
+   "id": "station.track_suggest_distance_m",
    "label": "Distance for suggesting tracks at a station",
    "group": "Infrastructure standards",
    "unit": "m",
@@ -2267,7 +2267,7 @@
    }
   },
   {
-   "key": "platform.side_width_m",
+   "id": "platform.side_width_m",
    "label": "Side platform width",
    "group": "Infrastructure standards",
    "unit": "m",
@@ -2296,7 +2296,7 @@
    }
   },
   {
-   "key": "platform.island_width_m",
+   "id": "platform.island_width_m",
    "label": "Island platform width",
    "group": "Infrastructure standards",
    "unit": "m",
@@ -2325,7 +2325,7 @@
    }
   },
   {
-   "key": "crossing.clearance_m",
+   "id": "crossing.clearance_m",
    "label": "Clearance before and after a crossing",
    "group": "Infrastructure standards",
    "unit": "m",
@@ -2339,7 +2339,7 @@
    }
   },
   {
-   "key": "curve.cant_tram_mm",
+   "id": "curve.cant_tram_mm",
    "label": "Curve speed: cant (superelevation) of tram and light rail curves",
    "group": "Infrastructure standards",
    "unit": "mm",
@@ -2353,7 +2353,7 @@
    }
   },
   {
-   "key": "curve.cant_deficiency_tram_mm",
+   "id": "curve.cant_deficiency_tram_mm",
    "label": "Curve speed: permitted cant deficiency of tram and light rail curves",
    "group": "Infrastructure standards",
    "unit": "mm",
@@ -2367,7 +2367,7 @@
    }
   },
   {
-   "key": "curve.cant_rail_mm",
+   "id": "curve.cant_rail_mm",
    "label": "Curve speed: cant (superelevation) of metro and railway curves",
    "group": "Infrastructure standards",
    "unit": "mm",
@@ -2386,7 +2386,7 @@
    }
   },
   {
-   "key": "curve.cant_deficiency_rail_mm",
+   "id": "curve.cant_deficiency_rail_mm",
    "label": "Curve speed: permitted cant deficiency of metro and railway curves",
    "group": "Infrastructure standards",
    "unit": "mm",
@@ -2405,7 +2405,7 @@
    }
   },
   {
-   "key": "structure.outline_width_m",
+   "id": "structure.outline_width_m",
    "label": "Bridge and tunnel outline: width beyond the rails on each side (drawing)",
    "group": "Infrastructure standards",
    "unit": "m",
@@ -2439,7 +2439,7 @@
    }
   },
   {
-   "key": "structure.underground_level_depth_m",
+   "id": "structure.underground_level_depth_m",
    "label": "Depth of track per underground level, below the street (ramps)",
    "group": "Infrastructure standards",
    "unit": "m",
@@ -2453,7 +2453,7 @@
    }
   },
   {
-   "key": "structure.elevated_level_height_m",
+   "id": "structure.elevated_level_height_m",
    "label": "Height of track per elevated level, above the street (ramps)",
    "group": "Infrastructure standards",
    "unit": "m",
@@ -2467,7 +2467,7 @@
    }
   },
   {
-   "key": "platform.max_gradient_pct",
+   "id": "platform.max_gradient_pct",
    "label": "Steepest gradient of track at a station platform, tram, light rail and metro",
    "group": "Infrastructure standards",
    "unit": "%",
@@ -2491,7 +2491,7 @@
    }
   },
   {
-   "key": "stop.reuse_distance_m",
+   "id": "stop.reuse_distance_m",
    "label": "Distance within which a new stop or station reuses an existing one",
    "group": "Infrastructure standards",
    "unit": "m",
@@ -2505,7 +2505,7 @@
    }
   },
   {
-   "key": "switch.cant_deficiency_mm",
+   "id": "switch.cant_deficiency_mm",
    "label": "Turnouts: permitted cant deficiency in the diverging track",
    "group": "Infrastructure standards",
    "unit": "mm",
@@ -2534,7 +2534,7 @@
    }
   },
   {
-   "key": "curve.vertical_radius_m",
+   "id": "curve.vertical_radius_m",
    "label": "Vertical curve radius at a change of gradient, minimum",
    "group": "Infrastructure standards",
    "unit": "m",
@@ -2583,7 +2583,7 @@
    }
   },
   {
-   "key": "curve.cant_change_rate_mm_s",
+   "id": "curve.cant_change_rate_mm_s",
    "label": "Transition curve: rate of change of cant, maximum",
    "group": "Infrastructure standards",
    "unit": "mm/s",
@@ -2597,7 +2597,7 @@
    }
   },
   {
-   "key": "curve.cant_deficiency_change_rate_mm_s",
+   "id": "curve.cant_deficiency_change_rate_mm_s",
    "label": "Transition curve: rate of change of cant deficiency, maximum",
    "group": "Infrastructure standards",
    "unit": "mm/s",
@@ -2611,7 +2611,7 @@
    }
   },
   {
-   "key": "curve.max_cant_gradient_mm_m",
+   "id": "curve.max_cant_gradient_mm_m",
    "label": "Transition curve: cant gradient along the track, maximum",
    "group": "Infrastructure standards",
    "unit": "mm/m",
@@ -2635,7 +2635,7 @@
    }
   },
   {
-   "key": "platform.edge_offset_m",
+   "id": "platform.edge_offset_m",
    "label": "Distance from track centre to the platform edge",
    "group": "Infrastructure standards",
    "unit": "m",
@@ -2664,7 +2664,21 @@
    }
   },
   {
-   "key": "station.track_beyond_platform_m",
+   "id": "platform.stopping_tolerance_m",
+   "label": "Stopping tolerance, platform length needed beyond the train",
+   "group": "Infrastructure standards",
+   "unit": "m",
+   "kind": "number",
+   "values": {
+    "*": [
+     2,
+     5,
+     10
+    ]
+   }
+  },
+  {
+   "id": "station.track_beyond_platform_m",
    "label": "Station track beyond each platform end, up to the station's connection point",
    "group": "Infrastructure standards",
    "unit": "m",
@@ -2703,7 +2717,7 @@
    }
   },
   {
-   "key": "ocl.span_m",
+   "id": "ocl.span_m",
    "label": "Overhead line span (mast spacing) on straight track",
    "group": "Infrastructure standards",
    "unit": "m",
@@ -2732,7 +2746,7 @@
    }
   },
   {
-   "key": "level_crossing.permitted",
+   "id": "level_crossing.permitted",
    "label": "Level crossings with streets: usual for the mode (otherwise a warning asks for special safety measures)",
    "group": "Infrastructure standards",
    "unit": "yes/no",
@@ -2748,7 +2762,7 @@
    ]
   },
   {
-   "key": "level_crossing.max_line_speed_kmh",
+   "id": "level_crossing.max_line_speed_kmh",
    "label": "Level crossings: highest usual line speed over a level crossing (above it, a warning asks for special safety measures)",
    "group": "Infrastructure standards",
    "unit": "km/h",
@@ -2762,7 +2776,7 @@
    }
   },
   {
-   "key": "level_crossing.min_angle_deg",
+   "id": "level_crossing.min_angle_deg",
    "label": "Level crossings: smallest angle between track and street",
    "group": "Infrastructure standards",
    "unit": "degrees",
@@ -2776,7 +2790,7 @@
    }
   },
   {
-   "key": "level_crossing.warning_time_s",
+   "id": "level_crossing.warning_time_s",
    "label": "Level crossings: warning time before a train reaches the crossing",
    "group": "Infrastructure standards",
    "unit": "s",
@@ -2800,7 +2814,7 @@
    }
   },
   {
-   "key": "level_crossing.barrier_closing_s",
+   "id": "level_crossing.barrier_closing_s",
    "label": "Level crossings with barriers: time from triggering until the crossing is proved closed",
    "group": "Infrastructure standards",
    "unit": "s",
@@ -2814,7 +2828,7 @@
    }
   },
   {
-   "key": "level_crossing.signal_closing_s",
+   "id": "level_crossing.signal_closing_s",
    "label": "Level crossings with road traffic signals only: time from triggering until closed",
    "group": "Infrastructure standards",
    "unit": "s",
@@ -2828,7 +2842,7 @@
    }
   },
   {
-   "key": "level_crossing.path_width_m",
+   "id": "level_crossing.path_width_m",
    "label": "Level crossings: width of a footpath or cycle path crossing the track, when OpenStreetMap has none",
    "group": "Infrastructure standards",
    "unit": "m",
@@ -2842,7 +2856,7 @@
    }
   },
   {
-   "key": "level_crossing.cycle_min_angle_deg",
+   "id": "level_crossing.cycle_min_angle_deg",
    "label": "Level crossings: smallest angle between track and a path that cyclists use",
    "group": "Infrastructure standards",
    "unit": "degrees",
@@ -2856,7 +2870,7 @@
    }
   },
   {
-   "key": "terrain.smoothing_window_m",
+   "id": "terrain.smoothing_window_m",
    "label": "Terrain: window over which the ground under a track is smoothed",
    "group": "Infrastructure standards",
    "unit": "m",
@@ -2870,7 +2884,7 @@
    }
   },
   {
-   "key": "terrain.tie_in_gradient_share",
+   "id": "terrain.tie_in_gradient_share",
    "label": "Terrain: share of the maximum gradient a track uses to meet a level station or a switch",
    "group": "Infrastructure standards",
    "unit": "share",
@@ -2884,7 +2898,7 @@
    }
   },
   {
-   "key": "terrain.street_level_tolerance_m",
+   "id": "terrain.street_level_tolerance_m",
    "label": "Terrain: largest height difference between street-level track and the ground",
    "group": "Infrastructure standards",
    "unit": "m",
@@ -2898,7 +2912,7 @@
    }
   },
   {
-   "key": "level_crossing.reopen_s",
+   "id": "level_crossing.reopen_s",
    "label": "Level crossings: time from the train clearing the crossing until road traffic may go again",
    "group": "Infrastructure standards",
    "unit": "s",
@@ -2922,7 +2936,7 @@
    }
   },
   {
-   "key": "access.level_gap_horizontal_mm",
+   "id": "access.level_gap_horizontal_mm",
    "label": "Level access: largest horizontal gap between platform edge and vehicle floor",
    "group": "Accessibility",
    "unit": "mm",
@@ -2936,7 +2950,7 @@
    }
   },
   {
-   "key": "access.level_gap_vertical_mm",
+   "id": "access.level_gap_vertical_mm",
    "label": "Level access: largest height difference between platform and vehicle floor",
    "group": "Accessibility",
    "unit": "mm",
@@ -2950,7 +2964,7 @@
    }
   },
   {
-   "key": "access.step_gap_horizontal_mm",
+   "id": "access.step_gap_horizontal_mm",
    "label": "Step limit: largest horizontal gap (straight track)",
    "group": "Accessibility",
    "unit": "mm",
@@ -2964,7 +2978,7 @@
    }
   },
   {
-   "key": "access.step_above_platform_mm",
+   "id": "access.step_above_platform_mm",
    "label": "Step limit: vehicle floor at most this much above the platform",
    "group": "Accessibility",
    "unit": "mm",
@@ -2978,7 +2992,7 @@
    }
   },
   {
-   "key": "access.step_below_platform_mm",
+   "id": "access.step_below_platform_mm",
    "label": "Step limit: vehicle floor at most this much below the platform",
    "group": "Accessibility",
    "unit": "mm",
@@ -2992,7 +3006,56 @@
    }
   },
   {
-   "key": "depot.vehicles_per_lane",
+   "id": "vehicle.floor_height_mm",
+   "label": "Vehicle floor height above rail, used when the vehicle file has none",
+   "group": "Accessibility",
+   "unit": "mm",
+   "kind": "number",
+   "values": {
+    "*": [
+     300,
+     800,
+     1300
+    ],
+    "tram": [
+     300,
+     350,
+     400
+    ],
+    "light_rail": [
+     350,
+     400,
+     1000
+    ],
+    "metro": [
+     700,
+     1100,
+     1200
+    ],
+    "commuter_rail": [
+     600,
+     800,
+     1100
+    ],
+    "regional_rail": [
+     500,
+     780,
+     1250
+    ],
+    "long_distance_rail": [
+     760,
+     1200,
+     1300
+    ],
+    "high_speed_rail": [
+     760,
+     1240,
+     1300
+    ]
+   }
+  },
+  {
+   "id": "depot.vehicles_per_lane",
    "label": "Street depot: vehicles per parking lane",
    "group": "Depots and streets",
    "unit": "vehicles",
@@ -3006,7 +3069,7 @@
    }
   },
   {
-   "key": "depot.lateral_spacing_m",
+   "id": "depot.lateral_spacing_m",
    "label": "Street depot: space between vehicles in neighbouring lanes",
    "group": "Depots and streets",
    "unit": "m",
@@ -3020,7 +3083,7 @@
    }
   },
   {
-   "key": "depot.walkway_width_m",
+   "id": "depot.walkway_width_m",
    "label": "Street depot: walkway width between lanes",
    "group": "Depots and streets",
    "unit": "m",
@@ -3034,7 +3097,7 @@
    }
   },
   {
-   "key": "depot.walkway_every_n_lanes",
+   "id": "depot.walkway_every_n_lanes",
    "label": "Street depot: a walkway after every n lanes",
    "group": "Depots and streets",
    "unit": "lanes",
@@ -3048,7 +3111,7 @@
    }
   },
   {
-   "key": "depot.aisle_width_m",
+   "id": "depot.aisle_width_m",
    "label": "Street depot: width of the aisles at the lane ends and of the perimeter road",
    "group": "Depots and streets",
    "unit": "m",
@@ -3062,7 +3125,7 @@
    }
   },
   {
-   "key": "depot.longitudinal_gap_m",
+   "id": "depot.longitudinal_gap_m",
    "label": "Street depot: gap between vehicles one behind the other in a lane",
    "group": "Depots and streets",
    "unit": "m",
@@ -3076,7 +3139,7 @@
    }
   },
   {
-   "key": "depot.turning_circle_m",
+   "id": "depot.turning_circle_m",
    "label": "Street depot: kerb-to-kerb turning circle of a bus the catalogue gives none for",
    "group": "Depots and streets",
    "unit": "m",
@@ -3090,7 +3153,7 @@
    }
   },
   {
-   "key": "depot.swept_clearance_m",
+   "id": "depot.swept_clearance_m",
    "label": "Street depot: smallest gap between a manoeuvring vehicle and a parked vehicle or the fence",
    "group": "Depots and streets",
    "unit": "m",
@@ -3104,7 +3167,7 @@
    }
   },
   {
-   "key": "depot.charger_power_kw",
+   "id": "depot.charger_power_kw",
    "label": "Street depot: power of the charger at each charging slot",
    "group": "Depots and streets",
    "unit": "kW",
@@ -3118,7 +3181,7 @@
    }
   },
   {
-   "key": "street.lane_width_m",
+   "id": "street.lane_width_m",
    "label": "Lane width of a street (vehicles drawn half a lane from the centreline)",
    "group": "Depots and streets",
    "unit": "m",
@@ -3132,7 +3195,7 @@
    }
   },
   {
-   "key": "street.lanes",
+   "id": "street.lanes",
    "label": "Lanes of a street carriageway (swept-path check of road vehicles)",
    "group": "Depots and streets",
    "unit": "lanes",
@@ -3146,7 +3209,7 @@
    }
   },
   {
-   "key": "street.speed_limit_kmh",
+   "id": "street.speed_limit_kmh",
    "label": "Speed limit of a street where OSM has no maxspeed (trams running in the street keep to it)",
    "group": "Depots and streets",
    "unit": "km/h",
@@ -3160,7 +3223,7 @@
    }
   },
   {
-   "key": "street.mixed_traffic_delay_share",
+   "id": "street.mixed_traffic_delay_share",
    "label": "Extra running time of buses and trams in the traffic of a main road (share of the free-flow time)",
    "group": "Depots and streets",
    "unit": "share",
@@ -3174,7 +3237,7 @@
    }
   },
   {
-   "key": "street.bus_lane_delay_share",
+   "id": "street.bus_lane_delay_share",
    "label": "Extra running time in a painted (not separated) bus or tram lane (share of the free-flow time)",
    "group": "Depots and streets",
    "unit": "share",
@@ -3188,7 +3251,7 @@
    }
   },
   {
-   "key": "street.walking_pace_kmh",
+   "id": "street.walking_pace_kmh",
    "label": "Speed in a living street or pedestrian zone (walking pace)",
    "group": "Depots and streets",
    "unit": "km/h",
@@ -3202,7 +3265,7 @@
    }
   },
   {
-   "key": "street.driving_side",
+   "id": "street.driving_side",
    "label": "Driving side of buses, BRT and trolleybuses",
    "group": "Depots and streets",
    "unit": "side",
@@ -3216,7 +3279,7 @@
    ]
   },
   {
-   "key": "track.running_side",
+   "id": "track.running_side",
    "label": "Running side for new double track",
    "group": "Depots and streets",
    "unit": "side",
@@ -3230,7 +3293,7 @@
    ]
   },
   {
-   "key": "street.peak_cars_trunk_vph",
+   "id": "street.peak_cars_trunk_vph",
    "label": "Cars at peak on an urban trunk road (OSM trunk, trunk_link, motorway_link), per hour in each direction, where the planner sets none",
    "group": "Depots and streets",
    "unit": "cars per hour per direction",
@@ -3244,7 +3307,7 @@
    }
   },
   {
-   "key": "street.peak_cars_primary_vph",
+   "id": "street.peak_cars_primary_vph",
    "label": "Cars at peak on a primary road (OSM primary, primary_link), per hour in each direction, where the planner sets none",
    "group": "Depots and streets",
    "unit": "cars per hour per direction",
@@ -3258,7 +3321,7 @@
    }
   },
   {
-   "key": "street.peak_cars_secondary_vph",
+   "id": "street.peak_cars_secondary_vph",
    "label": "Cars at peak on a secondary road (OSM secondary, secondary_link), per hour in each direction, where the planner sets none",
    "group": "Depots and streets",
    "unit": "cars per hour per direction",
@@ -3272,7 +3335,7 @@
    }
   },
   {
-   "key": "street.peak_cars_tertiary_vph",
+   "id": "street.peak_cars_tertiary_vph",
    "label": "Cars at peak on a tertiary road (OSM tertiary, tertiary_link), per hour in each direction, where the planner sets none",
    "group": "Depots and streets",
    "unit": "cars per hour per direction",
@@ -3286,7 +3349,7 @@
    }
   },
   {
-   "key": "street.peak_cars_local_vph",
+   "id": "street.peak_cars_local_vph",
    "label": "Cars at peak on a local street (OSM unclassified, residential, living_street, service, road), per hour in each direction, where the planner sets none",
    "group": "Depots and streets",
    "unit": "cars per hour per direction",
@@ -3300,7 +3363,7 @@
    }
   },
   {
-   "key": "road.off_peak_traffic_share",
+   "id": "road.off_peak_traffic_share",
    "label": "Road simulation: background traffic outside the peaks, as a share of the street's peak value",
    "group": "Depots and streets",
    "unit": "share",
@@ -3314,7 +3377,7 @@
    }
   },
   {
-   "key": "road.trolley_wire_charge_kw",
+   "id": "road.trolley_wire_charge_kw",
    "label": "Road simulation: power a trolleybus takes from its wires to charge its battery while driving",
    "group": "Depots and streets",
    "unit": "kW",
@@ -3328,7 +3391,7 @@
    }
   },
   {
-   "key": "road.battery_capacity_kwh",
+   "id": "road.battery_capacity_kwh",
    "label": "Road simulation: usable battery of a battery bus, or of a trolleybus for running off the wires",
    "group": "Depots and streets",
    "unit": "kWh",
@@ -3352,7 +3415,7 @@
    }
   },
   {
-   "key": "climate.rail_temp_above_air_c",
+   "id": "climate.rail_temp_above_air_c",
    "label": "Rail temperature above air temperature in sunlight (climate note)",
    "group": "Energy and climate",
    "unit": "°C",
@@ -3366,7 +3429,7 @@
    }
   },
   {
-   "key": "climate.rail_design_temp_c",
+   "id": "climate.rail_design_temp_c",
    "label": "Rail temperature the track is designed for (stress-free or neutral temperature, climate note)",
    "group": "Energy and climate",
    "unit": "°C",
@@ -3380,7 +3443,7 @@
    }
   },
   {
-   "key": "ebus.cool_band_low_c",
+   "id": "ebus.cool_band_low_c",
    "label": "Battery buses: lower end of the cool range (climate note)",
    "group": "Energy and climate",
    "unit": "°C",
@@ -3394,7 +3457,7 @@
    }
   },
   {
-   "key": "ebus.cool_band_high_c",
+   "id": "ebus.cool_band_high_c",
    "label": "Battery buses: upper end of the cool range (climate note)",
    "group": "Energy and climate",
    "unit": "°C",
@@ -3408,7 +3471,7 @@
    }
   },
   {
-   "key": "ebus.cool_extra_share",
+   "id": "ebus.cool_extra_share",
    "label": "Battery buses: extra energy in the cool range, share",
    "group": "Energy and climate",
    "unit": "share",
@@ -3422,7 +3485,7 @@
    }
   },
   {
-   "key": "ebus.cold_band_low_c",
+   "id": "ebus.cold_band_low_c",
    "label": "Battery buses: lower end of the cold band (climate note)",
    "group": "Energy and climate",
    "unit": "°C",
@@ -3436,7 +3499,7 @@
    }
   },
   {
-   "key": "ebus.cold_band_high_c",
+   "id": "ebus.cold_band_high_c",
    "label": "Battery buses: upper end of the cold band (climate note)",
    "group": "Energy and climate",
    "unit": "°C",
@@ -3450,7 +3513,7 @@
    }
   },
   {
-   "key": "ebus.cold_extra_share",
+   "id": "ebus.cold_extra_share",
    "label": "Battery buses: extra energy in the cold band, share",
    "group": "Energy and climate",
    "unit": "share",
@@ -3464,7 +3527,7 @@
    }
   },
   {
-   "key": "energy.hvac_power_kw",
+   "id": "energy.hvac_power_kw",
    "label": "Heating and air-conditioning power of a battery vehicle in service",
    "group": "Energy and climate",
    "unit": "kW",
@@ -3508,7 +3571,7 @@
    }
   },
   {
-   "key": "climate.ocl_sag_air_temp_c",
+   "id": "climate.ocl_sag_air_temp_c",
    "label": "Air temperature above which the overhead contact line sags too far",
    "group": "Energy and climate",
    "unit": "°C",
@@ -3522,7 +3585,7 @@
    }
   },
   {
-   "key": "cost.civil.at_grade_per_km",
+   "id": "cost.civil.at_grade_per_km",
    "label": "Civil works at street level or on its own formation, double track",
    "group": "Cost",
    "unit": "US$ million per route-km (2023, PPP)",
@@ -3556,7 +3619,7 @@
    }
   },
   {
-   "key": "cost.civil.elevated_per_km",
+   "id": "cost.civil.elevated_per_km",
    "label": "Elevated guideway on columns, double track",
    "group": "Cost",
    "unit": "US$ million per route-km (2023, PPP)",
@@ -3570,7 +3633,7 @@
    }
   },
   {
-   "key": "cost.civil.viaduct_per_km",
+   "id": "cost.civil.viaduct_per_km",
    "label": "Viaduct (long multi-span structure), double track",
    "group": "Cost",
    "unit": "US$ million per route-km (2023, PPP)",
@@ -3584,7 +3647,7 @@
    }
   },
   {
-   "key": "cost.civil.bridge_per_km",
+   "id": "cost.civil.bridge_per_km",
    "label": "Bridge over a river, road or railway, double track",
    "group": "Cost",
    "unit": "US$ million per route-km (2023, PPP)",
@@ -3598,7 +3661,7 @@
    }
   },
   {
-   "key": "cost.civil.ramp_per_km",
+   "id": "cost.civil.ramp_per_km",
    "label": "Ramp between levels (trough or embankment), double track",
    "group": "Cost",
    "unit": "US$ million per route-km (2023, PPP)",
@@ -3612,7 +3675,7 @@
    }
   },
   {
-   "key": "cost.civil.cut_and_cover_per_km",
+   "id": "cost.civil.cut_and_cover_per_km",
    "label": "Cut and cover tunnel, double track",
    "group": "Cost",
    "unit": "US$ million per route-km (2023, PPP)",
@@ -3626,7 +3689,7 @@
    }
   },
   {
-   "key": "cost.civil.tbm_per_km",
+   "id": "cost.civil.tbm_per_km",
    "label": "Bored tunnel (TBM), double track",
    "group": "Cost",
    "unit": "US$ million per route-km (2023, PPP)",
@@ -3645,7 +3708,7 @@
    }
   },
   {
-   "key": "cost.systems_per_km",
+   "id": "cost.systems_per_km",
    "label": "Track, power supply, signalling and communications, double track",
    "group": "Cost",
    "unit": "US$ million per route-km (2023, PPP)",
@@ -3679,7 +3742,7 @@
    }
   },
   {
-   "key": "cost.single_track_share",
+   "id": "cost.single_track_share",
    "label": "Single track, share of the double track cost per km",
    "group": "Cost",
    "unit": "share",
@@ -3693,7 +3756,7 @@
    }
   },
   {
-   "key": "cost.station.at_grade",
+   "id": "cost.station.at_grade",
    "label": "Station or stop at street level",
    "group": "Cost",
    "unit": "US$ million per station (2023, PPP)",
@@ -3732,7 +3795,7 @@
    }
   },
   {
-   "key": "cost.station.elevated",
+   "id": "cost.station.elevated",
    "label": "Elevated station",
    "group": "Cost",
    "unit": "US$ million per station (2023, PPP)",
@@ -3746,7 +3809,7 @@
    }
   },
   {
-   "key": "cost.station.underground",
+   "id": "cost.station.underground",
    "label": "Underground station on the first level (cut and cover box)",
    "group": "Cost",
    "unit": "US$ million per station (2023, PPP)",
@@ -3760,7 +3823,7 @@
    }
   },
   {
-   "key": "cost.station.underground_deep",
+   "id": "cost.station.underground_deep",
    "label": "Underground station on the second level (deep)",
    "group": "Cost",
    "unit": "US$ million per station (2023, PPP)",
@@ -3774,7 +3837,7 @@
    }
   },
   {
-   "key": "cost.switch_each",
+   "id": "cost.switch_each",
    "label": "Switch or crossing, each",
    "group": "Cost",
    "unit": "US$ million each (2023, PPP)",
@@ -3798,7 +3861,7 @@
    }
   },
   {
-   "key": "cost.depot_per_train_m",
+   "id": "cost.depot_per_train_m",
    "label": "Depot and stabling per metre of rail fleet",
    "group": "Cost",
    "unit": "US$ million per m of train (2023, PPP)",
@@ -3812,7 +3875,7 @@
    }
   },
   {
-   "key": "cost.depot_per_bus",
+   "id": "cost.depot_per_bus",
    "label": "Bus depot per bus",
    "group": "Cost",
    "unit": "US$ million per bus (2023, PPP)",
@@ -3826,7 +3889,7 @@
    }
   },
   {
-   "key": "cost.vehicle_per_train_m",
+   "id": "cost.vehicle_per_train_m",
    "label": "Rail vehicles per metre of train",
    "group": "Cost",
    "unit": "US$ million per m (2023, market)",
@@ -3865,7 +3928,7 @@
    }
   },
   {
-   "key": "cost.vehicle_each",
+   "id": "cost.vehicle_each",
    "label": "Road vehicle, each",
    "group": "Cost",
    "unit": "US$ million each (2023, market)",
@@ -3894,7 +3957,7 @@
    }
   },
   {
-   "key": "cost.street.stop_each",
+   "id": "cost.street.stop_each",
    "label": "Bus stop or station, each",
    "group": "Cost",
    "unit": "US$ million each (2023, PPP)",
@@ -3918,7 +3981,7 @@
    }
   },
   {
-   "key": "cost.street.bus_lane_per_km",
+   "id": "cost.street.bus_lane_per_km",
    "label": "Bus lane, per km of lane in one direction",
    "group": "Cost",
    "unit": "US$ million per km (2023, PPP)",
@@ -3937,7 +4000,7 @@
    }
   },
   {
-   "key": "cost.street.trolley_wire_per_km",
+   "id": "cost.street.trolley_wire_per_km",
    "label": "Trolleybus overhead wires, per route-km (both directions)",
    "group": "Cost",
    "unit": "US$ million per route-km (2023, PPP)",
@@ -3951,7 +4014,7 @@
    }
   },
   {
-   "key": "cost.engineering_share",
+   "id": "cost.engineering_share",
    "label": "Design, project management and supervision",
    "group": "Cost",
    "unit": "share of construction",
@@ -3965,7 +4028,7 @@
    }
   },
   {
-   "key": "cost.contingency_share",
+   "id": "cost.contingency_share",
    "label": "Contingency (risk and optimism bias)",
    "group": "Cost",
    "unit": "share of construction",
@@ -3979,7 +4042,7 @@
    }
   },
   {
-   "key": "cost.opex.vehicle_hour",
+   "id": "cost.opex.vehicle_hour",
    "label": "Road vehicle operating cost per vehicle-hour",
    "group": "Cost",
    "unit": "US$ per hour (2023, PPP)",
@@ -4008,7 +4071,7 @@
    }
   },
   {
-   "key": "cost.opex.train_hour",
+   "id": "cost.opex.train_hour",
    "label": "Rail crew and train-related cost per train-hour",
    "group": "Cost",
    "unit": "US$ per hour (2023, PPP)",
@@ -4047,7 +4110,7 @@
    }
   },
   {
-   "key": "cost.opex.car_km",
+   "id": "cost.opex.car_km",
    "label": "Rail running cost per car-km (per 25 m of train)",
    "group": "Cost",
    "unit": "US$ per car-km (2023, PPP)",
@@ -4071,7 +4134,7 @@
    }
   },
   {
-   "key": "cost.opex.infrastructure_share",
+   "id": "cost.opex.infrastructure_share",
    "label": "Infrastructure maintenance and operation per year",
    "group": "Cost",
    "unit": "share of infrastructure construction per year",
@@ -4085,7 +4148,7 @@
    }
   },
   {
-   "key": "cost.opex.overhead_share",
+   "id": "cost.opex.overhead_share",
    "label": "Administration and overheads",
    "group": "Cost",
    "unit": "share of operating cost",
@@ -4099,7 +4162,7 @@
    }
   },
   {
-   "key": "cost.service_hours_per_day",
+   "id": "cost.service_hours_per_day",
    "label": "Service hours per day of a street line",
    "group": "Cost",
    "unit": "h",
@@ -4113,7 +4176,7 @@
    }
   },
   {
-   "key": "cost.days_per_year",
+   "id": "cost.days_per_year",
    "label": "Operating days per year, as weekday equivalents",
    "group": "Cost",
    "unit": "days",
@@ -4127,7 +4190,7 @@
    }
   },
   {
-   "key": "cost.price_base_year",
+   "id": "cost.price_base_year",
    "label": "Price base year of the cost values",
    "group": "Cost",
    "unit": "year",
@@ -4141,7 +4204,7 @@
    }
   },
   {
-   "key": "benefit.uplift_inner_share",
+   "id": "benefit.uplift_inner_share",
    "label": "Land value: share of the catchment where the full uplift applies",
    "group": "Benefits",
    "unit": "share",
@@ -4155,7 +4218,7 @@
    }
   },
   {
-   "key": "benefit.time_limit.jobs",
+   "id": "benefit.time_limit.jobs",
    "label": "Access: longest public transport trip to count jobs as reachable",
    "group": "Benefits",
    "unit": "min",
@@ -4169,7 +4232,7 @@
    }
   },
   {
-   "key": "benefit.time_limit.school",
+   "id": "benefit.time_limit.school",
    "label": "Access: longest public transport trip to count schools as reachable",
    "group": "Benefits",
    "unit": "min",
@@ -4183,7 +4246,7 @@
    }
   },
   {
-   "key": "benefit.time_limit.university",
+   "id": "benefit.time_limit.university",
    "label": "Access: longest public transport trip to count universities and colleges as reachable",
    "group": "Benefits",
    "unit": "min",
@@ -4197,7 +4260,7 @@
    }
   },
   {
-   "key": "benefit.time_limit.hospital",
+   "id": "benefit.time_limit.hospital",
    "label": "Access: longest public transport trip to count hospitals as reachable",
    "group": "Benefits",
    "unit": "min",
@@ -4211,7 +4274,7 @@
    }
   },
   {
-   "key": "benefit.time_limit.clinic",
+   "id": "benefit.time_limit.clinic",
    "label": "Access: longest public transport trip to count clinics and doctors as reachable",
    "group": "Benefits",
    "unit": "min",
@@ -4225,7 +4288,7 @@
    }
   },
   {
-   "key": "benefit.access_decay_per_min",
+   "id": "benefit.access_decay_per_min",
    "label": "Access: weight of a destination falls by this factor per minute (exp(−β·t))",
    "group": "Benefits",
    "unit": "1/min",
@@ -4239,7 +4302,7 @@
    }
   },
   {
-   "key": "benefit.ed_decay",
+   "id": "benefit.ed_decay",
    "label": "Productivity: distance decay of effective density (1/t^α)",
    "group": "Benefits",
    "unit": "exponent",
@@ -4253,7 +4316,7 @@
    }
   },
   {
-   "key": "benefit.elasticity_agglomeration",
+   "id": "benefit.elasticity_agglomeration",
    "label": "Productivity: agglomeration elasticity (GDP per worker to effective density)",
    "group": "Benefits",
    "unit": "elasticity",
@@ -4267,7 +4330,7 @@
    }
   },
   {
-   "key": "benefit.elasticity_job_access",
+   "id": "benefit.elasticity_job_access",
    "label": "Earnings: elasticity of wages to job accessibility from home",
    "group": "Benefits",
    "unit": "elasticity",
@@ -4281,7 +4344,7 @@
    }
   },
   {
-   "key": "benefit.labour_income_share",
+   "id": "benefit.labour_income_share",
    "label": "Earnings: labour income share of GDP",
    "group": "Benefits",
    "unit": "share",
@@ -4295,7 +4358,7 @@
    }
   },
   {
-   "key": "benefit.age_18_24_share",
+   "id": "benefit.age_18_24_share",
    "label": "Education: share of the population aged 18 to 24",
    "group": "Benefits",
    "unit": "share",
@@ -4309,7 +4372,7 @@
    }
   },
   {
-   "key": "benefit.floor_m2_per_person",
+   "id": "benefit.floor_m2_per_person",
    "label": "Population fallback: residential floor area per person",
    "group": "Benefits",
    "unit": "m²",
@@ -4323,7 +4386,7 @@
    }
   },
   {
-   "key": "benefit.unknown_building_residential_share",
+   "id": "benefit.unknown_building_residential_share",
    "label": "Buildings tagged only 'building=yes': share counted as homes",
    "group": "Benefits",
    "unit": "share",
@@ -4337,7 +4400,7 @@
    }
   },
   {
-   "key": "benefit.default_levels",
+   "id": "benefit.default_levels",
    "label": "Buildings without height or levels in OpenStreetMap: number of floors",
    "group": "Benefits",
    "unit": "floors",
@@ -4351,7 +4414,7 @@
    }
   },
   {
-   "key": "benefit.m2_per_job.office",
+   "id": "benefit.m2_per_job.office",
    "label": "Jobs from buildings: floor area per job, offices",
    "group": "Benefits",
    "unit": "m²",
@@ -4365,7 +4428,7 @@
    }
   },
   {
-   "key": "benefit.m2_per_job.retail",
+   "id": "benefit.m2_per_job.retail",
    "label": "Jobs from buildings: floor area per job, shops",
    "group": "Benefits",
    "unit": "m²",
@@ -4379,7 +4442,7 @@
    }
   },
   {
-   "key": "benefit.m2_per_job.industrial",
+   "id": "benefit.m2_per_job.industrial",
    "label": "Jobs from buildings: floor area per job, industry and warehouses",
    "group": "Benefits",
    "unit": "m²",
@@ -4393,7 +4456,7 @@
    }
   },
   {
-   "key": "benefit.m2_per_job.public",
+   "id": "benefit.m2_per_job.public",
    "label": "Jobs from buildings: floor area per job, schools, hospitals and public buildings",
    "group": "Benefits",
    "unit": "m²",
@@ -4407,7 +4470,7 @@
    }
   },
   {
-   "key": "benefit.ridership.resident_share",
+   "id": "benefit.ridership.resident_share",
    "label": "Ridership: share of residents near a station who use the line on a weekday",
    "group": "Benefits",
    "unit": "share",
@@ -4451,7 +4514,7 @@
    }
   },
   {
-   "key": "benefit.ridership.trips_per_user",
+   "id": "benefit.ridership.trips_per_user",
    "label": "Ridership: trips per user per weekday",
    "group": "Benefits",
    "unit": "trips",
@@ -4465,7 +4528,7 @@
    }
   },
   {
-   "key": "benefit.ridership.days_per_year",
+   "id": "benefit.ridership.days_per_year",
    "label": "Ridership: weekday equivalents per year",
    "group": "Benefits",
    "unit": "days",
@@ -4479,7 +4542,7 @@
    }
   },
   {
-   "key": "benefit.ridership.peak_hour_share",
+   "id": "benefit.ridership.peak_hour_share",
    "label": "Ridership: share of a weekday's boardings in one peak hour",
    "group": "Benefits",
    "unit": "share",
@@ -4493,7 +4556,7 @@
    }
   },
   {
-   "key": "benefit.ridership.peak_direction_share",
+   "id": "benefit.ridership.peak_direction_share",
    "label": "Ridership: share of a peak hour's riders travelling in the busier direction",
    "group": "Benefits",
    "unit": "share",
@@ -4507,7 +4570,7 @@
    }
   },
   {
-   "key": "benefit.uplift.residential",
+   "id": "benefit.uplift.residential",
    "label": "Land value: uplift near a new station, homes",
    "group": "Benefits",
    "unit": "share",
@@ -4561,7 +4624,7 @@
    }
   },
   {
-   "key": "benefit.uplift.commercial",
+   "id": "benefit.uplift.commercial",
    "label": "Land value: uplift near a new station, shops, offices and other work places",
    "group": "Benefits",
    "unit": "share",
@@ -4615,7 +4678,7 @@
    }
   },
   {
-   "key": "benefit.value_per_m2_gdp_ratio",
+   "id": "benefit.value_per_m2_gdp_ratio",
    "label": "Land value fallback: value of 1 m² of homes as a share of GDP per person",
    "group": "Benefits",
    "unit": "share",
@@ -4629,7 +4692,7 @@
    }
   },
   {
-   "key": "benefit.commercial_value_factor",
+   "id": "benefit.commercial_value_factor",
    "label": "Land value fallback: value of 1 m² of work places relative to homes",
    "group": "Benefits",
    "unit": "ratio",
@@ -4643,7 +4706,7 @@
    }
   },
   {
-   "key": "benefit.property_tax_rate",
+   "id": "benefit.property_tax_rate",
    "label": "Tax: recurrent property tax as a share of property value per year",
    "group": "Benefits",
    "unit": "share",
@@ -4657,7 +4720,7 @@
    }
   },
   {
-   "key": "benefit.domestic_share.civil",
+   "id": "benefit.domestic_share.civil",
    "label": "Stimulated economy: share of spending on civil works, stations and depots that stays in the country",
    "group": "Benefits",
    "unit": "share",
@@ -4671,7 +4734,7 @@
    }
   },
   {
-   "key": "benefit.domestic_share.systems",
+   "id": "benefit.domestic_share.systems",
    "label": "Stimulated economy: share of spending on track, power and signalling that stays in the country",
    "group": "Benefits",
    "unit": "share",
@@ -4685,7 +4748,7 @@
    }
   },
   {
-   "key": "benefit.domestic_share.vehicles",
+   "id": "benefit.domestic_share.vehicles",
    "label": "Stimulated economy: share of spending on vehicles that stays in the country",
    "group": "Benefits",
    "unit": "share",
@@ -4699,7 +4762,7 @@
    }
   },
   {
-   "key": "benefit.domestic_share.operating",
+   "id": "benefit.domestic_share.operating",
    "label": "Stimulated economy: share of spending on operation and upkeep that stays in the country",
    "group": "Benefits",
    "unit": "share",
@@ -4713,7 +4776,7 @@
    }
   },
   {
-   "key": "benefit.va_multiplier.construction",
+   "id": "benefit.va_multiplier.construction",
    "label": "Stimulated economy: GDP generated per unit of domestic construction spending",
    "group": "Benefits",
    "unit": "ratio",
@@ -4727,7 +4790,7 @@
    }
   },
   {
-   "key": "benefit.va_multiplier.operation",
+   "id": "benefit.va_multiplier.operation",
    "label": "Stimulated economy: GDP generated per unit of domestic operating spending",
    "group": "Benefits",
    "unit": "ratio",
@@ -4741,7 +4804,7 @@
    }
   },
   {
-   "key": "benefit.construction_productivity_ratio",
+   "id": "benefit.construction_productivity_ratio",
    "label": "Stimulated economy: GDP per worker in the jobs supported, relative to the national average",
    "group": "Benefits",
    "unit": "ratio",
@@ -4755,7 +4818,7 @@
    }
   },
   {
-   "key": "fare.flat",
+   "id": "fare.flat",
    "label": "Flat fare: one fare for every trip",
    "group": "Fares",
    "unit": "US$ per trip (2023, PPP)",
@@ -4769,7 +4832,7 @@
    }
   },
   {
-   "key": "fare.zonal.first_zone",
+   "id": "fare.zonal.first_zone",
    "label": "Zonal fare: fare for a trip within one zone",
    "group": "Fares",
    "unit": "US$ per trip (2023, PPP)",
@@ -4783,7 +4846,7 @@
    }
   },
   {
-   "key": "fare.zonal.extra_zone",
+   "id": "fare.zonal.extra_zone",
    "label": "Zonal fare: added for each further zone",
    "group": "Fares",
    "unit": "US$ per zone (2023, PPP)",
@@ -4797,7 +4860,7 @@
    }
   },
   {
-   "key": "fare.distance.base",
+   "id": "fare.distance.base",
    "label": "Distance-based fare: base fare per trip",
    "group": "Fares",
    "unit": "US$ per trip (2023, PPP)",
@@ -4811,7 +4874,7 @@
    }
   },
   {
-   "key": "fare.distance.per_km",
+   "id": "fare.distance.per_km",
    "label": "Distance-based fare: added per km travelled",
    "group": "Fares",
    "unit": "US$ per km (2023, PPP)",
@@ -4825,7 +4888,7 @@
    }
   },
   {
-   "key": "fare.distance.max",
+   "id": "fare.distance.max",
    "label": "Distance-based fare: highest fare for one trip (0 for no cap)",
    "group": "Fares",
    "unit": "US$ per trip (2023, PPP)",
@@ -4839,7 +4902,7 @@
    }
   },
   {
-   "key": "fare.pass.trip_share",
+   "id": "fare.pass.trip_share",
    "label": "Passes: share of trips made with a monthly pass",
    "group": "Fares",
    "unit": "share",
@@ -4853,7 +4916,7 @@
    }
   },
   {
-   "key": "fare.pass.price_in_fares",
+   "id": "fare.pass.price_in_fares",
    "label": "Passes: price of a monthly pass, in single fares of the same trip",
    "group": "Fares",
    "unit": "single fares",
@@ -4867,7 +4930,7 @@
    }
   },
   {
-   "key": "fare.pass.trips_per_month",
+   "id": "fare.pass.trips_per_month",
    "label": "Passes: trips a pass holder makes in a month",
    "group": "Fares",
    "unit": "trips / month",
@@ -4881,7 +4944,7 @@
    }
   },
   {
-   "key": "fare.concession.child.share",
+   "id": "fare.concession.child.share",
    "label": "Discounts: share of trips made by children",
    "group": "Fares",
    "unit": "share",
@@ -4895,7 +4958,7 @@
    }
   },
   {
-   "key": "fare.concession.child.discount",
+   "id": "fare.concession.child.discount",
    "label": "Discounts: children's discount on the fare",
    "group": "Fares",
    "unit": "share",
@@ -4909,7 +4972,7 @@
    }
   },
   {
-   "key": "fare.concession.senior.share",
+   "id": "fare.concession.senior.share",
    "label": "Discounts: share of trips made by older people",
    "group": "Fares",
    "unit": "share",
@@ -4923,7 +4986,7 @@
    }
   },
   {
-   "key": "fare.concession.senior.discount",
+   "id": "fare.concession.senior.discount",
    "label": "Discounts: older people's discount on the fare",
    "group": "Fares",
    "unit": "share",
@@ -4937,7 +5000,7 @@
    }
   },
   {
-   "key": "fare.concession.student.share",
+   "id": "fare.concession.student.share",
    "label": "Discounts: share of trips made by students",
    "group": "Fares",
    "unit": "share",
@@ -4951,7 +5014,7 @@
    }
   },
   {
-   "key": "fare.concession.student.discount",
+   "id": "fare.concession.student.discount",
    "label": "Discounts: students' discount on the fare",
    "group": "Fares",
    "unit": "share",
@@ -4965,7 +5028,7 @@
    }
   },
   {
-   "key": "fare.elasticity",
+   "id": "fare.elasticity",
    "label": "Fare elasticity of ridership (change in trips for a change in the average fare)",
    "group": "Fares",
    "unit": "elasticity",
@@ -4979,7 +5042,7 @@
    }
   },
   {
-   "key": "fare.real_increase",
+   "id": "fare.real_increase",
    "label": "Yearly fare change above inflation",
    "group": "Fares",
    "unit": "share / year",
@@ -4993,7 +5056,7 @@
    }
   },
   {
-   "key": "fare.ridership_growth",
+   "id": "fare.ridership_growth",
    "label": "Yearly ridership growth",
    "group": "Fares",
    "unit": "share / year",
@@ -5007,7 +5070,7 @@
    }
   },
   {
-   "key": "fare.evasion_share",
+   "id": "fare.evasion_share",
    "label": "Fare evasion: share of trips that pay nothing",
    "group": "Fares",
    "unit": "share",
@@ -5021,7 +5084,7 @@
    }
   },
   {
-   "key": "fare.collection_cost_share",
+   "id": "fare.collection_cost_share",
    "label": "Fare collection cost: share of fare revenue (ticket machines, sales, card fees, inspection)",
    "group": "Fares",
    "unit": "share",

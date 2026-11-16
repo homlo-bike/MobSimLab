@@ -314,6 +314,9 @@ export const ar: Messages = {
   "prefs.traction.hydrogen": "هيدروجين",
   "prefs.traction.cng": "غاز طبيعي مضغوط",
   "prefs.traction.electric": "كهربائي",
+  "prefs.accessTitle": "إتاحة الرصيف",
+  "prefs.accessIntro":
+    "حدود الدرجة والفجوة بين الرصيف والقطار (TSI PRM)، وارتفاع الأرضية للقطارات التي لا تملكه في الكتالوج. تُفحص الخطوط عند كل محطة.",
   "prefs.vehiclesTitle": "المركبات",
   "prefs.vehiclesIntro":
     "مركبات الكتالوج التي يستخدمها هذا المشروع لكل نمط. لا تعرض أدوات خطوط الشوارع والسكك الحديدية إلا المحددة.",

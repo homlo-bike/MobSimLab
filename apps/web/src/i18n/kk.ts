@@ -322,6 +322,9 @@ export const kk: Messages = {
   "prefs.traction.hydrogen": "сутегі",
   "prefs.traction.cng": "табиғи газ (CNG)",
   "prefs.traction.electric": "электр",
+  "prefs.accessTitle": "Платформа қолжетімділігі",
+  "prefs.accessIntro":
+    "Платформа мен пойыз арасындағы баспалдақ пен саңылау шектері (TSI PRM) және каталогта жоқ пойыздарға арналған еден биіктігі. Желілер әр аялдамада тексеріледі.",
   "prefs.vehiclesTitle": "Көліктер",
   "prefs.vehiclesIntro":
     "Осы жоба әр түр үшін пайдаланатын каталог көліктері. Көше желісі мен темір жол құралдары тек белгіленгендерін ұсынады.",

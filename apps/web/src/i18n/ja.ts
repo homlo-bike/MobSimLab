@@ -319,6 +319,9 @@ export const ja: Messages = {
   "prefs.traction.hydrogen": "水素",
   "prefs.traction.cng": "天然ガス（CNG）",
   "prefs.traction.electric": "電気",
+  "prefs.accessTitle": "ホームのバリアフリー",
+  "prefs.accessIntro":
+    "ホームと列車の段差・すき間の限度（TSI PRM）と、車両カタログに床面高さがない列車に使う値。系統は各停車駅でこれに照らして確認されます。",
   "prefs.vehiclesTitle": "車両",
   "prefs.vehiclesIntro":
     "このプロジェクトでモードごとに使うカタログ車両。道路路線ツールと鉄道ツールはチェックした車両だけを表示します。",
