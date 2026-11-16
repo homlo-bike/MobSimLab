@@ -1,6 +1,7 @@
 import { roadVi } from "./road/vi";
 import { editorsVi } from "./editors/vi";
 import { cargoBikeVi } from "./cargo-bike/vi";
+import { commentsVi } from "./comments/vi";
 import { depotsVi } from "./depots/vi";
 import { mslabVi } from "./mslab/vi";
 import { pluginCodeVi } from "./plugin-code/vi";
@@ -169,7 +170,7 @@ export const vi: Messages = {
 
   "share.title": "Chia sẻ “{name}”",
   "share.rolesNote":
-    "Chủ sở hữu quản lý quyền truy cập. Người chỉnh sửa thay đổi mạng lưới. Người bình luận và người xem chỉ xem.",
+    "Chủ sở hữu quản lý quyền truy cập. Người chỉnh sửa thay đổi mạng lưới. Người bình luận góp ý về nó. Người xem chỉ xem.",
   "share.invite": "Mời qua email",
   "share.emailPlaceholder": "Email họ dùng để đăng nhập",
   "share.inviteRole": "Vai trò của người được mời",
@@ -491,6 +492,7 @@ export const vi: Messages = {
   ...editorsVi,
   ...cargoBikeVi,
   ...depotsVi,
+  ...commentsVi,
   ...mslabVi,
   ...pluginCodeVi,
   ...populationVi,

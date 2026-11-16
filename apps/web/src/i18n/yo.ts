@@ -1,6 +1,7 @@
 import { roadYo } from "./road/yo";
 import { editorsYo } from "./editors/yo";
 import { cargoBikeYo } from "./cargo-bike/yo";
+import { commentsYo } from "./comments/yo";
 import { depotsYo } from "./depots/yo";
 import { mslabYo } from "./mslab/yo";
 import { pluginCodeYo } from "./plugin-code/yo";
@@ -168,7 +169,7 @@ export const yo: Messages = {
 
   "share.title": "Pín “{name}”",
   "share.rolesNote":
-    "Àwọn olùní ń ṣàkóso ààyè. Àwọn olóòtú ń yí nẹ́tíwọ̀ọ̀kì padà. Àwọn aláròyé àti olùwò ń wò nìkan.",
+    "Àwọn olùní ń ṣàkóso ààyè. Àwọn olóòtú ń yí nẹ́tíwọ̀ọ̀kì padà. Àwọn aláròyé ń sọ àròyé lórí rẹ̀. Àwọn olùwò ń wò nìkan.",
   "share.invite": "Pè nípasẹ̀ ímeèlì",
   "share.emailPlaceholder": "Ímeèlì tí wọ́n fi ń wọlé",
   "share.inviteRole": "Ipa ẹni tí o ń pè",
@@ -491,6 +492,7 @@ export const yo: Messages = {
   ...editorsYo,
   ...cargoBikeYo,
   ...depotsYo,
+  ...commentsYo,
   ...mslabYo,
   ...pluginCodeYo,
   ...populationYo,

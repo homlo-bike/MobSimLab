@@ -1,6 +1,7 @@
 import { roadEs } from "./road/es";
 import { editorsEs } from "./editors/es";
 import { cargoBikeEs } from "./cargo-bike/es";
+import { commentsEs } from "./comments/es";
 import { depotsEs } from "./depots/es";
 import { mslabEs } from "./mslab/es";
 import { pluginCodeEs } from "./plugin-code/es";
@@ -171,7 +172,7 @@ export const es: Messages = {
 
   "share.title": "Compartir «{name}»",
   "share.rolesNote":
-    "Los propietarios gestionan el acceso. Los editores cambian la red. Comentaristas y lectores solo miran.",
+    "Los propietarios gestionan el acceso. Los editores cambian la red. Los comentaristas la comentan. Los lectores solo miran.",
   "share.invite": "Invitar por correo",
   "share.emailPlaceholder": "Correo con el que inicia sesión",
   "share.inviteRole": "Rol de la persona invitada",
@@ -498,6 +499,7 @@ export const es: Messages = {
   ...editorsEs,
   ...cargoBikeEs,
   ...depotsEs,
+  ...commentsEs,
   ...mslabEs,
   ...pluginCodeEs,
   ...populationEs,

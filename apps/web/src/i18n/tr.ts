@@ -1,6 +1,7 @@
 import { roadTr } from "./road/tr";
 import { editorsTr } from "./editors/tr";
 import { cargoBikeTr } from "./cargo-bike/tr";
+import { commentsTr } from "./comments/tr";
 import { depotsTr } from "./depots/tr";
 import { mslabTr } from "./mslab/tr";
 import { pluginCodeTr } from "./plugin-code/tr";
@@ -170,7 +171,7 @@ export const tr: Messages = {
 
   "share.title": "“{name}” projesini paylaş",
   "share.rolesNote":
-    "Sahipler erişimi yönetir. Düzenleyiciler ağı değiştirir. Yorumcular ve izleyiciler yalnızca bakar.",
+    "Sahipler erişimi yönetir. Düzenleyiciler ağı değiştirir. Yorumcular ona yorum yapar. İzleyiciler yalnızca bakar.",
   "share.invite": "E-postayla davet et",
   "share.emailPlaceholder": "Oturum açmak için kullandıkları e-posta",
   "share.inviteRole": "Davet edilen kişinin rolü",
@@ -494,6 +495,7 @@ export const tr: Messages = {
   ...editorsTr,
   ...cargoBikeTr,
   ...depotsTr,
+  ...commentsTr,
   ...mslabTr,
   ...pluginCodeTr,
   ...populationTr,

@@ -1,6 +1,7 @@
 import { roadPt } from "./road/pt";
 import { editorsPt } from "./editors/pt";
 import { cargoBikePt } from "./cargo-bike/pt";
+import { commentsPt } from "./comments/pt";
 import { depotsPt } from "./depots/pt";
 import { mslabPt } from "./mslab/pt";
 import { pluginCodePt } from "./plugin-code/pt";
@@ -170,7 +171,7 @@ export const pt: Messages = {
 
   "share.title": "Compartilhar “{name}”",
   "share.rolesNote":
-    "Proprietários gerenciam o acesso. Editores alteram a rede. Comentaristas e leitores apenas visualizam.",
+    "Proprietários gerenciam o acesso. Editores alteram a rede. Comentaristas a comentam. Leitores apenas visualizam.",
   "share.invite": "Convidar por e-mail",
   "share.emailPlaceholder": "E-mail com que a pessoa entra",
   "share.inviteRole": "Função da pessoa convidada",
@@ -498,6 +499,7 @@ export const pt: Messages = {
   ...editorsPt,
   ...cargoBikePt,
   ...depotsPt,
+  ...commentsPt,
   ...mslabPt,
   ...pluginCodePt,
   ...populationPt,

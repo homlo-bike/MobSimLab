@@ -1,6 +1,7 @@
 import { roadTe } from "./road/te";
 import { editorsTe } from "./editors/te";
 import { cargoBikeTe } from "./cargo-bike/te";
+import { commentsTe } from "./comments/te";
 import { depotsTe } from "./depots/te";
 import { mslabTe } from "./mslab/te";
 import { pluginCodeTe } from "./plugin-code/te";
@@ -170,7 +171,7 @@ export const te: Messages = {
 
   "share.title": "“{name}” పంచుకోండి",
   "share.rolesNote":
-    "యజమానులు ప్రవేశాన్ని నిర్వహిస్తారు. సంపాదకులు నెట్‌వర్క్‌ను మారుస్తారు. వ్యాఖ్యాతలు మరియు వీక్షకులు చూస్తారు మాత్రమే.",
+    "యజమానులు ప్రవేశాన్ని నిర్వహిస్తారు. సంపాదకులు నెట్‌వర్క్‌ను మారుస్తారు. వ్యాఖ్యాతలు దానిపై వ్యాఖ్యానిస్తారు. వీక్షకులు చూస్తారు మాత్రమే.",
   "share.invite": "ఇ-మెయిల్ ద్వారా ఆహ్వానించండి",
   "share.emailPlaceholder": "వారు సైన్ ఇన్ చేసే ఇ-మెయిల్",
   "share.inviteRole": "ఆహ్వానించిన వ్యక్తి పాత్ర",
@@ -491,6 +492,7 @@ export const te: Messages = {
   ...editorsTe,
   ...cargoBikeTe,
   ...depotsTe,
+  ...commentsTe,
   ...mslabTe,
   ...pluginCodeTe,
   ...populationTe,

@@ -1,6 +1,7 @@
 import { roadZu } from "./road/zu";
 import { editorsZu } from "./editors/zu";
 import { cargoBikeZu } from "./cargo-bike/zu";
+import { commentsZu } from "./comments/zu";
 import { depotsZu } from "./depots/zu";
 import { mslabZu } from "./mslab/zu";
 import { pluginCodeZu } from "./plugin-code/zu";
@@ -170,7 +171,7 @@ export const zu: Messages = {
 
   "share.title": "Yabelana nge-“{name}”",
   "share.rolesNote":
-    "Abanikazi baphatha ukufinyelela. Abahleli bashintsha inethiwekhi. Abaphawulayo nezibukeli babuka kuphela.",
+    "Abanikazi baphatha ukufinyelela. Abahleli bashintsha inethiwekhi. Abaphawulayo bayayiphawula. Izibukeli zibuka kuphela.",
   "share.invite": "Mema nge-imeyili",
   "share.emailPlaceholder": "I-imeyili abangena ngayo",
   "share.inviteRole": "Indima yomuntu omemayo",
@@ -501,6 +502,7 @@ export const zu: Messages = {
   ...editorsZu,
   ...cargoBikeZu,
   ...depotsZu,
+  ...commentsZu,
   ...mslabZu,
   ...pluginCodeZu,
   ...populationZu,

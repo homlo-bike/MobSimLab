@@ -3,6 +3,7 @@ import type { PluginLimits } from "../plugins/code/runtime";
 import type { ProjectPlugin } from "../plugins/registry";
 import { get, send } from "../session/api";
 import { projectRuns } from "../features/capacity/server";
+import { projectComments } from "../features/comments/api";
 import { projectDemandRuns } from "../features/demand/api";
 import { projectPopulation } from "../features/population/api";
 import { projectRoadRuns } from "../features/road-sim/api";
@@ -82,6 +83,7 @@ export function shelfOf(p: Pick<Project, "myRole" | "viaPublic">): Shelf {
 export const can = {
   edit: (p: Pick<Project, "myRole">) => p.myRole === "owner" || p.myRole === "editor",
   manage: (p: Pick<Project, "myRole">) => p.myRole === "owner",
+  comment: (p: Pick<Project, "myRole">) => p.myRole !== "viewer",
 };
 
 const base = "/api/projects";
@@ -163,6 +165,8 @@ export function projectsApi(csrf: string) {
     demandRuns: (id: string) => projectDemandRuns(id, csrf),
     /** The project's population layers (GIS tab): imports, uploads, the layer the project uses. */
     population: (id: string) => projectPopulation(id, csrf),
+    /** Comments on the project's objects: threads, replies, resolving. */
+    comments: (id: string) => projectComments(id, csrf),
   };
 }
 export type ProjectsApi = ReturnType<typeof projectsApi>;
