@@ -85,6 +85,8 @@ import { ProjectPreferences } from "./ProjectPreferences";
 import { delaysFrom, designValuesFrom, type PreferencesDoc } from "./preferences";
 import type { DelayShares } from "../features/street-lines/types";
 import { type Drawings, useDrawings } from "./useDrawings";
+import { DepotEditor } from "../features/depots/DepotEditor";
+import type { DepotsDoc, SavedDepot } from "../features/depots/types";
 
 type IconFn = (p: { size?: number }) => ReactNode;
 const TAB_ICONS: Record<CoreTab, IconFn> = {
@@ -109,7 +111,8 @@ type SimView = "test" | "journey";
 type GisView = "streets" | "regions";
 const NO_REGIONS: Region[] = [];
 const NO_FEEDS: GtfsFeed[] = [];
-/** "street", "rail", or the id of a plugin tool (cable car, ferry…). */
+const NO_DEPOTS: SavedDepot[] = [];
+/** "street", "rail", "depots", or the id of a plugin tool (cable car, ferry…). */
 type Build = string;
 /** The economy API for the project's currency rate. */
 const ECONOMY = economyApi();
@@ -265,6 +268,8 @@ export function Workspace({
   const benefitsDoc = drawings.doc<BenefitsDoc>("benefits");
   // Project preferences: assumption values the project changes, such as the delays in traffic.
   const preferences = drawings.doc<PreferencesDoc>("preferences");
+  // Road depots shared by the street lines (depot tool).
+  const depotsDoc = drawings.doc<DepotsDoc>("depots");
   // The currency all money is shown in, and its exchange rate (Project preferences).
   const currencyState = useProjectCurrency(preferences, ECONOMY);
   const currency = currencyState.currency;
@@ -497,9 +502,11 @@ export function Workspace({
       : tab === "create"
         ? chosen === "rail"
           ? t("create.rail")
-          : chosenPlugin
-            ? chosenPlugin.label
-            : t("create.street")
+          : chosen === "depots"
+            ? t("create.depots")
+            : chosenPlugin
+              ? chosenPlugin.label
+              : t("create.street")
         : tabLabel(pluginTab ? pluginTab.id : "gis");
   const pluginLineList = Object.values(pluginLines).filter((l): l is PluginLineInput => l !== null);
   const demandZoneList = Object.values(demandZones).filter((z): z is DemandZone => z !== null);
@@ -562,6 +569,19 @@ export function Workspace({
                 />
               }
               railTopology={railTopology}
+              depots={depotsDoc?.depots ?? NO_DEPOTS}
+              onOpenDepots={() => setBuild("depots")}
+            />
+          )}
+          {project && drawings.loaded && tab === "create" && editable && chosen === "depots" && (
+            <DepotEditor
+              key={`${projectId}-${drawings.generation("depots")}`}
+              map={map}
+              panel={panel}
+              doc={depotsDoc ?? null}
+              onDoc={(d) => drawings.set("depots", d)}
+              lines={savedStreet}
+              prefs={preferences?.values}
             />
           )}
           {project && drawings.loaded && tab === "create" && editable && chosen === "rail" && (
@@ -900,6 +920,14 @@ export function Workspace({
                     onClick={() => setBuild("rail")}
                   >
                     {t("create.rail")}
+                  </button>
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={chosen === "depots"}
+                    onClick={() => setBuild("depots")}
+                  >
+                    {t("create.depots")}
                   </button>
                   {PLUGIN_TOOLS.map((x) => (
                     <button

@@ -96,6 +96,54 @@
       check: unverified
       rationale: Room to walk between vehicles and for charging connectors.
 
+- key: depot.turning_circle_m
+  label: "Street depot: kerb-to-kerb turning circle of a bus the catalogue gives none for"
+  group: Depots and streets
+  unit: m
+  used_by: [automatic bus depot layout, swept-path check]
+  values:
+    - context:
+        mode: "*"
+      low: 21
+      central: 24
+      high: 25
+      basis: documented
+      sources: [eu-dir-96-53, mobsimlab-derivation]
+      check: unverified
+      rationale: "A bus must turn within a circle of 12.5 m outer radius (25 m diameter, 96/53/EC); catalogue 12 m buses quote about 19–22 m. The swept-path check uses the vehicle's own value where the catalogue has one."
+
+- key: depot.swept_clearance_m
+  label: "Street depot: smallest gap between a manoeuvring vehicle and a parked vehicle or the fence"
+  group: Depots and streets
+  unit: m
+  used_by: [swept-path check, automatic bus depot layout]
+  values:
+    - context:
+        mode: "*"
+      low: 0.2
+      central: 0.3
+      high: 0.5
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: "Margin for driver accuracy at walking pace in a depot, on top of the body outline (mirrors fold over parked vehicles); swept-path templates are commonly drawn with 0.3–0.5 m."
+
+- key: depot.charger_power_kw
+  label: "Street depot: power of the charger at each charging slot"
+  group: Depots and streets
+  unit: kW
+  used_by: [automatic bus depot layout, road simulation charging]
+  values:
+    - context:
+        mode: "*"
+      low: 50
+      central: 150
+      high: 300
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: "Overnight plug-in depot chargers for battery buses are commonly 40–150 kW per vehicle; 150 kW also allows a midday top-up. Pantograph chargers reach 300 kW or more."
+
 - key: street.lane_width_m
   label: Lane width of a street (vehicles drawn half a lane from the centreline)
   group: Depots and streets

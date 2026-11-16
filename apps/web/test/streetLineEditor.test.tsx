@@ -1,3 +1,4 @@
+import type { SavedDepot } from "../src/features/depots/types";
 import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import type { Map as MapLibreMap } from "maplibre-gl";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -165,6 +166,7 @@ function fakeEngine(): StreetEngine {
     ),
     setName: vi.fn(() => view),
     setDepot: vi.fn(() => view),
+    setDepotGates: vi.fn(() => view),
     clearDepot: vi.fn(() => view),
     optimise: vi.fn(() => view),
     setSettings: vi.fn(() => view),
@@ -423,6 +425,67 @@ describe("Street line saved with the project", () => {
     expect(line.points[0]).toMatchObject({ name: "Harbour" });
     expect(line.points.at(-1)).toMatchObject({ kind: "via", name: null });
     expect(line.view.points).toHaveLength(line.points.length);
+  });
+
+  it("runs to and from a shared depot's gates and saves the depot by id", async () => {
+    const engine = fakeEngine();
+    const onSave = vi.fn();
+    const { map } = fakeMap(15);
+    Object.assign(map, { fitBounds: vi.fn(), jumpTo: vi.fn() });
+    const ring: [number, number][] = [
+      [7.41, 43.729],
+      [7.412, 43.729],
+      [7.412, 43.7305],
+      [7.41, 43.7305],
+    ];
+    const depot = (modes: SavedDepot["modes"]): SavedDepot => ({
+      id: "dp1",
+      name: "North depot",
+      modes,
+      boundary: ring,
+      gates: [
+        { id: "g1", kind: "entrance", lonlat: [7.411, 43.729] },
+        { id: "g2", kind: "exit", lonlat: [7.412, 43.73] },
+        { id: "g3", kind: "both", lonlat: [7.41, 43.73] },
+      ],
+      zones: [],
+      layout: null,
+    });
+    const busOnly: SavedDepot = { ...depot(["bus"]), id: "dp2", name: "Bus depot" };
+    render(
+      <StreetLineEditor
+        map={map}
+        loadEngine={async () => engine}
+        fetchTile={async () => "<osm/>"}
+        initial={{ ...saved, depot: null }}
+        onSave={onSave}
+        depots={[depot(["trolleybus", "bus"]), busOnly]}
+      />,
+    );
+    await waitFor(() => expect(engine.insertPoint).toHaveBeenCalledTimes(3));
+    const pick = screen.getByRole("combobox", { name: "Depot" }) as HTMLSelectElement;
+    // A depot that does not take trolleybuses cannot be chosen.
+    const other = [...pick.options].find((o) => o.value === "dp2")!;
+    expect(other.disabled).toBe(true);
+    expect(other.textContent).toContain("does not take this mode");
+    fireEvent.change(pick, { target: { value: "dp1" } });
+    await waitFor(() =>
+      expect(engine.setDepotGates).toHaveBeenCalledWith(
+        [
+          [7.412, 43.73],
+          [7.41, 43.73],
+        ],
+        [
+          [7.411, 43.729],
+          [7.41, 43.73],
+        ],
+      ),
+    );
+    await waitFor(() => expect(onSave).toHaveBeenCalled());
+    const line = onSave.mock.calls.at(-1)![0] as SavedStreetLine;
+    expect(line).toMatchObject({ depotId: "dp1", depot: null });
+    fireEvent.change(pick, { target: { value: "" } });
+    expect(engine.clearDepot).toHaveBeenCalled();
   });
 
   it("saves a new line only once a point is placed", async () => {

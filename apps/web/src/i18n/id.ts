@@ -1,5 +1,6 @@
 import { editorsId } from "./editors/id";
 import { cargoBikeId } from "./cargo-bike/id";
+import { depotsId } from "./depots/id";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -371,5 +372,6 @@ export const id: Messages = {
 
   ...editorsId,
   ...cargoBikeId,
+  ...depotsId,
   ...PLUGIN_MESSAGES.id,
 };
