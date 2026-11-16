@@ -454,50 +454,129 @@ function PlatformAccess({
   const assumed = stops[0]!.floor_assumed ? stops[0]!.floor_height_mm : null;
   return (
     <div className="rounded border border-slate-200 p-2 text-xs" data-testid="platform-access">
-      <p className="font-semibold text-slate-700">{t("rail.access.title")}</p>
-      {assumed !== null && (
-        <p className="mt-1 rounded bg-amber-50 px-1.5 py-1 text-amber-900" data-testid="floor-assumed">
-          {t("rail.access.floorAssumed", { value: assumed })}
-        </p>
-      )}
-      <ul className="mt-1 flex flex-col gap-1">
-        {stops.map((s) => (
-          <li key={s.station}>
-            <div className="flex flex-wrap items-center gap-x-1.5">
-              <button
-                type="button"
-                onClick={() => show(s.station)}
-                className="min-w-0 truncate rounded px-0.5 text-start hover:bg-slate-100"
-              >
-                {s.name}
-              </button>
-              <span className={`rounded px-1 ${ACCESS_STYLE[s.access]}`}>{t(`rail.access.${s.access}`)}</span>
-              <span className="text-slate-600">
-                {s.horizontal_mm === null
-                  ? t("rail.access.floorOnly", {
-                      vertical: signedMm(s.vertical_mm),
-                      platform: s.platform_height_mm,
-                    })
-                  : t("rail.access.detail", {
-                      vertical: signedMm(s.vertical_mm),
-                      platform: s.platform_height_mm,
-                      gap: `${Math.round(s.horizontal_mm)} mm`,
-                    })}
-              </span>
-            </div>
-            {s.platform_length_m < s.needed_length_m && (
-              <p className="text-red-800">
-                {t("rail.access.short", {
-                  platform: fmtM(s.platform_length_m),
-                  train: fmtM(s.train_length_m),
-                  tolerance: fmtM(s.stopping_tolerance_m),
-                })}
-              </p>
-            )}
-          </li>
-        ))}
+      <div className="flex flex-wrap items-center gap-1.5">
+        <p className="font-semibold text-slate-700">{t("rail.access.title")}</p>
+        {assumed !== null && (
+          <span
+            className="rounded bg-amber-100 px-1 text-amber-900"
+            data-testid="floor-assumed"
+            title={t("rail.access.floorAssumed", { value: assumed })}
+          >
+            ≈ {assumed} mm
+          </span>
+        )}
+      </div>
+      <ul className="mt-1 flex flex-col">
+        {stops.map((s) => {
+          const short = s.platform_length_m < s.needed_length_m;
+          const detail =
+            s.horizontal_mm === null
+              ? t("rail.access.floorOnly", {
+                  vertical: signedMm(s.vertical_mm),
+                  platform: s.platform_height_mm,
+                })
+              : t("rail.access.detail", {
+                  vertical: signedMm(s.vertical_mm),
+                  platform: s.platform_height_mm,
+                  gap: `${Math.round(s.horizontal_mm)} mm`,
+                });
+          return (
+            <li
+              key={s.station}
+              className="flex items-center gap-2 border-t border-slate-100 py-1 first:border-t-0"
+            >
+              <StepGap vertical={s.vertical_mm} gap={s.horizontal_mm} access={s.access} label={detail} />
+              <div className="min-w-0 flex-1">
+                <button
+                  type="button"
+                  onClick={() => show(s.station)}
+                  className="block max-w-full truncate rounded text-start font-medium hover:bg-slate-100"
+                >
+                  {s.name}
+                </button>
+                <div className="flex flex-wrap items-center gap-1">
+                  <span className={`rounded px-1 ${ACCESS_STYLE[s.access]}`}>
+                    {t(`rail.access.${s.access}`)}
+                  </span>
+                  {short && (
+                    <span
+                      className="rounded bg-red-100 px-1 text-red-900"
+                      title={t("rail.access.short", {
+                        platform: fmtM(s.platform_length_m),
+                        train: fmtM(s.train_length_m),
+                        tolerance: fmtM(s.stopping_tolerance_m),
+                      })}
+                    >
+                      ⟷ {fmtM(s.platform_length_m)} &lt; {fmtM(s.needed_length_m)}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </li>
+          );
+        })}
       </ul>
     </div>
+  );
+}
+
+const ACCESS_FILL: Record<Access, string> = {
+  level: "#047857",
+  step: "#0369a1",
+  aid: "#b45309",
+  clash: "#b91c1c",
+};
+
+/**
+ * Purpose: a small cross-section of one stop: the platform on the left, the train's floor on the right, the
+ * step between them (up or down) and the gap, with both in mm. Drawn to an exaggerated scale so small steps show.
+ */
+function StepGap({
+  vertical,
+  gap,
+  access,
+  label,
+}: {
+  vertical: number;
+  gap: number | null;
+  access: Access;
+  label: string;
+}) {
+  const W = 120;
+  const H = 46;
+  const top = 26; // platform top, px
+  const dy = Math.max(-14, Math.min(14, vertical / 20)); // 20 mm per px, clamped
+  const gx = gap === null ? 6 : Math.max(0, Math.min(26, gap / 12)); // 12 mm per px, clamped
+  const pr = 38; // platform's right edge
+  const floor = top - dy;
+  const fill = ACCESS_FILL[access];
+  return (
+    <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} role="img" aria-label={label} className="shrink-0">
+      <title>{label}</title>
+      <rect x={0} y={top} width={pr} height={H - top} fill="#cbd5e1" />
+      <rect x={pr + gx} y={floor - 14} width={W - pr - gx} height={14} rx={2} fill={fill} opacity={0.18} />
+      <line x1={pr + gx} y1={floor} x2={W} y2={floor} stroke={fill} strokeWidth={2.5} />
+      <line x1={pr + gx} y1={floor - 14} x2={pr + gx} y2={floor} stroke={fill} strokeWidth={2} />
+      {Math.abs(dy) > 0.5 && (
+        <line
+          x1={pr + gx + 4}
+          y1={top}
+          x2={pr + gx + 4}
+          y2={floor}
+          stroke="#334155"
+          strokeWidth={1}
+          strokeDasharray="2 2"
+        />
+      )}
+      <text x={W - 2} y={10} textAnchor="end" fontSize={9} fill="#334155">
+        ↕ {signedMm(vertical)}
+      </text>
+      {gap !== null && (
+        <text x={2} y={10} fontSize={9} fill="#334155">
+          ↔ {Math.round(gap)} mm
+        </text>
+      )}
+    </svg>
   );
 }
 
