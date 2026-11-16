@@ -28,6 +28,9 @@ import { JourneyPlanner } from "../features/journey-planner/JourneyPlanner";
 import { NoiseMap } from "../features/noise/NoiseMap";
 import { NetworkTables } from "../features/tables/NetworkTables";
 import { TimetableTables } from "../features/timetables/TimetableTables";
+import { feedHolidays, projectFeed } from "../features/timetables/feed";
+import { paramValue } from "../features/costs/params";
+import { calendarFrom } from "./calendar";
 import { FareTables } from "../features/fares/FareTables";
 import type { FaresDoc } from "../features/fares/model";
 import { Scenarios } from "../features/tables/Scenarios";
@@ -765,6 +768,7 @@ export function Workspace({
               designValues={designValues}
               designTexts={designTexts}
               prefValues={preferences?.values}
+              calendar={calendarFrom(preferences)}
               switchChoice={switchChoice}
               stationGroupingM={paramNumber("analysis.station_grouping_m", preferences?.values)}
               existingRailways={existingRailways}
@@ -866,6 +870,23 @@ export function Workspace({
               gtfsFeeds={gtfsFeeds}
               {...(editable ? { onGtfsFeeds: (d: GtfsNetworkDoc) => drawings.set("gtfs-network", d) } : {})}
               projectName={project.name}
+              allDayFeed={async () => {
+                const cal = calendarFrom(preferences);
+                const today = new Date();
+                const waitMin = paramValue("timetable.max_terminal_wait_min", "*", preferences?.values)[1];
+                const timetable = await projectFeed({
+                  railway,
+                  streetLines: savedStreet,
+                  pluginLines: pluginLineList,
+                  cal,
+                  options: { max_idle_s: waitMin * 60 },
+                  values: preferences?.values ?? null,
+                });
+                return {
+                  timetable,
+                  holidays: feedHolidays(cal, today, new Date(today.getTime() + 365 * 86_400_000)),
+                };
+              }}
               {...(editable ? { onEditGtfsRoute: (f: string, r: string) => void editGtfsRoute(f, r) } : {})}
             />
           )}

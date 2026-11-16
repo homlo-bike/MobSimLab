@@ -294,7 +294,7 @@ export const editorsRu = {
   "rail.line.peakHeadway": "Интервал в часы пик",
   "rail.line.everyOffpeak": "Интервал вне часов пик",
   "rail.line.offpeakHeadway": "Интервал вне часов пик",
-  "rail.line.peaks": "Часы пик 07:00–09:00 и 16:00–19:00.",
+  "rail.line.peaks": "Часы пик {peaks}.",
   "rail.line.delete": "Удалить маршрут",
   "rail.line.needsStops": "Нужно не менее двух остановок.",
   "rail.line.needsTrain": "Выберите поезд.",
