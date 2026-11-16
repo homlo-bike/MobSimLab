@@ -236,14 +236,17 @@ export function JourneyPlanner({
   // The project's own lines, all of them, for the GTFS download.
   const ownLines: Timetable | null = useMemo(() => {
     const parts = [
-      streetLine ? streetLineTimetable(streetLine) : null,
+      ...streetLines.map((l, i) => {
+        const tt = streetLineTimetable(l);
+        return tt ? prefixTimetable(tt, `s${i}:`) : null;
+      }),
       railLines && (railLines.trips.length || railLines.frequency_patterns?.length)
         ? prefixTimetable(railLines, "lines:")
         : null,
       ...pluginLines.map((l) => pluginLineTimetable(l)),
     ].filter((p): p is Timetable => p !== null);
     return parts.length ? mergeTimetables(parts) : null;
-  }, [streetLine, railLines, pluginLines]);
+  }, [streetLines, railLines, pluginLines]);
   const toggle = (id: string, use: boolean) =>
     setSkipped((s) => {
       const n = new Set(s);
