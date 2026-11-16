@@ -1,16 +1,38 @@
 import { Fragment, useMemo, useState } from "react";
 import { card, fmtQty, modeLabel, num, NumberField, td, th } from "../costs/CostTables";
 import { paramValue, prefId } from "../costs/params";
-import { hhmm, lineMode } from "../railways/serviceLines";
+import { loadWasmGtfs } from "../gtfs/engine";
+import { feedFileName, gtfsAvailable, pluginRouteTypes } from "../gtfs/GtfsSection";
+import type { GtfsEngineLoader } from "../gtfs/types";
+import { writeZip } from "../gtfs/zip";
+import { mergeTimetables, prefixTimetable, streetLineTimetable } from "../journey-planner/network";
+import type { Timetable } from "../journey-planner/types";
+import { lineMode } from "../railways/serviceLines";
 import type { Network, RailEngineLoader } from "../railways/types";
 import { fullTiming } from "../street-lines/modes";
 import { lineInput, type StreetLinesDoc } from "../street-lines/saved";
+import {
+  calendarFrom,
+  DAY_TYPES,
+  type DayTypeId,
+  holidaysFor,
+  type ServiceCalendar,
+} from "../../workspace/calendar";
 import { type PreferencesDoc, withPref } from "../../workspace/preferences";
 import { blockSummary, fleetRow, railBlocks, streetBlocks, type BlockRun, type VehicleBlock } from "./blocks";
-import { useRailPublication } from "./railPublish";
 import { dayServiceOf, lineDay, railLineFor, streetTimingFor, streetWeekday } from "./dayTypes";
-import { streetLineTimetable } from "../journey-planner/network";
-import { calendarFrom, DAY_TYPES, type DayTypeId } from "../../workspace/calendar";
+import {
+  clockS,
+  directionGrids,
+  downloadText,
+  type LineDayTrips,
+  printableTimetable,
+  printDocument,
+  routeTrips,
+  timetableCsv,
+  type TripTimes,
+} from "./departures";
+import { type DayPublications, useRailPublications } from "./railPublish";
 
 interface Props {
   railway: Network | null;
@@ -18,11 +40,14 @@ interface Props {
   preferences: PreferencesDoc | null;
   /** Saves the project's own values (longest terminal wait, spare share); absent when read only. */
   onPreferences?: (d: PreferencesDoc) => void;
-  /** Tests inject the rail engine. */
+  /** Project name, for the file names of the downloads. */
+  projectName?: string;
+  /** Tests inject the engines. */
   loadRail?: RailEngineLoader;
+  loadGtfs?: GtfsEngineLoader;
 }
 
-/** One line with its blocks. */
+/** One line on one day type: its trips and blocks. */
 interface LineBlocks {
   key: string;
   name: string;
@@ -30,7 +55,10 @@ interface LineBlocks {
   mode: string;
   /** Units coupled per train (1 for street lines). */
   units: number;
+  trips: TripTimes[];
   blocks: VehicleBlock[];
+  /** The line's timetable on the day type, with that day's service id, for the GTFS download. */
+  timetable: Timetable | null;
 }
 
 /** Day type names in the tables (English, like the other tables). */
@@ -44,91 +72,224 @@ export const DAY_LABEL: Record<DayTypeId, string> = {
 const WAIT_KEY = "timetable.max_terminal_wait_min";
 const SPARE_KEY = "mode.spare_share";
 const int = (v: number) => new Intl.NumberFormat("en").format(Math.round(v));
-/** Purpose: a time of day from seconds after midnight, such as 05:12 or 24:40. */
-export const clockS = (s: number) => hhmm(Math.round(s / 60));
 const hours = (s: number) =>
   `${Math.floor(s / 3600)} h ${String(Math.round((s % 3600) / 60)).padStart(2, "0")} min`;
 
+/** Purpose: every line's trips and blocks on one day type. */
+function linesOn(
+  day: DayTypeId,
+  railway: Network | null,
+  publications: DayPublications,
+  streetLines: StreetLinesDoc | null,
+  cal: ServiceCalendar,
+  maxWaitMin: number,
+): LineBlocks[] {
+  const out: LineBlocks[] = [];
+  const pub = publications[day];
+  for (const line of pub ? (railway?.lines ?? []) : []) {
+    const l = railLineFor(line, day);
+    const mode = lineMode(railway!, l);
+    const name = l.name || l.id;
+    out.push({
+      key: `rail:${l.id}`,
+      name,
+      color: l.color,
+      mode,
+      units: Math.max(1, Math.round(l.units)),
+      trips: routeTrips(pub!.timetable, l.id),
+      blocks: railBlocks(pub!.blocks ?? [], l.id, name, mode),
+      timetable: null,
+    });
+  }
+  for (const [i, s] of (streetLines?.lines ?? []).entries()) {
+    const input = lineInput({ ...s, timing: streetTimingFor(s.timing, day) });
+    if (!input) continue;
+    const service = dayServiceOf(streetWeekday(s.timing), s.timing.days, day);
+    const timetable = streetLineTimetable(input, lineDay(cal, day, service), day);
+    out.push({
+      key: `street:${i}`,
+      name: input.name || `Street line ${i + 1}`,
+      color: input.color,
+      mode: input.mode,
+      units: 1,
+      trips: timetable ? routeTrips(timetable, `street-${input.name}`) : [],
+      blocks: streetBlocks({
+        line: input,
+        layoverMin: fullTiming(s.timing).layoverMin,
+        hasDepot: !!(s.depotId || s.depot),
+        maxWaitMin,
+        timetable,
+      }),
+      timetable: timetable && prefixTimetable(timetable, `s${i}:`),
+    });
+  }
+  return out;
+}
+
 /**
- * The timetables of the Tables tab for a day type (weekday, Saturday, Sunday, public holiday): the vehicle blocks (FR-TT-04): each vehicle's runs
- * from pull-out to pull-in, and the fleet each line needs with its spare vehicles. In English, like the other
- * tables.
+ * Purpose: one timetable of every day type for the GTFS download: each day's trips and patterns keep the day as
+ * their service id and get it after their id (weekday ids stay as they are); stops and routes are listed once.
+ */
+export function allDays(
+  byDay: Record<DayTypeId, LineBlocks[]>,
+  publications: DayPublications,
+): Timetable | null {
+  const parts: Timetable[] = [];
+  for (const day of DAY_TYPES) {
+    const own = (id: string) => (day === "weekday" ? id : `${id}~${day}`);
+    const rename = (tt: Timetable): Timetable => ({
+      ...tt,
+      trips: tt.trips.map((t) => ({ ...t, trip_id: own(t.trip_id), service_id: day })),
+      frequency_patterns: (tt.frequency_patterns ?? []).map((p) => ({
+        ...p,
+        pattern_id: own(p.pattern_id),
+        service_id: day,
+      })),
+    });
+    const rail = publications[day]?.timetable;
+    if (rail && (rail.trips.length || rail.frequency_patterns?.length))
+      parts.push(rename(prefixTimetable(rail, "lines:")));
+    for (const l of byDay[day]) if (l.timetable) parts.push(rename(l.timetable));
+  }
+  if (!parts.length) return null;
+  const all = mergeTimetables(parts);
+  const once = <T,>(xs: T[], id: (x: T) => string) => [...new Map(xs.map((x) => [id(x), x])).values()];
+  return {
+    ...all,
+    stops: once(all.stops, (s) => s.stop_id),
+    routes: once(all.routes, (r) => r.route_id),
+    transfers: once(all.transfers, (t) => `${t.from_stop_id}|${t.to_stop_id}`),
+  };
+}
+
+/**
+ * The timetables of the Tables tab, per day type (weekday, Saturday, Sunday, public holiday): the vehicle
+ * blocks (FR-TT-04), each vehicle's runs from pull-out to pull-in with the fleet each line needs, and the
+ * departures of each line (FR-TT-05) with CSV, PDF (print) and GTFS downloads. In English, like the other tables.
  * Side effects: publishes the railway's service lines with the rail engine.
  */
-export function TimetableTables({ railway, streetLines, preferences, onPreferences, loadRail }: Props) {
+export function TimetableTables({
+  railway,
+  streetLines,
+  preferences,
+  onPreferences,
+  projectName = "",
+  loadRail,
+  loadGtfs = loadWasmGtfs,
+}: Props) {
   const prefs = preferences?.values;
   const maxWaitMin = paramValue(WAIT_KEY, "*", prefs)[1];
   const options = useMemo(() => ({ max_idle_s: maxWaitMin * 60 }), [maxWaitMin]);
   const [day, setDay] = useState<DayTypeId>("weekday");
-  const calKey = JSON.stringify(calendarFrom(preferences).days ?? null);
-  const cal = useMemo(() => calendarFrom(preferences), [calKey]);
-  const { publication, busy, error } = useRailPublication(railway, day, cal, options, loadRail);
-  const lines = useMemo<LineBlocks[]>(() => {
-    const out: LineBlocks[] = [];
-    for (const line of railway?.lines ?? []) {
-      if (!publication) break;
-      const l = railLineFor(line, day);
-      const mode = lineMode(railway!, l);
-      const name = l.name || l.id;
-      out.push({
-        key: `rail:${l.id}`,
-        name,
-        color: l.color,
-        mode,
-        units: Math.max(1, Math.round(l.units)),
-        blocks: railBlocks(publication.blocks ?? [], l.id, name, mode),
-      });
-    }
-    for (const [i, s] of (streetLines?.lines ?? []).entries()) {
-      const timing = streetTimingFor(s.timing, day);
-      const input = lineInput({ ...s, timing });
-      if (!input) continue;
-      const service = dayServiceOf(streetWeekday(s.timing), s.timing.days, day);
-      out.push({
-        key: `street:${i}`,
-        name: input.name || `Street line ${i + 1}`,
-        color: input.color,
-        mode: input.mode,
-        units: 1,
-        blocks: streetBlocks({
-          line: input,
-          layoverMin: fullTiming(s.timing).layoverMin,
-          hasDepot: !!(s.depotId || s.depot),
-          maxWaitMin,
-          timetable: streetLineTimetable(input, lineDay(cal, day, service), day),
-        }),
-      });
-    }
-    return out;
-    // The calendar's peaks of the day type shape the street lines' periods (`calKey` stands for `cal`).
-  }, [railway, publication, streetLines, maxWaitMin, day, calKey]);
+  const calKey = JSON.stringify(calendarFrom(preferences));
+  const cal = useMemo(() => JSON.parse(calKey) as ServiceCalendar, [calKey]);
+  const { publications, busy, error } = useRailPublications(railway, cal, options, loadRail);
+  const byDay = useMemo(
+    () =>
+      Object.fromEntries(
+        DAY_TYPES.map((d) => [d, linesOn(d, railway, publications, streetLines, cal, maxWaitMin)]),
+      ) as Record<DayTypeId, LineBlocks[]>,
+    [railway, publications, streetLines, cal, maxWaitMin],
+  );
+  const lines = byDay[day];
 
   const editable = !!onPreferences;
   const setPref = (id: string, v: number | null) => onPreferences?.(withPref(preferences, id, v));
-  const nothing = !lines.length && !busy;
+  const nothing = !DAY_TYPES.some((d) => byDay[d].length) && !busy;
+  const [failed, setFailed] = useState<string | null>(null);
+
+  const rows = (): LineDayTrips[] =>
+    DAY_TYPES.flatMap((d) =>
+      byDay[d].map((l) => ({ line: l.name, mode: l.mode, day: d, trips: l.trips, blocks: l.blocks })),
+    );
+  const base = (projectName.trim() || "timetables").replace(/[^\p{L}\p{N}._-]+/gu, "-");
+  const downloadCsv = () =>
+    downloadText(`${base}-timetables.csv`, timetableCsv(rows()), "text/csv;charset=utf-8");
+  const print = () =>
+    printDocument(printableTimetable(rows(), DAY_LABEL, `${projectName || "MobSimLab"} timetables`));
+  const exporter = gtfsAvailable().exporter;
+  const downloadGtfs = async () => {
+    setFailed(null);
+    const tt = allDays(byDay, publications);
+    if (!tt) return;
+    try {
+      const engine = await loadGtfs();
+      const today = new Date();
+      const end = new Date(today.getTime() + 365 * 86_400_000);
+      const ymd = (d: Date) => d.toISOString().slice(0, 10).replaceAll("-", "");
+      const holidays = [today.getFullYear(), end.getFullYear()]
+        .flatMap((y) => holidaysFor(cal, y))
+        .map((d) => d.replaceAll("-", ""));
+      const files = engine.export(tt, {
+        agency_name: projectName || "MobSimLab",
+        agency_url: window.location.origin,
+        agency_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC",
+        lang: "en",
+        start_date: ymd(today),
+        end_date: ymd(end),
+        route_types: pluginRouteTypes(),
+        feed_version: today.toISOString(),
+        holidays,
+      });
+      const url = URL.createObjectURL(new Blob([writeZip(files) as BlobPart], { type: "application/zip" }));
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = feedFileName(projectName);
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 10_000);
+    } catch (e) {
+      setFailed(e instanceof Error ? e.message : String(e));
+    }
+  };
 
   return (
     <section aria-labelledby="timetables-title" className="mt-10">
       <h2 id="timetables-title" className="text-xl font-semibold tracking-tight">
         Timetables
       </h2>
-      <label className="mt-2 flex items-center gap-2 text-sm">
-        <span className="font-medium">Day type</span>
-        <select
-          value={day}
-          onChange={(e) => setDay(e.target.value as DayTypeId)}
-          className="rounded border border-slate-300 px-2 py-1"
-        >
-          {DAY_TYPES.map((d) => (
-            <option key={d} value={d}>
-              {DAY_LABEL[d]}
-            </option>
-          ))}
-        </select>
-      </label>
-      {error && (
+      <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
+        <label className="flex items-center gap-2">
+          <span className="font-medium">Day type</span>
+          <select
+            value={day}
+            onChange={(e) => setDay(e.target.value as DayTypeId)}
+            className="rounded border border-slate-300 px-2 py-1"
+          >
+            {DAY_TYPES.map((d) => (
+              <option key={d} value={d}>
+                {DAY_LABEL[d]}
+              </option>
+            ))}
+          </select>
+        </label>
+        {!nothing && (
+          <span className="flex flex-wrap gap-2">
+            <button type="button" className="btn" disabled={busy} onClick={downloadCsv}>
+              Download CSV
+            </button>
+            <button type="button" className="btn" disabled={busy} onClick={print}>
+              Print or save as PDF
+            </button>
+            {exporter && (
+              <button type="button" className="btn" disabled={busy} onClick={() => void downloadGtfs()}>
+                Download GTFS
+              </button>
+            )}
+          </span>
+        )}
+      </div>
+      {!nothing && (
+        <p className="mt-1 text-xs text-slate-500">
+          The downloads hold every line on every day type: the CSV every stop time with its vehicle block, the
+          PDF a page per line and day type, and the GTFS feed the four day types with the project's public
+          holidays.
+        </p>
+      )}
+      {(error || failed) && (
         <p role="alert" className="mt-3 text-sm text-red-700">
-          The rail lines could not be planned: {error}
+          {error
+            ? `The rail lines could not be planned: ${error}`
+            : `The GTFS feed could not be made: ${failed}`}
         </p>
       )}
       {nothing ? (
@@ -136,15 +297,84 @@ export function TimetableTables({ railway, streetLines, preferences, onPreferenc
           No lines yet. Draw a street line or a railway with service lines in the Create tab.
         </p>
       ) : (
-        <VehicleBlocks
-          lines={lines}
-          day={day}
-          busy={busy}
-          prefs={prefs}
-          editable={editable}
-          setPref={setPref}
-        />
+        <>
+          <VehicleBlocks
+            lines={lines}
+            day={day}
+            busy={busy}
+            prefs={prefs}
+            editable={editable}
+            setPref={setPref}
+          />
+          <Departures lines={lines} day={day} />
+        </>
       )}
+    </section>
+  );
+}
+
+/** Purpose: the departures of one line and direction: stops down, trips across. */
+function Departures({ lines, day }: { lines: LineBlocks[]; day: DayTypeId }) {
+  const [chosen, setChosen] = useState<string | null>(null);
+  const line = lines.find((l) => l.key === chosen) ?? lines[0] ?? null;
+  const grids = useMemo(() => (line ? directionGrids(line.trips) : []), [line]);
+  return (
+    <section className={card} aria-labelledby="departures-title">
+      <h3 id="departures-title" className="caps m-0">
+        Departures, {DAY_LABEL[day].toLowerCase()}
+      </h3>
+      {line && (
+        <label className="mt-2 flex flex-wrap items-center gap-2 text-sm">
+          <span className="font-medium">Line</span>
+          <select
+            value={line.key}
+            onChange={(e) => setChosen(e.target.value)}
+            className="rounded border border-slate-300 px-2 py-1"
+          >
+            {lines.map((l) => (
+              <option key={l.key} value={l.key}>
+                {l.name} ({modeLabel(l.mode)})
+              </option>
+            ))}
+          </select>
+        </label>
+      )}
+      {!grids.length && <p className="mt-2 text-sm text-slate-600">No trips on this day type.</p>}
+      {grids.map((g) => {
+        const from = g.stops[0]?.name ?? "";
+        const to = g.stops[g.stops.length - 1]?.name ?? "";
+        return (
+          <div key={g.direction} className="mt-4">
+            <p className="text-sm font-medium">
+              {from} → {to} <span className="font-normal text-slate-500">({g.trips.length} trips)</span>
+            </p>
+            <div className="mt-1 overflow-x-auto">
+              <table className="text-xs">
+                <caption className="sr-only">
+                  {line!.name}, {from} to {to}
+                </caption>
+                <tbody>
+                  {g.stops.map((s, i) => (
+                    <tr key={s.stopId} className="border-b border-slate-100">
+                      <th
+                        scope="row"
+                        className="sticky left-0 bg-white px-2 py-1 text-left font-medium whitespace-nowrap"
+                      >
+                        {s.name}
+                      </th>
+                      {g.trips.map((t) => (
+                        <td key={t.id} className="px-1.5 py-1 text-right tabular-nums">
+                          {t.times[i] === null || t.times[i] === undefined ? "|" : clockS(t.times[i]!)}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        );
+      })}
     </section>
   );
 }
