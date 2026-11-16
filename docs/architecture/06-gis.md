@@ -47,7 +47,7 @@ Tag mappings are data (a YAML file under source control), not code, so they can 
   larger ones use a Geofabrik region holding the whole area or an uploaded `.osm.pbf`, cut with `osmium extract`.
   `osm2pgsql` loads the flex style `tools/osm/mobsimlab-flex.lua` with the data-file mapping
   `tools/osm/tag_mapping.lua` (Lua, as osm2pgsql has no YAML parser) into the tables above, keyed by project and
-  import (`db/migrations/0011_osm_dem_import.sql`, runs in `geo.import`). Street, walk and rail tiles, buildings,
+  import (`db/migrations/0015_osm_dem_import.sql`, runs in `geo.import`). Street, walk and rail tiles, buildings,
   schools and hospitals and water read the import where it covers them and Overpass otherwise. Code:
   `apps/api/src/geodata`, `apps/web/src/features/geodata`.
 
