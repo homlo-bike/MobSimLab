@@ -37,7 +37,13 @@ import {
   servicePeriods,
   streetLineTimetable,
 } from "../src/features/journey-planner/network";
-import type { Journey, PlannerEngine, PlannerLoader, Timetable } from "../src/features/journey-planner/types";
+import type {
+  Journey,
+  PlannerEngine,
+  PlannerLoader,
+  Settings,
+  Timetable,
+} from "../src/features/journey-planner/types";
 import type { LineView } from "../src/features/street-lines/types";
 import { exampleCity } from "./fixtures/exampleCity";
 
@@ -241,10 +247,10 @@ function journey(time_s: number): Journey {
 }
 
 function fakeLoader() {
-  const calls: { timetable: Timetable }[] = [];
+  const calls: { timetable: Timetable; settings?: Partial<Settings> }[] = [];
   const plan = vi.fn((q: { time_s: number }) => ({ query: q, journeys: [journey(q.time_s)] }));
-  const loader: PlannerLoader = async (timetable) => {
-    calls.push({ timetable });
+  const loader: PlannerLoader = async (timetable, settings) => {
+    calls.push({ timetable, settings });
     const e: PlannerEngine = {
       summary: () => ({
         stops: timetable.stops.length,
@@ -345,6 +351,27 @@ describe("JourneyPlanner panel", () => {
     expect((screen.getByLabelText("Time of day") as HTMLInputElement).value).toBe("10:00");
     fireEvent.click(screen.getByRole("button", { name: "Show as table" }));
     expect(screen.getAllByRole("row").length).toBeGreaterThan(100);
+  });
+
+  it("plans with the project's walking speed and change times, under the panel's own", async () => {
+    const { journeySettingsFrom } = await import("../src/features/journey-planner/projectSettings");
+    const own = journeySettingsFrom({
+      "demand.walk_speed_kmh": 4,
+      "journey.min_change_s": 90,
+      "mode.dwell_s": 30,
+    });
+    expect(own).toEqual({ walk_speed_kmh: 4, min_change_s: 90 });
+    const { loader, calls } = fakeLoader();
+    render(
+      <JourneyPlanner
+        map={null}
+        loadPlanner={loader}
+        railLines={exampleCity([10, 50])}
+        projectSettings={own}
+      />,
+    );
+    await waitFor(() => expect(calls.length).toBeGreaterThan(0));
+    expect(calls[0]!.settings).toMatchObject({ walk_speed_kmh: 4, min_change_s: 90 });
   });
 
   it("rides the rail lines published in the railway tool, and can leave them out", async () => {

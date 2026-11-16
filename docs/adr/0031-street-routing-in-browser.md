@@ -1,6 +1,6 @@
 # ADR-0031: One street routing crate, compiled for the worker and, as WebAssembly, for the map editor
 
-- Status: Proposed (street line tool PR, 2026-10-27)
+- Status: Accepted (product owner, 2026-11-16); before that Proposed: street line tool PR, 2026-10-27
 - Date: 2026-10-27
 - Related: FR-NET-02, FR-NET-11a, ADR-0009 (one routing library), ADR-0017 (outbound gateway), ADR-0029 (street line authoring)
 

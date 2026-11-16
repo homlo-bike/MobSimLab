@@ -1,6 +1,7 @@
 import { editorsEn } from "./editors/en";
 import { cargoBikeEn } from "./cargo-bike/en";
 import { depotsEn } from "./depots/en";
+import { mslabEn } from "./mslab/en";
 import { roadEn } from "./road/en";
 import { populationEn } from "./population/en";
 import { pluginsEn } from "./plugins";
@@ -274,6 +275,7 @@ export const en = {
   "prefs.delayLane": "In a painted bus or tram lane",
   "prefs.delayDefault": "Assumption library: {value} %",
   "prefs.delayReset": "Use the library value",
+  "prefs.reason": "Reason for this value (optional)",
   "prefs.stationsTitle": "Stations",
   "prefs.stationsIntro":
     "Stops with the same name within this distance count as one station in the schematic map, the journey planner and the benefits and ridership tables.",
@@ -427,6 +429,7 @@ export const en = {
   ...editorsEn,
   ...cargoBikeEn,
   ...depotsEn,
+  ...mslabEn,
   ...roadEn,
   ...populationEn,
   ...pluginsEn,

@@ -534,6 +534,23 @@ export class RunsService {
     return r.data;
   }
 
+  /**
+   * Purpose: the scenario a road run ran (lines with their legs and departures, depots, streets), as the
+   * simulator panel sent it; the noise map takes the run's lines from it. 404 for another kind of run.
+   */
+  async roadScenario(actor: ProjectActor, projectId: string, runId: string): Promise<string> {
+    await this.projects.authorize(actor, projectId, "read");
+    const r = await this.db
+      .selectFrom("simulation.run")
+      .select("lines")
+      .where("project_id", "=", projectId)
+      .where("id", "=", runId)
+      .where("kind", "=", "road")
+      .executeTakeFirst();
+    if (!r) throw new NotFoundException("no such road run");
+    return r.lines;
+  }
+
   // ---------------------------------------------------------------------------------------------------------
 
   /**

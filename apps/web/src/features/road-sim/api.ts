@@ -36,6 +36,8 @@ export interface RoadRunsApi {
   rerun(id: string): Promise<RoadRunDetail>;
   remove(id: string): Promise<void>;
   replay(id: string): Promise<Replay>;
+  /** The scenario the run ran (its lines, legs and departures); the noise map uses it. */
+  scenario(id: string): Promise<RoadScenario>;
 }
 
 /** Purpose: the road runs of one project, through the session cookie and CSRF token. */
@@ -57,5 +59,6 @@ export function projectRoadRuns(projectId: string, csrf: string): RoadRunsApi {
     },
     // Sent gzipped with Content-Encoding: the browser unpacks it.
     replay: (id) => get<Replay>(`${one(id)}/replay`),
+    scenario: (id) => get<RoadScenario>(`${one(id)}/scenario`),
   };
 }

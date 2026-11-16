@@ -25,4 +25,7 @@ apps/web/src/features/fares/defaults.generated.json
 apps/web/src/features/road-sim/defaults.generated.json
 apps/api/src/plugins/core.generated.json
 apps/web/src/workspace/design-rules.generated.json
+apps/api/test/fixtures/mslab
+apps/api/src/mslab/drawing-schemas.generated.json
+contracts/mslab
 apps/web/src/workspace/parameters.generated.json
