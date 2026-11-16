@@ -739,7 +739,7 @@ export const editorsSw = {
   "noise.dbOrMore": "{db} dB au zaidi",
   "noise.dbRange": "{from}–{to} dB",
   "noise.mapNote":
-    "Huduma iliyopangwa tu, bila trafiki ya jumla. Majengo yanazuia juu ya paa zake na kuzunguka ncha zake (ISO 9613-2) na kuta zake za mbele zinaakisi mara moja (daraja la kwanza). Majengo yasiyo na urefu katika OpenStreetMap yanapewa m 3 kwa kila ghorofa iliyoandikwa, au m 8 (dhana za programu-jalizi ya kelele). Kiwango cha jengo hakijumuishi uakisi wa ukuta wake wa mbele. Majengo © wachangiaji wa OpenStreetMap.",
+    "Njia za huduma tu, bila trafiki ya jumla. Majengo yanazuia juu ya paa zake na kuzunguka ncha zake (ISO 9613-2) na kuta zake za mbele zinaakisi mara moja (daraja la kwanza). Majengo yasiyo na urefu katika OpenStreetMap yanapewa m 3 kwa kila ghorofa iliyoandikwa, au m 8 (dhana za programu-jalizi ya kelele). Kiwango cha jengo hakijumuishi uakisi wa ukuta wake wa mbele. Majengo © wachangiaji wa OpenStreetMap.",
   "noise.terrain": "Tumia miinuko ya ardhi (Copernicus GLO-30)",
   "noise.terrainTooLarge":
     "Njia zinashughulikia eneo kubwa mno kupakia ardhi, hivyo ramani hii imekokotolewa kwenye ardhi tambarare.",
@@ -771,6 +771,47 @@ export const editorsSw = {
   "noise.flat": "Ardhi tambarare.",
   "noise.popCredit":
     "Idadi ya watu: WorldPop, University of Southampton (doi:10.5258/SOTON/WP00839), CC BY 4.0.",
+  "noise.scenario": "Hali",
+  "noise.currentDesign": "Muundo wa sasa",
+  "noise.compareTo": "Linganisha na",
+  "noise.noComparison": "Bila kulinganisha",
+  "noise.inputLevel": "Magari na kasi kutoka",
+  "noise.level.planned": "Iliyopangwa: vipindi na mtiririko wa mfano",
+  "noise.level.timetabled": "Kwa ratiba: safari za siku",
+  "noise.level.simulated": "Iliyoigwa: uigaji wa barabara uliohifadhiwa",
+  "noise.simulatedIntro":
+    "Njia za mitaani zinachukua mabasi ambayo uigaji wa barabara ulihesabu kwenye kila sehemu na kasi zao hapo. Saa ambazo uigaji haujazifunika kikamilifu, na reli, zinabaki na ratiba yao.",
+  "noise.noRuns":
+    "Bado hakuna uigaji wa barabara uliokamilika: endesha kwanza njia za mitaani katika uigaji wa barabara.",
+  "noise.chooseRun": "Chagua uigaji wa barabara",
+  "noise.run": "Uigaji wa barabara",
+  "noise.runFor": "Uigaji wa barabara kwa {name}",
+  "noise.runLabel": "{when}, {from}–{to}",
+  "noise.runHours": "Mabasi kutoka uigaji wa barabara wa {run} kwa {hours}; ratiba kwa saa nyingine.",
+  "noise.runNoHours":
+    "Uigaji wa barabara wa {run} haufuniki saa yoyote kamili, kwa hiyo njia za mitaani zinabaki na ratiba yao.",
+  "noise.runNoTimetable":
+    "Hakuna njia ya mtaani yenye namba ile ile kwa {lines}: nje ya saa za uigaji njia hizi hazina mabasi.",
+  "noise.railTimetabled": "Reli zinabaki na ratiba yao: uigaji wa uwezo wa reli hauhifadhi mahali pa treni.",
+  "noise.noRailService": "Reli haina njia iliyochapishwa, kwa hiyo haina treni kwenye ramani hii.",
+  "noise.railNotPublished":
+    "Njia za reli hazikuweza kuchapishwa ({error}), kwa hiyo haina treni kwenye ramani hii.",
+  "noise.computingOf": "Inakokotoa ramani ya kelele ya {name}…",
+  "noise.noDifference":
+    "Ramani mbili hazikuweza kulinganishwa seli kwa seli, kwa hiyo ramani ya tofauti haionyeshwi.",
+  "noise.inputUsed": "{name} · {level}",
+  "noise.comparing": "{name} ikilinganishwa na {other} · {level}",
+  "noise.differenceNote":
+    "Mabadiliko kwa dB mahali ambapo hali mojawapo inafikia ukanda wa chini kabisa; mabadiliko chini ya 1 dB hayaonyeshwi. Zote zinatumia majengo, ardhi na wakazi wale wale, kwa hiyo trafiki ya jumla ingejifuta.",
+  "noise.changeBelow": "chini ya {db}",
+  "noise.changeAbove": "{db} au zaidi",
+  "noise.changeRange": "{from} hadi {to}",
+  "noise.comparisonTable": "Mabadiliko kwa ukanda wa kelele",
+  "noise.comparisonCaptionPeople": "Wakazi kwa kiwango kando ya upande wa jengo lao ulio wazi zaidi",
+  "noise.comparisonCaptionBuildings": "Majengo kwa kiwango kando ya upande wao ulio wazi zaidi",
+  "noise.change": "Mabadiliko",
+  "noise.exportContours": "Hamisha kontua (GeoJSON)",
+  "noise.exportTable": "Hamisha jedwali (CSV)",
   "jp.title": "Kipanga safari",
   "jp.s": "sek {n}",
   "jp.min": "dak {n}",

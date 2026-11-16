@@ -710,7 +710,7 @@ export const editorsYo = {
   "noise.dbOrMore": "{db} dB tàbí jù bẹ́ẹ̀ lọ",
   "noise.dbRange": "{from}–{to} dB",
   "noise.mapNote":
-    "Iṣẹ́ tí a gbèrò nìkan, láìsí ìrìnnà gbogbogbò. Àwọn ilé ń dènà lórí òrùlé wọn àti yíká òpin wọn (ISO 9613-2), ògiri iwájú wọn sì ń dá ohùn padà lẹ́ẹ̀kan (ìpele kìíní). Àwọn ilé tí kò ní gíga nínú OpenStreetMap ń gba 3 m fún àjà kọ̀ọ̀kan tí a kọ sílẹ̀, tàbí 8 m (àwọn àròjinlẹ̀ plugin ariwo). Ìwọ̀n ilé kan kò ka ìdápadà ohùn láti ògiri iwájú tirẹ̀. Àwọn ilé © àwọn olùkópa OpenStreetMap.",
+    "Àwọn ìlà iṣẹ́ nìkan, láìsí ìrìnnà gbogbogbò. Àwọn ilé ń dènà lórí òrùlé wọn àti yíká òpin wọn (ISO 9613-2), ògiri iwájú wọn sì ń dá ohùn padà lẹ́ẹ̀kan (ìpele kìíní). Àwọn ilé tí kò ní gíga nínú OpenStreetMap ń gba 3 m fún àjà kọ̀ọ̀kan tí a kọ sílẹ̀, tàbí 8 m (àwọn àròjinlẹ̀ plugin ariwo). Ìwọ̀n ilé kan kò ka ìdápadà ohùn láti ògiri iwájú tirẹ̀. Àwọn ilé © àwọn olùkópa OpenStreetMap.",
   "noise.terrain": "Lo gíga ilẹ̀ (Copernicus GLO-30)",
   "noise.terrainTooLarge":
     "Àwọn ìlà náà bo agbègbè tó tóbi jù láti gbé ilẹ̀ wọlé, nítorí náà a ṣírò máàpù yìí lórí ilẹ̀ pẹrẹsẹ.",
@@ -741,6 +741,47 @@ export const editorsYo = {
   "noise.flat": "Ilẹ̀ pẹrẹsẹ.",
   "noise.popCredit":
     "Iye ènìyàn: WorldPop, University of Southampton (doi:10.5258/SOTON/WP00839), CC BY 4.0.",
+  "noise.scenario": "Ìṣẹ̀lẹ̀",
+  "noise.currentDesign": "Àwòrán lọ́wọ́lọ́wọ́",
+  "noise.compareTo": "Fi wé",
+  "noise.noComparison": "Kò sí àfiwé",
+  "noise.inputLevel": "Ọkọ̀ àti ìyára láti",
+  "noise.level.planned": "Ti a gbèrò: àlàfo àkókò àti àpẹẹrẹ ìṣàn",
+  "noise.level.timetabled": "Gẹ́gẹ́ bí àtẹ àkókò: àwọn ìrìn-àjò ọjọ́",
+  "noise.level.simulated": "Àfarawé: àfarawé ọ̀nà tí a fipamọ́",
+  "noise.simulatedIntro":
+    "Àwọn ìlà òpópónà ń mú àwọn bọ́ọ̀sì tí àfarawé ọ̀nà kà lórí apá kọ̀ọ̀kan àti ìyára wọn níbẹ̀. Àwọn wákàtí tí àfarawé kò bò pátápátá, àti ojú irin, ń pa àtẹ àkókò wọn mọ́.",
+  "noise.noRuns": "Kò tíì sí àfarawé ọ̀nà tí ó parí: kọ́kọ́ ṣe àfarawé àwọn ìlà òpópónà nínú àfarawé ọ̀nà.",
+  "noise.chooseRun": "Yan àfarawé ọ̀nà",
+  "noise.run": "Àfarawé ọ̀nà",
+  "noise.runFor": "Àfarawé ọ̀nà fún {name}",
+  "noise.runLabel": "{when}, {from}–{to}",
+  "noise.runHours": "Bọ́ọ̀sì láti inú àfarawé ọ̀nà {run} fún {hours}; àtẹ àkókò fún àwọn wákàtí yòókù.",
+  "noise.runNoHours":
+    "Àfarawé ọ̀nà {run} kò bo wákàtí kíkún kankan, nítorí náà àwọn ìlà òpópónà ń pa àtẹ àkókò wọn mọ́.",
+  "noise.runNoTimetable":
+    "Kò sí ìlà òpópónà tí ó ní nọ́mbà kan náà fún {lines}: ní ìta wákàtí àfarawé àwọn ìlà wọ̀nyí kò ní bọ́ọ̀sì.",
+  "noise.railTimetabled":
+    "Ojú irin ń pa àtẹ àkókò wọn mọ́: àfarawé agbára ojú irin kò fi ipò ọkọ̀ ojú irin pamọ́.",
+  "noise.noRailService": "Ojú irin kò ní ìlà iṣẹ́ tí a tẹ̀ jáde, nítorí náà kò ní ọkọ̀ ojú irin lórí máàpù yìí.",
+  "noise.railNotPublished":
+    "A kò lè tẹ àwọn ìlà iṣẹ́ ojú irin jáde ({error}), nítorí náà kò ní ọkọ̀ ojú irin lórí máàpù yìí.",
+  "noise.computingOf": "Ń ṣe ìṣirò máàpù ariwo ti {name}…",
+  "noise.noDifference":
+    "A kò lè fi máàpù méjèèjì wé ara wọn sẹ́ẹ̀lì sí sẹ́ẹ̀lì, nítorí náà a kò fi máàpù ìyàtọ̀ hàn.",
+  "noise.inputUsed": "{name} · {level}",
+  "noise.comparing": "{name} tí a fi wé {other} · {level}",
+  "noise.differenceNote":
+    "Ìyípadà ní dB níbi tí ọ̀kan nínú àwọn ìṣẹ̀lẹ̀ dé ìpele tó kéré jù; a kò fi ìyípadà tí kò tó 1 dB hàn. Àwọn méjèèjì ń lo àwọn ilé, ilẹ̀ àti olùgbé kan náà, nítorí náà ìrìnnà gbogbogbò yóò pa ara rẹ̀ rẹ́.",
+  "noise.changeBelow": "kéré sí {db}",
+  "noise.changeAbove": "{db} tàbí jù bẹ́ẹ̀ lọ",
+  "noise.changeRange": "láti {from} sí {to}",
+  "noise.comparisonTable": "Ìyípadà nípa ìpele ariwo",
+  "noise.comparisonCaptionPeople": "Olùgbé nípa ìpele ní ẹ̀gbẹ́ ilé wọn tí ariwo kàn jù",
+  "noise.comparisonCaptionBuildings": "Àwọn ilé nípa ìpele ní ẹ̀gbẹ́ wọn tí ariwo kàn jù",
+  "noise.change": "Ìyípadà",
+  "noise.exportContours": "Gbé àwọn ìlà ìpele jáde (GeoJSON)",
+  "noise.exportTable": "Gbé tábìlì jáde (CSV)",
   "jp.title": "Olùṣètò ìrìn-àjò",
   "jp.s": "{n} ìṣẹ́jú-àáyá",
   "jp.min": "{n} ìṣẹ́jú",
