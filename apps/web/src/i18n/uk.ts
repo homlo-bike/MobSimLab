@@ -4,6 +4,7 @@ import { editorsUk } from "./editors/uk";
 import { cargoBikeUk } from "./cargo-bike/uk";
 import { commentsUk } from "./comments/uk";
 import { depotsUk } from "./depots/uk";
+import { timetablesUk } from "./timetables/uk";
 import { mslabUk } from "./mslab/uk";
 import { pluginCodeUk } from "./plugin-code/uk";
 import { populationUk } from "./population/uk";
@@ -499,6 +500,7 @@ export const uk: Messages = {
   ...editorsUk,
   ...cargoBikeUk,
   ...depotsUk,
+  ...timetablesUk,
   ...commentsUk,
   ...mslabUk,
   ...pluginCodeUk,

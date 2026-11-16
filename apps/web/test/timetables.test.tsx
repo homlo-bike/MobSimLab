@@ -1,10 +1,28 @@
 import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { StreetLinesDoc } from "../src/features/street-lines/saved";
-import { TimetableTables } from "../src/features/timetables/TimetableTables";
+import { allDays, TimetableTables } from "../src/features/timetables/TimetableTables";
+import {
+  directionGrids,
+  printableTimetable,
+  routeTrips,
+  timetableCsv,
+} from "../src/features/timetables/departures";
+import {
+  dayServiceOf,
+  editDay,
+  hasOwnDay,
+  lineDay,
+  railLineFor,
+  shownDay,
+  streetTimingFor,
+  withDay,
+} from "../src/features/timetables/dayTypes";
 import {
   DEFAULT_SERVICE_DAY,
+  prefixTimetable,
   servicePeriods,
+  streetLineTimetable,
   type StreetLineInput,
 } from "../src/features/journey-planner/network";
 import type { LineView } from "../src/features/street-lines/types";
@@ -293,5 +311,203 @@ describe("timetables in the Tables tab", () => {
   it("says when there is nothing to schedule", () => {
     render(<TimetableTables railway={null} streetLines={null} preferences={null} />);
     expect(screen.getByText(/No lines yet/)).toBeTruthy();
+  });
+});
+
+describe("day types", () => {
+  const weekday = { firstMin: 300, lastMin: 1410, peakHeadwayMin: 6, offPeakHeadwayMin: 12 };
+
+  it("runs a line as on a weekday until a day type has its own service", () => {
+    expect(dayServiceOf(weekday, undefined, "sunday")).toEqual(weekday);
+    // Editing Sunday starts its own service from the weekday's.
+    const e = editDay(weekday, undefined, "sunday", { peakHeadwayMin: 15 });
+    expect(e.weekday).toEqual(weekday);
+    expect(e.days).toEqual({ sunday: { ...weekday, peakHeadwayMin: 15 } });
+    expect(hasOwnDay(e.days, "sunday")).toBe(true);
+    expect(hasOwnDay(e.days, "saturday")).toBe(false);
+    expect(dayServiceOf(weekday, e.days, "sunday").peakHeadwayMin).toBe(15);
+    // Editing the weekday leaves Sunday's own service alone.
+    const w = editDay(weekday, e.days, "weekday", { firstMin: 330 });
+    expect(w.weekday.firstMin).toBe(330);
+    expect(w.days).toBe(e.days);
+    // Back to the weekday's service.
+    expect(withDay(e.days, "sunday", null)).toBeUndefined();
+    // A day still being typed (last before first) shows as typed but runs as on a weekday.
+    const bad = { sunday: { ...weekday, lastMin: 200 } };
+    expect(shownDay(weekday, bad, "sunday").lastMin).toBe(200);
+    expect(dayServiceOf(weekday, bad, "sunday")).toEqual(weekday);
+  });
+
+  it("gives street and rail lines their day type's times", () => {
+    const timing = {
+      headwayMin: 6,
+      offPeakHeadwayMin: 12,
+      dwellS: 20,
+      layoverMin: 5,
+      firstMin: 300,
+      lastMin: 1410,
+      days: { sunday: { firstMin: 420, lastMin: 1320, peakHeadwayMin: 20, offPeakHeadwayMin: 30 } },
+    };
+    expect(streetTimingFor(timing, "sunday")).toMatchObject({
+      firstMin: 420,
+      headwayMin: 20,
+      offPeakHeadwayMin: 30,
+      dwellS: 20,
+    });
+    expect(streetTimingFor(timing, "saturday")).toMatchObject({ firstMin: 300, headwayMin: 6 });
+    // Fewer trips and vehicles on a Sunday.
+    const sunday = streetBlocks({
+      line: { ...line(), headwayMin: 20, offPeakHeadwayMin: 30, firstMin: 420, lastMin: 1320 },
+      layoverMin: 5,
+      hasDepot: false,
+      maxWaitMin: 20,
+    });
+    const week = streetBlocks({ line: line(), layoverMin: 5, hasDepot: false, maxWaitMin: 20 });
+    expect(sunday.length).toBeLessThan(week.length);
+    const rail = {
+      id: "l1",
+      name: "M1",
+      color: "#000",
+      stations: [1, 2],
+      vehicle: "x",
+      units: 1,
+      first_min: 300,
+      last_min: 1440,
+      peak_headway_min: 4,
+      offpeak_headway_min: 8,
+      days: { holiday: { firstMin: 360, lastMin: 1380, peakHeadwayMin: 10, offPeakHeadwayMin: 10 } },
+    };
+    expect(railLineFor(rail, "holiday")).toMatchObject({
+      first_min: 360,
+      peak_headway_min: 10,
+      last_min: 1380,
+    });
+    expect(railLineFor(rail, "weekday")).toMatchObject({ first_min: 300, peak_headway_min: 4 });
+  });
+
+  it("takes the day type's peaks from the calendar and the line's own hours", () => {
+    const cal = {
+      days: { saturday: { firstMin: 360, lastMin: 1380, peaks: [[600, 840]] as [number, number][] } },
+    };
+    expect(lineDay(cal, "saturday", weekday)).toEqual({
+      firstS: 300 * 60,
+      lastS: 1410 * 60,
+      peaks: [[36000, 50400]],
+    });
+    // Without its own peaks a day type has the app's default ones.
+    expect(lineDay({}, "sunday", weekday).peaks).toEqual(DEFAULT_SERVICE_DAY.peaks);
+  });
+
+  it("shows the blocks of the chosen day type in the Tables tab", () => {
+    const doc = {
+      lines: [
+        {
+          name: "7",
+          profile: { mode: "bus" },
+          timing: {
+            headwayMin: 6,
+            offPeakHeadwayMin: 12,
+            dwellS: 20,
+            layoverMin: 5,
+            firstMin: 300,
+            lastMin: 1380,
+            days: { sunday: { firstMin: 420, lastMin: 1320, peakHeadwayMin: 30, offPeakHeadwayMin: 30 } },
+          },
+          points: [],
+          depot: null,
+          depotStops: {},
+          view: view(),
+        },
+      ],
+    } as unknown as StreetLinesDoc;
+    render(<TimetableTables railway={null} streetLines={doc} preferences={null} />);
+    const trips = () =>
+      Number(
+        within(screen.getAllByRole("table")[0]!).getAllByRole("row")[1]!.querySelectorAll("td")[4]!
+          .textContent,
+      );
+    const week = trips();
+    fireEvent.change(screen.getByRole("combobox", { name: "Day type" }), { target: { value: "sunday" } });
+    expect(screen.getByRole("region", { name: "Vehicle blocks, sunday" })).toBeTruthy();
+    expect(trips()).toBeLessThan(week);
+    // Saturday runs as on a weekday.
+    fireEvent.change(screen.getByRole("combobox", { name: "Day type" }), { target: { value: "saturday" } });
+    expect(trips()).toBe(week);
+  });
+});
+
+describe("departure timetables and downloads", () => {
+  const tt = () => streetLineTimetable(line(), undefined, "weekday")!;
+
+  it("lists every trip at every stop and a grid per direction", () => {
+    const trips = routeTrips(tt(), "street-7");
+    expect(trips.length).toBe(tripCount(line()));
+    const first = trips[0]!;
+    expect(first.id).toBe(`street-7-0@${5 * H}`);
+    // 70 s to S3, 20 s there, 50 s on to S4.
+    expect(first.stops.map((s) => [s.name, s.arriveS - 5 * H, s.departS - 5 * H])).toEqual([
+      ["S1", 0, 0],
+      ["S3", 70, 90],
+      ["S4", 140, 160],
+    ]);
+    const grids = directionGrids(trips);
+    expect(grids.map((g) => g.stops.map((s) => s.name))).toEqual([
+      ["S1", "S3", "S4"],
+      ["S4", "S1"],
+    ]);
+    // The last stop shows the arrival.
+    expect(grids[0]!.trips[0]!.times).toEqual([5 * H, 5 * H + 90, 5 * H + 140]);
+  });
+
+  it("writes every stop time with its block as CSV and a page per line and day type", () => {
+    const trips = routeTrips(tt(), "street-7");
+    const blocks = streetBlocks({ line: line(), layoverMin: 5, hasDepot: false, maxWaitMin: 20 });
+    const csv = timetableCsv([{ line: '7, "night"', mode: "bus", day: "sunday", trips, blocks }]);
+    const rows = csv.trim().split("\r\n");
+    expect(rows[0]).toBe("line,mode,day_type,direction,trip_id,block,stop_sequence,stop,arrival,departure");
+    expect(rows[1]).toBe(
+      `"7, ""night""",bus,sunday,0,street-7-0@${5 * H},"7, ""night""/1",1,S1,05:00:00,05:00:00`,
+    );
+    expect(rows).toHaveLength(1 + trips.reduce((n, t) => n + t.stops.length, 0));
+    const html = printableTimetable(
+      [
+        { line: "7", mode: "bus", day: "weekday", trips, blocks },
+        { line: "7", mode: "bus", day: "sunday", trips: [], blocks: [] },
+      ],
+      { weekday: "Weekday", saturday: "Saturday", sunday: "Sunday", holiday: "Public holiday" },
+      "Study <1>",
+    );
+    expect(html.match(/<article>/g)).toHaveLength(1);
+    expect(html).toContain("<title>Study &lt;1&gt;</title>");
+    expect(html).toContain("S1 → S4");
+    // Departures by hour: 05 every 12 min off peak, minutes from the first stop.
+    expect(html).toContain("<tr><th>05</th><td>00 12 24 36 48</td></tr>");
+    expect(html).toContain('<tr><td>S3</td><td class="n">2</td></tr>');
+  });
+
+  it("puts every day type in one GTFS timetable with its service id", () => {
+    const lines = (["weekday", "saturday", "sunday", "holiday"] as const).map((d) => [
+      d,
+      [
+        {
+          key: "street:0",
+          name: "7",
+          color: "#000",
+          mode: "bus",
+          units: 1,
+          trips: [],
+          blocks: [],
+          timetable: prefixTimetable(streetLineTimetable(line(), undefined, d)!, "s0:"),
+        },
+      ],
+    ]);
+    const all = allDays(Object.fromEntries(lines), {})!;
+    expect(new Set(all.frequency_patterns.map((p) => p.service_id))).toEqual(
+      new Set(["weekday", "saturday", "sunday", "holiday"]),
+    );
+    expect(new Set(all.frequency_patterns.map((p) => p.pattern_id)).size).toBe(8);
+    expect(all.frequency_patterns.map((p) => p.pattern_id)).toContain("s0:street-7-0~sunday");
+    expect(all.stops).toHaveLength(3);
+    expect(all.routes).toHaveLength(1);
   });
 });

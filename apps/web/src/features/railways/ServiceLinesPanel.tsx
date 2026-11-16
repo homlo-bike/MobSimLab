@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import { CommentBadge, ObjectComments } from "../comments/Comments";
 import { type Translate, useI18n } from "../../i18n/i18n";
 import { fmtM, fmtTime } from "./modes";
+import { DayTypeChoice } from "../timetables/DayTypeChoice";
+import { type DayService, editDay, hasOwnDay, railWeekday, shownDay, withDay } from "../timetables/dayTypes";
+import type { DayTypeId } from "../../workspace/calendar";
 import { Num, Row, Section } from "./panelControls";
 import {
   hhmm,
@@ -238,6 +241,21 @@ function LineEditor({
   const name = (id: number) => doc.stations.find((s) => s.id === id)?.name ?? t("rail.stationN", { id });
   const lonlat = (id: number) => view.stations.find((s) => s.id === id)?.lonlat ?? null;
   const length = train ? train.length_m * l.units : 0;
+  // The day type whose times and headways the fields show and change.
+  const [day, setDay] = useState<DayTypeId>("weekday");
+  const shown = shownDay(railWeekday(l), l.days, day);
+  const setDayService = (patch: Partial<DayService>) =>
+    set((x) => {
+      const next = editDay(railWeekday(x), x.days, day, patch);
+      return {
+        ...x,
+        first_min: next.weekday.firstMin,
+        last_min: next.weekday.lastMin,
+        peak_headway_min: next.weekday.peakHeadwayMin,
+        offpeak_headway_min: next.weekday.offPeakHeadwayMin,
+        days: next.days,
+      };
+    });
 
   return (
     <div className="flex flex-col gap-2 border-t border-slate-200 p-2">
@@ -353,18 +371,26 @@ function LineEditor({
         />
       )}
 
+      <DayTypeChoice
+        day={day}
+        onDay={setDay}
+        own={hasOwnDay(l.days, day)}
+        onOwn={(own) =>
+          day !== "weekday" && set((x) => ({ ...x, days: withDay(x.days, day, own ? shown : null) }))
+        }
+      />
       <Row label={t("rail.line.first")}>
         <TimeInput
           label={t("rail.line.first")}
-          value={l.first_min}
-          onChange={(v) => set((x) => ({ ...x, first_min: v }))}
+          value={shown.firstMin}
+          onChange={(v) => setDayService({ firstMin: v })}
         />
       </Row>
       <Row label={t("rail.line.last")}>
         <TimeInput
           label={t("rail.line.last")}
-          value={l.last_min}
-          onChange={(v) => set((x) => ({ ...x, last_min: v }))}
+          value={shown.lastMin}
+          onChange={(v) => setDayService({ lastMin: v })}
         />
       </Row>
       <Row label={t("rail.line.everyPeaks")}>
@@ -373,8 +399,8 @@ function LineEditor({
           unit="min"
           min={1}
           step={0.5}
-          value={l.peak_headway_min}
-          onChange={(v) => set((x) => ({ ...x, peak_headway_min: v }))}
+          value={shown.peakHeadwayMin}
+          onChange={(v) => setDayService({ peakHeadwayMin: v })}
         />
       </Row>
       <Row label={t("rail.line.everyOffpeak")}>
@@ -383,8 +409,8 @@ function LineEditor({
           unit="min"
           min={1}
           step={0.5}
-          value={l.offpeak_headway_min}
-          onChange={(v) => set((x) => ({ ...x, offpeak_headway_min: v }))}
+          value={shown.offPeakHeadwayMin}
+          onChange={(v) => setDayService({ offPeakHeadwayMin: v })}
         />
       </Row>
       <p className="text-xs text-slate-500">{t("rail.line.peaks")}</p>

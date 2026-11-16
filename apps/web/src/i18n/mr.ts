@@ -4,6 +4,7 @@ import { editorsMr } from "./editors/mr";
 import { cargoBikeMr } from "./cargo-bike/mr";
 import { commentsMr } from "./comments/mr";
 import { depotsMr } from "./depots/mr";
+import { timetablesMr } from "./timetables/mr";
 import { mslabMr } from "./mslab/mr";
 import { pluginCodeMr } from "./plugin-code/mr";
 import { populationMr } from "./population/mr";
@@ -491,6 +492,7 @@ export const mr: Messages = {
   ...editorsMr,
   ...cargoBikeMr,
   ...depotsMr,
+  ...timetablesMr,
   ...commentsMr,
   ...mslabMr,
   ...pluginCodeMr,

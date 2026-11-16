@@ -4,6 +4,7 @@ import { editorsJa } from "./editors/ja";
 import { cargoBikeJa } from "./cargo-bike/ja";
 import { commentsJa } from "./comments/ja";
 import { depotsJa } from "./depots/ja";
+import { timetablesJa } from "./timetables/ja";
 import { mslabJa } from "./mslab/ja";
 import { pluginCodeJa } from "./plugin-code/ja";
 import { populationJa } from "./population/ja";
@@ -488,6 +489,7 @@ export const ja: Messages = {
   ...editorsJa,
   ...cargoBikeJa,
   ...depotsJa,
+  ...timetablesJa,
   ...commentsJa,
   ...mslabJa,
   ...pluginCodeJa,
