@@ -37,6 +37,7 @@ const P1 = "11111111-1111-4111-8111-111111111111";
 const P2 = "22222222-2222-4222-8222-222222222222";
 const P3 = "33333333-3333-4333-8333-333333333333";
 const NEW = "44444444-4444-4444-8444-444444444444";
+const P4 = "55555555-5555-4555-8555-555555555555";
 const project = (
   id: string,
   name: string,
@@ -49,13 +50,13 @@ const project = (
   areaName: "Lakeside",
   modes: ["tram"],
   myRole,
-  viaLink: false,
+  viaPublic: false,
   owner: {
     id: myRole === "owner" ? "u1" : "u2",
     displayName: myRole === "owner" ? "Alice Smith" : "Ana Kovač",
   },
   memberCount: myRole === "owner" ? 1 : 3,
-  linkAccess: false,
+  visibility: "private",
   createdAt: "2026-11-01T10:00:00Z",
   updatedAt: new Date(Date.now() - 12 * 60_000).toISOString(),
   archivedAt: null,
@@ -91,6 +92,7 @@ function stubApi(me: Me | Me[], overrides: Record<string, unknown> = {}) {
       if (url === "/api/auth/me") return reply(mes[Math.min(i++, mes.length - 1)]);
       if (key === "GET /api/projects") return reply({ projects });
       if (key === "GET /api/projects?archived=true") return reply({ projects: [] });
+      if (key === "GET /api/projects?public=true") return reply({ projects: [] });
       if (key === "POST /api/projects")
         return reply(
           { project: project(NEW, (body as { name: string }).name, "owner", { areaName: null }) },
@@ -211,6 +213,50 @@ describe("projects home", () => {
         .getAllByRole("menuitem")
         .map((b) => b.textContent),
     ).toEqual(["Open", "Manage access", "Duplicate"]);
+  });
+
+  it("lists public projects on their own shelf, read-only", async () => {
+    const open = project(P4, "Harbour ferries", "viewer", { viaPublic: true, visibility: "public" });
+    stubApi(owner, { "GET /api/projects?public=true": { projects: [open] } });
+    render(<App />);
+    const shelf = await screen.findByRole("region", { name: "Public projects" });
+    expect(within(shelf).getByText("Harbour ferries")).toBeTruthy();
+    expect(screen.getByRole("tab", { name: "Public projects · 1" })).toBeTruthy();
+    // Not a member: no copy and no look at who has access.
+    fireEvent.click(screen.getByRole("button", { name: "Actions for Harbour ferries" }));
+    const menu = screen.getByRole("menu", { name: "Actions for Harbour ferries" });
+    expect(
+      within(menu)
+        .getAllByRole("menuitem")
+        .map((b) => b.textContent),
+    ).toEqual(["Open"]);
+  });
+
+  it("makes a project public only after the licence notice, and private again", async () => {
+    const calls = stubApi(owner, {
+      [`GET /api/projects/${P1}/members`]: {
+        members: [{ userId: "u1", displayName: "Alice Smith", email: "alice@example.org", role: "owner" }],
+      },
+      [`PUT /api/projects/${P1}/visibility`]: {
+        project: project(P1, "Lakeside network", "owner", { visibility: "public" }),
+      },
+    });
+    render(<App />);
+    fireEvent.contextMenu(await screen.findByText("Lakeside network"));
+    fireEvent.click(screen.getByRole("menuitem", { name: "Share" }));
+    const dlg = screen.getByRole("dialog", { name: "Share “Lakeside network”" });
+    expect(within(dlg).getByText("Private: only the people above can open it")).toBeTruthy();
+    fireEvent.click(within(dlg).getByRole("button", { name: "Make public" }));
+    const notice = within(dlg).getByRole("group", { name: "Before you make it public" });
+    expect(notice.textContent).toMatch(/Open Database License \(ODbL\)/);
+    expect(calls.some((c) => c.url.endsWith("/visibility"))).toBe(false);
+    fireEvent.click(within(notice).getByRole("button", { name: "I understand, make it public" }));
+    expect(await within(dlg).findByRole("button", { name: "Make private" })).toBeTruthy();
+    expect(calls.find((c) => c.url === `/api/projects/${P1}/visibility`)?.body).toEqual({
+      visibility: "public",
+      licenceAccepted: true,
+    });
+    expect(within(dlg).getByText(/anyone signed in to this MobSimLab can find it/)).toBeTruthy();
   });
 
   it("deletes only after the name is typed", async () => {

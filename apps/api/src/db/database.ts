@@ -22,6 +22,9 @@ export function roleRank(role: InstanceRole): number {
 /** Project roles (05 §3.2), highest first. */
 export const PROJECT_ROLES = ["owner", "editor", "commenter", "viewer"] as const;
 export type ProjectRole = (typeof PROJECT_ROLES)[number];
+/** Who can open a project: its members only, or anyone signed in to this instance, read-only (0009). */
+export const PROJECT_VISIBILITIES = ["private", "public"] as const;
+export type ProjectVisibility = (typeof PROJECT_VISIBILITIES)[number];
 
 /** How a simulation run stands (db/migrations/0007_simulation_runs.sql). */
 export const RUN_STATUSES = ["queued", "running", "done", "failed", "cancelled"] as const;
@@ -152,7 +155,7 @@ export interface DB {
     description: Generated<string>;
     area_name: string | null;
     modes: ColumnType<string[], string[] | undefined, string[]>;
-    link_access: Generated<boolean>;
+    visibility: Generated<ProjectVisibility>;
     copied_from: string | null;
     created_at: Generated<Date>;
     updated_at: Timestamp;

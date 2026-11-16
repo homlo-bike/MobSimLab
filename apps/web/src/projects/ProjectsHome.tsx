@@ -70,7 +70,8 @@ export function ProjectsHome({
   onOpen: (p: Project, fresh?: boolean) => void;
 }) {
   const { t, language } = useI18n();
-  const [projects, setProjects] = useState<Project[] | null>(null);
+  const [mine, setProjects] = useState<Project[] | null>(null);
+  const [publicProjects, setPublic] = useState<Project[]>([]);
   const [archived, setArchived] = useState<Project[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<Filter>("all");
@@ -86,11 +87,17 @@ export function ProjectsHome({
   const reload = useCallback(() => {
     api.list(false).then(setProjects, (e: unknown) => setError(String(e)));
     api.list(true).then(setArchived, () => setArchived([]));
+    api.listPublic().then(
+      (ps) => setPublic(ps ?? []),
+      () => setPublic([]),
+    );
   }, [api]);
   useEffect(reload, [reload]);
+  // Public projects the person is not a member of sit on their own shelf, read-only.
+  const projects = useMemo(() => (mine ? [...mine, ...publicProjects] : null), [mine, publicProjects]);
 
   const counts = useMemo(() => {
-    const c = { mine: 0, shared: 0, viewOnly: 0 };
+    const c = { mine: 0, shared: 0, viewOnly: 0, public: 0 };
     for (const p of projects ?? []) c[shelfOf(p)]++;
     return c;
   }, [projects]);
@@ -106,6 +113,7 @@ export function ProjectsHome({
             ["mine", "home.mine"],
             ["shared", "home.sharedEdit"],
             ["viewOnly", "home.viewOnly"],
+            ["public", "home.public"],
           ] as const
         )
           .filter(([s]) => filter === "all" || filter === s)
@@ -167,6 +175,7 @@ export function ProjectsHome({
     { id: "mine", label: `${t("home.mine")} · ${counts.mine}` },
     { id: "shared", label: `${t("home.shared")} · ${counts.shared}` },
     { id: "viewOnly", label: `${t("home.viewOnly")} · ${counts.viewOnly}` },
+    { id: "public", label: `${t("home.public")} · ${counts.public}` },
     { id: "archived", label: t("home.archived") },
   ];
 
@@ -187,8 +196,9 @@ export function ProjectsHome({
       item("menu.open", () => onOpen(p)),
       can.edit(p) && item("menu.rename", () => setDialog({ kind: "rename", project: p })),
       can.manage(p) && item("menu.share", () => setDialog({ kind: "share", project: p, focus: "invite" })),
-      item("menu.access", () => setDialog({ kind: "share", project: p, focus: "access" })),
+      !p.viaPublic && item("menu.access", () => setDialog({ kind: "share", project: p, focus: "access" })),
       canCreate &&
+        !p.viaPublic &&
         item(
           "menu.duplicate",
           () =>
@@ -247,7 +257,7 @@ export function ProjectsHome({
           <span className="block min-w-0 md:px-3 md:pt-2.5 md:pb-3 md:pe-12">
             <span className="block truncate font-semibold">{p.name}</span>
             <span id={`meta-${p.id}`} className="flex items-center gap-1 truncate text-xs text-slate-500">
-              {shelfOf(p) === "viewOnly" && <EyeIcon size={14} />}
+              {(shelfOf(p) === "viewOnly" || shelfOf(p) === "public") && <EyeIcon size={14} />}
               {meta}
               {p.memberCount > 1 &&
                 shelfOf(p) === "mine" &&

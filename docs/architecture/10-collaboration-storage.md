@@ -8,9 +8,9 @@
 |------------|-------------|--------------|
 | Private | Project members only | Members with Editor/Owner role |
 | Shared | Named users and IdP groups with a project role | Editors/Owners |
-| Public | Everyone on the instance; anonymous visitors too if the admin enables public anonymous access | Editors/Owners only |
+| Public | Everyone signed in to the instance, read-only. Visitors who are not signed in never see projects (product owner decision, 2026-11-16). | Editors/Owners only |
 
-Public projects that contain OSM-derived data show the ODbL notice (C-12). Making a project public is an audited action and shows a licence check (are all included datasets allowed to be shared publicly?).
+**Public projects (v1).** `project.project.visibility` is `private` or `public` (migration 0009); Private and Shared differ only in whether the Owner added people. Only the Owner changes it, with `PUT /api/projects/:id/visibility` `{ visibility, licenceAccepted }`. Making a project public first shows the Owner the ODbL notice for OpenStreetMap-derived data (C-12) and asks them to confirm that everything else in the project may be shared too; the API refuses without `licenceAccepted: true`. The change is audited as `project.visibility_changed`. `GET /api/projects?public=true` lists the public projects the caller is not a member of, for the "Public projects" shelf on the projects home. People who reach a project only because it is public get the Viewer role and cannot duplicate it or see its members. Public replaced the earlier view-only link; projects that had the link on became private. The project header shows a "Public" tag with the OpenStreetMap notice.
 
 ### 1.2 Concurrent editing
 

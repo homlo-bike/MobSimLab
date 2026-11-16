@@ -100,6 +100,7 @@ export const ha: Messages = {
   "home.shared": "An raba da ni",
   "home.sharedEdit": "An raba da ni · za ka iya gyara",
   "home.viewOnly": "Kallo kawai",
+  "home.public": "Ayyukan jama'a",
   "home.archived": "An ajiye",
   "home.none": "Babu komai a nan.",
   "home.edited": "An gyara {when}",
@@ -173,11 +174,16 @@ export const ha: Messages = {
   "share.roleOf": "Matsayin {name}",
   "share.remove": "Cire {name}",
   "share.leave": "Bari",
-  "share.link": "Mahaɗin kallo kawai",
-  "share.linkOn": "Duk wanda ya shiga wannan MobSimLab zai iya buɗe shi",
-  "share.linkOff": "A kashe: mutanen da ke sama ne kawai za su iya buɗe shi",
-  "share.linkTurnOn": "Kunna",
-  "share.linkTurnOff": "Kashe",
+  "share.visibility": "Wa zai iya buɗe shi",
+  "share.private": "Na sirri: mutanen da ke sama kaɗai za su iya buɗe shi",
+  "share.public":
+    "Na jama'a: duk wanda ya shiga wannan MobSimLab zai iya samun sa ya buɗe shi don karantawa kawai",
+  "share.makePublic": "Mai da shi na jama'a",
+  "share.makePrivate": "Mai da shi na sirri",
+  "share.licenceTitle": "Kafin ka mai da shi na jama'a",
+  "share.licenceNote":
+    "Wannan aikin yana amfani da bayanai daga OpenStreetMap. Za a raba su ƙarƙashin Open Database License (ODbL), © masu ba da gudummawa ga OpenStreetMap. Ka mai da shi na jama'a kawai idan duk sauran abubuwan da ke ciki ma za a iya raba su.",
+  "share.confirmPublic": "Na gane, mai da shi na jama'a",
   "share.copyLink": "Kwafi mahaɗi",
   "share.copied": "An kwafa",
 
@@ -194,6 +200,8 @@ export const ha: Messages = {
 
   "project.back": "Koma ayyuka",
   "project.viewOnly": "Kallo kawai",
+  "project.public": "Na jama'a",
+  "project.publicNote": "Aikin jama'a. Bayanan taswira © masu ba da gudummawa ga OpenStreetMap, ODbL.",
   "project.notFound": "Ba a sami aikin ba",
   "project.notFoundHint": "Wataƙila an share shi, ko kuma ba ka da dama yanzu.",
   "project.toHome": "Koma ayyuka",
