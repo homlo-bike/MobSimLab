@@ -2,6 +2,7 @@ import { roadEs } from "./road/es";
 import { editorsEs } from "./editors/es";
 import { cargoBikeEs } from "./cargo-bike/es";
 import { depotsEs } from "./depots/es";
+import { populationEs } from "./population/es";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -421,6 +422,7 @@ export const es: Messages = {
   ...editorsEs,
   ...cargoBikeEs,
   ...depotsEs,
+  ...populationEs,
   ...roadEs,
   ...PLUGIN_MESSAGES.es,
 };
