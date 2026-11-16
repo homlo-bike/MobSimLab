@@ -934,6 +934,15 @@ fn point_sources_alone_make_a_map_from_their_parameter() {
         )],
         &[],
     );
+    // The check names the study the sound power comes from; no ferry checks without ferries.
+    let texts: Vec<&str> = e.checks.iter().map(|c| c.text.as_str()).collect();
+    assert!(
+        texts
+            .iter()
+            .any(|t| t.contains("indicative") && t.contains("Placer County")),
+        "{texts:?}"
+    );
+    assert!(!texts.iter().any(|t| t.contains("Ferries")), "{texts:?}");
     let near = grid_level(&e, [20.0, 0.0]);
     let far = grid_level(&e, [150.0, 0.0]);
     assert!(near.is_finite() && far.is_finite());

@@ -448,23 +448,23 @@
   },
   "noise.cable_car_tower_lw_db": {
    "*": [
-    80,
     90,
-    100
+    100,
+    102
    ]
   },
   "noise.cable_car_station_lw_db": {
    "*": [
-    85,
-    95,
-    105
+    99,
+    102,
+    106
    ]
   },
   "noise.ferry_cruise_lw_db": {
    "*": [
-    95,
     105,
-    115
+    108,
+    112
    ]
   },
   "noise.ferry_berth_lw_db": {
