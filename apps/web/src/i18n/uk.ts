@@ -299,7 +299,14 @@ export const uk: Messages = {
   "prefs.rulesChanged": "змінено: {count}",
   "prefs.rulesLibrary": "Бібліотека припущень: {value} {unit}",
   "prefs.rulesLibraryRange": "Бібліотека припущень: {value} {unit} (діапазон {low}–{high})",
-  "prefs.vehicles": "Транспортні засоби (з каталогу транспортних засобів)",
+  "prefs.vehiclesTitle": "Транспортні засоби",
+  "prefs.vehiclesIntro":
+    "Транспортні засоби з каталогу, які використовує проєкт, для кожного виду транспорту. Інструменти ліній показують лише позначені.",
+  "prefs.vehiclesMode": "Вид транспорту",
+  "prefs.vehiclesUsed": "використано: {used} з {total}",
+  "prefs.vehiclesAll": "Використовувати всі",
+  "prefs.vehiclesFacts": "{length} м · {places} місць · {speed} км/год",
+  "prefs.vehiclesLast": "Для кожного виду транспорту залишається щонайменше один засіб.",
   "prefs.switches": "Стрілочні переводи (з каталогу стрілок)",
   "prefs.calendar": "Календар, попит і витрати",
 

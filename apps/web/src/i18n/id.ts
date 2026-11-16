@@ -300,7 +300,14 @@ export const id: Messages = {
   "prefs.rulesChanged": "{count} diubah",
   "prefs.rulesLibrary": "Pustaka asumsi: {value} {unit}",
   "prefs.rulesLibraryRange": "Pustaka asumsi: {value} {unit} (rentang {low}–{high})",
-  "prefs.vehicles": "Kendaraan yang digunakan (dari katalog kendaraan)",
+  "prefs.vehiclesTitle": "Kendaraan",
+  "prefs.vehiclesIntro":
+    "Kendaraan katalog yang dipakai proyek ini, per moda. Alat jalur jalan dan rel hanya menawarkan yang dicentang.",
+  "prefs.vehiclesMode": "Moda",
+  "prefs.vehiclesUsed": "{used} dari {total} dipakai",
+  "prefs.vehiclesAll": "Pakai semua",
+  "prefs.vehiclesFacts": "{length} m · {places} tempat · {speed} km/j",
+  "prefs.vehiclesLast": "Setiap moda tetap memakai setidaknya satu kendaraan.",
   "prefs.switches": "Wesel (dari katalog wesel)",
   "prefs.calendar": "Kalender, permintaan, dan biaya",
 

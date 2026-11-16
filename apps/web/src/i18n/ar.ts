@@ -288,7 +288,14 @@ export const ar: Messages = {
   "prefs.rulesChanged": "المعدّلة: {count}",
   "prefs.rulesLibrary": "مكتبة الافتراضات: {value} {unit}",
   "prefs.rulesLibraryRange": "مكتبة الافتراضات: {value} {unit} (النطاق {low}–{high})",
-  "prefs.vehicles": "المركبات المستخدمة، من كتالوج المركبات",
+  "prefs.vehiclesTitle": "المركبات",
+  "prefs.vehiclesIntro":
+    "مركبات الكتالوج التي يستخدمها هذا المشروع لكل نمط. لا تعرض أدوات خطوط الشوارع والسكك الحديدية إلا المحددة.",
+  "prefs.vehiclesMode": "النمط",
+  "prefs.vehiclesUsed": "{used} من {total} مستخدمة",
+  "prefs.vehiclesAll": "استخدام الكل",
+  "prefs.vehiclesFacts": "{length} م · {places} مقعدًا · {speed} كم/س",
+  "prefs.vehiclesLast": "تبقى مركبة واحدة على الأقل مستخدمة لكل نمط.",
   "prefs.switches": "تحويلات السكك، من كتالوج التحويلات",
   "prefs.calendar": "التقويم والطلب والتكاليف",
 

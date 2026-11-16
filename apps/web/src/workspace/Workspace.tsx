@@ -80,7 +80,8 @@ import { TopBar } from "../shell/TopBar";
 import { PROJECT_TOUR, Tour } from "../shell/Tour";
 import { PrintReport } from "./PrintReport";
 import { ProjectPreferences } from "./ProjectPreferences";
-import { delaysFrom, designValuesFrom, type PreferencesDoc } from "./preferences";
+import { delaysFrom, designValuesFrom, type PreferencesDoc, vehiclesOffFrom } from "./preferences";
+import { VehiclesOffContext } from "./projectVehicles";
 import type { DelayShares } from "../features/street-lines/types";
 import { type Drawings, useDrawings } from "./useDrawings";
 
@@ -255,6 +256,11 @@ export function Workspace({
   const delays = useMemo(() => JSON.parse(delaysJson) as DelayShares, [delaysJson]);
   const rulesJson = JSON.stringify(designValuesFrom(preferences));
   const designValues = useMemo(() => JSON.parse(rulesJson) as Record<string, number>, [rulesJson]);
+  const offJson = JSON.stringify([...vehiclesOffFrom(preferences)]);
+  const vehiclesOff = useMemo(
+    () => new Set(JSON.parse(offJson) as string[]) as ReadonlySet<string>,
+    [offJson],
+  );
   // Street setups made before projects saved drawings were kept in this browser: move them to the project once.
   useEffect(() => {
     if (!drawings.loaded || !editable) return;
@@ -520,419 +526,430 @@ export function Workspace({
           </button>
         </div>
       )}
-      <main className="relative flex min-h-0 flex-1 flex-col md:flex-row">
-        <div className={`relative min-h-0 min-w-0 flex-1 ${onMap ? "" : "hidden"}`}>
-          <MapView onReady={setMap} />
-          {project && drawings.loaded && tab === "create" && editable && chosen === "street" && (
-            <StreetLineEditor
-              key={`${projectId}-${drawings.generation("street-lines")}-${streetSwitch}`}
-              map={map}
-              panel={panel}
-              onLineChange={setLine}
-              streetSetups={setups}
-              delays={delays}
-              initial={savedStreet[editedStreet] ?? null}
-              onSave={saveStreet}
-              defaultName={t("street.lineN", { n: editedStreet + 1 })}
-              otherLines={otherStreet}
-              lineList={
-                <LineList
-                  names={savedStreet.map((l) => l.name)}
-                  current={editedStreet}
-                  onSelect={switchStreet}
-                  onNew={() => switchStreet(savedStreet.length)}
-                  onDelete={deleteStreet}
-                />
-              }
-              railTopology={railTopology}
-            />
-          )}
-          {project && drawings.loaded && tab === "create" && editable && chosen === "rail" && (
-            <RailwayEditor
-              key={`${projectId}-${drawings.generation("railway")}`}
-              map={map}
-              panel={panel}
-              streetSetups={setups}
-              delays={delays}
-              designValues={designValues}
-              existingRailways={existingRailways}
-              initial={railway}
-              onDocChange={(d) => drawings.set("railway", d)}
-              onTopologyChange={setRailTopology}
-              onPublish={(tt) => tt && drawings.set("rail-timetable", tt)}
-            />
-          )}
-          {project && tab === "create" && editable && chosenPlugin?.kit === "straight-spans" && (
-            <SpanLineEditor
-              key={`${projectId}-${chosenPlugin.id}`}
-              map={map}
-              panel={panel}
-              tool={chosenPlugin}
-              storageKey={`mobsimlab:${chosenPlugin.id}:${projectId}`}
-              onLineChange={(l) => setPluginLines((p) => ({ ...p, [chosenPlugin.id]: l }))}
-            />
-          )}
-          {project && tab === "create" && editable && chosenPlugin?.kit === "service-zone" && (
-            <ZoneEditor
-              key={`${projectId}-${chosenPlugin.id}`}
-              map={map}
-              panel={panel}
-              tool={chosenPlugin}
-              storageKey={`mobsimlab:${chosenPlugin.id}:${projectId}`}
-              onZoneChange={(z) => setDemandZones((p) => ({ ...p, [chosenPlugin.id]: z }))}
-            />
-          )}
-          {project && tab === "create" && editable && chosenPlugin?.kit === "water-route" && (
-            <WaterRouteEditor
-              map={map}
-              panel={panel}
-              tool={chosenPlugin}
-              storageKey={`mobsimlab:${chosenPlugin.id}:${projectId}`}
-              onLineChange={(l) => setPluginLines((p) => ({ ...p, [chosenPlugin.id]: l }))}
-            />
-          )}
-          {project && drawings.loaded && tab === "gis" && gis === "regions" && (
-            <RegionEditor
-              map={map}
-              panel={panel}
-              regions={regions}
-              onChange={(next) => drawings.set("regions", { regions: next } satisfies RegionsDoc)}
-              editable={editable}
-              currency={currency?.code ?? costInfo?.currency ?? null}
-            />
-          )}
-          {project && drawings.loaded && tab === "gis" && gis === "streets" && (
-            <StreetSetupEditor
-              map={map}
-              panel={panel}
-              setups={setups}
-              onChange={changeSetups}
-              editable={editable}
-              delays={delays}
-            />
-          )}
-          {project && drawings.loaded && pluginTab?.view === "cargo-bike" && (
-            <CargoBikeTab
-              key={`${projectId}-${drawings.generation("cargo-bike")}`}
-              map={map}
-              panel={panel}
-              doc={drawings.doc<CargoBikeDoc>("cargo-bike")}
-              onDoc={editable ? (d) => drawings.set("cargo-bike", d) : undefined}
-              setups={setups}
-              currency={currency}
-            />
-          )}
-          {project && tab === "simulator" && sim === "journey" && (
-            <JourneyPlanner
-              map={map}
-              panel={panel}
-              streetLines={ridden}
-              railLines={railLines}
-              pluginLines={pluginLineList}
-              demandZones={demandZoneList}
-              gtfsFeeds={gtfsFeeds}
-              {...(editable ? { onGtfsFeeds: (d: GtfsNetworkDoc) => drawings.set("gtfs-network", d) } : {})}
-              projectName={project.name}
-              {...(editable ? { onEditGtfsRoute: (f: string, r: string) => void editGtfsRoute(f, r) } : {})}
-            />
-          )}
-          {convertError && tab === "simulator" && (
-            <p
-              role="alert"
-              className="absolute top-2 left-1/2 z-30 -translate-x-1/2 rounded-lg border border-red-300 bg-red-50 px-3 py-1.5 text-sm text-red-900"
-            >
-              {convertError}
-            </p>
-          )}
-          {project && tab === "create" && editable && chosen === null && (
-            <div className="absolute inset-0 z-20 flex items-start justify-center overflow-y-auto bg-slate-50/70 p-4 md:pt-16">
-              <section
-                aria-label={t("create.chooseTitle")}
-                className="w-full max-w-2xl rounded-2xl bg-white p-5 shadow-2xl md:p-7"
+      <VehiclesOffContext.Provider value={vehiclesOff}>
+        <main className="relative flex min-h-0 flex-1 flex-col md:flex-row">
+          <div className={`relative min-h-0 min-w-0 flex-1 ${onMap ? "" : "hidden"}`}>
+            <MapView onReady={setMap} />
+            {project && drawings.loaded && tab === "create" && editable && chosen === "street" && (
+              <StreetLineEditor
+                key={`${projectId}-${drawings.generation("street-lines")}-${streetSwitch}`}
+                map={map}
+                panel={panel}
+                onLineChange={setLine}
+                streetSetups={setups}
+                delays={delays}
+                initial={savedStreet[editedStreet] ?? null}
+                onSave={saveStreet}
+                defaultName={t("street.lineN", { n: editedStreet + 1 })}
+                otherLines={otherStreet}
+                lineList={
+                  <LineList
+                    names={savedStreet.map((l) => l.name)}
+                    current={editedStreet}
+                    onSelect={switchStreet}
+                    onNew={() => switchStreet(savedStreet.length)}
+                    onDelete={deleteStreet}
+                  />
+                }
+                railTopology={railTopology}
+              />
+            )}
+            {project && drawings.loaded && tab === "create" && editable && chosen === "rail" && (
+              <RailwayEditor
+                key={`${projectId}-${drawings.generation("railway")}`}
+                map={map}
+                panel={panel}
+                streetSetups={setups}
+                delays={delays}
+                designValues={designValues}
+                existingRailways={existingRailways}
+                initial={railway}
+                onDocChange={(d) => drawings.set("railway", d)}
+                onTopologyChange={setRailTopology}
+                onPublish={(tt) => tt && drawings.set("rail-timetable", tt)}
+              />
+            )}
+            {project && tab === "create" && editable && chosenPlugin?.kit === "straight-spans" && (
+              <SpanLineEditor
+                key={`${projectId}-${chosenPlugin.id}`}
+                map={map}
+                panel={panel}
+                tool={chosenPlugin}
+                storageKey={`mobsimlab:${chosenPlugin.id}:${projectId}`}
+                onLineChange={(l) => setPluginLines((p) => ({ ...p, [chosenPlugin.id]: l }))}
+              />
+            )}
+            {project && tab === "create" && editable && chosenPlugin?.kit === "service-zone" && (
+              <ZoneEditor
+                key={`${projectId}-${chosenPlugin.id}`}
+                map={map}
+                panel={panel}
+                tool={chosenPlugin}
+                storageKey={`mobsimlab:${chosenPlugin.id}:${projectId}`}
+                onZoneChange={(z) => setDemandZones((p) => ({ ...p, [chosenPlugin.id]: z }))}
+              />
+            )}
+            {project && tab === "create" && editable && chosenPlugin?.kit === "water-route" && (
+              <WaterRouteEditor
+                map={map}
+                panel={panel}
+                tool={chosenPlugin}
+                storageKey={`mobsimlab:${chosenPlugin.id}:${projectId}`}
+                onLineChange={(l) => setPluginLines((p) => ({ ...p, [chosenPlugin.id]: l }))}
+              />
+            )}
+            {project && drawings.loaded && tab === "gis" && gis === "regions" && (
+              <RegionEditor
+                map={map}
+                panel={panel}
+                regions={regions}
+                onChange={(next) => drawings.set("regions", { regions: next } satisfies RegionsDoc)}
+                editable={editable}
+                currency={currency?.code ?? costInfo?.currency ?? null}
+              />
+            )}
+            {project && drawings.loaded && tab === "gis" && gis === "streets" && (
+              <StreetSetupEditor
+                map={map}
+                panel={panel}
+                setups={setups}
+                onChange={changeSetups}
+                editable={editable}
+                delays={delays}
+              />
+            )}
+            {project && drawings.loaded && pluginTab?.view === "cargo-bike" && (
+              <CargoBikeTab
+                key={`${projectId}-${drawings.generation("cargo-bike")}`}
+                map={map}
+                panel={panel}
+                doc={drawings.doc<CargoBikeDoc>("cargo-bike")}
+                onDoc={editable ? (d) => drawings.set("cargo-bike", d) : undefined}
+                setups={setups}
+                currency={currency}
+              />
+            )}
+            {project && tab === "simulator" && sim === "journey" && (
+              <JourneyPlanner
+                map={map}
+                panel={panel}
+                streetLines={ridden}
+                railLines={railLines}
+                pluginLines={pluginLineList}
+                demandZones={demandZoneList}
+                gtfsFeeds={gtfsFeeds}
+                {...(editable ? { onGtfsFeeds: (d: GtfsNetworkDoc) => drawings.set("gtfs-network", d) } : {})}
+                projectName={project.name}
+                {...(editable ? { onEditGtfsRoute: (f: string, r: string) => void editGtfsRoute(f, r) } : {})}
+              />
+            )}
+            {convertError && tab === "simulator" && (
+              <p
+                role="alert"
+                className="absolute top-2 left-1/2 z-30 -translate-x-1/2 rounded-lg border border-red-300 bg-red-50 px-3 py-1.5 text-sm text-red-900"
               >
-                <h2 className="text-2xl font-semibold tracking-tight">{t("create.chooseTitle")}</h2>
-                <p className="mt-1 text-slate-600">{t("create.chooseIntro")}</p>
-                <div className="mt-5 grid gap-3.5 sm:grid-cols-2">
-                  {[
-                    ...([
-                      [
-                        "street",
-                        BusIcon,
-                        t("create.street"),
-                        t("create.streetHint"),
-                        "bg-blue-100 text-blue-900",
-                      ],
-                      ["rail", TrainIcon, t("create.rail"), t("create.railHint"), "bg-red-100 text-red-900"],
-                    ] as const),
-                    // Tools contributed by plugins (ADR-0036 §6): cable car and ferry are bundled.
-                    ...PLUGIN_TOOLS.map((x) => {
-                      // A guideway tool (people mover) gets the train icon, a ropeway the cable car.
-                      const guided = x.modes.some((m) => findMode(m)?.mode.family === "guided");
-                      return [
-                        x.id,
-                        x.kit === "water-route"
-                          ? FerryIcon
-                          : x.kit === "service-zone"
-                            ? BusIcon
-                            : guided
-                              ? TrainIcon
-                              : CableIcon,
-                        x.label,
-                        x.hint ?? "",
-                        x.kit === "water-route"
-                          ? "bg-cyan-100 text-cyan-900"
-                          : x.kit === "service-zone"
-                            ? "bg-purple-100 text-purple-900"
-                            : guided
-                              ? "bg-teal-100 text-teal-900"
-                              : "bg-violet-100 text-violet-900",
-                      ] as const;
-                    }),
-                  ].map(([kind, Icon, title, hint, colour]) => (
-                    <button
-                      key={kind}
-                      type="button"
-                      className="flex flex-col gap-2.5 rounded-2xl border-[1.5px] border-slate-200 bg-white p-4 text-start hover:border-blue-700 hover:ring-[3px] hover:ring-blue-100 focus-visible:border-blue-700 focus-visible:ring-[3px] focus-visible:ring-blue-100 focus-visible:outline-none"
-                      onClick={() => setBuild(kind)}
-                    >
-                      <span className={`flex h-12 w-12 items-center justify-center rounded-xl ${colour}`}>
-                        <Icon size={26} />
-                      </span>
-                      <span className="text-base font-semibold">{title}</span>
-                      <span className="text-xs text-slate-500">{hint}</span>
-                    </button>
-                  ))}
-                </div>
-                {!project.areaName && (
-                  <div className="mt-4 flex flex-wrap items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-3">
-                    <p className="min-w-48 flex-1 text-xs text-slate-700">{t("create.noArea")}</p>
-                    <button type="button" className="btn min-h-10" onClick={() => onTab("gis")}>
-                      {t("create.setArea")}
-                    </button>
+                {convertError}
+              </p>
+            )}
+            {project && tab === "create" && editable && chosen === null && (
+              <div className="absolute inset-0 z-20 flex items-start justify-center overflow-y-auto bg-slate-50/70 p-4 md:pt-16">
+                <section
+                  aria-label={t("create.chooseTitle")}
+                  className="w-full max-w-2xl rounded-2xl bg-white p-5 shadow-2xl md:p-7"
+                >
+                  <h2 className="text-2xl font-semibold tracking-tight">{t("create.chooseTitle")}</h2>
+                  <p className="mt-1 text-slate-600">{t("create.chooseIntro")}</p>
+                  <div className="mt-5 grid gap-3.5 sm:grid-cols-2">
+                    {[
+                      ...([
+                        [
+                          "street",
+                          BusIcon,
+                          t("create.street"),
+                          t("create.streetHint"),
+                          "bg-blue-100 text-blue-900",
+                        ],
+                        [
+                          "rail",
+                          TrainIcon,
+                          t("create.rail"),
+                          t("create.railHint"),
+                          "bg-red-100 text-red-900",
+                        ],
+                      ] as const),
+                      // Tools contributed by plugins (ADR-0036 §6): cable car and ferry are bundled.
+                      ...PLUGIN_TOOLS.map((x) => {
+                        // A guideway tool (people mover) gets the train icon, a ropeway the cable car.
+                        const guided = x.modes.some((m) => findMode(m)?.mode.family === "guided");
+                        return [
+                          x.id,
+                          x.kit === "water-route"
+                            ? FerryIcon
+                            : x.kit === "service-zone"
+                              ? BusIcon
+                              : guided
+                                ? TrainIcon
+                                : CableIcon,
+                          x.label,
+                          x.hint ?? "",
+                          x.kit === "water-route"
+                            ? "bg-cyan-100 text-cyan-900"
+                            : x.kit === "service-zone"
+                              ? "bg-purple-100 text-purple-900"
+                              : guided
+                                ? "bg-teal-100 text-teal-900"
+                                : "bg-violet-100 text-violet-900",
+                        ] as const;
+                      }),
+                    ].map(([kind, Icon, title, hint, colour]) => (
+                      <button
+                        key={kind}
+                        type="button"
+                        className="flex flex-col gap-2.5 rounded-2xl border-[1.5px] border-slate-200 bg-white p-4 text-start hover:border-blue-700 hover:ring-[3px] hover:ring-blue-100 focus-visible:border-blue-700 focus-visible:ring-[3px] focus-visible:ring-blue-100 focus-visible:outline-none"
+                        onClick={() => setBuild(kind)}
+                      >
+                        <span className={`flex h-12 w-12 items-center justify-center rounded-xl ${colour}`}>
+                          <Icon size={26} />
+                        </span>
+                        <span className="text-base font-semibold">{title}</span>
+                        <span className="text-xs text-slate-500">{hint}</span>
+                      </button>
+                    ))}
                   </div>
+                  {!project.areaName && (
+                    <div className="mt-4 flex flex-wrap items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-3">
+                      <p className="min-w-48 flex-1 text-xs text-slate-700">{t("create.noArea")}</p>
+                      <button type="button" className="btn min-h-10" onClick={() => onTab("gis")}>
+                        {t("create.setArea")}
+                      </button>
+                    </div>
+                  )}
+                </section>
+              </div>
+            )}
+          </div>
+
+          {!onMap && project && tab === "preferences" && (
+            <div className="min-h-0 flex-1">
+              <ProjectPreferences
+                key={project.updatedAt}
+                api={api}
+                project={project}
+                onSaved={setProject}
+                preferences={drawings.loaded ? preferences : null}
+                onPreferences={drawings.loaded ? (d) => drawings.set("preferences", d) : undefined}
+                plugins={plugins}
+                onSetPlugin={setPlugin}
+                currency={currencyState}
+              />
+            </div>
+          )}
+          {!onMap && tab === "schematic" && (
+            <div className="min-h-0 flex-1">
+              {project && drawings.loaded ? (
+                <Schematic
+                  railway={railway}
+                  streetLines={streetLines}
+                  pluginLines={pluginLineList}
+                  doc={drawings.doc<SchematicDoc>("schematic")}
+                  onDoc={editable ? (d) => drawings.set("schematic", d) : undefined}
+                  projectName={project.name}
+                  onCreate={editable ? () => onTab("create") : undefined}
+                />
+              ) : (
+                <p role="status" className="mt-6 text-center text-slate-500">
+                  {t("common.loading")}
+                </p>
+              )}
+            </div>
+          )}
+          {!onMap && tab === "tables" && (
+            <div className="min-h-0 flex-1 overflow-y-auto bg-slate-50">
+              <section
+                aria-label={t("tables.title")}
+                className="mx-auto max-w-5xl px-4 py-6 md:px-8 md:py-10"
+              >
+                <h1 className="text-2xl font-semibold tracking-tight">{t("tables.title")}</h1>
+                <p className="mt-1 text-slate-600">{t("tables.intro")}</p>
+                {project && drawings.loaded ? (
+                  <>
+                    <NetworkTables
+                      railway={railway}
+                      streetLines={streetLines}
+                      preferences={preferences}
+                      onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
+                    />
+                    <CostTables
+                      railway={railway}
+                      streetLines={streetLines}
+                      preferences={preferences}
+                      onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
+                      costs={drawings.doc<CostsDoc>("costs")}
+                      onCosts={editable ? (d) => drawings.set("costs", d) : undefined}
+                      currency={currency}
+                      onEstimate={onCostEstimate}
+                    />
+                  </>
+                ) : (
+                  <p role="status" className="mt-6 text-slate-500">
+                    {t("common.loading")}
+                  </p>
+                )}
+                {project && drawings.loaded && (
+                  <BenefitTables
+                    timetable={networkTimetable}
+                    regions={regions}
+                    preferences={preferences}
+                    onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
+                    doc={drawings.doc<BenefitsDoc>("benefits")}
+                    onDoc={editable ? (d) => drawings.set("benefits", d) : undefined}
+                    costs={costInfo}
+                  />
+                )}
+                {project && drawings.loaded && (
+                  <Scenarios
+                    railway={railway}
+                    streetLines={streetLines}
+                    preferences={preferences}
+                    doc={drawings.doc<ScenariosDoc>("scenarios")}
+                    currency={currency}
+                    onChange={editable ? (d) => drawings.set("scenarios", d) : undefined}
+                  />
                 )}
               </section>
             </div>
           )}
-        </div>
+          {!project && !missing && (
+            <p role="status" className="absolute inset-x-0 top-4 text-center text-slate-500">
+              {t("common.loading")}
+            </p>
+          )}
 
-        {!onMap && project && tab === "preferences" && (
-          <div className="min-h-0 flex-1">
-            <ProjectPreferences
-              key={project.updatedAt}
-              api={api}
-              project={project}
-              onSaved={setProject}
-              preferences={drawings.loaded ? preferences : null}
-              onPreferences={drawings.loaded ? (d) => drawings.set("preferences", d) : undefined}
-              plugins={plugins}
-              onSetPlugin={setPlugin}
-              currency={currencyState}
-            />
-          </div>
-        )}
-        {!onMap && tab === "schematic" && (
-          <div className="min-h-0 flex-1">
-            {project && drawings.loaded ? (
-              <Schematic
-                railway={railway}
-                streetLines={streetLines}
-                pluginLines={pluginLineList}
-                doc={drawings.doc<SchematicDoc>("schematic")}
-                onDoc={editable ? (d) => drawings.set("schematic", d) : undefined}
-                projectName={project.name}
-                onCreate={editable ? () => onTab("create") : undefined}
+          {hasPanel && (
+            <aside
+              aria-label={panelLabel}
+              data-tour="panel"
+              className={`flex max-h-[55%] shrink-0 flex-col overflow-hidden rounded-t-2xl border-t border-slate-200 bg-white shadow-[0_-4px_20px_rgba(15,23,42,.12)] md:max-h-none md:rounded-none md:border-t-0 md:border-s md:shadow-none ${tab === "simulator" && sim === "journey" ? "md:w-[26rem]" : "md:w-96"}`}
+            >
+              <div
+                className="mx-auto mt-2 h-1.5 w-10 shrink-0 rounded-full bg-slate-300 md:hidden"
+                aria-hidden="true"
               />
-            ) : (
-              <p role="status" className="mt-6 text-center text-slate-500">
-                {t("common.loading")}
-              </p>
-            )}
-          </div>
-        )}
-        {!onMap && tab === "tables" && (
-          <div className="min-h-0 flex-1 overflow-y-auto bg-slate-50">
-            <section aria-label={t("tables.title")} className="mx-auto max-w-5xl px-4 py-6 md:px-8 md:py-10">
-              <h1 className="text-2xl font-semibold tracking-tight">{t("tables.title")}</h1>
-              <p className="mt-1 text-slate-600">{t("tables.intro")}</p>
-              {project && drawings.loaded ? (
-                <>
-                  <NetworkTables
-                    railway={railway}
-                    streetLines={streetLines}
-                    preferences={preferences}
-                    onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
-                  />
-                  <CostTables
-                    railway={railway}
-                    streetLines={streetLines}
-                    preferences={preferences}
-                    onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
-                    costs={drawings.doc<CostsDoc>("costs")}
-                    onCosts={editable ? (d) => drawings.set("costs", d) : undefined}
-                    currency={currency}
-                    onEstimate={onCostEstimate}
-                  />
-                </>
-              ) : (
-                <p role="status" className="mt-6 text-slate-500">
-                  {t("common.loading")}
-                </p>
-              )}
-              {project && drawings.loaded && (
-                <BenefitTables
-                  timetable={networkTimetable}
-                  regions={regions}
-                  preferences={preferences}
-                  onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
-                  doc={drawings.doc<BenefitsDoc>("benefits")}
-                  onDoc={editable ? (d) => drawings.set("benefits", d) : undefined}
-                  costs={costInfo}
-                />
-              )}
-              {project && drawings.loaded && (
-                <Scenarios
-                  railway={railway}
-                  streetLines={streetLines}
-                  preferences={preferences}
-                  doc={drawings.doc<ScenariosDoc>("scenarios")}
-                  currency={currency}
-                  onChange={editable ? (d) => drawings.set("scenarios", d) : undefined}
-                />
-              )}
-            </section>
-          </div>
-        )}
-        {!project && !missing && (
-          <p role="status" className="absolute inset-x-0 top-4 text-center text-slate-500">
-            {t("common.loading")}
-          </p>
-        )}
-
-        {hasPanel && (
-          <aside
-            aria-label={panelLabel}
-            data-tour="panel"
-            className={`flex max-h-[55%] shrink-0 flex-col overflow-hidden rounded-t-2xl border-t border-slate-200 bg-white shadow-[0_-4px_20px_rgba(15,23,42,.12)] md:max-h-none md:rounded-none md:border-t-0 md:border-s md:shadow-none ${tab === "simulator" && sim === "journey" ? "md:w-[26rem]" : "md:w-96"}`}
-          >
-            <div
-              className="mx-auto mt-2 h-1.5 w-10 shrink-0 rounded-full bg-slate-300 md:hidden"
-              aria-hidden="true"
-            />
-            {tab === "simulator" && (
-              <div className="shrink-0 px-4 pt-3 pb-2 md:px-5 md:pt-5">
-                <div className="seg" role="tablist" aria-label={tabLabel("simulator")}>
-                  <button
-                    type="button"
-                    role="tab"
-                    aria-selected={sim === "test"}
-                    onClick={() => setSim("test")}
-                  >
-                    {t("sim.test")}
-                  </button>
-                  <button
-                    type="button"
-                    role="tab"
-                    aria-selected={sim === "journey"}
-                    onClick={() => setSim("journey")}
-                  >
-                    {t("sim.journey")}
-                  </button>
-                </div>
-              </div>
-            )}
-            {tab === "gis" && (
-              <div className="shrink-0 px-4 pt-3 pb-2 md:px-5 md:pt-5">
-                <div className="seg" role="tablist" aria-label={tabLabel("gis")}>
-                  <button
-                    type="button"
-                    role="tab"
-                    aria-selected={gis === "streets"}
-                    onClick={() => setGis("streets")}
-                  >
-                    {t("gis.streetsView")}
-                  </button>
-                  <button
-                    type="button"
-                    role="tab"
-                    aria-selected={gis === "regions"}
-                    onClick={() => setGis("regions")}
-                  >
-                    {t("gis.regionsView")}
-                  </button>
-                </div>
-              </div>
-            )}
-            {tab === "create" && editable && chosen !== null && (
-              <div className="shrink-0 px-4 pt-3 pb-2 md:px-5 md:pt-5">
-                <div className="seg" role="tablist" aria-label={tabLabel("create")}>
-                  <button
-                    type="button"
-                    role="tab"
-                    aria-selected={chosen === "street"}
-                    onClick={() => setBuild("street")}
-                  >
-                    {t("create.street")}
-                  </button>
-                  <button
-                    type="button"
-                    role="tab"
-                    aria-selected={chosen === "rail"}
-                    onClick={() => setBuild("rail")}
-                  >
-                    {t("create.rail")}
-                  </button>
-                  {PLUGIN_TOOLS.map((x) => (
+              {tab === "simulator" && (
+                <div className="shrink-0 px-4 pt-3 pb-2 md:px-5 md:pt-5">
+                  <div className="seg" role="tablist" aria-label={tabLabel("simulator")}>
                     <button
-                      key={x.id}
                       type="button"
                       role="tab"
-                      aria-selected={chosen === x.id}
-                      onClick={() => setBuild(x.id)}
+                      aria-selected={sim === "test"}
+                      onClick={() => setSim("test")}
                     >
-                      {x.label}
+                      {t("sim.test")}
                     </button>
-                  ))}
+                    <button
+                      type="button"
+                      role="tab"
+                      aria-selected={sim === "journey"}
+                      onClick={() => setSim("journey")}
+                    >
+                      {t("sim.journey")}
+                    </button>
+                  </div>
                 </div>
+              )}
+              {tab === "gis" && (
+                <div className="shrink-0 px-4 pt-3 pb-2 md:px-5 md:pt-5">
+                  <div className="seg" role="tablist" aria-label={tabLabel("gis")}>
+                    <button
+                      type="button"
+                      role="tab"
+                      aria-selected={gis === "streets"}
+                      onClick={() => setGis("streets")}
+                    >
+                      {t("gis.streetsView")}
+                    </button>
+                    <button
+                      type="button"
+                      role="tab"
+                      aria-selected={gis === "regions"}
+                      onClick={() => setGis("regions")}
+                    >
+                      {t("gis.regionsView")}
+                    </button>
+                  </div>
+                </div>
+              )}
+              {tab === "create" && editable && chosen !== null && (
+                <div className="shrink-0 px-4 pt-3 pb-2 md:px-5 md:pt-5">
+                  <div className="seg" role="tablist" aria-label={tabLabel("create")}>
+                    <button
+                      type="button"
+                      role="tab"
+                      aria-selected={chosen === "street"}
+                      onClick={() => setBuild("street")}
+                    >
+                      {t("create.street")}
+                    </button>
+                    <button
+                      type="button"
+                      role="tab"
+                      aria-selected={chosen === "rail"}
+                      onClick={() => setBuild("rail")}
+                    >
+                      {t("create.rail")}
+                    </button>
+                    {PLUGIN_TOOLS.map((x) => (
+                      <button
+                        key={x.id}
+                        type="button"
+                        role="tab"
+                        aria-selected={chosen === x.id}
+                        onClick={() => setBuild(x.id)}
+                      >
+                        {x.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+              <div className="min-h-0 flex-1 overflow-y-auto">
+                {tab === "simulator" && sim === "test" && <CapacityRun runs={runs} canRun={editable} />}
+                {tab === "create" && !editable && (
+                  <div className="px-4 py-5 md:px-5">
+                    <h2 className="text-lg font-semibold">{t("create.readOnlyTitle")}</h2>
+                    <p className="mt-1 text-slate-600">{t("create.readOnly")}</p>
+                  </div>
+                )}
+                {tab === "create" && editable && chosen === null && (
+                  <p className="px-4 py-5 text-slate-600 md:px-5">{t("create.chooseFirst")}</p>
+                )}
+                {/* The street line tool, railway editor, journey planner and street setup render their panels here. */}
+                <div key={`${tab}-${sim}-${chosen}-${gis}`} ref={setPanel} />
+                {tab === "gis" && project && drawings.loaded && (
+                  <div className="border-t border-slate-200 px-4 py-5 md:px-5">
+                    <WalkAnalysis
+                      map={map}
+                      streetLines={streetLines}
+                      railway={railway}
+                      preferences={preferences?.values}
+                    />
+                  </div>
+                )}
+                {tab === "gis" && project && drawings.loaded && noiseCalculationIn("gis") && (
+                  <div className="border-t border-slate-200 px-4 py-5 md:px-5">
+                    <NoiseMap
+                      map={map}
+                      streetLines={streetLines}
+                      railway={railway}
+                      preferences={preferences?.values}
+                    />
+                  </div>
+                )}
               </div>
-            )}
-            <div className="min-h-0 flex-1 overflow-y-auto">
-              {tab === "simulator" && sim === "test" && <CapacityRun runs={runs} canRun={editable} />}
-              {tab === "create" && !editable && (
-                <div className="px-4 py-5 md:px-5">
-                  <h2 className="text-lg font-semibold">{t("create.readOnlyTitle")}</h2>
-                  <p className="mt-1 text-slate-600">{t("create.readOnly")}</p>
-                </div>
-              )}
-              {tab === "create" && editable && chosen === null && (
-                <p className="px-4 py-5 text-slate-600 md:px-5">{t("create.chooseFirst")}</p>
-              )}
-              {/* The street line tool, railway editor, journey planner and street setup render their panels here. */}
-              <div key={`${tab}-${sim}-${chosen}-${gis}`} ref={setPanel} />
-              {tab === "gis" && project && drawings.loaded && (
-                <div className="border-t border-slate-200 px-4 py-5 md:px-5">
-                  <WalkAnalysis
-                    map={map}
-                    streetLines={streetLines}
-                    railway={railway}
-                    preferences={preferences?.values}
-                  />
-                </div>
-              )}
-              {tab === "gis" && project && drawings.loaded && noiseCalculationIn("gis") && (
-                <div className="border-t border-slate-200 px-4 py-5 md:px-5">
-                  <NoiseMap
-                    map={map}
-                    streetLines={streetLines}
-                    railway={railway}
-                    preferences={preferences?.values}
-                  />
-                </div>
-              )}
-            </div>
-          </aside>
-        )}
-      </main>
+            </aside>
+          )}
+        </main>
+      </VehiclesOffContext.Provider>
       {bottomTabs}
       {touring && <Tour steps={PROJECT_TOUR} onTab={onTab} onClose={() => setTouring(false)} />}
       {printing && project && (
