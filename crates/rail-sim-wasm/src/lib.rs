@@ -3,7 +3,8 @@
 //! The panel loads a network and its lines once ([`CapacityRunner::new`]): the railway editor's
 //! track topology export (`contracts/rail-topology.schema.json`) or the built-in example metro, and
 //! the lines file the timetable planner reads (`{"lines": [LineSpec, ...]}`, as for
-//! `cargo run -p rail-plan --example publish_journeys`). It then runs the period
+//! `cargo run -p rail-plan --example publish_journeys`), or the service lines drawn in the railway
+//! editor (`{"service_lines": [...]}`, `rail_sim::capacity_input`). It then runs the period
 //! ([`CapacityRunner::run`]) and the frequency sweep one point at a time
 //! ([`CapacityRunner::sweep_point`]), so a web worker can report progress between points. The code is
 //! the same the simulation worker runs: timetable planner, UIC 406 compression, interlocking and
@@ -39,7 +40,7 @@ impl CapacityRunner {
     #[wasm_bindgen(constructor)]
     pub fn new(network: &str, lines_json: &str) -> Result<CapacityRunner, JsError> {
         let (model, notes) = compile_network(network).map_err(js)?;
-        let lines = parse_lines(lines_json).map_err(js)?;
+        let lines = parse_lines(lines_json, &model).map_err(js)?;
         Ok(CapacityRunner {
             model,
             lines,

@@ -183,9 +183,13 @@ export const FORMULA_BY_ID = Object.fromEntries(FORMULAS.map((f) => [f.id, f])) 
   FormulaDef
 >;
 
-/** The benefit tables' own settings (drawing kind `benefits`): the project's formulas. */
+/**
+ * The benefit tables' own settings (drawing kind `benefits`): the project's formulas, and the planner's own
+ * weekday boardings per station or stop (by name) for the simulator's passenger loads.
+ */
 export interface BenefitsDoc {
   formulas?: Partial<Record<FormulaId, string>>;
+  boardings?: Record<string, number>;
 }
 
 /** Purpose: the formula a project uses: its own when it compiles, else the default. */

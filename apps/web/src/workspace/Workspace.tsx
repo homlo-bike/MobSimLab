@@ -262,6 +262,8 @@ export function Workspace({
   const changeSetups = (next: StreetSetup[]) => drawings.set("street-setups", next);
   // GIS tab regions: their values take priority in the benefit tables.
   const regions = drawings.doc<RegionsDoc>("regions")?.regions ?? NO_REGIONS;
+  // Benefit tables settings: the project's formulas and its own boardings per station or stop.
+  const benefitsDoc = drawings.doc<BenefitsDoc>("benefits");
   // Project preferences: assumption values the project changes, such as the delays in traffic.
   const preferences = drawings.doc<PreferencesDoc>("preferences");
   // The currency all money is shown in, and its exchange rate (Project preferences).
@@ -817,7 +819,7 @@ export function Workspace({
                     regions={regions}
                     preferences={preferences}
                     onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
-                    doc={drawings.doc<BenefitsDoc>("benefits")}
+                    doc={benefitsDoc}
                     onDoc={editable ? (d) => drawings.set("benefits", d) : undefined}
                     costs={costInfo}
                     onEstimate={onBenefitEstimate}
@@ -930,7 +932,32 @@ export function Workspace({
                 </div>
               )}
               <div className="min-h-0 flex-1 overflow-y-auto">
-                {tab === "simulator" && sim === "test" && <CapacityRun runs={runs} canRun={editable} />}
+                {tab === "simulator" && sim === "test" && (
+                  <CapacityRun
+                    runs={runs}
+                    canRun={editable}
+                    railway={railway}
+                    streetLines={streetLines?.lines}
+                    prefs={preferences?.values}
+                    ridership={
+                      project && drawings.loaded
+                        ? {
+                            timetable: networkTimetable,
+                            regions,
+                            prefs: preferences?.values,
+                            doc: benefitsDoc,
+                            country: drawings.doc<{ country?: string | null }>("costs")?.country ?? null,
+                          }
+                        : null
+                    }
+                    ownBoardings={benefitsDoc?.boardings}
+                    onOwnBoardings={
+                      editable
+                        ? (b) => drawings.set("benefits", { ...(benefitsDoc ?? {}), boardings: b })
+                        : undefined
+                    }
+                  />
+                )}
                 {tab === "create" && !editable && (
                   <div className="px-4 py-5 md:px-5">
                     <h2 className="text-lg font-semibold">{t("create.readOnlyTitle")}</h2>

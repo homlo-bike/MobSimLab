@@ -122,7 +122,7 @@ impl PyCapacityRunner {
     #[new]
     fn new(network: &str, lines_json: &str) -> PyResult<Self> {
         let (model, notes) = compile_network(network).map_err(PyValueError::new_err)?;
-        let lines = parse_lines(lines_json).map_err(PyValueError::new_err)?;
+        let lines = parse_lines(lines_json, &model).map_err(PyValueError::new_err)?;
         Ok(Self {
             model,
             lines,
