@@ -86,7 +86,7 @@ jobs:
       matrix:
         include:
           - { name: Linux, runner: ubuntu-24.04, conda: "postgresql=18 postgis=3.7 osmium-tool osm2pgsql" }
-          - { name: macOS, runner: macos-14, conda: "postgresql=18 postgis=3.7 osmium-tool osm2pgsql" }
+          - { name: macOS, runner: macos-15, conda: "postgresql=18 postgis=3.7 osmium-tool osm2pgsql" }
           - { name: Windows, runner: windows-2022, conda: "osmium-tool osm2pgsql postgresql" }
     defaults:
       run:
