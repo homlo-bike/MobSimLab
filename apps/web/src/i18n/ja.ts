@@ -318,6 +318,7 @@ export const ja: Messages = {
   "prefs.group.cost": "費用",
   "prefs.group.benefits": "便益",
   "prefs.group.fares": "運賃",
+  "prefs.group.noise": "騒音",
   "prefs.traction.battery": "バッテリー",
   "prefs.traction.diesel": "ディーゼル",
   "prefs.traction.hydrogen": "水素",

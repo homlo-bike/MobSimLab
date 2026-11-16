@@ -21,6 +21,7 @@ import {
   PARAM_GROUPS,
   choiceValue,
   paramLibrary,
+  paramNumber,
   paramPrefId,
   withChoice,
 } from "../src/workspace/preferences";
@@ -127,6 +128,22 @@ describe("project preferences", () => {
     expect(effectiveDefault("tram", turnouts, new Set(), "tram-r100")).toBe("tram-r100");
     expect(effectiveDefault("tram", turnouts, new Set(["tram-r100"]), "tram-r100")).toBe("tram-r50");
     expect(effectiveDefault("tram", turnouts, new Set(["tram-r50"]), undefined)).toBe("tram-r25");
+  });
+
+  it("reads the values that were fixed in code from the library, and the project's over them", () => {
+    expect(paramNumber("demand.walk_speed_kmh", undefined)).toBe(4.5);
+    expect(paramNumber("journey.walk_detour_factor", undefined)).toBe(1.3);
+    expect(paramNumber("cost.opex.car_length_m", undefined)).toBe(25);
+    expect(paramNumber("noise.map_reach_m", undefined)).toBe(300);
+    expect(paramNumber("analysis.station_grouping_m", undefined)).toBe(150);
+    expect(paramNumber("analysis.same_place_m", undefined)).toBe(40);
+    expect(paramNumber("analysis.gap_cell_m", undefined)).toBe(200);
+    expect(paramNumber("noise.map_reach_m", { "noise.map_reach_m": 450 })).toBe(450);
+    expect(paramNumber("noise.map_reach_m", { "noise.map_reach_m": -1 })).toBe(300);
+    expect(paramNumber("cost.opex.car_length_m", { "cost.opex.car_length_m": 20 }, "tram")).toBe(20);
+    expect(paramNumber("cost.opex.car_length_m", { "cost.opex.car_length_m.tram": 18 }, "tram")).toBe(18);
+    expect(LIBRARY_PARAMS.find((p) => p.id === "noise.map_reach_m")?.group).toBe("Noise");
+    expect(() => paramNumber("no.such_value", undefined)).toThrow();
   });
 
   it("lists every library parameter with its values per mode and traction", () => {

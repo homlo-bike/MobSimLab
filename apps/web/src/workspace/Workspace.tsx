@@ -89,6 +89,7 @@ import {
   delaysFrom,
   designValuesFrom,
   type PreferencesDoc,
+  paramNumber,
   sameNameStationM,
   switchChoiceFrom,
   vehiclesOffFrom,
@@ -630,6 +631,7 @@ export function Workspace({
               delays={delays}
               designValues={designValues}
               switchChoice={switchChoice}
+              stationGroupingM={paramNumber("analysis.station_grouping_m", preferences?.values)}
               existingRailways={existingRailways}
               initial={railway}
               onDocChange={(d) => drawings.set("railway", d)}
@@ -814,7 +816,7 @@ export function Workspace({
                 railway={railway}
                 streetLines={streetLines}
                 pluginLines={pluginLineList}
-                sameNameM={sameNameStationM(preferences?.values)}
+                prefs={preferences?.values}
                 doc={drawings.doc<SchematicDoc>("schematic")}
                 onDoc={editable ? (d) => drawings.set("schematic", d) : undefined}
                 projectName={project.name}
@@ -875,6 +877,7 @@ export function Workspace({
                   railway={railway}
                   streetLines={streetLines}
                   pluginLines={pluginLineList}
+                  prefs={preferences?.values}
                   schematic={drawings.doc<SchematicDoc>("schematic")}
                   boardings={benefitsDoc?.boardings}
                   prices={farePrices}

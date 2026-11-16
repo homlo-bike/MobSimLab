@@ -28,9 +28,10 @@ import type {
   NoiseTerrain,
   NoiseView,
 } from "./types";
+import { paramNumber } from "../../workspace/preferences";
 
-/** How far the noise map reaches from the lines, m. */
-export const MAP_REACH_M = 300;
+/** How far the noise map reaches from the lines, m: the library's `noise.map_reach_m`. */
+export const MAP_REACH_M = paramNumber("noise.map_reach_m", undefined);
 /** Evening and night buses per hour on a street line (the street line tool's defaults). */
 export const STREET_OFF_PEAK: Omit<Flows, "day"> = { evening: 3, night: 1 };
 /** Colours start at the Directive's lowest reporting band. */
@@ -215,9 +216,10 @@ export function NoiseMap({
       let buildings: NoiseBuilding[] | null = null;
       const notes: string[] = [];
       const points = lines.flatMap((l) => l.points);
+      const reach = paramNumber("noise.map_reach_m", preferences);
       if (withBuildings) {
         index++;
-        const tiles = buildingTiles(points, MAP_REACH_M);
+        const tiles = buildingTiles(points, reach);
         if (tiles.length > MAX_BUILDING_TILES) {
           notes.push(tNow("noise.tooLarge", { tiles: tiles.length, max: MAX_BUILDING_TILES }));
         } else {
@@ -228,7 +230,7 @@ export function NoiseMap({
       let terrain: NoiseTerrain | null = null;
       if (withTerrain) {
         index++;
-        const plan = terrainPlan(points, MAP_REACH_M);
+        const plan = terrainPlan(points, reach);
         if (!plan) {
           notes.push(tNow("noise.terrainTooLarge"));
         } else {
@@ -268,7 +270,7 @@ export function NoiseMap({
         {
           lines,
           grid: true,
-          grid_reach_m: MAP_REACH_M,
+          grid_reach_m: reach,
           buildings: buildings ?? [],
           terrain,
           population,

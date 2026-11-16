@@ -322,6 +322,7 @@ export const tr: Messages = {
   "prefs.group.cost": "Maliyetler",
   "prefs.group.benefits": "Faydalar",
   "prefs.group.fares": "Ücretler",
+  "prefs.group.noise": "Gürültü",
   "prefs.traction.battery": "batarya",
   "prefs.traction.diesel": "dizel",
   "prefs.traction.hydrogen": "hidrojen",
