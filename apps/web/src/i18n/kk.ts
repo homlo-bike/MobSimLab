@@ -5,6 +5,7 @@ import { cargoBikeKk } from "./cargo-bike/kk";
 import { commentsKk } from "./comments/kk";
 import { depotsKk } from "./depots/kk";
 import { geodataKk } from "./geodata/kk";
+import { tablesKk } from "./tables/kk";
 import { fleetKk } from "./fleet/kk";
 import { timetablesKk } from "./timetables/kk";
 import { mslabKk } from "./mslab/kk";
@@ -500,6 +501,7 @@ export const kk: Messages = {
   ...cargoBikeKk,
   ...depotsKk,
   ...geodataKk,
+  ...tablesKk,
   ...fleetKk,
   ...timetablesKk,
   ...commentsKk,

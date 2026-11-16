@@ -5,6 +5,7 @@ import { cargoBikeTa } from "./cargo-bike/ta";
 import { commentsTa } from "./comments/ta";
 import { depotsTa } from "./depots/ta";
 import { geodataTa } from "./geodata/ta";
+import { tablesTa } from "./tables/ta";
 import { fleetTa } from "./fleet/ta";
 import { timetablesTa } from "./timetables/ta";
 import { mslabTa } from "./mslab/ta";
@@ -510,6 +511,7 @@ export const ta: Messages = {
   ...cargoBikeTa,
   ...depotsTa,
   ...geodataTa,
+  ...tablesTa,
   ...fleetTa,
   ...timetablesTa,
   ...commentsTa,

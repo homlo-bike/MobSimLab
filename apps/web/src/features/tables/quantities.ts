@@ -7,6 +7,8 @@ import { CATEGORY_LABEL, type StructureCategory, structureOf } from "../costs/mo
 import type { Level, Network, RailView } from "../railways/types";
 import type { SavedStreetLine } from "../street-lines/saved";
 import { lineStats } from "../street-lines/summary";
+import { type Translate, translate } from "../../i18n/i18n";
+import type { MessageKey } from "../../i18n/messages";
 
 export const STRUCTURES: StructureCategory[] = [
   "at_grade",
@@ -17,21 +19,23 @@ export const STRUCTURES: StructureCategory[] = [
   "cut_and_cover",
   "tbm",
 ];
-export const STRUCTURE_LABEL: Record<StructureCategory, string> = {
-  ...(CATEGORY_LABEL as Record<StructureCategory, string>),
-  at_grade: "At street level or on its own formation",
+/** Message key of each construction type's name. */
+export const STRUCTURE_LABEL: Record<StructureCategory, MessageKey> = {
+  ...(CATEGORY_LABEL as Record<StructureCategory, MessageKey>),
+  at_grade: "net.structure.at_grade",
 };
 /** Construction types counted as tunnels and as bridges or viaducts in the summary. */
 export const TUNNELS: StructureCategory[] = ["cut_and_cover", "tbm"];
 export const BRIDGES: StructureCategory[] = ["viaduct", "bridge"];
 
 export const LEVELS: Level[] = ["underground2", "underground", "street", "elevated", "elevated2"];
-export const LEVEL_LABEL: Record<Level, string> = {
-  underground2: "Underground, deep",
-  underground: "Underground",
-  street: "At street level",
-  elevated: "Elevated",
-  elevated2: "Elevated, upper level",
+/** Message key of the station row of each level. */
+export const LEVEL_LABEL: Record<Level, MessageKey> = {
+  underground2: "net.stations.underground2",
+  underground: "net.stations.underground",
+  street: "net.stations.street",
+  elevated: "net.stations.elevated",
+  elevated2: "net.stations.elevated2",
 };
 
 /** Quantities of one rail mode. */
@@ -84,13 +88,14 @@ const zeroLevels = () => Object.fromEntries(LEVELS.map((l) => [l, 0])) as Record
 
 /**
  * Purpose: the infrastructure quantities of the railway (by mode) and of the street lines.
- * Inputs: the railway document and its build, the street lines.
+ * Inputs: the railway document and its build, the street lines, and the translator for the names.
  * Output: per rail mode in order of first appearance, and per street line.
  */
 export function quantities(
   railway: Network | null,
   view: RailView | null,
   streetLines: SavedStreetLine[],
+  t: Translate = (key, vars) => translate("en", key, vars),
 ): Quantities {
   const byMode = new Map<string, RailQuantities>();
   const of = (mode: string) => {
@@ -135,7 +140,7 @@ export function quantities(
       if (e && (!q.steepest || Math.abs(e.steepest_permille) > q.steepest.permille))
         q.steepest = {
           permille: Math.abs(e.steepest_permille),
-          track: doc.name || `Track ${doc.id}`,
+          track: doc.name || t("tbl.trackName", { id: doc.id }),
           limit: e.max_permille,
         };
     }
@@ -173,7 +178,7 @@ export function quantities(
     const stats = lineStats(l.view, l.timing);
     street.push({
       id: `street:${i}`,
-      name: l.name || `Street line ${i + 1}`,
+      name: l.name || t("tbl.streetLineName", { n: i + 1 }),
       mode: l.profile.mode,
       routeKm: l.view.length_m / 2000,
       stops: stats.stops,

@@ -5,6 +5,7 @@ import { cargoBikeTe } from "./cargo-bike/te";
 import { commentsTe } from "./comments/te";
 import { depotsTe } from "./depots/te";
 import { geodataTe } from "./geodata/te";
+import { tablesTe } from "./tables/te";
 import { fleetTe } from "./fleet/te";
 import { timetablesTe } from "./timetables/te";
 import { mslabTe } from "./mslab/te";
@@ -498,6 +499,7 @@ export const te: Messages = {
   ...cargoBikeTe,
   ...depotsTe,
   ...geodataTe,
+  ...tablesTe,
   ...fleetTe,
   ...timetablesTe,
   ...commentsTe,

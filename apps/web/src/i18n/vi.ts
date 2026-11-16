@@ -5,6 +5,7 @@ import { cargoBikeVi } from "./cargo-bike/vi";
 import { commentsVi } from "./comments/vi";
 import { depotsVi } from "./depots/vi";
 import { geodataVi } from "./geodata/vi";
+import { tablesVi } from "./tables/vi";
 import { fleetVi } from "./fleet/vi";
 import { timetablesVi } from "./timetables/vi";
 import { mslabVi } from "./mslab/vi";
@@ -498,6 +499,7 @@ export const vi: Messages = {
   ...cargoBikeVi,
   ...depotsVi,
   ...geodataVi,
+  ...tablesVi,
   ...fleetVi,
   ...timetablesVi,
   ...commentsVi,

@@ -5,6 +5,7 @@ import { cargoBikeZh } from "./cargo-bike/zh";
 import { commentsZh } from "./comments/zh";
 import { depotsZh } from "./depots/zh";
 import { geodataZh } from "./geodata/zh";
+import { tablesZh } from "./tables/zh";
 import { fleetZh } from "./fleet/zh";
 import { timetablesZh } from "./timetables/zh";
 import { mslabZh } from "./mslab/zh";
@@ -478,6 +479,7 @@ export const zh: Messages = {
   ...cargoBikeZh,
   ...depotsZh,
   ...geodataZh,
+  ...tablesZh,
   ...fleetZh,
   ...timetablesZh,
   ...commentsZh,

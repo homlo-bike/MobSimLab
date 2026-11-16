@@ -3,6 +3,7 @@ import { cargoBikeEn } from "./cargo-bike/en";
 import { commentsEn } from "./comments/en";
 import { depotsEn } from "./depots/en";
 import { geodataEn } from "./geodata/en";
+import { tablesEn } from "./tables/en";
 import { fleetEn } from "./fleet/en";
 import { timetablesEn } from "./timetables/en";
 import { mslabEn } from "./mslab/en";
@@ -494,6 +495,7 @@ export const en = {
   ...cargoBikeEn,
   ...depotsEn,
   ...geodataEn,
+  ...tablesEn,
   ...fleetEn,
   ...timetablesEn,
   ...commentsEn,

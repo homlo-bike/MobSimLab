@@ -5,6 +5,7 @@ import { cargoBikeZu } from "./cargo-bike/zu";
 import { commentsZu } from "./comments/zu";
 import { depotsZu } from "./depots/zu";
 import { geodataZu } from "./geodata/zu";
+import { tablesZu } from "./tables/zu";
 import { fleetZu } from "./fleet/zu";
 import { timetablesZu } from "./timetables/zu";
 import { mslabZu } from "./mslab/zu";
@@ -508,6 +509,7 @@ export const zu: Messages = {
   ...cargoBikeZu,
   ...depotsZu,
   ...geodataZu,
+  ...tablesZu,
   ...fleetZu,
   ...timetablesZu,
   ...commentsZu,

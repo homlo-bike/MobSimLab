@@ -5,6 +5,7 @@ import { cargoBikeAr } from "./cargo-bike/ar";
 import { commentsAr } from "./comments/ar";
 import { depotsAr } from "./depots/ar";
 import { geodataAr } from "./geodata/ar";
+import { tablesAr } from "./tables/ar";
 import { fleetAr } from "./fleet/ar";
 import { timetablesAr } from "./timetables/ar";
 import { mslabAr } from "./mslab/ar";
@@ -489,6 +490,7 @@ export const ar: Messages = {
   ...cargoBikeAr,
   ...depotsAr,
   ...geodataAr,
+  ...tablesAr,
   ...fleetAr,
   ...timetablesAr,
   ...commentsAr,

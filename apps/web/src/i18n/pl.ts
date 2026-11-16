@@ -5,6 +5,7 @@ import { cargoBikePl } from "./cargo-bike/pl";
 import { commentsPl } from "./comments/pl";
 import { depotsPl } from "./depots/pl";
 import { geodataPl } from "./geodata/pl";
+import { tablesPl } from "./tables/pl";
 import { fleetPl } from "./fleet/pl";
 import { timetablesPl } from "./timetables/pl";
 import { mslabPl } from "./mslab/pl";
@@ -500,6 +501,7 @@ export const pl: Messages = {
   ...cargoBikePl,
   ...depotsPl,
   ...geodataPl,
+  ...tablesPl,
   ...fleetPl,
   ...timetablesPl,
   ...commentsPl,

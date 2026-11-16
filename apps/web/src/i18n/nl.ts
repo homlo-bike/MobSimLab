@@ -5,6 +5,7 @@ import { cargoBikeNl } from "./cargo-bike/nl";
 import { commentsNl } from "./comments/nl";
 import { depotsNl } from "./depots/nl";
 import { geodataNl } from "./geodata/nl";
+import { tablesNl } from "./tables/nl";
 import { fleetNl } from "./fleet/nl";
 import { timetablesNl } from "./timetables/nl";
 import { mslabNl } from "./mslab/nl";
@@ -505,6 +506,7 @@ export const nl: Messages = {
   ...cargoBikeNl,
   ...depotsNl,
   ...geodataNl,
+  ...tablesNl,
   ...fleetNl,
   ...timetablesNl,
   ...commentsNl,
