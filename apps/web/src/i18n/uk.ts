@@ -302,6 +302,9 @@ export const uk: Messages = {
   "prefs.rulesChanged": "змінено: {count}",
   "prefs.rulesLibrary": "Бібліотека припущень: {value} {unit}",
   "prefs.rulesLibraryRange": "Бібліотека припущень: {value} {unit} (діапазон {low}–{high})",
+  "prefs.accessTitle": "Доступність платформ",
+  "prefs.accessIntro":
+    "Межі сходинки й зазору між платформою та поїздом (TSI PRM) і висота підлоги для поїздів без неї в каталозі. Лінії перевіряються на кожній зупинці.",
   "prefs.vehiclesTitle": "Транспортні засоби",
   "prefs.vehiclesIntro":
     "Транспортні засоби з каталогу, які використовує проєкт, для кожного виду транспорту. Інструменти ліній показують лише позначені.",

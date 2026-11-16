@@ -301,6 +301,9 @@ export const te: Messages = {
   "prefs.rulesChanged": "మార్చినవి: {count}",
   "prefs.rulesLibrary": "ఊహల గ్రంథాలయం: {value} {unit}",
   "prefs.rulesLibraryRange": "ఊహల గ్రంథాలయం: {value} {unit} (పరిధి {low}–{high})",
+  "prefs.accessTitle": "ప్లాట్‌ఫారం అందుబాటు",
+  "prefs.accessIntro":
+    "ప్లాట్‌ఫారం మరియు రైలు మధ్య మెట్టు, ఖాళీ పరిమితులు (TSI PRM), జాబితాలో లేని రైళ్లకు నేల ఎత్తు. లైన్లు ప్రతి స్టాప్‌లో తనిఖీ అవుతాయి.",
   "prefs.vehiclesTitle": "వాహనాలు",
   "prefs.vehiclesIntro":
     "ఈ ప్రాజెక్ట్ ప్రతి విధానానికి వాడే జాబితా వాహనాలు. వీధి లైన్ మరియు రైల్వే సాధనాలు టిక్ చేసినవాటినే చూపుతాయి.",
