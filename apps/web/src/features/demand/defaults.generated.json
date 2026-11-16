@@ -40,6 +40,22 @@
    ]
   },
   {
+   "key": "demand.connector.count",
+   "step": "zones",
+   "label": "Zones: street junctions each zone's centre is joined to",
+   "unit": "junctions",
+   "values": [
+    1,
+    3,
+    6
+   ],
+   "basis": "documented",
+   "sources": [
+    "ortuzar-willumsen-2011",
+    "mobsimlab-derivation"
+   ]
+  },
+  {
    "key": "demand.trip_rate.hbw",
    "step": "generation",
    "label": "Trips: home–work trips per worker living in the zone, a weekday",
@@ -1326,6 +1342,21 @@
    ]
   },
   {
+   "key": "demand.mode.car_terminal_min",
+   "step": "mode_choice",
+   "label": "Mode choice: minutes to walk to and from the car and to park, per car trip",
+   "unit": "min",
+   "values": [
+    1,
+    3,
+    8
+   ],
+   "basis": "educated-guess",
+   "sources": [
+    "mobsimlab-derivation"
+   ]
+  },
+  {
    "key": "demand.walk_speed_kmh",
    "step": "mode_choice",
    "label": "Walking speed for walking links between stations",
@@ -1644,6 +1675,37 @@
     0.05
    ],
    "basis": "documented",
+   "sources": [
+    "mobsimlab-derivation"
+   ]
+  },
+  {
+   "key": "demand.transit.access_factor",
+   "step": "assignment",
+   "label": "Public transport: longest walk to or from a stop, as a multiple of the mode's catchment",
+   "unit": "×",
+   "values": [
+    1,
+    2,
+    3
+   ],
+   "basis": "educated-guess",
+   "sources": [
+    "tcqsm3",
+    "mobsimlab-derivation"
+   ]
+  },
+  {
+   "key": "demand.transit.transfer_max_m",
+   "step": "assignment",
+   "label": "Public transport: longest walk between two stops to change lines",
+   "unit": "m",
+   "values": [
+    200,
+    400,
+    800
+   ],
+   "basis": "educated-guess",
    "sources": [
     "mobsimlab-derivation"
    ]

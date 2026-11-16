@@ -1388,6 +1388,38 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 |---|---|---|---|---|---|---|---|
 | all | 0.005 | 0.01 | 0.05 | documented | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | 09 §2.1: relative gap below 1 %. Measured as the sum of absolute changes in the car trip matrix over its total; the matrices of successive rounds are averaged (method of successive averages). |
 
+### Zones: street junctions each zone's centre is joined to
+
+`demand.connector.count` · unit: junctions · used by: skims: zone connectors for car, walking and cycling
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 1 | 3 | 6 | documented | unverified | [ortuzar-willumsen-2011](#src-ortuzar-willumsen-2011), [mobsimlab-derivation](#src-mobsimlab-derivation) | A zone's trips start and end at its centre (weighted by where its people live) and join the street network at the nearest few junctions, so they spread over several streets instead of loading one. One connector loads a single street too much; more than about five spread trips over streets that are too far away. |
+
+### Mode choice: minutes to walk to and from the car and to park, per car trip
+
+`demand.mode.car_terminal_min` · unit: min · used by: mode choice: car utility
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 1 | 3 | 8 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Car trips start and end with a short walk and, at the destination, a search for a space. About one to two minutes at each end in residential areas, more in city centres; the parking cost of the centre is a separate value (demand.mode.parking_cost_usd). |
+
+### Public transport: longest walk to or from a stop, as a multiple of the mode's catchment
+
+`demand.transit.access_factor` · unit: × · used by: skims and transit assignment: walks between zones and stops
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 1 | 2 | 3 | educated-guess | unverified | [tcqsm3](#src-tcqsm3), [mobsimlab-derivation](#src-mobsimlab-derivation) | The catchment (mode.catchment_m) is the walk most riders accept; some walk further where the line is fast or frequent. Up to twice the catchment is offered, and the walk weight in mode choice makes long walks unattractive on their own. |
+
+### Public transport: longest walk between two stops to change lines
+
+`demand.transit.transfer_max_m` · unit: m · used by: skims and transit assignment: changes between nearby stops
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 200 | 400 | 800 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Changes at one stop or station need no walk; between nearby stops riders accept a few minutes on foot, about 400 m. The walk is weighed with demand.mode.walk_weight and every change with demand.mode.transfer_penalty_min. |
+
 ### Walking speed for walking links between stations
 
 `demand.walk_speed_kmh` · unit: km/h · used by: transfer links, access/egress links, catchment

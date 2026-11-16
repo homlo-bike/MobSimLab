@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   HttpException,
   HttpStatus,
@@ -44,7 +45,27 @@ export interface NewSweepRun {
   objectives: { metric: SweepMetric; better: "lower" | "higher" }[];
 }
 
-export type NewRun = NewCapacityRun | NewSweepRun;
+/**
+ * A demand model run (ADR-0019): the Demand section's bundle (contracts/demand-input.schema.json, JSON text) and
+ * the project's demand values (Project preferences). The worker checks the bundle when it reads it.
+ */
+export interface NewDemandRun {
+  kind: "demand";
+  bundle: string;
+  values: Record<string, number>;
+  /** What the list shows about the bundle. */
+  summary: DemandSummary;
+}
+
+/** Size of a demand run's bundle, for the list of runs. */
+export interface DemandSummary {
+  zones: number;
+  links: number;
+  stops: number;
+  lines: number;
+}
+
+export type NewRun = NewCapacityRun | NewSweepRun | NewDemandRun;
 
 /** The agent connection a run is started through, for the run limit and the audit trail (ADR-0035 §7). */
 export interface AgentVia {
@@ -60,8 +81,12 @@ export interface RunSummary {
   id: string;
   kind: RunKind;
   status: RunStatus;
-  network: { kind: "example" } | { kind: "files"; topologyName: string; linesName: string };
-  params: CapacitySettings;
+  network:
+    | { kind: "example" }
+    | { kind: "files"; topologyName: string; linesName: string }
+    | ({ kind: "demand" } & DemandSummary);
+  /** Capacity runs and sweeps: their settings; null for demand runs. */
+  params: CapacitySettings | null;
   sweep: boolean;
   /** Sweeps only: the design and the objectives of the Pareto front. */
   design?: SweepDesign;
@@ -87,10 +112,19 @@ export interface RunDetail extends RunSummary {
 /** Stored settings of a run (`simulation.run.input`). The network texts have their own columns. */
 interface StoredInput {
   network: RunSummary["network"];
-  params: CapacitySettings;
+  params: CapacitySettings | null;
   sweep: boolean;
   design?: SweepDesign;
   objectives?: NewSweepRun["objectives"];
+  /** Demand runs: the project's demand values the worker uses. */
+  values?: Record<string, number>;
+}
+
+/** A file a run saved next to its result. */
+export interface RunFile {
+  name: string;
+  mediaType: string;
+  content: Buffer;
 }
 
 /** The one example network the kernels know by name (crates/rail-sim/src/capacity_input.rs). */
@@ -129,13 +163,23 @@ export class RunsService {
    */
   async start(actor: ProjectActor, projectId: string, input: NewRun, via?: AgentVia): Promise<RunDetail> {
     await this.projects.authorize(actor, projectId, "edit");
-    const net = await this.resolveNetwork(projectId, input.network);
-    const stored: StoredInput = {
-      network: net.stored,
-      params: input.params,
-      sweep: input.kind === "capacity" ? input.sweep : false,
-      ...(input.kind === "sweep" ? { design: input.design, objectives: input.objectives } : {}),
-    };
+    const net =
+      input.kind === "demand"
+        ? {
+            stored: { kind: "demand" as const, ...input.summary },
+            network: input.bundle,
+            lines: "",
+          }
+        : await this.resolveNetwork(projectId, input.network);
+    const stored: StoredInput =
+      input.kind === "demand"
+        ? { network: net.stored, params: null, sweep: false, values: input.values }
+        : {
+            network: net.stored,
+            params: input.params,
+            sweep: input.kind === "capacity" ? input.sweep : false,
+            ...(input.kind === "sweep" ? { design: input.design, objectives: input.objectives } : {}),
+          };
     const id = await this.db.transaction().execute(async (tx) => {
       if (via) await this.holdToLimit(tx, via);
       const r = await tx
@@ -167,7 +211,16 @@ export class RunsService {
           actorId: actor.userId,
           actorIpHash: actor.ipHash,
           requestId: actor.requestId,
-          after: { kind: input.kind, ...stored, ...(via ? { agent: agentNote(via) } : {}) },
+          after: {
+            kind: input.kind,
+            network: stored.network,
+            params: stored.params,
+            sweep: stored.sweep,
+            ...(stored.design ? { design: stored.design, objectives: stored.objectives } : {}),
+            // A demand run's values are many; the audit trail notes how many the project changed.
+            ...(stored.values ? { values: Object.keys(stored.values).length } : {}),
+            ...(via ? { agent: agentNote(via) } : {}),
+          },
         },
         tx,
       );
@@ -197,6 +250,7 @@ export class RunsService {
       if (!r) throw new NotFoundException("run not found");
       if (r.status === "queued" || r.status === "running")
         throw new ConflictException("the run is still going; stop it or wait for it to finish");
+      await tx.deleteFrom("simulation.run_file").where("run_id", "=", runId).execute();
       await tx
         .updateTable("simulation.run")
         .set({
@@ -304,6 +358,24 @@ export class RunsService {
   }
 
   /**
+   * Purpose: a file a run saved next to its result (a demand run's `od.omx`). 404 when the run or the file is
+   * not there. Every member who can read the project may download it.
+   */
+  async file(actor: ProjectActor, projectId: string, runId: string, name: string): Promise<RunFile> {
+    await this.projects.authorize(actor, projectId, "read");
+    const f = await this.db
+      .selectFrom("simulation.run_file as f")
+      .innerJoin("simulation.run as r", "r.id", "f.run_id")
+      .select(["f.name", "f.media_type", "f.content"])
+      .where("r.project_id", "=", projectId)
+      .where("r.id", "=", runId)
+      .where("f.name", "=", name)
+      .executeTakeFirst();
+    if (!f) throw new NotFoundException("file not found");
+    return { name: f.name, mediaType: f.media_type, content: f.content };
+  }
+
+  /**
    * Purpose: stop a run. A queued run is cancelled at once; a running one stops after the step it is on (the
    * worker checks between sweep points) and keeps what it found. Settled runs are left as they are.
    * Side effects: audit `simulation.run_cancelled`.
@@ -379,6 +451,8 @@ export class RunsService {
       .where("id", "=", n.runId)
       .executeTakeFirst();
     if (!r) throw new NotFoundException("the run to take the network from was not found in this project");
+    if ((r.input as StoredInput).network.kind === "demand")
+      throw new BadRequestException("a demand run has no railway network to run again");
     return { stored: (r.input as StoredInput).network, network: r.network, lines: r.lines };
   }
 

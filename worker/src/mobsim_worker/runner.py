@@ -15,6 +15,7 @@ import structlog
 from psycopg.types.json import Jsonb
 
 from mobsim_worker.jobs.capacity import KernelLoader, load_kernel, run_capacity
+from mobsim_worker.jobs.demand import RunFile, run_demand_job
 from mobsim_worker.jobs.sweep import run_sweep
 from mobsim_worker.queue import Connection, Job, Queue
 
@@ -53,6 +54,12 @@ class StopSignal(Protocol):
 
     def wait(self, timeout: float | None = None) -> bool: ...  # noqa: D102
 
+
+SAVE_FILE = """
+INSERT INTO simulation.run_file (run_id, name, media_type, content)
+SELECT id, %(name)s, %(media_type)s, %(content)s FROM simulation.run
+WHERE id = %(id)s::uuid AND status = 'running'
+"""
 
 CANCELLED = "SELECT cancel_requested OR status <> 'running' FROM simulation.run WHERE id = %(id)s::uuid"
 
@@ -145,16 +152,20 @@ def process(
     bound.info("run started")
     reporter = RunReporter(conn, queue, job, run_id, stop)
     try:
-        if kind not in ("capacity", "sweep"):
+        if kind not in ("capacity", "sweep", "demand"):
             raise ValueError(f"this worker cannot run {kind!r} runs")
         if cancel_requested:
             settle(conn, run_id, "cancelled", None, None)
             queue.complete(job, {"status": "cancelled"})
             return "cancelled"
-        kernel = loader(network, lines)
-        if kind == "sweep":
+        files: list[RunFile] = []
+        if kind == "demand":
+            outcome, result, files = run_demand_job(network, settings, reporter)
+        elif kind == "sweep":
+            kernel = loader(network, lines)
             outcome, result = run_sweep(kernel, settings, reporter)
         else:
+            kernel = loader(network, lines)
             outcome, result = run_capacity(
                 kernel, dict(settings["params"]), bool(settings["sweep"]), reporter
             )
@@ -165,6 +176,10 @@ def process(
         queue.fail(job, message)
         return "failed"
     if outcome == "done":
+        for f in files:
+            conn.execute(
+                SAVE_FILE, {"id": run_id, "name": f.name, "media_type": f.media_type, "content": f.content}
+            )
         settle(conn, run_id, "done", result, None)
         queue.complete(job, {"status": "done"})
         bound.info(

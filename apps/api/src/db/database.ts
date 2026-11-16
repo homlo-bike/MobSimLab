@@ -27,8 +27,11 @@ export type ProjectRole = (typeof PROJECT_ROLES)[number];
 export const RUN_STATUSES = ["queued", "running", "done", "failed", "cancelled"] as const;
 export type RunStatus = (typeof RUN_STATUSES)[number];
 
-/** Kinds of simulation run: the rail capacity run, and a sweep of its settings (0008_agent_runs.sql). */
-export type RunKind = "capacity" | "sweep";
+/**
+ * Kinds of simulation run: the rail capacity run, a sweep of its settings (0008_agent_runs.sql) and the demand
+ * model (0009_demand_runs.sql).
+ */
+export type RunKind = "capacity" | "sweep" | "demand";
 
 type Timestamp = ColumnType<Date, Date | string | undefined, Date | string>;
 
@@ -187,6 +190,14 @@ export interface DB {
     finished_at: Date | null;
     /** The agent connection that started the run (db/migrations/0008_agent_runs.sql), null for people. */
     agent_connection_id: Generated<string | null>;
+  };
+  /** Files a run saves next to its result, such as a demand run's OD matrices (0009_demand_runs.sql). */
+  "simulation.run_file": {
+    run_id: string;
+    name: string;
+    media_type: string;
+    content: Buffer;
+    created_at: Generated<Date>;
   };
   "project.member": {
     project_id: string;
