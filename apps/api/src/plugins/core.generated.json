@@ -9901,7 +9901,7 @@
     {
       "id": "org.mobsimlab.on-demand-bus",
       "name": "On-demand bus",
-      "description": "Demand-responsive transport drawn with the service zone kit: outline a zone, set the requests an hour, the fleet and the service hours, and get the vehicles needed, the average wait, ride and door-to-door time from continuous-approximation formulas. The zone shows in the journey planner. A trip-by-trip dispatch simulation comes later (ADR-0037 §7).",
+      "description": "Demand-responsive transport drawn with the service zone kit: outline a zone, set the requests an hour, the fleet and the service hours, and get the vehicles needed, the average wait, ride and door-to-door time from continuous-approximation formulas. Simulate the day dispatches every booking trip by trip (ADR-0042). The zone shows in the journey planner.",
       "version": "0.1.0",
       "publisher": {
         "name": "MobSimLab contributors",
@@ -9977,6 +9977,18 @@
         "drt.riders_per_request": {
           "label": "Riders per booking",
           "unit": "riders"
+        },
+        "drt.max_wait_limit_s": {
+          "label": "Longest wait before a booking is turned away",
+          "unit": "s"
+        },
+        "drt.max_detour_share": {
+          "label": "Longest ride, share over the direct ride",
+          "unit": "share"
+        },
+        "drt.max_detour_fixed_s": {
+          "label": "Longest ride, fixed allowance over the direct ride",
+          "unit": "s"
         }
       },
       "defaults": {
@@ -10021,6 +10033,21 @@
               "low": 1,
               "central": 1.1,
               "high": 1.3
+            },
+            "drt.max_wait_limit_s": {
+              "low": 600,
+              "central": 900,
+              "high": 1800
+            },
+            "drt.max_detour_share": {
+              "low": 0.3,
+              "central": 0.5,
+              "high": 1
+            },
+            "drt.max_detour_fixed_s": {
+              "low": 300,
+              "central": 600,
+              "high": 900
             }
           }
         }

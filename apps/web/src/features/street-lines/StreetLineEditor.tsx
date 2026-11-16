@@ -600,8 +600,9 @@ export function StreetLineEditor({
     lastKey.current = savedKey;
     const line = JSON.parse(savedKey) as Omit<SavedStreetLine, "view">;
     drawn.current ||= line.points.length > 0 || line.depot !== null;
-    // Opening the tool is not a change; the first state after opening is only saved for a new drawing.
-    if (first && initial !== null) return;
+    // Opening the tool is not a change; the first state after opening is only saved for a new drawing, or
+    // for a line that was never routed (one made from an imported GTFS route).
+    if (first && initial !== null && initial.view.points.length > 0) return;
     if (drawn.current) saveTo.current?.({ ...line, view: latestView.current });
   }, [savedKey]);
 
