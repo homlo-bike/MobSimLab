@@ -31,6 +31,18 @@
    "url": "https://www.vdv.de/",
    "access": "on-request"
   },
+  "bpr-1964": {
+   "title": "Bureau of Public Roads: Traffic Assignment Manual (1964), volume-delay function",
+   "publisher": "US Department of Commerce, Bureau of Public Roads",
+   "url": "https://catalog.hathitrust.org/Record/001314064",
+   "access": "free"
+  },
+  "broach-2012": {
+   "title": "Broach, J., Dill, J., Gliebe, J.: Where do cyclists ride? A route choice model developed with revealed preference GPS data, Transportation Research Part A 46(10), 1730–1740 (2012)",
+   "publisher": "Elsevier",
+   "url": "https://doi.org/10.1016/j.tra.2012.07.005",
+   "access": "paywalled"
+  },
   "ceder-2016": {
    "title": "Avishai Ceder, Public Transit Planning and Operation: Modeling, Practice and Behavior, 2nd edition, chapters 3–4 (frequency and headway determination)",
    "publisher": "CRC Press",
@@ -151,6 +163,12 @@
    "url": "https://eur-lex.europa.eu/eli/reco/2001/290/oj",
    "access": "free"
   },
+  "fishman-2016": {
+   "title": "Fishman, E.: Bikeshare: A Review of Recent Literature, Transport Reviews 36(1), 92–113 (2016)",
+   "publisher": "Taylor & Francis",
+   "url": "https://doi.org/10.1080/01441647.2015.1033036",
+   "access": "paywalled"
+  },
   "flyvbjerg-2003": {
    "title": "Flyvbjerg, Skamris Holm, Buhl: How common and how large are cost overruns in transport infrastructure projects? Transport Reviews 23(1), 71–88 (2003)",
    "publisher": "Taylor & Francis",
@@ -217,6 +235,12 @@
    "url": "https://www.itdp.org/rapid-transit-database/",
    "access": "free"
   },
+  "ite-trip-generation": {
+   "title": "ITE Trip Generation Manual, 11th edition: hospital and medical office trip rates",
+   "publisher": "Institute of Transportation Engineers",
+   "url": "https://www.ite.org/technical-resources/topics/trip-and-parking-generation/",
+   "access": "paywalled"
+  },
   "krakow-tram-switches": {
    "title": "Kraków tramway (MPK / ZDMK) turnout specification (switches with shallow-groove crossings 15 km/h; R = 50 m switches with deep-groove crossings 25 km/h)",
    "publisher": "Zarząd Dróg Miasta Krakowa",
@@ -227,6 +251,18 @@
    "title": "Litman: Transit Price Elasticities and Cross-Elasticities (Victoria Transport Policy Institute, updated regularly)",
    "publisher": "Victoria Transport Policy Institute",
    "url": "https://www.vtpi.org/tranelas.pdf",
+   "access": "free"
+  },
+  "martens-2004": {
+   "title": "Martens, K.: The bicycle as a feedering mode: experiences from three European countries, Transportation Research Part D 9(4), 281–294 (2004)",
+   "publisher": "Elsevier",
+   "url": "https://doi.org/10.1016/j.trd.2004.02.005",
+   "access": "paywalled"
+  },
+  "mid-2017": {
+   "title": "Mobilität in Deutschland 2017 (MiD): results report, trips per person and day, purposes, times of day",
+   "publisher": "Bundesministerium für Verkehr und digitale Infrastruktur (infas, DLR)",
+   "url": "https://www.mobilitaet-in-deutschland.de/archive/publikationen2017.html",
    "access": "free"
   },
   "mobsimlab-derivation": {
@@ -259,6 +295,18 @@
    "url": "https://mutcd.fhwa.dot.gov/htm/2009/part8/part8c.htm",
    "access": "free"
   },
+  "nchrp-716": {
+   "title": "NCHRP Report 716: Travel Demand Forecasting: Parameters and Techniques (2012): trip rates, friction factors, mode choice coefficients, time-of-day factors",
+   "publisher": "Transportation Research Board",
+   "url": "https://nap.nationalacademies.org/catalog/14665/travel-demand-forecasting-parameters-and-techniques",
+   "access": "free"
+  },
+  "nhts-2017": {
+   "title": "2017 National Household Travel Survey (US): summary of travel trends, trips per person, purposes, vehicle occupancy",
+   "publisher": "US Federal Highway Administration",
+   "url": "https://nhts.ornl.gov/",
+   "access": "free"
+  },
   "nortrak-transit": {
    "title": "voestalpine Nortrak, transit turnouts (\"Meter Design\" tram and LRT turnouts for standard European geometries of 20, 25, 50, 75, 100 and 150 m radius)",
    "publisher": "voestalpine Railway Systems Nortrak",
@@ -277,6 +325,12 @@
    "url": "https://www.networkrail.co.uk/",
    "access": "on-request"
   },
+  "nts-2019": {
+   "title": "National Travel Survey: England 2019, trips per person per year by purpose",
+   "publisher": "UK Department for Transport",
+   "url": "https://www.gov.uk/government/statistics/national-travel-survey-2019",
+   "access": "free"
+  },
   "oecd-icio": {
    "title": "OECD Inter-Country Input-Output tables (value added and imports per unit of final demand by industry)",
    "publisher": "OECD",
@@ -294,6 +348,12 @@
    "publisher": "Office of Rail and Road (UK)",
    "url": "https://dataportal.orr.gov.uk/statistics/performance/passenger-rail-performance/",
    "access": "free"
+  },
+  "ortuzar-willumsen-2011": {
+   "title": "Ortúzar, J. de D. and Willumsen, L. G.: Modelling Transport, 4th edition (Wiley, 2011): intrazonal costs, gravity models, nested logit",
+   "publisher": "Wiley",
+   "url": "https://doi.org/10.1002/9781119993308",
+   "access": "paywalled"
   },
   "pachl-roc": {
    "title": "J. Pachl, Railway Operation and Control, VTD Rail Publishing (blocking time theory, route setting, release and approach times)",
@@ -365,6 +425,18 @@
    "title": "Eclipse SUMO documentation, Definition of Vehicles, Vehicle Types, and Routes (default minGap 2.5 m, tau 1.0 s)",
    "publisher": "Eclipse Foundation / DLR",
    "url": "https://sumo.dlr.de/docs/Definition_of_Vehicles%2C_Vehicle_Types%2C_and_Routes.html",
+   "access": "free"
+  },
+  "tag-m2": {
+   "title": "TAG unit M2.1: Variable Demand Modelling, illustrative nest scale parameters",
+   "publisher": "UK Department for Transport",
+   "url": "https://www.gov.uk/government/publications/tag-unit-m2-1-variable-demand-modelling",
+   "access": "free"
+  },
+  "tag-m3-1": {
+   "title": "TAG unit M3.1: Highway Assignment Modelling, convergence criteria (relative gap)",
+   "publisher": "UK Department for Transport",
+   "url": "https://www.gov.uk/government/publications/tag-unit-m3-1-highway-assignment-modelling",
    "access": "free"
   },
   "tcqsm3": {
@@ -463,6 +535,12 @@
    "url": "https://www.ecfr.gov/current/title-49/subtitle-B/chapter-II/part-234",
    "access": "free"
   },
+  "usdot-vot-2016": {
+   "title": "US DOT: Revised Departmental Guidance on Valuation of Travel Time in Economic Analysis (2016)",
+   "publisher": "US Department of Transportation",
+   "url": "https://www.transportation.gov/office-policy/transportation-policy/revised-departmental-guidance-valuation-travel-time-economic",
+   "access": "free"
+  },
   "vde-ebus-fleet": {
    "title": "Analysis and Characterization of the Energy Consumption in an Electric Bus Fleet (VDE proceedings): electric-only heating +70 to 94 % at 0 °C, hybrid heating +6 to 29 %",
    "publisher": "VDE Verlag",
@@ -480,6 +558,18 @@
    "publisher": "John Wiley & Sons",
    "url": "https://doi.org/10.1002/9780470168066",
    "access": "paywalled"
+  },
+  "wardman-2004": {
+   "title": "Wardman, M.: Public transport values of time, Transport Policy 11(4), 363–377 (2004): walk, wait and interchange weights",
+   "publisher": "Elsevier",
+   "url": "https://doi.org/10.1016/j.tranpol.2004.05.001",
+   "access": "paywalled"
+  },
+  "who-2011-disability": {
+   "title": "World Health Organization and World Bank: World report on disability (2011)",
+   "publisher": "World Health Organization",
+   "url": "https://www.who.int/publications/i/item/9789241564182",
+   "access": "free"
   },
   "worldbank-benefit-wdi": {
    "title": "World Bank World Development Indicators API: NY.GDP.PCAP.CN (GDP per capita, local currency), SL.EMP.TOTL.SP.ZS (employment to population ratio 15+), SP.POP.0014.TO.ZS (population 0–14), SP.POP.TOTL (population)",
@@ -2381,6 +2471,2450 @@
       "worldbank-wdi"
      ],
      "rationale": "The Transit Costs Project states costs in 2023 PPP dollars. The tables scale them to the latest year with the World Bank US GDP deflator (NY.GDP.DEFL.ZS) and to the country with its PPP conversion factor (PA.NUS.PPP) or, for vehicles, its exchange rate (PA.NUS.FCRF)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.area_buffer_m": {
+   "used_by": [
+    "demand model area",
+    "automatic zones"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Product owner choice (2026-11-16): the model covers the lines plus a 2 km buffer. That holds the walk and cycle catchments of every stop (mode.catchment_m is at most about 1.2 km) and the short car trips that compete with the line. Use more for lines whose riders come from far away (park and ride, regional rail)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.zone_max_count": {
+   "used_by": [
+    "automatic zones (hexagon size chosen from the area)"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "The smallest hexagon of the H3 sizes (resolution 9, about 0.1 km², up to 6, about 36 km²) that gives at most this many zones is used. 600 zones keeps a run to minutes on the worker; 2000 zones gives stop-level detail in a large city at about ten times the run time (the skims grow with the square of the zone count)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.trip_rate.hbw": {
+   "used_by": [
+    "trip generation: home–work productions"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "mid-2017",
+      "nhts-2017",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Two legs per commuting day times the share of workers who travel to work on an average weekday (about 0.8, after leave, sickness, part time and home working). Workers are the zone's people times the country's employment ratio (World Bank) for people aged 15 and over."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.trip_rate.hbe": {
+   "used_by": [
+    "trip generation: home–education productions"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "mid-2017",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Two legs per school day times about 0.85 attendance on an average weekday across the year's school weeks. University students are attracted by universities (demand.attraction.university_students) and produced through this rate and home–other trips."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.trip_rate.hbo": {
+   "used_by": [
+    "trip generation: home–other productions"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "mid-2017",
+      "nhts-2017",
+      "nts-2019",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "National travel surveys find about 2.7 (England) to 3.4 (United States) trips per person and day, 3.1 in Germany (MiD 2017). Home–other trips are about 40 to 50 % of them."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.trip_rate.nhb": {
+   "used_by": [
+    "trip generation: non-home-based productions"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "mid-2017",
+      "nhts-2017",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "About 15 to 25 % of all trips (work to shop, work to work). They are produced and attracted where the jobs, shops and services are, in proportion to the zones' non-home-based attractions."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.attraction.per_retail_job": {
+   "used_by": [
+    "trip generation: home–other attractions"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Attraction models give retail employment five to ten times the weight of a household for shopping and personal business trips. Weights are relative: the attractions are scaled to the productions."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.attraction.per_other_job": {
+   "used_by": [
+    "trip generation: home–other attractions"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Services, offices and public buildings draw visitors too, at a fraction of the rate of shops."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.attraction.per_resident": {
+   "used_by": [
+    "trip generation: home–other attractions"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "About 0.6 per household of 2.5 people: visiting friends and family, local services at home."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.attraction.nhb_per_retail_job": {
+   "used_by": [
+    "trip generation: non-home-based productions and attractions"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Trips between work, shops and errands end mostly at shops and services."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.attraction.nhb_per_other_job": {
+   "used_by": [
+    "trip generation: non-home-based productions and attractions"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Business trips between workplaces."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.attraction.nhb_per_resident": {
+   "used_by": [
+    "trip generation: non-home-based productions and attractions"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "A small share of non-home-based trips ends in residential areas (visits on the way home)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.attraction.school_pupils": {
+   "used_by": [
+    "trip generation: home–education attractions"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Primary schools have about 200 to 400 pupils, secondary schools 600 to 1500. OpenStreetMap seldom says which, so one middle value is used; enter the real number on the zone where it is known."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.attraction.university_students": {
+   "used_by": [
+    "trip generation: home–education and home–other attractions"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Colleges have a few thousand students, large city universities 20 000 to 40 000 spread over several sites. Enter the real number on the zone where it is known."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.attraction.hospital_visits": {
+   "used_by": [
+    "trip generation: home–other attractions"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "ite-trip-generation",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Trip generation surveys give hospitals roughly 10 to 15 trips per bed a weekday, staff included; a 300-bed hospital is about 1500 visitor and patient trips once staff (counted as jobs) are taken out."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.attraction.clinic_visits": {
+   "used_by": [
+    "trip generation: home–other attractions"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "ite-trip-generation",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "A practice with a few doctors sees about 50 to 100 patients a day, each a trip there and back."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.attraction.tourism_visits": {
+   "used_by": [
+    "trip generation: home–other attractions"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Small museums see a few hundred visitors a day, major sights several thousand. Enter the real number on the zone where it is known."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.attraction.cbd_factor": {
+   "used_by": [
+    "trip generation: attractions"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "City centres draw more trips than their jobs and shops alone suggest (agglomeration of shops, culture, services). A zone is in the centre when the planner marks it, or when its jobs per km² reach demand.cbd_job_density_km2."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.cbd_job_density_km2": {
+   "used_by": [
+    "trip generation: central business district zones"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Office and retail cores of European and North American cities have about 10 000 to 50 000 jobs per km²; dense mixed districts 5000 to 10 000."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.period.am_start_h": {
+   "used_by": [
+    "time periods"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Product owner choice (2026-11-16): morning peak, midday, evening peak, evening. The usual morning peak is 07:00 to 09:00."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.period.am_end_h": {
+   "used_by": [
+    "time periods"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "See demand.period.am_start_h."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.period.pm_start_h": {
+   "used_by": [
+    "time periods"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "The usual evening peak is 16:00 to 19:00."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.period.pm_end_h": {
+   "used_by": [
+    "time periods"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "See demand.period.pm_start_h."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.period.ev_end_h": {
+   "used_by": [
+    "time periods"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Trips after this and before the morning peak count in the weekday total only."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.period_share.am.hbw": {
+   "used_by": [
+    "time periods: trips per period"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716",
+      "mid-2017",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Departure time distributions of household travel surveys, grouped into the four periods. What is left of the weekday after the four periods is the night (shown in the weekday total only)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.period_share.md.hbw": {
+   "used_by": [
+    "time periods: trips per period"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716",
+      "mid-2017",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Departure time distributions of household travel surveys, grouped into the four periods. What is left of the weekday after the four periods is the night (shown in the weekday total only)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.period_share.pm.hbw": {
+   "used_by": [
+    "time periods: trips per period"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716",
+      "mid-2017",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Departure time distributions of household travel surveys, grouped into the four periods. What is left of the weekday after the four periods is the night (shown in the weekday total only)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.period_share.ev.hbw": {
+   "used_by": [
+    "time periods: trips per period"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716",
+      "mid-2017",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Departure time distributions of household travel surveys, grouped into the four periods. What is left of the weekday after the four periods is the night (shown in the weekday total only)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.period_share.am.hbe": {
+   "used_by": [
+    "time periods: trips per period"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716",
+      "mid-2017",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Departure time distributions of household travel surveys, grouped into the four periods. What is left of the weekday after the four periods is the night (shown in the weekday total only)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.period_share.md.hbe": {
+   "used_by": [
+    "time periods: trips per period"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716",
+      "mid-2017",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Departure time distributions of household travel surveys, grouped into the four periods. What is left of the weekday after the four periods is the night (shown in the weekday total only)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.period_share.pm.hbe": {
+   "used_by": [
+    "time periods: trips per period"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716",
+      "mid-2017",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Departure time distributions of household travel surveys, grouped into the four periods. What is left of the weekday after the four periods is the night (shown in the weekday total only)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.period_share.ev.hbe": {
+   "used_by": [
+    "time periods: trips per period"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716",
+      "mid-2017",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Departure time distributions of household travel surveys, grouped into the four periods. What is left of the weekday after the four periods is the night (shown in the weekday total only)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.period_share.am.hbo": {
+   "used_by": [
+    "time periods: trips per period"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716",
+      "mid-2017",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Departure time distributions of household travel surveys, grouped into the four periods. What is left of the weekday after the four periods is the night (shown in the weekday total only)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.period_share.md.hbo": {
+   "used_by": [
+    "time periods: trips per period"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716",
+      "mid-2017",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Departure time distributions of household travel surveys, grouped into the four periods. What is left of the weekday after the four periods is the night (shown in the weekday total only)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.period_share.pm.hbo": {
+   "used_by": [
+    "time periods: trips per period"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716",
+      "mid-2017",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Departure time distributions of household travel surveys, grouped into the four periods. What is left of the weekday after the four periods is the night (shown in the weekday total only)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.period_share.ev.hbo": {
+   "used_by": [
+    "time periods: trips per period"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716",
+      "mid-2017",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Departure time distributions of household travel surveys, grouped into the four periods. What is left of the weekday after the four periods is the night (shown in the weekday total only)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.period_share.am.nhb": {
+   "used_by": [
+    "time periods: trips per period"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716",
+      "mid-2017",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Departure time distributions of household travel surveys, grouped into the four periods. What is left of the weekday after the four periods is the night (shown in the weekday total only)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.period_share.md.nhb": {
+   "used_by": [
+    "time periods: trips per period"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716",
+      "mid-2017",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Departure time distributions of household travel surveys, grouped into the four periods. What is left of the weekday after the four periods is the night (shown in the weekday total only)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.period_share.pm.nhb": {
+   "used_by": [
+    "time periods: trips per period"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716",
+      "mid-2017",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Departure time distributions of household travel surveys, grouped into the four periods. What is left of the weekday after the four periods is the night (shown in the weekday total only)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.period_share.ev.nhb": {
+   "used_by": [
+    "time periods: trips per period"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716",
+      "mid-2017",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Departure time distributions of household travel surveys, grouped into the four periods. What is left of the weekday after the four periods is the night (shown in the weekday total only)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.from_home_share.am.hbw": {
+   "used_by": [
+    "time periods: trip direction (production–attraction to origin–destination)"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Turns the home-based trips of a period (produced at home) into trips from and to home: most morning trips leave home, most evening peak trips return."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.from_home_share.md.hbw": {
+   "used_by": [
+    "time periods: trip direction (production–attraction to origin–destination)"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Turns the home-based trips of a period (produced at home) into trips from and to home: most morning trips leave home, most evening peak trips return."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.from_home_share.pm.hbw": {
+   "used_by": [
+    "time periods: trip direction (production–attraction to origin–destination)"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Turns the home-based trips of a period (produced at home) into trips from and to home: most morning trips leave home, most evening peak trips return."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.from_home_share.ev.hbw": {
+   "used_by": [
+    "time periods: trip direction (production–attraction to origin–destination)"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Turns the home-based trips of a period (produced at home) into trips from and to home: most morning trips leave home, most evening peak trips return."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.from_home_share.am.hbe": {
+   "used_by": [
+    "time periods: trip direction (production–attraction to origin–destination)"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Turns the home-based trips of a period (produced at home) into trips from and to home: most morning trips leave home, most evening peak trips return."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.from_home_share.md.hbe": {
+   "used_by": [
+    "time periods: trip direction (production–attraction to origin–destination)"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Turns the home-based trips of a period (produced at home) into trips from and to home: most morning trips leave home, most evening peak trips return."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.from_home_share.pm.hbe": {
+   "used_by": [
+    "time periods: trip direction (production–attraction to origin–destination)"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Turns the home-based trips of a period (produced at home) into trips from and to home: most morning trips leave home, most evening peak trips return."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.from_home_share.ev.hbe": {
+   "used_by": [
+    "time periods: trip direction (production–attraction to origin–destination)"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Turns the home-based trips of a period (produced at home) into trips from and to home: most morning trips leave home, most evening peak trips return."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.from_home_share.am.hbo": {
+   "used_by": [
+    "time periods: trip direction (production–attraction to origin–destination)"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Turns the home-based trips of a period (produced at home) into trips from and to home: most morning trips leave home, most evening peak trips return."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.from_home_share.md.hbo": {
+   "used_by": [
+    "time periods: trip direction (production–attraction to origin–destination)"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Turns the home-based trips of a period (produced at home) into trips from and to home: most morning trips leave home, most evening peak trips return."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.from_home_share.pm.hbo": {
+   "used_by": [
+    "time periods: trip direction (production–attraction to origin–destination)"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Turns the home-based trips of a period (produced at home) into trips from and to home: most morning trips leave home, most evening peak trips return."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.from_home_share.ev.hbo": {
+   "used_by": [
+    "time periods: trip direction (production–attraction to origin–destination)"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Turns the home-based trips of a period (produced at home) into trips from and to home: most morning trips leave home, most evening peak trips return."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.deterrence.hbw.power": {
+   "used_by": [
+    "trip distribution: gravity model"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716"
+     ],
+     "rationale": "NCHRP Report 716 gives gamma friction factors for large urban areas (f = a·t^b·e^(c·t), t in minutes). Calibration to an observed trip length changes c and keeps b."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.deterrence.hbw.exponential": {
+   "used_by": [
+    "trip distribution: gravity model",
+    "calibration to an observed trip length"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716"
+     ],
+     "rationale": "NCHRP Report 716 gives gamma friction factors for large urban areas (f = a·t^b·e^(c·t), t in minutes). t is the generalised time between zones (the mode choice logsum, in minutes of in-vehicle time)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.deterrence.hbe.power": {
+   "used_by": [
+    "trip distribution: gravity model"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "NCHRP Report 716 has no school purpose; school trips are shorter than other home-based trips, so a steeper decay than home–other is used. Calibration to an observed trip length changes c and keeps b."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.deterrence.hbe.exponential": {
+   "used_by": [
+    "trip distribution: gravity model",
+    "calibration to an observed trip length"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "NCHRP Report 716 has no school purpose; school trips are shorter than other home-based trips, so a steeper decay than home–other is used. t is the generalised time between zones (the mode choice logsum, in minutes of in-vehicle time)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.deterrence.hbo.power": {
+   "used_by": [
+    "trip distribution: gravity model"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716"
+     ],
+     "rationale": "NCHRP Report 716 gives gamma friction factors for large urban areas (f = a·t^b·e^(c·t), t in minutes). Calibration to an observed trip length changes c and keeps b."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.deterrence.hbo.exponential": {
+   "used_by": [
+    "trip distribution: gravity model",
+    "calibration to an observed trip length"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716"
+     ],
+     "rationale": "NCHRP Report 716 gives gamma friction factors for large urban areas (f = a·t^b·e^(c·t), t in minutes). t is the generalised time between zones (the mode choice logsum, in minutes of in-vehicle time)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.deterrence.nhb.power": {
+   "used_by": [
+    "trip distribution: gravity model"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716"
+     ],
+     "rationale": "NCHRP Report 716 gives gamma friction factors for large urban areas (f = a·t^b·e^(c·t), t in minutes). Calibration to an observed trip length changes c and keeps b."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.deterrence.nhb.exponential": {
+   "used_by": [
+    "trip distribution: gravity model",
+    "calibration to an observed trip length"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716"
+     ],
+     "rationale": "NCHRP Report 716 gives gamma friction factors for large urban areas (f = a·t^b·e^(c·t), t in minutes). t is the generalised time between zones (the mode choice logsum, in minutes of in-vehicle time)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.intrazonal_share": {
+   "used_by": [
+    "skims: trips within a zone"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "ortuzar-willumsen-2011"
+     ],
+     "rationale": "The usual approximation: half the time to the nearest zone centroid."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.mode.ivt.hbw": {
+   "used_by": [
+    "mode choice: utilities of car and public transport",
+    "distribution: generalised time"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716",
+      "ortuzar-willumsen-2011"
+     ],
+     "rationale": "NCHRP Report 716 lists in-vehicle time coefficients of US models: about −0.019 to −0.028 per minute for work trips and −0.008 to −0.025 for other trips. All other time and cost terms are set relative to this one."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.mode.ivt.hbe": {
+   "used_by": [
+    "mode choice: utilities of car and public transport",
+    "distribution: generalised time"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716",
+      "ortuzar-willumsen-2011"
+     ],
+     "rationale": "NCHRP Report 716 lists in-vehicle time coefficients of US models: about −0.019 to −0.028 per minute for work trips and −0.008 to −0.025 for other trips. All other time and cost terms are set relative to this one."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.mode.ivt.hbo": {
+   "used_by": [
+    "mode choice: utilities of car and public transport",
+    "distribution: generalised time"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716",
+      "ortuzar-willumsen-2011"
+     ],
+     "rationale": "NCHRP Report 716 lists in-vehicle time coefficients of US models: about −0.019 to −0.028 per minute for work trips and −0.008 to −0.025 for other trips. All other time and cost terms are set relative to this one."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.mode.ivt.nhb": {
+   "used_by": [
+    "mode choice: utilities of car and public transport",
+    "distribution: generalised time"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716",
+      "ortuzar-willumsen-2011"
+     ],
+     "rationale": "NCHRP Report 716 lists in-vehicle time coefficients of US models: about −0.019 to −0.028 per minute for work trips and −0.008 to −0.025 for other trips. All other time and cost terms are set relative to this one."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.mode.wait_weight": {
+   "used_by": [
+    "mode choice: public transport utility",
+    "transit assignment"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "unverified",
+     "sources": [
+      "wardman-2004"
+     ],
+     "rationale": "Wardman's meta-analysis of UK values: waiting is valued at about 1.5 to 2.5 times in-vehicle time."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.mode.walk_weight": {
+   "used_by": [
+    "mode choice: public transport utility",
+    "transit assignment"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "unverified",
+     "sources": [
+      "wardman-2004"
+     ],
+     "rationale": "Wardman's meta-analysis: walking to and from public transport is valued at about 1.5 to 2.5 times in-vehicle time."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.mode.transfer_penalty_min": {
+   "used_by": [
+    "mode choice: public transport utility",
+    "transit assignment"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "unverified",
+     "sources": [
+      "wardman-2004"
+     ],
+     "rationale": "Wardman's meta-analysis: about 5 minutes per interchange, more where the change is unpleasant or uncertain; the walk and wait of the change are counted on top."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.mode.walk_mode_weight": {
+   "used_by": [
+    "mode choice: walk utility"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Models in NCHRP Report 716 weigh non-motorised time at about twice in-vehicle time; the alternative-specific constant takes up the rest."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.mode.cycle_mode_weight": {
+   "used_by": [
+    "mode choice: cycle utility"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "nchrp-716",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "As for walking. Cycle facilities lower the perceived time on the streets that have them (catchment effects)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.mode.nest_scale": {
+   "used_by": [
+    "mode choice: nested logit"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "tag-m2",
+      "ortuzar-willumsen-2011"
+     ],
+     "rationale": "Between 0 and 1: 1 is a plain multinomial logit; lower values make car and public transport (or walk and cycle) closer substitutes than modes across nests. TAG unit M2.1 gives illustrative values of about 0.5 to 0.8 for mode choice below destination choice."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.mode.asc.transit": {
+   "used_by": [
+    "mode choice: public transport utility",
+    "calibration to observed mode shares"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Uncalibrated starting value: what time and cost do not capture (comfort, reliability, habit). Calibration to observed mode shares replaces it."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.mode.asc.walk": {
+   "used_by": [
+    "mode choice: walk utility",
+    "calibration to observed mode shares"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Uncalibrated starting value; calibration to observed mode shares replaces it."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.mode.asc.cycle": {
+   "used_by": [
+    "mode choice: cycle utility",
+    "calibration to observed mode shares"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Uncalibrated starting value, low because few people own and use a bicycle for everyday trips in most cities; calibration to observed mode shares replaces it."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.mode.car_availability": {
+   "used_by": [
+    "mode choice: car available or not"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "People without a car choose among public transport, walking and cycling. About 0.8 in car-oriented suburbs, 0.4 to 0.6 in European cities, lower in many cities of lower-income countries. Enter the local value where the census gives it."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.mode.cycle_availability": {
+   "used_by": [
+    "mode choice: cycle available or not"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "About three quarters of households in north-western Europe own a bicycle; much less where cycling is rare. Children under 10 and many older people are left out."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.vot.share.hbw": {
+   "used_by": [
+    "mode choice: cost against time",
+    "appraisal: travel time savings"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "unverified",
+     "sources": [
+      "usdot-vot-2016"
+     ],
+     "rationale": "US DOT guidance values personal local travel at 50 % of median hourly income."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.vot.share.other": {
+   "used_by": [
+    "mode choice: cost against time",
+    "appraisal: travel time savings"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "unverified",
+     "sources": [
+      "usdot-vot-2016"
+     ],
+     "rationale": "US DOT guidance values personal local travel at 50 % of median hourly income, whatever the purpose."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.vot.income_hours": {
+   "used_by": [
+    "mode choice: cost against time"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "usdot-vot-2016",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "US DOT divides annual income by 2080 hours. GDP per capita (World Bank, local currency) stands in for income, as in the benefit tables."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.mode.fare_usd": {
+   "used_by": [
+    "mode choice: public transport cost"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Averages over single tickets, passes and free travel come to about 1 to 2 US$ (PPP) per boarding in many cities. Converted to the project currency like the cost tables."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.mode.car_cost_per_km_usd": {
+   "used_by": [
+    "mode choice: car cost"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Drivers perceive fuel and some wear, not the full cost of owning a car: about 0.1 to 0.2 US$ (PPP) per km."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.mode.parking_cost_usd": {
+   "used_by": [
+    "mode choice: car cost"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Average over free and paid spaces, charged on half the trip legs (the leg that arrives). Elsewhere parking is free in the model unless a zone sets its own."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.car_occupancy": {
+   "used_by": [
+    "road assignment: cars from car trips"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "nhts-2017",
+      "mid-2017"
+     ],
+     "rationale": "Average car occupancy in national travel surveys is about 1.3 to 1.5, lower on commuting trips."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.road.bpr_alpha": {
+   "used_by": [
+    "road assignment: congestion"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "unverified",
+     "sources": [
+      "bpr-1964"
+     ],
+     "rationale": "t = t0 · (1 + α (v/c)^β). The Bureau of Public Roads values are α = 0.15 and β = 4; urban arterials with signals are often given larger α."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.road.bpr_beta": {
+   "used_by": [
+    "road assignment: congestion"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "unverified",
+     "sources": [
+      "bpr-1964"
+     ],
+     "rationale": "See demand.road.bpr_alpha."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.road.free_flow_share": {
+   "used_by": [
+    "road assignment: free-flow time"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Junctions, crossings and parking slow urban traffic below the speed limit even without congestion."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.road.capacity.motorway": {
+   "used_by": [
+    "road assignment: congestion"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "hcm7",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Free-flow multilane highway lanes carry about 2000 to 2400 cars per hour."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.road.capacity.trunk": {
+   "used_by": [
+    "road assignment: congestion"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "hcm7",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Grade-separated or high-standard roads with few junctions."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.road.capacity.primary": {
+   "used_by": [
+    "road assignment: congestion"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "hcm7",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Signalised urban arterials: a saturation flow of about 1800 to 1900 cars per hour of green, times a green share of about 0.5."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.road.capacity.secondary": {
+   "used_by": [
+    "road assignment: congestion"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "hcm7",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "As primary roads, with shorter green times and more turning traffic."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.road.capacity.tertiary": {
+   "used_by": [
+    "road assignment: congestion"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "hcm7",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Collector streets."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.road.capacity.local": {
+   "used_by": [
+    "road assignment: congestion"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "hcm7",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Residential, unclassified, living and service streets: their capacity is seldom what limits a trip."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.road.lanes.motorway": {
+   "used_by": [
+    "road assignment: capacity"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Used only when the way has no lanes tag."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.road.lanes.trunk": {
+   "used_by": [
+    "road assignment: capacity"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Used only when the way has no lanes tag."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.road.lanes.primary": {
+   "used_by": [
+    "road assignment: capacity"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Used only when the way has no lanes tag."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.road.lanes.secondary": {
+   "used_by": [
+    "road assignment: capacity"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Used only when the way has no lanes tag."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.road.lanes.tertiary": {
+   "used_by": [
+    "road assignment: capacity"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Used only when the way has no lanes tag."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.road.lanes.local": {
+   "used_by": [
+    "road assignment: capacity"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Used only when the way has no lanes tag."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.road.speed_kmh.motorway": {
+   "used_by": [
+    "road assignment: free-flow time"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Used only when the way has no usable maxspeed tag. Urban motorways are often limited to 80–100 km/h; rural ones run faster."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.road.speed_kmh.trunk": {
+   "used_by": [
+    "road assignment: free-flow time"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Used only when the way has no usable maxspeed tag. Urban trunk roads are usually limited to 50–80 km/h."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.road.speed_kmh.primary": {
+   "used_by": [
+    "road assignment: free-flow time"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Used only when the way has no usable maxspeed tag. The general urban limit in most countries is 50 km/h (30 mph in the UK and US cities)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.road.speed_kmh.secondary": {
+   "used_by": [
+    "road assignment: free-flow time"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Used only when the way has no usable maxspeed tag. The general urban limit in most countries is 50 km/h."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.road.speed_kmh.tertiary": {
+   "used_by": [
+    "road assignment: free-flow time"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Used only when the way has no usable maxspeed tag. Between the urban limit and the 30 km/h zones many cities set on smaller streets."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.road.speed_kmh.local": {
+   "used_by": [
+    "road assignment: free-flow time"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Used only when the way has no usable maxspeed tag. Residential streets are often 30 km/h zones; living streets walking pace."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.road.max_iterations": {
+   "used_by": [
+    "road assignment: bi-conjugate Frank-Wolfe"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "The assignment stops at this or at demand.road.relative_gap, whichever comes first."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.road.relative_gap": {
+   "used_by": [
+    "road assignment: bi-conjugate Frank-Wolfe"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "tag-m3-1"
+     ],
+     "rationale": "Planning practice asks for a relative gap of 0.1 % or better in congested assignments."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.feedback.max_iterations": {
+   "used_by": [
+    "feedback loop"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "09 §2.1: iterate until the gap is below demand.feedback.gap or at most 10 rounds."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.feedback.gap": {
+   "used_by": [
+    "feedback loop"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "09 §2.1: relative gap below 1 %. Measured as the sum of absolute changes in the car trip matrix over its total; the matrices of successive rounds are averaged (method of successive averages)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.connector.count": {
+   "used_by": [
+    "skims: zone connectors for car, walking and cycling"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "ortuzar-willumsen-2011",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "A zone's trips start and end at its centre (weighted by where its people live) and join the street network at the nearest few junctions, so they spread over several streets instead of loading one. One connector loads a single street too much; more than about five spread trips over streets that are too far away."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.mode.car_terminal_min": {
+   "used_by": [
+    "mode choice: car utility"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Car trips start and end with a short walk and, at the destination, a search for a space. About one to two minutes at each end in residential areas, more in city centres; the parking cost of the centre is a separate value (demand.mode.parking_cost_usd)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.transit.access_factor": {
+   "used_by": [
+    "skims and transit assignment: walks between zones and stops"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "tcqsm3",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "The catchment (mode.catchment_m) is the walk most riders accept; some walk further where the line is fast or frequent. Up to twice the catchment is offered, and the walk weight in mode choice makes long walks unattractive on their own."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.transit.transfer_max_m": {
+   "used_by": [
+    "skims and transit assignment: changes between nearby stops"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Changes at one stop or station need no walk; between nearby stops riders accept a few minutes on foot, about 400 m. The walk is weighed with demand.mode.walk_weight and every change with demand.mode.transfer_penalty_min."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.cycle.factor.track": {
+   "used_by": [
+    "cycling skims: perceived distance",
+    "bike-and-ride and shared-bike access"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "unverified",
+     "sources": [
+      "broach-2012"
+     ],
+     "rationale": "Broach, Dill and Gliebe's route choice model of Portland cyclists: people ride noticeably longer routes to use separate paths and lanes. A track (OpenStreetMap cycleway=track, or a bike lane the planner marks as separated) makes a metre feel like about three quarters of one."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.cycle.factor.lane": {
+   "used_by": [
+    "cycling skims: perceived distance",
+    "bike-and-ride and shared-bike access"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "unverified",
+     "sources": [
+      "broach-2012"
+     ],
+     "rationale": "Broach, Dill and Gliebe: painted lanes help less than separate paths, and mostly on busy streets. OpenStreetMap cycleway=lane or a bike lane set up in the GIS tab (street setup)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.cycle.factor.busy_road": {
+   "used_by": [
+    "cycling skims: perceived distance",
+    "bike-and-ride and shared-bike access"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "unverified",
+     "sources": [
+      "broach-2012"
+     ],
+     "rationale": "Broach, Dill and Gliebe: cyclists avoid streets with heavy traffic and no bike facility, accepting detours of 40% or more around them. Applies to trunk, primary and secondary roads without a lane or track."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.walk.pedestrian_factor": {
+   "used_by": [
+    "walking skims: perceived distance"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "People prefer walking where there is no traffic. Applies to OpenStreetMap highway=pedestrian and living_street. Walks to stops keep their real length; only the walking mode's time is weighed."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.pedestrian_zone.car_min": {
+   "used_by": [
+    "mode choice: car utility at the destination"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Cars cannot reach the door in a pedestrian zone: the driver parks at its edge and walks. The minutes are scaled by the share of the zone's street length that is pedestrian, so a zone with a short pedestrian street gets little."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.bike_ride.max_m": {
+   "used_by": [
+    "skims and transit assignment: bike-and-ride access for people with a bicycle"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "unverified",
+     "sources": [
+      "martens-2004"
+     ],
+     "rationale": "Martens' study of bike and ride in the Netherlands, Germany and the United Kingdom: most riders cycle 1 to 3 km to the station, few more than 5 km. Only stops with a bike parking nearby (OpenStreetMap amenity=bicycle_parking) can be reached this way."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.bike_ride.parking_max_m": {
+   "used_by": [
+    "skims and transit assignment: bike-and-ride access"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "A parking on the station forecourt or the next corner is used; one further away is seldom. Bike parkings come from OpenStreetMap (amenity=bicycle_parking)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.bike_ride.parking_min": {
+   "used_by": [
+    "skims and transit assignment: bike-and-ride access"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "martens-2004",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Finding a place, locking and walking to the platform; more at crowded or guarded parkings."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.shared_bike.station_max_m": {
+   "used_by": [
+    "mode choice: cycling for people without a bicycle",
+    "skims and transit assignment: shared-bike access"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "unverified",
+     "sources": [
+      "fishman-2016"
+     ],
+     "rationale": "Fishman's review: being close to a docking station is the strongest predictor of using shared bikes; most users live or work within a few hundred metres. Stations come from OpenStreetMap (amenity=bicycle_rental)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.shared_bike.max_m": {
+   "used_by": [
+    "mode choice: cycling for people without a bicycle",
+    "skims and transit assignment: shared-bike access"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "unverified",
+     "sources": [
+      "fishman-2016"
+     ],
+     "rationale": "Fishman: shared-bike trips are short, typically 2 to 3 km and seldom over 5 km, as most schemes charge by the half hour."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.shared_bike.unlock_min": {
+   "used_by": [
+    "mode choice: cycling for people without a bicycle",
+    "skims and transit assignment: shared-bike access"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Unlocking at the station or with the phone, and docking at the end; more where stations are often empty or full."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.shared_bike.fare_usd": {
+   "used_by": [
+    "mode choice: cycling for people without a bicycle",
+    "skims and transit assignment: shared-bike access"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "unverified",
+     "sources": [
+      "fishman-2016"
+     ],
+     "rationale": "Fishman: most schemes make the first half hour free with a subscription, or charge about a dollar a trip. Converted to the project currency with the PPP factor; in the public transport graph it counts as minutes at the value of time of non-work trips."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.step_free.share": {
+   "used_by": [
+    "skims and transit assignment: boarding at stops without step-free access"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "unverified",
+     "sources": [
+      "who-2011-disability"
+     ],
+     "rationale": "The WHO World report on disability: about 15% of people live with a disability, many with difficulty climbing; parents with prams and travellers with luggage add to that at times. 8% is a mid value for riders who avoid stops with steps."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.step_free.penalty_min": {
+   "used_by": [
+    "skims and transit assignment: boarding at stops without step-free access"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Carrying a pram or luggage up the steps, asking for help, or going to another stop. Only stops recorded in Create without step-free access, a lift or a ramp are counted; stops with no recorded features are not. The model adds share times penalty to boarding there."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.calibration.max_iterations": {
+   "used_by": [
+    "calibration"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Each round runs the whole model, so a calibration takes this many times as long as one run. Mode constants usually settle within three to five rounds when the shares are the only target."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.calibration.damping": {
+   "used_by": [
+    "calibration"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "unverified",
+     "sources": [
+      "ortuzar-willumsen-2011"
+     ],
+     "rationale": "The constants of a logit model move by the log of observed over modelled share (Ortúzar and Willumsen, chapter 8). In a nested model the full step can overshoot; damping it a little makes it settle."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.calibration.tolerance": {
+   "used_by": [
+    "calibration"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Stops when every mode share and the mean car trip are within this share of what was observed (1% of a 20% share is 0.2 points)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "demand.calibration.geh_hours": {
+   "used_by": [
+    "calibration: GEH of counts"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "unverified",
+     "sources": [
+      "tag-m3-1"
+     ],
+     "rationale": "GEH is meant for hourly flows: TAG M3.1 asks for GEH below 5 on most counts. Daily boardings are turned into an average hour of the service day before it is computed."
     }
    ],
    "modes": {
