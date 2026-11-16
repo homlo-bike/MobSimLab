@@ -9,6 +9,7 @@ import { ProjectPlugins } from "./ProjectPlugins";
 import { DesignRulesSection } from "./DesignRules";
 import { VehicleChoiceSection } from "./VehicleChoice";
 import { SwitchChoiceSection } from "./SwitchChoice";
+import { CalendarSection } from "./CalendarSection";
 import { roadValue } from "../features/road-sim/params";
 import { CURRENCY_CODES } from "../features/costs/currencies";
 import { type CurrencyState, NO_CURRENCY, RATE_PREF, withCurrency } from "../features/costs/currency";
@@ -27,6 +28,7 @@ export function ProjectPreferences({
   plugins = null,
   onSetPlugin,
   currency = NO_CURRENCY,
+  country = null,
 }: {
   api: ProjectsApi;
   project: Project;
@@ -41,6 +43,8 @@ export function ProjectPreferences({
   onSetPlugin?: (pluginId: string, enabled: boolean, version?: string) => Promise<void>;
   /** The project's currency and its exchange rate. */
   currency?: CurrencyState;
+  /** ISO alpha-2 code of the country at the project's location, when known (public holidays). */
+  country?: string | null;
 }) {
   const { t } = useI18n();
   const editable = can.edit(project);
@@ -196,6 +200,12 @@ export function ProjectPreferences({
           </div>
           {!editable && <p className="mt-3 text-sm text-slate-500">{t("prefs.readOnly")}</p>}
         </section>
+        <CalendarSection
+          preferences={preferences}
+          editable={editable && !!onPreferences}
+          onPreferences={(d) => onPreferences?.(d)}
+          detectedCountry={country}
+        />
         <CurrencySection
           state={currency}
           preferences={preferences}
