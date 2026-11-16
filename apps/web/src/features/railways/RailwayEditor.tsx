@@ -1,4 +1,5 @@
 import { Marker, type Map as MapLibreMap } from "maplibre-gl";
+import { useVehiclesOff } from "../../workspace/projectVehicles";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { tNow, useI18n } from "../../i18n/i18n";
@@ -57,6 +58,7 @@ import type {
   RailMode,
   RailView,
   ServicePublication,
+  SwitchChoice,
   Track,
 } from "./types";
 import type { Timetable } from "../journey-planner/types";
@@ -110,6 +112,8 @@ interface Props {
   delays?: DelayShares | null;
   /** The project's design rules per mode (Project preferences), as `<mode>.<field>`; the library's when absent. */
   designValues?: Readonly<Record<string, number>> | null;
+  /** The project's choice from the switches and crossings catalogue (Project preferences); all when absent. */
+  switchChoice?: SwitchChoice | null;
   /** The drawing saved with the project, or null to start a new one at the map centre. */
   initial?: Network | null;
   /** Told about the drawing after every change, so the project can save it. */
@@ -143,6 +147,7 @@ export function RailwayEditor({
   streetSetups = NO_SETUPS,
   delays = null,
   designValues = null,
+  switchChoice = null,
   initial = null,
   onDocChange,
   loadNoise = loadWasmNoise,
@@ -151,6 +156,8 @@ export function RailwayEditor({
 }: Props) {
   const { t } = useI18n();
   const engine = useRef<RailEngine | null>(null);
+  // Catalogue trains the project does not use (Project preferences → Vehicles).
+  const vehiclesOff = useVehiclesOff();
   const [ready, setReady] = useState(false);
   const [doc, setDoc] = useState<Network | null>(initial);
   const [draft, setDraft] = useState<Track | null>(null);
@@ -206,6 +213,7 @@ export function RailwayEditor({
     streetSetups,
     delays,
     designValues,
+    switchChoice,
   });
 
   // A new drawing starts at the map centre.
@@ -472,7 +480,7 @@ export function RailwayEditor({
   const newLine = () => {
     const d0 = latest.current.doc;
     if (!d0) return;
-    const [d, id] = addLine(d0, (view?.params.platform_length_m ?? 120) - 5, { empty: true });
+    const [d, id] = addLine(d0, (view?.params.platform_length_m ?? 120) - 5, { empty: true, vehiclesOff });
     setDoc(d);
     setDraft(null);
     setCursor(null);

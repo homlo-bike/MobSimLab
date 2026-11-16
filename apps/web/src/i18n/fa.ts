@@ -1,5 +1,7 @@
+import { roadFa } from "./road/fa";
 import { editorsFa } from "./editors/fa";
 import { cargoBikeFa } from "./cargo-bike/fa";
+import { depotsFa } from "./depots/fa";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -293,8 +295,23 @@ export const fa: Messages = {
   "prefs.rulesChanged": "تغییریافته: {count}",
   "prefs.rulesLibrary": "کتابخانهٔ فرض‌ها: {value} {unit}",
   "prefs.rulesLibraryRange": "کتابخانهٔ فرض‌ها: {value} {unit} (بازه {low}–{high})",
-  "prefs.vehicles": "وسایل نقلیهٔ مورد استفاده (از کاتالوگ وسایل نقلیه)",
-  "prefs.switches": "سوزن‌ها (از کاتالوگ سوزن‌ها)",
+  "prefs.vehiclesTitle": "وسایل نقلیه",
+  "prefs.vehiclesIntro":
+    "وسایل نقلیهٔ کاتالوگ که این پروژه برای هر شیوه به کار می‌برد. ابزارهای خط خیابانی و راه‌آهن فقط موارد علامت‌خورده را نشان می‌دهند.",
+  "prefs.vehiclesMode": "شیوه",
+  "prefs.vehiclesUsed": "{used} از {total} در استفاده",
+  "prefs.vehiclesAll": "استفاده از همه",
+  "prefs.vehiclesFacts": "{length} متر · {places} جا · {speed} کیلومتر بر ساعت",
+  "prefs.vehiclesLast": "برای هر شیوه دست‌کم یک وسیله در استفاده می‌ماند.",
+  "prefs.switchesTitle": "سوزن‌ها",
+  "prefs.switchesIntro":
+    "سوزن‌ها و تقاطع‌های کاتالوگ که ویرایشگر راه‌آهن برای هر شیوهٔ ریلی ارائه می‌کند، و سوزنی که سوزن‌های تازه با آن آغاز می‌شوند.",
+  "prefs.switchesTurnouts": "سوزن‌ها",
+  "prefs.switchesSlips": "سوزن‌های لغزشی در تقاطع‌ها",
+  "prefs.switchesDefault": "پیش‌فرض",
+  "prefs.switchesFacts": "1:{n} · R {radius} متر · {speed} کیلومتر بر ساعت در انحراف",
+  "prefs.switchesLast":
+    "سوزن پیش‌فرض در استفاده می‌ماند. برای کنار گذاشتن آن، اول پیش‌فرض دیگری انتخاب کنید.",
   "prefs.calendar": "تقویم، تقاضا و هزینه‌ها",
 
   "job.stepOf": "گام {step} از {steps}",
@@ -364,5 +381,7 @@ export const fa: Messages = {
 
   ...editorsFa,
   ...cargoBikeFa,
+  ...depotsFa,
+  ...roadFa,
   ...PLUGIN_MESSAGES.fa,
 };

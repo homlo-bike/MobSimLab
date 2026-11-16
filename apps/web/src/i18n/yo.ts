@@ -1,5 +1,7 @@
+import { roadYo } from "./road/yo";
 import { editorsYo } from "./editors/yo";
 import { cargoBikeYo } from "./cargo-bike/yo";
+import { depotsYo } from "./depots/yo";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -296,8 +298,22 @@ export const yo: Messages = {
   "prefs.rulesChanged": "tí a yí padà: {count}",
   "prefs.rulesLibrary": "Ilé ìkàwé àròsọ: {value} {unit}",
   "prefs.rulesLibraryRange": "Ilé ìkàwé àròsọ: {value} {unit} (ìwọ̀n {low}–{high})",
-  "prefs.vehicles": "Àwọn ọkọ̀ tí a ń lò, láti inú àkójọ ọkọ̀",
-  "prefs.switches": "Àwọn ìyípadà ojú irin, láti inú àkójọ ìyípadà",
+  "prefs.vehiclesTitle": "Àwọn ọkọ̀",
+  "prefs.vehiclesIntro":
+    "Àwọn ọkọ̀ inú àkójọ tí iṣẹ́ àkànṣe yìí ń lò, fún irú kọ̀ọ̀kan. Àwọn irinṣẹ́ ọ̀nà òpópónà àti ojú irin ń fi àwọn tí a sàmì sí nìkan hàn.",
+  "prefs.vehiclesMode": "Irú",
+  "prefs.vehiclesUsed": "{used} nínú {total} ni à ń lò",
+  "prefs.vehiclesAll": "Lo gbogbo wọn",
+  "prefs.vehiclesFacts": "{length} m · àyè {places} · {speed} km/h",
+  "prefs.vehiclesLast": "Ó kéré tán ọkọ̀ kan máa wà ní lílò fún irú kọ̀ọ̀kan.",
+  "prefs.switchesTitle": "Àwọn ìyípadà ojú irin",
+  "prefs.switchesIntro":
+    "Àwọn ìyípadà àti ìkọjá láti inú àkójọ tí olóòtú ojú irin ń fúnni, fún irú ojú irin kọ̀ọ̀kan, àti ìyípadà tí àwọn tuntun fi ń bẹ̀rẹ̀.",
+  "prefs.switchesTurnouts": "Àwọn ìyípadà",
+  "prefs.switchesSlips": "Àwọn ìyípadà nínú ìkọjá",
+  "prefs.switchesDefault": "Àìyípadà",
+  "prefs.switchesFacts": "1:{n} · R {radius} m · {speed} km/h ní ẹ̀gbẹ́",
+  "prefs.switchesLast": "Ìyípadà àìyípadà máa wà ní lílò. Láti yọ ọ́, kọ́kọ́ yan òmíràn.",
   "prefs.calendar": "Kàlẹ́ńdà, ìbéèrè àti iye owó",
 
   "job.stepOf": "Ìgbésẹ̀ {step} nínú {steps}",
@@ -367,5 +383,7 @@ export const yo: Messages = {
 
   ...editorsYo,
   ...cargoBikeYo,
+  ...depotsYo,
+  ...roadYo,
   ...PLUGIN_MESSAGES.yo,
 };

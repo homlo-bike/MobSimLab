@@ -21,7 +21,10 @@ export interface SavedStreetLine {
   rules: RoutingRules;
   timing: Timing;
   points: SavedPoint[];
+  /** A depot point of lines drawn before shared depots; null when the line uses `depotId`. */
   depot: LonLat | null;
+  /** The shared road depot (drawing kind `depots`) the line pulls out of and in to; its gates start and end the depot runs. */
+  depotId?: string | null;
   /** The terminals the depot runs serve, as indexes into `points`. */
   depotStops: { out?: number; in?: number };
   /**

@@ -208,6 +208,7 @@ function streetEngine(): StreetEngine {
     setKind: vi.fn(() => view),
     setName: vi.fn(() => view),
     setDepot: vi.fn(() => view),
+    setDepotGates: vi.fn(() => view),
     clearDepot: vi.fn(() => view),
     optimise: vi.fn(() => view),
     setSettings: vi.fn(() => view),

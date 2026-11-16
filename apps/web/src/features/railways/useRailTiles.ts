@@ -4,7 +4,7 @@ import { tNow } from "../../i18n/i18n";
 import { MIN_LOAD_ZOOM, tilesFor } from "../street-lines/tiles";
 import type { DelayShares, TileFetcher } from "../street-lines/types";
 import type { StreetSetup } from "../street-setup/types";
-import type { RailEngine } from "./types";
+import type { RailEngine, SwitchChoice } from "./types";
 
 /**
  * Purpose: feed the railway engine what it builds on besides the drawing: streets for level crossings,
@@ -23,6 +23,7 @@ export function useRailTiles({
   streetSetups,
   delays,
   designValues,
+  switchChoice,
 }: {
   map: MapLibreMap | null;
   ready: boolean;
@@ -33,6 +34,7 @@ export function useRailTiles({
   streetSetups: readonly StreetSetup[];
   delays: DelayShares | null;
   designValues: Readonly<Record<string, number>> | null;
+  switchChoice: SwitchChoice | null;
 }) {
   // Streets for level crossings and existing railways for joins: the tiles on screen, loaded when
   // the map stops moving, the same tiles the street line tool routes on. Each batch of new tiles
@@ -66,6 +68,18 @@ export function useRailTiles({
     });
     setStreets((n) => n + 1);
   }, [ready, delaysJson, rulesJson]);
+  // The switches the project uses and its default turnouts; a change rebuilds.
+  const switchJson = switchChoice ? JSON.stringify(switchChoice) : "";
+  const switchSet = useRef(false);
+  useEffect(() => {
+    const e = engine.current;
+    if (!ready || !e?.setSwitchChoice || (!switchJson && !switchSet.current)) return;
+    switchSet.current = true;
+    e.setSwitchChoice(
+      switchJson ? (JSON.parse(switchJson) as SwitchChoice) : { off: [], default_turnout: {} },
+    );
+    setStreets((n) => n + 1);
+  }, [ready, switchJson]);
   useEffect(() => {
     if (!map || !ready) return;
     // Turning existing railways off forgets them; turning them on reloads the tiles on screen.

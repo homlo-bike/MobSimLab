@@ -24,6 +24,7 @@ Schema and contribution rules: [README.md](README.md).
 - [Energy and climate](#energy-and-climate)
 - [Cost](#cost)
 - [Benefits](#benefits)
+- [Fares](#fares)
 - [Energy supply systems](#energy-supply-systems)
 - [Switches and crossings](#switches-and-crossings)
 - [Sources](#sources)
@@ -1223,6 +1224,30 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 |---|---|---|---|---|---|---|---|
 | all | 0.5 | 1.0 | 2.0 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Room to walk between vehicles and for charging connectors. |
 
+### Street depot: kerb-to-kerb turning circle of a bus the catalogue gives none for
+
+`depot.turning_circle_m` · unit: m · used by: automatic bus depot layout, swept-path check
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 21 | 24 | 25 | documented | unverified | [eu-dir-96-53](#src-eu-dir-96-53), [mobsimlab-derivation](#src-mobsimlab-derivation) | A bus must turn within a circle of 12.5 m outer radius (25 m diameter, 96/53/EC); catalogue 12 m buses quote about 19–22 m. The swept-path check uses the vehicle's own value where the catalogue has one. |
+
+### Street depot: smallest gap between a manoeuvring vehicle and a parked vehicle or the fence
+
+`depot.swept_clearance_m` · unit: m · used by: swept-path check, automatic bus depot layout
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.2 | 0.3 | 0.5 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Margin for driver accuracy at walking pace in a depot, on top of the body outline (mirrors fold over parked vehicles); swept-path templates are commonly drawn with 0.3–0.5 m. |
+
+### Street depot: power of the charger at each charging slot
+
+`depot.charger_power_kw` · unit: kW · used by: automatic bus depot layout, road simulation charging
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 50 | 150 | 300 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Overnight plug-in depot chargers for battery buses are commonly 40–150 kW per vehicle; 150 kW also allows a midday top-up. Pantograph chargers reach 300 kW or more. |
+
 ### Lane width of a street (vehicles drawn half a lane from the centreline)
 
 `street.lane_width_m` · unit: m · used by: vehicle drawing offset, swept-path check
@@ -1326,6 +1351,32 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 | Context | Low | Central | High | Basis | Check | Sources | Rationale |
 |---|---|---|---|---|---|---|---|
 | all | 10 | 50 | 150 | educated-guess | unverified | [rast06](#src-rast06), [hcm7](#src-hcm7), [mobsimlab-derivation](#src-mobsimlab-derivation) | RASt 06 residential streets (Wohnstraßen, Wohnwege) carry up to about 400 vehicles per hour over the cross-section, most far less; 50 per direction is a quiet street with only its own residents' traffic. The same value is used for the morning and the evening peak; set a street's own counts in the GIS tab. |
+
+### Road simulation: background traffic outside the peaks, as a share of the street's peak value
+
+`road.off_peak_traffic_share` · unit: share · used by: road simulation background traffic
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.4 | 0.6 | 0.8 | educated-guess | unverified | [hcm7](#src-hcm7), [mobsimlab-derivation](#src-mobsimlab-derivation) | Streets only carry peak values (GIS tab traffic peaks), so midday and evening runs scale them. Urban weekday hourly profiles put a midday hour at roughly 5–6 % of the daily traffic against 8–10 % in the peak hour (HCM K-factors), about 0.6 of the peak; late evening is lower, so set your own value for evening runs. |
+
+### Road simulation: power a trolleybus takes from its wires to charge its battery while driving
+
+`road.trolley_wire_charge_kw` · unit: kW · used by: road simulation trolleybus energy
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 60 | 120 | 200 | educated-guess | unverified | [uitp-trolleybus-tco](#src-uitp-trolleybus-tco), [mobsimlab-derivation](#src-mobsimlab-derivation) | In-motion charging trolleybuses recharge their traction battery from the wires at roughly 50–200 kW on top of the power for driving; the road simulation gives this power to the battery on every street with a trolleybus wire (OSM trolley_wire). |
+
+### Road simulation: usable battery of a battery bus, or of a trolleybus for running off the wires
+
+`road.battery_capacity_kwh` · unit: kWh · used by: road simulation battery energy
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 250 | 350 | 450 | educated-guess | unverified | [vde-ebus-fleet](#src-vde-ebus-fleet), [mobsimlab-derivation](#src-mobsimlab-derivation) | 12 m battery buses for overnight depot charging carry about 300–500 kWh installed, of which roughly 80 % is usable. |
+| brt | 350 | 500 | 650 | educated-guess | unverified | [vde-ebus-fleet](#src-vde-ebus-fleet), [mobsimlab-derivation](#src-mobsimlab-derivation) | 18 m articulated battery buses carry about 450–800 kWh installed. |
+| trolleybus | 30 | 60 | 120 | educated-guess | unverified | [uitp-trolleybus-tco](#src-uitp-trolleybus-tco), [mobsimlab-derivation](#src-mobsimlab-derivation) | In-motion charging trolleybuses carry a smaller battery for sections without wires, typically 30–120 kWh. |
 
 ## Energy and climate
 
@@ -2008,6 +2059,168 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 |---|---|---|---|---|---|---|---|
 | all | 0.6 | 0.8 | 1.1 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Construction output per worker is usually a little below the economy average. |
 
+## Fares
+
+### Flat fare: one fare for every trip
+
+`fare.flat` · unit: US$ per trip (2023, PPP) · used by: fare revenue: flat fare
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 1.5 | 2.5 | 4 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation), [worldbank-wdi](#src-worldbank-wdi) | A single city ticket costs about 2–3.5 € in German, French and Italian cities and about 2.5–3 US$ in US cities; at their PPP factors that is about 2–4.5 international dollars. Cities in lower-income countries price fares lower relative to their price level; 1.5 covers them. |
+
+### Zonal fare: fare for a trip within one zone
+
+`fare.zonal.first_zone` · unit: US$ per trip (2023, PPP) · used by: fare revenue: zonal fare
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 1.5 | 2.5 | 4 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | The same level as a flat fare; zonal systems usually charge the city fare for one zone. |
+
+### Zonal fare: added for each further zone
+
+`fare.zonal.extra_zone` · unit: US$ per zone (2023, PPP) · used by: fare revenue: zonal fare
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.5 | 1 | 2 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Zonal tariffs (for example Verkehrsverbund tariffs and Transport for London's zones) add roughly 30–60 % of the one-zone fare for each further zone. |
+
+### Distance-based fare: base fare per trip
+
+`fare.distance.base` · unit: US$ per trip (2023, PPP) · used by: fare revenue: distance-based fare
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 1 | 1.5 | 2.5 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Distance-based tariffs (for example the Netherlands' OV-chipkaart, Washington Metro, Asian metros) charge a boarding fare of about half a flat city fare, then an amount per km. |
+
+### Distance-based fare: added per km travelled
+
+`fare.distance.per_km` · unit: US$ per km (2023, PPP) · used by: fare revenue: distance-based fare
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.08 | 0.15 | 0.25 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Dutch public transport charges about 0.17–0.20 € per km, German and Swiss regional and long-distance rail about 0.15–0.30 € per km at full fare; lower-income countries less. |
+
+### Distance-based fare: highest fare for one trip (0 for no cap)
+
+`fare.distance.max` · unit: US$ per trip (2023, PPP) · used by: fare revenue: distance-based fare
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0 | 0 | 0 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | No cap by default; many distance-based tariffs cap the fare, which the project can set here. |
+
+### Passes: share of trips made with a monthly pass
+
+`fare.pass.trip_share` · unit: share · used by: fare revenue: tickets and passes
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.3 | 0.5 | 0.7 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | In German, Austrian and Swiss transit associations most trips are made with season tickets; in cities with mainly pay-as-you-go cards the share is lower. 0.5 is a middle value. |
+
+### Passes: price of a monthly pass, in single fares of the same trip
+
+`fare.pass.price_in_fares` · unit: single fares · used by: fare revenue: tickets and passes
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 20 | 30 | 40 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Monthly passes usually cost about 20–40 single fares (for example about 30 in many European cities), so a pass pays for itself at about one return trip on most working days. |
+
+### Passes: trips a pass holder makes in a month
+
+`fare.pass.trips_per_month` · unit: trips / month · used by: fare revenue: tickets and passes
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 36 | 44 | 54 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Two trips on each of about 21 working days plus a few at weekends; changes between lines count as one trip per line here, which pushes the number up. |
+
+### Discounts: share of trips made by children
+
+`fare.concession.child.share` · unit: share · used by: fare revenue: discount groups
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.04 | 0.08 | 0.12 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | School-age travel is a large part of off-peak bus use and smaller on rail. |
+
+### Discounts: children's discount on the fare
+
+`fare.concession.child.discount` · unit: share · used by: fare revenue: discount groups
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.4 | 0.5 | 1 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Child fares are commonly half; some cities let children ride free (a discount of 1). |
+
+### Discounts: share of trips made by older people
+
+`fare.concession.senior.share` · unit: share · used by: fare revenue: discount groups
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.06 | 0.12 | 0.18 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Older people make a growing share of off-peak trips in ageing countries. |
+
+### Discounts: older people's discount on the fare
+
+`fare.concession.senior.discount` · unit: share · used by: fare revenue: discount groups
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.3 | 0.5 | 1 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Senior fares are commonly half; England's bus pass is free off-peak (a discount of 1). |
+
+### Discounts: share of trips made by students
+
+`fare.concession.student.share` · unit: share · used by: fare revenue: discount groups
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.06 | 0.12 | 0.2 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Higher near universities; the ridership estimate's students near stations are a guide. |
+
+### Discounts: students' discount on the fare
+
+`fare.concession.student.discount` · unit: share · used by: fare revenue: discount groups
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.2 | 0.3 | 0.6 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Student passes are commonly discounted by a quarter to a half; semester tickets go further. |
+
+### Fare elasticity of ridership (change in trips for a change in the average fare)
+
+`fare.elasticity` · unit: elasticity · used by: fare revenue: ridership after the fare
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | -0.6 | -0.4 | -0.2 | documented | unverified | [paulley-2006](#src-paulley-2006), [litman-transit-elasticities](#src-litman-transit-elasticities) | Paulley et al. (2006) report bus fare elasticities of about −0.4 in the short run and −0.6 to −1.0 in the long run, and metro about −0.3; Litman's review finds −0.2 to −0.5 in the short run. Applied as a constant elasticity to the average fare paid against the default fares. |
+
+### Yearly fare change above inflation
+
+`fare.real_increase` · unit: share / year · used by: fare revenue: later years
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0 | 0 | 0.02 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Appraisals usually keep fares constant in real terms; some cities plan rises above inflation. The fare elasticity applies to the change. |
+
+### Yearly ridership growth
+
+`fare.ridership_growth` · unit: share / year · used by: fare revenue: later years
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0 | 0.01 | 0.02 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Growth from population, jobs and the network maturing after opening, before any fare change; 0–2 % a year is the usual range in appraisal forecasts. |
+
+### Fare evasion: share of trips that pay nothing
+
+`fare.evasion_share` · unit: share · used by: fare revenue: losses
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.01 | 0.03 | 0.08 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Gated metros lose about 1–2 %, proof-of-payment systems about 2–5 %, and some open networks report 10 % or more. |
+
+### Fare collection cost: share of fare revenue (ticket machines, sales, card fees, inspection)
+
+`fare.collection_cost_share` · unit: share · used by: fare revenue: losses
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.05 | 0.1 | 0.15 | documented | unverified | [tcrp-94](#src-tcrp-94), [mobsimlab-derivation](#src-mobsimlab-derivation) | Agencies spend roughly 5–15 % of fare revenue on selling tickets, maintaining machines and gates, card and payment fees and inspection; smart cards and open payment are at the low end. |
+
 ## Energy supply systems
 
 Vehicles list the supply systems they support (`supplySystems`); a section can only be run by a vehicle
@@ -2187,3 +2400,6 @@ and rationale per attribute: [`switches.yaml`](switches.yaml); geometry model:
 | <a id="src-hca-employment-density-2015"></a>`hca-employment-density-2015` | [Homes and Communities Agency (UK): Employment Density Guide, 3rd edition (2015)](https://www.gov.uk/government/publications/employment-density-guide) | free | Open Government Licence v3.0 | 2026-11-09 | none |
 | <a id="src-oecd-icio"></a>`oecd-icio` | [OECD Inter-Country Input-Output tables (value added and imports per unit of final demand by industry)](https://www.oecd.org/en/data/datasets/inter-country-input-output-tables.html) | free | CC BY 4.0 | 2026-11-09 | none |
 | <a id="src-worldbank-benefit-wdi"></a>`worldbank-benefit-wdi` | [World Bank World Development Indicators API: NY.GDP.PCAP.CN (GDP per capita, local currency), SL.EMP.TOTL.SP.ZS (employment to population ratio 15+), SP.POP.0014.TO.ZS (population 0–14), SP.POP.TOTL (population)](https://datahelpdesk.worldbank.org/knowledgebase/articles/889392-about-the-indicators-api-documentation) | free | CC BY 4.0 | 2026-11-09 | none |
+| <a id="src-paulley-2006"></a>`paulley-2006` | [Paulley, Balcombe, Mackett, Titheridge, Preston, Wardman, Shires, White: The demand for public transport: The effects of fares, quality of service, income and car ownership (Transport Policy 13(4), 295–306, 2006)](https://doi.org/10.1016/j.tranpol.2005.12.004) | paywalled | © Elsevier; numbers cited as facts | 2026-11-16 | none |
+| <a id="src-litman-transit-elasticities"></a>`litman-transit-elasticities` | [Litman: Transit Price Elasticities and Cross-Elasticities (Victoria Transport Policy Institute, updated regularly)](https://www.vtpi.org/tranelas.pdf) | free | © VTPI; numbers cited as facts | 2026-11-16 | none |
+| <a id="src-tcrp-94"></a>`tcrp-94` | [TCRP Report 94: Fare Policies, Structures and Technologies: Update (Transportation Research Board, 2003)](https://doi.org/10.17226/21948) | free | © National Academy of Sciences; numbers cited as facts | 2026-11-16 | none |
