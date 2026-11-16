@@ -192,10 +192,44 @@ export interface ZoneView {
   issues: Issue[];
 }
 
+/** The dispatcher's limits (`mode_kits::dispatch::DispatchRules`), from the plugin's `drt.*` values. */
+export interface DispatchRules {
+  max_wait_s: number;
+  max_detour_share: number;
+  max_detour_fixed_s: number;
+  seed?: number;
+}
+
+export interface DispatchHour {
+  start_s: number;
+  requests: number;
+  served: number;
+  mean_wait_s: number;
+  busy_vehicles: number;
+}
+
+/** One simulated service day of a zone (`mode_kits::dispatch::DispatchResult`). */
+export interface DispatchResult {
+  requests: number;
+  served: number;
+  rejected: number;
+  mean_wait_s: number;
+  p90_wait_s: number;
+  mean_ride_s: number;
+  mean_detour_factor: number;
+  vehicle_km: number;
+  empty_share: number;
+  mean_occupancy: number;
+  riders_per_vehicle_hour: number;
+  shared_share: number;
+  hours: DispatchHour[];
+}
+
 export interface Kits {
   buildSpanLine(line: SpanLine): SpanView;
   buildWaterLine(line: WaterLine): WaterView;
   estimateZone(zone: ZoneInput): ZoneView;
+  simulateZone(day: { zone: ZoneInput; rules: DispatchRules }): DispatchResult;
 }
 
 export type KitsLoader = () => Promise<Kits>;

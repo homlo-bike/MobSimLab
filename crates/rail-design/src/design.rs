@@ -312,7 +312,7 @@ pub fn build_with_terrain(
         .params
         .clone()
         .unwrap_or_else(|| d.mode(net.mode).clone())
-        .with_values(values);
+        .with_mode_values(net.mode, values);
     let track_modes: BTreeMap<u32, RailMode> = net
         .tracks
         .iter()
@@ -328,7 +328,7 @@ pub fn build_with_terrain(
     {
         modes
             .entry(m)
-            .or_insert_with(|| d.mode(m).with_values(values));
+            .or_insert_with(|| d.mode(m).with_mode_values(m, values));
     }
     let mode_params = |m: RailMode| modes.get(&m).unwrap_or(&params);
     let storage_radius = |p: &ModeParams| {

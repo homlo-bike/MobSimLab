@@ -591,6 +591,30 @@ describe("Railway editor", () => {
     return { map, handlers, engine: () => engine! };
   }
 
+  it("checks the drawing against the project's design rules for its mode", async () => {
+    const { map } = fakeMap();
+    const props = {
+      map,
+      fetchTile: () => Promise.reject(new Error("offline")),
+      loadEngine: loadRailEngine,
+      initial: sample("tram"),
+    };
+    const { rerender } = render(<RailwayEditor {...props} />);
+    await screen.findByText(/0 errors/);
+    // A tram minimum radius far above the example's curves: they become errors. A metro value changes nothing.
+    rerender(<RailwayEditor {...props} designValues={{ "metro.min_radius_m": 5000 }} />);
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 50));
+    });
+    expect(screen.getByText(/0 errors/)).toBeTruthy();
+    rerender(<RailwayEditor {...props} designValues={{ "tram.min_radius_m": 5000 }} />);
+    await waitFor(() => expect(screen.queryByText(/\b0 errors/)).toBeNull());
+    expect(screen.getByText(/[1-9]\d* errors?/)).toBeTruthy();
+    // Back to the library's values.
+    rerender(<RailwayEditor {...props} designValues={{}} />);
+    await screen.findByText(/0 errors/);
+  });
+
   it("opens the drawing saved with the project and reports each change for saving", async () => {
     const [saved] = addStation(lineAcross("tram"), [0, 0], {
       level: "street",

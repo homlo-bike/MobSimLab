@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { delaysFrom, prefValue, withPref } from "../src/workspace/preferences";
+import {
+  DESIGN_RULES,
+  delaysFrom,
+  designValuesFrom,
+  prefValue,
+  withPref,
+} from "../src/workspace/preferences";
 import { chosenCurrency, convertTo, RATE_PREF, withCurrency } from "../src/features/costs/currency";
 import { countryOfCurrency, CURRENCY_CODES } from "../src/features/costs/currencies";
 
@@ -12,6 +18,22 @@ describe("project preferences", () => {
     // Removing the value brings the library's back; nonsense is clamped.
     expect(delaysFrom(withPref(doc, "street.mixed_traffic_delay_share", null)).mixed_traffic).toBe(0.25);
     expect(delaysFrom({ values: { "street.bus_lane_delay_share": -1 } }).bus_lane).toBe(0);
+  });
+
+  it("passes the project's design rules to the rail engine per mode", () => {
+    expect(designValuesFrom(null)).toEqual({});
+    const radius = DESIGN_RULES.find((r) => r.field === "min_radius_m")!;
+    expect(radius.modes.tram?.values[1]).toBe(20);
+    const cant = DESIGN_RULES.find((r) => r.field === "max_cant_mm")!;
+    // Tram and light rail take cant from their own library entry.
+    expect(cant.modes.tram?.key).toBe("curve.cant_tram_mm");
+    expect(cant.modes.metro?.key).toBe("curve.cant_rail_mm");
+    const doc = withPref(withPref(null, "mode.min_curve_radius_m.tram", 25), "curve.cant_rail_mm.metro", 120);
+    expect(designValuesFrom(doc)).toEqual({ "tram.min_radius_m": 25, "metro.max_cant_mm": 120 });
+    // A value for a key of another mode, or nonsense, is not passed on.
+    expect(
+      designValuesFrom({ values: { "curve.cant_rail_mm.tram": 99, "mode.min_curve_radius_m.metro": -1 } }),
+    ).toEqual({});
   });
 
   it("keeps one project currency and converts any amount to it through the US dollar", () => {

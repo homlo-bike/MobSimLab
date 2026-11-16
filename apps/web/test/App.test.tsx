@@ -405,6 +405,44 @@ describe("project workspace", () => {
     expect((mixed as HTMLInputElement).value).toBe("25");
     expect(screen.queryByRole("button", { name: "Use the library value" })).toBeNull();
   });
+  it("changes a design rule for one rail mode and goes back to the library value", async () => {
+    const calls = stubApi(owner, {
+      [`GET /api/projects/${P1}/drawings`]: { drawings: {} },
+      [`PUT /api/projects/${P1}/drawings/preferences`]: {
+        drawing: {
+          kind: "preferences",
+          schemaVersion: 1,
+          doc: { values: { "mode.min_curve_radius_m.tram": 25 } },
+          version: 1,
+          updatedAt: "2026-11-16T10:00:00Z",
+          updatedBy: { id: "u1", displayName: "Alice Smith" },
+        },
+      },
+    });
+    window.history.replaceState(null, "", `/projects/${P1}/preferences`);
+    render(<App />);
+    const rules = await screen.findByRole("region", { name: "Design rules per mode" });
+    // The project plans for trams, so tram rules show first.
+    expect((within(rules).getByLabelText("Rail mode") as HTMLSelectElement).value).toBe("tram");
+    const radius = within(rules).getByLabelText("Curve radius, minimum") as HTMLInputElement;
+    expect(radius.value).toBe("20");
+    fireEvent.change(radius, { target: { value: "25" } });
+    await waitFor(
+      () =>
+        expect(calls.find((c) => c.method === "PUT" && c.url.endsWith("/drawings/preferences"))).toBeTruthy(),
+      { timeout: 3000 },
+    );
+    expect(calls.find((c) => c.url.endsWith("/drawings/preferences"))?.body).toEqual({
+      doc: { values: { "mode.min_curve_radius_m.tram": 25 } },
+      baseVersion: null,
+    });
+    // Metro keeps the library's value.
+    fireEvent.change(within(rules).getByLabelText("Rail mode"), { target: { value: "metro" } });
+    expect((within(rules).getByLabelText("Curve radius, minimum") as HTMLInputElement).value).toBe("100");
+    fireEvent.change(within(rules).getByLabelText("Rail mode"), { target: { value: "tram" } });
+    fireEvent.click(within(rules).getByRole("button", { name: "Use the library value" }));
+    expect((within(rules).getByLabelText("Curve radius, minimum") as HTMLInputElement).value).toBe("20");
+  });
 });
 
 describe("user menu and settings", () => {
