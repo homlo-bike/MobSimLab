@@ -1,3 +1,4 @@
+import { cleanFeatures, STATION_FEATURES, SymbolPicker } from "../stations/features";
 import { hasMessage, type Translate, type TranslatePlural, useI18n, withNodes } from "../../i18n/i18n";
 import type { MessageKey } from "../../i18n/messages";
 import { signalById, update, updateSignal } from "./doc";
@@ -797,6 +798,14 @@ function StationInspector({ st, doc, view, actions: a }: Props & { st: Station }
           onChange={(v) => set((s) => ({ ...s, rotation_deg: v % 360 }))}
         />
       </Row>
+      <span className="text-slate-700">{t("station.features")}</span>
+      <SymbolPicker
+        options={STATION_FEATURES}
+        value={cleanFeatures(st.features)}
+        label={t("station.features")}
+        onChange={(f) => set((s) => ({ ...s, features: f.length ? f : undefined }))}
+        t={t}
+      />
       <Remove what={t("rail.deleteStation")} onClick={() => a.remove(st.id)} />
     </Section>
   );

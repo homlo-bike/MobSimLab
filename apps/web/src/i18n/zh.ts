@@ -207,6 +207,7 @@ export const zh: Messages = {
   "drawing.rail-timetable": "铁路时刻表",
   "drawing.preferences": "项目偏好设置",
   "drawing.costs": "费用设置",
+  "drawing.schematic": "示意图",
   "drawing.scenarios": "已保存的方案",
   "drawing.benefits": "效益公式",
   "drawing.regions": "区域",
@@ -238,10 +239,6 @@ export const zh: Messages = {
 
   "schematic.title": "示意图",
   "schematic.intro": "查看和编辑交通图，并单独查看一条线路。",
-  "schematic.network": "以示意方式绘制线路的网络图",
-  "schematic.line": "单条线路：线路图及换乘",
-  "schematic.layers": "图层、拖动和曲线",
-  "schematic.export": "导出用于印刷和屏幕",
 
   "gis.title": "GIS",
   "gis.streetsView": "街道",

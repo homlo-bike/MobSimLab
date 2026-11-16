@@ -217,6 +217,7 @@ export const uz: Messages = {
   "drawing.rail-timetable": "poyezdlar jadvali",
   "drawing.preferences": "loyiha sozlamalari",
   "drawing.costs": "xarajat sozlamalari",
+  "drawing.schematic": "sxema",
   "drawing.scenarios": "saqlangan ssenariylar",
   "drawing.benefits": "foyda formulalari",
   "drawing.regions": "hududlar",
@@ -252,10 +253,6 @@ export const uz: Messages = {
 
   "schematic.title": "Sxema",
   "schematic.intro": "Transport xaritasini koʻring va tahrirlang, bitta yoʻnalishni alohida koʻring.",
-  "schematic.network": "Yoʻnalishlar sxematik chizilgan tarmoq xaritasi",
-  "schematic.line": "Bitta yoʻnalish: uning tasmali xaritasi va ulanishlari",
-  "schematic.layers": "Qatlamlar, sudrash va egriliklar",
-  "schematic.export": "Chop etish va ekranlar uchun eksport",
 
   "gis.title": "GIS",
   "gis.streetsView": "Koʻchalar",

@@ -215,6 +215,7 @@ export const ur: Messages = {
   "drawing.rail-timetable": "ریل کا ٹائم ٹیبل",
   "drawing.preferences": "منصوبے کی ترجیحات",
   "drawing.costs": "لاگت کی ترتیبات",
+  "drawing.schematic": "خاکہ نقشہ",
   "drawing.scenarios": "محفوظ منظرنامے",
   "drawing.benefits": "فوائد کے فارمولے",
   "drawing.regions": "علاقے",
@@ -248,10 +249,6 @@ export const ur: Messages = {
 
   "schematic.title": "خاکہ",
   "schematic.intro": "نقل و حمل کا نقشہ دیکھیں اور اس میں ترمیم کریں، اور ایک لائن کو الگ سے دیکھیں۔",
-  "schematic.network": "خاکہ نما لائنوں والا نیٹ ورک کا نقشہ",
-  "schematic.line": "ایک لائن: اس کا پٹی نقشہ اور رابطے",
-  "schematic.layers": "تہیں، کھینچنا اور خم",
-  "schematic.export": "پرنٹ اور اسکرینوں کے لیے برآمد",
 
   "gis.title": "GIS",
   "gis.streetsView": "سڑکیں",

@@ -214,6 +214,7 @@ export const hi: Messages = {
   "drawing.rail-timetable": "रेल समय-सारणी",
   "drawing.preferences": "प्रोजेक्ट प्राथमिकताएँ",
   "drawing.costs": "लागत सेटिंग्स",
+  "drawing.schematic": "योजनाबद्ध मानचित्र",
   "drawing.scenarios": "सहेजे गए परिदृश्य",
   "drawing.benefits": "लाभ के सूत्र",
   "drawing.regions": "क्षेत्र",
@@ -247,10 +248,6 @@ export const hi: Messages = {
 
   "schematic.title": "योजनाबद्ध",
   "schematic.intro": "परिवहन मानचित्र देखें और संपादित करें, और किसी एक लाइन को अलग से देखें।",
-  "schematic.network": "योजनाबद्ध ढंग से बनी लाइनों वाला नेटवर्क मानचित्र",
-  "schematic.line": "एक लाइन: उसका स्ट्रिप मानचित्र और कनेक्शन",
-  "schematic.layers": "परतें, खींचना और वक्र",
-  "schematic.export": "प्रिंट और स्क्रीन के लिए निर्यात",
 
   "gis.title": "GIS",
   "gis.streetsView": "सड़कें",

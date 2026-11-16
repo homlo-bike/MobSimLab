@@ -211,6 +211,7 @@ export const fa: Messages = {
   "drawing.rail-timetable": "جدول زمانی ریلی",
   "drawing.preferences": "ترجیحات پروژه",
   "drawing.costs": "تنظیمات هزینه",
+  "drawing.schematic": "نقشهٔ شماتیک",
   "drawing.scenarios": "سناریوهای ذخیره‌شده",
   "drawing.benefits": "فرمول‌های منافع",
   "drawing.regions": "مناطق",
@@ -245,10 +246,6 @@ export const fa: Messages = {
 
   "schematic.title": "نقشهٔ شماتیک",
   "schematic.intro": "نقشهٔ شماتیک را ببینید و ویرایش کنید، یا فقط یک خط را ببینید.",
-  "schematic.network": "نقشهٔ شبکه با خطوط شماتیک",
-  "schematic.line": "یک خط: نقشهٔ نواری با تبادل‌ها",
-  "schematic.layers": "لایه‌ها، کشیدن و قوس‌ها",
-  "schematic.export": "خروجی برای چاپ و نمایشگر",
 
   "gis.title": "GIS",
   "gis.streetsView": "خیابان‌ها",

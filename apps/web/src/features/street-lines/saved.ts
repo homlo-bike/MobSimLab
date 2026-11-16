@@ -8,6 +8,8 @@ export interface SavedPoint {
   lonlat: LonLat;
   kind: PointKind;
   name: string | null;
+  /** Facilities of a stop (`stations/features.tsx`), shown in the Schematic tab; absent when none. */
+  features?: string[];
 }
 
 /** One street line: what the planner drew and set, plus the route last computed from it. */

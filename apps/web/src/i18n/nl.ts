@@ -216,6 +216,7 @@ export const nl: Messages = {
   "drawing.rail-timetable": "de dienstregeling van de spoorlijnen",
   "drawing.preferences": "de projectvoorkeuren",
   "drawing.costs": "de kosteninstellingen",
+  "drawing.schematic": "het schema",
   "drawing.scenarios": "de opgeslagen scenario’s",
   "drawing.benefits": "de batenformules",
   "drawing.regions": "de gebieden",
@@ -250,10 +251,6 @@ export const nl: Messages = {
 
   "schematic.title": "Schema",
   "schematic.intro": "De netkaart bekijken en bewerken, en één lijn apart bekijken.",
-  "schematic.network": "Netkaart met schematisch getekende lijnen",
-  "schematic.line": "Eén lijn: lijnfilm en overstappen",
-  "schematic.layers": "Lagen, slepen en bochten",
-  "schematic.export": "Exporteren voor druk en schermen",
 
   "gis.title": "GIS",
   "gis.intro": "Voeg informatie toe die de berekeningen gebruiken, of bewerk die.",

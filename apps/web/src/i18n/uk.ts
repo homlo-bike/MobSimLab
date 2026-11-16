@@ -215,6 +215,7 @@ export const uk: Messages = {
   "drawing.rail-timetable": "розклад залізниці",
   "drawing.preferences": "параметри проєкту",
   "drawing.costs": "налаштування витрат",
+  "drawing.schematic": "схему",
   "drawing.scenarios": "збережені сценарії",
   "drawing.benefits": "формули вигод",
   "drawing.regions": "райони",
@@ -249,10 +250,6 @@ export const uk: Messages = {
 
   "schematic.title": "Схема",
   "schematic.intro": "Переглядайте й редагуйте схематичну карту або подивіться одну лінію.",
-  "schematic.network": "Карта мережі зі схематизованими лініями",
-  "schematic.line": "Одна лінія: стрічкова схема з пересадками",
-  "schematic.layers": "Шари, перетягування й криві",
-  "schematic.export": "Експорт для друку й екрана",
 
   "gis.title": "ГІС",
   "gis.streetsView": "Вулиці",

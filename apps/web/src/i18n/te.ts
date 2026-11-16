@@ -215,6 +215,7 @@ export const te: Messages = {
   "drawing.rail-timetable": "రైలు సమయపట్టిక",
   "drawing.preferences": "ప్రాజెక్టు ప్రాధాన్యతలు",
   "drawing.costs": "ఖర్చు సెట్టింగ్‌లు",
+  "drawing.schematic": "రేఖాచిత్రం",
   "drawing.scenarios": "సేవ్ చేసిన దృశ్యాలు",
   "drawing.benefits": "ప్రయోజన సూత్రాలు",
   "drawing.regions": "ప్రాంతాలు",
@@ -249,10 +250,6 @@ export const te: Messages = {
 
   "schematic.title": "రేఖాచిత్రం",
   "schematic.intro": "రవాణా మ్యాప్‌ను చూడండి మరియు సవరించండి, ఒక మార్గాన్ని విడిగా చూడండి.",
-  "schematic.network": "రేఖాచిత్రంగా గీసిన మార్గాలతో నెట్‌వర్క్ మ్యాప్",
-  "schematic.line": "ఒక మార్గం: దాని పట్టీ మ్యాప్ మరియు అనుసంధానాలు",
-  "schematic.layers": "పొరలు, లాగడం మరియు వంపులు",
-  "schematic.export": "ముద్రణ మరియు తెరల కోసం ఎగుమతి",
 
   "gis.title": "GIS",
   "gis.streetsView": "వీధులు",

@@ -212,6 +212,7 @@ export const ja: Messages = {
   "drawing.rail-timetable": "鉄道時刻表",
   "drawing.preferences": "プロジェクト設定",
   "drawing.costs": "費用の設定",
+  "drawing.schematic": "路線図",
   "drawing.scenarios": "保存したシナリオ",
   "drawing.benefits": "便益の計算式",
   "drawing.regions": "地域",
@@ -245,10 +246,6 @@ export const ja: Messages = {
 
   "schematic.title": "路線図",
   "schematic.intro": "路線図を表示・編集し、1つの路線だけを見ることもできます。",
-  "schematic.network": "路線を模式的に描いたネットワーク図",
-  "schematic.line": "1路線：帯状の路線図と乗り換え",
-  "schematic.layers": "レイヤー、ドラッグ、曲線",
-  "schematic.export": "印刷・画面用に書き出し",
 
   "gis.title": "GIS",
   "gis.streetsView": "道路",

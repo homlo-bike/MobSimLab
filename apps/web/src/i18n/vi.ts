@@ -213,6 +213,7 @@ export const vi: Messages = {
   "drawing.rail-timetable": "lịch tàu",
   "drawing.preferences": "tùy chọn dự án",
   "drawing.costs": "cài đặt chi phí",
+  "drawing.schematic": "sơ đồ",
   "drawing.scenarios": "các kịch bản đã lưu",
   "drawing.benefits": "công thức lợi ích",
   "drawing.regions": "khu vực",
@@ -249,10 +250,6 @@ export const vi: Messages = {
 
   "schematic.title": "Sơ đồ",
   "schematic.intro": "Xem và chỉnh sửa sơ đồ, hoặc chỉ xem một tuyến.",
-  "schematic.network": "Bản đồ mạng lưới với các tuyến được sơ đồ hóa",
-  "schematic.line": "Một tuyến: sơ đồ dải kèm điểm chuyển tuyến",
-  "schematic.layers": "Lớp, kéo thả và đường cong",
-  "schematic.export": "Xuất để in và hiển thị màn hình",
 
   "gis.title": "GIS",
   "gis.streetsView": "Đường phố",

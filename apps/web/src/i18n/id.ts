@@ -215,6 +215,7 @@ export const id: Messages = {
   "drawing.rail-timetable": "jadwal kereta",
   "drawing.preferences": "preferensi proyek",
   "drawing.costs": "pengaturan biaya",
+  "drawing.schematic": "skema",
   "drawing.scenarios": "skenario tersimpan",
   "drawing.benefits": "rumus manfaat",
   "drawing.regions": "wilayah",
@@ -250,10 +251,6 @@ export const id: Messages = {
 
   "schematic.title": "Skema",
   "schematic.intro": "Lihat dan edit peta skema, atau lihat satu jalur saja.",
-  "schematic.network": "Peta jaringan dengan jalur skematis",
-  "schematic.line": "Satu jalur: peta jalur berbentuk pita dengan perpindahan",
-  "schematic.layers": "Lapisan, seret, dan lengkungan",
-  "schematic.export": "Ekspor untuk cetak dan layar",
 
   "gis.title": "GIS",
   "gis.streetsView": "Jalan",
