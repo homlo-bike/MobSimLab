@@ -12,6 +12,7 @@ import {
 import { OverpassClient } from "../src/gateway/overpass.client";
 import { buildingHeight, buildingQuery, crossings } from "../src/terrain/buildings";
 import { TerrainModule } from "../src/terrain/terrain.module";
+import { OpenElevationClient } from "../src/gateway/open-elevation.client";
 import { distanceM, samplePositions } from "../src/terrain/terrain.service";
 
 /**
@@ -328,13 +329,15 @@ describe("terrain profiles", () => {
     await app.close();
   });
 
-  it("passes on an unavailable DEM host as 502", async () => {
+  it("passes on an unavailable DEM host as 502 when the fallback is off", async () => {
     const { client } = fakeHost({ [cellName(7.5, 50.5)]: 500 });
     const mod = await Test.createTestingModule({ imports: [TerrainModule] })
       .overrideProvider(CopernicusDemClient)
       .useValue(client)
       .overrideProvider(OverpassClient)
       .useValue(overpass)
+      .overrideProvider(OpenElevationClient)
+      .useValue(null)
       .compile();
     const app = mod.createNestApplication();
     await app.init();
@@ -342,6 +345,46 @@ describe("terrain profiles", () => {
       .post("/api/terrain/points")
       .send({ points: [[7.5, 50.5]] })
       .expect(502);
+    await app.close();
+  });
+
+  it("falls back to Open-Elevation when the DEM host cannot be read", async () => {
+    const { client } = fakeHost({ [cellName(7.5, 50.5)]: 500 });
+    const asked: unknown[] = [];
+    const fallback = new OpenElevationClient({
+      endpoint: "https://elevation.example",
+      batchSize: 2,
+      minIntervalMs: 0,
+      backoffMs: [],
+      fetchImpl: (async (url: string, init: RequestInit) => {
+        expect(url).toBe("https://elevation.example/api/v1/lookup");
+        const body = JSON.parse(String(init.body)) as { locations: { latitude: number; longitude: number }[] };
+        asked.push(body.locations.length);
+        return new Response(
+          JSON.stringify({ results: body.locations.map((l) => ({ ...l, elevation: Math.round(l.latitude * 10) })) }),
+          { status: 200, headers: { "content-type": "application/json" } },
+        );
+      }) as typeof fetch,
+    });
+    const mod = await Test.createTestingModule({ imports: [TerrainModule] })
+      .overrideProvider(CopernicusDemClient)
+      .useValue(client)
+      .overrideProvider(OverpassClient)
+      .useValue(overpass)
+      .overrideProvider(OpenElevationClient)
+      .useValue(fallback)
+      .compile();
+    const app = mod.createNestApplication();
+    await app.init();
+    const res = await request(app.getHttpServer())
+      .post("/api/terrain/points")
+      .send({ points: [[7.5, 50.5], [7.6, 50.6], [7.7, 50.7], [7.5, 50.5]] })
+      .expect(200);
+    expect(res.body.elevationsM).toEqual([505, 506, 507, 505]);
+    // Three distinct points in batches of two.
+    expect(asked).toEqual([2, 1]);
+    expect(res.body.source.id).toBe("open_elevation");
+    expect(res.body.sources.map((x: { id: string }) => x.id)).toEqual(["open_elevation"]);
     await app.close();
   });
 });
