@@ -43,4 +43,16 @@ export const geodataIg = {
     "Mpaghara ahụ bụ {area} km², karịa ihe Overpass na-eji. Họrọ mpaghara Geofabrik ma ọ bụ bulite faịlụ.",
   "data.readOnly": "Ndị nwe na Ndị nchịkọta nwere ike ibubata data.",
   "data.licence": "© OpenStreetMap contributors, ODbL 1.0",
+  "data.own": "Grid ịdị elu nke gị",
+  "data.ownIntro":
+    "GeoTIFF nke ịdị elu na mita, dịka ụdị ala LiDAR. Ebe o nwere ịdị elu, a na-eji ya tupu GLO-30.",
+  "data.ownFacts": "Grid {res} m, {crs}",
+  "data.ownAccuracy": "ịdị elu n'ime ±{acc} m",
+  "data.ownCrs": "Usoro nhazi, ọ bụrụ na faịlụ akpọghị ya aha (koodu EPSG, PROJ ma ọ bụ WKT)",
+  "data.ownSource": "Isi mmalite",
+  "data.ownLicence": "Ikike",
+  "data.ownAccuracyField": "Izi ezi kwụ ọtọ (m)",
+  "data.ownChoose": "Họrọ faịlụ GeoTIFF (ruo {max} MB)",
+  "data.ownReplace": "Jiri GeoTIFF ọzọ dochie ya (ruo {max} MB)",
+  "data.remove": "Wepụ",
 } satisfies GeodataMessages;

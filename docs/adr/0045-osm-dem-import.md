@@ -12,7 +12,7 @@ Until now every tool asked Overpass and the Copernicus GLO-30 bucket for each ma
 needed. That is slow for large areas, depends on public servers staying up, and gives no fixed data date for a
 plan. 06-gis §2 and §4 describe imports per project area instead. The product owner asked (2026-11-16) for the
 OpenStreetMap and elevation import into PostGIS, the area being the box around everything drawn plus a buffer
-(2 km by default, set per project), with the large-area path (Geofabrik or an uploaded `.osm.pbf`), an
+(2 km by default, set per project), with the planner's own elevation GeoTIFF overriding GLO-30, with the large-area path (Geofabrik or an uploaded `.osm.pbf`), an
 "Import map data" button with Refresh, the existing tools reading the imported tables with the live services as
 a fallback, an Open-Elevation fallback, and every limit adjustable.
 
@@ -45,11 +45,17 @@ a fallback, an Open-Elevation fallback, and every limit adjustable.
 6. **Fallback heights.** Where neither the import nor the live GLO-30 bucket answers, heights come from an
    Open-Elevation server (`MOBSIMLAB_OPEN_ELEVATION_URL`, batched, cached), shown as source `open_elevation` with
    its lower accuracy. `MOBSIMLAB_ELEVATION_FALLBACK=off` never sends points there.
-7. **Tools in the image.** `osmium-tool` and `osm2pgsql` run as separate programs (GPL), never linked.
+7. **The planner's own grid.** An uploaded GeoTIFF of heights in metres (such as a LiDAR terrain model), in
+   any coordinate system the population import's reader and proj4 converter know (or one the planner gives as
+   EPSG code, PROJ or WKT), is resampled bilinearly to a longitude and latitude grid over the project area at
+   about its own resolution (coarser if it would pass `MOBSIMLAB_DEM_UPLOAD_MAX_CELLS`, 25 million) and stored
+   like the GLO-30 tiles with a higher priority, so it wins where it has heights. The planner names its source,
+   licence and vertical accuracy, which go into its Source record; Remove brings GLO-30 back.
+8. **Tools in the image.** `osmium-tool` and `osm2pgsql` run as separate programs (GPL), never linked.
 
 ## Consequences
 
 - A project's map data has a fixed date until the planner refreshes it, and works when the public servers are down.
 - The data volume holds the Geofabrik downloads and each project's extract; the database holds the tables.
-- A planner's own elevation GeoTIFF (priority over GLO-30) uses the population import's GeoTIFF reader and comes
-  in the next step.
+- The project area and its buffer are shared with the population import (`projects/project-area.ts`); changing
+  the buffer in either view changes it for both, and the Map data view then asks for a refresh.

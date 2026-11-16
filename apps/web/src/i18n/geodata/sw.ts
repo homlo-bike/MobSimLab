@@ -42,4 +42,16 @@ export const geodataSw = {
     "Eneo ni km² {area}, zaidi ya kile Overpass hutumika. Chagua eneo la Geofabrik au pakia faili.",
   "data.readOnly": "Wamiliki na Wahariri wanaweza kuingiza data.",
   "data.licence": "© OpenStreetMap contributors, ODbL 1.0",
+  "data.own": "Gridi yako ya miinuko",
+  "data.ownIntro":
+    "GeoTIFF ya miinuko kwa mita, kama modeli ya ardhi ya LiDAR. Pale ilipo na miinuko, hutumika kabla ya GLO-30.",
+  "data.ownFacts": "Gridi ya m {res}, {crs}",
+  "data.ownAccuracy": "miinuko ndani ya ±{acc} m",
+  "data.ownCrs": "Mfumo wa viwianishi, ikiwa faili haiutaji (msimbo wa EPSG, PROJ au WKT)",
+  "data.ownSource": "Chanzo",
+  "data.ownLicence": "Leseni",
+  "data.ownAccuracyField": "Usahihi wa wima (m)",
+  "data.ownChoose": "Chagua faili ya GeoTIFF (hadi MB {max})",
+  "data.ownReplace": "Badilisha kwa GeoTIFF nyingine (hadi MB {max})",
+  "data.remove": "Ondoa",
 } satisfies GeodataMessages;

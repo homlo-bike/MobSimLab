@@ -101,8 +101,9 @@ Rasters are clipped to the project area buffered by 2 km, reprojected to the wor
 - Built so far: the API reads GLO-30 straight from the public COG bucket with range requests (`apps/api/src/gateway/copernicus-dem.client.ts`, endpoint `MOBSIMLAB_COPERNICUS_URL`) and serves `POST /api/terrain/points` and `POST /api/terrain/profile` (several lines per request, optional OpenStreetMap buildings each line passes over). The web helper `apps/web/src/terrain/terrain.ts` is the one shared source for the railway and cable car tools. The GLO-30 cells of a project area are imported into `geo.dem_tile` (float32 tiles, ADR-0045) from the same
   **Map data** view and read first, with the live bucket for points outside them. Where neither answers, heights
   come from Open-Elevation (`apps/api/src/gateway/open-elevation.client.ts`, `MOBSIMLAB_OPEN_ELEVATION_URL`, off
-  with `MOBSIMLAB_ELEVATION_FALLBACK=off`); answers name every source used. GeoTIFF overrides and the
-  Elevation-API.eu adapter come later.
+  with `MOBSIMLAB_ELEVATION_FALLBACK=off`); answers name every source used. A planner's own GeoTIFF
+  (any coordinate system, resampled to WGS 84 at about its own resolution, `apps/api/src/geodata/dem-upload.ts`)
+  is stored with a higher priority and wins where it has heights. The Elevation-API.eu adapter comes later.
 
 ## 5. External data providers
 

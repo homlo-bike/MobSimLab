@@ -42,4 +42,16 @@ export const geodataIt = {
     "L’area è di {area} km², più di quanto copre Overpass. Scegli una regione Geofabrik o carica un file.",
   "data.readOnly": "Proprietari ed editor possono importare i dati.",
   "data.licence": "© OpenStreetMap contributors, ODbL 1.0",
+  "data.own": "La tua griglia altimetrica",
+  "data.ownIntro":
+    "Un GeoTIFF di quote in metri, come un modello del terreno LiDAR. Dove ha quote, viene usato prima di GLO-30.",
+  "data.ownFacts": "Griglia di {res} m, {crs}",
+  "data.ownAccuracy": "quote entro ±{acc} m",
+  "data.ownCrs": "Sistema di coordinate, se il file non lo indica (codice EPSG, PROJ o WKT)",
+  "data.ownSource": "Fonte",
+  "data.ownLicence": "Licenza",
+  "data.ownAccuracyField": "Precisione verticale (m)",
+  "data.ownChoose": "Scegli un file GeoTIFF (fino a {max} MB)",
+  "data.ownReplace": "Sostituisci con un altro GeoTIFF (fino a {max} MB)",
+  "data.remove": "Rimuovi",
 } satisfies GeodataMessages;

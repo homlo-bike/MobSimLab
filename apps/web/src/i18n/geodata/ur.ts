@@ -42,4 +42,16 @@ export const geodataUr = {
     "علاقہ {area} مربع کلومیٹر ہے، جو Overpass کی حد سے زیادہ ہے۔ Geofabrik کا خطہ چنیں یا فائل اپ لوڈ کریں۔",
   "data.readOnly": "مالکان اور مدیران ڈیٹا درآمد کر سکتے ہیں۔",
   "data.licence": "© OpenStreetMap contributors, ODbL 1.0",
+  "data.own": "آپ کا اپنا بلندی گرڈ",
+  "data.ownIntro":
+    "میٹر میں بلندیوں کی ایک GeoTIFF، جیسے LiDAR زمینی ماڈل۔ جہاں اس میں بلندیاں ہوں، وہاں GLO-30 سے پہلے استعمال ہوتی ہے۔",
+  "data.ownFacts": "{res} میٹر گرڈ، {crs}",
+  "data.ownAccuracy": "بلندیاں ±{acc} میٹر کے اندر",
+  "data.ownCrs": "کوآرڈینیٹ نظام، اگر فائل اس کا نام نہ دے (EPSG کوڈ، PROJ یا WKT)",
+  "data.ownSource": "ماخذ",
+  "data.ownLicence": "لائسنس",
+  "data.ownAccuracyField": "عمودی درستی (میٹر)",
+  "data.ownChoose": "GeoTIFF فائل منتخب کریں ({max} MB تک)",
+  "data.ownReplace": "دوسری GeoTIFF سے بدلیں ({max} MB تک)",
+  "data.remove": "ہٹائیں",
 } satisfies GeodataMessages;

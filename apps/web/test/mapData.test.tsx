@@ -65,6 +65,9 @@ function fakeApi(
     uploadPbf: vi.fn(async () => run({ status: "queued", method: "upload" })),
     startDem: vi.fn(async () => run({ kind: "dem", method: "copernicus", status: "queued" })),
     cancel: vi.fn(async () => run({ status: "cancelled" })),
+    uploadDem: vi.fn(async () => run({ kind: "dem_upload", method: "geotiff", status: "queued" })),
+    remove: vi.fn(async () => undefined),
+    setBuffer: vi.fn(async () => undefined),
   };
 }
 
@@ -152,5 +155,49 @@ describe("Map data panel", () => {
     render(<MapDataPanel api={fakeApi(status({ canImport: false }))} map={null} />);
     expect(await screen.findByText("Owners and Editors can import data.")).toBeTruthy();
     expect(screen.queryByRole("button", { name: "Import" })).toBeNull();
+  });
+
+  it("saves the buffer around the drawing", async () => {
+    const api = fakeApi(status());
+    render(<MapDataPanel api={api} map={null} />);
+    const field = await screen.findByLabelText("Buffer (km)");
+    fireEvent.change(field, { target: { value: "5" } });
+    fireEvent.click(screen.getByRole("button", { name: "Save buffer" }));
+    await waitFor(() => expect(api.setBuffer).toHaveBeenCalledWith(5));
+  });
+
+  it("uploads the planner's own elevation grid with its source, and removes it", async () => {
+    const own = run({
+      id: "own-1",
+      kind: "dem_upload",
+      method: "geotiff",
+      source: {
+        name: "City LiDAR",
+        licence: "CC BY 4.0",
+        verticalAccuracyM: 0.15,
+        resolutionM: 1,
+        crs: "EPSG:25832",
+      },
+      stats: { notes: ["The file has 2 bands; the first was read."] },
+    });
+    const api = fakeApi(status(), status({ demUpload: { current: own, latest: own } }));
+    render(<MapDataPanel api={api} map={null} />);
+    await screen.findByText(/Area: 80 km²/);
+    fireEvent.change(screen.getByLabelText("Source"), { target: { value: "City LiDAR" } });
+    fireEvent.change(screen.getByLabelText("Vertical accuracy (m)"), { target: { value: "0.15" } });
+    const file = new File([new Uint8Array([73, 73, 42, 0])], "lidar.tif", { type: "image/tiff" });
+    fireEvent.change(screen.getByLabelText(/Choose a GeoTIFF file/), { target: { files: [file] } });
+    await waitFor(() =>
+      expect(api.uploadDem).toHaveBeenCalledWith(file, {
+        crs: "",
+        source: "City LiDAR",
+        licence: "",
+        accuracy: 0.15,
+      }),
+    );
+    expect(await screen.findByText(/1 m grid, EPSG:25832 · heights within ±0.15 m · CC BY 4.0/)).toBeTruthy();
+    expect(screen.getByText("The file has 2 bands; the first was read.")).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Remove" }));
+    await waitFor(() => expect(api.remove).toHaveBeenCalledWith("own-1"));
   });
 });

@@ -15,12 +15,18 @@ export interface ImportRun {
     planned?: boolean;
     region?: { id: string; name: string };
     upload?: { name: string; bytes: number };
+    crs?: string | null;
+    sourceName?: string | null;
+    licence?: string | null;
+    accuracyM?: number | null;
   };
   progress: { step?: "download" | "merge" | "extract" | "database"; done?: number; total?: number };
   stats: {
     rows?: Record<string, number>;
     tiles?: number;
     cellsWithoutData?: number;
+    /** Notes on an uploaded elevation grid (English, from the API). */
+    notes?: string[];
   };
   source: {
     name?: string;
@@ -31,6 +37,7 @@ export interface ImportRun {
     via?: string;
     verticalAccuracyM?: number;
     resolutionM?: number;
+    crs?: string;
   };
   error: string | null;
   createdAt: string;
@@ -75,7 +82,41 @@ export interface GeodataApi {
   startOsm(body: { method: "overpass" | "geofabrik"; region?: string; planned: boolean }): Promise<ImportRun>;
   uploadPbf(file: File, planned: boolean): Promise<ImportRun>;
   startDem(): Promise<ImportRun>;
+  /** The planner's own elevation GeoTIFF, with what they say about it. */
+  uploadDem(file: File, meta: DemUploadMeta): Promise<ImportRun>;
   cancel(importId: string): Promise<ImportRun>;
+  /** Remove a finished import and its data (the planner's own grid). */
+  remove(importId: string): Promise<void>;
+  /** Set the project's buffer around the drawing, km (shared with the population import). */
+  setBuffer(km: number): Promise<void>;
+}
+
+/** What the planner says about their elevation grid; empty fields are left out. */
+export interface DemUploadMeta {
+  crs?: string;
+  source?: string;
+  licence?: string;
+  accuracy?: number | null;
+}
+
+/** Purpose: send a file as the request body; answers the import, or throws the API's message. */
+async function uploadFile(url: string, csrf: string, file: File): Promise<ImportRun> {
+  const res = await fetch(url, {
+    method: "POST",
+    credentials: "same-origin",
+    headers: { "Content-Type": "application/octet-stream", "X-CSRF-Token": csrf },
+    body: file,
+  });
+  const json = (await res.json().catch(() => ({}))) as {
+    import?: ImportRun;
+    message?: string | string[];
+  };
+  if (!res.ok || !json.import)
+    throw new Error(
+      (Array.isArray(json.message) ? json.message.join("; ") : json.message) ??
+        `Upload failed (${res.status})`,
+    );
+  return json.import;
 }
 
 /** Purpose: the Map data API of one project over HTTP; writes send the session's CSRF token. */
@@ -85,24 +126,9 @@ export function projectGeodata(projectId: string, csrf: string): GeodataApi {
     status: () => get<GeodataStatus>(base),
     regions: async () => (await get<{ regions: GeofabrikRegion[] }>(`${base}/geofabrik-regions`)).regions,
     startOsm: async (body) => (await send<{ import: ImportRun }>("POST", `${base}/osm`, csrf, body)).import,
-    uploadPbf: async (file, planned) => {
+    uploadPbf: (file, planned) => {
       const q = new URLSearchParams({ name: file.name, planned: String(planned) });
-      const res = await fetch(`${base}/osm/upload?${q.toString()}`, {
-        method: "POST",
-        credentials: "same-origin",
-        headers: { "Content-Type": "application/octet-stream", "X-CSRF-Token": csrf },
-        body: file,
-      });
-      const json = (await res.json().catch(() => ({}))) as {
-        import?: ImportRun;
-        message?: string | string[];
-      };
-      if (!res.ok || !json.import)
-        throw new Error(
-          (Array.isArray(json.message) ? json.message.join("; ") : json.message) ??
-            `Upload failed (${res.status})`,
-        );
-      return json.import;
+      return uploadFile(`${base}/osm/upload?${q.toString()}`, csrf, file);
     },
     startDem: async () => (await send<{ import: ImportRun }>("POST", `${base}/dem`, csrf)).import,
     cancel: async (importId) =>
@@ -113,5 +139,29 @@ export function projectGeodata(projectId: string, csrf: string): GeodataApi {
           csrf,
         )
       ).import,
+    uploadDem: (file, meta) => {
+      const q = new URLSearchParams({ name: file.name });
+      if (meta.crs?.trim()) q.set("crs", meta.crs.trim());
+      if (meta.source?.trim()) q.set("source", meta.source.trim());
+      if (meta.licence?.trim()) q.set("licence", meta.licence.trim());
+      if (meta.accuracy !== undefined && meta.accuracy !== null) q.set("accuracy", String(meta.accuracy));
+      return uploadFile(`${base}/dem/upload?${q.toString()}`, csrf, file);
+    },
+    remove: async (importId) => {
+      const res = await fetch(`${base}/imports/${encodeURIComponent(importId)}`, {
+        method: "DELETE",
+        credentials: "same-origin",
+        headers: { "X-CSRF-Token": csrf },
+      });
+      if (!res.ok) {
+        const json = (await res.json().catch(() => ({}))) as { message?: string };
+        throw new Error(json.message ?? `Remove failed (${res.status})`);
+      }
+    },
+    setBuffer: async (km) => {
+      await send("PUT", `/api/projects/${encodeURIComponent(projectId)}/population/area`, csrf, {
+        bufferKm: km,
+      });
+    },
   };
 }

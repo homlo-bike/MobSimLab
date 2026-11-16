@@ -82,6 +82,9 @@ export function MapDataPanel({
   const [planned, setPlanned] = useState(false);
   const [sending, setSending] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+  const demFileRef = useRef<HTMLInputElement>(null);
+  const [km, setKm] = useState("");
+  const [own, setOwn] = useState({ crs: "", source: "", licence: "", accuracy: "" });
   const lastOsm = useRef<string | null | undefined>(undefined);
   const onOsm = useRef(onOsmImport);
   onOsm.current = onOsmImport;
@@ -106,7 +109,7 @@ export function MapDataPanel({
   }, [load]);
 
   // Follow a running import.
-  const running = busy(status?.osm.latest) || busy(status?.dem.latest);
+  const running = busy(status?.osm.latest) || busy(status?.dem.latest) || busy(status?.demUpload.latest);
   useEffect(() => {
     if (!running) return;
     const timer = setTimeout(() => void load(), POLL_MS);
@@ -125,6 +128,15 @@ export function MapDataPanel({
     },
     [map],
   );
+
+  const savedKm = status?.area?.bufferKm;
+  useEffect(() => {
+    if (savedKm !== undefined) setKm(String(savedKm));
+  }, [savedKm]);
+  const kmValue = Number(km);
+  const kmValid = km.trim() !== "" && Number.isFinite(kmValue) && kmValue >= 0 && kmValue <= 50;
+  const accuracyValue = own.accuracy.trim() === "" ? null : Number(own.accuracy);
+  const ownValid = accuracyValue === null || (Number.isFinite(accuracyValue) && accuracyValue >= 0);
 
   const chosen: Method = method ?? status?.suggestedMethod ?? "overpass";
   useEffect(() => {
@@ -205,6 +217,8 @@ export function MapDataPanel({
 
   const osm = status?.osm;
   const dem = status?.dem;
+  const demUpload = status?.demUpload;
+  const ownGrid = demUpload?.current ?? null;
   const rows = osm?.current?.stats.rows ?? {};
   const tooLarge = !!status?.area && status.area.areaKm2 > status.limits.overpassMaxKm2;
 
@@ -228,6 +242,30 @@ export function MapDataPanel({
         <p className="text-sm text-slate-700">
           {t("data.area", { area: num(status.area.areaKm2), buffer: num(status.area.bufferKm) })}
         </p>
+      )}
+      {status?.area && status.canImport && (
+        <div className="flex items-end gap-2">
+          <label className="text-sm">
+            <span className="font-medium">{t("pop.area.buffer")}</span>
+            <input
+              type="number"
+              min={0}
+              max={50}
+              step="any"
+              className="input mt-1 w-28"
+              value={km}
+              onChange={(e) => setKm(e.target.value)}
+            />
+          </label>
+          <button
+            type="button"
+            className="btn min-h-10"
+            disabled={sending || !kmValid || kmValue === status.area.bufferKm}
+            onClick={() => run(() => api.setBuffer(kmValue))}
+          >
+            {t("pop.area.save")}
+          </button>
+        </div>
       )}
       {status && !status.canImport && <p className="text-sm text-slate-600">{t("data.readOnly")}</p>}
 
@@ -397,6 +435,104 @@ export function MapDataPanel({
             >
               {dem?.current ? t("data.refresh") : t("data.import")}
             </button>
+          )}
+        </section>
+      )}
+
+      {status && (
+        <section aria-labelledby="data-own">
+          <h3 id="data-own" className="text-xs font-semibold tracking-wider text-slate-500 uppercase">
+            {t("data.own")}
+          </h3>
+          <p className="mt-1 text-sm text-slate-600">{t("data.ownIntro")}</p>
+          {ownGrid && (
+            <div className="mt-2 text-sm text-slate-700">
+              <p>
+                {ownGrid.source.name}
+                {" · "}
+                {t("data.imported", { date: date(ownGrid.finishedAt) })}
+              </p>
+              <p className="text-xs text-slate-500">
+                {t("data.ownFacts", {
+                  res: num(ownGrid.source.resolutionM ?? 0),
+                  crs: ownGrid.source.crs ?? "",
+                })}
+                {ownGrid.source.verticalAccuracyM !== undefined &&
+                  ` · ${t("data.ownAccuracy", { acc: num(ownGrid.source.verticalAccuracyM) })}`}
+                {ownGrid.source.licence ? ` · ${ownGrid.source.licence}` : ""}
+              </p>
+              {ownGrid.stats.notes?.map((n) => (
+                <p key={n} className="text-xs text-slate-500">
+                  {n}
+                </p>
+              ))}
+              {status.canImport && (
+                <button
+                  type="button"
+                  className="btn-ghost btn mt-1 min-h-9"
+                  disabled={sending || busy(demUpload?.latest)}
+                  onClick={() => run(() => api.remove(ownGrid.id))}
+                >
+                  {t("data.remove")}
+                </button>
+              )}
+            </div>
+          )}
+          {lastProblem(demUpload?.latest ?? null, ownGrid)}
+          {runningLine(demUpload?.latest ?? null)}
+          {status.canImport && status.area && !busy(demUpload?.latest) && (
+            <div className="mt-3 flex flex-col gap-2">
+              {(
+                [
+                  ["source", "data.ownSource"],
+                  ["licence", "data.ownLicence"],
+                  ["accuracy", "data.ownAccuracyField"],
+                  ["crs", "data.ownCrs"],
+                ] as const
+              ).map(([field, label]) => (
+                <label key={field} className="flex flex-col gap-1 text-sm">
+                  <span className="font-medium">{t(label)}</span>
+                  <input
+                    className="input"
+                    type={field === "accuracy" ? "number" : "text"}
+                    min={field === "accuracy" ? 0 : undefined}
+                    step={field === "accuracy" ? "any" : undefined}
+                    value={own[field]}
+                    onChange={(e) => setOwn((o) => ({ ...o, [field]: e.target.value }))}
+                  />
+                </label>
+              ))}
+              <input
+                ref={demFileRef}
+                type="file"
+                accept=".tif,.tiff,image/tiff"
+                className="sr-only"
+                aria-label={t("data.ownChoose", { max: num(status.limits.demUploadMaxMb) })}
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  e.target.value = "";
+                  if (f)
+                    void run(() =>
+                      api.uploadDem(f, {
+                        crs: own.crs,
+                        source: own.source,
+                        licence: own.licence,
+                        accuracy: accuracyValue,
+                      }),
+                    );
+                }}
+              />
+              <button
+                type="button"
+                className="btn"
+                disabled={sending || !ownValid}
+                onClick={() => demFileRef.current?.click()}
+              >
+                {t(ownGrid ? "data.ownReplace" : "data.ownChoose", {
+                  max: num(status.limits.demUploadMaxMb),
+                })}
+              </button>
+            </div>
           )}
         </section>
       )}

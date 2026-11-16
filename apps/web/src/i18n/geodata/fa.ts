@@ -43,4 +43,16 @@ export const geodataFa = {
     "محدوده {area} کیلومتر مربع است، بیش از آنچه Overpass پوشش می‌دهد. یک منطقهٔ Geofabrik انتخاب کنید یا فایلی بارگذاری کنید.",
   "data.readOnly": "مالکان و ویرایشگران می‌توانند داده درون‌ریزی کنند.",
   "data.licence": "© OpenStreetMap contributors, ODbL 1.0",
+  "data.own": "شبکهٔ ارتفاعی خودتان",
+  "data.ownIntro":
+    "یک GeoTIFF از ارتفاع‌ها به متر، مانند مدل زمین LiDAR. هر جا ارتفاع داشته باشد، پیش از GLO-30 به کار می‌رود.",
+  "data.ownFacts": "شبکهٔ {res} متری، {crs}",
+  "data.ownAccuracy": "ارتفاع‌ها با دقت ±{acc} متر",
+  "data.ownCrs": "دستگاه مختصات، اگر پرونده آن را نام نبرده است (کد EPSG، PROJ یا WKT)",
+  "data.ownSource": "منبع",
+  "data.ownLicence": "مجوز",
+  "data.ownAccuracyField": "دقت قائم (متر)",
+  "data.ownChoose": "یک پروندهٔ GeoTIFF انتخاب کنید (تا {max} مگابایت)",
+  "data.ownReplace": "جایگزینی با GeoTIFF دیگر (تا {max} مگابایت)",
+  "data.remove": "حذف",
 } satisfies GeodataMessages;

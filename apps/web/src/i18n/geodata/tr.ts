@@ -42,4 +42,16 @@ export const geodataTr = {
     "Alan {area} km², Overpass'ın kapsadığından büyük. Bir Geofabrik bölgesi seçin ya da bir dosya yükleyin.",
   "data.readOnly": "Verileri sahipler ve düzenleyiciler içe aktarabilir.",
   "data.licence": "© OpenStreetMap contributors, ODbL 1.0",
+  "data.own": "Kendi yükseklik ızgaranız",
+  "data.ownIntro":
+    "Metre cinsinden yükseklikler içeren bir GeoTIFF, örneğin bir LiDAR arazi modeli. Yükseklik bulunan yerlerde GLO-30'dan önce kullanılır.",
+  "data.ownFacts": "{res} m ızgara, {crs}",
+  "data.ownAccuracy": "yükseklikler ±{acc} m içinde",
+  "data.ownCrs": "Dosya belirtmiyorsa koordinat sistemi (EPSG kodu, PROJ veya WKT)",
+  "data.ownSource": "Kaynak",
+  "data.ownLicence": "Lisans",
+  "data.ownAccuracyField": "Düşey doğruluk (m)",
+  "data.ownChoose": "Bir GeoTIFF dosyası seçin ({max} MB'a kadar)",
+  "data.ownReplace": "Başka bir GeoTIFF ile değiştirin ({max} MB'a kadar)",
+  "data.remove": "Kaldır",
 } satisfies GeodataMessages;

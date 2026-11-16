@@ -43,4 +43,16 @@ export const geodataRu = {
     "Площадь области {area} км² — больше, чем охватывает Overpass. Выберите регион Geofabrik или загрузите файл.",
   "data.readOnly": "Импортировать данные могут владельцы и редакторы.",
   "data.licence": "© OpenStreetMap contributors, ODbL 1.0",
+  "data.own": "Собственная сетка высот",
+  "data.ownIntro":
+    "GeoTIFF с высотами в метрах, например модель рельефа LiDAR. Где в нём есть высоты, он используется раньше GLO-30.",
+  "data.ownFacts": "Сетка {res} м, {crs}",
+  "data.ownAccuracy": "высоты с точностью ±{acc} м",
+  "data.ownCrs": "Система координат, если файл её не указывает (код EPSG, PROJ или WKT)",
+  "data.ownSource": "Источник",
+  "data.ownLicence": "Лицензия",
+  "data.ownAccuracyField": "Точность по высоте (м)",
+  "data.ownChoose": "Выбрать файл GeoTIFF (до {max} МБ)",
+  "data.ownReplace": "Заменить другим GeoTIFF (до {max} МБ)",
+  "data.remove": "Удалить",
 } satisfies GeodataMessages;

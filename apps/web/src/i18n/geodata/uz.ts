@@ -43,4 +43,16 @@ export const geodataUz = {
     "Hudud {area} km², Overpass qamrovidan katta. Geofabrik mintaqasini tanlang yoki fayl yuklang.",
   "data.readOnly": "Maʼlumotlarni egalar va muharrirlar import qila oladi.",
   "data.licence": "© OpenStreetMap contributors, ODbL 1.0",
+  "data.own": "O'z balandlik to'ringiz",
+  "data.ownIntro":
+    "Metrda balandliklar berilgan GeoTIFF, masalan LiDAR relyef modeli. Balandlik bor joyda u GLO-30 dan oldin ishlatiladi.",
+  "data.ownFacts": "{res} m to'r, {crs}",
+  "data.ownAccuracy": "balandliklar ±{acc} m ichida",
+  "data.ownCrs": "Koordinatalar tizimi, agar fayl uni ko'rsatmasa (EPSG kodi, PROJ yoki WKT)",
+  "data.ownSource": "Manba",
+  "data.ownLicence": "Litsenziya",
+  "data.ownAccuracyField": "Vertikal aniqlik (m)",
+  "data.ownChoose": "GeoTIFF faylini tanlang ({max} MB gacha)",
+  "data.ownReplace": "Boshqa GeoTIFF bilan almashtirish ({max} MB gacha)",
+  "data.remove": "Olib tashlash",
 } satisfies GeodataMessages;

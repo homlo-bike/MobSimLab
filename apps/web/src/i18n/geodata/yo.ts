@@ -42,4 +42,16 @@ export const geodataYo = {
     "Agbègbè náà jẹ́ {area} km², ó ju ohun tí Overpass ń lò fún. Yan agbègbè Geofabrik tàbí gbé fáìlì sókè.",
   "data.readOnly": "Àwọn Olùní àti Olóòtú lè kó dátà wọlé.",
   "data.licence": "© OpenStreetMap contributors, ODbL 1.0",
+  "data.own": "Àkójọ gíga tìrẹ",
+  "data.ownIntro":
+    "GeoTIFF ti gíga ní mítà, bíi àwòṣe ilẹ̀ LiDAR. Níbi tí ó bá ní gíga, a máa lò ó ṣáájú GLO-30.",
+  "data.ownFacts": "Àkójọ {res} m, {crs}",
+  "data.ownAccuracy": "gíga láàárín ±{acc} m",
+  "data.ownCrs": "Ètò ìpoidojúkọ, bí fáìlì kò bá dárúkọ rẹ̀ (kóòdù EPSG, PROJ tàbí WKT)",
+  "data.ownSource": "Orísun",
+  "data.ownLicence": "Ìwé-àṣẹ",
+  "data.ownAccuracyField": "Ìpéye inaro (m)",
+  "data.ownChoose": "Yan fáìlì GeoTIFF (títí dé {max} MB)",
+  "data.ownReplace": "Fi GeoTIFF mìíràn rọ́pò rẹ̀ (títí dé {max} MB)",
+  "data.remove": "Yọ kúrò",
 } satisfies GeodataMessages;

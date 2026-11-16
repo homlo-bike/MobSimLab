@@ -44,6 +44,18 @@ export const geodataEn = {
     "The area is {area} km², more than Overpass is used for. Pick a Geofabrik region or upload a file.",
   "data.readOnly": "Owners and Editors can import data.",
   "data.licence": "© OpenStreetMap contributors, ODbL 1.0",
+  "data.own": "Your own elevation grid",
+  "data.ownIntro":
+    "A GeoTIFF of heights in metres, such as a LiDAR terrain model. Where it has heights, it is used before GLO-30.",
+  "data.ownFacts": "{res} m grid, {crs}",
+  "data.ownAccuracy": "heights within ±{acc} m",
+  "data.ownCrs": "Coordinate system, if the file does not name it (EPSG code, PROJ or WKT)",
+  "data.ownSource": "Source",
+  "data.ownLicence": "Licence",
+  "data.ownAccuracyField": "Vertical accuracy (m)",
+  "data.ownChoose": "Choose a GeoTIFF file (up to {max} MB)",
+  "data.ownReplace": "Replace with another GeoTIFF (up to {max} MB)",
+  "data.remove": "Remove",
 };
 
 /** A language's Map data messages: every key of the English ones. */

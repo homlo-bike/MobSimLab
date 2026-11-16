@@ -42,4 +42,16 @@ export const geodataId = {
     "Area ini {area} km², lebih dari cakupan Overpass. Pilih wilayah Geofabrik atau unggah berkas.",
   "data.readOnly": "Pemilik dan Editor dapat mengimpor data.",
   "data.licence": "© OpenStreetMap contributors, ODbL 1.0",
+  "data.own": "Grid elevasi Anda sendiri",
+  "data.ownIntro":
+    "GeoTIFF ketinggian dalam meter, seperti model medan LiDAR. Di tempat yang memiliki ketinggian, ini dipakai sebelum GLO-30.",
+  "data.ownFacts": "Grid {res} m, {crs}",
+  "data.ownAccuracy": "ketinggian dalam ±{acc} m",
+  "data.ownCrs": "Sistem koordinat, jika file tidak menyebutkannya (kode EPSG, PROJ atau WKT)",
+  "data.ownSource": "Sumber",
+  "data.ownLicence": "Lisensi",
+  "data.ownAccuracyField": "Akurasi vertikal (m)",
+  "data.ownChoose": "Pilih file GeoTIFF (hingga {max} MB)",
+  "data.ownReplace": "Ganti dengan GeoTIFF lain (hingga {max} MB)",
+  "data.remove": "Hapus",
 } satisfies GeodataMessages;
