@@ -3,6 +3,7 @@ import { editorsYo } from "./editors/yo";
 import { cargoBikeYo } from "./cargo-bike/yo";
 import { depotsYo } from "./depots/yo";
 import { mslabYo } from "./mslab/yo";
+import { pluginCodeYo } from "./plugin-code/yo";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -389,6 +390,7 @@ export const yo: Messages = {
   ...cargoBikeYo,
   ...depotsYo,
   ...mslabYo,
+  ...pluginCodeYo,
   ...roadYo,
   ...PLUGIN_MESSAGES.yo,
 };

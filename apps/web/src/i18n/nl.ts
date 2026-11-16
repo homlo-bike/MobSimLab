@@ -3,6 +3,7 @@ import { editorsNl } from "./editors/nl";
 import { cargoBikeNl } from "./cargo-bike/nl";
 import { depotsNl } from "./depots/nl";
 import { mslabNl } from "./mslab/nl";
+import { pluginCodeNl } from "./plugin-code/nl";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -394,6 +395,7 @@ export const nl: Messages = {
   ...cargoBikeNl,
   ...depotsNl,
   ...mslabNl,
+  ...pluginCodeNl,
   ...roadNl,
   ...PLUGIN_MESSAGES.nl,
 };

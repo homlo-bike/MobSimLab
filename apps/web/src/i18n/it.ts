@@ -3,6 +3,7 @@ import { editorsIt } from "./editors/it";
 import { cargoBikeIt } from "./cargo-bike/it";
 import { depotsIt } from "./depots/it";
 import { mslabIt } from "./mslab/it";
+import { pluginCodeIt } from "./plugin-code/it";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -391,6 +392,7 @@ export const it: Messages = {
   ...cargoBikeIt,
   ...depotsIt,
   ...mslabIt,
+  ...pluginCodeIt,
   ...roadIt,
   ...PLUGIN_MESSAGES.it,
 };

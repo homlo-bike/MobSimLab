@@ -3,6 +3,7 @@ import { editorsMr } from "./editors/mr";
 import { cargoBikeMr } from "./cargo-bike/mr";
 import { depotsMr } from "./depots/mr";
 import { mslabMr } from "./mslab/mr";
+import { pluginCodeMr } from "./plugin-code/mr";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -386,6 +387,7 @@ export const mr: Messages = {
   ...cargoBikeMr,
   ...depotsMr,
   ...mslabMr,
+  ...pluginCodeMr,
   ...roadMr,
   ...PLUGIN_MESSAGES.mr,
 };

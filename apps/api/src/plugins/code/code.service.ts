@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import {
   BadRequestException,
   Inject,
@@ -71,6 +72,14 @@ export class PluginCodeService {
   async codeFile(actor: ProjectActor, projectId: string, pluginId: string, component: string, file: string) {
     const { entry, version } = await this.enabled(actor, projectId, pluginId);
     if (!componentOf(entry, component)) throw new NotFoundException("no such component");
+    if (file === "files.json") {
+      // The list of the component's compiled files, so the browser knows which modules to fetch.
+      const names = (await this.codeFiles(pluginId, version, component)).map((f) =>
+        f.path.slice(`code/${component}/`.length),
+      );
+      const data = Buffer.from(JSON.stringify(names.sort()));
+      return { data, mediaType: "application/json", sha256: createHash("sha256").update(data).digest("hex") };
+    }
     const row = await this.db
       .selectFrom("plugin.file")
       .select(["data", "media_type", "sha256"])

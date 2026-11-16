@@ -3,6 +3,7 @@ import { editorsUk } from "./editors/uk";
 import { cargoBikeUk } from "./cargo-bike/uk";
 import { depotsUk } from "./depots/uk";
 import { mslabUk } from "./mslab/uk";
+import { pluginCodeUk } from "./plugin-code/uk";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -394,6 +395,7 @@ export const uk: Messages = {
   ...cargoBikeUk,
   ...depotsUk,
   ...mslabUk,
+  ...pluginCodeUk,
   ...roadUk,
   ...PLUGIN_MESSAGES.uk,
 };

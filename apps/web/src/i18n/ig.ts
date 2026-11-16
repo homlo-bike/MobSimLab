@@ -3,6 +3,7 @@ import { editorsIg } from "./editors/ig";
 import { cargoBikeIg } from "./cargo-bike/ig";
 import { depotsIg } from "./depots/ig";
 import { mslabIg } from "./mslab/ig";
+import { pluginCodeIg } from "./plugin-code/ig";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -391,6 +392,7 @@ export const ig: Messages = {
   ...cargoBikeIg,
   ...depotsIg,
   ...mslabIg,
+  ...pluginCodeIg,
   ...roadIg,
   ...PLUGIN_MESSAGES.ig,
 };

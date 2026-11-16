@@ -3,6 +3,7 @@ import { editorsAm } from "./editors/am";
 import { cargoBikeAm } from "./cargo-bike/am";
 import { depotsAm } from "./depots/am";
 import { mslabAm } from "./mslab/am";
+import { pluginCodeAm } from "./plugin-code/am";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -376,6 +377,7 @@ export const am: Messages = {
   ...cargoBikeAm,
   ...depotsAm,
   ...mslabAm,
+  ...pluginCodeAm,
   ...roadAm,
   ...PLUGIN_MESSAGES.am,
 };
