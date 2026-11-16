@@ -3,6 +3,7 @@ import { editorsId } from "./editors/id";
 import { cargoBikeId } from "./cargo-bike/id";
 import { commentsId } from "./comments/id";
 import { depotsId } from "./depots/id";
+import { mslabId } from "./mslab/id";
 import { populationId } from "./population/id";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -282,6 +283,7 @@ export const id: Messages = {
   "prefs.delayLane": "Di lajur bus atau trem yang hanya dicat",
   "prefs.delayDefault": "Pustaka asumsi: {value} %",
   "prefs.delayReset": "Gunakan nilai pustaka",
+  "prefs.reason": "Alasan nilai ini (opsional)",
   "prefs.stationsTitle": "Stasiun",
   "prefs.stationsIntro":
     "Halte bernama sama dalam jarak ini dihitung sebagai satu stasiun di peta skematik, perencana perjalanan, serta tabel manfaat dan penumpang.",
@@ -422,6 +424,7 @@ export const id: Messages = {
   ...cargoBikeId,
   ...depotsId,
   ...commentsId,
+  ...mslabId,
   ...populationId,
   ...roadId,
   ...PLUGIN_MESSAGES.id,

@@ -3,6 +3,7 @@ import { editorsZu } from "./editors/zu";
 import { cargoBikeZu } from "./cargo-bike/zu";
 import { commentsZu } from "./comments/zu";
 import { depotsZu } from "./depots/zu";
+import { mslabZu } from "./mslab/zu";
 import { populationZu } from "./population/zu";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -286,6 +287,7 @@ export const zu: Messages = {
   "prefs.delayLane": "Emzileni webhasi noma wethremu odwetshwe ngopende",
   "prefs.delayDefault": "Umtapo wolwazi wemicabango: {value} %",
   "prefs.delayReset": "Sebenzisa inani lomtapo wolwazi",
+  "prefs.reason": "Isizathu sale nani (akuphoqelekile)",
   "prefs.stationsTitle": "Iziteshi",
   "prefs.stationsIntro":
     "Iziteshi ezinegama elifanayo ngaphakathi kwaleli banga zibalwa njengesiteshi esisodwa kumephu yomdwebo, kumhleli wohambo nasematafuleni ezinzuzo nabagibeli.",
@@ -427,6 +429,7 @@ export const zu: Messages = {
   ...cargoBikeZu,
   ...depotsZu,
   ...commentsZu,
+  ...mslabZu,
   ...populationZu,
   ...roadZu,
   ...PLUGIN_MESSAGES.zu,

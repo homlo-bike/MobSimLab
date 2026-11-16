@@ -764,7 +764,7 @@ export const editorsDe = {
   "noise.dbOrMore": "{db} dB oder mehr",
   "noise.dbRange": "{from}–{to} dB",
   "noise.mapNote":
-    "Nur geplantes Angebot, ohne allgemeinen Verkehr. Gebäude schirmen über ihre Dächer und um ihre Enden ab (ISO 9613-2), ihre Fassaden reflektieren einmal (erste Ordnung). Gebäude ohne Höhe in OpenStreetMap erhalten 3 m je erfasstem Geschoss oder 8 m (Annahmen des Lärm-Plugins). Der Pegel eines Gebäudes lässt die Reflexion an seiner eigenen Fassade weg. Gebäude © OpenStreetMap-Mitwirkende.",
+    "Nur die Linien des Angebots, ohne allgemeinen Verkehr. Gebäude schirmen über ihre Dächer und um ihre Enden ab (ISO 9613-2), ihre Fassaden reflektieren einmal (erste Ordnung). Gebäude ohne Höhe in OpenStreetMap erhalten 3 m je erfasstem Geschoss oder 8 m (Annahmen des Lärm-Plugins). Der Pegel eines Gebäudes lässt die Reflexion an seiner eigenen Fassade weg. Gebäude © OpenStreetMap-Mitwirkende.",
   "noise.terrain": "Geländehöhen verwenden (Copernicus GLO-30)",
   "noise.terrainTooLarge":
     "Die Linien decken ein zu großes Gebiet ab, um das Gelände zu laden, daher ist diese Karte auf ebenem Boden berechnet.",
@@ -796,6 +796,50 @@ export const editorsDe = {
   "noise.flat": "Ebener Boden.",
   "noise.popCredit":
     "Bevölkerung: WorldPop, University of Southampton (doi:10.5258/SOTON/WP00839), CC BY 4.0.",
+  "noise.scenario": "Szenario",
+  "noise.currentDesign": "Aktueller Entwurf",
+  "noise.compareTo": "Vergleichen mit",
+  "noise.noComparison": "Kein Vergleich",
+  "noise.inputLevel": "Fahrzeuge und Geschwindigkeiten aus",
+  "noise.level.planned": "Geplant: Takte und Beispielmengen",
+  "noise.level.timetabled": "Fahrplan: die Fahrten des Tages",
+  "noise.level.simulated": "Simuliert: ein gespeicherter Straßenlauf",
+  "noise.simulatedIntro":
+    "Straßenlinien übernehmen die Busse, die der Straßenlauf auf jedem Abschnitt gezählt hat, und ihre Geschwindigkeiten dort. Stunden, die der Lauf nicht vollständig abdeckt, und Bahnen behalten ihren Fahrplan.",
+  "noise.noRuns":
+    "Noch kein abgeschlossener Straßenlauf: Simulieren Sie zuerst die Straßenlinien in der Straßensimulation.",
+  "noise.chooseRun": "Straßenlauf wählen",
+  "noise.run": "Straßenlauf",
+  "noise.runFor": "Straßenlauf für {name}",
+  "noise.runLabel": "{when}, {from}–{to}",
+  "noise.runHours": "Busse aus dem Straßenlauf vom {run} für {hours}; für die übrigen Stunden der Fahrplan.",
+  "noise.runNoHours":
+    "Der Straßenlauf vom {run} deckt keine volle Stunde ab, daher behalten die Straßenlinien ihren Fahrplan.",
+  "noise.runNoTimetable":
+    "Keine Straßenlinie mit derselben Nummer für {lines}: außerhalb der Stunden des Laufs fahren auf diesen Linien keine Busse.",
+  "noise.railTimetabled":
+    "Bahnen behalten ihren Fahrplan: Der Kapazitätslauf der Bahn speichert keine Zugpositionen.",
+  "noise.noRailService":
+    "Die Bahn hat keine veröffentlichte Linie, daher fahren auf dieser Karte keine Züge.",
+  "noise.railNotPublished":
+    "Die Linien der Bahn konnten nicht veröffentlicht werden ({error}), daher fahren auf dieser Karte keine Züge.",
+  "noise.computingOf": "Lärmkarte von {name} wird berechnet…",
+  "noise.noDifference":
+    "Die beiden Karten ließen sich nicht Zelle für Zelle vergleichen, daher wird keine Differenzkarte gezeigt.",
+  "noise.inputUsed": "{name} · {level}",
+  "noise.comparing": "{name} im Vergleich zu {other} · {level}",
+  "noise.differenceNote":
+    "Änderung in dB, wo eines der Szenarien das unterste Band erreicht; Änderungen unter 1 dB werden nicht gezeigt. Beide verwenden dieselben Gebäude, dasselbe Gelände und dieselben Bewohner, daher würde sich der allgemeine Verkehr aufheben.",
+  "noise.changeBelow": "unter {db}",
+  "noise.changeAbove": "{db} oder mehr",
+  "noise.changeRange": "{from} bis {to}",
+  "noise.comparisonTable": "Änderung nach Lärmband",
+  "noise.comparisonCaptionPeople":
+    "Bewohner nach dem Pegel an der am stärksten belasteten Seite ihres Gebäudes",
+  "noise.comparisonCaptionBuildings": "Gebäude nach dem Pegel an ihrer am stärksten belasteten Seite",
+  "noise.change": "Änderung",
+  "noise.exportContours": "Konturen exportieren (GeoJSON)",
+  "noise.exportTable": "Tabelle exportieren (CSV)",
 
   "jp.title": "Reiseplaner",
   "jp.s": "{n} s",

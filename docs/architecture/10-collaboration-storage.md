@@ -25,7 +25,7 @@ Instead:
 - **Scenarios as branches:** each team member can work in their own scenario; differences are shown as a diff layer and list; changes can be cherry-picked into another scenario or promoted to base.
 - **Comments and mentions:** threads on any object or map location; mentions notify (in-app; e-mail optional via SMTP config).
 
-**Drawings (v1).** Until the network is stored object by object, what the editors draw is saved as one JSON document per project and kind in `project.drawing` (migration 0005): `street-lines`, `railway` and `street-setups` (GIS tab). `GET /api/projects/:id/drawings` returns them all; `PUT /api/projects/:id/drawings/:kind` with `{ doc, baseVersion }` replaces one and returns the new `version`, or 409 with the current drawing when `baseVersion` is stale. The web app saves 0.8 s after the last change, one save per kind at a time, retries lost connections with back-off, and on 409 shows a banner to keep one's own drawing or take the other one. Owners and Editors write; everyone who can read the project reads. The API checks each kind's outline (apps/api/src/projects/drawings.ts) and a size limit of 8 MB; saves are audited as `project.drawing_saved` with versions and size but not the document. Duplicating a project copies its drawings. A new editor adds a kind there and in `apps/web/src/projects/drawings.ts`.
+**Drawings (v1).** Until the network is stored object by object, what the editors draw is saved as one JSON document per project and kind in `project.drawing` (migration 0005): `street-lines`, `railway` and `street-setups` (GIS tab). `GET /api/projects/:id/drawings` returns them all; `PUT /api/projects/:id/drawings/:kind` with `{ doc, baseVersion }` replaces one and returns the new `version`, or 409 with the current drawing when `baseVersion` is stale. The web app saves 0.8 s after the last change, one save per kind at a time, retries lost connections with back-off, and on 409 shows a banner to keep one's own drawing or take the other one. Owners and Editors write; everyone who can read the project reads. The API checks each kind's outline (apps/api/src/projects/drawings.ts) and a size limit of 8 MB; saves are audited as `project.drawing_saved` with versions and size but not the document. Saving the `preferences` drawing also records each project value it changes (09 §1.5) as `project.value_changed` (old and new value, null when the library's applies, and the reason from the document's `reasons`), or `project.value_reason` when only a reason was given; `GET /api/projects/:id/value-history` (optional `id`, `before`, `limit`) lists them newest first with who and when, for everyone who can read the project. Duplicating a project copies its drawings. A new editor adds a kind there and in `apps/web/src/projects/drawings.ts`.
 
 **Comments (v1).** Comments live in `collab.comment` (migration 0016), one row per comment, pointing at its object by `(object_type, object_id)`: railway `station`, `track`, `switch` and `signal` (the planner's own signals; generated ones change ids when the design changes), `street-line`, `service-line` and `depot`, by the ids the editors give them. Street lines carry an `id` since this change; lines saved before get one the next time an Owner or Editor opens the project. A thread is a first comment and its replies, one level deep; the first comment carries whether the thread is resolved. `GET /api/projects/:id/comments` lists them all; `POST` adds a thread or a reply (`parentId`), `PATCH /:commentId` changes one's own text, `PUT /:commentId/resolved` resolves or reopens a thread, `DELETE /:commentId` removes a comment with its replies. Everyone who can read the project reads; Owners, Editors and Commenters write (project action `comment`); authors edit and delete their own comments and Owners delete any. Text is plain (at most 4,000 characters) and shown as text, never as HTML. Every change is audited as `comment.added`, `comment.edited`, `comment.resolved`, `comment.reopened` or `comment.deleted` with the object and text length but not the text. The web app loads comments when a project opens and again when the window gets focus; mentions and live updates are not built yet. Duplicating a project does not copy its comments.
 
@@ -53,22 +53,23 @@ A ZIP container, versioned, readable with standard tools:
 
 ```text
 project.mslab
-├── manifest.json            format version, app version, project id, created, checksums, licences summary
-├── project.json             project metadata, preferences, custom field schemas
-├── scenarios/<id>.json      scenario metadata
-├── data/<entity>.ndjson     one JSON object per line per entity type (nodes, edges, stations, lines, …)
-│                            geometry as GeoJSON in EPSG:4326 + local CRS definition
-├── vehicles/<mode>/*.json   custom vehicle types (same schema as catalogue)
-├── assumptions.json         assumption instances + overrides
-├── sources.json             source registry entries used by this project
-├── attachments/             user uploads (optional, user chooses)
-├── runs/<runId>/            optional: run results (large)
-├── ATTRIBUTION.md           generated: all sources and licences contained
-└── signatures/ (optional)   detached signature for integrity
+├── manifest.json            format version, app version, project id and name, date, what is included,
+│                            SHA-256 and size of every other file
+├── project.json             name, description, area, modes
+├── plugins.json             plugins switched on or off for the project (bundled, or installed with a version)
+├── data/<kind>.json         one saved drawing per tool (railway, street-lines, depots, preferences, scenarios, …):
+│                            kind, schema version, document as the tool saves it (geometry in EPSG:4326)
+├── runs/<runId>/            optional: finished simulation runs (run.json, network.txt, lines.txt,
+│                            replay.json.gz for road runs)
+└── ATTRIBUTION.md           generated: contents and the sources the project refers to
 ```
 
+Format 1.0.0 (2026-11-16) has no custom vehicles, attachments, sources registry or signatures yet, because
+projects cannot hold them; they come as a later minor version (`vehicles/<mode>/*.json`, `attachments/`,
+`sources.json`, `signatures/`).
+
 - JSON Schemas for every file are published, so other tools can read and write `.mslab`.
-- **Import** validates schemas, checks checksums, applies forward migrations (`format 1.x → current`), remaps IDs only on conflict (UUIDv7 makes conflicts rare), and runs in the sandboxed tool-runner with zip-bomb limits.
+- **Import** always creates a new project owned by the person who opens it, with new ids. It runs in the sandboxed tool-runner (`apps/api/src/tool-runner`) with ZIP limits (200 MB file, 5000 entries, 70 MB per file, 512 MB unpacked, compression ratio), checks the checksums and every file against its schema, and applies forward migrations (`apps/api/src/mslab/migrations.mts`); the API then checks every drawing again against the editor's outline. Drawings of tools or plugins this instance lacks are left out and listed.
 - Reference data (OSM, rasters) is **not** included by default (size, and it can be re-imported); the manifest records what was used (source, timestamp, bbox) so it can be rebuilt. Optional "full export" includes it.
 
 ### 2.3 Other import/export formats

@@ -3,6 +3,7 @@ import { editorsUz } from "./editors/uz";
 import { cargoBikeUz } from "./cargo-bike/uz";
 import { commentsUz } from "./comments/uz";
 import { depotsUz } from "./depots/uz";
+import { mslabUz } from "./mslab/uz";
 import { populationUz } from "./population/uz";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -284,6 +285,7 @@ export const uz: Messages = {
   "prefs.delayLane": "Boʻyalgan avtobus yoki tramvay yoʻlagida",
   "prefs.delayDefault": "Farazlar kutubxonasi: {value} %",
   "prefs.delayReset": "Kutubxona qiymatidan foydalanish",
+  "prefs.reason": "Ushbu qiymat sababi (ixtiyoriy)",
   "prefs.stationsTitle": "Stansiyalar",
   "prefs.stationsIntro":
     "Shu masofadagi bir xil nomli bekatlar sxematik xaritada, sayohat rejalashtiruvchida hamda foyda va yo'lovchilar jadvallarida bitta stansiya hisoblanadi.",
@@ -427,6 +429,7 @@ export const uz: Messages = {
   ...cargoBikeUz,
   ...depotsUz,
   ...commentsUz,
+  ...mslabUz,
   ...populationUz,
   ...roadUz,
   ...PLUGIN_MESSAGES.uz,

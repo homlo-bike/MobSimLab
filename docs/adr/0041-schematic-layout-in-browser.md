@@ -1,6 +1,6 @@
 # ADR-0041: Schematic diagrams laid out in the browser first, LOOM kept for the large-network layout
 
-- Status: Proposed (built: Schematic tab with strip map details, symbols, water and areas)
+- Status: Accepted (product owner, 2026-11-16); before that Proposed: built: Schematic tab with strip map details, symbols, water and areas
 - Date: 2026-11-10
 - Deciders: product owner, architecture
 - Related: ADR-0025 (schematics with LOOM), FR-SCH-01..03, 06-gis §10

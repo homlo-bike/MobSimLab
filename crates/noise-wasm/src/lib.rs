@@ -47,14 +47,15 @@ fn js(e: impl std::fmt::Display) -> JsError {
 
 /// Purpose: project an input given in longitude and latitude to local metres.
 /// Output: the input and the projection, or `None` when it has no coordinates.
-fn project(mut input: EstimateInput) -> (EstimateInput, Option<Proj>) {
-    let first = input
-        .lines
-        .iter()
-        .flat_map(|l| l.points.first())
-        .chain(input.point_sources.iter().map(|p| &p.p))
-        .find(|p| p[0].is_finite() && p[1].is_finite())
-        .copied();
+/// The projection's origin is `origin` when given (two estimates compared cell for cell share it),
+/// else the first source point.
+fn project(mut input: EstimateInput, origin: Option<[f64; 2]>) -> (EstimateInput, Option<Proj>) {
+    let first = origin
+        .into_iter()
+        .chain(input.lines.iter().flat_map(|l| l.points.first().copied()))
+        .chain(input.point_sources.iter().map(|p| p.p))
+        .chain(input.grid_cover.iter().copied())
+        .find(|p| p[0].is_finite() && p[1].is_finite());
     let Some([lon0, lat0]) = first else {
         return (input, None);
     };
@@ -65,6 +66,10 @@ fn project(mut input: EstimateInput) -> (EstimateInput, Option<Proj>) {
     for p in &mut input.point_sources {
         p.p = proj.local(p.p);
     }
+    input
+        .grid_cover
+        .iter_mut()
+        .for_each(|p| *p = proj.local(*p));
     for b in &mut input.buildings {
         b.ring.iter_mut().for_each(|p| *p = proj.local(*p));
     }
@@ -181,11 +186,16 @@ impl NoiseEstimator {
     /// Purpose: estimate the noise of the drawn lines.
     /// Inputs: `noise::EstimateInput` as JSON with `points`, point source `p` and building rings in
     /// `[lon, lat]`, and the terrain grid's corner (`x0` longitude, `y0` latitude) and spacing
-    /// (`dx`, `dy`) in degrees. Output: JSON `{lden, lnight, checks, image, input_level}` (see `to_json`).
+    /// (`dx`, `dy`) in degrees; `grid_cover` points in `[lon, lat]`, and an optional `origin`
+    /// `[lon, lat]` for the local projection, which two estimates on one grid must share. Output: JSON `{lden, lnight, checks, image, input_level}` (see `to_json`).
     /// Side effects: keeps the result for [`NoiseEstimator::image`].
     pub fn estimate(&mut self, input: &str) -> Result<String, JsError> {
-        let input: EstimateInput = serde_json::from_str(input).map_err(js)?;
-        let (input, proj) = project(input);
+        let value: Value = serde_json::from_str(input).map_err(js)?;
+        let origin: Option<[f64; 2]> = value
+            .get("origin")
+            .and_then(|o| serde_json::from_value(o.clone()).ok());
+        let input: EstimateInput = serde_json::from_value(value).map_err(js)?;
+        let (input, proj) = project(input, origin);
         let e = estimate(&input);
         let out = to_json(&e, proj).to_string();
         self.last = Some(e);
@@ -215,6 +225,21 @@ impl NoiseEstimator {
             }
         }
         out
+    }
+
+    /// Purpose: the grid levels of the last estimate, for a difference map and contours.
+    /// Inputs: `"lden"` or `"lnight"`. Output: one value per cell in dB, rows from the south,
+    /// west to east (the grid of the returned `image`), NaN where the map is not computed (beyond
+    /// its reach, inside buildings) and -inf where no source reaches; empty without a grid.
+    pub fn levels(&self, indicator: &str) -> Vec<f32> {
+        let Some(g) = self.last.as_ref().and_then(|e| e.grid.as_ref()) else {
+            return Vec::new();
+        };
+        if indicator == "lnight" {
+            g.lnight.clone()
+        } else {
+            g.lden.clone()
+        }
     }
 
     /// Purpose: the engine's default parameter values (`noise.*` → `[low, central, high]` per
@@ -248,6 +273,34 @@ mod tests {
         assert!(img["coordinates"][0][0].as_f64().unwrap() < 4.35);
         assert!(NoiseEstimator::defaults().contains("noise.rail_track_transfer"));
         assert!(v["buildings"].is_null());
+    }
+
+    #[test]
+    fn a_shared_origin_and_cover_put_two_estimates_on_one_grid() {
+        let tram = |x1: f64| {
+            json!({"id": "a", "mode": "tram", "vehicle_length_m": 30,
+            "flows": {"day": 24, "evening": 16, "night": 4}, "speed_kmh": 40,
+            "points": [[4.35, 50.85], [x1, 50.85]]})
+        };
+        let cover: Vec<[f64; 2]> = (0..=100)
+            .map(|i| [4.35 + i as f64 * 0.00014, 50.85])
+            .collect();
+        let mut n = NoiseEstimator::new();
+        let mut run = |line: Value| -> (Value, Vec<f32>) {
+            let input = json!({"lines": [line], "grid_reach_m": 150, "grid_cover": cover,
+                "origin": [4.36, 50.85], "input_level": "simulated"});
+            let v: Value = serde_json::from_str(&n.estimate(&input.to_string()).unwrap()).unwrap();
+            (v, n.levels("lden"))
+        };
+        let (a, la) = run(tram(4.364));
+        let (b, lb) = run(tram(4.355));
+        assert_eq!(a["image"], b["image"]);
+        assert_eq!(a["input_level"], "simulated");
+        assert_eq!(la.len(), lb.len());
+        let w = a["image"]["width"].as_u64().unwrap() as usize;
+        let h = a["image"]["height"].as_u64().unwrap() as usize;
+        assert_eq!(la.len(), w * h);
+        assert!(la.iter().zip(&lb).all(|(x, y)| x.is_nan() == y.is_nan()));
     }
 
     #[test]

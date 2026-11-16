@@ -3,6 +3,7 @@ import { editorsTr } from "./editors/tr";
 import { cargoBikeTr } from "./cargo-bike/tr";
 import { commentsTr } from "./comments/tr";
 import { depotsTr } from "./depots/tr";
+import { mslabTr } from "./mslab/tr";
 import { populationTr } from "./population/tr";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -280,6 +281,7 @@ export const tr: Messages = {
   "prefs.delayLane": "Yalnızca boyanmış otobüs veya tramvay şeridinde",
   "prefs.delayDefault": "Varsayımlar kitaplığı: %{value}",
   "prefs.delayReset": "Kitaplık değerini kullan",
+  "prefs.reason": "Bu değerin nedeni (isteğe bağlı)",
   "prefs.stationsTitle": "İstasyonlar",
   "prefs.stationsIntro":
     "Bu mesafedeki aynı adlı duraklar şematik haritada, yolculuk planlayıcıda ve fayda ile yolcu tablolarında tek istasyon sayılır.",
@@ -421,6 +423,7 @@ export const tr: Messages = {
   ...cargoBikeTr,
   ...depotsTr,
   ...commentsTr,
+  ...mslabTr,
   ...populationTr,
   ...roadTr,
   ...PLUGIN_MESSAGES.tr,

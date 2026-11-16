@@ -30,7 +30,10 @@ import { ProjectsController } from "./projects/projects.controller";
 import { ProjectsService } from "./projects/projects.service";
 import { SetupController } from "./setup/setup.controller";
 import { RunsController } from "./simulation/runs.controller";
+import { MslabController } from "./mslab/mslab.controller";
+import { MslabService } from "./mslab/mslab.service";
 import { SimulationModule } from "./simulation/simulation.module";
+import { ToolRunner } from "./tool-runner/runner";
 
 /** Root module. Every route passes the global AccessGuard. */
 @Module({})
@@ -64,6 +67,7 @@ export class AppModule {
         CommentsController,
         PluginsController,
         RunsController,
+        MslabController,
         PopulationLayersController,
       ],
       providers: [
@@ -76,6 +80,8 @@ export class AppModule {
         RateLimitService,
         SessionService,
         UsersService,
+        MslabService,
+        ToolRunner,
         { provide: APP_GUARD, useClass: AccessGuard },
       ],
     };

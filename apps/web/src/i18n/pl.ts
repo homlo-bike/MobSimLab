@@ -3,6 +3,7 @@ import { editorsPl } from "./editors/pl";
 import { cargoBikePl } from "./cargo-bike/pl";
 import { commentsPl } from "./comments/pl";
 import { depotsPl } from "./depots/pl";
+import { mslabPl } from "./mslab/pl";
 import { populationPl } from "./population/pl";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -281,6 +282,7 @@ export const pl: Messages = {
   "prefs.delayLane": "Na buspasie lub pasie tramwajowym tylko wymalowanym",
   "prefs.delayDefault": "Biblioteka założeń: {value} %",
   "prefs.delayReset": "Użyj wartości z biblioteki",
+  "prefs.reason": "Powód tej wartości (opcjonalnie)",
   "prefs.stationsTitle": "Stacje",
   "prefs.stationsIntro":
     "Przystanki o tej samej nazwie w tej odległości liczą się jako jedna stacja na schemacie sieci, w planerze podróży oraz w tabelach korzyści i pasażerów.",
@@ -420,6 +422,7 @@ export const pl: Messages = {
   ...cargoBikePl,
   ...depotsPl,
   ...commentsPl,
+  ...mslabPl,
   ...populationPl,
   ...roadPl,
   ...PLUGIN_MESSAGES.pl,
