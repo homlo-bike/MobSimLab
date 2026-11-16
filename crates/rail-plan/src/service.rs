@@ -151,6 +151,50 @@ pub struct ServicePublication {
     pub lines: Vec<LineReport>,
     /// Notes from the topology import and the stop placement.
     pub notes: Vec<String>,
+    /// The day's vehicle blocks (vehicle schedules): each train's runs in order, from its first
+    /// pull-out or trip to its last trip or pull-in. Sorted by the first departure.
+    pub blocks: Vec<VehicleBlock>,
+}
+
+/// One run of a vehicle block.
+#[derive(Clone, Debug, PartialEq, Serialize)]
+pub struct BlockRun {
+    /// `service` (a passenger trip), `pull_out` (from stabling) or `pull_in` (to stabling).
+    pub kind: String,
+    /// Line id.
+    pub line: String,
+    /// Trip id (the journey planner's trip id for a passenger trip).
+    pub trip: String,
+    /// 0 = outbound (the line's station order), 1 = return.
+    pub direction: u8,
+    /// Station the run starts at; None for a storage track.
+    pub from: Option<String>,
+    /// Station the run ends at; None for a storage track.
+    pub to: Option<String>,
+    /// Departure, s after midnight.
+    pub depart_s: f64,
+    /// Arrival, s after midnight.
+    pub arrive_s: f64,
+    /// Distance along the track, km.
+    pub km: f64,
+}
+
+/// The runs one train makes in a day (a vehicle block).
+#[derive(Clone, Debug, PartialEq, Serialize)]
+pub struct VehicleBlock {
+    /// Train number in the plan.
+    pub vehicle: usize,
+    /// Runs in time order.
+    pub runs: Vec<BlockRun>,
+}
+
+/// Settings of a publication the project can change.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+pub struct PublishOptions {
+    /// Longest a train waits in a terminal for its next trip before it goes to stabling instead, s;
+    /// the planner's default when absent.
+    #[serde(default)]
+    pub max_idle_s: Option<f64>,
 }
 
 /// Mode values from the assumption library (central values, `assumptions/DEFAULTS.md`) and estimates.
@@ -385,6 +429,16 @@ pub fn publish_service(
     lines: &[ServiceLine],
     service_id: &str,
 ) -> Result<ServicePublication, String> {
+    publish_service_with(topology_json, lines, service_id, &PublishOptions::default())
+}
+
+/// Purpose: [`publish_service`] with the project's settings (`opts`).
+pub fn publish_service_with(
+    topology_json: &str,
+    lines: &[ServiceLine],
+    service_id: &str,
+    opts: &PublishOptions,
+) -> Result<ServicePublication, String> {
     for l in lines {
         if l.stations.len() < 2 {
             return Err(format!("{} needs at least two stops.", l.name));
@@ -394,7 +448,11 @@ pub fn publish_service(
     let m =
         Model::compile(&imp.spec).map_err(|e| format!("the track layout cannot be used: {e:?}"))?;
     let specs: Vec<LineSpec> = lines.iter().map(|l| line_spec(l, &m)).collect();
-    let p = plan(&m, &specs, &PlanParams::default())?;
+    let mut params = PlanParams::default();
+    if let Some(v) = opts.max_idle_s.filter(|v| v.is_finite() && *v >= 0.0) {
+        params.max_idle_s = v;
+    }
+    let p = plan(&m, &specs, &params)?;
     let routes: Vec<RouteInfo> = lines
         .iter()
         .map(|l| RouteInfo {
@@ -537,7 +595,67 @@ pub fn publish_service(
         timetable: jt.timetable,
         lines: reports,
         notes,
+        blocks: vehicle_blocks(&m, &p, &ids),
     })
+}
+
+/// Purpose: the plan's runs grouped by train, each in time order, trains by their first departure.
+fn vehicle_blocks(m: &Model, p: &crate::Plan, ids: &[&str]) -> Vec<VehicleBlock> {
+    let mut by: BTreeMap<usize, Vec<&crate::PlannedRun>> = BTreeMap::new();
+    for r in &p.runs {
+        by.entry(r.vehicle).or_default().push(r);
+    }
+    let place_name = |c: Option<&crate::CallTime>| -> Option<String> {
+        match c?.place {
+            Place::Platform(pf) => {
+                let st = &m.stations[m.platforms[pf as usize].station as usize];
+                Some(m.groups[st.group as usize].name.clone())
+            }
+            Place::Storage(_) => None,
+        }
+    };
+    let mut out: Vec<VehicleBlock> = by
+        .into_iter()
+        .map(|(vehicle, mut runs)| {
+            runs.sort_by(|a, b| a.depart_s().total_cmp(&b.depart_s()));
+            VehicleBlock {
+                vehicle,
+                runs: runs
+                    .into_iter()
+                    .map(|r| {
+                        let length: f64 = r
+                            .run
+                            .routes
+                            .iter()
+                            .map(|&id| m.routes[id as usize].length_m)
+                            .sum();
+                        let end = r.run.end_m.unwrap_or(length);
+                        BlockRun {
+                            kind: match r.kind {
+                                RunKind::Service => "service",
+                                RunKind::PullOut => "pull_out",
+                                RunKind::PullIn => "pull_in",
+                            }
+                            .into(),
+                            line: ids.get(r.line).map_or(String::new(), |s| s.to_string()),
+                            trip: r.name.clone(),
+                            direction: r.direction,
+                            from: place_name(r.calls.first()),
+                            to: place_name(r.calls.last()),
+                            depart_s: r.depart_s(),
+                            arrive_s: r.arrive_s(),
+                            km: ((end - r.run.start_m) / 1000.0).max(0.0),
+                        }
+                    })
+                    .collect(),
+            }
+        })
+        .collect();
+    out.sort_by(|a, b| {
+        let first = |v: &VehicleBlock| v.runs.first().map_or(f64::MAX, |r| r.depart_s);
+        first(a).total_cmp(&first(b))
+    });
+    out
 }
 
 /// Purpose: the stopping stations of a run with their distance from its origin along the path.

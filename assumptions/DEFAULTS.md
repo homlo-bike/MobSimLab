@@ -443,6 +443,14 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 | traction: battery | 0.1 | 0.2 | 0.3 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Operators plan against the usable state-of-charge window and keep a reserve for diversions, traffic and battery ageing; 20 % of nominal is a common planning figure. |
 | traction: diesel, hydrogen, cng | 0.1 | 0.15 | 0.25 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Fuel reserve for disruption. |
 
+### Longest a vehicle waits at a terminal for its next trip before it returns to the depot instead
+
+`timetable.max_terminal_wait_min` · unit: min · used by: vehicle scheduling, fleet size
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 10 | 20 | 45 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Vehicle blocks: a vehicle that would stand longer than this between trips (for example between the peaks) runs back to the depot and a vehicle pulls out again later, so it does not block a terminal stand or platform. The rail timetable planner used 20 min; operators choose by depot distance and terminal space. |
+
 ### Minimum buffer time between the blocking times of two trains on one section
 
 `timetable.min_buffer_s` · unit: s · used by: timetable construction, conflict detection, capacity

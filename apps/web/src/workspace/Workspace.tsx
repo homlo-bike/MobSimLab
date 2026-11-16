@@ -19,6 +19,7 @@ import { WalkAnalysis } from "../features/walk/WalkAnalysis";
 import { JourneyPlanner } from "../features/journey-planner/JourneyPlanner";
 import { NoiseMap } from "../features/noise/NoiseMap";
 import { NetworkTables } from "../features/tables/NetworkTables";
+import { TimetableTables } from "../features/timetables/TimetableTables";
 import { FareTables } from "../features/fares/FareTables";
 import type { FaresDoc } from "../features/fares/model";
 import { Scenarios } from "../features/tables/Scenarios";
@@ -837,6 +838,12 @@ export function Workspace({
                     preferences={preferences}
                     onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
                     riders={riders}
+                  />
+                  <TimetableTables
+                    railway={railway}
+                    streetLines={streetLines}
+                    preferences={preferences}
+                    onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
                   />
                   <CostTables
                     railway={railway}
