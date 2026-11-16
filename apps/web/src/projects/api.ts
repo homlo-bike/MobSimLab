@@ -3,6 +3,7 @@ import type { PluginLimits } from "../plugins/code/runtime";
 import type { ProjectPlugin } from "../plugins/registry";
 import { get, send } from "../session/api";
 import { projectRuns } from "../features/capacity/server";
+import { projectDemandRuns } from "../features/demand/api";
 import { projectPopulation } from "../features/population/api";
 import { projectRoadRuns } from "../features/road-sim/api";
 import { type DrawingKind, loadDrawings, saveDrawing } from "./drawings";
@@ -121,6 +122,8 @@ export function projectsApi(csrf: string) {
     runs: (id: string) => projectRuns(id, csrf),
     /** The project's road simulation runs (SUMO) on the background worker, with their replays. */
     roadRuns: (id: string) => projectRoadRuns(id, csrf),
+    /** The project's demand model runs (AequilibraE) on the background worker, with their OD matrices. */
+    demandRuns: (id: string) => projectDemandRuns(id, csrf),
     /** The project's population layers (GIS tab): imports, uploads, the layer the project uses. */
     population: (id: string) => projectPopulation(id, csrf),
   };
