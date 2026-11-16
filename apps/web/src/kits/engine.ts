@@ -1,4 +1,4 @@
-import type { Kits, KitsLoader, SpanSystem, VesselType, ZoneSystem } from "./types";
+import type { DispatchRules, Kits, KitsLoader, SpanSystem, VesselType, ZoneSystem } from "./types";
 
 let wasmModule: Promise<typeof import("../wasm/mode-kits/mode_kits_wasm.js")> | null = null;
 
@@ -23,6 +23,7 @@ export const loadKits: KitsLoader = async () => {
     buildSpanLine: (line) => JSON.parse(wasm.build_span_line(JSON.stringify(line))),
     buildWaterLine: (line) => JSON.parse(wasm.build_water_line(JSON.stringify(line))),
     estimateZone: (zone) => JSON.parse(wasm.estimate_zone(JSON.stringify(zone))),
+    simulateZone: (day) => JSON.parse(wasm.simulate_zone(JSON.stringify(day))),
   } satisfies Kits;
 };
 
@@ -95,5 +96,15 @@ export function zoneSystem(v: Record<string, number>, prefix = "drt"): ZoneSyste
     pooling_detour_share: p("pooling_detour_share", 0.2),
     max_wait_s: p("max_wait_s", 600),
     riders_per_request: p("riders_per_request", 1.1),
+  };
+}
+
+/** Purpose: the dispatcher's limits from the plugin's values (`drt.max_wait_limit_s` and the detour rule). */
+export function dispatchRules(v: Record<string, number>, prefix = "drt"): DispatchRules {
+  const p = (k: string, d: number) => v[`${prefix}.${k}`] ?? d;
+  return {
+    max_wait_s: p("max_wait_limit_s", 900),
+    max_detour_share: p("max_detour_share", 0.5),
+    max_detour_fixed_s: p("max_detour_fixed_s", 600),
   };
 }

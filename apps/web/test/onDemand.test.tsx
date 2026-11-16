@@ -35,8 +35,8 @@ import * as wasm from "../src/wasm/mode-kits/mode_kits_wasm.js";
 import { drawZones } from "../src/features/journey-planner/mapLayers";
 import { JourneyPlanner } from "../src/features/journey-planner/JourneyPlanner";
 import type { PlannerLoader } from "../src/features/journey-planner/types";
-import { loadKits, zoneSystem } from "../src/kits/engine";
-import type { LonLat } from "../src/kits/types";
+import { dispatchRules, loadKits, zoneSystem } from "../src/kits/engine";
+import type { LonLat, ZoneView } from "../src/kits/types";
 import { type DemandZone, type ZoneDoc, ZoneEditor } from "../src/kits/ZoneEditor";
 import { centralValues, findMode, pluginTools } from "../src/plugins/registry";
 
@@ -102,6 +102,29 @@ describe("on-demand bus plugin", () => {
     expect(short.issues.map((i) => i.code)).toContain("zone.fleet_short");
   });
 
+  it("simulates a day trip by trip with the plugin's dispatch limits", async () => {
+    const kits = await loadKits();
+    const values = centralValues("on_demand_bus", "*");
+    const rules = dispatchRules(values);
+    expect(rules).toEqual({ max_wait_s: 900, max_detour_share: 0.5, max_detour_fixed_s: 600 });
+    const zone = {
+      ring: square(4000),
+      requests_per_hour: 60,
+      fleet: 12,
+      start_s: 6 * 3600,
+      end_s: 22 * 3600,
+      system: zoneSystem(values),
+    };
+    const day = kits.simulateZone({ zone, rules });
+    expect(day.served + day.rejected).toBe(day.requests);
+    expect(day.served).toBeGreaterThan(0.9 * day.requests);
+    expect(day.p90_wait_s).toBeLessThanOrEqual(900);
+    expect(day.hours).toHaveLength(16);
+    // Too few vehicles: bookings are turned away.
+    const small = kits.simulateZone({ zone: { ...zone, requests_per_hour: 200, fleet: 3 }, rules });
+    expect(small.rejected).toBeGreaterThan(0.3 * small.requests);
+  });
+
   it("zone editor shows the estimate and hands the zone to the journey planner", async () => {
     const doc: ZoneDoc = {
       name: "Hillside",
@@ -122,7 +145,18 @@ describe("on-demand bus plugin", () => {
       expect(onZone).toHaveBeenLastCalledWith(expect.objectContaining({ name: "Hillside" })),
     );
     // Too few vehicles: the estimate says so.
+    // Simulate the day: the result shows and the planner gets the simulated wait.
+    fireEvent.click(screen.getByRole("button", { name: "Simulate the day" }));
+    await screen.findByText("Simulated day");
+    expect(screen.getAllByText("Bookings served")[0]!.nextSibling?.textContent).toMatch(/^\d[\d,. ]* of \d/);
+    await waitFor(() =>
+      expect(onZone).toHaveBeenLastCalledWith(
+        expect.objectContaining({ simulated: expect.objectContaining({ wait_s: expect.any(Number) }) }),
+      ),
+    );
     fireEvent.change(screen.getByLabelText("Vehicles"), { target: { value: "1" } });
+    // A changed zone hides the old simulation.
+    expect(screen.queryByText("Simulated day")).toBeNull();
     expect((await screen.findAllByText("fleet too small")).length).toBe(2);
     fireEvent.click(screen.getByRole("button", { name: "Clear the outline" }));
     await waitFor(() => expect(onZone).toHaveBeenLastCalledWith(null));
@@ -161,5 +195,23 @@ describe("on-demand zones in the journey planner", () => {
     fireEvent.click(use);
     expect(screen.queryByTestId("on-demand")).toBeNull();
     expect(vi.mocked(drawZones)).toHaveBeenLastCalledWith(map, []);
+  });
+
+  it("uses the simulated wait when the planner ran the day", () => {
+    const ring = square(3000);
+    const view = { wait_s: null, ride_s: 400, ride_fixed_s: 60, ride_s_per_km: 150 } as unknown as ZoneView;
+    const zone: DemandZone = {
+      id: "on-demand-bus",
+      name: "Hillside",
+      color: "#9333ea",
+      ring,
+      view,
+      simulated: { wait_s: 420, ride_s: 480 },
+    };
+    const map = { on: () => {}, off: () => {}, getCanvas: () => null } as unknown as MapLibreMap;
+    render(<JourneyPlanner map={map} loadPlanner={vi.fn()} demandZones={[zone]} />);
+    expect(
+      screen.getByRole("checkbox", { name: /^On-demand bus “Hillside” \(simulated wait 7 min/ }),
+    ).toBeTruthy();
   });
 });

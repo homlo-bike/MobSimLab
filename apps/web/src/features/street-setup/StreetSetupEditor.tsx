@@ -6,6 +6,7 @@ import { type Translate, type TranslatePlural, tNow, useI18n } from "../../i18n/
 import { fetchStreetTile, loadStreetInfos } from "../street-lines/engine";
 import { MIN_LOAD_ZOOM, tilesFor } from "../street-lines/tiles";
 import type { TileFetcher } from "../street-lines/types";
+import { DEFAULT_SERVICE_DAY } from "../journey-planner/network";
 import { CrossSection } from "./CrossSection";
 import {
   drawStreets,
@@ -20,7 +21,10 @@ import {
   CLASS_LABEL,
   DEFAULT_DELAYS,
   effective,
+  MAX_PEAK_CARS,
   osmTrafficLanes,
+  parsePeakCars,
+  peakCarsDefault,
   upsert,
   type Verdict,
   verdicts,
@@ -302,6 +306,8 @@ function summary(s: StreetSetup, t: Translate, tn: TranslatePlural): string {
   if (s.bike_lane != null) parts.push(t(s.bike_lane ? "setup.sum.bikeLane" : "setup.sum.noBikeLane"));
   if (s.separated != null) parts.push(t(s.separated ? "setup.sum.separated" : "setup.sum.painted"));
   if (s.tram != null) parts.push(t(s.tram === "own_lane" ? "setup.sum.tramOwn" : "setup.sum.tramMixed"));
+  if (s.cars_morning_peak != null) parts.push(t("setup.sum.morning", { cars: s.cars_morning_peak }));
+  if (s.cars_evening_peak != null) parts.push(t("setup.sum.evening", { cars: s.cars_evening_peak }));
   return parts.join(" · ");
 }
 
@@ -427,6 +433,38 @@ function StreetForm({
           ]}
           onPick={(x) => onPatch({ tram: x })}
         />
+        <div role="group" aria-label={t("setup.traffic")}>
+          <div className="font-medium">{t("setup.traffic")}</div>
+          <div className="text-xs text-slate-500">
+            {t("setup.trafficPeakHint", { cars: peakCarsDefault(info.class) })}
+          </div>
+          <div className="mt-1.5 grid grid-cols-2 gap-2">
+            {(
+              [
+                ["cars_morning_peak", "setup.morningPeak", DEFAULT_SERVICE_DAY.peaks[0]],
+                ["cars_evening_peak", "setup.eveningPeak", DEFAULT_SERVICE_DAY.peaks[1]],
+              ] as const
+            ).map(([field, label, win]) => (
+              <label key={field} className="flex flex-col gap-1 text-sm">
+                <span>{t(label, { from: clock(win?.[0]), to: clock(win?.[1]) })}</span>
+                <span className="flex items-center gap-1.5">
+                  <input
+                    type="number"
+                    inputMode="numeric"
+                    min={0}
+                    max={MAX_PEAK_CARS}
+                    step={10}
+                    className="input min-h-11 w-full min-w-0 tabular-nums"
+                    placeholder={String(peakCarsDefault(info.class))}
+                    value={setup?.[field] ?? ""}
+                    onChange={(ev) => onPatch({ [field]: parsePeakCars(ev.target.value) })}
+                  />
+                  <span className="shrink-0 text-xs text-slate-500">{t("setup.carsPerHour")}</span>
+                </span>
+              </label>
+            ))}
+          </div>
+        </div>
       </fieldset>
 
       <section aria-label={t("setup.reliability")}>
@@ -457,6 +495,13 @@ function StreetForm({
       )}
     </section>
   );
+}
+
+/** Purpose: seconds after midnight as "7:00"; empty when unknown. */
+function clock(sec: number | undefined): string {
+  if (sec == null) return "";
+  const m = Math.round(sec / 60);
+  return `${Math.floor(m / 60)}:${String(m % 60).padStart(2, "0")}`;
 }
 
 function Row({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {

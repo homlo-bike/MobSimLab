@@ -24,3 +24,24 @@ def test_refuses_missing_secret_and_host(tmp_path: Path) -> None:
 @pytest.mark.parametrize("value", ["short", "changeme-changeme-changeme", "a" * 40])
 def test_rejects_weak_secrets(value: str) -> None:
     assert secret_problem("x", value) is not None
+
+
+def test_reads_port_and_name(tmp_path: Path) -> None:
+    (tmp_path / "db_worker_password").write_text(STRONG)
+    env = {"MOBSIMLAB_DB_HOST": "db", "MOBSIMLAB_SECRETS_DIR": str(tmp_path)}
+    cfg = load_config({**env, "MOBSIMLAB_DB_PORT": "6543", "MOBSIMLAB_DB_NAME": "other"})
+    assert (cfg.db_port, cfg.db_name) == (6543, "other")
+    assert load_config(env).db_port == 5432
+    with pytest.raises(ConfigError) as e:
+        load_config({**env, "MOBSIMLAB_DB_PORT": "nope"})
+    assert "MOBSIMLAB_DB_PORT" in str(e.value)
+
+
+def test_reads_the_number_of_worker_processes(tmp_path: Path) -> None:
+    (tmp_path / "db_worker_password").write_text(STRONG)
+    env = {"MOBSIMLAB_DB_HOST": "db", "MOBSIMLAB_SECRETS_DIR": str(tmp_path)}
+    assert load_config(env).sim_workers == 1
+    assert load_config({**env, "MOBSIMLAB_SIM_WORKERS": "4"}).sim_workers == 4
+    for bad in ("0", "many", "65"):
+        with pytest.raises(ConfigError, match="MOBSIMLAB_SIM_WORKERS"):
+            load_config({**env, "MOBSIMLAB_SIM_WORKERS": bad})

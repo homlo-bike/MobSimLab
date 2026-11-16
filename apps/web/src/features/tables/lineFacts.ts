@@ -10,6 +10,8 @@ import { paramValue } from "../costs/params";
 import { lineMode, trainById } from "../railways/serviceLines";
 import type { LineReport, Network, RailView } from "../railways/types";
 import type { SavedStreetLine } from "../street-lines/saved";
+import { fullTiming } from "../street-lines/modes";
+import { dayService, vehicleById } from "../street-lines/service";
 import { lineStats } from "../street-lines/summary";
 
 /** One line of the project, rail or street, with what it offers. */
@@ -33,13 +35,11 @@ export interface LineFact {
   /** Minutes between departures in the peak and off peak; off peak null when the line has one headway. */
   peakHeadwayMin: number | null;
   offpeakHeadwayMin: number | null;
-  /** First and last departure, minutes after midnight; null when not set (street lines). */
+  /** First and last departure, minutes after midnight; null when not set. */
   firstMin: number | null;
   lastMin: number | null;
   /** Hours of service a day. */
   serviceHours: number;
-  /** Whether the service hours are the library's assumption rather than set on the line. */
-  hoursAssumed: boolean;
   /** Trips a weekday, both directions. */
   tripsPerDay: number;
   /** Vehicles or trains in service at the peak, and the fleet with spares (rail: units). */
@@ -49,7 +49,7 @@ export interface LineFact {
   vehicle: string | null;
   /** Passenger places per vehicle or train (seats plus standing at the planning density). */
   placesPerVehicle: number;
-  /** Whether the places come from the assumption library rather than the chosen catalogue train. */
+  /** Whether the places come from the assumption library (a street line without a catalogue vehicle). */
   placesAssumed: boolean;
   /** Passenger places an hour in one direction at the peak headway. */
   capacityPerHour: number;
@@ -67,8 +67,6 @@ export interface LineFactsInput {
   streetLines: SavedStreetLine[];
   prefs: Record<string, number> | undefined;
 }
-
-const per = (n: number, d: number) => (d > 0 ? n / d : 0);
 
 /**
  * Purpose: the facts of every line of the project, rail service lines first, then street lines.
@@ -108,7 +106,6 @@ export function lineFacts(input: LineFactsInput): LineFact[] {
       firstMin: l.first_min,
       lastMin: l.last_min,
       serviceHours: Math.max(0, l.last_min - l.first_min) / 60,
-      hoursAssumed: false,
       tripsPerDay: running ? r.trips : 0,
       inService: s.inService,
       fleet: s.fleet,
@@ -128,12 +125,14 @@ export function lineFacts(input: LineFactsInput): LineFact[] {
     const s = summary.get(`street:${i}`);
     if (!s) return;
     const mode = l.profile.mode;
-    const stats = lineStats(l.view, l.timing);
-    const headway = l.timing.headwayMin > 0 ? l.timing.headwayMin : null;
+    const timing = fullTiming(l.timing);
+    const stats = lineStats(l.view, timing);
+    const headway = timing.headwayMin > 0 ? timing.headwayMin : null;
     // One direction: half the circuit's running time and its stops' dwell, without the layover.
     const tripMin = stats.cycleMin > 0 ? (stats.runMin + stats.dwellMin) / 2 : null;
-    const hours = paramValue("cost.service_hours_per_day", mode, prefs)[1];
-    const places = paramValue("mode.vehicle_capacity", mode, prefs)[1];
+    const service = dayService(timing, stats.cycleMin);
+    const vehicle = vehicleById(l.vehicle);
+    const places = vehicle?.capacity ?? paramValue("mode.vehicle_capacity", mode, prefs)[1];
     out.push({
       id: s.id,
       kind: "street",
@@ -146,17 +145,16 @@ export function lineFacts(input: LineFactsInput): LineFact[] {
       tripMin,
       speedKmh: tripMin ? s.lengthKm / (tripMin / 60) : null,
       peakHeadwayMin: headway,
-      offpeakHeadwayMin: null,
-      firstMin: null,
-      lastMin: null,
-      serviceHours: hours,
-      hoursAssumed: true,
-      tripsPerDay: headway ? Math.floor(per(hours * 60, headway)) * 2 : 0,
+      offpeakHeadwayMin: timing.offPeakHeadwayMin > 0 ? timing.offPeakHeadwayMin : null,
+      firstMin: timing.firstMin,
+      lastMin: timing.lastMin,
+      serviceHours: service.serviceHours,
+      tripsPerDay: headway && stats.vehicles > 0 ? service.tripsPerDay : 0,
       inService: s.inService,
       fleet: s.fleet,
-      vehicle: null,
+      vehicle: vehicle?.name ?? null,
       placesPerVehicle: places,
-      placesAssumed: true,
+      placesAssumed: !vehicle,
       capacityPerHour: headway ? (60 / headway) * places : 0,
       hoursPerYear: s.hoursPerYear,
       kmPerYear: s.kmPerYear,

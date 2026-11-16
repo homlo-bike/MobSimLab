@@ -3,11 +3,11 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { tNow, useI18n } from "../i18n/i18n";
 import { centralValues, findMode, type PluginTool } from "../plugins/registry";
-import { loadKits, zoneSystem } from "./engine";
+import { dispatchRules, loadKits, zoneSystem } from "./engine";
 import { fmtInt } from "./format";
 import { Issues, Stat } from "./Issues";
 import { drawKit, ensureKitLayers, loadLocal, removeKitLayers, saveLocal, setKitColor } from "./mapLayers";
-import type { Kits, KitsLoader, LonLat, ZoneView } from "./types";
+import type { DispatchResult, Kits, KitsLoader, LonLat, ZoneView } from "./types";
 
 const PREFIX = "zone";
 
@@ -30,6 +30,8 @@ export interface DemandZone {
   color: string;
   ring: LonLat[];
   view: ZoneView;
+  /** The simulated day, when the planner ran it for the zone as drawn now. */
+  simulated?: { wait_s: number; ride_s: number };
 }
 
 interface Props {
@@ -64,7 +66,7 @@ const secs = (hhmm: string) => {
  * Purpose: the service zone kit's editor (ADR-0036 §6): click the zone's outline on the map, set the
  * requests an hour, the fleet and the service hours; the panel shows the vehicles needed, the busy share,
  * the average wait, ride and door-to-door time and the live checks, from the kit's continuous-approximation
- * estimate.
+ * estimate. "Simulate the day" runs the kit's dispatch simulation (ADR-0042) for the zone as drawn.
  * Side effects: adds layers, markers and a click handler to the map while mounted; stores the drawing in
  * this device's storage under `storageKey`.
  */
@@ -116,12 +118,56 @@ export function ZoneEditor({
     }
   }, [kits, doc.ring, doc.requestsPerHour, doc.fleet, doc.from, doc.to, system, prefix]);
 
+  // The trip-by-trip simulation (ADR-0042), run on request; it belongs to the inputs it ran with.
+  const simInput = useMemo(
+    () =>
+      doc.ring.length >= 3
+        ? {
+            zone: {
+              ring: doc.ring,
+              requests_per_hour: doc.requestsPerHour,
+              fleet: doc.fleet,
+              start_s: secs(doc.from),
+              end_s: secs(doc.to),
+              system,
+              parameter_prefix: prefix,
+            },
+            rules: dispatchRules(centralValues(doc.mode, "*"), prefix),
+          }
+        : null,
+    [doc.ring, doc.requestsPerHour, doc.fleet, doc.from, doc.to, doc.mode, system, prefix],
+  );
+  const [sim, setSim] = useState<{ input: typeof simInput; result: DispatchResult } | null>(null);
+  const [simulating, setSimulating] = useState(false);
+  const day = sim && sim.input === simInput ? sim.result : null;
+  const simulate = () => {
+    if (!kits || !simInput) return;
+    setSimulating(true);
+    // Let the status show before the run blocks the page for a moment.
+    setTimeout(() => {
+      try {
+        setSim({ input: simInput, result: kits.simulateZone(simInput) });
+      } catch (e) {
+        setError(e instanceof Error ? e.message : String(e));
+      } finally {
+        setSimulating(false);
+      }
+    }, 0);
+  };
+
   const changed = useRef(onZoneChange);
   changed.current = onZoneChange;
   useEffect(() => {
     if (!view || doc.ring.length < 3) return changed.current?.(null);
-    changed.current?.({ id: tool.id, name: doc.name, color, ring: doc.ring, view });
-  }, [view, doc.name, doc.ring, color, tool.id]);
+    changed.current?.({
+      id: tool.id,
+      name: doc.name,
+      color,
+      ring: doc.ring,
+      view,
+      ...(day && day.served > 0 ? { simulated: { wait_s: day.mean_wait_s, ride_s: day.mean_ride_s } } : {}),
+    });
+  }, [view, day, doc.name, doc.ring, color, tool.id]);
 
   useEffect(() => {
     if (!map) return;
@@ -272,6 +318,58 @@ export function ZoneEditor({
         </div>
       )}
       {view && <Issues issues={view.issues} where={() => null} />}
+      {kits && simInput && (
+        <button type="button" className="btn self-start" disabled={simulating} onClick={simulate}>
+          {simulating ? t("drt.simulating") : t("drt.simulate")}
+        </button>
+      )}
+      {day && (
+        <section aria-labelledby="drt-sim-title" className="flex flex-col gap-2">
+          <h3 id="drt-sim-title" className="text-xs font-semibold text-slate-700">
+            {t("drt.sim.title")}
+          </h3>
+          <div className="grid grid-cols-2 gap-2">
+            <Stat
+              label={t("drt.sim.served")}
+              value={t("drt.sim.servedOf", { served: fmtInt(day.served), requests: fmtInt(day.requests) })}
+            />
+            <Stat label={t("drt.sim.rejected")} value={fmtInt(day.rejected)} />
+            <Stat label={t("drt.wait")} value={mins(day.mean_wait_s)} />
+            <Stat label={t("drt.sim.p90Wait")} value={mins(day.p90_wait_s)} />
+            <Stat label={t("drt.ride")} value={mins(day.mean_ride_s)} />
+            <Stat
+              label={t("drt.sim.detour")}
+              value={`+${Math.round(Math.max(0, day.mean_detour_factor - 1) * 100)} %`}
+            />
+            <Stat label={t("drt.sim.shared")} value={`${Math.round(day.shared_share * 100)} %`} />
+            <Stat label={t("drt.occupancy")} value={day.mean_occupancy.toFixed(1)} />
+            <Stat label={t("drt.vkm")} value={fmtInt(day.vehicle_km)} />
+            <Stat label={t("drt.sim.empty")} value={`${Math.round(day.empty_share * 100)} %`} />
+            <Stat label={t("drt.sim.perVehicleHour")} value={day.riders_per_vehicle_hour.toFixed(1)} />
+          </div>
+          <table className="w-full text-xs">
+            <thead>
+              <tr className="text-left text-slate-600">
+                <th className="font-medium">{t("drt.sim.hour")}</th>
+                <th className="font-medium">{t("drt.requests")}</th>
+                <th className="font-medium">{t("drt.sim.served")}</th>
+                <th className="font-medium">{t("drt.wait")}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {day.hours.map((h) => (
+                <tr key={h.start_s}>
+                  <td>{`${String(Math.floor(h.start_s / 3600) % 24).padStart(2, "0")}:${String(Math.floor((h.start_s % 3600) / 60)).padStart(2, "0")}`}</td>
+                  <td>{h.requests}</td>
+                  <td>{h.served}</td>
+                  <td>{h.served > 0 ? mins(h.mean_wait_s) : "–"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p className="text-[11px] text-slate-500">{t("drt.sim.method")}</p>
+        </section>
+      )}
       <p className="text-[11px] text-slate-500">
         {t("drt.method")}{" "}
         {t("kit.valuesFrom", {
