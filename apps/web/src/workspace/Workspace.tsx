@@ -843,6 +843,7 @@ export function Workspace({
                     riders={riders}
                   />
                   <TimetableTables
+                    projectName={project.name}
                     railway={railway}
                     streetLines={streetLines}
                     preferences={preferences}

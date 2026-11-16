@@ -1,7 +1,13 @@
 import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { StreetLinesDoc } from "../src/features/street-lines/saved";
-import { TimetableTables } from "../src/features/timetables/TimetableTables";
+import { allDays, TimetableTables } from "../src/features/timetables/TimetableTables";
+import {
+  directionGrids,
+  printableTimetable,
+  routeTrips,
+  timetableCsv,
+} from "../src/features/timetables/departures";
 import {
   dayServiceOf,
   editDay,
@@ -14,7 +20,9 @@ import {
 } from "../src/features/timetables/dayTypes";
 import {
   DEFAULT_SERVICE_DAY,
+  prefixTimetable,
   servicePeriods,
+  streetLineTimetable,
   type StreetLineInput,
 } from "../src/features/journey-planner/network";
 import type { LineView } from "../src/features/street-lines/types";
@@ -425,5 +433,81 @@ describe("day types", () => {
     // Saturday runs as on a weekday.
     fireEvent.change(screen.getByRole("combobox", { name: "Day type" }), { target: { value: "saturday" } });
     expect(trips()).toBe(week);
+  });
+});
+
+describe("departure timetables and downloads", () => {
+  const tt = () => streetLineTimetable(line(), undefined, "weekday")!;
+
+  it("lists every trip at every stop and a grid per direction", () => {
+    const trips = routeTrips(tt(), "street-7");
+    expect(trips.length).toBe(tripCount(line()));
+    const first = trips[0]!;
+    expect(first.id).toBe(`street-7-0@${5 * H}`);
+    // 70 s to S3, 20 s there, 50 s on to S4.
+    expect(first.stops.map((s) => [s.name, s.arriveS - 5 * H, s.departS - 5 * H])).toEqual([
+      ["S1", 0, 0],
+      ["S3", 70, 90],
+      ["S4", 140, 160],
+    ]);
+    const grids = directionGrids(trips);
+    expect(grids.map((g) => g.stops.map((s) => s.name))).toEqual([
+      ["S1", "S3", "S4"],
+      ["S4", "S1"],
+    ]);
+    // The last stop shows the arrival.
+    expect(grids[0]!.trips[0]!.times).toEqual([5 * H, 5 * H + 90, 5 * H + 140]);
+  });
+
+  it("writes every stop time with its block as CSV and a page per line and day type", () => {
+    const trips = routeTrips(tt(), "street-7");
+    const blocks = streetBlocks({ line: line(), layoverMin: 5, hasDepot: false, maxWaitMin: 20 });
+    const csv = timetableCsv([{ line: '7, "night"', mode: "bus", day: "sunday", trips, blocks }]);
+    const rows = csv.trim().split("\r\n");
+    expect(rows[0]).toBe("line,mode,day_type,direction,trip_id,block,stop_sequence,stop,arrival,departure");
+    expect(rows[1]).toBe(
+      `"7, ""night""",bus,sunday,0,street-7-0@${5 * H},"7, ""night""/1",1,S1,05:00:00,05:00:00`,
+    );
+    expect(rows).toHaveLength(1 + trips.reduce((n, t) => n + t.stops.length, 0));
+    const html = printableTimetable(
+      [
+        { line: "7", mode: "bus", day: "weekday", trips, blocks },
+        { line: "7", mode: "bus", day: "sunday", trips: [], blocks: [] },
+      ],
+      { weekday: "Weekday", saturday: "Saturday", sunday: "Sunday", holiday: "Public holiday" },
+      "Study <1>",
+    );
+    expect(html.match(/<article>/g)).toHaveLength(1);
+    expect(html).toContain("<title>Study &lt;1&gt;</title>");
+    expect(html).toContain("S1 → S4");
+    // Departures by hour: 05 every 12 min off peak, minutes from the first stop.
+    expect(html).toContain("<tr><th>05</th><td>00 12 24 36 48</td></tr>");
+    expect(html).toContain('<tr><td>S3</td><td class="n">2</td></tr>');
+  });
+
+  it("puts every day type in one GTFS timetable with its service id", () => {
+    const lines = (["weekday", "saturday", "sunday", "holiday"] as const).map((d) => [
+      d,
+      [
+        {
+          key: "street:0",
+          name: "7",
+          color: "#000",
+          mode: "bus",
+          units: 1,
+          trips: [],
+          blocks: [],
+          timetable: prefixTimetable(streetLineTimetable(line(), undefined, d)!, "s0:"),
+        },
+      ],
+    ]);
+    const all = allDays(Object.fromEntries(lines), {})!;
+    expect(new Set(all.frequency_patterns.map((p) => p.service_id))).toEqual(
+      new Set(["weekday", "saturday", "sunday", "holiday"]),
+    );
+    expect(new Set(all.frequency_patterns.map((p) => p.pattern_id)).size).toBe(8);
+    expect(all.frequency_patterns.map((p) => p.pattern_id)).toContain("s0:street-7-0~sunday");
+    expect(all.stops).toHaveLength(3);
+    expect(all.routes).toHaveLength(1);
   });
 });
