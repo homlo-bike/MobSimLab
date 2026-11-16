@@ -278,6 +278,18 @@ export const pt: Messages = {
   "prefs.delayLane": "Em uma faixa pintada de ônibus ou bonde",
   "prefs.delayDefault": "Biblioteca de premissas: {value} %",
   "prefs.delayReset": "Usar o valor da biblioteca",
+  "prefs.currencyTitle": "Moeda",
+  "prefs.currencyIntro":
+    "Todo o dinheiro do projeto é mostrado nesta moeda: tabelas de custos, benefícios, cenários e poupanças da bicicleta de carga.",
+  "prefs.currencyLabel": "Mostrar dinheiro em",
+  "prefs.currencyCountry": "A moeda do próprio país",
+  "prefs.currencyRate": "{code} por US$",
+  "prefs.currencyWorldBank": "Taxa de câmbio oficial do Banco Mundial ({year}): {value}",
+  "prefs.currencyMissing":
+    "O Banco Mundial não tem taxa de câmbio para {code}. Introduza uma para converter; até lá, cada ferramenta mostra a moeda do país.",
+  "prefs.currencyReset": "Usar a taxa do Banco Mundial",
+  "prefs.currencyHow":
+    "Os valores são convertidos através do dólar americano, com a taxa de câmbio oficial do Banco Mundial de cada país.",
   "prefs.moreTitle": "Regras, veículos e premissas",
   "prefs.moreIntro": "Cada variável com seu valor mínimo e recomendado, e os veículos que o projeto usa.",
   "prefs.rules": "Regras de projeto por modo, mínimas e recomendadas",

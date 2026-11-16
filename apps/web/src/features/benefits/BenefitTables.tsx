@@ -52,8 +52,11 @@ interface Props {
   onPreferences?: (doc: PreferencesDoc) => void;
   doc: BenefitsDoc | null;
   onDoc?: (doc: BenefitsDoc) => void;
-  /** From the cost tables: the estimate, the currency and the country code. */
-  costs: { estimate: CostEstimate; currency: string | null; country: string | null } | null;
+  /**
+   * From the cost tables: the estimate, the currency it is in, the country code and the factor from the
+   * country's currency to that one (the World Bank's figures are in the country's currency).
+   */
+  costs: { estimate: CostEstimate; currency: string | null; country: string | null; rate?: number } | null;
   /** Tests inject these. */
   api?: BenefitsApi;
   loadReach?: ReachLoader;
@@ -184,7 +187,8 @@ export function BenefitTables({
     };
   }, [areasKey, api]);
 
-  const country = useMemo(() => countryFigures(ind), [ind]);
+  const rate = costs?.rate ?? 1;
+  const country = useMemo(() => countryFigures(ind, rate), [ind, rate]);
   const prepared = useMemo(() => {
     if (!timetable || !net?.stations.length || !tiles || (!pop && !popError)) return null;
     return prepare({

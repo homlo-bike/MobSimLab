@@ -273,6 +273,17 @@ export const fa: Messages = {
   "prefs.delayLane": "در خط اتوبوس یا تراموای فقط رنگ‌شده",
   "prefs.delayDefault": "کتابخانهٔ فرض‌ها: {value} %",
   "prefs.delayReset": "استفاده از مقدار کتابخانه",
+  "prefs.currencyTitle": "واحد پول",
+  "prefs.currencyIntro":
+    "همهٔ مبالغ پروژه با این واحد پول نشان داده می‌شوند: جدول‌های هزینه، منافع، سناریوها و صرفه‌جویی دوچرخهٔ باری.",
+  "prefs.currencyLabel": "نمایش مبالغ به",
+  "prefs.currencyCountry": "واحد پول خود کشور",
+  "prefs.currencyRate": "{code} به ازای هر US$",
+  "prefs.currencyWorldBank": "نرخ رسمی ارز بانک جهانی ({year}): {value}",
+  "prefs.currencyMissing":
+    "بانک جهانی نرخ ارزی برای {code} ندارد. برای تبدیل یک نرخ وارد کنید؛ تا آن زمان هر ابزار واحد پول کشور را نشان می‌دهد.",
+  "prefs.currencyReset": "استفاده از نرخ بانک جهانی",
+  "prefs.currencyHow": "مبالغ از طریق دلار آمریکا و با نرخ رسمی ارز بانک جهانی برای هر کشور تبدیل می‌شوند.",
   "prefs.moreTitle": "قوانین، وسایل نقلیه و فرض‌ها",
   "prefs.moreIntro": "مقادیر حداقل و توصیه‌شده برای هر متغیر و وسایل نقلیه‌ای که پروژه استفاده می‌کند.",
   "prefs.rules": "قوانین طراحی برای هر شیوه (حداقل و توصیه‌شده)",

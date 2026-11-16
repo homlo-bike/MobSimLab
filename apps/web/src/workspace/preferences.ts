@@ -7,6 +7,8 @@ import { MIXED_DELAY, PAINTED_DELAY } from "../features/street-setup/model";
  */
 export interface PreferencesDoc {
   values: Record<string, number>;
+  /** ISO 4217 code of the currency all money is shown in; absent: each tool shows the country's own. */
+  currency?: string;
 }
 
 /** The delays in traffic a project can change, with the library's values. */

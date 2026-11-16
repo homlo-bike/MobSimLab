@@ -273,6 +273,17 @@ export const ja: Messages = {
   "prefs.delayLane": "塗装のみのバス・路面電車レーン",
   "prefs.delayDefault": "前提値ライブラリ：{value} %",
   "prefs.delayReset": "ライブラリの値を使う",
+  "prefs.currencyTitle": "通貨",
+  "prefs.currencyIntro":
+    "プロジェクトの金額はすべてこの通貨で表示されます（費用表、便益、シナリオ、カーゴバイクの節約額）。",
+  "prefs.currencyLabel": "金額の表示通貨",
+  "prefs.currencyCountry": "その国の通貨",
+  "prefs.currencyRate": "1 US$ あたりの {code}",
+  "prefs.currencyWorldBank": "世界銀行の公式為替レート（{year}）：{value}",
+  "prefs.currencyMissing":
+    "世界銀行には {code} の為替レートがありません。換算するにはレートを入力してください。それまでは各ツールがその国の通貨で表示します。",
+  "prefs.currencyReset": "世界銀行のレートを使う",
+  "prefs.currencyHow": "金額は米ドルを介して、各国の世界銀行公式為替レートで換算されます。",
   "prefs.moreTitle": "ルール、車両、前提値",
   "prefs.moreIntro": "各変数の最小値と推奨値、およびプロジェクトで使う車両。",
   "prefs.rules": "モード別の設計ルール（最小値と推奨値）",
