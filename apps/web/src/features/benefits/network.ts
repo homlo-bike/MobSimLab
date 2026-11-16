@@ -3,6 +3,8 @@
  * (same parent station, or the same name within 600 m, as the journey planner) form one zone.
  */
 import type { LonLat, Timetable } from "../journey-planner/types";
+import { distanceM } from "../../map/geo";
+import { LIBRARY_SAME_NAME_M } from "../../workspace/preferences";
 
 export interface Station {
   id: string;
@@ -28,18 +30,13 @@ export interface Net {
   lines: NetLine[];
 }
 
-const SAME_NAME_M = 600;
-
-/** Purpose: metres between two points (equirectangular; fine within a city). */
-export function metres(a: LonLat, b: LonLat): number {
-  const kx = 111_320 * Math.cos((((a[1] + b[1]) / 2) * Math.PI) / 180);
-  return Math.hypot((a[0] - b[0]) * kx, (a[1] - b[1]) * 110_574);
-}
-
 const norm = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/\s+/g, " ").trim();
 
-/** Purpose: the stations and lines of a timetable. */
-export function networkOf(tt: Timetable): Net {
+/**
+ * Purpose: the stations and lines of a timetable. Stops of one parent station, and stops with the same name
+ * within `sameNameM` metres (the project's `journey.same_name_station_m`), are one station.
+ */
+export function networkOf(tt: Timetable, sameNameM: number = LIBRARY_SAME_NAME_M): Net {
   const stops = tt.stops;
   const idx = new Map(stops.map((s, i) => [s.stop_id, i]));
   const parent = stops.map((_, i) => i);
@@ -62,7 +59,7 @@ export function networkOf(tt: Timetable): Net {
       if (
         a.stop_name &&
         norm(a.stop_name) === norm(b.stop_name) &&
-        metres([a.stop_lon, a.stop_lat], [b.stop_lon, b.stop_lat]) <= SAME_NAME_M
+        distanceM([a.stop_lon, a.stop_lat], [b.stop_lon, b.stop_lat]) <= sameNameM
       )
         join(i, j);
     }

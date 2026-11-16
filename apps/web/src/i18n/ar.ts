@@ -3,6 +3,7 @@ import { editorsAr } from "./editors/ar";
 import { cargoBikeAr } from "./cargo-bike/ar";
 import { depotsAr } from "./depots/ar";
 import { geodataAr } from "./geodata/ar";
+import { populationAr } from "./population/ar";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -271,6 +272,10 @@ export const ar: Messages = {
   "prefs.delayLane": "في مسار مخصّص مطلي للحافلات أو الترام",
   "prefs.delayDefault": "مكتبة الافتراضات: {value} %",
   "prefs.delayReset": "استخدام قيمة المكتبة",
+  "prefs.stationsTitle": "المحطات",
+  "prefs.stationsIntro":
+    "تُعدّ المواقف التي تحمل الاسم نفسه ضمن هذه المسافة محطة واحدة في المخطط التخطيطي ومخطط الرحلات وجداول المنافع والركاب.",
+  "prefs.libraryM": "مكتبة الافتراضات: {value} م",
   "prefs.currencyTitle": "العملة",
   "prefs.currencyIntro":
     "تُعرض كل المبالغ في المشروع بهذه العملة: جداول التكاليف والمنافع والسيناريوهات ووفورات دراجة الشحن.",
@@ -291,6 +296,33 @@ export const ar: Messages = {
   "prefs.rulesChanged": "المعدّلة: {count}",
   "prefs.rulesLibrary": "مكتبة الافتراضات: {value} {unit}",
   "prefs.rulesLibraryRange": "مكتبة الافتراضات: {value} {unit} (النطاق {low}–{high})",
+  "prefs.paramsTitle": "كل المعاملات",
+  "prefs.paramsIntro":
+    "كل قيمة في مكتبة الافتراضات. حدّد قيمتك لكل الأنماط أو لنمط واحد؛ قيمة النمط الواحد تتقدّم على قيمة كل الأنماط. تبقى قيمة المكتبة بجانب كل منها.",
+  "prefs.paramsGroup": "المجموعة",
+  "prefs.paramsMode": "النمط",
+  "prefs.paramsAllModes": "كل الأنماط",
+  "prefs.paramsFromAll": "قيمتك لكل الأنماط",
+  "prefs.group.modes": "الأنماط",
+  "prefs.group.operations": "التشغيل",
+  "prefs.group.demand": "الطلب",
+  "prefs.group.analysis": "التحليل",
+  "prefs.group.simulation": "المحاكاة",
+  "prefs.group.infrastructure": "معايير البنية التحتية",
+  "prefs.group.accessibility": "سهولة الوصول",
+  "prefs.group.depots": "المستودعات والشوارع",
+  "prefs.group.energy": "الطاقة والمناخ",
+  "prefs.group.cost": "التكاليف",
+  "prefs.group.benefits": "المنافع",
+  "prefs.group.fares": "الأجور",
+  "prefs.traction.battery": "بطارية",
+  "prefs.traction.diesel": "ديزل",
+  "prefs.traction.hydrogen": "هيدروجين",
+  "prefs.traction.cng": "غاز طبيعي مضغوط",
+  "prefs.traction.electric": "كهربائي",
+  "prefs.accessTitle": "إتاحة الرصيف",
+  "prefs.accessIntro":
+    "حدود الدرجة والفجوة بين الرصيف والقطار (TSI PRM)، وارتفاع الأرضية للقطارات التي لا تملكه في الكتالوج. تُفحص الخطوط عند كل محطة.",
   "prefs.vehiclesTitle": "المركبات",
   "prefs.vehiclesIntro":
     "مركبات الكتالوج التي يستخدمها هذا المشروع لكل نمط. لا تعرض أدوات خطوط الشوارع والسكك الحديدية إلا المحددة.",
@@ -376,6 +408,7 @@ export const ar: Messages = {
   ...cargoBikeAr,
   ...depotsAr,
   ...geodataAr,
+  ...populationAr,
   ...roadAr,
   ...PLUGIN_MESSAGES.ar,
 };

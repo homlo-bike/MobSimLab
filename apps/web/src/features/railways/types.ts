@@ -199,6 +199,10 @@ export interface CatalogueTrain {
   empty_mass_t: number | null;
   /** Seats plus standing places at the mode's planning density. */
   capacity: number;
+  /** Body width, m; null when the catalogue has none. */
+  width_m: number | null;
+  /** Floor height above rail at the doors, mm; null when the catalogue has none (the mode's default applies). */
+  floor_height_mm: number | null;
 }
 
 /** A service line of the design: the stations it stops at, its train and its headways. */
@@ -260,7 +264,7 @@ export interface EngineServiceLine {
   name: string;
   color: string;
   stations: string[];
-  vehicle: Omit<CatalogueTrain, "mode">;
+  vehicle: Omit<CatalogueTrain, "mode" | "width_m" | "floor_height_mm">;
   units: number;
   mode: RailMode;
   first_s: number;
@@ -268,6 +272,11 @@ export interface EngineServiceLine {
   peak_headway_s: number;
   offpeak_headway_s: number;
   dwell_s: number | null;
+  /** The project's running values (Project preferences); absent ones take the mode's. */
+  turnback_s?: number;
+  supplement_share?: number;
+  accel_ms2?: number;
+  decel_ms2?: number;
 }
 
 export type Severity = "error" | "warning" | "info" | "ok";

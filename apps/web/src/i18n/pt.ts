@@ -3,6 +3,7 @@ import { editorsPt } from "./editors/pt";
 import { cargoBikePt } from "./cargo-bike/pt";
 import { depotsPt } from "./depots/pt";
 import { geodataPt } from "./geodata/pt";
+import { populationPt } from "./population/pt";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -281,6 +282,10 @@ export const pt: Messages = {
   "prefs.delayLane": "Em uma faixa pintada de ônibus ou bonde",
   "prefs.delayDefault": "Biblioteca de premissas: {value} %",
   "prefs.delayReset": "Usar o valor da biblioteca",
+  "prefs.stationsTitle": "Estações",
+  "prefs.stationsIntro":
+    "Paradas com o mesmo nome dentro desta distância contam como uma só estação no mapa esquemático, no planejador de viagens e nas tabelas de benefícios e de passageiros.",
+  "prefs.libraryM": "Biblioteca de premissas: {value} m",
   "prefs.currencyTitle": "Moeda",
   "prefs.currencyIntro":
     "Todo o dinheiro do projeto é mostrado nesta moeda: tabelas de custos, benefícios, cenários e poupanças da bicicleta de carga.",
@@ -302,6 +307,33 @@ export const pt: Messages = {
   "prefs.rulesChanged": "{count} alterados",
   "prefs.rulesLibrary": "Biblioteca de premissas: {value} {unit}",
   "prefs.rulesLibraryRange": "Biblioteca de premissas: {value} {unit} (intervalo {low}–{high})",
+  "prefs.paramsTitle": "Todos os parâmetros",
+  "prefs.paramsIntro":
+    "Cada valor da biblioteca de pressupostos. Defina o seu para todos os modos ou para um modo; o valor de um modo prevalece sobre o de todos os modos. O valor da biblioteca fica ao lado.",
+  "prefs.paramsGroup": "Grupo",
+  "prefs.paramsMode": "Modo",
+  "prefs.paramsAllModes": "Todos os modos",
+  "prefs.paramsFromAll": "o seu valor para todos os modos",
+  "prefs.group.modes": "Modos",
+  "prefs.group.operations": "Operação",
+  "prefs.group.demand": "Procura",
+  "prefs.group.analysis": "Análise",
+  "prefs.group.simulation": "Simulação",
+  "prefs.group.infrastructure": "Normas de infraestrutura",
+  "prefs.group.accessibility": "Acessibilidade",
+  "prefs.group.depots": "Depósitos e ruas",
+  "prefs.group.energy": "Energia e clima",
+  "prefs.group.cost": "Custos",
+  "prefs.group.benefits": "Benefícios",
+  "prefs.group.fares": "Tarifas",
+  "prefs.traction.battery": "bateria",
+  "prefs.traction.diesel": "diesel",
+  "prefs.traction.hydrogen": "hidrogénio",
+  "prefs.traction.cng": "gás natural (GNC)",
+  "prefs.traction.electric": "elétrico",
+  "prefs.accessTitle": "Acessibilidade da plataforma",
+  "prefs.accessIntro":
+    "Limites de degrau e vão entre plataforma e trem (ETI PMR) e a altura de piso usada para trens sem dado no catálogo. As linhas são verificadas em cada parada.",
   "prefs.vehiclesTitle": "Veículos",
   "prefs.vehiclesIntro":
     "Os veículos do catálogo que este projeto usa, por modo. As ferramentas de linhas de rua e ferroviárias só oferecem os marcados.",
@@ -392,6 +424,7 @@ export const pt: Messages = {
   ...cargoBikePt,
   ...depotsPt,
   ...geodataPt,
+  ...populationPt,
   ...roadPt,
   ...PLUGIN_MESSAGES.pt,
 };

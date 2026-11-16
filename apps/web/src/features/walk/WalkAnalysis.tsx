@@ -431,7 +431,18 @@ export function WalkAnalysis({
             <p className="text-xs text-slate-500">
               {t("walk.note")}
               {coverage.people
-                ? ` ${t("walk.popCredit", { year: coverage.people.year, countries: coverage.people.countries.join(", ") })}`
+                ? ` ${
+                    coverage.people.id?.startsWith("layer:")
+                      ? t("walk.popLayerCredit", {
+                          name: coverage.people.name,
+                          year: coverage.people.year ?? "–",
+                          licence: coverage.people.licence,
+                        })
+                      : t("walk.popCredit", {
+                          year: coverage.people.year ?? "",
+                          countries: coverage.people.countries.join(", "),
+                        })
+                  }`
                 : ""}
             </p>
           </>

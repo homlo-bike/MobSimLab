@@ -11,8 +11,11 @@ import { SessionService } from "./auth/session.service";
 import { ConfigModule } from "./config/config.module";
 import type { AppConfig } from "./config/env";
 import { HealthController } from "./health/health.controller";
+import { LoggingModule } from "./logging/logging.module";
 import { StreetNetworkModule } from "./street-network/street-network.module";
 import { BenefitsModule } from "./benefits/benefits.module";
+import { PopulationLayersController } from "./population/layers.controller";
+import { PopulationLayersModule } from "./population/layers.module";
 import { PopulationModule } from "./population/population.module";
 import { EconomyModule } from "./economy/economy.module";
 import { PlacesModule } from "./places/places.module";
@@ -40,10 +43,12 @@ export class AppModule {
       module: AppModule,
       imports: [
         ConfigModule.forRoot(config),
+        LoggingModule,
         StreetNetworkModule,
         GeodataModule,
         TerrainModule,
         PopulationModule,
+        PopulationLayersModule,
         EconomyModule,
         BenefitsModule,
         PlacesModule,
@@ -58,6 +63,7 @@ export class AppModule {
         ProjectsController,
         PluginsController,
         RunsController,
+        PopulationLayersController,
       ],
       providers: [
         AuditService,

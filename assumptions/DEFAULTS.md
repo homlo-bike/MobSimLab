@@ -605,6 +605,14 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 |---|---|---|---|---|---|---|---|
 | all | 30 | 60 | 180 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Added to the straight-line walk between two platforms of one station until rail-model provides platform-to-platform times from the station layout (ADR-0032, 06 §9.3). About one flight of stairs or a lift ride; deep metro stations need the high value. |
 
+### Stops with the same name within this straight-line distance are one station
+
+`journey.same_name_station_m` · unit: m · used by: schematic map stations, journey planner interchanges, benefits and ridership station catchments
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 200 | 600 | 1000 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | A bus or tram stop named like the railway station beside it is an interchange even when it is farther than an ordinary change walk: station names are shared within the 150 m grouping distance of the platform line, so a long platform's middle can be a few hundred metres from the stop. Lower it where unrelated stops share a name nearby; raise it for large stations with spread-out stops. |
+
 ## Analysis
 
 ### Walk rule: largest walk to the nearest stop or station, in minutes (headline coverage figure)
@@ -1011,6 +1019,14 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 | tram, light_rail | 1.25 | 1.35 | 1.45 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Half the vehicle width (2.40–2.65 m) plus a horizontal gap of about 50 mm for level boarding. |
 | metro | 1.45 | 1.55 | 1.65 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Half the car body width (2.80–3.10 m) plus a gap of about 75 mm (access.level_gap_horizontal_mm). |
 
+### Stopping tolerance, platform length needed beyond the train
+
+`platform.stopping_tolerance_m` · unit: m · used by: platform length check per station, platform length check per service line
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 2 | 5 | 10 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Room for a driver stopping a little short or long of the stop mark, as the railway design tool has used so far (5 m). Automatic train operation stops within about ±0.5 m, so 2 m is enough there; long trains at speed may need 10 m. |
+
 ### Station track beyond each platform end, up to the station's connection point
 
 `station.track_beyond_platform_m` · unit: m · used by: station layout drawing, overrun at termini
@@ -1173,6 +1189,21 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 | Context | Low | Central | High | Basis | Check | Sources | Rationale |
 |---|---|---|---|---|---|---|---|
 | all | 50 | 160 | 160 | cited | unverified | [tsi-prm](#src-tsi-prm) | TSI PRM step position: first step at most 160 mm below the platform. Clause to be checked. |
+
+### Vehicle floor height above rail, used when the vehicle file has none
+
+`vehicle.floor_height_mm` · unit: mm · used by: platform accessibility check per service line and station
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 300 | 800 | 1300 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Wide fallback across rail modes; the vehicle catalogue's own floor heights range from 300 to 1300 mm. |
+| tram | 300 | 350 | 400 | documented | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Low-floor trams in the vehicle catalogue have 300–400 mm floors at the doors (10 of 13 with a floor height; most 350 mm). |
+| light_rail | 350 | 400 | 1000 | documented | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Low-floor light rail and tram-trains in the catalogue have 356–550 mm floors; high-floor Stadtbahn stock (Stuttgart DT 8) has 1000 mm. |
+| metro | 700 | 1100 | 1200 | documented | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Most metro cars in the catalogue have 950–1200 mm floors (about 1100 mm typical); small-profile lines such as the Glasgow Subway are lower (695 mm). |
+| commuter_rail | 600 | 800 | 1100 | documented | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Commuter units in the catalogue have 780–1100 mm floors; low-floor units built for 550 or 760 mm platforms have about 600–800 mm. |
+| regional_rail | 500 | 780 | 1250 | documented | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Regional units in the catalogue range from low-floor (495–780 mm) to high-floor British stock (about 1250 mm); 780 mm suits the common 760 mm platform. |
+| long_distance_rail | 760 | 1200 | 1300 | documented | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Long-distance coaches in the catalogue have 1180–1296 mm floors. |
+| high_speed_rail | 760 | 1240 | 1300 | documented | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | High-speed trains in the catalogue have 940–1240 mm floors; the Talgo Avril is a low-floor exception at about 760 mm. |
 
 ## Depots and streets
 

@@ -43,6 +43,16 @@
       "stadler-citylink-tram-train-das-projekt-vehicle"
     ]
   },
+  "floorHeight": {
+    "value": 380,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "stadler-rail-citylink-saarbahn"
+    ],
+    "rationale": "Stadler's Saarbahn data sheet gives an access height of 350–380 mm; the upper value is used."
+  },
   "consist": {
     "bidirectional": {
       "value": true,
