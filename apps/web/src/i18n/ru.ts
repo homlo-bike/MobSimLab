@@ -1,5 +1,7 @@
+import { roadRu } from "./road/ru";
 import { editorsRu } from "./editors/ru";
 import { cargoBikeRu } from "./cargo-bike/ru";
+import { depotsRu } from "./depots/ru";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -278,6 +280,10 @@ export const ru: Messages = {
   "prefs.delayLane": "На выделенной разметкой полосе для автобусов или трамваев",
   "prefs.delayDefault": "Библиотека допущений: {value} %",
   "prefs.delayReset": "Использовать значение из библиотеки",
+  "prefs.stationsTitle": "Станции",
+  "prefs.stationsIntro":
+    "Одноимённые остановки в пределах этого расстояния считаются одной станцией на схеме сети, в планировщике поездок и в таблицах выгод и пассажиров.",
+  "prefs.libraryM": "Библиотека допущений: {value} м",
   "prefs.currencyTitle": "Валюта",
   "prefs.currencyIntro":
     "Все денежные суммы проекта показываются в этой валюте: таблицы затрат, выгоды, сценарии и экономия грузового велосипеда.",
@@ -300,8 +306,26 @@ export const ru: Messages = {
   "prefs.rulesChanged": "изменено: {count}",
   "prefs.rulesLibrary": "Библиотека допущений: {value} {unit}",
   "prefs.rulesLibraryRange": "Библиотека допущений: {value} {unit} (диапазон {low}–{high})",
-  "prefs.vehicles": "Используемый подвижной состав из каталога",
-  "prefs.switches": "Стрелочные переводы из каталога стрелок",
+  "prefs.accessTitle": "Доступность платформ",
+  "prefs.accessIntro":
+    "Пределы ступеньки и зазора между платформой и поездом (TSI PRM) и высота пола для поездов без неё в каталоге. Линии проверяются на каждой остановке.",
+  "prefs.vehiclesTitle": "Подвижной состав",
+  "prefs.vehiclesIntro":
+    "Транспортные средства из каталога, которые использует проект, по видам транспорта. Инструменты линий показывают только отмеченные.",
+  "prefs.vehiclesMode": "Вид транспорта",
+  "prefs.vehiclesUsed": "используется: {used} из {total}",
+  "prefs.vehiclesAll": "Использовать все",
+  "prefs.vehiclesFacts": "{length} м · {places} мест · {speed} км/ч",
+  "prefs.vehiclesLast": "Для каждого вида транспорта остаётся хотя бы одно средство.",
+  "prefs.switchesTitle": "Стрелочные переводы",
+  "prefs.switchesIntro":
+    "Стрелочные переводы и пересечения из каталога, которые редактор железных дорог предлагает для каждого вида рельсового транспорта, и перевод по умолчанию для новых.",
+  "prefs.switchesTurnouts": "Стрелочные переводы",
+  "prefs.switchesSlips": "Перекрёстные переводы",
+  "prefs.switchesDefault": "По умолчанию",
+  "prefs.switchesFacts": "1:{n} · R {radius} м · {speed} км/ч на боковой путь",
+  "prefs.switchesLast":
+    "Перевод по умолчанию остаётся в работе. Чтобы убрать его, сначала выберите другой по умолчанию.",
   "prefs.calendar": "Календарь, спрос и затраты",
 
   "job.stepOf": "Шаг {step} из {steps}",
@@ -372,5 +396,7 @@ export const ru: Messages = {
 
   ...editorsRu,
   ...cargoBikeRu,
+  ...depotsRu,
+  ...roadRu,
   ...PLUGIN_MESSAGES.ru,
 };

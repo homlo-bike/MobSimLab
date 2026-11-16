@@ -1,5 +1,7 @@
+import { roadHi } from "./road/hi";
 import { editorsHi } from "./editors/hi";
 import { cargoBikeHi } from "./cargo-bike/hi";
+import { depotsHi } from "./depots/hi";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -275,6 +277,10 @@ export const hi: Messages = {
   "prefs.delayLane": "पेंट की गई बस या ट्राम लेन में",
   "prefs.delayDefault": "धारणा पुस्तकालय: {value} %",
   "prefs.delayReset": "पुस्तकालय मान इस्तेमाल करें",
+  "prefs.stationsTitle": "स्टेशन",
+  "prefs.stationsIntro":
+    "इस दूरी के भीतर एक ही नाम वाले स्टॉप योजनाबद्ध नक्शे, यात्रा योजनाकार और लाभ व यात्री तालिकाओं में एक स्टेशन गिने जाते हैं।",
+  "prefs.libraryM": "धारणा पुस्तकालय: {value} मी",
   "prefs.currencyTitle": "मुद्रा",
   "prefs.currencyIntro":
     "परियोजना की सारी राशियाँ इसी मुद्रा में दिखती हैं: लागत तालिकाएँ, लाभ, परिदृश्य और कार्गो बाइक की बचत।",
@@ -296,8 +302,25 @@ export const hi: Messages = {
   "prefs.rulesChanged": "बदले गए: {count}",
   "prefs.rulesLibrary": "धारणा पुस्तकालय: {value} {unit}",
   "prefs.rulesLibraryRange": "धारणा पुस्तकालय: {value} {unit} (सीमा {low}–{high})",
-  "prefs.vehicles": "इस्तेमाल किए गए वाहन, वाहन सूची से",
-  "prefs.switches": "पटरी स्विच, स्विच सूची से",
+  "prefs.accessTitle": "प्लेटफ़ॉर्म सुगम्यता",
+  "prefs.accessIntro":
+    "प्लेटफ़ॉर्म और ट्रेन के बीच सीढ़ी और अंतर की सीमाएँ (TSI PRM), और सूची में न होने वाली ट्रेनों की फ़र्श ऊँचाई। लाइनें हर स्टॉप पर जाँची जाती हैं।",
+  "prefs.vehiclesTitle": "वाहन",
+  "prefs.vehiclesIntro":
+    "इस परियोजना में हर साधन के लिए इस्तेमाल होने वाले सूची के वाहन। सड़क लाइन और रेलवे उपकरण केवल चुने गए वाहन दिखाते हैं।",
+  "prefs.vehiclesMode": "साधन",
+  "prefs.vehiclesUsed": "{total} में से {used} इस्तेमाल में",
+  "prefs.vehiclesAll": "सभी इस्तेमाल करें",
+  "prefs.vehiclesFacts": "{length} मी · {places} स्थान · {speed} किमी/घं",
+  "prefs.vehiclesLast": "हर साधन के लिए कम से कम एक वाहन इस्तेमाल में रहता है।",
+  "prefs.switchesTitle": "पॉइंट्स",
+  "prefs.switchesIntro":
+    "सूची के वे पॉइंट्स और क्रॉसिंग जो रेलवे संपादक हर रेल साधन के लिए देता है, और वह पॉइंट जिससे नए पॉइंट शुरू होते हैं।",
+  "prefs.switchesTurnouts": "पॉइंट्स",
+  "prefs.switchesSlips": "क्रॉसिंग में स्लिप",
+  "prefs.switchesDefault": "डिफ़ॉल्ट",
+  "prefs.switchesFacts": "1:{n} · R {radius} मी · मुड़ती लाइन पर {speed} किमी/घं",
+  "prefs.switchesLast": "डिफ़ॉल्ट पॉइंट इस्तेमाल में रहता है। उसे हटाने के लिए पहले दूसरा डिफ़ॉल्ट चुनें।",
   "prefs.calendar": "कैलेंडर, माँग और लागत",
 
   "job.stepOf": "चरण {step} / {steps}",
@@ -367,5 +390,7 @@ export const hi: Messages = {
 
   ...editorsHi,
   ...cargoBikeHi,
+  ...depotsHi,
+  ...roadHi,
   ...PLUGIN_MESSAGES.hi,
 };

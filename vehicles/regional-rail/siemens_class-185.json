@@ -52,6 +52,15 @@
       "wp-british-rail-class-185"
     ]
   },
+  "floorHeight": {
+    "value": 1247,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-british-rail-class-185"
+    ]
+  },
   "consist": {
     "carLengths": {
       "value": [

@@ -2,7 +2,7 @@
 
 The worker logs JSON lines to stdout. Every entry is redacted first with the shared deny-list
 (``contracts/log-redaction.json``). WARN, ERROR and CRITICAL entries are also stored in ``logs.entry`` with
-origin ``worker``, through ``logs.append_worker`` (``db/migrations/0009_logs.sql``), on a connection of their
+origin ``worker``, through ``logs.append_worker`` (``db/migrations/0010_logs.sql``), on a connection of their
 own. A store that fails is dropped: logging never stops a run.
 """
 

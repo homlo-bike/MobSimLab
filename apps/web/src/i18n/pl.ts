@@ -1,5 +1,7 @@
+import { roadPl } from "./road/pl";
 import { editorsPl } from "./editors/pl";
 import { cargoBikePl } from "./cargo-bike/pl";
+import { depotsPl } from "./depots/pl";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -277,6 +279,10 @@ export const pl: Messages = {
   "prefs.delayLane": "Na buspasie lub pasie tramwajowym tylko wymalowanym",
   "prefs.delayDefault": "Biblioteka założeń: {value} %",
   "prefs.delayReset": "Użyj wartości z biblioteki",
+  "prefs.stationsTitle": "Stacje",
+  "prefs.stationsIntro":
+    "Przystanki o tej samej nazwie w tej odległości liczą się jako jedna stacja na schemacie sieci, w planerze podróży oraz w tabelach korzyści i pasażerów.",
+  "prefs.libraryM": "Biblioteka założeń: {value} m",
   "prefs.currencyTitle": "Waluta",
   "prefs.currencyIntro":
     "Wszystkie kwoty w projekcie są pokazywane w tej walucie: tabele kosztów, korzyści, scenariusze i oszczędności roweru towarowego.",
@@ -298,8 +304,26 @@ export const pl: Messages = {
   "prefs.rulesChanged": "zmienione: {count}",
   "prefs.rulesLibrary": "Biblioteka założeń: {value} {unit}",
   "prefs.rulesLibraryRange": "Biblioteka założeń: {value} {unit} (zakres {low}–{high})",
-  "prefs.vehicles": "Używane pojazdy (z katalogu pojazdów)",
-  "prefs.switches": "Rozjazdy (z katalogu rozjazdów)",
+  "prefs.accessTitle": "Dostępność peronów",
+  "prefs.accessIntro":
+    "Limity stopnia i szczeliny między peronem a pociągiem (TSI PRM) oraz wysokość podłogi dla pociągów bez tej wartości w katalogu. Linie są sprawdzane na każdym przystanku.",
+  "prefs.vehiclesTitle": "Pojazdy",
+  "prefs.vehiclesIntro":
+    "Pojazdy z katalogu używane w tym projekcie, dla każdego środka transportu. Narzędzia linii ulicznych i kolejowych pokazują tylko zaznaczone.",
+  "prefs.vehiclesMode": "Środek transportu",
+  "prefs.vehiclesUsed": "używane: {used} z {total}",
+  "prefs.vehiclesAll": "Użyj wszystkich",
+  "prefs.vehiclesFacts": "{length} m · {places} miejsc · {speed} km/h",
+  "prefs.vehiclesLast": "Dla każdego środka transportu co najmniej jeden pojazd pozostaje w użyciu.",
+  "prefs.switchesTitle": "Rozjazdy",
+  "prefs.switchesIntro":
+    "Rozjazdy i skrzyżowania z katalogu, które edytor kolejowy oferuje dla każdego środka transportu szynowego, oraz rozjazd, od którego zaczynają nowe.",
+  "prefs.switchesTurnouts": "Rozjazdy",
+  "prefs.switchesSlips": "Rozjazdy krzyżowe",
+  "prefs.switchesDefault": "Domyślny",
+  "prefs.switchesFacts": "1:{n} · R {radius} m · {speed} km/h na zwrotny",
+  "prefs.switchesLast":
+    "Domyślny rozjazd pozostaje w użyciu. Aby go wyłączyć, najpierw wybierz inny domyślny.",
   "prefs.calendar": "Kalendarz, popyt i koszty",
 
   "job.stepOf": "Krok {step} z {steps}",
@@ -368,5 +392,7 @@ export const pl: Messages = {
 
   ...editorsPl,
   ...cargoBikePl,
+  ...depotsPl,
+  ...roadPl,
   ...PLUGIN_MESSAGES.pl,
 };

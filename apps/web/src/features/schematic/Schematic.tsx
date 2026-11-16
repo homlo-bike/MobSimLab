@@ -12,6 +12,7 @@ import { LAYERS, schematicNetwork } from "./lines";
 import { type AreaDraft, NetworkMap } from "./NetworkMap";
 import { StripMap } from "./StripMap";
 import { loadWater, waterBox, type WaterLoader, type WaterShapes } from "./water";
+import { LIBRARY_SAME_NAME_M } from "../../workspace/preferences";
 
 export { EMPTY_SCHEMATIC, type SchematicArea, type SchematicDoc };
 
@@ -53,6 +54,7 @@ export function Schematic({
   railway,
   streetLines,
   pluginLines = [],
+  sameNameM = LIBRARY_SAME_NAME_M,
   doc,
   onDoc,
   projectName,
@@ -64,6 +66,8 @@ export function Schematic({
   railway: Network | null | undefined;
   streetLines: StreetLinesDoc | null | undefined;
   pluginLines?: readonly PluginLineInput[];
+  /** Stops with the same name within this many metres are one station (Project preferences). */
+  sameNameM?: number;
   doc: SchematicDoc | null | undefined;
   onDoc?: (d: SchematicDoc) => void;
   projectName: string;
@@ -80,8 +84,8 @@ export function Schematic({
   // The plugin lines arrive as a new list on every render of the workspace: compare their content.
   const pluginJson = JSON.stringify(pluginLines);
   const base = useMemo(
-    () => schematicNetwork(railway, streetLines, JSON.parse(pluginJson) as PluginLineInput[]),
-    [railway, streetLines, pluginJson],
+    () => schematicNetwork(railway, streetLines, JSON.parse(pluginJson) as PluginLineInput[], sameNameM),
+    [railway, streetLines, pluginJson, sameNameM],
   );
   const net = useSchematicDetails(base, railway, loadRail, fetchHeights);
   const [view, setView] = useState<"network" | "line">("network");

@@ -1,5 +1,7 @@
+import { roadNl } from "./road/nl";
 import { editorsNl } from "./editors/nl";
 import { cargoBikeNl } from "./cargo-bike/nl";
+import { depotsNl } from "./depots/nl";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -278,6 +280,10 @@ export const nl: Messages = {
   "prefs.delayLane": "Op een geschilderde bus- of trambaan",
   "prefs.delayDefault": "Aannamebibliotheek: {value} %",
   "prefs.delayReset": "Waarde van de bibliotheek gebruiken",
+  "prefs.stationsTitle": "Stations",
+  "prefs.stationsIntro":
+    "Haltes met dezelfde naam binnen deze afstand tellen als één station in de netkaart, de reisplanner en de baten- en reizigerstabellen.",
+  "prefs.libraryM": "Aannamebibliotheek: {value} m",
   "prefs.currencyTitle": "Valuta",
   "prefs.currencyIntro":
     "Alle bedragen in het project worden in deze valuta getoond: de kostentabellen, de baten, de scenario's en de besparingen van de bakfiets.",
@@ -299,8 +305,26 @@ export const nl: Messages = {
   "prefs.rulesChanged": "{count} gewijzigd",
   "prefs.rulesLibrary": "Aannamebibliotheek: {value} {unit}",
   "prefs.rulesLibraryRange": "Aannamebibliotheek: {value} {unit} (bereik {low}–{high})",
-  "prefs.vehicles": "Gebruikte voertuigen, uit de voertuigcatalogus",
-  "prefs.switches": "Wissels, uit de wisselcatalogus",
+  "prefs.accessTitle": "Toegankelijkheid van perrons",
+  "prefs.accessIntro":
+    "Grenzen voor trede en kier tussen perron en trein (TSI PRM) en de vloerhoogte voor treinen zonder waarde in de voertuigcatalogus. Lijnen worden bij elke halte gecontroleerd.",
+  "prefs.vehiclesTitle": "Voertuigen",
+  "prefs.vehiclesIntro":
+    "De catalogusvoertuigen die dit project per vervoerswijze gebruikt. De straatlijn- en spoortools bieden alleen de aangevinkte aan.",
+  "prefs.vehiclesMode": "Vervoerswijze",
+  "prefs.vehiclesUsed": "{used} van {total} gebruikt",
+  "prefs.vehiclesAll": "Alle gebruiken",
+  "prefs.vehiclesFacts": "{length} m · {places} plaatsen · {speed} km/h",
+  "prefs.vehiclesLast": "Elke vervoerswijze houdt minstens één voertuig in gebruik.",
+  "prefs.switchesTitle": "Wissels",
+  "prefs.switchesIntro":
+    "De wissels en kruisingen uit de catalogus die de spoorwegeditor per railvervoerswijze aanbiedt, en de wissel waarmee nieuwe wissels beginnen.",
+  "prefs.switchesTurnouts": "Wissels",
+  "prefs.switchesSlips": "Engelse wissels",
+  "prefs.switchesDefault": "Standaard",
+  "prefs.switchesFacts": "1:{n} · R {radius} m · {speed} km/h afbuigend",
+  "prefs.switchesLast":
+    "De standaardwissel blijft in gebruik. Kies eerst een andere standaard om hem weg te laten.",
   "prefs.calendar": "Kalender, vraag en kosten",
 
   "job.stepOf": "Stap {step} van {steps}",
@@ -371,5 +395,7 @@ export const nl: Messages = {
 
   ...editorsNl,
   ...cargoBikeNl,
+  ...depotsNl,
+  ...roadNl,
   ...PLUGIN_MESSAGES.nl,
 };

@@ -19,7 +19,7 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 /** Largest stored context, in characters of JSON; a bigger one is replaced by a note. */
 const MAX_CONTEXT = 12_000;
 
-/** A row of logs.entry (db/migrations/0009_logs.sql). */
+/** A row of logs.entry (db/migrations/0010_logs.sql). */
 export interface LogRow {
   at: string;
   level: string;

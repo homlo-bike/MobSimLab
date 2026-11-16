@@ -199,6 +199,10 @@ export interface CatalogueTrain {
   empty_mass_t: number | null;
   /** Seats plus standing places at the mode's planning density. */
   capacity: number;
+  /** Body width, m; null when the catalogue has none. */
+  width_m: number | null;
+  /** Floor height above rail at the doors, mm; null when the catalogue has none (the mode's default applies). */
+  floor_height_mm: number | null;
 }
 
 /** A service line of the design: the stations it stops at, its train and its headways. */
@@ -260,7 +264,7 @@ export interface EngineServiceLine {
   name: string;
   color: string;
   stations: string[];
-  vehicle: Omit<CatalogueTrain, "mode">;
+  vehicle: Omit<CatalogueTrain, "mode" | "width_m" | "floor_height_mm">;
   units: number;
   mode: RailMode;
   first_s: number;
@@ -583,6 +587,8 @@ export interface RailEngine {
   setStreetSetups(setups: readonly StreetSetup[]): void;
   /** Design values the project's preferences change for every mode, by name; the next build uses them. */
   setValues?(values: Record<string, number>): void;
+  /** The project's choice from the switches and crossings catalogue (Project preferences → Switches). */
+  setSwitchChoice?(choice: SwitchChoice): void;
   /** A signal plan generated from the last build, with ids continuing the document's. */
   generateSignals(): Signal[];
   /** Where a signal placed at a map position would stand, within `maxM`. */
@@ -595,3 +601,9 @@ export interface RailEngine {
 }
 
 export type RailEngineLoader = () => Promise<RailEngine>;
+
+/** The project's choice from the switches and crossings catalogue: elements left out, default turnout per mode. */
+export interface SwitchChoice {
+  off: string[];
+  default_turnout: Record<string, string>;
+}

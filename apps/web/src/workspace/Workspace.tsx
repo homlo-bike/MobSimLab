@@ -10,6 +10,7 @@ import { projectTimetable } from "../features/benefits/timetable";
 import { CargoBikeTab } from "../features/cargo-bike/CargoBikeTab";
 import type { CargoBikeDoc } from "../features/cargo-bike/model";
 import { CapacityRun } from "../features/capacity/CapacityRun";
+import { RoadSimulation } from "../features/road-sim/RoadSimulation";
 import { economyApi, type Prices } from "../features/costs/economy";
 import { useProjectCurrency } from "../features/costs/currency";
 import type { Estimate as CostEstimate } from "../features/costs/model";
@@ -18,6 +19,8 @@ import { WalkAnalysis } from "../features/walk/WalkAnalysis";
 import { JourneyPlanner } from "../features/journey-planner/JourneyPlanner";
 import { NoiseMap } from "../features/noise/NoiseMap";
 import { NetworkTables } from "../features/tables/NetworkTables";
+import { FareTables } from "../features/fares/FareTables";
+import type { FaresDoc } from "../features/fares/model";
 import { Scenarios } from "../features/tables/Scenarios";
 import type { ScenariosDoc } from "../features/tables/scenarioModel";
 import { noiseCalculationIn } from "../features/noise/plugin";
@@ -82,9 +85,19 @@ import { TopBar } from "../shell/TopBar";
 import { PROJECT_TOUR, Tour } from "../shell/Tour";
 import { PrintReport } from "./PrintReport";
 import { ProjectPreferences } from "./ProjectPreferences";
-import { delaysFrom, designValuesFrom, type PreferencesDoc } from "./preferences";
+import {
+  delaysFrom,
+  designValuesFrom,
+  type PreferencesDoc,
+  sameNameStationM,
+  switchChoiceFrom,
+  vehiclesOffFrom,
+} from "./preferences";
+import { VehiclesOffContext } from "./projectVehicles";
 import type { DelayShares } from "../features/street-lines/types";
 import { type Drawings, useDrawings } from "./useDrawings";
+import { DepotEditor } from "../features/depots/DepotEditor";
+import type { DepotsDoc, SavedDepot } from "../features/depots/types";
 
 type IconFn = (p: { size?: number }) => ReactNode;
 const TAB_ICONS: Record<CoreTab, IconFn> = {
@@ -105,11 +118,12 @@ const MAP_TABS: readonly Tab[] = ["simulator", "create", "gis", ...PLUGIN_TABS.m
 const NO_SETUPS: StreetSetup[] = [];
 const NO_STREET_LINES: SavedStreetLine[] = [];
 
-type SimView = "test" | "journey";
+type SimView = "test" | "journey" | "road";
 type GisView = "streets" | "regions";
 const NO_REGIONS: Region[] = [];
 const NO_FEEDS: GtfsFeed[] = [];
-/** "street", "rail", or the id of a plugin tool (cable car, ferry…). */
+const NO_DEPOTS: SavedDepot[] = [];
+/** "street", "rail", "depots", or the id of a plugin tool (cable car, ferry…). */
 type Build = string;
 /** The economy API for the project's currency rate. */
 const ECONOMY = economyApi();
@@ -158,24 +172,36 @@ export function Workspace({
     currency: string | null;
     country: string | null;
     rate: number;
+    /** Units of the currency per 2023 international dollar (PPP factor × price escalation), for fares. */
+    perIntl: number;
   } | null>(null);
   const onCostEstimate = useCallback(
     (estimate: CostEstimate, prices: Prices, country: string | null, rate: number) =>
-      setCostInfo({ estimate, currency: prices.currency, country, rate }),
+      setCostInfo({
+        estimate,
+        currency: prices.currency,
+        country,
+        rate,
+        perIntl: prices.ppp * prices.escalation,
+      }),
     [],
   );
-  // The benefit estimate's riders a weekday per line (low, medium, high), for the service table.
-  const [riders, setRiders] = useState<Record<string, Triple> | null>(null);
-  const onBenefitEstimate = useCallback(
-    (e: BenefitEstimate | null) =>
-      setRiders(
-        e
-          ? Object.fromEntries(
-              e.rows.filter((r) => r.scope === "line").map((r) => [r.id, r.values.ridership_daily]),
-            )
-          : null,
-      ),
-    [],
+  // The benefit estimate: riders a weekday per line (low, medium, high) for the service table, and
+  // boardings a year for the fare revenue table.
+  const [benefitEst, setBenefitEst] = useState<BenefitEstimate | null>(null);
+  const riders = useMemo(
+    () =>
+      benefitEst
+        ? (Object.fromEntries(
+            benefitEst.rows.filter((r) => r.scope === "line").map((r) => [r.id, r.values.ridership_daily]),
+          ) as Record<string, Triple>)
+        : null,
+    [benefitEst],
+  );
+  const onBenefitEstimate = useCallback((e: BenefitEstimate | null) => setBenefitEst(e), []);
+  const farePrices = useMemo(
+    () => (costInfo ? { currency: costInfo.currency, perIntl: costInfo.perIntl } : null),
+    [costInfo?.currency, costInfo?.perIntl],
   );
   const [build, setBuild] = useState<Build | null>(null);
   // The street line being edited, as the tool last routed it, so the journey planner can ride it.
@@ -247,6 +273,10 @@ export function Workspace({
     () => (projectKey && typeof api.runs === "function" ? api.runs(projectKey) : null),
     [api, projectKey],
   );
+  const roadRuns = useMemo(
+    () => (projectKey && typeof api.roadRuns === "function" ? api.roadRuns(projectKey) : null),
+    [api, projectKey],
+  );
 
   // What is drawn in the project, saved with it a moment after each change.
   const drawings = useDrawings(api, projectId, editable);
@@ -265,6 +295,8 @@ export function Workspace({
   const benefitsDoc = drawings.doc<BenefitsDoc>("benefits");
   // Project preferences: assumption values the project changes, such as the delays in traffic.
   const preferences = drawings.doc<PreferencesDoc>("preferences");
+  // Road depots shared by the street lines (depot tool).
+  const depotsDoc = drawings.doc<DepotsDoc>("depots");
   // The currency all money is shown in, and its exchange rate (Project preferences).
   const currencyState = useProjectCurrency(preferences, ECONOMY);
   const currency = currencyState.currency;
@@ -272,6 +304,16 @@ export function Workspace({
   const delays = useMemo(() => JSON.parse(delaysJson) as DelayShares, [delaysJson]);
   const rulesJson = JSON.stringify(designValuesFrom(preferences));
   const designValues = useMemo(() => JSON.parse(rulesJson) as Record<string, number>, [rulesJson]);
+  const switchJson = JSON.stringify(switchChoiceFrom(preferences));
+  const switchChoice = useMemo(
+    () => JSON.parse(switchJson) as ReturnType<typeof switchChoiceFrom>,
+    [switchJson],
+  );
+  const offJson = JSON.stringify([...vehiclesOffFrom(preferences)]);
+  const vehiclesOff = useMemo(
+    () => new Set(JSON.parse(offJson) as string[]) as ReadonlySet<string>,
+    [offJson],
+  );
   // Street setups made before projects saved drawings were kept in this browser: move them to the project once.
   useEffect(() => {
     if (!drawings.loaded || !editable) return;
@@ -497,14 +539,16 @@ export function Workspace({
       : tab === "create"
         ? chosen === "rail"
           ? t("create.rail")
-          : chosenPlugin
-            ? chosenPlugin.label
-            : t("create.street")
+          : chosen === "depots"
+            ? t("create.depots")
+            : chosenPlugin
+              ? chosenPlugin.label
+              : t("create.street")
         : tabLabel(pluginTab ? pluginTab.id : "gis");
   const pluginLineList = Object.values(pluginLines).filter((l): l is PluginLineInput => l !== null);
   const demandZoneList = Object.values(demandZones).filter((z): z is DemandZone => z !== null);
 
-  return (
+  const body = (
     <div className="flex h-full flex-col">
       {top}
       {drawings.clash && (
@@ -562,6 +606,19 @@ export function Workspace({
                 />
               }
               railTopology={railTopology}
+              depots={depotsDoc?.depots ?? NO_DEPOTS}
+              onOpenDepots={() => setBuild("depots")}
+            />
+          )}
+          {project && drawings.loaded && tab === "create" && editable && chosen === "depots" && (
+            <DepotEditor
+              key={`${projectId}-${drawings.generation("depots")}`}
+              map={map}
+              panel={panel}
+              doc={depotsDoc ?? null}
+              onDoc={(d) => drawings.set("depots", d)}
+              lines={savedStreet}
+              prefs={preferences?.values}
             />
           )}
           {project && drawings.loaded && tab === "create" && editable && chosen === "rail" && (
@@ -572,6 +629,7 @@ export function Workspace({
               streetSetups={setups}
               delays={delays}
               designValues={designValues}
+              switchChoice={switchChoice}
               existingRailways={existingRailways}
               initial={railway}
               onDocChange={(d) => drawings.set("railway", d)}
@@ -647,6 +705,7 @@ export function Workspace({
               railLines={railLines}
               pluginLines={pluginLineList}
               demandZones={demandZoneList}
+              sameNameM={sameNameStationM(preferences?.values)}
               gtfsFeeds={gtfsFeeds}
               {...(editable ? { onGtfsFeeds: (d: GtfsNetworkDoc) => drawings.set("gtfs-network", d) } : {})}
               projectName={project.name}
@@ -755,6 +814,7 @@ export function Workspace({
                 railway={railway}
                 streetLines={streetLines}
                 pluginLines={pluginLineList}
+                sameNameM={sameNameStationM(preferences?.values)}
                 doc={drawings.doc<SchematicDoc>("schematic")}
                 onDoc={editable ? (d) => drawings.set("schematic", d) : undefined}
                 projectName={project.name}
@@ -810,6 +870,19 @@ export function Workspace({
                 />
               )}
               {project && drawings.loaded && (
+                <FareTables
+                  benefits={benefitEst}
+                  railway={railway}
+                  streetLines={streetLines}
+                  pluginLines={pluginLineList}
+                  schematic={drawings.doc<SchematicDoc>("schematic")}
+                  boardings={benefitsDoc?.boardings}
+                  prices={farePrices}
+                  doc={drawings.doc<FaresDoc>("fares")}
+                  onDoc={editable ? (d) => drawings.set("fares", d) : undefined}
+                />
+              )}
+              {project && drawings.loaded && (
                 <Scenarios
                   railway={railway}
                   streetLines={streetLines}
@@ -857,6 +930,14 @@ export function Workspace({
                   >
                     {t("sim.journey")}
                   </button>
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={sim === "road"}
+                    onClick={() => setSim("road")}
+                  >
+                    {t("sim.road")}
+                  </button>
                 </div>
               </div>
             )}
@@ -901,6 +982,14 @@ export function Workspace({
                   >
                     {t("create.rail")}
                   </button>
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={chosen === "depots"}
+                    onClick={() => setBuild("depots")}
+                  >
+                    {t("create.depots")}
+                  </button>
                   {PLUGIN_TOOLS.map((x) => (
                     <button
                       key={x.id}
@@ -940,6 +1029,17 @@ export function Workspace({
                       ? (b) => drawings.set("benefits", { ...(benefitsDoc ?? {}), boardings: b })
                       : undefined
                   }
+                />
+              )}
+              {tab === "simulator" && sim === "road" && (
+                <RoadSimulation
+                  api={roadRuns}
+                  canRun={editable}
+                  map={map}
+                  streetLines={streetLines?.lines}
+                  depots={depotsDoc?.depots}
+                  setups={setups}
+                  prefs={preferences?.values}
                 />
               )}
               {tab === "create" && !editable && (
@@ -1000,6 +1100,8 @@ export function Workspace({
       )}
     </div>
   );
+  // The catalogue vehicles the project does not use reach the line tools (Project preferences → Vehicles).
+  return <VehiclesOffContext.Provider value={vehiclesOff}>{body}</VehiclesOffContext.Provider>;
 }
 
 /** Purpose: how the project's drawings stand against the server, beside the project name. */
