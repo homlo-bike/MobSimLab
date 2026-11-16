@@ -14,6 +14,7 @@ import { RunsService } from "../simulation/runs.service";
 import { AccessService } from "./access.service";
 import { AnalysisService } from "./analysis.service";
 import { buildMcpServer } from "./mcp.tools";
+import { SCOPE_IDS } from "./oauth";
 import { OAuthService } from "./oauth.service";
 import { ScenariosService } from "./scenarios.service";
 
@@ -48,7 +49,7 @@ export class McpController {
   async handle(@Req() req: MslRequest, @Res() res: Response): Promise<void> {
     const metadata = new URL(".well-known/oauth-protected-resource/mcp", this.oauth.issuer() + "/").href;
     const challenge = (error?: string) =>
-      `Bearer resource_metadata="${metadata}"${error ? `, error="${error}"` : ""}, scope="${["project:read", "analysis:run", "scenario:write"].join(" ")}"`;
+      `Bearer resource_metadata="${metadata}"${error ? `, error="${error}"` : ""}, scope="${SCOPE_IDS.join(" ")}"`;
     const auth = req.header("authorization") ?? "";
     const m = /^Bearer\s+(\S+)$/i.exec(auth);
     const principal = m ? await this.oauth.resolve(m[1]!) : null;

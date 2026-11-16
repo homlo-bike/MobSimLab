@@ -22,6 +22,8 @@ export function testConfig(over: Partial<AppConfig> = {}): AppConfig {
     developmentMode: false,
     logging: { level: "info", console: false },
     secrets: { ...TEST_SECRETS },
+    // Setup mode only lets the named person claim the instance; the integration tests' first user is alice.
+    bootstrapOwnerSubject: "alice",
     ...over,
   };
 }

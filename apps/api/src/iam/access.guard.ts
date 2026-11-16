@@ -7,6 +7,7 @@ import {
   HttpStatus,
   Inject,
   Injectable,
+  Logger,
   UnauthorizedException,
 } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
@@ -32,6 +33,9 @@ const SAFE_METHODS = new Set(["GET", "HEAD", "OPTIONS"]);
  */
 @Injectable()
 export class AccessGuard implements CanActivate {
+  /** Refused requests that may be an attack (WARN, so they are also kept in the database for 30 days). */
+  private readonly security = new Logger("security");
+
   constructor(
     private readonly reflector: Reflector,
     private readonly sessions: SessionService,
@@ -64,16 +68,23 @@ export class AccessGuard implements CanActivate {
     addToLogContext({ userId: req.session?.actor.userId });
 
     const unsafe = !SAFE_METHODS.has(req.method);
-    if (unsafe && !this.sameOrigin(req)) throw new ForbiddenException("cross-origin request refused");
+    if (unsafe && !this.sameOrigin(req)) {
+      this.refused(req, "cross-origin request");
+      throw new ForbiddenException("cross-origin request refused");
+    }
 
     if (this.reflector.getAllAndOverride<boolean>(PUBLIC_KEY, targets)) return true;
     const action = this.reflector.getAllAndOverride<Action>(REQUIRES_KEY, targets);
     if (!action) throw new ForbiddenException("route has no permission declaration");
     if (!req.session) throw new UnauthorizedException();
     if (unsafe && !this.sessions.checkCsrf(req.session.tokenHash, req.header("x-csrf-token"))) {
+      this.refused(req, "missing or invalid CSRF token");
       throw new ForbiddenException("missing or invalid CSRF token");
     }
-    if (!can(req.session.actor, action)) throw new ForbiddenException();
+    if (!can(req.session.actor, action)) {
+      this.refused(req, `role ${req.session.actor.role} lacks ${action}`);
+      throw new ForbiddenException();
+    }
     if (unsafe) {
       await this.limit(ctx, `write:${req.session.actor.userId}`, this.config.rateLimits.writesPerMinute);
     }
@@ -83,11 +94,22 @@ export class AccessGuard implements CanActivate {
   /** Purpose: refuse with 429 and a Retry-After header when the bucket is empty. */
   private async limit(ctx: ExecutionContext, key: string, perMinute: number): Promise<void> {
     if (await this.limits.take(key, perMinute)) return;
+    this.refused(ctx.switchToHttp().getRequest<MslRequest>(), `rate limit ${key.split(":")[0]} exceeded`);
     ctx
       .switchToHttp()
       .getResponse<{ setHeader(n: string, v: string): void }>()
       .setHeader("Retry-After", String(Math.ceil(60 / perMinute)));
     throw new HttpException("too many requests, please wait a moment", HttpStatus.TOO_MANY_REQUESTS);
+  }
+
+  /**
+   * Purpose: log a refused request for the Administration log viewer and the container log. The client address is
+   * logged as its keyed hash (as in the audit log), the user as their ID; the request ID comes from the context.
+   */
+  private refused(req: MslRequest, why: string): void {
+    this.security.warn(
+      `request refused: ${why} (${req.method} ${req.path}, client ${this.sessions.ipHash(req.ip) ?? "unknown"})`,
+    );
   }
 
   /** Purpose: Origin check for state-changing requests; falls back to Referer, refuses when both are absent. */

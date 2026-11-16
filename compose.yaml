@@ -39,7 +39,8 @@ services:
     deploy: { resources: { limits: { cpus: "${MOBSIMLAB_CPUS:-4}", memory: "${MOBSIMLAB_MEMORY:-8g}" } } }
 
   postgres:
-    image: postgis/postgis:17-3.5
+    # Pinned by digest as well as tag (security review); update both together.
+    image: postgis/postgis:17-3.5@sha256:01a6a70e41e6c4467c8f55f6063555ed72db2d6662cd0d571040d42eadaeb6f6
     container_name: postgres
     environment:
       POSTGRES_USER: postgres

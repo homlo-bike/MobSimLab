@@ -125,6 +125,9 @@ export interface RoadNetworkSummary {
   tiles: number;
 }
 
+/** Most runs one person may have queued or running at once from the web app (agents have their own limit). */
+export const MAX_OPEN_RUNS_PER_USER = 20;
+
 /** The agent connection a run is started through, for the run limit and the audit trail (ADR-0035 §7). */
 export interface AgentVia {
   connectionId: string;
@@ -290,6 +293,7 @@ export class RunsService {
           };
     const id = await this.db.transaction().execute(async (tx) => {
       if (via) await this.holdToLimit(tx, via);
+      else await this.holdUserToLimit(tx, actor.userId);
       const r = await tx
         .insertInto("simulation.run")
         .values({
@@ -352,6 +356,7 @@ export class RunsService {
     await this.projects.authorize(actor, projectId, "edit");
     await this.db.transaction().execute(async (tx) => {
       if (via) await this.holdToLimit(tx, via);
+      else await this.holdUserToLimit(tx, actor.userId);
       const r = await tx
         .selectFrom("simulation.run")
         .select(["status", "result"])
@@ -804,6 +809,27 @@ export class RunsService {
     if (Number(open.n) >= via.maxOpen)
       throw new HttpException(
         `this agent connection already has ${open.n} runs queued or running (the limit is ${via.maxOpen}); wait for one to finish or cancel one`,
+        HttpStatus.TOO_MANY_REQUESTS,
+      );
+  }
+
+  /**
+   * Purpose: hold a person to MAX_OPEN_RUNS_PER_USER runs queued or running at once, started from the web app
+   * (security review: one member must not be able to fill the queue for everyone). Serialised per user like
+   * holdToLimit. 429 when the limit is reached.
+   */
+  private async holdUserToLimit(tx: Kysely<DB>, userId: string): Promise<void> {
+    await sql`SELECT pg_advisory_xact_lock(hashtext(${"user-runs:" + userId}))`.execute(tx);
+    const open = await tx
+      .selectFrom("simulation.run")
+      .select((eb) => eb.fn.countAll<string>().as("n"))
+      .where("created_by", "=", userId)
+      .where("agent_connection_id", "is", null)
+      .where("status", "in", ["queued", "running"])
+      .executeTakeFirstOrThrow();
+    if (Number(open.n) >= MAX_OPEN_RUNS_PER_USER)
+      throw new HttpException(
+        `you already have ${open.n} runs queued or running (the limit is ${MAX_OPEN_RUNS_PER_USER}); wait for one to finish or stop one`,
         HttpStatus.TOO_MANY_REQUESTS,
       );
   }

@@ -1,7 +1,7 @@
 import { Kysely, PostgresDialect } from "kysely";
 import { Pool } from "pg";
 import { AuditService } from "../audit/audit.service";
-import { ConfigError, loadConfig } from "../config/env";
+import { bootstrapOwnerSet, ConfigError, loadConfig } from "../config/env";
 import type { DB } from "../db/database";
 
 /**
@@ -76,6 +76,10 @@ async function main(argv: string[]): Promise<number> {
     process.stdout.write(
       `Instance is in setup mode again; ${n} owner(s) demoted to admin. The next permitted sign-in becomes Owner.\n`,
     );
+    if (!bootstrapOwnerSet(config))
+      process.stdout.write(
+        "Set MOBSIMLAB_BOOTSTRAP_OWNER_EMAIL or MOBSIMLAB_BOOTSTRAP_OWNER_SUBJECT in .env and restart: until then nobody can sign in.\n",
+      );
     return 0;
   } finally {
     await db.destroy();

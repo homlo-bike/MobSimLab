@@ -4,7 +4,7 @@
 //! files written by `tools/osm/overpass_fetch.py`. Data © OpenStreetMap contributors, ODbL.
 
 use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
+use quick_xml::{Reader, XmlVersion};
 use std::collections::{BTreeMap, HashSet};
 
 /// Tag map of one OSM element.
@@ -95,7 +95,11 @@ fn attr(e: &BytesStart, key: &[u8]) -> Option<String> {
     e.attributes()
         .flatten()
         .find(|a| a.key.as_ref() == key)
-        .and_then(|a| a.unescape_value().ok().map(|v| v.into_owned()))
+        .and_then(|a| {
+            a.normalized_value(XmlVersion::Implicit1_0)
+                .ok()
+                .map(|v| v.into_owned())
+        })
 }
 
 /// Purpose: decide whether a restriction relation applies to buses and which kind it is.
