@@ -207,3 +207,39 @@ fn trams_leave_their_stops_although_they_drive_on_sight() {
     );
     assert!(r.trips > 0, "{:?}", r.issues);
 }
+
+#[test]
+fn trains_per_hour_on_each_section_follow_the_timetable() {
+    let out = publish_service(&topology(), &[shuttle()], "weekday").unwrap();
+    assert!(!out.section_trains.is_empty());
+    let topo: serde_json::Value = serde_json::from_str(&topology()).unwrap();
+    let sections: Vec<&str> = topo["sections"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|s| s["id"].as_str().unwrap())
+        .collect();
+    for s in &out.section_trains {
+        assert_eq!(s.line, "M7");
+        assert!(sections.contains(&s.section.as_str()), "{}", s.section);
+        // No trains before 06:00 or after 11:00.
+        assert!(s.hours[..6].iter().all(|&n| n == 0), "{s:?}");
+        assert!(s.hours[11..].iter().all(|&n| n == 0), "{s:?}");
+    }
+    // Some section carries both directions of the peak: 6 trips each way an hour, 12 in all.
+    let busiest = out
+        .section_trains
+        .iter()
+        .map(|s| s.hours[7] + s.hours[8])
+        .max()
+        .unwrap();
+    assert!((20..=26).contains(&busiest), "{busiest}");
+    // A section counts every trip at most once.
+    let total: u32 = out
+        .section_trains
+        .iter()
+        .map(|s| s.hours.iter().sum::<u32>())
+        .max()
+        .unwrap();
+    assert!(total <= 36, "{total}");
+}
