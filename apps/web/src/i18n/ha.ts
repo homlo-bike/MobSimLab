@@ -2,6 +2,7 @@ import { roadHa } from "./road/ha";
 import { editorsHa } from "./editors/ha";
 import { cargoBikeHa } from "./cargo-bike/ha";
 import { depotsHa } from "./depots/ha";
+import { fleetHa } from "./fleet/ha";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -388,6 +389,7 @@ export const ha: Messages = {
   ...editorsHa,
   ...cargoBikeHa,
   ...depotsHa,
+  ...fleetHa,
   ...roadHa,
   ...PLUGIN_MESSAGES.ha,
 };

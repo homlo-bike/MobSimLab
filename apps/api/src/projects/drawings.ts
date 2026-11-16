@@ -205,6 +205,31 @@ const depots = z.looseObject({
     .max(50),
 });
 
+/** The project's own vehicles and its fleet (Project preferences → Vehicles and Fleet). */
+const fleet = z.looseObject({
+  vehicles: z
+    .array(
+      z.looseObject({
+        id: z
+          .string()
+          .regex(/^own-[a-z0-9-]+$/)
+          .max(80),
+        name: z.string().min(1).max(200),
+        mode: z.string().min(1).max(40),
+      }),
+    )
+    .max(500),
+  units: z
+    .array(
+      z.looseObject({
+        id: z.string().min(1).max(64),
+        vehicle: z.string().min(1).max(120),
+        number: z.string().max(40),
+      }),
+    )
+    .max(5000),
+});
+
 /** Drawing kinds with their document outline and current schema version. */
 export const DRAWING_KINDS = {
   /** The street line tool (ADR-0029): bus, BRT, trolleybus and intercity bus lines. */
@@ -233,6 +258,8 @@ export const DRAWING_KINDS = {
   "cargo-bike": { schema: cargoBike, schemaVersion: 1 },
   /** Road depots (07-simulation §7), shared by the street lines whose vehicles fit. */
   depots: { schema: depots, schemaVersion: 1 },
+  /** The project's own vehicle types and its individual vehicles (08-vehicles.md §1, §4). */
+  fleet: { schema: fleet, schemaVersion: 1 },
 } as const satisfies Record<string, { schema: z.ZodType; schemaVersion: number }>;
 
 export type DrawingKind = keyof typeof DRAWING_KINDS;
