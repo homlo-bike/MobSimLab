@@ -18,4 +18,5 @@ apps/web/src/features/street-lines/vehicles.ts
 apps/web/src/plugins/bundled.generated.json
 apps/web/src/features/costs/defaults.generated.json
 apps/web/src/features/benefits/defaults.generated.json
+apps/web/src/features/walk/defaults.generated.json
 apps/api/src/plugins/core.generated.json

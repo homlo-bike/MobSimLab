@@ -76,6 +76,10 @@ export interface PluginEntry {
   contexts: { key: string; label: string; options: { id: string; label: string }[] }[];
   tools: { id: string; label: string; hint?: string; kit: string; modes: string[] }[];
   calculations: unknown[];
+  importers?: unknown[];
+  exporters?: unknown[];
+  /** Project tabs (bundled plugins only); the web app ships each tab's view. */
+  tabs: { id: string; label: string; view: string; calculations: string[] }[];
   mapLayers: unknown[];
   parameters: Record<string, { label: string; unit: string }>;
   defaults: Record<string, Record<string, Record<string, Range>>>;
@@ -397,6 +401,9 @@ export function checkPlugin(
       vehicles?: { dir: string }[];
       tools?: PluginEntry["tools"];
       calculations?: { id: string }[];
+      importers?: { id: string }[];
+      exporters?: { id: string }[];
+      tabs?: PluginEntry["tabs"];
       mapLayers?: { id: string; calculation: string; style: string }[];
     };
   };
@@ -412,6 +419,9 @@ export function checkPlugin(
         );
     if (c.calculations?.length)
       errors.push(`${pid}: only bundled plugins may contribute calculations for now`);
+    if (c.importers?.length || c.exporters?.length)
+      errors.push(`${pid}: only bundled plugins may contribute importers and exporters for now`);
+    if (c.tabs?.length) errors.push(`${pid}: only bundled plugins may contribute tabs for now`);
     if (m.publisher.url !== undefined && !/^https:\/\/[^\s]+$/.test(m.publisher.url))
       errors.push(`${pid}: the publisher URL must start with https://`);
     for (const [what, lic] of [
@@ -535,6 +545,18 @@ export function checkPlugin(
       }
       defaults[md.id] = per;
     }
+    // A plugin without modes of its own (a calculation) gives values per core mode, so the app can
+    // resolve them for each line of the project.
+    if (!modes.length && params.length)
+      for (const mid of CORE.coreModes)
+        defaults[mid] = {
+          "*": Object.fromEntries(
+            params.map((p) => {
+              const r = resolve(p, mid, null, null);
+              return [p.key!, { low: r.low, central: r.central, high: r.high }];
+            }),
+          ),
+        };
   } catch (e) {
     return { ok: false, errors: [`${pid}: ${(e as Error).message}`] };
   }
@@ -553,6 +575,9 @@ export function checkPlugin(
     contexts: [...contexts.values()],
     tools: c.tools ?? [],
     calculations: c.calculations ?? [],
+    importers: c.importers ?? [],
+    exporters: c.exporters ?? [],
+    tabs: c.tabs ?? [],
     mapLayers: layers,
     parameters: Object.fromEntries(
       params.map((p) => [p.key!, { label: p.label as string, unit: p.unit as string }]),

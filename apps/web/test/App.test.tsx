@@ -276,7 +276,7 @@ describe("project workspace", () => {
       within(nav)
         .getAllByRole("link")
         .map((a) => a.textContent),
-    ).toEqual(["Simulator", "Create", "Schematic", "GIS", "Tables", "Preferences"]);
+    ).toEqual(["Simulator", "Create", "Schematic", "GIS", "Tables", "Preferences", "Cargo bike"]);
     fireEvent.click(within(nav).getByRole("link", { name: "Create" }));
     expect(await screen.findByRole("toolbar", { name: "Street line tools" })).toBeTruthy();
     fireEvent.click(screen.getByRole("tab", { name: "Rail route" }));

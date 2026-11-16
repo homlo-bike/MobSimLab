@@ -1,4 +1,5 @@
 import { editorsEs } from "./editors/es";
+import { cargoBikeEs } from "./cargo-bike/es";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -287,6 +288,74 @@ export const es: Messages = {
   "prefs.switches": "Desvíos, del catálogo de desvíos",
   "prefs.calendar": "Calendario, demanda y costes",
 
+  "job.stepOf": "Paso {step} de {steps}",
+  "job.cancel": "Cancelar",
+  "map.search": "Buscar lugares",
+  "map.searchPlaceholder": "Ciudad, calle, estación o dirección",
+  "map.searching": "Buscando…",
+  "map.searchFailed": "La búsqueda de lugares falló: {error}",
+  "map.noPlaces": "No se encontraron lugares.",
+  "map.places": "Lugares encontrados",
+  "map.searchCredit": "Nombres de lugares © colaboradores de OpenStreetMap, encontrados con Photon",
+  "map.layers": "Capas del mapa",
+  "map.basemap": "Mapa base",
+  "map.streetMap": "Mapa",
+  "map.aerial": "Aérea",
+  "map.aerialNote":
+    "Imágenes de satélite de unos 10 m por píxel: útiles para ver el uso del suelo, demasiado bastas para dibujar vías o bordillos.",
+  "map.projectLayers": "Capas del proyecto",
+  "map.noLayers": "Las líneas y resultados que dibujes aparecen aquí.",
+  "map.group.streetLines": "Líneas viales",
+  "map.group.railways": "Ferrocarriles",
+  "map.group.cableFerry": "Teleféricos y transbordadores",
+  "map.group.streetSetups": "Configuraciones de calle",
+  "map.group.noise": "Mapa de ruido",
+  "map.group.journey": "Planificador de viajes",
+  "map.group.agents": "Escenario del agente de IA",
+  "help.menu": "Ayuda",
+  "help.tour": "Hacer el recorrido",
+  "help.tourHint": "Un breve recorrido por las pestañas y herramientas del proyecto",
+  "tour.stepOf": "{step} de {steps}",
+  "tour.close": "Cerrar",
+  "tour.back": "Atrás",
+  "tour.next": "Siguiente",
+  "tour.done": "Hecho",
+  "tour.tabs.title": "Las pestañas del proyecto",
+  "tour.tabs.body":
+    "Cada pestaña es una parte del trabajo: simular, crear líneas, esquema, SIG, tablas y preferencias.",
+  "tour.create.title": "Dibujar líneas",
+  "tour.create.body":
+    "En Crear, elige la herramienta de líneas viales, el editor ferroviario o una herramienta de plugin. Sus ajustes, comprobaciones y resultados aparecen en este panel.",
+  "tour.search.title": "Encontrar un lugar",
+  "tour.search.body": "Busca una ciudad, calle, estación o dirección para mover el mapa allí.",
+  "tour.layers.title": "Mapa base y capas",
+  "tour.layers.body":
+    "Cambia entre mapas de calles e imágenes aéreas, y muestra u oculta las capas del proyecto.",
+  "tour.simulator.title": "Simular",
+  "tour.simulator.body":
+    "Ejecuta la prueba de capacidad ferroviaria y planifica viajes por las líneas que dibujaste.",
+  "tour.gis.title": "SIG",
+  "tour.gis.body":
+    "Configura calles para autobuses y tranvías, y calcula el mapa de ruido alrededor de las líneas.",
+  "tour.tables.title": "Tablas",
+  "tour.tables.body": "Estimaciones de costes de construcción y explotación de las líneas.",
+  "tour.save.title": "Guardado por ti",
+  "tour.save.body":
+    "Los cambios se guardan en el proyecto un momento después de hacerlos. Aquí ves si lo están.",
+  "tour.print.title": "Imprimir o guardar como PDF",
+  "tour.print.body": "Imprime el mapa y las tablas de costes para un informe, o guárdalos como PDF.",
+  "tour.help.title": "Ayuda",
+  "tour.help.body": "Vuelve a empezar este recorrido desde aquí cuando quieras.",
+  "print.title": "Imprimir o guardar como PDF",
+  "print.intro": "Un informe con el nombre del proyecto y la fecha de hoy.",
+  "print.include": "Incluir",
+  "print.map": "Mapa, tal como se ve ahora",
+  "print.mapHidden": "Abre la pestaña Simulador, Crear o SIG para incluir el mapa.",
+  "print.tables": "Tablas de costes",
+  "print.pdfHint": "Para guardar un PDF, elige «Guardar como PDF» como impresora en el diálogo que se abre.",
+  "print.print": "Imprimir…",
+
   ...editorsEs,
+  ...cargoBikeEs,
   ...PLUGIN_MESSAGES.es,
 };

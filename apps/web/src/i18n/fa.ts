@@ -1,4 +1,5 @@
 import { editorsFa } from "./editors/fa";
+import { cargoBikeFa } from "./cargo-bike/fa";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -282,6 +283,72 @@ export const fa: Messages = {
   "prefs.switches": "سوزن‌ها (از کاتالوگ سوزن‌ها)",
   "prefs.calendar": "تقویم، تقاضا و هزینه‌ها",
 
+  "job.stepOf": "گام {step} از {steps}",
+  "job.cancel": "لغو",
+  "map.search": "جستجوی مکان",
+  "map.searchPlaceholder": "شهر، خیابان، ایستگاه یا نشانی",
+  "map.searching": "در حال جستجو…",
+  "map.searchFailed": "جستجوی مکان ناموفق بود: {error}",
+  "map.noPlaces": "مکانی پیدا نشد.",
+  "map.places": "مکان‌های پیدا شده",
+  "map.searchCredit": "نام مکان‌ها © مشارکت‌کنندگان OpenStreetMap، یافته با Photon",
+  "map.layers": "لایه‌های نقشه",
+  "map.basemap": "نقشهٔ پایه",
+  "map.streetMap": "نقشه",
+  "map.aerial": "هوایی",
+  "map.aerialNote":
+    "تصاویر ماهواره‌ای با حدود ۱۰ متر در هر پیکسل: برای دیدن کاربری زمین خوب است، برای کشیدن ریل یا جدول خیابان بیش از حد درشت است.",
+  "map.projectLayers": "لایه‌های پروژه",
+  "map.noLayers": "خطوط و نتایجی که می‌کشید اینجا نشان داده می‌شوند.",
+  "map.group.streetLines": "خطوط خیابانی",
+  "map.group.railways": "راه‌آهن‌ها",
+  "map.group.cableFerry": "تله‌کابین‌ها و کشتی‌ها",
+  "map.group.streetSetups": "تنظیمات خیابان",
+  "map.group.noise": "نقشهٔ نوفه",
+  "map.group.journey": "برنامه‌ریز سفر",
+  "map.group.agents": "سناریوی عامل هوش مصنوعی",
+  "help.menu": "راهنما",
+  "help.tour": "شروع گشت",
+  "help.tourHint": "گشتی کوتاه در زبانه‌ها و ابزارهای پروژه",
+  "tour.stepOf": "{step} از {steps}",
+  "tour.close": "بستن",
+  "tour.back": "قبلی",
+  "tour.next": "بعدی",
+  "tour.done": "پایان",
+  "tour.tabs.title": "زبانه‌های پروژه",
+  "tour.tabs.body": "هر زبانه بخشی از کار است: شبیه‌سازی، ساخت خطوط، نقشهٔ شماتیک، GIS، جدول‌ها و ترجیحات.",
+  "tour.create.title": "کشیدن خطوط",
+  "tour.create.body":
+    "در «ساخت» ابزار خط خیابانی، ویرایشگر راه‌آهن یا ابزار یک افزونه را انتخاب کنید. تنظیمات، بررسی‌ها و نتایج آن در این پنل نشان داده می‌شوند.",
+  "tour.search.title": "یافتن مکان",
+  "tour.search.body": "شهر، خیابان، ایستگاه یا نشانی را جستجو کنید تا نقشه به آنجا برود.",
+  "tour.layers.title": "نقشهٔ پایه و لایه‌ها",
+  "tour.layers.body":
+    "میان نقشه‌های خیابان و تصاویر هوایی جابه‌جا شوید و لایه‌های پروژه را نشان دهید یا پنهان کنید.",
+  "tour.simulator.title": "شبیه‌سازی",
+  "tour.simulator.body": "آزمون ظرفیت راه‌آهن را اجرا کنید و روی خطوطی که کشیده‌اید سفر برنامه‌ریزی کنید.",
+  "tour.gis.title": "GIS",
+  "tour.gis.body": "خیابان‌ها را برای اتوبوس و تراموا تنظیم کنید و نقشهٔ نوفه را پیرامون خطوط محاسبه کنید.",
+  "tour.tables.title": "جدول‌ها",
+  "tour.tables.body": "برآورد هزینه‌های ساخت و بهره‌برداری خطوط.",
+  "tour.save.title": "ذخیرهٔ خودکار",
+  "tour.save.body":
+    "تغییرات کمی پس از انجام در پروژه ذخیره می‌شوند. اینجا نشان می‌دهد که ذخیره شده‌اند یا نه.",
+  "tour.print.title": "چاپ یا ذخیره به‌صورت PDF",
+  "tour.print.body": "نقشه و جدول‌های هزینه را برای گزارش چاپ کنید یا به‌صورت PDF ذخیره کنید.",
+  "tour.help.title": "راهنما",
+  "tour.help.body": "هر زمان خواستید این گشت را از اینجا دوباره شروع کنید.",
+  "print.title": "چاپ یا ذخیره به‌صورت PDF",
+  "print.intro": "گزارشی با نام پروژه و تاریخ امروز.",
+  "print.include": "شامل",
+  "print.map": "نقشه، همان‌طور که اکنون نمایش داده می‌شود",
+  "print.mapHidden": "برای افزودن نقشه، زبانهٔ شبیه‌ساز، ساخت یا GIS را باز کنید.",
+  "print.tables": "جدول‌های هزینه",
+  "print.pdfHint":
+    "برای ذخیرهٔ PDF، در پنجره‌ای که باز می‌شود «ذخیره به‌صورت PDF» را به‌عنوان چاپگر انتخاب کنید.",
+  "print.print": "چاپ…",
+
   ...editorsFa,
+  ...cargoBikeFa,
   ...PLUGIN_MESSAGES.fa,
 };

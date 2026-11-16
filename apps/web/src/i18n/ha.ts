@@ -1,4 +1,5 @@
 import { editorsHa } from "./editors/ha";
+import { cargoBikeHa } from "./cargo-bike/ha";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -287,6 +288,73 @@ export const ha: Messages = {
   "prefs.switches": "Makunnan dogo, daga kundin makunnai",
   "prefs.calendar": "Kalanda, buƙata da kuɗi",
 
+  "job.stepOf": "Mataki {step} cikin {steps}",
+  "job.cancel": "Soke",
+  "map.search": "Nemi wurare",
+  "map.searchPlaceholder": "Gari, titi, tasha ko adireshi",
+  "map.searching": "Ana nema…",
+  "map.searchFailed": "Neman wuri ya kasa: {error}",
+  "map.noPlaces": "Ba a sami wani wuri ba.",
+  "map.places": "Wuraren da aka samu",
+  "map.searchCredit": "Sunayen wurare © masu ba da gudummawa ga OpenStreetMap, an samo su da Photon",
+  "map.layers": "Matakan taswira",
+  "map.basemap": "Taswirar tushe",
+  "map.streetMap": "Taswira",
+  "map.aerial": "Daga sama",
+  "map.aerialNote":
+    "Hotunan tauraron dan adam kusan mita 10 a kowane pikisel: suna da kyau don ganin amfani da ƙasa, sun yi kauri sosai don zana layin dogo ko gefen titi.",
+  "map.projectLayers": "Matakan aikin",
+  "map.noLayers": "Layukan da sakamakon da kuka zana suna bayyana a nan.",
+  "map.group.streetLines": "Layukan titi",
+  "map.group.railways": "Layin dogo",
+  "map.group.cableFerry": "Motocin igiya da jiragen ruwa",
+  "map.group.streetSetups": "Saitunan titi",
+  "map.group.noise": "Taswirar hayaniya",
+  "map.group.journey": "Mai tsara tafiya",
+  "map.group.agents": "Yanayin wakilin AI",
+  "help.menu": "Taimako",
+  "help.tour": "Fara rangadi",
+  "help.tourHint": "Gajeren rangadi cikin shafuka da kayan aikin aikin",
+  "tour.stepOf": "{step} cikin {steps}",
+  "tour.close": "Rufe",
+  "tour.back": "Baya",
+  "tour.next": "Na gaba",
+  "tour.done": "An gama",
+  "tour.tabs.title": "Shafukan aikin",
+  "tour.tabs.body":
+    "Kowane shafi wani ɓangare ne na aikin: kwaikwayo, ƙirƙirar layuka, zane, GIS, teburori da zaɓuɓɓuka.",
+  "tour.create.title": "Zana layuka",
+  "tour.create.body":
+    "A Ƙirƙira, zaɓi kayan aikin layin titi, editan layin dogo ko kayan aikin plugin. Saitunansa, bincike da sakamakonsa suna bayyana a wannan allo.",
+  "tour.search.title": "Nemo wuri",
+  "tour.search.body": "Nemi gari, titi, tasha ko adireshi don matsar da taswira can.",
+  "tour.layers.title": "Taswirar tushe da matakai",
+  "tour.layers.body": "Sauya tsakanin taswirorin titi da hotunan sama, kuma nuna ko ɓoye matakan aikin.",
+  "tour.simulator.title": "Kwaikwayo",
+  "tour.simulator.body":
+    "Gudanar da gwajin ƙarfin layin dogo kuma tsara tafiye-tafiye a kan layukan da kuka zana.",
+  "tour.gis.title": "GIS",
+  "tour.gis.body": "Shirya tituna don bas da tram, kuma lissafa taswirar hayaniya a kewayen layuka.",
+  "tour.tables.title": "Teburori",
+  "tour.tables.body": "Ƙididdigar kuɗin gini da gudanar da layuka.",
+  "tour.save.title": "Ana adana muku",
+  "tour.save.body":
+    "Ana adana canje-canje a cikin aikin jim kaɗan bayan kun yi su. Wannan yana nuna ko an adana su.",
+  "tour.print.title": "Buga ko adana a matsayin PDF",
+  "tour.print.body": "Buga taswira da teburorin kuɗi don rahoto, ko adana su a matsayin PDF.",
+  "tour.help.title": "Taimako",
+  "tour.help.body": "Sake fara wannan rangadi daga nan a kowane lokaci.",
+  "print.title": "Buga ko adana a matsayin PDF",
+  "print.intro": "Rahoto mai sunan aikin da kwanan watan yau.",
+  "print.include": "Haɗa",
+  "print.map": "Taswira, kamar yadda take a yanzu",
+  "print.mapHidden": "Buɗe shafin Na'urar kwaikwayo, Ƙirƙira ko GIS don haɗa taswira.",
+  "print.tables": "Teburorin kuɗi",
+  "print.pdfHint":
+    "Don adana PDF, zaɓi “Adana a matsayin PDF” a matsayin firinta a cikin akwatin da ya buɗe.",
+  "print.print": "Buga…",
+
   ...editorsHa,
+  ...cargoBikeHa,
   ...PLUGIN_MESSAGES.ha,
 };

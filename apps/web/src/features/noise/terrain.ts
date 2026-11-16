@@ -62,13 +62,24 @@ export function terrainPlan(points: LonLat[], reachM: number): TerrainPlan | nul
 /**
  * Purpose: load the heights of a terrain plan, row by row from the south-west (longitude fastest),
  * as the noise engine takes them.
- * Side effects: one request to the terrain API per 20,000 heights.
+ * Side effects: one request to the terrain API per 20,000 heights; `onProgress` after each, and `signal`
+ * stops before the next one.
  */
-export async function loadTerrain(plan: TerrainPlan, fetch: HeightsFetcher): Promise<NoiseTerrain> {
+export async function loadTerrain(
+  plan: TerrainPlan,
+  fetch: HeightsFetcher,
+  onProgress?: (done: number, total: number) => void,
+  signal?: AbortSignal,
+): Promise<NoiseTerrain> {
   const pts: LonLat[] = [];
   for (let j = 0; j < plan.ny; j++)
     for (let i = 0; i < plan.nx; i++) pts.push([plan.lon0 + i * plan.dLon, plan.lat0 + j * plan.dLat]);
   const z: (number | null)[] = [];
-  for (let k = 0; k < pts.length; k += CHUNK) z.push(...(await fetch(pts.slice(k, k + CHUNK))));
+  for (let k = 0; k < pts.length; k += CHUNK) {
+    signal?.throwIfAborted();
+    z.push(...(await fetch(pts.slice(k, k + CHUNK))));
+    onProgress?.(Math.min(k + CHUNK, pts.length), pts.length);
+  }
+  signal?.throwIfAborted();
   return { x0: plan.lon0, y0: plan.lat0, dx: plan.dLon, dy: plan.dLat, nx: plan.nx, ny: plan.ny, z };
 }
