@@ -405,6 +405,38 @@ describe("project workspace", () => {
     expect((mixed as HTMLInputElement).value).toBe("25");
     expect(screen.queryByRole("button", { name: "Use the library value" })).toBeNull();
   });
+  it("sets the road simulation's off-peak traffic share", async () => {
+    const calls = stubApi(owner, {
+      [`GET /api/projects/${P1}/drawings`]: { drawings: {} },
+      [`PUT /api/projects/${P1}/drawings/preferences`]: {
+        drawing: {
+          kind: "preferences",
+          schemaVersion: 1,
+          doc: { values: { "road.off_peak_traffic_share": 0.5 } },
+          version: 1,
+          updatedAt: "2026-11-16T10:00:00Z",
+          updatedBy: { id: "u1", displayName: "Alice Smith" },
+        },
+      },
+    });
+    window.history.replaceState(null, "", `/projects/${P1}/preferences`);
+    render(<App />);
+    const share = await screen.findByLabelText(
+      "Traffic outside the morning and evening peaks, as a share of each street's peak",
+    );
+    expect((share as HTMLInputElement).value).toBe("60");
+    fireEvent.change(share, { target: { value: "150" } });
+    fireEvent.change(share, { target: { value: "50" } });
+    await waitFor(
+      () =>
+        expect(calls.find((c) => c.method === "PUT" && c.url.endsWith("/drawings/preferences"))).toBeTruthy(),
+      { timeout: 3000 },
+    );
+    expect(calls.find((c) => c.url.endsWith("/drawings/preferences"))?.body).toEqual({
+      doc: { values: { "road.off_peak_traffic_share": 0.5 } },
+      baseVersion: null,
+    });
+  });
   it("leaves a catalogue vehicle out of the project and uses all again", async () => {
     const calls = stubApi(owner, {
       [`GET /api/projects/${P1}/drawings`]: { drawings: {} },

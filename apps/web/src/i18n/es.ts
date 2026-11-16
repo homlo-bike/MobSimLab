@@ -1,3 +1,4 @@
+import { roadEs } from "./road/es";
 import { editorsEs } from "./editors/es";
 import { cargoBikeEs } from "./cargo-bike/es";
 import { depotsEs } from "./depots/es";
@@ -389,5 +390,6 @@ export const es: Messages = {
   ...editorsEs,
   ...cargoBikeEs,
   ...depotsEs,
+  ...roadEs,
   ...PLUGIN_MESSAGES.es,
 };

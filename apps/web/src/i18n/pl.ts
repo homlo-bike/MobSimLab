@@ -1,3 +1,4 @@
+import { roadPl } from "./road/pl";
 import { editorsPl } from "./editors/pl";
 import { cargoBikePl } from "./cargo-bike/pl";
 import { depotsPl } from "./depots/pl";
@@ -385,5 +386,6 @@ export const pl: Messages = {
   ...editorsPl,
   ...cargoBikePl,
   ...depotsPl,
+  ...roadPl,
   ...PLUGIN_MESSAGES.pl,
 };

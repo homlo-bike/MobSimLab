@@ -10,7 +10,12 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-sim = ["eclipse-sumo==1.28.0", "libsumo==1.28.0"]
+sim = [
+    "eclipse-sumo==1.28.0",
+    "libsumo==1.28.0",
+    "pyproj==3.7.2",
+    "rtree==1.4.1",
+]
 
 [project.scripts]
 mobsim-worker = "mobsim_worker.main:main"
@@ -44,5 +49,5 @@ files = ["src"]
 testpaths = ["tests"]
 
 [[tool.mypy.overrides]]
-module = ["mobsim_kernels"]
+module = ["mobsim_kernels", "sumo", "sumolib", "sumolib.*", "libsumo"]
 ignore_missing_imports = true

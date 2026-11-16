@@ -1,3 +1,4 @@
+import { roadHi } from "./road/hi";
 import { editorsHi } from "./editors/hi";
 import { cargoBikeHi } from "./cargo-bike/hi";
 import { depotsHi } from "./depots/hi";
@@ -383,5 +384,6 @@ export const hi: Messages = {
   ...editorsHi,
   ...cargoBikeHi,
   ...depotsHi,
+  ...roadHi,
   ...PLUGIN_MESSAGES.hi,
 };

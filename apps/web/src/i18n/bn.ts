@@ -1,3 +1,4 @@
+import { roadBn } from "./road/bn";
 import { editorsBn } from "./editors/bn";
 import { cargoBikeBn } from "./cargo-bike/bn";
 import { depotsBn } from "./depots/bn";
@@ -380,5 +381,6 @@ export const bn: Messages = {
   ...editorsBn,
   ...cargoBikeBn,
   ...depotsBn,
+  ...roadBn,
   ...PLUGIN_MESSAGES.bn,
 };

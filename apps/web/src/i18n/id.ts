@@ -1,3 +1,4 @@
+import { roadId } from "./road/id";
 import { editorsId } from "./editors/id";
 import { cargoBikeId } from "./cargo-bike/id";
 import { depotsId } from "./depots/id";
@@ -387,5 +388,6 @@ export const id: Messages = {
   ...editorsId,
   ...cargoBikeId,
   ...depotsId,
+  ...roadId,
   ...PLUGIN_MESSAGES.id,
 };
