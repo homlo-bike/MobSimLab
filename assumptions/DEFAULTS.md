@@ -572,6 +572,822 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 
 ## Demand
 
+### Model area: distance around the project's lines and stations that the model covers
+
+`demand.area_buffer_m` · unit: m · used by: demand model area, automatic zones
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 1000 | 2000 | 5000 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Product owner choice (2026-11-16): the model covers the lines plus a 2 km buffer. That holds the walk and cycle catchments of every stop (mode.catchment_m is at most about 1.2 km) and the short car trips that compete with the line. Use more for lines whose riders come from far away (park and ride, regional rail). |
+
+### Automatic zones: most hexagons the model area is cut into
+
+`demand.zone_max_count` · unit: zones · used by: automatic zones (H3 resolution chosen from the area)
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 200 | 600 | 2000 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | The finest H3 resolution (9, about 0.1 km² per hexagon, down to 6, about 36 km²) that gives at most this many zones is used. 600 zones keeps a run to minutes on the worker; 2000 zones gives stop-level detail in a large city at about ten times the run time (the skims grow with the square of the zone count). |
+
+### Trips: home–work trips per worker living in the zone, a weekday
+
+`demand.trip_rate.hbw` · unit: trips/worker · used by: trip generation: home–work productions
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 1.3 | 1.6 | 1.9 | documented | unverified | [mid-2017](#src-mid-2017), [nhts-2017](#src-nhts-2017), [mobsimlab-derivation](#src-mobsimlab-derivation) | Two legs per commuting day times the share of workers who travel to work on an average weekday (about 0.8, after leave, sickness, part time and home working). Workers are the zone's people times the country's employment ratio (World Bank) for people aged 15 and over. |
+
+### Trips: home–education trips per child under 15 living in the zone, a weekday
+
+`demand.trip_rate.hbe` · unit: trips/child · used by: trip generation: home–education productions
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 1.4 | 1.7 | 1.9 | documented | unverified | [mid-2017](#src-mid-2017), [mobsimlab-derivation](#src-mobsimlab-derivation) | Two legs per school day times about 0.85 attendance on an average weekday across the year's school weeks. University students are attracted by universities (demand.attraction.university_students) and produced through this rate and home–other trips. |
+
+### Trips: home–other trips (shopping, errands, leisure, visits, care) per person, a weekday
+
+`demand.trip_rate.hbo` · unit: trips/person · used by: trip generation: home–other productions
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.9 | 1.3 | 1.7 | documented | unverified | [mid-2017](#src-mid-2017), [nhts-2017](#src-nhts-2017), [nts-2019](#src-nts-2019), [mobsimlab-derivation](#src-mobsimlab-derivation) | National travel surveys find about 2.7 (England) to 3.4 (United States) trips per person and day, 3.1 in Germany (MiD 2017). Home–other trips are about 40 to 50 % of them. |
+
+### Trips: trips that neither start nor end at home, per person living in the model area, a weekday
+
+`demand.trip_rate.nhb` · unit: trips/person · used by: trip generation: non-home-based productions
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.4 | 0.6 | 0.9 | documented | unverified | [mid-2017](#src-mid-2017), [nhts-2017](#src-nhts-2017), [mobsimlab-derivation](#src-mobsimlab-derivation) | About 15 to 25 % of all trips (work to shop, work to work). They are produced and attracted where the jobs, shops and services are, in proportion to the zones' non-home-based attractions. |
+
+### Attraction: weight of one retail job for home–other trips
+
+`demand.attraction.per_retail_job` · unit: weight · used by: trip generation: home–other attractions
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 5 | 8 | 12 | documented | unverified | [nchrp-716](#src-nchrp-716), [mobsimlab-derivation](#src-mobsimlab-derivation) | Attraction models give retail employment five to ten times the weight of a household for shopping and personal business trips. Weights are relative: the attractions are scaled to the productions. |
+
+### Attraction: weight of one non-retail job for home–other trips
+
+`demand.attraction.per_other_job` · unit: weight · used by: trip generation: home–other attractions
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.5 | 1.4 | 2.5 | documented | unverified | [nchrp-716](#src-nchrp-716), [mobsimlab-derivation](#src-mobsimlab-derivation) | Services, offices and public buildings draw visitors too, at a fraction of the rate of shops. |
+
+### Attraction: weight of one resident for home–other trips (visits, local errands)
+
+`demand.attraction.per_resident` · unit: weight · used by: trip generation: home–other attractions
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.1 | 0.25 | 0.5 | documented | unverified | [nchrp-716](#src-nchrp-716), [mobsimlab-derivation](#src-mobsimlab-derivation) | About 0.6 per household of 2.5 people: visiting friends and family, local services at home. |
+
+### Attraction: weight of one retail job for trips not based at home
+
+`demand.attraction.nhb_per_retail_job` · unit: weight · used by: trip generation: non-home-based productions and attractions
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 2 | 4 | 6 | documented | unverified | [nchrp-716](#src-nchrp-716), [mobsimlab-derivation](#src-mobsimlab-derivation) | Trips between work, shops and errands end mostly at shops and services. |
+
+### Attraction: weight of one non-retail job for trips not based at home
+
+`demand.attraction.nhb_per_other_job` · unit: weight · used by: trip generation: non-home-based productions and attractions
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.5 | 1 | 1.5 | documented | unverified | [nchrp-716](#src-nchrp-716), [mobsimlab-derivation](#src-mobsimlab-derivation) | Business trips between workplaces. |
+
+### Attraction: weight of one resident for trips not based at home
+
+`demand.attraction.nhb_per_resident` · unit: weight · used by: trip generation: non-home-based productions and attractions
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0 | 0.15 | 0.3 | documented | unverified | [nchrp-716](#src-nchrp-716), [mobsimlab-derivation](#src-mobsimlab-derivation) | A small share of non-home-based trips ends in residential areas (visits on the way home). |
+
+### Special generator: pupils per school, where the school has no number of its own
+
+`demand.attraction.school_pupils` · unit: pupils · used by: trip generation: home–education attractions
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 200 | 500 | 1000 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Primary schools have about 200 to 400 pupils, secondary schools 600 to 1500. OpenStreetMap seldom says which, so one middle value is used; enter the real number on the zone where it is known. |
+
+### Special generator: students per university or college, where it has no number of its own
+
+`demand.attraction.university_students` · unit: students · used by: trip generation: home–education and home–other attractions
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 2000 | 8000 | 25000 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Colleges have a few thousand students, large city universities 20 000 to 40 000 spread over several sites. Enter the real number on the zone where it is known. |
+
+### Special generator: visitor and patient trips a weekday per hospital
+
+`demand.attraction.hospital_visits` · unit: trips · used by: trip generation: home–other attractions
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 500 | 1500 | 4000 | educated-guess | unverified | [ite-trip-generation](#src-ite-trip-generation), [mobsimlab-derivation](#src-mobsimlab-derivation) | Trip generation surveys give hospitals roughly 10 to 15 trips per bed a weekday, staff included; a 300-bed hospital is about 1500 visitor and patient trips once staff (counted as jobs) are taken out. |
+
+### Special generator: patient trips a weekday per clinic or doctor's practice
+
+`demand.attraction.clinic_visits` · unit: trips · used by: trip generation: home–other attractions
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 50 | 150 | 400 | educated-guess | unverified | [ite-trip-generation](#src-ite-trip-generation), [mobsimlab-derivation](#src-mobsimlab-derivation) | A practice with a few doctors sees about 50 to 100 patients a day, each a trip there and back. |
+
+### Special generator: visitor trips a weekday per tourist attraction or museum
+
+`demand.attraction.tourism_visits` · unit: trips · used by: trip generation: home–other attractions
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 100 | 1000 | 5000 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Small museums see a few hundred visitors a day, major sights several thousand. Enter the real number on the zone where it is known. |
+
+### Central business district: attraction uplift for zones in the centre
+
+`demand.attraction.cbd_factor` · unit: factor · used by: trip generation: attractions
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 1 | 1.2 | 1.5 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | City centres draw more trips than their jobs and shops alone suggest (agglomeration of shops, culture, services). A zone is in the centre when the planner marks it, or when its jobs per km² reach demand.cbd_job_density_km2. |
+
+### Central business district: jobs per km² from which a zone counts as centre
+
+`demand.cbd_job_density_km2` · unit: jobs/km² · used by: trip generation: central business district zones
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 5000 | 10000 | 20000 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Office and retail cores of European and North American cities have about 10 000 to 50 000 jobs per km²; dense mixed districts 5000 to 10 000. |
+
+### Time periods: morning peak starts
+
+`demand.period.am_start_h` · unit: h · used by: time periods
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 6 | 7 | 7.5 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Product owner choice (2026-11-16): morning peak, midday, evening peak, evening. The usual morning peak is 07:00 to 09:00. |
+
+### Time periods: morning peak ends, midday starts
+
+`demand.period.am_end_h` · unit: h · used by: time periods
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 8.5 | 9 | 10 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | See demand.period.am_start_h. |
+
+### Time periods: midday ends, evening peak starts
+
+`demand.period.pm_start_h` · unit: h · used by: time periods
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 15 | 16 | 17 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | The usual evening peak is 16:00 to 19:00. |
+
+### Time periods: evening peak ends, evening starts
+
+`demand.period.pm_end_h` · unit: h · used by: time periods
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 18 | 19 | 20 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | See demand.period.pm_start_h. |
+
+### Time periods: evening ends
+
+`demand.period.ev_end_h` · unit: h · used by: time periods
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 22 | 23 | 24 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Trips after this and before the morning peak count in the weekday total only. |
+
+### Time periods: share of the weekday's home–work trips made in the morning peak
+
+`demand.period_share.am.hbw` · unit: share · used by: time periods: trips per period
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.25 | 0.3 | 0.35 | documented | unverified | [nchrp-716](#src-nchrp-716), [mid-2017](#src-mid-2017), [mobsimlab-derivation](#src-mobsimlab-derivation) | Departure time distributions of household travel surveys, grouped into the four periods. What is left of the weekday after the four periods is the night (shown in the weekday total only). |
+
+### Time periods: share of the weekday's home–work trips made in the midday
+
+`demand.period_share.md.hbw` · unit: share · used by: time periods: trips per period
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.07 | 0.12 | 0.17 | documented | unverified | [nchrp-716](#src-nchrp-716), [mid-2017](#src-mid-2017), [mobsimlab-derivation](#src-mobsimlab-derivation) | Departure time distributions of household travel surveys, grouped into the four periods. What is left of the weekday after the four periods is the night (shown in the weekday total only). |
+
+### Time periods: share of the weekday's home–work trips made in the evening peak
+
+`demand.period_share.pm.hbw` · unit: share · used by: time periods: trips per period
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.25 | 0.3 | 0.35 | documented | unverified | [nchrp-716](#src-nchrp-716), [mid-2017](#src-mid-2017), [mobsimlab-derivation](#src-mobsimlab-derivation) | Departure time distributions of household travel surveys, grouped into the four periods. What is left of the weekday after the four periods is the night (shown in the weekday total only). |
+
+### Time periods: share of the weekday's home–work trips made in the evening
+
+`demand.period_share.ev.hbw` · unit: share · used by: time periods: trips per period
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.07 | 0.12 | 0.17 | documented | unverified | [nchrp-716](#src-nchrp-716), [mid-2017](#src-mid-2017), [mobsimlab-derivation](#src-mobsimlab-derivation) | Departure time distributions of household travel surveys, grouped into the four periods. What is left of the weekday after the four periods is the night (shown in the weekday total only). |
+
+### Time periods: share of the weekday's home–education trips made in the morning peak
+
+`demand.period_share.am.hbe` · unit: share · used by: time periods: trips per period
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.35 | 0.4 | 0.45 | documented | unverified | [nchrp-716](#src-nchrp-716), [mid-2017](#src-mid-2017), [mobsimlab-derivation](#src-mobsimlab-derivation) | Departure time distributions of household travel surveys, grouped into the four periods. What is left of the weekday after the four periods is the night (shown in the weekday total only). |
+
+### Time periods: share of the weekday's home–education trips made in the midday
+
+`demand.period_share.md.hbe` · unit: share · used by: time periods: trips per period
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.25 | 0.3 | 0.35 | documented | unverified | [nchrp-716](#src-nchrp-716), [mid-2017](#src-mid-2017), [mobsimlab-derivation](#src-mobsimlab-derivation) | Departure time distributions of household travel surveys, grouped into the four periods. What is left of the weekday after the four periods is the night (shown in the weekday total only). |
+
+### Time periods: share of the weekday's home–education trips made in the evening peak
+
+`demand.period_share.pm.hbe` · unit: share · used by: time periods: trips per period
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.1 | 0.15 | 0.2 | documented | unverified | [nchrp-716](#src-nchrp-716), [mid-2017](#src-mid-2017), [mobsimlab-derivation](#src-mobsimlab-derivation) | Departure time distributions of household travel surveys, grouped into the four periods. What is left of the weekday after the four periods is the night (shown in the weekday total only). |
+
+### Time periods: share of the weekday's home–education trips made in the evening
+
+`demand.period_share.ev.hbe` · unit: share · used by: time periods: trips per period
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.0 | 0.05 | 0.1 | documented | unverified | [nchrp-716](#src-nchrp-716), [mid-2017](#src-mid-2017), [mobsimlab-derivation](#src-mobsimlab-derivation) | Departure time distributions of household travel surveys, grouped into the four periods. What is left of the weekday after the four periods is the night (shown in the weekday total only). |
+
+### Time periods: share of the weekday's home–other trips made in the morning peak
+
+`demand.period_share.am.hbo` · unit: share · used by: time periods: trips per period
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.05 | 0.1 | 0.15 | documented | unverified | [nchrp-716](#src-nchrp-716), [mid-2017](#src-mid-2017), [mobsimlab-derivation](#src-mobsimlab-derivation) | Departure time distributions of household travel surveys, grouped into the four periods. What is left of the weekday after the four periods is the night (shown in the weekday total only). |
+
+### Time periods: share of the weekday's home–other trips made in the midday
+
+`demand.period_share.md.hbo` · unit: share · used by: time periods: trips per period
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.37 | 0.42 | 0.47 | documented | unverified | [nchrp-716](#src-nchrp-716), [mid-2017](#src-mid-2017), [mobsimlab-derivation](#src-mobsimlab-derivation) | Departure time distributions of household travel surveys, grouped into the four periods. What is left of the weekday after the four periods is the night (shown in the weekday total only). |
+
+### Time periods: share of the weekday's home–other trips made in the evening peak
+
+`demand.period_share.pm.hbo` · unit: share · used by: time periods: trips per period
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.2 | 0.25 | 0.3 | documented | unverified | [nchrp-716](#src-nchrp-716), [mid-2017](#src-mid-2017), [mobsimlab-derivation](#src-mobsimlab-derivation) | Departure time distributions of household travel surveys, grouped into the four periods. What is left of the weekday after the four periods is the night (shown in the weekday total only). |
+
+### Time periods: share of the weekday's home–other trips made in the evening
+
+`demand.period_share.ev.hbo` · unit: share · used by: time periods: trips per period
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.1 | 0.15 | 0.2 | documented | unverified | [nchrp-716](#src-nchrp-716), [mid-2017](#src-mid-2017), [mobsimlab-derivation](#src-mobsimlab-derivation) | Departure time distributions of household travel surveys, grouped into the four periods. What is left of the weekday after the four periods is the night (shown in the weekday total only). |
+
+### Time periods: share of the weekday's non-home-based trips made in the morning peak
+
+`demand.period_share.am.nhb` · unit: share · used by: time periods: trips per period
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.03 | 0.08 | 0.13 | documented | unverified | [nchrp-716](#src-nchrp-716), [mid-2017](#src-mid-2017), [mobsimlab-derivation](#src-mobsimlab-derivation) | Departure time distributions of household travel surveys, grouped into the four periods. What is left of the weekday after the four periods is the night (shown in the weekday total only). |
+
+### Time periods: share of the weekday's non-home-based trips made in the midday
+
+`demand.period_share.md.nhb` · unit: share · used by: time periods: trips per period
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.45 | 0.5 | 0.55 | documented | unverified | [nchrp-716](#src-nchrp-716), [mid-2017](#src-mid-2017), [mobsimlab-derivation](#src-mobsimlab-derivation) | Departure time distributions of household travel surveys, grouped into the four periods. What is left of the weekday after the four periods is the night (shown in the weekday total only). |
+
+### Time periods: share of the weekday's non-home-based trips made in the evening peak
+
+`demand.period_share.pm.nhb` · unit: share · used by: time periods: trips per period
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.22 | 0.27 | 0.32 | documented | unverified | [nchrp-716](#src-nchrp-716), [mid-2017](#src-mid-2017), [mobsimlab-derivation](#src-mobsimlab-derivation) | Departure time distributions of household travel surveys, grouped into the four periods. What is left of the weekday after the four periods is the night (shown in the weekday total only). |
+
+### Time periods: share of the weekday's non-home-based trips made in the evening
+
+`demand.period_share.ev.nhb` · unit: share · used by: time periods: trips per period
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.05 | 0.1 | 0.15 | documented | unverified | [nchrp-716](#src-nchrp-716), [mid-2017](#src-mid-2017), [mobsimlab-derivation](#src-mobsimlab-derivation) | Departure time distributions of household travel surveys, grouped into the four periods. What is left of the weekday after the four periods is the night (shown in the weekday total only). |
+
+### Time periods: share of the morning peak's home–work trips that go from home (the rest go home)
+
+`demand.from_home_share.am.hbw` · unit: share · used by: time periods: trip direction (production–attraction to origin–destination)
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.8 | 0.9 | 1.0 | documented | unverified | [nchrp-716](#src-nchrp-716), [mobsimlab-derivation](#src-mobsimlab-derivation) | Turns the home-based trips of a period (produced at home) into trips from and to home: most morning trips leave home, most evening peak trips return. |
+
+### Time periods: share of the midday's home–work trips that go from home (the rest go home)
+
+`demand.from_home_share.md.hbw` · unit: share · used by: time periods: trip direction (production–attraction to origin–destination)
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.35 | 0.45 | 0.55 | documented | unverified | [nchrp-716](#src-nchrp-716), [mobsimlab-derivation](#src-mobsimlab-derivation) | Turns the home-based trips of a period (produced at home) into trips from and to home: most morning trips leave home, most evening peak trips return. |
+
+### Time periods: share of the evening peak's home–work trips that go from home (the rest go home)
+
+`demand.from_home_share.pm.hbw` · unit: share · used by: time periods: trip direction (production–attraction to origin–destination)
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.05 | 0.15 | 0.25 | documented | unverified | [nchrp-716](#src-nchrp-716), [mobsimlab-derivation](#src-mobsimlab-derivation) | Turns the home-based trips of a period (produced at home) into trips from and to home: most morning trips leave home, most evening peak trips return. |
+
+### Time periods: share of the evening's home–work trips that go from home (the rest go home)
+
+`demand.from_home_share.ev.hbw` · unit: share · used by: time periods: trip direction (production–attraction to origin–destination)
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.2 | 0.3 | 0.4 | documented | unverified | [nchrp-716](#src-nchrp-716), [mobsimlab-derivation](#src-mobsimlab-derivation) | Turns the home-based trips of a period (produced at home) into trips from and to home: most morning trips leave home, most evening peak trips return. |
+
+### Time periods: share of the morning peak's home–education trips that go from home (the rest go home)
+
+`demand.from_home_share.am.hbe` · unit: share · used by: time periods: trip direction (production–attraction to origin–destination)
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.85 | 0.95 | 1.0 | documented | unverified | [nchrp-716](#src-nchrp-716), [mobsimlab-derivation](#src-mobsimlab-derivation) | Turns the home-based trips of a period (produced at home) into trips from and to home: most morning trips leave home, most evening peak trips return. |
+
+### Time periods: share of the midday's home–education trips that go from home (the rest go home)
+
+`demand.from_home_share.md.hbe` · unit: share · used by: time periods: trip direction (production–attraction to origin–destination)
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.3 | 0.4 | 0.5 | documented | unverified | [nchrp-716](#src-nchrp-716), [mobsimlab-derivation](#src-mobsimlab-derivation) | Turns the home-based trips of a period (produced at home) into trips from and to home: most morning trips leave home, most evening peak trips return. |
+
+### Time periods: share of the evening peak's home–education trips that go from home (the rest go home)
+
+`demand.from_home_share.pm.hbe` · unit: share · used by: time periods: trip direction (production–attraction to origin–destination)
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.1 | 0.2 | 0.3 | documented | unverified | [nchrp-716](#src-nchrp-716), [mobsimlab-derivation](#src-mobsimlab-derivation) | Turns the home-based trips of a period (produced at home) into trips from and to home: most morning trips leave home, most evening peak trips return. |
+
+### Time periods: share of the evening's home–education trips that go from home (the rest go home)
+
+`demand.from_home_share.ev.hbe` · unit: share · used by: time periods: trip direction (production–attraction to origin–destination)
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.3 | 0.4 | 0.5 | documented | unverified | [nchrp-716](#src-nchrp-716), [mobsimlab-derivation](#src-mobsimlab-derivation) | Turns the home-based trips of a period (produced at home) into trips from and to home: most morning trips leave home, most evening peak trips return. |
+
+### Time periods: share of the morning peak's home–other trips that go from home (the rest go home)
+
+`demand.from_home_share.am.hbo` · unit: share · used by: time periods: trip direction (production–attraction to origin–destination)
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.55 | 0.65 | 0.75 | documented | unverified | [nchrp-716](#src-nchrp-716), [mobsimlab-derivation](#src-mobsimlab-derivation) | Turns the home-based trips of a period (produced at home) into trips from and to home: most morning trips leave home, most evening peak trips return. |
+
+### Time periods: share of the midday's home–other trips that go from home (the rest go home)
+
+`demand.from_home_share.md.hbo` · unit: share · used by: time periods: trip direction (production–attraction to origin–destination)
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.4 | 0.5 | 0.6 | documented | unverified | [nchrp-716](#src-nchrp-716), [mobsimlab-derivation](#src-mobsimlab-derivation) | Turns the home-based trips of a period (produced at home) into trips from and to home: most morning trips leave home, most evening peak trips return. |
+
+### Time periods: share of the evening peak's home–other trips that go from home (the rest go home)
+
+`demand.from_home_share.pm.hbo` · unit: share · used by: time periods: trip direction (production–attraction to origin–destination)
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.35 | 0.45 | 0.55 | documented | unverified | [nchrp-716](#src-nchrp-716), [mobsimlab-derivation](#src-mobsimlab-derivation) | Turns the home-based trips of a period (produced at home) into trips from and to home: most morning trips leave home, most evening peak trips return. |
+
+### Time periods: share of the evening's home–other trips that go from home (the rest go home)
+
+`demand.from_home_share.ev.hbo` · unit: share · used by: time periods: trip direction (production–attraction to origin–destination)
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.25 | 0.35 | 0.45 | documented | unverified | [nchrp-716](#src-nchrp-716), [mobsimlab-derivation](#src-mobsimlab-derivation) | Turns the home-based trips of a period (produced at home) into trips from and to home: most morning trips leave home, most evening peak trips return. |
+
+### Distribution: power b of the deterrence function for home–work trips (f = t^b · e^(c·t))
+
+`demand.deterrence.hbw.power` · unit: – · used by: trip distribution: gravity model
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | -0.026 | -0.02 | -0.014 | cited | unverified | [nchrp-716](#src-nchrp-716) | NCHRP Report 716 gives gamma friction factors for large urban areas (f = a·t^b·e^(c·t), t in minutes). Calibration to an observed trip length changes c and keeps b. |
+
+### Distribution: exponential c of the deterrence function for home–work trips, per minute
+
+`demand.deterrence.hbw.exponential` · unit: 1/min · used by: trip distribution: gravity model, calibration to an observed trip length
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | -0.1845 | -0.123 | -0.0615 | cited | unverified | [nchrp-716](#src-nchrp-716) | NCHRP Report 716 gives gamma friction factors for large urban areas (f = a·t^b·e^(c·t), t in minutes). t is the generalised time between zones (the mode choice logsum, in minutes of in-vehicle time). |
+
+### Distribution: power b of the deterrence function for home–education trips (f = t^b · e^(c·t))
+
+`demand.deterrence.hbe.power` · unit: – · used by: trip distribution: gravity model
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | -0.65 | -0.5 | -0.35 | educated-guess | unverified | [nchrp-716](#src-nchrp-716), [mobsimlab-derivation](#src-mobsimlab-derivation) | NCHRP Report 716 has no school purpose; school trips are shorter than other home-based trips, so a steeper decay than home–other is used. Calibration to an observed trip length changes c and keeps b. |
+
+### Distribution: exponential c of the deterrence function for home–education trips, per minute
+
+`demand.deterrence.hbe.exponential` · unit: 1/min · used by: trip distribution: gravity model, calibration to an observed trip length
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | -0.225 | -0.15 | -0.075 | educated-guess | unverified | [nchrp-716](#src-nchrp-716), [mobsimlab-derivation](#src-mobsimlab-derivation) | NCHRP Report 716 has no school purpose; school trips are shorter than other home-based trips, so a steeper decay than home–other is used. t is the generalised time between zones (the mode choice logsum, in minutes of in-vehicle time). |
+
+### Distribution: power b of the deterrence function for home–other trips (f = t^b · e^(c·t))
+
+`demand.deterrence.hbo.power` · unit: – · used by: trip distribution: gravity model
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | -1.67 | -1.285 | -0.899 | cited | unverified | [nchrp-716](#src-nchrp-716) | NCHRP Report 716 gives gamma friction factors for large urban areas (f = a·t^b·e^(c·t), t in minutes). Calibration to an observed trip length changes c and keeps b. |
+
+### Distribution: exponential c of the deterrence function for home–other trips, per minute
+
+`demand.deterrence.hbo.exponential` · unit: 1/min · used by: trip distribution: gravity model, calibration to an observed trip length
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | -0.141 | -0.094 | -0.047 | cited | unverified | [nchrp-716](#src-nchrp-716) | NCHRP Report 716 gives gamma friction factors for large urban areas (f = a·t^b·e^(c·t), t in minutes). t is the generalised time between zones (the mode choice logsum, in minutes of in-vehicle time). |
+
+### Distribution: power b of the deterrence function for non-home-based trips (f = t^b · e^(c·t))
+
+`demand.deterrence.nhb.power` · unit: – · used by: trip distribution: gravity model
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | -1.732 | -1.332 | -0.932 | cited | unverified | [nchrp-716](#src-nchrp-716) | NCHRP Report 716 gives gamma friction factors for large urban areas (f = a·t^b·e^(c·t), t in minutes). Calibration to an observed trip length changes c and keeps b. |
+
+### Distribution: exponential c of the deterrence function for non-home-based trips, per minute
+
+`demand.deterrence.nhb.exponential` · unit: 1/min · used by: trip distribution: gravity model, calibration to an observed trip length
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | -0.15 | -0.1 | -0.05 | cited | unverified | [nchrp-716](#src-nchrp-716) | NCHRP Report 716 gives gamma friction factors for large urban areas (f = a·t^b·e^(c·t), t in minutes). t is the generalised time between zones (the mode choice logsum, in minutes of in-vehicle time). |
+
+### Distribution: time within a zone as a share of the time to its nearest neighbouring zone
+
+`demand.intrazonal_share` · unit: share · used by: skims: trips within a zone
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.3 | 0.5 | 0.7 | documented | unverified | [ortuzar-willumsen-2011](#src-ortuzar-willumsen-2011) | The usual approximation: half the time to the nearest zone centroid. |
+
+### Mode choice: utility of one minute in a vehicle for home–work trips
+
+`demand.mode.ivt.hbw` · unit: 1/min · used by: mode choice: utilities of car and public transport, distribution: generalised time
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | -0.035 | -0.025 | -0.015 | documented | unverified | [nchrp-716](#src-nchrp-716), [ortuzar-willumsen-2011](#src-ortuzar-willumsen-2011) | NCHRP Report 716 lists in-vehicle time coefficients of US models: about −0.019 to −0.028 per minute for work trips and −0.008 to −0.025 for other trips. All other time and cost terms are set relative to this one. |
+
+### Mode choice: utility of one minute in a vehicle for home–education trips
+
+`demand.mode.ivt.hbe` · unit: 1/min · used by: mode choice: utilities of car and public transport, distribution: generalised time
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | -0.028 | -0.02 | -0.012 | documented | unverified | [nchrp-716](#src-nchrp-716), [ortuzar-willumsen-2011](#src-ortuzar-willumsen-2011) | NCHRP Report 716 lists in-vehicle time coefficients of US models: about −0.019 to −0.028 per minute for work trips and −0.008 to −0.025 for other trips. All other time and cost terms are set relative to this one. |
+
+### Mode choice: utility of one minute in a vehicle for home–other trips
+
+`demand.mode.ivt.hbo` · unit: 1/min · used by: mode choice: utilities of car and public transport, distribution: generalised time
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | -0.021 | -0.015 | -0.009 | documented | unverified | [nchrp-716](#src-nchrp-716), [ortuzar-willumsen-2011](#src-ortuzar-willumsen-2011) | NCHRP Report 716 lists in-vehicle time coefficients of US models: about −0.019 to −0.028 per minute for work trips and −0.008 to −0.025 for other trips. All other time and cost terms are set relative to this one. |
+
+### Mode choice: utility of one minute in a vehicle for non-home-based trips
+
+`demand.mode.ivt.nhb` · unit: 1/min · used by: mode choice: utilities of car and public transport, distribution: generalised time
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | -0.028 | -0.02 | -0.012 | documented | unverified | [nchrp-716](#src-nchrp-716), [ortuzar-willumsen-2011](#src-ortuzar-willumsen-2011) | NCHRP Report 716 lists in-vehicle time coefficients of US models: about −0.019 to −0.028 per minute for work trips and −0.008 to −0.025 for other trips. All other time and cost terms are set relative to this one. |
+
+### Mode choice: weight of a minute waiting, relative to a minute in a vehicle
+
+`demand.mode.wait_weight` · unit: × · used by: mode choice: public transport utility, transit assignment
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 1.5 | 2.0 | 2.5 | cited | unverified | [wardman-2004](#src-wardman-2004) | Wardman's meta-analysis of UK values: waiting is valued at about 1.5 to 2.5 times in-vehicle time. |
+
+### Mode choice: weight of a minute walking to, from or between stops, relative to a minute in a vehicle
+
+`demand.mode.walk_weight` · unit: × · used by: mode choice: public transport utility, transit assignment
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 1.5 | 2.0 | 2.5 | cited | unverified | [wardman-2004](#src-wardman-2004) | Wardman's meta-analysis: walking to and from public transport is valued at about 1.5 to 2.5 times in-vehicle time. |
+
+### Mode choice: penalty for each change of vehicle, in minutes of in-vehicle time
+
+`demand.mode.transfer_penalty_min` · unit: min · used by: mode choice: public transport utility, transit assignment
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 3 | 5 | 10 | cited | unverified | [wardman-2004](#src-wardman-2004) | Wardman's meta-analysis: about 5 minutes per interchange, more where the change is unpleasant or uncertain; the walk and wait of the change are counted on top. |
+
+### Mode choice: weight of a minute of a trip made on foot, relative to a minute in a vehicle
+
+`demand.mode.walk_mode_weight` · unit: × · used by: mode choice: walk utility
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 1.5 | 2.0 | 3.0 | documented | unverified | [nchrp-716](#src-nchrp-716), [mobsimlab-derivation](#src-mobsimlab-derivation) | Models in NCHRP Report 716 weigh non-motorised time at about twice in-vehicle time; the alternative-specific constant takes up the rest. |
+
+### Mode choice: weight of a minute of a trip made by bicycle, relative to a minute in a vehicle
+
+`demand.mode.cycle_mode_weight` · unit: × · used by: mode choice: cycle utility
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 1.5 | 2.0 | 3.0 | documented | unverified | [nchrp-716](#src-nchrp-716), [mobsimlab-derivation](#src-mobsimlab-derivation) | As for walking. Cycle facilities lower the perceived time on the streets that have them (catchment effects). |
+
+### Mode choice: nest scale of motorised (car, public transport) and non-motorised (walk, cycle) modes
+
+`demand.mode.nest_scale` · unit: – · used by: mode choice: nested logit
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.4 | 0.6 | 0.9 | documented | unverified | [tag-m2](#src-tag-m2), [ortuzar-willumsen-2011](#src-ortuzar-willumsen-2011) | Between 0 and 1: 1 is a plain multinomial logit; lower values make car and public transport (or walk and cycle) closer substitutes than modes across nests. TAG unit M2.1 gives illustrative values of about 0.5 to 0.8 for mode choice below destination choice. |
+
+### Mode choice: constant of public transport, relative to car
+
+`demand.mode.asc.transit` · unit: utility · used by: mode choice: public transport utility, calibration to observed mode shares
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | -2.0 | -1.0 | 0.0 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Uncalibrated starting value: what time and cost do not capture (comfort, reliability, habit). Calibration to observed mode shares replaces it. |
+
+### Mode choice: constant of walking, relative to car
+
+`demand.mode.asc.walk` · unit: utility · used by: mode choice: walk utility, calibration to observed mode shares
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | -1.0 | 0.0 | 1.0 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Uncalibrated starting value; calibration to observed mode shares replaces it. |
+
+### Mode choice: constant of cycling, relative to car
+
+`demand.mode.asc.cycle` · unit: utility · used by: mode choice: cycle utility, calibration to observed mode shares
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | -2.5 | -1.5 | -0.5 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Uncalibrated starting value, low because few people own and use a bicycle for everyday trips in most cities; calibration to observed mode shares replaces it. |
+
+### Mode choice: share of people who have a car available for the trip
+
+`demand.mode.car_availability` · unit: share · used by: mode choice: car available or not
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.2 | 0.6 | 0.9 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | People without a car choose among public transport, walking and cycling. About 0.8 in car-oriented suburbs, 0.4 to 0.6 in European cities, lower in many cities of lower-income countries. Enter the local value where the census gives it. |
+
+### Mode choice: share of people who have a bicycle available and can ride it
+
+`demand.mode.cycle_availability` · unit: share · used by: mode choice: cycle available or not
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.3 | 0.7 | 0.9 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | About three quarters of households in north-western Europe own a bicycle; much less where cycling is rare. Children under 10 and many older people are left out. |
+
+### Value of time: home–work trips, as a share of income per hour
+
+`demand.vot.share.hbw` · unit: share · used by: mode choice: cost against time, appraisal: travel time savings
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.4 | 0.5 | 0.7 | cited | unverified | [usdot-vot-2016](#src-usdot-vot-2016) | US DOT guidance values personal local travel at 50 % of median hourly income. |
+
+### Value of time: education, other and non-home-based trips, as a share of income per hour
+
+`demand.vot.share.other` · unit: share · used by: mode choice: cost against time, appraisal: travel time savings
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.3 | 0.5 | 0.6 | cited | unverified | [usdot-vot-2016](#src-usdot-vot-2016) | US DOT guidance values personal local travel at 50 % of median hourly income, whatever the purpose. |
+
+### Value of time: hours a year over which GDP per capita is spread to give income per hour
+
+`demand.vot.income_hours` · unit: h · used by: mode choice: cost against time
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 1600 | 2080 | 2500 | documented | unverified | [usdot-vot-2016](#src-usdot-vot-2016), [mobsimlab-derivation](#src-mobsimlab-derivation) | US DOT divides annual income by 2080 hours. GDP per capita (World Bank, local currency) stands in for income, as in the benefit tables. |
+
+### Mode choice: average fare paid per public transport trip (2023 US$ PPP)
+
+`demand.mode.fare_usd` · unit: US$ (2023 PPP) · used by: mode choice: public transport cost
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0 | 1.5 | 3 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Averages over single tickets, passes and free travel come to about 1 to 2 US$ (PPP) per boarding in many cities. Converted to the project currency like the cost tables. |
+
+### Mode choice: perceived cost of driving per km, fuel and wear (2023 US$ PPP)
+
+`demand.mode.car_cost_per_km_usd` · unit: US$/km (2023 PPP) · used by: mode choice: car cost
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.08 | 0.15 | 0.3 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Drivers perceive fuel and some wear, not the full cost of owning a car: about 0.1 to 0.2 US$ (PPP) per km. |
+
+### Mode choice: parking cost at a trip end in the central business district (2023 US$ PPP)
+
+`demand.mode.parking_cost_usd` · unit: US$ (2023 PPP) · used by: mode choice: car cost
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0 | 5 | 15 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Average over free and paid spaces, charged on half the trip legs (the leg that arrives). Elsewhere parking is free in the model unless a zone sets its own. |
+
+### Assignment: people per car
+
+`demand.car_occupancy` · unit: persons · used by: road assignment: cars from car trips
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 1.1 | 1.3 | 1.6 | documented | unverified | [nhts-2017](#src-nhts-2017), [mid-2017](#src-mid-2017) | Average car occupancy in national travel surveys is about 1.3 to 1.5, lower on commuting trips. |
+
+### Road assignment: BPR volume-delay α
+
+`demand.road.bpr_alpha` · unit: – · used by: road assignment: congestion
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.15 | 0.15 | 1.0 | cited | unverified | [bpr-1964](#src-bpr-1964) | t = t0 · (1 + α (v/c)^β). The Bureau of Public Roads values are α = 0.15 and β = 4; urban arterials with signals are often given larger α. |
+
+### Road assignment: BPR volume-delay β
+
+`demand.road.bpr_beta` · unit: – · used by: road assignment: congestion
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 4 | 4 | 8 | cited | unverified | [bpr-1964](#src-bpr-1964) | See demand.road.bpr_alpha. |
+
+### Road assignment: free-flow speed as a share of the legal speed
+
+`demand.road.free_flow_share` · unit: share · used by: road assignment: free-flow time
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.6 | 0.8 | 1.0 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Junctions, crossings and parking slow urban traffic below the speed limit even without congestion. |
+
+### Road assignment: capacity of a motorway road, cars per hour per lane
+
+`demand.road.capacity.motorway` · unit: cars/h/lane · used by: road assignment: congestion
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 1800 | 2000 | 2200 | documented | unverified | [hcm7](#src-hcm7), [mobsimlab-derivation](#src-mobsimlab-derivation) | Free-flow multilane highway lanes carry about 2000 to 2400 cars per hour. |
+
+### Road assignment: capacity of a trunk road, cars per hour per lane
+
+`demand.road.capacity.trunk` · unit: cars/h/lane · used by: road assignment: congestion
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 1400 | 1700 | 2000 | documented | unverified | [hcm7](#src-hcm7), [mobsimlab-derivation](#src-mobsimlab-derivation) | Grade-separated or high-standard roads with few junctions. |
+
+### Road assignment: capacity of a primary road, cars per hour per lane
+
+`demand.road.capacity.primary` · unit: cars/h/lane · used by: road assignment: congestion
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 700 | 900 | 1200 | documented | unverified | [hcm7](#src-hcm7), [mobsimlab-derivation](#src-mobsimlab-derivation) | Signalised urban arterials: a saturation flow of about 1800 to 1900 cars per hour of green, times a green share of about 0.5. |
+
+### Road assignment: capacity of a secondary road, cars per hour per lane
+
+`demand.road.capacity.secondary` · unit: cars/h/lane · used by: road assignment: congestion
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 600 | 800 | 1000 | documented | unverified | [hcm7](#src-hcm7), [mobsimlab-derivation](#src-mobsimlab-derivation) | As primary roads, with shorter green times and more turning traffic. |
+
+### Road assignment: capacity of a tertiary road, cars per hour per lane
+
+`demand.road.capacity.tertiary` · unit: cars/h/lane · used by: road assignment: congestion
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 500 | 650 | 800 | documented | unverified | [hcm7](#src-hcm7), [mobsimlab-derivation](#src-mobsimlab-derivation) | Collector streets. |
+
+### Road assignment: capacity of a local road, cars per hour per lane
+
+`demand.road.capacity.local` · unit: cars/h/lane · used by: road assignment: congestion
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 300 | 450 | 600 | documented | unverified | [hcm7](#src-hcm7), [mobsimlab-derivation](#src-mobsimlab-derivation) | Residential, unclassified, living and service streets: their capacity is seldom what limits a trip. |
+
+### Road assignment: lanes per direction of a motorway road where OpenStreetMap does not say
+
+`demand.road.lanes.motorway` · unit: lanes · used by: road assignment: capacity
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 1 | 2 | 3 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Used only when the way has no lanes tag. |
+
+### Road assignment: lanes per direction of a trunk road where OpenStreetMap does not say
+
+`demand.road.lanes.trunk` · unit: lanes · used by: road assignment: capacity
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 1 | 2 | 3 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Used only when the way has no lanes tag. |
+
+### Road assignment: lanes per direction of a primary road where OpenStreetMap does not say
+
+`demand.road.lanes.primary` · unit: lanes · used by: road assignment: capacity
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 1 | 2 | 2 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Used only when the way has no lanes tag. |
+
+### Road assignment: lanes per direction of a secondary road where OpenStreetMap does not say
+
+`demand.road.lanes.secondary` · unit: lanes · used by: road assignment: capacity
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 1 | 1 | 2 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Used only when the way has no lanes tag. |
+
+### Road assignment: lanes per direction of a tertiary road where OpenStreetMap does not say
+
+`demand.road.lanes.tertiary` · unit: lanes · used by: road assignment: capacity
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 1 | 1 | 2 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Used only when the way has no lanes tag. |
+
+### Road assignment: lanes per direction of a local road where OpenStreetMap does not say
+
+`demand.road.lanes.local` · unit: lanes · used by: road assignment: capacity
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 1 | 1 | 2 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Used only when the way has no lanes tag. |
+
+### Road assignment: most iterations of the equilibrium
+
+`demand.road.max_iterations` · unit: iterations · used by: road assignment: bi-conjugate Frank-Wolfe
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 20 | 100 | 500 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | The assignment stops at this or at demand.road.relative_gap, whichever comes first. |
+
+### Road assignment: relative gap at which the equilibrium counts as reached
+
+`demand.road.relative_gap` · unit: share · used by: road assignment: bi-conjugate Frank-Wolfe
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.0001 | 0.001 | 0.01 | documented | unverified | [tag-m3-1](#src-tag-m3-1) | Planning practice asks for a relative gap of 0.1 % or better in congested assignments. |
+
+### Feedback: most rounds of skims, distribution, mode choice and assignment
+
+`demand.feedback.max_iterations` · unit: rounds · used by: feedback loop
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 3 | 10 | 20 | documented | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | 09 §2.1: iterate until the gap is below demand.feedback.gap or at most 10 rounds. |
+
+### Feedback: change in car trips between rounds at which the model counts as settled
+
+`demand.feedback.gap` · unit: share · used by: feedback loop
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.005 | 0.01 | 0.05 | documented | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | 09 §2.1: relative gap below 1 %. Measured as the sum of absolute changes in the car trip matrix over its total; the matrices of successive rounds are averaged (method of successive averages). |
+
 ### Walking speed for walking links between stations
 
 `demand.walk_speed_kmh` · unit: km/h · used by: transfer links, access/egress links, catchment
@@ -2211,3 +3027,14 @@ and rationale per attribute: [`switches.yaml`](switches.yaml); geometry model:
 | <a id="src-hca-employment-density-2015"></a>`hca-employment-density-2015` | [Homes and Communities Agency (UK): Employment Density Guide, 3rd edition (2015)](https://www.gov.uk/government/publications/employment-density-guide) | free | Open Government Licence v3.0 | 2026-11-09 | none |
 | <a id="src-oecd-icio"></a>`oecd-icio` | [OECD Inter-Country Input-Output tables (value added and imports per unit of final demand by industry)](https://www.oecd.org/en/data/datasets/inter-country-input-output-tables.html) | free | CC BY 4.0 | 2026-11-09 | none |
 | <a id="src-worldbank-benefit-wdi"></a>`worldbank-benefit-wdi` | [World Bank World Development Indicators API: NY.GDP.PCAP.CN (GDP per capita, local currency), SL.EMP.TOTL.SP.ZS (employment to population ratio 15+), SP.POP.0014.TO.ZS (population 0–14), SP.POP.TOTL (population)](https://datahelpdesk.worldbank.org/knowledgebase/articles/889392-about-the-indicators-api-documentation) | free | CC BY 4.0 | 2026-11-09 | none |
+| <a id="src-nchrp-716"></a>`nchrp-716` | [NCHRP Report 716: Travel Demand Forecasting: Parameters and Techniques (2012): trip rates, friction factors, mode choice coefficients, time-of-day factors](https://nap.nationalacademies.org/catalog/14665/travel-demand-forecasting-parameters-and-techniques) | free | © National Academy of Sciences; numbers cited as facts | 2026-11-16 | none |
+| <a id="src-mid-2017"></a>`mid-2017` | [Mobilität in Deutschland 2017 (MiD): results report, trips per person and day, purposes, times of day](https://www.mobilitaet-in-deutschland.de/archive/publikationen2017.html) | free | © BMVI; numbers cited as facts | 2026-11-16 | none |
+| <a id="src-nhts-2017"></a>`nhts-2017` | [2017 National Household Travel Survey (US): summary of travel trends, trips per person, purposes, vehicle occupancy](https://nhts.ornl.gov/) | free | US government work, public domain | 2026-11-16 | none |
+| <a id="src-nts-2019"></a>`nts-2019` | [National Travel Survey: England 2019, trips per person per year by purpose](https://www.gov.uk/government/statistics/national-travel-survey-2019) | free | Open Government Licence v3.0 | 2026-11-16 | none |
+| <a id="src-ite-trip-generation"></a>`ite-trip-generation` | [ITE Trip Generation Manual, 11th edition: hospital and medical office trip rates](https://www.ite.org/technical-resources/topics/trip-and-parking-generation/) | paywalled | © ITE; numbers cited as facts | 2026-11-16 | none |
+| <a id="src-ortuzar-willumsen-2011"></a>`ortuzar-willumsen-2011` | [Ortúzar, J. de D. and Willumsen, L. G.: Modelling Transport, 4th edition (Wiley, 2011): intrazonal costs, gravity models, nested logit](https://doi.org/10.1002/9781119993308) | paywalled | © Wiley; numbers cited as facts | 2026-11-16 | none |
+| <a id="src-wardman-2004"></a>`wardman-2004` | [Wardman, M.: Public transport values of time, Transport Policy 11(4), 363–377 (2004): walk, wait and interchange weights](https://doi.org/10.1016/j.tranpol.2004.05.001) | paywalled | © Elsevier; numbers cited as facts | 2026-11-16 | none |
+| <a id="src-tag-m2"></a>`tag-m2` | [TAG unit M2.1: Variable Demand Modelling, illustrative nest scale parameters](https://www.gov.uk/government/publications/tag-unit-m2-1-variable-demand-modelling) | free | Open Government Licence v3.0 | 2026-11-16 | none |
+| <a id="src-tag-m3-1"></a>`tag-m3-1` | [TAG unit M3.1: Highway Assignment Modelling, convergence criteria (relative gap)](https://www.gov.uk/government/publications/tag-unit-m3-1-highway-assignment-modelling) | free | Open Government Licence v3.0 | 2026-11-16 | none |
+| <a id="src-usdot-vot-2016"></a>`usdot-vot-2016` | [US DOT: Revised Departmental Guidance on Valuation of Travel Time in Economic Analysis (2016)](https://www.transportation.gov/office-policy/transportation-policy/revised-departmental-guidance-valuation-travel-time-economic) | free | US government work, public domain | 2026-11-16 | none |
+| <a id="src-bpr-1964"></a>`bpr-1964` | [Bureau of Public Roads: Traffic Assignment Manual (1964), volume-delay function](https://catalog.hathitrust.org/Record/001314064) | free | US government work, public domain | 2026-11-16 | none |
