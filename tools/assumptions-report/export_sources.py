@@ -5,7 +5,9 @@ Usage:
   python3 tools/assumptions-report/export_sources.py           # write apps/web/src/workspace/assumptions-report.generated.json
   python3 tools/assumptions-report/export_sources.py --check   # fail if it is stale
 
-Reads assumptions/parameters and assumptions/sources.yaml (validated by tools/assumptions/check.py) and writes,
+Reads assumptions/parameters and assumptions/sources.yaml (validated by tools/assumptions/check.py), and the
+number parameters and sources of the plugins whose values Project Preferences shows (as
+tools/parameters/export_defaults.py does), and writes,
 per parameter, what it is used by and, for every mode ("*" and each mode) and each traction with its own entry,
 the entry that applies: its basis, check, sources and reasoning. The values themselves come from
 parameters.generated.json (tools/parameters/export_defaults.py), so they are not repeated here. Also writes
@@ -20,8 +22,16 @@ import json
 import sys
 from pathlib import Path
 
+import yaml
+
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "apps" / "web" / "src" / "workspace" / "assumptions-report.generated.json"
+# Plugin assumption folders whose number parameters are in Project Preferences (tools/parameters/export_defaults.py).
+PLUGIN_DIRS = [ROOT / "plugins" / "noise" / "assumptions"]
+
+
+def read_yaml(path: Path) -> list[dict]:
+    return yaml.safe_load(path.read_text(encoding="utf-8")) or []
 
 
 def assumption_check():
@@ -55,9 +65,17 @@ def index(entries: list[dict], v: dict) -> int:
 def render() -> str:
     ac = assumption_check()
     sources = ac.load_sources()
+    all_params = ac.load_parameters()
+    for d in PLUGIN_DIRS:
+        sources.update({x["id"]: x for x in read_yaml(d / "sources.yaml")})
+        all_params += [
+            x
+            for x in read_yaml(d / "parameters.yaml")
+            if x.get("kind", "number") == "number"
+        ]
     params = {}
     cited: set[str] = set()
-    for p in ac.load_parameters():
+    for p in all_params:
         entries: list[dict] = []
         modes = {m: index(entries, ac.resolve(p, m)) for m in ["*", *ac.MODES]}
         traction = {}
