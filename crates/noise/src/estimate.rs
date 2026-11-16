@@ -1762,14 +1762,36 @@ fn checks(
             line: None,
         });
     }
-    if !input.point_sources.is_empty() {
-        out.push(Check {
-            severity: Severity::Info,
-            text: "Cable car and ferry sources use placeholder sound powers: indicative only"
-                .into(),
-            at: None,
-            line: None,
-        });
+    // The point sources' sound powers rest on one study each (the berth value on none yet): name it.
+    let uses = |key: &str| {
+        input
+            .point_sources
+            .iter()
+            .any(|p| p.lw_key.as_deref() == Some(key))
+    };
+    let cable = uses("noise.cable_car_tower_lw_db") || uses("noise.cable_car_station_lw_db");
+    for (used, text) in [
+        (
+            cable,
+            "Cable cars: sound powers from one study (Placer County gondola EIR, 2019): indicative",
+        ),
+        (
+            uses("noise.ferry_cruise_lw_db"),
+            "Ferries under way: sound power from one study of large ferries (port of Livorno, Fredianelli and Nastasi 2020): indicative",
+        ),
+        (
+            uses("noise.ferry_berth_lw_db"),
+            "Ferries at the pier: placeholder sound power, no source yet: indicative only",
+        ),
+    ] {
+        if used {
+            out.push(Check {
+                severity: Severity::Info,
+                text: text.into(),
+                at: None,
+                line: None,
+            });
+        }
     }
     out.push(Check {
         severity: Severity::Info,
