@@ -518,14 +518,14 @@ describe("projects", () => {
       "project.drawing_saved",
       "project.drawing_saved",
       "project.drawing_saved",
+      // The own vehicles and fleet drawing saved in the drawings test.
+      "project.drawing_saved",
       // The preferences drawing sets two values.
       "project.drawing_saved",
       "project.value_changed",
       "project.value_changed",
       // The two schematic drawings saved in the drawings test.
       "project.drawing_saved",
-      "project.drawing_saved",
-      // The own vehicles and fleet drawing saved in the drawings test.
       "project.drawing_saved",
       // The scenarios drawing saved in the drawings test.
       "project.drawing_saved",
