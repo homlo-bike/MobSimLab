@@ -3,6 +3,7 @@ import { editorsId } from "./editors/id";
 import { cargoBikeId } from "./cargo-bike/id";
 import { depotsId } from "./depots/id";
 import { mslabId } from "./mslab/id";
+import { pluginCodeId } from "./plugin-code/id";
 import { populationId } from "./population/id";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -423,6 +424,7 @@ export const id: Messages = {
   ...cargoBikeId,
   ...depotsId,
   ...mslabId,
+  ...pluginCodeId,
   ...populationId,
   ...roadId,
   ...PLUGIN_MESSAGES.id,
