@@ -1,6 +1,9 @@
 import type { Map as MapLibreMap } from "maplibre-gl";
 import { type ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { BenefitTables } from "../features/benefits/BenefitTables";
+import { DemandSection } from "../features/demand/DemandSection";
+import { DemandZoneEditor } from "../features/demand/ZoneEditor";
+import type { DemandDoc } from "../features/demand/zones";
 import type { Estimate as BenefitEstimate } from "../features/benefits/model";
 import type { Triple } from "../features/benefits/params";
 import type { BenefitsDoc } from "../features/benefits/formulas";
@@ -116,7 +119,7 @@ const NO_SETUPS: StreetSetup[] = [];
 const NO_STREET_LINES: SavedStreetLine[] = [];
 
 type SimView = "test" | "journey" | "road";
-type GisView = "streets" | "regions";
+type GisView = "streets" | "regions" | "zones";
 const NO_REGIONS: Region[] = [];
 const NO_FEEDS: GtfsFeed[] = [];
 const NO_DEPOTS: SavedDepot[] = [];
@@ -169,10 +172,12 @@ export function Workspace({
     currency: string | null;
     country: string | null;
     rate: number;
+    /** Local currency units per international $ (the demand model's fares and car costs). */
+    ppp: number;
   } | null>(null);
   const onCostEstimate = useCallback(
     (estimate: CostEstimate, prices: Prices, country: string | null, rate: number) =>
-      setCostInfo({ estimate, currency: prices.currency, country, rate }),
+      setCostInfo({ estimate, currency: prices.currency, country, rate, ppp: prices.ppp }),
     [],
   );
   // The benefit estimate's riders a weekday per line (low, medium, high), for the service table.
@@ -260,6 +265,10 @@ export function Workspace({
   );
   const roadRuns = useMemo(
     () => (projectKey && typeof api.roadRuns === "function" ? api.roadRuns(projectKey) : null),
+    [api, projectKey],
+  );
+  const demandRuns = useMemo(
+    () => (projectKey && typeof api.demandRuns === "function" ? api.demandRuns(projectKey) : null),
     [api, projectKey],
   );
 
@@ -661,6 +670,16 @@ export function Workspace({
               currency={currency?.code ?? costInfo?.currency ?? null}
             />
           )}
+          {project && drawings.loaded && tab === "gis" && gis === "zones" && (
+            <DemandZoneEditor
+              map={map}
+              panel={panel}
+              timetable={networkTimetable}
+              preferences={preferences}
+              doc={drawings.doc<DemandDoc>("demand")}
+              onDoc={editable ? (d) => drawings.set("demand", d) : undefined}
+            />
+          )}
           {project && drawings.loaded && tab === "gis" && gis === "streets" && (
             <StreetSetupEditor
               map={map}
@@ -853,6 +872,18 @@ export function Workspace({
                 />
               )}
               {project && drawings.loaded && (
+                <DemandSection
+                  timetable={networkTimetable}
+                  regions={regions}
+                  preferences={preferences}
+                  doc={drawings.doc<DemandDoc>("demand")}
+                  onDoc={editable ? (d) => drawings.set("demand", d) : undefined}
+                  costs={costInfo}
+                  runs={demandRuns}
+                  canRun={editable}
+                />
+              )}
+              {project && drawings.loaded && (
                 <Scenarios
                   railway={railway}
                   streetLines={streetLines}
@@ -929,6 +960,14 @@ export function Workspace({
                     onClick={() => setGis("regions")}
                   >
                     {t("gis.regionsView")}
+                  </button>
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={gis === "zones"}
+                    onClick={() => setGis("zones")}
+                  >
+                    {t("gis.zonesView")}
                   </button>
                 </div>
               </div>

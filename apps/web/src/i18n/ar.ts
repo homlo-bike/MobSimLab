@@ -247,6 +247,7 @@ export const ar: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "الشوارع",
   "gis.regionsView": "المناطق",
+  "gis.zonesView": "مناطق الطلب",
   "gis.intro": "أضف أو عدّل المعلومات التي تستخدمها الحسابات.",
   "gis.areas": "ارسم منطقة أو استوردها من OpenStreetMap",
   "gis.streets": "تخطيط الشوارع: مسارات الحافلات والدراجات والترام، السرعات، الأسلاك العلوية",

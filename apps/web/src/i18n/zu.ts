@@ -259,6 +259,7 @@ export const zu: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "Imigwaqo",
   "gis.regionsView": "Izifunda",
+  "gis.zonesView": "Izindawo zesidingo",
   "gis.intro": "Engeza noma uhlele ulwazi olusetshenziswa izibalo.",
   "gis.areas": "Dweba indawo noma ungenise eyodwa kusuka ku-OpenStreetMap",
   "gis.streets":

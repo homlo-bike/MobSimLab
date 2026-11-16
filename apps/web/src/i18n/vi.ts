@@ -256,6 +256,7 @@ export const vi: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "Đường phố",
   "gis.regionsView": "Khu vực",
+  "gis.zonesView": "Vùng nhu cầu",
   "gis.intro": "Thêm và chỉnh sửa thông tin dùng trong tính toán.",
   "gis.areas": "Vẽ khu vực hoặc nhập từ OpenStreetMap",
   "gis.streets": "Cấu trúc đường phố: làn xe buýt, xe đạp và tàu điện, tốc độ, dây điện trên cao",

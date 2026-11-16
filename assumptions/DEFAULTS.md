@@ -582,11 +582,11 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 
 ### Automatic zones: most hexagons the model area is cut into
 
-`demand.zone_max_count` · unit: zones · used by: automatic zones (H3 resolution chosen from the area)
+`demand.zone_max_count` · unit: zones · used by: automatic zones (hexagon size chosen from the area)
 
 | Context | Low | Central | High | Basis | Check | Sources | Rationale |
 |---|---|---|---|---|---|---|---|
-| all | 200 | 600 | 2000 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | The finest H3 resolution (9, about 0.1 km² per hexagon, down to 6, about 36 km²) that gives at most this many zones is used. 600 zones keeps a run to minutes on the worker; 2000 zones gives stop-level detail in a large city at about ten times the run time (the skims grow with the square of the zone count). |
+| all | 200 | 600 | 2000 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | The smallest hexagon of the H3 sizes (resolution 9, about 0.1 km², up to 6, about 36 km²) that gives at most this many zones is used. 600 zones keeps a run to minutes on the worker; 2000 zones gives stop-level detail in a large city at about ten times the run time (the skims grow with the square of the zone count). |
 
 ### Trips: home–work trips per worker living in the zone, a weekday
 
@@ -1355,6 +1355,54 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 | Context | Low | Central | High | Basis | Check | Sources | Rationale |
 |---|---|---|---|---|---|---|---|
 | all | 1 | 1 | 2 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Used only when the way has no lanes tag. |
+
+### Road assignment: legal speed of a motorway where OpenStreetMap gives no maxspeed
+
+`demand.road.speed_kmh.motorway` · unit: km/h · used by: road assignment: free-flow time
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 80 | 100 | 120 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Used only when the way has no usable maxspeed tag. Urban motorways are often limited to 80–100 km/h; rural ones run faster. |
+
+### Road assignment: legal speed of a trunk road where OpenStreetMap gives no maxspeed
+
+`demand.road.speed_kmh.trunk` · unit: km/h · used by: road assignment: free-flow time
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 50 | 70 | 100 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Used only when the way has no usable maxspeed tag. Urban trunk roads are usually limited to 50–80 km/h. |
+
+### Road assignment: legal speed of a primary road where OpenStreetMap gives no maxspeed
+
+`demand.road.speed_kmh.primary` · unit: km/h · used by: road assignment: free-flow time
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 40 | 50 | 70 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Used only when the way has no usable maxspeed tag. The general urban limit in most countries is 50 km/h (30 mph in the UK and US cities). |
+
+### Road assignment: legal speed of a secondary road where OpenStreetMap gives no maxspeed
+
+`demand.road.speed_kmh.secondary` · unit: km/h · used by: road assignment: free-flow time
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 40 | 50 | 60 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Used only when the way has no usable maxspeed tag. The general urban limit in most countries is 50 km/h. |
+
+### Road assignment: legal speed of a tertiary road where OpenStreetMap gives no maxspeed
+
+`demand.road.speed_kmh.tertiary` · unit: km/h · used by: road assignment: free-flow time
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 30 | 40 | 50 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Used only when the way has no usable maxspeed tag. Between the urban limit and the 30 km/h zones many cities set on smaller streets. |
+
+### Road assignment: legal speed of a local street where OpenStreetMap gives no maxspeed
+
+`demand.road.speed_kmh.local` · unit: km/h · used by: road assignment: free-flow time
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 20 | 30 | 50 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Used only when the way has no usable maxspeed tag. Residential streets are often 30 km/h zones; living streets walking pace. |
 
 ### Road assignment: most iterations of the equilibrium
 

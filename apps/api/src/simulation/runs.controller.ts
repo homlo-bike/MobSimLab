@@ -56,18 +56,19 @@ const count = z.number().int().min(0).max(10_000_000);
 
 /**
  * A demand model run (ADR-0019): the Demand section's bundle as JSON text (contracts/demand-input.schema.json,
- * checked by the worker when it reads it), the project's demand values, and the bundle's size for the list.
+ * without streets: the API adds the street tiles of the zones; the worker checks the rest when it reads it),
+ * the project's demand values, and the bundle's size for the list.
  */
 const demandBody = z.strictObject({
   kind: z.literal("demand"),
   bundle: z
     .string()
     .min(2)
-    .max(15 * 1024 * 1024),
+    .max(8 * 1024 * 1024),
   values: z
     .record(z.string().regex(/^[a-z][a-z0-9_.]{0,99}$/), z.number().finite())
     .refine((v) => Object.keys(v).length <= 1000, "too many demand values"),
-  summary: z.strictObject({ zones: count, links: count, stops: count, lines: count }),
+  summary: z.strictObject({ zones: count, stops: count, lines: count }),
 });
 
 const startBody = z.discriminatedUnion("kind", [capacityBody, roadBody, demandBody]);

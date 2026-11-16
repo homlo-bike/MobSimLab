@@ -178,7 +178,7 @@ def process(
         files: list[RunFile] = []
         replay: bytes | None = None
         if kind == "demand":
-            outcome, result, files = run_demand_job(network, settings, reporter)
+            outcome, result, files = run_demand_job(network, lines, settings, reporter)
         elif kind == "road":
             tiles = json.loads(network).get("tiles", [])
             outcome, result, replay = road(settings, json.loads(lines), list(tiles), reporter)

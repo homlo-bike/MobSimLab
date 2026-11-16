@@ -254,6 +254,7 @@ export const en = {
   "gis.spacing": "Stop spacing",
   "gis.streetsView": "Streets",
   "gis.regionsView": "Regions",
+  "gis.zonesView": "Demand zones",
 
   "tables.title": "Tables",
   "tables.intro": "Every calculation about the project, to estimate how well it will perform.",

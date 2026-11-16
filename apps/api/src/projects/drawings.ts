@@ -157,6 +157,27 @@ const regions = z.looseObject({
     .max(500),
 });
 
+/** Demand model zones (ADR-0019): automatic hexagons or the planner's own zones, and values per zone. */
+const zoneValues = z.record(z.string().max(40), z.union([z.number().finite(), z.boolean()]));
+const demand = z.looseObject({
+  source: z.enum(["auto", "own"]),
+  zones: z
+    .array(
+      z.looseObject({
+        id: z.string().min(1).max(64),
+        name: z.string().max(120),
+        ring: z.array(point).min(4).max(200),
+        values: zoneValues,
+      }),
+    )
+    .max(3000)
+    .optional(),
+  autoValues: z
+    .record(z.string().max(64), zoneValues)
+    .refine((v) => Object.keys(v).length <= 3000, "at most 3000 zones")
+    .optional(),
+});
+
 /** Cargo bike tab (plugins/cargo-bike): start point, destination and the values the project changed. */
 const cargoBike = z.looseObject({
   start: point.nullable().optional(),
@@ -233,6 +254,8 @@ export const DRAWING_KINDS = {
   "cargo-bike": { schema: cargoBike, schemaVersion: 1 },
   /** Road depots (07-simulation §7), shared by the street lines whose vehicles fit. */
   depots: { schema: depots, schemaVersion: 1 },
+  /** Demand model zones in the Tables and GIS tabs (ADR-0019): automatic or own, with the planner's values. */
+  demand: { schema: demand, schemaVersion: 1 },
 } as const satisfies Record<string, { schema: z.ZodType; schemaVersion: number }>;
 
 export type DrawingKind = keyof typeof DRAWING_KINDS;

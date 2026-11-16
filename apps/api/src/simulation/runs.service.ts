@@ -17,7 +17,7 @@ import { OverpassError } from "../gateway/overpass.client";
 import { StreetNetworkService } from "../street-network/street-network.service";
 import type { CapacitySettings, SweepDesign, SweepMetric } from "./params";
 import { type JobState, RunQueue } from "./queue";
-import { MAX_ROAD_TILES, type RoadScenario, type RoadSettings, roadTiles } from "./road";
+import { MAX_ROAD_TILES, type RoadScenario, type RoadSettings, roadTiles, tileOf } from "./road";
 
 /** The network of a capacity run: the example metro, or the railway editor's topology with a lines file. */
 export type RunNetwork =
@@ -63,7 +63,6 @@ export interface NewDemandRun {
 /** Size of a demand run's bundle, for the list of runs. */
 export interface DemandSummary {
   zones: number;
-  links: number;
   stops: number;
   lines: number;
 }
@@ -155,6 +154,34 @@ const EXAMPLE_NETWORK = "example:metro";
 /** Largest street tile text of a road run (db/migrations/0009_road_runs.sql). */
 const MAX_ROAD_NETWORK_CHARS = 64 * 1024 * 1024;
 
+/** Most street tiles one demand run may take (about 18 × 18 km at 50° N). */
+export const MAX_DEMAND_TILES = 160;
+
+/**
+ * Purpose: the street tiles a demand run needs: the tile of every zone centre in the bundle (JSON text,
+ * contracts/demand-input.schema.json) and the tiles around it, so streets reach past each zone's edge.
+ * Output: tiles `[x, y]`, north to south, west to east; empty when the bundle has no zone centres.
+ */
+export function demandTiles(bundle: string): [number, number][] {
+  let zones: unknown;
+  try {
+    zones = (JSON.parse(bundle) as { zones?: unknown }).zones;
+  } catch {
+    throw new BadRequestException("the demand model input is not JSON");
+  }
+  const seen = new Map<string, [number, number]>();
+  for (const z of Array.isArray(zones) ? zones : []) {
+    const c = (z as { centroid?: unknown })?.centroid;
+    if (!Array.isArray(c) || typeof c[0] !== "number" || typeof c[1] !== "number") continue;
+    if (!Number.isFinite(c[0]) || !Number.isFinite(c[1]) || Math.abs(c[1]) > 85) continue;
+    const [x0, y0] = tileOf(c[0], c[1]);
+    for (let dy = -1; dy <= 1; dy++)
+      for (let dx = -1; dx <= 1; dx++) seen.set(`${x0 + dx}/${y0 + dy}`, [x0 + dx, y0 + dy]);
+    if (seen.size > 4 * MAX_DEMAND_TILES) break;
+  }
+  return [...seen.values()].sort((a, b) => a[1] - b[1] || a[0] - b[0]);
+}
+
 /** Message for a run whose worker stopped without settling it (a crash, a restart). */
 export const WORKER_STOPPED = "the background worker stopped before the run finished; start it again";
 
@@ -191,11 +218,7 @@ export class RunsService {
     await this.projects.authorize(actor, projectId, "edit");
     const net =
       input.kind === "demand"
-        ? {
-            stored: { kind: "demand" as const, ...input.summary },
-            network: input.bundle,
-            lines: "",
-          }
+        ? await this.demandNetwork(input)
         : input.kind === "road"
           ? await this.roadNetwork(input.scenario)
           : await this.resolveNetwork(projectId, input.network);
@@ -514,6 +537,39 @@ export class RunsService {
       network,
       lines: JSON.stringify(scenario),
     };
+  }
+
+  /**
+   * Purpose: the network of a demand run: the street tiles (OSM XML) around every zone centre of the bundle,
+   * from which the worker builds the streets (worker `demand/osm.py`), and the bundle itself. 400 when the
+   * bundle has no zone centres or the zones take more than `MAX_DEMAND_TILES` tiles; 502/504 when
+   * OpenStreetMap cannot be reached for a tile that is not cached.
+   */
+  private async demandNetwork(
+    input: NewDemandRun,
+  ): Promise<{ stored: StoredInput["network"]; network: string; lines: string }> {
+    const tiles = demandTiles(input.bundle);
+    if (!tiles.length) throw new BadRequestException("the demand model input has no zones");
+    if (tiles.length > MAX_DEMAND_TILES)
+      throw new BadRequestException(
+        `the zones cover too large an area for one demand run (${tiles.length} street tiles, at most ${MAX_DEMAND_TILES}); use a smaller buffer or fewer lines`,
+      );
+    const xml: string[] = [];
+    for (const [x, y] of tiles) {
+      try {
+        xml.push(await this.streets.tile(x, y));
+      } catch (e) {
+        if (e instanceof OverpassError)
+          throw new HttpException("OpenStreetMap streets are unavailable right now; try again", e.status);
+        throw e;
+      }
+    }
+    const network = JSON.stringify({ tiles: xml });
+    if (network.length > MAX_ROAD_NETWORK_CHARS)
+      throw new BadRequestException(
+        "the streets of the model area are too large for one demand run; use a smaller buffer or fewer lines",
+      );
+    return { stored: { kind: "demand", ...input.summary }, network, lines: input.bundle };
   }
 
   /**

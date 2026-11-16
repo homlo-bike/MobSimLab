@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import json
 import math
+from collections.abc import Iterable
 from dataclasses import dataclass, field
 from importlib import resources
 from typing import Any
@@ -377,8 +378,13 @@ def parse_economy(raw: Any) -> Economy:
     )
 
 
-def parse_bundle(text: str, given_values: dict[str, Any] | None) -> Bundle:
+def parse_bundle(
+    text: str, given_values: dict[str, Any] | None, tiles: Iterable[str] | None = None
+) -> Bundle:
     """Read and check a run's bundle (JSON text) and values.
+
+    A bundle without ``streets`` takes them from ``tiles``, the OpenStreetMap street tiles of the model area
+    that the API stored with the run (``demand.osm``).
 
     Raises:
         InputError: Something is missing or not in the expected form; the message says what.
@@ -391,9 +397,14 @@ def parse_bundle(text: str, given_values: dict[str, Any] | None) -> Bundle:
         raise InputError("the demand model input is not version 1 of contracts/demand-input.schema.json")
     values = Values.of(given_values)
     zones = parse_zones(raw.get("zones"), values)
+    streets = raw.get("streets")
+    if streets is None and tiles is not None:
+        from mobsim_worker.demand.osm import streets_from_tiles  # noqa: PLC0415
+
+        streets = streets_from_tiles(tiles, values)
     return Bundle(
         zones=zones,
-        streets=parse_streets(raw.get("streets"), len(zones)),
+        streets=parse_streets(streets, len(zones)),
         transit=parse_transit(raw.get("transit")),
         economy=parse_economy(raw.get("economy")),
         values=values,

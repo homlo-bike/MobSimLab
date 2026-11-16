@@ -253,6 +253,7 @@ export const yo: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "Àwọn òpópónà",
   "gis.regionsView": "Àwọn agbègbè",
+  "gis.zonesView": "Àwọn agbègbè ìbéèrè",
   "gis.intro": "Fi kún tàbí ṣàtúnṣe ìsọfúnni tí àwọn ìṣirò ń lò.",
   "gis.areas": "Ya agbègbè kan tàbí gbé ọ̀kan wọlé láti OpenStreetMap",
   "gis.streets": "Ìṣètò òpópónà: ọ̀nà bọ́ọ̀sì, kẹ̀kẹ́ àti tírámù, ìyára, wáyà òkè",

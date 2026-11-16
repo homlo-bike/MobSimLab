@@ -251,6 +251,7 @@ export const ko: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "도로",
   "gis.regionsView": "지역",
+  "gis.zonesView": "수요 존",
   "gis.intro": "계산에 쓰이는 정보를 추가하고 편집합니다.",
   "gis.areas": "지역을 그리거나 OpenStreetMap에서 가져오기",
   "gis.streets": "도로 구성: 버스·자전거·트램 차로, 속도, 가선",

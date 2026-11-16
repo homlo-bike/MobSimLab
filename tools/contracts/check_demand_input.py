@@ -22,8 +22,9 @@ def reference_errors(d: dict) -> list[str]:
     zones = [z["id"] for z in d["zones"]]
     if len(set(zones)) != len(zones):
         errs.append("duplicate zone ids")
-    n = len(d["streets"]["nodes"])
-    for i, link in enumerate(d["streets"]["links"]):
+    streets = d.get("streets") or {"nodes": [], "links": []}
+    n = len(streets["nodes"])
+    for i, link in enumerate(streets["links"]):
         if link[0] >= n or link[1] >= n:
             errs.append(f"street link {i} names a node that does not exist")
     stops = [s["id"] for s in d["transit"]["stops"]]

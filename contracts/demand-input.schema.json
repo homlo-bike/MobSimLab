@@ -5,7 +5,7 @@
   "description": "What a demand model run is given (ADR-0019, 09 §2): the zones of the model area with their people, jobs and special generators, the street network, the published public transport network and the country's money figures. Produced by the web app's Demand section in the Tables tab; read by worker/src/mobsim_worker/demand/inputs.py. The run's demand values (Project preferences) travel next to it.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["version", "zones", "streets", "transit", "economy"],
+  "required": ["version", "zones", "transit", "economy"],
   "properties": {
     "version": { "const": 1 },
     "zones": {
@@ -18,7 +18,7 @@
       "type": "object",
       "additionalProperties": false,
       "required": ["nodes", "links"],
-      "description": "Street network of the model area from OpenStreetMap: junctions and the links between them.",
+      "description": "Street network of the model area from OpenStreetMap: junctions and the links between them. Left out when the API adds the OpenStreetMap street tiles of the model area to the run (the web app does), from which the worker builds it (worker/src/mobsim_worker/demand/osm.py).",
       "properties": {
         "nodes": {
           "type": "array",

@@ -265,3 +265,71 @@ def test_production_constrained_distribution_keeps_productions() -> None:
     m = steps.distribute("hbw", prod, attr * 150 / attr.sum(), t, v)
     assert np.allclose(m.sum(axis=1), prod, rtol=1e-3)
     assert np.allclose(m.sum(axis=0), attr * 150 / attr.sum(), rtol=1e-3)
+
+
+def town_tiles() -> list[str]:
+    """The test town's street grid as two overlapping OSM XML tiles, plus an island and a motorway."""
+    n = 7
+    nodes = "".join(
+        f'<node id="{j * n + i + 1}" lon="{LON0 + i * DX:.7f}" lat="{LAT0 + j * DY:.7f}"/>'
+        for j in range(n)
+        for i in range(n)
+    )
+    ways = []
+    for j in range(n):
+        hw = "primary" if j == 3 else "residential"
+        refs = "".join(f'<nd ref="{j * n + i + 1}"/>' for i in range(n))
+        ways.append(f'<way id="{100 + j}">{refs}<tag k="highway" v="{hw}"/></way>')
+    for i in range(n):
+        hw = "primary" if i == 3 else "residential"
+        refs = "".join(f'<nd ref="{j * n + i + 1}"/>' for j in range(n))
+        tags = f'<tag k="highway" v="{hw}"/>' + ('<tag k="maxspeed" v="30 mph"/>' if i == 3 else "")
+        ways.append(f'<way id="{200 + i}">{refs}{tags}</way>')
+    # A one-way motorway along the bottom row, and a street island far away.
+    motorway = "".join(f'<nd ref="{i + 1}"/>' for i in range(n))
+    ways.append(
+        f'<way id="300">{motorway}<tag k="highway" v="motorway"/><tag k="oneway" v="yes"/>'
+        '<tag k="lanes" v="3"/></way>'
+    )
+    island = (
+        f'<node id="900" lon="{LON0 + 50 * DX:.7f}" lat="{LAT0:.7f}"/>'
+        f'<node id="901" lon="{LON0 + 51 * DX:.7f}" lat="{LAT0:.7f}"/>'
+        '<way id="400"><nd ref="900"/><nd ref="901"/><tag k="highway" v="residential"/></way>'
+    )
+    half = len(ways) // 2
+    return [
+        f"<osm>{nodes}{''.join(ways[: half + 1])}</osm>",
+        f"<osm>{nodes}{island}{''.join(ways[half:])}</osm>",
+    ]
+
+
+def test_builds_the_streets_from_openstreetmap_tiles() -> None:
+    from mobsim_worker.demand.osm import maxspeed_kmh, streets_from_tiles
+
+    s = streets_from_tiles(town_tiles(), library_values())
+    # 7 × 7 grid: 84 links between junctions, plus 6 motorway links; the island is dropped.
+    assert len(s["nodes"]) == 49
+    assert len(s["links"]) == 90
+    moto = [lk for lk in s["links"] if lk[3] == 0]
+    assert len(moto) == 6
+    assert all(lk[5] == 3 and lk[6] == 0 and lk[7] == 1 and lk[8] == 0 and lk[9] == 0 for lk in moto)
+    main = [lk for lk in s["links"] if lk[3] == 2]
+    assert sorted({lk[4] for lk in main}) == [48.3, 50.0]  # 30 mph tagged on the north–south main street
+    local = [lk for lk in s["links"] if lk[3] == 5]
+    assert {lk[4] for lk in local} == {30.0}
+    assert all(lk[2] == pytest.approx(400, rel=0.01) for lk in local)
+    assert maxspeed_kmh("DE:urban") is None and maxspeed_kmh("50") == 50.0
+
+
+def test_runs_on_streets_from_tiles() -> None:
+    from mobsim_worker.jobs.demand import run_demand_job
+
+    bundle = town()
+    del bundle["streets"]
+    outcome, result, files = run_demand_job(
+        json.dumps({"tiles": town_tiles()}), json.dumps(bundle), {"values": {}}, Recorder()
+    )
+    assert outcome == "done"
+    assert result["totals"]["by_mode"]["transit"] > 0
+    assert result["road"]["links"]
+    assert [f.name for f in files] == ["od.omx"]

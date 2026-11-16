@@ -267,6 +267,7 @@ export const de: Messages = {
   "gis.spacing": "Haltestellenabstände",
   "gis.streetsView": "Straßen",
   "gis.regionsView": "Gebiete",
+  "gis.zonesView": "Nachfragezonen",
 
   "tables.title": "Tabellen",
   "tables.intro": "Alle Berechnungen zum Projekt, um abzuschätzen, wie gut es funktionieren wird.",

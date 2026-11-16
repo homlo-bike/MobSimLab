@@ -256,6 +256,7 @@ export const te: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "వీధులు",
   "gis.regionsView": "ప్రాంతాలు",
+  "gis.zonesView": "డిమాండ్ జోన్లు",
   "gis.intro": "లెక్కలు ఉపయోగించే సమాచారాన్ని జోడించండి లేదా సవరించండి.",
   "gis.areas": "ప్రాంతాన్ని గీయండి లేదా OpenStreetMap నుండి దిగుమతి చేయండి",
   "gis.streets": "వీధి అమరిక: బస్సు, సైకిల్ మరియు ట్రామ్ లేన్‌లు, వేగాలు, పై తీగలు",

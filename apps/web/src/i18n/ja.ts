@@ -252,6 +252,7 @@ export const ja: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "道路",
   "gis.regionsView": "地域",
+  "gis.zonesView": "需要ゾーン",
   "gis.intro": "計算に使う情報を追加・編集します。",
   "gis.areas": "地域を描くか OpenStreetMap から取り込む",
   "gis.streets": "道路構成：バス・自転車・路面電車レーン、速度、架線",
