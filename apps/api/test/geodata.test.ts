@@ -1,7 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { regionsHolding } from "../src/gateway/geofabrik.client";
 import { cutTiles, decodeValues, encodeValues, sample, tileBounds } from "../src/geodata/dem-tiles";
+import { DemUploadError, resampleDem } from "../src/geodata/dem-upload";
 import { holds, toElement } from "../src/geodata/geodata-reader";
+import { bufferReader } from "../src/population/geotiff";
+import { buildTiff } from "./support/tiff";
 import { areaQuery, osmBase, quarters, runtimeError, splitBox } from "../src/geodata/overpass-import";
 import { bboxAreaKm2, geodataSettings } from "../src/geodata/settings";
 
@@ -167,5 +170,61 @@ describe("imported rows as Overpass elements", () => {
   it("checks that an import holds a box", () => {
     expect(holds([0, 0, 2, 2], [0.5, 0.5, 1, 1])).toBe(true);
     expect(holds([0, 0, 2, 2], [1, 1, 3, 1.5])).toBe(false);
+  });
+});
+
+describe("own elevation grid", () => {
+  const tif = (w: number, h: number, value: (c: number, r: number) => number, noData?: number) =>
+    bufferReader(
+      buildTiff({ width: w, height: h, value, origin: [7, 50.01], pixel: [0.001, 0.001], noData }),
+    );
+
+  it("resamples a WGS 84 grid over the area, filling single no-data pixels from their neighbours", async () => {
+    const r = await resampleDem(
+      tif(10, 10, (c, r) => (c === 0 && r === 0 ? -9999 : 100 + c), -9999),
+      [7, 50, 7.01, 50.01],
+      { maxCells: 1e6 },
+    );
+    expect(r.crs).toBe("EPSG:4326");
+    expect(r.fileResolutionM).toBeCloseTo(71.5, 0);
+    expect(r.window.values.some((v) => Number.isNaN(v))).toBe(false);
+    const t = { ...r.window };
+    // The middle of column 4 (between pixel centres 4 and 5 of the file) is 104.5.
+    const mid = sample({ ...t, values: t.values }, 7 + 0.005, 50.005);
+    expect(mid).toBeCloseTo(104.5, 2);
+  });
+
+  it("stores a coarser grid when the area holds too many cells, and refuses too large a file window", async () => {
+    // Pixels 0.005° wide but 0.0001° tall: at the file's finest resolution the area would need ~6,500 cells.
+    const narrow = bufferReader(
+      buildTiff({ width: 2, height: 100, value: () => 50, origin: [7, 50.01], pixel: [0.005, 0.0001] }),
+    );
+    const r = await resampleDem(narrow, [7, 50, 7.01, 50.01], { maxCells: 500 });
+    expect(r.window.width * r.window.height).toBeLessThanOrEqual(500);
+    expect(r.notes[0]).toMatch(/stored at/);
+    await expect(
+      resampleDem(
+        tif(100, 100, () => 50),
+        [7, 50, 7.1, 50.01],
+        { maxCells: 20 },
+      ),
+    ).rejects.toThrow(DemUploadError);
+  });
+
+  it("asks for the coordinate system when a projected file does not name it", async () => {
+    const read = bufferReader(
+      buildTiff({
+        width: 4,
+        height: 4,
+        value: () => 1,
+        origin: [0, 0],
+        pixel: [10, 10],
+        epsg: null,
+        geographic: false,
+      }),
+    );
+    await expect(resampleDem(read, [7, 50, 7.01, 50.01], { maxCells: 1e6 })).rejects.toThrow(
+      /does not name its coordinate system/,
+    );
   });
 });

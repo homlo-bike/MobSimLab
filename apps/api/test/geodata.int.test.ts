@@ -10,7 +10,9 @@ import { cellName } from "../src/gateway/copernicus-dem.client";
 import { GeodataService } from "../src/geodata/geodata.service";
 import { tilesFor } from "../src/street-network/street-network.service";
 import { createApp, testConfig } from "./support/app";
+import proj4 from "proj4";
 import { buildCog, height, W } from "./support/cog";
+import { buildTiff } from "./support/tiff";
 import { startDatabase, type TestDatabase } from "./support/database";
 import { cookieValue, signIn, startIdp, type TestIdp } from "./support/idp";
 
@@ -126,10 +128,7 @@ describe("geodata import", () => {
       JSON.stringify({
         lines: [
           {
-            points: [
-              [7.0, 50.0],
-              [7.01, 50.2],
-            ],
+            points: [{ lonlat: [7.0, 50.0] }, { lonlat: [7.01, 50.2] }],
           },
         ],
       }),
@@ -232,6 +231,85 @@ describe("geodata import", () => {
     );
     expect(res.body.sources).toHaveLength(1);
     expect(res.body.sources[0].retrievedAt).toBeTruthy();
+  });
+
+  it("imports the planner's own elevation GeoTIFF, which wins over GLO-30 where it has heights", async () => {
+    // A 40 × 40 grid of 10 m pixels in WGS 84 / UTM 32N around a point, heights rising east and south.
+    const utm = proj4("EPSG:4326", "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs");
+    const [e0, n0] = utm.forward([7.005, 50.1]) as [number, number];
+    const origin: [number, number] = [Math.round(e0) - 200, Math.round(n0) + 200];
+    const value = (c: number, r: number) => 100 + c * 0.5 + r * 0.2;
+    const tif = buildTiff({
+      width: 40,
+      height: 40,
+      value,
+      origin,
+      pixel: [10, 10],
+      epsg: 32632,
+      geographic: false,
+      compression: "deflate",
+    });
+    const q = new URLSearchParams({
+      name: "lidar.tif",
+      source: "City LiDAR 2025",
+      licence: "CC BY 4.0",
+      accuracy: "0.15",
+    });
+    const up = await as("alice").upload(`/api/projects/${project}/geodata/dem/upload?${q}`, Buffer.from(tif));
+    expect(up.status).toBe(201);
+    expect(up.body.import).toMatchObject({ kind: "dem_upload", method: "geotiff" });
+    await idle();
+    const st = (await as("alice").get(`/api/projects/${project}/geodata`)).body;
+    expect(st.demUpload.latest.error).toBeNull();
+    expect(st.demUpload.current.source).toMatchObject({
+      id: "own_geotiff",
+      name: "City LiDAR 2025",
+      licence: "CC BY 4.0",
+      verticalAccuracyM: 0.15,
+      crs: "EPSG:32632",
+    });
+    expect(st.demUpload.current.source.resolutionM).toBeCloseTo(10, 0);
+    // GLO-30 stays the current import of its own kind.
+    expect(st.dem.current).toMatchObject({ method: "copernicus" });
+
+    // Inside the grid the height is the file's (linear, so resampling keeps it); outside, GLO-30's.
+    const inside: [number, number] = [7.0051, 50.1003];
+    const [ex, ny] = utm.forward(inside) as [number, number];
+    const expected = value((ex - origin[0]) / 10 - 0.5, (origin[1] - ny) / 10 - 0.5);
+    const outside: [number, number] = [7 + 0.5 / W, 51 - 6.5 / W];
+    const res = await as("alice").post("/api/terrain/points", {
+      points: [inside, outside],
+      projectId: project,
+    });
+    expect(res.status).toBe(200);
+    expect(res.body.elevationsM[0]).toBeCloseTo(expected, 1);
+    expect(res.body.elevationsM[1]).toBeCloseTo(
+      (height(0, 6) + height(1, 6) + height(0, 7) + height(1, 7)) / 4,
+      2,
+    );
+    expect(res.body.sources.map((x: { id: string }) => x.id).sort()).toEqual([
+      "copernicus_glo30",
+      "own_geotiff",
+    ]);
+
+    // A file that is not a GeoTIFF fails and keeps the grid in use; a file elsewhere on Earth says so.
+    await as("alice").upload(`/api/projects/${project}/geodata/dem/upload?name=bad.tif`, Buffer.from("nope"));
+    await idle();
+    let after = (await as("alice").get(`/api/projects/${project}/geodata`)).body;
+    expect(after.demUpload.latest).toMatchObject({ status: "failed", error: "The file is not a TIFF file" });
+    expect(after.demUpload.current.id).toBe(up.body.import.id);
+    const far = buildTiff({ width: 4, height: 4, value: () => 5, origin: [100, 10], pixel: [0.01, 0.01] });
+    await as("alice").upload(`/api/projects/${project}/geodata/dem/upload?name=far.tif`, Buffer.from(far));
+    await idle();
+    after = (await as("alice").get(`/api/projects/${project}/geodata`)).body;
+    expect(after.demUpload.latest.error).toBe("The grid does not overlap the project area");
+
+    // Removing it brings GLO-30 back at that point.
+    expect(
+      (await as("alice").del(`/api/projects/${project}/geodata/imports/${up.body.import.id}`)).status,
+    ).toBe(204);
+    const back = await as("alice").post("/api/terrain/points", { points: [inside], projectId: project });
+    expect(back.body.sources.map((x: { id: string }) => x.id)).toEqual(["copernicus_glo30"]);
   });
 
   it("replaces the import with an uploaded .osm.pbf, keeping planned roads when asked", async () => {
