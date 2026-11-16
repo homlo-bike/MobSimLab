@@ -901,6 +901,7 @@ pub fn view(dz: &Design) -> Value {
         .switches
         .iter()
         .filter(|s| matches!(s.element, crate::params::Element::SingleSlip | crate::params::Element::DoubleSlip))
+        .filter(|s| dz.switch_choice.uses(&s.id))
         .map(|s| json!({"id": s.id, "label": s.label, "element": s.element, "crossing_ratio_n": s.crossing_ratio_n,
                         "typical_modes": s.typical_modes, "diverging_speed_kmh": s.diverging_speed_kmh}))
         .collect();
@@ -956,8 +957,8 @@ pub fn view(dz: &Design) -> Value {
         "issues": issues,
         "params": dz.params,
         "train_length_m": dz.train_length,
-        "turnouts": turnouts(dz.mode),
-        "modes": dz.modes.iter().map(|(m, p)| (m.id().to_string(), json!({"params": p, "turnouts": turnouts(*m)}))).collect::<Map<String, Value>>(),
+        "turnouts": turnouts(dz.mode, &dz.switch_choice),
+        "modes": dz.modes.iter().map(|(m, p)| (m.id().to_string(), json!({"params": p, "turnouts": turnouts(*m, &dz.switch_choice)}))).collect::<Map<String, Value>>(),
         "crossings": crossings,
         "level_crossings": level_crossings,
         "signals": signal_list,
@@ -973,11 +974,12 @@ pub fn view(dz: &Design) -> Value {
     })
 }
 
-/// Purpose: a mode's catalogue turnouts for the panel.
-fn turnouts(m: crate::params::RailMode) -> Vec<Value> {
+/// Purpose: a mode's catalogue turnouts the project uses, for the panel.
+fn turnouts(m: crate::params::RailMode, choice: &crate::params::SwitchChoice) -> Vec<Value> {
     defaults()
         .turnouts_for(m)
         .iter()
+        .filter(|s| choice.uses(&s.id))
         .map(|s| {
             json!({
                 "id": s.id, "label": s.label, "radius_m": s.radius_m, "crossing_ratio_n": s.crossing_ratio_n,

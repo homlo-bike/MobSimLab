@@ -5,7 +5,7 @@ Design tram, light rail, metro, commuter, regional, intercity and high-speed rai
 ## Start
 
 1. Click **Railway** in the top bar. The tool palette appears on the map and the railway panel on the right.
-2. Pick the **mode**. Gauge, track spacing, radii, gradients, speeds, platforms and electrification come from the mode. The panel lists the main values; the full set and their sources are in the [assumption library](../../assumptions/DEFAULTS.md). To use other values in a project, change them under **Project preferences → Design rules per mode**: the editor then checks the drawing against the project's values for that mode, and **Use the library value** brings the library's back.
+2. Pick the **mode**. Gauge, track spacing, radii, gradients, speeds, platforms and electrification come from the mode. The panel lists the main values; the full set and their sources are in the [assumption library](../../assumptions/DEFAULTS.md). To use other values in a project, change them under **Project preferences → Design rules per mode**: the editor then checks the drawing against the project's values for that mode, and **Use the library value** brings the library's back. Service lines offer the catalogue trains the project uses (**Project preferences → Vehicles**).
 3. Draw stations and tracks with the tools. **Clear** removes everything.
 
 The drawing is saved with the project a moment after each change (see [Saving](street-line-tool.md#saving)). It opens again, with the map on it, for everyone who opens the project.
@@ -86,7 +86,7 @@ Heights are accurate to about ±4 m. Without heights, because they have not load
 
 ## Switches and crossings
 
-- Switches come from the catalogue for the mode (for example tram 1:5 R50, mainline 1:9 R190, 1:12 R500, high-speed 1:26.5 R2500). Change the element, the side, the direction or the mirror image in the panel.
+- Switches come from the catalogue for the mode (for example tram 1:5 R50, mainline 1:9 R190, 1:12 R500, high-speed 1:26.5 R2500). **Project preferences → Switches** sets which of them the editor offers for each mode, and the default turnout new switches start with. Change the element, the side, the direction or the mirror image in the panel.
 - Switches go on straight track only, away from ramps and curves.
 - Tracks that cross on the same level share one piece of trackwork with a diamond crossing. On high-speed lines, or at angles flatter than 1:9, this is an error: put one track on another level instead.
 - **Slips**: where two single tracks cross at the angle of a catalogue slip (1:9 on main lines), the panel's **Diamond crossings** list lets you make the diamond a single slip or a double slip. Trains can then also turn from one track to the other, at the slip's turning speed (40 km/h for the 1:9 slips); straight through, the slip limits the speed to its through speed. A single slip has one turning route; **Turn the slip to the other side** swaps it. The slip needs straight track over its whole length on both tracks; if the tracks cross at another angle, the checks give the angle to aim for. There is no slip in the catalogue for trams yet.

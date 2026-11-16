@@ -78,11 +78,12 @@ jobs:
       - uses: actions/checkout@v5
       - uses: astral-sh/setup-uv@v6
         with: { python-version: "3.12" }
-      - run: uv sync --frozen
-      - run: uv run ruff check .
-      - run: uv run ruff format --check .
-      - run: uv run mypy
-      - run: uv run pytest -q
+      # The sim extra brings Eclipse SUMO, so the road simulation tests run a real SUMO run.
+      - run: uv sync --frozen --extra sim
+      - run: uv run --frozen --extra sim ruff check .
+      - run: uv run --frozen --extra sim ruff format --check .
+      - run: uv run --frozen --extra sim mypy
+      - run: uv run --frozen --extra sim pytest -q
 
   assumptions:
     name: Assumption library (schema, sources, DEFAULTS.md up to date)

@@ -353,3 +353,69 @@
       sources: [rast06, hcm7, mobsimlab-derivation]
       check: unverified
       rationale: "RASt 06 residential streets (Wohnstraßen, Wohnwege) carry up to about 400 vehicles per hour over the cross-section, most far less; 50 per direction is a quiet street with only its own residents' traffic. The same value is used for the morning and the evening peak; set a street's own counts in the GIS tab."
+
+- key: road.off_peak_traffic_share
+  label: "Road simulation: background traffic outside the peaks, as a share of the street's peak value"
+  group: Depots and streets
+  unit: share
+  used_by: [road simulation background traffic]
+  values:
+    - context:
+        mode: "*"
+      low: 0.4
+      central: 0.6
+      high: 0.8
+      basis: educated-guess
+      sources: [hcm7, mobsimlab-derivation]
+      check: unverified
+      rationale: "Streets only carry peak values (GIS tab traffic peaks), so midday and evening runs scale them. Urban weekday hourly profiles put a midday hour at roughly 5–6 % of the daily traffic against 8–10 % in the peak hour (HCM K-factors), about 0.6 of the peak; late evening is lower, so set your own value for evening runs."
+
+- key: road.trolley_wire_charge_kw
+  label: "Road simulation: power a trolleybus takes from its wires to charge its battery while driving"
+  group: Depots and streets
+  unit: kW
+  used_by: [road simulation trolleybus energy]
+  values:
+    - context:
+        mode: "*"
+      low: 60
+      central: 120
+      high: 200
+      basis: educated-guess
+      sources: [uitp-trolleybus-tco, mobsimlab-derivation]
+      check: unverified
+      rationale: "In-motion charging trolleybuses recharge their traction battery from the wires at roughly 50–200 kW on top of the power for driving; the road simulation gives this power to the battery on every street with a trolleybus wire (OSM trolley_wire)."
+
+- key: road.battery_capacity_kwh
+  label: "Road simulation: usable battery of a battery bus, or of a trolleybus for running off the wires"
+  group: Depots and streets
+  unit: kWh
+  used_by: [road simulation battery energy]
+  values:
+    - context:
+        mode: "*"
+      low: 250
+      central: 350
+      high: 450
+      basis: educated-guess
+      sources: [vde-ebus-fleet, mobsimlab-derivation]
+      check: unverified
+      rationale: "12 m battery buses for overnight depot charging carry about 300–500 kWh installed, of which roughly 80 % is usable."
+    - context:
+        mode: brt
+      low: 350
+      central: 500
+      high: 650
+      basis: educated-guess
+      sources: [vde-ebus-fleet, mobsimlab-derivation]
+      check: unverified
+      rationale: "18 m articulated battery buses carry about 450–800 kWh installed."
+    - context:
+        mode: trolleybus
+      low: 30
+      central: 60
+      high: 120
+      basis: educated-guess
+      sources: [uitp-trolleybus-tco, mobsimlab-derivation]
+      check: unverified
+      rationale: "In-motion charging trolleybuses carry a smaller battery for sections without wires, typically 30–120 kWh."

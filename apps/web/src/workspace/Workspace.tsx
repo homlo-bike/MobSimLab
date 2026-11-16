@@ -10,6 +10,7 @@ import { projectTimetable } from "../features/benefits/timetable";
 import { CargoBikeTab } from "../features/cargo-bike/CargoBikeTab";
 import type { CargoBikeDoc } from "../features/cargo-bike/model";
 import { CapacityRun } from "../features/capacity/CapacityRun";
+import { RoadSimulation } from "../features/road-sim/RoadSimulation";
 import { economyApi, type Prices } from "../features/costs/economy";
 import { useProjectCurrency } from "../features/costs/currency";
 import type { Estimate as CostEstimate } from "../features/costs/model";
@@ -84,7 +85,14 @@ import { TopBar } from "../shell/TopBar";
 import { PROJECT_TOUR, Tour } from "../shell/Tour";
 import { PrintReport } from "./PrintReport";
 import { ProjectPreferences } from "./ProjectPreferences";
-import { delaysFrom, designValuesFrom, type PreferencesDoc } from "./preferences";
+import {
+  delaysFrom,
+  designValuesFrom,
+  type PreferencesDoc,
+  switchChoiceFrom,
+  vehiclesOffFrom,
+} from "./preferences";
+import { VehiclesOffContext } from "./projectVehicles";
 import type { DelayShares } from "../features/street-lines/types";
 import { type Drawings, useDrawings } from "./useDrawings";
 import { DepotEditor } from "../features/depots/DepotEditor";
@@ -109,7 +117,7 @@ const MAP_TABS: readonly Tab[] = ["simulator", "create", "gis", ...PLUGIN_TABS.m
 const NO_SETUPS: StreetSetup[] = [];
 const NO_STREET_LINES: SavedStreetLine[] = [];
 
-type SimView = "test" | "journey";
+type SimView = "test" | "journey" | "road";
 type GisView = "streets" | "regions";
 const NO_REGIONS: Region[] = [];
 const NO_FEEDS: GtfsFeed[] = [];
@@ -264,6 +272,10 @@ export function Workspace({
     () => (projectKey && typeof api.runs === "function" ? api.runs(projectKey) : null),
     [api, projectKey],
   );
+  const roadRuns = useMemo(
+    () => (projectKey && typeof api.roadRuns === "function" ? api.roadRuns(projectKey) : null),
+    [api, projectKey],
+  );
 
   // What is drawn in the project, saved with it a moment after each change.
   const drawings = useDrawings(api, projectId, editable);
@@ -291,6 +303,16 @@ export function Workspace({
   const delays = useMemo(() => JSON.parse(delaysJson) as DelayShares, [delaysJson]);
   const rulesJson = JSON.stringify(designValuesFrom(preferences));
   const designValues = useMemo(() => JSON.parse(rulesJson) as Record<string, number>, [rulesJson]);
+  const switchJson = JSON.stringify(switchChoiceFrom(preferences));
+  const switchChoice = useMemo(
+    () => JSON.parse(switchJson) as ReturnType<typeof switchChoiceFrom>,
+    [switchJson],
+  );
+  const offJson = JSON.stringify([...vehiclesOffFrom(preferences)]);
+  const vehiclesOff = useMemo(
+    () => new Set(JSON.parse(offJson) as string[]) as ReadonlySet<string>,
+    [offJson],
+  );
   // Street setups made before projects saved drawings were kept in this browser: move them to the project once.
   useEffect(() => {
     if (!drawings.loaded || !editable) return;
@@ -525,7 +547,7 @@ export function Workspace({
   const pluginLineList = Object.values(pluginLines).filter((l): l is PluginLineInput => l !== null);
   const demandZoneList = Object.values(demandZones).filter((z): z is DemandZone => z !== null);
 
-  return (
+  const body = (
     <div className="flex h-full flex-col">
       {top}
       {drawings.clash && (
@@ -606,6 +628,7 @@ export function Workspace({
               streetSetups={setups}
               delays={delays}
               designValues={designValues}
+              switchChoice={switchChoice}
               existingRailways={existingRailways}
               initial={railway}
               onDocChange={(d) => drawings.set("railway", d)}
@@ -904,6 +927,14 @@ export function Workspace({
                   >
                     {t("sim.journey")}
                   </button>
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={sim === "road"}
+                    onClick={() => setSim("road")}
+                  >
+                    {t("sim.road")}
+                  </button>
                 </div>
               </div>
             )}
@@ -997,6 +1028,17 @@ export function Workspace({
                   }
                 />
               )}
+              {tab === "simulator" && sim === "road" && (
+                <RoadSimulation
+                  api={roadRuns}
+                  canRun={editable}
+                  map={map}
+                  streetLines={streetLines?.lines}
+                  depots={depotsDoc?.depots}
+                  setups={setups}
+                  prefs={preferences?.values}
+                />
+              )}
               {tab === "create" && !editable && (
                 <div className="px-4 py-5 md:px-5">
                   <h2 className="text-lg font-semibold">{t("create.readOnlyTitle")}</h2>
@@ -1055,6 +1097,8 @@ export function Workspace({
       )}
     </div>
   );
+  // The catalogue vehicles the project does not use reach the line tools (Project preferences → Vehicles).
+  return <VehiclesOffContext.Provider value={vehiclesOff}>{body}</VehiclesOffContext.Provider>;
 }
 
 /** Purpose: how the project's drawings stand against the server, beside the project name. */

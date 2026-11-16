@@ -1,3 +1,4 @@
+import { roadJa } from "./road/ja";
 import { editorsJa } from "./editors/ja";
 import { cargoBikeJa } from "./cargo-bike/ja";
 import { depotsJa } from "./depots/ja";
@@ -294,8 +295,22 @@ export const ja: Messages = {
   "prefs.rulesChanged": "{count} 件変更",
   "prefs.rulesLibrary": "前提値ライブラリ：{value} {unit}",
   "prefs.rulesLibraryRange": "前提値ライブラリ：{value} {unit}（範囲 {low}–{high}）",
-  "prefs.vehicles": "使用車両（車両カタログから）",
-  "prefs.switches": "分岐器（分岐器カタログから）",
+  "prefs.vehiclesTitle": "車両",
+  "prefs.vehiclesIntro":
+    "このプロジェクトでモードごとに使うカタログ車両。道路路線ツールと鉄道ツールはチェックした車両だけを表示します。",
+  "prefs.vehiclesMode": "モード",
+  "prefs.vehiclesUsed": "{total} 中 {used} 使用",
+  "prefs.vehiclesAll": "すべて使用",
+  "prefs.vehiclesFacts": "{length} m・定員 {places}・{speed} km/h",
+  "prefs.vehiclesLast": "各モードで少なくとも 1 両は使用中のままです。",
+  "prefs.switchesTitle": "分岐器",
+  "prefs.switchesIntro":
+    "鉄道エディターが鉄道モードごとに提示するカタログの分岐器と交差、および新しい分岐器の初期値。",
+  "prefs.switchesTurnouts": "分岐器",
+  "prefs.switchesSlips": "交差部のスリップ",
+  "prefs.switchesDefault": "既定",
+  "prefs.switchesFacts": "1:{n}・R {radius} m・分岐側 {speed} km/h",
+  "prefs.switchesLast": "既定の分岐器は使用中のままです。外すには先に別の既定を選んでください。",
   "prefs.calendar": "カレンダー、需要、費用",
 
   "job.stepOf": "ステップ {step}/{steps}",
@@ -364,5 +379,6 @@ export const ja: Messages = {
   ...editorsJa,
   ...cargoBikeJa,
   ...depotsJa,
+  ...roadJa,
   ...PLUGIN_MESSAGES.ja,
 };

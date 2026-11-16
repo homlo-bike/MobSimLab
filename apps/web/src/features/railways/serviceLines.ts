@@ -5,6 +5,7 @@ import type { MessageKey } from "../../i18n/messages";
  * for the journey planner.
  */
 import { TRAINS } from "./trains";
+import { usedVehicles } from "../../workspace/preferences";
 import type { CatalogueTrain, EngineServiceLine, Network, RailMode, ServiceLine } from "./types";
 
 /** Line colours in the order new lines take them. */
@@ -71,7 +72,7 @@ export function lineMode(doc: Network, line: ServiceLine): RailMode {
 export function addLine(
   doc: Network,
   trainLengthM: number,
-  opts: { empty?: boolean } = {},
+  opts: { empty?: boolean; vehiclesOff?: ReadonlySet<string> } = {},
 ): [Network, string] {
   const lines = doc.lines ?? [];
   let n = lines.length + 1;
@@ -84,7 +85,12 @@ export function addLine(
   while (names.has(`${PREFIX[mode]}${k}`)) k++;
   const [peak, off] = HEADWAYS[mode];
   const st = opts.empty ? [] : endStations(doc);
-  const train = suggestTrain(mode, trainLengthM);
+  // Only trains the project uses (Project preferences → Vehicles).
+  const train = suggestTrain(
+    mode,
+    trainLengthM,
+    usedVehicles(trainsFor(mode), opts.vehiclesOff ?? new Set()),
+  );
   const line: ServiceLine = {
     id,
     name: `${PREFIX[mode]}${k}`,

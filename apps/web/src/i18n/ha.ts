@@ -1,3 +1,4 @@
+import { roadHa } from "./road/ha";
 import { editorsHa } from "./editors/ha";
 import { cargoBikeHa } from "./cargo-bike/ha";
 import { depotsHa } from "./depots/ha";
@@ -300,8 +301,22 @@ export const ha: Messages = {
   "prefs.rulesChanged": "an canza: {count}",
   "prefs.rulesLibrary": "Ɗakin zato: {value} {unit}",
   "prefs.rulesLibraryRange": "Ɗakin zato: {value} {unit} (iyaka {low}–{high})",
-  "prefs.vehicles": "Ababen hawan da ake amfani da su, daga kundin ababen hawa",
-  "prefs.switches": "Makunnan dogo, daga kundin makunnai",
+  "prefs.vehiclesTitle": "Ababen hawa",
+  "prefs.vehiclesIntro":
+    "Ababen hawan kundi da wannan aikin ke amfani da su, ga kowane nau'i. Kayan aikin layukan titi da na dogo suna nuna waɗanda aka zaɓa kawai.",
+  "prefs.vehiclesMode": "Nau'i",
+  "prefs.vehiclesUsed": "{used} cikin {total} ana amfani",
+  "prefs.vehiclesAll": "Yi amfani da duka",
+  "prefs.vehiclesFacts": "m {length} · wurare {places} · km/h {speed}",
+  "prefs.vehiclesLast": "Aƙalla abin hawa ɗaya yana ci gaba da aiki ga kowane nau'i.",
+  "prefs.switchesTitle": "Makunnan dogo",
+  "prefs.switchesIntro":
+    "Makunnan dogo da mahaɗai daga kundin da editan layin dogo ke bayarwa, ga kowane nau'in layin dogo, da makunnin da sababbi ke farawa da shi.",
+  "prefs.switchesTurnouts": "Makunnan dogo",
+  "prefs.switchesSlips": "Makunnan zamewa a mahaɗai",
+  "prefs.switchesDefault": "Na asali",
+  "prefs.switchesFacts": "1:{n} · R m {radius} · km/h {speed} a juyawa",
+  "prefs.switchesLast": "Makunnin asali yana ci gaba da aiki. Don cire shi, zaɓi wani na asali tukuna.",
   "prefs.calendar": "Kalanda, buƙata da kuɗi",
 
   "job.stepOf": "Mataki {step} cikin {steps}",
@@ -373,5 +388,6 @@ export const ha: Messages = {
   ...editorsHa,
   ...cargoBikeHa,
   ...depotsHa,
+  ...roadHa,
   ...PLUGIN_MESSAGES.ha,
 };
