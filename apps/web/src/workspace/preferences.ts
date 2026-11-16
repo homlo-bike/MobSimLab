@@ -2,6 +2,7 @@ import type { DelayShares } from "../features/street-lines/types";
 import { MIXED_DELAY, PAINTED_DELAY } from "../features/street-setup/model";
 import rulesData from "./design-rules.generated.json";
 import type { ServiceCalendar, SimulationYears } from "./calendar";
+import type { ProjectClimate } from "./climate";
 import paramsData from "./parameters.generated.json";
 import libraryData from "../features/walk/defaults.generated.json";
 
@@ -26,6 +27,8 @@ export interface PreferencesDoc {
   calendar?: ServiceCalendar;
   /** Years the multi-year run simulates (calendar.ts `simulationYearsFrom`); absent: the defaults. */
   simulationYears?: SimulationYears;
+  /** Monthly air temperatures at the project's location (climate.ts); absent: not fetched yet. */
+  climate?: ProjectClimate;
   /** Values of enum and text assumptions the project changes, by assumption id (as `values` for numbers). */
   choices?: Record<string, string>;
 }

@@ -1,4 +1,5 @@
 import { roadJa } from "./road/ja";
+import { calendarJa } from "./calendar/ja";
 import { editorsJa } from "./editors/ja";
 import { cargoBikeJa } from "./cargo-bike/ja";
 import { depotsJa } from "./depots/ja";
@@ -444,5 +445,6 @@ export const ja: Messages = {
   ...pluginCodeJa,
   ...populationJa,
   ...roadJa,
+  ...calendarJa,
   ...PLUGIN_MESSAGES.ja,
 };

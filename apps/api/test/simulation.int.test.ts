@@ -202,6 +202,67 @@ describe.skipIf(!haveWorker)("simulation runs on the background worker", () => {
     });
   });
 
+  it("runs the example metro once per service day and expands the day figures over the years", async () => {
+    const day = (from_s: number) => ({
+      from_s,
+      to_s: from_s + 2 * 3600,
+      per_day: { vehicle_km: 100, vehicle_hours: 5, passengers: 1000, energy_kwh: null, operating_cost: 50 },
+    });
+    const res = await as("alice").post(runs(), {
+      kind: "calendar",
+      network: { kind: "example" },
+      params: { stability_runs: 1 },
+      plan: {
+        mode: "years",
+        day_types: { weekday: day(25200), saturday: day(25200), sunday: day(32400), holiday: day(32400) },
+        periods: [
+          { label: "2027", counts: { weekday: 258, saturday: 50, sunday: 51, holiday: 6 }, share_of_year: 1 },
+          { label: "2028", counts: { weekday: 256, saturday: 52, sunday: 52, holiday: 6 }, share_of_year: 1 },
+        ],
+        fixed_per_year: { operating_cost: 1000 },
+        currency: null,
+      },
+    });
+    expect(res.status).toBe(201);
+    const r = await waitFor(res.body.run.id);
+    expect(r as object).toMatchObject({ status: "done", kind: "calendar" });
+    const result = r.result as unknown as {
+      day_types: Record<string, { rail?: { verdict: string } }>;
+      periods: {
+        label: string;
+        days: number;
+        vehicle_km: number;
+        energy_kwh: null;
+        operating_cost: number;
+      }[];
+    };
+    expect(result.day_types.sunday?.rail?.verdict).toBeTruthy();
+    expect(result.periods.map((p) => [p.label, p.days, p.vehicle_km])).toEqual([
+      ["2027", 365, 36500],
+      ["2028", 366, 36600],
+    ]);
+    expect(result.periods[0]!.energy_kwh).toBeNull();
+    expect(result.periods[0]!.operating_cost).toBe(365 * 50 + 1000);
+    expect(r.verdict).toBe(r.result?.run?.verdict);
+    // Without rail service only the expansion runs.
+    const none = await as("alice").post(runs(), {
+      kind: "calendar",
+      network: null,
+      params: {},
+      plan: {
+        mode: "date",
+        day_types: { weekday: day(25200), saturday: day(25200), sunday: day(32400), holiday: day(32400) },
+        periods: [{ label: "2027-05-01", counts: { holiday: 1 }, share_of_year: 1 / 365 }],
+        fixed_per_year: { operating_cost: null },
+        currency: null,
+      },
+    });
+    const n = await waitFor(none.body.run.id);
+    expect(n as object).toMatchObject({ status: "done", network: { kind: "none" }, verdict: null });
+    await as("alice").del(`${runs()}/${r.id}`);
+    await as("alice").del(`${runs()}/${n.id}`);
+  });
+
   it("stops a run that is cancelled, and keeps what it found", async () => {
     const res = await as("alice").post(runs(), {
       kind: "capacity",

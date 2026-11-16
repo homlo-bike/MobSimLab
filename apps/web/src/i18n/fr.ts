@@ -1,4 +1,5 @@
 import { roadFr } from "./road/fr";
+import { calendarFr } from "./calendar/fr";
 import { editorsFr } from "./editors/fr";
 import { cargoBikeFr } from "./cargo-bike/fr";
 import { depotsFr } from "./depots/fr";
@@ -459,5 +460,6 @@ export const fr: Messages = {
   ...pluginCodeFr,
   ...populationFr,
   ...roadFr,
+  ...calendarFr,
   ...PLUGIN_MESSAGES.fr,
 };
