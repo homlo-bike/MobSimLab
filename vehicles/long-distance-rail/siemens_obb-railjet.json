@@ -44,6 +44,16 @@
       "wikipedia-railjet-1-generation"
     ]
   },
+  "floorHeight": {
+    "value": 1250,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "siemens-mobility-viaggio-plattform"
+    ],
+    "rationale": "Siemens' Viaggio platform brochure gives the ÖBB railjet as its reference, with floor and entrance height 1250 mm above rail head. Coach floor; not stated for every railjet batch."
+  },
   "consist": {
     "cars": {
       "value": 8,

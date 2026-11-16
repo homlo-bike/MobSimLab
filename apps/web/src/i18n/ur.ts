@@ -301,6 +301,9 @@ export const ur: Messages = {
   "prefs.rulesChanged": "تبدیل شدہ: {count}",
   "prefs.rulesLibrary": "مفروضات کی لائبریری: {value} {unit}",
   "prefs.rulesLibraryRange": "مفروضات کی لائبریری: {value} {unit} (حد {low}–{high})",
+  "prefs.accessTitle": "پلیٹ فارم تک رسائی",
+  "prefs.accessIntro":
+    "پلیٹ فارم اور ٹرین کے درمیان سیڑھی اور خلا کی حدیں (TSI PRM)، اور فہرست میں نہ ہونے والی ٹرینوں کے فرش کی اونچائی۔ لائنیں ہر اسٹاپ پر جانچی جاتی ہیں۔",
   "prefs.vehiclesTitle": "گاڑیاں",
   "prefs.vehiclesIntro":
     "فہرست کی وہ گاڑیاں جو یہ منصوبہ ہر ذریعے کے لیے استعمال کرتا ہے۔ سڑک لائن اور ریلوے ٹولز صرف نشان زدہ گاڑیاں دکھاتے ہیں۔",

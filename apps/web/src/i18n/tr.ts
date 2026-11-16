@@ -300,6 +300,9 @@ export const tr: Messages = {
   "prefs.rulesChanged": "{count} değiştirildi",
   "prefs.rulesLibrary": "Varsayımlar kitaplığı: {value} {unit}",
   "prefs.rulesLibraryRange": "Varsayımlar kitaplığı: {value} {unit} (aralık {low}–{high})",
+  "prefs.accessTitle": "Peron erişilebilirliği",
+  "prefs.accessIntro":
+    "Peron ile tren arasındaki basamak ve boşluk sınırları (TSI PRM) ve katalogda değeri olmayan trenler için taban yüksekliği. Hatlar her durakta bunlara göre denetlenir.",
   "prefs.vehiclesTitle": "Araçlar",
   "prefs.vehiclesIntro":
     "Bu projenin her tür için kullandığı katalog araçları. Sokak hattı ve demiryolu araçları yalnızca işaretlenenleri sunar.",
