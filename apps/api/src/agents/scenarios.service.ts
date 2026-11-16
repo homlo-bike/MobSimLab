@@ -1,9 +1,11 @@
 import { createHash } from "node:crypto";
 import { Inject, Injectable } from "@nestjs/common";
 import { AuditService } from "../audit/audit.service";
-import { DATABASE, type Database } from "../db/database";
+import { DATABASE, type Database, type InstanceRole } from "../db/database";
+import { ProjectsService } from "../projects/projects.service";
 import { NetworkService } from "./network.service";
 import { applyChanges, type Change, EMPTY_DOC, type ScenarioDoc } from "./scenario";
+import { type ProjectPrefs, projectValues, useLibraryValues, useValues } from "./values";
 
 /** Who changes a scenario: a user in the web app, or a user through an agent connection. */
 export interface Actor {
@@ -13,6 +15,8 @@ export interface Actor {
   tool?: string;
   ipHash?: string | null;
   requestId?: string | null;
+  /** Instance role, for reading the project a scenario is linked to. */
+  role?: InstanceRole;
 }
 
 /** A scenario could not be found, may not be changed by this actor, or the version moved on. */
@@ -52,7 +56,41 @@ export class ScenariosService {
     @Inject(DATABASE) private readonly db: Database,
     private readonly audit: AuditService,
     private readonly network: NetworkService,
+    private readonly projects: ProjectsService,
   ) {}
+
+  /**
+   * Purpose: use the values of the project a scenario is linked to (Project preferences → All parameters) for the
+   * rest of this call (values.ts). Nothing when the scenario is not linked.
+   * Throws: the projects service's refusal when the user may not read the project (or it is gone).
+   */
+  async useProject(a: Actor, doc: ScenarioDoc): Promise<void> {
+    if (!doc.project_id) return;
+    const drawings = await this.projects.drawings(
+      {
+        userId: a.userId,
+        role: a.role ?? "restricted",
+        ipHash: a.ipHash ?? null,
+        requestId: a.requestId ?? null,
+      },
+      doc.project_id,
+    );
+    useValues(projectValues(drawings.preferences?.doc as ProjectPrefs | undefined));
+  }
+
+  /**
+   * Purpose: a scenario's document with the linked project's values in use and its rail and tram lines' running
+   * times worked out with them (street lines keep their routing). For analyses. A scenario not linked to a
+   * project uses the library's values.
+   */
+  async withProject(a: Actor, row: ScenarioRow): Promise<ScenarioDoc> {
+    if (!row.doc.project_id) {
+      useLibraryValues();
+      return row.doc;
+    }
+    await this.useProject(a, row.doc);
+    return this.network.route(row.doc);
+  }
 
   /** Purpose: the user's scenarios, newest change first. */
   async list(userId: string) {
@@ -89,7 +127,13 @@ export class ScenariosService {
   }
 
   /** Purpose: create a scenario, empty or as a copy of a parent. Side effects: audit record. */
-  async create(a: Actor, name: string, description: string, parentId?: string): Promise<ScenarioRow> {
+  async create(
+    a: Actor,
+    name: string,
+    description: string,
+    parentId?: string,
+    projectId?: string,
+  ): Promise<ScenarioRow> {
     const count = await this.db
       .selectFrom("agent.scenario")
       .select((eb) => eb.fn.countAll<string>().as("n"))
@@ -97,7 +141,10 @@ export class ScenariosService {
       .executeTakeFirstOrThrow();
     if (Number(count.n) >= MAX_SCENARIOS)
       throw new ScenarioError(`at most ${MAX_SCENARIOS} scenarios; delete some first`, 409);
-    const doc = parentId ? (await this.get(a.userId, parentId)).doc : EMPTY_DOC;
+    const base = parentId ? (await this.get(a.userId, parentId)).doc : EMPTY_DOC;
+    const doc = projectId ? { ...base, project_id: projectId } : base;
+    // The user must be able to read the project the scenario is linked to.
+    await this.useProject(a, doc);
     return this.db.transaction().execute(async (tx) => {
       const row = await tx
         .insertInto("agent.scenario")
@@ -140,7 +187,10 @@ export class ScenariosService {
         `scenario is at version ${cur.version}, not ${expectedVersion}; read it again`,
         409,
       );
-    const doc = await this.network.route(applyChanges(cur.doc, changes));
+    const next = applyChanges(cur.doc, changes);
+    // Rail and tram running times use the linked project's values.
+    await this.useProject(a, next);
+    const doc = await this.network.route(next);
     return this.db.transaction().execute(async (tx) => {
       const row = await tx
         .updateTable("agent.scenario")

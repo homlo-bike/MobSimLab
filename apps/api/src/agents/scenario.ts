@@ -1,5 +1,6 @@
 import { z } from "zod";
-import DEFAULTS from "./defaults.json";
+import type DEFAULTS from "./defaults.json";
+import { values } from "./values";
 
 /**
  * Agent scenario documents and the change commands that edit them (ADR-0035 §3).
@@ -42,9 +43,12 @@ export const HIGH_CAPACITY: readonly Mode[] = [
 export type LonLat = [number, number];
 export type ModeDefaults = (typeof DEFAULTS.modes)["bus"];
 
-/** Purpose: central defaults of one mode from the assumption library export. */
+/**
+ * Purpose: central values of one mode: the assumption library's, or the linked project's in a tool call that
+ * loaded a scenario linked to a project (values.ts).
+ */
 export function modeDefaults(mode: Mode): ModeDefaults {
-  return DEFAULTS.modes[mode];
+  return values().modes[mode];
 }
 
 const id = z.string().regex(/^[A-Za-z0-9_.:-]{1,64}$/, "ids are 1–64 letters, digits, '_', '.', ':' or '-'");
@@ -126,6 +130,11 @@ export interface ScenarioDoc {
   stops: Stop[];
   lines: Line[];
   study_area?: [number, number, number, number];
+  /**
+   * The project whose values (Project preferences → All parameters) the analyses use; the assumption library's
+   * when absent. The user must be able to read the project.
+   */
+  project_id?: string;
   routed: Record<string, RoutedLine>;
 }
 
@@ -162,6 +171,15 @@ export const changeSchema = z.discriminatedUnion("op", [
       .tuple([lon, lat, lon, lat])
       .nullable()
       .describe("[west, south, east, north]; null to use the area around the stops"),
+  }),
+  z.object({
+    op: z.literal("set_project"),
+    project_id: z
+      .uuid()
+      .nullable()
+      .describe(
+        "project from list_projects whose values (Project preferences) the analyses use; null for the assumption library's",
+      ),
   }),
 ]);
 export type Change = z.infer<typeof changeSchema>;
@@ -264,6 +282,10 @@ export function applyChanges(doc: ScenarioDoc, changes: Change[]): ScenarioDoc {
             throw new ChangeError(i, "study area must have west < east and south < north");
           d.study_area = c.bbox;
         }
+        break;
+      case "set_project":
+        if (c.project_id === null) delete d.project_id;
+        else d.project_id = c.project_id;
         break;
     }
   });
