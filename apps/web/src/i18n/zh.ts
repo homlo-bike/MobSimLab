@@ -339,6 +339,7 @@ export const zh: Messages = {
   "prefs.group.cost": "成本",
   "prefs.group.benefits": "效益",
   "prefs.group.fares": "票价",
+  "prefs.group.appraisal": "评估",
   "prefs.group.noise": "噪声",
   "prefs.traction.battery": "电池",
   "prefs.traction.diesel": "柴油",

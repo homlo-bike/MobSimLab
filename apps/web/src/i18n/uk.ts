@@ -356,6 +356,7 @@ export const uk: Messages = {
   "prefs.group.cost": "Витрати",
   "prefs.group.benefits": "Вигоди",
   "prefs.group.fares": "Тарифи",
+  "prefs.group.appraisal": "Оцінка",
   "prefs.group.noise": "Шум",
   "prefs.traction.battery": "акумулятор",
   "prefs.traction.diesel": "дизель",

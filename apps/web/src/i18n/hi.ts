@@ -353,6 +353,7 @@ export const hi: Messages = {
   "prefs.group.cost": "लागत",
   "prefs.group.benefits": "लाभ",
   "prefs.group.fares": "किराया",
+  "prefs.group.appraisal": "मूल्यांकन",
   "prefs.group.noise": "शोर",
   "prefs.traction.battery": "बैटरी",
   "prefs.traction.diesel": "डीज़ल",

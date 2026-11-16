@@ -352,6 +352,7 @@ export const kk: Messages = {
   "prefs.group.cost": "Шығындар",
   "prefs.group.benefits": "Пайда",
   "prefs.group.fares": "Жол ақысы",
+  "prefs.group.appraisal": "Бағалау",
   "prefs.group.noise": "Шу",
   "prefs.traction.battery": "аккумулятор",
   "prefs.traction.diesel": "дизель",

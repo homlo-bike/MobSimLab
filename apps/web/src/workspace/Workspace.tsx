@@ -32,7 +32,9 @@ import { feedHolidays, projectFeed } from "../features/timetables/feed";
 import { paramValue } from "../features/costs/params";
 import { calendarFrom } from "./calendar";
 import { FareTables } from "../features/fares/FareTables";
-import type { FaresDoc } from "../features/fares/model";
+import { AppraisalSection } from "../features/appraisal/AppraisalSection";
+import type { AppraisalDoc } from "../features/appraisal/model";
+import type { FareInput, FaresDoc } from "../features/fares/model";
 import { Scenarios } from "../features/tables/Scenarios";
 import type { ScenariosDoc } from "../features/tables/scenarioModel";
 import { noiseCalculationIn } from "../features/noise/plugin";
@@ -210,6 +212,8 @@ export function Workspace({
     estimate: CostEstimate;
     currency: string | null;
     country: string | null;
+    /** World Bank income group of the country (HIC, UMC, LMC, LIC), or null; the appraisal's social rate. */
+    income: string | null;
     rate: number;
     /** Local currency units per international $ (the demand model's fares and car costs). */
     ppp: number;
@@ -217,11 +221,12 @@ export function Workspace({
     perIntl: number;
   } | null>(null);
   const onCostEstimate = useCallback(
-    (estimate: CostEstimate, prices: Prices, country: string | null, rate: number) =>
+    (estimate: CostEstimate, prices: Prices, country: string | null, rate: number, income: string | null) =>
       setCostInfo({
         estimate,
         currency: prices.currency,
         country,
+        income,
         rate,
         ppp: prices.ppp,
         perIntl: prices.ppp * prices.escalation,
@@ -241,6 +246,20 @@ export function Workspace({
     [benefitEst],
   );
   const onBenefitEstimate = useCallback((e: BenefitEstimate | null) => setBenefitEst(e), []);
+  // The fare revenue table's input, for the appraisal's fare revenue draws.
+  const [fareInput, setFareInput] = useState<FareInput | null>(null);
+  const appraisalCosts = useMemo(
+    () =>
+      costInfo
+        ? {
+            estimate: costInfo.estimate,
+            currency: costInfo.currency,
+            income: costInfo.income,
+            perIntl: costInfo.perIntl,
+          }
+        : null,
+    [costInfo],
+  );
   // The energy section's estimate (energy a year), for the calendar runs.
   const [energyEst, setEnergyEst] = useState<EnergyEstimate | null>(null);
   const tableFigures = useMemo(
@@ -1128,6 +1147,19 @@ export function Workspace({
                   prices={farePrices}
                   doc={drawings.doc<FaresDoc>("fares")}
                   onDoc={editable ? (d) => drawings.set("fares", d) : undefined}
+                  onInput={setFareInput}
+                />
+              )}
+              {project && drawings.loaded && (
+                <AppraisalSection
+                  costs={appraisalCosts}
+                  benefits={benefitEst}
+                  fares={fareInput}
+                  demand={usedRidership}
+                  preferences={preferences}
+                  onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
+                  doc={drawings.doc<AppraisalDoc>("appraisal")}
+                  onDoc={editable ? (d) => drawings.set("appraisal", d) : undefined}
                 />
               )}
               {project && drawings.loaded && (

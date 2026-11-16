@@ -356,6 +356,7 @@ export const nl: Messages = {
   "prefs.group.cost": "Kosten",
   "prefs.group.benefits": "Baten",
   "prefs.group.fares": "Tarieven",
+  "prefs.group.appraisal": "Beoordeling",
   "prefs.group.noise": "Geluid",
   "prefs.traction.battery": "batterij",
   "prefs.traction.diesel": "diesel",

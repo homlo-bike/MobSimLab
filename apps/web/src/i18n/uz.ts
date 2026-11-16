@@ -358,6 +358,7 @@ export const uz: Messages = {
   "prefs.group.cost": "Xarajatlar",
   "prefs.group.benefits": "Foydalar",
   "prefs.group.fares": "Yo'l haqi",
+  "prefs.group.appraisal": "Baholash",
   "prefs.group.noise": "Shovqin",
   "prefs.traction.battery": "batareya",
   "prefs.traction.diesel": "dizel",
