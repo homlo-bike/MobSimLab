@@ -1,5 +1,6 @@
 import { editorsJa } from "./editors/ja";
 import { cargoBikeJa } from "./cargo-bike/ja";
+import { depotsJa } from "./depots/ja";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -369,5 +370,6 @@ export const ja: Messages = {
 
   ...editorsJa,
   ...cargoBikeJa,
+  ...depotsJa,
   ...PLUGIN_MESSAGES.ja,
 };

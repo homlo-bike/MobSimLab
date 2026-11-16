@@ -24,6 +24,8 @@ members = [
   "crates/gtfs-wasm",
   "crates/cargo-bike",
   "crates/cargo-bike-wasm",
+  "crates/depot-layout",
+  "crates/depot-layout-wasm",
 ]
 
 [workspace.package]

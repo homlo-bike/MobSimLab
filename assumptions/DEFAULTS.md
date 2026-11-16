@@ -1223,6 +1223,30 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 |---|---|---|---|---|---|---|---|
 | all | 0.5 | 1.0 | 2.0 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Room to walk between vehicles and for charging connectors. |
 
+### Street depot: kerb-to-kerb turning circle of a bus the catalogue gives none for
+
+`depot.turning_circle_m` · unit: m · used by: automatic bus depot layout, swept-path check
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 21 | 24 | 25 | documented | unverified | [eu-dir-96-53](#src-eu-dir-96-53), [mobsimlab-derivation](#src-mobsimlab-derivation) | A bus must turn within a circle of 12.5 m outer radius (25 m diameter, 96/53/EC); catalogue 12 m buses quote about 19–22 m. The swept-path check uses the vehicle's own value where the catalogue has one. |
+
+### Street depot: smallest gap between a manoeuvring vehicle and a parked vehicle or the fence
+
+`depot.swept_clearance_m` · unit: m · used by: swept-path check, automatic bus depot layout
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.2 | 0.3 | 0.5 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Margin for driver accuracy at walking pace in a depot, on top of the body outline (mirrors fold over parked vehicles); swept-path templates are commonly drawn with 0.3–0.5 m. |
+
+### Street depot: power of the charger at each charging slot
+
+`depot.charger_power_kw` · unit: kW · used by: automatic bus depot layout, road simulation charging
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 50 | 150 | 300 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Overnight plug-in depot chargers for battery buses are commonly 40–150 kW per vehicle; 150 kW also allows a midday top-up. Pantograph chargers reach 300 kW or more. |
+
 ### Lane width of a street (vehicles drawn half a lane from the centreline)
 
 `street.lane_width_m` · unit: m · used by: vehicle drawing offset, swept-path check

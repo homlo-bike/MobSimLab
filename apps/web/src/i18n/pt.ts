@@ -1,5 +1,6 @@
 import { editorsPt } from "./editors/pt";
 import { cargoBikePt } from "./cargo-bike/pt";
+import { depotsPt } from "./depots/pt";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -379,5 +380,6 @@ export const pt: Messages = {
 
   ...editorsPt,
   ...cargoBikePt,
+  ...depotsPt,
   ...PLUGIN_MESSAGES.pt,
 };
