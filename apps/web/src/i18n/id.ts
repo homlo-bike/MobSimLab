@@ -374,6 +374,12 @@ export const id: Messages = {
   "report.col.sources": "Sumber",
   "report.col.reasoning": "Alasan",
   "report.col.usedBy": "Digunakan oleh",
+  "report.col.reason": "Alasan",
+  "report.col.changedBy": "Diubah oleh",
+  "report.col.changedAt": "Diubah pada",
+  "report.changedBy": "Diubah oleh {name} pada {date}",
+  "report.changedOn": "Diubah pada {date}",
+  "report.reason": "Alasan: {reason}",
   "prefs.accessTitle": "Aksesibilitas peron",
   "prefs.accessIntro":
     "Batas anak tangga dan celah antara peron dan kereta (TSI PRM), serta tinggi lantai untuk kereta yang tidak punya nilainya di katalog. Jalur diperiksa di setiap pemberhentian.",

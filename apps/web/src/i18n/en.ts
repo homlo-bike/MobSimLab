@@ -366,6 +366,12 @@ export const en = {
   "report.col.sources": "Sources",
   "report.col.reasoning": "Reasoning",
   "report.col.usedBy": "Used by",
+  "report.col.reason": "Reason",
+  "report.col.changedBy": "Changed by",
+  "report.col.changedAt": "Changed on",
+  "report.changedBy": "Changed by {name} on {date}",
+  "report.changedOn": "Changed on {date}",
+  "report.reason": "Reason: {reason}",
   "prefs.accessTitle": "Platform accessibility",
   "prefs.accessIntro":
     "Step and gap limits between platform and train (TSI PRM), and the floor height used for trains that have none in the vehicle catalogue. Service lines are checked against these at every stop.",

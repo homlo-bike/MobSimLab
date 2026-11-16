@@ -8,8 +8,11 @@ import { VEHICLES } from "../features/street-lines/vehicles";
 import { download } from "../features/schematic/export";
 import { GROUP_LABEL, TRACTION_LABEL } from "./Parameters";
 import { PARAM_GROUPS, type PreferencesDoc } from "./preferences";
+import type { ValueHistoryEntry } from "../projects/api";
 import {
   fmtNum,
+  type LastChange,
+  lastChanges,
   type OtherChoices,
   otherChoices,
   type ReportRow,
@@ -64,12 +67,15 @@ export function AssumptionsReportSection({
   projectModes,
   preferences,
   currency,
+  loadHistory,
 }: {
   projectName: string;
   projectModes: readonly string[];
   preferences: PreferencesDoc | null;
   /** The currency the project chose, or null when each tool shows the country's own. */
   currency: string | null;
+  /** The project's value history (who changed a value and when), newest first; absent: not shown. */
+  loadHistory?: () => Promise<readonly ValueHistoryEntry[]>;
 }) {
   const { t } = useI18n();
   const groupId = useId();
@@ -77,6 +83,24 @@ export function AssumptionsReportSection({
   const [group, setGroup] = useState<string>(PARAM_GROUPS[0] ?? "Modes");
   const [changedOnly, setChangedOnly] = useState(false);
   const [printing, setPrinting] = useState(false);
+  const [changes, setChanges] = useState<ReadonlyMap<string, LastChange>>(new Map());
+  // Who changed each value and when; read again a moment after the preferences change, once they are saved.
+  useEffect(() => {
+    if (!loadHistory) return;
+    let live = true;
+    const timer = setTimeout(
+      () =>
+        loadHistory().then(
+          (h) => live && setChanges(lastChanges(h)),
+          () => {},
+        ),
+      1500,
+    );
+    return () => {
+      live = false;
+      clearTimeout(timer);
+    };
+  }, [loadHistory, preferences]);
   useEffect(() => {
     let live = true;
     loadSources().then(
@@ -128,6 +152,9 @@ export function AssumptionsReportSection({
         t("report.col.sources"),
         t("report.col.reasoning"),
         t("report.col.usedBy"),
+        t("report.col.reason"),
+        t("report.col.changedBy"),
+        t("report.col.changedAt"),
       ],
     ];
     for (const r of shown) {
@@ -153,6 +180,9 @@ export function AssumptionsReportSection({
           .join("; "),
         r.source?.rationale ?? "",
         r.usedBy.join("; "),
+        r.reason,
+        (r.changed && changes.get(r.prefId)?.by) || "",
+        (r.changed && changes.get(r.prefId)?.at.slice(0, 10)) || "",
       ]);
     }
     lines.push([]);
@@ -189,7 +219,12 @@ export function AssumptionsReportSection({
   const list = (groupRows: ReportRow[]) => (
     <ul className="m-0 list-none p-0">
       {groupRows.map((r) => (
-        <ReportLine key={`${r.param.id}|${r.mode}|${r.traction ?? ""}`} row={r} scope={scope(r)}>
+        <ReportLine
+          key={`${r.param.id}|${r.mode}|${r.traction ?? ""}`}
+          row={r}
+          scope={scope(r)}
+          last={r.changed ? changes.get(r.prefId) : undefined}
+        >
           {shownValue(r.value)}
         </ReportLine>
       ))}
@@ -294,10 +329,24 @@ export function AssumptionsReportSection({
   );
 }
 
+/** Purpose: a time as a date in the viewer's language. */
+const fmtDate = (iso: string) => new Date(iso).toLocaleDateString(undefined, { dateStyle: "medium" });
+
 const SourcesContext = createContext<Record<string, ReportSources["sources"][string]>>({});
 
 /** Purpose: one line of the report: parameter and scope, value, library range, basis, sources and reasoning. */
-function ReportLine({ row: r, scope, children }: { row: ReportRow; scope: string; children: ReactNode }) {
+function ReportLine({
+  row: r,
+  scope,
+  last,
+  children,
+}: {
+  row: ReportRow;
+  scope: string;
+  /** Who last changed the value and when, when known. */
+  last?: LastChange;
+  children: ReactNode;
+}) {
   const { t } = useI18n();
   const sources = useContext(SourcesContext);
   const lib = r.library;
@@ -335,6 +384,16 @@ function ReportLine({ row: r, scope, children }: { row: ReportRow; scope: string
           </span>
         )}
       </div>
+      {(last || r.reason) && (
+        <div className="mt-0.5 text-sm text-amber-900">
+          {last &&
+            (last.by
+              ? t("report.changedBy", { name: last.by, date: fmtDate(last.at) })
+              : t("report.changedOn", { date: fmtDate(last.at) }))}
+          {last && r.reason && " · "}
+          {r.reason && t("report.reason", { reason: r.reason })}
+        </div>
+      )}
       {r.source && r.source.sources.length > 0 && (
         <div className="mt-0.5 text-sm text-slate-600">
           {t("report.sources")}{" "}

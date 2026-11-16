@@ -366,6 +366,12 @@ export const ko: Messages = {
   "report.col.sources": "출처",
   "report.col.reasoning": "이유",
   "report.col.usedBy": "사용처",
+  "report.col.reason": "이유",
+  "report.col.changedBy": "변경한 사람",
+  "report.col.changedAt": "변경일",
+  "report.changedBy": "{name} 님이 {date}에 변경",
+  "report.changedOn": "{date}에 변경",
+  "report.reason": "이유: {reason}",
   "prefs.accessTitle": "승강장 접근성",
   "prefs.accessIntro":
     "승강장과 열차 사이 단차·틈 한도(TSI PRM)와 차량 목록에 바닥 높이가 없는 열차에 쓰는 값. 노선은 모든 정류장에서 이를 기준으로 검사됩니다.",

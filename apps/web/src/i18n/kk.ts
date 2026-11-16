@@ -370,6 +370,12 @@ export const kk: Messages = {
   "report.col.sources": "Дереккөздер",
   "report.col.reasoning": "Негіздеме",
   "report.col.usedBy": "Пайдаланады",
+  "report.col.reason": "Себеп",
+  "report.col.changedBy": "Өзгерткен",
+  "report.col.changedAt": "Өзгертілген күні",
+  "report.changedBy": "{name} {date} күні өзгертті",
+  "report.changedOn": "{date} күні өзгертілді",
+  "report.reason": "Себеп: {reason}",
   "prefs.accessTitle": "Платформа қолжетімділігі",
   "prefs.accessIntro":
     "Платформа мен пойыз арасындағы баспалдақ пен саңылау шектері (TSI PRM) және каталогта жоқ пойыздарға арналған еден биіктігі. Желілер әр аялдамада тексеріледі.",

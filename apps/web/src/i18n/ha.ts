@@ -373,6 +373,12 @@ export const ha: Messages = {
   "report.col.sources": "Tushe",
   "report.col.reasoning": "Dalili",
   "report.col.usedBy": "Ana amfani da ita a",
+  "report.col.reason": "Dalili",
+  "report.col.changedBy": "Wanda ya canza",
+  "report.col.changedAt": "Ranar canji",
+  "report.changedBy": "{name} ya canza a ranar {date}",
+  "report.changedOn": "An canza a ranar {date}",
+  "report.reason": "Dalili: {reason}",
   "prefs.accessTitle": "Samun damar dandamali",
   "prefs.accessIntro":
     "Iyakokin mataki da tazara tsakanin dandamali da jirgi (TSI PRM), da tsayin ƙasa ga jiragen da babu a kundi. Ana duba layuka a kowace tasha.",

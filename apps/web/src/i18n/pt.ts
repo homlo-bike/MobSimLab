@@ -373,6 +373,12 @@ export const pt: Messages = {
   "report.col.sources": "Fontes",
   "report.col.reasoning": "Justificação",
   "report.col.usedBy": "Usado por",
+  "report.col.reason": "Motivo",
+  "report.col.changedBy": "Alterado por",
+  "report.col.changedAt": "Alterado em",
+  "report.changedBy": "Alterado por {name} em {date}",
+  "report.changedOn": "Alterado em {date}",
+  "report.reason": "Motivo: {reason}",
   "prefs.accessTitle": "Acessibilidade da plataforma",
   "prefs.accessIntro":
     "Limites de degrau e vão entre plataforma e trem (ETI PMR) e a altura de piso usada para trens sem dado no catálogo. As linhas são verificadas em cada parada.",

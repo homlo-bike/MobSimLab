@@ -373,6 +373,12 @@ export const es: Messages = {
   "report.col.sources": "Fuentes",
   "report.col.reasoning": "Justificación",
   "report.col.usedBy": "Usado por",
+  "report.col.reason": "Motivo",
+  "report.col.changedBy": "Cambiado por",
+  "report.col.changedAt": "Cambiado el",
+  "report.changedBy": "Cambiado por {name} el {date}",
+  "report.changedOn": "Cambiado el {date}",
+  "report.reason": "Motivo: {reason}",
   "prefs.accessTitle": "Accesibilidad del andén",
   "prefs.accessIntro":
     "Límites de escalón y hueco entre andén y tren (ETI PMR) y la altura de piso usada para trenes sin dato en el catálogo. Las líneas se comprueban en cada parada.",

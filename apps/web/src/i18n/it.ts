@@ -372,6 +372,12 @@ export const it: Messages = {
   "report.col.sources": "Fonti",
   "report.col.reasoning": "Motivazione",
   "report.col.usedBy": "Usato da",
+  "report.col.reason": "Motivo",
+  "report.col.changedBy": "Modificato da",
+  "report.col.changedAt": "Modificato il",
+  "report.changedBy": "Modificato da {name} il {date}",
+  "report.changedOn": "Modificato il {date}",
+  "report.reason": "Motivo: {reason}",
   "prefs.accessTitle": "Accessibilità dei marciapiedi",
   "prefs.accessIntro":
     "Limiti di gradino e distanza tra marciapiede e treno (STI PMR) e altezza del pavimento usata per i treni che non l'hanno nel catalogo. Le linee sono verificate a ogni fermata.",

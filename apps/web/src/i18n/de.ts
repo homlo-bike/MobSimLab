@@ -379,6 +379,12 @@ export const de: Messages = {
   "report.col.sources": "Quellen",
   "report.col.reasoning": "Begründung",
   "report.col.usedBy": "Verwendet von",
+  "report.col.reason": "Grund",
+  "report.col.changedBy": "Geändert von",
+  "report.col.changedAt": "Geändert am",
+  "report.changedBy": "Geändert von {name} am {date}",
+  "report.changedOn": "Geändert am {date}",
+  "report.reason": "Grund: {reason}",
   "prefs.accessTitle": "Barrierefreiheit am Bahnsteig",
   "prefs.accessIntro":
     "Grenzwerte für Stufe und Spalt zwischen Bahnsteig und Zug (TSI PRM) sowie die Fußbodenhöhe für Züge ohne Angabe im Fahrzeugkatalog. Linien werden an jedem Halt daran geprüft.",

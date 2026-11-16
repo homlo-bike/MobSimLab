@@ -372,6 +372,12 @@ export const pl: Messages = {
   "report.col.sources": "Źródła",
   "report.col.reasoning": "Uzasadnienie",
   "report.col.usedBy": "Używana przez",
+  "report.col.reason": "Powód",
+  "report.col.changedBy": "Zmienione przez",
+  "report.col.changedAt": "Data zmiany",
+  "report.changedBy": "Zmienione przez {name} dnia {date}",
+  "report.changedOn": "Zmienione dnia {date}",
+  "report.reason": "Powód: {reason}",
   "prefs.accessTitle": "Dostępność peronów",
   "prefs.accessIntro":
     "Limity stopnia i szczeliny między peronem a pociągiem (TSI PRM) oraz wysokość podłogi dla pociągów bez tej wartości w katalogu. Linie są sprawdzane na każdym przystanku.",

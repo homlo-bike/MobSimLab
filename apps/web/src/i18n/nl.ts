@@ -374,6 +374,12 @@ export const nl: Messages = {
   "report.col.sources": "Bronnen",
   "report.col.reasoning": "Onderbouwing",
   "report.col.usedBy": "Gebruikt door",
+  "report.col.reason": "Reden",
+  "report.col.changedBy": "Gewijzigd door",
+  "report.col.changedAt": "Gewijzigd op",
+  "report.changedBy": "Gewijzigd door {name} op {date}",
+  "report.changedOn": "Gewijzigd op {date}",
+  "report.reason": "Reden: {reason}",
   "prefs.accessTitle": "Toegankelijkheid van perrons",
   "prefs.accessIntro":
     "Grenzen voor trede en kier tussen perron en trein (TSI PRM) en de vloerhoogte voor treinen zonder waarde in de voertuigcatalogus. Lijnen worden bij elke halte gecontroleerd.",

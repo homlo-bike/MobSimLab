@@ -377,6 +377,12 @@ export const ta: Messages = {
   "report.col.sources": "மூலங்கள்",
   "report.col.reasoning": "காரணம்",
   "report.col.usedBy": "பயன்படுத்துவது",
+  "report.col.reason": "காரணம்",
+  "report.col.changedBy": "மாற்றியவர்",
+  "report.col.changedAt": "மாற்றிய தேதி",
+  "report.changedBy": "{name} {date} அன்று மாற்றினார்",
+  "report.changedOn": "{date} அன்று மாற்றப்பட்டது",
+  "report.reason": "காரணம்: {reason}",
   "prefs.accessTitle": "நடைமேடை அணுகல்தன்மை",
   "prefs.accessIntro":
     "நடைமேடைக்கும் ரயிலுக்கும் இடையிலான படி, இடைவெளி வரம்புகள் (TSI PRM), பட்டியலில் இல்லாத ரயில்களுக்கான தள உயரம். வழித்தடங்கள் ஒவ்வொரு நிறுத்தத்திலும் சரிபார்க்கப்படும்.",

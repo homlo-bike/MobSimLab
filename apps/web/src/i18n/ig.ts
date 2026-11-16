@@ -372,6 +372,12 @@ export const ig: Messages = {
   "report.col.sources": "Isi mmalite",
   "report.col.reasoning": "Ihe kpatara ya",
   "report.col.usedBy": "Ihe na-eji ya",
+  "report.col.reason": "Ihe kpatara ya",
+  "report.col.changedBy": "Onye gbanwere ya",
+  "report.col.changedAt": "Ụbọchị agbanwere ya",
+  "report.changedBy": "{name} gbanwere ya na {date}",
+  "report.changedOn": "Agbanwere ya na {date}",
+  "report.reason": "Ihe kpatara ya: {reason}",
   "prefs.accessTitle": "Ịnweta ikpo okwu",
   "prefs.accessIntro":
     "Oke steepụ na oghere n'etiti ikpo okwu na ụgbọ (TSI PRM), yana ịdị elu ala maka ụgbọ na-enweghị ya na katalọgụ. A na-enyocha ahịrị n'ọdụ ọ bụla.",

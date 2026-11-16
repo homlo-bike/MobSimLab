@@ -362,6 +362,12 @@ export const ar: Messages = {
   "report.col.sources": "المصادر",
   "report.col.reasoning": "التبرير",
   "report.col.usedBy": "تستخدمها",
+  "report.col.reason": "السبب",
+  "report.col.changedBy": "غيّرها",
+  "report.col.changedAt": "تاريخ التغيير",
+  "report.changedBy": "غيّرها {name} في {date}",
+  "report.changedOn": "تم التغيير في {date}",
+  "report.reason": "السبب: {reason}",
   "prefs.accessTitle": "إتاحة الرصيف",
   "prefs.accessIntro":
     "حدود الدرجة والفجوة بين الرصيف والقطار (TSI PRM)، وارتفاع الأرضية للقطارات التي لا تملكه في الكتالوج. تُفحص الخطوط عند كل محطة.",

@@ -372,6 +372,12 @@ export const sw: Messages = {
   "report.col.sources": "Vyanzo",
   "report.col.reasoning": "Sababu",
   "report.col.usedBy": "Inatumiwa na",
+  "report.col.reason": "Sababu",
+  "report.col.changedBy": "Imebadilishwa na",
+  "report.col.changedAt": "Ilibadilishwa tarehe",
+  "report.changedBy": "Imebadilishwa na {name} tarehe {date}",
+  "report.changedOn": "Ilibadilishwa tarehe {date}",
+  "report.reason": "Sababu: {reason}",
   "prefs.accessTitle": "Ufikivu wa jukwaa",
   "prefs.accessIntro":
     "Mipaka ya ngazi na pengo kati ya jukwaa na treni (TSI PRM), na kimo cha sakafu kwa treni zisizo nacho kwenye orodha. Njia hukaguliwa kila kituo.",

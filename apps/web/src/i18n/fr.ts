@@ -375,6 +375,12 @@ export const fr: Messages = {
   "report.col.sources": "Sources",
   "report.col.reasoning": "Justification",
   "report.col.usedBy": "Utilisée par",
+  "report.col.reason": "Motif",
+  "report.col.changedBy": "Modifiée par",
+  "report.col.changedAt": "Modifiée le",
+  "report.changedBy": "Modifiée par {name} le {date}",
+  "report.changedOn": "Modifiée le {date}",
+  "report.reason": "Motif : {reason}",
   "prefs.accessTitle": "Accessibilité des quais",
   "prefs.accessIntro":
     "Limites de marche et de lacune entre quai et train (STI PMR), et hauteur de plancher utilisée pour les trains qui n'en ont pas dans le catalogue. Les lignes sont vérifiées à chaque arrêt.",

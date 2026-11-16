@@ -372,6 +372,12 @@ export const te: Messages = {
   "report.col.sources": "మూలాలు",
   "report.col.reasoning": "కారణం",
   "report.col.usedBy": "ఉపయోగించేవి",
+  "report.col.reason": "కారణం",
+  "report.col.changedBy": "మార్చినవారు",
+  "report.col.changedAt": "మార్చిన తేదీ",
+  "report.changedBy": "{name} {date}న మార్చారు",
+  "report.changedOn": "{date}న మార్చబడింది",
+  "report.reason": "కారణం: {reason}",
   "prefs.accessTitle": "ప్లాట్‌ఫారం అందుబాటు",
   "prefs.accessIntro":
     "ప్లాట్‌ఫారం మరియు రైలు మధ్య మెట్టు, ఖాళీ పరిమితులు (TSI PRM), జాబితాలో లేని రైళ్లకు నేల ఎత్తు. లైన్లు ప్రతి స్టాప్‌లో తనిఖీ అవుతాయి.",

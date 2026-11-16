@@ -13,6 +13,7 @@ import {
   paramPrefId,
   type PreferencesDoc,
   prefValue,
+  reasonOf,
   switchChoiceFrom,
   vehiclesOffFrom,
 } from "./preferences";
@@ -79,6 +80,10 @@ export interface ReportRow {
   changed: boolean;
   /** For a mode line: the value comes from the project's value for every mode. */
   fromAll: boolean;
+  /** The preference id whose value applies when changed (the mode's, the traction's or every mode's). */
+  prefId: string;
+  /** Why the project changed the value, or "" when no reason was given. */
+  reason: string;
   /** Where the library's value comes from; null when the sources data has no entry. */
   source: SourceEntry | null;
   usedBy: string[];
@@ -114,6 +119,7 @@ export function reportRows(
       const mine = mode === "*" && !traction ? all : own(paramPrefId(p.id, mode, traction));
       const fromAll = mine === undefined && mode !== "*" && !traction && all !== undefined;
       const used = mine ?? (fromAll ? all : undefined);
+      const id = fromAll ? paramPrefId(p.id, "*") : paramPrefId(p.id, mode, traction);
       return {
         param: p,
         mode,
@@ -122,6 +128,8 @@ export function reportRows(
         library: lib,
         changed: used !== undefined,
         fromAll,
+        prefId: id,
+        reason: used !== undefined ? reasonOf(doc, id) : "",
         source: entry(traction ? src?.traction?.[traction] : (src?.modes[mode] ?? src?.modes["*"])),
         usedBy: src?.used_by ?? [],
       };
@@ -187,4 +195,23 @@ export function csvField(v: string | number): string {
 /** Purpose: CSV text from a header and lines, CRLF line ends (RFC 4180). */
 export function toCsv(lines: readonly (readonly (string | number)[])[]): string {
   return lines.map((l) => l.map(csvField).join(",")).join("\r\n") + "\r\n";
+}
+
+/** Who last changed a value, and when (from the project's value history). */
+export interface LastChange {
+  at: string;
+  by: string | null;
+}
+
+/**
+ * Purpose: the latest change of each value, by preference id, from the value history (newest first). Only
+ * changes of the value count; a reason given later does not move who changed it or when.
+ */
+export function lastChanges(
+  history: readonly { id: string; kind: string; at: string; by: { displayName: string | null } | null }[],
+): Map<string, LastChange> {
+  const out = new Map<string, LastChange>();
+  for (const h of history)
+    if (h.kind === "changed" && !out.has(h.id)) out.set(h.id, { at: h.at, by: h.by?.displayName ?? null });
+  return out;
 }

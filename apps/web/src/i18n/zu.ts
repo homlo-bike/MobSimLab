@@ -378,6 +378,12 @@ export const zu: Messages = {
   "report.col.sources": "Imithombo",
   "report.col.reasoning": "Isizathu",
   "report.col.usedBy": "Lisetshenziswa ngu",
+  "report.col.reason": "Isizathu",
+  "report.col.changedBy": "Lishintshwe ngu",
+  "report.col.changedAt": "Lishintshwe ngo",
+  "report.changedBy": "Lishintshwe ngu-{name} ngo-{date}",
+  "report.changedOn": "Lishintshwe ngo-{date}",
+  "report.reason": "Isizathu: {reason}",
   "prefs.accessTitle": "Ukufinyeleleka kwepulatifomu",
   "prefs.accessIntro":
     "Imingcele yesinyathelo negebe phakathi kwepulatifomu nesitimela (TSI PRM), nokuphakama kwaphansi kwezitimela ezingenakho ohlwini. Imizila ihlolwa kuso sonke isiteshi.",
