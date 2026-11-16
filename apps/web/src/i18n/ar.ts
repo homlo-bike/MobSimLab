@@ -10,7 +10,7 @@ import { timetablesAr } from "./timetables/ar";
 import { mslabAr } from "./mslab/ar";
 import { pluginCodeAr } from "./plugin-code/ar";
 import { populationAr } from "./population/ar";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsAr } from "./plugins/ar";
 import type { Messages } from "./en";
 
 /** العربية (right to left). */
@@ -497,5 +497,5 @@ export const ar: Messages = {
   ...populationAr,
   ...roadAr,
   ...calendarAr,
-  ...PLUGIN_MESSAGES.ar,
+  ...pluginsAr,
 };

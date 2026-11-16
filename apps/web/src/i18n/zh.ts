@@ -10,7 +10,7 @@ import { timetablesZh } from "./timetables/zh";
 import { mslabZh } from "./mslab/zh";
 import { pluginCodeZh } from "./plugin-code/zh";
 import { populationZh } from "./population/zh";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsZh } from "./plugins/zh";
 import type { Messages } from "./en";
 
 /** 中文（简体）. */
@@ -486,5 +486,5 @@ export const zh: Messages = {
   ...populationZh,
   ...roadZh,
   ...calendarZh,
-  ...PLUGIN_MESSAGES.zh,
+  ...pluginsZh,
 };

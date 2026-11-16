@@ -10,7 +10,7 @@ import { timetablesFa } from "./timetables/fa";
 import { mslabFa } from "./mslab/fa";
 import { pluginCodeFa } from "./plugin-code/fa";
 import { populationFa } from "./population/fa";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsFa } from "./plugins/fa";
 import type { Messages } from "./en";
 
 /** فارسی */
@@ -505,5 +505,5 @@ export const fa: Messages = {
   ...populationFa,
   ...roadFa,
   ...calendarFa,
-  ...PLUGIN_MESSAGES.fa,
+  ...pluginsFa,
 };

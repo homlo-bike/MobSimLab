@@ -10,7 +10,7 @@ import { timetablesIt } from "./timetables/it";
 import { mslabIt } from "./mslab/it";
 import { pluginCodeIt } from "./plugin-code/it";
 import { populationIt } from "./population/it";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsIt } from "./plugins/it";
 import type { Messages } from "./en";
 
 /** Italiano */
@@ -509,5 +509,5 @@ export const it: Messages = {
   ...populationIt,
   ...roadIt,
   ...calendarIt,
-  ...PLUGIN_MESSAGES.it,
+  ...pluginsIt,
 };

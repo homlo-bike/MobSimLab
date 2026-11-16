@@ -10,7 +10,7 @@ import { timetablesMr } from "./timetables/mr";
 import { mslabMr } from "./mslab/mr";
 import { pluginCodeMr } from "./plugin-code/mr";
 import { populationMr } from "./population/mr";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsMr } from "./plugins/mr";
 import type { Messages } from "./en";
 
 /** मराठी */
@@ -504,5 +504,5 @@ export const mr: Messages = {
   ...populationMr,
   ...roadMr,
   ...calendarMr,
-  ...PLUGIN_MESSAGES.mr,
+  ...pluginsMr,
 };

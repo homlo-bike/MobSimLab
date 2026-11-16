@@ -10,7 +10,7 @@ import { timetablesYo } from "./timetables/yo";
 import { mslabYo } from "./mslab/yo";
 import { pluginCodeYo } from "./plugin-code/yo";
 import { populationYo } from "./population/yo";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsYo } from "./plugins/yo";
 import type { Messages } from "./en";
 
 /** Yorùbá. */
@@ -506,5 +506,5 @@ export const yo: Messages = {
   ...populationYo,
   ...roadYo,
   ...calendarYo,
-  ...PLUGIN_MESSAGES.yo,
+  ...pluginsYo,
 };

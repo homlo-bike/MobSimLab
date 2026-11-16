@@ -10,7 +10,7 @@ import { timetablesVi } from "./timetables/vi";
 import { mslabVi } from "./mslab/vi";
 import { pluginCodeVi } from "./plugin-code/vi";
 import { populationVi } from "./population/vi";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsVi } from "./plugins/vi";
 import type { Messages } from "./en";
 
 /** Tiếng Việt */
@@ -506,5 +506,5 @@ export const vi: Messages = {
   ...populationVi,
   ...roadVi,
   ...calendarVi,
-  ...PLUGIN_MESSAGES.vi,
+  ...pluginsVi,
 };

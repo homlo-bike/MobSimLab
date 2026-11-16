@@ -1,0 +1,51 @@
+import type { PluginKey } from "../plugins";
+
+/** Plugin messages (ja). */
+export const pluginsJa = {
+  "admin.plugins": "プラグイン",
+  "plugins.title": "プラグイン",
+  "plugins.intro":
+    "プラグインは交通手段、ツール、計算を追加します。このプロジェクトで使うものをオンにしてください。オフにするとツールは隠れ、描いた内容は残ります。",
+  "plugins.bundled": "MobSimLab に付属",
+  "plugins.by": "発行者: {publisher}",
+  "plugins.versionN": "バージョン {version}",
+  "plugins.adds": "追加: {list}",
+  "plugins.uses": "使用: {list}",
+  "plugins.parameters": "前提値 {count} 件",
+  "plugins.missing":
+    "バージョン {version} はこの MobSimLab から削除されました。再び使うには別のバージョンを選んでください。",
+  "plugins.versionOf": "{name} のバージョン",
+  "plugins.useIn": "このプロジェクトで {name} を使う",
+  "plugins.ownerOnly": "プラグインをオン・オフできるのはプロジェクトのオーナーだけです。",
+  "plugins.perm.readNetwork": "プロジェクトのネットワーク",
+  "plugins.perm.readTimetable": "時刻表",
+  "plugins.perm.readFleet": "車両と車隊",
+  "plugins.perm.readGeodata": "インポートした地図データ",
+  "plugins.perm.readResults": "シミュレーション結果",
+  "plugins.perm.writeResults": "独自の結果を保存",
+  "plugins.perm.writeScenario": "シナリオへの変更を提案",
+  "plugins.installTitle": "プラグインをインストール",
+  "plugins.choose": ".msplugin ファイルを選択",
+  "plugins.problems": "このプラグインはインストールできません:",
+  "plugins.install": "インストール",
+  "plugins.installed": "インストール済みのプラグイン",
+  "plugins.none": "まだプラグインはインストールされていません。",
+  "plugins.removeOne": "{name} {version} を削除",
+  "plugins.inProjects": "{count} 件のプロジェクトで使用中",
+  "plugins.bundledTitle": "MobSimLab に付属",
+  "plugins.keys": "信頼する発行者",
+  "plugins.keysIntro":
+    "発行者がこれらの鍵のいずれかで署名したプラグインだけがインストールされます（ECDSA P-256 または Ed25519、PEM）。",
+  "plugins.noKeys": "信頼する鍵はまだありません。",
+  "plugins.removeKey": "{name} の信頼を取り消す",
+  "plugins.addKey": "鍵を追加",
+  "plugins.keyName": "発行者名",
+  "plugins.keyPem": "公開鍵",
+  "plugins.allowUnsigned": "署名のないプラグインを許可（開発モード、オーナーのみ）",
+  "plugins.signedBy": "{name} が署名",
+  "plugins.untrusted": "このインスタンスが信頼しない鍵で署名",
+  "plugins.unsigned": "署名なし",
+  "plugins.licences": "ライセンス: コード {code}、データ {data}",
+  "plugins.removeConfirm":
+    "{name} は {count} 件のプロジェクトでオンです。それでも削除しますか？それらではオフになり、図面は残ります。",
+} satisfies Record<PluginKey, string>;

@@ -1,70 +1,74 @@
-import { ar } from "./ar";
-import { de } from "./de";
 import { en, type MessageKey, type Messages, type PluralKey } from "./en";
-import { es } from "./es";
-import { fr } from "./fr";
-import { nl } from "./nl";
-import { pt } from "./pt";
-import { ru } from "./ru";
-import { sw } from "./sw";
-import { ha } from "./ha";
-import { am } from "./am";
-import { yo } from "./yo";
-import { ig } from "./ig";
-import { zu } from "./zu";
-import { hi } from "./hi";
-import { bn } from "./bn";
-import { ur } from "./ur";
-import { mr } from "./mr";
-import { te } from "./te";
-import { ta } from "./ta";
-import { uz } from "./uz";
-import { kk } from "./kk";
-import { ja } from "./ja";
-import { ko } from "./ko";
-import { id } from "./id";
-import { vi } from "./vi";
-import { fa } from "./fa";
-import { tr } from "./tr";
-import { it } from "./it";
-import { pl } from "./pl";
-import { uk } from "./uk";
-import { zh } from "./zh";
 
 export type { MessageKey, Messages, PluralKey };
 
-/** All shell translations by language tag. Each must have every English key (enforced by `Messages`). */
-export const MESSAGES = {
-  en,
-  ar,
-  de,
-  es,
-  fr,
-  nl,
-  pt,
-  ru,
-  zh,
-  sw,
-  ha,
-  am,
-  yo,
-  ig,
-  zu,
-  hi,
-  bn,
-  ur,
-  mr,
-  te,
-  ta,
-  uz,
-  kk,
-  ja,
-  ko,
-  id,
-  vi,
-  fa,
-  tr,
-  it,
-  pl,
-  uk,
-} satisfies Record<string, Messages>;
+/** English, always in the first download: the fallback for every missing message and the list of keys. */
+export const MESSAGES_EN = en;
+
+/**
+ * The other languages, each its own download, fetched only when it is shown. Each must have every English key
+ * (enforced by `Messages`).
+ */
+const LOADERS = {
+  ar: () => import("./ar").then((m) => m.ar),
+  de: () => import("./de").then((m) => m.de),
+  es: () => import("./es").then((m) => m.es),
+  fr: () => import("./fr").then((m) => m.fr),
+  nl: () => import("./nl").then((m) => m.nl),
+  pt: () => import("./pt").then((m) => m.pt),
+  ru: () => import("./ru").then((m) => m.ru),
+  zh: () => import("./zh").then((m) => m.zh),
+  sw: () => import("./sw").then((m) => m.sw),
+  ha: () => import("./ha").then((m) => m.ha),
+  am: () => import("./am").then((m) => m.am),
+  yo: () => import("./yo").then((m) => m.yo),
+  ig: () => import("./ig").then((m) => m.ig),
+  zu: () => import("./zu").then((m) => m.zu),
+  hi: () => import("./hi").then((m) => m.hi),
+  bn: () => import("./bn").then((m) => m.bn),
+  ur: () => import("./ur").then((m) => m.ur),
+  mr: () => import("./mr").then((m) => m.mr),
+  te: () => import("./te").then((m) => m.te),
+  ta: () => import("./ta").then((m) => m.ta),
+  uz: () => import("./uz").then((m) => m.uz),
+  kk: () => import("./kk").then((m) => m.kk),
+  ja: () => import("./ja").then((m) => m.ja),
+  ko: () => import("./ko").then((m) => m.ko),
+  id: () => import("./id").then((m) => m.id),
+  vi: () => import("./vi").then((m) => m.vi),
+  fa: () => import("./fa").then((m) => m.fa),
+  tr: () => import("./tr").then((m) => m.tr),
+  it: () => import("./it").then((m) => m.it),
+  pl: () => import("./pl").then((m) => m.pl),
+  uk: () => import("./uk").then((m) => m.uk),
+} satisfies Record<string, () => Promise<Messages>>;
+
+/** Tags of the languages that have messages: English and every language in `LOADERS`. */
+export const MESSAGE_LANGUAGES = ["en", ...Object.keys(LOADERS)] as const;
+
+const loaded: Record<string, Messages | undefined> = { en };
+const pending: Record<string, Promise<Messages> | undefined> = {};
+
+/** Purpose: a language's messages if they are already downloaded, else undefined. */
+export function messagesOf(tag: string): Messages | undefined {
+  return loaded[tag];
+}
+
+/**
+ * Purpose: download a language's messages once and keep them.
+ * Output: the messages; English for a tag without its own file. A failed download can be tried again.
+ */
+export function loadMessages(tag: string): Promise<Messages> {
+  const have = loaded[tag];
+  if (have) return Promise.resolve(have);
+  const load = (LOADERS as Record<string, (() => Promise<Messages>) | undefined>)[tag];
+  if (!load) return Promise.resolve(en);
+  pending[tag] ??= load().then(
+    (m) => (loaded[tag] = m),
+    (e: unknown) => {
+      pending[tag] = undefined;
+      throw e;
+    },
+  );
+  return pending[tag];
+}

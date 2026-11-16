@@ -10,7 +10,7 @@ import { timetablesDe } from "./timetables/de";
 import { mslabDe } from "./mslab/de";
 import { pluginCodeDe } from "./plugin-code/de";
 import { populationDe } from "./population/de";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsDe } from "./plugins/de";
 import type { Messages } from "./en";
 
 /** Deutsch. */
@@ -519,5 +519,5 @@ export const de: Messages = {
   ...populationDe,
   ...roadDe,
   ...calendarDe,
-  ...PLUGIN_MESSAGES.de,
+  ...pluginsDe,
 };

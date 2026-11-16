@@ -10,7 +10,7 @@ import { timetablesEs } from "./timetables/es";
 import { mslabEs } from "./mslab/es";
 import { pluginCodeEs } from "./plugin-code/es";
 import { populationEs } from "./population/es";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsEs } from "./plugins/es";
 import type { Messages } from "./en";
 
 /** Español. */
@@ -513,5 +513,5 @@ export const es: Messages = {
   ...populationEs,
   ...roadEs,
   ...calendarEs,
-  ...PLUGIN_MESSAGES.es,
+  ...pluginsEs,
 };

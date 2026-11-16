@@ -10,7 +10,7 @@ import { timetablesUr } from "./timetables/ur";
 import { mslabUr } from "./mslab/ur";
 import { pluginCodeUr } from "./plugin-code/ur";
 import { populationUr } from "./population/ur";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsUr } from "./plugins/ur";
 import type { Messages } from "./en";
 
 /** اردو */
@@ -509,5 +509,5 @@ export const ur: Messages = {
   ...populationUr,
   ...roadUr,
   ...calendarUr,
-  ...PLUGIN_MESSAGES.ur,
+  ...pluginsUr,
 };
