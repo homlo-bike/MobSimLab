@@ -340,6 +340,22 @@
       check: unverified
       rationale: Fuel reserve for disruption.
 
+- key: timetable.max_terminal_wait_min
+  label: Longest a vehicle waits at a terminal for its next trip before it returns to the depot instead
+  group: Operations
+  unit: min
+  used_by: [vehicle scheduling, fleet size]
+  values:
+    - context:
+        mode: "*"
+      low: 10
+      central: 20
+      high: 45
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: "Vehicle blocks: a vehicle that would stand longer than this between trips (for example between the peaks) runs back to the depot and a vehicle pulls out again later, so it does not block a terminal stand or platform. The rail timetable planner used 20 min; operators choose by depot distance and terminal space."
+
 - key: timetable.min_buffer_s
   label: Minimum buffer time between the blocking times of two trains on one section
   group: Operations
