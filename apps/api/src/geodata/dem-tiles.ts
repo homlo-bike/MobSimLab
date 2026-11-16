@@ -2,7 +2,7 @@ import { deflateSync, inflateSync } from "node:zlib";
 import type { DemWindow } from "../gateway/copernicus-dem.client";
 
 /**
- * Elevation grids stored per project (06-gis §4, db/migrations/0011): a grid is cut into tiles of at most
+ * Elevation grids stored per project (06-gis §4, db/migrations/0015): a grid is cut into tiles of at most
  * TILE_PX × TILE_PX pixels that share their edge row and column with the next tile, so bilinear interpolation
  * never needs a second tile. Values are float32, little-endian, row by row from the north-west, deflated;
  * NaN is no data.
