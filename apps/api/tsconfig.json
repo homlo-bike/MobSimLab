@@ -5,6 +5,9 @@
     "moduleResolution": "NodeNext",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
+    // The sandboxed tool host (src/tool-runner) is ESM (.mts) that Node runs from source in tests; its imports
+    // name the .mts files, which the build rewrites to .mjs.
+    "rewriteRelativeImportExtensions": true,
     "outDir": "dist",
     "rootDir": ".",
     "types": ["node"]
