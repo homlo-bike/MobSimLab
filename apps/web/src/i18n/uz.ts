@@ -316,6 +316,7 @@ export const uz: Messages = {
   "prefs.demandStep.periods": "Vaqt oraliqlari",
   "prefs.demandStep.distribution": "Qatnovlar taqsimoti",
   "prefs.demandStep.mode_choice": "Transport turini tanlash",
+  "prefs.demandStep.catchment": "Yetib borish hududi",
   "prefs.demandStep.assignment": "Yuklash",
   "prefs.demandAll": "Barcha bosqichlar",
   "prefs.vehiclesTitle": "Transport vositalari",

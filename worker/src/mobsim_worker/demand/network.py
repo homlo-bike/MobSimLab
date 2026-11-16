@@ -3,7 +3,9 @@
 Every zone's centre joins the street network at its nearest junctions (``demand.connector.count``); stops join
 the walk network at their nearest junction. Car links get a free-flow time (legal speed times
 ``demand.road.free_flow_share``) and a capacity (cars per hour per lane by road class, times the lanes tagged
-in OpenStreetMap or the class default). Walking and cycling use network distance at the project's speeds.
+in OpenStreetMap or the class default). Walking and cycling use perceived network distance at the project's
+speeds: a metre in a pedestrian street counts ``demand.walk.pedestrian_factor``; a metre on a cycle track,
+on a bike lane or on a main road without either counts ``demand.cycle.factor.*``.
 """
 
 from __future__ import annotations
@@ -54,11 +56,39 @@ class CarNetwork:
 
 @dataclass
 class ActiveNetwork:
-    """Walking or cycling graph: undirected street links with length, as both directions."""
+    """Walking or cycling graph: undirected street links with length and perceived length, both directions."""
 
     table: pd.DataFrame
     zone_ids: np.ndarray
-    stop_ids: np.ndarray  # node ids of the stops (walk network only), after the zones
+    stop_ids: np.ndarray  # node ids of the stops, after the zones
+
+
+@dataclass
+class ActiveSkims:
+    """Walking and cycling skims.
+
+    ``walk_min`` and ``cycle_min`` are zone-to-zone minutes of perceived distance; ``walk_dist`` is the walk
+    in metres and ``cycle_dist`` the perceived ride in metres, each over zones then stops.
+    """
+
+    walk_min: Floats
+    cycle_min: Floats
+    walk_dist: Floats
+    cycle_dist: Floats
+
+
+def perceived_factor(bundle: Bundle, mode: str) -> Floats:
+    """How much a metre of each street link counts for walking (``walk``) or cycling (``cycle``)."""
+    s, v = bundle.streets, bundle.values
+    f = np.ones(len(s.a))
+    if mode == "walk":
+        f[s.pedestrian] = v["demand.walk.pedestrian_factor"]
+        return f
+    busy = np.isin(s.road_class, [ROAD_CLASSES.index(c) for c in ("trunk", "primary", "secondary")])
+    f[busy & (s.cycle_facility == 0)] = v["demand.cycle.factor.busy_road"]
+    f[s.cycle_facility == 1] = v["demand.cycle.factor.lane"]
+    f[s.cycle_facility == 2] = v["demand.cycle.factor.track"]
+    return f
 
 
 def nearest(points: Floats, candidates: Floats, k: int) -> tuple[np.ndarray, np.ndarray]:
@@ -152,10 +182,10 @@ def car_network(bundle: Bundle, proj: Projection) -> CarNetwork:
 
 
 def active_network(bundle: Bundle, proj: Projection, mode: str) -> ActiveNetwork:
-    """The walking (``walk``, with the stops joined) or cycling (``cycle``) graph, both directions."""
+    """The walking (``walk``) or cycling (``cycle``) graph with zones and stops joined, both directions."""
     s, v, z = bundle.streets, bundle.values, bundle.zones
     nz = len(z)
-    ns = len(bundle.transit.stop_ids) if mode == "walk" else 0
+    ns = len(bundle.transit.stop_ids)
     allowed = s.walk if mode == "walk" else s.cycle
     if not allowed.any():
         raise ValueError(
@@ -167,9 +197,11 @@ def active_network(bundle: Bundle, proj: Projection, mode: str) -> ActiveNetwork
     a = s.a[idx] + offset
     b = s.b[idx] + offset
     length = s.length_m[idx]
+    felt = length * perceived_factor(bundle, mode)[idx]
     rows_a = [a, b]
     rows_b = [b, a]
     rows_l = [length, length]
+    rows_p = [felt, felt]
     used = np.zeros(len(s.nodes), dtype=bool)
     used[s.a[idx]] = True
     used[s.b[idx]] = True
@@ -183,11 +215,13 @@ def active_network(bundle: Bundle, proj: Projection, mode: str) -> ActiveNetwork
         rows_a += [ca, cb]
         rows_b += [cb, ca]
         rows_l += [cl, cl]
+        rows_p += [cl, cl]
     table = pd.DataFrame(
         {
             "a_node": np.concatenate(rows_a).astype(np.int64),
             "b_node": np.concatenate(rows_b).astype(np.int64),
             "distance": np.concatenate(rows_l).astype(np.float64),
+            "perceived": np.concatenate(rows_p).astype(np.float64),
         }
     )
     table.insert(0, "link_id", np.arange(1, len(table) + 1))
@@ -231,19 +265,49 @@ def with_intrazonal(m: Floats, share: float) -> Floats:
     return out
 
 
-def walk_cycle_skims(bundle: Bundle, proj: Projection) -> tuple[Floats, Floats, Floats]:
-    """Walking time between zones, cycling time between zones (min) and walking distance zone→stop and
-    stop→stop (m, one matrix over zones then stops).
-    """  # noqa: D205
+def walk_cycle_skims(bundle: Bundle, proj: Projection) -> ActiveSkims:
+    """Walking and cycling skims over zones and stops, by the perceived shortest paths."""
     v = bundle.values
+    nz = len(bundle.zones)
     walk_net = active_network(bundle, proj, "walk")
     cents = np.concatenate([walk_net.zone_ids, walk_net.stop_ids])
-    wd = skim(graph(walk_net.table, cents, "distance", ["distance"], "w"), ["distance"])["distance"]
-    nz = len(bundle.zones)
-    walk_km = wd[:nz, :nz] / 1000.0
-    walk_min = np.where(wd[:nz, :nz] >= UNREACHABLE, UNREACHABLE, walk_km / v["demand.walk_speed_kmh"] * 60.0)
+    fields = ["distance", "perceived"]
+    w = skim(graph(walk_net.table, cents, "perceived", fields, "w"), fields)
+    wp = w["perceived"][:nz, :nz]
+    walk_min = np.where(wp >= UNREACHABLE, UNREACHABLE, wp / 1000.0 / v["demand.walk_speed_kmh"] * 60.0)
     cyc_net = active_network(bundle, proj, "cycle")
-    cd = skim(graph(cyc_net.table, cyc_net.zone_ids, "distance", ["distance"], "b"), ["distance"])["distance"]
-    cyc_min = np.where(cd >= UNREACHABLE, UNREACHABLE, cd / 1000.0 / v["analysis.cycle_speed_kmh"] * 60.0)
+    cents = np.concatenate([cyc_net.zone_ids, cyc_net.stop_ids])
+    cd = skim(graph(cyc_net.table, cents, "perceived", ["perceived"], "b"), ["perceived"])["perceived"]
+    cz = cd[:nz, :nz]
+    cyc_min = np.where(cz >= UNREACHABLE, UNREACHABLE, cz / 1000.0 / v["analysis.cycle_speed_kmh"] * 60.0)
     share = v["demand.intrazonal_share"]
-    return with_intrazonal(walk_min, share), with_intrazonal(cyc_min, share), wd
+    return ActiveSkims(
+        walk_min=with_intrazonal(walk_min, share),
+        cycle_min=with_intrazonal(cyc_min, share),
+        walk_dist=w["distance"],
+        cycle_dist=cd,
+    )
+
+
+def pedestrian_share(bundle: Bundle, proj: Projection) -> Floats:
+    """Share of each zone's street length that is pedestrian; each link belongs to the nearest zone centre."""
+    s, z = bundle.streets, bundle.zones
+    out = np.zeros(len(z))
+    if not s.pedestrian.any():
+        return out
+    xy = proj.xy(s.nodes)
+    mid = (xy[s.a] + xy[s.b]) / 2.0
+    _, near = nearest(mid, proj.xy(z.lonlat), 1)
+    zone = near[:, 0]
+    total = np.bincount(zone, weights=s.length_m, minlength=len(z))
+    ped = np.bincount(zone, weights=np.where(s.pedestrian, s.length_m, 0.0), minlength=len(z))
+    np.divide(ped, total, out=out, where=total > 0)
+    return out
+
+
+def nearest_m(points: Floats, candidates: Floats, proj: Projection) -> Floats:
+    """Straight distance from each point (lon/lat) to the nearest candidate, m; infinite if there is none."""
+    if not len(candidates) or not len(points):
+        return np.full(len(points), np.inf)
+    d, _ = nearest(proj.xy(points), proj.xy(candidates), 1)
+    return d[:, 0]

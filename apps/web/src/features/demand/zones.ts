@@ -62,6 +62,8 @@ export interface DemandDoc {
   zones?: DemandZone[];
   /** Values the planner gave automatic zones, by zone id (kept while the hexagon size stays the same). */
   autoValues?: Record<string, ZoneValues>;
+  /** The GBFS feed of the project's shared-bike scheme (https), read with the OpenStreetMap stations. */
+  gbfsUrl?: string;
 }
 
 /** Purpose: the zones a run uses: the own zones, or the automatic ones with the planner's values on them. */

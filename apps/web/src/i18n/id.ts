@@ -314,6 +314,7 @@ export const id: Messages = {
   "prefs.demandStep.periods": "Periode waktu",
   "prefs.demandStep.distribution": "Distribusi perjalanan",
   "prefs.demandStep.mode_choice": "Pemilihan moda",
+  "prefs.demandStep.catchment": "Daerah tangkapan",
   "prefs.demandStep.assignment": "Pembebanan",
   "prefs.demandAll": "Semua langkah",
   "prefs.vehiclesTitle": "Kendaraan",

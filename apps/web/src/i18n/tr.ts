@@ -311,6 +311,7 @@ export const tr: Messages = {
   "prefs.demandStep.periods": "Zaman dilimleri",
   "prefs.demandStep.distribution": "Yolculuk dağılımı",
   "prefs.demandStep.mode_choice": "Ulaşım türü seçimi",
+  "prefs.demandStep.catchment": "Erişim alanı",
   "prefs.demandStep.assignment": "Atama",
   "prefs.demandAll": "Tüm adımlar",
   "prefs.vehiclesTitle": "Araçlar",

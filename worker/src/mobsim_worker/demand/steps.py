@@ -6,7 +6,9 @@ the productions. Distribution: gravity model with the gamma deterrence ``f = t^b
 choice logsum in minutes of in-vehicle time; doubly constrained for home–work trips (AequilibraE
 ``GravityApplication``, which balances with IPF), production-constrained for the others. Mode choice: nested
 logit with car and public transport in one nest and walking and cycling in the other, for four groups of
-people (car and bicycle available or not).
+people (car and bicycle available or not). People without a bicycle may cycle on a shared bike between zones
+near a station; people with one also see public transport with bike and ride. A car trip into a zone with
+pedestrian streets takes ``demand.pedestrian_zone.car_min`` times the zone's pedestrian share longer.
 """
 
 from __future__ import annotations
@@ -103,6 +105,12 @@ class Skims:
     transit_ivt_min: Floats
     walk_min: Floats
     cycle_min: Floats
+    #: Public transport for people with a bicycle (bike and ride); None when it is the same as without.
+    transit_bike_perceived_min: Floats | None = None
+    transit_bike_available: np.ndarray | None = None
+    #: Shared bike between zones: walks to and from the stations (min), and where it can be used.
+    shared_walk_min: Floats | None = None
+    shared_available: np.ndarray | None = None
 
 
 @dataclass
@@ -113,10 +121,17 @@ class Money:
     fare: float
     car_cost_per_km: float
     parking: Floats  # per zone, at a trip end
+    #: Price of a shared-bike ride.
+    shared_fare: float = 0.0
+    #: Extra minutes of a car trip ending in each zone (pedestrian streets).
+    car_extra_min: Floats | None = None
 
 
-def money(bundle: Bundle, cbd: np.ndarray) -> Money:
-    """Value of time from GDP per capita; fares and car costs from 2023 US$ PPP with the PPP factor."""
+def money(bundle: Bundle, cbd: np.ndarray, pedestrian: Floats | None = None) -> Money:
+    """Value of time from GDP per capita; fares and car costs from 2023 US$ PPP with the PPP factor.
+
+    ``pedestrian`` is each zone's pedestrian share of street length (``network.pedestrian_share``).
+    """
     v, e, z = bundle.values, bundle.economy, bundle.zones
     per_hour = e.gdp_per_capita / v["demand.vot.income_hours"]
     vot = {
@@ -131,6 +146,8 @@ def money(bundle: Bundle, cbd: np.ndarray) -> Money:
         fare=v["demand.mode.fare_usd"] * usd,
         car_cost_per_km=v["demand.mode.car_cost_per_km_usd"] * usd,
         parking=parking,
+        shared_fare=v["demand.shared_bike.fare_usd"] * usd,
+        car_extra_min=None if pedestrian is None else pedestrian * v["demand.pedestrian_zone.car_min"],
     )
 
 
@@ -140,6 +157,10 @@ class Choice:
 
     shares: dict[str, Floats]
     composite_min: Floats
+    #: Part of the trips (of all modes) that are cycling on a shared bike, and public transport by people with
+    #: a bicycle (assigned to the bike-and-ride graph).
+    shared_share: Floats | None = None
+    transit_bike_share: Floats | None = None
 
 
 def utilities(purpose: str, sk: Skims, m: Money, v: Values) -> dict[str, Floats]:
@@ -147,7 +168,8 @@ def utilities(purpose: str, sk: Skims, m: Money, v: Values) -> dict[str, Floats]
     b = v[f"demand.mode.ivt.{purpose}"]
     b_cost = b / m.vot_per_min[purpose] if m.vot_per_min[purpose] > 0 else 0.0
     car_ok = sk.car_min < UNREACHABLE
-    car = b * (sk.car_min + v["demand.mode.car_terminal_min"]) + b_cost * (
+    extra = 0.0 if m.car_extra_min is None else m.car_extra_min[None, :]
+    car = b * (sk.car_min + v["demand.mode.car_terminal_min"] + extra) + b_cost * (
         m.car_cost_per_km * sk.car_km + 0.5 * m.parking[None, :]
     )
     penalty = v["demand.mode.transfer_penalty_min"]
@@ -157,12 +179,24 @@ def utilities(purpose: str, sk: Skims, m: Money, v: Values) -> dict[str, Floats]
     walk = v["demand.mode.asc.walk"] + b * v["demand.mode.walk_mode_weight"] * sk.walk_min
     cyc_ok = sk.cycle_min < UNREACHABLE
     cycle = v["demand.mode.asc.cycle"] + b * v["demand.mode.cycle_mode_weight"] * sk.cycle_min
-    return {
+    out = {
         "car": np.where(car_ok, car, NO_WAY),
         "transit": np.where(sk.transit_available, transit, NO_WAY),
         "walk": np.where(walk_ok, walk, NO_WAY),
         "cycle": np.where(cyc_ok, cycle, NO_WAY),
     }
+    if sk.transit_bike_perceived_min is not None and sk.transit_bike_available is not None:
+        tb = v["demand.mode.asc.transit"] + b * (sk.transit_bike_perceived_min - penalty) + b_cost * m.fare
+        out["transit_bike"] = np.where(sk.transit_bike_available, tb, NO_WAY)
+    if sk.shared_walk_min is not None and sk.shared_available is not None:
+        shared = (
+            cycle
+            + b
+            * (v["demand.mode.walk_mode_weight"] * sk.shared_walk_min + v["demand.shared_bike.unlock_min"])
+            + b_cost * m.shared_fare
+        )
+        out["shared"] = np.where(sk.shared_available & cyc_ok, shared, NO_WAY)
+    return out
 
 
 def _nested(u: dict[str, Floats], avail: dict[str, bool], theta: float) -> tuple[dict[str, Floats], Floats]:
@@ -212,18 +246,35 @@ def choose(purpose: str, sk: Skims, m: Money, v: Values) -> Choice:
         ((1 - car_av) * (1 - cyc_av), False, False),
     ]
     shares = {k: np.zeros_like(u["car"]) for k in MODES}
+    shared_share = np.zeros_like(u["car"])
+    transit_bike = np.zeros_like(u["car"])
     exp_ls = np.zeros_like(u["car"])
     for weight, car, cyc in groups:
         if weight <= 0:
             continue
-        s, ls = _nested(u, {"car": car, "transit": True, "walk": True, "cycle": cyc}, theta)
+        ug = dict(u)
+        if cyc and "transit_bike" in u:
+            ug["transit"] = u["transit_bike"]
+        shared = not cyc and "shared" in u
+        if shared:
+            ug["cycle"] = u["shared"]
+        s, ls = _nested(ug, {"car": car, "transit": True, "walk": True, "cycle": cyc or shared}, theta)
         for k in MODES:
             shares[k] += weight * s[k]
+        if shared:
+            shared_share += weight * s["cycle"]
+        if cyc and "transit_bike" in u:
+            transit_bike += weight * s["transit"]
         exp_ls += weight * np.exp(np.minimum(ls, 50.0))
     logsum = np.log(np.maximum(exp_ls, 1e-300))
     b = v[f"demand.mode.ivt.{purpose}"]
     composite = np.maximum(logsum / b, 0.5) if b < 0 else np.full_like(logsum, 0.5)
-    return Choice(shares=shares, composite_min=composite)
+    return Choice(
+        shares=shares,
+        composite_min=composite,
+        shared_share=shared_share if "shared" in u else None,
+        transit_bike_share=transit_bike if "transit_bike" in u else None,
+    )
 
 
 def deterrence(purpose: str, t: Floats, v: Values) -> Floats:

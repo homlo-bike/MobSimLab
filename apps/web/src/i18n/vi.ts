@@ -312,6 +312,7 @@ export const vi: Messages = {
   "prefs.demandStep.periods": "Khung giờ",
   "prefs.demandStep.distribution": "Phân bố chuyến đi",
   "prefs.demandStep.mode_choice": "Lựa chọn phương thức",
+  "prefs.demandStep.catchment": "Vùng tiếp cận",
   "prefs.demandStep.assignment": "Phân bổ",
   "prefs.demandAll": "Tất cả các bước",
   "prefs.vehiclesTitle": "Phương tiện",

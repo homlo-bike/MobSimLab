@@ -35,6 +35,52 @@ export interface BundleStop {
   name: string;
   lonlat: LonLat;
   mode: string;
+  /** Step-free access as recorded in Create; null where nobody recorded the stop's features. */
+  step_free?: boolean | null;
+}
+
+/** A drawn stop or platform with what Create records about its access (step-free, lift or ramp). */
+export interface StopAccess {
+  lonlat: LonLat;
+  /** null where no feature of the stop is recorded. */
+  stepFree: boolean | null;
+}
+
+/** A street setup from the GIS tab as the demand model reads it (contracts/demand-input.schema.json). */
+export interface BundleStreetSetup {
+  way: number;
+  traffic_lanes?: number | null;
+  bus_lane?: boolean | null;
+  bike_lane?: boolean | null;
+  separated?: boolean | null;
+}
+
+/** Farthest a drawn stop may be from a timetable stop to give it its step-free access, m. */
+const STOP_MATCH_M = 50;
+
+/**
+ * Purpose: the timetable's stops with their step-free access from the nearest drawn stop or platform (within
+ * 50 m); stops with no drawn stop near, or one with no recorded features, stay unknown (null).
+ */
+export function withStepFree(transit: BundleTransit, drawn: readonly StopAccess[]): BundleTransit {
+  if (!drawn.length) return transit;
+  const near = (p: LonLat): StopAccess | null => {
+    let best: StopAccess | null = null;
+    let bestM = STOP_MATCH_M;
+    const kx = 111_320 * Math.cos((p[1] * Math.PI) / 180);
+    for (const d of drawn) {
+      const m = Math.hypot((d.lonlat[0] - p[0]) * kx, (d.lonlat[1] - p[1]) * 110_574);
+      if (m <= bestM) {
+        best = d;
+        bestM = m;
+      }
+    }
+    return best;
+  };
+  return {
+    ...transit,
+    stops: transit.stops.map((s) => ({ ...s, step_free: near(s.lonlat)?.stepFree ?? null })),
+  };
 }
 
 export interface BundlePattern {
@@ -369,6 +415,7 @@ export interface Bundle {
   zones: BundleZone[];
   transit: BundleTransit;
   economy: BundleEconomy;
+  street_setups?: BundleStreetSetup[];
 }
 
 /** Purpose: the bundle, and the counts the run list shows. */
@@ -376,9 +423,19 @@ export function makeBundle(
   zones: BundleZone[],
   transit: BundleTransit,
   economy: BundleEconomy,
+  streetSetups: readonly BundleStreetSetup[] = [],
 ): { bundle: Bundle; summary: { zones: number; stops: number; lines: number } } {
+  const setups = streetSetups
+    .filter((s) => s.traffic_lanes != null || s.bus_lane != null || s.bike_lane != null)
+    .map((s) => ({
+      way: s.way,
+      traffic_lanes: s.traffic_lanes ?? null,
+      bus_lane: s.bus_lane ?? null,
+      bike_lane: s.bike_lane ?? null,
+      separated: s.separated ?? null,
+    }));
   return {
-    bundle: { version: 1, zones, transit, economy },
+    bundle: { version: 1, zones, transit, economy, ...(setups.length ? { street_setups: setups } : {}) },
     summary: { zones: zones.length, stops: transit.stops.length, lines: transit.lines.length },
   };
 }

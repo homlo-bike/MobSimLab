@@ -318,6 +318,7 @@ export const zu: Messages = {
   "prefs.demandStep.periods": "Izikhathi",
   "prefs.demandStep.distribution": "Ukwabiwa kohambo",
   "prefs.demandStep.mode_choice": "Ukukhetha uhlobo lokuhamba",
+  "prefs.demandStep.catchment": "Indawo yokufinyelela",
   "prefs.demandStep.assignment": "Ukwabiwa emigwaqweni",
   "prefs.demandAll": "Zonke izinyathelo",
   "prefs.vehiclesTitle": "Izimoto",

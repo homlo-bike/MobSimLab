@@ -313,6 +313,7 @@ export const uk: Messages = {
   "prefs.demandStep.periods": "Періоди доби",
   "prefs.demandStep.distribution": "Розподіл поїздок",
   "prefs.demandStep.mode_choice": "Вибір виду транспорту",
+  "prefs.demandStep.catchment": "Зона доступності",
   "prefs.demandStep.assignment": "Призначення",
   "prefs.demandAll": "Усі кроки",
   "prefs.vehiclesTitle": "Транспортні засоби",

@@ -9,7 +9,13 @@ import {
   type DemandRunsApi,
   demandTiles,
 } from "../src/features/demand/api";
-import { estimateZones, makeBundle, periodWindows, transitOf } from "../src/features/demand/bundle";
+import {
+  estimateZones,
+  makeBundle,
+  periodWindows,
+  transitOf,
+  withStepFree,
+} from "../src/features/demand/bundle";
 import { DemandSection } from "../src/features/demand/DemandSection";
 import { loadZoneData, zoneTiles } from "../src/features/demand/load";
 import {
@@ -352,6 +358,20 @@ function result(): DemandResult {
       ],
       stops: { t1: { name: "West", boardings: 120, alightings: 0 } },
     },
+    catchment: {
+      cycle_lane_km: 3.2,
+      cycle_track_km: 1.5,
+      pedestrian_km: 0.8,
+      bike_parkings: 14,
+      shared_bike_stations: 6,
+      stops_with_steps: 2,
+      stops_step_free: 3,
+      shared_bike_trips: 410,
+      shared_bike_to_transit: 55,
+      shared_bike_from_transit: 48,
+      bike_and_ride: 230,
+      transit_by_bike_owners: 900,
+    },
     files: ["od.omx"],
   };
 }
@@ -374,8 +394,8 @@ function fakeRuns(): DemandRunsApi & { started: unknown[] } {
     started,
     list: async () => [],
     get: async () => done,
-    start: async (bundle, values, summary) => {
-      started.push({ bundle, values, summary });
+    start: async (bundle, values, summary, gbfsUrl) => {
+      started.push({ bundle, values, summary, gbfsUrl });
       return done;
     },
     cancel: async () => done,
@@ -559,5 +579,82 @@ describe("street tiles of a demand run", () => {
   it("takes each zone centre's tile and the eight around it, as the server does", () => {
     expect(demandTiles([C, at(10, 10)])).toHaveLength(9);
     expect(demandTiles([C, at(20_000, 0), [NaN, 1]])).toHaveLength(18);
+  });
+});
+
+describe("catchment effects in the demand run input", () => {
+  it("gives stops the step-free access of the drawn stop next to them, or none", () => {
+    const transit = transitOf(network(), null);
+    const [first, second] = transit.stops;
+    const t = withStepFree(transit, [
+      { lonlat: first!.lonlat, stepFree: false },
+      { lonlat: [second!.lonlat[0] + 0.01, second!.lonlat[1]], stepFree: true }, // about 700 m away
+    ]);
+    expect(t.stops[0]!.step_free).toBe(false);
+    expect(t.stops[1]!.step_free).toBeNull();
+    expect(withStepFree(transit, [])).toBe(transit);
+  });
+
+  it("sends the street setups that change lanes, bus lanes or bike lanes", () => {
+    const transit = transitOf(network(), null);
+    const economy = { currency: "EUR", gdp_per_capita: 1, ppp_per_usd: 1 };
+    const { bundle } = makeBundle([], transit, economy, [
+      { way: 1, bike_lane: true, separated: true },
+      { way: 2 },
+      { way: 3, traffic_lanes: 2, bus_lane: false },
+    ]);
+    expect(bundle.street_setups).toEqual([
+      { way: 1, traffic_lanes: null, bus_lane: null, bike_lane: true, separated: true },
+      { way: 3, traffic_lanes: 2, bus_lane: false, bike_lane: null, separated: null },
+    ]);
+    expect(makeBundle([], transit, economy).bundle.street_setups).toBeUndefined();
+  });
+
+  it("saves the GBFS feed, sends it with the run and shows what the catchment did", async () => {
+    const runs = fakeRuns();
+    const onDoc = vi.fn();
+    const doc: DemandDoc = { source: "auto", gbfsUrl: "https://bikes.example/gbfs.json" };
+    const { rerender } = render(
+      <DemandSection
+        timetable={network()}
+        regions={[]}
+        preferences={{ values: { "demand.zone_max_count": 40 } }}
+        doc={null}
+        onDoc={onDoc}
+        costs={{ currency: "EUR", country: "NLD", rate: 1, ppp: 0.8 }}
+        runs={runs}
+        canRun
+        api={fakeBenefits()}
+      />,
+    );
+    const field = screen.getByLabelText("Shared-bike feed (GBFS)");
+    fireEvent.blur(field, { target: { value: "http://insecure.example/gbfs.json" } });
+    expect(screen.getByRole("alert").textContent).toMatch(/https address/);
+    expect(onDoc).not.toHaveBeenCalled();
+    fireEvent.blur(field, { target: { value: " https://bikes.example/gbfs.json " } });
+    expect(onDoc).toHaveBeenCalledWith(doc);
+    rerender(
+      <DemandSection
+        timetable={network()}
+        regions={[]}
+        preferences={{ values: { "demand.zone_max_count": 40 } }}
+        doc={doc}
+        onDoc={onDoc}
+        costs={{ currency: "EUR", country: "NLD", rate: 1, ppp: 0.8 }}
+        runs={runs}
+        canRun
+        api={fakeBenefits()}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Estimate zone values" }));
+    const run = screen.getByRole("button", { name: "Run the demand model" });
+    await waitFor(() => expect((run as HTMLButtonElement).disabled).toBe(false));
+    await act(async () => {
+      fireEvent.click(run);
+    });
+    expect((runs.started[0] as { gbfsUrl?: string }).gbfsUrl).toBe("https://bikes.example/gbfs.json");
+    expect(await screen.findByText("Catchment, a weekday")).toBeTruthy();
+    expect(screen.getByText("230 riders cycle to a stop and park")).toBeTruthy();
+    expect(screen.getByText(/2 recorded without step-free access/)).toBeTruthy();
   });
 });

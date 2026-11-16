@@ -69,6 +69,10 @@ const demandBody = z.strictObject({
     .record(z.string().regex(/^[a-z][a-z0-9_.]{0,99}$/), z.number().finite())
     .refine((v) => Object.keys(v).length <= 1000, "too many demand values"),
   summary: z.strictObject({ zones: count, stops: count, lines: count }),
+  gbfsUrl: z
+    .url({ protocol: /^https$/ })
+    .max(2000)
+    .optional(),
 });
 
 const startBody = z.discriminatedUnion("kind", [capacityBody, roadBody, demandBody]);

@@ -306,6 +306,7 @@ export const en = {
   "prefs.demandStep.periods": "Time periods",
   "prefs.demandStep.distribution": "Trip distribution",
   "prefs.demandStep.mode_choice": "Mode choice",
+  "prefs.demandStep.catchment": "Catchment",
   "prefs.demandStep.assignment": "Assignment",
   "prefs.demandAll": "All steps",
   "prefs.vehiclesTitle": "Vehicles",

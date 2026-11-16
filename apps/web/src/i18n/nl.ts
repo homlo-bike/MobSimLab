@@ -313,6 +313,7 @@ export const nl: Messages = {
   "prefs.demandStep.periods": "Tijdvakken",
   "prefs.demandStep.distribution": "Ritdistributie",
   "prefs.demandStep.mode_choice": "Vervoerwijzekeuze",
+  "prefs.demandStep.catchment": "Invloedsgebied",
   "prefs.demandStep.assignment": "Toedeling",
   "prefs.demandAll": "Alle stappen",
   "prefs.vehiclesTitle": "Voertuigen",

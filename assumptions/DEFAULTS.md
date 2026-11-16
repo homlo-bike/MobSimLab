@@ -1468,6 +1468,118 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 |---|---|---|---|---|---|---|---|
 | all | 200 | 400 | 800 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Changes at one stop or station need no walk; between nearby stops riders accept a few minutes on foot, about 400 m. The walk is weighed with demand.mode.walk_weight and every change with demand.mode.transfer_penalty_min. |
 
+### Catchment: a metre on a separate cycle track counts as this much of a metre on a plain street
+
+`demand.cycle.factor.track` · unit: × · used by: cycling skims: perceived distance, bike-and-ride and shared-bike access
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.6 | 0.75 | 0.9 | cited | unverified | [broach-2012](#src-broach-2012) | Broach, Dill and Gliebe's route choice model of Portland cyclists: people ride noticeably longer routes to use separate paths and lanes. A track (OpenStreetMap cycleway=track, or a bike lane the planner marks as separated) makes a metre feel like about three quarters of one. |
+
+### Catchment: a metre on a painted bike lane counts as this much of a metre on a plain street
+
+`demand.cycle.factor.lane` · unit: × · used by: cycling skims: perceived distance, bike-and-ride and shared-bike access
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.8 | 0.9 | 1.0 | cited | unverified | [broach-2012](#src-broach-2012) | Broach, Dill and Gliebe: painted lanes help less than separate paths, and mostly on busy streets. OpenStreetMap cycleway=lane or a bike lane set up in the GIS tab (street setup). |
+
+### Catchment: a metre on a main road without a bike lane counts as this much of a metre on a plain street
+
+`demand.cycle.factor.busy_road` · unit: × · used by: cycling skims: perceived distance, bike-and-ride and shared-bike access
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 1.2 | 1.4 | 2.0 | cited | unverified | [broach-2012](#src-broach-2012) | Broach, Dill and Gliebe: cyclists avoid streets with heavy traffic and no bike facility, accepting detours of 40% or more around them. Applies to trunk, primary and secondary roads without a lane or track. |
+
+### Catchment: a metre walked in a pedestrian street counts as this much of a metre along traffic
+
+`demand.walk.pedestrian_factor` · unit: × · used by: walking skims: perceived distance
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.7 | 0.85 | 1.0 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | People prefer walking where there is no traffic. Applies to OpenStreetMap highway=pedestrian and living_street. Walks to stops keep their real length; only the walking mode's time is weighed. |
+
+### Catchment: extra minutes for a car trip into a zone whose streets are all pedestrian
+
+`demand.pedestrian_zone.car_min` · unit: min · used by: mode choice: car utility at the destination
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0 | 5 | 10 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Cars cannot reach the door in a pedestrian zone: the driver parks at its edge and walks. The minutes are scaled by the share of the zone's street length that is pedestrian, so a zone with a short pedestrian street gets little. |
+
+### Catchment: longest ride on one's own bicycle to a stop (bike and ride)
+
+`demand.bike_ride.max_m` · unit: m · used by: skims and transit assignment: bike-and-ride access for people with a bicycle
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 2000 | 3000 | 5000 | cited | unverified | [martens-2004](#src-martens-2004) | Martens' study of bike and ride in the Netherlands, Germany and the United Kingdom: most riders cycle 1 to 3 km to the station, few more than 5 km. Only stops with a bike parking nearby (OpenStreetMap amenity=bicycle_parking) can be reached this way. |
+
+### Catchment: farthest a bike parking may be from a stop for bike and ride
+
+`demand.bike_ride.parking_max_m` · unit: m · used by: skims and transit assignment: bike-and-ride access
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 50 | 150 | 300 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | A parking on the station forecourt or the next corner is used; one further away is seldom. Bike parkings come from OpenStreetMap (amenity=bicycle_parking). |
+
+### Catchment: minutes to park and lock the bicycle at the stop
+
+`demand.bike_ride.parking_min` · unit: min · used by: skims and transit assignment: bike-and-ride access
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 1 | 2 | 5 | educated-guess | unverified | [martens-2004](#src-martens-2004), [mobsimlab-derivation](#src-mobsimlab-derivation) | Finding a place, locking and walking to the platform; more at crowded or guarded parkings. |
+
+### Catchment: farthest walk to or from a shared-bike station
+
+`demand.shared_bike.station_max_m` · unit: m · used by: mode choice: cycling for people without a bicycle, skims and transit assignment: shared-bike access
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 150 | 300 | 500 | cited | unverified | [fishman-2016](#src-fishman-2016) | Fishman's review: being close to a docking station is the strongest predictor of using shared bikes; most users live or work within a few hundred metres. Stations come from OpenStreetMap (amenity=bicycle_rental). |
+
+### Catchment: longest ride on a shared bike
+
+`demand.shared_bike.max_m` · unit: m · used by: mode choice: cycling for people without a bicycle, skims and transit assignment: shared-bike access
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 3000 | 5000 | 8000 | cited | unverified | [fishman-2016](#src-fishman-2016) | Fishman: shared-bike trips are short, typically 2 to 3 km and seldom over 5 km, as most schemes charge by the half hour. |
+
+### Catchment: minutes to take and return a shared bike
+
+`demand.shared_bike.unlock_min` · unit: min · used by: mode choice: cycling for people without a bicycle, skims and transit assignment: shared-bike access
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 1 | 2 | 5 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Unlocking at the station or with the phone, and docking at the end; more where stations are often empty or full. |
+
+### Catchment: price of one shared-bike trip, 2023 US$ PPP
+
+`demand.shared_bike.fare_usd` · unit: US$ · used by: mode choice: cycling for people without a bicycle, skims and transit assignment: shared-bike access
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0 | 1 | 3 | cited | unverified | [fishman-2016](#src-fishman-2016) | Fishman: most schemes make the first half hour free with a subscription, or charge about a dollar a trip. Converted to the project currency with the PPP factor; in the public transport graph it counts as minutes at the value of time of non-work trips. |
+
+### Catchment: share of riders who cannot use steps (wheelchair, pram, heavy luggage, walking difficulty)
+
+`demand.step_free.share` · unit: share · used by: skims and transit assignment: boarding at stops without step-free access
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.04 | 0.08 | 0.15 | cited | unverified | [who-2011-disability](#src-who-2011-disability) | The WHO World report on disability: about 15% of people live with a disability, many with difficulty climbing; parents with prams and travellers with luggage add to that at times. 8% is a mid value for riders who avoid stops with steps. |
+
+### Catchment: extra minutes at a stop without step-free access, for those who cannot use steps
+
+`demand.step_free.penalty_min` · unit: min · used by: skims and transit assignment: boarding at stops without step-free access
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 5 | 15 | 30 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Carrying a pram or luggage up the steps, asking for help, or going to another stop. Only stops recorded in Create without step-free access, a lift or a ramp are counted; stops with no recorded features are not. The model adds share times penalty to boarding there. |
+
 ### Walking speed for walking links between stations
 
 `demand.walk_speed_kmh` · unit: km/h · used by: transfer links, access/egress links, catchment
@@ -3144,3 +3256,7 @@ and rationale per attribute: [`switches.yaml`](switches.yaml); geometry model:
 | <a id="src-tag-m3-1"></a>`tag-m3-1` | [TAG unit M3.1: Highway Assignment Modelling, convergence criteria (relative gap)](https://www.gov.uk/government/publications/tag-unit-m3-1-highway-assignment-modelling) | free | Open Government Licence v3.0 | 2026-11-16 | none |
 | <a id="src-usdot-vot-2016"></a>`usdot-vot-2016` | [US DOT: Revised Departmental Guidance on Valuation of Travel Time in Economic Analysis (2016)](https://www.transportation.gov/office-policy/transportation-policy/revised-departmental-guidance-valuation-travel-time-economic) | free | US government work, public domain | 2026-11-16 | none |
 | <a id="src-bpr-1964"></a>`bpr-1964` | [Bureau of Public Roads: Traffic Assignment Manual (1964), volume-delay function](https://catalog.hathitrust.org/Record/001314064) | free | US government work, public domain | 2026-11-16 | none |
+| <a id="src-broach-2012"></a>`broach-2012` | [Broach, J., Dill, J., Gliebe, J.: Where do cyclists ride? A route choice model developed with revealed preference GPS data, Transportation Research Part A 46(10), 1730–1740 (2012)](https://doi.org/10.1016/j.tra.2012.07.005) | paywalled | © Elsevier; numbers cited as facts | 2026-11-16 | none |
+| <a id="src-martens-2004"></a>`martens-2004` | [Martens, K.: The bicycle as a feedering mode: experiences from three European countries, Transportation Research Part D 9(4), 281–294 (2004)](https://doi.org/10.1016/j.trd.2004.02.005) | paywalled | © Elsevier; numbers cited as facts | 2026-11-16 | none |
+| <a id="src-fishman-2016"></a>`fishman-2016` | [Fishman, E.: Bikeshare: A Review of Recent Literature, Transport Reviews 36(1), 92–113 (2016)](https://doi.org/10.1080/01441647.2015.1033036) | paywalled | © Taylor & Francis; numbers cited as facts | 2026-11-16 | none |
+| <a id="src-who-2011-disability"></a>`who-2011-disability` | [World Health Organization and World Bank: World report on disability (2011)](https://www.who.int/publications/i/item/9789241564182) | free | CC BY-NC-SA 3.0 IGO | 2026-11-16 | none |

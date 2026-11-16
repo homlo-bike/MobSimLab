@@ -313,6 +313,7 @@ export const pt: Messages = {
   "prefs.demandStep.periods": "Períodos",
   "prefs.demandStep.distribution": "Distribuição de viagens",
   "prefs.demandStep.mode_choice": "Escolha modal",
+  "prefs.demandStep.catchment": "Área de influência",
   "prefs.demandStep.assignment": "Alocação",
   "prefs.demandAll": "Todos os passos",
   "prefs.vehiclesTitle": "Veículos",

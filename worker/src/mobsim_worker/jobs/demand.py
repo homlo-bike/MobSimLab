@@ -52,6 +52,16 @@ def street_tiles(network: str) -> list[str]:
     return tiles
 
 
+def street_bikes(network: str) -> dict[str, Any] | None:
+    """The bike parkings and shared-bike stations the API stored with the street tiles (``bikes``), if any."""
+    try:
+        raw = json.loads(network) if network else None
+    except ValueError:
+        return None
+    b = raw.get("bikes") if isinstance(raw, dict) else None
+    return b if isinstance(b, dict) else None
+
+
 def run_demand_job(
     network: str, lines: str, settings: dict[str, Any], reporter: Reporter
 ) -> tuple[Literal["done", "stopped"], dict[str, Any], list[RunFile]]:
@@ -73,7 +83,9 @@ def run_demand_job(
     except ImportError as e:
         raise RuntimeError("this worker was built without the demand model (the 'demand' extra)") from e
     if lines:
-        outcome, result, files = run_demand(lines, dict(settings or {}), reporter, street_tiles(network))
+        outcome, result, files = run_demand(
+            lines, dict(settings or {}), reporter, street_tiles(network), street_bikes(network)
+        )
     else:
         outcome, result, files = run_demand(network, dict(settings or {}), reporter)
     return outcome, result, [RunFile(f.name, f.media_type, f.content) for f in files]

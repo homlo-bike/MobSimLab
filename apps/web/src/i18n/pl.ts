@@ -312,6 +312,7 @@ export const pl: Messages = {
   "prefs.demandStep.periods": "Okresy doby",
   "prefs.demandStep.distribution": "Rozkład przestrzenny podróży",
   "prefs.demandStep.mode_choice": "Wybór środka transportu",
+  "prefs.demandStep.catchment": "Obszar dojścia",
   "prefs.demandStep.assignment": "Rozkład na sieć",
   "prefs.demandAll": "Wszystkie kroki",
   "prefs.vehiclesTitle": "Pojazdy",

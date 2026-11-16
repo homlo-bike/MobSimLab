@@ -312,6 +312,7 @@ export const ig: Messages = {
   "prefs.demandStep.periods": "Oge",
   "prefs.demandStep.distribution": "Nkesa njem",
   "prefs.demandStep.mode_choice": "Nhọrọ ụzọ njem",
+  "prefs.demandStep.catchment": "Mpaghara nnweta",
   "prefs.demandStep.assignment": "Nkenye",
   "prefs.demandAll": "Nzọụkwụ niile",
   "prefs.vehiclesTitle": "Ụgbọ",

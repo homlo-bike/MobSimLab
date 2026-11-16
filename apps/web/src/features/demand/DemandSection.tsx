@@ -18,7 +18,16 @@ import {
   type Mode,
   PURPOSES,
 } from "./api";
-import { type Estimated, estimateZones, makeBundle, transitOf, type ValueSource } from "./bundle";
+import {
+  type BundleStreetSetup,
+  type Estimated,
+  estimateZones,
+  makeBundle,
+  type StopAccess,
+  transitOf,
+  type ValueSource,
+  withStepFree,
+} from "./bundle";
 import { centreTile, loadZoneData, MAX_ZONE_TILES, type ZoneData } from "./load";
 import { demandValue, demandValues } from "./params";
 import {
@@ -49,12 +58,18 @@ interface Props {
   /** The project's demand runs; null while unknown. */
   runs: DemandRunsApi | null;
   canRun: boolean;
+  /** The GIS tab's street setups (lanes, bus lanes, bike lanes), applied to the streets of the run. */
+  streetSetups?: readonly BundleStreetSetup[];
+  /** The drawn stops and platforms with their recorded step-free access. */
+  stopAccess?: readonly StopAccess[];
   /** Tests inject these. */
   api?: BenefitsApi;
   pollMs?: number;
 }
 
 const DEFAULT_API = benefitsApi();
+const NO_SETUPS: readonly BundleStreetSetup[] = [];
+const NO_ACCESS: readonly StopAccess[] = [];
 const card = "mt-4 rounded-2xl border border-slate-200 bg-white p-4 md:p-6";
 const th = "px-2 py-1.5 text-left font-medium text-slate-600";
 const td = "px-2 py-1.5 align-top";
@@ -148,6 +163,8 @@ export function DemandSection({
   costs,
   runs,
   canRun,
+  streetSetups = NO_SETUPS,
+  stopAccess = NO_ACCESS,
   api = DEFAULT_API,
   pollMs = 3000,
 }: Props) {
@@ -157,7 +174,10 @@ export function DemandSection({
   const points = useMemo(() => linePoints(timetable), [timetable]);
   const auto = useMemo(() => hexZones(points, buffer, maxZones), [points, buffer, maxZones]);
   const zones = useMemo(() => activeZones(doc, auto.zones), [doc, auto.zones]);
-  const transit = useMemo(() => transitOf(timetable, preferences), [timetable, preferences]);
+  const transit = useMemo(
+    () => withStepFree(transitOf(timetable, preferences), stopAccess),
+    [timetable, preferences, stopAccess],
+  );
   const zonesKey = useMemo(
     () => zones.map((z) => `${z.id}:${z.ring.length}:${z.ring[0]?.join(",")}`).join("|"),
     [zones],
@@ -301,7 +321,7 @@ export function DemandSection({
         regions,
         prefs: preferences,
       });
-      const { bundle, summary } = makeBundle(est.zones, transit, economy);
+      const { bundle, summary } = makeBundle(est.zones, transit, economy, streetSetups);
       // The server loads the streets around the zones; it takes at most MAX_DEMAND_TILES tiles.
       const tiles = demandTiles(bundle.zones.map((z) => z.centroid));
       if (tiles.length > MAX_DEMAND_TILES) {
@@ -310,7 +330,7 @@ export function DemandSection({
         );
         return;
       }
-      const r = await runs.start(bundle, demandValues(preferences), summary);
+      const r = await runs.start(bundle, demandValues(preferences), summary, doc?.gbfsUrl);
       setViewing(r);
       setSaved((l) => [r, ...l.filter((x) => x.id !== r.id)]);
     } catch (e) {
@@ -513,6 +533,7 @@ export function DemandSection({
             about a minute.
           </p>
         )}
+        <GbfsField doc={doc} onDoc={onDoc} />
         <div className="mt-3 flex flex-wrap items-center gap-2">
           {canRun && runs && (
             <button
@@ -779,7 +800,9 @@ function RunStatusLine({ run }: { run: DemandRunDetail }) {
     run.status === "queued"
       ? p?.step === "streets" && typeof p.done === "number" && typeof p.of === "number"
         ? `Loading the OpenStreetMap streets of the zones: ${p.done} of ${p.of} tiles…`
-        : "Waiting for the server…"
+        : p?.step === "bikes"
+          ? "Loading the bike parkings and shared-bike stations…"
+          : "Waiting for the server…"
       : run.status === "running"
         ? `Running: ${STEP_LABEL[String(p?.step ?? "")] ?? "preparing"}${
             p?.period ? `, ${PERIOD_LABEL[String(p.period)]?.toLowerCase() ?? String(p.period)}` : ""
@@ -1037,6 +1060,7 @@ function Results({
         Roads: {fmt(result.road.links.length)} street links carry cars; {fmt(crowded)} reach 90 % of their
         capacity in some period.
       </p>
+      {result.catchment && <Catchment c={result.catchment} />}
       {result.notes.length > 0 && (
         <ul className="mt-3 list-disc pl-5 text-sm text-slate-600">
           {result.notes.map((n) => (
@@ -1052,6 +1076,92 @@ function Results({
         )}
         <span className="text-slate-500">{result.attribution}</span>
       </div>
+    </div>
+  );
+}
+
+/** The GBFS feed of the project's shared-bike scheme: stations it lists are added to OpenStreetMap's. */
+function GbfsField({ doc, onDoc }: { doc: DemandDoc | null; onDoc?: (doc: DemandDoc) => void }) {
+  const [error, setError] = useState<string | null>(null);
+  const saved = doc?.gbfsUrl ?? "";
+  if (!onDoc && !saved) return null;
+  const save = (raw: string) => {
+    const v = raw.trim();
+    if (v === saved) return;
+    if (v && !/^https:\/\/[^\s/]+\.[^\s]+$/.test(v)) {
+      setError("Enter an https address, such as https://example.com/gbfs.json.");
+      return;
+    }
+    setError(null);
+    const next: DemandDoc = { ...(doc ?? { source: "auto" }) };
+    if (v) next.gbfsUrl = v;
+    else delete next.gbfsUrl;
+    onDoc?.(next);
+  };
+  return (
+    <div className="mt-3 text-sm">
+      <label className="block">
+        <span className="font-medium">Shared-bike feed (GBFS)</span>
+        <input
+          key={saved}
+          type="url"
+          inputMode="url"
+          className="input mt-1 w-full max-w-xl"
+          placeholder="https://…/gbfs.json"
+          defaultValue={saved}
+          disabled={!onDoc}
+          onBlur={(e) => save(e.target.value)}
+        />
+      </label>
+      <p className="mt-1 text-slate-500">
+        Optional. Its stations are used with the shared-bike stations and bike parkings OpenStreetMap has in
+        the zones.
+      </p>
+      {error && (
+        <p role="alert" className="mt-1 text-red-700">
+          {error}
+        </p>
+      )}
+    </div>
+  );
+}
+
+/** What cycle lanes, bike parkings, shared bikes, pedestrian streets and stops with steps did in the run. */
+function Catchment({ c }: { c: NonNullable<DemandResult["catchment"]> }) {
+  const rows: [string, string][] = [
+    [
+      "Cycle lanes and tracks",
+      `${fmt(c.cycle_lane_km, 1)} km of lanes, ${fmt(c.cycle_track_km, 1)} km of tracks`,
+    ],
+    ["Pedestrian streets", `${fmt(c.pedestrian_km, 1)} km`],
+    ["Bike parkings", fmt(c.bike_parkings)],
+    ["Shared-bike stations", fmt(c.shared_bike_stations)],
+    [
+      "Stops with steps",
+      `${fmt(c.stops_with_steps)} recorded without step-free access, ${fmt(c.stops_step_free)} with it`,
+    ],
+    ["Trips on a shared bike", fmt(c.shared_bike_trips)],
+    [
+      "Shared bike to or from public transport",
+      `${fmt(c.shared_bike_to_transit)} to a stop, ${fmt(c.shared_bike_from_transit)} from a stop`,
+    ],
+    ["Bike and ride", `${fmt(c.bike_and_ride)} riders cycle to a stop and park`],
+  ];
+  return (
+    <div className="mt-4">
+      <h4 className="m-0 text-sm font-semibold">Catchment, a weekday</h4>
+      <table className="mt-2 w-full text-sm">
+        <tbody>
+          {rows.map(([k, v]) => (
+            <tr key={k} className="border-t border-slate-100">
+              <th scope="row" className={th}>
+                {k}
+              </th>
+              <td className={td}>{v}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

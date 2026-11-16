@@ -312,6 +312,7 @@ export const te: Messages = {
   "prefs.demandStep.periods": "కాల వ్యవధులు",
   "prefs.demandStep.distribution": "ప్రయాణ పంపిణీ",
   "prefs.demandStep.mode_choice": "రవాణా విధానం ఎంపిక",
+  "prefs.demandStep.catchment": "చేరువ ప్రాంతం",
   "prefs.demandStep.assignment": "కేటాయింపు",
   "prefs.demandAll": "అన్ని దశలు",
   "prefs.vehiclesTitle": "వాహనాలు",

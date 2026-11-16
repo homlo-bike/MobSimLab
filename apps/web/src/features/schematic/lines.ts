@@ -507,6 +507,15 @@ export function transferS(a: StationPart, b: StationPart): number {
 const STEP_FREE: readonly StationFeature[] = ["step_free", "elevator", "ramp"];
 
 /**
+ * Purpose: whether one stop or platform is step-free as recorded in Create: true with step-free access, a lift
+ * or a ramp; false when other features are recorded but none of those; null when none are recorded.
+ */
+export function partStepFree(p: StationPart): boolean | null {
+  if (p.features.some((f) => STEP_FREE.includes(f))) return true;
+  return p.features.length ? false : null;
+}
+
+/**
  * Purpose: whether a station is step-free as recorded in Create: every stop or platform of it has step-free
  * access, a lift or a ramp.
  */

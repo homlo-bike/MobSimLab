@@ -309,6 +309,7 @@ export const mr: Messages = {
   "prefs.demandStep.periods": "कालावधी",
   "prefs.demandStep.distribution": "प्रवास वितरण",
   "prefs.demandStep.mode_choice": "साधन निवड",
+  "prefs.demandStep.catchment": "पोहोच क्षेत्र",
   "prefs.demandStep.assignment": "नियुक्ती",
   "prefs.demandAll": "सर्व टप्पे",
   "prefs.vehiclesTitle": "वाहने",

@@ -2277,3 +2277,277 @@
       rationale:
         Changes at one stop or station need no walk; between nearby stops riders accept a few minutes on foot, about
         400 m. The walk is weighed with demand.mode.walk_weight and every change with demand.mode.transfer_penalty_min.
+
+- key: demand.cycle.factor.track
+  label: "Catchment: a metre on a separate cycle track counts as this much of a metre on a plain street"
+  group: Demand
+  unit: ×
+  used_by:
+    - "cycling skims: perceived distance"
+    - "bike-and-ride and shared-bike access"
+  values:
+    - context:
+        mode: "*"
+      low: 0.6
+      central: 0.75
+      high: 0.9
+      basis: cited
+      sources:
+        - broach-2012
+      check: unverified
+      rationale:
+        "Broach, Dill and Gliebe's route choice model of Portland cyclists: people ride noticeably longer routes to use separate paths and lanes. A track (OpenStreetMap cycleway=track, or a bike lane the planner marks as separated) makes a metre feel like about three quarters of one."
+
+- key: demand.cycle.factor.lane
+  label: "Catchment: a metre on a painted bike lane counts as this much of a metre on a plain street"
+  group: Demand
+  unit: ×
+  used_by:
+    - "cycling skims: perceived distance"
+    - "bike-and-ride and shared-bike access"
+  values:
+    - context:
+        mode: "*"
+      low: 0.8
+      central: 0.9
+      high: 1.0
+      basis: cited
+      sources:
+        - broach-2012
+      check: unverified
+      rationale:
+        "Broach, Dill and Gliebe: painted lanes help less than separate paths, and mostly on busy streets. OpenStreetMap cycleway=lane or a bike lane set up in the GIS tab (street setup)."
+
+- key: demand.cycle.factor.busy_road
+  label: "Catchment: a metre on a main road without a bike lane counts as this much of a metre on a plain street"
+  group: Demand
+  unit: ×
+  used_by:
+    - "cycling skims: perceived distance"
+    - "bike-and-ride and shared-bike access"
+  values:
+    - context:
+        mode: "*"
+      low: 1.2
+      central: 1.4
+      high: 2.0
+      basis: cited
+      sources:
+        - broach-2012
+      check: unverified
+      rationale:
+        "Broach, Dill and Gliebe: cyclists avoid streets with heavy traffic and no bike facility, accepting detours of 40% or more around them. Applies to trunk, primary and secondary roads without a lane or track."
+
+- key: demand.walk.pedestrian_factor
+  label: "Catchment: a metre walked in a pedestrian street counts as this much of a metre along traffic"
+  group: Demand
+  unit: ×
+  used_by:
+    - "walking skims: perceived distance"
+  values:
+    - context:
+        mode: "*"
+      low: 0.7
+      central: 0.85
+      high: 1.0
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        "People prefer walking where there is no traffic. Applies to OpenStreetMap highway=pedestrian and living_street. Walks to stops keep their real length; only the walking mode's time is weighed."
+
+- key: demand.pedestrian_zone.car_min
+  label: "Catchment: extra minutes for a car trip into a zone whose streets are all pedestrian"
+  group: Demand
+  unit: min
+  used_by:
+    - "mode choice: car utility at the destination"
+  values:
+    - context:
+        mode: "*"
+      low: 0
+      central: 5
+      high: 10
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        "Cars cannot reach the door in a pedestrian zone: the driver parks at its edge and walks. The minutes are scaled by the share of the zone's street length that is pedestrian, so a zone with a short pedestrian street gets little."
+
+- key: demand.bike_ride.max_m
+  label: "Catchment: longest ride on one's own bicycle to a stop (bike and ride)"
+  group: Demand
+  unit: m
+  used_by:
+    - "skims and transit assignment: bike-and-ride access for people with a bicycle"
+  values:
+    - context:
+        mode: "*"
+      low: 2000
+      central: 3000
+      high: 5000
+      basis: cited
+      sources:
+        - martens-2004
+      check: unverified
+      rationale:
+        "Martens' study of bike and ride in the Netherlands, Germany and the United Kingdom: most riders cycle 1 to 3 km to the station, few more than 5 km. Only stops with a bike parking nearby (OpenStreetMap amenity=bicycle_parking) can be reached this way."
+
+- key: demand.bike_ride.parking_max_m
+  label: "Catchment: farthest a bike parking may be from a stop for bike and ride"
+  group: Demand
+  unit: m
+  used_by:
+    - "skims and transit assignment: bike-and-ride access"
+  values:
+    - context:
+        mode: "*"
+      low: 50
+      central: 150
+      high: 300
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        "A parking on the station forecourt or the next corner is used; one further away is seldom. Bike parkings come from OpenStreetMap (amenity=bicycle_parking)."
+
+- key: demand.bike_ride.parking_min
+  label: "Catchment: minutes to park and lock the bicycle at the stop"
+  group: Demand
+  unit: min
+  used_by:
+    - "skims and transit assignment: bike-and-ride access"
+  values:
+    - context:
+        mode: "*"
+      low: 1
+      central: 2
+      high: 5
+      basis: educated-guess
+      sources:
+        - martens-2004
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        "Finding a place, locking and walking to the platform; more at crowded or guarded parkings."
+
+- key: demand.shared_bike.station_max_m
+  label: "Catchment: farthest walk to or from a shared-bike station"
+  group: Demand
+  unit: m
+  used_by:
+    - "mode choice: cycling for people without a bicycle"
+    - "skims and transit assignment: shared-bike access"
+  values:
+    - context:
+        mode: "*"
+      low: 150
+      central: 300
+      high: 500
+      basis: cited
+      sources:
+        - fishman-2016
+      check: unverified
+      rationale:
+        "Fishman's review: being close to a docking station is the strongest predictor of using shared bikes; most users live or work within a few hundred metres. Stations come from OpenStreetMap (amenity=bicycle_rental)."
+
+- key: demand.shared_bike.max_m
+  label: "Catchment: longest ride on a shared bike"
+  group: Demand
+  unit: m
+  used_by:
+    - "mode choice: cycling for people without a bicycle"
+    - "skims and transit assignment: shared-bike access"
+  values:
+    - context:
+        mode: "*"
+      low: 3000
+      central: 5000
+      high: 8000
+      basis: cited
+      sources:
+        - fishman-2016
+      check: unverified
+      rationale:
+        "Fishman: shared-bike trips are short, typically 2 to 3 km and seldom over 5 km, as most schemes charge by the half hour."
+
+- key: demand.shared_bike.unlock_min
+  label: "Catchment: minutes to take and return a shared bike"
+  group: Demand
+  unit: min
+  used_by:
+    - "mode choice: cycling for people without a bicycle"
+    - "skims and transit assignment: shared-bike access"
+  values:
+    - context:
+        mode: "*"
+      low: 1
+      central: 2
+      high: 5
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        "Unlocking at the station or with the phone, and docking at the end; more where stations are often empty or full."
+
+- key: demand.shared_bike.fare_usd
+  label: "Catchment: price of one shared-bike trip, 2023 US$ PPP"
+  group: Demand
+  unit: US$
+  used_by:
+    - "mode choice: cycling for people without a bicycle"
+    - "skims and transit assignment: shared-bike access"
+  values:
+    - context:
+        mode: "*"
+      low: 0
+      central: 1
+      high: 3
+      basis: cited
+      sources:
+        - fishman-2016
+      check: unverified
+      rationale:
+        "Fishman: most schemes make the first half hour free with a subscription, or charge about a dollar a trip. Converted to the project currency with the PPP factor; in the public transport graph it counts as minutes at the value of time of non-work trips."
+
+- key: demand.step_free.share
+  label: "Catchment: share of riders who cannot use steps (wheelchair, pram, heavy luggage, walking difficulty)"
+  group: Demand
+  unit: share
+  used_by:
+    - "skims and transit assignment: boarding at stops without step-free access"
+  values:
+    - context:
+        mode: "*"
+      low: 0.04
+      central: 0.08
+      high: 0.15
+      basis: cited
+      sources:
+        - who-2011-disability
+      check: unverified
+      rationale:
+        "The WHO World report on disability: about 15% of people live with a disability, many with difficulty climbing; parents with prams and travellers with luggage add to that at times. 8% is a mid value for riders who avoid stops with steps."
+
+- key: demand.step_free.penalty_min
+  label: "Catchment: extra minutes at a stop without step-free access, for those who cannot use steps"
+  group: Demand
+  unit: min
+  used_by:
+    - "skims and transit assignment: boarding at stops without step-free access"
+  values:
+    - context:
+        mode: "*"
+      low: 5
+      central: 15
+      high: 30
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        "Carrying a pram or luggage up the steps, asking for help, or going to another stop. Only stops recorded in Create without step-free access, a lift or a ramp are counted; stops with no recorded features are not. The model adds share times penalty to boarding there."

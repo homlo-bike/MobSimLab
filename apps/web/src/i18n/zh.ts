@@ -298,6 +298,7 @@ export const zh: Messages = {
   "prefs.demandStep.periods": "时段",
   "prefs.demandStep.distribution": "出行分布",
   "prefs.demandStep.mode_choice": "方式选择",
+  "prefs.demandStep.catchment": "可达范围",
   "prefs.demandStep.assignment": "交通分配",
   "prefs.demandAll": "全部步骤",
   "prefs.vehiclesTitle": "车辆",

@@ -161,6 +161,11 @@ const regions = z.looseObject({
 const zoneValues = z.record(z.string().max(40), z.union([z.number().finite(), z.boolean()]));
 const demand = z.looseObject({
   source: z.enum(["auto", "own"]),
+  /** The GBFS feed of the project's shared-bike scheme (https), read with the OpenStreetMap stations. */
+  gbfsUrl: z
+    .url({ protocol: /^https$/ })
+    .max(2000)
+    .optional(),
   zones: z
     .array(
       z.looseObject({

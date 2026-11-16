@@ -48,6 +48,17 @@ STEPS = [
         ),
     ),
     (
+        "catchment",
+        (
+            "demand.cycle.",
+            "demand.walk.",
+            "demand.pedestrian_zone.",
+            "demand.bike_ride.",
+            "demand.shared_bike.",
+            "demand.step_free.",
+        ),
+    ),
+    (
         "assignment",
         ("demand.car_occupancy", "demand.road.", "demand.transit.", "demand.feedback."),
     ),

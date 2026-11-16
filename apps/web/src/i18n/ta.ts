@@ -317,6 +317,7 @@ export const ta: Messages = {
   "prefs.demandStep.periods": "நேரப் பகுதிகள்",
   "prefs.demandStep.distribution": "பயணப் பகிர்வு",
   "prefs.demandStep.mode_choice": "போக்குவரத்து முறைத் தேர்வு",
+  "prefs.demandStep.catchment": "அணுகல் பகுதி",
   "prefs.demandStep.assignment": "ஒதுக்கீடு",
   "prefs.demandAll": "எல்லாப் படிகளும்",
   "prefs.vehiclesTitle": "வாகனங்கள்",

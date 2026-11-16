@@ -312,6 +312,7 @@ export const ur: Messages = {
   "prefs.demandStep.periods": "اوقات",
   "prefs.demandStep.distribution": "سفر کی تقسیم",
   "prefs.demandStep.mode_choice": "ذریعۂ سفر کا انتخاب",
+  "prefs.demandStep.catchment": "رسائی کا علاقہ",
   "prefs.demandStep.assignment": "تفویض",
   "prefs.demandAll": "تمام قدم",
   "prefs.vehiclesTitle": "گاڑیاں",

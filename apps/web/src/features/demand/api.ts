@@ -60,6 +60,21 @@ export interface DemandResult {
     lines: { id: string; name: string; mode: string; patterns: PatternLoads[] }[];
     stops: Record<string, { name: string; boardings: number; alightings: number }>;
   };
+  /** What the catchment effects did over the weekday (cycle lanes, bike and ride, shared bikes, steps). */
+  catchment?: {
+    cycle_lane_km: number;
+    cycle_track_km: number;
+    pedestrian_km: number;
+    bike_parkings: number;
+    shared_bike_stations: number;
+    stops_with_steps: number;
+    stops_step_free: number;
+    shared_bike_trips: number;
+    shared_bike_to_transit: number;
+    shared_bike_from_transit: number;
+    bike_and_ride: number;
+    transit_by_bike_owners: number;
+  };
   files: string[];
 }
 
@@ -89,6 +104,8 @@ export interface DemandRunsApi {
     bundle: Bundle,
     values: Record<string, number>,
     summary: { zones: number; stops: number; lines: number },
+    /** The GBFS feed of the project's shared-bike scheme. */
+    gbfsUrl?: string,
   ): Promise<DemandRunDetail>;
   cancel(id: string): Promise<DemandRunDetail>;
   remove(id: string): Promise<void>;
@@ -133,13 +150,14 @@ export function projectDemandRuns(projectId: string, csrf: string): DemandRunsAp
         (r): r is DemandRun => r.kind === "demand",
       ),
     get: async (id) => (await get<{ run: DemandRunDetail }>(one(id))).run,
-    start: async (bundle, values, summary) =>
+    start: async (bundle, values, summary, gbfsUrl) =>
       (
         await send<{ run: DemandRunDetail }>("POST", base, csrf, {
           kind: "demand",
           bundle: JSON.stringify(bundle),
           values,
           summary,
+          ...(gbfsUrl ? { gbfsUrl } : {}),
         })
       ).run,
     cancel: async (id) => (await send<{ run: DemandRunDetail }>("POST", `${one(id)}/cancel`, csrf, {})).run,

@@ -312,6 +312,7 @@ export const sw: Messages = {
   "prefs.demandStep.periods": "Vipindi vya muda",
   "prefs.demandStep.distribution": "Mgawanyo wa safari",
   "prefs.demandStep.mode_choice": "Uchaguzi wa njia ya usafiri",
+  "prefs.demandStep.catchment": "Eneo la kufikia",
   "prefs.demandStep.assignment": "Ugawaji",
   "prefs.demandAll": "Hatua zote",
   "prefs.vehiclesTitle": "Magari",

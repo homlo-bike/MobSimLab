@@ -306,6 +306,7 @@ export const ko: Messages = {
   "prefs.demandStep.periods": "시간대",
   "prefs.demandStep.distribution": "통행 분포",
   "prefs.demandStep.mode_choice": "수단 선택",
+  "prefs.demandStep.catchment": "접근 권역",
   "prefs.demandStep.assignment": "통행 배정",
   "prefs.demandAll": "모든 단계",
   "prefs.vehiclesTitle": "차량",
