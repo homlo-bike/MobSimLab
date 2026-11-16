@@ -291,7 +291,13 @@ export const ig: Messages = {
   "prefs.moreTitle": "Iwu, ụgbọ na echiche",
   "prefs.moreIntro":
     "Ihe ọ bụla na-agbanwe agbanwe nwere uru kacha nta ya na nke a tụrụ aro, na ụgbọ ọrụ ahụ na-eji.",
-  "prefs.rules": "Iwu nhazi maka ụdị ọ bụla, nke kacha nta na nke a tụrụ aro",
+  "prefs.rulesTitle": "Iwu nhazi maka ụdị ọ bụla",
+  "prefs.rulesIntro":
+    "Ụkpụrụ ndị onye ndezi ụzọ ụgbọ oloko ji enyocha ihe osise, maka ụdị ụgbọ oloko ọ bụla. Gbanwee ụkpụrụ maka ọrụ a, ma ọ bụ debe nke ọbá akwụkwọ echiche.",
+  "prefs.rulesMode": "Ụdị ụgbọ oloko",
+  "prefs.rulesChanged": "agbanwere: {count}",
+  "prefs.rulesLibrary": "Ọbá akwụkwọ echiche: {value} {unit}",
+  "prefs.rulesLibraryRange": "Ọbá akwụkwọ echiche: {value} {unit} (oke {low}–{high})",
   "prefs.vehicles": "Ụgbọ a na-eji, site na katalọgụ ụgbọ",
   "prefs.switches": "Ihe ntụgharị ụzọ ígwè, site na katalọgụ ihe ntụgharị",
   "prefs.calendar": "Kalenda, ọchịchọ na ọnụ ahịa",

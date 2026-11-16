@@ -20,3 +20,4 @@ apps/web/src/features/costs/defaults.generated.json
 apps/web/src/features/benefits/defaults.generated.json
 apps/web/src/features/walk/defaults.generated.json
 apps/api/src/plugins/core.generated.json
+apps/web/src/workspace/design-rules.generated.json

@@ -292,7 +292,13 @@ export const ha: Messages = {
   "prefs.moreTitle": "Dokoki, ababen hawa da zato",
   "prefs.moreIntro":
     "Kowane maɓalli tare da ƙaramar ƙimarsa da wadda aka ba da shawara, da ababen hawan da aikin ke amfani da su.",
-  "prefs.rules": "Dokokin tsarawa ga kowane nau'i, mafi ƙanƙanta da wanda aka ba da shawara",
+  "prefs.rulesTitle": "Dokokin tsarawa ga kowane nau'i",
+  "prefs.rulesIntro":
+    "Ƙimomin da editan layin dogo ke duba zane-zane da su, ga kowane nau'in layin dogo. Canza ƙima don wannan aikin, ko ka riƙe ta ɗakin zato.",
+  "prefs.rulesMode": "Nau'in layin dogo",
+  "prefs.rulesChanged": "an canza: {count}",
+  "prefs.rulesLibrary": "Ɗakin zato: {value} {unit}",
+  "prefs.rulesLibraryRange": "Ɗakin zato: {value} {unit} (iyaka {low}–{high})",
   "prefs.vehicles": "Ababen hawan da ake amfani da su, daga kundin ababen hawa",
   "prefs.switches": "Makunnan dogo, daga kundin makunnai",
   "prefs.calendar": "Kalanda, buƙata da kuɗi",
