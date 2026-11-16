@@ -104,6 +104,75 @@ def resolve(param: dict, mode: str, key: str | None, option: str | None) -> dict
     return best
 
 
+# What a calculation's input kind needs among the manifest's permissions (ADR-0036 §5); `parameters` needs none.
+INPUT_PERMISSION = {
+    "network": "read:network",
+    "street_lines": "read:network",
+    "rail_design": "read:network",
+    "timetable": "read:timetable",
+    "fleet": "read:fleet",
+    "geodata": "read:geodata",
+}
+# Where an installed plugin's calculation may appear: places the app fills from the manifest alone.
+COMPONENT_WHERE = {"tables", "plugin-tab"}
+
+
+def check_code(pid: str, manifest: dict, folder: Path | None) -> list[str]:
+    """Rules for code and tabs (ADR-0036 §4, §6). Bundled plugins use core crates (`bundled-wasm`) and views the
+    web app ships; installed plugins bring WebAssembly components (`component`) and sandboxed pages (`ui`).
+    `folder` is None when the files are checked elsewhere (the API checks uploaded packages)."""
+    errors: list[str] = []
+    c = manifest["contributes"]
+    bundled = manifest.get("bundled", False)
+    tiers = set(manifest["tiers"])
+    perms = set(manifest["permissions"])
+    tabs = c.get("tabs", [])
+    code = [("calculation", x) for x in c.get("calculations", [])]
+    code += [("importer", x) for x in c.get("importers", [])]
+    code += [("exporter", x) for x in c.get("exporters", [])]
+
+    def exists(path: str, ext: str) -> None:
+        if not path.endswith(ext):
+            errors.append(f"{pid}: {path} must be a {ext} file")
+        elif folder is not None and not (folder / path).is_file():
+            errors.append(f"{pid}: {path} does not exist")
+
+    for kind, x in code:
+        if bundled and x["runtime"] != "bundled-wasm":
+            errors.append(f"{pid}: {kind} {x['id']}: bundled plugins use runtime bundled-wasm")
+        if not bundled and x["runtime"] != "component":
+            errors.append(f"{pid}: {kind} {x['id']}: installed plugins bring their code as runtime component")
+        if x["runtime"] != "component":
+            continue
+        exists(x["component"], ".wasm")
+        if kind == "calculation":
+            for i in x["inputs"]:
+                need = INPUT_PERMISSION.get(i)
+                if need and need not in perms:
+                    errors.append(f"{pid}: calculation {x['id']} reads {i}, which needs the {need} permission")
+            for w in x.get("where", []):
+                if w not in COMPONENT_WHERE:
+                    errors.append(f"{pid}: calculation {x['id']}: an installed plugin's calculation cannot appear in {w}")
+            if "plugin-tab" in x.get("where", []) and not any(x["id"] in t.get("calculations", []) for t in tabs):
+                errors.append(f"{pid}: calculation {x['id']} is for a plugin tab, but no tab lists it")
+        elif kind == "importer" and "write:scenario" not in perms:
+            errors.append(f"{pid}: importer {x['id']} adds to the project, which needs the write:scenario permission")
+        elif kind == "exporter" and "read:timetable" not in perms:
+            errors.append(f"{pid}: exporter {x['id']} reads the timetable, which needs the read:timetable permission")
+    if any(x["runtime"] == "component" for _, x in code) and "compute" not in tiers:
+        errors.append(f"{pid}: a plugin with components must list the compute tier")
+    for tab in tabs:
+        if bundled and "view" not in tab:
+            errors.append(f"{pid}: tab {tab['id']}: bundled plugins name a view of the web app")
+        if not bundled and "ui" not in tab:
+            errors.append(f"{pid}: tab {tab['id']}: installed plugins bring their own page (ui)")
+        if "ui" in tab:
+            exists(tab["ui"], ".html")
+            if "ui" not in tiers:
+                errors.append(f"{pid}: a plugin with its own tab pages must list the ui tier")
+    return errors
+
+
 def check_plugin(
     folder: Path,
     chk,
@@ -172,19 +241,12 @@ def check_plugin(
                 errors.append(f"{pid}: tool {t['id']} uses kit {t['kit']}, mode {mid} needs {kits[mid]}")
 
     calc_ids = {x["id"] for x in c.get("calculations", [])}
-    if calc_ids and not manifest.get("bundled"):
-        errors.append(f"{pid}: only bundled plugins may contribute calculations until the plugin host exists")
+    errors += check_code(pid, manifest, folder)
     converters = c.get("importers", []) + c.get("exporters", [])
-    if converters and not manifest.get("bundled"):
-        errors.append(
-            f"{pid}: only bundled plugins may contribute importers and exporters until the plugin host exists"
-        )
     conv_ids = [x["id"] for x in converters]
     for cid in sorted({x for x in conv_ids if conv_ids.count(x) > 1}):
         errors.append(f"{pid}: importer or exporter id {cid} is used twice")
     for tab in c.get("tabs", []):
-        if not manifest.get("bundled"):
-            errors.append(f"{pid}: only bundled plugins may contribute tabs until the UI tier exists")
         if tab["id"] in CORE_TABS:
             errors.append(f"{pid}: tab {tab['id']} is a core tab")
         if tab["id"] in seen_tabs:

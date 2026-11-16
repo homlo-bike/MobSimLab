@@ -67,7 +67,9 @@ export async function runPlugin(input: Buffer, ctx: ToolContext) {
     );
   } catch (e) {
     if (e instanceof ToolError) throw e;
-    throw new ToolError(`the plugin code could not start: ${String(e instanceof Error ? e.message : e).slice(0, 300)}`);
+    throw new ToolError(
+      `the plugin code could not start: ${String(e instanceof Error ? e.message : e).slice(0, 300)}`,
+    );
   }
   const fn = instance[WORLD_EXPORT[world]];
   if (typeof fn !== "function") throw new ToolError("the plugin code does not export its function");
@@ -83,7 +85,9 @@ export async function runPlugin(input: Buffer, ctx: ToolContext) {
   } catch (e) {
     // With noComponentErrorWrapping the plugin's `err(message)` arrives as the thrown string.
     if (typeof e === "string") return { ok: false, error: e.slice(0, 1000), logs };
-    throw new ToolError(`the plugin code stopped: ${String(e instanceof Error ? e.message : e).slice(0, 300)}`);
+    throw new ToolError(
+      `the plugin code stopped: ${String(e instanceof Error ? e.message : e).slice(0, 300)}`,
+    );
   }
   if (world === "exporter") {
     if (!Array.isArray(value)) throw new ToolError("the exporter returned no files");

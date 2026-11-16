@@ -33,6 +33,9 @@ export const FORBIDDEN_IN_GLUE: [RegExp, string][] = [
   [/\brequire\s*\(/, "require"],
   [/\beval\s*\(/, "eval"],
   [/\bFunction\s*\(/, "the Function constructor"],
-  [/\b(fetch|XMLHttpRequest|WebSocket|EventSource|importScripts|postMessage|indexedDB|localStorage)\b/, "a browser API"],
+  [
+    /\b(fetch|XMLHttpRequest|WebSocket|EventSource|importScripts|postMessage|indexedDB|localStorage)\b/,
+    "a browser API",
+  ],
   [/\bprocess\s*\./, "the Node process object"],
 ];

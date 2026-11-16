@@ -4,7 +4,7 @@
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "https://mobsimlab.org/schemas/plugin-manifest/1.json",
     "title": "MobSimLab plugin manifest (mobsimlab-plugin.json)",
-    "description": "What a plugin contributes to MobSimLab (ADR-0036 §2 and §3). Producer: plugin authors; the bundled plugins live in plugins/. Consumer: tools/plugins/check.py (validation and the web app's generated registry, apps/web/src/plugins/bundled.generated.json), later the install flow. Plugin API major version 1. Bundled plugins may also add project tabs (`tabs`). Contribution points that are not built yet (checks, engines, schematics, panels, kpis) are reserved: the schema accepts no entries for them yet.",
+    "description": "What a plugin contributes to MobSimLab (ADR-0036 §2 and §3). Producer: plugin authors; the bundled plugins live in plugins/. Consumer: tools/plugins/check.py (validation and the web app's generated registry, apps/web/src/plugins/bundled.generated.json), later the install flow. Plugin API major version 1. Bundled plugins and installed plugins may add project tabs (`tabs`); installed plugins run their own code as WebAssembly components (`runtime: component`, contracts/wit/plugin.wit) and their tabs as sandboxed pages (`ui`). Contribution points that are not built yet (checks, engines, schematics, panels, kpis) are reserved: the schema accepts no entries for them yet.",
     "type": "object",
     "additionalProperties": false,
     "required": [
@@ -231,7 +231,7 @@
             }
           },
           "calculations": {
-            "description": "Calculations over the project's network (ADR-0036 §3). Until the sandboxed plugin host exists (Phase 2), only bundled plugins may contribute them, with runtime `bundled-wasm`: the code is a core crate compiled to WebAssembly (tools/wasm/build-<module>.sh, loaded from apps/web/src/wasm/<module>), released and reviewed with MobSimLab. Third-party `component` calculations come with Phase 2.",
+            "description": "Calculations over the project's data (ADR-0036 §3, §4). Runtime `bundled-wasm`: a core crate compiled to WebAssembly (tools/wasm/build-<module>.sh, loaded from apps/web/src/wasm/<module>), bundled plugins only. Runtime `component`: a WebAssembly component in the package that targets the `calculation` world of contracts/wit/plugin.wit, run in a sandbox in the browser and the API (installed plugins).",
             "type": "array",
             "items": {
               "type": "object",
@@ -240,7 +240,6 @@
                 "id",
                 "label",
                 "runtime",
-                "module",
                 "inputs",
                 "outputs"
               ],
@@ -257,11 +256,12 @@
                 },
                 "runtime": {
                   "enum": [
-                    "bundled-wasm"
+                    "bundled-wasm",
+                    "component"
                   ]
                 },
                 "module": {
-                  "description": "WebAssembly module name under apps/web/src/wasm/ (bundled-wasm).",
+                  "description": "WebAssembly module name under apps/web/src/wasm/ (runtime bundled-wasm).",
                   "type": "string",
                   "pattern": "^[a-z][a-z0-9-]*$"
                 },
@@ -310,8 +310,52 @@
                       "plugin-tab"
                     ]
                   }
+                },
+                "component": {
+                  "description": "Path of the WebAssembly component in the package (runtime component), such as wasm/calculation.wasm.",
+                  "$ref": "#/$defs/packagePath"
                 }
-              }
+              },
+              "allOf": [
+                {
+                  "if": {
+                    "properties": {
+                      "runtime": {
+                        "const": "bundled-wasm"
+                      }
+                    }
+                  },
+                  "then": {
+                    "required": [
+                      "module"
+                    ],
+                    "not": {
+                      "required": [
+                        "component"
+                      ]
+                    }
+                  }
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "runtime": {
+                        "const": "component"
+                      }
+                    }
+                  },
+                  "then": {
+                    "required": [
+                      "component"
+                    ],
+                    "not": {
+                      "required": [
+                        "module"
+                      ]
+                    }
+                  }
+                }
+              ]
             }
           },
           "checks": {
@@ -383,15 +427,14 @@
             "$ref": "#/$defs/reserved"
           },
           "tabs": {
-            "description": "Project tabs after the core ones (Simulator … Preferences). Until the UI tier exists (ADR-0036 §6), only bundled plugins may contribute tabs: `view` names a view built into the web app (apps/web/src/features/<view>), reviewed and released with MobSimLab, and the tab shows the plugin's own calculations.",
+            "description": "Project tabs after the core ones (Simulator … Preferences). A bundled plugin names a view built into the web app (`view`, apps/web/src/features/<view>). An installed plugin ships its own page (`ui`, an HTML file in the package) that the app shows in a sandboxed frame without access to the app, cookies or the network; it talks to the app through a message API that checks the plugin's permissions (ADR-0036 §6). `calculations` lists the plugin's calculations the tab may run.",
             "type": "array",
             "items": {
               "type": "object",
               "additionalProperties": false,
               "required": [
                 "id",
-                "label",
-                "view"
+                "label"
               ],
               "properties": {
                 "id": {
@@ -413,8 +456,24 @@
                   "items": {
                     "type": "string"
                   }
+                },
+                "ui": {
+                  "description": "HTML page of the tab in the package (installed plugins), such as tab/index.html; the files next to it are served with it.",
+                  "$ref": "#/$defs/packagePath"
                 }
-              }
+              },
+              "oneOf": [
+                {
+                  "required": [
+                    "view"
+                  ]
+                },
+                {
+                  "required": [
+                    "ui"
+                  ]
+                }
+              ]
             }
           }
         }
@@ -475,8 +534,6 @@
           "format",
           "contract",
           "runtime",
-          "module",
-          "function",
           "maxBytes"
         ],
         "properties": {
@@ -512,16 +569,17 @@
           },
           "runtime": {
             "enum": [
-              "bundled-wasm"
+              "bundled-wasm",
+              "component"
             ]
           },
           "module": {
-            "description": "WebAssembly module name under apps/web/src/wasm/ (bundled-wasm).",
+            "description": "WebAssembly module name under apps/web/src/wasm/ (runtime bundled-wasm).",
             "type": "string",
             "pattern": "^[a-z][a-z0-9-]*$"
           },
           "function": {
-            "description": "Exported function of the module: JSON in, JSON out.",
+            "description": "Exported function of the module, JSON in and out (runtime bundled-wasm).",
             "type": "string",
             "pattern": "^[a-z][a-z0-9_]*$"
           },
@@ -530,13 +588,75 @@
             "type": "integer",
             "minimum": 1,
             "maximum": 268435456
+          },
+          "component": {
+            "description": "Path of the WebAssembly component in the package (runtime component): the `importer` or `exporter` world of contracts/wit/plugin.wit.",
+            "$ref": "#/$defs/packagePath"
           }
-        }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "runtime": {
+                  "const": "bundled-wasm"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "module",
+                "function"
+              ],
+              "not": {
+                "required": [
+                  "component"
+                ]
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "runtime": {
+                  "const": "component"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "component"
+              ],
+              "not": {
+                "anyOf": [
+                  {
+                    "required": [
+                      "module"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "function"
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        ]
       },
       "reserved": {
         "description": "Contribution point of a later phase of ADR-0036; no entries are accepted yet.",
         "type": "array",
         "maxItems": 0
+      },
+      "packagePath": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9_-]+(/[A-Za-z0-9_.-]+)*\\.[a-z0-9]+$",
+        "not": {
+          "pattern": "\\.\\."
+        },
+        "maxLength": 200
       }
     }
   },
