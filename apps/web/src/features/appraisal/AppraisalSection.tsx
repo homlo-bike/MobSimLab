@@ -23,12 +23,16 @@ import {
   paramValue,
   POLICY,
   type Present,
+  SOCIAL_RATES,
   socialRateKey,
 } from "./model";
 
 interface Props {
-  /** From the cost tables: the estimate, its currency, the country (ISO alpha-3) and units per int. $. */
-  costs: { estimate: CostEstimate; currency: string | null; country: string | null; perIntl: number } | null;
+  /**
+   * From the cost tables: the estimate, its currency, the World Bank income group of the country (HIC, UMC,
+   * LMC, LIC, or null) and units per int. $.
+   */
+  costs: { estimate: CostEstimate; currency: string | null; income: string | null; perIntl: number } | null;
   /** The benefit tables' estimate (ridership, GDP growth, access). */
   benefits: BenefitEstimate | null;
   /** The fare revenue table's input (null until it has priced the lines). */
@@ -89,10 +93,10 @@ export function AppraisalSection({
     [costs?.estimate, benefits, demand, prefs, faresOwn],
   );
   const perIntl = costs?.perIntl ?? 1;
-  const country = costs?.country ?? null;
+  const income = costs?.income ?? null;
   const result = useMemo(
-    () => (costs && lines.length ? appraise({ lines, fares, prefs, perIntl, country }, draws) : null),
-    [costs, lines, fares, prefs, perIntl, country, draws],
+    () => (costs && lines.length ? appraise({ lines, fares, prefs, perIntl, income }, draws) : null),
+    [costs, lines, fares, prefs, perIntl, income, draws],
   );
   const mcaResult = useMemo(() => {
     if (!result) return null;
@@ -194,7 +198,7 @@ export function AppraisalSection({
         prefs={prefs}
         perIntl={perIntl}
         currency={currency}
-        country={country}
+        income={income}
         editable={editable}
         setValue={setValue}
       />
@@ -820,8 +824,16 @@ function Mca({
   );
 }
 
+/** How the settings name the income group each social rate applies to. */
+const GROUP_NAME: Record<string, string> = {
+  "appraisal.discount.social_high": "this project uses the high-income rate",
+  "appraisal.discount.social_upper_middle":
+    "this project uses the upper-middle-income rate, also used when the country's group is not known yet",
+  "appraisal.discount.social_lower": "this project uses the rate for lower-middle and low-income countries",
+};
+
 /** The settings, in the order a planner thinks about them. */
-function settingGroups(country: string | null): { title: string; keys: string[] }[] {
+function settingGroups(income: string | null): { title: string; keys: string[] }[] {
   return [
     {
       title: "Timeline",
@@ -830,10 +842,8 @@ function settingGroups(country: string | null): { title: string; keys: string[] 
     {
       title: "Discounting and prices",
       keys: [
-        socialRateKey(country),
-        ...["appraisal.discount.social_cohesion", "appraisal.discount.social_other"].filter(
-          (k) => k !== socialRateKey(country),
-        ),
+        socialRateKey(income),
+        ...SOCIAL_RATES.filter((k) => k !== socialRateKey(income)),
         "appraisal.discount.financial",
         "appraisal.conversion_factor",
       ],
@@ -858,18 +868,18 @@ function Settings({
   prefs,
   perIntl,
   currency,
-  country,
+  income,
   editable,
   setValue,
 }: {
   prefs: Record<string, number> | undefined;
   perIntl: number;
   currency: string | null;
-  country: string | null;
+  income: string | null;
   editable: boolean;
   setValue: (id: string, v: number | null) => void;
 }) {
-  const used = socialRateKey(country);
+  const used = socialRateKey(income);
   return (
     <section className={card} aria-labelledby="appraisal-settings">
       <h3 id="appraisal-settings" className="caps m-0">
@@ -877,11 +887,11 @@ function Settings({
       </h3>
       <p className="mt-1 text-xs text-slate-500">
         Setting a value replaces the medium; low and high move with it. Values marked “your choice” stay fixed
-        in the Monte Carlo run. The social discount rate follows the EU CBA Guide: 3 % in EU countries outside
-        the Cohesion Fund, 5 % elsewhere. The same values are in Project preferences → All parameters →
+        in the Monte Carlo run. The social discount rate follows the World Bank's income group of the
+        project's country: {GROUP_NAME[used]}. The same values are in Project preferences → All parameters →
         Appraisal. Sources and reasoning are in assumptions/DEFAULTS.md.
       </p>
-      {settingGroups(country).map((g) => (
+      {settingGroups(income).map((g) => (
         <div key={g.title} className="mt-4 overflow-x-auto">
           <table className="w-full min-w-[40rem] text-sm">
             <caption className="caps pb-1 text-left text-slate-700">{g.title}</caption>

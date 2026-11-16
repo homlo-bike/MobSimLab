@@ -9,10 +9,22 @@ import { WorldBankClient, WorldBankError, worldBankEndpoint } from "../src/gatew
 const COUNTRIES = [
   { page: 1, pages: 1, per_page: 400, total: 4 },
   [
-    { id: "DEU", iso2Code: "DE", name: "Germany", region: { id: "ECS", value: "Europe & Central Asia" } },
+    {
+      id: "DEU",
+      iso2Code: "DE",
+      name: "Germany",
+      region: { id: "ECS", value: "Europe & Central Asia" },
+      incomeLevel: { id: "HIC" },
+    },
     { id: "USA", iso2Code: "US", name: "United States", region: { id: "NAC", value: "North America" } },
     { id: "EUU", iso2Code: "EU", name: "European Union", region: { id: "NA", value: "Aggregates" } },
-    { id: "KEN", iso2Code: "KE", name: "Kenya", region: { id: "SSF", value: "Sub-Saharan Africa" } },
+    {
+      id: "KEN",
+      iso2Code: "KE",
+      name: "Kenya",
+      region: { id: "SSF", value: "Sub-Saharan Africa" },
+      incomeLevel: { id: "LMC" },
+    },
   ],
 ];
 
@@ -91,6 +103,7 @@ describe("World Bank client", () => {
       { year: 2025, value: 129.4 },
     ]);
     expect((await client.countries()).map((c) => c.iso3)).toEqual(["DEU", "KEN", "USA"]);
+    expect((await client.countries()).map((c) => c.income)).toEqual(["HIC", "LMC", null]);
     const n = calls.length;
     await client.latest("DEU", "PA.NUS.PPP");
     expect(calls.length).toBe(n);

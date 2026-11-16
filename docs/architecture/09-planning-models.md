@@ -135,7 +135,7 @@ Built (ADR-0039): the Tables tab costs construction (by construction type, set p
 |--------|-----------------|
 | FNPV | Σ (financial revenues − financial costs)ₜ / (1 + r_f)ᵗ, financial discount rate r_f (default 4 % real, editable) |
 | FIRR | r such that FNPV = 0 |
-| ENPV | Σ (economic benefits − economic costs)ₜ / (1 + r_s)ᵗ, social discount rate r_s (default per EU guidance 3 %/5 % by cohesion status; editable), with shadow prices / conversion factors applied to financial costs |
+| ENPV | Σ (economic benefits − economic costs)ₜ / (1 + r_s)ᵗ, social discount rate r_s (default by World Bank income group: 3.5 % high, 6 % upper-middle, 8 % lower-middle and low; editable), with shadow prices / conversion factors applied to financial costs |
 | ERR | r such that ENPV = 0 |
 | BCR | PV(economic benefits) / PV(economic costs) |
 | MCA | Weighted sum (default) or outranking (optional) over user-defined criteria: e.g. accessibility, equity, emissions, integration; weights editable; criteria scored from model outputs or user input |
