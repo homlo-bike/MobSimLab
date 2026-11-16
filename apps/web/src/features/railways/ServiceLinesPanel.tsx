@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { CommentBadge, ObjectComments } from "../comments/Comments";
 import { type Translate, useI18n } from "../../i18n/i18n";
 import { fmtM, fmtTime } from "./modes";
 import { DayTypeChoice } from "../timetables/DayTypeChoice";
@@ -128,6 +129,7 @@ export function ServiceLinesPanel({
                     {r && !publication?.stale ? ` · ${tn("rail.line.trips", r.trips)}` : ""}
                   </span>
                 </span>
+                <CommentBadge type="service-line" id={l.id} />
               </button>
               {open === l.id && (
                 <LineEditor
@@ -147,6 +149,11 @@ export function ServiceLinesPanel({
                   report={publication?.stale ? null : r}
                   published={publication?.stale ? null : (publication?.result ?? null)}
                 />
+              )}
+              {open === l.id && (
+                <div className="px-2 pb-2">
+                  <ObjectComments type="service-line" id={l.id} />
+                </div>
               )}
             </li>
           );
