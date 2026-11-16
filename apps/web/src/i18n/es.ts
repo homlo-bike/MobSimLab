@@ -283,6 +283,7 @@ export const es: Messages = {
   "prefs.delayLane": "En un carril bus o tranvía pintado",
   "prefs.delayDefault": "Biblioteca de supuestos: {value} %",
   "prefs.delayReset": "Usar el valor de la biblioteca",
+  "prefs.reason": "Motivo de este valor (opcional)",
   "prefs.stationsTitle": "Estaciones",
   "prefs.stationsIntro":
     "Las paradas con el mismo nombre dentro de esta distancia cuentan como una sola estación en el mapa esquemático, el planificador de viajes y las tablas de beneficios y de viajeros.",

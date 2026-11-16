@@ -281,6 +281,7 @@ export const ur: Messages = {
   "prefs.delayLane": "رنگ سے بنی بس یا ٹرام لین میں",
   "prefs.delayDefault": "مفروضات کی لائبریری: {value} %",
   "prefs.delayReset": "لائبریری کی قدر استعمال کریں",
+  "prefs.reason": "اس قدر کی وجہ (اختیاری)",
   "prefs.stationsTitle": "اسٹیشن",
   "prefs.stationsIntro":
     "اس فاصلے کے اندر ایک ہی نام کے اسٹاپ اسکیمیٹک نقشے، سفر منصوبہ ساز اور فوائد و مسافر جدولوں میں ایک اسٹیشن شمار ہوتے ہیں۔",

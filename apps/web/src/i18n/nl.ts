@@ -283,6 +283,7 @@ export const nl: Messages = {
   "prefs.delayLane": "Op een geschilderde bus- of trambaan",
   "prefs.delayDefault": "Aannamebibliotheek: {value} %",
   "prefs.delayReset": "Waarde van de bibliotheek gebruiken",
+  "prefs.reason": "Reden voor deze waarde (optioneel)",
   "prefs.stationsTitle": "Stations",
   "prefs.stationsIntro":
     "Haltes met dezelfde naam binnen deze afstand tellen als één station in de netkaart, de reisplanner en de baten- en reizigerstabellen.",

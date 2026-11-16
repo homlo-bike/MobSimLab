@@ -285,6 +285,7 @@ export const fr: Messages = {
   "prefs.delayLane": "Dans une voie bus ou tram marquée",
   "prefs.delayDefault": "Bibliothèque d'hypothèses : {value} %",
   "prefs.delayReset": "Utiliser la valeur de la bibliothèque",
+  "prefs.reason": "Raison de cette valeur (facultatif)",
   "prefs.stationsTitle": "Stations",
   "prefs.stationsIntro":
     "Les arrêts de même nom situés dans ce rayon comptent comme une seule station dans le plan schématique, le calculateur d'itinéraires et les tableaux des bénéfices et de fréquentation.",
