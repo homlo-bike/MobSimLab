@@ -167,7 +167,12 @@ describe("sign-in, setup mode and audit", () => {
       .set("Origin", origin())
       .set("X-CSRF-Token", csrfToken);
     expect(fin.status).toBe(200);
-    expect((await me(cookie)).instance).toEqual({ mode: "open", name: "Köln planning" });
+    expect((await me(cookie)).instance).toEqual({
+      mode: "open",
+      name: "Köln planning",
+      local: false,
+      agents: true,
+    });
   });
 
   it("puts new users on hold until approved when auto-registration is off", async () => {

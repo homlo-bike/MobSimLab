@@ -76,7 +76,11 @@ open http://localhost:8080
 
 Each release publishes a ready-made image for Intel/AMD and ARM servers to `ghcr.io/homlo-bike/mobsimlab`, tagged with its version only (for example `2026.11.1-alpha`; there is no `latest` tag). Set that version as `MOBSIMLAB_VERSION` in `.env` before pulling; to update, change it to the newer version and run `docker compose pull && docker compose up -d`. To build the image yourself from this checkout instead, run `docker compose up -d --build`.
 
-Releases are made by pushing a version tag (`git tag -s v2026.11.1-alpha -m "MobSimLab 2026.11.1-alpha" && git push origin v2026.11.1-alpha`); the **Release image** workflow builds, smoke-tests and publishes the image.
+Releases are made by pushing a version tag (`git tag -s v2026.11.1-alpha -m "MobSimLab 2026.11.1-alpha" && git push origin v2026.11.1-alpha`). The **Release image** workflow builds, smoke-tests and publishes the image. The **Release desktop** workflow creates the GitHub release as a pre-release and attaches the desktop installers.
+
+### Desktop app
+
+The desktop app for Windows, macOS (Apple Silicon) and Linux runs MobSimLab on your own computer without an account, or connects to a MobSimLab server with its single sign-on. Download it from the [releases](https://github.com/homlo-bike/MobSimLab/releases). See [docs/user/desktop.md](docs/user/desktop.md).
 
 ### Sign-in and first setup
 

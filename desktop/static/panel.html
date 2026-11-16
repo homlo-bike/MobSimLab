@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'"
+    />
+    <title>MobSimLab</title>
+    <link rel="stylesheet" href="panel.css" />
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>MobSimLab</h1>
+        <p class="sub" id="version"></p>
+      </header>
+
+      <section id="onboarding" hidden>
+        <h2>How do you want to use MobSimLab?</h2>
+        <div class="choices">
+          <article class="choice">
+            <h3>Use on this computer</h3>
+            <p>
+              Everything runs on this computer: the database, the simulations and your projects. No account
+              and no sign-in. Nothing leaves this computer unless you export it.
+            </p>
+            <button type="button" id="use-local" class="primary">Use on this computer</button>
+          </article>
+          <article class="choice">
+            <h3>Connect to a server</h3>
+            <p>
+              Work with your team on your organisation's MobSimLab server. You sign in with its single
+              sign-on.
+            </p>
+            <form id="connect-form">
+              <label for="server-url">Server address</label>
+              <input
+                id="server-url"
+                type="url"
+                inputmode="url"
+                autocomplete="url"
+                placeholder="https://mobsimlab.example.org"
+                required
+              />
+              <button type="submit" class="primary">Connect</button>
+            </form>
+          </article>
+        </div>
+        <p class="note">
+          You can change this later in Settings. Projects move between the two by exporting and opening the
+          project file (.mslab).
+        </p>
+      </section>
+
+      <section id="starting" hidden>
+        <h2>Starting MobSimLab…</h2>
+        <p id="status" role="status" aria-live="polite">Preparing…</p>
+        <div class="spinner" aria-hidden="true"></div>
+        <p class="note">The first start takes a little longer while the database is created.</p>
+      </section>
+
+      <section id="error" hidden>
+        <h2>MobSimLab could not start</h2>
+        <p id="error-text" class="error" role="alert"></p>
+        <div class="row">
+          <button type="button" id="retry" class="primary">Try again</button>
+          <button type="button" id="change">Choose another way</button>
+          <button type="button" id="logs" class="local-only">Open the log folder</button>
+        </div>
+      </section>
+
+      <section id="settings" hidden>
+        <h2>Settings</h2>
+        <h3>Where MobSimLab runs</h3>
+        <p id="mode-text"></p>
+        <div class="row">
+          <button type="button" id="switch-local" class="server-only">Use on this computer instead</button>
+        </div>
+        <form id="settings-connect-form">
+          <label for="settings-server-url">Server address</label>
+          <input
+            id="settings-server-url"
+            type="url"
+            inputmode="url"
+            autocomplete="url"
+            placeholder="https://mobsimlab.example.org"
+          />
+          <button type="submit">Connect to this server</button>
+        </form>
+
+        <div class="local-only">
+          <h3>AI agents</h3>
+          <label class="switch">
+            <input type="checkbox" id="agents" />
+            <span>Let AI apps on this computer (such as Claude Desktop) work with MobSimLab</span>
+          </label>
+          <p class="note">Off by default. Turning it on restarts MobSimLab on this computer.</p>
+          <div id="agents-help" hidden>
+            <ol>
+              <li>
+                In MobSimLab, open the account menu, then <strong>Connected agents</strong>, and create a
+                personal access token.
+              </li>
+              <li>
+                In Claude Desktop, open <strong>Settings → Developer → Edit Config</strong> and add this to
+                <code>claude_desktop_config.json</code>, with your token in place of
+                <code>YOUR_TOKEN</code> (it needs Node.js installed for <code>npx</code>):
+              </li>
+            </ol>
+            <pre id="snippet"></pre>
+            <button type="button" id="copy">Copy</button>
+          </div>
+        </div>
+        <div class="row end">
+          <button type="button" id="close" class="primary">Done</button>
+        </div>
+      </section>
+
+      <p id="message" class="error" role="alert" hidden></p>
+    </main>
+    <script src="panel.js"></script>
+  </body>
+</html>

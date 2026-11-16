@@ -50,6 +50,15 @@ export interface AppConfig {
   /** Token-bucket limits (05 §3.5), in requests per minute. */
   rateLimits: { authPerMinute: number; writesPerMinute: number };
   secrets: Record<ApiSecretName, string>;
+  /**
+   * Desktop app, "Use on this computer" (local mode): the key the desktop app adds to its own requests so that its
+   * single local Owner is signed in without a provider (`POST /api/auth/local`). Absent on a server.
+   */
+  localLaunchKey?: string;
+  /** Interface the API listens on. Absent: every interface (the container). The desktop app uses 127.0.0.1. */
+  listenHost?: string;
+  /** AI agent endpoints (`/mcp`, OAuth) switched off. The desktop app's local mode starts with them off. */
+  agentsDisabled?: boolean;
 }
 
 /** The OIDC provider used for the first login (more providers are added in the setup wizard later). */
@@ -86,7 +95,13 @@ const envSchema = z.object({
     z.enum(LOG_LEVELS).default("info"),
   ),
   MOBSIMLAB_LOG_DIR: z.preprocess(emptyToUndefined, z.string().min(1).optional()),
+  MOBSIMLAB_LOCAL_MODE: z.enum(["true", "false"]).default("false"),
+  MOBSIMLAB_LISTEN_HOST: z.preprocess(emptyToUndefined, z.ipv4().or(z.ipv6()).optional()),
+  MOBSIMLAB_AGENTS_ENABLED: z.enum(["true", "false"]).default("true"),
 });
+
+/** Loopback host names the desktop app's local mode may use. */
+const LOOPBACK = new Set(["127.0.0.1", "[::1]", "localhost"]);
 
 /** Accepted entries for MOBSIMLAB_TRUSTED_PROXIES: an IP, a CIDR range, or an Express keyword. */
 const PROXY_ENTRY = /^(loopback|linklocal|uniquelocal|[0-9a-fA-F:.]+(\/\d{1,3})?)$/;
@@ -143,8 +158,26 @@ export function loadConfig(
   } catch {
     oidcSecret = undefined;
   }
+  let localLaunchKey: string | undefined;
+  if (parsed.success && parsed.data.MOBSIMLAB_LOCAL_MODE === "true") {
+    try {
+      localLaunchKey = readFile(join(dir, "local_launch_key")).trim();
+      if (localLaunchKey.length < 44 || new Set(localLaunchKey).size < 10)
+        problems.push("local_launch_key is too short or has too little variety");
+    } catch {
+      problems.push("secret local_launch_key is missing (local mode is started by the desktop app)");
+    }
+  }
   if (parsed.success) {
     const d = parsed.data;
+    if (d.MOBSIMLAB_LOCAL_MODE === "true") {
+      // Local mode signs its Owner in without a provider, so it must never be reachable from the network.
+      if (!LOOPBACK.has(new URL(d.MOBSIMLAB_PUBLIC_URL).hostname))
+        problems.push("MOBSIMLAB_LOCAL_MODE needs a loopback MOBSIMLAB_PUBLIC_URL (http://127.0.0.1:<port>)");
+      if (d.MOBSIMLAB_LISTEN_HOST !== "127.0.0.1" && d.MOBSIMLAB_LISTEN_HOST !== "::1")
+        problems.push("MOBSIMLAB_LOCAL_MODE needs MOBSIMLAB_LISTEN_HOST=127.0.0.1");
+      if (d.MOBSIMLAB_OIDC_ISSUER) problems.push("MOBSIMLAB_LOCAL_MODE does not use a sign-in provider");
+    }
     if (Boolean(d.MOBSIMLAB_OIDC_ISSUER) !== Boolean(d.MOBSIMLAB_OIDC_CLIENT_ID)) {
       problems.push("MOBSIMLAB_OIDC_ISSUER and MOBSIMLAB_OIDC_CLIENT_ID must be set together");
     }
@@ -183,6 +216,9 @@ export function loadConfig(
       writesPerMinute: d.MOBSIMLAB_RATE_LIMIT_WRITES,
     },
     secrets,
+    localLaunchKey,
+    listenHost: d.MOBSIMLAB_LISTEN_HOST,
+    agentsDisabled: d.MOBSIMLAB_AGENTS_ENABLED === "false" ? true : undefined,
   };
 }
 

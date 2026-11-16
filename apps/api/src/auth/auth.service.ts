@@ -13,6 +13,16 @@ export type LoginRefusal =
 export type LoginOutcome =
   { ok: true; userId: string; claimedOwner: boolean } | { ok: false; reason: LoginRefusal };
 
+/** The identity of the desktop app's local Owner. No provider issues it; only `POST /api/auth/local` uses it. */
+export const LOCAL_IDENTITY: OidcIdentity = {
+  issuer: "mobsimlab:local",
+  subject: "owner",
+  email: null,
+  emailVerified: false,
+  name: "Local user",
+  groups: [],
+};
+
 /** Request context recorded in the audit log. */
 export interface RequestMeta {
   ipHash: string | null;
@@ -142,6 +152,67 @@ export class AuthService {
         .execute();
       await this.audit.append({ ...auditBase, action: "auth.login", objectId: userId, actorId: userId }, tx);
       return { ok: true, userId, claimedOwner } as const;
+    });
+  }
+
+  /**
+   * Purpose: sign in the desktop app's single local Owner (local mode, no provider). The first time, it creates
+   * the Owner and finishes setup, since nobody else can ever sign in to a local instance.
+   * Inputs: request metadata for the audit log. Output: the Owner's user id.
+   * Side effects: in one transaction holding the instance row lock: creates the user and identity once, opens the
+   * instance, and writes audit records.
+   */
+  async signInLocalOwner(meta: RequestMeta): Promise<string> {
+    return this.db.transaction().execute(async (tx) => {
+      const inst = await tx.selectFrom("iam.instance").selectAll().forUpdate().executeTakeFirstOrThrow();
+      const auditBase = { actorIpHash: meta.ipHash, requestId: meta.requestId, objectType: "user" };
+      const existing = await tx
+        .selectFrom("iam.identity")
+        .select("user_id")
+        .where("issuer", "=", LOCAL_IDENTITY.issuer)
+        .where("subject", "=", LOCAL_IDENTITY.subject)
+        .executeTakeFirst();
+      let userId = existing?.user_id;
+      if (!userId) {
+        userId = await this.createUser(tx, LOCAL_IDENTITY, "owner", "active");
+        await this.audit.append(
+          {
+            ...auditBase,
+            action: "instance.owner_claimed",
+            objectId: userId,
+            actorId: userId,
+            after: { instance_role: "owner", status: "active", issuer: LOCAL_IDENTITY.issuer },
+          },
+          tx,
+        );
+      } else {
+        // The local Owner is the only person on this computer: keep the account usable whatever happened to it.
+        await tx
+          .updateTable("iam.user")
+          .set({ instance_role: "owner", status: "active" })
+          .where("id", "=", userId)
+          .execute();
+      }
+      if (inst.mode === "setup") {
+        await tx
+          .updateTable("iam.instance")
+          .set({ mode: "open", name: "This computer", setup_finished_at: new Date(), updated_at: new Date() })
+          .execute();
+        await this.audit.append(
+          {
+            ...auditBase,
+            action: "instance.setup_finished",
+            objectType: "instance",
+            actorId: userId,
+            before: { mode: "setup" },
+            after: { mode: "open", local: true },
+          },
+          tx,
+        );
+      }
+      await tx.updateTable("iam.user").set({ last_login_at: new Date() }).where("id", "=", userId).execute();
+      await this.audit.append({ ...auditBase, action: "auth.login", objectId: userId, actorId: userId }, tx);
+      return userId;
     });
   }
 

@@ -1,0 +1,205 @@
+# Desktop apps for Windows, macOS (Apple Silicon) and Linux, with the whole MobSimLab server inside for "Use on
+# this computer" (desktop/). On a version tag (v2026.11.1-alpha) it creates the GitHub release as a pre-release
+# (other release workflows only upload to it) and attaches the installers. On a pull request that touches the
+# desktop app it builds and smoke-tests everything, and keeps the installers as workflow artifacts for a few days.
+name: Release desktop
+
+on:
+  push:
+    tags: ["v*"]
+  pull_request:
+    paths:
+      - "desktop/**"
+      - ".github/workflows/release-desktop.yml"
+      - "apps/api/src/auth/**"
+      - "apps/api/src/config/**"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-desktop-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  release:
+    name: Create the release
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - name: Create the pre-release unless it exists
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          if gh release view "$TAG" -R "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "release $TAG exists"
+          else
+            gh release create "$TAG" -R "$GITHUB_REPOSITORY" --prerelease --verify-tag \
+              --title "MobSimLab ${TAG#v}" --generate-notes
+          fi
+
+  app:
+    name: Build the API and web app
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - uses: dtolnay/rust-toolchain@39008827e6b4319a349e9a42dfc90579dd25f1ca # stable
+        with: { toolchain: stable, targets: wasm32-unknown-unknown }
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2
+      - uses: taiki-e/install-action@ab49d3c64680143e184118bed66a46419fc15519 # v2
+        with: { tool: wasm-bindgen@0.2.129 }
+      - name: WebAssembly modules (browser and API)
+        run: tools/wasm/build-street-routing.sh && tools/wasm/build-rail-design.sh && tools/wasm/build-rail-sim.sh && tools/wasm/build-journey-planner.sh && tools/wasm/build-mode-kits.sh && tools/wasm/build-noise.sh && tools/wasm/build-energy.sh && tools/wasm/build-gtfs.sh && tools/wasm/build-cargo-bike.sh && tools/wasm/build-depot-layout.sh && tools/wasm/build-api.sh
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with: { node-version-file: .nvmrc, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm -r build
+      - name: Collect the app (API with its production packages in a flat folder, web app, migrations, OSM style)
+        run: |
+          pnpm --filter @mobsimlab/api --config.node-linker=hoisted deploy --prod --legacy out/app/api
+          rm -rf out/app/api/dist out/app/api/wasm
+          cp -r apps/api/dist apps/api/wasm out/app/api/
+          cp -r apps/web/dist out/app/web
+          cp -r db/migrations out/app/migrations
+          mkdir -p out/app/osm && cp tools/osm/mobsimlab-flex.lua tools/osm/tag_mapping.lua out/app/osm/
+          du -sh out/app/*
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: app
+          path: out/app
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 1
+
+  desktop:
+    name: Desktop ${{ matrix.name }}
+    needs: app
+    runs-on: ${{ matrix.runner }}
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { name: Linux, runner: ubuntu-24.04, conda: "postgresql=18 postgis=3.7 osmium-tool osm2pgsql" }
+          - { name: macOS, runner: macos-15, conda: "postgresql=18 postgis=3.7 osmium-tool osm2pgsql" }
+          - { name: Windows, runner: windows-2022, conda: "osmium-tool osm2pgsql postgresql" }
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - name: Version
+        id: version
+        run: |
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+            # Calendar versions such as 2026.01.1 are written without leading zeros where a number is required.
+            v=$(sed -E 's/(^|\.)0+([0-9])/\1\2/g' <<< "${GITHUB_REF_NAME#v}")
+          else
+            v="0.0.0-pr.${{ github.event.pull_request.number || '0' }}"
+          fi
+          echo "version=$v" >> "$GITHUB_OUTPUT"
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with: { name: app, path: app }
+      - uses: dtolnay/rust-toolchain@39008827e6b4319a349e9a42dfc90579dd25f1ca # stable
+        with: { toolchain: stable }
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2
+      - uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        # No pnpm here: the desktop app is an npm project, so no automatic package-manager cache.
+        with: { node-version-file: .nvmrc, package-manager-cache: false }
+      - name: Rust kernels as a Python wheel
+        run: |
+          uv python install 3.12
+          uvx --from "maturin>=1.9,<2" maturin build --release -m crates/mobsim-py/Cargo.toml -o wheels \
+            -i "$(uv python find --managed-python 3.12)"
+      - uses: mamba-org/setup-micromamba@add3a49764cedee8ee24e82dfde87f5bc2914462 # v2.0.7
+        with:
+          init-shell: none
+          cache-downloads: true
+      # On Windows conda-forge's postgresql only provides psql: the server with PostGIS comes from the next step.
+      - name: PostgreSQL with PostGIS (Linux, macOS) and the OpenStreetMap tools, from conda-forge
+        run: |
+          "$MAMBA_EXE" create -y -p desktop/runtime/conda -c conda-forge --override-channels ${{ matrix.conda }}
+          rm -rf desktop/runtime/conda/{include,man,share/doc,share/man,share/info,conda-meta/*.json.bak}
+          rm -rf desktop/runtime/conda/Library/{include,share/doc,share/man}
+      - name: PostgreSQL and PostGIS for Windows
+        if: runner.os == 'Windows'
+        run: |
+          set -euo pipefail
+          maven=https://repo1.maven.org/maven2/io/zonky/test/postgres/embedded-postgres-binaries-windows-amd64
+          v=$(curl -fsSL "$maven/maven-metadata.xml" | grep -o '<version>17\.[0-9.]*</version>' | sed 's/<[^>]*>//g' | sort -V | tail -1)
+          echo "PostgreSQL $v (EDB build, packaged by zonky)"
+          curl -fsSLo pg.jar "$maven/$v/embedded-postgres-binaries-windows-amd64-$v.jar"
+          unzip -o -q pg.jar postgres-windows-x86_64.txz
+          mkdir -p desktop/runtime/pgsql
+          tar -xJf postgres-windows-x86_64.txz -C desktop/runtime/pgsql
+          base=https://download.osgeo.org/postgis/windows/pg17
+          # The newest PostGIS 3 bundle for PostgreSQL 17 (older ones move to archive/).
+          z=$(curl -fsSL "$base/" | grep -oE 'postgis-bundle-pg17-3\.[0-9]+\.[0-9]+x64\.zip' | sort -uV | tail -1 || true)
+          [ -n "$z" ] || { echo "no PostGIS bundle listed at $base/" >&2; curl -fsSL "$base/" | grep -o 'href="[^"]*"' >&2; exit 1; }
+          echo "PostGIS $z"
+          curl -fsSLo postgis.zip "$base/$z"
+          unzip -q postgis.zip -d postgis
+          src=$(dirname "$(find postgis -maxdepth 3 -type d -name bin | head -1)")
+          for d in bin lib share; do cp -r "$src/$d/." "desktop/runtime/pgsql/$d/"; done
+          # The Microsoft C++ runtime, deployed next to the programs (not every Windows has it installed).
+          for f in vcruntime140.dll vcruntime140_1.dll msvcp140.dll; do
+            cp "/c/Windows/System32/$f" desktop/runtime/pgsql/bin/ 2>/dev/null || true
+          done
+          find desktop/runtime/pgsql -maxdepth 2 | head -60
+      - name: Desktop app
+        working-directory: desktop
+        run: npm ci --ignore-scripts && npm run build
+      - name: Assemble the runtime (Node, Python with the worker and SUMO, the app)
+        working-directory: desktop
+        run: node scripts/assemble-runtime.mjs --app ../app --wheels ../wheels
+      - name: Smoke test (start, sign in as the local Owner, stop, start again)
+        working-directory: desktop
+        run: node scripts/smoke.mjs runtime
+      - name: rpm tools (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends rpm
+      - name: Installers
+        working-directory: desktop
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          npx electron-builder --publish never -c.extraMetadata.version="${{ steps.version.outputs.version }}"
+          ls -la release
+      - name: Keep the installers (pull request)
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: desktop-${{ matrix.name }}
+          path: |
+            desktop/release/MobSimLab-*.exe
+            desktop/release/MobSimLab-*.dmg
+            desktop/release/MobSimLab-*.AppImage
+            desktop/release/MobSimLab-*.deb
+            desktop/release/MobSimLab-*.rpm
+          if-no-files-found: error
+          retention-days: 3
+          compression-level: 0
+      - name: Attach the installers to the release
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          for _ in $(seq 1 60); do gh release view "$TAG" -R "$GITHUB_REPOSITORY" >/dev/null 2>&1 && break; sleep 10; done
+          cd desktop/release
+          shopt -s nullglob
+          files=(MobSimLab-*.exe MobSimLab-*.dmg MobSimLab-*.AppImage MobSimLab-*.deb MobSimLab-*.rpm)
+          [ "${#files[@]}" -gt 0 ] || { echo "no installers" >&2; exit 1; }
+          sums=()
+          for f in "${files[@]}"; do
+            if command -v sha256sum >/dev/null; then sha256sum "$f" > "$f.sha256"; else shasum -a 256 "$f" > "$f.sha256"; fi
+            sums+=("$f.sha256")
+          done
+          gh release upload "$TAG" -R "$GITHUB_REPOSITORY" --clobber "${files[@]}" "${sums[@]}"
