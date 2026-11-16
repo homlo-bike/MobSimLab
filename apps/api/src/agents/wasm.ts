@@ -58,6 +58,12 @@ interface JourneyPlannerModule {
   };
 }
 
+/** GTFS exporter (crates/gtfs, the GTFS plugin's code): published timetable → GTFS text files. */
+interface GtfsModule {
+  /** JSON `gtfs::ExportInput` → JSON file name → text. */
+  export_gtfs(inputJson: string): string;
+}
+
 /** The modules were not built. */
 export class WasmMissingError extends Error {}
 
@@ -87,6 +93,11 @@ function load<T>(name: string, file: string): T {
 /** Purpose: load the street routing and walk analysis module (once). Throws WasmMissingError. */
 export function streetRouting(): StreetRoutingModule {
   return load<StreetRoutingModule>("street-routing", "street_routing_wasm.js");
+}
+
+/** Purpose: load the GTFS module (once). Throws WasmMissingError. */
+export function gtfs(): GtfsModule {
+  return load<GtfsModule>("gtfs", "gtfs_wasm.js");
 }
 
 /** Purpose: load the journey planner module (once). Throws WasmMissingError. */

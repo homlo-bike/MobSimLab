@@ -4,7 +4,9 @@ import { describe, expect, it } from "vitest";
 import { AccessService } from "../src/agents/access.service";
 import { AnalysisService } from "../src/agents/analysis.service";
 import { destinationCategories } from "../src/agents/destinations";
+import { exportGtfs } from "../src/agents/gtfs-export";
 import { lpModel, solveMaxCover } from "../src/agents/mclp";
+import { crc32, writeZip } from "../src/agents/zip";
 import { NetworkService, type TileSource } from "../src/agents/network.service";
 import { applyChanges, EMPTY_DOC, type ScenarioDoc } from "../src/agents/scenario";
 import { destinationQuery, destinations } from "../src/street-network/street-network.service";
@@ -240,5 +242,65 @@ describe.skipIf(!WASM)("accessibility analyses (ADR-0035 §6)", () => {
     expect(exact.suggestions.length).toBeGreaterThan(0);
     expect(exact).not.toHaveProperty("instance");
     expect(exact).not.toHaveProperty("context");
+  });
+});
+
+describe("zip writer", () => {
+  it("stores files with their CRC and a central directory", () => {
+    const z = writeZip({ "a.txt": "hello", "b.txt": "wörld" });
+    expect(z.readUInt32LE(0)).toBe(0x04034b50);
+    expect(z.readUInt32LE(14)).toBe(crc32(Buffer.from("hello")));
+    expect(z.subarray(30, 35).toString()).toBe("a.txt");
+    const end = z.length - 22;
+    expect(z.readUInt32LE(end)).toBe(0x06054b50);
+    expect(z.readUInt16LE(end + 10)).toBe(2);
+    expect(crc32(Buffer.from("123456789"))).toBe(0xcbf43926);
+  });
+});
+
+describe.skipIf(!WASM)("GTFS export (ADR-0035 export_gtfs)", () => {
+  it("writes the scenario as a weekday feed with frequencies", async () => {
+    const { network, analysis } = services();
+    const doc = await scenario(network);
+    const feed = exportGtfs(doc, analysis, {
+      agencyName: "Test",
+      agencyUrl: "https://example.org",
+      timezone: "Europe/Berlin",
+      lang: "en",
+      startDate: "20270101",
+      endDate: "20271231",
+    });
+    expect(Object.keys(feed.files)).toEqual(
+      expect.arrayContaining([
+        "agency.txt",
+        "stops.txt",
+        "routes.txt",
+        "trips.txt",
+        "stop_times.txt",
+        "calendar.txt",
+      ]),
+    );
+    expect(feed.rows["stops.txt"]).toBe(4);
+    expect(feed.rows["routes.txt"]).toBe(2);
+    expect(feed.files["agency.txt"]).toContain("Europe/Berlin");
+    expect(feed.files["calendar.txt"]).toContain("20270101");
+    expect(feed.files["routes.txt"]).toMatch(/B1,.*,3,/);
+    // Lines run at their headways: one template trip per direction and period, repeated by frequencies.txt.
+    expect(feed.rows["frequencies.txt"]).toBeGreaterThan(0);
+    expect(feed.zip.readUInt32LE(0)).toBe(0x04034b50);
+  });
+
+  it("refuses a scenario without service", () => {
+    const { analysis } = services();
+    expect(() =>
+      exportGtfs(EMPTY_DOC, analysis, {
+        agencyName: "x",
+        agencyUrl: "https://example.org",
+        timezone: "UTC",
+        lang: "en",
+        startDate: "20270101",
+        endDate: "20271231",
+      }),
+    ).toThrow(/no routed line/);
   });
 });
