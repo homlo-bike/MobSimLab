@@ -240,12 +240,19 @@ export function Workspace({
   // The map tools read this project's imported OpenStreetMap and elevation data where it has some (ADR-0045).
   const geodata = useMemo(() => api.geodata(projectId), [api, projectId]);
   useEffect(() => {
+    let open = true;
     setDataProject(projectId);
+    // An answer that arrives after the project closed, or without import state, changes nothing.
     geodata.status().then(
-      (s) => setDataProject(projectId, s.osm.current?.id ?? null),
+      (s) => {
+        if (open) setDataProject(projectId, s?.osm?.current?.id ?? null);
+      },
       () => undefined,
     );
-    return () => setDataProject(null);
+    return () => {
+      open = false;
+      setDataProject(null);
+    };
   }, [geodata, projectId]);
 
   // The plugins this project uses (ADR-0036 §9): bundled ones it has not turned off and installed ones it has
