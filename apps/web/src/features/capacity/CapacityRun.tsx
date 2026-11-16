@@ -303,7 +303,7 @@ export function CapacityRun({
           src = { kind: "files", topology: topology!.text, lines: linesFile!.text };
         else {
           setStatus(t("capacity.building"));
-          const built = await buildDrawn(railway);
+          const built = await buildDrawn(railway, undefined, undefined, prefs);
           if (!alive()) return;
           if (typeof built === "string") {
             setError(t(`capacity.drawn.${built}`));
@@ -383,7 +383,7 @@ export function CapacityRun({
         return;
       }
       setSending(true);
-      const built = await buildDrawn(railway).catch((e: unknown) =>
+      const built = await buildDrawn(railway, undefined, undefined, prefs).catch((e: unknown) =>
         e instanceof Error ? e.message : String(e),
       );
       setSending(false);
