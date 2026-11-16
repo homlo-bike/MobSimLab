@@ -5,6 +5,8 @@ import { TimeInput } from "../railways/ServiceLinesPanel";
 import { formatLength } from "./geojson";
 import { MODE_ORDER, MODES, type Timing } from "./modes";
 import { vehicleById, vehiclesFor } from "./service";
+import { usedVehicles } from "../../workspace/preferences";
+import { useVehiclesOff } from "../../workspace/projectVehicles";
 import { lineChecks, lineStats, type Check, type Severity } from "./summary";
 import type { LineView, Mode, PointKind, RoutingRules, VehicleProfile } from "./types";
 
@@ -226,6 +228,7 @@ function NumberField({
  */
 export function LinePanel(props: Props) {
   const { t } = useI18n();
+  const vehiclesOff = useVehiclesOff();
   const { view, profile, rules, timing, selected, actions: a } = props;
   const mode = MODES[profile.mode];
   const st = lineStats(view, timing);
@@ -294,7 +297,7 @@ export function LinePanel(props: Props) {
             className="rounded border border-slate-300 bg-slate-50 p-1"
           >
             <option value="">{t("street.vehicleTypical", { mode: t(mode.label) })}</option>
-            {vehiclesFor(profile.mode).map((v) => (
+            {usedVehicles(vehiclesFor(profile.mode), vehiclesOff, vehicle?.id).map((v) => (
               <option key={v.id} value={v.id}>
                 {v.name}
               </option>

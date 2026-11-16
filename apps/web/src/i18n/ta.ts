@@ -303,7 +303,14 @@ export const ta: Messages = {
   "prefs.rulesChanged": "மாற்றப்பட்டவை: {count}",
   "prefs.rulesLibrary": "அனுமானங்களின் நூலகம்: {value} {unit}",
   "prefs.rulesLibraryRange": "அனுமானங்களின் நூலகம்: {value} {unit} (வரம்பு {low}–{high})",
-  "prefs.vehicles": "பயன்படுத்தப்படும் வாகனங்கள், வாகனப் பட்டியலிலிருந்து",
+  "prefs.vehiclesTitle": "வாகனங்கள்",
+  "prefs.vehiclesIntro":
+    "இந்தத் திட்டம் ஒவ்வொரு முறைக்கும் பயன்படுத்தும் பட்டியல் வாகனங்கள். தெரு வழித்தட மற்றும் ரயில்பாதை கருவிகள் குறியிட்டவற்றை மட்டுமே காட்டும்.",
+  "prefs.vehiclesMode": "முறை",
+  "prefs.vehiclesUsed": "{total} இல் {used} பயன்பாட்டில்",
+  "prefs.vehiclesAll": "அனைத்தையும் பயன்படுத்து",
+  "prefs.vehiclesFacts": "{length} மீ · {places} இடங்கள் · {speed} கிமீ/ம",
+  "prefs.vehiclesLast": "ஒவ்வொரு முறைக்கும் குறைந்தது ஒரு வாகனம் பயன்பாட்டில் இருக்கும்.",
   "prefs.switches": "தண்டவாள சுவிட்சுகள், சுவிட்சுப் பட்டியலிலிருந்து",
   "prefs.calendar": "நாட்காட்டி, தேவை மற்றும் செலவுகள்",
 
