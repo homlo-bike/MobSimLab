@@ -39,6 +39,7 @@ export const fleetMr = {
   "fleet.field.standing": "उभ्या प्रवाशांची जागा",
   "fleet.field.topSpeed": "कमाल वेग (km/h)",
   "fleet.field.height_m": "उंची (m)",
+  "fleet.field.floor_height_mm": "तळाची उंची (mm)",
   "fleet.field.standing_density": "स्रोतानुसार उभ्या प्रवाशांची घनता (व्यक्ती/m²)",
   "fleet.field.empty_mass_t": "रिकामे वस्तुमान (t)",
   "fleet.field.loaded_weight_t": "भारित वजन (t)",

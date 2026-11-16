@@ -3,6 +3,7 @@ import { editorsRu } from "./editors/ru";
 import { cargoBikeRu } from "./cargo-bike/ru";
 import { depotsRu } from "./depots/ru";
 import { fleetRu } from "./fleet/ru";
+import { populationRu } from "./population/ru";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -281,6 +282,10 @@ export const ru: Messages = {
   "prefs.delayLane": "На выделенной разметкой полосе для автобусов или трамваев",
   "prefs.delayDefault": "Библиотека допущений: {value} %",
   "prefs.delayReset": "Использовать значение из библиотеки",
+  "prefs.stationsTitle": "Станции",
+  "prefs.stationsIntro":
+    "Одноимённые остановки в пределах этого расстояния считаются одной станцией на схеме сети, в планировщике поездок и в таблицах выгод и пассажиров.",
+  "prefs.libraryM": "Библиотека допущений: {value} м",
   "prefs.currencyTitle": "Валюта",
   "prefs.currencyIntro":
     "Все денежные суммы проекта показываются в этой валюте: таблицы затрат, выгоды, сценарии и экономия грузового велосипеда.",
@@ -303,6 +308,33 @@ export const ru: Messages = {
   "prefs.rulesChanged": "изменено: {count}",
   "prefs.rulesLibrary": "Библиотека допущений: {value} {unit}",
   "prefs.rulesLibraryRange": "Библиотека допущений: {value} {unit} (диапазон {low}–{high})",
+  "prefs.paramsTitle": "Все параметры",
+  "prefs.paramsIntro":
+    "Каждое значение библиотеки допущений. Задайте своё для всех видов транспорта или для одного; значение для вида транспорта важнее значения для всех. Значение библиотеки показано рядом.",
+  "prefs.paramsGroup": "Группа",
+  "prefs.paramsMode": "Вид транспорта",
+  "prefs.paramsAllModes": "Все виды транспорта",
+  "prefs.paramsFromAll": "ваше значение для всех видов",
+  "prefs.group.modes": "Виды транспорта",
+  "prefs.group.operations": "Эксплуатация",
+  "prefs.group.demand": "Спрос",
+  "prefs.group.analysis": "Анализ",
+  "prefs.group.simulation": "Моделирование",
+  "prefs.group.infrastructure": "Нормы инфраструктуры",
+  "prefs.group.accessibility": "Доступность",
+  "prefs.group.depots": "Депо и улицы",
+  "prefs.group.energy": "Энергия и климат",
+  "prefs.group.cost": "Затраты",
+  "prefs.group.benefits": "Выгоды",
+  "prefs.group.fares": "Тарифы",
+  "prefs.traction.battery": "аккумулятор",
+  "prefs.traction.diesel": "дизель",
+  "prefs.traction.hydrogen": "водород",
+  "prefs.traction.cng": "природный газ (КПГ)",
+  "prefs.traction.electric": "электрический",
+  "prefs.accessTitle": "Доступность платформ",
+  "prefs.accessIntro":
+    "Пределы ступеньки и зазора между платформой и поездом (TSI PRM) и высота пола для поездов без неё в каталоге. Линии проверяются на каждой остановке.",
   "prefs.vehiclesTitle": "Подвижной состав",
   "prefs.vehiclesIntro":
     "Транспортные средства из каталога, которые использует проект, по видам транспорта. Инструменты линий показывают только отмеченные.",
@@ -392,6 +424,7 @@ export const ru: Messages = {
   ...cargoBikeRu,
   ...depotsRu,
   ...fleetRu,
+  ...populationRu,
   ...roadRu,
   ...PLUGIN_MESSAGES.ru,
 };

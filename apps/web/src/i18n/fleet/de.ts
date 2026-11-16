@@ -40,6 +40,7 @@ export const fleetDe = {
   "fleet.field.standing": "Stehplätze",
   "fleet.field.topSpeed": "Höchstgeschwindigkeit (km/h)",
   "fleet.field.height_m": "Höhe (m)",
+  "fleet.field.floor_height_mm": "Fußbodenhöhe (mm)",
   "fleet.field.standing_density": "Stehdichte der Quelle (Pers./m²)",
   "fleet.field.empty_mass_t": "Leermasse (t)",
   "fleet.field.loaded_weight_t": "Gesamtgewicht beladen (t)",

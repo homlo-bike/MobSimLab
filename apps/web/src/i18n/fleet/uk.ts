@@ -39,6 +39,7 @@ export const fleetUk = {
   "fleet.field.standing": "Місця для стояння",
   "fleet.field.topSpeed": "Максимальна швидкість (км/год)",
   "fleet.field.height_m": "Висота (м)",
+  "fleet.field.floor_height_mm": "Висота підлоги (мм)",
   "fleet.field.standing_density": "Щільність стоячих за джерелом (осіб/м²)",
   "fleet.field.empty_mass_t": "Маса порожнього (т)",
   "fleet.field.loaded_weight_t": "Повна маса (т)",

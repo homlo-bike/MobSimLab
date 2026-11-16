@@ -3,6 +3,7 @@ import { editorsTe } from "./editors/te";
 import { cargoBikeTe } from "./cargo-bike/te";
 import { depotsTe } from "./depots/te";
 import { fleetTe } from "./fleet/te";
+import { populationTe } from "./population/te";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -280,6 +281,10 @@ export const te: Messages = {
   "prefs.delayLane": "రంగు వేసిన బస్సు లేదా ట్రామ్ లేన్‌లో",
   "prefs.delayDefault": "ఊహల గ్రంథాలయం: {value} %",
   "prefs.delayReset": "గ్రంథాలయ విలువను ఉపయోగించండి",
+  "prefs.stationsTitle": "స్టేషన్లు",
+  "prefs.stationsIntro":
+    "ఈ దూరంలో ఒకే పేరున్న స్టాప్‌లు స్కీమాటిక్ మ్యాప్, ప్రయాణ ప్లానర్, ప్రయోజనాలు మరియు ప్రయాణికుల పట్టికలలో ఒక స్టేషన్‌గా లెక్కించబడతాయి.",
+  "prefs.libraryM": "ఊహల గ్రంథాలయం: {value} మీ",
   "prefs.currencyTitle": "కరెన్సీ",
   "prefs.currencyIntro":
     "ప్రాజెక్టులోని మొత్తం డబ్బు ఈ కరెన్సీలో చూపబడుతుంది: ఖర్చు పట్టికలు, ప్రయోజనాలు, దృశ్యాలు, కార్గో బైక్ ఆదాలు.",
@@ -301,6 +306,33 @@ export const te: Messages = {
   "prefs.rulesChanged": "మార్చినవి: {count}",
   "prefs.rulesLibrary": "ఊహల గ్రంథాలయం: {value} {unit}",
   "prefs.rulesLibraryRange": "ఊహల గ్రంథాలయం: {value} {unit} (పరిధి {low}–{high})",
+  "prefs.paramsTitle": "అన్ని పరామితులు",
+  "prefs.paramsIntro":
+    "అంచనాల లైబ్రరీలోని ప్రతి విలువ. అన్ని రవాణా విధానాలకు లేదా ఒక విధానానికి మీ విలువ ఇవ్వండి; ఒక విధానపు విలువ అన్నింటి విలువ కంటే ముందుంటుంది. లైబ్రరీ విలువ పక్కనే ఉంటుంది.",
+  "prefs.paramsGroup": "సమూహం",
+  "prefs.paramsMode": "రవాణా విధానం",
+  "prefs.paramsAllModes": "అన్ని విధానాలు",
+  "prefs.paramsFromAll": "అన్ని విధానాలకు మీ విలువ",
+  "prefs.group.modes": "రవాణా విధానాలు",
+  "prefs.group.operations": "నిర్వహణ",
+  "prefs.group.demand": "డిమాండ్",
+  "prefs.group.analysis": "విశ్లేషణ",
+  "prefs.group.simulation": "సిమ్యులేషన్",
+  "prefs.group.infrastructure": "మౌలిక సదుపాయాల ప్రమాణాలు",
+  "prefs.group.accessibility": "అందుబాటు",
+  "prefs.group.depots": "డిపోలు మరియు వీధులు",
+  "prefs.group.energy": "శక్తి మరియు వాతావరణం",
+  "prefs.group.cost": "ఖర్చులు",
+  "prefs.group.benefits": "ప్రయోజనాలు",
+  "prefs.group.fares": "ఛార్జీలు",
+  "prefs.traction.battery": "బ్యాటరీ",
+  "prefs.traction.diesel": "డీజిల్",
+  "prefs.traction.hydrogen": "హైడ్రోజన్",
+  "prefs.traction.cng": "సహజ వాయువు (CNG)",
+  "prefs.traction.electric": "విద్యుత్",
+  "prefs.accessTitle": "ప్లాట్‌ఫారం అందుబాటు",
+  "prefs.accessIntro":
+    "ప్లాట్‌ఫారం మరియు రైలు మధ్య మెట్టు, ఖాళీ పరిమితులు (TSI PRM), జాబితాలో లేని రైళ్లకు నేల ఎత్తు. లైన్లు ప్రతి స్టాప్‌లో తనిఖీ అవుతాయి.",
   "prefs.vehiclesTitle": "వాహనాలు",
   "prefs.vehiclesIntro":
     "ఈ ప్రాజెక్ట్ ప్రతి విధానానికి వాడే జాబితా వాహనాలు. వీధి లైన్ మరియు రైల్వే సాధనాలు టిక్ చేసినవాటినే చూపుతాయి.",
@@ -386,6 +418,7 @@ export const te: Messages = {
   ...cargoBikeTe,
   ...depotsTe,
   ...fleetTe,
+  ...populationTe,
   ...roadTe,
   ...PLUGIN_MESSAGES.te,
 };

@@ -64,6 +64,7 @@ AGENT_GLOBAL_FIELDS = {
     "cycle_speed_kmh": "analysis.cycle_speed_kmh",
     "frequent_headway_min": "analysis.frequent_headway_min",
     "min_change_s": "journey.min_change_s",
+    "same_name_station_m": "journey.same_name_station_m",
 }
 RAIL_MODES = [
     "tram",
@@ -93,6 +94,7 @@ RAIL_FIELDS = {
     "side_platform_width_m": "platform.side_width_m",
     "island_platform_width_m": "platform.island_width_m",
     "platform_edge_offset_m": "platform.edge_offset_m",
+    "stopping_tolerance_m": "platform.stopping_tolerance_m",
     "track_beyond_platform_m": "station.track_beyond_platform_m",
     "underground_level_depth_m": "structure.underground_level_depth_m",
     "elevated_level_height_m": "structure.elevated_level_height_m",
@@ -178,6 +180,7 @@ GROUP_ORDER = [
     "Energy and climate",
     "Cost",
     "Benefits",
+    "Fares",
 ]
 COLLECTIONS = {"ocl", "trolley", "third-rail", "fourth-rail"}
 SUPPLY_FIELDS = {"id", "label", "collection", "current", "typical_modes", "attributes"}

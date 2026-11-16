@@ -39,6 +39,7 @@ export const fleetPt = {
   "fleet.field.standing": "Lugares em pé",
   "fleet.field.topSpeed": "Velocidade máxima (km/h)",
   "fleet.field.height_m": "Altura (m)",
+  "fleet.field.floor_height_mm": "Altura do piso (mm)",
   "fleet.field.standing_density": "Densidade em pé da fonte (pess./m²)",
   "fleet.field.empty_mass_t": "Massa vazia (t)",
   "fleet.field.loaded_weight_t": "Peso carregado (t)",

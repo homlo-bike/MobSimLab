@@ -38,6 +38,7 @@ export const fleetAr = {
   "fleet.field.standing": "أماكن الوقوف",
   "fleet.field.topSpeed": "السرعة القصوى (كم/س)",
   "fleet.field.height_m": "الارتفاع (م)",
+  "fleet.field.floor_height_mm": "ارتفاع الأرضية (مم)",
   "fleet.field.standing_density": "كثافة الوقوف حسب المصدر (شخص/م²)",
   "fleet.field.empty_mass_t": "الكتلة فارغة (طن)",
   "fleet.field.loaded_weight_t": "الوزن محمّلة (طن)",

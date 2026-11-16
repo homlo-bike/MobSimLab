@@ -39,6 +39,7 @@ export const fleetTa = {
   "fleet.field.standing": "நிற்கும் இடங்கள்",
   "fleet.field.topSpeed": "அதிகபட்ச வேகம் (km/h)",
   "fleet.field.height_m": "உயரம் (m)",
+  "fleet.field.floor_height_mm": "தரை உயரம் (mm)",
   "fleet.field.standing_density": "மூலத்தின்படி நிற்போர் அடர்த்தி (நபர்/m²)",
   "fleet.field.empty_mass_t": "வெற்று நிறை (t)",
   "fleet.field.loaded_weight_t": "சுமையுடன் எடை (t)",

@@ -38,6 +38,7 @@ export const fleetId = {
   "fleet.field.standing": "Tempat berdiri",
   "fleet.field.topSpeed": "Kecepatan maksimum (km/jam)",
   "fleet.field.height_m": "Tinggi (m)",
+  "fleet.field.floor_height_mm": "Tinggi lantai (mm)",
   "fleet.field.standing_density": "Kepadatan berdiri menurut sumber (orang/m²)",
   "fleet.field.empty_mass_t": "Massa kosong (t)",
   "fleet.field.loaded_weight_t": "Berat bermuatan (t)",

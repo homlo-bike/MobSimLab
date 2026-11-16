@@ -39,6 +39,7 @@ export const fleetKk = {
   "fleet.field.standing": "Тұратын орындар",
   "fleet.field.topSpeed": "Ең жоғары жылдамдық (км/сағ)",
   "fleet.field.height_m": "Биіктігі (м)",
+  "fleet.field.floor_height_mm": "Еден биіктігі (мм)",
   "fleet.field.standing_density": "Дереккөз бойынша тұрғандар тығыздығы (адам/м²)",
   "fleet.field.empty_mass_t": "Бос массасы (т)",
   "fleet.field.loaded_weight_t": "Жүктелген салмағы (т)",

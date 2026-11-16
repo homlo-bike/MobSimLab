@@ -39,6 +39,7 @@ export const fleetSw = {
   "fleet.field.standing": "Nafasi za kusimama",
   "fleet.field.topSpeed": "Kasi ya juu (km/h)",
   "fleet.field.height_m": "Kimo (m)",
+  "fleet.field.floor_height_mm": "Kimo cha sakafu (mm)",
   "fleet.field.standing_density": "Msongamano wa waliosimama kwa chanzo (watu/m²)",
   "fleet.field.empty_mass_t": "Uzito tupu (t)",
   "fleet.field.loaded_weight_t": "Uzito likiwa limejaa (t)",

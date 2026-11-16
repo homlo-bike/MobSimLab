@@ -990,3 +990,30 @@
   access: free
   retrieved: 2026-11-09
   checked_via: none
+
+- id: paulley-2006
+  title: "Paulley, Balcombe, Mackett, Titheridge, Preston, Wardman, Shires, White: The demand for public transport: The effects of fares, quality of service, income and car ownership (Transport Policy 13(4), 295–306, 2006)"
+  publisher: Elsevier
+  url: https://doi.org/10.1016/j.tranpol.2005.12.004
+  licence: © Elsevier; numbers cited as facts
+  access: paywalled
+  retrieved: 2026-11-16
+  checked_via: none
+
+- id: litman-transit-elasticities
+  title: "Litman: Transit Price Elasticities and Cross-Elasticities (Victoria Transport Policy Institute, updated regularly)"
+  publisher: Victoria Transport Policy Institute
+  url: https://www.vtpi.org/tranelas.pdf
+  licence: © VTPI; numbers cited as facts
+  access: free
+  retrieved: 2026-11-16
+  checked_via: none
+
+- id: tcrp-94
+  title: "TCRP Report 94: Fare Policies, Structures and Technologies: Update (Transportation Research Board, 2003)"
+  publisher: Transportation Research Board
+  url: https://doi.org/10.17226/21948
+  licence: © National Academy of Sciences; numbers cited as facts
+  access: free
+  retrieved: 2026-11-16
+  checked_via: none

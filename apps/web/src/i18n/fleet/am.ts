@@ -38,6 +38,7 @@ export const fleetAm = {
   "fleet.field.standing": "የመቆሚያ ቦታዎች",
   "fleet.field.topSpeed": "ከፍተኛ ፍጥነት (km/h)",
   "fleet.field.height_m": "ቁመት (m)",
+  "fleet.field.floor_height_mm": "የወለል ከፍታ (mm)",
   "fleet.field.standing_density": "በምንጩ መሠረት የቆሞ ተሳፋሪዎች ጥግግት (ሰው/m²)",
   "fleet.field.empty_mass_t": "ባዶ ክብደት (t)",
   "fleet.field.loaded_weight_t": "የተጫነ ክብደት (t)",

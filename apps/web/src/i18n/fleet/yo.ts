@@ -38,6 +38,7 @@ export const fleetYo = {
   "fleet.field.standing": "Ààyè ìdúró",
   "fleet.field.topSpeed": "Ìyára tó ga jù (km/h)",
   "fleet.field.height_m": "Gíga (m)",
+  "fleet.field.floor_height_mm": "Gíga ilẹ̀ ọkọ̀ (mm)",
   "fleet.field.standing_density": "Ìkún àwọn tó dúró gẹ́gẹ́ bí orísun (ènìyàn/m²)",
   "fleet.field.empty_mass_t": "Ìwúwo òfo (t)",
   "fleet.field.loaded_weight_t": "Ìwúwo pẹ̀lú ẹrù (t)",

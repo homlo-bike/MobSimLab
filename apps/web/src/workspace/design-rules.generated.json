@@ -5,6 +5,7 @@
    "field": "gauge_mm",
    "label": "Track gauge (new track and drawing of the rails)",
    "unit": "mm",
+   "engine": true,
    "modes": {
     "tram": {
      "key": "mode.new_track_gauge_mm",
@@ -68,6 +69,7 @@
    "field": "design_speed_kmh",
    "label": "Maximum speed",
    "unit": "km/h",
+   "engine": true,
    "modes": {
     "tram": {
      "key": "mode.max_speed_kmh",
@@ -131,6 +133,7 @@
    "field": "track_centre_m",
    "label": "Track centre distance (double track, open line)",
    "unit": "m",
+   "engine": true,
    "modes": {
     "tram": {
      "key": "track.centre_distance_m",
@@ -194,6 +197,7 @@
    "field": "min_radius_m",
    "label": "Curve radius, minimum",
    "unit": "m",
+   "engine": true,
    "modes": {
     "tram": {
      "key": "mode.min_curve_radius_m",
@@ -257,6 +261,7 @@
    "field": "recommended_radius_m",
    "label": "Curve radius, recommended",
    "unit": "m",
+   "engine": true,
    "modes": {
     "tram": {
      "key": "mode.recommended_curve_radius_m",
@@ -320,6 +325,7 @@
    "field": "max_gradient_permille",
    "label": "Gradient of running track, maximum",
    "unit": "‰",
+   "engine": true,
    "modes": {
     "tram": {
      "key": "mode.max_gradient_permille",
@@ -383,6 +389,7 @@
    "field": "vertical_radius_m",
    "label": "Vertical curve radius at a change of gradient, minimum",
    "unit": "m",
+   "engine": true,
    "modes": {
     "tram": {
      "key": "curve.vertical_radius_m",
@@ -446,6 +453,7 @@
    "field": "max_cant_mm",
    "label": "Cant (superelevation), maximum",
    "unit": "mm",
+   "engine": true,
    "modes": {
     "tram": {
      "key": "curve.cant_tram_mm",
@@ -509,6 +517,7 @@
    "field": "max_cant_deficiency_mm",
    "label": "Cant deficiency, maximum",
    "unit": "mm",
+   "engine": true,
    "modes": {
     "tram": {
      "key": "curve.cant_deficiency_tram_mm",
@@ -572,6 +581,7 @@
    "field": "platform_length_m",
    "label": "Platform length (usable)",
    "unit": "m",
+   "engine": true,
    "modes": {
     "tram": {
      "key": "mode.platform_length_m",
@@ -635,6 +645,7 @@
    "field": "platform_height_mm",
    "label": "Platform height above rail (rail) or kerb height above road (road modes)",
    "unit": "mm",
+   "engine": true,
    "modes": {
     "tram": {
      "key": "mode.platform_height_mm",
@@ -698,6 +709,7 @@
    "field": "side_platform_width_m",
    "label": "Side platform width",
    "unit": "m",
+   "engine": true,
    "modes": {
     "tram": {
      "key": "platform.side_width_m",
@@ -761,6 +773,7 @@
    "field": "island_platform_width_m",
    "label": "Island platform width",
    "unit": "m",
+   "engine": true,
    "modes": {
     "tram": {
      "key": "platform.island_width_m",
@@ -821,9 +834,138 @@
    }
   },
   {
+   "field": "platform_edge_offset_m",
+   "label": "Distance from track centre to the platform edge",
+   "unit": "m",
+   "engine": true,
+   "modes": {
+    "tram": {
+     "key": "platform.edge_offset_m",
+     "values": [
+      1.25,
+      1.35,
+      1.45
+     ]
+    },
+    "light_rail": {
+     "key": "platform.edge_offset_m",
+     "values": [
+      1.25,
+      1.35,
+      1.45
+     ]
+    },
+    "metro": {
+     "key": "platform.edge_offset_m",
+     "values": [
+      1.45,
+      1.55,
+      1.65
+     ]
+    },
+    "commuter_rail": {
+     "key": "platform.edge_offset_m",
+     "values": [
+      1.6,
+      1.65,
+      1.7
+     ]
+    },
+    "regional_rail": {
+     "key": "platform.edge_offset_m",
+     "values": [
+      1.6,
+      1.65,
+      1.7
+     ]
+    },
+    "long_distance_rail": {
+     "key": "platform.edge_offset_m",
+     "values": [
+      1.6,
+      1.65,
+      1.7
+     ]
+    },
+    "high_speed_rail": {
+     "key": "platform.edge_offset_m",
+     "values": [
+      1.6,
+      1.65,
+      1.7
+     ]
+    }
+   }
+  },
+  {
+   "field": "stopping_tolerance_m",
+   "label": "Stopping tolerance, platform length needed beyond the train",
+   "unit": "m",
+   "engine": true,
+   "modes": {
+    "tram": {
+     "key": "platform.stopping_tolerance_m",
+     "values": [
+      2,
+      5,
+      10
+     ]
+    },
+    "light_rail": {
+     "key": "platform.stopping_tolerance_m",
+     "values": [
+      2,
+      5,
+      10
+     ]
+    },
+    "metro": {
+     "key": "platform.stopping_tolerance_m",
+     "values": [
+      2,
+      5,
+      10
+     ]
+    },
+    "commuter_rail": {
+     "key": "platform.stopping_tolerance_m",
+     "values": [
+      2,
+      5,
+      10
+     ]
+    },
+    "regional_rail": {
+     "key": "platform.stopping_tolerance_m",
+     "values": [
+      2,
+      5,
+      10
+     ]
+    },
+    "long_distance_rail": {
+     "key": "platform.stopping_tolerance_m",
+     "values": [
+      2,
+      5,
+      10
+     ]
+    },
+    "high_speed_rail": {
+     "key": "platform.stopping_tolerance_m",
+     "values": [
+      2,
+      5,
+      10
+     ]
+    }
+   }
+  },
+  {
    "field": "acceleration_ms2",
    "label": "Acceleration (initial, at low speed)",
    "unit": "m/s²",
+   "engine": true,
    "modes": {
     "tram": {
      "key": "mode.acceleration_ms2",
@@ -887,6 +1029,7 @@
    "field": "service_braking_ms2",
    "label": "Service braking deceleration",
    "unit": "m/s²",
+   "engine": true,
    "modes": {
     "tram": {
      "key": "mode.service_braking_ms2",
@@ -942,6 +1085,390 @@
       0.5,
       0.6,
       0.8
+     ]
+    }
+   }
+  },
+  {
+   "field": "level_gap_horizontal_mm",
+   "label": "Level access: largest horizontal gap between platform edge and vehicle floor",
+   "unit": "mm",
+   "engine": false,
+   "modes": {
+    "tram": {
+     "key": "access.level_gap_horizontal_mm",
+     "values": [
+      50,
+      75,
+      100
+     ]
+    },
+    "light_rail": {
+     "key": "access.level_gap_horizontal_mm",
+     "values": [
+      50,
+      75,
+      100
+     ]
+    },
+    "metro": {
+     "key": "access.level_gap_horizontal_mm",
+     "values": [
+      50,
+      75,
+      100
+     ]
+    },
+    "commuter_rail": {
+     "key": "access.level_gap_horizontal_mm",
+     "values": [
+      50,
+      75,
+      100
+     ]
+    },
+    "regional_rail": {
+     "key": "access.level_gap_horizontal_mm",
+     "values": [
+      50,
+      75,
+      100
+     ]
+    },
+    "long_distance_rail": {
+     "key": "access.level_gap_horizontal_mm",
+     "values": [
+      50,
+      75,
+      100
+     ]
+    },
+    "high_speed_rail": {
+     "key": "access.level_gap_horizontal_mm",
+     "values": [
+      50,
+      75,
+      100
+     ]
+    }
+   }
+  },
+  {
+   "field": "level_gap_vertical_mm",
+   "label": "Level access: largest height difference between platform and vehicle floor",
+   "unit": "mm",
+   "engine": false,
+   "modes": {
+    "tram": {
+     "key": "access.level_gap_vertical_mm",
+     "values": [
+      16,
+      50,
+      50
+     ]
+    },
+    "light_rail": {
+     "key": "access.level_gap_vertical_mm",
+     "values": [
+      16,
+      50,
+      50
+     ]
+    },
+    "metro": {
+     "key": "access.level_gap_vertical_mm",
+     "values": [
+      16,
+      50,
+      50
+     ]
+    },
+    "commuter_rail": {
+     "key": "access.level_gap_vertical_mm",
+     "values": [
+      16,
+      50,
+      50
+     ]
+    },
+    "regional_rail": {
+     "key": "access.level_gap_vertical_mm",
+     "values": [
+      16,
+      50,
+      50
+     ]
+    },
+    "long_distance_rail": {
+     "key": "access.level_gap_vertical_mm",
+     "values": [
+      16,
+      50,
+      50
+     ]
+    },
+    "high_speed_rail": {
+     "key": "access.level_gap_vertical_mm",
+     "values": [
+      16,
+      50,
+      50
+     ]
+    }
+   }
+  },
+  {
+   "field": "step_gap_horizontal_mm",
+   "label": "Step limit: largest horizontal gap (straight track)",
+   "unit": "mm",
+   "engine": false,
+   "modes": {
+    "tram": {
+     "key": "access.step_gap_horizontal_mm",
+     "values": [
+      75,
+      200,
+      200
+     ]
+    },
+    "light_rail": {
+     "key": "access.step_gap_horizontal_mm",
+     "values": [
+      75,
+      200,
+      200
+     ]
+    },
+    "metro": {
+     "key": "access.step_gap_horizontal_mm",
+     "values": [
+      75,
+      200,
+      200
+     ]
+    },
+    "commuter_rail": {
+     "key": "access.step_gap_horizontal_mm",
+     "values": [
+      75,
+      200,
+      200
+     ]
+    },
+    "regional_rail": {
+     "key": "access.step_gap_horizontal_mm",
+     "values": [
+      75,
+      200,
+      200
+     ]
+    },
+    "long_distance_rail": {
+     "key": "access.step_gap_horizontal_mm",
+     "values": [
+      75,
+      200,
+      200
+     ]
+    },
+    "high_speed_rail": {
+     "key": "access.step_gap_horizontal_mm",
+     "values": [
+      75,
+      200,
+      200
+     ]
+    }
+   }
+  },
+  {
+   "field": "step_above_platform_mm",
+   "label": "Step limit: vehicle floor at most this much above the platform",
+   "unit": "mm",
+   "engine": false,
+   "modes": {
+    "tram": {
+     "key": "access.step_above_platform_mm",
+     "values": [
+      50,
+      230,
+      230
+     ]
+    },
+    "light_rail": {
+     "key": "access.step_above_platform_mm",
+     "values": [
+      50,
+      230,
+      230
+     ]
+    },
+    "metro": {
+     "key": "access.step_above_platform_mm",
+     "values": [
+      50,
+      230,
+      230
+     ]
+    },
+    "commuter_rail": {
+     "key": "access.step_above_platform_mm",
+     "values": [
+      50,
+      230,
+      230
+     ]
+    },
+    "regional_rail": {
+     "key": "access.step_above_platform_mm",
+     "values": [
+      50,
+      230,
+      230
+     ]
+    },
+    "long_distance_rail": {
+     "key": "access.step_above_platform_mm",
+     "values": [
+      50,
+      230,
+      230
+     ]
+    },
+    "high_speed_rail": {
+     "key": "access.step_above_platform_mm",
+     "values": [
+      50,
+      230,
+      230
+     ]
+    }
+   }
+  },
+  {
+   "field": "step_below_platform_mm",
+   "label": "Step limit: vehicle floor at most this much below the platform",
+   "unit": "mm",
+   "engine": false,
+   "modes": {
+    "tram": {
+     "key": "access.step_below_platform_mm",
+     "values": [
+      50,
+      160,
+      160
+     ]
+    },
+    "light_rail": {
+     "key": "access.step_below_platform_mm",
+     "values": [
+      50,
+      160,
+      160
+     ]
+    },
+    "metro": {
+     "key": "access.step_below_platform_mm",
+     "values": [
+      50,
+      160,
+      160
+     ]
+    },
+    "commuter_rail": {
+     "key": "access.step_below_platform_mm",
+     "values": [
+      50,
+      160,
+      160
+     ]
+    },
+    "regional_rail": {
+     "key": "access.step_below_platform_mm",
+     "values": [
+      50,
+      160,
+      160
+     ]
+    },
+    "long_distance_rail": {
+     "key": "access.step_below_platform_mm",
+     "values": [
+      50,
+      160,
+      160
+     ]
+    },
+    "high_speed_rail": {
+     "key": "access.step_below_platform_mm",
+     "values": [
+      50,
+      160,
+      160
+     ]
+    }
+   }
+  },
+  {
+   "field": "vehicle_floor_height_mm",
+   "label": "Vehicle floor height above rail, used when the vehicle file has none",
+   "unit": "mm",
+   "engine": false,
+   "modes": {
+    "tram": {
+     "key": "vehicle.floor_height_mm",
+     "values": [
+      300,
+      350,
+      400
+     ]
+    },
+    "light_rail": {
+     "key": "vehicle.floor_height_mm",
+     "values": [
+      350,
+      400,
+      1000
+     ]
+    },
+    "metro": {
+     "key": "vehicle.floor_height_mm",
+     "values": [
+      700,
+      1100,
+      1200
+     ]
+    },
+    "commuter_rail": {
+     "key": "vehicle.floor_height_mm",
+     "values": [
+      600,
+      800,
+      1100
+     ]
+    },
+    "regional_rail": {
+     "key": "vehicle.floor_height_mm",
+     "values": [
+      500,
+      780,
+      1250
+     ]
+    },
+    "long_distance_rail": {
+     "key": "vehicle.floor_height_mm",
+     "values": [
+      760,
+      1200,
+      1300
+     ]
+    },
+    "high_speed_rail": {
+     "key": "vehicle.floor_height_mm",
+     "values": [
+      760,
+      1240,
+      1300
      ]
     }
    }
@@ -1269,5 +1796,364 @@
   "regional_rail": "db-ew-300-1-9",
   "long_distance_rail": "db-ew-500-1-12",
   "high_speed_rail": "db-ew-1200-1-18.5"
+ },
+ "engine_keys": {
+  "tram": {
+   "acceleration_ms2": "mode.acceleration_ms2",
+   "cant_change_rate_mm_s": "curve.cant_change_rate_mm_s",
+   "cant_deficiency_change_rate_mm_s": "curve.cant_deficiency_change_rate_mm_s",
+   "clearance_marker_m": "track.clearance_marker_centre_distance_m",
+   "design_speed_kmh": "mode.max_speed_kmh",
+   "elevated_level_height_m": "structure.elevated_level_height_m",
+   "gauge_mm": "mode.new_track_gauge_mm",
+   "island_platform_width_m": "platform.island_width_m",
+   "level_crossing_cycle_min_angle_deg": "level_crossing.cycle_min_angle_deg",
+   "level_crossing_max_speed_kmh": "level_crossing.max_line_speed_kmh",
+   "level_crossing_min_angle_deg": "level_crossing.min_angle_deg",
+   "level_crossing_path_width_m": "level_crossing.path_width_m",
+   "level_crossing_reopen_s": "level_crossing.reopen_s",
+   "level_crossing_warning_time_s": "level_crossing.warning_time_s",
+   "max_cant_deficiency_mm": "curve.cant_deficiency_tram_mm",
+   "max_cant_gradient_mm_m": "curve.max_cant_gradient_mm_m",
+   "max_cant_mm": "curve.cant_tram_mm",
+   "max_gradient_permille": "mode.max_gradient_permille",
+   "min_radius_m": "mode.min_curve_radius_m",
+   "ocl_span_m": "ocl.span_m",
+   "overlap_31_40_m": "signalling.overlap_31_40_m",
+   "overlap_41_60_m": "signalling.overlap_41_60_m",
+   "overlap_above_60_m": "signalling.overlap_above_60_m",
+   "platform_edge_offset_m": "platform.edge_offset_m",
+   "platform_height_mm": "mode.platform_height_mm",
+   "platform_length_m": "mode.platform_length_m",
+   "policy_headway_offpeak_min": "timetable.policy_headway_offpeak_min",
+   "policy_headway_peak_min": "timetable.policy_headway_peak_min",
+   "recommended_radius_m": "mode.recommended_curve_radius_m",
+   "road_stop_clearance_m": "crossing.clearance_m",
+   "service_braking_ms2": "mode.service_braking_ms2",
+   "side_platform_width_m": "platform.side_width_m",
+   "sighting_m": "signalling.sighting_m",
+   "signal_before_switch_m": "signalling.signal_before_switch_m",
+   "stopping_tolerance_m": "platform.stopping_tolerance_m",
+   "street_bus_lane_delay_share": "street.bus_lane_delay_share",
+   "street_lane_width_m": "street.lane_width_m",
+   "street_lanes": "street.lanes",
+   "street_mixed_traffic_delay_share": "street.mixed_traffic_delay_share",
+   "street_speed_limit_kmh": "street.speed_limit_kmh",
+   "street_walking_pace_kmh": "street.walking_pace_kmh",
+   "structure_outline_m": "structure.outline_width_m",
+   "terrain_smoothing_window_m": "terrain.smoothing_window_m",
+   "terrain_street_level_tolerance_m": "terrain.street_level_tolerance_m",
+   "terrain_tie_in_gradient_share": "terrain.tie_in_gradient_share",
+   "track_beyond_platform_m": "station.track_beyond_platform_m",
+   "track_centre_m": "track.centre_distance_m",
+   "underground_level_depth_m": "structure.underground_level_depth_m",
+   "vertical_radius_m": "curve.vertical_radius_m"
+  },
+  "light_rail": {
+   "acceleration_ms2": "mode.acceleration_ms2",
+   "cant_change_rate_mm_s": "curve.cant_change_rate_mm_s",
+   "cant_deficiency_change_rate_mm_s": "curve.cant_deficiency_change_rate_mm_s",
+   "clearance_marker_m": "track.clearance_marker_centre_distance_m",
+   "design_speed_kmh": "mode.max_speed_kmh",
+   "elevated_level_height_m": "structure.elevated_level_height_m",
+   "gauge_mm": "mode.new_track_gauge_mm",
+   "island_platform_width_m": "platform.island_width_m",
+   "level_crossing_cycle_min_angle_deg": "level_crossing.cycle_min_angle_deg",
+   "level_crossing_max_speed_kmh": "level_crossing.max_line_speed_kmh",
+   "level_crossing_min_angle_deg": "level_crossing.min_angle_deg",
+   "level_crossing_path_width_m": "level_crossing.path_width_m",
+   "level_crossing_reopen_s": "level_crossing.reopen_s",
+   "level_crossing_warning_time_s": "level_crossing.warning_time_s",
+   "max_cant_deficiency_mm": "curve.cant_deficiency_tram_mm",
+   "max_cant_gradient_mm_m": "curve.max_cant_gradient_mm_m",
+   "max_cant_mm": "curve.cant_tram_mm",
+   "max_gradient_permille": "mode.max_gradient_permille",
+   "min_radius_m": "mode.min_curve_radius_m",
+   "ocl_span_m": "ocl.span_m",
+   "overlap_31_40_m": "signalling.overlap_31_40_m",
+   "overlap_41_60_m": "signalling.overlap_41_60_m",
+   "overlap_above_60_m": "signalling.overlap_above_60_m",
+   "platform_edge_offset_m": "platform.edge_offset_m",
+   "platform_height_mm": "mode.platform_height_mm",
+   "platform_length_m": "mode.platform_length_m",
+   "policy_headway_offpeak_min": "timetable.policy_headway_offpeak_min",
+   "policy_headway_peak_min": "timetable.policy_headway_peak_min",
+   "recommended_radius_m": "mode.recommended_curve_radius_m",
+   "road_stop_clearance_m": "crossing.clearance_m",
+   "service_braking_ms2": "mode.service_braking_ms2",
+   "side_platform_width_m": "platform.side_width_m",
+   "sighting_m": "signalling.sighting_m",
+   "signal_before_switch_m": "signalling.signal_before_switch_m",
+   "stopping_tolerance_m": "platform.stopping_tolerance_m",
+   "street_bus_lane_delay_share": "street.bus_lane_delay_share",
+   "street_lane_width_m": "street.lane_width_m",
+   "street_lanes": "street.lanes",
+   "street_mixed_traffic_delay_share": "street.mixed_traffic_delay_share",
+   "street_speed_limit_kmh": "street.speed_limit_kmh",
+   "street_walking_pace_kmh": "street.walking_pace_kmh",
+   "structure_outline_m": "structure.outline_width_m",
+   "terrain_smoothing_window_m": "terrain.smoothing_window_m",
+   "terrain_street_level_tolerance_m": "terrain.street_level_tolerance_m",
+   "terrain_tie_in_gradient_share": "terrain.tie_in_gradient_share",
+   "track_beyond_platform_m": "station.track_beyond_platform_m",
+   "track_centre_m": "track.centre_distance_m",
+   "underground_level_depth_m": "structure.underground_level_depth_m",
+   "vertical_radius_m": "curve.vertical_radius_m"
+  },
+  "metro": {
+   "acceleration_ms2": "mode.acceleration_ms2",
+   "cant_change_rate_mm_s": "curve.cant_change_rate_mm_s",
+   "cant_deficiency_change_rate_mm_s": "curve.cant_deficiency_change_rate_mm_s",
+   "clearance_marker_m": "track.clearance_marker_centre_distance_m",
+   "design_speed_kmh": "mode.max_speed_kmh",
+   "elevated_level_height_m": "structure.elevated_level_height_m",
+   "gauge_mm": "mode.new_track_gauge_mm",
+   "island_platform_width_m": "platform.island_width_m",
+   "level_crossing_cycle_min_angle_deg": "level_crossing.cycle_min_angle_deg",
+   "level_crossing_max_speed_kmh": "level_crossing.max_line_speed_kmh",
+   "level_crossing_min_angle_deg": "level_crossing.min_angle_deg",
+   "level_crossing_path_width_m": "level_crossing.path_width_m",
+   "level_crossing_reopen_s": "level_crossing.reopen_s",
+   "level_crossing_warning_time_s": "level_crossing.warning_time_s",
+   "max_cant_deficiency_mm": "curve.cant_deficiency_rail_mm",
+   "max_cant_gradient_mm_m": "curve.max_cant_gradient_mm_m",
+   "max_cant_mm": "curve.cant_rail_mm",
+   "max_gradient_permille": "mode.max_gradient_permille",
+   "min_radius_m": "mode.min_curve_radius_m",
+   "ocl_span_m": "ocl.span_m",
+   "overlap_31_40_m": "signalling.overlap_31_40_m",
+   "overlap_41_60_m": "signalling.overlap_41_60_m",
+   "overlap_above_60_m": "signalling.overlap_above_60_m",
+   "platform_edge_offset_m": "platform.edge_offset_m",
+   "platform_height_mm": "mode.platform_height_mm",
+   "platform_length_m": "mode.platform_length_m",
+   "policy_headway_offpeak_min": "timetable.policy_headway_offpeak_min",
+   "policy_headway_peak_min": "timetable.policy_headway_peak_min",
+   "recommended_radius_m": "mode.recommended_curve_radius_m",
+   "road_stop_clearance_m": "crossing.clearance_m",
+   "service_braking_ms2": "mode.service_braking_ms2",
+   "side_platform_width_m": "platform.side_width_m",
+   "sighting_m": "signalling.sighting_m",
+   "signal_before_switch_m": "signalling.signal_before_switch_m",
+   "stopping_tolerance_m": "platform.stopping_tolerance_m",
+   "street_bus_lane_delay_share": "street.bus_lane_delay_share",
+   "street_lane_width_m": "street.lane_width_m",
+   "street_lanes": "street.lanes",
+   "street_mixed_traffic_delay_share": "street.mixed_traffic_delay_share",
+   "street_speed_limit_kmh": "street.speed_limit_kmh",
+   "street_walking_pace_kmh": "street.walking_pace_kmh",
+   "structure_outline_m": "structure.outline_width_m",
+   "terrain_smoothing_window_m": "terrain.smoothing_window_m",
+   "terrain_street_level_tolerance_m": "terrain.street_level_tolerance_m",
+   "terrain_tie_in_gradient_share": "terrain.tie_in_gradient_share",
+   "track_beyond_platform_m": "station.track_beyond_platform_m",
+   "track_centre_m": "track.centre_distance_m",
+   "underground_level_depth_m": "structure.underground_level_depth_m",
+   "vertical_radius_m": "curve.vertical_radius_m"
+  },
+  "commuter_rail": {
+   "acceleration_ms2": "mode.acceleration_ms2",
+   "cant_change_rate_mm_s": "curve.cant_change_rate_mm_s",
+   "cant_deficiency_change_rate_mm_s": "curve.cant_deficiency_change_rate_mm_s",
+   "clearance_marker_m": "track.clearance_marker_centre_distance_m",
+   "design_speed_kmh": "mode.max_speed_kmh",
+   "elevated_level_height_m": "structure.elevated_level_height_m",
+   "gauge_mm": "mode.new_track_gauge_mm",
+   "island_platform_width_m": "platform.island_width_m",
+   "level_crossing_cycle_min_angle_deg": "level_crossing.cycle_min_angle_deg",
+   "level_crossing_max_speed_kmh": "level_crossing.max_line_speed_kmh",
+   "level_crossing_min_angle_deg": "level_crossing.min_angle_deg",
+   "level_crossing_path_width_m": "level_crossing.path_width_m",
+   "level_crossing_reopen_s": "level_crossing.reopen_s",
+   "level_crossing_warning_time_s": "level_crossing.warning_time_s",
+   "max_cant_deficiency_mm": "curve.cant_deficiency_rail_mm",
+   "max_cant_gradient_mm_m": "curve.max_cant_gradient_mm_m",
+   "max_cant_mm": "curve.cant_rail_mm",
+   "max_gradient_permille": "mode.max_gradient_permille",
+   "min_radius_m": "mode.min_curve_radius_m",
+   "ocl_span_m": "ocl.span_m",
+   "overlap_31_40_m": "signalling.overlap_31_40_m",
+   "overlap_41_60_m": "signalling.overlap_41_60_m",
+   "overlap_above_60_m": "signalling.overlap_above_60_m",
+   "platform_edge_offset_m": "platform.edge_offset_m",
+   "platform_height_mm": "mode.platform_height_mm",
+   "platform_length_m": "mode.platform_length_m",
+   "policy_headway_offpeak_min": "timetable.policy_headway_offpeak_min",
+   "policy_headway_peak_min": "timetable.policy_headway_peak_min",
+   "recommended_radius_m": "mode.recommended_curve_radius_m",
+   "road_stop_clearance_m": "crossing.clearance_m",
+   "service_braking_ms2": "mode.service_braking_ms2",
+   "side_platform_width_m": "platform.side_width_m",
+   "sighting_m": "signalling.sighting_m",
+   "signal_before_switch_m": "signalling.signal_before_switch_m",
+   "stopping_tolerance_m": "platform.stopping_tolerance_m",
+   "street_bus_lane_delay_share": "street.bus_lane_delay_share",
+   "street_lane_width_m": "street.lane_width_m",
+   "street_lanes": "street.lanes",
+   "street_mixed_traffic_delay_share": "street.mixed_traffic_delay_share",
+   "street_speed_limit_kmh": "street.speed_limit_kmh",
+   "street_walking_pace_kmh": "street.walking_pace_kmh",
+   "structure_outline_m": "structure.outline_width_m",
+   "terrain_smoothing_window_m": "terrain.smoothing_window_m",
+   "terrain_street_level_tolerance_m": "terrain.street_level_tolerance_m",
+   "terrain_tie_in_gradient_share": "terrain.tie_in_gradient_share",
+   "track_beyond_platform_m": "station.track_beyond_platform_m",
+   "track_centre_m": "track.centre_distance_m",
+   "underground_level_depth_m": "structure.underground_level_depth_m",
+   "vertical_radius_m": "curve.vertical_radius_m"
+  },
+  "regional_rail": {
+   "acceleration_ms2": "mode.acceleration_ms2",
+   "cant_change_rate_mm_s": "curve.cant_change_rate_mm_s",
+   "cant_deficiency_change_rate_mm_s": "curve.cant_deficiency_change_rate_mm_s",
+   "clearance_marker_m": "track.clearance_marker_centre_distance_m",
+   "design_speed_kmh": "mode.max_speed_kmh",
+   "elevated_level_height_m": "structure.elevated_level_height_m",
+   "gauge_mm": "mode.new_track_gauge_mm",
+   "island_platform_width_m": "platform.island_width_m",
+   "level_crossing_cycle_min_angle_deg": "level_crossing.cycle_min_angle_deg",
+   "level_crossing_max_speed_kmh": "level_crossing.max_line_speed_kmh",
+   "level_crossing_min_angle_deg": "level_crossing.min_angle_deg",
+   "level_crossing_path_width_m": "level_crossing.path_width_m",
+   "level_crossing_reopen_s": "level_crossing.reopen_s",
+   "level_crossing_warning_time_s": "level_crossing.warning_time_s",
+   "max_cant_deficiency_mm": "curve.cant_deficiency_rail_mm",
+   "max_cant_gradient_mm_m": "curve.max_cant_gradient_mm_m",
+   "max_cant_mm": "curve.cant_rail_mm",
+   "max_gradient_permille": "mode.max_gradient_permille",
+   "min_radius_m": "mode.min_curve_radius_m",
+   "ocl_span_m": "ocl.span_m",
+   "overlap_31_40_m": "signalling.overlap_31_40_m",
+   "overlap_41_60_m": "signalling.overlap_41_60_m",
+   "overlap_above_60_m": "signalling.overlap_above_60_m",
+   "platform_edge_offset_m": "platform.edge_offset_m",
+   "platform_height_mm": "mode.platform_height_mm",
+   "platform_length_m": "mode.platform_length_m",
+   "policy_headway_offpeak_min": "timetable.policy_headway_offpeak_min",
+   "policy_headway_peak_min": "timetable.policy_headway_peak_min",
+   "recommended_radius_m": "mode.recommended_curve_radius_m",
+   "road_stop_clearance_m": "crossing.clearance_m",
+   "service_braking_ms2": "mode.service_braking_ms2",
+   "side_platform_width_m": "platform.side_width_m",
+   "sighting_m": "signalling.sighting_m",
+   "signal_before_switch_m": "signalling.signal_before_switch_m",
+   "stopping_tolerance_m": "platform.stopping_tolerance_m",
+   "street_bus_lane_delay_share": "street.bus_lane_delay_share",
+   "street_lane_width_m": "street.lane_width_m",
+   "street_lanes": "street.lanes",
+   "street_mixed_traffic_delay_share": "street.mixed_traffic_delay_share",
+   "street_speed_limit_kmh": "street.speed_limit_kmh",
+   "street_walking_pace_kmh": "street.walking_pace_kmh",
+   "structure_outline_m": "structure.outline_width_m",
+   "terrain_smoothing_window_m": "terrain.smoothing_window_m",
+   "terrain_street_level_tolerance_m": "terrain.street_level_tolerance_m",
+   "terrain_tie_in_gradient_share": "terrain.tie_in_gradient_share",
+   "track_beyond_platform_m": "station.track_beyond_platform_m",
+   "track_centre_m": "track.centre_distance_m",
+   "underground_level_depth_m": "structure.underground_level_depth_m",
+   "vertical_radius_m": "curve.vertical_radius_m"
+  },
+  "long_distance_rail": {
+   "acceleration_ms2": "mode.acceleration_ms2",
+   "cant_change_rate_mm_s": "curve.cant_change_rate_mm_s",
+   "cant_deficiency_change_rate_mm_s": "curve.cant_deficiency_change_rate_mm_s",
+   "clearance_marker_m": "track.clearance_marker_centre_distance_m",
+   "design_speed_kmh": "mode.max_speed_kmh",
+   "elevated_level_height_m": "structure.elevated_level_height_m",
+   "gauge_mm": "mode.new_track_gauge_mm",
+   "island_platform_width_m": "platform.island_width_m",
+   "level_crossing_cycle_min_angle_deg": "level_crossing.cycle_min_angle_deg",
+   "level_crossing_max_speed_kmh": "level_crossing.max_line_speed_kmh",
+   "level_crossing_min_angle_deg": "level_crossing.min_angle_deg",
+   "level_crossing_path_width_m": "level_crossing.path_width_m",
+   "level_crossing_reopen_s": "level_crossing.reopen_s",
+   "level_crossing_warning_time_s": "level_crossing.warning_time_s",
+   "max_cant_deficiency_mm": "curve.cant_deficiency_rail_mm",
+   "max_cant_gradient_mm_m": "curve.max_cant_gradient_mm_m",
+   "max_cant_mm": "curve.cant_rail_mm",
+   "max_gradient_permille": "mode.max_gradient_permille",
+   "min_radius_m": "mode.min_curve_radius_m",
+   "ocl_span_m": "ocl.span_m",
+   "overlap_31_40_m": "signalling.overlap_31_40_m",
+   "overlap_41_60_m": "signalling.overlap_41_60_m",
+   "overlap_above_60_m": "signalling.overlap_above_60_m",
+   "platform_edge_offset_m": "platform.edge_offset_m",
+   "platform_height_mm": "mode.platform_height_mm",
+   "platform_length_m": "mode.platform_length_m",
+   "policy_headway_offpeak_min": "timetable.policy_headway_offpeak_min",
+   "policy_headway_peak_min": "timetable.policy_headway_peak_min",
+   "recommended_radius_m": "mode.recommended_curve_radius_m",
+   "road_stop_clearance_m": "crossing.clearance_m",
+   "service_braking_ms2": "mode.service_braking_ms2",
+   "side_platform_width_m": "platform.side_width_m",
+   "sighting_m": "signalling.sighting_m",
+   "signal_before_switch_m": "signalling.signal_before_switch_m",
+   "stopping_tolerance_m": "platform.stopping_tolerance_m",
+   "street_bus_lane_delay_share": "street.bus_lane_delay_share",
+   "street_lane_width_m": "street.lane_width_m",
+   "street_lanes": "street.lanes",
+   "street_mixed_traffic_delay_share": "street.mixed_traffic_delay_share",
+   "street_speed_limit_kmh": "street.speed_limit_kmh",
+   "street_walking_pace_kmh": "street.walking_pace_kmh",
+   "structure_outline_m": "structure.outline_width_m",
+   "terrain_smoothing_window_m": "terrain.smoothing_window_m",
+   "terrain_street_level_tolerance_m": "terrain.street_level_tolerance_m",
+   "terrain_tie_in_gradient_share": "terrain.tie_in_gradient_share",
+   "track_beyond_platform_m": "station.track_beyond_platform_m",
+   "track_centre_m": "track.centre_distance_m",
+   "underground_level_depth_m": "structure.underground_level_depth_m",
+   "vertical_radius_m": "curve.vertical_radius_m"
+  },
+  "high_speed_rail": {
+   "acceleration_ms2": "mode.acceleration_ms2",
+   "cant_change_rate_mm_s": "curve.cant_change_rate_mm_s",
+   "cant_deficiency_change_rate_mm_s": "curve.cant_deficiency_change_rate_mm_s",
+   "clearance_marker_m": "track.clearance_marker_centre_distance_m",
+   "design_speed_kmh": "mode.max_speed_kmh",
+   "elevated_level_height_m": "structure.elevated_level_height_m",
+   "gauge_mm": "mode.new_track_gauge_mm",
+   "island_platform_width_m": "platform.island_width_m",
+   "level_crossing_cycle_min_angle_deg": "level_crossing.cycle_min_angle_deg",
+   "level_crossing_max_speed_kmh": "level_crossing.max_line_speed_kmh",
+   "level_crossing_min_angle_deg": "level_crossing.min_angle_deg",
+   "level_crossing_path_width_m": "level_crossing.path_width_m",
+   "level_crossing_reopen_s": "level_crossing.reopen_s",
+   "level_crossing_warning_time_s": "level_crossing.warning_time_s",
+   "max_cant_deficiency_mm": "curve.cant_deficiency_rail_mm",
+   "max_cant_gradient_mm_m": "curve.max_cant_gradient_mm_m",
+   "max_cant_mm": "curve.cant_rail_mm",
+   "max_gradient_permille": "mode.max_gradient_permille",
+   "min_radius_m": "mode.min_curve_radius_m",
+   "ocl_span_m": "ocl.span_m",
+   "overlap_31_40_m": "signalling.overlap_31_40_m",
+   "overlap_41_60_m": "signalling.overlap_41_60_m",
+   "overlap_above_60_m": "signalling.overlap_above_60_m",
+   "platform_edge_offset_m": "platform.edge_offset_m",
+   "platform_height_mm": "mode.platform_height_mm",
+   "platform_length_m": "mode.platform_length_m",
+   "policy_headway_offpeak_min": "timetable.policy_headway_offpeak_min",
+   "policy_headway_peak_min": "timetable.policy_headway_peak_min",
+   "recommended_radius_m": "mode.recommended_curve_radius_m",
+   "road_stop_clearance_m": "crossing.clearance_m",
+   "service_braking_ms2": "mode.service_braking_ms2",
+   "side_platform_width_m": "platform.side_width_m",
+   "sighting_m": "signalling.sighting_m",
+   "signal_before_switch_m": "signalling.signal_before_switch_m",
+   "stopping_tolerance_m": "platform.stopping_tolerance_m",
+   "street_bus_lane_delay_share": "street.bus_lane_delay_share",
+   "street_lane_width_m": "street.lane_width_m",
+   "street_lanes": "street.lanes",
+   "street_mixed_traffic_delay_share": "street.mixed_traffic_delay_share",
+   "street_speed_limit_kmh": "street.speed_limit_kmh",
+   "street_walking_pace_kmh": "street.walking_pace_kmh",
+   "structure_outline_m": "structure.outline_width_m",
+   "terrain_smoothing_window_m": "terrain.smoothing_window_m",
+   "terrain_street_level_tolerance_m": "terrain.street_level_tolerance_m",
+   "terrain_tie_in_gradient_share": "terrain.tie_in_gradient_share",
+   "track_beyond_platform_m": "station.track_beyond_platform_m",
+   "track_centre_m": "track.centre_distance_m",
+   "underground_level_depth_m": "structure.underground_level_depth_m",
+   "vertical_radius_m": "curve.vertical_radius_m"
+  }
  }
 }

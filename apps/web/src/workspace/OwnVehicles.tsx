@@ -215,6 +215,7 @@ const NUMBER_FIELDS: {
   { key: "length_m", label: "length", core: true },
   { key: "width_m", label: "width", core: true },
   { key: "height_m", label: "height_m" },
+  { key: "floor_height_mm", label: "floor_height_mm" },
   { key: "seats", label: "seats", core: true },
   { key: "standing", label: "standing", core: true },
   { key: "standing_density", label: "standing_density" },
