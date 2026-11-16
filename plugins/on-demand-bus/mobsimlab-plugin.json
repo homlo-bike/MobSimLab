@@ -2,7 +2,7 @@
   "$schema": "../../contracts/plugin-manifest.schema.json",
   "id": "org.mobsimlab.on-demand-bus",
   "name": "On-demand bus",
-  "description": "Demand-responsive transport drawn with the service zone kit: outline a zone, set the requests an hour, the fleet and the service hours, and get the vehicles needed, the average wait, ride and door-to-door time from continuous-approximation formulas. The zone shows in the journey planner. A trip-by-trip dispatch simulation comes later (ADR-0037 §7).",
+  "description": "Demand-responsive transport drawn with the service zone kit: outline a zone, set the requests an hour, the fleet and the service hours, and get the vehicles needed, the average wait, ride and door-to-door time from continuous-approximation formulas. Simulate the day dispatches every booking trip by trip (ADR-0041). The zone shows in the journey planner.",
   "version": "0.1.0",
   "publisher": { "name": "MobSimLab contributors", "url": "https://github.com/homlo-bike/MobSimLab" },
   "license": "AGPL-3.0-or-later",

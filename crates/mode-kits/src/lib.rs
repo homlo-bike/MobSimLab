@@ -19,6 +19,7 @@
 //!   dwell times, and hold until a reservable resource (a berth, a lock, a single track) is free.
 //! - [`issue`]: findings shared by the kits (error, warning, info).
 
+pub mod dispatch;
 pub mod geo;
 pub mod issue;
 pub mod segment;
