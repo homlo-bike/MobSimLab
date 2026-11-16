@@ -280,6 +280,7 @@ export const vi: Messages = {
   "prefs.delayLane": "Trên làn xe buýt hoặc tàu điện chỉ được sơn",
   "prefs.delayDefault": "Thư viện giả định: {value} %",
   "prefs.delayReset": "Dùng giá trị thư viện",
+  "prefs.reason": "Lý do cho giá trị này (không bắt buộc)",
   "prefs.stationsTitle": "Ga",
   "prefs.stationsIntro":
     "Các điểm dừng cùng tên trong khoảng cách này được tính là một ga trên sơ đồ mạng lưới, công cụ lập hành trình và các bảng lợi ích và hành khách.",
