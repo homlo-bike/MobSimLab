@@ -558,6 +558,51 @@ describe("project workspace", () => {
     expect(r50.checked).toBe(false);
   });
 
+  it("changes any library parameter for all modes or one mode, and goes back to the library value", async () => {
+    const calls = stubApi(owner, {
+      [`GET /api/projects/${P1}/drawings`]: { drawings: {} },
+      [`PUT /api/projects/${P1}/drawings/preferences`]: {
+        drawing: {
+          kind: "preferences",
+          schemaVersion: 1,
+          doc: { values: { "mode.dwell_s": 40 } },
+          version: 1,
+          updatedAt: "2026-11-16T10:00:00Z",
+          updatedBy: { id: "u1", displayName: "Alice Smith" },
+        },
+      },
+    });
+    window.history.replaceState(null, "", `/projects/${P1}/preferences`);
+    render(<App />);
+    const params = await screen.findByRole("region", { name: "All parameters" });
+    expect((within(params).getByLabelText("Group") as HTMLSelectElement).value).toBe("Modes");
+    const dwell = within(params).getByLabelText("Dwell time at a stop") as HTMLInputElement;
+    expect(dwell.value).toBe("30");
+    fireEvent.change(dwell, { target: { value: "40" } });
+    await waitFor(
+      () =>
+        expect(calls.find((c) => c.method === "PUT" && c.url.endsWith("/drawings/preferences"))).toBeTruthy(),
+      { timeout: 3000 },
+    );
+    expect(calls.find((c) => c.url.endsWith("/drawings/preferences"))?.body).toEqual({
+      doc: { values: { "mode.dwell_s": 40 } },
+      baseVersion: null,
+    });
+    // For one mode, the value for all modes shows until the mode gets its own.
+    fireEvent.change(within(params).getByLabelText("Mode"), { target: { value: "tram" } });
+    const tramDwell = within(params).getByLabelText("Dwell time at a stop") as HTMLInputElement;
+    expect(tramDwell.value).toBe("40");
+    expect(params.textContent).toContain("your value for all modes");
+    // An enum parameter offers its options.
+    const row = within(params).getByLabelText(
+      "Structure and right of way (category A, B or C)",
+    ) as HTMLSelectElement;
+    expect(row.value).toBe("C");
+    fireEvent.change(within(params).getByLabelText("Mode"), { target: { value: "*" } });
+    fireEvent.click(within(params).getByRole("button", { name: "Use the library value" }));
+    expect((within(params).getByLabelText("Dwell time at a stop") as HTMLInputElement).value).toBe("30");
+  });
+
   it("changes a design rule for one rail mode and goes back to the library value", async () => {
     const calls = stubApi(owner, {
       [`GET /api/projects/${P1}/drawings`]: { drawings: {} },

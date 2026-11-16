@@ -4,6 +4,7 @@ import { cargoBikeSw } from "./cargo-bike/sw";
 import { depotsSw } from "./depots/sw";
 import { mslabSw } from "./mslab/sw";
 import { pluginCodeSw } from "./plugin-code/sw";
+import { populationSw } from "./population/sw";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -280,6 +281,10 @@ export const sw: Messages = {
   "prefs.delayLane": "Katika njia ya basi au tramu iliyochorwa kwa rangi",
   "prefs.delayDefault": "Maktaba ya dhana: {value} %",
   "prefs.delayReset": "Tumia thamani ya maktaba",
+  "prefs.stationsTitle": "Stesheni",
+  "prefs.stationsIntro":
+    "Vituo vyenye jina moja ndani ya umbali huu vinahesabiwa kama stesheni moja kwenye ramani ya mchoro, kipanga safari na majedwali ya manufaa na abiria.",
+  "prefs.libraryM": "Maktaba ya dhana: {value} m",
   "prefs.currencyTitle": "Sarafu",
   "prefs.currencyIntro":
     "Fedha zote za mradi zinaonyeshwa kwa sarafu hii: majedwali ya gharama, manufaa, matukio na akiba ya baiskeli ya mizigo.",
@@ -302,6 +307,30 @@ export const sw: Messages = {
   "prefs.rulesChanged": "zilizobadilishwa: {count}",
   "prefs.rulesLibrary": "Maktaba ya dhana: {value} {unit}",
   "prefs.rulesLibraryRange": "Maktaba ya dhana: {value} {unit} (kiwango {low}–{high})",
+  "prefs.paramsTitle": "Vigezo vyote",
+  "prefs.paramsIntro":
+    "Kila thamani ya maktaba ya dhana. Weka yako kwa njia zote au kwa njia moja; thamani ya njia moja inatangulia ile ya njia zote. Thamani ya maktaba hubaki kando.",
+  "prefs.paramsGroup": "Kundi",
+  "prefs.paramsMode": "Njia ya usafiri",
+  "prefs.paramsAllModes": "Njia zote",
+  "prefs.paramsFromAll": "thamani yako kwa njia zote",
+  "prefs.group.modes": "Njia za usafiri",
+  "prefs.group.operations": "Uendeshaji",
+  "prefs.group.demand": "Mahitaji",
+  "prefs.group.analysis": "Uchambuzi",
+  "prefs.group.simulation": "Uigaji",
+  "prefs.group.infrastructure": "Viwango vya miundombinu",
+  "prefs.group.accessibility": "Ufikivu",
+  "prefs.group.depots": "Bohari na barabara",
+  "prefs.group.energy": "Nishati na tabianchi",
+  "prefs.group.cost": "Gharama",
+  "prefs.group.benefits": "Manufaa",
+  "prefs.group.fares": "Nauli",
+  "prefs.traction.battery": "betri",
+  "prefs.traction.diesel": "dizeli",
+  "prefs.traction.hydrogen": "haidrojeni",
+  "prefs.traction.cng": "gesi asilia (CNG)",
+  "prefs.traction.electric": "umeme",
   "prefs.accessTitle": "Ufikivu wa jukwaa",
   "prefs.accessIntro":
     "Mipaka ya ngazi na pengo kati ya jukwaa na treni (TSI PRM), na kimo cha sakafu kwa treni zisizo nacho kwenye orodha. Njia hukaguliwa kila kituo.",
@@ -394,6 +423,7 @@ export const sw: Messages = {
   ...depotsSw,
   ...mslabSw,
   ...pluginCodeSw,
+  ...populationSw,
   ...roadSw,
   ...PLUGIN_MESSAGES.sw,
 };

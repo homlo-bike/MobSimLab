@@ -4,6 +4,7 @@ import { cargoBikePl } from "./cargo-bike/pl";
 import { depotsPl } from "./depots/pl";
 import { mslabPl } from "./mslab/pl";
 import { pluginCodePl } from "./plugin-code/pl";
+import { populationPl } from "./population/pl";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -281,6 +282,10 @@ export const pl: Messages = {
   "prefs.delayLane": "Na buspasie lub pasie tramwajowym tylko wymalowanym",
   "prefs.delayDefault": "Biblioteka założeń: {value} %",
   "prefs.delayReset": "Użyj wartości z biblioteki",
+  "prefs.stationsTitle": "Stacje",
+  "prefs.stationsIntro":
+    "Przystanki o tej samej nazwie w tej odległości liczą się jako jedna stacja na schemacie sieci, w planerze podróży oraz w tabelach korzyści i pasażerów.",
+  "prefs.libraryM": "Biblioteka założeń: {value} m",
   "prefs.currencyTitle": "Waluta",
   "prefs.currencyIntro":
     "Wszystkie kwoty w projekcie są pokazywane w tej walucie: tabele kosztów, korzyści, scenariusze i oszczędności roweru towarowego.",
@@ -302,6 +307,30 @@ export const pl: Messages = {
   "prefs.rulesChanged": "zmienione: {count}",
   "prefs.rulesLibrary": "Biblioteka założeń: {value} {unit}",
   "prefs.rulesLibraryRange": "Biblioteka założeń: {value} {unit} (zakres {low}–{high})",
+  "prefs.paramsTitle": "Wszystkie parametry",
+  "prefs.paramsIntro":
+    "Każda wartość z biblioteki założeń. Ustaw własną dla wszystkich środków transportu lub dla jednego; wartość dla jednego ma pierwszeństwo przed wartością dla wszystkich. Wartość biblioteki widać obok.",
+  "prefs.paramsGroup": "Grupa",
+  "prefs.paramsMode": "Środek transportu",
+  "prefs.paramsAllModes": "Wszystkie środki transportu",
+  "prefs.paramsFromAll": "Twoja wartość dla wszystkich",
+  "prefs.group.modes": "Środki transportu",
+  "prefs.group.operations": "Eksploatacja",
+  "prefs.group.demand": "Popyt",
+  "prefs.group.analysis": "Analiza",
+  "prefs.group.simulation": "Symulacja",
+  "prefs.group.infrastructure": "Normy infrastruktury",
+  "prefs.group.accessibility": "Dostępność",
+  "prefs.group.depots": "Zajezdnie i ulice",
+  "prefs.group.energy": "Energia i klimat",
+  "prefs.group.cost": "Koszty",
+  "prefs.group.benefits": "Korzyści",
+  "prefs.group.fares": "Taryfy",
+  "prefs.traction.battery": "akumulator",
+  "prefs.traction.diesel": "diesel",
+  "prefs.traction.hydrogen": "wodór",
+  "prefs.traction.cng": "gaz ziemny (CNG)",
+  "prefs.traction.electric": "elektryczny",
   "prefs.accessTitle": "Dostępność peronów",
   "prefs.accessIntro":
     "Limity stopnia i szczeliny między peronem a pociągiem (TSI PRM) oraz wysokość podłogi dla pociągów bez tej wartości w katalogu. Linie są sprawdzane na każdym przystanku.",
@@ -393,6 +422,7 @@ export const pl: Messages = {
   ...depotsPl,
   ...mslabPl,
   ...pluginCodePl,
+  ...populationPl,
   ...roadPl,
   ...PLUGIN_MESSAGES.pl,
 };
