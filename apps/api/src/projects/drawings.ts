@@ -179,6 +179,32 @@ const cargoBike = z.looseObject({
     .optional(),
 });
 
+/** Road depots shared by the street lines (contracts/depot.schema.json): outline, gates, zones and layout. */
+const depots = z.looseObject({
+  depots: z
+    .array(
+      z.looseObject({
+        id: z.string().min(1).max(64),
+        name: z.string().max(120),
+        modes: z.array(z.enum(["bus", "brt", "trolleybus", "intercity_bus"])).max(4),
+        boundary: z.array(point).max(500),
+        gates: z.array(z.looseObject({ id: z.string().min(1).max(64), lonlat: point })).max(20),
+        zones: z
+          .array(z.looseObject({ id: z.string().min(1).max(64), ring: z.array(point).max(500) }))
+          .max(100),
+        layout: z
+          .looseObject({
+            lanes: z
+              .array(z.looseObject({ id: z.string().min(1), slots: z.array(z.looseObject({})) }))
+              .max(5000),
+            aisles: z.array(z.looseObject({ id: z.string().min(1) })).max(2000),
+          })
+          .nullable(),
+      }),
+    )
+    .max(50),
+});
+
 /** Drawing kinds with their document outline and current schema version. */
 export const DRAWING_KINDS = {
   /** The street line tool (ADR-0029): bus, BRT, trolleybus and intercity bus lines. */
@@ -205,6 +231,8 @@ export const DRAWING_KINDS = {
   regions: { schema: regions, schemaVersion: 1 },
   /** Cargo bike tab of the cargo bike plugin: start point, destination and the project's own values. */
   "cargo-bike": { schema: cargoBike, schemaVersion: 1 },
+  /** Road depots (07-simulation §7), shared by the street lines whose vehicles fit. */
+  depots: { schema: depots, schemaVersion: 1 },
 } as const satisfies Record<string, { schema: z.ZodType; schemaVersion: number }>;
 
 export type DrawingKind = keyof typeof DRAWING_KINDS;

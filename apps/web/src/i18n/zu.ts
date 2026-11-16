@@ -1,5 +1,6 @@
 import { editorsZu } from "./editors/zu";
 import { cargoBikeZu } from "./cargo-bike/zu";
+import { depotsZu } from "./depots/zu";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -376,5 +377,6 @@ export const zu: Messages = {
 
   ...editorsZu,
   ...cargoBikeZu,
+  ...depotsZu,
   ...PLUGIN_MESSAGES.zu,
 };

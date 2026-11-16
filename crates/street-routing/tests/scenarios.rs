@@ -672,3 +672,37 @@ fn the_project_can_change_the_delay_in_traffic() {
     );
     assert!((v2.mixed_traffic_m - v.mixed_traffic_m).abs() < 1e-6);
 }
+
+#[test]
+fn shared_depot_runs_use_its_exit_and_entrance_gates() {
+    let g = grid().graph();
+    let mut line = StreetLine::new(bus(), RoutingRules::default());
+    let a = add(&mut line, &g, 100.0, -5.0, PointKind::EndStop);
+    add(&mut line, &g, 600.0, 405.0, PointKind::EndStop);
+    // Exit on one street, entrance on another: each depot run starts or ends at its own gate.
+    let exit = ll(0.0, 500.0);
+    let entrance = ll(600.0, 0.0);
+    line.set_depot_gates(&g, &[exit], &[entrance]);
+    let v = line.view(&g);
+    let trip = |kind: &str| {
+        v.depot_trips
+            .iter()
+            .find(|t| t.kind == kind && t.stop == a)
+            .unwrap()
+    };
+    let out = trip("pull_out");
+    let back = trip("pull_in");
+    assert_eq!(out.status, Status::Ok, "{:?}", out.message);
+    assert_eq!(back.status, Status::Ok, "{:?}", back.message);
+    let near = |p: [f64; 2], q: (f64, f64)| (p[0] - q.0).abs() < 2e-4 && (p[1] - q.1).abs() < 2e-4;
+    assert!(near(out.coords[0], exit), "pull-out leaves by the exit");
+    assert!(
+        near(*back.coords.last().unwrap(), entrance),
+        "pull-in comes in by the entrance"
+    );
+    // A depot with no entrance cannot take vehicles back.
+    line.set_depot_gates(&g, &[exit], &[]);
+    let v = line.view(&g);
+    let back = v.depot_trips.iter().find(|t| t.kind == "pull_in").unwrap();
+    assert_eq!(back.status, Status::Error);
+}
