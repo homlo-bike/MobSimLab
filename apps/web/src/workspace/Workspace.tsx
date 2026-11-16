@@ -14,6 +14,7 @@ import type { CostsDoc } from "../features/costs/CostTables";
 import type { FaresDoc } from "../features/fares/model";
 import type { ScenariosDoc } from "../features/tables/scenarioModel";
 import { noiseCalculationIn } from "../features/noise/plugin";
+import { journeySettingsFrom } from "../features/journey-planner/projectSettings";
 import type { PluginLineInput, StreetLineInput } from "../features/journey-planner/network";
 import type { GtfsFeed, GtfsNetworkDoc } from "../features/gtfs/types";
 import type { Timetable } from "../features/journey-planner/types";
@@ -327,6 +328,7 @@ export function Workspace({
   const benefitsDoc = drawings.doc<BenefitsDoc>("benefits");
   // Project preferences: assumption values the project changes, such as the delays in traffic.
   const preferences = drawings.doc<PreferencesDoc>("preferences");
+  const journeySettings = useMemo(() => journeySettingsFrom(preferences?.values), [preferences]);
   // Road depots shared by the street lines (depot tool).
   const depotsDoc = drawings.doc<DepotsDoc>("depots");
   // The currency all money is shown in, and its exchange rate (Project preferences).
@@ -749,6 +751,7 @@ export function Workspace({
                 pluginLines={pluginLineList}
                 demandZones={demandZoneList}
                 sameNameM={sameNameStationM(preferences?.values)}
+                projectSettings={journeySettings}
                 gtfsFeeds={gtfsFeeds}
                 {...(editable ? { onGtfsFeeds: (d: GtfsNetworkDoc) => drawings.set("gtfs-network", d) } : {})}
                 projectName={project.name}

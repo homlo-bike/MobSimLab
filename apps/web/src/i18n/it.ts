@@ -280,6 +280,7 @@ export const it: Messages = {
   "prefs.delayLane": "Su una corsia bus o tram solo dipinta",
   "prefs.delayDefault": "Libreria delle ipotesi: {value} %",
   "prefs.delayReset": "Usa il valore della libreria",
+  "prefs.reason": "Motivo di questo valore (facoltativo)",
   "prefs.stationsTitle": "Stazioni",
   "prefs.stationsIntro":
     "Le fermate con lo stesso nome entro questa distanza contano come una sola stazione nella mappa schematica, nel pianificatore di viaggio e nelle tabelle dei benefici e dei passeggeri.",
