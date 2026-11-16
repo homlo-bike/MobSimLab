@@ -139,8 +139,6 @@ const STREET_COLOR: Record<string, string> = {
   trolleybus: "#1e8a4f",
   intercity_bus: "#cf7f00",
 };
-/** Car length the per-car-km running cost refers to, m. */
-export const CAR_M = 25;
 
 const mul = (a: Triple, k: number): Triple => [a[0] * k, a[1] * k, a[2] * k];
 const prod = (a: Triple, b: Triple): Triple => [a[0] * b[0], a[1] * b[1], a[2] * b[2]];
@@ -381,12 +379,14 @@ export function estimate(input: EstimateInput): Estimate {
         param: "cost.opex.train_hour",
       });
       const carKmRate = mul(v("cost.opex.car_km", mode), ppp);
-      const cars = trainM / CAR_M;
+      // The per car-km rate is for cars of `cost.opex.car_length_m`; the train's length sets how many.
+      const carM = Math.max(1, v("cost.opex.car_length_m", mode)[1]);
+      const cars = trainM / carM;
       items.push({
         category: "service",
         mode,
         line: id,
-        label: `Energy and vehicle upkeep, ${cars.toFixed(1)} cars of ${CAR_M} m`,
+        label: `Energy and vehicle upkeep, ${cars.toFixed(1)} cars of ${carM} m`,
         quantity: trainKm[1] * cars,
         unit: "car-km / year",
         rate: carKmRate,
