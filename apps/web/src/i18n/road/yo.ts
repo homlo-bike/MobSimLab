@@ -67,4 +67,7 @@ export const roadYo = {
   "road.speed": "Ìyára",
   "road.time": "Àkókò",
   "road.failed": "Àfarawé kùnà: {error}",
+  "prefs.roadTitle": "Àfarawé ọ̀nà òpópónà",
+  "prefs.roadIntro": "Ọkọ̀ ayọ́kẹ́lẹ́ ẹ̀yìn nínú àfarawé ọ̀nà òpópónà (Afarawé → Àfarawé ọ̀nà òpópónà).",
+  "prefs.offPeakTraffic": "Ọkọ̀ ní òde ìgbà òwúrọ̀ àti ìrọ̀lẹ́ tó pọ̀ jùlọ, gẹ́gẹ́ bí ìpín ti òpópónà kọ̀ọ̀kan",
 } satisfies RoadMessages;

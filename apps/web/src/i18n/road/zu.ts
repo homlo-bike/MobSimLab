@@ -67,4 +67,9 @@ export const roadZu = {
   "road.speed": "Isivinini",
   "road.time": "Isikhathi",
   "road.failed": "Ukulingisa kuhlulekile: {error}",
+  "prefs.roadTitle": "Ukulingisa komgwaqo",
+  "prefs.roadIntro":
+    "Ithrafikhi yezimoto zangemuva ekulingiseni komgwaqo (Isilingisi → Ukulingisa komgwaqo).",
+  "prefs.offPeakTraffic":
+    "Ithrafikhi ngaphandle kweziqongo zasekuseni nakusihlwa, njengengxenye yesiqongo somgwaqo ngamunye",
 } satisfies RoadMessages;

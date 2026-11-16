@@ -67,4 +67,7 @@ export const roadAr = {
   "road.speed": "السرعة",
   "road.time": "الوقت",
   "road.failed": "فشلت المحاكاة: {error}",
+  "prefs.roadTitle": "محاكاة الطرق",
+  "prefs.roadIntro": "حركة السيارات الخلفية في محاكاة الطرق (المحاكي ← محاكاة الطرق).",
+  "prefs.offPeakTraffic": "حركة المرور خارج ذروتي الصباح والمساء، كنسبة من ذروة كل شارع",
 } satisfies RoadMessages;

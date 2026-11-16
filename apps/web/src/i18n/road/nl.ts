@@ -67,4 +67,8 @@ export const roadNl = {
   "road.speed": "Snelheid",
   "road.time": "Tijd",
   "road.failed": "De simulatie is mislukt: {error}",
+  "prefs.roadTitle": "Wegsimulatie",
+  "prefs.roadIntro": "Achtergrondverkeer van auto's in wegsimulaties (Simulator → Wegsimulatie).",
+  "prefs.offPeakTraffic":
+    "Verkeer buiten de ochtend- en avondspits, als aandeel van de spits van elke straat",
 } satisfies RoadMessages;

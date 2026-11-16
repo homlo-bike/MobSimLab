@@ -67,4 +67,7 @@ export const roadBn = {
   "road.speed": "গতি",
   "road.time": "সময়",
   "road.failed": "সিমুলেশন ব্যর্থ হয়েছে: {error}",
+  "prefs.roadTitle": "সড়ক সিমুলেশন",
+  "prefs.roadIntro": "সড়ক সিমুলেশনে পটভূমির গাড়ির যানবাহন (সিমুলেটর → সড়ক সিমুলেশন)।",
+  "prefs.offPeakTraffic": "সকাল ও সন্ধ্যার শীর্ষ সময়ের বাইরে যানবাহন, প্রতিটি রাস্তার শীর্ষের অংশ হিসেবে",
 } satisfies RoadMessages;

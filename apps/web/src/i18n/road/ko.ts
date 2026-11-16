@@ -67,4 +67,7 @@ export const roadKo = {
   "road.speed": "속도",
   "road.time": "시간",
   "road.failed": "시뮬레이션 실패: {error}",
+  "prefs.roadTitle": "도로 시뮬레이션",
+  "prefs.roadIntro": "도로 시뮬레이션의 배경 차량 교통(시뮬레이터 → 도로 시뮬레이션).",
+  "prefs.offPeakTraffic": "아침·저녁 첨두 외 교통량, 각 도로 첨두 대비 비율",
 } satisfies RoadMessages;

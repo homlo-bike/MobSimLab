@@ -69,4 +69,8 @@ export const roadDe = {
   "road.speed": "Geschwindigkeit",
   "road.time": "Zeit",
   "road.failed": "Der Lauf ist fehlgeschlagen: {error}",
+  "prefs.roadTitle": "Straßensimulation",
+  "prefs.roadIntro": "Hintergrundverkehr der Autos in Straßenläufen (Simulator → Straßensimulation).",
+  "prefs.offPeakTraffic":
+    "Verkehr außerhalb der Morgen- und Abendspitze, als Anteil an der Spitze jeder Straße",
 } satisfies RoadMessages;

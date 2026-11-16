@@ -67,4 +67,8 @@ export const roadMr = {
   "road.speed": "वेग",
   "road.time": "वेळ",
   "road.failed": "सिम्युलेशन अयशस्वी झाले: {error}",
+  "prefs.roadTitle": "रस्ता सिम्युलेशन",
+  "prefs.roadIntro": "रस्ता सिम्युलेशनमधील पार्श्वभूमी गाड्यांची वाहतूक (सिम्युलेटर → रस्ता सिम्युलेशन).",
+  "prefs.offPeakTraffic":
+    "सकाळ आणि संध्याकाळच्या शिखराबाहेरील वाहतूक, प्रत्येक रस्त्याच्या शिखराचा हिस्सा म्हणून",
 } satisfies RoadMessages;

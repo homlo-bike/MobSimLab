@@ -66,4 +66,7 @@ export const roadZh = {
   "road.speed": "速度",
   "road.time": "时间",
   "road.failed": "仿真失败：{error}",
+  "prefs.roadTitle": "道路仿真",
+  "prefs.roadIntro": "道路仿真中的背景车辆交通（仿真器 → 道路仿真）。",
+  "prefs.offPeakTraffic": "早晚高峰以外的交通量，占每条街道高峰值的比例",
 } satisfies RoadMessages;

@@ -67,4 +67,7 @@ export const roadKk = {
   "road.speed": "Жылдамдық",
   "road.time": "Уақыт",
   "road.failed": "Модельдеу сәтсіз аяқталды: {error}",
+  "prefs.roadTitle": "Жол модельдеуі",
+  "prefs.roadIntro": "Жол модельдеуіндегі фондық автокөлік қозғалысы (Симулятор → Жол модельдеуі).",
+  "prefs.offPeakTraffic": "Таңғы және кешкі шыңнан тыс қозғалыс, әр көшенің шыңына үлес ретінде",
 } satisfies RoadMessages;

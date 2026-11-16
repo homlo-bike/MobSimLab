@@ -67,4 +67,7 @@ export const roadIg = {
   "road.speed": "Ọsọ",
   "road.time": "Oge",
   "road.failed": "Ịmepụta dara: {error}",
+  "prefs.roadTitle": "Ịmepụta okporo ụzọ",
+  "prefs.roadIntro": "Ọgbaghara ụgbọala azụ n'ịmepụta okporo ụzọ (Ihe ịmepụta → Ịmepụta okporo ụzọ).",
+  "prefs.offPeakTraffic": "Ọgbaghara na-abụghị n'oke ụtụtụ na mgbede, dịka òkè nke oke okporo ụzọ ọ bụla",
 } satisfies RoadMessages;

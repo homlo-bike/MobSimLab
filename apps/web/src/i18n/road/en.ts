@@ -68,6 +68,9 @@ export const roadEn = {
   "road.speed": "Speed",
   "road.time": "Time",
   "road.failed": "The run failed: {error}",
+  "prefs.roadTitle": "Road simulation",
+  "prefs.roadIntro": "Background car traffic in road simulation runs (Simulator → Road simulation).",
+  "prefs.offPeakTraffic": "Traffic outside the morning and evening peaks, as a share of each street's peak",
 };
 
 /** A language's road simulation messages: every key of the English ones. */

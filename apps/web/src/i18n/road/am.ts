@@ -66,4 +66,7 @@ export const roadAm = {
   "road.speed": "ፍጥነት",
   "road.time": "ሰዓት",
   "road.failed": "ማስመሰሉ አልተሳካም፦ {error}",
+  "prefs.roadTitle": "የመንገድ ማስመሰል",
+  "prefs.roadIntro": "በመንገድ ማስመሰል ውስጥ የጀርባ መኪና ትራፊክ (አስመሳይ → የመንገድ ማስመሰል)።",
+  "prefs.offPeakTraffic": "ከጠዋትና ከምሽት ከፍተኛ ጊዜ ውጭ ያለ ትራፊክ፣ ከእያንዳንዱ መንገድ ከፍተኛ ጊዜ እንደ ድርሻ",
 } satisfies RoadMessages;

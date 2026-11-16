@@ -67,4 +67,7 @@ export const roadHa = {
   "road.speed": "Gudu",
   "road.time": "Lokaci",
   "road.failed": "Kwaikwayon ya kasa: {error}",
+  "prefs.roadTitle": "Kwaikwayon hanya",
+  "prefs.roadIntro": "Cunkoson motocin baya a kwaikwayon hanya (Mai kwaikwayo → Kwaikwayon hanya).",
+  "prefs.offPeakTraffic": "Cunkoso a wajen kololuwar safe da yamma, a matsayin kaso na kololuwar kowane titi",
 } satisfies RoadMessages;

@@ -67,4 +67,7 @@ export const roadTe = {
   "road.speed": "వేగం",
   "road.time": "సమయం",
   "road.failed": "సిమ్యులేషన్ విఫలమైంది: {error}",
+  "prefs.roadTitle": "రహదారి సిమ్యులేషన్",
+  "prefs.roadIntro": "రహదారి సిమ్యులేషన్‌లో నేపథ్య కార్ల ట్రాఫిక్ (సిమ్యులేటర్ → రహదారి సిమ్యులేషన్).",
+  "prefs.offPeakTraffic": "ఉదయం మరియు సాయంత్రం గరిష్ఠ సమయాల వెలుపల ట్రాఫిక్, ప్రతి వీధి గరిష్ఠంలో భాగంగా",
 } satisfies RoadMessages;

@@ -68,4 +68,7 @@ export const roadJa = {
   "road.speed": "速度",
   "road.time": "時刻",
   "road.failed": "シミュレーションに失敗しました: {error}",
+  "prefs.roadTitle": "道路シミュレーション",
+  "prefs.roadIntro": "道路シミュレーションの背景の自動車交通（シミュレーター → 道路シミュレーション）。",
+  "prefs.offPeakTraffic": "朝夕のピーク以外の交通量（各道路のピークに対する割合）",
 } satisfies RoadMessages;

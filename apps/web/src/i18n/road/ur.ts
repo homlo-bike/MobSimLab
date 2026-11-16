@@ -67,4 +67,7 @@ export const roadUr = {
   "road.speed": "رفتار",
   "road.time": "وقت",
   "road.failed": "سمیولیشن ناکام ہو گئی: {error}",
+  "prefs.roadTitle": "سڑک سمیولیشن",
+  "prefs.roadIntro": "سڑک سمیولیشن میں پس منظر کاروں کی ٹریفک (سمیولیٹر ← سڑک سمیولیشن)۔",
+  "prefs.offPeakTraffic": "صبح اور شام کے عروج سے باہر ٹریفک، ہر سڑک کے عروج کے حصے کے طور پر",
 } satisfies RoadMessages;

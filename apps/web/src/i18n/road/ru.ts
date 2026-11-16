@@ -67,4 +67,7 @@ export const roadRu = {
   "road.speed": "Скорость",
   "road.time": "Время",
   "road.failed": "Симуляция завершилась ошибкой: {error}",
+  "prefs.roadTitle": "Дорожная симуляция",
+  "prefs.roadIntro": "Фоновый автомобильный трафик в дорожных симуляциях (Симулятор → Дорожная симуляция).",
+  "prefs.offPeakTraffic": "Трафик вне утреннего и вечернего пиков, как доля пика каждой улицы",
 } satisfies RoadMessages;

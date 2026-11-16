@@ -67,4 +67,8 @@ export const roadVi = {
   "road.speed": "Tốc độ",
   "road.time": "Thời gian",
   "road.failed": "Lần mô phỏng thất bại: {error}",
+  "prefs.roadTitle": "Mô phỏng đường bộ",
+  "prefs.roadIntro": "Giao thông xe nền trong mô phỏng đường bộ (Trình mô phỏng → Mô phỏng đường bộ).",
+  "prefs.offPeakTraffic":
+    "Giao thông ngoài giờ cao điểm sáng và chiều, theo tỷ lệ so với cao điểm của mỗi đường",
 } satisfies RoadMessages;

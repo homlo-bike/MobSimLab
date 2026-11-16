@@ -68,4 +68,9 @@ export const roadIt = {
   "road.speed": "Velocità",
   "road.time": "Ora",
   "road.failed": "La simulazione non è riuscita: {error}",
+  "prefs.roadTitle": "Simulazione stradale",
+  "prefs.roadIntro":
+    "Traffico di auto di fondo nelle simulazioni stradali (Simulatore → Simulazione stradale).",
+  "prefs.offPeakTraffic":
+    "Traffico fuori dai picchi del mattino e della sera, come quota del picco di ogni strada",
 } satisfies RoadMessages;

@@ -67,4 +67,7 @@ export const roadUk = {
   "road.speed": "Швидкість",
   "road.time": "Час",
   "road.failed": "Симуляція завершилася помилкою: {error}",
+  "prefs.roadTitle": "Дорожня симуляція",
+  "prefs.roadIntro": "Фоновий автомобільний трафік у дорожніх симуляціях (Симулятор → Дорожня симуляція).",
+  "prefs.offPeakTraffic": "Трафік поза ранковим і вечірнім піками, як частка піку кожної вулиці",
 } satisfies RoadMessages;

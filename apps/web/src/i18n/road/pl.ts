@@ -67,4 +67,7 @@ export const roadPl = {
   "road.speed": "Prędkość",
   "road.time": "Czas",
   "road.failed": "Symulacja nie powiodła się: {error}",
+  "prefs.roadTitle": "Symulacja drogowa",
+  "prefs.roadIntro": "Ruch samochodów tła w symulacjach drogowych (Symulator → Symulacja drogowa).",
+  "prefs.offPeakTraffic": "Ruch poza szczytem porannym i wieczornym, jako część szczytu każdej ulicy",
 } satisfies RoadMessages;

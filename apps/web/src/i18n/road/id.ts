@@ -67,4 +67,7 @@ export const roadId = {
   "road.speed": "Kecepatan",
   "road.time": "Waktu",
   "road.failed": "Simulasi gagal: {error}",
+  "prefs.roadTitle": "Simulasi jalan",
+  "prefs.roadIntro": "Lalu lintas mobil latar dalam simulasi jalan (Simulator → Simulasi jalan).",
+  "prefs.offPeakTraffic": "Lalu lintas di luar puncak pagi dan sore, sebagai bagian dari puncak tiap jalan",
 } satisfies RoadMessages;

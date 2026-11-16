@@ -67,4 +67,8 @@ export const roadTr = {
   "road.speed": "Hız",
   "road.time": "Saat",
   "road.failed": "Simülasyon başarısız oldu: {error}",
+  "prefs.roadTitle": "Karayolu simülasyonu",
+  "prefs.roadIntro":
+    "Karayolu simülasyonlarındaki arka plan araç trafiği (Simülatör → Karayolu simülasyonu).",
+  "prefs.offPeakTraffic": "Sabah ve akşam zirveleri dışındaki trafik, her sokağın zirvesinin payı olarak",
 } satisfies RoadMessages;

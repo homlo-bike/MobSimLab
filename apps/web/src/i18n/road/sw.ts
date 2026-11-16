@@ -67,4 +67,9 @@ export const roadSw = {
   "road.speed": "Kasi",
   "road.time": "Muda",
   "road.failed": "Uigaji umeshindwa: {error}",
+  "prefs.roadTitle": "Uigaji wa barabarani",
+  "prefs.roadIntro":
+    "Msongamano wa magari ya nyuma katika uigaji wa barabarani (Kiigaji → Uigaji wa barabarani).",
+  "prefs.offPeakTraffic":
+    "Msongamano nje ya vilele vya asubuhi na jioni, kama sehemu ya kilele cha kila barabara",
 } satisfies RoadMessages;

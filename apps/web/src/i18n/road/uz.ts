@@ -69,4 +69,8 @@ export const roadUz = {
   "road.speed": "Tezlik",
   "road.time": "Vaqt",
   "road.failed": "Simulyatsiya muvaffaqiyatsiz tugadi: {error}",
+  "prefs.roadTitle": "Yo‘l simulyatsiyasi",
+  "prefs.roadIntro": "Yo‘l simulyatsiyalaridagi fon avtomobil harakati (Simulyator → Yo‘l simulyatsiyasi).",
+  "prefs.offPeakTraffic":
+    "Ertalabki va kechki cho‘qqidan tashqari harakat, har bir ko‘cha cho‘qqisining ulushi sifatida",
 } satisfies RoadMessages;

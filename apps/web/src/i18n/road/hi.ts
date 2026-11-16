@@ -67,4 +67,7 @@ export const roadHi = {
   "road.speed": "गति",
   "road.time": "समय",
   "road.failed": "सिमुलेशन विफल हुआ: {error}",
+  "prefs.roadTitle": "सड़क सिमुलेशन",
+  "prefs.roadIntro": "सड़क सिमुलेशन में पृष्ठभूमि कार ट्रैफ़िक (सिम्युलेटर → सड़क सिमुलेशन)।",
+  "prefs.offPeakTraffic": "सुबह और शाम के शिखर के बाहर ट्रैफ़िक, हर सड़क के शिखर के हिस्से के रूप में",
 } satisfies RoadMessages;

@@ -67,4 +67,7 @@ export const roadFa = {
   "road.speed": "سرعت",
   "road.time": "زمان",
   "road.failed": "شبیه‌سازی ناموفق بود: {error}",
+  "prefs.roadTitle": "شبیه‌سازی جاده‌ای",
+  "prefs.roadIntro": "ترافیک خودروهای زمینه در شبیه‌سازی جاده‌ای (شبیه‌ساز ← شبیه‌سازی جاده‌ای).",
+  "prefs.offPeakTraffic": "ترافیک خارج از اوج صبح و عصر، به‌صورت سهمی از اوج هر خیابان",
 } satisfies RoadMessages;
