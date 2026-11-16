@@ -730,7 +730,7 @@ export const editorsHa = {
   "noise.dbOrMore": "{db} dB ko fiye",
   "noise.dbRange": "{from}–{to} dB",
   "noise.mapNote":
-    "Sabis ɗin da aka tsara kawai, ba tare da zirga-zirgar gama gari ba. Gine-gine suna karewa ta saman rufinsu da kewayen ƙarshensu (ISO 9613-2) kuma bangonsu na gaba yana mayar da sauti sau ɗaya (mataki na farko). Gine-ginen da ba su da tsayi a OpenStreetMap ana ba su m 3 ga kowane bene da aka rubuta, ko m 8 (zato na plugin ɗin hayaniya). Matakin gini ba ya haɗa da mayar da sauti daga bangonsa na gaba. Gine-gine © masu bayar da gudummawa ga OpenStreetMap.",
+    "Layukan sabis kawai, ba tare da zirga-zirgar gama gari ba. Gine-gine suna karewa ta saman rufinsu da kewayen ƙarshensu (ISO 9613-2) kuma bangonsu na gaba yana mayar da sauti sau ɗaya (mataki na farko). Gine-ginen da ba su da tsayi a OpenStreetMap ana ba su m 3 ga kowane bene da aka rubuta, ko m 8 (zato na plugin ɗin hayaniya). Matakin gini ba ya haɗa da mayar da sauti daga bangonsa na gaba. Gine-gine © masu bayar da gudummawa ga OpenStreetMap.",
   "noise.terrain": "Yi amfani da tsayin ƙasa (Copernicus GLO-30)",
   "noise.terrainTooLarge":
     "Layukan sun rufe yanki mai girma sosai don loda saman ƙasa, don haka an lissafa wannan taswira a kan ƙasa mai faɗi.",
@@ -761,6 +761,49 @@ export const editorsHa = {
   "noise.flat": "Ƙasa mai faɗi.",
   "noise.popCredit":
     "Yawan jama'a: WorldPop, University of Southampton (doi:10.5258/SOTON/WP00839), CC BY 4.0.",
+  "noise.scenario": "Yanayi",
+  "noise.currentDesign": "Zane na yanzu",
+  "noise.compareTo": "Kwatanta da",
+  "noise.noComparison": "Babu kwatanci",
+  "noise.inputLevel": "Motoci da gudu daga",
+  "noise.level.planned": "Wanda aka tsara: tazara da misalin kwarara",
+  "noise.level.timetabled": "Bisa jadawali: tafiye-tafiyen yini",
+  "noise.level.simulated": "Wanda aka kwaikwaya: kwaikwayon hanya da aka ajiye",
+  "noise.simulatedIntro":
+    "Layukan titi suna ɗaukar bas-bas ɗin da kwaikwayon hanya ya ƙirga a kowane sashe da gudunsu a can. Sa'o'in da kwaikwayon bai rufe gaba ɗaya ba, da layukan dogo, suna riƙe jadawalinsu.",
+  "noise.noRuns":
+    "Babu kwaikwayon hanya da ya kammala tukuna: fara gudanar da layukan titi a cikin kwaikwayon hanya.",
+  "noise.chooseRun": "Zaɓi kwaikwayon hanya",
+  "noise.run": "Kwaikwayon hanya",
+  "noise.runFor": "Kwaikwayon hanya na {name}",
+  "noise.runLabel": "{when}, {from}–{to}",
+  "noise.runHours": "Bas-bas daga kwaikwayon hanya na {run} don {hours}; jadawali don sauran sa'o'i.",
+  "noise.runNoHours":
+    "Kwaikwayon hanya na {run} bai rufe ko da cikakken sa'a ɗaya ba, don haka layukan titi suna riƙe jadawalinsu.",
+  "noise.runNoTimetable":
+    "Babu layin titi mai lamba ɗaya da {lines}: a wajen sa'o'in kwaikwayon waɗannan layukan ba su da bas.",
+  "noise.railTimetabled":
+    "Layukan dogo suna riƙe jadawalinsu: kwaikwayon ƙarfin layin dogo baya ajiye wuraren jiragen ƙasa.",
+  "noise.noRailService":
+    "Layin dogo ba shi da layin sabis da aka wallafa, don haka babu jirgin ƙasa a wannan taswira.",
+  "noise.railNotPublished":
+    "Ba a iya wallafa layukan sabis na layin dogo ba ({error}), don haka babu jirgin ƙasa a wannan taswira.",
+  "noise.computingOf": "Ana lissafin taswirar hayaniya ta {name}…",
+  "noise.noDifference":
+    "Ba a iya kwatanta taswirorin biyu kowane ɗaki ba, don haka ba a nuna taswirar bambanci ba.",
+  "noise.inputUsed": "{name} · {level}",
+  "noise.comparing": "{name} idan aka kwatanta da {other} · {level}",
+  "noise.differenceNote":
+    "Canji a dB inda ɗayan yanayin ya kai mafi ƙasƙancin rukuni; ba a nuna canje-canje ƙasa da 1 dB ba. Dukansu suna amfani da gine-gine, ƙasa da mazauna iri ɗaya, don haka zirga-zirgar gama gari za ta soke juna.",
+  "noise.changeBelow": "ƙasa da {db}",
+  "noise.changeAbove": "{db} ko fiye",
+  "noise.changeRange": "daga {from} zuwa {to}",
+  "noise.comparisonTable": "Canji bisa rukunin hayaniya",
+  "noise.comparisonCaptionPeople": "Mazauna bisa matakin gefen ginin da ya fi fuskantar hayaniya",
+  "noise.comparisonCaptionBuildings": "Gine-gine bisa matakin gefensu da ya fi fuskantar hayaniya",
+  "noise.change": "Canji",
+  "noise.exportContours": "Fitar da layukan matakin sauti (GeoJSON)",
+  "noise.exportTable": "Fitar da tebur (CSV)",
   "jp.title": "Mai tsara tafiya",
   "jp.s": "daƙ {n}",
   "jp.min": "min {n}",

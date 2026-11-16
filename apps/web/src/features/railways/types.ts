@@ -247,11 +247,21 @@ export interface StationKm {
   km: number;
 }
 
+/** Trains of one line in each clock hour on one section of the topology export (Rust `rail_plan::SectionTrains`). */
+export interface SectionTrains {
+  section: string;
+  line: string;
+  /** Trains entering the section in each hour 0–23, both directions. */
+  hours: number[];
+}
+
 /** Published service lines (Rust `rail_plan::ServicePublication`). */
 export interface ServicePublication {
   timetable: Timetable;
   lines: LineReport[];
   notes: string[];
+  /** Trains per hour on each section, for the noise map's timetabled input. */
+  section_trains?: SectionTrains[];
 }
 
 /** A service line as the engine takes it (Rust `rail_plan::ServiceLine`). */

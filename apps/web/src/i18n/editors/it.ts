@@ -742,7 +742,7 @@ export const editorsIt = {
   "noise.dbOrMore": "{db} dB o più",
   "noise.dbRange": "{from}–{to} dB",
   "noise.mapNote":
-    "Solo il servizio previsto, senza traffico generale. Gli edifici schermano sopra i tetti e attorno alle estremità (ISO 9613-2) e le loro facciate riflettono una volta (primo ordine). Gli edifici senza altezza in OpenStreetMap hanno 3 m per piano indicato, oppure 8 m (ipotesi del plugin rumore). Il livello di un edificio esclude la riflessione sulla propria facciata. Edifici © contributori di OpenStreetMap.",
+    "Solo le linee di servizio, senza traffico generale. Gli edifici schermano sopra i tetti e attorno alle estremità (ISO 9613-2) e le loro facciate riflettono una volta (primo ordine). Gli edifici senza altezza in OpenStreetMap hanno 3 m per piano indicato, oppure 8 m (ipotesi del plugin rumore). Il livello di un edificio esclude la riflessione sulla propria facciata. Edifici © contributori di OpenStreetMap.",
   "noise.terrain": "Usa le quote del terreno (Copernicus GLO-30)",
   "noise.terrainTooLarge":
     "Le linee coprono un'area troppo grande per caricare il terreno, quindi questa mappa è calcolata su terreno piano.",
@@ -774,6 +774,48 @@ export const editorsIt = {
   "noise.flat": "Terreno piano.",
   "noise.popCredit":
     "Popolazione: WorldPop, University of Southampton (doi:10.5258/SOTON/WP00839), CC BY 4.0.",
+  "noise.scenario": "Scenario",
+  "noise.currentDesign": "Progetto attuale",
+  "noise.compareTo": "Confronta con",
+  "noise.noComparison": "Nessun confronto",
+  "noise.inputLevel": "Veicoli e velocità da",
+  "noise.level.planned": "Previsto: frequenze e flussi di esempio",
+  "noise.level.timetabled": "Orario: le corse della giornata",
+  "noise.level.simulated": "Simulato: una simulazione stradale salvata",
+  "noise.simulatedIntro":
+    "Le linee stradali prendono gli autobus che la simulazione stradale ha contato su ogni tratto e le loro velocità. Le ore che la simulazione non copre per intero, e le ferrovie, mantengono l’orario.",
+  "noise.noRuns":
+    "Nessuna simulazione stradale completata: simula prima le linee stradali nella simulazione stradale.",
+  "noise.chooseRun": "Scegli una simulazione stradale",
+  "noise.run": "Simulazione stradale",
+  "noise.runFor": "Simulazione stradale per {name}",
+  "noise.runLabel": "{when}, {from}–{to}",
+  "noise.runHours": "Autobus dalla simulazione stradale del {run} per {hours}; l’orario per le altre ore.",
+  "noise.runNoHours":
+    "La simulazione stradale del {run} non copre nessuna ora intera, quindi le linee stradali mantengono l’orario.",
+  "noise.runNoTimetable":
+    "Nessuna linea stradale con lo stesso numero per {lines}: fuori dalle ore della simulazione queste linee non hanno autobus.",
+  "noise.railTimetabled":
+    "Le ferrovie mantengono l’orario: la simulazione di capacità ferroviaria non conserva le posizioni dei treni.",
+  "noise.noRailService": "La ferrovia non ha linee pubblicate, quindi non ha treni su questa mappa.",
+  "noise.railNotPublished":
+    "Non è stato possibile pubblicare le linee della ferrovia ({error}), quindi non ha treni su questa mappa.",
+  "noise.computingOf": "Calcolo della mappa del rumore di {name}…",
+  "noise.noDifference":
+    "Le due mappe non si sono potute confrontare cella per cella, quindi non è mostrata la mappa delle differenze.",
+  "noise.inputUsed": "{name} · {level}",
+  "noise.comparing": "{name} confrontato con {other} · {level}",
+  "noise.differenceNote":
+    "Variazione in dB dove uno dei due scenari raggiunge la fascia più bassa; le variazioni sotto 1 dB non sono mostrate. Entrambi usano gli stessi edifici, terreno e residenti, quindi il traffico generale si annullerebbe.",
+  "noise.changeBelow": "meno di {db}",
+  "noise.changeAbove": "{db} o più",
+  "noise.changeRange": "da {from} a {to}",
+  "noise.comparisonTable": "Variazione per fascia di rumore",
+  "noise.comparisonCaptionPeople": "Residenti per livello sul lato più esposto del loro edificio",
+  "noise.comparisonCaptionBuildings": "Edifici per livello sul loro lato più esposto",
+  "noise.change": "Variazione",
+  "noise.exportContours": "Esporta contorni (GeoJSON)",
+  "noise.exportTable": "Esporta tabella (CSV)",
   "jp.title": "Viaggi",
   "jp.s": "{n} s",
   "jp.min": "{n} min",
