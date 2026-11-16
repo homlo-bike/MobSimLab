@@ -314,6 +314,7 @@ export const vi: Messages = {
   "prefs.demandStep.mode_choice": "Lựa chọn phương thức",
   "prefs.demandStep.catchment": "Vùng tiếp cận",
   "prefs.demandStep.assignment": "Phân bổ",
+  "prefs.demandStep.calibration": "Hiệu chỉnh",
   "prefs.demandAll": "Tất cả các bước",
   "prefs.accessTitle": "Khả năng tiếp cận sân ga",
   "prefs.accessIntro":

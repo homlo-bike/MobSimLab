@@ -312,6 +312,7 @@ export const yo: Messages = {
   "prefs.demandStep.mode_choice": "Yíyàn ọ̀nà ìrìnnà",
   "prefs.demandStep.catchment": "Agbègbè ìwọlé",
   "prefs.demandStep.assignment": "Ìpínsí",
+  "prefs.demandStep.calibration": "Ìṣàtúnṣe",
   "prefs.demandAll": "Gbogbo ìgbésẹ̀",
   "prefs.accessTitle": "Ìráyè pèpéle",
   "prefs.accessIntro":

@@ -316,6 +316,7 @@ export const id: Messages = {
   "prefs.demandStep.mode_choice": "Pemilihan moda",
   "prefs.demandStep.catchment": "Daerah tangkapan",
   "prefs.demandStep.assignment": "Pembebanan",
+  "prefs.demandStep.calibration": "Kalibrasi",
   "prefs.demandAll": "Semua langkah",
   "prefs.accessTitle": "Aksesibilitas peron",
   "prefs.accessIntro":

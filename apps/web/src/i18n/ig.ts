@@ -314,6 +314,7 @@ export const ig: Messages = {
   "prefs.demandStep.mode_choice": "Nhọrọ ụzọ njem",
   "prefs.demandStep.catchment": "Mpaghara nnweta",
   "prefs.demandStep.assignment": "Nkenye",
+  "prefs.demandStep.calibration": "Nhazi",
   "prefs.demandAll": "Nzọụkwụ niile",
   "prefs.accessTitle": "Ịnweta ikpo okwu",
   "prefs.accessIntro":

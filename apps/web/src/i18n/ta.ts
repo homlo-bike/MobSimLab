@@ -319,6 +319,7 @@ export const ta: Messages = {
   "prefs.demandStep.mode_choice": "போக்குவரத்து முறைத் தேர்வு",
   "prefs.demandStep.catchment": "அணுகல் பகுதி",
   "prefs.demandStep.assignment": "ஒதுக்கீடு",
+  "prefs.demandStep.calibration": "அளவுத்திருத்தம்",
   "prefs.demandAll": "எல்லாப் படிகளும்",
   "prefs.accessTitle": "நடைமேடை அணுகல்தன்மை",
   "prefs.accessIntro":

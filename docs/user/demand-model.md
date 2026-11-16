@@ -52,4 +52,16 @@ Under a finished run, **Use this run for ridership** makes its boardings the pro
 
 Boardings you typed for a stop in the system test still come first. **Go back to the formula estimate** undoes the choice.
 
-Results are marked **Uncalibrated** because no observed counts have been used yet. Calibration comes in a later step.
+## Calibrating to observed data
+
+The **Observed data** card above **Run** takes what you know about travel in the area:
+
+- the share of trips by car, public transport, walking and cycling, in % (give all four; they are scaled to 100 %);
+- the mean length of a car trip, in km;
+- weekday boardings of lines and stops, typed in the table or uploaded as CSV with the columns `kind` (`line` or `stop`), `id` (the line's or stop's id or name) and `value`. An uploaded file is added to the counts already there.
+
+With observed data, a run calibrates itself. It repeats the model, moving the mode constants (relative to car) towards the observed shares and scaling the deterrence of every purpose towards the observed car trip length, until they are within the tolerance or the round limit. Without shares, counts move the public transport constant. The results then show the observed and modelled shares and trip length, the counts with the largest GEH (computed on the weekday count spread over the hours in Project preferences), the %RMSE of the counts, the share of counts with a GEH under 5, and counts that name no line or stop of the network.
+
+**Save fitted values to Project preferences** keeps the constants and deterrence the run ended with, so later runs start from them. The rounds, damping, tolerance and GEH hours are in Project preferences → Demand model → Calibration.
+
+Without observed shares or counts, results are marked **Uncalibrated**: the numbers come from library values only.

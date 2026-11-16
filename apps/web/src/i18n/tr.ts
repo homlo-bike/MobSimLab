@@ -313,6 +313,7 @@ export const tr: Messages = {
   "prefs.demandStep.mode_choice": "Ulaşım türü seçimi",
   "prefs.demandStep.catchment": "Erişim alanı",
   "prefs.demandStep.assignment": "Atama",
+  "prefs.demandStep.calibration": "Kalibrasyon",
   "prefs.demandAll": "Tüm adımlar",
   "prefs.accessTitle": "Peron erişilebilirliği",
   "prefs.accessIntro":

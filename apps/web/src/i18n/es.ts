@@ -315,6 +315,7 @@ export const es: Messages = {
   "prefs.demandStep.mode_choice": "Elección modal",
   "prefs.demandStep.catchment": "Área de captación",
   "prefs.demandStep.assignment": "Asignación",
+  "prefs.demandStep.calibration": "Calibración",
   "prefs.demandAll": "Todos los pasos",
   "prefs.accessTitle": "Accesibilidad del andén",
   "prefs.accessIntro":

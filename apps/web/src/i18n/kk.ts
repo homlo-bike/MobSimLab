@@ -312,6 +312,7 @@ export const kk: Messages = {
   "prefs.demandStep.mode_choice": "Көлік түрін таңдау",
   "prefs.demandStep.catchment": "Қолжетімділік аймағы",
   "prefs.demandStep.assignment": "Жүктеу",
+  "prefs.demandStep.calibration": "Калибрлеу",
   "prefs.demandAll": "Барлық қадамдар",
   "prefs.accessTitle": "Платформа қолжетімділігі",
   "prefs.accessIntro":

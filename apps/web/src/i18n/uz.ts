@@ -318,6 +318,7 @@ export const uz: Messages = {
   "prefs.demandStep.mode_choice": "Transport turini tanlash",
   "prefs.demandStep.catchment": "Yetib borish hududi",
   "prefs.demandStep.assignment": "Yuklash",
+  "prefs.demandStep.calibration": "Kalibrlash",
   "prefs.demandAll": "Barcha bosqichlar",
   "prefs.accessTitle": "Platforma qulayligi",
   "prefs.accessIntro":

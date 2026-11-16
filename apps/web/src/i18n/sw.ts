@@ -314,6 +314,7 @@ export const sw: Messages = {
   "prefs.demandStep.mode_choice": "Uchaguzi wa njia ya usafiri",
   "prefs.demandStep.catchment": "Eneo la kufikia",
   "prefs.demandStep.assignment": "Ugawaji",
+  "prefs.demandStep.calibration": "Urekebishaji",
   "prefs.demandAll": "Hatua zote",
   "prefs.accessTitle": "Ufikivu wa jukwaa",
   "prefs.accessIntro":

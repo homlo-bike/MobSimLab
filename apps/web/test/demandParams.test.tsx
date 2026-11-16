@@ -23,6 +23,7 @@ describe("demand model values", () => {
       "mode_choice",
       "catchment",
       "assignment",
+      "calibration",
     ]);
     for (const s of DEMAND_STEPS) expect(DEMAND_PARAMS.some((p) => p.step === s)).toBe(true);
     for (const p of DEMAND_PARAMS)

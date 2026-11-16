@@ -309,6 +309,7 @@ export const fa: Messages = {
   "prefs.demandStep.mode_choice": "انتخاب وسیله",
   "prefs.demandStep.catchment": "حوزه دسترسی",
   "prefs.demandStep.assignment": "تخصیص",
+  "prefs.demandStep.calibration": "واسنجی",
   "prefs.demandAll": "همهٔ گام‌ها",
   "prefs.accessTitle": "دسترس‌پذیری سکو",
   "prefs.accessIntro":

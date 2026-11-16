@@ -314,6 +314,7 @@ export const te: Messages = {
   "prefs.demandStep.mode_choice": "రవాణా విధానం ఎంపిక",
   "prefs.demandStep.catchment": "చేరువ ప్రాంతం",
   "prefs.demandStep.assignment": "కేటాయింపు",
+  "prefs.demandStep.calibration": "క్రమాంకనం",
   "prefs.demandAll": "అన్ని దశలు",
   "prefs.accessTitle": "ప్లాట్‌ఫారం అందుబాటు",
   "prefs.accessIntro":

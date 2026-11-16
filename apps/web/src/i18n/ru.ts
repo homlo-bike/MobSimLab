@@ -316,6 +316,7 @@ export const ru: Messages = {
   "prefs.demandStep.mode_choice": "Выбор вида транспорта",
   "prefs.demandStep.catchment": "Зона доступности",
   "prefs.demandStep.assignment": "Назначение",
+  "prefs.demandStep.calibration": "Калибровка",
   "prefs.demandAll": "Все шаги",
   "prefs.accessTitle": "Доступность платформ",
   "prefs.accessIntro":

@@ -315,6 +315,7 @@ export const ha: Messages = {
   "prefs.demandStep.mode_choice": "Zaɓin hanyar sufuri",
   "prefs.demandStep.catchment": "Yankin isa",
   "prefs.demandStep.assignment": "Rabawa a hanyoyi",
+  "prefs.demandStep.calibration": "Daidaitawa",
   "prefs.demandAll": "Duk matakai",
   "prefs.accessTitle": "Samun damar dandamali",
   "prefs.accessIntro":

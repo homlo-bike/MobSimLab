@@ -314,6 +314,7 @@ export const ur: Messages = {
   "prefs.demandStep.mode_choice": "ذریعۂ سفر کا انتخاب",
   "prefs.demandStep.catchment": "رسائی کا علاقہ",
   "prefs.demandStep.assignment": "تفویض",
+  "prefs.demandStep.calibration": "انشانکن",
   "prefs.demandAll": "تمام قدم",
   "prefs.accessTitle": "پلیٹ فارم تک رسائی",
   "prefs.accessIntro":

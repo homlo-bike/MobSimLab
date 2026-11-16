@@ -1581,6 +1581,38 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 |---|---|---|---|---|---|---|---|
 | all | 5 | 15 | 30 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Carrying a pram or luggage up the steps, asking for help, or going to another stop. Only stops recorded in Create without step-free access, a lift or a ramp are counted; stops with no recorded features are not. The model adds share times penalty to boarding there. |
 
+### Calibration: most runs of the whole model to fit the observed data
+
+`demand.calibration.max_iterations` · unit: runs · used by: calibration
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 1 | 5 | 10 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Each round runs the whole model, so a calibration takes this many times as long as one run. Mode constants usually settle within three to five rounds when the shares are the only target. |
+
+### Calibration: share of each round's correction that is applied
+
+`demand.calibration.damping` · unit: share · used by: calibration
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.5 | 0.8 | 1 | cited | unverified | [ortuzar-willumsen-2011](#src-ortuzar-willumsen-2011) | The constants of a logit model move by the log of observed over modelled share (Ortúzar and Willumsen, chapter 8). In a nested model the full step can overshoot; damping it a little makes it settle. |
+
+### Calibration: largest relative gap to the observed data at which it stops
+
+`demand.calibration.tolerance` · unit: share · used by: calibration
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.005 | 0.01 | 0.05 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Stops when every mode share and the mean car trip are within this share of what was observed (1% of a 20% share is 0.2 points). |
+
+### Calibration: hours a weekday count is spread over for the GEH statistic
+
+`demand.calibration.geh_hours` · unit: h · used by: calibration: GEH of counts
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 12 | 16 | 24 | cited | unverified | [tag-m3-1](#src-tag-m3-1) | GEH is meant for hourly flows: TAG M3.1 asks for GEH below 5 on most counts. Daily boardings are turned into an average hour of the service day before it is computed. |
+
 ### Walking speed for walking links between stations
 
 `demand.walk_speed_kmh` · unit: km/h · used by: transfer links, access/egress links, catchment

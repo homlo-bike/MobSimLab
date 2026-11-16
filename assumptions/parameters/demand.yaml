@@ -2537,3 +2537,75 @@
         - mobsimlab-derivation
       check: unverified
       rationale: "Carrying a pram or luggage up the steps, asking for help, or going to another stop. Only stops recorded in Create without step-free access, a lift or a ramp are counted; stops with no recorded features are not. The model adds share times penalty to boarding there."
+
+- key: demand.calibration.max_iterations
+  label: "Calibration: most runs of the whole model to fit the observed data"
+  group: Demand
+  unit: runs
+  used_by:
+    - "calibration"
+  values:
+    - context:
+        mode: "*"
+      low: 1
+      central: 5
+      high: 10
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: "Each round runs the whole model, so a calibration takes this many times as long as one run. Mode constants usually settle within three to five rounds when the shares are the only target."
+
+- key: demand.calibration.damping
+  label: "Calibration: share of each round's correction that is applied"
+  group: Demand
+  unit: share
+  used_by:
+    - "calibration"
+  values:
+    - context:
+        mode: "*"
+      low: 0.5
+      central: 0.8
+      high: 1
+      basis: cited
+      sources:
+        - ortuzar-willumsen-2011
+      check: unverified
+      rationale: "The constants of a logit model move by the log of observed over modelled share (Ortúzar and Willumsen, chapter 8). In a nested model the full step can overshoot; damping it a little makes it settle."
+
+- key: demand.calibration.tolerance
+  label: "Calibration: largest relative gap to the observed data at which it stops"
+  group: Demand
+  unit: share
+  used_by:
+    - "calibration"
+  values:
+    - context:
+        mode: "*"
+      low: 0.005
+      central: 0.01
+      high: 0.05
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: "Stops when every mode share and the mean car trip are within this share of what was observed (1% of a 20% share is 0.2 points)."
+
+- key: demand.calibration.geh_hours
+  label: "Calibration: hours a weekday count is spread over for the GEH statistic"
+  group: Demand
+  unit: h
+  used_by:
+    - "calibration: GEH of counts"
+  values:
+    - context:
+        mode: "*"
+      low: 12
+      central: 16
+      high: 24
+      basis: cited
+      sources:
+        - tag-m3-1
+      check: unverified
+      rationale: "GEH is meant for hourly flows: TAG M3.1 asks for GEH below 5 on most counts. Daily boardings are turned into an average hour of the service day before it is computed."

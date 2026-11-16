@@ -315,6 +315,7 @@ export const nl: Messages = {
   "prefs.demandStep.mode_choice": "Vervoerwijzekeuze",
   "prefs.demandStep.catchment": "Invloedsgebied",
   "prefs.demandStep.assignment": "Toedeling",
+  "prefs.demandStep.calibration": "Kalibratie",
   "prefs.demandAll": "Alle stappen",
   "prefs.accessTitle": "Toegankelijkheid van perrons",
   "prefs.accessIntro":

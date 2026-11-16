@@ -317,6 +317,7 @@ export const fr: Messages = {
   "prefs.demandStep.mode_choice": "Choix modal",
   "prefs.demandStep.catchment": "Zone de desserte",
   "prefs.demandStep.assignment": "Affectation",
+  "prefs.demandStep.calibration": "Calage",
   "prefs.demandAll": "Toutes les étapes",
   "prefs.accessTitle": "Accessibilité des quais",
   "prefs.accessIntro":
