@@ -1,0 +1,51 @@
+import type { PluginKey } from "../plugins";
+
+/** Plugin messages (ru). */
+export const pluginsRu = {
+  "admin.plugins": "Плагины",
+  "plugins.title": "Плагины",
+  "plugins.intro":
+    "Плагины добавляют виды транспорта, инструменты и расчёты. Включите те, что нужны проекту; при выключении инструменты скрываются, а нарисованное сохраняется.",
+  "plugins.bundled": "Входит в MobSimLab",
+  "plugins.by": "Издатель: {publisher}",
+  "plugins.versionN": "Версия {version}",
+  "plugins.adds": "Добавляет: {list}",
+  "plugins.uses": "Использует: {list}",
+  "plugins.parameters": "Значений допущений: {count}",
+  "plugins.missing":
+    "Версия {version} удалена из этого MobSimLab. Выберите другую версию, чтобы снова пользоваться плагином.",
+  "plugins.versionOf": "Версия {name}",
+  "plugins.useIn": "Использовать {name} в этом проекте",
+  "plugins.ownerOnly": "Включать и выключать плагины может только владелец проекта.",
+  "plugins.perm.readNetwork": "сеть проекта",
+  "plugins.perm.readTimetable": "расписание",
+  "plugins.perm.readFleet": "подвижной состав и парк",
+  "plugins.perm.readGeodata": "импортированные картографические данные",
+  "plugins.perm.readResults": "результаты моделирования",
+  "plugins.perm.writeResults": "сохраняет свои результаты",
+  "plugins.perm.writeScenario": "предлагает изменения сценария",
+  "plugins.installTitle": "Установить плагин",
+  "plugins.choose": "Выбрать файл .msplugin",
+  "plugins.problems": "Этот плагин нельзя установить:",
+  "plugins.install": "Установить",
+  "plugins.installed": "Установленные плагины",
+  "plugins.none": "Плагины пока не установлены.",
+  "plugins.removeOne": "Удалить {name} {version}",
+  "plugins.inProjects": "Используется в проектах: {count}",
+  "plugins.bundledTitle": "Входят в MobSimLab",
+  "plugins.keys": "Доверенные издатели",
+  "plugins.keysIntro":
+    "Плагин устанавливается, только если издатель подписал его одним из этих ключей (ECDSA P-256 или Ed25519, PEM).",
+  "plugins.noKeys": "Доверенных ключей пока нет.",
+  "plugins.removeKey": "Больше не доверять {name}",
+  "plugins.addKey": "Добавить ключ",
+  "plugins.keyName": "Имя издателя",
+  "plugins.keyPem": "Открытый ключ",
+  "plugins.allowUnsigned": "Разрешить неподписанные плагины (режим разработки, только владельцы)",
+  "plugins.signedBy": "Подписан: {name}",
+  "plugins.untrusted": "Подписан ключом, которому этот экземпляр не доверяет",
+  "plugins.unsigned": "Не подписан",
+  "plugins.licences": "Лицензии: код {code}, данные {data}",
+  "plugins.removeConfirm":
+    "{name} включён в проектах: {count}. Всё равно удалить? Он будет там выключен, чертежи сохранятся.",
+} satisfies Record<PluginKey, string>;

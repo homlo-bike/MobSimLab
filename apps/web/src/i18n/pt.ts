@@ -10,7 +10,7 @@ import { timetablesPt } from "./timetables/pt";
 import { mslabPt } from "./mslab/pt";
 import { pluginCodePt } from "./plugin-code/pt";
 import { populationPt } from "./population/pt";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsPt } from "./plugins/pt";
 import type { Messages } from "./en";
 
 /** Português (Brazilian spelling, the most widely used). */
@@ -513,5 +513,5 @@ export const pt: Messages = {
   ...populationPt,
   ...roadPt,
   ...calendarPt,
-  ...PLUGIN_MESSAGES.pt,
+  ...pluginsPt,
 };

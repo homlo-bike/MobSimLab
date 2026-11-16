@@ -10,7 +10,7 @@ import { timetablesHa } from "./timetables/ha";
 import { mslabHa } from "./mslab/ha";
 import { pluginCodeHa } from "./plugin-code/ha";
 import { populationHa } from "./population/ha";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsHa } from "./plugins/ha";
 import type { Messages } from "./en";
 
 /** Hausa. */
@@ -511,5 +511,5 @@ export const ha: Messages = {
   ...populationHa,
   ...roadHa,
   ...calendarHa,
-  ...PLUGIN_MESSAGES.ha,
+  ...pluginsHa,
 };

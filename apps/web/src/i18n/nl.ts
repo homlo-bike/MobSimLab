@@ -10,7 +10,7 @@ import { timetablesNl } from "./timetables/nl";
 import { mslabNl } from "./mslab/nl";
 import { pluginCodeNl } from "./plugin-code/nl";
 import { populationNl } from "./population/nl";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsNl } from "./plugins/nl";
 import type { Messages } from "./en";
 
 /** Nederlands. */
@@ -513,5 +513,5 @@ export const nl: Messages = {
   ...populationNl,
   ...roadNl,
   ...calendarNl,
-  ...PLUGIN_MESSAGES.nl,
+  ...pluginsNl,
 };

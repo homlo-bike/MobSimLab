@@ -10,7 +10,7 @@ import { timetablesIg } from "./timetables/ig";
 import { mslabIg } from "./mslab/ig";
 import { pluginCodeIg } from "./plugin-code/ig";
 import { populationIg } from "./population/ig";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsIg } from "./plugins/ig";
 import type { Messages } from "./en";
 
 /** Igbo. */
@@ -509,5 +509,5 @@ export const ig: Messages = {
   ...populationIg,
   ...roadIg,
   ...calendarIg,
-  ...PLUGIN_MESSAGES.ig,
+  ...pluginsIg,
 };

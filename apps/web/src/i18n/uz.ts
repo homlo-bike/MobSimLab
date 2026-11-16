@@ -10,7 +10,7 @@ import { timetablesUz } from "./timetables/uz";
 import { mslabUz } from "./mslab/uz";
 import { pluginCodeUz } from "./plugin-code/uz";
 import { populationUz } from "./population/uz";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsUz } from "./plugins/uz";
 import type { Messages } from "./en";
 
 /** Oʻzbekcha */
@@ -515,5 +515,5 @@ export const uz: Messages = {
   ...populationUz,
   ...roadUz,
   ...calendarUz,
-  ...PLUGIN_MESSAGES.uz,
+  ...pluginsUz,
 };

@@ -10,7 +10,7 @@ import { timetablesPl } from "./timetables/pl";
 import { mslabPl } from "./mslab/pl";
 import { pluginCodePl } from "./plugin-code/pl";
 import { populationPl } from "./population/pl";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsPl } from "./plugins/pl";
 import type { Messages } from "./en";
 
 /** Polski */
@@ -508,5 +508,5 @@ export const pl: Messages = {
   ...populationPl,
   ...roadPl,
   ...calendarPl,
-  ...PLUGIN_MESSAGES.pl,
+  ...pluginsPl,
 };

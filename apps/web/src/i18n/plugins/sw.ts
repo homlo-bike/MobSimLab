@@ -1,0 +1,51 @@
+import type { PluginKey } from "../plugins";
+
+/** Plugin messages (sw). */
+export const pluginsSw = {
+  "admin.plugins": "Programu-jalizi",
+  "plugins.title": "Programu-jalizi",
+  "plugins.intro":
+    "Programu-jalizi huongeza njia za usafiri, zana na hesabu. Washa zile ambazo mradi huu unatumia; ukizima moja, zana zake hufichwa na michoro hubaki.",
+  "plugins.bundled": "Huja na MobSimLab",
+  "plugins.by": "Na {publisher}",
+  "plugins.versionN": "Toleo {version}",
+  "plugins.adds": "Huongeza: {list}",
+  "plugins.uses": "Hutumia: {list}",
+  "plugins.parameters": "Thamani za dhana {count}",
+  "plugins.missing":
+    "Toleo {version} limeondolewa kwenye MobSimLab hii. Chagua toleo jingine ili kuitumia tena.",
+  "plugins.versionOf": "Toleo la {name}",
+  "plugins.useIn": "Tumia {name} katika mradi huu",
+  "plugins.ownerOnly": "Ni mmiliki wa mradi pekee anayeweza kuwasha au kuzima programu-jalizi.",
+  "plugins.perm.readNetwork": "mtandao wa mradi",
+  "plugins.perm.readTimetable": "ratiba",
+  "plugins.perm.readFleet": "magari na kundi la magari",
+  "plugins.perm.readGeodata": "data ya ramani iliyoingizwa",
+  "plugins.perm.readResults": "matokeo ya uigaji",
+  "plugins.perm.writeResults": "huhifadhi matokeo yake",
+  "plugins.perm.writeScenario": "hupendekeza mabadiliko ya hali",
+  "plugins.installTitle": "Sakinisha programu-jalizi",
+  "plugins.choose": "Chagua faili ya .msplugin",
+  "plugins.problems": "Programu-jalizi hii haiwezi kusakinishwa:",
+  "plugins.install": "Sakinisha",
+  "plugins.installed": "Programu-jalizi zilizosakinishwa",
+  "plugins.none": "Bado hakuna programu-jalizi iliyosakinishwa.",
+  "plugins.removeOne": "Ondoa {name} {version}",
+  "plugins.inProjects": "Inatumika katika miradi {count}",
+  "plugins.bundledTitle": "Zinazokuja na MobSimLab",
+  "plugins.keys": "Wachapishaji wanaoaminika",
+  "plugins.keysIntro":
+    "Programu-jalizi husakinishwa tu ikiwa mchapishaji aliisaini kwa mojawapo ya funguo hizi (ECDSA P-256 au Ed25519, PEM).",
+  "plugins.noKeys": "Bado hakuna funguo zinazoaminika.",
+  "plugins.removeKey": "Acha kumwamini {name}",
+  "plugins.addKey": "Ongeza ufunguo",
+  "plugins.keyName": "Jina la mchapishaji",
+  "plugins.keyPem": "Ufunguo wa umma",
+  "plugins.allowUnsigned": "Ruhusu programu-jalizi zisizosainiwa (hali ya usanidi, wamiliki pekee)",
+  "plugins.signedBy": "Imesainiwa na {name}",
+  "plugins.untrusted": "Imesainiwa kwa ufunguo ambao mfumo huu hauuamini",
+  "plugins.unsigned": "Haijasainiwa",
+  "plugins.licences": "Leseni: msimbo {code}, data {data}",
+  "plugins.removeConfirm":
+    "{name} imewashwa katika miradi {count}. Iondoe hata hivyo? Itazimwa humo na michoro itabaki.",
+} satisfies Record<PluginKey, string>;

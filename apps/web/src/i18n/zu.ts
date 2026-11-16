@@ -10,7 +10,7 @@ import { timetablesZu } from "./timetables/zu";
 import { mslabZu } from "./mslab/zu";
 import { pluginCodeZu } from "./plugin-code/zu";
 import { populationZu } from "./population/zu";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsZu } from "./plugins/zu";
 import type { Messages } from "./en";
 
 /** isiZulu. */
@@ -516,5 +516,5 @@ export const zu: Messages = {
   ...populationZu,
   ...roadZu,
   ...calendarZu,
-  ...PLUGIN_MESSAGES.zu,
+  ...pluginsZu,
 };

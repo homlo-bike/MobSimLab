@@ -1,0 +1,51 @@
+import type { PluginKey } from "../plugins";
+
+/** Plugin messages (ko). */
+export const pluginsKo = {
+  "admin.plugins": "플러그인",
+  "plugins.title": "플러그인",
+  "plugins.intro":
+    "플러그인은 교통수단, 도구, 계산을 추가합니다. 이 프로젝트에서 쓰는 것을 켜세요. 끄면 도구가 숨겨지고 그린 내용은 유지됩니다.",
+  "plugins.bundled": "MobSimLab에 포함",
+  "plugins.by": "게시자: {publisher}",
+  "plugins.versionN": "버전 {version}",
+  "plugins.adds": "추가: {list}",
+  "plugins.uses": "사용: {list}",
+  "plugins.parameters": "가정값 {count}개",
+  "plugins.missing":
+    "버전 {version}이(가) 이 MobSimLab에서 제거되었습니다. 다시 쓰려면 다른 버전을 선택하세요.",
+  "plugins.versionOf": "{name} 버전",
+  "plugins.useIn": "이 프로젝트에서 {name} 사용",
+  "plugins.ownerOnly": "프로젝트 소유자만 플러그인을 켜거나 끌 수 있습니다.",
+  "plugins.perm.readNetwork": "프로젝트 네트워크",
+  "plugins.perm.readTimetable": "시간표",
+  "plugins.perm.readFleet": "차량과 차량단",
+  "plugins.perm.readGeodata": "가져온 지도 데이터",
+  "plugins.perm.readResults": "시뮬레이션 결과",
+  "plugins.perm.writeResults": "자체 결과 저장",
+  "plugins.perm.writeScenario": "시나리오 변경 제안",
+  "plugins.installTitle": "플러그인 설치",
+  "plugins.choose": ".msplugin 파일 선택",
+  "plugins.problems": "이 플러그인은 설치할 수 없습니다:",
+  "plugins.install": "설치",
+  "plugins.installed": "설치된 플러그인",
+  "plugins.none": "아직 설치된 플러그인이 없습니다.",
+  "plugins.removeOne": "{name} {version} 제거",
+  "plugins.inProjects": "{count}개 프로젝트에서 사용 중",
+  "plugins.bundledTitle": "MobSimLab에 포함",
+  "plugins.keys": "신뢰하는 게시자",
+  "plugins.keysIntro":
+    "게시자가 다음 키 중 하나로 서명한 플러그인만 설치됩니다(ECDSA P-256 또는 Ed25519, PEM).",
+  "plugins.noKeys": "아직 신뢰하는 키가 없습니다.",
+  "plugins.removeKey": "{name} 신뢰 해제",
+  "plugins.addKey": "키 추가",
+  "plugins.keyName": "게시자 이름",
+  "plugins.keyPem": "공개 키",
+  "plugins.allowUnsigned": "서명 없는 플러그인 허용(개발 모드, 소유자만)",
+  "plugins.signedBy": "{name} 서명",
+  "plugins.untrusted": "이 인스턴스가 신뢰하지 않는 키로 서명됨",
+  "plugins.unsigned": "서명 없음",
+  "plugins.licences": "라이선스: 코드 {code}, 데이터 {data}",
+  "plugins.removeConfirm":
+    "{name}이(가) {count}개 프로젝트에서 켜져 있습니다. 그래도 제거할까요? 해당 프로젝트에서 꺼지고 도면은 유지됩니다.",
+} satisfies Record<PluginKey, string>;

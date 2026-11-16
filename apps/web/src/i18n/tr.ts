@@ -10,7 +10,7 @@ import { timetablesTr } from "./timetables/tr";
 import { mslabTr } from "./mslab/tr";
 import { pluginCodeTr } from "./plugin-code/tr";
 import { populationTr } from "./population/tr";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsTr } from "./plugins/tr";
 import type { Messages } from "./en";
 
 /** Türkçe */
@@ -509,5 +509,5 @@ export const tr: Messages = {
   ...populationTr,
   ...roadTr,
   ...calendarTr,
-  ...PLUGIN_MESSAGES.tr,
+  ...pluginsTr,
 };

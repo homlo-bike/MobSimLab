@@ -10,7 +10,7 @@ import { timetablesJa } from "./timetables/ja";
 import { mslabJa } from "./mslab/ja";
 import { pluginCodeJa } from "./plugin-code/ja";
 import { populationJa } from "./population/ja";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsJa } from "./plugins/ja";
 import type { Messages } from "./en";
 
 /** 日本語 */
@@ -501,5 +501,5 @@ export const ja: Messages = {
   ...populationJa,
   ...roadJa,
   ...calendarJa,
-  ...PLUGIN_MESSAGES.ja,
+  ...pluginsJa,
 };

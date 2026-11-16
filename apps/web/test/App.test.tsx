@@ -1,5 +1,5 @@
 import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("maplibre-gl", () => {
   class Map {
@@ -18,8 +18,8 @@ vi.mock("maplibre-gl", () => {
 });
 
 import { App } from "../src/App";
-import { MESSAGES } from "../src/i18n/messages";
-import { resolveLanguage, translatePlural } from "../src/i18n/i18n";
+import { loadMessages, MESSAGE_LANGUAGES, MESSAGES_EN } from "../src/i18n/messages";
+import { LANGUAGES, resolveLanguage, translatePlural } from "../src/i18n/i18n";
 import { DEFAULT_BASEMAP } from "../src/map/basemaps";
 import type { Project } from "../src/projects/api";
 import type { Me } from "../src/session/api";
@@ -112,6 +112,47 @@ function stubApi(me: Me | Me[], overrides: Record<string, unknown> = {}) {
   return calls;
 }
 
+// The app downloads each language and each screen when first shown. Load them once up front, so a slow first
+// compile on a CI runner does not use up the time the tests give a screen to appear.
+beforeAll(async () => {
+  await Promise.all([
+    ...MESSAGE_LANGUAGES.map(loadMessages),
+    import("../src/workspace/Workspace"),
+    import("../src/features/appraisal/AppraisalSection"),
+    import("../src/features/benefits/BenefitTables"),
+    import("../src/features/benefits/RegionEditor"),
+    import("../src/features/calendar-run/CalendarRun"),
+    import("../src/features/capacity/CapacityRun"),
+    import("../src/features/cargo-bike/CargoBikeTab"),
+    import("../src/features/costs/CostTables"),
+    import("../src/features/demand/DemandSection"),
+    import("../src/features/demand/ZoneEditor"),
+    import("../src/features/depots/DepotEditor"),
+    import("../src/features/fares/FareTables"),
+    import("../src/features/journey-planner/JourneyPlanner"),
+    import("../src/features/noise/NoiseMap"),
+    import("../src/features/population/PopulationPanel"),
+    import("../src/features/railways/RailwayEditor"),
+    import("../src/features/road-sim/RoadSimulation"),
+    import("../src/features/schematic/Schematic"),
+    import("../src/features/street-lines/StreetLineEditor"),
+    import("../src/features/street-setup/StreetSetupEditor"),
+    import("../src/features/tables/NetworkTables"),
+    import("../src/features/tables/Scenarios"),
+    import("../src/features/timetables/TimetableTables"),
+    import("../src/features/walk/WalkAnalysis"),
+    import("../src/kits/SpanLineEditor"),
+    import("../src/kits/WaterRouteEditor"),
+    import("../src/kits/ZoneEditor"),
+    import("../src/workspace/PrintReport"),
+    import("../src/workspace/ProjectPreferences"),
+    import("../src/admin/AdminPanel"),
+    import("../src/agents/AgentsPanel"),
+    import("../src/agents/ConsentPage"),
+    import("../src/setup/SetupPanel"),
+  ]);
+}, 120_000);
+
 let languages: string[] = ["en-GB", "en"];
 beforeEach(() => {
   languages = ["en-GB", "en"];
@@ -141,7 +182,7 @@ describe("sign-in page", () => {
     stubApi(signedOut);
     render(<App />);
     expect(await screen.findByRole("heading", { name: "Anmelden" })).toBeTruthy();
-    expect(document.documentElement.lang).toBe("de");
+    await waitFor(() => expect(document.documentElement.lang).toBe("de"));
     fireEvent.click(screen.getByRole("button", { name: /Deutsch \(vom Gerät\)/ }));
     // The menu says translations are machine-made and links to the message files on GitHub.
     expect(screen.getByRole("link", { name: /Übersetzungen zu verbessern/ }).getAttribute("href")).toMatch(
@@ -157,12 +198,12 @@ describe("sign-in page", () => {
     stubApi(signedOut);
     render(<App />);
     expect(await screen.findByRole("heading", { name: "تسجيل الدخول" })).toBeTruthy();
-    expect(document.documentElement.lang).toBe("ar");
+    await waitFor(() => expect(document.documentElement.lang).toBe("ar"));
     expect(document.documentElement.dir).toBe("rtl");
     fireEvent.click(screen.getByRole("button", { name: /العربية \(من الجهاز\)/ }));
     fireEvent.click(screen.getByRole("menuitemradio", { name: "中文（简体）" }));
     expect(await screen.findByRole("heading", { name: "登录" })).toBeTruthy();
-    expect(document.documentElement.dir).toBe("ltr");
+    await waitFor(() => expect(document.documentElement.dir).toBe("ltr"));
   });
 
   it("opens the About dialog with the version, licence and source link", async () => {
@@ -859,9 +900,12 @@ describe("building blocks", () => {
     expect(resolveLanguage("system", ["pt-BR"])).toBe("pt");
   });
 
-  it("has every message translated and keeps placeholders", () => {
-    for (const [lang, messages] of Object.entries(MESSAGES)) {
-      for (const [key, text] of Object.entries(MESSAGES.en)) {
+  it("has every message translated and keeps placeholders", async () => {
+    // Every language in the picker has its own messages file.
+    expect([...MESSAGE_LANGUAGES].sort()).toEqual(LANGUAGES.map((l) => l.tag).sort());
+    for (const lang of MESSAGE_LANGUAGES) {
+      const messages = await loadMessages(lang);
+      for (const [key, text] of Object.entries(MESSAGES_EN)) {
         // Plural forms other than `other` are optional: each language has the forms its grammar needs.
         if (/\.(zero|one|two|few|many)$/.test(key)) continue;
         const other = (messages as Record<string, string>)[key];
@@ -872,7 +916,8 @@ describe("building blocks", () => {
     }
   });
 
-  it("picks the plural form the language needs", () => {
+  it("picks the plural form the language needs", async () => {
+    await Promise.all(["ru", "ar", "zh"].map(loadMessages));
     expect(translatePlural("en", "rail.stations", 1)).toBe("1 station");
     expect(translatePlural("en", "rail.stations", 1200)).toBe("1,200 stations");
     expect(translatePlural("ru", "rail.stations", 1)).toBe("1 станция");

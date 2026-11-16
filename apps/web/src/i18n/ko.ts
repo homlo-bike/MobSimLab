@@ -10,7 +10,7 @@ import { timetablesKo } from "./timetables/ko";
 import { mslabKo } from "./mslab/ko";
 import { pluginCodeKo } from "./plugin-code/ko";
 import { populationKo } from "./population/ko";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsKo } from "./plugins/ko";
 import type { Messages } from "./en";
 
 /** 한국어 */
@@ -499,5 +499,5 @@ export const ko: Messages = {
   ...populationKo,
   ...roadKo,
   ...calendarKo,
-  ...PLUGIN_MESSAGES.ko,
+  ...pluginsKo,
 };

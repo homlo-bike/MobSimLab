@@ -10,7 +10,7 @@ import { timetablesSw } from "./timetables/sw";
 import { mslabSw } from "./mslab/sw";
 import { pluginCodeSw } from "./plugin-code/sw";
 import { populationSw } from "./population/sw";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsSw } from "./plugins/sw";
 import type { Messages } from "./en";
 
 /** Kiswahili. */
@@ -510,5 +510,5 @@ export const sw: Messages = {
   ...populationSw,
   ...roadSw,
   ...calendarSw,
-  ...PLUGIN_MESSAGES.sw,
+  ...pluginsSw,
 };

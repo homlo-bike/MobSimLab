@@ -10,7 +10,7 @@ import { timetablesTa } from "./timetables/ta";
 import { mslabTa } from "./mslab/ta";
 import { pluginCodeTa } from "./plugin-code/ta";
 import { populationTa } from "./population/ta";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsTa } from "./plugins/ta";
 import type { Messages } from "./en";
 
 /** தமிழ் */
@@ -518,5 +518,5 @@ export const ta: Messages = {
   ...populationTa,
   ...roadTa,
   ...calendarTa,
-  ...PLUGIN_MESSAGES.ta,
+  ...pluginsTa,
 };

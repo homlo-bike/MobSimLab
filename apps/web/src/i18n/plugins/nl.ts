@@ -1,0 +1,51 @@
+import type { PluginKey } from "../plugins";
+
+/** Plugin messages (nl). */
+export const pluginsNl = {
+  "admin.plugins": "Plug-ins",
+  "plugins.title": "Plug-ins",
+  "plugins.intro":
+    "Plug-ins voegen vervoerswijzen, gereedschappen en berekeningen toe. Zet aan wat dit project gebruikt; uitzetten verbergt de gereedschappen en bewaart wat ermee getekend is.",
+  "plugins.bundled": "Hoort bij MobSimLab",
+  "plugins.by": "Door {publisher}",
+  "plugins.versionN": "Versie {version}",
+  "plugins.adds": "Voegt toe: {list}",
+  "plugins.uses": "Gebruikt: {list}",
+  "plugins.parameters": "{count} aannamewaarden",
+  "plugins.missing":
+    "Versie {version} is uit deze MobSimLab verwijderd. Kies een andere versie om hem weer te gebruiken.",
+  "plugins.versionOf": "Versie van {name}",
+  "plugins.useIn": "{name} in dit project gebruiken",
+  "plugins.ownerOnly": "Alleen de eigenaar van het project kan plug-ins aan- of uitzetten.",
+  "plugins.perm.readNetwork": "het netwerk van het project",
+  "plugins.perm.readTimetable": "de dienstregeling",
+  "plugins.perm.readFleet": "voertuigen en vloot",
+  "plugins.perm.readGeodata": "geïmporteerde kaartgegevens",
+  "plugins.perm.readResults": "simulatieresultaten",
+  "plugins.perm.writeResults": "bewaart eigen resultaten",
+  "plugins.perm.writeScenario": "stelt wijzigingen in het scenario voor",
+  "plugins.installTitle": "Plug-in installeren",
+  "plugins.choose": "Kies een .msplugin-bestand",
+  "plugins.problems": "Deze plug-in kan niet worden geïnstalleerd:",
+  "plugins.install": "Installeren",
+  "plugins.installed": "Geïnstalleerde plug-ins",
+  "plugins.none": "Nog geen plug-ins geïnstalleerd.",
+  "plugins.removeOne": "{name} {version} verwijderen",
+  "plugins.inProjects": "Gebruikt in {count} projecten",
+  "plugins.bundledTitle": "Meegeleverd met MobSimLab",
+  "plugins.keys": "Vertrouwde uitgevers",
+  "plugins.keysIntro":
+    "Een plug-in wordt alleen geïnstalleerd als de uitgever hem met een van deze sleutels heeft ondertekend (ECDSA P-256 of Ed25519, PEM).",
+  "plugins.noKeys": "Nog geen vertrouwde sleutels.",
+  "plugins.removeKey": "{name} niet meer vertrouwen",
+  "plugins.addKey": "Sleutel toevoegen",
+  "plugins.keyName": "Naam van de uitgever",
+  "plugins.keyPem": "Publieke sleutel",
+  "plugins.allowUnsigned": "Niet-ondertekende plug-ins toestaan (ontwikkelmodus, alleen eigenaren)",
+  "plugins.signedBy": "Ondertekend door {name}",
+  "plugins.untrusted": "Ondertekend met een sleutel die deze instantie niet vertrouwt",
+  "plugins.unsigned": "Niet ondertekend",
+  "plugins.licences": "Licenties: code {code}, gegevens {data}",
+  "plugins.removeConfirm":
+    "{name} staat aan in {count} projecten. Toch verwijderen? Hij wordt daar uitgezet en de tekeningen blijven bewaard.",
+} satisfies Record<PluginKey, string>;

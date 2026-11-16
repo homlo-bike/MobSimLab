@@ -10,7 +10,7 @@ import { timetablesUk } from "./timetables/uk";
 import { mslabUk } from "./mslab/uk";
 import { pluginCodeUk } from "./plugin-code/uk";
 import { populationUk } from "./population/uk";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsUk } from "./plugins/uk";
 import type { Messages } from "./en";
 
 /** Українська */
@@ -512,5 +512,5 @@ export const uk: Messages = {
   ...populationUk,
   ...roadUk,
   ...calendarUk,
-  ...PLUGIN_MESSAGES.uk,
+  ...pluginsUk,
 };

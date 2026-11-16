@@ -10,7 +10,7 @@ import { timetablesAm } from "./timetables/am";
 import { mslabAm } from "./mslab/am";
 import { pluginCodeAm } from "./plugin-code/am";
 import { populationAm } from "./population/am";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsAm } from "./plugins/am";
 import type { Messages } from "./en";
 
 /** Amharic. */
@@ -494,5 +494,5 @@ export const am: Messages = {
   ...populationAm,
   ...roadAm,
   ...calendarAm,
-  ...PLUGIN_MESSAGES.am,
+  ...pluginsAm,
 };

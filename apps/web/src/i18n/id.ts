@@ -10,7 +10,7 @@ import { timetablesId } from "./timetables/id";
 import { mslabId } from "./mslab/id";
 import { pluginCodeId } from "./plugin-code/id";
 import { populationId } from "./population/id";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsId } from "./plugins/id";
 import type { Messages } from "./en";
 
 /** Bahasa Indonesia */
@@ -511,5 +511,5 @@ export const id: Messages = {
   ...populationId,
   ...roadId,
   ...calendarId,
-  ...PLUGIN_MESSAGES.id,
+  ...pluginsId,
 };
