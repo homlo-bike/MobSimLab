@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Build the street-routing and journey-planner WebAssembly modules for the API (Node, CommonJS) into
+# Build the street-routing, journey-planner and GTFS WebAssembly modules for the API (Node, CommonJS) into
 # apps/api/wasm. The agent tools (ADR-0035) run the same walk analysis, street routing and journey planner
 # code as the browser and the worker.
 # Needs: rustup target wasm32-unknown-unknown and wasm-bindgen-cli matching the wasm-bindgen crate version.
@@ -13,9 +13,11 @@ if [ "$have" != "$want" ]; then
   echo "  cargo install wasm-bindgen-cli --version $want --locked" >&2
   exit 1
 fi
-cargo build --release --locked --target wasm32-unknown-unknown -p street-routing-wasm -p journey-planner-wasm
+cargo build --release --locked --target wasm32-unknown-unknown -p street-routing-wasm -p journey-planner-wasm -p gtfs-wasm
 wasm-bindgen --target nodejs --out-dir apps/api/wasm/street-routing \
   target/wasm32-unknown-unknown/release/street_routing_wasm.wasm
 wasm-bindgen --target nodejs --out-dir apps/api/wasm/journey-planner \
   target/wasm32-unknown-unknown/release/journey_planner_wasm.wasm
+wasm-bindgen --target nodejs --out-dir apps/api/wasm/gtfs \
+  target/wasm32-unknown-unknown/release/gtfs_wasm.wasm
 echo "Built apps/api/wasm"

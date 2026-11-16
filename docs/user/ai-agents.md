@@ -39,6 +39,7 @@ Under **Personal access token** in the AI agents panel, give the token a name, p
 | `suggest_stop_locations` | Up to k new stops that cover the most uncovered demand, at least a set distance apart, solved exactly | analysis:run |
 | `accessibility_to_destinations` | The 15-minute city: food shops, primary schools, GPs or clinics, pharmacies, parks and workplaces within N minutes on foot, by bicycle, or on foot and public transport | analysis:run |
 | `plan_journey` | Door-to-door journeys on the scenario's lines at a time of day | analysis:run |
+| `export_gtfs` | The scenario as a GTFS Schedule feed (zip), from the same timetable `plan_journey` rides | project:read |
 | `benchmark_scenarios` | Coverage, journey times, line length, run times, cycle time and fleet for several scenarios side by side | analysis:run |
 
 The headline is the 15-minute walk to the nearest stop or station (`walk_minutes` preset). The SDG 11.2.1 rule (500 m to any stop, 1000 m to rail and BRT), the per-mode catchment rule, the frequent-service rule and PTAL are available as secondary presets. Every result names the rule, the parameters and where the defaults come from.
@@ -77,5 +78,6 @@ Walks follow the street network from OpenStreetMap at 4.5 km/h, avoid motorways 
 - Agent scenarios live in your own workspace, not in shared projects yet; people cannot be invited to them.
 - Rail lines without a timetable from the railway operations planner use run times from the vehicle's speed and acceleration, and the frequency the agent gives.
 - In `plan_journey`, walks to and between stops are still straight-line distance × 1.3 (as in the [journey planner](journey-planner.md)).
-- Not yet available: simulation runs and parameter sweeps, and GTFS export.
+- `export_gtfs` writes a weekday feed in which each line runs at its headways (one template trip per direction and period, repeated by `frequencies.txt`). It uses the GTFS plugin's exporter. The agent gives the time zone; the agency is the scenario name and this instance unless set. The feed is not run through the MobilityData GTFS Validator.
+- Not yet available: simulation runs and parameter sweeps.
 - At most 200 scenarios per user, 2000 stops and 100 lines per scenario; calls are rate limited per connection.
