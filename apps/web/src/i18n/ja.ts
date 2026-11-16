@@ -2,6 +2,7 @@ import { roadJa } from "./road/ja";
 import { editorsJa } from "./editors/ja";
 import { cargoBikeJa } from "./cargo-bike/ja";
 import { depotsJa } from "./depots/ja";
+import { mslabJa } from "./mslab/ja";
 import { populationJa } from "./population/ja";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -412,6 +413,7 @@ export const ja: Messages = {
   ...editorsJa,
   ...cargoBikeJa,
   ...depotsJa,
+  ...mslabJa,
   ...populationJa,
   ...roadJa,
   ...PLUGIN_MESSAGES.ja,

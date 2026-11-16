@@ -2,6 +2,7 @@ import { roadTa } from "./road/ta";
 import { editorsTa } from "./editors/ta";
 import { cargoBikeTa } from "./cargo-bike/ta";
 import { depotsTa } from "./depots/ta";
+import { mslabTa } from "./mslab/ta";
 import { populationTa } from "./population/ta";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -428,6 +429,7 @@ export const ta: Messages = {
   ...editorsTa,
   ...cargoBikeTa,
   ...depotsTa,
+  ...mslabTa,
   ...populationTa,
   ...roadTa,
   ...PLUGIN_MESSAGES.ta,

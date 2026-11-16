@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/homlo-bike/MobSimLab/blob/main/contracts/mslab/plugins.schema.json",
+  "title": "Plugins switched on or off for the project (plugins.json)",
+  "type": "object",
+  "required": [
+    "plugins"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "plugins": {
+      "type": "array",
+      "maxItems": 500,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "enabled",
+          "version"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "version": {
+            "description": "The pinned version of an installed plugin; null for a plugin bundled with MobSimLab.",
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 64
+          }
+        }
+      }
+    }
+  }
+}

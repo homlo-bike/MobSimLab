@@ -2,6 +2,7 @@ import { roadBn } from "./road/bn";
 import { editorsBn } from "./editors/bn";
 import { cargoBikeBn } from "./cargo-bike/bn";
 import { depotsBn } from "./depots/bn";
+import { mslabBn } from "./mslab/bn";
 import { populationBn } from "./population/bn";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -414,6 +415,7 @@ export const bn: Messages = {
   ...editorsBn,
   ...cargoBikeBn,
   ...depotsBn,
+  ...mslabBn,
   ...populationBn,
   ...roadBn,
   ...PLUGIN_MESSAGES.bn,
