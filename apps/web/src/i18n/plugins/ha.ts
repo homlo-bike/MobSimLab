@@ -1,0 +1,52 @@
+import type { PluginKey } from "../plugins";
+
+/** Plugin messages (ha). */
+export const pluginsHa = {
+  "admin.plugins": "Ƙarin manhajoji",
+  "plugins.title": "Ƙarin manhajoji",
+  "plugins.intro":
+    "Ƙarin manhajoji suna ƙara hanyoyin sufuri, kayan aiki da lissafi. Kunna waɗanda wannan aiki ke amfani da su; idan aka kashe ɗaya, kayan aikinsa za su ɓoye kuma zane zai kasance.",
+  "plugins.bundled": "Yana zuwa tare da MobSimLab",
+  "plugins.by": "Daga {publisher}",
+  "plugins.versionN": "Siga {version}",
+  "plugins.adds": "Yana ƙara: {list}",
+  "plugins.uses": "Yana amfani da: {list}",
+  "plugins.parameters": "Ƙimar zato {count}",
+  "plugins.missing": "An cire siga {version} daga wannan MobSimLab. Zaɓi wata siga don sake amfani da shi.",
+  "plugins.versionOf": "Sigar {name}",
+  "plugins.useIn": "Yi amfani da {name} a wannan aiki",
+  "plugins.ownerOnly": "Mai aikin kaɗai ne zai iya kunna ko kashe ƙarin manhajoji.",
+  "plugins.perm.readNetwork": "hanyar sadarwar aikin",
+  "plugins.perm.readTimetable": "jadawalin lokaci",
+  "plugins.perm.readFleet": "motoci da rundunar motoci",
+  "plugins.perm.readGeodata": "bayanan taswira da aka shigo da su",
+  "plugins.perm.readResults": "sakamakon kwaikwayo",
+  "plugins.perm.writeResults": "yana ajiye sakamakonsa",
+  "plugins.perm.writeScenario": "yana ba da shawarar sauye-sauye ga yanayi",
+  "plugins.installTitle": "Saka ƙarin manhaja",
+  "plugins.installIntro":
+    "Ɗora fayil ɗin .msplugin. MobSimLab zai bincika shi ya nuna abin da yake ƙarawa kafin a saka. Ƙarin manhajojin da aka saka na iya ƙara hanyoyi, kayan aiki, sigogi da tushe; waɗanda ke da nasu lambar za su zo daga baya.",
+  "plugins.choose": "Zaɓi fayil ɗin .msplugin",
+  "plugins.problems": "Ba za a iya saka wannan ƙarin manhaja ba:",
+  "plugins.install": "Saka",
+  "plugins.installed": "Ƙarin manhajojin da aka saka",
+  "plugins.none": "Babu ƙarin manhajar da aka saka tukuna.",
+  "plugins.removeOne": "Cire {name} {version}",
+  "plugins.inProjects": "Ana amfani da shi a ayyuka {count}",
+  "plugins.bundledTitle": "Waɗanda ke zuwa tare da MobSimLab",
+  "plugins.keys": "Masu wallafa amintattu",
+  "plugins.keysIntro":
+    "Ƙarin manhaja yana sakuwa ne kawai idan mai wallafa ya sa hannu da ɗaya daga cikin waɗannan maɓallai (ECDSA P-256 ko Ed25519, PEM).",
+  "plugins.noKeys": "Babu amintattun maɓallai tukuna.",
+  "plugins.removeKey": "Daina amincewa da {name}",
+  "plugins.addKey": "Ƙara maɓalli",
+  "plugins.keyName": "Sunan mai wallafa",
+  "plugins.keyPem": "Maɓalli na jama'a",
+  "plugins.allowUnsigned": "Bari ƙarin manhajojin da ba a sa hannu ba (yanayin haɓakawa, masu shi kaɗai)",
+  "plugins.signedBy": "{name} ya sa hannu",
+  "plugins.untrusted": "An sa hannu da maɓallin da wannan tsarin ba ya amincewa da shi",
+  "plugins.unsigned": "Ba a sa hannu ba",
+  "plugins.licences": "Lasisi: lamba {code}, bayanai {data}",
+  "plugins.removeConfirm":
+    "{name} yana kunne a ayyuka {count}. A cire shi duk da haka? Za a kashe shi a can kuma zane zai kasance.",
+} satisfies Record<PluginKey, string>;

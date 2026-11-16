@@ -1,6 +1,6 @@
 import { editorsVi } from "./editors/vi";
 import { cargoBikeVi } from "./cargo-bike/vi";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsVi } from "./plugins/vi";
 import type { Messages } from "./en";
 
 /** Tiếng Việt */
@@ -367,5 +367,5 @@ export const vi: Messages = {
 
   ...editorsVi,
   ...cargoBikeVi,
-  ...PLUGIN_MESSAGES.vi,
+  ...pluginsVi,
 };

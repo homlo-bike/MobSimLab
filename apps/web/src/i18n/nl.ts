@@ -1,6 +1,6 @@
 import { editorsNl } from "./editors/nl";
 import { cargoBikeNl } from "./cargo-bike/nl";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsNl } from "./plugins/nl";
 import type { Messages } from "./en";
 
 /** Nederlands. */
@@ -371,5 +371,5 @@ export const nl: Messages = {
 
   ...editorsNl,
   ...cargoBikeNl,
-  ...PLUGIN_MESSAGES.nl,
+  ...pluginsNl,
 };

@@ -1,0 +1,52 @@
+import type { PluginKey } from "../plugins";
+
+/** Plugin messages (yo). */
+export const pluginsYo = {
+  "admin.plugins": "Àwọn àfikún",
+  "plugins.title": "Àwọn àfikún",
+  "plugins.intro":
+    "Àwọn àfikún ń ṣàfikún ọ̀nà ìrìnàjò, irinṣẹ́ àti ìṣirò. Tan àwọn tí iṣẹ́ yìí ń lò; tí o bá pa ọ̀kan, irinṣẹ́ rẹ̀ á fara pamọ́, ohun tí a yà á wà.",
+  "plugins.bundled": "Ó wá pẹ̀lú MobSimLab",
+  "plugins.by": "Láti ọwọ́ {publisher}",
+  "plugins.versionN": "Ẹ̀yà {version}",
+  "plugins.adds": "Ó ń ṣàfikún: {list}",
+  "plugins.uses": "Ó ń lo: {list}",
+  "plugins.parameters": "Iye àròjinlẹ̀ {count}",
+  "plugins.missing": "A ti yọ ẹ̀yà {version} kúrò nínú MobSimLab yìí. Yan ẹ̀yà mìíràn láti tún un lò.",
+  "plugins.versionOf": "Ẹ̀yà {name}",
+  "plugins.useIn": "Lo {name} nínú iṣẹ́ yìí",
+  "plugins.ownerOnly": "Olùní iṣẹ́ nìkan ló lè tan tàbí pa àwọn àfikún.",
+  "plugins.perm.readNetwork": "nẹ́tíwọ́ọ̀kì iṣẹ́ náà",
+  "plugins.perm.readTimetable": "àkókò ìrìnàjò",
+  "plugins.perm.readFleet": "ọkọ̀ àti àkójọpọ̀ ọkọ̀",
+  "plugins.perm.readGeodata": "dátà máàpù tí a kó wọlé",
+  "plugins.perm.readResults": "èsì àfarawé",
+  "plugins.perm.writeResults": "ó ń fi èsì tirẹ̀ pamọ́",
+  "plugins.perm.writeScenario": "ó ń dábàá àyípadà sí ipò",
+  "plugins.installTitle": "Fi àfikún sórí",
+  "plugins.installIntro":
+    "Gbé fáìlì .msplugin sókè. MobSimLab á ṣàyẹ̀wò rẹ̀, á sì fi ohun tó ń ṣàfikún hàn kí o tó fi sórí. Àwọn àfikún tí a fi sórí lè ṣàfikún ọ̀nà, irinṣẹ́, pàrámítà àti orísun; àwọn tó ní kóòdù tiwọn á dé lẹ́yìn náà.",
+  "plugins.choose": "Yan fáìlì .msplugin",
+  "plugins.problems": "A kò lè fi àfikún yìí sórí:",
+  "plugins.install": "Fi sórí",
+  "plugins.installed": "Àwọn àfikún tí a fi sórí",
+  "plugins.none": "Kò sí àfikún tí a fi sórí síbẹ̀.",
+  "plugins.removeOne": "Yọ {name} {version} kúrò",
+  "plugins.inProjects": "A ń lò ó nínú iṣẹ́ {count}",
+  "plugins.bundledTitle": "Àwọn tó wá pẹ̀lú MobSimLab",
+  "plugins.keys": "Àwọn atẹ̀jáde tí a gbẹ́kẹ̀lé",
+  "plugins.keysIntro":
+    "Àfikún kan máa ń wọlé nìkan tí atẹ̀jáde rẹ̀ bá fi ọ̀kan nínú àwọn kọ́kọ́rọ́ yìí buwọ́lù ú (ECDSA P-256 tàbí Ed25519, PEM).",
+  "plugins.noKeys": "Kò sí kọ́kọ́rọ́ tí a gbẹ́kẹ̀lé síbẹ̀.",
+  "plugins.removeKey": "Dẹ́kun gbígbẹ́kẹ̀lé {name}",
+  "plugins.addKey": "Ṣàfikún kọ́kọ́rọ́",
+  "plugins.keyName": "Orúkọ atẹ̀jáde",
+  "plugins.keyPem": "Kọ́kọ́rọ́ gbogbogbò",
+  "plugins.allowUnsigned": "Gba àwọn àfikún tí a kò buwọ́lù láàyè (ipò ìdàgbàsókè, olùní nìkan)",
+  "plugins.signedBy": "{name} ló buwọ́lù ú",
+  "plugins.untrusted": "A fi kọ́kọ́rọ́ tí ètò yìí kò gbẹ́kẹ̀lé buwọ́lù ú",
+  "plugins.unsigned": "A kò buwọ́lù ú",
+  "plugins.licences": "Ìwé àṣẹ: kóòdù {code}, dátà {data}",
+  "plugins.removeConfirm":
+    "{name} wà ní títàn nínú iṣẹ́ {count}. Ṣé kí a yọ ọ́ síbẹ̀? A ó pa á níbẹ̀, àwọn àwòrán á wà.",
+} satisfies Record<PluginKey, string>;

@@ -1,6 +1,6 @@
 import { editorsUz } from "./editors/uz";
 import { cargoBikeUz } from "./cargo-bike/uz";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsUz } from "./plugins/uz";
 import type { Messages } from "./en";
 
 /** Oʻzbekcha */
@@ -375,5 +375,5 @@ export const uz: Messages = {
 
   ...editorsUz,
   ...cargoBikeUz,
-  ...PLUGIN_MESSAGES.uz,
+  ...pluginsUz,
 };

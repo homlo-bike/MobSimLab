@@ -1,6 +1,6 @@
 import { editorsTe } from "./editors/te";
 import { cargoBikeTe } from "./cargo-bike/te";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsTe } from "./plugins/te";
 import type { Messages } from "./en";
 
 /** తెలుగు */
@@ -367,5 +367,5 @@ export const te: Messages = {
 
   ...editorsTe,
   ...cargoBikeTe,
-  ...PLUGIN_MESSAGES.te,
+  ...pluginsTe,
 };

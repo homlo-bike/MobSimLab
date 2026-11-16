@@ -1,6 +1,6 @@
 import { editorsFr } from "./editors/fr";
 import { cargoBikeFr } from "./cargo-bike/fr";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsFr } from "./plugins/fr";
 import type { Messages } from "./en";
 
 /** Français. */
@@ -375,5 +375,5 @@ export const fr: Messages = {
 
   ...editorsFr,
   ...cargoBikeFr,
-  ...PLUGIN_MESSAGES.fr,
+  ...pluginsFr,
 };

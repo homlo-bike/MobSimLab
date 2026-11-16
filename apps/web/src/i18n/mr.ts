@@ -1,6 +1,6 @@
 import { editorsMr } from "./editors/mr";
 import { cargoBikeMr } from "./cargo-bike/mr";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsMr } from "./plugins/mr";
 import type { Messages } from "./en";
 
 /** मराठी */
@@ -364,5 +364,5 @@ export const mr: Messages = {
 
   ...editorsMr,
   ...cargoBikeMr,
-  ...PLUGIN_MESSAGES.mr,
+  ...pluginsMr,
 };

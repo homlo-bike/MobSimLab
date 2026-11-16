@@ -1,0 +1,52 @@
+import type { PluginKey } from "../plugins";
+
+/** Plugin messages (ur). */
+export const pluginsUr = {
+  "admin.plugins": "پلگ اِنز",
+  "plugins.title": "پلگ اِنز",
+  "plugins.intro":
+    "پلگ اِنز نقل و حمل کے طریقے، اوزار اور حسابات شامل کرتے ہیں۔ جو یہ منصوبہ استعمال کرتا ہے انہیں آن کریں؛ بند کرنے پر اوزار چھپ جاتے ہیں اور بنایا گیا کام محفوظ رہتا ہے۔",
+  "plugins.bundled": "MobSimLab کے ساتھ آتا ہے",
+  "plugins.by": "ناشر: {publisher}",
+  "plugins.versionN": "ورژن {version}",
+  "plugins.adds": "شامل کرتا ہے: {list}",
+  "plugins.uses": "استعمال کرتا ہے: {list}",
+  "plugins.parameters": "مفروضات کی {count} قدریں",
+  "plugins.missing": "ورژن {version} اس MobSimLab سے ہٹا دیا گیا۔ دوبارہ استعمال کے لیے کوئی اور ورژن چنیں۔",
+  "plugins.versionOf": "{name} کا ورژن",
+  "plugins.useIn": "اس منصوبے میں {name} استعمال کریں",
+  "plugins.ownerOnly": "صرف منصوبے کا مالک پلگ اِنز آن یا بند کر سکتا ہے۔",
+  "plugins.perm.readNetwork": "منصوبے کا نیٹ ورک",
+  "plugins.perm.readTimetable": "ٹائم ٹیبل",
+  "plugins.perm.readFleet": "گاڑیاں اور بیڑا",
+  "plugins.perm.readGeodata": "درآمد شدہ نقشہ ڈیٹا",
+  "plugins.perm.readResults": "سیمولیشن کے نتائج",
+  "plugins.perm.writeResults": "اپنے نتائج محفوظ کرتا ہے",
+  "plugins.perm.writeScenario": "منظرنامے میں تبدیلیاں تجویز کرتا ہے",
+  "plugins.installTitle": "پلگ اِن انسٹال کریں",
+  "plugins.installIntro":
+    "‎.msplugin فائل اپ لوڈ کریں۔ MobSimLab اسے جانچتا ہے اور انسٹال سے پہلے دکھاتا ہے کہ یہ کیا شامل کرتا ہے۔ انسٹال شدہ پلگ اِنز طریقے، اوزار، پیرامیٹر اور ماخذ شامل کر سکتے ہیں؛ اپنے کوڈ والے پلگ اِنز بعد میں آئیں گے۔",
+  "plugins.choose": "‎.msplugin فائل چنیں",
+  "plugins.problems": "یہ پلگ اِن انسٹال نہیں ہو سکتا:",
+  "plugins.install": "انسٹال کریں",
+  "plugins.installed": "انسٹال شدہ پلگ اِنز",
+  "plugins.none": "ابھی کوئی پلگ اِن انسٹال نہیں۔",
+  "plugins.removeOne": "{name} {version} ہٹائیں",
+  "plugins.inProjects": "{count} منصوبوں میں استعمال",
+  "plugins.bundledTitle": "MobSimLab کے ساتھ شامل",
+  "plugins.keys": "قابلِ اعتماد ناشر",
+  "plugins.keysIntro":
+    "پلگ اِن صرف تب انسٹال ہوتا ہے جب ناشر نے اسے ان میں سے کسی کلید سے دستخط کیا ہو (ECDSA P-256 یا Ed25519، PEM)۔",
+  "plugins.noKeys": "ابھی کوئی قابلِ اعتماد کلید نہیں۔",
+  "plugins.removeKey": "{name} پر اعتماد ختم کریں",
+  "plugins.addKey": "کلید شامل کریں",
+  "plugins.keyName": "ناشر کا نام",
+  "plugins.keyPem": "عوامی کلید",
+  "plugins.allowUnsigned": "غیر دستخط شدہ پلگ اِنز کی اجازت (ڈیولپمنٹ موڈ، صرف مالکان)",
+  "plugins.signedBy": "دستخط کنندہ: {name}",
+  "plugins.untrusted": "ایسی کلید سے دستخط شدہ جس پر یہ انسٹینس اعتماد نہیں کرتا",
+  "plugins.unsigned": "غیر دستخط شدہ",
+  "plugins.licences": "لائسنس: کوڈ {code}، ڈیٹا {data}",
+  "plugins.removeConfirm":
+    "{name} {count} منصوبوں میں آن ہے۔ پھر بھی ہٹائیں؟ وہاں بند ہو جائے گا اور ڈرائنگز محفوظ رہیں گی۔",
+} satisfies Record<PluginKey, string>;

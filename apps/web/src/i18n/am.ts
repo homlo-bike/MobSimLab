@@ -1,6 +1,6 @@
 import { editorsAm } from "./editors/am";
 import { cargoBikeAm } from "./cargo-bike/am";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsAm } from "./plugins/am";
 import type { Messages } from "./en";
 
 /** Amharic. */
@@ -354,5 +354,5 @@ export const am: Messages = {
 
   ...editorsAm,
   ...cargoBikeAm,
-  ...PLUGIN_MESSAGES.am,
+  ...pluginsAm,
 };

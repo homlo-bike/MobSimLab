@@ -1,6 +1,6 @@
 import { editorsEs } from "./editors/es";
 import { cargoBikeEs } from "./cargo-bike/es";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsEs } from "./plugins/es";
 import type { Messages } from "./en";
 
 /** Español. */
@@ -372,5 +372,5 @@ export const es: Messages = {
 
   ...editorsEs,
   ...cargoBikeEs,
-  ...PLUGIN_MESSAGES.es,
+  ...pluginsEs,
 };

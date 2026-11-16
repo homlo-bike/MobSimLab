@@ -1,6 +1,6 @@
 import { editorsJa } from "./editors/ja";
 import { cargoBikeJa } from "./cargo-bike/ja";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsJa } from "./plugins/ja";
 import type { Messages } from "./en";
 
 /** 日本語 */
@@ -362,5 +362,5 @@ export const ja: Messages = {
 
   ...editorsJa,
   ...cargoBikeJa,
-  ...PLUGIN_MESSAGES.ja,
+  ...pluginsJa,
 };

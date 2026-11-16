@@ -1,0 +1,53 @@
+import type { PluginKey } from "../plugins";
+
+/** Plugin messages (uk). */
+export const pluginsUk = {
+  "admin.plugins": "Плагіни",
+  "plugins.title": "Плагіни",
+  "plugins.intro":
+    "Плагіни додають види транспорту, інструменти та розрахунки. Увімкніть ті, що потрібні проєкту; вимкнення ховає інструменти й зберігає намальоване.",
+  "plugins.bundled": "Входить до MobSimLab",
+  "plugins.by": "Видавець: {publisher}",
+  "plugins.versionN": "Версія {version}",
+  "plugins.adds": "Додає: {list}",
+  "plugins.uses": "Використовує: {list}",
+  "plugins.parameters": "Значень припущень: {count}",
+  "plugins.missing":
+    "Версію {version} видалено з цього MobSimLab. Виберіть іншу версію, щоб знову користуватися плагіном.",
+  "plugins.versionOf": "Версія {name}",
+  "plugins.useIn": "Використовувати {name} у цьому проєкті",
+  "plugins.ownerOnly": "Вмикати й вимикати плагіни може лише власник проєкту.",
+  "plugins.perm.readNetwork": "мережу проєкту",
+  "plugins.perm.readTimetable": "розклад",
+  "plugins.perm.readFleet": "рухомий склад і парк",
+  "plugins.perm.readGeodata": "імпортовані картографічні дані",
+  "plugins.perm.readResults": "результати моделювання",
+  "plugins.perm.writeResults": "зберігає власні результати",
+  "plugins.perm.writeScenario": "пропонує зміни сценарію",
+  "plugins.installTitle": "Установити плагін",
+  "plugins.installIntro":
+    "Завантажте файл .msplugin. MobSimLab перевірить його й покаже, що він додає, до встановлення. Установлені плагіни можуть додавати види транспорту, інструменти, параметри й джерела; плагіни з власним кодом з'являться пізніше.",
+  "plugins.choose": "Вибрати файл .msplugin",
+  "plugins.problems": "Цей плагін не можна встановити:",
+  "plugins.install": "Установити",
+  "plugins.installed": "Установлені плагіни",
+  "plugins.none": "Плагінів ще не встановлено.",
+  "plugins.removeOne": "Видалити {name} {version}",
+  "plugins.inProjects": "Використовується в проєктах: {count}",
+  "plugins.bundledTitle": "Входять до MobSimLab",
+  "plugins.keys": "Довірені видавці",
+  "plugins.keysIntro":
+    "Плагін встановлюється, лише якщо видавець підписав його одним із цих ключів (ECDSA P-256 або Ed25519, PEM).",
+  "plugins.noKeys": "Довірених ключів ще немає.",
+  "plugins.removeKey": "Більше не довіряти {name}",
+  "plugins.addKey": "Додати ключ",
+  "plugins.keyName": "Назва видавця",
+  "plugins.keyPem": "Відкритий ключ",
+  "plugins.allowUnsigned": "Дозволити непідписані плагіни (режим розробки, лише власники)",
+  "plugins.signedBy": "Підписано: {name}",
+  "plugins.untrusted": "Підписано ключем, якому цей екземпляр не довіряє",
+  "plugins.unsigned": "Не підписано",
+  "plugins.licences": "Ліцензії: код {code}, дані {data}",
+  "plugins.removeConfirm":
+    "{name} увімкнено в проєктах: {count}. Усе одно видалити? Його там буде вимкнено, креслення збережуться.",
+} satisfies Record<PluginKey, string>;

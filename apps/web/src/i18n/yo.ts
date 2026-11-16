@@ -1,6 +1,6 @@
 import { editorsYo } from "./editors/yo";
 import { cargoBikeYo } from "./cargo-bike/yo";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsYo } from "./plugins/yo";
 import type { Messages } from "./en";
 
 /** Yorùbá. */
@@ -367,5 +367,5 @@ export const yo: Messages = {
 
   ...editorsYo,
   ...cargoBikeYo,
-  ...PLUGIN_MESSAGES.yo,
+  ...pluginsYo,
 };

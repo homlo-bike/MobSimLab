@@ -1,6 +1,6 @@
 import { editorsHi } from "./editors/hi";
 import { cargoBikeHi } from "./cargo-bike/hi";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsHi } from "./plugins/hi";
 import type { Messages } from "./en";
 
 /** हिन्दी। */
@@ -367,5 +367,5 @@ export const hi: Messages = {
 
   ...editorsHi,
   ...cargoBikeHi,
-  ...PLUGIN_MESSAGES.hi,
+  ...pluginsHi,
 };

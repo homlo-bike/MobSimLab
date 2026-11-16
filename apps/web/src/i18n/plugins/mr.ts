@@ -1,0 +1,52 @@
+import type { PluginKey } from "../plugins";
+
+/** Plugin messages (mr). */
+export const pluginsMr = {
+  "admin.plugins": "प्लगइन",
+  "plugins.title": "प्लगइन",
+  "plugins.intro":
+    "प्लगइन वाहतूक प्रकार, साधने आणि गणना जोडतात. या प्रकल्पाला लागणारे चालू करा; बंद केल्यावर साधने लपतात आणि काढलेले जपले जाते.",
+  "plugins.bundled": "MobSimLab सोबत येतो",
+  "plugins.by": "प्रकाशक: {publisher}",
+  "plugins.versionN": "आवृत्ती {version}",
+  "plugins.adds": "जोडतो: {list}",
+  "plugins.uses": "वापरतो: {list}",
+  "plugins.parameters": "{count} गृहीत मूल्ये",
+  "plugins.missing": "आवृत्ती {version} या MobSimLab मधून काढली. पुन्हा वापरण्यासाठी दुसरी आवृत्ती निवडा.",
+  "plugins.versionOf": "{name} ची आवृत्ती",
+  "plugins.useIn": "या प्रकल्पात {name} वापरा",
+  "plugins.ownerOnly": "फक्त प्रकल्पाचा मालक प्लगइन चालू किंवा बंद करू शकतो.",
+  "plugins.perm.readNetwork": "प्रकल्पाचे जाळे",
+  "plugins.perm.readTimetable": "वेळापत्रक",
+  "plugins.perm.readFleet": "वाहने आणि ताफा",
+  "plugins.perm.readGeodata": "आयात केलेला नकाशा डेटा",
+  "plugins.perm.readResults": "सिम्युलेशन निकाल",
+  "plugins.perm.writeResults": "स्वतःचे निकाल जतन करतो",
+  "plugins.perm.writeScenario": "परिस्थितीत बदल सुचवतो",
+  "plugins.installTitle": "प्लगइन स्थापित करा",
+  "plugins.installIntro":
+    ".msplugin फाइल अपलोड करा. MobSimLab ती तपासते आणि स्थापनेपूर्वी ती काय जोडते ते दाखवते. स्थापित प्लगइन प्रकार, साधने, पॅरामीटर आणि स्रोत जोडू शकतात; स्वतःचा कोड असलेले प्लगइन नंतर येतील.",
+  "plugins.choose": ".msplugin फाइल निवडा",
+  "plugins.problems": "हा प्लगइन स्थापित करता येत नाही:",
+  "plugins.install": "स्थापित करा",
+  "plugins.installed": "स्थापित प्लगइन",
+  "plugins.none": "अजून कोणताही प्लगइन स्थापित नाही.",
+  "plugins.removeOne": "{name} {version} काढा",
+  "plugins.inProjects": "{count} प्रकल्पांत वापर",
+  "plugins.bundledTitle": "MobSimLab सोबत आलेले",
+  "plugins.keys": "विश्वासू प्रकाशक",
+  "plugins.keysIntro":
+    "प्रकाशकाने यापैकी एका कीने स्वाक्षरी केली असेल तरच प्लगइन स्थापित होतो (ECDSA P-256 किंवा Ed25519, PEM).",
+  "plugins.noKeys": "अजून विश्वासू की नाहीत.",
+  "plugins.removeKey": "{name} वरील विश्वास काढा",
+  "plugins.addKey": "की जोडा",
+  "plugins.keyName": "प्रकाशकाचे नाव",
+  "plugins.keyPem": "सार्वजनिक की",
+  "plugins.allowUnsigned": "स्वाक्षरी नसलेल्या प्लगइनना परवानगी (विकास मोड, फक्त मालक)",
+  "plugins.signedBy": "स्वाक्षरी: {name}",
+  "plugins.untrusted": "या इन्स्टन्सचा विश्वास नसलेल्या कीने स्वाक्षरी",
+  "plugins.unsigned": "स्वाक्षरी नाही",
+  "plugins.licences": "परवाने: कोड {code}, डेटा {data}",
+  "plugins.removeConfirm":
+    "{name} {count} प्रकल्पांत चालू आहे. तरीही काढायचा? तिथे तो बंद होईल आणि रेखाचित्रे जपली जातील.",
+} satisfies Record<PluginKey, string>;

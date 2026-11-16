@@ -18,8 +18,8 @@ vi.mock("maplibre-gl", () => {
 });
 
 import { App } from "../src/App";
-import { MESSAGES } from "../src/i18n/messages";
-import { resolveLanguage, translatePlural } from "../src/i18n/i18n";
+import { loadMessages, MESSAGE_LANGUAGES, MESSAGES_EN } from "../src/i18n/messages";
+import { LANGUAGES, resolveLanguage, translatePlural } from "../src/i18n/i18n";
 import { DEFAULT_BASEMAP } from "../src/map/basemaps";
 import type { Project } from "../src/projects/api";
 import type { Me } from "../src/session/api";
@@ -546,9 +546,12 @@ describe("building blocks", () => {
     expect(resolveLanguage("system", ["pt-BR"])).toBe("pt");
   });
 
-  it("has every message translated and keeps placeholders", () => {
-    for (const [lang, messages] of Object.entries(MESSAGES)) {
-      for (const [key, text] of Object.entries(MESSAGES.en)) {
+  it("has every message translated and keeps placeholders", async () => {
+    // Every language in the picker has its own messages file.
+    expect([...MESSAGE_LANGUAGES].sort()).toEqual(LANGUAGES.map((l) => l.tag).sort());
+    for (const lang of MESSAGE_LANGUAGES) {
+      const messages = await loadMessages(lang);
+      for (const [key, text] of Object.entries(MESSAGES_EN)) {
         // Plural forms other than `other` are optional: each language has the forms its grammar needs.
         if (/\.(zero|one|two|few|many)$/.test(key)) continue;
         const other = (messages as Record<string, string>)[key];
@@ -559,7 +562,8 @@ describe("building blocks", () => {
     }
   });
 
-  it("picks the plural form the language needs", () => {
+  it("picks the plural form the language needs", async () => {
+    await Promise.all(["ru", "ar", "zh"].map(loadMessages));
     expect(translatePlural("en", "rail.stations", 1)).toBe("1 station");
     expect(translatePlural("en", "rail.stations", 1200)).toBe("1,200 stations");
     expect(translatePlural("ru", "rail.stations", 1)).toBe("1 станция");
