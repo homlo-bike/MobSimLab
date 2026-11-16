@@ -1,0 +1,377 @@
+# Fare revenue parameters (ADR-0044): fare levels for flat, zonal and distance-based fares, passes,
+# discount groups, the fare elasticity of ridership, yearly changes, fare evasion and the cost of collecting
+# fares. Schema: assumptions/README.md.
+#
+# Fares are 2023 international dollars at purchasing power parity, like the operating costs, so they follow
+# the price level of the project's country: the fare revenue table converts them with the World Bank PPP
+# factor and the US GDP deflator into the project's currency. Shares are of trips or of revenue.
+
+- key: fare.flat
+  label: "Flat fare: one fare for every trip"
+  group: Fares
+  unit: US$ per trip (2023, PPP)
+  used_by:
+    - "fare revenue: flat fare"
+  values:
+    - context:
+        mode: "*"
+      low: 1.5
+      central: 2.5
+      high: 4
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+        - worldbank-wdi
+      check: unverified
+      rationale:
+        A single city ticket costs about 2–3.5 € in German, French and Italian cities and about 2.5–3 US$ in
+        US cities; at their PPP factors that is about 2–4.5 international dollars. Cities in lower-income
+        countries price fares lower relative to their price level; 1.5 covers them.
+- key: fare.zonal.first_zone
+  label: "Zonal fare: fare for a trip within one zone"
+  group: Fares
+  unit: US$ per trip (2023, PPP)
+  used_by:
+    - "fare revenue: zonal fare"
+  values:
+    - context:
+        mode: "*"
+      low: 1.5
+      central: 2.5
+      high: 4
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: The same level as a flat fare; zonal systems usually charge the city fare for one zone.
+- key: fare.zonal.extra_zone
+  label: "Zonal fare: added for each further zone"
+  group: Fares
+  unit: US$ per zone (2023, PPP)
+  used_by:
+    - "fare revenue: zonal fare"
+  values:
+    - context:
+        mode: "*"
+      low: 0.5
+      central: 1
+      high: 2
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        Zonal tariffs (for example Verkehrsverbund tariffs and Transport for London's zones) add roughly
+        30–60 % of the one-zone fare for each further zone.
+- key: fare.distance.base
+  label: "Distance-based fare: base fare per trip"
+  group: Fares
+  unit: US$ per trip (2023, PPP)
+  used_by:
+    - "fare revenue: distance-based fare"
+  values:
+    - context:
+        mode: "*"
+      low: 1
+      central: 1.5
+      high: 2.5
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        Distance-based tariffs (for example the Netherlands' OV-chipkaart, Washington Metro, Asian metros)
+        charge a boarding fare of about half a flat city fare, then an amount per km.
+- key: fare.distance.per_km
+  label: "Distance-based fare: added per km travelled"
+  group: Fares
+  unit: US$ per km (2023, PPP)
+  used_by:
+    - "fare revenue: distance-based fare"
+  values:
+    - context:
+        mode: "*"
+      low: 0.08
+      central: 0.15
+      high: 0.25
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        Dutch public transport charges about 0.17–0.20 € per km, German and Swiss regional and long-distance
+        rail about 0.15–0.30 € per km at full fare; lower-income countries less.
+- key: fare.distance.max
+  label: "Distance-based fare: highest fare for one trip (0 for no cap)"
+  group: Fares
+  unit: US$ per trip (2023, PPP)
+  used_by:
+    - "fare revenue: distance-based fare"
+  values:
+    - context:
+        mode: "*"
+      low: 0
+      central: 0
+      high: 0
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: No cap by default; many distance-based tariffs cap the fare, which the project can set here.
+- key: fare.pass.trip_share
+  label: "Passes: share of trips made with a monthly pass"
+  group: Fares
+  unit: share
+  used_by:
+    - "fare revenue: tickets and passes"
+  values:
+    - context:
+        mode: "*"
+      low: 0.3
+      central: 0.5
+      high: 0.7
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        In German, Austrian and Swiss transit associations most trips are made with season tickets; in
+        cities with mainly pay-as-you-go cards the share is lower. 0.5 is a middle value.
+- key: fare.pass.price_in_fares
+  label: "Passes: price of a monthly pass, in single fares of the same trip"
+  group: Fares
+  unit: single fares
+  used_by:
+    - "fare revenue: tickets and passes"
+  values:
+    - context:
+        mode: "*"
+      low: 20
+      central: 30
+      high: 40
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        Monthly passes usually cost about 20–40 single fares (for example about 30 in many European cities),
+        so a pass pays for itself at about one return trip on most working days.
+- key: fare.pass.trips_per_month
+  label: "Passes: trips a pass holder makes in a month"
+  group: Fares
+  unit: trips / month
+  used_by:
+    - "fare revenue: tickets and passes"
+  values:
+    - context:
+        mode: "*"
+      low: 36
+      central: 44
+      high: 54
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        Two trips on each of about 21 working days plus a few at weekends; changes between lines count as one
+        trip per line here, which pushes the number up.
+- key: fare.concession.child.share
+  label: "Discounts: share of trips made by children"
+  group: Fares
+  unit: share
+  used_by:
+    - "fare revenue: discount groups"
+  values:
+    - context:
+        mode: "*"
+      low: 0.04
+      central: 0.08
+      high: 0.12
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: School-age travel is a large part of off-peak bus use and smaller on rail.
+- key: fare.concession.child.discount
+  label: "Discounts: children's discount on the fare"
+  group: Fares
+  unit: share
+  used_by:
+    - "fare revenue: discount groups"
+  values:
+    - context:
+        mode: "*"
+      low: 0.4
+      central: 0.5
+      high: 1
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Child fares are commonly half; some cities let children ride free (a discount of 1).
+- key: fare.concession.senior.share
+  label: "Discounts: share of trips made by older people"
+  group: Fares
+  unit: share
+  used_by:
+    - "fare revenue: discount groups"
+  values:
+    - context:
+        mode: "*"
+      low: 0.06
+      central: 0.12
+      high: 0.18
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Older people make a growing share of off-peak trips in ageing countries.
+- key: fare.concession.senior.discount
+  label: "Discounts: older people's discount on the fare"
+  group: Fares
+  unit: share
+  used_by:
+    - "fare revenue: discount groups"
+  values:
+    - context:
+        mode: "*"
+      low: 0.3
+      central: 0.5
+      high: 1
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Senior fares are commonly half; England's bus pass is free off-peak (a discount of 1).
+- key: fare.concession.student.share
+  label: "Discounts: share of trips made by students"
+  group: Fares
+  unit: share
+  used_by:
+    - "fare revenue: discount groups"
+  values:
+    - context:
+        mode: "*"
+      low: 0.06
+      central: 0.12
+      high: 0.2
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Higher near universities; the ridership estimate's students near stations are a guide.
+- key: fare.concession.student.discount
+  label: "Discounts: students' discount on the fare"
+  group: Fares
+  unit: share
+  used_by:
+    - "fare revenue: discount groups"
+  values:
+    - context:
+        mode: "*"
+      low: 0.2
+      central: 0.3
+      high: 0.6
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Student passes are commonly discounted by a quarter to a half; semester tickets go further.
+- key: fare.elasticity
+  label: "Fare elasticity of ridership (change in trips for a change in the average fare)"
+  group: Fares
+  unit: elasticity
+  used_by:
+    - "fare revenue: ridership after the fare"
+  values:
+    - context:
+        mode: "*"
+      low: -0.6
+      central: -0.4
+      high: -0.2
+      basis: documented
+      sources:
+        - paulley-2006
+        - litman-transit-elasticities
+      check: unverified
+      rationale:
+        Paulley et al. (2006) report bus fare elasticities of about −0.4 in the short run and −0.6 to −1.0 in
+        the long run, and metro about −0.3; Litman's review finds −0.2 to −0.5 in the short run. Applied as a
+        constant elasticity to the average fare paid against the default fares.
+- key: fare.real_increase
+  label: "Yearly fare change above inflation"
+  group: Fares
+  unit: share / year
+  used_by:
+    - "fare revenue: later years"
+  values:
+    - context:
+        mode: "*"
+      low: 0
+      central: 0
+      high: 0.02
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        Appraisals usually keep fares constant in real terms; some cities plan rises above inflation. The
+        fare elasticity applies to the change.
+- key: fare.ridership_growth
+  label: "Yearly ridership growth"
+  group: Fares
+  unit: share / year
+  used_by:
+    - "fare revenue: later years"
+  values:
+    - context:
+        mode: "*"
+      low: 0
+      central: 0.01
+      high: 0.02
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        Growth from population, jobs and the network maturing after opening, before any fare change; 0–2 % a
+        year is the usual range in appraisal forecasts.
+- key: fare.evasion_share
+  label: "Fare evasion: share of trips that pay nothing"
+  group: Fares
+  unit: share
+  used_by:
+    - "fare revenue: losses"
+  values:
+    - context:
+        mode: "*"
+      low: 0.01
+      central: 0.03
+      high: 0.08
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        Gated metros lose about 1–2 %, proof-of-payment systems about 2–5 %, and some open networks report
+        10 % or more.
+- key: fare.collection_cost_share
+  label: "Fare collection cost: share of fare revenue (ticket machines, sales, card fees, inspection)"
+  group: Fares
+  unit: share
+  used_by:
+    - "fare revenue: losses"
+  values:
+    - context:
+        mode: "*"
+      low: 0.05
+      central: 0.1
+      high: 0.15
+      basis: documented
+      sources:
+        - tcrp-94
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        Agencies spend roughly 5–15 % of fare revenue on selling tickets, maintaining machines and gates,
+        card and payment fees and inspection; smart cards and open payment are at the low end.
