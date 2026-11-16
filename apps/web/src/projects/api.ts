@@ -151,8 +151,14 @@ export function projectsApi(csrf: string) {
         (r) => r.history ?? [],
       );
     },
-    /** Where to download the project as a `.mslab` file (ADR-0021), with or without its simulation runs. */
-    mslabUrl: (id: string, runs: boolean) => `${one(id)}/mslab${runs ? "?runs=true" : ""}`,
+    /**
+     * Where to download the project as a `.mslab` file (ADR-0021), with or without its simulation runs, and with
+     * or without the map data of its area for the static viewer.
+     */
+    mslabUrl: (id: string, runs: boolean, map = false) => {
+      const q = [runs && "runs=true", map && "map=true"].filter(Boolean).join("&");
+      return `${one(id)}/mslab${q ? `?${q}` : ""}`;
+    },
     /** Open a `.mslab` file as a new project owned by the caller; `skipped` lists what was left out. */
     importMslab: (file: Blob) => importMslab(csrf, file),
     drawings: (id: string) => loadDrawings(id),

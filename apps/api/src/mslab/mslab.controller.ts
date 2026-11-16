@@ -20,7 +20,10 @@ import { MSLAB_MEDIA_TYPE } from "./format.mts";
 import { MslabService } from "./mslab.service";
 
 const uuid = z.uuid();
-const exportQuery = z.strictObject({ runs: z.enum(["true", "false"]).optional() });
+const exportQuery = z.strictObject({
+  runs: z.enum(["true", "false"]).optional(),
+  map: z.enum(["true", "false"]).optional(),
+});
 
 /**
  * `.mslab` project files (ADR-0021): save a project as a file, and open a file as a new project.
@@ -44,7 +47,9 @@ export class MslabController {
   }
 
   /**
-   * Purpose: download the project as a `.mslab` file. Query: `runs=true` adds the finished simulation runs.
+   * Purpose: download the project as a `.mslab` file. Query: `runs=true` adds the finished simulation runs;
+   * `map=true` adds the map data of the project area for the static viewer (format 1.1; may take minutes when the
+   * OpenStreetMap tiles are not cached).
    */
   @Get(":id/mslab")
   @Requires("projects.read")
@@ -57,7 +62,12 @@ export class MslabController {
     const q = exportQuery.safeParse(query ?? {});
     const pid = uuid.safeParse(id);
     if (!q.success || !pid.success) throw new BadRequestException("not a valid request");
-    const { fileName, bytes } = await this.mslab.export(this.actor(req), pid.data, q.data.runs === "true");
+    const { fileName, bytes } = await this.mslab.export(
+      this.actor(req),
+      pid.data,
+      q.data.runs === "true",
+      q.data.map === "true",
+    );
     res.setHeader("Content-Type", MSLAB_MEDIA_TYPE);
     res.setHeader(
       "Content-Disposition",

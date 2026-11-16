@@ -61,12 +61,19 @@ project.mslab
 │                            kind, schema version, document as the tool saves it (geometry in EPSG:4326)
 ├── runs/<runId>/            optional: finished simulation runs (run.json, network.txt, lines.txt,
 │                            replay.json.gz for road runs)
+├── map/                     optional, format 1.1: map data of the project area for the static viewer
+│                            (area.json, OSM tiles per kind <kind>/<x>-<y>.xml|json, water.json,
+│                            population.json, reference.json); ignored when the file is opened
 └── ATTRIBUTION.md           generated: contents and the sources the project refers to
 ```
 
 Format 1.0.0 (2026-11-16) has no custom vehicles, attachments, sources registry or signatures yet, because
 projects cannot hold them; they come as a later minor version (`vehicles/<mode>/*.json`, `attachments/`,
 `sources.json`, `signatures/`).
+
+Format 1.1.0 adds the optional `map/` folder (`includes.map` in the manifest), written only when the person
+ticks "Include map data" for the static viewer (docs/user/static-viewer.md). Files without it are still saved
+as 1.0.0, so older readers open them.
 
 - JSON Schemas for every file are published, so other tools can read and write `.mslab`.
 - **Import** always creates a new project owned by the person who opens it, with new ids. It runs in the sandboxed tool-runner (`apps/api/src/tool-runner`) with ZIP limits (200 MB file, 5000 entries, 70 MB per file, 512 MB unpacked, compression ratio), checks the checksums and every file against its schema, and applies forward migrations (`apps/api/src/mslab/migrations.mts`); the API then checks every drawing again against the editor's outline. Drawings of tools or plugins this instance lacks are left out and listed.
