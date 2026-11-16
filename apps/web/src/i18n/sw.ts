@@ -4,6 +4,7 @@ import { editorsSw } from "./editors/sw";
 import { cargoBikeSw } from "./cargo-bike/sw";
 import { commentsSw } from "./comments/sw";
 import { depotsSw } from "./depots/sw";
+import { timetablesSw } from "./timetables/sw";
 import { mslabSw } from "./mslab/sw";
 import { pluginCodeSw } from "./plugin-code/sw";
 import { populationSw } from "./population/sw";
@@ -497,6 +498,7 @@ export const sw: Messages = {
   ...editorsSw,
   ...cargoBikeSw,
   ...depotsSw,
+  ...timetablesSw,
   ...commentsSw,
   ...mslabSw,
   ...pluginCodeSw,

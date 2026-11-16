@@ -4,6 +4,7 @@ import { editorsKo } from "./editors/ko";
 import { cargoBikeKo } from "./cargo-bike/ko";
 import { commentsKo } from "./comments/ko";
 import { depotsKo } from "./depots/ko";
+import { timetablesKo } from "./timetables/ko";
 import { mslabKo } from "./mslab/ko";
 import { pluginCodeKo } from "./plugin-code/ko";
 import { populationKo } from "./population/ko";
@@ -486,6 +487,7 @@ export const ko: Messages = {
   ...editorsKo,
   ...cargoBikeKo,
   ...depotsKo,
+  ...timetablesKo,
   ...commentsKo,
   ...mslabKo,
   ...pluginCodeKo,

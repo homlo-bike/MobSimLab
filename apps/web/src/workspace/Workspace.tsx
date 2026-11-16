@@ -1009,6 +1009,7 @@ export function Workspace({
                     onEnergy={setEnergyEst}
                   />
                   <TimetableTables
+                    projectName={project.name}
                     railway={railway}
                     streetLines={streetLines}
                     preferences={preferences}

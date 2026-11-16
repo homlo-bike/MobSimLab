@@ -4,6 +4,7 @@ import { editorsPt } from "./editors/pt";
 import { cargoBikePt } from "./cargo-bike/pt";
 import { commentsPt } from "./comments/pt";
 import { depotsPt } from "./depots/pt";
+import { timetablesPt } from "./timetables/pt";
 import { mslabPt } from "./mslab/pt";
 import { pluginCodePt } from "./plugin-code/pt";
 import { populationPt } from "./population/pt";
@@ -500,6 +501,7 @@ export const pt: Messages = {
   ...editorsPt,
   ...cargoBikePt,
   ...depotsPt,
+  ...timetablesPt,
   ...commentsPt,
   ...mslabPt,
   ...pluginCodePt,

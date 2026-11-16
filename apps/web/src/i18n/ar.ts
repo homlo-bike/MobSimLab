@@ -4,6 +4,7 @@ import { editorsAr } from "./editors/ar";
 import { cargoBikeAr } from "./cargo-bike/ar";
 import { commentsAr } from "./comments/ar";
 import { depotsAr } from "./depots/ar";
+import { timetablesAr } from "./timetables/ar";
 import { mslabAr } from "./mslab/ar";
 import { pluginCodeAr } from "./plugin-code/ar";
 import { populationAr } from "./population/ar";
@@ -484,6 +485,7 @@ export const ar: Messages = {
   ...editorsAr,
   ...cargoBikeAr,
   ...depotsAr,
+  ...timetablesAr,
   ...commentsAr,
   ...mslabAr,
   ...pluginCodeAr,

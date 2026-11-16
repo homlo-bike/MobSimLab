@@ -4,6 +4,7 @@ import { editorsZu } from "./editors/zu";
 import { cargoBikeZu } from "./cargo-bike/zu";
 import { commentsZu } from "./comments/zu";
 import { depotsZu } from "./depots/zu";
+import { timetablesZu } from "./timetables/zu";
 import { mslabZu } from "./mslab/zu";
 import { pluginCodeZu } from "./plugin-code/zu";
 import { populationZu } from "./population/zu";
@@ -503,6 +504,7 @@ export const zu: Messages = {
   ...editorsZu,
   ...cargoBikeZu,
   ...depotsZu,
+  ...timetablesZu,
   ...commentsZu,
   ...mslabZu,
   ...pluginCodeZu,
