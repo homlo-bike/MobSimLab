@@ -54,7 +54,9 @@ function inRing(r: Ring, x: number, y: number): boolean {
 /** Purpose: whether a point is inside a (multi)polygon with holes. */
 function inGeometry(g: NonNullable<IndexFeature["geometry"]>, x: number, y: number): boolean {
   const polys = g.type === "Polygon" ? [g.coordinates] : g.coordinates;
-  return polys.some((rings) => rings.length > 0 && inRing(rings[0]!, x, y) && !rings.slice(1).some((h) => inRing(h, x, y)));
+  return polys.some(
+    (rings) => rings.length > 0 && inRing(rings[0]!, x, y) && !rings.slice(1).some((h) => inRing(h, x, y)),
+  );
 }
 
 /**
@@ -62,12 +64,23 @@ function inGeometry(g: NonNullable<IndexFeature["geometry"]>, x: number, y: numb
  * Inputs: the parsed index, `[west, south, east, north]`. The box counts as held when its corners, its centre
  * and the middles of its sides are all inside the region.
  */
-export function regionsHolding(index: { features?: IndexFeature[] }, b: [number, number, number, number]): GeofabrikRegion[] {
+export function regionsHolding(
+  index: { features?: IndexFeature[] },
+  b: [number, number, number, number],
+): GeofabrikRegion[] {
   const [w, s, e, n] = b;
   const mx = (w + e) / 2;
   const my = (s + n) / 2;
   const probes: [number, number][] = [
-    [w, s], [e, s], [e, n], [w, n], [mx, my], [mx, s], [mx, n], [w, my], [e, my],
+    [w, s],
+    [e, s],
+    [e, n],
+    [w, n],
+    [mx, my],
+    [mx, s],
+    [mx, n],
+    [w, my],
+    [e, my],
   ];
   const out: GeofabrikRegion[] = [];
   for (const f of index.features ?? []) {
@@ -123,14 +136,23 @@ export class GeofabrikClient {
     const idx = await this.loadIndex();
     const f = (idx.features ?? []).find((x) => x.properties?.id === id);
     if (!f?.properties.urls?.pbf) return null;
-    return { id, name: f.properties.name, parent: f.properties.parent ?? null, pbfUrl: f.properties.urls.pbf, bboxKm2: 0 };
+    return {
+      id,
+      name: f.properties.name,
+      parent: f.properties.parent ?? null,
+      pbfUrl: f.properties.urls.pbf,
+      bboxKm2: 0,
+    };
   }
 
   /**
    * Purpose: the region's `.osm.pbf` on the data volume, downloaded when missing or older than `cacheDays`.
    * Output: the file path. Side effects: one streamed download of at most `maxBytes`.
    */
-  async download(region: GeofabrikRegion, progress?: (bytes: number, total: number | null) => void): Promise<string> {
+  async download(
+    region: GeofabrikRegion,
+    progress?: (bytes: number, total: number | null) => void,
+  ): Promise<string> {
     if (!region.pbfUrl.startsWith(`${this.o.baseUrl}/`))
       throw new GeofabrikError("The region's download is not on the Geofabrik server", 400);
     const file = join(this.o.dir, `${region.id.replace(/[^a-z0-9_-]/gi, "_")}.osm.pbf`);
@@ -164,7 +186,9 @@ export class GeofabrikClient {
       await rename(part, file);
     } catch (e) {
       await rm(part, { force: true });
-      throw e instanceof GeofabrikError ? e : new GeofabrikError(`Download failed: ${(e as Error).message}`, 502);
+      throw e instanceof GeofabrikError
+        ? e
+        : new GeofabrikError(`Download failed: ${(e as Error).message}`, 502);
     }
     return file;
   }
@@ -211,7 +235,9 @@ export class GeofabrikClient {
     } catch (e) {
       if (e instanceof GeofabrikError) throw e;
       throw new GeofabrikError(
-        ctrl.signal.aborted ? "Geofabrik did not answer in time" : `Geofabrik is unreachable: ${(e as Error).message}`,
+        ctrl.signal.aborted
+          ? "Geofabrik did not answer in time"
+          : `Geofabrik is unreachable: ${(e as Error).message}`,
         ctrl.signal.aborted ? 504 : 502,
       );
     } finally {

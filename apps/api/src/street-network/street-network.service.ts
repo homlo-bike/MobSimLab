@@ -442,20 +442,35 @@ export class StreetNetworkService {
 
   /** Purpose: OSM XML for the streets of tile x/y at TILE_ZOOM. Side effects: may call Overpass. */
   tile(x: number, y: number, projectId?: string): Promise<string> {
-    return this.cached(`road/${x}/${y}`, () => streetQuery(TILE_ZOOM, x, y), undefined, projectId &&
-      (() => this.imported!.tileXml(projectId, "road", tileBox(x, y))), projectId);
+    return this.cached(
+      `road/${x}/${y}`,
+      () => streetQuery(TILE_ZOOM, x, y),
+      undefined,
+      projectId && (() => this.imported!.tileXml(projectId, "road", tileBox(x, y))),
+      projectId,
+    );
   }
 
   /** Purpose: OSM XML for the railway tracks of tile x/y at TILE_ZOOM. Side effects: may call Overpass. */
   railTile(x: number, y: number, projectId?: string): Promise<string> {
-    return this.cached(`rail/${x}/${y}`, () => railQuery(TILE_ZOOM, x, y), undefined, projectId &&
-      (() => this.imported!.tileXml(projectId, "rail", tileBox(x, y))), projectId);
+    return this.cached(
+      `rail/${x}/${y}`,
+      () => railQuery(TILE_ZOOM, x, y),
+      undefined,
+      projectId && (() => this.imported!.tileXml(projectId, "rail", tileBox(x, y))),
+      projectId,
+    );
   }
 
   /** Purpose: OSM XML for the walkable ways of tile x/y at TILE_ZOOM. Side effects: may call Overpass. */
   walkTile(x: number, y: number, projectId?: string): Promise<string> {
-    return this.cached(`walk/${x}/${y}`, () => walkQuery(TILE_ZOOM, x, y), undefined, projectId &&
-      (() => this.imported!.tileXml(projectId, "walk", tileBox(x, y))), projectId);
+    return this.cached(
+      `walk/${x}/${y}`,
+      () => walkQuery(TILE_ZOOM, x, y),
+      undefined,
+      projectId && (() => this.imported!.tileXml(projectId, "walk", tileBox(x, y))),
+      projectId,
+    );
   }
 
   /**

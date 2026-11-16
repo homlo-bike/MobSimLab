@@ -133,7 +133,7 @@ export async function fetchArea(
       // not cached
     }
     if (xml === null) {
-      let failure: string | null = null;
+      let failure: string | null;
       try {
         xml = await client.run(query);
         failure = runtimeError(xml);
@@ -144,7 +144,10 @@ export async function fetchArea(
       }
       if (failure) {
         if (sideKm(b) / 2 < o.minTileKm)
-          throw new OverpassError(`Overpass could not answer a ${sideKm(b).toFixed(1)} km tile: ${failure}`, 502);
+          throw new OverpassError(
+            `Overpass could not answer a ${sideKm(b).toFixed(1)} km tile: ${failure}`,
+            502,
+          );
         queue.unshift(...quarters(b));
         total += 3;
         continue;

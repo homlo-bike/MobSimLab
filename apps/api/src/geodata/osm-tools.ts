@@ -1,5 +1,7 @@
 import { spawn } from "node:child_process";
 import { existsSync } from "node:fs";
+import { mkdtemp, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 /**
@@ -128,17 +130,21 @@ export class OsmTools {
    * Inputs: the project's extract, the box, the filters. Output: OSM XML.
    */
   async filteredXml(input: string, box: Box, filters: string[], maxBytes: number): Promise<string> {
-    const pbf = await runTool(
-      "osmium",
-      ["extract", "-s", "complete_ways", "-b", boxArg(box), "-f", "pbf", "-o", "-", input],
-      { timeoutMs: this.timeoutMs, maxOutput: maxBytes },
-    );
-    const xml = await runTool(
-      "osmium",
-      ["tags-filter", "-F", "pbf", "-f", "osm", "-o", "-", "-", ...filters],
-      { timeoutMs: this.timeoutMs, input: pbf, maxOutput: maxBytes },
-    );
-    return xml.toString("utf8");
+    // tags-filter reads its input twice (to add the nodes of the ways it keeps), so the cut goes to a file.
+    const dir = await mkdtemp(join(tmpdir(), "msl-tile-"));
+    try {
+      const cut = join(dir, "tile.osm.pbf");
+      await runTool("osmium", ["extract", "-s", "complete_ways", "-b", boxArg(box), "-o", cut, input], {
+        timeoutMs: this.timeoutMs,
+      });
+      const xml = await runTool("osmium", ["tags-filter", "-f", "osm", "-o", "-", cut, ...filters], {
+        timeoutMs: this.timeoutMs,
+        maxOutput: maxBytes,
+      });
+      return xml.toString("utf8");
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
   }
 
   /**
@@ -148,7 +154,11 @@ export class OsmTools {
    */
   async osm2pgsql(
     file: string,
-    o: { schema: string; planned: boolean; db: { host: string; port: number; name: string; user: string; password: string } },
+    o: {
+      schema: string;
+      planned: boolean;
+      db: { host: string; port: number; name: string; user: string; password: string };
+    },
   ): Promise<void> {
     const [major, minor] = await this.version();
     const args = [
@@ -163,7 +173,7 @@ export class OsmTools {
       `--host=${o.db.host}`,
       `--port=${o.db.port}`,
       `--database=${o.db.name}`,
-      `--username=${o.db.user}`,
+      `--user=${o.db.user}`,
       "--log-progress=false",
     ];
     // From 1.9 osm2pgsql keeps a properties table, by default in the public schema the app role cannot write.
