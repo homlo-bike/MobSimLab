@@ -4,6 +4,7 @@ import { cargoBikeIg } from "./cargo-bike/ig";
 import { commentsIg } from "./comments/ig";
 import { depotsIg } from "./depots/ig";
 import { mslabIg } from "./mslab/ig";
+import { pluginCodeIg } from "./plugin-code/ig";
 import { populationIg } from "./population/ig";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -423,6 +424,7 @@ export const ig: Messages = {
   ...depotsIg,
   ...commentsIg,
   ...mslabIg,
+  ...pluginCodeIg,
   ...populationIg,
   ...roadIg,
   ...PLUGIN_MESSAGES.ig,

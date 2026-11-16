@@ -4,6 +4,7 @@ import { cargoBikeTe } from "./cargo-bike/te";
 import { commentsTe } from "./comments/te";
 import { depotsTe } from "./depots/te";
 import { mslabTe } from "./mslab/te";
+import { pluginCodeTe } from "./plugin-code/te";
 import { populationTe } from "./population/te";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -421,6 +422,7 @@ export const te: Messages = {
   ...depotsTe,
   ...commentsTe,
   ...mslabTe,
+  ...pluginCodeTe,
   ...populationTe,
   ...roadTe,
   ...PLUGIN_MESSAGES.te,

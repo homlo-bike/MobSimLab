@@ -95,6 +95,7 @@ import { PrintReport } from "./PrintReport";
 import { ProjectPreferences } from "./ProjectPreferences";
 import {
   delaysFrom,
+  designTextsFrom,
   designValuesFrom,
   type PreferencesDoc,
   sameNameStationM,
@@ -104,6 +105,10 @@ import {
 import { VehiclesOffContext } from "./projectVehicles";
 import type { DelayShares } from "../features/street-lines/types";
 import { type Drawings, useDrawings } from "./useDrawings";
+import { setPluginRuntime } from "../plugins/code/context";
+import { PluginCalculations } from "../plugins/code/PluginCalculations";
+import { PluginFrame } from "../plugins/code/PluginFrame";
+import { clearPluginCode } from "../plugins/code/runtime";
 import { DepotEditor } from "../features/depots/DepotEditor";
 import { CommentsProvider } from "../features/comments/Comments";
 import { commentableObjects, CommentsPanel } from "../features/comments/CommentsPanel";
@@ -263,12 +268,25 @@ export function Workspace({
   // The registry's helpers (modes, tools, calculations) read the open project's plugins.
   setActivePlugins(activePlugins);
   useEffect(() => () => setActivePlugins(PLUGINS), []);
+  // Installed plugins' own code and tab pages (ADR-0036 Phase 2) run for this project, by package.
+  setPluginRuntime({
+    projectId,
+    packages: Object.fromEntries((plugins ?? []).flatMap((p) => (p.sha256 ? [[p.id, p.sha256]] : []))),
+  });
+  useEffect(() => clearPluginCode, [plugins]);
   const PLUGIN_TOOLS = useMemo(() => pluginTools(activePlugins), [activePlugins]);
   // Plugin tabs show only while their plugin is on for the project.
+  const activeTabs = useMemo(() => pluginTabs(activePlugins), [activePlugins]);
   const projectTabs = useMemo(() => {
-    const on = new Set(pluginTabs(activePlugins).map((x) => x.id));
-    return TABS.filter((x) => !PLUGIN_TABS.some((p) => p.id === x) || on.has(x));
-  }, [activePlugins]);
+    const on = new Set(activeTabs.map((x) => x.id));
+    const bundled = TABS.filter((x) => !PLUGIN_TABS.some((p) => p.id === x) || on.has(x));
+    // Then the tabs of installed plugins, which bring their own pages.
+    return [...bundled, ...activeTabs.filter((x) => x.ui && !bundled.includes(x.id)).map((x) => x.id)];
+  }, [activeTabs]);
+  // A tab the project does not have (a plugin turned off, or a mistyped address) falls back to the simulator.
+  useEffect(() => {
+    if (plugins && !projectTabs.includes(tab)) onTab("simulator");
+  }, [plugins, projectTabs, tab, onTab]);
   const setPlugin = async (pluginId: string, enabled: boolean, version?: string) =>
     setPlugins(await api.setPlugin(projectId, pluginId, enabled, version));
 
@@ -338,6 +356,8 @@ export function Workspace({
   const delays = useMemo(() => JSON.parse(delaysJson) as DelayShares, [delaysJson]);
   const rulesJson = JSON.stringify(designValuesFrom(preferences));
   const designValues = useMemo(() => JSON.parse(rulesJson) as Record<string, number>, [rulesJson]);
+  const textsJson = JSON.stringify(designTextsFrom(preferences));
+  const designTexts = useMemo(() => JSON.parse(textsJson) as Record<string, string>, [textsJson]);
   const switchJson = JSON.stringify(switchChoiceFrom(preferences));
   const switchChoice = useMemo(
     () => JSON.parse(switchJson) as ReturnType<typeof switchChoiceFrom>,
@@ -442,10 +462,12 @@ export function Workspace({
     }
   };
   const hasPanel = onMap && project !== null;
-  const pluginTab = projectTabs.includes(tab) ? (PLUGIN_TABS.find((x) => x.id === tab) ?? null) : null;
+  const pluginTab = projectTabs.includes(tab) ? (activeTabs.find((x) => x.id === tab) ?? null) : null;
   const tabLabel = (x: Tab) => {
-    const p = PLUGIN_TABS.find((y) => y.id === x);
+    const p = activeTabs.find((y) => y.id === x) ?? PLUGIN_TABS.find((y) => y.id === x);
     if (!p) return t(`tab.${x}` as MessageKey);
+    // An installed plugin's tab is named by the plugin.
+    if (!p.view) return p.label;
     const key = `plugin.${p.view}.tab` as MessageKey;
     const label = t(key);
     return label === key ? p.label : label;
@@ -672,6 +694,7 @@ export function Workspace({
               streetSetups={setups}
               delays={delays}
               designValues={designValues}
+              designTexts={designTexts}
               prefValues={preferences?.values}
               switchChoice={switchChoice}
               existingRailways={existingRailways}
@@ -861,6 +884,13 @@ export function Workspace({
             />
           </div>
         )}
+        {!onMap && project && drawings.loaded && pluginTab?.ui && (
+          <PluginFrame
+            plugin={activePlugins.find((p) => p.id === pluginTab.plugin)!}
+            tab={pluginTab}
+            data={{ timetable: networkTimetable, streetLines: streetLines?.lines ?? [] }}
+          />
+        )}
         {!onMap && tab === "schematic" && (
           <div className="min-h-0 flex-1">
             {project && drawings.loaded ? (
@@ -922,6 +952,11 @@ export function Workspace({
                   onDoc={editable ? (d) => drawings.set("benefits", d) : undefined}
                   costs={costInfo}
                   onEstimate={onBenefitEstimate}
+                />
+              )}
+              {project && drawings.loaded && (
+                <PluginCalculations
+                  data={{ timetable: networkTimetable, streetLines: streetLines?.lines ?? [] }}
                 />
               )}
               {project && drawings.loaded && (

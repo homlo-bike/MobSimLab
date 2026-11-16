@@ -72,12 +72,21 @@ impl RailDesigner {
         }
     }
 
-    /// Purpose: set design values the project's preferences change (JSON object of numbers by design
-    /// value name for every mode, for example `{"street_mixed_traffic_delay_share": 0.3}`, or by
-    /// `<mode>.<name>` for one mode, for example `{"tram.min_radius_m": 25}`).
+    /// Purpose: set design values the project's preferences change (JSON object by design value
+    /// name for every mode, for example `{"street_mixed_traffic_delay_share": 0.3}`, or by
+    /// `<mode>.<name>` for one mode, for example `{"tram.min_radius_m": 25}`). Text values set the
+    /// text fields, for example `{"tram.electrification": "ocl-600v-dc"}`.
     /// Side effects: the next build uses them.
     pub fn set_values(&mut self, json: &str) -> Result<(), JsError> {
-        self.values = serde_json::from_str(json).map_err(js)?;
+        let all: BTreeMap<String, serde_json::Value> = serde_json::from_str(json).map_err(js)?;
+        self.values = all
+            .iter()
+            .filter_map(|(k, v)| v.as_f64().map(|n| (k.clone(), n)))
+            .collect();
+        self.switch_choice.texts = all
+            .into_iter()
+            .filter_map(|(k, v)| v.as_str().map(|t| (k, t.to_string())))
+            .collect();
         Ok(())
     }
 
@@ -85,7 +94,10 @@ impl RailDesigner {
     /// `{"off": [ids], "default_turnout": {"tram": id}}`).
     /// Side effects: the next build offers only the elements the project uses.
     pub fn set_switch_choice(&mut self, json: &str) -> Result<(), JsError> {
+        let texts = std::mem::take(&mut self.switch_choice.texts);
         self.switch_choice = serde_json::from_str(json).map_err(js)?;
+        // The text values come with the other design values (`set_values`).
+        self.switch_choice.texts = texts;
         Ok(())
     }
 

@@ -4,6 +4,7 @@ import { cargoBikeRu } from "./cargo-bike/ru";
 import { commentsRu } from "./comments/ru";
 import { depotsRu } from "./depots/ru";
 import { mslabRu } from "./mslab/ru";
+import { pluginCodeRu } from "./plugin-code/ru";
 import { populationRu } from "./population/ru";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -427,6 +428,7 @@ export const ru: Messages = {
   ...depotsRu,
   ...commentsRu,
   ...mslabRu,
+  ...pluginCodeRu,
   ...populationRu,
   ...roadRu,
   ...PLUGIN_MESSAGES.ru,

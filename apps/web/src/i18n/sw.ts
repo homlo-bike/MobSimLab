@@ -4,6 +4,7 @@ import { cargoBikeSw } from "./cargo-bike/sw";
 import { commentsSw } from "./comments/sw";
 import { depotsSw } from "./depots/sw";
 import { mslabSw } from "./mslab/sw";
+import { pluginCodeSw } from "./plugin-code/sw";
 import { populationSw } from "./population/sw";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -424,6 +425,7 @@ export const sw: Messages = {
   ...depotsSw,
   ...commentsSw,
   ...mslabSw,
+  ...pluginCodeSw,
   ...populationSw,
   ...roadSw,
   ...PLUGIN_MESSAGES.sw,

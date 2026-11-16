@@ -4,6 +4,7 @@ import { cargoBikeEs } from "./cargo-bike/es";
 import { commentsEs } from "./comments/es";
 import { depotsEs } from "./depots/es";
 import { mslabEs } from "./mslab/es";
+import { pluginCodeEs } from "./plugin-code/es";
 import { populationEs } from "./population/es";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -427,6 +428,7 @@ export const es: Messages = {
   ...depotsEs,
   ...commentsEs,
   ...mslabEs,
+  ...pluginCodeEs,
   ...populationEs,
   ...roadEs,
   ...PLUGIN_MESSAGES.es,

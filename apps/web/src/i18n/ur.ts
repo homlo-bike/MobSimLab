@@ -4,6 +4,7 @@ import { cargoBikeUr } from "./cargo-bike/ur";
 import { commentsUr } from "./comments/ur";
 import { depotsUr } from "./depots/ur";
 import { mslabUr } from "./mslab/ur";
+import { pluginCodeUr } from "./plugin-code/ur";
 import { populationUr } from "./population/ur";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -424,6 +425,7 @@ export const ur: Messages = {
   ...depotsUr,
   ...commentsUr,
   ...mslabUr,
+  ...pluginCodeUr,
   ...populationUr,
   ...roadUr,
   ...PLUGIN_MESSAGES.ur,

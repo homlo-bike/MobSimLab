@@ -4,6 +4,7 @@ import { cargoBikeZu } from "./cargo-bike/zu";
 import { commentsZu } from "./comments/zu";
 import { depotsZu } from "./depots/zu";
 import { mslabZu } from "./mslab/zu";
+import { pluginCodeZu } from "./plugin-code/zu";
 import { populationZu } from "./population/zu";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -430,6 +431,7 @@ export const zu: Messages = {
   ...depotsZu,
   ...commentsZu,
   ...mslabZu,
+  ...pluginCodeZu,
   ...populationZu,
   ...roadZu,
   ...PLUGIN_MESSAGES.zu,

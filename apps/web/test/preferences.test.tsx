@@ -4,6 +4,7 @@ import { ReasonField } from "../src/workspace/ReasonField";
 import {
   DESIGN_RULES,
   delaysFrom,
+  designTextsFrom,
   designValuesFrom,
   LIBRARY_SAME_NAME_M,
   type PreferencesDoc,
@@ -123,6 +124,23 @@ describe("project preferences", () => {
     expect(
       designValuesFrom({ values: { "curve.cant_rail_mm.tram": 99, "mode.min_curve_radius_m.metro": -1 } }),
     ).toEqual({});
+  });
+
+  it("passes the rail engine's text values set in All parameters, for every mode or for one", () => {
+    expect(designTextsFrom(null)).toEqual({});
+    let doc = withChoice(null, "mode.new_track_electrification", "ocl-1500v-dc");
+    doc = withChoice(doc, "mode.new_track_electrification.tram", "ocl-600v-dc");
+    doc = withChoice(doc, "level_crossing.permitted.metro", "yes");
+    doc = withChoice(doc, "mode.colour.light_rail", "#123456");
+    // A traction or an unknown suffix, and keys the engine has no field for, are not passed on.
+    doc = withChoice(doc, "mode.colour.battery", "#000000");
+    doc = withChoice(doc, "mode.new_track_gauge_mm.tram", "1000");
+    expect(designTextsFrom(doc)).toEqual({
+      electrification: "ocl-1500v-dc",
+      "tram.electrification": "ocl-600v-dc",
+      "metro.level_crossing_permitted": "yes",
+      "light_rail.colour": "#123456",
+    });
   });
 
   it("passes every rail engine value set in All parameters, for every mode or for one", () => {

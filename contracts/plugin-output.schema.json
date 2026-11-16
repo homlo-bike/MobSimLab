@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mobsimlab.org/schemas/plugin-output/1.json",
+  "title": "Output of a plugin calculation (plugin API 1)",
+  "description": "What a calculation component returns from `calculate` (contracts/wit/plugin.wit, ADR-0036 §4). Producer: installed plugins' code. Consumer: the web app (Tables tab, plugin tabs) and the agent tools. Only the outputs the calculation declares are shown; text is shown as text, never as markup.",
+  "type": "object",
+  "properties": {
+    "table": {
+      "type": "object",
+      "required": ["columns", "rows"],
+      "properties": {
+        "columns": {
+          "type": "array",
+          "maxItems": 50,
+          "items": {
+            "type": "object",
+            "required": ["id", "label"],
+            "properties": {
+              "id": { "type": "string" },
+              "label": { "type": "string", "maxLength": 100 },
+              "unit": { "type": "string", "maxLength": 30 }
+            }
+          }
+        },
+        "rows": {
+          "type": "array",
+          "maxItems": 10000,
+          "items": {
+            "type": "array",
+            "items": { "type": ["string", "number", "boolean", "null"] }
+          }
+        }
+      }
+    },
+    "kpis": {
+      "type": "array",
+      "maxItems": 50,
+      "items": {
+        "type": "object",
+        "required": ["id", "label", "value"],
+        "properties": {
+          "id": { "type": "string" },
+          "label": { "type": "string", "maxLength": 100 },
+          "value": { "type": ["number", "string", "null"] },
+          "unit": { "type": "string", "maxLength": 30 }
+        }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "maxItems": 1000,
+      "items": {
+        "type": "object",
+        "required": ["level", "message"],
+        "properties": {
+          "level": { "enum": ["ok", "warning", "error"] },
+          "message": { "type": "string", "maxLength": 500 },
+          "rule": { "type": "string", "maxLength": 200 },
+          "location": {
+            "description": "[lon, lat] of what the finding is about.",
+            "type": "array",
+            "items": { "type": "number" },
+            "minItems": 2,
+            "maxItems": 2
+          }
+        }
+      }
+    },
+    "segments": {
+      "description": "GeoJSON FeatureCollection of line features with the calculation's values as properties.",
+      "type": "object"
+    },
+    "grid": {
+      "description": "GeoJSON FeatureCollection of points or polygons on a grid with the calculation's values as properties.",
+      "type": "object"
+    }
+  }
+}
