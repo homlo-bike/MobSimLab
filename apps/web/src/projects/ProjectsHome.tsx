@@ -16,7 +16,7 @@ type Dialogs =
 const LINE_COLOURS = ["#1d4ed8", "#c81e1e", "#c2410c", "#0f766e", "#7c3aed", "#475569"];
 
 /** Purpose: a small deterministic "network" drawing per project, so cards are easy to tell apart. */
-function Thumb({ id, className }: { id: string; className: string }) {
+export function Thumb({ id, className }: { id: string; className: string }) {
   let h = 0;
   for (const c of id) h = (h * 31 + c.charCodeAt(0)) >>> 0;
   const pick = (n: number) => ((h >>> n) & 0xff) / 255;
@@ -35,7 +35,7 @@ function Thumb({ id, className }: { id: string; className: string }) {
 }
 
 /** Purpose: "Edited 12 min ago" style text in the current language. */
-function edited(iso: string, language: string, t: Translate): string {
+export function edited(iso: string, language: string, t: Translate): string {
   const s = (Date.now() - new Date(iso).getTime()) / 1000;
   const rtf = new Intl.RelativeTimeFormat(language, { numeric: "auto" });
   const ago =

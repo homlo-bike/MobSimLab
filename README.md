@@ -31,6 +31,8 @@ MobSimLab has no local passwords; people sign in with an OpenID Connect provider
 
 **AI agents:** Owners, Admins and Editors can connect Claude or another MCP app at `<MOBSIMLAB_PUBLIC_URL>/mcp` to build scenarios and check them against the 15-minute walk rule. See [docs/user/ai-agents.md](docs/user/ai-agents.md). The instance must be reachable over HTTPS from the AI app, and `MOBSIMLAB_PUBLIC_URL` must be the address the app uses.
 
+**Static viewer:** `pnpm build:static` builds a website with no server that shows saved `.mslab` projects read-only (simulator, schematic, tables and preferences), ready to upload to Cloudflare Pages. See [docs/user/static-viewer.md](docs/user/static-viewer.md).
+
 Lost the Owner account? Run `docker compose exec mobsimlab /app/bin/mobsimlab admin reset-owner`. This demotes the current Owner to Admin, signs them out, returns the instance to setup mode and records the action in the audit log.
 
 Spike reports: [S1 co-simulation](docs/spikes/s1-cosimulation.md), [S2 rail kernel performance](docs/spikes/s2-rail-kernel-performance.md), [S3 OSM import](docs/spikes/s3-osm-import.md).

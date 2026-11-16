@@ -81,10 +81,37 @@ describe("mslab reader", () => {
   });
 
   it("refuses files from a newer MobSimLab", async () => {
-    for (const v of ["1.1.0", "2.0.0"]) {
+    for (const v of ["1.2.0", "2.0.0"]) {
       const files = resign(folder(join(FIXTURES, "1.0.0")), (m) => (m.formatVersion = v));
       await refused(writeZip(files), /newer MobSimLab/);
     }
+  });
+
+  it("reads a file with map data (format 1.1) and leaves the map data out", async () => {
+    const files = folder(join(FIXTURES, "1.0.0"));
+    files.set(
+      "map/area.json",
+      Buffer.from(JSON.stringify({ bbox: [0, 0, 1, 1], zoom: 14, kinds: [], tiles: [] })),
+    );
+    files.set("map/streets/8192-8191.xml", Buffer.from("<osm/>"));
+    files.set("map/buildings/8192-8191.json", Buffer.from('{"buildings":[]}'));
+    const r = await read(
+      writeZip(
+        resign(files, (m) => {
+          m.formatVersion = "1.1.0";
+          m.includes = { runs: true, map: true };
+        }),
+      ),
+    );
+    expect(r).toMatchObject({ formatVersion: "1.1.0", migratedFrom: null, skipped: [] });
+    expect((r.drawings as unknown[]).length).toBe(3);
+
+    const unlisted = folder(join(FIXTURES, "1.0.0"));
+    unlisted.set("map/water.json", Buffer.from("{}"));
+    await refused(
+      writeZip(resign(unlisted, (m) => (m.formatVersion = "1.1.0"))),
+      /holds map data but its manifest says it does not/,
+    );
   });
 
   it("refuses changed, missing and extra files", async () => {
