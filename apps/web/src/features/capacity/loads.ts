@@ -10,7 +10,7 @@
  * not split. The load at the busiest link, divided by the vehicles that pass it in the hour, is compared with
  * a vehicle's places; whoever does not fit is left behind for the next one.
  */
-import { DEFAULT_SERVICE_DAY, type ServiceDay } from "../journey-planner/network";
+import { projectServiceDay, type ServiceDay } from "../journey-planner/network";
 
 /** A line as the load model sees it. */
 export interface LoadLine {
@@ -62,7 +62,7 @@ export interface LineLoad {
 }
 
 /** Purpose: the share of a weekday's boardings in the hour starting at `hourS`. */
-export function hourShare(hourS: number, shares: LoadShares, day: ServiceDay = DEFAULT_SERVICE_DAY): number {
+export function hourShare(hourS: number, shares: LoadShares, day: ServiceDay = projectServiceDay()): number {
   const mid = hourS + 1800;
   const inService = mid >= day.firstS && mid < day.lastS;
   if (!inService) return 0;
@@ -120,7 +120,7 @@ export function lineLoad(
   fromS: number,
   toS: number,
   shares: LoadShares,
-  day: ServiceDay = DEFAULT_SERVICE_DAY,
+  day: ServiceDay = projectServiceDay(),
 ): LineLoad {
   const stops = [...new Set(line.sequences.flat())];
   const daily = stops.reduce((a, n) => a + (line.boardings[n] ?? 0), 0);

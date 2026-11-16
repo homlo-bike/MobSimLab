@@ -6,7 +6,7 @@ import { type Translate, type TranslatePlural, tNow, useI18n } from "../../i18n/
 import { fetchStreetTile, loadStreetInfos } from "../street-lines/engine";
 import { MIN_LOAD_ZOOM, tilesFor } from "../street-lines/tiles";
 import type { TileFetcher } from "../street-lines/types";
-import { DEFAULT_SERVICE_DAY } from "../journey-planner/network";
+import { DEFAULT_SERVICE_DAY, projectServiceDay } from "../journey-planner/network";
 import { CrossSection } from "./CrossSection";
 import {
   drawStreets,
@@ -441,8 +441,16 @@ function StreetForm({
           <div className="mt-1.5 grid grid-cols-2 gap-2">
             {(
               [
-                ["cars_morning_peak", "setup.morningPeak", DEFAULT_SERVICE_DAY.peaks[0]],
-                ["cars_evening_peak", "setup.eveningPeak", DEFAULT_SERVICE_DAY.peaks[1]],
+                [
+                  "cars_morning_peak",
+                  "setup.morningPeak",
+                  projectServiceDay().peaks[0] ?? DEFAULT_SERVICE_DAY.peaks[0],
+                ],
+                [
+                  "cars_evening_peak",
+                  "setup.eveningPeak",
+                  projectServiceDay().peaks[1] ?? DEFAULT_SERVICE_DAY.peaks[1],
+                ],
               ] as const
             ).map(([field, label, win]) => (
               <label key={field} className="flex flex-col gap-1 text-sm">

@@ -36,7 +36,12 @@ import type { FaresDoc } from "../features/fares/model";
 import { Scenarios } from "../features/tables/Scenarios";
 import type { ScenariosDoc } from "../features/tables/scenarioModel";
 import { noiseCalculationIn } from "../features/noise/plugin";
-import type { PluginLineInput, StreetLineInput } from "../features/journey-planner/network";
+import {
+  type PluginLineInput,
+  type ServiceDay,
+  setProjectServiceDay,
+  type StreetLineInput,
+} from "../features/journey-planner/network";
 import type { GtfsFeed, GtfsNetworkDoc } from "../features/gtfs/types";
 import type { Timetable } from "../features/journey-planner/types";
 import { RailwayEditor } from "../features/railways/RailwayEditor";
@@ -102,6 +107,7 @@ import { TopBar } from "../shell/TopBar";
 import { PROJECT_TOUR, Tour } from "../shell/Tour";
 import { PrintReport } from "./PrintReport";
 import { ProjectPreferences } from "./ProjectPreferences";
+import { calendarFrom, serviceDayFor } from "./calendar";
 import {
   delaysFrom,
   designTextsFrom,
@@ -424,6 +430,11 @@ export function Workspace({
   const delays = useMemo(() => JSON.parse(delaysJson) as DelayShares, [delaysJson]);
   const rulesJson = JSON.stringify(designValuesFrom(preferences));
   const designValues = useMemo(() => JSON.parse(rulesJson) as Record<string, number>, [rulesJson]);
+  // The project's weekday service day (Calendar and years): the tools' peak windows, and the first and last
+  // departure of lines without their own. Set before the tools render; back to the default when the project closes.
+  const weekdayJson = JSON.stringify(serviceDayFor(calendarFrom(preferences), "weekday"));
+  useMemo(() => setProjectServiceDay(JSON.parse(weekdayJson) as ServiceDay), [weekdayJson]);
+  useEffect(() => () => setProjectServiceDay(null), []);
   const textsJson = JSON.stringify(designTextsFrom(preferences));
   const designTexts = useMemo(() => JSON.parse(textsJson) as Record<string, string>, [textsJson]);
   const switchJson = JSON.stringify(switchChoiceFrom(preferences));
