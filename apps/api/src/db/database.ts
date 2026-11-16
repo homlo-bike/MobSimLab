@@ -237,6 +237,20 @@ export interface DB {
     after: unknown;
     reason: string | null;
   };
+  /** WARN+ log entries, one partition per day (0009_logs.sql). The app role may only insert. */
+  "logs.entry": {
+    id: Generated<string>;
+    at: ColumnType<Date, string | undefined, never>;
+    level: string;
+    origin: string;
+    module: string | null;
+    message: string;
+    request_id: string | null;
+    user_id: string | null;
+    project_id: string | null;
+    run_id: string | null;
+    context: ColumnType<unknown, string | null, never>;
+  };
 }
 
 /** Injection token for the Kysely instance. */
