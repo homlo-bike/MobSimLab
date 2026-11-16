@@ -302,7 +302,14 @@ export const te: Messages = {
   "prefs.accessTitle": "ప్లాట్‌ఫారం అందుబాటు",
   "prefs.accessIntro":
     "ప్లాట్‌ఫారం మరియు రైలు మధ్య మెట్టు, ఖాళీ పరిమితులు (TSI PRM), జాబితాలో లేని రైళ్లకు నేల ఎత్తు. లైన్లు ప్రతి స్టాప్‌లో తనిఖీ అవుతాయి.",
-  "prefs.vehicles": "ఉపయోగించిన వాహనాలు, వాహన జాబితా నుండి",
+  "prefs.vehiclesTitle": "వాహనాలు",
+  "prefs.vehiclesIntro":
+    "ఈ ప్రాజెక్ట్ ప్రతి విధానానికి వాడే జాబితా వాహనాలు. వీధి లైన్ మరియు రైల్వే సాధనాలు టిక్ చేసినవాటినే చూపుతాయి.",
+  "prefs.vehiclesMode": "విధానం",
+  "prefs.vehiclesUsed": "{total}లో {used} వాడుకలో",
+  "prefs.vehiclesAll": "అన్నీ వాడండి",
+  "prefs.vehiclesFacts": "{length} మీ · {places} స్థానాలు · {speed} కి.మీ/గం",
+  "prefs.vehiclesLast": "ప్రతి విధానానికి కనీసం ఒక వాహనం వాడుకలో ఉంటుంది.",
   "prefs.switches": "పట్టా స్విచ్‌లు, స్విచ్ జాబితా నుండి",
   "prefs.calendar": "క్యాలెండర్, డిమాండ్ మరియు ఖర్చులు",
 

@@ -303,7 +303,14 @@ export const nl: Messages = {
   "prefs.accessTitle": "Toegankelijkheid van perrons",
   "prefs.accessIntro":
     "Grenzen voor trede en kier tussen perron en trein (TSI PRM) en de vloerhoogte voor treinen zonder waarde in de voertuigcatalogus. Lijnen worden bij elke halte gecontroleerd.",
-  "prefs.vehicles": "Gebruikte voertuigen, uit de voertuigcatalogus",
+  "prefs.vehiclesTitle": "Voertuigen",
+  "prefs.vehiclesIntro":
+    "De catalogusvoertuigen die dit project per vervoerswijze gebruikt. De straatlijn- en spoortools bieden alleen de aangevinkte aan.",
+  "prefs.vehiclesMode": "Vervoerswijze",
+  "prefs.vehiclesUsed": "{used} van {total} gebruikt",
+  "prefs.vehiclesAll": "Alle gebruiken",
+  "prefs.vehiclesFacts": "{length} m · {places} plaatsen · {speed} km/h",
+  "prefs.vehiclesLast": "Elke vervoerswijze houdt minstens één voertuig in gebruik.",
   "prefs.switches": "Wissels, uit de wisselcatalogus",
   "prefs.calendar": "Kalender, vraag en kosten",
 

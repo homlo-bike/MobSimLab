@@ -292,7 +292,14 @@ export const ar: Messages = {
   "prefs.accessTitle": "إتاحة الرصيف",
   "prefs.accessIntro":
     "حدود الدرجة والفجوة بين الرصيف والقطار (TSI PRM)، وارتفاع الأرضية للقطارات التي لا تملكه في الكتالوج. تُفحص الخطوط عند كل محطة.",
-  "prefs.vehicles": "المركبات المستخدمة، من كتالوج المركبات",
+  "prefs.vehiclesTitle": "المركبات",
+  "prefs.vehiclesIntro":
+    "مركبات الكتالوج التي يستخدمها هذا المشروع لكل نمط. لا تعرض أدوات خطوط الشوارع والسكك الحديدية إلا المحددة.",
+  "prefs.vehiclesMode": "النمط",
+  "prefs.vehiclesUsed": "{used} من {total} مستخدمة",
+  "prefs.vehiclesAll": "استخدام الكل",
+  "prefs.vehiclesFacts": "{length} م · {places} مقعدًا · {speed} كم/س",
+  "prefs.vehiclesLast": "تبقى مركبة واحدة على الأقل مستخدمة لكل نمط.",
   "prefs.switches": "تحويلات السكك، من كتالوج التحويلات",
   "prefs.calendar": "التقويم والطلب والتكاليف",
 

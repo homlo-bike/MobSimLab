@@ -308,7 +308,14 @@ export const zu: Messages = {
   "prefs.accessTitle": "Ukufinyeleleka kwepulatifomu",
   "prefs.accessIntro":
     "Imingcele yesinyathelo negebe phakathi kwepulatifomu nesitimela (TSI PRM), nokuphakama kwaphansi kwezitimela ezingenakho ohlwini. Imizila ihlolwa kuso sonke isiteshi.",
-  "prefs.vehicles": "Izimoto ezisetshenziswayo, kusuka kukhathalogi yezimoto",
+  "prefs.vehiclesTitle": "Izimoto",
+  "prefs.vehiclesIntro":
+    "Izimoto zekhathalogi le phrojekthi ezisebenzisayo, ngohlobo ngalunye. Amathuluzi emizila yasemgwaqweni neyesitimela anikeza lezo ezimakiwe kuphela.",
+  "prefs.vehiclesMode": "Uhlobo",
+  "prefs.vehiclesUsed": "{used} kwezingu-{total} ezisetshenziswayo",
+  "prefs.vehiclesAll": "Sebenzisa zonke",
+  "prefs.vehiclesFacts": "{length} m · izindawo {places} · {speed} km/h",
+  "prefs.vehiclesLast": "Okungenani imoto eyodwa ihlala isetshenziswa ohlotsheni ngalunye.",
   "prefs.switches": "Izishintshi zikajantshi, kusuka kukhathalogi yezishintshi",
   "prefs.calendar": "Ikhalenda, isidingo nezindleko",
 

@@ -82,7 +82,8 @@ import { TopBar } from "../shell/TopBar";
 import { PROJECT_TOUR, Tour } from "../shell/Tour";
 import { PrintReport } from "./PrintReport";
 import { ProjectPreferences } from "./ProjectPreferences";
-import { delaysFrom, designValuesFrom, type PreferencesDoc } from "./preferences";
+import { delaysFrom, designValuesFrom, type PreferencesDoc, vehiclesOffFrom } from "./preferences";
+import { VehiclesOffContext } from "./projectVehicles";
 import type { DelayShares } from "../features/street-lines/types";
 import { type Drawings, useDrawings } from "./useDrawings";
 import { DepotEditor } from "../features/depots/DepotEditor";
@@ -277,6 +278,11 @@ export function Workspace({
   const delays = useMemo(() => JSON.parse(delaysJson) as DelayShares, [delaysJson]);
   const rulesJson = JSON.stringify(designValuesFrom(preferences));
   const designValues = useMemo(() => JSON.parse(rulesJson) as Record<string, number>, [rulesJson]);
+  const offJson = JSON.stringify([...vehiclesOffFrom(preferences)]);
+  const vehiclesOff = useMemo(
+    () => new Set(JSON.parse(offJson) as string[]) as ReadonlySet<string>,
+    [offJson],
+  );
   // Street setups made before projects saved drawings were kept in this browser: move them to the project once.
   useEffect(() => {
     if (!drawings.loaded || !editable) return;
@@ -511,7 +517,7 @@ export function Workspace({
   const pluginLineList = Object.values(pluginLines).filter((l): l is PluginLineInput => l !== null);
   const demandZoneList = Object.values(demandZones).filter((z): z is DemandZone => z !== null);
 
-  return (
+  const body = (
     <div className="flex h-full flex-col">
       {top}
       {drawings.clash && (
@@ -1028,6 +1034,8 @@ export function Workspace({
       )}
     </div>
   );
+  // The catalogue vehicles the project does not use reach the line tools (Project preferences → Vehicles).
+  return <VehiclesOffContext.Provider value={vehiclesOff}>{body}</VehiclesOffContext.Provider>;
 }
 
 /** Purpose: how the project's drawings stand against the server, beside the project name. */

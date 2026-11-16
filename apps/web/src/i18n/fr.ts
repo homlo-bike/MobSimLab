@@ -305,7 +305,14 @@ export const fr: Messages = {
   "prefs.accessTitle": "Accessibilité des quais",
   "prefs.accessIntro":
     "Limites de marche et de lacune entre quai et train (STI PMR), et hauteur de plancher utilisée pour les trains qui n'en ont pas dans le catalogue. Les lignes sont vérifiées à chaque arrêt.",
-  "prefs.vehicles": "Véhicules utilisés, depuis le catalogue de véhicules",
+  "prefs.vehiclesTitle": "Véhicules",
+  "prefs.vehiclesIntro":
+    "Les véhicules du catalogue utilisés par ce projet, par mode. Les outils de lignes routières et ferroviaires ne proposent que ceux cochés.",
+  "prefs.vehiclesMode": "Mode",
+  "prefs.vehiclesUsed": "{used} sur {total} utilisés",
+  "prefs.vehiclesAll": "Tout utiliser",
+  "prefs.vehiclesFacts": "{length} m · {places} places · {speed} km/h",
+  "prefs.vehiclesLast": "Chaque mode garde au moins un véhicule en service.",
   "prefs.switches": "Aiguillages, depuis le catalogue d’aiguillages",
   "prefs.calendar": "Calendrier, demande et coûts",
 

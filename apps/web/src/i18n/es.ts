@@ -303,7 +303,14 @@ export const es: Messages = {
   "prefs.accessTitle": "Accesibilidad del andén",
   "prefs.accessIntro":
     "Límites de escalón y hueco entre andén y tren (ETI PMR) y la altura de piso usada para trenes sin dato en el catálogo. Las líneas se comprueban en cada parada.",
-  "prefs.vehicles": "Vehículos usados, del catálogo de vehículos",
+  "prefs.vehiclesTitle": "Vehículos",
+  "prefs.vehiclesIntro":
+    "Los vehículos del catálogo que usa este proyecto, por modo. Las herramientas de líneas de calle y ferroviarias solo ofrecen los marcados.",
+  "prefs.vehiclesMode": "Modo",
+  "prefs.vehiclesUsed": "{used} de {total} en uso",
+  "prefs.vehiclesAll": "Usar todos",
+  "prefs.vehiclesFacts": "{length} m · {places} plazas · {speed} km/h",
+  "prefs.vehiclesLast": "Cada modo mantiene al menos un vehículo en uso.",
   "prefs.switches": "Desvíos, del catálogo de desvíos",
   "prefs.calendar": "Calendario, demanda y costes",
 

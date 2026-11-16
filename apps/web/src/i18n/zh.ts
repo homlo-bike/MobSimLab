@@ -288,7 +288,13 @@ export const zh: Messages = {
   "prefs.accessTitle": "站台无障碍",
   "prefs.accessIntro":
     "站台与列车之间的台阶和间隙限值（TSI PRM），以及车辆目录中缺少地板高度时使用的值。线路在每个停靠站按此检查。",
-  "prefs.vehicles": "使用的车辆，来自车辆目录",
+  "prefs.vehiclesTitle": "车辆",
+  "prefs.vehiclesIntro": "本项目在各交通方式中使用的目录车辆。道路线路和铁路工具只提供已勾选的车辆。",
+  "prefs.vehiclesMode": "交通方式",
+  "prefs.vehiclesUsed": "已用 {used}/{total}",
+  "prefs.vehiclesAll": "全部使用",
+  "prefs.vehiclesFacts": "{length} 米 · {places} 个位置 · {speed} 公里/小时",
+  "prefs.vehiclesLast": "每种交通方式至少保留一辆车辆。",
   "prefs.switches": "轨道道岔，来自道岔目录",
   "prefs.calendar": "日历、需求和成本",
 

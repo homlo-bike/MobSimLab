@@ -299,7 +299,14 @@ export const mr: Messages = {
   "prefs.accessTitle": "फलाट सुलभता",
   "prefs.accessIntro":
     "फलाट आणि गाडीमधील पायरी व फटीच्या मर्यादा (TSI PRM), आणि सूचीत नसलेल्या गाड्यांसाठी तळ उंची. मार्ग प्रत्येक थांब्यावर तपासले जातात.",
-  "prefs.vehicles": "वापरलेली वाहने, वाहन सूचीतून",
+  "prefs.vehiclesTitle": "वाहने",
+  "prefs.vehiclesIntro":
+    "हा प्रकल्प प्रत्येक साधनासाठी वापरत असलेली सूचीतील वाहने. रस्ता मार्ग आणि रेल्वे साधने फक्त निवडलेली वाहने दाखवतात.",
+  "prefs.vehiclesMode": "साधन",
+  "prefs.vehiclesUsed": "{total} पैकी {used} वापरात",
+  "prefs.vehiclesAll": "सर्व वापरा",
+  "prefs.vehiclesFacts": "{length} मी · {places} जागा · {speed} किमी/ता",
+  "prefs.vehiclesLast": "प्रत्येक साधनासाठी किमान एक वाहन वापरात राहते.",
   "prefs.switches": "रुळांचे स्विच, स्विच सूचीतून",
   "prefs.calendar": "दिनदर्शिका, मागणी आणि खर्च",
 

@@ -296,7 +296,14 @@ export const en = {
   "prefs.accessTitle": "Platform accessibility",
   "prefs.accessIntro":
     "Step and gap limits between platform and train (TSI PRM), and the floor height used for trains that have none in the vehicle catalogue. Service lines are checked against these at every stop.",
-  "prefs.vehicles": "Vehicles used, from the vehicle catalogue",
+  "prefs.vehiclesTitle": "Vehicles",
+  "prefs.vehiclesIntro":
+    "The catalogue vehicles this project uses, per mode. The street line and railway tools only offer the ticked ones.",
+  "prefs.vehiclesMode": "Mode",
+  "prefs.vehiclesUsed": "{used} of {total} used",
+  "prefs.vehiclesAll": "Use all",
+  "prefs.vehiclesFacts": "{length} m · {places} places · {speed} km/h",
+  "prefs.vehiclesLast": "At least one vehicle stays in use for each mode.",
   "prefs.switches": "Track switches, from the switch catalogue",
   "prefs.calendar": "Calendar, demand and costs",
 

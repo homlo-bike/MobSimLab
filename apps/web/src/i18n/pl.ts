@@ -302,7 +302,14 @@ export const pl: Messages = {
   "prefs.accessTitle": "Dostępność peronów",
   "prefs.accessIntro":
     "Limity stopnia i szczeliny między peronem a pociągiem (TSI PRM) oraz wysokość podłogi dla pociągów bez tej wartości w katalogu. Linie są sprawdzane na każdym przystanku.",
-  "prefs.vehicles": "Używane pojazdy (z katalogu pojazdów)",
+  "prefs.vehiclesTitle": "Pojazdy",
+  "prefs.vehiclesIntro":
+    "Pojazdy z katalogu używane w tym projekcie, dla każdego środka transportu. Narzędzia linii ulicznych i kolejowych pokazują tylko zaznaczone.",
+  "prefs.vehiclesMode": "Środek transportu",
+  "prefs.vehiclesUsed": "używane: {used} z {total}",
+  "prefs.vehiclesAll": "Użyj wszystkich",
+  "prefs.vehiclesFacts": "{length} m · {places} miejsc · {speed} km/h",
+  "prefs.vehiclesLast": "Dla każdego środka transportu co najmniej jeden pojazd pozostaje w użyciu.",
   "prefs.switches": "Rozjazdy (z katalogu rozjazdów)",
   "prefs.calendar": "Kalendarz, popyt i koszty",
 

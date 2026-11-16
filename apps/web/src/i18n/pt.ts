@@ -303,7 +303,14 @@ export const pt: Messages = {
   "prefs.accessTitle": "Acessibilidade da plataforma",
   "prefs.accessIntro":
     "Limites de degrau e vão entre plataforma e trem (ETI PMR) e a altura de piso usada para trens sem dado no catálogo. As linhas são verificadas em cada parada.",
-  "prefs.vehicles": "Veículos usados, do catálogo de veículos",
+  "prefs.vehiclesTitle": "Veículos",
+  "prefs.vehiclesIntro":
+    "Os veículos do catálogo que este projeto usa, por modo. As ferramentas de linhas de rua e ferroviárias só oferecem os marcados.",
+  "prefs.vehiclesMode": "Modo",
+  "prefs.vehiclesUsed": "{used} de {total} em uso",
+  "prefs.vehiclesAll": "Usar todos",
+  "prefs.vehiclesFacts": "{length} m · {places} lugares · {speed} km/h",
+  "prefs.vehiclesLast": "Cada modo mantém pelo menos um veículo em uso.",
   "prefs.switches": "Aparelhos de mudança de via, do catálogo",
   "prefs.calendar": "Calendário, demanda e custos",
 

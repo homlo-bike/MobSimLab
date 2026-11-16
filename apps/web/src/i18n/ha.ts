@@ -303,7 +303,14 @@ export const ha: Messages = {
   "prefs.accessTitle": "Samun damar dandamali",
   "prefs.accessIntro":
     "Iyakokin mataki da tazara tsakanin dandamali da jirgi (TSI PRM), da tsayin ƙasa ga jiragen da babu a kundi. Ana duba layuka a kowace tasha.",
-  "prefs.vehicles": "Ababen hawan da ake amfani da su, daga kundin ababen hawa",
+  "prefs.vehiclesTitle": "Ababen hawa",
+  "prefs.vehiclesIntro":
+    "Ababen hawan kundi da wannan aikin ke amfani da su, ga kowane nau'i. Kayan aikin layukan titi da na dogo suna nuna waɗanda aka zaɓa kawai.",
+  "prefs.vehiclesMode": "Nau'i",
+  "prefs.vehiclesUsed": "{used} cikin {total} ana amfani",
+  "prefs.vehiclesAll": "Yi amfani da duka",
+  "prefs.vehiclesFacts": "m {length} · wurare {places} · km/h {speed}",
+  "prefs.vehiclesLast": "Aƙalla abin hawa ɗaya yana ci gaba da aiki ga kowane nau'i.",
   "prefs.switches": "Makunnan dogo, daga kundin makunnai",
   "prefs.calendar": "Kalanda, buƙata da kuɗi",
 

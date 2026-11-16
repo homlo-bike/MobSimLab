@@ -300,7 +300,14 @@ export const yo: Messages = {
   "prefs.accessTitle": "Ìráyè pèpéle",
   "prefs.accessIntro":
     "Ààlà àtẹ̀gùn àti àlàfo láàrin pèpéle àti ọkọ̀ (TSI PRM), àti gíga ilẹ̀ fún ọkọ̀ tí kò ní nínú àkójọ. A ń ṣàyẹ̀wò àwọn ìlà ní gbogbo ibùdó.",
-  "prefs.vehicles": "Àwọn ọkọ̀ tí a ń lò, láti inú àkójọ ọkọ̀",
+  "prefs.vehiclesTitle": "Àwọn ọkọ̀",
+  "prefs.vehiclesIntro":
+    "Àwọn ọkọ̀ inú àkójọ tí iṣẹ́ àkànṣe yìí ń lò, fún irú kọ̀ọ̀kan. Àwọn irinṣẹ́ ọ̀nà òpópónà àti ojú irin ń fi àwọn tí a sàmì sí nìkan hàn.",
+  "prefs.vehiclesMode": "Irú",
+  "prefs.vehiclesUsed": "{used} nínú {total} ni à ń lò",
+  "prefs.vehiclesAll": "Lo gbogbo wọn",
+  "prefs.vehiclesFacts": "{length} m · àyè {places} · {speed} km/h",
+  "prefs.vehiclesLast": "Ó kéré tán ọkọ̀ kan máa wà ní lílò fún irú kọ̀ọ̀kan.",
   "prefs.switches": "Àwọn ìyípadà ojú irin, láti inú àkójọ ìyípadà",
   "prefs.calendar": "Kàlẹ́ńdà, ìbéèrè àti iye owó",
 

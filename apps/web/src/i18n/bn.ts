@@ -300,7 +300,14 @@ export const bn: Messages = {
   "prefs.accessTitle": "প্ল্যাটফর্ম প্রবেশযোগ্যতা",
   "prefs.accessIntro":
     "প্ল্যাটফর্ম ও ট্রেনের মধ্যে ধাপ ও ফাঁকের সীমা (TSI PRM), এবং তালিকায় না থাকা ট্রেনের মেঝের উচ্চতা। লাইনগুলো প্রতিটি স্টপে যাচাই হয়।",
-  "prefs.vehicles": "ব্যবহৃত যানবাহন, যানবাহন তালিকা থেকে",
+  "prefs.vehiclesTitle": "যানবাহন",
+  "prefs.vehiclesIntro":
+    "এই প্রকল্প প্রতিটি মাধ্যমে তালিকার যে যানবাহন ব্যবহার করে। রাস্তার লাইন ও রেলপথ সরঞ্জাম শুধু টিক দেওয়াগুলো দেখায়।",
+  "prefs.vehiclesMode": "মাধ্যম",
+  "prefs.vehiclesUsed": "{total}টির মধ্যে {used}টি ব্যবহৃত",
+  "prefs.vehiclesAll": "সব ব্যবহার করুন",
+  "prefs.vehiclesFacts": "{length} মি · {places} আসন · {speed} কিমি/ঘ",
+  "prefs.vehiclesLast": "প্রতিটি মাধ্যমে অন্তত একটি যান ব্যবহারে থাকে।",
   "prefs.switches": "রেল সুইচ, সুইচ তালিকা থেকে",
   "prefs.calendar": "ক্যালেন্ডার, চাহিদা ও খরচ",
 

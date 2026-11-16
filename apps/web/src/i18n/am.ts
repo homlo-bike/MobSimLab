@@ -290,7 +290,14 @@ export const am: Messages = {
   "prefs.accessTitle": "የመድረክ ተደራሽነት",
   "prefs.accessIntro":
     "በመድረክና በባቡር መካከል የደረጃና የክፍተት ገደቦች (TSI PRM)፣ እና በካታሎግ ውስጥ ለሌላቸው ባቡሮች የወለል ከፍታ። መስመሮች በእያንዳንዱ ማቆሚያ ይፈተሻሉ።",
-  "prefs.vehicles": "ጥቅም ላይ የዋሉ ተሽከርካሪዎች፣ ከተሽከርካሪ ካታሎግ",
+  "prefs.vehiclesTitle": "ተሽከርካሪዎች",
+  "prefs.vehiclesIntro":
+    "ይህ ፕሮጀክት ለእያንዳንዱ ዓይነት የሚጠቀማቸው የካታሎግ ተሽከርካሪዎች። የመንገድ እና የባቡር መስመር መሣሪያዎች ምልክት የተደረገባቸውን ብቻ ያቀርባሉ።",
+  "prefs.vehiclesMode": "ዓይነት",
+  "prefs.vehiclesUsed": "ከ{total} {used} በጥቅም ላይ",
+  "prefs.vehiclesAll": "ሁሉንም ተጠቀም",
+  "prefs.vehiclesFacts": "{length} ሜ · {places} ቦታዎች · {speed} ኪሜ/ሰ",
+  "prefs.vehiclesLast": "ለእያንዳንዱ ዓይነት ቢያንስ አንድ ተሽከርካሪ በጥቅም ላይ ይቆያል።",
   "prefs.switches": "የሐዲድ መቀየሪያዎች፣ ከመቀየሪያ ካታሎግ",
   "prefs.calendar": "የቀን መቁጠሪያ፣ ፍላጎት እና ወጪዎች",
 
