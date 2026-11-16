@@ -269,6 +269,7 @@ export const zh: Messages = {
   "prefs.delayLane": "在划线的公交或有轨电车专用道中",
   "prefs.delayDefault": "假设库：{value} %",
   "prefs.delayReset": "使用假设库的值",
+  "prefs.reason": "此数值的理由（可选）",
   "prefs.stationsTitle": "车站",
   "prefs.stationsIntro": "在此距离内的同名站点在线路示意图、出行规划器以及效益和客流表中计为同一车站。",
   "prefs.libraryM": "假设库：{value} 米",
