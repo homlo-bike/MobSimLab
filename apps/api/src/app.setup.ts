@@ -44,6 +44,14 @@ export function configureApp(app: NestExpressApplication, config: AppConfig): vo
   app.use("/api/projects/:id/simulation-runs", json({ limit: "16mb" }));
   // Plugin packages (ADR-0036 §9) are uploaded as the raw .msplugin file, at most 10 MB.
   app.use("/api/admin/plugins", raw({ type: "application/octet-stream", limit: "10mb" }));
+  // A .mslab project file (ADR-0021) is uploaded as the raw file, at most 200 MB; the sandboxed reader checks it.
+  app.use(
+    "/api/projects/import",
+    raw({
+      type: ["application/octet-stream", "application/zip", "application/vnd.mobsimlab.project+zip"],
+      limit: "200mb",
+    }),
+  );
   // Planners' own population files (GeoTIFF, GeoJSON, CSV) are uploaded raw, up to MOBSIMLAB_POPULATION_UPLOAD_MB.
   app.use(
     "/api/projects/:id/population/uploads",

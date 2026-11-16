@@ -2,6 +2,7 @@ import { roadFr } from "./road/fr";
 import { editorsFr } from "./editors/fr";
 import { cargoBikeFr } from "./cargo-bike/fr";
 import { depotsFr } from "./depots/fr";
+import { mslabFr } from "./mslab/fr";
 import { populationFr } from "./population/fr";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -283,6 +284,7 @@ export const fr: Messages = {
   "prefs.delayLane": "Dans une voie bus ou tram marquée",
   "prefs.delayDefault": "Bibliothèque d'hypothèses : {value} %",
   "prefs.delayReset": "Utiliser la valeur de la bibliothèque",
+  "prefs.reason": "Raison de cette valeur (facultatif)",
   "prefs.stationsTitle": "Stations",
   "prefs.stationsIntro":
     "Les arrêts de même nom situés dans ce rayon comptent comme une seule station dans le plan schématique, le calculateur d'itinéraires et les tableaux des bénéfices et de fréquentation.",
@@ -425,6 +427,7 @@ export const fr: Messages = {
   ...editorsFr,
   ...cargoBikeFr,
   ...depotsFr,
+  ...mslabFr,
   ...populationFr,
   ...roadFr,
   ...PLUGIN_MESSAGES.fr,
