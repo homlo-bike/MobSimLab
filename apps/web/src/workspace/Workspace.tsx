@@ -112,6 +112,7 @@ export function Workspace({
   onHome,
   onAbout,
   existingRailways = false,
+  onExample,
 }: {
   api: ProjectsApi;
   projectId: string;
@@ -124,6 +125,8 @@ export function Workspace({
   onAbout: () => void;
   /** Draw existing railways from OpenStreetMap in the railway tool (app setting). */
   existingRailways?: boolean;
+  /** Make the Help menu's example project and open it; absent for those who may not create projects. */
+  onExample?: () => Promise<void>;
 }) {
   const { t } = useI18n();
   const [project, setProject] = useState<Project | null>(null);
@@ -290,7 +293,7 @@ export function Workspace({
             >
               <PrintIcon />
             </button>
-            <HelpMenu onTour={() => setTouring(true)} />
+            <HelpMenu onTour={() => setTouring(true)} onExample={onExample} />
           </>
         )
       }
