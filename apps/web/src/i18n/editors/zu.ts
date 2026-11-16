@@ -1316,6 +1316,27 @@ export const editorsZu = {
   "capacity.notFit.other": "Uhambo olungu-{count} alungeni",
   "capacity.dieOutRow": "kuyaphela",
   "capacity.pileUpRow": "kuyanqwabelana",
+  "capacity.runServer": "Qalisa kuseva bese ulondoloza",
+  "capacity.serverHint":
+    "Iseva iyaqhubeka noma uvala leli thebhu, futhi ilondoloza ukuhlolwa kuphrojekthi ukuze wonke amalungu akuvule.",
+  "capacity.saved": "Ukuhlolwa okulondoloziwe",
+  "capacity.savedNone": "Akukabi khona ukuhlolwa okulondoloziwe kule phrojekthi.",
+  "capacity.savedBy": "{who}, {when}",
+  "capacity.someone": "Othile",
+  "capacity.status.queued": "Kulindile",
+  "capacity.status.running": "Kuyaqhubeka",
+  "capacity.status.done": "Kuqediwe",
+  "capacity.status.failed": "Kuhlulekile",
+  "capacity.status.cancelled": "Kumisiwe",
+  "capacity.viewing": "Ukuhlolwa okulondolozwe ngo-{when}",
+  "capacity.close": "Vala",
+  "capacity.stoppedEarly":
+    "Lokhu kuhlolwa kumiswe ngaphambi kokuphela; le yimiphumela etholakale kuze kube yileso sikhathi.",
+  "capacity.waiting": "Ilinde iseva ukuthi iqale ukuhlolwa…",
+  "capacity.stopping": "Kuzomiswa ngemva kwesinyathelo samanje…",
+  "capacity.delete": "Susa",
+  "capacity.deleteAsk": "Susa lokhu kuhlolwa kubo bonke abakule phrojekthi?",
+  "capacity.keep": "Gcina",
   "rail.levelHeight":
     "Kuyisicaba, izinsimbi zingu-{rail} m ngaphezu kolwandle · umhlaba eduze kwazo {min}–{max} m",
   "rail.profileRange":
