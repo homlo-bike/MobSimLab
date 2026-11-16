@@ -465,6 +465,21 @@
     105,
     108,
     112
+   ],
+   "ferry/monohull": [
+    95,
+    105,
+    115
+   ],
+   "ferry/catamaran": [
+    95,
+    105,
+    115
+   ],
+   "ferry/hydrofoil": [
+    95,
+    105,
+    115
    ]
   },
   "noise.ferry_berth_lw_db": {

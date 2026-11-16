@@ -194,8 +194,14 @@ def check_plugin(
     core_keys: set[str],
     seen_modes: dict[str, str],
     seen_tabs: dict[str, str] | None = None,
+    others: tuple[set[str], dict[str, set[str]]] | None = None,
 ):
-    """Validate one plugin. Output: (errors, registry entry)."""
+    """Validate one plugin. Output: (errors, registry entry).
+
+    `others` holds the modes and contexts (key to option ids) of the other bundled plugins, which this
+    plugin's parameter values may name (the noise plugin's sound powers per ferry vessel type).
+    """
+    other_modes, other_contexts = others or (set(), {})
     errors: list[str] = []
     where = folder.name
     manifest = read_json(folder / MANIFEST)
@@ -294,13 +300,13 @@ def check_plugin(
                 x["_file"] = str(p)
                 params.append(x)
     saved = chk.MODES
-    chk.MODES = list(saved) + sorted(mode_ids)
+    chk.MODES = list(saved) + sorted(mode_ids | other_modes)
     used: set[str] = set()
     try:
         errors += [f"{pid}: {e}" for e in chk.validate({**core_sources, **sources}, params, used)]
     finally:
         chk.MODES = saved
-    allowed = {"mode", "traction"} | set(contexts)
+    allowed = {"mode", "traction"} | set(contexts) | set(other_contexts)
     for prm in params:
         if prm.get("key") in core_keys:
             errors.append(f"{pid}: {prm['key']} is a core parameter")
@@ -308,6 +314,10 @@ def check_plugin(
             for k, val in (v.get("context") or {}).items():
                 if k not in allowed:
                     errors.append(f"{pid}: {prm['key']}: unknown context key {k}")
+                elif k in other_contexts and k not in contexts:
+                    for o in chk.as_list(val):
+                        if o not in other_contexts[k]:
+                            errors.append(f"{pid}: {prm['key']}: {o} is not an option of {k}")
                 elif k in contexts:
                     opts = {o["id"] for o in contexts[k]["options"]}
                     for o in as_list(val):
@@ -364,6 +374,20 @@ def check_plugin(
     return errors, entry
 
 
+def others_of(folder: Path, folders: list[Path]) -> tuple[set[str], dict[str, set[str]]]:
+    """The modes and contexts (key to option ids) the plugins other than `folder` contribute."""
+    modes: set[str] = set()
+    contexts: dict[str, set[str]] = {}
+    for f in folders:
+        if f == folder or not (f / MANIFEST).exists():
+            continue
+        c = read_json(f / MANIFEST).get("contributes", {})
+        modes |= {m["id"] for m in c.get("modes", [])}
+        for x in c.get("contexts", []):
+            contexts.setdefault(x["key"], set()).update(o["id"] for o in x.get("options", []))
+    return modes, contexts
+
+
 def build(root: Path = PLUGINS) -> tuple[list[str], dict]:
     """Validate every plugin under `root`. Output: (errors, registry)."""
     chk = load_assumption_check()
@@ -374,8 +398,11 @@ def build(root: Path = PLUGINS) -> tuple[list[str], dict]:
     errors: list[str] = []
     plugins = []
     ids: set[str] = set()
-    for folder in discover(root):
-        errs, entry = check_plugin(folder, chk, core_sources, core_keys, seen, seen_tabs)
+    folders = list(discover(root))
+    for folder in folders:
+        errs, entry = check_plugin(
+            folder, chk, core_sources, core_keys, seen, seen_tabs, others_of(folder, folders)
+        )
         errors += errs
         if entry:
             if entry["id"] in ids:

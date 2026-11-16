@@ -22,6 +22,9 @@ use std::collections::HashMap;
 
 /// Longest source element, m.
 const ELEMENT_M: f64 = 10.0;
+/// Ferry vessel types (`ferry/<vessel_type>`) whose sound power under way is still a placeholder: the Livorno
+/// value is for large seagoing ferries (plugins/noise/assumptions/parameters.yaml).
+const SMALL_FERRIES: [&str; 3] = ["ferry/monohull", "ferry/catamaran", "ferry/hydrofoil"];
 /// Spacing of the band probes along a line, m.
 const PROBE_STEP_M: f64 = 20.0;
 /// Distance from which paired elements stand for their two halves on the screened map, m.
@@ -1763,12 +1766,19 @@ fn checks(
         });
     }
     // The point sources' sound powers rest on one study each (the berth value on none yet): name it.
-    let uses = |key: &str| {
+    // Small ferries keep a placeholder under way (product owner, 2026-11-16): Livorno measured large ones.
+    let small = |p: &PointSourceInput| {
+        p.context
+            .first()
+            .is_some_and(|c| SMALL_FERRIES.contains(&c.as_str()))
+    };
+    let uses_if = |key: &str, keep: &dyn Fn(&PointSourceInput) -> bool| {
         input
             .point_sources
             .iter()
-            .any(|p| p.lw_key.as_deref() == Some(key))
+            .any(|p| p.lw_key.as_deref() == Some(key) && keep(p))
     };
+    let uses = |key: &str| uses_if(key, &|_| true);
     let cable = uses("noise.cable_car_tower_lw_db") || uses("noise.cable_car_station_lw_db");
     for (used, text) in [
         (
@@ -1776,8 +1786,12 @@ fn checks(
             "Cable cars: sound powers from one study (Placer County gondola EIR, 2019): indicative",
         ),
         (
-            uses("noise.ferry_cruise_lw_db"),
+            uses_if("noise.ferry_cruise_lw_db", &|p| !small(p)),
             "Ferries under way: sound power from one study of large ferries (port of Livorno, Fredianelli and Nastasi 2020): indicative",
+        ),
+        (
+            uses_if("noise.ferry_cruise_lw_db", &small),
+            "Water buses, catamarans and hydrofoils under way: placeholder sound power, no source for small vessels yet: indicative only",
         ),
         (
             uses("noise.ferry_berth_lw_db"),
