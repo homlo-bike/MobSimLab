@@ -6,7 +6,7 @@
  * track by the timetable planner.
  */
 import { tNow } from "../../i18n/i18n";
-import { distanceM } from "../naming/names";
+import { distanceM } from "../../map/geo";
 import { lineMode, engineLines, trainById } from "../railways/serviceLines";
 import type { Network, RailEngine, RailView, SectionTrains, ServiceLine } from "../railways/types";
 import { lineEnergy, roadLine } from "../road-sim/scenario";
