@@ -6,6 +6,7 @@
 import { BUILDING_TILE_ZOOM, buildingTiles } from "../noise/buildings";
 import type { BuildingIn, CountryFigures, PlaceIn } from "./model";
 import type { LonLat } from "./regions";
+import { withProject } from "../../geodata/projectData";
 
 /** World Bank figures as the API answers them (benefits.service.ts). */
 export interface BenefitIndicators {
@@ -90,12 +91,12 @@ export function benefitsApi(
       ),
     buildingTile: (x, y) =>
       get<{ buildings?: BuildingIn[] }>(
-        `/api/street-network/building-tiles/${BUILDING_TILE_ZOOM}/${x}/${y}`,
+        withProject(`/api/street-network/building-tiles/${BUILDING_TILE_ZOOM}/${x}/${y}`),
       ).then((r) => r.buildings ?? []),
     placeTile: (x, y) =>
-      get<{ places?: PlaceIn[] }>(`/api/street-network/place-tiles/${BUILDING_TILE_ZOOM}/${x}/${y}`).then(
-        (r) => r.places ?? [],
-      ),
+      get<{ places?: PlaceIn[] }>(
+        withProject(`/api/street-network/place-tiles/${BUILDING_TILE_ZOOM}/${x}/${y}`),
+      ).then((r) => r.places ?? []),
     osmAreas: ([lon, lat]) =>
       get<{ areas: OsmArea[] }>(`/api/benefits/osm-areas?lon=${lon.toFixed(6)}&lat=${lat.toFixed(6)}`).then(
         (r) => r.areas,

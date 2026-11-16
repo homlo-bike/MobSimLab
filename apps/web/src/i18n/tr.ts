@@ -4,6 +4,7 @@ import { editorsTr } from "./editors/tr";
 import { cargoBikeTr } from "./cargo-bike/tr";
 import { commentsTr } from "./comments/tr";
 import { depotsTr } from "./depots/tr";
+import { geodataTr } from "./geodata/tr";
 import { tablesTr } from "./tables/tr";
 import { fleetTr } from "./fleet/tr";
 import { timetablesTr } from "./timetables/tr";
@@ -500,6 +501,7 @@ export const tr: Messages = {
   ...editorsTr,
   ...cargoBikeTr,
   ...depotsTr,
+  ...geodataTr,
   ...tablesTr,
   ...fleetTr,
   ...timetablesTr,

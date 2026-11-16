@@ -1,0 +1,58 @@
+import type { GeodataMessages } from "./en";
+
+/** Map data view messages (ig). */
+export const geodataIg = {
+  "gis.dataView": "Data maapụ",
+  "data.title": "Data maapụ",
+  "data.intro":
+    "OpenStreetMap na ịdị elu maka ọrụ a, nke edoro ya na ọrụ ahụ. Ngwá ọrụ okporo ụzọ, ụgbọ oloko, ụlọ, mmiri na ala na-agụ ha kama ịjụ OpenStreetMap na sava ịdị elu oge ọ bụla.",
+  "data.noArea":
+    "Buru ụzọ see ihe n'ime ọrụ ahụ: mbubata na-ekpuchi akụkụ anọ gbara ihe niile e sere gburugburu, gbakwunyere oke ọzọ.",
+  "data.area": "Mpaghara: {area} km², akụkụ anọ gbara ihe niile e sere gburugburu gbakwunyere {buffer} km",
+  "data.osm": "OpenStreetMap",
+  "data.dem": "Ịdị elu",
+  "data.notImported": "Ebubatabeghị ya.",
+  "data.imported": "Ebubatara {date}",
+  "data.dataDate": "data nke {date}",
+  "data.outside":
+    "Ihe osise ahụ agafeela mpaghara ebubatara ugbu a. Mee ka ọ dị ọhụrụ iji bubata mpaghara ọhụrụ.",
+  "data.method": "Nweta data site na",
+  "data.method.overpass": "Overpass (mpaghara ruo {max} km²)",
+  "data.method.geofabrik": "Mpaghara Geofabrik",
+  "data.method.upload": "Faịlụ .osm.pbf",
+  "data.region": "Mpaghara",
+  "data.regionsLoading": "Na-achọ mpaghara…",
+  "data.noRegions": "Ọ dịghị mpaghara Geofabrik nwere mpaghara ahụ niile.",
+  "data.planned": "Dobe okporo ụzọ ezubere (atụpụtara na nke a na-ewu)",
+  "data.import": "Bubata",
+  "data.refresh": "Mee ọhụrụ",
+  "data.chooseFile": "Họrọ faịlụ .osm.pbf (ruo {max} MB)",
+  "data.cancel": "Kagbuo",
+  "data.queued": "Na-eche ka mbubata ọzọ gwụ…",
+  "data.step.download": "Na-ebudata…",
+  "data.step.downloadN": "Na-ebudata {done} n'ime {total}…",
+  "data.step.merge": "Na-ejikọ taịl…",
+  "data.step.extract": "Na-ebipụ mpaghara ọrụ…",
+  "data.step.database": "Na-ede n'ime nchekwa data…",
+  "data.failed": "Mbubata ikpeazụ dara: {error}",
+  "data.cancelled": "Akagbuola mbubata ikpeazụ.",
+  "data.counts": "Okporo ụzọ {roads}, ụzọ ụgbọ oloko {rails}, ụlọ {buildings}, ebe nkwụsị {stops}",
+  "data.demFacts": "Copernicus GLO-30, grid {res} m, ịdị elu n'ime ±{acc} m",
+  "data.demNoData": "{n} n'ime cell 1° nke mpaghara enweghị data ịdị elu (oké osimiri mepere emepe).",
+  "data.tooLarge":
+    "Mpaghara ahụ bụ {area} km², karịa ihe Overpass na-eji. Họrọ mpaghara Geofabrik ma ọ bụ bulite faịlụ.",
+  "data.readOnly": "Ndị nwe na Ndị nchịkọta nwere ike ibubata data.",
+  "data.licence": "© OpenStreetMap contributors, ODbL 1.0",
+  "data.own": "Grid ịdị elu nke gị",
+  "data.ownIntro":
+    "GeoTIFF nke ịdị elu na mita, dịka ụdị ala LiDAR. Ebe o nwere ịdị elu, a na-eji ya tupu GLO-30.",
+  "data.ownFacts": "Grid {res} m, {crs}",
+  "data.ownAccuracy": "ịdị elu n'ime ±{acc} m",
+  "data.ownCrs": "Usoro nhazi, ọ bụrụ na faịlụ akpọghị ya aha (koodu EPSG, PROJ ma ọ bụ WKT)",
+  "data.ownSource": "Isi mmalite",
+  "data.ownLicence": "Ikike",
+  "data.ownAccuracyField": "Izi ezi kwụ ọtọ (m)",
+  "data.ownChoose": "Họrọ faịlụ GeoTIFF (ruo {max} MB)",
+  "data.ownReplace": "Jiri GeoTIFF ọzọ dochie ya (ruo {max} MB)",
+  "data.remove": "Wepụ",
+} satisfies GeodataMessages;

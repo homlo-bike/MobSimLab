@@ -4,6 +4,7 @@ import { editorsIt } from "./editors/it";
 import { cargoBikeIt } from "./cargo-bike/it";
 import { commentsIt } from "./comments/it";
 import { depotsIt } from "./depots/it";
+import { geodataIt } from "./geodata/it";
 import { tablesIt } from "./tables/it";
 import { fleetIt } from "./fleet/it";
 import { timetablesIt } from "./timetables/it";
@@ -500,6 +501,7 @@ export const it: Messages = {
   ...editorsIt,
   ...cargoBikeIt,
   ...depotsIt,
+  ...geodataIt,
   ...tablesIt,
   ...fleetIt,
   ...timetablesIt,

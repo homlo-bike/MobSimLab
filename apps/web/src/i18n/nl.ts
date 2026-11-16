@@ -4,6 +4,7 @@ import { editorsNl } from "./editors/nl";
 import { cargoBikeNl } from "./cargo-bike/nl";
 import { commentsNl } from "./comments/nl";
 import { depotsNl } from "./depots/nl";
+import { geodataNl } from "./geodata/nl";
 import { tablesNl } from "./tables/nl";
 import { fleetNl } from "./fleet/nl";
 import { timetablesNl } from "./timetables/nl";
@@ -504,6 +505,7 @@ export const nl: Messages = {
   ...editorsNl,
   ...cargoBikeNl,
   ...depotsNl,
+  ...geodataNl,
   ...tablesNl,
   ...fleetNl,
   ...timetablesNl,

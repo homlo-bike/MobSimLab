@@ -41,6 +41,16 @@ Both paths end in the same normalised tables, so the rest of the system does not
 
 Tag mappings are data (a YAML file under source control), not code, so they can be reviewed and extended.
 
+- Built so far (ADR-0046): both paths, per project area (the box around everything drawn plus the project's
+  buffer). The GIS tab's **Map data** view starts an import, shows its progress and the current one, and offers
+  Refresh. Overpass areas go up to `MOBSIMLAB_OSM_OVERPASS_MAX_KM2` (400 km²) in tiles that split on timeouts;
+  larger ones use a Geofabrik region holding the whole area or an uploaded `.osm.pbf`, cut with `osmium extract`.
+  `osm2pgsql` loads the flex style `tools/osm/mobsimlab-flex.lua` with the data-file mapping
+  `tools/osm/tag_mapping.lua` (Lua, as osm2pgsql has no YAML parser) into the tables above, keyed by project and
+  import (`db/migrations/0017_osm_dem_import.sql`, runs in `geo.import`). Street, walk and rail tiles, buildings,
+  schools and hospitals and water read the import where it covers them and Overpass otherwise. Code:
+  `apps/api/src/geodata`, `apps/web/src/features/geodata`.
+
 ### 2.3 Overpass client requirements (from brief)
 
 | Requirement | Design |
@@ -88,7 +98,12 @@ Rasters are clipped to the project area buffered by 2 km, reprojected to the wor
 - Alignment profiles sampled every 50 m (configurable) with bilinear interpolation, plus at every vertex and structure boundary.
 - DEM accuracy stored as metadata and shown next to every gradient result (C-09).
 - Open-Elevation and Elevation-API.eu adapters as fallbacks for areas without imported DEM, with batching (up to provider limit per request) and caching.
-- Built so far: the API reads GLO-30 straight from the public COG bucket with range requests (`apps/api/src/gateway/copernicus-dem.client.ts`, endpoint `MOBSIMLAB_COPERNICUS_URL`) and serves `POST /api/terrain/points` and `POST /api/terrain/profile` (several lines per request, optional OpenStreetMap buildings each line passes over). The web helper `apps/web/src/terrain/terrain.ts` is the one shared source for the railway and cable car tools. Import into PostGIS, GeoTIFF overrides and the fallback adapters come later.
+- Built so far: the API reads GLO-30 straight from the public COG bucket with range requests (`apps/api/src/gateway/copernicus-dem.client.ts`, endpoint `MOBSIMLAB_COPERNICUS_URL`) and serves `POST /api/terrain/points` and `POST /api/terrain/profile` (several lines per request, optional OpenStreetMap buildings each line passes over). The web helper `apps/web/src/terrain/terrain.ts` is the one shared source for the railway and cable car tools. The GLO-30 cells of a project area are imported into `geo.dem_tile` (float32 tiles, ADR-0046) from the same
+  **Map data** view and read first, with the live bucket for points outside them. Where neither answers, heights
+  come from Open-Elevation (`apps/api/src/gateway/open-elevation.client.ts`, `MOBSIMLAB_OPEN_ELEVATION_URL`, off
+  with `MOBSIMLAB_ELEVATION_FALLBACK=off`); answers name every source used. A planner's own GeoTIFF
+  (any coordinate system, resampled to WGS 84 at about its own resolution, `apps/api/src/geodata/dem-upload.ts`)
+  is stored with a higher priority and wins where it has heights. The Elevation-API.eu adapter comes later.
 
 ## 5. External data providers
 
