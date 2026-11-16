@@ -30,7 +30,6 @@ import { NetworkTables } from "../features/tables/NetworkTables";
 import { TimetableTables } from "../features/timetables/TimetableTables";
 import { feedHolidays, projectFeed } from "../features/timetables/feed";
 import { paramValue } from "../features/costs/params";
-import { calendarFrom } from "./calendar";
 import { FareTables } from "../features/fares/FareTables";
 import { AppraisalSection } from "../features/appraisal/AppraisalSection";
 import type { AppraisalDoc } from "../features/appraisal/model";
