@@ -11,6 +11,7 @@ import {
   pluginLineTimetable,
   prefixTimetable,
   type PluginLineInput,
+  streetHeadways,
   streetLineTimetable,
   type StreetLineInput,
 } from "./network";
@@ -29,12 +30,14 @@ import type {
   Timetable,
 } from "./types";
 
+const NO_STREET_LINES: readonly StreetLineInput[] = [];
+
 interface Props {
   map: MapLibreMap | null;
   /** Where the side panel renders; inline when `null`. */
   panel?: HTMLElement | null;
-  /** The line drawn in the street line tool, if any. */
-  streetLine?: StreetLineInput | null;
+  /** The lines drawn in the street line tool (those with two points or more). */
+  streetLines?: readonly StreetLineInput[];
   /** Rail service lines published in the railway tool, if any. */
   railLines?: Timetable | null;
   /** Cable car and ferry lines from the plugin tools (ADR-0037). */
@@ -149,14 +152,13 @@ function nearName(tt: Timetable | null, p: LonLat): string | null {
 export function JourneyPlanner({
   map,
   panel = null,
-  streetLine = null,
+  streetLines = NO_STREET_LINES,
   railLines = null,
   pluginLines = NO_PLUGIN_LINES,
   loadPlanner = loadWasmPlanner,
 }: Props) {
   const { t, tn } = useI18n();
   const [skipped, setSkipped] = useState<ReadonlySet<string>>(new Set());
-  const [useStreet, setUseStreet] = useState(true);
   const [useRailLines, setUseRailLines] = useState(true);
   const [settings, setSettings] = useState<Partial<Settings>>({});
   const [engine, setEngine] = useState<PlannerEngine | null>(null);
@@ -171,10 +173,14 @@ export function JourneyPlanner({
   const [showTable, setShowTable] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const street = useMemo(
-    () => (streetLine && useStreet ? streetLineTimetable(streetLine) : null),
-    [streetLine, useStreet],
-  );
+  // Each street line with its own ids, so two lines of the same name cannot collide.
+  const street = useMemo(() => {
+    const parts = streetLines.flatMap((l, i) => {
+      const tt = skipped.has(`street:${i}`) ? null : streetLineTimetable(l);
+      return tt ? [prefixTimetable(tt, `s${i}:`)] : [];
+    });
+    return parts.length ? mergeTimetables(parts) : null;
+  }, [streetLines, skipped]);
   const drawnRail = useMemo(
     () =>
       railLines && useRailLines && (railLines.trips.length || railLines.frequency_patterns?.length)
@@ -326,16 +332,31 @@ export function JourneyPlanner({
 
   const networkControls = (
     <div className="space-y-2">
-      {streetLine && (
-        <label className="flex items-center gap-2">
-          <input type="checkbox" checked={useStreet} onChange={(e) => setUseStreet(e.target.checked)} />
-          {t("jp.streetLine", {
-            name: streetLine.name,
-            headway: streetLine.headwayMin,
-            peak: Math.max(1, Math.round(streetLine.headwayMin / 2)),
-          })}
-        </label>
-      )}
+      {streetLines.map((l, i) => {
+        const key = `street:${i}`;
+        const { peakS, offPeakS } = streetHeadways(l);
+        return (
+          <label key={key} className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={!skipped.has(key)}
+              onChange={(e) =>
+                setSkipped((s) => {
+                  const n = new Set(s);
+                  if (e.target.checked) n.delete(key);
+                  else n.add(key);
+                  return n;
+                })
+              }
+            />
+            {t("jp.streetLine", {
+              name: l.name,
+              headway: Math.round(offPeakS / 6) / 10,
+              peak: Math.round(peakS / 6) / 10,
+            })}
+          </label>
+        );
+      })}
       {railLines && (railLines.trips.length > 0 || railLines.frequency_patterns?.length > 0) && (
         <label className="flex items-center gap-2">
           <input type="checkbox" checked={useRailLines} onChange={(e) => setUseRailLines(e.target.checked)} />
