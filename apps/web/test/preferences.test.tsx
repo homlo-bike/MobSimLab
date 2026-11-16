@@ -17,6 +17,12 @@ import {
   withSwitches,
   withVehicles,
   LIBRARY_DEFAULT_TURNOUT,
+  LIBRARY_PARAMS,
+  PARAM_GROUPS,
+  choiceValue,
+  paramLibrary,
+  paramPrefId,
+  withChoice,
 } from "../src/workspace/preferences";
 import { addLine, trainsFor } from "../src/features/railways/serviceLines";
 import type { Network } from "../src/features/railways/types";
@@ -121,6 +127,30 @@ describe("project preferences", () => {
     expect(effectiveDefault("tram", turnouts, new Set(), "tram-r100")).toBe("tram-r100");
     expect(effectiveDefault("tram", turnouts, new Set(["tram-r100"]), "tram-r100")).toBe("tram-r50");
     expect(effectiveDefault("tram", turnouts, new Set(["tram-r50"]), undefined)).toBe("tram-r25");
+  });
+
+  it("lists every library parameter with its values per mode and traction", () => {
+    expect(LIBRARY_PARAMS.length).toBeGreaterThan(200);
+    expect(PARAM_GROUPS[0]).toBe("Modes");
+    // The Switches section sets the default turnout.
+    expect(LIBRARY_PARAMS.some((p) => p.id === "switch.default_turnout")).toBe(false);
+    const dwell = LIBRARY_PARAMS.find((p) => p.id === "mode.dwell_s")!;
+    expect(paramLibrary(dwell, "tram")).toEqual([15, 25, 45]);
+    expect(paramLibrary(dwell, "bus")).toEqual([15, 30, 60]);
+    const refuel = LIBRARY_PARAMS.find((p) => p.id === "operations.refuel_time_min")!;
+    expect(paramLibrary(refuel, "*", "hydrogen")).toEqual([7, 10, 20]);
+    expect(paramPrefId("mode.dwell_s", "*")).toBe("mode.dwell_s");
+    expect(paramPrefId("mode.dwell_s", "tram")).toBe("mode.dwell_s.tram");
+    expect(paramPrefId("operations.refuel_time_min", "*", "cng")).toBe("operations.refuel_time_min.cng");
+  });
+
+  it("keeps enum and text values apart from numbers, and removes them again", () => {
+    const doc = withChoice(withPref(null, "mode.dwell_s", 40), "mode.right_of_way.tram", "A");
+    expect(choiceValue(doc, "mode.right_of_way.tram")).toBe("A");
+    expect(prefValue(doc, "mode.dwell_s")).toBe(40);
+    const back = withChoice(doc, "mode.right_of_way.tram", null);
+    expect(back.choices).toBeUndefined();
+    expect(back.values).toEqual({ "mode.dwell_s": 40 });
   });
 
   it("keeps one project currency and converts any amount to it through the US dollar", () => {
