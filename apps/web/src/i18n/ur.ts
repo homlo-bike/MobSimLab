@@ -372,6 +372,12 @@ export const ur: Messages = {
   "report.col.sources": "ماخذ",
   "report.col.reasoning": "وجہ",
   "report.col.usedBy": "استعمال کرنے والے",
+  "report.col.reason": "وجہ",
+  "report.col.changedBy": "تبدیل کرنے والا",
+  "report.col.changedAt": "تاریخِ تبدیلی",
+  "report.changedBy": "{name} نے {date} کو تبدیل کیا",
+  "report.changedOn": "{date} کو تبدیل کیا گیا",
+  "report.reason": "وجہ: {reason}",
   "prefs.accessTitle": "پلیٹ فارم تک رسائی",
   "prefs.accessIntro":
     "پلیٹ فارم اور ٹرین کے درمیان سیڑھی اور خلا کی حدیں (TSI PRM)، اور فہرست میں نہ ہونے والی ٹرینوں کے فرش کی اونچائی۔ لائنیں ہر اسٹاپ پر جانچی جاتی ہیں۔",

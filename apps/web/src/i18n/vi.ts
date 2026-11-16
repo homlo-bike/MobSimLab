@@ -372,6 +372,12 @@ export const vi: Messages = {
   "report.col.sources": "Nguồn",
   "report.col.reasoning": "Lý do",
   "report.col.usedBy": "Được dùng bởi",
+  "report.col.reason": "Lý do",
+  "report.col.changedBy": "Người thay đổi",
+  "report.col.changedAt": "Ngày thay đổi",
+  "report.changedBy": "{name} đã thay đổi ngày {date}",
+  "report.changedOn": "Đã thay đổi ngày {date}",
+  "report.reason": "Lý do: {reason}",
   "prefs.accessTitle": "Khả năng tiếp cận sân ga",
   "prefs.accessIntro":
     "Giới hạn bậc và khe hở giữa sân ga và tàu (TSI PRM), cùng chiều cao sàn dùng cho tàu không có trong danh mục. Các tuyến được kiểm tra tại mọi điểm dừng.",

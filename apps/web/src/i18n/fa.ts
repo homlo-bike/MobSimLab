@@ -367,6 +367,12 @@ export const fa: Messages = {
   "report.col.sources": "منابع",
   "report.col.reasoning": "استدلال",
   "report.col.usedBy": "استفاده در",
+  "report.col.reason": "دلیل",
+  "report.col.changedBy": "تغییر توسط",
+  "report.col.changedAt": "تاریخ تغییر",
+  "report.changedBy": "تغییر توسط {name} در {date}",
+  "report.changedOn": "تغییر در {date}",
+  "report.reason": "دلیل: {reason}",
   "prefs.accessTitle": "دسترس‌پذیری سکو",
   "prefs.accessIntro":
     "حدود پله و فاصله میان سکو و قطار (TSI PRM) و ارتفاع کف برای قطارهایی که در کاتالوگ ندارند. خطوط در هر ایستگاه با این‌ها بررسی می‌شوند.",

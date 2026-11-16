@@ -373,6 +373,12 @@ export const uk: Messages = {
   "report.col.sources": "Джерела",
   "report.col.reasoning": "Обґрунтування",
   "report.col.usedBy": "Використовується в",
+  "report.col.reason": "Причина",
+  "report.col.changedBy": "Хто змінив",
+  "report.col.changedAt": "Дата зміни",
+  "report.changedBy": "Змінено: {name}, {date}",
+  "report.changedOn": "Змінено {date}",
+  "report.reason": "Причина: {reason}",
   "prefs.accessTitle": "Доступність платформ",
   "prefs.accessIntro":
     "Межі сходинки й зазору між платформою та поїздом (TSI PRM) і висота підлоги для поїздів без неї в каталозі. Лінії перевіряються на кожній зупинці.",

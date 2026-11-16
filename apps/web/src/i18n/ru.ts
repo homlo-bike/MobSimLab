@@ -374,6 +374,12 @@ export const ru: Messages = {
   "report.col.sources": "Источники",
   "report.col.reasoning": "Обоснование",
   "report.col.usedBy": "Используется в",
+  "report.col.reason": "Причина",
+  "report.col.changedBy": "Кто изменил",
+  "report.col.changedAt": "Дата изменения",
+  "report.changedBy": "Изменено: {name}, {date}",
+  "report.changedOn": "Изменено {date}",
+  "report.reason": "Причина: {reason}",
   "prefs.accessTitle": "Доступность платформ",
   "prefs.accessIntro":
     "Пределы ступеньки и зазора между платформой и поездом (TSI PRM) и высота пола для поездов без неё в каталоге. Линии проверяются на каждой остановке.",

@@ -561,12 +561,26 @@ describe("project workspace", () => {
           preferences: {
             kind: "preferences",
             schemaVersion: 1,
-            doc: { values: { "mode.dwell_s.tram": 45 } },
+            doc: { values: { "mode.dwell_s.tram": 45 }, reasons: { "mode.dwell_s.tram": "Busy stops" } },
             version: 1,
             updatedAt: "2026-11-16T10:00:00Z",
             updatedBy: { id: "u1", displayName: "Alice Smith" },
           },
         },
+      },
+      [`GET /api/projects/${P1}/value-history?limit=500`]: {
+        history: [
+          {
+            seq: 3,
+            id: "mode.dwell_s.tram",
+            kind: "changed",
+            before: { value: null, reason: null },
+            after: { value: 45, reason: "Busy stops" },
+            reason: "Busy stops",
+            at: "2026-11-16T09:00:00Z",
+            by: { id: "u1", displayName: "Alice Smith" },
+          },
+        ],
       },
     });
     const blobs: Blob[] = [];
@@ -584,6 +598,8 @@ describe("project workspace", () => {
     // The project uses trams: dwell time shows for all modes and for trams, the tram value marked as changed.
     await waitFor(() => expect(report.textContent).toContain("45 s"));
     expect(within(report).getAllByText("changed").length).toBe(1);
+    expect(report.textContent).toContain("Reason: Busy stops");
+    await waitFor(() => expect(report.textContent).toContain("Changed by Alice Smith on"), { timeout: 4000 });
     fireEvent.click(within(report).getByLabelText("Changed values only"));
     expect(within(report).getAllByText(/Dwell time at a stop/).length).toBe(1);
     fireEvent.change(within(report).getByLabelText("Group"), { target: { value: "Cost" } });
@@ -595,6 +611,9 @@ describe("project workspace", () => {
     const lines = csv.trim().split("\r\n");
     expect(lines[0]).toContain("Group,Parameter,Id,Mode,Value used");
     expect(lines.some((l) => l.includes("mode.dwell_s,Tram,45,s,Yes"))).toBe(true);
+    expect(lines.find((l) => l.includes("mode.dwell_s,Tram,45"))).toMatch(
+      /,Busy stops,Alice Smith,2026-11-16$/,
+    );
     // Changed values only: the export follows the filter.
     expect(lines.filter((l) => l.includes(",Yes,")).length).toBe(1);
     fireEvent.click(within(report).getByRole("button", { name: "Print or save as PDF" }));

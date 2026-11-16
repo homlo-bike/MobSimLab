@@ -1,4 +1,4 @@
-import { type FormEvent, type ReactNode, useId, useState } from "react";
+import { type FormEvent, type ReactNode, useCallback, useId, useState } from "react";
 import { useI18n } from "../i18n/i18n";
 import { DELAY_PREFS, MAX_DELAY_SHARE, type PreferencesDoc, prefValue, withPref } from "./preferences";
 import { can, type Project, type ProjectsApi } from "../projects/api";
@@ -48,6 +48,7 @@ export function ProjectPreferences({
 }) {
   const { t } = useI18n();
   const editable = can.edit(project);
+  const loadHistory = useCallback(() => allValueHistory(api, project.id), [api, project.id]);
   const [name, setName] = useState(project.name);
   const [description, setDescription] = useState(project.description);
   const [area, setArea] = useState(project.areaName ?? "");
@@ -237,6 +238,7 @@ export function ProjectPreferences({
           projectModes={project.modes}
           preferences={preferences}
           currency={currency.chosen}
+          loadHistory={loadHistory}
         />
         {onSetPlugin && <ProjectPlugins plugins={plugins} manage={can.manage(project)} onSet={onSetPlugin} />}
         <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-4 md:p-6">
@@ -462,4 +464,17 @@ function CurrencySection({
       {!editable && <p className="mt-3 text-sm text-slate-500">{t("prefs.readOnly")}</p>}
     </section>
   );
+}
+
+/** Purpose: the project's whole value history, newest first, read page by page (at most 10 000 changes). */
+async function allValueHistory(api: ProjectsApi, projectId: string) {
+  const out = [];
+  let before: number | undefined;
+  for (let page = 0; page < 20; page++) {
+    const h = await api.valueHistory(projectId, { before, limit: 500 });
+    out.push(...h);
+    if (h.length < 500) break;
+    before = h[h.length - 1]!.seq;
+  }
+  return out;
 }

@@ -357,6 +357,12 @@ export const zh: Messages = {
   "report.col.sources": "来源",
   "report.col.reasoning": "理由",
   "report.col.usedBy": "用于",
+  "report.col.reason": "原因",
+  "report.col.changedBy": "更改人",
+  "report.col.changedAt": "更改日期",
+  "report.changedBy": "{name} 于 {date} 更改",
+  "report.changedOn": "于 {date} 更改",
+  "report.reason": "原因：{reason}",
   "prefs.accessTitle": "站台无障碍",
   "prefs.accessIntro":
     "站台与列车之间的台阶和间隙限值（TSI PRM），以及车辆目录中缺少地板高度时使用的值。线路在每个停靠站按此检查。",

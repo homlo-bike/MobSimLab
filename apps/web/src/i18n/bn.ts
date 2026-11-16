@@ -370,6 +370,12 @@ export const bn: Messages = {
   "report.col.sources": "উৎস",
   "report.col.reasoning": "যুক্তি",
   "report.col.usedBy": "ব্যবহার করে",
+  "report.col.reason": "কারণ",
+  "report.col.changedBy": "যিনি বদলেছেন",
+  "report.col.changedAt": "বদলানোর তারিখ",
+  "report.changedBy": "{name} {date} তারিখে বদলেছেন",
+  "report.changedOn": "{date} তারিখে বদলানো হয়েছে",
+  "report.reason": "কারণ: {reason}",
   "prefs.accessTitle": "প্ল্যাটফর্ম প্রবেশযোগ্যতা",
   "prefs.accessIntro":
     "প্ল্যাটফর্ম ও ট্রেনের মধ্যে ধাপ ও ফাঁকের সীমা (TSI PRM), এবং তালিকায় না থাকা ট্রেনের মেঝের উচ্চতা। লাইনগুলো প্রতিটি স্টপে যাচাই হয়।",

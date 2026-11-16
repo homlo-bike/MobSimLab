@@ -371,6 +371,12 @@ export const tr: Messages = {
   "report.col.sources": "Kaynaklar",
   "report.col.reasoning": "Gerekçe",
   "report.col.usedBy": "Kullanan",
+  "report.col.reason": "Neden",
+  "report.col.changedBy": "Değiştiren",
+  "report.col.changedAt": "Değiştirilme tarihi",
+  "report.changedBy": "{name} tarafından {date} tarihinde değiştirildi",
+  "report.changedOn": "{date} tarihinde değiştirildi",
+  "report.reason": "Neden: {reason}",
   "prefs.accessTitle": "Peron erişilebilirliği",
   "prefs.accessIntro":
     "Peron ile tren arasındaki basamak ve boşluk sınırları (TSI PRM) ve katalogda değeri olmayan trenler için taban yüksekliği. Hatlar her durakta bunlara göre denetlenir.",

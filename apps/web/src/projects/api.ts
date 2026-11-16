@@ -44,6 +44,21 @@ export const RAIL_MODES = [
 ] as const;
 export type Mode = (typeof STREET_MODES)[number] | (typeof RAIL_MODES)[number];
 
+/** One recorded change of a project value (GET /api/projects/:id/value-history), newest first. */
+export interface ValueHistoryEntry {
+  seq: number;
+  /** Assumption id, for example `mode.dwell_s.tram`. */
+  id: string;
+  /** "changed": the value changed; "reason": only a new reason was given. */
+  kind: "changed" | "reason";
+  /** The value before and after; a null value means the library's applies. */
+  before: { value: number | null; reason: string | null };
+  after: { value: number | null; reason: string | null };
+  reason: string | null;
+  at: string;
+  by: { id: string; displayName: string | null } | null;
+}
+
 /** Where a project shows on the projects home. */
 export type Shelf = "mine" | "shared" | "viewOnly";
 
@@ -104,6 +119,16 @@ export function projectsApi(csrf: string) {
         csrf,
         version ? { enabled, version } : { enabled },
       ).then((r) => r.plugins),
+    /** The change history of the project's values, newest first; `before` is a `seq`, for the next page. */
+    valueHistory: (id: string, opts: { before?: number; limit?: number } = {}) => {
+      const q = new URLSearchParams();
+      if (opts.before !== undefined) q.set("before", String(opts.before));
+      if (opts.limit !== undefined) q.set("limit", String(opts.limit));
+      const qs = q.toString();
+      return get<{ history?: ValueHistoryEntry[] }>(`${one(id)}/value-history${qs ? `?${qs}` : ""}`).then(
+        (r) => r.history ?? [],
+      );
+    },
     drawings: (id: string) => loadDrawings(id),
     saveDrawing: <T>(id: string, kind: DrawingKind, doc: T, baseVersion: number | null) =>
       saveDrawing(csrf, id, kind, doc, baseVersion),

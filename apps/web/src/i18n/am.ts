@@ -360,6 +360,12 @@ export const am: Messages = {
   "report.col.sources": "ምንጮች",
   "report.col.reasoning": "ምክንያት",
   "report.col.usedBy": "የሚጠቀመው",
+  "report.col.reason": "ምክንያት",
+  "report.col.changedBy": "የቀየረው",
+  "report.col.changedAt": "የተቀየረበት ቀን",
+  "report.changedBy": "በ{name} በ{date} ተቀይሯል",
+  "report.changedOn": "በ{date} ተቀይሯል",
+  "report.reason": "ምክንያት፦ {reason}",
   "prefs.accessTitle": "የመድረክ ተደራሽነት",
   "prefs.accessIntro":
     "በመድረክና በባቡር መካከል የደረጃና የክፍተት ገደቦች (TSI PRM)፣ እና በካታሎግ ውስጥ ለሌላቸው ባቡሮች የወለል ከፍታ። መስመሮች በእያንዳንዱ ማቆሚያ ይፈተሻሉ።",

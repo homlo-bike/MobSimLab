@@ -367,6 +367,12 @@ export const ja: Messages = {
   "report.col.sources": "出典",
   "report.col.reasoning": "理由",
   "report.col.usedBy": "使用先",
+  "report.col.reason": "理由",
+  "report.col.changedBy": "変更者",
+  "report.col.changedAt": "変更日",
+  "report.changedBy": "{name}が{date}に変更",
+  "report.changedOn": "{date}に変更",
+  "report.reason": "理由：{reason}",
   "prefs.accessTitle": "ホームのバリアフリー",
   "prefs.accessIntro":
     "ホームと列車の段差・すき間の限度（TSI PRM）と、車両カタログに床面高さがない列車に使う値。系統は各停車駅でこれに照らして確認されます。",

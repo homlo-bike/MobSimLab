@@ -376,6 +376,12 @@ export const uz: Messages = {
   "report.col.sources": "Manbalar",
   "report.col.reasoning": "Asoslash",
   "report.col.usedBy": "Foydalanadi",
+  "report.col.reason": "Sabab",
+  "report.col.changedBy": "O'zgartirgan",
+  "report.col.changedAt": "O'zgartirilgan sana",
+  "report.changedBy": "{name} {date} kuni o'zgartirgan",
+  "report.changedOn": "{date} kuni o'zgartirilgan",
+  "report.reason": "Sabab: {reason}",
   "prefs.accessTitle": "Platforma qulayligi",
   "prefs.accessIntro":
     "Platforma va poyezd orasidagi zinapoya va bo‘shliq chegaralari (TSI PRM) hamda katalogda yo‘q poyezdlar uchun pol balandligi. Liniyalar har bir bekatda tekshiriladi.",

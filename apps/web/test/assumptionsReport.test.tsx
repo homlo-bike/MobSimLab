@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import data from "../src/workspace/assumptions-report.generated.json";
 import {
+  lastChanges,
   otherChoices,
   type ReportSources,
   reportModes,
@@ -55,6 +56,23 @@ describe("assumptions report", () => {
       (r) => r.param === enumParam,
     )!;
     expect([er.value, er.changed]).toEqual([other, true]);
+  });
+
+  it("gives the reason and who last changed each value", () => {
+    const doc = { values: { "mode.dwell_s": 40 }, reasons: { "mode.dwell_s": "Busy stops" } };
+    const dwell = reportRows(SOURCES, doc, ["tram"]).filter((r) => r.param.id === "mode.dwell_s");
+    expect(dwell.map((r) => [r.mode, r.prefId, r.reason])).toEqual([
+      ["*", "mode.dwell_s", "Busy stops"],
+      ["tram", "mode.dwell_s", "Busy stops"],
+    ]);
+    const last = lastChanges([
+      { id: "mode.dwell_s", kind: "reason", at: "2026-11-16T12:00:00Z", by: { displayName: "Bo" } },
+      { id: "mode.dwell_s", kind: "changed", at: "2026-11-16T11:00:00Z", by: { displayName: "Ann" } },
+      { id: "mode.dwell_s", kind: "changed", at: "2026-11-15T11:00:00Z", by: { displayName: "Cy" } },
+      { id: "fare.base", kind: "changed", at: "2026-11-14T11:00:00Z", by: null },
+    ]);
+    expect(last.get("mode.dwell_s")).toEqual({ at: "2026-11-16T11:00:00Z", by: "Ann" });
+    expect(last.get("fare.base")).toEqual({ at: "2026-11-14T11:00:00Z", by: null });
   });
 
   it("lists the project's other choices", () => {

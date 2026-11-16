@@ -369,6 +369,12 @@ export const mr: Messages = {
   "report.col.sources": "स्रोत",
   "report.col.reasoning": "कारण",
   "report.col.usedBy": "वापरणारे",
+  "report.col.reason": "कारण",
+  "report.col.changedBy": "कोणी बदलले",
+  "report.col.changedAt": "बदलल्याची तारीख",
+  "report.changedBy": "{name} यांनी {date} रोजी बदलले",
+  "report.changedOn": "{date} रोजी बदलले",
+  "report.reason": "कारण: {reason}",
   "prefs.accessTitle": "फलाट सुलभता",
   "prefs.accessIntro":
     "फलाट आणि गाडीमधील पायरी व फटीच्या मर्यादा (TSI PRM), आणि सूचीत नसलेल्या गाड्यांसाठी तळ उंची. मार्ग प्रत्येक थांब्यावर तपासले जातात.",

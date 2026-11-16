@@ -370,6 +370,12 @@ export const hi: Messages = {
   "report.col.sources": "स्रोत",
   "report.col.reasoning": "तर्क",
   "report.col.usedBy": "उपयोग करने वाले",
+  "report.col.reason": "कारण",
+  "report.col.changedBy": "किसने बदला",
+  "report.col.changedAt": "बदलने की तारीख",
+  "report.changedBy": "{name} ने {date} को बदला",
+  "report.changedOn": "{date} को बदला गया",
+  "report.reason": "कारण: {reason}",
   "prefs.accessTitle": "प्लेटफ़ॉर्म सुगम्यता",
   "prefs.accessIntro":
     "प्लेटफ़ॉर्म और ट्रेन के बीच सीढ़ी और अंतर की सीमाएँ (TSI PRM), और सूची में न होने वाली ट्रेनों की फ़र्श ऊँचाई। लाइनें हर स्टॉप पर जाँची जाती हैं।",

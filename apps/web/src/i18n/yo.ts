@@ -370,6 +370,12 @@ export const yo: Messages = {
   "report.col.sources": "Àwọn orísun",
   "report.col.reasoning": "Ìdí",
   "report.col.usedBy": "Ó ń lò ó",
+  "report.col.reason": "Ìdí",
+  "report.col.changedBy": "Ẹni tó yí i padà",
+  "report.col.changedAt": "Ọjọ́ tí a yí i padà",
+  "report.changedBy": "{name} yí i padà ní {date}",
+  "report.changedOn": "A yí i padà ní {date}",
+  "report.reason": "Ìdí: {reason}",
   "prefs.accessTitle": "Ìráyè pèpéle",
   "prefs.accessIntro":
     "Ààlà àtẹ̀gùn àti àlàfo láàrin pèpéle àti ọkọ̀ (TSI PRM), àti gíga ilẹ̀ fún ọkọ̀ tí kò ní nínú àkójọ. A ń ṣàyẹ̀wò àwọn ìlà ní gbogbo ibùdó.",
