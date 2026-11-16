@@ -29,6 +29,18 @@ export type RunNetwork =
   /** The network and lines of a saved run of the same project (agents use this to avoid resending files). */
   | { kind: "run"; runId: string };
 
+/** Purpose: a calendar plan as runs show it: without the day types' own service lines, which only the worker reads. */
+function shownPlan(plan: CalendarPlan): CalendarPlan {
+  const day_types = Object.fromEntries(
+    Object.entries(plan.day_types).map(([k, d]) => {
+      const rest = { ...d };
+      delete rest.lines;
+      return [k, rest];
+    }),
+  ) as CalendarPlan["day_types"];
+  return { ...plan, day_types };
+}
+
 /** What a planner asks for: a capacity run of one period, with or without the frequency sweep. */
 export interface NewCapacityRun {
   kind: "capacity";
@@ -856,7 +868,7 @@ export class RunsService {
       params: input.params,
       sweep: input.sweep,
       ...(input.design ? { design: input.design, objectives: input.objectives ?? [] } : {}),
-      ...(input.plan ? { plan: input.plan } : {}),
+      ...(input.plan ? { plan: shownPlan(input.plan) } : {}),
       agent: r.agent_name,
       verdict: typeof verdict === "string" ? verdict : null,
       error: r.error,

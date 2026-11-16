@@ -85,6 +85,23 @@ describe("calendar run model", () => {
     expect(none.fixedPerYear).toBeNull();
   });
 
+  it("runs each day type's own service: its vehicle-km, hours, energy and cost follow the line's trips", () => {
+    // The line runs half its weekday trips on Sundays and holidays.
+    const shares = { "street:0": { weekday: 1, saturday: 1, sunday: 0.5, holiday: 0.5 } };
+    const f = dayFigures({ estimate: ESTIMATE, riders: RIDERS, energy: ENERGY }, undefined, shares);
+    expect(f.days.weekday.vehicle_km).toBe(1000);
+    expect(f.days.sunday).toMatchObject({ vehicle_km: 500, vehicle_hours: 25, energy_kwh: 1000 });
+    expect(f.days.sunday.operating_cost).toBeCloseTo(f.days.weekday.operating_cost! / 2);
+    // Riders come from the demand side, as before.
+    expect(f.days.sunday.passengers).toBeCloseTo(
+      f.days.weekday.passengers! * riderShare("sunday", undefined),
+    );
+    // A day type's own service lines go with the plan, the others run the run's lines.
+    const plan = buildPlan("years", {}, [], f, "EUR", undefined, { sunday: '{"service_lines":[]}' });
+    expect(plan.day_types.sunday.lines).toBe('{"service_lines":[]}');
+    expect(plan.day_types.saturday.lines).toBeUndefined();
+  });
+
   it("makes the periods of years, one date and a row of dates from the calendar", () => {
     const cal = withFetched({}, 2027, [{ date: "2027-05-01", name: "Labour Day" }]);
     const years = periodsFor("years", cal, { years: { first: 2027, last: 2028 } });

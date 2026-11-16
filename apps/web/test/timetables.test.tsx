@@ -2,7 +2,7 @@ import { cleanup, fireEvent, render, screen, within } from "@testing-library/rea
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { StreetLinesDoc } from "../src/features/street-lines/saved";
 import { allDays, TimetableTables } from "../src/features/timetables/TimetableTables";
-import { feedHolidays, projectFeed } from "../src/features/timetables/feed";
+import { dayShares, feedHolidays, projectFeed } from "../src/features/timetables/feed";
 import {
   directionGrids,
   printableTimetable,
@@ -577,5 +577,31 @@ describe("departure timetables and downloads", () => {
     const h = feedHolidays(cal, new Date("2026-11-16"), new Date("2027-11-16"));
     expect(h).toContain("20261225");
     expect(h).toContain("20270101");
+  });
+
+  it("compares each line's trips on every day type with its weekday", () => {
+    const street = {
+      name: "7",
+      profile: { mode: "bus" },
+      timing: {
+        headwayMin: 10,
+        offPeakHeadwayMin: 10,
+        dwellS: 20,
+        layoverMin: 5,
+        firstMin: 360,
+        lastMin: 1320,
+        days: { sunday: { firstMin: 360, lastMin: 1320, peakHeadwayMin: 20, offPeakHeadwayMin: 20 } },
+      },
+      points: [],
+      depot: null,
+      depotStops: {},
+      view: view(),
+    } as unknown as StreetLinesDoc["lines"][number];
+    const railway = { lines: [{ id: "M1" }] } as never;
+    const report = (trips: number) => ({ lines: [{ id: "M1", trips }] }) as never;
+    const s = dayShares(railway, [street], {}, { weekday: report(200), saturday: report(150) });
+    expect(s["rail:M1"]).toEqual({ weekday: 1, saturday: 0.75, sunday: 0, holiday: 0 });
+    expect(s["street:0"]!.saturday).toBe(1);
+    expect(s["street:0"]!.sunday).toBeCloseTo(0.5, 1);
   });
 });
