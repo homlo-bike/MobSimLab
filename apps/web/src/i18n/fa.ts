@@ -2,6 +2,7 @@ import { roadFa } from "./road/fa";
 import { editorsFa } from "./editors/fa";
 import { cargoBikeFa } from "./cargo-bike/fa";
 import { depotsFa } from "./depots/fa";
+import { populationFa } from "./population/fa";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -455,6 +456,7 @@ export const fa: Messages = {
   ...editorsFa,
   ...cargoBikeFa,
   ...depotsFa,
+  ...populationFa,
   ...roadFa,
   ...PLUGIN_MESSAGES.fa,
 };
