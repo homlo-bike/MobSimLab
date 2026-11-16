@@ -1,0 +1,234 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mobsimlab.org/contracts/demand-input.schema.json",
+  "title": "Demand model input",
+  "description": "What a demand model run is given (ADR-0019, 09 §2): the zones of the model area with their people, jobs and special generators, the street network, the published public transport network and the country's money figures. Produced by the web app's Demand section in the Tables tab; read by worker/src/mobsim_worker/demand/inputs.py. The run's demand values (Project preferences) travel next to it.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "zones", "transit", "economy"],
+  "properties": {
+    "version": { "const": 1 },
+    "zones": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 3000,
+      "items": { "$ref": "#/$defs/zone" }
+    },
+    "streets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["nodes", "links"],
+      "description": "Street network of the model area from OpenStreetMap: junctions and the links between them. Left out when the API adds the OpenStreetMap street tiles of the model area to the run (the web app does), from which the worker builds it (worker/src/mobsim_worker/demand/osm.py).",
+      "properties": {
+        "nodes": {
+          "type": "array",
+          "minItems": 2,
+          "items": { "$ref": "#/$defs/lonlat" }
+        },
+        "links": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 400000,
+          "description": "One street link: [a, b, length_m, class, speed_kmh, lanes_fwd, lanes_bwd, car_fwd, car_bwd, walk, cycle]. a and b are node indices; class indexes [motorway, trunk, primary, secondary, tertiary, local]; lanes are per direction (0 where OpenStreetMap does not say); the last four are 1 where cars may drive a → b, b → a, and where people may walk and cycle. Two optional columns follow: cycle_facility (0 none, 1 painted lane or bicycle road, 2 separate track) and pedestrian (1 for a pedestrian or living street).",
+          "items": {
+            "type": "array",
+            "minItems": 11,
+            "maxItems": 13,
+            "prefixItems": [
+              { "type": "integer", "minimum": 0 },
+              { "type": "integer", "minimum": 0 },
+              { "type": "number", "exclusiveMinimum": 0 },
+              { "type": "integer", "minimum": 0, "maximum": 5 },
+              { "type": "number", "minimum": 0 },
+              { "type": "number", "minimum": 0 },
+              { "type": "number", "minimum": 0 },
+              { "enum": [0, 1] },
+              { "enum": [0, 1] },
+              { "enum": [0, 1] },
+              { "enum": [0, 1] },
+              { "enum": [0, 1, 2] },
+              { "enum": [0, 1] }
+            ]
+          }
+        }
+      }
+    },
+    "transit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stops", "lines"],
+      "description": "The published lines: stops, and per line its stopping patterns with running times and headways by period.",
+      "properties": {
+        "stops": {
+          "type": "array",
+          "maxItems": 20000,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "lonlat"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "name": { "type": "string" },
+              "lonlat": { "$ref": "#/$defs/lonlat" },
+              "mode": {
+                "type": "string",
+                "description": "Mode id (bus, tram, metro…); its catchment sets how far riders walk."
+              },
+              "step_free": {
+                "type": ["boolean", "null"],
+                "description": "Step-free access (a lift, a ramp or level boarding) as recorded in Create. false makes boarding cost demand.step_free.share × demand.step_free.penalty_min more; null (not recorded) does not."
+              }
+            }
+          }
+        },
+        "lines": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "patterns"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "name": { "type": "string" },
+              "mode": { "type": "string" },
+              "patterns": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["stops", "run_s", "headway_s"],
+                  "properties": {
+                    "stops": { "type": "array", "minItems": 2, "items": { "type": "string" } },
+                    "run_s": {
+                      "type": "array",
+                      "description": "Running time between consecutive stops, dwell included, s (one fewer than stops).",
+                      "items": { "type": "number", "minimum": 0 }
+                    },
+                    "headway_s": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "description": "Average headway in each period, s; null or absent where the pattern does not run.",
+                      "properties": {
+                        "am": { "type": ["number", "null"], "minimum": 30 },
+                        "md": { "type": ["number", "null"], "minimum": 30 },
+                        "pm": { "type": ["number", "null"], "minimum": 30 },
+                        "ev": { "type": ["number", "null"], "minimum": 30 }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "catchment_m": {
+          "type": "object",
+          "description": "Walk to a stop most riders accept, by mode id (mode.catchment_m); \"*\" for any other mode.",
+          "additionalProperties": { "type": "number", "minimum": 50 }
+        }
+      }
+    },
+    "street_setups": {
+      "type": "array",
+      "maxItems": 100000,
+      "description": "The planner's street setups from the GIS tab, applied to the OpenStreetMap street tiles: general traffic lanes over both directions, a bus lane each way, and a bike lane each way (a track where separated).",
+      "items": {
+        "type": "object",
+        "required": ["way"],
+        "properties": {
+          "way": { "type": "integer" },
+          "traffic_lanes": { "type": ["number", "null"] },
+          "bus_lane": { "type": ["boolean", "null"] },
+          "bike_lane": { "type": ["boolean", "null"] },
+          "separated": { "type": ["boolean", "null"] }
+        }
+      }
+    },
+    "bikes": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Bike parkings (for bike and ride) and shared-bike stations. Left out when the API adds those it finds (OpenStreetMap amenity=bicycle_parking and amenity=bicycle_rental, and the project's GBFS feed) to the run.",
+      "properties": {
+        "parking": { "type": "array", "maxItems": 50000, "items": { "$ref": "#/$defs/lonlat" } },
+        "rental": { "type": "array", "maxItems": 50000, "items": { "$ref": "#/$defs/lonlat" } },
+        "notes": {
+          "type": "array",
+          "maxItems": 20,
+          "items": { "type": "string" },
+          "description": "What could not be loaded, shown with the result."
+        }
+      }
+    },
+    "economy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["currency", "gdp_per_capita", "ppp_per_usd"],
+      "properties": {
+        "currency": { "type": "string", "description": "ISO 4217 code of the project currency." },
+        "gdp_per_capita": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "GDP per capita in the project currency (World Bank)."
+        },
+        "ppp_per_usd": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Project currency per international (PPP) US$, as the cost tables convert."
+        }
+      }
+    }
+  },
+  "$defs": {
+    "lonlat": {
+      "type": "array",
+      "prefixItems": [
+        { "type": "number", "minimum": -180, "maximum": 180 },
+        { "type": "number", "minimum": -90, "maximum": 90 }
+      ],
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "count": { "type": "number", "minimum": 0 },
+    "zone": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "centroid"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "name": { "type": "string" },
+        "centroid": {
+          "$ref": "#/$defs/lonlat",
+          "description": "Where the zone's trips start and end (weighted by where its people live)."
+        },
+        "area_km2": { "$ref": "#/$defs/count" },
+        "population": { "$ref": "#/$defs/count" },
+        "workers": { "$ref": "#/$defs/count", "description": "Employed residents." },
+        "children": { "$ref": "#/$defs/count", "description": "Residents under 15." },
+        "retail_jobs": { "$ref": "#/$defs/count" },
+        "other_jobs": { "$ref": "#/$defs/count" },
+        "schools": { "$ref": "#/$defs/count" },
+        "universities": { "$ref": "#/$defs/count" },
+        "hospitals": { "$ref": "#/$defs/count" },
+        "clinics": { "$ref": "#/$defs/count" },
+        "tourism": { "$ref": "#/$defs/count", "description": "Tourist attractions and museums." },
+        "pupils": {
+          "$ref": "#/$defs/count",
+          "description": "The zone's own number of pupils and students; replaces schools × pupils per school and universities × students."
+        },
+        "visits": {
+          "$ref": "#/$defs/count",
+          "description": "The zone's own visitor trips a weekday; replaces hospitals, clinics and attractions × their library visits."
+        },
+        "cbd": {
+          "type": ["boolean", "null"],
+          "description": "Centre zone, as marked by the planner; null decides from the job density."
+        },
+        "parking_cost": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "description": "Parking cost at a trip end in the project currency; null for the default."
+        }
+      }
+    }
+  }
+}
