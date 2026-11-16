@@ -1,6 +1,7 @@
 import { roadKk } from "./road/kk";
 import { editorsKk } from "./editors/kk";
 import { cargoBikeKk } from "./cargo-bike/kk";
+import { commentsKk } from "./comments/kk";
 import { depotsKk } from "./depots/kk";
 import { populationKk } from "./population/kk";
 import { PLUGIN_MESSAGES } from "./plugins";
@@ -166,7 +167,7 @@ export const kk: Messages = {
 
   "share.title": "«{name}» бөлісу",
   "share.rolesNote":
-    "Иелер қолжетімділікті басқарады. Редакторлар желіні өзгертеді. Пікір жазушылар мен көрушілер тек қарайды.",
+    "Иелер қолжетімділікті басқарады. Редакторлар желіні өзгертеді. Пікір жазушылар оған пікір қалдырады. Көрушілер тек қарайды.",
   "share.invite": "Электрондық пошта арқылы шақыру",
   "share.emailPlaceholder": "Олар кіретін электрондық пошта",
   "share.inviteRole": "Шақырылатын адамның рөлі",
@@ -418,6 +419,7 @@ export const kk: Messages = {
   ...editorsKk,
   ...cargoBikeKk,
   ...depotsKk,
+  ...commentsKk,
   ...populationKk,
   ...roadKk,
   ...PLUGIN_MESSAGES.kk,

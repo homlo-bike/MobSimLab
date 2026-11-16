@@ -1,6 +1,7 @@
 import { roadIt } from "./road/it";
 import { editorsIt } from "./editors/it";
 import { cargoBikeIt } from "./cargo-bike/it";
+import { commentsIt } from "./comments/it";
 import { depotsIt } from "./depots/it";
 import { populationIt } from "./population/it";
 import { PLUGIN_MESSAGES } from "./plugins";
@@ -166,7 +167,7 @@ export const it: Messages = {
 
   "share.title": "Condividi “{name}”",
   "share.rolesNote":
-    "I proprietari gestiscono l'accesso. Gli editor modificano la rete. Commentatori e lettori guardano soltanto.",
+    "I proprietari gestiscono l'accesso. Gli editor modificano la rete. I commentatori la commentano. I lettori guardano soltanto.",
   "share.invite": "Invita via email",
   "share.emailPlaceholder": "L'email con cui accedono",
   "share.inviteRole": "Ruolo della persona invitata",
@@ -418,6 +419,7 @@ export const it: Messages = {
   ...editorsIt,
   ...cargoBikeIt,
   ...depotsIt,
+  ...commentsIt,
   ...populationIt,
   ...roadIt,
   ...PLUGIN_MESSAGES.it,

@@ -1,6 +1,7 @@
 import { roadHi } from "./road/hi";
 import { editorsHi } from "./editors/hi";
 import { cargoBikeHi } from "./cargo-bike/hi";
+import { commentsHi } from "./comments/hi";
 import { depotsHi } from "./depots/hi";
 import { populationHi } from "./population/hi";
 import { PLUGIN_MESSAGES } from "./plugins";
@@ -166,7 +167,7 @@ export const hi: Messages = {
 
   "share.title": "“{name}” साझा करें",
   "share.rolesNote":
-    "मालिक पहुँच प्रबंधित करते हैं। संपादक नेटवर्क बदलते हैं। टिप्पणीकार और दर्शक केवल देखते हैं।",
+    "मालिक पहुँच प्रबंधित करते हैं। संपादक नेटवर्क बदलते हैं। टिप्पणीकार उस पर टिप्पणी करते हैं। दर्शक केवल देखते हैं।",
   "share.invite": "ईमेल से आमंत्रित करें",
   "share.emailPlaceholder": "वह ईमेल जिससे वे साइन इन करते हैं",
   "share.inviteRole": "आमंत्रित व्यक्ति की भूमिका",
@@ -416,6 +417,7 @@ export const hi: Messages = {
   ...editorsHi,
   ...cargoBikeHi,
   ...depotsHi,
+  ...commentsHi,
   ...populationHi,
   ...roadHi,
   ...PLUGIN_MESSAGES.hi,

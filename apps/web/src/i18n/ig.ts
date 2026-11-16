@@ -1,6 +1,7 @@
 import { roadIg } from "./road/ig";
 import { editorsIg } from "./editors/ig";
 import { cargoBikeIg } from "./cargo-bike/ig";
+import { commentsIg } from "./comments/ig";
 import { depotsIg } from "./depots/ig";
 import { populationIg } from "./population/ig";
 import { PLUGIN_MESSAGES } from "./plugins";
@@ -166,7 +167,7 @@ export const ig: Messages = {
 
   "share.title": "Kesaa “{name}”",
   "share.rolesNote":
-    "Ndị nwe na-ejikwa ohere. Ndị ndezi na-agbanwe netwọk. Ndị nkọwa na ndị na-ele na-ele naanị.",
+    "Ndị nwe na-ejikwa ohere. Ndị ndezi na-agbanwe netwọk. Ndị nkọwa na-akọwa ya. Ndị na-ele na-ele naanị.",
   "share.invite": "Kpọọ site na email",
   "share.emailPlaceholder": "Email ha ji abanye",
   "share.inviteRole": "Ọrụ maka onye ị na-akpọ",
@@ -418,6 +419,7 @@ export const ig: Messages = {
   ...editorsIg,
   ...cargoBikeIg,
   ...depotsIg,
+  ...commentsIg,
   ...populationIg,
   ...roadIg,
   ...PLUGIN_MESSAGES.ig,

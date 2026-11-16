@@ -1,6 +1,7 @@
 import { roadNl } from "./road/nl";
 import { editorsNl } from "./editors/nl";
 import { cargoBikeNl } from "./cargo-bike/nl";
+import { commentsNl } from "./comments/nl";
 import { depotsNl } from "./depots/nl";
 import { populationNl } from "./population/nl";
 import { PLUGIN_MESSAGES } from "./plugins";
@@ -167,7 +168,7 @@ export const nl: Messages = {
 
   "share.title": "‘{name}’ delen",
   "share.rolesNote":
-    "Eigenaren beheren de toegang. Bewerkers wijzigen het netwerk. Commentatoren en kijkers kijken alleen mee.",
+    "Eigenaren beheren de toegang. Bewerkers wijzigen het netwerk. Commentatoren geven er opmerkingen bij. Kijkers kijken alleen mee.",
   "share.invite": "Uitnodigen per e-mail",
   "share.emailPlaceholder": "E-mail waarmee iemand inlogt",
   "share.inviteRole": "Rol voor de uitgenodigde persoon",
@@ -421,6 +422,7 @@ export const nl: Messages = {
   ...editorsNl,
   ...cargoBikeNl,
   ...depotsNl,
+  ...commentsNl,
   ...populationNl,
   ...roadNl,
   ...PLUGIN_MESSAGES.nl,

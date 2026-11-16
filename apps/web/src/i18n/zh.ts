@@ -1,6 +1,7 @@
 import { roadZh } from "./road/zh";
 import { editorsZh } from "./editors/zh";
 import { cargoBikeZh } from "./cargo-bike/zh";
+import { commentsZh } from "./comments/zh";
 import { depotsZh } from "./depots/zh";
 import { populationZh } from "./population/zh";
 import { PLUGIN_MESSAGES } from "./plugins";
@@ -160,7 +161,7 @@ export const zh: Messages = {
   "prole.viewer": "查看者",
 
   "share.title": "共享“{name}”",
-  "share.rolesNote": "所有者管理访问权限。编辑者修改网络。评论者和查看者只能查看。",
+  "share.rolesNote": "所有者管理访问权限。编辑者修改网络。评论者可以发表评论。查看者只能查看。",
   "share.invite": "通过电子邮件邀请",
   "share.emailPlaceholder": "对方登录使用的电子邮件",
   "share.inviteRole": "被邀请人的角色",
@@ -396,6 +397,7 @@ export const zh: Messages = {
   ...editorsZh,
   ...cargoBikeZh,
   ...depotsZh,
+  ...commentsZh,
   ...populationZh,
   ...roadZh,
   ...PLUGIN_MESSAGES.zh,

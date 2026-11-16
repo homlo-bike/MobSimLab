@@ -1,6 +1,7 @@
 import { roadKo } from "./road/ko";
 import { editorsKo } from "./editors/ko";
 import { cargoBikeKo } from "./cargo-bike/ko";
+import { commentsKo } from "./comments/ko";
 import { depotsKo } from "./depots/ko";
 import { populationKo } from "./population/ko";
 import { PLUGIN_MESSAGES } from "./plugins";
@@ -164,7 +165,7 @@ export const ko: Messages = {
 
   "share.title": "'{name}' 공유",
   "share.rolesNote":
-    "소유자는 접근을 관리합니다. 편집자는 네트워크를 변경합니다. 댓글 작성자와 뷰어는 보기만 합니다.",
+    "소유자는 접근을 관리합니다. 편집자는 네트워크를 변경합니다. 댓글 작성자는 댓글을 답니다. 뷰어는 보기만 합니다.",
   "share.invite": "이메일로 초대",
   "share.emailPlaceholder": "로그인에 사용하는 이메일",
   "share.inviteRole": "초대할 사람의 역할",
@@ -409,6 +410,7 @@ export const ko: Messages = {
   ...editorsKo,
   ...cargoBikeKo,
   ...depotsKo,
+  ...commentsKo,
   ...populationKo,
   ...roadKo,
   ...PLUGIN_MESSAGES.ko,

@@ -6,6 +6,8 @@ import { UsersService } from "./admin/users.service";
 import { AuditService } from "./audit/audit.service";
 import { AuthController } from "./auth/auth.controller";
 import { AuthService } from "./auth/auth.service";
+import { CommentsController } from "./comments/comments.controller";
+import { CommentsService } from "./comments/comments.service";
 import { OidcService } from "./auth/oidc.service";
 import { SessionService } from "./auth/session.service";
 import { ConfigModule } from "./config/config.module";
@@ -59,6 +61,7 @@ export class AppModule {
         SetupController,
         AdminController,
         ProjectsController,
+        CommentsController,
         PluginsController,
         RunsController,
         PopulationLayersController,
@@ -66,6 +69,7 @@ export class AppModule {
       providers: [
         AuditService,
         AuthService,
+        CommentsService,
         OidcService,
         PluginsService,
         ProjectsService,

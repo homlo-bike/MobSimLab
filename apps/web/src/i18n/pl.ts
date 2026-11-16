@@ -1,6 +1,7 @@
 import { roadPl } from "./road/pl";
 import { editorsPl } from "./editors/pl";
 import { cargoBikePl } from "./cargo-bike/pl";
+import { commentsPl } from "./comments/pl";
 import { depotsPl } from "./depots/pl";
 import { populationPl } from "./population/pl";
 import { PLUGIN_MESSAGES } from "./plugins";
@@ -167,7 +168,7 @@ export const pl: Messages = {
 
   "share.title": "Udostępnij „{name}”",
   "share.rolesNote":
-    "Właściciele zarządzają dostępem. Edytorzy zmieniają sieć. Komentujący i przeglądający tylko oglądają.",
+    "Właściciele zarządzają dostępem. Edytorzy zmieniają sieć. Komentujący ją komentują. Przeglądający tylko oglądają.",
   "share.invite": "Zaproś e-mailem",
   "share.emailPlaceholder": "E-mail, którym się logują",
   "share.inviteRole": "Rola zapraszanej osoby",
@@ -418,6 +419,7 @@ export const pl: Messages = {
   ...editorsPl,
   ...cargoBikePl,
   ...depotsPl,
+  ...commentsPl,
   ...populationPl,
   ...roadPl,
   ...PLUGIN_MESSAGES.pl,

@@ -1,6 +1,7 @@
 import { roadUk } from "./road/uk";
 import { editorsUk } from "./editors/uk";
 import { cargoBikeUk } from "./cargo-bike/uk";
+import { commentsUk } from "./comments/uk";
 import { depotsUk } from "./depots/uk";
 import { populationUk } from "./population/uk";
 import { PLUGIN_MESSAGES } from "./plugins";
@@ -167,7 +168,7 @@ export const uk: Messages = {
 
   "share.title": "Поділитися «{name}»",
   "share.rolesNote":
-    "Власники керують доступом. Редактори змінюють мережу. Коментатори й глядачі лише переглядають.",
+    "Власники керують доступом. Редактори змінюють мережу. Коментатори її коментують. Глядачі лише переглядають.",
   "share.invite": "Запросити електронною поштою",
   "share.emailPlaceholder": "Пошта, з якою вони входять",
   "share.inviteRole": "Роль запрошеної особи",
@@ -421,6 +422,7 @@ export const uk: Messages = {
   ...editorsUk,
   ...cargoBikeUk,
   ...depotsUk,
+  ...commentsUk,
   ...populationUk,
   ...roadUk,
   ...PLUGIN_MESSAGES.uk,
