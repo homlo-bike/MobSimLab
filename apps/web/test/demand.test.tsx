@@ -3,7 +3,12 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import type { BenefitsApi } from "../src/features/benefits/data";
 import type { BuildingIn, CountryFigures, PlaceIn } from "../src/features/benefits/model";
 import type { LonLat, Timetable } from "../src/features/journey-planner/types";
-import type { DemandResult, DemandRunDetail, DemandRunsApi } from "../src/features/demand/api";
+import {
+  type DemandResult,
+  type DemandRunDetail,
+  type DemandRunsApi,
+  demandTiles,
+} from "../src/features/demand/api";
 import { estimateZones, makeBundle, periodWindows, transitOf } from "../src/features/demand/bundle";
 import { DemandSection } from "../src/features/demand/DemandSection";
 import { loadZoneData, zoneTiles } from "../src/features/demand/load";
@@ -376,6 +381,7 @@ function fakeRuns(): DemandRunsApi & { started: unknown[] } {
     cancel: async () => done,
     remove: async () => undefined,
     fileUrl: (id, name) => `/files/${id}/${name}`,
+    streetTile: async () => undefined,
   };
 }
 
@@ -547,5 +553,12 @@ describe("Demand zones in the GIS tab", () => {
     const doc = onDoc.mock.calls[0]![0] as DemandDoc;
     expect(doc.zones).toHaveLength(1);
     expect(doc.zones![0]!.ring).toHaveLength(4);
+  });
+});
+
+describe("street tiles of a demand run", () => {
+  it("takes each zone centre's tile and the eight around it, as the server does", () => {
+    expect(demandTiles([C, at(10, 10)])).toHaveLength(9);
+    expect(demandTiles([C, at(20_000, 0), [NaN, 1]])).toHaveLength(18);
   });
 });

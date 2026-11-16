@@ -1,3 +1,4 @@
+import { gzipSync } from "node:zlib";
 import {
   BadRequestException,
   ConflictException,
@@ -554,17 +555,24 @@ export class RunsService {
       throw new BadRequestException(
         `the zones cover too large an area for one demand run (${tiles.length} street tiles, at most ${MAX_DEMAND_TILES}); use a smaller buffer or fewer lines`,
       );
-    const xml: string[] = [];
-    for (const [x, y] of tiles) {
-      try {
-        xml.push(await this.streets.tile(x, y));
-      } catch (e) {
-        if (e instanceof OverpassError)
-          throw new HttpException("OpenStreetMap streets are unavailable right now; try again", e.status);
-        throw e;
+    // Four tiles at a time; the web app loads them first, so they are usually in the street cache already.
+    const xml: string[] = new Array<string>(tiles.length);
+    let next = 0;
+    const worker = async () => {
+      for (let i = next++; i < tiles.length; i = next++) {
+        const [x, y] = tiles[i]!;
+        try {
+          xml[i] = await this.streets.tile(x, y);
+        } catch (e) {
+          if (e instanceof OverpassError)
+            throw new HttpException("OpenStreetMap streets are unavailable right now; try again", e.status);
+          throw e;
+        }
       }
-    }
-    const network = JSON.stringify({ tiles: xml });
+    };
+    await Promise.all([worker(), worker(), worker(), worker()]);
+    // A city's street tiles are large; gzipped they fit the run's network column (worker `jobs/demand.py`).
+    const network = JSON.stringify({ tiles_gz: gzipSync(JSON.stringify(xml)).toString("base64") });
     if (network.length > MAX_ROAD_NETWORK_CHARS)
       throw new BadRequestException(
         "the streets of the model area are too large for one demand run; use a smaller buffer or fewer lines",

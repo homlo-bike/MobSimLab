@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import base64
+import gzip
 import json
 from typing import Any
 
@@ -326,10 +328,23 @@ def test_runs_on_streets_from_tiles() -> None:
 
     bundle = town()
     del bundle["streets"]
+    packed = base64.b64encode(gzip.compress(json.dumps(town_tiles()).encode())).decode()
     outcome, result, files = run_demand_job(
-        json.dumps({"tiles": town_tiles()}), json.dumps(bundle), {"values": {}}, Recorder()
+        json.dumps({"tiles_gz": packed}), json.dumps(bundle), {"values": {}}, Recorder()
     )
     assert outcome == "done"
     assert result["totals"]["by_mode"]["transit"] > 0
     assert result["road"]["links"]
     assert [f.name for f in files] == ["od.omx"]
+
+
+def test_reads_the_street_tiles_in_either_form() -> None:
+    from mobsim_worker.jobs.demand import street_tiles
+
+    tiles = ["<osm/>", "<osm></osm>"]
+    packed = base64.b64encode(gzip.compress(json.dumps(tiles).encode())).decode()
+    assert street_tiles(json.dumps({"tiles_gz": packed})) == tiles
+    assert street_tiles(json.dumps({"tiles": tiles})) == tiles
+    assert street_tiles("") == []
+    with pytest.raises(ValueError, match="cannot be read"):
+        street_tiles(json.dumps({"tiles_gz": "not base64 gzip"}))
