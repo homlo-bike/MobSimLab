@@ -2,6 +2,7 @@ import { roadKo } from "./road/ko";
 import { editorsKo } from "./editors/ko";
 import { cargoBikeKo } from "./cargo-bike/ko";
 import { depotsKo } from "./depots/ko";
+import { mslabKo } from "./mslab/ko";
 import { populationKo } from "./population/ko";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -458,6 +459,7 @@ export const ko: Messages = {
   ...editorsKo,
   ...cargoBikeKo,
   ...depotsKo,
+  ...mslabKo,
   ...populationKo,
   ...roadKo,
   ...PLUGIN_MESSAGES.ko,

@@ -757,7 +757,7 @@ export const editorsUz = {
   "noise.dbOrMore": "{db} dB yoki koʻp",
   "noise.dbRange": "{from}–{to} dB",
   "noise.mapNote":
-    "Faqat rejalashtirilgan xizmat, umumiy transportsiz. Binolar tomlari ustidan va uchlari atrofidan toʻsadi (ISO 9613-2), fasadlari bir marta qaytaradi (birinchi tartib). OpenStreetMap’da balandligi yoʻq binolarga har bir koʻrsatilgan qavat uchun 3 m yoki 8 m olinadi (shovqin plaginining farazlari). Bino darajasiga uning oʻz fasadidan qaytish kirmaydi. Binolar © OpenStreetMap hissadorlari.",
+    "Faqat xizmat liniyalari, umumiy transportsiz. Binolar tomlari ustidan va uchlari atrofidan toʻsadi (ISO 9613-2), fasadlari bir marta qaytaradi (birinchi tartib). OpenStreetMap’da balandligi yoʻq binolarga har bir koʻrsatilgan qavat uchun 3 m yoki 8 m olinadi (shovqin plaginining farazlari). Bino darajasiga uning oʻz fasadidan qaytish kirmaydi. Binolar © OpenStreetMap hissadorlari.",
   "noise.terrain": "Relyef balandliklaridan foydalanish (Copernicus GLO-30)",
   "noise.terrainTooLarge":
     "Liniyalar relyefni yuklab boʻlmaydigan darajada katta hududni qamraydi, shuning uchun bu xarita tekis yerda hisoblangan.",
@@ -787,6 +787,48 @@ export const editorsUz = {
     "Manbalar, binolar va qabul nuqtalari relyef ustida turadi, tepaliklar toʻsadi; tomlar va daraxtlar sirt modelidan chiqarib tashlangan. Relyef: Copernicus DEM GLO-30 © DLR e.V. va © Airbus Defence and Space GmbH, Yevropa Ittifoqi va ESA tomonidan COPERNICUS doirasida taqdim etilgan.",
   "noise.flat": "Tekis yer.",
   "noise.popCredit": "Aholi: WorldPop, University of Southampton (doi:10.5258/SOTON/WP00839), CC BY 4.0.",
+  "noise.scenario": "Ssenariy",
+  "noise.currentDesign": "Joriy loyiha",
+  "noise.compareTo": "Taqqoslash",
+  "noise.noComparison": "Taqqoslashsiz",
+  "noise.inputLevel": "Transport va tezliklar manbai",
+  "noise.level.planned": "Rejalashtirilgan: oraliqlar va namunaviy oqimlar",
+  "noise.level.timetabled": "Jadval bo‘yicha: kunning reyslari",
+  "noise.level.simulated": "Modellashtirilgan: saqlangan yo‘l modellashtiruvi",
+  "noise.simulatedIntro":
+    "Ko‘cha liniyalari yo‘l modellashtiruvi har bir bo‘lakda sanagan avtobuslarni va u yerdagi tezliklarini oladi. Modellashtiruv to‘liq qamramagan soatlar va temir yo‘llar jadvalini saqlaydi.",
+  "noise.noRuns":
+    "Hali yakunlangan yo‘l modellashtiruvi yo‘q: avval ko‘cha liniyalarini yo‘l modellashtiruvida ishga tushiring.",
+  "noise.chooseRun": "Yo‘l modellashtiruvini tanlang",
+  "noise.run": "Yo‘l modellashtiruvi",
+  "noise.runFor": "{name} uchun yo‘l modellashtiruvi",
+  "noise.runLabel": "{when}, {from}–{to}",
+  "noise.runHours": "{hours} uchun {run} yo‘l modellashtiruvidagi avtobuslar; boshqa soatlar uchun jadval.",
+  "noise.runNoHours":
+    "{run} yo‘l modellashtiruvi birorta ham to‘liq soatni qamramaydi, shuning uchun ko‘cha liniyalari jadvalini saqlaydi.",
+  "noise.runNoTimetable":
+    "{lines} uchun raqami bir xil ko‘cha liniyasi yo‘q: modellashtiruv soatlaridan tashqari bu liniyalarda avtobus yo‘q.",
+  "noise.railTimetabled":
+    "Temir yo‘llar jadvalini saqlaydi: temir yo‘l o‘tkazuvchanlik modellashtiruvi poyezd o‘rinlarini saqlamaydi.",
+  "noise.noRailService": "Temir yo‘lda e’lon qilingan liniya yo‘q, shuning uchun bu xaritada poyezd yo‘q.",
+  "noise.railNotPublished":
+    "Temir yo‘l liniyalarini e’lon qilib bo‘lmadi ({error}), shuning uchun bu xaritada poyezd yo‘q.",
+  "noise.computingOf": "{name} shovqin xaritasi hisoblanmoqda…",
+  "noise.noDifference":
+    "Ikki xaritani katakma-katak taqqoslab bo‘lmadi, shuning uchun farq xaritasi ko‘rsatilmaydi.",
+  "noise.inputUsed": "{name} · {level}",
+  "noise.comparing": "{name} va {other} taqqoslanmoqda · {level}",
+  "noise.differenceNote":
+    "Ssenariylardan biri eng past polosaga yetgan joydagi dB o‘zgarishi; 1 dB dan kichik o‘zgarishlar ko‘rsatilmaydi. Ikkalasi ham bir xil binolar, relyef va aholidan foydalanadi, shuning uchun umumiy transport bir-birini yo‘qqa chiqaradi.",
+  "noise.changeBelow": "{db} dan kam",
+  "noise.changeAbove": "{db} va undan ko‘p",
+  "noise.changeRange": "{from} dan {to} gacha",
+  "noise.comparisonTable": "Shovqin polosasi bo‘yicha o‘zgarish",
+  "noise.comparisonCaptionPeople": "Binosining eng ko‘p ta’sirlangan tomonidagi daraja bo‘yicha aholi",
+  "noise.comparisonCaptionBuildings": "Eng ko‘p ta’sirlangan tomonidagi daraja bo‘yicha binolar",
+  "noise.change": "O‘zgarish",
+  "noise.exportContours": "Konturlarni eksport qilish (GeoJSON)",
+  "noise.exportTable": "Jadvalni eksport qilish (CSV)",
   "jp.title": "Safar rejalashtiruvchisi",
   "jp.s": "{n} soniya",
   "jp.min": "{n} daq",

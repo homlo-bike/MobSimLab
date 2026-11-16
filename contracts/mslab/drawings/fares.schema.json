@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/homlo-bike/MobSimLab/blob/main/contracts/mslab/drawings/fares.schema.json",
+  "title": "Document of a \"fares\" drawing (data/fares.json, field doc)",
+  "type": "object",
+  "properties": {
+    "structure": {
+      "type": "string",
+      "enum": [
+        "flat",
+        "zonal",
+        "distance"
+      ]
+    },
+    "values": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "maxLength": 60,
+        "pattern": "^[a-z_.]+$"
+      },
+      "additionalProperties": {
+        "type": "number"
+      }
+    }
+  },
+  "additionalProperties": {}
+}

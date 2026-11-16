@@ -1111,6 +1111,8 @@ export function Workspace({
                     streetLines={streetLines}
                     railway={railway}
                     preferences={preferences?.values}
+                    scenarios={drawings.doc<ScenariosDoc>("scenarios")}
+                    roadRuns={roadRuns}
                   />
                 </div>
               )}
