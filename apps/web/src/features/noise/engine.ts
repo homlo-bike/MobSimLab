@@ -21,6 +21,7 @@ export const loadWasmNoise: NoiseEngineLoader = async () => {
   return {
     estimate: (input) => JSON.parse(n.estimate(JSON.stringify(input))),
     image: (indicator, fromDb, alpha) => n.image(indicator, fromDb, alpha),
+    levels: (indicator) => n.levels(indicator),
     dispose: () => n.free(),
   } satisfies NoiseEngine;
 };
@@ -28,10 +29,14 @@ export const loadWasmNoise: NoiseEngineLoader = async () => {
 /** The pictures of one estimate, RGBA pixels north row first, coloured from the given level up. */
 export type NoiseImages = Record<Indicator, Uint8Array>;
 
-/** What a noise run gives back: the estimate, and its pictures when it has a grid. */
+/** Grid levels of one estimate per indicator, dB, rows from the south (NaN where not computed). */
+export type NoiseLevels = Record<Indicator, Float32Array>;
+
+/** What a noise run gives back: the estimate, and its pictures and levels when it has a grid. */
 export interface NoiseRun {
   view: NoiseView;
   images: NoiseImages | null;
+  levels?: NoiseLevels | null;
 }
 
 /**
@@ -50,7 +55,9 @@ function runOn(engine: NoiseEngine, input: NoiseInput, fromDb: Record<Indicator,
   const images = view.image
     ? { lden: engine.image("lden", fromDb.lden, 255), lnight: engine.image("lnight", fromDb.lnight, 255) }
     : null;
-  return { view, images };
+  const levels =
+    view.image && engine.levels ? { lden: engine.levels("lden"), lnight: engine.levels("lnight") } : null;
+  return { view, images, levels };
 }
 
 /**
