@@ -236,6 +236,28 @@ const cargoBike = z.looseObject({
     .optional(),
 });
 
+/**
+ * Lines of the plugin tools that draw on a core kit (cable cars and people movers on straight spans, ferries on a
+ * water route), by tool id: the planner's drawing, the line the journey planner rides and the shape the noise map
+ * needs, as the tool last built them.
+ */
+const pluginLines = z.looseObject({
+  tools: z
+    .record(
+      z
+        .string()
+        .regex(/^[a-z0-9-]+$/)
+        .max(60),
+      z.looseObject({
+        kit: z.enum(["straight-spans", "water-route"]),
+        doc: z.looseObject({}),
+        line: z.looseObject({}).nullable(),
+        noise: z.looseObject({}).nullable(),
+      }),
+    )
+    .refine((v) => Object.keys(v).length <= 50, "at most 50 tools"),
+});
+
 /** Road depots shared by the street lines (contracts/depot.schema.json): outline, gates, zones and layout. */
 const depots = z.looseObject({
   depots: z
@@ -262,6 +284,31 @@ const depots = z.looseObject({
     .max(50),
 });
 
+/** The project's own vehicles and its fleet (Project preferences → Vehicles and Fleet). */
+const fleet = z.looseObject({
+  vehicles: z
+    .array(
+      z.looseObject({
+        id: z
+          .string()
+          .regex(/^own-[a-z0-9-]+$/)
+          .max(80),
+        name: z.string().min(1).max(200),
+        mode: z.string().min(1).max(40),
+      }),
+    )
+    .max(500),
+  units: z
+    .array(
+      z.looseObject({
+        id: z.string().min(1).max(64),
+        vehicle: z.string().min(1).max(120),
+        number: z.string().max(40),
+      }),
+    )
+    .max(5000),
+});
+
 /** Fare revenue table (ADR-0044): the fare structure and the project's own values (fares in 2023 int. $). */
 const fares = z.looseObject({
   structure: z.enum(["flat", "zonal", "distance"]).optional(),
@@ -274,6 +321,24 @@ const fares = z.looseObject({
       z.number().finite(),
     )
     .refine((v) => Object.keys(v).length <= 100, "at most 100 values")
+    .optional(),
+});
+
+/** Appraisal (ADR-0045): the multi-criteria analysis' own criteria with their weights and scores per line. */
+const appraisal = z.looseObject({
+  criteria: z
+    .array(
+      z.looseObject({
+        id: z.string().max(40),
+        name: z.string().max(120),
+        weight: z.number().finite().min(0),
+        higher: z.boolean(),
+        scores: z
+          .record(z.string().max(200), z.number().finite())
+          .refine((v) => Object.keys(v).length <= 500, "at most 500 scores"),
+      }),
+    )
+    .max(30)
     .optional(),
 });
 
@@ -303,12 +368,18 @@ export const DRAWING_KINDS = {
   regions: { schema: regions, schemaVersion: 1 },
   /** Cargo bike tab of the cargo bike plugin: start point, destination and the project's own values. */
   "cargo-bike": { schema: cargoBike, schemaVersion: 1 },
+  /** Cable car, people mover and ferry lines of the plugin tools (straight spans and water route kits). */
+  "plugin-lines": { schema: pluginLines, schemaVersion: 1 },
   /** Road depots (07-simulation §7), shared by the street lines whose vehicles fit. */
   depots: { schema: depots, schemaVersion: 1 },
+  /** The project's own vehicle types and its individual vehicles (08-vehicles.md §1, §4). */
+  fleet: { schema: fleet, schemaVersion: 1 },
   /** Demand model zones in the Tables and GIS tabs (ADR-0019): automatic or own, with the planner's values. */
   demand: { schema: demand, schemaVersion: 1 },
   /** Fare revenue table (ADR-0044): fare structure, fares, passes, discounts and the other fare values. */
   fares: { schema: fares, schemaVersion: 1 },
+  /** Appraisal (ADR-0045): the planner's own multi-criteria criteria, weights and scores. */
+  appraisal: { schema: appraisal, schemaVersion: 1 },
 } as const satisfies Record<string, { schema: z.ZodType; schemaVersion: number }>;
 
 export type DrawingKind = keyof typeof DRAWING_KINDS;

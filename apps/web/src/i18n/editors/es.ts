@@ -255,7 +255,7 @@ export const editorsEs = {
   "rail.line.peakHeadway": "Frecuencia en hora punta",
   "rail.line.everyOffpeak": "Frecuencia fuera de punta",
   "rail.line.offpeakHeadway": "Frecuencia fuera de punta",
-  "rail.line.peaks": "Horas punta 07:00–09:00 y 16:00–19:00.",
+  "rail.line.peaks": "Horas punta {peaks}.",
   "rail.line.delete": "Borrar línea",
   "rail.line.needsStops": "Necesita al menos dos paradas.",
   "rail.line.needsTrain": "Elige un tren.",

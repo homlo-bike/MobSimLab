@@ -5,6 +5,8 @@ import { cargoBikeMr } from "./cargo-bike/mr";
 import { commentsMr } from "./comments/mr";
 import { depotsMr } from "./depots/mr";
 import { tablesMr } from "./tables/mr";
+import { fleetMr } from "./fleet/mr";
+import { timetablesMr } from "./timetables/mr";
 import { mslabMr } from "./mslab/mr";
 import { pluginCodeMr } from "./plugin-code/mr";
 import { populationMr } from "./population/mr";
@@ -351,6 +353,7 @@ export const mr: Messages = {
   "prefs.group.cost": "खर्च",
   "prefs.group.benefits": "लाभ",
   "prefs.group.fares": "भाडे",
+  "prefs.group.appraisal": "मूल्यमापन",
   "prefs.group.noise": "आवाज",
   "prefs.traction.battery": "बॅटरी",
   "prefs.traction.diesel": "डिझेल",
@@ -493,6 +496,8 @@ export const mr: Messages = {
   ...cargoBikeMr,
   ...depotsMr,
   ...tablesMr,
+  ...fleetMr,
+  ...timetablesMr,
   ...commentsMr,
   ...mslabMr,
   ...pluginCodeMr,

@@ -77,7 +77,25 @@ export interface DemandResult {
   };
   /** How the calibrated run fits what was observed (worker `demand/calibrate.py`); absent without data. */
   calibration?: Calibration;
+  /** What public transport is worth to the weekday's trips (worker `_appraisal`); absent in older runs. */
+  appraisal?: DemandAppraisal;
   files: string[];
+}
+
+/**
+ * The weekday's trips valued against the same trips without public transport (ADR-0045): the users' benefit
+ * (logsum change in the project currency), and the car trips and car vehicle-km saved.
+ */
+export interface DemandAppraisal {
+  method: string;
+  currency: string;
+  user_benefit: number;
+  user_benefit_by_purpose: Record<Purpose, number>;
+  generalised_hours: number;
+  /** Trips with no other way to travel; left out of the users' benefit. */
+  no_alternative_trips: number;
+  car_trips_saved: number;
+  car_vehicle_km_saved: number;
 }
 
 /** How a run fits the observed data, the rounds it took and the values it fitted. */

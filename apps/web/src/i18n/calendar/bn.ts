@@ -37,6 +37,18 @@ export const calendarBn = {
   "cal.total": "মোট",
   "cal.noHolidaysYear": "এখনও কোনো সরকারি ছুটি আনা হয়নি",
   "cal.resetCount": "গণনা করা {value}-এ ফিরুন",
+  "cal.service": "দিনের ধরন অনুযায়ী সেবা দিবস",
+  "cal.serviceIntro":
+    "প্রতিটি দিনের ধরনে সেবা কখন শুরু ও শেষ হয়, এবং সকাল ও সন্ধ্যার পিক, HH:MM আকারে। মধ্যরাতের পরের সময় 24:00 ছাড়িয়ে চলে, যেমন 24:30। পিক না থাকলে খালি রাখুন।",
+  "cal.serviceDefault": "প্রতিটি দিনের ধরনের জন্য ডিফল্ট: {first} থেকে {last}, পিক {peaks}।",
+  "cal.firstDep": "প্রথম ছাড়ার সময়",
+  "cal.lastDep": "শেষ ছাড়ার সময়",
+  "cal.morningPeak": "সকালের পিক",
+  "cal.eveningPeak": "সন্ধ্যার পিক",
+  "cal.peakFrom": "থেকে",
+  "cal.peakTo": "পর্যন্ত",
+  "cal.serviceInvalid":
+    "এখনও সংরক্ষিত হয়নি: শেষ ছাড়ার সময় প্রথমটির পরে হতে হবে, এবং প্রতিটি পিক শুরুর পরে শেষ হতে হবে।",
   "cal.day.weekday": "কর্মদিবস",
   "cal.day.saturday": "শনিবার",
   "cal.day.sunday": "রবিবার",

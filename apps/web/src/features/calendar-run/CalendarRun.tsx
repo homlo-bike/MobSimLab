@@ -1,10 +1,14 @@
 import { useEffect, useId, useMemo, useState } from "react";
 import { useI18n } from "../../i18n/i18n";
-import { type DrawnProblem, buildDrawnNetwork, drawnProblem } from "../capacity/drawn";
+import { type DrawnNetwork, type DrawnProblem, buildDrawnNetwork, drawnProblem } from "../capacity/drawn";
+import { paramValue } from "../costs/params";
+import type { SavedStreetLine } from "../street-lines/saved";
+import { dayShares } from "../timetables/feed";
+import { useRailPublications } from "../timetables/railPublish";
 import { verdictText } from "../capacity/CapacityRun";
 import { isOpen, type RunStatus, type ServerNetwork } from "../capacity/server";
 import type { Verdict } from "../capacity/types";
-import type { Network } from "../railways/types";
+import type { Network, RailEngineLoader } from "../railways/types";
 import { libraryValue as benefitLibrary } from "../benefits/params";
 import { DAY_TYPE_LABEL } from "../../workspace/CalendarSection";
 import { calendarFrom, DAY_TYPES, simulationYearsFrom } from "../../workspace/calendar";
@@ -68,6 +72,8 @@ function switchesIn(topology: string): number {
   }
 }
 const iso = (d: Date) => d.toISOString().slice(0, 10);
+/** No street lines (one array, so memos that depend on it keep). */
+const NO_STREET_LINES: readonly SavedStreetLine[] = [];
 
 /**
  * Purpose: the Simulator's calendar runs (ADR-0020): many years (the simulation years of Project preferences),
@@ -86,12 +92,16 @@ export function CalendarRun({
   onOpenTables,
   onOpenPreferences,
   buildDrawn = buildDrawnNetwork,
+  loadRail,
+  streetLines = NO_STREET_LINES,
   today = new Date(),
   pollMs = 2000,
 }: {
   api: CalendarRunsApi | null;
   canRun: boolean;
   railway: Network | null;
+  /** The project's street lines, for how much each runs on each day type. */
+  streetLines?: readonly SavedStreetLine[];
   preferences: PreferencesDoc | null;
   /** Saves the project's own rider shares; absent for viewers. */
   onPreferences?: (doc: PreferencesDoc) => void;
@@ -102,6 +112,8 @@ export function CalendarRun({
   onOpenTables?: () => void;
   onOpenPreferences?: () => void;
   buildDrawn?: typeof buildDrawnNetwork;
+  /** Rail engine loader for the day types' publications; tests inject one. */
+  loadRail?: RailEngineLoader;
   today?: Date;
   pollMs?: number;
 }) {
@@ -141,7 +153,17 @@ export function CalendarRun({
     [mode, preferences, today, date, from, to, months, weather, hvacFull],
   );
   const tooMany = mode === "days" && periods.length > MAX_DAYS;
-  const figures = useMemo(() => dayFigures(tables, prefs), [tables, prefs]);
+  // How much each line runs on each day type (its own Saturday, Sunday and holiday times), for the day figures.
+  const calKey = JSON.stringify(cal);
+  const waitMin = paramValue("timetable.max_terminal_wait_min", "*", prefs)[1];
+  const publishOptions = useMemo(() => ({ max_idle_s: waitMin * 60 }), [waitMin]);
+  const { publications } = useRailPublications(railway, cal, publishOptions, prefs, loadRail);
+  const shares = useMemo(
+    () => dayShares(railway, streetLines, cal, publications),
+    // The calendar is compared by its content.
+    [railway, streetLines, calKey, publications],
+  );
+  const figures = useMemo(() => dayFigures(tables, prefs, shares), [tables, prefs, shares]);
   const missing = FIGURES.filter((f) => figures.days.weekday[f] === null);
   const rail: DrawnProblem | null = drawnProblem(railway);
 
@@ -193,11 +215,12 @@ export function CalendarRun({
     if (!api || !periods.length || tooMany) return;
     setError(null);
     let network: ServerNetwork | null = null;
+    let dayLines: DrawnNetwork["dayLines"];
     let switches = 0;
     try {
       if (rail === null) {
         setStatus(t("calrun.building"));
-        const built = await buildDrawn(railway);
+        const built = await buildDrawn(railway, undefined, undefined, prefs, cal);
         if (typeof built === "string") {
           if (built === "errors") {
             setError(t("capacity.drawn.errors"));
@@ -212,6 +235,7 @@ export function CalendarRun({
             lines: built.lines,
             linesName: "service-lines.json",
           };
+          dayLines = built.dayLines;
         }
       }
       setStatus(t("calrun.sending"));
@@ -228,6 +252,7 @@ export function CalendarRun({
         figures,
         currency,
         months ? weatherPlan(weather, base) : undefined,
+        dayLines,
       );
       const run = await api.start(network, plan, { ...projectRunSettings(prefs), ...base });
       setViewing(run);

@@ -38,6 +38,18 @@ export const calendarYo = {
   "cal.total": "Àpapọ̀",
   "cal.noHolidaysYear": "A kò tíì gba ìsinmi gbogbogbò kankan",
   "cal.resetCount": "Padà sí {value} tí a kà",
+  "cal.service": "Ọjọ́ iṣẹ́ fún irú ọjọ́ kọ̀ọ̀kan",
+  "cal.serviceIntro":
+    "Ìgbà tí iṣẹ́ bẹ̀rẹ̀ àti parí ní irú ọjọ́ kọ̀ọ̀kan, àti àkókò ìrọ́kẹ̀kẹ̀ òwúrọ̀ àti ìrọ̀lẹ́ rẹ̀, bí HH:MM. Àkókò lẹ́yìn ọ̀gànjọ́ òru ń bá a lọ kọjá 24:00, bí 24:30. Fi àkókò ìrọ́kẹ̀kẹ̀ sílẹ̀ ní òfo bí kò bá sí.",
+  "cal.serviceDefault": "Àìyípadà fún irú ọjọ́ kọ̀ọ̀kan: {first} sí {last}, ìrọ́kẹ̀kẹ̀ {peaks}.",
+  "cal.firstDep": "Ìdágbéra àkọ́kọ́",
+  "cal.lastDep": "Ìdágbéra ìkẹyìn",
+  "cal.morningPeak": "Ìrọ́kẹ̀kẹ̀ òwúrọ̀",
+  "cal.eveningPeak": "Ìrọ́kẹ̀kẹ̀ ìrọ̀lẹ́",
+  "cal.peakFrom": "láti",
+  "cal.peakTo": "sí",
+  "cal.serviceInvalid":
+    "A kò tíì fi pamọ́: ìdágbéra ìkẹyìn gbọ́dọ̀ wà lẹ́yìn àkọ́kọ́, ìrọ́kẹ̀kẹ̀ kọ̀ọ̀kan sì gbọ́dọ̀ parí lẹ́yìn tí ó bẹ̀rẹ̀.",
   "cal.day.weekday": "Ọjọ́ iṣẹ́",
   "cal.day.saturday": "Àbámẹ́ta",
   "cal.day.sunday": "Àìkú",

@@ -31,6 +31,7 @@ export const GROUP_LABEL: Record<string, MessageKey> = {
   Cost: "prefs.group.cost",
   Benefits: "prefs.group.benefits",
   Fares: "prefs.group.fares",
+  Appraisal: "prefs.group.appraisal",
   Noise: "prefs.group.noise",
 };
 

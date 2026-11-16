@@ -38,6 +38,18 @@ export const calendarTr = {
   "cal.total": "Toplam",
   "cal.noHolidaysYear": "Henüz resmî tatil alınmadı",
   "cal.resetCount": "sayılan {value} değerine dön",
+  "cal.service": "Gün türüne göre hizmet günü",
+  "cal.serviceIntro":
+    "Her gün türünde hizmetin ne zaman başlayıp bittiği ve sabah ile akşam zirvesi, SS:DD olarak. Gece yarısından sonraki saatler 24:00'ün ötesinde devam eder, örneğin 24:30. Zirve yoksa boş bırakın.",
+  "cal.serviceDefault": "Her gün türü için varsayılan: {first} - {last}, zirveler {peaks}.",
+  "cal.firstDep": "İlk kalkış",
+  "cal.lastDep": "Son kalkış",
+  "cal.morningPeak": "Sabah zirvesi",
+  "cal.eveningPeak": "Akşam zirvesi",
+  "cal.peakFrom": "başlangıç",
+  "cal.peakTo": "bitiş",
+  "cal.serviceInvalid":
+    "Henüz kaydedilmedi: son kalkış ilkinden sonra olmalı ve her zirve başladıktan sonra bitmeli.",
   "cal.day.weekday": "Hafta içi",
   "cal.day.saturday": "Cumartesi",
   "cal.day.sunday": "Pazar",

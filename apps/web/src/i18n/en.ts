@@ -3,6 +3,8 @@ import { cargoBikeEn } from "./cargo-bike/en";
 import { commentsEn } from "./comments/en";
 import { depotsEn } from "./depots/en";
 import { tablesEn } from "./tables/en";
+import { fleetEn } from "./fleet/en";
+import { timetablesEn } from "./timetables/en";
 import { mslabEn } from "./mslab/en";
 import { pluginCodeEn } from "./plugin-code/en";
 import { roadEn } from "./road/en";
@@ -348,6 +350,7 @@ export const en = {
   "prefs.group.cost": "Costs",
   "prefs.group.benefits": "Benefits",
   "prefs.group.fares": "Fares",
+  "prefs.group.appraisal": "Appraisal",
   "prefs.group.noise": "Noise",
   "prefs.traction.battery": "battery",
   "prefs.traction.diesel": "diesel",
@@ -491,6 +494,8 @@ export const en = {
   ...cargoBikeEn,
   ...depotsEn,
   ...tablesEn,
+  ...fleetEn,
+  ...timetablesEn,
   ...commentsEn,
   ...mslabEn,
   ...pluginCodeEn,

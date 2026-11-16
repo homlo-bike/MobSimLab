@@ -15,6 +15,7 @@ import {
   FINISHED_RUN_STATUSES,
   FORMAT_NAME,
   FORMAT_VERSION,
+  FORMAT_VERSION_WITHOUT_MAP,
   type Manifest,
   MAX_MSLAB_BYTES,
   MSLAB_ZIP_LIMITS,
@@ -24,6 +25,7 @@ import {
   type RunFile,
 } from "./format.mts";
 import type { MslabReadResult } from "./read.mts";
+import { type MapDataSummary, MslabMapService } from "./map-data";
 
 /** The API's version, written into each file's manifest. */
 const APP_VERSION = (() => {
@@ -139,6 +141,7 @@ export class MslabService {
     @Inject(DATABASE) private readonly db: Database,
     private readonly projects: ProjectsService,
     private readonly tools: ToolRunner,
+    private readonly map: MslabMapService,
   ) {}
 
   /**
@@ -151,6 +154,7 @@ export class MslabService {
     actor: ProjectActor,
     id: string,
     includeRuns: boolean,
+    includeMap = false,
   ): Promise<{ fileName: string; bytes: Buffer }> {
     if ((await this.projects.get(actor, id)).viaPublic)
       throw new ForbiddenException("public projects are read-only; ask the owner for access");
@@ -247,22 +251,37 @@ export class MslabService {
         runCount++;
       }
     }
+    // Map data for the static viewer (format 1.1): the OpenStreetMap tiles, water, population and country
+    // figures of the project area.
+    let map: MapDataSummary | null = null;
+    if (includeMap) {
+      const m = await this.map.files({
+        projectId: id,
+        docs: Object.fromEntries(drawings.map((d) => [d.kind, d.doc])),
+        plugins: plugins.map((r) => ({ id: r.plugin_id, enabled: r.enabled })),
+      });
+      for (const [name, body] of m.files) add(name, body);
+      map = m.summary;
+    }
+    const formatVersion = includeMap ? FORMAT_VERSION : FORMAT_VERSION_WITHOUT_MAP;
     add(
       FILES.attribution,
       attribution(
         project,
         drawings.map((d) => ({ kind: d.kind, doc: d.doc })),
         runCount,
+        formatVersion,
+        map,
       ),
     );
 
     const manifest: Manifest = {
       format: FORMAT_NAME,
-      formatVersion: FORMAT_VERSION,
+      formatVersion,
       app: { name: "MobSimLab", version: APP_VERSION },
       createdAt: new Date().toISOString(),
       project: { id: p.id, name: p.name },
-      includes: { runs: includeRuns },
+      includes: includeMap ? { runs: includeRuns, map: true } : { runs: includeRuns },
       files: Object.fromEntries(files.map(([n, b]) => [n, { sha256: sha256(b), bytes: b.length }])),
     };
     const bytes = writeZip([[FILES.manifest, JSON.stringify(manifest, null, 1)], ...files]);
@@ -271,7 +290,7 @@ export class MslabService {
       id,
       "project.exported",
       null,
-      { formatVersion: FORMAT_VERSION, runs: runCount, bytes: bytes.length },
+      { formatVersion, runs: runCount, map: map ? map.tiles : 0, bytes: bytes.length },
       this.db,
     );
     return { fileName: mslabFileName(p.name), bytes };
@@ -498,22 +517,43 @@ function withoutRunFiles(kind: string, result: unknown): unknown {
   return { ...(result as Record<string, unknown>), files: [] };
 }
 
-function attribution(project: ProjectFile, drawings: { kind: string; doc: unknown }[], runs: number): string {
+function attribution(
+  project: ProjectFile,
+  drawings: { kind: string; doc: unknown }[],
+  runs: number,
+  formatVersion: string,
+  map: MapDataSummary | null,
+): string {
   const lines = [
     `# ${project.name}`,
     "",
-    `MobSimLab project file, format ${FORMAT_VERSION}, saved ${new Date().toISOString().slice(0, 10)}.`,
+    `MobSimLab project file, format ${formatVersion}, saved ${new Date().toISOString().slice(0, 10)}.`,
     "",
     "## Contents",
     "",
     ...drawings.map((d) => `- \`data/${d.kind}.json\``),
     `- ${runs} simulation run${runs === 1 ? "" : "s"}`,
+    ...(map
+      ? [
+          `- map data: ${map.tiles} map tiles (${map.kinds.join(", ")}), water, population and country figures`,
+        ]
+      : []),
     "",
     "## Sources",
     "",
-    "- Street, railway and place references (OpenStreetMap way ids and positions) refer to OpenStreetMap data",
-    "  © OpenStreetMap contributors, available under the Open Database Licence (ODbL 1.0). The OpenStreetMap",
-    "  data itself is not in this file.",
+    ...(map
+      ? [
+          "- The map data in `map/` (streets, paths, railways, buildings, places, water and the country at the",
+          "  project area) is OpenStreetMap data © OpenStreetMap contributors, available under the Open Database",
+          "  Licence (ODbL 1.0): https://www.openstreetmap.org/copyright. Share it under the ODbL.",
+          `- Population in \`map/population.json\`: ${map.population ?? "not included (no population grid was ready)"}.`,
+          "- Country figures in `map/reference.json`: World Bank Open Data, CC BY 4.0.",
+        ]
+      : [
+          "- Street, railway and place references (OpenStreetMap way ids and positions) refer to OpenStreetMap data",
+          "  © OpenStreetMap contributors, available under the Open Database Licence (ODbL 1.0). The OpenStreetMap",
+          "  data itself is not in this file.",
+        ]),
   ];
   const gtfs = drawings.find((d) => d.kind === "gtfs-network")?.doc as
     { feeds?: { name?: unknown }[] } | undefined;

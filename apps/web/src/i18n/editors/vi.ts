@@ -234,7 +234,7 @@ export const editorsVi = {
   "rail.line.peakHeadway": "Giãn cách giờ cao điểm",
   "rail.line.everyOffpeak": "Mỗi, ngoài cao điểm",
   "rail.line.offpeakHeadway": "Giãn cách ngoài cao điểm",
-  "rail.line.peaks": "Giờ cao điểm là 07:00–09:00 và 16:00–19:00.",
+  "rail.line.peaks": "Giờ cao điểm là {peaks}.",
   "rail.line.delete": "Xóa tuyến",
   "rail.line.needsStops": "Cần ít nhất hai điểm dừng.",
   "rail.line.needsTrain": "Hãy chọn đoàn tàu.",

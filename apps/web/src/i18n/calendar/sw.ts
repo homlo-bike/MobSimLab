@@ -38,6 +38,18 @@ export const calendarSw = {
   "cal.total": "Jumla",
   "cal.noHolidaysYear": "Bado hakuna sikukuu za umma zilizopatikana",
   "cal.resetCount": "Rudi kwenye {value} iliyohesabiwa",
+  "cal.service": "Siku ya huduma kwa aina ya siku",
+  "cal.serviceIntro":
+    "Huduma inapoanza na kuisha katika kila aina ya siku, na kilele chake cha asubuhi na jioni, kama HH:MM. Saa baada ya usiku wa manane zinaendelea zaidi ya 24:00, kama 24:30. Acha kilele kitupu kama hakipo.",
+  "cal.serviceDefault": "Chaguo-msingi kwa kila aina ya siku: {first} hadi {last}, vilele {peaks}.",
+  "cal.firstDep": "Kuondoka kwa kwanza",
+  "cal.lastDep": "Kuondoka kwa mwisho",
+  "cal.morningPeak": "Kilele cha asubuhi",
+  "cal.eveningPeak": "Kilele cha jioni",
+  "cal.peakFrom": "kuanzia",
+  "cal.peakTo": "hadi",
+  "cal.serviceInvalid":
+    "Bado haijahifadhiwa: kuondoka kwa mwisho lazima kuwe baada ya kwa kwanza, na kila kilele lazima kiishe baada ya kuanza.",
   "cal.day.weekday": "Siku ya kazi",
   "cal.day.saturday": "Jumamosi",
   "cal.day.sunday": "Jumapili",

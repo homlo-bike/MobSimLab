@@ -48,6 +48,8 @@ export interface GtfsExportOptions {
   /** GTFS route type of plugin modes. */
   route_types: Record<string, number>;
   feed_version: string;
+  /** Public holidays in the validity, YYYYMMDD: the `holiday` service runs instead of the day's usual one. */
+  holidays?: string[];
 }
 
 export interface GtfsEngine {

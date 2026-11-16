@@ -13,6 +13,12 @@
    "url": "https://www.ecfr.gov/current/title-49/subtitle-A/part-38",
    "access": "free"
   },
+  "adb-economic-analysis-2017": {
+   "title": "Guidelines for the Economic Analysis of Projects (2017): a minimum economic internal rate of return of 9 %, 6 % for social sector projects",
+   "publisher": "Asian Development Bank",
+   "url": "https://www.adb.org/documents/guidelines-economic-analysis-projects",
+   "access": "free"
+  },
   "bathtrams-uk-costs": {
    "title": "Bath Trams: UK tram track installation costs (£20–30 million per route-km) and German extension costs per km",
    "publisher": "Bath Trams",
@@ -44,7 +50,7 @@
    "access": "paywalled"
   },
   "burnaby-gondola-noise": {
-   "title": "TransLink, Burnaby Mountain Gondola noise modelling technical report (2023)",
+   "title": "TransLink, Burnaby Mountain Gondola: 2020 Noise Modelling Summary (2023-10-31), with Hemmera's Burnaby Mountain Gondola Transit Noise Modelling memo (October 2020)",
    "publisher": "TransLink",
    "url": "https://www.translink.ca/-/media/translink/documents/plans-and-projects/rapid-transit/burnaby-mountain-gondola/business-case-engagement-2023/bmg_noise_modelling_tech_report.pdf",
    "access": "free"
@@ -175,6 +181,12 @@
    "url": "https://accessible-eu-centre.ec.europa.eu/physical-accessibility-rail-platforms_bg",
    "access": "free"
   },
+  "eu-cba-guide-2014": {
+   "title": "Guide to Cost-Benefit Analysis of Investment Projects: Economic appraisal tool for Cohesion Policy 2014–2020 (reference periods, 4 % financial and 5 %/3 % social discount rates, conversion factors, residual value)",
+   "publisher": "European Commission, DG Regional and Urban Policy",
+   "url": "https://ec.europa.eu/regional_policy/sources/studies/cba_guide.pdf",
+   "access": "free"
+  },
   "eu-dir-92-6": {
    "title": "Council Directive 92/6/EEC on the installation and use of speed limitation devices for certain categories of motor vehicles (M3 buses set to 100 km/h)",
    "publisher": "European Union",
@@ -185,6 +197,12 @@
    "title": "Council Directive 96/53/EC laying down maximum authorised dimensions and weights for road vehicles (Annex I, 1.2 width and 1.5 turning circle), as amended by Directive (EU) 2015/719",
    "publisher": "European Union",
    "url": "https://eur-lex.europa.eu/eli/dir/1996/53/oj",
+   "access": "free"
+  },
+  "eu-external-costs-2019": {
+   "title": "Handbook on the external costs of transport, version 2019 – 1.1 (CE Delft for DG MOVE): average and marginal external costs per vehicle-km by mode",
+   "publisher": "European Commission, DG Mobility and Transport",
+   "url": "https://cedelft.eu/publications/handbook-on-the-external-costs-of-transport-version-2019",
    "access": "free"
   },
   "eu-reco-2001-290": {
@@ -293,6 +311,18 @@
    "title": "Litman: Transit Price Elasticities and Cross-Elasticities (Victoria Transport Policy Institute, updated regularly)",
    "publisher": "Victoria Transport Policy Institute",
    "url": "https://www.vtpi.org/tranelas.pdf",
+   "access": "free"
+  },
+  "livorno-ship-parameters-2020": {
+   "title": "Nastasi, M.; Fredianelli, L.; Bernardini, M.; Teti, L.; Fidecaro, F.; Licitra, G. (2020). Parameters Affecting Noise Emitted by Ships Moving in Port Areas. Sustainability 12(20), 8742",
+   "publisher": "MDPI",
+   "url": "https://doi.org/10.3390/su12208742",
+   "access": "free"
+  },
+  "livorno-ship-passby-2020": {
+   "title": "Fredianelli, L.; Nastasi, M.; Bernardini, M.; Fidecaro, F.; Licitra, G. (2020). Pass-by Characterization of Noise Emitted by Different Categories of Seagoing Ships in Ports. Sustainability 12(5), 1740",
+   "publisher": "MDPI",
+   "url": "https://doi.org/10.3390/su12051740",
    "access": "free"
   },
   "martens-2004": {
@@ -437,6 +467,12 @@
    "title": "Pedestrian Observations (Alon Levy): Quick Note on Subway Operating Costs (2026), costs per car-km of Berlin, London and New York",
    "publisher": "Pedestrian Observations",
    "url": "https://pedestrianobservations.com/2026/05/22/quick-note-on-subway-operating-costs/",
+   "access": "free"
+  },
+  "placer-gondola-eir": {
+   "title": "Squaw Valley | Alpine Meadows Base-to-Base Gondola Project, Final EIS/EIR, Volume 1, Section 4.9 Noise (2019): operational noise of terminals and tower crossings, from the Far East Express measurements (Ascent Environmental 2015)",
+   "publisher": "U.S. Forest Service and Placer County (SE Group and Ascent Environmental)",
+   "url": "https://www.placer.ca.gov/",
    "access": "free"
   },
   "railfuture-step-gap": {
@@ -589,6 +625,12 @@
    "url": "https://www.uitp.org/wp-content/uploads/sites/7/2026/06/20260611_Trolleybus-Total-Cost-Ownership_Summary.pdf",
    "access": "free"
   },
+  "uk-green-book-2022": {
+   "title": "The Green Book: Central Government Guidance on Appraisal and Evaluation (2022): social time preference rate of 3.5 %",
+   "publisher": "HM Treasury",
+   "url": "https://www.gov.uk/government/publications/the-green-book-appraisal-and-evaluation-in-central-government",
+   "access": "free"
+  },
   "unece-r107": {
    "title": "UN Regulation No. 107, uniform provisions concerning the approval of category M2 or M3 vehicles (Annex 3, area per standing passenger by vehicle class)",
    "publisher": "UNECE World Forum for Harmonization of Vehicle Regulations (WP.29)",
@@ -653,6 +695,18 @@
    "title": "World Bank: High-Speed Railways in China: A Look at Construction Costs (China Transport Topics No. 9, 2014)",
    "publisher": "World Bank",
    "url": "https://www.worldbank.org/en/news/press-release/2014/07/10/cost-of-high-speed-rail-in-china-one-third-lower-than-in-other-countries",
+   "access": "free"
+  },
+  "worldbank-income-groups": {
+   "title": "World Bank country classifications by income level (high, upper-middle, lower-middle, low), read from the country list of the Indicators API",
+   "publisher": "World Bank",
+   "url": "https://datahelpdesk.worldbank.org/knowledgebase/articles/906519-world-bank-country-and-lending-groups",
+   "access": "free"
+  },
+  "worldbank-sdr-2016": {
+   "title": "Discounting Costs and Benefits in Economic Analysis of World Bank Projects (OPSPQ technical note, 9 May 2016): a social discount rate of 6 % for client countries from 3 % growth per person, range 2–10 %",
+   "publisher": "World Bank, Operations Policy and Quality",
+   "url": "https://documents1.worldbank.org/curated/en/099610503022315638/pdf/IDU02e978a2a023f704c140bb1b082595e67e593.pdf",
    "access": "free"
   },
   "worldbank-wdi": {
@@ -980,6 +1034,454 @@
       "mobsimlab-derivation"
      ],
      "rationale": "The population grid is 100 m; gathering it in 200 m cells keeps the walk request small and makes each gap a block rather than a single grid cell. Smaller cells show gaps in more detail and take longer; 100 m is the grid itself."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "appraisal.build_years": {
+   "used_by": [
+    "appraisal: timeline"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "eu-cba-guide-2014",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Urban rail and tram projects typically take three to six years of works; bus projects one to two. Construction costs are spread evenly over these years. Your choice — the Monte Carlo run keeps it fixed."
+    },
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Bus, BRT and trolleybus works (lanes, stops, wires, depots, vehicles) usually take one to three years."
+    }
+   ],
+   "modes": {
+    "*": 0,
+    "bus": 1,
+    "brt": 1,
+    "trolleybus": 1,
+    "intercity_bus": 1
+   }
+  },
+  "appraisal.period_years": {
+   "used_by": [
+    "appraisal: timeline"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "unverified",
+     "sources": [
+      "eu-cba-guide-2014"
+     ],
+     "rationale": "Cost-benefit guides commonly use about 30 years for railways and 25–30 years for urban transport (for example the European Commission's CBA Guide, 2014, counted including construction); MobSimLab counts the 30 years after opening. Your choice — kept fixed in the Monte Carlo run."
+    },
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "eu-cba-guide-2014",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Bus-based projects have shorter-lived assets (vehicles 12–15 years); 20 years covers a vehicle renewal. Mixed networks use the longest period of their modes."
+    }
+   ],
+   "modes": {
+    "*": 0,
+    "bus": 1,
+    "brt": 1,
+    "trolleybus": 1,
+    "intercity_bus": 1
+   }
+  },
+  "appraisal.discount.financial": {
+   "used_by": [
+    "appraisal: FNPV, FIRR"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "unverified",
+     "sources": [
+      "eu-cba-guide-2014"
+     ],
+     "rationale": "4 % in real terms is a common benchmark for the financial return on public infrastructure (the European Commission's CBA Guide, 2014, uses it); set the rate your funders ask for. Your choice — kept fixed in the Monte Carlo run."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "appraisal.discount.social_high": {
+   "used_by": [
+    "appraisal: ENPV, BCR"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "unverified",
+     "sources": [
+      "uk-green-book-2022",
+      "worldbank-sdr-2016",
+      "worldbank-income-groups"
+     ],
+     "rationale": "Used where the World Bank classes the project's country as high income. The UK Green Book uses 3.5 %; the World Bank's 2016 note ties the rate to growth per person, which is slower in high-income countries. Your choice — kept fixed in the Monte Carlo run."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "appraisal.discount.social_upper_middle": {
+   "used_by": [
+    "appraisal: ENPV, BCR"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "unverified",
+     "sources": [
+      "worldbank-sdr-2016",
+      "worldbank-income-groups"
+     ],
+     "rationale": "Used where the World Bank classes the project's country as upper-middle income, and where it has no class for the country. The World Bank's 2016 note gives 6 % for its client countries (3 % growth per person a year), within a range of 2–10 %. Your choice — kept fixed in the Monte Carlo run."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "appraisal.discount.social_lower": {
+   "used_by": [
+    "appraisal: ENPV, BCR"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "worldbank-sdr-2016",
+      "adb-economic-analysis-2017",
+      "worldbank-income-groups"
+     ],
+     "rationale": "Used where the World Bank classes the project's country as lower-middle or low income. Faster expected growth and scarcer capital mean a higher rate; 8 % lies between the World Bank's 6 % and the 9 % the Asian Development Bank asks of most projects, and below the 10–12 % some development banks still use. Your choice — kept fixed in the Monte Carlo run."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "appraisal.conversion_factor": {
+   "used_by": [
+    "appraisal: ENPV, BCR"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "eu-cba-guide-2014"
+     ],
+     "rationale": "Economic costs are financial costs times this factor. Cost-benefit guides allow a standard conversion factor below 1 where taxes and labour market distortions are known; without country data 1.0 (market prices) is used. Your choice — kept fixed in the Monte Carlo run."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "appraisal.life.civil": {
+   "used_by": [
+    "appraisal: renewals, residual value"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "eu-cba-guide-2014",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Civil engineering structures are designed for 50–120 years; 60 years is a cautious straight-line life. Within a 30-year appraisal they are not renewed and leave a residual value."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "appraisal.life.systems": {
+   "used_by": [
+    "appraisal: renewals, residual value"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "eu-cba-guide-2014",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Rails, overhead lines and signalling are renewed every 20–40 years (09-planning-models §3.1 — systems 15–25 years, track 25–40 years)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "appraisal.life.vehicles": {
+   "used_by": [
+    "appraisal: renewals, residual value"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "eu-cba-guide-2014",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Rail vehicles run 25–40 years (09-planning-models §3.1); the product owner approved 30 years (2026-11-16)."
+    },
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Buses run 12–15 years (09-planning-models §3.1); the product owner approved 12 years (2026-11-16)."
+    }
+   ],
+   "modes": {
+    "*": 0,
+    "bus": 1,
+    "brt": 1,
+    "trolleybus": 1,
+    "intercity_bus": 1
+   }
+  },
+  "appraisal.vot_growth": {
+   "used_by": [
+    "appraisal: user benefits"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "eu-cba-guide-2014",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "The value of time grows with real GDP per person, with an elasticity of about 0.7–1; 1 % a year matches long-run growth of 1–1.5 % a year in most countries."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "appraisal.external.climate": {
+   "used_by": [
+    "appraisal: car-km saved"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "eu-external-costs-2019",
+      "worldbank-wdi"
+     ],
+     "rationale": "About 1.5–2.5 € cents per car-km in the Handbook's European averages for climate and well-to-tank costs, about 2–4 US$ cents at 2023 PPP prices; the high value allows for higher carbon prices. These are European values, converted from 2016 euros with the euro area PPP factor and US inflation; replace them with local values where you have them, since pollution, accident and congestion costs differ a lot between countries."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "appraisal.external.air_pollution": {
+   "used_by": [
+    "appraisal: car-km saved"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "eu-external-costs-2019",
+      "worldbank-wdi"
+     ],
+     "rationale": "About 0.5–1.5 € cents per car-km for an average European car, higher in dense cities and for diesel cars. These are European values, converted from 2016 euros with the euro area PPP factor and US inflation; replace them with local values where you have them, since pollution, accident and congestion costs differ a lot between countries."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "appraisal.external.noise": {
+   "used_by": [
+    "appraisal: car-km saved"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "eu-external-costs-2019",
+      "worldbank-wdi"
+     ],
+     "rationale": "Average noise cost of a car is about 0.5–1 € cents per km; marginal urban values at night are several times higher. These are European values, converted from 2016 euros with the euro area PPP factor and US inflation; replace them with local values where you have them, since pollution, accident and congestion costs differ a lot between countries."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "appraisal.external.accidents": {
+   "used_by": [
+    "appraisal: car-km saved"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "eu-external-costs-2019",
+      "worldbank-wdi"
+     ],
+     "rationale": "External accident costs of cars are the largest average item in the Handbook, about 4–7 € cents per car- km. These are European values, converted from 2016 euros with the euro area PPP factor and US inflation; replace them with local values where you have them, since pollution, accident and congestion costs differ a lot between countries."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "appraisal.external.congestion": {
+   "used_by": [
+    "appraisal: car-km saved"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "eu-external-costs-2019",
+      "worldbank-wdi"
+     ],
+     "rationale": "Marginal congestion costs range from nothing on free-flowing roads to over 50 € cents per car-km on congested urban roads at the peak; 0.1 is an educated average for a city over the day. These are European values, converted from 2016 euros with the euro area PPP factor and US inflation; replace them with local values where you have them, since pollution, accident and congestion costs differ a lot between countries."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "appraisal.mca.weight.enpv": {
+   "used_by": [
+    "appraisal: multi-criteria analysis"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Equal weights to start; weights are the planner's or the decision makers' choice and are normalised to add up to 1."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "appraisal.mca.weight.ridership": {
+   "used_by": [
+    "appraisal: multi-criteria analysis"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Equal weights to start; weights are the planner's or the decision makers' choice and are normalised to add up to 1."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "appraisal.mca.weight.jobs": {
+   "used_by": [
+    "appraisal: multi-criteria analysis"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Equal weights to start; weights are the planner's or the decision makers' choice and are normalised to add up to 1."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "appraisal.mca.weight.education": {
+   "used_by": [
+    "appraisal: multi-criteria analysis"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Equal weights to start; weights are the planner's or the decision makers' choice and are normalised to add up to 1."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "appraisal.mca.weight.healthcare": {
+   "used_by": [
+    "appraisal: multi-criteria analysis"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Equal weights to start; weights are the planner's or the decision makers' choice and are normalised to add up to 1."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "appraisal.mca.weight.construction_cost": {
+   "used_by": [
+    "appraisal: multi-criteria analysis"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Equal weights to start; weights are the planner's or the decision makers' choice and are normalised to add up to 1."
     }
    ],
    "modes": {
@@ -11526,12 +12028,13 @@
    ],
    "entries": [
     {
-     "basis": "educated-guess",
-     "check": "unverified",
+     "basis": "documented",
+     "check": "read",
      "sources": [
+      "placer-gondola-eir",
       "burnaby-gondola-noise"
      ],
-     "rationale": "PLACEHOLDER awaiting the product owner's value (asked 2026-11-03) and the cable car research. Order of magnitude from the Burnaby Mountain Gondola study; results using it are labelled indicative."
+     "rationale": "One study, so results using it are labelled indicative. Central: the Placer County gondola EIR (2019, section 4.9) predicts 62.6 dB(A) Leq 100 ft (30.5 m) from the tower locations, which is 100 dB(A) as a point source over hard ground (Lw = Lp + 20 log10 r + 8; MobSimLab's conversion). High: the EIR took its station reference (a detachable chairlift terminal, 69.6 dB(A) Leq at 54 ft, 102 dB(A)) for tower crossings too, as a worst case. Low: 10 dB under, a MobSimLab judgement because the EIR and the Burnaby Mountain Gondola noise summary (TransLink 2023, from Hemmera 2020) both say tower crossings are quieter than terminals; neither gives a number for it. The EIR says gondola machinery is generic, so the value is for every ropeway system until a source tells them apart."
     }
    ],
    "modes": {
@@ -11545,12 +12048,12 @@
    ],
    "entries": [
     {
-     "basis": "educated-guess",
-     "check": "unverified",
+     "basis": "documented",
+     "check": "read",
      "sources": [
-      "burnaby-gondola-noise"
+      "placer-gondola-eir"
      ],
-     "rationale": "PLACEHOLDER awaiting the product owner's value (asked 2026-11-03) and the cable car research."
+     "rationale": "One study, so results using it are labelled indicative. The Placer County gondola EIR (2019, section 4.9) measured 69.6 dB(A) Leq and 73.5 dB(A) Lmax 54 ft (16.5 m) from the base terminal of a detachable chairlift (Far East Express, Ascent Environmental 2015) as the cabins enter over the guide rails and bullwheel. As a point source over hard ground (Lw = Lp + 20 log10 r + 8; MobSimLab's conversion) that is 102 dB(A) from the Leq (central) and 106 dB(A) from the Lmax (high). Low: the EIR's own prediction of 56.3 dB(A) Leq at 175 ft (53.3 m) gives 99 dB(A). The EIR says gondola machinery is generic, so the value is for every ropeway system until a source tells them apart."
     }
    ],
    "modes": {
@@ -11564,12 +12067,13 @@
    ],
    "entries": [
     {
-     "basis": "educated-guess",
-     "check": "unverified",
+     "basis": "documented",
+     "check": "read",
      "sources": [
-      "nomeports"
+      "livorno-ship-passby-2020",
+      "livorno-ship-parameters-2020"
      ],
-     "rationale": "PLACEHOLDER awaiting the product owner's value (asked 2026-11-03) and the ferry research. Order of magnitude for small and medium passenger ferries from port noise mapping practice."
+     "rationale": "One study, so results using it are labelled indicative. Pass-by measurements of large seagoing ferries (ro-pax, 4.8–9.3 kn) in the port of Livorno. The papers give a sound power per metre of line source, LW/m: 84.3 dB(A) (Fredianelli et al. 2020, Figure 8) and 83.1 dB(A) once corrected for distance and speed (Nastasi et al. 2020, Figure 6), which they say is 'not to be confused with the sound power level of the moving ship'. The engine takes a ship's own sound power, so MobSimLab converts with Lw = LW/m + 10 log10(v T), the same sound exposure from a point source at speed v as from the line over the averaging time T: at the 5 kn (2.57 m/s) the first paper assumes and its 109 ± 38 s mean ferry pass-by, v T = 280 (182–378) m, giving 108 dB(A) (105–112 with the LW/m uncertainty). These are large ferries, so the product owner chose (2026-11-16) to keep the placeholder below for the water bus, catamaran and hydrofoil until a source covers small vessels. Nastasi et al. find the level rises with speed as 20.97 log10(v / 3.9 m/s); the engine does not apply that yet."
     }
    ],
    "modes": {
@@ -11588,7 +12092,26 @@
      "sources": [
       "nomeports"
      ],
-     "rationale": "PLACEHOLDER awaiting the product owner's value (asked 2026-11-03) and the ferry research."
+     "rationale": "PLACEHOLDER: the berth source (Euronoise 2018 paper 477, port of Bilbao) has not been read yet; its site could not be reached and the paper is not in the project."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "noise.ferry_source_height_m": {
+   "used_by": [
+    "noise map (ferries",
+    "indicative)"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "nomeports"
+     ],
+     "rationale": "PLACEHOLDER until the ferry sound power sources are read: the main sources of a small or medium passenger ferry (exhaust, engine room and air conditioning vents) sit a few metres above the water. The Livorno pass-by papers name the ventilation near the funnel as the loudest source of large ferries but give no height."
     }
    ],
    "modes": {

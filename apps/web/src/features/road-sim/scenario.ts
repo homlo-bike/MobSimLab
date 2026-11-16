@@ -6,7 +6,7 @@
 import { stopName } from "../capacity/streetRun";
 import { depotInput, lineVehicle } from "../depots/model";
 import type { DepotEngine, SavedDepot } from "../depots/types";
-import { DEFAULT_SERVICE_DAY, servicePeriods } from "../journey-planner/network";
+import { projectServiceDay, servicePeriods } from "../journey-planner/network";
 import { fullTiming } from "../street-lines/modes";
 import { MODES } from "../street-lines/modes";
 import type { SavedStreetLine } from "../street-lines/saved";
@@ -190,7 +190,7 @@ export function buildScenario(input: {
           local: central("street.peak_cars_local_vph", "*", prefs),
         },
         off_peak_share: central("road.off_peak_traffic_share", "*", prefs),
-        peaks: DEFAULT_SERVICE_DAY.peaks.map(([a, b]) => [a, b] as [number, number]),
+        peaks: projectServiceDay().peaks.map(([a, b]) => [a, b] as [number, number]),
       },
       trolley_charge_kw: central("road.trolley_wire_charge_kw", "*", prefs),
     },

@@ -5,6 +5,8 @@ import { cargoBikeUr } from "./cargo-bike/ur";
 import { commentsUr } from "./comments/ur";
 import { depotsUr } from "./depots/ur";
 import { tablesUr } from "./tables/ur";
+import { fleetUr } from "./fleet/ur";
+import { timetablesUr } from "./timetables/ur";
 import { mslabUr } from "./mslab/ur";
 import { pluginCodeUr } from "./plugin-code/ur";
 import { populationUr } from "./population/ur";
@@ -353,6 +355,7 @@ export const ur: Messages = {
   "prefs.group.cost": "لاگت",
   "prefs.group.benefits": "فوائد",
   "prefs.group.fares": "کرایے",
+  "prefs.group.appraisal": "جائزہ",
   "prefs.group.noise": "شور",
   "prefs.traction.battery": "بیٹری",
   "prefs.traction.diesel": "ڈیزل",
@@ -498,6 +501,8 @@ export const ur: Messages = {
   ...cargoBikeUr,
   ...depotsUr,
   ...tablesUr,
+  ...fleetUr,
+  ...timetablesUr,
   ...commentsUr,
   ...mslabUr,
   ...pluginCodeUr,

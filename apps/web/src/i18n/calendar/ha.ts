@@ -39,6 +39,18 @@ export const calendarHa = {
   "cal.total": "Jimla",
   "cal.noHolidaysYear": "Ba a samo hutun gwamnati ba tukuna",
   "cal.resetCount": "Koma zuwa {value} da aka ƙidaya",
+  "cal.service": "Ranar sabis bisa nau'in rana",
+  "cal.serviceIntro":
+    "Lokacin da sabis ke farawa da ƙarewa a kowane nau'in rana, da cunkoson safe da na yamma, a matsayin HH:MM. Lokuta bayan tsakar dare suna ci gaba bayan 24:00, kamar 24:30. Bar cunkoso babu komai idan babu.",
+  "cal.serviceDefault": "Tsoho ga kowane nau'in rana: {first} zuwa {last}, cunkoso {peaks}.",
+  "cal.firstDep": "Tashi na farko",
+  "cal.lastDep": "Tashi na ƙarshe",
+  "cal.morningPeak": "Cunkoson safe",
+  "cal.eveningPeak": "Cunkoson yamma",
+  "cal.peakFrom": "daga",
+  "cal.peakTo": "zuwa",
+  "cal.serviceInvalid":
+    "Ba a adana ba tukuna: tashi na ƙarshe dole ya kasance bayan na farko, kuma kowane cunkoso dole ya ƙare bayan ya fara.",
   "cal.day.weekday": "Ranar aiki",
   "cal.day.saturday": "Asabar",
   "cal.day.sunday": "Lahadi",

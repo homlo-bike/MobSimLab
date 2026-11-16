@@ -5,6 +5,8 @@ import { cargoBikeZu } from "./cargo-bike/zu";
 import { commentsZu } from "./comments/zu";
 import { depotsZu } from "./depots/zu";
 import { tablesZu } from "./tables/zu";
+import { fleetZu } from "./fleet/zu";
+import { timetablesZu } from "./timetables/zu";
 import { mslabZu } from "./mslab/zu";
 import { pluginCodeZu } from "./plugin-code/zu";
 import { populationZu } from "./population/zu";
@@ -360,6 +362,7 @@ export const zu: Messages = {
   "prefs.group.cost": "Izindleko",
   "prefs.group.benefits": "Izinzuzo",
   "prefs.group.fares": "Imali yokugibela",
+  "prefs.group.appraisal": "Ukuhlola",
   "prefs.group.noise": "Umsindo",
   "prefs.traction.battery": "ibhethri",
   "prefs.traction.diesel": "udizili",
@@ -505,6 +508,8 @@ export const zu: Messages = {
   ...cargoBikeZu,
   ...depotsZu,
   ...tablesZu,
+  ...fleetZu,
+  ...timetablesZu,
   ...commentsZu,
   ...mslabZu,
   ...pluginCodeZu,

@@ -255,7 +255,7 @@ export const editorsTe = {
   "rail.line.peakHeadway": "రద్దీ సమయ విరామం",
   "rail.line.everyOffpeak": "ప్రతి, ఇతర సమయాల్లో",
   "rail.line.offpeakHeadway": "ఇతర సమయ విరామం",
-  "rail.line.peaks": "రద్దీ సమయాలు 07:00–09:00 మరియు 16:00–19:00.",
+  "rail.line.peaks": "రద్దీ సమయాలు {peaks}.",
   "rail.line.delete": "మార్గాన్ని తొలగించండి",
   "rail.line.needsStops": "కనీసం రెండు స్టాప్‌లు కావాలి.",
   "rail.line.needsTrain": "రైలును ఎంచుకోండి.",

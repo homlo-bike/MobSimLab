@@ -5,6 +5,8 @@ import { cargoBikeJa } from "./cargo-bike/ja";
 import { commentsJa } from "./comments/ja";
 import { depotsJa } from "./depots/ja";
 import { tablesJa } from "./tables/ja";
+import { fleetJa } from "./fleet/ja";
+import { timetablesJa } from "./timetables/ja";
 import { mslabJa } from "./mslab/ja";
 import { pluginCodeJa } from "./plugin-code/ja";
 import { populationJa } from "./population/ja";
@@ -348,6 +350,7 @@ export const ja: Messages = {
   "prefs.group.cost": "費用",
   "prefs.group.benefits": "便益",
   "prefs.group.fares": "運賃",
+  "prefs.group.appraisal": "評価",
   "prefs.group.noise": "騒音",
   "prefs.traction.battery": "バッテリー",
   "prefs.traction.diesel": "ディーゼル",
@@ -490,6 +493,8 @@ export const ja: Messages = {
   ...cargoBikeJa,
   ...depotsJa,
   ...tablesJa,
+  ...fleetJa,
+  ...timetablesJa,
   ...commentsJa,
   ...mslabJa,
   ...pluginCodeJa,
