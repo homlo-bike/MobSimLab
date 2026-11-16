@@ -1880,6 +1880,22 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 |---|---|---|---|---|---|---|---|
 | all | 280 | 300 | 330 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Annual ridership is usually 280–330 times average weekday ridership, as weekends and holidays carry less. |
 
+### Ridership: share of a weekday's boardings in one peak hour
+
+`benefit.ridership.peak_hour_share` · unit: share · used by: passenger loads in the simulator's system test
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.08 | 0.1 | 0.13 | documented | unverified | [tcqsm3](#src-tcqsm3), [mobsimlab-derivation](#src-mobsimlab-derivation) | Transit demand peaks in the morning and evening rush; TCQSM gives peak hour factors and hourly ridership profiles in which the busiest hour carries roughly 8–13 % of the day's riders. The simulator gives each hour of the peak windows (07–09, 16–19) this share and spreads the rest of the day evenly over the other service hours. |
+
+### Ridership: share of a peak hour's riders travelling in the busier direction
+
+`benefit.ridership.peak_direction_share` · unit: share · used by: passenger loads in the simulator's system test
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.55 | 0.6 | 0.7 | documented | unverified | [tcqsm3](#src-tcqsm3), [mobsimlab-derivation](#src-mobsimlab-derivation) | In the rush hours more people travel towards the centre in the morning and away from it in the evening; directional splits of 55–70 % are common on radial lines (TCQSM directional peaking). Off the peak both directions carry the same, and loop lines are not split. |
+
 ### Land value: uplift near a new station, homes
 
 `benefit.uplift.residential` · unit: share · used by: land value uplift

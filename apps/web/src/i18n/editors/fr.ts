@@ -1260,7 +1260,52 @@ export const editorsFr = {
     "Faites passer une période de la journée par le planificateur d’horaires et l’enclenchement. Voyez si chaque ligne ferroviaire tient sur les voies, circule à l’heure et se remet des retards, et combien de trains elle pourrait faire circuler.",
   "capacity.network": "Réseau",
   "capacity.example": "Métro d’exemple",
-  "capacity.mine": "Mon réseau ferré",
+  "capacity.mine": "Depuis des fichiers",
+  "capacity.drawn": "Dessiné dans ce projet",
+  "capacity.drawnText":
+    "Lignes {names} sur le réseau ferré dessiné dans l’outil ferroviaire, tel qu’enregistré.",
+  "capacity.drawn.noTrack": "Rien n’est encore dessiné dans l’outil ferroviaire.",
+  "capacity.drawn.noLines":
+    "Aucune ligne n’est prête pour le test. Dans l’outil ferroviaire, donnez à une ligne au moins deux arrêts et un train.",
+  "capacity.drawn.errors":
+    "Le réseau ferré dessiné contient des erreurs. Corrigez-les d’abord dans l’outil ferroviaire.",
+  "capacity.building": "Construction du réseau ferré dessiné…",
+  "capacity.drawnStreets":
+    "Lignes routières {names}, parcourues sur leur itinéraire avec les retards dus au trafic.",
+  "capacity.loads.estimating": "Estimation de la fréquentation autour des stations et arrêts…",
+  "capacity.loads.toggle": "Charge de voyageurs (estimation de fréquentation de l’onglet Tableaux)",
+  "capacity.loads.title": "Voyageurs",
+  "capacity.loads.busiest": "Point le plus chargé : {from} → {to}, {time}",
+  "capacity.loads.full": "Charge au point le plus chargé",
+  "capacity.loads.fullHint": "{riders} voyageurs par heure pour {places} places",
+  "capacity.loads.left": "Laissés à quai",
+  "capacity.loads.leftHint": "personnes sur la période qui attendent le véhicule suivant",
+  "capacity.loads.over":
+    "Les véhicules sont trop pleins : augmentez la fréquence ou utilisez des véhicules plus longs.",
+  "capacity.loads.fits": "Tout le monde trouve place.",
+  "capacity.loads.missing": "Aucune montée à {stops}.",
+  "capacity.loads.none":
+    "Aucune montée pour cette ligne. Publiez les lignes pour que l’onglet Tableaux les estime, ou saisissez-les sous Montées par station ou arrêt.",
+  "capacity.loads.editor": "Montées par station ou arrêt",
+  "capacity.loads.editorHelp":
+    "Montées un jour de semaine, toutes lignes confondues. Laissez vide pour utiliser l’estimation de l’onglet Tableaux.",
+  "capacity.loads.estimatePending": "Chargement de l’estimation…",
+  "capacity.loads.estimate": "Estimation {n}",
+  "capacity.loads.noEstimate": "Pas d’estimation",
+  "capacity.loads.method":
+    "Voyageurs : chaque heure de pointe (07–09, 16–19) porte {peak} des montées d’un jour de semaine, et le sens le plus chargé {dir} des voyageurs (paramètres de l’onglet Tableaux).",
+  "capacity.street.title": "Lignes routières",
+  "capacity.street.perHour": "{n} par heure",
+  "capacity.street.keepsTime": "Respecte l’horaire",
+  "capacity.street.onTimeHint": "en moyenne {mean} min de retard, 95 % en moins de {p95} min",
+  "capacity.street.cycle": "Tour",
+  "capacity.street.cycleHint": "dont {traffic} min dans le trafic ; {run} min en circulation",
+  "capacity.street.vehicles": "Véhicules",
+  "capacity.street.bunching": "Trains de bus",
+  "capacity.street.bunchingHint":
+    "écarts de moins de la moitié de l’intervalle ; {left} min de retard à la fin",
+  "capacity.street.method":
+    "Chaque ligne routière a tourné {runs} fois ; chaque course a eu son propre trafic, de {low} à {high} fois le retard attendu dans le trafic des grands axes (préférences du projet).",
   "capacity.exampleText":
     "Ligne M1 Westpark – Eastgate : cinq stations, un dépôt à chaque bout, toutes les 5 min aux heures de pointe et toutes les 10 min le reste du temps.",
   "capacity.topologyFile": "Topologie des voies (JSON)",

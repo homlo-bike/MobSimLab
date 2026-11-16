@@ -22,13 +22,13 @@ export interface RailBuild {
 const TILES_PER_REQUEST = 18;
 const MAX_TILES = 144;
 
-const defaultHeights: HeightsFetcher = (points) => fetchElevations(points).then((r) => r.elevationsM);
+export const defaultHeights: HeightsFetcher = (points) => fetchElevations(points).then((r) => r.elevationsM);
 
 /**
  * Purpose: add the terrain heights the last build still needs, so the next build has gradients and heights.
  * Output: whether every request succeeded. Side effects: fetches heights; adds tiles to the engine.
  */
-async function loadTerrain(engine: RailEngine, fetchHeights: HeightsFetcher): Promise<boolean> {
+export async function loadTerrain(engine: RailEngine, fetchHeights: HeightsFetcher): Promise<boolean> {
   if (!engine.missingTerrainTiles || !engine.terrainTilePoints || !engine.addTerrainTile) return true;
   const want = engine.missingTerrainTiles().slice(0, MAX_TILES);
   let ok = true;
