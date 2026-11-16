@@ -2,6 +2,8 @@
 
 Thank you for helping. MobSimLab is licensed AGPL-3.0-or-later (code) and CC BY 4.0 (vehicle catalogue, assumption library, documentation).
 
+Everyone taking part in the project is expected to follow the [Code of Conduct](CODE_OF_CONDUCT.md).
+
 ## Developer Certificate of Origin
 
 Every commit must be signed off (`git commit -s`), which adds a line such as

@@ -72,12 +72,21 @@ impl RailDesigner {
         }
     }
 
-    /// Purpose: set design values the project's preferences change (JSON object of numbers by design
-    /// value name for every mode, for example `{"street_mixed_traffic_delay_share": 0.3}`, or by
-    /// `<mode>.<name>` for one mode, for example `{"tram.min_radius_m": 25}`).
+    /// Purpose: set design values the project's preferences change (JSON object by design value
+    /// name for every mode, for example `{"street_mixed_traffic_delay_share": 0.3}`, or by
+    /// `<mode>.<name>` for one mode, for example `{"tram.min_radius_m": 25}`). Text values set the
+    /// text fields, for example `{"tram.electrification": "ocl-600v-dc"}`.
     /// Side effects: the next build uses them.
     pub fn set_values(&mut self, json: &str) -> Result<(), JsError> {
-        self.values = serde_json::from_str(json).map_err(js)?;
+        let all: BTreeMap<String, serde_json::Value> = serde_json::from_str(json).map_err(js)?;
+        self.values = all
+            .iter()
+            .filter_map(|(k, v)| v.as_f64().map(|n| (k.clone(), n)))
+            .collect();
+        self.switch_choice.texts = all
+            .into_iter()
+            .filter_map(|(k, v)| v.as_str().map(|t| (k, t.to_string())))
+            .collect();
         Ok(())
     }
 
@@ -85,7 +94,10 @@ impl RailDesigner {
     /// `{"off": [ids], "default_turnout": {"tram": id}}`).
     /// Side effects: the next build offers only the elements the project uses.
     pub fn set_switch_choice(&mut self, json: &str) -> Result<(), JsError> {
+        let texts = std::mem::take(&mut self.switch_choice.texts);
         self.switch_choice = serde_json::from_str(json).map_err(js)?;
+        // The text values come with the other design values (`set_values`).
+        self.switch_choice.texts = texts;
         Ok(())
     }
 
@@ -305,6 +317,27 @@ impl RailDesigner {
         let topo = serde_json::to_string(&rail_design::topology::topology(d)).map_err(js)?;
         let out =
             rail_plan::publish_service(&topo, &lines, service_id).map_err(|e| JsError::new(&e))?;
+        serde_json::to_string(&out).map_err(js)
+    }
+
+    /// Purpose: [`Self::publish_lines`] with the project's settings.
+    /// Inputs: JSON lines, the day type id, JSON `rail_plan::PublishOptions` (for example the longest
+    /// wait in a terminal before a train goes to stabling).
+    pub fn publish_lines_with(
+        &self,
+        lines: &str,
+        service_id: &str,
+        options: &str,
+    ) -> Result<String, JsError> {
+        let d = self
+            .design
+            .as_ref()
+            .ok_or_else(|| JsError::new("Nothing is drawn yet."))?;
+        let lines: Vec<rail_plan::ServiceLine> = serde_json::from_str(lines).map_err(js)?;
+        let opts: rail_plan::PublishOptions = serde_json::from_str(options).map_err(js)?;
+        let topo = serde_json::to_string(&rail_design::topology::topology(d)).map_err(js)?;
+        let out = rail_plan::publish_service_with(&topo, &lines, service_id, &opts)
+            .map_err(|e| JsError::new(&e))?;
         serde_json::to_string(&out).map_err(js)
     }
 

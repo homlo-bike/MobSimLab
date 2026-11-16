@@ -25,8 +25,6 @@ export const pluginsEs = {
   "plugins.perm.writeResults": "guarda sus propios resultados",
   "plugins.perm.writeScenario": "propone cambios al escenario",
   "plugins.installTitle": "Instalar un complemento",
-  "plugins.installIntro":
-    "Suba un archivo .msplugin. MobSimLab lo comprueba y muestra lo que añade antes de instalarlo. Los complementos instalados pueden añadir modos, herramientas, parámetros y fuentes; los que traen su propio código llegarán más adelante.",
   "plugins.choose": "Elegir un archivo .msplugin",
   "plugins.problems": "Este complemento no se puede instalar:",
   "plugins.install": "Instalar",

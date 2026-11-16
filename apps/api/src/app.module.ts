@@ -6,6 +6,8 @@ import { UsersService } from "./admin/users.service";
 import { AuditService } from "./audit/audit.service";
 import { AuthController } from "./auth/auth.controller";
 import { AuthService } from "./auth/auth.service";
+import { CommentsController } from "./comments/comments.controller";
+import { CommentsService } from "./comments/comments.service";
 import { OidcService } from "./auth/oidc.service";
 import { SessionService } from "./auth/session.service";
 import { ConfigModule } from "./config/config.module";
@@ -18,17 +20,22 @@ import { PopulationLayersController } from "./population/layers.controller";
 import { PopulationLayersModule } from "./population/layers.module";
 import { PopulationModule } from "./population/population.module";
 import { EconomyModule } from "./economy/economy.module";
+import { CalendarModule } from "./calendar/calendar.module";
 import { PlacesModule } from "./places/places.module";
 import { TerrainModule } from "./terrain/terrain.module";
 import { AccessGuard } from "./iam/access.guard";
 import { RateLimitService } from "./iam/rate-limit.service";
 import { PluginsController } from "./plugins/plugins.controller";
-import { PluginsService } from "./plugins/plugins.service";
+import { PluginsModule } from "./plugins/plugins.module";
 import { ProjectsController } from "./projects/projects.controller";
 import { ProjectsService } from "./projects/projects.service";
 import { SetupController } from "./setup/setup.controller";
 import { RunsController } from "./simulation/runs.controller";
+import { MslabController } from "./mslab/mslab.controller";
+import { MslabService } from "./mslab/mslab.service";
+import { MslabMapService } from "./mslab/map-data";
 import { SimulationModule } from "./simulation/simulation.module";
+import { ToolRunner } from "./tool-runner/runner";
 
 /** Root module. Every route passes the global AccessGuard. */
 @Module({})
@@ -48,9 +55,11 @@ export class AppModule {
         PopulationModule,
         PopulationLayersModule,
         EconomyModule,
+        CalendarModule,
         BenefitsModule,
         PlacesModule,
         SimulationModule,
+        PluginsModule,
         AgentsModule,
       ],
       controllers: [
@@ -59,19 +68,24 @@ export class AppModule {
         SetupController,
         AdminController,
         ProjectsController,
+        CommentsController,
         PluginsController,
         RunsController,
+        MslabController,
         PopulationLayersController,
       ],
       providers: [
         AuditService,
         AuthService,
+        CommentsService,
         OidcService,
-        PluginsService,
         ProjectsService,
         RateLimitService,
         SessionService,
         UsersService,
+        MslabService,
+        MslabMapService,
+        ToolRunner,
         { provide: APP_GUARD, useClass: AccessGuard },
       ],
     };

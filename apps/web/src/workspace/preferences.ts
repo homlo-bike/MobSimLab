@@ -1,6 +1,8 @@
 import type { DelayShares } from "../features/street-lines/types";
 import { MIXED_DELAY, PAINTED_DELAY } from "../features/street-setup/model";
 import rulesData from "./design-rules.generated.json";
+import type { ServiceCalendar, SimulationYears } from "./calendar";
+import type { ProjectClimate } from "./climate";
 import paramsData from "./parameters.generated.json";
 import libraryData from "../features/walk/defaults.generated.json";
 
@@ -21,6 +23,12 @@ export interface PreferencesDoc {
   vehiclesOff?: string[];
   /** Switches and crossings the project does not use, and its default turnout per rail mode; absent: all, library's. */
   switches?: { off?: string[]; default_turnout?: Record<string, string> };
+  /** Day types, public holidays and service days (calendar.ts); absent: the defaults. */
+  calendar?: ServiceCalendar;
+  /** Years the multi-year run simulates (calendar.ts `simulationYearsFrom`); absent: the defaults. */
+  simulationYears?: SimulationYears;
+  /** Monthly air temperatures at the project's location (climate.ts); absent: not fetched yet. */
+  climate?: ProjectClimate;
   /** Values of enum and text assumptions the project changes, by assumption id (as `values` for numbers). */
   choices?: Record<string, string>;
 }
@@ -135,6 +143,9 @@ export const DESIGN_RULES = (rulesData as unknown as { rules: DesignRule[] }).ru
 /** Every numeric design value of the rail engine and its library key, per rail mode. */
 const ENGINE_KEYS = (rulesData as unknown as { engine_keys: Record<string, Record<string, string>> })
   .engine_keys;
+/** The rail engine's text design values (electrification, colour, level crossings, signalling) and their keys. */
+const ENGINE_TEXT_KEYS = (rulesData as unknown as { engine_text_keys: Record<string, string> })
+  .engine_text_keys;
 
 /** Purpose: the preference id of a design rule's value for a mode, for example `mode.min_curve_radius_m.tram`. */
 export function rulePrefId(rule: DesignRule, mode: string): string | null {
@@ -162,6 +173,23 @@ export function designValuesFrom(doc: PreferencesDoc | null | undefined): Record
       if (id in out) continue;
       const v = pick(key, mode);
       if (v !== undefined && v >= 0) out[id] = v;
+    }
+  }
+  return out;
+}
+
+/**
+ * Purpose: the rail engine's text design values the project sets (Project preferences → All parameters), by
+ * `<field>` for every mode and `<mode>.<field>` for one mode, for example `tram.electrification`.
+ */
+export function designTextsFrom(doc: PreferencesDoc | null | undefined): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const [field, key] of Object.entries(ENGINE_TEXT_KEYS)) {
+    for (const [id, v] of Object.entries(doc?.choices ?? {})) {
+      if (typeof v !== "string" || !v.trim()) continue;
+      if (id === key) out[field] = v;
+      else if (id.startsWith(`${key}.`) && id.slice(key.length + 1) in ENGINE_KEYS)
+        out[`${id.slice(key.length + 1)}.${field}`] = v;
     }
   }
   return out;
@@ -347,4 +375,19 @@ export function withChoice(
   if (Object.keys(choices).length) next.choices = choices;
   else delete next.choices;
   return next;
+}
+
+/**
+ * Purpose: the central value a project uses for a number parameter of the library: its own value for the
+ * mode, else its own for every mode, else the library's. Example: `paramNumber("analysis.gap_cell_m", prefs)`.
+ */
+export function paramNumber(key: string, values: PreferencesDoc["values"] | undefined, mode = "*"): number {
+  for (const id of mode === "*" ? [key] : [`${key}.${mode}`, key]) {
+    const v = values?.[id];
+    if (typeof v === "number" && Number.isFinite(v) && v >= 0) return v;
+  }
+  const p = LIBRARY_PARAMS.find((x) => x.id === key);
+  const lib = p ? paramLibrary(p, mode) : undefined;
+  if (!Array.isArray(lib)) throw new Error(`no number parameter ${key} in the assumption library`);
+  return lib[1];
 }

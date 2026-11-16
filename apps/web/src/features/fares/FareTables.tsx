@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import type { Estimate as BenefitEstimate } from "../benefits/model";
 import { card, fmtMoney, modeLabel, num, td, th, Tile } from "../costs/CostTables";
 import type { PluginLineInput } from "../journey-planner/network";
@@ -35,6 +35,8 @@ interface Props {
   pluginLines: readonly PluginLineInput[];
   /** The Schematic tab's edits: station positions and the tariff zones. */
   schematic: SchematicDoc | null;
+  /** The project's preference values: how near stops must be to be one station (library's when absent). */
+  prefs?: Record<string, number>;
   /** The planner's own weekday boardings by station or stop name (benefit tables). */
   boardings: Record<string, number> | undefined;
   /**
@@ -45,6 +47,8 @@ interface Props {
   doc: FaresDoc | null;
   onDoc?: (doc: FaresDoc) => void;
   draws?: number;
+  /** Called with the model's input whenever it changes (null until it can price the lines), for the appraisal. */
+  onInput?: (input: FareInput | null) => void;
 }
 
 const compact = (v: number) =>
@@ -73,19 +77,21 @@ export function FareTables({
   streetLines,
   pluginLines,
   schematic,
+  prefs,
   boardings,
   prices,
   doc,
   onDoc,
   draws,
+  onInput,
 }: Props) {
   const structure: FareStructure = doc?.structure ?? "flat";
   const own = doc?.values;
   const sd = schematic ?? EMPTY_SCHEMATIC;
   const pluginJson = JSON.stringify(pluginLines);
   const net = useMemo(
-    () => schematicNetwork(railway, streetLines, JSON.parse(pluginJson) as PluginLineInput[]),
-    [railway, streetLines, pluginJson],
+    () => schematicNetwork(railway, streetLines, JSON.parse(pluginJson) as PluginLineInput[], prefs),
+    [railway, streetLines, pluginJson, prefs],
   );
   const [ox, oy] = sd.origin ?? defaultOrigin(net);
   const straighten = sd.straighten !== false;
@@ -111,6 +117,9 @@ export function FareTables({
       }));
     return { structure, own, perIntl: prices.perIntl, lines, trips };
   }, [benefits, prices, structure, own, trips]);
+  useEffect(() => {
+    onInput?.(input && input.lines.length ? input : null);
+  }, [input, onInput]);
   const est: FareEstimate | null = useMemo(
     () => (input && input.lines.length ? fareEstimate(input, YEARS, draws) : null),
     [input, draws],

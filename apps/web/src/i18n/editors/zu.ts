@@ -256,7 +256,7 @@ export const editorsZu = {
   "rail.line.peakHeadway": "Isikhawu sesikhathi esiphezulu",
   "rail.line.everyOffpeak": "Njalo, ngaphandle kwesikhathi esiphezulu",
   "rail.line.offpeakHeadway": "Isikhawu ngaphandle kwesikhathi esiphezulu",
-  "rail.line.peaks": "Izikhathi eziphezulu 07:00–09:00 no-16:00–19:00.",
+  "rail.line.peaks": "Izikhathi eziphezulu {peaks}.",
   "rail.line.delete": "Susa umugqa",
   "rail.line.needsStops": "Idinga okungenani iziteshi ezimbili.",
   "rail.line.needsTrain": "Khetha isitimela.",
@@ -765,7 +765,7 @@ export const editorsZu = {
   "noise.dbOrMore": "{db} dB noma ngaphezulu",
   "noise.dbRange": "{from}–{to} dB",
   "noise.mapNote":
-    "Isevisi ehleliwe kuphela, ngaphandle kwethrafikhi evamile. Izakhiwo zivikela ngaphezu kophahla lwazo nasemaceleni emikhawulo yazo (ISO 9613-2) futhi izindonga zazo zangaphambili zibuyisela umsindo kanye (izinga lokuqala). Izakhiwo ezingenakho ukuphakama ku-OpenStreetMap zithatha u-3 m esitezi ngasinye esibhaliwe, noma u-8 m (izinkolelo ze-plugin yomsindo). Izinga lesakhiwo alifaki ukubuya komsindo odongeni lwaso lwangaphambili. Izakhiwo © abanikeli be-OpenStreetMap.",
+    "Imizila yesevisi kuphela, ngaphandle kwethrafikhi evamile. Izakhiwo zivikela ngaphezu kophahla lwazo nasemaceleni emikhawulo yazo (ISO 9613-2) futhi izindonga zazo zangaphambili zibuyisela umsindo kanye (izinga lokuqala). Izakhiwo ezingenakho ukuphakama ku-OpenStreetMap zithatha u-3 m esitezi ngasinye esibhaliwe, noma u-8 m (izinkolelo ze-plugin yomsindo). Izinga lesakhiwo alifaki ukubuya komsindo odongeni lwaso lwangaphambili. Izakhiwo © abanikeli be-OpenStreetMap.",
   "noise.terrain": "Sebenzisa ukuphakama komhlaba (Copernicus GLO-30)",
   "noise.terrainTooLarge":
     "Imigqa imboza indawo enkulu kakhulu ukuthi kulayishwe umhlaba, ngakho le mephu ibalwe emhlabeni oyisicaba.",
@@ -797,6 +797,49 @@ export const editorsZu = {
   "noise.flat": "Umhlaba oyisicaba.",
   "noise.popCredit":
     "Inani labantu: WorldPop, University of Southampton (doi:10.5258/SOTON/WP00839), CC BY 4.0.",
+  "noise.scenario": "Isimo",
+  "noise.currentDesign": "Umklamo wamanje",
+  "noise.compareTo": "Qhathanisa no",
+  "noise.noComparison": "Akukho kuqhathanisa",
+  "noise.inputLevel": "Izimoto nesivinini kusuka ku",
+  "noise.level.planned": "Okuhleliwe: izikhathi eziphakathi nokugeleza kwesibonelo",
+  "noise.level.timetabled": "Ngohlelo lwesikhathi: uhambo losuku",
+  "noise.level.simulated": "Okulingisiwe: ukulingisa komgwaqo okulondoloziwe",
+  "noise.simulatedIntro":
+    "Imizila yasemigwaqweni ithatha amabhasi ukulingisa komgwaqo okuwabalile engxenyeni ngayinye nesivinini sawo lapho. Amahora ukulingisa okungawamboze ngokuphelele, nojantshi, kugcina uhlelo lwakho lwesikhathi.",
+  "noise.noRuns":
+    "Akukabi khona ukulingisa komgwaqo okuqediwe: qala ngokuqhuba imizila yasemigwaqweni ekulingiseni komgwaqo.",
+  "noise.chooseRun": "Khetha ukulingisa komgwaqo",
+  "noise.run": "Ukulingisa komgwaqo",
+  "noise.runFor": "Ukulingisa komgwaqo kwe-{name}",
+  "noise.runLabel": "{when}, {from}–{to}",
+  "noise.runHours":
+    "Amabhasi avela ekulingiseni komgwaqo kwe-{run} ka-{hours}; uhlelo lwesikhathi lwamanye amahora.",
+  "noise.runNoHours":
+    "Ukulingisa komgwaqo kwe-{run} akumbozi ihora eliphelele, ngakho imizila yasemigwaqweni igcina uhlelo lwayo lwesikhathi.",
+  "noise.runNoTimetable":
+    "Awukho umzila wasemgwaqweni onenombolo efanayo ka-{lines}: ngaphandle kwamahora okulingisa le mizila ayinawo amabhasi.",
+  "noise.railTimetabled":
+    "Ojantshi bagcina uhlelo lwabo lwesikhathi: ukulingisa kwamandla kajantshi akugcini izindawo zezitimela.",
+  "noise.noRailService": "Ujantshi awunawo umzila oshicilelwe, ngakho awunazo izitimela kule mephu.",
+  "noise.railNotPublished":
+    "Imizila kajantshi ayikwazanga ukushicilelwa ({error}), ngakho awunazo izitimela kule mephu.",
+  "noise.computingOf": "Kubalwa imephu yomsindo ye-{name}…",
+  "noise.noDifference":
+    "Amamephu womabili awakwazanga ukuqhathaniswa iseli ngeseli, ngakho imephu yomehluko ayiboniswa.",
+  "noise.inputUsed": "{name} · {level}",
+  "noise.comparing": "{name} uma iqhathaniswa ne-{other} · {level}",
+  "noise.differenceNote":
+    "Ushintsho ku-dB lapho esinye sezimo sifinyelela ibhendi ephansi kakhulu; izinguquko ezingaphansi kuka-1 dB aziboniswa. Zombili zisebenzisa izakhiwo, umhlaba nezakhamuzi ezifanayo, ngakho ithrafikhi evamile ingazicisha.",
+  "noise.changeBelow": "ngaphansi kuka-{db}",
+  "noise.changeAbove": "{db} noma ngaphezulu",
+  "noise.changeRange": "kusuka ku-{from} kuya ku-{to}",
+  "noise.comparisonTable": "Ushintsho ngebhendi yomsindo",
+  "noise.comparisonCaptionPeople": "Izakhamuzi ngezinga eceleni kohlangothi lwesakhiwo sazo oluvezwe kakhulu",
+  "noise.comparisonCaptionBuildings": "Izakhiwo ngezinga eceleni kohlangothi lwazo oluvezwe kakhulu",
+  "noise.change": "Ushintsho",
+  "noise.exportContours": "Thumela ama-contour (GeoJSON)",
+  "noise.exportTable": "Thumela ithebula (CSV)",
   "jp.title": "Umhleli wohambo",
   "jp.s": "{n} imizuzwana",
   "jp.min": "{n} imiz",

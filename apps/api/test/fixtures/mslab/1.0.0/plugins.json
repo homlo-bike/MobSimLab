@@ -1,0 +1,3 @@
+{
+ "plugins": [{ "id": "org.mobsimlab.gtfs", "enabled": true, "version": null }]
+}

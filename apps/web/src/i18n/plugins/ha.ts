@@ -24,8 +24,6 @@ export const pluginsHa = {
   "plugins.perm.writeResults": "yana ajiye sakamakonsa",
   "plugins.perm.writeScenario": "yana ba da shawarar sauye-sauye ga yanayi",
   "plugins.installTitle": "Saka ƙarin manhaja",
-  "plugins.installIntro":
-    "Ɗora fayil ɗin .msplugin. MobSimLab zai bincika shi ya nuna abin da yake ƙarawa kafin a saka. Ƙarin manhajojin da aka saka na iya ƙara hanyoyi, kayan aiki, sigogi da tushe; waɗanda ke da nasu lambar za su zo daga baya.",
   "plugins.choose": "Zaɓi fayil ɗin .msplugin",
   "plugins.problems": "Ba za a iya saka wannan ƙarin manhaja ba:",
   "plugins.install": "Saka",

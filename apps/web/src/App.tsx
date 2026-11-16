@@ -11,6 +11,8 @@ import { setLogSession } from "./logging/logger";
 import { projectsApi } from "./projects/api";
 import { ProjectsHome } from "./projects/ProjectsHome";
 import { fetchMe, type Me, type Preferences, savePreferences } from "./session/api";
+import { STATIC_VIEWER } from "./static/mode";
+import { StaticHome } from "./static/StaticHome";
 import { AboutDialog } from "./shell/AboutDialog";
 import { lazyNamed, LoadingScreen } from "./shell/lazy";
 import { useRoute } from "./shell/route";
@@ -170,7 +172,8 @@ function Shell({
       </>
     );
 
-  const account = (
+  // The static viewer has no accounts: nobody signs in or out.
+  const account = STATIC_VIEWER ? null : (
     <UserMenu
       me={me}
       onSettings={(section) => setOverlay({ kind: "settings", section })}
@@ -224,11 +227,23 @@ function Shell({
             onHome={home}
             onAbout={about}
             existingRailways={Boolean(prefs.existingRailways)}
+            userId={user?.id ?? null}
           />
         </LoadingScreen>
         {setup}
         {overlays}
       </>
+    );
+
+  if (STATIC_VIEWER)
+    return (
+      <div className="flex h-full flex-col">
+        <TopBar brand={brand} onHome={home} onAbout={about} account={null} />
+        <div className="min-h-0 flex-1">
+          <StaticHome onOpen={(id) => go({ page: "project", id, tab: "simulator", fresh: false })} />
+        </div>
+        {overlays}
+      </div>
     );
 
   const canCreate = ["owner", "admin", "user"].includes(user.role);

@@ -24,8 +24,6 @@ export const pluginsUr = {
   "plugins.perm.writeResults": "اپنے نتائج محفوظ کرتا ہے",
   "plugins.perm.writeScenario": "منظرنامے میں تبدیلیاں تجویز کرتا ہے",
   "plugins.installTitle": "پلگ اِن انسٹال کریں",
-  "plugins.installIntro":
-    "‎.msplugin فائل اپ لوڈ کریں۔ MobSimLab اسے جانچتا ہے اور انسٹال سے پہلے دکھاتا ہے کہ یہ کیا شامل کرتا ہے۔ انسٹال شدہ پلگ اِنز طریقے، اوزار، پیرامیٹر اور ماخذ شامل کر سکتے ہیں؛ اپنے کوڈ والے پلگ اِنز بعد میں آئیں گے۔",
   "plugins.choose": "‎.msplugin فائل چنیں",
   "plugins.problems": "یہ پلگ اِن انسٹال نہیں ہو سکتا:",
   "plugins.install": "انسٹال کریں",

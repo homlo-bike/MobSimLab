@@ -25,8 +25,6 @@ export const pluginsSw = {
   "plugins.perm.writeResults": "huhifadhi matokeo yake",
   "plugins.perm.writeScenario": "hupendekeza mabadiliko ya hali",
   "plugins.installTitle": "Sakinisha programu-jalizi",
-  "plugins.installIntro":
-    "Pakia faili ya .msplugin. MobSimLab huikagua na kuonyesha inachoongeza kabla ya kusakinisha. Programu-jalizi zilizosakinishwa zinaweza kuongeza njia, zana, vigezo na vyanzo; zile zenye msimbo wao zitakuja baadaye.",
   "plugins.choose": "Chagua faili ya .msplugin",
   "plugins.problems": "Programu-jalizi hii haiwezi kusakinishwa:",
   "plugins.install": "Sakinisha",

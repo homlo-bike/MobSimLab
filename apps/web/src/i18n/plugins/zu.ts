@@ -25,8 +25,6 @@ export const pluginsZu = {
   "plugins.perm.writeResults": "igcina imiphumela yayo",
   "plugins.perm.writeScenario": "iphakamisa izinguquko esimweni",
   "plugins.installTitle": "Faka i-plugin",
-  "plugins.installIntro":
-    "Layisha ifayela le-.msplugin. I-MobSimLab iyalihlola futhi ikhombise ukuthi lengezani ngaphambi kokulifaka. Ama-plugin afakiwe angengeza izindlela, amathuluzi, amapharamitha nemithombo; lawo anekhodi yawo azofika kamuva.",
   "plugins.choose": "Khetha ifayela le-.msplugin",
   "plugins.problems": "Le plugin ayikwazi ukufakwa:",
   "plugins.install": "Faka",

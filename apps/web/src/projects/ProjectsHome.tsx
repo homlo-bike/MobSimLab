@@ -5,18 +5,18 @@ import { EyeIcon, MoreIcon, PlusIcon, SearchIcon } from "../shell/icons";
 import { anchorOf, Popover } from "../shell/Popover";
 import { initials } from "../shell/UserMenu";
 import { can, type Project, type ProjectsApi, type Shelf, shelfOf } from "./api";
-import { DeleteDialog, NewProjectDialog, RenameDialog, ShareDialog } from "./ProjectDialogs";
+import { DeleteDialog, NewProjectDialog, RenameDialog, SaveMslabDialog, ShareDialog } from "./ProjectDialogs";
 
 type Filter = "all" | Shelf | "archived";
 type Dialogs =
   | { kind: "new" }
-  | { kind: "rename" | "delete"; project: Project }
+  | { kind: "rename" | "delete" | "mslab"; project: Project }
   | { kind: "share"; project: Project; focus: "invite" | "access" };
 
 const LINE_COLOURS = ["#1d4ed8", "#c81e1e", "#c2410c", "#0f766e", "#7c3aed", "#475569"];
 
 /** Purpose: a small deterministic "network" drawing per project, so cards are easy to tell apart. */
-function Thumb({ id, className }: { id: string; className: string }) {
+export function Thumb({ id, className }: { id: string; className: string }) {
   let h = 0;
   for (const c of id) h = (h * 31 + c.charCodeAt(0)) >>> 0;
   const pick = (n: number) => ((h >>> n) & 0xff) / 255;
@@ -35,7 +35,7 @@ function Thumb({ id, className }: { id: string; className: string }) {
 }
 
 /** Purpose: "Edited 12 min ago" style text in the current language. */
-function edited(iso: string, language: string, t: Translate): string {
+export function edited(iso: string, language: string, t: Translate): string {
   const s = (Date.now() - new Date(iso).getTime()) / 1000;
   const rtf = new Intl.RelativeTimeFormat(language, { numeric: "auto" });
   const ago =
@@ -55,7 +55,7 @@ const isPhone = () =>
 /**
  * The projects home (mockups "Projects home", desktop, tablet and phone): own projects, projects shared with the
  * person that they can edit, view-only projects, and archived ones; a New project card; and on each project a
- * menu with Open, Rename, Share, Manage access, Duplicate, Archive and Delete, by right-click, the ⋯ button, the
+ * menu with Open, Rename, Share, Manage access, Duplicate, Save as .mslab file, Archive and Delete, by right-click, the ⋯ button, the
  * keyboard context-menu key, or a long press on touch screens.
  */
 export function ProjectsHome({
@@ -70,7 +70,8 @@ export function ProjectsHome({
   onOpen: (p: Project, fresh?: boolean) => void;
 }) {
   const { t, language } = useI18n();
-  const [projects, setProjects] = useState<Project[] | null>(null);
+  const [mine, setProjects] = useState<Project[] | null>(null);
+  const [publicProjects, setPublic] = useState<Project[]>([]);
   const [archived, setArchived] = useState<Project[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<Filter>("all");
@@ -82,15 +83,43 @@ export function ProjectsHome({
   } | null>(null);
   const [dialog, setDialog] = useState<Dialogs | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  const [opening, setOpening] = useState(false);
+  const fileInput = useRef<HTMLInputElement>(null);
+
+  /** Open a `.mslab` file as a new project (ADR-0021) and say what, if anything, was left out. */
+  const openFile = (file: File) =>
+    void act(async () => {
+      setOpening(true);
+      try {
+        const { project, skipped } = await api.importMslab(file);
+        setProjects((ps) => [project, ...(ps ?? [])]);
+        setNotice(
+          [
+            t("home.openedMslab", { name: project.name }),
+            skipped.length ? t("home.leftOut", { list: skipped.join("; ") }) : "",
+          ]
+            .filter(Boolean)
+            .join(" "),
+        );
+      } finally {
+        setOpening(false);
+      }
+    });
 
   const reload = useCallback(() => {
     api.list(false).then(setProjects, (e: unknown) => setError(String(e)));
     api.list(true).then(setArchived, () => setArchived([]));
+    api.listPublic().then(
+      (ps) => setPublic(ps ?? []),
+      () => setPublic([]),
+    );
   }, [api]);
   useEffect(reload, [reload]);
+  // Public projects the person is not a member of sit on their own shelf, read-only.
+  const projects = useMemo(() => (mine ? [...mine, ...publicProjects] : null), [mine, publicProjects]);
 
   const counts = useMemo(() => {
-    const c = { mine: 0, shared: 0, viewOnly: 0 };
+    const c = { mine: 0, shared: 0, viewOnly: 0, public: 0 };
     for (const p of projects ?? []) c[shelfOf(p)]++;
     return c;
   }, [projects]);
@@ -106,6 +135,7 @@ export function ProjectsHome({
             ["mine", "home.mine"],
             ["shared", "home.sharedEdit"],
             ["viewOnly", "home.viewOnly"],
+            ["public", "home.public"],
           ] as const
         )
           .filter(([s]) => filter === "all" || filter === s)
@@ -167,6 +197,7 @@ export function ProjectsHome({
     { id: "mine", label: `${t("home.mine")} · ${counts.mine}` },
     { id: "shared", label: `${t("home.shared")} · ${counts.shared}` },
     { id: "viewOnly", label: `${t("home.viewOnly")} · ${counts.viewOnly}` },
+    { id: "public", label: `${t("home.public")} · ${counts.public}` },
     { id: "archived", label: t("home.archived") },
   ];
 
@@ -187,8 +218,9 @@ export function ProjectsHome({
       item("menu.open", () => onOpen(p)),
       can.edit(p) && item("menu.rename", () => setDialog({ kind: "rename", project: p })),
       can.manage(p) && item("menu.share", () => setDialog({ kind: "share", project: p, focus: "invite" })),
-      item("menu.access", () => setDialog({ kind: "share", project: p, focus: "access" })),
+      !p.viaPublic && item("menu.access", () => setDialog({ kind: "share", project: p, focus: "access" })),
       canCreate &&
+        !p.viaPublic &&
         item(
           "menu.duplicate",
           () =>
@@ -198,6 +230,7 @@ export function ProjectsHome({
               setNotice(t("home.duplicated", { name: copy.name }));
             }),
         ),
+      !p.viaPublic && item("menu.saveMslab", () => setDialog({ kind: "mslab", project: p })),
       can.manage(p) && <hr key="hr" className="my-1.5 border-slate-200" />,
       can.manage(p) &&
         (p.archivedAt
@@ -247,7 +280,7 @@ export function ProjectsHome({
           <span className="block min-w-0 md:px-3 md:pt-2.5 md:pb-3 md:pe-12">
             <span className="block truncate font-semibold">{p.name}</span>
             <span id={`meta-${p.id}`} className="flex items-center gap-1 truncate text-xs text-slate-500">
-              {shelfOf(p) === "viewOnly" && <EyeIcon size={14} />}
+              {(shelfOf(p) === "viewOnly" || shelfOf(p) === "public") && <EyeIcon size={14} />}
               {meta}
               {p.memberCount > 1 &&
                 shelfOf(p) === "mine" &&
@@ -286,6 +319,31 @@ export function ProjectsHome({
               onChange={(e) => setQ(e.target.value)}
             />
           </label>
+          {canCreate && (
+            <>
+              <input
+                ref={fileInput}
+                type="file"
+                accept=".mslab"
+                className="hidden"
+                aria-hidden="true"
+                tabIndex={-1}
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  e.target.value = "";
+                  if (file) openFile(file);
+                }}
+              />
+              <button
+                type="button"
+                className="btn"
+                disabled={opening}
+                onClick={() => fileInput.current?.click()}
+              >
+                {opening ? t("home.openingMslab") : t("home.openMslab")}
+              </button>
+            </>
+          )}
           {canCreate && (
             <button
               type="button"
@@ -463,6 +521,9 @@ export function ProjectsHome({
             reload();
           }}
         />
+      )}
+      {dialog?.kind === "mslab" && (
+        <SaveMslabDialog api={api} project={dialog.project} onClose={() => setDialog(null)} />
       )}
       {dialog?.kind === "delete" && (
         <DeleteDialog

@@ -25,8 +25,6 @@ export const pluginsHi = {
   "plugins.perm.writeResults": "अपने परिणाम सहेजता है",
   "plugins.perm.writeScenario": "परिदृश्य में बदलाव सुझाता है",
   "plugins.installTitle": "प्लगइन इंस्टॉल करें",
-  "plugins.installIntro":
-    ".msplugin फ़ाइल अपलोड करें। MobSimLab उसे जाँचता है और इंस्टॉल से पहले दिखाता है कि वह क्या जोड़ता है। इंस्टॉल किए गए प्लगइन साधन, टूल, पैरामीटर और स्रोत जोड़ सकते हैं; अपने कोड वाले प्लगइन बाद में आएँगे।",
   "plugins.choose": ".msplugin फ़ाइल चुनें",
   "plugins.problems": "यह प्लगइन इंस्टॉल नहीं हो सकता:",
   "plugins.install": "इंस्टॉल करें",

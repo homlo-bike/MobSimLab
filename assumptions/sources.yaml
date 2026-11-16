@@ -1017,3 +1017,192 @@
   access: free
   retrieved: 2026-11-16
   checked_via: none
+
+- id: nchrp-716
+  title: "NCHRP Report 716: Travel Demand Forecasting: Parameters and Techniques (2012): trip rates, friction factors, mode choice coefficients, time-of-day factors"
+  publisher: Transportation Research Board
+  url: https://nap.nationalacademies.org/catalog/14665/travel-demand-forecasting-parameters-and-techniques
+  licence: © National Academy of Sciences; numbers cited as facts
+  access: free
+  retrieved: 2026-11-16
+  checked_via: none
+
+- id: mid-2017
+  title: "Mobilität in Deutschland 2017 (MiD): results report, trips per person and day, purposes, times of day"
+  publisher: Bundesministerium für Verkehr und digitale Infrastruktur (infas, DLR)
+  url: https://www.mobilitaet-in-deutschland.de/archive/publikationen2017.html
+  licence: © BMVI; numbers cited as facts
+  access: free
+  retrieved: 2026-11-16
+  checked_via: none
+
+- id: nhts-2017
+  title: "2017 National Household Travel Survey (US): summary of travel trends, trips per person, purposes, vehicle occupancy"
+  publisher: US Federal Highway Administration
+  url: https://nhts.ornl.gov/
+  licence: US government work, public domain
+  access: free
+  retrieved: 2026-11-16
+  checked_via: none
+
+- id: nts-2019
+  title: "National Travel Survey: England 2019, trips per person per year by purpose"
+  publisher: UK Department for Transport
+  url: https://www.gov.uk/government/statistics/national-travel-survey-2019
+  licence: Open Government Licence v3.0
+  access: free
+  retrieved: 2026-11-16
+  checked_via: none
+
+- id: ite-trip-generation
+  title: "ITE Trip Generation Manual, 11th edition: hospital and medical office trip rates"
+  publisher: Institute of Transportation Engineers
+  url: https://www.ite.org/technical-resources/topics/trip-and-parking-generation/
+  licence: © ITE; numbers cited as facts
+  access: paywalled
+  retrieved: 2026-11-16
+  checked_via: none
+
+- id: ortuzar-willumsen-2011
+  title: "Ortúzar, J. de D. and Willumsen, L. G.: Modelling Transport, 4th edition (Wiley, 2011): intrazonal costs, gravity models, nested logit"
+  publisher: Wiley
+  url: https://doi.org/10.1002/9781119993308
+  licence: © Wiley; numbers cited as facts
+  access: paywalled
+  retrieved: 2026-11-16
+  checked_via: none
+
+- id: wardman-2004
+  title: "Wardman, M.: Public transport values of time, Transport Policy 11(4), 363–377 (2004): walk, wait and interchange weights"
+  publisher: Elsevier
+  url: https://doi.org/10.1016/j.tranpol.2004.05.001
+  licence: © Elsevier; numbers cited as facts
+  access: paywalled
+  retrieved: 2026-11-16
+  checked_via: none
+
+- id: tag-m2
+  title: "TAG unit M2.1: Variable Demand Modelling, illustrative nest scale parameters"
+  publisher: UK Department for Transport
+  url: https://www.gov.uk/government/publications/tag-unit-m2-1-variable-demand-modelling
+  licence: Open Government Licence v3.0
+  access: free
+  retrieved: 2026-11-16
+  checked_via: none
+
+- id: tag-m3-1
+  title: "TAG unit M3.1: Highway Assignment Modelling, convergence criteria (relative gap)"
+  publisher: UK Department for Transport
+  url: https://www.gov.uk/government/publications/tag-unit-m3-1-highway-assignment-modelling
+  licence: Open Government Licence v3.0
+  access: free
+  retrieved: 2026-11-16
+  checked_via: none
+
+- id: usdot-vot-2016
+  title: "US DOT: Revised Departmental Guidance on Valuation of Travel Time in Economic Analysis (2016)"
+  publisher: US Department of Transportation
+  url: https://www.transportation.gov/office-policy/transportation-policy/revised-departmental-guidance-valuation-travel-time-economic
+  licence: US government work, public domain
+  access: free
+  retrieved: 2026-11-16
+  checked_via: none
+
+- id: bpr-1964
+  title: "Bureau of Public Roads: Traffic Assignment Manual (1964), volume-delay function"
+  publisher: US Department of Commerce, Bureau of Public Roads
+  url: https://catalog.hathitrust.org/Record/001314064
+  licence: US government work, public domain
+  access: free
+  retrieved: 2026-11-16
+  checked_via: none
+
+- id: broach-2012
+  title: "Broach, J., Dill, J., Gliebe, J.: Where do cyclists ride? A route choice model developed with revealed preference GPS data, Transportation Research Part A 46(10), 1730–1740 (2012)"
+  publisher: Elsevier
+  url: https://doi.org/10.1016/j.tra.2012.07.005
+  licence: © Elsevier; numbers cited as facts
+  access: paywalled
+  retrieved: 2026-11-16
+  checked_via: none
+
+- id: martens-2004
+  title: "Martens, K.: The bicycle as a feedering mode: experiences from three European countries, Transportation Research Part D 9(4), 281–294 (2004)"
+  publisher: Elsevier
+  url: https://doi.org/10.1016/j.trd.2004.02.005
+  licence: © Elsevier; numbers cited as facts
+  access: paywalled
+  retrieved: 2026-11-16
+  checked_via: none
+
+- id: fishman-2016
+  title: "Fishman, E.: Bikeshare: A Review of Recent Literature, Transport Reviews 36(1), 92–113 (2016)"
+  publisher: Taylor & Francis
+  url: https://doi.org/10.1080/01441647.2015.1033036
+  licence: © Taylor & Francis; numbers cited as facts
+  access: paywalled
+  retrieved: 2026-11-16
+  checked_via: none
+
+- id: who-2011-disability
+  title: "World Health Organization and World Bank: World report on disability (2011)"
+  publisher: World Health Organization
+  url: https://www.who.int/publications/i/item/9789241564182
+  licence: CC BY-NC-SA 3.0 IGO
+  access: free
+  retrieved: 2026-11-16
+  checked_via: none
+
+- id: eu-cba-guide-2014
+  title: "Guide to Cost-Benefit Analysis of Investment Projects: Economic appraisal tool for Cohesion Policy 2014–2020 (reference periods, 4 % financial and 5 %/3 % social discount rates, conversion factors, residual value)"
+  publisher: European Commission, DG Regional and Urban Policy
+  url: https://ec.europa.eu/regional_policy/sources/studies/cba_guide.pdf
+  licence: "© European Union, reuse authorised with acknowledgement (Commission Decision 2011/833/EU)"
+  access: free
+  retrieved: 2026-11-16
+  checked_via: none
+
+- id: eu-external-costs-2019
+  title: "Handbook on the external costs of transport, version 2019 – 1.1 (CE Delft for DG MOVE): average and marginal external costs per vehicle-km by mode"
+  publisher: European Commission, DG Mobility and Transport
+  url: https://cedelft.eu/publications/handbook-on-the-external-costs-of-transport-version-2019
+  licence: "© European Union, reuse authorised with acknowledgement (Commission Decision 2011/833/EU)"
+  access: free
+  retrieved: 2026-11-16
+  checked_via: search-snippet
+
+- id: worldbank-sdr-2016
+  title: "Discounting Costs and Benefits in Economic Analysis of World Bank Projects (OPSPQ technical note, 9 May 2016): a social discount rate of 6 % for client countries from 3 % growth per person, range 2–10 %"
+  publisher: World Bank, Operations Policy and Quality
+  url: https://documents1.worldbank.org/curated/en/099610503022315638/pdf/IDU02e978a2a023f704c140bb1b082595e67e593.pdf
+  licence: "© World Bank; not World Bank policy"
+  access: free
+  retrieved: 2026-11-16
+  checked_via: search-snippet
+
+- id: adb-economic-analysis-2017
+  title: "Guidelines for the Economic Analysis of Projects (2017): a minimum economic internal rate of return of 9 %, 6 % for social sector projects"
+  publisher: Asian Development Bank
+  url: https://www.adb.org/documents/guidelines-economic-analysis-projects
+  licence: "© Asian Development Bank, CC BY 3.0 IGO"
+  access: free
+  retrieved: 2026-11-16
+  checked_via: search-snippet
+
+- id: uk-green-book-2022
+  title: "The Green Book: Central Government Guidance on Appraisal and Evaluation (2022): social time preference rate of 3.5 %"
+  publisher: HM Treasury
+  url: https://www.gov.uk/government/publications/the-green-book-appraisal-and-evaluation-in-central-government
+  licence: Open Government Licence v3.0
+  access: free
+  retrieved: 2026-11-16
+  checked_via: none
+
+- id: worldbank-income-groups
+  title: "World Bank country classifications by income level (high, upper-middle, lower-middle, low), read from the country list of the Indicators API"
+  publisher: World Bank
+  url: https://datahelpdesk.worldbank.org/knowledgebase/articles/906519-world-bank-country-and-lending-groups
+  licence: CC BY 4.0
+  access: free
+  retrieved: 2026-11-16
+  checked_via: none

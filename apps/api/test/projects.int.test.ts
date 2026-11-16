@@ -163,15 +163,55 @@ describe("projects", () => {
     );
   });
 
-  it("opens through the view-only link for anyone signed in", async () => {
+  it("lets anyone signed in find and open a public project, read-only", async () => {
     expect((await as("carol").get(`/api/projects/${lakeside}`)).status).toBe(404);
+    expect((await as("carol").get("/api/projects?public=true")).body.projects).toEqual([]);
+    // Only the owner chooses, and making it public needs the licence notice confirmed.
     expect(
-      (await as("alice").put(`/api/projects/${lakeside}/link`, { linkAccess: true })).body.project.linkAccess,
-    ).toBe(true);
-    const viaLink = await as("carol").get(`/api/projects/${lakeside}`);
-    expect(viaLink.body.project).toMatchObject({ myRole: "viewer", viaLink: true });
-    // The link does not put the project on Carol's home.
+      (await as("bob").put(`/api/projects/${lakeside}/visibility`, { visibility: "public" })).status,
+    ).toBe(403);
+    expect(
+      (await as("alice").put(`/api/projects/${lakeside}/visibility`, { visibility: "public" })).status,
+    ).toBe(400);
+    const pub = await as("alice").put(`/api/projects/${lakeside}/visibility`, {
+      visibility: "public",
+      licenceAccepted: true,
+    });
+    expect(pub.body.project).toMatchObject({ visibility: "public", viaPublic: false, myRole: "owner" });
+    expect(
+      (
+        await as("alice").put(`/api/projects/${lakeside}/visibility`, {
+          visibility: "public",
+          licenceAccepted: true,
+        })
+      ).status,
+    ).toBe(409);
+
+    const opened = await as("carol").get(`/api/projects/${lakeside}`);
+    expect(opened.body.project).toMatchObject({ myRole: "viewer", viaPublic: true, visibility: "public" });
+    // Public projects show in their own list, not among Carol's projects.
     expect((await as("carol").get("/api/projects")).body.projects).toEqual([]);
+    expect(
+      (await as("carol").get("/api/projects?public=true")).body.projects.map((p: { id: string }) => p.id),
+    ).toEqual([lakeside]);
+    // Members do not see their own projects again in the public list.
+    expect((await as("alice").get("/api/projects?public=true")).body.projects).toEqual([]);
+    // Read-only: no changes, no copies, and no look at who has access.
+    expect((await as("carol").patch(`/api/projects/${lakeside}`, { name: "x" })).status).toBe(403);
+    expect((await as("carol").post(`/api/projects/${lakeside}/duplicate`)).status).toBe(403);
+    expect((await as("carol").get(`/api/projects/${lakeside}/mslab`)).status).toBe(403);
+    expect((await as("carol").get(`/api/projects/${lakeside}/members`)).status).toBe(403);
+    expect(
+      (await as("carol").put(`/api/projects/${lakeside}/visibility`, { visibility: "private" })).status,
+    ).toBe(403);
+    // Private again: gone for Carol. Then public once more for the tests below.
+    await as("alice").put(`/api/projects/${lakeside}/visibility`, { visibility: "private" });
+    expect((await as("carol").get(`/api/projects/${lakeside}`)).status).toBe(404);
+    expect((await as("carol").get("/api/projects?public=true")).body.projects).toEqual([]);
+    await as("alice").put(`/api/projects/${lakeside}/visibility`, {
+      visibility: "public",
+      licenceAccepted: true,
+    });
   });
 
   const railway = {
@@ -222,6 +262,20 @@ describe("projects", () => {
     // Drawings may be larger than other requests (100 kB): a 300 kB street setup list saves.
     const big = Array.from({ length: 6000 }, (_, i) => ({ way: i, note: "x".repeat(40) }));
     expect((await as("alice").put(`${path}/street-setups`, { doc: big, baseVersion: 1 })).status).toBe(200);
+    // Own vehicles and fleet: own vehicle ids start with `own-`.
+    const fleet = {
+      vehicles: [{ id: "own-town-bus", name: "Town bus", mode: "bus", length_m: 12 }],
+      units: [{ id: "u1", vehicle: "own-town-bus", number: "101", status: "active" }],
+    };
+    expect((await as("alice").put(`${path}/fleet`, { doc: fleet, baseVersion: null })).status).toBe(200);
+    expect(
+      (
+        await as("alice").put(`${path}/fleet`, {
+          doc: { vehicles: [{ id: "siemens_avenio", name: "Avenio", mode: "tram" }], units: [] },
+          baseVersion: 1,
+        })
+      ).status,
+    ).toBe(400);
     // Project preferences: assumption values by id, numbers only.
     const prefs = {
       values: { "street.mixed_traffic_delay_share": 0.3, "street.bus_lane_delay_share": 0.05 },
@@ -457,10 +511,14 @@ describe("projects", () => {
       "project.updated",
       "project.member_role_changed",
       "project.member_left",
-      "project.link_access_changed",
+      "project.visibility_changed",
+      "project.visibility_changed",
+      "project.visibility_changed",
       "project.drawing_saved",
       "project.drawing_saved",
       "project.drawing_saved",
+      "project.drawing_saved",
+      // The own vehicles and fleet drawing saved in the drawings test.
       "project.drawing_saved",
       // The preferences drawing sets two values.
       "project.drawing_saved",

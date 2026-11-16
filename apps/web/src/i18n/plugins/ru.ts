@@ -25,8 +25,6 @@ export const pluginsRu = {
   "plugins.perm.writeResults": "сохраняет свои результаты",
   "plugins.perm.writeScenario": "предлагает изменения сценария",
   "plugins.installTitle": "Установить плагин",
-  "plugins.installIntro":
-    "Загрузите файл .msplugin. MobSimLab проверит его и покажет, что он добавляет, до установки. Установленные плагины могут добавлять виды транспорта, инструменты, параметры и источники; плагины со своим кодом появятся позже.",
   "plugins.choose": "Выбрать файл .msplugin",
   "plugins.problems": "Этот плагин нельзя установить:",
   "plugins.install": "Установить",

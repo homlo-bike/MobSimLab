@@ -25,8 +25,6 @@ export const pluginsJa = {
   "plugins.perm.writeResults": "独自の結果を保存",
   "plugins.perm.writeScenario": "シナリオへの変更を提案",
   "plugins.installTitle": "プラグインをインストール",
-  "plugins.installIntro":
-    ".msplugin ファイルをアップロードしてください。MobSimLab が確認し、インストール前に追加内容を表示します。インストールしたプラグインは交通手段、ツール、パラメーター、出典を追加できます。独自のコードを持つプラグインは今後対応します。",
   "plugins.choose": ".msplugin ファイルを選択",
   "plugins.problems": "このプラグインはインストールできません:",
   "plugins.install": "インストール",

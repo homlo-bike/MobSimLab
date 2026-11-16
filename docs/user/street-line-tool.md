@@ -6,7 +6,7 @@ Draw bus, BRT, trolleybus and intercity bus lines on the street network. The lay
 
 1. Click **Street line** in the top bar. The tool palette appears on the map and the line panel on the right.
 2. Zoom in to street level (zoom 13 or closer). The streets for the area on screen load by themselves, and more load as you move the map. There are no files to load. You need to be signed in. Street data © OpenStreetMap contributors, ODbL.
-3. Give the line a **name** and pick the **mode**: Bus, BRT, Trolleybus or Intercity bus. The line takes the mode's colour, and the route is recalculated with that vehicle's rules. The vehicle list offers the catalogue vehicles the project uses (**Project preferences → Vehicles**).
+3. Give the line a **name** and pick the **mode**: Bus, BRT, Trolleybus or Intercity bus. The line takes the mode's colour, and the route is recalculated with that vehicle's rules. The vehicle list offers the catalogue vehicles the project uses (**Project preferences → Vehicles**) and the project's own vehicles ([own vehicles and fleet](vehicles-and-fleet.md)).
 
 ## Saving
 

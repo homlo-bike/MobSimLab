@@ -25,8 +25,6 @@ export const pluginsNl = {
   "plugins.perm.writeResults": "bewaart eigen resultaten",
   "plugins.perm.writeScenario": "stelt wijzigingen in het scenario voor",
   "plugins.installTitle": "Plug-in installeren",
-  "plugins.installIntro":
-    "Upload een .msplugin-bestand. MobSimLab controleert het en laat zien wat het toevoegt voordat u installeert. Geïnstalleerde plug-ins kunnen vervoerswijzen, gereedschappen, parameters en bronnen toevoegen; plug-ins met eigen code volgen later.",
   "plugins.choose": "Kies een .msplugin-bestand",
   "plugins.problems": "Deze plug-in kan niet worden geïnstalleerd:",
   "plugins.install": "Installeren",

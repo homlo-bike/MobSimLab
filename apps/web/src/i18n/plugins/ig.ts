@@ -24,8 +24,6 @@ export const pluginsIg = {
   "plugins.perm.writeResults": "na-echekwa nsonaazụ nke ya",
   "plugins.perm.writeScenario": "na-atụ aro mgbanwe n'ọnọdụ",
   "plugins.installTitle": "Wụnye ngwa mgbakwunye",
-  "plugins.installIntro":
-    "Bulite faịlụ .msplugin. MobSimLab na-enyocha ya ma gosi ihe ọ na-agbakwunye tupu i wụnye ya. Ngwa mgbakwunye ewụnyere nwere ike ịgbakwunye ụzọ, ngwaọrụ, paramita na isi mmalite; ndị nwere koodu nke ha ga-abịa ma emechaa.",
   "plugins.choose": "Họrọ faịlụ .msplugin",
   "plugins.problems": "Enweghị ike ịwụnye ngwa mgbakwunye a:",
   "plugins.install": "Wụnye",

@@ -252,7 +252,7 @@ export const editorsId = {
   "rail.line.peakHeadway": "Selang waktu jam sibuk",
   "rail.line.everyOffpeak": "Setiap, di luar jam sibuk",
   "rail.line.offpeakHeadway": "Selang waktu di luar jam sibuk",
-  "rail.line.peaks": "Jam sibuk adalah 07:00–09:00 dan 16:00–19:00.",
+  "rail.line.peaks": "Jam sibuk adalah {peaks}.",
   "rail.line.delete": "Hapus layanan",
   "rail.line.needsStops": "Diperlukan setidaknya dua pemberhentian.",
   "rail.line.needsTrain": "Pilih kereta.",
@@ -745,7 +745,7 @@ export const editorsId = {
   "noise.dbOrMore": "{db} dB atau lebih",
   "noise.dbRange": "{from}–{to} dB",
   "noise.mapNote":
-    "Hanya layanan yang direncanakan, tanpa lalu lintas umum. Bangunan meredam di atas atap dan di sekitar ujungnya (ISO 9613-2) dan fasadnya memantul sekali (orde pertama). Bangunan tanpa tinggi di OpenStreetMap diberi 3 m per lantai yang ditandai, atau 8 m (asumsi plugin kebisingan). Tingkat sebuah bangunan tidak menyertakan pantulan dari fasadnya sendiri. Bangunan © kontributor OpenStreetMap.",
+    "Hanya jalur layanan, tanpa lalu lintas umum. Bangunan meredam di atas atap dan di sekitar ujungnya (ISO 9613-2) dan fasadnya memantul sekali (orde pertama). Bangunan tanpa tinggi di OpenStreetMap diberi 3 m per lantai yang ditandai, atau 8 m (asumsi plugin kebisingan). Tingkat sebuah bangunan tidak menyertakan pantulan dari fasadnya sendiri. Bangunan © kontributor OpenStreetMap.",
   "noise.terrain": "Gunakan ketinggian medan (Copernicus GLO-30)",
   "noise.terrainTooLarge":
     "Jalur mencakup wilayah yang terlalu luas untuk memuat medan, sehingga peta ini dihitung di tanah datar.",
@@ -775,6 +775,48 @@ export const editorsId = {
     "Sumber, bangunan, dan penerima berdiri di atas medan, dan bukit meredam; atap dan pohon disaring dari model permukaan. Medan: Copernicus DEM GLO-30 © DLR e.V. dan © Airbus Defence and Space GmbH, disediakan dalam COPERNICUS oleh Uni Eropa dan ESA.",
   "noise.flat": "Tanah datar.",
   "noise.popCredit": "Penduduk: WorldPop, University of Southampton (doi:10.5258/SOTON/WP00839), CC BY 4.0.",
+  "noise.scenario": "Skenario",
+  "noise.currentDesign": "Desain saat ini",
+  "noise.compareTo": "Bandingkan dengan",
+  "noise.noComparison": "Tanpa perbandingan",
+  "noise.inputLevel": "Kendaraan dan kecepatan dari",
+  "noise.level.planned": "Direncanakan: selang waktu dan arus contoh",
+  "noise.level.timetabled": "Terjadwal: perjalanan sepanjang hari",
+  "noise.level.simulated": "Disimulasikan: simulasi jalan yang tersimpan",
+  "noise.simulatedIntro":
+    "Jalur jalan memakai bus yang dihitung simulasi jalan di setiap ruas dan kecepatannya di sana. Jam yang tidak tercakup penuh oleh simulasi, dan jalur kereta, tetap memakai jadwalnya.",
+  "noise.noRuns": "Belum ada simulasi jalan yang selesai: jalankan dulu jalur jalan di simulasi jalan.",
+  "noise.chooseRun": "Pilih simulasi jalan",
+  "noise.run": "Simulasi jalan",
+  "noise.runFor": "Simulasi jalan untuk {name}",
+  "noise.runLabel": "{when}, {from}–{to}",
+  "noise.runHours": "Bus dari simulasi jalan {run} untuk {hours}; jadwal untuk jam lainnya.",
+  "noise.runNoHours":
+    "Simulasi jalan {run} tidak mencakup satu jam penuh pun, jadi jalur jalan tetap memakai jadwalnya.",
+  "noise.runNoTimetable":
+    "Tidak ada jalur jalan dengan nomor yang sama untuk {lines}: di luar jam simulasi jalur ini tidak punya bus.",
+  "noise.railTimetabled":
+    "Jalur kereta tetap memakai jadwalnya: simulasi kapasitas kereta tidak menyimpan posisi kereta.",
+  "noise.noRailService":
+    "Jalur kereta tidak punya layanan yang diterbitkan, jadi tidak ada kereta di peta ini.",
+  "noise.railNotPublished":
+    "Layanan jalur kereta tidak dapat diterbitkan ({error}), jadi tidak ada kereta di peta ini.",
+  "noise.computingOf": "Menghitung peta kebisingan {name}…",
+  "noise.noDifference":
+    "Kedua peta tidak dapat dibandingkan sel demi sel, jadi peta selisih tidak ditampilkan.",
+  "noise.inputUsed": "{name} · {level}",
+  "noise.comparing": "{name} dibandingkan dengan {other} · {level}",
+  "noise.differenceNote":
+    "Perubahan dalam dB di tempat salah satu skenario mencapai pita terendah; perubahan di bawah 1 dB tidak ditampilkan. Keduanya memakai bangunan, medan, dan penghuni yang sama, jadi lalu lintas umum akan saling meniadakan.",
+  "noise.changeBelow": "di bawah {db}",
+  "noise.changeAbove": "{db} atau lebih",
+  "noise.changeRange": "{from} sampai {to}",
+  "noise.comparisonTable": "Perubahan per pita kebisingan",
+  "noise.comparisonCaptionPeople": "Penghuni menurut tingkat di sisi bangunan yang paling terpapar",
+  "noise.comparisonCaptionBuildings": "Bangunan menurut tingkat di sisinya yang paling terpapar",
+  "noise.change": "Perubahan",
+  "noise.exportContours": "Ekspor kontur (GeoJSON)",
+  "noise.exportTable": "Ekspor tabel (CSV)",
   "jp.title": "Perjalanan",
   "jp.s": "{n} d",
   "jp.min": "{n} mnt",

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/homlo-bike/MobSimLab/blob/main/contracts/mslab/drawings/street-setups.schema.json",
+  "title": "Document of a \"street-setups\" drawing (data/street-setups.json, field doc)",
+  "maxItems": 50000,
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "way": {
+        "type": "integer",
+        "minimum": -9007199254740991,
+        "maximum": 9007199254740991
+      }
+    },
+    "required": [
+      "way"
+    ],
+    "additionalProperties": {}
+  }
+}

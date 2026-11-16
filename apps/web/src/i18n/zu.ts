@@ -1,7 +1,13 @@
 import { roadZu } from "./road/zu";
+import { calendarZu } from "./calendar/zu";
 import { editorsZu } from "./editors/zu";
 import { cargoBikeZu } from "./cargo-bike/zu";
+import { commentsZu } from "./comments/zu";
 import { depotsZu } from "./depots/zu";
+import { fleetZu } from "./fleet/zu";
+import { timetablesZu } from "./timetables/zu";
+import { mslabZu } from "./mslab/zu";
+import { pluginCodeZu } from "./plugin-code/zu";
 import { populationZu } from "./population/zu";
 import { pluginsZu } from "./plugins/zu";
 import type { Messages } from "./en";
@@ -103,6 +109,7 @@ export const zu: Messages = {
   "home.shared": "Kwabelwe mina",
   "home.sharedEdit": "Kwabelwe mina · ungahlela",
   "home.viewOnly": "Ukubuka kuphela",
+  "home.public": "Amaphrojekthi omphakathi",
   "home.archived": "Kugcinwe kungobo yomlando",
   "home.none": "Akukho lutho lapha.",
   "home.edited": "Kuhlelwe {when}",
@@ -167,7 +174,7 @@ export const zu: Messages = {
 
   "share.title": "Yabelana nge-“{name}”",
   "share.rolesNote":
-    "Abanikazi baphatha ukufinyelela. Abahleli bashintsha inethiwekhi. Abaphawulayo nezibukeli babuka kuphela.",
+    "Abanikazi baphatha ukufinyelela. Abahleli bashintsha inethiwekhi. Abaphawulayo bayayiphawula. Izibukeli zibuka kuphela.",
   "share.invite": "Mema nge-imeyili",
   "share.emailPlaceholder": "I-imeyili abangena ngayo",
   "share.inviteRole": "Indima yomuntu omemayo",
@@ -177,11 +184,16 @@ export const zu: Messages = {
   "share.roleOf": "Indima ka-{name}",
   "share.remove": "Susa u-{name}",
   "share.leave": "Shiya",
-  "share.link": "Isixhumanisi sokubuka kuphela",
-  "share.linkOn": "Noma ubani ongene kule MobSimLab angayivula",
-  "share.linkOff": "Kuvaliwe: abantu abangenhla kuphela abangayivula",
-  "share.linkTurnOn": "Vula",
-  "share.linkTurnOff": "Vala",
+  "share.visibility": "Ubani ongayivula",
+  "share.private": "Okuyimfihlo: abantu abangenhla kuphela abangayivula",
+  "share.public":
+    "Okomphakathi: noma ubani ongene kule MobSimLab angayithola futhi ayivule ukuze afunde kuphela",
+  "share.makePublic": "Yenza ibe ngeyomphakathi",
+  "share.makePrivate": "Yenza ibe yimfihlo",
+  "share.licenceTitle": "Ngaphambi kokuthi uyenze ibe ngeyomphakathi",
+  "share.licenceNote":
+    "Le phrojekthi isebenzisa idatha evela ku-OpenStreetMap. Izokwabelwana ngaphansi kwe-Open Database License (ODbL), © abanikeli be-OpenStreetMap. Yenze ibe ngeyomphakathi kuphela uma konke okunye okukuyo nakho kungabelwana.",
+  "share.confirmPublic": "Ngiyaqonda, yenza ibe ngeyomphakathi",
   "share.copyLink": "Kopisha isixhumanisi",
   "share.copied": "Kukopishiwe",
 
@@ -199,6 +211,8 @@ export const zu: Messages = {
 
   "project.back": "Buyela kumaphrojekthi",
   "project.viewOnly": "Ukubuka kuphela",
+  "project.public": "Okomphakathi",
+  "project.publicNote": "Iphrojekthi yomphakathi. Idatha yemephu © abanikeli be-OpenStreetMap, ODbL.",
   "project.notFound": "Iphrojekthi ayitholakalanga",
   "project.notFoundHint": "Kungenzeka isusiwe, noma awusenakho ukufinyelela.",
   "project.toHome": "Buyela kumaphrojekthi",
@@ -260,6 +274,7 @@ export const zu: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "Imigwaqo",
   "gis.regionsView": "Izifunda",
+  "gis.zonesView": "Izindawo zesidingo",
   "gis.intro": "Engeza noma uhlele ulwazi olusetshenziswa izibalo.",
   "gis.areas": "Dweba indawo noma ungenise eyodwa kusuka ku-OpenStreetMap",
   "gis.streets":
@@ -312,6 +327,21 @@ export const zu: Messages = {
   "prefs.rulesChanged": "okushintshiwe: {count}",
   "prefs.rulesLibrary": "Umtapo wolwazi wemicabango: {value} {unit}",
   "prefs.rulesLibraryRange": "Umtapo wolwazi wemicabango: {value} {unit} (ububanzi {low}–{high})",
+  "prefs.demandTitle": "Imodeli yesidingo",
+  "prefs.demandIntro":
+    "Yonke inani elisetshenziswa yimodeli yesidingo, isinyathelo ngesinyathelo: izindawo, ukwenziwa kohambo, izikhathi, ukwabiwa, ukukhetha uhlobo lokuhamba nokwabiwa emigwaqweni. Shintsha inani kule phrojekthi, noma ugcine elomtapo wemibono.",
+  "prefs.demandStep": "Isinyathelo semodeli",
+  "prefs.demandSearch": "Sesha amanani",
+  "prefs.demandNone": "Alikho inani elifanayo.",
+  "prefs.demandStep.zones": "Izindawo",
+  "prefs.demandStep.generation": "Ukwenziwa kohambo",
+  "prefs.demandStep.periods": "Izikhathi",
+  "prefs.demandStep.distribution": "Ukwabiwa kohambo",
+  "prefs.demandStep.mode_choice": "Ukukhetha uhlobo lokuhamba",
+  "prefs.demandStep.catchment": "Indawo yokufinyelela",
+  "prefs.demandStep.assignment": "Ukwabiwa emigwaqweni",
+  "prefs.demandStep.calibration": "Ukulinganisa",
+  "prefs.demandAll": "Zonke izinyathelo",
   "prefs.paramsTitle": "Wonke amapharamitha",
   "prefs.paramsIntro":
     "Yonke inani lomtapo wemibono. Setha elakho lazo zonke izindlela noma indlela eyodwa; inani lendlela eyodwa liphambili kunelazo zonke. Inani lomtapo lihlala eceleni.",
@@ -331,11 +361,61 @@ export const zu: Messages = {
   "prefs.group.cost": "Izindleko",
   "prefs.group.benefits": "Izinzuzo",
   "prefs.group.fares": "Imali yokugibela",
+  "prefs.group.appraisal": "Ukuhlola",
+  "prefs.group.noise": "Umsindo",
   "prefs.traction.battery": "ibhethri",
   "prefs.traction.diesel": "udizili",
   "prefs.traction.hydrogen": "i-hydrogen",
   "prefs.traction.cng": "igesi yemvelo (CNG)",
   "prefs.traction.electric": "ugesi",
+  "report.title": "Umbiko wokucatshangwayo",
+  "report.intro":
+    "Yonke inani lomtapo wokucatshangwayo elisetshenziswa yileli phrojekthi: inani, ububanzi bomtapo, lapho livela khona, nokuthi iphrojekthi ilishintshile yini. Lilande njenge-CSV, noma uliphrinte noma ulilondoloze njenge-PDF.",
+  "report.csv": "Landa i-CSV",
+  "report.changedOnly": "Amanani ashintshiwe kuphela",
+  "report.noneChanged": "Alikho inani elishintshiwe kuleli qembu.",
+  "report.loadError": "Imithombo ayikwazanga ukulayishwa. Layisha kabusha ikhasi ukuze uzame futhi.",
+  "report.changed": "lishintshiwe",
+  "report.yes": "Yebo",
+  "report.no": "Cha",
+  "report.basis.cited": "licashuniwe",
+  "report.basis.documented": "libhaliwe",
+  "report.basis.guess": "isilinganiso esinesizathu",
+  "report.check.read": "kuhlolwe emthonjeni",
+  "report.check.secondary": "kuhlolwe ngomthombo wesibili",
+  "report.check.unverified": "akukahlolwa emthonjeni",
+  "report.sources": "Imithombo:",
+  "report.usedBy": "Lisetshenziswa ngu: {list}",
+  "report.other": "Ezinye izinqumo",
+  "report.currency": "Imali",
+  "report.currencyCountry": "Ithuluzi ngalinye libonisa imali yezwe",
+  "report.rate": "Izinga lokushintshisana nge-US$",
+  "report.rateWorldBank": "Izinga elisemthethweni leBhange Lomhlaba",
+  "report.vehiclesOff": "Izimoto ezingasetshenziswa",
+  "report.switchesOff": "Amaswishi angasetshenziswa",
+  "report.allUsed": "Konke kuyasetshenziswa",
+  "report.turnout": "Iswishi ezenzakalelayo",
+  "report.col.group": "Iqembu",
+  "report.col.parameter": "Ipharamitha",
+  "report.col.id": "I-Id",
+  "report.col.mode": "Uhlobo lokuhamba",
+  "report.col.value": "Inani elisetshenzisiwe",
+  "report.col.unit": "Iyunithi",
+  "report.col.changed": "Lishintshiwe",
+  "report.col.libLow": "Umtapo phansi",
+  "report.col.libCentral": "Umtapo phakathi",
+  "report.col.libHigh": "Umtapo phezulu",
+  "report.col.basis": "Isisekelo",
+  "report.col.check": "Ukuhlola",
+  "report.col.sources": "Imithombo",
+  "report.col.reasoning": "Isizathu",
+  "report.col.usedBy": "Lisetshenziswa ngu",
+  "report.col.reason": "Isizathu",
+  "report.col.changedBy": "Lishintshwe ngu",
+  "report.col.changedAt": "Lishintshwe ngo",
+  "report.changedBy": "Lishintshwe ngu-{name} ngo-{date}",
+  "report.changedOn": "Lishintshwe ngo-{date}",
+  "report.reason": "Isizathu: {reason}",
   "prefs.accessTitle": "Ukufinyeleleka kwepulatifomu",
   "prefs.accessIntro":
     "Imingcele yesinyathelo negebe phakathi kwepulatifomu nesitimela (TSI PRM), nokuphakama kwaphansi kwezitimela ezingenakho ohlwini. Imizila ihlolwa kuso sonke isiteshi.",
@@ -426,7 +506,13 @@ export const zu: Messages = {
   ...editorsZu,
   ...cargoBikeZu,
   ...depotsZu,
+  ...fleetZu,
+  ...timetablesZu,
+  ...commentsZu,
+  ...mslabZu,
+  ...pluginCodeZu,
   ...populationZu,
   ...roadZu,
+  ...calendarZu,
   ...pluginsZu,
 };

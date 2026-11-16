@@ -1,6 +1,6 @@
 # ADR-0042: On-demand dispatch simulation: one random day, booking by booking, with cheapest insertion in the browser
 
-- Status: Proposed; first version built (2026-11-15)
+- Status: Accepted (product owner, 2026-11-16); before that Proposed: first version built (2026-11-15)
 - Date: 2026-11-15
 - Deciders: product owner, architecture
 - Related: ADR-0036 (plugins), ADR-0037 §7 (on-demand buses on the service zone kit), ADR-0034 (journey planner), ADR-0031 (routing in the browser)

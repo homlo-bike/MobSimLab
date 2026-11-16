@@ -254,7 +254,7 @@ export const editorsPt = {
   "rail.line.peakHeadway": "Intervalo no pico",
   "rail.line.everyOffpeak": "Intervalo fora do pico",
   "rail.line.offpeakHeadway": "Intervalo fora do pico",
-  "rail.line.peaks": "Picos 07:00–09:00 e 16:00–19:00.",
+  "rail.line.peaks": "Picos {peaks}.",
   "rail.line.delete": "Excluir linha",
   "rail.line.needsStops": "Precisa de pelo menos duas paradas.",
   "rail.line.needsTrain": "Escolha um trem.",
@@ -754,7 +754,7 @@ export const editorsPt = {
   "noise.dbOrMore": "{db} dB ou mais",
   "noise.dbRange": "{from}–{to} dB",
   "noise.mapNote":
-    "Apenas o serviço planejado, sem tráfego geral. Os edifícios fazem barreira por cima dos telhados e ao redor das extremidades (ISO 9613-2) e suas fachadas refletem uma vez (primeira ordem). Edifícios sem altura no OpenStreetMap recebem 3 m por andar indicado, ou 8 m (premissas do plugin de ruído). O nível de um edifício exclui a reflexão na própria fachada. Edifícios © colaboradores do OpenStreetMap.",
+    "Apenas as linhas de serviço, sem tráfego geral. Os edifícios fazem barreira por cima dos telhados e ao redor das extremidades (ISO 9613-2) e suas fachadas refletem uma vez (primeira ordem). Edifícios sem altura no OpenStreetMap recebem 3 m por andar indicado, ou 8 m (premissas do plugin de ruído). O nível de um edifício exclui a reflexão na própria fachada. Edifícios © colaboradores do OpenStreetMap.",
   "noise.terrain": "Usar alturas do relevo (Copernicus GLO-30)",
   "noise.terrainTooLarge":
     "As linhas cobrem uma área grande demais para carregar o relevo, então este mapa é calculado em terreno plano.",
@@ -784,6 +784,48 @@ export const editorsPt = {
     "Fontes, edifícios e receptores ficam sobre o relevo, e as colinas fazem barreira; telhados e árvores são filtrados do modelo de superfície. Relevo: Copernicus DEM GLO-30 © DLR e.V. e © Airbus Defence and Space GmbH, fornecido no âmbito do COPERNICUS pela União Europeia e pela ESA.",
   "noise.flat": "Terreno plano.",
   "noise.popCredit": "População: WorldPop, University of Southampton (doi:10.5258/SOTON/WP00839), CC BY 4.0.",
+  "noise.scenario": "Cenário",
+  "noise.currentDesign": "Projeto atual",
+  "noise.compareTo": "Comparar com",
+  "noise.noComparison": "Sem comparação",
+  "noise.inputLevel": "Veículos e velocidades a partir de",
+  "noise.level.planned": "Planejado: intervalos e fluxos de exemplo",
+  "noise.level.timetabled": "Horário: as viagens do dia",
+  "noise.level.simulated": "Simulado: uma simulação viária salva",
+  "noise.simulatedIntro":
+    "As linhas de rua usam os ônibus que a simulação viária contou em cada trecho e suas velocidades ali. As horas que a simulação não cobre por inteiro, e as ferrovias, mantêm seu horário.",
+  "noise.noRuns":
+    "Ainda não há simulação viária concluída: simule primeiro as linhas de rua na simulação viária.",
+  "noise.chooseRun": "Escolha uma simulação viária",
+  "noise.run": "Simulação viária",
+  "noise.runFor": "Simulação viária para {name}",
+  "noise.runLabel": "{when}, {from}–{to}",
+  "noise.runHours": "Ônibus da simulação viária de {run} para {hours}; o horário para as demais horas.",
+  "noise.runNoHours":
+    "A simulação viária de {run} não cobre nenhuma hora inteira, então as linhas de rua mantêm seu horário.",
+  "noise.runNoTimetable":
+    "Nenhuma linha de rua com o mesmo número para {lines}: fora das horas da simulação essas linhas não têm ônibus.",
+  "noise.railTimetabled":
+    "As ferrovias mantêm seu horário: a simulação de capacidade ferroviária não guarda posições de trens.",
+  "noise.noRailService": "A ferrovia não tem linha publicada, então não tem trens neste mapa.",
+  "noise.railNotPublished":
+    "Não foi possível publicar as linhas da ferrovia ({error}), então ela não tem trens neste mapa.",
+  "noise.computingOf": "Calculando o mapa de ruído de {name}…",
+  "noise.noDifference":
+    "Os dois mapas não puderam ser comparados célula a célula, então nenhum mapa de diferença é mostrado.",
+  "noise.inputUsed": "{name} · {level}",
+  "noise.comparing": "{name} comparado a {other} · {level}",
+  "noise.differenceNote":
+    "Variação em dB onde algum dos cenários atinge a faixa mais baixa; variações abaixo de 1 dB não são mostradas. Ambos usam os mesmos edifícios, terreno e moradores, então o tráfego geral se anularia.",
+  "noise.changeBelow": "menos de {db}",
+  "noise.changeAbove": "{db} ou mais",
+  "noise.changeRange": "de {from} a {to}",
+  "noise.comparisonTable": "Variação por faixa de ruído",
+  "noise.comparisonCaptionPeople": "Moradores pelo nível junto à fachada mais exposta do seu edifício",
+  "noise.comparisonCaptionBuildings": "Edifícios pelo nível junto à sua fachada mais exposta",
+  "noise.change": "Variação",
+  "noise.exportContours": "Exportar contornos (GeoJSON)",
+  "noise.exportTable": "Exportar tabela (CSV)",
 
   "jp.title": "Planejador de viagens",
   "jp.s": "{n} s",

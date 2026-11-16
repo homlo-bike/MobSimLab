@@ -46,6 +46,18 @@ export interface WbCountry {
   iso3: string;
   iso2: string;
   name: string;
+  /**
+   * World Bank income group: HIC (high), UMC (upper-middle), LMC (lower-middle), LIC (low), or null when the
+   * World Bank has not classified the country. The appraisal picks its default social discount rate by it.
+   */
+  income: string | null;
+}
+
+const INCOME_GROUPS = new Set(["HIC", "UMC", "LMC", "LIC"]);
+
+/** Purpose: the income group code of a country row, or null when it is unclassified (INX) or missing. */
+function incomeGroup(id: string | undefined): string | null {
+  return id && INCOME_GROUPS.has(id) ? id : null;
 }
 
 /** Purpose: read the endpoint from `MOBSIMLAB_WORLDBANK_URL`; only https URLs are accepted. */
@@ -70,6 +82,7 @@ const countryRow = z.object({
   iso2Code: z.string(),
   name: z.string(),
   region: z.object({ id: z.string(), value: z.string() }),
+  incomeLevel: z.object({ id: z.string() }).optional(),
 });
 const countryPage = z.tuple([z.looseObject({}), z.array(countryRow).nullable()]);
 
@@ -137,7 +150,7 @@ export class WorldBankClient {
       if (!parsed.success) throw new WorldBankError("World Bank answered an unexpected country list", 502);
       return (parsed.data[1] ?? [])
         .filter((r) => r.region.id !== "NA" && r.region.value !== "Aggregates")
-        .map((r) => ({ iso3: r.id, iso2: r.iso2Code, name: r.name }))
+        .map((r) => ({ iso3: r.id, iso2: r.iso2Code, name: r.name, income: incomeGroup(r.incomeLevel?.id) }))
         .sort((x, y) => x.name.localeCompare(y.name));
     });
   }

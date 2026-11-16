@@ -169,6 +169,13 @@
     1000
    ]
   },
+  "noise.map_reach_m": {
+   "*": [
+    150,
+    300,
+    500
+   ]
+  },
   "noise.grid_spacing_m": {
    "*": [
     5,
@@ -441,20 +448,35 @@
   },
   "noise.cable_car_tower_lw_db": {
    "*": [
-    80,
     90,
-    100
+    100,
+    102
    ]
   },
   "noise.cable_car_station_lw_db": {
    "*": [
-    85,
-    95,
-    105
+    99,
+    102,
+    106
    ]
   },
   "noise.ferry_cruise_lw_db": {
    "*": [
+    105,
+    108,
+    112
+   ],
+   "ferry/monohull": [
+    95,
+    105,
+    115
+   ],
+   "ferry/catamaran": [
+    95,
+    105,
+    115
+   ],
+   "ferry/hydrofoil": [
     95,
     105,
     115
@@ -465,6 +487,13 @@
     90,
     100,
     110
+   ]
+  },
+  "noise.ferry_source_height_m": {
+   "*": [
+    3,
+    5,
+    10
    ]
   }
  },

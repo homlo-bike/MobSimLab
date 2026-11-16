@@ -1,7 +1,13 @@
 import { roadId } from "./road/id";
+import { calendarId } from "./calendar/id";
 import { editorsId } from "./editors/id";
 import { cargoBikeId } from "./cargo-bike/id";
+import { commentsId } from "./comments/id";
 import { depotsId } from "./depots/id";
+import { fleetId } from "./fleet/id";
+import { timetablesId } from "./timetables/id";
+import { mslabId } from "./mslab/id";
+import { pluginCodeId } from "./plugin-code/id";
 import { populationId } from "./population/id";
 import { pluginsId } from "./plugins/id";
 import type { Messages } from "./en";
@@ -103,6 +109,7 @@ export const id: Messages = {
   "home.shared": "Dibagikan kepada saya",
   "home.sharedEdit": "Dibagikan kepada saya · dapat diedit",
   "home.viewOnly": "Hanya lihat",
+  "home.public": "Proyek publik",
   "home.archived": "Diarsipkan",
   "home.none": "Tidak ada apa pun di sini.",
   "home.edited": "Diedit {when}",
@@ -166,7 +173,7 @@ export const id: Messages = {
 
   "share.title": "Bagikan “{name}”",
   "share.rolesNote":
-    "Pemilik mengelola akses. Editor mengubah jaringan. Pemberi komentar dan pemirsa hanya melihat.",
+    "Pemilik mengelola akses. Editor mengubah jaringan. Pemberi komentar mengomentarinya. Pemirsa hanya melihat.",
   "share.invite": "Undang lewat email",
   "share.emailPlaceholder": "Email yang mereka gunakan untuk masuk",
   "share.inviteRole": "Peran untuk orang yang diundang",
@@ -176,11 +183,16 @@ export const id: Messages = {
   "share.roleOf": "Peran {name}",
   "share.remove": "Hapus {name}",
   "share.leave": "Keluar",
-  "share.link": "Tautan hanya lihat",
-  "share.linkOn": "Siapa pun yang masuk ke MobSimLab ini dapat membukanya",
-  "share.linkOff": "Mati: hanya orang di atas yang dapat membukanya",
-  "share.linkTurnOn": "Nyalakan",
-  "share.linkTurnOff": "Matikan",
+  "share.visibility": "Siapa yang dapat membukanya",
+  "share.private": "Pribadi: hanya orang di atas yang dapat membukanya",
+  "share.public":
+    "Publik: siapa pun yang masuk ke MobSimLab ini dapat menemukannya dan membukanya hanya-baca",
+  "share.makePublic": "Jadikan publik",
+  "share.makePrivate": "Jadikan pribadi",
+  "share.licenceTitle": "Sebelum Anda menjadikannya publik",
+  "share.licenceNote":
+    "Proyek ini memakai data dari OpenStreetMap. Data itu akan dibagikan dengan Open Database License (ODbL), © kontributor OpenStreetMap. Jadikan publik hanya jika semua hal lain di dalamnya juga boleh dibagikan.",
+  "share.confirmPublic": "Saya mengerti, jadikan publik",
   "share.copyLink": "Salin tautan",
   "share.copied": "Disalin",
 
@@ -198,6 +210,8 @@ export const id: Messages = {
 
   "project.back": "Kembali ke proyek",
   "project.viewOnly": "Hanya lihat",
+  "project.public": "Publik",
+  "project.publicNote": "Proyek publik. Data peta © kontributor OpenStreetMap, ODbL.",
   "project.notFound": "Proyek tidak ditemukan",
   "project.notFoundHint": "Mungkin sudah dihapus, atau Anda tidak lagi memiliki akses.",
   "project.toHome": "Kembali ke proyek",
@@ -258,6 +272,7 @@ export const id: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "Jalan",
   "gis.regionsView": "Wilayah",
+  "gis.zonesView": "Zona permintaan",
   "gis.intro": "Tambahkan dan edit informasi yang digunakan dalam perhitungan.",
   "gis.areas": "Gambar wilayah atau impor dari OpenStreetMap",
   "gis.streets": "Susunan jalan: lajur bus, sepeda, dan trem, kecepatan, kabel atas",
@@ -308,6 +323,21 @@ export const id: Messages = {
   "prefs.rulesChanged": "{count} diubah",
   "prefs.rulesLibrary": "Pustaka asumsi: {value} {unit}",
   "prefs.rulesLibraryRange": "Pustaka asumsi: {value} {unit} (rentang {low}–{high})",
+  "prefs.demandTitle": "Model permintaan",
+  "prefs.demandIntro":
+    "Setiap nilai yang dipakai model permintaan, langkah demi langkah: zona, bangkitan perjalanan, periode waktu, distribusi, pemilihan moda, dan pembebanan. Ubah nilai untuk proyek ini, atau pertahankan nilai pustaka asumsi.",
+  "prefs.demandStep": "Langkah model",
+  "prefs.demandSearch": "Cari nilai",
+  "prefs.demandNone": "Tidak ada nilai yang cocok.",
+  "prefs.demandStep.zones": "Zona",
+  "prefs.demandStep.generation": "Bangkitan perjalanan",
+  "prefs.demandStep.periods": "Periode waktu",
+  "prefs.demandStep.distribution": "Distribusi perjalanan",
+  "prefs.demandStep.mode_choice": "Pemilihan moda",
+  "prefs.demandStep.catchment": "Daerah tangkapan",
+  "prefs.demandStep.assignment": "Pembebanan",
+  "prefs.demandStep.calibration": "Kalibrasi",
+  "prefs.demandAll": "Semua langkah",
   "prefs.paramsTitle": "Semua parameter",
   "prefs.paramsIntro":
     "Setiap nilai pustaka asumsi. Tetapkan nilai Anda untuk semua moda atau untuk satu moda; nilai satu moda mengalahkan nilai untuk semua moda. Nilai pustaka tetap di sampingnya.",
@@ -327,11 +357,61 @@ export const id: Messages = {
   "prefs.group.cost": "Biaya",
   "prefs.group.benefits": "Manfaat",
   "prefs.group.fares": "Tarif",
+  "prefs.group.appraisal": "Penilaian",
+  "prefs.group.noise": "Kebisingan",
   "prefs.traction.battery": "baterai",
   "prefs.traction.diesel": "diesel",
   "prefs.traction.hydrogen": "hidrogen",
   "prefs.traction.cng": "gas alam (CNG)",
   "prefs.traction.electric": "listrik",
+  "report.title": "Laporan asumsi",
+  "report.intro":
+    "Setiap nilai pustaka asumsi yang digunakan proyek ini: nilainya, rentang pustaka, asalnya, dan apakah proyek mengubahnya. Unduh sebagai CSV, atau cetak atau simpan sebagai PDF.",
+  "report.csv": "Unduh CSV",
+  "report.changedOnly": "Hanya nilai yang diubah",
+  "report.noneChanged": "Tidak ada nilai yang diubah dalam grup ini.",
+  "report.loadError": "Sumber tidak dapat dimuat. Muat ulang halaman untuk mencoba lagi.",
+  "report.changed": "diubah",
+  "report.yes": "Ya",
+  "report.no": "Tidak",
+  "report.basis.cited": "dikutip",
+  "report.basis.documented": "didokumentasikan",
+  "report.basis.guess": "perkiraan beralasan",
+  "report.check.read": "diperiksa terhadap sumber",
+  "report.check.secondary": "diperiksa melalui sumber sekunder",
+  "report.check.unverified": "belum diperiksa terhadap sumber",
+  "report.sources": "Sumber:",
+  "report.usedBy": "Digunakan oleh: {list}",
+  "report.other": "Pilihan lain",
+  "report.currency": "Mata uang",
+  "report.currencyCountry": "Setiap alat menampilkan mata uang negara",
+  "report.rate": "Kurs per US$",
+  "report.rateWorldBank": "Kurs resmi Bank Dunia",
+  "report.vehiclesOff": "Kendaraan yang tidak digunakan",
+  "report.switchesOff": "Wesel yang tidak digunakan",
+  "report.allUsed": "Semua digunakan",
+  "report.turnout": "Wesel bawaan",
+  "report.col.group": "Grup",
+  "report.col.parameter": "Parameter",
+  "report.col.id": "Id",
+  "report.col.mode": "Moda",
+  "report.col.value": "Nilai yang digunakan",
+  "report.col.unit": "Satuan",
+  "report.col.changed": "Diubah",
+  "report.col.libLow": "Pustaka rendah",
+  "report.col.libCentral": "Pustaka tengah",
+  "report.col.libHigh": "Pustaka tinggi",
+  "report.col.basis": "Dasar",
+  "report.col.check": "Pemeriksaan",
+  "report.col.sources": "Sumber",
+  "report.col.reasoning": "Alasan",
+  "report.col.usedBy": "Digunakan oleh",
+  "report.col.reason": "Alasan",
+  "report.col.changedBy": "Diubah oleh",
+  "report.col.changedAt": "Diubah pada",
+  "report.changedBy": "Diubah oleh {name} pada {date}",
+  "report.changedOn": "Diubah pada {date}",
+  "report.reason": "Alasan: {reason}",
   "prefs.accessTitle": "Aksesibilitas peron",
   "prefs.accessIntro":
     "Batas anak tangga dan celah antara peron dan kereta (TSI PRM), serta tinggi lantai untuk kereta yang tidak punya nilainya di katalog. Jalur diperiksa di setiap pemberhentian.",
@@ -421,7 +501,13 @@ export const id: Messages = {
   ...editorsId,
   ...cargoBikeId,
   ...depotsId,
+  ...fleetId,
+  ...timetablesId,
+  ...commentsId,
+  ...mslabId,
+  ...pluginCodeId,
   ...populationId,
   ...roadId,
+  ...calendarId,
   ...pluginsId,
 };

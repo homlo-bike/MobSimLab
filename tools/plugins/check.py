@@ -104,6 +104,89 @@ def resolve(param: dict, mode: str, key: str | None, option: str | None) -> dict
     return best
 
 
+# What a calculation's input kind needs among the manifest's permissions (ADR-0036 §5).
+# `parameters` needs none.
+INPUT_PERMISSION = {
+    "network": "read:network",
+    "street_lines": "read:network",
+    "rail_design": "read:network",
+    "timetable": "read:timetable",
+    "fleet": "read:fleet",
+    "geodata": "read:geodata",
+}
+# Where an installed plugin's calculation may appear: places the app fills from the manifest alone.
+COMPONENT_WHERE = {"tables", "plugin-tab"}
+
+
+def check_code(pid: str, manifest: dict, folder: Path | None) -> list[str]:
+    """Check the rules for code and tabs (ADR-0036 §4, §6).
+
+    Bundled plugins use core crates (`bundled-wasm`) and views the web app ships; installed plugins bring
+    WebAssembly components (`component`) and sandboxed pages (`ui`). `folder` is None when the files are
+    checked elsewhere (the API checks uploaded packages).
+    """
+    errors: list[str] = []
+    c = manifest["contributes"]
+    bundled = manifest.get("bundled", False)
+    tiers = set(manifest["tiers"])
+    perms = set(manifest["permissions"])
+    tabs = c.get("tabs", [])
+    code = [("calculation", x) for x in c.get("calculations", [])]
+    code += [("importer", x) for x in c.get("importers", [])]
+    code += [("exporter", x) for x in c.get("exporters", [])]
+
+    def exists(path: str, ext: str) -> None:
+        if not path.endswith(ext):
+            errors.append(f"{pid}: {path} must be a {ext} file")
+        elif folder is not None and not (folder / path).is_file():
+            errors.append(f"{pid}: {path} does not exist")
+
+    for kind, x in code:
+        if bundled and x["runtime"] != "bundled-wasm":
+            errors.append(f"{pid}: {kind} {x['id']}: bundled plugins use runtime bundled-wasm")
+        if not bundled and x["runtime"] != "component":
+            errors.append(f"{pid}: {kind} {x['id']}: installed plugins bring their code as runtime component")
+        if x["runtime"] != "component":
+            continue
+        exists(x["component"], ".wasm")
+        if kind == "calculation":
+            for i in x["inputs"]:
+                need = INPUT_PERMISSION.get(i)
+                if need and need not in perms:
+                    errors.append(
+                        f"{pid}: calculation {x['id']} reads {i}, which needs the {need} permission"
+                    )
+            for w in x.get("where", []):
+                if w not in COMPONENT_WHERE:
+                    errors.append(
+                        f"{pid}: calculation {x['id']}: "
+                        f"an installed plugin's calculation cannot appear in {w}"
+                    )
+            listed = any(x["id"] in t.get("calculations", []) for t in tabs)
+            if "plugin-tab" in x.get("where", []) and not listed:
+                errors.append(f"{pid}: calculation {x['id']} is for a plugin tab, but no tab lists it")
+        elif kind == "importer" and "write:scenario" not in perms:
+            errors.append(
+                f"{pid}: importer {x['id']} adds to the project, which needs the write:scenario permission"
+            )
+        elif kind == "exporter" and "read:timetable" not in perms:
+            errors.append(
+                f"{pid}: exporter {x['id']} reads the timetable, which needs the read:timetable permission"
+            )
+    if any(x["runtime"] == "component" for _, x in code) and "compute" not in tiers:
+        errors.append(f"{pid}: a plugin with components must list the compute tier")
+    for tab in tabs:
+        if bundled and "view" not in tab:
+            errors.append(f"{pid}: tab {tab['id']}: bundled plugins name a view of the web app")
+        if not bundled and "ui" not in tab:
+            errors.append(f"{pid}: tab {tab['id']}: installed plugins bring their own page (ui)")
+        if "ui" in tab:
+            exists(tab["ui"], ".html")
+            if "ui" not in tiers:
+                errors.append(f"{pid}: a plugin with its own tab pages must list the ui tier")
+    return errors
+
+
 def check_plugin(
     folder: Path,
     chk,
@@ -111,8 +194,14 @@ def check_plugin(
     core_keys: set[str],
     seen_modes: dict[str, str],
     seen_tabs: dict[str, str] | None = None,
+    others: tuple[set[str], dict[str, set[str]]] | None = None,
 ):
-    """Validate one plugin. Output: (errors, registry entry)."""
+    """Validate one plugin. Output: (errors, registry entry).
+
+    `others` holds the modes and contexts (key to option ids) of the other bundled plugins, which this
+    plugin's parameter values may name (the noise plugin's sound powers per ferry vessel type).
+    """
+    other_modes, other_contexts = others or (set(), {})
     errors: list[str] = []
     where = folder.name
     manifest = read_json(folder / MANIFEST)
@@ -172,19 +261,12 @@ def check_plugin(
                 errors.append(f"{pid}: tool {t['id']} uses kit {t['kit']}, mode {mid} needs {kits[mid]}")
 
     calc_ids = {x["id"] for x in c.get("calculations", [])}
-    if calc_ids and not manifest.get("bundled"):
-        errors.append(f"{pid}: only bundled plugins may contribute calculations until the plugin host exists")
+    errors += check_code(pid, manifest, folder)
     converters = c.get("importers", []) + c.get("exporters", [])
-    if converters and not manifest.get("bundled"):
-        errors.append(
-            f"{pid}: only bundled plugins may contribute importers and exporters until the plugin host exists"
-        )
     conv_ids = [x["id"] for x in converters]
     for cid in sorted({x for x in conv_ids if conv_ids.count(x) > 1}):
         errors.append(f"{pid}: importer or exporter id {cid} is used twice")
     for tab in c.get("tabs", []):
-        if not manifest.get("bundled"):
-            errors.append(f"{pid}: only bundled plugins may contribute tabs until the UI tier exists")
         if tab["id"] in CORE_TABS:
             errors.append(f"{pid}: tab {tab['id']} is a core tab")
         if tab["id"] in seen_tabs:
@@ -218,13 +300,13 @@ def check_plugin(
                 x["_file"] = str(p)
                 params.append(x)
     saved = chk.MODES
-    chk.MODES = list(saved) + sorted(mode_ids)
+    chk.MODES = list(saved) + sorted(mode_ids | other_modes)
     used: set[str] = set()
     try:
         errors += [f"{pid}: {e}" for e in chk.validate({**core_sources, **sources}, params, used)]
     finally:
         chk.MODES = saved
-    allowed = {"mode", "traction"} | set(contexts)
+    allowed = {"mode", "traction"} | set(contexts) | set(other_contexts)
     for prm in params:
         if prm.get("key") in core_keys:
             errors.append(f"{pid}: {prm['key']} is a core parameter")
@@ -232,6 +314,10 @@ def check_plugin(
             for k, val in (v.get("context") or {}).items():
                 if k not in allowed:
                     errors.append(f"{pid}: {prm['key']}: unknown context key {k}")
+                elif k in other_contexts and k not in contexts:
+                    for o in chk.as_list(val):
+                        if o not in other_contexts[k]:
+                            errors.append(f"{pid}: {prm['key']}: {o} is not an option of {k}")
                 elif k in contexts:
                     opts = {o["id"] for o in contexts[k]["options"]}
                     for o in as_list(val):
@@ -288,6 +374,20 @@ def check_plugin(
     return errors, entry
 
 
+def others_of(folder: Path, folders: list[Path]) -> tuple[set[str], dict[str, set[str]]]:
+    """The modes and contexts (key to option ids) the plugins other than `folder` contribute."""
+    modes: set[str] = set()
+    contexts: dict[str, set[str]] = {}
+    for f in folders:
+        if f == folder or not (f / MANIFEST).exists():
+            continue
+        c = read_json(f / MANIFEST).get("contributes", {})
+        modes |= {m["id"] for m in c.get("modes", [])}
+        for x in c.get("contexts", []):
+            contexts.setdefault(x["key"], set()).update(o["id"] for o in x.get("options", []))
+    return modes, contexts
+
+
 def build(root: Path = PLUGINS) -> tuple[list[str], dict]:
     """Validate every plugin under `root`. Output: (errors, registry)."""
     chk = load_assumption_check()
@@ -298,8 +398,11 @@ def build(root: Path = PLUGINS) -> tuple[list[str], dict]:
     errors: list[str] = []
     plugins = []
     ids: set[str] = set()
-    for folder in discover(root):
-        errs, entry = check_plugin(folder, chk, core_sources, core_keys, seen, seen_tabs)
+    folders = list(discover(root))
+    for folder in folders:
+        errs, entry = check_plugin(
+            folder, chk, core_sources, core_keys, seen, seen_tabs, others_of(folder, folders)
+        )
         errors += errs
         if entry:
             if entry["id"] in ids:

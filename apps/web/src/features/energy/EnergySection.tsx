@@ -47,11 +47,14 @@ export function EnergySection({
   preferences,
   onPreferences,
   loadEngine = loadWasmEnergy,
+  onEstimate,
 }: {
   facts: LineFact[];
   preferences: PreferencesDoc | null;
   onPreferences?: (d: PreferencesDoc) => void;
   loadEngine?: EnergyEngineLoader;
+  /** Told each new estimate (the multi-year run takes the energy a year from it). */
+  onEstimate?: (e: EnergyEstimate | null) => void;
 }) {
   const [engine, setEngine] = useState<EnergyEngine | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -77,6 +80,7 @@ export function EnergySection({
       return null;
     }
   }, [engine, inputs]);
+  useEffect(() => onEstimate?.(result), [result, onEstimate]);
 
   const set = (id: string, v: number | null) => onPreferences?.(withPref(preferences, id, v));
   const busModes = BUS_MODES.filter((m) => facts.some((f) => f.mode === m));

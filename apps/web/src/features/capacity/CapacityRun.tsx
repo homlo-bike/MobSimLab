@@ -21,6 +21,7 @@ import {
   type RidershipInput,
   type RidershipZones,
 } from "./ridership";
+import { type DemandRidership, demandStopBoardings } from "../demand/ridership";
 import { SavedRunBar, SavedRunsList } from "./SavedRuns";
 import {
   circuit,
@@ -58,6 +59,8 @@ interface Props {
   streetLines?: readonly SavedStreetLine[];
   /** What the Tables tab's ridership estimate needs; passenger loads are left out without it. */
   ridership?: RidershipInput | null;
+  /** The demand model run the planner picked for ridership: its boardings by stop replace the estimate. */
+  demandRidership?: DemandRidership | null;
   /** The planner's own weekday boardings per station or stop. */
   ownBoardings?: Boardings;
   /** Saves them; absent when the project is read-only. */
@@ -90,6 +93,7 @@ export function CapacityRun({
   buildDrawn = buildDrawnNetwork,
   streetLines = NO_STREETS,
   ridership = null,
+  demandRidership = null,
   ownBoardings = NO_BOARDINGS,
   onOwnBoardings,
   loadRidership = loadZones,
@@ -203,11 +207,11 @@ export function CapacityRun({
   const stopNames = useMemo(() => [...new Set(plans.flatMap((p) => p.sequences.flat()))], [plans]);
   const linesAt = (n: string) => plans.filter((p) => p.sequences.some((s) => s.includes(n))).length;
   const estimates = useMemo(() => {
-    if (!zones) return null;
+    if (!zones && !demandRidership) return null;
     const out: Record<string, number> = {};
-    for (const p of plans) {
+    for (const p of zones ? plans : []) {
       const e = estimatedBoardings(
-        zones.zones,
+        zones!.zones,
         p.mode,
         [...new Set(p.sequences.flat())],
         prefs,
@@ -215,8 +219,13 @@ export function CapacityRun({
       );
       for (const [n, v] of Object.entries(e)) out[n] = (out[n] ?? 0) + v;
     }
+    if (demandRidership)
+      Object.assign(
+        out,
+        demandStopBoardings(stopNames, demandRidership, () => 1),
+      );
     return out;
-  }, [zones, plans, prefs, ridership?.doc]);
+  }, [zones, plans, prefs, ridership?.doc, demandRidership, stopNames]);
 
   /** Loads the estimate's zones once per published network. */
   const ensureZones = (): Promise<RidershipZones> | null => {
@@ -261,7 +270,10 @@ export function CapacityRun({
     const out: Record<string, LineLoad> = {};
     for (const p of all) {
       const names = [...new Set(p.sequences.flat())];
-      const est = estimatedBoardings(z.zones, p.mode, names, prefs, ridership.doc);
+      const est = {
+        ...estimatedBoardings(z.zones, p.mode, names, prefs, ridership.doc),
+        ...(demandRidership ? demandStopBoardings(names, demandRidership, linesAt) : {}),
+      };
       const line: LoadLine = { ...p, boardings: lineBoardings(names, est, ownBoardings, linesAt) };
       out[p.key] = lineLoad(line, w.from_s, w.to_s, shares);
     }

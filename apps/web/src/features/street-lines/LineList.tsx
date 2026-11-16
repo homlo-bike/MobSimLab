@@ -1,8 +1,11 @@
 import { useI18n } from "../../i18n/i18n";
+import { ObjectComments, objectKey, useOpenThreads } from "../comments/Comments";
 
 interface Props {
   /** Names of the project's saved lines, in order. */
   names: string[];
+  /** Ids of the saved lines, in the same order, for their comments; absent ids have none. */
+  ids?: (string | undefined)[];
   /** The line being edited; `names.length` for a new line not drawn yet. */
   current: number;
   onSelect: (index: number) => void;
@@ -14,8 +17,10 @@ interface Props {
  * Purpose: the project's street lines at the top of the street line panel: pick the one to edit, start a new
  * one, or delete the one being edited (after asking).
  */
-export function LineList({ names, current, onSelect, onNew, onDelete }: Props) {
+export function LineList({ names, ids = [], current, onSelect, onNew, onDelete }: Props) {
   const { t } = useI18n();
+  const open = useOpenThreads();
+  const id = ids[current];
   const isNew = current >= names.length;
   const name = isNew ? null : names[current] || t("street.untitled");
   return (
@@ -27,11 +32,15 @@ export function LineList({ names, current, onSelect, onNew, onDelete }: Props) {
           onChange={(e) => onSelect(Number(e.target.value))}
           className="rounded border border-slate-300 bg-white p-1"
         >
-          {names.map((n, i) => (
-            <option key={i} value={i}>
-              {n || t("street.untitled")}
-            </option>
-          ))}
+          {names.map((n, i) => {
+            const threads = ids[i] ? (open.get(objectKey("street-line", ids[i])) ?? 0) : 0;
+            return (
+              <option key={i} value={i}>
+                {n || t("street.untitled")}
+                {threads > 0 && ` · 💬 ${threads}`}
+              </option>
+            );
+          })}
           {isNew && <option value={names.length}>{t("street.newLineDraft")}</option>}
         </select>
       </label>
@@ -55,6 +64,7 @@ export function LineList({ names, current, onSelect, onNew, onDelete }: Props) {
           {t("street.deleteLine")}
         </button>
       </div>
+      {id && <ObjectComments type="street-line" id={id} />}
     </div>
   );
 }

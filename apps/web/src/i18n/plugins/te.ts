@@ -25,8 +25,6 @@ export const pluginsTe = {
   "plugins.perm.writeResults": "తన ఫలితాలను సేవ్ చేస్తుంది",
   "plugins.perm.writeScenario": "దృశ్యంలో మార్పులను సూచిస్తుంది",
   "plugins.installTitle": "ప్లగిన్ ఇన్‌స్టాల్ చేయండి",
-  "plugins.installIntro":
-    ".msplugin ఫైల్‌ను అప్‌లోడ్ చేయండి. MobSimLab దాన్ని తనిఖీ చేసి, ఇన్‌స్టాల్ చేయకముందే అది ఏమి జోడిస్తుందో చూపిస్తుంది. ఇన్‌స్టాల్ అయిన ప్లగిన్‌లు విధానాలు, సాధనాలు, పారామితులు, మూలాలు జోడించగలవు; సొంత కోడ్ ఉన్న ప్లగిన్‌లు తర్వాత వస్తాయి.",
   "plugins.choose": ".msplugin ఫైల్ ఎంచుకోండి",
   "plugins.problems": "ఈ ప్లగిన్‌ను ఇన్‌స్టాల్ చేయలేము:",
   "plugins.install": "ఇన్‌స్టాల్ చేయండి",
