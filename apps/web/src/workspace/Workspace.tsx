@@ -629,6 +629,7 @@ export function Workspace({
               streetSetups={setups}
               delays={delays}
               designValues={designValues}
+              prefValues={preferences?.values}
               switchChoice={switchChoice}
               existingRailways={existingRailways}
               initial={railway}
