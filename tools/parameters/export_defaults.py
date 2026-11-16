@@ -9,6 +9,9 @@ Reads assumptions/parameters (validated by tools/assumptions/check.py) and write
 label, group, unit and kind, and its [low, central, high] value for every mode ("*" and each mode whose value
 differs) and for each traction that has its own entry. Enum and string parameters carry their central value
 only. switch.default_turnout is left out: Project Preferences → Switches sets it per rail mode.
+
+Plugin parameters that the tools read from Project Preferences are added from the plugins' own files
+(PLUGIN_FILES), numbers only: the noise map takes every `noise.*` number preference over the plugin's value.
 """
 
 from __future__ import annotations
@@ -19,9 +22,13 @@ import json
 import sys
 from pathlib import Path
 
+import yaml
+
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "apps" / "web" / "src" / "workspace" / "parameters.generated.json"
 SKIP = {"switch.default_turnout"}
+# Plugin parameter files whose values the tools read from Project Preferences.
+PLUGIN_FILES = [ROOT / "plugins" / "noise" / "assumptions" / "parameters.yaml"]
 
 
 def assumption_check():
@@ -44,6 +51,13 @@ def value(v: dict, kind: str):
 def render() -> str:
     ac = assumption_check()
     params = [p for p in ac.load_parameters() if p["key"] not in SKIP]
+    for f in PLUGIN_FILES:
+        # Only numbers: the noise map reads number preferences, not enum choices.
+        params += [
+            p
+            for p in yaml.safe_load(f.read_text(encoding="utf-8")) or []
+            if p.get("kind", "number") == "number"
+        ]
     order = {g: i for i, g in enumerate(ac.GROUP_ORDER)}
     params.sort(key=lambda p: order.get(p["group"], len(order)))
     out = []

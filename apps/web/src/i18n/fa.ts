@@ -346,6 +346,7 @@ export const fa: Messages = {
   "prefs.group.cost": "هزینه‌ها",
   "prefs.group.benefits": "منافع",
   "prefs.group.fares": "کرایه‌ها",
+  "prefs.group.noise": "نوفه",
   "prefs.traction.battery": "باتری",
   "prefs.traction.diesel": "دیزل",
   "prefs.traction.hydrogen": "هیدروژن",
