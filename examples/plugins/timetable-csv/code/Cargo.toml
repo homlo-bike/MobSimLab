@@ -1,0 +1,30 @@
+# Example third-party plugin code (ADR-0036 Phase 2): one WebAssembly component per world, built by
+# tools/plugins/build-example.sh. Its own workspace, because it only builds for wasm32.
+[workspace]
+
+[package]
+name = "timetable-csv-plugin"
+version = "1.0.0"
+edition = "2021"
+license = "AGPL-3.0-or-later"
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+
+[features]
+calculation = []
+importer = []
+exporter = []
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+wit-bindgen = { version = "0.46.0", default-features = false, features = ["macros", "realloc"] }
+
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true

@@ -24,7 +24,7 @@ process.stdin.on("data", (c: Buffer) => {
   }
   chunks.push(c);
 });
-process.stdin.on("end", () => {
+process.stdin.on("end", async () => {
   if (!tool) {
     process.stderr.write(`unknown tool ${toolName}\n`);
     process.exit(2);
@@ -37,7 +37,7 @@ process.stdin.on("end", () => {
   };
   let out: string;
   try {
-    out = JSON.stringify({ ok: true, result: tool(Buffer.concat(chunks), ctx) ?? null });
+    out = JSON.stringify({ ok: true, result: (await tool(Buffer.concat(chunks), ctx)) ?? null });
   } catch (e) {
     // Errors a tool throws on purpose name what is wrong with the file; anything else is a crash.
     if (e instanceof ToolError) out = JSON.stringify({ ok: false, error: e.message.slice(0, 500) });
