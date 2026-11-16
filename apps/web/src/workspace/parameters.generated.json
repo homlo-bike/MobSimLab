@@ -8055,6 +8055,20 @@
      110
     ]
    }
+  },
+  {
+   "id": "noise.ferry_source_height_m",
+   "label": "Ferry source height above the water (funnel, engine room vents, ventilation)",
+   "group": "Noise",
+   "unit": "m",
+   "kind": "number",
+   "values": {
+    "*": [
+     3,
+     5,
+     10
+    ]
+   }
   }
  ]
 }
