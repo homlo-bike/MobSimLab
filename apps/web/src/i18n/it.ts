@@ -1,5 +1,8 @@
+import { roadIt } from "./road/it";
 import { editorsIt } from "./editors/it";
 import { cargoBikeIt } from "./cargo-bike/it";
+import { depotsIt } from "./depots/it";
+import { populationIt } from "./population/it";
 import { pluginsIt } from "./plugins/it";
 import type { Messages } from "./en";
 
@@ -277,6 +280,10 @@ export const it: Messages = {
   "prefs.delayLane": "Su una corsia bus o tram solo dipinta",
   "prefs.delayDefault": "Libreria delle ipotesi: {value} %",
   "prefs.delayReset": "Usa il valore della libreria",
+  "prefs.stationsTitle": "Stazioni",
+  "prefs.stationsIntro":
+    "Le fermate con lo stesso nome entro questa distanza contano come una sola stazione nella mappa schematica, nel pianificatore di viaggio e nelle tabelle dei benefici e dei passeggeri.",
+  "prefs.libraryM": "Libreria delle ipotesi: {value} m",
   "prefs.currencyTitle": "Valuta",
   "prefs.currencyIntro":
     "Tutto il denaro del progetto è mostrato in questa valuta: tabelle dei costi, benefici, scenari e risparmi della cargo bike.",
@@ -298,8 +305,50 @@ export const it: Messages = {
   "prefs.rulesChanged": "{count} modificati",
   "prefs.rulesLibrary": "Libreria delle ipotesi: {value} {unit}",
   "prefs.rulesLibraryRange": "Libreria delle ipotesi: {value} {unit} (intervallo {low}–{high})",
-  "prefs.vehicles": "Veicoli usati (dal catalogo dei veicoli)",
-  "prefs.switches": "Deviatoi (dal catalogo dei deviatoi)",
+  "prefs.paramsTitle": "Tutti i parametri",
+  "prefs.paramsIntro":
+    "Ogni valore della libreria delle ipotesi. Imposta il tuo per tutti i modi o per un modo; il valore di un modo prevale su quello per tutti i modi. Il valore della libreria resta accanto.",
+  "prefs.paramsGroup": "Gruppo",
+  "prefs.paramsMode": "Modo",
+  "prefs.paramsAllModes": "Tutti i modi",
+  "prefs.paramsFromAll": "il tuo valore per tutti i modi",
+  "prefs.group.modes": "Modi",
+  "prefs.group.operations": "Esercizio",
+  "prefs.group.demand": "Domanda",
+  "prefs.group.analysis": "Analisi",
+  "prefs.group.simulation": "Simulazione",
+  "prefs.group.infrastructure": "Standard infrastrutturali",
+  "prefs.group.accessibility": "Accessibilità",
+  "prefs.group.depots": "Depositi e strade",
+  "prefs.group.energy": "Energia e clima",
+  "prefs.group.cost": "Costi",
+  "prefs.group.benefits": "Benefici",
+  "prefs.group.fares": "Tariffe",
+  "prefs.traction.battery": "batteria",
+  "prefs.traction.diesel": "diesel",
+  "prefs.traction.hydrogen": "idrogeno",
+  "prefs.traction.cng": "metano (CNG)",
+  "prefs.traction.electric": "elettrico",
+  "prefs.accessTitle": "Accessibilità dei marciapiedi",
+  "prefs.accessIntro":
+    "Limiti di gradino e distanza tra marciapiede e treno (STI PMR) e altezza del pavimento usata per i treni che non l'hanno nel catalogo. Le linee sono verificate a ogni fermata.",
+  "prefs.vehiclesTitle": "Veicoli",
+  "prefs.vehiclesIntro":
+    "I veicoli del catalogo usati da questo progetto, per modo. Gli strumenti per linee stradali e ferroviarie propongono solo quelli spuntati.",
+  "prefs.vehiclesMode": "Modo",
+  "prefs.vehiclesUsed": "{used} di {total} in uso",
+  "prefs.vehiclesAll": "Usa tutti",
+  "prefs.vehiclesFacts": "{length} m · {places} posti · {speed} km/h",
+  "prefs.vehiclesLast": "Ogni modo mantiene almeno un veicolo in uso.",
+  "prefs.switchesTitle": "Deviatoi",
+  "prefs.switchesIntro":
+    "I deviatoi e gli incroci del catalogo che l'editor ferroviario propone per ogni modo ferroviario, e il deviatoio con cui partono i nuovi.",
+  "prefs.switchesTurnouts": "Deviatoi",
+  "prefs.switchesSlips": "Deviatoi inglesi negli incroci",
+  "prefs.switchesDefault": "Predefinito",
+  "prefs.switchesFacts": "1:{n} · R {radius} m · {speed} km/h in deviata",
+  "prefs.switchesLast":
+    "Il deviatoio predefinito resta in uso. Per escluderlo, scegli prima un altro predefinito.",
   "prefs.calendar": "Calendario, domanda e costi",
 
   "job.stepOf": "Passo {step} di {steps}",
@@ -368,5 +417,8 @@ export const it: Messages = {
 
   ...editorsIt,
   ...cargoBikeIt,
+  ...depotsIt,
+  ...populationIt,
+  ...roadIt,
   ...pluginsIt,
 };

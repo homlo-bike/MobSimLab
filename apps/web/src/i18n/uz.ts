@@ -1,5 +1,8 @@
+import { roadUz } from "./road/uz";
 import { editorsUz } from "./editors/uz";
 import { cargoBikeUz } from "./cargo-bike/uz";
+import { depotsUz } from "./depots/uz";
+import { populationUz } from "./population/uz";
 import { pluginsUz } from "./plugins/uz";
 import type { Messages } from "./en";
 
@@ -280,6 +283,10 @@ export const uz: Messages = {
   "prefs.delayLane": "Boʻyalgan avtobus yoki tramvay yoʻlagida",
   "prefs.delayDefault": "Farazlar kutubxonasi: {value} %",
   "prefs.delayReset": "Kutubxona qiymatidan foydalanish",
+  "prefs.stationsTitle": "Stansiyalar",
+  "prefs.stationsIntro":
+    "Shu masofadagi bir xil nomli bekatlar sxematik xaritada, sayohat rejalashtiruvchida hamda foyda va yo'lovchilar jadvallarida bitta stansiya hisoblanadi.",
+  "prefs.libraryM": "Farazlar kutubxonasi: {value} m",
   "prefs.currencyTitle": "Valyuta",
   "prefs.currencyIntro":
     "Loyihadagi barcha pul miqdorlari shu valyutada ko‘rsatiladi: xarajat jadvallari, foydalar, ssenariylar va yuk velosipedi tejamlari.",
@@ -302,8 +309,50 @@ export const uz: Messages = {
   "prefs.rulesChanged": "o'zgartirilgan: {count}",
   "prefs.rulesLibrary": "Farazlar kutubxonasi: {value} {unit}",
   "prefs.rulesLibraryRange": "Farazlar kutubxonasi: {value} {unit} (oraliq {low}–{high})",
-  "prefs.vehicles": "Ishlatiladigan transport vositalari, katalogdan",
-  "prefs.switches": "Rels strelkalari, strelkalar katalogidan",
+  "prefs.paramsTitle": "Barcha parametrlar",
+  "prefs.paramsIntro":
+    "Farazlar kutubxonasining har bir qiymati. Barcha transport turlari yoki bittasi uchun o'z qiymatingizni bering; bitta turning qiymati barchasinikidan ustun. Kutubxona qiymati yonida turadi.",
+  "prefs.paramsGroup": "Guruh",
+  "prefs.paramsMode": "Transport turi",
+  "prefs.paramsAllModes": "Barcha turlar",
+  "prefs.paramsFromAll": "barcha turlar uchun qiymatingiz",
+  "prefs.group.modes": "Transport turlari",
+  "prefs.group.operations": "Ekspluatatsiya",
+  "prefs.group.demand": "Talab",
+  "prefs.group.analysis": "Tahlil",
+  "prefs.group.simulation": "Simulyatsiya",
+  "prefs.group.infrastructure": "Infratuzilma standartlari",
+  "prefs.group.accessibility": "Foydalanish qulayligi",
+  "prefs.group.depots": "Depolar va ko'chalar",
+  "prefs.group.energy": "Energiya va iqlim",
+  "prefs.group.cost": "Xarajatlar",
+  "prefs.group.benefits": "Foydalar",
+  "prefs.group.fares": "Yo'l haqi",
+  "prefs.traction.battery": "batareya",
+  "prefs.traction.diesel": "dizel",
+  "prefs.traction.hydrogen": "vodorod",
+  "prefs.traction.cng": "tabiiy gaz (CNG)",
+  "prefs.traction.electric": "elektr",
+  "prefs.accessTitle": "Platforma qulayligi",
+  "prefs.accessIntro":
+    "Platforma va poyezd orasidagi zinapoya va bo‘shliq chegaralari (TSI PRM) hamda katalogda yo‘q poyezdlar uchun pol balandligi. Liniyalar har bir bekatda tekshiriladi.",
+  "prefs.vehiclesTitle": "Transport vositalari",
+  "prefs.vehiclesIntro":
+    "Ushbu loyiha har bir tur uchun foydalanadigan katalog vositalari. Ko'cha yo'nalishi va temir yo'l vositalari faqat belgilanganlarini taklif qiladi.",
+  "prefs.vehiclesMode": "Tur",
+  "prefs.vehiclesUsed": "{total} tadan {used} tasi ishlatiladi",
+  "prefs.vehiclesAll": "Hammasini ishlatish",
+  "prefs.vehiclesFacts": "{length} m · {places} o'rin · {speed} km/soat",
+  "prefs.vehiclesLast": "Har bir tur uchun kamida bitta vosita ishlatilib qoladi.",
+  "prefs.switchesTitle": "Strelkalar",
+  "prefs.switchesIntro":
+    "Temir yo'l muharriri har bir relsli tur uchun taklif qiladigan katalogdagi strelkalar va kesishmalar hamda yangi strelkalar boshlanadigan strelka.",
+  "prefs.switchesTurnouts": "Strelkalar",
+  "prefs.switchesSlips": "Kesishmalardagi o'tkazgichlar",
+  "prefs.switchesDefault": "Standart",
+  "prefs.switchesFacts": "1:{n} · R {radius} m · burilishda {speed} km/soat",
+  "prefs.switchesLast":
+    "Standart strelka ishlatilib qoladi. Uni olib tashlash uchun avval boshqasini tanlang.",
   "prefs.calendar": "Kalendar, talab va xarajatlar",
 
   "job.stepOf": "{steps} qadamdan {step}-qadam",
@@ -375,5 +424,8 @@ export const uz: Messages = {
 
   ...editorsUz,
   ...cargoBikeUz,
+  ...depotsUz,
+  ...populationUz,
+  ...roadUz,
   ...pluginsUz,
 };

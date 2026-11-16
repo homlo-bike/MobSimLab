@@ -1,5 +1,8 @@
+import { roadFr } from "./road/fr";
 import { editorsFr } from "./editors/fr";
 import { cargoBikeFr } from "./cargo-bike/fr";
+import { depotsFr } from "./depots/fr";
+import { populationFr } from "./population/fr";
 import { pluginsFr } from "./plugins/fr";
 import type { Messages } from "./en";
 
@@ -280,6 +283,10 @@ export const fr: Messages = {
   "prefs.delayLane": "Dans une voie bus ou tram marquée",
   "prefs.delayDefault": "Bibliothèque d'hypothèses : {value} %",
   "prefs.delayReset": "Utiliser la valeur de la bibliothèque",
+  "prefs.stationsTitle": "Stations",
+  "prefs.stationsIntro":
+    "Les arrêts de même nom situés dans ce rayon comptent comme une seule station dans le plan schématique, le calculateur d'itinéraires et les tableaux des bénéfices et de fréquentation.",
+  "prefs.libraryM": "Bibliothèque d'hypothèses : {value} m",
   "prefs.currencyTitle": "Devise",
   "prefs.currencyIntro":
     "Tout l'argent du projet est affiché dans cette devise : tableaux de coûts, bénéfices, scénarios et économies du vélo cargo.",
@@ -301,8 +308,50 @@ export const fr: Messages = {
   "prefs.rulesChanged": "{count} modifiées",
   "prefs.rulesLibrary": "Bibliothèque d'hypothèses : {value} {unit}",
   "prefs.rulesLibraryRange": "Bibliothèque d'hypothèses : {value} {unit} (plage {low}–{high})",
-  "prefs.vehicles": "Véhicules utilisés, depuis le catalogue de véhicules",
-  "prefs.switches": "Aiguillages, depuis le catalogue d’aiguillages",
+  "prefs.paramsTitle": "Tous les paramètres",
+  "prefs.paramsIntro":
+    "Chaque valeur de la bibliothèque d'hypothèses. Définissez la vôtre pour tous les modes ou pour un mode ; une valeur pour un mode l'emporte sur celle pour tous les modes. La valeur de la bibliothèque reste affichée à côté.",
+  "prefs.paramsGroup": "Groupe",
+  "prefs.paramsMode": "Mode",
+  "prefs.paramsAllModes": "Tous les modes",
+  "prefs.paramsFromAll": "votre valeur pour tous les modes",
+  "prefs.group.modes": "Modes",
+  "prefs.group.operations": "Exploitation",
+  "prefs.group.demand": "Demande",
+  "prefs.group.analysis": "Analyse",
+  "prefs.group.simulation": "Simulation",
+  "prefs.group.infrastructure": "Normes d'infrastructure",
+  "prefs.group.accessibility": "Accessibilité",
+  "prefs.group.depots": "Dépôts et rues",
+  "prefs.group.energy": "Énergie et climat",
+  "prefs.group.cost": "Coûts",
+  "prefs.group.benefits": "Bénéfices",
+  "prefs.group.fares": "Tarifs",
+  "prefs.traction.battery": "batterie",
+  "prefs.traction.diesel": "diesel",
+  "prefs.traction.hydrogen": "hydrogène",
+  "prefs.traction.cng": "gaz naturel (GNV)",
+  "prefs.traction.electric": "électrique",
+  "prefs.accessTitle": "Accessibilité des quais",
+  "prefs.accessIntro":
+    "Limites de marche et de lacune entre quai et train (STI PMR), et hauteur de plancher utilisée pour les trains qui n'en ont pas dans le catalogue. Les lignes sont vérifiées à chaque arrêt.",
+  "prefs.vehiclesTitle": "Véhicules",
+  "prefs.vehiclesIntro":
+    "Les véhicules du catalogue utilisés par ce projet, par mode. Les outils de lignes routières et ferroviaires ne proposent que ceux cochés.",
+  "prefs.vehiclesMode": "Mode",
+  "prefs.vehiclesUsed": "{used} sur {total} utilisés",
+  "prefs.vehiclesAll": "Tout utiliser",
+  "prefs.vehiclesFacts": "{length} m · {places} places · {speed} km/h",
+  "prefs.vehiclesLast": "Chaque mode garde au moins un véhicule en service.",
+  "prefs.switchesTitle": "Aiguillages",
+  "prefs.switchesIntro":
+    "Les aiguillages et traversées du catalogue que l'éditeur ferroviaire propose, par mode ferroviaire, et l'aiguillage par défaut des nouveaux.",
+  "prefs.switchesTurnouts": "Aiguillages simples",
+  "prefs.switchesSlips": "Traversées-jonctions",
+  "prefs.switchesDefault": "Par défaut",
+  "prefs.switchesFacts": "1:{n} · R {radius} m · {speed} km/h en déviation",
+  "prefs.switchesLast":
+    "L'aiguillage par défaut reste utilisé. Pour l'exclure, choisissez d'abord un autre par défaut.",
   "prefs.calendar": "Calendrier, demande et coûts",
 
   "job.stepOf": "Étape {step} sur {steps}",
@@ -375,5 +424,8 @@ export const fr: Messages = {
 
   ...editorsFr,
   ...cargoBikeFr,
+  ...depotsFr,
+  ...populationFr,
+  ...roadFr,
   ...pluginsFr,
 };

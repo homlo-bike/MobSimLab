@@ -3,6 +3,9 @@ import { createRoot } from "react-dom/client";
 import { App } from "./App";
 import { preloadLanguage } from "./i18n/i18n";
 import "./index.css";
+import { logUncaughtErrors } from "./logging/logger";
+
+logUncaughtErrors();
 
 const root = document.getElementById("root");
 if (!root) throw new Error("#root element missing");

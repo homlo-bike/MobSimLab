@@ -24,7 +24,8 @@ export function drawnProblem(railway: Network | null | undefined): DrawnProblem 
 /**
  * Purpose: build the project's railway with its terrain heights, as the Tables tab does, and give the
  * capacity run its track topology and service lines (the lines the railway tool can publish).
- * Inputs: the railway document; the engine loader and height source (tests inject them).
+ * Inputs: the railway document; the engine loader and height source (tests inject them); the project's
+ * preference values (running values of the lines).
  * Output: the network, or a problem when nothing can be tested.
  * Side effects: loads the rail engine (WebAssembly) and fetches terrain heights.
  */
@@ -32,6 +33,7 @@ export async function buildDrawnNetwork(
   railway: Network | null | undefined,
   loadRail: RailEngineLoader = loadRailEngine,
   fetchHeights: HeightsFetcher = defaultHeights,
+  values?: Readonly<Record<string, number>> | null,
 ): Promise<DrawnNetwork | DrawnProblem> {
   const problem = drawnProblem(railway);
   if (problem || !railway) return problem ?? "noTrack";
@@ -45,7 +47,7 @@ export async function buildDrawnNetwork(
     if (view.counts.errors > 0) return "errors";
     return {
       topology: JSON.stringify(engine.topology()),
-      lines: JSON.stringify({ service_lines: engineLines(railway) }),
+      lines: JSON.stringify({ service_lines: engineLines(railway, railway.lines ?? [], values) }),
     };
   } finally {
     engine.dispose();
