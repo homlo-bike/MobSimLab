@@ -1,6 +1,8 @@
 import type { Map as MapLibreMap } from "maplibre-gl";
 import { type ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { BenefitTables } from "../features/benefits/BenefitTables";
+import type { Estimate as BenefitEstimate } from "../features/benefits/model";
+import type { Triple } from "../features/benefits/params";
 import type { BenefitsDoc } from "../features/benefits/formulas";
 import { RegionEditor } from "../features/benefits/RegionEditor";
 import type { Region, RegionsDoc } from "../features/benefits/regions";
@@ -149,6 +151,19 @@ export function Workspace({
   const onCostEstimate = useCallback(
     (estimate: CostEstimate, prices: Prices, country: string | null, rate: number) =>
       setCostInfo({ estimate, currency: prices.currency, country, rate }),
+    [],
+  );
+  // The benefit estimate's riders a weekday per line (low, medium, high), for the service table.
+  const [riders, setRiders] = useState<Record<string, Triple> | null>(null);
+  const onBenefitEstimate = useCallback(
+    (e: BenefitEstimate | null) =>
+      setRiders(
+        e
+          ? Object.fromEntries(
+              e.rows.filter((r) => r.scope === "line").map((r) => [r.id, r.values.ridership_daily]),
+            )
+          : null,
+      ),
     [],
   );
   const [build, setBuild] = useState<Build | null>(null);
@@ -641,6 +656,7 @@ export function Workspace({
                     streetLines={streetLines}
                     preferences={preferences}
                     onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
+                    riders={riders}
                   />
                   <CostTables
                     railway={railway}
@@ -667,6 +683,7 @@ export function Workspace({
                   doc={drawings.doc<BenefitsDoc>("benefits")}
                   onDoc={editable ? (d) => drawings.set("benefits", d) : undefined}
                   costs={costInfo}
+                  onEstimate={onBenefitEstimate}
                 />
               )}
               {project && drawings.loaded && (
