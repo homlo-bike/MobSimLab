@@ -21,6 +21,7 @@ import structlog
 
 from mobsim_worker import __version__
 from mobsim_worker.config import ConfigError, WorkerConfig, load_config
+from mobsim_worker.logsink import DatabaseSink, redact_event
 from mobsim_worker.queue import Queue
 from mobsim_worker.runner import StopSignal, process
 
@@ -92,20 +93,41 @@ def work(
             backoff = min(backoff * 2, MAX_BACKOFF_S)
 
 
-def configure_logging() -> None:
-    """Log JSON lines to stdout (ADR-0022)."""
-    structlog.configure(
-        processors=[
-            structlog.contextvars.merge_contextvars,
-            structlog.processors.TimeStamper(fmt="iso"),
-            structlog.processors.JSONRenderer(),
-        ]
+def log_connection(cfg: WorkerConfig) -> psycopg.Connection[tuple[object, ...]]:
+    """Open the connection the log sink stores WARN+ entries on (separate from the job connection)."""
+    return psycopg.connect(
+        host=cfg.db_host,
+        port=cfg.db_port,
+        dbname=cfg.db_name,
+        user="mobsimlab_worker",
+        password=cfg.db_password,
+        application_name="mobsimlab-worker-logs",
+        autocommit=True,
+        connect_timeout=3,
     )
+
+
+def configure_logging(cfg: WorkerConfig | None = None) -> None:
+    """Log redacted JSON lines with their level to stdout, and WARN+ to the database (ADR-0022).
+
+    Args:
+        cfg: Worker configuration; without it (before it is loaded) nothing goes to the database.
+    """
+    processors: list[structlog.typing.Processor] = [
+        structlog.contextvars.merge_contextvars,
+        structlog.processors.add_log_level,
+        structlog.processors.TimeStamper(fmt="iso"),
+        redact_event,
+    ]
+    if cfg is not None:
+        processors.append(DatabaseSink(lambda: log_connection(cfg)))
+    processors.append(structlog.processors.JSONRenderer())
+    structlog.configure(processors=processors)
 
 
 def child(cfg: WorkerConfig, stop: StopSignal, index: int) -> None:
     """Run one worker process until ``stop`` is set (the supervisor sets it on SIGTERM)."""
-    configure_logging()
+    configure_logging(cfg)
     # The supervisor decides when to stop; a signal sent to the whole process group must not stop a run early.
     signal.signal(signal.SIGTERM, signal.SIG_IGN)
     signal.signal(signal.SIGINT, signal.SIG_IGN)
@@ -170,6 +192,7 @@ def main() -> int:
     except ConfigError as e:
         print(e, file=sys.stderr)
         return 78
+    configure_logging(cfg)
     stop = threading.Event()
     signal.signal(signal.SIGTERM, lambda *_: stop.set())
     signal.signal(signal.SIGINT, lambda *_: stop.set())

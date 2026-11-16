@@ -32,7 +32,7 @@ const RESEARCH = {
   name: "Avenio",
   variant: "Munich TZ 4-car",
   producer: "Siemens",
-  dimensions: { lengthM: 36.85, widthM: 2.3, emptyWeightT: 45 },
+  dimensions: { lengthM: 36.85, widthM: 2.3, emptyWeightT: 45, floorHeightMm: 300 },
   consist: { cars: 4 },
   capacity: { seated: 60, standing: 159, total: 219, standingDensityPersM2: 4 },
   performance: { maxSpeedKmh: 70, tractionPowerKw: 600 },
@@ -135,6 +135,11 @@ describe("own vehicles", () => {
     expect(vehiclesFor("bus").some((v) => v.id === "own-volvo-7900-electric")).toBe(true);
     expect(trainsFor("tram").some((t) => t.id === "own-siemens-avenio-munich-4-car")).toBe(true);
     expect(trainById("own-siemens-avenio-munich-4-car")?.capacity).toBe(219);
+    // Platform access checks take the own train's width and floor height.
+    expect(trainById("own-siemens-avenio-munich-4-car")).toMatchObject({
+      width_m: 2.3,
+      floor_height_mm: 300,
+    });
     expect(vehicleById("own-volvo-7900-electric")?.energy).toBe("battery");
     const line = { profile: { mode: "bus", length_m: 12 }, vehicle: "own-volvo-7900-electric" };
     expect(lineVehicle(line as unknown as SavedStreetLine)).toMatchObject({

@@ -3,6 +3,7 @@ import { editorsTa } from "./editors/ta";
 import { cargoBikeTa } from "./cargo-bike/ta";
 import { depotsTa } from "./depots/ta";
 import { fleetTa } from "./fleet/ta";
+import { populationTa } from "./population/ta";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -284,6 +285,10 @@ export const ta: Messages = {
   "prefs.delayLane": "வண்ணம் பூசப்பட்ட பேருந்து அல்லது டிராம் பாதையில்",
   "prefs.delayDefault": "அனுமானங்களின் நூலகம்: {value} %",
   "prefs.delayReset": "நூலக மதிப்பைப் பயன்படுத்து",
+  "prefs.stationsTitle": "நிலையங்கள்",
+  "prefs.stationsIntro":
+    "இந்தத் தூரத்திற்குள் ஒரே பெயருள்ள நிறுத்தங்கள் வரைபட வரைவு, பயணத் திட்டமிடுபவர், நன்மை மற்றும் பயணிகள் அட்டவணைகளில் ஒரு நிலையமாகக் கணக்கிடப்படும்.",
+  "prefs.libraryM": "அனுமானங்களின் நூலகம்: {value} மீ",
   "prefs.currencyTitle": "நாணயம்",
   "prefs.currencyIntro":
     "திட்டத்தின் எல்லாப் பணத் தொகைகளும் இந்த நாணயத்தில் காட்டப்படும்: செலவு அட்டவணைகள், பயன்கள், சூழ்நிலைகள், சரக்கு மிதிவண்டிச் சேமிப்புகள்.",
@@ -306,6 +311,33 @@ export const ta: Messages = {
   "prefs.rulesChanged": "மாற்றப்பட்டவை: {count}",
   "prefs.rulesLibrary": "அனுமானங்களின் நூலகம்: {value} {unit}",
   "prefs.rulesLibraryRange": "அனுமானங்களின் நூலகம்: {value} {unit} (வரம்பு {low}–{high})",
+  "prefs.paramsTitle": "அனைத்து அளவுருக்கள்",
+  "prefs.paramsIntro":
+    "அனுமான நூலகத்தின் ஒவ்வொரு மதிப்பும். அனைத்து முறைகளுக்கும் அல்லது ஒரு முறைக்கும் உங்கள் மதிப்பை அமைக்கவும்; ஒரு முறையின் மதிப்பு அனைத்துக்குமான மதிப்பை விட முன்னுரிமை பெறும். நூலக மதிப்பு அருகில் இருக்கும்.",
+  "prefs.paramsGroup": "குழு",
+  "prefs.paramsMode": "போக்குவரத்து முறை",
+  "prefs.paramsAllModes": "அனைத்து முறைகள்",
+  "prefs.paramsFromAll": "அனைத்து முறைகளுக்கான உங்கள் மதிப்பு",
+  "prefs.group.modes": "போக்குவரத்து முறைகள்",
+  "prefs.group.operations": "இயக்கம்",
+  "prefs.group.demand": "தேவை",
+  "prefs.group.analysis": "பகுப்பாய்வு",
+  "prefs.group.simulation": "உருவகப்படுத்தல்",
+  "prefs.group.infrastructure": "உள்கட்டமைப்பு தரநிலைகள்",
+  "prefs.group.accessibility": "அணுகல்தன்மை",
+  "prefs.group.depots": "பணிமனைகளும் தெருக்களும்",
+  "prefs.group.energy": "ஆற்றலும் காலநிலையும்",
+  "prefs.group.cost": "செலவுகள்",
+  "prefs.group.benefits": "பயன்கள்",
+  "prefs.group.fares": "கட்டணங்கள்",
+  "prefs.traction.battery": "மின்கலம்",
+  "prefs.traction.diesel": "டீசல்",
+  "prefs.traction.hydrogen": "ஹைட்ரஜன்",
+  "prefs.traction.cng": "இயற்கை எரிவாயு (CNG)",
+  "prefs.traction.electric": "மின்சாரம்",
+  "prefs.accessTitle": "நடைமேடை அணுகல்தன்மை",
+  "prefs.accessIntro":
+    "நடைமேடைக்கும் ரயிலுக்கும் இடையிலான படி, இடைவெளி வரம்புகள் (TSI PRM), பட்டியலில் இல்லாத ரயில்களுக்கான தள உயரம். வழித்தடங்கள் ஒவ்வொரு நிறுத்தத்திலும் சரிபார்க்கப்படும்.",
   "prefs.vehiclesTitle": "வாகனங்கள்",
   "prefs.vehiclesIntro":
     "இந்தத் திட்டம் ஒவ்வொரு முறைக்கும் பயன்படுத்தும் பட்டியல் வாகனங்கள். தெரு வழித்தட மற்றும் ரயில்பாதை கருவிகள் குறியிட்டவற்றை மட்டுமே காட்டும்.",
@@ -397,6 +429,7 @@ export const ta: Messages = {
   ...cargoBikeTa,
   ...depotsTa,
   ...fleetTa,
+  ...populationTa,
   ...roadTa,
   ...PLUGIN_MESSAGES.ta,
 };

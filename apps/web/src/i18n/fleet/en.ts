@@ -40,6 +40,7 @@ export const fleetEn = {
   "fleet.field.standing": "Standing places",
   "fleet.field.topSpeed": "Top speed (km/h)",
   "fleet.field.height_m": "Height (m)",
+  "fleet.field.floor_height_mm": "Floor height (mm)",
   "fleet.field.standing_density": "Standing density of the source (pers/m²)",
   "fleet.field.empty_mass_t": "Empty mass (t)",
   "fleet.field.loaded_weight_t": "Loaded weight (t)",

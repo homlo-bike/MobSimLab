@@ -38,6 +38,7 @@ export const fleetIg = {
   "fleet.field.standing": "Ebe iguzo",
   "fleet.field.topSpeed": "Ọsọ kachasị elu (km/h)",
   "fleet.field.height_m": "Ịdị elu (m)",
+  "fleet.field.floor_height_mm": "Ịdị elu ala ụgbọ (mm)",
   "fleet.field.standing_density": "Njupụta ndị guzoro dịka isi iyi si kwuo (mmadụ/m²)",
   "fleet.field.empty_mass_t": "Ịdị arọ efu (t)",
   "fleet.field.loaded_weight_t": "Ịdị arọ ya na ibu (t)",

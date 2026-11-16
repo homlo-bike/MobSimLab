@@ -76,6 +76,8 @@ export interface OwnVehicle {
   length_m: number;
   width_m: number;
   height_m: number | null;
+  /** Floor height above rail or kerb at the doors, mm. */
+  floor_height_mm: number | null;
   seats: number;
   /** Standing places as the source quotes them. */
   standing: number;
@@ -129,6 +131,7 @@ export const LIMITS = {
   length_m: 500,
   width_m: 5,
   height_m: 8,
+  floor_height_mm: 2000,
   seats: 3000,
   standing: 5000,
   standing_density: 10,
@@ -149,6 +152,7 @@ export type CoreField = "name" | "mode" | "length" | "width" | "seats" | "standi
 /** Values an own vehicle may leave out. */
 export type OptionalField =
   | "height_m"
+  | "floor_height_mm"
   | "standing_density"
   | "empty_mass_t"
   | "loaded_weight_t"
@@ -211,6 +215,8 @@ export function toTrain(v: OwnVehicle): CatalogueTrain {
     power_kw: v.power_kw,
     empty_mass_t: v.empty_mass_t,
     capacity: ownCapacity(v),
+    width_m: v.width_m,
+    floor_height_mm: v.floor_height_mm,
   };
 }
 
@@ -274,6 +280,7 @@ export function checkVehicle(d: VehicleDraft): { vehicle: OwnVehicle } | { rejec
     return v;
   };
   const height_m = optional("height_m");
+  const floor_height_mm = optional("floor_height_mm");
   const standing_density = optional("standing_density");
   const empty_mass_t = optional("empty_mass_t");
   const loaded_weight_t = optional("loaded_weight_t");
@@ -306,6 +313,7 @@ export function checkVehicle(d: VehicleDraft): { vehicle: OwnVehicle } | { rejec
       length_m,
       width_m,
       height_m,
+      floor_height_mm,
       seats: Math.round(seats),
       standing: Math.round(standing),
       standing_density,
@@ -370,6 +378,7 @@ export function fromResearch(r: Record<string, unknown>): VehicleDraft {
     length_m: num(dim.lengthM),
     width_m: num(dim.widthM),
     height_m: num(dim.heightM),
+    floor_height_mm: num(dim.floorHeightMm),
     seats,
     standing,
     standing_density: num(cap.standingDensityPersM2),
@@ -406,6 +415,7 @@ export function fromCatalogue(c: Record<string, unknown>): VehicleDraft {
     length_m: n(c, "length"),
     width_m: n(c, "width"),
     height_m: n(c, "height"),
+    floor_height_mm: n(c, "floorHeight"),
     seats: n(c, "seats"),
     standing,
     standing_density: density,

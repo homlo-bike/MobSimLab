@@ -33,6 +33,8 @@ import type {
   TimeMode,
   Timetable,
 } from "./types";
+import { distanceKm } from "../../map/geo";
+import { LIBRARY_SAME_NAME_M } from "../../workspace/preferences";
 
 const NO_STREET_LINES: readonly StreetLineInput[] = [];
 
@@ -48,6 +50,10 @@ interface Props {
   pluginLines?: readonly PluginLineInput[];
   /** On-demand bus zones from the service zone kit. */
   demandZones?: readonly DemandZone[];
+  /** Stops with the same name within this many metres are one station (Project preferences). */
+  sameNameM?: number;
+  /** The project's walking and change values (Project preferences → All parameters). */
+  projectSettings?: Partial<Settings>;
   /** Existing networks imported from GTFS feeds (GTFS plugin). */
   gtfsFeeds?: readonly GtfsFeed[];
   /** Saves the imported feeds; absent when the planner may only look. */
@@ -77,12 +83,6 @@ function inRing(p: LonLat, ring: readonly LonLat[]): boolean {
     if (yi > p[1] !== yj > p[1] && p[0] < ((xj - xi) * (p[1] - yi)) / (yj - yi) + xi) c = !c;
   }
   return c;
-}
-
-/** Purpose: straight distance in km between two points (equirectangular, fine within a town). */
-function km(a: LonLat, b: LonLat): number {
-  const k = Math.cos((((a[1] + b[1]) / 2) * Math.PI) / 180);
-  return (Math.hypot((b[0] - a[0]) * k, b[1] - a[1]) * 111_320) / 1000;
 }
 
 /** Purpose: a headway as "45 s" or "15 min". */
@@ -191,6 +191,8 @@ export function JourneyPlanner({
   railLines = null,
   pluginLines = NO_PLUGIN_LINES,
   demandZones = NO_ZONES,
+  sameNameM = LIBRARY_SAME_NAME_M,
+  projectSettings,
   onEditGtfsRoute,
   gtfsFeeds = NO_FEEDS,
   onGtfsFeeds,
@@ -268,7 +270,7 @@ export function JourneyPlanner({
     }
     let alive = true;
     let made: PlannerEngine | null = null;
-    loadPlanner(timetable, settings)
+    loadPlanner(timetable, { same_name_station_m: sameNameM, ...projectSettings, ...settings })
       .then((e) => {
         made = e;
         if (!alive) return e.dispose();
@@ -283,7 +285,7 @@ export function JourneyPlanner({
       alive = false;
       made?.dispose();
     };
-  }, [timetable, settings, loadPlanner]);
+  }, [timetable, settings, sameNameM, projectSettings, loadPlanner]);
 
   const time = parseClock(timeText);
   const planned = useMemo((): { plan: Plan | null; error: string | null } => {
@@ -339,7 +341,7 @@ export function JourneyPlanner({
       (x) => inRing(a, x.ring) && inRing(b, x.ring) && (x.simulated || x.view.wait_s !== null),
     );
     if (!z) return null;
-    const ride = z.view.ride_fixed_s + km(a, b) * z.view.ride_s_per_km;
+    const ride = z.view.ride_fixed_s + distanceKm(a, b) * z.view.ride_s_per_km;
     // The simulated day's average wait, when the planner ran it; else the estimate's.
     return { name: z.name, wait: z.simulated?.wait_s ?? z.view.wait_s!, ride };
   }, [a, b, shownZones]);
@@ -810,7 +812,7 @@ export function JourneyPlanner({
                   ["walk_speed_kmh", "jp.set.walkSpeed", 4.5, 0.1],
                   ["max_access_m", "jp.set.maxAccess", 1000, 50],
                   ["max_transfer_m", "jp.set.maxTransfer", 400, 50],
-                  ["same_name_station_m", "jp.set.sameName", 600, 50],
+                  ["same_name_station_m", "jp.set.sameName", sameNameM, 50],
                   ["min_change_s", "jp.set.minChange", 60, 10],
                   ["max_rides", "jp.set.maxRides", 5, 1],
                 ] as const
@@ -821,7 +823,7 @@ export function JourneyPlanner({
                     type="number"
                     step={stepv}
                     min={0}
-                    value={settings[key] ?? def}
+                    value={settings[key] ?? projectSettings?.[key] ?? def}
                     onChange={(e) => {
                       const v = Number(e.target.value);
                       if (Number.isFinite(v) && v > 0) setSettings((s) => ({ ...s, [key]: v }));

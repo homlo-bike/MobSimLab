@@ -6,6 +6,7 @@ import {
   MAX_SIDE_DEG,
   POPULATION_SOURCE,
   PopulationService,
+  type PopulationSourceInfo,
 } from "../population/population.service";
 
 /** World Bank indicators the benefit tables use (ADR-0040). */
@@ -45,13 +46,14 @@ export interface PopulationArea {
 
 /** Answer of the population request: people per area (null where WorldPop could not answer). */
 export interface PopulationAnswer {
-  /** The WorldPop year of the counts (null when no area was answered). */
+  /** The reference year of the counts (null when no area was answered). */
   year: number | null;
   populations: Record<string, number | null>;
   failed: number;
   /** Why areas were not answered, e.g. a country grid still downloading to the server. */
   reasons: string[];
-  source: typeof POPULATION_SOURCE;
+  /** WorldPop's live grid, or the project's primary population layer. */
+  source: Omit<PopulationSourceInfo, "year" | "countries">;
 }
 
 /** Purpose: whether a point `[lon, lat]` lies inside a ring (even–odd rule). */
@@ -272,10 +274,12 @@ export class BenefitsService {
   }
 
   /**
-   * Purpose: the WorldPop population of each area, summed over the 100 m cells whose centre lies inside
-   * it (the population grid of ADR-0038); an area WorldPop cannot answer yet gets null.
+   * Purpose: the population of each area, summed over the 100 m cells whose centre lies inside it (the
+   * population grid of ADR-0038: the project's primary population layer when `projectId` names a project
+   * with one, else WorldPop); an area the grid cannot answer yet gets null. The caller checks project access.
    */
-  async population(areas: PopulationArea[]): Promise<PopulationAnswer> {
+  async population(areas: PopulationArea[], projectId: string | null = null): Promise<PopulationAnswer> {
+    let source: PopulationAnswer["source"] = { ...POPULATION_SOURCE, citation: "" };
     const populations: Record<string, number | null> = {};
     const reasons = new Set<string>();
     let failed = 0;
@@ -285,7 +289,7 @@ export class BenefitsService {
       const box: Bbox = [g.box[0] - pad, g.box[1] - pad, g.box[2] + pad, g.box[3] + pad];
       let ans: Awaited<ReturnType<PopulationService["grid"]>>;
       try {
-        ans = await this.population_.grid(box);
+        ans = projectId ? await this.population_.gridFor(box, projectId) : await this.population_.grid(box);
       } catch (e) {
         ans = { status: "unavailable", reason: e instanceof Error ? e.message : String(e) };
       }
@@ -296,6 +300,14 @@ export class BenefitsService {
         continue;
       }
       year = ans.source.year;
+      source = {
+        id: ans.source.id,
+        name: ans.source.name,
+        dataset: ans.source.dataset,
+        url: ans.source.url,
+        licence: ans.source.licence,
+        citation: ans.source.citation,
+      };
       const { x0, y0, dx, dy, nx, ny, people } = ans.grid;
       for (const a of g.areas) {
         const [w, s, e, n] = ringBox(a.ring);
@@ -310,7 +322,7 @@ export class BenefitsService {
         populations[a.id] = sum;
       }
     }
-    return { year, populations, failed, reasons: [...reasons], source: POPULATION_SOURCE };
+    return { year, populations, failed, reasons: [...reasons], source };
   }
 
   /** Purpose: the OpenStreetMap areas (boundaries, neighbourhoods, named places) that contain a point. */

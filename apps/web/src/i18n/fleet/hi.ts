@@ -38,6 +38,7 @@ export const fleetHi = {
   "fleet.field.standing": "खड़े होने की जगहें",
   "fleet.field.topSpeed": "अधिकतम गति (km/h)",
   "fleet.field.height_m": "ऊँचाई (m)",
+  "fleet.field.floor_height_mm": "फ़र्श की ऊँचाई (mm)",
   "fleet.field.standing_density": "स्रोत के अनुसार खड़े यात्रियों का घनत्व (व्यक्ति/m²)",
   "fleet.field.empty_mass_t": "खाली द्रव्यमान (t)",
   "fleet.field.loaded_weight_t": "भरा हुआ वज़न (t)",

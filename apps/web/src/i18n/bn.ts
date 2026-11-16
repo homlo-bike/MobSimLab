@@ -3,6 +3,7 @@ import { editorsBn } from "./editors/bn";
 import { cargoBikeBn } from "./cargo-bike/bn";
 import { depotsBn } from "./depots/bn";
 import { fleetBn } from "./fleet/bn";
+import { populationBn } from "./population/bn";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -278,6 +279,10 @@ export const bn: Messages = {
   "prefs.delayLane": "রং দিয়ে আঁকা বাস বা ট্রাম লেনে",
   "prefs.delayDefault": "অনুমান লাইব্রেরি: {value} %",
   "prefs.delayReset": "লাইব্রেরির মান ব্যবহার করুন",
+  "prefs.stationsTitle": "স্টেশন",
+  "prefs.stationsIntro":
+    "এই দূরত্বের মধ্যে একই নামের স্টপগুলো স্কিম্যাটিক মানচিত্র, যাত্রা পরিকল্পক এবং সুবিধা ও যাত্রী সারণিতে একটি স্টেশন হিসেবে গণ্য হয়।",
+  "prefs.libraryM": "অনুমান লাইব্রেরি: {value} মি",
   "prefs.currencyTitle": "মুদ্রা",
   "prefs.currencyIntro":
     "প্রকল্পের সব অর্থ এই মুদ্রায় দেখানো হয়: খরচের সারণি, সুফল, পরিস্থিতি ও কার্গো বাইকের সাশ্রয়।",
@@ -299,6 +304,33 @@ export const bn: Messages = {
   "prefs.rulesChanged": "পরিবর্তিত: {count}",
   "prefs.rulesLibrary": "অনুমান লাইব্রেরি: {value} {unit}",
   "prefs.rulesLibraryRange": "অনুমান লাইব্রেরি: {value} {unit} (পরিসর {low}–{high})",
+  "prefs.paramsTitle": "সব প্যারামিটার",
+  "prefs.paramsIntro":
+    "অনুমান লাইব্রেরির প্রতিটি মান। সব মাধ্যম বা একটি মাধ্যমের জন্য নিজের মান দিন; একটি মাধ্যমের মান সব মাধ্যমের মানের চেয়ে অগ্রাধিকার পায়। লাইব্রেরির মান পাশে থাকে।",
+  "prefs.paramsGroup": "গোষ্ঠী",
+  "prefs.paramsMode": "মাধ্যম",
+  "prefs.paramsAllModes": "সব মাধ্যম",
+  "prefs.paramsFromAll": "সব মাধ্যমের জন্য আপনার মান",
+  "prefs.group.modes": "মাধ্যম",
+  "prefs.group.operations": "পরিচালনা",
+  "prefs.group.demand": "চাহিদা",
+  "prefs.group.analysis": "বিশ্লেষণ",
+  "prefs.group.simulation": "সিমুলেশন",
+  "prefs.group.infrastructure": "অবকাঠামো মান",
+  "prefs.group.accessibility": "প্রবেশযোগ্যতা",
+  "prefs.group.depots": "ডিপো ও রাস্তা",
+  "prefs.group.energy": "শক্তি ও জলবায়ু",
+  "prefs.group.cost": "খরচ",
+  "prefs.group.benefits": "সুফল",
+  "prefs.group.fares": "ভাড়া",
+  "prefs.traction.battery": "ব্যাটারি",
+  "prefs.traction.diesel": "ডিজেল",
+  "prefs.traction.hydrogen": "হাইড্রোজেন",
+  "prefs.traction.cng": "প্রাকৃতিক গ্যাস (CNG)",
+  "prefs.traction.electric": "বৈদ্যুতিক",
+  "prefs.accessTitle": "প্ল্যাটফর্ম প্রবেশযোগ্যতা",
+  "prefs.accessIntro":
+    "প্ল্যাটফর্ম ও ট্রেনের মধ্যে ধাপ ও ফাঁকের সীমা (TSI PRM), এবং তালিকায় না থাকা ট্রেনের মেঝের উচ্চতা। লাইনগুলো প্রতিটি স্টপে যাচাই হয়।",
   "prefs.vehiclesTitle": "যানবাহন",
   "prefs.vehiclesIntro":
     "এই প্রকল্প প্রতিটি মাধ্যমে তালিকার যে যানবাহন ব্যবহার করে। রাস্তার লাইন ও রেলপথ সরঞ্জাম শুধু টিক দেওয়াগুলো দেখায়।",
@@ -383,6 +415,7 @@ export const bn: Messages = {
   ...cargoBikeBn,
   ...depotsBn,
   ...fleetBn,
+  ...populationBn,
   ...roadBn,
   ...PLUGIN_MESSAGES.bn,
 };

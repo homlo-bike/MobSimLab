@@ -39,6 +39,7 @@ export const fleetUz = {
   "fleet.field.standing": "Tik turish joylari",
   "fleet.field.topSpeed": "Eng yuqori tezlik (km/soat)",
   "fleet.field.height_m": "Balandligi (m)",
+  "fleet.field.floor_height_mm": "Pol balandligi (mm)",
   "fleet.field.standing_density": "Manba boʻyicha tik turganlar zichligi (kishi/m²)",
   "fleet.field.empty_mass_t": "Boʻsh massasi (t)",
   "fleet.field.loaded_weight_t": "Yuklangan vazni (t)",

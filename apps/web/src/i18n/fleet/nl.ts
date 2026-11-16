@@ -39,6 +39,7 @@ export const fleetNl = {
   "fleet.field.standing": "Staanplaatsen",
   "fleet.field.topSpeed": "Topsnelheid (km/h)",
   "fleet.field.height_m": "Hoogte (m)",
+  "fleet.field.floor_height_mm": "Vloerhoogte (mm)",
   "fleet.field.standing_density": "Staandichtheid van de bron (pers./m²)",
   "fleet.field.empty_mass_t": "Leeg gewicht (t)",
   "fleet.field.loaded_weight_t": "Beladen gewicht (t)",

@@ -39,6 +39,7 @@ export const fleetUr = {
   "fleet.field.standing": "کھڑے ہونے کی جگہیں",
   "fleet.field.topSpeed": "زیادہ سے زیادہ رفتار (km/h)",
   "fleet.field.height_m": "اونچائی (m)",
+  "fleet.field.floor_height_mm": "فرش کی اونچائی (mm)",
   "fleet.field.standing_density": "ماخذ کے مطابق کھڑے افراد کی کثافت (افراد/m²)",
   "fleet.field.empty_mass_t": "خالی کمیت (t)",
   "fleet.field.loaded_weight_t": "بھرا ہوا وزن (t)",

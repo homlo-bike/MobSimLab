@@ -38,6 +38,7 @@ export const fleetJa = {
   "fleet.field.standing": "立席数",
   "fleet.field.topSpeed": "最高速度 (km/h)",
   "fleet.field.height_m": "全高 (m)",
+  "fleet.field.floor_height_mm": "床面高さ (mm)",
   "fleet.field.standing_density": "出典の立席密度 (人/m²)",
   "fleet.field.empty_mass_t": "空車質量 (t)",
   "fleet.field.loaded_weight_t": "積車重量 (t)",

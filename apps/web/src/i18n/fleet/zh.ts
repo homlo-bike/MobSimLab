@@ -37,6 +37,7 @@ export const fleetZh = {
   "fleet.field.standing": "站位数",
   "fleet.field.topSpeed": "最高速度 (km/h)",
   "fleet.field.height_m": "高度 (m)",
+  "fleet.field.floor_height_mm": "地板高度 (mm)",
   "fleet.field.standing_density": "来源的站立密度 (人/m²)",
   "fleet.field.empty_mass_t": "空车质量 (t)",
   "fleet.field.loaded_weight_t": "满载重量 (t)",

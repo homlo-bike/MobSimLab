@@ -11,9 +11,11 @@
 import type { LonLat, Timetable } from "../journey-planner/types";
 import { compile, type Compiled, type Vars } from "./formula";
 import { type BenefitsDoc, FORMULA_BY_ID, type FormulaId, FORMULAS, formulaText } from "./formulas";
-import { metres, type Net, type NetLine, networkOf, withoutRoutes } from "./network";
+import { type Net, type NetLine, networkOf, withoutRoutes } from "./network";
 import { p10p50p90, paramValue, seeded, triangular, type Triple } from "./params";
 import { type Region, regionAt, ringAreaM2, ringCentre, usable } from "./regions";
+import { distanceM } from "../../map/geo";
+import { sameNameStationM } from "../../workspace/preferences";
 
 export type PlaceKind = "school" | "university" | "hospital" | "clinic";
 export const PLACE_KINDS: PlaceKind[] = ["school", "university", "hospital", "clinic"];
@@ -239,19 +241,22 @@ export function circle(at: LonLat, r: number, n = 24): LonLat[] {
 
 /** Purpose: the stations of a timetable with their catchment circles, for the WorldPop request. */
 export function catchments(tt: Timetable, prefs: PrepareInput["prefs"]): { id: string; ring: LonLat[] }[] {
-  return networkOf(tt).stations.map((s) => ({ id: s.id, ring: circle(s.at, catchment(s.modes, prefs)) }));
+  return networkOf(tt, sameNameStationM(prefs)).stations.map((s) => ({
+    id: s.id,
+    ring: circle(s.at, catchment(s.modes, prefs)),
+  }));
 }
 
 /** Purpose: the people, jobs and places of every station's zone, and the buildings near the lines. */
 export function prepare(input: PrepareInput): Prepared {
   const { prefs, country, regions } = input;
   const notes: string[] = [];
-  const net = networkOf(input.timetable);
+  const net = networkOf(input.timetable, sameNameStationM(prefs));
   const st = net.stations.map((s) => ({ ...s, radius: catchment(s.modes, prefs) }));
   const nearest = (p: LonLat): { i: number; d: number } | null => {
     let best: { i: number; d: number } | null = null;
     st.forEach((s, i) => {
-      const d = metres(p, s.at);
+      const d = distanceM(p, s.at);
       if (d <= s.radius && (!best || d < best.d)) best = { i, d };
     });
     return best;
@@ -315,7 +320,7 @@ export function prepare(input: PrepareInput): Prepared {
     for (const { l, at: stops } of lineStations) {
       const r = central("mode.catchment_m", l.mode, prefs);
       let d = Infinity;
-      for (const s of stops) d = Math.min(d, metres(at, s.at));
+      for (const s of stops) d = Math.min(d, distanceM(at, s.at));
       if (d <= r) near.push({ line: l.id, d, r });
     }
     if (region) {
@@ -354,7 +359,7 @@ export function prepare(input: PrepareInput): Prepared {
         const at: LonLat = [x + step.x / 2, y + step.y / 2];
         const circles: number[] = [];
         st.forEach((z, i) => {
-          if (metres(at, z.at) <= z.radius) circles.push(i);
+          if (distanceM(at, z.at) <= z.radius) circles.push(i);
         });
         if (!circles.length) continue;
         const zone = nearest(at)!.i;
@@ -474,7 +479,7 @@ export function scenarioTimetable(tt: Timetable, s: Scenario): Timetable | null 
 
 /** Purpose: minutes on foot between two stations (door to door is added by `matrix`). */
 export function walkMin(a: LonLat, b: LonLat): number {
-  return (metres(a, b) * WALK_DETOUR) / (WALK_KMH / 3.6) / 60;
+  return (distanceM(a, b) * WALK_DETOUR) / (WALK_KMH / 3.6) / 60;
 }
 
 /**
@@ -576,6 +581,11 @@ export interface Estimate {
   rows: Row[];
   notes: string[];
   draws: number;
+  /**
+   * Weekday boardings of each line at each of its stations with the central parameter values, by line id
+   * and station name (the fare revenue table spreads a line's trips between its stations with them).
+   */
+  stations: Record<string, Record<string, number>>;
 }
 
 export interface EstimateInput {
@@ -902,7 +912,27 @@ export function estimate(input: EstimateInput): Estimate {
   }));
   if (!nationalGdpPerWorker)
     notes.push("Job-years cannot be estimated without the country's GDP per person.");
-  return { rows, notes, draws };
+  const stationName = new Map(P.net.stations.map((s) => [s.id, s.name]));
+  const stations: Estimate["stations"] = {};
+  for (const l of lines) {
+    const out: Record<string, number> = {};
+    for (const id of l.stations) {
+      const z = P.zones[zoneIdx.get(id) ?? -1];
+      if (!z) continue;
+      const k = stationLines.get(id) ?? 1;
+      const v = fns.ridership_daily({
+        pop: z.pop / k,
+        jobs: z.jobs / k,
+        students: z.students / k,
+        resident_share: central("benefit.ridership.resident_share", l.mode, prefs),
+        trips_per_user: central("benefit.ridership.trips_per_user", l.mode, prefs),
+      });
+      const name = stationName.get(id) ?? id;
+      if (Number.isFinite(v)) out[name] = (out[name] ?? 0) + Math.max(0, v);
+    }
+    stations[l.id] = out;
+  }
+  return { rows, notes, draws, stations };
 }
 
 /** Purpose: the formula definition of a metric (for labels and units). */

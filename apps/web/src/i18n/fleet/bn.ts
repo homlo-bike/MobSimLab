@@ -39,6 +39,7 @@ export const fleetBn = {
   "fleet.field.standing": "দাঁড়ানোর জায়গা",
   "fleet.field.topSpeed": "সর্বোচ্চ গতি (km/h)",
   "fleet.field.height_m": "উচ্চতা (m)",
+  "fleet.field.floor_height_mm": "মেঝের উচ্চতা (mm)",
   "fleet.field.standing_density": "উৎস অনুযায়ী দাঁড়ানোর ঘনত্ব (জন/m²)",
   "fleet.field.empty_mass_t": "খালি ভর (t)",
   "fleet.field.loaded_weight_t": "বোঝাই ওজন (t)",

@@ -39,6 +39,7 @@ export const fleetKo = {
   "fleet.field.standing": "입석 수",
   "fleet.field.topSpeed": "최고 속도 (km/h)",
   "fleet.field.height_m": "높이 (m)",
+  "fleet.field.floor_height_mm": "바닥 높이 (mm)",
   "fleet.field.standing_density": "출처의 입석 밀도 (명/m²)",
   "fleet.field.empty_mass_t": "공차 질량 (t)",
   "fleet.field.loaded_weight_t": "적재 중량 (t)",

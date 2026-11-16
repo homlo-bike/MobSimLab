@@ -40,6 +40,7 @@ export const fleetVi = {
   "fleet.field.standing": "Số chỗ đứng",
   "fleet.field.topSpeed": "Tốc độ tối đa (km/h)",
   "fleet.field.height_m": "Chiều cao (m)",
+  "fleet.field.floor_height_mm": "Chiều cao sàn (mm)",
   "fleet.field.standing_density": "Mật độ đứng theo nguồn (người/m²)",
   "fleet.field.empty_mass_t": "Khối lượng rỗng (t)",
   "fleet.field.loaded_weight_t": "Trọng lượng có tải (t)",

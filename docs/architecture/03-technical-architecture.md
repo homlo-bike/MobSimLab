@@ -134,9 +134,9 @@ The map is the root view. Panels are dockable side sheets and a bottom drawer (t
 | CRITICAL | 60 | Service-level failure, needs operator |
 | AUDIT | — | Not a severity. Routed to the audit module (ADR-0012) |
 
-- **Backend (Winston):** JSON lines. Sinks: console (all levels ≥ configured), rotating file in `/data/logs` (≥ configured), PostgreSQL `logs.entry` (WARN+ only, 30-day retention via partition drop). Every entry carries `requestId`, `userId` (pseudonymous), `projectId`, `runId`, `module`.
+- **Backend (Winston):** JSON lines. Sinks: console (all levels ≥ configured), rotating file in `/data/logs` (≥ configured), PostgreSQL `logs.entry` (WARN+ only, 30-day retention via partition drop). The level is set with `MOBSIMLAB_LOG_LEVEL` (default INFO). Every entry carries `requestId`, `userId` (pseudonymous), `projectId`, `runId`, `module`.
 - **Frontend (Pino browser):** buffered, sent every 10 s or on ERROR to `POST /api/logs` (authenticated, rate-limited, size-capped, schema-validated). Stored like backend logs with `origin=frontend`.
-- **Workers (Python `structlog`, Rust `tracing`):** JSON to stdout; s6 collects into the same file sink; WARN+ forwarded via the API.
+- **Workers (Python `structlog`, Rust `tracing`):** JSON to stdout; s6 collects into the same file sink. The Python worker stores its WARN+ entries in `logs.entry` with `origin=worker` itself, through the `logs.append_worker` database function (the worker reaches the API only through the database, and the function lets it write nothing else).
 - **Redaction:** a shared deny-list (tokens, passwords, `Authorization`, cookies, credential fields) applied in every sink; tests assert redaction.
 
 ## 7. Deployment architecture

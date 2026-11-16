@@ -39,6 +39,7 @@ export const fleetRu = {
   "fleet.field.standing": "Места для стоя",
   "fleet.field.topSpeed": "Максимальная скорость (км/ч)",
   "fleet.field.height_m": "Высота (м)",
+  "fleet.field.floor_height_mm": "Высота пола (мм)",
   "fleet.field.standing_density": "Плотность стоящих по источнику (чел./м²)",
   "fleet.field.empty_mass_t": "Масса порожнего (т)",
   "fleet.field.loaded_weight_t": "Полная масса (т)",

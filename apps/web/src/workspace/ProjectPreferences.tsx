@@ -13,7 +13,9 @@ import { OwnVehiclesSection } from "./OwnVehicles";
 import { FleetSection } from "./Fleet";
 import { EMPTY_FLEET, type FleetDoc } from "../features/fleet/model";
 import type { SavedDepot } from "../features/depots/types";
+import { ParametersSection } from "./Parameters";
 import { roadValue } from "../features/road-sim/params";
+import { StationsSection } from "./StationsSection";
 import { CURRENCY_CODES } from "../features/costs/currencies";
 import { type CurrencyState, NO_CURRENCY, RATE_PREF, withCurrency } from "../features/costs/currency";
 
@@ -222,8 +224,18 @@ export function ProjectPreferences({
           </div>
           {!editable && <p className="mt-3 text-sm text-slate-500">{t("prefs.readOnly")}</p>}
         </section>
+        <StationsSection
+          preferences={preferences}
+          editable={editable && !!onPreferences}
+          onPreferences={(d) => onPreferences?.(d)}
+        />
         <CurrencySection
           state={currency}
+          preferences={preferences}
+          editable={editable && !!onPreferences}
+          onPreferences={(d) => onPreferences?.(d)}
+        />
+        <ParametersSection
           preferences={preferences}
           editable={editable && !!onPreferences}
           onPreferences={(d) => onPreferences?.(d)}

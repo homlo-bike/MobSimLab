@@ -39,6 +39,7 @@ export const fleetHa = {
   "fleet.field.standing": "Wuraren tsayawa",
   "fleet.field.topSpeed": "Mafi girman gudu (km/h)",
   "fleet.field.height_m": "Tsawo (m)",
+  "fleet.field.floor_height_mm": "Tsayin bene (mm)",
   "fleet.field.standing_density": "Cunkoson masu tsayawa bisa tushe (mutane/m²)",
   "fleet.field.empty_mass_t": "Nauyi babu kaya (t)",
   "fleet.field.loaded_weight_t": "Nauyi da kaya (t)",

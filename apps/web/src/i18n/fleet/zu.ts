@@ -39,6 +39,7 @@ export const fleetZu = {
   "fleet.field.standing": "Izindawo zokuma",
   "fleet.field.topSpeed": "Isivinini esiphezulu (km/h)",
   "fleet.field.height_m": "Ukuphakama (m)",
+  "fleet.field.floor_height_mm": "Ukuphakama kwaphansi (mm)",
   "fleet.field.standing_density": "Ukuminyana kwabamile ngokomthombo (abantu/m²)",
   "fleet.field.empty_mass_t": "Isisindo singenalutho (t)",
   "fleet.field.loaded_weight_t": "Isisindo silayishiwe (t)",

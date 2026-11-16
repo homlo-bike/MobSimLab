@@ -39,6 +39,7 @@ export const fleetTe = {
   "fleet.field.standing": "నిలబడే స్థలాలు",
   "fleet.field.topSpeed": "గరిష్ఠ వేగం (km/h)",
   "fleet.field.height_m": "ఎత్తు (m)",
+  "fleet.field.floor_height_mm": "అంతస్తు ఎత్తు (mm)",
   "fleet.field.standing_density": "మూలం ప్రకారం నిలబడేవారి సాంద్రత (వ్యక్తులు/m²)",
   "fleet.field.empty_mass_t": "ఖాళీ ద్రవ్యరాశి (t)",
   "fleet.field.loaded_weight_t": "లోడ్‌తో బరువు (t)",

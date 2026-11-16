@@ -39,6 +39,7 @@ export const fleetFa = {
   "fleet.field.standing": "جای ایستاده",
   "fleet.field.topSpeed": "بیشینه سرعت (کیلومتر بر ساعت)",
   "fleet.field.height_m": "ارتفاع (متر)",
+  "fleet.field.floor_height_mm": "ارتفاع کف (میلی‌متر)",
   "fleet.field.standing_density": "تراکم ایستاده طبق منبع (نفر/متر²)",
   "fleet.field.empty_mass_t": "جرم خالی (تن)",
   "fleet.field.loaded_weight_t": "وزن با بار (تن)",

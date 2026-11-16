@@ -39,6 +39,7 @@ export const fleetTr = {
   "fleet.field.standing": "Ayakta yer",
   "fleet.field.topSpeed": "Azami hız (km/sa)",
   "fleet.field.height_m": "Yükseklik (m)",
+  "fleet.field.floor_height_mm": "Taban yüksekliği (mm)",
   "fleet.field.standing_density": "Kaynağın ayakta yoğunluğu (kişi/m²)",
   "fleet.field.empty_mass_t": "Boş kütle (t)",
   "fleet.field.loaded_weight_t": "Yüklü ağırlık (t)",
