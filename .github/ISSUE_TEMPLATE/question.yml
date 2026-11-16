@@ -1,0 +1,24 @@
+name: Question
+description: Ask how to use MobSimLab or how something works.
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The [user documentation](https://github.com/homlo-bike/MobSimLab/tree/main/docs/user) and the [architecture documentation](https://github.com/homlo-bike/MobSimLab/blob/main/docs/architecture/README.md) may already answer your question.
+  - type: textarea
+    id: question
+    attributes:
+      label: Your question
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: What you are trying to do
+      description: The task behind the question, and what you have tried so far.
+  - type: input
+    id: version
+    attributes:
+      label: MobSimLab version
+      description: The release or commit you are using, if it matters.
