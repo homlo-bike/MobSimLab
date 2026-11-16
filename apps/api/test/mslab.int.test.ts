@@ -224,7 +224,11 @@ describe("mslab project files", () => {
     const su = await db.superuser();
     try {
       const audit = await su.query("SELECT action FROM audit.record WHERE object_id = $1 ORDER BY seq", [id]);
-      expect(audit.rows.map((r) => r.action)).toEqual(["project.created", "project.imported", "project.exported"]);
+      expect(audit.rows.map((r) => r.action)).toEqual([
+        "project.created",
+        "project.imported",
+        "project.exported",
+      ]);
       const exported = await su.query(
         "SELECT count(*)::int AS n FROM audit.record WHERE object_id = $1 AND action = 'project.exported'",
         [source],

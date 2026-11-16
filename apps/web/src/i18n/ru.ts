@@ -2,6 +2,7 @@ import { roadRu } from "./road/ru";
 import { editorsRu } from "./editors/ru";
 import { cargoBikeRu } from "./cargo-bike/ru";
 import { depotsRu } from "./depots/ru";
+import { mslabRu } from "./mslab/ru";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -390,6 +391,7 @@ export const ru: Messages = {
   ...editorsRu,
   ...cargoBikeRu,
   ...depotsRu,
+  ...mslabRu,
   ...roadRu,
   ...PLUGIN_MESSAGES.ru,
 };

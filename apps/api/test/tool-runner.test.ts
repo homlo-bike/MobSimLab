@@ -40,7 +40,10 @@ describe("tool-runner without a network namespace", () => {
     // Containers often forbid user namespaces; the guard alone must hold.
     Object.assign(runner, { unshare: null });
     expect(runner.isolation().network).toBe("guard");
-    const result = (await runner.run("sandbox-check", Buffer.alloc(0), async (r) => r)) as Record<string, boolean>;
+    const result = (await runner.run("sandbox-check", Buffer.alloc(0), async (r) => r)) as Record<
+      string,
+      boolean
+    >;
     expect(result.openConnection).toBe(true);
   });
 });

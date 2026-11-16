@@ -28,7 +28,8 @@ function resign(files: Map<string, Buffer>, change: (m: Record<string, unknown>)
   const m = JSON.parse(files.get("manifest.json")!.toString()) as Record<string, unknown>;
   const listed: Record<string, { sha256: string; bytes: number }> = {};
   for (const [n, b] of files)
-    if (n !== "manifest.json") listed[n] = { sha256: createHash("sha256").update(b).digest("hex"), bytes: b.length };
+    if (n !== "manifest.json")
+      listed[n] = { sha256: createHash("sha256").update(b).digest("hex"), bytes: b.length };
   m.files = listed;
   change(m);
   files.set("manifest.json", Buffer.from(JSON.stringify(m)));
@@ -65,7 +66,9 @@ describe("mslab reader", () => {
     const files = folder(join(FIXTURES, "1.0.0"));
     files.set(
       "data/tunnels.json",
-      Buffer.from(JSON.stringify({ kind: "tunnels", schemaVersion: 1, updatedAt: "2026-11-16T10:00:00Z", doc: {} })),
+      Buffer.from(
+        JSON.stringify({ kind: "tunnels", schemaVersion: 1, updatedAt: "2026-11-16T10:00:00Z", doc: {} }),
+      ),
     );
     const rail = JSON.parse(files.get("data/railway.json")!.toString());
     files.set("data/railway.json", Buffer.from(JSON.stringify({ ...rail, schemaVersion: 2 })));
@@ -86,7 +89,10 @@ describe("mslab reader", () => {
 
   it("refuses changed, missing and extra files", async () => {
     const changed = folder(join(FIXTURES, "1.0.0"));
-    changed.set("project.json", Buffer.from(changed.get("project.json")!.toString().replace("Lakeside", "Seaside")));
+    changed.set(
+      "project.json",
+      Buffer.from(changed.get("project.json")!.toString().replace("Lakeside", "Seaside")),
+    );
     await refused(writeZip(changed), /does not match its checksum/);
 
     const extra = folder(join(FIXTURES, "1.0.0"));
@@ -120,8 +126,16 @@ describe("mslab reader", () => {
 
   it("upgrades older formats step by step", () => {
     const steps = [
-      { from: "0.9.0", to: "0.9.5", up: (f: Map<string, Buffer>) => new Map([...f, ["a", Buffer.from("1")]]) },
-      { from: "0.9.5", to: "1.0.0", up: (f: Map<string, Buffer>) => new Map([...f, ["b", Buffer.from("2")]]) },
+      {
+        from: "0.9.0",
+        to: "0.9.5",
+        up: (f: Map<string, Buffer>) => new Map([...f, ["a", Buffer.from("1")]]),
+      },
+      {
+        from: "0.9.5",
+        to: "1.0.0",
+        up: (f: Map<string, Buffer>) => new Map([...f, ["b", Buffer.from("2")]]),
+      },
     ];
     const out = migrate(new Map(), "0.9.0", steps);
     expect(out.version).toBe("1.0.0");

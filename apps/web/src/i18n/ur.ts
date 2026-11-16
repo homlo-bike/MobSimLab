@@ -2,6 +2,7 @@ import { roadUr } from "./road/ur";
 import { editorsUr } from "./editors/ur";
 import { cargoBikeUr } from "./cargo-bike/ur";
 import { depotsUr } from "./depots/ur";
+import { mslabUr } from "./mslab/ur";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -387,6 +388,7 @@ export const ur: Messages = {
   ...editorsUr,
   ...cargoBikeUr,
   ...depotsUr,
+  ...mslabUr,
   ...roadUr,
   ...PLUGIN_MESSAGES.ur,
 };
