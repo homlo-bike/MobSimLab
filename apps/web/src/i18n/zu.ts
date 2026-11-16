@@ -217,6 +217,7 @@ export const zu: Messages = {
   "drawing.rail-timetable": "uhlelo lwezikhathi lwesitimela",
   "drawing.preferences": "okuthandwayo kwephrojekthi",
   "drawing.costs": "izilungiselelo zezindleko",
+  "drawing.schematic": "imephu yomdwebo",
   "drawing.scenarios": "izimo ezigciniwe",
   "drawing.benefits": "amafomula ezinzuzo",
   "drawing.regions": "izifunda",
@@ -252,10 +253,6 @@ export const zu: Messages = {
 
   "schematic.title": "Imephu yesikimu",
   "schematic.intro": "Buka futhi uhlele imephu yezokuthutha, futhi ubuke umugqa owodwa wodwa.",
-  "schematic.network": "Imephu yenethiwekhi enemigqa edwetshwe ngesikimu",
-  "schematic.line": "Umugqa owodwa: imephu yawo nokuxhumana kwawo",
-  "schematic.layers": "Izingqimba, ukudonsa namajika",
-  "schematic.export": "Thumela ngaphandle ukuze uphrinte nezikrini",
 
   "gis.title": "GIS",
   "gis.streetsView": "Imigwaqo",

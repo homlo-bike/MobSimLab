@@ -22,6 +22,7 @@ import type { PluginLineInput, StreetLineInput } from "../features/journey-plann
 import type { GtfsFeed, GtfsNetworkDoc } from "../features/gtfs/types";
 import type { Timetable } from "../features/journey-planner/types";
 import { RailwayEditor } from "../features/railways/RailwayEditor";
+import { Schematic, type SchematicDoc } from "../features/schematic/Schematic";
 import type { Network } from "../features/railways/types";
 import { lineInput, type StreetLinesDoc } from "../features/street-lines/saved";
 import { StreetLineEditor } from "../features/street-lines/StreetLineEditor";
@@ -64,7 +65,6 @@ import { HelpMenu } from "../shell/HelpMenu";
 import { TopBar } from "../shell/TopBar";
 import { PROJECT_TOUR, Tour } from "../shell/Tour";
 import { PrintReport } from "./PrintReport";
-import { Placeholder } from "./Placeholder";
 import { ProjectPreferences } from "./ProjectPreferences";
 import { delaysFrom, type PreferencesDoc } from "./preferences";
 import type { DelayShares } from "../features/street-lines/types";
@@ -98,7 +98,8 @@ type Build = string;
 /**
  * One open project (mockups "Project app"): the project name and the six tabs in the top bar (a bottom tab bar on
  * phones), the map, and a side panel (a bottom sheet on phones). Simulator holds the capacity run and the journey planner; Create holds
- * the street line tool and the railway editor; Tables holds the network and cost tables; the other tabs are placeholders
+ * the street line tool and the railway editor; Schematic holds the network diagram and strip maps;
+ * Tables holds the network and cost tables; the other tabs are placeholders
  * until their tools exist.
  */
 export function Workspace({
@@ -599,12 +600,21 @@ export function Workspace({
         )}
         {!onMap && tab === "schematic" && (
           <div className="min-h-0 flex-1">
-            <Placeholder
-              page
-              title="schematic.title"
-              intro="schematic.intro"
-              items={["schematic.network", "schematic.line", "schematic.layers", "schematic.export"]}
-            />
+            {project && drawings.loaded ? (
+              <Schematic
+                railway={railway}
+                streetLines={streetLines}
+                pluginLines={pluginLineList}
+                doc={drawings.doc<SchematicDoc>("schematic")}
+                onDoc={editable ? (d) => drawings.set("schematic", d) : undefined}
+                projectName={project.name}
+                onCreate={editable ? () => onTab("create") : undefined}
+              />
+            ) : (
+              <p role="status" className="mt-6 text-center text-slate-500">
+                {t("common.loading")}
+              </p>
+            )}
           </div>
         )}
         {!onMap && tab === "tables" && (

@@ -216,6 +216,7 @@ export const ta: Messages = {
   "drawing.rail-timetable": "ரயில் கால அட்டவணை",
   "drawing.preferences": "திட்ட விருப்பங்கள்",
   "drawing.costs": "செலவு அமைப்புகள்",
+  "drawing.schematic": "திட்ட வரைபடம்",
   "drawing.scenarios": "சேமித்த சூழ்நிலைகள்",
   "drawing.benefits": "பயன் சூத்திரங்கள்",
   "drawing.regions": "பகுதிகள்",
@@ -253,10 +254,6 @@ export const ta: Messages = {
   "schematic.title": "வரைபடத் திட்டம்",
   "schematic.intro":
     "போக்குவரத்து வரைபடத்தைப் பார்த்துத் திருத்துங்கள், ஒரு வழித்தடத்தைத் தனியாகப் பாருங்கள்.",
-  "schematic.network": "திட்டவட்டமாக வரையப்பட்ட வழித்தடங்களுடன் வலையமைப்பு வரைபடம்",
-  "schematic.line": "ஒரு வழித்தடம்: அதன் பட்டை வரைபடம் மற்றும் இணைப்புகள்",
-  "schematic.layers": "அடுக்குகள், இழுத்தல் மற்றும் வளைவுகள்",
-  "schematic.export": "அச்சு மற்றும் திரைகளுக்கு ஏற்றுமதி",
 
   "gis.title": "GIS",
   "gis.streetsView": "தெருக்கள்",

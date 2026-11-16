@@ -220,6 +220,7 @@ export const de: Messages = {
   "drawing.rail-timetable": "den Fahrplan der Bahnlinien",
   "drawing.preferences": "die Projekteinstellungen",
   "drawing.costs": "die Kosteneinstellungen",
+  "drawing.schematic": "das Schema",
   "drawing.scenarios": "die gespeicherten Szenarien",
   "drawing.benefits": "die Nutzenformeln",
   "drawing.regions": "die Gebiete",
@@ -255,10 +256,6 @@ export const de: Messages = {
 
   "schematic.title": "Schema",
   "schematic.intro": "Den Liniennetzplan ansehen und bearbeiten und einzelne Linien betrachten.",
-  "schematic.network": "Liniennetzplan in schematischer Darstellung",
-  "schematic.line": "Eine Linie: Linienband und Anschlüsse",
-  "schematic.layers": "Ebenen, Verschieben und Kurven",
-  "schematic.export": "Export für Druck und Bildschirme",
 
   "gis.title": "GIS",
   "gis.intro": "Informationen hinzufügen oder bearbeiten, die in die Berechnungen eingehen.",

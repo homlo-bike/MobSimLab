@@ -217,6 +217,7 @@ export const fr: Messages = {
   "drawing.rail-timetable": "l'horaire ferroviaire",
   "drawing.preferences": "les préférences du projet",
   "drawing.costs": "les réglages des coûts",
+  "drawing.schematic": "le plan schématique",
   "drawing.scenarios": "les scénarios enregistrés",
   "drawing.benefits": "les formules des bénéfices",
   "drawing.regions": "les régions",
@@ -252,10 +253,6 @@ export const fr: Messages = {
 
   "schematic.title": "Schéma",
   "schematic.intro": "Voir et modifier le plan du réseau, et regarder chaque ligne séparément.",
-  "schematic.network": "Plan du réseau avec les lignes en schéma",
-  "schematic.line": "Une ligne : son thermomètre et ses correspondances",
-  "schematic.layers": "Calques, glisser-déposer et courbes",
-  "schematic.export": "Export pour l’impression et les écrans",
 
   "gis.title": "SIG",
   "gis.intro": "Ajoutez ou modifiez les informations utilisées par les calculs.",

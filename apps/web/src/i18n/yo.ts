@@ -213,6 +213,7 @@ export const yo: Messages = {
   "drawing.rail-timetable": "àkókò ìrìn ọkọ̀ ojú irin",
   "drawing.preferences": "àwọn àyànfẹ́ iṣẹ́ àkànṣe",
   "drawing.costs": "ètò iye owó",
+  "drawing.schematic": "máàpù àwòrán",
   "drawing.scenarios": "àwọn ìṣẹ̀lẹ̀ tí a fipamọ́",
   "drawing.benefits": "àwọn àgbékalẹ̀ àǹfààní",
   "drawing.regions": "àwọn agbègbè",
@@ -246,10 +247,6 @@ export const yo: Messages = {
 
   "schematic.title": "Àwòrán àtòjọ",
   "schematic.intro": "Wo kí o sì ṣàtúnṣe máàpù ìrìnnà, kí o sì wo ìlà kan ní òun nìkan.",
-  "schematic.network": "Máàpù nẹ́tíwọ̀ọ̀kì pẹ̀lú àwọn ìlà tí a yà ní àtòjọ",
-  "schematic.line": "Ìlà kan: máàpù rẹ̀ àti àwọn ìsopọ̀ rẹ̀",
-  "schematic.layers": "Àwọn ìpele, fífà àti àwọn ìtẹ̀",
-  "schematic.export": "Gbé jáde fún títẹ̀ àti ojú ìbojú",
 
   "gis.title": "GIS",
   "gis.streetsView": "Àwọn òpópónà",

@@ -207,6 +207,7 @@ export const ar: Messages = {
   "drawing.rail-timetable": "جدول مواعيد القطارات",
   "drawing.preferences": "تفضيلات المشروع",
   "drawing.costs": "إعدادات التكاليف",
+  "drawing.schematic": "المخطط",
   "drawing.scenarios": "السيناريوهات المحفوظة",
   "drawing.benefits": "صيغ المنافع",
   "drawing.regions": "المناطق",
@@ -240,10 +241,6 @@ export const ar: Messages = {
 
   "schematic.title": "المخطط",
   "schematic.intro": "اعرض خريطة النقل وعدّلها، واطّلع على خط واحد بمفرده.",
-  "schematic.network": "خريطة الشبكة مع الخطوط مرسومة بشكل تخطيطي",
-  "schematic.line": "خط واحد: مخططه الشريطي ونقاط الاتصال",
-  "schematic.layers": "الطبقات والسحب والمنحنيات",
-  "schematic.export": "التصدير للطباعة والشاشات",
 
   "gis.title": "GIS",
   "gis.streetsView": "الشوارع",

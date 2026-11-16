@@ -9,6 +9,7 @@ export type DrawingKind =
   | "rail-timetable"
   | "gtfs-network"
   | "costs"
+  | "schematic"
   | "benefits"
   | "regions"
   | "scenarios"
@@ -21,6 +22,7 @@ export const DRAWING_KINDS: readonly DrawingKind[] = [
   "rail-timetable",
   "gtfs-network",
   "costs",
+  "schematic",
   "scenarios",
   "benefits",
   "regions",

@@ -213,6 +213,7 @@ export const bn: Messages = {
   "drawing.rail-timetable": "রেলের সময়সূচি",
   "drawing.preferences": "প্রকল্পের পছন্দ",
   "drawing.costs": "খরচের সেটিংস",
+  "drawing.schematic": "নকশা মানচিত্র",
   "drawing.scenarios": "সংরক্ষিত পরিস্থিতি",
   "drawing.benefits": "সুফলের সূত্র",
   "drawing.regions": "অঞ্চল",
@@ -247,10 +248,6 @@ export const bn: Messages = {
 
   "schematic.title": "নকশাচিত্র",
   "schematic.intro": "পরিবহন মানচিত্র দেখুন ও সম্পাদনা করুন, এবং একটি লাইন আলাদাভাবে দেখুন।",
-  "schematic.network": "নকশাচিত্র আকারে আঁকা লাইনসহ নেটওয়ার্ক মানচিত্র",
-  "schematic.line": "একটি লাইন: তার স্ট্রিপ মানচিত্র ও সংযোগ",
-  "schematic.layers": "স্তর, টেনে আনা ও বক্ররেখা",
-  "schematic.export": "মুদ্রণ ও পর্দার জন্য রপ্তানি",
 
   "gis.title": "GIS",
   "gis.streetsView": "রাস্তা",

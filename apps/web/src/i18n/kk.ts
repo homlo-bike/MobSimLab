@@ -214,6 +214,7 @@ export const kk: Messages = {
   "drawing.rail-timetable": "пойыз кестесі",
   "drawing.preferences": "жоба параметрлері",
   "drawing.costs": "шығын баптаулары",
+  "drawing.schematic": "сызбаны",
   "drawing.scenarios": "сақталған сценарийлер",
   "drawing.benefits": "пайда формулалары",
   "drawing.regions": "аймақтар",
@@ -247,10 +248,6 @@ export const kk: Messages = {
 
   "schematic.title": "Сызба",
   "schematic.intro": "Көлік картасын қарап, өңдеңіз және бір бағытты бөлек қараңыз.",
-  "schematic.network": "Бағыттары сызбалық түрде салынған желі картасы",
-  "schematic.line": "Бір бағыт: оның таспалы картасы мен қосылыстары",
-  "schematic.layers": "Қабаттар, сүйреу және қисықтар",
-  "schematic.export": "Басып шығару мен экрандарға экспорттау",
 
   "gis.title": "GIS",
   "gis.streetsView": "Көшелер",

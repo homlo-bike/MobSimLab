@@ -215,6 +215,7 @@ export const tr: Messages = {
   "drawing.rail-timetable": "tren tarifesi",
   "drawing.preferences": "proje tercihleri",
   "drawing.costs": "maliyet ayarları",
+  "drawing.schematic": "şema",
   "drawing.scenarios": "kaydedilen senaryolar",
   "drawing.benefits": "fayda formülleri",
   "drawing.regions": "bölgeler",
@@ -248,10 +249,6 @@ export const tr: Messages = {
 
   "schematic.title": "Şematik",
   "schematic.intro": "Şematik haritayı görüntüleyin ve düzenleyin ya da yalnızca bir hatta bakın.",
-  "schematic.network": "Şematik hatlarla ağ haritası",
-  "schematic.line": "Tek hat: aktarmalı şerit harita",
-  "schematic.layers": "Katmanlar, sürükleme ve eğriler",
-  "schematic.export": "Baskı ve ekran için dışa aktar",
 
   "gis.title": "CBS",
   "gis.streetsView": "Sokaklar",

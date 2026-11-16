@@ -214,6 +214,7 @@ export const it: Messages = {
   "drawing.rail-timetable": "l'orario ferroviario",
   "drawing.preferences": "le preferenze del progetto",
   "drawing.costs": "le impostazioni dei costi",
+  "drawing.schematic": "lo schema",
   "drawing.scenarios": "gli scenari salvati",
   "drawing.benefits": "le formule dei benefici",
   "drawing.regions": "le aree",
@@ -249,10 +250,6 @@ export const it: Messages = {
 
   "schematic.title": "Schema",
   "schematic.intro": "Visualizza e modifica la mappa schematica, oppure guarda una sola linea.",
-  "schematic.network": "Mappa della rete con linee schematizzate",
-  "schematic.line": "Una linea: mappa a striscia con interscambi",
-  "schematic.layers": "Livelli, trascinamento e curve",
-  "schematic.export": "Esporta per stampa e schermo",
 
   "gis.title": "GIS",
   "gis.streetsView": "Strade",

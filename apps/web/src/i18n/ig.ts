@@ -214,6 +214,7 @@ export const ig: Messages = {
   "drawing.rail-timetable": "usoro oge ụgbọ oloko",
   "drawing.preferences": "mmasị ọrụ",
   "drawing.costs": "ntọala ego",
+  "drawing.schematic": "map eserese",
   "drawing.scenarios": "ọnọdụ echekwara",
   "drawing.benefits": "usoro uru",
   "drawing.regions": "mpaghara",
@@ -248,10 +249,6 @@ export const ig: Messages = {
 
   "schematic.title": "Maapụ eserese",
   "schematic.intro": "Lee ma dezie maapụ njem, ma lee otu ahịrị n'onwe ya.",
-  "schematic.network": "Maapụ netwọk nwere ahịrị ese n'ụzọ eserese",
-  "schematic.line": "Otu ahịrị: maapụ ya na njikọ ya",
-  "schematic.layers": "Ọkwa, ịdọkpụ na ngbanwe",
-  "schematic.export": "Bupụ maka mbipụta na ihuenyo",
 
   "gis.title": "GIS",
   "gis.streetsView": "Okporo ụzọ",

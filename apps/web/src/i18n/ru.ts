@@ -215,6 +215,7 @@ export const ru: Messages = {
   "drawing.rail-timetable": "расписание поездов",
   "drawing.preferences": "параметры проекта",
   "drawing.costs": "настройки затрат",
+  "drawing.schematic": "схему",
   "drawing.scenarios": "сохранённые сценарии",
   "drawing.benefits": "формулы выгод",
   "drawing.regions": "районы",
@@ -250,10 +251,6 @@ export const ru: Messages = {
 
   "schematic.title": "Схема",
   "schematic.intro": "Просматривайте и редактируйте схему транспорта и отдельные линии.",
-  "schematic.network": "Схема сети с линиями в схематичном виде",
-  "schematic.line": "Одна линия: схема линии и пересадки",
-  "schematic.layers": "Слои, перетаскивание и кривые",
-  "schematic.export": "Экспорт для печати и экранов",
 
   "gis.title": "ГИС",
   "gis.streetsView": "Улицы",
