@@ -1207,6 +1207,40 @@ export const editorsIt = {
   "capacity.drawn.errors":
     "La ferrovia disegnata contiene errori. Correggili prima nello strumento ferroviario.",
   "capacity.building": "Costruzione della ferrovia disegnata…",
+  "capacity.drawnStreets":
+    "Linee su strada {names}, percorse lungo il loro tracciato con i ritardi del traffico.",
+  "capacity.loads.estimating": "Stima dei passeggeri intorno a stazioni e fermate…",
+  "capacity.loads.toggle": "Carico passeggeri (stima della scheda Tabelle)",
+  "capacity.loads.title": "Passeggeri",
+  "capacity.loads.busiest": "Punto più carico: {from} → {to}, {time}",
+  "capacity.loads.full": "Carico nel punto più carico",
+  "capacity.loads.fullHint": "{riders} passeggeri all’ora per {places} posti",
+  "capacity.loads.left": "Rimasti a terra",
+  "capacity.loads.leftHint": "persone nel periodo che aspettano il mezzo successivo",
+  "capacity.loads.over": "I mezzi sono troppo pieni: aumenta la frequenza o usa mezzi più lunghi.",
+  "capacity.loads.fits": "C’è posto per tutti.",
+  "capacity.loads.missing": "Nessuna salita a {stops}.",
+  "capacity.loads.none":
+    "Nessuna salita per questa linea. Pubblica le linee perché la scheda Tabelle le stimi, oppure inseriscile in Salite per stazione o fermata.",
+  "capacity.loads.editor": "Salite per stazione o fermata",
+  "capacity.loads.editorHelp":
+    "Salite in un giorno feriale, tutte le linee insieme. Lascia vuoto per usare la stima della scheda Tabelle.",
+  "capacity.loads.estimatePending": "Caricamento della stima…",
+  "capacity.loads.estimate": "Stima {n}",
+  "capacity.loads.noEstimate": "Nessuna stima",
+  "capacity.loads.method":
+    "Passeggeri: ogni ora di punta (07–09, 16–19) porta {peak} delle salite di un giorno feriale, e la direzione più carica {dir} dei passeggeri (parametri della scheda Tabelle).",
+  "capacity.street.title": "Linee su strada",
+  "capacity.street.perHour": "{n} all’ora",
+  "capacity.street.keepsTime": "Rispetta l’orario",
+  "capacity.street.onTimeHint": "in media {mean} min di ritardo, 95 % entro {p95} min",
+  "capacity.street.cycle": "Giro",
+  "capacity.street.cycleHint": "di cui {traffic} min nel traffico; {run} min effettivi",
+  "capacity.street.vehicles": "Mezzi",
+  "capacity.street.bunching": "Accodamento",
+  "capacity.street.bunchingHint": "distanze sotto metà della frequenza; {left} min di ritardo alla fine",
+  "capacity.street.method":
+    "Ogni linea su strada è stata percorsa {runs} volte; ogni corsa ha avuto il suo traffico, da {low} a {high} volte il ritardo atteso nel traffico delle strade principali (preferenze del progetto).",
   "capacity.exampleText":
     "Linea M1 Westpark – Eastgate: cinque stazioni, un deposito a ogni capo, ogni 5 min nelle ore di punta e ogni 10 min negli altri orari.",
   "capacity.topologyFile": "Topologia dei binari (JSON)",

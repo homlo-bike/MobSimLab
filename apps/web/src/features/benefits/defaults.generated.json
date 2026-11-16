@@ -273,6 +273,28 @@
     ]
    }
   },
+  "benefit.ridership.peak_hour_share": {
+   "label": "Ridership: share of a weekday's boardings in one peak hour",
+   "unit": "share",
+   "values": {
+    "*": [
+     0.08,
+     0.1,
+     0.13
+    ]
+   }
+  },
+  "benefit.ridership.peak_direction_share": {
+   "label": "Ridership: share of a peak hour's riders travelling in the busier direction",
+   "unit": "share",
+   "values": {
+    "*": [
+     0.55,
+     0.6,
+     0.7
+    ]
+   }
+  },
   "benefit.uplift.residential": {
    "label": "Land value: uplift near a new station, homes",
    "unit": "share",
