@@ -34,7 +34,7 @@ EXTRA = ["demand.walk_speed_kmh", "analysis.cycle_speed_kmh"]
 
 #: Model step of a key, by prefix (first match wins), in the order Project preferences shows them.
 STEPS = [
-    ("zones", ("demand.area_buffer_m", "demand.zone_")),
+    ("zones", ("demand.area_buffer_m", "demand.zone_", "demand.connector.")),
     ("generation", ("demand.trip_rate.", "demand.attraction.", "demand.cbd_")),
     ("periods", ("demand.period.", "demand.period_share.", "demand.from_home_share.")),
     ("distribution", ("demand.deterrence.", "demand.intrazonal_")),
@@ -47,7 +47,10 @@ STEPS = [
             "analysis.cycle_speed_kmh",
         ),
     ),
-    ("assignment", ("demand.car_occupancy", "demand.road.", "demand.feedback.")),
+    (
+        "assignment",
+        ("demand.car_occupancy", "demand.road.", "demand.transit.", "demand.feedback."),
+    ),
 ]
 
 

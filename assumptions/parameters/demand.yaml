@@ -2084,3 +2084,88 @@
       rationale:
         "09 §2.1: relative gap below 1 %. Measured as the sum of absolute changes in the car trip matrix
         over its total; the matrices of successive rounds are averaged (method of successive averages)."
+
+- key: demand.connector.count
+  label: "Zones: street junctions each zone's centre is joined to"
+  group: Demand
+  unit: junctions
+  used_by:
+    - "skims: zone connectors for car, walking and cycling"
+  values:
+    - context:
+        mode: "*"
+      low: 1
+      central: 3
+      high: 6
+      basis: documented
+      sources:
+        - ortuzar-willumsen-2011
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        A zone's trips start and end at its centre (weighted by where its people live) and join the street network at
+        the nearest few junctions, so they spread over several streets instead of loading one. One connector loads a
+        single street too much; more than about five spread trips over streets that are too far away.
+
+- key: demand.mode.car_terminal_min
+  label: "Mode choice: minutes to walk to and from the car and to park, per car trip"
+  group: Demand
+  unit: min
+  used_by:
+    - "mode choice: car utility"
+  values:
+    - context:
+        mode: "*"
+      low: 1
+      central: 3
+      high: 8
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        Car trips start and end with a short walk and, at the destination, a search for a space. About one to two
+        minutes at each end in residential areas, more in city centres; the parking cost of the centre is a separate
+        value (demand.mode.parking_cost_usd).
+
+- key: demand.transit.access_factor
+  label: "Public transport: longest walk to or from a stop, as a multiple of the mode's catchment"
+  group: Demand
+  unit: ×
+  used_by:
+    - "skims and transit assignment: walks between zones and stops"
+  values:
+    - context:
+        mode: "*"
+      low: 1
+      central: 2
+      high: 3
+      basis: educated-guess
+      sources:
+        - tcqsm3
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        The catchment (mode.catchment_m) is the walk most riders accept; some walk further where the line is fast or
+        frequent. Up to twice the catchment is offered, and the walk weight in mode choice makes long walks unattractive
+        on their own.
+
+- key: demand.transit.transfer_max_m
+  label: "Public transport: longest walk between two stops to change lines"
+  group: Demand
+  unit: m
+  used_by:
+    - "skims and transit assignment: changes between nearby stops"
+  values:
+    - context:
+        mode: "*"
+      low: 200
+      central: 400
+      high: 800
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        Changes at one stop or station need no walk; between nearby stops riders accept a few minutes on foot, about
+        400 m. The walk is weighed with demand.mode.walk_weight and every change with demand.mode.transfer_penalty_min.

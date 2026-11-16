@@ -78,11 +78,17 @@ jobs:
       - uses: actions/checkout@v5
       - uses: astral-sh/setup-uv@v6
         with: { python-version: "3.12" }
-      - run: uv sync --frozen
+      - run: uv sync --frozen --extra demand
       - run: uv run ruff check .
       - run: uv run ruff format --check .
       - run: uv run mypy
       - run: uv run pytest -q
+      - name: Demand test town matches contracts/demand-input.schema.json
+        run: |
+          uvx ruff check ../tools/contracts && uvx ruff format --check ../tools/contracts
+          mkdir -p "$RUNNER_TEMP/demand"
+          uv run python -c "import json, sys; sys.path.insert(0, 'tests'); from test_demand import town; json.dump(town(), open(sys.argv[1], 'w'))" "$RUNNER_TEMP/demand/town.json"
+          uv run --no-project --with jsonschema python ../tools/contracts/check_demand_input.py "$RUNNER_TEMP"/demand/*.json
 
   assumptions:
     name: Assumption library (schema, sources, DEFAULTS.md up to date)
@@ -175,7 +181,7 @@ jobs:
         run: |
           pnpm licenses list --prod --json > npm.json
           cargo metadata --format-version 1 > cargo.json
-          (cd worker && uv sync --frozen --no-dev --extra sim && uv pip install pip-licenses && \
+          (cd worker && uv sync --frozen --no-dev --extra sim --extra demand && uv pip install pip-licenses && \
            uv run --no-sync pip-licenses --format=json > ../py.json)
       - run: python3 tools/license-gate/license_gate.py --npm npm.json --cargo cargo.json --python py.json
 
