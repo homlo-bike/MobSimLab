@@ -12,7 +12,12 @@ type Converter = PluginConverter & { plugin: Plugin };
 function summaryOf(tt: Timetable, s: unknown): GtfsSummary {
   const o = (typeof s === "object" && s !== null ? s : {}) as Record<string, unknown>;
   const strings = (v: unknown) =>
-    Array.isArray(v) ? v.filter((x): x is string => typeof x === "string").map((x) => x.slice(0, 300)).slice(0, 20) : [];
+    Array.isArray(v)
+      ? v
+          .filter((x): x is string => typeof x === "string")
+          .map((x) => x.slice(0, 300))
+          .slice(0, 20)
+      : [];
   return {
     agencies: strings(o.agencies),
     date: typeof o.date === "string" ? o.date.slice(0, 8) : "",
@@ -35,7 +40,9 @@ function asTimetable(v: unknown): Timetable {
     routes: o.routes as Timetable["routes"],
     trips: o.trips as Timetable["trips"],
     transfers: Array.isArray(o.transfers) ? (o.transfers as Timetable["transfers"]) : [],
-    frequency_patterns: Array.isArray(o.frequency_patterns) ? (o.frequency_patterns as Timetable["frequency_patterns"]) : [],
+    frequency_patterns: Array.isArray(o.frequency_patterns)
+      ? (o.frequency_patterns as Timetable["frequency_patterns"])
+      : [],
   };
 }
 
@@ -102,10 +109,13 @@ export function PluginConverters({
         timetable,
       };
       const doc: GtfsNetworkDoc = { feeds: [...feeds, feed].slice(-maxFeeds) };
-      if (new TextEncoder().encode(JSON.stringify(doc)).length > maxDocBytes) throw new Error("the network is too large");
+      if (new TextEncoder().encode(JSON.stringify(doc)).length > maxDocBytes)
+        throw new Error("the network is too large");
       onAdd?.(doc);
     } catch (e) {
-      setError(t("pcode.importFailed", { plugin: c.plugin.name, error: e instanceof Error ? e.message : String(e) }));
+      setError(
+        t("pcode.importFailed", { plugin: c.plugin.name, error: e instanceof Error ? e.message : String(e) }),
+      );
     } finally {
       setBusy(false);
     }
@@ -136,12 +146,19 @@ export function PluginConverters({
         const a = document.createElement("a");
         a.href = url;
         // Only the file's own name, never a folder.
-        a.download = f.name.split("/").pop()!.replace(/[^\w.\- ]+/g, "_").slice(0, 100) || "export";
+        a.download =
+          f.name
+            .split("/")
+            .pop()!
+            .replace(/[^\w.\- ]+/g, "_")
+            .slice(0, 100) || "export";
         a.click();
         setTimeout(() => URL.revokeObjectURL(url), 10_000);
       }
     } catch (e) {
-      setError(t("pcode.exportFailed", { plugin: c.plugin.name, error: e instanceof Error ? e.message : String(e) }));
+      setError(
+        t("pcode.exportFailed", { plugin: c.plugin.name, error: e instanceof Error ? e.message : String(e) }),
+      );
     } finally {
       setBusy(false);
     }

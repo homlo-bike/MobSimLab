@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Builds the example third-party plugin's code (examples/plugins/timetable-csv) into three WebAssembly
-# components, one per world of contracts/wit/plugin.wit, and packs the plugin as an unsigned .msplugin.
+# components, one per world of contracts/wit/plugin.wit.
 # Needs: Rust with the wasm32-unknown-unknown target, and wasm-tools (cargo install wasm-tools).
 # The components are committed, so tests and CI do not need the Rust toolchain for wasm32.
 set -euo pipefail

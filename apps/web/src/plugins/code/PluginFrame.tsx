@@ -43,9 +43,11 @@ export async function answer(
       };
     case "run": {
       const id = req.params?.calculation;
-      if (typeof id !== "string" || !allowed.includes(id)) throw new Error("this tab may not run that calculation");
+      if (typeof id !== "string" || !allowed.includes(id))
+        throw new Error("this tab may not run that calculation");
       const calc = plugin.calculations!.find((c) => c.id === id)!;
-      return (await runCalculation({ ...calc, plugin }, data, req.params?.options ?? {}, createWorker)).output;
+      return (await runCalculation({ ...calc, plugin }, data, req.params?.options ?? {}, createWorker))
+        .output;
     }
     case "data": {
       const kind = req.params?.kind;
@@ -95,7 +97,14 @@ export function PluginFrame({
       try {
         const theme = window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
         reply({
-          result: await answer(plugin, tab, req, live.current.data, { language: live.current.language, theme }, createWorker),
+          result: await answer(
+            plugin,
+            tab,
+            req,
+            live.current.data,
+            { language: live.current.language, theme },
+            createWorker,
+          ),
         });
       } catch (err) {
         reply({ error: (err instanceof Error ? err.message : String(err)).slice(0, 500) });

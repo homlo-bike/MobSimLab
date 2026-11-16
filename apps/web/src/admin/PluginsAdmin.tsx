@@ -336,11 +336,7 @@ export function PluginsAdmin({
           </button>
         </form>
         {limits && (
-          <form
-            onSubmit={saveLimits}
-            className="mt-4 flex flex-col gap-2"
-            aria-labelledby="ap-limits"
-          >
+          <form onSubmit={saveLimits} className="mt-4 flex flex-col gap-2" aria-labelledby="ap-limits">
             <h3 id="ap-limits" className="font-semibold">
               {t("pcode.limits")}
             </h3>

@@ -1,3 +1,4 @@
+/* global window, document */
 // Tab page of the example plugin. It runs in a sandboxed frame with no network and no access to the app;
 // everything goes through the app's message API (docs/plugins/README.md#tabs).
 "use strict";
