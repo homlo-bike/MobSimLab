@@ -327,6 +327,44 @@ describe.skipIf(!WASM)("AI agent integration (ADR-0035)", () => {
     expect(rows[1].after.args_sha256).toMatch(/^[0-9a-f]{64}$/);
   });
 
+  it("links a scenario to a project, whose values its analyses then use", async () => {
+    const proj = await as("alice").post("/api/projects", { name: "Agent values", modes: ["bus", "metro"] });
+    expect(proj.status).toBe(201);
+    const pid = proj.body.project.id as string;
+    const saved = await as("alice").put(`/api/projects/${pid}/drawings/preferences`, {
+      doc: {
+        values: { "demand.walk_speed_kmh": 3.6, "mode.max_speed_kmh.metro": 60, "mode.dwell_s": 25 },
+        choices: { "mode.colour.metro": "#123456" },
+      },
+      baseVersion: null,
+    });
+    expect(saved.status).toBe(200);
+    const c = await tool(tokens.access_token, "create_scenario", { name: "Linked", project_id: pid });
+    expect(c.error).toBe(false);
+    expect(c.json.project_id).toBe(pid);
+    const v = await tool(tokens.access_token, "get_assumptions", { scenario_id: c.json.id });
+    expect(v.json.project_id).toBe(pid);
+    expect(v.json.walk_speed_kmh).toBe(3.6);
+    expect(v.json.modes.metro.max_speed_kmh).toBe(60);
+    expect(v.json.modes.metro.colour).toBe("#123456");
+    expect(v.json.modes.bus.dwell_s).toBe(25);
+    // Unlinked again, the library's values apply.
+    await tool(tokens.access_token, "apply_changes", {
+      scenario_id: c.json.id,
+      changes: [{ op: "set_project", project_id: null }],
+    });
+    const lib = await tool(tokens.access_token, "get_assumptions", { scenario_id: c.json.id });
+    expect(lib.json.project_id).toBeNull();
+    expect(lib.json.walk_speed_kmh).not.toBe(3.6);
+    // A project the user cannot read is refused.
+    const no = await tool(tokens.access_token, "create_scenario", {
+      name: "Nope",
+      project_id: "00000000-0000-4000-8000-000000000000",
+    });
+    expect(no.error).toBe(true);
+    await tool(tokens.access_token, "delete_agent_scenario", { scenario_id: c.json.id });
+  });
+
   it("refuses a bad batch as a whole", async () => {
     const r = await tool(tokens.access_token, "apply_changes", {
       scenario_id: scenario,

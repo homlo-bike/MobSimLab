@@ -37,6 +37,7 @@ const P1 = "11111111-1111-4111-8111-111111111111";
 const P2 = "22222222-2222-4222-8222-222222222222";
 const P3 = "33333333-3333-4333-8333-333333333333";
 const NEW = "44444444-4444-4444-8444-444444444444";
+const P4 = "55555555-5555-4555-8555-555555555555";
 const project = (
   id: string,
   name: string,
@@ -49,13 +50,13 @@ const project = (
   areaName: "Lakeside",
   modes: ["tram"],
   myRole,
-  viaLink: false,
+  viaPublic: false,
   owner: {
     id: myRole === "owner" ? "u1" : "u2",
     displayName: myRole === "owner" ? "Alice Smith" : "Ana Kovač",
   },
   memberCount: myRole === "owner" ? 1 : 3,
-  linkAccess: false,
+  visibility: "private",
   createdAt: "2026-11-01T10:00:00Z",
   updatedAt: new Date(Date.now() - 12 * 60_000).toISOString(),
   archivedAt: null,
@@ -91,6 +92,7 @@ function stubApi(me: Me | Me[], overrides: Record<string, unknown> = {}) {
       if (url === "/api/auth/me") return reply(mes[Math.min(i++, mes.length - 1)]);
       if (key === "GET /api/projects") return reply({ projects });
       if (key === "GET /api/projects?archived=true") return reply({ projects: [] });
+      if (key === "GET /api/projects?public=true") return reply({ projects: [] });
       if (key === "POST /api/projects")
         return reply(
           { project: project(NEW, (body as { name: string }).name, "owner", { areaName: null }) },
@@ -260,6 +262,50 @@ describe("projects home", () => {
     expect(
       within(screen.getByRole("region", { name: "My projects" })).getByText("Lakeside tram"),
     ).toBeTruthy();
+  });
+
+  it("lists public projects on their own shelf, read-only", async () => {
+    const open = project(P4, "Harbour ferries", "viewer", { viaPublic: true, visibility: "public" });
+    stubApi(owner, { "GET /api/projects?public=true": { projects: [open] } });
+    render(<App />);
+    const shelf = await screen.findByRole("region", { name: "Public projects" });
+    expect(within(shelf).getByText("Harbour ferries")).toBeTruthy();
+    expect(screen.getByRole("tab", { name: "Public projects · 1" })).toBeTruthy();
+    // Not a member: no copy and no look at who has access.
+    fireEvent.click(screen.getByRole("button", { name: "Actions for Harbour ferries" }));
+    const menu = screen.getByRole("menu", { name: "Actions for Harbour ferries" });
+    expect(
+      within(menu)
+        .getAllByRole("menuitem")
+        .map((b) => b.textContent),
+    ).toEqual(["Open"]);
+  });
+
+  it("makes a project public only after the licence notice, and private again", async () => {
+    const calls = stubApi(owner, {
+      [`GET /api/projects/${P1}/members`]: {
+        members: [{ userId: "u1", displayName: "Alice Smith", email: "alice@example.org", role: "owner" }],
+      },
+      [`PUT /api/projects/${P1}/visibility`]: {
+        project: project(P1, "Lakeside network", "owner", { visibility: "public" }),
+      },
+    });
+    render(<App />);
+    fireEvent.contextMenu(await screen.findByText("Lakeside network"));
+    fireEvent.click(screen.getByRole("menuitem", { name: "Share" }));
+    const dlg = screen.getByRole("dialog", { name: "Share “Lakeside network”" });
+    expect(within(dlg).getByText("Private: only the people above can open it")).toBeTruthy();
+    fireEvent.click(within(dlg).getByRole("button", { name: "Make public" }));
+    const notice = within(dlg).getByRole("group", { name: "Before you make it public" });
+    expect(notice.textContent).toMatch(/Open Database License \(ODbL\)/);
+    expect(calls.some((c) => c.url.endsWith("/visibility"))).toBe(false);
+    fireEvent.click(within(notice).getByRole("button", { name: "I understand, make it public" }));
+    expect(await within(dlg).findByRole("button", { name: "Make private" })).toBeTruthy();
+    expect(calls.find((c) => c.url === `/api/projects/${P1}/visibility`)?.body).toEqual({
+      visibility: "public",
+      licenceAccepted: true,
+    });
+    expect(within(dlg).getByText(/anyone signed in to this MobSimLab can find it/)).toBeTruthy();
   });
 
   it("deletes only after the name is typed", async () => {
@@ -601,6 +647,73 @@ describe("project workspace", () => {
     fireEvent.change(within(params).getByLabelText("Mode"), { target: { value: "*" } });
     fireEvent.click(within(params).getByRole("button", { name: "Use the library value" }));
     expect((within(params).getByLabelText("Dwell time at a stop") as HTMLInputElement).value).toBe("30");
+  });
+
+  it("shows the assumptions report with the changed values, and exports it as CSV or for printing", async () => {
+    stubApi(owner, {
+      [`GET /api/projects/${P1}/drawings`]: {
+        drawings: {
+          preferences: {
+            kind: "preferences",
+            schemaVersion: 1,
+            doc: { values: { "mode.dwell_s.tram": 45 }, reasons: { "mode.dwell_s.tram": "Busy stops" } },
+            version: 1,
+            updatedAt: "2026-11-16T10:00:00Z",
+            updatedBy: { id: "u1", displayName: "Alice Smith" },
+          },
+        },
+      },
+      [`GET /api/projects/${P1}/value-history?limit=500`]: {
+        history: [
+          {
+            seq: 3,
+            id: "mode.dwell_s.tram",
+            kind: "changed",
+            before: { value: null, reason: null },
+            after: { value: 45, reason: "Busy stops" },
+            reason: "Busy stops",
+            at: "2026-11-16T09:00:00Z",
+            by: { id: "u1", displayName: "Alice Smith" },
+          },
+        ],
+      },
+    });
+    const blobs: Blob[] = [];
+    const createObjectURL = vi.fn((b: Blob) => {
+      blobs.push(b);
+      return "blob:report";
+    });
+    Object.assign(URL, { createObjectURL, revokeObjectURL: vi.fn() });
+    const print = vi.fn();
+    vi.stubGlobal("print", print);
+    window.history.replaceState(null, "", `/projects/${P1}/preferences`);
+    render(<App />);
+    const report = await screen.findByRole("region", { name: "Assumptions report" });
+    await within(report).findByRole("button", { name: "Download CSV" });
+    // The project uses trams: dwell time shows for all modes and for trams, the tram value marked as changed.
+    await waitFor(() => expect(report.textContent).toContain("45 s"));
+    expect(within(report).getAllByText("changed").length).toBe(1);
+    expect(report.textContent).toContain("Reason: Busy stops");
+    await waitFor(() => expect(report.textContent).toContain("Changed by Alice Smith on"), { timeout: 4000 });
+    fireEvent.click(within(report).getByLabelText("Changed values only"));
+    expect(within(report).getAllByText(/Dwell time at a stop/).length).toBe(1);
+    fireEvent.change(within(report).getByLabelText("Group"), { target: { value: "Cost" } });
+    expect(report.textContent).toContain("No value in this group is changed.");
+    expect(report.textContent).toContain("Other choices");
+    fireEvent.click(within(report).getByRole("button", { name: "Download CSV" }));
+    expect(createObjectURL).toHaveBeenCalled();
+    const csv = await blobs[0]!.text();
+    const lines = csv.trim().split("\r\n");
+    expect(lines[0]).toContain("Group,Parameter,Id,Mode,Value used");
+    expect(lines.some((l) => l.includes("mode.dwell_s,Tram,45,s,Yes"))).toBe(true);
+    expect(lines.find((l) => l.includes("mode.dwell_s,Tram,45"))).toMatch(
+      /,Busy stops,Alice Smith,2026-11-16$/,
+    );
+    // Changed values only: the export follows the filter.
+    expect(lines.filter((l) => l.includes(",Yes,")).length).toBe(1);
+    fireEvent.click(within(report).getByRole("button", { name: "Print or save as PDF" }));
+    expect(print).toHaveBeenCalled();
+    expect(document.querySelector(".print-report")?.textContent).toContain("Dwell time at a stop");
   });
 
   it("changes a design rule for one rail mode and goes back to the library value", async () => {

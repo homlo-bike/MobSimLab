@@ -6,6 +6,8 @@ import { UsersService } from "./admin/users.service";
 import { AuditService } from "./audit/audit.service";
 import { AuthController } from "./auth/auth.controller";
 import { AuthService } from "./auth/auth.service";
+import { CommentsController } from "./comments/comments.controller";
+import { CommentsService } from "./comments/comments.service";
 import { OidcService } from "./auth/oidc.service";
 import { SessionService } from "./auth/session.service";
 import { ConfigModule } from "./config/config.module";
@@ -18,6 +20,7 @@ import { PopulationLayersController } from "./population/layers.controller";
 import { PopulationLayersModule } from "./population/layers.module";
 import { PopulationModule } from "./population/population.module";
 import { EconomyModule } from "./economy/economy.module";
+import { CalendarModule } from "./calendar/calendar.module";
 import { PlacesModule } from "./places/places.module";
 import { TerrainModule } from "./terrain/terrain.module";
 import { AccessGuard } from "./iam/access.guard";
@@ -51,6 +54,7 @@ export class AppModule {
         PopulationModule,
         PopulationLayersModule,
         EconomyModule,
+        CalendarModule,
         BenefitsModule,
         PlacesModule,
         SimulationModule,
@@ -63,6 +67,7 @@ export class AppModule {
         SetupController,
         AdminController,
         ProjectsController,
+        CommentsController,
         PluginsController,
         RunsController,
         MslabController,
@@ -71,6 +76,7 @@ export class AppModule {
       providers: [
         AuditService,
         AuthService,
+        CommentsService,
         OidcService,
         ProjectsService,
         RateLimitService,

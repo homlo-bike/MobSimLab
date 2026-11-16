@@ -1,4 +1,4 @@
-import { type FormEvent, type ReactNode, useId, useState } from "react";
+import { type FormEvent, type ReactNode, useCallback, useId, useState } from "react";
 import { useI18n } from "../i18n/i18n";
 import { DELAY_PREFS, MAX_DELAY_SHARE, type PreferencesDoc, prefValue, withPref } from "./preferences";
 import { can, type Project, type ProjectsApi } from "../projects/api";
@@ -10,7 +10,10 @@ import { ReasonField } from "./ReasonField";
 import { DesignRulesSection } from "./DesignRules";
 import { VehicleChoiceSection } from "./VehicleChoice";
 import { SwitchChoiceSection } from "./SwitchChoice";
+import { CalendarSection } from "./CalendarSection";
+import { ClimateSection } from "./ClimateSection";
 import { ParametersSection } from "./Parameters";
+import { AssumptionsReportSection } from "./AssumptionsReport";
 import { roadValue } from "../features/road-sim/params";
 import { DemandParamsSection } from "./DemandParams";
 import { StationsSection } from "./StationsSection";
@@ -31,6 +34,8 @@ export function ProjectPreferences({
   plugins = null,
   onSetPlugin,
   currency = NO_CURRENCY,
+  country = null,
+  place = null,
 }: {
   api: ProjectsApi;
   project: Project;
@@ -45,9 +50,14 @@ export function ProjectPreferences({
   onSetPlugin?: (pluginId: string, enabled: boolean, version?: string) => Promise<void>;
   /** The project's currency and its exchange rate. */
   currency?: CurrencyState;
+  /** ISO alpha-2 code of the country at the project's location, when known (public holidays). */
+  country?: string | null;
+  /** The project's location [lon, lat], for its climate; null when nothing is drawn yet. */
+  place?: readonly [number, number] | null;
 }) {
   const { t } = useI18n();
   const editable = can.edit(project);
+  const loadHistory = useCallback(() => allValueHistory(api, project.id), [api, project.id]);
   const [name, setName] = useState(project.name);
   const [description, setDescription] = useState(project.description);
   const [area, setArea] = useState(project.areaName ?? "");
@@ -221,6 +231,18 @@ export function ProjectPreferences({
           </div>
           {!editable && <p className="mt-3 text-sm text-slate-500">{t("prefs.readOnly")}</p>}
         </section>
+        <CalendarSection
+          preferences={preferences}
+          editable={editable && !!onPreferences}
+          onPreferences={(d) => onPreferences?.(d)}
+          detectedCountry={country}
+        />
+        <ClimateSection
+          preferences={preferences}
+          editable={editable && !!onPreferences}
+          onPreferences={(d) => onPreferences?.(d)}
+          place={place}
+        />
         <StationsSection
           preferences={preferences}
           editable={editable && !!onPreferences}
@@ -236,6 +258,13 @@ export function ProjectPreferences({
           preferences={preferences}
           editable={editable && !!onPreferences}
           onPreferences={(d) => onPreferences?.(d)}
+        />
+        <AssumptionsReportSection
+          projectName={project.name}
+          projectModes={project.modes}
+          preferences={preferences}
+          currency={currency.chosen}
+          loadHistory={loadHistory}
         />
         {onSetPlugin && <ProjectPlugins plugins={plugins} manage={can.manage(project)} onSet={onSetPlugin} />}
         <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-4 md:p-6">
@@ -461,4 +490,17 @@ function CurrencySection({
       {!editable && <p className="mt-3 text-sm text-slate-500">{t("prefs.readOnly")}</p>}
     </section>
   );
+}
+
+/** Purpose: the project's whole value history, newest first, read page by page (at most 10 000 changes). */
+async function allValueHistory(api: ProjectsApi, projectId: string) {
+  const out = [];
+  let before: number | undefined;
+  for (let page = 0; page < 20; page++) {
+    const h = await api.valueHistory(projectId, { before, limit: 500 });
+    out.push(...h);
+    if (h.length < 500) break;
+    before = h[h.length - 1]!.seq;
+  }
+  return out;
 }

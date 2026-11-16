@@ -35,6 +35,8 @@ interface Props {
   pluginLines: readonly PluginLineInput[];
   /** The Schematic tab's edits: station positions and the tariff zones. */
   schematic: SchematicDoc | null;
+  /** The project's preference values: how near stops must be to be one station (library's when absent). */
+  prefs?: Record<string, number>;
   /** The planner's own weekday boardings by station or stop name (benefit tables). */
   boardings: Record<string, number> | undefined;
   /**
@@ -75,6 +77,7 @@ export function FareTables({
   streetLines,
   pluginLines,
   schematic,
+  prefs,
   boardings,
   prices,
   doc,
@@ -87,8 +90,8 @@ export function FareTables({
   const sd = schematic ?? EMPTY_SCHEMATIC;
   const pluginJson = JSON.stringify(pluginLines);
   const net = useMemo(
-    () => schematicNetwork(railway, streetLines, JSON.parse(pluginJson) as PluginLineInput[]),
-    [railway, streetLines, pluginJson],
+    () => schematicNetwork(railway, streetLines, JSON.parse(pluginJson) as PluginLineInput[], prefs),
+    [railway, streetLines, pluginJson, prefs],
   );
   const [ox, oy] = sd.origin ?? defaultOrigin(net);
   const straighten = sd.straighten !== false;

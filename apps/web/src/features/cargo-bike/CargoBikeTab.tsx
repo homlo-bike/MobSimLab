@@ -43,8 +43,6 @@ const IMPACT_KEYS = [
 ];
 /** Gaps and amenities listed at most. */
 const LIST_MAX = 10;
-/** Price base year of the plugin's money values (German reference prices). */
-const PRICE_YEAR = 2024;
 
 const km = (m: number, digits = 1) => (m / 1000).toFixed(digits);
 const pct = (x: number) => `${Math.round(x * 100)} %`;
@@ -113,6 +111,10 @@ export function CargoBikeTab({
   const start = local.start ?? null;
   const destination = local.destination ?? null;
   const values = useMemo(() => local.values ?? {}, [local.values]);
+  // Year of the German reference prices (`savings.price_year`): the project's, else the plugin's.
+  const priceYear = Math.round(
+    values["savings.price_year"] ?? defaults?.["savings.price_year"]?.central ?? NaN,
+  );
   const update = (d: CargoBikeDoc) => {
     setLocal(d);
     onDoc?.(d);
@@ -148,7 +150,7 @@ export function CargoBikeTab({
   // The country of the start point sets the currency and the price level of the savings.
   const startKey = start ? `${start[0].toFixed(3)},${start[1].toFixed(3)}` : "";
   useEffect(() => {
-    if (!start) return;
+    if (!start || !Number.isFinite(priceYear)) return;
     let live = true;
     (async () => {
       try {
@@ -158,8 +160,8 @@ export function CargoBikeTab({
           return;
         }
         const [mine, germany] = await Promise.all([
-          economy.indicators(place.iso3, PRICE_YEAR),
-          economy.indicators("DEU", PRICE_YEAR),
+          economy.indicators(place.iso3, priceYear),
+          economy.indicators("DEU", priceYear),
         ]);
         const conv = conversionFrom(mine, germany);
         if (live)
@@ -176,7 +178,7 @@ export function CargoBikeTab({
     return () => {
       live = false;
     };
-  }, [economy, startKey]);
+  }, [economy, startKey, priceYear]);
   const localCurrency = country.conv ? (country.currency ?? "EUR") : "EUR";
   // German prices in the country's currency, then in the project's currency (Project preferences). Without
   // the country's prices the tab keeps German prices in EUR, as it says.
@@ -821,7 +823,7 @@ export function CargoBikeTab({
             </section>
             {fieldGroup(t("cb.prices"), savingsKeys, savings.values)}
             {fieldGroup(t("cb.impactValues"), IMPACT_KEYS, savings.values)}
-            <p className="mt-2 text-xs text-slate-500">{t("cb.savingsNote", { year: PRICE_YEAR })}</p>
+            <p className="mt-2 text-xs text-slate-500">{t("cb.savingsNote", { year: priceYear })}</p>
           </section>
         )
       )}

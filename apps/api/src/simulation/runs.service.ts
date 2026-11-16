@@ -20,6 +20,7 @@ import { type BikeAccess, StreetNetworkService } from "../street-network/street-
 import type { CapacitySettings, SweepDesign, SweepMetric } from "./params";
 import { type JobState, RunQueue } from "./queue";
 import { MAX_ROAD_TILES, type RoadScenario, type RoadSettings, roadTiles, tileOf } from "./road";
+import type { CalendarPlan, CalendarSettings } from "./calendar";
 
 /** The network of a capacity run: the example metro, or the railway editor's topology with a lines file. */
 export type RunNetwork =
@@ -90,7 +91,19 @@ export interface NewRoadRun {
   scenario: RoadScenario;
 }
 
-export type NewRun = NewCapacityRun | NewSweepRun | NewRoadRun | NewDemandRun;
+/**
+ * A calendar run (ADR-0020): the rail service (if the project has rail service lines) run once per day type over
+ * its service day, and the day figures expanded over many years, one date or a row of dates (./calendar.ts).
+ */
+export interface NewCalendarRun {
+  kind: "calendar";
+  /** The rail network, or null when the project has no rail service to run. */
+  network: RunNetwork | null;
+  params: CalendarSettings;
+  plan: CalendarPlan;
+}
+
+export type NewRun = NewCapacityRun | NewSweepRun | NewRoadRun | NewDemandRun | NewCalendarRun;
 
 /** What the run list shows about a road run's network: its lines and depots, and how many street tiles. */
 export interface RoadNetworkSummary {
@@ -118,10 +131,13 @@ export interface RunSummary {
     | { kind: "example" }
     | { kind: "files"; topologyName: string; linesName: string }
     | RoadNetworkSummary
-    | ({ kind: "demand" } & DemandSummary);
-  /** Capacity runs and sweeps: their settings; road runs: theirs; null for demand runs. */
-  params: CapacitySettings | RoadSettings | null;
+    | ({ kind: "demand" } & DemandSummary)
+    | { kind: "none" };
+  /** Capacity runs and sweeps: their settings; road and calendar runs: theirs; null for demand runs. */
+  params: CapacitySettings | RoadSettings | CalendarSettings | null;
   sweep: boolean;
+  /** Calendar runs only: what is run and expanded (./calendar.ts). */
+  plan?: CalendarPlan;
   /** Sweeps only: the design and the objectives of the Pareto front. */
   design?: SweepDesign;
   objectives?: NewSweepRun["objectives"];
@@ -146,8 +162,9 @@ export interface RunDetail extends RunSummary {
 /** Stored settings of a run (`simulation.run.input`). The network texts have their own columns. */
 interface StoredInput {
   network: RunSummary["network"];
-  params: CapacitySettings | RoadSettings | null;
+  params: CapacitySettings | RoadSettings | CalendarSettings | null;
   sweep: boolean;
+  plan?: CalendarPlan;
   design?: SweepDesign;
   objectives?: NewSweepRun["objectives"];
   /** Demand runs: the project's demand values the worker uses, and the shared-bike GBFS feed. */
@@ -239,7 +256,9 @@ export class RunsService {
         ? demand!
         : input.kind === "road"
           ? await this.roadNetwork(input.scenario)
-          : await this.resolveNetwork(projectId, input.network);
+          : input.network === null
+            ? { stored: { kind: "none" as const }, network: "", lines: "" }
+            : await this.resolveNetwork(projectId, input.network);
     const stored: StoredInput =
       input.kind === "demand"
         ? {
@@ -255,6 +274,7 @@ export class RunsService {
             params: input.params,
             sweep: input.kind === "capacity" ? input.sweep : false,
             ...(input.kind === "sweep" ? { design: input.design, objectives: input.objectives } : {}),
+            ...(input.kind === "calendar" ? { plan: input.plan } : {}),
           };
     const id = await this.db.transaction().execute(async (tx) => {
       if (via) await this.holdToLimit(tx, via);
@@ -836,6 +856,7 @@ export class RunsService {
       params: input.params,
       sweep: input.sweep,
       ...(input.design ? { design: input.design, objectives: input.objectives ?? [] } : {}),
+      ...(input.plan ? { plan: input.plan } : {}),
       agent: r.agent_name,
       verdict: typeof verdict === "string" ? verdict : null,
       error: r.error,

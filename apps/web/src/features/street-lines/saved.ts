@@ -14,6 +14,8 @@ export interface SavedPoint {
 
 /** One street line: what the planner drew and set, plus the route last computed from it. */
 export interface SavedStreetLine {
+  /** Stable id, so comments stay on the line when lines before it are deleted; absent on lines saved before ids. */
+  id?: string;
   name: string;
   profile: VehicleProfile;
   /** The catalogue vehicle (vehicles.ts id); null or absent for the mode's typical vehicle. */
@@ -37,6 +39,11 @@ export interface SavedStreetLine {
 /** The project's street lines; the street line tool edits one at a time. */
 export interface StreetLinesDoc {
   lines: SavedStreetLine[];
+}
+
+/** Purpose: a new street line id. */
+export function newLineId(): string {
+  return crypto.randomUUID();
 }
 
 /** Purpose: the journey planner's view of a saved line, or null if it has fewer than two points. */
