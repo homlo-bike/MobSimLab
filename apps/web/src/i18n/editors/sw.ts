@@ -1199,6 +1199,41 @@ export const editorsSw = {
     "Hakuna laini iliyo tayari kujaribiwa. Katika zana ya reli, ipe laini angalau vituo viwili na treni.",
   "capacity.drawn.errors": "Reli iliyochorwa ina makosa. Yarekebishe kwanza katika zana ya reli.",
   "capacity.building": "Inajenga reli iliyochorwa…",
+  "capacity.drawnStreets":
+    "Laini za barabarani {names}, zimeendeshwa kwenye njia zao pamoja na ucheleweshaji wa msongamano.",
+  "capacity.loads.estimating": "Inakadiria abiria karibu na vituo…",
+  "capacity.loads.toggle": "Mzigo wa abiria (makadirio ya abiria ya kichupo cha Majedwali)",
+  "capacity.loads.title": "Abiria",
+  "capacity.loads.busiest": "Sehemu yenye msongamano zaidi: {from} → {to}, {time}",
+  "capacity.loads.full": "Mzigo kwenye sehemu yenye msongamano zaidi",
+  "capacity.loads.fullHint": "Abiria {riders} kwa saa kwa nafasi {places}",
+  "capacity.loads.left": "Walioachwa",
+  "capacity.loads.leftHint": "watu katika kipindi wanaosubiri gari linalofuata",
+  "capacity.loads.over":
+    "Magari yamejaa kupita kiasi: endesha mara nyingi zaidi au tumia magari marefu zaidi.",
+  "capacity.loads.fits": "Wote wanaenea.",
+  "capacity.loads.missing": "Hakuna wanaopanda katika {stops}.",
+  "capacity.loads.none":
+    "Hakuna wanaopanda kwa laini hii. Chapisha laini ili kichupo cha Majedwali kikadirie, au uziweke chini ya Wanaopanda kwa kila kituo.",
+  "capacity.loads.editor": "Wanaopanda kwa kila kituo",
+  "capacity.loads.editorHelp":
+    "Wanaopanda siku ya kazi, laini zote pamoja. Acha tupu kutumia makadirio ya kichupo cha Majedwali.",
+  "capacity.loads.estimatePending": "Inapakia makadirio…",
+  "capacity.loads.estimate": "Makadirio {n}",
+  "capacity.loads.noEstimate": "Hakuna makadirio",
+  "capacity.loads.method":
+    "Abiria: kila saa ya kilele (07–09, 16–19) hubeba {peak} ya wanaopanda siku ya kazi, na mwelekeo wenye wengi zaidi {dir} ya abiria (vigezo vya kichupo cha Majedwali).",
+  "capacity.street.title": "Laini za barabarani",
+  "capacity.street.perHour": "{n} kwa saa",
+  "capacity.street.keepsTime": "Hufuata ratiba",
+  "capacity.street.onTimeHint": "wastani wa kuchelewa dk {mean}, 95 % ndani ya dk {p95}",
+  "capacity.street.cycle": "Mzunguko",
+  "capacity.street.cycleHint": "dk {traffic} kati yake katika msongamano; dk {run} halisi",
+  "capacity.street.vehicles": "Magari",
+  "capacity.street.bunching": "Kurundikana",
+  "capacity.street.bunchingHint": "nafasi chini ya nusu ya muda kati ya magari; kuchelewa dk {left} mwishoni",
+  "capacity.street.method":
+    "Kila laini ya barabarani iliendeshwa mara {runs}; kila safari ilikuwa na msongamano wake, mara {low} hadi {high} ya ucheleweshaji unaotarajiwa barabara kuu (mapendeleo ya mradi).",
   "capacity.exampleText":
     "Njia M1 Westpark – Eastgate: stesheni tano, karakana kila mwisho, kila dak 5 wakati wa msongamano na kila dak 10 nyakati nyingine.",
   "capacity.topologyFile": "Topolojia ya reli (JSON)",

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { clock, parseClock } from "../journey-planner/format";
 import {
@@ -9,10 +9,33 @@ import {
   useI18n,
   withNodes,
 } from "../../i18n/i18n";
+import { paramValue as costParam } from "../costs/params";
+import { paramValue } from "../benefits/params";
 import { engineLines } from "../railways/serviceLines";
+import type { SavedStreetLine } from "../street-lines/saved";
 import type { Network } from "../railways/types";
 import { buildDrawnNetwork, drawnProblem } from "./drawn";
 import { loadWorkerEngine } from "./engine";
+import { type LineLoad, type LoadLine, lineLoad } from "./loads";
+import {
+  type Boardings,
+  estimatedBoardings,
+  lineBoardings,
+  loadZones,
+  type RidershipInput,
+  type RidershipZones,
+} from "./ridership";
+import {
+  circuit,
+  departures,
+  runStreetLine,
+  STREET_RUN_DEFAULTS,
+  type StreetLineResult,
+  type StreetRunParams,
+  streetStops,
+  TRAFFIC_FACTOR,
+} from "./streetRun";
+import { BoardingsEditor, LoadMetrics, StreetCard } from "./SystemResults";
 import type {
   CapacityEngine,
   CapacityParams,
@@ -25,6 +48,23 @@ import type {
 } from "./types";
 
 const H = 3600;
+const NO_STREETS: readonly SavedStreetLine[] = [];
+const NO_BOARDINGS: Boardings = {};
+
+/** Purpose: the test settings that the street run shares with the capacity run. */
+function pickStreetParams(a: Partial<CapacityParams>): Partial<StreetRunParams> {
+  const out: Partial<StreetRunParams> = {};
+  for (const k of [
+    "stability_runs",
+    "seed",
+    "late_threshold_s",
+    "residual_delay_s",
+    "warmup_s",
+    "recovery_s",
+  ] as const)
+    if (a[k] !== undefined && Number.isFinite(a[k])) out[k] = a[k];
+  return out;
+}
 
 /** Periods to pick from; "custom" lets the planner type the times. */
 const PERIODS = [
@@ -94,40 +134,125 @@ interface Props {
   railway?: Network | null;
   /** Builds the drawn railway for the test; tests inject a fake. */
   buildDrawn?: typeof buildDrawnNetwork;
+  /** The project's street lines, run along their routes with traffic delays. */
+  streetLines?: readonly SavedStreetLine[];
+  /** What the Tables tab's ridership estimate needs; passenger loads are left out without it. */
+  ridership?: RidershipInput | null;
+  /** The planner's own weekday boardings per station or stop. */
+  ownBoardings?: Boardings;
+  /** Saves them; absent when the project is read-only. */
+  onOwnBoardings?: (b: Boardings) => void;
+  /** Loads the estimate's zones; tests inject a fake. */
+  loadRidership?: (input: RidershipInput) => Promise<RidershipZones>;
+  /** The project's values (Project preferences), for vehicle places and the load shares. */
+  prefs?: Record<string, number>;
 }
 
 type LineState = { info: LineInfo; planned: Point; sweep: Point[]; sweeping: boolean };
 
+/** A line of the drawn network as the passenger loads see it, before the boardings are known. */
+interface LoadPlan {
+  key: string;
+  id: string;
+  name: string;
+  mode: string;
+  sequences: string[][];
+  loop: boolean;
+  capacity: number;
+  perHour: (hourS: number) => number;
+}
+
+/** Purpose: the drawn rail lines for the loads: stops by station name both ways, the train's places. */
+function railLoadPlans(railway: Network, infos: LineInfo[]): LoadPlan[] {
+  const name = new Map(railway.stations.map((s) => [`st${s.id}`, s.name]));
+  return engineLines(railway).map((l) => {
+    const stops = l.stations.map((id) => name.get(id) ?? id);
+    const bands = infos.find((i) => i.id === l.id)?.bands ?? [];
+    return {
+      key: `rail:${l.id}`,
+      id: l.id,
+      name: l.name,
+      mode: l.mode,
+      sequences: [stops, [...stops].reverse()],
+      loop: false,
+      capacity: l.vehicle.capacity * l.units,
+      perHour: (h) => {
+        const b = bands.find((x) => h + 1800 >= x.from_s && h + 1800 < x.to_s);
+        return b && b.headway_s > 0 ? 3600 / b.headway_s : 0;
+      },
+    };
+  });
+}
+
+/** Purpose: the street lines for the loads: stops in riding order, the mode's places per vehicle. */
+function streetLoadPlans(
+  streets: readonly { line: SavedStreetLine; index: number }[],
+  prefs: Record<string, number> | undefined,
+): LoadPlan[] {
+  return streets.map(({ line, index }) => {
+    const { sequences, loop } = streetStops(line);
+    return {
+      key: `street:${index}`,
+      id: `street:${index}`,
+      name: line.name,
+      mode: line.profile.mode,
+      sequences,
+      loop,
+      capacity: costParam("mode.vehicle_capacity", line.profile.mode, prefs)[1],
+      perHour: (h) => departures(line, h, h + 3600).length,
+    };
+  });
+}
+
 /**
- * The simulator tab's "Test the system" panel: the rail capacity run. The planner picks a network (the example
- * metro, or the railway editor's track topology with a lines file) and a period; the run plans the period with the
- * timetable planner, measures UIC 406 capacity, runs it through the interlocking, repeats it with random delays,
- * and tries other frequencies to find the most each line can carry. Plain verdicts first, numbers behind them.
+ * The simulator tab's "Test the system" panel. The planner picks a network (the lines drawn in the project,
+ * the example metro, or the railway editor's track topology with a lines file) and a period. Rail lines are
+ * planned with the timetable planner, measured for UIC 406 capacity, run through the interlocking, repeated
+ * with random delays, and tried at other frequencies to find the most each line can carry. Street lines run
+ * their timetables along their routes with traffic delays that vary from trip to trip. Passenger loads come
+ * from the Tables tab's ridership estimate or the planner's own boardings. Plain verdicts first, numbers
+ * behind them.
  */
 export function CapacityRun({
   panel = null,
   loadEngine = loadWorkerEngine,
   railway = null,
   buildDrawn = buildDrawnNetwork,
+  streetLines = NO_STREETS,
+  ridership = null,
+  ownBoardings = NO_BOARDINGS,
+  onOwnBoardings,
+  loadRidership = loadZones,
+  prefs,
 }: Props) {
   const { t } = useI18n();
   const drawn = drawnProblem(railway);
-  // Until the planner picks one: the drawn railway when it has service lines, else the example.
+  const streets = useMemo(
+    () => streetLines.map((line, index) => ({ line, index })).filter(({ line }) => circuit(line) !== null),
+    [streetLines],
+  );
+  const drawnReady = drawn === null || streets.length > 0;
+  // Until the planner picks one: the lines drawn in the project when there are any, else the example.
   const [picked, setSource] = useState<"example" | "drawn" | "files" | null>(null);
-  const source = picked ?? (drawn === null ? "drawn" : "example");
+  const source = picked ?? (drawnReady ? "drawn" : "example");
   const [topology, setTopology] = useState<{ name: string; text: string } | null>(null);
   const [linesFile, setLinesFile] = useState<{ name: string; text: string } | null>(null);
   const [period, setPeriod] = useState<string>("am");
   const [from, setFrom] = useState("07:00");
   const [to, setTo] = useState("09:00");
   const [sweep, setSweep] = useState(true);
+  const [withLoads, setWithLoads] = useState(true);
   const [advanced, setAdvanced] = useState<Partial<CapacityParams>>({});
   const [status, setStatus] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [run, setRun] = useState<Run | null>(null);
   const [lines, setLines] = useState<LineState[]>([]);
   const [notes, setNotes] = useState<string[]>([]);
+  const [streetResults, setStreetResults] = useState<StreetLineResult[]>([]);
+  const [loads, setLoads] = useState<Record<string, LineLoad>>({});
+  const [zones, setZones] = useState<RidershipZones | null>(null);
   const engine = useRef<{ key: string; engine: CapacityEngine } | null>(null);
+  const zonesRun = useRef<{ key: string; zones: Promise<RidershipZones> } | null>(null);
   const generation = useRef(0);
 
   useEffect(
@@ -148,8 +273,84 @@ export function CapacityRun({
   };
 
   const ready =
-    source === "example" || (source === "drawn" ? drawn === null : topology !== null && linesFile !== null);
+    source === "example" || (source === "drawn" ? drawnReady : topology !== null && linesFile !== null);
   const busy = status !== null;
+
+  // The drawn lines without their service bands (for the boardings editor before a run).
+  const plans = useMemo(
+    () => [
+      ...(drawn === null && railway ? railLoadPlans(railway, []) : []),
+      ...streetLoadPlans(streets, prefs),
+    ],
+    [drawn, railway, streets, prefs],
+  );
+  const stopNames = useMemo(() => [...new Set(plans.flatMap((p) => p.sequences.flat()))], [plans]);
+  const linesAt = (n: string) => plans.filter((p) => p.sequences.some((s) => s.includes(n))).length;
+  const estimates = useMemo(() => {
+    if (!zones) return null;
+    const out: Record<string, number> = {};
+    for (const p of plans) {
+      const e = estimatedBoardings(
+        zones.zones,
+        p.mode,
+        [...new Set(p.sequences.flat())],
+        prefs,
+        ridership?.doc ?? null,
+      );
+      for (const [n, v] of Object.entries(e)) out[n] = (out[n] ?? 0) + v;
+    }
+    return out;
+  }, [zones, plans, prefs, ridership?.doc]);
+
+  /** Loads the estimate's zones once per published network. */
+  const ensureZones = (): Promise<RidershipZones> | null => {
+    if (!ridership) return null;
+    const key = JSON.stringify([ridership.timetable, ridership.regions, ridership.prefs, ridership.country]);
+    if (zonesRun.current?.key !== key) {
+      const z = loadRidership(ridership);
+      zonesRun.current = { key, zones: z };
+      void z.then(
+        (v) => zonesRun.current?.key === key && setZones(v),
+        () => undefined,
+      );
+    }
+    return zonesRun.current.zones;
+  };
+
+  /** Runs the street lines and works out the passenger loads of the drawn lines. */
+  const drawnExtras = async (
+    w: { from_s: number; to_s: number },
+    infos: LineInfo[],
+    alive: () => boolean,
+  ) => {
+    const params: StreetRunParams = { ...STREET_RUN_DEFAULTS, ...pickStreetParams(advanced), ...w };
+    setStreetResults(
+      streets.flatMap(({ line, index }) => {
+        const r = runStreetLine(line, index, params);
+        return r ? [r] : [];
+      }),
+    );
+    if (!withLoads || !ridership) return;
+    setStatus(t("capacity.loads.estimating"));
+    const z = await ensureZones()!.catch(() => ({ zones: [], notes: [] }) as RidershipZones);
+    if (!alive()) return;
+    const shares = {
+      peakHour: paramValue("benefit.ridership.peak_hour_share", "*", prefs)[1],
+      peakDirection: paramValue("benefit.ridership.peak_direction_share", "*", prefs)[1],
+    };
+    const all = [
+      ...(drawn === null && railway ? railLoadPlans(railway, infos) : []),
+      ...streetLoadPlans(streets, prefs),
+    ];
+    const out: Record<string, LineLoad> = {};
+    for (const p of all) {
+      const names = [...new Set(p.sequences.flat())];
+      const est = estimatedBoardings(z.zones, p.mode, names, prefs, ridership.doc);
+      const line: LoadLine = { ...p, boardings: lineBoardings(names, est, ownBoardings, linesAt) };
+      out[p.key] = lineLoad(line, w.from_s, w.to_s, shares);
+    }
+    setLoads(out);
+  };
 
   const start = async () => {
     const w = periodWindow();
@@ -162,6 +363,9 @@ export function CapacityRun({
     setError(null);
     setRun(null);
     setLines([]);
+    setStreetResults([]);
+    setLoads({});
+    const railOn = source !== "drawn" || drawn === null;
     const key =
       source === "example"
         ? "example"
@@ -169,6 +373,10 @@ export function CapacityRun({
           ? `drawn|${JSON.stringify(railway)}`
           : `${topology!.name}|${topology!.text.length}|${linesFile!.text}`;
     try {
+      if (!railOn) {
+        await drawnExtras(w, [], alive);
+        return;
+      }
       if (engine.current?.key !== key) {
         engine.current?.engine.dispose();
         engine.current = null;
@@ -206,6 +414,8 @@ export function CapacityRun({
         sweeping: sweep,
       }));
       setLines(states);
+      if (source === "drawn") await drawnExtras(w, infos, alive);
+      if (!alive()) return;
       if (sweep) {
         for (let k = 0; k < states.length; k++) {
           const li = infos.findIndex((i) => i.id === states[k]!.info.id);
@@ -342,15 +552,20 @@ export function CapacityRun({
         {source === "example" ? (
           <p className="text-xs text-slate-600">{t("capacity.exampleText")}</p>
         ) : source === "drawn" ? (
-          <p className="text-xs text-slate-600">
-            {drawn === null
-              ? t("capacity.drawnText", {
-                  names: engineLines(railway!)
-                    .map((l) => l.name)
-                    .join(", "),
-                })
-              : t(`capacity.drawn.${drawn}`)}
-          </p>
+          <div className="space-y-1 text-xs text-slate-600">
+            <p>
+              {drawn === null
+                ? t("capacity.drawnText", {
+                    names: engineLines(railway!)
+                      .map((l) => l.name)
+                      .join(", "),
+                  })
+                : t(`capacity.drawn.${drawn}`)}
+            </p>
+            {streets.length > 0 && (
+              <p>{t("capacity.drawnStreets", { names: streets.map((x) => x.line.name).join(", ") })}</p>
+            )}
+          </div>
         ) : (
           <div className="space-y-2">
             {file(t("capacity.topologyFile"), topology, setTopology)}
@@ -411,6 +626,23 @@ export function CapacityRun({
           <input type="checkbox" checked={sweep} onChange={(e) => setSweep(e.target.checked)} />
           {t("capacity.sweep")}
         </label>
+        {source === "drawn" && ridership && (
+          <>
+            <label className="flex items-center gap-2 text-sm">
+              <input type="checkbox" checked={withLoads} onChange={(e) => setWithLoads(e.target.checked)} />
+              {t("capacity.loads.toggle")}
+            </label>
+            {withLoads && (
+              <BoardingsEditor
+                names={stopNames}
+                estimate={estimates}
+                own={ownBoardings}
+                onOwn={onOwnBoardings ?? null}
+                onOpen={() => void ensureZones()?.catch(() => undefined)}
+              />
+            )}
+          </>
+        )}
         <details className="rounded-[10px] border border-slate-200 bg-slate-50 px-3 py-2">
           <summary className="cursor-pointer text-sm font-medium">{t("capacity.settings")}</summary>
           <div className="mt-2 space-y-1.5">
@@ -476,7 +708,7 @@ export function CapacityRun({
             </p>
           </div>
           {lines.map((l) => (
-            <LineCard key={l.info.id} line={l} limit={limit} />
+            <LineCard key={l.info.id} line={l} limit={limit} load={loads[`rail:${l.info.id}`]} />
           ))}
           {notes.length > 0 && (
             <details className="text-xs text-slate-600">
@@ -509,12 +741,36 @@ export function CapacityRun({
           </p>
         </div>
       )}
+
+      {streetResults.length > 0 && (
+        <div className="space-y-3" data-testid="street-result">
+          <h3 className="caps">{t("capacity.street.title")}</h3>
+          {streetResults.map((r) => (
+            <StreetCard key={r.index} r={r} load={loads[`street:${r.index}`]} />
+          ))}
+          <p className="text-xs text-slate-500">
+            {t("capacity.street.method", {
+              runs: pickStreetParams(advanced).stability_runs ?? STREET_RUN_DEFAULTS.stability_runs,
+              low: TRAFFIC_FACTOR[0].toFixed(1),
+              high: TRAFFIC_FACTOR[2].toFixed(1),
+            })}
+          </p>
+        </div>
+      )}
+      {Object.keys(loads).length > 0 && (
+        <p className="text-xs text-slate-500">
+          {t("capacity.loads.method", {
+            peak: `${Math.round(paramValue("benefit.ridership.peak_hour_share", "*", prefs)[1] * 100)} %`,
+            dir: `${Math.round(paramValue("benefit.ridership.peak_direction_share", "*", prefs)[1] * 100)} %`,
+          })}
+        </p>
+      )}
     </section>
   );
   return panel ? createPortal(body, panel) : body;
 }
 
-function LineCard({ line, limit }: { line: LineState; limit: number }) {
+function LineCard({ line, limit, load }: { line: LineState; limit: number; load?: LineLoad }) {
   const { t, tn } = useI18n();
   const p = line.planned;
   const all = [p, ...line.sweep].sort((a, b) => b.headway_s - a.headway_s);
@@ -620,6 +876,7 @@ function LineCard({ line, limit }: { line: LineState; limit: number }) {
           </ul>
         </details>
       )}
+      {load && <LoadMetrics load={load} />}
     </article>
   );
 }

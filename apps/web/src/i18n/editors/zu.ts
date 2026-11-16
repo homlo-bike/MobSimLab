@@ -1220,6 +1220,41 @@ export const editorsZu = {
     "Awukho umugqa olungele ukuhlolwa. Ethuluzini likajantshi, nikeza umugqa okungenani iziteshi ezimbili nesitimela.",
   "capacity.drawn.errors": "Ujantshi odwetshiwe unamaphutha. Qala uwalungise ethuluzini likajantshi.",
   "capacity.building": "Kwakhiwa ujantshi odwetshiwe…",
+  "capacity.drawnStreets":
+    "Imigqa yasemgwaqweni {names}, ihanjiswe emizileni yayo nokubambezeleka kwethrafikhi.",
+  "capacity.loads.estimating": "Kulinganiselwa abagibeli eduze neziteshi…",
+  "capacity.loads.toggle": "Umthwalo wabagibeli (isilinganiso sabagibeli sethebhu Amatafula)",
+  "capacity.loads.title": "Abagibeli",
+  "capacity.loads.busiest": "Indawo eminyene kakhulu: {from} → {to}, {time}",
+  "capacity.loads.full": "Umthwalo endaweni eminyene kakhulu",
+  "capacity.loads.fullHint": "Abagibeli abangu-{riders} ngehora ezindaweni ezingu-{places}",
+  "capacity.loads.left": "Abasele",
+  "capacity.loads.leftHint": "abantu kulesi sikhathi abalinda imoto elandelayo",
+  "capacity.loads.over": "Izimoto zigcwele kakhulu: hamba kaningi noma usebenzise izimoto ezinde.",
+  "capacity.loads.fits": "Wonke umuntu uyangena.",
+  "capacity.loads.missing": "Akekho ogibelayo e-{stops}.",
+  "capacity.loads.none":
+    "Abekho abagibelayo kulo mugqa. Shicilela imigqa ukuze ithebhu Amatafula ilinganise, noma uwafake ngaphansi kokuthi Abagibelayo esiteshini ngasinye.",
+  "capacity.loads.editor": "Abagibelayo esiteshini ngasinye",
+  "capacity.loads.editorHelp":
+    "Abagibelayo ngosuku lomsebenzi, yonke imigqa ndawonye. Shiya kungenalutho ukuze kusetshenziswe isilinganiso sethebhu Amatafula.",
+  "capacity.loads.estimatePending": "Ilayisha isilinganiso…",
+  "capacity.loads.estimate": "Isilinganiso {n}",
+  "capacity.loads.noEstimate": "Asikho isilinganiso",
+  "capacity.loads.method":
+    "Abagibeli: ihora ngalinye eliminyene (07–09, 16–19) lithwala u-{peak} wabagibelayo bosuku lomsebenzi, nendlela eminyene ithwala u-{dir} wabagibeli (amapharamitha ethebhu Amatafula).",
+  "capacity.street.title": "Imigqa yasemgwaqweni",
+  "capacity.street.perHour": "{n} ngehora",
+  "capacity.street.keepsTime": "Ihamba ngesikhathi",
+  "capacity.street.onTimeHint": "ngokwesilinganiso ibambezeleka imiz {mean}, u-95 % ngaphakathi kwemiz {p95}",
+  "capacity.street.cycle": "Umjikelezo",
+  "capacity.street.cycleHint": "imiz {traffic} kuyo isethrafikhini; imiz {run} ngempela",
+  "capacity.street.vehicles": "Izimoto",
+  "capacity.street.bunching": "Ukuqoqana",
+  "capacity.street.bunchingHint":
+    "izikhala ezingaphansi kwengxenye yesikhathi phakathi; ukubambezeleka kwemiz {left} ekugcineni",
+  "capacity.street.method":
+    "Umugqa ngamunye wasemgwaqweni uhanjiswe izikhathi ezingu-{runs}; uhambo ngalunye lube nethrafikhi yalo, izikhathi ezingu-{low} kuya ku-{high} zokubambezeleka okulindelekile emigwaqweni emikhulu (okuncanyelwayo kwephrojekthi).",
   "capacity.exampleText":
     "Ulayini M1 Westpark – Eastgate: iziteshi ezinhlanu, idepho ekugcineni ngakunye, njalo ngemizuzu engu-5 ngesikhathi sesiminyaminya nanjalo ngemizuzu engu-10 ngezinye izikhathi.",
   "capacity.topologyFile": "Isakhiwo sojantshi (JSON)",

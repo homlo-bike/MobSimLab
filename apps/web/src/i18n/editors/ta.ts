@@ -1219,6 +1219,41 @@ export const editorsTa = {
   "capacity.drawn.errors":
     "வரையப்பட்ட ரயில்வேயில் பிழைகள் உள்ளன. முதலில் அவற்றை ரயில்வே கருவியில் சரிசெய்யுங்கள்.",
   "capacity.building": "வரையப்பட்ட ரயில்வே உருவாக்கப்படுகிறது…",
+  "capacity.drawnStreets":
+    "தெரு வழித்தடங்கள் {names}, போக்குவரத்து தாமதத்துடன் தங்கள் பாதையில் இயக்கப்பட்டன.",
+  "capacity.loads.estimating": "நிலையங்கள், நிறுத்தங்களைச் சுற்றிய பயணிகள் மதிப்பிடப்படுகிறது…",
+  "capacity.loads.toggle": "பயணிகள் சுமை (அட்டவணைகள் தாவலின் பயணிகள் மதிப்பீடு)",
+  "capacity.loads.title": "பயணிகள்",
+  "capacity.loads.busiest": "அதிக நெரிசல் பகுதி: {from} → {to}, {time}",
+  "capacity.loads.full": "அதிக நெரிசல் பகுதியில் சுமை",
+  "capacity.loads.fullHint": "{places} இடங்களுக்கு மணிக்கு {riders} பயணிகள்",
+  "capacity.loads.left": "விடப்பட்டவர்கள்",
+  "capacity.loads.leftHint": "பேர் இந்தக் காலத்தில் அடுத்த வாகனத்துக்குக் காத்திருக்கின்றனர்",
+  "capacity.loads.over":
+    "வாகனங்கள் மிக நிரம்பியுள்ளன: அடிக்கடி இயக்குங்கள் அல்லது நீளமான வாகனங்களைப் பயன்படுத்துங்கள்.",
+  "capacity.loads.fits": "அனைவருக்கும் இடம் உண்டு.",
+  "capacity.loads.missing": "{stops} இல் யாரும் ஏறவில்லை.",
+  "capacity.loads.none":
+    "இந்த வழித்தடத்துக்கு ஏறுபவர்கள் இல்லை. அட்டவணைகள் தாவல் மதிப்பிட வழித்தடங்களை வெளியிடுங்கள், அல்லது நிலையம் அல்லது நிறுத்தம் வாரியாக ஏறுபவர்கள் என்பதில் உள்ளிடுங்கள்.",
+  "capacity.loads.editor": "நிலையம் அல்லது நிறுத்தம் வாரியாக ஏறுபவர்கள்",
+  "capacity.loads.editorHelp":
+    "வேலை நாள் ஏறுபவர்கள், எல்லா வழித்தடங்களும் சேர்த்து. காலியாக விட்டால் அட்டவணைகள் தாவலின் மதிப்பீடு பயன்படும்.",
+  "capacity.loads.estimatePending": "மதிப்பீடு ஏற்றப்படுகிறது…",
+  "capacity.loads.estimate": "மதிப்பீடு {n}",
+  "capacity.loads.noEstimate": "மதிப்பீடு இல்லை",
+  "capacity.loads.method":
+    "பயணிகள்: ஒவ்வொரு நெரிசல் மணியும் (07–09, 16–19) வேலை நாள் ஏறுபவர்களில் {peak} சுமக்கிறது, நெரிசலான திசை பயணிகளில் {dir} (அட்டவணைகள் தாவல் அளவுருக்கள்).",
+  "capacity.street.title": "தெரு வழித்தடங்கள்",
+  "capacity.street.perHour": "மணிக்கு {n}",
+  "capacity.street.keepsTime": "நேரம் தவறாது",
+  "capacity.street.onTimeHint": "சராசரி {mean} நிமி தாமதம், 95 % {p95} நிமிக்குள்",
+  "capacity.street.cycle": "சுற்று",
+  "capacity.street.cycleHint": "இதில் {traffic} நிமி போக்குவரத்தில்; {run} நிமி உண்மையில்",
+  "capacity.street.vehicles": "வாகனங்கள்",
+  "capacity.street.bunching": "கொத்தாக வருதல்",
+  "capacity.street.bunchingHint": "பாதி இடைவெளிக்கும் குறைவான இடைவெளிகள்; முடிவில் {left} நிமி தாமதம்",
+  "capacity.street.method":
+    "ஒவ்வொரு தெரு வழித்தடமும் {runs} முறை இயக்கப்பட்டது; ஒவ்வொரு பயணத்துக்கும் தனிப் போக்குவரத்து, முதன்மைச் சாலைகளில் எதிர்பார்க்கும் தாமதத்தின் {low} முதல் {high} மடங்கு (திட்ட விருப்பங்கள்).",
   "capacity.exampleText":
     "வழி M1 Westpark – Eastgate: ஐந்து நிலையங்கள், ஒவ்வொரு முனையிலும் ஒரு பணிமனை, நெரிசல் நேரத்தில் ஒவ்வொரு 5 நிமி, மற்ற நேரங்களில் ஒவ்வொரு 10 நிமி.",
   "capacity.topologyFile": "தண்டவாள இடவியல் (JSON)",
