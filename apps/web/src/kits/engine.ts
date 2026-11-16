@@ -1,4 +1,4 @@
-import type { Kits, KitsLoader, SpanSystem, VesselType } from "./types";
+import type { Kits, KitsLoader, SpanSystem, VesselType, ZoneSystem } from "./types";
 
 let wasmModule: Promise<typeof import("../wasm/mode-kits/mode_kits_wasm.js")> | null = null;
 
@@ -12,7 +12,8 @@ function initWasm() {
 }
 
 /**
- * Purpose: load the mode-kits WebAssembly module (straight spans kit, water route kit, segment engine).
+ * Purpose: load the mode-kits WebAssembly module (straight spans, water route and service zone kits,
+ * segment engine).
  * Output: the kits; each call sends the whole line and returns the built line.
  * Dependencies: apps/web/src/wasm/mode-kits, built by tools/wasm/build-mode-kits.sh.
  */
@@ -21,20 +22,24 @@ export const loadKits: KitsLoader = async () => {
   return {
     buildSpanLine: (line) => JSON.parse(wasm.build_span_line(JSON.stringify(line))),
     buildWaterLine: (line) => JSON.parse(wasm.build_water_line(JSON.stringify(line))),
+    estimateZone: (zone) => JSON.parse(wasm.estimate_zone(JSON.stringify(zone))),
   } satisfies Kits;
 };
 
 /**
- * Purpose: a ropeway system for the straight spans kit from the plugin's parameter values
- * (`ropeway.*`, resolved for the mode and ropeway system), with the planner's overrides on top.
+ * Purpose: a system for the straight spans kit from the plugin's parameter values (`<prefix>.*`, resolved
+ * for the mode and system: `ropeway.*` for cable cars, `people_mover.*` for people movers), with the
+ * planner's overrides on top. `carrier` is "cabin" for ropeways and "train" for guideway modes.
  */
 export function spanSystem(
   id: string,
   operation: SpanSystem["operation"],
   v: Record<string, number>,
   over: Partial<SpanSystem> = {},
+  prefix = "ropeway",
+  carrier: NonNullable<SpanSystem["carrier"]> = "cabin",
 ): SpanSystem {
-  const p = (k: string, d: number) => v[`ropeway.${k}`] ?? d;
+  const p = (k: string, d: number) => v[`${prefix}.${k}`] ?? d;
   return {
     id,
     operation,
@@ -54,6 +59,8 @@ export function spanSystem(
     terminal_dwell_s: p("terminal_dwell_s", 60),
     reserve_share: p("reserve_share", 0.1),
     capacity_ceiling_pphpd: p("capacity_ceiling_pphpd", 0),
+    carrier,
+    parameter_prefix: prefix,
     ...over,
   };
 }
@@ -73,5 +80,20 @@ export function vesselType(
     min_dwell_s: p("min_dwell_s", 60),
     capacity: p("passenger_capacity", 250),
     ...over,
+  };
+}
+
+/** Purpose: an on-demand system for the service zone kit from the plugin's `<prefix>.*` values. */
+export function zoneSystem(v: Record<string, number>, prefix = "drt"): ZoneSystem {
+  const p = (k: string, d: number) => v[`${prefix}.${k}`] ?? d;
+  return {
+    speed_kmh: p("speed_kmh", 25),
+    network_factor: p("network_factor", 1.25),
+    stop_dwell_s: p("stop_dwell_s", 32),
+    vehicle_places: p("vehicle_places", 8),
+    target_utilisation: p("target_utilisation", 0.85),
+    pooling_detour_share: p("pooling_detour_share", 0.2),
+    max_wait_s: p("max_wait_s", 600),
+    riders_per_request: p("riders_per_request", 1.1),
   };
 }
