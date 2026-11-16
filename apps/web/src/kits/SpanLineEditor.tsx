@@ -19,6 +19,7 @@ import {
 } from "./mapLayers";
 import { fetchProfiles, sectionGround, type TerrainProfiles } from "../terrain/terrain";
 import { ProfileView } from "./ProfileView";
+import type { SavedPluginLine } from "./saved";
 import type {
   GroundSample,
   Kits,
@@ -32,7 +33,7 @@ import type {
 
 const PREFIX = "spans";
 
-/** What the planner drew, kept on this device per project. */
+/** What the planner drew, saved with the project (on this device for an editor without `onSave`). */
 export interface SpanDoc {
   name: string;
   mode: string;
@@ -93,8 +94,13 @@ interface Props {
   panel?: HTMLElement | null;
   /** The plugin tool (straight spans kit) with the modes it draws. */
   tool: PluginTool;
-  /** Storage key of the drawing (per project). */
+  /** Storage key of the drawing on this device: where it is kept without `onSave`, and read once when the
+   * project has none yet (drawings made before they were saved with the project). */
   storageKey: string;
+  /** The drawing saved with the project, if any. */
+  initial?: Partial<SpanDoc> | null;
+  /** Told about the drawing, the line and its noise shape after every change, to save with the project. */
+  onSave?: (saved: SavedPluginLine) => void;
   loadKits?: KitsLoader;
   /** Told about the line after every change, so the journey planner can ride it. */
   onLineChange?: (line: PluginLineInput | null) => void;
@@ -140,8 +146,8 @@ export function moveStation(doc: SpanDoc, i: number, lonlat: LonLat): SpanDoc {
  * are straight; towers are placed automatically within the span limit and keep the recommended clearance,
  * or the planner sets them per section. The panel shows the system, the stations, the towers, the
  * longitudinal profile, the live checks, and running time, capacity and cabins.
- * Side effects: adds layers, markers and a click handler to the map while mounted; stores the drawing in
- * this device's storage under `storageKey`.
+ * Side effects: adds layers, markers and a click handler to the map while mounted; hands the drawing to
+ * `onSave`, or without it stores it in this device's storage under `storageKey`.
  */
 export function SpanLineEditor({
   map,
@@ -150,12 +156,16 @@ export function SpanLineEditor({
   storageKey,
   loadKits: load = loadKits,
   onLineChange,
+  initial = null,
+  onSave,
   loadTerrain = defaultTerrain,
 }: Props) {
   const { t, tn } = useI18n();
   const [kits, setKits] = useState<Kits | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [doc, setDoc] = useState<SpanDoc>(() => loadLocal(storageKey, emptyDoc(tool)));
+  const [doc, setDoc] = useState<SpanDoc>(() =>
+    initial ? { ...emptyDoc(tool), ...initial } : loadLocal(storageKey, emptyDoc(tool)),
+  );
   const [mode, setMode] = useState<Tool>("add");
   const [selected, setSelected] = useState<number | null>(null);
 
@@ -176,7 +186,10 @@ export function SpanLineEditor({
     };
   }, [load, tool]);
 
-  useEffect(() => saveLocal(storageKey, doc), [storageKey, doc]);
+  const saving = !!onSave;
+  useEffect(() => {
+    if (!saving) saveLocal(storageKey, doc);
+  }, [storageKey, doc, saving]);
 
   const found = findMode(doc.mode) ?? findMode(tool.modes[0] ?? "");
   const m = found?.mode;
@@ -257,32 +270,60 @@ export function SpanLineEditor({
     0,
   );
 
-  // Journey planner.
+  // Journey planner, and the project's copy of the drawing.
   const changed = useRef(onLineChange);
   changed.current = onLineChange;
+  const save = useRef(onSave);
+  save.current = onSave;
   useEffect(() => {
-    if (!view || view.stops.length < 2) return changed.current?.(null);
-    const stops = view.stops.map((s) => ({
-      name: doc.stations[s.station]?.name || tNow("cable.station", { n: s.station + 1 }),
-      lonlat: doc.stations[s.station]!.lonlat,
-    }));
-    const fwd = view.stops.map((s, k) => ({ stop: k, run_s: s.run_s, dwell_s: s.dwell_s }));
-    const n = fwd.length;
-    const bwd = fwd.map((_, k) => ({
-      stop: n - 1 - k,
-      run_s: k === 0 ? 0 : fwd[n - k]!.run_s,
-      dwell_s: fwd[n - 1 - k]!.dwell_s,
-    }));
-    changed.current?.({
-      id: tool.id,
-      name: doc.name,
-      mode: doc.mode,
-      color,
-      stops,
-      directions: [fwd, bwd],
-      headwayS: Math.max(60, view.headway_s),
+    // Until the kit is loaded there is nothing new to say about the line.
+    if (!view) return;
+    let line: PluginLineInput | null = null;
+    if (view.stops.length >= 2) {
+      const stops = view.stops.map((s) => ({
+        name: doc.stations[s.station]?.name || tNow("cable.station", { n: s.station + 1 }),
+        lonlat: doc.stations[s.station]!.lonlat,
+      }));
+      const fwd = view.stops.map((s, k) => ({ stop: k, run_s: s.run_s, dwell_s: s.dwell_s }));
+      const n = fwd.length;
+      const bwd = fwd.map((_, k) => ({
+        stop: n - 1 - k,
+        run_s: k === 0 ? 0 : fwd[n - k]!.run_s,
+        dwell_s: fwd[n - 1 - k]!.dwell_s,
+      }));
+      line = {
+        id: tool.id,
+        name: doc.name,
+        mode: doc.mode,
+        color,
+        stops,
+        directions: [fwd, bwd],
+        headwayS: Math.max(60, view.headway_s),
+      };
+    }
+    changed.current?.(line);
+    save.current?.({
+      kit: "straight-spans",
+      doc,
+      line,
+      noise:
+        doc.stations.length >= 2
+          ? {
+              kit: "straight-spans",
+              mode: doc.mode,
+              system: doc.system,
+              operation: system.operation,
+              headway_s: view.headway_s,
+              trip_time_s: view.trip_time_s,
+              stations: doc.stations.map((s) => ({ lonlat: s.lonlat, kind: s.kind })),
+              station_height_m: system.station_rope_height_m,
+              towers: view.sections.flatMap((x) =>
+                x.towers.map((tw) => ({ lonlat: tw.lonlat, height_m: tw.height_m })),
+              ),
+            }
+          : null,
     });
-  }, [view, doc.name, doc.mode, doc.stations, color, tool.id]);
+  }, [view, doc, color, tool.id, system.operation, system.station_rope_height_m]);
 
   // Map layers.
   useEffect(() => {

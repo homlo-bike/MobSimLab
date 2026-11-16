@@ -22,6 +22,9 @@ use std::collections::HashMap;
 
 /// Longest source element, m.
 const ELEMENT_M: f64 = 10.0;
+/// Ferry vessel types (`ferry/<vessel_type>`) whose sound power under way is still a placeholder: the Livorno
+/// value is for large seagoing ferries (plugins/noise/assumptions/parameters.yaml).
+const SMALL_FERRIES: [&str; 3] = ["ferry/monohull", "ferry/catamaran", "ferry/hydrofoil"];
 /// Spacing of the band probes along a line, m.
 const PROBE_STEP_M: f64 = 20.0;
 /// Distance from which paired elements stand for their two halves on the screened map, m.
@@ -110,7 +113,8 @@ pub struct LineInput {
     pub stops_m: Vec<f64>,
 }
 
-/// A fixed source of known A-weighted sound power (cable car tower or station, ferry berth).
+/// A fixed source of A-weighted sound power: a cable car tower or station, a ferry at the berth,
+/// or a stretch of a ferry route (the vessels' time there spread over the hour).
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PointSourceInput {
     /// Id.
@@ -123,9 +127,22 @@ pub struct PointSourceInput {
     /// Height above ground, m.
     #[serde(default)]
     pub height_m: f64,
-    /// Sound power while operating, dB(A).
-    pub lw_dba: f64,
-    /// Share of each period it operates, 0–1.
+    /// Noise parameter with the height above ground, m (central value), which then replaces
+    /// `height_m`, such as `noise.ferry_source_height_m`.
+    #[serde(default)]
+    pub height_key: Option<String>,
+    /// Sound power while operating, dB(A), when it is known; else `lw_key` gives it.
+    #[serde(default)]
+    pub lw_dba: Option<f64>,
+    /// Noise parameter with the sound power while operating, dB(A), such as
+    /// `noise.cable_car_tower_lw_db`: its low, central and high values give the three variants.
+    #[serde(default)]
+    pub lw_key: Option<String>,
+    /// Contexts to look `lw_key` up in, most specific first (`cable_car/3s`, `cable_car`).
+    #[serde(default)]
+    pub context: Vec<String>,
+    /// How much of each period it operates: the share of the time for one source (0–1), or the
+    /// mean number operating at once where several can be (vessels at one pier).
     pub active: Flows,
 }
 
@@ -824,16 +841,25 @@ fn estimate_with(input: &EstimateInput, lib: &Library, periods: Periods) -> Esti
     }
     let n_lines = input.lines.len();
     for (pi, ps) in input.point_sources.iter().enumerate() {
-        let w = pow10(ps.lw_dba);
-        let flat = [w / NB as f64; NB];
+        let lw: [f64; 3] = match (&ps.lw_key, ps.lw_dba) {
+            (Some(k), _) if lib.has(k) => lib.range_in(k, &ps.context),
+            (_, Some(x)) => [x; 3],
+            _ => [f64::NEG_INFINITY; 3],
+        };
+        let power = lw.map(|x| [pow10(x) / NB as f64; NB]);
+        let h = match &ps.height_key {
+            Some(k) if lib.has(k) => lib.range_in(k, &ps.context)[1],
+            _ => ps.height_m,
+        }
+        .max(0.0);
         elements.push(Element {
             p: ps.p,
             dipole: None,
-            table: table_of(ps.height_m.max(0.0), Vertical::None),
-            h: ps.height_m.max(0.0),
-            z: ps.height_m.max(0.0),
+            table: table_of(h, Vertical::None),
+            h,
+            z: h,
             owner: n_lines + pi,
-            power: [flat; 3],
+            power,
         });
     }
     // Buildings and terrain for the map grid (step N2); sources stand on the ground.
@@ -856,15 +882,17 @@ fn estimate_with(input: &EstimateInput, lib: &Library, periods: Periods) -> Esti
     let buckets = Buckets::new(&elements, 50.0);
 
     // Period flows per owner.
-    let flows: Vec<[f64; 3]> =
-        input
-            .lines
-            .iter()
-            .map(|l| [l.flows.day, l.flows.evening, l.flows.night].map(|x| x.max(0.0)))
-            .chain(input.point_sources.iter().map(|p| {
-                [p.active.day, p.active.evening, p.active.night].map(|x| x.clamp(0.0, 1.0))
-            }))
-            .collect();
+    let flows: Vec<[f64; 3]> = input
+        .lines
+        .iter()
+        .map(|l| [l.flows.day, l.flows.evening, l.flows.night].map(|x| x.max(0.0)))
+        .chain(
+            input
+                .point_sources
+                .iter()
+                .map(|p| [p.active.day, p.active.evening, p.active.night].map(|x| x.max(0.0))),
+        )
+        .collect();
 
     // Energy per owner at a receiver, per variant (central only when `all` is false).
     let mut scratch = vec![[0.0f64; 3]; flows.len()];
@@ -1737,14 +1765,47 @@ fn checks(
             line: None,
         });
     }
-    if !input.point_sources.is_empty() {
-        out.push(Check {
-            severity: Severity::Info,
-            text: "Cable car and ferry sources use placeholder sound powers: indicative only"
-                .into(),
-            at: None,
-            line: None,
-        });
+    // The point sources' sound powers rest on one study each (the berth value on none yet): name it.
+    // Small ferries keep a placeholder under way (product owner, 2026-11-16): Livorno measured large ones.
+    let small = |p: &PointSourceInput| {
+        p.context
+            .first()
+            .is_some_and(|c| SMALL_FERRIES.contains(&c.as_str()))
+    };
+    let uses_if = |key: &str, keep: &dyn Fn(&PointSourceInput) -> bool| {
+        input
+            .point_sources
+            .iter()
+            .any(|p| p.lw_key.as_deref() == Some(key) && keep(p))
+    };
+    let uses = |key: &str| uses_if(key, &|_| true);
+    let cable = uses("noise.cable_car_tower_lw_db") || uses("noise.cable_car_station_lw_db");
+    for (used, text) in [
+        (
+            cable,
+            "Cable cars: sound powers from one study (Placer County gondola EIR, 2019): indicative",
+        ),
+        (
+            uses_if("noise.ferry_cruise_lw_db", &|p| !small(p)),
+            "Ferries under way: sound power from one study of large ferries (port of Livorno, Fredianelli and Nastasi 2020): indicative",
+        ),
+        (
+            uses_if("noise.ferry_cruise_lw_db", &small),
+            "Water buses, catamarans and hydrofoils under way: placeholder sound power, no source for small vessels yet: indicative only",
+        ),
+        (
+            uses("noise.ferry_berth_lw_db"),
+            "Ferries at the pier: placeholder sound power, no source yet: indicative only",
+        ),
+    ] {
+        if used {
+            out.push(Check {
+                severity: Severity::Info,
+                text: text.into(),
+                at: None,
+                line: None,
+            });
+        }
     }
     out.push(Check {
         severity: Severity::Info,

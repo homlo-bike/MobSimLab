@@ -7,7 +7,9 @@ Usage:
 
 Reads plugins/noise/assumptions/parameters.yaml (validated by tools/plugins/check.py) and writes every
 numeric noise.* parameter as [low, central, high] for "*" and each core mode whose value differs, and
-every enum noise.* parameter the same way under "enums".
+every enum noise.* parameter the same way under "enums". Values for a plugin mode (cable car, aerial tramway,
+ferry) go under the mode id, and under "<mode>/<context value>" when they are for one system or vessel type
+(the engine looks those up for point sources, most specific first).
 """
 
 from __future__ import annotations
@@ -53,6 +55,21 @@ def render() -> str:
                 v["central"],
                 v.get("high", v["central"]),
             ]
+        for v in p["values"]:
+            ctx = v["context"]
+            modes = [
+                m for m in ac.as_list(ctx["mode"]) if m != "*" and m not in ac.MODES
+            ]
+            other = [x for k, x in ctx.items() if k != "mode"]
+            if not modes or len(other) > 1:
+                continue
+            for m in modes:
+                for o in ac.as_list(other[0]) if other else [None]:
+                    row[m if o is None else f"{m}/{o}"] = [
+                        v.get("low", v["central"]),
+                        v["central"],
+                        v.get("high", v["central"]),
+                    ]
         glob = row["*"]
         (enums if kind == "enum" else out)[p["key"]] = {
             k: x for k, x in row.items() if k == "*" or x != glob
