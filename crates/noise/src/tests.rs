@@ -986,6 +986,24 @@ fn point_source_contexts_take_the_most_specific_value() {
         let r = lib.range_in(key, &[]);
         assert!(r[0] <= r[1] && r[1] <= r[2], "{key} {r:?}");
     }
+    // Small ferries keep their own (placeholder) value under way; large ones take the Livorno value.
+    let small = lib.range_in(
+        "noise.ferry_cruise_lw_db",
+        &ctx(&["ferry/catamaran", "ferry"]),
+    );
+    assert_ne!(small, glob);
+    let checks = |c: &[&str]| -> Vec<String> {
+        points_only(vec![point("noise.ferry_cruise_lw_db", c, 1.0)], &[])
+            .checks
+            .into_iter()
+            .map(|c| c.text)
+            .collect()
+    };
+    let t = checks(&["ferry/catamaran", "ferry"]);
+    assert!(t.iter().any(|x| x.starts_with("Water buses")), "{t:?}");
+    assert!(!t.iter().any(|x| x.contains("Livorno")), "{t:?}");
+    let t = checks(&["ferry"]);
+    assert!(t.iter().any(|x| x.contains("Livorno")), "{t:?}");
 }
 
 #[test]
