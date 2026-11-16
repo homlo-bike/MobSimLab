@@ -8,7 +8,9 @@ values the tool needs into ``apps/web/src/features/street-lines/vehicles.ts``:
 - loaded weight for weight limits: the catalogue's ``weightLoaded``, else the empty weight plus 75 kg per
   passenger place, else none (the mode's profile weight then stays);
 - planning capacity: seats plus the standing area at the mode's planning density
-  (``mode.standing_density_ppm2`` in ``assumptions/DEFAULTS.md``; 08-vehicles.md §3 rule 4).
+  (``mode.standing_density_ppm2`` in ``assumptions/DEFAULTS.md``; 08-vehicles.md §3 rule 4);
+- for depot layouts: width, articulations, axle positions and turning circle (the swept-path check)
+  and the energy source (battery vehicles charge in the depot).
 
 Usage:
     python tools/vehicles/street_vehicles.py          # rewrite vehicles.ts
@@ -61,6 +63,10 @@ def vehicles() -> list[dict]:
             loaded = value(v, "weightLoaded")
             empty = value(v, "weightEmpty")
             weight = loaded if loaded else (empty + capacity * PASSENGER_T if empty else None)
+            consist = v.get("consist") or {}
+            axles = (consist.get("axlePositions") or {}).get("value")
+            turning = value(v, "turningCircle")
+            energy = (v.get("energySource") or {}).get("value")
             out.append(
                 {
                     "id": f.stem,
@@ -71,6 +77,13 @@ def vehicles() -> list[dict]:
                     "weight_t": round(weight, 1) if weight else None,
                     "top_speed_kmh": round(top, 1),
                     "capacity": capacity,
+                    "width_m": round(value(v, "width") or 2.55, 2),
+                    "articulations": int(value(consist, "articulations") or 0),
+                    "axles_m": [round(float(a), 3) for a in axles]
+                    if isinstance(axles, list) and axles
+                    else None,
+                    "turning_circle_m": round(turning, 2) if turning else None,
+                    "energy": energy if isinstance(energy, str) else None,
                 }
             )
     out.sort(key=lambda t: (list(FOLDERS.values()).index(t["mode"]), t["name"]))

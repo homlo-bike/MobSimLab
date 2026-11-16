@@ -46,3 +46,4 @@ All ADRs below were accepted on 2026-10-27. New ADRs start as Proposed. Template
 | [0040](0040-benefit-estimate.md) | Economic and social benefit tables: travel times with and without each line, WorldPop, OpenStreetMap and World Bank data, editable formulas, GIS regions that take priority | Proposed (first version built) |
 | [0041](0041-schematic-layout-in-browser.md) | Schematic diagrams laid out in the browser first, LOOM kept for the large-network layout | Proposed (first version built) |
 | [0042](0042-on-demand-dispatch-simulation.md) | On-demand dispatch simulation: one random day of an on-demand zone, booking by booking, with cheapest insertion under wait and ride limits, in the browser | Proposed (first version built) |
+| [0043](0043-road-depots.md) | Road depots shared by the street lines: drive-through lanes in straight or angled bays laid out in Rust, swept-path check, driving network, capacity and dynamic sizing | Proposed (first version built) |

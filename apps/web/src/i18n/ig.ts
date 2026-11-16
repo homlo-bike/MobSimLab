@@ -1,5 +1,6 @@
 import { editorsIg } from "./editors/ig";
 import { cargoBikeIg } from "./cargo-bike/ig";
+import { depotsIg } from "./depots/ig";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -376,5 +377,6 @@ export const ig: Messages = {
 
   ...editorsIg,
   ...cargoBikeIg,
+  ...depotsIg,
   ...PLUGIN_MESSAGES.ig,
 };

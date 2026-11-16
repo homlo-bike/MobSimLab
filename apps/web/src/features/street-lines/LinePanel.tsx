@@ -9,6 +9,7 @@ import { usedVehicles } from "../../workspace/preferences";
 import { useVehiclesOff } from "../../workspace/projectVehicles";
 import { lineChecks, lineStats, type Check, type Severity } from "./summary";
 import type { LineView, Mode, PointKind, RoutingRules, VehicleProfile } from "./types";
+import type { FitProblem } from "../depots/model";
 
 const KINDS: { id: PointKind; label: MessageKey; title: MessageKey }[] = [
   { id: "via", label: "street.kind.via", title: "street.kind.viaTitle" },
@@ -42,6 +43,8 @@ export interface PanelActions {
   clear: () => void;
   placeDepot: () => void;
   removeDepot: () => void;
+  /** Use a shared road depot (its gates), or none. */
+  chooseDepot: (id: string | null) => void;
   setDepotStops: (s: { out?: number; in?: number }) => void;
   setShowDepot: (v: boolean) => void;
   setShowRoads: (v: boolean) => void;
@@ -128,6 +131,12 @@ interface Props {
   selected: number | null;
   depotStops: { out?: number; in?: number };
   showDepot: boolean;
+  /** The shared road depot the line uses, or null. */
+  depotId?: string | null;
+  /** The project's road depots, with why the line cannot use one (null: it can). */
+  depots?: { id: string; name: string; problem: FitProblem }[];
+  /** Opens the depot tool. */
+  onOpenDepots?: () => void;
   showRoads: boolean;
   crossingSources?: CrossingSources;
   status: string | null;
@@ -573,15 +582,40 @@ export function LinePanel(props: Props) {
 
       <Section title={t("street.depotRuns")}>
         <p className="text-xs text-slate-600">{t("street.depotNote")}</p>
-        {!view.depot ? (
+        <label className="flex items-center gap-2">
+          <span className="w-20">{t("depot.line.depot")}</span>
+          <select
+            value={props.depotId ?? ""}
+            onChange={(e) => a.chooseDepot(e.target.value || null)}
+            className="min-w-0 flex-1 rounded border border-slate-300 p-0.5"
+          >
+            <option value="">{t("depot.line.none")}</option>
+            {(props.depots ?? []).map((d) => (
+              <option key={d.id} value={d.id} disabled={d.problem !== null && d.id !== props.depotId}>
+                {d.problem ? `${d.name} (${t(d.problem)})` : d.name}
+              </option>
+            ))}
+          </select>
+        </label>
+        {props.depotId && (props.depots ?? []).find((d) => d.id === props.depotId)?.problem && (
+          <p className="text-xs text-amber-700">
+            {t((props.depots ?? []).find((d) => d.id === props.depotId)!.problem!)}
+          </p>
+        )}
+        {props.depotId && !(props.depots ?? []).some((d) => d.id === props.depotId) && (
+          <p className="text-xs text-amber-700">{t("depot.line.gone")}</p>
+        )}
+        {!(props.depots ?? []).length && <p className="text-xs text-slate-600">{t("depot.line.noDepots")}</p>}
+        {props.onOpenDepots && (
           <button
             type="button"
             className="w-fit rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
-            onClick={a.placeDepot}
+            onClick={props.onOpenDepots}
           >
-            {t("street.placeDepot")}
+            {t("depot.line.open")}
           </button>
-        ) : (
+        )}
+        {!view.depot ? null : (
           <>
             {terminals.length === 0 && <p className="text-xs text-slate-600">{t("street.addStopsDepot")}</p>}
             {terminals.length > 0 &&
@@ -623,22 +657,24 @@ export function LinePanel(props: Props) {
               />
               {t("street.showDepot")}
             </label>
-            <div className="flex gap-2">
-              <button
-                type="button"
-                className="rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
-                onClick={a.placeDepot}
-              >
-                {t("street.moveDepot")}
-              </button>
-              <button
-                type="button"
-                className="rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
-                onClick={a.removeDepot}
-              >
-                {t("street.removeDepot")}
-              </button>
-            </div>
+            {!props.depotId && (
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  className="rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
+                  onClick={a.placeDepot}
+                >
+                  {t("street.moveDepot")}
+                </button>
+                <button
+                  type="button"
+                  className="rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
+                  onClick={a.removeDepot}
+                >
+                  {t("street.removeDepot")}
+                </button>
+              </div>
+            )}
           </>
         )}
         {stops.length === 0 && view.depot && null}
