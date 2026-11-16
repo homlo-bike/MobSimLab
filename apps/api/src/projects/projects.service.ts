@@ -56,10 +56,11 @@ export interface ProjectDrawing {
   updatedBy: { id: string; displayName: string | null } | null;
 }
 
-/** What each project role may do. Owners manage access, archive and delete. */
-export type ProjectAction = "read" | "edit" | "manage";
+/** What each project role may do. Commenters comment on objects; Owners manage access, archive and delete. */
+export type ProjectAction = "read" | "comment" | "edit" | "manage";
 const ALLOWED: Record<ProjectAction, readonly ProjectRole[]> = {
   read: ["owner", "editor", "commenter", "viewer"],
+  comment: ["owner", "editor", "commenter"],
   edit: ["owner", "editor"],
   manage: ["owner"],
 };

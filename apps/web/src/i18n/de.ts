@@ -1,6 +1,7 @@
 import { roadDe } from "./road/de";
 import { editorsDe } from "./editors/de";
 import { cargoBikeDe } from "./cargo-bike/de";
+import { commentsDe } from "./comments/de";
 import { depotsDe } from "./depots/de";
 import { populationDe } from "./population/de";
 import { PLUGIN_MESSAGES } from "./plugins";
@@ -171,7 +172,7 @@ export const de: Messages = {
 
   "share.title": "„{name}“ teilen",
   "share.rolesNote":
-    "Eigentümer verwalten den Zugriff. Bearbeiter ändern das Netz. Kommentatoren und Betrachter sehen nur zu.",
+    "Eigentümer verwalten den Zugriff. Bearbeiter ändern das Netz. Kommentatoren kommentieren es. Betrachter sehen nur zu.",
   "share.invite": "Per E-Mail einladen",
   "share.emailPlaceholder": "E-Mail, mit der sich die Person anmeldet",
   "share.inviteRole": "Rolle der eingeladenen Person",
@@ -427,6 +428,7 @@ export const de: Messages = {
   ...editorsDe,
   ...cargoBikeDe,
   ...depotsDe,
+  ...commentsDe,
   ...populationDe,
   ...roadDe,
   ...PLUGIN_MESSAGES.de,

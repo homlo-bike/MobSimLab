@@ -1,6 +1,7 @@
 import { roadUr } from "./road/ur";
 import { editorsUr } from "./editors/ur";
 import { cargoBikeUr } from "./cargo-bike/ur";
+import { commentsUr } from "./comments/ur";
 import { depotsUr } from "./depots/ur";
 import { populationUr } from "./population/ur";
 import { PLUGIN_MESSAGES } from "./plugins";
@@ -167,7 +168,7 @@ export const ur: Messages = {
 
   "share.title": "“{name}” شیئر کریں",
   "share.rolesNote":
-    "مالکان رسائی کا انتظام کرتے ہیں۔ مدیر نیٹ ورک بدلتے ہیں۔ تبصرہ نگار اور ناظر صرف دیکھتے ہیں۔",
+    "مالکان رسائی کا انتظام کرتے ہیں۔ مدیر نیٹ ورک بدلتے ہیں۔ تبصرہ نگار اس پر تبصرہ کرتے ہیں۔ ناظر صرف دیکھتے ہیں۔",
   "share.invite": "ای میل سے مدعو کریں",
   "share.emailPlaceholder": "وہ ای میل جس سے وہ سائن اِن کرتے ہیں",
   "share.inviteRole": "مدعو شخص کا کردار",
@@ -419,6 +420,7 @@ export const ur: Messages = {
   ...editorsUr,
   ...cargoBikeUr,
   ...depotsUr,
+  ...commentsUr,
   ...populationUr,
   ...roadUr,
   ...PLUGIN_MESSAGES.ur,

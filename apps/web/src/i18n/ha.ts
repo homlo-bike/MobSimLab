@@ -1,6 +1,7 @@
 import { roadHa } from "./road/ha";
 import { editorsHa } from "./editors/ha";
 import { cargoBikeHa } from "./cargo-bike/ha";
+import { commentsHa } from "./comments/ha";
 import { depotsHa } from "./depots/ha";
 import { populationHa } from "./population/ha";
 import { PLUGIN_MESSAGES } from "./plugins";
@@ -166,7 +167,7 @@ export const ha: Messages = {
 
   "share.title": "Raba “{name}”",
   "share.rolesNote":
-    "Mamallaka suna sarrafa dama. Masu gyara suna canza hanyar sadarwa. Masu sharhi da masu kallo suna kallo kawai.",
+    "Mamallaka suna sarrafa dama. Masu gyara suna canza hanyar sadarwa. Masu sharhi suna yin sharhi a kai. Masu kallo suna kallo kawai.",
   "share.invite": "Gayyata ta imel",
   "share.emailPlaceholder": "Imel ɗin da suke shiga da shi",
   "share.inviteRole": "Matsayin wanda kake gayyata",
@@ -420,6 +421,7 @@ export const ha: Messages = {
   ...editorsHa,
   ...cargoBikeHa,
   ...depotsHa,
+  ...commentsHa,
   ...populationHa,
   ...roadHa,
   ...PLUGIN_MESSAGES.ha,

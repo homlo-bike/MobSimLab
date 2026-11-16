@@ -1,6 +1,7 @@
 import { roadTa } from "./road/ta";
 import { editorsTa } from "./editors/ta";
 import { cargoBikeTa } from "./cargo-bike/ta";
+import { commentsTa } from "./comments/ta";
 import { depotsTa } from "./depots/ta";
 import { populationTa } from "./population/ta";
 import { PLUGIN_MESSAGES } from "./plugins";
@@ -167,7 +168,7 @@ export const ta: Messages = {
 
   "share.title": "“{name}” ஐப் பகிர்",
   "share.rolesNote":
-    "உரிமையாளர்கள் அணுகலை நிர்வகிக்கிறார்கள். திருத்துநர்கள் வலையமைப்பை மாற்றுகிறார்கள். கருத்துரையாளர்களும் பார்வையாளர்களும் பார்க்க மட்டுமே செய்கிறார்கள்.",
+    "உரிமையாளர்கள் அணுகலை நிர்வகிக்கிறார்கள். திருத்துநர்கள் வலையமைப்பை மாற்றுகிறார்கள். கருத்துரையாளர்கள் அதில் கருத்திடுகிறார்கள். பார்வையாளர்கள் பார்க்க மட்டுமே செய்கிறார்கள்.",
   "share.invite": "மின்னஞ்சல் மூலம் அழை",
   "share.emailPlaceholder": "அவர்கள் உள்நுழையும் மின்னஞ்சல்",
   "share.inviteRole": "அழைக்கப்படுபவரின் பங்கு",
@@ -427,6 +428,7 @@ export const ta: Messages = {
   ...editorsTa,
   ...cargoBikeTa,
   ...depotsTa,
+  ...commentsTa,
   ...populationTa,
   ...roadTa,
   ...PLUGIN_MESSAGES.ta,

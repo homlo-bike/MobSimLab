@@ -1,6 +1,7 @@
 import { roadRu } from "./road/ru";
 import { editorsRu } from "./editors/ru";
 import { cargoBikeRu } from "./cargo-bike/ru";
+import { commentsRu } from "./comments/ru";
 import { depotsRu } from "./depots/ru";
 import { populationRu } from "./population/ru";
 import { PLUGIN_MESSAGES } from "./plugins";
@@ -166,7 +167,7 @@ export const ru: Messages = {
 
   "share.title": "Поделиться «{name}»",
   "share.rolesNote":
-    "Владельцы управляют доступом. Редакторы изменяют сеть. Комментаторы и наблюдатели только смотрят.",
+    "Владельцы управляют доступом. Редакторы изменяют сеть. Комментаторы её комментируют. Наблюдатели только смотрят.",
   "share.invite": "Пригласить по эл. почте",
   "share.emailPlaceholder": "Адрес, с которым человек входит",
   "share.inviteRole": "Роль приглашённого",
@@ -422,6 +423,7 @@ export const ru: Messages = {
   ...editorsRu,
   ...cargoBikeRu,
   ...depotsRu,
+  ...commentsRu,
   ...populationRu,
   ...roadRu,
   ...PLUGIN_MESSAGES.ru,

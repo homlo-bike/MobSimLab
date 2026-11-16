@@ -1,6 +1,7 @@
 import { roadJa } from "./road/ja";
 import { editorsJa } from "./editors/ja";
 import { cargoBikeJa } from "./cargo-bike/ja";
+import { commentsJa } from "./comments/ja";
 import { depotsJa } from "./depots/ja";
 import { populationJa } from "./population/ja";
 import { PLUGIN_MESSAGES } from "./plugins";
@@ -165,7 +166,7 @@ export const ja: Messages = {
 
   "share.title": "「{name}」を共有",
   "share.rolesNote":
-    "所有者はアクセスを管理します。編集者はネットワークを変更します。コメント可と閲覧者は見るだけです。",
+    "所有者はアクセスを管理します。編集者はネットワークを変更します。コメント可はコメントを書けます。閲覧者は見るだけです。",
   "share.invite": "メールで招待",
   "share.emailPlaceholder": "サインインに使うメールアドレス",
   "share.inviteRole": "招待する人の役割",
@@ -411,6 +412,7 @@ export const ja: Messages = {
   ...editorsJa,
   ...cargoBikeJa,
   ...depotsJa,
+  ...commentsJa,
   ...populationJa,
   ...roadJa,
   ...PLUGIN_MESSAGES.ja,

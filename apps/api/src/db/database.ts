@@ -234,6 +234,20 @@ export interface DB {
     data: Buffer;
     created_at: Generated<Date>;
   };
+  /** Comments on project objects (db/migrations/0016_comments.sql). */
+  "collab.comment": {
+    id: Generated<string>;
+    project_id: string;
+    object_type: string;
+    object_id: string;
+    parent_id: string | null;
+    body: string;
+    author_id: string | null;
+    created_at: Generated<Date>;
+    edited_at: Date | null;
+    resolved_at: Date | null;
+    resolved_by: string | null;
+  };
   "project.member": {
     project_id: string;
     user_id: string;

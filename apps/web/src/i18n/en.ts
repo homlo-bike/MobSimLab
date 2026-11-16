@@ -1,5 +1,6 @@
 import { editorsEn } from "./editors/en";
 import { cargoBikeEn } from "./cargo-bike/en";
+import { commentsEn } from "./comments/en";
 import { depotsEn } from "./depots/en";
 import { roadEn } from "./road/en";
 import { populationEn } from "./population/en";
@@ -162,7 +163,8 @@ export const en = {
   "prole.viewer": "Viewer",
 
   "share.title": "Share “{name}”",
-  "share.rolesNote": "Owners manage access. Editors change the network. Commenters and Viewers only look.",
+  "share.rolesNote":
+    "Owners manage access. Editors change the network. Commenters comment on it. Viewers only look.",
   "share.invite": "Invite by e-mail",
   "share.emailPlaceholder": "E-mail they sign in with",
   "share.inviteRole": "Role for the person you invite",
@@ -411,6 +413,7 @@ export const en = {
   ...editorsEn,
   ...cargoBikeEn,
   ...depotsEn,
+  ...commentsEn,
   ...roadEn,
   ...populationEn,
   ...pluginsEn,
