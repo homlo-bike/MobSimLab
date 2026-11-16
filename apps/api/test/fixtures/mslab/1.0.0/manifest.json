@@ -1,0 +1,54 @@
+{
+ "format": "mslab",
+ "formatVersion": "1.0.0",
+ "app": {
+  "name": "MobSimLab",
+  "version": "0.1.0"
+ },
+ "createdAt": "2026-11-16T10:05:00.000Z",
+ "project": {
+  "id": "0194f3a2-0000-7000-8000-000000000001",
+  "name": "Lakeside tram"
+ },
+ "includes": {
+  "runs": true
+ },
+ "files": {
+  "ATTRIBUTION.md": {
+   "sha256": "624c9ac8efde400503fff7a6131529e7586b161d49e0cbd54ef2b4edaca9a7d9",
+   "bytes": 55
+  },
+  "data/preferences.json": {
+   "sha256": "3fb244ccc00eb7af0cf7b3bde60f31265a3cf375b81f7a389c34ec9985e319ce",
+   "bytes": 157
+  },
+  "data/railway.json": {
+   "sha256": "10a908693f565e786d840a174355bde431827764b3fbbf0149b587cbca977fae",
+   "bytes": 267
+  },
+  "data/street-lines.json": {
+   "sha256": "39f487475beec36650f61f77cdd9fec1b19cbe2a24662d6e832807a58af86780",
+   "bytes": 200
+  },
+  "plugins.json": {
+   "sha256": "aa17e2137909f2330e1203c94cd1651af43e9394bf8e6d2b046eb50d4646272a",
+   "bytes": 83
+  },
+  "project.json": {
+   "sha256": "0e88fd776cee488be3b0d2ef87c2aaaec4844ab1afb822ead75daca543540684",
+   "bytes": 264
+  },
+  "runs/0194f3a2-6c1d-7b2e-9f00-4a5b6c7d8e9f/lines.txt": {
+   "sha256": "2ffd967f41ac1c7ee43c558109ecb4e86721fff4025f22c2a70aff5fcd0a3e32",
+   "bytes": 12
+  },
+  "runs/0194f3a2-6c1d-7b2e-9f00-4a5b6c7d8e9f/network.txt": {
+   "sha256": "9bea1c2e75361820a5c3a463512c70a8769e7bc9cbc5b9a495e1a1b565950170",
+   "bytes": 13
+  },
+  "runs/0194f3a2-6c1d-7b2e-9f00-4a5b6c7d8e9f/run.json": {
+   "sha256": "31bfc0116ef693fc5118cda0f1a18cdba2125db57b69db0f4100874ff60489b0",
+   "bytes": 328
+  }
+ }
+}

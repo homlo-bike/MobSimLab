@@ -2,6 +2,7 @@ import { roadDe } from "./road/de";
 import { editorsDe } from "./editors/de";
 import { cargoBikeDe } from "./cargo-bike/de";
 import { depotsDe } from "./depots/de";
+import { mslabDe } from "./mslab/de";
 import { populationDe } from "./population/de";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -286,6 +287,7 @@ export const de: Messages = {
   "prefs.delayLane": "Auf einer markierten Bus- oder Straßenbahnspur",
   "prefs.delayDefault": "Annahmenbibliothek: {value} %",
   "prefs.delayReset": "Wert der Bibliothek verwenden",
+  "prefs.reason": "Grund für diesen Wert (optional)",
   "prefs.stationsTitle": "Stationen",
   "prefs.stationsIntro":
     "Gleichnamige Haltestellen innerhalb dieser Entfernung gelten im Liniennetzplan, in der Reiseplanung und in den Nutzen- und Fahrgasttabellen als eine Station.",
@@ -428,6 +430,7 @@ export const de: Messages = {
   ...editorsDe,
   ...cargoBikeDe,
   ...depotsDe,
+  ...mslabDe,
   ...populationDe,
   ...roadDe,
   ...PLUGIN_MESSAGES.de,
