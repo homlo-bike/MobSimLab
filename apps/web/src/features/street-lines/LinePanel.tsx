@@ -1,8 +1,10 @@
 import { cleanFeatures, STATION_FEATURES, SymbolPicker } from "../stations/features";
 import { type Translate, useI18n } from "../../i18n/i18n";
 import type { MessageKey } from "../../i18n/messages";
+import { TimeInput } from "../railways/ServiceLinesPanel";
 import { formatLength } from "./geojson";
 import { MODE_ORDER, MODES, type Timing } from "./modes";
+import { vehicleById, vehiclesFor } from "./service";
 import { lineChecks, lineStats, type Check, type Severity } from "./summary";
 import type { LineView, Mode, PointKind, RoutingRules, VehicleProfile } from "./types";
 
@@ -24,6 +26,8 @@ export interface PanelActions {
   setName: (name: string) => void;
   setMode: (mode: Mode) => void;
   setProfile: (p: VehicleProfile) => void;
+  /** A catalogue vehicle by id, or null for the mode's typical vehicle. */
+  setVehicle: (id: string | null) => void;
   setRules: (r: RoutingRules) => void;
   setTiming: (t: Timing) => void;
   select: (id: number | null) => void;
@@ -115,6 +119,10 @@ interface Props {
   profile: VehicleProfile;
   rules: RoutingRules;
   timing: Timing;
+  /** The chosen catalogue vehicle's id, or null for the mode's typical vehicle. */
+  vehicle: string | null;
+  /** The project's lines (switch, add, delete), shown at the top. */
+  lineList?: React.ReactNode;
   selected: number | null;
   depotStops: { out?: number; in?: number };
   showDepot: boolean;
@@ -222,7 +230,16 @@ export function LinePanel(props: Props) {
   const mode = MODES[profile.mode];
   const st = lineStats(view, timing);
   const rank: Record<Severity, number> = { error: 0, warn: 1, ok: 2, info: 3 };
-  const checks = [...lineChecks(view), ...(props.extraChecks ?? [])].sort(
+  const vehicle = vehicleById(props.vehicle);
+  const serviceChecks: Check[] = [
+    ...(timing.lastMin <= timing.firstMin
+      ? [{ sev: "error" as const, text: t("rail.line.lastAfterFirst") }]
+      : []),
+    ...(timing.headwayMin < 1 || timing.offPeakHeadwayMin < 1
+      ? [{ sev: "error" as const, text: t("rail.line.headwayMin") }]
+      : []),
+  ];
+  const checks = [...serviceChecks, ...lineChecks(view), ...(props.extraChecks ?? [])].sort(
     (x, y) => rank[x.sev] - rank[y.sev],
   );
   const stops = view.points.filter((p) => p.kind !== "via");
@@ -238,6 +255,7 @@ export function LinePanel(props: Props) {
 
   return (
     <div className="flex flex-col gap-3 p-4 text-sm">
+      {props.lineList}
       <h2 className="text-xl font-semibold">{props.lineName || t("street.untitled")}</h2>
       <label className="flex flex-col gap-1">
         <span className="text-xs text-slate-600">{t("rail.line.name")}</span>
@@ -268,7 +286,30 @@ export function LinePanel(props: Props) {
             </button>
           ))}
         </div>
-        <p className="text-xs text-slate-600">{t(mode.profile)}</p>
+        <label className="flex flex-col gap-1">
+          <span className="text-xs text-slate-600">{t("street.vehicle")}</span>
+          <select
+            value={vehicle?.id ?? ""}
+            onChange={(e) => a.setVehicle(e.target.value || null)}
+            className="rounded border border-slate-300 bg-slate-50 p-1"
+          >
+            <option value="">{t("street.vehicleTypical", { mode: t(mode.label) })}</option>
+            {vehiclesFor(profile.mode).map((v) => (
+              <option key={v.id} value={v.id}>
+                {v.name}
+              </option>
+            ))}
+          </select>
+        </label>
+        <p className="text-xs text-slate-600" data-testid="vehicle-facts">
+          {vehicle
+            ? t("street.vehicleFacts", {
+                length: formatLength(vehicle.length_m),
+                speed: Math.round(vehicle.top_speed_kmh),
+                places: vehicle.capacity,
+              })
+            : t(mode.profile)}
+        </p>
         {profile.mode === "trolleybus" && (
           <NumberField
             label={t("street.battery")}
@@ -628,11 +669,39 @@ export function LinePanel(props: Props) {
           step={50}
           onChange={(v) => a.setRules({ ...rules, detour_warn_m: v })}
         />
+        <label className="flex items-center justify-between gap-2">
+          <span>{t("rail.line.first")}</span>
+          <span className="flex items-center gap-1">
+            <TimeInput
+              label={t("rail.line.first")}
+              value={timing.firstMin}
+              onChange={(v) => a.setTiming({ ...timing, firstMin: v })}
+            />
+            <span className="w-6" />
+          </span>
+        </label>
+        <label className="flex items-center justify-between gap-2">
+          <span>{t("rail.line.last")}</span>
+          <span className="flex items-center gap-1">
+            <TimeInput
+              label={t("rail.line.last")}
+              value={timing.lastMin}
+              onChange={(v) => a.setTiming({ ...timing, lastMin: v })}
+            />
+            <span className="w-6" />
+          </span>
+        </label>
         <NumberField
-          label={t("street.headway")}
+          label={t("rail.line.peakHeadway")}
           value={timing.headwayMin}
           unit="min"
           onChange={(v) => a.setTiming({ ...timing, headwayMin: v })}
+        />
+        <NumberField
+          label={t("rail.line.offpeakHeadway")}
+          value={timing.offPeakHeadwayMin}
+          unit="min"
+          onChange={(v) => a.setTiming({ ...timing, offPeakHeadwayMin: v })}
         />
         <NumberField
           label={t("street.dwell")}
