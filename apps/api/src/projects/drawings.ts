@@ -124,7 +124,7 @@ const scenarios = z.looseObject({
     .max(20),
 });
 
-/** Benefit tables settings (ADR-0040): the project's own formulas, by formula id. */
+/** Benefit tables settings (ADR-0040): the project's own formulas, by formula id, and its own boardings. */
 const benefits = z.looseObject({
   formulas: z
     .record(
@@ -135,6 +135,11 @@ const benefits = z.looseObject({
       z.string().max(2000),
     )
     .refine((v) => Object.keys(v).length <= 50, "at most 50 formulas")
+    .optional(),
+  /** The planner's own weekday boardings per station or stop name, for the simulator's passenger loads. */
+  boardings: z
+    .record(z.string().max(300), z.number().finite().min(0).max(10_000_000))
+    .refine((v) => Object.keys(v).length <= 20000, "at most 20000 stations and stops")
     .optional(),
 });
 

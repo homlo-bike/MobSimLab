@@ -433,6 +433,45 @@
       rationale:
         Annual ridership is usually 280–330 times average weekday ridership, as weekends and holidays carry
         less.
+- key: benefit.ridership.peak_hour_share
+  label: "Ridership: share of a weekday's boardings in one peak hour"
+  group: Benefits
+  unit: share
+  used_by:
+    - passenger loads in the simulator's system test
+  values:
+    - context:
+        mode: "*"
+      low: 0.08
+      central: 0.1
+      high: 0.13
+      basis: documented
+      sources: [tcqsm3, mobsimlab-derivation]
+      check: unverified
+      rationale:
+        Transit demand peaks in the morning and evening rush; TCQSM gives peak hour factors and hourly
+        ridership profiles in which the busiest hour carries roughly 8–13 % of the day's riders. The
+        simulator gives each hour of the peak windows (07–09, 16–19) this share and spreads the rest of the
+        day evenly over the other service hours.
+- key: benefit.ridership.peak_direction_share
+  label: "Ridership: share of a peak hour's riders travelling in the busier direction"
+  group: Benefits
+  unit: share
+  used_by:
+    - passenger loads in the simulator's system test
+  values:
+    - context:
+        mode: "*"
+      low: 0.55
+      central: 0.6
+      high: 0.7
+      basis: documented
+      sources: [tcqsm3, mobsimlab-derivation]
+      check: unverified
+      rationale:
+        In the rush hours more people travel towards the centre in the morning and away from it in the
+        evening; directional splits of 55–70 % are common on radial lines (TCQSM directional peaking). Off
+        the peak both directions carry the same, and loop lines are not split.
 - key: benefit.uplift.residential
   label: "Land value: uplift near a new station, homes"
   group: Benefits
