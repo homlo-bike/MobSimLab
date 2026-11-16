@@ -80,6 +80,7 @@ export function DesignRulesSection({
               rule={rule}
               mode={mode}
               value={prefValue(preferences, rulePrefId(rule, mode) ?? "")}
+              inherited={rule.modes[mode] ? prefValue(preferences, rule.modes[mode].key) : undefined}
               editable={editable}
               onChange={(v) => {
                 const id = rulePrefId(rule, mode);
@@ -110,6 +111,7 @@ function RuleField({
   rule,
   mode,
   value,
+  inherited,
   editable,
   onChange,
   reason,
@@ -117,6 +119,8 @@ function RuleField({
   rule: DesignRule;
   mode: string;
   value: number | undefined;
+  /** The project's value for every mode (All parameters), shown until the mode gets its own. */
+  inherited?: number;
   editable: boolean;
   onChange: (v: number | null) => void;
   /** The optional reason for the project's own value, shown below it. */
@@ -132,7 +136,7 @@ function RuleField({
   const commit = (raw: string) => {
     const n = Number(raw.replace(",", "."));
     if (raw.trim() === "" || !Number.isFinite(n) || n <= 0) return;
-    onChange(Math.abs(n - central) < 1e-9 ? null : n);
+    onChange(Math.abs(n - central) < 1e-9 && inherited === undefined ? null : n);
   };
   return (
     <div className="flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-slate-100 py-3 first:border-t-0">
@@ -148,7 +152,7 @@ function RuleField({
             min={0}
             step="any"
             disabled={!editable}
-            value={text ?? num(value ?? central)}
+            value={text ?? num(value ?? inherited ?? central)}
             onChange={(e) => {
               setText(e.target.value);
               commit(e.target.value);
@@ -170,6 +174,7 @@ function RuleField({
               })
             : t("prefs.rulesLibrary", { value: num(central), unit: rule.unit })}
         </span>
+        {value === undefined && inherited !== undefined && <span>· {t("prefs.paramsFromAll")}</span>}
         {editable && value !== undefined && (
           <button
             type="button"

@@ -1,27 +1,40 @@
-import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { ReasonField } from "../src/workspace/ReasonField";
 import {
   DESIGN_RULES,
   delaysFrom,
   designValuesFrom,
+  LIBRARY_SAME_NAME_M,
+  type PreferencesDoc,
   prefValue,
   usedVehicles,
   vehiclesOffFrom,
   switchChoiceFrom,
   withDefaultTurnout,
+  SAME_NAME_PREF,
+  sameNameStationM,
   withPref,
   withReason,
   reasonOf,
   withSwitches,
   withVehicles,
   LIBRARY_DEFAULT_TURNOUT,
+  LIBRARY_PARAMS,
+  PARAM_GROUPS,
+  choiceValue,
+  paramLibrary,
+  paramPrefId,
+  withChoice,
 } from "../src/workspace/preferences";
 import { addLine, trainsFor } from "../src/features/railways/serviceLines";
 import type { Network } from "../src/features/railways/types";
 import { effectiveDefault } from "../src/workspace/SwitchChoice";
+import { StationsSection } from "../src/workspace/StationsSection";
 import { chosenCurrency, convertTo, RATE_PREF, withCurrency } from "../src/features/costs/currency";
 import { countryOfCurrency, CURRENCY_CODES } from "../src/features/costs/currencies";
+
+afterEach(cleanup);
 
 describe("project preferences", () => {
   it("uses the library's delays unless the project changes them", () => {
@@ -75,6 +88,27 @@ describe("project preferences", () => {
     expect(screen.queryByRole("textbox")).toBeNull();
   });
 
+  it("uses one same-name station distance: the project's, else the library's", () => {
+    expect(SAME_NAME_PREF).toBe("journey.same_name_station_m");
+    expect(sameNameStationM(undefined)).toBe(LIBRARY_SAME_NAME_M);
+    expect(sameNameStationM(withPref(null, SAME_NAME_PREF, 250).values)).toBe(250);
+    expect(sameNameStationM({ [SAME_NAME_PREF]: -5 })).toBe(LIBRARY_SAME_NAME_M);
+  });
+
+  it("lets the project change the same-name station distance and go back to the library's", () => {
+    let doc: PreferencesDoc | null = null;
+    const onPreferences = vi.fn((d: PreferencesDoc) => (doc = d));
+    const view = () => <StationsSection preferences={doc} editable onPreferences={onPreferences} />;
+    const { rerender } = render(view());
+    const field = screen.getByRole("spinbutton", { name: /same-name stops/i });
+    expect((field as HTMLInputElement).value).toBe(String(LIBRARY_SAME_NAME_M));
+    fireEvent.change(field, { target: { value: "300" } });
+    expect(prefValue(doc, SAME_NAME_PREF)).toBe(300);
+    rerender(view());
+    fireEvent.click(screen.getByRole("button", { name: /library value/i }));
+    expect(prefValue(doc, SAME_NAME_PREF)).toBeUndefined();
+  });
+
   it("passes the project's design rules to the rail engine per mode", () => {
     expect(designValuesFrom(null)).toEqual({});
     const radius = DESIGN_RULES.find((r) => r.field === "min_radius_m")!;
@@ -89,6 +123,23 @@ describe("project preferences", () => {
     expect(
       designValuesFrom({ values: { "curve.cant_rail_mm.tram": 99, "mode.min_curve_radius_m.metro": -1 } }),
     ).toEqual({});
+  });
+
+  it("passes every rail engine value set in All parameters, for every mode or for one", () => {
+    const doc = withPref(
+      withPref(withPref(null, "track.centre_distance_m", 3.6), "track.centre_distance_m.metro", 3.8),
+      "mode.min_curve_radius_m",
+      30,
+    );
+    const v = designValuesFrom(doc);
+    // A value for every mode reaches each rail mode; one for the mode wins.
+    expect(v["tram.track_centre_m"]).toBe(3.6);
+    expect(v["metro.track_centre_m"]).toBe(3.8);
+    expect(v["regional_rail.min_radius_m"]).toBe(30);
+    // A design rule set for the mode still wins over the value for every mode.
+    expect(designValuesFrom(withPref(doc, "mode.min_curve_radius_m.tram", 25))["tram.min_radius_m"]).toBe(25);
+    // Values for other tools do not reach the rail engine.
+    expect(Object.keys(designValuesFrom(withPref(null, "mode.dwell_s", 40)))).toEqual([]);
   });
 
   it("keeps the catalogue vehicles the project leaves out, and offers the rest", () => {
@@ -137,6 +188,30 @@ describe("project preferences", () => {
     expect(effectiveDefault("tram", turnouts, new Set(), "tram-r100")).toBe("tram-r100");
     expect(effectiveDefault("tram", turnouts, new Set(["tram-r100"]), "tram-r100")).toBe("tram-r50");
     expect(effectiveDefault("tram", turnouts, new Set(["tram-r50"]), undefined)).toBe("tram-r25");
+  });
+
+  it("lists every library parameter with its values per mode and traction", () => {
+    expect(LIBRARY_PARAMS.length).toBeGreaterThan(200);
+    expect(PARAM_GROUPS[0]).toBe("Modes");
+    // The Switches section sets the default turnout.
+    expect(LIBRARY_PARAMS.some((p) => p.id === "switch.default_turnout")).toBe(false);
+    const dwell = LIBRARY_PARAMS.find((p) => p.id === "mode.dwell_s")!;
+    expect(paramLibrary(dwell, "tram")).toEqual([15, 25, 45]);
+    expect(paramLibrary(dwell, "bus")).toEqual([15, 30, 60]);
+    const refuel = LIBRARY_PARAMS.find((p) => p.id === "operations.refuel_time_min")!;
+    expect(paramLibrary(refuel, "*", "hydrogen")).toEqual([7, 10, 20]);
+    expect(paramPrefId("mode.dwell_s", "*")).toBe("mode.dwell_s");
+    expect(paramPrefId("mode.dwell_s", "tram")).toBe("mode.dwell_s.tram");
+    expect(paramPrefId("operations.refuel_time_min", "*", "cng")).toBe("operations.refuel_time_min.cng");
+  });
+
+  it("keeps enum and text values apart from numbers, and removes them again", () => {
+    const doc = withChoice(withPref(null, "mode.dwell_s", 40), "mode.right_of_way.tram", "A");
+    expect(choiceValue(doc, "mode.right_of_way.tram")).toBe("A");
+    expect(prefValue(doc, "mode.dwell_s")).toBe(40);
+    const back = withChoice(doc, "mode.right_of_way.tram", null);
+    expect(back.choices).toBeUndefined();
+    expect(back.values).toEqual({ "mode.dwell_s": 40 });
   });
 
   it("keeps one project currency and converts any amount to it through the US dollar", () => {
