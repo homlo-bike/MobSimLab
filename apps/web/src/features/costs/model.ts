@@ -11,6 +11,7 @@ import { dayService } from "../street-lines/service";
 import { lineStats } from "../street-lines/summary";
 import type { Prices } from "./economy";
 import { paramValue, type Triple } from "./params";
+import { distanceKm } from "../../map/geo";
 
 /** Kinds of construction cost; the first seven are the alignment by construction type. */
 export type Category =
@@ -192,15 +193,6 @@ const STATION_LABEL: Record<Level, string> = {
   underground2: "underground, deep",
 };
 
-/** Purpose: great-circle distance in km. */
-export function km(a: [number, number], b: [number, number]): number {
-  const r = Math.PI / 180;
-  const h =
-    Math.sin(((b[1] - a[1]) * r) / 2) ** 2 +
-    Math.cos(a[1] * r) * Math.cos(b[1] * r) * Math.sin(((b[0] - a[0]) * r) / 2) ** 2;
-  return 2 * 6371.0088 * Math.asin(Math.min(1, Math.sqrt(h)));
-}
-
 /**
  * Purpose: the cost estimate of the project.
  * Inputs: the railway design and its build, the publication reports of its service lines, the street
@@ -311,7 +303,7 @@ export function estimate(input: EstimateInput): Estimate {
       const mode = lineMode(railway, l);
       const stops = l.stations.map((id) => pos.get(id)).filter((p): p is [number, number] => !!p);
       let lengthKm = 0;
-      for (let i = 1; i < stops.length; i++) lengthKm += km(stops[i - 1]!, stops[i]!);
+      for (let i = 1; i < stops.length; i++) lengthKm += distanceKm(stops[i - 1]!, stops[i]!);
       const id = `rail:${l.id}`;
       const name = l.name || l.id;
       if (!r || !train || r.trains === 0) {
