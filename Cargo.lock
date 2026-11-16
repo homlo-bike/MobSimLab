@@ -293,6 +293,8 @@ name = "mobsim-py"
 version = "0.1.0"
 dependencies = [
  "pyo3",
+ "rail-model",
+ "rail-plan",
  "rail-sim",
  "serde_json",
 ]

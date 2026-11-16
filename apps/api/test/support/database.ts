@@ -12,6 +12,8 @@ export interface TestDatabase {
   host: string;
   port: number;
   appPassword: string;
+  /** Password of the restricted worker role, for tests that run the Python worker. */
+  workerPassword: string;
   /** Superuser connection to the mobsimlab database (for assertions and tampering tests). */
   superuser(): Promise<Client>;
 }
@@ -48,6 +50,7 @@ export async function startDatabase(): Promise<TestDatabase> {
     host,
     port,
     appPassword: secrets.db_app_password,
+    workerPassword: secrets.db_worker_password,
     superuser: async () => {
       const c = new Client({
         host,
