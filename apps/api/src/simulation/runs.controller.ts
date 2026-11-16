@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   ForbiddenException,
   Get,
   HttpCode,
@@ -114,6 +115,22 @@ export class RunsController {
   @Requires("projects.read")
   async get(@Param("id") id: string, @Param("runId") runId: string, @Req() req: MslRequest) {
     return { run: await this.runs.get(this.actor(req), parse(uuid, id), parse(uuid, runId)) };
+  }
+
+  /** Purpose: run a saved run again with the same network and settings, replacing its result. */
+  @Post(":runId/rerun")
+  @HttpCode(200)
+  @Requires("projects.read")
+  async rerun(@Param("id") id: string, @Param("runId") runId: string, @Req() req: MslRequest) {
+    return { run: await this.runs.rerun(this.actor(req), parse(uuid, id), parse(uuid, runId)) };
+  }
+
+  /** Purpose: delete a saved run for everyone (a run that is still going is stopped). */
+  @Delete(":runId")
+  @Requires("projects.read")
+  async remove(@Param("id") id: string, @Param("runId") runId: string, @Req() req: MslRequest) {
+    await this.runs.remove(this.actor(req), parse(uuid, id), parse(uuid, runId));
+    return { ok: true };
   }
 
   /** Purpose: stop a queued or running run. */

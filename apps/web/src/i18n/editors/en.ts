@@ -1051,6 +1051,9 @@ export const editorsEn = {
   "capacity.stoppedEarly": "This run was stopped before the end; these are the results it found until then.",
   "capacity.waiting": "Waiting for the server to start the run…",
   "capacity.stopping": "Stopping after the current step…",
+  "capacity.delete": "Delete",
+  "capacity.deleteAsk": "Delete this run for everyone in the project?",
+  "capacity.keep": "Keep",
 } as const;
 
 /** Keys of the editor messages. */

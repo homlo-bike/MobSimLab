@@ -1042,6 +1042,9 @@ export const editorsUr = {
   "capacity.stoppedEarly": "یہ رن ختم ہونے سے پہلے روک دیا گیا؛ یہ اس وقت تک کے نتائج ہیں۔",
   "capacity.waiting": "سرور کے رن شروع کرنے کا انتظار…",
   "capacity.stopping": "موجودہ قدم کے بعد روکا جا رہا ہے…",
+  "capacity.delete": "حذف کریں",
+  "capacity.deleteAsk": "کیا یہ رن پروجیکٹ کے سب ارکان کے لیے حذف کر دیں؟",
+  "capacity.keep": "رکھیں",
   "rail.levelHeight": "ہموار، ریلیں سطح سمندر سے {rail} میٹر اوپر · ساتھ ساتھ زمین {min}–{max} میٹر",
   "rail.profileRange":
     "ریلیں سطح سمندر سے {min}–{max} میٹر اوپر · سب سے زیادہ ڈھلوان {steep} (زیادہ سے زیادہ {limit} ‰)",

@@ -1073,6 +1073,9 @@ export const editorsTa = {
   "capacity.stoppedEarly": "இந்த இயக்கம் முடிவதற்கு முன் நிறுத்தப்பட்டது; இவை அதுவரை கிடைத்த முடிவுகள்.",
   "capacity.waiting": "சேவையகம் இயக்கத்தைத் தொடங்கக் காத்திருக்கிறது…",
   "capacity.stopping": "தற்போதைய படிக்குப் பின் நிறுத்துகிறது…",
+  "capacity.delete": "நீக்கு",
+  "capacity.deleteAsk": "திட்டத்தில் அனைவருக்கும் இந்த இயக்கத்தை நீக்கவா?",
+  "capacity.keep": "வைத்திரு",
   "rail.levelHeight":
     "சமதளம், தண்டவாளங்கள் கடல் மட்டத்திலிருந்து {rail} மீ உயரத்தில் · அருகிலுள்ள நிலம் {min}–{max} மீ",
   "rail.profileRange":

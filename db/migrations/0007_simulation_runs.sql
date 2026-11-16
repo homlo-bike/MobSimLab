@@ -31,7 +31,7 @@ CREATE TABLE simulation.run (
 );
 CREATE INDEX run_project_created ON simulation.run (project_id, created_at DESC);
 
-GRANT SELECT, INSERT, UPDATE ON simulation.run TO mobsimlab_app;
+GRANT SELECT, INSERT, UPDATE, DELETE ON simulation.run TO mobsimlab_app;
 -- The worker reads what to run and writes only how the run goes (03 §1: a restricted role).
 GRANT SELECT (id, kind, status, input, network, lines, cancel_requested) ON simulation.run TO mobsimlab_worker;
 GRANT UPDATE (status, progress, result, error, started_at, finished_at) ON simulation.run TO mobsimlab_worker;

@@ -1049,6 +1049,9 @@ export const editorsId = {
   "capacity.stoppedEarly": "Uji ini dihentikan sebelum selesai; inilah hasil yang didapat sampai saat itu.",
   "capacity.waiting": "Menunggu server memulai uji…",
   "capacity.stopping": "Berhenti setelah langkah saat ini…",
+  "capacity.delete": "Hapus",
+  "capacity.deleteAsk": "Hapus uji ini untuk semua orang di proyek?",
+  "capacity.keep": "Simpan",
   "rail.levelHeight": "Datar, rel pada {rail} m di atas permukaan laut · tanah di sepanjangnya {min}–{max} m",
   "rail.profileRange":
     "Rel {min}–{max} m di atas permukaan laut · kelandaian tercuram {steep} (maks. {limit} ‰)",

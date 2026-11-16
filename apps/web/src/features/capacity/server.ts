@@ -49,6 +49,10 @@ export interface RunsApi {
   get(id: string): Promise<SavedRunDetail>;
   start(network: ServerNetwork, params: SavedRun["params"], sweep: boolean): Promise<SavedRunDetail>;
   cancel(id: string): Promise<SavedRunDetail>;
+  /** Run a saved run again with the same network and settings, replacing its result. */
+  rerun(id: string): Promise<SavedRunDetail>;
+  /** Delete a saved run for everyone. */
+  remove(id: string): Promise<void>;
 }
 
 /** Purpose: the runs API of one project, through the session cookie and CSRF token. */
@@ -60,6 +64,11 @@ export function projectRuns(projectId: string, csrf: string): RunsApi {
     start: async (network, params, sweep) =>
       (await send<{ run: SavedRunDetail }>("POST", base, csrf, { kind: "capacity", network, params, sweep }))
         .run,
+    rerun: async (id) =>
+      (await send<{ run: SavedRunDetail }>("POST", `${base}/${encodeURIComponent(id)}/rerun`, csrf, {})).run,
+    remove: async (id) => {
+      await send<{ ok: true }>("DELETE", `${base}/${encodeURIComponent(id)}`, csrf);
+    },
     cancel: async (id) =>
       (await send<{ run: SavedRunDetail }>("POST", `${base}/${encodeURIComponent(id)}/cancel`, csrf, {})).run,
   };

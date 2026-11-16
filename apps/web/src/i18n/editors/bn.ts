@@ -1036,6 +1036,9 @@ export const editorsBn = {
   "capacity.stoppedEarly": "এই রানটি শেষ হওয়ার আগে থামানো হয়েছে; এগুলো তখন পর্যন্ত পাওয়া ফলাফল।",
   "capacity.waiting": "সার্ভার রান শুরু করার অপেক্ষায়…",
   "capacity.stopping": "বর্তমান ধাপের পরে থামানো হচ্ছে…",
+  "capacity.delete": "মুছুন",
+  "capacity.deleteAsk": "প্রকল্পের সবার জন্য এই রানটি মুছবেন?",
+  "capacity.keep": "রাখুন",
   "rail.levelHeight": "সমতল, রেল সমুদ্রপৃষ্ঠ থেকে {rail} মি উপরে · পাশের মাটি {min}–{max} মি",
   "rail.profileRange":
     "রেল সমুদ্রপৃষ্ঠ থেকে {min}–{max} মি উপরে · সবচেয়ে খাড়া ঢাল {steep} (সর্বোচ্চ {limit} ‰)",

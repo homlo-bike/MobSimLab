@@ -1049,6 +1049,9 @@ export const editorsHa = {
     "An tsayar da wannan gwajin kafin ƙarshe; waɗannan sakamakon da aka samu har zuwa lokacin ne.",
   "capacity.waiting": "Ana jiran sabar ta fara gwajin…",
   "capacity.stopping": "Za a tsaya bayan matakin yanzu…",
+  "capacity.delete": "Share",
+  "capacity.deleteAsk": "A share wannan gwajin ga kowa a cikin aikin?",
+  "capacity.keep": "Ajiye",
   "rail.levelHeight": "Shimfiɗaɗɗe, layukan ƙarfe a m {rail} sama da teku · ƙasa a gefensa m {min}–{max}",
   "rail.profileRange":
     "Layukan ƙarfe m {min}–{max} sama da teku · gangare mafi tsauri {steep} (mafi yawa {limit} ‰)",

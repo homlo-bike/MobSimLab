@@ -1059,6 +1059,9 @@ export const editorsPt = {
   "capacity.stoppedEarly": "Este teste foi parado antes do fim; estes são os resultados obtidos até então.",
   "capacity.waiting": "À espera de que o servidor inicie o teste…",
   "capacity.stopping": "A parar após o passo atual…",
+  "capacity.delete": "Eliminar",
+  "capacity.deleteAsk": "Eliminar este teste para todos no projeto?",
+  "capacity.keep": "Manter",
   "rail.levelHeight": "Plano, trilhos a {rail} m acima do nível do mar · terreno ao longo {min}–{max} m",
   "rail.profileRange":
     "Trilhos a {min}–{max} m acima do nível do mar · rampa máxima {steep} (máx. {limit} ‰)",

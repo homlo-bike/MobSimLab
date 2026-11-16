@@ -327,7 +327,38 @@ export function CapacityRun({
       const r = await runs.get(id);
       generation.current++;
       setStatus(null);
+      setConfirmDelete(false);
       setViewing(r);
+    } catch (e) {
+      setServerError(e instanceof Error ? e.message : String(e));
+    }
+  };
+
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
+  /** Purpose: run the open saved run again with its own settings; its old result is replaced. */
+  const rerunSaved = async () => {
+    if (!runs || !viewing) return;
+    setServerError(null);
+    try {
+      const r = await runs.rerun(viewing.id);
+      setViewing(r);
+      setSaved((l) => [r, ...l.filter((x) => x.id !== r.id)]);
+    } catch (e) {
+      setServerError(e instanceof Error ? e.message : String(e));
+    }
+  };
+
+  /** Purpose: delete the open saved run for everyone. */
+  const deleteSaved = async () => {
+    if (!runs || !viewing) return;
+    const id = viewing.id;
+    setServerError(null);
+    try {
+      await runs.remove(id);
+      setConfirmDelete(false);
+      setViewing(null);
+      setSaved((l) => l.filter((x) => x.id !== id));
     } catch (e) {
       setServerError(e instanceof Error ? e.message : String(e));
     }
@@ -528,7 +559,7 @@ export function CapacityRun({
           disabled={!ready || busy}
           onClick={() => void start()}
         >
-          {run ? t("capacity.runAgain") : t("capacity.run")}
+          {run && !viewing ? t("capacity.runAgain") : t("capacity.run")}
         </button>
         {busy && (
           <button type="button" className="btn" onClick={stop}>
@@ -615,8 +646,42 @@ export function CapacityRun({
                 {t("capacity.stop")}
               </button>
             )}
-            <button type="button" className="btn" onClick={() => setViewing(null)}>
+            {!isOpen(viewing) && canRun && (
+              <button type="button" className="btn" onClick={() => void rerunSaved()}>
+                {t("capacity.runAgain")}
+              </button>
+            )}
+            {canRun && (
+              <button type="button" className="btn" onClick={() => setConfirmDelete(true)}>
+                {t("capacity.delete")}
+              </button>
+            )}
+            <button
+              type="button"
+              className="btn"
+              onClick={() => {
+                setConfirmDelete(false);
+                setViewing(null);
+              }}
+            >
               {t("capacity.close")}
+            </button>
+          </span>
+        </div>
+      )}
+      {viewing && confirmDelete && (
+        <div
+          role="alertdialog"
+          aria-label={t("capacity.deleteAsk")}
+          className="flex flex-wrap items-center justify-between gap-2 rounded-[10px] border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-900"
+        >
+          <span>{t("capacity.deleteAsk")}</span>
+          <span className="flex gap-2">
+            <button type="button" className="btn" onClick={() => setConfirmDelete(false)}>
+              {t("capacity.keep")}
+            </button>
+            <button type="button" className="btn btn-danger" onClick={() => void deleteSaved()}>
+              {t("capacity.delete")}
             </button>
           </span>
         </div>

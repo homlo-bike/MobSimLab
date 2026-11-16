@@ -62,6 +62,12 @@ describe.skipIf(!haveWorker)("simulation runs on the background worker", () => {
           .set("Origin", config.publicUrl.origin)
           .set("X-CSRF-Token", b.csrf)
           .send(body),
+      del: (path: string) =>
+        request(server)
+          .delete(path)
+          .set("Cookie", b.cookie)
+          .set("Origin", config.publicUrl.origin)
+          .set("X-CSRF-Token", b.csrf),
       put: (path: string, body: object) =>
         request(server)
           .put(path)
@@ -223,6 +229,60 @@ describe.skipIf(!haveWorker)("simulation runs on the background worker", () => {
     } finally {
       await su.end();
     }
+  });
+
+  it("runs a saved run again in place, replacing its result", async () => {
+    const res = await as("alice").post(runs(), {
+      kind: "capacity",
+      network: { kind: "files", topology: "{}", topologyName: "t.json", lines: "[]", linesName: "l.json" },
+      params: AM,
+      sweep: false,
+    });
+    const id = res.body.run.id as string;
+    const failed = await waitFor(id);
+    expect(failed.status).toBe("failed");
+    expect((await as("bob").post(`${runs()}/${id}/rerun`)).status).toBe(403);
+    const again = await as("alice").post(`${runs()}/${id}/rerun`);
+    expect(again.status).toBe(200);
+    expect(again.body.run).toMatchObject({ id, status: "queued", error: null, result: null });
+    // Running again while it is still going is refused.
+    const twice = await as("alice").post(`${runs()}/${id}/rerun`);
+    expect([200, 409]).toContain(twice.status);
+    const r = await waitFor(id);
+    expect(r.status).toBe("failed");
+    expect((await as("alice").get(runs())).body.runs.filter((x: { id: string }) => x.id === id)).toHaveLength(
+      1,
+    );
+  });
+
+  it("deletes a saved run for everyone", async () => {
+    const res = await as("alice").post(runs(), {
+      kind: "capacity",
+      network: { kind: "example" },
+      params: AM,
+      sweep: false,
+    });
+    const id = res.body.run.id as string;
+    await waitFor(id);
+    expect((await as("bob").del(`${runs()}/${id}`)).status).toBe(403);
+    expect((await as("alice").del(`${runs()}/${id}`)).status).toBe(200);
+    expect((await as("bob").get(`${runs()}/${id}`)).status).toBe(404);
+    expect((await as("alice").del(`${runs()}/${id}`)).status).toBe(404);
+    // A run deleted while it is still going is stopped, and the worker carries on with the next one.
+    const going = await as("alice").post(runs(), {
+      kind: "capacity",
+      network: { kind: "example" },
+      params: AM,
+      sweep: true,
+    });
+    expect((await as("alice").del(`${runs()}/${going.body.run.id}`)).status).toBe(200);
+    const next = await as("alice").post(runs(), {
+      kind: "capacity",
+      network: { kind: "example" },
+      params: AM,
+      sweep: false,
+    });
+    expect((await waitFor(next.body.run.id)).status).toBe("done");
   });
 
   it("marks a run failed when the worker stops without finishing it", async () => {

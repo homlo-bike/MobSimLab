@@ -20,6 +20,8 @@ Owners and Editors of the project can also click **Run on the server and save**.
 - It is saved to the project. **Saved runs** lists every run of the project, newest first, with who started it and when, and every member of the project (Viewers included) can open one to see its results.
 - While it runs, the panel shows what the worker is doing (planning the period, or which frequency it is trying) and the results so far. **Stop** ends it after the current step and keeps what it found.
 - If the worker stops in the middle (a restart of the server), the run is marked **Failed** with a note to start it again.
+- **Run again** (Owners and Editors) runs an open saved run again with its own network, period and settings and replaces its result; it moves to the top of the list with your name.
+- **Delete** (Owners and Editors) removes the run and its result for everyone, after you confirm. A run that is still going is stopped.
 
 Runs wait their turn: the server runs as many at the same time as it has background workers (`MOBSIMLAB_SIM_WORKERS` in `.env`, 1 by default), and the others show **Waiting** until a worker is free.
 

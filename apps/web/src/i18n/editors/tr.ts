@@ -1022,6 +1022,9 @@ export const editorsTr = {
   "capacity.stoppedEarly": "Bu test bitmeden durduruldu; o ana kadar bulunan sonuçlar bunlar.",
   "capacity.waiting": "Sunucunun testi başlatması bekleniyor…",
   "capacity.stopping": "Geçerli adımdan sonra durduruluyor…",
+  "capacity.delete": "Sil",
+  "capacity.deleteAsk": "Bu test projedeki herkes için silinsin mi?",
+  "capacity.keep": "Sakla",
   "rail.levelHeight": "Düz, raylar deniz seviyesinden {rail} m yukarıda · boyunca arazi {min}–{max} m",
   "rail.profileRange":
     "Raylar deniz seviyesinden {min}–{max} m yukarıda · en dik eğim {steep} (en fazla {limit} ‰)",

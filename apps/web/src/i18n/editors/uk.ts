@@ -1109,6 +1109,9 @@ export const editorsUk = {
   "capacity.stoppedEarly": "Цей прогін зупинено до кінця; це результати, отримані до того часу.",
   "capacity.waiting": "Очікування запуску прогону на сервері…",
   "capacity.stopping": "Зупинка після поточного кроку…",
+  "capacity.delete": "Видалити",
+  "capacity.deleteAsk": "Видалити цей прогін для всіх учасників проєкту?",
+  "capacity.keep": "Залишити",
   "rail.levelHeight": "Горизонтально, рейки на висоті {rail} м над рівнем моря · рельєф уздовж {min}–{max} м",
   "rail.profileRange":
     "Рейки на висоті {min}–{max} м над рівнем моря · найбільший ухил {steep} (макс. {limit} ‰)",
