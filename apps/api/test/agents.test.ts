@@ -172,7 +172,7 @@ describe("OAuth helpers", () => {
   });
 
   it("parses scopes", () => {
-    expect(parseScopes("")).toEqual(["project:read", "analysis:run", "scenario:write"]);
+    expect(parseScopes("")).toEqual(["project:read", "analysis:run", "scenario:write", "simulation:run"]);
     expect(parseScopes("analysis:run analysis:run")).toEqual(["analysis:run"]);
     expect(parseScopes("admin")).toBeNull();
   });

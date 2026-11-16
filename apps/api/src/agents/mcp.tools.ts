@@ -8,6 +8,7 @@ import { exportGtfs } from "./gtfs-export";
 import DEFAULTS from "./defaults.json";
 import { KPI_CATALOGUE_VERSION, KPIS } from "./kpis";
 import { NetworkError } from "./network.service";
+import { registerRunTools, type RunToolDeps } from "./run.tools";
 import type { AgentPrincipal } from "./oauth.service";
 import type { Scope } from "./oauth";
 import {
@@ -22,14 +23,17 @@ import {
 } from "./scenario";
 import { ScenarioError, type ScenariosService } from "./scenarios.service";
 import { WasmMissingError } from "./wasm";
+import { HttpException } from "@nestjs/common";
 
 /** Version of the tool set; tool names and schemas are a public contract (ADR-0035 Consequences). */
-export const TOOLS_VERSION = "0.3.0";
+export const TOOLS_VERSION = "0.4.0";
 
 export interface ToolDeps {
   scenarios: ScenariosService;
   analysis: AnalysisService;
   access: AccessService;
+  /** Simulation runs and sweeps on the background worker (run.tools.ts). */
+  simulation?: RunToolDeps;
   instanceName: string;
   /** Origin of this instance, e.g. `https://mobsimlab.example.org`. */
   instanceUrl?: string;
@@ -42,6 +46,13 @@ class ToolRefusal extends Error {}
 /** A tool result with its own content blocks (for example a file), returned as is. */
 class Raw {
   constructor(readonly content: CallToolResult["content"]) {}
+}
+
+/** Purpose: the message of a refused request (Nest's HttpException), as one line for the agent. */
+function httpMessage(e: HttpException): string {
+  const r = e.getResponse();
+  const m = typeof r === "string" ? r : (r as { message?: unknown }).message;
+  return Array.isArray(m) ? m.join("; ") : typeof m === "string" ? m : e.message;
 }
 
 const json = (v: unknown): CallToolResult => ({
@@ -73,7 +84,9 @@ export function buildMcpServer(p: AgentPrincipal, d: ToolDeps): McpServer {
         "coverage_report (headline: 15-minute walk to the nearest stop on the street network), measure_stop_spacing, " +
         "find_coverage_gaps, suggest_stop_locations (exact optimiser), accessibility_to_destinations (the 15-minute " +
         "city: daily needs within 15 minutes on foot, by bicycle or by public transport), coverage_report with the " +
-        "ptal preset (TfL PTAL), plan_journey, compare with benchmark_scenarios, and export a scenario as GTFS with export_gtfs. Every " +
+        "ptal preset (TfL PTAL), plan_journey, compare with benchmark_scenarios, and export a scenario as GTFS with export_gtfs. " +
+        "Rail capacity runs and settings sweeps run on the background worker in a project (list_projects, start_run, " +
+        "run_sweep, get_run_status, cancel_run, rerun, list_runs). Every " +
         "number states its rule and the assumption-library keys behind it; quote them. You cannot change the base " +
         "network, sharing or users; a person reviews scenarios in MobSimLab.",
     },
@@ -105,6 +118,9 @@ export function buildMcpServer(p: AgentPrincipal, d: ToolDeps): McpServer {
           e instanceof WasmMissingError
         )
           return { content: [{ type: "text", text: e.message }], isError: true };
+        // Refusals of the shared services (not found, role, conflict, run limit, queue down) go to the agent.
+        if (e instanceof HttpException)
+          return { content: [{ type: "text", text: httpMessage(e) }], isError: true };
         throw e;
       }
     };
@@ -860,6 +876,21 @@ export function buildMcpServer(p: AgentPrincipal, d: ToolDeps): McpServer {
       ],
     }),
   );
+  // ---- Simulation runs and sweeps (run.tools.ts) -------------------------------------------------
+  if (d.simulation)
+    registerRunTools(
+      {
+        server,
+        userId: p.userId,
+        role: p.role,
+        connectionId: p.connectionId,
+        clientName: p.clientName,
+        requestId: d.requestId ?? null,
+        run,
+      },
+      d.simulation,
+    );
+
   return server;
 }
 
