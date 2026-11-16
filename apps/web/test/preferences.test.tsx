@@ -1,13 +1,18 @@
-import { describe, expect, it } from "vitest";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   DESIGN_RULES,
   delaysFrom,
   designValuesFrom,
+  LIBRARY_SAME_NAME_M,
+  type PreferencesDoc,
   prefValue,
   usedVehicles,
   vehiclesOffFrom,
   switchChoiceFrom,
   withDefaultTurnout,
+  SAME_NAME_PREF,
+  sameNameStationM,
   withPref,
   withSwitches,
   withVehicles,
@@ -22,8 +27,11 @@ import {
 import { addLine, trainsFor } from "../src/features/railways/serviceLines";
 import type { Network } from "../src/features/railways/types";
 import { effectiveDefault } from "../src/workspace/SwitchChoice";
+import { StationsSection } from "../src/workspace/StationsSection";
 import { chosenCurrency, convertTo, RATE_PREF, withCurrency } from "../src/features/costs/currency";
 import { countryOfCurrency, CURRENCY_CODES } from "../src/features/costs/currencies";
+
+afterEach(cleanup);
 
 describe("project preferences", () => {
   it("uses the library's delays unless the project changes them", () => {
@@ -34,6 +42,27 @@ describe("project preferences", () => {
     // Removing the value brings the library's back; nonsense is clamped.
     expect(delaysFrom(withPref(doc, "street.mixed_traffic_delay_share", null)).mixed_traffic).toBe(0.25);
     expect(delaysFrom({ values: { "street.bus_lane_delay_share": -1 } }).bus_lane).toBe(0);
+  });
+
+  it("uses one same-name station distance: the project's, else the library's", () => {
+    expect(SAME_NAME_PREF).toBe("journey.same_name_station_m");
+    expect(sameNameStationM(undefined)).toBe(LIBRARY_SAME_NAME_M);
+    expect(sameNameStationM(withPref(null, SAME_NAME_PREF, 250).values)).toBe(250);
+    expect(sameNameStationM({ [SAME_NAME_PREF]: -5 })).toBe(LIBRARY_SAME_NAME_M);
+  });
+
+  it("lets the project change the same-name station distance and go back to the library's", () => {
+    let doc: PreferencesDoc | null = null;
+    const onPreferences = vi.fn((d: PreferencesDoc) => (doc = d));
+    const view = () => <StationsSection preferences={doc} editable onPreferences={onPreferences} />;
+    const { rerender } = render(view());
+    const field = screen.getByRole("spinbutton", { name: /same-name stops/i });
+    expect((field as HTMLInputElement).value).toBe(String(LIBRARY_SAME_NAME_M));
+    fireEvent.change(field, { target: { value: "300" } });
+    expect(prefValue(doc, SAME_NAME_PREF)).toBe(300);
+    rerender(view());
+    fireEvent.click(screen.getByRole("button", { name: /library value/i }));
+    expect(prefValue(doc, SAME_NAME_PREF)).toBeUndefined();
   });
 
   it("passes the project's design rules to the rail engine per mode", () => {
