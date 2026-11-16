@@ -66,6 +66,7 @@ import type {
   RailView,
   ServicePublication,
   SignalView,
+  SwitchChoice,
   Track,
 } from "./types";
 import type { Timetable } from "../journey-planner/types";
@@ -117,6 +118,8 @@ interface Props {
   delays?: DelayShares | null;
   /** The project's design rules per mode (Project preferences), as `<mode>.<field>`; the library's when absent. */
   designValues?: Readonly<Record<string, number>> | null;
+  /** The project's choice from the switches and crossings catalogue (Project preferences); all when absent. */
+  switchChoice?: SwitchChoice | null;
   /** The drawing saved with the project, or null to start a new one at the map centre. */
   initial?: Network | null;
   /** Told about the drawing after every change, so the project can save it. */
@@ -163,6 +166,7 @@ export function RailwayEditor({
   streetSetups = NO_SETUPS,
   delays = null,
   designValues = null,
+  switchChoice = null,
   initial = null,
   onDocChange,
   loadNoise = loadWasmNoise,
@@ -250,6 +254,18 @@ export function RailwayEditor({
     });
     setStreets((n) => n + 1);
   }, [ready, delaysJson, rulesJson]);
+  // The switches the project uses and its default turnouts; a change rebuilds.
+  const switchJson = switchChoice ? JSON.stringify(switchChoice) : "";
+  const switchSet = useRef(false);
+  useEffect(() => {
+    const e = engine.current;
+    if (!ready || !e?.setSwitchChoice || (!switchJson && !switchSet.current)) return;
+    switchSet.current = true;
+    e.setSwitchChoice(
+      switchJson ? (JSON.parse(switchJson) as SwitchChoice) : { off: [], default_turnout: {} },
+    );
+    setStreets((n) => n + 1);
+  }, [ready, switchJson]);
   useEffect(() => {
     if (!map || !ready) return;
     // Turning existing railways off forgets them; turning them on reloads the tiles on screen.

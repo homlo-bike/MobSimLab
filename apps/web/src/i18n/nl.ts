@@ -308,7 +308,15 @@ export const nl: Messages = {
   "prefs.vehiclesAll": "Alle gebruiken",
   "prefs.vehiclesFacts": "{length} m · {places} plaatsen · {speed} km/h",
   "prefs.vehiclesLast": "Elke vervoerswijze houdt minstens één voertuig in gebruik.",
-  "prefs.switches": "Wissels, uit de wisselcatalogus",
+  "prefs.switchesTitle": "Wissels",
+  "prefs.switchesIntro":
+    "De wissels en kruisingen uit de catalogus die de spoorwegeditor per railvervoerswijze aanbiedt, en de wissel waarmee nieuwe wissels beginnen.",
+  "prefs.switchesTurnouts": "Wissels",
+  "prefs.switchesSlips": "Engelse wissels",
+  "prefs.switchesDefault": "Standaard",
+  "prefs.switchesFacts": "1:{n} · R {radius} m · {speed} km/h afbuigend",
+  "prefs.switchesLast":
+    "De standaardwissel blijft in gebruik. Kies eerst een andere standaard om hem weg te laten.",
   "prefs.calendar": "Kalender, vraag en kosten",
 
   "job.stepOf": "Stap {step} van {steps}",

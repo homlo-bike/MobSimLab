@@ -308,7 +308,15 @@ export const pt: Messages = {
   "prefs.vehiclesAll": "Usar todos",
   "prefs.vehiclesFacts": "{length} m · {places} lugares · {speed} km/h",
   "prefs.vehiclesLast": "Cada modo mantém pelo menos um veículo em uso.",
-  "prefs.switches": "Aparelhos de mudança de via, do catálogo",
+  "prefs.switchesTitle": "Aparelhos de mudança de via",
+  "prefs.switchesIntro":
+    "Os aparelhos de mudança de via e cruzamentos do catálogo que o editor ferroviário oferece, por modo ferroviário, e o aparelho com que começam os novos.",
+  "prefs.switchesTurnouts": "Aparelhos de via",
+  "prefs.switchesSlips": "Travessões em cruzamentos",
+  "prefs.switchesDefault": "Predefinido",
+  "prefs.switchesFacts": "1:{n} · R {radius} m · {speed} km/h no desvio",
+  "prefs.switchesLast":
+    "O aparelho predefinido continua em uso. Para o retirar, escolha primeiro outro predefinido.",
   "prefs.calendar": "Calendário, demanda e custos",
 
   "job.stepOf": "Passo {step} de {steps}",

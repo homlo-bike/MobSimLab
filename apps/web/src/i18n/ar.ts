@@ -297,7 +297,14 @@ export const ar: Messages = {
   "prefs.vehiclesAll": "استخدام الكل",
   "prefs.vehiclesFacts": "{length} م · {places} مقعدًا · {speed} كم/س",
   "prefs.vehiclesLast": "تبقى مركبة واحدة على الأقل مستخدمة لكل نمط.",
-  "prefs.switches": "تحويلات السكك، من كتالوج التحويلات",
+  "prefs.switchesTitle": "المحولات",
+  "prefs.switchesIntro":
+    "المحولات والتقاطعات من الكتالوج التي يعرضها محرر السكك الحديدية لكل نمط سككي، والمحول الذي تبدأ به المحولات الجديدة.",
+  "prefs.switchesTurnouts": "المحولات",
+  "prefs.switchesSlips": "المحولات المنزلقة في التقاطعات",
+  "prefs.switchesDefault": "الافتراضي",
+  "prefs.switchesFacts": "1:{n} · نصف قطر {radius} م · {speed} كم/س في الاتجاه المنحرف",
+  "prefs.switchesLast": "يبقى المحول الافتراضي مستخدمًا. لإزالته، اختر محولًا افتراضيًا آخر أولًا.",
   "prefs.calendar": "التقويم والطلب والتكاليف",
 
   "job.stepOf": "الخطوة {step} من {steps}",
