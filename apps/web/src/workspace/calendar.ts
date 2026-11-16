@@ -227,6 +227,64 @@ export function withDayCount(
   return { ...cal, counts };
 }
 
+/** The service day every day type has until the project sets its own, in minutes. */
+export const DEFAULT_WINDOW: ServiceWindow = {
+  firstMin: DEFAULT_SERVICE_DAY.firstS / 60,
+  lastMin: DEFAULT_SERVICE_DAY.lastS / 60,
+  peaks: DEFAULT_SERVICE_DAY.peaks.map(([a, b]) => [a / 60, b / 60] as [number, number]),
+};
+
+/** Purpose: a day type's service day in minutes: the project's, else the default. */
+export function serviceWindowOf(cal: ServiceCalendar, dayType: DayTypeId): ServiceWindow {
+  const w = cal.days?.[dayType];
+  return w && w.lastMin > w.firstMin ? w : DEFAULT_WINDOW;
+}
+
+/** Purpose: whether a service day makes sense: it ends after it starts, and each peak ends after it starts. */
+export function validWindow(w: ServiceWindow): boolean {
+  const ok = (n: number) => Number.isInteger(n) && n >= 0 && n <= 30 * 60;
+  return (
+    ok(w.firstMin) &&
+    ok(w.lastMin) &&
+    w.lastMin > w.firstMin &&
+    w.peaks.length <= 4 &&
+    w.peaks.every(([a, b]) => ok(a) && ok(b) && b > a)
+  );
+}
+
+/**
+ * Purpose: the calendar with a day type's service day set by the planner, or back to the default (`null`, or a
+ * service day equal to the default). A service day that makes no sense is refused (the calendar is returned
+ * unchanged).
+ */
+export function withServiceWindow(
+  cal: ServiceCalendar,
+  dayType: DayTypeId,
+  w: ServiceWindow | null,
+): ServiceCalendar {
+  if (w && !validWindow(w)) return cal;
+  const days = { ...(cal.days ?? {}) };
+  if (!w || JSON.stringify(w) === JSON.stringify(DEFAULT_WINDOW)) delete days[dayType];
+  else days[dayType] = { firstMin: w.firstMin, lastMin: w.lastMin, peaks: w.peaks.map(([a, b]) => [a, b]) };
+  const next: ServiceCalendar = { ...cal, days };
+  if (!Object.keys(days).length) delete next.days;
+  return next;
+}
+
+/** Purpose: minutes after midnight as HH:MM (past 24:00 for after midnight). */
+export function clockText(min: number): string {
+  return `${String(Math.floor(min / 60)).padStart(2, "0")}:${String(min % 60).padStart(2, "0")}`;
+}
+
+/** Purpose: HH:MM (up to 29:59) as minutes after midnight, or null. */
+export function parseClock(t: string): number | null {
+  const m = /^\s*(\d{1,2})[:.](\d{2})\s*$/.exec(t);
+  if (!m) return null;
+  const h = Number(m[1]);
+  const min = Number(m[2]);
+  return h <= 29 && min <= 59 ? h * 60 + min : null;
+}
+
 /** Purpose: the calendar with a holiday added by the planner, or a fetched one restored. */
 export function withHolidayAdded(cal: ServiceCalendar, h: Holiday): ServiceCalendar {
   if (!DATE.test(h.date)) throw new Error("not a date");

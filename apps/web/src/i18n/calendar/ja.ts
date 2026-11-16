@@ -38,6 +38,18 @@ export const calendarJa = {
   "cal.total": "合計",
   "cal.noHolidaysYear": "祝日はまだ取得されていません",
   "cal.resetCount": "数えた値 {value} に戻す",
+  "cal.service": "日種別ごとの運行日",
+  "cal.serviceIntro":
+    "日種別ごとの運行開始・終了時刻と朝夕のピークを HH:MM で指定します。深夜0時以降は 24:30 のように 24:00 を超えて続けます。ピークがない場合は空欄にしてください。",
+  "cal.serviceDefault": "すべての日種別の既定値: {first}〜{last}、ピーク {peaks}。",
+  "cal.firstDep": "始発",
+  "cal.lastDep": "終発",
+  "cal.morningPeak": "朝ピーク",
+  "cal.eveningPeak": "夕ピーク",
+  "cal.peakFrom": "開始",
+  "cal.peakTo": "終了",
+  "cal.serviceInvalid":
+    "まだ保存されていません: 終発は始発より後、各ピークは開始より後に終わる必要があります。",
   "cal.day.weekday": "平日",
   "cal.day.saturday": "土曜日",
   "cal.day.sunday": "日曜日",

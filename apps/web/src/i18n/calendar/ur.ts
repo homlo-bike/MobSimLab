@@ -38,6 +38,18 @@ export const calendarUr = {
   "cal.total": "کل",
   "cal.noHolidaysYear": "ابھی کوئی سرکاری تعطیل نہیں لائی گئی",
   "cal.resetCount": "گنے ہوئے {value} پر واپس",
+  "cal.service": "دن کی قسم کے مطابق سروس کا دن",
+  "cal.serviceIntro":
+    "ہر دن کی قسم میں سروس کب شروع اور ختم ہوتی ہے، اور اس کا صبح اور شام کا رش، HH:MM کی صورت میں۔ آدھی رات کے بعد کے اوقات 24:00 سے آگے چلتے ہیں، جیسے 24:30۔ اگر رش نہ ہو تو خالی چھوڑ دیں۔",
+  "cal.serviceDefault": "ہر دن کی قسم کے لیے طے شدہ: {first} سے {last}، رش {peaks}۔",
+  "cal.firstDep": "پہلی روانگی",
+  "cal.lastDep": "آخری روانگی",
+  "cal.morningPeak": "صبح کا رش",
+  "cal.eveningPeak": "شام کا رش",
+  "cal.peakFrom": "سے",
+  "cal.peakTo": "تک",
+  "cal.serviceInvalid":
+    "ابھی محفوظ نہیں ہوا: آخری روانگی پہلی کے بعد ہونی چاہیے، اور ہر رش اپنے آغاز کے بعد ختم ہونا چاہیے۔",
   "cal.day.weekday": "کام کا دن",
   "cal.day.saturday": "ہفتہ",
   "cal.day.sunday": "اتوار",
