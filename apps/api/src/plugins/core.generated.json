@@ -651,6 +651,7 @@
     "access.step_above_platform_mm",
     "access.step_below_platform_mm",
     "access.step_gap_horizontal_mm",
+    "analysis.cycle_speed_kmh",
     "analysis.frequent_headway_min",
     "analysis.walk_rule_minutes",
     "benefit.access_decay_per_min",

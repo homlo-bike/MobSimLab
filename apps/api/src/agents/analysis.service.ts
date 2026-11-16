@@ -351,7 +351,7 @@ export class AnalysisService {
   async suggestStops(
     doc: ScenarioDoc,
     k: number,
-    o: { lineId?: string; minutes?: number; demand?: DemandPoint[] },
+    o: { lineId?: string; minutes?: number; demand?: DemandPoint[]; returnInstance?: boolean },
   ) {
     const minutes = o.minutes ?? DEFAULTS.walk_rule_minutes;
     const lines = doc.lines.filter((l) => !o.lineId || l.id === o.lineId);
@@ -368,11 +368,12 @@ export class AnalysisService {
     const settings = this.settings({});
     const area = this.studyArea(doc, (minutes / 60) * settings.walk_speed_kmh * 1000);
     const w = await this.network.walkGraph(area);
+    const cands = thin(candidates, 400);
     const r = JSON.parse(
       w.suggest_stops(
         JSON.stringify({
           existing: doc.stops.map((s) => ({ id: s.id, lon: s.lon, lat: s.lat })),
-          candidates: thin(candidates, 400),
+          candidates: cands,
           demand: o.demand?.map((d) => ({ lon: d.lon, lat: d.lat, weight: d.weight ?? 1 })) ?? null,
           street_cells_m: 150,
           study_area: area,
@@ -380,15 +381,19 @@ export class AnalysisService {
           k,
           min_spacing_m: minSpacing,
           settings,
+          return_instance: o.returnInstance ?? false,
         }),
       ),
-    ) as {
-      demand_kind: string;
-      total: number;
-      covered_before: number;
-      covered_after: number;
-      suggestions: { candidate: string; lon: number; lat: number; gain: number }[];
-    };
+    ) as SuggestRaw;
+    return this.suggestionReport(r, minutes, minSpacing, cands);
+  }
+
+  private suggestionReport(
+    r: SuggestRaw,
+    minutes: number,
+    minSpacing: number,
+    cands: { id: string; lon: number; lat: number }[],
+  ) {
     const share = (v: number) => (r.total > 0 ? pct(v / r.total) : 0);
     return {
       method:
@@ -410,6 +415,48 @@ export class AnalysisService {
       })),
       how_to_apply:
         "Add a stop with add_stop and insert its id into the line's stop_ids with update_line, then run coverage_report again.",
+      instance: r.instance,
+      suggestions_raw: r.suggestions,
+      context: { raw: r, minutes, minSpacing, cands },
+    };
+  }
+
+  /**
+   * Purpose: the suggestion report for a chosen set of candidates (indices into the candidates sent), as the
+   * exact solver picks them: gains are the demand each adds in the order given, from the covering problem.
+   */
+  applyChoice(greedy: ReturnType<AnalysisService["suggestionReport"]>, chosen: number[]) {
+    const { raw, minutes, minSpacing, cands } = greedy.context;
+    const inst = raw.instance!;
+    const covered = new Set<number>();
+    const suggestions = chosen.map((ci) => {
+      const cover = inst.cover[inst.candidates.indexOf(ci)] ?? [];
+      let gain = 0;
+      for (const p of cover)
+        if (!covered.has(p)) {
+          covered.add(p);
+          gain += inst.weights[p]!;
+        }
+      const c = cands[ci]!;
+      return { candidate: c.id, lon: c.lon, lat: c.lat, gain };
+    });
+    suggestions.sort((a, b) => b.gain - a.gain);
+    const after = raw.covered_before + suggestions.reduce((a, s) => a + s.gain, 0);
+    const rep = this.suggestionReport(
+      { ...raw, covered_after: after, suggestions },
+      minutes,
+      minSpacing,
+      cands,
+    );
+    const { instance, suggestions_raw, context, ...out } = rep;
+    void instance;
+    void suggestions_raw;
+    void context;
+    return {
+      ...out,
+      method:
+        "Maximal Covering Location Problem (Church & ReVelle 1974), solved as a mixed-integer programme with HiGHS " +
+        "from a greedy start: the chosen stops together bring the most uncovered demand within the walk limit",
     };
   }
 
@@ -575,6 +622,16 @@ export function periods(sv: { first: string; last: string; peaks: [string, strin
   }
   if (last + 1 > t) push(t, last + 1, "off_peak");
   return out;
+}
+
+/** Raw result of the Rust suggestion (crates/street-routing `walk::SuggestResult`). */
+interface SuggestRaw {
+  demand_kind: string;
+  total: number;
+  covered_before: number;
+  covered_after: number;
+  suggestions: { candidate: string; lon: number; lat: number; gain: number }[];
+  instance?: { weights: number[]; candidates: number[]; cover: number[][]; conflicts: [number, number][] };
 }
 
 interface SpacingStats {

@@ -44,6 +44,11 @@ function gridXml(): string {
 }
 
 const EMPTY = "<osm></osm>";
+/** A supermarket next to C and a pharmacy 1 km north of it, as the destination tile serves them. */
+const DESTINATIONS = [
+  { id: "n1", categories: ["food_shop"], lonlat: ll(300, 0) },
+  { id: "n2", categories: ["pharmacy"], lonlat: ll(0, 1000) },
+];
 /** Every tile but the one holding the grid is empty. */
 function tiles(): TileSource {
   const grid = gridXml();
@@ -57,6 +62,7 @@ function tiles(): TileSource {
   return {
     tile: async (x, y) => (holds(x, y) ? grid : EMPTY),
     walkTile: async (x, y) => (holds(x, y) ? grid : EMPTY),
+    destinationTile: async (x, y) => JSON.stringify({ destinations: holds(x, y) ? DESTINATIONS : [] }),
   };
 }
 
@@ -233,6 +239,7 @@ describe.skipIf(!WASM)("AI agent integration (ADR-0035)", () => {
     const names = (r.body.result.tools as { name: string }[]).map((t) => t.name).sort();
     expect(names).toEqual(
       [
+        "accessibility_to_destinations",
         "apply_changes",
         "benchmark_scenarios",
         "coverage_report",
@@ -398,6 +405,28 @@ describe.skipIf(!WASM)("AI agent integration (ADR-0035)", () => {
     expect(r0.kpi.peak_vehicles).toBeGreaterThan(0);
     expect(r0.kpi.walk_15_min_coverage_pct).toBe(r1.kpi.walk_15_min_coverage_pct);
     expect(r0.kpi.median_journey_min).toBeGreaterThan(0);
+  });
+
+  it("reports PTAL, the 15-minute city and an exact stop choice", async () => {
+    const p = await tool(tokens.access_token, "coverage_report", { scenario_id: scenario, preset: "ptal" });
+    expect(p.error).toBe(false);
+    expect(p.json.method_source).toContain("Transport for London");
+    expect(p.json.bands).toHaveLength(9);
+    const c = await tool(tokens.access_token, "accessibility_to_destinations", {
+      scenario_id: scenario,
+      categories: ["food_shop", "pharmacy"],
+      demand_points: [{ lon: ll(0, 0)[0], lat: ll(0, 0)[1] }],
+    });
+    expect(c.error).toBe(false);
+    expect(c.json.destinations_source).toContain("OpenStreetMap");
+    expect(c.json.share_reaching_all_pct).toBe(100);
+    const s = await tool(tokens.access_token, "suggest_stop_locations", {
+      scenario_id: scenario,
+      k: 2,
+      minutes: 5,
+    });
+    expect(s.error).toBe(false);
+    expect(s.json.solver).toMatch(/HiGHS/);
   });
 
   it("enforces scopes", async () => {
