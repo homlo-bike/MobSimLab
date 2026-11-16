@@ -1,0 +1,16 @@
+[package]
+name = "gtfs-wasm"
+version = "0.1.0"
+description = "WebAssembly bindings of the MobSimLab GTFS importer and exporter (GTFS plugin)"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+gtfs = { path = "../gtfs" }
+serde_json = "1"
+wasm-bindgen = "=0.2.129"

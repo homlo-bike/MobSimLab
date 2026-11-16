@@ -11,6 +11,7 @@ import { CapacityRun } from "../features/capacity/CapacityRun";
 import type { Prices } from "../features/costs/economy";
 import type { Estimate as CostEstimate } from "../features/costs/model";
 import { CostTables, type CostsDoc } from "../features/costs/CostTables";
+import { WalkAnalysis } from "../features/walk/WalkAnalysis";
 import { JourneyPlanner } from "../features/journey-planner/JourneyPlanner";
 import { NoiseMap } from "../features/noise/NoiseMap";
 import { NetworkTables } from "../features/tables/NetworkTables";
@@ -18,6 +19,7 @@ import { Scenarios } from "../features/tables/Scenarios";
 import type { ScenariosDoc } from "../features/tables/scenarioModel";
 import { noiseCalculationIn } from "../features/noise/plugin";
 import type { PluginLineInput, StreetLineInput } from "../features/journey-planner/network";
+import type { GtfsFeed, GtfsNetworkDoc } from "../features/gtfs/types";
 import type { Timetable } from "../features/journey-planner/types";
 import { RailwayEditor } from "../features/railways/RailwayEditor";
 import type { Network } from "../features/railways/types";
@@ -30,8 +32,10 @@ import { useI18n } from "../i18n/i18n";
 import type { MessageKey } from "../i18n/messages";
 import { SpanLineEditor } from "../kits/SpanLineEditor";
 import { WaterRouteEditor } from "../kits/WaterRouteEditor";
+import { type DemandZone, ZoneEditor } from "../kits/ZoneEditor";
 import { MapView } from "../map/MapView";
 import {
+  findMode,
   PLUGINS,
   pluginTabs,
   type ProjectPlugin,
@@ -83,6 +87,7 @@ const NO_SETUPS: StreetSetup[] = [];
 type SimView = "test" | "journey";
 type GisView = "streets" | "regions";
 const NO_REGIONS: Region[] = [];
+const NO_FEEDS: GtfsFeed[] = [];
 /** "street", "rail", or the id of a plugin tool (cable car, ferry…). */
 type Build = string;
 
@@ -139,6 +144,8 @@ export function Workspace({
   const [line, setLine] = useState<StreetLineInput | null>(null);
   // Cable car and ferry lines from the plugin tools, per tool, for the journey planner.
   const [pluginLines, setPluginLines] = useState<Record<string, PluginLineInput | null>>({});
+  // On-demand zones from the service zone kit, for the journey planner.
+  const [demandZones, setDemandZones] = useState<Record<string, DemandZone | null>>({});
   // The track topology last built in the railway tool, so street lines wait at its level crossings.
   const [railTopology, setRailTopology] = useState<unknown>(null);
   useEffect(() => {
@@ -197,6 +204,8 @@ export function Workspace({
   const railway = drawings.doc<Network>("railway");
   // The trains of the rail service lines as last published in the railway tool, for the journey planner.
   const railLines = drawings.doc<Timetable>("rail-timetable");
+  // Existing networks imported from GTFS feeds (GTFS plugin), for the journey planner.
+  const gtfsFeeds = drawings.doc<GtfsNetworkDoc>("gtfs-network")?.feeds ?? NO_FEEDS;
   // Street setups from the GIS tab: they override OSM in the street line tool and the railway editor.
   const setups = drawings.doc<StreetSetup[]>("street-setups") ?? NO_SETUPS;
   const changeSetups = (next: StreetSetup[]) => drawings.set("street-setups", next);
@@ -332,6 +341,7 @@ export function Workspace({
             : t("create.street")
         : tabLabel(pluginTab ? pluginTab.id : "gis");
   const pluginLineList = Object.values(pluginLines).filter((l): l is PluginLineInput => l !== null);
+  const demandZoneList = Object.values(demandZones).filter((z): z is DemandZone => z !== null);
 
   return (
     <div className="flex h-full flex-col">
@@ -398,11 +408,22 @@ export function Workspace({
           )}
           {project && tab === "create" && editable && chosenPlugin?.kit === "straight-spans" && (
             <SpanLineEditor
+              key={`${projectId}-${chosenPlugin.id}`}
               map={map}
               panel={panel}
               tool={chosenPlugin}
               storageKey={`mobsimlab:${chosenPlugin.id}:${projectId}`}
               onLineChange={(l) => setPluginLines((p) => ({ ...p, [chosenPlugin.id]: l }))}
+            />
+          )}
+          {project && tab === "create" && editable && chosenPlugin?.kit === "service-zone" && (
+            <ZoneEditor
+              key={`${projectId}-${chosenPlugin.id}`}
+              map={map}
+              panel={panel}
+              tool={chosenPlugin}
+              storageKey={`mobsimlab:${chosenPlugin.id}:${projectId}`}
+              onZoneChange={(z) => setDemandZones((p) => ({ ...p, [chosenPlugin.id]: z }))}
             />
           )}
           {project && tab === "create" && editable && chosenPlugin?.kit === "water-route" && (
@@ -451,6 +472,10 @@ export function Workspace({
               streetLine={ridden && ridden.view.points.length >= 2 ? ridden : null}
               railLines={railLines}
               pluginLines={pluginLineList}
+              demandZones={demandZoneList}
+              gtfsFeeds={gtfsFeeds}
+              {...(editable ? { onGtfsFeeds: (d: GtfsNetworkDoc) => drawings.set("gtfs-network", d) } : {})}
+              projectName={project.name}
             />
           )}
           {project && tab === "create" && editable && chosen === null && (
@@ -474,18 +499,29 @@ export function Workspace({
                       ["rail", TrainIcon, t("create.rail"), t("create.railHint"), "bg-red-100 text-red-900"],
                     ] as const),
                     // Tools contributed by plugins (ADR-0036 §6): cable car and ferry are bundled.
-                    ...PLUGIN_TOOLS.map(
-                      (x) =>
-                        [
-                          x.id,
-                          x.kit === "water-route" ? FerryIcon : CableIcon,
-                          x.label,
-                          x.hint ?? "",
-                          x.kit === "water-route"
-                            ? "bg-cyan-100 text-cyan-900"
-                            : "bg-violet-100 text-violet-900",
-                        ] as const,
-                    ),
+                    ...PLUGIN_TOOLS.map((x) => {
+                      // A guideway tool (people mover) gets the train icon, a ropeway the cable car.
+                      const guided = x.modes.some((m) => findMode(m)?.mode.family === "guided");
+                      return [
+                        x.id,
+                        x.kit === "water-route"
+                          ? FerryIcon
+                          : x.kit === "service-zone"
+                            ? BusIcon
+                            : guided
+                              ? TrainIcon
+                              : CableIcon,
+                        x.label,
+                        x.hint ?? "",
+                        x.kit === "water-route"
+                          ? "bg-cyan-100 text-cyan-900"
+                          : x.kit === "service-zone"
+                            ? "bg-purple-100 text-purple-900"
+                            : guided
+                              ? "bg-teal-100 text-teal-900"
+                              : "bg-violet-100 text-violet-900",
+                      ] as const;
+                    }),
                   ].map(([kind, Icon, title, hint, colour]) => (
                     <button
                       key={kind}
@@ -545,7 +581,12 @@ export function Workspace({
               <p className="mt-1 text-slate-600">{t("tables.intro")}</p>
               {project && drawings.loaded ? (
                 <>
-                  <NetworkTables railway={railway} streetLines={streetLines} preferences={preferences} />
+                  <NetworkTables
+                    railway={railway}
+                    streetLines={streetLines}
+                    preferences={preferences}
+                    onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
+                  />
                   <CostTables
                     railway={railway}
                     streetLines={streetLines}
@@ -689,6 +730,16 @@ export function Workspace({
               )}
               {/* The street line tool, railway editor, journey planner and street setup render their panels here. */}
               <div key={`${tab}-${sim}-${chosen}-${gis}`} ref={setPanel} />
+              {tab === "gis" && project && drawings.loaded && (
+                <div className="border-t border-slate-200 px-4 py-5 md:px-5">
+                  <WalkAnalysis
+                    map={map}
+                    streetLines={streetLines}
+                    railway={railway}
+                    preferences={preferences?.values}
+                  />
+                </div>
+              )}
               {tab === "gis" && project && drawings.loaded && noiseCalculationIn("gis") && (
                 <div className="border-t border-slate-200 px-4 py-5 md:px-5">
                   <NoiseMap
@@ -697,11 +748,6 @@ export function Workspace({
                     railway={railway}
                     preferences={preferences?.values}
                   />
-                </div>
-              )}
-              {tab === "gis" && (
-                <div className="border-t border-slate-200 px-4 py-5 md:px-5">
-                  <Placeholder title="gis.title" intro="gis.intro" items={["gis.walk", "gis.spacing"]} />
                 </div>
               )}
             </div>
