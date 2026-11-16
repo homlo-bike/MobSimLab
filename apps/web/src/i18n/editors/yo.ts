@@ -247,10 +247,13 @@ export const editorsYo = {
   "rail.access.aid": "A nílò ìrànlọ́wọ́ láti wọlé",
   "rail.access.clash": "Ọkọ̀ ojú-irin fẹ̀ ju bí etí pèpéle ṣe gbà",
   "rail.access.detail": "Ilẹ̀ ọkọ̀ {vertical} láti pèpéle mm {platform} · àlàfo {gap}",
-  "rail.access.floorOnly": "Ilẹ̀ ọkọ̀ {vertical} láti pèpéle mm {platform}",
-  "rail.access.floorAssumed":
-    "Ọkọ̀ yìí kò ní gíga ilẹ̀ nínú àkójọ ọkọ̀, nítorí náà a gba ìye àìyípadà irú ọkọ̀ náà, mm {value} (Àwọn ààyò).",
-  "rail.access.short": "Pèpéle {platform} kúrú jù fún ọkọ̀ {train} pẹ̀lú {tolerance} ìfàyègbà ìdúró.",
+  "rail.access.stepLabel": "Àtẹ̀gùn",
+  "rail.access.gapLabel": "Àlàfo",
+  "rail.access.limits": "ìpele kan ≤ {level} · àtẹ̀gùn ≤ {step} mm",
+  "rail.access.floorAssumedShort": "A fojú díwọ̀n gíga ilẹ̀: mm {value}, àìyípadà irú ọkọ̀ (kò sí nínú àkójọ)",
+  "rail.access.shortAt": "{name}: pèpéle {platform}, ó nílò {needed}",
+  "rail.access.platformMm": "Pèpéle mm {value}",
+  "rail.access.floorMm": "Ilẹ̀ ọkọ̀ mm {value}",
 
   "rail.hint.select":
     "Tẹ ibùdókọ̀, ojú irin, ìyípadà tàbí àmì láti ṣàtúnṣe rẹ̀. Fa àwọn ibùdókọ̀ àti ojúàmì ojú irin; fa ìyípadà tàbí àmì lórí ojú irin rẹ̀.",

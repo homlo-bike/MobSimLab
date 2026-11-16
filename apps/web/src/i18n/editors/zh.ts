@@ -243,10 +243,13 @@ export const editorsZh = {
   "rail.access.aid": "需要登乘辅助",
   "rail.access.clash": "列车宽度超出站台边缘允许值",
   "rail.access.detail": "地板相对 {platform} 毫米站台 {vertical} · 间隙 {gap}",
-  "rail.access.floorOnly": "地板相对 {platform} 毫米站台 {vertical}",
-  "rail.access.floorAssumed":
-    "车辆目录中没有此列车的地板高度，因此采用该方式的默认值 {value} 毫米（偏好设置）。",
-  "rail.access.short": "站台 {platform} 不足以容纳 {train} 列车加 {tolerance} 停车容差。",
+  "rail.access.stepLabel": "台阶",
+  "rail.access.gapLabel": "间隙",
+  "rail.access.limits": "水平 ≤ {level} · 台阶 ≤ {step} 毫米",
+  "rail.access.floorAssumedShort": "地板高度为假定值：{value} 毫米，该方式的默认值（车辆目录中没有）",
+  "rail.access.shortAt": "{name}：站台 {platform}，需要 {needed}",
+  "rail.access.platformMm": "站台 {value} 毫米",
+  "rail.access.floorMm": "列车地板 {value} 毫米",
 
   "rail.hint.select": "点击车站、轨道、道岔或信号机进行编辑。拖动车站和轨道点；沿轨道拖动道岔或信号机。",
   "rail.hint.station": "点击地图放置车站，然后将其拖到位并旋转。",

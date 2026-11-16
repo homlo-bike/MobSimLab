@@ -304,11 +304,13 @@ export const editorsUk = {
   "rail.access.aid": "Потрібен засіб для посадки",
   "rail.access.clash": "Поїзд ширший, ніж дозволяє край платформи",
   "rail.access.detail": "Підлога {vertical} відносно платформи {platform} мм · зазор {gap}",
-  "rail.access.floorOnly": "Підлога {vertical} відносно платформи {platform} мм",
-  "rail.access.floorAssumed":
-    "У каталозі немає висоти підлоги для цього поїзда; прийнято типове значення для виду транспорту, {value} мм (Налаштування).",
-  "rail.access.short":
-    "Платформа {platform} закоротка для поїзда {train} плюс {tolerance} на точність зупинки.",
+  "rail.access.stepLabel": "Сходинка",
+  "rail.access.gapLabel": "Зазор",
+  "rail.access.limits": "врівень ≤ {level} · сходинка ≤ {step} мм",
+  "rail.access.floorAssumedShort": "Висоту підлоги прийнято: {value} мм, типове значення (немає в каталозі)",
+  "rail.access.shortAt": "{name}: платформа {platform}, потрібно {needed}",
+  "rail.access.platformMm": "Платформа {value} мм",
+  "rail.access.floorMm": "Підлога поїзда {value} мм",
 
   "rail.hint.select":
     "Клацніть станцію, колію, стрілку чи світлофор, щоб редагувати. Перетягуйте станції й точки колій, щоб переміщувати їх; стрілки й світлофори перетягуйте вздовж колії.",

@@ -266,11 +266,13 @@ export const editorsUr = {
   "rail.access.aid": "سوار ہونے میں مدد درکار",
   "rail.access.clash": "ٹرین پلیٹ فارم کے کنارے کی اجازت سے زیادہ چوڑی ہے",
   "rail.access.detail": "فرش {platform} ملی میٹر پلیٹ فارم سے {vertical} · خلا {gap}",
-  "rail.access.floorOnly": "فرش {platform} ملی میٹر پلیٹ فارم سے {vertical}",
-  "rail.access.floorAssumed":
-    "گاڑیوں کی فہرست میں اس ٹرین کے فرش کی اونچائی نہیں، اس لیے طریقے کی طے شدہ قدر {value} ملی میٹر (ترجیحات) فرض کی گئی۔",
-  "rail.access.short":
-    "پلیٹ فارم {platform}، {train} ٹرین اور {tolerance} رکنے کی گنجائش کے لیے بہت چھوٹا ہے۔",
+  "rail.access.stepLabel": "سیڑھی",
+  "rail.access.gapLabel": "خلا",
+  "rail.access.limits": "ہموار ≤ {level} · سیڑھی ≤ {step} ملی میٹر",
+  "rail.access.floorAssumedShort": "فرش کی اونچائی فرض: {value} ملی میٹر، طریقے کی طے شدہ (فہرست میں نہیں)",
+  "rail.access.shortAt": "{name}: پلیٹ فارم {platform}، درکار {needed}",
+  "rail.access.platformMm": "پلیٹ فارم {value} ملی میٹر",
+  "rail.access.floorMm": "ٹرین کا فرش {value} ملی میٹر",
 
   "rail.hint.select":
     "ترمیم کے لیے اسٹیشن، پٹری، سوئچ یا سگنل پر کلک کریں۔ اسٹیشن اور پٹری کے نقطے کھینچیں؛ سوئچ یا سگنل کو اس کی پٹری کے ساتھ کھینچیں۔",

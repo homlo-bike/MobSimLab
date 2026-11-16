@@ -263,10 +263,13 @@ export const editorsAm = {
   "rail.access.aid": "የመሳፈሪያ እርዳታ ያስፈልጋል",
   "rail.access.clash": "ባቡሩ የመድረኩ ጠርዝ ከሚፈቅደው በላይ ሰፊ ነው",
   "rail.access.detail": "ወለል ከ{platform} ሚ.ሜ መድረክ {vertical} · ክፍተት {gap}",
-  "rail.access.floorOnly": "ወለል ከ{platform} ሚ.ሜ መድረክ {vertical}",
-  "rail.access.floorAssumed":
-    "ይህ ባቡር በተሽከርካሪ ካታሎግ ውስጥ የወለል ከፍታ የለውም፤ ስለዚህ የዓይነቱ ነባሪ {value} ሚ.ሜ (ምርጫዎች) ተወስዷል።",
-  "rail.access.short": "መድረክ {platform} ለ{train} ባቡር እና ለ{tolerance} የማቆሚያ መቻቻል በጣም አጭር ነው።",
+  "rail.access.stepLabel": "ደረጃ",
+  "rail.access.gapLabel": "ክፍተት",
+  "rail.access.limits": "ደረጃ የሌለው ≤ {level} · ደረጃ ≤ {step} ሚ.ሜ",
+  "rail.access.floorAssumedShort": "የወለል ከፍታ ተገምቷል፦ {value} ሚ.ሜ፣ የዓይነቱ ነባሪ (በካታሎግ የለም)",
+  "rail.access.shortAt": "{name}፦ መድረክ {platform}፣ ያስፈልጋል {needed}",
+  "rail.access.platformMm": "መድረክ {value} ሚ.ሜ",
+  "rail.access.floorMm": "የባቡር ወለል {value} ሚ.ሜ",
 
   "rail.hint.select":
     "ለማርትዕ ጣቢያ፣ ሐዲድ፣ መቀየሪያ ወይም ምልክት ጠቅ ያድርጉ። ጣቢያዎችን እና የሐዲድ ነጥቦችን ይጎትቱ፤ መቀየሪያን ወይም ምልክትን በሐዲዱ ላይ ይጎትቱ።",

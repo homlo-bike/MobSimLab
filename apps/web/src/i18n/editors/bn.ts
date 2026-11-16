@@ -265,10 +265,13 @@ export const editorsBn = {
   "rail.access.aid": "ওঠার সহায়তা দরকার",
   "rail.access.clash": "ট্রেন প্ল্যাটফর্মের কিনারার অনুমতির চেয়ে চওড়া",
   "rail.access.detail": "মেঝে {platform} মিমি প্ল্যাটফর্ম থেকে {vertical} · ফাঁক {gap}",
-  "rail.access.floorOnly": "মেঝে {platform} মিমি প্ল্যাটফর্ম থেকে {vertical}",
-  "rail.access.floorAssumed":
-    "যানবাহন তালিকায় এই ট্রেনের মেঝের উচ্চতা নেই, তাই মাধ্যমের ডিফল্ট {value} মিমি (পছন্দ) ধরা হয়েছে।",
-  "rail.access.short": "প্ল্যাটফর্ম {platform}, {train} ট্রেন ও {tolerance} থামার সহনশীলতার জন্য খুব ছোট।",
+  "rail.access.stepLabel": "ধাপ",
+  "rail.access.gapLabel": "ফাঁক",
+  "rail.access.limits": "সমতল ≤ {level} · ধাপ ≤ {step} মিমি",
+  "rail.access.floorAssumedShort": "মেঝের উচ্চতা ধরা হয়েছে: {value} মিমি, মাধ্যমের ডিফল্ট (তালিকায় নেই)",
+  "rail.access.shortAt": "{name}: প্ল্যাটফর্ম {platform}, দরকার {needed}",
+  "rail.access.platformMm": "প্ল্যাটফর্ম {value} মিমি",
+  "rail.access.floorMm": "ট্রেনের মেঝে {value} মিমি",
 
   "rail.hint.select":
     "সম্পাদনা করতে স্টেশন, লাইন, সুইচ বা সিগন্যালে ক্লিক করুন। স্টেশন ও লাইনের বিন্দু টানুন; সুইচ বা সিগন্যাল তার লাইন বরাবর টানুন।",

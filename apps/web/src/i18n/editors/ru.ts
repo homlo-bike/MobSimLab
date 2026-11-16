@@ -306,11 +306,13 @@ export const editorsRu = {
   "rail.access.aid": "Нужно средство для посадки",
   "rail.access.clash": "Поезд шире, чем допускает край платформы",
   "rail.access.detail": "Пол {vertical} относительно платформы {platform} мм · зазор {gap}",
-  "rail.access.floorOnly": "Пол {vertical} относительно платформы {platform} мм",
-  "rail.access.floorAssumed":
-    "В каталоге нет высоты пола для этого поезда; принято значение по умолчанию для вида транспорта, {value} мм (Настройки).",
-  "rail.access.short":
-    "Платформа {platform} слишком коротка для поезда {train} плюс {tolerance} на точность остановки.",
+  "rail.access.stepLabel": "Ступенька",
+  "rail.access.gapLabel": "Зазор",
+  "rail.access.limits": "вровень ≤ {level} · ступенька ≤ {step} мм",
+  "rail.access.floorAssumedShort": "Высота пола принята: {value} мм, значение по умолчанию (нет в каталоге)",
+  "rail.access.shortAt": "{name}: платформа {platform}, нужно {needed}",
+  "rail.access.platformMm": "Платформа {value} мм",
+  "rail.access.floorMm": "Пол поезда {value} мм",
 
   "rail.hint.select":
     "Нажмите на станцию, путь, стрелку или светофор, чтобы изменить их. Перетаскивайте станции и точки пути; стрелку или светофор перетаскивайте вдоль их пути.",

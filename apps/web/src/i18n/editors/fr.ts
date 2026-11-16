@@ -267,11 +267,14 @@ export const editorsFr = {
   "rail.access.aid": "Aide à l'embarquement nécessaire",
   "rail.access.clash": "Train plus large que ne le permet le bord du quai",
   "rail.access.detail": "Plancher {vertical} par rapport au quai de {platform} mm · lacune {gap}",
-  "rail.access.floorOnly": "Plancher {vertical} par rapport au quai de {platform} mm",
-  "rail.access.floorAssumed":
-    "Ce train n'a pas de hauteur de plancher dans le catalogue des véhicules ; la valeur par défaut du mode, {value} mm (Préférences), est utilisée.",
-  "rail.access.short":
-    "Le quai de {platform} est trop court pour un train de {train} plus {tolerance} de tolérance d'arrêt.",
+  "rail.access.stepLabel": "Marche",
+  "rail.access.gapLabel": "Lacune",
+  "rail.access.limits": "plain-pied ≤ {level} · marche ≤ {step} mm",
+  "rail.access.floorAssumedShort":
+    "Hauteur de plancher supposée : {value} mm, valeur par défaut du mode (absente du catalogue)",
+  "rail.access.shortAt": "{name} : quai {platform}, il faut {needed}",
+  "rail.access.platformMm": "Quai {value} mm",
+  "rail.access.floorMm": "Plancher {value} mm",
 
   "rail.hint.select":
     "Cliquez sur une station, une voie, un aiguillage ou un signal pour le modifier. Faites glisser les stations et les points de voie ; faites glisser un aiguillage ou un signal le long de sa voie.",

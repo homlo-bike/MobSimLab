@@ -69,6 +69,8 @@ export interface StopAccess {
   needed_length_m: number;
   train_length_m: number;
   stopping_tolerance_m: number;
+  /** The limits the stop was judged against. */
+  rules: AccessRules;
 }
 
 /** Purpose: judge one door position against the limits. */
@@ -121,7 +123,26 @@ export function lineAccess(
         needed_length_m: trainLength + r.stopping_tolerance_m,
         train_length_m: trainLength,
         stopping_tolerance_m: r.stopping_tolerance_m,
+        rules: r,
       },
     ];
   });
+}
+
+/** How far one measure meets the limits: within the level-access limit, the step limit, or neither. */
+export type Grade = "level" | "step" | "over";
+
+/** Purpose: grade the height difference (floor minus platform) on its own. */
+export function gradeStep(vertical: number, r: AccessRules): Grade {
+  if (Math.abs(vertical) <= r.level_gap_vertical_mm) return "level";
+  if (vertical <= r.step_above_platform_mm && -vertical <= r.step_below_platform_mm) return "step";
+  return "over";
+}
+
+/** Purpose: grade the horizontal gap on its own (a negative gap, a clash, is "over"). */
+export function gradeGap(gap: number, r: AccessRules): Grade {
+  if (gap < 0) return "over";
+  if (gap <= r.level_gap_horizontal_mm) return "level";
+  if (gap <= r.step_gap_horizontal_mm) return "step";
+  return "over";
 }

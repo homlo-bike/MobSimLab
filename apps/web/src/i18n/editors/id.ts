@@ -264,11 +264,14 @@ export const editorsId = {
   "rail.access.aid": "Perlu alat bantu naik",
   "rail.access.clash": "Kereta lebih lebar dari yang diizinkan tepi peron",
   "rail.access.detail": "Lantai {vertical} dari peron {platform} mm · celah {gap}",
-  "rail.access.floorOnly": "Lantai {vertical} dari peron {platform} mm",
-  "rail.access.floorAssumed":
-    "Kereta ini tidak punya tinggi lantai di katalog kendaraan, jadi nilai bawaan moda {value} mm (Preferensi) diasumsikan.",
-  "rail.access.short":
-    "Peron {platform} terlalu pendek untuk kereta {train} ditambah toleransi berhenti {tolerance}.",
+  "rail.access.stepLabel": "Anak tangga",
+  "rail.access.gapLabel": "Celah",
+  "rail.access.limits": "sejajar ≤ {level} · anak tangga ≤ {step} mm",
+  "rail.access.floorAssumedShort":
+    "Tinggi lantai diasumsikan: {value} mm, bawaan moda (tidak ada di katalog)",
+  "rail.access.shortAt": "{name}: peron {platform}, perlu {needed}",
+  "rail.access.platformMm": "Peron {value} mm",
+  "rail.access.floorMm": "Lantai kereta {value} mm",
 
   "rail.hint.select":
     "Klik stasiun, rel, wesel, atau sinyal untuk mengeditnya. Seret stasiun dan titik rel untuk memindahkannya; seret wesel dan sinyal di sepanjang relnya.",

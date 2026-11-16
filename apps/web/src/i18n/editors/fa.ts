@@ -246,10 +246,13 @@ export const editorsFa = {
   "rail.access.aid": "کمک برای سوارشدن لازم است",
   "rail.access.clash": "قطار پهن‌تر از حدی است که لبهٔ سکو اجازه می‌دهد",
   "rail.access.detail": "کف {vertical} نسبت به سکوی {platform} میلی‌متری · فاصله {gap}",
-  "rail.access.floorOnly": "کف {vertical} نسبت به سکوی {platform} میلی‌متری",
-  "rail.access.floorAssumed":
-    "این قطار در کاتالوگ وسایل نقلیه ارتفاع کف ندارد؛ مقدار پیش‌فرض شیوه، {value} میلی‌متر (تنظیمات)، فرض شد.",
-  "rail.access.short": "سکوی {platform} برای قطار {train} به‌علاوهٔ {tolerance} رواداری توقف کوتاه است.",
+  "rail.access.stepLabel": "پله",
+  "rail.access.gapLabel": "فاصله",
+  "rail.access.limits": "هم‌تراز ≤ {level} · پله ≤ {step} میلی‌متر",
+  "rail.access.floorAssumedShort": "ارتفاع کف فرضی: {value} میلی‌متر، پیش‌فرض شیوه (در کاتالوگ نیست)",
+  "rail.access.shortAt": "{name}: سکو {platform}، لازم {needed}",
+  "rail.access.platformMm": "سکو {value} میلی‌متر",
+  "rail.access.floorMm": "کف قطار {value} میلی‌متر",
 
   "rail.hint.select":
     "روی ایستگاه، ریل، سوزن یا علامت کلیک کنید تا ویرایش شود. ایستگاه‌ها و نقاط ریل را بکشید تا جابه‌جا شوند؛ سوزن‌ها و علائم را در طول ریل بکشید.",

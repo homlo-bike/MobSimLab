@@ -266,11 +266,14 @@ export const editorsNl = {
   "rail.access.aid": "Instaphulp nodig",
   "rail.access.clash": "Trein breder dan de perronrand toelaat",
   "rail.access.detail": "Vloer {vertical} t.o.v. het perron van {platform} mm · kier {gap}",
-  "rail.access.floorOnly": "Vloer {vertical} t.o.v. het perron van {platform} mm",
-  "rail.access.floorAssumed":
-    "Deze trein heeft geen vloerhoogte in de voertuigcatalogus; de standaardwaarde van de modaliteit, {value} mm (Voorkeuren), wordt aangenomen.",
-  "rail.access.short":
-    "Perron van {platform} is te kort voor een trein van {train} plus {tolerance} stoptolerantie.",
+  "rail.access.stepLabel": "Trede",
+  "rail.access.gapLabel": "Kier",
+  "rail.access.limits": "gelijkvloers ≤ {level} · trede ≤ {step} mm",
+  "rail.access.floorAssumedShort":
+    "Vloerhoogte aangenomen: {value} mm, standaard van de modaliteit (niet in de catalogus)",
+  "rail.access.shortAt": "{name}: perron {platform}, nodig {needed}",
+  "rail.access.platformMm": "Perron {value} mm",
+  "rail.access.floorMm": "Treinvloer {value} mm",
 
   "rail.hint.select":
     "Klik op een station, spoor, wissel of sein om het te bewerken. Sleep stations en spoorpunten; sleep een wissel of sein langs zijn spoor.",
