@@ -119,6 +119,7 @@ import { PluginCalculations } from "../plugins/code/PluginCalculations";
 import { PluginFrame } from "../plugins/code/PluginFrame";
 import { clearPluginCode } from "../plugins/code/runtime";
 import { DepotEditor } from "../features/depots/DepotEditor";
+import { STATIC_TABS, STATIC_VIEWER } from "../static/mode";
 import { CommentsProvider } from "../features/comments/Comments";
 import { commentableObjects, CommentsPanel } from "../features/comments/CommentsPanel";
 import type { DepotsDoc, SavedDepot } from "../features/depots/types";
@@ -298,6 +299,8 @@ export function Workspace({
   const projectTabs = useMemo(() => {
     const on = new Set(activeTabs.map((x) => x.id));
     const bundled = TABS.filter((x) => !PLUGIN_TABS.some((p) => p.id === x) || on.has(x));
+    // The static viewer shows the simulator, the schematic, the tables and the preferences only.
+    if (STATIC_VIEWER) return bundled.filter((x) => STATIC_TABS.includes(x));
     // Then the tabs of installed plugins, which bring their own pages.
     return [...bundled, ...activeTabs.filter((x) => x.ui && !bundled.includes(x.id)).map((x) => x.id)];
   }, [activeTabs]);

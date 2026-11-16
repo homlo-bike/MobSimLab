@@ -11,7 +11,15 @@
  *   runs/<id>/network.txt      the network it ran on, as saved with the run
  *   runs/<id>/lines.txt        the lines it ran, as saved with the run
  *   runs/<id>/replay.json.gz   a road run's replay (gzipped JSON), when it has one
+ *   map/area.json              (1.1, optional) the project area and the tiles the map data covers
+ *   map/<kind>/<x>-<y>.<ext>   (1.1, optional) one zoom-14 OpenStreetMap tile as the street network API serves it
+ *   map/water.json             (1.1, optional) sea, lakes and rivers of the area
+ *   map/population.json        (1.1, optional) people per cell over the area
+ *   map/reference.json         (1.1, optional) country figures for the cost and benefit tables, by API path
  *   ATTRIBUTION.md             generated: what the file holds and the sources it refers to
+ *
+ * The map data (`map/`) is there only when the person ticks "Include map data", for the static viewer
+ * (`pnpm build:static`). A MobSimLab that opens the file ignores it and loads its own.
  *
  * Members, the view-only link and the audit history stay with the instance and are not in the file.
  * The JSON Schemas below are published in `contracts/mslab/` (written by test/mslab-schemas.test.ts).
@@ -20,7 +28,10 @@
  */
 
 /** Current format version (semantic): a new minor version only adds, a new major version needs a migration. */
-export const FORMAT_VERSION = "1.0.0";
+export const FORMAT_VERSION = "1.1.0";
+
+/** The version a file without map data is saved as, so that MobSimLab 1.0 readers still open it. */
+export const FORMAT_VERSION_WITHOUT_MAP = "1.0.0";
 
 /** Value of `manifest.format`. */
 export const FORMAT_NAME = "mslab";
@@ -76,6 +87,28 @@ export const FILES = {
   runReplay: (id: string) => `runs/${id}/replay.json.gz`,
 } as const;
 
+/** Kinds of map tile a file may carry (format 1.1), as the street network API serves them. */
+export const MAP_TILE_KINDS = ["streets", "walk", "rail", "buildings", "places", "bike-amenities"] as const;
+export type MapTileKind = (typeof MAP_TILE_KINDS)[number];
+
+/** Map data file names (format 1.1). */
+export const MAP_FILES = {
+  area: "map/area.json",
+  water: "map/water.json",
+  population: "map/population.json",
+  reference: "map/reference.json",
+  tile: (kind: MapTileKind, x: number, y: number) =>
+    `map/${kind}/${x}-${y}.${kind === "streets" || kind === "walk" || kind === "rail" ? "xml" : "json"}`,
+} as const;
+
+/** `map/area.json`: the project area (degrees) and the zoom-14 tiles of each kind in the file. */
+export interface MapAreaFile {
+  bbox: [number, number, number, number];
+  zoom: number;
+  kinds: MapTileKind[];
+  tiles: [number, number][];
+}
+
 /** Patterns of every file a version 1 file may hold besides the manifest. */
 export const FILE_PATTERNS = {
   drawing: /^data\/([a-z][a-z0-9-]{1,39})\.json$/,
@@ -83,6 +116,7 @@ export const FILE_PATTERNS = {
   runNetwork: /^runs\/([0-9a-f-]{36})\/network\.txt$/,
   runLines: /^runs\/([0-9a-f-]{36})\/lines\.txt$/,
   runReplay: /^runs\/([0-9a-f-]{36})\/replay\.json\.gz$/,
+  map: /^map\/(?:(?:area|water|population|reference)\.json|(?:streets|walk|rail)\/\d{1,5}-\d{1,5}\.xml|(?:buildings|places|bike-amenities)\/\d{1,5}-\d{1,5}\.json)$/,
 } as const;
 
 /** `manifest.json`. */
@@ -92,7 +126,8 @@ export interface Manifest {
   app: { name: string; version: string };
   createdAt: string;
   project: { id: string; name: string };
-  includes: { runs: boolean };
+  /** `map` (format 1.1): the file carries map data for the static viewer. */
+  includes: { runs: boolean; map?: boolean };
   /** Every other file in the ZIP with its SHA-256 (hex) and size in bytes. */
   files: Record<string, { sha256: string; bytes: number }>;
 }
@@ -172,7 +207,13 @@ export const MANIFEST_SCHEMA = {
       type: "object",
       required: ["runs"],
       additionalProperties: false,
-      properties: { runs: { type: "boolean" } },
+      properties: {
+        runs: { type: "boolean" },
+        map: {
+          description: "Format 1.1: the file carries map data (map/) for the static viewer.",
+          type: "boolean",
+        },
+      },
     },
     files: {
       description: "Every other file in the ZIP, with its SHA-256 (lower-case hex) and size in bytes.",

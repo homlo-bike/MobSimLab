@@ -15,6 +15,13 @@ costs, benefits, fares, cargo bike and any other tool that saves with the projec
 It does not hold the people with access, the view-only link or the project's history. OpenStreetMap, terrain
 and population data are not copied in: the project refers to them, and MobSimLab loads them again.
 
+Tick **Include map data for the static viewer** to also add the map data of the project area: the
+OpenStreetMap streets, paths, railways, buildings and places, the water, the population grid and the country
+figures the cost and benefit tables use. The [static viewer](static-viewer.md) shows the project with them,
+without a server. The project area is the box round everything drawn, widened by the area buffer (2 km by
+default); it may take at most 400 map tiles. Saving can take a few minutes when the tiles are not cached yet.
+A file with map data uses format 1.1; a MobSimLab that opens it leaves the map data out and loads its own.
+
 ## Open a file
 
 On the projects home choose **Open .mslab file** and pick the file. It always becomes a **new project** that
