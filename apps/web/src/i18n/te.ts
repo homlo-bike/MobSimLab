@@ -354,6 +354,7 @@ export const te: Messages = {
   "prefs.group.cost": "ఖర్చులు",
   "prefs.group.benefits": "ప్రయోజనాలు",
   "prefs.group.fares": "ఛార్జీలు",
+  "prefs.group.appraisal": "మూల్యాంకనం",
   "prefs.group.noise": "శబ్దం",
   "prefs.traction.battery": "బ్యాటరీ",
   "prefs.traction.diesel": "డీజిల్",

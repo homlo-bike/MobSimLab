@@ -360,6 +360,7 @@ export const ta: Messages = {
   "prefs.group.cost": "செலவுகள்",
   "prefs.group.benefits": "பயன்கள்",
   "prefs.group.fares": "கட்டணங்கள்",
+  "prefs.group.appraisal": "மதிப்பீடு",
   "prefs.group.noise": "இரைச்சல்",
   "prefs.traction.battery": "மின்கலம்",
   "prefs.traction.diesel": "டீசல்",

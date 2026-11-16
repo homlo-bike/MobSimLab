@@ -357,6 +357,7 @@ export const id: Messages = {
   "prefs.group.cost": "Biaya",
   "prefs.group.benefits": "Manfaat",
   "prefs.group.fares": "Tarif",
+  "prefs.group.appraisal": "Penilaian",
   "prefs.group.noise": "Kebisingan",
   "prefs.traction.battery": "baterai",
   "prefs.traction.diesel": "diesel",

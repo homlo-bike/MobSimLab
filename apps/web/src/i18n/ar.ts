@@ -345,6 +345,7 @@ export const ar: Messages = {
   "prefs.group.cost": "التكاليف",
   "prefs.group.benefits": "المنافع",
   "prefs.group.fares": "الأجور",
+  "prefs.group.appraisal": "التقييم الاقتصادي",
   "prefs.group.noise": "الضوضاء",
   "prefs.traction.battery": "بطارية",
   "prefs.traction.diesel": "ديزل",

@@ -361,6 +361,7 @@ export const de: Messages = {
   "prefs.group.cost": "Kosten",
   "prefs.group.benefits": "Nutzen",
   "prefs.group.fares": "Fahrpreise",
+  "prefs.group.appraisal": "Bewertung",
   "prefs.group.noise": "Lärm",
   "prefs.traction.battery": "Batterie",
   "prefs.traction.diesel": "Diesel",

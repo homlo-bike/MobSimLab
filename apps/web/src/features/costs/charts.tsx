@@ -36,7 +36,7 @@ interface Tip {
 }
 
 /** Purpose: a hover tooltip anchored in a relatively positioned chart; returns the handlers and the bubble. */
-function useTip() {
+export function useTip() {
   const [tip, setTip] = useState<Tip | null>(null);
   const show = (e: { currentTarget: Element; clientX?: number; clientY?: number }, body: ReactNode) => {
     const box = (e.currentTarget.closest("[data-chart]") as HTMLElement | null)?.getBoundingClientRect();
