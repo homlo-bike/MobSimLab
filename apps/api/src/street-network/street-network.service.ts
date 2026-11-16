@@ -355,6 +355,55 @@ export function bikeAmenities(json: string): BikeAmenity[] {
 }
 
 /**
+ * Purpose: Overpass QL for every bike parking and shared-bike station of one tile, with their centre, for the
+ * demand model's bike and ride and shared bikes (ADR-0019).
+ */
+export function bikeAccessQuery(z: number, x: number, y: number): string {
+  const b = tileBbox(z, x, y)
+    .map((v) => v.toFixed(7))
+    .join(",");
+  return (
+    `[out:json][timeout:90][maxsize:33554432];` +
+    `(nwr["amenity"="bicycle_parking"](${b});nwr["amenity"="bicycle_rental"](${b}););` +
+    `out tags center;`
+  );
+}
+
+/** Bike parkings and shared-bike stations as `[lon, lat]`. */
+export interface BikeAccess {
+  parking: [number, number][];
+  rental: [number, number][];
+}
+
+/**
+ * Purpose: the bike parkings (`amenity=bicycle_parking`, not private) and shared-bike stations
+ * (`amenity=bicycle_rental`, not a shop that hires bikes out) in an Overpass JSON answer (`out tags center`).
+ */
+export function bikeAccess(json: string): BikeAccess {
+  const els =
+    (
+      JSON.parse(json) as {
+        elements?: (OverpassElement & {
+          lat?: number;
+          lon?: number;
+          center?: { lat: number; lon: number };
+        })[];
+      }
+    ).elements ?? [];
+  const r7 = (v: number) => Math.round(v * 1e7) / 1e7;
+  const out: BikeAccess = { parking: [], rental: [] };
+  for (const e of els) {
+    const t = e.tags ?? {};
+    const at = e.center ?? (e.lat !== undefined && e.lon !== undefined ? { lat: e.lat, lon: e.lon } : null);
+    if (!at || ["private", "no", "customers"].includes(t.access ?? "")) continue;
+    const p: [number, number] = [r7(at.lon), r7(at.lat)];
+    if (t.amenity === "bicycle_parking") out.parking.push(p);
+    else if (t.amenity === "bicycle_rental" && t.bicycle_rental !== "shop") out.rental.push(p);
+  }
+  return out;
+}
+
+/**
  * Purpose: Overpass QL for the daily-needs destinations of one tile (shops, schools, doctors, pharmacies, parks,
  * workplaces; nodes, ways and relations with their centre), for the 15-minute city preset (ADR-0035 §6).
  */
@@ -525,6 +574,18 @@ export class StreetNetworkService {
       `bike-amenity/${x}/${y}`,
       () => bikeAmenityQuery(TILE_ZOOM, x, y),
       (json) => JSON.stringify({ amenities: bikeAmenities(json) }),
+    );
+  }
+
+  /**
+   * Purpose: the bike parkings and shared-bike stations of tile x/y at TILE_ZOOM as JSON `BikeAccess`, for the
+   * demand model. Side effects: may call Overpass.
+   */
+  bikeAccessTile(x: number, y: number): Promise<string> {
+    return this.cached(
+      `bike-access/${x}/${y}`,
+      () => bikeAccessQuery(TILE_ZOOM, x, y),
+      (json) => JSON.stringify(bikeAccess(json)),
     );
   }
 

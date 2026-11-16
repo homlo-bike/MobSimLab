@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/homlo-bike/MobSimLab/blob/main/contracts/mslab/drawing.schema.json",
+  "title": "One saved drawing of the project (data/<kind>.json)",
+  "type": "object",
+  "required": [
+    "kind",
+    "schemaVersion",
+    "updatedAt",
+    "doc"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "kind": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{1,39}$"
+    },
+    "schemaVersion": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "maxLength": 40
+    },
+    "doc": {
+      "description": "The document, in the shape of drawings/<kind>.schema.json."
+    }
+  }
+}

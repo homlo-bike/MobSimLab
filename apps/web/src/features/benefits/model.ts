@@ -60,14 +60,12 @@ export type Matrix = number[][];
 export type ReachFn = (from: LonLat, t0: number) => Map<string, number | null>;
 
 export const DEPARTURES_S = [7.5 * 3600, 8 * 3600, 8.5 * 3600];
-export const WALK_KMH = 4.5;
-export const WALK_DETOUR = 1.3;
 const CELL_M = 50;
 
 // ---------------------------------------------------------------------------------------------------
 // Buildings: use, floor area, homes and jobs.
 
-type JobClass = "office" | "retail" | "industrial" | "public";
+export type JobClass = "office" | "retail" | "industrial" | "public";
 const RESIDENTIAL = new Set([
   "house",
   "residential",
@@ -207,6 +205,8 @@ export interface Prepared {
   notes: string[];
   /** How the population of the zones was found. */
   popSource: { worldpop: number; buildings: number; regions: number };
+  /** Walking speed and detour factor, from the project's preferences or the library. */
+  walk: Walk;
 }
 
 export interface PrepareInput {
@@ -417,7 +417,8 @@ export function prepare(input: PrepareInput): Prepared {
     if (z) places[z.i]![p.kind]++;
   }
   const students = central("benefit.age_18_24_share", "*", prefs);
-  const walkMs = WALK_KMH / 3.6;
+  const walkMs = central("demand.walk_speed_kmh", "*", prefs) / 3.6;
+  const detour = central("journey.walk_detour_factor", "*", prefs);
   const zones: Zone[] = st.map((s, i) => {
     const a = zonesAcc[i]!;
     const region = regionAt(regions, s.at);
@@ -438,10 +439,10 @@ export function prepare(input: PrepareInput): Prepared {
       gdpPerCapita,
       gdpPerWorker: a.jobs > 0 ? a.gdp / a.jobs : gdpPerCapita / Math.max(0.05, wpc),
       places: places[i]!,
-      accessMin: Math.max(1, ((2 / 3) * s.radius * WALK_DETOUR) / walkMs / 60),
+      accessMin: Math.max(1, ((2 / 3) * s.radius * detour) / walkMs / 60),
     };
   });
-  return { net, zones, buildings, regionStock, notes, popSource };
+  return { net, zones, buildings, regionStock, notes, popSource, walk: { kmh: walkMs * 3.6, detour } };
 }
 
 // ---------------------------------------------------------------------------------------------------
@@ -477,9 +478,15 @@ export function scenarioTimetable(tt: Timetable, s: Scenario): Timetable | null 
   return s.without.size ? withoutRoutes(tt, s.without) : tt;
 }
 
+/** Walking speed and detour factor of an estimate (`demand.walk_speed_kmh`, `journey.walk_detour_factor`). */
+export interface Walk {
+  kmh: number;
+  detour: number;
+}
+
 /** Purpose: minutes on foot between two stations (door to door is added by `matrix`). */
-export function walkMin(a: LonLat, b: LonLat): number {
-  return (distanceM(a, b) * WALK_DETOUR) / (WALK_KMH / 3.6) / 60;
+export function walkMin(a: LonLat, b: LonLat, walk: Walk): number {
+  return (distanceM(a, b) * walk.detour) / (walk.kmh / 3.6) / 60;
 }
 
 /**
@@ -487,7 +494,12 @@ export function walkMin(a: LonLat, b: LonLat): number {
  * walking and public transport between the stations, averaged over the peak departures.
  * Inputs: `reach` from a compiled scenario timetable, or null for walking only.
  */
-export function matrix(zones: Zone[], stationStops: string[][], reach: ReachFn | null): Matrix {
+export function matrix(
+  zones: Zone[],
+  stationStops: string[][],
+  reach: ReachFn | null,
+  walking: Walk,
+): Matrix {
   const n = zones.length;
   const out: Matrix = zones.map(() => new Array<number>(n).fill(0));
   for (let i = 0; i < n; i++) {
@@ -495,7 +507,7 @@ export function matrix(zones: Zone[], stationStops: string[][], reach: ReachFn |
     const answers = reach ? DEPARTURES_S.map((t0) => ({ t0, at: reach(zones[i]!.at, t0) })) : [];
     for (let j = 0; j < n; j++) {
       if (i === j) continue;
-      const walk = walkMin(zones[i]!.at, zones[j]!.at);
+      const walk = walkMin(zones[i]!.at, zones[j]!.at, walking);
       if (!answers.length) {
         sums[j] = walk;
         continue;

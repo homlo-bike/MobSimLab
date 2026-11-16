@@ -9,7 +9,7 @@ Each requirement has an ID so tests, ADRs and issues can reference it. Priority:
 | ID | Requirement | Pri |
 |----|-------------|-----|
 | FR-PLAT-01 | Users create, open, save, save-as, duplicate, archive and delete projects. | M |
-| FR-PLAT-02 | Projects have visibility Private, Shared (named users/groups with a role) or Public (read-only to anyone, including anonymous if the admin allows). | M |
+| FR-PLAT-02 | Projects have visibility Private, Shared (named users/groups with a role) or Public (read-only to anyone signed in to the instance; never to visitors who are not signed in). | M |
 | FR-PLAT-03 | File menu: New, Open, Save, Save As, Export, Import, Settings, Project Preferences, Help (Documentation, Tutorial, Demonstration, Example Projects, GitHub URL, Demo URL). | M |
 | FR-PLAT-04 | Projects export to a versioned `.mslab` file (ZIP) including custom vehicles, sources and assumptions; import migrates older versions forward. | M |
 | FR-PLAT-05 | Project Preferences: all model variables (FR-ASM-05), network/mode/line colours, gauge defaults, platform standards, energy and electrification standards, service windows, peak periods, holiday calendars, reserve fleet % (default 15 %). | M |

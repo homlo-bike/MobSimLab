@@ -14,7 +14,7 @@ import { MODES } from "../street-lines/modes";
 import type { StreetLinesDoc } from "../street-lines/saved";
 import type { LonLat } from "../street-lines/types";
 import { distanceM } from "../../map/geo";
-import { LIBRARY_SAME_NAME_M } from "../../workspace/preferences";
+import { paramNumber, type PreferencesDoc, sameNameStationM } from "../../workspace/preferences";
 
 /** The mode layers of the diagram (FR-SCH-01), plus one for the plugin modes (cable car, ferry and so on). */
 export const LAYERS = ["bus", "brt", "tram", "metro", "regional", "long_distance", "other"] as const;
@@ -135,8 +135,8 @@ export interface SchematicNetwork {
   lines: SchematicLine[];
 }
 
-/** Stops closer than this are one station, whatever their names. */
-export const SAME_PLACE_M = 40;
+/** Stops closer than this are one station, whatever their names: the library's `analysis.same_place_m`. */
+export const SAME_PLACE_M = paramNumber("analysis.same_place_m", undefined);
 
 export { distanceM };
 
@@ -356,15 +356,17 @@ function rawLines(
 /**
  * Purpose: the project's lines as a diagram network. Inputs: the railway design, the saved street lines and
  * the plugin tools' lines (any may be missing). Output: merged stations and lines that refer to them. A stop
- * joins an existing station when it has the same name within `sameNameM` metres (the project's
- * `journey.same_name_station_m`), or lies within `SAME_PLACE_M`.
+ * joins an existing station when it has the same name within the project's `journey.same_name_station_m`,
+ * or lies within its `analysis.same_place_m`. `prefs`: the project's preference values (library's when absent).
  */
 export function schematicNetwork(
   railway: Network | null | undefined,
   streetLines: StreetLinesDoc | null | undefined,
   pluginLines: readonly PluginLineInput[] = [],
-  sameNameM: number = LIBRARY_SAME_NAME_M,
+  prefs?: PreferencesDoc["values"],
 ): SchematicNetwork {
+  const sameNameM = sameNameStationM(prefs);
+  const samePlaceM = paramNumber("analysis.same_place_m", prefs);
   const stations: (SchematicStation & { n: number })[] = [];
   const lines: SchematicLine[] = [];
   const keys = new Set<string>();
@@ -379,7 +381,7 @@ export function schematicNetwork(
     stations.forEach((s, i) => {
       const d = distanceM(s.lonlat, lonlat);
       const same = norm(s.name) === norm(name);
-      if ((same && d <= sameNameM) || d <= SAME_PLACE_M) {
+      if ((same && d <= sameNameM) || d <= samePlaceM) {
         const score = same ? d : d + sameNameM;
         if (score < bestD) {
           bestD = score;
@@ -501,6 +503,15 @@ export function transferS(a: StationPart, b: StationPart): number {
 
 /** Features that make a stop reachable without steps. */
 const STEP_FREE: readonly StationFeature[] = ["step_free", "elevator", "ramp"];
+
+/**
+ * Purpose: whether one stop or platform is step-free as recorded in Create: true with step-free access, a lift
+ * or a ramp; false when other features are recorded but none of those; null when none are recorded.
+ */
+export function partStepFree(p: StationPart): boolean | null {
+  if (p.features.some((f) => STEP_FREE.includes(f))) return true;
+  return p.features.length ? false : null;
+}
 
 /**
  * Purpose: whether a station is step-free as recorded in Create: every stop or platform of it has step-free

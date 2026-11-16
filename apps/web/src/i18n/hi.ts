@@ -1,8 +1,12 @@
 import { roadHi } from "./road/hi";
+import { calendarHi } from "./calendar/hi";
 import { editorsHi } from "./editors/hi";
 import { cargoBikeHi } from "./cargo-bike/hi";
+import { commentsHi } from "./comments/hi";
 import { depotsHi } from "./depots/hi";
 import { geodataHi } from "./geodata/hi";
+import { mslabHi } from "./mslab/hi";
+import { pluginCodeHi } from "./plugin-code/hi";
 import { populationHi } from "./population/hi";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -105,6 +109,7 @@ export const hi: Messages = {
   "home.shared": "मेरे साथ साझा किए गए",
   "home.sharedEdit": "मेरे साथ साझा · आप संपादित कर सकते हैं",
   "home.viewOnly": "केवल देखने के लिए",
+  "home.public": "सार्वजनिक परियोजनाएँ",
   "home.archived": "संग्रहीत",
   "home.none": "यहाँ कुछ नहीं है।",
   "home.edited": "{when} संपादित",
@@ -167,7 +172,7 @@ export const hi: Messages = {
 
   "share.title": "“{name}” साझा करें",
   "share.rolesNote":
-    "मालिक पहुँच प्रबंधित करते हैं। संपादक नेटवर्क बदलते हैं। टिप्पणीकार और दर्शक केवल देखते हैं।",
+    "मालिक पहुँच प्रबंधित करते हैं। संपादक नेटवर्क बदलते हैं। टिप्पणीकार उस पर टिप्पणी करते हैं। दर्शक केवल देखते हैं।",
   "share.invite": "ईमेल से आमंत्रित करें",
   "share.emailPlaceholder": "वह ईमेल जिससे वे साइन इन करते हैं",
   "share.inviteRole": "आमंत्रित व्यक्ति की भूमिका",
@@ -177,11 +182,16 @@ export const hi: Messages = {
   "share.roleOf": "{name} की भूमिका",
   "share.remove": "{name} को हटाएँ",
   "share.leave": "छोड़ें",
-  "share.link": "केवल देखने का लिंक",
-  "share.linkOn": "इस MobSimLab में साइन इन किया कोई भी इसे खोल सकता है",
-  "share.linkOff": "बंद: केवल ऊपर के लोग इसे खोल सकते हैं",
-  "share.linkTurnOn": "चालू करें",
-  "share.linkTurnOff": "बंद करें",
+  "share.visibility": "इसे कौन खोल सकता है",
+  "share.private": "निजी: केवल ऊपर के लोग इसे खोल सकते हैं",
+  "share.public":
+    "सार्वजनिक: इस MobSimLab में साइन इन कोई भी व्यक्ति इसे ढूँढ़कर केवल पढ़ने के लिए खोल सकता है",
+  "share.makePublic": "सार्वजनिक करें",
+  "share.makePrivate": "निजी करें",
+  "share.licenceTitle": "सार्वजनिक करने से पहले",
+  "share.licenceNote":
+    "यह परियोजना OpenStreetMap के डेटा का उपयोग करती है। इसे Open Database License (ODbL) के तहत साझा किया जाएगा, © OpenStreetMap योगदानकर्ता। इसे तभी सार्वजनिक करें जब इसमें बाकी सब कुछ भी साझा किया जा सकता हो।",
+  "share.confirmPublic": "समझ गया, सार्वजनिक करें",
   "share.copyLink": "लिंक कॉपी करें",
   "share.copied": "कॉपी हो गया",
 
@@ -198,6 +208,8 @@ export const hi: Messages = {
 
   "project.back": "प्रोजेक्ट पर वापस जाएँ",
   "project.viewOnly": "केवल देखने के लिए",
+  "project.public": "सार्वजनिक",
+  "project.publicNote": "सार्वजनिक परियोजना। मानचित्र डेटा © OpenStreetMap योगदानकर्ता, ODbL।",
   "project.notFound": "प्रोजेक्ट नहीं मिला",
   "project.notFoundHint": "हो सकता है इसे हटा दिया गया हो, या अब आपके पास पहुँच न हो।",
   "project.toHome": "प्रोजेक्ट पर वापस जाएँ",
@@ -256,6 +268,7 @@ export const hi: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "सड़कें",
   "gis.regionsView": "क्षेत्र",
+  "gis.zonesView": "मांग क्षेत्र",
   "gis.intro": "गणनाओं में इस्तेमाल होने वाली जानकारी जोड़ें या संपादित करें।",
   "gis.areas": "क्षेत्र बनाएँ या OpenStreetMap से आयात करें",
   "gis.streets": "सड़क लेआउट: बस, साइकिल और ट्राम लेन, गति, ऊपरी तार",
@@ -279,6 +292,7 @@ export const hi: Messages = {
   "prefs.delayLane": "पेंट की गई बस या ट्राम लेन में",
   "prefs.delayDefault": "धारणा पुस्तकालय: {value} %",
   "prefs.delayReset": "पुस्तकालय मान इस्तेमाल करें",
+  "prefs.reason": "इस मान का कारण (वैकल्पिक)",
   "prefs.stationsTitle": "स्टेशन",
   "prefs.stationsIntro":
     "इस दूरी के भीतर एक ही नाम वाले स्टॉप योजनाबद्ध नक्शे, यात्रा योजनाकार और लाभ व यात्री तालिकाओं में एक स्टेशन गिने जाते हैं।",
@@ -304,6 +318,21 @@ export const hi: Messages = {
   "prefs.rulesChanged": "बदले गए: {count}",
   "prefs.rulesLibrary": "धारणा पुस्तकालय: {value} {unit}",
   "prefs.rulesLibraryRange": "धारणा पुस्तकालय: {value} {unit} (सीमा {low}–{high})",
+  "prefs.demandTitle": "मांग मॉडल",
+  "prefs.demandIntro":
+    "मांग मॉडल जो भी मान इस्तेमाल करता है, चरण दर चरण: ज़ोन, यात्रा उत्पादन, समय अवधियाँ, वितरण, साधन चयन और असाइनमेंट। इस परियोजना के लिए कोई मान बदलें, या धारणा पुस्तकालय का मान रखें।",
+  "prefs.demandStep": "मॉडल चरण",
+  "prefs.demandSearch": "मान खोजें",
+  "prefs.demandNone": "कोई मान मेल नहीं खाता।",
+  "prefs.demandStep.zones": "ज़ोन",
+  "prefs.demandStep.generation": "यात्रा उत्पादन",
+  "prefs.demandStep.periods": "समय अवधियाँ",
+  "prefs.demandStep.distribution": "यात्रा वितरण",
+  "prefs.demandStep.mode_choice": "साधन चयन",
+  "prefs.demandStep.catchment": "पहुँच क्षेत्र",
+  "prefs.demandStep.assignment": "असाइनमेंट",
+  "prefs.demandStep.calibration": "अंशांकन",
+  "prefs.demandAll": "सभी चरण",
   "prefs.paramsTitle": "सभी पैरामीटर",
   "prefs.paramsIntro":
     "मान्यता लाइब्रेरी का हर मान। सभी साधनों या एक साधन के लिए अपना मान रखें; एक साधन का मान सभी साधनों वाले मान से ऊपर है। लाइब्रेरी का मान साथ में दिखता है।",
@@ -323,11 +352,60 @@ export const hi: Messages = {
   "prefs.group.cost": "लागत",
   "prefs.group.benefits": "लाभ",
   "prefs.group.fares": "किराया",
+  "prefs.group.noise": "शोर",
   "prefs.traction.battery": "बैटरी",
   "prefs.traction.diesel": "डीज़ल",
   "prefs.traction.hydrogen": "हाइड्रोजन",
   "prefs.traction.cng": "प्राकृतिक गैस (CNG)",
   "prefs.traction.electric": "विद्युत",
+  "report.title": "मान्यताओं की रिपोर्ट",
+  "report.intro":
+    "मान्यता लाइब्रेरी का हर मान जो यह प्रोजेक्ट उपयोग करता है: मान, लाइब्रेरी की सीमा, उसका स्रोत, और क्या प्रोजेक्ट ने उसे बदला है। इसे CSV के रूप में डाउनलोड करें, या प्रिंट करें या PDF के रूप में सहेजें।",
+  "report.csv": "CSV डाउनलोड करें",
+  "report.changedOnly": "केवल बदले गए मान",
+  "report.noneChanged": "इस समूह में कोई मान बदला नहीं गया है।",
+  "report.loadError": "स्रोत लोड नहीं हो सके। फिर से कोशिश करने के लिए पेज दोबारा लोड करें।",
+  "report.changed": "बदला गया",
+  "report.yes": "हाँ",
+  "report.no": "नहीं",
+  "report.basis.cited": "उद्धृत",
+  "report.basis.documented": "प्रलेखित",
+  "report.basis.guess": "तर्कसंगत अनुमान",
+  "report.check.read": "स्रोत से जाँचा गया",
+  "report.check.secondary": "द्वितीयक स्रोत से जाँचा गया",
+  "report.check.unverified": "अभी स्रोत से नहीं जाँचा गया",
+  "report.sources": "स्रोत:",
+  "report.usedBy": "उपयोग करने वाले: {list}",
+  "report.other": "अन्य विकल्प",
+  "report.currency": "मुद्रा",
+  "report.currencyCountry": "हर टूल देश की अपनी मुद्रा दिखाता है",
+  "report.rate": "प्रति US$ विनिमय दर",
+  "report.rateWorldBank": "विश्व बैंक की आधिकारिक दर",
+  "report.vehiclesOff": "उपयोग न होने वाले वाहन",
+  "report.switchesOff": "उपयोग न होने वाले स्विच",
+  "report.allUsed": "सभी उपयोग में",
+  "report.turnout": "डिफ़ॉल्ट टर्नआउट",
+  "report.col.group": "समूह",
+  "report.col.parameter": "पैरामीटर",
+  "report.col.id": "आईडी",
+  "report.col.mode": "परिवहन साधन",
+  "report.col.value": "उपयोग किया गया मान",
+  "report.col.unit": "इकाई",
+  "report.col.changed": "बदला गया",
+  "report.col.libLow": "लाइब्रेरी न्यूनतम",
+  "report.col.libCentral": "लाइब्रेरी मध्य",
+  "report.col.libHigh": "लाइब्रेरी अधिकतम",
+  "report.col.basis": "आधार",
+  "report.col.check": "जाँच",
+  "report.col.sources": "स्रोत",
+  "report.col.reasoning": "तर्क",
+  "report.col.usedBy": "उपयोग करने वाले",
+  "report.col.reason": "कारण",
+  "report.col.changedBy": "किसने बदला",
+  "report.col.changedAt": "बदलने की तारीख",
+  "report.changedBy": "{name} ने {date} को बदला",
+  "report.changedOn": "{date} को बदला गया",
+  "report.reason": "कारण: {reason}",
   "prefs.accessTitle": "प्लेटफ़ॉर्म सुगम्यता",
   "prefs.accessIntro":
     "प्लेटफ़ॉर्म और ट्रेन के बीच सीढ़ी और अंतर की सीमाएँ (TSI PRM), और सूची में न होने वाली ट्रेनों की फ़र्श ऊँचाई। लाइनें हर स्टॉप पर जाँची जाती हैं।",
@@ -418,7 +496,11 @@ export const hi: Messages = {
   ...cargoBikeHi,
   ...depotsHi,
   ...geodataHi,
+  ...commentsHi,
+  ...mslabHi,
+  ...pluginCodeHi,
   ...populationHi,
   ...roadHi,
+  ...calendarHi,
   ...PLUGIN_MESSAGES.hi,
 };

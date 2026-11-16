@@ -30,7 +30,7 @@ import { type Box, OsmTools } from "./osm-tools";
 import { fetchArea } from "./overpass-import";
 import { bboxAreaKm2, type GeodataSettings, geodataDirs, geodataSettings } from "./settings";
 
-/** Kinds of import (db/migrations/0015). */
+/** Kinds of import (db/migrations/0017). */
 export type ImportKind = "osm" | "dem" | "dem_upload";
 export type ImportMethod = "overpass" | "geofabrik" | "upload" | "copernicus" | "geotiff";
 export type ImportStatus = "queued" | "running" | "done" | "failed" | "cancelled";
@@ -60,7 +60,7 @@ export const OSM_SOURCE = {
   licence: "© OpenStreetMap contributors, ODbL 1.0",
 } as const;
 
-/** The staging schema osm2pgsql writes into (db/migrations/0015). */
+/** The staging schema osm2pgsql writes into (db/migrations/0017). */
 const STAGE = "geo_stage";
 /** pg_advisory_lock key: one osm2pgsql run uses the staging schema at a time, across processes. */
 const STAGE_LOCK = 7_316_525_311;

@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/homlo-bike/MobSimLab/blob/main/contracts/mslab/run.schema.json",
+  "title": "One finished simulation run (runs/<id>/run.json)",
+  "type": "object",
+  "required": [
+    "id",
+    "kind",
+    "status",
+    "input",
+    "progress",
+    "result",
+    "error",
+    "createdAt",
+    "startedAt",
+    "finishedAt"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F-]{36}$"
+    },
+    "kind": {
+      "enum": [
+        "capacity",
+        "sweep",
+        "road",
+        "demand",
+        "calendar"
+      ]
+    },
+    "status": {
+      "enum": [
+        "done",
+        "failed",
+        "cancelled"
+      ]
+    },
+    "input": {
+      "type": "object",
+      "description": "Settings of the run and the names of its input files."
+    },
+    "progress": {
+      "description": "What the worker found while it ran, or null."
+    },
+    "result": {
+      "description": "The run's result, or null."
+    },
+    "error": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 2000
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "maxLength": 40
+    },
+    "startedAt": {
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 40
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "finishedAt": {
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 40
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  }
+}

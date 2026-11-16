@@ -1,8 +1,12 @@
 import { roadRu } from "./road/ru";
+import { calendarRu } from "./calendar/ru";
 import { editorsRu } from "./editors/ru";
 import { cargoBikeRu } from "./cargo-bike/ru";
+import { commentsRu } from "./comments/ru";
 import { depotsRu } from "./depots/ru";
 import { geodataRu } from "./geodata/ru";
+import { mslabRu } from "./mslab/ru";
+import { pluginCodeRu } from "./plugin-code/ru";
 import { populationRu } from "./population/ru";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -104,6 +108,7 @@ export const ru: Messages = {
   "home.shared": "Доступные мне",
   "home.sharedEdit": "Доступные мне · можно редактировать",
   "home.viewOnly": "Только просмотр",
+  "home.public": "Публичные проекты",
   "home.archived": "В архиве",
   "home.none": "Здесь ничего нет.",
   "home.edited": "Изменён {when}",
@@ -167,7 +172,7 @@ export const ru: Messages = {
 
   "share.title": "Поделиться «{name}»",
   "share.rolesNote":
-    "Владельцы управляют доступом. Редакторы изменяют сеть. Комментаторы и наблюдатели только смотрят.",
+    "Владельцы управляют доступом. Редакторы изменяют сеть. Комментаторы её комментируют. Наблюдатели только смотрят.",
   "share.invite": "Пригласить по эл. почте",
   "share.emailPlaceholder": "Адрес, с которым человек входит",
   "share.inviteRole": "Роль приглашённого",
@@ -177,11 +182,16 @@ export const ru: Messages = {
   "share.roleOf": "Роль: {name}",
   "share.remove": "Удалить {name}",
   "share.leave": "Выйти",
-  "share.link": "Ссылка для просмотра",
-  "share.linkOn": "Открыть может любой, кто вошёл в этот MobSimLab",
-  "share.linkOff": "Выключено: открыть могут только люди выше",
-  "share.linkTurnOn": "Включить",
-  "share.linkTurnOff": "Выключить",
+  "share.visibility": "Кто может открыть",
+  "share.private": "Закрытый: открыть могут только люди выше",
+  "share.public":
+    "Публичный: любой, кто вошёл в этот MobSimLab, может найти и открыть его только для просмотра",
+  "share.makePublic": "Сделать публичным",
+  "share.makePrivate": "Сделать закрытым",
+  "share.licenceTitle": "Прежде чем сделать его публичным",
+  "share.licenceNote":
+    "Этот проект использует данные OpenStreetMap. Они будут распространяться по лицензии Open Database License (ODbL), © участники OpenStreetMap. Делайте проект публичным, только если всё остальное в нём тоже можно распространять.",
+  "share.confirmPublic": "Понятно, сделать публичным",
   "share.copyLink": "Копировать ссылку",
   "share.copied": "Скопировано",
 
@@ -198,6 +208,8 @@ export const ru: Messages = {
 
   "project.back": "Назад к проектам",
   "project.viewOnly": "Только просмотр",
+  "project.public": "Публичный",
+  "project.publicNote": "Публичный проект. Данные карты © участники OpenStreetMap, ODbL.",
   "project.notFound": "Проект не найден",
   "project.notFoundHint": "Возможно, он удалён или у вас больше нет доступа.",
   "project.toHome": "Назад к проектам",
@@ -259,6 +271,7 @@ export const ru: Messages = {
   "gis.title": "ГИС",
   "gis.streetsView": "Улицы",
   "gis.regionsView": "Районы",
+  "gis.zonesView": "Зоны спроса",
   "gis.intro": "Добавляйте и изменяйте данные, которые используются в расчётах.",
   "gis.areas": "Нарисуйте территорию или импортируйте её из OpenStreetMap",
   "gis.streets": "Профиль улиц: полосы для автобусов, велосипедов и трамваев, скорости, контактная сеть",
@@ -282,6 +295,7 @@ export const ru: Messages = {
   "prefs.delayLane": "На выделенной разметкой полосе для автобусов или трамваев",
   "prefs.delayDefault": "Библиотека допущений: {value} %",
   "prefs.delayReset": "Использовать значение из библиотеки",
+  "prefs.reason": "Причина этого значения (необязательно)",
   "prefs.stationsTitle": "Станции",
   "prefs.stationsIntro":
     "Одноимённые остановки в пределах этого расстояния считаются одной станцией на схеме сети, в планировщике поездок и в таблицах выгод и пассажиров.",
@@ -308,6 +322,21 @@ export const ru: Messages = {
   "prefs.rulesChanged": "изменено: {count}",
   "prefs.rulesLibrary": "Библиотека допущений: {value} {unit}",
   "prefs.rulesLibraryRange": "Библиотека допущений: {value} {unit} (диапазон {low}–{high})",
+  "prefs.demandTitle": "Модель спроса",
+  "prefs.demandIntro":
+    "Все значения, которые использует модель спроса, по шагам: зоны, генерация поездок, периоды, распределение, выбор вида транспорта и назначение. Измените значение для этого проекта или оставьте значение из библиотеки допущений.",
+  "prefs.demandStep": "Шаг модели",
+  "prefs.demandSearch": "Поиск значений",
+  "prefs.demandNone": "Ничего не найдено.",
+  "prefs.demandStep.zones": "Зоны",
+  "prefs.demandStep.generation": "Генерация поездок",
+  "prefs.demandStep.periods": "Периоды",
+  "prefs.demandStep.distribution": "Распределение поездок",
+  "prefs.demandStep.mode_choice": "Выбор вида транспорта",
+  "prefs.demandStep.catchment": "Зона доступности",
+  "prefs.demandStep.assignment": "Назначение",
+  "prefs.demandStep.calibration": "Калибровка",
+  "prefs.demandAll": "Все шаги",
   "prefs.paramsTitle": "Все параметры",
   "prefs.paramsIntro":
     "Каждое значение библиотеки допущений. Задайте своё для всех видов транспорта или для одного; значение для вида транспорта важнее значения для всех. Значение библиотеки показано рядом.",
@@ -327,11 +356,60 @@ export const ru: Messages = {
   "prefs.group.cost": "Затраты",
   "prefs.group.benefits": "Выгоды",
   "prefs.group.fares": "Тарифы",
+  "prefs.group.noise": "Шум",
   "prefs.traction.battery": "аккумулятор",
   "prefs.traction.diesel": "дизель",
   "prefs.traction.hydrogen": "водород",
   "prefs.traction.cng": "природный газ (КПГ)",
   "prefs.traction.electric": "электрический",
+  "report.title": "Отчёт о допущениях",
+  "report.intro":
+    "Каждое значение из библиотеки допущений, которое использует этот проект: значение, диапазон библиотеки, источник и то, изменил ли его проект. Скачайте его в CSV или распечатайте либо сохраните в PDF.",
+  "report.csv": "Скачать CSV",
+  "report.changedOnly": "Только изменённые значения",
+  "report.noneChanged": "В этой группе нет изменённых значений.",
+  "report.loadError": "Не удалось загрузить источники. Перезагрузите страницу и попробуйте снова.",
+  "report.changed": "изменено",
+  "report.yes": "Да",
+  "report.no": "Нет",
+  "report.basis.cited": "цитируется",
+  "report.basis.documented": "задокументировано",
+  "report.basis.guess": "обоснованная оценка",
+  "report.check.read": "проверено по источнику",
+  "report.check.secondary": "проверено по вторичному источнику",
+  "report.check.unverified": "ещё не проверено по источнику",
+  "report.sources": "Источники:",
+  "report.usedBy": "Используется в: {list}",
+  "report.other": "Другие настройки",
+  "report.currency": "Валюта",
+  "report.currencyCountry": "Каждый инструмент показывает валюту страны",
+  "report.rate": "Обменный курс за US$",
+  "report.rateWorldBank": "Официальный курс Всемирного банка",
+  "report.vehiclesOff": "Неиспользуемые транспортные средства",
+  "report.switchesOff": "Неиспользуемые стрелочные переводы",
+  "report.allUsed": "Используются все",
+  "report.turnout": "Стрелочный перевод по умолчанию",
+  "report.col.group": "Группа",
+  "report.col.parameter": "Параметр",
+  "report.col.id": "Идентификатор",
+  "report.col.mode": "Вид транспорта",
+  "report.col.value": "Используемое значение",
+  "report.col.unit": "Единица",
+  "report.col.changed": "Изменено",
+  "report.col.libLow": "Библиотека: минимум",
+  "report.col.libCentral": "Библиотека: среднее",
+  "report.col.libHigh": "Библиотека: максимум",
+  "report.col.basis": "Основание",
+  "report.col.check": "Проверка",
+  "report.col.sources": "Источники",
+  "report.col.reasoning": "Обоснование",
+  "report.col.usedBy": "Используется в",
+  "report.col.reason": "Причина",
+  "report.col.changedBy": "Кто изменил",
+  "report.col.changedAt": "Дата изменения",
+  "report.changedBy": "Изменено: {name}, {date}",
+  "report.changedOn": "Изменено {date}",
+  "report.reason": "Причина: {reason}",
   "prefs.accessTitle": "Доступность платформ",
   "prefs.accessIntro":
     "Пределы ступеньки и зазора между платформой и поездом (TSI PRM) и высота пола для поездов без неё в каталоге. Линии проверяются на каждой остановке.",
@@ -424,7 +502,11 @@ export const ru: Messages = {
   ...cargoBikeRu,
   ...depotsRu,
   ...geodataRu,
+  ...commentsRu,
+  ...mslabRu,
+  ...pluginCodeRu,
   ...populationRu,
   ...roadRu,
+  ...calendarRu,
   ...PLUGIN_MESSAGES.ru,
 };

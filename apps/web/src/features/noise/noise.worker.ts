@@ -18,8 +18,12 @@ self.onmessage = async (e: MessageEvent<{ input: NoiseInput; fromDb: Record<Indi
             lnight: n.image("lnight", e.data.fromDb.lnight, 255),
           }
         : null;
-      const transfer = images ? [images.lden.buffer, images.lnight.buffer] : [];
-      (self as unknown as DedicatedWorkerGlobalScope).postMessage({ view, images }, transfer);
+      const levels = view.image ? { lden: n.levels("lden"), lnight: n.levels("lnight") } : null;
+      const transfer = [
+        ...(images ? [images.lden.buffer, images.lnight.buffer] : []),
+        ...(levels ? [levels.lden.buffer, levels.lnight.buffer] : []),
+      ];
+      (self as unknown as DedicatedWorkerGlobalScope).postMessage({ view, images, levels }, transfer);
     } finally {
       n.free();
     }

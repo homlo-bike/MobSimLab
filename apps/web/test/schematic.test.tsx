@@ -8,6 +8,7 @@ import { Schematic, type SchematicDoc } from "../src/features/schematic/Schemati
 import { RAILWAY, STREET_LINES } from "./fixtures/schematic";
 import { EARTH_RADIUS_M } from "../src/map/geo";
 import type { PluginLineInput } from "../src/features/journey-planner/network";
+import { SAME_NAME_PREF } from "../src/workspace/preferences";
 
 afterEach(cleanup);
 
@@ -89,7 +90,9 @@ describe("schematic network", () => {
     });
     const lines = [line("A", [4.9, 52.37], [4.95, 52.37]), line("B", [4.9, 52.3745], [4.85, 52.4])];
     const harbours = (m: number) =>
-      schematicNetwork(null, null, lines, m).stations.filter((s) => s.name === "Harbour");
+      schematicNetwork(null, null, lines, { [SAME_NAME_PREF]: m }).stations.filter(
+        (s) => s.name === "Harbour",
+      );
     expect(harbours(600)).toHaveLength(1);
     expect(harbours(400)).toHaveLength(2);
   });

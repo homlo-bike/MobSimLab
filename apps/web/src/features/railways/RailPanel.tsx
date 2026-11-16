@@ -1,3 +1,4 @@
+import { ObjectComments } from "../comments/Comments";
 import { hasMessage, type Translate, useI18n } from "../../i18n/i18n";
 import { signalById } from "./doc";
 import { field, input, levelOpts, Num, Row, Section, Segmented, Stat } from "./panelControls";
@@ -232,6 +233,10 @@ export function RailPanel(props: Props) {
         <SwitchInspector sw={doc.switches.find((s) => s.id === sel.id)!} {...props} />
       )}
       {kind === "signal" && sel && <SignalInspector sg={signalById(doc, sel.id, view.signals)!} {...props} />}
+      {/* Generated signals get new ids when the design changes, so only the planner's own carry comments. */}
+      {kind && sel && (kind !== "signal" || doc.signals?.some((s) => s.id === sel.id)) && (
+        <ObjectComments type={kind} id={sel.id} />
+      )}
 
       <ServiceLinesPanel doc={doc} view={view} setDoc={a.setDoc} show={a.showIssue} {...props.service} />
 

@@ -1,8 +1,12 @@
 import { roadHa } from "./road/ha";
+import { calendarHa } from "./calendar/ha";
 import { editorsHa } from "./editors/ha";
 import { cargoBikeHa } from "./cargo-bike/ha";
+import { commentsHa } from "./comments/ha";
 import { depotsHa } from "./depots/ha";
 import { geodataHa } from "./geodata/ha";
+import { mslabHa } from "./mslab/ha";
+import { pluginCodeHa } from "./plugin-code/ha";
 import { populationHa } from "./population/ha";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -104,6 +108,7 @@ export const ha: Messages = {
   "home.shared": "An raba da ni",
   "home.sharedEdit": "An raba da ni · za ka iya gyara",
   "home.viewOnly": "Kallo kawai",
+  "home.public": "Ayyukan jama'a",
   "home.archived": "An ajiye",
   "home.none": "Babu komai a nan.",
   "home.edited": "An gyara {when}",
@@ -167,7 +172,7 @@ export const ha: Messages = {
 
   "share.title": "Raba “{name}”",
   "share.rolesNote":
-    "Mamallaka suna sarrafa dama. Masu gyara suna canza hanyar sadarwa. Masu sharhi da masu kallo suna kallo kawai.",
+    "Mamallaka suna sarrafa dama. Masu gyara suna canza hanyar sadarwa. Masu sharhi suna yin sharhi a kai. Masu kallo suna kallo kawai.",
   "share.invite": "Gayyata ta imel",
   "share.emailPlaceholder": "Imel ɗin da suke shiga da shi",
   "share.inviteRole": "Matsayin wanda kake gayyata",
@@ -177,11 +182,16 @@ export const ha: Messages = {
   "share.roleOf": "Matsayin {name}",
   "share.remove": "Cire {name}",
   "share.leave": "Bari",
-  "share.link": "Mahaɗin kallo kawai",
-  "share.linkOn": "Duk wanda ya shiga wannan MobSimLab zai iya buɗe shi",
-  "share.linkOff": "A kashe: mutanen da ke sama ne kawai za su iya buɗe shi",
-  "share.linkTurnOn": "Kunna",
-  "share.linkTurnOff": "Kashe",
+  "share.visibility": "Wa zai iya buɗe shi",
+  "share.private": "Na sirri: mutanen da ke sama kaɗai za su iya buɗe shi",
+  "share.public":
+    "Na jama'a: duk wanda ya shiga wannan MobSimLab zai iya samun sa ya buɗe shi don karantawa kawai",
+  "share.makePublic": "Mai da shi na jama'a",
+  "share.makePrivate": "Mai da shi na sirri",
+  "share.licenceTitle": "Kafin ka mai da shi na jama'a",
+  "share.licenceNote":
+    "Wannan aikin yana amfani da bayanai daga OpenStreetMap. Za a raba su ƙarƙashin Open Database License (ODbL), © masu ba da gudummawa ga OpenStreetMap. Ka mai da shi na jama'a kawai idan duk sauran abubuwan da ke ciki ma za a iya raba su.",
+  "share.confirmPublic": "Na gane, mai da shi na jama'a",
   "share.copyLink": "Kwafi mahaɗi",
   "share.copied": "An kwafa",
 
@@ -198,6 +208,8 @@ export const ha: Messages = {
 
   "project.back": "Koma ayyuka",
   "project.viewOnly": "Kallo kawai",
+  "project.public": "Na jama'a",
+  "project.publicNote": "Aikin jama'a. Bayanan taswira © masu ba da gudummawa ga OpenStreetMap, ODbL.",
   "project.notFound": "Ba a sami aikin ba",
   "project.notFoundHint": "Wataƙila an share shi, ko kuma ba ka da dama yanzu.",
   "project.toHome": "Koma ayyuka",
@@ -258,6 +270,7 @@ export const ha: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "Tituna",
   "gis.regionsView": "Yankuna",
+  "gis.zonesView": "Yankunan bukata",
   "gis.intro": "Ƙara ko gyara bayanan da ƙididdiga ke amfani da su.",
   "gis.areas": "Zana yanki ko shigo da ɗaya daga OpenStreetMap",
   "gis.streets": "Tsarin titi: hanyoyin bas, keke da tram, gudu, wayoyin sama",
@@ -281,6 +294,7 @@ export const ha: Messages = {
   "prefs.delayLane": "A cikin hanyar bas ko tram da aka zana da fenti",
   "prefs.delayDefault": "Ɗakin zato: {value} %",
   "prefs.delayReset": "Yi amfani da ƙimar ɗakin",
+  "prefs.reason": "Dalilin wannan ƙimar (ba dole ba)",
   "prefs.stationsTitle": "Tashoshi",
   "prefs.stationsIntro":
     "Tashoshi masu suna ɗaya cikin wannan nisa ana ƙidaya su a matsayin tasha ɗaya a taswirar zane, mai tsara tafiya da teburan fa'idodi da fasinjoji.",
@@ -307,6 +321,21 @@ export const ha: Messages = {
   "prefs.rulesChanged": "an canza: {count}",
   "prefs.rulesLibrary": "Ɗakin zato: {value} {unit}",
   "prefs.rulesLibraryRange": "Ɗakin zato: {value} {unit} (iyaka {low}–{high})",
+  "prefs.demandTitle": "Tsarin buƙatar tafiya",
+  "prefs.demandIntro":
+    "Kowace ƙimar da tsarin buƙatar tafiya ke amfani da ita, mataki-mataki: yankuna, samar da tafiye-tafiye, lokuta, rarrabawa, zaɓin hanyar sufuri da rabawa a hanyoyi. Canza ƙima don wannan aikin, ko ka riƙe ta ɗakin karatu na zato.",
+  "prefs.demandStep": "Matakin tsari",
+  "prefs.demandSearch": "Nemi ƙimomi",
+  "prefs.demandNone": "Babu ƙimar da ta dace.",
+  "prefs.demandStep.zones": "Yankuna",
+  "prefs.demandStep.generation": "Samar da tafiye-tafiye",
+  "prefs.demandStep.periods": "Lokuta",
+  "prefs.demandStep.distribution": "Rarraba tafiye-tafiye",
+  "prefs.demandStep.mode_choice": "Zaɓin hanyar sufuri",
+  "prefs.demandStep.catchment": "Yankin isa",
+  "prefs.demandStep.assignment": "Rabawa a hanyoyi",
+  "prefs.demandStep.calibration": "Daidaitawa",
+  "prefs.demandAll": "Duk matakai",
   "prefs.paramsTitle": "Duk sigogi",
   "prefs.paramsIntro":
     "Kowace ƙima ta ɗakin zato. Saka naka don duk hanyoyi ko don hanya ɗaya; ƙimar hanya ɗaya ta fi ta duk hanyoyi. Ƙimar ɗakin tana gefe.",
@@ -326,11 +355,60 @@ export const ha: Messages = {
   "prefs.group.cost": "Kuɗaɗe",
   "prefs.group.benefits": "Fa'idodi",
   "prefs.group.fares": "Kuɗin mota",
+  "prefs.group.noise": "Hayaniya",
   "prefs.traction.battery": "batir",
   "prefs.traction.diesel": "dizal",
   "prefs.traction.hydrogen": "hydrogen",
   "prefs.traction.cng": "iskar gas (CNG)",
   "prefs.traction.electric": "lantarki",
+  "report.title": "Rahoton zato",
+  "report.intro":
+    "Kowace ƙimar ɗakin zato da wannan aikin ke amfani da ita: ƙimar, kewayon ɗakin, inda ta fito, da ko aikin ya canza ta. Sauke ta a matsayin CSV, ko buga ta ko adana ta a matsayin PDF.",
+  "report.csv": "Sauke CSV",
+  "report.changedOnly": "Ƙimomin da aka canza kawai",
+  "report.noneChanged": "Babu ƙimar da aka canza a wannan rukuni.",
+  "report.loadError": "Ba a iya loda tushe ba. Sake loda shafin don sake gwadawa.",
+  "report.changed": "an canza",
+  "report.yes": "Ee",
+  "report.no": "A'a",
+  "report.basis.cited": "an ambata",
+  "report.basis.documented": "an rubuta",
+  "report.basis.guess": "kimantawa mai dalili",
+  "report.check.read": "an duba da tushe",
+  "report.check.secondary": "an duba ta tushe na biyu",
+  "report.check.unverified": "ba a duba da tushe ba tukuna",
+  "report.sources": "Tushe:",
+  "report.usedBy": "Ana amfani da ita a: {list}",
+  "report.other": "Sauran zaɓuɓɓuka",
+  "report.currency": "Kuɗi",
+  "report.currencyCountry": "Kowace kayan aiki tana nuna kuɗin ƙasar",
+  "report.rate": "Farashin musaya a kowace US$",
+  "report.rateWorldBank": "Farashin hukuma na Bankin Duniya",
+  "report.vehiclesOff": "Motocin da ba a amfani da su",
+  "report.switchesOff": "Makullan hanya da ba a amfani da su",
+  "report.allUsed": "Ana amfani da duka",
+  "report.turnout": "Makullin hanya na asali",
+  "report.col.group": "Rukuni",
+  "report.col.parameter": "Siga",
+  "report.col.id": "Lamba",
+  "report.col.mode": "Hanyar sufuri",
+  "report.col.value": "Ƙimar da aka yi amfani da ita",
+  "report.col.unit": "Ma'auni",
+  "report.col.changed": "An canza",
+  "report.col.libLow": "Ɗaki ƙasa",
+  "report.col.libCentral": "Ɗaki tsakiya",
+  "report.col.libHigh": "Ɗaki sama",
+  "report.col.basis": "Tushe",
+  "report.col.check": "Dubawa",
+  "report.col.sources": "Tushe",
+  "report.col.reasoning": "Dalili",
+  "report.col.usedBy": "Ana amfani da ita a",
+  "report.col.reason": "Dalili",
+  "report.col.changedBy": "Wanda ya canza",
+  "report.col.changedAt": "Ranar canji",
+  "report.changedBy": "{name} ya canza a ranar {date}",
+  "report.changedOn": "An canza a ranar {date}",
+  "report.reason": "Dalili: {reason}",
   "prefs.accessTitle": "Samun damar dandamali",
   "prefs.accessIntro":
     "Iyakokin mataki da tazara tsakanin dandamali da jirgi (TSI PRM), da tsayin ƙasa ga jiragen da babu a kundi. Ana duba layuka a kowace tasha.",
@@ -422,7 +500,11 @@ export const ha: Messages = {
   ...cargoBikeHa,
   ...depotsHa,
   ...geodataHa,
+  ...commentsHa,
+  ...mslabHa,
+  ...pluginCodeHa,
   ...populationHa,
   ...roadHa,
+  ...calendarHa,
   ...PLUGIN_MESSAGES.ha,
 };
