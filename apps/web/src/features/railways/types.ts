@@ -251,11 +251,51 @@ export interface StationKm {
   km: number;
 }
 
+/** One run of a train's day (Rust `rail_plan::BlockRun`). */
+export interface RailBlockRun {
+  kind: "service" | "pull_out" | "pull_in";
+  /** Line id. */
+  line: string;
+  /** Trip id (the timetable's trip id for a passenger trip). */
+  trip: string;
+  direction: number;
+  /** Station name; null for a storage track. */
+  from: string | null;
+  to: string | null;
+  depart_s: number;
+  arrive_s: number;
+  km: number;
+}
+
+/** The runs one train makes in a day (Rust `rail_plan::VehicleBlock`). */
+export interface RailVehicleBlock {
+  vehicle: number;
+  runs: RailBlockRun[];
+}
+
+/** Settings of a publication the project can change (Rust `rail_plan::PublishOptions`). */
+export interface PublishOptions {
+  /** Longest a train waits in a terminal before it goes to stabling instead, s. */
+  max_idle_s?: number | null;
+}
+
+/** Trains of one line in each clock hour on one section of the topology export (Rust `rail_plan::SectionTrains`). */
+export interface SectionTrains {
+  section: string;
+  line: string;
+  /** Trains entering the section in each hour 0–23, both directions. */
+  hours: number[];
+}
+
 /** Published service lines (Rust `rail_plan::ServicePublication`). */
 export interface ServicePublication {
   timetable: Timetable;
   lines: LineReport[];
   notes: string[];
+  /** Each train's runs of the day, by first departure (absent from engines built before blocks). */
+  blocks?: RailVehicleBlock[];
+  /** Trains per hour on each section, for the noise map's timetabled input. */
+  section_trains?: SectionTrains[];
 }
 
 /** A service line as the engine takes it (Rust `rail_plan::ServiceLine`). */
@@ -590,8 +630,11 @@ export interface RailEngine {
   existingSnap(at: LonLat, maxM: number): ExistingSnap | null;
   /** Applies the planner's street setups from the GIS tab; the next build uses them. */
   setStreetSetups(setups: readonly StreetSetup[]): void;
-  /** Design values the project's preferences change for every mode, by name; the next build uses them. */
-  setValues?(values: Record<string, number>): void;
+  /**
+   * Design values the project's preferences change, by name for every mode or `<mode>.<name>` for one; numbers,
+   * and text for the text values (electrification, colour, level crossings, signalling). The next build uses them.
+   */
+  setValues?(values: Record<string, number | string>): void;
   /** The project's choice from the switches and crossings catalogue (Project preferences → Switches). */
   setSwitchChoice?(choice: SwitchChoice): void;
   /** A signal plan generated from the last build, with ids continuing the document's. */
@@ -599,7 +642,7 @@ export interface RailEngine {
   /** Where a signal placed at a map position would stand, within `maxM`. */
   signalAnchor(at: LonLat, maxM: number): SignalAt | null;
   /** Plan the service lines on the last build and publish them for the journey planner; throws on errors. */
-  publishLines(lines: EngineServiceLine[], serviceId: string): ServicePublication;
+  publishLines(lines: EngineServiceLine[], serviceId: string, options?: PublishOptions): ServicePublication;
   /** Whether trains can run from one station (document id) to another on the last build; throws on errors. */
   reachable(from: number, to: number): { ok: boolean; reason: string | null };
   dispose(): void;

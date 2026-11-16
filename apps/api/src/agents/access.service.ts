@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { AnalysisService, type DemandPoint, headwayIn, median, type Period } from "./analysis.service";
-import DEFAULTS from "./defaults.json";
+import { values } from "./values";
 import { DESTINATION_CATEGORIES, DESTINATION_LIST_VERSION, type DestinationPoint } from "./destinations";
 import { solveMaxCover } from "./mclp";
 import { NetworkError, NetworkService } from "./network.service";
@@ -186,7 +186,7 @@ export class AccessService {
       listGaps?: number;
     },
   ) {
-    const minutes = o.minutes ?? DEFAULTS.walk_rule_minutes;
+    const minutes = o.minutes ?? values().walk_rule_minutes;
     const cats = DESTINATION_CATEGORIES.filter((c) => !o.categories || o.categories.includes(c.id));
     if (o.categories?.length) {
       const unknown = o.categories.filter((c) => !DESTINATION_CATEGORIES.some((d) => d.id === c));
@@ -201,7 +201,7 @@ export class AccessService {
         )
       : cats.map((c) => c.id);
     if (catIds.length === 0) throw new NetworkError("No destination category to count.");
-    const speed = o.mode === "cycle" ? DEFAULTS.cycle_speed_kmh : DEFAULTS.walk_speed_kmh;
+    const speed = o.mode === "cycle" ? values().cycle_speed_kmh : values().walk_speed_kmh;
     if (doc.stops.length === 0 && !doc.study_area)
       throw new NetworkError("Set a study area (set_study_area) or add stops first.");
     const area = this.analysis.studyArea(doc, (minutes / 60) * speed * 1000);
@@ -231,7 +231,7 @@ export class AccessService {
     const found = catIds.map((_, i) => flat.filter((d) => d.category === i).length);
     const settings = {
       walk_speed_kmh: speed,
-      crossing_delay_s: DEFAULTS.crossing_delay_s,
+      crossing_delay_s: values().crossing_delay_s,
       step_free: false,
       max_snap_m: 250,
     };
@@ -271,10 +271,10 @@ export class AccessService {
       total > 0 ? pct(origins.filter(pred).reduce((a, r) => a + r.weight, 0) / total) : 0;
     const how =
       o.mode === "walk"
-        ? `on foot at ${speed} km/h along the street network, ${DEFAULTS.crossing_delay_s} s per signalised crossing`
+        ? `on foot at ${speed} km/h along the street network, ${values().crossing_delay_s} s per signalised crossing`
         : o.mode === "cycle"
-          ? `by bicycle at ${speed} km/h on streets, cycleways and paths open to bicycles, ${DEFAULTS.crossing_delay_s} s per signalised crossing`
-          : `on foot (${DEFAULTS.walk_speed_kmh} km/h on the street network) and on the scenario's lines, median over departures every ${o.stepMin ?? 10} min from ${clock((o.window ?? [7 * 3600])[0])} to ${clock((o.window ?? [0, 9 * 3600])[1])}`;
+          ? `by bicycle at ${speed} km/h on streets, cycleways and paths open to bicycles, ${values().crossing_delay_s} s per signalised crossing`
+          : `on foot (${values().walk_speed_kmh} km/h on the street network) and on the scenario's lines, median over departures every ${o.stepMin ?? 10} min from ${clock((o.window ?? [7 * 3600])[0])} to ${clock((o.window ?? [0, 9 * 3600])[1])}`;
     const basis = `destinations reachable within ${minutes} min ${how}`;
     const complete = share((r) => r.counts.every((c) => c > 0));
     const label = (id: string) => DESTINATION_CATEGORIES.find((c) => c.id === id)?.label ?? id;

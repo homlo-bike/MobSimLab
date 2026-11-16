@@ -1,8 +1,12 @@
 import { editorsEn } from "./editors/en";
 import { cargoBikeEn } from "./cargo-bike/en";
+import { commentsEn } from "./comments/en";
 import { depotsEn } from "./depots/en";
 import { geodataEn } from "./geodata/en";
+import { mslabEn } from "./mslab/en";
+import { pluginCodeEn } from "./plugin-code/en";
 import { roadEn } from "./road/en";
+import { calendarEn } from "./calendar/en";
 import { populationEn } from "./population/en";
 import { pluginsEn } from "./plugins";
 
@@ -103,6 +107,7 @@ export const en = {
   "home.shared": "Shared with me",
   "home.sharedEdit": "Shared with me · you can edit",
   "home.viewOnly": "View only",
+  "home.public": "Public projects",
   "home.archived": "Archived",
   "home.none": "Nothing here.",
   "home.edited": "Edited {when}",
@@ -163,7 +168,8 @@ export const en = {
   "prole.viewer": "Viewer",
 
   "share.title": "Share “{name}”",
-  "share.rolesNote": "Owners manage access. Editors change the network. Commenters and Viewers only look.",
+  "share.rolesNote":
+    "Owners manage access. Editors change the network. Commenters comment on it. Viewers only look.",
   "share.invite": "Invite by e-mail",
   "share.emailPlaceholder": "E-mail they sign in with",
   "share.inviteRole": "Role for the person you invite",
@@ -173,11 +179,15 @@ export const en = {
   "share.roleOf": "Role of {name}",
   "share.remove": "Remove {name}",
   "share.leave": "Leave",
-  "share.link": "View-only link",
-  "share.linkOn": "Anyone signed in to this MobSimLab can open it",
-  "share.linkOff": "Off: only the people above can open it",
-  "share.linkTurnOn": "Turn on",
-  "share.linkTurnOff": "Turn off",
+  "share.visibility": "Who can open it",
+  "share.private": "Private: only the people above can open it",
+  "share.public": "Public: anyone signed in to this MobSimLab can find it and open it, read-only",
+  "share.makePublic": "Make public",
+  "share.makePrivate": "Make private",
+  "share.licenceTitle": "Before you make it public",
+  "share.licenceNote":
+    "This project uses data from OpenStreetMap. It will be shared under the Open Database License (ODbL), © OpenStreetMap contributors. Only make it public if everything else in it may be shared too.",
+  "share.confirmPublic": "I understand, make it public",
   "share.copyLink": "Copy link",
   "share.copied": "Copied",
 
@@ -193,6 +203,8 @@ export const en = {
 
   "project.back": "Back to projects",
   "project.viewOnly": "View only",
+  "project.public": "Public",
+  "project.publicNote": "Public project. Map data © OpenStreetMap contributors, ODbL.",
   "project.notFound": "Project not found",
   "project.notFoundHint": "It may have been deleted, or you no longer have access.",
   "project.toHome": "Back to projects",
@@ -256,6 +268,7 @@ export const en = {
   "gis.spacing": "Stop spacing",
   "gis.streetsView": "Streets",
   "gis.regionsView": "Regions",
+  "gis.zonesView": "Demand zones",
 
   "tables.title": "Tables",
   "tables.intro": "Every calculation about the project, to estimate how well it will perform.",
@@ -274,6 +287,7 @@ export const en = {
   "prefs.delayLane": "In a painted bus or tram lane",
   "prefs.delayDefault": "Assumption library: {value} %",
   "prefs.delayReset": "Use the library value",
+  "prefs.reason": "Reason for this value (optional)",
   "prefs.stationsTitle": "Stations",
   "prefs.stationsIntro":
     "Stops with the same name within this distance count as one station in the schematic map, the journey planner and the benefits and ridership tables.",
@@ -300,6 +314,21 @@ export const en = {
   "prefs.rulesChanged": "{count} changed",
   "prefs.rulesLibrary": "Assumption library: {value} {unit}",
   "prefs.rulesLibraryRange": "Assumption library: {value} {unit} (range {low}–{high})",
+  "prefs.demandTitle": "Demand model",
+  "prefs.demandIntro":
+    "Every value the demand model uses, step by step: zones, trip generation, time periods, distribution, mode choice and assignment. Change a value for this project, or keep the assumption library's.",
+  "prefs.demandStep": "Model step",
+  "prefs.demandSearch": "Search the values",
+  "prefs.demandNone": "No value matches.",
+  "prefs.demandStep.zones": "Zones",
+  "prefs.demandStep.generation": "Trip generation",
+  "prefs.demandStep.periods": "Time periods",
+  "prefs.demandStep.distribution": "Trip distribution",
+  "prefs.demandStep.mode_choice": "Mode choice",
+  "prefs.demandStep.catchment": "Catchment",
+  "prefs.demandStep.assignment": "Assignment",
+  "prefs.demandStep.calibration": "Calibration",
+  "prefs.demandAll": "All steps",
   "prefs.paramsTitle": "All parameters",
   "prefs.paramsIntro":
     "Every value of the assumption library. Set your own for all modes or for one mode; a value for one mode wins over the one for all modes. The library's value stays beside each.",
@@ -319,11 +348,60 @@ export const en = {
   "prefs.group.cost": "Costs",
   "prefs.group.benefits": "Benefits",
   "prefs.group.fares": "Fares",
+  "prefs.group.noise": "Noise",
   "prefs.traction.battery": "battery",
   "prefs.traction.diesel": "diesel",
   "prefs.traction.hydrogen": "hydrogen",
   "prefs.traction.cng": "natural gas (CNG)",
   "prefs.traction.electric": "electric",
+  "report.title": "Assumptions report",
+  "report.intro":
+    "Every assumption library value this project uses: the value, the library's range, where it comes from, and whether the project changed it. Download it as CSV, or print it or save it as PDF.",
+  "report.csv": "Download CSV",
+  "report.changedOnly": "Changed values only",
+  "report.noneChanged": "No value in this group is changed.",
+  "report.loadError": "The sources could not be loaded. Reload the page to try again.",
+  "report.changed": "changed",
+  "report.yes": "Yes",
+  "report.no": "No",
+  "report.basis.cited": "cited",
+  "report.basis.documented": "documented",
+  "report.basis.guess": "educated guess",
+  "report.check.read": "checked against the source",
+  "report.check.secondary": "checked through a secondary source",
+  "report.check.unverified": "not yet checked against the source",
+  "report.sources": "Sources:",
+  "report.usedBy": "Used by: {list}",
+  "report.other": "Other choices",
+  "report.currency": "Currency",
+  "report.currencyCountry": "Each tool shows the country's own currency",
+  "report.rate": "Exchange rate per US$",
+  "report.rateWorldBank": "World Bank official rate",
+  "report.vehiclesOff": "Vehicles not used",
+  "report.switchesOff": "Switches not used",
+  "report.allUsed": "All used",
+  "report.turnout": "Default turnout",
+  "report.col.group": "Group",
+  "report.col.parameter": "Parameter",
+  "report.col.id": "Id",
+  "report.col.mode": "Mode",
+  "report.col.value": "Value used",
+  "report.col.unit": "Unit",
+  "report.col.changed": "Changed",
+  "report.col.libLow": "Library low",
+  "report.col.libCentral": "Library central",
+  "report.col.libHigh": "Library high",
+  "report.col.basis": "Basis",
+  "report.col.check": "Check",
+  "report.col.sources": "Sources",
+  "report.col.reasoning": "Reasoning",
+  "report.col.usedBy": "Used by",
+  "report.col.reason": "Reason",
+  "report.col.changedBy": "Changed by",
+  "report.col.changedAt": "Changed on",
+  "report.changedBy": "Changed by {name} on {date}",
+  "report.changedOn": "Changed on {date}",
+  "report.reason": "Reason: {reason}",
   "prefs.accessTitle": "Platform accessibility",
   "prefs.accessIntro":
     "Step and gap limits between platform and train (TSI PRM), and the floor height used for trains that have none in the vehicle catalogue. Service lines are checked against these at every stop.",
@@ -413,7 +491,11 @@ export const en = {
   ...cargoBikeEn,
   ...depotsEn,
   ...geodataEn,
+  ...commentsEn,
+  ...mslabEn,
+  ...pluginCodeEn,
   ...roadEn,
+  ...calendarEn,
   ...populationEn,
   ...pluginsEn,
 } as const;

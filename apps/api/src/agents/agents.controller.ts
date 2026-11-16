@@ -16,6 +16,7 @@ import { z } from "zod";
 import { type MslRequest, SessionService } from "../auth/session.service";
 import { Requires } from "../iam/requires";
 import { AnalysisService } from "./analysis.service";
+import { withValues } from "./values";
 import { NetworkError } from "./network.service";
 import { type Scope, SCOPE_IDS, SCOPES } from "./oauth";
 import { OAuthService } from "./oauth.service";
@@ -124,13 +125,18 @@ export class AgentsController {
   @Requires("agents.connect")
   async coverage(@Param("id") id: string, @Query("minutes") m: string | undefined, @Req() req: MslRequest) {
     const minutes = m && /^\d{1,2}$/.test(m) ? Math.min(30, Math.max(1, Number(m))) : undefined;
-    const s = await this.wrap(() => this.scenarios.get(req.session!.actor.userId, id));
-    return this.wrap(async () => {
-      const { raw, ...report } = await this.analysis.coverage(s.doc, { preset: "walk_minutes", minutes });
-      void raw;
-      const layer = await this.analysis.catchment(s.doc, minutes ?? 15);
-      return { report, layer };
-    });
+    const { userId, role } = req.session!.actor;
+    const s = await this.wrap(() => this.scenarios.get(userId, id));
+    // With the values of the project the scenario is linked to, if any (values.ts).
+    return withValues(() =>
+      this.wrap(async () => {
+        const doc = await this.scenarios.withProject({ userId, role }, s);
+        const { raw, ...report } = await this.analysis.coverage(doc, { preset: "walk_minutes", minutes });
+        void raw;
+        const layer = await this.analysis.catchment(doc, minutes ?? 15);
+        return { report, layer };
+      }),
+    );
   }
 
   /** Purpose: delete one of the user's scenarios. */

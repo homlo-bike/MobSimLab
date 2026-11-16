@@ -8,8 +8,15 @@ import {
 } from "@nestjs/common";
 import { sql } from "kysely";
 import { AuditService, projectChain } from "../audit/audit.service";
-import { DATABASE, type Database, type InstanceRole, type ProjectRole } from "../db/database";
+import {
+  DATABASE,
+  type Database,
+  type InstanceRole,
+  type ProjectRole,
+  type ProjectVisibility,
+} from "../db/database";
 import { DRAWING_KINDS, type DrawingKind } from "./drawings";
+import { VALUE_CHANGED, VALUE_OBJECT, VALUE_REASON, type ValueState, valueChanges } from "./value-history";
 
 /** Who is acting, with what they need for the audit record. */
 export interface ProjectActor {
@@ -28,11 +35,12 @@ export interface ProjectSummary {
   modes: string[];
   /** The caller's effective role: project role capped by the instance role (05 §3.2). */
   myRole: ProjectRole;
-  /** True when the caller reaches the project only through its view-only link. */
-  viaLink: boolean;
+  /** True when the caller is not a member and reaches the project only because it is public (read-only). */
+  viaPublic: boolean;
   owner: { id: string; displayName: string | null };
   memberCount: number;
-  linkAccess: boolean;
+  /** Private: only members open it. Public: anyone signed in to this instance can open it read-only. */
+  visibility: ProjectVisibility;
   createdAt: string;
   updatedAt: string;
   archivedAt: string | null;
@@ -56,10 +64,26 @@ export interface ProjectDrawing {
   updatedBy: { id: string; displayName: string | null } | null;
 }
 
-/** What each project role may do. Owners manage access, archive and delete. */
-export type ProjectAction = "read" | "edit" | "manage";
+/** One entry of a project value's change history, newest first. */
+export interface ValueHistoryEntry {
+  /** Position in the project's audit chain; pass as `before` for the next page. */
+  seq: number;
+  /** Assumption id, for example `street.mixed_traffic_delay_share`. */
+  id: string;
+  /** `changed`: the number changed (null: the library's applies); `reason`: only a reason was given. */
+  kind: "changed" | "reason";
+  before: ValueState;
+  after: ValueState;
+  reason: string | null;
+  at: string;
+  by: { id: string; displayName: string | null } | null;
+}
+
+/** What each project role may do. Commenters comment on objects; Owners manage access, archive and delete. */
+export type ProjectAction = "read" | "comment" | "edit" | "manage";
 const ALLOWED: Record<ProjectAction, readonly ProjectRole[]> = {
   read: ["owner", "editor", "commenter", "viewer"],
+  comment: ["owner", "editor", "commenter"],
   edit: ["owner", "editor"],
   manage: ["owner"],
 };
@@ -109,10 +133,36 @@ export class ProjectsService {
     });
   }
 
-  /** Purpose: one project the caller may read (as a member or through its view-only link). 404 otherwise. */
+  /**
+   * Purpose: the public projects the caller is not a member of, newest change first, for the projects home.
+   * Archived and deleted projects never show. The caller opens them read-only (FR-PLAT-02).
+   */
+  async listPublic(actor: ProjectActor): Promise<ProjectSummary[]> {
+    const role = effectiveRole(actor.role, "viewer");
+    if (!role) return [];
+    const rows = await this.baseQuery()
+      .where("p.visibility", "=", "public")
+      .where("p.archived_at", "is", null)
+      .where(({ not, exists, selectFrom }) =>
+        not(
+          exists(
+            selectFrom("project.member as me")
+              .select("me.user_id")
+              .whereRef("me.project_id", "=", "p.id")
+              .where("me.user_id", "=", actor.userId),
+          ),
+        ),
+      )
+      .orderBy("p.updated_at", "desc")
+      .limit(500)
+      .execute();
+    return rows.map((r) => this.summary(r, role, true));
+  }
+
+  /** Purpose: one project the caller may read (as a member, or any signed-in person when public). 404 otherwise. */
   async get(actor: ProjectActor, id: string): Promise<ProjectSummary> {
-    const { row, role, viaLink } = await this.load(actor, id, "read");
-    return this.summary(row, role, viaLink);
+    const { row, role, viaPublic } = await this.load(actor, id, "read");
+    return this.summary(row, role, viaPublic);
   }
 
   /**
@@ -186,12 +236,15 @@ export class ProjectsService {
   }
 
   /**
-   * Purpose: copy a project the caller can read into a new project the caller owns. Members are not copied.
+   * Purpose: copy a project the caller is a member of into a new project the caller owns. Members are not
+   * copied, and the copy is private. Public projects are read-only to people who are not members, so they
+   * cannot copy them (403).
    * Side effects: audit `project.duplicated` on the source chain and `project.created` on the new one.
    */
   async duplicate(actor: ProjectActor, id: string, name?: string): Promise<ProjectSummary> {
     const newId = await this.db.transaction().execute(async (tx) => {
-      const { row } = await this.load(actor, id, "read", tx);
+      const { row, viaPublic } = await this.load(actor, id, "read", tx);
+      if (viaPublic) throw new ForbiddenException("public projects are read-only; ask the owner for access");
       const copyName = name ?? `${row.name} (copy)`.slice(0, 200);
       const p = await tx
         .insertInto("project.project")
@@ -256,9 +309,13 @@ export class ProjectsService {
     });
   }
 
-  /** Purpose: the people with access, owner first. Any member may see who else has access. */
+  /**
+   * Purpose: the people with access, owner first. Any member may see who else has access; people who only see
+   * the project because it is public may not (403), so members' e-mail addresses stay among the members.
+   */
   async members(actor: ProjectActor, id: string): Promise<ProjectMember[]> {
-    await this.load(actor, id, "read");
+    const { viaPublic } = await this.load(actor, id, "read");
+    if (viaPublic) throw new ForbiddenException("only members see who has access");
     const rows = await this.db
       .selectFrom("project.member as m")
       .innerJoin("iam.user as u", "u.id", "m.user_id")
@@ -364,12 +421,32 @@ export class ProjectsService {
     });
   }
 
-  /** Purpose: switch the view-only link on or off. Owners only. */
-  async setLinkAccess(actor: ProjectActor, id: string, on: boolean): Promise<ProjectSummary> {
+  /**
+   * Purpose: make a project public or private again. Owners only (10 §1.1).
+   * Inputs: the new visibility; `licenceAccepted` must be true to make a project public, after the Owner has seen
+   * that its OpenStreetMap-derived data is shared under the ODbL (C-12).
+   * Side effects: audit `project.visibility_changed` with the old and new visibility. 409 when nothing changes.
+   */
+  async setVisibility(
+    actor: ProjectActor,
+    id: string,
+    visibility: ProjectVisibility,
+    licenceAccepted: boolean,
+  ): Promise<ProjectSummary> {
     await this.db.transaction().execute(async (tx) => {
-      await this.load(actor, id, "manage", tx, true);
-      await tx.updateTable("project.project").set({ link_access: on }).where("id", "=", id).execute();
-      await this.log(actor, id, "project.link_access_changed", null, { linkAccess: on }, tx);
+      const { row } = await this.load(actor, id, "manage", tx, true);
+      if (row.visibility === visibility) throw new ConflictException(`project is already ${visibility}`);
+      if (visibility === "public" && !licenceAccepted)
+        throw new BadRequestException("confirm the licence notice before making the project public");
+      await tx.updateTable("project.project").set({ visibility }).where("id", "=", id).execute();
+      await this.log(
+        actor,
+        id,
+        "project.visibility_changed",
+        { visibility: row.visibility },
+        visibility === "public" ? { visibility, licenceAccepted: true } : { visibility },
+        tx,
+      );
     });
     return this.get(actor, id);
   }
@@ -399,7 +476,8 @@ export class ProjectsService {
    * the caller started from, or null when the caller has never seen a saved drawing of this kind.
    * Output: the saved drawing with its new version.
    * Side effects: replaces the document and bumps its version and the project's `updated_at`; audit
-   * `project.drawing_saved` (kind, versions and size, not the document). 409 with the current drawing when
+   * `project.drawing_saved` (kind, versions and size, not the document), and for the preferences one
+   * `project.value_changed` or `project.value_reason` per value changed (who, when, old, new, reason). 409 with the current drawing when
    * someone else saved since `baseVersion` (10 §1.2), so the caller can choose whose drawing to keep.
    */
   async saveDrawing(
@@ -458,12 +536,80 @@ export class ProjectsService {
         { kind, version: (cur?.version ?? 0) + 1, bytes: Buffer.byteLength(json) },
         tx,
       );
+      if (kind === "preferences")
+        for (const c of valueChanges(cur?.doc ?? null, doc))
+          await this.audit.append(
+            {
+              chain: projectChain(id),
+              action: c.action,
+              objectType: VALUE_OBJECT,
+              objectId: c.id,
+              projectId: id,
+              actorId: actor.userId,
+              actorIpHash: actor.ipHash,
+              requestId: actor.requestId,
+              before: c.before,
+              after: c.after,
+              reason: c.after.reason,
+            },
+            tx,
+          );
     });
     const saved = await this.drawingQuery(this.db)
       .where("d.project_id", "=", id)
       .where("d.kind", "=", kind)
       .executeTakeFirstOrThrow();
     return this.drawing(saved);
+  }
+
+  /**
+   * Purpose: the change history of the project's values, newest first, for anyone who may read the project.
+   * Inputs: `valueId` limits it to one assumption id; `before` (a `seq`) pages back; `limit` at most 500.
+   * Output: who changed which value when, from what to what, and why.
+   */
+  async valueHistory(
+    actor: ProjectActor,
+    id: string,
+    opts: { valueId?: string; before?: number; limit: number },
+  ): Promise<ValueHistoryEntry[]> {
+    await this.load(actor, id, "read");
+    let q = this.db
+      .selectFrom("audit.record as r")
+      .leftJoin("iam.user as u", "u.id", "r.actor_id")
+      .select([
+        "r.seq",
+        "r.at",
+        "r.actor_id",
+        "u.display_name",
+        "r.action",
+        "r.object_id",
+        "r.before",
+        "r.after",
+        "r.reason",
+      ])
+      .where("r.chain", "=", projectChain(id))
+      .where("r.object_type", "=", VALUE_OBJECT)
+      .where("r.action", "in", [VALUE_CHANGED, VALUE_REASON]);
+    if (opts.valueId) q = q.where("r.object_id", "=", opts.valueId);
+    if (opts.before !== undefined) q = q.where("r.seq", "<", String(opts.before));
+    const rows = await q.orderBy("r.seq", "desc").limit(opts.limit).execute();
+    const state = (v: unknown): ValueState => {
+      const o = (v ?? {}) as { value?: unknown; reason?: unknown };
+      return {
+        value: typeof o.value === "number" ? o.value : null,
+        reason: typeof o.reason === "string" ? o.reason : null,
+      };
+    };
+    return rows.map((r) => ({
+      seq: Number(r.seq),
+      id: r.object_id ?? "",
+      kind: r.action === VALUE_REASON ? "reason" : "changed",
+      before: state(r.before),
+      after: state(r.after),
+      reason: r.reason,
+      at: r.at.toISOString(),
+      by: r.actor_id ? { id: r.actor_id, displayName: r.display_name } : null,
+    }));
   }
 
   // ---------------------------------------------------------------------------------------------------------
@@ -515,7 +661,7 @@ export class ProjectsService {
         "p.description",
         "p.area_name",
         "p.modes",
-        "p.link_access",
+        "p.visibility",
         "p.created_at",
         "p.updated_at",
         "p.archived_at",
@@ -575,15 +721,15 @@ export class ProjectsService {
     if (lock) q = q.forUpdate("p");
     const row = await q.executeTakeFirst();
     if (!row) throw new NotFoundException("project not found");
-    const viaLink = !row.my_role && row.link_access;
+    const viaPublic = !row.my_role && row.visibility === "public";
     const role = row.my_role
       ? effectiveRole(actor.role, row.my_role)
-      : viaLink
+      : viaPublic
         ? effectiveRole(actor.role, "viewer")
         : null;
     if (!allows(role, "read") || !role) throw new NotFoundException("project not found");
     if (!allows(role, action)) throw new ForbiddenException("your role on this project does not allow this");
-    return { row, role, viaLink };
+    return { row, role, viaPublic };
   }
 
   private async member(db: Database, projectId: string, userId: string) {
@@ -604,7 +750,7 @@ export class ProjectsService {
       description: string;
       area_name: string | null;
       modes: string[];
-      link_access: boolean;
+      visibility: ProjectVisibility;
       created_at: Date;
       updated_at: Date;
       archived_at: Date | null;
@@ -613,7 +759,7 @@ export class ProjectsService {
       member_count: number;
     },
     role: ProjectRole,
-    viaLink: boolean,
+    viaPublic: boolean,
   ): ProjectSummary {
     return {
       id: r.id,
@@ -622,10 +768,10 @@ export class ProjectsService {
       areaName: r.area_name,
       modes: r.modes,
       myRole: role,
-      viaLink,
+      viaPublic,
       owner: { id: r.owner_id, displayName: r.owner_name },
       memberCount: Number(r.member_count),
-      linkAccess: r.link_access,
+      visibility: r.visibility,
       createdAt: r.created_at.toISOString(),
       updatedAt: r.updated_at.toISOString(),
       archivedAt: iso(r.archived_at),

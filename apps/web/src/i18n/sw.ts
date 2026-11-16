@@ -1,8 +1,12 @@
 import { roadSw } from "./road/sw";
+import { calendarSw } from "./calendar/sw";
 import { editorsSw } from "./editors/sw";
 import { cargoBikeSw } from "./cargo-bike/sw";
+import { commentsSw } from "./comments/sw";
 import { depotsSw } from "./depots/sw";
 import { geodataSw } from "./geodata/sw";
+import { mslabSw } from "./mslab/sw";
+import { pluginCodeSw } from "./plugin-code/sw";
 import { populationSw } from "./population/sw";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -104,6 +108,7 @@ export const sw: Messages = {
   "home.shared": "Imeshirikiwa nami",
   "home.sharedEdit": "Imeshirikiwa nami · unaweza kuhariri",
   "home.viewOnly": "Kutazama tu",
+  "home.public": "Miradi ya umma",
   "home.archived": "Imehifadhiwa kumbukumbu",
   "home.none": "Hakuna kitu hapa.",
   "home.edited": "Ilihaririwa {when}",
@@ -166,7 +171,7 @@ export const sw: Messages = {
 
   "share.title": "Shiriki “{name}”",
   "share.rolesNote":
-    "Wamiliki husimamia ufikiaji. Wahariri hubadilisha mtandao. Watoa maoni na Watazamaji hutazama tu.",
+    "Wamiliki husimamia ufikiaji. Wahariri hubadilisha mtandao. Watoa maoni huutolea maoni. Watazamaji hutazama tu.",
   "share.invite": "Alika kwa barua pepe",
   "share.emailPlaceholder": "Barua pepe anayoingia nayo",
   "share.inviteRole": "Jukumu la mtu unayemwalika",
@@ -176,11 +181,16 @@ export const sw: Messages = {
   "share.roleOf": "Jukumu la {name}",
   "share.remove": "Ondoa {name}",
   "share.leave": "Ondoka",
-  "share.link": "Kiungo cha kutazama tu",
-  "share.linkOn": "Yeyote aliyeingia kwenye MobSimLab hii anaweza kukifungua",
-  "share.linkOff": "Kimezimwa: watu walio juu tu ndio wanaweza kukifungua",
-  "share.linkTurnOn": "Washa",
-  "share.linkTurnOff": "Zima",
+  "share.visibility": "Nani anaweza kuufungua",
+  "share.private": "Binafsi: watu walio hapo juu tu wanaweza kuufungua",
+  "share.public":
+    "Ya umma: yeyote aliyeingia kwenye MobSimLab hii anaweza kuupata na kuufungua kwa kusoma tu",
+  "share.makePublic": "Fanya uwe wa umma",
+  "share.makePrivate": "Fanya uwe binafsi",
+  "share.licenceTitle": "Kabla ya kuufanya wa umma",
+  "share.licenceNote":
+    "Mradi huu unatumia data kutoka OpenStreetMap. Itashirikiwa chini ya Open Database License (ODbL), © wachangiaji wa OpenStreetMap. Ufanye wa umma tu ikiwa kila kitu kingine ndani yake kinaweza kushirikiwa pia.",
+  "share.confirmPublic": "Nimeelewa, ufanye wa umma",
   "share.copyLink": "Nakili kiungo",
   "share.copied": "Imenakiliwa",
 
@@ -197,6 +207,8 @@ export const sw: Messages = {
 
   "project.back": "Rudi kwenye miradi",
   "project.viewOnly": "Kutazama tu",
+  "project.public": "Ya umma",
+  "project.publicNote": "Mradi wa umma. Data ya ramani © wachangiaji wa OpenStreetMap, ODbL.",
   "project.notFound": "Mradi haukupatikana",
   "project.notFoundHint": "Huenda umefutwa, au huna ufikiaji tena.",
   "project.toHome": "Rudi kwenye miradi",
@@ -257,6 +269,7 @@ export const sw: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "Barabara",
   "gis.regionsView": "Maeneo",
+  "gis.zonesView": "Kanda za mahitaji",
   "gis.intro": "Ongeza au hariri taarifa ambazo hesabu zinatumia.",
   "gis.areas": "Chora eneo au lilete kutoka OpenStreetMap",
   "gis.streets": "Mpangilio wa barabara: njia za basi, baiskeli na tramu, kasi, nyaya za juu",
@@ -280,6 +293,7 @@ export const sw: Messages = {
   "prefs.delayLane": "Katika njia ya basi au tramu iliyochorwa kwa rangi",
   "prefs.delayDefault": "Maktaba ya dhana: {value} %",
   "prefs.delayReset": "Tumia thamani ya maktaba",
+  "prefs.reason": "Sababu ya thamani hii (si lazima)",
   "prefs.stationsTitle": "Stesheni",
   "prefs.stationsIntro":
     "Vituo vyenye jina moja ndani ya umbali huu vinahesabiwa kama stesheni moja kwenye ramani ya mchoro, kipanga safari na majedwali ya manufaa na abiria.",
@@ -306,6 +320,21 @@ export const sw: Messages = {
   "prefs.rulesChanged": "zilizobadilishwa: {count}",
   "prefs.rulesLibrary": "Maktaba ya dhana: {value} {unit}",
   "prefs.rulesLibraryRange": "Maktaba ya dhana: {value} {unit} (kiwango {low}–{high})",
+  "prefs.demandTitle": "Muundo wa mahitaji",
+  "prefs.demandIntro":
+    "Kila thamani ambayo muundo wa mahitaji unatumia, hatua kwa hatua: kanda, uzalishaji wa safari, vipindi vya muda, mgawanyo, uchaguzi wa njia ya usafiri na ugawaji. Badilisha thamani kwa mradi huu, au uhifadhi ile ya maktaba ya dhana.",
+  "prefs.demandStep": "Hatua ya muundo",
+  "prefs.demandSearch": "Tafuta thamani",
+  "prefs.demandNone": "Hakuna thamani inayolingana.",
+  "prefs.demandStep.zones": "Kanda",
+  "prefs.demandStep.generation": "Uzalishaji wa safari",
+  "prefs.demandStep.periods": "Vipindi vya muda",
+  "prefs.demandStep.distribution": "Mgawanyo wa safari",
+  "prefs.demandStep.mode_choice": "Uchaguzi wa njia ya usafiri",
+  "prefs.demandStep.catchment": "Eneo la kufikia",
+  "prefs.demandStep.assignment": "Ugawaji",
+  "prefs.demandStep.calibration": "Urekebishaji",
+  "prefs.demandAll": "Hatua zote",
   "prefs.paramsTitle": "Vigezo vyote",
   "prefs.paramsIntro":
     "Kila thamani ya maktaba ya dhana. Weka yako kwa njia zote au kwa njia moja; thamani ya njia moja inatangulia ile ya njia zote. Thamani ya maktaba hubaki kando.",
@@ -325,11 +354,60 @@ export const sw: Messages = {
   "prefs.group.cost": "Gharama",
   "prefs.group.benefits": "Manufaa",
   "prefs.group.fares": "Nauli",
+  "prefs.group.noise": "Kelele",
   "prefs.traction.battery": "betri",
   "prefs.traction.diesel": "dizeli",
   "prefs.traction.hydrogen": "haidrojeni",
   "prefs.traction.cng": "gesi asilia (CNG)",
   "prefs.traction.electric": "umeme",
+  "report.title": "Ripoti ya makadirio",
+  "report.intro":
+    "Kila thamani ya maktaba ya makadirio ambayo mradi huu unatumia: thamani, kiwango cha maktaba, inakotoka, na kama mradi umeibadilisha. Ipakue kama CSV, au ichapishe au ihifadhi kama PDF.",
+  "report.csv": "Pakua CSV",
+  "report.changedOnly": "Thamani zilizobadilishwa tu",
+  "report.noneChanged": "Hakuna thamani iliyobadilishwa katika kundi hili.",
+  "report.loadError": "Vyanzo havikuweza kupakiwa. Pakia ukurasa upya ujaribu tena.",
+  "report.changed": "imebadilishwa",
+  "report.yes": "Ndiyo",
+  "report.no": "Hapana",
+  "report.basis.cited": "imenukuliwa",
+  "report.basis.documented": "imeandikwa",
+  "report.basis.guess": "makisio yenye msingi",
+  "report.check.read": "imekaguliwa dhidi ya chanzo",
+  "report.check.secondary": "imekaguliwa kupitia chanzo cha pili",
+  "report.check.unverified": "bado haijakaguliwa dhidi ya chanzo",
+  "report.sources": "Vyanzo:",
+  "report.usedBy": "Inatumiwa na: {list}",
+  "report.other": "Chaguo nyingine",
+  "report.currency": "Sarafu",
+  "report.currencyCountry": "Kila zana inaonyesha sarafu ya nchi",
+  "report.rate": "Kiwango cha ubadilishaji kwa US$",
+  "report.rateWorldBank": "Kiwango rasmi cha Benki ya Dunia",
+  "report.vehiclesOff": "Magari yasiyotumika",
+  "report.switchesOff": "Swichi zisizotumika",
+  "report.allUsed": "Zote zinatumika",
+  "report.turnout": "Swichi chaguo-msingi",
+  "report.col.group": "Kundi",
+  "report.col.parameter": "Kigezo",
+  "report.col.id": "Kitambulisho",
+  "report.col.mode": "Njia ya usafiri",
+  "report.col.value": "Thamani iliyotumika",
+  "report.col.unit": "Kipimo",
+  "report.col.changed": "Imebadilishwa",
+  "report.col.libLow": "Maktaba chini",
+  "report.col.libCentral": "Maktaba kati",
+  "report.col.libHigh": "Maktaba juu",
+  "report.col.basis": "Msingi",
+  "report.col.check": "Ukaguzi",
+  "report.col.sources": "Vyanzo",
+  "report.col.reasoning": "Sababu",
+  "report.col.usedBy": "Inatumiwa na",
+  "report.col.reason": "Sababu",
+  "report.col.changedBy": "Imebadilishwa na",
+  "report.col.changedAt": "Ilibadilishwa tarehe",
+  "report.changedBy": "Imebadilishwa na {name} tarehe {date}",
+  "report.changedOn": "Ilibadilishwa tarehe {date}",
+  "report.reason": "Sababu: {reason}",
   "prefs.accessTitle": "Ufikivu wa jukwaa",
   "prefs.accessIntro":
     "Mipaka ya ngazi na pengo kati ya jukwaa na treni (TSI PRM), na kimo cha sakafu kwa treni zisizo nacho kwenye orodha. Njia hukaguliwa kila kituo.",
@@ -421,7 +499,11 @@ export const sw: Messages = {
   ...cargoBikeSw,
   ...depotsSw,
   ...geodataSw,
+  ...commentsSw,
+  ...mslabSw,
+  ...pluginCodeSw,
   ...populationSw,
   ...roadSw,
+  ...calendarSw,
   ...PLUGIN_MESSAGES.sw,
 };

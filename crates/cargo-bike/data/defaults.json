@@ -218,6 +218,13 @@
    "central": 46,
    "high": 52
   },
+  "savings.price_year": {
+   "label": "Year of the reference prices",
+   "unit": "year",
+   "low": 2024,
+   "central": 2024,
+   "high": 2024
+  },
   "savings.bike_price_eur": {
    "label": "Cargo bike purchase price (2024 EUR)",
    "unit": "EUR",

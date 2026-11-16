@@ -6,6 +6,8 @@ import {
   kinematicRunS,
   type Line,
   type LonLat,
+  type Mode,
+  modeDefaults,
   type RoutedDirection,
   type RoutedLine,
   type ScenarioDoc,
@@ -172,7 +174,10 @@ export class NetworkService {
   }
 }
 
-/** Purpose: hash of what a line's routing depends on. */
+/**
+ * Purpose: hash of what a line's routing depends on: its stops and geometry, and for rail and tram lines the
+ * speed, acceleration and braking of the mode (the library's or the linked project's, values.ts).
+ */
 export function lineInput(doc: ScenarioDoc, l: Line): string {
   const pts = l.stop_ids.map((id) => {
     const s = doc.stops.find((x) => x.id === id);
@@ -180,10 +185,21 @@ export function lineInput(doc: ScenarioDoc, l: Line): string {
   });
   return createHash("sha256")
     .update(
-      JSON.stringify({ mode: l.mode, pts, route: STREET_MODES.includes(l.mode) ? null : (l.route ?? null) }),
+      JSON.stringify({
+        mode: l.mode,
+        pts,
+        route: STREET_MODES.includes(l.mode) ? null : (l.route ?? null),
+        ...(STREET_MODES.includes(l.mode) ? {} : { run: kinematics(l.mode) }),
+      }),
     )
     .digest("base64url")
     .slice(0, 22);
+}
+
+/** Purpose: the values a rail or tram line's running times depend on. */
+function kinematics(mode: Mode): number[] {
+  const d = modeDefaults(mode);
+  return [d.max_speed_kmh, d.acceleration_ms2, d.service_braking_ms2];
 }
 
 /** Purpose: both directions from the router's circuit view, whose points are the stops out and back. */
