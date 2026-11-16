@@ -275,6 +275,10 @@ export const ja: Messages = {
   "prefs.delayLane": "塗装のみのバス・路面電車レーン",
   "prefs.delayDefault": "前提値ライブラリ：{value} %",
   "prefs.delayReset": "ライブラリの値を使う",
+  "prefs.stationsTitle": "駅",
+  "prefs.stationsIntro":
+    "この距離内の同名の停留所は、路線図、乗換案内、便益表と利用者表で1つの駅として扱われます。",
+  "prefs.libraryM": "前提値ライブラリ：{value} m",
   "prefs.currencyTitle": "通貨",
   "prefs.currencyIntro":
     "プロジェクトの金額はすべてこの通貨で表示されます（費用表、便益、シナリオ、カーゴバイクの節約額）。",

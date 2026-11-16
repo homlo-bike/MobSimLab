@@ -276,6 +276,10 @@ export const yo: Messages = {
   "prefs.delayLane": "Nínú ọ̀nà bọ́ọ̀sì tàbí tírámù tí a fi kun yà",
   "prefs.delayDefault": "Ilé ìkàwé àròsọ: {value} %",
   "prefs.delayReset": "Lo iye ti ilé ìkàwé",
+  "prefs.stationsTitle": "Àwọn ibùdókọ̀",
+  "prefs.stationsIntro":
+    "Àwọn ibùdókọ̀ orúkọ kan náà láàárín ìjìnnà yìí ni a kà sí ibùdókọ̀ kan nínú máàpù àwòrán, olùṣètò ìrìn-àjò àti àwọn tábìlì àǹfààní àti èrò.",
+  "prefs.libraryM": "Ilé ìkàwé àròsọ: {value} m",
   "prefs.currencyTitle": "Owó",
   "prefs.currencyIntro":
     "Gbogbo owó inú iṣẹ́ náà ni a ń fihàn ní owó yìí: àwọn tábìlì iye owó, àǹfààní, àwọn ìṣẹ̀lẹ̀ àti ìfipamọ́ kẹ̀kẹ́ ẹrù.",

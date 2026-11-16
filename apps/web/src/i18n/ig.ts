@@ -278,6 +278,10 @@ export const ig: Messages = {
   "prefs.delayLane": "N'ụzọ bọs ma ọ bụ tram e ji agba see",
   "prefs.delayDefault": "Ọbá akwụkwọ echiche: {value} %",
   "prefs.delayReset": "Jiri uru ọbá akwụkwọ",
+  "prefs.stationsTitle": "Ọdụ",
+  "prefs.stationsIntro":
+    "Ebe nkwụsị nwere otu aha n'ime anya a ka a na-agụ dị ka otu ọdụ na maapụ eserese, onye nhazi njem na tebụl uru na ndị njem.",
+  "prefs.libraryM": "Ọbá akwụkwọ echiche: {value} m",
   "prefs.currencyTitle": "Ego",
   "prefs.currencyIntro":
     "A na-egosi ego niile nke ọrụ a n'ego a: tebụl ọnụ ahịa, uru, ọnọdụ na nchekwa igwe kaa ibu.",
