@@ -4,6 +4,7 @@ import { editorsFa } from "./editors/fa";
 import { cargoBikeFa } from "./cargo-bike/fa";
 import { commentsFa } from "./comments/fa";
 import { depotsFa } from "./depots/fa";
+import { fleetFa } from "./fleet/fa";
 import { timetablesFa } from "./timetables/fa";
 import { mslabFa } from "./mslab/fa";
 import { pluginCodeFa } from "./plugin-code/fa";
@@ -493,6 +494,7 @@ export const fa: Messages = {
   ...editorsFa,
   ...cargoBikeFa,
   ...depotsFa,
+  ...fleetFa,
   ...timetablesFa,
   ...commentsFa,
   ...mslabFa,

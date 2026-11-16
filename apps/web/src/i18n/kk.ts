@@ -4,6 +4,7 @@ import { editorsKk } from "./editors/kk";
 import { cargoBikeKk } from "./cargo-bike/kk";
 import { commentsKk } from "./comments/kk";
 import { depotsKk } from "./depots/kk";
+import { fleetKk } from "./fleet/kk";
 import { timetablesKk } from "./timetables/kk";
 import { mslabKk } from "./mslab/kk";
 import { pluginCodeKk } from "./plugin-code/kk";
@@ -496,6 +497,7 @@ export const kk: Messages = {
   ...editorsKk,
   ...cargoBikeKk,
   ...depotsKk,
+  ...fleetKk,
   ...timetablesKk,
   ...commentsKk,
   ...mslabKk,

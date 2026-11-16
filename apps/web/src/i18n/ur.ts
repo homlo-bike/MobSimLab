@@ -4,6 +4,7 @@ import { editorsUr } from "./editors/ur";
 import { cargoBikeUr } from "./cargo-bike/ur";
 import { commentsUr } from "./comments/ur";
 import { depotsUr } from "./depots/ur";
+import { fleetUr } from "./fleet/ur";
 import { timetablesUr } from "./timetables/ur";
 import { mslabUr } from "./mslab/ur";
 import { pluginCodeUr } from "./plugin-code/ur";
@@ -497,6 +498,7 @@ export const ur: Messages = {
   ...editorsUr,
   ...cargoBikeUr,
   ...depotsUr,
+  ...fleetUr,
   ...timetablesUr,
   ...commentsUr,
   ...mslabUr,
