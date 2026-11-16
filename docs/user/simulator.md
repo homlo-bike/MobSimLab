@@ -21,6 +21,8 @@ Owners and Editors of the project can also click **Run on the server and save**.
 - While it runs, the panel shows what the worker is doing (planning the period, or which frequency it is trying) and the results so far. **Stop** ends it after the current step and keeps what it found.
 - If the worker stops in the middle (a restart of the server), the run is marked **Failed** with a note to start it again.
 
+Runs wait their turn: the server runs as many at the same time as it has background workers (`MOBSIMLAB_SIM_WORKERS` in `.env`, 1 by default), and the others show **Waiting** until a worker is free.
+
 The result is the same as in the browser: both use the same Rust code. The run in the browser stays as it was, instant and not saved.
 
 ## What the test does

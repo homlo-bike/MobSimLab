@@ -35,3 +35,13 @@ def test_reads_port_and_name(tmp_path: Path) -> None:
     with pytest.raises(ConfigError) as e:
         load_config({**env, "MOBSIMLAB_DB_PORT": "nope"})
     assert "MOBSIMLAB_DB_PORT" in str(e.value)
+
+
+def test_reads_the_number_of_worker_processes(tmp_path: Path) -> None:
+    (tmp_path / "db_worker_password").write_text(STRONG)
+    env = {"MOBSIMLAB_DB_HOST": "db", "MOBSIMLAB_SECRETS_DIR": str(tmp_path)}
+    assert load_config(env).sim_workers == 1
+    assert load_config({**env, "MOBSIMLAB_SIM_WORKERS": "4"}).sim_workers == 4
+    for bad in ("0", "many", "65"):
+        with pytest.raises(ConfigError, match="MOBSIMLAB_SIM_WORKERS"):
+            load_config({**env, "MOBSIMLAB_SIM_WORKERS": bad})

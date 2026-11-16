@@ -82,6 +82,8 @@ describe.skipIf(!haveWorker)("simulation runs on the background worker", () => {
         MOBSIMLAB_DB_HOST: db.host,
         MOBSIMLAB_DB_PORT: String(db.port),
         MOBSIMLAB_SECRETS_DIR: secretsDir,
+        // Two processes, as an install with MOBSIMLAB_SIM_WORKERS=2 runs: every job goes to exactly one.
+        MOBSIMLAB_SIM_WORKERS: "2",
       },
       stdio: ["ignore", "ignore", "inherit"],
     });

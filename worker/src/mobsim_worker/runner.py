@@ -7,10 +7,9 @@ before the job, so the API never shows a finished job with an open run.
 
 from __future__ import annotations
 
-import threading
 import time
 from collections.abc import Callable
-from typing import Any
+from typing import Any, Protocol
 
 import structlog
 from psycopg.types.json import Jsonb
@@ -45,6 +44,15 @@ SET status = %(status)s, progress = NULL, result = %(result)s, error = %(error)s
 WHERE id = %(id)s::uuid AND status = 'running'
 """
 
+
+class StopSignal(Protocol):
+    """Set when the worker is stopping (a ``threading.Event`` or a ``multiprocessing`` event)."""
+
+    def is_set(self) -> bool: ...  # noqa: D102
+
+    def wait(self, timeout: float | None = None) -> bool: ...  # noqa: D102
+
+
 CANCELLED = "SELECT cancel_requested OR status <> 'running' FROM simulation.run WHERE id = %(id)s::uuid"
 
 
@@ -57,7 +65,7 @@ class RunReporter:
         queue: Queue,
         job: Job,
         run_id: str,
-        stop: threading.Event,
+        stop: StopSignal,
         clock: Callable[[], float] = time.monotonic,
     ) -> None:
         """Create a reporter for one run."""
@@ -109,7 +117,7 @@ def process(
     conn: Connection,
     queue: Queue,
     job: Job,
-    stop: threading.Event,
+    stop: StopSignal,
     loader: KernelLoader = load_kernel,
 ) -> str:
     """Run the job's simulation run and settle the run and the job.

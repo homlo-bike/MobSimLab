@@ -9,6 +9,10 @@ from pathlib import Path
 KNOWN_WEAK = ("changeme", "change-me", "password", "secret", "example", "mobsimlab", "postgres", "admin")
 
 
+#: Most worker processes one container runs (each takes one run at a time and can use a CPU core).
+MAX_SIM_WORKERS = 64
+
+
 class ConfigError(Exception):
     """Raised when the worker must not start. The message never contains secret values."""
 
@@ -21,6 +25,7 @@ class WorkerConfig:
         db_host: PostgreSQL host name.
         db_port: PostgreSQL port.
         db_name: Database name.
+        sim_workers: Number of worker processes that take runs at the same time.
         db_password: Password of the restricted ``mobsimlab_worker`` role.
         data_dir: Writable directory for run inputs and outputs.
     """
@@ -30,6 +35,7 @@ class WorkerConfig:
     data_dir: Path
     db_port: int = 5432
     db_name: str = "mobsimlab"
+    sim_workers: int = 1
 
 
 def secret_problem(name: str, value: str, min_len: int = 24) -> str | None:
@@ -86,6 +92,13 @@ def load_config(env: dict[str, str] | None = None) -> WorkerConfig:
     except ValueError:
         problems.append("MOBSIMLAB_DB_PORT must be a port number")
     db_name = env.get("MOBSIMLAB_DB_NAME", "mobsimlab") or "mobsimlab"
+    sim_workers = 1
+    try:
+        sim_workers = int(env.get("MOBSIMLAB_SIM_WORKERS", "1") or "1")
+        if not 1 <= sim_workers <= MAX_SIM_WORKERS:
+            raise ValueError
+    except ValueError:
+        problems.append(f"MOBSIMLAB_SIM_WORKERS must be a whole number from 1 to {MAX_SIM_WORKERS}")
     if problems:
         raise ConfigError("MobSimLab worker refuses to start:\n - " + "\n - ".join(problems))
     return WorkerConfig(
@@ -94,4 +107,5 @@ def load_config(env: dict[str, str] | None = None) -> WorkerConfig:
         data_dir=Path(env.get("MOBSIMLAB_DATA_DIR", "/data")),
         db_port=db_port,
         db_name=db_name,
+        sim_workers=sim_workers,
     )
