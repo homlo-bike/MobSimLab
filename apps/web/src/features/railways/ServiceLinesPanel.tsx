@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { type Translate, useI18n } from "../../i18n/i18n";
 import { fmtM, fmtTime } from "./modes";
-import { Num, Row, Section } from "./RailPanel";
+import { Num, Row, Section } from "./panelControls";
 import {
   hhmm,
   lineMode,
