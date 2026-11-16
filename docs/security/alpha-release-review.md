@@ -104,6 +104,11 @@ Further hardening that answers checklist items directly:
   network namespace is unavailable under Docker's default seccomp profile). Node does not call its permission
   model a sandbox for hostile code, so plugin signing (unsigned plugins only in development mode) remains the main
   protection.
+- **OpenStreetMap and elevation imports** (merged during this review) were checked too: Owners and Editors only,
+  uploads streamed to disk under a size cap (`MOBSIMLAB_OSM_PBF_MAX_MB`, default 4,000 MB; elevation 500 MB),
+  osmium and osm2pgsql started with fixed arguments and no shell. Those tools parse uploaded `.osm.pbf` files
+  outside the tool-runner sandbox, so a flaw in them would run as the app user. This is acceptable for trusted
+  Editors; lower the size cap on instances with many Editors.
 - **`master_key`** is required but unused (see the environment row above).
 - **Duplicated and unused code** from the earlier audit (shared parse helper, gateway request loop, ZIP writers,
   11 unused exports) is not a security issue and was not changed here.
