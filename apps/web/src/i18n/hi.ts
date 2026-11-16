@@ -280,6 +280,7 @@ export const hi: Messages = {
   "prefs.delayLane": "पेंट की गई बस या ट्राम लेन में",
   "prefs.delayDefault": "धारणा पुस्तकालय: {value} %",
   "prefs.delayReset": "पुस्तकालय मान इस्तेमाल करें",
+  "prefs.reason": "इस मान का कारण (वैकल्पिक)",
   "prefs.stationsTitle": "स्टेशन",
   "prefs.stationsIntro":
     "इस दूरी के भीतर एक ही नाम वाले स्टॉप योजनाबद्ध नक्शे, यात्रा योजनाकार और लाभ व यात्री तालिकाओं में एक स्टेशन गिने जाते हैं।",

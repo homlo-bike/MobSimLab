@@ -288,6 +288,7 @@ export const de: Messages = {
   "prefs.delayLane": "Auf einer markierten Bus- oder Straßenbahnspur",
   "prefs.delayDefault": "Annahmenbibliothek: {value} %",
   "prefs.delayReset": "Wert der Bibliothek verwenden",
+  "prefs.reason": "Grund für diesen Wert (optional)",
   "prefs.stationsTitle": "Stationen",
   "prefs.stationsIntro":
     "Gleichnamige Haltestellen innerhalb dieser Entfernung gelten im Liniennetzplan, in der Reiseplanung und in den Nutzen- und Fahrgasttabellen als eine Station.",

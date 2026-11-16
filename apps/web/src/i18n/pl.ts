@@ -282,6 +282,7 @@ export const pl: Messages = {
   "prefs.delayLane": "Na buspasie lub pasie tramwajowym tylko wymalowanym",
   "prefs.delayDefault": "Biblioteka założeń: {value} %",
   "prefs.delayReset": "Użyj wartości z biblioteki",
+  "prefs.reason": "Powód tej wartości (opcjonalnie)",
   "prefs.stationsTitle": "Stacje",
   "prefs.stationsIntro":
     "Przystanki o tej samej nazwie w tej odległości liczą się jako jedna stacja na schemacie sieci, w planerze podróży oraz w tabelach korzyści i pasażerów.",

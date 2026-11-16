@@ -755,7 +755,7 @@ export const editorsNl = {
   "noise.dbOrMore": "{db} dB of meer",
   "noise.dbRange": "{from}–{to} dB",
   "noise.mapNote":
-    "Alleen de geplande dienst, zonder algemeen verkeer. Gebouwen schermen af over hun daken en rond hun uiteinden (ISO 9613-2) en hun gevels reflecteren eenmaal (eerste orde). Gebouwen zonder hoogte in OpenStreetMap krijgen 3 m per opgegeven verdieping, of 8 m (aannames van de geluidsplug-in). Het niveau van een gebouw laat de reflectie van de eigen gevel weg. Gebouwen © OpenStreetMap-bijdragers.",
+    "Alleen de dienstlijnen, zonder algemeen verkeer. Gebouwen schermen af over hun daken en rond hun uiteinden (ISO 9613-2) en hun gevels reflecteren eenmaal (eerste orde). Gebouwen zonder hoogte in OpenStreetMap krijgen 3 m per opgegeven verdieping, of 8 m (aannames van de geluidsplug-in). Het niveau van een gebouw laat de reflectie van de eigen gevel weg. Gebouwen © OpenStreetMap-bijdragers.",
   "noise.terrain": "Terreinhoogten gebruiken (Copernicus GLO-30)",
   "noise.terrainTooLarge":
     "De lijnen beslaan een te groot gebied om het terrein te laden, dus deze kaart is berekend op vlak terrein.",
@@ -786,6 +786,48 @@ export const editorsNl = {
     "Bronnen, gebouwen en ontvangers staan op het terrein, en heuvels schermen af; daken en bomen worden uit het oppervlaktemodel gefilterd. Terrein: Copernicus DEM GLO-30 © DLR e.V. en © Airbus Defence and Space GmbH, beschikbaar gesteld onder COPERNICUS door de Europese Unie en ESA.",
   "noise.flat": "Vlak terrein.",
   "noise.popCredit": "Bevolking: WorldPop, University of Southampton (doi:10.5258/SOTON/WP00839), CC BY 4.0.",
+  "noise.scenario": "Scenario",
+  "noise.currentDesign": "Huidig ontwerp",
+  "noise.compareTo": "Vergelijken met",
+  "noise.noComparison": "Geen vergelijking",
+  "noise.inputLevel": "Voertuigen en snelheden uit",
+  "noise.level.planned": "Gepland: intervallen en voorbeeldaantallen",
+  "noise.level.timetabled": "Dienstregeling: de ritten van de dag",
+  "noise.level.simulated": "Gesimuleerd: een opgeslagen wegsimulatie",
+  "noise.simulatedIntro":
+    "Straatlijnen nemen de bussen die de wegsimulatie op elk deel telde en hun snelheden daar. Uren die de simulatie niet volledig dekt, en spoorlijnen, houden hun dienstregeling.",
+  "noise.noRuns": "Nog geen voltooide wegsimulatie: simuleer eerst de straatlijnen in de wegsimulatie.",
+  "noise.chooseRun": "Kies een wegsimulatie",
+  "noise.run": "Wegsimulatie",
+  "noise.runFor": "Wegsimulatie voor {name}",
+  "noise.runLabel": "{when}, {from}–{to}",
+  "noise.runHours":
+    "Bussen uit de wegsimulatie van {run} voor {hours}; de dienstregeling voor de andere uren.",
+  "noise.runNoHours":
+    "De wegsimulatie van {run} dekt geen volledig uur, dus de straatlijnen houden hun dienstregeling.",
+  "noise.runNoTimetable":
+    "Geen straatlijn met hetzelfde nummer voor {lines}: buiten de uren van de simulatie rijden er op deze lijnen geen bussen.",
+  "noise.railTimetabled":
+    "Spoorlijnen houden hun dienstregeling: de capaciteitssimulatie van het spoor bewaart geen treinposities.",
+  "noise.noRailService": "Het spoor heeft geen gepubliceerde lijn en dus geen treinen op deze kaart.",
+  "noise.railNotPublished":
+    "De lijnen van het spoor konden niet worden gepubliceerd ({error}), dus het heeft geen treinen op deze kaart.",
+  "noise.computingOf": "Geluidskaart van {name} wordt berekend…",
+  "noise.noDifference":
+    "De twee kaarten konden niet cel voor cel worden vergeleken, dus er wordt geen verschilkaart getoond.",
+  "noise.inputUsed": "{name} · {level}",
+  "noise.comparing": "{name} vergeleken met {other} · {level}",
+  "noise.differenceNote":
+    "Verandering in dB waar een van beide scenario’s de laagste klasse haalt; veranderingen onder 1 dB worden niet getoond. Beide gebruiken dezelfde gebouwen, hetzelfde terrein en dezelfde bewoners, dus het algemene verkeer zou tegen elkaar wegvallen.",
+  "noise.changeBelow": "minder dan {db}",
+  "noise.changeAbove": "{db} of meer",
+  "noise.changeRange": "{from} tot {to}",
+  "noise.comparisonTable": "Verandering per geluidsklasse",
+  "noise.comparisonCaptionPeople": "Bewoners naar het niveau aan de meest blootgestelde zijde van hun gebouw",
+  "noise.comparisonCaptionBuildings": "Gebouwen naar het niveau aan hun meest blootgestelde zijde",
+  "noise.change": "Verandering",
+  "noise.exportContours": "Contouren exporteren (GeoJSON)",
+  "noise.exportTable": "Tabel exporteren (CSV)",
 
   "jp.title": "Reisplanner",
   "jp.s": "{n} s",

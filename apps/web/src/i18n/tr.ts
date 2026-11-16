@@ -281,6 +281,7 @@ export const tr: Messages = {
   "prefs.delayLane": "Yalnızca boyanmış otobüs veya tramvay şeridinde",
   "prefs.delayDefault": "Varsayımlar kitaplığı: %{value}",
   "prefs.delayReset": "Kitaplık değerini kullan",
+  "prefs.reason": "Bu değerin nedeni (isteğe bağlı)",
   "prefs.stationsTitle": "İstasyonlar",
   "prefs.stationsIntro":
     "Bu mesafedeki aynı adlı duraklar şematik haritada, yolculuk planlayıcıda ve fayda ile yolcu tablolarında tek istasyon sayılır.",

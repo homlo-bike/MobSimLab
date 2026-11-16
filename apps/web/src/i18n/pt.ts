@@ -283,6 +283,7 @@ export const pt: Messages = {
   "prefs.delayLane": "Em uma faixa pintada de ônibus ou bonde",
   "prefs.delayDefault": "Biblioteca de premissas: {value} %",
   "prefs.delayReset": "Usar o valor da biblioteca",
+  "prefs.reason": "Motivo deste valor (opcional)",
   "prefs.stationsTitle": "Estações",
   "prefs.stationsIntro":
     "Paradas com o mesmo nome dentro desta distância contam como uma só estação no mapa esquemático, no planejador de viagens e nas tabelas de benefícios e de passageiros.",

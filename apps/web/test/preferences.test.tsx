@@ -1,5 +1,6 @@
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { ReasonField } from "../src/workspace/ReasonField";
 import {
   DESIGN_RULES,
   delaysFrom,
@@ -14,6 +15,8 @@ import {
   SAME_NAME_PREF,
   sameNameStationM,
   withPref,
+  withReason,
+  reasonOf,
   withSwitches,
   withVehicles,
   LIBRARY_DEFAULT_TURNOUT,
@@ -42,6 +45,47 @@ describe("project preferences", () => {
     // Removing the value brings the library's back; nonsense is clamped.
     expect(delaysFrom(withPref(doc, "street.mixed_traffic_delay_share", null)).mixed_traffic).toBe(0.25);
     expect(delaysFrom({ values: { "street.bus_lane_delay_share": -1 } }).bus_lane).toBe(0);
+  });
+
+  it("keeps a reason with a changed value until the value changes again", () => {
+    const id = "street.mixed_traffic_delay_share";
+    const doc = withReason(withPref(null, id, 0.4), id, "  Survey of 2026 ");
+    expect(reasonOf(doc, id)).toBe("Survey of 2026");
+    // The same number again keeps the reason; another number or a reset drops it.
+    expect(reasonOf(withPref(doc, id, 0.4), id)).toBe("Survey of 2026");
+    expect(withPref(doc, id, 0.5).reasons).toBeUndefined();
+    expect(withPref(doc, id, null)).toEqual({ values: {} });
+    // A value changed elsewhere (for example in the cost tables) leaves other reasons alone.
+    expect(reasonOf(withPref(doc, "street.bus_lane_delay_share", 0.1), id)).toBe("Survey of 2026");
+    expect(withReason(doc, id, " ").reasons).toBeUndefined();
+    expect(reasonOf(withReason(doc, id, "x".repeat(600)), id)).toHaveLength(500);
+  });
+
+  it("asks for a reason only for the project's own values, and saves it when the field is left", () => {
+    const id = "street.mixed_traffic_delay_share";
+    const onPreferences = vi.fn();
+    const { rerender } = render(
+      <ReasonField valueId={id} preferences={null} editable onPreferences={onPreferences} />,
+    );
+    expect(screen.queryByRole("textbox")).toBeNull();
+    const doc = withPref(null, id, 0.4);
+    rerender(<ReasonField valueId={id} preferences={doc} editable onPreferences={onPreferences} />);
+    const box = screen.getByRole("textbox", { name: "Reason for this value (optional)" });
+    fireEvent.change(box, { target: { value: "Survey of 2026" } });
+    expect(onPreferences).not.toHaveBeenCalled();
+    fireEvent.blur(box);
+    expect(onPreferences).toHaveBeenCalledWith(withReason(doc, id, "Survey of 2026"));
+    // Read-only: the reason as text.
+    rerender(
+      <ReasonField
+        valueId={id}
+        preferences={withReason(doc, id, "Survey of 2026")}
+        editable={false}
+        onPreferences={onPreferences}
+      />,
+    );
+    expect(screen.getByText(/Survey of 2026/)).toBeTruthy();
+    expect(screen.queryByRole("textbox")).toBeNull();
   });
 
   it("uses one same-name station distance: the project's, else the library's", () => {
