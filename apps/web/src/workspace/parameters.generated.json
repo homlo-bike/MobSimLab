@@ -1437,6 +1437,20 @@
    }
   },
   {
+   "id": "timetable.max_terminal_wait_min",
+   "label": "Longest a vehicle waits at a terminal for its next trip before it returns to the depot instead",
+   "group": "Operations",
+   "unit": "min",
+   "kind": "number",
+   "values": {
+    "*": [
+     10,
+     20,
+     45
+    ]
+   }
+  },
+  {
    "id": "timetable.min_buffer_s",
    "label": "Minimum buffer time between the blocking times of two trains on one section",
    "group": "Operations",
