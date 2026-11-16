@@ -17,6 +17,8 @@ interface PluginRow {
   tiers: string[];
   permissions: string[];
   contributes: ProjectPlugin["contributes"];
+  /** It brings code or tab pages of its own, which run in the sandbox. */
+  runsCode?: boolean;
   signature?: { status: "trusted" | "unsigned"; signer: string | null };
   sha256?: string;
   installedAt?: string;
@@ -37,6 +39,8 @@ interface AdminPlugins {
   keys: KeyRow[];
   developmentMode: boolean;
   allowUnsigned: boolean;
+  /** Memory and time of one call of plugin code. */
+  limits?: { memoryMb: number; timeS: number };
 }
 
 interface Inspection {
@@ -89,8 +93,15 @@ export function PluginsAdmin({
   const [inspection, setInspection] = useState<Inspection | null>(null);
   const [keyName, setKeyName] = useState("");
   const [keyPem, setKeyPem] = useState("");
+  const [limits, setLimits] = useState<{ memoryMb: string; timeS: string } | null>(null);
+  const [limitsSaved, setLimitsSaved] = useState(false);
   const load = useCallback(
-    () => run(async () => setData(await get<AdminPlugins>("/api/admin/plugins"))),
+    () =>
+      run(async () => {
+        const d = await get<AdminPlugins>("/api/admin/plugins");
+        setData(d);
+        if (d.limits) setLimits({ memoryMb: String(d.limits.memoryMb), timeS: String(d.limits.timeS) });
+      }),
     [run],
   );
   useEffect(() => {
@@ -137,6 +148,18 @@ export function PluginsAdmin({
       await load();
     });
   };
+  const saveLimits = (e: FormEvent) => {
+    e.preventDefault();
+    if (!limits) return;
+    setLimitsSaved(false);
+    void run(async () => {
+      await send("PUT", "/api/admin/plugin-limits", csrfToken, {
+        memoryMb: Number(limits.memoryMb),
+        timeS: Number(limits.timeS),
+      });
+      setLimitsSaved(true);
+    });
+  };
   const sigText = (s: Inspection["signature"], signer: string | null) =>
     s === "trusted"
       ? t("plugins.signedBy", { name: signer ?? "" })
@@ -152,6 +175,7 @@ export function PluginsAdmin({
       </div>
       {p.description && <p className="m-0 text-slate-600">{p.description}</p>}
       <p className="m-0 text-xs text-slate-500">{t("plugins.adds", { list: addsLine(p.contributes, t) })}</p>
+      {p.runsCode && <p className="m-0 text-xs font-semibold text-slate-700">{t("pcode.runsCode")}</p>}
       {p.permissions.length > 0 && (
         <p className="m-0 text-xs text-slate-500">
           {t("plugins.uses", {
@@ -172,7 +196,7 @@ export function PluginsAdmin({
           <h3 id="ap-install" className="font-semibold">
             {t("plugins.installTitle")}
           </h3>
-          <p className="m-0 text-slate-500">{t("plugins.installIntro")}</p>
+          <p className="m-0 text-slate-500">{t("pcode.installIntro")}</p>
           <label className="flex flex-col gap-1">
             {t("plugins.choose")}
             <input
@@ -311,6 +335,52 @@ export function PluginsAdmin({
             {t("plugins.addKey")}
           </button>
         </form>
+        {limits && (
+          <form onSubmit={saveLimits} className="mt-4 flex flex-col gap-2" aria-labelledby="ap-limits">
+            <h3 id="ap-limits" className="font-semibold">
+              {t("pcode.limits")}
+            </h3>
+            <p className="m-0 text-slate-500">{t("pcode.limitsIntro")}</p>
+            <div className="flex flex-wrap gap-3">
+              <label className="flex flex-col gap-1">
+                {t("pcode.memory")}
+                <input
+                  type="number"
+                  required
+                  min={16}
+                  max={2048}
+                  step={1}
+                  className="w-28 rounded border border-slate-300 px-2 py-1"
+                  value={limits.memoryMb}
+                  onChange={(e) => setLimits({ ...limits, memoryMb: e.target.value })}
+                />
+              </label>
+              <label className="flex flex-col gap-1">
+                {t("pcode.time")}
+                <input
+                  type="number"
+                  required
+                  min={1}
+                  max={600}
+                  step={1}
+                  className="w-28 rounded border border-slate-300 px-2 py-1"
+                  value={limits.timeS}
+                  onChange={(e) => setLimits({ ...limits, timeS: e.target.value })}
+                />
+              </label>
+            </div>
+            <div className="flex items-center gap-2">
+              <button type="submit" className="rounded bg-slate-800 px-2 py-1 text-white">
+                {t("pcode.saveLimits")}
+              </button>
+              {limitsSaved && (
+                <span role="status" className="text-slate-600">
+                  {t("pcode.saved")}
+                </span>
+              )}
+            </div>
+          </form>
+        )}
         {data.developmentMode && actorRole === "owner" && (
           <label className="mt-2 flex items-center gap-2">
             <input

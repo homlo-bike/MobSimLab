@@ -82,7 +82,7 @@ Two layers:
 - Every API input validated by Zod schemas generated from the shared contract; unknown fields rejected.
 - Geometry inputs: validity (`ST_IsValid`), vertex count limits, coordinate bounds, area limits per project.
 - File uploads: size limits per type, magic-number sniffing, extension allowlist (GeoTIFF, GeoJSON, CSV, GTFS zip, `.mslab`, vehicle JSON, PBF). Zip bomb protection: limits on entry count, total uncompressed size, compression ratio, and path traversal (`..`, absolute paths, symlinks rejected).
-- Uploaded files are parsed in **tool-runner** child processes with resource limits (CPU time, memory, no network, read-only filesystem except a scratch dir, seccomp default profile).
+- Uploaded files are parsed in **tool-runner** child processes with resource limits (CPU time, memory, no network, read-only filesystem except a scratch dir, seccomp default profile). Built for `.mslab` import (`apps/api/src/tool-runner/README.md`): Node permission model, own network namespace where allowed plus a network guard, `prlimit`, timeout, empty environment.
 - Output: React escapes by default; `dangerouslySetInnerHTML` banned by lint. User Markdown (descriptions, comments) rendered with a strict sanitiser (DOMPurify, no raw HTML). Exports (CSV) escape formula prefixes (`=`, `+`, `-`, `@`) to prevent CSV injection.
 - SQL: parameterised queries only (Kysely); dynamic identifiers only from allowlists.
 

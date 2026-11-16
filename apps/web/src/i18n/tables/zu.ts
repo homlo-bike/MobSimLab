@@ -338,7 +338,7 @@ export const tablesZu = {
   "cost.p.cost.contingency_share": "Okungalindelekile (ingozi nokuchema kwethemba)",
   "cost.p.cost.opex.vehicle_hour": "Izindleko zokusebenza zemoto yomgwaqo ngehora lemoto",
   "cost.p.cost.opex.train_hour": "Izindleko zabasebenzi besitimela nezihlobene nesitimela ngehora lesitimela",
-  "cost.p.cost.opex.car_km": "Izindleko zokuhamba kwesitimela ngenqola-km (nge-25 m yesitimela)",
+  "cost.p.cost.opex.car_km": "Izindleko zokuhamba kwesitimela ngenqola-km (ngenqola yobude obubalwayo)",
   "cost.p.cost.opex.infrastructure_share": "Ukulungiswa nokusebenza kwengqalasizinda konyaka",
   "cost.p.cost.opex.overhead_share": "Ukuphatha nezindleko zokuphatha",
   "cost.p.cost.service_hours_per_day": "Amahora esevisi ansuku zonke emizila yomgwaqo",
@@ -366,4 +366,6 @@ export const tablesZu = {
   "cost.pu.days": "izinsuku",
   "cost.pu.year": "unyaka",
   "cost.pu.passengers": "abagibeli",
+  "cost.p.cost.opex.car_length_m":
+    "Izindleko zokuhamba kwesitimela: ubude besitimela obubalwa njengenqola eyodwa",
 } satisfies TablesMessages;

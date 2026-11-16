@@ -327,7 +327,7 @@ export const tablesBn = {
   "cost.p.cost.contingency_share": "আকস্মিক (ঝুঁকি ও আশাবাদী পক্ষপাত)",
   "cost.p.cost.opex.vehicle_hour": "প্রতি যান-ঘণ্টা রাস্তার যানের পরিচালনা খরচ",
   "cost.p.cost.opex.train_hour": "প্রতি ট্রেন-ঘণ্টা রেলের কর্মী ও ট্রেন-সম্পর্কিত খরচ",
-  "cost.p.cost.opex.car_km": "প্রতি বগি-কিমি রেলের চলাচল খরচ (প্রতি 25 মি ট্রেন)",
+  "cost.p.cost.opex.car_km": "প্রতি বগি-কিমি রেলের চলাচল খরচ (গণনাকৃত দৈর্ঘ্যের প্রতি বগি)",
   "cost.p.cost.opex.infrastructure_share": "বার্ষিক অবকাঠামো রক্ষণাবেক্ষণ ও পরিচালনা",
   "cost.p.cost.opex.overhead_share": "প্রশাসন ও ওভারহেড",
   "cost.p.cost.service_hours_per_day": "রাস্তার লাইনের দৈনিক সেবার সময়",
@@ -353,4 +353,5 @@ export const tablesBn = {
   "cost.pu.days": "দিন",
   "cost.pu.year": "বছর",
   "cost.pu.passengers": "যাত্রী",
+  "cost.p.cost.opex.car_length_m": "রেলের চলাচল খরচ: একটি বগি হিসেবে গোনা ট্রেনের দৈর্ঘ্য",
 } satisfies TablesMessages;

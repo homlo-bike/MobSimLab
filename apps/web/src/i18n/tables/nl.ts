@@ -330,7 +330,7 @@ export const tablesNl = {
   "cost.p.cost.contingency_share": "Onvoorzien (risico en optimismebias)",
   "cost.p.cost.opex.vehicle_hour": "Exploitatiekosten van wegvoertuigen per voertuiguur",
   "cost.p.cost.opex.train_hour": "Personeels- en treingebonden kosten per treinuur",
-  "cost.p.cost.opex.car_km": "Rijkosten spoor per rijtuig-km (per 25 m trein)",
+  "cost.p.cost.opex.car_km": "Rijkosten spoor per rijtuig-km (per rijtuig van de aangehouden rijtuiglengte)",
   "cost.p.cost.opex.infrastructure_share": "Onderhoud en beheer van de infrastructuur per jaar",
   "cost.p.cost.opex.overhead_share": "Administratie en overhead",
   "cost.p.cost.service_hours_per_day": "Bedieningsuren per dag van een straatlijn",
@@ -357,4 +357,5 @@ export const tablesNl = {
   "cost.pu.days": "dagen",
   "cost.pu.year": "jaar",
   "cost.pu.passengers": "reizigers",
+  "cost.p.cost.opex.car_length_m": "Rijkosten spoor: treinlengte die als één rijtuig telt",
 } satisfies TablesMessages;

@@ -337,7 +337,7 @@ export const tablesPl = {
   "cost.p.cost.contingency_share": "Rezerwa (ryzyko i błąd optymizmu)",
   "cost.p.cost.opex.vehicle_hour": "Koszt eksploatacji pojazdu drogowego na wozogodzinę",
   "cost.p.cost.opex.train_hour": "Koszt drużyny i związany z pociągiem na pociągogodzinę",
-  "cost.p.cost.opex.car_km": "Koszt jazdy kolei na wagonokilometr (na 25 m pociągu)",
+  "cost.p.cost.opex.car_km": "Koszt ruchu kolejowego na wagonokm (na wagon o przyjętej długości)",
   "cost.p.cost.opex.infrastructure_share": "Utrzymanie i eksploatacja infrastruktury rocznie",
   "cost.p.cost.opex.overhead_share": "Administracja i koszty ogólne",
   "cost.p.cost.service_hours_per_day": "Godziny kursowania dziennie linii ulicznej",
@@ -364,4 +364,5 @@ export const tablesPl = {
   "cost.pu.days": "dni",
   "cost.pu.year": "rok",
   "cost.pu.passengers": "pasażerowie",
+  "cost.p.cost.opex.car_length_m": "Koszt ruchu kolejowego: długość pociągu liczona jako jeden wagon",
 } satisfies TablesMessages;

@@ -356,7 +356,7 @@ export const tablesEn = {
   "cost.p.cost.contingency_share": "Contingency (risk and optimism bias)",
   "cost.p.cost.opex.vehicle_hour": "Road vehicle operating cost per vehicle-hour",
   "cost.p.cost.opex.train_hour": "Rail crew and train-related cost per train-hour",
-  "cost.p.cost.opex.car_km": "Rail running cost per car-km (per 25 m of train)",
+  "cost.p.cost.opex.car_km": "Rail running cost per car-km (per car of the counted car length)",
   "cost.p.cost.opex.infrastructure_share": "Infrastructure maintenance and operation per year",
   "cost.p.cost.opex.overhead_share": "Administration and overheads",
   "cost.p.cost.service_hours_per_day": "Service hours per day of a street line",
@@ -383,6 +383,7 @@ export const tablesEn = {
   "cost.pu.days": "days",
   "cost.pu.year": "year",
   "cost.pu.passengers": "passengers",
+  "cost.p.cost.opex.car_length_m": "Rail running cost: length of train counted as one car",
 } as const;
 
 /** Keys of the tables messages. */

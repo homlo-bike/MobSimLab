@@ -1,8 +1,13 @@
 import { roadAm } from "./road/am";
+import { calendarAm } from "./calendar/am";
 import { editorsAm } from "./editors/am";
 import { cargoBikeAm } from "./cargo-bike/am";
+import { commentsAm } from "./comments/am";
 import { depotsAm } from "./depots/am";
 import { tablesAm } from "./tables/am";
+import { mslabAm } from "./mslab/am";
+import { pluginCodeAm } from "./plugin-code/am";
+import { populationAm } from "./population/am";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -100,6 +105,7 @@ export const am: Messages = {
   "home.shared": "ከእኔ ጋር የተጋሩ",
   "home.sharedEdit": "ከእኔ ጋር የተጋሩ · ማርትዕ ይችላሉ",
   "home.viewOnly": "ለማየት ብቻ",
+  "home.public": "የሕዝብ ፕሮጀክቶች",
   "home.archived": "በማህደር የተቀመጡ",
   "home.none": "እዚህ ምንም የለም።",
   "home.edited": "የተስተካከለው {when}",
@@ -160,7 +166,8 @@ export const am: Messages = {
   "prole.viewer": "ተመልካች",
 
   "share.title": "“{name}”ን አጋራ",
-  "share.rolesNote": "ባለቤቶች መዳረሻን ያስተዳድራሉ። አርታዒዎች አውታሩን ይቀይራሉ። አስተያየት ሰጪዎች እና ተመልካቾች ያያሉ ብቻ።",
+  "share.rolesNote":
+    "ባለቤቶች መዳረሻን ያስተዳድራሉ። አርታዒዎች አውታሩን ይቀይራሉ። አስተያየት ሰጪዎች በእሱ ላይ አስተያየት ይሰጣሉ። ተመልካቾች ያያሉ ብቻ።",
   "share.invite": "በኢሜይል ጋብዝ",
   "share.emailPlaceholder": "የሚገቡበት ኢሜይል",
   "share.inviteRole": "ለሚጋብዙት ሰው ሚና",
@@ -170,11 +177,15 @@ export const am: Messages = {
   "share.roleOf": "የ {name} ሚና",
   "share.remove": "{name}ን አስወግድ",
   "share.leave": "ልቀቅ",
-  "share.link": "ለማየት ብቻ ማገናኛ",
-  "share.linkOn": "ወደዚህ MobSimLab የገባ ማንኛውም ሰው ሊከፍተው ይችላል",
-  "share.linkOff": "ጠፍቷል፦ ከላይ ያሉት ሰዎች ብቻ ሊከፍቱት ይችላሉ",
-  "share.linkTurnOn": "አብራ",
-  "share.linkTurnOff": "አጥፋ",
+  "share.visibility": "ማን ሊከፍተው ይችላል",
+  "share.private": "የግል፦ ከላይ ያሉት ሰዎች ብቻ ሊከፍቱት ይችላሉ",
+  "share.public": "የሕዝብ፦ ወደዚህ MobSimLab የገባ ማንኛውም ሰው ሊያገኘውና ለንባብ ብቻ ሊከፍተው ይችላል",
+  "share.makePublic": "የሕዝብ አድርግ",
+  "share.makePrivate": "የግል አድርግ",
+  "share.licenceTitle": "የሕዝብ ከማድረግዎ በፊት",
+  "share.licenceNote":
+    "ይህ ፕሮጀክት ከOpenStreetMap የተገኘ ውሂብ ይጠቀማል። በOpen Database License (ODbL) ስር ይጋራል፣ © የOpenStreetMap አበርካቾች። በውስጡ ያለው ሌላው ሁሉ መጋራት የሚችል ከሆነ ብቻ የሕዝብ ያድርጉት።",
+  "share.confirmPublic": "ተረድቻለሁ፣ የሕዝብ አድርግ",
   "share.copyLink": "ማገናኛ ቅዳ",
   "share.copied": "ተቀድቷል",
 
@@ -190,6 +201,8 @@ export const am: Messages = {
 
   "project.back": "ወደ ፕሮጀክቶች ተመለስ",
   "project.viewOnly": "ለማየት ብቻ",
+  "project.public": "የሕዝብ",
+  "project.publicNote": "የሕዝብ ፕሮጀክት። የካርታ ውሂብ © የOpenStreetMap አበርካቾች፣ ODbL።",
   "project.notFound": "ፕሮጀክቱ አልተገኘም",
   "project.notFoundHint": "ተሰርዞ ሊሆን ይችላል፣ ወይም ከእንግዲህ መዳረሻ የለዎትም።",
   "project.toHome": "ወደ ፕሮጀክቶች ተመለስ",
@@ -247,6 +260,7 @@ export const am: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "መንገዶች",
   "gis.regionsView": "ክልሎች",
+  "gis.zonesView": "የጉዞ ዞኖች",
   "gis.intro": "ስሌቶች የሚጠቀሙበትን መረጃ ያክሉ ወይም ያርትዑ።",
   "gis.areas": "አካባቢ ይሳሉ ወይም ከ OpenStreetMap ያስገቡ",
   "gis.streets": "የመንገድ አቀማመጥ፦ የአውቶቡስ፣ የብስክሌት እና የትራም መስመሮች፣ ፍጥነቶች፣ የላይ ሽቦዎች",
@@ -270,6 +284,7 @@ export const am: Messages = {
   "prefs.delayLane": "በቀለም በተሳለ የአውቶቡስ ወይም የትራም መስመር ውስጥ",
   "prefs.delayDefault": "የግምቶች ቤተ መጻሕፍት፦ {value} %",
   "prefs.delayReset": "የቤተ መጻሕፍቱን እሴት ተጠቀም",
+  "prefs.reason": "የዚህ እሴት ምክንያት (አማራጭ)",
   "prefs.stationsTitle": "ጣቢያዎች",
   "prefs.stationsIntro":
     "በዚህ ርቀት ውስጥ ተመሳሳይ ስም ያላቸው ማቆሚያዎች በስኬማቲክ ካርታው፣ በጉዞ እቅድ አውጪው እና በጥቅሞችና በተሳፋሪ ሰንጠረዦች ውስጥ እንደ አንድ ጣቢያ ይቆጠራሉ።",
@@ -293,6 +308,21 @@ export const am: Messages = {
   "prefs.rulesChanged": "የተቀየሩ፦ {count}",
   "prefs.rulesLibrary": "የግምቶች ቤተ መጻሕፍት: {value} {unit}",
   "prefs.rulesLibraryRange": "የግምቶች ቤተ መጻሕፍት: {value} {unit} (ክልል {low}–{high})",
+  "prefs.demandTitle": "የፍላጎት ሞዴል",
+  "prefs.demandIntro":
+    "የፍላጎት ሞዴሉ የሚጠቀምበት እያንዳንዱ እሴት በደረጃ፦ ዞኖች፣ የጉዞ ማመንጨት፣ የጊዜ ክፍሎች፣ ስርጭት፣ የትራንስፖርት ዘዴ ምርጫ እና ምደባ። ለዚህ ፕሮጀክት እሴት ይቀይሩ ወይም የግምቶች ቤተ-መጻሕፍቱን ይጠብቁ።",
+  "prefs.demandStep": "የሞዴል ደረጃ",
+  "prefs.demandSearch": "እሴቶችን ይፈልጉ",
+  "prefs.demandNone": "የሚዛመድ እሴት የለም።",
+  "prefs.demandStep.zones": "ዞኖች",
+  "prefs.demandStep.generation": "የጉዞ ማመንጨት",
+  "prefs.demandStep.periods": "የጊዜ ክፍሎች",
+  "prefs.demandStep.distribution": "የጉዞ ስርጭት",
+  "prefs.demandStep.mode_choice": "የትራንስፖርት ዘዴ ምርጫ",
+  "prefs.demandStep.catchment": "የመድረሻ ክልል",
+  "prefs.demandStep.assignment": "ምደባ",
+  "prefs.demandStep.calibration": "ማስተካከያ",
+  "prefs.demandAll": "ሁሉም ደረጃዎች",
   "prefs.paramsTitle": "ሁሉም መለኪያዎች",
   "prefs.paramsIntro":
     "የግምት ቤተ-መጻሕፍት እያንዳንዱ እሴት። ለሁሉም ዘዴዎች ወይም ለአንድ ዘዴ የራስዎን እሴት ያስቀምጡ፤ የአንድ ዘዴ እሴት ከሁሉም ዘዴዎች እሴት ይቀድማል። የቤተ-መጻሕፍቱ እሴት ከጎኑ ይቆያል።",
@@ -312,11 +342,60 @@ export const am: Messages = {
   "prefs.group.cost": "ወጪዎች",
   "prefs.group.benefits": "ጥቅሞች",
   "prefs.group.fares": "የጉዞ ዋጋ",
+  "prefs.group.noise": "ጫጫታ",
   "prefs.traction.battery": "ባትሪ",
   "prefs.traction.diesel": "ናፍጣ",
   "prefs.traction.hydrogen": "ሃይድሮጅን",
   "prefs.traction.cng": "የተፈጥሮ ጋዝ (CNG)",
   "prefs.traction.electric": "ኤሌክትሪክ",
+  "report.title": "የግምቶች ሪፖርት",
+  "report.intro":
+    "ይህ ፕሮጀክት የሚጠቀመው እያንዳንዱ የግምቶች ቤተ-መጽሐፍት እሴት፦ እሴቱ፣ የቤተ-መጽሐፍቱ ክልል፣ ከየት እንደመጣ እና ፕሮጀክቱ እንደቀየረው። እንደ CSV ያውርዱት፣ ወይም ያትሙት ወይም እንደ PDF ያስቀምጡት።",
+  "report.csv": "CSV አውርድ",
+  "report.changedOnly": "የተቀየሩ እሴቶች ብቻ",
+  "report.noneChanged": "በዚህ ቡድን ውስጥ የተቀየረ እሴት የለም።",
+  "report.loadError": "ምንጮቹ ሊጫኑ አልቻሉም። እንደገና ለመሞከር ገጹን ዳግም ይጫኑ።",
+  "report.changed": "ተቀይሯል",
+  "report.yes": "አዎ",
+  "report.no": "አይ",
+  "report.basis.cited": "የተጠቀሰ",
+  "report.basis.documented": "የተመዘገበ",
+  "report.basis.guess": "በምክንያት የተደገፈ ግምት",
+  "report.check.read": "ከምንጩ ጋር ተረጋግጧል",
+  "report.check.secondary": "በሁለተኛ ምንጭ ተረጋግጧል",
+  "report.check.unverified": "ገና ከምንጩ ጋር አልተረጋገጠም",
+  "report.sources": "ምንጮች፦",
+  "report.usedBy": "የሚጠቀመው፦ {list}",
+  "report.other": "ሌሎች ምርጫዎች",
+  "report.currency": "ምንዛሬ",
+  "report.currencyCountry": "እያንዳንዱ መሣሪያ የአገሩን ምንዛሬ ያሳያል",
+  "report.rate": "የምንዛሬ ተመን በ US$",
+  "report.rateWorldBank": "የዓለም ባንክ ይፋዊ ተመን",
+  "report.vehiclesOff": "ጥቅም ላይ ያልዋሉ ተሽከርካሪዎች",
+  "report.switchesOff": "ጥቅም ላይ ያልዋሉ መቀየሪያዎች",
+  "report.allUsed": "ሁሉም ጥቅም ላይ ናቸው",
+  "report.turnout": "ነባሪ መቀየሪያ",
+  "report.col.group": "ቡድን",
+  "report.col.parameter": "መለኪያ",
+  "report.col.id": "መለያ",
+  "report.col.mode": "የትራንስፖርት ዓይነት",
+  "report.col.value": "ጥቅም ላይ የዋለ እሴት",
+  "report.col.unit": "አሃድ",
+  "report.col.changed": "ተቀይሯል",
+  "report.col.libLow": "ቤተ-መጽሐፍት ዝቅተኛ",
+  "report.col.libCentral": "ቤተ-መጽሐፍት መካከለኛ",
+  "report.col.libHigh": "ቤተ-መጽሐፍት ከፍተኛ",
+  "report.col.basis": "መሠረት",
+  "report.col.check": "ማረጋገጫ",
+  "report.col.sources": "ምንጮች",
+  "report.col.reasoning": "ምክንያት",
+  "report.col.usedBy": "የሚጠቀመው",
+  "report.col.reason": "ምክንያት",
+  "report.col.changedBy": "የቀየረው",
+  "report.col.changedAt": "የተቀየረበት ቀን",
+  "report.changedBy": "በ{name} በ{date} ተቀይሯል",
+  "report.changedOn": "በ{date} ተቀይሯል",
+  "report.reason": "ምክንያት፦ {reason}",
   "prefs.accessTitle": "የመድረክ ተደራሽነት",
   "prefs.accessIntro":
     "በመድረክና በባቡር መካከል የደረጃና የክፍተት ገደቦች (TSI PRM)፣ እና በካታሎግ ውስጥ ለሌላቸው ባቡሮች የወለል ከፍታ። መስመሮች በእያንዳንዱ ማቆሚያ ይፈተሻሉ።",
@@ -404,6 +483,11 @@ export const am: Messages = {
   ...cargoBikeAm,
   ...depotsAm,
   ...tablesAm,
+  ...commentsAm,
+  ...mslabAm,
+  ...pluginCodeAm,
+  ...populationAm,
   ...roadAm,
+  ...calendarAm,
   ...PLUGIN_MESSAGES.am,
 };

@@ -328,7 +328,8 @@ export const tablesTr = {
   "cost.p.cost.contingency_share": "Beklenmeyen giderler (risk ve iyimserlik yanlılığı)",
   "cost.p.cost.opex.vehicle_hour": "Araç-saat başına karayolu aracı işletme maliyeti",
   "cost.p.cost.opex.train_hour": "Tren-saat başına raylı personel ve trenle ilgili maliyet",
-  "cost.p.cost.opex.car_km": "Vagon-km başına raylı işletme maliyeti (25 m tren başına)",
+  "cost.p.cost.opex.car_km":
+    "Vagon-km başına demiryolu işletme maliyeti (sayılan vagon uzunluğundaki vagon başına)",
   "cost.p.cost.opex.infrastructure_share": "Yıllık altyapı bakımı ve işletmesi",
   "cost.p.cost.opex.overhead_share": "Yönetim ve genel giderler",
   "cost.p.cost.service_hours_per_day": "Bir cadde hattının günlük hizmet saatleri",
@@ -354,4 +355,5 @@ export const tablesTr = {
   "cost.pu.days": "gün",
   "cost.pu.year": "yıl",
   "cost.pu.passengers": "yolcu",
+  "cost.p.cost.opex.car_length_m": "Demiryolu işletme maliyeti: bir vagon sayılan tren uzunluğu",
 } satisfies TablesMessages;

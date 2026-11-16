@@ -321,7 +321,7 @@ export const tablesZh = {
   "cost.p.cost.contingency_share": "不可预见费（风险和乐观偏差）",
   "cost.p.cost.opex.vehicle_hour": "道路车辆每车辆小时运营成本",
   "cost.p.cost.opex.train_hour": "铁路乘务和列车相关成本，每列车小时",
-  "cost.p.cost.opex.car_km": "铁路每车厢公里运行成本（每 25 米列车）",
+  "cost.p.cost.opex.car_km": "铁路每车厢公里运行成本（按计入的车厢长度每节）",
   "cost.p.cost.opex.infrastructure_share": "每年基础设施维护和运营",
   "cost.p.cost.opex.overhead_share": "行政和管理费用",
   "cost.p.cost.service_hours_per_day": "道路线路每日服务小时数",
@@ -347,4 +347,5 @@ export const tablesZh = {
   "cost.pu.days": "天",
   "cost.pu.year": "年",
   "cost.pu.passengers": "乘客",
+  "cost.p.cost.opex.car_length_m": "铁路运行成本：计为一节车厢的列车长度",
 } satisfies TablesMessages;

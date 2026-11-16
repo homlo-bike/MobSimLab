@@ -324,7 +324,7 @@ export const tablesFa = {
   "cost.p.cost.contingency_share": "پیش‌بینی‌نشده (ریسک و سوگیری خوش‌بینی)",
   "cost.p.cost.opex.vehicle_hour": "هزینه بهره‌برداری وسیله جاده‌ای به ازای هر وسیله-ساعت",
   "cost.p.cost.opex.train_hour": "هزینه خدمه و قطار به ازای هر قطار-ساعت",
-  "cost.p.cost.opex.car_km": "هزینه حرکت ریلی به ازای هر واگن-کیلومتر (به ازای ۲۵ متر قطار)",
+  "cost.p.cost.opex.car_km": "هزینه حرکت ریلی به ازای هر واگن-کیلومتر (به ازای هر واگن با طول محاسبه‌شده)",
   "cost.p.cost.opex.infrastructure_share": "نگهداری و بهره‌برداری زیرساخت در سال",
   "cost.p.cost.opex.overhead_share": "اداری و سربار",
   "cost.p.cost.service_hours_per_day": "ساعات خدمت در روز برای یک خط خیابانی",
@@ -350,4 +350,5 @@ export const tablesFa = {
   "cost.pu.days": "روز",
   "cost.pu.year": "سال",
   "cost.pu.passengers": "مسافر",
+  "cost.p.cost.opex.car_length_m": "هزینه حرکت ریلی: طول قطاری که یک واگن شمرده می‌شود",
 } satisfies TablesMessages;

@@ -334,7 +334,8 @@ export const tablesUz = {
   "cost.p.cost.contingency_share": "Kutilmagan xarajatlar (xavf va optimizm ogʻishi)",
   "cost.p.cost.opex.vehicle_hour": "Transport-soat uchun yoʻl transport vositasining ekspluatatsiya xarajati",
   "cost.p.cost.opex.train_hour": "Poyezd-soat uchun temir yoʻl xodimlari va poyezdga oid xarajat",
-  "cost.p.cost.opex.car_km": "Vagon-km uchun temir yoʻl harakat xarajati (25 m poyezd uchun)",
+  "cost.p.cost.opex.car_km":
+    "Vagon-km uchun temir yoʻl harakat xarajati (hisobga olinadigan uzunlikdagi vagon uchun)",
   "cost.p.cost.opex.infrastructure_share": "Yillik infratuzilmaga texnik xizmat va ekspluatatsiya",
   "cost.p.cost.opex.overhead_share": "Maʼmuriyat va umumiy xarajatlar",
   "cost.p.cost.service_hours_per_day": "Koʻcha yoʻnalishlarining kunlik xizmat soatlari",
@@ -362,4 +363,6 @@ export const tablesUz = {
   "cost.pu.days": "kun",
   "cost.pu.year": "yil",
   "cost.pu.passengers": "yoʻlovchilar",
+  "cost.p.cost.opex.car_length_m":
+    "Temir yoʻl harakat xarajati: bitta vagon deb hisoblanadigan poyezd uzunligi",
 } satisfies TablesMessages;

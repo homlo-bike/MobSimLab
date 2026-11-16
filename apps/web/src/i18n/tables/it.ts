@@ -333,7 +333,8 @@ export const tablesIt = {
   "cost.p.cost.contingency_share": "Imprevisti (rischio e bias di ottimismo)",
   "cost.p.cost.opex.vehicle_hour": "Costo di esercizio dei veicoli stradali per veicolo-ora",
   "cost.p.cost.opex.train_hour": "Costo del personale e del treno per treno-ora",
-  "cost.p.cost.opex.car_km": "Costo di marcia ferroviario per carrozza-km (per 25 m di treno)",
+  "cost.p.cost.opex.car_km":
+    "Costo di marcia ferroviario per carrozza-km (per carrozza della lunghezza considerata)",
   "cost.p.cost.opex.infrastructure_share": "Manutenzione ed esercizio dell’infrastruttura all’anno",
   "cost.p.cost.opex.overhead_share": "Amministrazione e spese generali",
   "cost.p.cost.service_hours_per_day": "Ore di servizio al giorno di una linea stradale",
@@ -360,4 +361,6 @@ export const tablesIt = {
   "cost.pu.days": "giorni",
   "cost.pu.year": "anno",
   "cost.pu.passengers": "passeggeri",
+  "cost.p.cost.opex.car_length_m":
+    "Costo di marcia ferroviario: lunghezza di treno contata come una carrozza",
 } satisfies TablesMessages;

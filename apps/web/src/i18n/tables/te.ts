@@ -330,7 +330,7 @@ export const tablesTe = {
   "cost.p.cost.contingency_share": "ఆకస్మికం (ప్రమాదం మరియు ఆశావాద పక్షపాతం)",
   "cost.p.cost.opex.vehicle_hour": "వాహన-గంటకు రోడ్డు వాహన నిర్వహణ ఖర్చు",
   "cost.p.cost.opex.train_hour": "రైలు-గంటకు రైల్వే సిబ్బంది మరియు రైలు సంబంధిత ఖర్చు",
-  "cost.p.cost.opex.car_km": "బోగీ-కి.మీ.కు రైల్వే నడిచే ఖర్చు (25 మీ. రైలుకు)",
+  "cost.p.cost.opex.car_km": "బోగీ-కి.మీ.కు రైల్వే నడిచే ఖర్చు (లెక్కించిన పొడవు గల బోగీకి)",
   "cost.p.cost.opex.infrastructure_share": "వార్షిక మౌలిక సదుపాయాల నిర్వహణ మరియు నడపడం",
   "cost.p.cost.opex.overhead_share": "పరిపాలన మరియు ఓవర్‌హెడ్",
   "cost.p.cost.service_hours_per_day": "వీధి మార్గాల రోజువారీ సేవా గంటలు",
@@ -357,4 +357,5 @@ export const tablesTe = {
   "cost.pu.days": "రోజులు",
   "cost.pu.year": "సంవత్సరం",
   "cost.pu.passengers": "ప్రయాణికులు",
+  "cost.p.cost.opex.car_length_m": "రైల్వే నడిచే ఖర్చు: ఒక బోగీగా లెక్కించే రైలు పొడవు",
 } satisfies TablesMessages;

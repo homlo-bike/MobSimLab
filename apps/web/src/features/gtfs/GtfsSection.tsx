@@ -1,7 +1,8 @@
 import type { Map as MapLibreMap } from "maplibre-gl";
 import { useState } from "react";
 import { useI18n } from "../../i18n/i18n";
-import { activePlugins, pluginConverter, type Plugin } from "../../plugins/registry";
+import { PluginConverters } from "../../plugins/code/PluginConverters";
+import { activePlugins, componentConverters, pluginConverter, type Plugin } from "../../plugins/registry";
 import type { Timetable } from "../journey-planner/types";
 import { loadWasmGtfs } from "./engine";
 import { convertibleRoutes } from "./toLines";
@@ -76,7 +77,8 @@ export function GtfsSection({
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState("");
-  if (!importer && !exporter) return null;
+  const pluginConverters = componentConverters("importers").length + componentConverters("exporters").length;
+  if (!importer && !exporter && pluginConverters === 0) return null;
 
   const importFile = async (file: File) => {
     setError(null);
@@ -246,6 +248,13 @@ export function GtfsSection({
           {t("jp.gtfs.export")}
         </button>
       )}
+      <PluginConverters
+        feeds={feeds}
+        {...(onChange ? { onAdd: onChange } : {})}
+        ownLines={ownLines}
+        maxDocBytes={MAX_DOC_BYTES}
+        maxFeeds={MAX_FEEDS}
+      />
     </section>
   );
 }

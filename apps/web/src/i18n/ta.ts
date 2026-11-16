@@ -1,8 +1,13 @@
 import { roadTa } from "./road/ta";
+import { calendarTa } from "./calendar/ta";
 import { editorsTa } from "./editors/ta";
 import { cargoBikeTa } from "./cargo-bike/ta";
+import { commentsTa } from "./comments/ta";
 import { depotsTa } from "./depots/ta";
 import { tablesTa } from "./tables/ta";
+import { mslabTa } from "./mslab/ta";
+import { pluginCodeTa } from "./plugin-code/ta";
+import { populationTa } from "./population/ta";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -104,6 +109,7 @@ export const ta: Messages = {
   "home.shared": "என்னுடன் பகிரப்பட்டவை",
   "home.sharedEdit": "என்னுடன் பகிரப்பட்டவை · நீங்கள் திருத்தலாம்",
   "home.viewOnly": "பார்வைக்கு மட்டும்",
+  "home.public": "பொதுத் திட்டங்கள்",
   "home.archived": "காப்பகப்படுத்தப்பட்டவை",
   "home.none": "இங்கே எதுவும் இல்லை.",
   "home.edited": "திருத்தப்பட்டது {when}",
@@ -167,7 +173,7 @@ export const ta: Messages = {
 
   "share.title": "“{name}” ஐப் பகிர்",
   "share.rolesNote":
-    "உரிமையாளர்கள் அணுகலை நிர்வகிக்கிறார்கள். திருத்துநர்கள் வலையமைப்பை மாற்றுகிறார்கள். கருத்துரையாளர்களும் பார்வையாளர்களும் பார்க்க மட்டுமே செய்கிறார்கள்.",
+    "உரிமையாளர்கள் அணுகலை நிர்வகிக்கிறார்கள். திருத்துநர்கள் வலையமைப்பை மாற்றுகிறார்கள். கருத்துரையாளர்கள் அதில் கருத்திடுகிறார்கள். பார்வையாளர்கள் பார்க்க மட்டுமே செய்கிறார்கள்.",
   "share.invite": "மின்னஞ்சல் மூலம் அழை",
   "share.emailPlaceholder": "அவர்கள் உள்நுழையும் மின்னஞ்சல்",
   "share.inviteRole": "அழைக்கப்படுபவரின் பங்கு",
@@ -177,11 +183,16 @@ export const ta: Messages = {
   "share.roleOf": "{name} இன் பங்கு",
   "share.remove": "{name} ஐ அகற்று",
   "share.leave": "விலகு",
-  "share.link": "பார்வைக்கு மட்டுமான இணைப்பு",
-  "share.linkOn": "இந்த MobSimLab இல் உள்நுழைந்த எவரும் இதைத் திறக்கலாம்",
-  "share.linkOff": "அணைக்கப்பட்டது: மேலே உள்ளவர்கள் மட்டுமே இதைத் திறக்க முடியும்",
-  "share.linkTurnOn": "இயக்கு",
-  "share.linkTurnOff": "அணை",
+  "share.visibility": "இதை யார் திறக்கலாம்",
+  "share.private": "தனிப்பட்டது: மேலே உள்ளவர்கள் மட்டுமே இதைத் திறக்க முடியும்",
+  "share.public":
+    "பொது: இந்த MobSimLab இல் உள்நுழைந்த எவரும் இதைக் கண்டுபிடித்துப் படிக்க மட்டும் திறக்கலாம்",
+  "share.makePublic": "பொதுவாக்கு",
+  "share.makePrivate": "தனிப்பட்டதாக்கு",
+  "share.licenceTitle": "பொதுவாக்கும் முன்",
+  "share.licenceNote":
+    "இந்தத் திட்டம் OpenStreetMap தரவைப் பயன்படுத்துகிறது. அது Open Database License (ODbL) இன் கீழ் பகிரப்படும், © OpenStreetMap பங்களிப்பாளர்கள். இதில் உள்ள மற்ற அனைத்தையும் பகிர முடிந்தால் மட்டுமே இதைப் பொதுவாக்குங்கள்.",
+  "share.confirmPublic": "புரிந்தது, பொதுவாக்கு",
   "share.copyLink": "இணைப்பை நகலெடு",
   "share.copied": "நகலெடுக்கப்பட்டது",
 
@@ -198,6 +209,8 @@ export const ta: Messages = {
 
   "project.back": "திட்டங்களுக்குத் திரும்பு",
   "project.viewOnly": "பார்வைக்கு மட்டும்",
+  "project.public": "பொது",
+  "project.publicNote": "பொதுத் திட்டம். வரைபடத் தரவு © OpenStreetMap பங்களிப்பாளர்கள், ODbL.",
   "project.notFound": "திட்டம் கிடைக்கவில்லை",
   "project.notFoundHint": "அது நீக்கப்பட்டிருக்கலாம், அல்லது உங்களுக்கு இனி அணுகல் இல்லாமல் இருக்கலாம்.",
   "project.toHome": "திட்டங்களுக்குத் திரும்பு",
@@ -261,6 +274,7 @@ export const ta: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "தெருக்கள்",
   "gis.regionsView": "பகுதிகள்",
+  "gis.zonesView": "தேவை மண்டலங்கள்",
   "gis.intro": "கணக்கீடுகள் பயன்படுத்தும் தகவலைச் சேர்க்கவும் அல்லது திருத்தவும்.",
   "gis.areas": "பகுதியை வரையுங்கள் அல்லது OpenStreetMap இலிருந்து இறக்குமதி செய்யுங்கள்",
   "gis.streets": "தெரு அமைப்பு: பேருந்து, மிதிவண்டி மற்றும் டிராம் பாதைகள், வேகங்கள், மேல்நிலைக் கம்பிகள்",
@@ -284,6 +298,7 @@ export const ta: Messages = {
   "prefs.delayLane": "வண்ணம் பூசப்பட்ட பேருந்து அல்லது டிராம் பாதையில்",
   "prefs.delayDefault": "அனுமானங்களின் நூலகம்: {value} %",
   "prefs.delayReset": "நூலக மதிப்பைப் பயன்படுத்து",
+  "prefs.reason": "இந்த மதிப்புக்கான காரணம் (விருப்பத்தேர்வு)",
   "prefs.stationsTitle": "நிலையங்கள்",
   "prefs.stationsIntro":
     "இந்தத் தூரத்திற்குள் ஒரே பெயருள்ள நிறுத்தங்கள் வரைபட வரைவு, பயணத் திட்டமிடுபவர், நன்மை மற்றும் பயணிகள் அட்டவணைகளில் ஒரு நிலையமாகக் கணக்கிடப்படும்.",
@@ -310,6 +325,21 @@ export const ta: Messages = {
   "prefs.rulesChanged": "மாற்றப்பட்டவை: {count}",
   "prefs.rulesLibrary": "அனுமானங்களின் நூலகம்: {value} {unit}",
   "prefs.rulesLibraryRange": "அனுமானங்களின் நூலகம்: {value} {unit} (வரம்பு {low}–{high})",
+  "prefs.demandTitle": "தேவை மாதிரி",
+  "prefs.demandIntro":
+    "தேவை மாதிரி பயன்படுத்தும் ஒவ்வொரு மதிப்பும், படிப்படியாக: மண்டலங்கள், பயண உருவாக்கம், நேரப் பகுதிகள், பகிர்வு, போக்குவரத்து முறைத் தேர்வு மற்றும் ஒதுக்கீடு. இந்தத் திட்டத்துக்கு ஒரு மதிப்பை மாற்றுங்கள், அல்லது அனுமான நூலகத்தின் மதிப்பை வைத்திருங்கள்.",
+  "prefs.demandStep": "மாதிரிப் படி",
+  "prefs.demandSearch": "மதிப்புகளைத் தேடுங்கள்",
+  "prefs.demandNone": "எந்த மதிப்பும் பொருந்தவில்லை.",
+  "prefs.demandStep.zones": "மண்டலங்கள்",
+  "prefs.demandStep.generation": "பயண உருவாக்கம்",
+  "prefs.demandStep.periods": "நேரப் பகுதிகள்",
+  "prefs.demandStep.distribution": "பயணப் பகிர்வு",
+  "prefs.demandStep.mode_choice": "போக்குவரத்து முறைத் தேர்வு",
+  "prefs.demandStep.catchment": "அணுகல் பகுதி",
+  "prefs.demandStep.assignment": "ஒதுக்கீடு",
+  "prefs.demandStep.calibration": "அளவுத்திருத்தம்",
+  "prefs.demandAll": "எல்லாப் படிகளும்",
   "prefs.paramsTitle": "அனைத்து அளவுருக்கள்",
   "prefs.paramsIntro":
     "அனுமான நூலகத்தின் ஒவ்வொரு மதிப்பும். அனைத்து முறைகளுக்கும் அல்லது ஒரு முறைக்கும் உங்கள் மதிப்பை அமைக்கவும்; ஒரு முறையின் மதிப்பு அனைத்துக்குமான மதிப்பை விட முன்னுரிமை பெறும். நூலக மதிப்பு அருகில் இருக்கும்.",
@@ -329,11 +359,60 @@ export const ta: Messages = {
   "prefs.group.cost": "செலவுகள்",
   "prefs.group.benefits": "பயன்கள்",
   "prefs.group.fares": "கட்டணங்கள்",
+  "prefs.group.noise": "இரைச்சல்",
   "prefs.traction.battery": "மின்கலம்",
   "prefs.traction.diesel": "டீசல்",
   "prefs.traction.hydrogen": "ஹைட்ரஜன்",
   "prefs.traction.cng": "இயற்கை எரிவாயு (CNG)",
   "prefs.traction.electric": "மின்சாரம்",
+  "report.title": "அனுமானங்கள் அறிக்கை",
+  "report.intro":
+    "இந்தத் திட்டம் பயன்படுத்தும் ஒவ்வொரு அனுமான நூலக மதிப்பும்: மதிப்பு, நூலகத்தின் வரம்பு, அது எங்கிருந்து வந்தது, திட்டம் அதை மாற்றியதா என்பது. இதை CSV ஆகப் பதிவிறக்கவும், அல்லது அச்சிடவும் அல்லது PDF ஆகச் சேமிக்கவும்.",
+  "report.csv": "CSV பதிவிறக்கு",
+  "report.changedOnly": "மாற்றிய மதிப்புகள் மட்டும்",
+  "report.noneChanged": "இந்தக் குழுவில் எந்த மதிப்பும் மாற்றப்படவில்லை.",
+  "report.loadError": "மூலங்களை ஏற்ற முடியவில்லை. மீண்டும் முயல பக்கத்தை மீண்டும் ஏற்றவும்.",
+  "report.changed": "மாற்றப்பட்டது",
+  "report.yes": "ஆம்",
+  "report.no": "இல்லை",
+  "report.basis.cited": "மேற்கோள் காட்டப்பட்டது",
+  "report.basis.documented": "ஆவணப்படுத்தப்பட்டது",
+  "report.basis.guess": "காரணமுள்ள மதிப்பீடு",
+  "report.check.read": "மூலத்துடன் சரிபார்க்கப்பட்டது",
+  "report.check.secondary": "இரண்டாம் நிலை மூலம் வழியாகச் சரிபார்க்கப்பட்டது",
+  "report.check.unverified": "இன்னும் மூலத்துடன் சரிபார்க்கப்படவில்லை",
+  "report.sources": "மூலங்கள்:",
+  "report.usedBy": "பயன்படுத்துவது: {list}",
+  "report.other": "பிற தேர்வுகள்",
+  "report.currency": "நாணயம்",
+  "report.currencyCountry": "ஒவ்வொரு கருவியும் நாட்டின் சொந்த நாணயத்தைக் காட்டுகிறது",
+  "report.rate": "ஒரு US$க்கு மாற்று விகிதம்",
+  "report.rateWorldBank": "உலக வங்கியின் அதிகாரப்பூர்வ விகிதம்",
+  "report.vehiclesOff": "பயன்படுத்தாத வாகனங்கள்",
+  "report.switchesOff": "பயன்படுத்தாத சுவிட்சுகள்",
+  "report.allUsed": "அனைத்தும் பயன்பாட்டில்",
+  "report.turnout": "இயல்புநிலை டர்ன்அவுட்",
+  "report.col.group": "குழு",
+  "report.col.parameter": "அளவுரு",
+  "report.col.id": "அடையாளம்",
+  "report.col.mode": "போக்குவரத்து முறை",
+  "report.col.value": "பயன்படுத்திய மதிப்பு",
+  "report.col.unit": "அலகு",
+  "report.col.changed": "மாற்றப்பட்டது",
+  "report.col.libLow": "நூலகம் குறைந்தது",
+  "report.col.libCentral": "நூலகம் நடுநிலை",
+  "report.col.libHigh": "நூலகம் அதிகம்",
+  "report.col.basis": "அடிப்படை",
+  "report.col.check": "சரிபார்ப்பு",
+  "report.col.sources": "மூலங்கள்",
+  "report.col.reasoning": "காரணம்",
+  "report.col.usedBy": "பயன்படுத்துவது",
+  "report.col.reason": "காரணம்",
+  "report.col.changedBy": "மாற்றியவர்",
+  "report.col.changedAt": "மாற்றிய தேதி",
+  "report.changedBy": "{name} {date} அன்று மாற்றினார்",
+  "report.changedOn": "{date} அன்று மாற்றப்பட்டது",
+  "report.reason": "காரணம்: {reason}",
   "prefs.accessTitle": "நடைமேடை அணுகல்தன்மை",
   "prefs.accessIntro":
     "நடைமேடைக்கும் ரயிலுக்கும் இடையிலான படி, இடைவெளி வரம்புகள் (TSI PRM), பட்டியலில் இல்லாத ரயில்களுக்கான தள உயரம். வழித்தடங்கள் ஒவ்வொரு நிறுத்தத்திலும் சரிபார்க்கப்படும்.",
@@ -428,6 +507,11 @@ export const ta: Messages = {
   ...cargoBikeTa,
   ...depotsTa,
   ...tablesTa,
+  ...commentsTa,
+  ...mslabTa,
+  ...pluginCodeTa,
+  ...populationTa,
   ...roadTa,
+  ...calendarTa,
   ...PLUGIN_MESSAGES.ta,
 };

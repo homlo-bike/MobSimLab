@@ -335,7 +335,7 @@ export const tablesTa = {
   "cost.p.cost.contingency_share": "எதிர்பாராதவை (இடர் மற்றும் நம்பிக்கைச் சார்பு)",
   "cost.p.cost.opex.vehicle_hour": "வாகன-மணிக்கு சாலை வாகன இயக்கச் செலவு",
   "cost.p.cost.opex.train_hour": "ரயில்-மணிக்கு ரயில் பணியாளர் மற்றும் ரயில் தொடர்பான செலவு",
-  "cost.p.cost.opex.car_km": "பெட்டி-கி.மீ.க்கு ரயில் ஓட்டச் செலவு (25 மீ. ரயிலுக்கு)",
+  "cost.p.cost.opex.car_km": "பெட்டி-கி.மீ.க்கு ரயில் ஓட்டச் செலவு (கணக்கிடப்படும் நீளமுள்ள ஒரு பெட்டிக்கு)",
   "cost.p.cost.opex.infrastructure_share": "ஆண்டு உள்கட்டமைப்புப் பராமரிப்பு மற்றும் இயக்கம்",
   "cost.p.cost.opex.overhead_share": "நிர்வாகம் மற்றும் மேல்நிலைச் செலவு",
   "cost.p.cost.service_hours_per_day": "தெரு வழித்தடங்களின் தினசரி சேவை நேரம்",
@@ -362,4 +362,5 @@ export const tablesTa = {
   "cost.pu.days": "நாட்கள்",
   "cost.pu.year": "ஆண்டு",
   "cost.pu.passengers": "பயணிகள்",
+  "cost.p.cost.opex.car_length_m": "ரயில் ஓட்டச் செலவு: ஒரு பெட்டியாகக் கணக்கிடப்படும் ரயில் நீளம்",
 } satisfies TablesMessages;

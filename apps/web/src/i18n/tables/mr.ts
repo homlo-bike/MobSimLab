@@ -331,7 +331,7 @@ export const tablesMr = {
   "cost.p.cost.contingency_share": "आकस्मिक (जोखीम आणि आशावाद पूर्वग्रह)",
   "cost.p.cost.opex.vehicle_hour": "प्रति वाहन-तास रस्ते वाहन संचालन खर्च",
   "cost.p.cost.opex.train_hour": "प्रति गाडी-तास रेल्वे कर्मचारी आणि गाडीसंबंधी खर्च",
-  "cost.p.cost.opex.car_km": "प्रति डबा-किमी रेल्वे धावण्याचा खर्च (प्रति 25 मी गाडी)",
+  "cost.p.cost.opex.car_km": "प्रति डबा-किमी रेल्वे धावण्याचा खर्च (मोजलेल्या लांबीच्या प्रति डबा)",
   "cost.p.cost.opex.infrastructure_share": "वार्षिक पायाभूत सुविधा देखभाल आणि संचालन",
   "cost.p.cost.opex.overhead_share": "प्रशासन आणि ओव्हरहेड",
   "cost.p.cost.service_hours_per_day": "रस्त्यावरील मार्गाचे दररोजचे सेवा तास",
@@ -357,4 +357,5 @@ export const tablesMr = {
   "cost.pu.days": "दिवस",
   "cost.pu.year": "वर्ष",
   "cost.pu.passengers": "प्रवासी",
+  "cost.p.cost.opex.car_length_m": "रेल्वे धावण्याचा खर्च: एक डबा म्हणून मोजली जाणारी गाडीची लांबी",
 } satisfies TablesMessages;

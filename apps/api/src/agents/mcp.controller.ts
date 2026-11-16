@@ -7,6 +7,8 @@ import type { AppConfig } from "../config/env";
 import { DATABASE, type Database } from "../db/database";
 import { RateLimitService } from "../iam/rate-limit.service";
 import { BearerAuth, Public } from "../iam/requires";
+import { PluginCodeService } from "../plugins/code/code.service";
+import { PluginsService } from "../plugins/plugins.service";
 import { ProjectsService } from "../projects/projects.service";
 import { RunsService } from "../simulation/runs.service";
 import { AccessService } from "./access.service";
@@ -32,6 +34,8 @@ export class McpController {
     private readonly access: AccessService,
     private readonly runs: RunsService,
     private readonly projects: ProjectsService,
+    private readonly plugins: PluginsService,
+    private readonly pluginCode: PluginCodeService,
     private readonly limits: RateLimitService,
     @Inject(DATABASE) private readonly db: Database,
     @Inject(APP_CONFIG) private readonly config: AppConfig,
@@ -77,6 +81,7 @@ export class McpController {
       analysis: this.analysis,
       access: this.access,
       simulation: { runs: this.runs, projects: this.projects },
+      plugins: { plugins: this.plugins, code: this.pluginCode },
       instanceName: inst.name,
       instanceUrl: this.config.publicUrl.origin,
       requestId: req.requestId,

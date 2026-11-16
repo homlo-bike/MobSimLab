@@ -335,7 +335,7 @@ export const tablesSw = {
   "cost.p.cost.contingency_share": "Dharura (hatari na upendeleo wa matumaini)",
   "cost.p.cost.opex.vehicle_hour": "Gharama ya uendeshaji wa gari la barabarani kwa gari-saa",
   "cost.p.cost.opex.train_hour": "Gharama ya wafanyakazi wa reli na inayohusiana na treni kwa treni-saa",
-  "cost.p.cost.opex.car_km": "Gharama ya uendeshaji wa reli kwa behewa-km (kwa m 25 za treni)",
+  "cost.p.cost.opex.car_km": "Gharama ya uendeshaji wa reli kwa behewa-km (kwa behewa la urefu unaohesabiwa)",
   "cost.p.cost.opex.infrastructure_share": "Matengenezo na uendeshaji wa miundombinu wa mwaka",
   "cost.p.cost.opex.overhead_share": "Utawala na gharama za ziada",
   "cost.p.cost.service_hours_per_day": "Saa za huduma za kila siku za njia za barabarani",
@@ -362,4 +362,6 @@ export const tablesSw = {
   "cost.pu.days": "siku",
   "cost.pu.year": "mwaka",
   "cost.pu.passengers": "abiria",
+  "cost.p.cost.opex.car_length_m":
+    "Gharama ya uendeshaji wa reli: urefu wa treni unaohesabiwa kama behewa moja",
 } satisfies TablesMessages;

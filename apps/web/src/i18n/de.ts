@@ -1,8 +1,13 @@
 import { roadDe } from "./road/de";
+import { calendarDe } from "./calendar/de";
 import { editorsDe } from "./editors/de";
 import { cargoBikeDe } from "./cargo-bike/de";
+import { commentsDe } from "./comments/de";
 import { depotsDe } from "./depots/de";
 import { tablesDe } from "./tables/de";
+import { mslabDe } from "./mslab/de";
+import { pluginCodeDe } from "./plugin-code/de";
+import { populationDe } from "./population/de";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -108,6 +113,7 @@ export const de: Messages = {
   "home.shared": "Mit mir geteilt",
   "home.sharedEdit": "Mit mir geteilt · Sie können bearbeiten",
   "home.viewOnly": "Nur ansehen",
+  "home.public": "Öffentliche Projekte",
   "home.archived": "Archiviert",
   "home.none": "Hier ist nichts.",
   "home.edited": "Bearbeitet {when}",
@@ -171,7 +177,7 @@ export const de: Messages = {
 
   "share.title": "„{name}“ teilen",
   "share.rolesNote":
-    "Eigentümer verwalten den Zugriff. Bearbeiter ändern das Netz. Kommentatoren und Betrachter sehen nur zu.",
+    "Eigentümer verwalten den Zugriff. Bearbeiter ändern das Netz. Kommentatoren kommentieren es. Betrachter sehen nur zu.",
   "share.invite": "Per E-Mail einladen",
   "share.emailPlaceholder": "E-Mail, mit der sich die Person anmeldet",
   "share.inviteRole": "Rolle der eingeladenen Person",
@@ -181,11 +187,16 @@ export const de: Messages = {
   "share.roleOf": "Rolle von {name}",
   "share.remove": "{name} entfernen",
   "share.leave": "Verlassen",
-  "share.link": "Link zum Ansehen",
-  "share.linkOn": "Alle, die bei diesem MobSimLab angemeldet sind, können es öffnen",
-  "share.linkOff": "Aus: Nur die Personen oben können es öffnen",
-  "share.linkTurnOn": "Einschalten",
-  "share.linkTurnOff": "Ausschalten",
+  "share.visibility": "Wer es öffnen kann",
+  "share.private": "Privat: Nur die Personen oben können es öffnen",
+  "share.public":
+    "Öffentlich: Alle, die bei diesem MobSimLab angemeldet sind, können es finden und schreibgeschützt öffnen",
+  "share.makePublic": "Öffentlich machen",
+  "share.makePrivate": "Privat machen",
+  "share.licenceTitle": "Bevor Sie es öffentlich machen",
+  "share.licenceNote":
+    "Dieses Projekt nutzt Daten von OpenStreetMap. Sie werden unter der Open Database License (ODbL) geteilt, © OpenStreetMap-Mitwirkende. Machen Sie es nur öffentlich, wenn auch alles andere darin geteilt werden darf.",
+  "share.confirmPublic": "Verstanden, öffentlich machen",
   "share.copyLink": "Link kopieren",
   "share.copied": "Kopiert",
 
@@ -202,6 +213,8 @@ export const de: Messages = {
 
   "project.back": "Zurück zu den Projekten",
   "project.viewOnly": "Nur ansehen",
+  "project.public": "Öffentlich",
+  "project.publicNote": "Öffentliches Projekt. Kartendaten © OpenStreetMap-Mitwirkende, ODbL.",
   "project.notFound": "Projekt nicht gefunden",
   "project.notFoundHint": "Es wurde vielleicht gelöscht, oder Sie haben keinen Zugriff mehr.",
   "project.toHome": "Zurück zu den Projekten",
@@ -268,6 +281,7 @@ export const de: Messages = {
   "gis.spacing": "Haltestellenabstände",
   "gis.streetsView": "Straßen",
   "gis.regionsView": "Gebiete",
+  "gis.zonesView": "Nachfragezonen",
 
   "tables.title": "Tabellen",
   "tables.intro": "Alle Berechnungen zum Projekt, um abzuschätzen, wie gut es funktionieren wird.",
@@ -286,6 +300,7 @@ export const de: Messages = {
   "prefs.delayLane": "Auf einer markierten Bus- oder Straßenbahnspur",
   "prefs.delayDefault": "Annahmenbibliothek: {value} %",
   "prefs.delayReset": "Wert der Bibliothek verwenden",
+  "prefs.reason": "Grund für diesen Wert (optional)",
   "prefs.stationsTitle": "Stationen",
   "prefs.stationsIntro":
     "Gleichnamige Haltestellen innerhalb dieser Entfernung gelten im Liniennetzplan, in der Reiseplanung und in den Nutzen- und Fahrgasttabellen als eine Station.",
@@ -311,6 +326,21 @@ export const de: Messages = {
   "prefs.rulesChanged": "{count} geändert",
   "prefs.rulesLibrary": "Annahmenbibliothek: {value} {unit}",
   "prefs.rulesLibraryRange": "Annahmenbibliothek: {value} {unit} (Bereich {low}–{high})",
+  "prefs.demandTitle": "Nachfragemodell",
+  "prefs.demandIntro":
+    "Jeder Wert, den das Nachfragemodell verwendet, Schritt für Schritt: Zonen, Verkehrserzeugung, Zeitabschnitte, Verkehrsverteilung, Verkehrsmittelwahl und Umlegung. Ändern Sie einen Wert für dieses Projekt oder behalten Sie den der Annahmenbibliothek.",
+  "prefs.demandStep": "Modellschritt",
+  "prefs.demandSearch": "Werte durchsuchen",
+  "prefs.demandNone": "Kein Wert passt.",
+  "prefs.demandStep.zones": "Zonen",
+  "prefs.demandStep.generation": "Verkehrserzeugung",
+  "prefs.demandStep.periods": "Zeitabschnitte",
+  "prefs.demandStep.distribution": "Verkehrsverteilung",
+  "prefs.demandStep.mode_choice": "Verkehrsmittelwahl",
+  "prefs.demandStep.catchment": "Einzugsgebiet",
+  "prefs.demandStep.assignment": "Umlegung",
+  "prefs.demandStep.calibration": "Kalibrierung",
+  "prefs.demandAll": "Alle Schritte",
   "prefs.paramsTitle": "Alle Parameter",
   "prefs.paramsIntro":
     "Jeder Wert der Annahmenbibliothek. Lege eigene Werte für alle Verkehrsmittel oder für ein Verkehrsmittel fest; ein Wert für ein Verkehrsmittel hat Vorrang vor dem für alle. Der Wert der Bibliothek steht jeweils daneben.",
@@ -330,11 +360,61 @@ export const de: Messages = {
   "prefs.group.cost": "Kosten",
   "prefs.group.benefits": "Nutzen",
   "prefs.group.fares": "Fahrpreise",
+  "prefs.group.noise": "Lärm",
   "prefs.traction.battery": "Batterie",
   "prefs.traction.diesel": "Diesel",
   "prefs.traction.hydrogen": "Wasserstoff",
   "prefs.traction.cng": "Erdgas (CNG)",
   "prefs.traction.electric": "elektrisch",
+  "report.title": "Annahmenbericht",
+  "report.intro":
+    "Jeder Wert der Annahmenbibliothek, den dieses Projekt verwendet: der Wert, der Bereich der Bibliothek, woher er stammt und ob das Projekt ihn geändert hat. Als CSV herunterladen oder drucken bzw. als PDF speichern.",
+  "report.csv": "CSV herunterladen",
+  "report.changedOnly": "Nur geänderte Werte",
+  "report.noneChanged": "In dieser Gruppe ist kein Wert geändert.",
+  "report.loadError":
+    "Die Quellen konnten nicht geladen werden. Lade die Seite neu, um es erneut zu versuchen.",
+  "report.changed": "geändert",
+  "report.yes": "Ja",
+  "report.no": "Nein",
+  "report.basis.cited": "zitiert",
+  "report.basis.documented": "dokumentiert",
+  "report.basis.guess": "begründete Schätzung",
+  "report.check.read": "an der Quelle geprüft",
+  "report.check.secondary": "über eine Sekundärquelle geprüft",
+  "report.check.unverified": "noch nicht an der Quelle geprüft",
+  "report.sources": "Quellen:",
+  "report.usedBy": "Verwendet von: {list}",
+  "report.other": "Weitere Festlegungen",
+  "report.currency": "Währung",
+  "report.currencyCountry": "Jedes Werkzeug zeigt die Landeswährung",
+  "report.rate": "Wechselkurs je US$",
+  "report.rateWorldBank": "Offizieller Kurs der Weltbank",
+  "report.vehiclesOff": "Nicht verwendete Fahrzeuge",
+  "report.switchesOff": "Nicht verwendete Weichen",
+  "report.allUsed": "Alle verwendet",
+  "report.turnout": "Standardweiche",
+  "report.col.group": "Gruppe",
+  "report.col.parameter": "Parameter",
+  "report.col.id": "Kennung",
+  "report.col.mode": "Verkehrsmittel",
+  "report.col.value": "Verwendeter Wert",
+  "report.col.unit": "Einheit",
+  "report.col.changed": "Geändert",
+  "report.col.libLow": "Bibliothek niedrig",
+  "report.col.libCentral": "Bibliothek mittel",
+  "report.col.libHigh": "Bibliothek hoch",
+  "report.col.basis": "Grundlage",
+  "report.col.check": "Prüfung",
+  "report.col.sources": "Quellen",
+  "report.col.reasoning": "Begründung",
+  "report.col.usedBy": "Verwendet von",
+  "report.col.reason": "Grund",
+  "report.col.changedBy": "Geändert von",
+  "report.col.changedAt": "Geändert am",
+  "report.changedBy": "Geändert von {name} am {date}",
+  "report.changedOn": "Geändert am {date}",
+  "report.reason": "Grund: {reason}",
   "prefs.accessTitle": "Barrierefreiheit am Bahnsteig",
   "prefs.accessIntro":
     "Grenzwerte für Stufe und Spalt zwischen Bahnsteig und Zug (TSI PRM) sowie die Fußbodenhöhe für Züge ohne Angabe im Fahrzeugkatalog. Linien werden an jedem Halt daran geprüft.",
@@ -428,6 +508,11 @@ export const de: Messages = {
   ...cargoBikeDe,
   ...depotsDe,
   ...tablesDe,
+  ...commentsDe,
+  ...mslabDe,
+  ...pluginCodeDe,
+  ...populationDe,
   ...roadDe,
+  ...calendarDe,
   ...PLUGIN_MESSAGES.de,
 };

@@ -24,6 +24,9 @@ export function addsLine(
     ...c.tools.filter((x) => !c.modes.includes(x)),
     ...c.calculations,
     ...c.mapLayers,
+    ...(c.importers ?? []),
+    ...(c.exporters ?? []),
+    ...(c.tabs ?? []),
   ];
   if (c.parameters > 0) parts.push(t("plugins.parameters", { count: c.parameters }));
   return [...new Set(parts)].join(" · ");

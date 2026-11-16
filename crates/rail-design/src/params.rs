@@ -18,7 +18,21 @@ pub struct SwitchChoice {
     /// Default turnout for new switches, by mode id.
     #[serde(default)]
     pub default_turnout: BTreeMap<String, String>,
+    /// Text values the project sets (Project preferences → All parameters), by field name for
+    /// every mode or by `<mode id>.<field>` for one mode, for example
+    /// `{"tram.electrification": "ocl-600v-dc"}`. Only the text fields of [`TEXT_FIELDS`] change.
+    #[serde(default)]
+    pub texts: BTreeMap<String, String>,
 }
+
+/// The design values that are text and a project may set: electrification, line colour, whether
+/// level crossings are usual, and the signalling system.
+pub const TEXT_FIELDS: [&str; 4] = [
+    "electrification",
+    "colour",
+    "level_crossing_permitted",
+    "signalling_system",
+];
 
 impl SwitchChoice {
     /// Purpose: whether the project uses a catalogue element.
@@ -256,9 +270,32 @@ impl ModeParams {
                     .then_some(self.default_turnout.as_str())
             })
             .or_else(|| usable.first().copied());
-        let mut p = self.clone();
+        let mut p = self.with_mode_texts(mode, &choice.texts);
         if let Some(id) = pick {
             p.default_turnout = id.to_string();
+        }
+        p
+    }
+
+    /// Purpose: the values of one mode with the project's text values applied (see
+    /// [`SwitchChoice::texts`]); a value for the mode wins over one for every mode. Fields outside
+    /// [`TEXT_FIELDS`] and empty values are ignored.
+    pub fn with_mode_texts(&self, mode: RailMode, texts: &BTreeMap<String, String>) -> ModeParams {
+        let mut p = self.clone();
+        for field in TEXT_FIELDS {
+            let v = texts
+                .get(&format!("{}.{field}", mode.id()))
+                .or_else(|| texts.get(field))
+                .map(|v| v.trim())
+                .filter(|v| !v.is_empty());
+            let Some(v) = v else { continue };
+            let slot = match field {
+                "electrification" => &mut p.electrification,
+                "colour" => &mut p.colour,
+                "level_crossing_permitted" => &mut p.level_crossing_permitted,
+                _ => &mut p.signalling_system,
+            };
+            *slot = v.to_string();
         }
         p
     }
@@ -530,6 +567,35 @@ mod tests {
                 .with_mode_values(RailMode::Metro, &only_tram),
             *d.mode(RailMode::Metro)
         );
+    }
+
+    #[test]
+    fn a_text_value_for_one_mode_wins_and_others_are_ignored() {
+        let d = defaults();
+        let c = SwitchChoice {
+            texts: [
+                ("electrification", "ocl-1500v-dc"),
+                ("tram.electrification", "ocl-600v-dc"),
+                ("level_crossing_permitted", "no"),
+                ("label", "Not a text field"),
+                ("metro.colour", " "),
+            ]
+            .into_iter()
+            .map(|(k, v)| (k.to_string(), v.to_string()))
+            .collect(),
+            ..SwitchChoice::default()
+        };
+        let tram = d
+            .mode(RailMode::Tram)
+            .with_switch_choice(RailMode::Tram, &c);
+        let metro = d
+            .mode(RailMode::Metro)
+            .with_switch_choice(RailMode::Metro, &c);
+        assert_eq!(tram.electrification, "ocl-600v-dc");
+        assert_eq!(metro.electrification, "ocl-1500v-dc");
+        assert_eq!(tram.level_crossing_permitted, "no");
+        assert_eq!(tram.label, d.mode(RailMode::Tram).label);
+        assert_eq!(metro.colour, d.mode(RailMode::Metro).colour);
     }
 
     #[test]

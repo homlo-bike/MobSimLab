@@ -337,7 +337,7 @@ export const tablesUk = {
   "cost.p.cost.contingency_share": "Непередбачені витрати (ризик і оптимістичне упередження)",
   "cost.p.cost.opex.vehicle_hour": "Експлуатаційні витрати безрейкової машини на машино-годину",
   "cost.p.cost.opex.train_hour": "Витрати на бригади й потяг на поїздо-годину",
-  "cost.p.cost.opex.car_km": "Витрати на рух потягів на вагоно-км (на 25 м потяга)",
+  "cost.p.cost.opex.car_km": "Експлуатаційні витрати залізниці на вагоно-км (на вагон врахованої довжини)",
   "cost.p.cost.opex.infrastructure_share": "Утримання та експлуатація інфраструктури за рік",
   "cost.p.cost.opex.overhead_share": "Адміністрування та накладні витрати",
   "cost.p.cost.service_hours_per_day": "Години роботи вуличної лінії на день",
@@ -364,4 +364,6 @@ export const tablesUk = {
   "cost.pu.days": "днів",
   "cost.pu.year": "рік",
   "cost.pu.passengers": "пасажирів",
+  "cost.p.cost.opex.car_length_m":
+    "Експлуатаційні витрати залізниці: довжина поїзда, що вважається одним вагоном",
 } satisfies TablesMessages;

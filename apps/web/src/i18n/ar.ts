@@ -1,8 +1,13 @@
 import { roadAr } from "./road/ar";
+import { calendarAr } from "./calendar/ar";
 import { editorsAr } from "./editors/ar";
 import { cargoBikeAr } from "./cargo-bike/ar";
+import { commentsAr } from "./comments/ar";
 import { depotsAr } from "./depots/ar";
 import { tablesAr } from "./tables/ar";
+import { mslabAr } from "./mslab/ar";
+import { pluginCodeAr } from "./plugin-code/ar";
+import { populationAr } from "./population/ar";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -100,6 +105,7 @@ export const ar: Messages = {
   "home.shared": "مشتركة معي",
   "home.sharedEdit": "مشتركة معي · يمكنك التعديل",
   "home.viewOnly": "عرض فقط",
+  "home.public": "المشاريع العامة",
   "home.archived": "مؤرشفة",
   "home.none": "لا يوجد شيء هنا.",
   "home.edited": "عُدّل {when}",
@@ -160,7 +166,8 @@ export const ar: Messages = {
   "prole.viewer": "مُشاهِد",
 
   "share.title": "مشاركة «{name}»",
-  "share.rolesNote": "يدير المالكون الوصول. يغيّر المحرّرون الشبكة. يكتفي المعلّقون والمشاهدون بالاطلاع.",
+  "share.rolesNote":
+    "يدير المالكون الوصول. يغيّر المحرّرون الشبكة. يعلّق عليها المعلّقون. يكتفي المشاهدون بالاطلاع.",
   "share.invite": "دعوة بالبريد الإلكتروني",
   "share.emailPlaceholder": "البريد الإلكتروني الذي يسجّل به الدخول",
   "share.inviteRole": "دور الشخص الذي تدعوه",
@@ -170,11 +177,15 @@ export const ar: Messages = {
   "share.roleOf": "دور {name}",
   "share.remove": "إزالة {name}",
   "share.leave": "مغادرة",
-  "share.link": "رابط للعرض فقط",
-  "share.linkOn": "يمكن لأي شخص مسجّل الدخول إلى MobSimLab هذا فتحه",
-  "share.linkOff": "مُعطّل: لا يفتحه إلا الأشخاص المذكورون أعلاه",
-  "share.linkTurnOn": "تشغيل",
-  "share.linkTurnOff": "إيقاف",
+  "share.visibility": "من يمكنه فتحه",
+  "share.private": "خاص: يمكن للأشخاص أعلاه فقط فتحه",
+  "share.public": "عام: يمكن لأي شخص سجّل الدخول إلى MobSimLab هذا العثور عليه وفتحه للقراءة فقط",
+  "share.makePublic": "اجعله عامًا",
+  "share.makePrivate": "اجعله خاصًا",
+  "share.licenceTitle": "قبل أن تجعله عامًا",
+  "share.licenceNote":
+    "يستخدم هذا المشروع بيانات من OpenStreetMap. ستُشارك بموجب رخصة Open Database License ‏(ODbL)، © مساهمو OpenStreetMap. لا تجعله عامًا إلا إذا كان كل ما فيه يمكن مشاركته أيضًا.",
+  "share.confirmPublic": "فهمت، اجعله عامًا",
   "share.copyLink": "نسخ الرابط",
   "share.copied": "تم النسخ",
 
@@ -190,6 +201,8 @@ export const ar: Messages = {
 
   "project.back": "العودة إلى المشاريع",
   "project.viewOnly": "عرض فقط",
+  "project.public": "عام",
+  "project.publicNote": "مشروع عام. بيانات الخريطة © مساهمو OpenStreetMap، ‏ODbL.",
   "project.notFound": "المشروع غير موجود",
   "project.notFoundHint": "ربما تم حذفه، أو لم يعد لديك وصول إليه.",
   "project.toHome": "العودة إلى المشاريع",
@@ -248,6 +261,7 @@ export const ar: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "الشوارع",
   "gis.regionsView": "المناطق",
+  "gis.zonesView": "مناطق الطلب",
   "gis.intro": "أضف أو عدّل المعلومات التي تستخدمها الحسابات.",
   "gis.areas": "ارسم منطقة أو استوردها من OpenStreetMap",
   "gis.streets": "تخطيط الشوارع: مسارات الحافلات والدراجات والترام، السرعات، الأسلاك العلوية",
@@ -271,6 +285,7 @@ export const ar: Messages = {
   "prefs.delayLane": "في مسار مخصّص مطلي للحافلات أو الترام",
   "prefs.delayDefault": "مكتبة الافتراضات: {value} %",
   "prefs.delayReset": "استخدام قيمة المكتبة",
+  "prefs.reason": "سبب هذه القيمة (اختياري)",
   "prefs.stationsTitle": "المحطات",
   "prefs.stationsIntro":
     "تُعدّ المواقف التي تحمل الاسم نفسه ضمن هذه المسافة محطة واحدة في المخطط التخطيطي ومخطط الرحلات وجداول المنافع والركاب.",
@@ -295,6 +310,21 @@ export const ar: Messages = {
   "prefs.rulesChanged": "المعدّلة: {count}",
   "prefs.rulesLibrary": "مكتبة الافتراضات: {value} {unit}",
   "prefs.rulesLibraryRange": "مكتبة الافتراضات: {value} {unit} (النطاق {low}–{high})",
+  "prefs.demandTitle": "نموذج الطلب",
+  "prefs.demandIntro":
+    "كل قيمة يستخدمها نموذج الطلب، خطوة بخطوة: المناطق وتوليد الرحلات والفترات الزمنية والتوزيع واختيار الوسيلة والتخصيص. غيّر قيمة لهذا المشروع أو احتفظ بقيمة مكتبة الافتراضات.",
+  "prefs.demandStep": "خطوة النموذج",
+  "prefs.demandSearch": "ابحث في القيم",
+  "prefs.demandNone": "لا توجد قيمة مطابقة.",
+  "prefs.demandStep.zones": "المناطق",
+  "prefs.demandStep.generation": "توليد الرحلات",
+  "prefs.demandStep.periods": "الفترات الزمنية",
+  "prefs.demandStep.distribution": "توزيع الرحلات",
+  "prefs.demandStep.mode_choice": "اختيار الوسيلة",
+  "prefs.demandStep.catchment": "منطقة الوصول",
+  "prefs.demandStep.assignment": "التخصيص",
+  "prefs.demandStep.calibration": "المعايرة",
+  "prefs.demandAll": "كل الخطوات",
   "prefs.paramsTitle": "كل المعاملات",
   "prefs.paramsIntro":
     "كل قيمة في مكتبة الافتراضات. حدّد قيمتك لكل الأنماط أو لنمط واحد؛ قيمة النمط الواحد تتقدّم على قيمة كل الأنماط. تبقى قيمة المكتبة بجانب كل منها.",
@@ -314,11 +344,60 @@ export const ar: Messages = {
   "prefs.group.cost": "التكاليف",
   "prefs.group.benefits": "المنافع",
   "prefs.group.fares": "الأجور",
+  "prefs.group.noise": "الضوضاء",
   "prefs.traction.battery": "بطارية",
   "prefs.traction.diesel": "ديزل",
   "prefs.traction.hydrogen": "هيدروجين",
   "prefs.traction.cng": "غاز طبيعي مضغوط",
   "prefs.traction.electric": "كهربائي",
+  "report.title": "تقرير الافتراضات",
+  "report.intro":
+    "كل قيمة من مكتبة الافتراضات يستخدمها هذا المشروع: القيمة، ونطاق المكتبة، ومصدرها، وهل غيّرها المشروع. نزّله بصيغة CSV، أو اطبعه أو احفظه بصيغة PDF.",
+  "report.csv": "تنزيل CSV",
+  "report.changedOnly": "القيم المغيّرة فقط",
+  "report.noneChanged": "لا توجد قيمة مغيّرة في هذه المجموعة.",
+  "report.loadError": "تعذّر تحميل المصادر. أعد تحميل الصفحة للمحاولة مرة أخرى.",
+  "report.changed": "مغيّرة",
+  "report.yes": "نعم",
+  "report.no": "لا",
+  "report.basis.cited": "مستشهد بها",
+  "report.basis.documented": "موثّقة",
+  "report.basis.guess": "تقدير مدروس",
+  "report.check.read": "تم التحقق منها في المصدر",
+  "report.check.secondary": "تم التحقق منها عبر مصدر ثانوي",
+  "report.check.unverified": "لم يتم التحقق منها في المصدر بعد",
+  "report.sources": "المصادر:",
+  "report.usedBy": "تستخدمها: {list}",
+  "report.other": "خيارات أخرى",
+  "report.currency": "العملة",
+  "report.currencyCountry": "كل أداة تعرض عملة البلد",
+  "report.rate": "سعر الصرف لكل دولار أمريكي",
+  "report.rateWorldBank": "السعر الرسمي للبنك الدولي",
+  "report.vehiclesOff": "المركبات غير المستخدمة",
+  "report.switchesOff": "المحوّلات غير المستخدمة",
+  "report.allUsed": "كلها مستخدمة",
+  "report.turnout": "المحوّلة الافتراضية",
+  "report.col.group": "المجموعة",
+  "report.col.parameter": "المعامل",
+  "report.col.id": "المعرّف",
+  "report.col.mode": "وسيلة النقل",
+  "report.col.value": "القيمة المستخدمة",
+  "report.col.unit": "الوحدة",
+  "report.col.changed": "مغيّرة",
+  "report.col.libLow": "المكتبة: الأدنى",
+  "report.col.libCentral": "المكتبة: المركزية",
+  "report.col.libHigh": "المكتبة: الأعلى",
+  "report.col.basis": "الأساس",
+  "report.col.check": "التحقق",
+  "report.col.sources": "المصادر",
+  "report.col.reasoning": "التبرير",
+  "report.col.usedBy": "تستخدمها",
+  "report.col.reason": "السبب",
+  "report.col.changedBy": "غيّرها",
+  "report.col.changedAt": "تاريخ التغيير",
+  "report.changedBy": "غيّرها {name} في {date}",
+  "report.changedOn": "تم التغيير في {date}",
+  "report.reason": "السبب: {reason}",
   "prefs.accessTitle": "إتاحة الرصيف",
   "prefs.accessIntro":
     "حدود الدرجة والفجوة بين الرصيف والقطار (TSI PRM)، وارتفاع الأرضية للقطارات التي لا تملكه في الكتالوج. تُفحص الخطوط عند كل محطة.",
@@ -407,6 +486,11 @@ export const ar: Messages = {
   ...cargoBikeAr,
   ...depotsAr,
   ...tablesAr,
+  ...commentsAr,
+  ...mslabAr,
+  ...pluginCodeAr,
+  ...populationAr,
   ...roadAr,
+  ...calendarAr,
   ...PLUGIN_MESSAGES.ar,
 };

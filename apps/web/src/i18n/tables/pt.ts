@@ -331,7 +331,8 @@ export const tablesPt = {
   "cost.p.cost.contingency_share": "Contingência (risco e viés de otimismo)",
   "cost.p.cost.opex.vehicle_hour": "Custo de operação de veículos rodoviários por veículo-hora",
   "cost.p.cost.opex.train_hour": "Custo de tripulação e do trem por trem-hora",
-  "cost.p.cost.opex.car_km": "Custo de rodagem ferroviária por carro-km (por 25 m de trem)",
+  "cost.p.cost.opex.car_km":
+    "Custo de circulação ferroviária por carro-km (por carro do comprimento considerado)",
   "cost.p.cost.opex.infrastructure_share": "Manutenção e operação da infraestrutura por ano",
   "cost.p.cost.opex.overhead_share": "Administração e despesas gerais",
   "cost.p.cost.service_hours_per_day": "Horas de serviço por dia de uma linha em rua",
@@ -358,4 +359,6 @@ export const tablesPt = {
   "cost.pu.days": "dias",
   "cost.pu.year": "ano",
   "cost.pu.passengers": "passageiros",
+  "cost.p.cost.opex.car_length_m":
+    "Custo de circulação ferroviária: comprimento de trem contado como um carro",
 } satisfies TablesMessages;

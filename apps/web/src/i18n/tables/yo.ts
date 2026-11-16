@@ -328,7 +328,7 @@ export const tablesYo = {
   "cost.p.cost.contingency_share": "Àìròtẹ́lẹ̀ (ewu àti ìrètí àṣejù)",
   "cost.p.cost.opex.vehicle_hour": "Iye owó iṣẹ́ ọkọ̀ òpópónà fún wákàtí ọkọ̀ kọ̀ọ̀kan",
   "cost.p.cost.opex.train_hour": "Iye owó òṣìṣẹ́ ojú irin àti ti ọkọ̀ ojú irin fún wákàtí ọkọ̀ ojú irin kọ̀ọ̀kan",
-  "cost.p.cost.opex.car_km": "Iye owó ìrìn ojú irin fún kẹ̀kẹ́-km kọ̀ọ̀kan (fún 25 m ọkọ̀ ojú irin)",
+  "cost.p.cost.opex.car_km": "Iye owó ìrìn ojú irin fún kẹ̀kẹ́-km kọ̀ọ̀kan (fún kẹ̀kẹ́ kọ̀ọ̀kan ti gígùn tí a kà)",
   "cost.p.cost.opex.infrastructure_share": "Ìtọ́jú àti iṣẹ́ ohun amáyédẹrùn ọdọọdún",
   "cost.p.cost.opex.overhead_share": "Ìṣàkóso àti owó àbójútó",
   "cost.p.cost.service_hours_per_day": "Wákàtí iṣẹ́ ojoojúmọ́ ti àwọn ìlà òpópónà",
@@ -354,4 +354,5 @@ export const tablesYo = {
   "cost.pu.days": "ọjọ́",
   "cost.pu.year": "ọdún",
   "cost.pu.passengers": "èrò",
+  "cost.p.cost.opex.car_length_m": "Iye owó ìrìn ojú irin: gígùn ọkọ̀ ojú irin tí a kà sí kẹ̀kẹ́ kan",
 } satisfies TablesMessages;

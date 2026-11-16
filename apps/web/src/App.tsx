@@ -214,6 +214,7 @@ function Shell({
           onHome={home}
           onAbout={about}
           existingRailways={Boolean(prefs.existingRailways)}
+          userId={user?.id ?? null}
         />
         {setup}
         {overlays}

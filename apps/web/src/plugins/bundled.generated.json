@@ -1076,6 +1076,10 @@
           "label": "Weeks of use per year",
           "unit": "weeks"
         },
+        "cargo_bike.savings.price_year": {
+          "label": "Year of the reference prices",
+          "unit": "year"
+        },
         "cargo_bike.savings.bike_price_eur": {
           "label": "Cargo bike purchase price (2024 EUR)",
           "unit": "EUR"
@@ -1310,6 +1314,11 @@
               "low": 30,
               "central": 46,
               "high": 52
+            },
+            "cargo_bike.savings.price_year": {
+              "low": 2024,
+              "central": 2024,
+              "high": 2024
             },
             "cargo_bike.savings.bike_price_eur": {
               "low": 2000,
@@ -1565,6 +1574,11 @@
               "central": 46,
               "high": 52
             },
+            "cargo_bike.savings.price_year": {
+              "low": 2024,
+              "central": 2024,
+              "high": 2024
+            },
             "cargo_bike.savings.bike_price_eur": {
               "low": 2000,
               "central": 4000,
@@ -1818,6 +1832,11 @@
               "low": 30,
               "central": 46,
               "high": 52
+            },
+            "cargo_bike.savings.price_year": {
+              "low": 2024,
+              "central": 2024,
+              "high": 2024
             },
             "cargo_bike.savings.bike_price_eur": {
               "low": 2000,
@@ -2073,6 +2092,11 @@
               "central": 46,
               "high": 52
             },
+            "cargo_bike.savings.price_year": {
+              "low": 2024,
+              "central": 2024,
+              "high": 2024
+            },
             "cargo_bike.savings.bike_price_eur": {
               "low": 2000,
               "central": 4000,
@@ -2326,6 +2350,11 @@
               "low": 30,
               "central": 46,
               "high": 52
+            },
+            "cargo_bike.savings.price_year": {
+              "low": 2024,
+              "central": 2024,
+              "high": 2024
             },
             "cargo_bike.savings.bike_price_eur": {
               "low": 2000,
@@ -2581,6 +2610,11 @@
               "central": 46,
               "high": 52
             },
+            "cargo_bike.savings.price_year": {
+              "low": 2024,
+              "central": 2024,
+              "high": 2024
+            },
             "cargo_bike.savings.bike_price_eur": {
               "low": 2000,
               "central": 4000,
@@ -2834,6 +2868,11 @@
               "low": 30,
               "central": 46,
               "high": 52
+            },
+            "cargo_bike.savings.price_year": {
+              "low": 2024,
+              "central": 2024,
+              "high": 2024
             },
             "cargo_bike.savings.bike_price_eur": {
               "low": 2000,
@@ -3089,6 +3128,11 @@
               "central": 46,
               "high": 52
             },
+            "cargo_bike.savings.price_year": {
+              "low": 2024,
+              "central": 2024,
+              "high": 2024
+            },
             "cargo_bike.savings.bike_price_eur": {
               "low": 2000,
               "central": 4000,
@@ -3342,6 +3386,11 @@
               "low": 30,
               "central": 46,
               "high": 52
+            },
+            "cargo_bike.savings.price_year": {
+              "low": 2024,
+              "central": 2024,
+              "high": 2024
             },
             "cargo_bike.savings.bike_price_eur": {
               "low": 2000,
@@ -3597,6 +3646,11 @@
               "central": 46,
               "high": 52
             },
+            "cargo_bike.savings.price_year": {
+              "low": 2024,
+              "central": 2024,
+              "high": 2024
+            },
             "cargo_bike.savings.bike_price_eur": {
               "low": 2000,
               "central": 4000,
@@ -3851,6 +3905,11 @@
               "central": 46,
               "high": 52
             },
+            "cargo_bike.savings.price_year": {
+              "low": 2024,
+              "central": 2024,
+              "high": 2024
+            },
             "cargo_bike.savings.bike_price_eur": {
               "low": 2000,
               "central": 4000,
@@ -4104,6 +4163,11 @@
               "low": 30,
               "central": 46,
               "high": 52
+            },
+            "cargo_bike.savings.price_year": {
+              "low": 2024,
+              "central": 2024,
+              "high": 2024
             },
             "cargo_bike.savings.bike_price_eur": {
               "low": 2000,
@@ -5325,7 +5389,7 @@
           "label": "Noise band",
           "calculation": "noise_estimate",
           "style": {
-            "_comment": "The noise band is drawn as a picture of the receiver grid (raster), coloured in 5 dB bands after ISO 1996-2 / DIN 45682. Colours are applied by the engine (noise::band_colour); this layer sets how the picture is shown.",
+            "_comment": "The noise band is drawn as a picture of the receiver grid (raster), coloured in 5 dB bands after ISO 1996-2 / DIN 45682. Colours are applied by the engine (noise::band_colour); this layer sets how the picture is shown. The difference map between two scenarios (step N3) is coloured by the change in dB: `difference` gives each class's lower edge (null: no lower edge) and colour (null: not drawn).",
             "layers": [
               {
                 "id": "noise-band",
@@ -5365,6 +5429,44 @@
               {
                 "from_db": 75,
                 "color": "#75085c"
+              }
+            ],
+            "difference": [
+              {
+                "from_db": null,
+                "color": "#08519c"
+              },
+              {
+                "from_db": -10,
+                "color": "#3182bd"
+              },
+              {
+                "from_db": -5,
+                "color": "#6baed6"
+              },
+              {
+                "from_db": -3,
+                "color": "#c6dbef"
+              },
+              {
+                "from_db": -1,
+                "color": null
+              },
+              {
+                "from_db": 1,
+                "color": "#fcbba1"
+              },
+              {
+                "from_db": 3,
+                "color": "#fb6a4a"
+              },
+              {
+                "from_db": 5,
+                "color": "#de2d26"
+              },
+              {
+                "from_db": 10,
+                "color": "#a50f15"
               }
             ]
           }
@@ -5426,6 +5528,10 @@
         },
         "noise.max_source_distance_m": {
           "label": "Largest source-to-receiver distance considered",
+          "unit": "m"
+        },
+        "noise.map_reach_m": {
+          "label": "Noise map: how far the map reaches from the lines",
           "unit": "m"
         },
         "noise.grid_spacing_m": {
@@ -5665,6 +5771,11 @@
               "low": 250,
               "central": 500,
               "high": 1000
+            },
+            "noise.map_reach_m": {
+              "low": 150,
+              "central": 300,
+              "high": 500
             },
             "noise.grid_spacing_m": {
               "low": 5,
@@ -5945,6 +6056,11 @@
               "central": 500,
               "high": 1000
             },
+            "noise.map_reach_m": {
+              "low": 150,
+              "central": 300,
+              "high": 500
+            },
             "noise.grid_spacing_m": {
               "low": 5,
               "central": 10,
@@ -6223,6 +6339,11 @@
               "low": 250,
               "central": 500,
               "high": 1000
+            },
+            "noise.map_reach_m": {
+              "low": 150,
+              "central": 300,
+              "high": 500
             },
             "noise.grid_spacing_m": {
               "low": 5,
@@ -6503,6 +6624,11 @@
               "central": 500,
               "high": 1000
             },
+            "noise.map_reach_m": {
+              "low": 150,
+              "central": 300,
+              "high": 500
+            },
             "noise.grid_spacing_m": {
               "low": 5,
               "central": 10,
@@ -6781,6 +6907,11 @@
               "low": 250,
               "central": 500,
               "high": 1000
+            },
+            "noise.map_reach_m": {
+              "low": 150,
+              "central": 300,
+              "high": 500
             },
             "noise.grid_spacing_m": {
               "low": 5,
@@ -7061,6 +7192,11 @@
               "central": 500,
               "high": 1000
             },
+            "noise.map_reach_m": {
+              "low": 150,
+              "central": 300,
+              "high": 500
+            },
             "noise.grid_spacing_m": {
               "low": 5,
               "central": 10,
@@ -7339,6 +7475,11 @@
               "low": 250,
               "central": 500,
               "high": 1000
+            },
+            "noise.map_reach_m": {
+              "low": 150,
+              "central": 300,
+              "high": 500
             },
             "noise.grid_spacing_m": {
               "low": 5,
@@ -7619,6 +7760,11 @@
               "central": 500,
               "high": 1000
             },
+            "noise.map_reach_m": {
+              "low": 150,
+              "central": 300,
+              "high": 500
+            },
             "noise.grid_spacing_m": {
               "low": 5,
               "central": 10,
@@ -7897,6 +8043,11 @@
               "low": 250,
               "central": 500,
               "high": 1000
+            },
+            "noise.map_reach_m": {
+              "low": 150,
+              "central": 300,
+              "high": 500
             },
             "noise.grid_spacing_m": {
               "low": 5,
@@ -8177,6 +8328,11 @@
               "central": 500,
               "high": 1000
             },
+            "noise.map_reach_m": {
+              "low": 150,
+              "central": 300,
+              "high": 500
+            },
             "noise.grid_spacing_m": {
               "low": 5,
               "central": 10,
@@ -8456,6 +8612,11 @@
               "central": 500,
               "high": 1000
             },
+            "noise.map_reach_m": {
+              "low": 150,
+              "central": 300,
+              "high": 500
+            },
             "noise.grid_spacing_m": {
               "low": 5,
               "central": 10,
@@ -8734,6 +8895,11 @@
               "low": 250,
               "central": 500,
               "high": 1000
+            },
+            "noise.map_reach_m": {
+              "low": 150,
+              "central": 300,
+              "high": 500
             },
             "noise.grid_spacing_m": {
               "low": 5,
