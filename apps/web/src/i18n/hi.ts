@@ -2,6 +2,7 @@ import { roadHi } from "./road/hi";
 import { editorsHi } from "./editors/hi";
 import { cargoBikeHi } from "./cargo-bike/hi";
 import { depotsHi } from "./depots/hi";
+import { populationHi } from "./population/hi";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -457,6 +458,7 @@ export const hi: Messages = {
   ...editorsHi,
   ...cargoBikeHi,
   ...depotsHi,
+  ...populationHi,
   ...roadHi,
   ...PLUGIN_MESSAGES.hi,
 };
