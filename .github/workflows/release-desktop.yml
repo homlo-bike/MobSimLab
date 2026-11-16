@@ -147,7 +147,7 @@ jobs:
           for f in vcruntime140.dll vcruntime140_1.dll msvcp140.dll; do
             cp "/c/Windows/System32/$f" desktop/runtime/pgsql/bin/ 2>/dev/null || true
           done
-          ls desktop/runtime/pgsql desktop/runtime/pgsql/bin | head -50
+          find desktop/runtime/pgsql -maxdepth 2 | head -60
       - name: Desktop app
         working-directory: desktop
         run: npm ci --ignore-scripts && npm run build
@@ -190,7 +190,12 @@ jobs:
         run: |
           for _ in $(seq 1 60); do gh release view "$TAG" -R "$GITHUB_REPOSITORY" >/dev/null 2>&1 && break; sleep 10; done
           cd desktop/release
-          files=$(ls MobSimLab-*.exe MobSimLab-*.dmg MobSimLab-*.AppImage MobSimLab-*.deb MobSimLab-*.rpm 2>/dev/null || true)
-          for f in $files; do sha256sum "$f" > "$f.sha256" 2>/dev/null || shasum -a 256 "$f" > "$f.sha256"; done
-          # shellcheck disable=SC2086
-          gh release upload "$TAG" -R "$GITHUB_REPOSITORY" --clobber $files $(for f in $files; do echo "$f.sha256"; done)
+          shopt -s nullglob
+          files=(MobSimLab-*.exe MobSimLab-*.dmg MobSimLab-*.AppImage MobSimLab-*.deb MobSimLab-*.rpm)
+          [ "${#files[@]}" -gt 0 ] || { echo "no installers" >&2; exit 1; }
+          sums=()
+          for f in "${files[@]}"; do
+            if command -v sha256sum >/dev/null; then sha256sum "$f" > "$f.sha256"; else shasum -a 256 "$f" > "$f.sha256"; fi
+            sums+=("$f.sha256")
+          done
+          gh release upload "$TAG" -R "$GITHUB_REPOSITORY" --clobber "${files[@]}" "${sums[@]}"
