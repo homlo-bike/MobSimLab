@@ -17,7 +17,7 @@ import {
 } from "./preferences";
 
 /** The library's group names as message keys. */
-const GROUP_LABEL: Record<string, MessageKey> = {
+export const GROUP_LABEL: Record<string, MessageKey> = {
   Modes: "prefs.group.modes",
   Operations: "prefs.group.operations",
   Demand: "prefs.group.demand",
@@ -32,7 +32,7 @@ const GROUP_LABEL: Record<string, MessageKey> = {
   Fares: "prefs.group.fares",
 };
 
-const TRACTION_LABEL: Record<string, MessageKey> = {
+export const TRACTION_LABEL: Record<string, MessageKey> = {
   battery: "prefs.traction.battery",
   diesel: "prefs.traction.diesel",
   hydrogen: "prefs.traction.hydrogen",
