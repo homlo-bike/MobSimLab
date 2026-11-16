@@ -4,6 +4,7 @@ import { editorsRu } from "./editors/ru";
 import { cargoBikeRu } from "./cargo-bike/ru";
 import { commentsRu } from "./comments/ru";
 import { depotsRu } from "./depots/ru";
+import { tablesRu } from "./tables/ru";
 import { fleetRu } from "./fleet/ru";
 import { timetablesRu } from "./timetables/ru";
 import { mslabRu } from "./mslab/ru";
@@ -503,6 +504,7 @@ export const ru: Messages = {
   ...editorsRu,
   ...cargoBikeRu,
   ...depotsRu,
+  ...tablesRu,
   ...fleetRu,
   ...timetablesRu,
   ...commentsRu,

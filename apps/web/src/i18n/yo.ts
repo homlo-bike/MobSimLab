@@ -4,6 +4,7 @@ import { editorsYo } from "./editors/yo";
 import { cargoBikeYo } from "./cargo-bike/yo";
 import { commentsYo } from "./comments/yo";
 import { depotsYo } from "./depots/yo";
+import { tablesYo } from "./tables/yo";
 import { fleetYo } from "./fleet/yo";
 import { timetablesYo } from "./timetables/yo";
 import { mslabYo } from "./mslab/yo";
@@ -496,6 +497,7 @@ export const yo: Messages = {
   ...editorsYo,
   ...cargoBikeYo,
   ...depotsYo,
+  ...tablesYo,
   ...fleetYo,
   ...timetablesYo,
   ...commentsYo,
