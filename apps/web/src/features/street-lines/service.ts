@@ -2,15 +2,15 @@
  * The service a street line runs through the day, from its timing: the service day for the journey planner
  * and the benefit timetable, and the trips and vehicle-hours a weekday for the tables and the costs.
  */
-import { DEFAULT_SERVICE_DAY, servicePeriods, type ServiceDay } from "../journey-planner/network";
+import { projectServiceDay, servicePeriods, type ServiceDay } from "../journey-planner/network";
 import { fullTiming, type Timing } from "./modes";
 import { VEHICLES } from "./vehicles";
 import type { CatalogueVehicle, Mode, VehicleProfile } from "./types";
 
-/** Purpose: the line's service day: its first and last departure, with the planner's peak windows. */
+/** Purpose: the line's service day: its first and last departure, with the project's peak windows. */
 export function lineServiceDay(timing: Partial<Timing> | undefined): ServiceDay {
   const t = fullTiming(timing);
-  return { ...DEFAULT_SERVICE_DAY, firstS: t.firstMin * 60, lastS: t.lastMin * 60 };
+  return { ...projectServiceDay(), firstS: t.firstMin * 60, lastS: t.lastMin * 60 };
 }
 
 /** What the line runs on a weekday. */

@@ -10,11 +10,11 @@ import { clock, duration, minutes, PARTS, parseClock } from "./format";
 import type { DemandZone } from "../../kits/ZoneEditor";
 import { drawJourney, drawNetwork, drawZones, ensureLayers, removeLayers } from "./mapLayers";
 import {
-  DEFAULT_SERVICE_DAY,
   mergeTimetables,
   pluginLineTimetable,
   prefixTimetable,
   type PluginLineInput,
+  projectServiceDay,
   streetHeadways,
   streetLineTimetable,
   type StreetLineInput,
@@ -731,7 +731,7 @@ export function JourneyPlanner({
             <ProfileChart
               points={profile}
               selected={time}
-              peaks={DEFAULT_SERVICE_DAY.peaks}
+              peaks={projectServiceDay().peaks}
               onSelect={(t) => setTimeText(clock(t))}
             />
             <div className="flex items-center gap-3 text-xs text-slate-600">
