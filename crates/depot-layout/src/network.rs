@@ -189,6 +189,24 @@ fn inset_corner(boundary: &[V2], i: usize, d: f64) -> Option<V2> {
     None
 }
 
+/// Purpose: the part of an aisle centreline (as fractions from `a`) at least `d` metres from the fence; the
+/// whole aisle when no part is.
+fn clear_span(boundary: &[V2], a: V2, b: V2, d: f64) -> (f64, f64) {
+    let len = a.dist(b);
+    let steps = (len / 0.5).ceil().max(1.0) as usize;
+    let ok = |k: usize| {
+        let t = k as f64 / steps as f64;
+        boundary_clear(boundary, a.add(b.sub(a).mul(t)), d)
+    };
+    match (
+        (0..=steps).find(|&k| ok(k)),
+        (0..=steps).rev().find(|&k| ok(k)),
+    ) {
+        (Some(i), Some(j)) => (i as f64 / steps as f64, j as f64 / steps as f64),
+        _ => (0.0, 1.0),
+    }
+}
+
 fn boundary_clear(boundary: &[V2], p: V2, d: f64) -> bool {
     let n = boundary.len();
     (0..n).all(|i| dist_point_segment(p, boundary[i], boundary[(i + 1) % n]) >= d)
@@ -271,6 +289,14 @@ pub fn build(inp: &NetInput) -> (Network, Vec<Reach>) {
         let d = b.sub(*a);
         let len2 = d.dot(d).max(1e-9);
         let mut stops: Vec<(f64, Option<(usize, bool)>)> = vec![(0.0, None), (1.0, None)];
+        // An aisle that runs up to the fence is joined to the yard where it is clear of the fence.
+        let (t0, t1) = clear_span(inp.boundary, *a, *b, inp.keep_off);
+        if t0 > 0.0 {
+            stops.push((t0, None));
+        }
+        if t1 < 1.0 {
+            stops.push((t1, None));
+        }
         for (li, (_, entry, exit, ain, aout)) in inp.lanes.iter().enumerate() {
             if *ain == Some(ai) {
                 stops.push((
@@ -288,6 +314,7 @@ pub fn build(inp: &NetInput) -> (Network, Vec<Reach>) {
         stops.sort_by(|x, y| x.0.total_cmp(&y.0));
         let mut prev: Option<(usize, f64)> = None;
         let mut first_node = None;
+        let mut last_node = None;
         let mut count = 0;
         for (t, who) in stops {
             let node = match prev {
@@ -317,7 +344,12 @@ pub fn build(inp: &NetInput) -> (Network, Vec<Reach>) {
                     n
                 }
             };
-            first_node.get_or_insert(node);
+            if who.is_none() && (t - t0).abs() < 1e-9 {
+                first_node = Some(node);
+            }
+            if who.is_none() && (t - t1).abs() < 1e-9 {
+                last_node = Some(node);
+            }
             if let Some((li, is_in)) = who {
                 if is_in {
                     lane_in[li] = Some(node);
@@ -330,7 +362,7 @@ pub fn build(inp: &NetInput) -> (Network, Vec<Reach>) {
         if let Some(f) = first_node {
             terminals.push(f);
         }
-        if let Some((l, _)) = prev {
+        if let Some(l) = last_node {
             terminals.push(l);
         }
     }

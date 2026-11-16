@@ -201,6 +201,32 @@ fn rectangle_with_parking_and_charging() {
     check(d, 20);
 }
 
+/// A zone drawn over the whole outline: its aisles run up to the fence, and the gates still reach them.
+#[test]
+fn zone_over_the_whole_outline() {
+    let p = Proj::around(&[ORIGIN]);
+    let outline = [(0., 0.), (180., 0.), (180., 140.), (0., 140.)];
+    for angle in [90.0, 45.0] {
+        let zones = vec![zone(
+            "all",
+            ZoneKind::Parking,
+            ring(&p, &outline),
+            angle,
+            None,
+        )];
+        let d = depot(
+            &outline,
+            &[
+                (180., 30., GateKind::Entrance),
+                (180., 110., GateKind::Exit),
+            ],
+            zones,
+            fleet(8, 0),
+        );
+        check(d, 20);
+    }
+}
+
 #[test]
 fn l_shaped_depot() {
     let p = Proj::around(&[ORIGIN]);
