@@ -3,6 +3,7 @@ import { editorsKo } from "./editors/ko";
 import { cargoBikeKo } from "./cargo-bike/ko";
 import { depotsKo } from "./depots/ko";
 import { mslabKo } from "./mslab/ko";
+import { populationKo } from "./population/ko";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -275,6 +276,10 @@ export const ko: Messages = {
   "prefs.delayLane": "도색만 된 버스·트램 차로",
   "prefs.delayDefault": "가정값 라이브러리: {value} %",
   "prefs.delayReset": "라이브러리 값 사용",
+  "prefs.stationsTitle": "역",
+  "prefs.stationsIntro":
+    "이 거리 안의 같은 이름 정류장은 노선도, 경로 탐색, 편익 및 승객 표에서 하나의 역으로 계산됩니다.",
+  "prefs.libraryM": "가정값 라이브러리: {value} m",
   "prefs.currencyTitle": "통화",
   "prefs.currencyIntro":
     "프로젝트의 모든 금액은 이 통화로 표시됩니다: 비용 표, 편익, 시나리오, 화물 자전거 절감액.",
@@ -295,6 +300,30 @@ export const ko: Messages = {
   "prefs.rulesChanged": "{count}개 변경됨",
   "prefs.rulesLibrary": "가정값 라이브러리: {value} {unit}",
   "prefs.rulesLibraryRange": "가정값 라이브러리: {value} {unit} (범위 {low}–{high})",
+  "prefs.paramsTitle": "모든 매개변수",
+  "prefs.paramsIntro":
+    "가정 라이브러리의 모든 값입니다. 모든 수단 또는 한 수단에 대해 직접 값을 정하세요. 한 수단의 값이 모든 수단의 값보다 우선합니다. 라이브러리 값은 옆에 표시됩니다.",
+  "prefs.paramsGroup": "그룹",
+  "prefs.paramsMode": "교통수단",
+  "prefs.paramsAllModes": "모든 수단",
+  "prefs.paramsFromAll": "모든 수단에 대한 내 값",
+  "prefs.group.modes": "교통수단",
+  "prefs.group.operations": "운영",
+  "prefs.group.demand": "수요",
+  "prefs.group.analysis": "분석",
+  "prefs.group.simulation": "시뮬레이션",
+  "prefs.group.infrastructure": "인프라 기준",
+  "prefs.group.accessibility": "접근성",
+  "prefs.group.depots": "차량기지와 도로",
+  "prefs.group.energy": "에너지와 기후",
+  "prefs.group.cost": "비용",
+  "prefs.group.benefits": "편익",
+  "prefs.group.fares": "요금",
+  "prefs.traction.battery": "배터리",
+  "prefs.traction.diesel": "디젤",
+  "prefs.traction.hydrogen": "수소",
+  "prefs.traction.cng": "천연가스(CNG)",
+  "prefs.traction.electric": "전기",
   "prefs.accessTitle": "승강장 접근성",
   "prefs.accessIntro":
     "승강장과 열차 사이 단차·틈 한도(TSI PRM)와 차량 목록에 바닥 높이가 없는 열차에 쓰는 값. 노선은 모든 정류장에서 이를 기준으로 검사됩니다.",
@@ -382,6 +411,7 @@ export const ko: Messages = {
   ...cargoBikeKo,
   ...depotsKo,
   ...mslabKo,
+  ...populationKo,
   ...roadKo,
   ...PLUGIN_MESSAGES.ko,
 };

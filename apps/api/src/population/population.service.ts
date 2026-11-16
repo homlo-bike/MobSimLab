@@ -1,6 +1,8 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable, Optional } from "@nestjs/common";
+import { DATABASE, type Database } from "../db/database";
 import { OverpassClient } from "../gateway/overpass.client";
-import { emptyGrid, WorldPopClient, type WorldPopEntry } from "../gateway/worldpop.client";
+import { CELL_DEG, emptyGrid, WorldPopClient, type WorldPopEntry } from "../gateway/worldpop.client";
+import { layerLattice } from "./lattice";
 
 /** Where the people counts come from, shown next to them (C-09). */
 export const POPULATION_SOURCE = {
@@ -19,12 +21,25 @@ const WAIT_MS = 20_000;
 
 export type Bbox = [number, number, number, number];
 
+/** Where an answer's people counts come from: WorldPop's live grid, or the project's primary layer. */
+export interface PopulationSourceInfo {
+  /** `worldpop_r2025a` for the live grid; `layer:<id>` for a project layer. */
+  id: string;
+  name: string;
+  dataset: string;
+  url: string;
+  licence: string;
+  year: number | null;
+  countries: string[];
+  citation: string;
+}
+
 export type PopulationAnswer =
   | {
       status: "ready";
       /** People per cell: south-west corner `x0` longitude, `y0` latitude, cell size in degrees, rows from the south. */
       grid: { x0: number; y0: number; dx: number; dy: number; nx: number; ny: number; people: number[] };
-      source: typeof POPULATION_SOURCE & { year: number; countries: string[]; citation: string };
+      source: PopulationSourceInfo;
     }
   | {
       status: "loading";
@@ -73,7 +88,54 @@ export class PopulationService {
   constructor(
     private readonly overpass: OverpassClient,
     private readonly worldpop: WorldPopClient,
+    @Optional() @Inject(DATABASE) private readonly db?: Database,
   ) {}
+
+  /**
+   * Purpose: the people per cell over a box for a project: its primary population layer (06-gis §3) on
+   * WorldPop's 3-arc-second lattice when it has one, else WorldPop's live grid (`grid`).
+   * The caller checks that the person may read the project.
+   */
+  async gridFor(bbox: Bbox, projectId: string | null, waitMs = WAIT_MS): Promise<PopulationAnswer> {
+    if (!projectId || !this.db) return this.grid(bbox, waitMs);
+    if (bbox[2] - bbox[0] > MAX_SIDE_DEG || bbox[3] - bbox[1] > MAX_SIDE_DEG)
+      throw new RangeError(`The area is larger than ${MAX_SIDE_DEG}° on a side`);
+    if (!(bbox[0] < bbox[2] && bbox[1] < bbox[3])) throw new RangeError("The area is empty");
+    const layer = await this.db
+      .selectFrom("geo.population_layer")
+      .select(["id", "name", "source", "source_url", "licence", "reference_year", "citation", "options"])
+      .where("project_id", "=", projectId)
+      .where("is_primary", "=", true)
+      .where("status", "=", "ready")
+      .executeTakeFirst();
+    if (!layer) return this.grid(bbox, waitMs);
+    const l = await layerLattice(this.db, layer.id, bbox, CELL_DEG);
+    const countries = (layer.options as { countries?: unknown }).countries;
+    return {
+      status: "ready",
+      grid: {
+        x0: l.x0,
+        y0: l.y0,
+        dx: l.dx,
+        dy: l.dy,
+        nx: l.nx,
+        ny: l.ny,
+        people: Array.from(l.people, (v) => Math.round(v * 100) / 100),
+      },
+      source: {
+        id: `layer:${layer.id}`,
+        name: layer.name,
+        dataset: layer.source === "upload" ? "Uploaded population data" : layer.name,
+        url: layer.source_url,
+        licence: layer.licence,
+        year: layer.reference_year,
+        countries: Array.isArray(countries)
+          ? countries.filter((c): c is string => typeof c === "string")
+          : [],
+        citation: layer.citation,
+      },
+    };
+  }
 
   /**
    * Purpose: the people per cell over a box `[west, south, east, north]`.
@@ -141,7 +203,8 @@ export class PopulationService {
     };
   }
 
-  private countriesOf(b: Bbox): Promise<string[]> {
+  /** Purpose: the countries (ISO 3166-1 alpha-3) at the corners and the centre of a box, from OpenStreetMap. */
+  countriesOf(b: Bbox): Promise<string[]> {
     const key = b.map((v) => v.toFixed(3)).join(",");
     let p = this.countryCache.get(key);
     if (!p) {

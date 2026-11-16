@@ -3,6 +3,7 @@ import { editorsJa } from "./editors/ja";
 import { cargoBikeJa } from "./cargo-bike/ja";
 import { depotsJa } from "./depots/ja";
 import { mslabJa } from "./mslab/ja";
+import { populationJa } from "./population/ja";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -276,6 +277,10 @@ export const ja: Messages = {
   "prefs.delayLane": "塗装のみのバス・路面電車レーン",
   "prefs.delayDefault": "前提値ライブラリ：{value} %",
   "prefs.delayReset": "ライブラリの値を使う",
+  "prefs.stationsTitle": "駅",
+  "prefs.stationsIntro":
+    "この距離内の同名の停留所は、路線図、乗換案内、便益表と利用者表で1つの駅として扱われます。",
+  "prefs.libraryM": "前提値ライブラリ：{value} m",
   "prefs.currencyTitle": "通貨",
   "prefs.currencyIntro":
     "プロジェクトの金額はすべてこの通貨で表示されます（費用表、便益、シナリオ、カーゴバイクの節約額）。",
@@ -296,6 +301,30 @@ export const ja: Messages = {
   "prefs.rulesChanged": "{count} 件変更",
   "prefs.rulesLibrary": "前提値ライブラリ：{value} {unit}",
   "prefs.rulesLibraryRange": "前提値ライブラリ：{value} {unit}（範囲 {low}–{high}）",
+  "prefs.paramsTitle": "すべてのパラメータ",
+  "prefs.paramsIntro":
+    "前提値ライブラリのすべての値。全モード共通または特定モードの値を設定できます。特定モードの値が全モード共通の値より優先されます。ライブラリの値は横に表示されます。",
+  "prefs.paramsGroup": "グループ",
+  "prefs.paramsMode": "モード",
+  "prefs.paramsAllModes": "全モード",
+  "prefs.paramsFromAll": "全モード共通のあなたの値",
+  "prefs.group.modes": "モード",
+  "prefs.group.operations": "運行",
+  "prefs.group.demand": "需要",
+  "prefs.group.analysis": "分析",
+  "prefs.group.simulation": "シミュレーション",
+  "prefs.group.infrastructure": "インフラ基準",
+  "prefs.group.accessibility": "アクセシビリティ",
+  "prefs.group.depots": "車両基地と街路",
+  "prefs.group.energy": "エネルギーと気候",
+  "prefs.group.cost": "費用",
+  "prefs.group.benefits": "便益",
+  "prefs.group.fares": "運賃",
+  "prefs.traction.battery": "バッテリー",
+  "prefs.traction.diesel": "ディーゼル",
+  "prefs.traction.hydrogen": "水素",
+  "prefs.traction.cng": "天然ガス（CNG）",
+  "prefs.traction.electric": "電気",
   "prefs.accessTitle": "ホームのバリアフリー",
   "prefs.accessIntro":
     "ホームと列車の段差・すき間の限度（TSI PRM）と、車両カタログに床面高さがない列車に使う値。系統は各停車駅でこれに照らして確認されます。",
@@ -384,6 +413,7 @@ export const ja: Messages = {
   ...cargoBikeJa,
   ...depotsJa,
   ...mslabJa,
+  ...populationJa,
   ...roadJa,
   ...PLUGIN_MESSAGES.ja,
 };

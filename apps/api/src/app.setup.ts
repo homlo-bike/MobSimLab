@@ -1,8 +1,10 @@
 import type { NestExpressApplication } from "@nestjs/platform-express";
+import { populationSettings } from "./population/layers.service";
 import cookieParser from "cookie-parser";
 import { json, raw } from "express";
 import helmet from "helmet";
 import type { AppConfig } from "./config/env";
+import { requestLogContext } from "./logging/context";
 
 /**
  * Purpose: HTTP middleware shared by the server and the tests: security headers and CSP (05 §3.4) and
@@ -50,5 +52,13 @@ export function configureApp(app: NestExpressApplication, config: AppConfig): vo
       limit: "200mb",
     }),
   );
+  // Planners' own population files (GeoTIFF, GeoJSON, CSV) are uploaded raw, up to MOBSIMLAB_POPULATION_UPLOAD_MB.
+  app.use(
+    "/api/projects/:id/population/uploads",
+    raw({ type: "application/octet-stream", limit: populationSettings().maxUploadBytes }),
+  );
   app.use(json({ limit: "100kb" }));
+  // After the body parsers, whose stream callbacks would lose the context: every log entry of the request
+  // carries its request ID (ADR-0022).
+  app.use(requestLogContext);
 }

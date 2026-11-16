@@ -12,6 +12,7 @@
  */
 import { tNow } from "../../i18n/i18n";
 import type { FeatureCategory, LonLat, NameFeature } from "./labels";
+import { distanceM } from "../../map/geo";
 
 /** Stops and stations closer than this form one station group (06-gis §9.3 default, 150 m). */
 export const STATION_GROUPING_M = 150;
@@ -76,11 +77,6 @@ export function normaliseName(name: string): string {
 function offsetM(from: LonLat, to: LonLat): [number, number] {
   const k = Math.cos((from[1] * Math.PI) / 180);
   return [(to[0] - from[0]) * k * 111_320, (to[1] - from[1]) * 111_320];
-}
-
-export function distanceM(a: LonLat, b: LonLat): number {
-  const [x, y] = offsetM(a, b);
-  return Math.hypot(x, y);
 }
 
 /** Purpose: distance from a point to a place: to its platform line for a station, else its point. */
