@@ -43,11 +43,35 @@
    "url": "https://doi.org/10.1016/j.tra.2012.07.005",
    "access": "paywalled"
   },
+  "burnaby-gondola-noise": {
+   "title": "TransLink, Burnaby Mountain Gondola noise modelling technical report (2023)",
+   "publisher": "TransLink",
+   "url": "https://www.translink.ca/-/media/translink/documents/plans-and-projects/rapid-transit/burnaby-mountain-gondola/business-case-engagement-2023/bmg_noise_modelling_tech_report.pdf",
+   "access": "free"
+  },
   "ceder-2016": {
    "title": "Avishai Ceder, Public Transit Planning and Operation: Modeling, Practice and Behavior, 2nd edition, chapters 3–4 (frequency and headway determination)",
    "publisher": "CRC Press",
    "url": "https://www.routledge.com/Public-Transit-Planning-and-Operation-Modeling-Practice-and-Behavior-Second-Edition/Ceder/p/book/9781466563919",
    "access": "paywalled"
+  },
+  "cnossos-2015": {
+   "title": "Commission Directive (EU) 2015/996 establishing common noise assessment methods (CNOSSOS-EU), Annex II (section 2.3 railway noise and Appendix G railway source database)",
+   "publisher": "European Union",
+   "url": "https://eur-lex.europa.eu/eli/dir/2015/996/oj",
+   "access": "free"
+  },
+  "cnossos-2021": {
+   "title": "Commission Delegated Directive (EU) 2021/1226 amending Annex II of Directive 2002/49/EC (CNOSSOS-EU), including the railway squeal table, vertical directivity, bridge noise and the replaced Appendix G tables",
+   "publisher": "European Union",
+   "url": "https://eur-lex.europa.eu/eli/dir_del/2021/1226/oj",
+   "access": "free"
+  },
+  "copernicus-glo30": {
+   "title": "Copernicus DEM GLO-30, a 30 m digital surface model (heights include buildings and tree canopy)",
+   "publisher": "European Space Agency, Copernicus programme",
+   "url": "https://doi.org/10.5270/ESA-c5d3d65",
+   "access": "free"
   },
   "cornell-ebus-cold": {
    "title": "Cornell Chronicle, \"Electric buses don't like the cold, study finds\" (TCAT fleet, Transportation Research Part D): +27–29 % energy at −12 to 10 °C, about +48 % at −4 to 0 °C",
@@ -132,6 +156,12 @@
    "publisher": "CENELEC",
    "url": "https://standards.cencenelec.eu/",
    "access": "paywalled"
+  },
+  "end-2002": {
+   "title": "Directive 2002/49/EC relating to the assessment and management of environmental noise (Environmental Noise Directive), Annex I (indicators, periods, 4 m receiver height) and Annex VI (reporting bands)",
+   "publisher": "European Union",
+   "url": "https://eur-lex.europa.eu/eli/dir/2002/49/oj",
+   "access": "free"
   },
   "era-subset-026": {
    "title": "ERA, ERTMS/ETCS System Requirements Specification, SUBSET-026, chapter 3.13 (speed and distance monitoring) and appendix A.3.1 (ceiling speed supervision values)",
@@ -229,6 +259,18 @@
    "url": "https://swopec.hhs.se/ctswps/abs/ctswps2015_018.htm",
    "access": "free"
   },
+  "iso-9613-1": {
+   "title": "ISO 9613-1:1993, Acoustics — Attenuation of sound during propagation outdoors — Part 1, calculation of the absorption of sound by the atmosphere",
+   "publisher": "International Organization for Standardization",
+   "url": "https://www.iso.org/standard/17426.html",
+   "access": "paywalled"
+  },
+  "iso-9613-2": {
+   "title": "ISO 9613-2:1996, Acoustics — Attenuation of sound during propagation outdoors — Part 2, general method of calculation (ground effect, clause 7.3.1)",
+   "publisher": "International Organization for Standardization",
+   "url": "https://www.iso.org/standard/20649.html",
+   "access": "paywalled"
+  },
   "itdp-pnft": {
    "title": "ITDP, People Near Frequent Transit (share of people living within 500 m of transit running at least every 15 minutes)",
    "publisher": "Institute for Transportation and Development Policy",
@@ -307,6 +349,18 @@
    "url": "https://nhts.ornl.gov/",
    "access": "free"
   },
+  "noisemodelling": {
+   "title": "NoiseModelling, open-source CNOSSOS-EU implementation (Université Gustave Eiffel and Cerema), documentation and defaults",
+   "publisher": "Université Gustave Eiffel, Cerema",
+   "url": "https://noisemodelling.readthedocs.io/",
+   "access": "free"
+  },
+  "nomeports": {
+   "title": "NoMEPorts, Good Practice Guide on Port Area Noise Mapping and Management (2008)",
+   "publisher": "NoMEPorts project (EU LIFE)",
+   "url": "https://www.ecoports.com/",
+   "access": "free"
+  },
   "nortrak-transit": {
    "title": "voestalpine Nortrak, transit turnouts (\"Meter Design\" tram and LRT turnouts for standard European geometries of 20, 25, 50, 75, 100 and 150 m radius)",
    "publisher": "voestalpine Railway Systems Nortrak",
@@ -329,6 +383,12 @@
    "title": "National Travel Survey: England 2019, trips per person per year by purpose",
    "publisher": "UK Department for Transport",
    "url": "https://www.gov.uk/government/statistics/national-travel-survey-2019",
+   "access": "free"
+  },
+  "nzta-rr703": {
+   "title": "Waka Kotahi NZ Transport Agency, Research Report 703, Electric bus noise and road user safety",
+   "publisher": "Waka Kotahi NZ Transport Agency",
+   "url": "https://www.nzta.govt.nz/resources/research/reports/703",
    "access": "free"
   },
   "oecd-icio": {
@@ -354,6 +414,12 @@
    "publisher": "Wiley",
    "url": "https://doi.org/10.1002/9781119993308",
    "access": "paywalled"
+  },
+  "osm-data": {
+   "title": "OpenStreetMap buildings (`building=*` ways and multipolygons with `height` and `building:levels`), loaded through the Overpass API",
+   "publisher": "OpenStreetMap contributors",
+   "url": "https://www.openstreetmap.org/copyright",
+   "access": "free"
   },
   "pachl-roc": {
    "title": "J. Pachl, Railway Operation and Control, VTD Rail Publishing (blocking time theory, route setting, release and approach times)",
@@ -571,6 +637,12 @@
    "url": "https://www.who.int/publications/i/item/9789241564182",
    "access": "free"
   },
+  "who-noise-2018": {
+   "title": "WHO Regional Office for Europe, Environmental Noise Guidelines for the European Region (2018)",
+   "publisher": "World Health Organization",
+   "url": "https://www.who.int/europe/publications/i/item/9789289053563",
+   "access": "free"
+  },
   "worldbank-benefit-wdi": {
    "title": "World Bank World Development Indicators API: NY.GDP.PCAP.CN (GDP per capita, local currency), SL.EMP.TOTL.SP.ZS (employment to population ratio 15+), SP.POP.0014.TO.ZS (population 0–14), SP.POP.TOTL (population)",
    "publisher": "World Bank",
@@ -588,6 +660,18 @@
    "publisher": "World Bank",
    "url": "https://datahelpdesk.worldbank.org/knowledgebase/articles/889392-about-the-indicators-api-documentation",
    "access": "free"
+  },
+  "worldpop-r2025a": {
+   "title": "Bondarenko M. et al. (2025), Constrained estimates of 2015-2030 total number of people per grid square at a resolution of 3 arc seconds (about 100 m), R2025A v1. WorldPop, University of Southampton. DOI 10.5258/SOTON/WP00839",
+   "publisher": "WorldPop, School of Geography and Environmental Science, University of Southampton",
+   "url": "https://doi.org/10.5258/SOTON/WP00839",
+   "access": "free"
+  },
+  "zhang-2003-pmf": {
+   "title": "Zhang, K., Chen, S.-C., Whitman, D., Shyu, M.-L., Yan, J., Zhang, C. (2003), A progressive morphological filter for removing nonground measurements from airborne LIDAR data, IEEE Transactions on Geoscience and Remote Sensing 41(4), 872–882",
+   "publisher": "IEEE",
+   "url": "https://doi.org/10.1109/TGRS.2003.810682",
+   "access": "paywalled"
   }
  },
  "params": {
@@ -839,6 +923,63 @@
       "mobsimlab-derivation"
      ],
      "rationale": "Average urban cycling speed door to door, with waits at junctions folded in, as used for the bicycle variant of the 15-minute city (Moreno et al. 2021 count destinations within 15 minutes on foot or by bicycle). 12 km/h is a cautious value for older or casual riders, 18 km/h a commuter on a fast cycle network. Signalised crossings add walk.crossing_delay_s on top, as for walking."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "analysis.station_grouping_m": {
+   "used_by": [
+    "stop and station names in the railway editor",
+    "renaming stops and stations"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "06-gis §9.3 default: platforms of one interchange (a tram stop in front of a station, two bus stops on either side of a junction) usually lie within about 150 m of each other; farther apart they are separate stops that need their own names. A street line's own grouping distance (line rules) still applies to its stops."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "analysis.same_place_m": {
+   "used_by": [
+    "network and strip maps",
+    "fare zones"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Two stops this close are on the same platform or kerb even when their names differ (a renamed stop, a typo), so the diagrams merge them. Stops with the same name are merged over a longer distance."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "analysis.gap_cell_m": {
+   "used_by": [
+    "walk coverage gaps",
+    "people not reached"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "The population grid is 100 m; gathering it in 200 m cells keeps the walk request small and makes each gap a block rather than a single grid cell. Smaller cells show gaps in more detail and take longer; 100 m is the grid itself."
     }
    ],
    "modes": {
@@ -1268,6 +1409,60 @@
       "mobsimlab-derivation"
      ],
      "rationale": "Annual ridership is usually 280–330 times average weekday ridership, as weekends and holidays carry less."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "benefit.ridership.saturday_share": {
+   "used_by": [
+    "multi-year runs (passengers per day type)"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Weekend days carry fewer riders than weekdays. With 0.6 on Saturdays and 0.45 on Sundays and public holidays, a year of 250 weekdays, 52 Saturdays, 52 Sundays and 10 holidays comes to about 310 weekday equivalents, in line with benefit.ridership.days_per_year (280–330)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "benefit.ridership.sunday_share": {
+   "used_by": [
+    "multi-year runs (passengers per day type)"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Sundays carry the fewest riders of the week; the range keeps the year's weekday equivalents within benefit.ridership.days_per_year (280–330), as for benefit.ridership.saturday_share."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "benefit.ridership.holiday_share": {
+   "used_by": [
+    "multi-year runs (passengers per day type)"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "A public holiday usually runs like a Sunday, so it takes the Sunday share (benefit.ridership.sunday_share)."
     }
    ],
    "modes": {
@@ -2346,6 +2541,24 @@
     "metro": 2,
     "long_distance_rail": 3,
     "high_speed_rail": 3
+   }
+  },
+  "cost.opex.car_length_m": {
+   "used_by": [
+    "operating cost: service"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "The per car-km running costs are for cars of about 25 m (main-line coaches 24–27 m, metro cars 18–23 m). A train's car-km are its length over this value times its km, so short articulated tram modules are not each counted as a full car."
+    }
+   ],
+   "modes": {
+    "*": 0
    }
   },
   "cost.opex.car_km": {
@@ -4923,7 +5136,8 @@
   },
   "climate.rail_temp_above_air_c": {
    "used_by": [
-    "heat-related speed restriction note"
+    "heat-related speed restriction note",
+    "calendar run hot days"
    ],
    "entries": [
     {
@@ -4941,7 +5155,8 @@
   },
   "climate.rail_design_temp_c": {
    "used_by": [
-    "buckling-risk note (risk rises as rail temperature exceeds this by a margin)"
+    "buckling-risk note (risk rises as rail temperature exceeds this by a margin)",
+    "calendar run hot days"
    ],
    "entries": [
     {
@@ -5071,7 +5286,8 @@
   },
   "energy.hvac_power_kw": {
    "used_by": [
-    "auxiliary energy demand"
+    "auxiliary energy demand",
+    "calendar run heating and air conditioning energy"
    ],
    "entries": [
     {
@@ -5119,7 +5335,8 @@
   },
   "climate.ocl_sag_air_temp_c": {
    "used_by": [
-    "heat-related speed restriction note"
+    "heat-related speed restriction note",
+    "calendar run hot days"
    ],
    "entries": [
     {
@@ -5129,6 +5346,259 @@
       "orr-ole-heat"
      ],
      "rationale": "ORR: UK legacy overhead line equipment is designed for −18 °C to +38 °C; modern auto-tensioned systems and hot-climate designs go higher."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "climate.heat_restriction_margin_c": {
+   "used_by": [
+    "calendar run hot days (heat speed restriction on welded track)"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "With a 25 °C design temperature and rails 20 °C above the air, restrictions start at about 30 °C air temperature; well-maintained track tolerates more, track with weak ballast less."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "climate.heat_speed_kmh": {
+   "used_by": [
+    "calendar run hot days"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Blanket emergency speed restrictions in hot weather are typically 30–100 km/h; lines slower than the limit are not affected."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "climate.heat_from_h": {
+   "used_by": [
+    "calendar run hot days"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Rail temperature follows the sun and peaks in the afternoon."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "climate.heat_to_h": {
+   "used_by": [
+    "calendar run hot days"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Rails cool down in the evening."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "climate.ocl_sag_speed_kmh": {
+   "used_by": [
+    "calendar run very hot days"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Lower speeds keep the pantograph from losing contact or catching the sagging wire."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "climate.frost_day_min_c": {
+   "used_by": [
+    "calendar run cold days (frozen switches",
+    "switch heating)"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Climatology counts a day with a minimum below 0 °C as a frost day; snow and ice in the switches need frost."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "climate.switch_heating": {
+   "used_by": [
+    "calendar run cold days (frozen switches or switch heating energy)"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Railways with frost fit heating to their switches; without it, switches freeze and fail."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "climate.switch_heating_kw": {
+   "used_by": [
+    "calendar run switch heating energy"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Electric point heating is a few kW per switch; long high-speed turnouts need more."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "climate.switch_heating_hours": {
+   "used_by": [
+    "calendar run switch heating energy"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Controlled heating runs while the rail is near or below freezing, mostly at night and in the morning."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "climate.frost_extra_delayed_share": {
+   "used_by": [
+    "calendar run cold days"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Added to the stability test's share of delayed trips (simulation.stability.delayed_share)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "climate.frost_delay_mean_s": {
+   "used_by": [
+    "calendar run cold days"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Clearing a frozen switch or routing round it takes minutes."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "climate.comfort_low_c": {
+   "used_by": [
+    "calendar run heating and air conditioning energy"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Heating degree days are often counted below 15 °C."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "climate.comfort_high_c": {
+   "used_by": [
+    "calendar run heating and air conditioning energy"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Cooling degree days are often counted above 22 °C."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "climate.hvac_full_delta_c": {
+   "used_by": [
+    "calendar run heating and air conditioning energy"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Heating and cooling power grows with the gap to the comfort range up to the full power (energy.hvac_power_kw)."
     }
    ],
    "modes": {
@@ -8621,7 +9091,8 @@
    "used_by": [
     "transfer links",
     "access/egress links",
-    "catchment"
+    "catchment",
+    "benefit estimate walks"
    ],
    "entries": [
     {
@@ -8641,7 +9112,8 @@
   "journey.walk_detour_factor": {
    "used_by": [
     "journey planner access",
-    "egress and transfer walks"
+    "egress and transfer walks",
+    "benefit estimate walks"
    ],
    "entries": [
     {
@@ -8753,6 +9225,25 @@
     "diesel": 2,
     "hydrogen": 2,
     "cng": 2
+   }
+  },
+  "timetable.max_terminal_wait_min": {
+   "used_by": [
+    "vehicle scheduling",
+    "fleet size"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Vehicle blocks: a vehicle that would stand longer than this between trips (for example between the peaks) runs back to the depot and a vehicle pulls out again later, so it does not block a terminal stand or platform. The rail timetable planner used 20 min; operators choose by depot distance and terminal space."
+    }
+   ],
+   "modes": {
+    "*": 0
    }
   },
   "timetable.min_buffer_s": {
@@ -10077,6 +10568,1031 @@
     "*": 0,
     "brt": 1,
     "trolleybus": 2
+   }
+  },
+  "noise.receiver_height_m": {
+   "used_by": [
+    "noise corridor in the editors",
+    "noise map"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "unverified",
+     "sources": [
+      "end-2002"
+     ],
+     "rationale": "Strategic noise maps assess L_den and L_night at 4 m above ground (END Annex I). 1.5 m is the usual ear height for single-storey and garden checks."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "noise.day_start_h": {
+   "used_by": [
+    "noise indicators"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "unverified",
+     "sources": [
+      "end-2002"
+     ],
+     "rationale": "END Annex I: day 07–19, evening 19–23, night 23–07 by default; Member States may shift the periods by one or two hours."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "noise.evening_start_h": {
+   "used_by": [
+    "noise indicators"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "unverified",
+     "sources": [
+      "end-2002"
+     ],
+     "rationale": "END Annex I default 19:00; the evening period may be shortened by one or two hours with the day or night period lengthened to match."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "noise.night_start_h": {
+   "used_by": [
+    "noise indicators"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "unverified",
+     "sources": [
+      "end-2002"
+     ],
+     "rationale": "END Annex I default 23:00 for an eight-hour night."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "noise.evening_penalty_db": {
+   "used_by": [
+    "noise indicators"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "unverified",
+     "sources": [
+      "end-2002"
+     ],
+     "rationale": "L_den = 10 lg[(12·10^(L_day/10) + 4·10^((L_evening+5)/10) + 8·10^((L_night+10)/10))/24] (END Annex I)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "noise.night_penalty_db": {
+   "used_by": [
+    "noise indicators"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "unverified",
+     "sources": [
+      "end-2002"
+     ],
+     "rationale": "END Annex I, as for the evening penalty."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "noise.band_lden_db": {
+   "used_by": [
+    "noise corridor in the editors"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "unverified",
+     "sources": [
+      "end-2002"
+     ],
+     "rationale": "55 dB L_den is the lowest band Member States report under END Annex VI; the editor corridor is drawn out to it (ADR-0038 §1)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "noise.band_lnight_db": {
+   "used_by": [
+    "noise corridor in the editors"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "unverified",
+     "sources": [
+      "end-2002"
+     ],
+     "rationale": "50 dB L_night is the lowest END Annex VI reporting band for the night."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "noise.who_guideline_lden_db": {
+   "used_by": [
+    "noise map exposure",
+    "noise corridor checks"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "unverified",
+     "sources": [
+      "who-noise-2018"
+     ],
+     "rationale": "WHO 2018 recommends reducing road traffic noise below 53 dB L_den."
+    },
+    {
+     "basis": "cited",
+     "check": "unverified",
+     "sources": [
+      "who-noise-2018"
+     ],
+     "rationale": "WHO 2018 recommends reducing railway noise below 54 dB L_den."
+    }
+   ],
+   "modes": {
+    "*": 0,
+    "tram": 1,
+    "light_rail": 1,
+    "metro": 1,
+    "commuter_rail": 1,
+    "regional_rail": 1,
+    "long_distance_rail": 1,
+    "high_speed_rail": 1
+   }
+  },
+  "noise.who_guideline_lnight_db": {
+   "used_by": [
+    "noise map exposure",
+    "noise corridor checks"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "unverified",
+     "sources": [
+      "who-noise-2018"
+     ],
+     "rationale": "WHO 2018: road traffic noise below 45 dB L_night."
+    },
+    {
+     "basis": "cited",
+     "check": "unverified",
+     "sources": [
+      "who-noise-2018"
+     ],
+     "rationale": "WHO 2018: railway noise below 44 dB L_night."
+    }
+   ],
+   "modes": {
+    "*": 0,
+    "tram": 1,
+    "light_rail": 1,
+    "metro": 1,
+    "commuter_rail": 1,
+    "regional_rail": 1,
+    "long_distance_rail": 1,
+    "high_speed_rail": 1
+   }
+  },
+  "noise.air_temperature_c": {
+   "used_by": [
+    "noise propagation"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "iso-9613-1",
+      "noisemodelling"
+     ],
+     "rationale": "ISO 9613-1 absorption is computed from temperature and humidity; 15 °C and 70 % are common defaults in CNOSSOS software. Absorption matters little within the 100–200 m of an editor corridor."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "noise.relative_humidity_pct": {
+   "used_by": [
+    "noise propagation"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "iso-9613-1",
+      "noisemodelling"
+     ],
+     "rationale": "As for the air temperature."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "noise.ground_factor_default": {
+   "used_by": [
+    "noise propagation"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "cnossos-2015",
+      "iso-9613-2"
+     ],
+     "rationale": "G = 0 for paved ground and water, 1 for grass, fields and forest. 0.5 stands for a mixed urban edge until land use from OSM is imported (ADR-0038 §2). The quick estimate applies the ISO 9613-2 ground effect with this one value."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "noise.max_source_distance_m": {
+   "used_by": [
+    "noise corridor in the editors",
+    "noise map"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Beyond about 500 m a transit line rarely lifts a receiver above 45 dB L_den; the range is tested in sensitivity runs."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "noise.map_reach_m": {
+   "used_by": [
+    "noise map"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Buildings, terrain and receivers are loaded within this distance of the lines. 300 m covers the 55 dB L_den band of most urban lines; a fast main line may need more. Never beyond noise.max_source_distance_m."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "noise.grid_spacing_m": {
+   "used_by": [
+    "noise corridor in the editors",
+    "noise map"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Typical spacing of urban strategic maps. The editor coarsens the grid for very long lines so the corridor still recomputes on each edit."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "noise.building_storey_height_m": {
+   "used_by": [
+    "noise map"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation",
+      "osm-data"
+     ],
+     "rationale": "OSM buildings carry `height` (used as given) or `building:levels`; storeys × this value gives the screen height. 3 m is a common floor-to-floor height of housing; offices and older buildings are taller."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "noise.building_default_height_m": {
+   "used_by": [
+    "noise map"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation",
+      "osm-data"
+     ],
+     "rationale": "Most OSM buildings have no height tag. 8 m stands for a two-to-three-storey building; the low end (a single storey or shed) screens less, which is the cautious side for the map. Any building at least 2 to 3 m above the line of sight already gives most of the roof screening."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "noise.favourable_probability_day": {
+   "used_by": [
+    "noise map (full propagation)"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "noisemodelling"
+     ],
+     "rationale": "NMPB-2008 defaults as used for France in CNOSSOS software; Hungarian climatology finds about one third by day. Used by the full map; the editor corridor assumes favourable conditions throughout (an upper bound)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "noise.favourable_probability_evening": {
+   "used_by": [
+    "noise map (full propagation)"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "noisemodelling"
+     ],
+     "rationale": "As for the day; about two thirds in Hungarian climatology."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "noise.favourable_probability_night": {
+   "used_by": [
+    "noise map (full propagation)"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "noisemodelling"
+     ],
+     "rationale": "As for the day."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "noise.reflection_order": {
+   "used_by": [
+    "noise map (full propagation)"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "noisemodelling"
+     ],
+     "rationale": "First-order façade reflections are usual CNOSSOS mapping practice."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "noise.reflection_max_distance_m": {
+   "used_by": [
+    "noise map (full propagation)"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "First-order reflections are searched on the facades within this distance of each map receiver. 50 m covers the opposite side of most urban streets and squares; a farther facade adds little next to the direct sound, and a wider search slows the map down."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "noise.facade_reflection_coefficient": {
+   "used_by": [
+    "noise map (full propagation)"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "iso-9613-2"
+     ],
+     "rationale": "ISO 9613-2 Table 4 gives 1 for flat hard walls without openings, 0.8 for walls of buildings with windows and small additions or bays, and 0.4 for factory walls with half the surface openings, installations or pipes. 0.8 (a reflection loss of about 1 dB) stands for ordinary building facades."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "noise.terrain_filter_window_m": {
+   "used_by": [
+    "noise map (full propagation)"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "zhang-2003-pmf",
+      "copernicus-glo30"
+     ],
+     "rationale": "Copernicus GLO-30 is a surface model with roofs and tree tops. Samples inside OSM buildings are dropped, then a morphological opening over this window (Zhang et al. 2003) removes anything narrower that stands above its surroundings: other buildings, tree rows, bridges. Hills and embankments wider than the window stay. Too narrow a window keeps large buildings and woods as terrain; too wide flattens small hills."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "noise.floor_area_per_person_m2": {
+   "used_by": [
+    "noise map (population exposure)"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation",
+      "osm-data"
+     ],
+     "rationale": "Used only where the WorldPop grid cannot be loaded: people in a building = footprint × storeys ÷ this value. Dwellings in western Europe offer roughly 40 to 50 m² of living space per person; the gross floor area of a building (walls, stairs, common parts, ground-floor uses) is about a quarter larger. Buildings tagged in OSM as another use (shop, office, garage, church…) get no residents."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "noise.population_min_footprint_m2": {
+   "used_by": [
+    "noise map (population exposure)"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation",
+      "osm-data",
+      "worldpop-r2025a"
+     ],
+     "rationale": "Most OSM buildings are tagged only building=yes; below this footprint they are taken to be garages, sheds and kiosks and get no residents, from the WorldPop grid or from the building size."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "noise.building_level_height_m": {
+   "used_by": [
+    "noise map (full propagation)"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Used when OSM has building:levels but no height; a building with neither counts as three storeys."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "noise.road_source_height_m": {
+   "used_by": [
+    "noise corridor in the editors"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "unverified",
+     "sources": [
+      "cnossos-2015"
+     ],
+     "rationale": "CNOSSOS-EU places the road line source 0.05 m above the road surface."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "noise.rail_source_height_a_m": {
+   "used_by": [
+    "noise corridor in the editors",
+    "noise map"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "read",
+     "sources": [
+      "cnossos-2015"
+     ],
+     "rationale": "CNOSSOS-EU Annex II 2.3.1, Figure 2.3.a: source A at 0.5 m above the plane of the rail heads."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "noise.rail_source_height_b_m": {
+   "used_by": [
+    "noise corridor in the editors",
+    "noise map"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "read",
+     "sources": [
+      "cnossos-2015"
+     ],
+     "rationale": "CNOSSOS-EU Annex II 2.3.1, Figure 2.3.a: source B at 4.0 m above the plane of the rail heads."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "noise.rail_min_roughness_speed_kmh": {
+   "used_by": [
+    "noise corridor in the editors",
+    "noise map"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "read",
+     "sources": [
+      "cnossos-2015"
+     ],
+     "rationale": "CNOSSOS-EU Annex II 2.3.2 (rolling noise): a minimum speed of 50 km/h is used for the total effective roughness, to cover braking and impact noise at low speed; it does not change the vehicle flow. Impact noise is not modelled below this speed."
+    },
+    {
+     "basis": "cited",
+     "check": "read",
+     "sources": [
+      "cnossos-2015"
+     ],
+     "rationale": "CNOSSOS-EU Annex II 2.3.2: 30 km/h for trams and light metro."
+    }
+   ],
+   "modes": {
+    "*": 0,
+    "tram": 1,
+    "light_rail": 1
+   }
+  },
+  "noise.rail_aero_from_kmh": {
+   "used_by": [
+    "noise corridor in the editors",
+    "noise map"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "read",
+     "sources": [
+      "cnossos-2015"
+     ],
+     "rationale": "CNOSSOS-EU Annex II 2.3.2 (aerodynamic noise): only relevant above 200 km/h. The Table G-6 values are then added at sources A and B with alpha 50 (L_W = L_W,0 + 50 lg(v/300))."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "noise.rail_vehicle_length_m": {
+   "used_by": [
+    "noise corridor in the editors",
+    "noise map"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "cnossos-2015",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "CNOSSOS-EU counts vehicles (sub-units of a train). The train length the editors give is divided by this length to get the number of vehicles; 25 m is a usual mainline multiple-unit car."
+    },
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "cnossos-2015",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Articulated trams and light rail vehicles cannot be split, so CNOSSOS-EU treats each as one vehicle; 30 m is a usual unit length, so a double unit counts as two."
+    },
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Usual metro car length."
+    },
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "UIC-X/Z passenger coach length."
+    }
+   ],
+   "modes": {
+    "*": 0,
+    "tram": 1,
+    "light_rail": 1,
+    "metro": 2,
+    "long_distance_rail": 3
+   }
+  },
+  "noise.rail_axles_per_vehicle": {
+   "used_by": [
+    "noise corridor in the editors",
+    "noise map"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Two two-axle bogies per car. Rolling noise grows 10 lg(N_a) with the axle count (CNOSSOS-EU formulas 2.3.8 to 2.3.10)."
+    },
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "A 30 m articulated low-floor tram runs on two to four bogies (some with independent wheels); three bogies is common."
+    }
+   ],
+   "modes": {
+    "*": 0,
+    "tram": 1,
+    "light_rail": 1
+   }
+  },
+  "noise.rail_powered_vehicle_share": {
+   "used_by": [
+    "noise corridor in the editors",
+    "noise map"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "cnossos-2015",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "The Table G-5 traction values are per vehicle. In a multiple unit only some cars carry motors and converters; half is usual for EMUs and high-speed trains with distributed traction."
+    },
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Each tram or light rail vehicle is self-propelled."
+    },
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Locomotive-hauled: the coaches have no traction; the locomotive is counted by noise.rail_locomotives_per_train."
+    }
+   ],
+   "modes": {
+    "*": 0,
+    "tram": 1,
+    "light_rail": 1,
+    "long_distance_rail": 2
+   }
+  },
+  "noise.rail_locomotives_per_train": {
+   "used_by": [
+    "noise corridor in the editors",
+    "noise map"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Multiple units have no locomotive."
+    },
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "One locomotive hauls the coaches; its traction noise comes from noise.rail_traction."
+    }
+   ],
+   "modes": {
+    "*": 0,
+    "long_distance_rail": 1
+   }
+  },
+  "noise.rail_impact_extent_m": {
+   "used_by": [
+    "noise corridor in the editors",
+    "noise map"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "read",
+     "sources": [
+      "cnossos-2015"
+     ],
+     "rationale": "CNOSSOS-EU Annex II 2.3.2 (impact noise): the impact roughness raises the emission from 50 m before to 50 m after the joint or switch, at a joint density of one per 100 m (Table G-4 single switch/joint/crossing)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "noise.road_stop_zone_m": {
+   "used_by": [
+    "noise corridor in the editors"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "unverified",
+     "sources": [
+      "cnossos-2015"
+     ],
+     "rationale": "CNOSSOS-EU applies the acceleration correction within 100 m of a signalised junction or roundabout, fading linearly; a stop is treated like a signalised junction (ADR-0038 §2)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "noise.electric_road_propulsion_delta_db": {
+   "used_by": [
+    "noise corridor in the editors",
+    "noise map"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "secondary",
+     "sources": [
+      "nzta-rr703"
+     ],
+     "rationale": "PLACEHOLDER awaiting the product owner's value (asked 2026-11-03). NZTA RR 703 found electric buses about 8 dB quieter at 10 km/h and no different at 30 km/h; applying the change to the CNOSSOS propulsion term only reproduces that fade-out because rolling noise dominates with speed. CNOSSOS-EU has no electric category yet."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "noise.rail_squeal_r300_db": {
+   "used_by": [
+    "noise corridor in the editors",
+    "noise map"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "read",
+     "sources": [
+      "cnossos-2021"
+     ],
+     "rationale": "Directive (EU) 2021/1226, Annex point (4)(b), squeal table: trains +8 dB for curves with R ≤ 300 m and at least 50 m of track (and switch turnouts with R ≤ 300 m), added to the rolling noise in all bands. Low and high are sensitivity values for lubricated and badly squealing curves."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "noise.rail_squeal_r500_db": {
+   "used_by": [
+    "noise corridor in the editors",
+    "noise map"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "read",
+     "sources": [
+      "cnossos-2021"
+     ],
+     "rationale": "Directive (EU) 2021/1226, Annex point (4)(b): trains +5 dB for curves with 300 m < R ≤ 500 m and at least 50 m of track."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "noise.tram_squeal_r200_db": {
+   "used_by": [
+    "noise corridor in the editors",
+    "noise map"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "read",
+     "sources": [
+      "cnossos-2021"
+     ],
+     "rationale": "Directive (EU) 2021/1226, Annex point (4)(b): trams +5 dB for curves and switch turnouts with R ≤ 200 m."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "noise.squeal_min_length_m": {
+   "used_by": [
+    "noise corridor in the editors",
+    "noise map"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "read",
+     "sources": [
+      "cnossos-2021"
+     ],
+     "rationale": "Directive (EU) 2021/1226, Annex point (4)(b): the train squeal values apply to curves with l_track ≥ 50 m."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "noise.tram_embedded_track_db": {
+   "used_by": [
+    "noise corridor in the editors",
+    "noise map"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "cnossos-2015",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Embedded track in paving radiates more than ballast and reflects; grass track would be quieter. CNOSSOS-EU lists embedded track (track base code T, Table 2.3.b) but gives no transfer function for it in Appendix G, so this MobSimLab correction is added to the track radiation of the ballasted track transfer function."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "noise.cable_car_tower_lw_db": {
+   "used_by": [
+    "noise map (cable cars",
+    "indicative)"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "burnaby-gondola-noise"
+     ],
+     "rationale": "PLACEHOLDER awaiting the product owner's value (asked 2026-11-03) and the cable car research. Order of magnitude from the Burnaby Mountain Gondola study; results using it are labelled indicative."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "noise.cable_car_station_lw_db": {
+   "used_by": [
+    "noise map (cable cars",
+    "indicative)"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "burnaby-gondola-noise"
+     ],
+     "rationale": "PLACEHOLDER awaiting the product owner's value (asked 2026-11-03) and the cable car research."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "noise.ferry_cruise_lw_db": {
+   "used_by": [
+    "noise map (ferries",
+    "indicative)"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "nomeports"
+     ],
+     "rationale": "PLACEHOLDER awaiting the product owner's value (asked 2026-11-03) and the ferry research. Order of magnitude for small and medium passenger ferries from port noise mapping practice."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "noise.ferry_berth_lw_db": {
+   "used_by": [
+    "noise map (ferries",
+    "indicative)"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "nomeports"
+     ],
+     "rationale": "PLACEHOLDER awaiting the product owner's value (asked 2026-11-03) and the ferry research."
+    }
+   ],
+   "modes": {
+    "*": 0
    }
   }
  }
