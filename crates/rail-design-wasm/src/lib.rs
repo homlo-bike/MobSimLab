@@ -69,8 +69,9 @@ impl RailDesigner {
         }
     }
 
-    /// Purpose: set design values the project's preferences change for every mode (JSON object of
-    /// numbers by design value name, for example `{"street_mixed_traffic_delay_share": 0.3}`).
+    /// Purpose: set design values the project's preferences change (JSON object of numbers by design
+    /// value name for every mode, for example `{"street_mixed_traffic_delay_share": 0.3}`, or by
+    /// `<mode>.<name>` for one mode, for example `{"tram.min_radius_m": 25}`).
     /// Side effects: the next build uses them.
     pub fn set_values(&mut self, json: &str) -> Result<(), JsError> {
         self.values = serde_json::from_str(json).map_err(js)?;

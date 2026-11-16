@@ -291,7 +291,13 @@ export const ur: Messages = {
   "prefs.moreTitle": "اصول، گاڑیاں اور مفروضات",
   "prefs.moreIntro":
     "ہر متغیر اپنی کم از کم اور تجویز کردہ قدر کے ساتھ، اور منصوبے میں استعمال ہونے والی گاڑیاں۔",
-  "prefs.rules": "ہر ذریعے کے ڈیزائن اصول، کم از کم اور تجویز کردہ",
+  "prefs.rulesTitle": "ہر ذریعے کے ڈیزائن اصول",
+  "prefs.rulesIntro":
+    "وہ قدریں جن سے ریلوے ایڈیٹر ہر ریل ذریعے کے لیے ڈرائنگ جانچتا ہے۔ اس منصوبے کے لیے کوئی قدر بدلیں، یا مفروضات کی لائبریری کی قدر رکھیں۔",
+  "prefs.rulesMode": "ریل ذریعہ",
+  "prefs.rulesChanged": "تبدیل شدہ: {count}",
+  "prefs.rulesLibrary": "مفروضات کی لائبریری: {value} {unit}",
+  "prefs.rulesLibraryRange": "مفروضات کی لائبریری: {value} {unit} (حد {low}–{high})",
   "prefs.vehicles": "استعمال شدہ گاڑیاں، گاڑیوں کی فہرست سے",
   "prefs.switches": "پٹری کے سوئچ، سوئچوں کی فہرست سے",
   "prefs.calendar": "کیلنڈر، طلب اور لاگت",

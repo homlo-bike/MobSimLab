@@ -289,7 +289,13 @@ export const yo: Messages = {
   "prefs.moreTitle": "Àwọn òfin, ọkọ̀ àti àròsọ",
   "prefs.moreIntro":
     "Gbogbo àyípadà pẹ̀lú iye tó kéré jù àti èyí tí a dámọ̀ràn, àti àwọn ọkọ̀ tí iṣẹ́ àkànṣe náà ń lò.",
-  "prefs.rules": "Àwọn òfin àpẹrẹ fún irú kọ̀ọ̀kan, tó kéré jù àti tí a dámọ̀ràn",
+  "prefs.rulesTitle": "Àwọn òfin àpẹrẹ fún irú kọ̀ọ̀kan",
+  "prefs.rulesIntro":
+    "Àwọn iye tí olóòtú ojú irin fi ń ṣàyẹ̀wò àwọn àwòrán, fún irú ojú irin kọ̀ọ̀kan. Yí iye kan padà fún iṣẹ́ àkànṣe yìí, tàbí lo ti ilé ìkàwé àròsọ.",
+  "prefs.rulesMode": "Irú ojú irin",
+  "prefs.rulesChanged": "tí a yí padà: {count}",
+  "prefs.rulesLibrary": "Ilé ìkàwé àròsọ: {value} {unit}",
+  "prefs.rulesLibraryRange": "Ilé ìkàwé àròsọ: {value} {unit} (ìwọ̀n {low}–{high})",
   "prefs.vehicles": "Àwọn ọkọ̀ tí a ń lò, láti inú àkójọ ọkọ̀",
   "prefs.switches": "Àwọn ìyípadà ojú irin, láti inú àkójọ ìyípadà",
   "prefs.calendar": "Kàlẹ́ńdà, ìbéèrè àti iye owó",
