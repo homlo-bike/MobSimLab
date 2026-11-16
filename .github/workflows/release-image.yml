@@ -117,13 +117,11 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.IMAGE }}
-          # Tag v2026.11.1-alpha -> :2026.11.1-alpha and :latest. Versions are calendar based
+          # Tag v2026.11.1-alpha -> :2026.11.1-alpha only (no :latest). Versions are calendar based
           # (2026.01.1 has a leading zero, which is not valid semver), so the tag is used as written.
-          # :latest follows the newest tag; it is what compose.yaml pulls when MOBSIMLAB_VERSION is unset.
           flavor: latest=false
           tags: |
             type=match,pattern=v(.*),group=1
-            type=raw,value=latest
       - name: Sign in to ghcr.io
         uses: docker/login-action@v3
         with:
