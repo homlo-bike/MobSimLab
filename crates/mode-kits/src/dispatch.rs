@@ -1,4 +1,4 @@
-//! **On-demand dispatch simulation** for the service zone kit (ADR-0041): ride requests arrive one by
+//! **On-demand dispatch simulation** for the service zone kit (ADR-0042): ride requests arrive one by
 //! one over the service hours, each with a random pick-up and drop-off inside the zone, and a dispatcher
 //! inserts each request into the vehicle plan that grows least, keeping every rider's wait and ride
 //! within the service's limits; a request no vehicle can take is turned away.

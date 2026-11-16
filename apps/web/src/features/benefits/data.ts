@@ -132,12 +132,15 @@ export async function loadTiles(
   return { buildings: [...b.values()], places: [...p.values()], failed };
 }
 
-/** Purpose: the country figures the model uses, from the API's answer (percentages become shares). */
-export function countryFigures(ind: BenefitIndicators | null): CountryFigures {
+/**
+ * Purpose: the country figures the model uses, from the API's answer (percentages become shares; money in the
+ * country's currency times `rate`, into the currency the tables show).
+ */
+export function countryFigures(ind: BenefitIndicators | null, rate = 1): CountryFigures {
   const share = (v: { value: number } | null | undefined) =>
     v && Number.isFinite(v.value) ? v.value / 100 : null;
   return {
-    gdpPerCapita: ind?.gdpPerCapita?.value ?? null,
+    gdpPerCapita: ind?.gdpPerCapita ? ind.gdpPerCapita.value * rate : null,
     employmentRatio15: share(ind?.employmentRatio),
     under15: share(ind?.under15Share),
   };

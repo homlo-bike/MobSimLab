@@ -26,7 +26,13 @@ export type PopulationAnswer =
       grid: { x0: number; y0: number; dx: number; dy: number; nx: number; ny: number; people: number[] };
       source: typeof POPULATION_SOURCE & { year: number; countries: string[]; citation: string };
     }
-  | { status: "loading"; reason: string; countries: string[] }
+  | {
+      status: "loading";
+      reason: string;
+      countries: string[];
+      /** How far the downloads are, summed over the countries; `totalBytes` null when a size is unknown. */
+      progress: { receivedBytes: number; totalBytes: number | null };
+    }
   | { status: "unavailable"; reason: string };
 
 /**
@@ -99,10 +105,18 @@ export class PopulationService {
     }
     if (got === "late") {
       files.catch(() => undefined);
+      const each = entries.map((e) => this.worldpop.downloadProgress(e));
       return {
         status: "loading",
         reason: `The WorldPop grid of ${entries.map((e) => e.iso3).join(", ")} is being downloaded to the server`,
         countries: entries.map((e) => e.iso3),
+        progress: {
+          receivedBytes: each.reduce((a, p) => a + (p?.receivedBytes ?? 0), 0),
+          // Only the downloads under way count; one of unknown size leaves the total unknown.
+          totalBytes: each.some((p) => p && p.totalBytes === null)
+            ? null
+            : each.reduce((a, p) => a + (p ? p.totalBytes! : 0), 0) || null,
+        },
       };
     }
     const grid = emptyGrid(bbox);

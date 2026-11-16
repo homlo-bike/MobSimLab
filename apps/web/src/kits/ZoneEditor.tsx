@@ -66,7 +66,7 @@ const secs = (hhmm: string) => {
  * Purpose: the service zone kit's editor (ADR-0036 §6): click the zone's outline on the map, set the
  * requests an hour, the fleet and the service hours; the panel shows the vehicles needed, the busy share,
  * the average wait, ride and door-to-door time and the live checks, from the kit's continuous-approximation
- * estimate. "Simulate the day" runs the kit's dispatch simulation (ADR-0041) for the zone as drawn.
+ * estimate. "Simulate the day" runs the kit's dispatch simulation (ADR-0042) for the zone as drawn.
  * Side effects: adds layers, markers and a click handler to the map while mounted; stores the drawing in
  * this device's storage under `storageKey`.
  */
@@ -118,7 +118,7 @@ export function ZoneEditor({
     }
   }, [kits, doc.ring, doc.requestsPerHour, doc.fleet, doc.from, doc.to, system, prefix]);
 
-  // The trip-by-trip simulation (ADR-0041), run on request; it belongs to the inputs it ran with.
+  // The trip-by-trip simulation (ADR-0042), run on request; it belongs to the inputs it ran with.
   const simInput = useMemo(
     () =>
       doc.ring.length >= 3

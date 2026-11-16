@@ -4,19 +4,22 @@ import { InfoIcon } from "./icons";
 
 /**
  * The top bar on every signed-in page: the instance name (back to the projects home), whatever the page puts in
- * the middle (project name and tabs), the About (!) button and the account menu.
+ * the middle (project name and tabs), the page's own buttons (`actions`: in a project, Print and Help), the
+ * About (!) button and the account menu.
  */
 export function TopBar({
   brand,
   onHome,
   onAbout,
   account,
+  actions,
   children,
 }: {
   brand: string;
   onHome: () => void;
   onAbout: () => void;
   account: ReactNode;
+  actions?: ReactNode;
   children?: ReactNode;
 }) {
   const { t } = useI18n();
@@ -35,6 +38,7 @@ export function TopBar({
       </a>
       {children}
       <span className="flex-1" />
+      {actions}
       <button
         type="button"
         className="icon-btn"

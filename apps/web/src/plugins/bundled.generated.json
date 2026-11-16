@@ -8947,7 +8947,7 @@
     {
       "id": "org.mobsimlab.on-demand-bus",
       "name": "On-demand bus",
-      "description": "Demand-responsive transport drawn with the service zone kit: outline a zone, set the requests an hour, the fleet and the service hours, and get the vehicles needed, the average wait, ride and door-to-door time from continuous-approximation formulas. Simulate the day dispatches every booking trip by trip (ADR-0041). The zone shows in the journey planner.",
+      "description": "Demand-responsive transport drawn with the service zone kit: outline a zone, set the requests an hour, the fleet and the service hours, and get the vehicles needed, the average wait, ride and door-to-door time from continuous-approximation formulas. Simulate the day dispatches every booking trip by trip (ADR-0042). The zone shows in the journey planner.",
       "version": "0.1.0",
       "publisher": {
         "name": "MobSimLab contributors",
