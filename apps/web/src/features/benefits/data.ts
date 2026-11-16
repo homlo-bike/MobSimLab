@@ -56,8 +56,14 @@ async function json<T>(res: Response): Promise<T> {
   return (await res.json()) as T;
 }
 
-/** Purpose: the benefit API over HTTP, with answers kept for the session. */
-export function benefitsApi(fetchImpl: typeof fetch = (...a) => fetch(...a)): BenefitsApi {
+/**
+ * Purpose: the benefit API over HTTP, with answers kept for the session. `population`, when given, answers
+ * the station catchments instead of the live WorldPop route (the project's own population layer).
+ */
+export function benefitsApi(
+  fetchImpl: typeof fetch = (...a) => fetch(...a),
+  population?: BenefitsApi["population"],
+): BenefitsApi {
   const cache = new Map<string, Promise<unknown>>();
   const once = <T>(key: string, f: () => Promise<T>): Promise<T> => {
     const hit = cache.get(key);
@@ -73,12 +79,14 @@ export function benefitsApi(fetchImpl: typeof fetch = (...a) => fetch(...a)): Be
     indicators: (code) => get<BenefitIndicators>(`/api/benefits/indicators?code=${encodeURIComponent(code)}`),
     population: (areas) =>
       once(`pop:${JSON.stringify(areas)}`, () =>
-        fetchImpl("/api/benefits/population", {
-          method: "POST",
-          credentials: "same-origin",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ areas }),
-        }).then((r) => json<PopulationAnswer>(r)),
+        population
+          ? population(areas)
+          : fetchImpl("/api/benefits/population", {
+              method: "POST",
+              credentials: "same-origin",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ areas }),
+            }).then((r) => json<PopulationAnswer>(r)),
       ),
     buildingTile: (x, y) =>
       get<{ buildings?: BuildingIn[] }>(

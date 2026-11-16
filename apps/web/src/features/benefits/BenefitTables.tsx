@@ -350,10 +350,10 @@ function Sources({
   else items.push("World Bank figures: waiting for the project's country (from the cost tables).");
   if (pop)
     items.push(
-      `WorldPop ${pop.year ?? ""} population (100 m grid)${pop.failed ? `; ${pop.failed} station areas use homes' floor area instead${pop.reasons.length ? ` (${pop.reasons.join("; ")})` : ""}` : ""}. ${pop.source.licence}.`,
+      `${pop.source.name || "WorldPop"} ${pop.year ?? ""} population (100 m grid)${pop.failed ? `; ${pop.failed} station areas use homes' floor area instead${pop.reasons.length ? ` (${pop.reasons.join("; ")})` : ""}` : ""}. ${pop.source.licence}.`,
     );
   else if (popError)
-    items.push(`WorldPop is unavailable (${popError}); population comes from homes' floor area.`);
+    items.push(`The population data is unavailable (${popError}); population comes from homes' floor area.`);
   if (tiles)
     items.push(
       `OpenStreetMap: ${tiles.buildings.length.toLocaleString("en")} buildings and ${tiles.places.length.toLocaleString("en")} schools and health places${tiles.failed ? `; ${tiles.failed} tile requests failed` : ""}${tiles.capped ? `; ${tiles.capped} far tiles left out` : ""}. © OpenStreetMap contributors, ODbL.`,

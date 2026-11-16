@@ -2,6 +2,7 @@ import { roadMr } from "./road/mr";
 import { editorsMr } from "./editors/mr";
 import { cargoBikeMr } from "./cargo-bike/mr";
 import { depotsMr } from "./depots/mr";
+import { populationMr } from "./population/mr";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -381,6 +382,7 @@ export const mr: Messages = {
   ...editorsMr,
   ...cargoBikeMr,
   ...depotsMr,
+  ...populationMr,
   ...roadMr,
   ...PLUGIN_MESSAGES.mr,
 };
