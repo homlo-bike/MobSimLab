@@ -451,6 +451,155 @@ describe("project workspace", () => {
     expect((mixed as HTMLInputElement).value).toBe("25");
     expect(screen.queryByRole("button", { name: "Use the library value" })).toBeNull();
   });
+  it("sets the road simulation's off-peak traffic share", async () => {
+    const calls = stubApi(owner, {
+      [`GET /api/projects/${P1}/drawings`]: { drawings: {} },
+      [`PUT /api/projects/${P1}/drawings/preferences`]: {
+        drawing: {
+          kind: "preferences",
+          schemaVersion: 1,
+          doc: { values: { "road.off_peak_traffic_share": 0.5 } },
+          version: 1,
+          updatedAt: "2026-11-16T10:00:00Z",
+          updatedBy: { id: "u1", displayName: "Alice Smith" },
+        },
+      },
+    });
+    window.history.replaceState(null, "", `/projects/${P1}/preferences`);
+    render(<App />);
+    const share = await screen.findByLabelText(
+      "Traffic outside the morning and evening peaks, as a share of each street's peak",
+    );
+    expect((share as HTMLInputElement).value).toBe("60");
+    fireEvent.change(share, { target: { value: "150" } });
+    fireEvent.change(share, { target: { value: "50" } });
+    await waitFor(
+      () =>
+        expect(calls.find((c) => c.method === "PUT" && c.url.endsWith("/drawings/preferences"))).toBeTruthy(),
+      { timeout: 3000 },
+    );
+    expect(calls.find((c) => c.url.endsWith("/drawings/preferences"))?.body).toEqual({
+      doc: { values: { "road.off_peak_traffic_share": 0.5 } },
+      baseVersion: null,
+    });
+  });
+  it("leaves a catalogue vehicle out of the project and uses all again", async () => {
+    const calls = stubApi(owner, {
+      [`GET /api/projects/${P1}/drawings`]: { drawings: {} },
+      [`PUT /api/projects/${P1}/drawings/preferences`]: {
+        drawing: {
+          kind: "preferences",
+          schemaVersion: 1,
+          doc: { values: {}, vehiclesOff: ["siemens_avenio-munich-4-car"] },
+          version: 1,
+          updatedAt: "2026-11-16T10:00:00Z",
+          updatedBy: { id: "u1", displayName: "Alice Smith" },
+        },
+      },
+    });
+    window.history.replaceState(null, "", `/projects/${P1}/preferences`);
+    render(<App />);
+    const section = await screen.findByRole("region", { name: "Vehicles" });
+    // The project plans for trams, so its trams show first, all in use.
+    expect((within(section).getByLabelText("Mode") as HTMLSelectElement).value).toBe("tram");
+    const avenio = within(section).getByRole("checkbox", { name: /Siemens Avenio/ }) as HTMLInputElement;
+    expect(avenio.checked).toBe(true);
+    fireEvent.click(avenio);
+    await waitFor(
+      () =>
+        expect(calls.find((c) => c.method === "PUT" && c.url.endsWith("/drawings/preferences"))).toBeTruthy(),
+      { timeout: 3000 },
+    );
+    expect(calls.find((c) => c.url.endsWith("/drawings/preferences"))?.body).toEqual({
+      doc: { values: {}, vehiclesOff: ["siemens_avenio-munich-4-car"] },
+      baseVersion: null,
+    });
+    expect(avenio.checked).toBe(false);
+    fireEvent.click(within(section).getByRole("button", { name: "Use all" }));
+    expect(avenio.checked).toBe(true);
+  });
+
+  it("leaves a turnout out of the project and chooses its default turnout", async () => {
+    const calls = stubApi(owner, {
+      [`GET /api/projects/${P1}/drawings`]: { drawings: {} },
+      [`PUT /api/projects/${P1}/drawings/preferences`]: {
+        drawing: {
+          kind: "preferences",
+          schemaVersion: 1,
+          doc: { values: {} },
+          version: 1,
+          updatedAt: "2026-11-16T10:00:00Z",
+          updatedBy: { id: "u1", displayName: "Alice Smith" },
+        },
+      },
+    });
+    window.history.replaceState(null, "", `/projects/${P1}/preferences`);
+    render(<App />);
+    const section = await screen.findByRole("region", { name: "Switches" });
+    const r50 = within(section).getByRole("checkbox", { name: /turnout R 50 m/ }) as HTMLInputElement;
+    // The library's tram default stays in use.
+    expect(r50.disabled).toBe(true);
+    const defaults = within(section).getAllByRole("radio", { name: "Default" }) as HTMLInputElement[];
+    const r100 = defaults.find((r) => r.closest("li")?.textContent?.includes("turnout R 100 m"))!;
+    fireEvent.click(r100);
+    expect(r100.checked).toBe(true);
+    expect(r50.disabled).toBe(false);
+    fireEvent.click(r50);
+    await waitFor(
+      () =>
+        expect(
+          calls.filter((c) => c.method === "PUT" && c.url.endsWith("/drawings/preferences")).length,
+        ).toBeGreaterThan(0),
+      { timeout: 3000 },
+    );
+    expect(r50.checked).toBe(false);
+  });
+
+  it("changes any library parameter for all modes or one mode, and goes back to the library value", async () => {
+    const calls = stubApi(owner, {
+      [`GET /api/projects/${P1}/drawings`]: { drawings: {} },
+      [`PUT /api/projects/${P1}/drawings/preferences`]: {
+        drawing: {
+          kind: "preferences",
+          schemaVersion: 1,
+          doc: { values: { "mode.dwell_s": 40 } },
+          version: 1,
+          updatedAt: "2026-11-16T10:00:00Z",
+          updatedBy: { id: "u1", displayName: "Alice Smith" },
+        },
+      },
+    });
+    window.history.replaceState(null, "", `/projects/${P1}/preferences`);
+    render(<App />);
+    const params = await screen.findByRole("region", { name: "All parameters" });
+    expect((within(params).getByLabelText("Group") as HTMLSelectElement).value).toBe("Modes");
+    const dwell = within(params).getByLabelText("Dwell time at a stop") as HTMLInputElement;
+    expect(dwell.value).toBe("30");
+    fireEvent.change(dwell, { target: { value: "40" } });
+    await waitFor(
+      () =>
+        expect(calls.find((c) => c.method === "PUT" && c.url.endsWith("/drawings/preferences"))).toBeTruthy(),
+      { timeout: 3000 },
+    );
+    expect(calls.find((c) => c.url.endsWith("/drawings/preferences"))?.body).toEqual({
+      doc: { values: { "mode.dwell_s": 40 } },
+      baseVersion: null,
+    });
+    // For one mode, the value for all modes shows until the mode gets its own.
+    fireEvent.change(within(params).getByLabelText("Mode"), { target: { value: "tram" } });
+    const tramDwell = within(params).getByLabelText("Dwell time at a stop") as HTMLInputElement;
+    expect(tramDwell.value).toBe("40");
+    expect(params.textContent).toContain("your value for all modes");
+    // An enum parameter offers its options.
+    const row = within(params).getByLabelText(
+      "Structure and right of way (category A, B or C)",
+    ) as HTMLSelectElement;
+    expect(row.value).toBe("C");
+    fireEvent.change(within(params).getByLabelText("Mode"), { target: { value: "*" } });
+    fireEvent.click(within(params).getByRole("button", { name: "Use the library value" }));
+    expect((within(params).getByLabelText("Dwell time at a stop") as HTMLInputElement).value).toBe("30");
+  });
+
   it("changes a design rule for one rail mode and goes back to the library value", async () => {
     const calls = stubApi(owner, {
       [`GET /api/projects/${P1}/drawings`]: { drawings: {} },

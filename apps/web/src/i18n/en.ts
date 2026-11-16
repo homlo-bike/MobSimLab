@@ -1,5 +1,8 @@
 import { editorsEn } from "./editors/en";
 import { cargoBikeEn } from "./cargo-bike/en";
+import { depotsEn } from "./depots/en";
+import { roadEn } from "./road/en";
+import { populationEn } from "./population/en";
 import { pluginsEn } from "./plugins";
 
 /** English: the source language. Every other language must have every key (the type checker enforces it). */
@@ -277,6 +280,10 @@ export const en = {
   "prefs.delayLane": "In a painted bus or tram lane",
   "prefs.delayDefault": "Assumption library: {value} %",
   "prefs.delayReset": "Use the library value",
+  "prefs.stationsTitle": "Stations",
+  "prefs.stationsIntro":
+    "Stops with the same name within this distance count as one station in the schematic map, the journey planner and the benefits and ridership tables.",
+  "prefs.libraryM": "Assumption library: {value} m",
   "prefs.currencyTitle": "Currency",
   "prefs.currencyIntro":
     "All money in the project is shown in this currency: the cost tables, the benefits, the scenarios and the cargo bike savings.",
@@ -299,8 +306,49 @@ export const en = {
   "prefs.rulesChanged": "{count} changed",
   "prefs.rulesLibrary": "Assumption library: {value} {unit}",
   "prefs.rulesLibraryRange": "Assumption library: {value} {unit} (range {low}–{high})",
-  "prefs.vehicles": "Vehicles used, from the vehicle catalogue",
-  "prefs.switches": "Track switches, from the switch catalogue",
+  "prefs.paramsTitle": "All parameters",
+  "prefs.paramsIntro":
+    "Every value of the assumption library. Set your own for all modes or for one mode; a value for one mode wins over the one for all modes. The library's value stays beside each.",
+  "prefs.paramsGroup": "Group",
+  "prefs.paramsMode": "Mode",
+  "prefs.paramsAllModes": "All modes",
+  "prefs.paramsFromAll": "your value for all modes",
+  "prefs.group.modes": "Modes",
+  "prefs.group.operations": "Operations",
+  "prefs.group.demand": "Demand",
+  "prefs.group.analysis": "Analysis",
+  "prefs.group.simulation": "Simulation",
+  "prefs.group.infrastructure": "Infrastructure standards",
+  "prefs.group.accessibility": "Accessibility",
+  "prefs.group.depots": "Depots and streets",
+  "prefs.group.energy": "Energy and climate",
+  "prefs.group.cost": "Costs",
+  "prefs.group.benefits": "Benefits",
+  "prefs.group.fares": "Fares",
+  "prefs.traction.battery": "battery",
+  "prefs.traction.diesel": "diesel",
+  "prefs.traction.hydrogen": "hydrogen",
+  "prefs.traction.cng": "natural gas (CNG)",
+  "prefs.traction.electric": "electric",
+  "prefs.accessTitle": "Platform accessibility",
+  "prefs.accessIntro":
+    "Step and gap limits between platform and train (TSI PRM), and the floor height used for trains that have none in the vehicle catalogue. Service lines are checked against these at every stop.",
+  "prefs.vehiclesTitle": "Vehicles",
+  "prefs.vehiclesIntro":
+    "The catalogue vehicles this project uses, per mode. The street line and railway tools only offer the ticked ones.",
+  "prefs.vehiclesMode": "Mode",
+  "prefs.vehiclesUsed": "{used} of {total} used",
+  "prefs.vehiclesAll": "Use all",
+  "prefs.vehiclesFacts": "{length} m · {places} places · {speed} km/h",
+  "prefs.vehiclesLast": "At least one vehicle stays in use for each mode.",
+  "prefs.switchesTitle": "Switches",
+  "prefs.switchesIntro":
+    "The switches and crossings from the catalogue that the railway editor offers, per rail mode, and the turnout new switches start with.",
+  "prefs.switchesTurnouts": "Turnouts",
+  "prefs.switchesSlips": "Slips in diamond crossings",
+  "prefs.switchesDefault": "Default",
+  "prefs.switchesFacts": "1:{n} · R {radius} m · {speed} km/h diverging",
+  "prefs.switchesLast": "The default turnout stays in use. To leave it out, choose another default first.",
   "prefs.calendar": "Calendar, demand and costs",
 
   "job.stepOf": "Step {step} of {steps}",
@@ -369,6 +417,9 @@ export const en = {
 
   ...editorsEn,
   ...cargoBikeEn,
+  ...depotsEn,
+  ...roadEn,
+  ...populationEn,
   ...pluginsEn,
 } as const;
 

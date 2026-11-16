@@ -1,5 +1,8 @@
+import { roadTa } from "./road/ta";
 import { editorsTa } from "./editors/ta";
 import { cargoBikeTa } from "./cargo-bike/ta";
+import { depotsTa } from "./depots/ta";
+import { populationTa } from "./population/ta";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -289,6 +292,10 @@ export const ta: Messages = {
   "prefs.delayLane": "வண்ணம் பூசப்பட்ட பேருந்து அல்லது டிராம் பாதையில்",
   "prefs.delayDefault": "அனுமானங்களின் நூலகம்: {value} %",
   "prefs.delayReset": "நூலக மதிப்பைப் பயன்படுத்து",
+  "prefs.stationsTitle": "நிலையங்கள்",
+  "prefs.stationsIntro":
+    "இந்தத் தூரத்திற்குள் ஒரே பெயருள்ள நிறுத்தங்கள் வரைபட வரைவு, பயணத் திட்டமிடுபவர், நன்மை மற்றும் பயணிகள் அட்டவணைகளில் ஒரு நிலையமாகக் கணக்கிடப்படும்.",
+  "prefs.libraryM": "அனுமானங்களின் நூலகம்: {value} மீ",
   "prefs.currencyTitle": "நாணயம்",
   "prefs.currencyIntro":
     "திட்டத்தின் எல்லாப் பணத் தொகைகளும் இந்த நாணயத்தில் காட்டப்படும்: செலவு அட்டவணைகள், பயன்கள், சூழ்நிலைகள், சரக்கு மிதிவண்டிச் சேமிப்புகள்.",
@@ -311,8 +318,50 @@ export const ta: Messages = {
   "prefs.rulesChanged": "மாற்றப்பட்டவை: {count}",
   "prefs.rulesLibrary": "அனுமானங்களின் நூலகம்: {value} {unit}",
   "prefs.rulesLibraryRange": "அனுமானங்களின் நூலகம்: {value} {unit} (வரம்பு {low}–{high})",
-  "prefs.vehicles": "பயன்படுத்தப்படும் வாகனங்கள், வாகனப் பட்டியலிலிருந்து",
-  "prefs.switches": "தண்டவாள சுவிட்சுகள், சுவிட்சுப் பட்டியலிலிருந்து",
+  "prefs.paramsTitle": "அனைத்து அளவுருக்கள்",
+  "prefs.paramsIntro":
+    "அனுமான நூலகத்தின் ஒவ்வொரு மதிப்பும். அனைத்து முறைகளுக்கும் அல்லது ஒரு முறைக்கும் உங்கள் மதிப்பை அமைக்கவும்; ஒரு முறையின் மதிப்பு அனைத்துக்குமான மதிப்பை விட முன்னுரிமை பெறும். நூலக மதிப்பு அருகில் இருக்கும்.",
+  "prefs.paramsGroup": "குழு",
+  "prefs.paramsMode": "போக்குவரத்து முறை",
+  "prefs.paramsAllModes": "அனைத்து முறைகள்",
+  "prefs.paramsFromAll": "அனைத்து முறைகளுக்கான உங்கள் மதிப்பு",
+  "prefs.group.modes": "போக்குவரத்து முறைகள்",
+  "prefs.group.operations": "இயக்கம்",
+  "prefs.group.demand": "தேவை",
+  "prefs.group.analysis": "பகுப்பாய்வு",
+  "prefs.group.simulation": "உருவகப்படுத்தல்",
+  "prefs.group.infrastructure": "உள்கட்டமைப்பு தரநிலைகள்",
+  "prefs.group.accessibility": "அணுகல்தன்மை",
+  "prefs.group.depots": "பணிமனைகளும் தெருக்களும்",
+  "prefs.group.energy": "ஆற்றலும் காலநிலையும்",
+  "prefs.group.cost": "செலவுகள்",
+  "prefs.group.benefits": "பயன்கள்",
+  "prefs.group.fares": "கட்டணங்கள்",
+  "prefs.traction.battery": "மின்கலம்",
+  "prefs.traction.diesel": "டீசல்",
+  "prefs.traction.hydrogen": "ஹைட்ரஜன்",
+  "prefs.traction.cng": "இயற்கை எரிவாயு (CNG)",
+  "prefs.traction.electric": "மின்சாரம்",
+  "prefs.accessTitle": "நடைமேடை அணுகல்தன்மை",
+  "prefs.accessIntro":
+    "நடைமேடைக்கும் ரயிலுக்கும் இடையிலான படி, இடைவெளி வரம்புகள் (TSI PRM), பட்டியலில் இல்லாத ரயில்களுக்கான தள உயரம். வழித்தடங்கள் ஒவ்வொரு நிறுத்தத்திலும் சரிபார்க்கப்படும்.",
+  "prefs.vehiclesTitle": "வாகனங்கள்",
+  "prefs.vehiclesIntro":
+    "இந்தத் திட்டம் ஒவ்வொரு முறைக்கும் பயன்படுத்தும் பட்டியல் வாகனங்கள். தெரு வழித்தட மற்றும் ரயில்பாதை கருவிகள் குறியிட்டவற்றை மட்டுமே காட்டும்.",
+  "prefs.vehiclesMode": "முறை",
+  "prefs.vehiclesUsed": "{total} இல் {used} பயன்பாட்டில்",
+  "prefs.vehiclesAll": "அனைத்தையும் பயன்படுத்து",
+  "prefs.vehiclesFacts": "{length} மீ · {places} இடங்கள் · {speed} கிமீ/ம",
+  "prefs.vehiclesLast": "ஒவ்வொரு முறைக்கும் குறைந்தது ஒரு வாகனம் பயன்பாட்டில் இருக்கும்.",
+  "prefs.switchesTitle": "பாயிண்ட்கள்",
+  "prefs.switchesIntro":
+    "ஒவ்வொரு ரயில் முறைக்கும் ரயில்பாதை திருத்தி வழங்கும் பட்டியலின் பாயிண்ட்கள், குறுக்குகள், மற்றும் புதிய பாயிண்ட்கள் தொடங்கும் பாயிண்ட்.",
+  "prefs.switchesTurnouts": "பாயிண்ட்கள்",
+  "prefs.switchesSlips": "குறுக்குகளில் ஸ்லிப்கள்",
+  "prefs.switchesDefault": "இயல்புநிலை",
+  "prefs.switchesFacts": "1:{n} · R {radius} மீ · திருப்பு பாதையில் {speed} கிமீ/ம",
+  "prefs.switchesLast":
+    "இயல்புநிலை பாயிண்ட் பயன்பாட்டில் இருக்கும். அதை நீக்க, முதலில் வேறொன்றைத் தேர்ந்தெடுக்கவும்.",
   "prefs.calendar": "நாட்காட்டி, தேவை மற்றும் செலவுகள்",
 
   "job.stepOf": "படி {step} / {steps}",
@@ -385,5 +434,8 @@ export const ta: Messages = {
 
   ...editorsTa,
   ...cargoBikeTa,
+  ...depotsTa,
+  ...populationTa,
+  ...roadTa,
   ...PLUGIN_MESSAGES.ta,
 };

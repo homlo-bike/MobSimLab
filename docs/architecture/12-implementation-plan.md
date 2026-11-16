@@ -69,6 +69,8 @@ SUMO export, background traffic from counts/OD, transit vehicles from depots, dw
 
 Exit: NFR-PERF-04 met; no teleports; vehicles start and end in depots; reproducibility test passes.
 
+Status: first version built. The Simulator's **Road simulation** runs the project's street lines in SUMO on the background worker (`worker/src/mobsim_worker/jobs/road`): OpenStreetMap streets with the GIS tab's street setup, transit vehicles from their depot slots (depot layout tool) and back, a fixed dwell per line, background traffic from the GIS tab's traffic peaks per street (off peak a share of the peak, `road.off_peak_traffic_share`), battery and trolleybus energy, KPIs per line and a saved replay (play, pause, reset, speed). No teleports; vehicles start and end in their depot slots; the worker test checks that the same seed gives the same run. Not yet: a dwell model by passengers, background traffic from counts or OD, a live view, Parquet results, and a measured NFR-PERF-04. User guide: [Road simulation](../user/road-simulation.md).
+
 ### Phase 6 — Rail operations
 
 Rail kernel (dynamics, interlocking, dispatching, platform assignment, rerouting), co-simulation with SUMO, disruptions and failures, OSRD comparison suite.

@@ -1,5 +1,8 @@
+import { roadVi } from "./road/vi";
 import { editorsVi } from "./editors/vi";
 import { cargoBikeVi } from "./cargo-bike/vi";
+import { depotsVi } from "./depots/vi";
+import { populationVi } from "./population/vi";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -284,6 +287,10 @@ export const vi: Messages = {
   "prefs.delayLane": "Trên làn xe buýt hoặc tàu điện chỉ được sơn",
   "prefs.delayDefault": "Thư viện giả định: {value} %",
   "prefs.delayReset": "Dùng giá trị thư viện",
+  "prefs.stationsTitle": "Ga",
+  "prefs.stationsIntro":
+    "Các điểm dừng cùng tên trong khoảng cách này được tính là một ga trên sơ đồ mạng lưới, công cụ lập hành trình và các bảng lợi ích và hành khách.",
+  "prefs.libraryM": "Thư viện giả định: {value} m",
   "prefs.currencyTitle": "Tiền tệ",
   "prefs.currencyIntro":
     "Mọi khoản tiền trong dự án được hiển thị bằng tiền tệ này: bảng chi phí, lợi ích, kịch bản và khoản tiết kiệm của xe đạp chở hàng.",
@@ -305,8 +312,49 @@ export const vi: Messages = {
   "prefs.rulesChanged": "đã đổi {count}",
   "prefs.rulesLibrary": "Thư viện giả định: {value} {unit}",
   "prefs.rulesLibraryRange": "Thư viện giả định: {value} {unit} (khoảng {low}–{high})",
-  "prefs.vehicles": "Phương tiện sử dụng (từ danh mục phương tiện)",
-  "prefs.switches": "Ghi (từ danh mục ghi)",
+  "prefs.paramsTitle": "Tất cả tham số",
+  "prefs.paramsIntro":
+    "Mọi giá trị trong thư viện giả định. Đặt giá trị của bạn cho mọi phương thức hoặc cho một phương thức; giá trị của một phương thức được ưu tiên hơn giá trị cho mọi phương thức. Giá trị thư viện hiển thị bên cạnh.",
+  "prefs.paramsGroup": "Nhóm",
+  "prefs.paramsMode": "Phương thức",
+  "prefs.paramsAllModes": "Mọi phương thức",
+  "prefs.paramsFromAll": "giá trị của bạn cho mọi phương thức",
+  "prefs.group.modes": "Phương thức",
+  "prefs.group.operations": "Vận hành",
+  "prefs.group.demand": "Nhu cầu",
+  "prefs.group.analysis": "Phân tích",
+  "prefs.group.simulation": "Mô phỏng",
+  "prefs.group.infrastructure": "Tiêu chuẩn hạ tầng",
+  "prefs.group.accessibility": "Khả năng tiếp cận",
+  "prefs.group.depots": "Depot và đường phố",
+  "prefs.group.energy": "Năng lượng và khí hậu",
+  "prefs.group.cost": "Chi phí",
+  "prefs.group.benefits": "Lợi ích",
+  "prefs.group.fares": "Giá vé",
+  "prefs.traction.battery": "pin",
+  "prefs.traction.diesel": "diesel",
+  "prefs.traction.hydrogen": "hydro",
+  "prefs.traction.cng": "khí tự nhiên (CNG)",
+  "prefs.traction.electric": "điện",
+  "prefs.accessTitle": "Khả năng tiếp cận sân ga",
+  "prefs.accessIntro":
+    "Giới hạn bậc và khe hở giữa sân ga và tàu (TSI PRM), cùng chiều cao sàn dùng cho tàu không có trong danh mục. Các tuyến được kiểm tra tại mọi điểm dừng.",
+  "prefs.vehiclesTitle": "Phương tiện",
+  "prefs.vehiclesIntro":
+    "Các phương tiện trong danh mục mà dự án này dùng, theo phương thức. Công cụ tuyến đường phố và đường sắt chỉ đưa ra các phương tiện đã chọn.",
+  "prefs.vehiclesMode": "Phương thức",
+  "prefs.vehiclesUsed": "dùng {used}/{total}",
+  "prefs.vehiclesAll": "Dùng tất cả",
+  "prefs.vehiclesFacts": "{length} m · {places} chỗ · {speed} km/h",
+  "prefs.vehiclesLast": "Mỗi phương thức luôn giữ ít nhất một phương tiện.",
+  "prefs.switchesTitle": "Ghi",
+  "prefs.switchesIntro":
+    "Các ghi và giao cắt trong danh mục mà trình chỉnh sửa đường sắt đưa ra theo từng phương thức, và ghi mặc định cho ghi mới.",
+  "prefs.switchesTurnouts": "Ghi",
+  "prefs.switchesSlips": "Ghi chéo trong giao cắt",
+  "prefs.switchesDefault": "Mặc định",
+  "prefs.switchesFacts": "1:{n} · R {radius} m · {speed} km/h nhánh rẽ",
+  "prefs.switchesLast": "Ghi mặc định luôn được dùng. Để bỏ, hãy chọn ghi mặc định khác trước.",
   "prefs.calendar": "Lịch, nhu cầu và chi phí",
 
   "job.stepOf": "Bước {step}/{steps}",
@@ -374,5 +422,8 @@ export const vi: Messages = {
 
   ...editorsVi,
   ...cargoBikeVi,
+  ...depotsVi,
+  ...populationVi,
+  ...roadVi,
   ...PLUGIN_MESSAGES.vi,
 };

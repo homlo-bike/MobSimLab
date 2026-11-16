@@ -40,7 +40,8 @@ pub mod topology;
 pub mod view;
 
 pub use design::{
-    build, build_with_osm, build_with_streets, build_with_terrain, build_with_values, Design,
+    build, build_with_choice, build_with_osm, build_with_streets, build_with_terrain,
+    build_with_values, Design,
 };
 pub use model::Network;
 pub use params::{defaults, RailMode};

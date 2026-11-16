@@ -262,6 +262,20 @@ export const editorsZu = {
   "rail.line.needsTrain": "Khetha isitimela.",
   "rail.line.lastAfterFirst": "Ukusuka kokugcina kumele kube ngemuva kokokuqala.",
   "rail.line.headwayMin": "Izikhawu kumele zibe okungenani umzuzu ongu-1.",
+  "rail.access.title": "Ukufinyelela epulatifomu",
+  "rail.access.level": "Ukugibela okulinganayo",
+  "rail.access.step": "Ukugibela ngesinyathelo",
+  "rail.access.aid": "Kudingeka usizo lokugibela",
+  "rail.access.clash": "Isitimela sibanzi kunalokho okuvunyelwa umphetho wepulatifomu",
+  "rail.access.detail": "Phansi {vertical} kusuka epulatifomu ye-mm {platform} · igebe {gap}",
+  "rail.access.stepLabel": "Isinyathelo",
+  "rail.access.gapLabel": "Igebe",
+  "rail.access.limits": "okulinganayo ≤ {level} · isinyathelo ≤ {step} mm",
+  "rail.access.floorAssumedShort":
+    "Ukuphakama kwaphansi kucatshangiwe: mm {value}, okuzenzakalelayo kohlobo (akukho ohlwini)",
+  "rail.access.shortAt": "{name}: ipulatifomu {platform}, kudingeka {needed}",
+  "rail.access.platformMm": "Ipulatifomu mm {value}",
+  "rail.access.floorMm": "Phansi kwesitimela mm {value}",
 
   "rail.hint.select":
     "Chofoza isiteshi, ujantshi, isishintshi noma isiginali ukuze ukuhlele. Donsa iziteshi namaphoyinti kajantshi; donsa isishintshi noma isiginali kujantshi wayo.",

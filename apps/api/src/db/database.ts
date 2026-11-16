@@ -22,7 +22,7 @@ export function roleRank(role: InstanceRole): number {
 /** Project roles (05 §3.2), highest first. */
 export const PROJECT_ROLES = ["owner", "editor", "commenter", "viewer"] as const;
 export type ProjectRole = (typeof PROJECT_ROLES)[number];
-/** Who can open a project: its members only, or anyone signed in to this instance, read-only (0009). */
+/** Who can open a project: its members only, or anyone signed in to this instance, read-only (0013). */
 export const PROJECT_VISIBILITIES = ["private", "public"] as const;
 export type ProjectVisibility = (typeof PROJECT_VISIBILITIES)[number];
 
@@ -30,8 +30,15 @@ export type ProjectVisibility = (typeof PROJECT_VISIBILITIES)[number];
 export const RUN_STATUSES = ["queued", "running", "done", "failed", "cancelled"] as const;
 export type RunStatus = (typeof RUN_STATUSES)[number];
 
+/** Where a population layer comes from (db/migrations/0014_population.sql). */
+export type PopulationLayerSource = "worldpop" | "ghsl" | "upload";
+/** What a population layer holds: grid cells, zone polygons or points. */
+export type PopulationLayerKind = "grid" | "zones" | "points";
+export type PopulationLayerStatus = "importing" | "ready" | "failed";
+export type PopulationConfidence = "high" | "medium" | "low";
+
 /** Kinds of simulation run: the rail capacity run, and a sweep of its settings (0008_agent_runs.sql). */
-export type RunKind = "capacity" | "sweep";
+export type RunKind = "capacity" | "sweep" | "road";
 
 type Timestamp = ColumnType<Date, Date | string | undefined, Date | string>;
 
@@ -161,6 +168,8 @@ export interface DB {
     updated_at: Timestamp;
     archived_at: Date | null;
     deleted_at: Date | null;
+    /** Buffer round the box of everything drawn, km (projects/project-area.ts). */
+    area_buffer_km: Generated<number>;
   };
   "project.drawing": {
     project_id: string;
@@ -170,6 +179,37 @@ export interface DB {
     version: Generated<number>;
     updated_by: string | null;
     updated_at: Timestamp;
+  };
+  "geo.population_layer": {
+    id: Generated<string>;
+    project_id: string;
+    name: string;
+    source: PopulationLayerSource;
+    kind: PopulationLayerKind;
+    status: Generated<PopulationLayerStatus>;
+    error: string | null;
+    progress: ColumnType<Record<string, unknown> | null, string | null, string | null>;
+    licence: Generated<string>;
+    source_url: Generated<string>;
+    citation: Generated<string>;
+    confidence: PopulationConfidence;
+    reference_year: number | null;
+    resolution_m: number | null;
+    coverage: ColumnType<unknown, never, never>;
+    people_total: Generated<number>;
+    feature_count: Generated<number>;
+    is_primary: Generated<boolean>;
+    options: ColumnType<Record<string, unknown>, string, string>;
+    created_by: string | null;
+    created_at: Generated<Date>;
+    updated_at: Timestamp;
+  };
+  "geo.population_feature": {
+    layer_id: string;
+    n: number;
+    zone_id: string | null;
+    people: number;
+    geom: ColumnType<unknown, never, never>;
   };
   "simulation.run": {
     id: Generated<string>;
@@ -190,6 +230,12 @@ export interface DB {
     finished_at: Date | null;
     /** The agent connection that started the run (db/migrations/0008_agent_runs.sql), null for people. */
     agent_connection_id: Generated<string | null>;
+  };
+  /** The replay of a road run, gzipped JSON (db/migrations/0009_road_runs.sql). */
+  "simulation.run_replay": {
+    run_id: string;
+    data: Buffer;
+    created_at: Generated<Date>;
   };
   "project.member": {
     project_id: string;
@@ -239,6 +285,20 @@ export interface DB {
     before: unknown;
     after: unknown;
     reason: string | null;
+  };
+  /** WARN+ log entries, one partition per day (0010_logs.sql). The app role may only insert. */
+  "logs.entry": {
+    id: Generated<string>;
+    at: ColumnType<Date, string | undefined, never>;
+    level: string;
+    origin: string;
+    module: string | null;
+    message: string;
+    request_id: string | null;
+    user_id: string | null;
+    project_id: string | null;
+    run_id: string | null;
+    context: ColumnType<unknown, string | null, never>;
   };
 }
 

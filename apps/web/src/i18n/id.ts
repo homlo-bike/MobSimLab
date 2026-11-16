@@ -1,5 +1,8 @@
+import { roadId } from "./road/id";
 import { editorsId } from "./editors/id";
 import { cargoBikeId } from "./cargo-bike/id";
+import { depotsId } from "./depots/id";
+import { populationId } from "./population/id";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -286,6 +289,10 @@ export const id: Messages = {
   "prefs.delayLane": "Di lajur bus atau trem yang hanya dicat",
   "prefs.delayDefault": "Pustaka asumsi: {value} %",
   "prefs.delayReset": "Gunakan nilai pustaka",
+  "prefs.stationsTitle": "Stasiun",
+  "prefs.stationsIntro":
+    "Halte bernama sama dalam jarak ini dihitung sebagai satu stasiun di peta skematik, perencana perjalanan, serta tabel manfaat dan penumpang.",
+  "prefs.libraryM": "Pustaka asumsi: {value} m",
   "prefs.currencyTitle": "Mata uang",
   "prefs.currencyIntro":
     "Semua jumlah uang dalam proyek ditampilkan dalam mata uang ini: tabel biaya, manfaat, skenario, dan penghematan sepeda kargo.",
@@ -308,8 +315,49 @@ export const id: Messages = {
   "prefs.rulesChanged": "{count} diubah",
   "prefs.rulesLibrary": "Pustaka asumsi: {value} {unit}",
   "prefs.rulesLibraryRange": "Pustaka asumsi: {value} {unit} (rentang {low}–{high})",
-  "prefs.vehicles": "Kendaraan yang digunakan (dari katalog kendaraan)",
-  "prefs.switches": "Wesel (dari katalog wesel)",
+  "prefs.paramsTitle": "Semua parameter",
+  "prefs.paramsIntro":
+    "Setiap nilai pustaka asumsi. Tetapkan nilai Anda untuk semua moda atau untuk satu moda; nilai satu moda mengalahkan nilai untuk semua moda. Nilai pustaka tetap di sampingnya.",
+  "prefs.paramsGroup": "Kelompok",
+  "prefs.paramsMode": "Moda",
+  "prefs.paramsAllModes": "Semua moda",
+  "prefs.paramsFromAll": "nilai Anda untuk semua moda",
+  "prefs.group.modes": "Moda",
+  "prefs.group.operations": "Operasi",
+  "prefs.group.demand": "Permintaan",
+  "prefs.group.analysis": "Analisis",
+  "prefs.group.simulation": "Simulasi",
+  "prefs.group.infrastructure": "Standar infrastruktur",
+  "prefs.group.accessibility": "Aksesibilitas",
+  "prefs.group.depots": "Depo dan jalan",
+  "prefs.group.energy": "Energi dan iklim",
+  "prefs.group.cost": "Biaya",
+  "prefs.group.benefits": "Manfaat",
+  "prefs.group.fares": "Tarif",
+  "prefs.traction.battery": "baterai",
+  "prefs.traction.diesel": "diesel",
+  "prefs.traction.hydrogen": "hidrogen",
+  "prefs.traction.cng": "gas alam (CNG)",
+  "prefs.traction.electric": "listrik",
+  "prefs.accessTitle": "Aksesibilitas peron",
+  "prefs.accessIntro":
+    "Batas anak tangga dan celah antara peron dan kereta (TSI PRM), serta tinggi lantai untuk kereta yang tidak punya nilainya di katalog. Jalur diperiksa di setiap pemberhentian.",
+  "prefs.vehiclesTitle": "Kendaraan",
+  "prefs.vehiclesIntro":
+    "Kendaraan katalog yang dipakai proyek ini, per moda. Alat jalur jalan dan rel hanya menawarkan yang dicentang.",
+  "prefs.vehiclesMode": "Moda",
+  "prefs.vehiclesUsed": "{used} dari {total} dipakai",
+  "prefs.vehiclesAll": "Pakai semua",
+  "prefs.vehiclesFacts": "{length} m · {places} tempat · {speed} km/j",
+  "prefs.vehiclesLast": "Setiap moda tetap memakai setidaknya satu kendaraan.",
+  "prefs.switchesTitle": "Wesel",
+  "prefs.switchesIntro":
+    "Wesel dan persilangan dari katalog yang ditawarkan editor rel per moda rel, dan wesel awal untuk wesel baru.",
+  "prefs.switchesTurnouts": "Wesel",
+  "prefs.switchesSlips": "Wesel inggris di persilangan",
+  "prefs.switchesDefault": "Bawaan",
+  "prefs.switchesFacts": "1:{n} · R {radius} m · {speed} km/j di sisi belok",
+  "prefs.switchesLast": "Wesel bawaan tetap dipakai. Untuk melepasnya, pilih bawaan lain dulu.",
   "prefs.calendar": "Kalender, permintaan, dan biaya",
 
   "job.stepOf": "Langkah {step} dari {steps}",
@@ -379,5 +427,8 @@ export const id: Messages = {
 
   ...editorsId,
   ...cargoBikeId,
+  ...depotsId,
+  ...populationId,
+  ...roadId,
   ...PLUGIN_MESSAGES.id,
 };

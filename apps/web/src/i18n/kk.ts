@@ -1,5 +1,8 @@
+import { roadKk } from "./road/kk";
 import { editorsKk } from "./editors/kk";
 import { cargoBikeKk } from "./cargo-bike/kk";
+import { depotsKk } from "./depots/kk";
+import { populationKk } from "./population/kk";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -282,6 +285,10 @@ export const kk: Messages = {
   "prefs.delayLane": "Боялған автобус немесе трамвай жолағында",
   "prefs.delayDefault": "Болжамдар кітапханасы: {value} %",
   "prefs.delayReset": "Кітапхана мәнін пайдалану",
+  "prefs.stationsTitle": "Станциялар",
+  "prefs.stationsIntro":
+    "Осы қашықтықтағы аттас аялдамалар сызбалық картада, сапар жоспарлағышта және пайда мен жолаушылар кестелерінде бір станция болып саналады.",
+  "prefs.libraryM": "Болжамдар кітапханасы: {value} м",
   "prefs.currencyTitle": "Валюта",
   "prefs.currencyIntro":
     "Жобадағы барлық ақша сомалары осы валютада көрсетіледі: шығын кестелері, пайдалар, сценарийлер және жүк велосипедінің үнемдеуі.",
@@ -303,8 +310,50 @@ export const kk: Messages = {
   "prefs.rulesChanged": "өзгертілген: {count}",
   "prefs.rulesLibrary": "Болжамдар кітапханасы: {value} {unit}",
   "prefs.rulesLibraryRange": "Болжамдар кітапханасы: {value} {unit} (ауқым {low}–{high})",
-  "prefs.vehicles": "Пайдаланылатын көліктер, көлік каталогынан",
-  "prefs.switches": "Жол бағыттамалары, бағыттамалар каталогынан",
+  "prefs.paramsTitle": "Барлық параметрлер",
+  "prefs.paramsIntro":
+    "Болжамдар кітапханасының әр мәні. Барлық көлік түрлеріне немесе біреуіне өз мәніңізді қойыңыз; бір түрдің мәні барлығына арналған мәннен басым. Кітапхана мәні қасында тұрады.",
+  "prefs.paramsGroup": "Топ",
+  "prefs.paramsMode": "Көлік түрі",
+  "prefs.paramsAllModes": "Барлық түрлер",
+  "prefs.paramsFromAll": "барлық түрге арналған мәніңіз",
+  "prefs.group.modes": "Көлік түрлері",
+  "prefs.group.operations": "Пайдалану",
+  "prefs.group.demand": "Сұраныс",
+  "prefs.group.analysis": "Талдау",
+  "prefs.group.simulation": "Модельдеу",
+  "prefs.group.infrastructure": "Инфрақұрылым нормалары",
+  "prefs.group.accessibility": "Қолжетімділік",
+  "prefs.group.depots": "Депо мен көшелер",
+  "prefs.group.energy": "Энергия және климат",
+  "prefs.group.cost": "Шығындар",
+  "prefs.group.benefits": "Пайда",
+  "prefs.group.fares": "Жол ақысы",
+  "prefs.traction.battery": "аккумулятор",
+  "prefs.traction.diesel": "дизель",
+  "prefs.traction.hydrogen": "сутегі",
+  "prefs.traction.cng": "табиғи газ (CNG)",
+  "prefs.traction.electric": "электр",
+  "prefs.accessTitle": "Платформа қолжетімділігі",
+  "prefs.accessIntro":
+    "Платформа мен пойыз арасындағы баспалдақ пен саңылау шектері (TSI PRM) және каталогта жоқ пойыздарға арналған еден биіктігі. Желілер әр аялдамада тексеріледі.",
+  "prefs.vehiclesTitle": "Көліктер",
+  "prefs.vehiclesIntro":
+    "Осы жоба әр түр үшін пайдаланатын каталог көліктері. Көше желісі мен темір жол құралдары тек белгіленгендерін ұсынады.",
+  "prefs.vehiclesMode": "Түр",
+  "prefs.vehiclesUsed": "{total} ішінен {used} пайдаланылады",
+  "prefs.vehiclesAll": "Барлығын пайдалану",
+  "prefs.vehiclesFacts": "{length} м · {places} орын · {speed} км/сағ",
+  "prefs.vehiclesLast": "Әр түр үшін кемінде бір көлік пайдаланыста қалады.",
+  "prefs.switchesTitle": "Бағыттамалар",
+  "prefs.switchesIntro":
+    "Темір жол редакторы әр рельсті түр үшін ұсынатын каталогтағы бағыттамалар мен қиылыстар және жаңа бағыттамалар басталатын бағыттама.",
+  "prefs.switchesTurnouts": "Бағыттамалар",
+  "prefs.switchesSlips": "Қиылыстардағы айқас бағыттамалар",
+  "prefs.switchesDefault": "Әдепкі",
+  "prefs.switchesFacts": "1:{n} · R {radius} м · бұрылыста {speed} км/сағ",
+  "prefs.switchesLast":
+    "Әдепкі бағыттама пайдаланыста қалады. Оны алып тастау үшін алдымен басқасын таңдаңыз.",
   "prefs.calendar": "Күнтізбе, сұраныс және шығындар",
 
   "job.stepOf": "{steps} қадамның {step}-қадамы",
@@ -375,5 +424,8 @@ export const kk: Messages = {
 
   ...editorsKk,
   ...cargoBikeKk,
+  ...depotsKk,
+  ...populationKk,
+  ...roadKk,
   ...PLUGIN_MESSAGES.kk,
 };

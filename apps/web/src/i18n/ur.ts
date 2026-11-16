@@ -1,5 +1,8 @@
+import { roadUr } from "./road/ur";
 import { editorsUr } from "./editors/ur";
 import { cargoBikeUr } from "./cargo-bike/ur";
+import { depotsUr } from "./depots/ur";
+import { populationUr } from "./population/ur";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -283,6 +286,10 @@ export const ur: Messages = {
   "prefs.delayLane": "رنگ سے بنی بس یا ٹرام لین میں",
   "prefs.delayDefault": "مفروضات کی لائبریری: {value} %",
   "prefs.delayReset": "لائبریری کی قدر استعمال کریں",
+  "prefs.stationsTitle": "اسٹیشن",
+  "prefs.stationsIntro":
+    "اس فاصلے کے اندر ایک ہی نام کے اسٹاپ اسکیمیٹک نقشے، سفر منصوبہ ساز اور فوائد و مسافر جدولوں میں ایک اسٹیشن شمار ہوتے ہیں۔",
+  "prefs.libraryM": "مفروضات کی لائبریری: {value} میٹر",
   "prefs.currencyTitle": "کرنسی",
   "prefs.currencyIntro":
     "منصوبے کی تمام رقوم اسی کرنسی میں دکھائی جاتی ہیں: لاگت کی جدولیں، فوائد، منظرنامے اور کارگو بائیک کی بچت۔",
@@ -305,8 +312,49 @@ export const ur: Messages = {
   "prefs.rulesChanged": "تبدیل شدہ: {count}",
   "prefs.rulesLibrary": "مفروضات کی لائبریری: {value} {unit}",
   "prefs.rulesLibraryRange": "مفروضات کی لائبریری: {value} {unit} (حد {low}–{high})",
-  "prefs.vehicles": "استعمال شدہ گاڑیاں، گاڑیوں کی فہرست سے",
-  "prefs.switches": "پٹری کے سوئچ، سوئچوں کی فہرست سے",
+  "prefs.paramsTitle": "تمام پیرامیٹر",
+  "prefs.paramsIntro":
+    "مفروضات کی لائبریری کی ہر قدر۔ تمام طریقوں یا ایک طریقے کے لیے اپنی قدر رکھیں؛ ایک طریقے کی قدر تمام طریقوں والی پر فوقیت رکھتی ہے۔ لائبریری کی قدر ساتھ رہتی ہے۔",
+  "prefs.paramsGroup": "گروپ",
+  "prefs.paramsMode": "طریقہ",
+  "prefs.paramsAllModes": "تمام طریقے",
+  "prefs.paramsFromAll": "تمام طریقوں کے لیے آپ کی قدر",
+  "prefs.group.modes": "طریقے",
+  "prefs.group.operations": "آپریشن",
+  "prefs.group.demand": "طلب",
+  "prefs.group.analysis": "تجزیہ",
+  "prefs.group.simulation": "سمیولیشن",
+  "prefs.group.infrastructure": "بنیادی ڈھانچے کے معیار",
+  "prefs.group.accessibility": "رسائی",
+  "prefs.group.depots": "ڈپو اور سڑکیں",
+  "prefs.group.energy": "توانائی اور آب و ہوا",
+  "prefs.group.cost": "لاگت",
+  "prefs.group.benefits": "فوائد",
+  "prefs.group.fares": "کرایے",
+  "prefs.traction.battery": "بیٹری",
+  "prefs.traction.diesel": "ڈیزل",
+  "prefs.traction.hydrogen": "ہائیڈروجن",
+  "prefs.traction.cng": "قدرتی گیس (CNG)",
+  "prefs.traction.electric": "برقی",
+  "prefs.accessTitle": "پلیٹ فارم تک رسائی",
+  "prefs.accessIntro":
+    "پلیٹ فارم اور ٹرین کے درمیان سیڑھی اور خلا کی حدیں (TSI PRM)، اور فہرست میں نہ ہونے والی ٹرینوں کے فرش کی اونچائی۔ لائنیں ہر اسٹاپ پر جانچی جاتی ہیں۔",
+  "prefs.vehiclesTitle": "گاڑیاں",
+  "prefs.vehiclesIntro":
+    "فہرست کی وہ گاڑیاں جو یہ منصوبہ ہر ذریعے کے لیے استعمال کرتا ہے۔ سڑک لائن اور ریلوے ٹولز صرف نشان زدہ گاڑیاں دکھاتے ہیں۔",
+  "prefs.vehiclesMode": "ذریعہ",
+  "prefs.vehiclesUsed": "{total} میں سے {used} استعمال میں",
+  "prefs.vehiclesAll": "سب استعمال کریں",
+  "prefs.vehiclesFacts": "{length} میٹر · {places} جگہیں · {speed} کلومیٹر/گھنٹہ",
+  "prefs.vehiclesLast": "ہر ذریعے کے لیے کم از کم ایک گاڑی استعمال میں رہتی ہے۔",
+  "prefs.switchesTitle": "کانٹے",
+  "prefs.switchesIntro":
+    "فہرست کے وہ کانٹے اور کراسنگ جو ریلوے ایڈیٹر ہر ریل ذریعے کے لیے دیتا ہے، اور وہ کانٹا جس سے نئے کانٹے شروع ہوتے ہیں۔",
+  "prefs.switchesTurnouts": "کانٹے",
+  "prefs.switchesSlips": "کراسنگ میں سلپ",
+  "prefs.switchesDefault": "طے شدہ",
+  "prefs.switchesFacts": "1:{n} · R {radius} میٹر · مڑنے والی لائن پر {speed} کلومیٹر/گھنٹہ",
+  "prefs.switchesLast": "طے شدہ کانٹا استعمال میں رہتا ہے۔ اسے ہٹانے کے لیے پہلے کوئی اور طے کریں۔",
   "prefs.calendar": "کیلنڈر، طلب اور لاگت",
 
   "job.stepOf": "مرحلہ {step} از {steps}",
@@ -377,5 +425,8 @@ export const ur: Messages = {
 
   ...editorsUr,
   ...cargoBikeUr,
+  ...depotsUr,
+  ...populationUr,
+  ...roadUr,
   ...PLUGIN_MESSAGES.ur,
 };

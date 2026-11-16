@@ -1,4 +1,4 @@
--- 0009: public projects (FR-PLAT-02, 10 §1.1). A project is private (only its members open it) or public (anyone
+-- 0013: public projects (FR-PLAT-02, 10 §1.1). A project is private (only its members open it) or public (anyone
 -- signed in to this instance can find it on the projects home and open it read-only). Visitors who are not signed
 -- in never see projects. Public replaces the view-only link of 0004: projects that had the link on become private,
 -- because making a project public is an Owner's choice with a licence notice and an audit record.

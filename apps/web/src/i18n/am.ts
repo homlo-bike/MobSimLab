@@ -1,5 +1,8 @@
+import { roadAm } from "./road/am";
 import { editorsAm } from "./editors/am";
 import { cargoBikeAm } from "./cargo-bike/am";
+import { depotsAm } from "./depots/am";
+import { populationAm } from "./population/am";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -274,6 +277,10 @@ export const am: Messages = {
   "prefs.delayLane": "በቀለም በተሳለ የአውቶቡስ ወይም የትራም መስመር ውስጥ",
   "prefs.delayDefault": "የግምቶች ቤተ መጻሕፍት፦ {value} %",
   "prefs.delayReset": "የቤተ መጻሕፍቱን እሴት ተጠቀም",
+  "prefs.stationsTitle": "ጣቢያዎች",
+  "prefs.stationsIntro":
+    "በዚህ ርቀት ውስጥ ተመሳሳይ ስም ያላቸው ማቆሚያዎች በስኬማቲክ ካርታው፣ በጉዞ እቅድ አውጪው እና በጥቅሞችና በተሳፋሪ ሰንጠረዦች ውስጥ እንደ አንድ ጣቢያ ይቆጠራሉ።",
+  "prefs.libraryM": "የግምቶች ቤተ መጻሕፍት፦ {value} ሜ",
   "prefs.currencyTitle": "ምንዛሪ",
   "prefs.currencyIntro": "የፕሮጀክቱ ገንዘብ ሁሉ በዚህ ምንዛሪ ይታያል፦ የወጪ ሰንጠረዦች፣ ጥቅሞች፣ ሁኔታዎች እና የጭነት ብስክሌት ቁጠባ።",
   "prefs.currencyLabel": "ገንዘብን በዚህ አሳይ",
@@ -293,8 +300,49 @@ export const am: Messages = {
   "prefs.rulesChanged": "የተቀየሩ፦ {count}",
   "prefs.rulesLibrary": "የግምቶች ቤተ መጻሕፍት: {value} {unit}",
   "prefs.rulesLibraryRange": "የግምቶች ቤተ መጻሕፍት: {value} {unit} (ክልል {low}–{high})",
-  "prefs.vehicles": "ጥቅም ላይ የዋሉ ተሽከርካሪዎች፣ ከተሽከርካሪ ካታሎግ",
-  "prefs.switches": "የሐዲድ መቀየሪያዎች፣ ከመቀየሪያ ካታሎግ",
+  "prefs.paramsTitle": "ሁሉም መለኪያዎች",
+  "prefs.paramsIntro":
+    "የግምት ቤተ-መጻሕፍት እያንዳንዱ እሴት። ለሁሉም ዘዴዎች ወይም ለአንድ ዘዴ የራስዎን እሴት ያስቀምጡ፤ የአንድ ዘዴ እሴት ከሁሉም ዘዴዎች እሴት ይቀድማል። የቤተ-መጻሕፍቱ እሴት ከጎኑ ይቆያል።",
+  "prefs.paramsGroup": "ቡድን",
+  "prefs.paramsMode": "የትራንስፖርት ዘዴ",
+  "prefs.paramsAllModes": "ሁሉም ዘዴዎች",
+  "prefs.paramsFromAll": "ለሁሉም ዘዴዎች ያስቀመጡት እሴት",
+  "prefs.group.modes": "የትራንስፖርት ዘዴዎች",
+  "prefs.group.operations": "ኦፕሬሽን",
+  "prefs.group.demand": "ፍላጎት",
+  "prefs.group.analysis": "ትንተና",
+  "prefs.group.simulation": "ማስመሰል",
+  "prefs.group.infrastructure": "የመሠረተ ልማት መስፈርቶች",
+  "prefs.group.accessibility": "ተደራሽነት",
+  "prefs.group.depots": "ዴፖዎችና መንገዶች",
+  "prefs.group.energy": "ኃይልና የአየር ንብረት",
+  "prefs.group.cost": "ወጪዎች",
+  "prefs.group.benefits": "ጥቅሞች",
+  "prefs.group.fares": "የጉዞ ዋጋ",
+  "prefs.traction.battery": "ባትሪ",
+  "prefs.traction.diesel": "ናፍጣ",
+  "prefs.traction.hydrogen": "ሃይድሮጅን",
+  "prefs.traction.cng": "የተፈጥሮ ጋዝ (CNG)",
+  "prefs.traction.electric": "ኤሌክትሪክ",
+  "prefs.accessTitle": "የመድረክ ተደራሽነት",
+  "prefs.accessIntro":
+    "በመድረክና በባቡር መካከል የደረጃና የክፍተት ገደቦች (TSI PRM)፣ እና በካታሎግ ውስጥ ለሌላቸው ባቡሮች የወለል ከፍታ። መስመሮች በእያንዳንዱ ማቆሚያ ይፈተሻሉ።",
+  "prefs.vehiclesTitle": "ተሽከርካሪዎች",
+  "prefs.vehiclesIntro":
+    "ይህ ፕሮጀክት ለእያንዳንዱ ዓይነት የሚጠቀማቸው የካታሎግ ተሽከርካሪዎች። የመንገድ እና የባቡር መስመር መሣሪያዎች ምልክት የተደረገባቸውን ብቻ ያቀርባሉ።",
+  "prefs.vehiclesMode": "ዓይነት",
+  "prefs.vehiclesUsed": "ከ{total} {used} በጥቅም ላይ",
+  "prefs.vehiclesAll": "ሁሉንም ተጠቀም",
+  "prefs.vehiclesFacts": "{length} ሜ · {places} ቦታዎች · {speed} ኪሜ/ሰ",
+  "prefs.vehiclesLast": "ለእያንዳንዱ ዓይነት ቢያንስ አንድ ተሽከርካሪ በጥቅም ላይ ይቆያል።",
+  "prefs.switchesTitle": "ማዞሪያዎች",
+  "prefs.switchesIntro":
+    "የባቡር መስመር አርታዒው ለእያንዳንዱ የባቡር ዓይነት የሚያቀርባቸው ከካታሎጉ የተወሰዱ ማዞሪያዎችና መጋጠሚያዎች፣ እና አዲስ ማዞሪያዎች የሚጀምሩበት ማዞሪያ።",
+  "prefs.switchesTurnouts": "ማዞሪያዎች",
+  "prefs.switchesSlips": "በመጋጠሚያዎች ውስጥ ያሉ ማዞሪያዎች",
+  "prefs.switchesDefault": "ነባሪ",
+  "prefs.switchesFacts": "1:{n} · R {radius} ሜ · {speed} ኪሜ/ሰ በማዞሪያ",
+  "prefs.switchesLast": "ነባሪው ማዞሪያ በጥቅም ላይ ይቆያል። ለማስወገድ መጀመሪያ ሌላ ነባሪ ይምረጡ።",
   "prefs.calendar": "የቀን መቁጠሪያ፣ ፍላጎት እና ወጪዎች",
 
   "job.stepOf": "ደረጃ {step} ከ{steps}",
@@ -361,5 +409,8 @@ export const am: Messages = {
 
   ...editorsAm,
   ...cargoBikeAm,
+  ...depotsAm,
+  ...populationAm,
+  ...roadAm,
   ...PLUGIN_MESSAGES.am,
 };
