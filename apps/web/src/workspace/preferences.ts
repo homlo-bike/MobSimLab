@@ -1,8 +1,8 @@
 import type { DelayShares } from "../features/street-lines/types";
 import { MIXED_DELAY, PAINTED_DELAY } from "../features/street-setup/model";
 import rulesData from "./design-rules.generated.json";
-import libraryData from "../features/walk/defaults.generated.json";
 import paramsData from "./parameters.generated.json";
+import libraryData from "../features/walk/defaults.generated.json";
 
 /**
  * The project's preferences document (drawing kind `preferences`): assumption library values the project
