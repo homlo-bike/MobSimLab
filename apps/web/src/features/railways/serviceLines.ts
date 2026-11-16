@@ -4,7 +4,7 @@ import type { MessageKey } from "../../i18n/messages";
  * the engine's form. The engine plans them on the design (timetable planner) and publishes the trips
  * for the journey planner.
  */
-import { TRAINS } from "./trains";
+import { railVehicles } from "../fleet/registry";
 import { usedVehicles } from "../../workspace/preferences";
 import type { CatalogueTrain, EngineServiceLine, Network, RailMode, ServiceLine } from "./types";
 
@@ -34,13 +34,16 @@ const HEADWAYS: Record<RailMode, [number, number]> = {
 };
 
 /** Purpose: the catalogue trains of a mode (all rail trains when the mode has none). */
-export function trainsFor(mode: RailMode, all: readonly CatalogueTrain[] = TRAINS): CatalogueTrain[] {
+export function trainsFor(mode: RailMode, all: readonly CatalogueTrain[] = railVehicles()): CatalogueTrain[] {
   const own = all.filter((t) => t.mode === mode);
   return own.length ? own : [...all];
 }
 
 /** Purpose: a catalogue train by id. */
-export function trainById(id: string, all: readonly CatalogueTrain[] = TRAINS): CatalogueTrain | null {
+export function trainById(
+  id: string,
+  all: readonly CatalogueTrain[] = railVehicles(),
+): CatalogueTrain | null {
   return all.find((t) => t.id === id) ?? null;
 }
 
@@ -51,7 +54,7 @@ export function trainById(id: string, all: readonly CatalogueTrain[] = TRAINS): 
 export function suggestTrain(
   mode: RailMode,
   maxLengthM: number,
-  all: readonly CatalogueTrain[] = TRAINS,
+  all: readonly CatalogueTrain[] = railVehicles(),
 ): CatalogueTrain | null {
   const list = trainsFor(mode, all);
   const fits = list.filter((t) => t.length_m <= maxLengthM).sort((a, b) => b.length_m - a.length_m);
@@ -174,8 +177,18 @@ export function lineProblem(doc: Network, line: ServiceLine): MessageKey | null 
   const known = line.stations.filter((id) => doc.stations.some((s) => s.id === id));
   if (known.length < 2) return "rail.line.needsStops";
   if (!trainById(line.vehicle)) return "rail.line.needsTrain";
-  if (line.last_min <= line.first_min) return "rail.line.lastAfterFirst";
-  if (line.peak_headway_min < 1 || line.offpeak_headway_min < 1) return "rail.line.headwayMin";
+  // The weekday and every day type with its own times.
+  const days = [
+    [line.first_min, line.last_min, line.peak_headway_min, line.offpeak_headway_min],
+    ...Object.values(line.days ?? {}).map((d) => [
+      d.firstMin,
+      d.lastMin,
+      d.peakHeadwayMin,
+      d.offPeakHeadwayMin,
+    ]),
+  ];
+  if (days.some(([first, last]) => !(last! > first!))) return "rail.line.lastAfterFirst";
+  if (days.some(([, , peak, off]) => !(peak! >= 1) || !(off! >= 1))) return "rail.line.headwayMin";
   return null;
 }
 

@@ -20,9 +20,11 @@ export type Route =
  */
 export function parseRoute(pathname: string, search = ""): Route {
   if (pathname === "/agents/consent") return { page: "consent" };
-  const m = /^\/projects\/([0-9a-fA-F-]{36})(?:\/([a-z][a-z-]*))?\/?$/.exec(pathname);
+  const m = /^\/projects\/([0-9a-fA-F-]{36})(?:\/([a-z][a-z0-9-]*))?\/?$/.exec(pathname);
   if (m?.[1]) {
-    const tab = TABS.find((t) => t === m[2]) ?? "simulator";
+    // A tab of an installed plugin is only known once the project's plugins load; the workspace falls back to
+    // the simulator for a tab the project does not have.
+    const tab = TABS.find((t) => t === m[2]) ?? m[2] ?? "simulator";
     return { page: "project", id: m[1], tab, fresh: new URLSearchParams(search).get("new") === "1" };
   }
   return { page: "home" };

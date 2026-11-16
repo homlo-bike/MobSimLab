@@ -24,8 +24,6 @@ export const pluginsYo = {
   "plugins.perm.writeResults": "ó ń fi èsì tirẹ̀ pamọ́",
   "plugins.perm.writeScenario": "ó ń dábàá àyípadà sí ipò",
   "plugins.installTitle": "Fi àfikún sórí",
-  "plugins.installIntro":
-    "Gbé fáìlì .msplugin sókè. MobSimLab á ṣàyẹ̀wò rẹ̀, á sì fi ohun tó ń ṣàfikún hàn kí o tó fi sórí. Àwọn àfikún tí a fi sórí lè ṣàfikún ọ̀nà, irinṣẹ́, pàrámítà àti orísun; àwọn tó ní kóòdù tiwọn á dé lẹ́yìn náà.",
   "plugins.choose": "Yan fáìlì .msplugin",
   "plugins.problems": "A kò lè fi àfikún yìí sórí:",
   "plugins.install": "Fi sórí",

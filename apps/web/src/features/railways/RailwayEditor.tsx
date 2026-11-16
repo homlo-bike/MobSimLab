@@ -27,7 +27,7 @@ import {
   sigs,
 } from "./editorState";
 import { fetchRailTile, loadRailEngine } from "./engine";
-import { describeClash, renamePlace } from "../naming/names";
+import { describeClash, renamePlace, STATION_GROUPING_M } from "../naming/names";
 import { placesOtherThan, publishPlaces } from "../naming/registry";
 import { CONNECTION_LAYER, drawRail, ensureRailLayers, removeRailLayers, showConnections } from "./mapLayers";
 import { COLORS } from "./modes";
@@ -45,7 +45,9 @@ import { noiseCalculationIn } from "../noise/plugin";
 import { noiseCheckText, RAIL_FLOWS, railSources } from "../noise/sources";
 import type { Flows, Indicator, NoiseEngineLoader } from "../noise/types";
 import { useNoise } from "../noise/useNoise";
-import { addLine, engineLines, linesTrainLength, removeLine } from "./serviceLines";
+import { addLine, linesTrainLength, removeLine } from "./serviceLines";
+import { dayEngineLines, type DayPublications, publishDays } from "../timetables/railPublish";
+import type { ServiceCalendar } from "../../workspace/calendar";
 import type { Publication } from "./ServiceLinesPanel";
 import type {
   Anchor,
@@ -84,7 +86,13 @@ const NO_SETUPS: readonly StreetSetup[] = [];
 /** Purpose: what a publication depends on: the drawing without its view-only parts. */
 const publishKey = (d: Network) => JSON.stringify(d);
 
-type Published = { result: ServicePublication | null; error: string | null; key: string };
+type Published = {
+  result: ServicePublication | null;
+  /** The publication of every day type with lines (weekday is `result`). */
+  byDay?: DayPublications;
+  error: string | null;
+  key: string;
+};
 
 interface Props {
   /** The map; `null` until it has loaded. */
@@ -112,10 +120,16 @@ interface Props {
   delays?: DelayShares | null;
   /** The project's design rules per mode (Project preferences), as `<mode>.<field>`; the library's when absent. */
   designValues?: Readonly<Record<string, number>> | null;
+  /** The project's text design values per mode (electrification, colour, level crossings, signalling). */
+  designTexts?: Readonly<Record<string, string>> | null;
   /** The project's preference values by id (running values of the service lines: dwell, layover…). */
   prefValues?: Readonly<Record<string, number>> | null;
+  /** The project calendar (peak windows of each day type); the default calendar when absent. */
+  calendar?: ServiceCalendar;
   /** The project's choice from the switches and crossings catalogue (Project preferences); all when absent. */
   switchChoice?: SwitchChoice | null;
+  /** Stations closer than this share a name, m (`analysis.station_grouping_m`); the library's when absent. */
+  stationGroupingM?: number;
   /** The drawing saved with the project, or null to start a new one at the map centre. */
   initial?: Network | null;
   /** Told about the drawing after every change, so the project can save it. */
@@ -129,6 +143,9 @@ interface Props {
 }
 
 export type { Selection } from "./editorState";
+
+/** The default calendar (its day types' usual peaks). */
+const NO_CALENDAR: ServiceCalendar = {};
 
 /**
  * Purpose: railway design tool (ADR-0030, ADR-0033), laid out like the railways tab of the line
@@ -149,8 +166,11 @@ export function RailwayEditor({
   streetSetups = NO_SETUPS,
   delays = null,
   designValues = null,
+  designTexts = null,
   prefValues = null,
+  calendar = NO_CALENDAR,
   switchChoice = null,
+  stationGroupingM = STATION_GROUPING_M,
   initial = null,
   onDocChange,
   loadNoise = loadWasmNoise,
@@ -216,6 +236,7 @@ export function RailwayEditor({
     streetSetups,
     delays,
     designValues,
+    designTexts,
     switchChoice,
   });
 
@@ -383,8 +404,21 @@ export function RailwayEditor({
     view,
     cursor,
     picking,
+    stationGroupingM,
   });
-  latest.current = { tool, doc, draft, sel, trackOpts, stationOpts, switchOpts, view, cursor, picking };
+  latest.current = {
+    tool,
+    doc,
+    draft,
+    sel,
+    trackOpts,
+    stationOpts,
+    switchOpts,
+    view,
+    cursor,
+    picking,
+    stationGroupingM,
+  };
   const dragging = useRef<Dragging>(null);
 
   const startDraft = useCallback((start: Anchor, d: Network, level: Track["level"], tracks: 1 | 2) => {
@@ -537,8 +571,10 @@ export function RailwayEditor({
     try {
       // The engine plans on its last build: build the drawing without a draft first.
       e.build(doc, null);
-      const result = e.publishLines(engineLines(doc, doc.lines ?? [], prefValues), "weekday");
-      next = { result, error: null, key: publishKey(doc) };
+      // Every day type with its own times and the calendar's peaks; the journey planner takes the weekday.
+      const result = e.publishLines(dayEngineLines(doc, "weekday", calendar, prefValues), "weekday");
+      const byDay = { ...publishDays(e, doc, calendar, undefined, prefValues), weekday: result };
+      next = { result, byDay, error: null, key: publishKey(doc) };
       onPublish?.(result.timetable);
     } catch (err) {
       next = { result: null, error: err instanceof Error ? err.message : String(err), key: publishKey(doc) };
@@ -547,7 +583,12 @@ export function RailwayEditor({
     setPublished(next);
   };
   const publication: Publication | null = published
-    ? { result: published.result, error: published.error, stale: !!doc && published.key !== publishKey(doc) }
+    ? {
+        result: published.result,
+        ...(published.byDay ? { byDay: published.byDay } : {}),
+        error: published.error,
+        stale: !!doc && published.key !== publishKey(doc),
+      }
     : null;
 
   const panelActions = {
@@ -606,11 +647,16 @@ export function RailwayEditor({
     },
     renameStation: (id: number, name: string) => {
       if (!doc || !name.trim()) return;
-      const r = renamePlace(`rail:${id}`, name, [...placesOtherThan("rail"), ...stationPlaces(doc, view)]);
+      const r = renamePlace(
+        `rail:${id}`,
+        name,
+        [...placesOtherThan("rail"), ...stationPlaces(doc, view)],
+        stationGroupingM,
+      );
       const members = new Set(r.members.filter((m) => m.startsWith("rail:")).map((m) => Number(m.slice(5))));
       members.add(id);
       setDoc({ ...doc, stations: doc.stations.map((s) => (members.has(s.id) ? { ...s, name: r.name } : s)) });
-      setNote(describeClash(r));
+      setNote(describeClash(r, stationGroupingM));
     },
     showIssue: (at: LonLat | null, ref: number | null) => {
       if (ref) setSel({ id: ref });
@@ -675,7 +721,7 @@ export function RailwayEditor({
         at: c.at,
         ref_id: null,
       }))}
-      service={{ publication, publish, picking, setPicking: pickFor, newLine, designValues }}
+      service={{ publication, publish, picking, setPicking: pickFor, newLine, designValues, calendar }}
     />
   );
 

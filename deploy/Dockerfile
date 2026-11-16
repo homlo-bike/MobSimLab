@@ -58,7 +58,7 @@ COPY --from=ghcr.io/astral-sh/uv:0.11 /uv /usr/local/bin/uv
 ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy UV_PYTHON_DOWNLOADS=never
 WORKDIR /src/worker
 COPY worker/pyproject.toml worker/uv.lock ./
-RUN uv venv /app/venv && VIRTUAL_ENV=/app/venv uv sync --active --frozen --no-dev --no-install-project --extra sim
+RUN uv venv /app/venv && VIRTUAL_ENV=/app/venv uv sync --active --frozen --no-dev --no-install-project --extra sim --extra demand
 COPY worker/src src
 COPY --from=rust-build /wheels /wheels
 RUN VIRTUAL_ENV=/app/venv uv pip install --no-deps . /wheels/*.whl

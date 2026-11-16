@@ -22,6 +22,9 @@ use std::collections::HashMap;
 
 /// Longest source element, m.
 const ELEMENT_M: f64 = 10.0;
+/// Ferry vessel types (`ferry/<vessel_type>`) whose sound power under way is still a placeholder: the Livorno
+/// value is for large seagoing ferries (plugins/noise/assumptions/parameters.yaml).
+const SMALL_FERRIES: [&str; 3] = ["ferry/monohull", "ferry/catamaran", "ferry/hydrofoil"];
 /// Spacing of the band probes along a line, m.
 const PROBE_STEP_M: f64 = 20.0;
 /// Distance from which paired elements stand for their two halves on the screened map, m.
@@ -89,6 +92,11 @@ pub struct LineInput {
     pub vehicle_length_m: f64,
     /// Vehicles per hour on this line.
     pub flows: Flows,
+    /// Vehicles in each clock hour 0–23 (timetabled and simulated input, step N3). When given,
+    /// the period flows are the averages over the hours of each period (`noise.day_start_h`,
+    /// `noise.evening_start_h`, `noise.night_start_h`) and `flows` is ignored.
+    #[serde(default)]
+    pub hourly: Option<Vec<f64>>,
     /// Centre line, local metres.
     pub points: Vec<[f64; 2]>,
     /// Speed profile `[chainage m, km/h]`, piecewise linear; empty uses `speed_kmh`.
@@ -105,7 +113,8 @@ pub struct LineInput {
     pub stops_m: Vec<f64>,
 }
 
-/// A fixed source of known A-weighted sound power (cable car tower or station, ferry berth).
+/// A fixed source of A-weighted sound power: a cable car tower or station, a ferry at the berth,
+/// or a stretch of a ferry route (the vessels' time there spread over the hour).
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PointSourceInput {
     /// Id.
@@ -118,10 +127,36 @@ pub struct PointSourceInput {
     /// Height above ground, m.
     #[serde(default)]
     pub height_m: f64,
-    /// Sound power while operating, dB(A).
-    pub lw_dba: f64,
-    /// Share of each period it operates, 0–1.
+    /// Noise parameter with the height above ground, m (central value), which then replaces
+    /// `height_m`, such as `noise.ferry_source_height_m`.
+    #[serde(default)]
+    pub height_key: Option<String>,
+    /// Sound power while operating, dB(A), when it is known; else `lw_key` gives it.
+    #[serde(default)]
+    pub lw_dba: Option<f64>,
+    /// Noise parameter with the sound power while operating, dB(A), such as
+    /// `noise.cable_car_tower_lw_db`: its low, central and high values give the three variants.
+    #[serde(default)]
+    pub lw_key: Option<String>,
+    /// Contexts to look `lw_key` up in, most specific first (`cable_car/3s`, `cable_car`).
+    #[serde(default)]
+    pub context: Vec<String>,
+    /// How much of each period it operates: the share of the time for one source (0–1), or the
+    /// mean number operating at once where several can be (vessels at one pier).
     pub active: Flows,
+}
+
+/// Level of detail of the inputs (ADR-0038 §4), stored with the result and shown on the legend.
+#[derive(Debug, Clone, Copy, Default, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "snake_case")]
+pub enum InputLevel {
+    /// Headways and planned speeds from the editors.
+    #[default]
+    Planned,
+    /// Trips from the published timetables.
+    Timetabled,
+    /// Vehicles and speeds from a simulation run.
+    Simulated,
 }
 
 /// What the estimate is for.
@@ -153,6 +188,15 @@ pub struct EstimateInput {
     /// the exposure counts. `None` estimates the people from the building size.
     #[serde(default)]
     pub population: Option<PopulationInput>,
+    /// Level of detail of the flows and speeds, passed through to the result.
+    #[serde(default)]
+    pub input_level: InputLevel,
+    /// Points, local metres, that set the map grid instead of the sources: its extent, the cells
+    /// computed (within the reach of a point) and the cell size. Two estimates with the same cover
+    /// and preferences share one grid cell for cell, as a difference map needs. Points should be
+    /// no more than 10 m apart along the lines they stand for. Empty follows the sources.
+    #[serde(default)]
+    pub grid_cover: Vec<[f64; 2]>,
 }
 
 fn yes() -> bool {
@@ -232,7 +276,7 @@ pub struct Estimate {
     /// grid does not reach it or the building was dropped), by input index.
     pub building_levels: Vec<[f32; 2]>,
     /// Level of detail of the inputs (ADR-0038 §4).
-    pub input_level: &'static str,
+    pub input_level: InputLevel,
     /// Whether terrain heights shaped the map (a flat or empty grid does not).
     pub terrain: bool,
     /// People living in each input building (`None` without buildings).
@@ -241,14 +285,14 @@ pub struct Estimate {
 
 /// Period lengths and penalties.
 #[derive(Debug, Clone, Copy)]
-struct Periods {
+pub(crate) struct Periods {
     hours: [f64; 3],
     w_evening: f64,
     w_night: f64,
 }
 
 impl Periods {
-    fn new(lib: &Library) -> Self {
+    pub(crate) fn new(lib: &Library) -> Self {
         let d0 = lib.central("noise.day_start_h");
         let e0 = lib.central("noise.evening_start_h");
         let n0 = lib.central("noise.night_start_h");
@@ -258,6 +302,39 @@ impl Periods {
             hours: [day, evening, (24.0 - day - evening).max(0.0)],
             w_evening: pow10(lib.central("noise.evening_penalty_db")),
             w_night: pow10(lib.central("noise.night_penalty_db")),
+        }
+    }
+
+    /// Purpose: the mean vehicles per hour in the day, evening and night from vehicles in each
+    /// clock hour 0–23 (missing hours count as none), weighting each hour by how much of it
+    /// lies in the period.
+    pub(crate) fn hourly_flows(&self, start: [f64; 3], hourly: &[f64]) -> Flows {
+        let mut sum = [0.0; 3];
+        for h in 0..24 {
+            let q = hourly.get(h).copied().unwrap_or(0.0);
+            if !q.is_finite() || q <= 0.0 {
+                continue;
+            }
+            for (k, total) in sum.iter_mut().enumerate() {
+                let (a, b) = (start[k], start[k] + self.hours[k]);
+                // The period may run past midnight: try the hour on this day and the next.
+                for shift in [0.0, 24.0] {
+                    let (x, y) = (h as f64 + shift, h as f64 + shift + 1.0);
+                    *total += q * (y.min(b) - x.max(a)).max(0.0);
+                }
+            }
+        }
+        let mean = |k: usize| {
+            if self.hours[k] > 0.0 {
+                sum[k] / self.hours[k]
+            } else {
+                0.0
+            }
+        };
+        Flows {
+            day: mean(0),
+            evening: mean(1),
+            night: mean(2),
         }
     }
 
@@ -642,6 +719,25 @@ pub fn estimate(input: &EstimateInput) -> Estimate {
     }
     let lib = &lib;
     let periods = Periods::new(lib);
+    if input.lines.iter().any(|l| l.hourly.is_some()) {
+        let start = [
+            lib.central("noise.day_start_h"),
+            lib.central("noise.evening_start_h"),
+            lib.central("noise.night_start_h"),
+        ];
+        let mut input = input.clone();
+        for l in &mut input.lines {
+            if let Some(h) = l.hourly.take() {
+                l.flows = periods.hourly_flows(start, &h);
+            }
+        }
+        return estimate_with(&input, lib, periods);
+    }
+    estimate_with(input, lib, periods)
+}
+
+/// Purpose: [`estimate`] with the preferences applied and every flow given per period.
+fn estimate_with(input: &EstimateInput, lib: &Library, periods: Periods) -> Estimate {
     let prop = Propagation {
         alpha: absorption(
             lib.central("noise.air_temperature_c"),
@@ -745,16 +841,25 @@ pub fn estimate(input: &EstimateInput) -> Estimate {
     }
     let n_lines = input.lines.len();
     for (pi, ps) in input.point_sources.iter().enumerate() {
-        let w = pow10(ps.lw_dba);
-        let flat = [w / NB as f64; NB];
+        let lw: [f64; 3] = match (&ps.lw_key, ps.lw_dba) {
+            (Some(k), _) if lib.has(k) => lib.range_in(k, &ps.context),
+            (_, Some(x)) => [x; 3],
+            _ => [f64::NEG_INFINITY; 3],
+        };
+        let power = lw.map(|x| [pow10(x) / NB as f64; NB]);
+        let h = match &ps.height_key {
+            Some(k) if lib.has(k) => lib.range_in(k, &ps.context)[1],
+            _ => ps.height_m,
+        }
+        .max(0.0);
         elements.push(Element {
             p: ps.p,
             dipole: None,
-            table: table_of(ps.height_m.max(0.0), Vertical::None),
-            h: ps.height_m.max(0.0),
-            z: ps.height_m.max(0.0),
+            table: table_of(h, Vertical::None),
+            h,
+            z: h,
             owner: n_lines + pi,
-            power: [flat; 3],
+            power,
         });
     }
     // Buildings and terrain for the map grid (step N2); sources stand on the ground.
@@ -777,15 +882,17 @@ pub fn estimate(input: &EstimateInput) -> Estimate {
     let buckets = Buckets::new(&elements, 50.0);
 
     // Period flows per owner.
-    let flows: Vec<[f64; 3]> =
-        input
-            .lines
-            .iter()
-            .map(|l| [l.flows.day, l.flows.evening, l.flows.night].map(|x| x.max(0.0)))
-            .chain(input.point_sources.iter().map(|p| {
-                [p.active.day, p.active.evening, p.active.night].map(|x| x.clamp(0.0, 1.0))
-            }))
-            .collect();
+    let flows: Vec<[f64; 3]> = input
+        .lines
+        .iter()
+        .map(|l| [l.flows.day, l.flows.evening, l.flows.night].map(|x| x.max(0.0)))
+        .chain(
+            input
+                .point_sources
+                .iter()
+                .map(|p| [p.active.day, p.active.evening, p.active.night].map(|x| x.max(0.0))),
+        )
+        .collect();
 
     // Energy per owner at a receiver, per variant (central only when `all` is false).
     let mut scratch = vec![[0.0f64; 3]; flows.len()];
@@ -1193,23 +1300,35 @@ pub fn estimate(input: &EstimateInput) -> Estimate {
     };
 
     // Map grid round the lines.
-    let grid = if input.grid && !elements.is_empty() {
+    let grid = if input.grid && (!elements.is_empty() || !input.grid_cover.is_empty()) {
         let reach = input
             .grid_reach_m
             .filter(|r| r.is_finite() && *r > 0.0)
             .unwrap_or(lden.max_m.max(lnight.max_m) * 1.3 + 25.0)
             .clamp(30.0, max_d);
+        // The grid follows the source elements, or the cover points when given (a difference
+        // map gives both estimates the same cover).
+        let cover: Vec<[f64; 2]> = if input.grid_cover.is_empty() {
+            elements.iter().map(|e| e.p).collect()
+        } else {
+            input
+                .grid_cover
+                .iter()
+                .copied()
+                .filter(|p| p[0].is_finite() && p[1].is_finite())
+                .collect()
+        };
         let (mut x0, mut y0, mut x1, mut y1) = (f64::MAX, f64::MAX, f64::MIN, f64::MIN);
-        for e in &elements {
-            x0 = x0.min(e.p[0]);
-            y0 = y0.min(e.p[1]);
-            x1 = x1.max(e.p[0]);
-            y1 = y1.max(e.p[1]);
+        for p in &cover {
+            x0 = x0.min(p[0]);
+            y0 = y0.min(p[1]);
+            x1 = x1.max(p[0]);
+            y1 = y1.max(p[1]);
         }
         let (x0, y0, x1, y1) = (x0 - reach, y0 - reach, x1 + reach, y1 + reach);
         // Cells within reach of the sources: estimate the area as the corridor length × width.
         let corridor_area =
-            elements.len() as f64 * ELEMENT_M * 2.0 * reach + std::f64::consts::PI * reach * reach;
+            cover.len() as f64 * ELEMENT_M * 2.0 * reach + std::f64::consts::PI * reach * reach;
         let area = corridor_area.min((x1 - x0) * (y1 - y0));
         let cell = lib
             .get("noise.grid_spacing_m", None, Variant::Low)
@@ -1219,13 +1338,13 @@ pub fn estimate(input: &EstimateInput) -> Estimate {
         let ny = ((y1 - y0) / cell).ceil() as usize;
         let mut mask = vec![false; nx * ny];
         let r_cells = (reach / cell).ceil() as i64;
-        for e in &elements {
-            let ci = ((e.p[0] - x0) / cell) as i64;
-            let cj = ((e.p[1] - y0) / cell) as i64;
+        for p in &cover {
+            let ci = ((p[0] - x0) / cell) as i64;
+            let cj = ((p[1] - y0) / cell) as i64;
             for j in (cj - r_cells).max(0)..=(cj + r_cells).min(ny as i64 - 1) {
                 for i in (ci - r_cells).max(0)..=(ci + r_cells).min(nx as i64 - 1) {
                     let c = [x0 + (i as f64 + 0.5) * cell, y0 + (j as f64 + 0.5) * cell];
-                    if dist(c, e.p) <= reach {
+                    if dist(c, *p) <= reach {
                         mask[j as usize * nx + i as usize] = true;
                     }
                 }
@@ -1333,7 +1452,7 @@ pub fn estimate(input: &EstimateInput) -> Estimate {
         checks,
         grid,
         building_levels,
-        input_level: "planned",
+        input_level: input.input_level,
         terrain: obstacles.has_ground(),
         residents: (!input.buildings.is_empty()).then(|| {
             residents(
@@ -1646,14 +1765,47 @@ fn checks(
             line: None,
         });
     }
-    if !input.point_sources.is_empty() {
-        out.push(Check {
-            severity: Severity::Info,
-            text: "Cable car and ferry sources use placeholder sound powers: indicative only"
-                .into(),
-            at: None,
-            line: None,
-        });
+    // The point sources' sound powers rest on one study each (the berth value on none yet): name it.
+    // Small ferries keep a placeholder under way (product owner, 2026-11-16): Livorno measured large ones.
+    let small = |p: &PointSourceInput| {
+        p.context
+            .first()
+            .is_some_and(|c| SMALL_FERRIES.contains(&c.as_str()))
+    };
+    let uses_if = |key: &str, keep: &dyn Fn(&PointSourceInput) -> bool| {
+        input
+            .point_sources
+            .iter()
+            .any(|p| p.lw_key.as_deref() == Some(key) && keep(p))
+    };
+    let uses = |key: &str| uses_if(key, &|_| true);
+    let cable = uses("noise.cable_car_tower_lw_db") || uses("noise.cable_car_station_lw_db");
+    for (used, text) in [
+        (
+            cable,
+            "Cable cars: sound powers from one study (Placer County gondola EIR, 2019): indicative",
+        ),
+        (
+            uses_if("noise.ferry_cruise_lw_db", &|p| !small(p)),
+            "Ferries under way: sound power from one study of large ferries (port of Livorno, Fredianelli and Nastasi 2020): indicative",
+        ),
+        (
+            uses_if("noise.ferry_cruise_lw_db", &small),
+            "Water buses, catamarans and hydrofoils under way: placeholder sound power, no source for small vessels yet: indicative only",
+        ),
+        (
+            uses("noise.ferry_berth_lw_db"),
+            "Ferries at the pier: placeholder sound power, no source yet: indicative only",
+        ),
+    ] {
+        if used {
+            out.push(Check {
+                severity: Severity::Info,
+                text: text.into(),
+                at: None,
+                line: None,
+            });
+        }
     }
     out.push(Check {
         severity: Severity::Info,

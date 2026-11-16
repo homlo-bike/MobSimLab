@@ -230,6 +230,21 @@
       check: unverified
       rationale: "Beyond about 500 m a transit line rarely lifts a receiver above 45 dB L_den; the range is tested in sensitivity runs."
 
+- key: noise.map_reach_m
+  label: "Noise map: how far the map reaches from the lines"
+  group: Noise
+  unit: m
+  used_by: [noise map]
+  values:
+    - context: { mode: "*" }
+      low: 150
+      central: 300
+      high: 500
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: "Buildings, terrain and receivers are loaded within this distance of the lines. 300 m covers the 55 dB L_den band of most urban lines; a fast main line may need more. Never beyond noise.max_source_distance_m."
+
 - key: noise.grid_spacing_m
   label: "Receiver grid spacing"
   group: Noise
@@ -917,13 +932,13 @@
   used_by: [noise map (cable cars, indicative)]
   values:
     - context: { mode: "*" }
-      low: 80
-      central: 90
-      high: 100
-      basis: educated-guess
-      sources: [burnaby-gondola-noise]
-      check: unverified
-      rationale: "PLACEHOLDER awaiting the product owner's value (asked 2026-11-03) and the cable car research. Order of magnitude from the Burnaby Mountain Gondola study; results using it are labelled indicative."
+      low: 90
+      central: 100
+      high: 102
+      basis: documented
+      sources: [placer-gondola-eir, burnaby-gondola-noise]
+      check: read
+      rationale: "One study, so results using it are labelled indicative. Central: the Placer County gondola EIR (2019, section 4.9) predicts 62.6 dB(A) Leq 100 ft (30.5 m) from the tower locations, which is 100 dB(A) as a point source over hard ground (Lw = Lp + 20 log10 r + 8; MobSimLab's conversion). High: the EIR took its station reference (a detachable chairlift terminal, 69.6 dB(A) Leq at 54 ft, 102 dB(A)) for tower crossings too, as a worst case. Low: 10 dB under, a MobSimLab judgement because the EIR and the Burnaby Mountain Gondola noise summary (TransLink 2023, from Hemmera 2020) both say tower crossings are quieter than terminals; neither gives a number for it. The EIR says gondola machinery is generic, so the value is for every ropeway system until a source tells them apart."
 
 - key: noise.cable_car_station_lw_db
   label: "Cable car station: sound power of drive, bullwheel and cabin handling"
@@ -932,13 +947,13 @@
   used_by: [noise map (cable cars, indicative)]
   values:
     - context: { mode: "*" }
-      low: 85
-      central: 95
-      high: 105
-      basis: educated-guess
-      sources: [burnaby-gondola-noise]
-      check: unverified
-      rationale: "PLACEHOLDER awaiting the product owner's value (asked 2026-11-03) and the cable car research."
+      low: 99
+      central: 102
+      high: 106
+      basis: documented
+      sources: [placer-gondola-eir]
+      check: read
+      rationale: "One study, so results using it are labelled indicative. The Placer County gondola EIR (2019, section 4.9) measured 69.6 dB(A) Leq and 73.5 dB(A) Lmax 54 ft (16.5 m) from the base terminal of a detachable chairlift (Far East Express, Ascent Environmental 2015) as the cabins enter over the guide rails and bullwheel. As a point source over hard ground (Lw = Lp + 20 log10 r + 8; MobSimLab's conversion) that is 102 dB(A) from the Leq (central) and 106 dB(A) from the Lmax (high). Low: the EIR's own prediction of 56.3 dB(A) Leq at 175 ft (53.3 m) gives 99 dB(A). The EIR says gondola machinery is generic, so the value is for every ropeway system until a source tells them apart."
 
 - key: noise.ferry_cruise_lw_db
   label: "Ferry at cruise speed: sound power"
@@ -947,13 +962,21 @@
   used_by: [noise map (ferries, indicative)]
   values:
     - context: { mode: "*" }
+      low: 105
+      central: 108
+      high: 112
+      basis: documented
+      sources: [livorno-ship-passby-2020, livorno-ship-parameters-2020]
+      check: read
+      rationale: "One study, so results using it are labelled indicative. Pass-by measurements of large seagoing ferries (ro-pax, 4.8–9.3 kn) in the port of Livorno. The papers give a sound power per metre of line source, LW/m: 84.3 dB(A) (Fredianelli et al. 2020, Figure 8) and 83.1 dB(A) once corrected for distance and speed (Nastasi et al. 2020, Figure 6), which they say is 'not to be confused with the sound power level of the moving ship'. The engine takes a ship's own sound power, so MobSimLab converts with Lw = LW/m + 10 log10(v T), the same sound exposure from a point source at speed v as from the line over the averaging time T: at the 5 kn (2.57 m/s) the first paper assumes and its 109 ± 38 s mean ferry pass-by, v T = 280 (182–378) m, giving 108 dB(A) (105–112 with the LW/m uncertainty). These are large ferries, so the product owner chose (2026-11-16) to keep the placeholder below for the water bus, catamaran and hydrofoil until a source covers small vessels. Nastasi et al. find the level rises with speed as 20.97 log10(v / 3.9 m/s); the engine does not apply that yet."
+    - context: { mode: ferry, vessel_type: [monohull, catamaran, hydrofoil] }
       low: 95
       central: 105
       high: 115
       basis: educated-guess
       sources: [nomeports]
       check: unverified
-      rationale: "PLACEHOLDER awaiting the product owner's value (asked 2026-11-03) and the ferry research. Order of magnitude for small and medium passenger ferries from port noise mapping practice."
+      rationale: "PLACEHOLDER for small craft (product owner, 2026-11-16): the Livorno value is for large seagoing ferries, so water buses, fast catamarans and electric hydrofoils keep this order of magnitude from port noise mapping practice until a source covers them."
 
 - key: noise.ferry_berth_lw_db
   label: "Ferry at the berth: sound power of engines, auxiliaries and ramp"
@@ -968,4 +991,19 @@
       basis: educated-guess
       sources: [nomeports]
       check: unverified
-      rationale: "PLACEHOLDER awaiting the product owner's value (asked 2026-11-03) and the ferry research."
+      rationale: "PLACEHOLDER: the berth source (Euronoise 2018 paper 477, port of Bilbao) has not been read yet; its site could not be reached and the paper is not in the project."
+
+- key: noise.ferry_source_height_m
+  label: "Ferry source height above the water (funnel, engine room vents, ventilation)"
+  group: Noise
+  unit: m
+  used_by: [noise map (ferries, indicative)]
+  values:
+    - context: { mode: "*" }
+      low: 3
+      central: 5
+      high: 10
+      basis: educated-guess
+      sources: [nomeports]
+      check: unverified
+      rationale: "PLACEHOLDER until the ferry sound power sources are read: the main sources of a small or medium passenger ferry (exhaust, engine room and air conditioning vents) sit a few metres above the water. The Livorno pass-by papers name the ventilation near the funnel as the loudest source of large ferries but give no height."

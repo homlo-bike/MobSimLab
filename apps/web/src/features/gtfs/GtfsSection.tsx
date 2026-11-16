@@ -1,7 +1,8 @@
 import type { Map as MapLibreMap } from "maplibre-gl";
 import { useState } from "react";
 import { useI18n } from "../../i18n/i18n";
-import { activePlugins, pluginConverter, type Plugin } from "../../plugins/registry";
+import { PluginConverters } from "../../plugins/code/PluginConverters";
+import { activePlugins, componentConverters, pluginConverter, type Plugin } from "../../plugins/registry";
 import type { Timetable } from "../journey-planner/types";
 import { loadWasmGtfs } from "./engine";
 import { convertibleRoutes } from "./toLines";
@@ -41,10 +42,48 @@ export function feedFileName(project: string): string {
 }
 
 /**
+ * Purpose: export a timetable as a GTFS feed and let the browser save it (`<project>-gtfs.zip`), valid for a
+ * year from today.
+ * Inputs: the GTFS engine loader, the timetable (service ids weekday, saturday, sunday, holiday), the project
+ * name, the feed language and the public holidays (YYYYMMDD) on which the holiday service runs.
+ * Side effects: loads the GTFS engine; starts a file save.
+ */
+export async function saveFeed(
+  loadEngine: GtfsEngineLoader,
+  timetable: Timetable,
+  { projectName, lang, holidays }: { projectName: string; lang: string; holidays?: string[] },
+): Promise<void> {
+  const engine = await loadEngine();
+  const today = new Date();
+  const day = (d: Date) => d.toISOString().slice(0, 10).replaceAll("-", "");
+  const files = engine.export(timetable, {
+    agency_name: projectName || "MobSimLab",
+    agency_url: window.location.origin,
+    agency_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC",
+    lang,
+    start_date: day(today),
+    end_date: day(new Date(today.getTime() + 365 * 86_400_000)),
+    route_types: pluginRouteTypes(),
+    feed_version: today.toISOString(),
+    ...(holidays?.length ? { holidays } : {}),
+  });
+  const url = URL.createObjectURL(new Blob([writeZip(files) as BlobPart], { type: "application/zip" }));
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = feedFileName(projectName);
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 10_000);
+}
+
+/** The project's own lines on every day type for the download, with the public holidays (YYYYMMDD). */
+export type AllDayFeed = () => Promise<{ timetable: Timetable | null; holidays: string[] }>;
+
+/**
  * Purpose: the GTFS plugin in the journey planner: import a feed (zip) as the existing network of one
  * service day, cut to the map view if asked, and download the project's lines as a GTFS feed.
  * Inputs: the imported feeds and which of them the planner leaves out; `onChange` saves the feeds (absent
- * when the planner may only look); `ownLines` is what the project draws and publishes, for the download.
+ * when the planner may only look); `ownLines` is what the project draws and publishes, for the download;
+ * `allDays` builds the project's lines on every day type instead (weekday, Saturday, Sunday, public holiday).
  * Side effects: reads the chosen file; the download starts a file save in the browser.
  */
 export function GtfsSection({
@@ -54,6 +93,7 @@ export function GtfsSection({
   onToggle,
   onChange,
   ownLines,
+  allDays,
   projectName,
   onEditRoute,
   loadEngine = loadWasmGtfs,
@@ -64,6 +104,7 @@ export function GtfsSection({
   onToggle: (id: string, use: boolean) => void;
   onChange?: (doc: GtfsNetworkDoc) => void;
   ownLines: Timetable | null;
+  allDays?: AllDayFeed;
   projectName: string;
   /** Turns an imported route into a line of the project's own (street line or railway tool). */
   onEditRoute?: (feedId: string, routeId: string) => void;
@@ -76,7 +117,8 @@ export function GtfsSection({
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState("");
-  if (!importer && !exporter) return null;
+  const pluginConverters = componentConverters("importers").length + componentConverters("exporters").length;
+  if (!importer && !exporter && pluginConverters === 0) return null;
 
   const importFile = async (file: File) => {
     setError(null);
@@ -120,25 +162,13 @@ export function GtfsSection({
     if (!ownLines) return;
     setError(null);
     try {
-      const engine = await loadEngine();
-      const today = new Date();
-      const day = (d: Date) => d.toISOString().slice(0, 10).replaceAll("-", "");
-      const files = engine.export(ownLines, {
-        agency_name: projectName || "MobSimLab",
-        agency_url: window.location.origin,
-        agency_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC",
-        lang: document.documentElement.lang || "en",
-        start_date: day(today),
-        end_date: day(new Date(today.getTime() + 365 * 86_400_000)),
-        route_types: pluginRouteTypes(),
-        feed_version: today.toISOString(),
+      const lang = document.documentElement.lang || "en";
+      const all = allDays ? await allDays() : null;
+      await saveFeed(loadEngine, all?.timetable ?? ownLines, {
+        projectName,
+        lang,
+        ...(all?.timetable ? { holidays: all.holidays } : {}),
       });
-      const url = URL.createObjectURL(new Blob([writeZip(files) as BlobPart], { type: "application/zip" }));
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = feedFileName(projectName);
-      a.click();
-      setTimeout(() => URL.revokeObjectURL(url), 10_000);
     } catch (e) {
       setError(t("jp.gtfs.exportFailed", { error: e instanceof Error ? e.message : String(e) }));
     }
@@ -246,6 +276,13 @@ export function GtfsSection({
           {t("jp.gtfs.export")}
         </button>
       )}
+      <PluginConverters
+        feeds={feeds}
+        {...(onChange ? { onAdd: onChange } : {})}
+        ownLines={ownLines}
+        maxDocBytes={MAX_DOC_BYTES}
+        maxFeeds={MAX_FEEDS}
+      />
     </section>
   );
 }

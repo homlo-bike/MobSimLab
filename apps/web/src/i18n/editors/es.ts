@@ -255,7 +255,7 @@ export const editorsEs = {
   "rail.line.peakHeadway": "Frecuencia en hora punta",
   "rail.line.everyOffpeak": "Frecuencia fuera de punta",
   "rail.line.offpeakHeadway": "Frecuencia fuera de punta",
-  "rail.line.peaks": "Horas punta 07:00–09:00 y 16:00–19:00.",
+  "rail.line.peaks": "Horas punta {peaks}.",
   "rail.line.delete": "Borrar línea",
   "rail.line.needsStops": "Necesita al menos dos paradas.",
   "rail.line.needsTrain": "Elige un tren.",
@@ -756,7 +756,7 @@ export const editorsEs = {
   "noise.dbOrMore": "{db} dB o más",
   "noise.dbRange": "{from}–{to} dB",
   "noise.mapNote":
-    "Solo el servicio previsto, sin tráfico general. Los edificios apantallan por encima de sus tejados y alrededor de sus extremos (ISO 9613-2) y sus fachadas reflejan una vez (primer orden). Los edificios sin altura en OpenStreetMap toman 3 m por planta indicada, u 8 m (supuestos del plugin de ruido). El nivel de un edificio excluye la reflexión en su propia fachada. Edificios © colaboradores de OpenStreetMap.",
+    "Solo las líneas de servicio, sin tráfico general. Los edificios apantallan por encima de sus tejados y alrededor de sus extremos (ISO 9613-2) y sus fachadas reflejan una vez (primer orden). Los edificios sin altura en OpenStreetMap toman 3 m por planta indicada, u 8 m (supuestos del plugin de ruido). El nivel de un edificio excluye la reflexión en su propia fachada. Edificios © colaboradores de OpenStreetMap.",
   "noise.terrain": "Usar alturas del terreno (Copernicus GLO-30)",
   "noise.terrainTooLarge":
     "Las líneas cubren una zona demasiado grande para cargar el terreno, así que este mapa se calcula sobre terreno llano.",
@@ -786,6 +786,50 @@ export const editorsEs = {
     "Las fuentes, los edificios y los receptores se apoyan en el terreno, y las colinas apantallan; los tejados y árboles se filtran del modelo de superficie. Terreno: Copernicus DEM GLO-30 © DLR e.V. y © Airbus Defence and Space GmbH, facilitado en el marco de COPERNICUS por la Unión Europea y la ESA.",
   "noise.flat": "Terreno llano.",
   "noise.popCredit": "Población: WorldPop, University of Southampton (doi:10.5258/SOTON/WP00839), CC BY 4.0.",
+  "noise.scenario": "Escenario",
+  "noise.currentDesign": "Diseño actual",
+  "noise.compareTo": "Comparar con",
+  "noise.noComparison": "Sin comparación",
+  "noise.inputLevel": "Vehículos y velocidades a partir de",
+  "noise.level.planned": "Previsto: frecuencias y flujos de ejemplo",
+  "noise.level.timetabled": "Horario: los viajes del día",
+  "noise.level.simulated": "Simulado: una simulación vial guardada",
+  "noise.simulatedIntro":
+    "Las líneas de calle toman los autobuses que la simulación vial contó en cada tramo y sus velocidades allí. Las horas que la simulación no cubre por completo, y los ferrocarriles, mantienen su horario.",
+  "noise.noRuns":
+    "Aún no hay ninguna simulación vial terminada: simule primero las líneas de calle en la simulación vial.",
+  "noise.chooseRun": "Elija una simulación vial",
+  "noise.run": "Simulación vial",
+  "noise.runFor": "Simulación vial para {name}",
+  "noise.runLabel": "{when}, {from}–{to}",
+  "noise.runHours":
+    "Autobuses de la simulación vial del {run} para {hours}; el horario para las demás horas.",
+  "noise.runNoHours":
+    "La simulación vial del {run} no cubre ninguna hora completa, así que las líneas de calle mantienen su horario.",
+  "noise.runNoTimetable":
+    "No hay línea de calle con el mismo número para {lines}: fuera de las horas de la simulación estas líneas no tienen autobuses.",
+  "noise.railTimetabled":
+    "Los ferrocarriles mantienen su horario: la simulación de capacidad ferroviaria no guarda posiciones de trenes.",
+  "noise.noRailService":
+    "El ferrocarril no tiene ninguna línea publicada, así que no tiene trenes en este mapa.",
+  "noise.railNotPublished":
+    "No se pudieron publicar las líneas del ferrocarril ({error}), así que no tiene trenes en este mapa.",
+  "noise.computingOf": "Calculando el mapa de ruido de {name}…",
+  "noise.noDifference":
+    "Los dos mapas no se pudieron comparar celda a celda, así que no se muestra mapa de diferencias.",
+  "noise.inputUsed": "{name} · {level}",
+  "noise.comparing": "{name} comparado con {other} · {level}",
+  "noise.differenceNote":
+    "Cambio en dB donde alguno de los escenarios alcanza la banda más baja; no se muestran cambios menores de 1 dB. Ambos usan los mismos edificios, terreno y residentes, así que el tráfico general se anularía.",
+  "noise.changeBelow": "menos de {db}",
+  "noise.changeAbove": "{db} o más",
+  "noise.changeRange": "de {from} a {to}",
+  "noise.comparisonTable": "Cambio por banda de ruido",
+  "noise.comparisonCaptionPeople": "Residentes según el nivel junto a la fachada más expuesta de su edificio",
+  "noise.comparisonCaptionBuildings": "Edificios según el nivel junto a su fachada más expuesta",
+  "noise.change": "Cambio",
+  "noise.exportContours": "Exportar contornos (GeoJSON)",
+  "noise.exportTable": "Exportar tabla (CSV)",
 
   "jp.title": "Planificador de viajes",
   "jp.s": "{n} s",

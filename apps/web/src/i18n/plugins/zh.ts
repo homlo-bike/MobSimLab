@@ -24,8 +24,6 @@ export const pluginsZh = {
   "plugins.perm.writeResults": "保存自己的结果",
   "plugins.perm.writeScenario": "提出对情景的修改",
   "plugins.installTitle": "安装插件",
-  "plugins.installIntro":
-    "上传 .msplugin 文件。MobSimLab 会先检查它，并在安装前显示它添加的内容。已安装的插件可以添加交通方式、工具、参数和来源；带有自身代码的插件将在以后支持。",
   "plugins.choose": "选择 .msplugin 文件",
   "plugins.problems": "无法安装此插件：",
   "plugins.install": "安装",

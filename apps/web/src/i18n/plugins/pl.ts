@@ -24,8 +24,6 @@ export const pluginsPl = {
   "plugins.perm.writeResults": "zapisuje własne wyniki",
   "plugins.perm.writeScenario": "proponuje zmiany scenariusza",
   "plugins.installTitle": "Zainstaluj wtyczkę",
-  "plugins.installIntro":
-    "Prześlij plik .msplugin. MobSimLab sprawdza go i pokazuje, co dodaje, zanim go zainstalujesz. Zainstalowane wtyczki mogą dodawać środki transportu, narzędzia, parametry i źródła; wtyczki z własnym kodem pojawią się później.",
   "plugins.choose": "Wybierz plik .msplugin",
   "plugins.problems": "Tej wtyczki nie można zainstalować:",
   "plugins.install": "Zainstaluj",

@@ -234,7 +234,7 @@ export const editorsIg = {
   "rail.line.peakHeadway": "Oghere oge ọgbaghara",
   "rail.line.everyOffpeak": "Kwa, n'oge ọzọ",
   "rail.line.offpeakHeadway": "Oghere oge ọzọ",
-  "rail.line.peaks": "Oge ọgbaghara 07:00–09:00 na 16:00–19:00.",
+  "rail.line.peaks": "Oge ọgbaghara {peaks}.",
   "rail.line.delete": "Hichapụ ahịrị",
   "rail.line.needsStops": "Ọ chọrọ opekata mpe ebe nkwụsị abụọ.",
   "rail.line.needsTrain": "Họrọ ụgbọ oloko.",
@@ -720,7 +720,7 @@ export const editorsIg = {
   "noise.dbOrMore": "{db} dB ma ọ bụ karịa",
   "noise.dbRange": "{from}–{to} dB",
   "noise.mapNote":
-    "Ọrụ a haziri naanị, na-enweghị okporo ụzọ izugbe. Ụlọ na-egbochi n'elu ụlọ ha na gburugburu nsọtụ ha (ISO 9613-2), ihu mgbidi ha na-atụgharị ụda otu ugboro (ọkwa mbụ). Ụlọ na-enweghị ịdị elu na OpenStreetMap na-ewere m 3 maka ala ọ bụla edere, ma ọ bụ m 8 (echiche plugin mkpọtụ). Ọkwa ụlọ anaghị agụnye ntụgharị si n'ihu mgbidi nke ya. Ụlọ © ndị nyere aka na OpenStreetMap.",
+    "Ahịrị ọrụ naanị, na-enweghị okporo ụzọ izugbe. Ụlọ na-egbochi n'elu ụlọ ha na gburugburu nsọtụ ha (ISO 9613-2), ihu mgbidi ha na-atụgharị ụda otu ugboro (ọkwa mbụ). Ụlọ na-enweghị ịdị elu na OpenStreetMap na-ewere m 3 maka ala ọ bụla edere, ma ọ bụ m 8 (echiche plugin mkpọtụ). Ọkwa ụlọ anaghị agụnye ntụgharị si n'ihu mgbidi nke ya. Ụlọ © ndị nyere aka na OpenStreetMap.",
   "noise.terrain": "Jiri ịdị elu ala (Copernicus GLO-30)",
   "noise.terrainTooLarge":
     "Ahịrị ndị ahụ kpuchiri mpaghara buru oke ibu iji bugo ala, ya mere a gbakọrọ maapụ a n'ala dị larịị.",
@@ -750,6 +750,47 @@ export const editorsIg = {
   "noise.flat": "Ala dị larịị.",
   "noise.popCredit":
     "Ọnụ ọgụgụ mmadụ: WorldPop, University of Southampton (doi:10.5258/SOTON/WP00839), CC BY 4.0.",
+  "noise.scenario": "Ọnọdụ",
+  "noise.currentDesign": "Atụmatụ ugbu a",
+  "noise.compareTo": "Tụnyere ya na",
+  "noise.noComparison": "Enweghị ntụnyere",
+  "noise.inputLevel": "Ụgbọala na ọsọ sitere na",
+  "noise.level.planned": "Ahaziri: oge n'etiti na ọmụmaatụ mmegharị",
+  "noise.level.timetabled": "Dị ka usoro oge: njem ụbọchị",
+  "noise.level.simulated": "E mere ka ọ dị: ịme ka ụzọ dị nke echekwara",
+  "noise.simulatedIntro":
+    "Ahịrị okporo ámá na-ewere bọs ndị ịme ka ụzọ dị gụrụ n'akụkụ ọ bụla na ọsọ ha n'ebe ahụ. Awa ndị ịme ka ọ dị na-ekpuchighị kpamkpam, na ụzọ ígwè, na-edobe usoro oge ha.",
+  "noise.noRuns":
+    "O nwebeghị ịme ka ụzọ dị nke gwụchara: buru ụzọ mee ka ahịrị okporo ámá gaa n'ịme ka ụzọ dị.",
+  "noise.chooseRun": "Họrọ ịme ka ụzọ dị",
+  "noise.run": "Ịme ka ụzọ dị",
+  "noise.runFor": "Ịme ka ụzọ dị maka {name}",
+  "noise.runLabel": "{when}, {from}–{to}",
+  "noise.runHours": "Bọs sitere n'ịme ka ụzọ dị nke {run} maka {hours}; usoro oge maka awa ndị ọzọ.",
+  "noise.runNoHours":
+    "Ịme ka ụzọ dị nke {run} ekpuchighị otu awa zuru ezu, ya mere ahịrị okporo ámá na-edobe usoro oge ha.",
+  "noise.runNoTimetable":
+    "Enweghị ahịrị okporo ámá nwere otu nọmba maka {lines}: na mpụga awa ịme ka ọ dị ahịrị ndị a enweghị bọs.",
+  "noise.railTimetabled":
+    "Ụzọ ígwè na-edobe usoro oge ha: ịme ka ike ụzọ ígwè dị anaghị echekwa ọnọdụ ụgbọ oloko.",
+  "noise.noRailService": "Ụzọ ígwè enweghị ahịrị e bipụtara, ya mere ọ nweghị ụgbọ oloko na maapụ a.",
+  "noise.railNotPublished":
+    "Enweghị ike ibipụta ahịrị ụzọ ígwè ({error}), ya mere ọ nweghị ụgbọ oloko na maapụ a.",
+  "noise.computingOf": "A na-agbakọ maapụ mkpọtụ nke {name}…",
+  "noise.noDifference": "Enweghị ike itụnyere maapụ abụọ ahụ igbe na igbe, ya mere egosighị maapụ ọdịiche.",
+  "noise.inputUsed": "{name} · {level}",
+  "noise.comparing": "{name} tụnyere {other} · {level}",
+  "noise.differenceNote":
+    "Mgbanwe na dB ebe otu n'ime ọnọdụ ndị ahụ ruru ọkwa kacha ala; anaghị egosi mgbanwe dị n'okpuru 1 dB. Ha abụọ na-eji otu ụlọ, ala na ndị bi na ya, ya mere okporo ụzọ izugbe ga-akagbu onwe ya.",
+  "noise.changeBelow": "n'okpuru {db}",
+  "noise.changeAbove": "{db} ma ọ bụ karịa",
+  "noise.changeRange": "site na {from} ruo {to}",
+  "noise.comparisonTable": "Mgbanwe site n'ọkwa mkpọtụ",
+  "noise.comparisonCaptionPeople": "Ndị bi na ya site n'ọkwa n'akụkụ ụlọ ha kacha ekpughe",
+  "noise.comparisonCaptionBuildings": "Ụlọ site n'ọkwa n'akụkụ ha kacha ekpughe",
+  "noise.change": "Mgbanwe",
+  "noise.exportContours": "Bupụ akara ọkwa (GeoJSON)",
+  "noise.exportTable": "Bupụ tebụl (CSV)",
   "jp.title": "Onye nhazi njem",
   "jp.s": "{n} sekọnd",
   "jp.min": "{n} nkeji",

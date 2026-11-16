@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/homlo-bike/MobSimLab/blob/main/contracts/mslab/manifest.schema.json",
+  "title": "MobSimLab project file manifest (manifest.json)",
+  "type": "object",
+  "required": [
+    "format",
+    "formatVersion",
+    "app",
+    "createdAt",
+    "project",
+    "includes",
+    "files"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "format": {
+      "const": "mslab"
+    },
+    "formatVersion": {
+      "description": "Semantic version of the file format. A reader accepts its own major version up to its own minor version.",
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "app": {
+      "type": "object",
+      "required": [
+        "name",
+        "version"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "version": {
+          "type": "string",
+          "maxLength": 40
+        }
+      }
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "maxLength": 40
+    },
+    "project": {
+      "type": "object",
+      "required": [
+        "id",
+        "name"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F-]{36}$"
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 200
+        }
+      }
+    },
+    "includes": {
+      "type": "object",
+      "required": [
+        "runs"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "runs": {
+          "type": "boolean"
+        },
+        "map": {
+          "description": "Format 1.1: the file carries map data (map/) for the static viewer.",
+          "type": "boolean"
+        }
+      }
+    },
+    "files": {
+      "description": "Every other file in the ZIP, with its SHA-256 (lower-case hex) and size in bytes.",
+      "type": "object",
+      "maxProperties": 5000,
+      "propertyNames": {
+        "maxLength": 200
+      },
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "sha256",
+          "bytes"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    }
+  }
+}

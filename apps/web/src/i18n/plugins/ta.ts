@@ -25,8 +25,6 @@ export const pluginsTa = {
   "plugins.perm.writeResults": "தன் முடிவுகளைச் சேமிக்கிறது",
   "plugins.perm.writeScenario": "சூழ்நிலையில் மாற்றங்களை முன்மொழிகிறது",
   "plugins.installTitle": "செருகுநிரலை நிறுவு",
-  "plugins.installIntro":
-    ".msplugin கோப்பைப் பதிவேற்றுங்கள். MobSimLab அதைச் சரிபார்த்து, நிறுவும் முன் அது என்ன சேர்க்கிறது என்பதைக் காட்டும். நிறுவிய செருகுநிரல்கள் முறைகள், கருவிகள், அளவுருக்கள், மூலங்களைச் சேர்க்கலாம்; சொந்த நிரல் கொண்டவை பின்னர் வரும்.",
   "plugins.choose": ".msplugin கோப்பைத் தேர்ந்தெடு",
   "plugins.problems": "இந்தச் செருகுநிரலை நிறுவ முடியாது:",
   "plugins.install": "நிறுவு",

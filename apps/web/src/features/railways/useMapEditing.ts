@@ -118,6 +118,7 @@ export function useMapEditing({
             s.doc,
             places.map((p) => p.name),
           ),
+          radiusM: s.stationGroupingM,
         });
         setNote(describeChoice(choice, "station"));
         const [d, id] = addStation(s.doc, at, {

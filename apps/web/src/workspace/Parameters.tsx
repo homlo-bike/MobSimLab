@@ -18,7 +18,7 @@ import {
 import { ReasonField } from "./ReasonField";
 
 /** The library's group names as message keys. */
-const GROUP_LABEL: Record<string, MessageKey> = {
+export const GROUP_LABEL: Record<string, MessageKey> = {
   Modes: "prefs.group.modes",
   Operations: "prefs.group.operations",
   Demand: "prefs.group.demand",
@@ -31,9 +31,11 @@ const GROUP_LABEL: Record<string, MessageKey> = {
   Cost: "prefs.group.cost",
   Benefits: "prefs.group.benefits",
   Fares: "prefs.group.fares",
+  Appraisal: "prefs.group.appraisal",
+  Noise: "prefs.group.noise",
 };
 
-const TRACTION_LABEL: Record<string, MessageKey> = {
+export const TRACTION_LABEL: Record<string, MessageKey> = {
   battery: "prefs.traction.battery",
   diesel: "prefs.traction.diesel",
   hydrogen: "prefs.traction.hydrogen",

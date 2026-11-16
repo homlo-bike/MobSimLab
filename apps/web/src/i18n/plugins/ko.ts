@@ -25,8 +25,6 @@ export const pluginsKo = {
   "plugins.perm.writeResults": "자체 결과 저장",
   "plugins.perm.writeScenario": "시나리오 변경 제안",
   "plugins.installTitle": "플러그인 설치",
-  "plugins.installIntro":
-    ".msplugin 파일을 올리세요. MobSimLab이 확인하고 설치 전에 무엇을 추가하는지 보여 줍니다. 설치한 플러그인은 교통수단, 도구, 매개변수, 출처를 추가할 수 있으며, 자체 코드가 있는 플러그인은 나중에 지원됩니다.",
   "plugins.choose": ".msplugin 파일 선택",
   "plugins.problems": "이 플러그인은 설치할 수 없습니다:",
   "plugins.install": "설치",

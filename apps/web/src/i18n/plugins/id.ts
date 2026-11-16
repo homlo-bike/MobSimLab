@@ -25,8 +25,6 @@ export const pluginsId = {
   "plugins.perm.writeResults": "menyimpan hasilnya sendiri",
   "plugins.perm.writeScenario": "mengusulkan perubahan skenario",
   "plugins.installTitle": "Pasang plugin",
-  "plugins.installIntro":
-    "Unggah berkas .msplugin. MobSimLab memeriksanya dan menunjukkan apa yang ditambahkan sebelum dipasang. Plugin terpasang dapat menambah moda, alat, parameter, dan sumber; plugin dengan kode sendiri menyusul nanti.",
   "plugins.choose": "Pilih berkas .msplugin",
   "plugins.problems": "Plugin ini tidak dapat dipasang:",
   "plugins.install": "Pasang",

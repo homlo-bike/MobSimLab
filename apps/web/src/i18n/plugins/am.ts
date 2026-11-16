@@ -24,8 +24,6 @@ export const pluginsAm = {
   "plugins.perm.writeResults": "የራሱን ውጤቶች ያስቀምጣል",
   "plugins.perm.writeScenario": "በሁኔታው ላይ ለውጦችን ያቀርባል",
   "plugins.installTitle": "ተሰኪ ይጫኑ",
-  "plugins.installIntro":
-    "የ.msplugin ፋይል ይስቀሉ። MobSimLab ይፈትሸውና ከመጫንዎ በፊት ምን እንደሚያክል ያሳያል። የተጫኑ ተሰኪዎች ዓይነቶችን፣ መሣሪያዎችን፣ መለኪያዎችንና ምንጮችን ማከል ይችላሉ፤ የራሳቸው ኮድ ያላቸው ተሰኪዎች ወደፊት ይመጣሉ።",
   "plugins.choose": "የ.msplugin ፋይል ይምረጡ",
   "plugins.problems": "ይህ ተሰኪ ሊጫን አይችልም፦",
   "plugins.install": "ጫን",

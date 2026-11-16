@@ -50,7 +50,13 @@ interface Props {
    * Told the estimate, the prices (in the currency shown), the country code and the factor from the country's
    * currency to the one shown whenever they change (the benefit tables use them).
    */
-  onEstimate?: (e: Estimate, prices: Prices, country: string | null, rate: number) => void;
+  onEstimate?: (
+    e: Estimate,
+    prices: Prices,
+    country: string | null,
+    rate: number,
+    income: string | null,
+  ) => void;
   /** Tests inject these. */
   loadRail?: RailEngineLoader;
   api?: EconomyApi;
@@ -202,8 +208,8 @@ export function CostTables({
     [railway, rail, streetLines, prefs, prices],
   );
   useEffect(() => {
-    onEstimate?.(est, prices, code ?? null, conv.rate);
-  }, [est, prices, code, onEstimate, conv.rate]);
+    onEstimate?.(est, prices, code ?? null, conv.rate, econ?.country.income ?? null);
+  }, [est, prices, code, onEstimate, conv.rate, econ?.country.income]);
   const money = (v: number) => fmtMoney(v, prices.currency);
   const range = (t: Triple) => `${money(t[0])} – ${money(t[2])}`;
   const editable = !!onPreferences;
@@ -764,7 +770,7 @@ function ItemRow({ x, money, est }: { x: CostItem; money: (v: number) => string;
 }
 
 /** Purpose: a number field that commits on blur or Enter; empty returns to the default. */
-function NumberField({
+export function NumberField({
   label,
   value,
   placeholder,

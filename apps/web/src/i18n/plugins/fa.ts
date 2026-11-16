@@ -24,8 +24,6 @@ export const pluginsFa = {
   "plugins.perm.writeResults": "نتایج خود را ذخیره می‌کند",
   "plugins.perm.writeScenario": "تغییراتی در سناریو پیشنهاد می‌دهد",
   "plugins.installTitle": "نصب افزونه",
-  "plugins.installIntro":
-    "یک پرونده ‎.msplugin بارگذاری کنید. MobSimLab آن را بررسی می‌کند و پیش از نصب نشان می‌دهد چه اضافه می‌کند. افزونه‌های نصب‌شده می‌توانند شیوه‌ها، ابزارها، پارامترها و منابع اضافه کنند؛ افزونه‌های دارای کد خود بعداً می‌آیند.",
   "plugins.choose": "یک پرونده ‎.msplugin انتخاب کنید",
   "plugins.problems": "این افزونه قابل نصب نیست:",
   "plugins.install": "نصب",

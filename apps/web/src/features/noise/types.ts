@@ -14,6 +14,8 @@ export type NoiseMode =
   | "long_distance_rail"
   | "high_speed_rail";
 export type Indicator = "lden" | "lnight";
+/** Level of detail of the flows and speeds (ADR-0038 §4). */
+export type InputLevel = "planned" | "timetabled" | "simulated";
 
 /** Vehicles per hour in each period (day 07–19, evening 19–23, night 23–07 average). */
 export interface Flows {
@@ -37,12 +39,34 @@ export interface NoiseLine {
   electric?: boolean;
   vehicle_length_m: number;
   flows: Flows;
+  /** Vehicles in each clock hour 0–23 (timetabled and simulated input); replaces `flows` when given. */
+  hourly?: number[];
   points: LonLat[];
   /** `[chainage m, km/h]` along the line. */
   speed?: [number, number][];
   speed_kmh?: number;
   ranges?: NoiseRange[];
   stops_m?: number[];
+}
+
+/**
+ * A fixed source (Rust `noise::PointSourceInput`): a cable car tower or station, a ferry at a pier, or a stretch
+ * of a ferry route with the vessels' time there spread over the hour.
+ */
+export interface NoisePointSource {
+  id: string;
+  label?: string;
+  /** Position, longitude and latitude. */
+  p: LonLat;
+  height_m: number;
+  /** Noise parameter with the height, m, which then replaces `height_m`. */
+  height_key?: string;
+  /** Noise parameter with the sound power while operating, dB(A). */
+  lw_key: string;
+  /** Contexts to look the parameter up in, most specific first (`cable_car/3s`, `cable_car`). */
+  context: string[];
+  /** Share of each period it operates, or the mean number operating at once. */
+  active: Flows;
 }
 
 /** An OSM building footprint (API building tiles); the engine fills a missing height from storeys or a default. */
@@ -86,6 +110,8 @@ export interface NoisePopulation {
 
 export interface NoiseInput {
   lines: NoiseLine[];
+  /** Cable car towers and stations, ferry routes and piers. */
+  point_sources?: NoisePointSource[];
   grid?: boolean;
   /** How far the map reaches from the lines, m; the editors leave it to the band edges. */
   grid_reach_m?: number;
@@ -96,6 +122,12 @@ export interface NoiseInput {
   terrain?: NoiseTerrain | null;
   /** People per cell, shared among the buildings; null estimates them from the building size. */
   population?: NoisePopulation | null;
+  /** Level of detail of the flows and speeds, stored with the result. */
+  input_level?: InputLevel;
+  /** Points that set the map grid instead of the sources (two scenarios compared share them). */
+  grid_cover?: LonLat[];
+  /** Origin of the engine's local projection; two scenarios compared share it. */
+  origin?: LonLat;
 }
 
 /**
@@ -139,7 +171,7 @@ export interface NoiseView {
     cell_m: number;
     coordinates: [LonLat, LonLat, LonLat, LonLat];
   } | null;
-  input_level: "planned" | "timetabled" | "simulated";
+  input_level: InputLevel;
   /** With buildings only. */
   buildings?: NoiseExposure | null;
   /** `[L_den, L_night]` beside each input building, null where the map does not reach. */
@@ -153,6 +185,8 @@ export interface NoiseEngine {
   estimate(input: NoiseInput): NoiseView;
   /** RGBA pixels of the last estimate, north row first; colours start at `fromDb`. */
   image(indicator: Indicator, fromDb: number, alpha: number): Uint8Array;
+  /** Grid levels of the last estimate in dB, rows from the south; NaN where not computed. */
+  levels?(indicator: Indicator): Float32Array;
   dispose(): void;
 }
 

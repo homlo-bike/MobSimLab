@@ -15,3 +15,9 @@ deploy/secrets/
 apps/web/src/wasm/
 apps/api/wasm/
 *.tsbuildinfo
+examples/plugins/*/code/target/
+
+# Static viewer site (tools/static-site/build.mjs)
+apps/web/dist-static/
+apps/web/mobsimlab-static.zip
+/static-projects/

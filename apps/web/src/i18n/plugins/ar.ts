@@ -24,8 +24,6 @@ export const pluginsAr = {
   "plugins.perm.writeResults": "تحفظ نتائجها الخاصة",
   "plugins.perm.writeScenario": "تقترح تغييرات على السيناريو",
   "plugins.installTitle": "تثبيت إضافة",
-  "plugins.installIntro":
-    "ارفع ملف ‎.msplugin. يفحصه MobSimLab ويعرض ما يضيفه قبل التثبيت. يمكن للإضافات المثبتة إضافة وسائل نقل وأدوات ومعاملات ومصادر؛ أما الإضافات ذات الشيفرة الخاصة فستأتي لاحقًا.",
   "plugins.choose": "اختر ملف ‎.msplugin",
   "plugins.problems": "لا يمكن تثبيت هذه الإضافة:",
   "plugins.install": "تثبيت",

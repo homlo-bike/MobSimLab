@@ -24,8 +24,6 @@ export const pluginsVi = {
   "plugins.perm.writeResults": "lưu kết quả riêng",
   "plugins.perm.writeScenario": "đề xuất thay đổi kịch bản",
   "plugins.installTitle": "Cài đặt plugin",
-  "plugins.installIntro":
-    "Tải lên tệp .msplugin. MobSimLab sẽ kiểm tra và cho biết nó bổ sung gì trước khi cài. Plugin đã cài có thể thêm phương thức, công cụ, tham số và nguồn; plugin có mã riêng sẽ có sau.",
   "plugins.choose": "Chọn tệp .msplugin",
   "plugins.problems": "Không thể cài plugin này:",
   "plugins.install": "Cài đặt",

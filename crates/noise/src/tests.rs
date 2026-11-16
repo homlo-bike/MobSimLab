@@ -21,6 +21,7 @@ fn line(mode: Mode, points: Vec<[f64; 2]>, flows: Flows, v: f64, length: f64) ->
         speed_kmh: Some(v),
         ranges: vec![],
         stops_m: vec![],
+        hourly: None,
     }
 }
 
@@ -891,4 +892,200 @@ fn grid_people_are_shared_by_floor_area_within_their_cell() {
     assert_eq!(r.source, PeopleSource::Grid);
     assert_eq!(r.people, vec![10.0, 30.0, 0.0, 0.0]);
     assert_eq!(r.unplaced, 7.0);
+}
+
+fn point(key: &str, context: &[&str], active: f64) -> PointSourceInput {
+    PointSourceInput {
+        id: "p".into(),
+        label: String::new(),
+        p: [0.0, 0.0],
+        height_m: 10.0,
+        height_key: None,
+        lw_dba: None,
+        lw_key: Some(key.into()),
+        context: context.iter().map(|c| c.to_string()).collect(),
+        active: Flows {
+            day: active,
+            evening: active,
+            night: 0.0,
+        },
+    }
+}
+
+fn points_only(points: Vec<PointSourceInput>, kv: &[(&str, f64)]) -> Estimate {
+    estimate(&with_overrides(
+        EstimateInput {
+            point_sources: points,
+            grid: true,
+            grid_reach_m: Some(200.0),
+            ..Default::default()
+        },
+        kv,
+    ))
+}
+
+#[test]
+fn point_sources_alone_make_a_map_from_their_parameter() {
+    let e = points_only(
+        vec![point(
+            "noise.cable_car_tower_lw_db",
+            &["cable_car/mgd", "cable_car"],
+            1.0,
+        )],
+        &[],
+    );
+    // The check names the study the sound power comes from; no ferry checks without ferries.
+    let texts: Vec<&str> = e.checks.iter().map(|c| c.text.as_str()).collect();
+    assert!(
+        texts
+            .iter()
+            .any(|t| t.contains("indicative") && t.contains("Placer County")),
+        "{texts:?}"
+    );
+    assert!(!texts.iter().any(|t| t.contains("Ferries")), "{texts:?}");
+    let near = grid_level(&e, [20.0, 0.0]);
+    let far = grid_level(&e, [150.0, 0.0]);
+    assert!(near.is_finite() && far.is_finite());
+    assert!(near > far + 10.0, "{near} vs {far}");
+    // 10 dB more sound power is 10 dB more everywhere.
+    let lw = Library::builtin().range_in("noise.cable_car_tower_lw_db", &["cable_car".into()])[1];
+    let louder = points_only(
+        vec![point("noise.cable_car_tower_lw_db", &["cable_car"], 1.0)],
+        &[("noise.cable_car_tower_lw_db", lw + 10.0)],
+    );
+    assert!((grid_level(&louder, [20.0, 0.0]) - near - 10.0).abs() < 0.2);
+    // Half the time is 3 dB less; two at once 3 dB more.
+    let half = points_only(
+        vec![point("noise.cable_car_tower_lw_db", &["cable_car"], 0.5)],
+        &[],
+    );
+    assert!((near - grid_level(&half, [20.0, 0.0]) - 3.01).abs() < 0.2);
+    let two = points_only(
+        vec![point("noise.cable_car_tower_lw_db", &["cable_car"], 2.0)],
+        &[],
+    );
+    assert!((grid_level(&two, [20.0, 0.0]) - near - 3.01).abs() < 0.2);
+}
+
+#[test]
+fn point_source_contexts_take_the_most_specific_value() {
+    let lib = Library::builtin();
+    let ctx = |c: &[&str]| -> Vec<String> { c.iter().map(|x| x.to_string()).collect() };
+    let glob = lib.range_in("noise.ferry_cruise_lw_db", &[]);
+    assert_eq!(
+        lib.range_in("noise.ferry_cruise_lw_db", &ctx(&["nowhere/x", "nowhere"])),
+        glob
+    );
+    for key in [
+        "noise.cable_car_tower_lw_db",
+        "noise.cable_car_station_lw_db",
+        "noise.ferry_cruise_lw_db",
+        "noise.ferry_berth_lw_db",
+        "noise.ferry_source_height_m",
+    ] {
+        let r = lib.range_in(key, &[]);
+        assert!(r[0] <= r[1] && r[1] <= r[2], "{key} {r:?}");
+    }
+    // Small ferries keep their own (placeholder) value under way; large ones take the Livorno value.
+    let small = lib.range_in(
+        "noise.ferry_cruise_lw_db",
+        &ctx(&["ferry/catamaran", "ferry"]),
+    );
+    assert_ne!(small, glob);
+    let checks = |c: &[&str]| -> Vec<String> {
+        points_only(vec![point("noise.ferry_cruise_lw_db", c, 1.0)], &[])
+            .checks
+            .into_iter()
+            .map(|c| c.text)
+            .collect()
+    };
+    let t = checks(&["ferry/catamaran", "ferry"]);
+    assert!(t.iter().any(|x| x.starts_with("Water buses")), "{t:?}");
+    assert!(!t.iter().any(|x| x.contains("Livorno")), "{t:?}");
+    let t = checks(&["ferry"]);
+    assert!(t.iter().any(|x| x.contains("Livorno")), "{t:?}");
+}
+
+#[test]
+fn hourly_flows_average_over_each_period() {
+    // 12 trains an hour 07–19, 6 an hour 19–23, 2 an hour 05–07, none otherwise.
+    let mut hourly = vec![0.0; 24];
+    hourly[5] = 2.0;
+    hourly[6] = 2.0;
+    (7..19).for_each(|h| hourly[h] = 12.0);
+    (19..23).for_each(|h| hourly[h] = 6.0);
+    let flows = Flows {
+        day: 12.0,
+        evening: 6.0,
+        night: 0.5,
+    };
+    let base = line(Mode::Tram, straight(400.0), flows, 40.0, 30.0);
+    let by_hour = LineInput {
+        flows: Flows::default(),
+        hourly: Some(hourly.clone()),
+        ..base.clone()
+    };
+    let a = run(vec![base]);
+    let b = run(vec![by_hour]);
+    assert!((a.lden.typical_m[1] - b.lden.typical_m[1]).abs() < 1e-9);
+    assert!((a.lnight.typical_m[1] - b.lnight.typical_m[1]).abs() < 1e-9);
+    // Periods moved an hour earlier by the preferences: 22:00 (6 trains) and 05:00 (2) fall in
+    // the night, 06:00 (2) and 18:00 (12) in the day and evening.
+    let mut lib = Library::builtin().clone();
+    lib.set("noise.day_start_h", 6.0);
+    lib.set("noise.evening_start_h", 18.0);
+    lib.set("noise.night_start_h", 22.0);
+    let f = Periods::new(&lib).hourly_flows([6.0, 18.0, 22.0], &hourly);
+    assert!((f.day - (2.0 + 11.0 * 12.0) / 12.0).abs() < 1e-9, "{f:?}");
+    assert!((f.evening - (12.0 + 3.0 * 6.0) / 4.0).abs() < 1e-9, "{f:?}");
+    assert!((f.night - (6.0 + 2.0) / 8.0).abs() < 1e-9, "{f:?}");
+}
+
+#[test]
+fn a_shared_cover_gives_two_estimates_the_same_grid() {
+    let cover: Vec<[f64; 2]> = (0..=60).map(|i| [i as f64 * 10.0, 0.0]).collect();
+    let grid = |lines: Vec<LineInput>| {
+        let e = estimate(&EstimateInput {
+            lines,
+            grid: true,
+            grid_reach_m: Some(150.0),
+            grid_cover: cover.clone(),
+            input_level: InputLevel::Timetabled,
+            ..Default::default()
+        });
+        assert_eq!(e.input_level, InputLevel::Timetabled);
+        e.grid.unwrap()
+    };
+    let a = grid(vec![line(Mode::Tram, straight(600.0), F, 40.0, 30.0)]);
+    let b = grid(vec![line(
+        Mode::Tram,
+        vec![[0.0, 0.0], [200.0, 0.0]],
+        F,
+        40.0,
+        30.0,
+    )]);
+    assert_eq!(
+        (a.x0, a.y0, a.cell, a.nx, a.ny),
+        (b.x0, b.y0, b.cell, b.nx, b.ny)
+    );
+    // The same cells are computed; the shorter line is quieter at the far end.
+    let computed = |g: &Grid| g.lden.iter().map(|v| !v.is_nan()).collect::<Vec<_>>();
+    assert_eq!(computed(&a), computed(&b));
+    let far = a.ny / 2 * a.nx + a.nx - 20;
+    assert!(a.lden[far] > b.lden[far] + 10.0 || !b.lden[far].is_finite());
+    // Without a cover the shorter line gets a smaller grid.
+    let own = estimate(&EstimateInput {
+        lines: vec![line(
+            Mode::Tram,
+            vec![[0.0, 0.0], [200.0, 0.0]],
+            F,
+            40.0,
+            30.0,
+        )],
+        grid: true,
+        grid_reach_m: Some(150.0),
+        ..Default::default()
+    });
+    assert!(own.grid.unwrap().nx < a.nx);
+    assert_eq!(own.input_level, InputLevel::Planned);
 }

@@ -1,0 +1,166 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/homlo-bike/MobSimLab/blob/main/contracts/mslab/drawings/demand.schema.json",
+  "title": "Document of a \"demand\" drawing (data/demand.json, field doc)",
+  "type": "object",
+  "properties": {
+    "source": {
+      "type": "string",
+      "enum": [
+        "auto",
+        "own"
+      ]
+    },
+    "gbfsUrl": {
+      "type": "string",
+      "maxLength": 2000,
+      "format": "uri"
+    },
+    "observed": {
+      "type": "object",
+      "properties": {
+        "shares": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "maxLength": 20
+          },
+          "additionalProperties": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          }
+        },
+        "meanCarKm": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "counts": {
+          "maxItems": 5000,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "line",
+                  "stop"
+                ]
+              },
+              "id": {
+                "type": "string",
+                "maxLength": 300
+              },
+              "value": {
+                "type": "number",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "kind",
+              "id",
+              "value"
+            ],
+            "additionalProperties": {}
+          }
+        }
+      },
+      "additionalProperties": {}
+    },
+    "ridershipRun": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "zones": {
+      "maxItems": 3000,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "ring": {
+            "minItems": 4,
+            "maxItems": 200,
+            "type": "array",
+            "items": {
+              "type": "array",
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "items": false,
+              "minItems": 2,
+              "maxItems": 2
+            }
+          },
+          "values": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string",
+              "maxLength": 40
+            },
+            "additionalProperties": {
+              "type": [
+                "number",
+                "boolean"
+              ]
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "ring",
+          "values"
+        ],
+        "additionalProperties": {}
+      }
+    },
+    "autoValues": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "maxLength": 64
+      },
+      "additionalProperties": {
+        "type": "object",
+        "propertyNames": {
+          "type": "string",
+          "maxLength": 40
+        },
+        "additionalProperties": {
+          "type": [
+            "number",
+            "boolean"
+          ]
+        }
+      }
+    }
+  },
+  "required": [
+    "source"
+  ],
+  "additionalProperties": {}
+}

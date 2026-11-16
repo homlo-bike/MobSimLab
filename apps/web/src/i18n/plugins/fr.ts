@@ -25,8 +25,6 @@ export const pluginsFr = {
   "plugins.perm.writeResults": "enregistre ses propres résultats",
   "plugins.perm.writeScenario": "propose des modifications du scénario",
   "plugins.installTitle": "Installer une extension",
-  "plugins.installIntro":
-    "Envoyez un fichier .msplugin. MobSimLab le vérifie et montre ce qu'il ajoute avant l'installation. Les extensions installées peuvent ajouter des modes, des outils, des paramètres et des sources ; celles avec leur propre code viendront plus tard.",
   "plugins.choose": "Choisir un fichier .msplugin",
   "plugins.problems": "Cette extension ne peut pas être installée :",
   "plugins.install": "Installer",

@@ -25,8 +25,6 @@ export const pluginsKk = {
   "plugins.perm.writeResults": "өз нәтижелерін сақтайды",
   "plugins.perm.writeScenario": "сценарийге өзгерістер ұсынады",
   "plugins.installTitle": "Плагин орнату",
-  "plugins.installIntro":
-    ".msplugin файлын жүктеңіз. MobSimLab оны тексеріп, орнатпас бұрын не қосатынын көрсетеді. Орнатылған плагиндер көлік түрлерін, құралдарды, параметрлер мен дереккөздерді қоса алады; өз коды бар плагиндер кейін келеді.",
   "plugins.choose": ".msplugin файлын таңдаңыз",
   "plugins.problems": "Бұл плагинді орнату мүмкін емес:",
   "plugins.install": "Орнату",

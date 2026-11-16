@@ -26,8 +26,6 @@ export const pluginsDe = {
   "plugins.perm.writeResults": "speichert eigene Ergebnisse",
   "plugins.perm.writeScenario": "schlägt Änderungen am Szenario vor",
   "plugins.installTitle": "Plugin installieren",
-  "plugins.installIntro":
-    "Laden Sie eine .msplugin-Datei hoch. MobSimLab prüft sie und zeigt vor der Installation, was sie hinzufügt. Installierte Plugins können Verkehrsmittel, Werkzeuge, Parameter und Quellen hinzufügen; Plugins mit eigenem Code folgen später.",
   "plugins.choose": "Eine .msplugin-Datei wählen",
   "plugins.problems": "Dieses Plugin kann nicht installiert werden:",
   "plugins.install": "Installieren",

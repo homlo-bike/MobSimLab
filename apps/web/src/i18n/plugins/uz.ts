@@ -25,8 +25,6 @@ export const pluginsUz = {
   "plugins.perm.writeResults": "o'z natijalarini saqlaydi",
   "plugins.perm.writeScenario": "ssenariyga o'zgarishlar taklif qiladi",
   "plugins.installTitle": "Plagin o'rnatish",
-  "plugins.installIntro":
-    ".msplugin faylini yuklang. MobSimLab uni tekshiradi va o'rnatishdan oldin nimani qo'shishini ko'rsatadi. O'rnatilgan plaginlar transport turlari, vositalar, parametrlar va manbalar qo'sha oladi; o'z kodiga ega plaginlar keyinroq keladi.",
   "plugins.choose": ".msplugin faylini tanlang",
   "plugins.problems": "Bu plaginni o'rnatib bo'lmaydi:",
   "plugins.install": "O'rnatish",

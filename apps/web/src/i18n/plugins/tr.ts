@@ -25,8 +25,6 @@ export const pluginsTr = {
   "plugins.perm.writeResults": "kendi sonuçlarını kaydeder",
   "plugins.perm.writeScenario": "senaryoda değişiklik önerir",
   "plugins.installTitle": "Eklenti kur",
-  "plugins.installIntro":
-    "Bir .msplugin dosyası yükleyin. MobSimLab dosyayı denetler ve kurmadan önce ne eklediğini gösterir. Kurulan eklentiler ulaşım türleri, araçlar, parametreler ve kaynaklar ekleyebilir; kendi kodunu getiren eklentiler daha sonra gelecek.",
   "plugins.choose": "Bir .msplugin dosyası seçin",
   "plugins.problems": "Bu eklenti kurulamaz:",
   "plugins.install": "Kur",

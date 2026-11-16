@@ -24,8 +24,6 @@ export const pluginsMr = {
   "plugins.perm.writeResults": "स्वतःचे निकाल जतन करतो",
   "plugins.perm.writeScenario": "परिस्थितीत बदल सुचवतो",
   "plugins.installTitle": "प्लगइन स्थापित करा",
-  "plugins.installIntro":
-    ".msplugin फाइल अपलोड करा. MobSimLab ती तपासते आणि स्थापनेपूर्वी ती काय जोडते ते दाखवते. स्थापित प्लगइन प्रकार, साधने, पॅरामीटर आणि स्रोत जोडू शकतात; स्वतःचा कोड असलेले प्लगइन नंतर येतील.",
   "plugins.choose": ".msplugin फाइल निवडा",
   "plugins.problems": "हा प्लगइन स्थापित करता येत नाही:",
   "plugins.install": "स्थापित करा",
