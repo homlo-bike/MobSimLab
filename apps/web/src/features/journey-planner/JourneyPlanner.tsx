@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { tNow, useI18n } from "../../i18n/i18n";
 import { GtfsSection } from "../gtfs/GtfsSection";
+import { feedTimetable } from "../gtfs/toLines";
 import type { GtfsEngineLoader, GtfsFeed, GtfsNetworkDoc } from "../gtfs/types";
 import { loadWasmPlanner } from "./engine";
 import { clock, duration, minutes, PARTS, parseClock } from "./format";
@@ -53,6 +54,8 @@ interface Props {
   onGtfsFeeds?: (doc: GtfsNetworkDoc) => void;
   /** The project's name, for the GTFS download. */
   projectName?: string;
+  /** Turns an imported GTFS route into a line of the project's own; absent when the planner may only look. */
+  onEditGtfsRoute?: (feedId: string, routeId: string) => void;
   /** Planner loader; tests inject a fake. */
   loadPlanner?: PlannerLoader;
   /** GTFS engine loader; tests inject one. */
@@ -188,6 +191,7 @@ export function JourneyPlanner({
   railLines = null,
   pluginLines = NO_PLUGIN_LINES,
   demandZones = NO_ZONES,
+  onEditGtfsRoute,
   gtfsFeeds = NO_FEEDS,
   onGtfsFeeds,
   projectName = "",
@@ -229,7 +233,7 @@ export function JourneyPlanner({
     const plugin = pluginLines.filter((l) => !skipped.has(l.id)).map((l) => pluginLineTimetable(l));
     const existing = gtfsFeeds
       .filter((f) => !skipped.has(`gtfs:${f.id}`))
-      .map((f) => prefixTimetable(f.timetable, `gtfs:${f.id}:`));
+      .map((f) => prefixTimetable(feedTimetable(f), `gtfs:${f.id}:`));
     const parts = [street, drawnRail, ...plugin, ...existing].filter((p): p is Timetable => p !== null);
     return parts.length ? mergeTimetables(parts) : null;
   }, [street, drawnRail, pluginLines, gtfsFeeds, skipped]);
@@ -331,10 +335,13 @@ export function JourneyPlanner({
   // An on-demand ride when A and B are both in a zone: the zone's average wait plus the ride for this trip.
   const onDemand = useMemo(() => {
     if (!a || !b) return null;
-    const z = shownZones.find((x) => inRing(a, x.ring) && inRing(b, x.ring) && x.view.wait_s !== null);
+    const z = shownZones.find(
+      (x) => inRing(a, x.ring) && inRing(b, x.ring) && (x.simulated || x.view.wait_s !== null),
+    );
     if (!z) return null;
     const ride = z.view.ride_fixed_s + km(a, b) * z.view.ride_s_per_km;
-    return { name: z.name, wait: z.view.wait_s!, ride };
+    // The simulated day's average wait, when the planner ran it; else the estimate's.
+    return { name: z.name, wait: z.simulated?.wait_s ?? z.view.wait_s!, ride };
   }, [a, b, shownZones]);
 
   // Picking A and B by clicking the map.
@@ -467,9 +474,19 @@ export function JourneyPlanner({
             checked={!skipped.has(`zone:${z.id}`)}
             onChange={(e) => toggle(`zone:${z.id}`, e.target.checked)}
           />
-          {z.view.wait_s === null
-            ? t("jp.drtZoneShort", { name: z.name })
-            : t("jp.drtZone", { name: z.name, wait: duration(z.view.wait_s), ride: duration(z.view.ride_s) })}
+          {z.simulated
+            ? t("jp.drtZoneSim", {
+                name: z.name,
+                wait: duration(z.simulated.wait_s),
+                ride: duration(z.simulated.ride_s),
+              })
+            : z.view.wait_s === null
+              ? t("jp.drtZoneShort", { name: z.name })
+              : t("jp.drtZone", {
+                  name: z.name,
+                  wait: duration(z.view.wait_s),
+                  ride: duration(z.view.ride_s),
+                })}
         </label>
       ))}
       {!timetable && <p className="text-xs text-slate-600">{t("jp.noTimetable")}</p>}
@@ -481,6 +498,7 @@ export function JourneyPlanner({
         onChange={onGtfsFeeds}
         ownLines={ownLines}
         projectName={projectName}
+        {...(onEditGtfsRoute ? { onEditRoute: onEditGtfsRoute } : {})}
         {...(loadGtfs ? { loadEngine: loadGtfs } : {})}
       />
       {summary && (

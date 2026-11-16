@@ -195,6 +195,25 @@ impl ModeParams {
         serde_json::from_value(serde_json::Value::Object(o)).unwrap_or_else(|_| self.clone())
     }
 
+    /// Purpose: the values of one mode with the project's preferences applied.
+    /// Inputs: numbers by field name for every mode, and by `<mode id>.<field>` (for example
+    /// `tram.min_radius_m`) for one mode; a value for the mode wins over one for every mode.
+    /// Output: a copy with those fields replaced (see [`ModeParams::with_values`]).
+    pub fn with_mode_values(&self, mode: RailMode, values: &BTreeMap<String, f64>) -> ModeParams {
+        let prefix = format!("{}.", mode.id());
+        let mut own: BTreeMap<String, f64> = values
+            .iter()
+            .filter(|(k, _)| !k.contains('.'))
+            .map(|(k, v)| (k.clone(), *v))
+            .collect();
+        for (k, v) in values {
+            if let Some(field) = k.strip_prefix(&prefix) {
+                own.insert(field.to_string(), *v);
+            }
+        }
+        self.with_values(&own)
+    }
+
     /// Purpose: gauge in metres.
     pub fn gauge_m(&self) -> f64 {
         self.gauge_mm / 1000.0
@@ -389,6 +408,35 @@ impl Defaults {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn a_value_for_one_mode_changes_only_that_mode() {
+        let d = defaults();
+        let values: BTreeMap<String, f64> = [
+            ("tram.min_radius_m".to_string(), 18.0),
+            ("min_radius_m".to_string(), 30.0),
+            ("metro.no_such_value".to_string(), 1.0),
+        ]
+        .into_iter()
+        .collect();
+        let tram = d
+            .mode(RailMode::Tram)
+            .with_mode_values(RailMode::Tram, &values);
+        let metro = d
+            .mode(RailMode::Metro)
+            .with_mode_values(RailMode::Metro, &values);
+        // The mode's own value wins over the one for every mode.
+        assert_eq!(tram.min_radius_m, 18.0);
+        assert_eq!(metro.min_radius_m, 30.0);
+        let only_tram: BTreeMap<String, f64> = [("tram.platform_length_m".to_string(), 60.0)]
+            .into_iter()
+            .collect();
+        assert_eq!(
+            d.mode(RailMode::Metro)
+                .with_mode_values(RailMode::Metro, &only_tram),
+            *d.mode(RailMode::Metro)
+        );
+    }
 
     #[test]
     fn defaults_cover_every_mode_and_default_turnout() {

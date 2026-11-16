@@ -16,6 +16,9 @@
 //! - `mobsimlab:tram`: `own_lane` or `mixed`;
 //! - `mobsimlab:setup`: `yes` on every way the planner set up.
 //!
+//! The traffic peaks (cars per hour in each direction in the morning and evening peak) are not
+//! tags: the road simulation reads them from the setup for its background traffic.
+//!
 //! The extra running time a bus loses in the traffic of a main road comes from the assumption
 //! library: `street.mixed_traffic_delay_share` and `street.bus_lane_delay_share`.
 
@@ -53,6 +56,14 @@ pub struct StreetSetup {
     /// Tram along this street: own lane or mixed traffic.
     #[serde(default)]
     pub tram: Option<TramShare>,
+    /// Cars per hour in each direction in the morning peak (the shared peak windows of the
+    /// service day), for the road simulation's background traffic. `None`: the default for the
+    /// road type (assumptions `street.peak_cars_*_vph`). Not an OSM tag: [`Self::apply`] ignores it.
+    #[serde(default)]
+    pub cars_morning_peak: Option<u32>,
+    /// Cars per hour in each direction in the evening peak; as [`Self::cars_morning_peak`].
+    #[serde(default)]
+    pub cars_evening_peak: Option<u32>,
 }
 
 /// Extra running time of a bus in the general traffic of a main road, as a share of the
@@ -128,7 +139,8 @@ pub fn separated(tags: &Tags) -> bool {
 }
 
 impl StreetSetup {
-    /// Purpose: whether the setup changes anything.
+    /// Purpose: whether the setup changes nothing on the carriageway (traffic peaks do not count:
+    /// they change no OSM tag).
     pub fn is_empty(&self) -> bool {
         self.traffic_lanes.is_none()
             && self.bus_lane.is_none()
@@ -379,6 +391,20 @@ mod tests {
         kv.iter()
             .map(|(k, v)| (k.to_string(), v.to_string()))
             .collect()
+    }
+
+    #[test]
+    fn traffic_peaks_are_read_and_change_no_tags() {
+        let s: StreetSetup =
+            serde_json::from_str(r#"{"way":3,"cars_morning_peak":900,"cars_evening_peak":1100}"#)
+                .unwrap();
+        assert_eq!(s.cars_morning_peak, Some(900));
+        assert_eq!(s.cars_evening_peak, Some(1100));
+        let old: StreetSetup = serde_json::from_str(r#"{"way":3,"bus_lane":true}"#).unwrap();
+        assert_eq!(old.cars_morning_peak, None);
+        let mut t = tags(&[("highway", "primary")]);
+        s.apply(&mut t);
+        assert_eq!(t, tags(&[("highway", "primary")]));
     }
 
     #[test]

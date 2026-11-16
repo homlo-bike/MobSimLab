@@ -1,4 +1,4 @@
-# ADR-0042: Road depots shared by the street lines, laid out and checked in Rust
+# ADR-0043: Road depots shared by the street lines, laid out and checked in Rust
 
 - Status: Proposed (first version built)
 - Date: 2026-11-16

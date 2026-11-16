@@ -22,6 +22,8 @@ export interface GtfsFeed {
   importedAt: string;
   summary: GtfsSummary;
   timetable: Timetable;
+  /** Routes the planner turned into lines of their own; the journey planner leaves them out of the feed. */
+  converted?: string[];
 }
 
 /** The project's existing network from GTFS feeds. */

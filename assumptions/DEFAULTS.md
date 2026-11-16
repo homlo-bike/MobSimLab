@@ -1311,6 +1311,46 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 |---|---|---|---|---|---|---|---|
 | all | – | right | – | documented | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Follow the national mainline convention: right in for example DE, AT, NL, ES, PL, CZ, US; left in GB, FR (except Alsace-Moselle), BE, CH, IT, SE, PT, JP. Trams and most metros follow road traffic. |
 
+### Cars at peak on an urban trunk road (OSM trunk, trunk_link, motorway_link), per hour in each direction, where the planner sets none
+
+`street.peak_cars_trunk_vph` · unit: cars per hour per direction · used by: GIS tab street setup traffic peaks, road simulation background traffic
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 800 | 1500 | 2500 | educated-guess | unverified | [rast06](#src-rast06), [hcm7](#src-hcm7), [mobsimlab-derivation](#src-mobsimlab-derivation) | A two-lane-per-direction urban expressway or trunk road carries roughly 1,000–2,500 vehicles per hour per direction at peak; HCM gives about 1,800–1,900 cars per hour per lane as base saturation flow, and signals and merges keep the hourly flow well below twice that. The same value is used for the morning and the evening peak; set a street's own counts in the GIS tab. |
+
+### Cars at peak on a primary road (OSM primary, primary_link), per hour in each direction, where the planner sets none
+
+`street.peak_cars_primary_vph` · unit: cars per hour per direction · used by: GIS tab street setup traffic peaks, road simulation background traffic
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 500 | 900 | 1500 | educated-guess | unverified | [rast06](#src-rast06), [hcm7](#src-hcm7), [mobsimlab-derivation](#src-mobsimlab-derivation) | RASt 06 street types for main roads (Hauptverkehrsstraßen) span roughly 800–2,600 vehicles per hour over the cross-section at peak, so about 400–1,300 per direction; a signalised lane takes about 600–900 per hour at a typical green share (HCM). The same value is used for the morning and the evening peak; set a street's own counts in the GIS tab. |
+
+### Cars at peak on a secondary road (OSM secondary, secondary_link), per hour in each direction, where the planner sets none
+
+`street.peak_cars_secondary_vph` · unit: cars per hour per direction · used by: GIS tab street setup traffic peaks, road simulation background traffic
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 300 | 600 | 1000 | educated-guess | unverified | [rast06](#src-rast06), [hcm7](#src-hcm7), [mobsimlab-derivation](#src-mobsimlab-derivation) | Lower end of the RASt 06 main road range: distributor roads with one lane per direction carry a few hundred to about 1,000 vehicles per hour per direction at peak. The same value is used for the morning and the evening peak; set a street's own counts in the GIS tab. |
+
+### Cars at peak on a tertiary road (OSM tertiary, tertiary_link), per hour in each direction, where the planner sets none
+
+`street.peak_cars_tertiary_vph` · unit: cars per hour per direction · used by: GIS tab street setup traffic peaks, road simulation background traffic
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 150 | 300 | 600 | educated-guess | unverified | [rast06](#src-rast06), [hcm7](#src-hcm7), [mobsimlab-derivation](#src-mobsimlab-derivation) | RASt 06 collector streets (Sammelstraßen) carry roughly 400–1,000 vehicles per hour over the cross-section at peak, so about 200–500 per direction. The same value is used for the morning and the evening peak; set a street's own counts in the GIS tab. |
+
+### Cars at peak on a local street (OSM unclassified, residential, living_street, service, road), per hour in each direction, where the planner sets none
+
+`street.peak_cars_local_vph` · unit: cars per hour per direction · used by: GIS tab street setup traffic peaks, road simulation background traffic
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 10 | 50 | 150 | educated-guess | unverified | [rast06](#src-rast06), [hcm7](#src-hcm7), [mobsimlab-derivation](#src-mobsimlab-derivation) | RASt 06 residential streets (Wohnstraßen, Wohnwege) carry up to about 400 vehicles per hour over the cross-section, most far less; 50 per direction is a quiet street with only its own residents' traffic. The same value is used for the morning and the evening peak; set a street's own counts in the GIS tab. |
+
 ## Energy and climate
 
 ### Rail temperature above air temperature in sunlight (climate note)
@@ -1863,6 +1903,22 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 | Context | Low | Central | High | Basis | Check | Sources | Rationale |
 |---|---|---|---|---|---|---|---|
 | all | 280 | 300 | 330 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Annual ridership is usually 280–330 times average weekday ridership, as weekends and holidays carry less. |
+
+### Ridership: share of a weekday's boardings in one peak hour
+
+`benefit.ridership.peak_hour_share` · unit: share · used by: passenger loads in the simulator's system test
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.08 | 0.1 | 0.13 | documented | unverified | [tcqsm3](#src-tcqsm3), [mobsimlab-derivation](#src-mobsimlab-derivation) | Transit demand peaks in the morning and evening rush; TCQSM gives peak hour factors and hourly ridership profiles in which the busiest hour carries roughly 8–13 % of the day's riders. The simulator gives each hour of the peak windows (07–09, 16–19) this share and spreads the rest of the day evenly over the other service hours. |
+
+### Ridership: share of a peak hour's riders travelling in the busier direction
+
+`benefit.ridership.peak_direction_share` · unit: share · used by: passenger loads in the simulator's system test
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.55 | 0.6 | 0.7 | documented | unverified | [tcqsm3](#src-tcqsm3), [mobsimlab-derivation](#src-mobsimlab-derivation) | In the rush hours more people travel towards the centre in the morning and away from it in the evening; directional splits of 55–70 % are common on radial lines (TCQSM directional peaking). Off the peak both directions carry the same, and loop lines are not split. |
 
 ### Land value: uplift near a new station, homes
 

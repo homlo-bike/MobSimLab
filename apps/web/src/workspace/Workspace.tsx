@@ -1,6 +1,8 @@
 import type { Map as MapLibreMap } from "maplibre-gl";
 import { type ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { BenefitTables } from "../features/benefits/BenefitTables";
+import type { Estimate as BenefitEstimate } from "../features/benefits/model";
+import type { Triple } from "../features/benefits/params";
 import type { BenefitsDoc } from "../features/benefits/formulas";
 import { RegionEditor } from "../features/benefits/RegionEditor";
 import type { Region, RegionsDoc } from "../features/benefits/regions";
@@ -28,6 +30,18 @@ import type { Network } from "../features/railways/types";
 import { LineList } from "../features/street-lines/LineList";
 import { lineInput, type SavedStreetLine, type StreetLinesDoc } from "../features/street-lines/saved";
 import { StreetLineEditor } from "../features/street-lines/StreetLineEditor";
+import { loadWasmEngine as loadStreetEngine } from "../features/street-lines/engine";
+import type { Mode as StreetMode } from "../features/street-lines/types";
+import { loadRailEngine } from "../features/railways/engine";
+import type { RailMode } from "../features/railways/types";
+import {
+  addStreetLine,
+  addTerminalCrossovers,
+  kindOf,
+  mainPattern,
+  toRailLine,
+  toStreetLine,
+} from "../features/gtfs/toLines";
 import { forgetSetups, loadSetups } from "../features/street-setup/model";
 import { StreetSetupEditor } from "../features/street-setup/StreetSetupEditor";
 import type { StreetSetup } from "../features/street-setup/types";
@@ -68,7 +82,7 @@ import { TopBar } from "../shell/TopBar";
 import { PROJECT_TOUR, Tour } from "../shell/Tour";
 import { PrintReport } from "./PrintReport";
 import { ProjectPreferences } from "./ProjectPreferences";
-import { delaysFrom, type PreferencesDoc } from "./preferences";
+import { delaysFrom, designValuesFrom, type PreferencesDoc } from "./preferences";
 import type { DelayShares } from "../features/street-lines/types";
 import { type Drawings, useDrawings } from "./useDrawings";
 import { DepotEditor } from "../features/depots/DepotEditor";
@@ -121,7 +135,6 @@ export function Workspace({
   onHome,
   onAbout,
   existingRailways = false,
-  onExample,
 }: {
   api: ProjectsApi;
   projectId: string;
@@ -134,8 +147,6 @@ export function Workspace({
   onAbout: () => void;
   /** Draw existing railways from OpenStreetMap in the railway tool (app setting). */
   existingRailways?: boolean;
-  /** Make the Help menu's example project and open it; absent for those who may not create projects. */
-  onExample?: () => Promise<void>;
 }) {
   const { t } = useI18n();
   const [project, setProject] = useState<Project | null>(null);
@@ -154,6 +165,19 @@ export function Workspace({
   const onCostEstimate = useCallback(
     (estimate: CostEstimate, prices: Prices, country: string | null, rate: number) =>
       setCostInfo({ estimate, currency: prices.currency, country, rate }),
+    [],
+  );
+  // The benefit estimate's riders a weekday per line (low, medium, high), for the service table.
+  const [riders, setRiders] = useState<Record<string, Triple> | null>(null);
+  const onBenefitEstimate = useCallback(
+    (e: BenefitEstimate | null) =>
+      setRiders(
+        e
+          ? Object.fromEntries(
+              e.rows.filter((r) => r.scope === "line").map((r) => [r.id, r.values.ridership_daily]),
+            )
+          : null,
+      ),
     [],
   );
   const [build, setBuild] = useState<Build | null>(null);
@@ -221,6 +245,11 @@ export function Workspace({
 
   const onMap = MAP_TABS.includes(tab);
   const editable = project ? can.edit(project) : false;
+  const projectKey = project?.id ?? null;
+  const runs = useMemo(
+    () => (projectKey && typeof api.runs === "function" ? api.runs(projectKey) : null),
+    [api, projectKey],
+  );
 
   // What is drawn in the project, saved with it a moment after each change.
   const drawings = useDrawings(api, projectId, editable);
@@ -235,6 +264,8 @@ export function Workspace({
   const changeSetups = (next: StreetSetup[]) => drawings.set("street-setups", next);
   // GIS tab regions: their values take priority in the benefit tables.
   const regions = drawings.doc<RegionsDoc>("regions")?.regions ?? NO_REGIONS;
+  // Benefit tables settings: the project's formulas and its own boardings per station or stop.
+  const benefitsDoc = drawings.doc<BenefitsDoc>("benefits");
   // Project preferences: assumption values the project changes, such as the delays in traffic.
   const preferences = drawings.doc<PreferencesDoc>("preferences");
   // Road depots shared by the street lines (depot tool).
@@ -244,6 +275,8 @@ export function Workspace({
   const currency = currencyState.currency;
   const delaysJson = JSON.stringify(delaysFrom(preferences));
   const delays = useMemo(() => JSON.parse(delaysJson) as DelayShares, [delaysJson]);
+  const rulesJson = JSON.stringify(designValuesFrom(preferences));
+  const designValues = useMemo(() => JSON.parse(rulesJson) as Record<string, number>, [rulesJson]);
   // Street setups made before projects saved drawings were kept in this browser: move them to the project once.
   useEffect(() => {
     if (!drawings.loaded || !editable) return;
@@ -280,6 +313,55 @@ export function Workspace({
     () => savedStreet.filter((_, i) => i !== editedStreet),
     [savedStreet, editedStreet],
   );
+  // An imported GTFS route becomes a line of the project's own: a street line or a railway service line.
+  // The feed then leaves the route out, so it is not ridden twice.
+  const [convertError, setConvertError] = useState<string | null>(null);
+  const editGtfsRoute = async (feedId: string, routeId: string) => {
+    const feed = gtfsFeeds.find((f) => f.id === feedId);
+    const pattern = feed && mainPattern(feed.timetable, routeId);
+    const kind = pattern ? kindOf(pattern.route.mode) : null;
+    if (!feed || !pattern || !kind) return;
+    setConvertError(null);
+    try {
+      if (kind === "street") {
+        const e = await loadStreetEngine();
+        try {
+          const mode = pattern.route.mode as StreetMode;
+          const [doc, i] = addStreetLine(
+            streetLines,
+            toStreetLine(pattern, e.defaultProfile(mode), e.defaultRules()),
+          );
+          drawings.set("street-lines", doc);
+          switchStreet(i);
+        } finally {
+          e.dispose();
+        }
+      } else {
+        const e = await loadRailEngine();
+        try {
+          const mode = pattern.route.mode as RailMode;
+          const [doc, id] = toRailLine(railway, pattern, mode, e.toLocal, {
+            platformLengthM: Number(e.defaultParams(mode).platform_length_m) || 100,
+          });
+          drawings.set(
+            "railway",
+            addTerminalCrossovers(doc, id, (d) => e.build(d, null)),
+          );
+        } finally {
+          e.dispose();
+        }
+      }
+      drawings.set("gtfs-network", {
+        feeds: gtfsFeeds.map((f) =>
+          f.id === feedId ? { ...f, converted: [...(f.converted ?? []), routeId] } : f,
+        ),
+      } satisfies GtfsNetworkDoc);
+      setBuild(kind);
+      onTab("create");
+    } catch (err) {
+      setConvertError(err instanceof Error ? err.message : String(err));
+    }
+  };
   const hasPanel = onMap && project !== null;
   const pluginTab = projectTabs.includes(tab) ? (PLUGIN_TABS.find((x) => x.id === tab) ?? null) : null;
   const tabLabel = (x: Tab) => {
@@ -341,7 +423,7 @@ export function Workspace({
             >
               <PrintIcon />
             </button>
-            <HelpMenu onTour={() => setTouring(true)} onExample={onExample} />
+            <HelpMenu onTour={() => setTouring(true)} />
           </>
         )
       }
@@ -509,6 +591,7 @@ export function Workspace({
               panel={panel}
               streetSetups={setups}
               delays={delays}
+              designValues={designValues}
               existingRailways={existingRailways}
               initial={railway}
               onDocChange={(d) => drawings.set("railway", d)}
@@ -587,7 +670,16 @@ export function Workspace({
               gtfsFeeds={gtfsFeeds}
               {...(editable ? { onGtfsFeeds: (d: GtfsNetworkDoc) => drawings.set("gtfs-network", d) } : {})}
               projectName={project.name}
+              {...(editable ? { onEditGtfsRoute: (f: string, r: string) => void editGtfsRoute(f, r) } : {})}
             />
+          )}
+          {convertError && tab === "simulator" && (
+            <p
+              role="alert"
+              className="absolute top-2 left-1/2 z-30 -translate-x-1/2 rounded-lg border border-red-300 bg-red-50 px-3 py-1.5 text-sm text-red-900"
+            >
+              {convertError}
+            </p>
           )}
           {project && tab === "create" && editable && chosen === null && (
             <div className="absolute inset-0 z-20 flex items-start justify-center overflow-y-auto bg-slate-50/70 p-4 md:pt-16">
@@ -707,6 +799,7 @@ export function Workspace({
                     streetLines={streetLines}
                     preferences={preferences}
                     onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
+                    riders={riders}
                   />
                   <CostTables
                     railway={railway}
@@ -730,9 +823,10 @@ export function Workspace({
                   regions={regions}
                   preferences={preferences}
                   onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
-                  doc={drawings.doc<BenefitsDoc>("benefits")}
+                  doc={benefitsDoc}
                   onDoc={editable ? (d) => drawings.set("benefits", d) : undefined}
                   costs={costInfo}
+                  onEstimate={onBenefitEstimate}
                 />
               )}
               {project && drawings.loaded && (
@@ -850,7 +944,32 @@ export function Workspace({
               </div>
             )}
             <div className="min-h-0 flex-1 overflow-y-auto">
-              {tab === "simulator" && sim === "test" && <CapacityRun />}
+              {tab === "simulator" && sim === "test" && (
+                <CapacityRun
+                  runs={runs}
+                  canRun={editable}
+                  railway={railway}
+                  streetLines={streetLines?.lines}
+                  prefs={preferences?.values}
+                  ridership={
+                    project && drawings.loaded
+                      ? {
+                          timetable: networkTimetable,
+                          regions,
+                          prefs: preferences?.values,
+                          doc: benefitsDoc,
+                          country: drawings.doc<{ country?: string | null }>("costs")?.country ?? null,
+                        }
+                      : null
+                  }
+                  ownBoardings={benefitsDoc?.boardings}
+                  onOwnBoardings={
+                    editable
+                      ? (b) => drawings.set("benefits", { ...(benefitsDoc ?? {}), boardings: b })
+                      : undefined
+                  }
+                />
+              )}
               {tab === "create" && !editable && (
                 <div className="px-4 py-5 md:px-5">
                   <h2 className="text-lg font-semibold">{t("create.readOnlyTitle")}</h2>

@@ -57,6 +57,14 @@ jobs:
       - uses: actions/setup-node@v5
         with: { node-version-file: .nvmrc, cache: pnpm }
       - run: pnpm install --frozen-lockfile
+      - uses: astral-sh/setup-uv@v6
+        with: { python-version: "3.12" }
+      - name: Python worker with the Rust kernels (the API's simulation run test starts it)
+        working-directory: worker
+        run: |
+          uv sync --frozen --no-dev
+          uv pip install "maturin>=1.9,<2"
+          uv run --no-sync maturin develop --release -m ../crates/mobsim-py/Cargo.toml
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm test
@@ -88,6 +96,8 @@ jobs:
         run: uvx ruff check tools/costs && uvx ruff format --check tools/costs && uv run --no-project --with pyyaml python tools/costs/export_defaults.py --check
       - name: Benefit tables values match the assumption library
         run: uvx ruff check tools/benefits && uvx ruff format --check tools/benefits && uv run --no-project --with pyyaml python tools/benefits/export_defaults.py --check
+      - name: Design rules in Project preferences match the assumption library
+        run: uvx ruff check tools/design-rules && uvx ruff format --check tools/design-rules && uv run --no-project --with pyyaml python tools/design-rules/export_defaults.py --check
 
   rust:
     name: Kernels (fmt, clippy, test, S2 smoke benchmark)

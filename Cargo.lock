@@ -312,6 +312,8 @@ version = "0.1.0"
 dependencies = [
  "depot-layout",
  "pyo3",
+ "rail-model",
+ "rail-plan",
  "rail-sim",
  "serde_json",
 ]

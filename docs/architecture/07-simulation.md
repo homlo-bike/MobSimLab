@@ -155,7 +155,7 @@ From the depot polygon and the selected fleet:
 
 Generated layout is a set of persistent objects (slots, aisles) that users can edit.
 
-Built (ADR-0042): a depot is shared by every street line whose mode it takes and whose vehicle fits a slot;
+Built (ADR-0043): a depot is shared by every street line whose mode it takes and whose vehicle fits a slot;
 road depots take bus, BRT, trolleybus and intercity bus (trams use track depots, §4.6). Lanes are
 drive-through (first in, first out); straight bays have two-way aisles, angled bays (60°, 45°) one-way aisles.
 The Create tab's depot tool draws the depot and saves it as the drawing kind `depots`
