@@ -1,6 +1,6 @@
 # ADR-0038: Estimated noise map of service lines with CNOSSOS-EU: a live corridor in the editors, a full map as an analysis layer, exposure into the appraisal
 
-- Status: Proposed; step N1 implemented as the noise plugin (2026-11-03); first part of N2, the GIS noise map with OSM buildings, implemented (2026-11-09); lateral diffraction, facade reflections and terrain added to it (2026-11-09); population exposure from WorldPop added (2026-11-10)
+- Status: Accepted (product owner, 2026-11-16); before that Proposed: step N1 implemented as the noise plugin (2026-11-03); first part of N2, the GIS noise map with OSM buildings, implemented (2026-11-09); lateral diffraction, facade reflections and terrain added to it (2026-11-09); population exposure from WorldPop added (2026-11-10)
 - Date: 2026-11-02
 - Deciders: product owner, architecture
 - Related: FR-COST-03, FR-GIS-04, FR-GIS-05, FR-GIS-06, FR-ENV-01..05 (new), ADR-0004 (polyglot runtime), ADR-0005 (SUMO), ADR-0006 (rail kernel), ADR-0013 (scenario overlays), ADR-0014 (results storage), ADR-0018 (assumption engine), ADR-0023 (job queue), ADR-0024 (map rendering), ADR-0028 (declared background traffic), ADR-0029 (street lines), ADR-0031 (routing in the browser), ADR-0033 (railway editor), ADR-0034 (published timetable), [09 §3.3](../architecture/09-planning-models.md)
