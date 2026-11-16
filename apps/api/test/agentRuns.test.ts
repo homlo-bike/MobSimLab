@@ -163,6 +163,13 @@ describe("sweep settings", () => {
   it("checks capacity settings as the runs API does", () => {
     expect(capacityParams.safeParse({ from_s: 100, to_s: 50 }).success).toBe(false);
     expect(capacityParams.safeParse({ from_s: 0, to_s: 50, nonsense: 1 }).success).toBe(false);
+    // The project's signalling values pass; unknown ones are refused.
+    expect(
+      capacityParams.safeParse({ from_s: 0, to_s: 50, signalling: { route_setting_s: 8 } }).success,
+    ).toBe(true);
+    expect(capacityParams.safeParse({ from_s: 0, to_s: 50, signalling: { nonsense: 1 } }).success).toBe(
+      false,
+    );
     expect(capacityParams.safeParse({ from_s: 0, to_s: 50, delayed_share: 0.3 }).success).toBe(true);
   });
 });

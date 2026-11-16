@@ -77,6 +77,15 @@ pub struct ServiceLine {
     /// Minimum turn-back in the terminal platform, s; the mode's layover when absent.
     #[serde(default)]
     pub turnback_s: Option<f64>,
+    /// Starting acceleration, m/s² (`mode.acceleration_ms2`); the mode's when absent.
+    #[serde(default)]
+    pub accel_ms2: Option<f64>,
+    /// Service braking rate, m/s² (`mode.service_braking_ms2`); the mode's when absent.
+    #[serde(default)]
+    pub decel_ms2: Option<f64>,
+    /// Running-time supplement share (`timetable.recovery_share`); 5 % when absent.
+    #[serde(default)]
+    pub supplement_share: Option<f64>,
 }
 
 fn one() -> u32 {
@@ -243,7 +252,26 @@ const PLANNING_LOAD_SHARE: f64 = 0.5;
 /// else what holds that effort up to 40 % of the top speed. Running resistance follows the Davis form
 /// with educated-guess coefficients per tonne and a front-and-length air term.
 pub fn train_params(v: &ServiceVehicle, units: u32, mode: &str) -> TrainParams {
-    let mv = mode_values(mode);
+    train_params_with(v, units, mode, None, None)
+}
+
+/// Purpose: as [`train_params`], with the project's acceleration and service braking rate (m/s²)
+/// in place of the mode's where given.
+pub fn train_params_with(
+    v: &ServiceVehicle,
+    units: u32,
+    mode: &str,
+    accel_ms2: Option<f64>,
+    decel_ms2: Option<f64>,
+) -> TrainParams {
+    let mut mv = mode_values(mode);
+    let ok = |x: &f64| x.is_finite() && *x > 0.0;
+    if let Some(a) = accel_ms2.filter(ok) {
+        mv.accel = a;
+    }
+    if let Some(d) = decel_ms2.filter(ok) {
+        mv.decel = d;
+    }
     let n = f64::from(units.max(1));
     let length_m = v.length_m.max(5.0) * n;
     let empty_t = v
@@ -344,10 +372,13 @@ pub fn line_spec(l: &ServiceLine, m: &Model) -> LineSpec {
                 dwell_s: None,
             })
             .collect(),
-        train: train_params(&l.vehicle, l.units, &l.mode),
+        train: train_params_with(&l.vehicle, l.units, &l.mode, l.accel_ms2, l.decel_ms2),
         dwell_s: l.dwell_s.unwrap_or(mv.dwell_s),
         turnback_s: l.turnback_s.unwrap_or(mv.turnback_s),
-        supplement_share: 0.05,
+        supplement_share: l
+            .supplement_share
+            .filter(|x| x.is_finite() && (0.0..1.0).contains(x))
+            .unwrap_or(0.05),
         stabling,
         bands: service_bands(l),
         return_offset_s: None,

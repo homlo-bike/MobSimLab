@@ -14,5 +14,6 @@ import { BenefitsService } from "./benefits.service";
     { provide: WorldBankClient, useFactory: () => new WorldBankClient() },
     { provide: OverpassClient, useFactory: () => new OverpassClient() },
   ],
+  exports: [BenefitsService],
 })
 export class BenefitsModule {}
