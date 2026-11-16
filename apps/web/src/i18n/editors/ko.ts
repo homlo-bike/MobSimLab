@@ -234,7 +234,7 @@ export const editorsKo = {
   "rail.line.peakHeadway": "첨두 배차 간격",
   "rail.line.everyOffpeak": "그 외 시간 간격",
   "rail.line.offpeakHeadway": "그 외 시간 배차 간격",
-  "rail.line.peaks": "첨두 시간은 07:00–09:00와 16:00–19:00입니다.",
+  "rail.line.peaks": "첨두 시간은 {peaks}입니다.",
   "rail.line.delete": "계통 삭제",
   "rail.line.needsStops": "정차역이 2개 이상 필요합니다.",
   "rail.line.needsTrain": "차량을 선택하세요.",

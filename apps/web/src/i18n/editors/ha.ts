@@ -253,7 +253,7 @@ export const editorsHa = {
   "rail.line.peakHeadway": "Tazara a lokacin cunkoso",
   "rail.line.everyOffpeak": "Kowane, a wajen cunkoso",
   "rail.line.offpeakHeadway": "Tazara a wajen cunkoso",
-  "rail.line.peaks": "Lokacin cunkoso 07:00–09:00 da 16:00–19:00.",
+  "rail.line.peaks": "Lokacin cunkoso {peaks}.",
   "rail.line.delete": "Share layi",
   "rail.line.needsStops": "Yana buƙatar aƙalla tashoshi biyu.",
   "rail.line.needsTrain": "Zaɓi jirgi.",

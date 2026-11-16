@@ -255,7 +255,7 @@ export const editorsDe = {
   "rail.line.peakHeadway": "Takt Hauptverkehrszeit",
   "rail.line.everyOffpeak": "Takt sonst",
   "rail.line.offpeakHeadway": "Takt Nebenverkehrszeit",
-  "rail.line.peaks": "Hauptverkehrszeiten 07:00–09:00 und 16:00–19:00.",
+  "rail.line.peaks": "Hauptverkehrszeiten {peaks}.",
   "rail.line.delete": "Linie löschen",
   "rail.line.needsStops": "Braucht mindestens zwei Halte.",
   "rail.line.needsTrain": "Wählen Sie einen Zug.",

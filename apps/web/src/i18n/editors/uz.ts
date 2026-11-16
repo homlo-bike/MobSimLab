@@ -255,7 +255,7 @@ export const editorsUz = {
   "rail.line.peakHeadway": "Tigʻiz soatlardagi oraliq",
   "rail.line.everyOffpeak": "Har, boshqa vaqtda",
   "rail.line.offpeakHeadway": "Boshqa vaqtdagi oraliq",
-  "rail.line.peaks": "Tigʻiz soatlar 07:00–09:00 va 16:00–19:00.",
+  "rail.line.peaks": "Tigʻiz soatlar {peaks}.",
   "rail.line.delete": "Liniyani oʻchirish",
   "rail.line.needsStops": "Kamida ikkita bekat kerak.",
   "rail.line.needsTrain": "Poyezdni tanlang.",

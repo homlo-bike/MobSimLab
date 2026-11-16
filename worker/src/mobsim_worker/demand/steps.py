@@ -13,7 +13,8 @@ pedestrian streets takes ``demand.pedestrian_zone.car_min`` times the zone's ped
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from collections.abc import Callable
+from dataclasses import dataclass, replace
 
 import numpy as np
 import pandas as pd
@@ -161,6 +162,8 @@ class Choice:
     #: a bicycle (assigned to the bike-and-ride graph).
     shared_share: Floats | None = None
     transit_bike_share: Floats | None = None
+    #: Expected utility of the trip over the modes (logsum, utility units), for the appraisal.
+    logsum: Floats | None = None
 
 
 def utilities(purpose: str, sk: Skims, m: Money, v: Values) -> dict[str, Floats]:
@@ -274,6 +277,62 @@ def choose(purpose: str, sk: Skims, m: Money, v: Values) -> Choice:
         composite_min=composite,
         shared_share=shared_share if "shared" in u else None,
         transit_bike_share=transit_bike if "transit_bike" in u else None,
+        logsum=logsum,
+    )
+
+
+def without_transit(sk: Skims) -> Skims:
+    """The same skims with no public transport at all (the appraisal's reference case)."""
+    return replace(
+        sk,
+        transit_available=np.zeros_like(sk.transit_available, dtype=bool),
+        transit_bike_perceived_min=None,
+        transit_bike_available=None,
+    )
+
+
+@dataclass
+class Gain:
+    """What public transport is worth to the trips of one purpose and period (09 §3.3, ADR-0045).
+
+    ``money`` is the change in consumer surplus (logsum change ÷ the time coefficient × value of time, in the
+    project currency) of the trips that have another way to travel; ``no_alternative`` counts the trips that
+    have none without public transport, which are left out. ``car_trips`` and ``car_km`` are the person trips
+    and person-km by car without public transport less those with it.
+    """
+
+    money: float
+    minutes: float
+    no_alternative: float
+    car_trips: float
+    car_km: float
+
+
+def gain(purpose: str, sk: Skims, m: Money, v: Values, ch: Choice, trips: Callable[[Floats], Floats]) -> Gain:
+    """The appraisal's user benefit of one purpose: the same trips chosen again without public transport.
+
+    ``trips`` turns a share of the purpose's production–attraction matrix into origin–destination trips.
+    """
+    b = v[f"demand.mode.ivt.{purpose}"]
+    zero = Gain(0.0, 0.0, 0.0, 0.0, 0.0)
+    if b >= 0 or ch.logsum is None:
+        return zero
+    ref = choose(purpose, without_transit(sk), m, v)
+    if ref.logsum is None:
+        return zero
+    ok = ref.logsum > NO_WAY / 2
+    per_trip_min = np.where(ok, (ch.logsum - ref.logsum) / -b, 0.0)
+    minutes = float(trips(per_trip_min).sum())
+    lost = float(trips(np.where(ok, 0.0, 1.0)).sum())
+    car_with = trips(ch.shares["car"])
+    car_without = trips(np.where(ok, ref.shares["car"], ch.shares["car"]))
+    km = np.where(sk.car_km < UNREACHABLE, sk.car_km, 0.0)
+    return Gain(
+        money=minutes * m.vot_per_min[purpose],
+        minutes=minutes,
+        no_alternative=lost,
+        car_trips=float((car_without - car_with).sum()),
+        car_km=float(((car_without - car_with) * km).sum()),
     )
 
 

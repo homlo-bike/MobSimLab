@@ -33,6 +33,7 @@ import { SetupController } from "./setup/setup.controller";
 import { RunsController } from "./simulation/runs.controller";
 import { MslabController } from "./mslab/mslab.controller";
 import { MslabService } from "./mslab/mslab.service";
+import { MslabMapService } from "./mslab/map-data";
 import { SimulationModule } from "./simulation/simulation.module";
 import { ToolRunner } from "./tool-runner/runner";
 
@@ -83,6 +84,7 @@ export class AppModule {
         SessionService,
         UsersService,
         MslabService,
+        MslabMapService,
         ToolRunner,
         { provide: APP_GUARD, useClass: AccessGuard },
       ],

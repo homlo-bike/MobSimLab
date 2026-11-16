@@ -2,25 +2,19 @@ import { Fragment, useMemo, useState } from "react";
 import { card, fmtQty, modeLabel, num, NumberField, td, th } from "../costs/CostTables";
 import { paramValue, prefId } from "../costs/params";
 import { loadWasmGtfs } from "../gtfs/engine";
-import { feedFileName, gtfsAvailable, pluginRouteTypes } from "../gtfs/GtfsSection";
+import { gtfsAvailable, saveFeed } from "../gtfs/GtfsSection";
 import type { GtfsEngineLoader } from "../gtfs/types";
-import { writeZip } from "../gtfs/zip";
-import { mergeTimetables, prefixTimetable, streetLineTimetable } from "../journey-planner/network";
+import { prefixTimetable } from "../journey-planner/network";
 import type { Timetable } from "../journey-planner/types";
 import { lineMode } from "../railways/serviceLines";
 import type { Network, RailEngineLoader } from "../railways/types";
 import { fullTiming } from "../street-lines/modes";
-import { lineInput, type StreetLinesDoc } from "../street-lines/saved";
-import {
-  calendarFrom,
-  DAY_TYPES,
-  type DayTypeId,
-  holidaysFor,
-  type ServiceCalendar,
-} from "../../workspace/calendar";
+import type { StreetLinesDoc } from "../street-lines/saved";
+import { calendarFrom, DAY_TYPES, type DayTypeId, type ServiceCalendar } from "../../workspace/calendar";
 import { type PreferencesDoc, withPref } from "../../workspace/preferences";
 import { blockSummary, fleetRow, railBlocks, streetBlocks, type BlockRun, type VehicleBlock } from "./blocks";
-import { dayServiceOf, lineDay, railLineFor, streetTimingFor, streetWeekday } from "./dayTypes";
+import { railLineFor } from "./dayTypes";
+import { feedHolidays, mergeDays, streetDay } from "./feed";
 import {
   clockS,
   directionGrids,
@@ -102,10 +96,9 @@ function linesOn(
     });
   }
   for (const [i, s] of (streetLines?.lines ?? []).entries()) {
-    const input = lineInput({ ...s, timing: streetTimingFor(s.timing, day) });
-    if (!input) continue;
-    const service = dayServiceOf(streetWeekday(s.timing), s.timing.days, day);
-    const timetable = streetLineTimetable(input, lineDay(cal, day, service), day);
+    const own = streetDay(s, day, cal);
+    if (!own) continue;
+    const { input, timetable } = own;
     out.push({
       key: `street:${i}`,
       name: input.name || `Street line ${i + 1}`,
@@ -126,40 +119,25 @@ function linesOn(
   return out;
 }
 
-/**
- * Purpose: one timetable of every day type for the GTFS download: each day's trips and patterns keep the day as
- * their service id and get it after their id (weekday ids stay as they are); stops and routes are listed once.
- */
+/** Purpose: one timetable of every day type for the GTFS download (rail publications and street lines). */
 export function allDays(
   byDay: Record<DayTypeId, LineBlocks[]>,
   publications: DayPublications,
 ): Timetable | null {
-  const parts: Timetable[] = [];
-  for (const day of DAY_TYPES) {
-    const own = (id: string) => (day === "weekday" ? id : `${id}~${day}`);
-    const rename = (tt: Timetable): Timetable => ({
-      ...tt,
-      trips: tt.trips.map((t) => ({ ...t, trip_id: own(t.trip_id), service_id: day })),
-      frequency_patterns: (tt.frequency_patterns ?? []).map((p) => ({
-        ...p,
-        pattern_id: own(p.pattern_id),
-        service_id: day,
-      })),
-    });
-    const rail = publications[day]?.timetable;
-    if (rail && (rail.trips.length || rail.frequency_patterns?.length))
-      parts.push(rename(prefixTimetable(rail, "lines:")));
-    for (const l of byDay[day]) if (l.timetable) parts.push(rename(l.timetable));
-  }
-  if (!parts.length) return null;
-  const all = mergeTimetables(parts);
-  const once = <T,>(xs: T[], id: (x: T) => string) => [...new Map(xs.map((x) => [id(x), x])).values()];
-  return {
-    ...all,
-    stops: once(all.stops, (s) => s.stop_id),
-    routes: once(all.routes, (r) => r.route_id),
-    transfers: once(all.transfers, (t) => `${t.from_stop_id}|${t.to_stop_id}`),
-  };
+  return mergeDays(
+    Object.fromEntries(
+      DAY_TYPES.map((day) => {
+        const rail = publications[day]?.timetable;
+        return [
+          day,
+          [
+            ...(rail ? [prefixTimetable(rail, "lines:")] : []),
+            ...byDay[day].flatMap((l) => (l.timetable ? [l.timetable] : [])),
+          ],
+        ];
+      }),
+    ),
+  );
 }
 
 /**
@@ -213,30 +191,12 @@ export function TimetableTables({
     const tt = allDays(byDay, publications);
     if (!tt) return;
     try {
-      const engine = await loadGtfs();
       const today = new Date();
-      const end = new Date(today.getTime() + 365 * 86_400_000);
-      const ymd = (d: Date) => d.toISOString().slice(0, 10).replaceAll("-", "");
-      const holidays = [today.getFullYear(), end.getFullYear()]
-        .flatMap((y) => holidaysFor(cal, y))
-        .map((d) => d.replaceAll("-", ""));
-      const files = engine.export(tt, {
-        agency_name: projectName || "MobSimLab",
-        agency_url: window.location.origin,
-        agency_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC",
+      await saveFeed(loadGtfs, tt, {
+        projectName,
         lang: "en",
-        start_date: ymd(today),
-        end_date: ymd(end),
-        route_types: pluginRouteTypes(),
-        feed_version: today.toISOString(),
-        holidays,
+        holidays: feedHolidays(cal, today, new Date(today.getTime() + 365 * 86_400_000)),
       });
-      const url = URL.createObjectURL(new Blob([writeZip(files) as BlobPart], { type: "application/zip" }));
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = feedFileName(projectName);
-      a.click();
-      setTimeout(() => URL.revokeObjectURL(url), 10_000);
     } catch (e) {
       setFailed(e instanceof Error ? e.message : String(e));
     }

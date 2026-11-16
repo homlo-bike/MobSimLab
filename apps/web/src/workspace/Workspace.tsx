@@ -28,12 +28,22 @@ import { JourneyPlanner } from "../features/journey-planner/JourneyPlanner";
 import { NoiseMap } from "../features/noise/NoiseMap";
 import { NetworkTables } from "../features/tables/NetworkTables";
 import { TimetableTables } from "../features/timetables/TimetableTables";
+import { feedHolidays, projectFeed } from "../features/timetables/feed";
+import { paramValue } from "../features/costs/params";
+import { calendarFrom } from "./calendar";
 import { FareTables } from "../features/fares/FareTables";
-import type { FaresDoc } from "../features/fares/model";
+import { AppraisalSection } from "../features/appraisal/AppraisalSection";
+import type { AppraisalDoc } from "../features/appraisal/model";
+import type { FareInput, FaresDoc } from "../features/fares/model";
 import { Scenarios } from "../features/tables/Scenarios";
 import type { ScenariosDoc } from "../features/tables/scenarioModel";
 import { noiseCalculationIn } from "../features/noise/plugin";
-import type { PluginLineInput, StreetLineInput } from "../features/journey-planner/network";
+import {
+  type PluginLineInput,
+  type ServiceDay,
+  setProjectServiceDay,
+  type StreetLineInput,
+} from "../features/journey-planner/network";
 import type { GtfsFeed, GtfsNetworkDoc } from "../features/gtfs/types";
 import type { Timetable } from "../features/journey-planner/types";
 import { RailwayEditor } from "../features/railways/RailwayEditor";
@@ -100,6 +110,7 @@ import { TopBar } from "../shell/TopBar";
 import { PROJECT_TOUR, Tour } from "../shell/Tour";
 import { PrintReport } from "./PrintReport";
 import { ProjectPreferences } from "./ProjectPreferences";
+import { calendarFrom, serviceDayFor } from "./calendar";
 import {
   delaysFrom,
   designTextsFrom,
@@ -111,6 +122,8 @@ import {
   vehiclesOffFrom,
 } from "./preferences";
 import { VehiclesOffContext } from "./projectVehicles";
+import { EMPTY_FLEET, fleetFrom, type FleetDoc } from "../features/fleet/model";
+import { setOwnVehicles } from "../features/fleet/registry";
 import type { DelayShares } from "../features/street-lines/types";
 import { type Drawings, useDrawings } from "./useDrawings";
 import { CalendarRun } from "../features/calendar-run/CalendarRun";
@@ -120,6 +133,7 @@ import { PluginCalculations } from "../plugins/code/PluginCalculations";
 import { PluginFrame } from "../plugins/code/PluginFrame";
 import { clearPluginCode } from "../plugins/code/runtime";
 import { DepotEditor } from "../features/depots/DepotEditor";
+import { STATIC_TABS, STATIC_VIEWER } from "../static/mode";
 import { CommentsProvider } from "../features/comments/Comments";
 import { commentableObjects, CommentsPanel } from "../features/comments/CommentsPanel";
 import type { DepotsDoc, SavedDepot } from "../features/depots/types";
@@ -200,6 +214,8 @@ export function Workspace({
     estimate: CostEstimate;
     currency: string | null;
     country: string | null;
+    /** World Bank income group of the country (HIC, UMC, LMC, LIC), or null; the appraisal's social rate. */
+    income: string | null;
     rate: number;
     /** Local currency units per international $ (the demand model's fares and car costs). */
     ppp: number;
@@ -207,11 +223,12 @@ export function Workspace({
     perIntl: number;
   } | null>(null);
   const onCostEstimate = useCallback(
-    (estimate: CostEstimate, prices: Prices, country: string | null, rate: number) =>
+    (estimate: CostEstimate, prices: Prices, country: string | null, rate: number, income: string | null) =>
       setCostInfo({
         estimate,
         currency: prices.currency,
         country,
+        income,
         rate,
         ppp: prices.ppp,
         perIntl: prices.ppp * prices.escalation,
@@ -231,6 +248,20 @@ export function Workspace({
     [benefitEst],
   );
   const onBenefitEstimate = useCallback((e: BenefitEstimate | null) => setBenefitEst(e), []);
+  // The fare revenue table's input, for the appraisal's fare revenue draws.
+  const [fareInput, setFareInput] = useState<FareInput | null>(null);
+  const appraisalCosts = useMemo(
+    () =>
+      costInfo
+        ? {
+            estimate: costInfo.estimate,
+            currency: costInfo.currency,
+            income: costInfo.income,
+            perIntl: costInfo.perIntl,
+          }
+        : null,
+    [costInfo],
+  );
   // The energy section's estimate (energy a year), for the calendar runs.
   const [energyEst, setEnergyEst] = useState<EnergyEstimate | null>(null);
   const tableFigures = useMemo(
@@ -297,6 +328,8 @@ export function Workspace({
   const projectTabs = useMemo(() => {
     const on = new Set(activeTabs.map((x) => x.id));
     const bundled = TABS.filter((x) => !PLUGIN_TABS.some((p) => p.id === x) || on.has(x));
+    // The static viewer shows the simulator, the schematic, the tables and the preferences only.
+    if (STATIC_VIEWER) return bundled.filter((x) => STATIC_TABS.includes(x));
     // Then the tabs of installed plugins, which bring their own pages.
     return [...bundled, ...activeTabs.filter((x) => x.ui && !bundled.includes(x.id)).map((x) => x.id)];
   }, [activeTabs]);
@@ -428,6 +461,11 @@ export function Workspace({
   const delays = useMemo(() => JSON.parse(delaysJson) as DelayShares, [delaysJson]);
   const rulesJson = JSON.stringify(designValuesFrom(preferences));
   const designValues = useMemo(() => JSON.parse(rulesJson) as Record<string, number>, [rulesJson]);
+  // The project's weekday service day (Calendar and years): the tools' peak windows, and the first and last
+  // departure of lines without their own. Set before the tools render; back to the default when the project closes.
+  const weekdayJson = JSON.stringify(serviceDayFor(calendarFrom(preferences), "weekday"));
+  useMemo(() => setProjectServiceDay(JSON.parse(weekdayJson) as ServiceDay), [weekdayJson]);
+  useEffect(() => () => setProjectServiceDay(null), []);
   const textsJson = JSON.stringify(designTextsFrom(preferences));
   const designTexts = useMemo(() => JSON.parse(textsJson) as Record<string, string>, [textsJson]);
   const switchJson = JSON.stringify(switchChoiceFrom(preferences));
@@ -435,10 +473,20 @@ export function Workspace({
     () => JSON.parse(switchJson) as ReturnType<typeof switchChoiceFrom>,
     [switchJson],
   );
+  // The project's own vehicles and its fleet (Project preferences). Own vehicles join the catalogue's for
+  // every tool: set them before the tools render, and leave the catalogue alone when the project closes.
+  const fleetRaw = drawings.doc<FleetDoc>("fleet");
+  const fleet = useMemo(() => (fleetRaw ? fleetFrom(fleetRaw) : EMPTY_FLEET), [fleetRaw]);
+  setOwnVehicles(fleet.vehicles);
+  useEffect(() => () => setOwnVehicles([]), []);
   const offJson = JSON.stringify([...vehiclesOffFrom(preferences)]);
   const vehiclesOff = useMemo(
-    () => new Set(JSON.parse(offJson) as string[]) as ReadonlySet<string>,
-    [offJson],
+    // A new set when the own vehicles change too, so the line tools' vehicle lists render again.
+    () => {
+      void fleet.vehicles;
+      return new Set(JSON.parse(offJson) as string[]) as ReadonlySet<string>;
+    },
+    [offJson, fleet.vehicles],
   );
   // Street setups made before projects saved drawings were kept in this browser: move them to the project once.
   useEffect(() => {
@@ -774,6 +822,7 @@ export function Workspace({
               designValues={designValues}
               designTexts={designTexts}
               prefValues={preferences?.values}
+              calendar={calendarFrom(preferences)}
               switchChoice={switchChoice}
               stationGroupingM={paramNumber("analysis.station_grouping_m", preferences?.values)}
               existingRailways={existingRailways}
@@ -886,6 +935,23 @@ export function Workspace({
               gtfsFeeds={gtfsFeeds}
               {...(editable ? { onGtfsFeeds: (d: GtfsNetworkDoc) => drawings.set("gtfs-network", d) } : {})}
               projectName={project.name}
+              allDayFeed={async () => {
+                const cal = calendarFrom(preferences);
+                const today = new Date();
+                const waitMin = paramValue("timetable.max_terminal_wait_min", "*", preferences?.values)[1];
+                const timetable = await projectFeed({
+                  railway,
+                  streetLines: savedStreet,
+                  pluginLines: pluginLineList,
+                  cal,
+                  options: { max_idle_s: waitMin * 60 },
+                  values: preferences?.values ?? null,
+                });
+                return {
+                  timetable,
+                  holidays: feedHolidays(cal, today, new Date(today.getTime() + 365 * 86_400_000)),
+                };
+              }}
               {...(editable ? { onEditGtfsRoute: (f: string, r: string) => void editGtfsRoute(f, r) } : {})}
             />
           )}
@@ -981,6 +1047,9 @@ export function Workspace({
               plugins={plugins}
               onSetPlugin={setPlugin}
               currency={currencyState}
+              fleet={drawings.loaded ? fleet : null}
+              onFleet={drawings.loaded ? (d) => drawings.set("fleet", d) : undefined}
+              depots={depotsDoc?.depots ?? NO_DEPOTS}
               country={placeCountry}
               place={place}
             />
@@ -1098,6 +1167,19 @@ export function Workspace({
                   prices={farePrices}
                   doc={drawings.doc<FaresDoc>("fares")}
                   onDoc={editable ? (d) => drawings.set("fares", d) : undefined}
+                  onInput={setFareInput}
+                />
+              )}
+              {project && drawings.loaded && (
+                <AppraisalSection
+                  costs={appraisalCosts}
+                  benefits={benefitEst}
+                  fares={fareInput}
+                  demand={usedRidership}
+                  preferences={preferences}
+                  onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
+                  doc={drawings.doc<AppraisalDoc>("appraisal")}
+                  onDoc={editable ? (d) => drawings.set("appraisal", d) : undefined}
                 />
               )}
               {project && drawings.loaded && (
@@ -1290,6 +1372,7 @@ export function Workspace({
                   api={calendarRuns}
                   canRun={editable}
                   railway={railway}
+                  streetLines={savedStreet}
                   preferences={preferences}
                   onPreferences={
                     editable && drawings.loaded ? (d) => drawings.set("preferences", d) : undefined

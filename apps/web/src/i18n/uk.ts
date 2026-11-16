@@ -4,6 +4,7 @@ import { editorsUk } from "./editors/uk";
 import { cargoBikeUk } from "./cargo-bike/uk";
 import { commentsUk } from "./comments/uk";
 import { depotsUk } from "./depots/uk";
+import { fleetUk } from "./fleet/uk";
 import { timetablesUk } from "./timetables/uk";
 import { mslabUk } from "./mslab/uk";
 import { pluginCodeUk } from "./plugin-code/uk";
@@ -355,6 +356,7 @@ export const uk: Messages = {
   "prefs.group.cost": "Витрати",
   "prefs.group.benefits": "Вигоди",
   "prefs.group.fares": "Тарифи",
+  "prefs.group.appraisal": "Оцінка",
   "prefs.group.noise": "Шум",
   "prefs.traction.battery": "акумулятор",
   "prefs.traction.diesel": "дизель",
@@ -500,6 +502,7 @@ export const uk: Messages = {
   ...editorsUk,
   ...cargoBikeUk,
   ...depotsUk,
+  ...fleetUk,
   ...timetablesUk,
   ...commentsUk,
   ...mslabUk,

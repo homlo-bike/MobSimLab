@@ -4,6 +4,7 @@ import { editorsVi } from "./editors/vi";
 import { cargoBikeVi } from "./cargo-bike/vi";
 import { commentsVi } from "./comments/vi";
 import { depotsVi } from "./depots/vi";
+import { fleetVi } from "./fleet/vi";
 import { timetablesVi } from "./timetables/vi";
 import { mslabVi } from "./mslab/vi";
 import { pluginCodeVi } from "./plugin-code/vi";
@@ -353,6 +354,7 @@ export const vi: Messages = {
   "prefs.group.cost": "Chi phí",
   "prefs.group.benefits": "Lợi ích",
   "prefs.group.fares": "Giá vé",
+  "prefs.group.appraisal": "Thẩm định",
   "prefs.group.noise": "Tiếng ồn",
   "prefs.traction.battery": "pin",
   "prefs.traction.diesel": "diesel",
@@ -494,6 +496,7 @@ export const vi: Messages = {
   ...editorsVi,
   ...cargoBikeVi,
   ...depotsVi,
+  ...fleetVi,
   ...timetablesVi,
   ...commentsVi,
   ...mslabVi,

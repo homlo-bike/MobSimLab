@@ -127,7 +127,7 @@ OD matrices (OMX format, open standard) per mode and period, link loads, line lo
 
 Every unit cost is an `AssumedValue` with currency and price-base year. Conversions: World Bank GDP deflators and PPP factors (with source and retrieval date) to the project currency and base year.
 
-Built (ADR-0039): the Tables tab costs construction (by construction type, set per track in the railway tool), vehicles, depots and operation per mode, per line and in total, low/medium/high, from `assumptions/parameters/costs.yaml` (2023 PPP dollars), converted with the World Bank PPP factor, exchange rate and US GDP deflator. Fare revenue is built too (ADR-0044): boardings from the benefit tables' ridership estimate times the average fare paid under a flat, zonal or distance-based structure, with passes, discount groups, fare elasticity, yearly changes, evasion and collection cost, from `assumptions/parameters/fares.yaml`. Lifecycle and appraisal are not built yet.
+Built (ADR-0039): the Tables tab costs construction (by construction type, set per track in the railway tool), vehicles, depots and operation per mode, per line and in total, low/medium/high, from `assumptions/parameters/costs.yaml` (2023 PPP dollars), converted with the World Bank PPP factor, exchange rate and US GDP deflator. Fare revenue is built too (ADR-0044): boardings from the benefit tables' ridership estimate times the average fare paid under a flat, zonal or distance-based structure, with passes, discount groups, fare elasticity, yearly changes, evasion and collection cost, from `assumptions/parameters/fares.yaml`. The appraisal is built too (ADR-0045): asset renewals and straight-line residual values by asset class, ENPV, ERR, BCR, FNPV and FIRR per line, per mode and in total, with a Monte Carlo range, tornado chart, switching values, the standard tests and a weighted-sum multi-criteria analysis, from `assumptions/parameters/appraisal.yaml`. Mid-life overhauls and export are not built yet.
 
 ### 3.2 Appraisal methods
 
@@ -135,7 +135,7 @@ Built (ADR-0039): the Tables tab costs construction (by construction type, set p
 |--------|-----------------|
 | FNPV | Σ (financial revenues − financial costs)ₜ / (1 + r_f)ᵗ, financial discount rate r_f (default 4 % real, editable) |
 | FIRR | r such that FNPV = 0 |
-| ENPV | Σ (economic benefits − economic costs)ₜ / (1 + r_s)ᵗ, social discount rate r_s (default per EU guidance 3 %/5 % by cohesion status; editable), with shadow prices / conversion factors applied to financial costs |
+| ENPV | Σ (economic benefits − economic costs)ₜ / (1 + r_s)ᵗ, social discount rate r_s (default by World Bank income group: 3.5 % high, 6 % upper-middle, 8 % lower-middle and low; editable), with shadow prices / conversion factors applied to financial costs |
 | ERR | r such that ENPV = 0 |
 | BCR | PV(economic benefits) / PV(economic costs) |
 | MCA | Weighted sum (default) or outranking (optional) over user-defined criteria: e.g. accessibility, equity, emissions, integration; weights editable; criteria scored from model outputs or user input |

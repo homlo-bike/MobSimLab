@@ -10,6 +10,10 @@ import { ReasonField } from "./ReasonField";
 import { DesignRulesSection } from "./DesignRules";
 import { VehicleChoiceSection } from "./VehicleChoice";
 import { SwitchChoiceSection } from "./SwitchChoice";
+import { OwnVehiclesSection } from "./OwnVehicles";
+import { FleetSection } from "./Fleet";
+import { EMPTY_FLEET, type FleetDoc } from "../features/fleet/model";
+import type { SavedDepot } from "../features/depots/types";
 import { CalendarSection } from "./CalendarSection";
 import { ClimateSection } from "./ClimateSection";
 import { ParametersSection } from "./Parameters";
@@ -34,6 +38,9 @@ export function ProjectPreferences({
   plugins = null,
   onSetPlugin,
   currency = NO_CURRENCY,
+  fleet = null,
+  onFleet,
+  depots = [],
   country = null,
   place = null,
 }: {
@@ -50,6 +57,12 @@ export function ProjectPreferences({
   onSetPlugin?: (pluginId: string, enabled: boolean, version?: string) => Promise<void>;
   /** The project's currency and its exchange rate. */
   currency?: CurrencyState;
+  /** The project's own vehicles and its fleet; null while loading. */
+  fleet?: FleetDoc | null;
+  /** Told about each change to the own vehicles or the fleet; the project saves it. */
+  onFleet?: (doc: FleetDoc) => void;
+  /** The road depots (depot tool), as homes for fleet vehicles. */
+  depots?: readonly SavedDepot[];
   /** ISO alpha-2 code of the country at the project's location, when known (public holidays). */
   country?: string | null;
   /** The project's location [lon, lat], for its climate; null when nothing is drawn yet. */
@@ -161,6 +174,19 @@ export function ProjectPreferences({
           preferences={preferences}
           editable={editable && !!onPreferences}
           onPreferences={(d) => onPreferences?.(d)}
+        />
+        <OwnVehiclesSection
+          fleet={fleet ?? EMPTY_FLEET}
+          editable={editable && !!onFleet && !!fleet}
+          onFleet={(d) => onFleet?.(d)}
+        />
+        <FleetSection
+          fleet={fleet ?? EMPTY_FLEET}
+          preferences={preferences}
+          projectModes={project.modes}
+          depots={depots}
+          editable={editable && !!onFleet && !!fleet}
+          onFleet={(d) => onFleet?.(d)}
         />
         <SwitchChoiceSection
           projectModes={project.modes}

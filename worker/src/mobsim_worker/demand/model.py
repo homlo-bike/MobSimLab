@@ -78,6 +78,8 @@ class PeriodResult:
     shared_od: Floats | None = None
     transit_bike_od: Floats | None = None
     rounds: list[dict[str, float]] = field(default_factory=list)
+    #: The appraisal's user benefit by purpose (``steps.gain``).
+    gains: dict[str, steps.Gain] = field(default_factory=dict)
 
 
 def period_hours(b: Bundle) -> dict[str, float]:
@@ -264,12 +266,18 @@ class DemandModel:
         shared = np.zeros((nz, nz))
         transit_bike = np.zeros((nz, nz))
         by_purpose: dict[str, dict[str, float]] = {}
+        gains: dict[str, steps.Gain] = {}
         for p in PURPOSES:
             s = self.shares[p][per]
             ch = steps.choose(p, sk, money, b.values)
             pa = steps.distribute(
                 p, ends.productions[p] * s, ends.attractions[p] * s, ch.composite_min, b.values
             )
+
+            def od_of(share: Floats, p: str = p, pa: Floats = pa) -> Floats:
+                return to_od(b, p, per, pa * share)
+
+            gains[p] = steps.gain(p, sk, money, b.values, ch, od_of)
             by_purpose[p] = {}
             for m in MODES:
                 trips = to_od(b, p, per, pa * ch.shares[m])
@@ -279,7 +287,9 @@ class DemandModel:
                 shared += to_od(b, p, per, pa * ch.shared_share)
             if ch.transit_bike_share is not None:
                 transit_bike += to_od(b, p, per, pa * ch.transit_bike_share)
-        return PeriodResult(od=od, by_purpose=by_purpose, shared_od=shared, transit_bike_od=transit_bike)
+        return PeriodResult(
+            od=od, by_purpose=by_purpose, shared_od=shared, transit_bike_od=transit_bike, gains=gains
+        )
 
     def _period(
         self,
@@ -401,7 +411,31 @@ class DemandModel:
             "road": self._road(res, car_net),
             "transit": self._transit(res),
             "catchment": self._catchment(res),
+            "appraisal": self._appraisal(res),
             "files": ["od.omx"],
+        }
+
+    def _appraisal(self, res: dict[str, PeriodResult]) -> dict[str, Any]:
+        """What public transport is worth to the weekday's trips, against the same trips without it.
+
+        The appraisal (ADR-0045) turns these into yearly benefits: the users' benefit, and the car-km that the
+        project's externality values price.
+        """
+        occ = max(self.b.values["demand.car_occupancy"], 1e-6)
+
+        def day(p: str, attr: str) -> float:
+            return float(sum(getattr(res[per].gains[p], attr) for per in ALL_PERIODS if p in res[per].gains))
+
+        by = {p: round(day(p, "money"), 2) for p in PURPOSES}
+        return {
+            "method": "logsum change of the weekday's trips without public transport, at fixed destinations",
+            "currency": self.b.economy.currency,
+            "user_benefit": round(sum(by.values()), 2),
+            "user_benefit_by_purpose": by,
+            "generalised_hours": round(sum(day(p, "minutes") for p in PURPOSES) / 60.0, 1),
+            "no_alternative_trips": round(sum(day(p, "no_alternative") for p in PURPOSES), 1),
+            "car_trips_saved": round(sum(day(p, "car_trips") for p in PURPOSES), 1),
+            "car_vehicle_km_saved": round(sum(day(p, "car_km") for p in PURPOSES) / occ, 1),
         }
 
     def _road(self, res: dict[str, PeriodResult], car_net: network.CarNetwork) -> dict[str, Any]:

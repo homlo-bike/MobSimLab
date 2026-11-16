@@ -36,6 +36,18 @@ export const calendarVi = {
   "cal.total": "Tổng",
   "cal.noHolidaysYear": "Chưa lấy ngày lễ nào",
   "cal.resetCount": "trở về {value} đã đếm",
+  "cal.service": "Ngày khai thác theo loại ngày",
+  "cal.serviceIntro":
+    "Giờ bắt đầu và kết thúc khai thác của mỗi loại ngày, cùng cao điểm sáng và chiều, theo dạng HH:MM. Giờ sau nửa đêm tiếp tục quá 24:00, ví dụ 24:30. Để trống cao điểm nếu không có.",
+  "cal.serviceDefault": "Mặc định cho mọi loại ngày: {first} đến {last}, cao điểm {peaks}.",
+  "cal.firstDep": "Chuyến đầu",
+  "cal.lastDep": "Chuyến cuối",
+  "cal.morningPeak": "Cao điểm sáng",
+  "cal.eveningPeak": "Cao điểm chiều",
+  "cal.peakFrom": "từ",
+  "cal.peakTo": "đến",
+  "cal.serviceInvalid":
+    "Chưa lưu: chuyến cuối phải sau chuyến đầu, và mỗi cao điểm phải kết thúc sau khi bắt đầu.",
   "cal.day.weekday": "Ngày thường",
   "cal.day.saturday": "Thứ Bảy",
   "cal.day.sunday": "Chủ Nhật",

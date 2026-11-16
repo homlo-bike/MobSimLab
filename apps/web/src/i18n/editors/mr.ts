@@ -253,7 +253,7 @@ export const editorsMr = {
   "rail.line.peakHeadway": "गर्दीच्या वेळेचा अंतराल",
   "rail.line.everyOffpeak": "दर, इतर वेळी",
   "rail.line.offpeakHeadway": "इतर वेळेचा अंतराल",
-  "rail.line.peaks": "गर्दीच्या वेळा 07:00–09:00 आणि 16:00–19:00.",
+  "rail.line.peaks": "गर्दीच्या वेळा {peaks}.",
   "rail.line.delete": "मार्ग हटवा",
   "rail.line.needsStops": "किमान दोन थांबे हवेत.",
   "rail.line.needsTrain": "गाडी निवडा.",

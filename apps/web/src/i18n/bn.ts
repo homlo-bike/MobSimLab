@@ -4,6 +4,7 @@ import { editorsBn } from "./editors/bn";
 import { cargoBikeBn } from "./cargo-bike/bn";
 import { commentsBn } from "./comments/bn";
 import { depotsBn } from "./depots/bn";
+import { fleetBn } from "./fleet/bn";
 import { timetablesBn } from "./timetables/bn";
 import { mslabBn } from "./mslab/bn";
 import { pluginCodeBn } from "./plugin-code/bn";
@@ -351,6 +352,7 @@ export const bn: Messages = {
   "prefs.group.cost": "খরচ",
   "prefs.group.benefits": "সুফল",
   "prefs.group.fares": "ভাড়া",
+  "prefs.group.appraisal": "মূল্যায়ন",
   "prefs.group.noise": "শব্দদূষণ",
   "prefs.traction.battery": "ব্যাটারি",
   "prefs.traction.diesel": "ডিজেল",
@@ -491,6 +493,7 @@ export const bn: Messages = {
   ...editorsBn,
   ...cargoBikeBn,
   ...depotsBn,
+  ...fleetBn,
   ...timetablesBn,
   ...commentsBn,
   ...mslabBn,
