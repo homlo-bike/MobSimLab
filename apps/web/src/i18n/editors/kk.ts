@@ -254,7 +254,7 @@ export const editorsKk = {
   "rail.line.peakHeadway": "Қарбалас уақыттағы аралық",
   "rail.line.everyOffpeak": "Әр, басқа уақытта",
   "rail.line.offpeakHeadway": "Басқа уақыттағы аралық",
-  "rail.line.peaks": "Қарбалас уақыт 07:00–09:00 және 16:00–19:00.",
+  "rail.line.peaks": "Қарбалас уақыт {peaks}.",
   "rail.line.delete": "Желіні жою",
   "rail.line.needsStops": "Кемінде екі аялдама керек.",
   "rail.line.needsTrain": "Пойызды таңдаңыз.",

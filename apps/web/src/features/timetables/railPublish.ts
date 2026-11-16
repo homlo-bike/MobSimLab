@@ -5,6 +5,7 @@ import type {
   EngineServiceLine,
   Network,
   PublishOptions,
+  RailEngine,
   RailEngineLoader,
   ServicePublication,
 } from "../railways/types";
@@ -26,6 +27,25 @@ export function dayEngineLines(
 }
 
 export type DayPublications = Partial<Record<DayTypeId, ServicePublication>>;
+
+/**
+ * Purpose: publish the railway's service lines on every day type that has lines, on an engine that has built the
+ * railway (each day with its own times and headways and the calendar's peaks).
+ */
+export function publishDays(
+  engine: Pick<RailEngine, "publishLines">,
+  railway: Network,
+  cal: ServiceCalendar,
+  options?: PublishOptions,
+  values?: Readonly<Record<string, number>> | null,
+): DayPublications {
+  const out: DayPublications = {};
+  for (const day of DAY_TYPES) {
+    const lines = dayEngineLines(railway, day, cal, values);
+    if (lines.length) out[day] = engine.publishLines(lines, day, options);
+  }
+  return out;
+}
 
 /** No publications (one object, so memos that depend on it keep). */
 const NONE: DayPublications = {};
@@ -64,8 +84,7 @@ export function useRailPublications(
       const engine = await loadRail();
       try {
         engine.build(railway!, null);
-        const publications: DayPublications = {};
-        for (const [day, l] of lines) if (l.length) publications[day] = engine.publishLines(l, day, options);
+        const publications = publishDays(engine, railway!, cal, options, values);
         if (live) setState({ key, publications, error: null });
       } catch (err) {
         fail(err);

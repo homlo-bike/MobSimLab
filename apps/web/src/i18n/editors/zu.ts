@@ -256,7 +256,7 @@ export const editorsZu = {
   "rail.line.peakHeadway": "Isikhawu sesikhathi esiphezulu",
   "rail.line.everyOffpeak": "Njalo, ngaphandle kwesikhathi esiphezulu",
   "rail.line.offpeakHeadway": "Isikhawu ngaphandle kwesikhathi esiphezulu",
-  "rail.line.peaks": "Izikhathi eziphezulu 07:00–09:00 no-16:00–19:00.",
+  "rail.line.peaks": "Izikhathi eziphezulu {peaks}.",
   "rail.line.delete": "Susa umugqa",
   "rail.line.needsStops": "Idinga okungenani iziteshi ezimbili.",
   "rail.line.needsTrain": "Khetha isitimela.",

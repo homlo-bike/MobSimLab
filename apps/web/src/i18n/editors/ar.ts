@@ -293,7 +293,7 @@ export const editorsAr = {
   "rail.line.peakHeadway": "الفاصل الزمني في الذروة",
   "rail.line.everyOffpeak": "التواتر خارج الذروة",
   "rail.line.offpeakHeadway": "الفاصل الزمني خارج الذروة",
-  "rail.line.peaks": "أوقات الذروة 07:00–09:00 و16:00–19:00.",
+  "rail.line.peaks": "أوقات الذروة {peaks}.",
   "rail.line.delete": "حذف الخط",
   "rail.line.needsStops": "يحتاج إلى محطتي توقف على الأقل.",
   "rail.line.needsTrain": "اختر قطارًا.",

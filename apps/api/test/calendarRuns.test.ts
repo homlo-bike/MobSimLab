@@ -31,6 +31,10 @@ describe("calendar run settings", () => {
         }),
       ).success,
     ).toBe(true);
+    // A day type whose lines run their own times brings its own service lines.
+    const own = plan();
+    own.day_types.sunday = { ...own.day_types.sunday, lines: '{"service_lines":[]}' };
+    expect(calendarPlan.safeParse(own).success).toBe(true);
   });
 
   it("refuses periods without days, broken labels, unknown day types and backwards service days", () => {

@@ -254,7 +254,7 @@ export const editorsHi = {
   "rail.line.peakHeadway": "व्यस्त समय का अंतराल",
   "rail.line.everyOffpeak": "हर, बाकी समय",
   "rail.line.offpeakHeadway": "बाकी समय का अंतराल",
-  "rail.line.peaks": "व्यस्त समय 07:00–09:00 और 16:00–19:00।",
+  "rail.line.peaks": "व्यस्त समय {peaks}।",
   "rail.line.delete": "लाइन हटाएँ",
   "rail.line.needsStops": "कम से कम दो स्टॉप चाहिए।",
   "rail.line.needsTrain": "एक गाड़ी चुनें।",
