@@ -368,3 +368,18 @@ export function withChoice(
   else delete next.choices;
   return next;
 }
+
+/**
+ * Purpose: the central value a project uses for a number parameter of the library: its own value for the
+ * mode, else its own for every mode, else the library's. Example: `paramNumber("analysis.gap_cell_m", prefs)`.
+ */
+export function paramNumber(key: string, values: PreferencesDoc["values"] | undefined, mode = "*"): number {
+  for (const id of mode === "*" ? [key] : [`${key}.${mode}`, key]) {
+    const v = values?.[id];
+    if (typeof v === "number" && Number.isFinite(v) && v >= 0) return v;
+  }
+  const p = LIBRARY_PARAMS.find((x) => x.id === key);
+  const lib = p ? paramLibrary(p, mode) : undefined;
+  if (!Array.isArray(lib)) throw new Error(`no number parameter ${key} in the assumption library`);
+  return lib[1];
+}

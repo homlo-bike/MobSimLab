@@ -353,6 +353,7 @@ export const ru: Messages = {
   "prefs.group.cost": "Затраты",
   "prefs.group.benefits": "Выгоды",
   "prefs.group.fares": "Тарифы",
+  "prefs.group.noise": "Шум",
   "prefs.traction.battery": "аккумулятор",
   "prefs.traction.diesel": "дизель",
   "prefs.traction.hydrogen": "водород",
