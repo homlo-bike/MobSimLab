@@ -1,6 +1,7 @@
 import type { DelayShares } from "../features/street-lines/types";
 import { MIXED_DELAY, PAINTED_DELAY } from "../features/street-setup/model";
 import rulesData from "./design-rules.generated.json";
+import libraryData from "../features/walk/defaults.generated.json";
 import paramsData from "./parameters.generated.json";
 
 /**
@@ -47,6 +48,21 @@ export function delaysFrom(doc: PreferencesDoc | null | undefined): DelayShares 
     if (v !== undefined) out[p.key] = Math.min(MAX_DELAY_SHARE, Math.max(0, v));
   }
   return out;
+}
+
+/** Preference id of the distance within which stops with the same name are one station. */
+export const SAME_NAME_PREF = "journey.same_name_station_m";
+
+/** The assumption library's same-name station distance in metres (`journey.same_name_station_m`). */
+export const LIBRARY_SAME_NAME_M = (libraryData as { same_name_station_m: number }).same_name_station_m;
+
+/**
+ * Purpose: the distance in metres within which stops with the same name are one station, for the schematic
+ * map, the journey planner and the benefits and ridership networks: the project's value, else the library's.
+ */
+export function sameNameStationM(values: PreferencesDoc["values"] | undefined): number {
+  const v = values?.[SAME_NAME_PREF];
+  return typeof v === "number" && Number.isFinite(v) && v >= 0 ? v : LIBRARY_SAME_NAME_M;
 }
 
 /** Purpose: the document with one value set, or removed (`null`) so the library's applies again. */
@@ -278,4 +294,19 @@ export function withChoice(
   if (Object.keys(choices).length) next.choices = choices;
   else delete next.choices;
   return next;
+}
+
+/**
+ * Purpose: the central value a project uses for a number parameter of the library: its own value for the
+ * mode, else its own for every mode, else the library's. Example: `paramNumber("analysis.gap_cell_m", prefs)`.
+ */
+export function paramNumber(key: string, values: PreferencesDoc["values"] | undefined, mode = "*"): number {
+  for (const id of mode === "*" ? [key] : [`${key}.${mode}`, key]) {
+    const v = values?.[id];
+    if (typeof v === "number" && Number.isFinite(v) && v >= 0) return v;
+  }
+  const p = LIBRARY_PARAMS.find((x) => x.id === key);
+  const lib = p ? paramLibrary(p, mode) : undefined;
+  if (!Array.isArray(lib)) throw new Error(`no number parameter ${key} in the assumption library`);
+  return lib[1];
 }
