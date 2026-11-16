@@ -284,6 +284,7 @@ export const zu: Messages = {
   "prefs.delayLane": "Emzileni webhasi noma wethremu odwetshwe ngopende",
   "prefs.delayDefault": "Umtapo wolwazi wemicabango: {value} %",
   "prefs.delayReset": "Sebenzisa inani lomtapo wolwazi",
+  "prefs.reason": "Isizathu sale nani (akuphoqelekile)",
   "prefs.currencyTitle": "Imali",
   "prefs.currencyIntro":
     "Yonke imali yephrojekthi iboniswa ngale mali: amathebula ezindleko, izinzuzo, izimo kanye nokonga kwebhayisikili lempahla.",

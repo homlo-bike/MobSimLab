@@ -279,6 +279,7 @@ export const vi: Messages = {
   "prefs.delayLane": "Trên làn xe buýt hoặc tàu điện chỉ được sơn",
   "prefs.delayDefault": "Thư viện giả định: {value} %",
   "prefs.delayReset": "Dùng giá trị thư viện",
+  "prefs.reason": "Lý do cho giá trị này (không bắt buộc)",
   "prefs.currencyTitle": "Tiền tệ",
   "prefs.currencyIntro":
     "Mọi khoản tiền trong dự án được hiển thị bằng tiền tệ này: bảng chi phí, lợi ích, kịch bản và khoản tiết kiệm của xe đạp chở hàng.",

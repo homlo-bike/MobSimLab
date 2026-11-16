@@ -278,6 +278,7 @@ export const sw: Messages = {
   "prefs.delayLane": "Katika njia ya basi au tramu iliyochorwa kwa rangi",
   "prefs.delayDefault": "Maktaba ya dhana: {value} %",
   "prefs.delayReset": "Tumia thamani ya maktaba",
+  "prefs.reason": "Sababu ya thamani hii (si lazima)",
   "prefs.currencyTitle": "Sarafu",
   "prefs.currencyIntro":
     "Fedha zote za mradi zinaonyeshwa kwa sarafu hii: majedwali ya gharama, manufaa, matukio na akiba ya baiskeli ya mizigo.",

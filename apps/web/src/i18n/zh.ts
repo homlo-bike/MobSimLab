@@ -268,6 +268,7 @@ export const zh: Messages = {
   "prefs.delayLane": "在划线的公交或有轨电车专用道中",
   "prefs.delayDefault": "假设库：{value} %",
   "prefs.delayReset": "使用假设库的值",
+  "prefs.reason": "此数值的理由（可选）",
   "prefs.currencyTitle": "货币",
   "prefs.currencyIntro": "项目中的所有金额都以此货币显示：成本表、效益、方案和货运自行车节省。",
   "prefs.currencyLabel": "金额显示货币",

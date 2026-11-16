@@ -280,6 +280,7 @@ export const es: Messages = {
   "prefs.delayLane": "En un carril bus o tranvía pintado",
   "prefs.delayDefault": "Biblioteca de supuestos: {value} %",
   "prefs.delayReset": "Usar el valor de la biblioteca",
+  "prefs.reason": "Motivo de este valor (opcional)",
   "prefs.currencyTitle": "Moneda",
   "prefs.currencyIntro":
     "Todo el dinero del proyecto se muestra en esta moneda: las tablas de costes, los beneficios, los escenarios y los ahorros de la bicicleta de carga.",

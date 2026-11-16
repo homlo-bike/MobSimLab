@@ -279,6 +279,7 @@ export const it: Messages = {
   "prefs.delayLane": "Su una corsia bus o tram solo dipinta",
   "prefs.delayDefault": "Libreria delle ipotesi: {value} %",
   "prefs.delayReset": "Usa il valore della libreria",
+  "prefs.reason": "Motivo di questo valore (facoltativo)",
   "prefs.currencyTitle": "Valuta",
   "prefs.currencyIntro":
     "Tutto il denaro del progetto è mostrato in questa valuta: tabelle dei costi, benefici, scenari e risparmi della cargo bike.",

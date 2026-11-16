@@ -279,6 +279,7 @@ export const ha: Messages = {
   "prefs.delayLane": "A cikin hanyar bas ko tram da aka zana da fenti",
   "prefs.delayDefault": "Ɗakin zato: {value} %",
   "prefs.delayReset": "Yi amfani da ƙimar ɗakin",
+  "prefs.reason": "Dalilin wannan ƙimar (ba dole ba)",
   "prefs.currencyTitle": "Kuɗi",
   "prefs.currencyIntro":
     "Duk kuɗin aikin ana nuna su a wannan kuɗin: teburorin kuɗaɗe, fa'idodi, yanayi da tanadin keken kaya.",

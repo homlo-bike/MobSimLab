@@ -276,6 +276,7 @@ export const mr: Messages = {
   "prefs.delayLane": "रंगवलेल्या बस किंवा ट्राम मार्गिकेत",
   "prefs.delayDefault": "गृहीतकांचे ग्रंथालय: {value} %",
   "prefs.delayReset": "ग्रंथालयातील मूल्य वापरा",
+  "prefs.reason": "या मूल्याचे कारण (ऐच्छिक)",
   "prefs.currencyTitle": "चलन",
   "prefs.currencyIntro":
     "प्रकल्पातील सर्व रक्कम या चलनात दाखवली जाते: खर्चाच्या तक्त्या, लाभ, परिस्थिती आणि कार्गो बाइकची बचत.",

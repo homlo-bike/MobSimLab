@@ -279,6 +279,7 @@ export const pl: Messages = {
   "prefs.delayLane": "Na buspasie lub pasie tramwajowym tylko wymalowanym",
   "prefs.delayDefault": "Biblioteka założeń: {value} %",
   "prefs.delayReset": "Użyj wartości z biblioteki",
+  "prefs.reason": "Powód tej wartości (opcjonalnie)",
   "prefs.currencyTitle": "Waluta",
   "prefs.currencyIntro":
     "Wszystkie kwoty w projekcie są pokazywane w tej walucie: tabele kosztów, korzyści, scenariusze i oszczędności roweru towarowego.",

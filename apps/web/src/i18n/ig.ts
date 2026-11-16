@@ -278,6 +278,7 @@ export const ig: Messages = {
   "prefs.delayLane": "N'ụzọ bọs ma ọ bụ tram e ji agba see",
   "prefs.delayDefault": "Ọbá akwụkwọ echiche: {value} %",
   "prefs.delayReset": "Jiri uru ọbá akwụkwọ",
+  "prefs.reason": "Ihe kpatara uru a (nhọrọ)",
   "prefs.currencyTitle": "Ego",
   "prefs.currencyIntro":
     "A na-egosi ego niile nke ọrụ a n'ego a: tebụl ọnụ ahịa, uru, ọnọdụ na nchekwa igwe kaa ibu.",

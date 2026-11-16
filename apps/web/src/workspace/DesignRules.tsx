@@ -1,4 +1,4 @@
-import { useId, useState } from "react";
+import { type ReactNode, useId, useState } from "react";
 import { useI18n } from "../i18n/i18n";
 import { RAIL_MODES } from "../features/railways/modes";
 import {
@@ -9,6 +9,7 @@ import {
   rulePrefId,
   withPref,
 } from "./preferences";
+import { ReasonField } from "./ReasonField";
 
 /** Project mode ids that the railway design tool knows by another id. */
 const RAIL_MODE_OF: Record<string, string> = { intercity_rail: "long_distance_rail" };
@@ -84,6 +85,14 @@ export function DesignRulesSection({
                 const id = rulePrefId(rule, mode);
                 if (id) onPreferences(withPref(preferences, id, v));
               }}
+              reason={
+                <ReasonField
+                  valueId={rulePrefId(rule, mode) ?? ""}
+                  preferences={preferences}
+                  editable={editable}
+                  onPreferences={onPreferences}
+                />
+              }
             />
           ))}
         </div>
@@ -103,12 +112,15 @@ function RuleField({
   value,
   editable,
   onChange,
+  reason,
 }: {
   rule: DesignRule;
   mode: string;
   value: number | undefined;
   editable: boolean;
   onChange: (v: number | null) => void;
+  /** The optional reason for the project's own value, shown below it. */
+  reason?: ReactNode;
 }) {
   const { t } = useI18n();
   const id = useId();
@@ -171,6 +183,7 @@ function RuleField({
           </button>
         )}
       </div>
+      {reason}
     </div>
   );
 }

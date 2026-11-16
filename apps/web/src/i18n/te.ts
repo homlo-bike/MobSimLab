@@ -279,6 +279,7 @@ export const te: Messages = {
   "prefs.delayLane": "రంగు వేసిన బస్సు లేదా ట్రామ్ లేన్‌లో",
   "prefs.delayDefault": "ఊహల గ్రంథాలయం: {value} %",
   "prefs.delayReset": "గ్రంథాలయ విలువను ఉపయోగించండి",
+  "prefs.reason": "ఈ విలువకు కారణం (ఐచ్ఛికం)",
   "prefs.currencyTitle": "కరెన్సీ",
   "prefs.currencyIntro":
     "ప్రాజెక్టులోని మొత్తం డబ్బు ఈ కరెన్సీలో చూపబడుతుంది: ఖర్చు పట్టికలు, ప్రయోజనాలు, దృశ్యాలు, కార్గో బైక్ ఆదాలు.",

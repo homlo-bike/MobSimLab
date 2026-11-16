@@ -269,6 +269,7 @@ export const am: Messages = {
   "prefs.delayLane": "በቀለም በተሳለ የአውቶቡስ ወይም የትራም መስመር ውስጥ",
   "prefs.delayDefault": "የግምቶች ቤተ መጻሕፍት፦ {value} %",
   "prefs.delayReset": "የቤተ መጻሕፍቱን እሴት ተጠቀም",
+  "prefs.reason": "የዚህ እሴት ምክንያት (አማራጭ)",
   "prefs.currencyTitle": "ምንዛሪ",
   "prefs.currencyIntro": "የፕሮጀክቱ ገንዘብ ሁሉ በዚህ ምንዛሪ ይታያል፦ የወጪ ሰንጠረዦች፣ ጥቅሞች፣ ሁኔታዎች እና የጭነት ብስክሌት ቁጠባ።",
   "prefs.currencyLabel": "ገንዘብን በዚህ አሳይ",

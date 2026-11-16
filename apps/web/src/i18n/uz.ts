@@ -282,6 +282,7 @@ export const uz: Messages = {
   "prefs.delayLane": "Boʻyalgan avtobus yoki tramvay yoʻlagida",
   "prefs.delayDefault": "Farazlar kutubxonasi: {value} %",
   "prefs.delayReset": "Kutubxona qiymatidan foydalanish",
+  "prefs.reason": "Ushbu qiymat sababi (ixtiyoriy)",
   "prefs.currencyTitle": "Valyuta",
   "prefs.currencyIntro":
     "Loyihadagi barcha pul miqdorlari shu valyutada ko‘rsatiladi: xarajat jadvallari, foydalar, ssenariylar va yuk velosipedi tejamlari.",
