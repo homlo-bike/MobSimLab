@@ -304,6 +304,7 @@ export const zh: Messages = {
   "prefs.group.energy": "能源与气候",
   "prefs.group.cost": "成本",
   "prefs.group.benefits": "效益",
+  "prefs.group.fares": "票价",
   "prefs.traction.battery": "电池",
   "prefs.traction.diesel": "柴油",
   "prefs.traction.hydrogen": "氢能",

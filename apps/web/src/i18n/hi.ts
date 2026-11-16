@@ -316,6 +316,7 @@ export const hi: Messages = {
   "prefs.group.energy": "ऊर्जा और जलवायु",
   "prefs.group.cost": "लागत",
   "prefs.group.benefits": "लाभ",
+  "prefs.group.fares": "किराया",
   "prefs.traction.battery": "बैटरी",
   "prefs.traction.diesel": "डीज़ल",
   "prefs.traction.hydrogen": "हाइड्रोजन",

@@ -318,6 +318,7 @@ export const te: Messages = {
   "prefs.group.energy": "శక్తి మరియు వాతావరణం",
   "prefs.group.cost": "ఖర్చులు",
   "prefs.group.benefits": "ప్రయోజనాలు",
+  "prefs.group.fares": "ఛార్జీలు",
   "prefs.traction.battery": "బ్యాటరీ",
   "prefs.traction.diesel": "డీజిల్",
   "prefs.traction.hydrogen": "హైడ్రోజన్",

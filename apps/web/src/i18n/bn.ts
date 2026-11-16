@@ -316,6 +316,7 @@ export const bn: Messages = {
   "prefs.group.energy": "শক্তি ও জলবায়ু",
   "prefs.group.cost": "খরচ",
   "prefs.group.benefits": "সুফল",
+  "prefs.group.fares": "ভাড়া",
   "prefs.traction.battery": "ব্যাটারি",
   "prefs.traction.diesel": "ডিজেল",
   "prefs.traction.hydrogen": "হাইড্রোজেন",

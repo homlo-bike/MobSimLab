@@ -313,6 +313,7 @@ export const fa: Messages = {
   "prefs.group.energy": "انرژی و اقلیم",
   "prefs.group.cost": "هزینه‌ها",
   "prefs.group.benefits": "منافع",
+  "prefs.group.fares": "کرایه‌ها",
   "prefs.traction.battery": "باتری",
   "prefs.traction.diesel": "دیزل",
   "prefs.traction.hydrogen": "هیدروژن",

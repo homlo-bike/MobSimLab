@@ -306,6 +306,7 @@ export const am: Messages = {
   "prefs.group.energy": "ኃይልና የአየር ንብረት",
   "prefs.group.cost": "ወጪዎች",
   "prefs.group.benefits": "ጥቅሞች",
+  "prefs.group.fares": "የጉዞ ዋጋ",
   "prefs.traction.battery": "ባትሪ",
   "prefs.traction.diesel": "ናፍጣ",
   "prefs.traction.hydrogen": "ሃይድሮጅን",

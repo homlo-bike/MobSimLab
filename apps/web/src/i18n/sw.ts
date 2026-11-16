@@ -318,6 +318,7 @@ export const sw: Messages = {
   "prefs.group.energy": "Nishati na tabianchi",
   "prefs.group.cost": "Gharama",
   "prefs.group.benefits": "Manufaa",
+  "prefs.group.fares": "Nauli",
   "prefs.traction.battery": "betri",
   "prefs.traction.diesel": "dizeli",
   "prefs.traction.hydrogen": "haidrojeni",

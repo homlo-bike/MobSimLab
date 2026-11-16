@@ -318,6 +318,7 @@ export const vi: Messages = {
   "prefs.group.energy": "Năng lượng và khí hậu",
   "prefs.group.cost": "Chi phí",
   "prefs.group.benefits": "Lợi ích",
+  "prefs.group.fares": "Giá vé",
   "prefs.traction.battery": "pin",
   "prefs.traction.diesel": "diesel",
   "prefs.traction.hydrogen": "hydro",

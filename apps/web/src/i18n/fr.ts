@@ -321,6 +321,7 @@ export const fr: Messages = {
   "prefs.group.energy": "Énergie et climat",
   "prefs.group.cost": "Coûts",
   "prefs.group.benefits": "Bénéfices",
+  "prefs.group.fares": "Tarifs",
   "prefs.traction.battery": "batterie",
   "prefs.traction.diesel": "diesel",
   "prefs.traction.hydrogen": "hydrogène",

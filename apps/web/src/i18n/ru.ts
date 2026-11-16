@@ -320,6 +320,7 @@ export const ru: Messages = {
   "prefs.group.energy": "Энергия и климат",
   "prefs.group.cost": "Затраты",
   "prefs.group.benefits": "Выгоды",
+  "prefs.group.fares": "Тарифы",
   "prefs.traction.battery": "аккумулятор",
   "prefs.traction.diesel": "дизель",
   "prefs.traction.hydrogen": "водород",

@@ -29,6 +29,7 @@ const GROUP_LABEL: Record<string, MessageKey> = {
   "Energy and climate": "prefs.group.energy",
   Cost: "prefs.group.cost",
   Benefits: "prefs.group.benefits",
+  Fares: "prefs.group.fares",
 };
 
 const TRACTION_LABEL: Record<string, MessageKey> = {
