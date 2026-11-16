@@ -322,6 +322,39 @@ describe("network tables", () => {
     expect(within(service).getByText("05:00–24:00")).toBeTruthy();
   });
 
+  it("shows each line's projected riders from the benefit estimate", async () => {
+    const props = {
+      railway: railway(),
+      streetLines: STREET,
+      preferences: { values: {} },
+      loadRail,
+      fetchHeights: async (p: [number, number][]) => p.map(() => 0),
+    };
+    const { rerender } = render(<NetworkTables {...props} riders={null} />);
+    const service = await screen.findByRole("region", { name: "Service and fleet per line" });
+    expect(within(service).getByText(/They show once that estimate is ready/)).toBeTruthy();
+    rerender(
+      <NetworkTables
+        {...props}
+        riders={{ "rail:M1": [8000, 12000, 18500], "street:0": [900, 1500, 2100] }}
+      />,
+    );
+    expect(within(service).getByText("12,000")).toBeTruthy();
+    expect(within(service).getByText("8K–18.5K")).toBeTruthy();
+    expect(within(service).getByText("900–2.1K")).toBeTruthy();
+    expect(within(service).queryByText(/They show once/)).toBeNull();
+    const names = () =>
+      within(service)
+        .getAllByRole("row")
+        .slice(1)
+        .map((r) => r.querySelector(".font-medium")?.textContent);
+    const riders = within(service).getByRole("button", { name: /Riders a day/ });
+    fireEvent.click(riders); // most riders first
+    await waitFor(() => expect(names()).toEqual(["M1", "Route 7"]));
+    fireEvent.click(riders);
+    await waitFor(() => expect(names()).toEqual(["Route 7", "M1"]));
+  });
+
   it("says when there is nothing to measure", () => {
     render(<NetworkTables railway={null} streetLines={null} preferences={null} />);
     expect(screen.getByText(/Nothing to measure yet/)).toBeTruthy();

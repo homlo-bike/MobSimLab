@@ -18,6 +18,7 @@ import { hhmm } from "../railways/serviceLines";
 import type { Network, RailEngineLoader } from "../railways/types";
 import type { StreetLinesDoc } from "../street-lines/saved";
 import type { PreferencesDoc } from "../../workspace/preferences";
+import type { Triple } from "../benefits/params";
 import { type LineFact, lineFacts } from "./lineFacts";
 import {
   BRIDGES,
@@ -38,6 +39,11 @@ interface Props {
   preferences: PreferencesDoc | null;
   /** Saves the project's own values (the energy section's grid intensity and battery bus share). */
   onPreferences?: (d: PreferencesDoc) => void;
+  /**
+   * Projected riders a weekday per line id (low, medium, high), from the benefit estimate; null while it
+   * is not ready.
+   */
+  riders?: Record<string, Triple> | null;
   /** Tests inject these. */
   loadRail?: RailEngineLoader;
   loadEnergy?: EnergyEngineLoader;
@@ -46,6 +52,8 @@ interface Props {
 
 const km = (v: number) => `${fmtQty(v)} km`;
 const int = (v: number) => new Intl.NumberFormat("en").format(Math.round(v));
+const compact = (v: number) =>
+  new Intl.NumberFormat("en", { notation: "compact", maximumFractionDigits: 1 }).format(v);
 const sumOf = <T,>(xs: T[], f: (x: T) => number) => xs.reduce((s, x) => s + f(x), 0);
 
 /**
@@ -58,6 +66,7 @@ export function NetworkTables({
   streetLines,
   preferences,
   onPreferences,
+  riders = null,
   loadRail,
   loadEnergy,
   fetchHeights,
@@ -104,7 +113,7 @@ export function NetworkTables({
         <>
           <Summary facts={facts} q={q} />
           <Infrastructure q={q} terrain={build?.terrain ?? null} />
-          <ServiceAndFleet facts={facts} />
+          <ServiceAndFleet facts={facts} riders={riders} />
           {energyInTables() && (
             <EnergySection
               facts={facts}
@@ -373,10 +382,20 @@ function Infrastructure({ q, terrain }: { q: Quantities; terrain: "ready" | "fai
 }
 
 type FactKey =
-  "name" | "length" | "stops" | "trip" | "headway" | "hours" | "trips" | "fleet" | "places" | "capacity";
+  | "name"
+  | "length"
+  | "stops"
+  | "trip"
+  | "headway"
+  | "hours"
+  | "trips"
+  | "fleet"
+  | "places"
+  | "capacity"
+  | "riders";
 
 /** Purpose: the service and fleet of each line, sortable by any column. */
-function ServiceAndFleet({ facts }: { facts: LineFact[] }) {
+function ServiceAndFleet({ facts, riders }: { facts: LineFact[]; riders: Record<string, Triple> | null }) {
   const [sort, setSort] = useState<Sort<FactKey>>(null);
   const rows = sorted(facts, sort, (f, k) => {
     switch (k) {
@@ -400,6 +419,8 @@ function ServiceAndFleet({ facts }: { facts: LineFact[] }) {
         return f.placesPerVehicle;
       case "capacity":
         return f.capacityPerHour;
+      case "riders":
+        return riders?.[f.id]?.[1] ?? -1;
     }
   });
   const H = (label: string, k: FactKey, right = true) => (
@@ -415,8 +436,8 @@ function ServiceAndFleet({ facts }: { facts: LineFact[] }) {
         Service and fleet
       </h2>
       <p className="mt-1 max-w-3xl text-slate-600">
-        Each line's frequency, operating hours, trips, fleet and the places it offers, on a weekday. Fleet and
-        vehicle-km are the same as in the cost tables.
+        Each line's frequency, operating hours, trips, fleet, the places it offers and its projected riders,
+        on a weekday. Fleet and vehicle-km are the same as in the cost tables.
       </p>
       {facts.length === 0 ? (
         <p className="mt-4 rounded-xl border border-dashed border-slate-300 bg-white px-4 py-5 text-slate-600">
@@ -425,7 +446,7 @@ function ServiceAndFleet({ facts }: { facts: LineFact[] }) {
       ) : (
         <section className={card} aria-label="Service and fleet per line">
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[50rem] text-sm">
+            <table className="w-full min-w-[55rem] text-sm">
               <thead>
                 <tr className="border-b border-slate-200">
                   {H("Line", "name", false)}
@@ -438,6 +459,7 @@ function ServiceAndFleet({ facts }: { facts: LineFact[] }) {
                   {H("Fleet", "fleet")}
                   {H("Places", "places")}
                   {H("Capacity", "capacity")}
+                  {H("Riders a day", "riders")}
                 </tr>
               </thead>
               <tbody>
@@ -490,10 +512,20 @@ function ServiceAndFleet({ facts }: { facts: LineFact[] }) {
                         {int(f.capacityPerHour)}
                         {sub("per hour")}
                       </td>
+                      <td className={num}>
+                        {riders?.[f.id] ? (
+                          <>
+                            {int(riders[f.id]![1])}
+                            {sub(`${compact(riders[f.id]![0])}–${compact(riders[f.id]![2])}`)}
+                          </>
+                        ) : (
+                          dash
+                        )}
+                      </td>
                     </tr>
                     {f.problem && (
                       <tr className="border-b border-slate-100">
-                        <td colSpan={10} className="px-2 pb-2 text-xs text-amber-800">
+                        <td colSpan={11} className="px-2 pb-2 text-xs text-amber-800">
                           No service figures yet: {f.problem}
                         </td>
                       </tr>
@@ -512,6 +544,10 @@ function ServiceAndFleet({ facts }: { facts: LineFact[] }) {
             <li>
               Rail fleets count units: a line of 4 trains of 2 coupled units has a fleet of 8. Spares come
               from the assumption library (mode.spare_share).
+            </li>
+            <li>
+              Riders are the projected boardings a weekday from the benefit estimate below, medium with low
+              and high under it.{riders ? "" : " They show once that estimate is ready."}
             </li>
             {assumedHours && (
               <li>
