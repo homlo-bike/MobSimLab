@@ -312,6 +312,7 @@ export const ko: Messages = {
   "prefs.group.energy": "에너지와 기후",
   "prefs.group.cost": "비용",
   "prefs.group.benefits": "편익",
+  "prefs.group.fares": "요금",
   "prefs.traction.battery": "배터리",
   "prefs.traction.diesel": "디젤",
   "prefs.traction.hydrogen": "수소",

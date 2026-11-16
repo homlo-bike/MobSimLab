@@ -319,6 +319,7 @@ export const uk: Messages = {
   "prefs.group.energy": "Енергія та клімат",
   "prefs.group.cost": "Витрати",
   "prefs.group.benefits": "Вигоди",
+  "prefs.group.fares": "Тарифи",
   "prefs.traction.battery": "акумулятор",
   "prefs.traction.diesel": "дизель",
   "prefs.traction.hydrogen": "водень",

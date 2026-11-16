@@ -323,6 +323,7 @@ export const ta: Messages = {
   "prefs.group.energy": "ஆற்றலும் காலநிலையும்",
   "prefs.group.cost": "செலவுகள்",
   "prefs.group.benefits": "பயன்கள்",
+  "prefs.group.fares": "கட்டணங்கள்",
   "prefs.traction.battery": "மின்கலம்",
   "prefs.traction.diesel": "டீசல்",
   "prefs.traction.hydrogen": "ஹைட்ரஜன்",

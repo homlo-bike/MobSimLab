@@ -319,6 +319,7 @@ export const ha: Messages = {
   "prefs.group.energy": "Makamashi da yanayi",
   "prefs.group.cost": "Kuɗaɗe",
   "prefs.group.benefits": "Fa'idodi",
+  "prefs.group.fares": "Kuɗin mota",
   "prefs.traction.battery": "batir",
   "prefs.traction.diesel": "dizal",
   "prefs.traction.hydrogen": "hydrogen",

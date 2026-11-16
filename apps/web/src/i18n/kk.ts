@@ -316,6 +316,7 @@ export const kk: Messages = {
   "prefs.group.energy": "Энергия және климат",
   "prefs.group.cost": "Шығындар",
   "prefs.group.benefits": "Пайда",
+  "prefs.group.fares": "Жол ақысы",
   "prefs.traction.battery": "аккумулятор",
   "prefs.traction.diesel": "дизель",
   "prefs.traction.hydrogen": "сутегі",

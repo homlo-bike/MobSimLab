@@ -315,6 +315,7 @@ export const mr: Messages = {
   "prefs.group.energy": "ऊर्जा आणि हवामान",
   "prefs.group.cost": "खर्च",
   "prefs.group.benefits": "लाभ",
+  "prefs.group.fares": "भाडे",
   "prefs.traction.battery": "बॅटरी",
   "prefs.traction.diesel": "डिझेल",
   "prefs.traction.hydrogen": "हायड्रोजन",

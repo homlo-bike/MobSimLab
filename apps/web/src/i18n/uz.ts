@@ -322,6 +322,7 @@ export const uz: Messages = {
   "prefs.group.energy": "Energiya va iqlim",
   "prefs.group.cost": "Xarajatlar",
   "prefs.group.benefits": "Foydalar",
+  "prefs.group.fares": "Yo'l haqi",
   "prefs.traction.battery": "batareya",
   "prefs.traction.diesel": "dizel",
   "prefs.traction.hydrogen": "vodorod",

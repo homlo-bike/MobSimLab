@@ -324,6 +324,7 @@ export const zu: Messages = {
   "prefs.group.energy": "Amandla nesimo sezulu",
   "prefs.group.cost": "Izindleko",
   "prefs.group.benefits": "Izinzuzo",
+  "prefs.group.fares": "Imali yokugibela",
   "prefs.traction.battery": "ibhethri",
   "prefs.traction.diesel": "udizili",
   "prefs.traction.hydrogen": "i-hydrogen",

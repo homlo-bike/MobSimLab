@@ -318,6 +318,7 @@ export const ur: Messages = {
   "prefs.group.energy": "توانائی اور آب و ہوا",
   "prefs.group.cost": "لاگت",
   "prefs.group.benefits": "فوائد",
+  "prefs.group.fares": "کرایے",
   "prefs.traction.battery": "بیٹری",
   "prefs.traction.diesel": "ڈیزل",
   "prefs.traction.hydrogen": "ہائیڈروجن",

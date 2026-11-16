@@ -324,6 +324,7 @@ export const de: Messages = {
   "prefs.group.energy": "Energie und Klima",
   "prefs.group.cost": "Kosten",
   "prefs.group.benefits": "Nutzen",
+  "prefs.group.fares": "Fahrpreise",
   "prefs.traction.battery": "Batterie",
   "prefs.traction.diesel": "Diesel",
   "prefs.traction.hydrogen": "Wasserstoff",

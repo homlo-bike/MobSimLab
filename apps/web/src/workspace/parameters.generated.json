@@ -11,7 +11,8 @@
   "Depots and streets",
   "Energy and climate",
   "Cost",
-  "Benefits"
+  "Benefits",
+  "Fares"
  ],
  "params": [
   {
@@ -4750,6 +4751,286 @@
      0.6,
      0.8,
      1.1
+    ]
+   }
+  },
+  {
+   "key": "fare.flat",
+   "label": "Flat fare: one fare for every trip",
+   "group": "Fares",
+   "unit": "US$ per trip (2023, PPP)",
+   "kind": "number",
+   "values": {
+    "*": [
+     1.5,
+     2.5,
+     4
+    ]
+   }
+  },
+  {
+   "key": "fare.zonal.first_zone",
+   "label": "Zonal fare: fare for a trip within one zone",
+   "group": "Fares",
+   "unit": "US$ per trip (2023, PPP)",
+   "kind": "number",
+   "values": {
+    "*": [
+     1.5,
+     2.5,
+     4
+    ]
+   }
+  },
+  {
+   "key": "fare.zonal.extra_zone",
+   "label": "Zonal fare: added for each further zone",
+   "group": "Fares",
+   "unit": "US$ per zone (2023, PPP)",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.5,
+     1,
+     2
+    ]
+   }
+  },
+  {
+   "key": "fare.distance.base",
+   "label": "Distance-based fare: base fare per trip",
+   "group": "Fares",
+   "unit": "US$ per trip (2023, PPP)",
+   "kind": "number",
+   "values": {
+    "*": [
+     1,
+     1.5,
+     2.5
+    ]
+   }
+  },
+  {
+   "key": "fare.distance.per_km",
+   "label": "Distance-based fare: added per km travelled",
+   "group": "Fares",
+   "unit": "US$ per km (2023, PPP)",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.08,
+     0.15,
+     0.25
+    ]
+   }
+  },
+  {
+   "key": "fare.distance.max",
+   "label": "Distance-based fare: highest fare for one trip (0 for no cap)",
+   "group": "Fares",
+   "unit": "US$ per trip (2023, PPP)",
+   "kind": "number",
+   "values": {
+    "*": [
+     0,
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "key": "fare.pass.trip_share",
+   "label": "Passes: share of trips made with a monthly pass",
+   "group": "Fares",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.3,
+     0.5,
+     0.7
+    ]
+   }
+  },
+  {
+   "key": "fare.pass.price_in_fares",
+   "label": "Passes: price of a monthly pass, in single fares of the same trip",
+   "group": "Fares",
+   "unit": "single fares",
+   "kind": "number",
+   "values": {
+    "*": [
+     20,
+     30,
+     40
+    ]
+   }
+  },
+  {
+   "key": "fare.pass.trips_per_month",
+   "label": "Passes: trips a pass holder makes in a month",
+   "group": "Fares",
+   "unit": "trips / month",
+   "kind": "number",
+   "values": {
+    "*": [
+     36,
+     44,
+     54
+    ]
+   }
+  },
+  {
+   "key": "fare.concession.child.share",
+   "label": "Discounts: share of trips made by children",
+   "group": "Fares",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.04,
+     0.08,
+     0.12
+    ]
+   }
+  },
+  {
+   "key": "fare.concession.child.discount",
+   "label": "Discounts: children's discount on the fare",
+   "group": "Fares",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.4,
+     0.5,
+     1
+    ]
+   }
+  },
+  {
+   "key": "fare.concession.senior.share",
+   "label": "Discounts: share of trips made by older people",
+   "group": "Fares",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.06,
+     0.12,
+     0.18
+    ]
+   }
+  },
+  {
+   "key": "fare.concession.senior.discount",
+   "label": "Discounts: older people's discount on the fare",
+   "group": "Fares",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.3,
+     0.5,
+     1
+    ]
+   }
+  },
+  {
+   "key": "fare.concession.student.share",
+   "label": "Discounts: share of trips made by students",
+   "group": "Fares",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.06,
+     0.12,
+     0.2
+    ]
+   }
+  },
+  {
+   "key": "fare.concession.student.discount",
+   "label": "Discounts: students' discount on the fare",
+   "group": "Fares",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.2,
+     0.3,
+     0.6
+    ]
+   }
+  },
+  {
+   "key": "fare.elasticity",
+   "label": "Fare elasticity of ridership (change in trips for a change in the average fare)",
+   "group": "Fares",
+   "unit": "elasticity",
+   "kind": "number",
+   "values": {
+    "*": [
+     -0.6,
+     -0.4,
+     -0.2
+    ]
+   }
+  },
+  {
+   "key": "fare.real_increase",
+   "label": "Yearly fare change above inflation",
+   "group": "Fares",
+   "unit": "share / year",
+   "kind": "number",
+   "values": {
+    "*": [
+     0,
+     0,
+     0.02
+    ]
+   }
+  },
+  {
+   "key": "fare.ridership_growth",
+   "label": "Yearly ridership growth",
+   "group": "Fares",
+   "unit": "share / year",
+   "kind": "number",
+   "values": {
+    "*": [
+     0,
+     0.01,
+     0.02
+    ]
+   }
+  },
+  {
+   "key": "fare.evasion_share",
+   "label": "Fare evasion: share of trips that pay nothing",
+   "group": "Fares",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.01,
+     0.03,
+     0.08
+    ]
+   }
+  },
+  {
+   "key": "fare.collection_cost_share",
+   "label": "Fare collection cost: share of fare revenue (ticket machines, sales, card fees, inspection)",
+   "group": "Fares",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.05,
+     0.1,
+     0.15
     ]
    }
   }
