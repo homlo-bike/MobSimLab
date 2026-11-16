@@ -3,6 +3,7 @@ import { editorsIt } from "./editors/it";
 import { cargoBikeIt } from "./cargo-bike/it";
 import { depotsIt } from "./depots/it";
 import { mslabIt } from "./mslab/it";
+import { pluginCodeIt } from "./plugin-code/it";
 import { populationIt } from "./population/it";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -258,6 +259,7 @@ export const it: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "Strade",
   "gis.regionsView": "Aree",
+  "gis.zonesView": "Zone di domanda",
   "gis.intro": "Aggiungi e modifica le informazioni usate nei calcoli.",
   "gis.areas": "Disegna aree o importale da OpenStreetMap",
   "gis.streets": "Configurazione stradale: corsie bus, ciclabili e tram, velocità, linea aerea",
@@ -307,6 +309,21 @@ export const it: Messages = {
   "prefs.rulesChanged": "{count} modificati",
   "prefs.rulesLibrary": "Libreria delle ipotesi: {value} {unit}",
   "prefs.rulesLibraryRange": "Libreria delle ipotesi: {value} {unit} (intervallo {low}–{high})",
+  "prefs.demandTitle": "Modello di domanda",
+  "prefs.demandIntro":
+    "Ogni valore usato dal modello di domanda, passo per passo: zone, generazione degli spostamenti, fasce orarie, distribuzione, scelta modale e assegnazione. Cambia un valore per questo progetto o mantieni quello della libreria delle ipotesi.",
+  "prefs.demandStep": "Passo del modello",
+  "prefs.demandSearch": "Cerca i valori",
+  "prefs.demandNone": "Nessun valore corrisponde.",
+  "prefs.demandStep.zones": "Zone",
+  "prefs.demandStep.generation": "Generazione degli spostamenti",
+  "prefs.demandStep.periods": "Fasce orarie",
+  "prefs.demandStep.distribution": "Distribuzione degli spostamenti",
+  "prefs.demandStep.mode_choice": "Scelta modale",
+  "prefs.demandStep.catchment": "Bacino d'utenza",
+  "prefs.demandStep.assignment": "Assegnazione",
+  "prefs.demandStep.calibration": "Calibrazione",
+  "prefs.demandAll": "Tutti i passi",
   "prefs.paramsTitle": "Tutti i parametri",
   "prefs.paramsIntro":
     "Ogni valore della libreria delle ipotesi. Imposta il tuo per tutti i modi o per un modo; il valore di un modo prevale su quello per tutti i modi. Il valore della libreria resta accanto.",
@@ -469,6 +486,7 @@ export const it: Messages = {
   ...cargoBikeIt,
   ...depotsIt,
   ...mslabIt,
+  ...pluginCodeIt,
   ...populationIt,
   ...roadIt,
   ...PLUGIN_MESSAGES.it,

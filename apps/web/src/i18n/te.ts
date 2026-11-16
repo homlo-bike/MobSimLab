@@ -3,6 +3,7 @@ import { editorsTe } from "./editors/te";
 import { cargoBikeTe } from "./cargo-bike/te";
 import { depotsTe } from "./depots/te";
 import { mslabTe } from "./mslab/te";
+import { pluginCodeTe } from "./plugin-code/te";
 import { populationTe } from "./population/te";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -258,6 +259,7 @@ export const te: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "వీధులు",
   "gis.regionsView": "ప్రాంతాలు",
+  "gis.zonesView": "డిమాండ్ జోన్లు",
   "gis.intro": "లెక్కలు ఉపయోగించే సమాచారాన్ని జోడించండి లేదా సవరించండి.",
   "gis.areas": "ప్రాంతాన్ని గీయండి లేదా OpenStreetMap నుండి దిగుమతి చేయండి",
   "gis.streets": "వీధి అమరిక: బస్సు, సైకిల్ మరియు ట్రామ్ లేన్‌లు, వేగాలు, పై తీగలు",
@@ -307,6 +309,21 @@ export const te: Messages = {
   "prefs.rulesChanged": "మార్చినవి: {count}",
   "prefs.rulesLibrary": "ఊహల గ్రంథాలయం: {value} {unit}",
   "prefs.rulesLibraryRange": "ఊహల గ్రంథాలయం: {value} {unit} (పరిధి {low}–{high})",
+  "prefs.demandTitle": "డిమాండ్ నమూనా",
+  "prefs.demandIntro":
+    "డిమాండ్ నమూనా ఉపయోగించే ప్రతి విలువ, దశలవారీగా: జోన్లు, ప్రయాణ ఉత్పత్తి, కాల వ్యవధులు, పంపిణీ, రవాణా విధానం ఎంపిక మరియు కేటాయింపు. ఈ ప్రాజెక్ట్ కోసం విలువను మార్చండి, లేదా అంచనాల గ్రంథాలయం విలువను ఉంచండి.",
+  "prefs.demandStep": "నమూనా దశ",
+  "prefs.demandSearch": "విలువలను వెతకండి",
+  "prefs.demandNone": "ఏ విలువా సరిపోలలేదు.",
+  "prefs.demandStep.zones": "జోన్లు",
+  "prefs.demandStep.generation": "ప్రయాణ ఉత్పత్తి",
+  "prefs.demandStep.periods": "కాల వ్యవధులు",
+  "prefs.demandStep.distribution": "ప్రయాణ పంపిణీ",
+  "prefs.demandStep.mode_choice": "రవాణా విధానం ఎంపిక",
+  "prefs.demandStep.catchment": "చేరువ ప్రాంతం",
+  "prefs.demandStep.assignment": "కేటాయింపు",
+  "prefs.demandStep.calibration": "క్రమాంకనం",
+  "prefs.demandAll": "అన్ని దశలు",
   "prefs.paramsTitle": "అన్ని పరామితులు",
   "prefs.paramsIntro":
     "అంచనాల లైబ్రరీలోని ప్రతి విలువ. అన్ని రవాణా విధానాలకు లేదా ఒక విధానానికి మీ విలువ ఇవ్వండి; ఒక విధానపు విలువ అన్నింటి విలువ కంటే ముందుంటుంది. లైబ్రరీ విలువ పక్కనే ఉంటుంది.",
@@ -467,6 +484,7 @@ export const te: Messages = {
   ...cargoBikeTe,
   ...depotsTe,
   ...mslabTe,
+  ...pluginCodeTe,
   ...populationTe,
   ...roadTe,
   ...PLUGIN_MESSAGES.te,

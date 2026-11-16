@@ -64,6 +64,13 @@ export interface ToolScratch {
   read(name: string): Promise<Buffer>;
 }
 
+/**
+ * Tools that may start worker threads. jco's component bindgen (`plugin-compile`) is WebAssembly that runs on
+ * WASI shims which do blocking I/O in a worker. The worker is under the same permission model (no files outside
+ * the code and scratch folder, no processes, no add-ons); the bindgen has no socket imports.
+ */
+const WORKER_TOOLS = new Set(["plugin-compile"]);
+
 const SCRATCH_NAME = /^[A-Za-z0-9_-]{1,80}(\.[A-Za-z0-9]{1,10}){0,2}$/;
 
 /** Purpose: the first of these programs that exists, or null. */
@@ -175,7 +182,9 @@ export class ToolRunner {
       `--allow-fs-read=${scratch}`,
       `--allow-fs-write=${scratch}`,
       `--max-old-space-size=${l.memoryMb}`,
+      ...(WORKER_TOOLS.has(tool) ? ["--allow-worker"] : []),
       "--disable-warning=ExperimentalWarning",
+      "--disable-warning=SecurityWarning",
       this.host,
       tool,
       String(l.inputBytes),

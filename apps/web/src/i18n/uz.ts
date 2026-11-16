@@ -3,6 +3,7 @@ import { editorsUz } from "./editors/uz";
 import { cargoBikeUz } from "./cargo-bike/uz";
 import { depotsUz } from "./depots/uz";
 import { mslabUz } from "./mslab/uz";
+import { pluginCodeUz } from "./plugin-code/uz";
 import { populationUz } from "./population/uz";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -261,6 +262,7 @@ export const uz: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "Koʻchalar",
   "gis.regionsView": "Hududlar",
+  "gis.zonesView": "Talab zonalari",
   "gis.intro": "Hisob-kitoblar foydalanadigan maʼlumotlarni qoʻshing yoki tahrirlang.",
   "gis.areas": "Hudud chizing yoki OpenStreetMap dan import qiling",
   "gis.streets": "Koʻcha tuzilishi: avtobus, velosiped va tramvay yoʻlaklari, tezliklar, havo simlari",
@@ -311,6 +313,21 @@ export const uz: Messages = {
   "prefs.rulesChanged": "o'zgartirilgan: {count}",
   "prefs.rulesLibrary": "Farazlar kutubxonasi: {value} {unit}",
   "prefs.rulesLibraryRange": "Farazlar kutubxonasi: {value} {unit} (oraliq {low}–{high})",
+  "prefs.demandTitle": "Talab modeli",
+  "prefs.demandIntro":
+    "Talab modeli ishlatadigan har bir qiymat, bosqichma-bosqich: zonalar, qatnovlar hosil boʻlishi, vaqt oraliqlari, taqsimot, transport turini tanlash va yuklash. Bu loyiha uchun qiymatni oʻzgartiring yoki farazlar kutubxonasinikini qoldiring.",
+  "prefs.demandStep": "Model bosqichi",
+  "prefs.demandSearch": "Qiymatlarni qidirish",
+  "prefs.demandNone": "Mos qiymat yoʻq.",
+  "prefs.demandStep.zones": "Zonalar",
+  "prefs.demandStep.generation": "Qatnovlar hosil boʻlishi",
+  "prefs.demandStep.periods": "Vaqt oraliqlari",
+  "prefs.demandStep.distribution": "Qatnovlar taqsimoti",
+  "prefs.demandStep.mode_choice": "Transport turini tanlash",
+  "prefs.demandStep.catchment": "Yetib borish hududi",
+  "prefs.demandStep.assignment": "Yuklash",
+  "prefs.demandStep.calibration": "Kalibrlash",
+  "prefs.demandAll": "Barcha bosqichlar",
   "prefs.paramsTitle": "Barcha parametrlar",
   "prefs.paramsIntro":
     "Farazlar kutubxonasining har bir qiymati. Barcha transport turlari yoki bittasi uchun o'z qiymatingizni bering; bitta turning qiymati barchasinikidan ustun. Kutubxona qiymati yonida turadi.",
@@ -476,6 +493,7 @@ export const uz: Messages = {
   ...cargoBikeUz,
   ...depotsUz,
   ...mslabUz,
+  ...pluginCodeUz,
   ...populationUz,
   ...roadUz,
   ...PLUGIN_MESSAGES.uz,

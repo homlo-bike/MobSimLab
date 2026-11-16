@@ -3,6 +3,7 @@ import { editorsJa } from "./editors/ja";
 import { cargoBikeJa } from "./cargo-bike/ja";
 import { depotsJa } from "./depots/ja";
 import { mslabJa } from "./mslab/ja";
+import { pluginCodeJa } from "./plugin-code/ja";
 import { populationJa } from "./population/ja";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -254,6 +255,7 @@ export const ja: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "道路",
   "gis.regionsView": "地域",
+  "gis.zonesView": "需要ゾーン",
   "gis.intro": "計算に使う情報を追加・編集します。",
   "gis.areas": "地域を描くか OpenStreetMap から取り込む",
   "gis.streets": "道路構成：バス・自転車・路面電車レーン、速度、架線",
@@ -302,6 +304,21 @@ export const ja: Messages = {
   "prefs.rulesChanged": "{count} 件変更",
   "prefs.rulesLibrary": "前提値ライブラリ：{value} {unit}",
   "prefs.rulesLibraryRange": "前提値ライブラリ：{value} {unit}（範囲 {low}–{high}）",
+  "prefs.demandTitle": "需要モデル",
+  "prefs.demandIntro":
+    "需要モデルが使うすべての値を手順ごとに示します：ゾーン、発生集中、時間帯、分布、交通手段選択、配分。このプロジェクト用に値を変更するか、前提ライブラリの値をそのまま使います。",
+  "prefs.demandStep": "モデルの手順",
+  "prefs.demandSearch": "値を検索",
+  "prefs.demandNone": "一致する値はありません。",
+  "prefs.demandStep.zones": "ゾーン",
+  "prefs.demandStep.generation": "発生集中",
+  "prefs.demandStep.periods": "時間帯",
+  "prefs.demandStep.distribution": "分布",
+  "prefs.demandStep.mode_choice": "交通手段選択",
+  "prefs.demandStep.catchment": "アクセス圏",
+  "prefs.demandStep.assignment": "配分",
+  "prefs.demandStep.calibration": "キャリブレーション",
+  "prefs.demandAll": "すべての手順",
   "prefs.paramsTitle": "すべてのパラメータ",
   "prefs.paramsIntro":
     "前提値ライブラリのすべての値。全モード共通または特定モードの値を設定できます。特定モードの値が全モード共通の値より優先されます。ライブラリの値は横に表示されます。",
@@ -462,6 +479,7 @@ export const ja: Messages = {
   ...cargoBikeJa,
   ...depotsJa,
   ...mslabJa,
+  ...pluginCodeJa,
   ...populationJa,
   ...roadJa,
   ...PLUGIN_MESSAGES.ja,
