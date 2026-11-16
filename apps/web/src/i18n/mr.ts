@@ -4,6 +4,7 @@ import { editorsMr } from "./editors/mr";
 import { cargoBikeMr } from "./cargo-bike/mr";
 import { commentsMr } from "./comments/mr";
 import { depotsMr } from "./depots/mr";
+import { geodataMr } from "./geodata/mr";
 import { tablesMr } from "./tables/mr";
 import { fleetMr } from "./fleet/mr";
 import { timetablesMr } from "./timetables/mr";
@@ -495,6 +496,7 @@ export const mr: Messages = {
   ...editorsMr,
   ...cargoBikeMr,
   ...depotsMr,
+  ...geodataMr,
   ...tablesMr,
   ...fleetMr,
   ...timetablesMr,

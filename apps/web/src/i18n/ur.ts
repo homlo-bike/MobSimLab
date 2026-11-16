@@ -4,6 +4,7 @@ import { editorsUr } from "./editors/ur";
 import { cargoBikeUr } from "./cargo-bike/ur";
 import { commentsUr } from "./comments/ur";
 import { depotsUr } from "./depots/ur";
+import { geodataUr } from "./geodata/ur";
 import { tablesUr } from "./tables/ur";
 import { fleetUr } from "./fleet/ur";
 import { timetablesUr } from "./timetables/ur";
@@ -500,6 +501,7 @@ export const ur: Messages = {
   ...editorsUr,
   ...cargoBikeUr,
   ...depotsUr,
+  ...geodataUr,
   ...tablesUr,
   ...fleetUr,
   ...timetablesUr,

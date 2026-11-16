@@ -4,6 +4,7 @@ import { editorsHa } from "./editors/ha";
 import { cargoBikeHa } from "./cargo-bike/ha";
 import { commentsHa } from "./comments/ha";
 import { depotsHa } from "./depots/ha";
+import { geodataHa } from "./geodata/ha";
 import { tablesHa } from "./tables/ha";
 import { fleetHa } from "./fleet/ha";
 import { timetablesHa } from "./timetables/ha";
@@ -502,6 +503,7 @@ export const ha: Messages = {
   ...editorsHa,
   ...cargoBikeHa,
   ...depotsHa,
+  ...geodataHa,
   ...tablesHa,
   ...fleetHa,
   ...timetablesHa,

@@ -4,6 +4,7 @@ import { editorsHi } from "./editors/hi";
 import { cargoBikeHi } from "./cargo-bike/hi";
 import { commentsHi } from "./comments/hi";
 import { depotsHi } from "./depots/hi";
+import { geodataHi } from "./geodata/hi";
 import { tablesHi } from "./tables/hi";
 import { fleetHi } from "./fleet/hi";
 import { timetablesHi } from "./timetables/hi";
@@ -498,6 +499,7 @@ export const hi: Messages = {
   ...editorsHi,
   ...cargoBikeHi,
   ...depotsHi,
+  ...geodataHi,
   ...tablesHi,
   ...fleetHi,
   ...timetablesHi,

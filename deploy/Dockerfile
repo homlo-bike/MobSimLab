@@ -71,7 +71,9 @@ LABEL org.opencontainers.image.source="https://github.com/homlo-bike/MobSimLab" 
       org.opencontainers.image.licenses="AGPL-3.0-or-later" \
       org.opencontainers.image.title="MobSimLab"
 
-RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates xz-utils curl \
+# osmium-tool (GPL-3.0) and osm2pgsql (GPL-2.0) import a project's OpenStreetMap data (ADR-0046); they run as
+# separate programs, never linked into MobSimLab.
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates xz-utils curl osmium-tool osm2pgsql \
  && rm -rf /var/lib/apt/lists/*
 
 # s6-overlay (ISC). Each archive is checked against the checksum published with the release.
@@ -90,6 +92,7 @@ COPY --from=node-build /out/api /app/api
 COPY --from=node-build /out/web /app/web
 COPY --from=py-build /app/venv /app/venv
 COPY db/migrations /app/db/migrations
+COPY tools/osm/mobsimlab-flex.lua tools/osm/tag_mapping.lua /app/osm/
 COPY deploy/bin /app/bin
 COPY deploy/s6/s6-rc.d /etc/s6-overlay/s6-rc.d
 COPY LICENSE /app/LICENSE
@@ -102,6 +105,7 @@ ENV PATH="/app/venv/bin:/command:${PATH}" \
     NODE_ENV=production \
     MOBSIMLAB_WEB_DIR=/app/web \
     MOBSIMLAB_PORT=8080 \
+    MOBSIMLAB_OSM_STYLE_DIR=/app/osm \
     MOBSIMLAB_LOG_DIR=/data/logs \
     S6_READ_ONLY_ROOT=1 \
     S6_BEHAVIOUR_IF_STAGE2_FAILS=2 \

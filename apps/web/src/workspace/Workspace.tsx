@@ -8,6 +8,8 @@ import type { Triple } from "../features/benefits/params";
 import type { BenefitsDoc } from "../features/benefits/formulas";
 import { benefitsApi } from "../features/benefits/data";
 import type { Region, RegionsDoc } from "../features/benefits/regions";
+import { MapDataPanel } from "../features/geodata/MapDataPanel";
+import { setDataProject } from "../geodata/projectData";
 import { projectTimetable } from "../features/benefits/timetable";
 import type { CargoBikeDoc } from "../features/cargo-bike/model";
 import { economyApi, type Prices } from "../features/costs/economy";
@@ -177,7 +179,7 @@ const NO_SETUPS: StreetSetup[] = [];
 const NO_STREET_LINES: SavedStreetLine[] = [];
 
 type SimView = "test" | "journey" | "road" | "calendar";
-type GisView = "streets" | "regions" | "zones" | "population";
+type GisView = "streets" | "regions" | "zones" | "population" | "data";
 const NO_REGIONS: Region[] = [];
 const NO_FEEDS: GtfsFeed[] = [];
 const NO_PLUGIN_LINES: Record<string, SavedPluginLine> = {};
@@ -316,6 +318,24 @@ export function Workspace({
     setMissing(false);
     api.get(projectId).then(setProject, () => setMissing(true));
   }, [api, projectId]);
+
+  // The map tools read this project's imported OpenStreetMap and elevation data where it has some (ADR-0046).
+  const geodata = useMemo(() => api.geodata(projectId), [api, projectId]);
+  useEffect(() => {
+    let open = true;
+    setDataProject(projectId);
+    // An answer that arrives after the project closed, or without import state, changes nothing.
+    geodata.status().then(
+      (s) => {
+        if (open) setDataProject(projectId, s?.osm?.current?.id ?? null);
+      },
+      () => undefined,
+    );
+    return () => {
+      open = false;
+      setDataProject(null);
+    };
+  }, [geodata, projectId]);
 
   // The plugins this project uses (ADR-0036 §9): bundled ones it has not turned off and installed ones it has
   // turned on. Until they load, the bundled plugins are used.
@@ -915,6 +935,15 @@ export function Workspace({
               />
             </Suspense>
           )}
+          {project && tab === "gis" && gis === "data" && (
+            <MapDataPanel
+              key={projectId}
+              api={geodata}
+              map={map}
+              panel={panel}
+              onOsmImport={(id) => setDataProject(projectId, id)}
+            />
+          )}
           {project && drawings.loaded && tab === "gis" && gis === "zones" && (
             <Suspense fallback={null}>
               <DemandZoneEditor
@@ -1346,6 +1375,14 @@ export function Workspace({
                     onClick={() => setGis("population")}
                   >
                     {t("gis.populationView")}
+                  </button>
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={gis === "data"}
+                    onClick={() => setGis("data")}
+                  >
+                    {t("gis.dataView")}
                   </button>
                 </div>
               </div>

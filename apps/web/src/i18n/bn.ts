@@ -4,6 +4,7 @@ import { editorsBn } from "./editors/bn";
 import { cargoBikeBn } from "./cargo-bike/bn";
 import { commentsBn } from "./comments/bn";
 import { depotsBn } from "./depots/bn";
+import { geodataBn } from "./geodata/bn";
 import { tablesBn } from "./tables/bn";
 import { fleetBn } from "./fleet/bn";
 import { timetablesBn } from "./timetables/bn";
@@ -494,6 +495,7 @@ export const bn: Messages = {
   ...editorsBn,
   ...cargoBikeBn,
   ...depotsBn,
+  ...geodataBn,
   ...tablesBn,
   ...fleetBn,
   ...timetablesBn,

@@ -6,6 +6,7 @@
 import { get } from "../../session/api";
 import type { LonLat } from "../street-lines/types";
 import { project, type Pt } from "./layout";
+import { withProject } from "../../geodata/projectData";
 
 /** What the API returns (apps/api/src/street-network/water.ts), `[lon, lat]`. */
 export interface WaterShapes {
@@ -21,7 +22,7 @@ export type WaterLoader = (box: WaterBox) => Promise<WaterShapes>;
 const MAX_SPAN = 1;
 
 export const loadWater: WaterLoader = (b) =>
-  get<WaterShapes>(`/api/street-network/water?bbox=${b.map((x) => x.toFixed(4)).join(",")}`);
+  get<WaterShapes>(withProject(`/api/street-network/water?bbox=${b.map((x) => x.toFixed(4)).join(",")}`));
 
 /**
  * Purpose: the box to fetch water for: the stations' box with a margin of a fifth of its size (at least

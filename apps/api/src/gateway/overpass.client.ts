@@ -19,6 +19,8 @@ export interface OverpassOptions {
   maxBytes: number;
   minIntervalMs: number;
   backoffMs: number[];
+  /** Retry a query that timed out. Imports turn this off and split the area instead. */
+  retryTimeouts: boolean;
   fetchImpl: typeof fetch;
   sleep: (ms: number) => Promise<void>;
 }
@@ -52,6 +54,7 @@ export class OverpassClient {
       maxBytes: 64 * 1024 * 1024,
       minIntervalMs: 1_000,
       backoffMs: [2_000, 4_000, 8_000],
+      retryTimeouts: true,
       fetchImpl: (...a) => fetch(...a),
       sleep: (ms) => new Promise((r) => setTimeout(r, ms)),
       ...options,
@@ -80,7 +83,8 @@ export class OverpassClient {
         return await this.once(query);
       } catch (e) {
         lastError = e instanceof OverpassError ? e : new OverpassError(String(e), 502);
-        if (!(lastError.status === 504 || lastError.message.startsWith("retry"))) throw lastError;
+        const timedOut = lastError.status === 504 && this.o.retryTimeouts;
+        if (!(timedOut || lastError.message.startsWith("retry"))) throw lastError;
       }
     }
     throw lastError;

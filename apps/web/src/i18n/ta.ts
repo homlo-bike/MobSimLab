@@ -4,6 +4,7 @@ import { editorsTa } from "./editors/ta";
 import { cargoBikeTa } from "./cargo-bike/ta";
 import { commentsTa } from "./comments/ta";
 import { depotsTa } from "./depots/ta";
+import { geodataTa } from "./geodata/ta";
 import { tablesTa } from "./tables/ta";
 import { fleetTa } from "./fleet/ta";
 import { timetablesTa } from "./timetables/ta";
@@ -509,6 +510,7 @@ export const ta: Messages = {
   ...editorsTa,
   ...cargoBikeTa,
   ...depotsTa,
+  ...geodataTa,
   ...tablesTa,
   ...fleetTa,
   ...timetablesTa,

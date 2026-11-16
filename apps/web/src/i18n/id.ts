@@ -4,6 +4,7 @@ import { editorsId } from "./editors/id";
 import { cargoBikeId } from "./cargo-bike/id";
 import { commentsId } from "./comments/id";
 import { depotsId } from "./depots/id";
+import { geodataId } from "./geodata/id";
 import { tablesId } from "./tables/id";
 import { fleetId } from "./fleet/id";
 import { timetablesId } from "./timetables/id";
@@ -502,6 +503,7 @@ export const id: Messages = {
   ...editorsId,
   ...cargoBikeId,
   ...depotsId,
+  ...geodataId,
   ...tablesId,
   ...fleetId,
   ...timetablesId,

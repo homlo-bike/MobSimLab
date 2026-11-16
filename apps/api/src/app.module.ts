@@ -23,6 +23,7 @@ import { EconomyModule } from "./economy/economy.module";
 import { CalendarModule } from "./calendar/calendar.module";
 import { PlacesModule } from "./places/places.module";
 import { TerrainModule } from "./terrain/terrain.module";
+import { GeodataModule } from "./geodata/geodata.module";
 import { AccessGuard } from "./iam/access.guard";
 import { RateLimitService } from "./iam/rate-limit.service";
 import { PluginsController } from "./plugins/plugins.controller";
@@ -51,6 +52,7 @@ export class AppModule {
         ConfigModule.forRoot(config),
         LoggingModule,
         StreetNetworkModule,
+        GeodataModule,
         TerrainModule,
         PopulationModule,
         PopulationLayersModule,

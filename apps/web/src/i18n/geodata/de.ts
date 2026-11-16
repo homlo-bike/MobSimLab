@@ -1,0 +1,58 @@
+import type { GeodataMessages } from "./en";
+
+/** Map data view messages (de). */
+export const geodataDe = {
+  "gis.dataView": "Kartendaten",
+  "data.title": "Kartendaten",
+  "data.intro":
+    "OpenStreetMap und Höhendaten für dieses Projekt, im Projekt gespeichert. Die Straßen-, Bahn-, Gebäude-, Gewässer- und Geländewerkzeuge lesen sie, statt jedes Mal OpenStreetMap und den Höhenserver zu fragen.",
+  "data.noArea":
+    "Zeichnen Sie zuerst etwas im Projekt: Der Import umfasst das Rechteck um alles Gezeichnete plus einen Puffer.",
+  "data.area": "Gebiet: {area} km², das Rechteck um alles Gezeichnete plus {buffer} km",
+  "data.osm": "OpenStreetMap",
+  "data.dem": "Höhen",
+  "data.notImported": "Noch nicht importiert.",
+  "data.imported": "Importiert {date}",
+  "data.dataDate": "Datenstand {date}",
+  "data.outside":
+    "Die Zeichnung reicht jetzt über das importierte Gebiet hinaus. Aktualisieren Sie, um das neue Gebiet zu importieren.",
+  "data.method": "Daten holen von",
+  "data.method.overpass": "Overpass (Gebiete bis {max} km²)",
+  "data.method.geofabrik": "Einer Geofabrik-Region",
+  "data.method.upload": "Einer .osm.pbf-Datei",
+  "data.region": "Region",
+  "data.regionsLoading": "Regionen werden gesucht…",
+  "data.noRegions": "Keine Geofabrik-Region enthält das ganze Gebiet.",
+  "data.planned": "Geplante Straßen behalten (geplant und im Bau)",
+  "data.import": "Importieren",
+  "data.refresh": "Aktualisieren",
+  "data.chooseFile": "Eine .osm.pbf-Datei wählen (bis {max} MB)",
+  "data.cancel": "Abbrechen",
+  "data.queued": "Wartet, bis ein anderer Import fertig ist…",
+  "data.step.download": "Wird heruntergeladen…",
+  "data.step.downloadN": "Wird heruntergeladen: {done} von {total}…",
+  "data.step.merge": "Kacheln werden zusammengefügt…",
+  "data.step.extract": "Projektgebiet wird ausgeschnitten…",
+  "data.step.database": "Wird in die Datenbank geschrieben…",
+  "data.failed": "Der letzte Import ist fehlgeschlagen: {error}",
+  "data.cancelled": "Der letzte Import wurde abgebrochen.",
+  "data.counts": "{roads} Straßen, {rails} Gleise, {buildings} Gebäude, {stops} Haltestellen",
+  "data.demFacts": "Copernicus GLO-30, {res}-m-Raster, Höhen auf ±{acc} m genau",
+  "data.demNoData": "{n} der 1°-Zellen des Gebiets haben keine Höhendaten (offenes Meer).",
+  "data.tooLarge":
+    "Das Gebiet ist {area} km² groß, mehr als Overpass abdeckt. Wählen Sie eine Geofabrik-Region oder laden Sie eine Datei hoch.",
+  "data.readOnly": "Eigentümer und Bearbeiter können Daten importieren.",
+  "data.licence": "© OpenStreetMap contributors, ODbL 1.0",
+  "data.own": "Eigenes Höhenraster",
+  "data.ownIntro":
+    "Ein GeoTIFF mit Höhen in Metern, etwa ein LiDAR-Geländemodell. Wo es Höhen hat, wird es vor GLO-30 verwendet.",
+  "data.ownFacts": "{res} m Raster, {crs}",
+  "data.ownAccuracy": "Höhen auf ±{acc} m genau",
+  "data.ownCrs": "Koordinatensystem, falls die Datei es nicht nennt (EPSG-Code, PROJ oder WKT)",
+  "data.ownSource": "Quelle",
+  "data.ownLicence": "Lizenz",
+  "data.ownAccuracyField": "Höhengenauigkeit (m)",
+  "data.ownChoose": "GeoTIFF-Datei wählen (bis {max} MB)",
+  "data.ownReplace": "Durch ein anderes GeoTIFF ersetzen (bis {max} MB)",
+  "data.remove": "Entfernen",
+} satisfies GeodataMessages;

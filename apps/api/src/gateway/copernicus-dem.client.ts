@@ -16,6 +16,21 @@ const USER_AGENT = "MobSimLab/0.1 (+https://github.com/homlo-bike/MobSimLab)";
 const RETRY_STATUS = new Set([429, 500, 502, 503, 504]);
 const HEADER_BYTES = 16 * 1024;
 
+/** Where the heights come from, shown next to every result that uses them (06-gis §4, C-09). */
+export const TERRAIN_SOURCE = {
+  id: "copernicus_glo30",
+  name: "Copernicus DEM GLO-30",
+  kind: "DSM",
+  note: "Surface model: heights include buildings and tree canopy. Heights are metres above the EGM2008 geoid.",
+  resolutionM: 30,
+  verticalAccuracyM: 4,
+  verticalAccuracyNote:
+    "Absolute vertical accuracy better than 4 m (90 % linear error), worse in steep terrain and forest.",
+  url: "https://doi.org/10.5270/ESA-c5d3d65",
+  licence:
+    "© DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; all rights reserved. Free use under the Copernicus DEM licence.",
+} as const;
+
 /** Settings, with defaults for production. */
 export interface CopernicusOptions {
   endpoint: string;
@@ -199,6 +214,19 @@ class Lru<K, V> {
   }
 }
 
+/** A block of DEM pixels: row by row from the north-west; NaN is no data. */
+export interface DemWindow {
+  width: number;
+  height: number;
+  /** Centre of the north-west pixel, degrees. */
+  originLon: number;
+  originLat: number;
+  /** Pixel size, degrees. */
+  stepLon: number;
+  stepLat: number;
+  values: Float32Array;
+}
+
 export class CopernicusDemClient {
   private readonly o: CopernicusOptions;
   private readonly headers: Lru<string, Promise<CellHeader | null>>;
@@ -260,6 +288,53 @@ export class CopernicusDemClient {
       }
     }
     return wsum > 0 ? Math.round((sum / wsum) * 100) / 100 : null;
+  }
+
+  /**
+   * Purpose: the pixels of one 1° cell inside a box, for importing the DEM into a project (06-gis §4).
+   * Inputs: the cell name (`cellName`) and the box `[west, south, east, north]` in degrees.
+   * Output: the window's pixels row by row from the north-west (NaN where the DEM has no data), the centre of
+   * its north-west pixel and the pixel size; null when the DEM does not cover the cell (open sea) or the box
+   * misses it. Side effects: range requests for the header and every internal tile the window touches.
+   */
+  async window(name: string, box: [number, number, number, number]): Promise<DemWindow | null> {
+    const h = await this.header(name);
+    if (!h) return null;
+    const col = (lon: number) => (lon - h.originLon) / h.scaleLon;
+    const row = (lat: number) => (h.originLat - lat) / h.scaleLat;
+    const x0 = Math.max(0, Math.floor(col(box[0])));
+    const x1 = Math.min(h.width - 1, Math.ceil(col(box[2])));
+    const y0 = Math.max(0, Math.floor(row(box[3])));
+    const y1 = Math.min(h.height - 1, Math.ceil(row(box[1])));
+    if (x1 < x0 || y1 < y0) return null;
+    const width = x1 - x0 + 1;
+    const height = y1 - y0 + 1;
+    const values = new Float32Array(width * height).fill(Number.NaN);
+    const across = Math.ceil(h.width / h.tileWidth);
+    for (let ty = Math.floor(y0 / h.tileHeight); ty <= Math.floor(y1 / h.tileHeight); ty++) {
+      for (let tx = Math.floor(x0 / h.tileWidth); tx <= Math.floor(x1 / h.tileWidth); tx++) {
+        const data = await this.tile(name, h, ty * across + tx);
+        const ya = Math.max(y0, ty * h.tileHeight);
+        const yb = Math.min(y1, (ty + 1) * h.tileHeight - 1);
+        const xa = Math.max(x0, tx * h.tileWidth);
+        const xb = Math.min(x1, (tx + 1) * h.tileWidth - 1);
+        for (let y = ya; y <= yb; y++) {
+          for (let x = xa; x <= xb; x++) {
+            const v = data[(y - ty * h.tileHeight) * h.tileWidth + (x - tx * h.tileWidth)]!;
+            if (Number.isFinite(v) && v > -1000) values[(y - y0) * width + (x - x0)] = v;
+          }
+        }
+      }
+    }
+    return {
+      width,
+      height,
+      originLon: h.originLon + (x0 + 0.5) * h.scaleLon,
+      originLat: h.originLat - (y0 + 0.5) * h.scaleLat,
+      stepLon: h.scaleLon,
+      stepLat: h.scaleLat,
+      values,
+    };
   }
 
   private async pixel(name: string, h: CellHeader, x: number, y: number): Promise<number | null> {

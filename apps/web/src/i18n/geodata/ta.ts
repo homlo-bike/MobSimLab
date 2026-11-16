@@ -1,0 +1,58 @@
+import type { GeodataMessages } from "./en";
+
+/** Map data view messages (ta). */
+export const geodataTa = {
+  "gis.dataView": "வரைபடத் தரவு",
+  "data.title": "வரைபடத் தரவு",
+  "data.intro":
+    "இந்தத் திட்டத்திற்கான OpenStreetMap மற்றும் உயரத் தரவு, திட்டத்துடன் சேமிக்கப்படும். தெரு, ரயில், கட்டடம், நீர் மற்றும் நிலப்பரப்புக் கருவிகள் ஒவ்வொரு முறையும் OpenStreetMap மற்றும் உயரச் சேவையகத்திடம் கேட்காமல் இவற்றைப் படிக்கின்றன.",
+  "data.noArea":
+    "முதலில் திட்டத்தில் ஏதாவது வரையுங்கள்: இறக்குமதி வரைந்த அனைத்தையும் சுற்றியுள்ள செவ்வகத்தையும் கூடுதல் விளிம்பையும் உள்ளடக்கும்.",
+  "data.area": "பகுதி: {area} ச.கி.மீ, வரைந்த அனைத்தையும் சுற்றிய செவ்வகம் மற்றும் {buffer} கி.மீ",
+  "data.osm": "OpenStreetMap",
+  "data.dem": "உயரம்",
+  "data.notImported": "இன்னும் இறக்குமதி செய்யப்படவில்லை.",
+  "data.imported": "இறக்குமதி {date}",
+  "data.dataDate": "{date} தேதியிட்ட தரவு",
+  "data.outside":
+    "வரைபடம் இப்போது இறக்குமதி செய்த பகுதிக்கு வெளியே செல்கிறது. புதிய பகுதியை இறக்குமதி செய்ய புதுப்பிக்கவும்.",
+  "data.method": "தரவை இங்கிருந்து பெறுக",
+  "data.method.overpass": "Overpass ({max} ச.கி.மீ வரையிலான பகுதிகள்)",
+  "data.method.geofabrik": "ஒரு Geofabrik பிராந்தியம்",
+  "data.method.upload": "ஒரு .osm.pbf கோப்பு",
+  "data.region": "பிராந்தியம்",
+  "data.regionsLoading": "பிராந்தியங்களைத் தேடுகிறது…",
+  "data.noRegions": "எந்த Geofabrik பிராந்தியமும் முழுப் பகுதியையும் கொண்டிருக்கவில்லை.",
+  "data.planned": "திட்டமிட்ட சாலைகளை வைத்திருக்கவும் (முன்மொழியப்பட்டவை மற்றும் கட்டுமானத்தில் உள்ளவை)",
+  "data.import": "இறக்குமதி",
+  "data.refresh": "புதுப்பி",
+  "data.chooseFile": "ஒரு .osm.pbf கோப்பைத் தேர்ந்தெடுக்கவும் ({max} MB வரை)",
+  "data.cancel": "ரத்துசெய்",
+  "data.queued": "மற்றொரு இறக்குமதி முடியக் காத்திருக்கிறது…",
+  "data.step.download": "பதிவிறக்குகிறது…",
+  "data.step.downloadN": "பதிவிறக்கம் {done} / {total}…",
+  "data.step.merge": "ஓடுகளை இணைக்கிறது…",
+  "data.step.extract": "திட்டப் பகுதியை வெட்டுகிறது…",
+  "data.step.database": "தரவுத்தளத்தில் எழுதுகிறது…",
+  "data.failed": "கடைசி இறக்குமதி தோல்வியடைந்தது: {error}",
+  "data.cancelled": "கடைசி இறக்குமதி ரத்து செய்யப்பட்டது.",
+  "data.counts": "{roads} தெருக்கள், {rails} ரயில் பாதைகள், {buildings} கட்டடங்கள், {stops} நிறுத்தங்கள்",
+  "data.demFacts": "Copernicus GLO-30, {res} மீ கட்டம், உயரம் ±{acc} மீ துல்லியம்",
+  "data.demNoData": "பகுதியின் 1° கட்டங்களில் {n} இல் உயரத் தரவு இல்லை (திறந்த கடல்).",
+  "data.tooLarge":
+    "பகுதி {area} ச.கி.மீ, Overpass வரம்பை விட அதிகம். ஒரு Geofabrik பிராந்தியத்தைத் தேர்ந்தெடுக்கவும் அல்லது கோப்பைப் பதிவேற்றவும்.",
+  "data.readOnly": "உரிமையாளர்களும் தொகுப்பாளர்களும் தரவை இறக்குமதி செய்யலாம்.",
+  "data.licence": "© OpenStreetMap contributors, ODbL 1.0",
+  "data.own": "உங்கள் சொந்த உயர வலை",
+  "data.ownIntro":
+    "மீட்டரில் உயரங்களைக் கொண்ட GeoTIFF, எ.கா. LiDAR நில மாதிரி. உயரங்கள் உள்ள இடங்களில் இது GLO-30-க்கு முன் பயன்படுத்தப்படும்.",
+  "data.ownFacts": "{res} மீ வலை, {crs}",
+  "data.ownAccuracy": "உயரங்கள் ±{acc} மீ-க்குள்",
+  "data.ownCrs": "ஆய அமைப்பு, கோப்பு அதைக் குறிப்பிடாவிட்டால் (EPSG குறியீடு, PROJ அல்லது WKT)",
+  "data.ownSource": "மூலம்",
+  "data.ownLicence": "உரிமம்",
+  "data.ownAccuracyField": "செங்குத்து துல்லியம் (மீ)",
+  "data.ownChoose": "GeoTIFF கோப்பைத் தேர்ந்தெடுக்கவும் ({max} MB வரை)",
+  "data.ownReplace": "வேறு GeoTIFF-ஆல் மாற்றவும் ({max} MB வரை)",
+  "data.remove": "நீக்கு",
+} satisfies GeodataMessages;
