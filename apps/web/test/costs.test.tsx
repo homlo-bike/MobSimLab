@@ -425,7 +425,7 @@ describe("cost tables", () => {
       />,
     );
     await waitFor(() => expect(screen.getAllByText(/CHF/).length).toBeGreaterThan(3));
-    expect(screen.getByText(/at 0\.9783 CHF per EUR/)).toBeTruthy();
+    expect(await screen.findByText(/at 0\.9783 CHF per EUR/)).toBeTruthy();
     expect(screen.queryAllByText(/€/)).toHaveLength(0);
     // The benefit tables get the estimate in CHF and the factor from EUR.
     await waitFor(() => expect(onEstimate.mock.lastCall?.[1].currency).toBe("CHF"));
