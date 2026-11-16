@@ -1,4 +1,5 @@
 import { roadKo } from "./road/ko";
+import { calendarKo } from "./calendar/ko";
 import { editorsKo } from "./editors/ko";
 import { cargoBikeKo } from "./cargo-bike/ko";
 import { depotsKo } from "./depots/ko";
@@ -381,5 +382,6 @@ export const ko: Messages = {
   ...cargoBikeKo,
   ...depotsKo,
   ...roadKo,
+  ...calendarKo,
   ...PLUGIN_MESSAGES.ko,
 };

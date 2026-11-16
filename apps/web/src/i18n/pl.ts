@@ -1,4 +1,5 @@
 import { roadPl } from "./road/pl";
+import { calendarPl } from "./calendar/pl";
 import { editorsPl } from "./editors/pl";
 import { cargoBikePl } from "./cargo-bike/pl";
 import { depotsPl } from "./depots/pl";
@@ -390,5 +391,6 @@ export const pl: Messages = {
   ...cargoBikePl,
   ...depotsPl,
   ...roadPl,
+  ...calendarPl,
   ...PLUGIN_MESSAGES.pl,
 };

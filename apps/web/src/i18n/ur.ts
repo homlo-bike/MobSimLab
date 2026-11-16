@@ -1,4 +1,5 @@
 import { roadUr } from "./road/ur";
+import { calendarUr } from "./calendar/ur";
 import { editorsUr } from "./editors/ur";
 import { cargoBikeUr } from "./cargo-bike/ur";
 import { depotsUr } from "./depots/ur";
@@ -391,5 +392,6 @@ export const ur: Messages = {
   ...cargoBikeUr,
   ...depotsUr,
   ...roadUr,
+  ...calendarUr,
   ...PLUGIN_MESSAGES.ur,
 };

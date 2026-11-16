@@ -1,4 +1,5 @@
 import { roadId } from "./road/id";
+import { calendarId } from "./calendar/id";
 import { editorsId } from "./editors/id";
 import { cargoBikeId } from "./cargo-bike/id";
 import { depotsId } from "./depots/id";
@@ -392,5 +393,6 @@ export const id: Messages = {
   ...cargoBikeId,
   ...depotsId,
   ...roadId,
+  ...calendarId,
   ...PLUGIN_MESSAGES.id,
 };

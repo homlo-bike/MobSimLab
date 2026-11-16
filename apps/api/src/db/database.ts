@@ -28,7 +28,7 @@ export const RUN_STATUSES = ["queued", "running", "done", "failed", "cancelled"]
 export type RunStatus = (typeof RUN_STATUSES)[number];
 
 /** Kinds of simulation run: the rail capacity run, and a sweep of its settings (0008_agent_runs.sql). */
-export type RunKind = "capacity" | "sweep" | "road";
+export type RunKind = "capacity" | "sweep" | "road" | "calendar";
 
 type Timestamp = ColumnType<Date, Date | string | undefined, Date | string>;
 

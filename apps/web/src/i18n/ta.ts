@@ -1,4 +1,5 @@
 import { roadTa } from "./road/ta";
+import { calendarTa } from "./calendar/ta";
 import { editorsTa } from "./editors/ta";
 import { cargoBikeTa } from "./cargo-bike/ta";
 import { depotsTa } from "./depots/ta";
@@ -399,5 +400,6 @@ export const ta: Messages = {
   ...cargoBikeTa,
   ...depotsTa,
   ...roadTa,
+  ...calendarTa,
   ...PLUGIN_MESSAGES.ta,
 };
