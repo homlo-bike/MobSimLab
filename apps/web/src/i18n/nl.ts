@@ -1,4 +1,5 @@
 import { editorsNl } from "./editors/nl";
+import { cargoBikeNl } from "./cargo-bike/nl";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -215,6 +216,7 @@ export const nl: Messages = {
   "drawing.rail-timetable": "de dienstregeling van de spoorlijnen",
   "drawing.preferences": "de projectvoorkeuren",
   "drawing.costs": "de kosteninstellingen",
+  "drawing.schematic": "het schema",
   "drawing.scenarios": "de opgeslagen scenario’s",
   "drawing.benefits": "de batenformules",
   "drawing.regions": "de gebieden",
@@ -249,10 +251,6 @@ export const nl: Messages = {
 
   "schematic.title": "Schema",
   "schematic.intro": "De netkaart bekijken en bewerken, en één lijn apart bekijken.",
-  "schematic.network": "Netkaart met schematisch getekende lijnen",
-  "schematic.line": "Eén lijn: lijnfilm en overstappen",
-  "schematic.layers": "Lagen, slepen en bochten",
-  "schematic.export": "Exporteren voor druk en schermen",
 
   "gis.title": "GIS",
   "gis.intro": "Voeg informatie toe die de berekeningen gebruiken, of bewerk die.",
@@ -280,6 +278,18 @@ export const nl: Messages = {
   "prefs.delayLane": "Op een geschilderde bus- of trambaan",
   "prefs.delayDefault": "Aannamebibliotheek: {value} %",
   "prefs.delayReset": "Waarde van de bibliotheek gebruiken",
+  "prefs.currencyTitle": "Valuta",
+  "prefs.currencyIntro":
+    "Alle bedragen in het project worden in deze valuta getoond: de kostentabellen, de baten, de scenario's en de besparingen van de bakfiets.",
+  "prefs.currencyLabel": "Bedragen tonen in",
+  "prefs.currencyCountry": "De eigen valuta van het land",
+  "prefs.currencyRate": "{code} per US$",
+  "prefs.currencyWorldBank": "Officiële wisselkoers van de Wereldbank ({year}): {value}",
+  "prefs.currencyMissing":
+    "De Wereldbank heeft geen wisselkoers voor {code}. Vul er een in om om te rekenen; tot dan toont elk hulpmiddel de valuta van het land.",
+  "prefs.currencyReset": "Koers van de Wereldbank gebruiken",
+  "prefs.currencyHow":
+    "Bedragen worden omgerekend via de Amerikaanse dollar, met de officiële wisselkoers van de Wereldbank voor elk land.",
   "prefs.moreTitle": "Regels, voertuigen en aannames",
   "prefs.moreIntro": "Elke variabele met minimum- en aanbevolen waarde, en de voertuigen van het project.",
   "prefs.rules": "Ontwerpregels per vervoerswijze, minimum en aanbevolen",
@@ -287,6 +297,81 @@ export const nl: Messages = {
   "prefs.switches": "Wissels, uit de wisselcatalogus",
   "prefs.calendar": "Kalender, vraag en kosten",
 
+  "job.stepOf": "Stap {step} van {steps}",
+  "job.cancel": "Annuleren",
+  "map.search": "Plaatsen zoeken",
+  "map.searchPlaceholder": "Plaats, straat, station of adres",
+  "map.searching": "Zoeken…",
+  "map.searchFailed": "Plaats zoeken mislukt: {error}",
+  "map.noPlaces": "Geen plaatsen gevonden.",
+  "map.places": "Gevonden plaatsen",
+  "map.searchCredit": "Plaatsnamen © OpenStreetMap-bijdragers, gevonden met Photon",
+  "map.layers": "Kaartlagen",
+  "map.basemap": "Basiskaart",
+  "map.streetMap": "Kaart",
+  "map.aerial": "Luchtfoto",
+  "map.aerialNote":
+    "Satellietbeelden van ongeveer 10 m per pixel: goed om het grondgebruik te zien, te grof om spoor of stoepranden te tekenen.",
+  "map.projectLayers": "Projectlagen",
+  "map.noLayers": "De lijnen en resultaten die je tekent verschijnen hier.",
+  "map.group.streetLines": "Straatlijnen",
+  "map.group.railways": "Spoorlijnen",
+  "map.group.cableFerry": "Kabelbanen en veerboten",
+  "map.group.streetSetups": "Straatinrichtingen",
+  "map.group.noise": "Geluidskaart",
+  "map.group.journey": "Reisplanner",
+  "map.group.agents": "Scenario van de AI-agent",
+  "help.menu": "Help",
+  "help.tour": "Rondleiding volgen",
+  "help.tourHint": "Een korte rondgang langs de tabbladen en tools van het project",
+  "help.example": "Voorbeeldproject openen",
+  "help.exampleMaking": "Voorbeeldproject wordt gemaakt…",
+  "help.exampleHint": "Een nieuw eigen project met een buslijn en een tram in Zürich",
+  "help.exampleFailed": "Het voorbeeldproject kon niet worden gemaakt: {error}",
+  "example.name": "Voorbeeld: bus en tram in Zürich",
+  "example.description":
+    "Een voorbeeld om te verkennen: een buslijn van Bellevue naar Haldenbach en een tram over de Bahnhofstrasse. Verander alles; het is uw eigen kopie.",
+  "example.busName": "Voorbeeldbus",
+  "tour.stepOf": "{step} van {steps}",
+  "tour.close": "Sluiten",
+  "tour.back": "Terug",
+  "tour.next": "Volgende",
+  "tour.done": "Klaar",
+  "tour.tabs.title": "De tabbladen van het project",
+  "tour.tabs.body":
+    "Elk tabblad is een deel van het werk: simuleren, lijnen maken, schema, GIS, tabellen en voorkeuren.",
+  "tour.create.title": "Lijnen tekenen",
+  "tour.create.body":
+    "Kies bij Maken de straatlijntool, de spoorwegeditor of een plugin-tool. De instellingen, controles en resultaten staan in dit paneel.",
+  "tour.search.title": "Een plaats vinden",
+  "tour.search.body": "Zoek een plaats, straat, station of adres om de kaart daarheen te verplaatsen.",
+  "tour.layers.title": "Basiskaart en lagen",
+  "tour.layers.body":
+    "Wissel tussen stratenkaarten en luchtfoto’s, en toon of verberg de lagen van het project.",
+  "tour.simulator.title": "Simuleren",
+  "tour.simulator.body":
+    "Voer de capaciteitstest voor het spoor uit en plan reizen over de getekende lijnen.",
+  "tour.gis.title": "GIS",
+  "tour.gis.body": "Richt straten in voor bussen en trams, en bereken de geluidskaart rond de lijnen.",
+  "tour.tables.title": "Tabellen",
+  "tour.tables.body": "Schattingen van de bouw- en exploitatiekosten van de lijnen.",
+  "tour.save.title": "Voor je opgeslagen",
+  "tour.save.body":
+    "Wijzigingen worden kort na het maken in het project opgeslagen. Hier zie je of dat gelukt is.",
+  "tour.print.title": "Afdrukken of opslaan als pdf",
+  "tour.print.body": "Druk de kaart en de kostentabellen af voor een rapport, of sla ze op als pdf.",
+  "tour.help.title": "Help",
+  "tour.help.body": "Start deze rondleiding hier op elk moment opnieuw.",
+  "print.title": "Afdrukken of opslaan als pdf",
+  "print.intro": "Een rapport met de projectnaam en de datum van vandaag.",
+  "print.include": "Opnemen",
+  "print.map": "Kaart, zoals die nu wordt getoond",
+  "print.mapHidden": "Open het tabblad Simulator, Maken of GIS om de kaart op te nemen.",
+  "print.tables": "Kostentabellen",
+  "print.pdfHint": "Kies om een pdf op te slaan „Opslaan als pdf” als printer in het venster dat opent.",
+  "print.print": "Afdrukken…",
+
   ...editorsNl,
+  ...cargoBikeNl,
   ...PLUGIN_MESSAGES.nl,
 };

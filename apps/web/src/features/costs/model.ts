@@ -3,9 +3,11 @@
  * quantities from the railway design and the street lines, times unit costs from the assumption library
  * (low, central, high), converted to the project's country and today's prices.
  */
-import { lineMode, trainById } from "../railways/serviceLines";
+import { hhmm, lineMode, trainById } from "../railways/serviceLines";
 import type { Level, LineReport, Network, RailMode, RailView, Track } from "../railways/types";
 import type { SavedStreetLine } from "../street-lines/saved";
+import { fullTiming } from "../street-lines/modes";
+import { dayService } from "../street-lines/service";
 import { lineStats } from "../street-lines/summary";
 import type { Prices } from "./economy";
 import { paramValue, type Triple } from "./params";
@@ -408,12 +410,13 @@ export function estimate(input: EstimateInput): Estimate {
     const mode = l.profile.mode;
     const id = `street:${i}`;
     const name = l.name || `Street line ${i + 1}`;
-    const stats = lineStats(l.view, l.timing);
+    const timing = fullTiming(l.timing);
+    const stats = lineStats(l.view, timing);
     const routeKm = l.view.length_m / 2000;
     const spare = v("mode.spare_share", mode);
     const fleet = spare.map((s) => Math.ceil(stats.vehicles * (1 + s))) as Triple;
-    const serviceHours = v("cost.service_hours_per_day", mode);
-    const vehHours = prod(mul(serviceHours, stats.vehicles), days);
+    // Vehicle-hours a weekday from the line's own service day: peak and off-peak headways, first to last.
+    const vehHours = mul(days, stats.vehicles > 0 ? dayService(timing, stats.cycleMin).vehicleHours : 0);
     const kmh = stats.cycleMin > 0 ? l.view.length_m / 1000 / (stats.cycleMin / 60) : 0;
     lines.push({
       id,
@@ -487,7 +490,7 @@ export function estimate(input: EstimateInput): Estimate {
       category: "service",
       mode,
       line: id,
-      label: `${stats.vehicles} vehicles in service, ${serviceHours[1]} h a day`,
+      label: `${stats.vehicles} vehicles at the peak, ${hhmm(timing.firstMin)}–${hhmm(timing.lastMin)}`,
       quantity: vehHours[1],
       unit: "vehicle-h / year",
       rate: hourRate,

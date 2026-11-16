@@ -1,4 +1,5 @@
 import { editorsRu } from "./editors/ru";
+import { cargoBikeRu } from "./cargo-bike/ru";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -214,6 +215,7 @@ export const ru: Messages = {
   "drawing.rail-timetable": "расписание поездов",
   "drawing.preferences": "параметры проекта",
   "drawing.costs": "настройки затрат",
+  "drawing.schematic": "схему",
   "drawing.scenarios": "сохранённые сценарии",
   "drawing.benefits": "формулы выгод",
   "drawing.regions": "районы",
@@ -249,10 +251,6 @@ export const ru: Messages = {
 
   "schematic.title": "Схема",
   "schematic.intro": "Просматривайте и редактируйте схему транспорта и отдельные линии.",
-  "schematic.network": "Схема сети с линиями в схематичном виде",
-  "schematic.line": "Одна линия: схема линии и пересадки",
-  "schematic.layers": "Слои, перетаскивание и кривые",
-  "schematic.export": "Экспорт для печати и экранов",
 
   "gis.title": "ГИС",
   "gis.streetsView": "Улицы",
@@ -280,6 +278,18 @@ export const ru: Messages = {
   "prefs.delayLane": "На выделенной разметкой полосе для автобусов или трамваев",
   "prefs.delayDefault": "Библиотека допущений: {value} %",
   "prefs.delayReset": "Использовать значение из библиотеки",
+  "prefs.currencyTitle": "Валюта",
+  "prefs.currencyIntro":
+    "Все денежные суммы проекта показываются в этой валюте: таблицы затрат, выгоды, сценарии и экономия грузового велосипеда.",
+  "prefs.currencyLabel": "Показывать деньги в",
+  "prefs.currencyCountry": "Собственная валюта страны",
+  "prefs.currencyRate": "{code} за 1 US$",
+  "prefs.currencyWorldBank": "Официальный обменный курс Всемирного банка ({year}): {value}",
+  "prefs.currencyMissing":
+    "У Всемирного банка нет обменного курса для {code}. Введите курс для пересчёта; до тех пор каждый инструмент показывает валюту страны.",
+  "prefs.currencyReset": "Использовать курс Всемирного банка",
+  "prefs.currencyHow":
+    "Суммы пересчитываются через доллар США по официальному обменному курсу Всемирного банка для каждой страны.",
   "prefs.moreTitle": "Правила, подвижной состав и допущения",
   "prefs.moreIntro":
     "Каждая переменная с минимальным и рекомендуемым значением, а также подвижной состав, используемый в проекте.",
@@ -288,6 +298,81 @@ export const ru: Messages = {
   "prefs.switches": "Стрелочные переводы из каталога стрелок",
   "prefs.calendar": "Календарь, спрос и затраты",
 
+  "job.stepOf": "Шаг {step} из {steps}",
+  "job.cancel": "Отмена",
+  "map.search": "Поиск мест",
+  "map.searchPlaceholder": "Город, улица, станция или адрес",
+  "map.searching": "Поиск…",
+  "map.searchFailed": "Не удалось найти место: {error}",
+  "map.noPlaces": "Ничего не найдено.",
+  "map.places": "Найденные места",
+  "map.searchCredit": "Названия мест © участники OpenStreetMap, найдены с помощью Photon",
+  "map.layers": "Слои карты",
+  "map.basemap": "Подложка",
+  "map.streetMap": "Карта",
+  "map.aerial": "Аэроснимок",
+  "map.aerialNote":
+    "Спутниковые снимки около 10 м на пиксель: подходят, чтобы видеть землепользование, но слишком грубые, чтобы рисовать пути или бордюры.",
+  "map.projectLayers": "Слои проекта",
+  "map.noLayers": "Здесь появятся нарисованные линии и результаты.",
+  "map.group.streetLines": "Уличные линии",
+  "map.group.railways": "Железные дороги",
+  "map.group.cableFerry": "Канатные дороги и паромы",
+  "map.group.streetSetups": "Настройки улиц",
+  "map.group.noise": "Шумовая карта",
+  "map.group.journey": "Планировщик поездок",
+  "map.group.agents": "Сценарий ИИ-агента",
+  "help.menu": "Справка",
+  "help.tour": "Пройти обзор",
+  "help.tourHint": "Короткая прогулка по вкладкам и инструментам проекта",
+  "help.example": "Открыть пример проекта",
+  "help.exampleMaking": "Создаём пример проекта…",
+  "help.exampleHint": "Новый собственный проект с автобусной линией и трамваем в Цюрихе",
+  "help.exampleFailed": "Не удалось создать пример проекта: {error}",
+  "example.name": "Пример: автобус и трамвай в Цюрихе",
+  "example.description":
+    "Пример для изучения: автобусная линия от Bellevue до Haldenbach и трамвай по Bahnhofstrasse. Меняйте что угодно — это ваша копия.",
+  "example.busName": "Пример автобуса",
+  "tour.stepOf": "{step} из {steps}",
+  "tour.close": "Закрыть",
+  "tour.back": "Назад",
+  "tour.next": "Далее",
+  "tour.done": "Готово",
+  "tour.tabs.title": "Вкладки проекта",
+  "tour.tabs.body":
+    "Каждая вкладка — часть работы: моделирование, создание линий, схема, ГИС, таблицы и настройки.",
+  "tour.create.title": "Рисование линий",
+  "tour.create.body":
+    "На вкладке «Создание» выберите инструмент уличных линий, редактор железной дороги или инструмент плагина. Его настройки, проверки и результаты показываются на этой панели.",
+  "tour.search.title": "Найти место",
+  "tour.search.body": "Найдите город, улицу, станцию или адрес, чтобы переместить туда карту.",
+  "tour.layers.title": "Подложка и слои",
+  "tour.layers.body":
+    "Переключайтесь между картами улиц и аэроснимками, показывайте или скрывайте слои проекта.",
+  "tour.simulator.title": "Моделирование",
+  "tour.simulator.body":
+    "Запустите проверку пропускной способности и планируйте поездки по нарисованным линиям.",
+  "tour.gis.title": "ГИС",
+  "tour.gis.body": "Настройте улицы для автобусов и трамваев и рассчитайте шумовую карту вокруг линий.",
+  "tour.tables.title": "Таблицы",
+  "tour.tables.body": "Оценки затрат на строительство и эксплуатацию линий.",
+  "tour.save.title": "Сохраняется само",
+  "tour.save.body":
+    "Изменения сохраняются в проекте вскоре после того, как вы их внесли. Здесь видно, сохранены ли они.",
+  "tour.print.title": "Печать или PDF",
+  "tour.print.body": "Распечатайте карту и таблицы затрат для отчёта или сохраните их в PDF.",
+  "tour.help.title": "Справка",
+  "tour.help.body": "Отсюда этот обзор можно запустить снова в любой момент.",
+  "print.title": "Печать или PDF",
+  "print.intro": "Отчёт с названием проекта и сегодняшней датой.",
+  "print.include": "Включить",
+  "print.map": "Карта в текущем виде",
+  "print.mapHidden": "Откройте вкладку «Симулятор», «Создание» или «ГИС», чтобы включить карту.",
+  "print.tables": "Таблицы затрат",
+  "print.pdfHint": "Чтобы сохранить PDF, выберите принтер «Сохранить как PDF» в открывшемся окне.",
+  "print.print": "Печать…",
+
   ...editorsRu,
+  ...cargoBikeRu,
   ...PLUGIN_MESSAGES.ru,
 };

@@ -1,7 +1,10 @@
 import { McpServer, ResourceTemplate } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import { z } from "zod";
+import { type AccessService, type DestinationInput } from "./access.service";
 import { type AnalysisService, type DemandPoint, PRESETS } from "./analysis.service";
+import { DESTINATION_CATEGORIES, DESTINATION_LIST_VERSION } from "./destinations";
+import { exportGtfs } from "./gtfs-export";
 import DEFAULTS from "./defaults.json";
 import { KPI_CATALOGUE_VERSION, KPIS } from "./kpis";
 import { NetworkError } from "./network.service";
@@ -21,17 +24,25 @@ import { ScenarioError, type ScenariosService } from "./scenarios.service";
 import { WasmMissingError } from "./wasm";
 
 /** Version of the tool set; tool names and schemas are a public contract (ADR-0035 Consequences). */
-export const TOOLS_VERSION = "0.1.0";
+export const TOOLS_VERSION = "0.3.0";
 
 export interface ToolDeps {
   scenarios: ScenariosService;
   analysis: AnalysisService;
+  access: AccessService;
   instanceName: string;
+  /** Origin of this instance, e.g. `https://mobsimlab.example.org`. */
+  instanceUrl?: string;
   requestId?: string;
 }
 
 /** A tool refused for missing scope or a bad request; shown to the agent as a tool error. */
 class ToolRefusal extends Error {}
+
+/** A tool result with its own content blocks (for example a file), returned as is. */
+class Raw {
+  constructor(readonly content: CallToolResult["content"]) {}
+}
 
 const json = (v: unknown): CallToolResult => ({
   content: [{ type: "text", text: JSON.stringify(v, null, 1) }],
@@ -60,7 +71,9 @@ export function buildMcpServer(p: AgentPrincipal, d: ToolDeps): McpServer {
         "apply_changes to add stops and lines with headways. Street lines (bus, brt, trolleybus, intercity_bus) are " +
         "routed on real streets; rail and tram lines use the route you give or straight lines. Measure with " +
         "coverage_report (headline: 15-minute walk to the nearest stop on the street network), measure_stop_spacing, " +
-        "find_coverage_gaps, suggest_stop_locations, plan_journey, and compare with benchmark_scenarios. Every " +
+        "find_coverage_gaps, suggest_stop_locations (exact optimiser), accessibility_to_destinations (the 15-minute " +
+        "city: daily needs within 15 minutes on foot, by bicycle or by public transport), coverage_report with the " +
+        "ptal preset (TfL PTAL), plan_journey, compare with benchmark_scenarios, and export a scenario as GTFS with export_gtfs. Every " +
         "number states its rule and the assumption-library keys behind it; quote them. You cannot change the base " +
         "network, sharing or users; a person reviews scenarios in MobSimLab.",
     },
@@ -81,7 +94,8 @@ export function buildMcpServer(p: AgentPrincipal, d: ToolDeps): McpServer {
     async (args: A): Promise<CallToolResult> => {
       try {
         need(scope);
-        return json(await fn(args));
+        const v = await fn(args);
+        return v instanceof Raw ? { content: v.content } : json(v);
       } catch (e) {
         if (
           e instanceof ToolRefusal ||
@@ -325,14 +339,43 @@ export function buildMcpServer(p: AgentPrincipal, d: ToolDeps): McpServer {
       title: "Walk coverage report",
       description:
         "How much demand lies within the rule's walk of a stop, measured along the street network (never circles; a crow-flies figure is given for comparison). The headline is the 15-minute walk to the nearest stop or station.",
-      inputSchema: coverageInput,
+      inputSchema: {
+        ...coverageInput,
+        preset: z
+          .enum([...PRESETS, "ptal"])
+          .default("walk_minutes")
+          .describe(
+            "walk_minutes: walk time to the nearest stop (headline, 15 min); sdg_11_2_1: 500 m bus/tram or 1000 m rail; catchment_by_mode: mode.catchment_m; frequent_only: walk_minutes counting only frequent stops; ptal: TfL Public Transport Accessibility Level, bands 0 to 6b from walk to each line plus half its headway",
+          ),
+        list_points: z
+          .number()
+          .int()
+          .min(0)
+          .max(3000)
+          .default(0)
+          .describe("ptal: also return up to this many graded points as GeoJSON"),
+      },
       annotations: analysisRead,
     },
-    run("analysis:run", async (a: CoverageArgs) => {
-      const { raw, ...r } = await d.analysis.coverage(await doc(a.scenario_id), coverageOpts(a));
-      void raw;
-      return r;
-    }),
+    run(
+      "analysis:run",
+      async (
+        a: Omit<CoverageArgs, "preset"> & { preset: CoverageArgs["preset"] | "ptal"; list_points: number },
+      ) => {
+        if (a.preset === "ptal")
+          return d.access.ptal(await doc(a.scenario_id), {
+            period: a.period,
+            demand: a.demand_points,
+            listPoints: a.list_points,
+          });
+        const { raw, ...r } = await d.analysis.coverage(
+          await doc(a.scenario_id),
+          coverageOpts({ ...a, preset: a.preset }),
+        );
+        void raw;
+        return r;
+      },
+    ),
   );
 
   server.registerTool(
@@ -385,13 +428,23 @@ export function buildMcpServer(p: AgentPrincipal, d: ToolDeps): McpServer {
     {
       title: "Suggest stop locations",
       description:
-        "Where k new stops along the scenario's routes would bring the most uncovered demand within the walk limit (maximal covering location problem, greedy). Deterministic, not AI.",
+        "Where k new stops along the scenario's routes would bring the most uncovered demand within the walk limit: the maximal covering location problem, solved exactly with HiGHS (mixed-integer programme) from a greedy start, within a time limit. Says whether the choice is proved optimal. Deterministic, not AI.",
       inputSchema: {
         scenario_id: scenarioId,
         k: z.number().int().min(1).max(20).default(3),
         line_id: z.string().optional(),
         minutes: z.number().min(1).max(30).optional(),
         demand_points: demandPoints,
+        exact: z
+          .boolean()
+          .default(true)
+          .describe("solve exactly with HiGHS; false gives the quick greedy choice only"),
+        time_limit_s: z
+          .number()
+          .min(1)
+          .max(60)
+          .default(10)
+          .describe("longest time the exact solver may take"),
       },
       annotations: analysisRead,
     },
@@ -403,11 +456,99 @@ export function buildMcpServer(p: AgentPrincipal, d: ToolDeps): McpServer {
         line_id?: string;
         minutes?: number;
         demand_points?: DemandPoint[];
+        exact: boolean;
+        time_limit_s: number;
+      }) => {
+        const opts = { lineId: a.line_id, minutes: a.minutes, demand: a.demand_points };
+        if (a.exact)
+          return d.access.suggestStopsExact(await doc(a.scenario_id), a.k, {
+            ...opts,
+            timeLimitS: a.time_limit_s,
+          });
+        const { instance, suggestions_raw, context, ...r } = await d.analysis.suggestStops(
+          await doc(a.scenario_id),
+          a.k,
+          opts,
+        );
+        void instance;
+        void suggestions_raw;
+        void context;
+        return { ...r, solver: "greedy only (exact: false)" };
+      },
+    ),
+  );
+
+  server.registerTool(
+    "accessibility_to_destinations",
+    {
+      title: "15-minute city: daily needs within reach",
+      description: `How many food shops, primary schools, GPs or clinics, pharmacies, parks and workplaces each place reaches within N minutes (default 15) on foot, by bicycle, or on foot and the scenario's public transport. Reports the share of demand that reaches at least one of each category and the share that reaches every category, with the places missing the most. Destinations come from OpenStreetMap (list ${DESTINATION_LIST_VERSION}) unless you give your own.`,
+      inputSchema: {
+        scenario_id: scenarioId,
+        mode: z
+          .enum(["walk", "cycle", "walk_transit"])
+          .default("walk")
+          .describe("walk; cycle (analysis.cycle_speed_kmh); walk_transit: on foot and the scenario's lines"),
+        minutes: z.number().min(1).max(60).optional().describe(`default ${DEFAULTS.walk_rule_minutes}`),
+        categories: z
+          .array(z.string())
+          .max(20)
+          .optional()
+          .describe(
+            `subset of ${DESTINATION_CATEGORIES.map((c) => c.id).join(", ")} (or of your own categories)`,
+          ),
+        destinations: z
+          .array(
+            z.object({
+              category: z.string().min(1).max(40),
+              lon: z.number(),
+              lat: z.number(),
+              name: z.string().max(200).optional(),
+            }),
+          )
+          .max(20_000)
+          .optional()
+          .describe(
+            "your own destinations instead of OpenStreetMap, e.g. jobs or services from a local register",
+          ),
+        demand_points: demandPoints,
+        window: z
+          .tuple([z.string().regex(/^\d{1,2}:\d{2}$/), z.string().regex(/^\d{1,2}:\d{2}$/)])
+          .default(["07:00", "09:00"])
+          .describe("walk_transit: departures from … to …, median over them"),
+        step_min: z
+          .number()
+          .int()
+          .min(1)
+          .max(60)
+          .default(10)
+          .describe("walk_transit: minutes between departures"),
+        list_gaps: z.number().int().min(0).max(200).default(25),
+      },
+      annotations: analysisRead,
+    },
+    run(
+      "analysis:run",
+      async (a: {
+        scenario_id: string;
+        mode: "walk" | "cycle" | "walk_transit";
+        minutes?: number;
+        categories?: string[];
+        destinations?: DestinationInput[];
+        demand_points?: DemandPoint[];
+        window: [string, string];
+        step_min: number;
+        list_gaps: number;
       }) =>
-        d.analysis.suggestStops(await doc(a.scenario_id), a.k, {
-          lineId: a.line_id,
+        d.access.destinations(await doc(a.scenario_id), {
+          mode: a.mode,
           minutes: a.minutes,
+          categories: a.categories,
+          destinations: a.destinations,
           demand: a.demand_points,
+          window: [clockS(a.window[0]), clockS(a.window[1])],
+          stepMin: a.step_min,
+          listGaps: a.list_gaps,
         }),
     ),
   );
@@ -497,6 +638,87 @@ export function buildMcpServer(p: AgentPrincipal, d: ToolDeps): McpServer {
           kpis: KPIS.map((k) => ({ id: k.id, unit: k.unit, better: k.better })),
           rows,
         };
+      },
+    ),
+  );
+
+  // ---- Export ---------------------------------------------------------------------------------
+  const ymd = /^\d{8}$/;
+  server.registerTool(
+    "export_gtfs",
+    {
+      title: "Export as GTFS",
+      description:
+        "The scenario's stops and lines as a GTFS Schedule feed (zip): agency, stops, routes, a weekday calendar, trips with frequencies, stop_times and feed_info, from the same timetable plan_journey rides. Returns the zip as an embedded file and the row count of each file.",
+      inputSchema: {
+        scenario_id: scenarioId,
+        agency_timezone: z
+          .string()
+          .min(1)
+          .max(64)
+          .regex(/^[A-Za-z_]+(\/[A-Za-z0-9_+-]+)*$/)
+          .describe("IANA time zone of the service area, e.g. Europe/Berlin"),
+        agency_name: z.string().min(1).max(200).optional().describe("default: the scenario name"),
+        agency_url: z
+          .url({ protocol: /^https?$/ })
+          .optional()
+          .describe("default: this MobSimLab instance"),
+        lang: z.string().min(2).max(12).default("en"),
+        start_date: z.string().regex(ymd).optional().describe("YYYYMMDD, default today"),
+        end_date: z.string().regex(ymd).optional().describe("YYYYMMDD, default one year after the start"),
+        include_text: z
+          .boolean()
+          .default(false)
+          .describe("also return the text of each file (for small scenarios)"),
+      },
+      annotations: read,
+    },
+    run(
+      "project:read",
+      async (a: {
+        scenario_id: string;
+        agency_timezone: string;
+        agency_name?: string;
+        agency_url?: string;
+        lang: string;
+        start_date?: string;
+        end_date?: string;
+        include_text: boolean;
+      }) => {
+        const s = await d.scenarios.get(p.userId, a.scenario_id);
+        const day = (t: Date) => t.toISOString().slice(0, 10).replaceAll("-", "");
+        const start = a.start_date ?? day(new Date());
+        const startT = Date.UTC(+start.slice(0, 4), +start.slice(4, 6) - 1, +start.slice(6, 8));
+        const end = a.end_date ?? day(new Date(startT + 365 * 86_400_000));
+        if (end < start) throw new ToolRefusal("end_date is before start_date");
+        const feed = exportGtfs(s.doc, d.analysis, {
+          agencyName: a.agency_name ?? s.name,
+          agencyUrl: a.agency_url ?? d.instanceUrl ?? "https://mobsimlab.org",
+          timezone: a.agency_timezone,
+          lang: a.lang,
+          startDate: start,
+          endDate: end,
+        });
+        const name = `${s.name.replace(/[^A-Za-z0-9_-]+/g, "-").replace(/^-+|-+$/g, "") || "scenario"}-gtfs.zip`;
+        const summary = {
+          file_name: name,
+          bytes: feed.zip.length,
+          rows: feed.rows,
+          service: `weekdays ${start}–${end}, lines at their headways (frequencies.txt)`,
+          note: "Generated by MobSimLab from an agent scenario; not checked with the MobilityData GTFS Validator.",
+          ...(a.include_text ? { files: feed.files } : {}),
+        };
+        return new Raw([
+          { type: "text", text: JSON.stringify(summary, null, 1) },
+          {
+            type: "resource",
+            resource: {
+              uri: `mobsimlab://scenarios/${s.id}/gtfs.zip`,
+              mimeType: "application/zip",
+              blob: feed.zip.toString("base64"),
+            },
+          },
+        ]);
       },
     ),
   );

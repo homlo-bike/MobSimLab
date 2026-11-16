@@ -1,4 +1,5 @@
 import { editorsZu } from "./editors/zu";
+import { cargoBikeZu } from "./cargo-bike/zu";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -216,6 +217,7 @@ export const zu: Messages = {
   "drawing.rail-timetable": "uhlelo lwezikhathi lwesitimela",
   "drawing.preferences": "okuthandwayo kwephrojekthi",
   "drawing.costs": "izilungiselelo zezindleko",
+  "drawing.schematic": "imephu yomdwebo",
   "drawing.scenarios": "izimo ezigciniwe",
   "drawing.benefits": "amafomula ezinzuzo",
   "drawing.regions": "izifunda",
@@ -251,10 +253,6 @@ export const zu: Messages = {
 
   "schematic.title": "Imephu yesikimu",
   "schematic.intro": "Buka futhi uhlele imephu yezokuthutha, futhi ubuke umugqa owodwa wodwa.",
-  "schematic.network": "Imephu yenethiwekhi enemigqa edwetshwe ngesikimu",
-  "schematic.line": "Umugqa owodwa: imephu yawo nokuxhumana kwawo",
-  "schematic.layers": "Izingqimba, ukudonsa namajika",
-  "schematic.export": "Thumela ngaphandle ukuze uphrinte nezikrini",
 
   "gis.title": "GIS",
   "gis.streetsView": "Imigwaqo",
@@ -284,6 +282,18 @@ export const zu: Messages = {
   "prefs.delayLane": "Emzileni webhasi noma wethremu odwetshwe ngopende",
   "prefs.delayDefault": "Umtapo wolwazi wemicabango: {value} %",
   "prefs.delayReset": "Sebenzisa inani lomtapo wolwazi",
+  "prefs.currencyTitle": "Imali",
+  "prefs.currencyIntro":
+    "Yonke imali yephrojekthi iboniswa ngale mali: amathebula ezindleko, izinzuzo, izimo kanye nokonga kwebhayisikili lempahla.",
+  "prefs.currencyLabel": "Bonisa imali ngo",
+  "prefs.currencyCountry": "Imali yezwe uqobo lwalo",
+  "prefs.currencyRate": "{code} nge-US$ ngayinye",
+  "prefs.currencyWorldBank": "Izinga elisemthethweni lokushintshisana leBhange Lomhlaba ({year}): {value}",
+  "prefs.currencyMissing":
+    "IBhange Lomhlaba alinalo izinga lokushintshisana le-{code}. Faka elilodwa ukuze uguqule; kuze kube yilapho ithuluzi ngalinye libonisa imali yezwe.",
+  "prefs.currencyReset": "Sebenzisa izinga leBhange Lomhlaba",
+  "prefs.currencyHow":
+    "Amanani aguqulwa ngedola laseMelika, ngezinga elisemthethweni leBhange Lomhlaba lezwe ngalinye.",
   "prefs.moreTitle": "Imithetho, izimoto nemicabango",
   "prefs.moreIntro":
     "Konke okuguquguqukayo nenani lako elincane nelinconyiwe, nezimoto iphrojekthi ezisebenzisayo.",
@@ -292,6 +302,81 @@ export const zu: Messages = {
   "prefs.switches": "Izishintshi zikajantshi, kusuka kukhathalogi yezishintshi",
   "prefs.calendar": "Ikhalenda, isidingo nezindleko",
 
+  "job.stepOf": "Isinyathelo {step} kwezingu-{steps}",
+  "job.cancel": "Khansela",
+  "map.search": "Sesha izindawo",
+  "map.searchPlaceholder": "Idolobha, umgwaqo, isiteshi noma ikheli",
+  "map.searching": "Iyasesha…",
+  "map.searchFailed": "Ukusesha indawo kuhlulekile: {error}",
+  "map.noPlaces": "Azikho izindawo ezitholakele.",
+  "map.places": "Izindawo ezitholakele",
+  "map.searchCredit": "Amagama ezindawo © abanikeli be-OpenStreetMap, atholakale nge-Photon",
+  "map.layers": "Izendlalelo zemephu",
+  "map.basemap": "Imephu eyisisekelo",
+  "map.streetMap": "Imephu",
+  "map.aerial": "Emoyeni",
+  "map.aerialNote":
+    "Izithombe zesathelayithi ezingaba ngamamitha ayi-10 ngephikseli ngayinye: zinhle ukubona ukusetshenziswa komhlaba, zimahhadla kakhulu ukudweba ujantshi noma imiphetho yomgwaqo.",
+  "map.projectLayers": "Izendlalelo zephrojekthi",
+  "map.noLayers": "Imizila nemiphumela oyidwebayo ivela lapha.",
+  "map.group.streetLines": "Imizila yasemgwaqweni",
+  "map.group.railways": "Ujantshi",
+  "map.group.cableFerry": "Izimoto zentambo nezikebhe",
+  "map.group.streetSetups": "Ukuhlelwa komgwaqo",
+  "map.group.noise": "Imephu yomsindo",
+  "map.group.journey": "Umhleli wohambo",
+  "map.group.agents": "Isimo se-ejenti ye-AI",
+  "help.menu": "Usizo",
+  "help.tour": "Qala uhambo",
+  "help.tourHint": "Uhambo olufushane emathebhuni namathuluzi ephrojekthi",
+  "help.example": "Vula iphrojekthi eyisibonelo",
+  "help.exampleMaking": "Yenza iphrojekthi eyisibonelo…",
+  "help.exampleHint": "Iphrojekthi entsha yakho enomzila webhasi nethremu eZurich",
+  "help.exampleFailed": "Ayikwazanga ukwenza iphrojekthi eyisibonelo: {error}",
+  "example.name": "Isibonelo: ibhasi nethremu yaseZurich",
+  "example.description":
+    "Isibonelo sokuhlola: umzila webhasi osuka eBellevue uye eHaldenbach nethremu eceleni kweBahnhofstrasse. Shintsha noma yini; yikhophi yakho.",
+  "example.busName": "Ibhasi eyisibonelo",
+  "tour.stepOf": "{step} kwezingu-{steps}",
+  "tour.close": "Vala",
+  "tour.back": "Emuva",
+  "tour.next": "Okulandelayo",
+  "tour.done": "Kwenziwe",
+  "tour.tabs.title": "Amathebhu ephrojekthi",
+  "tour.tabs.body":
+    "Ithebhu ngayinye iyingxenye yomsebenzi: ukulingisa, ukwakha imizila, isikimu, i-GIS, amathebula nokuthandwayo.",
+  "tour.create.title": "Dweba imizila",
+  "tour.create.body":
+    "Ku-Dala, khetha ithuluzi lomzila wasemgwaqweni, umhleli kajantshi noma ithuluzi le-plugin. Izilungiselelo zalo, ukuhlola nemiphumela kuvela kule phaneli.",
+  "tour.search.title": "Thola indawo",
+  "tour.search.body": "Sesha idolobha, umgwaqo, isiteshi noma ikheli ukuze uyise imephu lapho.",
+  "tour.layers.title": "Imephu eyisisekelo nezendlalelo",
+  "tour.layers.body":
+    "Shintsha phakathi kwamamephu emigwaqo nezithombe zasemoyeni, futhi ubonise noma ufihle izendlalelo zephrojekthi.",
+  "tour.simulator.title": "Ukulingisa",
+  "tour.simulator.body": "Sebenzisa ukuhlolwa komthamo kajantshi futhi uhlele uhambo emizileni oyidwebile.",
+  "tour.gis.title": "GIS",
+  "tour.gis.body": "Hlela imigwaqo yamabhasi namathilamu, futhi ubale imephu yomsindo ezungeze imizila.",
+  "tour.tables.title": "Amathebula",
+  "tour.tables.body": "Izilinganiso zezindleko zokwakha nokusebenzisa imizila.",
+  "tour.save.title": "Kugcinelwa wena",
+  "tour.save.body":
+    "Izinguquko zigcinwa ephrojekthini ngemuva nje kokuthi uzenze. Lokhu kubonisa ukuthi zigciniwe yini.",
+  "tour.print.title": "Phrinta noma ulondoloze njenge-PDF",
+  "tour.print.body": "Phrinta imephu namathebula ezindleko ombikweni, noma ukulondoloze njenge-PDF.",
+  "tour.help.title": "Usizo",
+  "tour.help.body": "Qala kabusha lolu hambo lapha noma nini.",
+  "print.title": "Phrinta noma ulondoloze njenge-PDF",
+  "print.intro": "Umbiko onegama lephrojekthi nosuku lwanamuhla.",
+  "print.include": "Faka",
+  "print.map": "Imephu, njengoba ibonakala manje",
+  "print.mapHidden": "Vula ithebhu ethi Isilingisi, Dala noma i-GIS ukuze ufake imephu.",
+  "print.tables": "Amathebula ezindleko",
+  "print.pdfHint":
+    "Ukuze ulondoloze i-PDF, khetha “Londoloza njenge-PDF” njengephrinta engxoxweni evulekayo.",
+  "print.print": "Phrinta…",
+
   ...editorsZu,
+  ...cargoBikeZu,
   ...PLUGIN_MESSAGES.zu,
 };

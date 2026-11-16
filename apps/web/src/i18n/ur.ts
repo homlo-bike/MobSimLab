@@ -1,4 +1,5 @@
 import { editorsUr } from "./editors/ur";
+import { cargoBikeUr } from "./cargo-bike/ur";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -214,6 +215,7 @@ export const ur: Messages = {
   "drawing.rail-timetable": "ریل کا ٹائم ٹیبل",
   "drawing.preferences": "منصوبے کی ترجیحات",
   "drawing.costs": "لاگت کی ترتیبات",
+  "drawing.schematic": "خاکہ نقشہ",
   "drawing.scenarios": "محفوظ منظرنامے",
   "drawing.benefits": "فوائد کے فارمولے",
   "drawing.regions": "علاقے",
@@ -247,10 +249,6 @@ export const ur: Messages = {
 
   "schematic.title": "خاکہ",
   "schematic.intro": "نقل و حمل کا نقشہ دیکھیں اور اس میں ترمیم کریں، اور ایک لائن کو الگ سے دیکھیں۔",
-  "schematic.network": "خاکہ نما لائنوں والا نیٹ ورک کا نقشہ",
-  "schematic.line": "ایک لائن: اس کا پٹی نقشہ اور رابطے",
-  "schematic.layers": "تہیں، کھینچنا اور خم",
-  "schematic.export": "پرنٹ اور اسکرینوں کے لیے برآمد",
 
   "gis.title": "GIS",
   "gis.streetsView": "سڑکیں",
@@ -278,6 +276,18 @@ export const ur: Messages = {
   "prefs.delayLane": "رنگ سے بنی بس یا ٹرام لین میں",
   "prefs.delayDefault": "مفروضات کی لائبریری: {value} %",
   "prefs.delayReset": "لائبریری کی قدر استعمال کریں",
+  "prefs.currencyTitle": "کرنسی",
+  "prefs.currencyIntro":
+    "منصوبے کی تمام رقوم اسی کرنسی میں دکھائی جاتی ہیں: لاگت کی جدولیں، فوائد، منظرنامے اور کارگو بائیک کی بچت۔",
+  "prefs.currencyLabel": "رقم اس میں دکھائیں",
+  "prefs.currencyCountry": "ملک کی اپنی کرنسی",
+  "prefs.currencyRate": "فی US$ {code}",
+  "prefs.currencyWorldBank": "عالمی بینک کی سرکاری شرحِ تبادلہ ({year}): {value}",
+  "prefs.currencyMissing":
+    "عالمی بینک کے پاس {code} کی شرحِ تبادلہ نہیں ہے۔ تبدیل کرنے کے لیے شرح درج کریں؛ تب تک ہر ٹول ملک کی کرنسی دکھاتا ہے۔",
+  "prefs.currencyReset": "عالمی بینک کی شرح استعمال کریں",
+  "prefs.currencyHow":
+    "رقوم امریکی ڈالر کے ذریعے، ہر ملک کی عالمی بینک کی سرکاری شرحِ تبادلہ سے تبدیل کی جاتی ہیں۔",
   "prefs.moreTitle": "اصول، گاڑیاں اور مفروضات",
   "prefs.moreIntro":
     "ہر متغیر اپنی کم از کم اور تجویز کردہ قدر کے ساتھ، اور منصوبے میں استعمال ہونے والی گاڑیاں۔",
@@ -286,6 +296,81 @@ export const ur: Messages = {
   "prefs.switches": "پٹری کے سوئچ، سوئچوں کی فہرست سے",
   "prefs.calendar": "کیلنڈر، طلب اور لاگت",
 
+  "job.stepOf": "مرحلہ {step} از {steps}",
+  "job.cancel": "منسوخ کریں",
+  "map.search": "مقامات تلاش کریں",
+  "map.searchPlaceholder": "قصبہ، سڑک، اسٹیشن یا پتہ",
+  "map.searching": "تلاش جاری ہے…",
+  "map.searchFailed": "مقام کی تلاش ناکام رہی: {error}",
+  "map.noPlaces": "کوئی مقام نہیں ملا۔",
+  "map.places": "ملے ہوئے مقامات",
+  "map.searchCredit": "مقامات کے نام © OpenStreetMap کے معاونین، Photon سے تلاش کیے گئے",
+  "map.layers": "نقشے کی پرتیں",
+  "map.basemap": "بنیادی نقشہ",
+  "map.streetMap": "نقشہ",
+  "map.aerial": "فضائی",
+  "map.aerialNote":
+    "تقریباً 10 میٹر فی پکسل کی سیٹلائٹ تصاویر: زمین کے استعمال کو دیکھنے کے لیے اچھی، پٹری یا فٹ پاتھ کے کنارے بنانے کے لیے بہت موٹی۔",
+  "map.projectLayers": "منصوبے کی پرتیں",
+  "map.noLayers": "آپ کی بنائی ہوئی لائنیں اور نتائج یہاں دکھائی دیتے ہیں۔",
+  "map.group.streetLines": "سڑک کی لائنیں",
+  "map.group.railways": "ریلوے",
+  "map.group.cableFerry": "کیبل کار اور فیری",
+  "map.group.streetSetups": "سڑک کی ترتیبات",
+  "map.group.noise": "شور کا نقشہ",
+  "map.group.journey": "سفر منصوبہ ساز",
+  "map.group.agents": "اے آئی ایجنٹ کا منظرنامہ",
+  "help.menu": "مدد",
+  "help.tour": "تعارفی دورہ کریں",
+  "help.tourHint": "منصوبے کے ٹیبز اور ٹولز کا مختصر دورہ",
+  "help.example": "مثالی منصوبہ کھولیں",
+  "help.exampleMaking": "مثالی منصوبہ بنایا جا رہا ہے…",
+  "help.exampleHint": "زیورخ میں ایک بس لائن اور ایک ٹرام کے ساتھ آپ کا اپنا نیا منصوبہ",
+  "help.exampleFailed": "مثالی منصوبہ نہیں بن سکا: {error}",
+  "example.name": "مثال: زیورخ کی بس اور ٹرام",
+  "example.description":
+    "دیکھنے کے لیے ایک مثال: Bellevue سے Haldenbach تک ایک بس لائن اور Bahnhofstrasse کے ساتھ ایک ٹرام۔ جو چاہیں بدلیں؛ یہ آپ کی اپنی نقل ہے۔",
+  "example.busName": "مثالی بس",
+  "tour.stepOf": "{step} از {steps}",
+  "tour.close": "بند کریں",
+  "tour.back": "پیچھے",
+  "tour.next": "اگلا",
+  "tour.done": "مکمل",
+  "tour.tabs.title": "منصوبے کے ٹیبز",
+  "tour.tabs.body": "ہر ٹیب کام کا ایک حصہ ہے: سمولیشن، لائنیں بنانا، خاکہ، GIS، جدولیں اور ترجیحات۔",
+  "tour.create.title": "لائنیں بنائیں",
+  "tour.create.body":
+    "تخلیق میں سڑک لائن ٹول، ریلوے ایڈیٹر یا کسی پلگ ان کا ٹول چنیں۔ اس کی ترتیبات، جانچ اور نتائج اس پینل میں دکھائی دیتے ہیں۔",
+  "tour.search.title": "مقام تلاش کریں",
+  "tour.search.body": "نقشے کو وہاں لے جانے کے لیے قصبہ، سڑک، اسٹیشن یا پتہ تلاش کریں۔",
+  "tour.layers.title": "بنیادی نقشہ اور پرتیں",
+  "tour.layers.body":
+    "سڑک کے نقشوں اور فضائی تصاویر کے درمیان بدلیں، اور منصوبے کی پرتیں دکھائیں یا چھپائیں۔",
+  "tour.simulator.title": "سمولیشن",
+  "tour.simulator.body":
+    "ریل کی گنجائش کا ٹیسٹ چلائیں اور اپنی بنائی ہوئی لائنوں پر سفر کی منصوبہ بندی کریں۔",
+  "tour.gis.title": "GIS",
+  "tour.gis.body": "بسوں اور ٹراموں کے لیے سڑکیں ترتیب دیں، اور لائنوں کے گرد شور کا نقشہ حساب کریں۔",
+  "tour.tables.title": "جدولیں",
+  "tour.tables.body": "لائنوں کی تعمیر اور چلانے کی لاگت کے تخمینے۔",
+  "tour.save.title": "خودکار محفوظ",
+  "tour.save.body":
+    "تبدیلیاں کرنے کے کچھ ہی دیر بعد منصوبے میں محفوظ ہو جاتی ہیں۔ یہاں دکھتا ہے کہ وہ محفوظ ہوئیں یا نہیں۔",
+  "tour.print.title": "پرنٹ کریں یا PDF کے طور پر محفوظ کریں",
+  "tour.print.body": "رپورٹ کے لیے نقشہ اور لاگت کی جدولیں پرنٹ کریں، یا PDF کے طور پر محفوظ کریں۔",
+  "tour.help.title": "مدد",
+  "tour.help.body": "یہ دورہ کسی بھی وقت یہاں سے دوبارہ شروع کریں۔",
+  "print.title": "پرنٹ کریں یا PDF کے طور پر محفوظ کریں",
+  "print.intro": "منصوبے کے نام اور آج کی تاریخ کے ساتھ ایک رپورٹ۔",
+  "print.include": "شامل کریں",
+  "print.map": "نقشہ، جیسا ابھی دکھائی دے رہا ہے",
+  "print.mapHidden": "نقشہ شامل کرنے کے لیے سمیولیٹر، تخلیق یا GIS ٹیب کھولیں۔",
+  "print.tables": "لاگت کی جدولیں",
+  "print.pdfHint":
+    "PDF محفوظ کرنے کے لیے کھلنے والے ڈائیلاگ میں پرنٹر کے طور پر “PDF کے طور پر محفوظ کریں” چنیں۔",
+  "print.print": "پرنٹ…",
+
   ...editorsUr,
+  ...cargoBikeUr,
   ...PLUGIN_MESSAGES.ur,
 };
