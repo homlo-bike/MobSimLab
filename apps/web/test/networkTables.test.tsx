@@ -202,7 +202,13 @@ describe("line facts", () => {
     });
 
   it("gives a rail line's length, stops, speed, service, fleet and capacity", () => {
-    const m1 = facts().find((f) => f.id === "rail:M1")!;
+    const m1 = lineFacts({
+      railway: railway(),
+      view: railView(),
+      reports: { M1: REPORT },
+      streetLines: STREET.lines,
+      prefs: {},
+    }).find((f) => f.id === "rail:M1")!;
     expect(m1.kind).toBe("rail");
     expect(m1.stops).toBe(2);
     expect(m1.lengthKm).toBeGreaterThan(1.9);
@@ -342,6 +348,15 @@ describe("network tables", () => {
     expect(within(service).getByText("12,000")).toBeTruthy();
     expect(within(service).getByText("8K–18.5K")).toBeTruthy();
     expect(within(service).getByText("900–2.1K")).toBeTruthy();
+    const m1 = lineFacts({
+      railway: railway(),
+      view: railView(),
+      reports: { M1: REPORT },
+      streetLines: STREET.lines,
+      prefs: {},
+    }).find((f) => f.id === "rail:M1")!;
+    const day = m1.placesPerVehicle * m1.tripsPerDay;
+    expect(within(service).getByText(`${Math.round((100 * 12000) / day)}% of places`)).toBeTruthy();
     expect(within(service).queryByText(/They show once/)).toBeNull();
     const names = () =>
       within(service)
