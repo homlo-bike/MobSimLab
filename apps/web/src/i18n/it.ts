@@ -279,6 +279,10 @@ export const it: Messages = {
   "prefs.delayLane": "Su una corsia bus o tram solo dipinta",
   "prefs.delayDefault": "Libreria delle ipotesi: {value} %",
   "prefs.delayReset": "Usa il valore della libreria",
+  "prefs.stationsTitle": "Stazioni",
+  "prefs.stationsIntro":
+    "Le fermate con lo stesso nome entro questa distanza contano come una sola stazione nella mappa schematica, nel pianificatore di viaggio e nelle tabelle dei benefici e dei passeggeri.",
+  "prefs.libraryM": "Libreria delle ipotesi: {value} m",
   "prefs.currencyTitle": "Valuta",
   "prefs.currencyIntro":
     "Tutto il denaro del progetto è mostrato in questa valuta: tabelle dei costi, benefici, scenari e risparmi della cargo bike.",

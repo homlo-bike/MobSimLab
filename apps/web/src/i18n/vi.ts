@@ -279,6 +279,10 @@ export const vi: Messages = {
   "prefs.delayLane": "Trên làn xe buýt hoặc tàu điện chỉ được sơn",
   "prefs.delayDefault": "Thư viện giả định: {value} %",
   "prefs.delayReset": "Dùng giá trị thư viện",
+  "prefs.stationsTitle": "Ga",
+  "prefs.stationsIntro":
+    "Các điểm dừng cùng tên trong khoảng cách này được tính là một ga trên sơ đồ mạng lưới, công cụ lập hành trình và các bảng lợi ích và hành khách.",
+  "prefs.libraryM": "Thư viện giả định: {value} m",
   "prefs.currencyTitle": "Tiền tệ",
   "prefs.currencyIntro":
     "Mọi khoản tiền trong dự án được hiển thị bằng tiền tệ này: bảng chi phí, lợi ích, kịch bản và khoản tiết kiệm của xe đạp chở hàng.",
