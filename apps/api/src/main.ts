@@ -7,6 +7,7 @@ import type { NestExpressApplication } from "@nestjs/platform-express";
 import type { NextFunction, Request, Response } from "express";
 import { AppModule } from "./app.module";
 import { configureApp } from "./app.setup";
+import { NestWinstonLogger } from "./logging/nest-logger";
 import { ConfigError, loadConfig } from "./config/env";
 
 /**
@@ -25,8 +26,10 @@ async function bootstrap(): Promise<void> {
     throw e;
   }
   const app = await NestFactory.create<NestExpressApplication>(AppModule.forRoot(config), {
-    logger: ["error", "warn", "log"],
+    bufferLogs: true,
   });
+  // Every Nest message and every `new Logger()` goes through the Winston logger (ADR-0022).
+  app.useLogger(app.get(NestWinstonLogger));
   configureApp(app, config);
   if (!config.oidc) {
     new Logger("bootstrap").warn(

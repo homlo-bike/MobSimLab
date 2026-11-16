@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { z } from "zod";
+import { LOG_LEVELS, type LoggingConfig } from "../logging/logger";
 
 /** Secret files the API needs, read from the secrets directory (Docker secrets). */
 export const API_SECRETS = ["db_app_password", "master_key", "session_secret"] as const;
@@ -44,6 +45,8 @@ export interface AppConfig {
    * that holds real plans.
    */
   developmentMode: boolean;
+  /** Logging (ADR-0022). Absent: INFO to the console, no file. */
+  logging?: LoggingConfig;
   /** Token-bucket limits (05 §3.5), in requests per minute. */
   rateLimits: { authPerMinute: number; writesPerMinute: number };
   secrets: Record<ApiSecretName, string>;
@@ -78,6 +81,11 @@ const envSchema = z.object({
   MOBSIMLAB_DEVELOPMENT_MODE: z.enum(["true", "false"]).default("false"),
   MOBSIMLAB_RATE_LIMIT_AUTH: z.coerce.number().int().min(1).max(10_000).default(10),
   MOBSIMLAB_RATE_LIMIT_WRITES: z.coerce.number().int().min(1).max(100_000).default(120),
+  MOBSIMLAB_LOG_LEVEL: z.preprocess(
+    (v) => (typeof v === "string" && v ? v.toLowerCase() : undefined),
+    z.enum(LOG_LEVELS).default("info"),
+  ),
+  MOBSIMLAB_LOG_DIR: z.preprocess(emptyToUndefined, z.string().min(1).optional()),
 });
 
 /** Accepted entries for MOBSIMLAB_TRUSTED_PROXIES: an IP, a CIDR range, or an Express keyword. */
@@ -169,6 +177,7 @@ export function loadConfig(
         : undefined,
     trustedProxies: d.MOBSIMLAB_TRUSTED_PROXIES ? splitList(d.MOBSIMLAB_TRUSTED_PROXIES) : undefined,
     developmentMode: d.MOBSIMLAB_DEVELOPMENT_MODE === "true",
+    logging: { level: d.MOBSIMLAB_LOG_LEVEL, dir: d.MOBSIMLAB_LOG_DIR },
     rateLimits: {
       authPerMinute: d.MOBSIMLAB_RATE_LIMIT_AUTH,
       writesPerMinute: d.MOBSIMLAB_RATE_LIMIT_WRITES,
