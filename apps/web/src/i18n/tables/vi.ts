@@ -327,7 +327,7 @@ export const tablesVi = {
   "cost.p.cost.contingency_share": "Dự phòng (rủi ro và thiên lệch lạc quan)",
   "cost.p.cost.opex.vehicle_hour": "Chi phí vận hành phương tiện đường bộ mỗi xe-giờ",
   "cost.p.cost.opex.train_hour": "Chi phí tổ lái và liên quan đến tàu mỗi tàu-giờ",
-  "cost.p.cost.opex.car_km": "Chi phí chạy tàu mỗi toa-km (mỗi 25 m tàu)",
+  "cost.p.cost.opex.car_km": "Chi phí vận hành đường sắt mỗi toa-km (mỗi toa theo chiều dài được tính)",
   "cost.p.cost.opex.infrastructure_share": "Bảo trì và vận hành hạ tầng mỗi năm",
   "cost.p.cost.opex.overhead_share": "Hành chính và chi phí chung",
   "cost.p.cost.service_hours_per_day": "Giờ phục vụ mỗi ngày của một tuyến đường phố",
@@ -354,4 +354,5 @@ export const tablesVi = {
   "cost.pu.days": "ngày",
   "cost.pu.year": "năm",
   "cost.pu.passengers": "hành khách",
+  "cost.p.cost.opex.car_length_m": "Chi phí vận hành đường sắt: chiều dài tàu tính là một toa",
 } satisfies TablesMessages;

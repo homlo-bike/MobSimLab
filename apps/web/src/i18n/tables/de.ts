@@ -334,7 +334,7 @@ export const tablesDe = {
   "cost.p.cost.contingency_share": "Reserve (Risiko und Optimismus-Verzerrung)",
   "cost.p.cost.opex.vehicle_hour": "Betriebskosten für Straßenfahrzeuge je Fahrzeugstunde",
   "cost.p.cost.opex.train_hour": "Personal- und zugbezogene Kosten der Bahn je Zugstunde",
-  "cost.p.cost.opex.car_km": "Laufkosten der Bahn je Wagen-km (je 25 m Zug)",
+  "cost.p.cost.opex.car_km": "Laufkosten der Bahn je Wagen-km (je Wagen der angerechneten Wagenlänge)",
   "cost.p.cost.opex.infrastructure_share": "Unterhalt und Betrieb der Infrastruktur pro Jahr",
   "cost.p.cost.opex.overhead_share": "Verwaltung und Gemeinkosten",
   "cost.p.cost.service_hours_per_day": "Betriebsstunden pro Tag einer Straßenlinie",
@@ -361,4 +361,5 @@ export const tablesDe = {
   "cost.pu.days": "Tage",
   "cost.pu.year": "Jahr",
   "cost.pu.passengers": "Fahrgäste",
+  "cost.p.cost.opex.car_length_m": "Laufkosten der Bahn: als ein Wagen gezählte Zuglänge",
 } satisfies TablesMessages;

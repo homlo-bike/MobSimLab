@@ -5,9 +5,10 @@ Usage:
   python3 tools/costs/export_defaults.py           # write apps/web/src/features/costs/defaults.generated.json
   python3 tools/costs/export_defaults.py --check   # fail if it is stale
 
-Reads assumptions/parameters/costs.yaml (validated by tools/assumptions/check.py) and mode.spare_share
-from modes.yaml, and writes every parameter as [low, central, high] for "*" and each mode whose value
-differs, with its label and unit, so the tables can show and edit them.
+Reads assumptions/parameters/costs.yaml (validated by tools/assumptions/check.py), mode.spare_share
+from modes.yaml and timetable.max_terminal_wait_min (vehicle blocks) from operations.yaml, and
+writes every parameter as [low, central, high] for "*" and each mode whose value differs, with its
+label and unit, so the tables can show and edit them.
 """
 
 from __future__ import annotations
@@ -20,7 +21,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "apps" / "web" / "src" / "features" / "costs" / "defaults.generated.json"
-EXTRA = {"mode.spare_share", "mode.vehicle_capacity"}
+EXTRA = {
+    "mode.spare_share",
+    "mode.vehicle_capacity",
+    "timetable.max_terminal_wait_min",
+}
 
 
 def assumption_check():

@@ -331,7 +331,7 @@ export const tablesKk = {
   "cost.p.cost.contingency_share": "Күтпеген шығындар (тәуекел және оптимизм ауытқуы)",
   "cost.p.cost.opex.vehicle_hour": "Көлік-сағатқа жол көлігінің пайдалану шығыны",
   "cost.p.cost.opex.train_hour": "Пойыз-сағатқа темір жол қызметкерлері мен пойызға қатысты шығын",
-  "cost.p.cost.opex.car_km": "Вагон-км үшін темір жол қозғалыс шығыны (25 м пойызға)",
+  "cost.p.cost.opex.car_km": "Вагон-км үшін темір жол қозғалыс шығыны (есептелетін ұзындықтағы вагонға)",
   "cost.p.cost.opex.infrastructure_share": "Инфрақұрылымға жылдық техникалық қызмет және пайдалану",
   "cost.p.cost.opex.overhead_share": "Әкімшілік және жалпы шығындар",
   "cost.p.cost.service_hours_per_day": "Көше бағыттарының күндік қызмет сағаттары",
@@ -358,4 +358,5 @@ export const tablesKk = {
   "cost.pu.days": "күн",
   "cost.pu.year": "жыл",
   "cost.pu.passengers": "жолаушылар",
+  "cost.p.cost.opex.car_length_m": "Темір жол қозғалыс шығыны: бір вагон ретінде есептелетін пойыз ұзындығы",
 } satisfies TablesMessages;

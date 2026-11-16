@@ -22,13 +22,27 @@ export function roleRank(role: InstanceRole): number {
 /** Project roles (05 §3.2), highest first. */
 export const PROJECT_ROLES = ["owner", "editor", "commenter", "viewer"] as const;
 export type ProjectRole = (typeof PROJECT_ROLES)[number];
+/** Who can open a project: its members only, or anyone signed in to this instance, read-only (0013). */
+export const PROJECT_VISIBILITIES = ["private", "public"] as const;
+export type ProjectVisibility = (typeof PROJECT_VISIBILITIES)[number];
 
 /** How a simulation run stands (db/migrations/0007_simulation_runs.sql). */
 export const RUN_STATUSES = ["queued", "running", "done", "failed", "cancelled"] as const;
 export type RunStatus = (typeof RUN_STATUSES)[number];
 
-/** Kinds of simulation run: the rail capacity run, and a sweep of its settings (0008_agent_runs.sql). */
-export type RunKind = "capacity" | "sweep" | "road";
+/** Where a population layer comes from (db/migrations/0014_population.sql). */
+export type PopulationLayerSource = "worldpop" | "ghsl" | "upload";
+/** What a population layer holds: grid cells, zone polygons or points. */
+export type PopulationLayerKind = "grid" | "zones" | "points";
+export type PopulationLayerStatus = "importing" | "ready" | "failed";
+export type PopulationConfidence = "high" | "medium" | "low";
+
+/**
+ * Kinds of simulation run: the rail capacity run, a sweep of its settings (0008_agent_runs.sql), the road
+ * simulation (0009_road_runs.sql), the demand model (0012_demand_runs.sql) and calendar runs
+ * (0015_calendar_runs.sql).
+ */
+export type RunKind = "capacity" | "sweep" | "road" | "demand" | "calendar";
 
 type Timestamp = ColumnType<Date, Date | string | undefined, Date | string>;
 
@@ -46,6 +60,8 @@ export interface DB {
     updated_at: Timestamp;
     agent_registration: Generated<boolean>;
     allow_unsigned_plugins: Generated<boolean>;
+    plugin_memory_mb: Generated<number>;
+    plugin_time_s: Generated<number>;
   };
   "iam.user": {
     id: Generated<string>;
@@ -152,12 +168,14 @@ export interface DB {
     description: Generated<string>;
     area_name: string | null;
     modes: ColumnType<string[], string[] | undefined, string[]>;
-    link_access: Generated<boolean>;
+    visibility: Generated<ProjectVisibility>;
     copied_from: string | null;
     created_at: Generated<Date>;
     updated_at: Timestamp;
     archived_at: Date | null;
     deleted_at: Date | null;
+    /** Buffer round the box of everything drawn, km (projects/project-area.ts). */
+    area_buffer_km: Generated<number>;
   };
   "project.drawing": {
     project_id: string;
@@ -167,6 +185,37 @@ export interface DB {
     version: Generated<number>;
     updated_by: string | null;
     updated_at: Timestamp;
+  };
+  "geo.population_layer": {
+    id: Generated<string>;
+    project_id: string;
+    name: string;
+    source: PopulationLayerSource;
+    kind: PopulationLayerKind;
+    status: Generated<PopulationLayerStatus>;
+    error: string | null;
+    progress: ColumnType<Record<string, unknown> | null, string | null, string | null>;
+    licence: Generated<string>;
+    source_url: Generated<string>;
+    citation: Generated<string>;
+    confidence: PopulationConfidence;
+    reference_year: number | null;
+    resolution_m: number | null;
+    coverage: ColumnType<unknown, never, never>;
+    people_total: Generated<number>;
+    feature_count: Generated<number>;
+    is_primary: Generated<boolean>;
+    options: ColumnType<Record<string, unknown>, string, string>;
+    created_by: string | null;
+    created_at: Generated<Date>;
+    updated_at: Timestamp;
+  };
+  "geo.population_feature": {
+    layer_id: string;
+    n: number;
+    zone_id: string | null;
+    people: number;
+    geom: ColumnType<unknown, never, never>;
   };
   "simulation.run": {
     id: Generated<string>;
@@ -192,6 +241,28 @@ export interface DB {
   "simulation.run_replay": {
     run_id: string;
     data: Buffer;
+    created_at: Generated<Date>;
+  };
+  /** Comments on project objects (db/migrations/0016_comments.sql). */
+  "collab.comment": {
+    id: Generated<string>;
+    project_id: string;
+    object_type: string;
+    object_id: string;
+    parent_id: string | null;
+    body: string;
+    author_id: string | null;
+    created_at: Generated<Date>;
+    edited_at: Date | null;
+    resolved_at: Date | null;
+    resolved_by: string | null;
+  };
+  /** Files a run saves next to its result, such as a demand run's OD matrices (0012_demand_runs.sql). */
+  "simulation.run_file": {
+    run_id: string;
+    name: string;
+    media_type: string;
+    content: Buffer;
     created_at: Generated<Date>;
   };
   "project.member": {
@@ -221,6 +292,14 @@ export interface DB {
     signer_name: string | null;
     installed_by: string | null;
     installed_at: Generated<Date>;
+  };
+  "plugin.file": {
+    plugin_id: string;
+    version: string;
+    path: string;
+    media_type: string;
+    data: Buffer;
+    sha256: string;
   };
   "project.plugin": {
     project_id: string;

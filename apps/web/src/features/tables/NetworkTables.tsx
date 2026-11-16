@@ -1,6 +1,7 @@
 import { Fragment, type ReactNode, useMemo, useState } from "react";
 import { card, fmtQty, num, type Sort, SortHeader, sorted, td, th, Tile } from "../costs/CostTables";
 import { EnergySection } from "../energy/EnergySection";
+import type { EnergyEstimate } from "../energy/types";
 import { energyInTables } from "../energy/params";
 import type { EnergyEngineLoader } from "../energy/types";
 import { hhmm } from "../railways/serviceLines";
@@ -36,6 +37,8 @@ interface Props {
    * is not ready.
    */
   riders?: Record<string, Triple> | null;
+  /** Told the energy section's estimate (the multi-year run takes the energy a year from it). */
+  onEnergy?: (e: EnergyEstimate | null) => void;
   /** Tests inject these. */
   loadRail?: RailEngineLoader;
   loadEnergy?: EnergyEngineLoader;
@@ -62,6 +65,7 @@ export function NetworkTables({
   preferences,
   onPreferences,
   riders = null,
+  onEnergy,
   loadRail,
   loadEnergy,
   fetchHeights,
@@ -117,6 +121,7 @@ export function NetworkTables({
               preferences={preferences}
               onPreferences={onPreferences}
               loadEngine={loadEnergy}
+              onEstimate={onEnergy}
             />
           )}
         </>

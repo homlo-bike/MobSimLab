@@ -27,7 +27,7 @@ import {
   sigs,
 } from "./editorState";
 import { fetchRailTile, loadRailEngine } from "./engine";
-import { describeClash, renamePlace } from "../naming/names";
+import { describeClash, renamePlace, STATION_GROUPING_M } from "../naming/names";
 import { placesOtherThan, publishPlaces } from "../naming/registry";
 import { CONNECTION_LAYER, drawRail, ensureRailLayers, removeRailLayers, showConnections } from "./mapLayers";
 import { COLORS } from "./modes";
@@ -112,10 +112,14 @@ interface Props {
   delays?: DelayShares | null;
   /** The project's design rules per mode (Project preferences), as `<mode>.<field>`; the library's when absent. */
   designValues?: Readonly<Record<string, number>> | null;
+  /** The project's text design values per mode (electrification, colour, level crossings, signalling). */
+  designTexts?: Readonly<Record<string, string>> | null;
   /** The project's preference values by id (running values of the service lines: dwell, layover…). */
   prefValues?: Readonly<Record<string, number>> | null;
   /** The project's choice from the switches and crossings catalogue (Project preferences); all when absent. */
   switchChoice?: SwitchChoice | null;
+  /** Stations closer than this share a name, m (`analysis.station_grouping_m`); the library's when absent. */
+  stationGroupingM?: number;
   /** The drawing saved with the project, or null to start a new one at the map centre. */
   initial?: Network | null;
   /** Told about the drawing after every change, so the project can save it. */
@@ -149,8 +153,10 @@ export function RailwayEditor({
   streetSetups = NO_SETUPS,
   delays = null,
   designValues = null,
+  designTexts = null,
   prefValues = null,
   switchChoice = null,
+  stationGroupingM = STATION_GROUPING_M,
   initial = null,
   onDocChange,
   loadNoise = loadWasmNoise,
@@ -216,6 +222,7 @@ export function RailwayEditor({
     streetSetups,
     delays,
     designValues,
+    designTexts,
     switchChoice,
   });
 
@@ -383,8 +390,21 @@ export function RailwayEditor({
     view,
     cursor,
     picking,
+    stationGroupingM,
   });
-  latest.current = { tool, doc, draft, sel, trackOpts, stationOpts, switchOpts, view, cursor, picking };
+  latest.current = {
+    tool,
+    doc,
+    draft,
+    sel,
+    trackOpts,
+    stationOpts,
+    switchOpts,
+    view,
+    cursor,
+    picking,
+    stationGroupingM,
+  };
   const dragging = useRef<Dragging>(null);
 
   const startDraft = useCallback((start: Anchor, d: Network, level: Track["level"], tracks: 1 | 2) => {
@@ -606,11 +626,16 @@ export function RailwayEditor({
     },
     renameStation: (id: number, name: string) => {
       if (!doc || !name.trim()) return;
-      const r = renamePlace(`rail:${id}`, name, [...placesOtherThan("rail"), ...stationPlaces(doc, view)]);
+      const r = renamePlace(
+        `rail:${id}`,
+        name,
+        [...placesOtherThan("rail"), ...stationPlaces(doc, view)],
+        stationGroupingM,
+      );
       const members = new Set(r.members.filter((m) => m.startsWith("rail:")).map((m) => Number(m.slice(5))));
       members.add(id);
       setDoc({ ...doc, stations: doc.stations.map((s) => (members.has(s.id) ? { ...s, name: r.name } : s)) });
-      setNote(describeClash(r));
+      setNote(describeClash(r, stationGroupingM));
     },
     showIssue: (at: LonLat | null, ref: number | null) => {
       if (ref) setSel({ id: ref });

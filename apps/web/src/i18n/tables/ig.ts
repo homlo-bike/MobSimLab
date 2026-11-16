@@ -328,7 +328,7 @@ export const tablesIg = {
   "cost.p.cost.contingency_share": "Ihe a na-atụghị anya (ihe ize ndụ na echiche ọma gabigara ókè)",
   "cost.p.cost.opex.vehicle_hour": "Ego ọrụ ụgbọ okporo ụzọ kwa awa ụgbọ",
   "cost.p.cost.opex.train_hour": "Ego ndị ọrụ ụzọ ígwè na ihe metụtara ụgbọ oloko kwa awa ụgbọ oloko",
-  "cost.p.cost.opex.car_km": "Ego ịgba ọsọ ụzọ ígwè kwa ụgbọ-km (kwa 25 m ụgbọ oloko)",
+  "cost.p.cost.opex.car_km": "Ego ịgba ọsọ ụzọ ígwè kwa ụgbọ-km (kwa ụgbọ nke ogologo a gụrụ)",
   "cost.p.cost.opex.infrastructure_share": "Nlekọta na ọrụ akụrụngwa kwa afọ",
   "cost.p.cost.opex.overhead_share": "Nchịkwa na ego njikwa",
   "cost.p.cost.service_hours_per_day": "Awa ọrụ kwa ụbọchị nke ahịrị okporo ụzọ",
@@ -354,4 +354,5 @@ export const tablesIg = {
   "cost.pu.days": "ụbọchị",
   "cost.pu.year": "afọ",
   "cost.pu.passengers": "ndị njem",
+  "cost.p.cost.opex.car_length_m": "Ego ịgba ọsọ ụzọ ígwè: ogologo ụgbọ oloko a gụrụ dị ka otu ụgbọ",
 } satisfies TablesMessages;

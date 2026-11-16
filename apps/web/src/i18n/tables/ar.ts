@@ -336,7 +336,7 @@ export const tablesAr = {
   "cost.p.cost.contingency_share": "الطوارئ (المخاطر وانحياز التفاؤل)",
   "cost.p.cost.opex.vehicle_hour": "تكلفة تشغيل مركبة الطرق لكل مركبة-ساعة",
   "cost.p.cost.opex.train_hour": "تكلفة الطاقم والقطار لكل قطار-ساعة",
-  "cost.p.cost.opex.car_km": "تكلفة سير السكك لكل عربة-كم (لكل 25 م من القطار)",
+  "cost.p.cost.opex.car_km": "تكلفة تشغيل السكك الحديدية لكل عربة-كم (لكل عربة بالطول المحتسب)",
   "cost.p.cost.opex.infrastructure_share": "صيانة البنية التحتية وتشغيلها سنويًا",
   "cost.p.cost.opex.overhead_share": "الإدارة والنفقات العامة",
   "cost.p.cost.service_hours_per_day": "ساعات الخدمة يوميًا لخط الشارع",
@@ -362,4 +362,5 @@ export const tablesAr = {
   "cost.pu.days": "أيام",
   "cost.pu.year": "سنة",
   "cost.pu.passengers": "ركاب",
+  "cost.p.cost.opex.car_length_m": "تكلفة تشغيل السكك الحديدية: طول القطار المحتسب عربةً واحدة",
 } satisfies TablesMessages;

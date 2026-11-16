@@ -18,9 +18,9 @@ Plugins add modes, parameters, tools and calculations to MobSimLab ([ADR-0036](.
 | Contribution | Status |
 |--------------|--------|
 | `modes`, `contexts`, `parameters`, `sources`, `tools` | Built. Parameters follow the assumption library rules (ADR-0018) with the plugin's modes and context keys. Tools use a core authoring kit: `straight-spans`, `water-route` or `service-zone` (`crates/mode-kits`). |
-| `calculations`, `mapLayers` | Built for bundled plugins only, with runtime `bundled-wasm`: the code is a core crate compiled to WebAssembly by `tools/wasm/build-<module>.sh`. Sandboxed third-party components come with the plugin host (ADR-0036 Phase 2). |
-| `importers`, `exporters` | Built for bundled plugins only, with runtime `bundled-wasm`: a module function converts between a file format and a published contract (today `published-timetable`), JSON in and out; the app unzips and zips. |
-| `tabs` | Built for bundled plugins only: a project tab after the core tabs, with a view the web app ships (`view`) and the calculations it shows. `tools/plugins/check.py` refuses a core tab id, a tab two plugins contribute, and unknown calculations. |
+| `calculations`, `mapLayers` | Bundled plugins: runtime `bundled-wasm`, a core crate compiled to WebAssembly by `tools/wasm/build-<module>.sh`. Installed plugins: calculations with runtime `component`, their own WebAssembly component run in a sandbox (ADR-0036 Phase 2, [guide](../docs/plugins/README.md)), shown in the Tables tab, in the plugin's tab and to agents. Map layers stay bundled-only. |
+| `importers`, `exporters` | A function converts between a file format and a published contract (today `published-timetable`), JSON in and out: a module function for bundled plugins (`bundled-wasm`; the app unzips and zips), a component for installed plugins (`component`). Shown in the journey planner. |
+| `tabs` | A project tab after the core tabs with the calculations it shows: a view the web app ships (`view`) for bundled plugins, the plugin's own page (`ui`) in a locked frame for installed plugins. `tools/plugins/check.py` refuses a core tab id, a tab two plugins contribute, and unknown calculations. |
 | `vehicles` | Accepted by the schema; the cable car and ferry catalogue folders come with sourced vehicles. |
 | `checks`, `engines`, `infrastructure`, `catalogues`, `kpis`, `schematics`, `panels` | Reserved for later phases; the schema accepts no entries yet. |
 
@@ -30,7 +30,7 @@ Built in ADR-0036 Phase 1 (see *Phase 1 as built* in the ADR):
 
 - **Admins and Owners install** a plugin under *Administration → Plugins* by uploading a `.msplugin` file. MobSimLab checks it first and shows the publisher, the signature, what it adds, what it may read and its licences; nothing is stored until **Install** is pressed. Several versions of a plugin can be installed side by side. Removing a version that projects use asks for confirmation, turns it off in those projects and keeps their drawings.
 - **Project Owners turn plugins on or off** under *Preferences → Plugins* and pick the version of an installed plugin. Bundled plugins are on in every project until its Owner turns one off; installed plugins are off until turned on. Turning a plugin off hides its tools and keeps what was drawn with it. A copied project keeps its plugin choices.
-- **Installed plugins are data plugins for now**: modes, contexts, tools on the core kits, parameters and sources. Calculations, map layers and the compute and UI tiers stay with bundled plugins until the sandboxed plugin host (Phase 2) exists, and the install check refuses them.
+- **Installed plugins** add modes, contexts, tools on the core kits, parameters and sources, and can run their own code: calculations, importers, exporters (tier `compute`) and tab pages (tier `ui`), in a sandbox without internet access (see [Plugins with their own code](../docs/plugins/README.md)). The Admin screen marks such plugins *Runs its own code in a sandbox* and holds the memory and time limits for every call. Map layers stay with bundled plugins.
 - Installs, removals, keys and per-project changes are in the audit log.
 
 ## Making a third-party plugin

@@ -4,7 +4,9 @@ import { JobProgress } from "../../shell/JobProgress";
 import { formatInt, tNow, useI18n } from "../../i18n/i18n";
 import { loadRailEngine } from "../railways/engine";
 import type { Network, RailEngineLoader } from "../railways/types";
+import type { RoadRun, RoadRunsApi } from "../road-sim/api";
 import type { StreetLinesDoc } from "../street-lines/saved";
+import type { ScenariosDoc } from "../tables/scenarioModel";
 import {
   type BuildingTileFetcher,
   buildingTiles,
@@ -14,27 +16,34 @@ import {
   MAX_BUILDING_TILES,
   removeBuildings,
 } from "./buildings";
-import { type NoiseImages, type NoiseRunner, workerRunner } from "./engine";
-import { drawNoise, LEGEND, removeNoise } from "./mapLayer";
-import { RAIL_FLOWS, railSources, streetLineSources } from "./sources";
+import { differenceLevels, differencePixels } from "./difference";
+import { type NoiseLevels, type NoiseRunner, workerRunner } from "./engine";
+import { coverPoints, type Design, designSources, hasLines, type RoadRunInput } from "./inputs";
+import { drawNoise, removeNoise } from "./mapLayer";
+import { NoiseResult } from "./NoiseResult";
+import { type Computed, type Difference, type Done, FROM_DB } from "./result";
 import { buildingsBbox, fetchPopulation, type PopulationFetcher, type PopulationSource } from "./population";
 import { fetchHeights, type HeightsFetcher, loadTerrain, terrainPlan } from "./terrain";
 import type {
-  Flows,
   Indicator,
+  InputLevel,
   NoiseBuilding,
+  NoiseInput,
   NoiseLine,
   NoisePopulation,
   NoiseTerrain,
   NoiseView,
 } from "./types";
+import { paramNumber } from "../../workspace/preferences";
 
-/** How far the noise map reaches from the lines, m. */
-export const MAP_REACH_M = 300;
-/** Evening and night buses per hour on a street line (the street line tool's defaults). */
-export const STREET_OFF_PEAK: Omit<Flows, "day"> = { evening: 3, night: 1 };
-/** Colours start at the Directive's lowest reporting band. */
-const FROM_DB: Record<Indicator, number> = { lden: 55, lnight: 50 };
+export { STREET_OFF_PEAK } from "./inputs";
+export { FROM_DB } from "./result";
+
+/** How far the noise map reaches from the lines, m: the library's `noise.map_reach_m`. */
+export const MAP_REACH_M = paramNumber("noise.map_reach_m", undefined);
+
+/** The current drawing in the scenario pickers. */
+const CURRENT = "current";
 
 interface Props {
   map: MapLibreMap | null;
@@ -42,6 +51,10 @@ interface Props {
   railway: Network | null;
   /** Project preferences: `noise.*` values replace the plugin's assumptions. */
   preferences?: Record<string, number>;
+  /** Scenarios saved in the Tables tab, to compute or compare with. */
+  scenarios?: ScenariosDoc | null;
+  /** The project's saved road runs, for the simulated input. */
+  roadRuns?: RoadRunsApi | null;
   /** Tests inject these. */
   runNoise?: NoiseRunner;
   loadRail?: RailEngineLoader;
@@ -69,9 +82,9 @@ const POP_WAIT_MS = 15 * 60_000;
 const POP_POLL_MS = 3_000;
 
 /**
- * Purpose: the project's noise lines as sources: every saved street line (buses per hour from the
- * headway in the day, the tool's evening and night defaults) and every railway track (the sample
- * trains per hour of the design's mode).
+ * Purpose: the project's noise lines as planned: every saved street line (buses per hour from the headway in
+ * the day, the tool's evening and night defaults) and every railway track (the sample trains per hour of the
+ * design's mode).
  * Side effects: builds the railway design with the rail engine when there is one.
  */
 export async function projectSources(
@@ -79,24 +92,7 @@ export async function projectSources(
   railway: Network | null,
   loadRail: RailEngineLoader,
 ): Promise<NoiseLine[]> {
-  const lines: NoiseLine[] = [];
-  for (const [i, l] of (streetLines?.lines ?? []).entries()) {
-    if (l.view.points.length < 2) continue;
-    const day = l.timing.headwayMin > 0 ? 60 / l.timing.headwayMin : 0;
-    for (const s of streetLineSources(l.view, l.profile, { day, ...STREET_OFF_PEAK }, false))
-      lines.push({ ...s, id: `street-${i}-${s.id}`, label: l.name || `Street line ${i + 1}` });
-  }
-  if (railway && railway.tracks.length) {
-    const engine = await loadRail();
-    try {
-      const view = engine.build(railway, null);
-      const flows = RAIL_FLOWS[railway.mode] ?? RAIL_FLOWS.tram!;
-      lines.push(...railSources(railway, view, flows));
-    } finally {
-      engine.dispose();
-    }
-  }
-  return lines;
+  return (await designSources({ streetLines, railway }, "planned", loadRail)).lines;
 }
 
 /** A step of the computation under way: its text, its number of `steps`, and how far it is when known. */
@@ -110,34 +106,24 @@ interface Busy {
   canSkip?: boolean;
 }
 
-type Status =
-  | { kind: "idle" }
-  | Busy
-  | {
-      kind: "done";
-      view: NoiseView;
-      images: NoiseImages | null;
-      buildings: NoiseBuilding[] | null;
-      notes: string[];
-      people: PopulationSource | null;
-    }
-  | { kind: "error"; text: string }
-  | { kind: "cancelled" };
+type Status = { kind: "idle" } | Busy | Done | { kind: "error"; text: string } | { kind: "cancelled" };
 
 /**
- * Purpose: the Noise map in the GIS tab (ADR-0038 step N2): L_den or L_night from every saved
- * street line and railway, screened by the OSM buildings round them (over the roofs and round the
- * ends), with first-order facade reflections and the terrain, the buildings coloured by the level
- * beside their most exposed side, and the buildings and their residents (WorldPop, else the
- * building size) counted by the Directive's reporting bands.
- * Side effects: loads buildings, terrain heights and the population grid from the API and the noise and rail engines on
- * demand; draws the noise picture and the buildings on the map while shown.
+ * Purpose: the Noise map in the GIS tab (ADR-0038 steps N2 and N3): L_den or L_night from the street lines and
+ * railway of the current design or a saved scenario, from planned, timetabled or simulated flows, screened by
+ * the OSM buildings round them (over the roofs and round the ends), with first-order facade reflections and the
+ * terrain, the buildings and their residents (WorldPop, else the building size) counted by the Directive's
+ * reporting bands; compared to another scenario, the difference map in dB; contours and the table for export.
+ * Side effects: loads buildings, terrain heights, the population grid and road runs from the API and the noise
+ * and rail engines on demand; draws the noise picture and the buildings on the map while shown.
  */
 export function NoiseMap({
   map,
   streetLines,
   railway,
   preferences,
+  scenarios,
+  roadRuns,
   runNoise = workerRunner,
   loadRail = loadRailEngine,
   fetchTile = fetchBuildingTile,
@@ -148,13 +134,27 @@ export function NoiseMap({
 }: Props) {
   const { t } = useI18n();
   const [indicator, setIndicator] = useState<Indicator>("lden");
+  const [level, setLevel] = useState<InputLevel>("planned");
+  const [mainId, setMainId] = useState(CURRENT);
+  const [otherId, setOtherId] = useState("");
+  const [runIds, setRunIds] = useState<[string, string]>(["", ""]);
+  const [runs, setRuns] = useState<RoadRun[] | null>(null);
   const [withBuildings, setWithBuildings] = useState(true);
   const [withTerrain, setWithTerrain] = useState(true);
   const [status, setStatus] = useState<Status>({ kind: "idle" });
   // The run under way: aborting it cancels the run; `skip` ends the wait for WorldPop.
   const run = useRef<{ abort: AbortController; skip: AbortController } | null>(null);
-  const hasLines =
-    (streetLines?.lines ?? []).some((l) => l.view.points.length >= 2) || !!railway?.tracks.length;
+
+  const saved = scenarios?.scenarios ?? [];
+  const design = (id: string): { name: string; design: Design } | null => {
+    if (id === CURRENT) return { name: t("noise.currentDesign"), design: { streetLines, railway } };
+    const s = saved.find((x) => x.id === id);
+    return s ? { name: s.name, design: { streetLines: s.streetLines, railway: s.railway } } : null;
+  };
+  const main = design(mainId) ?? design(CURRENT)!;
+  const other = otherId ? design(otherId) : null;
+  const ready = hasLines(main.design) || (!!other && hasLines(other.design));
+  const missingRun = level === "simulated" && (!runIds[0] || (!!other && !runIds[1]));
 
   useEffect(
     () => () => {
@@ -167,24 +167,36 @@ export function NoiseMap({
     [map],
   );
 
-  // Draw the result for the indicator shown.
+  // The finished road runs, once the simulated input is chosen.
+  useEffect(() => {
+    if (level !== "simulated" || runs || !roadRuns) return;
+    let live = true;
+    roadRuns
+      .list()
+      .then((list) => live && setRuns(list.filter((r) => r.status === "done")))
+      .catch(() => live && setRuns([]));
+    return () => {
+      live = false;
+    };
+  }, [level, runs, roadRuns]);
+
+  // Draw the result for the indicator shown: the difference when comparing, else the noise bands.
   useEffect(() => {
     if (!map) return;
-    if (status.kind !== "done" || !status.images || !status.view.image) {
+    if (status.kind !== "done" || !status.main.view.image) {
       if (status.kind !== "busy") {
         removeNoise(map);
         removeBuildings(map);
       }
       return;
     }
-    const img = status.view.image;
-    drawNoise(map, {
-      pixels: status.images[indicator],
-      width: img.width,
-      height: img.height,
-      coordinates: img.coordinates,
-    });
-    drawBuildings(map, status.buildings, status.view.building_levels, indicator, FROM_DB[indicator]);
+    const img = status.main.view.image;
+    const pixels = status.difference ? status.difference.pixels[indicator] : status.main.images?.[indicator];
+    if (!pixels) return;
+    drawNoise(map, { pixels, width: img.width, height: img.height, coordinates: img.coordinates });
+    if (status.difference) removeBuildings(map);
+    else
+      drawBuildings(map, status.buildings, status.main.view.building_levels, indicator, FROM_DB[indicator]);
   }, [map, status, indicator]);
 
   async function compute() {
@@ -193,7 +205,7 @@ export function NoiseMap({
     run.current?.abort.abort();
     run.current = { abort, skip };
     const signal = abort.signal;
-    const steps = 2 + (withBuildings ? 2 : 0) + (withTerrain ? 1 : 0);
+    const steps = 2 + (withBuildings ? 2 : 0) + (withTerrain ? 1 : 0) + (other ? 1 : 0);
     let index = 0;
     const step = (text: string, extra: Partial<Busy> = {}) => {
       signal.throwIfAborted();
@@ -206,18 +218,36 @@ export function NoiseMap({
     try {
       index++;
       step(tNow("noise.collecting"));
-      const lines = await abortable(projectSources(streetLines, railway, loadRail), signal);
+      const notes: string[] = [];
+      const collect = async (d: { name: string; design: Design }, runId: string) => {
+        let roadRun: RoadRunInput | null = null;
+        if (level === "simulated" && roadRuns && runId) {
+          const r = runs?.find((x) => x.id === runId);
+          const [scenario, replay] = await Promise.all([roadRuns.scenario(runId), roadRuns.replay(runId)]);
+          roadRun = {
+            name: r ? runLabel(r) : runId,
+            scenario,
+            replay,
+            params: r?.params ?? replaySpan(replay),
+          };
+        }
+        const got = await designSources(d.design, level, loadRail, roadRun);
+        notes.push(...got.notes.map((n) => (other ? `${d.name}: ${n}` : n)));
+        return got.lines;
+      };
+      const linesA = await abortable(collect(main, runIds[0]), signal);
+      const linesB = other ? await abortable(collect(other, runIds[1]), signal) : null;
       signal.throwIfAborted();
-      if (!lines.length) {
+      if (!linesA.length && !linesB?.length) {
         setStatus({ kind: "error", text: tNow("noise.drawFirst") });
         return;
       }
       let buildings: NoiseBuilding[] | null = null;
-      const notes: string[] = [];
-      const points = lines.flatMap((l) => l.points);
+      const points = [...linesA, ...(linesB ?? [])].flatMap((l) => l.points);
+      const reach = paramNumber("noise.map_reach_m", preferences);
       if (withBuildings) {
         index++;
-        const tiles = buildingTiles(points, MAP_REACH_M);
+        const tiles = buildingTiles(points, reach);
         if (tiles.length > MAX_BUILDING_TILES) {
           notes.push(tNow("noise.tooLarge", { tiles: tiles.length, max: MAX_BUILDING_TILES }));
         } else {
@@ -228,7 +258,7 @@ export function NoiseMap({
       let terrain: NoiseTerrain | null = null;
       if (withTerrain) {
         index++;
-        const plan = terrainPlan(points, MAP_REACH_M);
+        const plan = terrainPlan(points, reach);
         if (!plan) {
           notes.push(tNow("noise.terrainTooLarge"));
         } else {
@@ -262,27 +292,47 @@ export function NoiseMap({
           );
         }
       }
+      const common: Omit<NoiseInput, "lines"> = {
+        grid: true,
+        grid_reach_m: reach,
+        buildings: buildings ?? [],
+        terrain,
+        population,
+        input_level: level,
+        overrides: Object.fromEntries(
+          Object.entries(preferences ?? {}).filter(([k, v]) => k.startsWith("noise.") && Number.isFinite(v)),
+        ),
+      };
+      // Compared scenarios share one grid: the same cover points and projection origin.
+      if (linesB) {
+        const cover = coverPoints([...linesA, ...linesB]);
+        Object.assign(common, { grid_cover: cover, origin: cover[0] });
+      }
       index++;
-      step(tNow("noise.computing"));
-      const result = await runNoise(
-        {
-          lines,
-          grid: true,
-          grid_reach_m: MAP_REACH_M,
-          buildings: buildings ?? [],
-          terrain,
-          population,
-          overrides: Object.fromEntries(
-            Object.entries(preferences ?? {}).filter(
-              ([k, v]) => k.startsWith("noise.") && Number.isFinite(v),
-            ),
-          ),
-        },
-        FROM_DB,
-        signal,
-      );
+      step(tNow(linesB ? "noise.computingOf" : "noise.computing", { name: main.name }));
+      const a = await runNoise({ ...common, lines: linesA }, FROM_DB, signal);
       signal.throwIfAborted();
-      setStatus({ kind: "done", view: result.view, images: result.images, buildings, notes, people });
+      let b: Computed | null = null;
+      let difference: Difference | null = null;
+      if (linesB && other) {
+        index++;
+        step(tNow("noise.computingOf", { name: other.name }));
+        const r = await runNoise({ ...common, lines: linesB }, FROM_DB, signal);
+        signal.throwIfAborted();
+        b = { name: other.name, view: r.view, images: r.images, levels: r.levels ?? null };
+        difference = differenceOf(a.view, a.levels ?? null, r.levels ?? null);
+        if (!difference) notes.push(tNow("noise.noDifference"));
+      }
+      setStatus({
+        kind: "done",
+        level,
+        main: { name: main.name, view: a.view, images: a.images, levels: a.levels ?? null },
+        other: b,
+        difference,
+        buildings,
+        notes,
+        people,
+      });
     } catch (err) {
       if (signal.aborted) setStatus({ kind: "cancelled" });
       else setStatus({ kind: "error", text: err instanceof Error ? err.message : String(err) });
@@ -330,8 +380,26 @@ export function NoiseMap({
     }
   }
 
-  const exposure = status.kind === "done" ? status.view.buildings : null;
-  const rows = exposure ? exposure[indicator] : null;
+  const select = "min-h-10 w-full rounded border border-slate-300 bg-white px-2 text-xs";
+  const runPicker = (side: 0 | 1, label: string) => (
+    <label className="flex flex-col gap-1 text-xs text-slate-600">
+      {label}
+      <select
+        className={select}
+        value={runIds[side]}
+        onChange={(e) =>
+          setRunIds((ids) => (side === 0 ? [e.target.value, ids[1]] : [ids[0], e.target.value]))
+        }
+      >
+        <option value="">{t("noise.chooseRun")}</option>
+        {(runs ?? []).map((r) => (
+          <option key={r.id} value={r.id}>
+            {runLabel(r)}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
   return (
     <section className="flex flex-col gap-2" aria-label={t("noise.map")}>
       <h3 className="text-xs font-semibold tracking-wider text-slate-500 uppercase">{t("noise.map")}</h3>
@@ -359,6 +427,52 @@ export function NoiseMap({
           </button>
         ))}
       </div>
+      <label className="flex flex-col gap-1 text-xs text-slate-600">
+        {t("noise.scenario")}
+        <select className={select} value={mainId} onChange={(e) => setMainId(e.target.value)}>
+          <option value={CURRENT}>{t("noise.currentDesign")}</option>
+          {saved.map((s) => (
+            <option key={s.id} value={s.id}>
+              {s.name}
+            </option>
+          ))}
+        </select>
+      </label>
+      <label className="flex flex-col gap-1 text-xs text-slate-600">
+        {t("noise.compareTo")}
+        <select className={select} value={otherId} onChange={(e) => setOtherId(e.target.value)}>
+          <option value="">{t("noise.noComparison")}</option>
+          {[{ id: CURRENT, name: t("noise.currentDesign") }, ...saved]
+            .filter((s) => s.id !== mainId)
+            .map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.name}
+              </option>
+            ))}
+        </select>
+      </label>
+      <fieldset className="flex flex-col gap-1">
+        <legend className="pb-1 text-xs text-slate-600">{t("noise.inputLevel")}</legend>
+        {(["planned", "timetabled", "simulated"] as const).map((l) => (
+          <label key={l} className="flex items-center gap-2 text-xs">
+            <input type="radio" name="noise-input-level" checked={level === l} onChange={() => setLevel(l)} />
+            {t(`noise.level.${l}`)}
+          </label>
+        ))}
+      </fieldset>
+      {level === "simulated" && (
+        <div className="flex flex-col gap-2 rounded border border-slate-200 p-2">
+          <p className="text-xs text-slate-600">{t("noise.simulatedIntro")}</p>
+          {!roadRuns || (runs && !runs.length) ? (
+            <p className="text-xs text-slate-500">{t("noise.noRuns")}</p>
+          ) : (
+            <>
+              {runPicker(0, other ? t("noise.runFor", { name: main.name }) : t("noise.run"))}
+              {other && runPicker(1, t("noise.runFor", { name: other.name }))}
+            </>
+          )}
+        </div>
+      )}
       <label className="flex items-center gap-2 text-xs">
         <input type="checkbox" checked={withBuildings} onChange={(e) => setWithBuildings(e.target.checked)} />
         {t("noise.screen")}
@@ -370,12 +484,12 @@ export function NoiseMap({
       <button
         type="button"
         className="btn min-h-10"
-        disabled={!hasLines || status.kind === "busy"}
+        disabled={!ready || missingRun || status.kind === "busy"}
         onClick={() => void compute()}
       >
         {t(status.kind === "done" ? "noise.computeAgain" : "noise.compute")}
       </button>
-      {!hasLines && <p className="text-xs text-slate-500">{t("noise.drawFirst")}</p>}
+      {!ready && <p className="text-xs text-slate-500">{t("noise.drawFirst")}</p>}
       {status.kind === "busy" && (
         <JobProgress
           label={t("noise.map")}
@@ -392,87 +506,41 @@ export function NoiseMap({
       {status.kind === "error" && (
         <p className="rounded bg-red-50 px-2 py-1 text-xs text-red-700">{status.text}</p>
       )}
-      {status.kind === "done" && (
-        <>
-          <div
-            className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-slate-600"
-            aria-label={t("noise.mapLegend")}
-          >
-            {LEGEND.filter((l) => l.from_db >= FROM_DB[indicator]).map((l) => (
-              <span key={l.from_db} className="flex items-center gap-1">
-                <span
-                  className="inline-block h-3 w-3 rounded-sm border border-slate-300"
-                  style={{ background: l.color }}
-                />
-                {l.from_db}
-              </span>
-            ))}
-            <span>dB</span>
-          </div>
-          {exposure && rows && (
-            <table className="w-full text-xs" aria-label={t("noise.table")}>
-              <caption className="pb-1 text-start text-slate-600">
-                {t("noise.tableCaption", { reached: exposure.reached, count: exposure.count })}
-              </caption>
-              <thead>
-                <tr className="text-start text-slate-500">
-                  <th className="font-normal">{indicator === "lden" ? "L_den" : "L_night"}</th>
-                  <th className="text-end font-normal">{t("noise.buildings")}</th>
-                  {exposure.people && <th className="text-end font-normal">{t("noise.residents")}</th>}
-                </tr>
-              </thead>
-              <tbody>
-                {rows.from_db.map((from, i) => (
-                  <tr key={from} className="border-t border-slate-100">
-                    <td>
-                      {i === rows.from_db.length - 1
-                        ? t("noise.dbOrMore", { db: from })
-                        : t("noise.dbRange", { from, to: from + 4 })}
-                    </td>
-                    <td className="text-end tabular-nums">{rows.buildings[i]}</td>
-                    {exposure.people && (
-                      <td className="text-end tabular-nums">{peopleText(rows.people[i] ?? 0)}</td>
-                    )}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-          {exposure?.people && (
-            <p className="text-xs text-slate-600">
-              {exposure.people.source === "grid" && status.people
-                ? t("noise.popGrid", {
-                    year: status.people.year,
-                    countries: status.people.countries.join(", "),
-                    reached: peopleText(exposure.people.reached),
-                    total: peopleText(exposure.people.total),
-                  })
-                : t("noise.popSize", {
-                    reached: peopleText(exposure.people.reached),
-                    total: peopleText(exposure.people.total),
-                  })}
-              {exposure.people.source === "grid" && exposure.people.unplaced >= 1
-                ? ` ${t("noise.popUnplaced", { n: peopleText(exposure.people.unplaced) })}`
-                : ""}{" "}
-              {t("noise.popNoHomes")}
-            </p>
-          )}
-          {status.notes.map((n) => (
-            <p key={n} className="rounded bg-amber-50 px-2 py-1 text-xs text-amber-900">
-              {n}
-            </p>
-          ))}
-          <p className="text-xs text-slate-500">
-            {t("noise.mapNote")} {t(status.view.terrain ? "noise.onTerrain" : "noise.flat")}
-            {status.people ? ` ${t("noise.popCredit")}` : ""}
-          </p>
-        </>
-      )}
+      {status.kind === "done" && <NoiseResult result={status} indicator={indicator} />}
     </section>
   );
 }
 
-/** Purpose: a people count as the Directive reports it, rounded to the nearest hundred above 100. */
-function peopleText(n: number): string {
-  return formatInt(n >= 100 ? Math.round(n / 100) * 100 : n);
+/** Purpose: a road run in the picker: when it ran and its period. */
+function runLabel(r: RoadRun): string {
+  const hh = (s: number) =>
+    `${String(Math.floor(s / 3600) % 24).padStart(2, "0")}:${String(Math.floor((s % 3600) / 60)).padStart(2, "0")}`;
+  const when = new Date(r.finishedAt ?? r.createdAt).toLocaleString(undefined, {
+    dateStyle: "short",
+    timeStyle: "short",
+  });
+  return tNow("noise.runLabel", { when, from: hh(r.params.from_s), to: hh(r.params.to_s) });
+}
+
+/** Purpose: the period a replay covers, for a run whose settings are not in the list. */
+function replaySpan(r: { begin: number; frames: number; frame_s: number }) {
+  return { from_s: r.begin, to_s: r.begin + Math.max(0, r.frames - 1) * r.frame_s };
+}
+
+/** Purpose: the difference map of two estimates on one grid, or null when either has no grid levels. */
+function differenceOf(view: NoiseView, a: NoiseLevels | null, b: NoiseLevels | null): Difference | null {
+  const img = view.image;
+  if (!img || !a || !b || a.lden.length !== b.lden.length || a.lden.length !== img.width * img.height)
+    return null;
+  const levels = {
+    lden: differenceLevels(a.lden, b.lden, FROM_DB.lden),
+    lnight: differenceLevels(a.lnight, b.lnight, FROM_DB.lnight),
+  };
+  return {
+    levels,
+    pixels: {
+      lden: differencePixels(levels.lden, img.width, img.height),
+      lnight: differencePixels(levels.lnight, img.width, img.height),
+    },
+  };
 }

@@ -337,7 +337,7 @@ export const tablesRu = {
   "cost.p.cost.contingency_share": "Непредвиденные расходы (риск и оптимистическое смещение)",
   "cost.p.cost.opex.vehicle_hour": "Эксплуатационные затраты безрельсовой машины на машино-час",
   "cost.p.cost.opex.train_hour": "Затраты на бригады и поезд на поездо-час",
-  "cost.p.cost.opex.car_km": "Затраты на движение поездов на вагоно-км (на 25 м поезда)",
+  "cost.p.cost.opex.car_km": "Эксплуатационные расходы ж/д на вагоно-км (на вагон учитываемой длины)",
   "cost.p.cost.opex.infrastructure_share": "Содержание и эксплуатация инфраструктуры в год",
   "cost.p.cost.opex.overhead_share": "Администрирование и накладные расходы",
   "cost.p.cost.service_hours_per_day": "Часы работы уличной линии в день",
@@ -364,4 +364,5 @@ export const tablesRu = {
   "cost.pu.days": "дней",
   "cost.pu.year": "год",
   "cost.pu.passengers": "пассажиров",
+  "cost.p.cost.opex.car_length_m": "Эксплуатационные расходы ж/д: длина поезда, считаемая за один вагон",
 } satisfies TablesMessages;

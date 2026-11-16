@@ -328,7 +328,7 @@ export const tablesHi = {
   "cost.p.cost.contingency_share": "आकस्मिकता (जोखिम और आशावाद पूर्वाग्रह)",
   "cost.p.cost.opex.vehicle_hour": "प्रति वाहन-घंटा सड़क वाहन संचालन लागत",
   "cost.p.cost.opex.train_hour": "प्रति ट्रेन-घंटा रेल चालक दल और ट्रेन संबंधी लागत",
-  "cost.p.cost.opex.car_km": "प्रति डिब्बा-किमी रेल चलाने की लागत (प्रति 25 मी ट्रेन)",
+  "cost.p.cost.opex.car_km": "प्रति डिब्बा-किमी रेल परिचालन लागत (गिनी गई लंबाई के प्रति डिब्बे)",
   "cost.p.cost.opex.infrastructure_share": "सालाना बुनियादी ढाँचे का रखरखाव और संचालन",
   "cost.p.cost.opex.overhead_share": "प्रशासन और ओवरहेड",
   "cost.p.cost.service_hours_per_day": "सड़क लाइन के प्रतिदिन सेवा घंटे",
@@ -354,4 +354,5 @@ export const tablesHi = {
   "cost.pu.days": "दिन",
   "cost.pu.year": "वर्ष",
   "cost.pu.passengers": "यात्री",
+  "cost.p.cost.opex.car_length_m": "रेल परिचालन लागत: एक डिब्बा गिनी जाने वाली ट्रेन की लंबाई",
 } satisfies TablesMessages;

@@ -1,6 +1,6 @@
 # ADR-0033: Railway editor: one Rust geometry crate, run in the browser as WebAssembly
 
-- Status: Proposed (railway editor PR, 2026-11-01)
+- Status: Accepted (product owner, 2026-11-16); before that Proposed: railway editor PR, 2026-11-01
 - Date: 2026-11-01
 - Related: FR-NET-02..07, ADR-0030 (railway design tool), ADR-0031 (street routing in the browser), ADR-0032 (railway operations), [06 §9.5](../architecture/06-gis.md#95-railway-design-tool)
 
@@ -78,9 +78,9 @@ The editor has to refit curves and re-run the checks on every drag. Railway oper
 - CI and the image build compile a second WebAssembly module (`tools/wasm/build-rail-design.sh`). The web tests load it from disk.
 - Railway operations (ADR-0032) reads the design as a track topology from the same crate (`topology` module, `contracts/rail-topology.schema.json`). It contains sections with stable ids split at switch points, the allowed movements through each node, switches with their conflict sections, platform edges, crossings with chainages and fouling points, and depot groups. CI checks every mode's example against the schema.
 - Street line routing (ADR-0029) does not yet read the level crossings. It should add the expected waiting time at crossings to running times and depot runs, and plan the battery stretch where a trolleybus loses its wire. The simulation will close the street before a train (07 §5). Pedestrian and cycle crossings are not checked yet.
-- Signals (decision 10) are only as good as the generator's rules: distant signals, signals for speed restrictions and the exact sighting of each signal are left to the planner. Generated ids (`g{n}`) are not stable between exports; planned ids (`sg{id}`) are.
+- Signals (decisions 10 and 16) are only as good as the generator's rules: the exact sighting of each signal is left to the planner. Generated ids (`g{n}`) are not stable between exports; planned ids (`sg{id}`) are.
 - Railway operations sees where the design joins the existing network (`existing_joins`) but not the existing network itself. Through services onto existing lines need that network from another source.
-- Tunnel cover, bridge clearance and terrain checks wait for the DEM (06 §4). Until then levels are nominal heights from the assumption library.
+- Ground heights come from the terrain source (decision 18). Tunnel cover, bridge clearance over the ground and the heights of two tracks at a diamond crossing are not checked yet.
 
 ## Alternatives considered
 

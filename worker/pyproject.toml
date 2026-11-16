@@ -16,6 +16,8 @@ sim = [
     "pyproj==3.7.2",
     "rtree==1.4.1",
 ]
+# The four-step demand model (ADR-0019). AequilibraE brings numpy, pandas, scipy and openmatrix.
+demand = ["aequilibrae==1.7.2", "pyyaml>=6.0"]
 
 [project.scripts]
 mobsim-worker = "mobsim_worker.main:main"
@@ -49,5 +51,10 @@ files = ["src"]
 testpaths = ["tests"]
 
 [[tool.mypy.overrides]]
-module = ["mobsim_kernels", "sumo", "sumolib", "sumolib.*", "libsumo"]
+module = ["mobsim_kernels", "sumo", "sumolib", "sumolib.*", "libsumo", "aequilibrae", "aequilibrae.*", "openmatrix", "pandas", "pandas.*", "scipy", "scipy.*"]
 ignore_missing_imports = true
+
+[tool.uv]
+# AequilibraE declares pyaml (WTFPL, not on the licence gate's list) but only imports PyYAML (MIT), which the
+# demand extra names itself; leave pyaml out.
+override-dependencies = ["pyaml; sys_platform == 'never'"]

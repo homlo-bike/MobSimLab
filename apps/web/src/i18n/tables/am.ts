@@ -324,7 +324,7 @@ export const tablesAm = {
   "cost.p.cost.contingency_share": "ያልተጠበቀ (ስጋት እና የተስፋ አድልዎ)",
   "cost.p.cost.opex.vehicle_hour": "በተሽከርካሪ-ሰዓት የመንገድ ተሽከርካሪ የሥራ ወጪ",
   "cost.p.cost.opex.train_hour": "በባቡር-ሰዓት የባቡር ሠራተኞች እና ከባቡር ጋር የተያያዘ ወጪ",
-  "cost.p.cost.opex.car_km": "በፉርጎ-ኪሜ የባቡር የጉዞ ወጪ (በ25 ሜ ባቡር)",
+  "cost.p.cost.opex.car_km": "በፉርጎ-ኪሜ የባቡር የጉዞ ወጪ (በተቆጠረው ርዝመት በፉርጎ)",
   "cost.p.cost.opex.infrastructure_share": "ዓመታዊ የመሠረተ ልማት ጥገና እና ሥራ",
   "cost.p.cost.opex.overhead_share": "አስተዳደር እና አጠቃላይ ወጪ",
   "cost.p.cost.service_hours_per_day": "የመንገድ መስመሮች ዕለታዊ የአገልግሎት ሰዓታት",
@@ -350,4 +350,5 @@ export const tablesAm = {
   "cost.pu.days": "ቀናት",
   "cost.pu.year": "ዓመት",
   "cost.pu.passengers": "ተሳፋሪዎች",
+  "cost.p.cost.opex.car_length_m": "የባቡር የጉዞ ወጪ፦ እንደ አንድ ፉርጎ የሚቆጠር የባቡር ርዝመት",
 } satisfies TablesMessages;

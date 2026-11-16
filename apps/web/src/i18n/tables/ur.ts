@@ -328,7 +328,7 @@ export const tablesUr = {
   "cost.p.cost.contingency_share": "ہنگامی (خطرہ اور خوش فہمی کا جھکاؤ)",
   "cost.p.cost.opex.vehicle_hour": "سڑک کی گاڑی کی فی گاڑی-گھنٹہ آپریشن لاگت",
   "cost.p.cost.opex.train_hour": "ریل عملے اور ٹرین سے متعلق فی ٹرین-گھنٹہ لاگت",
-  "cost.p.cost.opex.car_km": "فی ڈبہ-کلومیٹر ریل چلانے کی لاگت (فی 25 میٹر ٹرین)",
+  "cost.p.cost.opex.car_km": "ریل چلانے کی لاگت فی ڈبہ-کلومیٹر (شمار شدہ لمبائی کے فی ڈبہ)",
   "cost.p.cost.opex.infrastructure_share": "سالانہ بنیادی ڈھانچے کی دیکھ بھال اور آپریشن",
   "cost.p.cost.opex.overhead_share": "انتظامیہ اور بالائی اخراجات",
   "cost.p.cost.service_hours_per_day": "سڑک کی لائن کے روزانہ سروس کے گھنٹے",
@@ -354,4 +354,5 @@ export const tablesUr = {
   "cost.pu.days": "دن",
   "cost.pu.year": "سال",
   "cost.pu.passengers": "مسافر",
+  "cost.p.cost.opex.car_length_m": "ریل چلانے کی لاگت: ٹرین کی وہ لمبائی جو ایک ڈبہ شمار ہوتی ہے",
 } satisfies TablesMessages;

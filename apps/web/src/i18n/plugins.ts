@@ -26,8 +26,6 @@ export const pluginsEn = {
   "plugins.perm.writeResults": "saves its own results",
   "plugins.perm.writeScenario": "proposes changes to the scenario",
   "plugins.installTitle": "Install a plugin",
-  "plugins.installIntro":
-    "Upload a .msplugin file. MobSimLab checks it and shows what it adds before you install it. Installed plugins can add modes, tools, parameters and sources; plugins with their own code come later.",
   "plugins.choose": "Choose a .msplugin file",
   "plugins.problems": "This plugin cannot be installed:",
   "plugins.install": "Install",
@@ -83,8 +81,6 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "speichert eigene Ergebnisse",
     "plugins.perm.writeScenario": "schlägt Änderungen am Szenario vor",
     "plugins.installTitle": "Plugin installieren",
-    "plugins.installIntro":
-      "Laden Sie eine .msplugin-Datei hoch. MobSimLab prüft sie und zeigt vor der Installation, was sie hinzufügt. Installierte Plugins können Verkehrsmittel, Werkzeuge, Parameter und Quellen hinzufügen; Plugins mit eigenem Code folgen später.",
     "plugins.choose": "Eine .msplugin-Datei wählen",
     "plugins.problems": "Dieses Plugin kann nicht installiert werden:",
     "plugins.install": "Installieren",
@@ -133,8 +129,6 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "enregistre ses propres résultats",
     "plugins.perm.writeScenario": "propose des modifications du scénario",
     "plugins.installTitle": "Installer une extension",
-    "plugins.installIntro":
-      "Envoyez un fichier .msplugin. MobSimLab le vérifie et montre ce qu'il ajoute avant l'installation. Les extensions installées peuvent ajouter des modes, des outils, des paramètres et des sources ; celles avec leur propre code viendront plus tard.",
     "plugins.choose": "Choisir un fichier .msplugin",
     "plugins.problems": "Cette extension ne peut pas être installée :",
     "plugins.install": "Installer",
@@ -184,8 +178,6 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "guarda sus propios resultados",
     "plugins.perm.writeScenario": "propone cambios al escenario",
     "plugins.installTitle": "Instalar un complemento",
-    "plugins.installIntro":
-      "Suba un archivo .msplugin. MobSimLab lo comprueba y muestra lo que añade antes de instalarlo. Los complementos instalados pueden añadir modos, herramientas, parámetros y fuentes; los que traen su propio código llegarán más adelante.",
     "plugins.choose": "Elegir un archivo .msplugin",
     "plugins.problems": "Este complemento no se puede instalar:",
     "plugins.install": "Instalar",
@@ -234,8 +226,6 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "salva os próprios resultados",
     "plugins.perm.writeScenario": "propõe mudanças no cenário",
     "plugins.installTitle": "Instalar um plugin",
-    "plugins.installIntro":
-      "Envie um arquivo .msplugin. O MobSimLab o verifica e mostra o que ele adiciona antes da instalação. Plugins instalados podem adicionar modos, ferramentas, parâmetros e fontes; plugins com código próprio virão depois.",
     "plugins.choose": "Escolher um arquivo .msplugin",
     "plugins.problems": "Este plugin não pode ser instalado:",
     "plugins.install": "Instalar",
@@ -284,8 +274,6 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "salva i propri risultati",
     "plugins.perm.writeScenario": "propone modifiche allo scenario",
     "plugins.installTitle": "Installa un plugin",
-    "plugins.installIntro":
-      "Carica un file .msplugin. MobSimLab lo controlla e mostra cosa aggiunge prima dell'installazione. I plugin installati possono aggiungere modi, strumenti, parametri e fonti; quelli con codice proprio arriveranno più avanti.",
     "plugins.choose": "Scegli un file .msplugin",
     "plugins.problems": "Questo plugin non può essere installato:",
     "plugins.install": "Installa",
@@ -334,8 +322,6 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "bewaart eigen resultaten",
     "plugins.perm.writeScenario": "stelt wijzigingen in het scenario voor",
     "plugins.installTitle": "Plug-in installeren",
-    "plugins.installIntro":
-      "Upload een .msplugin-bestand. MobSimLab controleert het en laat zien wat het toevoegt voordat u installeert. Geïnstalleerde plug-ins kunnen vervoerswijzen, gereedschappen, parameters en bronnen toevoegen; plug-ins met eigen code volgen later.",
     "plugins.choose": "Kies een .msplugin-bestand",
     "plugins.problems": "Deze plug-in kan niet worden geïnstalleerd:",
     "plugins.install": "Installeren",
@@ -384,8 +370,6 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "zapisuje własne wyniki",
     "plugins.perm.writeScenario": "proponuje zmiany scenariusza",
     "plugins.installTitle": "Zainstaluj wtyczkę",
-    "plugins.installIntro":
-      "Prześlij plik .msplugin. MobSimLab sprawdza go i pokazuje, co dodaje, zanim go zainstalujesz. Zainstalowane wtyczki mogą dodawać środki transportu, narzędzia, parametry i źródła; wtyczki z własnym kodem pojawią się później.",
     "plugins.choose": "Wybierz plik .msplugin",
     "plugins.problems": "Tej wtyczki nie można zainstalować:",
     "plugins.install": "Zainstaluj",
@@ -434,8 +418,6 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "сохраняет свои результаты",
     "plugins.perm.writeScenario": "предлагает изменения сценария",
     "plugins.installTitle": "Установить плагин",
-    "plugins.installIntro":
-      "Загрузите файл .msplugin. MobSimLab проверит его и покажет, что он добавляет, до установки. Установленные плагины могут добавлять виды транспорта, инструменты, параметры и источники; плагины со своим кодом появятся позже.",
     "plugins.choose": "Выбрать файл .msplugin",
     "plugins.problems": "Этот плагин нельзя установить:",
     "plugins.install": "Установить",
@@ -484,8 +466,6 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "зберігає власні результати",
     "plugins.perm.writeScenario": "пропонує зміни сценарію",
     "plugins.installTitle": "Установити плагін",
-    "plugins.installIntro":
-      "Завантажте файл .msplugin. MobSimLab перевірить його й покаже, що він додає, до встановлення. Установлені плагіни можуть додавати види транспорту, інструменти, параметри й джерела; плагіни з власним кодом з'являться пізніше.",
     "plugins.choose": "Вибрати файл .msplugin",
     "plugins.problems": "Цей плагін не можна встановити:",
     "plugins.install": "Установити",
@@ -534,8 +514,6 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "kendi sonuçlarını kaydeder",
     "plugins.perm.writeScenario": "senaryoda değişiklik önerir",
     "plugins.installTitle": "Eklenti kur",
-    "plugins.installIntro":
-      "Bir .msplugin dosyası yükleyin. MobSimLab dosyayı denetler ve kurmadan önce ne eklediğini gösterir. Kurulan eklentiler ulaşım türleri, araçlar, parametreler ve kaynaklar ekleyebilir; kendi kodunu getiren eklentiler daha sonra gelecek.",
     "plugins.choose": "Bir .msplugin dosyası seçin",
     "plugins.problems": "Bu eklenti kurulamaz:",
     "plugins.install": "Kur",
@@ -583,8 +561,6 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "تحفظ نتائجها الخاصة",
     "plugins.perm.writeScenario": "تقترح تغييرات على السيناريو",
     "plugins.installTitle": "تثبيت إضافة",
-    "plugins.installIntro":
-      "ارفع ملف ‎.msplugin. يفحصه MobSimLab ويعرض ما يضيفه قبل التثبيت. يمكن للإضافات المثبتة إضافة وسائل نقل وأدوات ومعاملات ومصادر؛ أما الإضافات ذات الشيفرة الخاصة فستأتي لاحقًا.",
     "plugins.choose": "اختر ملف ‎.msplugin",
     "plugins.problems": "لا يمكن تثبيت هذه الإضافة:",
     "plugins.install": "تثبيت",
@@ -632,8 +608,6 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "نتایج خود را ذخیره می‌کند",
     "plugins.perm.writeScenario": "تغییراتی در سناریو پیشنهاد می‌دهد",
     "plugins.installTitle": "نصب افزونه",
-    "plugins.installIntro":
-      "یک پرونده ‎.msplugin بارگذاری کنید. MobSimLab آن را بررسی می‌کند و پیش از نصب نشان می‌دهد چه اضافه می‌کند. افزونه‌های نصب‌شده می‌توانند شیوه‌ها، ابزارها، پارامترها و منابع اضافه کنند؛ افزونه‌های دارای کد خود بعداً می‌آیند.",
     "plugins.choose": "یک پرونده ‎.msplugin انتخاب کنید",
     "plugins.problems": "این افزونه قابل نصب نیست:",
     "plugins.install": "نصب",
@@ -682,8 +656,6 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "اپنے نتائج محفوظ کرتا ہے",
     "plugins.perm.writeScenario": "منظرنامے میں تبدیلیاں تجویز کرتا ہے",
     "plugins.installTitle": "پلگ اِن انسٹال کریں",
-    "plugins.installIntro":
-      "‎.msplugin فائل اپ لوڈ کریں۔ MobSimLab اسے جانچتا ہے اور انسٹال سے پہلے دکھاتا ہے کہ یہ کیا شامل کرتا ہے۔ انسٹال شدہ پلگ اِنز طریقے، اوزار، پیرامیٹر اور ماخذ شامل کر سکتے ہیں؛ اپنے کوڈ والے پلگ اِنز بعد میں آئیں گے۔",
     "plugins.choose": "‎.msplugin فائل چنیں",
     "plugins.problems": "یہ پلگ اِن انسٹال نہیں ہو سکتا:",
     "plugins.install": "انسٹال کریں",
@@ -732,8 +704,6 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "अपने परिणाम सहेजता है",
     "plugins.perm.writeScenario": "परिदृश्य में बदलाव सुझाता है",
     "plugins.installTitle": "प्लगइन इंस्टॉल करें",
-    "plugins.installIntro":
-      ".msplugin फ़ाइल अपलोड करें। MobSimLab उसे जाँचता है और इंस्टॉल से पहले दिखाता है कि वह क्या जोड़ता है। इंस्टॉल किए गए प्लगइन साधन, टूल, पैरामीटर और स्रोत जोड़ सकते हैं; अपने कोड वाले प्लगइन बाद में आएँगे।",
     "plugins.choose": ".msplugin फ़ाइल चुनें",
     "plugins.problems": "यह प्लगइन इंस्टॉल नहीं हो सकता:",
     "plugins.install": "इंस्टॉल करें",
@@ -781,8 +751,6 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "स्वतःचे निकाल जतन करतो",
     "plugins.perm.writeScenario": "परिस्थितीत बदल सुचवतो",
     "plugins.installTitle": "प्लगइन स्थापित करा",
-    "plugins.installIntro":
-      ".msplugin फाइल अपलोड करा. MobSimLab ती तपासते आणि स्थापनेपूर्वी ती काय जोडते ते दाखवते. स्थापित प्लगइन प्रकार, साधने, पॅरामीटर आणि स्रोत जोडू शकतात; स्वतःचा कोड असलेले प्लगइन नंतर येतील.",
     "plugins.choose": ".msplugin फाइल निवडा",
     "plugins.problems": "हा प्लगइन स्थापित करता येत नाही:",
     "plugins.install": "स्थापित करा",
@@ -831,8 +799,6 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "নিজের ফলাফল সংরক্ষণ করে",
     "plugins.perm.writeScenario": "পরিস্থিতিতে পরিবর্তন প্রস্তাব করে",
     "plugins.installTitle": "প্লাগইন ইনস্টল করুন",
-    "plugins.installIntro":
-      ".msplugin ফাইল আপলোড করুন। MobSimLab সেটি যাচাই করে এবং ইনস্টলের আগে দেখায় এটি কী যোগ করে। ইনস্টল করা প্লাগইন মাধ্যম, টুল, প্যারামিটার ও উৎস যোগ করতে পারে; নিজস্ব কোডসহ প্লাগইন পরে আসবে।",
     "plugins.choose": ".msplugin ফাইল বেছে নিন",
     "plugins.problems": "এই প্লাগইন ইনস্টল করা যাবে না:",
     "plugins.install": "ইনস্টল করুন",
@@ -881,8 +847,6 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "తన ఫలితాలను సేవ్ చేస్తుంది",
     "plugins.perm.writeScenario": "దృశ్యంలో మార్పులను సూచిస్తుంది",
     "plugins.installTitle": "ప్లగిన్ ఇన్‌స్టాల్ చేయండి",
-    "plugins.installIntro":
-      ".msplugin ఫైల్‌ను అప్‌లోడ్ చేయండి. MobSimLab దాన్ని తనిఖీ చేసి, ఇన్‌స్టాల్ చేయకముందే అది ఏమి జోడిస్తుందో చూపిస్తుంది. ఇన్‌స్టాల్ అయిన ప్లగిన్‌లు విధానాలు, సాధనాలు, పారామితులు, మూలాలు జోడించగలవు; సొంత కోడ్ ఉన్న ప్లగిన్‌లు తర్వాత వస్తాయి.",
     "plugins.choose": ".msplugin ఫైల్ ఎంచుకోండి",
     "plugins.problems": "ఈ ప్లగిన్‌ను ఇన్‌స్టాల్ చేయలేము:",
     "plugins.install": "ఇన్‌స్టాల్ చేయండి",
@@ -931,8 +895,6 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "தன் முடிவுகளைச் சேமிக்கிறது",
     "plugins.perm.writeScenario": "சூழ்நிலையில் மாற்றங்களை முன்மொழிகிறது",
     "plugins.installTitle": "செருகுநிரலை நிறுவு",
-    "plugins.installIntro":
-      ".msplugin கோப்பைப் பதிவேற்றுங்கள். MobSimLab அதைச் சரிபார்த்து, நிறுவும் முன் அது என்ன சேர்க்கிறது என்பதைக் காட்டும். நிறுவிய செருகுநிரல்கள் முறைகள், கருவிகள், அளவுருக்கள், மூலங்களைச் சேர்க்கலாம்; சொந்த நிரல் கொண்டவை பின்னர் வரும்.",
     "plugins.choose": ".msplugin கோப்பைத் தேர்ந்தெடு",
     "plugins.problems": "இந்தச் செருகுநிரலை நிறுவ முடியாது:",
     "plugins.install": "நிறுவு",
@@ -980,8 +942,6 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "保存自己的结果",
     "plugins.perm.writeScenario": "提出对情景的修改",
     "plugins.installTitle": "安装插件",
-    "plugins.installIntro":
-      "上传 .msplugin 文件。MobSimLab 会先检查它，并在安装前显示它添加的内容。已安装的插件可以添加交通方式、工具、参数和来源；带有自身代码的插件将在以后支持。",
     "plugins.choose": "选择 .msplugin 文件",
     "plugins.problems": "无法安装此插件：",
     "plugins.install": "安装",
@@ -1029,8 +989,6 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "独自の結果を保存",
     "plugins.perm.writeScenario": "シナリオへの変更を提案",
     "plugins.installTitle": "プラグインをインストール",
-    "plugins.installIntro":
-      ".msplugin ファイルをアップロードしてください。MobSimLab が確認し、インストール前に追加内容を表示します。インストールしたプラグインは交通手段、ツール、パラメーター、出典を追加できます。独自のコードを持つプラグインは今後対応します。",
     "plugins.choose": ".msplugin ファイルを選択",
     "plugins.problems": "このプラグインはインストールできません:",
     "plugins.install": "インストール",
@@ -1079,8 +1037,6 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "자체 결과 저장",
     "plugins.perm.writeScenario": "시나리오 변경 제안",
     "plugins.installTitle": "플러그인 설치",
-    "plugins.installIntro":
-      ".msplugin 파일을 올리세요. MobSimLab이 확인하고 설치 전에 무엇을 추가하는지 보여 줍니다. 설치한 플러그인은 교통수단, 도구, 매개변수, 출처를 추가할 수 있으며, 자체 코드가 있는 플러그인은 나중에 지원됩니다.",
     "plugins.choose": ".msplugin 파일 선택",
     "plugins.problems": "이 플러그인은 설치할 수 없습니다:",
     "plugins.install": "설치",
@@ -1128,8 +1084,6 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "lưu kết quả riêng",
     "plugins.perm.writeScenario": "đề xuất thay đổi kịch bản",
     "plugins.installTitle": "Cài đặt plugin",
-    "plugins.installIntro":
-      "Tải lên tệp .msplugin. MobSimLab sẽ kiểm tra và cho biết nó bổ sung gì trước khi cài. Plugin đã cài có thể thêm phương thức, công cụ, tham số và nguồn; plugin có mã riêng sẽ có sau.",
     "plugins.choose": "Chọn tệp .msplugin",
     "plugins.problems": "Không thể cài plugin này:",
     "plugins.install": "Cài đặt",
@@ -1178,8 +1132,6 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "menyimpan hasilnya sendiri",
     "plugins.perm.writeScenario": "mengusulkan perubahan skenario",
     "plugins.installTitle": "Pasang plugin",
-    "plugins.installIntro":
-      "Unggah berkas .msplugin. MobSimLab memeriksanya dan menunjukkan apa yang ditambahkan sebelum dipasang. Plugin terpasang dapat menambah moda, alat, parameter, dan sumber; plugin dengan kode sendiri menyusul nanti.",
     "plugins.choose": "Pilih berkas .msplugin",
     "plugins.problems": "Plugin ini tidak dapat dipasang:",
     "plugins.install": "Pasang",
@@ -1228,8 +1180,6 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "huhifadhi matokeo yake",
     "plugins.perm.writeScenario": "hupendekeza mabadiliko ya hali",
     "plugins.installTitle": "Sakinisha programu-jalizi",
-    "plugins.installIntro":
-      "Pakia faili ya .msplugin. MobSimLab huikagua na kuonyesha inachoongeza kabla ya kusakinisha. Programu-jalizi zilizosakinishwa zinaweza kuongeza njia, zana, vigezo na vyanzo; zile zenye msimbo wao zitakuja baadaye.",
     "plugins.choose": "Chagua faili ya .msplugin",
     "plugins.problems": "Programu-jalizi hii haiwezi kusakinishwa:",
     "plugins.install": "Sakinisha",
@@ -1277,8 +1227,6 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "yana ajiye sakamakonsa",
     "plugins.perm.writeScenario": "yana ba da shawarar sauye-sauye ga yanayi",
     "plugins.installTitle": "Saka ƙarin manhaja",
-    "plugins.installIntro":
-      "Ɗora fayil ɗin .msplugin. MobSimLab zai bincika shi ya nuna abin da yake ƙarawa kafin a saka. Ƙarin manhajojin da aka saka na iya ƙara hanyoyi, kayan aiki, sigogi da tushe; waɗanda ke da nasu lambar za su zo daga baya.",
     "plugins.choose": "Zaɓi fayil ɗin .msplugin",
     "plugins.problems": "Ba za a iya saka wannan ƙarin manhaja ba:",
     "plugins.install": "Saka",
@@ -1326,8 +1274,6 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "የራሱን ውጤቶች ያስቀምጣል",
     "plugins.perm.writeScenario": "በሁኔታው ላይ ለውጦችን ያቀርባል",
     "plugins.installTitle": "ተሰኪ ይጫኑ",
-    "plugins.installIntro":
-      "የ.msplugin ፋይል ይስቀሉ። MobSimLab ይፈትሸውና ከመጫንዎ በፊት ምን እንደሚያክል ያሳያል። የተጫኑ ተሰኪዎች ዓይነቶችን፣ መሣሪያዎችን፣ መለኪያዎችንና ምንጮችን ማከል ይችላሉ፤ የራሳቸው ኮድ ያላቸው ተሰኪዎች ወደፊት ይመጣሉ።",
     "plugins.choose": "የ.msplugin ፋይል ይምረጡ",
     "plugins.problems": "ይህ ተሰኪ ሊጫን አይችልም፦",
     "plugins.install": "ጫን",
@@ -1373,8 +1319,6 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "ó ń fi èsì tirẹ̀ pamọ́",
     "plugins.perm.writeScenario": "ó ń dábàá àyípadà sí ipò",
     "plugins.installTitle": "Fi àfikún sórí",
-    "plugins.installIntro":
-      "Gbé fáìlì .msplugin sókè. MobSimLab á ṣàyẹ̀wò rẹ̀, á sì fi ohun tó ń ṣàfikún hàn kí o tó fi sórí. Àwọn àfikún tí a fi sórí lè ṣàfikún ọ̀nà, irinṣẹ́, pàrámítà àti orísun; àwọn tó ní kóòdù tiwọn á dé lẹ́yìn náà.",
     "plugins.choose": "Yan fáìlì .msplugin",
     "plugins.problems": "A kò lè fi àfikún yìí sórí:",
     "plugins.install": "Fi sórí",
@@ -1422,8 +1366,6 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "na-echekwa nsonaazụ nke ya",
     "plugins.perm.writeScenario": "na-atụ aro mgbanwe n'ọnọdụ",
     "plugins.installTitle": "Wụnye ngwa mgbakwunye",
-    "plugins.installIntro":
-      "Bulite faịlụ .msplugin. MobSimLab na-enyocha ya ma gosi ihe ọ na-agbakwunye tupu i wụnye ya. Ngwa mgbakwunye ewụnyere nwere ike ịgbakwunye ụzọ, ngwaọrụ, paramita na isi mmalite; ndị nwere koodu nke ha ga-abịa ma emechaa.",
     "plugins.choose": "Họrọ faịlụ .msplugin",
     "plugins.problems": "Enweghị ike ịwụnye ngwa mgbakwunye a:",
     "plugins.install": "Wụnye",
@@ -1472,8 +1414,6 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "igcina imiphumela yayo",
     "plugins.perm.writeScenario": "iphakamisa izinguquko esimweni",
     "plugins.installTitle": "Faka i-plugin",
-    "plugins.installIntro":
-      "Layisha ifayela le-.msplugin. I-MobSimLab iyalihlola futhi ikhombise ukuthi lengezani ngaphambi kokulifaka. Ama-plugin afakiwe angengeza izindlela, amathuluzi, amapharamitha nemithombo; lawo anekhodi yawo azofika kamuva.",
     "plugins.choose": "Khetha ifayela le-.msplugin",
     "plugins.problems": "Le plugin ayikwazi ukufakwa:",
     "plugins.install": "Faka",
@@ -1522,8 +1462,6 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "o'z natijalarini saqlaydi",
     "plugins.perm.writeScenario": "ssenariyga o'zgarishlar taklif qiladi",
     "plugins.installTitle": "Plagin o'rnatish",
-    "plugins.installIntro":
-      ".msplugin faylini yuklang. MobSimLab uni tekshiradi va o'rnatishdan oldin nimani qo'shishini ko'rsatadi. O'rnatilgan plaginlar transport turlari, vositalar, parametrlar va manbalar qo'sha oladi; o'z kodiga ega plaginlar keyinroq keladi.",
     "plugins.choose": ".msplugin faylini tanlang",
     "plugins.problems": "Bu plaginni o'rnatib bo'lmaydi:",
     "plugins.install": "O'rnatish",
@@ -1572,8 +1510,6 @@ export const PLUGIN_MESSAGES = {
     "plugins.perm.writeResults": "өз нәтижелерін сақтайды",
     "plugins.perm.writeScenario": "сценарийге өзгерістер ұсынады",
     "plugins.installTitle": "Плагин орнату",
-    "plugins.installIntro":
-      ".msplugin файлын жүктеңіз. MobSimLab оны тексеріп, орнатпас бұрын не қосатынын көрсетеді. Орнатылған плагиндер көлік түрлерін, құралдарды, параметрлер мен дереккөздерді қоса алады; өз коды бар плагиндер кейін келеді.",
     "plugins.choose": ".msplugin файлын таңдаңыз",
     "plugins.problems": "Бұл плагинді орнату мүмкін емес:",
     "plugins.install": "Орнату",

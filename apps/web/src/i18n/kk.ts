@@ -1,8 +1,13 @@
 import { roadKk } from "./road/kk";
+import { calendarKk } from "./calendar/kk";
 import { editorsKk } from "./editors/kk";
 import { cargoBikeKk } from "./cargo-bike/kk";
+import { commentsKk } from "./comments/kk";
 import { depotsKk } from "./depots/kk";
 import { tablesKk } from "./tables/kk";
+import { mslabKk } from "./mslab/kk";
+import { pluginCodeKk } from "./plugin-code/kk";
+import { populationKk } from "./population/kk";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -103,6 +108,7 @@ export const kk: Messages = {
   "home.shared": "Маған ортақ",
   "home.sharedEdit": "Маған ортақ · өңдей аласыз",
   "home.viewOnly": "Тек көру",
+  "home.public": "Жария жобалар",
   "home.archived": "Мұрағатталған",
   "home.none": "Мұнда ештеңе жоқ.",
   "home.edited": "Өңделді {when}",
@@ -166,7 +172,7 @@ export const kk: Messages = {
 
   "share.title": "«{name}» бөлісу",
   "share.rolesNote":
-    "Иелер қолжетімділікті басқарады. Редакторлар желіні өзгертеді. Пікір жазушылар мен көрушілер тек қарайды.",
+    "Иелер қолжетімділікті басқарады. Редакторлар желіні өзгертеді. Пікір жазушылар оған пікір қалдырады. Көрушілер тек қарайды.",
   "share.invite": "Электрондық пошта арқылы шақыру",
   "share.emailPlaceholder": "Олар кіретін электрондық пошта",
   "share.inviteRole": "Шақырылатын адамның рөлі",
@@ -176,11 +182,15 @@ export const kk: Messages = {
   "share.roleOf": "{name} рөлі",
   "share.remove": "{name} жою",
   "share.leave": "Шығу",
-  "share.link": "Тек көру сілтемесі",
-  "share.linkOn": "Осы MobSimLab-қа кірген кез келген адам аша алады",
-  "share.linkOff": "Өшірулі: тек жоғарыдағы адамдар аша алады",
-  "share.linkTurnOn": "Қосу",
-  "share.linkTurnOff": "Өшіру",
+  "share.visibility": "Кім аша алады",
+  "share.private": "Жеке: тек жоғарыдағы адамдар аша алады",
+  "share.public": "Жария: осы MobSimLab-қа кірген кез келген адам оны тауып, тек оқу үшін аша алады",
+  "share.makePublic": "Жария ету",
+  "share.makePrivate": "Жеке ету",
+  "share.licenceTitle": "Жария етпес бұрын",
+  "share.licenceNote":
+    "Бұл жоба OpenStreetMap деректерін пайдаланады. Олар Open Database License (ODbL) бойынша таратылады, © OpenStreetMap қатысушылары. Ішіндегі басқаның бәрін де таратуға болса ғана жария етіңіз.",
+  "share.confirmPublic": "Түсіндім, жария ету",
   "share.copyLink": "Сілтемені көшіру",
   "share.copied": "Көшірілді",
 
@@ -197,6 +207,8 @@ export const kk: Messages = {
 
   "project.back": "Жобаларға оралу",
   "project.viewOnly": "Тек көру",
+  "project.public": "Жария",
+  "project.publicNote": "Жария жоба. Карта деректері © OpenStreetMap қатысушылары, ODbL.",
   "project.notFound": "Жоба табылмады",
   "project.notFoundHint": "Ол жойылған немесе сізде енді қолжетімділік жоқ болуы мүмкін.",
   "project.toHome": "Жобаларға оралу",
@@ -255,6 +267,7 @@ export const kk: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "Көшелер",
   "gis.regionsView": "Аймақтар",
+  "gis.zonesView": "Сұраныс аймақтары",
   "gis.intro": "Есептеулер пайдаланатын ақпаратты қосыңыз немесе өңдеңіз.",
   "gis.areas": "Аумақ сызыңыз немесе OpenStreetMap-тан импорттаңыз",
   "gis.streets": "Көше құрылымы: автобус, велосипед және трамвай жолақтары, жылдамдықтар, түйіспе желісі",
@@ -278,6 +291,7 @@ export const kk: Messages = {
   "prefs.delayLane": "Боялған автобус немесе трамвай жолағында",
   "prefs.delayDefault": "Болжамдар кітапханасы: {value} %",
   "prefs.delayReset": "Кітапхана мәнін пайдалану",
+  "prefs.reason": "Осы мәннің себебі (міндетті емес)",
   "prefs.stationsTitle": "Станциялар",
   "prefs.stationsIntro":
     "Осы қашықтықтағы аттас аялдамалар сызбалық картада, сапар жоспарлағышта және пайда мен жолаушылар кестелерінде бір станция болып саналады.",
@@ -303,6 +317,21 @@ export const kk: Messages = {
   "prefs.rulesChanged": "өзгертілген: {count}",
   "prefs.rulesLibrary": "Болжамдар кітапханасы: {value} {unit}",
   "prefs.rulesLibraryRange": "Болжамдар кітапханасы: {value} {unit} (ауқым {low}–{high})",
+  "prefs.demandTitle": "Сұраныс моделі",
+  "prefs.demandIntro":
+    "Сұраныс моделі қолданатын әрбір мән, қадам бойынша: аймақтар, сапарлардың пайда болуы, уақыт кезеңдері, бөлу, көлік түрін таңдау және жүктеу. Осы жоба үшін мәнді өзгертіңіз немесе болжамдар кітапханасының мәнін қалдырыңыз.",
+  "prefs.demandStep": "Модель қадамы",
+  "prefs.demandSearch": "Мәндерді іздеу",
+  "prefs.demandNone": "Сәйкес мән жоқ.",
+  "prefs.demandStep.zones": "Аймақтар",
+  "prefs.demandStep.generation": "Сапарлардың пайда болуы",
+  "prefs.demandStep.periods": "Уақыт кезеңдері",
+  "prefs.demandStep.distribution": "Сапарларды бөлу",
+  "prefs.demandStep.mode_choice": "Көлік түрін таңдау",
+  "prefs.demandStep.catchment": "Қолжетімділік аймағы",
+  "prefs.demandStep.assignment": "Жүктеу",
+  "prefs.demandStep.calibration": "Калибрлеу",
+  "prefs.demandAll": "Барлық қадамдар",
   "prefs.paramsTitle": "Барлық параметрлер",
   "prefs.paramsIntro":
     "Болжамдар кітапханасының әр мәні. Барлық көлік түрлеріне немесе біреуіне өз мәніңізді қойыңыз; бір түрдің мәні барлығына арналған мәннен басым. Кітапхана мәні қасында тұрады.",
@@ -322,11 +351,60 @@ export const kk: Messages = {
   "prefs.group.cost": "Шығындар",
   "prefs.group.benefits": "Пайда",
   "prefs.group.fares": "Жол ақысы",
+  "prefs.group.noise": "Шу",
   "prefs.traction.battery": "аккумулятор",
   "prefs.traction.diesel": "дизель",
   "prefs.traction.hydrogen": "сутегі",
   "prefs.traction.cng": "табиғи газ (CNG)",
   "prefs.traction.electric": "электр",
+  "report.title": "Болжамдар есебі",
+  "report.intro":
+    "Осы жоба пайдаланатын болжамдар кітапханасының әрбір мәні: мән, кітапхана ауқымы, оның қайдан алынғаны және жоба оны өзгерткені. Оны CSV ретінде жүктеп алыңыз немесе басып шығарыңыз не PDF ретінде сақтаңыз.",
+  "report.csv": "CSV жүктеп алу",
+  "report.changedOnly": "Тек өзгертілген мәндер",
+  "report.noneChanged": "Бұл топта өзгертілген мән жоқ.",
+  "report.loadError": "Дереккөздерді жүктеу мүмкін болмады. Қайта көру үшін бетті жаңартыңыз.",
+  "report.changed": "өзгертілген",
+  "report.yes": "Иә",
+  "report.no": "Жоқ",
+  "report.basis.cited": "дәйексөз келтірілген",
+  "report.basis.documented": "құжатталған",
+  "report.basis.guess": "негізделген бағалау",
+  "report.check.read": "дереккөз бойынша тексерілген",
+  "report.check.secondary": "қосалқы дереккөз арқылы тексерілген",
+  "report.check.unverified": "әлі дереккөз бойынша тексерілмеген",
+  "report.sources": "Дереккөздер:",
+  "report.usedBy": "Пайдаланады: {list}",
+  "report.other": "Басқа таңдаулар",
+  "report.currency": "Валюта",
+  "report.currencyCountry": "Әр құрал елдің өз валютасын көрсетеді",
+  "report.rate": "1 US$ үшін айырбас бағамы",
+  "report.rateWorldBank": "Дүниежүзілік банктің ресми бағамы",
+  "report.vehiclesOff": "Пайдаланылмайтын көліктер",
+  "report.switchesOff": "Пайдаланылмайтын бағыттамалар",
+  "report.allUsed": "Барлығы пайдаланылады",
+  "report.turnout": "Әдепкі бағыттама",
+  "report.col.group": "Топ",
+  "report.col.parameter": "Параметр",
+  "report.col.id": "Id",
+  "report.col.mode": "Көлік түрі",
+  "report.col.value": "Пайдаланылған мән",
+  "report.col.unit": "Бірлік",
+  "report.col.changed": "Өзгертілген",
+  "report.col.libLow": "Кітапхана төмен",
+  "report.col.libCentral": "Кітапхана орташа",
+  "report.col.libHigh": "Кітапхана жоғары",
+  "report.col.basis": "Негіз",
+  "report.col.check": "Тексеру",
+  "report.col.sources": "Дереккөздер",
+  "report.col.reasoning": "Негіздеме",
+  "report.col.usedBy": "Пайдаланады",
+  "report.col.reason": "Себеп",
+  "report.col.changedBy": "Өзгерткен",
+  "report.col.changedAt": "Өзгертілген күні",
+  "report.changedBy": "{name} {date} күні өзгертті",
+  "report.changedOn": "{date} күні өзгертілді",
+  "report.reason": "Себеп: {reason}",
   "prefs.accessTitle": "Платформа қолжетімділігі",
   "prefs.accessIntro":
     "Платформа мен пойыз арасындағы баспалдақ пен саңылау шектері (TSI PRM) және каталогта жоқ пойыздарға арналған еден биіктігі. Желілер әр аялдамада тексеріледі.",
@@ -419,6 +497,11 @@ export const kk: Messages = {
   ...cargoBikeKk,
   ...depotsKk,
   ...tablesKk,
+  ...commentsKk,
+  ...mslabKk,
+  ...pluginCodeKk,
+  ...populationKk,
   ...roadKk,
+  ...calendarKk,
   ...PLUGIN_MESSAGES.kk,
 };

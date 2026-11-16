@@ -325,7 +325,7 @@ export const tablesJa = {
   "cost.p.cost.contingency_share": "予備費（リスクと楽観バイアス）",
   "cost.p.cost.opex.vehicle_hour": "道路車両の車両時間あたり運営費",
   "cost.p.cost.opex.train_hour": "鉄道の列車時間あたり乗務員・列車関連費",
-  "cost.p.cost.opex.car_km": "鉄道の車両キロあたり走行費（列車25 m あたり）",
+  "cost.p.cost.opex.car_km": "鉄道の車両キロあたり走行費（計上する車両長の1両あたり）",
   "cost.p.cost.opex.infrastructure_share": "インフラの年間維持管理・運営",
   "cost.p.cost.opex.overhead_share": "管理費と間接費",
   "cost.p.cost.service_hours_per_day": "道路路線の1日の運行時間",
@@ -351,4 +351,5 @@ export const tablesJa = {
   "cost.pu.days": "日",
   "cost.pu.year": "年",
   "cost.pu.passengers": "人",
+  "cost.p.cost.opex.car_length_m": "鉄道の走行費：1両として数える列車の長さ",
 } satisfies TablesMessages;

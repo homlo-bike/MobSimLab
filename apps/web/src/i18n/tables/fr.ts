@@ -336,7 +336,8 @@ export const tablesFr = {
   "cost.p.cost.contingency_share": "Aléas (risque et biais d’optimisme)",
   "cost.p.cost.opex.vehicle_hour": "Coût d’exploitation des véhicules routiers par heure-véhicule",
   "cost.p.cost.opex.train_hour": "Coût du personnel et lié aux trains par heure-train",
-  "cost.p.cost.opex.car_km": "Coût de roulement ferroviaire par voiture-km (par 25 m de train)",
+  "cost.p.cost.opex.car_km":
+    "Coût de roulement ferroviaire par voiture-km (par voiture de la longueur retenue)",
   "cost.p.cost.opex.infrastructure_share": "Entretien et exploitation de l’infrastructure par an",
   "cost.p.cost.opex.overhead_share": "Administration et frais généraux",
   "cost.p.cost.service_hours_per_day": "Heures de service par jour d’une ligne sur rue",
@@ -363,4 +364,6 @@ export const tablesFr = {
   "cost.pu.days": "jours",
   "cost.pu.year": "année",
   "cost.pu.passengers": "voyageurs",
+  "cost.p.cost.opex.car_length_m":
+    "Coût de roulement ferroviaire : longueur de train comptée comme une voiture",
 } satisfies TablesMessages;

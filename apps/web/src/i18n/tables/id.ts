@@ -329,7 +329,7 @@ export const tablesId = {
   "cost.p.cost.contingency_share": "Kontingensi (risiko dan bias optimisme)",
   "cost.p.cost.opex.vehicle_hour": "Biaya operasi kendaraan jalan per kendaraan-jam",
   "cost.p.cost.opex.train_hour": "Biaya awak dan terkait kereta per kereta-jam",
-  "cost.p.cost.opex.car_km": "Biaya jalan kereta per gerbong-km (per 25 m kereta)",
+  "cost.p.cost.opex.car_km": "Biaya jalan kereta per kereta-km (per kereta dengan panjang yang dihitung)",
   "cost.p.cost.opex.infrastructure_share": "Pemeliharaan dan operasi infrastruktur per tahun",
   "cost.p.cost.opex.overhead_share": "Administrasi dan biaya umum",
   "cost.p.cost.service_hours_per_day": "Jam layanan per hari jalur jalan",
@@ -357,4 +357,5 @@ export const tablesId = {
   "cost.pu.days": "hari",
   "cost.pu.year": "tahun",
   "cost.pu.passengers": "penumpang",
+  "cost.p.cost.opex.car_length_m": "Biaya jalan kereta: panjang kereta yang dihitung sebagai satu gerbong",
 } satisfies TablesMessages;

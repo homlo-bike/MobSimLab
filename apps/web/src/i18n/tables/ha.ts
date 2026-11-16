@@ -331,7 +331,8 @@ export const tablesHa = {
   "cost.p.cost.contingency_share": "Na ba-zata (haɗari da son kyakkyawan fata)",
   "cost.p.cost.opex.vehicle_hour": "Kuɗin gudanar da motar titi kowace mota-awa",
   "cost.p.cost.opex.train_hour": "Kuɗin ma'aikatan layin dogo da na jirgi kowace jirgi-awa",
-  "cost.p.cost.opex.car_km": "Kuɗin tafiyar layin dogo kowace tarago-km (kowace m 25 na jirgi)",
+  "cost.p.cost.opex.car_km":
+    "Kuɗin tafiyar layin dogo kowace tarago-km (kowane tarago na tsawon da aka ƙirga)",
   "cost.p.cost.opex.infrastructure_share": "Gyara da gudanar da ababen more rayuwa na shekara",
   "cost.p.cost.opex.overhead_share": "Mulki da kuɗin gudanarwa na gaba ɗaya",
   "cost.p.cost.service_hours_per_day": "Awannin hidima na kowace rana na layukan titi",
@@ -357,4 +358,6 @@ export const tablesHa = {
   "cost.pu.days": "kwanaki",
   "cost.pu.year": "shekara",
   "cost.pu.passengers": "fasinjoji",
+  "cost.p.cost.opex.car_length_m":
+    "Kuɗin tafiyar layin dogo: tsawon jirgin da ake ƙirga a matsayin tarago ɗaya",
 } satisfies TablesMessages;

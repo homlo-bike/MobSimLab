@@ -323,7 +323,7 @@ export const tablesKo = {
   "cost.p.cost.contingency_share": "예비비(위험과 낙관 편향)",
   "cost.p.cost.opex.vehicle_hour": "도로 차량의 차량-시간당 운영비",
   "cost.p.cost.opex.train_hour": "철도 승무원 및 열차 관련 비용, 열차-시간당",
-  "cost.p.cost.opex.car_km": "철도 차량-km당 운행비(열차 25m당)",
+  "cost.p.cost.opex.car_km": "철도 차량-km당 운행비(산정 차량 길이 1량당)",
   "cost.p.cost.opex.infrastructure_share": "연간 기반시설 유지관리 및 운영",
   "cost.p.cost.opex.overhead_share": "관리비와 간접비",
   "cost.p.cost.service_hours_per_day": "도로 노선의 하루 운행 시간",
@@ -349,4 +349,5 @@ export const tablesKo = {
   "cost.pu.days": "일",
   "cost.pu.year": "년",
   "cost.pu.passengers": "명",
+  "cost.p.cost.opex.car_length_m": "철도 운행비: 1량으로 계산하는 열차 길이",
 } satisfies TablesMessages;
