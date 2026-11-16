@@ -266,6 +266,20 @@ export const editorsEn = {
   "rail.line.needsTrain": "Choose a train.",
   "rail.line.lastAfterFirst": "The last departure must be after the first.",
   "rail.line.headwayMin": "Headways must be at least 1 min.",
+  "rail.access.title": "Platform access",
+  "rail.access.level": "Level access",
+  "rail.access.step": "Step access",
+  "rail.access.aid": "Boarding aid needed",
+  "rail.access.clash": "Train wider than the platform edge allows",
+  "rail.access.detail": "Floor {vertical} from the {platform} mm platform · gap {gap}",
+  "rail.access.stepLabel": "Step",
+  "rail.access.gapLabel": "Gap",
+  "rail.access.limits": "level ≤ {level} · step ≤ {step} mm",
+  "rail.access.floorAssumedShort":
+    "Floor height assumed: {value} mm, the mode's default (none in the vehicle catalogue)",
+  "rail.access.shortAt": "{name}: platform {platform}, needs {needed}",
+  "rail.access.platformMm": "Platform {value} mm",
+  "rail.access.floorMm": "Train floor {value} mm",
 
   "rail.hint.select":
     "Click a station, track, switch or signal to edit it. Drag stations and track points; drag a switch or signal along its track.",

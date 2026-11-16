@@ -1,6 +1,8 @@
 import type { DelayShares } from "../features/street-lines/types";
 import { MIXED_DELAY, PAINTED_DELAY } from "../features/street-setup/model";
 import rulesData from "./design-rules.generated.json";
+import paramsData from "./parameters.generated.json";
+import libraryData from "../features/walk/defaults.generated.json";
 
 /**
  * The project's preferences document (drawing kind `preferences`): assumption library values the project
@@ -14,6 +16,8 @@ export interface PreferencesDoc {
   vehiclesOff?: string[];
   /** Switches and crossings the project does not use, and its default turnout per rail mode; absent: all, library's. */
   switches?: { off?: string[]; default_turnout?: Record<string, string> };
+  /** Values of enum and text assumptions the project changes, by assumption id (as `values` for numbers). */
+  choices?: Record<string, string>;
 }
 
 /** The delays in traffic a project can change, with the library's values. */
@@ -46,6 +50,21 @@ export function delaysFrom(doc: PreferencesDoc | null | undefined): DelayShares 
   return out;
 }
 
+/** Preference id of the distance within which stops with the same name are one station. */
+export const SAME_NAME_PREF = "journey.same_name_station_m";
+
+/** The assumption library's same-name station distance in metres (`journey.same_name_station_m`). */
+export const LIBRARY_SAME_NAME_M = (libraryData as { same_name_station_m: number }).same_name_station_m;
+
+/**
+ * Purpose: the distance in metres within which stops with the same name are one station, for the schematic
+ * map, the journey planner and the benefits and ridership networks: the project's value, else the library's.
+ */
+export function sameNameStationM(values: PreferencesDoc["values"] | undefined): number {
+  const v = values?.[SAME_NAME_PREF];
+  return typeof v === "number" && Number.isFinite(v) && v >= 0 ? v : LIBRARY_SAME_NAME_M;
+}
+
 /** Purpose: the document with one value set, or removed (`null`) so the library's applies again. */
 export function withPref(
   doc: PreferencesDoc | null | undefined,
@@ -64,6 +83,8 @@ export interface DesignRule {
   field: string;
   label: string;
   unit: string;
+  /** A rail engine value (ModeParams); false for the platform accessibility rules the web app checks (the engine ignores those). */
+  engine: boolean;
   /** Library key and [low, central, high] per rail mode. */
   modes: Record<string, { key: string; values: [number, number, number] }>;
 }
@@ -91,6 +112,21 @@ export function designValuesFrom(doc: PreferencesDoc | null | undefined): Record
     }
   }
   return out;
+}
+
+/**
+ * Purpose: a design rule's value for a mode, from the values `designValuesFrom` gives (`<mode>.<field>`): the
+ * project's where it set one, else the library's central value. `undefined` when the rule or mode is unknown.
+ */
+export function ruleValue(
+  values: Readonly<Record<string, number>> | null | undefined,
+  field: string,
+  mode: string,
+): number | undefined {
+  const lib = DESIGN_RULES.find((r) => r.field === field)?.modes[mode];
+  if (!lib) return undefined;
+  const own = values?.[`${mode}.${field}`];
+  return typeof own === "number" && Number.isFinite(own) && own > 0 ? own : lib.values[1];
 }
 
 /** Purpose: the catalogue vehicles the project does not use. */
@@ -197,4 +233,65 @@ export function withDefaultTurnout(
   if (id === null || id === LIBRARY_DEFAULT_TURNOUT[mode]) delete dt[mode];
   else dt[mode] = id;
   return withSwitchChoice(doc, { ...c, default_turnout: dt });
+}
+
+/** One parameter of the assumption library, as Project Preferences → Parameters lists it. */
+export interface LibraryParam {
+  /** Library key, also the preference id for every mode. */
+  id: string;
+  label: string;
+  /** Library group (assumptions/parameters/*.yaml), in English. */
+  group: string;
+  unit: string;
+  kind: "number" | "enum" | "string";
+  options?: string[];
+  /** [low, central, high] for numbers, the value for enum and text; by mode, "*" for every mode not listed. */
+  values: Record<string, [number, number, number] | string>;
+  /** Values for a traction (battery, diesel…) that has its own entry. */
+  traction?: Record<string, [number, number, number] | string>;
+}
+
+const PARAMS_DATA = paramsData as unknown as { groups: string[]; params: LibraryParam[] };
+/** Every parameter of the assumption library (tools/parameters/export_defaults.py), in group order. */
+export const LIBRARY_PARAMS = PARAMS_DATA.params;
+/** The library's groups in their order. */
+export const PARAM_GROUPS = PARAMS_DATA.groups;
+
+/** Purpose: the library's value of a parameter for a mode ("*": every mode) or, given, a traction. */
+export function paramLibrary(
+  p: LibraryParam,
+  mode: string,
+  traction?: string,
+): [number, number, number] | string {
+  return (traction ? p.traction?.[traction] : undefined) ?? p.values[mode] ?? (p.values["*"] as never);
+}
+
+/**
+ * Purpose: the preference id of a parameter's project value for a mode or a traction, `key` for every mode.
+ * The same ids the tools read, for example `mode.dwell_s.tram`.
+ */
+export function paramPrefId(key: string, mode: string, traction?: string): string {
+  if (traction) return `${key}.${traction}`;
+  return mode === "*" ? key : `${key}.${mode}`;
+}
+
+/** Purpose: the project's value of an enum or text assumption, or `undefined` when the library's applies. */
+export function choiceValue(doc: PreferencesDoc | null | undefined, id: string): string | undefined {
+  const v = doc?.choices?.[id];
+  return typeof v === "string" ? v : undefined;
+}
+
+/** Purpose: the document with one enum or text value set, or removed (`null`) so the library's applies. */
+export function withChoice(
+  doc: PreferencesDoc | null | undefined,
+  id: string,
+  value: string | null,
+): PreferencesDoc {
+  const choices = { ...(doc?.choices ?? {}) };
+  if (value === null) delete choices[id];
+  else choices[id] = value;
+  const next: PreferencesDoc = { ...(doc ?? {}), values: { ...(doc?.values ?? {}) } };
+  if (Object.keys(choices).length) next.choices = choices;
+  else delete next.choices;
+  return next;
 }

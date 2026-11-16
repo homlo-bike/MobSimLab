@@ -642,6 +642,22 @@
       check: unverified
       rationale: "Half the car body width (2.80–3.10 m) plus a gap of about 75 mm (access.level_gap_horizontal_mm)."
 
+- key: platform.stopping_tolerance_m
+  label: Stopping tolerance, platform length needed beyond the train
+  group: Infrastructure standards
+  unit: m
+  used_by: [platform length check per station, platform length check per service line]
+  values:
+    - context:
+        mode: "*"
+      low: 2
+      central: 5
+      high: 10
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: "Room for a driver stopping a little short or long of the stop mark, as the railway design tool has used so far (5 m). Automatic train operation stops within about ±0.5 m, so 2 m is enough there; long trains at speed may need 10 m."
+
 - key: station.track_beyond_platform_m
   label: Station track beyond each platform end, up to the station's connection point
   group: Infrastructure standards
