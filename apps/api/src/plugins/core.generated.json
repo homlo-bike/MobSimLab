@@ -795,6 +795,7 @@
     "platform.island_width_m",
     "platform.max_gradient_pct",
     "platform.side_width_m",
+    "platform.stopping_tolerance_m",
     "recording.late_threshold_s",
     "signalling.approach_release_s",
     "signalling.moving_block_margin_m",
@@ -854,6 +855,7 @@
     "track.centre_distance_m",
     "track.clearance_marker_centre_distance_m",
     "track.running_side",
+    "vehicle.floor_height_mm",
     "walk.crossing_delay_s"
   ],
   "coreSourceIds": [
