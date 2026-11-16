@@ -1,5 +1,8 @@
+import { roadMr } from "./road/mr";
 import { editorsMr } from "./editors/mr";
 import { cargoBikeMr } from "./cargo-bike/mr";
+import { depotsMr } from "./depots/mr";
+import { populationMr } from "./population/mr";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -281,6 +284,10 @@ export const mr: Messages = {
   "prefs.delayLane": "रंगवलेल्या बस किंवा ट्राम मार्गिकेत",
   "prefs.delayDefault": "गृहीतकांचे ग्रंथालय: {value} %",
   "prefs.delayReset": "ग्रंथालयातील मूल्य वापरा",
+  "prefs.stationsTitle": "स्थानके",
+  "prefs.stationsIntro":
+    "या अंतरातील एकाच नावाचे थांबे योजनाबद्ध नकाशा, प्रवास नियोजक आणि लाभ व प्रवासी तक्त्यांमध्ये एक स्थानक म्हणून मोजले जातात.",
+  "prefs.libraryM": "गृहीतकांचे ग्रंथालय: {value} मी",
   "prefs.currencyTitle": "चलन",
   "prefs.currencyIntro":
     "प्रकल्पातील सर्व रक्कम या चलनात दाखवली जाते: खर्चाच्या तक्त्या, लाभ, परिस्थिती आणि कार्गो बाइकची बचत.",
@@ -302,8 +309,49 @@ export const mr: Messages = {
   "prefs.rulesChanged": "बदललेले: {count}",
   "prefs.rulesLibrary": "गृहीतकांचे ग्रंथालय: {value} {unit}",
   "prefs.rulesLibraryRange": "गृहीतकांचे ग्रंथालय: {value} {unit} (श्रेणी {low}–{high})",
-  "prefs.vehicles": "वापरलेली वाहने, वाहन सूचीतून",
-  "prefs.switches": "रुळांचे स्विच, स्विच सूचीतून",
+  "prefs.paramsTitle": "सर्व पॅरामीटर",
+  "prefs.paramsIntro":
+    "गृहीतक ग्रंथालयातील प्रत्येक मूल्य. सर्व साधनांसाठी किंवा एका साधनासाठी तुमचे मूल्य द्या; एका साधनाचे मूल्य सर्व साधनांच्या मूल्यापेक्षा वरचढ ठरते. ग्रंथालयाचे मूल्य शेजारी दिसते.",
+  "prefs.paramsGroup": "गट",
+  "prefs.paramsMode": "साधन",
+  "prefs.paramsAllModes": "सर्व साधने",
+  "prefs.paramsFromAll": "सर्व साधनांसाठी तुमचे मूल्य",
+  "prefs.group.modes": "साधने",
+  "prefs.group.operations": "संचालन",
+  "prefs.group.demand": "मागणी",
+  "prefs.group.analysis": "विश्लेषण",
+  "prefs.group.simulation": "सिम्युलेशन",
+  "prefs.group.infrastructure": "पायाभूत सुविधा मानके",
+  "prefs.group.accessibility": "सुगम्यता",
+  "prefs.group.depots": "डेपो आणि रस्ते",
+  "prefs.group.energy": "ऊर्जा आणि हवामान",
+  "prefs.group.cost": "खर्च",
+  "prefs.group.benefits": "लाभ",
+  "prefs.group.fares": "भाडे",
+  "prefs.traction.battery": "बॅटरी",
+  "prefs.traction.diesel": "डिझेल",
+  "prefs.traction.hydrogen": "हायड्रोजन",
+  "prefs.traction.cng": "नैसर्गिक वायू (CNG)",
+  "prefs.traction.electric": "विद्युत",
+  "prefs.accessTitle": "फलाट सुलभता",
+  "prefs.accessIntro":
+    "फलाट आणि गाडीमधील पायरी व फटीच्या मर्यादा (TSI PRM), आणि सूचीत नसलेल्या गाड्यांसाठी तळ उंची. मार्ग प्रत्येक थांब्यावर तपासले जातात.",
+  "prefs.vehiclesTitle": "वाहने",
+  "prefs.vehiclesIntro":
+    "हा प्रकल्प प्रत्येक साधनासाठी वापरत असलेली सूचीतील वाहने. रस्ता मार्ग आणि रेल्वे साधने फक्त निवडलेली वाहने दाखवतात.",
+  "prefs.vehiclesMode": "साधन",
+  "prefs.vehiclesUsed": "{total} पैकी {used} वापरात",
+  "prefs.vehiclesAll": "सर्व वापरा",
+  "prefs.vehiclesFacts": "{length} मी · {places} जागा · {speed} किमी/ता",
+  "prefs.vehiclesLast": "प्रत्येक साधनासाठी किमान एक वाहन वापरात राहते.",
+  "prefs.switchesTitle": "रूळबदल",
+  "prefs.switchesIntro":
+    "सूचीतील रूळबदल आणि क्रॉसिंग जे रेल्वे संपादक प्रत्येक रेल्वे साधनासाठी देतो, आणि नवे रूळबदल ज्याने सुरू होतात तो.",
+  "prefs.switchesTurnouts": "रूळबदल",
+  "prefs.switchesSlips": "क्रॉसिंगमधील स्लिप",
+  "prefs.switchesDefault": "पूर्वनिर्धारित",
+  "prefs.switchesFacts": "1:{n} · R {radius} मी · वळणाऱ्या मार्गावर {speed} किमी/ता",
+  "prefs.switchesLast": "पूर्वनिर्धारित रूळबदल वापरात राहतो. तो वगळण्यासाठी आधी दुसरा निवडा.",
   "prefs.calendar": "दिनदर्शिका, मागणी आणि खर्च",
 
   "job.stepOf": "पायरी {step} / {steps}",
@@ -371,5 +419,8 @@ export const mr: Messages = {
 
   ...editorsMr,
   ...cargoBikeMr,
+  ...depotsMr,
+  ...populationMr,
+  ...roadMr,
   ...PLUGIN_MESSAGES.mr,
 };

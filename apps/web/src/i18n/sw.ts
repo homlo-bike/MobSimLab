@@ -1,5 +1,8 @@
+import { roadSw } from "./road/sw";
 import { editorsSw } from "./editors/sw";
 import { cargoBikeSw } from "./cargo-bike/sw";
+import { depotsSw } from "./depots/sw";
+import { populationSw } from "./population/sw";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -284,6 +287,10 @@ export const sw: Messages = {
   "prefs.delayLane": "Katika njia ya basi au tramu iliyochorwa kwa rangi",
   "prefs.delayDefault": "Maktaba ya dhana: {value} %",
   "prefs.delayReset": "Tumia thamani ya maktaba",
+  "prefs.stationsTitle": "Stesheni",
+  "prefs.stationsIntro":
+    "Vituo vyenye jina moja ndani ya umbali huu vinahesabiwa kama stesheni moja kwenye ramani ya mchoro, kipanga safari na majedwali ya manufaa na abiria.",
+  "prefs.libraryM": "Maktaba ya dhana: {value} m",
   "prefs.currencyTitle": "Sarafu",
   "prefs.currencyIntro":
     "Fedha zote za mradi zinaonyeshwa kwa sarafu hii: majedwali ya gharama, manufaa, matukio na akiba ya baiskeli ya mizigo.",
@@ -306,8 +313,49 @@ export const sw: Messages = {
   "prefs.rulesChanged": "zilizobadilishwa: {count}",
   "prefs.rulesLibrary": "Maktaba ya dhana: {value} {unit}",
   "prefs.rulesLibraryRange": "Maktaba ya dhana: {value} {unit} (kiwango {low}–{high})",
-  "prefs.vehicles": "Magari yanayotumika, kutoka katalogi ya magari",
-  "prefs.switches": "Swichi za reli, kutoka katalogi ya swichi",
+  "prefs.paramsTitle": "Vigezo vyote",
+  "prefs.paramsIntro":
+    "Kila thamani ya maktaba ya dhana. Weka yako kwa njia zote au kwa njia moja; thamani ya njia moja inatangulia ile ya njia zote. Thamani ya maktaba hubaki kando.",
+  "prefs.paramsGroup": "Kundi",
+  "prefs.paramsMode": "Njia ya usafiri",
+  "prefs.paramsAllModes": "Njia zote",
+  "prefs.paramsFromAll": "thamani yako kwa njia zote",
+  "prefs.group.modes": "Njia za usafiri",
+  "prefs.group.operations": "Uendeshaji",
+  "prefs.group.demand": "Mahitaji",
+  "prefs.group.analysis": "Uchambuzi",
+  "prefs.group.simulation": "Uigaji",
+  "prefs.group.infrastructure": "Viwango vya miundombinu",
+  "prefs.group.accessibility": "Ufikivu",
+  "prefs.group.depots": "Bohari na barabara",
+  "prefs.group.energy": "Nishati na tabianchi",
+  "prefs.group.cost": "Gharama",
+  "prefs.group.benefits": "Manufaa",
+  "prefs.group.fares": "Nauli",
+  "prefs.traction.battery": "betri",
+  "prefs.traction.diesel": "dizeli",
+  "prefs.traction.hydrogen": "haidrojeni",
+  "prefs.traction.cng": "gesi asilia (CNG)",
+  "prefs.traction.electric": "umeme",
+  "prefs.accessTitle": "Ufikivu wa jukwaa",
+  "prefs.accessIntro":
+    "Mipaka ya ngazi na pengo kati ya jukwaa na treni (TSI PRM), na kimo cha sakafu kwa treni zisizo nacho kwenye orodha. Njia hukaguliwa kila kituo.",
+  "prefs.vehiclesTitle": "Magari",
+  "prefs.vehiclesIntro":
+    "Magari ya katalogi ambayo mradi huu unatumia, kwa kila aina. Zana za njia za barabarani na za reli zinaonyesha yaliyowekewa alama tu.",
+  "prefs.vehiclesMode": "Aina",
+  "prefs.vehiclesUsed": "{used} kati ya {total} yanatumika",
+  "prefs.vehiclesAll": "Tumia yote",
+  "prefs.vehiclesFacts": "m {length} · nafasi {places} · km/h {speed}",
+  "prefs.vehiclesLast": "Angalau gari moja hubaki likitumika kwa kila aina.",
+  "prefs.switchesTitle": "Swichi",
+  "prefs.switchesIntro":
+    "Swichi na makutano kutoka katalogi ambayo kihariri cha reli kinatoa, kwa kila aina ya reli, na swichi ambayo swichi mpya huanza nayo.",
+  "prefs.switchesTurnouts": "Swichi",
+  "prefs.switchesSlips": "Swichi za kuteleza kwenye makutano",
+  "prefs.switchesDefault": "Chaguo-msingi",
+  "prefs.switchesFacts": "1:{n} · R m {radius} · km/h {speed} upande wa kugeuka",
+  "prefs.switchesLast": "Swichi chaguo-msingi hubaki ikitumika. Ili kuiondoa, chagua nyingine kwanza.",
   "prefs.calendar": "Kalenda, mahitaji na gharama",
 
   "job.stepOf": "Hatua {step} kati ya {steps}",
@@ -378,5 +426,8 @@ export const sw: Messages = {
 
   ...editorsSw,
   ...cargoBikeSw,
+  ...depotsSw,
+  ...populationSw,
+  ...roadSw,
   ...PLUGIN_MESSAGES.sw,
 };

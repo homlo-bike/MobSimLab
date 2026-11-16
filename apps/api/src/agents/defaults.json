@@ -16,7 +16,8 @@
   "walk_rule_minutes": "analysis.walk_rule_minutes",
   "cycle_speed_kmh": "analysis.cycle_speed_kmh",
   "frequent_headway_min": "analysis.frequent_headway_min",
-  "min_change_s": "journey.min_change_s"
+  "min_change_s": "journey.min_change_s",
+  "same_name_station_m": "journey.same_name_station_m"
  },
  "modes": {
   "bus": {
@@ -201,5 +202,6 @@
  "walk_rule_minutes": 15,
  "cycle_speed_kmh": 15,
  "frequent_headway_min": 15,
- "min_change_s": 60
+ "min_change_s": 60,
+ "same_name_station_m": 600
 }

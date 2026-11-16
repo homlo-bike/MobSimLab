@@ -7,7 +7,9 @@ running-time estimate needs into ``apps/web/src/features/railways/trains.ts``:
 - length, top speed, power and empty mass, as the catalogue files give them (power and mass may be
   missing; ``rail_plan::service::train_params`` then estimates them by mode);
 - planning capacity: seats plus the standing area at the mode's planning density
-  (``mode.standing_density_ppm2`` in ``assumptions/DEFAULTS.md``; 08-vehicles.md §3 rule 4).
+  (``mode.standing_density_ppm2`` in ``assumptions/DEFAULTS.md``; 08-vehicles.md §3 rule 4);
+- body width and floor height above rail, for the platform accessibility check (the floor height may be
+  missing; the check then uses the mode's ``vehicle.floor_height_mm`` and says so).
 
 Usage:
     python tools/vehicles/rail_trains.py          # rewrite trains.ts
@@ -67,6 +69,8 @@ def trains() -> list[dict]:
             standing = (value(v, "standingArea") or 0) * STANDING_DENSITY[mode]
             mass = value(v, "weightEmpty")  # t
             power = value(v, "power")  # kW
+            width = value(v, "width")  # m
+            floor = value(v, "floorHeight")  # mm
             out.append(
                 {
                     "id": f.stem,
@@ -77,6 +81,8 @@ def trains() -> list[dict]:
                     "power_kw": round(power, 1) if power else None,
                     "empty_mass_t": round(mass, 1) if mass else None,
                     "capacity": round(seats + standing),
+                    "width_m": round(width, 3) if width else None,
+                    "floor_height_mm": round(floor) if floor else None,
                 }
             )
     out.sort(key=lambda t: (list(FOLDERS.values()).index(t["mode"]), t["name"]))

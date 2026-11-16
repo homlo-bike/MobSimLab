@@ -1,5 +1,8 @@
+import { roadTr } from "./road/tr";
 import { editorsTr } from "./editors/tr";
 import { cargoBikeTr } from "./cargo-bike/tr";
+import { depotsTr } from "./depots/tr";
+import { populationTr } from "./population/tr";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -283,6 +286,10 @@ export const tr: Messages = {
   "prefs.delayLane": "Yalnızca boyanmış otobüs veya tramvay şeridinde",
   "prefs.delayDefault": "Varsayımlar kitaplığı: %{value}",
   "prefs.delayReset": "Kitaplık değerini kullan",
+  "prefs.stationsTitle": "İstasyonlar",
+  "prefs.stationsIntro":
+    "Bu mesafedeki aynı adlı duraklar şematik haritada, yolculuk planlayıcıda ve fayda ile yolcu tablolarında tek istasyon sayılır.",
+  "prefs.libraryM": "Varsayımlar kitaplığı: {value} m",
   "prefs.currencyTitle": "Para birimi",
   "prefs.currencyIntro":
     "Projedeki tüm para tutarları bu para biriminde gösterilir: maliyet tabloları, faydalar, senaryolar ve kargo bisikleti tasarrufları.",
@@ -304,8 +311,49 @@ export const tr: Messages = {
   "prefs.rulesChanged": "{count} değiştirildi",
   "prefs.rulesLibrary": "Varsayımlar kitaplığı: {value} {unit}",
   "prefs.rulesLibraryRange": "Varsayımlar kitaplığı: {value} {unit} (aralık {low}–{high})",
-  "prefs.vehicles": "Kullanılan araçlar (araç kataloğundan)",
-  "prefs.switches": "Makaslar (makas kataloğundan)",
+  "prefs.paramsTitle": "Tüm parametreler",
+  "prefs.paramsIntro":
+    "Varsayım kütüphanesinin her değeri. Tüm türler veya tek bir tür için kendi değerinizi girin; bir türün değeri tüm türler için olandan önce gelir. Kütüphanenin değeri yanında kalır.",
+  "prefs.paramsGroup": "Grup",
+  "prefs.paramsMode": "Ulaşım türü",
+  "prefs.paramsAllModes": "Tüm türler",
+  "prefs.paramsFromAll": "tüm türler için değeriniz",
+  "prefs.group.modes": "Ulaşım türleri",
+  "prefs.group.operations": "İşletme",
+  "prefs.group.demand": "Talep",
+  "prefs.group.analysis": "Analiz",
+  "prefs.group.simulation": "Simülasyon",
+  "prefs.group.infrastructure": "Altyapı standartları",
+  "prefs.group.accessibility": "Erişilebilirlik",
+  "prefs.group.depots": "Depolar ve sokaklar",
+  "prefs.group.energy": "Enerji ve iklim",
+  "prefs.group.cost": "Maliyetler",
+  "prefs.group.benefits": "Faydalar",
+  "prefs.group.fares": "Ücretler",
+  "prefs.traction.battery": "batarya",
+  "prefs.traction.diesel": "dizel",
+  "prefs.traction.hydrogen": "hidrojen",
+  "prefs.traction.cng": "doğal gaz (CNG)",
+  "prefs.traction.electric": "elektrikli",
+  "prefs.accessTitle": "Peron erişilebilirliği",
+  "prefs.accessIntro":
+    "Peron ile tren arasındaki basamak ve boşluk sınırları (TSI PRM) ve katalogda değeri olmayan trenler için taban yüksekliği. Hatlar her durakta bunlara göre denetlenir.",
+  "prefs.vehiclesTitle": "Araçlar",
+  "prefs.vehiclesIntro":
+    "Bu projenin her tür için kullandığı katalog araçları. Sokak hattı ve demiryolu araçları yalnızca işaretlenenleri sunar.",
+  "prefs.vehiclesMode": "Tür",
+  "prefs.vehiclesUsed": "{total} araçtan {used} kullanılıyor",
+  "prefs.vehiclesAll": "Hepsini kullan",
+  "prefs.vehiclesFacts": "{length} m · {places} yer · {speed} km/sa",
+  "prefs.vehiclesLast": "Her tür için en az bir araç kullanımda kalır.",
+  "prefs.switchesTitle": "Makaslar",
+  "prefs.switchesIntro":
+    "Demiryolu düzenleyicisinin her raylı tür için sunduğu katalogdaki makas ve geçitler ile yeni makasların başlangıç makası.",
+  "prefs.switchesTurnouts": "Makaslar",
+  "prefs.switchesSlips": "Geçitlerdeki çapraz makaslar",
+  "prefs.switchesDefault": "Varsayılan",
+  "prefs.switchesFacts": "1:{n} · R {radius} m · sapan yolda {speed} km/sa",
+  "prefs.switchesLast": "Varsayılan makas kullanımda kalır. Çıkarmak için önce başka bir varsayılan seçin.",
   "prefs.calendar": "Takvim, talep ve maliyetler",
 
   "job.stepOf": "Adım {step}/{steps}",
@@ -377,5 +425,8 @@ export const tr: Messages = {
 
   ...editorsTr,
   ...cargoBikeTr,
+  ...depotsTr,
+  ...populationTr,
+  ...roadTr,
   ...PLUGIN_MESSAGES.tr,
 };
