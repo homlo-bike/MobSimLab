@@ -272,6 +272,17 @@ export const ko: Messages = {
   "prefs.delayLane": "도색만 된 버스·트램 차로",
   "prefs.delayDefault": "가정값 라이브러리: {value} %",
   "prefs.delayReset": "라이브러리 값 사용",
+  "prefs.currencyTitle": "통화",
+  "prefs.currencyIntro":
+    "프로젝트의 모든 금액은 이 통화로 표시됩니다: 비용 표, 편익, 시나리오, 화물 자전거 절감액.",
+  "prefs.currencyLabel": "금액 표시 통화",
+  "prefs.currencyCountry": "해당 국가의 통화",
+  "prefs.currencyRate": "1 US$당 {code}",
+  "prefs.currencyWorldBank": "세계은행 공식 환율({year}): {value}",
+  "prefs.currencyMissing":
+    "세계은행에 {code} 환율이 없습니다. 환산하려면 환율을 입력하세요. 그때까지 각 도구는 해당 국가의 통화로 표시합니다.",
+  "prefs.currencyReset": "세계은행 환율 사용",
+  "prefs.currencyHow": "금액은 각 국가의 세계은행 공식 환율로 미국 달러를 거쳐 환산됩니다.",
   "prefs.moreTitle": "규칙, 차량, 가정값",
   "prefs.moreIntro": "각 변수의 최솟값과 권장값, 그리고 프로젝트에서 쓰는 차량.",
   "prefs.rules": "교통수단별 설계 규칙(최솟값과 권장값)",

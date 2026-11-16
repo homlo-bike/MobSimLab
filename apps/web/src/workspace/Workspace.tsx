@@ -8,7 +8,8 @@ import { projectTimetable } from "../features/benefits/timetable";
 import { CargoBikeTab } from "../features/cargo-bike/CargoBikeTab";
 import type { CargoBikeDoc } from "../features/cargo-bike/model";
 import { CapacityRun } from "../features/capacity/CapacityRun";
-import type { Prices } from "../features/costs/economy";
+import { economyApi, type Prices } from "../features/costs/economy";
+import { useProjectCurrency } from "../features/costs/currency";
 import type { Estimate as CostEstimate } from "../features/costs/model";
 import { CostTables, type CostsDoc } from "../features/costs/CostTables";
 import { WalkAnalysis } from "../features/walk/WalkAnalysis";
@@ -94,6 +95,8 @@ const NO_REGIONS: Region[] = [];
 const NO_FEEDS: GtfsFeed[] = [];
 /** "street", "rail", or the id of a plugin tool (cable car, ferry…). */
 type Build = string;
+/** The economy API for the project's currency rate. */
+const ECONOMY = economyApi();
 
 /**
  * One open project (mockups "Project app"): the project name and the six tabs in the top bar (a bottom tab bar on
@@ -138,10 +141,11 @@ export function Workspace({
     estimate: CostEstimate;
     currency: string | null;
     country: string | null;
+    rate: number;
   } | null>(null);
   const onCostEstimate = useCallback(
-    (estimate: CostEstimate, prices: Prices, country: string | null) =>
-      setCostInfo({ estimate, currency: prices.currency, country }),
+    (estimate: CostEstimate, prices: Prices, country: string | null, rate: number) =>
+      setCostInfo({ estimate, currency: prices.currency, country, rate }),
     [],
   );
   const [build, setBuild] = useState<Build | null>(null);
@@ -220,6 +224,9 @@ export function Workspace({
   const regions = drawings.doc<RegionsDoc>("regions")?.regions ?? NO_REGIONS;
   // Project preferences: assumption values the project changes, such as the delays in traffic.
   const preferences = drawings.doc<PreferencesDoc>("preferences");
+  // The currency all money is shown in, and its exchange rate (Project preferences).
+  const currencyState = useProjectCurrency(preferences, ECONOMY);
+  const currency = currencyState.currency;
   const delaysJson = JSON.stringify(delaysFrom(preferences));
   const delays = useMemo(() => JSON.parse(delaysJson) as DelayShares, [delaysJson]);
   // Street setups made before projects saved drawings were kept in this browser: move them to the project once.
@@ -476,7 +483,7 @@ export function Workspace({
               regions={regions}
               onChange={(next) => drawings.set("regions", { regions: next } satisfies RegionsDoc)}
               editable={editable}
-              currency={costInfo?.currency ?? null}
+              currency={currency?.code ?? costInfo?.currency ?? null}
             />
           )}
           {project && drawings.loaded && tab === "gis" && gis === "streets" && (
@@ -497,6 +504,7 @@ export function Workspace({
               doc={drawings.doc<CargoBikeDoc>("cargo-bike")}
               onDoc={editable ? (d) => drawings.set("cargo-bike", d) : undefined}
               setups={setups}
+              currency={currency}
             />
           )}
           {project && tab === "simulator" && sim === "journey" && (
@@ -595,6 +603,7 @@ export function Workspace({
               onPreferences={drawings.loaded ? (d) => drawings.set("preferences", d) : undefined}
               plugins={plugins}
               onSetPlugin={setPlugin}
+              currency={currencyState}
             />
           </div>
         )}
@@ -637,6 +646,7 @@ export function Workspace({
                     onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
                     costs={drawings.doc<CostsDoc>("costs")}
                     onCosts={editable ? (d) => drawings.set("costs", d) : undefined}
+                    currency={currency}
                     onEstimate={onCostEstimate}
                   />
                 </>
@@ -662,6 +672,7 @@ export function Workspace({
                   streetLines={streetLines}
                   preferences={preferences}
                   doc={drawings.doc<ScenariosDoc>("scenarios")}
+                  currency={currency}
                   onChange={editable ? (d) => drawings.set("scenarios", d) : undefined}
                 />
               )}

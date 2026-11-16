@@ -228,3 +228,29 @@ const CURRENCY: Record<string, string> = {
 export function currencyOf(iso3: string): string | null {
   return CURRENCY[iso3.toUpperCase()] ?? null;
 }
+
+/** The country whose World Bank exchange rate stands for a currency several countries share. */
+const MAIN_COUNTRY: Record<string, string> = {
+  ANG: "CUW",
+  AUD: "AUS",
+  CHF: "CHE",
+  DKK: "DNK",
+  EUR: "DEU",
+  GBP: "GBR",
+  ILS: "ISR",
+  USD: "USA",
+  XAF: "CMR",
+  XCD: "LCA",
+  XOF: "SEN",
+  XPF: "NCL",
+};
+
+/** Every currency of the table, by ISO 4217 code, in alphabetical order. */
+export const CURRENCY_CODES: readonly string[] = [...new Set(Object.values(CURRENCY))].sort();
+
+/** Purpose: the country whose World Bank exchange rate is used for a currency, or null when none uses it. */
+export function countryOfCurrency(code: string): string | null {
+  const c = code.toUpperCase();
+  if (MAIN_COUNTRY[c]) return MAIN_COUNTRY[c];
+  return Object.keys(CURRENCY).find((iso3) => CURRENCY[iso3] === c) ?? null;
+}

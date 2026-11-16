@@ -277,6 +277,18 @@ export const ha: Messages = {
   "prefs.delayLane": "A cikin hanyar bas ko tram da aka zana da fenti",
   "prefs.delayDefault": "Ɗakin zato: {value} %",
   "prefs.delayReset": "Yi amfani da ƙimar ɗakin",
+  "prefs.currencyTitle": "Kuɗi",
+  "prefs.currencyIntro":
+    "Duk kuɗin aikin ana nuna su a wannan kuɗin: teburorin kuɗaɗe, fa'idodi, yanayi da tanadin keken kaya.",
+  "prefs.currencyLabel": "Nuna kuɗi a",
+  "prefs.currencyCountry": "Kuɗin ƙasar kanta",
+  "prefs.currencyRate": "{code} a kowace US$",
+  "prefs.currencyWorldBank": "Farashin musayar kuɗi na hukuma na Bankin Duniya ({year}): {value}",
+  "prefs.currencyMissing":
+    "Bankin Duniya ba shi da farashin musaya na {code}. Shigar da ɗaya don canzawa; har zuwa lokacin kowane kayan aiki yana nuna kuɗin ƙasar.",
+  "prefs.currencyReset": "Yi amfani da farashin Bankin Duniya",
+  "prefs.currencyHow":
+    "Ana canza adadi ta hanyar dalar Amurka, da farashin musaya na hukuma na Bankin Duniya na kowace ƙasa.",
   "prefs.moreTitle": "Dokoki, ababen hawa da zato",
   "prefs.moreIntro":
     "Kowane maɓalli tare da ƙaramar ƙimarsa da wadda aka ba da shawara, da ababen hawan da aikin ke amfani da su.",

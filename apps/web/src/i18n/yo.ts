@@ -274,6 +274,18 @@ export const yo: Messages = {
   "prefs.delayLane": "Nínú ọ̀nà bọ́ọ̀sì tàbí tírámù tí a fi kun yà",
   "prefs.delayDefault": "Ilé ìkàwé àròsọ: {value} %",
   "prefs.delayReset": "Lo iye ti ilé ìkàwé",
+  "prefs.currencyTitle": "Owó",
+  "prefs.currencyIntro":
+    "Gbogbo owó inú iṣẹ́ náà ni a ń fihàn ní owó yìí: àwọn tábìlì iye owó, àǹfààní, àwọn ìṣẹ̀lẹ̀ àti ìfipamọ́ kẹ̀kẹ́ ẹrù.",
+  "prefs.currencyLabel": "Fi owó hàn ní",
+  "prefs.currencyCountry": "Owó orílẹ̀-èdè náà fúnra rẹ̀",
+  "prefs.currencyRate": "{code} fún US$ kọ̀ọ̀kan",
+  "prefs.currencyWorldBank": "Òṣùwọ̀n pàṣípààrọ̀ àṣẹ Báǹkì Àgbáyé ({year}): {value}",
+  "prefs.currencyMissing":
+    "Báǹkì Àgbáyé kò ní òṣùwọ̀n pàṣípààrọ̀ fún {code}. Tẹ ọ̀kan sí i láti yí i padà; títí di ìgbà náà, irinṣẹ́ kọ̀ọ̀kan ń fi owó orílẹ̀-èdè náà hàn.",
+  "prefs.currencyReset": "Lo òṣùwọ̀n Báǹkì Àgbáyé",
+  "prefs.currencyHow":
+    "A ń yí iye owó padà nípasẹ̀ dọ́là Amẹ́ríkà, pẹ̀lú òṣùwọ̀n pàṣípààrọ̀ àṣẹ Báǹkì Àgbáyé ti orílẹ̀-èdè kọ̀ọ̀kan.",
   "prefs.moreTitle": "Àwọn òfin, ọkọ̀ àti àròsọ",
   "prefs.moreIntro":
     "Gbogbo àyípadà pẹ̀lú iye tó kéré jù àti èyí tí a dámọ̀ràn, àti àwọn ọkọ̀ tí iṣẹ́ àkànṣe náà ń lò.",

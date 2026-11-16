@@ -277,6 +277,18 @@ export const vi: Messages = {
   "prefs.delayLane": "Trên làn xe buýt hoặc tàu điện chỉ được sơn",
   "prefs.delayDefault": "Thư viện giả định: {value} %",
   "prefs.delayReset": "Dùng giá trị thư viện",
+  "prefs.currencyTitle": "Tiền tệ",
+  "prefs.currencyIntro":
+    "Mọi khoản tiền trong dự án được hiển thị bằng tiền tệ này: bảng chi phí, lợi ích, kịch bản và khoản tiết kiệm của xe đạp chở hàng.",
+  "prefs.currencyLabel": "Hiển thị tiền bằng",
+  "prefs.currencyCountry": "Tiền tệ riêng của quốc gia",
+  "prefs.currencyRate": "{code} trên 1 US$",
+  "prefs.currencyWorldBank": "Tỷ giá chính thức của Ngân hàng Thế giới ({year}): {value}",
+  "prefs.currencyMissing":
+    "Ngân hàng Thế giới không có tỷ giá cho {code}. Hãy nhập một tỷ giá để quy đổi; cho đến lúc đó mỗi công cụ hiển thị tiền tệ của quốc gia.",
+  "prefs.currencyReset": "Dùng tỷ giá Ngân hàng Thế giới",
+  "prefs.currencyHow":
+    "Các khoản tiền được quy đổi qua đô la Mỹ, theo tỷ giá chính thức của Ngân hàng Thế giới cho từng quốc gia.",
   "prefs.moreTitle": "Quy tắc, phương tiện và giả định",
   "prefs.moreIntro": "Giá trị tối thiểu và khuyến nghị cho từng biến, và các phương tiện dự án sử dụng.",
   "prefs.rules": "Quy tắc thiết kế theo phương thức (tối thiểu và khuyến nghị)",

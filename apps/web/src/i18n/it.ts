@@ -277,6 +277,18 @@ export const it: Messages = {
   "prefs.delayLane": "Su una corsia bus o tram solo dipinta",
   "prefs.delayDefault": "Libreria delle ipotesi: {value} %",
   "prefs.delayReset": "Usa il valore della libreria",
+  "prefs.currencyTitle": "Valuta",
+  "prefs.currencyIntro":
+    "Tutto il denaro del progetto è mostrato in questa valuta: tabelle dei costi, benefici, scenari e risparmi della cargo bike.",
+  "prefs.currencyLabel": "Mostra il denaro in",
+  "prefs.currencyCountry": "La valuta del paese",
+  "prefs.currencyRate": "{code} per US$",
+  "prefs.currencyWorldBank": "Tasso di cambio ufficiale della Banca Mondiale ({year}): {value}",
+  "prefs.currencyMissing":
+    "La Banca Mondiale non ha un tasso di cambio per {code}. Inseriscine uno per convertire; fino ad allora ogni strumento mostra la valuta del paese.",
+  "prefs.currencyReset": "Usa il tasso della Banca Mondiale",
+  "prefs.currencyHow":
+    "Gli importi sono convertiti tramite il dollaro USA, con il tasso di cambio ufficiale della Banca Mondiale di ogni paese.",
   "prefs.moreTitle": "Regole, veicoli e ipotesi",
   "prefs.moreIntro": "Valori minimi e raccomandati per ogni variabile e i veicoli usati dal progetto.",
   "prefs.rules": "Regole di progettazione per modo (minimo e raccomandato)",
