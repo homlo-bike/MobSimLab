@@ -3,6 +3,7 @@ import { editorsYo } from "./editors/yo";
 import { cargoBikeYo } from "./cargo-bike/yo";
 import { depotsYo } from "./depots/yo";
 import { timetablesYo } from "./timetables/yo";
+import { populationYo } from "./population/yo";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -417,6 +418,7 @@ export const yo: Messages = {
   ...cargoBikeYo,
   ...depotsYo,
   ...timetablesYo,
+  ...populationYo,
   ...roadYo,
   ...PLUGIN_MESSAGES.yo,
 };

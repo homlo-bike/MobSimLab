@@ -3,6 +3,7 @@ import { editorsKk } from "./editors/kk";
 import { cargoBikeKk } from "./cargo-bike/kk";
 import { depotsKk } from "./depots/kk";
 import { timetablesKk } from "./timetables/kk";
+import { populationKk } from "./population/kk";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -419,6 +420,7 @@ export const kk: Messages = {
   ...cargoBikeKk,
   ...depotsKk,
   ...timetablesKk,
+  ...populationKk,
   ...roadKk,
   ...PLUGIN_MESSAGES.kk,
 };

@@ -3,6 +3,7 @@ import { editorsHa } from "./editors/ha";
 import { cargoBikeHa } from "./cargo-bike/ha";
 import { depotsHa } from "./depots/ha";
 import { timetablesHa } from "./timetables/ha";
+import { populationHa } from "./population/ha";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -421,6 +422,7 @@ export const ha: Messages = {
   ...cargoBikeHa,
   ...depotsHa,
   ...timetablesHa,
+  ...populationHa,
   ...roadHa,
   ...PLUGIN_MESSAGES.ha,
 };

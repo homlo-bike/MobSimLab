@@ -3,6 +3,7 @@ import { editorsTa } from "./editors/ta";
 import { cargoBikeTa } from "./cargo-bike/ta";
 import { depotsTa } from "./depots/ta";
 import { timetablesTa } from "./timetables/ta";
+import { populationTa } from "./population/ta";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -428,6 +429,7 @@ export const ta: Messages = {
   ...cargoBikeTa,
   ...depotsTa,
   ...timetablesTa,
+  ...populationTa,
   ...roadTa,
   ...PLUGIN_MESSAGES.ta,
 };

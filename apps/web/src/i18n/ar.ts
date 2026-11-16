@@ -3,6 +3,7 @@ import { editorsAr } from "./editors/ar";
 import { cargoBikeAr } from "./cargo-bike/ar";
 import { depotsAr } from "./depots/ar";
 import { timetablesAr } from "./timetables/ar";
+import { populationAr } from "./population/ar";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -407,6 +408,7 @@ export const ar: Messages = {
   ...cargoBikeAr,
   ...depotsAr,
   ...timetablesAr,
+  ...populationAr,
   ...roadAr,
   ...PLUGIN_MESSAGES.ar,
 };

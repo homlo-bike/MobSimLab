@@ -307,6 +307,11 @@ export interface EngineServiceLine {
   dwell_s: number | null;
   /** Peak windows `[from, to)`, s after midnight; the planner's 07–09 and 16–19 when absent. */
   peaks?: [number, number][];
+  /** The project's running values (Project preferences); absent ones take the mode's. */
+  turnback_s?: number;
+  supplement_share?: number;
+  accel_ms2?: number;
+  decel_ms2?: number;
 }
 
 export type Severity = "error" | "warning" | "info" | "ok";

@@ -3,6 +3,7 @@ import { editorsTe } from "./editors/te";
 import { cargoBikeTe } from "./cargo-bike/te";
 import { depotsTe } from "./depots/te";
 import { timetablesTe } from "./timetables/te";
+import { populationTe } from "./population/te";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -417,6 +418,7 @@ export const te: Messages = {
   ...cargoBikeTe,
   ...depotsTe,
   ...timetablesTe,
+  ...populationTe,
   ...roadTe,
   ...PLUGIN_MESSAGES.te,
 };

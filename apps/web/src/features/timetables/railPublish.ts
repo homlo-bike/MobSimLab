@@ -11,10 +11,18 @@ import type {
 import { DAY_TYPES, type DayTypeId, serviceDayFor, type ServiceCalendar } from "../../workspace/calendar";
 import { railLineFor, withPeaks } from "./dayTypes";
 
-/** Purpose: the railway's service lines in the engine's form on a day type, with the calendar's peaks. */
-export function dayEngineLines(railway: Network, day: DayTypeId, cal: ServiceCalendar): EngineServiceLine[] {
+/**
+ * Purpose: the railway's service lines in the engine's form on a day type, with the calendar's peaks and the
+ * project's running values (`values`: Project preferences values by id), as the railway tool publishes them.
+ */
+export function dayEngineLines(
+  railway: Network,
+  day: DayTypeId,
+  cal: ServiceCalendar,
+  values?: Readonly<Record<string, number>> | null,
+): EngineServiceLine[] {
   const doc = { ...railway, lines: (railway.lines ?? []).map((l) => railLineFor(l, day)) };
-  return withPeaks(engineLines(doc), serviceDayFor(cal, day));
+  return withPeaks(engineLines(doc, doc.lines, values), serviceDayFor(cal, day));
 }
 
 export type DayPublications = Partial<Record<DayTypeId, ServicePublication>>;
@@ -25,7 +33,8 @@ const NONE: DayPublications = {};
 /**
  * Purpose: publish the railway's service lines for every day type with the project's settings, for the
  * timetables in the Tables tab (the timetable planner's trips and vehicle blocks). The design is built once.
- * Inputs: the railway document, the project calendar (peak windows), the publish settings; the engine loader
+ * Inputs: the railway document, the project calendar (peak windows), the publish settings, the project's
+ * preference values; the engine loader
  * (tests inject one).
  * Output: the publication per day type, empty while it runs or without lines, and an error message.
  * Side effects: loads the rail engine (WebAssembly).
@@ -34,6 +43,7 @@ export function useRailPublications(
   railway: Network | null,
   cal: ServiceCalendar,
   options: PublishOptions,
+  values?: Readonly<Record<string, number>> | null,
   loadRail: RailEngineLoader = loadRailEngine,
 ): { publications: DayPublications; busy: boolean; error: string | null } {
   const [state, setState] = useState<{
@@ -41,7 +51,7 @@ export function useRailPublications(
     publications: DayPublications;
     error: string | null;
   } | null>(null);
-  const lines = railway ? DAY_TYPES.map((d) => [d, dayEngineLines(railway, d, cal)] as const) : [];
+  const lines = railway ? DAY_TYPES.map((d) => [d, dayEngineLines(railway, d, cal, values)] as const) : [];
   const key = JSON.stringify([railway, lines, options]);
   const none = !railway || !railway.tracks.length || !lines.some(([, l]) => l.length);
   useEffect(() => {

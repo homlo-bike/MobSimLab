@@ -3,6 +3,7 @@ import { editorsPt } from "./editors/pt";
 import { cargoBikePt } from "./cargo-bike/pt";
 import { depotsPt } from "./depots/pt";
 import { timetablesPt } from "./timetables/pt";
+import { populationPt } from "./population/pt";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -423,6 +424,7 @@ export const pt: Messages = {
   ...cargoBikePt,
   ...depotsPt,
   ...timetablesPt,
+  ...populationPt,
   ...roadPt,
   ...PLUGIN_MESSAGES.pt,
 };

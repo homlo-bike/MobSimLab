@@ -4,6 +4,7 @@ import { depotsEn } from "./depots/en";
 import { timetablesEn } from "./timetables/en";
 import { roadEn } from "./road/en";
 import { calendarEn } from "./calendar/en";
+import { populationEn } from "./population/en";
 import { pluginsEn } from "./plugins";
 
 /** English: the source language. Every other language must have every key (the type checker enforces it). */
@@ -415,6 +416,7 @@ export const en = {
   ...timetablesEn,
   ...roadEn,
   ...calendarEn,
+  ...populationEn,
   ...pluginsEn,
 } as const;
 

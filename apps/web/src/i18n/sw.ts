@@ -3,6 +3,7 @@ import { editorsSw } from "./editors/sw";
 import { cargoBikeSw } from "./cargo-bike/sw";
 import { depotsSw } from "./depots/sw";
 import { timetablesSw } from "./timetables/sw";
+import { populationSw } from "./population/sw";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -420,6 +421,7 @@ export const sw: Messages = {
   ...cargoBikeSw,
   ...depotsSw,
   ...timetablesSw,
+  ...populationSw,
   ...roadSw,
   ...PLUGIN_MESSAGES.sw,
 };

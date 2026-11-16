@@ -183,7 +183,7 @@ export function TimetableTables({
   const [day, setDay] = useState<DayTypeId>("weekday");
   const calKey = JSON.stringify(calendarFrom(preferences));
   const cal = useMemo(() => JSON.parse(calKey) as ServiceCalendar, [calKey]);
-  const { publications, busy, error } = useRailPublications(railway, cal, options, loadRail);
+  const { publications, busy, error } = useRailPublications(railway, cal, options, prefs, loadRail);
   const byDay = useMemo(
     () =>
       Object.fromEntries(
