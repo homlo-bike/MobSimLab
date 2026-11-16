@@ -298,6 +298,9 @@ export const kk: Messages = {
   "prefs.rulesChanged": "өзгертілген: {count}",
   "prefs.rulesLibrary": "Болжамдар кітапханасы: {value} {unit}",
   "prefs.rulesLibraryRange": "Болжамдар кітапханасы: {value} {unit} (ауқым {low}–{high})",
+  "prefs.accessTitle": "Платформа қолжетімділігі",
+  "prefs.accessIntro":
+    "Платформа мен пойыз арасындағы баспалдақ пен саңылау шектері (TSI PRM) және каталогта жоқ пойыздарға арналған еден биіктігі. Желілер әр аялдамада тексеріледі.",
   "prefs.vehiclesTitle": "Көліктер",
   "prefs.vehiclesIntro":
     "Осы жоба әр түр үшін пайдаланатын каталог көліктері. Көше желісі мен темір жол құралдары тек белгіленгендерін ұсынады.",
