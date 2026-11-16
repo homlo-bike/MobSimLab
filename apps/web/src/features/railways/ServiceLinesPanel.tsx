@@ -4,7 +4,7 @@ import { fmtM, fmtTime } from "./modes";
 import { DayTypeChoice } from "../timetables/DayTypeChoice";
 import { type DayService, editDay, hasOwnDay, railWeekday, shownDay, withDay } from "../timetables/dayTypes";
 import type { DayTypeId } from "../../workspace/calendar";
-import { Num, Row, Section } from "./RailPanel";
+import { Num, Row, Section } from "./panelControls";
 import {
   hhmm,
   lineMode,

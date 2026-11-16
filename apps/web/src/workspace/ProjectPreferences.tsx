@@ -10,7 +10,9 @@ import { DesignRulesSection } from "./DesignRules";
 import { VehicleChoiceSection } from "./VehicleChoice";
 import { SwitchChoiceSection } from "./SwitchChoice";
 import { CalendarSection } from "./CalendarSection";
+import { ParametersSection } from "./Parameters";
 import { roadValue } from "../features/road-sim/params";
+import { StationsSection } from "./StationsSection";
 import { CURRENCY_CODES } from "../features/costs/currencies";
 import { type CurrencyState, NO_CURRENCY, RATE_PREF, withCurrency } from "../features/costs/currency";
 
@@ -206,8 +208,18 @@ export function ProjectPreferences({
           onPreferences={(d) => onPreferences?.(d)}
           detectedCountry={country}
         />
+        <StationsSection
+          preferences={preferences}
+          editable={editable && !!onPreferences}
+          onPreferences={(d) => onPreferences?.(d)}
+        />
         <CurrencySection
           state={currency}
+          preferences={preferences}
+          editable={editable && !!onPreferences}
+          onPreferences={(d) => onPreferences?.(d)}
+        />
+        <ParametersSection
           preferences={preferences}
           editable={editable && !!onPreferences}
           onPreferences={(d) => onPreferences?.(d)}
