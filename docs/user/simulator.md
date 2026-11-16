@@ -79,7 +79,7 @@ Each line card shows the capacity used (line and terminal), the most trains per 
 
 The frequencies do not always improve in order. A line can work every 5 minutes but not every 6 when the turn-backs at a terminal fit one pattern and not the other; the table lists every frequency tried.
 
-**Test settings** changes the number of runs, the share and size of late starts, the recommended limit, the buffer between trains, the late threshold and the seed. The defaults and their sources are in the assumption library (`stability.*`, `capacity.occupancy_limit_share`, `timetable.min_buffer_s`, `recording.late_threshold_s`).
+**Test settings** changes the number of runs, the share and size of late starts, the recommended limit, the buffer between trains, the late threshold and the seed. The defaults and their sources are in the assumption library (`stability.*`, `capacity.occupancy_limit_share`, `timetable.min_buffer_s`, `recording.late_threshold_s`). Values you set in **Project preferences → All parameters** are the starting point; the signalling and driving values there (route setting, release, sighting, braking…) also reach the planner and the kernel. Drawn lines take their dwell, layover, running-time supplement, acceleration and service braking from there too, for the line's mode or for every mode.
 
 ## Lines file
 
@@ -93,7 +93,7 @@ The lines file is the one the timetable planner reads (`crates/rail-plan/example
 - `bands`: `{"from_s", "to_s", "headway_s"}` in seconds from the start of the service day;
 - `return_offset_s`: `null` to let the planner choose.
 
-A lines file can also hold the railway tool's service lines, `{"service_lines": [ ... ]}`, in the form **Publish timetable** sends them to the planner (`rail_plan::ServiceLine`).
+A lines file can also hold the railway tool's service lines, `{"service_lines": [ ... ]}`, in the form **Publish timetable** sends them to the planner (`rail_plan::ServiceLine`). Each may give `dwell_s`, `turnback_s`, `supplement_share`, `accel_ms2` and `decel_ms2`; absent ones take the mode's values.
 
 ## Not yet
 

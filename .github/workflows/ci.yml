@@ -101,6 +101,8 @@ jobs:
         run: uvx ruff check tools/fares && uvx ruff format --check tools/fares && uv run --no-project --with pyyaml python tools/fares/export_defaults.py --check
       - name: Design rules in Project preferences match the assumption library
         run: uvx ruff check tools/design-rules && uvx ruff format --check tools/design-rules && uv run --no-project --with pyyaml python tools/design-rules/export_defaults.py --check
+      - name: Parameters in Project preferences match the assumption library
+        run: uvx ruff check tools/parameters && uvx ruff format --check tools/parameters && uv run --no-project --with pyyaml python tools/parameters/export_defaults.py --check
 
   rust:
     name: Kernels (fmt, clippy, test, S2 smoke benchmark)
