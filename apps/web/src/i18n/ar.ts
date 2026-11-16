@@ -1,3 +1,4 @@
+import { roadAr } from "./road/ar";
 import { editorsAr } from "./editors/ar";
 import { cargoBikeAr } from "./cargo-bike/ar";
 import { depotsAr } from "./depots/ar";
@@ -302,8 +303,22 @@ export const ar: Messages = {
   "prefs.demandStep.mode_choice": "اختيار الوسيلة",
   "prefs.demandStep.assignment": "التخصيص",
   "prefs.demandAll": "كل الخطوات",
-  "prefs.vehicles": "المركبات المستخدمة، من كتالوج المركبات",
-  "prefs.switches": "تحويلات السكك، من كتالوج التحويلات",
+  "prefs.vehiclesTitle": "المركبات",
+  "prefs.vehiclesIntro":
+    "مركبات الكتالوج التي يستخدمها هذا المشروع لكل نمط. لا تعرض أدوات خطوط الشوارع والسكك الحديدية إلا المحددة.",
+  "prefs.vehiclesMode": "النمط",
+  "prefs.vehiclesUsed": "{used} من {total} مستخدمة",
+  "prefs.vehiclesAll": "استخدام الكل",
+  "prefs.vehiclesFacts": "{length} م · {places} مقعدًا · {speed} كم/س",
+  "prefs.vehiclesLast": "تبقى مركبة واحدة على الأقل مستخدمة لكل نمط.",
+  "prefs.switchesTitle": "المحولات",
+  "prefs.switchesIntro":
+    "المحولات والتقاطعات من الكتالوج التي يعرضها محرر السكك الحديدية لكل نمط سككي، والمحول الذي تبدأ به المحولات الجديدة.",
+  "prefs.switchesTurnouts": "المحولات",
+  "prefs.switchesSlips": "المحولات المنزلقة في التقاطعات",
+  "prefs.switchesDefault": "الافتراضي",
+  "prefs.switchesFacts": "1:{n} · نصف قطر {radius} م · {speed} كم/س في الاتجاه المنحرف",
+  "prefs.switchesLast": "يبقى المحول الافتراضي مستخدمًا. لإزالته، اختر محولًا افتراضيًا آخر أولًا.",
   "prefs.calendar": "التقويم والطلب والتكاليف",
 
   "job.stepOf": "الخطوة {step} من {steps}",
@@ -372,5 +387,6 @@ export const ar: Messages = {
   ...editorsAr,
   ...cargoBikeAr,
   ...depotsAr,
+  ...roadAr,
   ...PLUGIN_MESSAGES.ar,
 };

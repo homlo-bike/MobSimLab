@@ -7,6 +7,7 @@ before the job, so the API never shows a finished job with an open run.
 
 from __future__ import annotations
 
+import json
 import time
 from collections.abc import Callable
 from typing import Any, Protocol
@@ -18,6 +19,9 @@ from mobsim_worker.jobs.capacity import KernelLoader, load_kernel, run_capacity
 from mobsim_worker.jobs.demand import RunFile, run_demand_job
 from mobsim_worker.jobs.sweep import run_sweep
 from mobsim_worker.queue import Connection, Job, Queue
+
+#: Runs the road simulation: settings, scenario, street tiles, reporter (``jobs/road/job.py`` ``run_road``).
+RoadRunner = Callable[[Any, Any, list[str], Any], tuple[str, dict[str, Any], bytes | None]]
 
 log = structlog.get_logger("mobsim_worker")
 
@@ -60,6 +64,8 @@ INSERT INTO simulation.run_file (run_id, name, media_type, content)
 SELECT id, %(name)s, %(media_type)s, %(content)s FROM simulation.run
 WHERE id = %(id)s::uuid AND status = 'running'
 """
+
+REPLAY = "INSERT INTO simulation.run_replay (run_id, data) VALUES (%(id)s::uuid, %(data)s)"
 
 CANCELLED = "SELECT cancel_requested OR status <> 'running' FROM simulation.run WHERE id = %(id)s::uuid"
 
@@ -121,12 +127,21 @@ def settle(conn: Connection, run_id: str, status: str, result: Any, error: str |
     )
 
 
+def _run_road(
+    settings: Any, scenario: Any, tiles: list[str], reporter: Any
+) -> tuple[str, dict[str, Any], bytes | None]:
+    from mobsim_worker.jobs.road.job import run_road  # noqa: PLC0415 (SUMO is only needed for road runs)
+
+    return run_road(settings, scenario, tiles, reporter)
+
+
 def process(
     conn: Connection,
     queue: Queue,
     job: Job,
     stop: StopSignal,
     loader: KernelLoader = load_kernel,
+    road: RoadRunner = _run_road,
 ) -> str:
     """Run the job's simulation run and settle the run and the job.
 
@@ -136,6 +151,7 @@ def process(
         job: The job taken from it.
         stop: Set when the worker is stopping; the run stops between steps.
         loader: Loads the kernel for a network and its lines.
+        road: Runs a road simulation.
 
     Returns:
         How the run ended: ``done``, ``cancelled``, ``failed``, ``stopped`` or ``skipped``.
@@ -152,18 +168,24 @@ def process(
     bound.info("run started")
     reporter = RunReporter(conn, queue, job, run_id, stop)
     try:
-        if kind not in ("capacity", "sweep", "demand"):
+        if kind not in ("capacity", "sweep", "road", "demand"):
             raise ValueError(f"this worker cannot run {kind!r} runs")
         if cancel_requested:
             settle(conn, run_id, "cancelled", None, None)
             queue.complete(job, {"status": "cancelled"})
             return "cancelled"
+        outcome: str
         files: list[RunFile] = []
+        replay: bytes | None = None
         if kind == "demand":
             outcome, result, files = run_demand_job(network, settings, reporter)
+        elif kind == "road":
+            tiles = json.loads(network).get("tiles", [])
+            outcome, result, replay = road(settings, json.loads(lines), list(tiles), reporter)
+            if replay is not None and outcome == "done":
+                conn.execute(REPLAY, {"id": run_id, "data": replay})
         elif kind == "sweep":
-            kernel = loader(network, lines)
-            outcome, result = run_sweep(kernel, settings, reporter)
+            outcome, result = run_sweep(loader(network, lines), settings, reporter)
         else:
             kernel = loader(network, lines)
             outcome, result = run_capacity(
@@ -184,7 +206,7 @@ def process(
         queue.complete(job, {"status": "done"})
         bound.info(
             "run done",
-            verdict=(result.get("run") or {}).get("verdict"),
+            verdict=(result.get("run") or {}).get("verdict") if kind not in ("road", "demand") else None,
             variants=len(result.get("variants", [])),
         )
         return "done"

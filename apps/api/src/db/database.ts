@@ -28,10 +28,10 @@ export const RUN_STATUSES = ["queued", "running", "done", "failed", "cancelled"]
 export type RunStatus = (typeof RUN_STATUSES)[number];
 
 /**
- * Kinds of simulation run: the rail capacity run, a sweep of its settings (0008_agent_runs.sql) and the demand
- * model (0009_demand_runs.sql).
+ * Kinds of simulation run: the rail capacity run, a sweep of its settings (0008_agent_runs.sql), the road
+ * simulation (0009_road_runs.sql) and the demand model (0010_demand_runs.sql).
  */
-export type RunKind = "capacity" | "sweep" | "demand";
+export type RunKind = "capacity" | "sweep" | "road" | "demand";
 
 type Timestamp = ColumnType<Date, Date | string | undefined, Date | string>;
 
@@ -191,7 +191,13 @@ export interface DB {
     /** The agent connection that started the run (db/migrations/0008_agent_runs.sql), null for people. */
     agent_connection_id: Generated<string | null>;
   };
-  /** Files a run saves next to its result, such as a demand run's OD matrices (0009_demand_runs.sql). */
+  /** The replay of a road run, gzipped JSON (db/migrations/0009_road_runs.sql). */
+  "simulation.run_replay": {
+    run_id: string;
+    data: Buffer;
+    created_at: Generated<Date>;
+  };
+  /** Files a run saves next to its result, such as a demand run's OD matrices (0010_demand_runs.sql). */
   "simulation.run_file": {
     run_id: string;
     name: string;

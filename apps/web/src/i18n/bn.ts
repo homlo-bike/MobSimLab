@@ -1,3 +1,4 @@
+import { roadBn } from "./road/bn";
 import { editorsBn } from "./editors/bn";
 import { cargoBikeBn } from "./cargo-bike/bn";
 import { depotsBn } from "./depots/bn";
@@ -310,8 +311,22 @@ export const bn: Messages = {
   "prefs.demandStep.mode_choice": "যানবাহন নির্বাচন",
   "prefs.demandStep.assignment": "বরাদ্দ",
   "prefs.demandAll": "সব ধাপ",
-  "prefs.vehicles": "ব্যবহৃত যানবাহন, যানবাহন তালিকা থেকে",
-  "prefs.switches": "রেল সুইচ, সুইচ তালিকা থেকে",
+  "prefs.vehiclesTitle": "যানবাহন",
+  "prefs.vehiclesIntro":
+    "এই প্রকল্প প্রতিটি মাধ্যমে তালিকার যে যানবাহন ব্যবহার করে। রাস্তার লাইন ও রেলপথ সরঞ্জাম শুধু টিক দেওয়াগুলো দেখায়।",
+  "prefs.vehiclesMode": "মাধ্যম",
+  "prefs.vehiclesUsed": "{total}টির মধ্যে {used}টি ব্যবহৃত",
+  "prefs.vehiclesAll": "সব ব্যবহার করুন",
+  "prefs.vehiclesFacts": "{length} মি · {places} আসন · {speed} কিমি/ঘ",
+  "prefs.vehiclesLast": "প্রতিটি মাধ্যমে অন্তত একটি যান ব্যবহারে থাকে।",
+  "prefs.switchesTitle": "পয়েন্ট",
+  "prefs.switchesIntro":
+    "তালিকার যে পয়েন্ট ও ক্রসিং রেলপথ সম্পাদক প্রতিটি রেল মাধ্যমে দেয়, এবং নতুন পয়েন্ট যেটি দিয়ে শুরু হয়।",
+  "prefs.switchesTurnouts": "পয়েন্ট",
+  "prefs.switchesSlips": "ক্রসিংয়ে স্লিপ",
+  "prefs.switchesDefault": "ডিফল্ট",
+  "prefs.switchesFacts": "1:{n} · R {radius} মি · বাঁকা লাইনে {speed} কিমি/ঘ",
+  "prefs.switchesLast": "ডিফল্ট পয়েন্ট ব্যবহারে থাকে। বাদ দিতে আগে অন্য ডিফল্ট বেছে নিন।",
   "prefs.calendar": "ক্যালেন্ডার, চাহিদা ও খরচ",
 
   "job.stepOf": "ধাপ {step} / {steps}",
@@ -379,5 +394,6 @@ export const bn: Messages = {
   ...editorsBn,
   ...cargoBikeBn,
   ...depotsBn,
+  ...roadBn,
   ...PLUGIN_MESSAGES.bn,
 };

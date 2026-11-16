@@ -946,5 +946,328 @@
     }
    }
   }
- ]
+ ],
+ "switches": [
+  {
+   "id": "db-ew-190-1-9",
+   "label": "DB EW 49/54/60-190-1:9, straight crossing",
+   "element": "turnout",
+   "typical_modes": [
+    "light_rail",
+    "metro",
+    "commuter_rail",
+    "regional_rail",
+    "long_distance_rail"
+   ],
+   "crossing_ratio_n": 9,
+   "radius_m": 190,
+   "diverging_speed_kmh": 40
+  },
+  {
+   "id": "db-ew-300-1-9",
+   "label": "DB EW 54/60-300-1:9, curved crossing",
+   "element": "turnout",
+   "typical_modes": [
+    "metro",
+    "commuter_rail",
+    "regional_rail",
+    "long_distance_rail"
+   ],
+   "crossing_ratio_n": 9,
+   "radius_m": 300,
+   "diverging_speed_kmh": 50
+  },
+  {
+   "id": "db-ew-500-1-12",
+   "label": "DB EW 54/60-500-1:12, curved crossing",
+   "element": "turnout",
+   "typical_modes": [
+    "commuter_rail",
+    "regional_rail",
+    "long_distance_rail",
+    "high_speed_rail"
+   ],
+   "crossing_ratio_n": 12,
+   "radius_m": 500,
+   "diverging_speed_kmh": 60
+  },
+  {
+   "id": "db-ew-500-1-14",
+   "label": "DB EW 60-500-1:14 fb, curved crossing with movable point",
+   "element": "turnout",
+   "typical_modes": [
+    "regional_rail",
+    "long_distance_rail",
+    "high_speed_rail"
+   ],
+   "crossing_ratio_n": 14,
+   "radius_m": 500,
+   "diverging_speed_kmh": 60
+  },
+  {
+   "id": "db-ew-760-1-14",
+   "label": "DB EW 54/60-760-1:14, curved crossing",
+   "element": "turnout",
+   "typical_modes": [
+    "regional_rail",
+    "long_distance_rail",
+    "high_speed_rail"
+   ],
+   "crossing_ratio_n": 14,
+   "radius_m": 760,
+   "diverging_speed_kmh": 80
+  },
+  {
+   "id": "db-ew-1200-1-18.5",
+   "label": "DB EW 60-1200-1:18,5, curved crossing",
+   "element": "turnout",
+   "typical_modes": [
+    "regional_rail",
+    "long_distance_rail",
+    "high_speed_rail"
+   ],
+   "crossing_ratio_n": 18.5,
+   "radius_m": 1200,
+   "diverging_speed_kmh": 100
+  },
+  {
+   "id": "db-ew-2500-1-26.5-fb",
+   "label": "DB EW 60-2500-1:26,5 fb, high-speed turnout with movable point",
+   "element": "turnout",
+   "typical_modes": [
+    "long_distance_rail",
+    "high_speed_rail"
+   ],
+   "crossing_ratio_n": 26.5,
+   "radius_m": 2500,
+   "diverging_speed_kmh": 130
+  },
+  {
+   "id": "db-ew-6000-3700-1-32.5-fb",
+   "label": "DB EW 60-6000/3700-1:32,5 fb, clothoid high-speed turnout",
+   "element": "turnout",
+   "typical_modes": [
+    "long_distance_rail",
+    "high_speed_rail"
+   ],
+   "crossing_ratio_n": 32.5,
+   "radius_m": 3700,
+   "diverging_speed_kmh": 160
+  },
+  {
+   "id": "db-ew-7000-6000-1-42-fb",
+   "label": "DB EW 60-7000/6000-1:42 fb, high-speed turnout",
+   "element": "turnout",
+   "typical_modes": [
+    "high_speed_rail"
+   ],
+   "crossing_ratio_n": 42,
+   "radius_m": 6000,
+   "diverging_speed_kmh": 200
+  },
+  {
+   "id": "adif-dsih-17000-7300-1-50",
+   "label": "ADIF DSIH-AV3-60-17000/7300-1:50, high-speed turnout",
+   "element": "turnout",
+   "typical_modes": [
+    "high_speed_rail"
+   ],
+   "crossing_ratio_n": 50,
+   "radius_m": 7300,
+   "diverging_speed_kmh": 220
+  },
+  {
+   "id": "adif-dsih-10000-4000-1-36",
+   "label": "ADIF DSIH-AV3-60-10000/4000-1:36, high-speed turnout",
+   "element": "turnout",
+   "typical_modes": [
+    "high_speed_rail"
+   ],
+   "crossing_ratio_n": 36,
+   "radius_m": 4000,
+   "diverging_speed_kmh": 160
+  },
+  {
+   "id": "sncf-tg-0.0154",
+   "label": "SNCF high-speed turnout tg 0.0154 (about 1:65)",
+   "element": "turnout",
+   "typical_modes": [
+    "high_speed_rail"
+   ],
+   "crossing_ratio_n": 65,
+   "radius_m": 10000,
+   "diverging_speed_kmh": 220
+  },
+  {
+   "id": "cn-60-no18-hs",
+   "label": "China 60 kg/m No. 18 high-speed turnout (1:18)",
+   "element": "turnout",
+   "typical_modes": [
+    "long_distance_rail",
+    "high_speed_rail"
+   ],
+   "crossing_ratio_n": 18,
+   "radius_m": 1100,
+   "diverging_speed_kmh": 80
+  },
+  {
+   "id": "cn-60-no42-hs",
+   "label": "China 60 kg/m No. 42 high-speed turnout (1:42)",
+   "element": "turnout",
+   "typical_modes": [
+    "high_speed_rail"
+   ],
+   "crossing_ratio_n": 42,
+   "radius_m": 5000,
+   "diverging_speed_kmh": 160
+  },
+  {
+   "id": "cn-60-no12",
+   "label": "China 60 kg/m No. 12 turnout, rigid crossing (1:12)",
+   "element": "turnout",
+   "typical_modes": [
+    "commuter_rail",
+    "regional_rail",
+    "long_distance_rail"
+   ],
+   "crossing_ratio_n": 12,
+   "radius_m": 350,
+   "diverging_speed_kmh": 50
+  },
+  {
+   "id": "cn-metro-60-no9",
+   "label": "China metro 60 kg/m No. 9 turnout (1:9)",
+   "element": "turnout",
+   "typical_modes": [
+    "metro",
+    "light_rail"
+   ],
+   "crossing_ratio_n": 9,
+   "radius_m": 200,
+   "diverging_speed_kmh": 35
+  },
+  {
+   "id": "arema-no8",
+   "label": "AREMA No. 8 turnout",
+   "element": "turnout",
+   "typical_modes": [
+    "commuter_rail",
+    "regional_rail",
+    "long_distance_rail"
+   ],
+   "crossing_ratio_n": 7.97,
+   "radius_m": 153.31,
+   "diverging_speed_kmh": 24
+  },
+  {
+   "id": "arema-no10",
+   "label": "AREMA No. 10 turnout",
+   "element": "turnout",
+   "typical_modes": [
+    "light_rail",
+    "commuter_rail",
+    "regional_rail",
+    "long_distance_rail"
+   ],
+   "crossing_ratio_n": 9.97,
+   "radius_m": 237.97,
+   "diverging_speed_kmh": 24
+  },
+  {
+   "id": "arema-no15",
+   "label": "AREMA No. 15 turnout",
+   "element": "turnout",
+   "typical_modes": [
+    "commuter_rail",
+    "regional_rail",
+    "long_distance_rail"
+   ],
+   "crossing_ratio_n": 14.98,
+   "radius_m": 557.91,
+   "diverging_speed_kmh": 48
+  },
+  {
+   "id": "arema-no20",
+   "label": "AREMA No. 20 turnout",
+   "element": "turnout",
+   "typical_modes": [
+    "commuter_rail",
+    "regional_rail",
+    "long_distance_rail"
+   ],
+   "crossing_ratio_n": 19.99,
+   "radius_m": 996.73,
+   "diverging_speed_kmh": 72
+  },
+  {
+   "id": "tram-r25",
+   "label": "Tram grooved-rail turnout R 25 m (about 1:4.5)",
+   "element": "turnout",
+   "typical_modes": [
+    "tram"
+   ],
+   "crossing_ratio_n": 4.5,
+   "radius_m": 25,
+   "diverging_speed_kmh": 10
+  },
+  {
+   "id": "tram-r50",
+   "label": "Tram grooved-rail turnout R 50 m (about 1:6)",
+   "element": "turnout",
+   "typical_modes": [
+    "tram",
+    "light_rail"
+   ],
+   "crossing_ratio_n": 6,
+   "radius_m": 50,
+   "diverging_speed_kmh": 15
+  },
+  {
+   "id": "tram-r100",
+   "label": "Tram grooved-rail turnout R 100 m (about 1:7)",
+   "element": "turnout",
+   "typical_modes": [
+    "tram",
+    "light_rail"
+   ],
+   "crossing_ratio_n": 7,
+   "radius_m": 100,
+   "diverging_speed_kmh": 25
+  },
+  {
+   "id": "db-dkw-190-1-9",
+   "label": "DB DKW 54-190-1:9 (double slip)",
+   "element": "double_slip",
+   "typical_modes": [
+    "commuter_rail",
+    "regional_rail",
+    "long_distance_rail"
+   ],
+   "crossing_ratio_n": 9,
+   "radius_m": 190,
+   "diverging_speed_kmh": 40
+  },
+  {
+   "id": "db-ekw-190-1-9",
+   "label": "DB EKW 54-190-1:9 (single slip)",
+   "element": "single_slip",
+   "typical_modes": [
+    "commuter_rail",
+    "regional_rail",
+    "long_distance_rail"
+   ],
+   "crossing_ratio_n": 9,
+   "radius_m": 190,
+   "diverging_speed_kmh": 40
+  }
+ ],
+ "default_turnout": {
+  "tram": "tram-r50",
+  "light_rail": "tram-r100",
+  "metro": "db-ew-190-1-9",
+  "commuter_rail": "db-ew-300-1-9",
+  "regional_rail": "db-ew-300-1-9",
+  "long_distance_rail": "db-ew-500-1-12",
+  "high_speed_rail": "db-ew-1200-1-18.5"
+ }
 }

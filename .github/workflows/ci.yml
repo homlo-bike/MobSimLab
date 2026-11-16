@@ -78,16 +78,18 @@ jobs:
       - uses: actions/checkout@v5
       - uses: astral-sh/setup-uv@v6
         with: { python-version: "3.12" }
-      - run: uv sync --frozen --extra demand
-      - run: uv run ruff check .
-      - run: uv run ruff format --check .
-      - run: uv run mypy
-      - run: uv run pytest -q
+      # The sim extra brings Eclipse SUMO, so the road simulation tests run a real SUMO run; the demand extra
+      # brings AequilibraE for the demand model tests.
+      - run: uv sync --frozen --extra sim --extra demand
+      - run: uv run --frozen --extra sim --extra demand ruff check .
+      - run: uv run --frozen --extra sim --extra demand ruff format --check .
+      - run: uv run --frozen --extra sim --extra demand mypy
+      - run: uv run --frozen --extra sim --extra demand pytest -q
       - name: Demand test town matches contracts/demand-input.schema.json
         run: |
           uvx ruff check ../tools/contracts && uvx ruff format --check ../tools/contracts
           mkdir -p "$RUNNER_TEMP/demand"
-          uv run python -c "import json, sys; sys.path.insert(0, 'tests'); from test_demand import town; json.dump(town(), open(sys.argv[1], 'w'))" "$RUNNER_TEMP/demand/town.json"
+          uv run --frozen --extra sim --extra demand python -c "import json, sys; sys.path.insert(0, 'tests'); from test_demand import town; json.dump(town(), open(sys.argv[1], 'w'))" "$RUNNER_TEMP/demand/town.json"
           uv run --no-project --with jsonschema python ../tools/contracts/check_demand_input.py "$RUNNER_TEMP"/demand/*.json
 
   assumptions:
