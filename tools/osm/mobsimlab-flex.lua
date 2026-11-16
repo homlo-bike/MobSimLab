@@ -1,10 +1,13 @@
--- osm2pgsql flex style for MobSimLab (Spike S3, tag mapping v0).
+-- osm2pgsql flex style for MobSimLab (06-gis §2, tag mapping in tag_mapping.lua).
 -- Usage: osm2pgsql -O flex -S tools/osm/mobsimlab-flex.lua -d <db> <file.osm.pbf|.osm>
--- Environment: MOBSIMLAB_OSM_SCHEMA (default "geo"). Geometries are stored in EPSG:4326 (ADR-0009 / 04 §4).
+-- Environment: MOBSIMLAB_OSM_SCHEMA (default "geo"); MOBSIMLAB_OSM_PLANNED=1 keeps proposed roads and roads
+-- under construction. Geometries are stored in EPSG:4326 (ADR-0009 / 04 §4). The API imports into
+-- `geo_stage` and copies the rows into the project's `geo.osm_*` tables (apps/api/src/geodata).
 
 local schema = os.getenv('MOBSIMLAB_OSM_SCHEMA') or 'geo'
+local planned = os.getenv('MOBSIMLAB_OSM_PLANNED') == '1'
 local here = debug.getinfo(1, 'S').source:match('^@(.*/)') or './'
-local M = dofile(here .. 'tag_mapping_v0.lua')
+local M = dofile(here .. 'tag_mapping.lua')
 
 local function tbl(name, geom, cols)
   local columns = { { column = 'tags', type = 'jsonb' } }
@@ -33,6 +36,9 @@ local T = {
   poi = tbl('osm_poi', 'geometry', { { column = 'class', type = 'text' }, { column = 'name', type = 'text' } }),
   barrier = tbl('osm_barrier', 'geometry', { { column = 'barrier', type = 'text' } }),
   place = tbl('osm_place', 'geometry', { { column = 'place', type = 'text' }, { column = 'name', type = 'text' } }),
+  structure = tbl('osm_structure', 'linestring', {
+    { column = 'kind', type = 'text' }, { column = 'carries', type = 'text' }, { column = 'layer', type = 'int2' },
+  }),
 }
 
 local function yes(v) return v == 'yes' or v == 'true' or v == '1' end
@@ -55,6 +61,25 @@ local function area_or_point(o)
   return o:as_multipolygon()
 end
 
+-- Purpose: whether a highway value is imported (planned roads only when the import asks for them).
+local function road_ok(hw)
+  if not hw then return false end
+  if planned and M.road.planned[hw] then return true end
+  return not M.road.exclude[hw]
+end
+
+-- Purpose: record a road or railway way that is a bridge or a tunnel (06-gis §2.2 geo.osm_structure).
+local function structure(o, carries)
+  local t = o.tags
+  local layer = int(t.layer)
+  if t.bridge and t.bridge ~= 'no' then
+    T.structure:insert({ tags = t, kind = 'bridge', carries = carries, layer = layer, geom = o:as_linestring() })
+  end
+  if t.tunnel and t.tunnel ~= 'no' then
+    T.structure:insert({ tags = t, kind = 'tunnel', carries = carries, layer = layer, geom = o:as_linestring() })
+  end
+end
+
 local function common(o, geom)
   local t = o.tags
   local m = match_any(t, M.pt.match)
@@ -72,7 +97,7 @@ end
 function osm2pgsql.process_way(o)
   local t = o.tags
   local hw = t.highway
-  if hw and not M.road.exclude[hw] and not (o.is_closed and t.area == 'yes') then
+  if road_ok(hw) and not (o.is_closed and t.area == 'yes') then
     T.road:insert({
       tags = t, highway = hw, name = t.name, oneway = t.oneway, maxspeed = t.maxspeed, lanes = t.lanes,
       bridge = t.bridge ~= nil and t.bridge ~= 'no', tunnel = t.tunnel ~= nil and t.tunnel ~= 'no', layer = int(t.layer),
@@ -80,6 +105,7 @@ function osm2pgsql.process_way(o)
       is_foot = hw == 'footway' or hw == 'pedestrian' or hw == 'steps' or hw == 'path' or t.sidewalk ~= nil,
       geom = o:as_linestring(),
     })
+    structure(o, 'road')
   end
   if t.railway and M.rail.values[t.railway] then
     T.rail:insert({
@@ -87,6 +113,7 @@ function osm2pgsql.process_way(o)
       bridge = t.bridge ~= nil and t.bridge ~= 'no', tunnel = t.tunnel ~= nil and t.tunnel ~= 'no', layer = int(t.layer),
       geom = o:as_linestring(),
     })
+    structure(o, 'rail')
   end
   if o.is_closed then
     if t.building and t.building ~= 'no' then
@@ -96,6 +123,8 @@ function osm2pgsql.process_way(o)
     if t.leisure == 'park' then T.landuse:insert({ tags = t, class = 'leisure', value = 'park', geom = o:as_polygon() }) end
   end
   if t.waterway then T.water:insert({ tags = t, class = 'waterway', value = t.waterway, geom = o:as_linestring() })
+  elseif t.natural == 'coastline' then
+    T.water:insert({ tags = t, class = 'coastline', value = 'coastline', geom = o:as_linestring() })
   elseif o.is_closed and (t.natural == 'water' or t.water) then
     T.water:insert({ tags = t, class = 'water', value = t.water or 'water', geom = o:as_polygon() })
   end

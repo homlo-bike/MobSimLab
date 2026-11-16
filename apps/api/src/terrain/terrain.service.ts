@@ -1,6 +1,8 @@
-import { Injectable } from "@nestjs/common";
-import { CopernicusDemClient } from "../gateway/copernicus-dem.client";
+import { Injectable, Optional } from "@nestjs/common";
+import { CopernicusDemClient, DemError, TERRAIN_SOURCE } from "../gateway/copernicus-dem.client";
+import { OPEN_ELEVATION_SOURCE, OpenElevationClient } from "../gateway/open-elevation.client";
 import { OverpassClient } from "../gateway/overpass.client";
+import { GeodataReader } from "../geodata/geodata-reader";
 import { type BuildingCrossing, buildingQuery, crossings } from "./buildings";
 
 /** Where the heights come from, shown next to every result that uses them (06-gis §4, C-09). */
@@ -11,19 +13,8 @@ export const BUILDING_SOURCE = {
   url: "https://www.openstreetmap.org/copyright",
 } as const;
 
-export const TERRAIN_SOURCE = {
-  id: "copernicus_glo30",
-  name: "Copernicus DEM GLO-30",
-  kind: "DSM",
-  note: "Surface model: heights include buildings and tree canopy. Heights are metres above the EGM2008 geoid.",
-  resolutionM: 30,
-  verticalAccuracyM: 4,
-  verticalAccuracyNote:
-    "Absolute vertical accuracy better than 4 m (90 % linear error), worse in steep terrain and forest.",
-  url: "https://doi.org/10.5270/ESA-c5d3d65",
-  licence:
-    "© DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; all rights reserved. Free use under the Copernicus DEM licence.",
-} as const;
+/** Where the heights come from (moved to the GLO-30 client so the import can record it too). */
+export { TERRAIN_SOURCE };
 
 export const MAX_SAMPLES = 20_000;
 /** Building lookups cost an Overpass request per line; keep them to lines a cable car could have. */
@@ -83,7 +74,32 @@ export function samplePositions(
   return out;
 }
 
-/** Terrain heights for alignments: one shared source for the railway, cable car and other tools. */
+/** A Source record of heights (GLO-30, the planner's own grid, Open-Elevation), as answers carry it. */
+export type HeightSource = Record<string, unknown> & { verticalAccuracyM?: number };
+
+/** Heights at points, and every source that gave one of them. */
+export interface Heights {
+  values: Array<number | null>;
+  sources: HeightSource[];
+}
+
+/**
+ * Purpose: the source to show next to a result: the least accurate of those used (C-09 shows the accuracy
+ * next to every gradient, so a mixed result shows the worst), else GLO-30.
+ */
+export function mainSource(sources: HeightSource[]): HeightSource {
+  let best: HeightSource | null = null;
+  for (const s of sources)
+    if (!best || (Number(s.verticalAccuracyM ?? 0) > Number(best.verticalAccuracyM ?? 0))) best = s;
+  return best ?? TERRAIN_SOURCE;
+}
+
+/**
+ * Terrain heights for alignments: one shared source for the railway, cable car and other tools. With a project,
+ * heights come first from the project's imported grids (the planner's own GeoTIFF, then GLO-30; ADR-0045); points
+ * outside them are read live from the GLO-30 bucket, and when that cannot be read, from Open-Elevation
+ * (unless the fallback is turned off).
+ */
 @Injectable()
 export class TerrainService {
   private readonly buildingCache = new Map<string, BuildingCrossing[]>();
@@ -91,13 +107,15 @@ export class TerrainService {
   constructor(
     private readonly dem: CopernicusDemClient,
     private readonly overpass: OverpassClient,
+    @Optional() private readonly imported?: GeodataReader,
+    @Optional() private readonly fallback?: OpenElevationClient,
   ) {}
 
   /**
-   * Purpose: buildings each line passes over, from OpenStreetMap.
-   * Side effects: one Overpass request per line not yet cached.
+   * Purpose: buildings each line passes over, from the project's OpenStreetMap import when it holds the line,
+   * else from Overpass. Side effects: one Overpass request per line not yet cached.
    */
-  async buildings(lines: LonLat[][]): Promise<BuildingCrossing[][]> {
+  async buildings(lines: LonLat[][], projectId?: string): Promise<BuildingCrossing[][]> {
     if (lines.length > MAX_BUILDING_LINES)
       throw new RangeError(`Buildings for at most ${MAX_BUILDING_LINES} lines per request`);
     for (const l of lines) {
@@ -108,10 +126,28 @@ export class TerrainService {
     }
     const out: BuildingCrossing[][] = [];
     for (const l of lines) {
+      if (l.length < 2) {
+        out.push([]);
+        continue;
+      }
+      if (projectId && this.imported) {
+        const pad = 0.001;
+        const box: [number, number, number, number] = [
+          Math.min(...l.map((p) => p[0])) - pad,
+          Math.min(...l.map((p) => p[1])) - pad,
+          Math.max(...l.map((p) => p[0])) + pad,
+          Math.max(...l.map((p) => p[1])) + pad,
+        ];
+        const json = await this.imported.buildings(projectId, box);
+        if (json !== null) {
+          out.push(crossings(l, json));
+          continue;
+        }
+      }
       const key = JSON.stringify(l.map(([x, y]) => [x.toFixed(6), y.toFixed(6)]));
       let hit = this.buildingCache.get(key);
       if (!hit) {
-        hit = l.length < 2 ? [] : crossings(l, await this.overpass.run(buildingQuery(l)));
+        hit = crossings(l, await this.overpass.run(buildingQuery(l)));
         if (this.buildingCache.size >= 512)
           this.buildingCache.delete(this.buildingCache.keys().next().value!);
         this.buildingCache.set(key, hit);
@@ -121,21 +157,68 @@ export class TerrainService {
     return out;
   }
 
+  /** Purpose: heights at the given points, in order; null where no source has data. */
+  async heights(points: LonLat[], projectId?: string): Promise<Heights> {
+    const values: Array<number | null | undefined> = new Array(points.length).fill(undefined);
+    const sources: HeightSource[] = [];
+    if (projectId && this.imported) {
+      const r = await this.imported.heights(projectId, points);
+      r.values.forEach((v, i) => (values[i] = v));
+      sources.push(...(r.sources as HeightSource[]));
+    }
+    const rest = values.flatMap((v, i) => (v === undefined ? [i] : []));
+    if (rest.length) {
+      try {
+        const zs = await Promise.all(rest.map((i) => this.dem.elevation(points[i]![0], points[i]![1])));
+        rest.forEach((i, k) => (values[i] = zs[k] ?? null));
+        sources.push(TERRAIN_SOURCE);
+      } catch (e) {
+        if (!(e instanceof DemError) || !this.fallback) throw e;
+        const zs = await this.fallback.elevations(rest.map((i) => points[i]!));
+        rest.forEach((i, k) => (values[i] = zs[k] ?? null));
+        sources.push(OPEN_ELEVATION_SOURCE);
+      }
+    }
+    const seen = new Set<string>();
+    return {
+      values: values.map((v) => v ?? null),
+      sources: sources.filter((s) => {
+        const k = `${String(s.id ?? s.name)}|${String(s.retrievedAt ?? "")}`;
+        if (seen.has(k)) return false;
+        seen.add(k);
+        return true;
+      }),
+    };
+  }
+
   /** Purpose: heights at the given points, in order; null where the DEM has no data. */
-  points(points: LonLat[]): Promise<Array<number | null>> {
-    return Promise.all(points.map(([lon, lat]) => this.dem.elevation(lon, lat)));
+  async points(points: LonLat[], projectId?: string): Promise<Array<number | null>> {
+    return (await this.heights(points, projectId)).values;
   }
 
   /** Purpose: a height profile per line, sampled every `spacingM` metres and at every vertex. */
-  async profiles(lines: LonLat[][], spacingM: number): Promise<ProfileSample[][]> {
+  async profiles(lines: LonLat[][], spacingM: number, projectId?: string): Promise<ProfileSample[][]> {
+    return (await this.profilesWithSources(lines, spacingM, projectId)).profiles;
+  }
+
+  /** Purpose: profiles as `profiles` makes them, with the sources of their heights. */
+  async profilesWithSources(
+    lines: LonLat[][],
+    spacingM: number,
+    projectId?: string,
+  ): Promise<{ profiles: ProfileSample[][]; sources: HeightSource[] }> {
     const positions = lines.map((l) => samplePositions(l, spacingM));
     const total = positions.reduce((s, p) => s + p.length, 0);
     if (total > MAX_SAMPLES) throw new RangeError(`${total} samples; at most ${MAX_SAMPLES} per request`);
-    return Promise.all(
-      positions.map(async (ps) => {
-        const zs = await this.points(ps.map((p) => [p.lon, p.lat]));
-        return ps.map((p, i) => ({ ...p, elevationM: zs[i] ?? null }));
-      }),
+    const flat = positions.flat();
+    const h = await this.heights(
+      flat.map((p) => [p.lon, p.lat]),
+      projectId,
     );
+    let k = 0;
+    return {
+      profiles: positions.map((ps) => ps.map((p) => ({ ...p, elevationM: h.values[k++] ?? null }))),
+      sources: h.sources,
+    };
   }
 }
