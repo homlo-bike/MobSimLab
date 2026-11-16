@@ -590,8 +590,11 @@ export interface RailEngine {
   existingSnap(at: LonLat, maxM: number): ExistingSnap | null;
   /** Applies the planner's street setups from the GIS tab; the next build uses them. */
   setStreetSetups(setups: readonly StreetSetup[]): void;
-  /** Design values the project's preferences change for every mode, by name; the next build uses them. */
-  setValues?(values: Record<string, number>): void;
+  /**
+   * Design values the project's preferences change, by name for every mode or `<mode>.<name>` for one; numbers,
+   * and text for the text values (electrification, colour, level crossings, signalling). The next build uses them.
+   */
+  setValues?(values: Record<string, number | string>): void;
   /** The project's choice from the switches and crossings catalogue (Project preferences → Switches). */
   setSwitchChoice?(choice: SwitchChoice): void;
   /** A signal plan generated from the last build, with ids continuing the document's. */

@@ -95,6 +95,9 @@ export const DESIGN_RULES = (rulesData as unknown as { rules: DesignRule[] }).ru
 /** Every numeric design value of the rail engine and its library key, per rail mode. */
 const ENGINE_KEYS = (rulesData as unknown as { engine_keys: Record<string, Record<string, string>> })
   .engine_keys;
+/** The rail engine's text design values (electrification, colour, level crossings, signalling) and their keys. */
+const ENGINE_TEXT_KEYS = (rulesData as unknown as { engine_text_keys: Record<string, string> })
+  .engine_text_keys;
 
 /** Purpose: the preference id of a design rule's value for a mode, for example `mode.min_curve_radius_m.tram`. */
 export function rulePrefId(rule: DesignRule, mode: string): string | null {
@@ -122,6 +125,23 @@ export function designValuesFrom(doc: PreferencesDoc | null | undefined): Record
       if (id in out) continue;
       const v = pick(key, mode);
       if (v !== undefined && v >= 0) out[id] = v;
+    }
+  }
+  return out;
+}
+
+/**
+ * Purpose: the rail engine's text design values the project sets (Project preferences → All parameters), by
+ * `<field>` for every mode and `<mode>.<field>` for one mode, for example `tram.electrification`.
+ */
+export function designTextsFrom(doc: PreferencesDoc | null | undefined): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const [field, key] of Object.entries(ENGINE_TEXT_KEYS)) {
+    for (const [id, v] of Object.entries(doc?.choices ?? {})) {
+      if (typeof v !== "string" || !v.trim()) continue;
+      if (id === key) out[field] = v;
+      else if (id.startsWith(`${key}.`) && id.slice(key.length + 1) in ENGINE_KEYS)
+        out[`${id.slice(key.length + 1)}.${field}`] = v;
     }
   }
   return out;
