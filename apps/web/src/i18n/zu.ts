@@ -285,6 +285,18 @@ export const zu: Messages = {
   "prefs.delayLane": "Emzileni webhasi noma wethremu odwetshwe ngopende",
   "prefs.delayDefault": "Umtapo wolwazi wemicabango: {value} %",
   "prefs.delayReset": "Sebenzisa inani lomtapo wolwazi",
+  "prefs.currencyTitle": "Imali",
+  "prefs.currencyIntro":
+    "Yonke imali yephrojekthi iboniswa ngale mali: amathebula ezindleko, izinzuzo, izimo kanye nokonga kwebhayisikili lempahla.",
+  "prefs.currencyLabel": "Bonisa imali ngo",
+  "prefs.currencyCountry": "Imali yezwe uqobo lwalo",
+  "prefs.currencyRate": "{code} nge-US$ ngayinye",
+  "prefs.currencyWorldBank": "Izinga elisemthethweni lokushintshisana leBhange Lomhlaba ({year}): {value}",
+  "prefs.currencyMissing":
+    "IBhange Lomhlaba alinalo izinga lokushintshisana le-{code}. Faka elilodwa ukuze uguqule; kuze kube yilapho ithuluzi ngalinye libonisa imali yezwe.",
+  "prefs.currencyReset": "Sebenzisa izinga leBhange Lomhlaba",
+  "prefs.currencyHow":
+    "Amanani aguqulwa ngedola laseMelika, ngezinga elisemthethweni leBhange Lomhlaba lezwe ngalinye.",
   "prefs.moreTitle": "Imithetho, izimoto nemicabango",
   "prefs.moreIntro":
     "Konke okuguquguqukayo nenani lako elincane nelinconyiwe, nezimoto iphrojekthi ezisebenzisayo.",

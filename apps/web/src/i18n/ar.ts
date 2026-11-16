@@ -271,6 +271,17 @@ export const ar: Messages = {
   "prefs.delayLane": "في مسار مخصّص مطلي للحافلات أو الترام",
   "prefs.delayDefault": "مكتبة الافتراضات: {value} %",
   "prefs.delayReset": "استخدام قيمة المكتبة",
+  "prefs.currencyTitle": "العملة",
+  "prefs.currencyIntro":
+    "تُعرض كل المبالغ في المشروع بهذه العملة: جداول التكاليف والمنافع والسيناريوهات ووفورات دراجة الشحن.",
+  "prefs.currencyLabel": "عرض المبالغ بـ",
+  "prefs.currencyCountry": "عملة البلد نفسه",
+  "prefs.currencyRate": "{code} لكل دولار أمريكي (US$)",
+  "prefs.currencyWorldBank": "سعر الصرف الرسمي للبنك الدولي ({year}): {value}",
+  "prefs.currencyMissing":
+    "لا يملك البنك الدولي سعر صرف لـ {code}. أدخل سعرًا للتحويل؛ وحتى ذلك الحين تعرض كل أداة عملة البلد.",
+  "prefs.currencyReset": "استخدام سعر البنك الدولي",
+  "prefs.currencyHow": "تُحوَّل المبالغ عبر الدولار الأمريكي، بسعر الصرف الرسمي للبنك الدولي لكل بلد.",
   "prefs.moreTitle": "القواعد والمركبات والافتراضات",
   "prefs.moreIntro": "كل متغيّر مع قيمته الدنيا والموصى بها، والمركبات التي يستخدمها المشروع.",
   "prefs.rules": "قواعد التصميم لكل نمط، الدنيا والموصى بها",

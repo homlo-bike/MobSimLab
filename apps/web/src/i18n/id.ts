@@ -281,6 +281,18 @@ export const id: Messages = {
   "prefs.delayLane": "Di lajur bus atau trem yang hanya dicat",
   "prefs.delayDefault": "Pustaka asumsi: {value} %",
   "prefs.delayReset": "Gunakan nilai pustaka",
+  "prefs.currencyTitle": "Mata uang",
+  "prefs.currencyIntro":
+    "Semua jumlah uang dalam proyek ditampilkan dalam mata uang ini: tabel biaya, manfaat, skenario, dan penghematan sepeda kargo.",
+  "prefs.currencyLabel": "Tampilkan uang dalam",
+  "prefs.currencyCountry": "Mata uang negara itu sendiri",
+  "prefs.currencyRate": "{code} per US$",
+  "prefs.currencyWorldBank": "Kurs resmi Bank Dunia ({year}): {value}",
+  "prefs.currencyMissing":
+    "Bank Dunia tidak punya kurs untuk {code}. Masukkan kurs untuk mengonversi; sampai saat itu setiap alat menampilkan mata uang negara.",
+  "prefs.currencyReset": "Gunakan kurs Bank Dunia",
+  "prefs.currencyHow":
+    "Jumlah dikonversi melalui dolar AS, dengan kurs resmi Bank Dunia untuk setiap negara.",
   "prefs.moreTitle": "Aturan, kendaraan, dan asumsi",
   "prefs.moreIntro":
     "Nilai minimum dan yang disarankan untuk setiap variabel, serta kendaraan yang digunakan proyek.",
