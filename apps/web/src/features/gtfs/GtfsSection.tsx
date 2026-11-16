@@ -4,6 +4,7 @@ import { useI18n } from "../../i18n/i18n";
 import { activePlugins, pluginConverter, type Plugin } from "../../plugins/registry";
 import type { Timetable } from "../journey-planner/types";
 import { loadWasmGtfs } from "./engine";
+import { convertibleRoutes } from "./toLines";
 import type { GtfsEngineLoader, GtfsFeed, GtfsNetworkDoc } from "./types";
 import { readZip, writeZip } from "./zip";
 
@@ -54,6 +55,7 @@ export function GtfsSection({
   onChange,
   ownLines,
   projectName,
+  onEditRoute,
   loadEngine = loadWasmGtfs,
 }: {
   map: MapLibreMap | null;
@@ -63,6 +65,8 @@ export function GtfsSection({
   onChange?: (doc: GtfsNetworkDoc) => void;
   ownLines: Timetable | null;
   projectName: string;
+  /** Turns an imported route into a line of the project's own (street line or railway tool). */
+  onEditRoute?: (feedId: string, routeId: string) => void;
   loadEngine?: GtfsEngineLoader;
 }) {
   const { t } = useI18n();
@@ -71,6 +75,7 @@ export function GtfsSection({
   const [date, setDate] = useState("");
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [filter, setFilter] = useState("");
   if (!importer && !exporter) return null;
 
   const importFile = async (file: File) => {
@@ -184,6 +189,9 @@ export function GtfsSection({
           )}
         </div>
       ))}
+      {onEditRoute && feeds.length > 0 && (
+        <RouteList feeds={feeds} filter={filter} onFilter={setFilter} onEdit={onEditRoute} />
+      )}
       {importer && onChange && feeds.length < MAX_FEEDS && (
         <div className="space-y-1.5">
           {feeds.length === 0 && <p className="text-xs text-slate-600">{t("jp.gtfs.intro")}</p>}
@@ -239,5 +247,70 @@ export function GtfsSection({
         </button>
       )}
     </section>
+  );
+}
+
+/** At most this many routes are listed at once; the filter finds the others. */
+const ROUTES_SHOWN = 30;
+
+/** Purpose: the imported routes that can become lines, with a filter by name, and the routes already turned. */
+function RouteList({
+  feeds,
+  filter,
+  onFilter,
+  onEdit,
+}: {
+  feeds: readonly GtfsFeed[];
+  filter: string;
+  onFilter: (s: string) => void;
+  onEdit: (feedId: string, routeId: string) => void;
+}) {
+  const { t } = useI18n();
+  const all = feeds.flatMap((f) => convertibleRoutes(f).map((r) => ({ feed: f.id, ...r })));
+  const done = feeds.reduce((n, f) => n + (f.converted?.length ?? 0), 0);
+  const q = filter.trim().toLowerCase();
+  const shown = (q ? all.filter((r) => r.route.route_short_name.toLowerCase().includes(q)) : all).slice(
+    0,
+    ROUTES_SHOWN,
+  );
+  if (!all.length && !done) return null;
+  return (
+    <details className="text-xs">
+      <summary className="cursor-pointer font-medium text-slate-700">
+        {t("jp.gtfs.lines.title", { n: all.length })}
+      </summary>
+      <p className="mt-1 text-slate-600">{t("jp.gtfs.lines.intro")}</p>
+      {done > 0 && <p className="mt-1 text-slate-600">{t("jp.gtfs.lines.done", { n: done })}</p>}
+      {all.length > ROUTES_SHOWN && (
+        <input
+          type="search"
+          aria-label={t("jp.gtfs.lines.filter")}
+          placeholder={t("jp.gtfs.lines.filter")}
+          value={filter}
+          onChange={(e) => onFilter(e.target.value)}
+          className="mt-1 w-full rounded border border-slate-300 px-1.5 py-0.5"
+        />
+      )}
+      <ul className="mt-1 space-y-1">
+        {shown.map((r) => (
+          <li key={`${r.feed}:${r.route.route_id}`} className="flex items-center gap-2">
+            <span className="flex-1">
+              {t("jp.gtfs.lines.route", {
+                name: r.route.route_short_name || r.route.route_id,
+                tool: t(r.kind === "street" ? "jp.gtfs.lines.street" : "jp.gtfs.lines.rail"),
+                n: r.departures,
+              })}
+            </span>
+            <button
+              type="button"
+              className="text-blue-700 underline"
+              onClick={() => onEdit(r.feed, r.route.route_id)}
+            >
+              {t("jp.gtfs.lines.edit")}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </details>
   );
 }

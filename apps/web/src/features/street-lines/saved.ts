@@ -27,7 +27,7 @@ export interface SavedStreetLine {
   view: LineView;
 }
 
-/** The project's street lines. The street line tool edits one line for now. */
+/** The project's street lines; the street line tool edits one at a time and picks among them. */
 export interface StreetLinesDoc {
   lines: SavedStreetLine[];
 }

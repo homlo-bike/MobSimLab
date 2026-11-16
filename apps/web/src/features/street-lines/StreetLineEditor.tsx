@@ -1,5 +1,5 @@
 import { Marker, type Map as MapLibreMap, type MapMouseEvent } from "maplibre-gl";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { tNow, useI18n } from "../../i18n/i18n";
 import type { MessageKey } from "../../i18n/messages";
@@ -100,6 +100,8 @@ interface Props {
   onSave?: (line: SavedStreetLine) => void;
   /** Noise engine loader (noise plugin); tests inject a fake. */
   loadNoise?: NoiseEngineLoader;
+  /** Shown above the panel: the project's street lines to pick from. */
+  picker?: ReactNode;
   /** Offer the noise band; defaults to whether the noise plugin is installed. */
   noiseAvailable?: boolean;
 }
@@ -131,6 +133,7 @@ export function StreetLineEditor({
   onSave,
   loadNoise = loadWasmNoise,
   noiseAvailable = noiseCalculationIn("street-line-tool"),
+  picker = null,
 }: Props) {
   const { t } = useI18n();
   const engine = useRef<StreetEngine | null>(null);
@@ -551,8 +554,9 @@ export function StreetLineEditor({
     lastKey.current = savedKey;
     const line = JSON.parse(savedKey) as Omit<SavedStreetLine, "view">;
     drawn.current ||= line.points.length > 0 || line.depot !== null;
-    // Opening the tool is not a change; the first state after opening is only saved for a new drawing.
-    if (first && initial !== null) return;
+    // Opening the tool is not a change; the first state after opening is only saved for a new drawing, or
+    // for a line that was never routed (one made from an imported GTFS route).
+    if (first && initial !== null && initial.view.points.length > 0) return;
     if (drawn.current) saveTo.current?.({ ...line, view: latestView.current });
   }, [savedKey]);
 
@@ -701,7 +705,21 @@ export function StreetLineEditor({
           {t(HINTS[tool])}
         </p>
       </div>
-      {panel ? sidePanel && createPortal(sidePanel, panel) : sidePanel}
+      {panel
+        ? sidePanel &&
+          createPortal(
+            <>
+              {picker}
+              {sidePanel}
+            </>,
+            panel,
+          )
+        : sidePanel && (
+            <>
+              {picker}
+              {sidePanel}
+            </>
+          )}
       {!profile && error && (
         <p className="absolute top-3 right-14 z-10 rounded bg-red-50 px-2 py-1 text-sm text-red-700">
           {error}

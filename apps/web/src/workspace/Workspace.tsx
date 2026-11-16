@@ -23,8 +23,21 @@ import type { GtfsFeed, GtfsNetworkDoc } from "../features/gtfs/types";
 import type { Timetable } from "../features/journey-planner/types";
 import { RailwayEditor } from "../features/railways/RailwayEditor";
 import type { Network } from "../features/railways/types";
-import { lineInput, type StreetLinesDoc } from "../features/street-lines/saved";
+import { lineInput, type SavedStreetLine, type StreetLinesDoc } from "../features/street-lines/saved";
 import { StreetLineEditor } from "../features/street-lines/StreetLineEditor";
+import { StreetLinePicker } from "../features/street-lines/StreetLinePicker";
+import { loadWasmEngine as loadStreetEngine } from "../features/street-lines/engine";
+import type { Mode as StreetMode } from "../features/street-lines/types";
+import { loadRailEngine } from "../features/railways/engine";
+import type { RailMode } from "../features/railways/types";
+import {
+  addStreetLine,
+  addTerminalCrossovers,
+  kindOf,
+  mainPattern,
+  toRailLine,
+  toStreetLine,
+} from "../features/gtfs/toLines";
 import { forgetSetups, loadSetups } from "../features/street-setup/model";
 import { StreetSetupEditor } from "../features/street-setup/StreetSetupEditor";
 import type { StreetSetup } from "../features/street-setup/types";
@@ -88,6 +101,7 @@ type SimView = "test" | "journey";
 type GisView = "streets" | "regions";
 const NO_REGIONS: Region[] = [];
 const NO_FEEDS: GtfsFeed[] = [];
+const NO_STREET_LINES: SavedStreetLine[] = [];
 /** "street", "rail", or the id of a plugin tool (cable car, ferry…). */
 type Build = string;
 
@@ -142,6 +156,9 @@ export function Workspace({
   const [build, setBuild] = useState<Build | null>(null);
   // The street line as the tool last routed it, so the journey planner can ride it.
   const [line, setLine] = useState<StreetLineInput | null>(null);
+  // Which of the project's street lines the street line tool edits, and a key to open it afresh.
+  const [streetIndex, setStreetIndex] = useState(0);
+  const [streetRev, setStreetRev] = useState(0);
   // Cable car and ferry lines from the plugin tools, per tool, for the journey planner.
   const [pluginLines, setPluginLines] = useState<Record<string, PluginLineInput | null>>({});
   // On-demand zones from the service zone kit, for the journey planner.
@@ -150,6 +167,7 @@ export function Workspace({
   const [railTopology, setRailTopology] = useState<unknown>(null);
   useEffect(() => {
     setLine(null);
+    setStreetIndex(0);
     setPluginLines({});
     setRailTopology(null);
   }, [projectId]);
@@ -222,7 +240,77 @@ export function Workspace({
     if (local.length && !drawings.doc("street-setups")) drawings.set("street-setups", local);
     forgetSetups(projectId);
   }, [drawings.loaded, editable, projectId]);
-  const ridden = line ?? lineInput(streetLines?.lines[0]);
+  // Every saved street line for the journey planner; the one open in the tool as it last routed it.
+  const streetDocLines = streetLines?.lines ?? NO_STREET_LINES;
+  const ridden = useMemo(() => {
+    const ls = streetDocLines.map((l) => lineInput(l));
+    if (line) ls[streetIndex] = line;
+    return ls.filter((l): l is StreetLineInput => l !== null && l.view.points.length >= 2);
+  }, [streetDocLines, line, streetIndex]);
+  const saveStreetLine = (l: SavedStreetLine) => {
+    const lines = [...streetDocLines];
+    lines[Math.min(streetIndex, lines.length)] = l;
+    drawings.set("street-lines", { lines } satisfies StreetLinesDoc);
+  };
+  const openStreetLine = (i: number) => {
+    setLine(null);
+    setStreetIndex(i);
+    setStreetRev((r) => r + 1);
+  };
+  const removeStreetLine = () => {
+    const lines = streetDocLines.filter((_, i) => i !== streetIndex);
+    drawings.set("street-lines", { lines } satisfies StreetLinesDoc);
+    openStreetLine(Math.max(0, Math.min(streetIndex, lines.length - 1)));
+  };
+  // An imported GTFS route becomes a line of the project's own: a street line or a railway service line.
+  // The feed then leaves the route out, so it is not ridden twice.
+  const [convertError, setConvertError] = useState<string | null>(null);
+  const editGtfsRoute = async (feedId: string, routeId: string) => {
+    const feed = gtfsFeeds.find((f) => f.id === feedId);
+    const pattern = feed && mainPattern(feed.timetable, routeId);
+    const kind = pattern ? kindOf(pattern.route.mode) : null;
+    if (!feed || !pattern || !kind) return;
+    setConvertError(null);
+    try {
+      if (kind === "street") {
+        const e = await loadStreetEngine();
+        try {
+          const mode = pattern.route.mode as StreetMode;
+          const [doc, i] = addStreetLine(
+            streetLines,
+            toStreetLine(pattern, e.defaultProfile(mode), e.defaultRules()),
+          );
+          drawings.set("street-lines", doc);
+          openStreetLine(i);
+        } finally {
+          e.dispose();
+        }
+      } else {
+        const e = await loadRailEngine();
+        try {
+          const mode = pattern.route.mode as RailMode;
+          const [doc, id] = toRailLine(railway, pattern, mode, e.toLocal, {
+            platformLengthM: Number(e.defaultParams(mode).platform_length_m) || 100,
+          });
+          drawings.set(
+            "railway",
+            addTerminalCrossovers(doc, id, (d) => e.build(d, null)),
+          );
+        } finally {
+          e.dispose();
+        }
+      }
+      drawings.set("gtfs-network", {
+        feeds: gtfsFeeds.map((f) =>
+          f.id === feedId ? { ...f, converted: [...(f.converted ?? []), routeId] } : f,
+        ),
+      } satisfies GtfsNetworkDoc);
+      setBuild(kind);
+      onTab("create");
+    } catch (err) {
+      setConvertError(err instanceof Error ? err.message : String(err));
+    }
+  };
   const hasPanel = onMap && project !== null;
   const pluginTab = projectTabs.includes(tab) ? (PLUGIN_TABS.find((x) => x.id === tab) ?? null) : null;
   const tabLabel = (x: Tab) => {
@@ -381,14 +469,23 @@ export function Workspace({
           <MapView onReady={setMap} />
           {project && drawings.loaded && tab === "create" && editable && chosen === "street" && (
             <StreetLineEditor
-              key={`${projectId}-${drawings.generation("street-lines")}`}
+              key={`${projectId}-${drawings.generation("street-lines")}-${streetRev}`}
               map={map}
               panel={panel}
               onLineChange={setLine}
               streetSetups={setups}
               delays={delays}
-              initial={streetLines?.lines[0] ?? null}
-              onSave={(l) => drawings.set("street-lines", { lines: [l] } satisfies StreetLinesDoc)}
+              initial={streetDocLines[streetIndex] ?? null}
+              onSave={saveStreetLine}
+              picker={
+                <StreetLinePicker
+                  names={streetDocLines.map((l) => l.name)}
+                  index={streetIndex}
+                  onPick={openStreetLine}
+                  onNew={() => openStreetLine(streetDocLines.length)}
+                  onRemove={removeStreetLine}
+                />
+              }
               railTopology={railTopology}
             />
           )}
@@ -469,14 +566,23 @@ export function Workspace({
             <JourneyPlanner
               map={map}
               panel={panel}
-              streetLine={ridden && ridden.view.points.length >= 2 ? ridden : null}
+              streetLines={ridden}
               railLines={railLines}
               pluginLines={pluginLineList}
               demandZones={demandZoneList}
               gtfsFeeds={gtfsFeeds}
               {...(editable ? { onGtfsFeeds: (d: GtfsNetworkDoc) => drawings.set("gtfs-network", d) } : {})}
               projectName={project.name}
+              {...(editable ? { onEditGtfsRoute: (f: string, r: string) => void editGtfsRoute(f, r) } : {})}
             />
+          )}
+          {convertError && tab === "simulator" && (
+            <p
+              role="alert"
+              className="absolute top-2 left-1/2 z-30 -translate-x-1/2 rounded-lg border border-red-300 bg-red-50 px-3 py-1.5 text-sm text-red-900"
+            >
+              {convertError}
+            </p>
           )}
           {project && tab === "create" && editable && chosen === null && (
             <div className="absolute inset-0 z-20 flex items-start justify-center overflow-y-auto bg-slate-50/70 p-4 md:pt-16">
