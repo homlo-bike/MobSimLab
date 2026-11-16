@@ -281,6 +281,10 @@ export const pt: Messages = {
   "prefs.delayLane": "Em uma faixa pintada de ônibus ou bonde",
   "prefs.delayDefault": "Biblioteca de premissas: {value} %",
   "prefs.delayReset": "Usar o valor da biblioteca",
+  "prefs.stationsTitle": "Estações",
+  "prefs.stationsIntro":
+    "Paradas com o mesmo nome dentro desta distância contam como uma só estação no mapa esquemático, no planejador de viagens e nas tabelas de benefícios e de passageiros.",
+  "prefs.libraryM": "Biblioteca de premissas: {value} m",
   "prefs.currencyTitle": "Moeda",
   "prefs.currencyIntro":
     "Todo o dinheiro do projeto é mostrado nesta moeda: tabelas de custos, benefícios, cenários e poupanças da bicicleta de carga.",

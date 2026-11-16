@@ -273,6 +273,10 @@ export const en = {
   "prefs.delayLane": "In a painted bus or tram lane",
   "prefs.delayDefault": "Assumption library: {value} %",
   "prefs.delayReset": "Use the library value",
+  "prefs.stationsTitle": "Stations",
+  "prefs.stationsIntro":
+    "Stops with the same name within this distance count as one station in the schematic map, the journey planner and the benefits and ridership tables.",
+  "prefs.libraryM": "Assumption library: {value} m",
   "prefs.currencyTitle": "Currency",
   "prefs.currencyIntro":
     "All money in the project is shown in this currency: the cost tables, the benefits, the scenarios and the cargo bike savings.",

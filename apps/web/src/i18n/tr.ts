@@ -279,6 +279,10 @@ export const tr: Messages = {
   "prefs.delayLane": "Yalnızca boyanmış otobüs veya tramvay şeridinde",
   "prefs.delayDefault": "Varsayımlar kitaplığı: %{value}",
   "prefs.delayReset": "Kitaplık değerini kullan",
+  "prefs.stationsTitle": "İstasyonlar",
+  "prefs.stationsIntro":
+    "Bu mesafedeki aynı adlı duraklar şematik haritada, yolculuk planlayıcıda ve fayda ile yolcu tablolarında tek istasyon sayılır.",
+  "prefs.libraryM": "Varsayımlar kitaplığı: {value} m",
   "prefs.currencyTitle": "Para birimi",
   "prefs.currencyIntro":
     "Projedeki tüm para tutarları bu para biriminde gösterilir: maliyet tabloları, faydalar, senaryolar ve kargo bisikleti tasarrufları.",

@@ -906,6 +906,7 @@
     "fare.zonal.first_zone",
     "journey.level_change_s",
     "journey.min_change_s",
+    "journey.same_name_station_m",
     "journey.walk_detour_factor",
     "level_crossing.barrier_closing_s",
     "level_crossing.cycle_min_angle_deg",
