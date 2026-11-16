@@ -29,8 +29,8 @@ Under **Personal access token** in the AI agents panel, give the token a name, p
 | Tool | What it does | Scope |
 |------|--------------|-------|
 | `list_scenarios`, `get_scenario` | Your agent scenarios and their stops, lines and validation | project:read |
-| `get_assumptions` | Default stop spacing, speeds, headways, walk speed and the 15-minute rule, with sources | project:read |
-| `create_scenario` | A new empty scenario or a copy of one | scenario:write |
+| `get_assumptions` | Default stop spacing, speeds, headways, walk speed and the 15-minute rule, with sources; with a scenario, the values its analyses use | project:read |
+| `create_scenario` | A new empty scenario or a copy of one, optionally linked to a project so its analyses use the project's values from Project preferences → All parameters | scenario:write |
 | `apply_changes` | Add, move, rename or remove stops; add, change or remove lines; set the study area. Bus, trolleybus and BRT lines are routed along real streets | scenario:write |
 | `validate_scenario`, `diff_scenarios` | Problems in a scenario; what differs between two | project:read |
 | `delete_agent_scenario` | Delete a scenario this connection made (never yours) | scenario:write |
