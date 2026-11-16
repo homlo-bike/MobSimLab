@@ -6,7 +6,16 @@
 // the workflow before this runs.
 //   node scripts/assemble-runtime.mjs --app <built app folder> --wheels <folder with the mobsim-kernels wheel>
 import { execFileSync } from "node:child_process";
-import { cpSync, existsSync, mkdirSync, readdirSync, realpathSync, rmSync, writeFileSync } from "node:fs";
+import {
+  cpSync,
+  existsSync,
+  lstatSync,
+  mkdirSync,
+  readdirSync,
+  realpathSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { parseArgs } from "node:util";
@@ -60,8 +69,7 @@ writeFileSync(
   ),
 );
 const pip = ["pip", "install", "--python", python, "--break-system-packages", "--no-cache"];
-if (realpathSync(join(out, "python")) !== join(out, "python"))
-  throw new Error("runtime/python must be a real folder");
+if (lstatSync(join(out, "python")).isSymbolicLink()) throw new Error("runtime/python must be a real folder");
 sh("uv", [...pip, "-r", req]);
 const wheels = readdirSync(resolve(values.wheels))
   .filter((f) => f.endsWith(".whl"))
