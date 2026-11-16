@@ -1,3 +1,4 @@
+import { roadMr } from "./road/mr";
 import { editorsMr } from "./editors/mr";
 import { cargoBikeMr } from "./cargo-bike/mr";
 import { depotsMr } from "./depots/mr";
@@ -296,8 +297,22 @@ export const mr: Messages = {
   "prefs.rulesChanged": "बदललेले: {count}",
   "prefs.rulesLibrary": "गृहीतकांचे ग्रंथालय: {value} {unit}",
   "prefs.rulesLibraryRange": "गृहीतकांचे ग्रंथालय: {value} {unit} (श्रेणी {low}–{high})",
-  "prefs.vehicles": "वापरलेली वाहने, वाहन सूचीतून",
-  "prefs.switches": "रुळांचे स्विच, स्विच सूचीतून",
+  "prefs.vehiclesTitle": "वाहने",
+  "prefs.vehiclesIntro":
+    "हा प्रकल्प प्रत्येक साधनासाठी वापरत असलेली सूचीतील वाहने. रस्ता मार्ग आणि रेल्वे साधने फक्त निवडलेली वाहने दाखवतात.",
+  "prefs.vehiclesMode": "साधन",
+  "prefs.vehiclesUsed": "{total} पैकी {used} वापरात",
+  "prefs.vehiclesAll": "सर्व वापरा",
+  "prefs.vehiclesFacts": "{length} मी · {places} जागा · {speed} किमी/ता",
+  "prefs.vehiclesLast": "प्रत्येक साधनासाठी किमान एक वाहन वापरात राहते.",
+  "prefs.switchesTitle": "रूळबदल",
+  "prefs.switchesIntro":
+    "सूचीतील रूळबदल आणि क्रॉसिंग जे रेल्वे संपादक प्रत्येक रेल्वे साधनासाठी देतो, आणि नवे रूळबदल ज्याने सुरू होतात तो.",
+  "prefs.switchesTurnouts": "रूळबदल",
+  "prefs.switchesSlips": "क्रॉसिंगमधील स्लिप",
+  "prefs.switchesDefault": "पूर्वनिर्धारित",
+  "prefs.switchesFacts": "1:{n} · R {radius} मी · वळणाऱ्या मार्गावर {speed} किमी/ता",
+  "prefs.switchesLast": "पूर्वनिर्धारित रूळबदल वापरात राहतो. तो वगळण्यासाठी आधी दुसरा निवडा.",
   "prefs.calendar": "दिनदर्शिका, मागणी आणि खर्च",
 
   "job.stepOf": "पायरी {step} / {steps}",
@@ -366,5 +381,6 @@ export const mr: Messages = {
   ...editorsMr,
   ...cargoBikeMr,
   ...depotsMr,
+  ...roadMr,
   ...PLUGIN_MESSAGES.mr,
 };

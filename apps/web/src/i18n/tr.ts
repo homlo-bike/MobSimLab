@@ -1,3 +1,4 @@
+import { roadTr } from "./road/tr";
 import { editorsTr } from "./editors/tr";
 import { cargoBikeTr } from "./cargo-bike/tr";
 import { depotsTr } from "./depots/tr";
@@ -298,8 +299,22 @@ export const tr: Messages = {
   "prefs.rulesChanged": "{count} değiştirildi",
   "prefs.rulesLibrary": "Varsayımlar kitaplığı: {value} {unit}",
   "prefs.rulesLibraryRange": "Varsayımlar kitaplığı: {value} {unit} (aralık {low}–{high})",
-  "prefs.vehicles": "Kullanılan araçlar (araç kataloğundan)",
-  "prefs.switches": "Makaslar (makas kataloğundan)",
+  "prefs.vehiclesTitle": "Araçlar",
+  "prefs.vehiclesIntro":
+    "Bu projenin her tür için kullandığı katalog araçları. Sokak hattı ve demiryolu araçları yalnızca işaretlenenleri sunar.",
+  "prefs.vehiclesMode": "Tür",
+  "prefs.vehiclesUsed": "{total} araçtan {used} kullanılıyor",
+  "prefs.vehiclesAll": "Hepsini kullan",
+  "prefs.vehiclesFacts": "{length} m · {places} yer · {speed} km/sa",
+  "prefs.vehiclesLast": "Her tür için en az bir araç kullanımda kalır.",
+  "prefs.switchesTitle": "Makaslar",
+  "prefs.switchesIntro":
+    "Demiryolu düzenleyicisinin her raylı tür için sunduğu katalogdaki makas ve geçitler ile yeni makasların başlangıç makası.",
+  "prefs.switchesTurnouts": "Makaslar",
+  "prefs.switchesSlips": "Geçitlerdeki çapraz makaslar",
+  "prefs.switchesDefault": "Varsayılan",
+  "prefs.switchesFacts": "1:{n} · R {radius} m · sapan yolda {speed} km/sa",
+  "prefs.switchesLast": "Varsayılan makas kullanımda kalır. Çıkarmak için önce başka bir varsayılan seçin.",
   "prefs.calendar": "Takvim, talep ve maliyetler",
 
   "job.stepOf": "Adım {step}/{steps}",
@@ -372,5 +387,6 @@ export const tr: Messages = {
   ...editorsTr,
   ...cargoBikeTr,
   ...depotsTr,
+  ...roadTr,
   ...PLUGIN_MESSAGES.tr,
 };

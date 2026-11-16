@@ -1,3 +1,4 @@
+import { roadKk } from "./road/kk";
 import { editorsKk } from "./editors/kk";
 import { cargoBikeKk } from "./cargo-bike/kk";
 import { depotsKk } from "./depots/kk";
@@ -297,8 +298,23 @@ export const kk: Messages = {
   "prefs.rulesChanged": "өзгертілген: {count}",
   "prefs.rulesLibrary": "Болжамдар кітапханасы: {value} {unit}",
   "prefs.rulesLibraryRange": "Болжамдар кітапханасы: {value} {unit} (ауқым {low}–{high})",
-  "prefs.vehicles": "Пайдаланылатын көліктер, көлік каталогынан",
-  "prefs.switches": "Жол бағыттамалары, бағыттамалар каталогынан",
+  "prefs.vehiclesTitle": "Көліктер",
+  "prefs.vehiclesIntro":
+    "Осы жоба әр түр үшін пайдаланатын каталог көліктері. Көше желісі мен темір жол құралдары тек белгіленгендерін ұсынады.",
+  "prefs.vehiclesMode": "Түр",
+  "prefs.vehiclesUsed": "{total} ішінен {used} пайдаланылады",
+  "prefs.vehiclesAll": "Барлығын пайдалану",
+  "prefs.vehiclesFacts": "{length} м · {places} орын · {speed} км/сағ",
+  "prefs.vehiclesLast": "Әр түр үшін кемінде бір көлік пайдаланыста қалады.",
+  "prefs.switchesTitle": "Бағыттамалар",
+  "prefs.switchesIntro":
+    "Темір жол редакторы әр рельсті түр үшін ұсынатын каталогтағы бағыттамалар мен қиылыстар және жаңа бағыттамалар басталатын бағыттама.",
+  "prefs.switchesTurnouts": "Бағыттамалар",
+  "prefs.switchesSlips": "Қиылыстардағы айқас бағыттамалар",
+  "prefs.switchesDefault": "Әдепкі",
+  "prefs.switchesFacts": "1:{n} · R {radius} м · бұрылыста {speed} км/сағ",
+  "prefs.switchesLast":
+    "Әдепкі бағыттама пайдаланыста қалады. Оны алып тастау үшін алдымен басқасын таңдаңыз.",
   "prefs.calendar": "Күнтізбе, сұраныс және шығындар",
 
   "job.stepOf": "{steps} қадамның {step}-қадамы",
@@ -370,5 +386,6 @@ export const kk: Messages = {
   ...editorsKk,
   ...cargoBikeKk,
   ...depotsKk,
+  ...roadKk,
   ...PLUGIN_MESSAGES.kk,
 };

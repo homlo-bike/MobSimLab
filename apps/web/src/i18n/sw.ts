@@ -1,3 +1,4 @@
+import { roadSw } from "./road/sw";
 import { editorsSw } from "./editors/sw";
 import { cargoBikeSw } from "./cargo-bike/sw";
 import { depotsSw } from "./depots/sw";
@@ -299,8 +300,22 @@ export const sw: Messages = {
   "prefs.rulesChanged": "zilizobadilishwa: {count}",
   "prefs.rulesLibrary": "Maktaba ya dhana: {value} {unit}",
   "prefs.rulesLibraryRange": "Maktaba ya dhana: {value} {unit} (kiwango {low}–{high})",
-  "prefs.vehicles": "Magari yanayotumika, kutoka katalogi ya magari",
-  "prefs.switches": "Swichi za reli, kutoka katalogi ya swichi",
+  "prefs.vehiclesTitle": "Magari",
+  "prefs.vehiclesIntro":
+    "Magari ya katalogi ambayo mradi huu unatumia, kwa kila aina. Zana za njia za barabarani na za reli zinaonyesha yaliyowekewa alama tu.",
+  "prefs.vehiclesMode": "Aina",
+  "prefs.vehiclesUsed": "{used} kati ya {total} yanatumika",
+  "prefs.vehiclesAll": "Tumia yote",
+  "prefs.vehiclesFacts": "m {length} · nafasi {places} · km/h {speed}",
+  "prefs.vehiclesLast": "Angalau gari moja hubaki likitumika kwa kila aina.",
+  "prefs.switchesTitle": "Swichi",
+  "prefs.switchesIntro":
+    "Swichi na makutano kutoka katalogi ambayo kihariri cha reli kinatoa, kwa kila aina ya reli, na swichi ambayo swichi mpya huanza nayo.",
+  "prefs.switchesTurnouts": "Swichi",
+  "prefs.switchesSlips": "Swichi za kuteleza kwenye makutano",
+  "prefs.switchesDefault": "Chaguo-msingi",
+  "prefs.switchesFacts": "1:{n} · R m {radius} · km/h {speed} upande wa kugeuka",
+  "prefs.switchesLast": "Swichi chaguo-msingi hubaki ikitumika. Ili kuiondoa, chagua nyingine kwanza.",
   "prefs.calendar": "Kalenda, mahitaji na gharama",
 
   "job.stepOf": "Hatua {step} kati ya {steps}",
@@ -372,5 +387,6 @@ export const sw: Messages = {
   ...editorsSw,
   ...cargoBikeSw,
   ...depotsSw,
+  ...roadSw,
   ...PLUGIN_MESSAGES.sw,
 };
