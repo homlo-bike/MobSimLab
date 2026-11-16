@@ -4,8 +4,13 @@ import {
   delaysFrom,
   designValuesFrom,
   prefValue,
+  usedVehicles,
+  vehiclesOffFrom,
   withPref,
+  withVehicles,
 } from "../src/workspace/preferences";
+import { addLine, trainsFor } from "../src/features/railways/serviceLines";
+import type { Network } from "../src/features/railways/types";
 import { chosenCurrency, convertTo, RATE_PREF, withCurrency } from "../src/features/costs/currency";
 import { countryOfCurrency, CURRENCY_CODES } from "../src/features/costs/currencies";
 
@@ -34,6 +39,36 @@ describe("project preferences", () => {
     expect(
       designValuesFrom({ values: { "curve.cant_rail_mm.tram": 99, "mode.min_curve_radius_m.metro": -1 } }),
     ).toEqual({});
+  });
+
+  it("keeps the catalogue vehicles the project leaves out, and offers the rest", () => {
+    const doc = withVehicles(withPref(null, "x", 1), ["a", "b"], false);
+    expect(doc).toEqual({ values: { x: 1 }, vehiclesOff: ["a", "b"] });
+    expect([...vehiclesOffFrom(doc)]).toEqual(["a", "b"]);
+    // Using every vehicle again removes the list.
+    expect(withVehicles(doc, ["a", "b"], true)).toEqual({ values: { x: 1 } });
+    const list = [{ id: "a" }, { id: "b" }, { id: "c" }];
+    const off = vehiclesOffFrom(doc);
+    expect(usedVehicles(list, off).map((v) => v.id)).toEqual(["c"]);
+    // A line's own vehicle stays on offer; a list with none in use offers all.
+    expect(usedVehicles(list, off, "a").map((v) => v.id)).toEqual(["a", "c"]);
+    expect(usedVehicles(list.slice(0, 2), off).map((v) => v.id)).toEqual(["a", "b"]);
+  });
+
+  it("gives a new rail line a train the project uses", () => {
+    const doc = {
+      origin: [0, 0],
+      mode: "metro",
+      stations: [],
+      tracks: [],
+      switches: [],
+    } as unknown as Network;
+    const metros = trainsFor("metro");
+    const [first] = addLine(doc, 1000, { empty: true });
+    const suggested = first.lines![0]!.vehicle;
+    const off = new Set(metros.map((t) => t.id).filter((id) => id !== metros[0]!.id || id === suggested));
+    const [d] = addLine(doc, 1000, { empty: true, vehiclesOff: off });
+    expect(off.has(d.lines![0]!.vehicle)).toBe(false);
   });
 
   it("keeps one project currency and converts any amount to it through the US dollar", () => {

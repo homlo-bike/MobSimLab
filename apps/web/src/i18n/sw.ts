@@ -299,7 +299,14 @@ export const sw: Messages = {
   "prefs.rulesChanged": "zilizobadilishwa: {count}",
   "prefs.rulesLibrary": "Maktaba ya dhana: {value} {unit}",
   "prefs.rulesLibraryRange": "Maktaba ya dhana: {value} {unit} (kiwango {low}–{high})",
-  "prefs.vehicles": "Magari yanayotumika, kutoka katalogi ya magari",
+  "prefs.vehiclesTitle": "Magari",
+  "prefs.vehiclesIntro":
+    "Magari ya katalogi ambayo mradi huu unatumia, kwa kila aina. Zana za njia za barabarani na za reli zinaonyesha yaliyowekewa alama tu.",
+  "prefs.vehiclesMode": "Aina",
+  "prefs.vehiclesUsed": "{used} kati ya {total} yanatumika",
+  "prefs.vehiclesAll": "Tumia yote",
+  "prefs.vehiclesFacts": "m {length} · nafasi {places} · km/h {speed}",
+  "prefs.vehiclesLast": "Angalau gari moja hubaki likitumika kwa kila aina.",
   "prefs.switches": "Swichi za reli, kutoka katalogi ya swichi",
   "prefs.calendar": "Kalenda, mahitaji na gharama",
 

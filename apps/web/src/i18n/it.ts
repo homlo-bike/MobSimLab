@@ -299,7 +299,14 @@ export const it: Messages = {
   "prefs.rulesChanged": "{count} modificati",
   "prefs.rulesLibrary": "Libreria delle ipotesi: {value} {unit}",
   "prefs.rulesLibraryRange": "Libreria delle ipotesi: {value} {unit} (intervallo {low}–{high})",
-  "prefs.vehicles": "Veicoli usati (dal catalogo dei veicoli)",
+  "prefs.vehiclesTitle": "Veicoli",
+  "prefs.vehiclesIntro":
+    "I veicoli del catalogo usati da questo progetto, per modo. Gli strumenti per linee stradali e ferroviarie propongono solo quelli spuntati.",
+  "prefs.vehiclesMode": "Modo",
+  "prefs.vehiclesUsed": "{used} di {total} in uso",
+  "prefs.vehiclesAll": "Usa tutti",
+  "prefs.vehiclesFacts": "{length} m · {places} posti · {speed} km/h",
+  "prefs.vehiclesLast": "Ogni modo mantiene almeno un veicolo in uso.",
   "prefs.switches": "Deviatoi (dal catalogo dei deviatoi)",
   "prefs.calendar": "Calendario, domanda e costi",
 

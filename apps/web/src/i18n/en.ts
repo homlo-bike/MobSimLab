@@ -293,7 +293,14 @@ export const en = {
   "prefs.rulesChanged": "{count} changed",
   "prefs.rulesLibrary": "Assumption library: {value} {unit}",
   "prefs.rulesLibraryRange": "Assumption library: {value} {unit} (range {low}–{high})",
-  "prefs.vehicles": "Vehicles used, from the vehicle catalogue",
+  "prefs.vehiclesTitle": "Vehicles",
+  "prefs.vehiclesIntro":
+    "The catalogue vehicles this project uses, per mode. The street line and railway tools only offer the ticked ones.",
+  "prefs.vehiclesMode": "Mode",
+  "prefs.vehiclesUsed": "{used} of {total} used",
+  "prefs.vehiclesAll": "Use all",
+  "prefs.vehiclesFacts": "{length} m · {places} places · {speed} km/h",
+  "prefs.vehiclesLast": "At least one vehicle stays in use for each mode.",
   "prefs.switches": "Track switches, from the switch catalogue",
   "prefs.calendar": "Calendar, demand and costs",
 

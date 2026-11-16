@@ -5,7 +5,7 @@ Design tram, light rail, metro, commuter, regional, intercity and high-speed rai
 ## Start
 
 1. Click **Railway** in the top bar. The tool palette appears on the map and the railway panel on the right.
-2. Pick the **mode**. Gauge, track spacing, radii, gradients, speeds, platforms and electrification come from the mode. The panel lists the main values; the full set and their sources are in the [assumption library](../../assumptions/DEFAULTS.md). To use other values in a project, change them under **Project preferences → Design rules per mode**: the editor then checks the drawing against the project's values for that mode, and **Use the library value** brings the library's back.
+2. Pick the **mode**. Gauge, track spacing, radii, gradients, speeds, platforms and electrification come from the mode. The panel lists the main values; the full set and their sources are in the [assumption library](../../assumptions/DEFAULTS.md). To use other values in a project, change them under **Project preferences → Design rules per mode**: the editor then checks the drawing against the project's values for that mode, and **Use the library value** brings the library's back. Service lines offer the catalogue trains the project uses (**Project preferences → Vehicles**).
 3. Draw stations and tracks with the tools. **Clear** removes everything.
 
 The drawing is saved with the project a moment after each change (see [Saving](street-line-tool.md#saving)). It opens again, with the map on it, for everyone who opens the project.

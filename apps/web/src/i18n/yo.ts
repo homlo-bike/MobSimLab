@@ -297,7 +297,14 @@ export const yo: Messages = {
   "prefs.rulesChanged": "tí a yí padà: {count}",
   "prefs.rulesLibrary": "Ilé ìkàwé àròsọ: {value} {unit}",
   "prefs.rulesLibraryRange": "Ilé ìkàwé àròsọ: {value} {unit} (ìwọ̀n {low}–{high})",
-  "prefs.vehicles": "Àwọn ọkọ̀ tí a ń lò, láti inú àkójọ ọkọ̀",
+  "prefs.vehiclesTitle": "Àwọn ọkọ̀",
+  "prefs.vehiclesIntro":
+    "Àwọn ọkọ̀ inú àkójọ tí iṣẹ́ àkànṣe yìí ń lò, fún irú kọ̀ọ̀kan. Àwọn irinṣẹ́ ọ̀nà òpópónà àti ojú irin ń fi àwọn tí a sàmì sí nìkan hàn.",
+  "prefs.vehiclesMode": "Irú",
+  "prefs.vehiclesUsed": "{used} nínú {total} ni à ń lò",
+  "prefs.vehiclesAll": "Lo gbogbo wọn",
+  "prefs.vehiclesFacts": "{length} m · àyè {places} · {speed} km/h",
+  "prefs.vehiclesLast": "Ó kéré tán ọkọ̀ kan máa wà ní lílò fún irú kọ̀ọ̀kan.",
   "prefs.switches": "Àwọn ìyípadà ojú irin, láti inú àkójọ ìyípadà",
   "prefs.calendar": "Kàlẹ́ńdà, ìbéèrè àti iye owó",
 

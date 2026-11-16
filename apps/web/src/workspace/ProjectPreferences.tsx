@@ -7,13 +7,14 @@ import { Placeholder } from "./Placeholder";
 import type { ProjectPlugin } from "../plugins/registry";
 import { ProjectPlugins } from "./ProjectPlugins";
 import { DesignRulesSection } from "./DesignRules";
+import { VehicleChoiceSection } from "./VehicleChoice";
 import { CURRENCY_CODES } from "../features/costs/currencies";
 import { type CurrencyState, NO_CURRENCY, RATE_PREF, withCurrency } from "../features/costs/currency";
 
 /**
  * Preferences tab (mockup "Project preferences"): the project's name, description, study area and modes, which
- * Owners and Editors can change, and the design rules per rail mode. Vehicles, switches, calendar, demand and
- * costs follow.
+ * Owners and Editors can change, the design rules per rail mode and the catalogue vehicles used. Switches,
+ * calendar, demand and costs follow.
  */
 export function ProjectPreferences({
   api,
@@ -139,6 +140,12 @@ export function ProjectPreferences({
           editable={editable && !!onPreferences}
           onPreferences={(d) => onPreferences?.(d)}
         />
+        <VehicleChoiceSection
+          projectModes={project.modes}
+          preferences={preferences}
+          editable={editable && !!onPreferences}
+          onPreferences={(d) => onPreferences?.(d)}
+        />
         <section
           aria-labelledby="pp-delay"
           className="mt-6 rounded-2xl border border-slate-200 bg-white p-4 md:p-6"
@@ -172,7 +179,7 @@ export function ProjectPreferences({
           <Placeholder
             title="prefs.moreTitle"
             intro="prefs.moreIntro"
-            items={["prefs.vehicles", "prefs.switches", "prefs.calendar"]}
+            items={["prefs.switches", "prefs.calendar"]}
           />
         </div>
       </div>

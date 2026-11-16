@@ -299,7 +299,14 @@ export const te: Messages = {
   "prefs.rulesChanged": "మార్చినవి: {count}",
   "prefs.rulesLibrary": "ఊహల గ్రంథాలయం: {value} {unit}",
   "prefs.rulesLibraryRange": "ఊహల గ్రంథాలయం: {value} {unit} (పరిధి {low}–{high})",
-  "prefs.vehicles": "ఉపయోగించిన వాహనాలు, వాహన జాబితా నుండి",
+  "prefs.vehiclesTitle": "వాహనాలు",
+  "prefs.vehiclesIntro":
+    "ఈ ప్రాజెక్ట్ ప్రతి విధానానికి వాడే జాబితా వాహనాలు. వీధి లైన్ మరియు రైల్వే సాధనాలు టిక్ చేసినవాటినే చూపుతాయి.",
+  "prefs.vehiclesMode": "విధానం",
+  "prefs.vehiclesUsed": "{total}లో {used} వాడుకలో",
+  "prefs.vehiclesAll": "అన్నీ వాడండి",
+  "prefs.vehiclesFacts": "{length} మీ · {places} స్థానాలు · {speed} కి.మీ/గం",
+  "prefs.vehiclesLast": "ప్రతి విధానానికి కనీసం ఒక వాహనం వాడుకలో ఉంటుంది.",
   "prefs.switches": "పట్టా స్విచ్‌లు, స్విచ్ జాబితా నుండి",
   "prefs.calendar": "క్యాలెండర్, డిమాండ్ మరియు ఖర్చులు",
 

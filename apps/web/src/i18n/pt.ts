@@ -300,7 +300,14 @@ export const pt: Messages = {
   "prefs.rulesChanged": "{count} alterados",
   "prefs.rulesLibrary": "Biblioteca de premissas: {value} {unit}",
   "prefs.rulesLibraryRange": "Biblioteca de premissas: {value} {unit} (intervalo {low}–{high})",
-  "prefs.vehicles": "Veículos usados, do catálogo de veículos",
+  "prefs.vehiclesTitle": "Veículos",
+  "prefs.vehiclesIntro":
+    "Os veículos do catálogo que este projeto usa, por modo. As ferramentas de linhas de rua e ferroviárias só oferecem os marcados.",
+  "prefs.vehiclesMode": "Modo",
+  "prefs.vehiclesUsed": "{used} de {total} em uso",
+  "prefs.vehiclesAll": "Usar todos",
+  "prefs.vehiclesFacts": "{length} m · {places} lugares · {speed} km/h",
+  "prefs.vehiclesLast": "Cada modo mantém pelo menos um veículo em uso.",
   "prefs.switches": "Aparelhos de mudança de via, do catálogo",
   "prefs.calendar": "Calendário, demanda e custos",
 

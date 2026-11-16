@@ -303,7 +303,14 @@ export const uz: Messages = {
   "prefs.rulesChanged": "o'zgartirilgan: {count}",
   "prefs.rulesLibrary": "Farazlar kutubxonasi: {value} {unit}",
   "prefs.rulesLibraryRange": "Farazlar kutubxonasi: {value} {unit} (oraliq {low}–{high})",
-  "prefs.vehicles": "Ishlatiladigan transport vositalari, katalogdan",
+  "prefs.vehiclesTitle": "Transport vositalari",
+  "prefs.vehiclesIntro":
+    "Ushbu loyiha har bir tur uchun foydalanadigan katalog vositalari. Ko'cha yo'nalishi va temir yo'l vositalari faqat belgilanganlarini taklif qiladi.",
+  "prefs.vehiclesMode": "Tur",
+  "prefs.vehiclesUsed": "{total} tadan {used} tasi ishlatiladi",
+  "prefs.vehiclesAll": "Hammasini ishlatish",
+  "prefs.vehiclesFacts": "{length} m · {places} o'rin · {speed} km/soat",
+  "prefs.vehiclesLast": "Har bir tur uchun kamida bitta vosita ishlatilib qoladi.",
   "prefs.switches": "Rels strelkalari, strelkalar katalogidan",
   "prefs.calendar": "Kalendar, talab va xarajatlar",
 

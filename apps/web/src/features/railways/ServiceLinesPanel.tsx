@@ -14,6 +14,8 @@ import {
   updateLine,
 } from "./serviceLines";
 import { TimeDistanceGraph } from "./TimeDistanceGraph";
+import { usedVehicles } from "../../workspace/preferences";
+import { useVehiclesOff } from "../../workspace/projectVehicles";
 import type { LonLat, Network, RailView, ServiceLine, ServicePublication } from "./types";
 
 /** The last publication, and whether the drawing changed since. */
@@ -208,7 +210,8 @@ function LineEditor({
   const { t, tn } = useI18n();
   const [graph, setGraph] = useState(false);
   const mode = lineMode(doc, l);
-  const trains = trainsFor(mode);
+  const vehiclesOff = useVehiclesOff();
+  const trains = usedVehicles(trainsFor(mode), vehiclesOff, l.vehicle);
   const train = trainById(l.vehicle);
   const name = (id: number) => doc.stations.find((s) => s.id === id)?.name ?? t("rail.stationN", { id });
   const lonlat = (id: number) => view.stations.find((s) => s.id === id)?.lonlat ?? null;

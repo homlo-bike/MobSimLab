@@ -299,7 +299,14 @@ export const ig: Messages = {
   "prefs.rulesChanged": "agbanwere: {count}",
   "prefs.rulesLibrary": "Ọbá akwụkwọ echiche: {value} {unit}",
   "prefs.rulesLibraryRange": "Ọbá akwụkwọ echiche: {value} {unit} (oke {low}–{high})",
-  "prefs.vehicles": "Ụgbọ a na-eji, site na katalọgụ ụgbọ",
+  "prefs.vehiclesTitle": "Ụgbọ",
+  "prefs.vehiclesIntro":
+    "Ụgbọ katalọgụ ọrụ a na-eji, maka ụdị ọ bụla. Ngwaọrụ ahịrị okporo ụzọ na ụgbọ oloko na-egosi naanị ndị a kara akara.",
+  "prefs.vehiclesMode": "Ụdị",
+  "prefs.vehiclesUsed": "{used} n'ime {total} a na-eji",
+  "prefs.vehiclesAll": "Jiri ha niile",
+  "prefs.vehiclesFacts": "{length} m · oche {places} · {speed} km/h",
+  "prefs.vehiclesLast": "Opekata mpe otu ụgbọ na-anọgide na-arụ ọrụ maka ụdị ọ bụla.",
   "prefs.switches": "Ihe ntụgharị ụzọ ígwè, site na katalọgụ ihe ntụgharị",
   "prefs.calendar": "Kalenda, ọchịchọ na ọnụ ahịa",
 
