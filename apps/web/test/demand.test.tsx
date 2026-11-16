@@ -16,7 +16,9 @@ import {
   transitOf,
   withStepFree,
 } from "../src/features/demand/bundle";
+import type { Estimate } from "../src/features/benefits/model";
 import { DemandSection } from "../src/features/demand/DemandSection";
+import { demandRidership, demandStopBoardings, withDemandRidership } from "../src/features/demand/ridership";
 import { loadZoneData, zoneTiles } from "../src/features/demand/load";
 import {
   activeZones,
@@ -656,5 +658,85 @@ describe("catchment effects in the demand run input", () => {
     expect(await screen.findByText("Catchment, a weekday")).toBeTruthy();
     expect(screen.getByText("230 riders cycle to a stop and park")).toBeTruthy();
     expect(screen.getByText(/2 recorded without step-free access/)).toBeTruthy();
+  });
+});
+
+describe("demand model ridership in the project", () => {
+  const row = (
+    id: string,
+    scope: "line" | "mode" | "total",
+    mode: string | null,
+    daily: [number, number, number],
+  ) =>
+    ({
+      id,
+      scope,
+      name: id,
+      mode,
+      color: "#000",
+      values: { ridership_daily: daily, ridership_annual: [daily[0] * 300, daily[1] * 300, daily[2] * 300] },
+      access: {},
+    }) as unknown as Estimate["rows"][number];
+
+  it("sums boardings per line, per line and stop, and per stop", () => {
+    const r = demandRidership("r1", "2026-11-16T08:01:00Z", result());
+    expect(r.lines).toEqual({ "rail:T1": 120 });
+    expect(r.stations).toEqual({ "rail:T1": { West: 120 } });
+    expect(r.stops).toEqual({ West: 120 });
+    expect(demandStopBoardings(["west", "East"], r, () => 2)).toEqual({ west: 60 });
+  });
+
+  it("puts the model's boardings in the benefit estimate, with the formula's spread, and adds up modes", () => {
+    const est: Estimate = {
+      rows: [
+        row("rail:T1", "line", "tram", [50, 100, 200]),
+        row("street:0", "line", "bus", [10, 20, 40]),
+        row("mode:tram", "mode", "tram", [50, 100, 200]),
+        row("total", "total", null, [60, 120, 240]),
+      ],
+      notes: [],
+      draws: 200,
+      stations: { "rail:T1": { West: 100 }, "street:0": { A: 20 } },
+    };
+    const r = demandRidership("r1", "2026-11-16T08:01:00Z", result());
+    const out = withDemandRidership(est, r, { "benefit.ridership.days_per_year.tram": 250 });
+    const get = (id: string) => out.rows.find((x) => x.id === id)!.values;
+    expect(get("rail:T1").ridership_daily).toEqual([60, 120, 240]);
+    expect(get("rail:T1").ridership_annual).toEqual([15_000, 30_000, 60_000]);
+    expect(get("street:0").ridership_daily).toEqual([10, 20, 40]);
+    expect(get("mode:tram").ridership_daily).toEqual([60, 120, 240]);
+    expect(get("total").ridership_daily).toEqual([70, 140, 280]);
+    expect(out.stations["rail:T1"]).toEqual({ West: 120 });
+    expect(out.stations["street:0"]).toEqual({ A: 20 });
+    expect(out.notes.at(-1)).toMatch(/demand model run .* \(uncalibrated\)/);
+    // A run without any of the estimate's lines leaves it as it is.
+    expect(withDemandRidership(est, { ...r, lines: { other: 5 } }, undefined)).toBe(est);
+  });
+
+  it("lets the planner use a run for the project's ridership and go back", async () => {
+    const runs = fakeRuns();
+    const onDoc = vi.fn();
+    const props = {
+      timetable: network(),
+      regions: [],
+      preferences: { values: { "demand.zone_max_count": 40 } },
+      onDoc,
+      costs: { currency: "EUR", country: "NLD", rate: 1, ppp: 0.8 },
+      runs,
+      canRun: true,
+      api: fakeBenefits(),
+    };
+    const { rerender } = render(<DemandSection {...props} doc={null} />);
+    fireEvent.click(screen.getByRole("button", { name: "Estimate zone values" }));
+    const run = screen.getByRole("button", { name: "Run the demand model" });
+    await waitFor(() => expect((run as HTMLButtonElement).disabled).toBe(false));
+    await act(async () => {
+      fireEvent.click(run);
+    });
+    fireEvent.click(await screen.findByRole("button", { name: "Use this run for ridership" }));
+    expect(onDoc).toHaveBeenLastCalledWith({ source: "auto", ridershipRun: "r1" });
+    rerender(<DemandSection {...props} doc={{ source: "auto", ridershipRun: "r1" }} />);
+    fireEvent.click(screen.getByRole("button", { name: "Go back to the formula estimate" }));
+    expect(onDoc).toHaveBeenLastCalledWith({ source: "auto" });
   });
 });

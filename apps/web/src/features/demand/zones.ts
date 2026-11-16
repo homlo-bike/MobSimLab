@@ -64,6 +64,8 @@ export interface DemandDoc {
   autoValues?: Record<string, ZoneValues>;
   /** The GBFS feed of the project's shared-bike scheme (https), read with the OpenStreetMap stations. */
   gbfsUrl?: string;
+  /** The demand run whose ridership the Tables tab, the service table and the system test use. */
+  ridershipRun?: string;
 }
 
 /** Purpose: the zones a run uses: the own zones, or the automatic ones with the planner's values on them. */

@@ -166,6 +166,8 @@ const demand = z.looseObject({
     .url({ protocol: /^https$/ })
     .max(2000)
     .optional(),
+  /** The demand run whose ridership the Tables tab, the service table and the system test use. */
+  ridershipRun: z.string().min(1).max(64).optional(),
   zones: z
     .array(
       z.looseObject({

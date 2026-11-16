@@ -4,6 +4,7 @@ import { BenefitTables } from "../features/benefits/BenefitTables";
 import { DemandSection } from "../features/demand/DemandSection";
 import { DemandZoneEditor } from "../features/demand/ZoneEditor";
 import { partStepFree, schematicNetwork } from "../features/schematic/lines";
+import { type DemandRidership, demandRidership } from "../features/demand/ridership";
 import type { DemandDoc } from "../features/demand/zones";
 import type { Estimate as BenefitEstimate } from "../features/benefits/model";
 import type { Triple } from "../features/benefits/params";
@@ -298,6 +299,32 @@ export function Workspace({
   const gtfsFeeds = drawings.doc<GtfsNetworkDoc>("gtfs-network")?.feeds ?? NO_FEEDS;
   // Street setups from the GIS tab: they override OSM in the street line tool and the railway editor.
   const setups = drawings.doc<StreetSetup[]>("street-setups") ?? NO_SETUPS;
+  // The demand run the planner picked for ridership (Demand section): its boardings replace the formula
+  // estimate in the Tables tab and the system test.
+  const ridershipRun = drawings.doc<DemandDoc>("demand")?.ridershipRun ?? null;
+  const [demandRidershipState, setDemandRidership] = useState<DemandRidership | null>(null);
+  useEffect(() => {
+    if (!ridershipRun || !demandRuns) {
+      setDemandRidership(null);
+      return;
+    }
+    let alive = true;
+    demandRuns.get(ridershipRun).then(
+      (r) => {
+        if (!alive) return;
+        setDemandRidership(
+          r.status === "done" && r.result ? demandRidership(r.id, r.finishedAt, r.result) : null,
+        );
+      },
+      () => {
+        if (alive) setDemandRidership(null);
+      },
+    );
+    return () => {
+      alive = false;
+    };
+  }, [ridershipRun, demandRuns]);
+  const usedRidership = demandRidershipState?.runId === ridershipRun ? demandRidershipState : null;
   // Drawn stops and platforms with their recorded step-free access, for the demand model.
   const stopAccess = useMemo(
     () =>
@@ -893,6 +920,7 @@ export function Workspace({
                   onDoc={editable ? (d) => drawings.set("benefits", d) : undefined}
                   costs={costInfo}
                   onEstimate={onBenefitEstimate}
+                  ridership={usedRidership}
                 />
               )}
               {project && drawings.loaded && (
@@ -1055,6 +1083,7 @@ export function Workspace({
             <div className="min-h-0 flex-1 overflow-y-auto">
               {tab === "simulator" && sim === "test" && (
                 <CapacityRun
+                  demandRidership={usedRidership}
                   runs={runs}
                   canRun={editable}
                   railway={railway}
