@@ -1120,6 +1120,7 @@
     "terrain.street_level_tolerance_m",
     "terrain.tie_in_gradient_share",
     "timetable.layover_min",
+    "timetable.max_terminal_wait_min",
     "timetable.min_buffer_s",
     "timetable.policy_headway_offpeak_min",
     "timetable.policy_headway_peak_min",

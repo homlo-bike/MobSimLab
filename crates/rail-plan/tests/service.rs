@@ -215,6 +215,66 @@ fn trams_leave_their_stops_although_they_drive_on_sight() {
 }
 
 #[test]
+fn every_trip_belongs_to_one_vehicle_block_in_time_order() {
+    let out = publish_service(&topology(), &[shuttle()], "weekday").unwrap();
+    let r = &out.lines[0];
+    let service: usize = out
+        .blocks
+        .iter()
+        .map(|b| b.runs.iter().filter(|x| x.kind == "service").count())
+        .sum();
+    assert_eq!(service, r.trips);
+    // As many blocks as the line's trains, each run after the previous one, at the station it ended at.
+    assert_eq!(out.blocks.len(), r.trains);
+    for b in &out.blocks {
+        for w in b.runs.windows(2) {
+            assert!(w[1].depart_s >= w[0].arrive_s, "{:?}", b);
+            if w[0].kind == "service" && w[1].kind == "service" {
+                assert_eq!(w[0].to, w[1].from, "{:?}", b);
+            }
+        }
+        for x in &b.runs {
+            assert!(x.km >= 0.0 && x.km < 50.0, "{x:?}");
+            assert_eq!(x.line, "M7");
+            if x.kind == "service" {
+                assert!(x.km > 0.1, "{x:?}");
+                assert!(x.from.is_some() && x.to.is_some());
+            }
+        }
+    }
+    // Trips of the published timetable keep their ids in the blocks.
+    let ids: std::collections::BTreeSet<&str> = out
+        .timetable
+        .trips
+        .iter()
+        .map(|t| t.trip_id.as_str())
+        .collect();
+    for b in &out.blocks {
+        for x in b.runs.iter().filter(|x| x.kind == "service") {
+            assert!(ids.contains(x.trip.as_str()), "{}", x.trip);
+        }
+    }
+}
+
+#[test]
+fn a_shorter_terminal_wait_sends_trains_to_stabling_sooner() {
+    let long = publish_service(&topology(), &[shuttle()], "weekday").unwrap();
+    let opts = rail_plan::PublishOptions {
+        max_idle_s: Some(0.0),
+    };
+    let short =
+        rail_plan::publish_service_with(&topology(), &[shuttle()], "weekday", &opts).unwrap();
+    let pulls = |o: &rail_plan::ServicePublication| {
+        o.blocks
+            .iter()
+            .flat_map(|b| &b.runs)
+            .filter(|x| x.kind != "service")
+            .count()
+    };
+    assert!(pulls(&short) >= pulls(&long));
+}
+
+#[test]
 fn trains_per_hour_on_each_section_follow_the_timetable() {
     let out = publish_service(&topology(), &[shuttle()], "weekday").unwrap();
     assert!(!out.section_trains.is_empty());
