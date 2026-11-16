@@ -251,7 +251,7 @@ export const editorsAm = {
   "rail.line.peakHeadway": "የከፍተኛ ሰዓት ክፍተት",
   "rail.line.everyOffpeak": "በየ፣ ከከፍተኛ ሰዓት ውጭ",
   "rail.line.offpeakHeadway": "ከከፍተኛ ሰዓት ውጭ ክፍተት",
-  "rail.line.peaks": "ከፍተኛ ሰዓቶች 07:00–09:00 እና 16:00–19:00።",
+  "rail.line.peaks": "ከፍተኛ ሰዓቶች {peaks}።",
   "rail.line.delete": "መስመር ሰርዝ",
   "rail.line.needsStops": "ቢያንስ ሁለት ማቆሚያዎች ያስፈልጉታል።",
   "rail.line.needsTrain": "ባቡር ይምረጡ።",

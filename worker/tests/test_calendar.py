@@ -176,11 +176,13 @@ class Factory:
 
     def __init__(self) -> None:
         self.networks: list[str] = []
+        self.lines: list[str | None] = []
         self.kernels: list[FakeKernel] = []
         self.params: list[dict[str, Any]] = []
 
-    def __call__(self, network: str) -> FakeKernel:
+    def __call__(self, network: str, lines: str | None = None) -> FakeKernel:
         self.networks.append(network)
+        self.lines.append(lines)
         k = FakeKernel()
         outer = self
         original = k.run
@@ -240,3 +242,18 @@ def test_cold_with_switch_heating_runs_as_an_ordinary_day() -> None:
     factory = Factory()
     run_calendar(factory, s, Reporter(), NETWORK)
     assert len(factory.params) == 1
+
+
+def test_runs_a_day_type_with_its_own_lines_on_a_kernel_of_its_own() -> None:
+    s = plan([{"label": "2027", "counts": {"weekday": 255, "saturday": 51, "sunday": 51, "holiday": 8}}])
+    s["plan"]["day_types"]["sunday"]["lines"] = '{"service_lines": ["sunday"]}'
+    s["plan"]["day_types"]["holiday"]["lines"] = '{"service_lines": ["sunday"]}'
+    factory = Factory()
+    outcome, result = run_calendar(factory, s, Reporter(), NETWORK)
+    assert outcome == "done"
+    # The run's lines, then the Sunday lines once for Sunday and the holiday.
+    assert factory.lines == [None, '{"service_lines": ["sunday"]}']
+    assert len(factory.kernels[0].periods) == 1
+    assert len(factory.kernels[1].periods) == 1
+    # The lines stay out of the result.
+    assert "lines" not in result["day_types"]["sunday"]

@@ -234,7 +234,7 @@ export const editorsFa = {
   "rail.line.peakHeadway": "سرفاصلهٔ اوج",
   "rail.line.everyOffpeak": "هر، در غیر اوج",
   "rail.line.offpeakHeadway": "سرفاصلهٔ غیر اوج",
-  "rail.line.peaks": "ساعات اوج 07:00 تا 09:00 و 16:00 تا 19:00 است.",
+  "rail.line.peaks": "ساعات اوج {peaks} است.",
   "rail.line.delete": "حذف سرویس",
   "rail.line.needsStops": "دست‌کم دو ایستگاه لازم است.",
   "rail.line.needsTrain": "یک قطار انتخاب کنید.",

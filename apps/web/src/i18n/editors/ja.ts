@@ -234,7 +234,7 @@ export const editorsJa = {
   "rail.line.peakHeadway": "ピーク時の運行間隔",
   "rail.line.everyOffpeak": "その他の時間の間隔",
   "rail.line.offpeakHeadway": "その他の時間の運行間隔",
-  "rail.line.peaks": "ピーク時は 07:00–09:00 と 16:00–19:00。",
+  "rail.line.peaks": "ピーク時は {peaks}。",
   "rail.line.delete": "系統を削除",
   "rail.line.needsStops": "停車駅が2つ以上必要です。",
   "rail.line.needsTrain": "車両を選んでください。",

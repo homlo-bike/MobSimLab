@@ -234,7 +234,7 @@ export const editorsIg = {
   "rail.line.peakHeadway": "Oghere oge ọgbaghara",
   "rail.line.everyOffpeak": "Kwa, n'oge ọzọ",
   "rail.line.offpeakHeadway": "Oghere oge ọzọ",
-  "rail.line.peaks": "Oge ọgbaghara 07:00–09:00 na 16:00–19:00.",
+  "rail.line.peaks": "Oge ọgbaghara {peaks}.",
   "rail.line.delete": "Hichapụ ahịrị",
   "rail.line.needsStops": "Ọ chọrọ opekata mpe ebe nkwụsị abụọ.",
   "rail.line.needsTrain": "Họrọ ụgbọ oloko.",

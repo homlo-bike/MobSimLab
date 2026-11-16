@@ -188,7 +188,10 @@ def process(
         elif kind == "calendar":
             # A project without rail service lines has no network: only the expansion runs.
             outcome, result = run_calendar(
-                (lambda net: loader(net, lines)) if network else None, settings, reporter, network or None
+                (lambda net, own=None: loader(net, own or lines)) if network else None,
+                settings,
+                reporter,
+                network or None,
             )
         elif kind == "sweep":
             outcome, result = run_sweep(loader(network, lines), settings, reporter)
