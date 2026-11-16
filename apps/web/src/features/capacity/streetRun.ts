@@ -10,7 +10,7 @@
  * project's `street.mixed_traffic_delay_share` and `street.bus_lane_delay_share`) is scaled by a factor drawn
  * between the assumption's low and high ends (triangular, most likely the central value).
  */
-import { DEFAULT_SERVICE_DAY, servicePeriods, type ServiceDay } from "../journey-planner/network";
+import { projectServiceDay, servicePeriods, type ServiceDay } from "../journey-planner/network";
 import type { SavedStreetLine } from "../street-lines/saved";
 
 /** Settings of the street run (the capacity run's names, so one settings panel serves both). */
@@ -155,7 +155,7 @@ export function departures(
   line: SavedStreetLine,
   fromS: number,
   toS: number,
-  day: ServiceDay = DEFAULT_SERVICE_DAY,
+  day: ServiceDay = projectServiceDay(),
 ): { at: number; headway: number }[] {
   const off = Math.max(1, Math.round(line.timing.headwayMin * 60));
   const peak = Math.max(60, Math.round(off / 2));

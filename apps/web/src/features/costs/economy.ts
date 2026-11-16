@@ -15,6 +15,8 @@ export interface WbCountry {
   iso3: string;
   iso2: string;
   name: string;
+  /** World Bank income group (HIC, UMC, LMC, LIC), or null when unclassified; absent from older answers. */
+  income?: string | null;
 }
 
 export interface CountryEconomy {

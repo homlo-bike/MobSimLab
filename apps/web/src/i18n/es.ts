@@ -5,6 +5,8 @@ import { cargoBikeEs } from "./cargo-bike/es";
 import { commentsEs } from "./comments/es";
 import { depotsEs } from "./depots/es";
 import { tablesEs } from "./tables/es";
+import { fleetEs } from "./fleet/es";
+import { timetablesEs } from "./timetables/es";
 import { mslabEs } from "./mslab/es";
 import { pluginCodeEs } from "./plugin-code/es";
 import { populationEs } from "./population/es";
@@ -355,6 +357,7 @@ export const es: Messages = {
   "prefs.group.cost": "Costes",
   "prefs.group.benefits": "Beneficios",
   "prefs.group.fares": "Tarifas",
+  "prefs.group.appraisal": "Evaluación",
   "prefs.group.noise": "Ruido",
   "prefs.traction.battery": "batería",
   "prefs.traction.diesel": "diésel",
@@ -502,6 +505,8 @@ export const es: Messages = {
   ...cargoBikeEs,
   ...depotsEs,
   ...tablesEs,
+  ...fleetEs,
+  ...timetablesEs,
   ...commentsEs,
   ...mslabEs,
   ...pluginCodeEs,

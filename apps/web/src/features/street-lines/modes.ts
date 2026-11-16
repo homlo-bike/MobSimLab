@@ -1,4 +1,5 @@
 import type { MessageKey } from "../../i18n/messages";
+import type { DayServices } from "../timetables/dayTypes";
 import type { Mode } from "./types";
 
 /** Display settings per street mode (colours as in the line and track drawing mockup). */
@@ -22,6 +23,8 @@ export interface Timing {
   /** First and last departure, minutes after midnight; the last may pass midnight (24:30 is 1470). */
   firstMin: number;
   lastMin: number;
+  /** Its own first and last departure and headways on Saturdays, Sundays and holidays; absent: as on a weekday. */
+  days?: DayServices;
 }
 
 export const DEFAULT_TIMING: Timing = {

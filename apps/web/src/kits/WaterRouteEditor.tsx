@@ -16,11 +16,12 @@ import {
   setKitColor,
   stationElement,
 } from "./mapLayers";
+import type { SavedPluginLine } from "./saved";
 import type { Kits, KitsLoader, LonLat, Pier, SpeedZone, WaterCall, WaterView } from "./types";
 
 const PREFIX = "water";
 
-/** What the planner drew, kept on this device per project. */
+/** What the planner drew, saved with the project (on this device for an editor without `onSave`). */
 export interface WaterDoc {
   name: string;
   mode: string;
@@ -42,9 +43,15 @@ interface Props {
   panel?: HTMLElement | null;
   /** The plugin tool (water route kit) with the modes it draws. */
   tool: PluginTool;
+  /** Storage key of the drawing on this device: where it is kept without `onSave`, and read once when the
+   * project has none yet (drawings made before they were saved with the project). */
   storageKey: string;
   loadKits?: KitsLoader;
   onLineChange?: (line: PluginLineInput | null) => void;
+  /** The drawing saved with the project, if any. */
+  initial?: Partial<WaterDoc> | null;
+  /** Told about the drawing, the line and its noise shape after every change, to save with the project. */
+  onSave?: (saved: SavedPluginLine) => void;
 }
 
 function emptyDoc(tool: PluginTool): WaterDoc {
@@ -78,8 +85,8 @@ export function removePier(doc: WaterDoc, i: number): WaterDoc {
  * Purpose: the water route kit's editor (ADR-0036 §6, ADR-0037 §3): click piers in calling order, add via
  * points to keep a leg on the water, draw speed zones; the panel sets the vessel type, headway, berths and
  * gangways, and shows running time, vessels, capacity, the berth check and the other live checks.
- * Side effects: adds layers, markers and a click handler to the map while mounted; stores the drawing in
- * this device's storage under `storageKey`.
+ * Side effects: adds layers, markers and a click handler to the map while mounted; hands the drawing to
+ * `onSave`, or without it stores it in this device's storage under `storageKey`.
  */
 export function WaterRouteEditor({
   map,
@@ -88,11 +95,15 @@ export function WaterRouteEditor({
   storageKey,
   loadKits: load = loadKits,
   onLineChange,
+  initial = null,
+  onSave,
 }: Props) {
   const { t, tn } = useI18n();
   const [kits, setKits] = useState<Kits | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [doc, setDoc] = useState<WaterDoc>(() => loadLocal(storageKey, emptyDoc(tool)));
+  const [doc, setDoc] = useState<WaterDoc>(() =>
+    initial ? { ...emptyDoc(tool), ...initial } : loadLocal(storageKey, emptyDoc(tool)),
+  );
   const [mode, setMode] = useState<Tool>("pier");
   const [leg, setLeg] = useState<number | null>(null);
   const [draft, setDraft] = useState<LonLat[]>([]);
@@ -107,7 +118,10 @@ export function WaterRouteEditor({
       alive = false;
     };
   }, [load]);
-  useEffect(() => saveLocal(storageKey, doc), [storageKey, doc]);
+  const saving = !!onSave;
+  useEffect(() => {
+    if (!saving) saveLocal(storageKey, doc);
+  }, [storageKey, doc, saving]);
 
   const found = findMode(doc.mode) ?? findMode(tool.modes[0] ?? "");
   const color = found?.mode.colour ?? "#0e7490";
@@ -139,27 +153,70 @@ export function WaterRouteEditor({
 
   const changed = useRef(onLineChange);
   changed.current = onLineChange;
+  const save = useRef(onSave);
+  save.current = onSave;
   useEffect(() => {
-    if (!view || view.directions.length < 2) return changed.current?.(null);
+    // Until the kit is loaded there is nothing new to say about the line.
+    if (!view) return;
     const order = doc.calls.map((c) => c.pier);
-    const stops = order.map((p) => ({
-      name: doc.piers[p]?.name || tNow("ferry.pier", { n: p + 1 }),
-      lonlat: doc.piers[p]!.lonlat,
-    }));
     const n = order.length;
-    // Stops are the calls in order; the backward direction visits them in reverse.
-    const fwd = view.directions[0]!.map((s, k) => ({ stop: k, run_s: s.run_s, dwell_s: s.dwell_s }));
-    const bwd = view.directions[1]!.map((s, k) => ({ stop: n - 1 - k, run_s: s.run_s, dwell_s: s.dwell_s }));
-    changed.current?.({
-      id: tool.id,
-      name: doc.name,
-      mode: doc.mode,
-      color,
-      stops,
-      directions: [fwd, bwd],
-      headwayS: doc.headwayMin * 60,
+    let line: PluginLineInput | null = null;
+    if (view.directions.length >= 2) {
+      const stops = order.map((p) => ({
+        name: doc.piers[p]?.name || tNow("ferry.pier", { n: p + 1 }),
+        lonlat: doc.piers[p]!.lonlat,
+      }));
+      // Stops are the calls in order; the backward direction visits them in reverse.
+      const fwd = view.directions[0]!.map((s, k) => ({ stop: k, run_s: s.run_s, dwell_s: s.dwell_s }));
+      const bwd = view.directions[1]!.map((s, k) => ({
+        stop: n - 1 - k,
+        run_s: s.run_s,
+        dwell_s: s.dwell_s,
+      }));
+      line = {
+        id: tool.id,
+        name: doc.name,
+        mode: doc.mode,
+        color,
+        stops,
+        directions: [fwd, bwd],
+        headwayS: doc.headwayMin * 60,
+      };
+    }
+    changed.current?.(line);
+    // Time a vessel lies at each pier per round trip: the dwell of each call both ways, the layover at the ends.
+    const docked = doc.piers.map(() => 0);
+    const at = (k: number, s: number) => {
+      const p = order[k];
+      if (p !== undefined && p < docked.length) docked[p]! += s;
+    };
+    if (view.directions.length >= 2 && n >= 2) {
+      view.directions[0]!.forEach((s, k) => at(k, s.dwell_s));
+      view.directions[1]!.forEach((s, k) => at(n - 1 - k, s.dwell_s));
+      at(0, view.layover_first_s);
+      at(n - 1, view.layover_last_s);
+    }
+    save.current?.({
+      kit: "water-route",
+      doc,
+      line,
+      noise:
+        view.legs.length && doc.headwayMin > 0
+          ? {
+              kit: "water-route",
+              mode: doc.mode,
+              vessel: doc.vessel,
+              headway_s: doc.headwayMin * 60,
+              legs: view.legs.map((l) => ({ path: l.path, length_m: l.length_m, time_s: l.time_s })),
+              berths: doc.piers.map((p, i) => ({
+                lonlat: p.lonlat,
+                name: p.name || tNow("ferry.pier", { n: i + 1 }),
+                docked_s: docked[i]!,
+              })),
+            }
+          : null,
     });
-  }, [view, doc.name, doc.mode, doc.calls, doc.piers, doc.headwayMin, color, tool.id]);
+  }, [view, doc, color, tool.id]);
 
   useEffect(() => {
     if (!map) return;

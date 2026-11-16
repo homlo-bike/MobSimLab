@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import { CommentBadge, ObjectComments } from "../comments/Comments";
 import { type Translate, useI18n } from "../../i18n/i18n";
 import { fmtM, fmtTime } from "./modes";
+import { DayTypeChoice } from "../timetables/DayTypeChoice";
+import { type DayService, editDay, hasOwnDay, railWeekday, shownDay, withDay } from "../timetables/dayTypes";
+import { type DayTypeId, serviceDayFor, type ServiceCalendar } from "../../workspace/calendar";
 import { Num, Row, Section } from "./panelControls";
 import {
   hhmm,
@@ -31,6 +34,8 @@ import type { CatalogueTrain, LonLat, Network, RailView, ServiceLine, ServicePub
 /** The last publication, and whether the drawing changed since. */
 export interface Publication {
   result: ServicePublication | null;
+  /** The publication of every day type with lines (weekday is `result`). */
+  byDay?: Partial<Record<DayTypeId, ServicePublication>>;
   error: string | null;
   stale: boolean;
 }
@@ -48,7 +53,16 @@ interface Props {
   show: (at: LonLat | null, ref: number | null) => void;
   /** The project's design rules (Project preferences) as `<mode>.<field>`; the library's when absent. */
   designValues?: Readonly<Record<string, number>> | null;
+  /** The project calendar (peak windows of each day type); the default calendar when absent. */
+  calendar?: ServiceCalendar;
 }
+
+/** The default calendar (its day types' usual peaks). */
+const NO_CALENDAR: ServiceCalendar = {};
+
+/** Purpose: a time of day from seconds after midnight, such as 07:00. */
+const clock = (s: number) =>
+  `${String(Math.floor(s / 3600)).padStart(2, "0")}:${String(Math.round((s % 3600) / 60)).padStart(2, "0")}`;
 
 const field = "rounded border border-slate-300 bg-slate-50 px-2 py-1";
 
@@ -77,6 +91,7 @@ export function ServiceLinesPanel({
   newLine,
   show,
   designValues = null,
+  calendar = NO_CALENDAR,
 }: Props) {
   const { t, tn } = useI18n();
   const lines = doc.lines ?? [];
@@ -143,8 +158,8 @@ export function ServiceLinesPanel({
                   setPicking={(on) => setPicking(on ? l.id : null)}
                   show={show}
                   designValues={designValues}
-                  report={publication?.stale ? null : r}
-                  published={publication?.stale ? null : (publication?.result ?? null)}
+                  publication={publication?.stale ? null : publication}
+                  calendar={calendar}
                 />
               )}
               {open === l.id && (
@@ -213,8 +228,8 @@ function LineEditor({
   setPicking,
   show,
   designValues,
-  report,
-  published,
+  publication,
+  calendar,
 }: {
   doc: Network;
   view: RailView;
@@ -225,9 +240,9 @@ function LineEditor({
   setPicking: (on: boolean) => void;
   show: (at: LonLat | null, ref: number | null) => void;
   designValues: Readonly<Record<string, number>> | null;
-  report: ServicePublication["lines"][number] | null;
-  /** The publication the report comes from, for the time-distance graph. */
-  published: ServicePublication | null;
+  /** The last publication (null while stale): the report and graph show the chosen day type's. */
+  publication: Publication | null;
+  calendar: ServiceCalendar;
 }) {
   const { t, tn } = useI18n();
   const [graph, setGraph] = useState(false);
@@ -238,6 +253,26 @@ function LineEditor({
   const name = (id: number) => doc.stations.find((s) => s.id === id)?.name ?? t("rail.stationN", { id });
   const lonlat = (id: number) => view.stations.find((s) => s.id === id)?.lonlat ?? null;
   const length = train ? train.length_m * l.units : 0;
+  // The day type whose times and headways the fields show and change.
+  const [day, setDay] = useState<DayTypeId>("weekday");
+  const shown = shownDay(railWeekday(l), l.days, day);
+  const published = (day === "weekday" ? publication?.result : publication?.byDay?.[day]) ?? null;
+  const report = published?.lines.find((r) => r.id === l.id) ?? null;
+  const peaks = serviceDayFor(calendar, day)
+    .peaks.map(([a, b]) => `${clock(a)}–${clock(b)}`)
+    .join(", ");
+  const setDayService = (patch: Partial<DayService>) =>
+    set((x) => {
+      const next = editDay(railWeekday(x), x.days, day, patch);
+      return {
+        ...x,
+        first_min: next.weekday.firstMin,
+        last_min: next.weekday.lastMin,
+        peak_headway_min: next.weekday.peakHeadwayMin,
+        offpeak_headway_min: next.weekday.offPeakHeadwayMin,
+        days: next.days,
+      };
+    });
 
   return (
     <div className="flex flex-col gap-2 border-t border-slate-200 p-2">
@@ -353,18 +388,26 @@ function LineEditor({
         />
       )}
 
+      <DayTypeChoice
+        day={day}
+        onDay={setDay}
+        own={hasOwnDay(l.days, day)}
+        onOwn={(own) =>
+          day !== "weekday" && set((x) => ({ ...x, days: withDay(x.days, day, own ? shown : null) }))
+        }
+      />
       <Row label={t("rail.line.first")}>
         <TimeInput
           label={t("rail.line.first")}
-          value={l.first_min}
-          onChange={(v) => set((x) => ({ ...x, first_min: v }))}
+          value={shown.firstMin}
+          onChange={(v) => setDayService({ firstMin: v })}
         />
       </Row>
       <Row label={t("rail.line.last")}>
         <TimeInput
           label={t("rail.line.last")}
-          value={l.last_min}
-          onChange={(v) => set((x) => ({ ...x, last_min: v }))}
+          value={shown.lastMin}
+          onChange={(v) => setDayService({ lastMin: v })}
         />
       </Row>
       <Row label={t("rail.line.everyPeaks")}>
@@ -373,8 +416,8 @@ function LineEditor({
           unit="min"
           min={1}
           step={0.5}
-          value={l.peak_headway_min}
-          onChange={(v) => set((x) => ({ ...x, peak_headway_min: v }))}
+          value={shown.peakHeadwayMin}
+          onChange={(v) => setDayService({ peakHeadwayMin: v })}
         />
       </Row>
       <Row label={t("rail.line.everyOffpeak")}>
@@ -383,11 +426,11 @@ function LineEditor({
           unit="min"
           min={1}
           step={0.5}
-          value={l.offpeak_headway_min}
-          onChange={(v) => set((x) => ({ ...x, offpeak_headway_min: v }))}
+          value={shown.offPeakHeadwayMin}
+          onChange={(v) => setDayService({ offPeakHeadwayMin: v })}
         />
       </Row>
-      <p className="text-xs text-slate-500">{t("rail.line.peaks")}</p>
+      <p className="text-xs text-slate-500">{peaks && t("rail.line.peaks", { peaks })}</p>
 
       {report && (
         <div className="rounded bg-slate-100 p-2 text-xs" data-testid="line-report">

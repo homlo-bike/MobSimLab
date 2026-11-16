@@ -512,7 +512,10 @@ export function ShareDialog({
 }
 
 /** Delete confirmation (mockup "Delete confirmation"): offers archive instead, and needs the name typed. */
-/** Save a project as a `.mslab` file (ADR-0021): with or without its saved simulation runs. */
+/**
+ * Save a project as a `.mslab` file (ADR-0021): with or without its saved simulation runs, and with or without
+ * the map data of its area for the static viewer.
+ */
 export function SaveMslabDialog({
   api,
   project,
@@ -524,6 +527,7 @@ export function SaveMslabDialog({
 }) {
   const { t } = useI18n();
   const [runs, setRuns] = useState(false);
+  const [map, setMap] = useState(false);
   return (
     <Dialog
       title={t("menu.saveMslab")}
@@ -534,7 +538,7 @@ export function SaveMslabDialog({
           <button type="button" className="btn" onClick={onClose}>
             {t("common.cancel")}
           </button>
-          <a className="btn btn-pri" href={api.mslabUrl(project.id, runs)} download onClick={onClose}>
+          <a className="btn btn-pri" href={api.mslabUrl(project.id, runs, map)} download onClick={onClose}>
             {t("mslab.save")}
           </a>
         </>
@@ -550,6 +554,10 @@ export function SaveMslabDialog({
           onChange={(e) => setRuns(e.target.checked)}
         />
         <span>{t("mslab.runs")}</span>
+      </label>
+      <label className="mt-3 flex items-start gap-2 text-sm">
+        <input type="checkbox" className="mt-0.5" checked={map} onChange={(e) => setMap(e.target.checked)} />
+        <span>{t("mslab.map")}</span>
       </label>
     </Dialog>
   );

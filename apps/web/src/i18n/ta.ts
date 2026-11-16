@@ -5,6 +5,8 @@ import { cargoBikeTa } from "./cargo-bike/ta";
 import { commentsTa } from "./comments/ta";
 import { depotsTa } from "./depots/ta";
 import { tablesTa } from "./tables/ta";
+import { fleetTa } from "./fleet/ta";
+import { timetablesTa } from "./timetables/ta";
 import { mslabTa } from "./mslab/ta";
 import { pluginCodeTa } from "./plugin-code/ta";
 import { populationTa } from "./population/ta";
@@ -359,6 +361,7 @@ export const ta: Messages = {
   "prefs.group.cost": "செலவுகள்",
   "prefs.group.benefits": "பயன்கள்",
   "prefs.group.fares": "கட்டணங்கள்",
+  "prefs.group.appraisal": "மதிப்பீடு",
   "prefs.group.noise": "இரைச்சல்",
   "prefs.traction.battery": "மின்கலம்",
   "prefs.traction.diesel": "டீசல்",
@@ -507,6 +510,8 @@ export const ta: Messages = {
   ...cargoBikeTa,
   ...depotsTa,
   ...tablesTa,
+  ...fleetTa,
+  ...timetablesTa,
   ...commentsTa,
   ...mslabTa,
   ...pluginCodeTa,

@@ -611,9 +611,23 @@ export function checkPlugin(
       else errors.push(`${pid}: ${item.file}: every parameter must be a mapping`);
     }
   const used = new Set<string>();
-  const modeIds = new Set([...CORE.coreModes, ...modes.map((x) => x.id)]);
+  // Values may also name the modes and contexts of the bundled plugins (the noise plugin's sound power per
+  // ferry vessel type), as in tools/plugins/check.py.
+  const bundledOthers = BUNDLED.filter((x) => x.id !== pid);
+  const otherContexts = new Map<string, Set<string>>();
+  for (const x of bundledOthers)
+    for (const k of x.contexts ?? []) {
+      const set = otherContexts.get(k.key) ?? new Set<string>();
+      for (const o of k.options) set.add(o.id);
+      otherContexts.set(k.key, set);
+    }
+  const modeIds = new Set([
+    ...CORE.coreModes,
+    ...modes.map((x) => x.id),
+    ...bundledOthers.flatMap((x) => x.modes.map((md) => md.id)),
+  ]);
   errors.push(...validateAssumptions(sources, params, modeIds, used).map((e) => `${pid}: ${e}`));
-  const allowed = new Set(["mode", "traction", ...contexts.keys()]);
+  const allowed = new Set(["mode", "traction", ...contexts.keys(), ...otherContexts.keys()]);
   for (const p of params) {
     if (CORE.coreParameterKeys.includes(p.key ?? "")) errors.push(`${pid}: ${p.key} is a core parameter`);
     const owner = rivals.find((o) => o.parameters.includes(p.key ?? ""));
@@ -625,6 +639,10 @@ export function checkPlugin(
           const opts = new Set(contexts.get(k)!.options.map((o) => o.id));
           for (const o of asList(val))
             if (!opts.has(o as string))
+              errors.push(`${pid}: ${p.key}: ${String(o)} is not an option of ${k}`);
+        } else if (otherContexts.has(k)) {
+          for (const o of asList(val))
+            if (!otherContexts.get(k)!.has(o as string))
               errors.push(`${pid}: ${p.key}: ${String(o)} is not an option of ${k}`);
         }
       }

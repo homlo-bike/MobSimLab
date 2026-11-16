@@ -1,3 +1,4 @@
+import type { ServiceCalendar } from "../../workspace/calendar";
 import type { Selection } from "./editorState";
 import type { Publication } from "./ServiceLinesPanel";
 import type { IssueView, Level, LonLat, Network, Power, RailMode, RailView, Track, TrackUse } from "./types";
@@ -78,5 +79,7 @@ export interface RailPanelProps {
     setPicking: (id: string | null) => void;
     /** Start a new line and pick its stations on the map. */
     newLine: () => void;
+    /** The project calendar (peak windows of each day type); the default calendar when absent. */
+    calendar?: ServiceCalendar;
   };
 }

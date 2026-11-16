@@ -254,7 +254,7 @@ export const editorsNl = {
   "rail.line.peakHeadway": "Interval in de spits",
   "rail.line.everyOffpeak": "Frequentie buiten de spits",
   "rail.line.offpeakHeadway": "Interval buiten de spits",
-  "rail.line.peaks": "Spits 07:00–09:00 en 16:00–19:00.",
+  "rail.line.peaks": "Spits {peaks}.",
   "rail.line.delete": "Lijn verwijderen",
   "rail.line.needsStops": "Heeft minstens twee haltes nodig.",
   "rail.line.needsTrain": "Kies een trein.",

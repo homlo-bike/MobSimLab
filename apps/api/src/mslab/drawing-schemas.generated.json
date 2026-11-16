@@ -938,6 +938,77 @@
       "additionalProperties": {}
     }
   },
+  "plugin-lines": {
+    "schemaVersion": 1,
+    "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "https://github.com/homlo-bike/MobSimLab/blob/main/contracts/mslab/drawings/plugin-lines.schema.json",
+      "title": "Document of a \"plugin-lines\" drawing (data/plugin-lines.json, field doc)",
+      "type": "object",
+      "properties": {
+        "tools": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "maxLength": 60,
+            "pattern": "^[a-z0-9-]+$"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "kit": {
+                "type": "string",
+                "enum": [
+                  "straight-spans",
+                  "water-route"
+                ]
+              },
+              "doc": {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": {}
+              },
+              "line": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {},
+                    "additionalProperties": {}
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "noise": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {},
+                    "additionalProperties": {}
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "kit",
+              "doc",
+              "line",
+              "noise"
+            ],
+            "additionalProperties": {}
+          }
+        }
+      },
+      "required": [
+        "tools"
+      ],
+      "additionalProperties": {}
+    }
+  },
   "depots": {
     "schemaVersion": 1,
     "schema": {
@@ -1142,6 +1213,81 @@
       "additionalProperties": {}
     }
   },
+  "fleet": {
+    "schemaVersion": 1,
+    "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "https://github.com/homlo-bike/MobSimLab/blob/main/contracts/mslab/drawings/fleet.schema.json",
+      "title": "Document of a \"fleet\" drawing (data/fleet.json, field doc)",
+      "type": "object",
+      "properties": {
+        "vehicles": {
+          "maxItems": 500,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "maxLength": 80,
+                "pattern": "^own-[a-z0-9-]+$"
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "mode": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 40
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "mode"
+            ],
+            "additionalProperties": {}
+          }
+        },
+        "units": {
+          "maxItems": 5000,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 64
+              },
+              "vehicle": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              },
+              "number": {
+                "type": "string",
+                "maxLength": 40
+              }
+            },
+            "required": [
+              "id",
+              "vehicle",
+              "number"
+            ],
+            "additionalProperties": {}
+          }
+        }
+      },
+      "required": [
+        "vehicles",
+        "units"
+      ],
+      "additionalProperties": {}
+    }
+  },
   "demand": {
     "schemaVersion": 1,
     "schema": {
@@ -1336,6 +1482,60 @@
           },
           "additionalProperties": {
             "type": "number"
+          }
+        }
+      },
+      "additionalProperties": {}
+    }
+  },
+  "appraisal": {
+    "schemaVersion": 1,
+    "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "https://github.com/homlo-bike/MobSimLab/blob/main/contracts/mslab/drawings/appraisal.schema.json",
+      "title": "Document of a \"appraisal\" drawing (data/appraisal.json, field doc)",
+      "type": "object",
+      "properties": {
+        "criteria": {
+          "maxItems": 30,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "maxLength": 40
+              },
+              "name": {
+                "type": "string",
+                "maxLength": 120
+              },
+              "weight": {
+                "type": "number",
+                "minimum": 0
+              },
+              "higher": {
+                "type": "boolean"
+              },
+              "scores": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string",
+                  "maxLength": 200
+                },
+                "additionalProperties": {
+                  "type": "number"
+                }
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "weight",
+              "higher",
+              "scores"
+            ],
+            "additionalProperties": {}
           }
         }
       },

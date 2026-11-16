@@ -49,6 +49,26 @@ export interface NoiseLine {
   stops_m?: number[];
 }
 
+/**
+ * A fixed source (Rust `noise::PointSourceInput`): a cable car tower or station, a ferry at a pier, or a stretch
+ * of a ferry route with the vessels' time there spread over the hour.
+ */
+export interface NoisePointSource {
+  id: string;
+  label?: string;
+  /** Position, longitude and latitude. */
+  p: LonLat;
+  height_m: number;
+  /** Noise parameter with the height, m, which then replaces `height_m`. */
+  height_key?: string;
+  /** Noise parameter with the sound power while operating, dB(A). */
+  lw_key: string;
+  /** Contexts to look the parameter up in, most specific first (`cable_car/3s`, `cable_car`). */
+  context: string[];
+  /** Share of each period it operates, or the mean number operating at once. */
+  active: Flows;
+}
+
 /** An OSM building footprint (API building tiles); the engine fills a missing height from storeys or a default. */
 export interface NoiseBuilding {
   id: string;
@@ -90,6 +110,8 @@ export interface NoisePopulation {
 
 export interface NoiseInput {
   lines: NoiseLine[];
+  /** Cable car towers and stations, ferry routes and piers. */
+  point_sources?: NoisePointSource[];
   grid?: boolean;
   /** How far the map reaches from the lines, m; the editors leave it to the band edges. */
   grid_reach_m?: number;

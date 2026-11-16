@@ -62,6 +62,21 @@ def test_unknown_context_option_is_refused(plugins: Path):
     assert any("submarine is not an option of vessel_type" in e for e in errors)
 
 
+def test_values_for_another_plugins_vessel_type(plugins: Path):
+    # The noise plugin gives small ferries their own sound power; an option the ferry plugin lacks fails.
+    errors, _ = check.build(plugins)
+    assert errors == []
+    p = plugins / "noise" / "assumptions" / "parameters.yaml"
+    p.write_text(
+        p.read_text(encoding="utf-8").replace(
+            "vessel_type: [monohull, catamaran, hydrofoil]", "vessel_type: [monohull, submarine]"
+        ),
+        encoding="utf-8",
+    )
+    errors, _ = check.build(plugins)
+    assert any("submarine is not an option of vessel_type" in e for e in errors)
+
+
 def test_installed_plugins_bring_components(plugins: Path):
     def f(m):
         m["bundled"] = False

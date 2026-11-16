@@ -5,6 +5,8 @@ import { cargoBikeId } from "./cargo-bike/id";
 import { commentsId } from "./comments/id";
 import { depotsId } from "./depots/id";
 import { tablesId } from "./tables/id";
+import { fleetId } from "./fleet/id";
+import { timetablesId } from "./timetables/id";
 import { mslabId } from "./mslab/id";
 import { pluginCodeId } from "./plugin-code/id";
 import { populationId } from "./population/id";
@@ -356,6 +358,7 @@ export const id: Messages = {
   "prefs.group.cost": "Biaya",
   "prefs.group.benefits": "Manfaat",
   "prefs.group.fares": "Tarif",
+  "prefs.group.appraisal": "Penilaian",
   "prefs.group.noise": "Kebisingan",
   "prefs.traction.battery": "baterai",
   "prefs.traction.diesel": "diesel",
@@ -500,6 +503,8 @@ export const id: Messages = {
   ...cargoBikeId,
   ...depotsId,
   ...tablesId,
+  ...fleetId,
+  ...timetablesId,
   ...commentsId,
   ...mslabId,
   ...pluginCodeId,

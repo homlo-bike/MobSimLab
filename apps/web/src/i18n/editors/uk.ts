@@ -292,7 +292,7 @@ export const editorsUk = {
   "rail.line.peakHeadway": "Інтервал у пік",
   "rail.line.everyOffpeak": "Кожні, поза піком",
   "rail.line.offpeakHeadway": "Інтервал поза піком",
-  "rail.line.peaks": "Години пік: 07:00–09:00 і 16:00–19:00.",
+  "rail.line.peaks": "Години пік: {peaks}.",
   "rail.line.delete": "Видалити маршрут",
   "rail.line.needsStops": "Потрібно щонайменше дві зупинки.",
   "rail.line.needsTrain": "Виберіть поїзд.",

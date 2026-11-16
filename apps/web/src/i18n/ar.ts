@@ -5,6 +5,8 @@ import { cargoBikeAr } from "./cargo-bike/ar";
 import { commentsAr } from "./comments/ar";
 import { depotsAr } from "./depots/ar";
 import { tablesAr } from "./tables/ar";
+import { fleetAr } from "./fleet/ar";
+import { timetablesAr } from "./timetables/ar";
 import { mslabAr } from "./mslab/ar";
 import { pluginCodeAr } from "./plugin-code/ar";
 import { populationAr } from "./population/ar";
@@ -344,6 +346,7 @@ export const ar: Messages = {
   "prefs.group.cost": "التكاليف",
   "prefs.group.benefits": "المنافع",
   "prefs.group.fares": "الأجور",
+  "prefs.group.appraisal": "التقييم الاقتصادي",
   "prefs.group.noise": "الضوضاء",
   "prefs.traction.battery": "بطارية",
   "prefs.traction.diesel": "ديزل",
@@ -486,6 +489,8 @@ export const ar: Messages = {
   ...cargoBikeAr,
   ...depotsAr,
   ...tablesAr,
+  ...fleetAr,
+  ...timetablesAr,
   ...commentsAr,
   ...mslabAr,
   ...pluginCodeAr,
