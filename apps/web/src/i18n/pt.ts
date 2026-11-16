@@ -1,5 +1,7 @@
+import { roadPt } from "./road/pt";
 import { editorsPt } from "./editors/pt";
 import { cargoBikePt } from "./cargo-bike/pt";
+import { depotsPt } from "./depots/pt";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -299,8 +301,23 @@ export const pt: Messages = {
   "prefs.rulesChanged": "{count} alterados",
   "prefs.rulesLibrary": "Biblioteca de premissas: {value} {unit}",
   "prefs.rulesLibraryRange": "Biblioteca de premissas: {value} {unit} (intervalo {low}–{high})",
-  "prefs.vehicles": "Veículos usados, do catálogo de veículos",
-  "prefs.switches": "Aparelhos de mudança de via, do catálogo",
+  "prefs.vehiclesTitle": "Veículos",
+  "prefs.vehiclesIntro":
+    "Os veículos do catálogo que este projeto usa, por modo. As ferramentas de linhas de rua e ferroviárias só oferecem os marcados.",
+  "prefs.vehiclesMode": "Modo",
+  "prefs.vehiclesUsed": "{used} de {total} em uso",
+  "prefs.vehiclesAll": "Usar todos",
+  "prefs.vehiclesFacts": "{length} m · {places} lugares · {speed} km/h",
+  "prefs.vehiclesLast": "Cada modo mantém pelo menos um veículo em uso.",
+  "prefs.switchesTitle": "Aparelhos de mudança de via",
+  "prefs.switchesIntro":
+    "Os aparelhos de mudança de via e cruzamentos do catálogo que o editor ferroviário oferece, por modo ferroviário, e o aparelho com que começam os novos.",
+  "prefs.switchesTurnouts": "Aparelhos de via",
+  "prefs.switchesSlips": "Travessões em cruzamentos",
+  "prefs.switchesDefault": "Predefinido",
+  "prefs.switchesFacts": "1:{n} · R {radius} m · {speed} km/h no desvio",
+  "prefs.switchesLast":
+    "O aparelho predefinido continua em uso. Para o retirar, escolha primeiro outro predefinido.",
   "prefs.calendar": "Calendário, demanda e custos",
 
   "job.stepOf": "Passo {step} de {steps}",
@@ -372,5 +389,7 @@ export const pt: Messages = {
 
   ...editorsPt,
   ...cargoBikePt,
+  ...depotsPt,
+  ...roadPt,
   ...PLUGIN_MESSAGES.pt,
 };
