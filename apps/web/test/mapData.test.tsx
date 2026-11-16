@@ -1,0 +1,156 @@
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import type { GeodataApi, GeodataStatus, ImportRun } from "../src/features/geodata/api";
+import { MapDataPanel } from "../src/features/geodata/MapDataPanel";
+import { dataProject, setDataProject, withProject } from "../src/geodata/projectData";
+
+afterEach(() => {
+  cleanup();
+  setDataProject(null);
+});
+
+const LIMITS = {
+  overpassMaxKm2: 400,
+  osmMaxAreaKm2: 20000,
+  demMaxAreaKm2: 20000,
+  maxPbfMb: 4000,
+  demUploadMaxMb: 500,
+};
+const none = { current: null, latest: null };
+
+function run(over: Partial<ImportRun> = {}): ImportRun {
+  return {
+    id: "run-1",
+    kind: "osm",
+    method: "overpass",
+    status: "done",
+    bbox: [7, 50, 7.1, 50.1],
+    bufferKm: 2,
+    options: {},
+    progress: {},
+    stats: { rows: { osm_way_road: 12, osm_way_rail: 1, osm_building: 30, osm_pt: 4 } },
+    source: { dataTimestamp: "2026-11-15T08:00:00Z", via: "Overpass" },
+    error: null,
+    createdAt: "2026-11-16T10:00:00Z",
+    startedAt: "2026-11-16T10:00:00Z",
+    finishedAt: "2026-11-16T10:01:00Z",
+    ...over,
+  };
+}
+
+function status(over: Partial<GeodataStatus> = {}): GeodataStatus {
+  return {
+    canImport: true,
+    area: { bbox: [7, 50, 7.1, 50.1], drawnBbox: [7.02, 50.02, 7.08, 50.08], bufferKm: 2, areaKm2: 80 },
+    osm: none,
+    dem: none,
+    demUpload: none,
+    suggestedMethod: "overpass",
+    limits: LIMITS,
+    ...over,
+  };
+}
+
+function fakeApi(
+  first: GeodataStatus,
+  after: GeodataStatus = first,
+): GeodataApi & Record<string, ReturnType<typeof vi.fn>> {
+  let calls = 0;
+  return {
+    status: vi.fn(async () => (calls++ === 0 ? first : after)),
+    regions: vi.fn(async () => [
+      { id: "nordrhein-westfalen", name: "Nordrhein-Westfalen", parent: "germany", bboxKm2: 40000 },
+    ]),
+    startOsm: vi.fn(async () => run({ status: "queued" })),
+    uploadPbf: vi.fn(async () => run({ status: "queued", method: "upload" })),
+    startDem: vi.fn(async () => run({ kind: "dem", method: "copernicus", status: "queued" })),
+    cancel: vi.fn(async () => run({ status: "cancelled" })),
+  };
+}
+
+describe("map data requests", () => {
+  it("add the open project and its import to tile URLs and terrain bodies", () => {
+    expect(withProject("/api/street-network/tiles/14/1/2")).toBe("/api/street-network/tiles/14/1/2");
+    setDataProject("p-1", "imp 1");
+    expect(withProject("/api/street-network/tiles/14/1/2")).toBe(
+      "/api/street-network/tiles/14/1/2?project=p-1&osm=imp%201",
+    );
+    expect(withProject("/api/street-network/water?bbox=1,2,3,4")).toBe(
+      "/api/street-network/water?bbox=1,2,3,4&project=p-1&osm=imp%201",
+    );
+    expect(dataProject()).toBe("p-1");
+    setDataProject(null, "imp 1");
+    expect(withProject("/x")).toBe("/x");
+  });
+});
+
+describe("Map data panel", () => {
+  it("asks for a drawing when the project has no area", async () => {
+    render(<MapDataPanel api={fakeApi(status({ area: null }))} map={null} />);
+    expect(await screen.findByText(/Draw something in the project first/)).toBeTruthy();
+  });
+
+  it("shows the current import and reports it to the map tools", async () => {
+    const onOsmImport = vi.fn();
+    render(
+      <MapDataPanel
+        api={fakeApi(status({ osm: { current: run(), latest: run(), coversDrawing: false } }))}
+        map={null}
+        onOsmImport={onOsmImport}
+      />,
+    );
+    expect(await screen.findByText(/12 roads, 1 railways, 30 buildings, 4 stops/)).toBeTruthy();
+    expect(screen.getByText(/reaches outside the imported area/)).toBeTruthy();
+    expect(onOsmImport).toHaveBeenCalledWith("run-1");
+  });
+
+  it("starts an Overpass import with planned roads and follows it", async () => {
+    const api = fakeApi(
+      status(),
+      status({ osm: { current: null, latest: run({ status: "running", progress: { step: "extract" } }) } }),
+    );
+    render(<MapDataPanel api={api} map={null} />);
+    await screen.findByText(/Area: 80 km²/);
+    fireEvent.click(screen.getByLabelText(/Keep planned roads/));
+    fireEvent.click(screen.getAllByRole("button", { name: "Import" })[0]!);
+    await waitFor(() => expect(api.startOsm).toHaveBeenCalledWith({ method: "overpass", planned: true }));
+    expect(await screen.findByText("Cutting out the project area…")).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
+    await waitFor(() => expect(api.cancel).toHaveBeenCalledWith("run-1"));
+  });
+
+  it("offers Geofabrik regions for an area too large for Overpass", async () => {
+    const api = fakeApi(
+      status({
+        area: { bbox: [6, 50, 8, 51], drawnBbox: [6, 50, 8, 51], bufferKm: 2, areaKm2: 15000 },
+        suggestedMethod: "geofabrik",
+      }),
+    );
+    render(<MapDataPanel api={api} map={null} />);
+    expect(((await screen.findByRole("option", { name: /Overpass/ })) as HTMLOptionElement).disabled).toBe(
+      true,
+    );
+    expect(await screen.findByRole("option", { name: /Nordrhein-Westfalen/ })).toBeTruthy();
+    fireEvent.click(screen.getAllByRole("button", { name: "Import" })[0]!);
+    await waitFor(() =>
+      expect(api.startOsm).toHaveBeenCalledWith({
+        method: "geofabrik",
+        region: "nordrhein-westfalen",
+        planned: false,
+      }),
+    );
+  });
+
+  it("starts the elevation import and hides imports from viewers", async () => {
+    const api = fakeApi(status());
+    render(<MapDataPanel api={api} map={null} />);
+    await screen.findByText(/Area: 80 km²/);
+    const buttons = screen.getAllByRole("button", { name: "Import" });
+    fireEvent.click(buttons[buttons.length - 1]!);
+    await waitFor(() => expect(api.startDem).toHaveBeenCalled());
+    cleanup();
+    render(<MapDataPanel api={fakeApi(status({ canImport: false }))} map={null} />);
+    expect(await screen.findByText("Owners and Editors can import data.")).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Import" })).toBeNull();
+  });
+});
