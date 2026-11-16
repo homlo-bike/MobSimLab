@@ -877,6 +877,14 @@ describe("Railway editor", () => {
     fireEvent.change(screen.getByLabelText("Units coupled"), { target: { value: "2" } });
     expect(screen.getByTestId("train-length").textContent).toContain(fmtM(len * 2));
     fireEvent.change(screen.getByLabelText("Units coupled"), { target: { value: "1" } });
+    // Platform access: each stop is judged against the TSI PRM step and gap limits.
+    const access = screen.getByTestId("platform-access");
+    expect(access.textContent).toMatch(/Platform access/);
+    expect(access.textContent).toMatch(/(Level access|Step access|Boarding aid needed|Train wider)/);
+    expect(access.textContent).toMatch(/Riverside/);
+    expect(access.textContent).toMatch(/Northgate/);
+    expect(access.textContent).toMatch(/Gap -?\d+ mm/);
+    expect(access.textContent).toMatch(/Step [+−±]\d+ mm/);
     fireEvent.change(screen.getByLabelText("Peak headway"), { target: { value: "10" } });
     fireEvent.change(screen.getByLabelText("Off-peak headway"), { target: { value: "20" } });
 
@@ -1021,5 +1029,28 @@ describe("service lines", () => {
     expect(hhmm(24 * 60 + 30)).toBe("24:30");
     expect(parseHhmm("5:15")).toBe(315);
     expect(parseHhmm("28:00")).toBeNull();
+  });
+
+  it("gives the engine the project's dwell, layover, supplement, acceleration and braking", () => {
+    const [d] = addLine(doc(), 115);
+    const values = {
+      "mode.dwell_s": 40,
+      "mode.dwell_s.metro": 35,
+      "timetable.layover_min": 4,
+      "timetable.recovery_share": 0.07,
+      "mode.acceleration_ms2.metro": 1.0,
+      "mode.service_braking_ms2.tram": 1.2,
+    };
+    const [e] = engineLines(d, d.lines!, values);
+    // The value for the mode wins over the one for every mode; minutes become seconds.
+    expect(e!.dwell_s).toBe(35);
+    expect(e!.turnback_s).toBe(240);
+    expect(e!.supplement_share).toBe(0.07);
+    expect(e!.accel_ms2).toBe(1.0);
+    expect(e).not.toHaveProperty("decel_ms2");
+    // The line's own dwell still wins; without values nothing is added.
+    const own = updateLine(d, "line1", (l) => ({ ...l, dwell_s: 20 }));
+    expect(engineLines(own, own.lines!, values)[0]!.dwell_s).toBe(20);
+    expect(engineLines(d)[0]).not.toHaveProperty("turnback_s");
   });
 });

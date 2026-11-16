@@ -3,6 +3,7 @@ import { editorsDe } from "./editors/de";
 import { cargoBikeDe } from "./cargo-bike/de";
 import { depotsDe } from "./depots/de";
 import { geodataDe } from "./geodata/de";
+import { populationDe } from "./population/de";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -286,6 +287,10 @@ export const de: Messages = {
   "prefs.delayLane": "Auf einer markierten Bus- oder Straßenbahnspur",
   "prefs.delayDefault": "Annahmenbibliothek: {value} %",
   "prefs.delayReset": "Wert der Bibliothek verwenden",
+  "prefs.stationsTitle": "Stationen",
+  "prefs.stationsIntro":
+    "Gleichnamige Haltestellen innerhalb dieser Entfernung gelten im Liniennetzplan, in der Reiseplanung und in den Nutzen- und Fahrgasttabellen als eine Station.",
+  "prefs.libraryM": "Annahmenbibliothek: {value} m",
   "prefs.currencyTitle": "Währung",
   "prefs.currencyIntro":
     "Alle Geldbeträge des Projekts werden in dieser Währung angezeigt: Kostentabellen, Nutzen, Szenarien und die Einsparungen des Lastenrads.",
@@ -307,6 +312,33 @@ export const de: Messages = {
   "prefs.rulesChanged": "{count} geändert",
   "prefs.rulesLibrary": "Annahmenbibliothek: {value} {unit}",
   "prefs.rulesLibraryRange": "Annahmenbibliothek: {value} {unit} (Bereich {low}–{high})",
+  "prefs.paramsTitle": "Alle Parameter",
+  "prefs.paramsIntro":
+    "Jeder Wert der Annahmenbibliothek. Lege eigene Werte für alle Verkehrsmittel oder für ein Verkehrsmittel fest; ein Wert für ein Verkehrsmittel hat Vorrang vor dem für alle. Der Wert der Bibliothek steht jeweils daneben.",
+  "prefs.paramsGroup": "Gruppe",
+  "prefs.paramsMode": "Verkehrsmittel",
+  "prefs.paramsAllModes": "Alle Verkehrsmittel",
+  "prefs.paramsFromAll": "dein Wert für alle Verkehrsmittel",
+  "prefs.group.modes": "Verkehrsmittel",
+  "prefs.group.operations": "Betrieb",
+  "prefs.group.demand": "Nachfrage",
+  "prefs.group.analysis": "Analyse",
+  "prefs.group.simulation": "Simulation",
+  "prefs.group.infrastructure": "Infrastrukturstandards",
+  "prefs.group.accessibility": "Barrierefreiheit",
+  "prefs.group.depots": "Depots und Straßen",
+  "prefs.group.energy": "Energie und Klima",
+  "prefs.group.cost": "Kosten",
+  "prefs.group.benefits": "Nutzen",
+  "prefs.group.fares": "Fahrpreise",
+  "prefs.traction.battery": "Batterie",
+  "prefs.traction.diesel": "Diesel",
+  "prefs.traction.hydrogen": "Wasserstoff",
+  "prefs.traction.cng": "Erdgas (CNG)",
+  "prefs.traction.electric": "elektrisch",
+  "prefs.accessTitle": "Barrierefreiheit am Bahnsteig",
+  "prefs.accessIntro":
+    "Grenzwerte für Stufe und Spalt zwischen Bahnsteig und Zug (TSI PRM) sowie die Fußbodenhöhe für Züge ohne Angabe im Fahrzeugkatalog. Linien werden an jedem Halt daran geprüft.",
   "prefs.vehiclesTitle": "Fahrzeuge",
   "prefs.vehiclesIntro":
     "Die Katalogfahrzeuge, die dieses Projekt je Verkehrsmittel einsetzt. Linien- und Gleiseditor bieten nur die angehakten an.",
@@ -397,6 +429,7 @@ export const de: Messages = {
   ...cargoBikeDe,
   ...depotsDe,
   ...geodataDe,
+  ...populationDe,
   ...roadDe,
   ...PLUGIN_MESSAGES.de,
 };

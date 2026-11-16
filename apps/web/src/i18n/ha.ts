@@ -3,6 +3,7 @@ import { editorsHa } from "./editors/ha";
 import { cargoBikeHa } from "./cargo-bike/ha";
 import { depotsHa } from "./depots/ha";
 import { geodataHa } from "./geodata/ha";
+import { populationHa } from "./population/ha";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -280,6 +281,10 @@ export const ha: Messages = {
   "prefs.delayLane": "A cikin hanyar bas ko tram da aka zana da fenti",
   "prefs.delayDefault": "Ɗakin zato: {value} %",
   "prefs.delayReset": "Yi amfani da ƙimar ɗakin",
+  "prefs.stationsTitle": "Tashoshi",
+  "prefs.stationsIntro":
+    "Tashoshi masu suna ɗaya cikin wannan nisa ana ƙidaya su a matsayin tasha ɗaya a taswirar zane, mai tsara tafiya da teburan fa'idodi da fasinjoji.",
+  "prefs.libraryM": "Ɗakin zato: {value} m",
   "prefs.currencyTitle": "Kuɗi",
   "prefs.currencyIntro":
     "Duk kuɗin aikin ana nuna su a wannan kuɗin: teburorin kuɗaɗe, fa'idodi, yanayi da tanadin keken kaya.",
@@ -302,6 +307,33 @@ export const ha: Messages = {
   "prefs.rulesChanged": "an canza: {count}",
   "prefs.rulesLibrary": "Ɗakin zato: {value} {unit}",
   "prefs.rulesLibraryRange": "Ɗakin zato: {value} {unit} (iyaka {low}–{high})",
+  "prefs.paramsTitle": "Duk sigogi",
+  "prefs.paramsIntro":
+    "Kowace ƙima ta ɗakin zato. Saka naka don duk hanyoyi ko don hanya ɗaya; ƙimar hanya ɗaya ta fi ta duk hanyoyi. Ƙimar ɗakin tana gefe.",
+  "prefs.paramsGroup": "Rukuni",
+  "prefs.paramsMode": "Hanyar sufuri",
+  "prefs.paramsAllModes": "Duk hanyoyi",
+  "prefs.paramsFromAll": "ƙimarka don duk hanyoyi",
+  "prefs.group.modes": "Hanyoyin sufuri",
+  "prefs.group.operations": "Gudanarwa",
+  "prefs.group.demand": "Buƙata",
+  "prefs.group.analysis": "Bincike",
+  "prefs.group.simulation": "Kwaikwayo",
+  "prefs.group.infrastructure": "Ma'aunin kayayyakin more rayuwa",
+  "prefs.group.accessibility": "Samun dama",
+  "prefs.group.depots": "Gidajen ababen hawa da tituna",
+  "prefs.group.energy": "Makamashi da yanayi",
+  "prefs.group.cost": "Kuɗaɗe",
+  "prefs.group.benefits": "Fa'idodi",
+  "prefs.group.fares": "Kuɗin mota",
+  "prefs.traction.battery": "batir",
+  "prefs.traction.diesel": "dizal",
+  "prefs.traction.hydrogen": "hydrogen",
+  "prefs.traction.cng": "iskar gas (CNG)",
+  "prefs.traction.electric": "lantarki",
+  "prefs.accessTitle": "Samun damar dandamali",
+  "prefs.accessIntro":
+    "Iyakokin mataki da tazara tsakanin dandamali da jirgi (TSI PRM), da tsayin ƙasa ga jiragen da babu a kundi. Ana duba layuka a kowace tasha.",
   "prefs.vehiclesTitle": "Ababen hawa",
   "prefs.vehiclesIntro":
     "Ababen hawan kundi da wannan aikin ke amfani da su, ga kowane nau'i. Kayan aikin layukan titi da na dogo suna nuna waɗanda aka zaɓa kawai.",
@@ -390,6 +422,7 @@ export const ha: Messages = {
   ...cargoBikeHa,
   ...depotsHa,
   ...geodataHa,
+  ...populationHa,
   ...roadHa,
   ...PLUGIN_MESSAGES.ha,
 };

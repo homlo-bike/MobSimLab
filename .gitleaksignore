@@ -11,3 +11,6 @@
 # False positive: the parameter ids "energy.diesel_ttw_kg_co2e_per_l" and "energy.diesel_wtt_kg_co2e_per_l" (diesel tank-to-wheel and well-to-tank CO2e per litre) match the generic key pattern.
 fc34963b8c8a857867828be5232426bb28d88b28:plugins/energy/assumptions/parameters.yaml:generic-api-key:304
 fc34963b8c8a857867828be5232426bb28d88b28:plugins/energy/assumptions/parameters.yaml:generic-api-key:321
+# False positive: the parameter id "benefit.floor_m2_per_person" in the generated Parameters list matches the generic key pattern.
+7ebf8f275aaef40d4db2d4909018eb041c8c8ff4:apps/web/src/workspace/parameters.generated.json:generic-api-key:4311
+e1c755fdf5844c0070e32645d0920f95588ddc57:apps/web/src/workspace/parameters.generated.json:generic-api-key:4312

@@ -32,6 +32,7 @@ services:
       MOBSIMLAB_OSM_TOOL_TIMEOUT_MIN: ${MOBSIMLAB_OSM_TOOL_TIMEOUT_MIN:-120}
       MOBSIMLAB_ELEVATION_FALLBACK: ${MOBSIMLAB_ELEVATION_FALLBACK:-open-elevation}
       MOBSIMLAB_OPEN_ELEVATION_URL: ${MOBSIMLAB_OPEN_ELEVATION_URL:-https://api.open-elevation.com}
+      MOBSIMLAB_LOG_LEVEL: ${MOBSIMLAB_LOG_LEVEL:-info}
     secrets:
       - db_migrator_password
       - db_app_password

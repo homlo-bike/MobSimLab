@@ -159,7 +159,8 @@ impl Design {
         if m == self.mode {
             self.train_length
         } else {
-            (self.params_for(m).platform_length_m - 5.0).max(1.0)
+            let p = self.params_for(m);
+            (p.platform_length_m - p.stopping_tolerance_m).max(1.0)
         }
     }
     /// Purpose: whether street-level track of this alignment is embedded in the road.
@@ -437,7 +438,7 @@ pub fn build_with_choice(
     }
     let train_length = net
         .train_length_m
-        .unwrap_or(params.platform_length_m - 5.0)
+        .unwrap_or(params.platform_length_m - params.stopping_tolerance_m)
         .max(1.0);
     let mut design = Design {
         mode: net.mode,
@@ -889,13 +890,15 @@ fn validate(dz: &mut Design, draft: Option<u32>) {
     // Platforms and termini.
     for (st, doc) in dz.stations.iter().zip(&net.stations) {
         let train = dz.train_length_for(dz.station_mode(doc));
-        if doc.platform_length_m < train + 5.0 {
+        let tolerance = dz.params_for(dz.station_mode(doc)).stopping_tolerance_m;
+        if doc.platform_length_m < train + tolerance {
             iss.push(Issue::error(
                 format!(
-                    "{}: platform {} is too short for a {} train plus 5 m stopping tolerance.",
+                    "{}: platform {} is too short for a {} train plus {} stopping tolerance.",
                     doc.name,
                     fmt_m(doc.platform_length_m),
-                    fmt_m(train)
+                    fmt_m(train),
+                    fmt_m(tolerance)
                 ),
                 Some(st.centre),
                 st.id,

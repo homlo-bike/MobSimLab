@@ -440,17 +440,24 @@ export function NoiseMap({
           )}
           {exposure?.people && (
             <p className="text-xs text-slate-600">
-              {exposure.people.source === "grid" && status.people
-                ? t("noise.popGrid", {
-                    year: status.people.year,
-                    countries: status.people.countries.join(", "),
+              {exposure.people.source === "grid" && status.people && status.people.id?.startsWith("layer:")
+                ? t("noise.popLayer", {
+                    name: status.people.name,
+                    year: status.people.year ?? "–",
                     reached: peopleText(exposure.people.reached),
                     total: peopleText(exposure.people.total),
                   })
-                : t("noise.popSize", {
-                    reached: peopleText(exposure.people.reached),
-                    total: peopleText(exposure.people.total),
-                  })}
+                : exposure.people.source === "grid" && status.people
+                  ? t("noise.popGrid", {
+                      year: status.people.year ?? "",
+                      countries: status.people.countries.join(", "),
+                      reached: peopleText(exposure.people.reached),
+                      total: peopleText(exposure.people.total),
+                    })
+                  : t("noise.popSize", {
+                      reached: peopleText(exposure.people.reached),
+                      total: peopleText(exposure.people.total),
+                    })}
               {exposure.people.source === "grid" && exposure.people.unplaced >= 1
                 ? ` ${t("noise.popUnplaced", { n: peopleText(exposure.people.unplaced) })}`
                 : ""}{" "}
@@ -464,7 +471,13 @@ export function NoiseMap({
           ))}
           <p className="text-xs text-slate-500">
             {t("noise.mapNote")} {t(status.view.terrain ? "noise.onTerrain" : "noise.flat")}
-            {status.people ? ` ${t("noise.popCredit")}` : ""}
+            {status.people
+              ? ` ${
+                  status.people.id?.startsWith("layer:")
+                    ? t("noise.popLayerCredit", { name: status.people.name, licence: status.people.licence })
+                    : t("noise.popCredit")
+                }`
+              : ""}
           </p>
         </>
       )}

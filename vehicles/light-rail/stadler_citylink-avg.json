@@ -43,6 +43,16 @@
       "stadler-citylink-tram-train-das-projekt-vehicle"
     ]
   },
+  "floorHeight": {
+    "value": 550,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "albtal-verkehrs-gese-vdv-tramtrain"
+    ],
+    "rationale": "Entrance height 550 mm for the Karlsruhe / Heilbronn (AVG) variant."
+  },
   "consist": {
     "bidirectional": {
       "value": true,
