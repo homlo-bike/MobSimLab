@@ -2,7 +2,7 @@ import { Marker, type Map as MapLibreMap, type MapMouseEvent } from "maplibre-gl
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { tNow, useI18n } from "../../i18n/i18n";
-import { GtfsSection } from "../gtfs/GtfsSection";
+import { type AllDayFeed, GtfsSection } from "../gtfs/GtfsSection";
 import { feedTimetable } from "../gtfs/toLines";
 import type { GtfsEngineLoader, GtfsFeed, GtfsNetworkDoc } from "../gtfs/types";
 import { loadWasmPlanner } from "./engine";
@@ -66,6 +66,8 @@ interface Props {
   loadPlanner?: PlannerLoader;
   /** GTFS engine loader; tests inject one. */
   loadGtfs?: GtfsEngineLoader;
+  /** The project's own lines on every day type, for the GTFS download (weekday only when absent). */
+  allDayFeed?: AllDayFeed;
 }
 
 const PROFILE_START = 4 * 3600;
@@ -199,6 +201,7 @@ export function JourneyPlanner({
   projectName = "",
   loadPlanner = loadWasmPlanner,
   loadGtfs,
+  allDayFeed,
 }: Props) {
   const { t, tn } = useI18n();
   const [skipped, setSkipped] = useState<ReadonlySet<string>>(new Set());
@@ -499,6 +502,7 @@ export function JourneyPlanner({
         onToggle={(id, use) => toggle(`gtfs:${id}`, use)}
         onChange={onGtfsFeeds}
         ownLines={ownLines}
+        {...(allDayFeed ? { allDays: allDayFeed } : {})}
         projectName={projectName}
         {...(onEditGtfsRoute ? { onEditRoute: onEditGtfsRoute } : {})}
         {...(loadGtfs ? { loadEngine: loadGtfs } : {})}

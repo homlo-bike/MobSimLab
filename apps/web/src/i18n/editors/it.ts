@@ -254,7 +254,7 @@ export const editorsIt = {
   "rail.line.peakHeadway": "Cadenza nelle ore di punta",
   "rail.line.everyOffpeak": "Ogni, fuori punta",
   "rail.line.offpeakHeadway": "Cadenza fuori punta",
-  "rail.line.peaks": "Le ore di punta sono 07:00–09:00 e 16:00–19:00.",
+  "rail.line.peaks": "Le ore di punta sono {peaks}.",
   "rail.line.delete": "Elimina servizio",
   "rail.line.needsStops": "Servono almeno due fermate.",
   "rail.line.needsTrain": "Scegli un treno.",

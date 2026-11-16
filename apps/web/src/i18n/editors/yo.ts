@@ -235,7 +235,7 @@ export const editorsYo = {
   "rail.line.peakHeadway": "Àlàfo àkókò ìkọ̀lù",
   "rail.line.everyOffpeak": "Ní gbogbo, lẹ́yìn àkókò ìkọ̀lù",
   "rail.line.offpeakHeadway": "Àlàfo lẹ́yìn àkókò ìkọ̀lù",
-  "rail.line.peaks": "Àkókò ìkọ̀lù 07:00–09:00 àti 16:00–19:00.",
+  "rail.line.peaks": "Àkókò ìkọ̀lù {peaks}.",
   "rail.line.delete": "Pa ìlà rẹ́",
   "rail.line.needsStops": "Ó nílò ibùdókọ̀ méjì ó kéré tán.",
   "rail.line.needsTrain": "Yan ọkọ̀ ojú irin.",

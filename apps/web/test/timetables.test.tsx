@@ -2,6 +2,7 @@ import { cleanup, fireEvent, render, screen, within } from "@testing-library/rea
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { StreetLinesDoc } from "../src/features/street-lines/saved";
 import { allDays, TimetableTables } from "../src/features/timetables/TimetableTables";
+import { feedHolidays, projectFeed } from "../src/features/timetables/feed";
 import {
   directionGrids,
   printableTimetable,
@@ -509,5 +510,72 @@ describe("departure timetables and downloads", () => {
     expect(all.frequency_patterns.map((p) => p.pattern_id)).toContain("s0:street-7-0~sunday");
     expect(all.stops).toHaveLength(3);
     expect(all.routes).toHaveLength(1);
+  });
+
+  it("builds the project's lines of every day type for the journey planner's GTFS download", async () => {
+    const street = {
+      name: "7",
+      profile: { mode: "bus" },
+      timing: {
+        headwayMin: 6,
+        offPeakHeadwayMin: 12,
+        dwellS: 20,
+        layoverMin: 5,
+        firstMin: 300,
+        lastMin: 1380,
+        days: { sunday: { firstMin: 420, lastMin: 1320, peakHeadwayMin: 30, offPeakHeadwayMin: 30 } },
+      },
+      points: [],
+      depot: null,
+      depotStops: {},
+      view: view(),
+    } as unknown as StreetLinesDoc["lines"][number];
+    const ferry = {
+      id: "ferry",
+      name: "F1",
+      mode: "ferry",
+      color: "#0af",
+      stops: [
+        { name: "Pier", lonlat: [7, 50] as [number, number] },
+        { name: "Island", lonlat: [7.02, 50] as [number, number] },
+      ],
+      directions: [
+        [
+          { stop: 0, run_s: 0, dwell_s: 0 },
+          { stop: 1, run_s: 600, dwell_s: 0 },
+        ],
+      ],
+      headwayS: 1800,
+    };
+    const loadRail = vi.fn();
+    const all = (await projectFeed({
+      railway: null,
+      streetLines: [street],
+      pluginLines: [ferry],
+      cal: {},
+      loadRail,
+    }))!;
+    // No railway, no rail engine.
+    expect(loadRail).not.toHaveBeenCalled();
+    const ofDay = (d: string, route: string) =>
+      all.frequency_patterns.filter((p) => p.service_id === d && p.route_id === route);
+    for (const d of ["weekday", "saturday", "sunday", "holiday"]) {
+      expect(ofDay(d, "s0:street-7")).toHaveLength(2);
+      expect(ofDay(d, "plugin:ferry")).toHaveLength(1);
+    }
+    // Sunday runs the line's own times: its first departure at 07:00, Saturday as on a weekday at 05:00.
+    const first = (d: string) =>
+      Math.min(...ofDay(d, "s0:street-7").flatMap((p) => p.periods.map((x) => x.start_time)));
+    expect(first("sunday")).toBe(7 * H);
+    expect(first("saturday")).toBe(first("weekday"));
+    expect(all.frequency_patterns.map((p) => p.pattern_id)).toContain("s0:street-7-0~sunday");
+    expect(all.stops.filter((x) => x.stop_id.startsWith("plugin:ferry"))).toHaveLength(2);
+  });
+
+  it("lists the calendar's public holidays of every year the feed covers", () => {
+    const cal = { added: [{ date: "2026-12-25" }, { date: "2027-01-01" }] } as never;
+    const h = feedHolidays(cal, new Date("2026-11-16"), new Date("2027-11-16"));
+    expect(h).toContain("20261225");
+    expect(h).toContain("20270101");
   });
 });

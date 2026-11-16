@@ -255,7 +255,7 @@ export const editorsTa = {
   "rail.line.peakHeadway": "நெரிசல் நேர இடைவெளி",
   "rail.line.everyOffpeak": "ஒவ்வொரு, மற்ற நேரங்களில்",
   "rail.line.offpeakHeadway": "மற்ற நேர இடைவெளி",
-  "rail.line.peaks": "நெரிசல் நேரங்கள் 07:00–09:00 மற்றும் 16:00–19:00.",
+  "rail.line.peaks": "நெரிசல் நேரங்கள் {peaks}.",
   "rail.line.delete": "வழித்தடத்தை நீக்கு",
   "rail.line.needsStops": "குறைந்தது இரண்டு நிறுத்தங்கள் தேவை.",
   "rail.line.needsTrain": "ரயிலைத் தேர்ந்தெடுக்கவும்.",

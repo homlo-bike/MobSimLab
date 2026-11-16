@@ -254,7 +254,7 @@ export const editorsPt = {
   "rail.line.peakHeadway": "Intervalo no pico",
   "rail.line.everyOffpeak": "Intervalo fora do pico",
   "rail.line.offpeakHeadway": "Intervalo fora do pico",
-  "rail.line.peaks": "Picos 07:00–09:00 e 16:00–19:00.",
+  "rail.line.peaks": "Picos {peaks}.",
   "rail.line.delete": "Excluir linha",
   "rail.line.needsStops": "Precisa de pelo menos duas paradas.",
   "rail.line.needsTrain": "Escolha um trem.",

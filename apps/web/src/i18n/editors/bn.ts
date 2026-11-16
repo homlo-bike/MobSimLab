@@ -253,7 +253,7 @@ export const editorsBn = {
   "rail.line.peakHeadway": "ব্যস্ত সময়ের ব্যবধান",
   "rail.line.everyOffpeak": "প্রতি, অন্য সময়",
   "rail.line.offpeakHeadway": "অন্য সময়ের ব্যবধান",
-  "rail.line.peaks": "ব্যস্ত সময় 07:00–09:00 ও 16:00–19:00।",
+  "rail.line.peaks": "ব্যস্ত সময় {peaks}।",
   "rail.line.delete": "লাইন মুছুন",
   "rail.line.needsStops": "কমপক্ষে দুটি স্টপ দরকার।",
   "rail.line.needsTrain": "একটি ট্রেন বেছে নিন।",

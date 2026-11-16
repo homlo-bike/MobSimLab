@@ -4,7 +4,7 @@ import { type Translate, useI18n } from "../../i18n/i18n";
 import { fmtM, fmtTime } from "./modes";
 import { DayTypeChoice } from "../timetables/DayTypeChoice";
 import { type DayService, editDay, hasOwnDay, railWeekday, shownDay, withDay } from "../timetables/dayTypes";
-import type { DayTypeId } from "../../workspace/calendar";
+import { type DayTypeId, serviceDayFor, type ServiceCalendar } from "../../workspace/calendar";
 import { Num, Row, Section } from "./panelControls";
 import {
   hhmm,
@@ -34,6 +34,8 @@ import type { CatalogueTrain, LonLat, Network, RailView, ServiceLine, ServicePub
 /** The last publication, and whether the drawing changed since. */
 export interface Publication {
   result: ServicePublication | null;
+  /** The publication of every day type with lines (weekday is `result`). */
+  byDay?: Partial<Record<DayTypeId, ServicePublication>>;
   error: string | null;
   stale: boolean;
 }
@@ -51,7 +53,16 @@ interface Props {
   show: (at: LonLat | null, ref: number | null) => void;
   /** The project's design rules (Project preferences) as `<mode>.<field>`; the library's when absent. */
   designValues?: Readonly<Record<string, number>> | null;
+  /** The project calendar (peak windows of each day type); the default calendar when absent. */
+  calendar?: ServiceCalendar;
 }
+
+/** The default calendar (its day types' usual peaks). */
+const NO_CALENDAR: ServiceCalendar = {};
+
+/** Purpose: a time of day from seconds after midnight, such as 07:00. */
+const clock = (s: number) =>
+  `${String(Math.floor(s / 3600)).padStart(2, "0")}:${String(Math.round((s % 3600) / 60)).padStart(2, "0")}`;
 
 const field = "rounded border border-slate-300 bg-slate-50 px-2 py-1";
 
@@ -80,6 +91,7 @@ export function ServiceLinesPanel({
   newLine,
   show,
   designValues = null,
+  calendar = NO_CALENDAR,
 }: Props) {
   const { t, tn } = useI18n();
   const lines = doc.lines ?? [];
@@ -146,8 +158,8 @@ export function ServiceLinesPanel({
                   setPicking={(on) => setPicking(on ? l.id : null)}
                   show={show}
                   designValues={designValues}
-                  report={publication?.stale ? null : r}
-                  published={publication?.stale ? null : (publication?.result ?? null)}
+                  publication={publication?.stale ? null : publication}
+                  calendar={calendar}
                 />
               )}
               {open === l.id && (
@@ -216,8 +228,8 @@ function LineEditor({
   setPicking,
   show,
   designValues,
-  report,
-  published,
+  publication,
+  calendar,
 }: {
   doc: Network;
   view: RailView;
@@ -228,9 +240,9 @@ function LineEditor({
   setPicking: (on: boolean) => void;
   show: (at: LonLat | null, ref: number | null) => void;
   designValues: Readonly<Record<string, number>> | null;
-  report: ServicePublication["lines"][number] | null;
-  /** The publication the report comes from, for the time-distance graph. */
-  published: ServicePublication | null;
+  /** The last publication (null while stale): the report and graph show the chosen day type's. */
+  publication: Publication | null;
+  calendar: ServiceCalendar;
 }) {
   const { t, tn } = useI18n();
   const [graph, setGraph] = useState(false);
@@ -244,6 +256,11 @@ function LineEditor({
   // The day type whose times and headways the fields show and change.
   const [day, setDay] = useState<DayTypeId>("weekday");
   const shown = shownDay(railWeekday(l), l.days, day);
+  const published = (day === "weekday" ? publication?.result : publication?.byDay?.[day]) ?? null;
+  const report = published?.lines.find((r) => r.id === l.id) ?? null;
+  const peaks = serviceDayFor(calendar, day)
+    .peaks.map(([a, b]) => `${clock(a)}–${clock(b)}`)
+    .join(", ");
   const setDayService = (patch: Partial<DayService>) =>
     set((x) => {
       const next = editDay(railWeekday(x), x.days, day, patch);
@@ -413,7 +430,7 @@ function LineEditor({
           onChange={(v) => setDayService({ offPeakHeadwayMin: v })}
         />
       </Row>
-      <p className="text-xs text-slate-500">{t("rail.line.peaks")}</p>
+      <p className="text-xs text-slate-500">{peaks && t("rail.line.peaks", { peaks })}</p>
 
       {report && (
         <div className="rounded bg-slate-100 p-2 text-xs" data-testid="line-report">
