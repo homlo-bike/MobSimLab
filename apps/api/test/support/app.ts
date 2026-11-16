@@ -20,6 +20,7 @@ export function testConfig(over: Partial<AppConfig> = {}): AppConfig {
     db: { host: "127.0.0.1", port: 5432, name: "mobsimlab" },
     rateLimits: { authPerMinute: 1000, writesPerMinute: 1000 },
     developmentMode: false,
+    logging: { level: "info", console: false },
     secrets: { ...TEST_SECRETS },
     ...over,
   };
