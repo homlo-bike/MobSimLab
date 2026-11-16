@@ -10,9 +10,14 @@ An open-source, self-hosted platform for public transport planning, GIS analysis
 ```bash
 deploy/scripts/init-secrets          # random secrets in deploy/secrets (never committed)
 cp .env.example .env                 # set MOBSIMLAB_PUBLIC_URL and the OIDC provider
-docker compose up -d --build         # two containers: mobsimlab and postgres
+docker compose pull                  # ready-made image from ghcr.io, nothing to build
+docker compose up -d                 # two containers: mobsimlab and postgres
 open http://localhost:8080
 ```
+
+Each release publishes a ready-made image for Intel/AMD and ARM servers to `ghcr.io/homlo-bike/mobsimlab`, tagged with its version (for example `2026.11.1-alpha`) and `latest`. Compose pulls `latest` unless you pin a version with `MOBSIMLAB_VERSION` in `.env`. To update, run `docker compose pull && docker compose up -d`. To build the image yourself from this checkout instead, run `docker compose up -d --build`.
+
+Releases are made by pushing a version tag (`git tag -s v2026.11.1-alpha -m "MobSimLab 2026.11.1-alpha" && git push origin v2026.11.1-alpha`); the **Release image** workflow builds, smoke-tests and publishes the image.
 
 ### Sign-in and first setup
 
