@@ -297,7 +297,13 @@ export const zu: Messages = {
   "prefs.moreTitle": "Imithetho, izimoto nemicabango",
   "prefs.moreIntro":
     "Konke okuguquguqukayo nenani lako elincane nelinconyiwe, nezimoto iphrojekthi ezisebenzisayo.",
-  "prefs.rules": "Imithetho yokuklama ngohlobo ngalunye, encane nenconyiwe",
+  "prefs.rulesTitle": "Imithetho yokuklama ngohlobo ngalunye",
+  "prefs.rulesIntro":
+    "Amanani umhleli wesitimela ahlola ngawo imidwebo, ohlotsheni ngalunye lwesitimela. Shintsha inani lale phrojekthi, noma ugcine elomtapo wolwazi wemicabango.",
+  "prefs.rulesMode": "Uhlobo lwesitimela",
+  "prefs.rulesChanged": "okushintshiwe: {count}",
+  "prefs.rulesLibrary": "Umtapo wolwazi wemicabango: {value} {unit}",
+  "prefs.rulesLibraryRange": "Umtapo wolwazi wemicabango: {value} {unit} (ububanzi {low}–{high})",
   "prefs.vehicles": "Izimoto ezisetshenziswayo, kusuka kukhathalogi yezimoto",
   "prefs.switches": "Izishintshi zikajantshi, kusuka kukhathalogi yezishintshi",
   "prefs.calendar": "Ikhalenda, isidingo nezindleko",

@@ -114,6 +114,8 @@ interface Props {
   streetSetups?: readonly StreetSetup[];
   /** The project's delays in traffic for trams in streets (Project preferences); the library's when absent. */
   delays?: DelayShares | null;
+  /** The project's design rules per mode (Project preferences), as `<mode>.<field>`; the library's when absent. */
+  designValues?: Readonly<Record<string, number>> | null;
   /** The drawing saved with the project, or null to start a new one at the map centre. */
   initial?: Network | null;
   /** Told about the drawing after every change, so the project can save it. */
@@ -159,6 +161,7 @@ export function RailwayEditor({
   existingRailways = false,
   streetSetups = NO_SETUPS,
   delays = null,
+  designValues = null,
   initial = null,
   onDocChange,
   loadNoise = loadWasmNoise,
@@ -226,18 +229,24 @@ export function RailwayEditor({
     e.setStreetSetups(JSON.parse(setupsJson) as StreetSetup[]);
     setStreets((n) => n + 1);
   }, [ready, setupsJson]);
-  // The project's delays in traffic: a tram's running time in streets; a change rebuilds.
+  // The project's delays in traffic (a tram's running time in streets) and design rules per mode; a change rebuilds.
   const delaysJson = delays ? JSON.stringify(delays) : "";
+  const rulesJson = designValues && Object.keys(designValues).length ? JSON.stringify(designValues) : "";
+  const valuesSet = useRef(false);
   useEffect(() => {
     const e = engine.current;
-    if (!ready || !e?.setValues || !delaysJson) return;
-    const d = JSON.parse(delaysJson) as DelayShares;
+    // Nothing to set, and nothing set before to clear.
+    if (!ready || !e?.setValues || (!delaysJson && !rulesJson && !valuesSet.current)) return;
+    valuesSet.current = true;
+    const d = delaysJson ? (JSON.parse(delaysJson) as DelayShares) : null;
     e.setValues({
-      street_mixed_traffic_delay_share: d.mixed_traffic,
-      street_bus_lane_delay_share: d.bus_lane,
+      ...(d
+        ? { street_mixed_traffic_delay_share: d.mixed_traffic, street_bus_lane_delay_share: d.bus_lane }
+        : {}),
+      ...(rulesJson ? (JSON.parse(rulesJson) as Record<string, number>) : {}),
     });
     setStreets((n) => n + 1);
-  }, [ready, delaysJson]);
+  }, [ready, delaysJson, rulesJson]);
   useEffect(() => {
     if (!map || !ready) return;
     // Turning existing railways off forgets them; turning them on reloads the tiles on screen.

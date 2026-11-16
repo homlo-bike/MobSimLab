@@ -1,5 +1,6 @@
 import type { DelayShares } from "../features/street-lines/types";
 import { MIXED_DELAY, PAINTED_DELAY } from "../features/street-setup/model";
+import rulesData from "./design-rules.generated.json";
 
 /**
  * The project's preferences document (drawing kind `preferences`): assumption library values the project
@@ -51,4 +52,39 @@ export function withPref(
   if (value === null) delete values[id];
   else values[id] = value;
   return { ...(doc ?? {}), values };
+}
+
+/** One design rule of the railway design tool, with the library's values per rail mode. */
+export interface DesignRule {
+  /** Design value name in the rail engine (crates/rail-design ModeParams). */
+  field: string;
+  label: string;
+  unit: string;
+  /** Library key and [low, central, high] per rail mode. */
+  modes: Record<string, { key: string; values: [number, number, number] }>;
+}
+
+/** Design rules the project can change per rail mode (tools/design-rules/export_defaults.py). */
+export const DESIGN_RULES = (rulesData as unknown as { rules: DesignRule[] }).rules;
+
+/** Purpose: the preference id of a design rule's value for a mode, for example `mode.min_curve_radius_m.tram`. */
+export function rulePrefId(rule: DesignRule, mode: string): string | null {
+  const m = rule.modes[mode];
+  return m ? `${m.key}.${mode}` : null;
+}
+
+/**
+ * Purpose: the design values the project changes, as the rail engine takes them (`<mode>.<field>`, for
+ * example `tram.min_radius_m`). Values the project leaves alone are absent, so the library's apply.
+ */
+export function designValuesFrom(doc: PreferencesDoc | null | undefined): Record<string, number> {
+  const out: Record<string, number> = {};
+  for (const rule of DESIGN_RULES) {
+    for (const mode of Object.keys(rule.modes)) {
+      const id = rulePrefId(rule, mode);
+      const v = id ? prefValue(doc, id) : undefined;
+      if (v !== undefined && v > 0) out[`${mode}.${rule.field}`] = v;
+    }
+  }
+  return out;
 }
