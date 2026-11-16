@@ -299,6 +299,8 @@ export function Workspace({
   const depotsDoc = drawings.doc<DepotsDoc>("depots");
   // The currency all money is shown in, and its exchange rate (Project preferences).
   const currencyState = useProjectCurrency(preferences, ECONOMY);
+  // The country at the project's location, for the calendar's public holidays (Project preferences).
+  const placeCountry = usePlaceCountry(railway?.origin ?? streetLines?.lines[0]?.points[0]?.lonlat ?? null);
   const currency = currencyState.currency;
   const delaysJson = JSON.stringify(delaysFrom(preferences));
   const delays = useMemo(() => JSON.parse(delaysJson) as DelayShares, [delaysJson]);
@@ -803,6 +805,7 @@ export function Workspace({
               plugins={plugins}
               onSetPlugin={setPlugin}
               currency={currencyState}
+              country={placeCountry}
             />
           </div>
         )}
@@ -1131,4 +1134,26 @@ function SaveStatus({ drawings }: { drawings: Drawings }) {
       {text}
     </span>
   );
+}
+
+/**
+ * Purpose: the ISO alpha-2 code of the country at a place (rounded to about a kilometre, asked once per place),
+ * or null while unknown or at sea.
+ */
+function usePlaceCountry(place: readonly [number, number] | null): string | null {
+  const [code, setCode] = useState<{ key: string; iso2: string | null } | null>(null);
+  const key = place ? `${place[0].toFixed(2)},${place[1].toFixed(2)}` : null;
+  useEffect(() => {
+    if (!place || !key || code?.key === key) return;
+    let stop = false;
+    ECONOMY.countryAt([place[0], place[1]])
+      .then((c) => {
+        if (!stop) setCode({ key, iso2: c.iso2 });
+      })
+      .catch(() => {});
+    return () => {
+      stop = true;
+    };
+  }, [key]);
+  return code && code.key === key ? code.iso2 : null;
 }

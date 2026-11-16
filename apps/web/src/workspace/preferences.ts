@@ -1,6 +1,7 @@
 import type { DelayShares } from "../features/street-lines/types";
 import { MIXED_DELAY, PAINTED_DELAY } from "../features/street-setup/model";
 import rulesData from "./design-rules.generated.json";
+import type { ServiceCalendar, SimulationYears } from "./calendar";
 
 /**
  * The project's preferences document (drawing kind `preferences`): assumption library values the project
@@ -14,6 +15,10 @@ export interface PreferencesDoc {
   vehiclesOff?: string[];
   /** Switches and crossings the project does not use, and its default turnout per rail mode; absent: all, library's. */
   switches?: { off?: string[]; default_turnout?: Record<string, string> };
+  /** Day types, public holidays and service days (calendar.ts); absent: the defaults. */
+  calendar?: ServiceCalendar;
+  /** Years the multi-year run simulates (calendar.ts `simulationYearsFrom`); absent: the defaults. */
+  simulationYears?: SimulationYears;
 }
 
 /** The delays in traffic a project can change, with the library's values. */
