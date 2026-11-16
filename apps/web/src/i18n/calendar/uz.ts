@@ -91,4 +91,45 @@ export const calendarUz = {
   "calrun.fig.passengers": "Yo‘lovchilar",
   "calrun.fig.energy_kwh": "Energiya (MWh)",
   "calrun.fig.operating_cost": "Ekspluatatsiya xarajati",
+  "climate.title": "Iqlim",
+  "climate.intro":
+    "Loyiha joyidagi havo harorati, oyma-oy. Kalendar ishga tushirishlari undan issiq, juda issiq va sovuq (ayoz) kunlarni hamda ularning temir yo‘l va energiyaga ta’sirini kutadi. Iqlim har bir simulyatsiya yilida bir xil.",
+  "climate.noPlace": "Avval temir yo‘l yoki ko‘cha liniyasini chizing: iqlim loyiha joyi uchun olinadi.",
+  "climate.loading": "Iqlim olinmoqda…",
+  "climate.failed": "Iqlimni olib bo‘lmadi: {error}",
+  "climate.refetch": "Loyiha joyi uchun qayta olish",
+  "climate.month": "Oy",
+  "climate.mean": "O‘rtacha (°C)",
+  "climate.max": "O‘rtacha eng yuqori (°C)",
+  "climate.min": "O‘rtacha eng past (°C)",
+  "climate.maxSd": "Eng yuqorilarning tarqoqligi (°C)",
+  "climate.minSd": "Eng pastlarning tarqoqligi (°C)",
+  "climate.hotDays": "Issiq kunlar",
+  "climate.veryHotDays": "Juda issiq kunlar",
+  "climate.coldDays": "Ayozli kunlar",
+  "climate.ownHint":
+    "O‘zingiznikini ishlatish uchun son kiriting; u ramkaga olinadi va ↺ Open-Meteo qiymatini qaytaradi.",
+  "climate.reset": "Open-Meteo’ning {value} qiymatiga qaytish",
+  "climate.clear": "Tozalash",
+  "climate.limits":
+    "Issiq kun {heat} °C ga (yo‘lda issiq sababli tezlik cheklovi, {heatKmh} km/soat) yoki {sag} °C ga (kontakt simining osilishi, sim ostida {sagKmh} km/soat) yetadi, qaysi biri past bo‘lsa; juda issiq kun ikkalasiga ham yetadi. Ayozli kun {frost} °C yoki undan pastga tushadi. {switches} Bu chegaralarni Barcha parametrlar, Energiya va iqlim guruhida o‘zgartiring.",
+  "climate.switchesHeated": "Strelkalar isitiladi.",
+  "climate.switchesFreeze": "Strelkalar isitilmaydi va muzlashi mumkin.",
+  "climate.source":
+    "Ob-havo ma’lumotlari Open-Meteo.com’dan (CC BY 4.0): {lat}, {lon} nuqtasida {from}–{to} kunlik haroratlar. Loyiha o‘z nusxasini saqlaydi.",
+  "calrun.weatherOn":
+    "Ob-havo: issiq, juda issiq va ayozli kunlar loyiha iqlimidan kutiladi, har biri temir yo‘l va energiyaga o‘z ta’siri bilan.",
+  "calrun.weatherOff": "Hali iqlim yo‘q, shuning uchun har bir kun oddiy kun sifatida ishlaydi.",
+  "calrun.openClimate": "Iqlimni loyiha sozlamalarida belgilang",
+  "calrun.weatherDays": "Kutilayotgan ob-havo: {hot} issiq, {veryHot} juda issiq va {cold} ayozli kun",
+  "calrun.variant.hot": "Issiq kunlar",
+  "calrun.variant.very_hot": "Juda issiq kunlar",
+  "calrun.variant.cold": "Ayozli kunlar",
+  "calrun.hotAll": "Issiq va juda issiq kunlar",
+  "calrun.restricted": "cheklovlar {from}–{to}",
+  "calrun.step.variant": "{day} simulyatsiya qilinmoqda, {variant} ({total} dan {n})…",
+  "calrun.extraEnergy":
+    "Energiyaga transport ichidagi isitish va konditsionerlash uchun {hvac} MWh hamda strelkalarni isitish uchun {switches} MWh kiradi.",
+  "calrun.weatherMethod":
+    "Issiq, juda issiq va ayozli kunlar har oyning o‘rtachasi va tarqoqligidan kutilgan sonlardir, shuning uchun kasr bo‘lishi mumkin. Issiq cheklovlari o‘z soatlarida, muzlagan strelkalar esa kun bo‘yi simulyatsiya qilinadi. Transport-km, transport-soat va yo‘lovchilar har qanday ob-havoda bir xil qoladi.",
 } satisfies CalendarMessages;

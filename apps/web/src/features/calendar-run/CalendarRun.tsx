@@ -8,8 +8,10 @@ import type { Network } from "../railways/types";
 import { libraryValue as benefitLibrary } from "../benefits/params";
 import { DAY_TYPE_LABEL } from "../../workspace/CalendarSection";
 import { calendarFrom, DAY_TYPES, simulationYearsFrom } from "../../workspace/calendar";
+import { climateFrom, monthsOf } from "../../workspace/climate";
+import { projectRunSettings } from "../capacity/projectSettings";
 import { type PreferencesDoc, prefValue, withPref } from "../../workspace/preferences";
-import type { CalendarRunDetail, CalendarRun as SavedCalendarRun, CalendarRunsApi } from "./api";
+import type { CalendarRunDetail, CalendarRun as SavedCalendarRun, CalendarRunsApi, RailDay } from "./api";
 import {
   buildPlan,
   dayFigures,
@@ -20,7 +22,17 @@ import {
   RIDER_SHARE,
   type RunMode,
   type TableFigures,
+  weatherPeriods,
 } from "./model";
+import {
+  hvacFullKwhPerDay,
+  libValue,
+  switchKwhPerFrostDay,
+  VARIANTS,
+  type Variant,
+  weatherPlan,
+  weatherSettings,
+} from "./weather";
 
 const STATUS_TONE: Record<RunStatus, string> = {
   queued: "bg-slate-100 text-slate-700 border-slate-300",
@@ -38,7 +50,23 @@ const FIGURE_LABEL = {
   operating_cost: "calrun.fig.operating_cost",
 } as const satisfies Record<Figure, string>;
 
+const VARIANT_LABEL = {
+  hot: "calrun.variant.hot",
+  very_hot: "calrun.variant.very_hot",
+  cold: "calrun.variant.cold",
+} as const satisfies Record<Variant, string>;
+
 const message = (e: unknown) => (e instanceof Error ? e.message : String(e));
+
+/** Purpose: the number of switches in the railway editor's topology export (0 when it cannot be read). */
+function switchesIn(topology: string): number {
+  try {
+    const doc = JSON.parse(topology) as { switches?: unknown[] };
+    return Array.isArray(doc.switches) ? doc.switches.length : 0;
+  } catch {
+    return 0;
+  }
+}
 const iso = (d: Date) => d.toISOString().slice(0, 10);
 
 /**
@@ -92,15 +120,25 @@ export function CalendarRun({
   const [status, setStatus] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
 
+  const months = useMemo(() => monthsOf(climateFrom(preferences)), [preferences]);
+  const weather = useMemo(() => weatherSettings(preferences), [preferences]);
+  const hvacFull = useMemo(() => hvacFullKwhPerDay(tables.estimate, prefs), [tables, prefs]);
+  // The periods, split by the weather when the project has a climate; `switches` gives the switch heating.
+  const periodsWith = (switches: number) => {
+    const span = { years: simulationYearsFrom(preferences, today), date, from, to };
+    const c = calendarFrom(preferences);
+    return months
+      ? weatherPeriods(mode, c, span, {
+          months,
+          settings: weather,
+          hvacFullKwhPerDay: hvacFull,
+          switchKwhPerFrostDay: switchKwhPerFrostDay(switches, weather),
+        })
+      : periodsFor(mode, c, span);
+  };
   const periods = useMemo(
-    () =>
-      periodsFor(mode, calendarFrom(preferences), {
-        years: simulationYearsFrom(preferences, today),
-        date,
-        from,
-        to,
-      }),
-    [mode, preferences, today, date, from, to],
+    () => periodsWith(0),
+    [mode, preferences, today, date, from, to, months, weather, hvacFull],
   );
   const tooMany = mode === "days" && periods.length > MAX_DAYS;
   const figures = useMemo(() => dayFigures(tables, prefs), [tables, prefs]);
@@ -155,6 +193,7 @@ export function CalendarRun({
     if (!api || !periods.length || tooMany) return;
     setError(null);
     let network: ServerNetwork | null = null;
+    let switches = 0;
     try {
       if (rail === null) {
         setStatus(t("calrun.building"));
@@ -164,7 +203,8 @@ export function CalendarRun({
             setError(t("capacity.drawn.errors"));
             return;
           }
-        } else
+        } else {
+          switches = switchesIn(built.topology);
           network = {
             kind: "files",
             topology: built.topology,
@@ -172,9 +212,24 @@ export function CalendarRun({
             lines: built.lines,
             linesName: "service-lines.json",
           };
+        }
       }
       setStatus(t("calrun.sending"));
-      const run = await api.start(network, buildPlan(mode, cal, periods, figures, currency));
+      // The stability test's delays as the project sets them, which a cold day without switch heating adds to.
+      const base = {
+        delayed_share: libValue("stability.delayed_share", "*", prefs),
+        primary_delay_mean_s: libValue("stability.primary_delay_mean_s", "*", prefs),
+        primary_delay_max_s: libValue("stability.primary_delay_max_s", "*", prefs),
+      };
+      const plan = buildPlan(
+        mode,
+        cal,
+        periodsWith(switches),
+        figures,
+        currency,
+        months ? weatherPlan(weather, base) : undefined,
+      );
+      const run = await api.start(network, plan, { ...projectRunSettings(prefs), ...base });
       setViewing(run);
       setSaved((l) => [run, ...l.filter((x) => x.id !== run.id)]);
     } catch (e) {
@@ -261,6 +316,14 @@ export function CalendarRun({
       )}
 
       {periods.length > 0 && !tooMany && <DayCountSummary periods={periods} />}
+      <p className="text-xs text-slate-600">
+        {months ? t("calrun.weatherOn") : t("calrun.weatherOff")}{" "}
+        {!months && onOpenPreferences && (
+          <button type="button" className="min-h-10 text-blue-700 underline" onClick={onOpenPreferences}>
+            {t("calrun.openClimate")}
+          </button>
+        )}
+      </p>
 
       <section aria-labelledby={`${id}-shares`}>
         <h3 id={`${id}-shares`} className="caps">
@@ -418,18 +481,39 @@ export function CalendarRun({
   );
 }
 
-/** Purpose: how many days of each day type the chosen periods have, as one line. */
+/** Purpose: how many days of each day type the chosen periods have, and the expected weather days, as lines. */
 function DayCountSummary({ periods }: { periods: ReturnType<typeof periodsFor> }) {
-  const { t } = useI18n();
+  const { t, language } = useI18n();
+  const sum = (match: (key: string) => boolean) =>
+    periods.reduce(
+      (s, p) => s + Object.entries(p.counts).reduce((a, [k, n]) => a + (match(k) ? n : 0), 0),
+      0,
+    );
+  const fmt = (x: number) => new Intl.NumberFormat(language, { maximumFractionDigits: 1 }).format(x);
   const total = Object.fromEntries(
-    DAY_TYPES.map((dt) => [dt, periods.reduce((s, p) => s + (p.counts[dt] ?? 0), 0)]),
+    DAY_TYPES.map((dt) => [dt, sum((k) => k === dt || k.startsWith(`${dt}.`))]),
   ) as Record<(typeof DAY_TYPES)[number], number>;
+  const weather = Object.fromEntries(VARIANTS.map((v) => [v, sum((k) => k.endsWith(`.${v}`))])) as Record<
+    Variant,
+    number
+  >;
   return (
-    <p className="text-sm text-slate-700">
-      {DAY_TYPES.filter((dt) => total[dt] > 0)
-        .map((dt) => `${t(DAY_TYPE_LABEL[dt])}: ${total[dt]}`)
-        .join(" · ")}
-    </p>
+    <div className="text-sm text-slate-700">
+      <p>
+        {DAY_TYPES.filter((dt) => total[dt] > 0)
+          .map((dt) => `${t(DAY_TYPE_LABEL[dt])}: ${fmt(total[dt])}`)
+          .join(" · ")}
+      </p>
+      {VARIANTS.some((v) => weather[v] > 0) && (
+        <p>
+          {t("calrun.weatherDays", {
+            hot: fmt(weather.hot),
+            veryHot: fmt(weather.very_hot),
+            cold: fmt(weather.cold),
+          })}
+        </p>
+      )}
+    </div>
   );
 }
 
@@ -457,8 +541,24 @@ function RunView({ run }: { run: CalendarRunDetail }) {
       : f === "energy_kwh"
         ? num(v === null || v === undefined ? v : v / 1000)
         : num(v);
+  const pct = (x: number | null) => (x === null ? "–" : `${Math.round(x * 100)} %`);
   const r = run.result;
   const p = run.progress;
+  const stepText = (x: Extract<NonNullable<typeof p>, { step: "day" }>) =>
+    x.variant
+      ? t("calrun.step.variant", {
+          day: t(DAY_TYPE_LABEL[x.day_type]),
+          variant: t(VARIANT_LABEL[x.variant]),
+          n: x.n,
+          total: x.total,
+        })
+      : t("calrun.step.day", { day: t(DAY_TYPE_LABEL[x.day_type]), n: x.n, total: x.total });
+  const hhmm = (sec: number) =>
+    `${String(Math.floor(sec / 3600) % 24).padStart(2, "0")}:${String(Math.floor((sec % 3600) / 60)).padStart(2, "0")}`;
+  const punctOf = (rail: RailDay | undefined) =>
+    rail?.lines.length
+      ? Math.min(...rail.lines.map((l) => l.disturbed_punctuality ?? l.punctuality ?? 1))
+      : null;
   if (run.error)
     return (
       <p role="alert" className="text-sm text-red-800">
@@ -468,9 +568,7 @@ function RunView({ run }: { run: CalendarRunDetail }) {
   if (!r)
     return (
       <p role="status" className="text-sm text-slate-600">
-        {p && p.step === "day"
-          ? t("calrun.step.day", { day: t(DAY_TYPE_LABEL[p.day_type]), n: p.n, total: p.total })
-          : t("road.status.queued")}
+        {p && p.step === "day" ? stepText(p) : t("road.status.queued")}
       </p>
     );
   const totals = Object.fromEntries(
@@ -480,13 +578,14 @@ function RunView({ run }: { run: CalendarRunDetail }) {
     ]),
   ) as Record<Figure, number | null>;
   const verdict = r.run.verdict as Verdict | null;
+  const withWeather = r.periods.some((x) => x.weather);
+  const extraTotal = (k: "hvac_kwh" | "switch_heating_kwh") =>
+    r.periods.reduce((s, x) => s + (x.extra?.[k] ?? 0), 0);
   return (
     <div className="space-y-4">
       {isOpen(run) && p && (
         <p role="status" className="text-sm text-slate-600">
-          {p.step === "day"
-            ? t("calrun.step.day", { day: t(DAY_TYPE_LABEL[p.day_type]), n: p.n, total: p.total })
-            : t("calrun.step.expanding")}
+          {p.step === "day" ? stepText(p) : t("calrun.step.expanding")}
         </p>
       )}
       {verdict && (
@@ -519,12 +618,9 @@ function RunView({ run }: { run: CalendarRunDetail }) {
               </tr>
             </thead>
             <tbody>
-              {DAY_TYPES.filter((dt) => r.day_types[dt]).map((dt) => {
+              {DAY_TYPES.filter((dt) => r.day_types[dt]).flatMap((dt) => {
                 const d = r.day_types[dt]!;
-                const punct = d.rail?.lines.length
-                  ? Math.min(...d.rail.lines.map((l) => l.disturbed_punctuality ?? l.punctuality ?? 1))
-                  : null;
-                return (
+                const rows = [
                   <tr key={dt} className="border-t border-slate-100">
                     <th scope="row" className="py-1 text-start font-semibold">
                       {t(DAY_TYPE_LABEL[dt])}
@@ -534,14 +630,39 @@ function RunView({ run }: { run: CalendarRunDetail }) {
                         </span>
                       )}
                     </th>
-                    <td className="py-1 text-end tabular-nums">{num(d.days)}</td>
+                    <td className="py-1 text-end tabular-nums">{num(d.days, 1)}</td>
                     <td className="py-1 text-end tabular-nums">{num(d.rail?.vehicles)}</td>
-                    <td className="py-1 text-end tabular-nums">
-                      {punct === null ? "–" : `${Math.round(punct * 100)} %`}
-                    </td>
+                    <td className="py-1 text-end tabular-nums">{pct(punctOf(d.rail))}</td>
                     <td className="py-1 text-end tabular-nums">{num(d.per_day.passengers)}</td>
-                  </tr>
-                );
+                  </tr>,
+                ];
+                for (const v of VARIANTS) {
+                  const x = d.weather?.[v];
+                  if (!x) continue;
+                  const heat = v !== "cold" && x.rail?.from_s !== undefined && x.rail.to_s !== undefined;
+                  rows.push(
+                    <tr key={`${dt}.${v}`} className="text-slate-700">
+                      <th scope="row" className="py-1 ps-4 text-start font-normal">
+                        {t(VARIANT_LABEL[v])}
+                        {heat && (
+                          <span className="ms-1 text-xs text-slate-500">
+                            {t("calrun.restricted", { from: hhmm(x.rail!.from_s!), to: hhmm(x.rail!.to_s!) })}
+                          </span>
+                        )}
+                        {x.rail?.verdict && (
+                          <span className="block text-xs text-slate-600">
+                            {verdictText(x.rail.verdict as Verdict, t).title}
+                          </span>
+                        )}
+                      </th>
+                      <td className="py-1 text-end tabular-nums">{num(x.days, 1)}</td>
+                      <td className="py-1 text-end tabular-nums">{num(x.rail?.vehicles)}</td>
+                      <td className="py-1 text-end tabular-nums">{pct(punctOf(x.rail))}</td>
+                      <td className="py-1 text-end tabular-nums" />
+                    </tr>,
+                  );
+                }
+                return rows;
               })}
             </tbody>
           </table>
@@ -559,6 +680,16 @@ function RunView({ run }: { run: CalendarRunDetail }) {
                 <th scope="col" className="py-1 text-end font-medium">
                   {t("calrun.days")}
                 </th>
+                {withWeather && (
+                  <>
+                    <th scope="col" className="py-1 text-end font-medium">
+                      {t("calrun.hotAll")}
+                    </th>
+                    <th scope="col" className="py-1 text-end font-medium">
+                      {t("calrun.variant.cold")}
+                    </th>
+                  </>
+                )}
                 {FIGURES.map((f) => (
                   <th key={f} scope="col" className="py-1 text-end font-medium">
                     {t(FIGURE_LABEL[f])}
@@ -579,7 +710,15 @@ function RunView({ run }: { run: CalendarRunDetail }) {
                       </span>
                     )}
                   </th>
-                  <td className="py-1 text-end tabular-nums">{x.days}</td>
+                  <td className="py-1 text-end tabular-nums">{num(x.days, 1)}</td>
+                  {withWeather && (
+                    <>
+                      <td className="py-1 text-end tabular-nums">
+                        {num(x.weather ? x.weather.hot + x.weather.very_hot : null, 1)}
+                      </td>
+                      <td className="py-1 text-end tabular-nums">{num(x.weather?.cold, 1)}</td>
+                    </>
+                  )}
                   {FIGURES.map((f) => (
                     <td key={f} className="py-1 text-end tabular-nums">
                       {show(f, x[f])}
@@ -592,7 +731,31 @@ function RunView({ run }: { run: CalendarRunDetail }) {
                   <th scope="row" className="py-1 text-start">
                     {t("cal.total")}
                   </th>
-                  <td className="py-1 text-end tabular-nums">{r.periods.reduce((s, x) => s + x.days, 0)}</td>
+                  <td className="py-1 text-end tabular-nums">
+                    {num(
+                      r.periods.reduce((s, x) => s + x.days, 0),
+                      1,
+                    )}
+                  </td>
+                  {withWeather && (
+                    <>
+                      <td className="py-1 text-end tabular-nums">
+                        {num(
+                          r.periods.reduce(
+                            (s, x) => s + (x.weather ? x.weather.hot + x.weather.very_hot : 0),
+                            0,
+                          ),
+                          1,
+                        )}
+                      </td>
+                      <td className="py-1 text-end tabular-nums">
+                        {num(
+                          r.periods.reduce((s, x) => s + (x.weather?.cold ?? 0), 0),
+                          1,
+                        )}
+                      </td>
+                    </>
+                  )}
                   {FIGURES.map((f) => (
                     <td key={f} className="py-1 text-end tabular-nums">
                       {show(f, totals[f])}
@@ -604,6 +767,15 @@ function RunView({ run }: { run: CalendarRunDetail }) {
           </table>
         </div>
         <p className="mt-2 text-xs text-slate-600">{t("calrun.method")}</p>
+        {withWeather && (
+          <p className="mt-1 text-xs text-slate-600">
+            {t("calrun.extraEnergy", {
+              hvac: num(extraTotal("hvac_kwh") / 1000),
+              switches: num(extraTotal("switch_heating_kwh") / 1000),
+            })}{" "}
+            {t("calrun.weatherMethod")}
+          </p>
+        )}
       </section>
       {r.notes.length > 0 && (
         <ul className="list-disc ps-5 text-xs text-slate-600">

@@ -91,4 +91,45 @@ export const calendarHi = {
   "calrun.fig.passengers": "यात्री",
   "calrun.fig.energy_kwh": "ऊर्जा (MWh)",
   "calrun.fig.operating_cost": "परिचालन लागत",
+  "climate.title": "जलवायु",
+  "climate.intro":
+    "परियोजना स्थल पर हवा का तापमान, महीने-दर-महीने। कैलेंडर रन इससे गर्म, बहुत गर्म और पाले वाले दिनों तथा रेलवे और ऊर्जा पर उनके असर का अनुमान लगाते हैं। जलवायु हर सिमुलेशन वर्ष में एक जैसी रहती है।",
+  "climate.noPlace": "पहले रेलवे या कोई सड़क लाइन बनाएँ: जलवायु परियोजना स्थल के लिए लाई जाती है।",
+  "climate.loading": "जलवायु लाई जा रही है…",
+  "climate.failed": "जलवायु नहीं लाई जा सकी: {error}",
+  "climate.refetch": "परियोजना स्थल के लिए फिर से लाएँ",
+  "climate.month": "महीना",
+  "climate.mean": "औसत (°C)",
+  "climate.max": "औसत अधिकतम (°C)",
+  "climate.min": "औसत न्यूनतम (°C)",
+  "climate.maxSd": "अधिकतम का फैलाव (°C)",
+  "climate.minSd": "न्यूनतम का फैलाव (°C)",
+  "climate.hotDays": "गर्म दिन",
+  "climate.veryHotDays": "बहुत गर्म दिन",
+  "climate.coldDays": "पाले के दिन",
+  "climate.ownHint":
+    "अपना मान इस्तेमाल करने के लिए संख्या लिखें; उस पर फ़्रेम आएगा और ↺ Open-Meteo का मान लौटाता है।",
+  "climate.reset": "Open-Meteo के {value} पर लौटें",
+  "climate.clear": "साफ़ करें",
+  "climate.limits":
+    "गर्म दिन {heat} °C (पटरी पर गर्मी के कारण गति सीमा, {heatKmh} km/h) या {sag} °C (ओवरहेड लाइन का झुकाव, तार के नीचे {sagKmh} km/h) तक पहुँचता है, जो भी कम हो; बहुत गर्म दिन दोनों तक पहुँचता है। पाले का दिन {frost} °C या उससे नीचे जाता है। {switches} ये सीमाएँ सभी पैरामीटर, समूह ऊर्जा और जलवायु में बदलें।",
+  "climate.switchesHeated": "पॉइंट्स गरम किए जाते हैं।",
+  "climate.switchesFreeze": "पॉइंट्स गरम नहीं किए जाते और जम सकते हैं।",
+  "climate.source":
+    "मौसम डेटा Open-Meteo.com से (CC BY 4.0): {lat}, {lon} पर {from}–{to} के दैनिक तापमान। परियोजना अपनी प्रति रखती है।",
+  "calrun.weatherOn":
+    "मौसम: गर्म, बहुत गर्म और पाले के दिन परियोजना की जलवायु से अनुमानित हैं, हर एक रेलवे और ऊर्जा पर अपने असर के साथ।",
+  "calrun.weatherOff": "अभी जलवायु नहीं है, इसलिए हर दिन सामान्य दिन की तरह चलता है।",
+  "calrun.openClimate": "परियोजना प्राथमिकताओं में जलवायु तय करें",
+  "calrun.weatherDays": "अनुमानित मौसम: {hot} गर्म, {veryHot} बहुत गर्म और {cold} पाले के दिन",
+  "calrun.variant.hot": "गर्म दिन",
+  "calrun.variant.very_hot": "बहुत गर्म दिन",
+  "calrun.variant.cold": "पाले के दिन",
+  "calrun.hotAll": "गर्म और बहुत गर्म दिन",
+  "calrun.restricted": "प्रतिबंध {from}–{to}",
+  "calrun.step.variant": "{day} का सिमुलेशन, {variant} ({total} में से {n})…",
+  "calrun.extraEnergy":
+    "ऊर्जा में वाहन के भीतर हीटिंग और एयर कंडीशनिंग के लिए {hvac} MWh और पॉइंट हीटिंग के लिए {switches} MWh शामिल हैं।",
+  "calrun.weatherMethod":
+    "गर्म, बहुत गर्म और पाले के दिन हर महीने के औसत और फैलाव से अनुमानित संख्याएँ हैं, इसलिए इनमें दशमलव हो सकते हैं। गर्मी के प्रतिबंध अपने घंटों में और जमे हुए पॉइंट्स पूरे दिन के लिए सिमुलेट होते हैं। वाहन-किमी, वाहन-घंटे और यात्री हर मौसम में समान रहते हैं।",
 } satisfies CalendarMessages;

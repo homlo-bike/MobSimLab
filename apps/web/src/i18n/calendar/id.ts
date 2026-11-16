@@ -91,4 +91,46 @@ export const calendarId = {
   "calrun.fig.passengers": "Penumpang",
   "calrun.fig.energy_kwh": "Energi (MWh)",
   "calrun.fig.operating_cost": "Biaya operasi",
+  "climate.title": "Iklim",
+  "climate.intro":
+    "Suhu udara di lokasi proyek, bulan demi bulan. Simulasi kalender memperkirakan dari sini hari panas, sangat panas, dan beku serta dampaknya pada kereta api dan energi. Iklim sama di setiap tahun simulasi.",
+  "climate.noPlace": "Gambar dulu jalur kereta atau jalur jalan: iklim diambil untuk lokasi proyek.",
+  "climate.loading": "Mengambil iklim…",
+  "climate.failed": "Iklim tidak dapat diambil: {error}",
+  "climate.refetch": "Ambil lagi untuk lokasi proyek",
+  "climate.month": "Bulan",
+  "climate.mean": "Rata-rata (°C)",
+  "climate.max": "Rata-rata maksimum (°C)",
+  "climate.min": "Rata-rata minimum (°C)",
+  "climate.maxSd": "Sebaran maksimum (°C)",
+  "climate.minSd": "Sebaran minimum (°C)",
+  "climate.hotDays": "Hari panas",
+  "climate.veryHotDays": "Hari sangat panas",
+  "climate.coldDays": "Hari beku",
+  "climate.ownHint":
+    "Ketik angka untuk memakai nilai Anda; nilainya diberi bingkai dan ↺ mengembalikan nilai Open-Meteo.",
+  "climate.reset": "Kembali ke {value} dari Open-Meteo",
+  "climate.clear": "Hapus",
+  "climate.limits":
+    "Hari panas mencapai {heat} °C (pembatasan kecepatan karena panas di rel, {heatKmh} km/j) atau {sag} °C (kawat aliran atas melendut, {sagKmh} km/j di bawah kawat), mana yang lebih rendah; hari sangat panas mencapai keduanya. Hari beku turun ke {frost} °C atau lebih rendah. {switches} Ubah batas ini di Semua parameter, grup Energi dan iklim.",
+  "climate.switchesHeated": "Wesel dipanaskan.",
+  "climate.switchesFreeze": "Wesel tidak dipanaskan dan bisa membeku.",
+  "climate.source":
+    "Data cuaca dari Open-Meteo.com (CC BY 4.0): suhu harian {from}–{to} di {lat}, {lon}. Proyek menyimpan salinannya sendiri.",
+  "calrun.weatherOn":
+    "Cuaca: hari panas, sangat panas, dan beku diperkirakan dari iklim proyek, masing-masing dengan dampaknya pada kereta api dan energi.",
+  "calrun.weatherOff": "Belum ada iklim, jadi setiap hari dijalankan sebagai hari biasa.",
+  "calrun.openClimate": "Atur iklim di preferensi proyek",
+  "calrun.weatherDays":
+    "Cuaca yang diperkirakan: {hot} hari panas, {veryHot} sangat panas, dan {cold} hari beku",
+  "calrun.variant.hot": "Hari panas",
+  "calrun.variant.very_hot": "Hari sangat panas",
+  "calrun.variant.cold": "Hari beku",
+  "calrun.hotAll": "Hari panas dan sangat panas",
+  "calrun.restricted": "pembatasan {from}–{to}",
+  "calrun.step.variant": "Menyimulasikan {day}, {variant} ({n} dari {total})…",
+  "calrun.extraEnergy":
+    "Energi termasuk {hvac} MWh untuk pemanas dan AC di kendaraan serta {switches} MWh untuk pemanas wesel.",
+  "calrun.weatherMethod":
+    "Hari panas, sangat panas, dan beku adalah angka harapan dari rata-rata dan sebaran tiap bulan, jadi bisa berdesimal. Pembatasan karena panas disimulasikan pada jamnya, wesel beku sepanjang hari. Kendaraan-km, kendaraan-jam, dan penumpang tetap sama dalam cuaca apa pun.",
 } satisfies CalendarMessages;

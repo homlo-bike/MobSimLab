@@ -92,4 +92,46 @@ export const calendarFr = {
   "calrun.fig.passengers": "Voyageurs",
   "calrun.fig.energy_kwh": "Énergie (MWh)",
   "calrun.fig.operating_cost": "Coût d’exploitation",
+  "climate.title": "Climat",
+  "climate.intro":
+    "Températures de l'air sur le site du projet, mois par mois. Les simulations calendaires en déduisent les jours chauds, très chauds et de gel attendus, et leurs effets sur le chemin de fer et sur l'énergie. Le climat est le même chaque année de simulation.",
+  "climate.noPlace":
+    "Dessinez d'abord la voie ferrée ou une ligne routière : le climat est récupéré pour le site du projet.",
+  "climate.loading": "Récupération du climat…",
+  "climate.failed": "Impossible de récupérer le climat : {error}",
+  "climate.refetch": "Récupérer à nouveau pour le site du projet",
+  "climate.month": "Mois",
+  "climate.mean": "Moyenne (°C)",
+  "climate.max": "Maximale moyenne (°C)",
+  "climate.min": "Minimale moyenne (°C)",
+  "climate.maxSd": "Dispersion des maximales (°C)",
+  "climate.minSd": "Dispersion des minimales (°C)",
+  "climate.hotDays": "Jours chauds",
+  "climate.veryHotDays": "Jours très chauds",
+  "climate.coldDays": "Jours de gel",
+  "climate.ownHint":
+    "Saisissez un nombre pour utiliser le vôtre ; il est encadré et ↺ rétablit celui d'Open-Meteo.",
+  "climate.reset": "Revenir à {value} d'Open-Meteo",
+  "climate.clear": "Effacer",
+  "climate.limits":
+    "Un jour chaud atteint {heat} °C (limitation de vitesse pour chaleur sur la voie, {heatKmh} km/h) ou {sag} °C (affaissement de la caténaire, {sagKmh} km/h sous le fil), selon la plus basse ; un jour très chaud atteint les deux. Un jour de gel descend à {frost} °C ou moins. {switches} Modifiez ces limites dans Tous les paramètres, groupe Énergie et climat.",
+  "climate.switchesHeated": "Les aiguillages sont chauffés.",
+  "climate.switchesFreeze": "Les aiguillages ne sont pas chauffés et peuvent geler.",
+  "climate.source":
+    "Données météo d'Open-Meteo.com (CC BY 4.0) : températures journalières {from}–{to} à {lat}, {lon}. Le projet en garde sa propre copie.",
+  "calrun.weatherOn":
+    "Météo : les jours chauds, très chauds et de gel sont attendus d'après le climat du projet, chacun avec ses effets sur le chemin de fer et sur l'énergie.",
+  "calrun.weatherOff": "Pas encore de climat : chaque jour est simulé comme un jour ordinaire.",
+  "calrun.openClimate": "Définir le climat dans les préférences du projet",
+  "calrun.weatherDays": "Météo attendue : {hot} jours chauds, {veryHot} très chauds et {cold} jours de gel",
+  "calrun.variant.hot": "Jours chauds",
+  "calrun.variant.very_hot": "Jours très chauds",
+  "calrun.variant.cold": "Jours de gel",
+  "calrun.hotAll": "Jours chauds et très chauds",
+  "calrun.restricted": "limitations {from}–{to}",
+  "calrun.step.variant": "Simulation de {day}, {variant} ({n} sur {total})…",
+  "calrun.extraEnergy":
+    "L'énergie comprend {hvac} MWh pour le chauffage et la climatisation à bord et {switches} MWh pour le chauffage des aiguillages.",
+  "calrun.weatherMethod":
+    "Les jours chauds, très chauds et de gel sont des nombres attendus calculés à partir de la moyenne et de la dispersion de chaque mois ; ils peuvent donc avoir des décimales. Les limitations pour chaleur sont simulées sur leurs heures, les aiguillages gelés sur toute la journée. Les véhicules-km, véhicules-heures et voyageurs restent les mêmes par tous les temps.",
 } satisfies CalendarMessages;

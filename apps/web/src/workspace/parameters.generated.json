@@ -3599,6 +3599,202 @@
    }
   },
   {
+   "id": "climate.heat_restriction_margin_c",
+   "label": "Rail temperature above the design temperature at which heat speed restrictions start",
+   "group": "Energy and climate",
+   "unit": "°C",
+   "kind": "number",
+   "values": {
+    "*": [
+     15,
+     25,
+     35
+    ]
+   }
+  },
+  {
+   "id": "climate.heat_speed_kmh",
+   "label": "Speed limit of a heat speed restriction (buckling risk on welded track)",
+   "group": "Energy and climate",
+   "unit": "km/h",
+   "kind": "number",
+   "values": {
+    "*": [
+     30,
+     60,
+     90
+    ]
+   }
+  },
+  {
+   "id": "climate.heat_from_h",
+   "label": "Hour of the day heat speed restrictions start on a hot day",
+   "group": "Energy and climate",
+   "unit": "h",
+   "kind": "number",
+   "values": {
+    "*": [
+     10,
+     12,
+     14
+    ]
+   }
+  },
+  {
+   "id": "climate.heat_to_h",
+   "label": "Hour of the day heat speed restrictions end on a hot day",
+   "group": "Energy and climate",
+   "unit": "h",
+   "kind": "number",
+   "values": {
+    "*": [
+     18,
+     20,
+     22
+    ]
+   }
+  },
+  {
+   "id": "climate.ocl_sag_speed_kmh",
+   "label": "Speed limit under a sagging overhead contact line on a very hot day",
+   "group": "Energy and climate",
+   "unit": "km/h",
+   "kind": "number",
+   "values": {
+    "*": [
+     40,
+     80,
+     120
+    ]
+   }
+  },
+  {
+   "id": "climate.frost_day_min_c",
+   "label": "Daily minimum air temperature at or below which a day counts as a frost day",
+   "group": "Energy and climate",
+   "unit": "°C",
+   "kind": "number",
+   "values": {
+    "*": [
+     -5,
+     0,
+     2
+    ]
+   }
+  },
+  {
+   "id": "climate.switch_heating",
+   "label": "Switch heating on the switches of the railway",
+   "group": "Energy and climate",
+   "unit": "choice",
+   "kind": "enum",
+   "values": {
+    "*": "fitted"
+   },
+   "options": [
+    "fitted",
+    "none"
+   ]
+  },
+  {
+   "id": "climate.switch_heating_kw",
+   "label": "Heating power of one switch on a frost day",
+   "group": "Energy and climate",
+   "unit": "kW",
+   "kind": "number",
+   "values": {
+    "*": [
+     2,
+     4,
+     8
+    ]
+   }
+  },
+  {
+   "id": "climate.switch_heating_hours",
+   "label": "Hours switch heating runs on a frost day",
+   "group": "Energy and climate",
+   "unit": "h",
+   "kind": "number",
+   "values": {
+    "*": [
+     6,
+     12,
+     24
+    ]
+   }
+  },
+  {
+   "id": "climate.frost_extra_delayed_share",
+   "label": "Extra share of trips delayed on a frost day without switch heating (frozen switches)",
+   "group": "Energy and climate",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.05,
+     0.1,
+     0.3
+    ]
+   }
+  },
+  {
+   "id": "climate.frost_delay_mean_s",
+   "label": "Mean primary delay on a frost day without switch heating (frozen switches)",
+   "group": "Energy and climate",
+   "unit": "s",
+   "kind": "number",
+   "values": {
+    "*": [
+     120,
+     300,
+     900
+    ]
+   }
+  },
+  {
+   "id": "climate.comfort_low_c",
+   "label": "Daily mean air temperature below which vehicles heat",
+   "group": "Energy and climate",
+   "unit": "°C",
+   "kind": "number",
+   "values": {
+    "*": [
+     12,
+     15,
+     18
+    ]
+   }
+  },
+  {
+   "id": "climate.comfort_high_c",
+   "label": "Daily mean air temperature above which vehicles cool",
+   "group": "Energy and climate",
+   "unit": "°C",
+   "kind": "number",
+   "values": {
+    "*": [
+     20,
+     22,
+     26
+    ]
+   }
+  },
+  {
+   "id": "climate.hvac_full_delta_c",
+   "label": "Degrees beyond the comfort range at which heating or air conditioning runs at full power",
+   "group": "Energy and climate",
+   "unit": "°C",
+   "kind": "number",
+   "values": {
+    "*": [
+     15,
+     20,
+     30
+    ]
+   }
+  },
+  {
    "id": "cost.civil.at_grade_per_km",
    "label": "Civil works at street level or on its own formation, double track",
    "group": "Cost",

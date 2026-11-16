@@ -10,6 +10,7 @@ import { DesignRulesSection } from "./DesignRules";
 import { VehicleChoiceSection } from "./VehicleChoice";
 import { SwitchChoiceSection } from "./SwitchChoice";
 import { CalendarSection } from "./CalendarSection";
+import { ClimateSection } from "./ClimateSection";
 import { ParametersSection } from "./Parameters";
 import { roadValue } from "../features/road-sim/params";
 import { StationsSection } from "./StationsSection";
@@ -31,6 +32,7 @@ export function ProjectPreferences({
   onSetPlugin,
   currency = NO_CURRENCY,
   country = null,
+  place = null,
 }: {
   api: ProjectsApi;
   project: Project;
@@ -47,6 +49,8 @@ export function ProjectPreferences({
   currency?: CurrencyState;
   /** ISO alpha-2 code of the country at the project's location, when known (public holidays). */
   country?: string | null;
+  /** The project's location [lon, lat], for its climate; null when nothing is drawn yet. */
+  place?: readonly [number, number] | null;
 }) {
   const { t } = useI18n();
   const editable = can.edit(project);
@@ -207,6 +211,12 @@ export function ProjectPreferences({
           editable={editable && !!onPreferences}
           onPreferences={(d) => onPreferences?.(d)}
           detectedCountry={country}
+        />
+        <ClimateSection
+          preferences={preferences}
+          editable={editable && !!onPreferences}
+          onPreferences={(d) => onPreferences?.(d)}
+          place={place}
         />
         <StationsSection
           preferences={preferences}

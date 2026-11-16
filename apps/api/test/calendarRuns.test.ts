@@ -55,6 +55,34 @@ describe("calendar run settings", () => {
     expect(calendarPlan.safeParse(plan({ periods: Array(367).fill(p.periods[0]) })).success).toBe(false);
   });
 
+  it("takes weather variants with expected days, their rail effects and their energy", () => {
+    const heat = { from_s: 43200, to_s: 72000, speed_cap_kmh: 60, overhead_cap_kmh: null };
+    const weather = plan({
+      periods: [
+        {
+          label: "2027",
+          counts: { weekday: 240.5, "weekday.hot": 12.5, "weekday.cold": 5, saturday: 50 },
+          share_of_year: 1,
+          extra: { hvac_kwh: 12000, switch_heating_kwh: 900 },
+        },
+      ],
+      weather: {
+        hot: heat,
+        very_hot: { ...heat, overhead_cap_kmh: 80 },
+        cold: { delayed_share: 0.4, primary_delay_mean_s: 300, primary_delay_max_s: 1800 },
+      },
+    });
+    expect(calendarPlan.safeParse(weather).success).toBe(true);
+    expect(calendarPlan.safeParse({ ...weather, weather: { cold: null } }).success).toBe(true);
+    const p = weather.periods[0]!;
+    expect(
+      calendarPlan.safeParse({ ...weather, periods: [{ ...p, counts: { "weekday.snowy": 3 } }] }).success,
+    ).toBe(false);
+    expect(
+      calendarPlan.safeParse({ ...weather, weather: { hot: { ...heat, speed_cap_kmh: -5 } } }).success,
+    ).toBe(false);
+  });
+
   it("takes capacity settings but not the period, which each day type sets", () => {
     expect(calendarParams.safeParse({ stability_runs: 4, seed: 2 }).success).toBe(true);
     expect(calendarParams.safeParse({ from_s: 0 }).success).toBe(false);

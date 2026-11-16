@@ -91,4 +91,45 @@ export const calendarSw = {
   "calrun.fig.passengers": "Abiria",
   "calrun.fig.energy_kwh": "Nishati (MWh)",
   "calrun.fig.operating_cost": "Gharama ya uendeshaji",
+  "climate.title": "Hali ya hewa",
+  "climate.intro":
+    "Joto la hewa mahali pa mradi, mwezi kwa mwezi. Uendeshaji wa kalenda huzitumia kukadiria siku za joto, joto kali na baridi kali ya barafu, na athari zake kwa reli na nishati. Hali ya hewa ni ileile kila mwaka wa uigaji.",
+  "climate.noPlace": "Chora kwanza reli au mstari wa barabara: hali ya hewa hupatikana kwa mahali pa mradi.",
+  "climate.loading": "Inapata hali ya hewa…",
+  "climate.failed": "Haikuweza kupata hali ya hewa: {error}",
+  "climate.refetch": "Pata tena kwa mahali pa mradi",
+  "climate.month": "Mwezi",
+  "climate.mean": "Wastani (°C)",
+  "climate.max": "Wastani wa juu (°C)",
+  "climate.min": "Wastani wa chini (°C)",
+  "climate.maxSd": "Mtawanyiko wa viwango vya juu (°C)",
+  "climate.minSd": "Mtawanyiko wa viwango vya chini (°C)",
+  "climate.hotDays": "Siku za joto",
+  "climate.veryHotDays": "Siku za joto kali",
+  "climate.coldDays": "Siku za barafu",
+  "climate.ownHint": "Andika namba ili kutumia yako; itawekewa fremu na ↺ inarudisha ya Open-Meteo.",
+  "climate.reset": "Rudi kwenye {value} ya Open-Meteo",
+  "climate.clear": "Futa",
+  "climate.limits":
+    "Siku ya joto hufikia {heat} °C (kizuizi cha kasi kwa joto kwenye njia, {heatKmh} km/h) au {sag} °C (waya wa juu kulegea, {sagKmh} km/h chini ya waya), kipi kilicho chini; siku ya joto kali hufikia vyote. Siku ya barafu hushuka hadi {frost} °C au chini. {switches} Badilisha mipaka hii katika Vigezo vyote, kundi Nishati na hali ya hewa.",
+  "climate.switchesHeated": "Swichi zinapashwa joto.",
+  "climate.switchesFreeze": "Swichi hazipashwi joto na zinaweza kuganda.",
+  "climate.source":
+    "Data ya hali ya hewa kutoka Open-Meteo.com (CC BY 4.0): joto la kila siku {from}–{to} katika {lat}, {lon}. Mradi unahifadhi nakala yake.",
+  "calrun.weatherOn":
+    "Hali ya hewa: siku za joto, joto kali na barafu zinakadiriwa kutoka hali ya hewa ya mradi, kila moja na athari zake kwa reli na nishati.",
+  "calrun.weatherOff": "Bado hakuna hali ya hewa, kwa hivyo kila siku huendeshwa kama siku ya kawaida.",
+  "calrun.openClimate": "Weka hali ya hewa katika mapendeleo ya mradi",
+  "calrun.weatherDays":
+    "Hali ya hewa inayotarajiwa: siku {hot} za joto, {veryHot} za joto kali na {cold} za barafu",
+  "calrun.variant.hot": "Siku za joto",
+  "calrun.variant.very_hot": "Siku za joto kali",
+  "calrun.variant.cold": "Siku za barafu",
+  "calrun.hotAll": "Siku za joto na joto kali",
+  "calrun.restricted": "vizuizi {from}–{to}",
+  "calrun.step.variant": "Inaiga {day}, {variant} ({n} kati ya {total})…",
+  "calrun.extraEnergy":
+    "Nishati inajumuisha MWh {hvac} za kupasha joto na kiyoyozi ndani ya magari na MWh {switches} za kupasha joto swichi.",
+  "calrun.weatherMethod":
+    "Siku za joto, joto kali na barafu ni idadi zinazotarajiwa kutoka wastani na mtawanyiko wa kila mwezi, kwa hivyo zinaweza kuwa na desimali. Vizuizi vya joto huigwa kwa saa zake, swichi zilizoganda kwa siku nzima. Gari-km, gari-saa na abiria hubaki vilevile katika hali yoyote ya hewa.",
 } satisfies CalendarMessages;

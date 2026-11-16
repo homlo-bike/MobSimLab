@@ -331,7 +331,8 @@ export function Workspace({
   // The currency all money is shown in, and its exchange rate (Project preferences).
   const currencyState = useProjectCurrency(preferences, ECONOMY);
   // The country at the project's location, for the calendar's public holidays (Project preferences).
-  const placeCountry = usePlaceCountry(railway?.origin ?? streetLines?.lines[0]?.points[0]?.lonlat ?? null);
+  const place = railway?.origin ?? streetLines?.lines[0]?.points[0]?.lonlat ?? null;
+  const placeCountry = usePlaceCountry(place);
   const currency = currencyState.currency;
   const delaysJson = JSON.stringify(delaysFrom(preferences));
   const delays = useMemo(() => JSON.parse(delaysJson) as DelayShares, [delaysJson]);
@@ -849,6 +850,7 @@ export function Workspace({
               onSetPlugin={setPlugin}
               currency={currencyState}
               country={placeCountry}
+              place={place}
             />
           </div>
         )}

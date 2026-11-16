@@ -9,8 +9,10 @@ import { paramValue as benefitParam } from "../benefits/params";
 import { type Category, type Estimate, OPERATING } from "../costs/model";
 import { paramValue as costParam } from "../costs/params";
 import type { EnergyEstimate } from "../energy/types";
+import type { MonthClimate } from "../../workspace/climate";
 import {
   DAY_TYPES,
+  datesOf,
   dayCounts,
   type DayTypeId,
   dayTypeOf,
@@ -21,6 +23,7 @@ import {
   yearList,
 } from "../../workspace/calendar";
 import type { PreferencesDoc } from "../../workspace/preferences";
+import { hvacLoad, VARIANTS, variantShares, type WeatherPlan, type WeatherSettings } from "./weather";
 
 /** Figures of one day (or summed over a period). Null when the project cannot tell yet. */
 export interface DayFigures {
@@ -126,9 +129,21 @@ export function dayFigures(
 /** One period of a calendar run: a year or a date, with its days per day type. */
 export interface Period {
   label: string;
-  counts: Partial<Record<DayTypeId, number>>;
+  /**
+   * Days per day type (`weekday`) and, with the climate, expected days per weather variant (`weekday.hot`,
+   * `weekday.very_hot`, `weekday.cold`; may be fractional).
+   */
+  counts: Record<string, number>;
   /** Share of a year the period stands for (the fixed operating cost). */
   share_of_year: number;
+  /** The weather's extra energy, kWh: heating and air conditioning on board, switch heating. */
+  extra?: { hvac_kwh: number; switch_heating_kwh: number };
+}
+
+/** A period with its days per day type in each month (January first), for the weather. */
+interface MonthlyPeriod {
+  period: Period;
+  monthly: Record<DayTypeId, number[]>;
 }
 
 /** What a calendar run runs. */
@@ -139,36 +154,123 @@ export const MAX_DAYS = 366;
 
 const daysInYear = (y: number) => (y % 4 === 0 && (y % 100 !== 0 || y % 400 === 0) ? 366 : 365);
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
+const zeros = () => Array.from({ length: 12 }, () => 0);
 
-/** Purpose: the periods of a run: every simulation year with its day counts, one date, or each date of a row. */
+/**
+ * Purpose: a year's days per day type in each month, scaled so each day type adds up to the year's day count
+ * (the planner's own counts spread like the calendar's, or evenly over the year when the calendar has none).
+ */
+function monthlyOfYear(year: number, cal: ServiceCalendar, used: Record<DayTypeId, number>) {
+  const holidays = holidaysFor(cal, year);
+  const out = Object.fromEntries(DAY_TYPES.map((dt) => [dt, zeros()])) as Record<DayTypeId, number[]>;
+  const all = zeros();
+  for (const d of datesOf(year)) {
+    const m = Number(d.slice(5, 7)) - 1;
+    out[dayTypeOf(d, cal, holidays)]![m]! += 1;
+    all[m]! += 1;
+  }
+  for (const dt of DAY_TYPES) {
+    const counted = out[dt].reduce((s, x) => s + x, 0);
+    const k = counted > 0 ? used[dt] / counted : 0;
+    out[dt] = counted > 0 ? out[dt].map((x) => x * k) : all.map((x) => (x * used[dt]) / daysInYear(year));
+  }
+  return out;
+}
+
+function monthlyPeriods(
+  mode: RunMode,
+  cal: ServiceCalendar,
+  span: { years?: SimulationYears; date?: string; from?: string; to?: string },
+): MonthlyPeriod[] {
+  if (mode === "years") {
+    if (!span.years) return [];
+    return yearList(span.years).map((y) => {
+      const used = dayCounts(y, cal).used;
+      return {
+        period: { label: String(y), counts: { ...used }, share_of_year: 1 },
+        monthly: monthlyOfYear(y, cal, used),
+      };
+    });
+  }
+  const one = (date: string): MonthlyPeriod => {
+    const y = Number(date.slice(0, 4));
+    const dt = dayTypeOf(date, cal, holidaysFor(cal, y));
+    const monthly = Object.fromEntries(DAY_TYPES.map((d) => [d, zeros()])) as Record<DayTypeId, number[]>;
+    monthly[dt][Number(date.slice(5, 7)) - 1] = 1;
+    return { period: { label: date, counts: { [dt]: 1 }, share_of_year: 1 / daysInYear(y) }, monthly };
+  };
+  if (mode === "date") return span.date && DATE.test(span.date) ? [one(span.date)] : [];
+  if (!span.from || !span.to || !DATE.test(span.from) || !DATE.test(span.to)) return [];
+  const out: MonthlyPeriod[] = [];
+  const end = Date.parse(`${span.to}T00:00:00Z`);
+  for (let t = Date.parse(`${span.from}T00:00:00Z`); t <= end && out.length <= MAX_DAYS; t += 86_400_000)
+    out.push(one(new Date(t).toISOString().slice(0, 10)));
+  return out;
+}
+
+/**
+ * Purpose: the periods of a run: every simulation year with its day counts, one date, or each date of a row
+ * (one more than `MAX_DAYS` at most, so the panel can tell the row is too long).
+ */
 export function periodsFor(
   mode: RunMode,
   cal: ServiceCalendar,
   span: { years?: SimulationYears; date?: string; from?: string; to?: string },
 ): Period[] {
-  if (mode === "years") {
-    if (!span.years) return [];
-    return yearList(span.years).map((y) => ({
-      label: String(y),
-      counts: { ...dayCounts(y, cal).used },
-      share_of_year: 1,
-    }));
-  }
-  const one = (date: string): Period => {
-    const y = Number(date.slice(0, 4));
+  return monthlyPeriods(mode, cal, span).map((p) => p.period);
+}
+
+/** The climate and what it costs in energy, for `weatherPeriods`. */
+export interface WeatherInput {
+  months: MonthClimate[];
+  settings: WeatherSettings;
+  /** Heating and air conditioning at full power for a day's service, kWh (null when the service is unknown). */
+  hvacFullKwhPerDay: number | null;
+  /** Switch heating on a frost day, kWh. */
+  switchKwhPerFrostDay: number;
+}
+
+const r3 = (x: number) => Math.round(x * 1000) / 1000;
+
+/**
+ * Purpose: the periods of a run with each day type split into ordinary days and expected hot, very hot and cold
+ * days (from each month's climate), and the weather's extra energy.
+ */
+export function weatherPeriods(
+  mode: RunMode,
+  cal: ServiceCalendar,
+  span: { years?: SimulationYears; date?: string; from?: string; to?: string },
+  wx: WeatherInput,
+): Period[] {
+  const shares = wx.months.map((m) => variantShares(m, wx.settings));
+  const loads = wx.months.map((m) => hvacLoad(m.mean_c, wx.settings));
+  return monthlyPeriods(mode, cal, span).map(({ period, monthly }) => {
+    const counts: Record<string, number> = {};
+    const allDays = zeros();
+    for (const dt of DAY_TYPES) {
+      const total = period.counts[dt] ?? 0;
+      if (!(total > 0)) continue;
+      let rest = total;
+      for (const v of VARIANTS) {
+        const n = r3(monthly[dt].reduce((s, d, m) => s + d * shares[m]![v], 0));
+        if (n > 0) counts[`${dt}.${v}`] = n;
+        rest -= n;
+      }
+      if (r3(rest) > 0) counts[dt] = r3(rest);
+      monthly[dt].forEach((d, m) => (allDays[m]! += d));
+    }
+    const hvac = wx.hvacFullKwhPerDay ?? 0;
     return {
-      label: date,
-      counts: { [dayTypeOf(date, cal, holidaysFor(cal, y))]: 1 },
-      share_of_year: 1 / daysInYear(y),
+      ...period,
+      counts,
+      extra: {
+        hvac_kwh: Math.round(allDays.reduce((s, d, m) => s + d * hvac * loads[m]!, 0)),
+        switch_heating_kwh: Math.round(
+          allDays.reduce((s, d, m) => s + d * shares[m]!.cold * wx.switchKwhPerFrostDay, 0),
+        ),
+      },
     };
-  };
-  if (mode === "date") return span.date && DATE.test(span.date) ? [one(span.date)] : [];
-  if (!span.from || !span.to || !DATE.test(span.from) || !DATE.test(span.to)) return [];
-  const out: Period[] = [];
-  const end = Date.parse(`${span.to}T00:00:00Z`);
-  for (let t = Date.parse(`${span.from}T00:00:00Z`); t <= end && out.length <= MAX_DAYS; t += 86_400_000)
-    out.push(one(new Date(t).toISOString().slice(0, 10)));
-  return out;
+  });
 }
 
 /** The plan the worker runs (apps/api/src/simulation/calendar.ts `calendarPlan`). */
@@ -178,6 +280,8 @@ export interface CalendarPlan {
   periods: Period[];
   fixed_per_year: { operating_cost: number | null };
   currency: string | null;
+  /** The weather's effects on the rail runs; absent without a climate. */
+  weather?: WeatherPlan;
 }
 
 /** Purpose: the plan of a run: each day type's service day and day figures, and the periods. */
@@ -187,11 +291,19 @@ export function buildPlan(
   periods: Period[],
   figures: ReturnType<typeof dayFigures>,
   currency: string | null,
+  weather?: WeatherPlan,
 ): CalendarPlan {
   const day_types = {} as CalendarPlan["day_types"];
   for (const dt of DAY_TYPES) {
     const d = serviceDayFor(cal, dt);
     day_types[dt] = { from_s: d.firstS, to_s: d.lastS, per_day: figures.days[dt] };
   }
-  return { mode, day_types, periods, fixed_per_year: { operating_cost: figures.fixedPerYear }, currency };
+  return {
+    mode,
+    day_types,
+    periods,
+    fixed_per_year: { operating_cost: figures.fixedPerYear },
+    currency,
+    ...(weather ? { weather } : {}),
+  };
 }
