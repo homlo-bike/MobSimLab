@@ -66,7 +66,11 @@ export function toElement(
         ...base,
         type: "relation",
         members: polys.flatMap((rings) =>
-          rings.map((r, i) => ({ type: "way" as const, role: i === 0 ? ("outer" as const) : ("inner" as const), geometry: geom(r) })),
+          rings.map((r, i) => ({
+            type: "way" as const,
+            role: i === 0 ? ("outer" as const) : ("inner" as const),
+            geometry: geom(r),
+          })),
         ),
       };
     }
@@ -89,7 +93,9 @@ export const TILE_FILTERS = {
   walk: [
     "w/highway=footway,path,pedestrian,steps,living_street,residential,service,unclassified,tertiary,tertiary_link,secondary,secondary_link,primary,primary_link,trunk,trunk_link,track,road,cycleway,bridleway,corridor,platform",
   ],
-  rail: ["w/railway=rail,light_rail,tram,subway,narrow_gauge,monorail,funicular,construction,disused,preserved"],
+  rail: [
+    "w/railway=rail,light_rail,tram,subway,narrow_gauge,monorail,funicular,construction,disused,preserved",
+  ],
 } as const;
 
 const TILE_MAX_BYTES = 256 * 1024 * 1024;
@@ -109,7 +115,10 @@ export interface ImportedHeights {
 
 @Injectable()
 export class GeodataReader {
-  private readonly demIndex = new Map<string, Promise<{ tiles: DemIndexEntry[]; sources: Map<string, Record<string, unknown>> }>>();
+  private readonly demIndex = new Map<
+    string,
+    Promise<{ tiles: DemIndexEntry[]; sources: Map<string, Record<string, unknown>> }>
+  >();
   private readonly demData = new Map<string, Promise<Float32Array>>();
   private readonly osmRun = new Map<string, Promise<ImportRun | null>>();
 
@@ -162,7 +171,9 @@ export class GeodataReader {
     const { rows } = await sql<{ osm_type: string; osm_id: string; tags: Record<string, string>; g: string }>`
       SELECT osm_type, osm_id, tags, ST_AsGeoJSON(geom, 7) AS g FROM geo.osm_building
       WHERE import_id = ${run.id} AND geom && ST_MakeEnvelope(${box[0]}, ${box[1]}, ${box[2]}, ${box[3]}, 4326)
-        AND ST_Intersects(geom, ST_MakeEnvelope(${box[0]}, ${box[1]}, ${box[2]}, ${box[3]}, 4326))`.execute(this.db);
+        AND ST_Intersects(geom, ST_MakeEnvelope(${box[0]}, ${box[1]}, ${box[2]}, ${box[3]}, 4326))`.execute(
+      this.db,
+    );
     return elementsJson(rows.map((r) => toElement(r.osm_type, r.osm_id, r.tags, JSON.parse(r.g) as GeoJson)));
   }
 
@@ -292,7 +303,8 @@ export class GeodataReader {
       });
     p.catch(() => this.demData.delete(t.id));
     this.demData.set(t.id, p);
-    while (this.demData.size > DEM_TILE_CACHE) this.demData.delete(this.demData.keys().next().value as string);
+    while (this.demData.size > DEM_TILE_CACHE)
+      this.demData.delete(this.demData.keys().next().value as string);
     return p;
   }
 }

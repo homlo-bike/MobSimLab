@@ -1,4 +1,14 @@
-import { BadRequestException, Controller, Get, Header, HttpException, Param, Query, Req, Optional } from "@nestjs/common";
+import {
+  BadRequestException,
+  Controller,
+  Get,
+  Header,
+  HttpException,
+  Param,
+  Query,
+  Req,
+  Optional,
+} from "@nestjs/common";
 import type { MslRequest } from "../auth/session.service";
 import { OverpassError } from "../gateway/overpass.client";
 import { ProjectGate } from "../geodata/project-gate";
@@ -40,7 +50,8 @@ export class StreetNetworkController {
     } catch (e) {
       if (e instanceof OverpassError)
         throw new HttpException("OpenStreetMap streets are unavailable right now", e.status);
-      if (e instanceof ToolError) throw new HttpException("The project's OpenStreetMap import could not be read", 502);
+      if (e instanceof ToolError)
+        throw new HttpException("The project's OpenStreetMap import could not be read", 502);
       throw e;
     }
   }
@@ -67,7 +78,8 @@ export class StreetNetworkController {
     } catch (e) {
       if (e instanceof OverpassError)
         throw new HttpException("OpenStreetMap streets are unavailable right now", e.status);
-      if (e instanceof ToolError) throw new HttpException("The project's OpenStreetMap import could not be read", 502);
+      if (e instanceof ToolError)
+        throw new HttpException("The project's OpenStreetMap import could not be read", 502);
       throw e;
     }
   }
@@ -94,7 +106,8 @@ export class StreetNetworkController {
     } catch (e) {
       if (e instanceof OverpassError)
         throw new HttpException("OpenStreetMap railways are unavailable right now", e.status);
-      if (e instanceof ToolError) throw new HttpException("The project's OpenStreetMap import could not be read", 502);
+      if (e instanceof ToolError)
+        throw new HttpException("The project's OpenStreetMap import could not be read", 502);
       throw e;
     }
   }

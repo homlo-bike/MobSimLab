@@ -47,12 +47,23 @@ export interface OpenElevationOptions {
 }
 
 /** Purpose: the fallback settings from the environment; null when the fallback is off. */
-export function openElevationSettings(env: NodeJS.ProcessEnv = process.env): Partial<OpenElevationOptions> | null {
+export function openElevationSettings(
+  env: NodeJS.ProcessEnv = process.env,
+): Partial<OpenElevationOptions> | null {
   if ((env.MOBSIMLAB_ELEVATION_FALLBACK ?? "open-elevation") === "off") return null;
   const endpoint = env.MOBSIMLAB_OPEN_ELEVATION_URL
-    ? z.url({ protocol: /^https$/ }).parse(env.MOBSIMLAB_OPEN_ELEVATION_URL).replace(/\/+$/, "")
+    ? z
+        .url({ protocol: /^https$/ })
+        .parse(env.MOBSIMLAB_OPEN_ELEVATION_URL)
+        .replace(/\/+$/, "")
     : DEFAULT_OPEN_ELEVATION_URL;
-  const batch = z.coerce.number().int().min(1).max(10_000).default(100).parse(env.MOBSIMLAB_OPEN_ELEVATION_BATCH || undefined);
+  const batch = z.coerce
+    .number()
+    .int()
+    .min(1)
+    .max(10_000)
+    .default(100)
+    .parse(env.MOBSIMLAB_OPEN_ELEVATION_BATCH || undefined);
   return { endpoint, batchSize: batch };
 }
 
@@ -82,7 +93,9 @@ export class OpenElevationClient {
    */
   async elevations(points: [number, number][]): Promise<Array<number | null>> {
     const key = ([lon, lat]: [number, number]) => `${lon.toFixed(6)},${lat.toFixed(6)}`;
-    const missing = [...new Map(points.filter((p) => !this.cache.has(key(p))).map((p) => [key(p), p])).values()];
+    const missing = [
+      ...new Map(points.filter((p) => !this.cache.has(key(p))).map((p) => [key(p), p])).values(),
+    ];
     for (let i = 0; i < missing.length; i += this.o.batchSize) {
       const batch = missing.slice(i, i + this.o.batchSize);
       const zs = await this.serial(() => this.lookup(batch));
@@ -115,7 +128,11 @@ export class OpenElevationClient {
       try {
         const res = await this.o.fetchImpl(`${this.o.endpoint}/api/v1/lookup`, {
           method: "POST",
-          headers: { "User-Agent": USER_AGENT, "Content-Type": "application/json", Accept: "application/json" },
+          headers: {
+            "User-Agent": USER_AGENT,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
           body: JSON.stringify({ locations: batch.map(([lon, lat]) => ({ latitude: lat, longitude: lon })) }),
           signal: ctrl.signal,
           redirect: "error",
@@ -127,8 +144,11 @@ export class OpenElevationClient {
         if (!res.ok) throw new OpenElevationError(`Open-Elevation answered ${res.status}`, 502);
         const body = (await res.json()) as { results?: { elevation?: unknown }[] };
         const results = body.results ?? [];
-        if (results.length !== batch.length) throw new OpenElevationError("Open-Elevation answered the wrong number of points", 502);
-        return results.map((r) => (typeof r.elevation === "number" && Number.isFinite(r.elevation) ? r.elevation : null));
+        if (results.length !== batch.length)
+          throw new OpenElevationError("Open-Elevation answered the wrong number of points", 502);
+        return results.map((r) =>
+          typeof r.elevation === "number" && Number.isFinite(r.elevation) ? r.elevation : null,
+        );
       } catch (e) {
         if (e instanceof OpenElevationError) throw e;
         lastError = ctrl.signal.aborted

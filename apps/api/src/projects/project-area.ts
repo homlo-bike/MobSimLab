@@ -28,14 +28,24 @@ export function bufferedBox(b: Bbox, km: number): Bbox {
 }
 
 /** Purpose: the project area, or null when nothing is drawn. */
-export async function projectArea(db: Database, projectId: string, bufferKm?: number): Promise<ProjectArea | null> {
+export async function projectArea(
+  db: Database,
+  projectId: string,
+  bufferKm?: number,
+): Promise<ProjectArea | null> {
   const { rows } = await sql<{ doc: unknown; buffer: string | null }>`
-    SELECT d.doc, p.area_buffer_km::text AS buffer FROM project.project p
+    SELECT d.doc, to_jsonb(p) ->> 'area_buffer_km' AS buffer FROM project.project p
     LEFT JOIN project.drawing d ON d.project_id = p.id WHERE p.id = ${projectId}`.execute(db);
   let b: Bbox | null = null;
   const visit = (v: unknown) => {
     if (Array.isArray(v)) {
-      if (v.length >= 2 && typeof v[0] === "number" && typeof v[1] === "number" && Math.abs(v[0]) <= 180 && Math.abs(v[1]) <= 90) {
+      if (
+        v.length >= 2 &&
+        typeof v[0] === "number" &&
+        typeof v[1] === "number" &&
+        Math.abs(v[0]) <= 180 &&
+        Math.abs(v[1]) <= 90
+      ) {
         const [x, y] = v as [number, number];
         b = b ? [Math.min(b[0], x), Math.min(b[1], y), Math.max(b[2], x), Math.max(b[3], y)] : [x, y, x, y];
         return;

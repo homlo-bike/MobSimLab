@@ -90,7 +90,7 @@ export interface Heights {
 export function mainSource(sources: HeightSource[]): HeightSource {
   let best: HeightSource | null = null;
   for (const s of sources)
-    if (!best || (Number(s.verticalAccuracyM ?? 0) > Number(best.verticalAccuracyM ?? 0))) best = s;
+    if (!best || Number(s.verticalAccuracyM ?? 0) > Number(best.verticalAccuracyM ?? 0)) best = s;
   return best ?? TERRAIN_SOURCE;
 }
 

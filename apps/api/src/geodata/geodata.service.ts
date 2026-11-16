@@ -66,7 +66,18 @@ const STAGE_LOCK = 7_316_525_311;
 
 /** Columns copied from each staging table into `geo.<table>`, after osm_type, osm_id and tags. */
 export const OSM_TABLES: Record<string, string[]> = {
-  osm_way_road: ["highway", "name", "oneway", "maxspeed", "lanes", "bridge", "tunnel", "layer", "is_cycle", "is_foot"],
+  osm_way_road: [
+    "highway",
+    "name",
+    "oneway",
+    "maxspeed",
+    "lanes",
+    "bridge",
+    "tunnel",
+    "layer",
+    "is_cycle",
+    "is_foot",
+  ],
   osm_way_rail: ["railway", "name", "bridge", "tunnel", "layer"],
   osm_building: ["building", "levels", "height"],
   osm_landuse: ["class", "value"],
@@ -187,16 +198,21 @@ export class GeodataService implements OnApplicationBootstrap {
     const role = await this.projects.access(actor, projectId, "read");
     const area = await projectArea(this.db, projectId);
     const { rows } = await sql<Row>`
-      SELECT * FROM geo.import WHERE project_id = ${projectId} ORDER BY created_at DESC LIMIT 30`.execute(this.db);
+      SELECT * FROM geo.import WHERE project_id = ${projectId} ORDER BY created_at DESC LIMIT 30`.execute(
+      this.db,
+    );
     const runs = rows.map(toRun);
     const of = (kind: ImportKind) => ({
       current: runs.find((r) => r.kind === kind && r.status === "done") ?? null,
       latest: runs.find((r) => r.kind === kind) ?? null,
     });
     const covers = (r: ImportRun | null) =>
-      !!r && !!area &&
-      r.bbox[0] <= area.drawnBbox[0] && r.bbox[1] <= area.drawnBbox[1] &&
-      r.bbox[2] >= area.drawnBbox[2] && r.bbox[3] >= area.drawnBbox[3];
+      !!r &&
+      !!area &&
+      r.bbox[0] <= area.drawnBbox[0] &&
+      r.bbox[1] <= area.drawnBbox[1] &&
+      r.bbox[2] >= area.drawnBbox[2] &&
+      r.bbox[3] >= area.drawnBbox[3];
     const osm = of("osm");
     const dem = of("dem");
     const demUpload = of("dem_upload");
@@ -207,7 +223,8 @@ export class GeodataService implements OnApplicationBootstrap {
       osm: { ...osm, coversDrawing: covers(osm.current) },
       dem: { ...dem, coversDrawing: covers(dem.current) },
       demUpload,
-      suggestedMethod: areaKm2 !== null && areaKm2 > this.settings.overpass.maxAreaKm2 ? "geofabrik" : "overpass",
+      suggestedMethod:
+        areaKm2 !== null && areaKm2 > this.settings.overpass.maxAreaKm2 ? "geofabrik" : "overpass",
       limits: {
         overpassMaxKm2: this.settings.overpass.maxAreaKm2,
         osmMaxAreaKm2: this.settings.maxAreaKm2,
@@ -432,7 +449,11 @@ export class GeodataService implements OnApplicationBootstrap {
           progress: (done, total) => this.mark(run.id, { progress: { step: "download", done, total } }),
           checkCancelled: () => this.check(run.id),
         });
-        Object.assign(stats, { tiles: fetched.tiles, cachedTiles: fetched.cachedTiles, downloadBytes: fetched.bytes });
+        Object.assign(stats, {
+          tiles: fetched.tiles,
+          cachedTiles: fetched.cachedTiles,
+          downloadBytes: fetched.bytes,
+        });
         dataTimestamp = fetched.dataTimestamp;
         await this.mark(run.id, { progress: { step: "merge" } });
         const sorted: string[] = [];
@@ -452,7 +473,9 @@ export class GeodataService implements OnApplicationBootstrap {
           source = await this.geofabrik.download(o.region!, (bytes, total) => {
             if (Date.now() - lastMark < 2_000) return;
             lastMark = Date.now();
-            void this.mark(run.id, { progress: { step: "download", done: bytes, total: total ?? undefined } });
+            void this.mark(run.id, {
+              progress: { step: "download", done: bytes, total: total ?? undefined },
+            });
           });
         }
         this.check(run.id);
@@ -541,7 +564,8 @@ export class GeodataService implements OnApplicationBootstrap {
     const [w, s, e, n] = run.bbox;
     const cells: string[] = [];
     for (let lat = Math.floor(s); lat <= Math.floor(n - 1e-12); lat++)
-      for (let lon = Math.floor(w); lon <= Math.floor(e - 1e-12); lon++) cells.push(cellName(lon + 0.5, lat + 0.5));
+      for (let lon = Math.floor(w); lon <= Math.floor(e - 1e-12); lon++)
+        cells.push(cellName(lon + 0.5, lat + 0.5));
     let tiles = 0;
     let pixels = 0;
     let missingCells = 0;
@@ -583,7 +607,10 @@ export class GeodataService implements OnApplicationBootstrap {
 
   private async requireArea(projectId: string) {
     const area = await projectArea(this.db, projectId);
-    if (!area) throw new BadRequestException("Draw something in the project first: the import covers the box around it");
+    if (!area)
+      throw new BadRequestException(
+        "Draw something in the project first: the import covers the box around it",
+      );
     return area;
   }
 
@@ -601,7 +628,14 @@ export class GeodataService implements OnApplicationBootstrap {
         VALUES (${projectId}, ${kind}, ${method}, ${area.bbox}::double precision[], ${area.bufferKm},
                 ${JSON.stringify(options)}::jsonb, ${actor.userId})
         RETURNING *`.execute(tx);
-      await this.projects.logProject(actor, projectId, `geodata.import.${kind}`, null, { method, options }, tx);
+      await this.projects.logProject(
+        actor,
+        projectId,
+        `geodata.import.${kind}`,
+        null,
+        { method, options },
+        tx,
+      );
       return toRun(rows[0]!);
     });
     return run;

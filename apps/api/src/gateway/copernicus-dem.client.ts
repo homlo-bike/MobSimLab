@@ -297,10 +297,7 @@ export class CopernicusDemClient {
    * its north-west pixel and the pixel size; null when the DEM does not cover the cell (open sea) or the box
    * misses it. Side effects: range requests for the header and every internal tile the window touches.
    */
-  async window(
-    name: string,
-    box: [number, number, number, number],
-  ): Promise<DemWindow | null> {
+  async window(name: string, box: [number, number, number, number]): Promise<DemWindow | null> {
     const h = await this.header(name);
     if (!h) return null;
     const col = (lon: number) => (lon - h.originLon) / h.scaleLon;

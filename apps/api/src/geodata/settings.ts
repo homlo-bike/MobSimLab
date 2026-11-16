@@ -45,7 +45,10 @@ export interface GeodataSettings {
 }
 
 const num = (min: number, max: number, dflt: number) =>
-  z.preprocess((v) => (v === undefined || v === "" ? undefined : v), z.coerce.number().min(min).max(max).default(dflt));
+  z.preprocess(
+    (v) => (v === undefined || v === "" ? undefined : v),
+    z.coerce.number().min(min).max(max).default(dflt),
+  );
 
 const schema = z.object({
   MOBSIMLAB_DATA_DIR: z.string().min(1).default("/data"),
