@@ -1,4 +1,5 @@
 import { roadTe } from "./road/te";
+import { calendarTe } from "./calendar/te";
 import { editorsTe } from "./editors/te";
 import { cargoBikeTe } from "./cargo-bike/te";
 import { commentsTe } from "./comments/te";
@@ -497,5 +498,6 @@ export const te: Messages = {
   ...pluginCodeTe,
   ...populationTe,
   ...roadTe,
+  ...calendarTe,
   ...PLUGIN_MESSAGES.te,
 };

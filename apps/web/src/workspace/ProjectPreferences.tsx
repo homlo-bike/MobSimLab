@@ -10,6 +10,8 @@ import { ReasonField } from "./ReasonField";
 import { DesignRulesSection } from "./DesignRules";
 import { VehicleChoiceSection } from "./VehicleChoice";
 import { SwitchChoiceSection } from "./SwitchChoice";
+import { CalendarSection } from "./CalendarSection";
+import { ClimateSection } from "./ClimateSection";
 import { ParametersSection } from "./Parameters";
 import { AssumptionsReportSection } from "./AssumptionsReport";
 import { roadValue } from "../features/road-sim/params";
@@ -32,6 +34,8 @@ export function ProjectPreferences({
   plugins = null,
   onSetPlugin,
   currency = NO_CURRENCY,
+  country = null,
+  place = null,
 }: {
   api: ProjectsApi;
   project: Project;
@@ -46,6 +50,10 @@ export function ProjectPreferences({
   onSetPlugin?: (pluginId: string, enabled: boolean, version?: string) => Promise<void>;
   /** The project's currency and its exchange rate. */
   currency?: CurrencyState;
+  /** ISO alpha-2 code of the country at the project's location, when known (public holidays). */
+  country?: string | null;
+  /** The project's location [lon, lat], for its climate; null when nothing is drawn yet. */
+  place?: readonly [number, number] | null;
 }) {
   const { t } = useI18n();
   const editable = can.edit(project);
@@ -223,6 +231,18 @@ export function ProjectPreferences({
           </div>
           {!editable && <p className="mt-3 text-sm text-slate-500">{t("prefs.readOnly")}</p>}
         </section>
+        <CalendarSection
+          preferences={preferences}
+          editable={editable && !!onPreferences}
+          onPreferences={(d) => onPreferences?.(d)}
+          detectedCountry={country}
+        />
+        <ClimateSection
+          preferences={preferences}
+          editable={editable && !!onPreferences}
+          onPreferences={(d) => onPreferences?.(d)}
+          place={place}
+        />
         <StationsSection
           preferences={preferences}
           editable={editable && !!onPreferences}

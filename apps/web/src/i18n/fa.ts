@@ -1,4 +1,5 @@
 import { roadFa } from "./road/fa";
+import { calendarFa } from "./calendar/fa";
 import { editorsFa } from "./editors/fa";
 import { cargoBikeFa } from "./cargo-bike/fa";
 import { commentsFa } from "./comments/fa";
@@ -496,5 +497,6 @@ export const fa: Messages = {
   ...pluginCodeFa,
   ...populationFa,
   ...roadFa,
+  ...calendarFa,
   ...PLUGIN_MESSAGES.fa,
 };

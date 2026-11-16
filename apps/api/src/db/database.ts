@@ -39,9 +39,10 @@ export type PopulationConfidence = "high" | "medium" | "low";
 
 /**
  * Kinds of simulation run: the rail capacity run, a sweep of its settings (0008_agent_runs.sql), the road
- * simulation (0009_road_runs.sql) and the demand model (0012_demand_runs.sql).
+ * simulation (0009_road_runs.sql), the demand model (0012_demand_runs.sql) and calendar runs
+ * (0015_calendar_runs.sql).
  */
-export type RunKind = "capacity" | "sweep" | "road" | "demand";
+export type RunKind = "capacity" | "sweep" | "road" | "demand" | "calendar";
 
 type Timestamp = ColumnType<Date, Date | string | undefined, Date | string>;
 

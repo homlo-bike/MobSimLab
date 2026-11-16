@@ -1,4 +1,5 @@
 import { roadIg } from "./road/ig";
+import { calendarIg } from "./calendar/ig";
 import { editorsIg } from "./editors/ig";
 import { cargoBikeIg } from "./cargo-bike/ig";
 import { commentsIg } from "./comments/ig";
@@ -500,5 +501,6 @@ export const ig: Messages = {
   ...pluginCodeIg,
   ...populationIg,
   ...roadIg,
+  ...calendarIg,
   ...PLUGIN_MESSAGES.ig,
 };

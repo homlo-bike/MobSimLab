@@ -20,6 +20,7 @@ import { PopulationLayersController } from "./population/layers.controller";
 import { PopulationLayersModule } from "./population/layers.module";
 import { PopulationModule } from "./population/population.module";
 import { EconomyModule } from "./economy/economy.module";
+import { CalendarModule } from "./calendar/calendar.module";
 import { PlacesModule } from "./places/places.module";
 import { TerrainModule } from "./terrain/terrain.module";
 import { AccessGuard } from "./iam/access.guard";
@@ -53,6 +54,7 @@ export class AppModule {
         PopulationModule,
         PopulationLayersModule,
         EconomyModule,
+        CalendarModule,
         BenefitsModule,
         PlacesModule,
         SimulationModule,

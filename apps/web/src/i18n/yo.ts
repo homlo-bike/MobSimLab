@@ -1,4 +1,5 @@
 import { roadYo } from "./road/yo";
+import { calendarYo } from "./calendar/yo";
 import { editorsYo } from "./editors/yo";
 import { cargoBikeYo } from "./cargo-bike/yo";
 import { commentsYo } from "./comments/yo";
@@ -497,5 +498,6 @@ export const yo: Messages = {
   ...pluginCodeYo,
   ...populationYo,
   ...roadYo,
+  ...calendarYo,
   ...PLUGIN_MESSAGES.yo,
 };
