@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import { card, fmtQty, modeLabel, num, td, th, Tile } from "../costs/CostTables";
+import { card, fmtQty, num, td, th, Tile } from "../costs/CostTables";
+import { useModeLabel } from "../schematic/common";
+import { type Translate, useI18n } from "../../i18n/i18n";
 import { prefId } from "../costs/params";
 import type { LineFact } from "../tables/lineFacts";
 import { type PreferencesDoc, withPref } from "../../workspace/preferences";
@@ -13,9 +15,11 @@ const BUS_MODES = ["bus", "brt", "intercity_bus"];
 const int = (v: number) => new Intl.NumberFormat("en").format(Math.round(v));
 const compact = (v: number) =>
   new Intl.NumberFormat("en", { notation: "compact", maximumFractionDigits: 1 }).format(v);
-/** kWh as MWh or GWh. */
-const energy = (kwh: number) => (kwh >= 1e6 ? `${fmtQty(kwh / 1e6)} GWh` : `${fmtQty(kwh / 1e3)} MWh`);
-const tonnes = (kg: number) => `${fmtQty(kg / 1000)} t`;
+/** Purpose: kWh as MWh or GWh, in the language's unit format. */
+const energyIn = (t: Translate) => (kwh: number) =>
+  kwh >= 1e6 ? t("tbl.u.gwh", { v: fmtQty(kwh / 1e6) }) : t("tbl.u.mwh", { v: fmtQty(kwh / 1e3) });
+/** Purpose: kg as tonnes, in the language's unit format. */
+const tonnesIn = (t: Translate) => (kg: number) => t("tbl.u.t", { v: fmtQty(kg / 1000) });
 
 /**
  * Purpose: the inputs of the energy calculation for the project's lines: each line's vehicle-km a year,
@@ -39,7 +43,7 @@ export function energyInputs(
  * Purpose: the energy plugin's section of the Tables tab (calculation `energy_emissions`): electricity,
  * diesel and greenhouse gas emissions a year per line and for the network, from the same vehicle-km as
  * the service table and the cost tables, with the grid's emission intensity and the battery bus share as
- * project values. In English for now, like the other tables.
+ * project values, in the chosen language.
  * Side effects: loads the energy WebAssembly module; `onPreferences` saves the project's values.
  */
 export function EnergySection({
@@ -53,6 +57,12 @@ export function EnergySection({
   onPreferences?: (d: PreferencesDoc) => void;
   loadEngine?: EnergyEngineLoader;
 }) {
+  const { t: tr } = useI18n();
+  const modeLabel = useModeLabel();
+  const energy = energyIn(tr);
+  const tonnes = tonnesIn(tr);
+  const litres = (v: number | string) => tr("tbl.u.l", { v });
+  const grams = (v: number | string) => tr("tbl.u.g", { v });
   const [engine, setEngine] = useState<EnergyEngine | null>(null);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
@@ -86,24 +96,21 @@ export function EnergySection({
   return (
     <section aria-labelledby="energy-title" className="mt-10">
       <h2 id="energy-title" className="text-xl font-semibold tracking-tight">
-        Energy and emissions
+        {tr("nrg.title")}
       </h2>
-      <p className="mt-1 max-w-3xl text-slate-600">
-        Traction energy and greenhouse gas emissions a year, from each line's vehicle-km in the service table.
-        Electricity is counted where it is bought (substation or charger), diesel well-to-wheel.
-      </p>
+      <p className="mt-1 max-w-3xl text-slate-600">{tr("nrg.intro")}</p>
       {error && (
         <p role="alert" className="mt-3 text-sm text-red-700">
-          The energy estimate did not run: {error}
+          {tr("nrg.error", { error })}
         </p>
       )}
       <section className={card} aria-labelledby="energy-inputs">
         <h3 id="energy-inputs" className="caps m-0">
-          Project values
+          {tr("nrg.values")}
         </h3>
         <div className="mt-2 flex flex-wrap gap-x-6 gap-y-3">
           <ValueField
-            label="Grid electricity, kg CO2e per kWh"
+            label={tr("nrg.grid")}
             id={GRID}
             step={0.01}
             max={2}
@@ -118,7 +125,7 @@ export function EnergySection({
             return (
               <ValueField
                 key={m}
-                label={`${modeLabel(m)}: battery electric, %`}
+                label={tr("nrg.electricShare", { mode: modeLabel(m) })}
                 id={id}
                 step={5}
                 max={100}
@@ -134,51 +141,56 @@ export function EnergySection({
       </section>
       {facts.length === 0 ? (
         <p className="mt-4 rounded-xl border border-dashed border-slate-300 bg-white px-4 py-5 text-slate-600">
-          No lines yet. Add a service line in the railway tool or draw a street line.
+          {tr("tbl.noLines")}
         </p>
       ) : !result || !t ? (
         !error && (
           <p role="status" className="mt-4 text-slate-500">
-            Estimating energy…
+            {tr("nrg.estimating")}
           </p>
         )
       ) : (
         <>
           <div className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
             <Tile
-              title="Electricity a year"
+              title={tr("nrg.electricityYear")}
               value={energy(t.electricity_kwh)}
-              sub="at the substation or charger"
+              sub={tr("nrg.electricitySub")}
             />
             <Tile
-              title="Diesel a year"
-              value={`${compact(t.diesel_l)} L`}
-              sub={`${energy(t.diesel_l * (inputs[0]?.params["energy.diesel_kwh_per_l"] ?? 10))} of fuel`}
+              title={tr("nrg.dieselYear")}
+              value={litres(compact(t.diesel_l))}
+              sub={tr("nrg.dieselSub", {
+                energy: energy(t.diesel_l * (inputs[0]?.params["energy.diesel_kwh_per_l"] ?? 10)),
+              })}
             />
             <Tile
-              title="Emissions a year"
+              title={tr("nrg.emissionsYear")}
               value={tonnes(t.co2e_kg)}
-              sub={`CO2e: ${tonnes(t.co2e_electric_kg)} electricity, ${tonnes(t.co2e_diesel_kg)} diesel`}
+              sub={tr("nrg.emissionsSub", {
+                electric: tonnes(t.co2e_electric_kg),
+                diesel: tonnes(t.co2e_diesel_kg),
+              })}
             />
             <Tile
-              title="Per place-km"
-              value={t.place_km > 0 ? `${fmtQty((t.co2e_kg * 1000) / t.place_km)} g` : "—"}
-              sub="CO2e for each place offered, every place filled"
+              title={tr("nrg.perPlaceKm")}
+              value={t.place_km > 0 ? grams(fmtQty((t.co2e_kg * 1000) / t.place_km)) : "—"}
+              sub={tr("nrg.perPlaceKmSub")}
             />
           </div>
-          <section className={card} aria-label="Energy and emissions per line">
+          <section className={card} aria-label={tr("nrg.aria")}>
             <div className="overflow-x-auto">
               <table className="w-full min-w-[46rem] text-sm">
                 <thead>
                   <tr className="border-b border-slate-200">
-                    <th className={th}>Line</th>
-                    <th className={`${th} text-right`}>Vehicle-km</th>
-                    <th className={`${th} text-right`}>Electric</th>
-                    <th className={`${th} text-right`}>Electricity</th>
-                    <th className={`${th} text-right`}>Diesel</th>
-                    <th className={`${th} text-right`}>CO2e</th>
-                    <th className={`${th} text-right`}>Per vehicle-km</th>
-                    <th className={`${th} text-right`}>Per place-km</th>
+                    <th className={th}>{tr("tbl.line")}</th>
+                    <th className={`${th} text-right`}>{tr("nrg.vehicleKm")}</th>
+                    <th className={`${th} text-right`}>{tr("nrg.electric")}</th>
+                    <th className={`${th} text-right`}>{tr("nrg.electricity")}</th>
+                    <th className={`${th} text-right`}>{tr("nrg.diesel")}</th>
+                    <th className={`${th} text-right`}>{tr("nrg.co2e")}</th>
+                    <th className={`${th} text-right`}>{tr("nrg.perVehicleKm")}</th>
+                    <th className={`${th} text-right`}>{tr("nrg.perPlaceKm")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -191,19 +203,21 @@ export function EnergySection({
                       <td className={num}>{int(l.vehicle_km)}</td>
                       <td className={num}>{`${int(l.electric_share * 100)} %`}</td>
                       <td className={num}>{energy(l.electricity_kwh)}</td>
-                      <td className={num}>{`${int(l.diesel_l)} L`}</td>
+                      <td className={num}>{litres(int(l.diesel_l))}</td>
                       <td className={num}>{tonnes(l.co2e_kg)}</td>
                       <td className={num}>
-                        {`${int(l.g_per_vkm)} g`}
-                        <span className="block text-xs text-slate-500">{`${fmtQty(l.kwh_per_vkm)} kWh`}</span>
+                        {grams(int(l.g_per_vkm))}
+                        <span className="block text-xs text-slate-500">
+                          {tr("tbl.u.kwh", { v: fmtQty(l.kwh_per_vkm) })}
+                        </span>
                       </td>
                       <td className={num}>
-                        {l.g_per_place_km === null ? "—" : `${fmtQty(l.g_per_place_km)} g`}
+                        {l.g_per_place_km === null ? "—" : grams(fmtQty(l.g_per_place_km))}
                       </td>
                     </tr>
                   ))}
                   <tr className="font-semibold">
-                    <td className={td}>All lines</td>
+                    <td className={td}>{tr("nrg.allLines")}</td>
                     <td className={num}>{int(t.vehicle_km)}</td>
                     <td className={num}>
                       {t.vehicle_km > 0
@@ -215,33 +229,23 @@ export function EnergySection({
                         : "—"}
                     </td>
                     <td className={num}>{energy(t.electricity_kwh)}</td>
-                    <td className={num}>{`${int(t.diesel_l)} L`}</td>
+                    <td className={num}>{litres(int(t.diesel_l))}</td>
                     <td className={num}>{tonnes(t.co2e_kg)}</td>
                     <td className={num}>
-                      {t.vehicle_km > 0 ? `${int((t.co2e_kg * 1000) / t.vehicle_km)} g` : "—"}
+                      {t.vehicle_km > 0 ? grams(int((t.co2e_kg * 1000) / t.vehicle_km)) : "—"}
                     </td>
                     <td className={num}>
-                      {t.place_km > 0 ? `${fmtQty((t.co2e_kg * 1000) / t.place_km)} g` : "—"}
+                      {t.place_km > 0 ? grams(fmtQty((t.co2e_kg * 1000) / t.place_km)) : "—"}
                     </td>
                   </tr>
                 </tbody>
               </table>
             </div>
             <ul className="mt-3 list-disc ps-5 text-xs text-slate-500">
-              <li>
-                Rail uses electricity per place-km times the train's places, since trains range from a short
-                tram to a 16-car high-speed train; street modes use a value per vehicle-km. Battery buses add
-                the charging loss.
-              </li>
-              <li>
-                Diesel counts burning it (tank-to-wheel) and producing it (well-to-tank). Electricity counts
-                generation at the grid's emission intensity; a line on green power sets a lower value.
-              </li>
-              <li>
-                Values come from the energy plugin's assumption library (energy.*), all unverified first
-                estimates; the simulation will replace the intensities with each line's own running.
-              </li>
-              {missing.length > 0 && <li>Missing values, counted as 0: {missing.join(", ")}.</li>}
+              <li>{tr("nrg.note.rail")}</li>
+              <li>{tr("nrg.note.diesel")}</li>
+              <li>{tr("nrg.note.library")}</li>
+              {missing.length > 0 && <li>{tr("nrg.note.missing", { list: missing.join(", ") })}</li>}
             </ul>
           </section>
         </>
@@ -271,6 +275,7 @@ function ValueField({
   max: number;
   onChange?: (v: number | null) => void;
 }) {
+  const { t } = useI18n();
   const shown = Math.round((value ?? library) * 1000) / 1000;
   return (
     <label className="flex flex-col gap-1 text-sm">
@@ -293,11 +298,11 @@ function ValueField({
           }}
         />
         {value === undefined ? (
-          <span className="text-xs text-slate-500">library value</span>
+          <span className="text-xs text-slate-500">{t("nrg.libraryValue")}</span>
         ) : (
           onChange && (
             <button type="button" className="text-xs text-blue-700 underline" onClick={() => onChange(null)}>
-              Use the library value ({Math.round(library * 1000) / 1000})
+              {t("nrg.useLibrary", { value: Math.round(library * 1000) / 1000 })}
             </button>
           )
         )}

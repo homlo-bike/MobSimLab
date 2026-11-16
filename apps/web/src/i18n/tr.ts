@@ -2,6 +2,7 @@ import { roadTr } from "./road/tr";
 import { editorsTr } from "./editors/tr";
 import { cargoBikeTr } from "./cargo-bike/tr";
 import { depotsTr } from "./depots/tr";
+import { tablesTr } from "./tables/tr";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -390,6 +391,7 @@ export const tr: Messages = {
   ...editorsTr,
   ...cargoBikeTr,
   ...depotsTr,
+  ...tablesTr,
   ...roadTr,
   ...PLUGIN_MESSAGES.tr,
 };
