@@ -6,7 +6,12 @@
   "type": "object",
   "required": ["id", "name", "modes", "boundary", "gates", "zones", "layout"],
   "properties": {
-    "id": { "type": "string", "minLength": 1, "maxLength": 64, "description": "Stable id; street lines name their depot by it (`depotId`)." },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "description": "Stable id; street lines name their depot by it (`depotId`)."
+    },
     "name": { "type": "string", "maxLength": 120 },
     "modes": {
       "type": "array",
@@ -42,7 +47,10 @@
           "enum": ["entrance", "exit", "both"],
           "description": "Pull-in uses entrances, pull-out uses exits; the street line tool routes depot runs to and from these gates."
         },
-        "lonlat": { "$ref": "#/$defs/lonlat", "description": "On the depot outline, where it meets the street." }
+        "lonlat": {
+          "$ref": "#/$defs/lonlat",
+          "description": "On the depot outline, where it meets the street."
+        }
       }
     },
     "zone": {
@@ -55,11 +63,30 @@
           "description": "parking: overnight parking; charging: parking with a charger at every slot; maintenance: workshop positions (not used for overnight parking); reserve: parking for spare vehicles; circulation: driving area, no slots."
         },
         "ring": { "$ref": "#/$defs/ring" },
-        "angle_deg": { "enum": [90, 60, 45], "default": 90, "description": "Angle of the lanes to the aisles: 90 straight (two-way aisles), 60 or 45 angled (one-way aisles)." },
-        "vehicles_per_lane": { "type": ["integer", "null"], "minimum": 1, "maximum": 12, "description": "Vehicles one behind the other in a drive-through lane; null: the project value `depot.vehicles_per_lane` or fewer, whichever holds most." },
-        "vehicle": { "type": ["string", "null"], "description": "Vehicle the slots are sized for (catalogue id, or `mode:<mode>`); null: the longest of the lines using the depot." },
-        "aisle_width_m": { "type": ["number", "null"], "exclusiveMinimum": 0, "description": "Aisle width; null: the narrowest the vehicle's swept path allows." },
-        "heading_deg": { "type": ["number", "null"], "description": "Direction of the aisles, degrees clockwise from north; null: the best of the zone's long sides." }
+        "angle_deg": {
+          "enum": [90, 60, 45],
+          "default": 90,
+          "description": "Angle of the lanes to the aisles: 90 straight (two-way aisles), 60 or 45 angled (one-way aisles)."
+        },
+        "vehicles_per_lane": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "maximum": 12,
+          "description": "Vehicles one behind the other in a drive-through lane; null: the project value `depot.vehicles_per_lane` or fewer, whichever holds most."
+        },
+        "vehicle": {
+          "type": ["string", "null"],
+          "description": "Vehicle the slots are sized for (catalogue id, or `mode:<mode>`); null: the longest of the lines using the depot."
+        },
+        "aisle_width_m": {
+          "type": ["number", "null"],
+          "exclusiveMinimum": 0,
+          "description": "Aisle width; null: the narrowest the vehicle's swept path allows."
+        },
+        "heading_deg": {
+          "type": ["number", "null"],
+          "description": "Direction of the aisles, degrees clockwise from north; null: the best of the zone's long sides."
+        }
       }
     },
     "slot": {
@@ -68,8 +95,17 @@
       "properties": {
         "id": { "type": "string", "minLength": 1 },
         "center": { "$ref": "#/$defs/lonlat" },
-        "heading_deg": { "type": "number", "minimum": 0, "maximum": 360, "description": "Direction the parked vehicle faces (towards the lane exit), degrees clockwise from north." },
-        "length_m": { "type": "number", "exclusiveMinimum": 0, "description": "Longest vehicle the slot takes." },
+        "heading_deg": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 360,
+          "description": "Direction the parked vehicle faces (towards the lane exit), degrees clockwise from north."
+        },
+        "length_m": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Longest vehicle the slot takes."
+        },
         "width_m": { "type": "number", "exclusiveMinimum": 0 },
         "charger": { "type": "boolean", "description": "A charger of `depot.charger_power_kw` at this slot." }
       }
@@ -85,8 +121,14 @@
         "entry": { "$ref": "#/$defs/lonlat" },
         "exit": { "$ref": "#/$defs/lonlat" },
         "width_m": { "type": "number", "exclusiveMinimum": 0 },
-        "aisle_in": { "type": ["string", "null"], "description": "Aisle the lane is entered from; null: the nearest." },
-        "aisle_out": { "type": ["string", "null"], "description": "Aisle the lane is left into; null: the nearest." },
+        "aisle_in": {
+          "type": ["string", "null"],
+          "description": "Aisle the lane is entered from; null: the nearest."
+        },
+        "aisle_out": {
+          "type": ["string", "null"],
+          "description": "Aisle the lane is left into; null: the nearest."
+        },
         "slots": { "type": "array", "items": { "$ref": "#/$defs/slot" }, "minItems": 1 }
       }
     },
@@ -96,7 +138,12 @@
       "properties": {
         "id": { "type": "string", "minLength": 1 },
         "zone": { "type": "string" },
-        "coords": { "type": "array", "items": { "$ref": "#/$defs/lonlat" }, "minItems": 2, "description": "Centreline in the direction of travel." },
+        "coords": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/lonlat" },
+          "minItems": 2,
+          "description": "Centreline in the direction of travel."
+        },
         "width_m": { "type": "number", "exclusiveMinimum": 0 },
         "two_way": { "type": "boolean", "default": false }
       }
@@ -119,7 +166,10 @@
             "type": "object",
             "required": ["key", "length_m"],
             "properties": {
-              "key": { "type": "string", "description": "Catalogue id, or `mode:<mode>` for the mode's typical vehicle." },
+              "key": {
+                "type": "string",
+                "description": "Catalogue id, or `mode:<mode>` for the mode's typical vehicle."
+              },
               "name": { "type": "string" },
               "length_m": { "type": "number" },
               "width_m": { "type": "number", "default": 2.55 },
@@ -138,7 +188,11 @@
               "line": { "type": "string", "description": "`street:<index>` as in the cost estimate." },
               "name": { "type": "string" },
               "vehicle": { "type": "string" },
-              "count": { "type": "integer", "minimum": 0, "description": "Vehicles with spares (`mode.spare_share`)." },
+              "count": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Vehicles with spares (`mode.spare_share`)."
+              },
               "charging": { "type": "boolean", "description": "Battery vehicles that charge in the depot." }
             }
           }

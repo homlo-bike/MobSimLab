@@ -1,5 +1,6 @@
 import { editorsTe } from "./editors/te";
 import { cargoBikeTe } from "./cargo-bike/te";
+import { depotsTe } from "./depots/te";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -369,5 +370,6 @@ export const te: Messages = {
 
   ...editorsTe,
   ...cargoBikeTe,
+  ...depotsTe,
   ...PLUGIN_MESSAGES.te,
 };

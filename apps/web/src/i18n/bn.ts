@@ -1,5 +1,6 @@
 import { editorsBn } from "./editors/bn";
 import { cargoBikeBn } from "./cargo-bike/bn";
+import { depotsBn } from "./depots/bn";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -366,5 +367,6 @@ export const bn: Messages = {
 
   ...editorsBn,
   ...cargoBikeBn,
+  ...depotsBn,
   ...PLUGIN_MESSAGES.bn,
 };

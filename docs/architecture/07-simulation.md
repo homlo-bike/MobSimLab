@@ -155,6 +155,15 @@ From the depot polygon and the selected fleet:
 
 Generated layout is a set of persistent objects (slots, aisles) that users can edit.
 
+Built (ADR-0042): a depot is shared by every street line whose mode it takes and whose vehicle fits a slot;
+road depots take bus, BRT, trolleybus and intercity bus (trams use track depots, §4.6). Lanes are
+drive-through (first in, first out); straight bays have two-way aisles, angled bays (60°, 45°) one-way aisles.
+The Create tab's depot tool draws the depot and saves it as the drawing kind `depots`
+(`contracts/depot.schema.json`); `crates/depot-layout` lays it out, checks the swept path into and out of each
+lane, builds the driving network from the entrances to the exits, gives every vehicle of the lines a slot and
+sizes the depot. A line's pull-out runs start at the depot's exit gates and its pull-in runs end at its
+entrance gates. The road simulation starts each vehicle in the slot `analyse` gives it.
+
 ## 8. Passenger engine
 
 - Demand as OD matrices per period (from the demand model or GTFS-based observed data).

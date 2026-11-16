@@ -1,5 +1,6 @@
 import { editorsFa } from "./editors/fa";
 import { cargoBikeFa } from "./cargo-bike/fa";
+import { depotsFa } from "./depots/fa";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -366,5 +367,6 @@ export const fa: Messages = {
 
   ...editorsFa,
   ...cargoBikeFa,
+  ...depotsFa,
   ...PLUGIN_MESSAGES.fa,
 };

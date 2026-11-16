@@ -1,5 +1,6 @@
 import { editorsMr } from "./editors/mr";
 import { cargoBikeMr } from "./cargo-bike/mr";
+import { depotsMr } from "./depots/mr";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -366,5 +367,6 @@ export const mr: Messages = {
 
   ...editorsMr,
   ...cargoBikeMr,
+  ...depotsMr,
   ...PLUGIN_MESSAGES.mr,
 };
