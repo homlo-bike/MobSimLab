@@ -26,6 +26,19 @@ const railTimetable = z.looseObject({
   trips: z.array(z.looseObject({ trip_id: z.string() })).max(100000),
 });
 
+/** Existing networks imported from GTFS feeds (GTFS plugin): each feed's timetable of one service day. */
+const gtfsNetwork = z.looseObject({
+  feeds: z
+    .array(
+      z.looseObject({
+        id: z.string().min(1).max(64),
+        name: z.string().max(200),
+        timetable: railTimetable,
+      }),
+    )
+    .max(5),
+});
+
 const streetSetups = z.array(z.looseObject({ way: z.number().int() })).max(50000);
 
 /** Assumption library values the project changes, by assumption id (for example `street.mixed_traffic_delay_share`). */
@@ -128,6 +141,8 @@ export const DRAWING_KINDS = {
   "street-setups": { schema: streetSetups, schemaVersion: 1 },
   /** The trains of the railway tool's service lines as last published, for the journey planner. */
   "rail-timetable": { schema: railTimetable, schemaVersion: 1 },
+  /** Existing networks imported from GTFS feeds (GTFS plugin), for the journey planner. */
+  "gtfs-network": { schema: gtfsNetwork, schemaVersion: 1 },
   /** Project preferences: assumption library values changed for this project (Preferences tab). */
   preferences: { schema: preferences, schemaVersion: 1 },
   /** Cost tables settings (ADR-0039): the country chosen for prices. */

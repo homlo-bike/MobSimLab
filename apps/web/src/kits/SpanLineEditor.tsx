@@ -2,8 +2,9 @@ import { Marker, type Map as MapLibreMap, type MapMouseEvent } from "maplibre-gl
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { tNow, useI18n } from "../i18n/i18n";
+import type { MessageKey } from "../i18n/messages";
 import type { PluginLineInput } from "../features/journey-planner/network";
-import { centralValues, contextLabel, findMode, type PluginTool } from "../plugins/registry";
+import { centralValues, contextLabel, findMode, type PluginMode, type PluginTool } from "../plugins/registry";
 import { loadKits, spanSystem } from "./engine";
 import { fmtDur, fmtInt, fmtLen } from "./format";
 import { Issues, Stat } from "./Issues";
@@ -100,11 +101,16 @@ interface Props {
   loadTerrain?: TerrainLoader;
 }
 
+/** Whether a mode runs trains on a guideway (people movers) rather than cabins on a rope. */
+export function isGuideway(mode: PluginMode | undefined): boolean {
+  return !!mode && mode.family !== "aerial";
+}
+
 /** Purpose: an empty drawing for the tool's first mode. */
 function emptyDoc(tool: PluginTool): SpanDoc {
   const mode = findMode(tool.modes[0] ?? "")?.mode;
   return {
-    name: tNow("cable.defaultName"),
+    name: tNow(isGuideway(mode) ? "apm.defaultName" : "cable.defaultName"),
     mode: mode?.id ?? "",
     system: mode?.defaultContext ?? "",
     stations: [],
@@ -155,28 +161,44 @@ export function SpanLineEditor({
 
   useEffect(() => {
     let alive = true;
+    const guide = isGuideway(findMode(tool.modes[0] ?? "")?.mode);
     load().then(
       (k) => alive && setKits(k),
-      (e) => setError(tNow("cable.engineFailed", { error: e instanceof Error ? e.message : String(e) })),
+      (e) =>
+        setError(
+          tNow(guide ? "apm.engineFailed" : "cable.engineFailed", {
+            error: e instanceof Error ? e.message : String(e),
+          }),
+        ),
     );
     return () => {
       alive = false;
     };
-  }, [load]);
+  }, [load, tool]);
 
   useEffect(() => saveLocal(storageKey, doc), [storageKey, doc]);
 
   const found = findMode(doc.mode) ?? findMode(tool.modes[0] ?? "");
   const m = found?.mode;
   const color = m?.colour ?? "#7c3aed";
+  const guideway = isGuideway(m);
+  /** The cable car word, or the people mover's (trains, piers, headway) for guideway modes. */
+  const w = (cable: MessageKey, apm: MessageKey): MessageKey => (guideway ? apm : cable);
   const values = useMemo(() => centralValues(doc.mode, doc.system), [doc.mode, doc.system]);
   const system = useMemo(
     () =>
-      spanSystem(doc.system, m?.operation === "shuttle" ? "reversible" : "continuous", values, {
-        ...(doc.lineSpeed ? { line_speed_ms: doc.lineSpeed } : {}),
-        ...(doc.interval ? { cabin_interval_s: doc.interval } : {}),
-      }),
-    [doc.system, doc.lineSpeed, doc.interval, m?.operation, values],
+      spanSystem(
+        doc.system,
+        m?.operation === "shuttle" ? "reversible" : "continuous",
+        values,
+        {
+          ...(doc.lineSpeed ? { line_speed_ms: doc.lineSpeed } : {}),
+          ...(doc.interval ? { cabin_interval_s: doc.interval } : {}),
+        },
+        m?.parameterPrefix ?? "ropeway",
+        guideway ? "train" : "cabin",
+      ),
+    [doc.system, doc.lineSpeed, doc.interval, m?.operation, m?.parameterPrefix, guideway, values],
   );
 
   // Terrain and buildings under each section, fetched when the stations move.
@@ -410,11 +432,13 @@ export function SpanLineEditor({
         </label>
         {!reversible && (
           <label className="flex flex-col gap-1">
-            <span className="text-xs font-medium text-slate-600">{t("cable.cabinInterval")}</span>
+            <span className="text-xs font-medium text-slate-600">
+              {t(w("cable.cabinInterval", "apm.headway"))}
+            </span>
             <input
               type="number"
               min={5}
-              max={300}
+              max={guideway ? 900 : 300}
               className="rounded-lg border border-slate-300 px-2 py-1.5"
               value={system.cabin_interval_s}
               onChange={(e) => setDoc({ ...doc, interval: Number(e.target.value) || null })}
@@ -427,18 +451,18 @@ export function SpanLineEditor({
           {error}
         </p>
       )}
-      {!kits && !error && <p className="text-slate-500">{t("cable.starting")}</p>}
+      {!kits && !error && <p className="text-slate-500">{t(w("cable.starting", "apm.starting"))}</p>}
       {view && doc.stations.length >= 2 && (
         <div className="grid grid-cols-2 gap-2" aria-label={t("kit.summary")}>
           <Stat label={t("kit.length")} value={fmtLen(view.length_m)} />
           <Stat label={t("kit.tripTime")} value={fmtDur(view.trip_time_s)} />
           <Stat
-            label={t(reversible ? "cable.departureEvery" : "cable.cabinEvery")}
+            label={t(reversible ? "cable.departureEvery" : w("cable.cabinEvery", "apm.trainEvery"))}
             value={fmtDur(view.headway_s)}
           />
           <Stat label={t("kit.capacity")} value={t("kit.pph", { n: fmtInt(view.capacity_pphpd) })} />
-          <Stat label={t("cable.cabins")} value={String(view.cabins)} />
-          <Stat label={t("cable.towers")} value={String(view.tower_count)} />
+          <Stat label={t(w("cable.cabins", "apm.trains"))} value={String(view.cabins)} />
+          <Stat label={t(w("cable.towers", "apm.piers"))} value={String(view.tower_count)} />
         </div>
       )}
       <label className="flex items-center gap-2 text-xs">
@@ -457,7 +481,7 @@ export function SpanLineEditor({
           {t("cable.terrainFailed", { error: terrainError ?? "" })}
         </p>
       )}
-      {view && <ProfileView view={view} color={color} />}
+      {view && <ProfileView view={view} color={color} guideway={guideway} />}
       {current && (
         <p className="text-[11px] text-slate-500">
           {t("cable.ground", {
@@ -518,7 +542,7 @@ export function SpanLineEditor({
                     onChange={(e) => update(i, { kind: e.target.value as StationKind })}
                   >
                     <option value="intermediate">{t("cable.intermediate")}</option>
-                    <option value="angle">{t("cable.angle")}</option>
+                    <option value="angle">{t(w("cable.angle", "apm.curve"))}</option>
                   </select>
                 )}
                 {!end && s.kind === "angle" && (
@@ -566,11 +590,18 @@ export function SpanLineEditor({
                 <div className="mt-2 border-t border-slate-100 pt-1.5 text-xs">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="font-medium">
-                      {tn(sec.manual ? "cable.sectionYours" : "cable.sectionAuto", sec.towers.length, {
-                        to: i + 2,
-                        len: fmtLen(sec.length_m),
-                        clearance: Math.round(sec.min_clearance_m),
-                      })}
+                      {guideway
+                        ? t(sec.manual ? "apm.sectionYours" : "apm.sectionAuto", {
+                            to: i + 2,
+                            len: fmtLen(sec.length_m),
+                            count: sec.towers.length,
+                            clearance: Math.round(sec.min_clearance_m),
+                          })
+                        : tn(sec.manual ? "cable.sectionYours" : "cable.sectionAuto", sec.towers.length, {
+                            to: i + 2,
+                            len: fmtLen(sec.length_m),
+                            clearance: Math.round(sec.min_clearance_m),
+                          })}
                     </span>
                     {sec.manual ? (
                       <button
@@ -591,7 +622,7 @@ export function SpanLineEditor({
                           )
                         }
                       >
-                        {t("cable.editTowers")}
+                        {t(w("cable.editTowers", "apm.editPiers"))}
                       </button>
                     )}
                   </div>
@@ -599,10 +630,13 @@ export function SpanLineEditor({
                     <div className="mt-1 flex flex-col gap-1">
                       {(doc.towers[i] ?? []).map((tw, k) => (
                         <div key={k} className="flex items-center gap-1.5">
-                          {t("cable.towerAt")}
+                          {t(w("cable.towerAt", "apm.pierAt"))}
                           <input
                             type="number"
-                            aria-label={t("cable.towerPosition", { section: i + 1, tower: k + 1 })}
+                            aria-label={t(w("cable.towerPosition", "apm.pierPosition"), {
+                              section: i + 1,
+                              tower: k + 1,
+                            })}
                             className="w-20 rounded border border-slate-300 px-1.5 py-0.5"
                             value={Math.round(tw.at_m)}
                             onChange={(e) =>
@@ -617,7 +651,10 @@ export function SpanLineEditor({
                           {t("cable.mHeight")}
                           <input
                             type="number"
-                            aria-label={t("cable.towerHeight", { section: i + 1, tower: k + 1 })}
+                            aria-label={t(w("cable.towerHeight", "apm.pierHeight"), {
+                              section: i + 1,
+                              tower: k + 1,
+                            })}
                             className="w-16 rounded border border-slate-300 px-1.5 py-0.5"
                             value={Math.round(tw.height_m ?? system.tower_height_m)}
                             onChange={(e) =>
@@ -654,7 +691,7 @@ export function SpanLineEditor({
                           ])
                         }
                       >
-                        {t("cable.addTower")}
+                        {t(w("cable.addTower", "apm.addPier"))}
                       </button>
                     </div>
                   )}
@@ -666,7 +703,7 @@ export function SpanLineEditor({
       </section>
       <p className="text-[11px] text-slate-500">
         {t("kit.valuesFrom", {
-          plugin: found?.plugin.name ?? t("cable.plugin"),
+          plugin: found?.plugin.name ?? t(w("cable.plugin", "apm.plugin")),
           context: contextLabel(doc.mode, doc.system),
         })}{" "}
         {t("kit.keptHere")}

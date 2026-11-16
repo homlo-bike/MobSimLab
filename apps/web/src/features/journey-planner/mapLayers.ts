@@ -8,8 +8,15 @@ interface FeatureCollection {
 }
 
 const EMPTY: FeatureCollection = { type: "FeatureCollection", features: [] };
-const SOURCES = ["jp-network", "jp-stops", "jp-journey"];
-const LAYERS = ["jp-network", "jp-stops", "jp-journey-casing", "jp-journey"];
+const SOURCES = ["jp-zones", "jp-network", "jp-stops", "jp-journey"];
+const LAYERS = [
+  "jp-zones-fill",
+  "jp-zones-line",
+  "jp-network",
+  "jp-stops",
+  "jp-journey-casing",
+  "jp-journey",
+];
 
 /** Purpose: every pattern as a straight-segment line in its route colour (no shapes in the contract yet). */
 export function networkToGeoJson(tt: Timetable): FeatureCollection {
@@ -82,6 +89,18 @@ export function ensureLayers(map: MapLibreMap): void {
   if (map.getSource("jp-journey")) return;
   for (const id of SOURCES) map.addSource(id, { type: "geojson", data: EMPTY });
   map.addLayer({
+    id: "jp-zones-fill",
+    type: "fill",
+    source: "jp-zones",
+    paint: { "fill-color": ["get", "color"], "fill-opacity": 0.12 },
+  });
+  map.addLayer({
+    id: "jp-zones-line",
+    type: "line",
+    source: "jp-zones",
+    paint: { "line-color": ["get", "color"], "line-width": 2, "line-dasharray": [2, 1.5] },
+  });
+  map.addLayer({
     id: "jp-network",
     type: "line",
     source: "jp-network",
@@ -132,4 +151,27 @@ export function drawNetwork(map: MapLibreMap, tt: Timetable): void {
 
 export function drawJourney(map: MapLibreMap, j: Journey | null): void {
   (map.getSource("jp-journey") as GeoJSONSource | undefined)?.setData(journeyToGeoJson(j) as never);
+}
+
+/** Purpose: on-demand zones (service zone kit) as polygons with their colour. */
+export function zonesToGeoJson(
+  zones: readonly { ring: [number, number][]; color: string }[],
+): FeatureCollection {
+  return {
+    type: "FeatureCollection",
+    features: zones
+      .filter((z) => z.ring.length >= 3)
+      .map((z) => ({
+        type: "Feature",
+        properties: { color: z.color },
+        geometry: { type: "Polygon", coordinates: [[...z.ring, z.ring[0]!]] },
+      })),
+  };
+}
+
+export function drawZones(
+  map: MapLibreMap,
+  zones: readonly { ring: [number, number][]; color: string }[],
+): void {
+  (map.getSource("jp-zones") as GeoJSONSource | undefined)?.setData(zonesToGeoJson(zones) as never);
 }

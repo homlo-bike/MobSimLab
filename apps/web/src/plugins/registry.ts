@@ -7,11 +7,13 @@ export interface PluginMode {
   family: "street" | "rail" | "guided" | "aerial" | "water";
   colour: string;
   gtfsRouteType: number;
-  kit: "straight-spans" | "water-route";
-  operation: "frequency" | "shuttle" | "timetabled";
+  kit: "straight-spans" | "water-route" | "service-zone";
+  operation: "frequency" | "shuttle" | "timetabled" | "on_demand";
   contextKey?: string;
   contexts?: string[];
   defaultContext?: string;
+  /** Prefix of the plugin parameters that feed the kit (default `ropeway` or `ferry`). */
+  parameterPrefix?: string;
 }
 
 /** An authoring tool for the Create tab: a core kit with the modes it draws. */
@@ -19,7 +21,7 @@ export interface PluginTool {
   id: string;
   label: string;
   hint?: string;
-  kit: "straight-spans" | "water-route";
+  kit: "straight-spans" | "water-route" | "service-zone";
   modes: string[];
 }
 
@@ -33,6 +35,20 @@ export interface PluginCalculation {
   inputs: string[];
   outputs: string[];
   where?: string[];
+}
+
+/** An importer or exporter a bundled plugin adds: a file format to or from a published contract. */
+export interface PluginConverter {
+  id: string;
+  label: string;
+  description?: string;
+  format: string;
+  extensions?: string[];
+  contract: "published-timetable";
+  runtime: "bundled-wasm";
+  module: string;
+  function: string;
+  maxBytes: number;
 }
 
 /** A map layer drawn from a calculation's output. */
@@ -74,6 +90,8 @@ export interface Plugin {
   contexts: { key: string; label: string; options: { id: string; label: string }[] }[];
   tools: PluginTool[];
   calculations?: PluginCalculation[];
+  importers?: PluginConverter[];
+  exporters?: PluginConverter[];
   mapLayers?: PluginMapLayer[];
   tabs?: PluginTab[];
   parameters: Record<string, { label: string; unit: string }>;
@@ -168,6 +186,19 @@ export function pluginCalculation(
 ): (PluginCalculation & { plugin: string }) | null {
   for (const p of plugins) {
     const c = p.calculations?.find((x) => x.id === id);
+    if (c) return { ...c, plugin: p.id };
+  }
+  return null;
+}
+
+/** Purpose: an importer or exporter by id, so the app offers it only when its plugin is present. */
+export function pluginConverter(
+  kind: "importers" | "exporters",
+  id: string,
+  plugins: readonly Plugin[] = activePlugins(),
+): (PluginConverter & { plugin: string }) | null {
+  for (const p of plugins) {
+    const c = p[kind]?.find((x) => x.id === id);
     if (c) return { ...c, plugin: p.id };
   }
   return null;
