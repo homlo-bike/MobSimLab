@@ -1,9 +1,11 @@
 import { type ChildProcess, spawn } from "node:child_process";
 import { randomBytes } from "node:crypto";
 import {
+  closeSync,
   createWriteStream,
   existsSync,
   mkdirSync,
+  openSync,
   readFileSync,
   type WriteStream,
   writeFileSync,
@@ -151,6 +153,7 @@ export class LocalStack {
   }
 
   private async startPostgres(): Promise<void> {
+    if (process.platform === "win32") return this.startPostgresWindows();
     const pg = this.longRun("postgres", pgProgram(this.o.runtime, "postgres"), [
       "-D",
       this.pgData,
@@ -180,6 +183,43 @@ export class LocalStack {
       if (ok) return;
       if (Date.now() > until) throw new Error(`the database did not start; see ${this.logDir}`);
       await sleep(500);
+    }
+  }
+
+  /**
+   * On Windows, postgres refuses to run with administrator rights, which many accounts have. pg_ctl starts it with
+   * those rights removed, writes its output to postgres.log and waits until it accepts connections.
+   */
+  private async startPostgresWindows(): Promise<void> {
+    this.pgStarted = true;
+    const opts = `-p ${this.dbPort} -c listen_addresses=127.0.0.1 -c max_connections=60`;
+    const args = [
+      "start",
+      "-D",
+      this.pgData,
+      "-l",
+      join(this.logDir, "postgres.log"),
+      "-o",
+      opts,
+      "-w",
+      "-t",
+      "90",
+    ];
+    // The server inherits pg_ctl's handles, so pg_ctl writes to a file (a pipe would stay open while it runs).
+    const logFile = join(this.logDir, "pg_ctl.log");
+    const fd = openSync(logFile, "a", 0o600);
+    const code = await new Promise<number | null>((resolve, reject) => {
+      const child = spawn(pgProgram(this.o.runtime, "pg_ctl"), args, {
+        env: this.commonEnv(),
+        stdio: ["ignore", fd, fd],
+        windowsHide: true,
+      });
+      child.on("error", (e) => reject(new Error(`pg_ctl could not start: ${e.message}`)));
+      child.on("exit", resolve);
+    }).finally(() => closeSync(fd));
+    if (code !== 0) {
+      const tail = readFileSync(logFile, "utf8").trim().split("\n").slice(-5).join(" ");
+      throw new Error(`the database did not start (code ${code}): ${tail}; see ${this.logDir}`);
     }
   }
 

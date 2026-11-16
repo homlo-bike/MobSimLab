@@ -89,7 +89,7 @@ try {
   log("smoke test passed");
 } catch (e) {
   process.stderr.write(`smoke test failed: ${e.stack ?? e}\n`);
-  for (const f of ["postgres", "initdb", "psql", "migrate", "api", "worker"]) {
+  for (const f of ["postgres", "pg_ctl", "initdb", "psql", "migrate", "api", "worker"]) {
     try {
       process.stderr.write(
         `--- ${f}.log\n${readFileSync(join(dataDir, "logs", `${f}.log`), "utf8").slice(-4000)}\n`,
