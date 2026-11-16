@@ -2,6 +2,7 @@ import { roadMr } from "./road/mr";
 import { editorsMr } from "./editors/mr";
 import { cargoBikeMr } from "./cargo-bike/mr";
 import { depotsMr } from "./depots/mr";
+import { mslabMr } from "./mslab/mr";
 import { populationMr } from "./population/mr";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -277,6 +278,7 @@ export const mr: Messages = {
   "prefs.delayLane": "रंगवलेल्या बस किंवा ट्राम मार्गिकेत",
   "prefs.delayDefault": "गृहीतकांचे ग्रंथालय: {value} %",
   "prefs.delayReset": "ग्रंथालयातील मूल्य वापरा",
+  "prefs.reason": "या मूल्याचे कारण (ऐच्छिक)",
   "prefs.stationsTitle": "स्थानके",
   "prefs.stationsIntro":
     "या अंतरातील एकाच नावाचे थांबे योजनाबद्ध नकाशा, प्रवास नियोजक आणि लाभ व प्रवासी तक्त्यांमध्ये एक स्थानक म्हणून मोजले जातात.",
@@ -414,6 +416,7 @@ export const mr: Messages = {
   ...editorsMr,
   ...cargoBikeMr,
   ...depotsMr,
+  ...mslabMr,
   ...populationMr,
   ...roadMr,
   ...PLUGIN_MESSAGES.mr,

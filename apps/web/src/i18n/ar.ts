@@ -2,6 +2,7 @@ import { roadAr } from "./road/ar";
 import { editorsAr } from "./editors/ar";
 import { cargoBikeAr } from "./cargo-bike/ar";
 import { depotsAr } from "./depots/ar";
+import { mslabAr } from "./mslab/ar";
 import { populationAr } from "./population/ar";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -271,6 +272,7 @@ export const ar: Messages = {
   "prefs.delayLane": "في مسار مخصّص مطلي للحافلات أو الترام",
   "prefs.delayDefault": "مكتبة الافتراضات: {value} %",
   "prefs.delayReset": "استخدام قيمة المكتبة",
+  "prefs.reason": "سبب هذه القيمة (اختياري)",
   "prefs.stationsTitle": "المحطات",
   "prefs.stationsIntro":
     "تُعدّ المواقف التي تحمل الاسم نفسه ضمن هذه المسافة محطة واحدة في المخطط التخطيطي ومخطط الرحلات وجداول المنافع والركاب.",
@@ -407,6 +409,7 @@ export const ar: Messages = {
   ...editorsAr,
   ...cargoBikeAr,
   ...depotsAr,
+  ...mslabAr,
   ...populationAr,
   ...roadAr,
   ...PLUGIN_MESSAGES.ar,

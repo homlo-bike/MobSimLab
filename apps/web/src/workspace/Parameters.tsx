@@ -15,6 +15,7 @@ import {
   withChoice,
   withPref,
 } from "./preferences";
+import { ReasonField } from "./ReasonField";
 
 /** The library's group names as message keys. */
 const GROUP_LABEL: Record<string, MessageKey> = {
@@ -304,6 +305,14 @@ function ParamField({
           </button>
         )}
       </div>
+      {isNumber && (
+        <ReasonField
+          valueId={prefId}
+          preferences={preferences}
+          editable={editable}
+          onPreferences={onPreferences}
+        />
+      )}
     </div>
   );
 }

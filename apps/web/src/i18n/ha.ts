@@ -2,6 +2,7 @@ import { roadHa } from "./road/ha";
 import { editorsHa } from "./editors/ha";
 import { cargoBikeHa } from "./cargo-bike/ha";
 import { depotsHa } from "./depots/ha";
+import { mslabHa } from "./mslab/ha";
 import { populationHa } from "./population/ha";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -280,6 +281,7 @@ export const ha: Messages = {
   "prefs.delayLane": "A cikin hanyar bas ko tram da aka zana da fenti",
   "prefs.delayDefault": "Ɗakin zato: {value} %",
   "prefs.delayReset": "Yi amfani da ƙimar ɗakin",
+  "prefs.reason": "Dalilin wannan ƙimar (ba dole ba)",
   "prefs.stationsTitle": "Tashoshi",
   "prefs.stationsIntro":
     "Tashoshi masu suna ɗaya cikin wannan nisa ana ƙidaya su a matsayin tasha ɗaya a taswirar zane, mai tsara tafiya da teburan fa'idodi da fasinjoji.",
@@ -421,6 +423,7 @@ export const ha: Messages = {
   ...editorsHa,
   ...cargoBikeHa,
   ...depotsHa,
+  ...mslabHa,
   ...populationHa,
   ...roadHa,
   ...PLUGIN_MESSAGES.ha,
