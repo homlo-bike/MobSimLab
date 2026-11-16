@@ -315,6 +315,7 @@ export const uk: Messages = {
   "prefs.demandStep.mode_choice": "Вибір виду транспорту",
   "prefs.demandStep.catchment": "Зона доступності",
   "prefs.demandStep.assignment": "Призначення",
+  "prefs.demandStep.calibration": "Калібрування",
   "prefs.demandAll": "Усі кроки",
   "prefs.accessTitle": "Доступність платформ",
   "prefs.accessIntro":

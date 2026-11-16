@@ -62,6 +62,15 @@ export interface NewDemandRun {
   summary: DemandSummary;
   /** A GBFS feed of the project's shared-bike scheme, read with the OpenStreetMap stations. */
   gbfsUrl?: string;
+  /** Observed mode shares, mean car trip and boardings to calibrate to (09 §2.3). */
+  observed?: ObservedDemand;
+}
+
+/** What the planner observed, for a demand run's calibration (worker `demand/calibrate.py`). */
+export interface ObservedDemand {
+  mode_shares?: { car: number; transit: number; walk: number; cycle: number };
+  mean_car_km?: number;
+  counts?: { kind: "line" | "stop"; id: string; value: number }[];
 }
 
 /** Size of a demand run's bundle, for the list of runs. */
@@ -144,6 +153,8 @@ interface StoredInput {
   /** Demand runs: the project's demand values the worker uses, and the shared-bike GBFS feed. */
   values?: Record<string, number>;
   gbfsUrl?: string;
+  /** Demand runs: the observed data the worker calibrates to. */
+  observed?: ObservedDemand;
 }
 
 /** A file a run saved next to its result. */
@@ -237,6 +248,7 @@ export class RunsService {
             sweep: false,
             values: input.values,
             ...(input.gbfsUrl ? { gbfsUrl: input.gbfsUrl } : {}),
+            ...(input.observed ? { observed: input.observed } : {}),
           }
         : {
             network: net.stored,
@@ -283,6 +295,7 @@ export class RunsService {
             ...(stored.design ? { design: stored.design, objectives: stored.objectives } : {}),
             // A demand run's values are many; the audit trail notes how many the project changed.
             ...(stored.values ? { values: Object.keys(stored.values).length } : {}),
+            ...(stored.observed ? { observed: true } : {}),
             ...(via ? { agent: agentNote(via) } : {}),
           },
         },

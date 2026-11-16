@@ -312,6 +312,7 @@ export const bn: Messages = {
   "prefs.demandStep.mode_choice": "যানবাহন নির্বাচন",
   "prefs.demandStep.catchment": "প্রবেশ এলাকা",
   "prefs.demandStep.assignment": "বরাদ্দ",
+  "prefs.demandStep.calibration": "ক্রমাঙ্কন",
   "prefs.demandAll": "সব ধাপ",
   "prefs.accessTitle": "প্ল্যাটফর্ম প্রবেশযোগ্যতা",
   "prefs.accessIntro":

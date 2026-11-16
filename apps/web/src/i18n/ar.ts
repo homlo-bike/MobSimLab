@@ -304,6 +304,7 @@ export const ar: Messages = {
   "prefs.demandStep.mode_choice": "اختيار الوسيلة",
   "prefs.demandStep.catchment": "منطقة الوصول",
   "prefs.demandStep.assignment": "التخصيص",
+  "prefs.demandStep.calibration": "المعايرة",
   "prefs.demandAll": "كل الخطوات",
   "prefs.accessTitle": "إتاحة الرصيف",
   "prefs.accessIntro":

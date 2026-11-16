@@ -320,6 +320,7 @@ export const zu: Messages = {
   "prefs.demandStep.mode_choice": "Ukukhetha uhlobo lokuhamba",
   "prefs.demandStep.catchment": "Indawo yokufinyelela",
   "prefs.demandStep.assignment": "Ukwabiwa emigwaqweni",
+  "prefs.demandStep.calibration": "Ukulinganisa",
   "prefs.demandAll": "Zonke izinyathelo",
   "prefs.accessTitle": "Ukufinyeleleka kwepulatifomu",
   "prefs.accessIntro":

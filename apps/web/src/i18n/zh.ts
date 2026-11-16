@@ -300,6 +300,7 @@ export const zh: Messages = {
   "prefs.demandStep.mode_choice": "方式选择",
   "prefs.demandStep.catchment": "可达范围",
   "prefs.demandStep.assignment": "交通分配",
+  "prefs.demandStep.calibration": "校准",
   "prefs.demandAll": "全部步骤",
   "prefs.accessTitle": "站台无障碍",
   "prefs.accessIntro":

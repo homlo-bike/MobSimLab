@@ -66,6 +66,23 @@ export interface DemandDoc {
   gbfsUrl?: string;
   /** The demand run whose ridership the Tables tab, the service table and the system test use. */
   ridershipRun?: string;
+  /** What the planner observed, to calibrate the model to (09 §2.3). */
+  observed?: ObservedDoc;
+}
+
+/** Observed weekday boardings of a line or a stop, by its id or name. */
+export interface ObservedCount {
+  kind: "line" | "stop";
+  id: string;
+  value: number;
+}
+
+/** What the planner observed: mode shares in %, the mean car trip in km, and boardings of lines and stops. */
+export interface ObservedDoc {
+  /** By mode (car, transit, walk, cycle), %. */
+  shares?: Record<string, number>;
+  meanCarKm?: number | null;
+  counts?: ObservedCount[];
 }
 
 /** Purpose: the zones a run uses: the own zones, or the automatic ones with the planner's values on them. */

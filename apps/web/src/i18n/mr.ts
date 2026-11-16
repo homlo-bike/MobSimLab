@@ -311,6 +311,7 @@ export const mr: Messages = {
   "prefs.demandStep.mode_choice": "साधन निवड",
   "prefs.demandStep.catchment": "पोहोच क्षेत्र",
   "prefs.demandStep.assignment": "नियुक्ती",
+  "prefs.demandStep.calibration": "अंशांकन",
   "prefs.demandAll": "सर्व टप्पे",
   "prefs.accessTitle": "फलाट सुलभता",
   "prefs.accessIntro":

@@ -5,6 +5,7 @@ from __future__ import annotations
 import base64
 import gzip
 import json
+import math
 from typing import Any
 
 import numpy as np
@@ -468,3 +469,88 @@ def test_notes_about_bike_points_reach_the_result() -> None:
     b = town()
     b["bikes"] = {"parking": [], "rental": [], "notes": ["the GBFS feed answered 404"]}
     assert "the GBFS feed answered 404" in catchment_run(b)["notes"]
+
+
+# ----------------------------------------------------------------------------------------------------
+# Calibration to observed data
+
+
+def test_calibrates_the_mode_constants_to_observed_shares(run: tuple[str, dict[str, Any], list[Any]]) -> None:
+    before = run[1]["totals"]
+    total = before["trips"]
+    # Percentages this town can reach: few of its zones are near the tram.
+    observed = {"car": 35, "transit": 1, "walk": 52, "cycle": 12}
+    outcome, r, _ = run_demand(
+        json.dumps(town()),
+        {"values": {"demand.calibration.max_iterations": 8}, "observed": {"mode_shares": observed}},
+        Recorder(),
+    )
+    assert outcome == "done"
+    cal = r["calibration"]
+    assert r["uncalibrated"] is False
+    shares = {m: r["totals"]["by_mode"][m] / r["totals"]["trips"] for m in observed}
+    # Closer to what was observed than before calibration, within a couple of points.
+    for m, pct in observed.items():
+        assert abs(shares[m] - pct / 100) < 0.03
+        assert abs(shares[m] - pct / 100) <= abs(before["by_mode"][m] / total - pct / 100) + 1e-9
+    assert set(cal["fitted"]) >= {"demand.mode.asc.transit"}
+    assert cal["rounds"][0]["round"] == 1 and len(cal["rounds"]) <= 8
+    assert cal["mode_shares"]["transit"]["observed"] == pytest.approx(0.01)
+
+
+def test_compares_counts_and_fits_the_transit_constant_to_them(
+    run: tuple[str, dict[str, Any], list[Any]],
+) -> None:
+    modelled = sum(sum(p["boardings"]["day"]) for p in run[1]["transit"]["lines"][0]["patterns"])
+    counts = [
+        {"kind": "line", "id": "Tram 1", "value": round(modelled * 1.5)},
+        {"kind": "stop", "id": "s1", "value": run[1]["transit"]["stops"]["s1"]["boardings"] * 1.5},
+        {"kind": "stop", "id": "nowhere", "value": 10},
+    ]
+    _, r, _ = run_demand(
+        json.dumps(town()),
+        {"values": {"demand.calibration.max_iterations": 6}, "observed": {"counts": counts}},
+        Recorder(),
+    )
+    cal = r["calibration"]
+    assert cal["matched"] == 2
+    line = cal["counts"][0]
+    assert line["modelled"] == pytest.approx(line["observed"], rel=0.1)
+    assert cal["counts"][2]["modelled"] is None
+    assert cal["rmse_pct"] is not None and cal["rmse_pct"] < 15
+    assert cal["geh_under_5_share"] == 1.0
+    assert cal["fitted"]["demand.mode.asc.transit"] > library_values()["demand.mode.asc.transit"]
+
+
+def test_fits_the_deterrence_to_the_mean_car_trip(run: tuple[str, dict[str, Any], list[Any]]) -> None:
+    km = run[1]["totals"]["car_km"]
+    _, r, _ = run_demand(
+        json.dumps(town()),
+        {"values": {"demand.calibration.max_iterations": 6}, "observed": {"mean_car_km": km * 0.85}},
+        Recorder(),
+    )
+    cal = r["calibration"]
+    assert r["totals"]["car_km"] < km
+    assert "demand.deterrence.hbw.exponential" in cal["fitted"]
+    # Only the trip length was observed: the result is still uncalibrated as to mode shares and counts.
+    assert r["uncalibrated"] is True
+
+
+def test_reads_the_observed_data() -> None:
+    from mobsim_worker.demand.calibrate import geh, parse_observed
+
+    o = parse_observed(
+        {"mode_shares": {"car": 50, "transit": 50}, "counts": [{"kind": "line", "id": "A", "value": 3}]}
+    )
+    assert o is not None and o.mode_shares == {"car": 0.5, "transit": 0.5, "walk": 0.0, "cycle": 0.0}
+    assert parse_observed({}) is None and parse_observed(None) is None
+    for bad in (
+        {"mode_shares": {"boat": 1}},
+        {"mode_shares": {"car": 0}},
+        {"mean_car_km": -1},
+        {"counts": [{"kind": "road", "value": 1}]},
+        {"counts": [{"kind": "stop", "id": "x", "value": "many"}]},
+    ):
+        with pytest.raises(InputError):
+            parse_observed(bad)
+    assert geh(100, 100) == 0 and geh(150, 100) == pytest.approx(math.sqrt(2 * 50**2 / 250))

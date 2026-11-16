@@ -548,7 +548,8 @@ def run_demand(
 
     Args:
         network_text: The bundle (contracts/demand-input.schema.json) as JSON text.
-        settings: The run's settings: ``{"values": {key: number}}`` (the project's demand values).
+        settings: The run's settings: ``{"values": {key: number}}`` (the project's demand values), and the
+            observed data to calibrate to (``observed``, ``calibrate.parse_observed``).
         reporter: Where progress goes.
         tiles: OpenStreetMap street tiles of the model area, for a bundle without ``streets``.
         bikes: Bike parkings and shared-bike stations the API found, for a bundle without ``bikes``.
@@ -556,7 +557,11 @@ def run_demand(
     Raises:
         InputError: The bundle or values cannot be used.
     """
+    from mobsim_worker.demand.calibrate import calibrate, parse_observed  # noqa: PLC0415
     from mobsim_worker.demand.inputs import parse_bundle  # noqa: PLC0415
 
     bundle = parse_bundle(network_text, settings.get("values"), tiles, bikes)
+    observed = parse_observed(settings.get("observed"))
+    if observed is not None:
+        return calibrate(bundle, reporter, observed)
     return DemandModel(bundle, reporter).run()

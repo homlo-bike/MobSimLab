@@ -30,6 +30,7 @@ import {
 } from "./bundle";
 import { centreTile, loadZoneData, MAX_ZONE_TILES, type ZoneData } from "./load";
 import { demandValue, demandValues } from "./params";
+import { CalibrationResult, ObservedCard, observedForRun } from "./Calibration";
 import {
   activeZones,
   type DemandDoc,
@@ -62,6 +63,8 @@ interface Props {
   streetSetups?: readonly BundleStreetSetup[];
   /** The drawn stops and platforms with their recorded step-free access. */
   stopAccess?: readonly StopAccess[];
+  /** Saves Project preferences (the calibrated values); absent for people who may not edit the project. */
+  onPreferences?: (doc: PreferencesDoc) => void;
   /** Tests inject these. */
   api?: BenefitsApi;
   pollMs?: number;
@@ -150,7 +153,8 @@ function download(name: string, text: string, type: string) {
  * The demand model in the Tables tab (ADR-0019, 09 §2): the zones of the model area (automatic hexagons, or
  * the planner's own zones uploaded as GeoJSON) with their people, jobs and special generators, a run of the
  * four-step model on the server, and its results: trips by mode, period and purpose, line loads, busiest
- * stops and desire lines. Results are uncalibrated until observed counts are added.
+ * stops and desire lines. With observed data (mode shares, the mean car trip, counts) the run calibrates
+ * itself; without them results are uncalibrated.
  * Side effects: asks the API for World Bank figures, WorldPop population and OpenStreetMap buildings and
  * places; starts, follows and deletes demand runs.
  */
@@ -165,6 +169,7 @@ export function DemandSection({
   canRun,
   streetSetups = NO_SETUPS,
   stopAccess = NO_ACCESS,
+  onPreferences,
   api = DEFAULT_API,
   pollMs = 3000,
 }: Props) {
@@ -330,7 +335,13 @@ export function DemandSection({
         );
         return;
       }
-      const r = await runs.start(bundle, demandValues(preferences), summary, doc?.gbfsUrl);
+      const r = await runs.start(
+        bundle,
+        demandValues(preferences),
+        summary,
+        doc?.gbfsUrl,
+        observedForRun(doc?.observed),
+      );
       setViewing(r);
       setSaved((l) => [r, ...l.filter((x) => x.id !== r.id)]);
     } catch (e) {
@@ -393,6 +404,14 @@ export function DemandSection({
   };
 
   const result = viewing?.status === "done" ? viewing.result : null;
+  const lineNames = useMemo(
+    () => [...new Set(transit.lines.map((l) => l.name || l.id))].sort(),
+    [transit.lines],
+  );
+  const stopNames = useMemo(
+    () => [...new Set(transit.stops.map((s) => s.name || s.id))].sort(),
+    [transit.stops],
+  );
   const zoneName = useMemo(() => new Map(zones.map((z) => [z.id, z.name])), [zones]);
 
   return (
@@ -522,6 +541,8 @@ export function DemandSection({
         )}
       </div>
 
+      <ObservedCard doc={doc} onDoc={onDoc} lineNames={lineNames} stopNames={stopNames} />
+
       <div className={card}>
         <h3 className="caps m-0">Run</h3>
         {blocker ? (
@@ -574,6 +595,8 @@ export function DemandSection({
             result={result}
             zoneName={zoneName}
             fileUrl={runs?.fileUrl(viewing.id, "od.omx") ?? null}
+            preferences={preferences}
+            onPreferences={onPreferences}
           />
         </>
       )}
@@ -813,7 +836,11 @@ function RunStatusLine({ run }: { run: DemandRunDetail }) {
       : run.status === "running"
         ? `Running: ${STEP_LABEL[String(p?.step ?? "")] ?? "preparing"}${
             p?.period ? `, ${PERIOD_LABEL[String(p.period)]?.toLowerCase() ?? String(p.period)}` : ""
-          }${typeof p?.round === "number" ? `, round ${p.round + 1}` : ""}…`
+          }${typeof p?.round === "number" ? `, round ${p.round + 1}` : ""}${
+            typeof p?.calibration_round === "number" && typeof p.calibration_rounds === "number"
+              ? ` (calibration round ${p.calibration_round} of at most ${p.calibration_rounds})`
+              : ""
+          }…`
         : run.status === "failed"
           ? `The run failed: ${run.error ?? "no reason given"}`
           : run.status === "cancelled"
@@ -873,10 +900,14 @@ function Results({
   result,
   zoneName,
   fileUrl,
+  preferences,
+  onPreferences,
 }: {
   result: DemandResult;
   zoneName: Map<string, string>;
   fileUrl: string | null;
+  preferences: PreferencesDoc | null;
+  onPreferences?: (doc: PreferencesDoc) => void;
 }) {
   const t = result.totals;
   const periods = Object.keys(t.by_period);
@@ -903,7 +934,7 @@ function Results({
         {result.uncalibrated && (
           <span
             className="rounded-full bg-amber-100 px-3 py-0.5 text-xs font-semibold text-amber-900"
-            title="No observed counts were used: the numbers come from library values only. Calibration follows."
+            title="No observed mode shares or counts were used: the numbers come from library values only. Add observed data above to calibrate."
           >
             Uncalibrated
           </span>
@@ -1067,6 +1098,9 @@ function Results({
         Roads: {fmt(result.road.links.length)} street links carry cars; {fmt(crowded)} reach 90 % of their
         capacity in some period.
       </p>
+      {result.calibration && (
+        <CalibrationResult c={result.calibration} preferences={preferences} onPreferences={onPreferences} />
+      )}
       {result.catchment && <Catchment c={result.catchment} />}
       {result.notes.length > 0 && (
         <ul className="mt-3 list-disc pl-5 text-sm text-slate-600">

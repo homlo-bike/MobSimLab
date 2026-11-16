@@ -166,6 +166,23 @@ const demand = z.looseObject({
     .url({ protocol: /^https$/ })
     .max(2000)
     .optional(),
+  /** What the planner observed (mode shares in %, mean car trip in km, weekday boardings), to calibrate to. */
+  observed: z
+    .looseObject({
+      shares: z.record(z.string().max(20), z.number().finite().min(0).max(100)).optional(),
+      meanCarKm: z.number().finite().min(0).max(1000).nullable().optional(),
+      counts: z
+        .array(
+          z.looseObject({
+            kind: z.enum(["line", "stop"]),
+            id: z.string().max(300),
+            value: z.number().finite().min(0),
+          }),
+        )
+        .max(5000)
+        .optional(),
+    })
+    .optional(),
   /** The demand run whose ridership the Tables tab, the service table and the system test use. */
   ridershipRun: z.string().min(1).max(64).optional(),
   zones: z

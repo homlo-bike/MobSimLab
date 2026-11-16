@@ -75,7 +75,35 @@ export interface DemandResult {
     bike_and_ride: number;
     transit_by_bike_owners: number;
   };
+  /** How the calibrated run fits what was observed (worker `demand/calibrate.py`); absent without data. */
+  calibration?: Calibration;
   files: string[];
+}
+
+/** How a run fits the observed data, the rounds it took and the values it fitted. */
+export interface Calibration {
+  mode_shares: Record<Mode, { observed: number | null; modelled: number }>;
+  mean_car_km: { observed: number | null; modelled: number | null };
+  counts: {
+    kind: "line" | "stop";
+    id: string;
+    observed: number;
+    modelled: number | null;
+    geh: number | null;
+  }[];
+  matched: number;
+  rmse_pct: number | null;
+  geh_under_5_share: number | null;
+  rounds: { round: number; gap: number; rmse_pct: number | null; shares: Record<Mode, number> }[];
+  /** Mode constants and deterrence the run ended with, where they differ from the project's. */
+  fitted: Record<string, number>;
+}
+
+/** Observed data a run calibrates to (apps/api `ObservedDemand`). */
+export interface ObservedDemand {
+  mode_shares?: Record<Mode, number>;
+  mean_car_km?: number;
+  counts?: { kind: "line" | "stop"; id: string; value: number }[];
 }
 
 /** One saved demand run in the project's list. */
@@ -106,6 +134,8 @@ export interface DemandRunsApi {
     summary: { zones: number; stops: number; lines: number },
     /** The GBFS feed of the project's shared-bike scheme. */
     gbfsUrl?: string,
+    /** What was observed, to calibrate to. */
+    observed?: ObservedDemand,
   ): Promise<DemandRunDetail>;
   cancel(id: string): Promise<DemandRunDetail>;
   remove(id: string): Promise<void>;
@@ -150,7 +180,7 @@ export function projectDemandRuns(projectId: string, csrf: string): DemandRunsAp
         (r): r is DemandRun => r.kind === "demand",
       ),
     get: async (id) => (await get<{ run: DemandRunDetail }>(one(id))).run,
-    start: async (bundle, values, summary, gbfsUrl) =>
+    start: async (bundle, values, summary, gbfsUrl, observed) =>
       (
         await send<{ run: DemandRunDetail }>("POST", base, csrf, {
           kind: "demand",
@@ -158,6 +188,7 @@ export function projectDemandRuns(projectId: string, csrf: string): DemandRunsAp
           values,
           summary,
           ...(gbfsUrl ? { gbfsUrl } : {}),
+          ...(observed ? { observed } : {}),
         })
       ).run,
     cancel: async (id) => (await send<{ run: DemandRunDetail }>("POST", `${one(id)}/cancel`, csrf, {})).run,

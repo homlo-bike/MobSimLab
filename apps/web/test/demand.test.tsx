@@ -18,6 +18,8 @@ import {
 } from "../src/features/demand/bundle";
 import type { Estimate } from "../src/features/benefits/model";
 import { DemandSection } from "../src/features/demand/DemandSection";
+import { CalibrationResult, observedForRun, parseCountsCsv } from "../src/features/demand/Calibration";
+import type { Calibration } from "../src/features/demand/api";
 import { demandRidership, demandStopBoardings, withDemandRidership } from "../src/features/demand/ridership";
 import { loadZoneData, zoneTiles } from "../src/features/demand/load";
 import {
@@ -396,8 +398,8 @@ function fakeRuns(): DemandRunsApi & { started: unknown[] } {
     started,
     list: async () => [],
     get: async () => done,
-    start: async (bundle, values, summary, gbfsUrl) => {
-      started.push({ bundle, values, summary, gbfsUrl });
+    start: async (bundle, values, summary, gbfsUrl, observed) => {
+      started.push({ bundle, values, summary, gbfsUrl, observed });
       return done;
     },
     cancel: async () => done,
@@ -738,5 +740,134 @@ describe("demand model ridership in the project", () => {
     rerender(<DemandSection {...props} doc={{ source: "auto", ridershipRun: "r1" }} />);
     fireEvent.click(screen.getByRole("button", { name: "Go back to the formula estimate" }));
     expect(onDoc).toHaveBeenLastCalledWith({ source: "auto" });
+  });
+});
+
+describe("demand model calibration", () => {
+  it("reads counts from CSV with or without a header, and lists the rows it cannot use", () => {
+    const text =
+      '\uFEFFkind,id,value\nline,T1,1200\nstop,"Main St, north",340\nbus,X,5\nline,,4\nstop;West;12\n';
+    const { counts, errors } = parseCountsCsv(text);
+    expect(counts).toEqual([
+      { kind: "line", id: "T1", value: 1200 },
+      { kind: "stop", id: "Main St, north", value: 340 },
+      { kind: "stop", id: "West", value: 12 },
+    ]);
+    expect(errors[0]).toMatch(/Rows 4, 5 were left out/);
+    expect(parseCountsCsv("line,T1,10").counts).toHaveLength(1);
+  });
+
+  it("sends the shares only when all four are given, with the trip length and the counts", () => {
+    expect(observedForRun(undefined)).toBeUndefined();
+    expect(observedForRun({ shares: { car: 50, transit: 20 } })).toBeUndefined();
+    expect(
+      observedForRun({
+        shares: { car: 50, transit: 20, walk: 20, cycle: 10 },
+        meanCarKm: 8,
+        counts: [{ kind: "line", id: "T1", value: 900 }],
+      }),
+    ).toEqual({
+      mode_shares: { car: 50, transit: 20, walk: 20, cycle: 10 },
+      mean_car_km: 8,
+      counts: [{ kind: "line", id: "T1", value: 900 }],
+    });
+  });
+
+  it("saves the observed data, sends it with the run and adds an uploaded CSV to the counts", async () => {
+    const runs = fakeRuns();
+    const onDoc = vi.fn();
+    const props = {
+      timetable: network(),
+      regions: [],
+      preferences: { values: { "demand.zone_max_count": 40 } },
+      onDoc,
+      costs: { currency: "EUR", country: "NLD", rate: 1, ppp: 0.8 },
+      runs,
+      canRun: true,
+      api: fakeBenefits(),
+    };
+    const { rerender } = render(<DemandSection {...props} doc={null} />);
+    fireEvent.blur(screen.getByLabelText("Car, % of trips"), { target: { value: "45" } });
+    expect(onDoc).toHaveBeenLastCalledWith({ source: "auto", observed: { shares: { car: 45 } } });
+    const doc: DemandDoc = {
+      source: "auto",
+      observed: {
+        shares: { car: 45, transit: 25, walk: 20, cycle: 10 },
+        meanCarKm: 7.5,
+        counts: [{ kind: "line", id: "T1", value: 900 }],
+      },
+    };
+    rerender(<DemandSection {...props} doc={doc} />);
+    expect((screen.getByLabelText("Count 1: id or name") as HTMLInputElement).value).toBe("T1");
+    const file = new File(["kind,id,value\nstop,West,120\n"], "counts.csv", { type: "text/csv" });
+    Object.defineProperty(file, "text", { value: async () => "kind,id,value\nstop,West,120\n" });
+    await act(async () => {
+      fireEvent.change(screen.getByLabelText("Upload counts (CSV)"), { target: { files: [file] } });
+    });
+    await waitFor(() =>
+      expect(onDoc).toHaveBeenLastCalledWith({
+        ...doc,
+        observed: {
+          ...doc.observed,
+          counts: [
+            { kind: "line", id: "T1", value: 900 },
+            { kind: "stop", id: "West", value: 120 },
+          ],
+        },
+      }),
+    );
+    expect(screen.getByText("1 counts read from counts.csv.")).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Estimate zone values" }));
+    const run = screen.getByRole("button", { name: "Run the demand model" });
+    await waitFor(() => expect((run as HTMLButtonElement).disabled).toBe(false));
+    await act(async () => {
+      fireEvent.click(run);
+    });
+    expect((runs.started[0] as { observed?: unknown }).observed).toEqual({
+      mode_shares: { car: 45, transit: 25, walk: 20, cycle: 10 },
+      mean_car_km: 7.5,
+      counts: [{ kind: "line", id: "T1", value: 900 }],
+    });
+  });
+
+  it("shows how the run fits, the counts with the largest GEH, and saves the fitted values", () => {
+    const c: Calibration = {
+      mode_shares: {
+        car: { observed: 0.45, modelled: 0.46 },
+        transit: { observed: 0.25, modelled: 0.24 },
+        walk: { observed: 0.2, modelled: 0.2 },
+        cycle: { observed: 0.1, modelled: 0.1 },
+      },
+      mean_car_km: { observed: 7.5, modelled: 7.4 },
+      counts: [
+        { kind: "line", id: "T1", observed: 900, modelled: 1300, geh: 2.8 },
+        { kind: "stop", id: "Nowhere", observed: 50, modelled: null, geh: null },
+      ],
+      matched: 1,
+      rmse_pct: 44.4,
+      geh_under_5_share: 1,
+      rounds: [
+        { round: 1, gap: 0.3, rmse_pct: 60, shares: { car: 0.5, transit: 0.2, walk: 0.2, cycle: 0.1 } },
+        { round: 2, gap: 0.04, rmse_pct: 44.4, shares: { car: 0.46, transit: 0.24, walk: 0.2, cycle: 0.1 } },
+      ],
+      fitted: { "demand.mode.asc.transit": 0.4321 },
+    };
+    const onPreferences = vi.fn();
+    render(
+      <CalibrationResult
+        c={c}
+        preferences={{ values: { "demand.zone_max_count": 40 } }}
+        onPreferences={onPreferences}
+      />,
+    );
+    expect(screen.getByText(/2 rounds; the largest gap left is 4\.0 %/)).toBeTruthy();
+    expect(screen.getByText(/%RMSE 44\.4, 100 % with a GEH under 5/)).toBeTruthy();
+    expect(screen.getByText("Line T1")).toBeTruthy();
+    expect(screen.getByText(/1 counts name no line or stop of the network: Nowhere/)).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Save fitted values to Project preferences" }));
+    expect(onPreferences).toHaveBeenCalledWith({
+      values: { "demand.zone_max_count": 40, "demand.mode.asc.transit": 0.4321 },
+    });
+    expect(screen.getByRole("button", { name: "Saved to Project preferences" })).toBeTruthy();
   });
 });

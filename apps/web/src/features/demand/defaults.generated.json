@@ -7,7 +7,8 @@
   "distribution",
   "mode_choice",
   "catchment",
-  "assignment"
+  "assignment",
+  "calibration"
  ],
  "params": [
   {
@@ -2010,6 +2011,66 @@
    "basis": "educated-guess",
    "sources": [
     "mobsimlab-derivation"
+   ]
+  },
+  {
+   "key": "demand.calibration.max_iterations",
+   "step": "calibration",
+   "label": "Calibration: most runs of the whole model to fit the observed data",
+   "unit": "runs",
+   "values": [
+    1,
+    5,
+    10
+   ],
+   "basis": "educated-guess",
+   "sources": [
+    "mobsimlab-derivation"
+   ]
+  },
+  {
+   "key": "demand.calibration.damping",
+   "step": "calibration",
+   "label": "Calibration: share of each round's correction that is applied",
+   "unit": "share",
+   "values": [
+    0.5,
+    0.8,
+    1
+   ],
+   "basis": "cited",
+   "sources": [
+    "ortuzar-willumsen-2011"
+   ]
+  },
+  {
+   "key": "demand.calibration.tolerance",
+   "step": "calibration",
+   "label": "Calibration: largest relative gap to the observed data at which it stops",
+   "unit": "share",
+   "values": [
+    0.005,
+    0.01,
+    0.05
+   ],
+   "basis": "educated-guess",
+   "sources": [
+    "mobsimlab-derivation"
+   ]
+  },
+  {
+   "key": "demand.calibration.geh_hours",
+   "step": "calibration",
+   "label": "Calibration: hours a weekday count is spread over for the GEH statistic",
+   "unit": "h",
+   "values": [
+    12,
+    16,
+    24
+   ],
+   "basis": "cited",
+   "sources": [
+    "tag-m3-1"
    ]
   }
  ]

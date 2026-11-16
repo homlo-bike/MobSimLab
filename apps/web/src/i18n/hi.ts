@@ -312,6 +312,7 @@ export const hi: Messages = {
   "prefs.demandStep.mode_choice": "साधन चयन",
   "prefs.demandStep.catchment": "पहुँच क्षेत्र",
   "prefs.demandStep.assignment": "असाइनमेंट",
+  "prefs.demandStep.calibration": "अंशांकन",
   "prefs.demandAll": "सभी चरण",
   "prefs.accessTitle": "प्लेटफ़ॉर्म सुगम्यता",
   "prefs.accessIntro":

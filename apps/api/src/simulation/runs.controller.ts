@@ -53,6 +53,8 @@ const roadBody = z.strictObject({
 });
 
 const count = z.number().int().min(0).max(10_000_000);
+/** An observed mode share, as a fraction or a percentage (the worker scales the four to add up to 1). */
+const share = z.number().finite().min(0).max(100);
 
 /**
  * A demand model run (ADR-0019): the Demand section's bundle as JSON text (contracts/demand-input.schema.json,
@@ -72,6 +74,30 @@ const demandBody = z.strictObject({
   gbfsUrl: z
     .url({ protocol: /^https$/ })
     .max(2000)
+    .optional(),
+  /** What the planner observed, to calibrate to (09 §2.3); the worker checks the details. */
+  observed: z
+    .strictObject({
+      mode_shares: z
+        .strictObject({
+          car: share,
+          transit: share,
+          walk: share,
+          cycle: share,
+        })
+        .optional(),
+      mean_car_km: z.number().finite().gt(0).lt(1000).optional(),
+      counts: z
+        .array(
+          z.strictObject({
+            kind: z.enum(["line", "stop"]),
+            id: z.string().min(1).max(300),
+            value: z.number().finite().min(0).max(100_000_000),
+          }),
+        )
+        .max(5000)
+        .optional(),
+    })
     .optional(),
 });
 

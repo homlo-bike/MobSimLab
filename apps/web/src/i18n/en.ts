@@ -308,6 +308,7 @@ export const en = {
   "prefs.demandStep.mode_choice": "Mode choice",
   "prefs.demandStep.catchment": "Catchment",
   "prefs.demandStep.assignment": "Assignment",
+  "prefs.demandStep.calibration": "Calibration",
   "prefs.demandAll": "All steps",
   "prefs.accessTitle": "Platform accessibility",
   "prefs.accessIntro":

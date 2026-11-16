@@ -320,6 +320,7 @@ export const de: Messages = {
   "prefs.demandStep.mode_choice": "Verkehrsmittelwahl",
   "prefs.demandStep.catchment": "Einzugsgebiet",
   "prefs.demandStep.assignment": "Umlegung",
+  "prefs.demandStep.calibration": "Kalibrierung",
   "prefs.demandAll": "Alle Schritte",
   "prefs.accessTitle": "Barrierefreiheit am Bahnsteig",
   "prefs.accessIntro":

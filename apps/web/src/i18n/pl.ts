@@ -314,6 +314,7 @@ export const pl: Messages = {
   "prefs.demandStep.mode_choice": "Wybór środka transportu",
   "prefs.demandStep.catchment": "Obszar dojścia",
   "prefs.demandStep.assignment": "Rozkład na sieć",
+  "prefs.demandStep.calibration": "Kalibracja",
   "prefs.demandAll": "Wszystkie kroki",
   "prefs.accessTitle": "Dostępność peronów",
   "prefs.accessIntro":

@@ -308,6 +308,7 @@ export const ko: Messages = {
   "prefs.demandStep.mode_choice": "수단 선택",
   "prefs.demandStep.catchment": "접근 권역",
   "prefs.demandStep.assignment": "통행 배정",
+  "prefs.demandStep.calibration": "보정",
   "prefs.demandAll": "모든 단계",
   "prefs.accessTitle": "승강장 접근성",
   "prefs.accessIntro":

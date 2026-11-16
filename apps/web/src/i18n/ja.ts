@@ -309,6 +309,7 @@ export const ja: Messages = {
   "prefs.demandStep.mode_choice": "交通手段選択",
   "prefs.demandStep.catchment": "アクセス圏",
   "prefs.demandStep.assignment": "配分",
+  "prefs.demandStep.calibration": "キャリブレーション",
   "prefs.demandAll": "すべての手順",
   "prefs.accessTitle": "ホームのバリアフリー",
   "prefs.accessIntro":

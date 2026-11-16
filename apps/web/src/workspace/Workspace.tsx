@@ -935,6 +935,7 @@ export function Workspace({
                   canRun={editable}
                   streetSetups={setups}
                   stopAccess={stopAccess}
+                  onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
                 />
               )}
               {project && drawings.loaded && (

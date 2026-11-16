@@ -302,6 +302,7 @@ export const am: Messages = {
   "prefs.demandStep.mode_choice": "የትራንስፖርት ዘዴ ምርጫ",
   "prefs.demandStep.catchment": "የመድረሻ ክልል",
   "prefs.demandStep.assignment": "ምደባ",
+  "prefs.demandStep.calibration": "ማስተካከያ",
   "prefs.demandAll": "ሁሉም ደረጃዎች",
   "prefs.accessTitle": "የመድረክ ተደራሽነት",
   "prefs.accessIntro":
