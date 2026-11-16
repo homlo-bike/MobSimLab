@@ -7,11 +7,13 @@ import type { InstanceRole } from "../db/database";
  * delegated to the instance's OIDC provider.
  */
 
-/** Scopes an agent can be granted. `simulation:run` arrives with simulation runs (ADR-0035 phase C). */
+/** Scopes an agent can be granted (ADR-0035 §2). */
 export const SCOPES = {
   "project:read": "Read your agent scenarios: stops, lines, service levels and validation results",
   "analysis:run": "Run analyses: stop spacing, walk coverage, catchments, journeys and benchmarks",
   "scenario:write": "Create agent scenarios and change them (never the base network, sharing or users)",
+  "simulation:run":
+    "Read your projects' saved simulation runs, and start, stop and rerun rail capacity runs and settings sweeps where you are an Owner or Editor",
 } as const;
 export type Scope = keyof typeof SCOPES;
 export const SCOPE_IDS = Object.keys(SCOPES) as Scope[];

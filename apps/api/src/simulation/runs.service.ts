@@ -1,38 +1,73 @@
 import {
   ConflictException,
+  HttpException,
+  HttpStatus,
   Inject,
   Injectable,
   Logger,
   NotFoundException,
   ServiceUnavailableException,
 } from "@nestjs/common";
+import { type Kysely, sql } from "kysely";
 import { AuditService, projectChain } from "../audit/audit.service";
-import { DATABASE, type Database, type RunStatus } from "../db/database";
+import { type DB, DATABASE, type Database, type RunKind, type RunStatus } from "../db/database";
 import { type ProjectActor, ProjectsService } from "../projects/projects.service";
+import type { CapacitySettings, SweepDesign, SweepMetric } from "./params";
 import { type JobState, RunQueue } from "./queue";
 
 /** The network of a capacity run: the example metro, or the railway editor's topology with a lines file. */
 export type RunNetwork =
   | { kind: "example" }
-  | { kind: "files"; topology: string; topologyName: string; lines: string; linesName: string };
+  | { kind: "files"; topology: string; topologyName: string; lines: string; linesName: string }
+  /** The network and lines of a saved run of the same project (agents use this to avoid resending files). */
+  | { kind: "run"; runId: string };
 
 /** What a planner asks for: a capacity run of one period, with or without the frequency sweep. */
 export interface NewCapacityRun {
   kind: "capacity";
   network: RunNetwork;
   /** `CapacityParams` of crates/rail-sim/src/capacity.rs; missing fields take the kernel's defaults. */
-  params: Record<string, number>;
+  params: CapacitySettings;
   sweep: boolean;
+}
+
+/**
+ * A sweep of the capacity run's settings (ADR-0035 §7): one capacity run per variant of the design, in one
+ * job, with the Pareto front over the objectives (worker/src/mobsim_worker/jobs/sweep.py).
+ */
+export interface NewSweepRun {
+  kind: "sweep";
+  network: RunNetwork;
+  /** Settings every variant shares; the design overrides the ones it varies. */
+  params: CapacitySettings;
+  design: SweepDesign;
+  objectives: { metric: SweepMetric; better: "lower" | "higher" }[];
+}
+
+export type NewRun = NewCapacityRun | NewSweepRun;
+
+/** The agent connection a run is started through, for the run limit and the audit trail (ADR-0035 §7). */
+export interface AgentVia {
+  connectionId: string;
+  clientName: string;
+  tool: string;
+  /** Most runs this connection may have queued or running at once. */
+  maxOpen: number;
 }
 
 /** One run in the project's list of saved runs. */
 export interface RunSummary {
   id: string;
-  kind: "capacity";
+  kind: RunKind;
   status: RunStatus;
   network: { kind: "example" } | { kind: "files"; topologyName: string; linesName: string };
-  params: Record<string, number>;
+  params: CapacitySettings;
   sweep: boolean;
+  /** Sweeps only: the design and the objectives of the Pareto front. */
+  design?: SweepDesign;
+  objectives?: NewSweepRun["objectives"];
+  /** Name of the agent connection that started the run, or null when a person did. */
+  agent: string | null;
   /** The overall verdict once the period has been planned and run. */
   verdict: string | null;
   error: string | null;
@@ -52,8 +87,10 @@ export interface RunDetail extends RunSummary {
 /** Stored settings of a run (`simulation.run.input`). The network texts have their own columns. */
 interface StoredInput {
   network: RunSummary["network"];
-  params: Record<string, number>;
+  params: CapacitySettings;
   sweep: boolean;
+  design?: SweepDesign;
+  objectives?: NewSweepRun["objectives"];
 }
 
 /** The one example network the kernels know by name (crates/rail-sim/src/capacity_input.rs). */
@@ -63,6 +100,9 @@ const EXAMPLE_NETWORK = "example:metro";
 export const WORKER_STOPPED = "the background worker stopped before the run finished; start it again";
 
 const iso = (d: Date | null) => (d ? d.toISOString() : null);
+
+/** What the audit trail records about an agent that acted on a run. */
+const agentNote = (v: AgentVia) => ({ connectionId: v.connectionId, client: v.clientName, tool: v.tool });
 
 /**
  * Simulation runs saved with a project (ADR-0003, ADR-0023). Owners and Editors start, stop, run again and
@@ -87,24 +127,25 @@ export class RunsService {
    * `simulation.run_started` (settings and file names, not the files). 503 when the queue cannot be reached:
    * the run is then saved as failed, so the list says what happened.
    */
-  async start(actor: ProjectActor, projectId: string, input: NewCapacityRun): Promise<RunDetail> {
+  async start(actor: ProjectActor, projectId: string, input: NewRun, via?: AgentVia): Promise<RunDetail> {
     await this.projects.authorize(actor, projectId, "edit");
-    const n = input.network;
+    const net = await this.resolveNetwork(projectId, input.network);
     const stored: StoredInput = {
-      network:
-        n.kind === "example" ? n : { kind: "files", topologyName: n.topologyName, linesName: n.linesName },
+      network: net.stored,
       params: input.params,
-      sweep: input.sweep,
+      sweep: input.kind === "capacity" ? input.sweep : false,
+      ...(input.kind === "sweep" ? { design: input.design, objectives: input.objectives } : {}),
     };
     const id = await this.db.transaction().execute(async (tx) => {
+      if (via) await this.holdToLimit(tx, via);
       const r = await tx
         .insertInto("simulation.run")
         .values({
           project_id: projectId,
           kind: input.kind,
           input: JSON.stringify(stored),
-          network: n.kind === "example" ? EXAMPLE_NETWORK : n.topology,
-          lines: n.kind === "example" ? "" : n.lines,
+          network: net.network,
+          lines: net.lines,
           progress: null,
           result: null,
           error: null,
@@ -112,6 +153,7 @@ export class RunsService {
           created_by: actor.userId,
           started_at: null,
           finished_at: null,
+          agent_connection_id: via?.connectionId ?? null,
         })
         .returning("id")
         .executeTakeFirstOrThrow();
@@ -125,7 +167,7 @@ export class RunsService {
           actorId: actor.userId,
           actorIpHash: actor.ipHash,
           requestId: actor.requestId,
-          after: { kind: input.kind, ...stored },
+          after: { kind: input.kind, ...stored, ...(via ? { agent: agentNote(via) } : {}) },
         },
         tx,
       );
@@ -141,9 +183,10 @@ export class RunsService {
    * 409 while it is still queued or running. Side effects: clears progress, result and error, queues a new
    * job, audit `simulation.run_restarted` (with how the old run had ended).
    */
-  async rerun(actor: ProjectActor, projectId: string, runId: string): Promise<RunDetail> {
+  async rerun(actor: ProjectActor, projectId: string, runId: string, via?: AgentVia): Promise<RunDetail> {
     await this.projects.authorize(actor, projectId, "edit");
     await this.db.transaction().execute(async (tx) => {
+      if (via) await this.holdToLimit(tx, via);
       const r = await tx
         .selectFrom("simulation.run")
         .select(["status", "result"])
@@ -167,6 +210,7 @@ export class RunsService {
           created_at: new Date(),
           started_at: null,
           finished_at: null,
+          agent_connection_id: via?.connectionId ?? null,
         })
         .where("id", "=", runId)
         .execute();
@@ -182,6 +226,7 @@ export class RunsService {
           actorIpHash: actor.ipHash,
           requestId: actor.requestId,
           before: { status: r.status, verdict: typeof verdict === "string" ? verdict : null },
+          ...(via ? { after: { agent: agentNote(via) } } : {}),
         },
         tx,
       );
@@ -263,7 +308,7 @@ export class RunsService {
    * worker checks between sweep points) and keeps what it found. Settled runs are left as they are.
    * Side effects: audit `simulation.run_cancelled`.
    */
-  async cancel(actor: ProjectActor, projectId: string, runId: string): Promise<RunDetail> {
+  async cancel(actor: ProjectActor, projectId: string, runId: string, via?: AgentVia): Promise<RunDetail> {
     await this.projects.authorize(actor, projectId, "edit");
     const r = await this.db
       .selectFrom("simulation.run")
@@ -297,6 +342,7 @@ export class RunsService {
             actorIpHash: actor.ipHash,
             requestId: actor.requestId,
             before: { status: r.status },
+            ...(via ? { after: { agent: agentNote(via) } } : {}),
           },
           tx,
         );
@@ -310,6 +356,50 @@ export class RunsService {
   }
 
   // ---------------------------------------------------------------------------------------------------------
+
+  /**
+   * Purpose: the network texts to store for a new run, and what the list shows about them. A `run` network is
+   * copied from a saved run of the same project (404 when there is none).
+   */
+  private async resolveNetwork(
+    projectId: string,
+    n: RunNetwork,
+  ): Promise<{ stored: StoredInput["network"]; network: string; lines: string }> {
+    if (n.kind === "example") return { stored: n, network: EXAMPLE_NETWORK, lines: "" };
+    if (n.kind === "files")
+      return {
+        stored: { kind: "files", topologyName: n.topologyName, linesName: n.linesName },
+        network: n.topology,
+        lines: n.lines,
+      };
+    const r = await this.db
+      .selectFrom("simulation.run")
+      .select(["input", "network", "lines"])
+      .where("project_id", "=", projectId)
+      .where("id", "=", n.runId)
+      .executeTakeFirst();
+    if (!r) throw new NotFoundException("the run to take the network from was not found in this project");
+    return { stored: (r.input as StoredInput).network, network: r.network, lines: r.lines };
+  }
+
+  /**
+   * Purpose: hold an agent connection to its limit of runs at once (ADR-0035 §7). Serialised per connection
+   * with a transaction lock, so two calls at the same moment cannot both pass. 429 when the limit is reached.
+   */
+  private async holdToLimit(tx: Kysely<DB>, via: AgentVia): Promise<void> {
+    await sql`SELECT pg_advisory_xact_lock(hashtext(${"agent-runs:" + via.connectionId}))`.execute(tx);
+    const open = await tx
+      .selectFrom("simulation.run")
+      .select((eb) => eb.fn.countAll<string>().as("n"))
+      .where("agent_connection_id", "=", via.connectionId)
+      .where("status", "in", ["queued", "running"])
+      .executeTakeFirstOrThrow();
+    if (Number(open.n) >= via.maxOpen)
+      throw new HttpException(
+        `this agent connection already has ${open.n} runs queued or running (the limit is ${via.maxOpen}); wait for one to finish or cancel one`,
+        HttpStatus.TOO_MANY_REQUESTS,
+      );
+  }
 
   /** Purpose: queue a stored run. 503 when the queue cannot be reached: the run is then settled as failed. */
   private async enqueue(id: string): Promise<void> {
@@ -327,7 +417,9 @@ export class RunsService {
     return this.db
       .selectFrom("simulation.run as r")
       .leftJoin("iam.user as u", "u.id", "r.created_by")
+      .leftJoin("agent.connection as c", "c.id", "r.agent_connection_id")
       .select([
+        "c.name as agent_name",
         "r.id",
         "r.kind",
         "r.status",
@@ -345,7 +437,8 @@ export class RunsService {
 
   private summary(r: {
     id: string;
-    kind: "capacity";
+    kind: RunKind;
+    agent_name: string | null;
     status: RunStatus;
     input: unknown;
     error: string | null;
@@ -367,6 +460,8 @@ export class RunsService {
       network: input.network,
       params: input.params,
       sweep: input.sweep,
+      ...(input.design ? { design: input.design, objectives: input.objectives ?? [] } : {}),
+      agent: r.agent_name,
       verdict: typeof verdict === "string" ? verdict : null,
       error: r.error,
       cancelRequested: r.cancel_requested,

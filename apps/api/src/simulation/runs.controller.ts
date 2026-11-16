@@ -14,38 +14,16 @@ import { z } from "zod";
 import { type MslRequest, SessionService } from "../auth/session.service";
 import { Requires } from "../iam/requires";
 import type { ProjectActor } from "../projects/projects.service";
+import { capacityParams } from "./params";
 import { RunsService } from "./runs.service";
 
 const uuid = z.uuid();
-const DAY = 48 * 3600;
-const seconds = z.number().finite().min(0).max(DAY);
-const share = z.number().finite().min(0).max(1);
 const fileName = z.string().trim().min(1).max(200);
 /** The network texts are checked by the kernel when the worker compiles them; here only their size. */
 const text = z
   .string()
   .min(2)
   .max(8 * 1024 * 1024);
-
-/** `CapacityParams` of crates/rail-sim/src/capacity.rs. Unknown settings are refused. */
-const capacityParams = z
-  .strictObject({
-    from_s: seconds,
-    to_s: seconds,
-    warmup_s: seconds.optional(),
-    recovery_s: seconds.optional(),
-    min_buffer_s: seconds.optional(),
-    occupancy_limit_share: share.optional(),
-    spare_share: share.optional(),
-    late_threshold_s: seconds.optional(),
-    stability_runs: z.number().int().min(0).max(100).optional(),
-    delayed_share: share.optional(),
-    primary_delay_mean_s: seconds.optional(),
-    primary_delay_max_s: seconds.optional(),
-    residual_delay_s: seconds.optional(),
-    seed: z.number().int().min(0).max(Number.MAX_SAFE_INTEGER).optional(),
-  })
-  .refine((p) => p.to_s > p.from_s, "the period must end after it starts");
 
 const startBody = z.strictObject({
   kind: z.literal("capacity"),
