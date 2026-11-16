@@ -319,6 +319,9 @@ export const uz: Messages = {
   "prefs.demandStep.catchment": "Yetib borish hududi",
   "prefs.demandStep.assignment": "Yuklash",
   "prefs.demandAll": "Barcha bosqichlar",
+  "prefs.accessTitle": "Platforma qulayligi",
+  "prefs.accessIntro":
+    "Platforma va poyezd orasidagi zinapoya va bo‘shliq chegaralari (TSI PRM) hamda katalogda yo‘q poyezdlar uchun pol balandligi. Liniyalar har bir bekatda tekshiriladi.",
   "prefs.vehiclesTitle": "Transport vositalari",
   "prefs.vehiclesIntro":
     "Ushbu loyiha har bir tur uchun foydalanadigan katalog vositalari. Ko'cha yo'nalishi va temir yo'l vositalari faqat belgilanganlarini taklif qiladi.",

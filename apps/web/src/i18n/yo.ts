@@ -313,6 +313,9 @@ export const yo: Messages = {
   "prefs.demandStep.catchment": "Agbègbè ìwọlé",
   "prefs.demandStep.assignment": "Ìpínsí",
   "prefs.demandAll": "Gbogbo ìgbésẹ̀",
+  "prefs.accessTitle": "Ìráyè pèpéle",
+  "prefs.accessIntro":
+    "Ààlà àtẹ̀gùn àti àlàfo láàrin pèpéle àti ọkọ̀ (TSI PRM), àti gíga ilẹ̀ fún ọkọ̀ tí kò ní nínú àkójọ. A ń ṣàyẹ̀wò àwọn ìlà ní gbogbo ibùdó.",
   "prefs.vehiclesTitle": "Àwọn ọkọ̀",
   "prefs.vehiclesIntro":
     "Àwọn ọkọ̀ inú àkójọ tí iṣẹ́ àkànṣe yìí ń lò, fún irú kọ̀ọ̀kan. Àwọn irinṣẹ́ ọ̀nà òpópónà àti ojú irin ń fi àwọn tí a sàmì sí nìkan hàn.",

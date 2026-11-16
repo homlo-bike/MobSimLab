@@ -303,6 +303,9 @@ export const am: Messages = {
   "prefs.demandStep.catchment": "የመድረሻ ክልል",
   "prefs.demandStep.assignment": "ምደባ",
   "prefs.demandAll": "ሁሉም ደረጃዎች",
+  "prefs.accessTitle": "የመድረክ ተደራሽነት",
+  "prefs.accessIntro":
+    "በመድረክና በባቡር መካከል የደረጃና የክፍተት ገደቦች (TSI PRM)፣ እና በካታሎግ ውስጥ ለሌላቸው ባቡሮች የወለል ከፍታ። መስመሮች በእያንዳንዱ ማቆሚያ ይፈተሻሉ።",
   "prefs.vehiclesTitle": "ተሽከርካሪዎች",
   "prefs.vehiclesIntro":
     "ይህ ፕሮጀክት ለእያንዳንዱ ዓይነት የሚጠቀማቸው የካታሎግ ተሽከርካሪዎች። የመንገድ እና የባቡር መስመር መሣሪያዎች ምልክት የተደረገባቸውን ብቻ ያቀርባሉ።",

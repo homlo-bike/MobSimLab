@@ -315,6 +315,9 @@ export const it: Messages = {
   "prefs.demandStep.catchment": "Bacino d'utenza",
   "prefs.demandStep.assignment": "Assegnazione",
   "prefs.demandAll": "Tutti i passi",
+  "prefs.accessTitle": "Accessibilità dei marciapiedi",
+  "prefs.accessIntro":
+    "Limiti di gradino e distanza tra marciapiede e treno (STI PMR) e altezza del pavimento usata per i treni che non l'hanno nel catalogo. Le linee sono verificate a ogni fermata.",
   "prefs.vehiclesTitle": "Veicoli",
   "prefs.vehiclesIntro":
     "I veicoli del catalogo usati da questo progetto, per modo. Gli strumenti per linee stradali e ferroviarie propongono solo quelli spuntati.",

@@ -25,7 +25,7 @@ When the project has no lines yet, the tab says so and offers **Go to Create**.
 - **Click a line** to open its strip map.
 - **Status symbols** and **Station feature symbols** show or hide the symbols next to station names.
 - **Sea, lakes and rivers**: water from OpenStreetMap around the network, bent along with the stations so it stays where it belongs between them.
-- **Tariff zones and landmarks**: **Draw an area**, click the map at each corner, then **Finish**. Pick the area in the list to change its name, kind (tariff zone or landmark), colour, or remove it; drag its white corners on the map to change its shape.
+- **Tariff zones and landmarks**: **Draw an area**, click the map at each corner, then **Finish**. Pick the area in the list to change its name, kind (tariff zone or landmark), colour, or remove it; drag its white corners on the map to change its shape. Tariff zones set the zones of a trip when the [fare revenue table](fare-revenue.md) uses zonal fares.
 - Use **−**, **+** and **Fit** to zoom.
 
 Moves, name places and rotations, statuses, areas, layers and switches are saved with the project. People who can only view the project see the map and can export it, but cannot change it.

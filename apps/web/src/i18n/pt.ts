@@ -316,6 +316,9 @@ export const pt: Messages = {
   "prefs.demandStep.catchment": "Área de influência",
   "prefs.demandStep.assignment": "Alocação",
   "prefs.demandAll": "Todos os passos",
+  "prefs.accessTitle": "Acessibilidade da plataforma",
+  "prefs.accessIntro":
+    "Limites de degrau e vão entre plataforma e trem (ETI PMR) e a altura de piso usada para trens sem dado no catálogo. As linhas são verificadas em cada parada.",
   "prefs.vehiclesTitle": "Veículos",
   "prefs.vehiclesIntro":
     "Os veículos do catálogo que este projeto usa, por modo. As ferramentas de linhas de rua e ferroviárias só oferecem os marcados.",

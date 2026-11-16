@@ -316,6 +316,9 @@ export const nl: Messages = {
   "prefs.demandStep.catchment": "Invloedsgebied",
   "prefs.demandStep.assignment": "Toedeling",
   "prefs.demandAll": "Alle stappen",
+  "prefs.accessTitle": "Toegankelijkheid van perrons",
+  "prefs.accessIntro":
+    "Grenzen voor trede en kier tussen perron en trein (TSI PRM) en de vloerhoogte voor treinen zonder waarde in de voertuigcatalogus. Lijnen worden bij elke halte gecontroleerd.",
   "prefs.vehiclesTitle": "Voertuigen",
   "prefs.vehiclesIntro":
     "De catalogusvoertuigen die dit project per vervoerswijze gebruikt. De straatlijn- en spoortools bieden alleen de aangevinkte aan.",

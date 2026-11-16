@@ -313,6 +313,9 @@ export const hi: Messages = {
   "prefs.demandStep.catchment": "पहुँच क्षेत्र",
   "prefs.demandStep.assignment": "असाइनमेंट",
   "prefs.demandAll": "सभी चरण",
+  "prefs.accessTitle": "प्लेटफ़ॉर्म सुगम्यता",
+  "prefs.accessIntro":
+    "प्लेटफ़ॉर्म और ट्रेन के बीच सीढ़ी और अंतर की सीमाएँ (TSI PRM), और सूची में न होने वाली ट्रेनों की फ़र्श ऊँचाई। लाइनें हर स्टॉप पर जाँची जाती हैं।",
   "prefs.vehiclesTitle": "वाहन",
   "prefs.vehiclesIntro":
     "इस परियोजना में हर साधन के लिए इस्तेमाल होने वाले सूची के वाहन। सड़क लाइन और रेलवे उपकरण केवल चुने गए वाहन दिखाते हैं।",

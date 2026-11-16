@@ -21,6 +21,7 @@ describe("demand model values", () => {
       "periods",
       "distribution",
       "mode_choice",
+      "catchment",
       "assignment",
     ]);
     for (const s of DEMAND_STEPS) expect(DEMAND_PARAMS.some((p) => p.step === s)).toBe(true);

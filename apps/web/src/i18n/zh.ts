@@ -301,6 +301,9 @@ export const zh: Messages = {
   "prefs.demandStep.catchment": "可达范围",
   "prefs.demandStep.assignment": "交通分配",
   "prefs.demandAll": "全部步骤",
+  "prefs.accessTitle": "站台无障碍",
+  "prefs.accessIntro":
+    "站台与列车之间的台阶和间隙限值（TSI PRM），以及车辆目录中缺少地板高度时使用的值。线路在每个停靠站按此检查。",
   "prefs.vehiclesTitle": "车辆",
   "prefs.vehiclesIntro": "本项目在各交通方式中使用的目录车辆。道路线路和铁路工具只提供已勾选的车辆。",
   "prefs.vehiclesMode": "交通方式",
