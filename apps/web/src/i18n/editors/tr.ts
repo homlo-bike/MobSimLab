@@ -1161,7 +1161,14 @@ export const editorsTr = {
     "Günün bir dönemini sefer planlayıcısından ve anklaşmandan geçirin. Her raylı hattın raylara sığıp sığmadığını, zamanında işleyip işlemediğini ve gecikmelerden toparlanıp toparlanmadığını, kaç tren taşıyabileceğini görün.",
   "capacity.network": "Ağ",
   "capacity.example": "Örnek metro",
-  "capacity.mine": "Demiryolum",
+  "capacity.mine": "Dosyalardan",
+  "capacity.drawn": "Bu projede çizilen",
+  "capacity.drawnText": "Demiryolu aracında çizilen hattaki {names} hatları, kaydedildiği gibi.",
+  "capacity.drawn.noTrack": "Demiryolu aracında henüz hiçbir şey çizilmedi.",
+  "capacity.drawn.noLines":
+    "Teste hazır hat yok. Demiryolu aracında bir hatta en az iki durak ve bir tren verin.",
+  "capacity.drawn.errors": "Çizilen demiryolunda hatalar var. Önce bunları demiryolu aracında düzeltin.",
+  "capacity.building": "Çizilen demiryolu oluşturuluyor…",
   "capacity.exampleText":
     "M1 hattı Westpark – Eastgate: beş istasyon, her uçta bir depo, zirvelerde her 5 dk, diğer saatlerde her 10 dk.",
   "capacity.topologyFile": "Ray topolojisi (JSON)",

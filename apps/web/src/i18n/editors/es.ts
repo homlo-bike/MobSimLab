@@ -1200,7 +1200,16 @@ export const editorsEs = {
     "Pase un periodo del día por el planificador de horarios y el enclavamiento. Vea si cada línea ferroviaria cabe en las vías, circula a tiempo y se recupera de los retrasos, y cuántos trenes podría llevar.",
   "capacity.network": "Red",
   "capacity.example": "Metro de ejemplo",
-  "capacity.mine": "Mi ferrocarril",
+  "capacity.mine": "Desde archivos",
+  "capacity.drawn": "Dibujado en este proyecto",
+  "capacity.drawnText":
+    "Líneas {names} en el ferrocarril dibujado en la herramienta ferroviaria, tal como se guardó.",
+  "capacity.drawn.noTrack": "Aún no hay nada dibujado en la herramienta ferroviaria.",
+  "capacity.drawn.noLines":
+    "Ninguna línea está lista para la prueba. En la herramienta ferroviaria, da a una línea al menos dos paradas y un tren.",
+  "capacity.drawn.errors":
+    "El ferrocarril dibujado tiene errores. Corrígelos primero en la herramienta ferroviaria.",
+  "capacity.building": "Construyendo el ferrocarril dibujado…",
   "capacity.exampleText":
     "Línea M1 Westpark – Eastgate: cinco estaciones, un depósito en cada extremo, cada 5 min en las horas punta y cada 10 min el resto del tiempo.",
   "capacity.topologyFile": "Topología de vías (JSON)",

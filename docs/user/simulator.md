@@ -7,7 +7,8 @@ Find out whether your rail lines work: do they fit the tracks, do they run on ti
 1. Open a project and click **Simulator** in the top bar. **Test the system** is the first view of the panel.
 2. Choose the network:
    - **Example metro**: line M1 Westpark – Eastgate, five stations, a depot at each end, every 5 minutes in the peaks and every 10 minutes otherwise. It is there to try the test before your own railway exists.
-   - **My railway**: pick two files, the **track topology** (in the railway tool, **Download track topology (JSON)**) and a **lines file** (below).
+   - **Drawn in this project**: the railway drawn in the [railway tool](railway-tool.md) and its service lines, as saved. It is picked by default when the project has a service line with at least two stops and a train. The test builds the railway with its terrain heights, as the Tables tab does, and plans the lines as **Publish timetable** does: same stops, train, headways, peaks and stabling. Lines without two stops or a train are left out. A drawing with errors is not tested; the panel says to fix it in the railway tool first. You do not need to publish the timetable first.
+   - **From files**: pick two files, the **track topology** (in the railway tool, **Download track topology (JSON)**) and a **lines file** (below).
 3. Pick a **period**: morning peak 07:00–09:00, midday 11:00–13:00, evening peak 16:00–18:00, evening 20:00–22:00, or **Other** to type the times.
 4. Leave **Also find the most trains each line can carry** on to try other frequencies (it takes longer: one more test per frequency).
 5. Click **Run the test**. Everything runs in your browser; **Stop** ends the frequency search after the current step.
@@ -50,8 +51,9 @@ The lines file is the one the timetable planner reads (`crates/rail-plan/example
 - `bands`: `{"from_s", "to_s", "headway_s"}` in seconds from the start of the service day;
 - `return_offset_s`: `null` to let the planner choose.
 
+A lines file can also hold the railway tool's service lines, `{"service_lines": [ ... ]}`, in the form **Publish timetable** sends them to the planner (`rail_plan::ServiceLine`).
+
 ## Not yet
 
 - Passenger loads (who is left behind on a full train) need the demand model; the test is about trains and tracks.
-- Lines drawn in the railway tool will feed the test directly, without a lines file.
 - Street lines (bus, tram in traffic) are not part of this test.

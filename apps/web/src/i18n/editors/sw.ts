@@ -1191,7 +1191,14 @@ export const editorsSw = {
     "Pitisha kipindi cha siku kwenye mpangaji wa ratiba na interlocking. Ona kama kila njia ya reli inatosha kwenye reli, inakwenda kwa wakati na inapona kutokana na ucheleweshaji, na inaweza kubeba treni ngapi.",
   "capacity.network": "Mtandao",
   "capacity.example": "Metro ya mfano",
-  "capacity.mine": "Reli yangu",
+  "capacity.mine": "Kutoka kwa faili",
+  "capacity.drawn": "Iliyochorwa katika mradi huu",
+  "capacity.drawnText": "Laini {names} kwenye reli iliyochorwa katika zana ya reli, kama ilivyohifadhiwa.",
+  "capacity.drawn.noTrack": "Bado hakuna kilichochorwa katika zana ya reli.",
+  "capacity.drawn.noLines":
+    "Hakuna laini iliyo tayari kujaribiwa. Katika zana ya reli, ipe laini angalau vituo viwili na treni.",
+  "capacity.drawn.errors": "Reli iliyochorwa ina makosa. Yarekebishe kwanza katika zana ya reli.",
+  "capacity.building": "Inajenga reli iliyochorwa…",
   "capacity.exampleText":
     "Njia M1 Westpark – Eastgate: stesheni tano, karakana kila mwisho, kila dak 5 wakati wa msongamano na kila dak 10 nyakati nyingine.",
   "capacity.topologyFile": "Topolojia ya reli (JSON)",

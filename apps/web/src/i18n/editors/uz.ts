@@ -1195,7 +1195,14 @@ export const editorsUz = {
     "Kunning bir davrini jadval rejalovchisi va markazlashtirish orqali o‘tkazing. Har bir temir yo‘l liniyasi relslarga sig‘adimi, o‘z vaqtida yuradimi va kechikishlardan tiklanadimi, qancha poyezd tashiy olishini ko‘ring.",
   "capacity.network": "Tarmoq",
   "capacity.example": "Namuna metro",
-  "capacity.mine": "Mening temir yo‘lim",
+  "capacity.mine": "Fayllardan",
+  "capacity.drawn": "Shu loyihada chizilgan",
+  "capacity.drawnText": "Temir yo‘l vositasida chizilgan yo‘ldagi {names} liniyalari, saqlanganidek.",
+  "capacity.drawn.noTrack": "Temir yo‘l vositasida hali hech narsa chizilmagan.",
+  "capacity.drawn.noLines":
+    "Sinovga tayyor liniya yo‘q. Temir yo‘l vositasida liniyaga kamida ikki bekat va poyezd bering.",
+  "capacity.drawn.errors": "Chizilgan temir yo‘lda xatolar bor. Avval ularni temir yo‘l vositasida tuzating.",
+  "capacity.building": "Chizilgan temir yo‘l qurilmoqda…",
   "capacity.exampleText":
     "M1 liniya Westpark – Eastgate: beshta bekat, har uchida depo, tig‘izlikda har 5 daq, boshqa vaqtda har 10 daq.",
   "capacity.topologyFile": "Yo‘l topologiyasi (JSON)",

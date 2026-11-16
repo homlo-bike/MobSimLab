@@ -1182,7 +1182,16 @@ export const editorsHa = {
     "Gudanar da wani lokaci na yini ta mai tsara jadawali da interlocking. Duba ko kowane layin dogo ya dace da layukan ƙarfe, yana tafiya a kan lokaci kuma yana farfaɗowa daga jinkiri, da jirage nawa zai iya ɗauka.",
   "capacity.network": "Hanyar sadarwa",
   "capacity.example": "Misalin metro",
-  "capacity.mine": "Layin dogo na",
+  "capacity.mine": "Daga fayiloli",
+  "capacity.drawn": "An zana a wannan aikin",
+  "capacity.drawnText":
+    "Layuka {names} a kan layin dogo da aka zana a kayan aikin layin dogo, kamar yadda aka adana.",
+  "capacity.drawn.noTrack": "Ba a zana komai a kayan aikin layin dogo ba tukuna.",
+  "capacity.drawn.noLines":
+    "Babu layin da ke shirye don gwaji. A kayan aikin layin dogo, ba layi aƙalla tasha biyu da jirgin ƙasa.",
+  "capacity.drawn.errors":
+    "Layin dogo da aka zana yana da kurakurai. Gyara su a kayan aikin layin dogo tukuna.",
+  "capacity.building": "Ana gina layin dogo da aka zana…",
   "capacity.exampleText":
     "Layi M1 Westpark – Eastgate: tasoshi biyar, ma’ajiya a kowane ƙarshe, kowane mint. 5 a lokacin cunkoso da kowane mint. 10 a sauran lokaci.",
   "capacity.topologyFile": "Tsarin layin dogo (JSON)",

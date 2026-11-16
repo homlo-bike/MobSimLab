@@ -1132,7 +1132,14 @@ export const editorsJa = {
     "1 日のある時間帯をダイヤ作成と連動装置に通します。各鉄道路線が線路に収まるか、定時に走り遅れから回復するか、何本の列車を走らせられるかを確認します。",
   "capacity.network": "路線網",
   "capacity.example": "サンプル地下鉄",
-  "capacity.mine": "自分の鉄道",
+  "capacity.mine": "ファイルから",
+  "capacity.drawn": "このプロジェクトで描いた路線",
+  "capacity.drawnText": "鉄道ツールで描いた鉄道上の系統 {names}(保存された状態)。",
+  "capacity.drawn.noTrack": "鉄道ツールにはまだ何も描かれていません。",
+  "capacity.drawn.noLines":
+    "テストできる系統がありません。鉄道ツールで、系統に2つ以上の停車駅と車両を設定してください。",
+  "capacity.drawn.errors": "描いた鉄道にエラーがあります。先に鉄道ツールで直してください。",
+  "capacity.building": "描いた鉄道を構築しています…",
   "capacity.exampleText":
     "M1 線 Westpark – Eastgate：5 駅、両端に車両基地、ラッシュ時は 5 分ごと、それ以外は 10 分ごと。",
   "capacity.topologyFile": "線路トポロジー（JSON）",

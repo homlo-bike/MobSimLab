@@ -1211,7 +1211,14 @@ export const editorsDe = {
     "Fahre einen Zeitraum des Tages durch den Fahrplaner und das Stellwerk. Sieh, ob jede Bahnlinie auf die Gleise passt, pünktlich läuft und sich von Verspätungen erholt, und wie viele Züge sie fahren könnte.",
   "capacity.network": "Netz",
   "capacity.example": "Beispiel-U-Bahn",
-  "capacity.mine": "Meine Bahn",
+  "capacity.mine": "Aus Dateien",
+  "capacity.drawn": "In diesem Projekt gezeichnet",
+  "capacity.drawnText": "Linien {names} auf der im Bahn-Werkzeug gezeichneten Strecke, wie gespeichert.",
+  "capacity.drawn.noTrack": "Im Bahn-Werkzeug ist noch nichts gezeichnet.",
+  "capacity.drawn.noLines":
+    "Keine Linie ist bereit für den Test. Gib einer Linie im Bahn-Werkzeug mindestens zwei Halte und einen Zug.",
+  "capacity.drawn.errors": "Die gezeichnete Bahn hat Fehler. Behebe sie zuerst im Bahn-Werkzeug.",
+  "capacity.building": "Die gezeichnete Bahn wird aufgebaut…",
   "capacity.exampleText":
     "Linie M1 Westpark – Eastgate: fünf Stationen, an jedem Ende ein Depot, alle 5 min in den Spitzen und sonst alle 10 min.",
   "capacity.topologyFile": "Gleistopologie (JSON)",

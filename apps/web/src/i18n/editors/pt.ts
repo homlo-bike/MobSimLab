@@ -1195,7 +1195,14 @@ export const editorsPt = {
     "Passe um período do dia pelo planejador de horários e pelo intertravamento. Veja se cada linha ferroviária cabe nos trilhos, roda no horário e se recupera de atrasos, e quantos trens ela poderia levar.",
   "capacity.network": "Rede",
   "capacity.example": "Metrô de exemplo",
-  "capacity.mine": "Minha ferrovia",
+  "capacity.mine": "De arquivos",
+  "capacity.drawn": "Desenhada neste projeto",
+  "capacity.drawnText": "Linhas {names} na ferrovia desenhada na ferramenta ferroviária, como foi salva.",
+  "capacity.drawn.noTrack": "Ainda não há nada desenhado na ferramenta ferroviária.",
+  "capacity.drawn.noLines":
+    "Nenhuma linha está pronta para o teste. Na ferramenta ferroviária, dê a uma linha pelo menos duas paradas e um trem.",
+  "capacity.drawn.errors": "A ferrovia desenhada tem erros. Corrija-os primeiro na ferramenta ferroviária.",
+  "capacity.building": "Construindo a ferrovia desenhada…",
   "capacity.exampleText":
     "Linha M1 Westpark – Eastgate: cinco estações, um pátio em cada ponta, a cada 5 min nos picos e a cada 10 min no resto do tempo.",
   "capacity.topologyFile": "Topologia da via (JSON)",

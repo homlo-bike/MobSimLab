@@ -1212,7 +1212,14 @@ export const editorsZu = {
     "Dlulisa isikhathi sosuku kumhleli wezikhathi zokuhamba naku-interlocking. Bona ukuthi ulayini ngamunye wesitimela uyangena yini ezinsimbini, uhamba ngesikhathi futhi uyalulama ekubambezelekeni, nokuthi angathwala izitimela ezingaki.",
   "capacity.network": "Inethiwekhi",
   "capacity.example": "Imetro eyisibonelo",
-  "capacity.mine": "Ujantshi wami",
+  "capacity.mine": "Kusuka kumafayela",
+  "capacity.drawn": "Kudwetshwe kule phrojekthi",
+  "capacity.drawnText": "Imigqa {names} kujantshi odwetshwe ethuluzini likajantshi, njengoba ugciniwe.",
+  "capacity.drawn.noTrack": "Akukho okudwetshwe ethuluzini likajantshi okwamanje.",
+  "capacity.drawn.noLines":
+    "Awukho umugqa olungele ukuhlolwa. Ethuluzini likajantshi, nikeza umugqa okungenani iziteshi ezimbili nesitimela.",
+  "capacity.drawn.errors": "Ujantshi odwetshiwe unamaphutha. Qala uwalungise ethuluzini likajantshi.",
+  "capacity.building": "Kwakhiwa ujantshi odwetshiwe…",
   "capacity.exampleText":
     "Ulayini M1 Westpark – Eastgate: iziteshi ezinhlanu, idepho ekugcineni ngakunye, njalo ngemizuzu engu-5 ngesikhathi sesiminyaminya nanjalo ngemizuzu engu-10 ngezinye izikhathi.",
   "capacity.topologyFile": "Isakhiwo sojantshi (JSON)",

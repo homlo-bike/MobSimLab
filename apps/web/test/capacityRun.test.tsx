@@ -1,7 +1,9 @@
 import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { CapacityRun, explain, practicalMaximum } from "../src/features/capacity/CapacityRun";
+import { buildDrawnNetwork } from "../src/features/capacity/drawn";
 import type { CapacityEngine, CapacityRun as Run, EngineLoader, Point } from "../src/features/capacity/types";
+import type { Network, RailEngine, RailView } from "../src/features/railways/types";
 
 afterEach(cleanup);
 
@@ -91,7 +93,125 @@ describe("capacity run helpers", () => {
   });
 });
 
+const METRO_TRAIN = "alstom_metropolis-amsterdam-m5-6-car";
+
+/** A two-station metro drawn in the railway tool, with line M1 (and M2, which has one stop only). */
+function drawn(): Network {
+  const station = (id: number, x: number) => ({
+    id,
+    name: `S${id}`,
+    x,
+    y: 0,
+    rotation_deg: 0,
+    level: "street" as const,
+    side_platforms: 2,
+    island_platforms: 0,
+    platform_length_m: 120,
+  });
+  const line = (id: string, stations: number[]) => ({
+    id,
+    name: id,
+    color: "#0055aa",
+    stations,
+    vehicle: METRO_TRAIN,
+    units: 1,
+    first_min: 300,
+    last_min: 1440,
+    peak_headway_min: 5,
+    offpeak_headway_min: 10,
+  });
+  return {
+    origin: [4.9, 52.37],
+    mode: "metro",
+    stations: [station(1, 0), station(2, 2000)],
+    tracks: [
+      {
+        id: 10,
+        name: "Main",
+        start: { type: "station", station: 1, end: 1, tracks: [0, 1] },
+        end: { type: "station", station: 2, end: 0, tracks: [0, 1] },
+        points: [],
+        tracks: 2,
+        level: "street",
+        power: "auto",
+        use: "running",
+        bed: "auto",
+        lead_start_m: 30,
+        lead_end_m: 30,
+      },
+    ],
+    switches: [],
+    lines: [line("M1", [1, 2]), line("M2", [1])],
+  } as Network;
+}
+
+function fakeRail(errors = 0): { loadRail: () => Promise<RailEngine>; engine: RailEngine } {
+  const view = { counts: { errors, warnings: 0, track_km: 2, route_km: 2 } } as RailView;
+  const engine = {
+    build: vi.fn(() => view),
+    topology: vi.fn(() => ({ version: 1, parts: [] })),
+    dispose: vi.fn(),
+  } as unknown as RailEngine;
+  return { loadRail: vi.fn(async () => engine), engine };
+}
+
+describe("drawn railway for the test", () => {
+  it("gives the topology and the service lines ready to publish", async () => {
+    const { loadRail, engine } = fakeRail();
+    const net = await buildDrawnNetwork(drawn(), loadRail);
+    if (typeof net === "string") throw new Error(net);
+    expect(JSON.parse(net.topology)).toEqual({ version: 1, parts: [] });
+    const lines = JSON.parse(net.lines).service_lines;
+    expect(lines.map((l: { id: string }) => l.id)).toEqual(["M1"]);
+    expect(lines[0].stations).toEqual(["st1", "st2"]);
+    expect(lines[0].peak_headway_s).toBe(300);
+    expect(engine.dispose).toHaveBeenCalled();
+  });
+
+  it("says what is missing", async () => {
+    expect(await buildDrawnNetwork(null)).toBe("noTrack");
+    expect(await buildDrawnNetwork({ ...drawn(), lines: [] })).toBe("noLines");
+    expect(await buildDrawnNetwork(drawn(), fakeRail(2).loadRail)).toBe("errors");
+  });
+});
+
 describe("capacity run panel", () => {
+  it("tests the railway drawn in the project by default", async () => {
+    const { loader, engine } = fakeLoader();
+    const buildDrawn = vi.fn(async () => ({ topology: "{}", lines: '{"service_lines":[]}' }));
+    render(<CapacityRun loadEngine={loader} railway={drawn()} buildDrawn={buildDrawn} />);
+    expect(screen.getByRole("radio", { name: "Drawn in this project" }).getAttribute("aria-checked")).toBe(
+      "true",
+    );
+    expect(screen.getByText(/Lines M1 on the railway drawn/)).toBeTruthy();
+    fireEvent.click(screen.getByRole("checkbox"));
+    fireEvent.click(screen.getByRole("button", { name: "Run the test" }));
+    await screen.findByTestId("capacity-result");
+    expect(loader).toHaveBeenCalledWith({ kind: "files", topology: "{}", lines: '{"service_lines":[]}' });
+    expect(engine.run).toHaveBeenCalled();
+    // The same drawing is not built again.
+    fireEvent.click(screen.getByRole("button", { name: "Run again" }));
+    await waitFor(() => expect(engine.run).toHaveBeenCalledTimes(2));
+    expect(buildDrawn).toHaveBeenCalledTimes(1);
+  });
+
+  it("explains why the drawn railway cannot be tested", async () => {
+    const { loader } = fakeLoader();
+    render(<CapacityRun loadEngine={loader} railway={{ ...drawn(), lines: [] }} />);
+    expect(screen.getByRole("radio", { name: "Example metro" }).getAttribute("aria-checked")).toBe("true");
+    fireEvent.click(screen.getByRole("radio", { name: "Drawn in this project" }));
+    expect(screen.getByText(/No service line is ready to test/)).toBeTruthy();
+    expect((screen.getByRole("button", { name: "Run the test" }) as HTMLButtonElement).disabled).toBe(true);
+  });
+
+  it("reports errors in the drawn railway", async () => {
+    const { loader } = fakeLoader();
+    render(<CapacityRun loadEngine={loader} railway={drawn()} buildDrawn={async () => "errors"} />);
+    fireEvent.click(screen.getByRole("button", { name: "Run the test" }));
+    expect((await screen.findByRole("alert")).textContent).toContain("The drawn railway has errors");
+    expect(loader).not.toHaveBeenCalled();
+  });
+
   it("runs the example metro in the morning peak and sweeps other frequencies", async () => {
     const { loader, engine } = fakeLoader();
     render(<CapacityRun loadEngine={loader} />);
@@ -109,7 +229,7 @@ describe("capacity run panel", () => {
   it("asks for both files before running a railway of one's own", () => {
     const { loader } = fakeLoader();
     render(<CapacityRun loadEngine={loader} />);
-    fireEvent.click(screen.getByRole("radio", { name: "My railway" }));
+    fireEvent.click(screen.getByRole("radio", { name: "From files" }));
     expect((screen.getByRole("button", { name: "Run the test" }) as HTMLButtonElement).disabled).toBe(true);
     expect(screen.getByText("Choose both files to run your railway.")).toBeTruthy();
   });

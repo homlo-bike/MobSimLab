@@ -9,6 +9,9 @@ import {
   useI18n,
   withNodes,
 } from "../../i18n/i18n";
+import { engineLines } from "../railways/serviceLines";
+import type { Network } from "../railways/types";
+import { buildDrawnNetwork, drawnProblem } from "./drawn";
 import { loadWorkerEngine } from "./engine";
 import type {
   CapacityEngine,
@@ -87,6 +90,10 @@ interface Props {
   panel?: HTMLElement | null;
   /** Engine loader; tests inject a fake. */
   loadEngine?: EngineLoader;
+  /** The railway drawn in the project, with its service lines. */
+  railway?: Network | null;
+  /** Builds the drawn railway for the test; tests inject a fake. */
+  buildDrawn?: typeof buildDrawnNetwork;
 }
 
 type LineState = { info: LineInfo; planned: Point; sweep: Point[]; sweeping: boolean };
@@ -97,9 +104,17 @@ type LineState = { info: LineInfo; planned: Point; sweep: Point[]; sweeping: boo
  * timetable planner, measures UIC 406 capacity, runs it through the interlocking, repeats it with random delays,
  * and tries other frequencies to find the most each line can carry. Plain verdicts first, numbers behind them.
  */
-export function CapacityRun({ panel = null, loadEngine = loadWorkerEngine }: Props) {
+export function CapacityRun({
+  panel = null,
+  loadEngine = loadWorkerEngine,
+  railway = null,
+  buildDrawn = buildDrawnNetwork,
+}: Props) {
   const { t } = useI18n();
-  const [source, setSource] = useState<"example" | "files">("example");
+  const drawn = drawnProblem(railway);
+  // Until the planner picks one: the drawn railway when it has service lines, else the example.
+  const [picked, setSource] = useState<"example" | "drawn" | "files" | null>(null);
+  const source = picked ?? (drawn === null ? "drawn" : "example");
   const [topology, setTopology] = useState<{ name: string; text: string } | null>(null);
   const [linesFile, setLinesFile] = useState<{ name: string; text: string } | null>(null);
   const [period, setPeriod] = useState<string>("am");
@@ -132,7 +147,8 @@ export function CapacityRun({ panel = null, loadEngine = loadWorkerEngine }: Pro
     return { from_s: a, to_s: b };
   };
 
-  const ready = source === "example" || (topology !== null && linesFile !== null);
+  const ready =
+    source === "example" || (source === "drawn" ? drawn === null : topology !== null && linesFile !== null);
   const busy = status !== null;
 
   const start = async () => {
@@ -146,17 +162,31 @@ export function CapacityRun({ panel = null, loadEngine = loadWorkerEngine }: Pro
     setError(null);
     setRun(null);
     setLines([]);
-    const src: NetworkSource =
-      source === "example"
-        ? { kind: "example" }
-        : { kind: "files", topology: topology!.text, lines: linesFile!.text };
     const key =
-      source === "example" ? "example" : `${topology!.name}|${topology!.text.length}|${linesFile!.text}`;
+      source === "example"
+        ? "example"
+        : source === "drawn"
+          ? `drawn|${JSON.stringify(railway)}`
+          : `${topology!.name}|${topology!.text.length}|${linesFile!.text}`;
     try {
       if (engine.current?.key !== key) {
-        setStatus(t("capacity.loading"));
         engine.current?.engine.dispose();
         engine.current = null;
+        let src: NetworkSource;
+        if (source === "example") src = { kind: "example" };
+        else if (source === "files")
+          src = { kind: "files", topology: topology!.text, lines: linesFile!.text };
+        else {
+          setStatus(t("capacity.building"));
+          const built = await buildDrawn(railway);
+          if (!alive()) return;
+          if (typeof built === "string") {
+            setError(t(`capacity.drawn.${built}`));
+            return;
+          }
+          src = { kind: "files", ...built };
+        }
+        setStatus(t("capacity.loading"));
         const e = await loadEngine(src);
         if (!alive()) return e.dispose();
         engine.current = { key, engine: e };
@@ -293,6 +323,15 @@ export function CapacityRun({ panel = null, loadEngine = loadWorkerEngine }: Pro
           <button
             type="button"
             role="radio"
+            aria-checked={source === "drawn"}
+            aria-pressed={source === "drawn"}
+            onClick={() => setSource("drawn")}
+          >
+            {t("capacity.drawn")}
+          </button>
+          <button
+            type="button"
+            role="radio"
             aria-checked={source === "files"}
             aria-pressed={source === "files"}
             onClick={() => setSource("files")}
@@ -302,6 +341,16 @@ export function CapacityRun({ panel = null, loadEngine = loadWorkerEngine }: Pro
         </div>
         {source === "example" ? (
           <p className="text-xs text-slate-600">{t("capacity.exampleText")}</p>
+        ) : source === "drawn" ? (
+          <p className="text-xs text-slate-600">
+            {drawn === null
+              ? t("capacity.drawnText", {
+                  names: engineLines(railway!)
+                    .map((l) => l.name)
+                    .join(", "),
+                })
+              : t(`capacity.drawn.${drawn}`)}
+          </p>
         ) : (
           <div className="space-y-2">
             {file(t("capacity.topologyFile"), topology, setTopology)}

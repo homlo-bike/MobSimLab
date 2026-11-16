@@ -1255,7 +1255,14 @@ export const editorsPl = {
     "Przepuść okres dnia przez planer rozkładu i urządzenia sterowania ruchem. Zobacz, czy każda linia kolejowa mieści się na torach, jest punktualna i odrabia opóźnienia oraz ile pociągów mogłaby obsłużyć.",
   "capacity.network": "Sieć",
   "capacity.example": "Przykładowe metro",
-  "capacity.mine": "Moja kolej",
+  "capacity.mine": "Z plików",
+  "capacity.drawn": "Narysowana w tym projekcie",
+  "capacity.drawnText": "Linie {names} na kolei narysowanej w narzędziu kolejowym, w zapisanej postaci.",
+  "capacity.drawn.noTrack": "W narzędziu kolejowym nic jeszcze nie narysowano.",
+  "capacity.drawn.noLines":
+    "Żadna linia nie jest gotowa do testu. W narzędziu kolejowym nadaj linii co najmniej dwa przystanki i pociąg.",
+  "capacity.drawn.errors": "Narysowana kolej zawiera błędy. Najpierw popraw je w narzędziu kolejowym.",
+  "capacity.building": "Budowanie narysowanej kolei…",
   "capacity.exampleText":
     "Linia M1 Westpark – Eastgate: pięć stacji, zajezdnia na każdym końcu, co 5 min w szczycie i co 10 min poza nim.",
   "capacity.topologyFile": "Topologia torów (JSON)",

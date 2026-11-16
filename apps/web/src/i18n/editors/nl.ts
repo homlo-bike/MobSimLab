@@ -1196,7 +1196,14 @@ export const editorsNl = {
     "Laat een periode van de dag door de dienstregelingplanner en de beveiliging rijden. Zie of elke spoorlijn op de sporen past, op tijd rijdt en herstelt van vertragingen, en hoeveel treinen ze aankan.",
   "capacity.network": "Netwerk",
   "capacity.example": "Voorbeeldmetro",
-  "capacity.mine": "Mijn spoorlijn",
+  "capacity.mine": "Uit bestanden",
+  "capacity.drawn": "Getekend in dit project",
+  "capacity.drawnText": "Lijnen {names} op het spoor dat in het spoortool is getekend, zoals opgeslagen.",
+  "capacity.drawn.noTrack": "Er is nog niets getekend in het spoortool.",
+  "capacity.drawn.noLines":
+    "Geen lijn is klaar voor de test. Geef een lijn in het spoortool minstens twee haltes en een trein.",
+  "capacity.drawn.errors": "Het getekende spoor bevat fouten. Los ze eerst op in het spoortool.",
+  "capacity.building": "Het getekende spoor wordt opgebouwd…",
   "capacity.exampleText":
     "Lijn M1 Westpark – Eastgate: vijf stations, aan elk einde een depot, elke 5 min in de spits en anders elke 10 min.",
   "capacity.topologyFile": "Spoortopologie (JSON)",

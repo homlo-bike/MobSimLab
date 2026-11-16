@@ -1131,7 +1131,14 @@ export const editorsKo = {
     "하루 중 한 시간대를 시간표 계획기와 연동장치에 통과시킵니다. 각 철도 노선이 선로에 맞는지, 정시에 운행하고 지연에서 회복하는지, 열차를 몇 대까지 운행할 수 있는지 확인하세요.",
   "capacity.network": "노선망",
   "capacity.example": "예제 지하철",
-  "capacity.mine": "내 철도",
+  "capacity.mine": "파일에서",
+  "capacity.drawn": "이 프로젝트에서 그린 철도",
+  "capacity.drawnText": "철도 도구에서 그린 철도의 노선 {names} (저장된 상태).",
+  "capacity.drawn.noTrack": "철도 도구에 아직 아무것도 그려지지 않았습니다.",
+  "capacity.drawn.noLines":
+    "테스트할 수 있는 노선이 없습니다. 철도 도구에서 노선에 정차역 2개 이상과 열차를 지정하세요.",
+  "capacity.drawn.errors": "그린 철도에 오류가 있습니다. 먼저 철도 도구에서 고치세요.",
+  "capacity.building": "그린 철도를 구성하는 중…",
   "capacity.exampleText":
     "M1 노선 Westpark – Eastgate: 5개 역, 양 끝에 차량기지, 첨두에는 5분 간격, 그 외에는 10분 간격.",
   "capacity.topologyFile": "선로 토폴로지(JSON)",
