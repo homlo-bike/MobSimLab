@@ -2,6 +2,7 @@ import { roadNl } from "./road/nl";
 import { calendarNl } from "./calendar/nl";
 import { editorsNl } from "./editors/nl";
 import { cargoBikeNl } from "./cargo-bike/nl";
+import { commentsNl } from "./comments/nl";
 import { depotsNl } from "./depots/nl";
 import { timetablesNl } from "./timetables/nl";
 import { mslabNl } from "./mslab/nl";
@@ -172,7 +173,7 @@ export const nl: Messages = {
 
   "share.title": "‘{name}’ delen",
   "share.rolesNote":
-    "Eigenaren beheren de toegang. Bewerkers wijzigen het netwerk. Commentatoren en kijkers kijken alleen mee.",
+    "Eigenaren beheren de toegang. Bewerkers wijzigen het netwerk. Commentatoren geven er opmerkingen bij. Kijkers kijken alleen mee.",
   "share.invite": "Uitnodigen per e-mail",
   "share.emailPlaceholder": "E-mail waarmee iemand inlogt",
   "share.inviteRole": "Rol voor de uitgenodigde persoon",
@@ -360,6 +361,55 @@ export const nl: Messages = {
   "prefs.traction.hydrogen": "waterstof",
   "prefs.traction.cng": "aardgas (CNG)",
   "prefs.traction.electric": "elektrisch",
+  "report.title": "Aannamerapport",
+  "report.intro":
+    "Elke waarde uit de aannamebibliotheek die dit project gebruikt: de waarde, het bereik van de bibliotheek, waar de waarde vandaan komt en of het project haar heeft gewijzigd. Download het als CSV, of druk het af of sla het op als PDF.",
+  "report.csv": "CSV downloaden",
+  "report.changedOnly": "Alleen gewijzigde waarden",
+  "report.noneChanged": "Geen waarde in deze groep is gewijzigd.",
+  "report.loadError":
+    "De bronnen konden niet worden geladen. Laad de pagina opnieuw om het nog eens te proberen.",
+  "report.changed": "gewijzigd",
+  "report.yes": "Ja",
+  "report.no": "Nee",
+  "report.basis.cited": "geciteerd",
+  "report.basis.documented": "gedocumenteerd",
+  "report.basis.guess": "onderbouwde schatting",
+  "report.check.read": "gecontroleerd aan de bron",
+  "report.check.secondary": "gecontroleerd via een secundaire bron",
+  "report.check.unverified": "nog niet aan de bron gecontroleerd",
+  "report.sources": "Bronnen:",
+  "report.usedBy": "Gebruikt door: {list}",
+  "report.other": "Overige keuzes",
+  "report.currency": "Valuta",
+  "report.currencyCountry": "Elk hulpmiddel toont de valuta van het land",
+  "report.rate": "Wisselkoers per US$",
+  "report.rateWorldBank": "Officiële koers van de Wereldbank",
+  "report.vehiclesOff": "Niet gebruikte voertuigen",
+  "report.switchesOff": "Niet gebruikte wissels",
+  "report.allUsed": "Alle gebruikt",
+  "report.turnout": "Standaardwissel",
+  "report.col.group": "Groep",
+  "report.col.parameter": "Parameter",
+  "report.col.id": "Id",
+  "report.col.mode": "Modaliteit",
+  "report.col.value": "Gebruikte waarde",
+  "report.col.unit": "Eenheid",
+  "report.col.changed": "Gewijzigd",
+  "report.col.libLow": "Bibliotheek laag",
+  "report.col.libCentral": "Bibliotheek midden",
+  "report.col.libHigh": "Bibliotheek hoog",
+  "report.col.basis": "Grondslag",
+  "report.col.check": "Controle",
+  "report.col.sources": "Bronnen",
+  "report.col.reasoning": "Onderbouwing",
+  "report.col.usedBy": "Gebruikt door",
+  "report.col.reason": "Reden",
+  "report.col.changedBy": "Gewijzigd door",
+  "report.col.changedAt": "Gewijzigd op",
+  "report.changedBy": "Gewijzigd door {name} op {date}",
+  "report.changedOn": "Gewijzigd op {date}",
+  "report.reason": "Reden: {reason}",
   "prefs.accessTitle": "Toegankelijkheid van perrons",
   "prefs.accessIntro":
     "Grenzen voor trede en kier tussen perron en trein (TSI PRM) en de vloerhoogte voor treinen zonder waarde in de voertuigcatalogus. Lijnen worden bij elke halte gecontroleerd.",
@@ -452,6 +502,7 @@ export const nl: Messages = {
   ...cargoBikeNl,
   ...depotsNl,
   ...timetablesNl,
+  ...commentsNl,
   ...mslabNl,
   ...pluginCodeNl,
   ...populationNl,

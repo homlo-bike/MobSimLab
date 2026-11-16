@@ -2,6 +2,7 @@ import { roadDe } from "./road/de";
 import { calendarDe } from "./calendar/de";
 import { editorsDe } from "./editors/de";
 import { cargoBikeDe } from "./cargo-bike/de";
+import { commentsDe } from "./comments/de";
 import { depotsDe } from "./depots/de";
 import { timetablesDe } from "./timetables/de";
 import { mslabDe } from "./mslab/de";
@@ -176,7 +177,7 @@ export const de: Messages = {
 
   "share.title": "„{name}“ teilen",
   "share.rolesNote":
-    "Eigentümer verwalten den Zugriff. Bearbeiter ändern das Netz. Kommentatoren und Betrachter sehen nur zu.",
+    "Eigentümer verwalten den Zugriff. Bearbeiter ändern das Netz. Kommentatoren kommentieren es. Betrachter sehen nur zu.",
   "share.invite": "Per E-Mail einladen",
   "share.emailPlaceholder": "E-Mail, mit der sich die Person anmeldet",
   "share.inviteRole": "Rolle der eingeladenen Person",
@@ -365,6 +366,55 @@ export const de: Messages = {
   "prefs.traction.hydrogen": "Wasserstoff",
   "prefs.traction.cng": "Erdgas (CNG)",
   "prefs.traction.electric": "elektrisch",
+  "report.title": "Annahmenbericht",
+  "report.intro":
+    "Jeder Wert der Annahmenbibliothek, den dieses Projekt verwendet: der Wert, der Bereich der Bibliothek, woher er stammt und ob das Projekt ihn geändert hat. Als CSV herunterladen oder drucken bzw. als PDF speichern.",
+  "report.csv": "CSV herunterladen",
+  "report.changedOnly": "Nur geänderte Werte",
+  "report.noneChanged": "In dieser Gruppe ist kein Wert geändert.",
+  "report.loadError":
+    "Die Quellen konnten nicht geladen werden. Lade die Seite neu, um es erneut zu versuchen.",
+  "report.changed": "geändert",
+  "report.yes": "Ja",
+  "report.no": "Nein",
+  "report.basis.cited": "zitiert",
+  "report.basis.documented": "dokumentiert",
+  "report.basis.guess": "begründete Schätzung",
+  "report.check.read": "an der Quelle geprüft",
+  "report.check.secondary": "über eine Sekundärquelle geprüft",
+  "report.check.unverified": "noch nicht an der Quelle geprüft",
+  "report.sources": "Quellen:",
+  "report.usedBy": "Verwendet von: {list}",
+  "report.other": "Weitere Festlegungen",
+  "report.currency": "Währung",
+  "report.currencyCountry": "Jedes Werkzeug zeigt die Landeswährung",
+  "report.rate": "Wechselkurs je US$",
+  "report.rateWorldBank": "Offizieller Kurs der Weltbank",
+  "report.vehiclesOff": "Nicht verwendete Fahrzeuge",
+  "report.switchesOff": "Nicht verwendete Weichen",
+  "report.allUsed": "Alle verwendet",
+  "report.turnout": "Standardweiche",
+  "report.col.group": "Gruppe",
+  "report.col.parameter": "Parameter",
+  "report.col.id": "Kennung",
+  "report.col.mode": "Verkehrsmittel",
+  "report.col.value": "Verwendeter Wert",
+  "report.col.unit": "Einheit",
+  "report.col.changed": "Geändert",
+  "report.col.libLow": "Bibliothek niedrig",
+  "report.col.libCentral": "Bibliothek mittel",
+  "report.col.libHigh": "Bibliothek hoch",
+  "report.col.basis": "Grundlage",
+  "report.col.check": "Prüfung",
+  "report.col.sources": "Quellen",
+  "report.col.reasoning": "Begründung",
+  "report.col.usedBy": "Verwendet von",
+  "report.col.reason": "Grund",
+  "report.col.changedBy": "Geändert von",
+  "report.col.changedAt": "Geändert am",
+  "report.changedBy": "Geändert von {name} am {date}",
+  "report.changedOn": "Geändert am {date}",
+  "report.reason": "Grund: {reason}",
   "prefs.accessTitle": "Barrierefreiheit am Bahnsteig",
   "prefs.accessIntro":
     "Grenzwerte für Stufe und Spalt zwischen Bahnsteig und Zug (TSI PRM) sowie die Fußbodenhöhe für Züge ohne Angabe im Fahrzeugkatalog. Linien werden an jedem Halt daran geprüft.",
@@ -458,6 +508,7 @@ export const de: Messages = {
   ...cargoBikeDe,
   ...depotsDe,
   ...timetablesDe,
+  ...commentsDe,
   ...mslabDe,
   ...pluginCodeDe,
   ...populationDe,

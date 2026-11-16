@@ -40,7 +40,12 @@ import { RailwayEditor } from "../features/railways/RailwayEditor";
 import { Schematic, type SchematicDoc } from "../features/schematic/Schematic";
 import type { Network } from "../features/railways/types";
 import { LineList } from "../features/street-lines/LineList";
-import { lineInput, type SavedStreetLine, type StreetLinesDoc } from "../features/street-lines/saved";
+import {
+  lineInput,
+  newLineId,
+  type SavedStreetLine,
+  type StreetLinesDoc,
+} from "../features/street-lines/saved";
 import { StreetLineEditor } from "../features/street-lines/StreetLineEditor";
 import { loadWasmEngine as loadStreetEngine } from "../features/street-lines/engine";
 import type { Mode as StreetMode } from "../features/street-lines/types";
@@ -114,6 +119,8 @@ import { PluginCalculations } from "../plugins/code/PluginCalculations";
 import { PluginFrame } from "../plugins/code/PluginFrame";
 import { clearPluginCode } from "../plugins/code/runtime";
 import { DepotEditor } from "../features/depots/DepotEditor";
+import { CommentsProvider } from "../features/comments/Comments";
+import { commentableObjects, CommentsPanel } from "../features/comments/CommentsPanel";
 import type { DepotsDoc, SavedDepot } from "../features/depots/types";
 
 type IconFn = (p: { size?: number }) => ReactNode;
@@ -163,6 +170,7 @@ export function Workspace({
   onHome,
   onAbout,
   existingRailways = false,
+  userId = null,
 }: {
   api: ProjectsApi;
   projectId: string;
@@ -175,6 +183,8 @@ export function Workspace({
   onAbout: () => void;
   /** Draw existing railways from OpenStreetMap in the railway tool (app setting). */
   existingRailways?: boolean;
+  /** The signed-in person, so they can edit and delete their own comments. */
+  userId?: string | null;
 }) {
   const { t } = useI18n();
   const [project, setProject] = useState<Project | null>(null);
@@ -312,6 +322,11 @@ export function Workspace({
     () => (projectKey && typeof api.runs === "function" ? api.runs(projectKey) : null),
     [api, projectKey],
   );
+  // Comments on the project's objects: everyone who can read the project reads them; Commenters and up write.
+  const commentsApi = useMemo(
+    () => (projectKey && typeof api.comments === "function" ? api.comments(projectKey) : null),
+    [api, projectKey],
+  );
   const roadRuns = useMemo(
     () => (projectKey && typeof api.roadRuns === "function" ? api.roadRuns(projectKey) : null),
     [api, projectKey],
@@ -424,6 +439,14 @@ export function Workspace({
     forgetSetups(projectId);
   }, [drawings.loaded, editable, projectId]);
   const savedStreet = streetLines?.lines ?? NO_STREET_LINES;
+  // Street lines saved before lines had ids get one, so their comments stay with them (Owners and Editors save).
+  useEffect(() => {
+    if (!drawings.loaded || !editable || !streetLines?.lines.some((l) => !l.id)) return;
+    drawings.set("street-lines", {
+      ...streetLines,
+      lines: streetLines.lines.map((l) => (l.id ? l : { ...l, id: newLineId() })),
+    } satisfies StreetLinesDoc);
+  }, [drawings.loaded, editable, streetLines]);
   const editedStreet = Math.min(streetIndex, savedStreet.length);
   const switchStreet = (i: number) => {
     setStreetIndex(i);
@@ -432,7 +455,7 @@ export function Workspace({
   };
   const saveStreet = (l: SavedStreetLine) => {
     const next = [...savedStreet];
-    next[editedStreet] = l;
+    next[editedStreet] = { ...l, id: savedStreet[editedStreet]?.id ?? l.id ?? newLineId() };
     drawings.set("street-lines", { lines: next } satisfies StreetLinesDoc);
   };
   const deleteStreet = (i: number) => {
@@ -709,6 +732,7 @@ export function Workspace({
               lineList={
                 <LineList
                   names={savedStreet.map((l) => l.name)}
+                  ids={savedStreet.map((l) => l.id)}
                   current={editedStreet}
                   onSelect={switchStreet}
                   onNew={() => switchStreet(savedStreet.length)}
@@ -1260,6 +1284,11 @@ export function Workspace({
                 <div className="px-4 py-5 md:px-5">
                   <h2 className="text-lg font-semibold">{t("create.readOnlyTitle")}</h2>
                   <p className="mt-1 text-slate-600">{t("create.readOnly")}</p>
+                  {drawings.loaded && (
+                    <div className="mt-5 border-t border-slate-200 pt-5">
+                      <CommentsPanel objects={commentableObjects(t, railway, streetLines, depotsDoc)} />
+                    </div>
+                  )}
                 </div>
               )}
               {tab === "create" && editable && chosen === null && (
@@ -1319,7 +1348,18 @@ export function Workspace({
     </div>
   );
   // The catalogue vehicles the project does not use reach the line tools (Project preferences → Vehicles).
-  return <VehiclesOffContext.Provider value={vehiclesOff}>{body}</VehiclesOffContext.Provider>;
+  return (
+    <VehiclesOffContext.Provider value={vehiclesOff}>
+      <CommentsProvider
+        api={commentsApi}
+        canComment={project ? can.comment(project) : false}
+        isOwner={project ? can.manage(project) : false}
+        userId={userId}
+      >
+        {body}
+      </CommentsProvider>
+    </VehiclesOffContext.Provider>
+  );
 }
 
 /** Purpose: how the project's drawings stand against the server, beside the project name. */
