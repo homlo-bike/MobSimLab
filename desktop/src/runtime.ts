@@ -48,7 +48,14 @@ export function runtimeAt(root: string): Runtime {
   return r;
 }
 
-/** Purpose: the path of a PostgreSQL program. */
+/**
+ * Purpose: the path of a PostgreSQL program. On Windows the server build has no client programs (psql), which
+ * come from conda-forge instead.
+ */
 export function pgProgram(r: Runtime, name: string): string {
-  return join(r.pgBin, win ? `${name}.exe` : name);
+  const exe = win ? `${name}.exe` : name;
+  const server = join(r.pgBin, exe);
+  if (!win || existsSync(server)) return server;
+  const client = join(r.root, "conda", "Library", "bin", exe);
+  return existsSync(client) ? client : server;
 }
