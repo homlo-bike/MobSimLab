@@ -279,6 +279,18 @@ export const sw: Messages = {
   "prefs.delayLane": "Katika njia ya basi au tramu iliyochorwa kwa rangi",
   "prefs.delayDefault": "Maktaba ya dhana: {value} %",
   "prefs.delayReset": "Tumia thamani ya maktaba",
+  "prefs.currencyTitle": "Sarafu",
+  "prefs.currencyIntro":
+    "Fedha zote za mradi zinaonyeshwa kwa sarafu hii: majedwali ya gharama, manufaa, matukio na akiba ya baiskeli ya mizigo.",
+  "prefs.currencyLabel": "Onyesha fedha kwa",
+  "prefs.currencyCountry": "Sarafu ya nchi yenyewe",
+  "prefs.currencyRate": "{code} kwa kila US$",
+  "prefs.currencyWorldBank": "Kiwango rasmi cha ubadilishaji cha Benki ya Dunia ({year}): {value}",
+  "prefs.currencyMissing":
+    "Benki ya Dunia haina kiwango cha ubadilishaji kwa {code}. Weka kiwango ili kubadilisha; hadi hapo kila zana inaonyesha sarafu ya nchi.",
+  "prefs.currencyReset": "Tumia kiwango cha Benki ya Dunia",
+  "prefs.currencyHow":
+    "Kiasi hubadilishwa kupitia dola ya Marekani, kwa kiwango rasmi cha Benki ya Dunia cha kila nchi.",
   "prefs.moreTitle": "Kanuni, magari na dhana",
   "prefs.moreIntro":
     "Kila kigezo na thamani yake ya chini na inayopendekezwa, na magari ambayo mradi unatumia.",

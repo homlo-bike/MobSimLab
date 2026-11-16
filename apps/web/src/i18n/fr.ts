@@ -283,6 +283,18 @@ export const fr: Messages = {
   "prefs.delayLane": "Dans une voie bus ou tram marquée",
   "prefs.delayDefault": "Bibliothèque d'hypothèses : {value} %",
   "prefs.delayReset": "Utiliser la valeur de la bibliothèque",
+  "prefs.currencyTitle": "Devise",
+  "prefs.currencyIntro":
+    "Tout l'argent du projet est affiché dans cette devise : tableaux de coûts, bénéfices, scénarios et économies du vélo cargo.",
+  "prefs.currencyLabel": "Afficher l'argent en",
+  "prefs.currencyCountry": "La devise du pays",
+  "prefs.currencyRate": "{code} par US$",
+  "prefs.currencyWorldBank": "Taux de change officiel de la Banque mondiale ({year}) : {value}",
+  "prefs.currencyMissing":
+    "La Banque mondiale n'a pas de taux de change pour {code}. Saisissez-en un pour convertir ; d'ici là, chaque outil affiche la devise du pays.",
+  "prefs.currencyReset": "Utiliser le taux de la Banque mondiale",
+  "prefs.currencyHow":
+    "Les montants sont convertis en passant par le dollar américain, avec le taux de change officiel de la Banque mondiale de chaque pays.",
   "prefs.moreTitle": "Règles, véhicules et hypothèses",
   "prefs.moreIntro": "Chaque variable avec ses valeurs minimale et recommandée, et les véhicules du projet.",
   "prefs.rules": "Règles de conception par mode, minimales et recommandées",

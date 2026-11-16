@@ -278,6 +278,18 @@ export const hi: Messages = {
   "prefs.delayLane": "पेंट की गई बस या ट्राम लेन में",
   "prefs.delayDefault": "धारणा पुस्तकालय: {value} %",
   "prefs.delayReset": "पुस्तकालय मान इस्तेमाल करें",
+  "prefs.currencyTitle": "मुद्रा",
+  "prefs.currencyIntro":
+    "परियोजना की सारी राशियाँ इसी मुद्रा में दिखती हैं: लागत तालिकाएँ, लाभ, परिदृश्य और कार्गो बाइक की बचत।",
+  "prefs.currencyLabel": "राशि इसमें दिखाएँ",
+  "prefs.currencyCountry": "देश की अपनी मुद्रा",
+  "prefs.currencyRate": "प्रति US$ {code}",
+  "prefs.currencyWorldBank": "विश्व बैंक की आधिकारिक विनिमय दर ({year}): {value}",
+  "prefs.currencyMissing":
+    "विश्व बैंक के पास {code} की विनिमय दर नहीं है। बदलने के लिए एक दर डालें; तब तक हर टूल देश की मुद्रा दिखाता है।",
+  "prefs.currencyReset": "विश्व बैंक की दर इस्तेमाल करें",
+  "prefs.currencyHow":
+    "राशियाँ अमेरिकी डॉलर के ज़रिए, हर देश की विश्व बैंक की आधिकारिक विनिमय दर से बदली जाती हैं।",
   "prefs.moreTitle": "नियम, वाहन और धारणाएँ",
   "prefs.moreIntro": "हर चर अपने न्यूनतम और अनुशंसित मान के साथ, और प्रोजेक्ट में इस्तेमाल होने वाले वाहन।",
   "prefs.rules": "हर साधन के लिए डिज़ाइन नियम, न्यूनतम और अनुशंसित",
