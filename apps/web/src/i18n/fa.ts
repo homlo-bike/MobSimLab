@@ -275,6 +275,10 @@ export const fa: Messages = {
   "prefs.delayLane": "در خط اتوبوس یا تراموای فقط رنگ‌شده",
   "prefs.delayDefault": "کتابخانهٔ فرض‌ها: {value} %",
   "prefs.delayReset": "استفاده از مقدار کتابخانه",
+  "prefs.stationsTitle": "ایستگاه‌ها",
+  "prefs.stationsIntro":
+    "ایستگاه‌های هم‌نام درون این فاصله در نقشهٔ شماتیک، برنامه‌ریز سفر و جدول‌های منافع و مسافران یک ایستگاه به شمار می‌آیند.",
+  "prefs.libraryM": "کتابخانهٔ فرض‌ها: {value} m",
   "prefs.currencyTitle": "واحد پول",
   "prefs.currencyIntro":
     "همهٔ مبالغ پروژه با این واحد پول نشان داده می‌شوند: جدول‌های هزینه، منافع، سناریوها و صرفه‌جویی دوچرخهٔ باری.",

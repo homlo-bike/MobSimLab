@@ -1818,6 +1818,20 @@
    }
   },
   {
+   "id": "journey.same_name_station_m",
+   "label": "Stops with the same name within this straight-line distance are one station",
+   "group": "Demand",
+   "unit": "m",
+   "kind": "number",
+   "values": {
+    "*": [
+     200,
+     600,
+     1000
+    ]
+   }
+  },
+  {
    "id": "analysis.walk_rule_minutes",
    "label": "Walk rule: largest walk to the nearest stop or station, in minutes (headline coverage figure)",
    "group": "Analysis",
