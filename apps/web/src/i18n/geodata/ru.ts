@@ -1,0 +1,46 @@
+import type { GeodataMessages } from "./en";
+
+/** Map data view messages (ru). */
+export const geodataRu = {
+  "gis.dataView": "Данные карты",
+  "data.title": "Данные карты",
+  "data.intro":
+    "OpenStreetMap и высоты для этого проекта, сохранённые вместе с проектом. Инструменты улиц, железных дорог, зданий, воды и рельефа читают их, а не запрашивают каждый раз OpenStreetMap и сервер высот.",
+  "data.noArea":
+    "Сначала нарисуйте что-нибудь в проекте: импорт охватывает прямоугольник вокруг всего нарисованного плюс запас.",
+  "data.area": "Область: {area} км², прямоугольник вокруг всего нарисованного плюс {buffer} км",
+  "data.osm": "OpenStreetMap",
+  "data.dem": "Высоты",
+  "data.notImported": "Ещё не импортировано.",
+  "data.imported": "Импортировано {date}",
+  "data.dataDate": "данные от {date}",
+  "data.outside":
+    "Рисунок теперь выходит за импортированную область. Обновите, чтобы импортировать новую область.",
+  "data.method": "Откуда взять данные",
+  "data.method.overpass": "Overpass (области до {max} км²)",
+  "data.method.geofabrik": "Регион Geofabrik",
+  "data.method.upload": "Файл .osm.pbf",
+  "data.region": "Регион",
+  "data.regionsLoading": "Поиск регионов…",
+  "data.noRegions": "Ни один регион Geofabrik не содержит всю область.",
+  "data.planned": "Сохранить планируемые дороги (проектируемые и строящиеся)",
+  "data.import": "Импортировать",
+  "data.refresh": "Обновить",
+  "data.chooseFile": "Выберите файл .osm.pbf (до {max} МБ)",
+  "data.cancel": "Отмена",
+  "data.queued": "Ожидание завершения другого импорта…",
+  "data.step.download": "Загрузка…",
+  "data.step.downloadN": "Загрузка {done} из {total}…",
+  "data.step.merge": "Объединение тайлов…",
+  "data.step.extract": "Вырезание области проекта…",
+  "data.step.database": "Запись в базу данных…",
+  "data.failed": "Последний импорт не удался: {error}",
+  "data.cancelled": "Последний импорт отменён.",
+  "data.counts": "Улиц: {roads}, путей: {rails}, зданий: {buildings}, остановок: {stops}",
+  "data.demFacts": "Copernicus GLO-30, сетка {res} м, высоты с точностью ±{acc} м",
+  "data.demNoData": "В {n} ячейках области размером 1° нет данных о высотах (открытое море).",
+  "data.tooLarge":
+    "Площадь области {area} км² — больше, чем охватывает Overpass. Выберите регион Geofabrik или загрузите файл.",
+  "data.readOnly": "Импортировать данные могут владельцы и редакторы.",
+  "data.licence": "© OpenStreetMap contributors, ODbL 1.0",
+} satisfies GeodataMessages;

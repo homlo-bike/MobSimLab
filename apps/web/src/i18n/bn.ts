@@ -2,6 +2,7 @@ import { roadBn } from "./road/bn";
 import { editorsBn } from "./editors/bn";
 import { cargoBikeBn } from "./cargo-bike/bn";
 import { depotsBn } from "./depots/bn";
+import { geodataBn } from "./geodata/bn";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -381,6 +382,7 @@ export const bn: Messages = {
   ...editorsBn,
   ...cargoBikeBn,
   ...depotsBn,
+  ...geodataBn,
   ...roadBn,
   ...PLUGIN_MESSAGES.bn,
 };

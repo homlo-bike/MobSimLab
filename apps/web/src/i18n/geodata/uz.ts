@@ -1,0 +1,46 @@
+import type { GeodataMessages } from "./en";
+
+/** Map data view messages (uz). */
+export const geodataUz = {
+  "gis.dataView": "Xarita maʼlumotlari",
+  "data.title": "Xarita maʼlumotlari",
+  "data.intro":
+    "Ushbu loyiha uchun OpenStreetMap va balandlik maʼlumotlari, loyiha bilan birga saqlanadi. Ko‘cha, temir yo‘l, bino, suv va relyef vositalari har safar OpenStreetMap va balandlik serveridan so‘ramasdan ularni o‘qiydi.",
+  "data.noArea":
+    "Avval loyihada biror narsa chizing: import chizilgan hamma narsani o‘rab turgan to‘rtburchak va qo‘shimcha chegarani qamraydi.",
+  "data.area": "Hudud: {area} km², chizilgan hamma narsani o‘rab turgan to‘rtburchak va {buffer} km",
+  "data.osm": "OpenStreetMap",
+  "data.dem": "Balandlik",
+  "data.notImported": "Hali import qilinmagan.",
+  "data.imported": "Import qilingan: {date}",
+  "data.dataDate": "{date} holatidagi maʼlumot",
+  "data.outside":
+    "Chizma endi import qilingan hududdan chiqib ketmoqda. Yangi hududni import qilish uchun yangilang.",
+  "data.method": "Maʼlumotni qayerdan olish",
+  "data.method.overpass": "Overpass ({max} km² gacha hududlar)",
+  "data.method.geofabrik": "Geofabrik mintaqasi",
+  "data.method.upload": "Bitta .osm.pbf fayl",
+  "data.region": "Mintaqa",
+  "data.regionsLoading": "Mintaqalar qidirilmoqda…",
+  "data.noRegions": "Hech bir Geofabrik mintaqasi butun hududni qamramaydi.",
+  "data.planned": "Rejalashtirilgan yo‘llarni saqlash (loyihadagi va qurilayotgan)",
+  "data.import": "Import qilish",
+  "data.refresh": "Yangilash",
+  "data.chooseFile": ".osm.pbf faylni tanlang ({max} MB gacha)",
+  "data.cancel": "Bekor qilish",
+  "data.queued": "Boshqa import tugashi kutilmoqda…",
+  "data.step.download": "Yuklab olinmoqda…",
+  "data.step.downloadN": "Yuklab olinmoqda: {done} / {total}…",
+  "data.step.merge": "Plitkalar birlashtirilmoqda…",
+  "data.step.extract": "Loyiha hududi kesib olinmoqda…",
+  "data.step.database": "Maʼlumotlar bazasiga yozilmoqda…",
+  "data.failed": "Oxirgi import muvaffaqiyatsiz bo‘ldi: {error}",
+  "data.cancelled": "Oxirgi import bekor qilindi.",
+  "data.counts": "{roads} ko‘cha, {rails} temir yo‘l, {buildings} bino, {stops} bekat",
+  "data.demFacts": "Copernicus GLO-30, {res} m to‘r, balandlik aniqligi ±{acc} m",
+  "data.demNoData": "Hududdagi 1° kataklardan {n} tasida balandlik maʼlumoti yo‘q (ochiq dengiz).",
+  "data.tooLarge":
+    "Hudud {area} km², Overpass qamrovidan katta. Geofabrik mintaqasini tanlang yoki fayl yuklang.",
+  "data.readOnly": "Maʼlumotlarni egalar va muharrirlar import qila oladi.",
+  "data.licence": "© OpenStreetMap contributors, ODbL 1.0",
+} satisfies GeodataMessages;

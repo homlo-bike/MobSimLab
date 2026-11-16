@@ -1,0 +1,50 @@
+/**
+ * English messages of the Map data view in the GIS tab (apps/web/src/features/geodata): the OpenStreetMap and
+ * elevation imports of the project area. Merged into each language's dictionary like the editor messages;
+ * every language has its own file next to this one.
+ */
+export const geodataEn = {
+  "gis.dataView": "Map data",
+  "data.title": "Map data",
+  "data.intro":
+    "OpenStreetMap and elevation for this project, kept with the project. The street, railway, building, water and terrain tools read them instead of asking OpenStreetMap and the elevation server every time.",
+  "data.noArea":
+    "Draw something in the project first: the import covers the box around everything drawn, plus a buffer.",
+  "data.area": "Area: {area} km², the box around everything drawn plus {buffer} km",
+  "data.osm": "OpenStreetMap",
+  "data.dem": "Elevation",
+  "data.notImported": "Not imported yet.",
+  "data.imported": "Imported {date}",
+  "data.dataDate": "data of {date}",
+  "data.outside": "The drawing now reaches outside the imported area. Refresh to import the new area.",
+  "data.method": "Get the data from",
+  "data.method.overpass": "Overpass (areas up to {max} km²)",
+  "data.method.geofabrik": "A Geofabrik region",
+  "data.method.upload": "An .osm.pbf file",
+  "data.region": "Region",
+  "data.regionsLoading": "Looking up regions…",
+  "data.noRegions": "No Geofabrik region holds the whole area.",
+  "data.planned": "Keep planned roads (proposed and under construction)",
+  "data.import": "Import",
+  "data.refresh": "Refresh",
+  "data.chooseFile": "Choose an .osm.pbf file (up to {max} MB)",
+  "data.cancel": "Cancel",
+  "data.queued": "Waiting for another import to finish…",
+  "data.step.download": "Downloading…",
+  "data.step.downloadN": "Downloading {done} of {total}…",
+  "data.step.merge": "Joining the tiles…",
+  "data.step.extract": "Cutting out the project area…",
+  "data.step.database": "Writing to the database…",
+  "data.failed": "The last import failed: {error}",
+  "data.cancelled": "The last import was cancelled.",
+  "data.counts": "{roads} roads, {rails} railways, {buildings} buildings, {stops} stops",
+  "data.demFacts": "Copernicus GLO-30, {res} m grid, heights within ±{acc} m",
+  "data.demNoData": "{n} of the area's 1° cells have no elevation data (open sea).",
+  "data.tooLarge":
+    "The area is {area} km², more than Overpass is used for. Pick a Geofabrik region or upload a file.",
+  "data.readOnly": "Owners and Editors can import data.",
+  "data.licence": "© OpenStreetMap contributors, ODbL 1.0",
+};
+
+/** A language's Map data messages: every key of the English ones. */
+export type GeodataMessages = Record<keyof typeof geodataEn, string>;
