@@ -1,4 +1,6 @@
 import { readMslab } from "../mslab/read.mts";
+import { compilePlugin } from "../plugins/code/compile.mts";
+import { runPlugin } from "../plugins/code/run.mts";
 import { sandboxCheck } from "./check.mts";
 
 /**
@@ -17,13 +19,17 @@ export interface ToolContext {
   write(name: string, data: Uint8Array | string): void;
 }
 
-/** A tool: takes the uploaded bytes, returns a JSON-serialisable result. */
+/** A tool: takes the uploaded bytes, returns a JSON-serialisable result (or a promise of one). */
 export type Tool = (input: Buffer, ctx: ToolContext) => unknown;
 
 /** Registered tools by name. */
 export const TOOLS: Record<string, Tool> = {
   /** Read and check a `.mslab` project file (ADR-0021). */
   "mslab-read": readMslab,
+  /** Check and transpile an uploaded plugin component (ADR-0036 §4); needs worker threads (runner.ts). */
+  "plugin-compile": compilePlugin,
+  /** Run one call of an installed plugin's code (ADR-0036 §4). */
+  "plugin-run": runPlugin,
   /** Report what the sandbox stops (check.mts); for the tests and for checking a new deployment. */
   "sandbox-check": sandboxCheck,
 };

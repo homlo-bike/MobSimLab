@@ -4,6 +4,7 @@ import { cargoBikeVi } from "./cargo-bike/vi";
 import { commentsVi } from "./comments/vi";
 import { depotsVi } from "./depots/vi";
 import { mslabVi } from "./mslab/vi";
+import { pluginCodeVi } from "./plugin-code/vi";
 import { populationVi } from "./population/vi";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -421,6 +422,7 @@ export const vi: Messages = {
   ...depotsVi,
   ...commentsVi,
   ...mslabVi,
+  ...pluginCodeVi,
   ...populationVi,
   ...roadVi,
   ...PLUGIN_MESSAGES.vi,

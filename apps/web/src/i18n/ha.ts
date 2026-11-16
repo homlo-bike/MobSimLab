@@ -4,6 +4,7 @@ import { cargoBikeHa } from "./cargo-bike/ha";
 import { commentsHa } from "./comments/ha";
 import { depotsHa } from "./depots/ha";
 import { mslabHa } from "./mslab/ha";
+import { pluginCodeHa } from "./plugin-code/ha";
 import { populationHa } from "./population/ha";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -425,6 +426,7 @@ export const ha: Messages = {
   ...depotsHa,
   ...commentsHa,
   ...mslabHa,
+  ...pluginCodeHa,
   ...populationHa,
   ...roadHa,
   ...PLUGIN_MESSAGES.ha,

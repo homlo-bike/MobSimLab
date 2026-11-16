@@ -4,6 +4,7 @@ import { cargoBikeUz } from "./cargo-bike/uz";
 import { commentsUz } from "./comments/uz";
 import { depotsUz } from "./depots/uz";
 import { mslabUz } from "./mslab/uz";
+import { pluginCodeUz } from "./plugin-code/uz";
 import { populationUz } from "./population/uz";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -430,6 +431,7 @@ export const uz: Messages = {
   ...depotsUz,
   ...commentsUz,
   ...mslabUz,
+  ...pluginCodeUz,
   ...populationUz,
   ...roadUz,
   ...PLUGIN_MESSAGES.uz,

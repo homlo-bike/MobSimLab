@@ -4,6 +4,7 @@ import { cargoBikeId } from "./cargo-bike/id";
 import { commentsId } from "./comments/id";
 import { depotsId } from "./depots/id";
 import { mslabId } from "./mslab/id";
+import { pluginCodeId } from "./plugin-code/id";
 import { populationId } from "./population/id";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -425,6 +426,7 @@ export const id: Messages = {
   ...depotsId,
   ...commentsId,
   ...mslabId,
+  ...pluginCodeId,
   ...populationId,
   ...roadId,
   ...PLUGIN_MESSAGES.id,

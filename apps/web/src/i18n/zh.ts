@@ -4,6 +4,7 @@ import { cargoBikeZh } from "./cargo-bike/zh";
 import { commentsZh } from "./comments/zh";
 import { depotsZh } from "./depots/zh";
 import { mslabZh } from "./mslab/zh";
+import { pluginCodeZh } from "./plugin-code/zh";
 import { populationZh } from "./population/zh";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -401,6 +402,7 @@ export const zh: Messages = {
   ...depotsZh,
   ...commentsZh,
   ...mslabZh,
+  ...pluginCodeZh,
   ...populationZh,
   ...roadZh,
   ...PLUGIN_MESSAGES.zh,

@@ -112,6 +112,8 @@ interface Props {
   delays?: DelayShares | null;
   /** The project's design rules per mode (Project preferences), as `<mode>.<field>`; the library's when absent. */
   designValues?: Readonly<Record<string, number>> | null;
+  /** The project's text design values per mode (electrification, colour, level crossings, signalling). */
+  designTexts?: Readonly<Record<string, string>> | null;
   /** The project's preference values by id (running values of the service lines: dwell, layover…). */
   prefValues?: Readonly<Record<string, number>> | null;
   /** The project's choice from the switches and crossings catalogue (Project preferences); all when absent. */
@@ -149,6 +151,7 @@ export function RailwayEditor({
   streetSetups = NO_SETUPS,
   delays = null,
   designValues = null,
+  designTexts = null,
   prefValues = null,
   switchChoice = null,
   initial = null,
@@ -216,6 +219,7 @@ export function RailwayEditor({
     streetSetups,
     delays,
     designValues,
+    designTexts,
     switchChoice,
   });
 

@@ -10,10 +10,13 @@ import {
   Post,
   Put,
   Req,
+  Res,
 } from "@nestjs/common";
+import type { Response } from "express";
 import { z } from "zod";
 import { type MslRequest, SessionService } from "../auth/session.service";
-import { Requires } from "../iam/requires";
+import { Public, Requires } from "../iam/requires";
+import { PluginCodeService, safePath } from "./code/code.service";
 import { type PluginActor, PluginsService } from "./plugins.service";
 
 const uuid = z.uuid();
@@ -31,6 +34,30 @@ const keyBody = z.strictObject({
   publicKey: z.string().min(1).max(4000),
 });
 const settingsBody = z.strictObject({ allowUnsigned: z.boolean() });
+const limitsBody = z.strictObject({
+  memoryMb: z.number().int().min(16, "at least 16 MB").max(2048, "at most 2048 MB"),
+  timeS: z.number().int().min(1, "at least 1 second").max(600, "at most 600 seconds"),
+});
+const sha = z.string().regex(/^[0-9a-f]{64}$/, "not a package hash");
+
+/** Purpose: a wildcard route parameter (Express 5 gives its segments) as one path. */
+const joined = (p: string | string[]) => (Array.isArray(p) ? p.join("/") : p);
+
+/**
+ * Headers of a tab page's files (ADR-0036 §6): the page runs sandboxed with an opaque origin even when opened on
+ * its own (CSP `sandbox allow-scripts`), loads only the plugin's own files, connects nowhere, and may be framed
+ * only by MobSimLab.
+ */
+const UI_HEADERS: Record<string, string> = {
+  "Content-Security-Policy":
+    "sandbox allow-scripts; default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; " +
+    "font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'none'; frame-ancestors 'self'",
+  "X-Content-Type-Options": "nosniff",
+  "Cross-Origin-Resource-Policy": "same-origin",
+  "Referrer-Policy": "no-referrer",
+  "Cache-Control": "private, max-age=3600",
+  "X-Frame-Options": "SAMEORIGIN",
+};
 const projectBody = z.strictObject({ enabled: z.boolean(), version: version.optional() });
 
 /** Purpose: parse input with a zod schema; 400 with the issue messages on failure. */
@@ -55,6 +82,7 @@ function packageBody(body: unknown): Buffer {
 export class PluginsController {
   constructor(
     private readonly plugins: PluginsService,
+    private readonly code: PluginCodeService,
     private readonly sessions: SessionService,
   ) {}
 
@@ -129,11 +157,68 @@ export class PluginsController {
     return { ok: true };
   }
 
-  /** Purpose: the plugins a project can use, with whether each is on and its version. */
+  /** Purpose: set the memory and time limits of plugin code. Body: `{ memoryMb, timeS }`. */
+  @Put("admin/plugin-limits")
+  @Requires("plugins.manage")
+  async setLimits(@Body() body: unknown, @Req() req: MslRequest) {
+    return { limits: await this.plugins.setLimits(this.actor(req), parse(limitsBody, body)) };
+  }
+
+  /**
+   * Purpose: the plugins a project can use, with whether each is on and its version, and the limits the browser
+   * runs plugin code with.
+   */
   @Get("projects/:id/plugins")
   @Requires("projects.read")
   async forProject(@Param("id") id: string, @Req() req: MslRequest) {
-    return { plugins: await this.plugins.forProject(this.actor(req), parse(uuid, id)) };
+    const [plugins, limits] = await Promise.all([
+      this.plugins.forProject(this.actor(req), parse(uuid, id)),
+      this.code.limits(),
+    ]);
+    return { plugins, limits };
+  }
+
+  /**
+   * Purpose: a compiled file of an enabled plugin's component, for the browser's plugin host:
+   * `…/code/<component path>/glue.js` or `…/glue.core.wasm`. Project members.
+   */
+  @Get("projects/:id/plugins/:pluginId/code/*path")
+  @Requires("projects.read")
+  async codeFile(
+    @Param("id") id: string,
+    @Param("pluginId") plugin: string,
+    @Param("path") path: string | string[],
+    @Req() req: MslRequest,
+    @Res() res: Response,
+  ): Promise<void> {
+    const full = safePath(joined(path));
+    const cut = full.lastIndexOf("/");
+    const f = await this.code.codeFile(
+      this.actor(req),
+      parse(uuid, id),
+      parse(pluginId, plugin),
+      full.slice(0, cut),
+      full.slice(cut + 1),
+    );
+    res.setHeader("Content-Type", f.mediaType);
+    res.setHeader("Cache-Control", "private, no-cache");
+    res.setHeader("ETag", `"${f.sha256}"`);
+    res.setHeader("X-Content-Type-Options", "nosniff");
+    res.end(f.data);
+  }
+
+  /** Purpose: a file of an installed plugin's tab page, by package hash (see PluginCodeService.uiFile). */
+  @Get("plugin-ui/:sha/*path")
+  @Public()
+  async uiFile(
+    @Param("sha") hash: string,
+    @Param("path") path: string | string[],
+    @Res() res: Response,
+  ): Promise<void> {
+    const f = await this.code.uiFile(parse(sha, hash), safePath(joined(path)));
+    for (const [k, v] of Object.entries(UI_HEADERS)) res.setHeader(k, v);
+    res.setHeader("Content-Type", f.mediaType);
+    res.end(f.data);
   }
 
   /** Purpose: turn a plugin on or off for a project (project Owners). Body: `{ enabled, version? }`. */

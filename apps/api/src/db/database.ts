@@ -53,6 +53,8 @@ export interface DB {
     updated_at: Timestamp;
     agent_registration: Generated<boolean>;
     allow_unsigned_plugins: Generated<boolean>;
+    plugin_memory_mb: Generated<number>;
+    plugin_time_s: Generated<number>;
   };
   "iam.user": {
     id: Generated<string>;
@@ -275,6 +277,14 @@ export interface DB {
     signer_name: string | null;
     installed_by: string | null;
     installed_at: Generated<Date>;
+  };
+  "plugin.file": {
+    plugin_id: string;
+    version: string;
+    path: string;
+    media_type: string;
+    data: Buffer;
+    sha256: string;
   };
   "project.plugin": {
     project_id: string;

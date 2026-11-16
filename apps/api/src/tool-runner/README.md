@@ -12,12 +12,16 @@ as possible (05 §3.3, threat model TB6). First used by the `.mslab` importer (A
 | `errors.mts` | `ToolError`: a refusal whose message is shown to the person |
 | `zip.mts` | Safe ZIP reader (entry, size and ratio limits, no `..`, absolute paths or links) and writer |
 | `check.mts` | The `sandbox-check` tool: reports what the sandbox stops |
+| `../plugins/code/compile.mts` | The `plugin-compile` tool: checks a plugin's WebAssembly component and turns it into core modules and JavaScript glue with jco (ADR-0036 Phase 2) |
+| `../plugins/code/run.mts` | The `plugin-run` tool: runs one call of a plugin's code with the Admins' memory limit |
 
 ## What a tool cannot do
 
 - **Files**: Node's permission model (`--permission`). Reads only the API package and its npm packages, writes
   only its own scratch folder (a fresh folder under the system temp folder, removed after the run).
-- **Processes, worker threads, native add-ons**: not allowed by the permission model.
+- **Processes, worker threads, native add-ons**: not allowed by the permission model. The one exception is
+  `plugin-compile`, which gets `--allow-worker` because jco's own WASI shims do blocking I/O in a worker thread;
+  the worker stays under the same permission model, network guard and limits. Tools may be `async`.
 - **Network**: its own empty network namespace (`unshare --net --map-root-user`) when the system allows user
   namespaces (the runner probes this once), and in every case `guard.mts`. In the Docker image with the default
   seccomp profile, user namespaces are refused, so the guard is what holds there.

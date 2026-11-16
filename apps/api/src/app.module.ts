@@ -25,7 +25,7 @@ import { TerrainModule } from "./terrain/terrain.module";
 import { AccessGuard } from "./iam/access.guard";
 import { RateLimitService } from "./iam/rate-limit.service";
 import { PluginsController } from "./plugins/plugins.controller";
-import { PluginsService } from "./plugins/plugins.service";
+import { PluginsModule } from "./plugins/plugins.module";
 import { ProjectsController } from "./projects/projects.controller";
 import { ProjectsService } from "./projects/projects.service";
 import { SetupController } from "./setup/setup.controller";
@@ -56,6 +56,7 @@ export class AppModule {
         BenefitsModule,
         PlacesModule,
         SimulationModule,
+        PluginsModule,
         AgentsModule,
       ],
       controllers: [
@@ -75,7 +76,6 @@ export class AppModule {
         AuthService,
         CommentsService,
         OidcService,
-        PluginsService,
         ProjectsService,
         RateLimitService,
         SessionService,

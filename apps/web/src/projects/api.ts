@@ -1,3 +1,5 @@
+import { setPluginRuntime } from "../plugins/code/context";
+import type { PluginLimits } from "../plugins/code/runtime";
 import type { ProjectPlugin } from "../plugins/registry";
 import { get, send } from "../session/api";
 import { projectRuns } from "../features/capacity/server";
@@ -97,7 +99,11 @@ export function projectsApi(csrf: string) {
       send<{ project: Project }>("PUT", `${one(id)}/link`, csrf, { linkAccess }).then((r) => r.project),
     /** The plugins the project can use, with whether each is on (ADR-0036 §9). */
     plugins: (id: string) =>
-      get<{ plugins?: ProjectPlugin[] }>(`${one(id)}/plugins`).then((r) => r.plugins ?? []),
+      get<{ plugins?: ProjectPlugin[]; limits?: PluginLimits }>(`${one(id)}/plugins`).then((r) => {
+        // The Admins' limits for plugin code, which the browser's plugin host runs with.
+        if (r.limits) setPluginRuntime({ limits: r.limits });
+        return r.plugins ?? [];
+      }),
     /** Turn a plugin on or off for the project (Owners), pinning the version of an installed plugin. */
     setPlugin: (id: string, pluginId: string, enabled: boolean, version?: string) =>
       send<{ plugins: ProjectPlugin[] }>(
