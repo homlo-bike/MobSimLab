@@ -21,6 +21,9 @@ export interface Effective {
   tram: TramShare | null;
   /** The street has tram rails, or the planner said how a tram shares it. */
   hasTram: boolean;
+  /** Cars per hour in each direction in the morning and evening peak. */
+  carsMorningPeak: number;
+  carsEveningPeak: number;
 }
 
 /** Purpose: general traffic lanes as OSM gives them (OSM `lanes` counts bus lanes too). */
@@ -41,6 +44,8 @@ export function effective(info: StreetInfo, setup: StreetSetup | undefined): Eff
     separated: s.separated ?? info.class === "busway",
     tram,
     hasTram: info.tram || tram !== null,
+    carsMorningPeak: s.cars_morning_peak ?? peakCarsDefault(info.class),
+    carsEveningPeak: s.cars_evening_peak ?? peakCarsDefault(info.class),
   };
 }
 
@@ -51,8 +56,57 @@ export function isEmpty(s: StreetSetup): boolean {
     s.bus_lane == null &&
     s.bike_lane == null &&
     s.separated == null &&
-    s.tram == null
+    s.tram == null &&
+    s.cars_morning_peak == null &&
+    s.cars_evening_peak == null
   );
+}
+
+/**
+ * Assumptions `street.peak_cars_*_vph` (central): cars per hour in each direction at peak where the
+ * planner sets none, by road type. The same value applies to the morning and the evening peak.
+ */
+export const PEAK_CARS_DEFAULT = {
+  trunk: 1500,
+  primary: 900,
+  secondary: 600,
+  tertiary: 300,
+  local: 50,
+} as const;
+
+/** Largest traffic peak accepted, cars per hour in one direction (about four busy lanes). */
+export const MAX_PEAK_CARS = 8000;
+
+/** Purpose: the default cars per hour in each direction at peak for an OSM highway class. */
+export function peakCarsDefault(cls: string): number {
+  switch (cls) {
+    case "trunk":
+    case "trunk_link":
+    case "motorway_link":
+      return PEAK_CARS_DEFAULT.trunk;
+    case "primary":
+    case "primary_link":
+      return PEAK_CARS_DEFAULT.primary;
+    case "secondary":
+    case "secondary_link":
+      return PEAK_CARS_DEFAULT.secondary;
+    case "tertiary":
+    case "tertiary_link":
+      return PEAK_CARS_DEFAULT.tertiary;
+    // No general traffic: buses only, or people on foot.
+    case "busway":
+    case "pedestrian":
+      return 0;
+    default:
+      return PEAK_CARS_DEFAULT.local;
+  }
+}
+
+/** Purpose: a typed traffic peak as a value to save: a whole number of cars, `null` when empty or invalid. */
+export function parsePeakCars(text: string): number | null {
+  const v = Number(text.trim());
+  if (text.trim() === "" || !Number.isFinite(v) || v < 0) return null;
+  return Math.min(MAX_PEAK_CARS, Math.round(v));
 }
 
 /** Purpose: the list with one street's setup replaced (removed when it changes nothing). */
