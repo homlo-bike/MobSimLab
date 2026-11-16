@@ -49,8 +49,9 @@ function line(over: Partial<AppraisalLine> = {}): AppraisalLine {
 const PREFS: Record<string, number> = {
   "appraisal.build_years": 1,
   "appraisal.period_years": 10,
-  "appraisal.discount.social_cohesion": 0.1,
-  "appraisal.discount.social_other": 0.1,
+  "appraisal.discount.social_high": 0.1,
+  "appraisal.discount.social_upper_middle": 0.1,
+  "appraisal.discount.social_lower": 0.1,
   "appraisal.discount.financial": 0.05,
   "appraisal.conversion_factor": 1,
   "appraisal.life.civil": 1000,
@@ -64,7 +65,7 @@ const input = (lines: AppraisalLine[], prefs = PREFS): AppraisalInput => ({
   fares: null,
   prefs,
   perIntl: 1,
-  country: "POL",
+  income: "UMC",
 });
 
 describe("discounting", () => {
@@ -78,13 +79,15 @@ describe("discounting", () => {
     expect(irr([-100, -10])).toBeNull();
   });
 
-  it("uses 3 % in EU countries outside the Cohesion Fund and 5 % elsewhere", () => {
-    expect(socialRateKey("DEU")).toBe("appraisal.discount.social_other");
-    expect(socialRateKey("pol")).toBe("appraisal.discount.social_cohesion");
-    expect(socialRateKey("USA")).toBe("appraisal.discount.social_cohesion");
-    expect(socialRateKey(null)).toBe("appraisal.discount.social_cohesion");
-    expect(libraryValue("appraisal.discount.social_other")[1]).toBe(0.03);
-    expect(libraryValue("appraisal.discount.social_cohesion")[1]).toBe(0.05);
+  it("picks the social rate by the World Bank income group, upper-middle when it is unknown", () => {
+    expect(socialRateKey("HIC")).toBe("appraisal.discount.social_high");
+    expect(socialRateKey("umc")).toBe("appraisal.discount.social_upper_middle");
+    expect(socialRateKey("LMC")).toBe("appraisal.discount.social_lower");
+    expect(socialRateKey("LIC")).toBe("appraisal.discount.social_lower");
+    expect(socialRateKey(null)).toBe("appraisal.discount.social_upper_middle");
+    expect(libraryValue("appraisal.discount.social_high")[1]).toBe(0.035);
+    expect(libraryValue("appraisal.discount.social_upper_middle")[1]).toBe(0.06);
+    expect(libraryValue("appraisal.discount.social_lower")[1]).toBe(0.08);
     expect(libraryValue("appraisal.discount.financial")[1]).toBe(0.04);
   });
 
@@ -259,7 +262,8 @@ describe("appraisal", () => {
     const capex = a.tornado.find((b) => b.name === "input.capex")!;
     expect(capex.low).toBeGreaterThan(capex.high);
     // Only the social rate of the project's country is varied.
-    expect(a.tornado.some((b) => b.name === "appraisal.discount.social_other")).toBe(false);
+    expect(a.tornado.some((b) => b.name === "appraisal.discount.social_high")).toBe(false);
+    expect(a.tornado.some((b) => b.name === "appraisal.discount.social_upper_middle")).toBe(true);
   });
 
   it("says when the demand run's benefits are missing", () => {
@@ -433,7 +437,7 @@ describe("appraisal inputs", () => {
 });
 
 describe("appraisal section", () => {
-  const costs = { estimate: COSTS, currency: "EUR", country: "DEU", perIntl: 0.8 };
+  const costs = { estimate: COSTS, currency: "EUR", income: "HIC", perIntl: 0.8 };
 
   it("waits for the cost tables", () => {
     render(
@@ -472,17 +476,17 @@ describe("appraisal section", () => {
     expect(
       screen.getByText("Fare revenue is not counted until the fare revenue table has priced the lines."),
     ).toBeTruthy();
-    // Germany: the 3 % rate applies.
+    // A high-income country: the 3.5 % rate applies.
     const settings = screen.getByRole("region", { name: "Appraisal settings" });
     expect(
       within(settings)
         .getAllByText(/applies to this project's country/)[0]!
         .closest("tr")!.textContent,
-    ).toMatch(/other EU countries/);
-    const rate = within(settings).getByLabelText("Social discount rate (real), other EU countries");
+    ).toMatch(/high-income countries/);
+    const rate = within(settings).getByLabelText("Social discount rate (real), high-income countries");
     fireEvent.change(rate, { target: { value: "0.02" } });
     fireEvent.blur(rate);
-    expect(onPreferences).toHaveBeenCalledWith({ values: { "appraisal.discount.social_other": 0.02 } });
+    expect(onPreferences).toHaveBeenCalledWith({ values: { "appraisal.discount.social_high": 0.02 } });
     // External costs show in the project's currency and save in international dollars.
     const climate = within(settings).getByLabelText(
       "External cost of a car-km: climate change and well-to-tank emissions",

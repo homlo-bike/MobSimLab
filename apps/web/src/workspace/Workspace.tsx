@@ -186,6 +186,8 @@ export function Workspace({
     estimate: CostEstimate;
     currency: string | null;
     country: string | null;
+    /** World Bank income group of the country (HIC, UMC, LMC, LIC), or null; the appraisal's social rate. */
+    income: string | null;
     rate: number;
     /** Local currency units per international $ (the demand model's fares and car costs). */
     ppp: number;
@@ -193,11 +195,12 @@ export function Workspace({
     perIntl: number;
   } | null>(null);
   const onCostEstimate = useCallback(
-    (estimate: CostEstimate, prices: Prices, country: string | null, rate: number) =>
+    (estimate: CostEstimate, prices: Prices, country: string | null, rate: number, income: string | null) =>
       setCostInfo({
         estimate,
         currency: prices.currency,
         country,
+        income,
         rate,
         ppp: prices.ppp,
         perIntl: prices.ppp * prices.escalation,
@@ -225,7 +228,7 @@ export function Workspace({
         ? {
             estimate: costInfo.estimate,
             currency: costInfo.currency,
-            country: costInfo.country,
+            income: costInfo.income,
             perIntl: costInfo.perIntl,
           }
         : null,

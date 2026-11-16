@@ -1171,11 +1171,38 @@
   retrieved: 2026-11-16
   checked_via: search-snippet
 
-- id: eu-cohesion-fund
-  title: "Cohesion Fund 2021–2027: eligible member states (gross national income per person below 90 % of the EU average)"
-  publisher: European Commission
-  url: https://ec.europa.eu/regional_policy/funding/cohesion-fund_en
-  licence: "© European Union, reuse authorised with acknowledgement (Commission Decision 2011/833/EU)"
+- id: worldbank-sdr-2016
+  title: "Discounting Costs and Benefits in Economic Analysis of World Bank Projects (OPSPQ technical note, 9 May 2016): a social discount rate of 6 % for client countries from 3 % growth per person, range 2–10 %"
+  publisher: World Bank, Operations Policy and Quality
+  url: https://documents1.worldbank.org/curated/en/099610503022315638/pdf/IDU02e978a2a023f704c140bb1b082595e67e593.pdf
+  licence: "© World Bank; not World Bank policy"
+  access: free
+  retrieved: 2026-11-16
+  checked_via: search-snippet
+
+- id: adb-economic-analysis-2017
+  title: "Guidelines for the Economic Analysis of Projects (2017): a minimum economic internal rate of return of 9 %, 6 % for social sector projects"
+  publisher: Asian Development Bank
+  url: https://www.adb.org/documents/guidelines-economic-analysis-projects
+  licence: "© Asian Development Bank, CC BY 3.0 IGO"
+  access: free
+  retrieved: 2026-11-16
+  checked_via: search-snippet
+
+- id: uk-green-book-2022
+  title: "The Green Book: Central Government Guidance on Appraisal and Evaluation (2022): social time preference rate of 3.5 %"
+  publisher: HM Treasury
+  url: https://www.gov.uk/government/publications/the-green-book-appraisal-and-evaluation-in-central-government
+  licence: Open Government Licence v3.0
+  access: free
+  retrieved: 2026-11-16
+  checked_via: none
+
+- id: worldbank-income-groups
+  title: "World Bank country classifications by income level (high, upper-middle, lower-middle, low), read from the country list of the Indicators API"
+  publisher: World Bank
+  url: https://datahelpdesk.worldbank.org/knowledgebase/articles/906519-world-bank-country-and-lending-groups
+  licence: CC BY 4.0
   access: free
   retrieved: 2026-11-16
   checked_via: none

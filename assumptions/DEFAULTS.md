@@ -3310,7 +3310,7 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 
 | Context | Low | Central | High | Basis | Check | Sources | Rationale |
 |---|---|---|---|---|---|---|---|
-| all | 25 | 30 | 40 | cited | unverified | [eu-cba-guide-2014](#src-eu-cba-guide-2014) | The EU CBA Guide (2014) gives a reference period of 30 years for railways and 25–30 years for urban transport, counted including construction; MobSimLab counts the 30 years after opening. Your choice — kept fixed in the Monte Carlo run. |
+| all | 25 | 30 | 40 | cited | unverified | [eu-cba-guide-2014](#src-eu-cba-guide-2014) | Cost-benefit guides commonly use about 30 years for railways and 25–30 years for urban transport (for example the European Commission's CBA Guide, 2014, counted including construction); MobSimLab counts the 30 years after opening. Your choice — kept fixed in the Monte Carlo run. |
 | bus, brt, trolleybus, intercity_bus | 15 | 20 | 25 | documented | unverified | [eu-cba-guide-2014](#src-eu-cba-guide-2014), [mobsimlab-derivation](#src-mobsimlab-derivation) | Bus-based projects have shorter-lived assets (vehicles 12–15 years); 20 years covers a vehicle renewal. Mixed networks use the longest period of their modes. |
 
 ### Financial discount rate (real)
@@ -3319,23 +3319,31 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 
 | Context | Low | Central | High | Basis | Check | Sources | Rationale |
 |---|---|---|---|---|---|---|---|
-| all | 0.03 | 0.04 | 0.05 | cited | unverified | [eu-cba-guide-2014](#src-eu-cba-guide-2014) | The EU CBA Guide (2014) recommends 4 % in real terms as the benchmark financial discount rate. Your choice — kept fixed in the Monte Carlo run. |
+| all | 0.03 | 0.04 | 0.05 | cited | unverified | [eu-cba-guide-2014](#src-eu-cba-guide-2014) | 4 % in real terms is a common benchmark for the financial return on public infrastructure (the European Commission's CBA Guide, 2014, uses it); set the rate your funders ask for. Your choice — kept fixed in the Monte Carlo run. |
 
-### Social discount rate (real), EU Cohesion Fund countries and countries outside the EU
+### Social discount rate (real), high-income countries
 
-`appraisal.discount.social_cohesion` · unit: share a year · used by: appraisal: ENPV, BCR
-
-| Context | Low | Central | High | Basis | Check | Sources | Rationale |
-|---|---|---|---|---|---|---|---|
-| all | 0.04 | 0.05 | 0.07 | cited | unverified | [eu-cba-guide-2014](#src-eu-cba-guide-2014), [eu-cohesion-fund](#src-eu-cohesion-fund) | The EU CBA Guide (2014) recommends 5 % for Cohesion countries. MobSimLab also uses it outside the EU, where faster expected growth usually means a higher social rate; national guidance (UK 3.5 %, Germany 1.7 %) can be set as the project's value. Your choice — kept fixed in the Monte Carlo run. |
-
-### Social discount rate (real), other EU countries
-
-`appraisal.discount.social_other` · unit: share a year · used by: appraisal: ENPV, BCR
+`appraisal.discount.social_high` · unit: share a year · used by: appraisal: ENPV, BCR
 
 | Context | Low | Central | High | Basis | Check | Sources | Rationale |
 |---|---|---|---|---|---|---|---|
-| all | 0.02 | 0.03 | 0.04 | cited | unverified | [eu-cba-guide-2014](#src-eu-cba-guide-2014) | The EU CBA Guide (2014) recommends 3 % for EU countries outside the Cohesion Fund. Your choice — kept fixed in the Monte Carlo run. |
+| all | 0.025 | 0.035 | 0.05 | cited | unverified | [uk-green-book-2022](#src-uk-green-book-2022), [worldbank-sdr-2016](#src-worldbank-sdr-2016), [worldbank-income-groups](#src-worldbank-income-groups) | Used where the World Bank classes the project's country as high income. The UK Green Book uses 3.5 %; the World Bank's 2016 note ties the rate to growth per person, which is slower in high-income countries. Your choice — kept fixed in the Monte Carlo run. |
+
+### Social discount rate (real), upper-middle-income countries
+
+`appraisal.discount.social_upper_middle` · unit: share a year · used by: appraisal: ENPV, BCR
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.04 | 0.06 | 0.08 | cited | unverified | [worldbank-sdr-2016](#src-worldbank-sdr-2016), [worldbank-income-groups](#src-worldbank-income-groups) | Used where the World Bank classes the project's country as upper-middle income, and where it has no class for the country. The World Bank's 2016 note gives 6 % for its client countries (3 % growth per person a year), within a range of 2–10 %. Your choice — kept fixed in the Monte Carlo run. |
+
+### Social discount rate (real), lower-middle and low-income countries
+
+`appraisal.discount.social_lower` · unit: share a year · used by: appraisal: ENPV, BCR
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.06 | 0.08 | 0.12 | educated-guess | unverified | [worldbank-sdr-2016](#src-worldbank-sdr-2016), [adb-economic-analysis-2017](#src-adb-economic-analysis-2017), [worldbank-income-groups](#src-worldbank-income-groups) | Used where the World Bank classes the project's country as lower-middle or low income. Faster expected growth and scarcer capital mean a higher rate; 8 % lies between the World Bank's 6 % and the 9 % the Asian Development Bank asks of most projects, and below the 10–12 % some development banks still use. Your choice — kept fixed in the Monte Carlo run. |
 
 ### Conversion factor from financial to economic costs (shadow prices)
 
@@ -3343,7 +3351,7 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 
 | Context | Low | Central | High | Basis | Check | Sources | Rationale |
 |---|---|---|---|---|---|---|---|
-| all | 0.8 | 1.0 | 1.0 | documented | unverified | [eu-cba-guide-2014](#src-eu-cba-guide-2014) | Economic costs are financial costs times this factor. The EU CBA Guide allows a standard conversion factor below 1 where taxes and labour market distortions are known; without country data 1.0 (market prices) is used. Your choice — kept fixed in the Monte Carlo run. |
+| all | 0.8 | 1.0 | 1.0 | documented | unverified | [eu-cba-guide-2014](#src-eu-cba-guide-2014) | Economic costs are financial costs times this factor. Cost-benefit guides allow a standard conversion factor below 1 where taxes and labour market distortions are known; without country data 1.0 (market prices) is used. Your choice — kept fixed in the Monte Carlo run. |
 
 ### Asset life: civil works (track bed, tunnels, viaducts, stations, depots)
 
@@ -3384,7 +3392,7 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 
 | Context | Low | Central | High | Basis | Check | Sources | Rationale |
 |---|---|---|---|---|---|---|---|
-| all | 0.01 | 0.025 | 0.06 | educated-guess | unverified | [eu-external-costs-2019](#src-eu-external-costs-2019), [worldbank-wdi](#src-worldbank-wdi) | About 1.5–2.5 € cents per car-km in the Handbook's EU averages for climate and well-to-tank costs, about 2–4 US$ cents at 2023 PPP prices; the high value allows for higher carbon prices. Converted from 2016 euros with the EU PPP factor and US inflation; read the Handbook's country table before relying on it. |
+| all | 0.01 | 0.025 | 0.06 | educated-guess | unverified | [eu-external-costs-2019](#src-eu-external-costs-2019), [worldbank-wdi](#src-worldbank-wdi) | About 1.5–2.5 € cents per car-km in the Handbook's European averages for climate and well-to-tank costs, about 2–4 US$ cents at 2023 PPP prices; the high value allows for higher carbon prices. These are European values, converted from 2016 euros with the euro area PPP factor and US inflation; replace them with local values where you have them, since pollution, accident and congestion costs differ a lot between countries. |
 
 ### External cost of a car-km: air pollution
 
@@ -3392,7 +3400,7 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 
 | Context | Low | Central | High | Basis | Check | Sources | Rationale |
 |---|---|---|---|---|---|---|---|
-| all | 0.005 | 0.015 | 0.04 | educated-guess | unverified | [eu-external-costs-2019](#src-eu-external-costs-2019), [worldbank-wdi](#src-worldbank-wdi) | About 0.5–1.5 € cents per car-km for an average EU car, higher in dense cities and for diesel cars. Converted from 2016 euros with the EU PPP factor and US inflation; read the Handbook's country table before relying on it. |
+| all | 0.005 | 0.015 | 0.04 | educated-guess | unverified | [eu-external-costs-2019](#src-eu-external-costs-2019), [worldbank-wdi](#src-worldbank-wdi) | About 0.5–1.5 € cents per car-km for an average European car, higher in dense cities and for diesel cars. These are European values, converted from 2016 euros with the euro area PPP factor and US inflation; replace them with local values where you have them, since pollution, accident and congestion costs differ a lot between countries. |
 
 ### External cost of a car-km: noise
 
@@ -3400,7 +3408,7 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 
 | Context | Low | Central | High | Basis | Check | Sources | Rationale |
 |---|---|---|---|---|---|---|---|
-| all | 0.005 | 0.015 | 0.05 | educated-guess | unverified | [eu-external-costs-2019](#src-eu-external-costs-2019), [worldbank-wdi](#src-worldbank-wdi) | Average noise cost of a car is about 0.5–1 € cents per km; marginal urban values at night are several times higher. Converted from 2016 euros with the EU PPP factor and US inflation; read the Handbook's country table before relying on it. |
+| all | 0.005 | 0.015 | 0.05 | educated-guess | unverified | [eu-external-costs-2019](#src-eu-external-costs-2019), [worldbank-wdi](#src-worldbank-wdi) | Average noise cost of a car is about 0.5–1 € cents per km; marginal urban values at night are several times higher. These are European values, converted from 2016 euros with the euro area PPP factor and US inflation; replace them with local values where you have them, since pollution, accident and congestion costs differ a lot between countries. |
 
 ### External cost of a car-km: accidents not paid by the driver
 
@@ -3408,7 +3416,7 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 
 | Context | Low | Central | High | Basis | Check | Sources | Rationale |
 |---|---|---|---|---|---|---|---|
-| all | 0.03 | 0.07 | 0.12 | educated-guess | unverified | [eu-external-costs-2019](#src-eu-external-costs-2019), [worldbank-wdi](#src-worldbank-wdi) | External accident costs of cars are the largest average item in the Handbook, about 4–7 € cents per car- km. Converted from 2016 euros with the EU PPP factor and US inflation; read the Handbook's country table before relying on it. |
+| all | 0.03 | 0.07 | 0.12 | educated-guess | unverified | [eu-external-costs-2019](#src-eu-external-costs-2019), [worldbank-wdi](#src-worldbank-wdi) | External accident costs of cars are the largest average item in the Handbook, about 4–7 € cents per car- km. These are European values, converted from 2016 euros with the euro area PPP factor and US inflation; replace them with local values where you have them, since pollution, accident and congestion costs differ a lot between countries. |
 
 ### External cost of a car-km: congestion caused to other road users
 
@@ -3416,7 +3424,7 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 
 | Context | Low | Central | High | Basis | Check | Sources | Rationale |
 |---|---|---|---|---|---|---|---|
-| all | 0.0 | 0.1 | 0.4 | educated-guess | unverified | [eu-external-costs-2019](#src-eu-external-costs-2019), [worldbank-wdi](#src-worldbank-wdi) | Marginal congestion costs range from nothing on free-flowing roads to over 50 € cents per car-km on congested urban roads at the peak; 0.1 is an educated average for a city over the day. Converted from 2016 euros with the EU PPP factor and US inflation; read the Handbook's country table before relying on it. |
+| all | 0.0 | 0.1 | 0.4 | educated-guess | unverified | [eu-external-costs-2019](#src-eu-external-costs-2019), [worldbank-wdi](#src-worldbank-wdi) | Marginal congestion costs range from nothing on free-flowing roads to over 50 € cents per car-km on congested urban roads at the peak; 0.1 is an educated average for a city over the day. These are European values, converted from 2016 euros with the euro area PPP factor and US inflation; replace them with local values where you have them, since pollution, accident and congestion costs differ a lot between countries. |
 
 ### Multi-criteria weight: economic net present value
 
@@ -3665,4 +3673,7 @@ and rationale per attribute: [`switches.yaml`](switches.yaml); geometry model:
 | <a id="src-who-2011-disability"></a>`who-2011-disability` | [World Health Organization and World Bank: World report on disability (2011)](https://www.who.int/publications/i/item/9789241564182) | free | CC BY-NC-SA 3.0 IGO | 2026-11-16 | none |
 | <a id="src-eu-cba-guide-2014"></a>`eu-cba-guide-2014` | [Guide to Cost-Benefit Analysis of Investment Projects: Economic appraisal tool for Cohesion Policy 2014–2020 (reference periods, 4 % financial and 5 %/3 % social discount rates, conversion factors, residual value)](https://ec.europa.eu/regional_policy/sources/studies/cba_guide.pdf) | free | © European Union, reuse authorised with acknowledgement (Commission Decision 2011/833/EU) | 2026-11-16 | none |
 | <a id="src-eu-external-costs-2019"></a>`eu-external-costs-2019` | [Handbook on the external costs of transport, version 2019 – 1.1 (CE Delft for DG MOVE): average and marginal external costs per vehicle-km by mode](https://cedelft.eu/publications/handbook-on-the-external-costs-of-transport-version-2019) | free | © European Union, reuse authorised with acknowledgement (Commission Decision 2011/833/EU) | 2026-11-16 | search-snippet |
-| <a id="src-eu-cohesion-fund"></a>`eu-cohesion-fund` | [Cohesion Fund 2021–2027: eligible member states (gross national income per person below 90 % of the EU average)](https://ec.europa.eu/regional_policy/funding/cohesion-fund_en) | free | © European Union, reuse authorised with acknowledgement (Commission Decision 2011/833/EU) | 2026-11-16 | none |
+| <a id="src-worldbank-sdr-2016"></a>`worldbank-sdr-2016` | [Discounting Costs and Benefits in Economic Analysis of World Bank Projects (OPSPQ technical note, 9 May 2016): a social discount rate of 6 % for client countries from 3 % growth per person, range 2–10 %](https://documents1.worldbank.org/curated/en/099610503022315638/pdf/IDU02e978a2a023f704c140bb1b082595e67e593.pdf) | free | © World Bank; not World Bank policy | 2026-11-16 | search-snippet |
+| <a id="src-adb-economic-analysis-2017"></a>`adb-economic-analysis-2017` | [Guidelines for the Economic Analysis of Projects (2017): a minimum economic internal rate of return of 9 %, 6 % for social sector projects](https://www.adb.org/documents/guidelines-economic-analysis-projects) | free | © Asian Development Bank, CC BY 3.0 IGO | 2026-11-16 | search-snippet |
+| <a id="src-uk-green-book-2022"></a>`uk-green-book-2022` | [The Green Book: Central Government Guidance on Appraisal and Evaluation (2022): social time preference rate of 3.5 %](https://www.gov.uk/government/publications/the-green-book-appraisal-and-evaluation-in-central-government) | free | Open Government Licence v3.0 | 2026-11-16 | none |
+| <a id="src-worldbank-income-groups"></a>`worldbank-income-groups` | [World Bank country classifications by income level (high, upper-middle, lower-middle, low), read from the country list of the Indicators API](https://datahelpdesk.worldbank.org/knowledgebase/articles/906519-world-bank-country-and-lending-groups) | free | CC BY 4.0 | 2026-11-16 | none |

@@ -12,7 +12,7 @@ At the bottom of the **Tables** tab, the appraisal weighs what the lines cost ag
 
 ## Results
 
-- **ENPV, ERR and benefit-cost ratio**: every benefit to society against the costs, at the social discount rate (3 % in EU countries outside the Cohesion Fund, 5 % elsewhere; set your country's rate if it differs).
+- **ENPV, ERR and benefit-cost ratio**: every benefit to society against the costs, at the social discount rate (by the World Bank income group of the project's country: 3.5 % high income, 6 % upper-middle income or unknown, 8 % lower-middle and low income; set your country's rate if it has one).
 - **FNPV and FIRR**: the operator's view, fares against costs, at the financial discount rate.
 - Per line, per mode and for all lines, with low, medium and high from 200 random draws over the ranges of the values. The timeline, the discount rates and the conversion factor stay as you set them.
 - A **year-by-year** cash flow and the **present values** of each item.

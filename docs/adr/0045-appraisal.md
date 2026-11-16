@@ -12,10 +12,10 @@ The product owner asked (2026-11-16) for the appraisal: NPV, IRR, benefit-cost r
 and sensitivity (tornado chart, switching values), combining the cost tables, fare revenue and the benefits, with
 every value editable and flexible defaults. The product owner chose to wait for the demand model (so the users'
 travel time benefit counts) and for the fare revenue model, approved the default timeline (4-year build, 30-year
-period after opening for rail and 20 for bus-only, social discount rate 5 % or 3 % by country after the EU CBA
-Guide, financial rate 4 %, vehicles renewed every 30 years for rail and 12 for bus, straight-line residual value,
+period after opening for rail and 20 for bus-only, financial rate 4 %, vehicles renewed every 30 years for rail and 12 for bus, straight-line residual value,
 conversion factor 1.0), a weighted-sum multi-criteria analysis, tornado chart, switching values and Monte Carlo,
-and no export for now.
+and no export for now. Projects are not in the EU, so the product owner then chose a social discount rate by
+World Bank income group instead of the EU guide's 5 % or 3 % (2026-11-16).
 
 ## Decision
 
@@ -36,8 +36,10 @@ and no export for now.
    FIRR from fares and the operator's costs at the financial rate. Rates of return by bisection; none when the
    value does not change sign. Per line, per mode (with the shared items no line runs on yet) and in total, each on
    the longest construction and appraisal period of its modes.
-4. **Social discount rate.** 3 % in EU members outside the Cohesion Fund, 5 % elsewhere (EU CBA Guide 2014);
-   outside the EU the planner sets the national rate as the project's value.
+4. **Social discount rate.** By the World Bank income group of the project's country, which the Indicators API's
+   country list carries: 3.5 % for high income (UK Green Book), 6 % for upper-middle income (World Bank 2016 note)
+   and when the group is unknown, 8 % for lower-middle and low income (between the World Bank's 6 % and the Asian
+   Development Bank's 9 %). The planner sets the national rate as the project's value where one exists.
 5. **Uncertainty.** Low, medium and high are the 10th, 50th and 90th percentile of 200 seeded draws: construction
    and operating cost from the cost tables' range, ridership from the benefit tables' range (the same draw as the
    fare revenue model, so fares and benefits move together), GDP growth, asset lives, value-of-time growth and
@@ -72,7 +74,7 @@ and no export for now.
 - The demand model's fare (`demand.mode.fare_usd`) and the fare revenue table's fares are set separately; keep them
   close.
 - Emissions of the buses and trains themselves are not yet counted against the car-km saved.
-- The external cost values are educated averages from the EU Handbook (2019) marked `unverified`; read the
-  Handbook's country tables before relying on them.
+- The external cost values are European averages from the Handbook on the external costs of transport (2019),
+  marked `unverified`; they differ a lot between countries, so replace them with local values where known.
 - Demand runs made before this change have no `appraisal` block; run the demand model again to count the users'
   benefit.

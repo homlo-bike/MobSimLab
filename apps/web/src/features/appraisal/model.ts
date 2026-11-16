@@ -27,30 +27,15 @@ export const POLICY = new Set([
   "appraisal.build_years",
   "appraisal.period_years",
   "appraisal.discount.financial",
-  "appraisal.discount.social_cohesion",
-  "appraisal.discount.social_other",
+  "appraisal.discount.social_high",
+  "appraisal.discount.social_upper_middle",
+  "appraisal.discount.social_lower",
   "appraisal.conversion_factor",
 ]);
 
 /** External costs of a car-km the project saves, in the order the tables show them. */
 export const EXTERNAL = ["climate", "air_pollution", "noise", "accidents", "congestion"] as const;
 export type External = (typeof EXTERNAL)[number];
-
-/** EU members outside the Cohesion Fund 2021–2027 (ISO 3166 alpha-3): the 3 % social discount rate. */
-export const EU_OTHER = new Set([
-  "AUT",
-  "BEL",
-  "DNK",
-  "FIN",
-  "FRA",
-  "DEU",
-  "IRL",
-  "ITA",
-  "LUX",
-  "NLD",
-  "ESP",
-  "SWE",
-]);
 
 /** Purpose: the library's low, central and high value of an appraisal parameter for a mode (else "*"). */
 export function libraryValue(key: string, mode = "*"): Triple {
@@ -82,11 +67,22 @@ export function paramValue(key: string, mode: string, prefs: Record<string, numb
   return t[0] <= t[2] ? t : [t[2], own, t[0]];
 }
 
-/** Purpose: which social discount rate applies in a country (EU CBA Guide 2014: 3 % or 5 %). */
-export function socialRateKey(iso3: string | null): string {
-  return iso3 && EU_OTHER.has(iso3.toUpperCase())
-    ? "appraisal.discount.social_other"
-    : "appraisal.discount.social_cohesion";
+/** The social discount rates, one per World Bank income group. */
+export const SOCIAL_RATES = [
+  "appraisal.discount.social_high",
+  "appraisal.discount.social_upper_middle",
+  "appraisal.discount.social_lower",
+] as const;
+
+/**
+ * Purpose: which social discount rate applies for a World Bank income group: high income, upper-middle income
+ * (also when the group is unknown), or lower-middle and low income.
+ */
+export function socialRateKey(income: string | null): string {
+  const g = income?.toUpperCase();
+  if (g === "HIC") return SOCIAL_RATES[0];
+  if (g === "LMC" || g === "LIC") return SOCIAL_RATES[2];
+  return SOCIAL_RATES[1];
 }
 
 /** A line (or a mode's items no line uses yet) as the appraisal sees it. Money in the project's currency. */
@@ -120,8 +116,8 @@ export interface AppraisalInput {
   prefs: Record<string, number> | undefined;
   /** Units of the project's currency per 2023 international dollar (external cost values). */
   perIntl: number;
-  /** ISO 3166 alpha-3 code of the project's country. */
-  country: string | null;
+  /** World Bank income group of the project's country (HIC, UMC, LMC, LIC), or null when unknown. */
+  income: string | null;
 }
 
 /**
@@ -308,7 +304,7 @@ export function present(
   const { prefs } = input;
   const modes = [...new Set(lines.map((l) => l.mode))];
   const one = (key: string) => pick(key, paramValue(key, modes.length === 1 ? modes[0]! : "*", prefs));
-  const rs = one(socialRateKey(input.country));
+  const rs = one(socialRateKey(input.income));
   const rf = one("appraisal.discount.financial");
   const cf = one("appraisal.conversion_factor");
   const pv = (f: (y: CashYear) => number, r: number) => npv(years.map(f), r);
@@ -471,11 +467,11 @@ function medianFares(runs: Record<string, number[]>[]): Record<string, number[]>
 }
 
 /** Purpose: the parameters the tornado chart varies, with the inputs, for the given lines. */
-function tornadoNames(lines: AppraisalLine[], country: string | null, withDemand: boolean): string[] {
+function tornadoNames(lines: AppraisalLine[], income: string | null, withDemand: boolean): string[] {
   const names = ["input.capex", "input.opex", "ridership", "input.gdp"];
   for (const key of Object.keys(PARAMS)) {
     if (key.startsWith("appraisal.mca.")) continue;
-    if (key.startsWith("appraisal.discount.social") && key !== socialRateKey(country)) continue;
+    if (key.startsWith("appraisal.discount.social") && key !== socialRateKey(income)) continue;
     if ((key.startsWith("appraisal.external.") || key === "appraisal.vot_growth") && !withDemand) continue;
     names.push(key);
   }
@@ -564,7 +560,7 @@ export function appraise(input: AppraisalInput, draws = 200, seed = 0xa9a1): App
     notes.push("Fare revenue is not counted until the fare revenue table has priced the lines.");
   // Tornado: each value at its low and its high, the others at their central.
   const tornado: TornadoBar[] = [];
-  for (const name of tornadoNames(all, input.country, withDemand)) {
+  for (const name of tornadoNames(all, input.income, withDemand)) {
     const at =
       (i: 0 | 2): Pick =>
       (nm, t) =>
