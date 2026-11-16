@@ -969,3 +969,18 @@
       sources: [nomeports]
       check: unverified
       rationale: "PLACEHOLDER awaiting the product owner's value (asked 2026-11-03) and the ferry research."
+
+- key: noise.ferry_source_height_m
+  label: "Ferry source height above the water (funnel, engine room vents, ventilation)"
+  group: Noise
+  unit: m
+  used_by: [noise map (ferries, indicative)]
+  values:
+    - context: { mode: "*" }
+      low: 3
+      central: 5
+      high: 10
+      basis: educated-guess
+      sources: [nomeports]
+      check: unverified
+      rationale: "PLACEHOLDER until the ferry sound power sources are read: the main sources of a small or medium passenger ferry (exhaust, engine room and air conditioning vents) sit a few metres above the water."
