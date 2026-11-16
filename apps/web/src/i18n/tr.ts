@@ -314,6 +314,9 @@ export const tr: Messages = {
   "prefs.demandStep.catchment": "Erişim alanı",
   "prefs.demandStep.assignment": "Atama",
   "prefs.demandAll": "Tüm adımlar",
+  "prefs.accessTitle": "Peron erişilebilirliği",
+  "prefs.accessIntro":
+    "Peron ile tren arasındaki basamak ve boşluk sınırları (TSI PRM) ve katalogda değeri olmayan trenler için taban yüksekliği. Hatlar her durakta bunlara göre denetlenir.",
   "prefs.vehiclesTitle": "Araçlar",
   "prefs.vehiclesIntro":
     "Bu projenin her tür için kullandığı katalog araçları. Sokak hattı ve demiryolu araçları yalnızca işaretlenenleri sunar.",

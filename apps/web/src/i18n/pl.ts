@@ -315,6 +315,9 @@ export const pl: Messages = {
   "prefs.demandStep.catchment": "Obszar dojścia",
   "prefs.demandStep.assignment": "Rozkład na sieć",
   "prefs.demandAll": "Wszystkie kroki",
+  "prefs.accessTitle": "Dostępność peronów",
+  "prefs.accessIntro":
+    "Limity stopnia i szczeliny między peronem a pociągiem (TSI PRM) oraz wysokość podłogi dla pociągów bez tej wartości w katalogu. Linie są sprawdzane na każdym przystanku.",
   "prefs.vehiclesTitle": "Pojazdy",
   "prefs.vehiclesIntro":
     "Pojazdy z katalogu używane w tym projekcie, dla każdego środka transportu. Narzędzia linii ulicznych i kolejowych pokazują tylko zaznaczone.",

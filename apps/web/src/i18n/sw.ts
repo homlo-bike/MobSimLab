@@ -315,6 +315,9 @@ export const sw: Messages = {
   "prefs.demandStep.catchment": "Eneo la kufikia",
   "prefs.demandStep.assignment": "Ugawaji",
   "prefs.demandAll": "Hatua zote",
+  "prefs.accessTitle": "Ufikivu wa jukwaa",
+  "prefs.accessIntro":
+    "Mipaka ya ngazi na pengo kati ya jukwaa na treni (TSI PRM), na kimo cha sakafu kwa treni zisizo nacho kwenye orodha. Njia hukaguliwa kila kituo.",
   "prefs.vehiclesTitle": "Magari",
   "prefs.vehiclesIntro":
     "Magari ya katalogi ambayo mradi huu unatumia, kwa kila aina. Zana za njia za barabarani na za reli zinaonyesha yaliyowekewa alama tu.",

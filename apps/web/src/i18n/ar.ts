@@ -305,6 +305,9 @@ export const ar: Messages = {
   "prefs.demandStep.catchment": "منطقة الوصول",
   "prefs.demandStep.assignment": "التخصيص",
   "prefs.demandAll": "كل الخطوات",
+  "prefs.accessTitle": "إتاحة الرصيف",
+  "prefs.accessIntro":
+    "حدود الدرجة والفجوة بين الرصيف والقطار (TSI PRM)، وارتفاع الأرضية للقطارات التي لا تملكه في الكتالوج. تُفحص الخطوط عند كل محطة.",
   "prefs.vehiclesTitle": "المركبات",
   "prefs.vehiclesIntro":
     "مركبات الكتالوج التي يستخدمها هذا المشروع لكل نمط. لا تعرض أدوات خطوط الشوارع والسكك الحديدية إلا المحددة.",

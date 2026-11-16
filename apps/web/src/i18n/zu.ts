@@ -321,6 +321,9 @@ export const zu: Messages = {
   "prefs.demandStep.catchment": "Indawo yokufinyelela",
   "prefs.demandStep.assignment": "Ukwabiwa emigwaqweni",
   "prefs.demandAll": "Zonke izinyathelo",
+  "prefs.accessTitle": "Ukufinyeleleka kwepulatifomu",
+  "prefs.accessIntro":
+    "Imingcele yesinyathelo negebe phakathi kwepulatifomu nesitimela (TSI PRM), nokuphakama kwaphansi kwezitimela ezingenakho ohlwini. Imizila ihlolwa kuso sonke isiteshi.",
   "prefs.vehiclesTitle": "Izimoto",
   "prefs.vehiclesIntro":
     "Izimoto zekhathalogi le phrojekthi ezisebenzisayo, ngohlobo ngalunye. Amathuluzi emizila yasemgwaqweni neyesitimela anikeza lezo ezimakiwe kuphela.",

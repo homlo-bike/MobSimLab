@@ -316,6 +316,9 @@ export const es: Messages = {
   "prefs.demandStep.catchment": "Área de captación",
   "prefs.demandStep.assignment": "Asignación",
   "prefs.demandAll": "Todos los pasos",
+  "prefs.accessTitle": "Accesibilidad del andén",
+  "prefs.accessIntro":
+    "Límites de escalón y hueco entre andén y tren (ETI PMR) y la altura de piso usada para trenes sin dato en el catálogo. Las líneas se comprueban en cada parada.",
   "prefs.vehiclesTitle": "Vehículos",
   "prefs.vehiclesIntro":
     "Los vehículos del catálogo que usa este proyecto, por modo. Las herramientas de líneas de calle y ferroviarias solo ofrecen los marcados.",

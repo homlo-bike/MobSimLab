@@ -316,6 +316,9 @@ export const ha: Messages = {
   "prefs.demandStep.catchment": "Yankin isa",
   "prefs.demandStep.assignment": "Rabawa a hanyoyi",
   "prefs.demandAll": "Duk matakai",
+  "prefs.accessTitle": "Samun damar dandamali",
+  "prefs.accessIntro":
+    "Iyakokin mataki da tazara tsakanin dandamali da jirgi (TSI PRM), da tsayin ƙasa ga jiragen da babu a kundi. Ana duba layuka a kowace tasha.",
   "prefs.vehiclesTitle": "Ababen hawa",
   "prefs.vehiclesIntro":
     "Ababen hawan kundi da wannan aikin ke amfani da su, ga kowane nau'i. Kayan aikin layukan titi da na dogo suna nuna waɗanda aka zaɓa kawai.",

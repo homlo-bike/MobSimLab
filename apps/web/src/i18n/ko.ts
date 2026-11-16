@@ -309,6 +309,9 @@ export const ko: Messages = {
   "prefs.demandStep.catchment": "접근 권역",
   "prefs.demandStep.assignment": "통행 배정",
   "prefs.demandAll": "모든 단계",
+  "prefs.accessTitle": "승강장 접근성",
+  "prefs.accessIntro":
+    "승강장과 열차 사이 단차·틈 한도(TSI PRM)와 차량 목록에 바닥 높이가 없는 열차에 쓰는 값. 노선은 모든 정류장에서 이를 기준으로 검사됩니다.",
   "prefs.vehiclesTitle": "차량",
   "prefs.vehiclesIntro":
     "이 프로젝트가 교통수단별로 쓰는 카탈로그 차량입니다. 도로 노선 도구와 철도 도구는 선택한 차량만 보여 줍니다.",

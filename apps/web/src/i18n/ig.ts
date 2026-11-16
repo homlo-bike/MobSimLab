@@ -315,6 +315,9 @@ export const ig: Messages = {
   "prefs.demandStep.catchment": "Mpaghara nnweta",
   "prefs.demandStep.assignment": "Nkenye",
   "prefs.demandAll": "Nzọụkwụ niile",
+  "prefs.accessTitle": "Ịnweta ikpo okwu",
+  "prefs.accessIntro":
+    "Oke steepụ na oghere n'etiti ikpo okwu na ụgbọ (TSI PRM), yana ịdị elu ala maka ụgbọ na-enweghị ya na katalọgụ. A na-enyocha ahịrị n'ọdụ ọ bụla.",
   "prefs.vehiclesTitle": "Ụgbọ",
   "prefs.vehiclesIntro":
     "Ụgbọ katalọgụ ọrụ a na-eji, maka ụdị ọ bụla. Ngwaọrụ ahịrị okporo ụzọ na ụgbọ oloko na-egosi naanị ndị a kara akara.",

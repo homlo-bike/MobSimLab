@@ -231,6 +231,21 @@ const depots = z.looseObject({
     .max(50),
 });
 
+/** Fare revenue table (ADR-0044): the fare structure and the project's own values (fares in 2023 int. $). */
+const fares = z.looseObject({
+  structure: z.enum(["flat", "zonal", "distance"]).optional(),
+  values: z
+    .record(
+      z
+        .string()
+        .regex(/^[a-z_.]+$/)
+        .max(60),
+      z.number().finite(),
+    )
+    .refine((v) => Object.keys(v).length <= 100, "at most 100 values")
+    .optional(),
+});
+
 /** Drawing kinds with their document outline and current schema version. */
 export const DRAWING_KINDS = {
   /** The street line tool (ADR-0029): bus, BRT, trolleybus and intercity bus lines. */
@@ -261,6 +276,8 @@ export const DRAWING_KINDS = {
   depots: { schema: depots, schemaVersion: 1 },
   /** Demand model zones in the Tables and GIS tabs (ADR-0019): automatic or own, with the planner's values. */
   demand: { schema: demand, schemaVersion: 1 },
+  /** Fare revenue table (ADR-0044): fare structure, fares, passes, discounts and the other fare values. */
+  fares: { schema: fares, schemaVersion: 1 },
 } as const satisfies Record<string, { schema: z.ZodType; schemaVersion: number }>;
 
 export type DrawingKind = keyof typeof DRAWING_KINDS;
