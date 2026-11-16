@@ -46,7 +46,7 @@ export interface Prices {
   currency: string | null;
   /** Local currency units per international $ (construction and operation). */
   ppp: number;
-  /** Local currency units per US$ (vehicles, and the US$ column). */
+  /** Local currency units per US$ (vehicles, and the conversion to the project's currency). */
   fx: number;
   /** Price base year to today: US GDP deflator latest ÷ base year. */
   escalation: number;

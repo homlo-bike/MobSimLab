@@ -279,6 +279,18 @@ export const ig: Messages = {
   "prefs.delayLane": "N'ụzọ bọs ma ọ bụ tram e ji agba see",
   "prefs.delayDefault": "Ọbá akwụkwọ echiche: {value} %",
   "prefs.delayReset": "Jiri uru ọbá akwụkwọ",
+  "prefs.currencyTitle": "Ego",
+  "prefs.currencyIntro":
+    "A na-egosi ego niile nke ọrụ a n'ego a: tebụl ọnụ ahịa, uru, ọnọdụ na nchekwa igwe kaa ibu.",
+  "prefs.currencyLabel": "Gosi ego na",
+  "prefs.currencyCountry": "Ego obodo ahụ n'onwe ya",
+  "prefs.currencyRate": "{code} kwa US$",
+  "prefs.currencyWorldBank": "Ọnụego mgbanwe gọọmentị nke Ụlọ akụ Ụwa ({year}): {value}",
+  "prefs.currencyMissing":
+    "Ụlọ akụ Ụwa enweghị ọnụego mgbanwe maka {code}. Tinye otu iji gbanwee; ruo mgbe ahụ, ngwá ọrụ ọ bụla na-egosi ego obodo ahụ.",
+  "prefs.currencyReset": "Jiri ọnụego Ụlọ akụ Ụwa",
+  "prefs.currencyHow":
+    "A na-agbanwe ego site na dọla America, jiri ọnụego mgbanwe gọọmentị nke Ụlọ akụ Ụwa maka obodo ọ bụla.",
   "prefs.moreTitle": "Iwu, ụgbọ na echiche",
   "prefs.moreIntro":
     "Ihe ọ bụla na-agbanwe agbanwe nwere uru kacha nta ya na nke a tụrụ aro, na ụgbọ ọrụ ahụ na-eji.",

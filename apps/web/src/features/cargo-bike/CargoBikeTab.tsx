@@ -4,6 +4,7 @@ import { createPortal } from "react-dom";
 import { tNow, useI18n } from "../../i18n/i18n";
 import type { MessageKey } from "../../i18n/messages";
 import { currencyOf } from "../costs/currencies";
+import { convertTo, type ProjectCurrency } from "../costs/currency";
 import { economyApi, type EconomyApi } from "../costs/economy";
 import type { StreetSetup } from "../street-setup/types";
 import { cargoBikeEngine, type CargoBikeEngine, TripError } from "./engine";
@@ -87,6 +88,7 @@ export function CargoBikeTab({
   setups,
   engine: engineIn,
   economy: economyIn,
+  currency: projectCurrency = null,
 }: {
   map: MapLibreMap | null;
   panel: HTMLElement | null;
@@ -96,6 +98,8 @@ export function CargoBikeTab({
   setups: StreetSetup[];
   engine?: CargoBikeEngine;
   economy?: EconomyApi;
+  /** The project's currency (Project preferences); null keeps the start point's country's. */
+  currency?: ProjectCurrency | null;
 }) {
   const { t } = useI18n();
   const engine = useMemo(() => engineIn ?? cargoBikeEngine(), [engineIn]);
@@ -122,10 +126,13 @@ export function CargoBikeTab({
     name: string | null;
     currency: string | null;
     conv: Conversion | null;
+    /** Units of the country's currency (EUR without a country) per US$, for the project's currency. */
+    perUsd: number | null;
   }>({
     name: null,
     currency: null,
     conv: null,
+    perUsd: null,
   });
   const [savings, setSavings] = useState<Savings | null>(null);
   const [amenities, setAmenities] = useState<AmenityNear[] | null>(null);
@@ -147,33 +154,43 @@ export function CargoBikeTab({
       try {
         const place = await economy.countryAt(start);
         if (!place.iso3) {
-          if (live) setCountry({ name: null, currency: null, conv: null });
+          if (live) setCountry({ name: null, currency: null, conv: null, perUsd: null });
           return;
         }
         const [mine, germany] = await Promise.all([
           economy.indicators(place.iso3, PRICE_YEAR),
           economy.indicators("DEU", PRICE_YEAR),
         ]);
+        const conv = conversionFrom(mine, germany);
         if (live)
           setCountry({
             name: place.name,
             currency: currencyOf(place.iso3),
-            conv: conversionFrom(mine, germany),
+            conv,
+            perUsd: conv ? (mine.fx?.value ?? null) : null,
           });
       } catch {
-        if (live) setCountry({ name: null, currency: null, conv: null });
+        if (live) setCountry({ name: null, currency: null, conv: null, perUsd: null });
       }
     })();
     return () => {
       live = false;
     };
   }, [economy, startKey]);
-  const currency = country.conv ? (country.currency ?? "EUR") : "EUR";
+  const localCurrency = country.conv ? (country.currency ?? "EUR") : "EUR";
+  // German prices in the country's currency, then in the project's currency (Project preferences). Without
+  // the country's prices the tab keeps German prices in EUR, as it says.
+  const shown = convertTo(projectCurrency, localCurrency, country.perUsd);
+  const currency = shown.currency ?? localCurrency;
+  const conv = useMemo<Conversion | null>(() => {
+    const c = country.conv;
+    return c && shown.rate !== 1 ? { fx: c.fx * shown.rate, ppp: c.ppp * shown.rate } : c;
+  }, [country.conv, shown.rate]);
 
   // The kit preset's values, in the start point's prices, with the project's own values on top.
   const kitId = local.kit ?? kits?.default ?? null;
   const kit = kits?.kits.find((k) => k.id === kitId);
-  const kitVals = useMemo(() => kitValues(kit, defaults, country.conv), [kit, defaults, country.conv]);
+  const kitVals = useMemo(() => kitValues(kit, defaults, conv), [kit, defaults, conv]);
   const effective = useMemo(() => ({ ...kitVals, ...values }), [kitVals, values]);
 
   // Savings follow the trip, the values and the country.
@@ -189,14 +206,14 @@ export function CargoBikeTab({
       riderWh: trip.trip.rider_wh,
       timeS: trip.trip.time_s,
     };
-    engine.savings(perTrip, effective, country.conv).then(
+    engine.savings(perTrip, effective, conv).then(
       (s) => live && setSavings(s),
       (e: unknown) => live && setError(String(e)),
     );
     return () => {
       live = false;
     };
-  }, [engine, trip, effective, country.conv]);
+  }, [engine, trip, effective, conv]);
 
   // Charging points and secure parkings along the trip, once it is ridden.
   useEffect(() => {
@@ -371,7 +388,7 @@ export function CargoBikeTab({
             mass: Math.round(effective.bike_mass_kg ?? defaults.bike_mass_kg?.central ?? 0),
             price: money(
               effective["savings.bike_price_eur"] ??
-                (defaults["savings.bike_price_eur"]?.central ?? 0) * (country.conv?.fx ?? 1),
+                (defaults["savings.bike_price_eur"]?.central ?? 0) * (conv?.fx ?? 1),
             ),
           })}
         </p>
@@ -685,7 +702,7 @@ export function CargoBikeTab({
   const savingsView = () => (
     <div>
       <p className="mt-2 text-sm text-slate-600">
-        {country.conv
+        {conv
           ? t("cb.country", { country: country.name ?? "", currency })
           : start
             ? t("cb.countryUnknown")

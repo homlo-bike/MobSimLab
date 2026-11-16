@@ -286,6 +286,18 @@ export const de: Messages = {
   "prefs.delayLane": "Auf einer markierten Bus- oder Straßenbahnspur",
   "prefs.delayDefault": "Annahmenbibliothek: {value} %",
   "prefs.delayReset": "Wert der Bibliothek verwenden",
+  "prefs.currencyTitle": "Währung",
+  "prefs.currencyIntro":
+    "Alle Geldbeträge des Projekts werden in dieser Währung angezeigt: Kostentabellen, Nutzen, Szenarien und die Einsparungen des Lastenrads.",
+  "prefs.currencyLabel": "Geld anzeigen in",
+  "prefs.currencyCountry": "Die eigene Währung des Landes",
+  "prefs.currencyRate": "{code} je US$",
+  "prefs.currencyWorldBank": "Amtlicher Wechselkurs der Weltbank ({year}): {value}",
+  "prefs.currencyMissing":
+    "Die Weltbank hat keinen Wechselkurs für {code}. Geben Sie einen ein, um umzurechnen; bis dahin zeigt jedes Werkzeug die Währung des Landes.",
+  "prefs.currencyReset": "Kurs der Weltbank verwenden",
+  "prefs.currencyHow":
+    "Beträge werden über den US-Dollar umgerechnet, mit dem amtlichen Wechselkurs der Weltbank für jedes Land.",
   "prefs.moreTitle": "Regeln, Fahrzeuge und Annahmen",
   "prefs.moreIntro": "Jede Variable mit Mindest- und Richtwert sowie die Fahrzeuge des Projekts.",
   "prefs.rules": "Entwurfsregeln je Verkehrsmittel, Mindest- und Richtwert",

@@ -396,9 +396,8 @@ describe("cost tables", () => {
     expect(within(build).getByText("Tunnel, bored (TBM)")).toBeTruthy();
     expect(within(build).getByText("Ramp between levels")).toBeTruthy();
 
-    // US$ at the market rate.
-    fireEvent.click(screen.getByRole("tab", { name: "US$" }));
-    await waitFor(() => expect(screen.getAllByText(/\$/).length).toBeGreaterThan(3));
+    // One currency only: no switch between the country's and US$.
+    expect(screen.queryByRole("tab", { name: "US$" })).toBeNull();
 
     // A project's own unit cost.
     const field = screen.getByRole("textbox", { name: /Bored tunnel \(TBM\), double track, Metro/ });
@@ -409,6 +408,28 @@ describe("cost tables", () => {
     // Another country.
     fireEvent.change(screen.getByLabelText("Country"), { target: { value: "DEU" } });
     expect(onCosts).toHaveBeenCalledWith({ country: "DEU" });
+  });
+
+  it("shows every amount in the project's currency, converted through the US dollar", async () => {
+    const onEstimate = vi.fn();
+    render(
+      <CostTables
+        railway={railway()}
+        streetLines={STREET}
+        preferences={{ values: {} }}
+        costs={null}
+        currency={{ code: "CHF", perUsd: 0.9, year: 2024, own: false }}
+        onEstimate={onEstimate}
+        loadRail={loadRail}
+        api={fakeApi()}
+      />,
+    );
+    await waitFor(() => expect(screen.getAllByText(/CHF/).length).toBeGreaterThan(3));
+    expect(screen.getByText(/at 0\.9783 CHF per EUR/)).toBeTruthy();
+    expect(screen.queryAllByText(/€/)).toHaveLength(0);
+    // The benefit tables get the estimate in CHF and the factor from EUR.
+    await waitFor(() => expect(onEstimate.mock.lastCall?.[1].currency).toBe("CHF"));
+    expect(onEstimate.mock.lastCall?.[3]).toBeCloseTo(0.9 / 0.92);
   });
 
   it("draws the charts, sorts lines and opens and closes groups", async () => {
