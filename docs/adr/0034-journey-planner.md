@@ -1,6 +1,6 @@
 # ADR-0034: Journey time benchmark: RAPTOR over a GTFS-shaped published timetable, in Rust and WebAssembly
 
-- Status: Proposed (product owner request 2026-11-01)
+- Status: Accepted (product owner, 2026-11-16); before that Proposed: product owner request 2026-11-01
 - Date: 2026-11-01
 - Deciders: product owner, architecture
 - Related: FR-TT-05, FR-NET-12, ADR-0009 (one routing library), ADR-0020 (day types), ADR-0029 (street lines), ADR-0031 (routing in the browser), ADR-0032 (railway operations), ADR-0035 (agent integration)

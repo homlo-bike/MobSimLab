@@ -160,6 +160,21 @@ pub struct ServicePublication {
     pub lines: Vec<LineReport>,
     /// Notes from the topology import and the stop placement.
     pub notes: Vec<String>,
+    /// Trains of each line per clock hour on each topology section, for the noise map's
+    /// timetabled input (ADR-0038 step N3).
+    pub section_trains: Vec<SectionTrains>,
+}
+
+/// How many trains of one line pass one section of the topology export in each clock hour.
+#[derive(Clone, Debug, PartialEq, Serialize)]
+pub struct SectionTrains {
+    /// Section id of the topology export (`t{track}.{line}.{piece}`, `s…`, `w…`).
+    pub section: String,
+    /// Service line id.
+    pub line: String,
+    /// Trains entering the section in each hour 0–23 of the clock, both directions together;
+    /// trips after midnight count in the early hours.
+    pub hours: [u32; 24],
 }
 
 /// Mode values from the assumption library (central values, `assumptions/DEFAULTS.md`) and estimates.
@@ -564,11 +579,67 @@ pub fn publish_service(
     }
     notes.extend(imp.notes.iter().filter(|n| !n.is_empty()).cloned());
     notes.extend(jt.notes);
+    let section_trains = section_trains(&m, &p, &ids);
     Ok(ServicePublication {
         timetable: jt.timetable,
         lines: reports,
         notes,
+        section_trains,
     })
+}
+
+/// Purpose: count the passenger trips of each line on each section of the topology export by the
+/// clock hour they pass it, for the noise map (ADR-0038 step N3).
+/// Inputs: the compiled model, the plan and the line ids in input order.
+/// Output: one row per section and line with trains, sorted by section then line.
+/// A trip passes a sub-track at the time interpolated linearly between its departure and its
+/// arrival by the position of the sub-track's middle along its path; dwells at intermediate stops
+/// are spread over the trip, which moves a time by at most the trip's dwells. A section counts a
+/// trip once even when the trip runs over several of its sub-tracks.
+fn section_trains(m: &Model, p: &crate::Plan, ids: &[&str]) -> Vec<SectionTrains> {
+    let mut out: BTreeMap<(String, usize), [u32; 24]> = BTreeMap::new();
+    for r in p.runs.iter().filter(|r| r.kind == RunKind::Service) {
+        let Ok(steps) = crate::route_steps(m, &r.run.routes) else {
+            continue;
+        };
+        let total: f64 = steps
+            .iter()
+            .map(|s| m.pieces[s.piece as usize].length_m())
+            .sum();
+        let (x0, x1) = (r.run.start_m, r.run.end_m.unwrap_or(total));
+        let (t0, t1) = (r.depart_s(), r.arrive_s());
+        let mut seen: Vec<&str> = Vec::new();
+        let mut pos = 0.0;
+        for st in &steps {
+            let piece = &m.pieces[st.piece as usize];
+            let mid = pos + piece.length_m() / 2.0;
+            pos += piece.length_m();
+            if mid < x0 || mid > x1 {
+                continue;
+            }
+            let id = m.tracks[piece.track].id.as_str();
+            // Sub-tracks of a section are `section/k` (rail_model::topology).
+            let section = id.split_once('/').map_or(id, |(a, _)| a);
+            if seen.contains(&section) {
+                continue;
+            }
+            seen.push(section);
+            let t = if x1 > x0 {
+                t0 + (t1 - t0) * (mid - x0) / (x1 - x0)
+            } else {
+                t0
+            };
+            let hour = ((t / 3600.0).floor() as i64).rem_euclid(24) as usize;
+            out.entry((section.to_string(), r.line)).or_insert([0; 24])[hour] += 1;
+        }
+    }
+    out.into_iter()
+        .map(|((section, line), hours)| SectionTrains {
+            section,
+            line: ids.get(line).map_or_else(String::new, |s| s.to_string()),
+            hours,
+        })
+        .collect()
 }
 
 /// Purpose: the stopping stations of a run with their distance from its origin along the path.

@@ -3,6 +3,7 @@ import { editorsNl } from "./editors/nl";
 import { cargoBikeNl } from "./cargo-bike/nl";
 import { commentsNl } from "./comments/nl";
 import { depotsNl } from "./depots/nl";
+import { mslabNl } from "./mslab/nl";
 import { populationNl } from "./population/nl";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -282,6 +283,7 @@ export const nl: Messages = {
   "prefs.delayLane": "Op een geschilderde bus- of trambaan",
   "prefs.delayDefault": "Aannamebibliotheek: {value} %",
   "prefs.delayReset": "Waarde van de bibliotheek gebruiken",
+  "prefs.reason": "Reden voor deze waarde (optioneel)",
   "prefs.stationsTitle": "Stations",
   "prefs.stationsIntro":
     "Haltes met dezelfde naam binnen deze afstand tellen als één station in de netkaart, de reisplanner en de baten- en reizigerstabellen.",
@@ -423,6 +425,7 @@ export const nl: Messages = {
   ...cargoBikeNl,
   ...depotsNl,
   ...commentsNl,
+  ...mslabNl,
   ...populationNl,
   ...roadNl,
   ...PLUGIN_MESSAGES.nl,

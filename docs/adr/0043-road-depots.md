@@ -1,6 +1,6 @@
 # ADR-0043: Road depots shared by the street lines, laid out and checked in Rust
 
-- Status: Proposed (first version built)
+- Status: Accepted (product owner, 2026-11-16); before that Proposed: first version built
 - Date: 2026-11-16
 - Deciders: product owner, architecture
 - Related: 07-simulation §3 and §7, ADR-0008 (vehicle geometry), ADR-0029 (street line tool), FR-NET-09, FR-SIM-09

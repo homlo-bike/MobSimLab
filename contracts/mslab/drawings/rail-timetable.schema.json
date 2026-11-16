@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/homlo-bike/MobSimLab/blob/main/contracts/mslab/drawings/rail-timetable.schema.json",
+  "title": "Document of a \"rail-timetable\" drawing (data/rail-timetable.json, field doc)",
+  "type": "object",
+  "properties": {
+    "stops": {
+      "maxItems": 50000,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "stop_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "stop_id"
+        ],
+        "additionalProperties": {}
+      }
+    },
+    "routes": {
+      "maxItems": 2000,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "route_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "route_id"
+        ],
+        "additionalProperties": {}
+      }
+    },
+    "trips": {
+      "maxItems": 100000,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "trip_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "trip_id"
+        ],
+        "additionalProperties": {}
+      }
+    }
+  },
+  "required": [
+    "stops",
+    "routes",
+    "trips"
+  ],
+  "additionalProperties": {}
+}

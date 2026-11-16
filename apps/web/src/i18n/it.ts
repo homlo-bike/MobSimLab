@@ -3,6 +3,7 @@ import { editorsIt } from "./editors/it";
 import { cargoBikeIt } from "./cargo-bike/it";
 import { commentsIt } from "./comments/it";
 import { depotsIt } from "./depots/it";
+import { mslabIt } from "./mslab/it";
 import { populationIt } from "./population/it";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -281,6 +282,7 @@ export const it: Messages = {
   "prefs.delayLane": "Su una corsia bus o tram solo dipinta",
   "prefs.delayDefault": "Libreria delle ipotesi: {value} %",
   "prefs.delayReset": "Usa il valore della libreria",
+  "prefs.reason": "Motivo di questo valore (facoltativo)",
   "prefs.stationsTitle": "Stazioni",
   "prefs.stationsIntro":
     "Le fermate con lo stesso nome entro questa distanza contano come una sola stazione nella mappa schematica, nel pianificatore di viaggio e nelle tabelle dei benefici e dei passeggeri.",
@@ -420,6 +422,7 @@ export const it: Messages = {
   ...cargoBikeIt,
   ...depotsIt,
   ...commentsIt,
+  ...mslabIt,
   ...populationIt,
   ...roadIt,
   ...PLUGIN_MESSAGES.it,

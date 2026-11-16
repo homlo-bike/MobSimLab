@@ -89,6 +89,11 @@ pub struct LineInput {
     pub vehicle_length_m: f64,
     /// Vehicles per hour on this line.
     pub flows: Flows,
+    /// Vehicles in each clock hour 0–23 (timetabled and simulated input, step N3). When given,
+    /// the period flows are the averages over the hours of each period (`noise.day_start_h`,
+    /// `noise.evening_start_h`, `noise.night_start_h`) and `flows` is ignored.
+    #[serde(default)]
+    pub hourly: Option<Vec<f64>>,
     /// Centre line, local metres.
     pub points: Vec<[f64; 2]>,
     /// Speed profile `[chainage m, km/h]`, piecewise linear; empty uses `speed_kmh`.
@@ -124,6 +129,19 @@ pub struct PointSourceInput {
     pub active: Flows,
 }
 
+/// Level of detail of the inputs (ADR-0038 §4), stored with the result and shown on the legend.
+#[derive(Debug, Clone, Copy, Default, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "snake_case")]
+pub enum InputLevel {
+    /// Headways and planned speeds from the editors.
+    #[default]
+    Planned,
+    /// Trips from the published timetables.
+    Timetabled,
+    /// Vehicles and speeds from a simulation run.
+    Simulated,
+}
+
 /// What the estimate is for.
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct EstimateInput {
@@ -153,6 +171,15 @@ pub struct EstimateInput {
     /// the exposure counts. `None` estimates the people from the building size.
     #[serde(default)]
     pub population: Option<PopulationInput>,
+    /// Level of detail of the flows and speeds, passed through to the result.
+    #[serde(default)]
+    pub input_level: InputLevel,
+    /// Points, local metres, that set the map grid instead of the sources: its extent, the cells
+    /// computed (within the reach of a point) and the cell size. Two estimates with the same cover
+    /// and preferences share one grid cell for cell, as a difference map needs. Points should be
+    /// no more than 10 m apart along the lines they stand for. Empty follows the sources.
+    #[serde(default)]
+    pub grid_cover: Vec<[f64; 2]>,
 }
 
 fn yes() -> bool {
@@ -232,7 +259,7 @@ pub struct Estimate {
     /// grid does not reach it or the building was dropped), by input index.
     pub building_levels: Vec<[f32; 2]>,
     /// Level of detail of the inputs (ADR-0038 §4).
-    pub input_level: &'static str,
+    pub input_level: InputLevel,
     /// Whether terrain heights shaped the map (a flat or empty grid does not).
     pub terrain: bool,
     /// People living in each input building (`None` without buildings).
@@ -241,14 +268,14 @@ pub struct Estimate {
 
 /// Period lengths and penalties.
 #[derive(Debug, Clone, Copy)]
-struct Periods {
+pub(crate) struct Periods {
     hours: [f64; 3],
     w_evening: f64,
     w_night: f64,
 }
 
 impl Periods {
-    fn new(lib: &Library) -> Self {
+    pub(crate) fn new(lib: &Library) -> Self {
         let d0 = lib.central("noise.day_start_h");
         let e0 = lib.central("noise.evening_start_h");
         let n0 = lib.central("noise.night_start_h");
@@ -258,6 +285,39 @@ impl Periods {
             hours: [day, evening, (24.0 - day - evening).max(0.0)],
             w_evening: pow10(lib.central("noise.evening_penalty_db")),
             w_night: pow10(lib.central("noise.night_penalty_db")),
+        }
+    }
+
+    /// Purpose: the mean vehicles per hour in the day, evening and night from vehicles in each
+    /// clock hour 0–23 (missing hours count as none), weighting each hour by how much of it
+    /// lies in the period.
+    pub(crate) fn hourly_flows(&self, start: [f64; 3], hourly: &[f64]) -> Flows {
+        let mut sum = [0.0; 3];
+        for h in 0..24 {
+            let q = hourly.get(h).copied().unwrap_or(0.0);
+            if !q.is_finite() || q <= 0.0 {
+                continue;
+            }
+            for (k, total) in sum.iter_mut().enumerate() {
+                let (a, b) = (start[k], start[k] + self.hours[k]);
+                // The period may run past midnight: try the hour on this day and the next.
+                for shift in [0.0, 24.0] {
+                    let (x, y) = (h as f64 + shift, h as f64 + shift + 1.0);
+                    *total += q * (y.min(b) - x.max(a)).max(0.0);
+                }
+            }
+        }
+        let mean = |k: usize| {
+            if self.hours[k] > 0.0 {
+                sum[k] / self.hours[k]
+            } else {
+                0.0
+            }
+        };
+        Flows {
+            day: mean(0),
+            evening: mean(1),
+            night: mean(2),
         }
     }
 
@@ -642,6 +702,25 @@ pub fn estimate(input: &EstimateInput) -> Estimate {
     }
     let lib = &lib;
     let periods = Periods::new(lib);
+    if input.lines.iter().any(|l| l.hourly.is_some()) {
+        let start = [
+            lib.central("noise.day_start_h"),
+            lib.central("noise.evening_start_h"),
+            lib.central("noise.night_start_h"),
+        ];
+        let mut input = input.clone();
+        for l in &mut input.lines {
+            if let Some(h) = l.hourly.take() {
+                l.flows = periods.hourly_flows(start, &h);
+            }
+        }
+        return estimate_with(&input, lib, periods);
+    }
+    estimate_with(input, lib, periods)
+}
+
+/// Purpose: [`estimate`] with the preferences applied and every flow given per period.
+fn estimate_with(input: &EstimateInput, lib: &Library, periods: Periods) -> Estimate {
     let prop = Propagation {
         alpha: absorption(
             lib.central("noise.air_temperature_c"),
@@ -1193,23 +1272,35 @@ pub fn estimate(input: &EstimateInput) -> Estimate {
     };
 
     // Map grid round the lines.
-    let grid = if input.grid && !elements.is_empty() {
+    let grid = if input.grid && (!elements.is_empty() || !input.grid_cover.is_empty()) {
         let reach = input
             .grid_reach_m
             .filter(|r| r.is_finite() && *r > 0.0)
             .unwrap_or(lden.max_m.max(lnight.max_m) * 1.3 + 25.0)
             .clamp(30.0, max_d);
+        // The grid follows the source elements, or the cover points when given (a difference
+        // map gives both estimates the same cover).
+        let cover: Vec<[f64; 2]> = if input.grid_cover.is_empty() {
+            elements.iter().map(|e| e.p).collect()
+        } else {
+            input
+                .grid_cover
+                .iter()
+                .copied()
+                .filter(|p| p[0].is_finite() && p[1].is_finite())
+                .collect()
+        };
         let (mut x0, mut y0, mut x1, mut y1) = (f64::MAX, f64::MAX, f64::MIN, f64::MIN);
-        for e in &elements {
-            x0 = x0.min(e.p[0]);
-            y0 = y0.min(e.p[1]);
-            x1 = x1.max(e.p[0]);
-            y1 = y1.max(e.p[1]);
+        for p in &cover {
+            x0 = x0.min(p[0]);
+            y0 = y0.min(p[1]);
+            x1 = x1.max(p[0]);
+            y1 = y1.max(p[1]);
         }
         let (x0, y0, x1, y1) = (x0 - reach, y0 - reach, x1 + reach, y1 + reach);
         // Cells within reach of the sources: estimate the area as the corridor length × width.
         let corridor_area =
-            elements.len() as f64 * ELEMENT_M * 2.0 * reach + std::f64::consts::PI * reach * reach;
+            cover.len() as f64 * ELEMENT_M * 2.0 * reach + std::f64::consts::PI * reach * reach;
         let area = corridor_area.min((x1 - x0) * (y1 - y0));
         let cell = lib
             .get("noise.grid_spacing_m", None, Variant::Low)
@@ -1219,13 +1310,13 @@ pub fn estimate(input: &EstimateInput) -> Estimate {
         let ny = ((y1 - y0) / cell).ceil() as usize;
         let mut mask = vec![false; nx * ny];
         let r_cells = (reach / cell).ceil() as i64;
-        for e in &elements {
-            let ci = ((e.p[0] - x0) / cell) as i64;
-            let cj = ((e.p[1] - y0) / cell) as i64;
+        for p in &cover {
+            let ci = ((p[0] - x0) / cell) as i64;
+            let cj = ((p[1] - y0) / cell) as i64;
             for j in (cj - r_cells).max(0)..=(cj + r_cells).min(ny as i64 - 1) {
                 for i in (ci - r_cells).max(0)..=(ci + r_cells).min(nx as i64 - 1) {
                     let c = [x0 + (i as f64 + 0.5) * cell, y0 + (j as f64 + 0.5) * cell];
-                    if dist(c, e.p) <= reach {
+                    if dist(c, *p) <= reach {
                         mask[j as usize * nx + i as usize] = true;
                     }
                 }
@@ -1333,7 +1424,7 @@ pub fn estimate(input: &EstimateInput) -> Estimate {
         checks,
         grid,
         building_levels,
-        input_level: "planned",
+        input_level: input.input_level,
         terrain: obstacles.has_ground(),
         residents: (!input.buildings.is_empty()).then(|| {
             residents(

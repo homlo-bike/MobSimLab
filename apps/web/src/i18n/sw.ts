@@ -3,6 +3,7 @@ import { editorsSw } from "./editors/sw";
 import { cargoBikeSw } from "./cargo-bike/sw";
 import { commentsSw } from "./comments/sw";
 import { depotsSw } from "./depots/sw";
+import { mslabSw } from "./mslab/sw";
 import { populationSw } from "./population/sw";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -280,6 +281,7 @@ export const sw: Messages = {
   "prefs.delayLane": "Katika njia ya basi au tramu iliyochorwa kwa rangi",
   "prefs.delayDefault": "Maktaba ya dhana: {value} %",
   "prefs.delayReset": "Tumia thamani ya maktaba",
+  "prefs.reason": "Sababu ya thamani hii (si lazima)",
   "prefs.stationsTitle": "Stesheni",
   "prefs.stationsIntro":
     "Vituo vyenye jina moja ndani ya umbali huu vinahesabiwa kama stesheni moja kwenye ramani ya mchoro, kipanga safari na majedwali ya manufaa na abiria.",
@@ -421,6 +423,7 @@ export const sw: Messages = {
   ...cargoBikeSw,
   ...depotsSw,
   ...commentsSw,
+  ...mslabSw,
   ...populationSw,
   ...roadSw,
   ...PLUGIN_MESSAGES.sw,

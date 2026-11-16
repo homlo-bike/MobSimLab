@@ -3,6 +3,7 @@ import { editorsBn } from "./editors/bn";
 import { cargoBikeBn } from "./cargo-bike/bn";
 import { commentsBn } from "./comments/bn";
 import { depotsBn } from "./depots/bn";
+import { mslabBn } from "./mslab/bn";
 import { populationBn } from "./population/bn";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -279,6 +280,7 @@ export const bn: Messages = {
   "prefs.delayLane": "রং দিয়ে আঁকা বাস বা ট্রাম লেনে",
   "prefs.delayDefault": "অনুমান লাইব্রেরি: {value} %",
   "prefs.delayReset": "লাইব্রেরির মান ব্যবহার করুন",
+  "prefs.reason": "এই মানের কারণ (ঐচ্ছিক)",
   "prefs.stationsTitle": "স্টেশন",
   "prefs.stationsIntro":
     "এই দূরত্বের মধ্যে একই নামের স্টপগুলো স্কিম্যাটিক মানচিত্র, যাত্রা পরিকল্পক এবং সুবিধা ও যাত্রী সারণিতে একটি স্টেশন হিসেবে গণ্য হয়।",
@@ -415,6 +417,7 @@ export const bn: Messages = {
   ...cargoBikeBn,
   ...depotsBn,
   ...commentsBn,
+  ...mslabBn,
   ...populationBn,
   ...roadBn,
   ...PLUGIN_MESSAGES.bn,

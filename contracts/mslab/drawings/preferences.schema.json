@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/homlo-bike/MobSimLab/blob/main/contracts/mslab/drawings/preferences.schema.json",
+  "title": "Document of a \"preferences\" drawing (data/preferences.json, field doc)",
+  "type": "object",
+  "properties": {
+    "values": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "maxLength": 120,
+        "pattern": "^[a-z][a-z0-9_]*(\\.[a-z0-9_]+)+$"
+      },
+      "additionalProperties": {
+        "type": "number"
+      }
+    }
+  },
+  "required": [
+    "values"
+  ],
+  "additionalProperties": {}
+}

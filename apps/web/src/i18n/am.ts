@@ -3,6 +3,7 @@ import { editorsAm } from "./editors/am";
 import { cargoBikeAm } from "./cargo-bike/am";
 import { commentsAm } from "./comments/am";
 import { depotsAm } from "./depots/am";
+import { mslabAm } from "./mslab/am";
 import { populationAm } from "./population/am";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -272,6 +273,7 @@ export const am: Messages = {
   "prefs.delayLane": "በቀለም በተሳለ የአውቶቡስ ወይም የትራም መስመር ውስጥ",
   "prefs.delayDefault": "የግምቶች ቤተ መጻሕፍት፦ {value} %",
   "prefs.delayReset": "የቤተ መጻሕፍቱን እሴት ተጠቀም",
+  "prefs.reason": "የዚህ እሴት ምክንያት (አማራጭ)",
   "prefs.stationsTitle": "ጣቢያዎች",
   "prefs.stationsIntro":
     "በዚህ ርቀት ውስጥ ተመሳሳይ ስም ያላቸው ማቆሚያዎች በስኬማቲክ ካርታው፣ በጉዞ እቅድ አውጪው እና በጥቅሞችና በተሳፋሪ ሰንጠረዦች ውስጥ እንደ አንድ ጣቢያ ይቆጠራሉ።",
@@ -406,6 +408,7 @@ export const am: Messages = {
   ...cargoBikeAm,
   ...depotsAm,
   ...commentsAm,
+  ...mslabAm,
   ...populationAm,
   ...roadAm,
   ...PLUGIN_MESSAGES.am,

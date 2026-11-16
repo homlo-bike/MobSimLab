@@ -3,6 +3,7 @@ import { editorsEs } from "./editors/es";
 import { cargoBikeEs } from "./cargo-bike/es";
 import { commentsEs } from "./comments/es";
 import { depotsEs } from "./depots/es";
+import { mslabEs } from "./mslab/es";
 import { populationEs } from "./population/es";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -282,6 +283,7 @@ export const es: Messages = {
   "prefs.delayLane": "En un carril bus o tranvía pintado",
   "prefs.delayDefault": "Biblioteca de supuestos: {value} %",
   "prefs.delayReset": "Usar el valor de la biblioteca",
+  "prefs.reason": "Motivo de este valor (opcional)",
   "prefs.stationsTitle": "Estaciones",
   "prefs.stationsIntro":
     "Las paradas con el mismo nombre dentro de esta distancia cuentan como una sola estación en el mapa esquemático, el planificador de viajes y las tablas de beneficios y de viajeros.",
@@ -424,6 +426,7 @@ export const es: Messages = {
   ...cargoBikeEs,
   ...depotsEs,
   ...commentsEs,
+  ...mslabEs,
   ...populationEs,
   ...roadEs,
   ...PLUGIN_MESSAGES.es,

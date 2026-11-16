@@ -3,6 +3,7 @@ import { editorsKk } from "./editors/kk";
 import { cargoBikeKk } from "./cargo-bike/kk";
 import { commentsKk } from "./comments/kk";
 import { depotsKk } from "./depots/kk";
+import { mslabKk } from "./mslab/kk";
 import { populationKk } from "./population/kk";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -279,6 +280,7 @@ export const kk: Messages = {
   "prefs.delayLane": "Боялған автобус немесе трамвай жолағында",
   "prefs.delayDefault": "Болжамдар кітапханасы: {value} %",
   "prefs.delayReset": "Кітапхана мәнін пайдалану",
+  "prefs.reason": "Осы мәннің себебі (міндетті емес)",
   "prefs.stationsTitle": "Станциялар",
   "prefs.stationsIntro":
     "Осы қашықтықтағы аттас аялдамалар сызбалық картада, сапар жоспарлағышта және пайда мен жолаушылар кестелерінде бір станция болып саналады.",
@@ -420,6 +422,7 @@ export const kk: Messages = {
   ...cargoBikeKk,
   ...depotsKk,
   ...commentsKk,
+  ...mslabKk,
   ...populationKk,
   ...roadKk,
   ...PLUGIN_MESSAGES.kk,
