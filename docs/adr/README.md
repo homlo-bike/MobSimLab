@@ -1,6 +1,6 @@
 # Architecture Decision Records
 
-All ADRs below were accepted on 2026-10-27. New ADRs start as Proposed. Template: [0000-template.md](0000-template.md).
+ADRs 0001 to 0030 were accepted on 2026-10-27; each later ADR gives its own date in its Status line. New ADRs start as Proposed. Template: [0000-template.md](0000-template.md).
 
 | ADR | Title | Status |
 |-----|-------|--------|
@@ -34,17 +34,17 @@ All ADRs below were accepted on 2026-10-27. New ADRs start as Proposed. Template
 | [0028](0028-persistence-semantics.md) | Persistence rule applies to modelled assets; background traffic and passengers are declared demand | Accepted |
 | [0029](0029-street-service-line-authoring.md) | Street-based service lines are drawn as an ordered point circuit, routed on the road graph | Accepted |
 | [0030](0030-railway-design-tool.md) | Railway design is station-first, drawn to scale from engineering elements | Accepted |
-| [0031](0031-street-routing-in-browser.md) | One street routing crate, compiled for the worker and, as WebAssembly, for the map editor | Proposed |
+| [0031](0031-street-routing-in-browser.md) | One street routing crate, compiled for the worker and, as WebAssembly, for the map editor | Accepted |
 | [0032](0032-railway-operations-management.md) | Railway operations management: rail lines from stations, conflict-free timetables on blocking times, traffic management that reschedules | Accepted |
-| [0033](0033-railway-editor-implementation.md) | Railway editor: one Rust geometry crate, run in the browser as WebAssembly | Proposed |
-| [0034](0034-journey-planner.md) | Journey time benchmark: RAPTOR over a GTFS-shaped published timetable, in Rust and WebAssembly | Proposed |
+| [0033](0033-railway-editor-implementation.md) | Railway editor: one Rust geometry crate, run in the browser as WebAssembly | Accepted |
+| [0034](0034-journey-planner.md) | Journey time benchmark: RAPTOR over a GTFS-shaped published timetable, in Rust and WebAssembly | Accepted |
 | [0035](0035-ai-agent-integration-mcp.md) | AI agents connect from outside through an MCP server; MobSimLab supplies deterministic scenario, benchmark and walk-coverage tools | Accepted |
 | [0036](0036-plugins.md) | Plugins add modes, infrastructure, calculations and schematics as signed packages of data and sandboxed WebAssembly, installed by Admins and enabled per project | Accepted |
-| [0037](0037-cable-car-and-ferry-lines.md) | Cable car and ferry service lines: two new mode families drawn station-first, frequency-based gondolas and timetabled ferries with berths | Proposed |
-| [0038](0038-service-line-noise-map.md) | Estimated noise map of service lines with CNOSSOS-EU: live corridor in the editors, full map as an analysis layer, exposure into the appraisal | Proposed (N1 built as the noise plugin; N2 GIS map with OSM buildings started) |
-| [0039](0039-cost-estimate.md) | Construction and operating cost tables from sourced unit costs (low, medium, high), construction types set in the railway editor and World Bank price levels | Proposed (first version built) |
-| [0040](0040-benefit-estimate.md) | Economic and social benefit tables: travel times with and without each line, WorldPop, OpenStreetMap and World Bank data, editable formulas, GIS regions that take priority | Proposed (first version built) |
-| [0041](0041-schematic-layout-in-browser.md) | Schematic diagrams laid out in the browser first, LOOM kept for the large-network layout | Proposed (first version built) |
-| [0042](0042-on-demand-dispatch-simulation.md) | On-demand dispatch simulation: one random day of an on-demand zone, booking by booking, with cheapest insertion under wait and ride limits, in the browser | Proposed (first version built) |
-| [0043](0043-road-depots.md) | Road depots shared by the street lines: drive-through lanes in straight or angled bays laid out in Rust, swept-path check, driving network, capacity and dynamic sizing | Proposed (first version built) |
-| [0044](0044-fare-revenue.md) | Fare revenue from the ridership estimate: flat, zonal (Schematic tariff zones) or distance-based fares, passes, discount groups, fare elasticity, yearly changes, evasion and collection cost, with a Monte Carlo range | Proposed (first version built) |
+| [0037](0037-cable-car-and-ferry-lines.md) | Cable car and ferry service lines: two new mode families drawn station-first, frequency-based gondolas and timetabled ferries with berths | Accepted |
+| [0038](0038-service-line-noise-map.md) | Estimated noise map of service lines with CNOSSOS-EU: live corridor in the editors, full map as an analysis layer, exposure into the appraisal | Accepted |
+| [0039](0039-cost-estimate.md) | Construction and operating cost tables from sourced unit costs (low, medium, high), construction types set in the railway editor and World Bank price levels | Accepted |
+| [0040](0040-benefit-estimate.md) | Economic and social benefit tables: travel times with and without each line, WorldPop, OpenStreetMap and World Bank data, editable formulas, GIS regions that take priority | Accepted |
+| [0041](0041-schematic-layout-in-browser.md) | Schematic diagrams laid out in the browser first, LOOM kept for the large-network layout | Accepted |
+| [0042](0042-on-demand-dispatch-simulation.md) | On-demand dispatch simulation: one random day of an on-demand zone, booking by booking, with cheapest insertion under wait and ride limits, in the browser | Accepted |
+| [0043](0043-road-depots.md) | Road depots shared by the street lines: drive-through lanes in straight or angled bays laid out in Rust, swept-path check, driving network, capacity and dynamic sizing | Accepted |
+| [0044](0044-fare-revenue.md) | Fare revenue from the ridership estimate: flat, zonal (Schematic tariff zones) or distance-based fares, passes, discount groups, fare elasticity, yearly changes, evasion and collection cost, with a Monte Carlo range | Accepted |

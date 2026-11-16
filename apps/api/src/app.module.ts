@@ -24,12 +24,15 @@ import { TerrainModule } from "./terrain/terrain.module";
 import { AccessGuard } from "./iam/access.guard";
 import { RateLimitService } from "./iam/rate-limit.service";
 import { PluginsController } from "./plugins/plugins.controller";
-import { PluginsService } from "./plugins/plugins.service";
+import { PluginsModule } from "./plugins/plugins.module";
 import { ProjectsController } from "./projects/projects.controller";
 import { ProjectsService } from "./projects/projects.service";
 import { SetupController } from "./setup/setup.controller";
 import { RunsController } from "./simulation/runs.controller";
+import { MslabController } from "./mslab/mslab.controller";
+import { MslabService } from "./mslab/mslab.service";
 import { SimulationModule } from "./simulation/simulation.module";
+import { ToolRunner } from "./tool-runner/runner";
 
 /** Root module. Every route passes the global AccessGuard. */
 @Module({})
@@ -53,6 +56,7 @@ export class AppModule {
         BenefitsModule,
         PlacesModule,
         SimulationModule,
+        PluginsModule,
         AgentsModule,
       ],
       controllers: [
@@ -63,17 +67,19 @@ export class AppModule {
         ProjectsController,
         PluginsController,
         RunsController,
+        MslabController,
         PopulationLayersController,
       ],
       providers: [
         AuditService,
         AuthService,
         OidcService,
-        PluginsService,
         ProjectsService,
         RateLimitService,
         SessionService,
         UsersService,
+        MslabService,
+        ToolRunner,
         { provide: APP_GUARD, useClass: AccessGuard },
       ],
     };

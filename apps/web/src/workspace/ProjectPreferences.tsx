@@ -1,4 +1,4 @@
-import { type FormEvent, useId, useState } from "react";
+import { type FormEvent, type ReactNode, useId, useState } from "react";
 import { useI18n } from "../i18n/i18n";
 import { DELAY_PREFS, MAX_DELAY_SHARE, type PreferencesDoc, prefValue, withPref } from "./preferences";
 import { can, type Project, type ProjectsApi } from "../projects/api";
@@ -6,20 +6,22 @@ import { ModePicker } from "../projects/ProjectDialogs";
 import { Placeholder } from "./Placeholder";
 import type { ProjectPlugin } from "../plugins/registry";
 import { ProjectPlugins } from "./ProjectPlugins";
+import { ReasonField } from "./ReasonField";
 import { DesignRulesSection } from "./DesignRules";
 import { VehicleChoiceSection } from "./VehicleChoice";
 import { SwitchChoiceSection } from "./SwitchChoice";
 import { CalendarSection } from "./CalendarSection";
 import { ParametersSection } from "./Parameters";
 import { roadValue } from "../features/road-sim/params";
+import { DemandParamsSection } from "./DemandParams";
 import { StationsSection } from "./StationsSection";
 import { CURRENCY_CODES } from "../features/costs/currencies";
 import { type CurrencyState, NO_CURRENCY, RATE_PREF, withCurrency } from "../features/costs/currency";
 
 /**
  * Preferences tab (mockup "Project preferences"): the project's name, description, study area and modes, which
- * Owners and Editors can change, the design rules per rail mode and the catalogue vehicles and switches used.
- * Calendar, demand and costs follow.
+ * Owners and Editors can change, the design rules per rail mode, the catalogue vehicles and switches used and the
+ * demand model's values. Calendar and costs follow.
  */
 export function ProjectPreferences({
   api,
@@ -160,6 +162,11 @@ export function ProjectPreferences({
           editable={editable && !!onPreferences}
           onPreferences={(d) => onPreferences?.(d)}
         />
+        <DemandParamsSection
+          preferences={preferences}
+          editable={editable && !!onPreferences}
+          onPreferences={(d) => onPreferences?.(d)}
+        />
         <section
           aria-labelledby="pp-delay"
           className="mt-6 rounded-2xl border border-slate-200 bg-white p-4 md:p-6"
@@ -177,6 +184,14 @@ export function ProjectPreferences({
                 value={prefValue(preferences, p.id)}
                 editable={editable && !!onPreferences}
                 onChange={(v) => onPreferences?.(withPref(preferences, p.id, v))}
+                reason={
+                  <ReasonField
+                    valueId={p.id}
+                    preferences={preferences}
+                    editable={editable && !!onPreferences}
+                    onPreferences={(d) => onPreferences?.(d)}
+                  />
+                }
               />
             ))}
           </div>
@@ -198,6 +213,14 @@ export function ProjectPreferences({
               value={prefValue(preferences, OFF_PEAK_PREF)}
               editable={editable && !!onPreferences}
               onChange={(v) => onPreferences?.(withPref(preferences, OFF_PEAK_PREF, v))}
+              reason={
+                <ReasonField
+                  valueId={OFF_PEAK_PREF}
+                  preferences={preferences}
+                  editable={editable && !!onPreferences}
+                  onPreferences={(d) => onPreferences?.(d)}
+                />
+              }
             />
           </div>
           {!editable && <p className="mt-3 text-sm text-slate-500">{t("prefs.readOnly")}</p>}
@@ -250,6 +273,7 @@ function ShareField({
   value,
   editable,
   onChange,
+  reason,
 }: {
   label: string;
   library: number;
@@ -258,6 +282,8 @@ function ShareField({
   value: number | undefined;
   editable: boolean;
   onChange: (share: number | null) => void;
+  /** The optional reason for the project's own value, shown below it. */
+  reason?: ReactNode;
 }) {
   const { t } = useI18n();
   const id = useId();
@@ -311,6 +337,7 @@ function ShareField({
           </button>
         )}
       </div>
+      {reason}
     </div>
   );
 }
@@ -432,6 +459,12 @@ function CurrencySection({
               </button>
             )}
           </div>
+          <ReasonField
+            valueId={RATE_PREF}
+            preferences={preferences}
+            editable={editable}
+            onPreferences={onPreferences}
+          />
         </div>
       )}
       {chosen && <p className="mt-3 text-sm text-slate-500">{t("prefs.currencyHow")}</p>}

@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/homlo-bike/MobSimLab/blob/main/contracts/mslab/project.schema.json",
+  "title": "MobSimLab project details (project.json)",
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "description",
+    "areaName",
+    "modes",
+    "createdAt",
+    "updatedAt"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F-]{36}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "areaName": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 200
+    },
+    "modes": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "enum": [
+          "bus",
+          "brt",
+          "trolleybus",
+          "intercity_bus",
+          "tram",
+          "light_rail",
+          "metro",
+          "commuter_rail",
+          "regional_rail",
+          "intercity_rail",
+          "high_speed_rail"
+        ]
+      }
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "maxLength": 40
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "maxLength": 40
+    }
+  }
+}

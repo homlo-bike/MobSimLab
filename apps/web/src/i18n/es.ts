@@ -3,6 +3,8 @@ import { editorsEs } from "./editors/es";
 import { cargoBikeEs } from "./cargo-bike/es";
 import { depotsEs } from "./depots/es";
 import { timetablesEs } from "./timetables/es";
+import { mslabEs } from "./mslab/es";
+import { pluginCodeEs } from "./plugin-code/es";
 import { populationEs } from "./population/es";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -264,6 +266,7 @@ export const es: Messages = {
   "gis.spacing": "Distancia entre paradas",
   "gis.streetsView": "Calles",
   "gis.regionsView": "Regiones",
+  "gis.zonesView": "Zonas de demanda",
 
   "tables.title": "Tablas",
   "tables.intro": "Todos los cálculos del proyecto, para estimar lo bien que funcionará.",
@@ -282,6 +285,7 @@ export const es: Messages = {
   "prefs.delayLane": "En un carril bus o tranvía pintado",
   "prefs.delayDefault": "Biblioteca de supuestos: {value} %",
   "prefs.delayReset": "Usar el valor de la biblioteca",
+  "prefs.reason": "Motivo de este valor (opcional)",
   "prefs.stationsTitle": "Estaciones",
   "prefs.stationsIntro":
     "Las paradas con el mismo nombre dentro de esta distancia cuentan como una sola estación en el mapa esquemático, el planificador de viajes y las tablas de beneficios y de viajeros.",
@@ -307,6 +311,21 @@ export const es: Messages = {
   "prefs.rulesChanged": "{count} cambiados",
   "prefs.rulesLibrary": "Biblioteca de supuestos: {value} {unit}",
   "prefs.rulesLibraryRange": "Biblioteca de supuestos: {value} {unit} (intervalo {low}–{high})",
+  "prefs.demandTitle": "Modelo de demanda",
+  "prefs.demandIntro":
+    "Cada valor que usa el modelo de demanda, paso a paso: zonas, generación de viajes, periodos, distribución, elección modal y asignación. Cambie un valor para este proyecto o mantenga el de la biblioteca de supuestos.",
+  "prefs.demandStep": "Paso del modelo",
+  "prefs.demandSearch": "Buscar valores",
+  "prefs.demandNone": "Ningún valor coincide.",
+  "prefs.demandStep.zones": "Zonas",
+  "prefs.demandStep.generation": "Generación de viajes",
+  "prefs.demandStep.periods": "Periodos",
+  "prefs.demandStep.distribution": "Distribución de viajes",
+  "prefs.demandStep.mode_choice": "Elección modal",
+  "prefs.demandStep.catchment": "Área de captación",
+  "prefs.demandStep.assignment": "Asignación",
+  "prefs.demandStep.calibration": "Calibración",
+  "prefs.demandAll": "Todos los pasos",
   "prefs.paramsTitle": "Todos los parámetros",
   "prefs.paramsIntro":
     "Cada valor de la biblioteca de supuestos. Define el tuyo para todos los modos o para un modo; el valor de un modo prevalece sobre el de todos los modos. El valor de la biblioteca se muestra al lado.",
@@ -424,6 +443,8 @@ export const es: Messages = {
   ...cargoBikeEs,
   ...depotsEs,
   ...timetablesEs,
+  ...mslabEs,
+  ...pluginCodeEs,
   ...populationEs,
   ...roadEs,
   ...PLUGIN_MESSAGES.es,

@@ -3,6 +3,8 @@ import { editorsZu } from "./editors/zu";
 import { cargoBikeZu } from "./cargo-bike/zu";
 import { depotsZu } from "./depots/zu";
 import { timetablesZu } from "./timetables/zu";
+import { mslabZu } from "./mslab/zu";
+import { pluginCodeZu } from "./plugin-code/zu";
 import { populationZu } from "./population/zu";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -261,6 +263,7 @@ export const zu: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "Imigwaqo",
   "gis.regionsView": "Izifunda",
+  "gis.zonesView": "Izindawo zesidingo",
   "gis.intro": "Engeza noma uhlele ulwazi olusetshenziswa izibalo.",
   "gis.areas": "Dweba indawo noma ungenise eyodwa kusuka ku-OpenStreetMap",
   "gis.streets":
@@ -286,6 +289,7 @@ export const zu: Messages = {
   "prefs.delayLane": "Emzileni webhasi noma wethremu odwetshwe ngopende",
   "prefs.delayDefault": "Umtapo wolwazi wemicabango: {value} %",
   "prefs.delayReset": "Sebenzisa inani lomtapo wolwazi",
+  "prefs.reason": "Isizathu sale nani (akuphoqelekile)",
   "prefs.stationsTitle": "Iziteshi",
   "prefs.stationsIntro":
     "Iziteshi ezinegama elifanayo ngaphakathi kwaleli banga zibalwa njengesiteshi esisodwa kumephu yomdwebo, kumhleli wohambo nasematafuleni ezinzuzo nabagibeli.",
@@ -312,6 +316,21 @@ export const zu: Messages = {
   "prefs.rulesChanged": "okushintshiwe: {count}",
   "prefs.rulesLibrary": "Umtapo wolwazi wemicabango: {value} {unit}",
   "prefs.rulesLibraryRange": "Umtapo wolwazi wemicabango: {value} {unit} (ububanzi {low}–{high})",
+  "prefs.demandTitle": "Imodeli yesidingo",
+  "prefs.demandIntro":
+    "Yonke inani elisetshenziswa yimodeli yesidingo, isinyathelo ngesinyathelo: izindawo, ukwenziwa kohambo, izikhathi, ukwabiwa, ukukhetha uhlobo lokuhamba nokwabiwa emigwaqweni. Shintsha inani kule phrojekthi, noma ugcine elomtapo wemibono.",
+  "prefs.demandStep": "Isinyathelo semodeli",
+  "prefs.demandSearch": "Sesha amanani",
+  "prefs.demandNone": "Alikho inani elifanayo.",
+  "prefs.demandStep.zones": "Izindawo",
+  "prefs.demandStep.generation": "Ukwenziwa kohambo",
+  "prefs.demandStep.periods": "Izikhathi",
+  "prefs.demandStep.distribution": "Ukwabiwa kohambo",
+  "prefs.demandStep.mode_choice": "Ukukhetha uhlobo lokuhamba",
+  "prefs.demandStep.catchment": "Indawo yokufinyelela",
+  "prefs.demandStep.assignment": "Ukwabiwa emigwaqweni",
+  "prefs.demandStep.calibration": "Ukulinganisa",
+  "prefs.demandAll": "Zonke izinyathelo",
   "prefs.paramsTitle": "Wonke amapharamitha",
   "prefs.paramsIntro":
     "Yonke inani lomtapo wemibono. Setha elakho lazo zonke izindlela noma indlela eyodwa; inani lendlela eyodwa liphambili kunelazo zonke. Inani lomtapo lihlala eceleni.",
@@ -427,6 +446,8 @@ export const zu: Messages = {
   ...cargoBikeZu,
   ...depotsZu,
   ...timetablesZu,
+  ...mslabZu,
+  ...pluginCodeZu,
   ...populationZu,
   ...roadZu,
   ...PLUGIN_MESSAGES.zu,
