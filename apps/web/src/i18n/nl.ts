@@ -5,6 +5,8 @@ import { cargoBikeNl } from "./cargo-bike/nl";
 import { commentsNl } from "./comments/nl";
 import { depotsNl } from "./depots/nl";
 import { geodataNl } from "./geodata/nl";
+import { fleetNl } from "./fleet/nl";
+import { timetablesNl } from "./timetables/nl";
 import { mslabNl } from "./mslab/nl";
 import { pluginCodeNl } from "./plugin-code/nl";
 import { populationNl } from "./population/nl";
@@ -355,6 +357,7 @@ export const nl: Messages = {
   "prefs.group.cost": "Kosten",
   "prefs.group.benefits": "Baten",
   "prefs.group.fares": "Tarieven",
+  "prefs.group.appraisal": "Beoordeling",
   "prefs.group.noise": "Geluid",
   "prefs.traction.battery": "batterij",
   "prefs.traction.diesel": "diesel",
@@ -502,6 +505,8 @@ export const nl: Messages = {
   ...cargoBikeNl,
   ...depotsNl,
   ...geodataNl,
+  ...fleetNl,
+  ...timetablesNl,
   ...commentsNl,
   ...mslabNl,
   ...pluginCodeNl,

@@ -23,6 +23,22 @@ export const DEFAULT_SERVICE_DAY: ServiceDay = {
   ],
 };
 
+let projectDay: ServiceDay = DEFAULT_SERVICE_DAY;
+
+/**
+ * Purpose: the open project's weekday service day (Project preferences → Calendar and years): its peak windows,
+ * and its first and last departure for lines without their own. The default service day until the workspace
+ * sets the project's (`setProjectServiceDay`).
+ */
+export function projectServiceDay(): ServiceDay {
+  return projectDay;
+}
+
+/** Purpose: use this weekday service day for the open project; `null` goes back to the default. */
+export function setProjectServiceDay(day: ServiceDay | null): void {
+  projectDay = day ?? DEFAULT_SERVICE_DAY;
+}
+
 /**
  * Purpose: periods for one line: peak headway in the peak windows, off-peak headway in the rest of the
  * service day, nothing outside it. Departures stay on the clock face (offset from midnight).
@@ -96,10 +112,11 @@ export function streetHeadways(line: StreetLineInput): { peakS: number; offPeakS
 export function streetLineTimetable(
   line: StreetLineInput,
   day: ServiceDay = {
-    ...DEFAULT_SERVICE_DAY,
+    ...projectServiceDay(),
     ...(line.firstMin !== undefined && { firstS: line.firstMin * 60 }),
     ...(line.lastMin !== undefined && { lastS: line.lastMin * 60 }),
   },
+  serviceId = "weekday",
 ): Timetable | null {
   const v = line.view;
   const pts = new Map(v.points.map((p) => [p.id, p]));
@@ -138,7 +155,7 @@ export function streetLineTimetable(
         pattern_id: `${id}-${d.direction}`,
         route_id: id,
         direction_id: d.direction,
-        service_id: "weekday",
+        service_id: serviceId,
         stops: seq,
         periods: servicePeriods(day, peak, headway),
       });
@@ -227,7 +244,7 @@ export interface PluginLineInput {
  */
 export function pluginLineTimetable(
   line: PluginLineInput,
-  day: ServiceDay = DEFAULT_SERVICE_DAY,
+  day: ServiceDay = projectServiceDay(),
 ): Timetable | null {
   if (line.stops.length < 2) return null;
   const id = `plugin:${line.id}`;

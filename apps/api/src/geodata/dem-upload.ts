@@ -4,7 +4,7 @@ import { type ByteReader, GeoTiffError, openGeoTiff } from "../population/geotif
 import type { Box } from "./osm-tools";
 
 /**
- * The planner's own elevation grid (06-gis §4, ADR-0045): a GeoTIFF in any coordinate system (read with the
+ * The planner's own elevation grid (06-gis §4, ADR-0046): a GeoTIFF in any coordinate system (read with the
  * population import's GeoTIFF reader and proj4 converter), resampled bilinearly to a longitude and latitude grid
  * over the project area at about the file's own resolution, then stored like the GLO-30 tiles with a higher
  * priority, so it wins wherever it has a height.

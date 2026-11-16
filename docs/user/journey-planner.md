@@ -6,7 +6,7 @@ Benchmark your network: how long does it take to get from A to B, and how does t
 
 1. Click **Journey planner** in the top bar. The panel opens on the right.
 2. Choose the network to route on:
-   - the **street line** you drew in the street line tool (draw it first, then open the planner; it runs at its headway off-peak and twice as often in the peaks, 07:00–09:00 and 16:00–19:00, from 05:00 to 00:30), and/or
+   - the **street line** you drew in the street line tool (draw it first, then open the planner; it runs at its headway off-peak and twice as often in the peaks, which are the project's weekday peaks from **Project preferences → Calendar and years** (by default 07:00–09:00 and 16:00–19:00), from its first to its last departure), and/or
    - the **rail lines** published in the railway tool (see _Rail timetables_ below): they appear under **Network** as _Rail lines from the railway tool_, and the checkbox leaves them out.
 3. Click **A**, then click the map; then the same for **B**. Drag the markers to move them.
 4. Pick **Depart at** or **Arrive by** and a time.

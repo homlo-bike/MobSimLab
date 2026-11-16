@@ -4,17 +4,23 @@ import {
   type CalendarApi,
   calendarApi,
   calendarFrom,
+  clockText,
   DAY_TYPES,
+  DEFAULT_WINDOW,
   dayCounts,
   type DayTypeId,
   holidayRows,
   MAX_YEARS,
+  parseClock,
+  type ServiceWindow,
+  serviceWindowOf,
   simulationYearsFrom,
   withCalendar,
   withDayCount,
   withFetched,
   withHolidayAdded,
   withHolidayRemoved,
+  withServiceWindow,
   withSimulationYears,
   yearList,
 } from "./calendar";
@@ -250,6 +256,28 @@ export function CalendarSection({
       )}
       <p className="mt-2 text-xs text-slate-500">{t("cal.source")}</p>
 
+      <h3 className="mt-5 font-semibold">{t("cal.service")}</h3>
+      <p className="mt-1 text-sm text-slate-600">{t("cal.serviceIntro")}</p>
+      <p className="mt-1 text-xs text-slate-500">
+        {t("cal.serviceDefault", {
+          first: clockText(DEFAULT_WINDOW.firstMin),
+          last: clockText(DEFAULT_WINDOW.lastMin),
+          peaks: DEFAULT_WINDOW.peaks.map(([a, b]) => `${clockText(a)}–${clockText(b)}`).join(", "),
+        })}
+      </p>
+      <div className="mt-2 flex flex-col">
+        {DAY_TYPES.map((dt) => (
+          <ServiceDayFields
+            key={dt}
+            label={t(DAY_TYPE_LABEL[dt])}
+            window={serviceWindowOf(cal, dt)}
+            own={!!cal.days?.[dt]}
+            editable={editable}
+            onChange={(w) => setCal(withServiceWindow(cal, dt, w))}
+          />
+        ))}
+      </div>
+
       <h3 className="mt-5 font-semibold">{t("cal.counts")}</h3>
       <p className="mt-1 text-sm text-slate-600">{t("cal.countsIntro")}</p>
       <div className="mt-2 overflow-x-auto">
@@ -401,6 +429,120 @@ function CodeField({
         />
       </div>
       <p className="mt-1 text-xs text-slate-500">{hint}</p>
+    </div>
+  );
+}
+
+/**
+ * Purpose: one day type's service day: first and last departure, and the morning and evening peak (empty for
+ * none), as HH:MM, with a way back to the default. A change is passed on once the whole day makes sense.
+ */
+function ServiceDayFields({
+  label,
+  window: w,
+  own,
+  editable,
+  onChange,
+}: {
+  label: string;
+  window: ServiceWindow;
+  own: boolean;
+  editable: boolean;
+  onChange: (w: ServiceWindow | null) => void;
+}) {
+  const { t } = useI18n();
+  const id = useId();
+  const saved = {
+    first: clockText(w.firstMin),
+    last: clockText(w.lastMin),
+    p0a: w.peaks[0] ? clockText(w.peaks[0][0]) : "",
+    p0b: w.peaks[0] ? clockText(w.peaks[0][1]) : "",
+    p1a: w.peaks[1] ? clockText(w.peaks[1][0]) : "",
+    p1b: w.peaks[1] ? clockText(w.peaks[1][1]) : "",
+  };
+  type Key = keyof typeof saved;
+  const [text, setText] = useState<typeof saved | null>(null);
+  const shown = text ?? saved;
+  const parse = (v: typeof saved): ServiceWindow | null => {
+    const first = parseClock(v.first);
+    const last = parseClock(v.last);
+    if (first === null || last === null || last <= first) return null;
+    const peaks: [number, number][] = [];
+    for (const [a, b] of [
+      [v.p0a, v.p0b],
+      [v.p1a, v.p1b],
+    ] as const) {
+      if (!a.trim() && !b.trim()) continue;
+      const x = parseClock(a);
+      const y = parseClock(b);
+      if (x === null || y === null || y <= x) return null;
+      peaks.push([x, y]);
+    }
+    return { firstMin: first, lastMin: last, peaks };
+  };
+  const bad = text !== null && parse(text) === null;
+  const set = (k: Key, v: string) => {
+    const next = { ...shown, [k]: v };
+    setText(next);
+    const parsed = parse(next);
+    if (parsed) onChange(parsed);
+  };
+  const field = (k: Key, aria: string) => (
+    <div className={`field w-20 ${own ? "ring-1 ring-amber-400" : ""}`}>
+      <input
+        id={`${id}-${k}`}
+        aria-label={`${label} · ${aria}`}
+        type="text"
+        inputMode="numeric"
+        placeholder="hh:mm"
+        autoComplete="off"
+        disabled={!editable}
+        value={shown[k]}
+        onChange={(e) => set(k, e.target.value)}
+        onBlur={() => setText(null)}
+        className="text-end tabular-nums"
+      />
+    </div>
+  );
+  const peak = (a: Key, b: Key, name: string) => (
+    <div className="flex items-center gap-1.5">
+      <span className="text-sm text-slate-600">{name}</span>
+      {field(a, `${name} ${t("cal.peakFrom")}`)}
+      <span aria-hidden="true">–</span>
+      {field(b, `${name} ${t("cal.peakTo")}`)}
+    </div>
+  );
+  return (
+    <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-slate-100 py-3 first:border-t-0">
+      <span className="w-full font-semibold sm:w-32">{label}</span>
+      <div className="flex items-center gap-1.5">
+        <span className="text-sm text-slate-600">{t("cal.firstDep")}</span>
+        {field("first", t("cal.firstDep"))}
+      </div>
+      <div className="flex items-center gap-1.5">
+        <span className="text-sm text-slate-600">{t("cal.lastDep")}</span>
+        {field("last", t("cal.lastDep"))}
+      </div>
+      {peak("p0a", "p0b", t("cal.morningPeak"))}
+      {peak("p1a", "p1b", t("cal.eveningPeak"))}
+      {editable && own && (
+        <button
+          type="button"
+          className="min-h-10 text-sm text-blue-700 underline"
+          aria-label={`${label}: ${t("cal.reset")}`}
+          onClick={() => {
+            setText(null);
+            onChange(null);
+          }}
+        >
+          {t("cal.reset")}
+        </button>
+      )}
+      {bad && (
+        <p role="alert" className="w-full text-sm text-amber-800">
+          {t("cal.serviceInvalid")}
+        </p>
+      )}
     </div>
   );
 }

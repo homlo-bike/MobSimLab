@@ -29,6 +29,7 @@ import { loadKits, spanSystem, vesselType } from "../src/kits/engine";
 import { SpanLineEditor, removeStation, type SpanDoc, type TerrainLoader } from "../src/kits/SpanLineEditor";
 import { sectionGround, type TerrainProfiles } from "../src/terrain/terrain";
 import { WaterRouteEditor, removePier, type WaterDoc } from "../src/kits/WaterRouteEditor";
+import type { SavedPluginLine } from "../src/kits/saved";
 import {
   centralValues,
   contextLabel,
@@ -328,6 +329,78 @@ describe("editors", () => {
     expect(tt.routes[0]!.mode).toBe("ferry");
     expect(tt.frequency_patterns).toHaveLength(2);
     expect(tt.stops[0]!.stop_id).toBe("plugin:ferry:0");
+  });
+
+  it("editors save the drawing, the line and the noise shape with the project", async () => {
+    const cable: SpanDoc = {
+      name: "Rhine",
+      mode: "cable_car",
+      system: "mgd",
+      stations: [
+        { name: "Old Town", lonlat: east(0), kind: "terminal", boarding: false, elevation_m: 0 },
+        { name: "Fortress", lonlat: east(1800), kind: "terminal", boarding: false, elevation_m: 110 },
+      ],
+      towers: [null],
+      lineSpeed: null,
+      interval: null,
+    };
+    // A drawing kept on this device before is not read when the project has one.
+    localStorage.setItem("k-old", JSON.stringify({ ...cable, name: "Old copy" }));
+    const onSave = vi.fn();
+    const noTerrain: TerrainLoader = () => Promise.reject(new Error("offline"));
+    render(
+      <SpanLineEditor
+        map={null}
+        tool={cableTool}
+        storageKey="k-old"
+        initial={cable}
+        onSave={onSave}
+        loadTerrain={noTerrain}
+      />,
+    );
+    await waitFor(() => expect(onSave).toHaveBeenCalled());
+    const span = onSave.mock.lastCall![0] as SavedPluginLine;
+    expect(span.kit).toBe("straight-spans");
+    expect((span.doc as SpanDoc).name).toBe("Rhine");
+    expect(span.line?.stops).toHaveLength(2);
+    expect(span.noise).toMatchObject({ kit: "straight-spans", mode: "cable_car", system: "mgd" });
+    if (span.noise?.kit !== "straight-spans") throw new Error("span shape");
+    expect(span.noise.stations).toHaveLength(2);
+    expect(span.noise.towers.length).toBeGreaterThan(0);
+    // With the project saving it, the device's copy is left alone.
+    expect(JSON.parse(localStorage.getItem("k-old")!).name).toBe("Old copy");
+    cleanup();
+
+    const water: WaterDoc = {
+      name: "Harbour",
+      mode: "ferry",
+      vessel: "monohull",
+      piers: [
+        { name: "Landing A", lonlat: east(0), berths: 1, gangways: 1 },
+        { name: "Landing B", lonlat: east(2000), berths: 1, gangways: 1 },
+      ],
+      calls: [
+        { pier: 0, via: [] },
+        { pier: 1, via: [] },
+      ],
+      zones: [],
+      headwayMin: 15,
+      layoverS: null,
+      paxPerCall: null,
+      speedKn: null,
+    };
+    const onWater = vi.fn();
+    render(
+      <WaterRouteEditor map={null} tool={ferryTool} storageKey="k-w" initial={water} onSave={onWater} />,
+    );
+    await waitFor(() => expect(onWater).toHaveBeenCalled());
+    const ferry = onWater.mock.lastCall![0] as SavedPluginLine;
+    if (ferry.noise?.kit !== "water-route") throw new Error("water shape");
+    expect(ferry.noise.headway_s).toBe(900);
+    expect(ferry.noise.legs).toHaveLength(1);
+    // Each pier is an end: the dwell there one way and the layover after it.
+    expect(ferry.noise.berths.every((b) => b.docked_s > 0)).toBe(true);
+    expect(localStorage.getItem("k-w")).toBeNull();
   });
 
   it("removing a station or pier keeps the drawing consistent", () => {

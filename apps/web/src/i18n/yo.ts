@@ -5,6 +5,8 @@ import { cargoBikeYo } from "./cargo-bike/yo";
 import { commentsYo } from "./comments/yo";
 import { depotsYo } from "./depots/yo";
 import { geodataYo } from "./geodata/yo";
+import { fleetYo } from "./fleet/yo";
+import { timetablesYo } from "./timetables/yo";
 import { mslabYo } from "./mslab/yo";
 import { pluginCodeYo } from "./plugin-code/yo";
 import { populationYo } from "./population/yo";
@@ -351,6 +353,7 @@ export const yo: Messages = {
   "prefs.group.cost": "Iye owó",
   "prefs.group.benefits": "Àǹfààní",
   "prefs.group.fares": "Owó ọkọ̀",
+  "prefs.group.appraisal": "Ìgbéléwọ̀n",
   "prefs.group.noise": "Ariwo",
   "prefs.traction.battery": "bátìrì",
   "prefs.traction.diesel": "díẹ́sẹ́lì",
@@ -495,6 +498,8 @@ export const yo: Messages = {
   ...cargoBikeYo,
   ...depotsYo,
   ...geodataYo,
+  ...fleetYo,
+  ...timetablesYo,
   ...commentsYo,
   ...mslabYo,
   ...pluginCodeYo,

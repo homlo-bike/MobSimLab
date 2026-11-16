@@ -38,6 +38,18 @@ export const calendarIg = {
   "cal.total": "Ngụkọta",
   "cal.noHolidaysYear": "Ewetabeghị ezumike ọha ọ bụla",
   "cal.resetCount": "Laghachi na {value} agụrụ",
+  "cal.service": "Ụbọchị ọrụ dịka ụdị ụbọchị",
+  "cal.serviceIntro":
+    "Mgbe ọrụ na-amalite na-akwụsị n'ụdị ụbọchị ọ bụla, yana oke oge ụtụtụ na mgbede ya, dịka HH:MM. Oge mgbe etiti abalị gasịrị na-aga n'ihu karịa 24:00, dịka 24:30. Hapụ oke oge ka ọ tọgbọ chakoo ma ọ bụrụ na enweghị.",
+  "cal.serviceDefault": "Ndabara maka ụdị ụbọchị ọ bụla: {first} ruo {last}, oke oge {peaks}.",
+  "cal.firstDep": "Mpụta mbụ",
+  "cal.lastDep": "Mpụta ikpeazụ",
+  "cal.morningPeak": "Oke oge ụtụtụ",
+  "cal.eveningPeak": "Oke oge mgbede",
+  "cal.peakFrom": "site na",
+  "cal.peakTo": "ruo",
+  "cal.serviceInvalid":
+    "Echekwabeghị ya: mpụta ikpeazụ ga-abịa mgbe nke mbụ gasịrị, oke oge ọ bụla ga-akwụsị mgbe ọ malitere.",
   "cal.day.weekday": "Ụbọchị ọrụ",
   "cal.day.saturday": "Satọdee",
   "cal.day.sunday": "Sọnde",

@@ -96,7 +96,7 @@ export function mainSource(sources: HeightSource[]): HeightSource {
 
 /**
  * Terrain heights for alignments: one shared source for the railway, cable car and other tools. With a project,
- * heights come first from the project's imported grids (the planner's own GeoTIFF, then GLO-30; ADR-0045); points
+ * heights come first from the project's imported grids (the planner's own GeoTIFF, then GLO-30; ADR-0046); points
  * outside them are read live from the GLO-30 bucket, and when that cannot be read, from Open-Elevation
  * (unless the fallback is turned off).
  */

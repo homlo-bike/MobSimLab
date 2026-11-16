@@ -20,7 +20,7 @@ import { type Bbox, MAX_WATER_SPAN_DEG } from "./water";
 /**
  * Street tiles for the map editor. Read-only public OSM data, but members only: each uncached tile
  * costs a request to the Overpass service. With `?project=<id>` (a project the caller can read) the tiles,
- * buildings, places and water come from that project's OpenStreetMap import where it covers them (ADR-0045).
+ * buildings, places and water come from that project's OpenStreetMap import where it covers them (ADR-0046).
  */
 @Controller("api/street-network")
 export class StreetNetworkController {

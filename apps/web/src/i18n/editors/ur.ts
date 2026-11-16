@@ -254,7 +254,7 @@ export const editorsUr = {
   "rail.line.peakHeadway": "رش کے اوقات کا وقفہ",
   "rail.line.everyOffpeak": "ہر، دیگر اوقات میں",
   "rail.line.offpeakHeadway": "دیگر اوقات کا وقفہ",
-  "rail.line.peaks": "رش کے اوقات 07:00–09:00 اور 16:00–19:00۔",
+  "rail.line.peaks": "رش کے اوقات {peaks}۔",
   "rail.line.delete": "لائن حذف کریں",
   "rail.line.needsStops": "کم از کم دو اسٹاپ درکار ہیں۔",
   "rail.line.needsTrain": "ٹرین چنیں۔",

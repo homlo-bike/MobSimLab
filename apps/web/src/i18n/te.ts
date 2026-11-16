@@ -5,6 +5,8 @@ import { cargoBikeTe } from "./cargo-bike/te";
 import { commentsTe } from "./comments/te";
 import { depotsTe } from "./depots/te";
 import { geodataTe } from "./geodata/te";
+import { fleetTe } from "./fleet/te";
+import { timetablesTe } from "./timetables/te";
 import { mslabTe } from "./mslab/te";
 import { pluginCodeTe } from "./plugin-code/te";
 import { populationTe } from "./population/te";
@@ -353,6 +355,7 @@ export const te: Messages = {
   "prefs.group.cost": "ఖర్చులు",
   "prefs.group.benefits": "ప్రయోజనాలు",
   "prefs.group.fares": "ఛార్జీలు",
+  "prefs.group.appraisal": "మూల్యాంకనం",
   "prefs.group.noise": "శబ్దం",
   "prefs.traction.battery": "బ్యాటరీ",
   "prefs.traction.diesel": "డీజిల్",
@@ -495,6 +498,8 @@ export const te: Messages = {
   ...cargoBikeTe,
   ...depotsTe,
   ...geodataTe,
+  ...fleetTe,
+  ...timetablesTe,
   ...commentsTe,
   ...mslabTe,
   ...pluginCodeTe,

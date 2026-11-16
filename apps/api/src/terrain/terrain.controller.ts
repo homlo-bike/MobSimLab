@@ -33,7 +33,7 @@ const profileBody = z.object({
  * Terrain heights from the Copernicus GLO-30 DEM (06-gis §4), shared by every tool that needs ground
  * levels: railway gradients, tunnel cover and bridge clearance, cable car clearance. Members only:
  * uncached cells cost requests to the DEM host. With `projectId` (a project the caller can read), heights and
- * buildings come from the project's imports where they cover the points (ADR-0045). `source` is the least
+ * buildings come from the project's imports where they cover the points (ADR-0046). `source` is the least
  * accurate source used; `sources` lists every one.
  */
 @Controller("api/terrain")

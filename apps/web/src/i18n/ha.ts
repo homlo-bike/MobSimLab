@@ -5,6 +5,8 @@ import { cargoBikeHa } from "./cargo-bike/ha";
 import { commentsHa } from "./comments/ha";
 import { depotsHa } from "./depots/ha";
 import { geodataHa } from "./geodata/ha";
+import { fleetHa } from "./fleet/ha";
+import { timetablesHa } from "./timetables/ha";
 import { mslabHa } from "./mslab/ha";
 import { pluginCodeHa } from "./plugin-code/ha";
 import { populationHa } from "./population/ha";
@@ -355,6 +357,7 @@ export const ha: Messages = {
   "prefs.group.cost": "Kuɗaɗe",
   "prefs.group.benefits": "Fa'idodi",
   "prefs.group.fares": "Kuɗin mota",
+  "prefs.group.appraisal": "Kimantawa",
   "prefs.group.noise": "Hayaniya",
   "prefs.traction.battery": "batir",
   "prefs.traction.diesel": "dizal",
@@ -500,6 +503,8 @@ export const ha: Messages = {
   ...cargoBikeHa,
   ...depotsHa,
   ...geodataHa,
+  ...fleetHa,
+  ...timetablesHa,
   ...commentsHa,
   ...mslabHa,
   ...pluginCodeHa,

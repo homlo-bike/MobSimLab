@@ -1,5 +1,5 @@
 /**
- * Which project's imported OpenStreetMap and elevation data the map tools read (ADR-0045). The open project
+ * Which project's imported OpenStreetMap and elevation data the map tools read (ADR-0046). The open project
  * sets it; the street, railway, building, place and water requests then carry `project=<id>`, and the API answers
  * from the project's import where it covers the request (else live from OpenStreetMap). The OSM import's ID is
  * part of the URL too, so the browser's cached tiles are not reused after a new import.

@@ -292,7 +292,7 @@ export const editorsPl = {
   "rail.line.peakHeadway": "Takt w szczycie",
   "rail.line.everyOffpeak": "Co, poza szczytem",
   "rail.line.offpeakHeadway": "Takt poza szczytem",
-  "rail.line.peaks": "Szczyty to 07:00–09:00 i 16:00–19:00.",
+  "rail.line.peaks": "Szczyty to {peaks}.",
   "rail.line.delete": "Usuń połączenie",
   "rail.line.needsStops": "Potrzebne są co najmniej dwa przystanki.",
   "rail.line.needsTrain": "Wybierz pociąg.",

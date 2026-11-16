@@ -41,6 +41,18 @@ export const calendarEn = {
   "cal.total": "Total",
   "cal.noHolidaysYear": "No public holidays fetched yet",
   "cal.resetCount": "back to the counted {value}",
+  "cal.service": "Service day per day type",
+  "cal.serviceIntro":
+    "When service starts and ends on each day type, and its morning and evening peak, as HH:MM. Times after midnight continue past 24:00, such as 24:30. Leave a peak empty for none.",
+  "cal.serviceDefault": "Default for every day type: {first} to {last}, peaks {peaks}.",
+  "cal.firstDep": "First departure",
+  "cal.lastDep": "Last departure",
+  "cal.morningPeak": "Morning peak",
+  "cal.eveningPeak": "Evening peak",
+  "cal.peakFrom": "from",
+  "cal.peakTo": "to",
+  "cal.serviceInvalid":
+    "Not saved yet: the last departure must be after the first, and each peak must end after it starts.",
   "cal.day.weekday": "Weekday",
   "cal.day.saturday": "Saturday",
   "cal.day.sunday": "Sunday",

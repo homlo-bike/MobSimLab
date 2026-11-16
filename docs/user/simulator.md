@@ -43,7 +43,7 @@ For the period, with half an hour of service before it (so the line is full when
 
 ## Street lines
 
-Each street line runs the timetable the journey planner rides: a departure from its first end stop every headway (half the headway in the peak windows 07:00–09:00 and 16:00–19:00), the routed running time of each leg, the line's dwell at every stop and its layover at every end stop. One vehicle runs the whole circuit and takes the next departure once it is back; at an end stop it waits for its scheduled departure, so the layover soaks up delay.
+Each street line runs the timetable the journey planner rides: a departure from its first end stop every headway (half the headway in the project's weekday peaks from Project preferences → Calendar and years, by default 07:00–09:00 and 16:00–19:00), the routed running time of each leg, the line's dwell at every stop and its layover at every end stop. One vehicle runs the whole circuit and takes the next departure once it is back; at an end stop it waits for its scheduled departure, so the layover soaks up delay.
 
 Every trip meets its own traffic. The routed running time already holds the expected delay in main-road traffic (Project preferences: `street.mixed_traffic_delay_share` and `street.bus_lane_delay_share`); each trip gets between 0.4 and 2 times that delay (the assumption's low and high ends, most often the central value). The period runs as many times as the rail test (**Test settings**: runs, seed, late threshold), with half an hour of service before and after it.
 
@@ -60,7 +60,7 @@ Each street line card shows:
 With **Passenger loads** on, each drawn line (rail and street) gets a **Passengers** block: the busiest point in the period, the load there against the places in the vehicles, and how many people are left behind for the next vehicle.
 
 - **Boardings** per station or stop are a weekday's, from the [Tables tab's ridership estimate](benefit-tables.md) (the `ridership_daily` formula over the people, jobs and students near the station, shared among the lines that call there). The Tables tab estimates the stations of the published network, so publish the rail timetable first. Under **Boardings per station or stop** you can type your own weekday number for any station or stop (all lines together); it replaces the estimate and is saved with the project. Leave the field empty to go back to the estimate.
-- **Hours.** Each hour of the peak windows (07:00–09:00, 16:00–19:00) carries `benefit.ridership.peak_hour_share` of the day (10 %); the rest of the day is spread evenly over the other service hours (05:00–00:30).
+- **Hours.** Each hour of the project's weekday peaks (Project preferences → Calendar and years; by default 07:00–09:00 and 16:00–19:00) carries `benefit.ridership.peak_hour_share` of the day (10 %); the rest of the day is spread evenly over the other service hours of the weekday (by default 05:00–00:30).
 - **Where people go.** People who board at a stop ride to the line's other stops in proportion to those stops' boardings. In a peak hour the busier direction carries `benefit.ridership.peak_direction_share` of the riders (60 %); off the peak, and on a loop line, both are the same. Both shares are in the Tables tab's parameters.
 - **Places.** A train has its catalogue places times the units coupled; a bus has `mode.vehicle_capacity` (75, BRT 120, intercity coach 50).
 - **Left behind**: on the busiest link of each hour, the riders above the places of the vehicles that pass in that hour, added over the period.

@@ -5,6 +5,8 @@ import { cargoBikePl } from "./cargo-bike/pl";
 import { commentsPl } from "./comments/pl";
 import { depotsPl } from "./depots/pl";
 import { geodataPl } from "./geodata/pl";
+import { fleetPl } from "./fleet/pl";
+import { timetablesPl } from "./timetables/pl";
 import { mslabPl } from "./mslab/pl";
 import { pluginCodePl } from "./plugin-code/pl";
 import { populationPl } from "./population/pl";
@@ -353,6 +355,7 @@ export const pl: Messages = {
   "prefs.group.cost": "Koszty",
   "prefs.group.benefits": "Korzyści",
   "prefs.group.fares": "Taryfy",
+  "prefs.group.appraisal": "Ocena",
   "prefs.group.noise": "Hałas",
   "prefs.traction.battery": "akumulator",
   "prefs.traction.diesel": "diesel",
@@ -497,6 +500,8 @@ export const pl: Messages = {
   ...cargoBikePl,
   ...depotsPl,
   ...geodataPl,
+  ...fleetPl,
+  ...timetablesPl,
   ...commentsPl,
   ...mslabPl,
   ...pluginCodePl,

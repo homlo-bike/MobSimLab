@@ -12,5 +12,6 @@ import { EconomyService } from "./economy.service";
     { provide: WorldBankClient, useFactory: () => new WorldBankClient() },
     { provide: OverpassClient, useFactory: () => new OverpassClient() },
   ],
+  exports: [EconomyService],
 })
 export class EconomyModule {}

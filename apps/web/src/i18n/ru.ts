@@ -5,6 +5,8 @@ import { cargoBikeRu } from "./cargo-bike/ru";
 import { commentsRu } from "./comments/ru";
 import { depotsRu } from "./depots/ru";
 import { geodataRu } from "./geodata/ru";
+import { fleetRu } from "./fleet/ru";
+import { timetablesRu } from "./timetables/ru";
 import { mslabRu } from "./mslab/ru";
 import { pluginCodeRu } from "./plugin-code/ru";
 import { populationRu } from "./population/ru";
@@ -356,6 +358,7 @@ export const ru: Messages = {
   "prefs.group.cost": "Затраты",
   "prefs.group.benefits": "Выгоды",
   "prefs.group.fares": "Тарифы",
+  "prefs.group.appraisal": "Оценка",
   "prefs.group.noise": "Шум",
   "prefs.traction.battery": "аккумулятор",
   "prefs.traction.diesel": "дизель",
@@ -502,6 +505,8 @@ export const ru: Messages = {
   ...cargoBikeRu,
   ...depotsRu,
   ...geodataRu,
+  ...fleetRu,
+  ...timetablesRu,
   ...commentsRu,
   ...mslabRu,
   ...pluginCodeRu,

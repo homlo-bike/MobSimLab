@@ -9,7 +9,7 @@ import { GeodataService } from "./geodata.service";
 import { ProjectGate } from "./project-gate";
 
 /**
- * OpenStreetMap and elevation imported per project area (06-gis §2 and §4, ADR-0045), and the readers the
+ * OpenStreetMap and elevation imported per project area (06-gis §2 and §4, ADR-0046), and the readers the
  * street-network and terrain services use when a project has an import. Global, so those modules take the
  * readers as optional dependencies: assembled without this module (as some tests do), they serve live data only.
  */
