@@ -42,10 +42,10 @@ export const MSLAB_ZIP_LIMITS = {
 } as const;
 
 /**
- * Run kinds and finished statuses a file may hold (db/migrations/0009_road_runs.sql, 0012_demand_runs.sql). A
- * demand run's files (its OD matrices, `simulation.run_file`) are not carried: its result lists none.
+ * Run kinds and finished statuses a file may hold (db/migrations/0009_road_runs.sql, 0012_demand_runs.sql,
+ * 0015_calendar_runs.sql). A demand run's files (its OD matrices, `simulation.run_file`) are not carried: its result lists none.
  */
-export const RUN_KINDS = ["capacity", "sweep", "road", "demand"] as const;
+export const RUN_KINDS = ["capacity", "sweep", "road", "demand", "calendar"] as const;
 export const FINISHED_RUN_STATUSES = ["done", "failed", "cancelled"] as const;
 
 /** Modes a project can plan for (apps/api/src/projects/projects.controller.ts PROJECT_MODES). */

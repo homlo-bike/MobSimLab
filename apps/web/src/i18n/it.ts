@@ -1,4 +1,5 @@
 import { roadIt } from "./road/it";
+import { calendarIt } from "./calendar/it";
 import { editorsIt } from "./editors/it";
 import { cargoBikeIt } from "./cargo-bike/it";
 import { depotsIt } from "./depots/it";
@@ -452,5 +453,6 @@ export const it: Messages = {
   ...pluginCodeIt,
   ...populationIt,
   ...roadIt,
+  ...calendarIt,
   ...PLUGIN_MESSAGES.it,
 };

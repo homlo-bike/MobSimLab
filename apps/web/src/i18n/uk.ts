@@ -1,4 +1,5 @@
 import { roadUk } from "./road/uk";
+import { calendarUk } from "./calendar/uk";
 import { editorsUk } from "./editors/uk";
 import { cargoBikeUk } from "./cargo-bike/uk";
 import { depotsUk } from "./depots/uk";
@@ -455,5 +456,6 @@ export const uk: Messages = {
   ...pluginCodeUk,
   ...populationUk,
   ...roadUk,
+  ...calendarUk,
   ...PLUGIN_MESSAGES.uk,
 };

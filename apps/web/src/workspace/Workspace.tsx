@@ -107,6 +107,8 @@ import {
 import { VehiclesOffContext } from "./projectVehicles";
 import type { DelayShares } from "../features/street-lines/types";
 import { type Drawings, useDrawings } from "./useDrawings";
+import { CalendarRun } from "../features/calendar-run/CalendarRun";
+import type { EnergyEstimate } from "../features/energy/types";
 import { setPluginRuntime } from "../plugins/code/context";
 import { PluginCalculations } from "../plugins/code/PluginCalculations";
 import { PluginFrame } from "../plugins/code/PluginFrame";
@@ -133,7 +135,7 @@ const MAP_TABS: readonly Tab[] = ["simulator", "create", "gis", ...PLUGIN_TABS.m
 const NO_SETUPS: StreetSetup[] = [];
 const NO_STREET_LINES: SavedStreetLine[] = [];
 
-type SimView = "test" | "journey" | "road";
+type SimView = "test" | "journey" | "road" | "calendar";
 type GisView = "streets" | "regions" | "zones" | "population";
 const NO_REGIONS: Region[] = [];
 const NO_FEEDS: GtfsFeed[] = [];
@@ -217,6 +219,12 @@ export function Workspace({
     [benefitEst],
   );
   const onBenefitEstimate = useCallback((e: BenefitEstimate | null) => setBenefitEst(e), []);
+  // The energy section's estimate (energy a year), for the calendar runs.
+  const [energyEst, setEnergyEst] = useState<EnergyEstimate | null>(null);
+  const tableFigures = useMemo(
+    () => ({ estimate: costInfo?.estimate ?? null, riders, energy: energyEst }),
+    [costInfo?.estimate, riders, energyEst],
+  );
   const farePrices = useMemo(
     () => (costInfo ? { currency: costInfo.currency, perIntl: costInfo.perIntl } : null),
     [costInfo?.currency, costInfo?.perIntl],
@@ -308,6 +316,10 @@ export function Workspace({
     () => (projectKey && typeof api.roadRuns === "function" ? api.roadRuns(projectKey) : null),
     [api, projectKey],
   );
+  const calendarRuns = useMemo(
+    () => (projectKey && typeof api.calendarRuns === "function" ? api.calendarRuns(projectKey) : null),
+    [api, projectKey],
+  );
   const demandRuns = useMemo(
     () => (projectKey && typeof api.demandRuns === "function" ? api.demandRuns(projectKey) : null),
     [api, projectKey],
@@ -385,7 +397,8 @@ export function Workspace({
   // The currency all money is shown in, and its exchange rate (Project preferences).
   const currencyState = useProjectCurrency(preferences, ECONOMY);
   // The country at the project's location, for the calendar's public holidays (Project preferences).
-  const placeCountry = usePlaceCountry(railway?.origin ?? streetLines?.lines[0]?.points[0]?.lonlat ?? null);
+  const place = railway?.origin ?? streetLines?.lines[0]?.points[0]?.lonlat ?? null;
+  const placeCountry = usePlaceCountry(place);
   const currency = currencyState.currency;
   const delaysJson = JSON.stringify(delaysFrom(preferences));
   const delays = useMemo(() => JSON.parse(delaysJson) as DelayShares, [delaysJson]);
@@ -925,6 +938,7 @@ export function Workspace({
               onSetPlugin={setPlugin}
               currency={currencyState}
               country={placeCountry}
+              place={place}
             />
           </div>
         )}
@@ -968,6 +982,7 @@ export function Workspace({
                     preferences={preferences}
                     onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
                     riders={riders}
+                    onEnergy={setEnergyEst}
                   />
                   <TimetableTables
                     projectName={project.name}
@@ -1097,6 +1112,14 @@ export function Workspace({
                   >
                     {t("sim.road")}
                   </button>
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={sim === "calendar"}
+                    onClick={() => setSim("calendar")}
+                  >
+                    {t("calrun.tab")}
+                  </button>
                 </div>
               </div>
             )}
@@ -1216,6 +1239,21 @@ export function Workspace({
                   depots={depotsDoc?.depots}
                   setups={setups}
                   prefs={preferences?.values}
+                />
+              )}
+              {tab === "simulator" && sim === "calendar" && (
+                <CalendarRun
+                  api={calendarRuns}
+                  canRun={editable}
+                  railway={railway}
+                  preferences={preferences}
+                  onPreferences={
+                    editable && drawings.loaded ? (d) => drawings.set("preferences", d) : undefined
+                  }
+                  tables={tableFigures}
+                  currency={costInfo?.currency ?? null}
+                  onOpenTables={() => onTab("tables")}
+                  onOpenPreferences={() => onTab("preferences")}
                 />
               )}
               {tab === "create" && !editable && (
