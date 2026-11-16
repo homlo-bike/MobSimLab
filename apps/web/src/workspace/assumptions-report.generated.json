@@ -11594,6 +11594,25 @@
    "modes": {
     "*": 0
    }
+  },
+  "noise.ferry_source_height_m": {
+   "used_by": [
+    "noise map (ferries",
+    "indicative)"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "nomeports"
+     ],
+     "rationale": "PLACEHOLDER until the ferry sound power sources are read: the main sources of a small or medium passenger ferry (exhaust, engine room and air conditioning vents) sit a few metres above the water."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
   }
  }
 }
