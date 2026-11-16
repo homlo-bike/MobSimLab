@@ -13,8 +13,9 @@ import type { LineView } from "./types";
 export const HIT_LAYER = "sl-legs-hit";
 
 const EMPTY: FeatureCollection = { type: "FeatureCollection", features: [] };
-const SOURCES = ["sl-roads", "sl-depot", "sl-groups", "sl-bays", "sl-legs"];
+const SOURCES = ["sl-others", "sl-roads", "sl-depot", "sl-groups", "sl-bays", "sl-legs"];
 const LAYERS = [
+  "sl-others",
   "sl-roads",
   "sl-depot",
   "sl-groups",
@@ -57,6 +58,13 @@ export function ensureLayers(map: MapLibreMap, color: string, trafficSide: "righ
   if (map.getSource("sl-legs")) return;
   const offset = trafficSide === "right" ? 3 : -3;
   for (const id of SOURCES) map.addSource(id, { type: "geojson", data: EMPTY });
+  map.addLayer({
+    id: "sl-others",
+    type: "line",
+    source: "sl-others",
+    layout: { "line-join": "round", "line-cap": "round" },
+    paint: { "line-color": ["get", "color"], "line-width": 3, "line-opacity": 0.4 },
+  });
   map.addLayer({
     id: "sl-roads",
     type: "line",
@@ -177,6 +185,16 @@ function set(map: MapLibreMap, id: string, data: object): void {
 /** Purpose: show the roads usable by the current vehicle, or hide them with `null`. */
 export function drawRoads(map: MapLibreMap, roads: object | null): void {
   set(map, "sl-roads", roads ?? EMPTY);
+}
+
+/** Purpose: draw the project's other street lines faded, from their saved routes, in their mode colours. */
+export function drawOtherLines(map: MapLibreMap, lines: { view: LineView; color: string }[]): void {
+  set(map, "sl-others", {
+    type: "FeatureCollection",
+    features: lines.flatMap((l) =>
+      legsToGeoJson(l.view).features.map((f) => ({ ...f, properties: { color: l.color } })),
+    ),
+  });
 }
 
 /** Purpose: push the line view to the map; `depot` picks which depot runs to show (`null` hides them). */

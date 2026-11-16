@@ -70,17 +70,36 @@ export interface StreetLineInput {
   color: string;
   view: LineView;
   dwellS: number;
+  /** Minutes between departures; the peak headway when `offPeakHeadwayMin` is given. */
   headwayMin: number;
+  /** Minutes between departures outside the peaks; without it, `headwayMin` off peak and half in the peaks. */
+  offPeakHeadwayMin?: number;
+  /** First and last departure, minutes after midnight; without them, the default service day. */
+  firstMin?: number;
+  lastMin?: number;
+}
+
+/** Purpose: the line's peak and off-peak headways, s. */
+export function streetHeadways(line: StreetLineInput): { peakS: number; offPeakS: number } {
+  const headway = Math.max(1, Math.round(line.headwayMin * 60));
+  if (line.offPeakHeadwayMin !== undefined)
+    return { peakS: Math.max(60, headway), offPeakS: Math.max(60, Math.round(line.offPeakHeadwayMin * 60)) };
+  return { peakS: Math.max(60, Math.round(headway / 2)), offPeakS: headway };
 }
 
 /**
  * Purpose: one frequency pattern per direction of a street line: stop order and running times from the
- * routed legs, dwell from the line's timing, the line's headway off-peak and half of it in the peak.
+ * routed legs, dwell from the line's timing, its peak and off-peak headways, between its first and last
+ * departure (lines without them: the line's headway off-peak and half of it in the peak, all day).
  * Output: a timetable with only this line, or `null` when the line has fewer than two stops.
  */
 export function streetLineTimetable(
   line: StreetLineInput,
-  day: ServiceDay = DEFAULT_SERVICE_DAY,
+  day: ServiceDay = {
+    ...DEFAULT_SERVICE_DAY,
+    ...(line.firstMin !== undefined && { firstS: line.firstMin * 60 }),
+    ...(line.lastMin !== undefined && { lastS: line.lastMin * 60 }),
+  },
 ): Timetable | null {
   const v = line.view;
   const pts = new Map(v.points.map((p) => [p.id, p]));
@@ -95,8 +114,7 @@ export function streetLineTimetable(
       stop_lat: p.lonlat[1],
     }));
   if (stops.length < 2) return null;
-  const headway = Math.max(1, Math.round(line.headwayMin * 60));
-  const peak = Math.max(60, Math.round(headway / 2));
+  const { peakS: peak, offPeakS: headway } = streetHeadways(line);
   const dirs = v.directions.length
     ? v.directions
     : [{ direction: 0, stops: [], legs: v.legs.map((l) => l.index), length_m: v.length_m, time_s: v.time_s }];

@@ -14,6 +14,7 @@ apps/web/src/wasm
 apps/api/wasm
 apps/api/src/agents/defaults.json
 apps/web/src/features/railways/trains.ts
+apps/web/src/features/street-lines/vehicles.ts
 apps/web/src/plugins/bundled.generated.json
 apps/web/src/features/costs/defaults.generated.json
 apps/web/src/features/benefits/defaults.generated.json

@@ -401,7 +401,7 @@ function LineEditor({
 }
 
 /** Purpose: an "HH:MM" field that keeps what is typed until it is a valid time. */
-function TimeInput({
+export function TimeInput({
   value,
   onChange,
   label,
