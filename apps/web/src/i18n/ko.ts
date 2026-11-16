@@ -293,7 +293,14 @@ export const ko: Messages = {
   "prefs.rulesChanged": "{count}개 변경됨",
   "prefs.rulesLibrary": "가정값 라이브러리: {value} {unit}",
   "prefs.rulesLibraryRange": "가정값 라이브러리: {value} {unit} (범위 {low}–{high})",
-  "prefs.vehicles": "사용 차량(차량 카탈로그에서)",
+  "prefs.vehiclesTitle": "차량",
+  "prefs.vehiclesIntro":
+    "이 프로젝트가 교통수단별로 쓰는 카탈로그 차량입니다. 도로 노선 도구와 철도 도구는 선택한 차량만 보여 줍니다.",
+  "prefs.vehiclesMode": "교통수단",
+  "prefs.vehiclesUsed": "{total}개 중 {used}개 사용",
+  "prefs.vehiclesAll": "모두 사용",
+  "prefs.vehiclesFacts": "{length} m · {places}명 · {speed} km/h",
+  "prefs.vehiclesLast": "교통수단마다 차량이 최소 하나는 사용 상태로 남습니다.",
   "prefs.switches": "분기기(분기기 카탈로그에서)",
   "prefs.calendar": "달력, 수요, 비용",
 

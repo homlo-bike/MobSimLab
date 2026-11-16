@@ -294,7 +294,14 @@ export const fa: Messages = {
   "prefs.rulesChanged": "تغییریافته: {count}",
   "prefs.rulesLibrary": "کتابخانهٔ فرض‌ها: {value} {unit}",
   "prefs.rulesLibraryRange": "کتابخانهٔ فرض‌ها: {value} {unit} (بازه {low}–{high})",
-  "prefs.vehicles": "وسایل نقلیهٔ مورد استفاده (از کاتالوگ وسایل نقلیه)",
+  "prefs.vehiclesTitle": "وسایل نقلیه",
+  "prefs.vehiclesIntro":
+    "وسایل نقلیهٔ کاتالوگ که این پروژه برای هر شیوه به کار می‌برد. ابزارهای خط خیابانی و راه‌آهن فقط موارد علامت‌خورده را نشان می‌دهند.",
+  "prefs.vehiclesMode": "شیوه",
+  "prefs.vehiclesUsed": "{used} از {total} در استفاده",
+  "prefs.vehiclesAll": "استفاده از همه",
+  "prefs.vehiclesFacts": "{length} متر · {places} جا · {speed} کیلومتر بر ساعت",
+  "prefs.vehiclesLast": "برای هر شیوه دست‌کم یک وسیله در استفاده می‌ماند.",
   "prefs.switches": "سوزن‌ها (از کاتالوگ سوزن‌ها)",
   "prefs.calendar": "تقویم، تقاضا و هزینه‌ها",
 

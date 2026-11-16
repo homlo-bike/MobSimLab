@@ -305,7 +305,14 @@ export const zu: Messages = {
   "prefs.rulesChanged": "okushintshiwe: {count}",
   "prefs.rulesLibrary": "Umtapo wolwazi wemicabango: {value} {unit}",
   "prefs.rulesLibraryRange": "Umtapo wolwazi wemicabango: {value} {unit} (ububanzi {low}–{high})",
-  "prefs.vehicles": "Izimoto ezisetshenziswayo, kusuka kukhathalogi yezimoto",
+  "prefs.vehiclesTitle": "Izimoto",
+  "prefs.vehiclesIntro":
+    "Izimoto zekhathalogi le phrojekthi ezisebenzisayo, ngohlobo ngalunye. Amathuluzi emizila yasemgwaqweni neyesitimela anikeza lezo ezimakiwe kuphela.",
+  "prefs.vehiclesMode": "Uhlobo",
+  "prefs.vehiclesUsed": "{used} kwezingu-{total} ezisetshenziswayo",
+  "prefs.vehiclesAll": "Sebenzisa zonke",
+  "prefs.vehiclesFacts": "{length} m · izindawo {places} · {speed} km/h",
+  "prefs.vehiclesLast": "Okungenani imoto eyodwa ihlala isetshenziswa ohlotsheni ngalunye.",
   "prefs.switches": "Izishintshi zikajantshi, kusuka kukhathalogi yezishintshi",
   "prefs.calendar": "Ikhalenda, isidingo nezindleko",
 

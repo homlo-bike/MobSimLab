@@ -10,6 +10,8 @@ export interface PreferencesDoc {
   values: Record<string, number>;
   /** ISO 4217 code of the currency all money is shown in; absent: each tool shows the country's own. */
   currency?: string;
+  /** Catalogue vehicles the project does not use (ids); the line tools leave them out. Absent: all are used. */
+  vehiclesOff?: string[];
 }
 
 /** The delays in traffic a project can change, with the library's values. */
@@ -87,4 +89,39 @@ export function designValuesFrom(doc: PreferencesDoc | null | undefined): Record
     }
   }
   return out;
+}
+
+/** Purpose: the catalogue vehicles the project does not use. */
+export function vehiclesOffFrom(doc: PreferencesDoc | null | undefined): ReadonlySet<string> {
+  return new Set(Array.isArray(doc?.vehiclesOff) ? doc.vehiclesOff.filter((x) => typeof x === "string") : []);
+}
+
+/** Purpose: the document with catalogue vehicles used (`on`) or not; an empty list is removed. */
+export function withVehicles(
+  doc: PreferencesDoc | null | undefined,
+  ids: readonly string[],
+  on: boolean,
+): PreferencesDoc {
+  const off = new Set(vehiclesOffFrom(doc));
+  for (const id of ids) {
+    if (on) off.delete(id);
+    else off.add(id);
+  }
+  const next: PreferencesDoc = { ...(doc ?? {}), values: { ...(doc?.values ?? {}) } };
+  if (off.size) next.vehiclesOff = [...off].sort();
+  else delete next.vehiclesOff;
+  return next;
+}
+
+/**
+ * Purpose: the vehicles a line tool offers: those the project uses, plus `keep` (the vehicle a line already
+ * has) so an existing line keeps showing it. When the project uses none of the list, all of it.
+ */
+export function usedVehicles<T extends { id: string }>(
+  list: readonly T[],
+  off: ReadonlySet<string>,
+  keep?: string | null,
+): T[] {
+  const used = list.filter((v) => !off.has(v.id) || v.id === keep);
+  return used.some((v) => !off.has(v.id)) ? used : [...list];
 }

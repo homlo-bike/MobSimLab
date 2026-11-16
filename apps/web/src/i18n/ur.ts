@@ -299,7 +299,14 @@ export const ur: Messages = {
   "prefs.rulesChanged": "تبدیل شدہ: {count}",
   "prefs.rulesLibrary": "مفروضات کی لائبریری: {value} {unit}",
   "prefs.rulesLibraryRange": "مفروضات کی لائبریری: {value} {unit} (حد {low}–{high})",
-  "prefs.vehicles": "استعمال شدہ گاڑیاں، گاڑیوں کی فہرست سے",
+  "prefs.vehiclesTitle": "گاڑیاں",
+  "prefs.vehiclesIntro":
+    "فہرست کی وہ گاڑیاں جو یہ منصوبہ ہر ذریعے کے لیے استعمال کرتا ہے۔ سڑک لائن اور ریلوے ٹولز صرف نشان زدہ گاڑیاں دکھاتے ہیں۔",
+  "prefs.vehiclesMode": "ذریعہ",
+  "prefs.vehiclesUsed": "{total} میں سے {used} استعمال میں",
+  "prefs.vehiclesAll": "سب استعمال کریں",
+  "prefs.vehiclesFacts": "{length} میٹر · {places} جگہیں · {speed} کلومیٹر/گھنٹہ",
+  "prefs.vehiclesLast": "ہر ذریعے کے لیے کم از کم ایک گاڑی استعمال میں رہتی ہے۔",
   "prefs.switches": "پٹری کے سوئچ، سوئچوں کی فہرست سے",
   "prefs.calendar": "کیلنڈر، طلب اور لاگت",
 

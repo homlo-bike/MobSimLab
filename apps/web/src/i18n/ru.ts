@@ -301,7 +301,14 @@ export const ru: Messages = {
   "prefs.rulesChanged": "изменено: {count}",
   "prefs.rulesLibrary": "Библиотека допущений: {value} {unit}",
   "prefs.rulesLibraryRange": "Библиотека допущений: {value} {unit} (диапазон {low}–{high})",
-  "prefs.vehicles": "Используемый подвижной состав из каталога",
+  "prefs.vehiclesTitle": "Подвижной состав",
+  "prefs.vehiclesIntro":
+    "Транспортные средства из каталога, которые использует проект, по видам транспорта. Инструменты линий показывают только отмеченные.",
+  "prefs.vehiclesMode": "Вид транспорта",
+  "prefs.vehiclesUsed": "используется: {used} из {total}",
+  "prefs.vehiclesAll": "Использовать все",
+  "prefs.vehiclesFacts": "{length} м · {places} мест · {speed} км/ч",
+  "prefs.vehiclesLast": "Для каждого вида транспорта остаётся хотя бы одно средство.",
   "prefs.switches": "Стрелочные переводы из каталога стрелок",
   "prefs.calendar": "Календарь, спрос и затраты",
 

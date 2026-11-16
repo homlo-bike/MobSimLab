@@ -305,7 +305,14 @@ export const de: Messages = {
   "prefs.rulesChanged": "{count} geändert",
   "prefs.rulesLibrary": "Annahmenbibliothek: {value} {unit}",
   "prefs.rulesLibraryRange": "Annahmenbibliothek: {value} {unit} (Bereich {low}–{high})",
-  "prefs.vehicles": "Eingesetzte Fahrzeuge aus dem Fahrzeugkatalog",
+  "prefs.vehiclesTitle": "Fahrzeuge",
+  "prefs.vehiclesIntro":
+    "Die Katalogfahrzeuge, die dieses Projekt je Verkehrsmittel einsetzt. Linien- und Gleiseditor bieten nur die angehakten an.",
+  "prefs.vehiclesMode": "Verkehrsmittel",
+  "prefs.vehiclesUsed": "{used} von {total} eingesetzt",
+  "prefs.vehiclesAll": "Alle einsetzen",
+  "prefs.vehiclesFacts": "{length} m · {places} Plätze · {speed} km/h",
+  "prefs.vehiclesLast": "Je Verkehrsmittel bleibt mindestens ein Fahrzeug im Einsatz.",
   "prefs.switches": "Weichen aus dem Weichenkatalog",
   "prefs.calendar": "Kalender, Nachfrage und Kosten",
 

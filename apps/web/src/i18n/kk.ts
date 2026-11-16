@@ -297,7 +297,14 @@ export const kk: Messages = {
   "prefs.rulesChanged": "өзгертілген: {count}",
   "prefs.rulesLibrary": "Болжамдар кітапханасы: {value} {unit}",
   "prefs.rulesLibraryRange": "Болжамдар кітапханасы: {value} {unit} (ауқым {low}–{high})",
-  "prefs.vehicles": "Пайдаланылатын көліктер, көлік каталогынан",
+  "prefs.vehiclesTitle": "Көліктер",
+  "prefs.vehiclesIntro":
+    "Осы жоба әр түр үшін пайдаланатын каталог көліктері. Көше желісі мен темір жол құралдары тек белгіленгендерін ұсынады.",
+  "prefs.vehiclesMode": "Түр",
+  "prefs.vehiclesUsed": "{total} ішінен {used} пайдаланылады",
+  "prefs.vehiclesAll": "Барлығын пайдалану",
+  "prefs.vehiclesFacts": "{length} м · {places} орын · {speed} км/сағ",
+  "prefs.vehiclesLast": "Әр түр үшін кемінде бір көлік пайдаланыста қалады.",
   "prefs.switches": "Жол бағыттамалары, бағыттамалар каталогынан",
   "prefs.calendar": "Күнтізбе, сұраныс және шығындар",
 

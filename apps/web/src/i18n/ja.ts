@@ -294,7 +294,14 @@ export const ja: Messages = {
   "prefs.rulesChanged": "{count} 件変更",
   "prefs.rulesLibrary": "前提値ライブラリ：{value} {unit}",
   "prefs.rulesLibraryRange": "前提値ライブラリ：{value} {unit}（範囲 {low}–{high}）",
-  "prefs.vehicles": "使用車両（車両カタログから）",
+  "prefs.vehiclesTitle": "車両",
+  "prefs.vehiclesIntro":
+    "このプロジェクトでモードごとに使うカタログ車両。道路路線ツールと鉄道ツールはチェックした車両だけを表示します。",
+  "prefs.vehiclesMode": "モード",
+  "prefs.vehiclesUsed": "{total} 中 {used} 使用",
+  "prefs.vehiclesAll": "すべて使用",
+  "prefs.vehiclesFacts": "{length} m・定員 {places}・{speed} km/h",
+  "prefs.vehiclesLast": "各モードで少なくとも 1 両は使用中のままです。",
   "prefs.switches": "分岐器（分岐器カタログから）",
   "prefs.calendar": "カレンダー、需要、費用",
 

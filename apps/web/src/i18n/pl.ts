@@ -299,7 +299,14 @@ export const pl: Messages = {
   "prefs.rulesChanged": "zmienione: {count}",
   "prefs.rulesLibrary": "Biblioteka założeń: {value} {unit}",
   "prefs.rulesLibraryRange": "Biblioteka założeń: {value} {unit} (zakres {low}–{high})",
-  "prefs.vehicles": "Używane pojazdy (z katalogu pojazdów)",
+  "prefs.vehiclesTitle": "Pojazdy",
+  "prefs.vehiclesIntro":
+    "Pojazdy z katalogu używane w tym projekcie, dla każdego środka transportu. Narzędzia linii ulicznych i kolejowych pokazują tylko zaznaczone.",
+  "prefs.vehiclesMode": "Środek transportu",
+  "prefs.vehiclesUsed": "używane: {used} z {total}",
+  "prefs.vehiclesAll": "Użyj wszystkich",
+  "prefs.vehiclesFacts": "{length} m · {places} miejsc · {speed} km/h",
+  "prefs.vehiclesLast": "Dla każdego środka transportu co najmniej jeden pojazd pozostaje w użyciu.",
   "prefs.switches": "Rozjazdy (z katalogu rozjazdów)",
   "prefs.calendar": "Kalendarz, popyt i koszty",
 

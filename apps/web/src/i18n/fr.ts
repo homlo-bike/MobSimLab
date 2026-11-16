@@ -302,7 +302,14 @@ export const fr: Messages = {
   "prefs.rulesChanged": "{count} modifiées",
   "prefs.rulesLibrary": "Bibliothèque d'hypothèses : {value} {unit}",
   "prefs.rulesLibraryRange": "Bibliothèque d'hypothèses : {value} {unit} (plage {low}–{high})",
-  "prefs.vehicles": "Véhicules utilisés, depuis le catalogue de véhicules",
+  "prefs.vehiclesTitle": "Véhicules",
+  "prefs.vehiclesIntro":
+    "Les véhicules du catalogue utilisés par ce projet, par mode. Les outils de lignes routières et ferroviaires ne proposent que ceux cochés.",
+  "prefs.vehiclesMode": "Mode",
+  "prefs.vehiclesUsed": "{used} sur {total} utilisés",
+  "prefs.vehiclesAll": "Tout utiliser",
+  "prefs.vehiclesFacts": "{length} m · {places} places · {speed} km/h",
+  "prefs.vehiclesLast": "Chaque mode garde au moins un véhicule en service.",
   "prefs.switches": "Aiguillages, depuis le catalogue d’aiguillages",
   "prefs.calendar": "Calendrier, demande et coûts",
 
