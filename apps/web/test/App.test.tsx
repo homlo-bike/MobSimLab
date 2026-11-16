@@ -649,6 +649,73 @@ describe("project workspace", () => {
     expect((within(params).getByLabelText("Dwell time at a stop") as HTMLInputElement).value).toBe("30");
   });
 
+  it("shows the assumptions report with the changed values, and exports it as CSV or for printing", async () => {
+    stubApi(owner, {
+      [`GET /api/projects/${P1}/drawings`]: {
+        drawings: {
+          preferences: {
+            kind: "preferences",
+            schemaVersion: 1,
+            doc: { values: { "mode.dwell_s.tram": 45 }, reasons: { "mode.dwell_s.tram": "Busy stops" } },
+            version: 1,
+            updatedAt: "2026-11-16T10:00:00Z",
+            updatedBy: { id: "u1", displayName: "Alice Smith" },
+          },
+        },
+      },
+      [`GET /api/projects/${P1}/value-history?limit=500`]: {
+        history: [
+          {
+            seq: 3,
+            id: "mode.dwell_s.tram",
+            kind: "changed",
+            before: { value: null, reason: null },
+            after: { value: 45, reason: "Busy stops" },
+            reason: "Busy stops",
+            at: "2026-11-16T09:00:00Z",
+            by: { id: "u1", displayName: "Alice Smith" },
+          },
+        ],
+      },
+    });
+    const blobs: Blob[] = [];
+    const createObjectURL = vi.fn((b: Blob) => {
+      blobs.push(b);
+      return "blob:report";
+    });
+    Object.assign(URL, { createObjectURL, revokeObjectURL: vi.fn() });
+    const print = vi.fn();
+    vi.stubGlobal("print", print);
+    window.history.replaceState(null, "", `/projects/${P1}/preferences`);
+    render(<App />);
+    const report = await screen.findByRole("region", { name: "Assumptions report" });
+    await within(report).findByRole("button", { name: "Download CSV" });
+    // The project uses trams: dwell time shows for all modes and for trams, the tram value marked as changed.
+    await waitFor(() => expect(report.textContent).toContain("45 s"));
+    expect(within(report).getAllByText("changed").length).toBe(1);
+    expect(report.textContent).toContain("Reason: Busy stops");
+    await waitFor(() => expect(report.textContent).toContain("Changed by Alice Smith on"), { timeout: 4000 });
+    fireEvent.click(within(report).getByLabelText("Changed values only"));
+    expect(within(report).getAllByText(/Dwell time at a stop/).length).toBe(1);
+    fireEvent.change(within(report).getByLabelText("Group"), { target: { value: "Cost" } });
+    expect(report.textContent).toContain("No value in this group is changed.");
+    expect(report.textContent).toContain("Other choices");
+    fireEvent.click(within(report).getByRole("button", { name: "Download CSV" }));
+    expect(createObjectURL).toHaveBeenCalled();
+    const csv = await blobs[0]!.text();
+    const lines = csv.trim().split("\r\n");
+    expect(lines[0]).toContain("Group,Parameter,Id,Mode,Value used");
+    expect(lines.some((l) => l.includes("mode.dwell_s,Tram,45,s,Yes"))).toBe(true);
+    expect(lines.find((l) => l.includes("mode.dwell_s,Tram,45"))).toMatch(
+      /,Busy stops,Alice Smith,2026-11-16$/,
+    );
+    // Changed values only: the export follows the filter.
+    expect(lines.filter((l) => l.includes(",Yes,")).length).toBe(1);
+    fireEvent.click(within(report).getByRole("button", { name: "Print or save as PDF" }));
+    expect(print).toHaveBeenCalled();
+    expect(document.querySelector(".print-report")?.textContent).toContain("Dwell time at a stop");
+  });
+
   it("changes a design rule for one rail mode and goes back to the library value", async () => {
     const calls = stubApi(owner, {
       [`GET /api/projects/${P1}/drawings`]: { drawings: {} },
