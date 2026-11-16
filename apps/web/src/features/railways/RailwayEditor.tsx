@@ -1,43 +1,36 @@
-import { Marker, type Map as MapLibreMap, type MapMouseEvent } from "maplibre-gl";
+import { Marker, type Map as MapLibreMap } from "maplibre-gl";
 import { useVehiclesOff } from "../../workspace/projectVehicles";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { tNow, useI18n } from "../../i18n/i18n";
 import type { MessageKey } from "../../i18n/messages";
 import { fetchStreetTile } from "../street-lines/engine";
-import { MIN_LOAD_ZOOM, tilesFor } from "../street-lines/tiles";
 import type { DelayShares, TileFetcher } from "../street-lines/types";
 import type { StreetSetup } from "../street-setup/types";
 import {
-  addSignal,
-  addStation,
-  addSwitch,
   autoLeads,
   deleteElement,
   emptyNetwork,
-  fallbackStationName,
-  kindOf,
   newTrack,
   stationPlaces,
-  update,
-  updateSignal,
   resetSignals,
   type LocalConnection,
 } from "./doc";
-import { fetchRailTile, loadRailEngine } from "./engine";
-import { fetchElevations } from "../../terrain/terrain";
-import { basemapLabels, featuresFromLabels, preferTransitKind } from "../naming/labels";
-import { describeChoice, describeClash, nameForNewPlace, renamePlace } from "../naming/names";
-import { placesOtherThan, publishPlaces } from "../naming/registry";
+import { labelElement } from "./editorDom";
 import {
-  CONNECTION_LAYER,
-  drawRail,
-  ensureRailLayers,
-  HIT_LAYERS,
-  removeRailLayers,
-  showConnections,
-} from "./mapLayers";
-import { COLORS, shiftLevel } from "./modes";
+  type Cursor,
+  type Dragging,
+  draftLevel,
+  type EditorState,
+  sameAnchor,
+  type Selection,
+  sigs,
+} from "./editorState";
+import { fetchRailTile, loadRailEngine } from "./engine";
+import { describeClash, renamePlace } from "../naming/names";
+import { placesOtherThan, publishPlaces } from "../naming/registry";
+import { CONNECTION_LAYER, drawRail, ensureRailLayers, removeRailLayers, showConnections } from "./mapLayers";
+import { COLORS } from "./modes";
 import {
   RailPanel,
   type NewStationOpts,
@@ -52,7 +45,7 @@ import { noiseCalculationIn } from "../noise/plugin";
 import { noiseCheckText, RAIL_FLOWS, railSources } from "../noise/sources";
 import type { Flows, Indicator, NoiseEngineLoader } from "../noise/types";
 import { useNoise } from "../noise/useNoise";
-import { addLine, engineLines, linesTrainLength, removeLine, updateLine } from "./serviceLines";
+import { addLine, engineLines, linesTrainLength, removeLine } from "./serviceLines";
 import type { Publication } from "./ServiceLinesPanel";
 import type {
   Anchor,
@@ -65,14 +58,15 @@ import type {
   RailMode,
   RailView,
   ServicePublication,
-  SignalView,
   SwitchChoice,
   Track,
 } from "./types";
 import type { Timetable } from "../journey-planner/types";
-
-/** Purpose: the drawn signals of a view (generated and the planner's), or none before a build. */
-const sigs = (v: RailView | null | undefined): SignalView[] => v?.signals ?? [];
+import { useEditHandles } from "./useEditHandles";
+import { useEditorKeys } from "./useEditorKeys";
+import { useMapEditing } from "./useMapEditing";
+import { useRailTiles } from "./useRailTiles";
+import { fetchTerrainHeights, useTerrainHeights } from "./useTerrainHeights";
 
 const HINTS: Record<RailTool, MessageKey> = {
   select: "rail.hint.select",
@@ -118,6 +112,8 @@ interface Props {
   delays?: DelayShares | null;
   /** The project's design rules per mode (Project preferences), as `<mode>.<field>`; the library's when absent. */
   designValues?: Readonly<Record<string, number>> | null;
+  /** The project's preference values by id (running values of the service lines: dwell, layover…). */
+  prefValues?: Readonly<Record<string, number>> | null;
   /** The project's choice from the switches and crossings catalogue (Project preferences); all when absent. */
   switchChoice?: SwitchChoice | null;
   /** The drawing saved with the project, or null to start a new one at the map centre. */
@@ -132,20 +128,7 @@ interface Props {
   onPublish?: (timetable: Timetable | null) => void;
 }
 
-export interface Selection {
-  id: number;
-  pi?: number;
-}
-
-/** Terrain tiles fetched in one request (1,089 points each; the API takes up to 20,000). */
-const TERRAIN_TILES_PER_REQUEST = 18;
-/** Terrain tiles fetched after one build at most; the rebuild asks for the rest. */
-const TERRAIN_TILES_PER_PASS = 72;
-
-/** Purpose: ground heights at points from the shared terrain source (Copernicus GLO-30). */
-const fetchTerrainHeights = (points: LonLat[]) => fetchElevations(points).then((r) => r.elevationsM);
-
-const sameAnchor = (a: Anchor, b: Anchor) => JSON.stringify(a) === JSON.stringify(b);
+export type { Selection } from "./editorState";
 
 /**
  * Purpose: railway design tool (ADR-0030, ADR-0033), laid out like the railways tab of the line
@@ -166,6 +149,7 @@ export function RailwayEditor({
   streetSetups = NO_SETUPS,
   delays = null,
   designValues = null,
+  prefValues = null,
   switchChoice = null,
   initial = null,
   onDocChange,
@@ -180,7 +164,7 @@ export function RailwayEditor({
   const [ready, setReady] = useState(false);
   const [doc, setDoc] = useState<Network | null>(initial);
   const [draft, setDraft] = useState<Track | null>(null);
-  const [cursor, setCursor] = useState<{ at: [number, number]; conn: ConnectionView | null } | null>(null);
+  const [cursor, setCursor] = useState<Cursor | null>(null);
   const [tool, setTool] = useState<RailTool>("station");
   const [sel, setSel] = useState<Selection | null>(null);
   const [trackOpts, setTrackOpts] = useState<NewTrackOpts>({
@@ -222,141 +206,18 @@ export function RailwayEditor({
     };
   }, [loadEngine]);
 
-  // Streets for level crossings and existing railways for joins: the tiles on screen, loaded when
-  // the map stops moving, the same tiles the street line tool routes on. Each batch of new tiles
-  // triggers one rebuild.
-  const [streets, setStreets] = useState(0);
-  const [streetNote, setStreetNote] = useState<string | null>(null);
-  const tiles = useRef(new Set<string>());
-  // Street setups from the GIS tab override OSM for street running; a change rebuilds.
-  const setupsJson = JSON.stringify(streetSetups);
-  useEffect(() => {
-    const e = engine.current;
-    if (!ready || !e) return;
-    e.setStreetSetups(JSON.parse(setupsJson) as StreetSetup[]);
-    setStreets((n) => n + 1);
-  }, [ready, setupsJson]);
-  // The project's delays in traffic (a tram's running time in streets) and design rules per mode; a change rebuilds.
-  const delaysJson = delays ? JSON.stringify(delays) : "";
-  const rulesJson = designValues && Object.keys(designValues).length ? JSON.stringify(designValues) : "";
-  const valuesSet = useRef(false);
-  useEffect(() => {
-    const e = engine.current;
-    // Nothing to set, and nothing set before to clear.
-    if (!ready || !e?.setValues || (!delaysJson && !rulesJson && !valuesSet.current)) return;
-    valuesSet.current = true;
-    const d = delaysJson ? (JSON.parse(delaysJson) as DelayShares) : null;
-    e.setValues({
-      ...(d
-        ? { street_mixed_traffic_delay_share: d.mixed_traffic, street_bus_lane_delay_share: d.bus_lane }
-        : {}),
-      ...(rulesJson ? (JSON.parse(rulesJson) as Record<string, number>) : {}),
-    });
-    setStreets((n) => n + 1);
-  }, [ready, delaysJson, rulesJson]);
-  // The switches the project uses and its default turnouts; a change rebuilds.
-  const switchJson = switchChoice ? JSON.stringify(switchChoice) : "";
-  const switchSet = useRef(false);
-  useEffect(() => {
-    const e = engine.current;
-    if (!ready || !e?.setSwitchChoice || (!switchJson && !switchSet.current)) return;
-    switchSet.current = true;
-    e.setSwitchChoice(
-      switchJson ? (JSON.parse(switchJson) as SwitchChoice) : { off: [], default_turnout: {} },
-    );
-    setStreets((n) => n + 1);
-  }, [ready, switchJson]);
-  useEffect(() => {
-    if (!map || !ready) return;
-    // Turning existing railways off forgets them; turning them on reloads the tiles on screen.
-    if (!existingRailways) {
-      engine.current?.clearRails();
-      setStreets((n) => n + 1);
-    }
-    let busy = false;
-    let again = false;
-    let stopped = false;
-    const load = async () => {
-      const e = engine.current;
-      if (!e || stopped) return;
-      if (busy) {
-        again = true;
-        return;
-      }
-      if (map.getZoom() < MIN_LOAD_ZOOM) {
-        setStreetNote(
-          existingRailways
-            ? tNow("rail.zoomInRails", { zoom: MIN_LOAD_ZOOM })
-            : tNow("rail.zoomInStreets", { zoom: MIN_LOAD_ZOOM }),
-        );
-        return;
-      }
-      const b = map.getBounds();
-      const want = tilesFor([b.getWest(), b.getSouth(), b.getEast(), b.getNorth()])
-        .map(([x, y]) => `${x}/${y}`)
-        .filter((k) => !tiles.current.has(k));
-      if (!want.length) return;
-      busy = true;
-      want.forEach((k) => tiles.current.add(k));
-      const fetchAll = (f: TileFetcher) =>
-        Promise.allSettled(
-          want.map((k) => {
-            const [x, y] = k.split("/").map(Number);
-            return f(x!, y!);
-          }),
-        );
-      const [got, rails] = await Promise.all([
-        fetchAll(fetchTile),
-        existingRailways ? fetchAll(fetchRails) : Promise.resolve([]),
-      ]);
-      busy = false;
-      if (stopped || engine.current !== e) {
-        want.forEach((k) => tiles.current.delete(k));
-        return;
-      }
-      let added = 0;
-      let reason: string | null = null;
-      let railReason: string | null = null;
-      got.forEach((r, i) => {
-        try {
-          if (r.status === "rejected") throw r.reason;
-          e.addStreetTile(r.value);
-          added++;
-        } catch (err) {
-          tiles.current.delete(want[i]!);
-          reason ??= err instanceof Error ? err.message : tNow("rail.streetsFailed");
-        }
-      });
-      rails.forEach((r, i) => {
-        try {
-          if (r.status === "rejected") throw r.reason;
-          e.addRailTile(r.value);
-          added++;
-        } catch (err) {
-          tiles.current.delete(want[i]!);
-          railReason ??= err instanceof Error ? err.message : tNow("rail.railsFailed");
-        }
-      });
-      if (added) setStreets((n) => n + 1);
-      const notes = [
-        reason && `${reason} ${tNow("rail.crossingsWhereLoaded")}`,
-        railReason && `${railReason} ${tNow("rail.joinsWhereLoaded")}`,
-      ].filter(Boolean);
-      setStreetNote(notes.length ? `${notes.join(" ")} ${tNow("rail.moveMap")}` : null);
-      if (again) {
-        again = false;
-        void load();
-      }
-    };
-    const onMove = () => void load();
-    map.on("moveend", onMove);
-    void load();
-    return () => {
-      stopped = true;
-      map.off("moveend", onMove);
-      tiles.current.clear();
-    };
-  }, [map, ready, fetchTile, fetchRails, existingRailways]);
+  const { streets, setStreets, streetNote } = useRailTiles({
+    map,
+    ready,
+    engine,
+    fetchTile,
+    fetchRails,
+    existingRailways,
+    streetSetups,
+    delays,
+    designValues,
+    switchChoice,
+  });
 
   // A new drawing starts at the map centre.
   useEffect(() => {
@@ -409,57 +270,7 @@ export function RailwayEditor({
   const lastView = useRef<RailView | null>(null);
   if (view) lastView.current = view;
 
-  // Terrain heights under the tracks and stations (ADR-0033 decision 18): after a build, the tiles it
-  // still needs are fetched from the shared terrain source, and one rebuild follows each batch.
-  const terrainBusy = useRef(false);
-  const [terrainNote, setTerrainNote] = useState<string | null>(null);
-  useEffect(() => {
-    const e = engine.current;
-    if (!view || !e?.missingTerrainTiles || !e.terrainTilePoints || !e.addTerrainTile || draft) return;
-    const timer = setTimeout(() => {
-      if (terrainBusy.current || engine.current !== e) return;
-      const want = e.missingTerrainTiles!().slice(0, TERRAIN_TILES_PER_PASS);
-      if (!want.length) return;
-      terrainBusy.current = true;
-      const batches: [number, number][][] = [];
-      for (let i = 0; i < want.length; i += TERRAIN_TILES_PER_REQUEST)
-        batches.push(want.slice(i, i + TERRAIN_TILES_PER_REQUEST));
-      void Promise.allSettled(
-        batches.map(async (b) => {
-          const pts = b.map(([x, y]) => e.terrainTilePoints!(x, y));
-          const heights = await fetchHeights(pts.flat());
-          let k = 0;
-          return b.map(([x, y], i) => {
-            const h = heights.slice(k, k + pts[i]!.length);
-            k += pts[i]!.length;
-            return { x, y, h };
-          });
-        }),
-      ).then((res) => {
-        terrainBusy.current = false;
-        if (engine.current !== e) return;
-        let added = 0;
-        let failed: string | null = null;
-        for (const r of res) {
-          if (r.status === "rejected") {
-            failed ??= r.reason instanceof Error ? r.reason.message : "Terrain heights did not load.";
-            continue;
-          }
-          for (const t of r.value) {
-            e.addTerrainTile!(t.x, t.y, t.h);
-            added++;
-          }
-        }
-        setTerrainNote(
-          failed
-            ? `${failed} Gradients and station heights follow once the terrain heights load; edit the drawing to try again.`
-            : null,
-        );
-        if (added) setStreets((n) => n + 1);
-      });
-    }, 400);
-    return () => clearTimeout(timer);
-  }, [view, draft, fetchHeights]);
+  const terrainNote = useTerrainHeights({ engine, view, draft, fetchHeights, setStreets });
 
   // A saved drawing opens with the map on it.
   const framed = useRef(initial === null);
@@ -561,16 +372,20 @@ export function RailwayEditor({
     [map],
   );
 
-  // Latest state for handlers registered once per map.
-  const latest = useRef({ tool, doc, draft, sel, trackOpts, stationOpts, switchOpts, view, cursor, picking });
+  const latest = useRef<EditorState>({
+    tool,
+    doc,
+    draft,
+    sel,
+    trackOpts,
+    stationOpts,
+    switchOpts,
+    view,
+    cursor,
+    picking,
+  });
   latest.current = { tool, doc, draft, sel, trackOpts, stationOpts, switchOpts, view, cursor, picking };
-  const dragging = useRef<
-    | { kind: "station"; id: number; dx: number; dy: number }
-    | { kind: "switch"; id: number; track: number; offset: number }
-    | { kind: "signal"; id: number }
-    | { kind: "end" }
-    | null
-  >(null);
+  const dragging = useRef<Dragging>(null);
 
   const startDraft = useCallback((start: Anchor, d: Network, level: Track["level"], tracks: 1 | 2) => {
     const o = latest.current.trackOpts;
@@ -608,345 +423,39 @@ export function RailwayEditor({
     [connLocal, minLead],
   );
 
-  // Map clicks.
-  useEffect(() => {
-    if (!map) return;
-    const onClick = (ev: MapMouseEvent) => {
-      const s = latest.current;
-      const e = engine.current;
-      if (!e || !s.doc) return;
-      const ll: LonLat = [ev.lngLat.lng, ev.lngLat.lat];
-      const at = e.toLocal(s.doc.origin, ll);
-      const params = s.view?.params;
-      // Creating a service line: each click on a station adds the next stop, if trains can get there.
-      const pickLine = s.tool === "line" && s.picking ? s.doc.lines?.find((l) => l.id === s.picking) : null;
-      if (s.tool === "line") {
-        if (!pickLine) return;
-        const station = stationAt(map, ev.point, s.doc, s.view);
-        if (station === null) return say(tNow("rail.pick.clickStation"));
-        const name = s.doc.stations.find((x) => x.id === station)?.name ?? tNow("rail.pick.thisStation");
-        const last = pickLine.stations[pickLine.stations.length - 1];
-        if (last === station) return say(tNow("rail.pick.lastAlready", { name }));
-        if (pickLine.stations.includes(station)) return say(tNow("rail.pick.already", { name }));
-        if (last !== undefined) {
-          let reach: { ok: boolean; reason: string | null };
-          try {
-            reach = e.reachable(last, station);
-          } catch (err) {
-            return say(err instanceof Error ? err.message : String(err));
-          }
-          if (!reach.ok) return say(reach.reason ?? tNow("rail.pick.unreachable", { name }));
-        }
-        setDoc(updateLine(s.doc, pickLine.id, (l) => ({ ...l, stations: [...l.stations, station] })));
-        setNote(
-          pickLine.stations.length === 0
-            ? tNow("rail.pick.first", { name })
-            : tNow("rail.pick.added", { name }),
-        );
-        return;
-      }
-      if (s.tool === "station") {
-        // Next to an existing stop or station it is part of that one; otherwise named from the map.
-        const places = [...placesOtherThan("rail"), ...stationPlaces(s.doc, s.view)];
-        const choice = nameForNewPlace(ll, {
-          places,
-          features: preferTransitKind(featuresFromLabels(basemapLabels(map, ll), ll), "rail"),
-          fallback: fallbackStationName(
-            s.doc,
-            places.map((p) => p.name),
-          ),
-        });
-        setNote(describeChoice(choice, "station"));
-        const [d, id] = addStation(s.doc, at, {
-          ...s.stationOpts,
-          platformLength: params?.platform_length_m ?? 120,
-          name: choice.name,
-        });
-        setDoc(d);
-        setSel({ id });
-        setTool("select");
-      } else if (s.tool === "track") {
-        // A free point close to an existing railway snaps onto it, so the track joins it.
-        const snap = e.existingSnap(ll, pxToM(10));
-        const p = snap ? e.toLocal(s.doc.origin, snap.lonlat) : at;
-        if (!s.draft) {
-          const c = connectionAt(ev.point, s.trackOpts.tracks);
-          if (c) startDraft(c.anchor, s.doc, c.level, c.tracks === 2 ? 2 : 1);
-          else startDraft({ type: "free", x: p[0], y: p[1] }, s.doc, s.trackOpts.level, s.trackOpts.tracks);
-          return;
-        }
-        const c = connectionAt(ev.point, s.draft.tracks);
-        if (c) return finishDraft(c.anchor);
-        const dr = s.draft;
-        const pts = [...dr.points, { x: p[0], y: p[1], level: draftLevel(dr) }];
-        const next = autoLeads({ ...dr, points: pts }, connLocal(dr.start), null, null, minLead);
-        setDraft(next);
-      } else if (s.tool === "turnout" || s.tool === "crossover") {
-        const hit = e.nearestTrack(ll, pxToM(10));
-        if (!hit) return say(tNow("rail.say.clickTrackSwitch"));
-        if (!hit.straight) return say(tNow("rail.say.straightOnly"));
-        // The panel's element is from the catalogue of the mode for new elements; a track of
-        // another railway system gets its own mode's default turnout.
-        const trackMode = s.view?.tracks.find((t) => t.id === hit.track)?.mode ?? s.doc.mode;
-        const catalogue = s.view?.modes[trackMode];
-        const element =
-          (trackMode === s.doc.mode ? s.switchOpts.element : null) ??
-          catalogue?.params.default_turnout ??
-          params?.default_turnout ??
-          "";
-        if (s.tool === "crossover") {
-          if (hit.tracks !== 2) return say(tNow("rail.say.doubleOnly"));
-          const t = (catalogue?.turnouts ?? s.view?.turnouts)?.find((x) => x.id === element);
-          const len = t ? 2 * (t.length_a_m ?? 0) + hit.spacing * (t.crossing_ratio_n ?? 0) : 0;
-          const [d, id] = addSwitch(s.doc, {
-            kind: s.switchOpts.scissors ? "scissors" : "crossover",
-            track: hit.track,
-            s: hit.s - len / 2,
-            element,
-            side: 1,
-          });
-          setDoc(d);
-          setSel({ id });
-          return;
-        }
-        const junction = hit.tracks === 2 && s.switchOpts.junction;
-        const [d, id] = addSwitch(s.doc, {
-          kind: junction ? "double_junction" : "turnout",
-          track: hit.track,
-          s: hit.s,
-          element,
-          side: hit.side >= 0 ? 1 : -1,
-        });
-        setDoc(d);
-        setTool("track");
-        startDraft({ type: "switch", switch: id, leg: 0 }, d, s.trackOpts.level, junction ? 2 : 1);
-      } else if (s.tool === "signal") {
-        const anchor = e.signalAnchor(ll, pxToM(15));
-        if (!anchor) return say(tNow("rail.say.clickTrackSignal"));
-        const [d, id] = addSignal(s.doc, anchor, 1, "main");
-        setDoc(d);
-        setSel({ id });
-      } else if (s.tool === "select") {
-        const box: [[number, number], [number, number]] = [
-          [ev.point.x - 5, ev.point.y - 5],
-          [ev.point.x + 5, ev.point.y + 5],
-        ];
-        const layers = HIT_LAYERS.filter((l) => map.getLayer(l));
-        const hits = map.queryRenderedFeatures(box, { layers });
-        const ref = hits.map((h) => Number(h.properties?.ref)).find((r) => kindOf(s.doc!, r, sigs(s.view)));
-        setSel(ref ? { id: ref } : null);
-      }
-    };
-    const onDbl = (ev: MapMouseEvent) => {
-      const s = latest.current;
-      if (s.tool !== "track" || !s.draft || !s.doc || !engine.current) return;
-      ev.preventDefault();
-      // The double-click's two clicks each added a point: drop the second; the first is the end.
-      const dr = s.draft;
-      const pts = dr.points.slice(0, -1);
-      const at = engine.current.toLocal(s.doc.origin, [ev.lngLat.lng, ev.lngLat.lat]);
-      latest.current.draft = { ...dr, points: pts };
-      finishDraft({ type: "free", x: at[0], y: at[1], level: draftLevel(dr) });
-    };
-    let frame = 0;
-    const onMove = (ev: MapMouseEvent) => {
-      const s = latest.current;
-      const e = engine.current;
-      if (!e || !s.doc) return;
-      const ll: LonLat = [ev.lngLat.lng, ev.lngLat.lat];
-      const dr = dragging.current;
-      if (dr?.kind === "station") {
-        const at = e.toLocal(s.doc.origin, ll);
-        cancelAnimationFrame(frame);
-        frame = requestAnimationFrame(() =>
-          setDoc(
-            (d) => d && update(d, "stations", dr.id, (st) => ({ ...st, x: at[0] - dr.dx, y: at[1] - dr.dy })),
-          ),
-        );
-        return;
-      }
-      if (dr?.kind === "switch") {
-        const ch = e.chainage(dr.track, ll);
-        if (!Number.isFinite(ch)) return;
-        cancelAnimationFrame(frame);
-        frame = requestAnimationFrame(() =>
-          setDoc(
-            (d) => d && update(d, "switches", dr.id, (sw) => ({ ...sw, s: Math.max(0, ch - dr.offset) })),
-          ),
-        );
-        return;
-      }
-      if (dr?.kind === "signal") {
-        const anchor = e.signalAnchor(ll, pxToM(30));
-        if (!anchor) return;
-        cancelAnimationFrame(frame);
-        frame = requestAnimationFrame(() =>
-          setDoc(
-            (d) => d && updateSignal(d, dr.id, (x) => ({ ...x, at: anchor }), sigs(latest.current.view)),
-          ),
-        );
-        return;
-      }
-      if (s.tool === "track" && s.draft) {
-        const conn = connectionAt(ev.point, s.draft.tracks);
-        const snap = e.existingSnap(ll, pxToM(10));
-        const at = e.toLocal(s.doc.origin, snap ? snap.lonlat : ll);
-        cancelAnimationFrame(frame);
-        frame = requestAnimationFrame(() => {
-          const d = latest.current.draft;
-          if (!d) return;
-          const endC = conn ? connLocal(conn.anchor) : null;
-          setDraft(autoLeads(d, connLocal(d.start), endC, at, minLead));
-          setCursor({ at, conn });
-        });
-      }
-    };
-    const onDown = (ev: MapMouseEvent) => {
-      const s = latest.current;
-      if (s.tool !== "select" || !s.doc || !engine.current) return;
-      const box: [[number, number], [number, number]] = [
-        [ev.point.x - 4, ev.point.y - 4],
-        [ev.point.x + 4, ev.point.y + 4],
-      ];
-      const layers = HIT_LAYERS.filter((l) => map.getLayer(l));
-      const hits = map.queryRenderedFeatures(box, { layers });
-      const ref = hits.map((h) => Number(h.properties?.ref)).find((r) => kindOf(s.doc!, r, sigs(s.view)));
-      if (!ref || s.sel?.id !== ref) return;
-      const ll: LonLat = [ev.lngLat.lng, ev.lngLat.lat];
-      const kind = kindOf(s.doc, ref, sigs(s.view));
-      if (kind === "station") {
-        const st = s.doc.stations.find((x) => x.id === ref)!;
-        const at = engine.current.toLocal(s.doc.origin, ll);
-        dragging.current = { kind: "station", id: ref, dx: at[0] - st.x, dy: at[1] - st.y };
-      } else if (kind === "switch") {
-        const sw = s.doc.switches.find((x) => x.id === ref)!;
-        const ch = engine.current.chainage(sw.track, ll);
-        if (!Number.isFinite(ch)) return;
-        dragging.current = { kind: "switch", id: ref, track: sw.track, offset: ch - sw.s };
-      } else if (kind === "signal") {
-        dragging.current = { kind: "signal", id: ref };
-      } else return;
-      ev.preventDefault();
-      map.dragPan.disable();
-    };
-    const onUp = () => {
-      if (dragging.current && dragging.current.kind !== "end") {
-        dragging.current = null;
-        map.dragPan.enable();
-      }
-    };
-    map.on("click", onClick);
-    map.on("dblclick", onDbl);
-    map.on("mousemove", onMove);
-    map.on("mousedown", onDown);
-    map.on("mouseup", onUp);
-    return () => {
-      map.off("click", onClick);
-      map.off("dblclick", onDbl);
-      map.off("mousemove", onMove);
-      map.off("mousedown", onDown);
-      map.off("mouseup", onUp);
-      cancelAnimationFrame(frame);
-    };
-  }, [map, connectionAt, connLocal, finishDraft, minLead, pxToM, startDraft]);
+  useMapEditing({
+    map,
+    engine,
+    latest,
+    dragging,
+    say,
+    setDoc,
+    setSel,
+    setTool,
+    setNote,
+    setDraft,
+    setCursor,
+    connectionAt,
+    connLocal,
+    finishDraft,
+    startDraft,
+    minLead,
+    pxToM,
+  });
 
-  // Edit handles for the selected track (points, leads, free ends) and station (rotation).
-  const handles = useMemo(
-    () => (view?.handles ?? []).filter((h) => ("track" in h ? sel?.id === h.track : sel?.id === h.station)),
-    [view, sel],
-  );
-  const handleKey = handles
-    .map((h) => ("track" in h ? `${h.track}:${h.kind}:${h.index}` : `r${h.station}`))
-    .join("|");
-  const markers = useRef(new Map<string, Marker>());
-  useEffect(() => {
-    if (!map) return;
-    const made = new Map<string, Marker>();
-    const hs =
-      latest.current.view?.handles.filter((h) =>
-        "track" in h ? latest.current.sel?.id === h.track : latest.current.sel?.id === h.station,
-      ) ?? [];
-    let frame = 0;
-    for (const h of hs) {
-      const key = "track" in h ? `${h.track}:${h.kind}:${h.index}` : `r${h.station}`;
-      const el = handleElement(h.kind, "track" in h && h.kind === "pi" && latest.current.sel?.pi === h.index);
-      const m = new Marker({ element: el, draggable: true }).setLngLat(h.lonlat).addTo(map);
-      el.addEventListener("click", (ev) => {
-        ev.stopPropagation();
-        if ("track" in h && h.kind === "pi" && h.index !== null) setSel({ id: h.track, pi: h.index });
-      });
-      const apply = (final: boolean) => {
-        const s = latest.current;
-        const e = engine.current;
-        if (!s.doc || !e) return;
-        const { lng, lat: la } = m.getLngLat();
-        const at = e.toLocal(s.doc.origin, [lng, la]);
-        if ("station" in h) {
-          const st = s.doc.stations.find((x) => x.id === h.station);
-          if (!st) return;
-          const deg = Math.round((Math.atan2(at[1] - st.y, at[0] - st.x) * 180) / Math.PI - 90);
-          setDoc(
-            (d) =>
-              d &&
-              update(d, "stations", h.station, (x) => ({ ...x, rotation_deg: ((deg % 360) + 360) % 360 })),
-          );
-          return;
-        }
-        const t = s.doc.tracks.find((x) => x.id === h.track);
-        if (!t) return;
-        let next: Track = t;
-        if (h.kind === "pi" && h.index !== null)
-          next = { ...t, points: t.points.map((p, i) => (i === h.index ? { ...p, x: at[0], y: at[1] } : p)) };
-        else if (h.kind === "lead_start" || h.kind === "lead_end") {
-          const c = connLocal(h.kind === "lead_start" ? t.start : (t.end ?? t.start));
-          if (c) {
-            const v = Math.max(5, (at[0] - c.p[0]) * c.dir[0] + (at[1] - c.p[1]) * c.dir[1]);
-            next = h.kind === "lead_start" ? { ...t, lead_start_m: v } : { ...t, lead_end_m: v };
-          }
-        } else if (h.kind === "end" || h.kind === "start") {
-          const pt = map.project([lng, la]);
-          const conn = final ? connectionAt(pt, t.tracks) : null;
-          const a: Anchor = conn ? conn.anchor : { type: "free", x: at[0], y: at[1], level: draftLevel(t) };
-          next = h.kind === "end" ? { ...t, end: a } : { ...t, start: a };
-          if (conn) next = autoLeads(next, connLocal(next.start), connLocal(conn.anchor), null, minLead);
-        }
-        setDoc((d) => d && update(d, "tracks", t.id, () => next));
-      };
-      m.on("dragstart", () => {
-        if (h.kind === "end" || h.kind === "start") {
-          dragging.current = { kind: "end" };
-          showConnections(map, true);
-        }
-      });
-      m.on("drag", () => {
-        cancelAnimationFrame(frame);
-        frame = requestAnimationFrame(() => apply(false));
-      });
-      m.on("dragend", () => {
-        cancelAnimationFrame(frame);
-        apply(true);
-        if (dragging.current?.kind === "end") {
-          dragging.current = null;
-          showConnections(map, latest.current.tool === "track");
-        }
-      });
-      made.set(key, m);
-    }
-    markers.current = made;
-    return () => {
-      cancelAnimationFrame(frame);
-      made.forEach((m) => m.remove());
-    };
-  }, [map, handleKey, sel?.pi, connLocal, connectionAt, minLead]);
-  // Keep handles on the fitted geometry while not being dragged.
-  useEffect(() => {
-    for (const h of handles) {
-      const key = "track" in h ? `${h.track}:${h.kind}:${h.index}` : `r${h.station}`;
-      const m = markers.current.get(key);
-      if (m && !m.isDraggable?.()) continue;
-      if (m && !(m as unknown as { _isDragging?: boolean })._isDragging) m.setLngLat(h.lonlat);
-    }
-  }, [handles]);
+  useEditHandles({
+    map,
+    engine,
+    view,
+    sel,
+    latest,
+    dragging,
+    setDoc,
+    setSel,
+    connLocal,
+    connectionAt,
+    minLead,
+  });
 
   // Station names.
   useEffect(() => {
@@ -958,74 +467,6 @@ export function RailwayEditor({
     );
     return () => ms.forEach((m) => m.remove());
   }, [map, view?.stations.map((s) => `${s.name}@${s.lonlat.join()}`).join("|")]);
-
-  // Keyboard.
-  useEffect(() => {
-    const onKey = (ev: KeyboardEvent) => {
-      const target = ev.target as HTMLElement | null;
-      if (target && ["INPUT", "SELECT", "TEXTAREA"].includes(target.tagName)) return;
-      if (ev.ctrlKey || ev.metaKey || ev.altKey) return;
-      const s = latest.current;
-      const k = ev.key.toLowerCase();
-      if (s.draft) {
-        if (ev.key === "+" || ev.key === "=" || ev.key === "-" || ev.key === "_") {
-          const up = ev.key === "+" || ev.key === "=";
-          setDraft({
-            ...s.draft,
-            level: shiftLevel(draftLevel(s.draft), up ? 1 : -1),
-            points: s.draft.points,
-          });
-          setTrackOpts((o) => ({ ...o, level: shiftLevel(draftLevel(s.draft!), up ? 1 : -1) }));
-          ev.preventDefault();
-          return;
-        }
-        if (ev.key === "Backspace" || ev.key === "Delete") {
-          setDraft({ ...s.draft, points: s.draft.points.slice(0, -1) });
-          ev.preventDefault();
-          return;
-        }
-        if (ev.key === "Enter") return finishDraft(null);
-        if (ev.key === "Escape") {
-          setDraft(null);
-          setCursor(null);
-          return;
-        }
-      }
-      if (s.tool === "line" && (ev.key === "Enter" || ev.key === "Escape")) return finishLine();
-      if (ev.key === "Escape") return setSel(null);
-      if (k === "f" && s.sel && s.doc && kindOf(s.doc, s.sel.id, sigs(s.view)) === "signal") {
-        setDoc(
-          updateSignal(s.doc, s.sel.id, (x) => ({ ...x, facing: x.facing === 1 ? -1 : 1 }), sigs(s.view)),
-        );
-        return;
-      }
-      if ((ev.key === "Delete" || ev.key === "Backspace") && s.sel && s.doc) {
-        ev.preventDefault();
-        if (s.sel.pi !== undefined) {
-          const { id, pi } = s.sel;
-          setDoc(update(s.doc, "tracks", id, (t) => ({ ...t, points: t.points.filter((_, i) => i !== pi) })));
-          setSel({ id });
-        } else {
-          setDoc(deleteElement(s.doc, s.sel.id, anchorAt, sigs(s.view)));
-          setSel(null);
-        }
-        return;
-      }
-      const tools: Record<string, RailTool> = {
-        v: "select",
-        s: "station",
-        t: "track",
-        b: "turnout",
-        x: "crossover",
-        g: "signal",
-        h: "pan",
-        l: "line",
-      };
-      if (tools[k]) toolChange.current(tools[k]);
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [finishDraft]);
 
   const anchorAt = (a: Anchor): [number, number] | null => connLocal(a)?.p ?? null;
 
@@ -1075,6 +516,19 @@ export function RailwayEditor({
     setTool("line");
   };
 
+  useEditorKeys({
+    latest,
+    setDoc,
+    setSel,
+    setDraft,
+    setCursor,
+    setTrackOpts,
+    finishDraft,
+    finishLine,
+    anchorAt,
+    toolChange,
+  });
+
   // Publishing: plan the service lines on the drawn track (timetable planner) for the journey planner.
   const publish = () => {
     const e = engine.current;
@@ -1083,7 +537,7 @@ export function RailwayEditor({
     try {
       // The engine plans on its last build: build the drawing without a draft first.
       e.build(doc, null);
-      const result = e.publishLines(engineLines(doc), "weekday");
+      const result = e.publishLines(engineLines(doc, doc.lines ?? [], prefValues), "weekday");
       next = { result, error: null, key: publishKey(doc) };
       onPublish?.(result.timetable);
     } catch (err) {
@@ -1255,77 +709,4 @@ export function RailwayEditor({
       )}
     </>
   );
-}
-
-/**
- * Purpose: the station under a map click: a drawn station feature, else the station whose centre is
- * nearest within 30 px. Output: the station id, or `null`.
- */
-function stationAt(map: MapLibreMap, pt: { x: number; y: number }, doc: Network, view: RailView | null) {
-  const box: [[number, number], [number, number]] = [
-    [pt.x - 6, pt.y - 6],
-    [pt.x + 6, pt.y + 6],
-  ];
-  const layers = HIT_LAYERS.filter((l) => map.getLayer(l));
-  const hit = map
-    .queryRenderedFeatures(box, { layers })
-    .map((h) => Number(h.properties?.ref))
-    .find((r) => doc.stations.some((s) => s.id === r));
-  if (hit) return hit;
-  let best: { id: number; d: number } | null = null;
-  for (const sv of view?.stations ?? []) {
-    const p = map.project(sv.lonlat);
-    const d = Math.hypot(p.x - pt.x, p.y - pt.y);
-    if (d <= 30 && (!best || d < best.d)) best = { id: sv.id, d };
-  }
-  return best?.id ?? null;
-}
-
-/** Purpose: the level new points of a track get (its last point's, else the track's). */
-function draftLevel(t: Track) {
-  return t.points[t.points.length - 1]?.level ?? t.level;
-}
-
-/** Purpose: DOM element for an edit handle. */
-function handleElement(kind: string, selected: boolean): HTMLElement {
-  const el = document.createElement("div");
-  el.setAttribute("role", "button");
-  el.setAttribute(
-    "aria-label",
-    kind === "rotate"
-      ? tNow("rail.handle.rotate")
-      : tNow("rail.handle.track", { kind: kind.replace("_", " ") }),
-  );
-  const lead = kind === "lead_start" || kind === "lead_end";
-  Object.assign(el.style, {
-    width: kind === "rotate" ? "16px" : "13px",
-    height: kind === "rotate" ? "16px" : "13px",
-    boxSizing: "border-box",
-    borderRadius: lead ? "3px" : "50%",
-    background: kind === "rotate" ? COLORS.accent : "#ffffff",
-    border: `2px solid ${COLORS.accent}`,
-    boxShadow: selected ? `0 0 0 3px #f59e0b` : "0 1px 3px rgba(0,0,0,.35)",
-    cursor: "grab",
-  });
-  el.title =
-    kind === "rotate"
-      ? tNow("rail.handle.rotateHint")
-      : lead
-        ? tNow("rail.handle.leadHint")
-        : tNow("rail.handle.moveHint");
-  return el;
-}
-
-/** Purpose: DOM element for a station name. */
-function labelElement(name: string): HTMLElement {
-  const el = document.createElement("div");
-  el.textContent = name;
-  Object.assign(el.style, {
-    pointerEvents: "none",
-    whiteSpace: "nowrap",
-    color: "#1f2937",
-    font: "600 12px system-ui, sans-serif",
-    textShadow: "0 0 3px #fff, 0 0 3px #fff, 0 0 3px #fff",
-  });
-  return el;
 }

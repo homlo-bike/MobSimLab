@@ -18,6 +18,7 @@ import { networkOf } from "../benefits/network";
 import { paramValue } from "../benefits/params";
 import type { Region } from "../benefits/regions";
 import type { Timetable } from "../journey-planner/types";
+import { sameNameStationM } from "../../workspace/preferences";
 
 /** The planner's own weekday boardings, by station or stop name (kept in the `benefits` drawing). */
 export type Boardings = Record<string, number>;
@@ -52,7 +53,7 @@ export async function loadZones(
 ): Promise<RidershipZones> {
   const tt = input.timetable;
   if (!tt) return { zones: [], notes: [] };
-  const net = networkOf(tt);
+  const net = networkOf(tt, sameNameStationM(input.prefs));
   if (!net.stations.length) return { zones: [], notes: [] };
   const st = net.stations.map((s) => ({ id: s.id, at: s.at, radius: catchment(s.modes, input.prefs) }));
   const all = catchmentTiles(st);

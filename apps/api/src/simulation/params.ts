@@ -33,17 +33,42 @@ export const SWEEP_PARAM_IDS = Object.keys(SWEEP_PARAMS) as [SweepParam, ...Swee
 /** Settings that only take whole numbers; a Latin hypercube rounds them. */
 export const INTEGER_PARAMS: readonly SweepParam[] = ["stability_runs", "seed"];
 
+/** The project's signalling and driving values (`Signalling` of crates/rail-sim/src/capacity.rs). */
+const positive = z.number().finite().min(0).max(100_000);
+export const signallingParams = z.strictObject(
+  Object.fromEntries(
+    [
+      "route_setting_s",
+      "sight_reaction_s",
+      "release_s",
+      "sighting_m",
+      "overlap_release_s",
+      "approach_release_s",
+      "barrier_closing_s",
+      "signal_closing_s",
+      "moving_block_margin_m",
+      "supervision_tolerance_kmh",
+      "emergency_brake_factor",
+      "ato_brake_share",
+      "terminal_separation_s",
+    ].map((k) => [k, positive.optional()]),
+  ),
+);
+
 /** `CapacityParams` of crates/rail-sim/src/capacity.rs. Unknown settings are refused. */
 export const capacityParams = z
   .strictObject({
     from_s: seconds,
     to_s: seconds,
     ...Object.fromEntries(Object.entries(SWEEP_PARAMS).map(([k, v]) => [k, v.optional()])),
+    signalling: signallingParams.optional(),
   })
   .refine((p) => p.to_s > p.from_s, "the period must end after it starts") as z.ZodType<CapacitySettings>;
 
 /** The capacity run's settings: the period, and any other setting (missing ones take the kernel's defaults). */
-export type CapacitySettings = { from_s: number; to_s: number } & Partial<Record<SweepParam, number>>;
+export type CapacitySettings = { from_s: number; to_s: number } & Partial<Record<SweepParam, number>> & {
+    signalling?: Record<string, number>;
+  };
 
 /**
  * What a sweep can measure for each variant, from the capacity run's result, and which way is better. The

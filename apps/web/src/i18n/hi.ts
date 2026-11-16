@@ -3,6 +3,7 @@ import { editorsHi } from "./editors/hi";
 import { cargoBikeHi } from "./cargo-bike/hi";
 import { depotsHi } from "./depots/hi";
 import { mslabHi } from "./mslab/hi";
+import { populationHi } from "./population/hi";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -278,6 +279,10 @@ export const hi: Messages = {
   "prefs.delayLane": "पेंट की गई बस या ट्राम लेन में",
   "prefs.delayDefault": "धारणा पुस्तकालय: {value} %",
   "prefs.delayReset": "पुस्तकालय मान इस्तेमाल करें",
+  "prefs.stationsTitle": "स्टेशन",
+  "prefs.stationsIntro":
+    "इस दूरी के भीतर एक ही नाम वाले स्टॉप योजनाबद्ध नक्शे, यात्रा योजनाकार और लाभ व यात्री तालिकाओं में एक स्टेशन गिने जाते हैं।",
+  "prefs.libraryM": "धारणा पुस्तकालय: {value} मी",
   "prefs.currencyTitle": "मुद्रा",
   "prefs.currencyIntro":
     "परियोजना की सारी राशियाँ इसी मुद्रा में दिखती हैं: लागत तालिकाएँ, लाभ, परिदृश्य और कार्गो बाइक की बचत।",
@@ -299,6 +304,30 @@ export const hi: Messages = {
   "prefs.rulesChanged": "बदले गए: {count}",
   "prefs.rulesLibrary": "धारणा पुस्तकालय: {value} {unit}",
   "prefs.rulesLibraryRange": "धारणा पुस्तकालय: {value} {unit} (सीमा {low}–{high})",
+  "prefs.paramsTitle": "सभी पैरामीटर",
+  "prefs.paramsIntro":
+    "मान्यता लाइब्रेरी का हर मान। सभी साधनों या एक साधन के लिए अपना मान रखें; एक साधन का मान सभी साधनों वाले मान से ऊपर है। लाइब्रेरी का मान साथ में दिखता है।",
+  "prefs.paramsGroup": "समूह",
+  "prefs.paramsMode": "साधन",
+  "prefs.paramsAllModes": "सभी साधन",
+  "prefs.paramsFromAll": "सभी साधनों के लिए आपका मान",
+  "prefs.group.modes": "साधन",
+  "prefs.group.operations": "संचालन",
+  "prefs.group.demand": "मांग",
+  "prefs.group.analysis": "विश्लेषण",
+  "prefs.group.simulation": "सिमुलेशन",
+  "prefs.group.infrastructure": "अवसंरचना मानक",
+  "prefs.group.accessibility": "सुगम्यता",
+  "prefs.group.depots": "डिपो और सड़कें",
+  "prefs.group.energy": "ऊर्जा और जलवायु",
+  "prefs.group.cost": "लागत",
+  "prefs.group.benefits": "लाभ",
+  "prefs.group.fares": "किराया",
+  "prefs.traction.battery": "बैटरी",
+  "prefs.traction.diesel": "डीज़ल",
+  "prefs.traction.hydrogen": "हाइड्रोजन",
+  "prefs.traction.cng": "प्राकृतिक गैस (CNG)",
+  "prefs.traction.electric": "विद्युत",
   "prefs.accessTitle": "प्लेटफ़ॉर्म सुगम्यता",
   "prefs.accessIntro":
     "प्लेटफ़ॉर्म और ट्रेन के बीच सीढ़ी और अंतर की सीमाएँ (TSI PRM), और सूची में न होने वाली ट्रेनों की फ़र्श ऊँचाई। लाइनें हर स्टॉप पर जाँची जाती हैं।",
@@ -389,6 +418,7 @@ export const hi: Messages = {
   ...cargoBikeHi,
   ...depotsHi,
   ...mslabHi,
+  ...populationHi,
   ...roadHi,
   ...PLUGIN_MESSAGES.hi,
 };
