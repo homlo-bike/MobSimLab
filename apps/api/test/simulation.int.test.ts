@@ -285,6 +285,109 @@ describe.skipIf(!haveWorker)("simulation runs on the background worker", () => {
     expect((await waitFor(next.body.run.id)).status).toBe("done");
   });
 
+  // ---- AI agents (ADR-0035 §7) ---------------------------------------------------------------------
+  let rpcId = 1;
+  async function agentToken(sub: string): Promise<string> {
+    const r = await as(sub).post("/api/agents/tokens", {
+      name: `${sub} runs`,
+      scopes: ["simulation:run"],
+      expiresInDays: 1,
+    });
+    expect(r.status).toBe(201);
+    return r.body.token as string;
+  }
+  async function tool(token: string, name: string, args: object = {}) {
+    const r = await request(app.getHttpServer())
+      .post("/mcp")
+      .set("Authorization", `Bearer ${token}`)
+      .set("Accept", "application/json, text/event-stream")
+      .set("Content-Type", "application/json")
+      .send({ jsonrpc: "2.0", id: rpcId++, method: "tools/call", params: { name, arguments: args } });
+    expect(r.status).toBe(200);
+    const result = r.body.result as { content: { text: string }[]; isError?: boolean };
+    const text = result.content[0]?.text ?? "";
+    return { error: result.isError === true, text, json: result.isError ? null : JSON.parse(text) };
+  }
+
+  it("lets an agent sweep settings on the worker and read the Pareto front", async () => {
+    const token = await agentToken("alice");
+    const projects = (await tool(token, "list_projects")).json.projects;
+    expect(projects).toEqual([
+      expect.objectContaining({ id: project, my_role: "owner", can_start_runs: true }),
+    ]);
+    const started = await tool(token, "run_sweep", {
+      project_id: project,
+      network: { kind: "example" },
+      params: { ...AM, stability_runs: 2 },
+      design: { design: "grid", parameters: [{ name: "delayed_share", values: [0, 0.5] }] },
+      objectives: ["min_disturbed_punctuality", "vehicles"],
+    });
+    expect(started.error).toBe(false);
+    const id = started.json.run.id as string;
+    expect(started.json).toMatchObject({
+      variants: 2,
+      run: { kind: "sweep", started_by: "agent: alice runs" },
+    });
+    const done = await waitFor(id);
+    expect(done.status).toBe("done");
+    const status = await tool(token, "get_run_status", { project_id: project, run_id: id });
+    expect(status.json.result).toMatchObject({ variants_done: 2, variants_total: 2, variants_failed: 0 });
+    expect(status.json.result.pareto_front.length).toBeGreaterThan(0);
+    // Planners see the sweep in the project's runs, marked as started by the agent.
+    const listed = (await as("bob").get(runs())).body.runs.find((r: { id: string }) => r.id === id);
+    expect(listed).toMatchObject({ kind: "sweep", agent: "alice runs", design: { design: "grid" } });
+    // A capacity run on the network of a saved run, and the agent's view of the list.
+    const run = await tool(token, "start_run", {
+      project_id: project,
+      network: { kind: "run", run_id: id },
+      params: AM,
+    });
+    expect(run.error).toBe(false);
+    expect((await waitFor(run.json.run.id)).status).toBe("done");
+    const summary = await tool(token, "get_run_status", { project_id: project, run_id: run.json.run.id });
+    expect(summary.json.result.lines[0].id).toBe("M1");
+    const mine = (await tool(token, "list_runs", { project_id: project })).json.runs;
+    expect(mine.map((r: { id: string }) => r.id)).toEqual(expect.arrayContaining([id, run.json.run.id]));
+  });
+
+  it("holds an agent to its project role and its limit of runs at once", async () => {
+    const viewer = await agentToken("bob");
+    const refused = await tool(viewer, "start_run", {
+      project_id: project,
+      network: { kind: "example" },
+      params: AM,
+    });
+    expect(refused.error).toBe(true);
+    expect(refused.text).toContain("role");
+    const outsider = await agentToken("dave");
+    expect((await tool(outsider, "list_runs", { project_id: project })).text).toContain("not found");
+
+    await stopWorker();
+    const token = await agentToken("alice");
+    const start = () =>
+      tool(token, "start_run", { project_id: project, network: { kind: "example" }, params: AM });
+    const a = await start();
+    const b = await start();
+    expect(a.error || b.error).toBe(false);
+    const c = await start();
+    expect(c.error).toBe(true);
+    expect(c.text).toContain("the limit is 2");
+    // People are not held to the agent's limit.
+    const person = await as("alice").post(runs(), {
+      kind: "capacity",
+      network: { kind: "example" },
+      params: AM,
+      sweep: false,
+    });
+    expect(person.status).toBe(201);
+    for (const id of [a.json.run.id, b.json.run.id])
+      expect((await tool(token, "cancel_run", { project_id: project, run_id: id })).json.run.status).toBe(
+        "cancelled",
+      );
+    expect((await start()).error).toBe(false);
+    startWorker();
+  });
+
   it("marks a run failed when the worker stops without finishing it", async () => {
     await stopWorker();
     const res = await as("alice").post(runs(), {

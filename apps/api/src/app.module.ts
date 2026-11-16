@@ -24,9 +24,8 @@ import { PluginsService } from "./plugins/plugins.service";
 import { ProjectsController } from "./projects/projects.controller";
 import { ProjectsService } from "./projects/projects.service";
 import { SetupController } from "./setup/setup.controller";
-import { RunQueue } from "./simulation/queue";
 import { RunsController } from "./simulation/runs.controller";
-import { RunsService } from "./simulation/runs.service";
+import { SimulationModule } from "./simulation/simulation.module";
 
 /** Root module. Every route passes the global AccessGuard. */
 @Module({})
@@ -46,6 +45,7 @@ export class AppModule {
         EconomyModule,
         BenefitsModule,
         PlacesModule,
+        SimulationModule,
         AgentsModule,
       ],
       controllers: [
@@ -64,8 +64,6 @@ export class AppModule {
         PluginsService,
         ProjectsService,
         RateLimitService,
-        RunQueue,
-        RunsService,
         SessionService,
         UsersService,
         { provide: APP_GUARD, useClass: AccessGuard },

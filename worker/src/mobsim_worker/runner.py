@@ -15,6 +15,7 @@ import structlog
 from psycopg.types.json import Jsonb
 
 from mobsim_worker.jobs.capacity import KernelLoader, load_kernel, run_capacity
+from mobsim_worker.jobs.sweep import run_sweep
 from mobsim_worker.queue import Connection, Job, Queue
 
 log = structlog.get_logger("mobsim_worker")
@@ -144,14 +145,19 @@ def process(
     bound.info("run started")
     reporter = RunReporter(conn, queue, job, run_id, stop)
     try:
-        if kind != "capacity":
+        if kind not in ("capacity", "sweep"):
             raise ValueError(f"this worker cannot run {kind!r} runs")
         if cancel_requested:
             settle(conn, run_id, "cancelled", None, None)
             queue.complete(job, {"status": "cancelled"})
             return "cancelled"
         kernel = loader(network, lines)
-        outcome, result = run_capacity(kernel, dict(settings["params"]), bool(settings["sweep"]), reporter)
+        if kind == "sweep":
+            outcome, result = run_sweep(kernel, settings, reporter)
+        else:
+            outcome, result = run_capacity(
+                kernel, dict(settings["params"]), bool(settings["sweep"]), reporter
+            )
     except Exception as e:  # noqa: BLE001 (any failure of the run is reported on the run)
         message = str(e) or type(e).__name__
         bound.warning("run failed", error=message)
@@ -161,7 +167,11 @@ def process(
     if outcome == "done":
         settle(conn, run_id, "done", result, None)
         queue.complete(job, {"status": "done"})
-        bound.info("run done", verdict=(result.get("run") or {}).get("verdict"))
+        bound.info(
+            "run done",
+            verdict=(result.get("run") or {}).get("verdict"),
+            variants=len(result.get("variants", [])),
+        )
         return "done"
     if reporter.cancelled and not stop.is_set() and not reporter.lost:
         settle(conn, run_id, "cancelled", result, None)
