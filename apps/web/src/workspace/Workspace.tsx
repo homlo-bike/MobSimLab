@@ -32,8 +32,9 @@ import { StreetSetupEditor } from "../features/street-setup/StreetSetupEditor";
 import type { StreetSetup } from "../features/street-setup/types";
 import { useI18n } from "../i18n/i18n";
 import type { MessageKey } from "../i18n/messages";
-import { SpanLineEditor } from "../kits/SpanLineEditor";
-import { WaterRouteEditor } from "../kits/WaterRouteEditor";
+import type { PluginLinesDoc, SavedPluginLine } from "../kits/saved";
+import { type SpanDoc, SpanLineEditor } from "../kits/SpanLineEditor";
+import { type WaterDoc, WaterRouteEditor } from "../kits/WaterRouteEditor";
 import { type DemandZone, ZoneEditor } from "../kits/ZoneEditor";
 import { MapView } from "../map/MapView";
 import {
@@ -93,6 +94,7 @@ type SimView = "test" | "journey";
 type GisView = "streets" | "regions";
 const NO_REGIONS: Region[] = [];
 const NO_FEEDS: GtfsFeed[] = [];
+const NO_PLUGIN_LINES: Record<string, SavedPluginLine> = {};
 /** "street", "rail", or the id of a plugin tool (cable car, ferry…). */
 type Build = string;
 /** The economy API for the project's currency rate. */
@@ -154,8 +156,6 @@ export function Workspace({
   const [build, setBuild] = useState<Build | null>(null);
   // The street line as the tool last routed it, so the journey planner can ride it.
   const [line, setLine] = useState<StreetLineInput | null>(null);
-  // Cable car and ferry lines from the plugin tools, per tool, for the journey planner.
-  const [pluginLines, setPluginLines] = useState<Record<string, PluginLineInput | null>>({});
   // On-demand zones from the service zone kit, for the journey planner.
   const [demandZones, setDemandZones] = useState<Record<string, DemandZone | null>>({});
   // The track topology last built in the railway tool, so street lines wait at its level crossings.
@@ -164,7 +164,6 @@ export function Workspace({
   const [printing, setPrinting] = useState(false);
   useEffect(() => {
     setLine(null);
-    setPluginLines({});
     setRailTopology(null);
   }, [projectId]);
   if (import.meta.env.DEV) Object.assign(window, { mobsimMap: map });
@@ -216,6 +215,16 @@ export function Workspace({
   const drawings = useDrawings(api, projectId, editable);
   const streetLines = drawings.doc<StreetLinesDoc>("street-lines");
   const railway = drawings.doc<Network>("railway");
+  // Cable car, people mover and ferry lines of the plugin tools, per tool: the drawing, the line the journey
+  // planner rides and the shape the noise map needs.
+  const pluginSaved = drawings.doc<PluginLinesDoc>("plugin-lines")?.tools ?? NO_PLUGIN_LINES;
+  const pluginLines: Record<string, PluginLineInput | null> = Object.fromEntries(
+    Object.entries(pluginSaved).map(([id, x]) => [id, x.line]),
+  );
+  const savePluginLine = (id: string, saved: SavedPluginLine) =>
+    drawings.set("plugin-lines", {
+      tools: { ...(drawings.doc<PluginLinesDoc>("plugin-lines")?.tools ?? {}), [id]: saved },
+    } satisfies PluginLinesDoc);
   // The trains of the rail service lines as last published in the railway tool, for the journey planner.
   const railLines = drawings.doc<Timetable>("rail-timetable");
   // Existing networks imported from GTFS feeds (GTFS plugin), for the journey planner.
@@ -450,16 +459,21 @@ export function Workspace({
               onPublish={(tt) => tt && drawings.set("rail-timetable", tt)}
             />
           )}
-          {project && tab === "create" && editable && chosenPlugin?.kit === "straight-spans" && (
-            <SpanLineEditor
-              key={`${projectId}-${chosenPlugin.id}`}
-              map={map}
-              panel={panel}
-              tool={chosenPlugin}
-              storageKey={`mobsimlab:${chosenPlugin.id}:${projectId}`}
-              onLineChange={(l) => setPluginLines((p) => ({ ...p, [chosenPlugin.id]: l }))}
-            />
-          )}
+          {project &&
+            drawings.loaded &&
+            tab === "create" &&
+            editable &&
+            chosenPlugin?.kit === "straight-spans" && (
+              <SpanLineEditor
+                key={`${projectId}-${chosenPlugin.id}-${drawings.generation("plugin-lines")}`}
+                map={map}
+                panel={panel}
+                tool={chosenPlugin}
+                storageKey={`mobsimlab:${chosenPlugin.id}:${projectId}`}
+                initial={pluginSaved[chosenPlugin.id]?.doc as Partial<SpanDoc> | undefined}
+                onSave={(x) => savePluginLine(chosenPlugin.id, x)}
+              />
+            )}
           {project && tab === "create" && editable && chosenPlugin?.kit === "service-zone" && (
             <ZoneEditor
               key={`${projectId}-${chosenPlugin.id}`}
@@ -470,15 +484,21 @@ export function Workspace({
               onZoneChange={(z) => setDemandZones((p) => ({ ...p, [chosenPlugin.id]: z }))}
             />
           )}
-          {project && tab === "create" && editable && chosenPlugin?.kit === "water-route" && (
-            <WaterRouteEditor
-              map={map}
-              panel={panel}
-              tool={chosenPlugin}
-              storageKey={`mobsimlab:${chosenPlugin.id}:${projectId}`}
-              onLineChange={(l) => setPluginLines((p) => ({ ...p, [chosenPlugin.id]: l }))}
-            />
-          )}
+          {project &&
+            drawings.loaded &&
+            tab === "create" &&
+            editable &&
+            chosenPlugin?.kit === "water-route" && (
+              <WaterRouteEditor
+                key={`${projectId}-${chosenPlugin.id}-${drawings.generation("plugin-lines")}`}
+                map={map}
+                panel={panel}
+                tool={chosenPlugin}
+                storageKey={`mobsimlab:${chosenPlugin.id}:${projectId}`}
+                initial={pluginSaved[chosenPlugin.id]?.doc as Partial<WaterDoc> | undefined}
+                onSave={(x) => savePluginLine(chosenPlugin.id, x)}
+              />
+            )}
           {project && drawings.loaded && tab === "gis" && gis === "regions" && (
             <RegionEditor
               map={map}
@@ -804,6 +824,7 @@ export function Workspace({
                     map={map}
                     streetLines={streetLines}
                     railway={railway}
+                    pluginLines={pluginSaved}
                     preferences={preferences?.values}
                   />
                 </div>

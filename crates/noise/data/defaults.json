@@ -466,6 +466,13 @@
     100,
     110
    ]
+  },
+  "noise.ferry_source_height_m": {
+   "*": [
+    3,
+    5,
+    10
+   ]
   }
  },
  "enums": {

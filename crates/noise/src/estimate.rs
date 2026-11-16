@@ -105,7 +105,8 @@ pub struct LineInput {
     pub stops_m: Vec<f64>,
 }
 
-/// A fixed source of known A-weighted sound power (cable car tower or station, ferry berth).
+/// A fixed source of A-weighted sound power: a cable car tower or station, a ferry at the berth,
+/// or a stretch of a ferry route (the vessels' time there spread over the hour).
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PointSourceInput {
     /// Id.
@@ -118,9 +119,22 @@ pub struct PointSourceInput {
     /// Height above ground, m.
     #[serde(default)]
     pub height_m: f64,
-    /// Sound power while operating, dB(A).
-    pub lw_dba: f64,
-    /// Share of each period it operates, 0–1.
+    /// Noise parameter with the height above ground, m (central value), which then replaces
+    /// `height_m`, such as `noise.ferry_source_height_m`.
+    #[serde(default)]
+    pub height_key: Option<String>,
+    /// Sound power while operating, dB(A), when it is known; else `lw_key` gives it.
+    #[serde(default)]
+    pub lw_dba: Option<f64>,
+    /// Noise parameter with the sound power while operating, dB(A), such as
+    /// `noise.cable_car_tower_lw_db`: its low, central and high values give the three variants.
+    #[serde(default)]
+    pub lw_key: Option<String>,
+    /// Contexts to look `lw_key` up in, most specific first (`cable_car/3s`, `cable_car`).
+    #[serde(default)]
+    pub context: Vec<String>,
+    /// How much of each period it operates: the share of the time for one source (0–1), or the
+    /// mean number operating at once where several can be (vessels at one pier).
     pub active: Flows,
 }
 
@@ -745,16 +759,25 @@ pub fn estimate(input: &EstimateInput) -> Estimate {
     }
     let n_lines = input.lines.len();
     for (pi, ps) in input.point_sources.iter().enumerate() {
-        let w = pow10(ps.lw_dba);
-        let flat = [w / NB as f64; NB];
+        let lw: [f64; 3] = match (&ps.lw_key, ps.lw_dba) {
+            (Some(k), _) if lib.has(k) => lib.range_in(k, &ps.context),
+            (_, Some(x)) => [x; 3],
+            _ => [f64::NEG_INFINITY; 3],
+        };
+        let power = lw.map(|x| [pow10(x) / NB as f64; NB]);
+        let h = match &ps.height_key {
+            Some(k) if lib.has(k) => lib.range_in(k, &ps.context)[1],
+            _ => ps.height_m,
+        }
+        .max(0.0);
         elements.push(Element {
             p: ps.p,
             dipole: None,
-            table: table_of(ps.height_m.max(0.0), Vertical::None),
-            h: ps.height_m.max(0.0),
-            z: ps.height_m.max(0.0),
+            table: table_of(h, Vertical::None),
+            h,
+            z: h,
             owner: n_lines + pi,
-            power: [flat; 3],
+            power,
         });
     }
     // Buildings and terrain for the map grid (step N2); sources stand on the ground.
@@ -777,15 +800,17 @@ pub fn estimate(input: &EstimateInput) -> Estimate {
     let buckets = Buckets::new(&elements, 50.0);
 
     // Period flows per owner.
-    let flows: Vec<[f64; 3]> =
-        input
-            .lines
-            .iter()
-            .map(|l| [l.flows.day, l.flows.evening, l.flows.night].map(|x| x.max(0.0)))
-            .chain(input.point_sources.iter().map(|p| {
-                [p.active.day, p.active.evening, p.active.night].map(|x| x.clamp(0.0, 1.0))
-            }))
-            .collect();
+    let flows: Vec<[f64; 3]> = input
+        .lines
+        .iter()
+        .map(|l| [l.flows.day, l.flows.evening, l.flows.night].map(|x| x.max(0.0)))
+        .chain(
+            input
+                .point_sources
+                .iter()
+                .map(|p| [p.active.day, p.active.evening, p.active.night].map(|x| x.max(0.0))),
+        )
+        .collect();
 
     // Energy per owner at a receiver, per variant (central only when `all` is false).
     let mut scratch = vec![[0.0f64; 3]; flows.len()];
