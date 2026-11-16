@@ -54,6 +54,8 @@ export const loadWasmEngine: EngineLoader = async () => {
     setName: (id, name) => v(ed.set_name(id, name)),
     setDepot: ([lon, lat]) => v(ed.set_depot(lon, lat)),
     clearDepot: () => v(ed.clear_depot()),
+    setDepotGates: (exits, entrances) =>
+      v(ed.set_depot_gates(JSON.stringify(exits), JSON.stringify(entrances))),
     optimise: () => v(ed.optimise()),
     setSettings: (p, r) => v(ed.set_settings(JSON.stringify(p), JSON.stringify(r))),
     setLevelCrossings: (topology, closures) => v(ed.set_level_crossings(topology, closures)),

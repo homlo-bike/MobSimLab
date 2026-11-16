@@ -7,13 +7,18 @@ import { Placeholder } from "./Placeholder";
 import type { ProjectPlugin } from "../plugins/registry";
 import { ProjectPlugins } from "./ProjectPlugins";
 import { DesignRulesSection } from "./DesignRules";
+import { VehicleChoiceSection } from "./VehicleChoice";
+import { SwitchChoiceSection } from "./SwitchChoice";
+import { ParametersSection } from "./Parameters";
+import { roadValue } from "../features/road-sim/params";
+import { StationsSection } from "./StationsSection";
 import { CURRENCY_CODES } from "../features/costs/currencies";
 import { type CurrencyState, NO_CURRENCY, RATE_PREF, withCurrency } from "../features/costs/currency";
 
 /**
  * Preferences tab (mockup "Project preferences"): the project's name, description, study area and modes, which
- * Owners and Editors can change, and the design rules per rail mode. Vehicles, switches, calendar, demand and
- * costs follow.
+ * Owners and Editors can change, the design rules per rail mode and the catalogue vehicles and switches used.
+ * Calendar, demand and costs follow.
  */
 export function ProjectPreferences({
   api,
@@ -139,6 +144,18 @@ export function ProjectPreferences({
           editable={editable && !!onPreferences}
           onPreferences={(d) => onPreferences?.(d)}
         />
+        <VehicleChoiceSection
+          projectModes={project.modes}
+          preferences={preferences}
+          editable={editable && !!onPreferences}
+          onPreferences={(d) => onPreferences?.(d)}
+        />
+        <SwitchChoiceSection
+          projectModes={project.modes}
+          preferences={preferences}
+          editable={editable && !!onPreferences}
+          onPreferences={(d) => onPreferences?.(d)}
+        />
         <section
           aria-labelledby="pp-delay"
           className="mt-6 rounded-2xl border border-slate-200 bg-white p-4 md:p-6"
@@ -161,24 +178,54 @@ export function ProjectPreferences({
           </div>
           {!editable && <p className="mt-3 text-sm text-slate-500">{t("prefs.readOnly")}</p>}
         </section>
+        <section
+          aria-labelledby="pp-road"
+          className="mt-6 rounded-2xl border border-slate-200 bg-white p-4 md:p-6"
+        >
+          <h2 id="pp-road" className="caps m-0">
+            {t("prefs.roadTitle")}
+          </h2>
+          <p className="mt-1 text-sm text-slate-600">{t("prefs.roadIntro")}</p>
+          <div className="mt-2 flex flex-col gap-1">
+            <ShareField
+              label={t("prefs.offPeakTraffic")}
+              library={OFF_PEAK_LIBRARY}
+              max={1}
+              value={prefValue(preferences, OFF_PEAK_PREF)}
+              editable={editable && !!onPreferences}
+              onChange={(v) => onPreferences?.(withPref(preferences, OFF_PEAK_PREF, v))}
+            />
+          </div>
+          {!editable && <p className="mt-3 text-sm text-slate-500">{t("prefs.readOnly")}</p>}
+        </section>
+        <StationsSection
+          preferences={preferences}
+          editable={editable && !!onPreferences}
+          onPreferences={(d) => onPreferences?.(d)}
+        />
         <CurrencySection
           state={currency}
           preferences={preferences}
           editable={editable && !!onPreferences}
           onPreferences={(d) => onPreferences?.(d)}
         />
+        <ParametersSection
+          preferences={preferences}
+          editable={editable && !!onPreferences}
+          onPreferences={(d) => onPreferences?.(d)}
+        />
         {onSetPlugin && <ProjectPlugins plugins={plugins} manage={can.manage(project)} onSet={onSetPlugin} />}
         <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-4 md:p-6">
-          <Placeholder
-            title="prefs.moreTitle"
-            intro="prefs.moreIntro"
-            items={["prefs.vehicles", "prefs.switches", "prefs.calendar"]}
-          />
+          <Placeholder title="prefs.moreTitle" intro="prefs.moreIntro" items={["prefs.calendar"]} />
         </div>
       </div>
     </div>
   );
 }
+
+/** Off-peak traffic of the road simulation, as a share of each street's peak value. */
+const OFF_PEAK_PREF = "road.off_peak_traffic_share";
+const OFF_PEAK_LIBRARY = roadValue(OFF_PEAK_PREF, "*", undefined)[1];
 
 const pct = (share: number) => String(Math.round(share * 1000) / 10);
 
@@ -189,12 +236,15 @@ const pct = (share: number) => String(Math.round(share * 1000) / 10);
 function ShareField({
   label,
   library,
+  max = MAX_DELAY_SHARE,
   value,
   editable,
   onChange,
 }: {
   label: string;
   library: number;
+  /** Largest share accepted. */
+  max?: number;
   value: number | undefined;
   editable: boolean;
   onChange: (share: number | null) => void;
@@ -206,7 +256,7 @@ function ShareField({
   const [text, setText] = useState<string | null>(null);
   const commit = (raw: string) => {
     const n = Number(raw.replace(",", "."));
-    if (raw.trim() === "" || !Number.isFinite(n) || n < 0 || n > MAX_DELAY_SHARE * 100) return;
+    if (raw.trim() === "" || !Number.isFinite(n) || n < 0 || n > max * 100) return;
     const share = Math.round(n * 10) / 1000;
     onChange(Math.abs(share - library) < 1e-9 ? null : share);
   };
@@ -222,7 +272,7 @@ function ShareField({
             type="number"
             inputMode="decimal"
             min={0}
-            max={MAX_DELAY_SHARE * 100}
+            max={max * 100}
             step={1}
             disabled={!editable}
             value={text ?? shown}

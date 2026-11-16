@@ -1,5 +1,8 @@
+import { roadPt } from "./road/pt";
 import { editorsPt } from "./editors/pt";
 import { cargoBikePt } from "./cargo-bike/pt";
+import { depotsPt } from "./depots/pt";
+import { populationPt } from "./population/pt";
 import { pluginsPt } from "./plugins/pt";
 import type { Messages } from "./en";
 
@@ -278,6 +281,10 @@ export const pt: Messages = {
   "prefs.delayLane": "Em uma faixa pintada de ônibus ou bonde",
   "prefs.delayDefault": "Biblioteca de premissas: {value} %",
   "prefs.delayReset": "Usar o valor da biblioteca",
+  "prefs.stationsTitle": "Estações",
+  "prefs.stationsIntro":
+    "Paradas com o mesmo nome dentro desta distância contam como uma só estação no mapa esquemático, no planejador de viagens e nas tabelas de benefícios e de passageiros.",
+  "prefs.libraryM": "Biblioteca de premissas: {value} m",
   "prefs.currencyTitle": "Moeda",
   "prefs.currencyIntro":
     "Todo o dinheiro do projeto é mostrado nesta moeda: tabelas de custos, benefícios, cenários e poupanças da bicicleta de carga.",
@@ -299,8 +306,50 @@ export const pt: Messages = {
   "prefs.rulesChanged": "{count} alterados",
   "prefs.rulesLibrary": "Biblioteca de premissas: {value} {unit}",
   "prefs.rulesLibraryRange": "Biblioteca de premissas: {value} {unit} (intervalo {low}–{high})",
-  "prefs.vehicles": "Veículos usados, do catálogo de veículos",
-  "prefs.switches": "Aparelhos de mudança de via, do catálogo",
+  "prefs.paramsTitle": "Todos os parâmetros",
+  "prefs.paramsIntro":
+    "Cada valor da biblioteca de pressupostos. Defina o seu para todos os modos ou para um modo; o valor de um modo prevalece sobre o de todos os modos. O valor da biblioteca fica ao lado.",
+  "prefs.paramsGroup": "Grupo",
+  "prefs.paramsMode": "Modo",
+  "prefs.paramsAllModes": "Todos os modos",
+  "prefs.paramsFromAll": "o seu valor para todos os modos",
+  "prefs.group.modes": "Modos",
+  "prefs.group.operations": "Operação",
+  "prefs.group.demand": "Procura",
+  "prefs.group.analysis": "Análise",
+  "prefs.group.simulation": "Simulação",
+  "prefs.group.infrastructure": "Normas de infraestrutura",
+  "prefs.group.accessibility": "Acessibilidade",
+  "prefs.group.depots": "Depósitos e ruas",
+  "prefs.group.energy": "Energia e clima",
+  "prefs.group.cost": "Custos",
+  "prefs.group.benefits": "Benefícios",
+  "prefs.group.fares": "Tarifas",
+  "prefs.traction.battery": "bateria",
+  "prefs.traction.diesel": "diesel",
+  "prefs.traction.hydrogen": "hidrogénio",
+  "prefs.traction.cng": "gás natural (GNC)",
+  "prefs.traction.electric": "elétrico",
+  "prefs.accessTitle": "Acessibilidade da plataforma",
+  "prefs.accessIntro":
+    "Limites de degrau e vão entre plataforma e trem (ETI PMR) e a altura de piso usada para trens sem dado no catálogo. As linhas são verificadas em cada parada.",
+  "prefs.vehiclesTitle": "Veículos",
+  "prefs.vehiclesIntro":
+    "Os veículos do catálogo que este projeto usa, por modo. As ferramentas de linhas de rua e ferroviárias só oferecem os marcados.",
+  "prefs.vehiclesMode": "Modo",
+  "prefs.vehiclesUsed": "{used} de {total} em uso",
+  "prefs.vehiclesAll": "Usar todos",
+  "prefs.vehiclesFacts": "{length} m · {places} lugares · {speed} km/h",
+  "prefs.vehiclesLast": "Cada modo mantém pelo menos um veículo em uso.",
+  "prefs.switchesTitle": "Aparelhos de mudança de via",
+  "prefs.switchesIntro":
+    "Os aparelhos de mudança de via e cruzamentos do catálogo que o editor ferroviário oferece, por modo ferroviário, e o aparelho com que começam os novos.",
+  "prefs.switchesTurnouts": "Aparelhos de via",
+  "prefs.switchesSlips": "Travessões em cruzamentos",
+  "prefs.switchesDefault": "Predefinido",
+  "prefs.switchesFacts": "1:{n} · R {radius} m · {speed} km/h no desvio",
+  "prefs.switchesLast":
+    "O aparelho predefinido continua em uso. Para o retirar, escolha primeiro outro predefinido.",
   "prefs.calendar": "Calendário, demanda e custos",
 
   "job.stepOf": "Passo {step} de {steps}",
@@ -372,5 +421,8 @@ export const pt: Messages = {
 
   ...editorsPt,
   ...cargoBikePt,
+  ...depotsPt,
+  ...populationPt,
+  ...roadPt,
   ...pluginsPt,
 };

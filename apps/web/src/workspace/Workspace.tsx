@@ -3,6 +3,7 @@ import { type ReactNode, Suspense, useCallback, useEffect, useMemo, useState } f
 import type { Estimate as BenefitEstimate } from "../features/benefits/model";
 import type { Triple } from "../features/benefits/params";
 import type { BenefitsDoc } from "../features/benefits/formulas";
+import { benefitsApi } from "../features/benefits/data";
 import type { Region, RegionsDoc } from "../features/benefits/regions";
 import { projectTimetable } from "../features/benefits/timetable";
 import type { CargoBikeDoc } from "../features/cargo-bike/model";
@@ -10,6 +11,7 @@ import { economyApi, type Prices } from "../features/costs/economy";
 import { useProjectCurrency } from "../features/costs/currency";
 import type { Estimate as CostEstimate } from "../features/costs/model";
 import type { CostsDoc } from "../features/costs/CostTables";
+import type { FaresDoc } from "../features/fares/model";
 import type { ScenariosDoc } from "../features/tables/scenarioModel";
 import { noiseCalculationIn } from "../features/noise/plugin";
 import type { PluginLineInput, StreetLineInput } from "../features/journey-planner/network";
@@ -67,15 +69,26 @@ import { HelpMenu } from "../shell/HelpMenu";
 import { lazyNamed, LoadingScreen } from "../shell/lazy";
 import { TopBar } from "../shell/TopBar";
 import { PROJECT_TOUR, Tour } from "../shell/Tour";
-import { delaysFrom, designValuesFrom, type PreferencesDoc } from "./preferences";
+import {
+  delaysFrom,
+  designValuesFrom,
+  type PreferencesDoc,
+  sameNameStationM,
+  switchChoiceFrom,
+  vehiclesOffFrom,
+} from "./preferences";
+import { VehiclesOffContext } from "./projectVehicles";
 import type { DelayShares } from "../features/street-lines/types";
 import { type Drawings, useDrawings } from "./useDrawings";
+import type { DepotsDoc, SavedDepot } from "../features/depots/types";
 
 // Editors and screens downloaded when first opened, so opening a project fetches only the tab shown.
 const BenefitTables = lazyNamed(() => import("../features/benefits/BenefitTables"), "BenefitTables");
 const RegionEditor = lazyNamed(() => import("../features/benefits/RegionEditor"), "RegionEditor");
+const PopulationPanel = lazyNamed(() => import("../features/population/PopulationPanel"), "PopulationPanel");
 const CargoBikeTab = lazyNamed(() => import("../features/cargo-bike/CargoBikeTab"), "CargoBikeTab");
 const CapacityRun = lazyNamed(() => import("../features/capacity/CapacityRun"), "CapacityRun");
+const RoadSimulation = lazyNamed(() => import("../features/road-sim/RoadSimulation"), "RoadSimulation");
 const CostTables = lazyNamed(() => import("../features/costs/CostTables"), "CostTables");
 const WalkAnalysis = lazyNamed(() => import("../features/walk/WalkAnalysis"), "WalkAnalysis");
 const JourneyPlanner = lazyNamed(
@@ -84,6 +97,7 @@ const JourneyPlanner = lazyNamed(
 );
 const NoiseMap = lazyNamed(() => import("../features/noise/NoiseMap"), "NoiseMap");
 const NetworkTables = lazyNamed(() => import("../features/tables/NetworkTables"), "NetworkTables");
+const FareTables = lazyNamed(() => import("../features/fares/FareTables"), "FareTables");
 const Scenarios = lazyNamed(() => import("../features/tables/Scenarios"), "Scenarios");
 const RailwayEditor = lazyNamed(() => import("../features/railways/RailwayEditor"), "RailwayEditor");
 const Schematic = lazyNamed(() => import("../features/schematic/Schematic"), "Schematic");
@@ -100,6 +114,7 @@ const WaterRouteEditor = lazyNamed(() => import("../kits/WaterRouteEditor"), "Wa
 const ZoneEditor = lazyNamed(() => import("../kits/ZoneEditor"), "ZoneEditor");
 const PrintReport = lazyNamed(() => import("./PrintReport"), "PrintReport");
 const ProjectPreferences = lazyNamed(() => import("./ProjectPreferences"), "ProjectPreferences");
+const DepotEditor = lazyNamed(() => import("../features/depots/DepotEditor"), "DepotEditor");
 
 type IconFn = (p: { size?: number }) => ReactNode;
 const TAB_ICONS: Record<CoreTab, IconFn> = {
@@ -120,11 +135,12 @@ const MAP_TABS: readonly Tab[] = ["simulator", "create", "gis", ...PLUGIN_TABS.m
 const NO_SETUPS: StreetSetup[] = [];
 const NO_STREET_LINES: SavedStreetLine[] = [];
 
-type SimView = "test" | "journey";
-type GisView = "streets" | "regions";
+type SimView = "test" | "journey" | "road";
+type GisView = "streets" | "regions" | "population";
 const NO_REGIONS: Region[] = [];
 const NO_FEEDS: GtfsFeed[] = [];
-/** "street", "rail", or the id of a plugin tool (cable car, ferry…). */
+const NO_DEPOTS: SavedDepot[] = [];
+/** "street", "rail", "depots", or the id of a plugin tool (cable car, ferry…). */
 type Build = string;
 /** The economy API for the project's currency rate. */
 const ECONOMY = economyApi();
@@ -173,24 +189,36 @@ export function Workspace({
     currency: string | null;
     country: string | null;
     rate: number;
+    /** Units of the currency per 2023 international dollar (PPP factor × price escalation), for fares. */
+    perIntl: number;
   } | null>(null);
   const onCostEstimate = useCallback(
     (estimate: CostEstimate, prices: Prices, country: string | null, rate: number) =>
-      setCostInfo({ estimate, currency: prices.currency, country, rate }),
+      setCostInfo({
+        estimate,
+        currency: prices.currency,
+        country,
+        rate,
+        perIntl: prices.ppp * prices.escalation,
+      }),
     [],
   );
-  // The benefit estimate's riders a weekday per line (low, medium, high), for the service table.
-  const [riders, setRiders] = useState<Record<string, Triple> | null>(null);
-  const onBenefitEstimate = useCallback(
-    (e: BenefitEstimate | null) =>
-      setRiders(
-        e
-          ? Object.fromEntries(
-              e.rows.filter((r) => r.scope === "line").map((r) => [r.id, r.values.ridership_daily]),
-            )
-          : null,
-      ),
-    [],
+  // The benefit estimate: riders a weekday per line (low, medium, high) for the service table, and
+  // boardings a year for the fare revenue table.
+  const [benefitEst, setBenefitEst] = useState<BenefitEstimate | null>(null);
+  const riders = useMemo(
+    () =>
+      benefitEst
+        ? (Object.fromEntries(
+            benefitEst.rows.filter((r) => r.scope === "line").map((r) => [r.id, r.values.ridership_daily]),
+          ) as Record<string, Triple>)
+        : null,
+    [benefitEst],
+  );
+  const onBenefitEstimate = useCallback((e: BenefitEstimate | null) => setBenefitEst(e), []);
+  const farePrices = useMemo(
+    () => (costInfo ? { currency: costInfo.currency, perIntl: costInfo.perIntl } : null),
+    [costInfo?.currency, costInfo?.perIntl],
   );
   const [build, setBuild] = useState<Build | null>(null);
   // The street line being edited, as the tool last routed it, so the journey planner can ride it.
@@ -262,6 +290,25 @@ export function Workspace({
     () => (projectKey && typeof api.runs === "function" ? api.runs(projectKey) : null),
     [api, projectKey],
   );
+  const roadRuns = useMemo(
+    () => (projectKey && typeof api.roadRuns === "function" ? api.roadRuns(projectKey) : null),
+    [api, projectKey],
+  );
+  // The project's population layers (GIS tab). `populationVersion` changes when the layer the project uses
+  // changes, so the noise map, the walk analysis and the benefit tables fetch their people again.
+  const population = useMemo(
+    () => (projectKey && typeof api.population === "function" ? api.population(projectKey) : null),
+    [api, projectKey],
+  );
+  const [populationVersion, setPopulationVersion] = useState(0);
+  const fetchPeople = useMemo(
+    () => (population ? (bbox: [number, number, number, number]) => population.grid(bbox) : undefined),
+    [population, populationVersion],
+  );
+  const benefitsApiOfProject = useMemo(
+    () => (population ? benefitsApi(undefined, population.catchments) : undefined),
+    [population, populationVersion],
+  );
 
   // What is drawn in the project, saved with it a moment after each change.
   const drawings = useDrawings(api, projectId, editable);
@@ -280,6 +327,8 @@ export function Workspace({
   const benefitsDoc = drawings.doc<BenefitsDoc>("benefits");
   // Project preferences: assumption values the project changes, such as the delays in traffic.
   const preferences = drawings.doc<PreferencesDoc>("preferences");
+  // Road depots shared by the street lines (depot tool).
+  const depotsDoc = drawings.doc<DepotsDoc>("depots");
   // The currency all money is shown in, and its exchange rate (Project preferences).
   const currencyState = useProjectCurrency(preferences, ECONOMY);
   const currency = currencyState.currency;
@@ -287,6 +336,16 @@ export function Workspace({
   const delays = useMemo(() => JSON.parse(delaysJson) as DelayShares, [delaysJson]);
   const rulesJson = JSON.stringify(designValuesFrom(preferences));
   const designValues = useMemo(() => JSON.parse(rulesJson) as Record<string, number>, [rulesJson]);
+  const switchJson = JSON.stringify(switchChoiceFrom(preferences));
+  const switchChoice = useMemo(
+    () => JSON.parse(switchJson) as ReturnType<typeof switchChoiceFrom>,
+    [switchJson],
+  );
+  const offJson = JSON.stringify([...vehiclesOffFrom(preferences)]);
+  const vehiclesOff = useMemo(
+    () => new Set(JSON.parse(offJson) as string[]) as ReadonlySet<string>,
+    [offJson],
+  );
   // Street setups made before projects saved drawings were kept in this browser: move them to the project once.
   useEffect(() => {
     if (!drawings.loaded || !editable) return;
@@ -512,14 +571,16 @@ export function Workspace({
       : tab === "create"
         ? chosen === "rail"
           ? t("create.rail")
-          : chosenPlugin
-            ? chosenPlugin.label
-            : t("create.street")
+          : chosen === "depots"
+            ? t("create.depots")
+            : chosenPlugin
+              ? chosenPlugin.label
+              : t("create.street")
         : tabLabel(pluginTab ? pluginTab.id : "gis");
   const pluginLineList = Object.values(pluginLines).filter((l): l is PluginLineInput => l !== null);
   const demandZoneList = Object.values(demandZones).filter((z): z is DemandZone => z !== null);
 
-  return (
+  const body = (
     <div className="flex h-full flex-col">
       {top}
       {drawings.clash && (
@@ -578,6 +639,19 @@ export function Workspace({
                   />
                 }
                 railTopology={railTopology}
+                depots={depotsDoc?.depots ?? NO_DEPOTS}
+                onOpenDepots={() => setBuild("depots")}
+              />
+            )}
+            {project && drawings.loaded && tab === "create" && editable && chosen === "depots" && (
+              <DepotEditor
+                key={`${projectId}-${drawings.generation("depots")}`}
+                map={map}
+                panel={panel}
+                doc={depotsDoc ?? null}
+                onDoc={(d) => drawings.set("depots", d)}
+                lines={savedStreet}
+                prefs={preferences?.values}
               />
             )}
             {project && drawings.loaded && tab === "create" && editable && chosen === "rail" && (
@@ -588,6 +662,8 @@ export function Workspace({
                 streetSetups={setups}
                 delays={delays}
                 designValues={designValues}
+                prefValues={preferences?.values}
+                switchChoice={switchChoice}
                 existingRailways={existingRailways}
                 initial={railway}
                 onDocChange={(d) => drawings.set("railway", d)}
@@ -634,6 +710,15 @@ export function Workspace({
                 currency={currency?.code ?? costInfo?.currency ?? null}
               />
             )}
+            {project && tab === "gis" && gis === "population" && (
+              <PopulationPanel
+                map={map}
+                panel={panel}
+                api={population}
+                editable={editable}
+                onPrimaryChange={() => setPopulationVersion((n) => n + 1)}
+              />
+            )}
             {project && drawings.loaded && tab === "gis" && gis === "streets" && (
               <StreetSetupEditor
                 map={map}
@@ -663,6 +748,7 @@ export function Workspace({
                 railLines={railLines}
                 pluginLines={pluginLineList}
                 demandZones={demandZoneList}
+                sameNameM={sameNameStationM(preferences?.values)}
                 gtfsFeeds={gtfsFeeds}
                 {...(editable ? { onGtfsFeeds: (d: GtfsNetworkDoc) => drawings.set("gtfs-network", d) } : {})}
                 projectName={project.name}
@@ -775,6 +861,7 @@ export function Workspace({
                   railway={railway}
                   streetLines={streetLines}
                   pluginLines={pluginLineList}
+                  sameNameM={sameNameStationM(preferences?.values)}
                   doc={drawings.doc<SchematicDoc>("schematic")}
                   onDoc={editable ? (d) => drawings.set("schematic", d) : undefined}
                   projectName={project.name}
@@ -821,6 +908,7 @@ export function Workspace({
                 )}
                 {project && drawings.loaded && (
                   <BenefitTables
+                    api={benefitsApiOfProject}
                     timetable={networkTimetable}
                     regions={regions}
                     preferences={preferences}
@@ -829,6 +917,19 @@ export function Workspace({
                     onDoc={editable ? (d) => drawings.set("benefits", d) : undefined}
                     costs={costInfo}
                     onEstimate={onBenefitEstimate}
+                  />
+                )}
+                {project && drawings.loaded && (
+                  <FareTables
+                    benefits={benefitEst}
+                    railway={railway}
+                    streetLines={streetLines}
+                    pluginLines={pluginLineList}
+                    schematic={drawings.doc<SchematicDoc>("schematic")}
+                    boardings={benefitsDoc?.boardings}
+                    prices={farePrices}
+                    doc={drawings.doc<FaresDoc>("fares")}
+                    onDoc={editable ? (d) => drawings.set("fares", d) : undefined}
                   />
                 )}
                 {project && drawings.loaded && (
@@ -880,6 +981,14 @@ export function Workspace({
                   >
                     {t("sim.journey")}
                   </button>
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={sim === "road"}
+                    onClick={() => setSim("road")}
+                  >
+                    {t("sim.road")}
+                  </button>
                 </div>
               </div>
             )}
@@ -902,6 +1011,14 @@ export function Workspace({
                   >
                     {t("gis.regionsView")}
                   </button>
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={gis === "population"}
+                    onClick={() => setGis("population")}
+                  >
+                    {t("gis.populationView")}
+                  </button>
                 </div>
               </div>
             )}
@@ -923,6 +1040,14 @@ export function Workspace({
                     onClick={() => setBuild("rail")}
                   >
                     {t("create.rail")}
+                  </button>
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={chosen === "depots"}
+                    onClick={() => setBuild("depots")}
+                  >
+                    {t("create.depots")}
                   </button>
                   {PLUGIN_TOOLS.map((x) => (
                     <button
@@ -967,6 +1092,19 @@ export function Workspace({
                   />
                 </LoadingScreen>
               )}
+              {tab === "simulator" && sim === "road" && (
+                <LoadingScreen>
+                  <RoadSimulation
+                    api={roadRuns}
+                    canRun={editable}
+                    map={map}
+                    streetLines={streetLines?.lines}
+                    depots={depotsDoc?.depots}
+                    setups={setups}
+                    prefs={preferences?.values}
+                  />
+                </LoadingScreen>
+              )}
               {tab === "create" && !editable && (
                 <div className="px-4 py-5 md:px-5">
                   <h2 className="text-lg font-semibold">{t("create.readOnlyTitle")}</h2>
@@ -983,6 +1121,7 @@ export function Workspace({
                   <LoadingScreen>
                     <WalkAnalysis
                       map={map}
+                      fetchPeople={fetchPeople}
                       streetLines={streetLines}
                       railway={railway}
                       preferences={preferences?.values}
@@ -995,6 +1134,7 @@ export function Workspace({
                   <LoadingScreen>
                     <NoiseMap
                       map={map}
+                      fetchPeople={fetchPeople}
                       streetLines={streetLines}
                       railway={railway}
                       preferences={preferences?.values}
@@ -1031,6 +1171,8 @@ export function Workspace({
       )}
     </div>
   );
+  // The catalogue vehicles the project does not use reach the line tools (Project preferences → Vehicles).
+  return <VehiclesOffContext.Provider value={vehiclesOff}>{body}</VehiclesOffContext.Provider>;
 }
 
 /** Purpose: how the project's drawings stand against the server, beside the project name. */

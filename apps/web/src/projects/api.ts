@@ -1,6 +1,8 @@
 import type { ProjectPlugin } from "../plugins/registry";
 import { get, send } from "../session/api";
 import { projectRuns } from "../features/capacity/server";
+import { projectPopulation } from "../features/population/api";
+import { projectRoadRuns } from "../features/road-sim/api";
 import { type DrawingKind, loadDrawings, saveDrawing } from "./drawings";
 
 export type ProjectRole = "owner" | "editor" | "commenter" | "viewer";
@@ -107,6 +109,10 @@ export function projectsApi(csrf: string) {
       saveDrawing(csrf, id, kind, doc, baseVersion),
     /** The project's simulation runs on the background worker, saved with the project. */
     runs: (id: string) => projectRuns(id, csrf),
+    /** The project's road simulation runs (SUMO) on the background worker, with their replays. */
+    roadRuns: (id: string) => projectRoadRuns(id, csrf),
+    /** The project's population layers (GIS tab): imports, uploads, the layer the project uses. */
+    population: (id: string) => projectPopulation(id, csrf),
   };
 }
 export type ProjectsApi = ReturnType<typeof projectsApi>;

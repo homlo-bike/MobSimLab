@@ -52,6 +52,7 @@
 | NestJS packages | MIT | ✅ |
 | Kysely | MIT | ✅ |
 | node-postgres (`pg`) | MIT | ✅ |
+| proj4js (`proj4`, coordinate systems of uploaded population files) | MIT | ✅ |
 | node-pg-migrate | MIT | ✅ |
 | pg-boss | MIT | ✅ |
 | openid-client | MIT | ✅ |
