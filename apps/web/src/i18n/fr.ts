@@ -1,3 +1,4 @@
+import { roadFr } from "./road/fr";
 import { editorsFr } from "./editors/fr";
 import { cargoBikeFr } from "./cargo-bike/fr";
 import { depotsFr } from "./depots/fr";
@@ -313,7 +314,15 @@ export const fr: Messages = {
   "prefs.vehiclesAll": "Tout utiliser",
   "prefs.vehiclesFacts": "{length} m · {places} places · {speed} km/h",
   "prefs.vehiclesLast": "Chaque mode garde au moins un véhicule en service.",
-  "prefs.switches": "Aiguillages, depuis le catalogue d’aiguillages",
+  "prefs.switchesTitle": "Aiguillages",
+  "prefs.switchesIntro":
+    "Les aiguillages et traversées du catalogue que l'éditeur ferroviaire propose, par mode ferroviaire, et l'aiguillage par défaut des nouveaux.",
+  "prefs.switchesTurnouts": "Aiguillages simples",
+  "prefs.switchesSlips": "Traversées-jonctions",
+  "prefs.switchesDefault": "Par défaut",
+  "prefs.switchesFacts": "1:{n} · R {radius} m · {speed} km/h en déviation",
+  "prefs.switchesLast":
+    "L'aiguillage par défaut reste utilisé. Pour l'exclure, choisissez d'abord un autre par défaut.",
   "prefs.calendar": "Calendrier, demande et coûts",
 
   "job.stepOf": "Étape {step} sur {steps}",
@@ -387,5 +396,6 @@ export const fr: Messages = {
   ...editorsFr,
   ...cargoBikeFr,
   ...depotsFr,
+  ...roadFr,
   ...PLUGIN_MESSAGES.fr,
 };

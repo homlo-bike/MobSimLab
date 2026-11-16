@@ -587,6 +587,8 @@ export interface RailEngine {
   setStreetSetups(setups: readonly StreetSetup[]): void;
   /** Design values the project's preferences change for every mode, by name; the next build uses them. */
   setValues?(values: Record<string, number>): void;
+  /** The project's choice from the switches and crossings catalogue (Project preferences → Switches). */
+  setSwitchChoice?(choice: SwitchChoice): void;
   /** A signal plan generated from the last build, with ids continuing the document's. */
   generateSignals(): Signal[];
   /** Where a signal placed at a map position would stand, within `maxM`. */
@@ -599,3 +601,9 @@ export interface RailEngine {
 }
 
 export type RailEngineLoader = () => Promise<RailEngine>;
+
+/** The project's choice from the switches and crossings catalogue: elements left out, default turnout per mode. */
+export interface SwitchChoice {
+  off: string[];
+  default_turnout: Record<string, string>;
+}

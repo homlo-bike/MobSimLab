@@ -1,3 +1,4 @@
+import { roadIg } from "./road/ig";
 import { editorsIg } from "./editors/ig";
 import { cargoBikeIg } from "./cargo-bike/ig";
 import { depotsIg } from "./depots/ig";
@@ -310,7 +311,14 @@ export const ig: Messages = {
   "prefs.vehiclesAll": "Jiri ha niile",
   "prefs.vehiclesFacts": "{length} m · oche {places} · {speed} km/h",
   "prefs.vehiclesLast": "Opekata mpe otu ụgbọ na-anọgide na-arụ ọrụ maka ụdị ọ bụla.",
-  "prefs.switches": "Ihe ntụgharị ụzọ ígwè, site na katalọgụ ihe ntụgharị",
+  "prefs.switchesTitle": "Ngbanwe ụzọ",
+  "prefs.switchesIntro":
+    "Ngbanwe ụzọ na ngafe sitere na katalọgụ nke onye ndezi ụzọ ụgbọ oloko na-enye, maka ụdị ọ bụla, na ngbanwe nke ndị ọhụrụ ji amalite.",
+  "prefs.switchesTurnouts": "Ngbanwe ụzọ",
+  "prefs.switchesSlips": "Ngbanwe n'ime ngafe",
+  "prefs.switchesDefault": "Ndabara",
+  "prefs.switchesFacts": "1:{n} · R {radius} m · {speed} km/h n'akụkụ",
+  "prefs.switchesLast": "Ngbanwe ndabara na-anọgide na-arụ ọrụ. Iji wepụ ya, buru ụzọ họrọ ndabara ọzọ.",
   "prefs.calendar": "Kalenda, ọchịchọ na ọnụ ahịa",
 
   "job.stepOf": "Nzọụkwụ {step} n'ime {steps}",
@@ -381,5 +389,6 @@ export const ig: Messages = {
   ...editorsIg,
   ...cargoBikeIg,
   ...depotsIg,
+  ...roadIg,
   ...PLUGIN_MESSAGES.ig,
 };

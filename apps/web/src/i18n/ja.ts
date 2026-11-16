@@ -1,3 +1,4 @@
+import { roadJa } from "./road/ja";
 import { editorsJa } from "./editors/ja";
 import { cargoBikeJa } from "./cargo-bike/ja";
 import { depotsJa } from "./depots/ja";
@@ -305,7 +306,14 @@ export const ja: Messages = {
   "prefs.vehiclesAll": "すべて使用",
   "prefs.vehiclesFacts": "{length} m・定員 {places}・{speed} km/h",
   "prefs.vehiclesLast": "各モードで少なくとも 1 両は使用中のままです。",
-  "prefs.switches": "分岐器（分岐器カタログから）",
+  "prefs.switchesTitle": "分岐器",
+  "prefs.switchesIntro":
+    "鉄道エディターが鉄道モードごとに提示するカタログの分岐器と交差、および新しい分岐器の初期値。",
+  "prefs.switchesTurnouts": "分岐器",
+  "prefs.switchesSlips": "交差部のスリップ",
+  "prefs.switchesDefault": "既定",
+  "prefs.switchesFacts": "1:{n}・R {radius} m・分岐側 {speed} km/h",
+  "prefs.switchesLast": "既定の分岐器は使用中のままです。外すには先に別の既定を選んでください。",
   "prefs.calendar": "カレンダー、需要、費用",
 
   "job.stepOf": "ステップ {step}/{steps}",
@@ -374,5 +382,6 @@ export const ja: Messages = {
   ...editorsJa,
   ...cargoBikeJa,
   ...depotsJa,
+  ...roadJa,
   ...PLUGIN_MESSAGES.ja,
 };

@@ -1,3 +1,4 @@
+import { roadZh } from "./road/zh";
 import { editorsZh } from "./editors/zh";
 import { cargoBikeZh } from "./cargo-bike/zh";
 import { depotsZh } from "./depots/zh";
@@ -295,7 +296,13 @@ export const zh: Messages = {
   "prefs.vehiclesAll": "全部使用",
   "prefs.vehiclesFacts": "{length} 米 · {places} 个位置 · {speed} 公里/小时",
   "prefs.vehiclesLast": "每种交通方式至少保留一辆车辆。",
-  "prefs.switches": "轨道道岔，来自道岔目录",
+  "prefs.switchesTitle": "道岔",
+  "prefs.switchesIntro": "铁路编辑器按轨道交通方式提供的目录道岔与交叉，以及新道岔的默认型号。",
+  "prefs.switchesTurnouts": "道岔",
+  "prefs.switchesSlips": "交叉渡线中的复式交分",
+  "prefs.switchesDefault": "默认",
+  "prefs.switchesFacts": "1:{n} · R {radius} 米 · 侧向 {speed} 公里/小时",
+  "prefs.switchesLast": "默认道岔保持使用。要去掉它，请先选择另一个默认道岔。",
   "prefs.calendar": "日历、需求和成本",
 
   "job.stepOf": "第 {step} 步，共 {steps} 步",
@@ -361,5 +368,6 @@ export const zh: Messages = {
   ...editorsZh,
   ...cargoBikeZh,
   ...depotsZh,
+  ...roadZh,
   ...PLUGIN_MESSAGES.zh,
 };

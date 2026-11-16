@@ -1,3 +1,4 @@
+import { roadZu } from "./road/zu";
 import { editorsZu } from "./editors/zu";
 import { cargoBikeZu } from "./cargo-bike/zu";
 import { depotsZu } from "./depots/zu";
@@ -316,7 +317,14 @@ export const zu: Messages = {
   "prefs.vehiclesAll": "Sebenzisa zonke",
   "prefs.vehiclesFacts": "{length} m · izindawo {places} · {speed} km/h",
   "prefs.vehiclesLast": "Okungenani imoto eyodwa ihlala isetshenziswa ohlotsheni ngalunye.",
-  "prefs.switches": "Izishintshi zikajantshi, kusuka kukhathalogi yezishintshi",
+  "prefs.switchesTitle": "Amaswishi",
+  "prefs.switchesIntro":
+    "Amaswishi nezimpambano ezivela kukhathalogi umhleli wesitimela azinikezayo, ohlotsheni ngalunye, neswishi amasha aqala ngayo.",
+  "prefs.switchesTurnouts": "Amaswishi",
+  "prefs.switchesSlips": "Amaswishi ezimpambanweni",
+  "prefs.switchesDefault": "Okuzenzakalelayo",
+  "prefs.switchesFacts": "1:{n} · R {radius} m · {speed} km/h ohlangothini",
+  "prefs.switchesLast": "Iswishi ezenzakalelayo ihlala isetshenziswa. Ukuyisusa, khetha enye kuqala.",
   "prefs.calendar": "Ikhalenda, isidingo nezindleko",
 
   "job.stepOf": "Isinyathelo {step} kwezingu-{steps}",
@@ -388,5 +396,6 @@ export const zu: Messages = {
   ...editorsZu,
   ...cargoBikeZu,
   ...depotsZu,
+  ...roadZu,
   ...PLUGIN_MESSAGES.zu,
 };

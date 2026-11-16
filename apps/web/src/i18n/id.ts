@@ -1,3 +1,4 @@
+import { roadId } from "./road/id";
 import { editorsId } from "./editors/id";
 import { cargoBikeId } from "./cargo-bike/id";
 import { depotsId } from "./depots/id";
@@ -312,7 +313,14 @@ export const id: Messages = {
   "prefs.vehiclesAll": "Pakai semua",
   "prefs.vehiclesFacts": "{length} m · {places} tempat · {speed} km/j",
   "prefs.vehiclesLast": "Setiap moda tetap memakai setidaknya satu kendaraan.",
-  "prefs.switches": "Wesel (dari katalog wesel)",
+  "prefs.switchesTitle": "Wesel",
+  "prefs.switchesIntro":
+    "Wesel dan persilangan dari katalog yang ditawarkan editor rel per moda rel, dan wesel awal untuk wesel baru.",
+  "prefs.switchesTurnouts": "Wesel",
+  "prefs.switchesSlips": "Wesel inggris di persilangan",
+  "prefs.switchesDefault": "Bawaan",
+  "prefs.switchesFacts": "1:{n} · R {radius} m · {speed} km/j di sisi belok",
+  "prefs.switchesLast": "Wesel bawaan tetap dipakai. Untuk melepasnya, pilih bawaan lain dulu.",
   "prefs.calendar": "Kalender, permintaan, dan biaya",
 
   "job.stepOf": "Langkah {step} dari {steps}",
@@ -383,5 +391,6 @@ export const id: Messages = {
   ...editorsId,
   ...cargoBikeId,
   ...depotsId,
+  ...roadId,
   ...PLUGIN_MESSAGES.id,
 };
