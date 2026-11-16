@@ -4,7 +4,7 @@ import { join, relative } from "node:path";
 import { describe, expect, it } from "vitest";
 import pkg from "../package.json";
 import { checkChecksums, checkSignature, parsePublicKey } from "../src/plugins/signature";
-import { samplePlugin, signed } from "./support/plugins";
+import { examplePlugin, samplePlugin, signed } from "./support/plugins";
 import { BUNDLED, checkPlugin, claims, MOBSIMLAB_VERSION, satisfies } from "../src/plugins/validate";
 import { PackageError, unzip, zip } from "../src/plugins/zip";
 
@@ -56,7 +56,7 @@ describe("plugin checks (ADR-0036)", () => {
     }
   });
 
-  it("refuses code, a bundled flag, other licences and clashes with other plugins", () => {
+  it("refuses a bundled flag, other licences, views in tabs and clashes with other plugins", () => {
     const bad = checkPlugin(
       samplePlugin({
         bundled: true,
@@ -69,7 +69,6 @@ describe("plugin checks (ADR-0036)", () => {
     expect(bad.ok).toBe(false);
     const errs = bad.ok ? [] : bad.errors.join("\n");
     expect(errs).toContain('may say "bundled"');
-    expect(errs).toContain("compute tier");
     expect(errs).toContain("licence Proprietary");
     expect(errs).toContain("made for MobSimLab >=2");
 
@@ -85,7 +84,7 @@ describe("plugin checks (ADR-0036)", () => {
       [],
     );
     expect(tab.ok ? [] : tab.errors).toContain(
-      "org.example.water-taxi: only bundled plugins may contribute tabs for now",
+      "org.example.water-taxi: tab taxis: installed plugins bring their own page (ui)",
     );
 
     const clash = checkPlugin(samplePlugin({}, "org.example.other"), [
@@ -112,6 +111,26 @@ describe("plugin checks (ADR-0036)", () => {
     expect(update.ok).toBe(true);
     const core = checkPlugin(samplePlugin(), [...BUNDLED.map(claims)]);
     expect(core.ok).toBe(true);
+  });
+
+  it("accepts the example plugin with code and a tab page (Phase 2)", () => {
+    const r = checkPlugin(examplePlugin(), []);
+    expect(r.ok ? [] : r.errors).toEqual([]);
+    if (!r.ok) return;
+    expect(r.entry.tiers).toEqual(["compute", "ui"]);
+    expect(r.entry.tabs[0]!.ui).toBe("tab/index.html");
+    const noPerm = checkPlugin(examplePlugin({ permissions: [] }), []);
+    expect(noPerm.ok ? [] : noPerm.errors).toEqual([
+      "org.example.timetable-csv: calculation route_summary reads timetable, which needs the read:timetable permission",
+      "org.example.timetable-csv: importer csv_import adds to the project, which needs the write:scenario permission",
+      "org.example.timetable-csv: exporter csv_export reads the timetable, which needs the read:timetable permission",
+    ]);
+    const files = examplePlugin();
+    files.delete("wasm/importer.wasm");
+    const missing = checkPlugin(files, []);
+    expect(missing.ok ? [] : missing.errors).toEqual([
+      "org.example.timetable-csv: wasm/importer.wasm does not exist",
+    ]);
   });
 
   it("applies the assumption library rules to plugin parameters", () => {

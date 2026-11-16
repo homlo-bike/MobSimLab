@@ -7,7 +7,8 @@ import { zip } from "../src/plugins/zip";
 import { createApp, testConfig } from "./support/app";
 import { startDatabase, type TestDatabase } from "./support/database";
 import { cookieValue, signIn, startIdp, type TestIdp } from "./support/idp";
-import { samplePlugin, signed } from "./support/plugins";
+import { PluginCodeService } from "../src/plugins/code/code.service";
+import { examplePlugin, samplePlugin, signed } from "./support/plugins";
 
 /** Integration: installing plugins (Admins), trusted keys, and plugins per project (project Owners), ADR-0036 §9. */
 describe("plugins", () => {
@@ -205,6 +206,89 @@ describe("plugins", () => {
     });
     const admin = (await as("dave").get("/api/admin/plugins")).body;
     expect(admin.installed).toEqual([]);
+  });
+
+  it("installs a plugin with code: compiles it in the sandbox, serves it to members and runs it (Phase 2)", async () => {
+    const pkgFile = zip(signed(examplePlugin(), lab.privateKey));
+    const seen = await as("dave").upload("/api/admin/plugins/inspect", pkgFile);
+    expect(seen.body.inspection.problems).toEqual([]);
+    expect(seen.body.inspection.plugin).toMatchObject({ runsCode: true, tiers: ["compute", "ui"] });
+    // A component that imports WASI (or anything but the host) is refused at install.
+    const files = examplePlugin();
+    files.set("wasm/importer.wasm", files.get("wasm/calculation.wasm")!);
+    const wrong = await as("dave").upload("/api/admin/plugins/inspect", zip(signed(files, lab.privateKey)));
+    expect(wrong.body.inspection.problems.join("\n")).toContain("must export only importFiles");
+
+    const installed = await as("dave").upload("/api/admin/plugins", pkgFile);
+    expect(installed.status).toBe(201);
+    const sha = installed.body.plugin.sha256 as string;
+
+    const p = (await as("bob").post("/api/projects", { name: "Timetables" })).body.project.id as string;
+    const code = `/api/projects/${p}/plugins/org.example.timetable-csv/code/wasm/calculation.wasm/glue.js`;
+    expect((await as("bob").get(code)).status).toBe(404); // off until the Owner turns it on
+    await as("bob").put(`/api/projects/${p}/plugins/org.example.timetable-csv`, { enabled: true });
+    const listed = (await as("bob").get(`/api/projects/${p}/plugins`)).body;
+    expect(listed.limits).toEqual({ memoryMb: 256, timeS: 30 });
+    expect(listed.plugins.find((x: { id: string }) => x.id === "org.example.timetable-csv")).toMatchObject({
+      enabled: true,
+      sha256: sha,
+    });
+    const glue = await as("bob").get(code);
+    expect(glue.status).toBe(200);
+    expect(glue.headers["content-type"]).toContain("text/javascript");
+    expect(String(glue.text)).toContain("export function instantiate");
+    const wasm = await as("bob").get(code.replace("glue.js", "glue.core.wasm")).buffer(true);
+    expect(wasm.headers["content-type"]).toBe("application/wasm");
+    // Non-members get nothing.
+    expect((await as("alice").get(code)).status).toBe(404);
+
+    // Tab pages: no session needed, sandboxed by CSP, framed only by MobSimLab.
+    const page = await request(app.getHttpServer()).get(`/api/plugin-ui/${sha}/tab/index.html`);
+    expect(page.status).toBe(200);
+    expect(page.headers["content-security-policy"]).toContain("sandbox allow-scripts");
+    expect(page.headers["content-security-policy"]).toContain("connect-src 'none'");
+    expect(page.headers["content-security-policy"]).toContain("frame-ancestors 'self'");
+    expect(
+      (await request(app.getHttpServer()).get(`/api/plugin-ui/${sha}/mobsimlab-plugin.json`)).status,
+    ).toBe(404);
+    expect((await request(app.getHttpServer()).get(`/api/plugin-ui/${sha}/tab/..%2f..%2fx.js`)).status).toBe(
+      400,
+    );
+
+    // On the server (agent tools): runs in the tool-runner with the instance's limits.
+    const codeSvc = app.get(PluginCodeService);
+    const bob = { userId: browsers.bob!.id, role: "user" as const, ipHash: null, requestId: null };
+    const csv = "t1,A,bus,Harbour,47.1,8.1,07:00\nt1,A,bus,Market,47.11,8.11,07:06\n";
+    const imported = await codeSvc.run(bob, p, "org.example.timetable-csv", "importer", "csv_import", {
+      files: [{ name: "times.csv", data: Buffer.from(csv) }],
+    });
+    expect(imported.output).toMatchObject({ summary: { trips: 1, stops: 2 } });
+    const sum = await codeSvc.run(bob, p, "org.example.timetable-csv", "calculation", "route_summary", {
+      input: JSON.stringify({ inputs: { timetable: (imported.output as { timetable: unknown }).timetable } }),
+    });
+    expect(sum.output).toMatchObject({
+      kpis: [
+        { id: "routes", value: 1 },
+        { id: "trips", value: 1 },
+      ],
+    });
+    expect(sum.logs).toEqual([["info", "summing up routes"]]);
+
+    // Admins set the limits; the audit keeps the change.
+    expect((await as("bob").put("/api/admin/plugin-limits", { memoryMb: 128, timeS: 10 })).status).toBe(403);
+    expect((await as("dave").put("/api/admin/plugin-limits", { memoryMb: 8, timeS: 10 })).status).toBe(400);
+    const set = await as("dave").put("/api/admin/plugin-limits", { memoryMb: 128, timeS: 10 });
+    expect(set.body.limits).toEqual({ memoryMb: 128, timeS: 10 });
+    expect((await as("dave").get("/api/admin/plugins")).body.limits).toEqual({ memoryMb: 128, timeS: 10 });
+
+    // Removing the version removes its code.
+    await as("dave").del("/api/admin/plugins/org.example.timetable-csv/1.0.0", { force: true });
+    const su = await db.superuser();
+    const { rows } = await su.query(
+      "SELECT count(*)::int AS n FROM plugin.file WHERE plugin_id = 'org.example.timetable-csv'",
+    );
+    await su.end();
+    expect(rows[0].n).toBe(0);
   });
 
   it("lets an Owner allow unsigned plugins only in development mode", async () => {

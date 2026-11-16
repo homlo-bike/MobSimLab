@@ -40,7 +40,7 @@ function writeU32(v: number): number[] {
  * Output: new module bytes (the input when it defines no memory). Throws WasmModuleError for a module that is not
  * a core module, or that uses shared or 64-bit memory, or whose memory starts above the cap.
  */
-export function capMemory(bytes: Uint8Array, maxPages: number): Uint8Array {
+export function capMemory(bytes: Uint8Array, maxPages: number): Uint8Array<ArrayBuffer> {
   if (bytes.length < 8 || MAGIC.some((m, i) => bytes[i] !== m))
     throw new WasmModuleError("not a core WebAssembly module");
   const parts: Uint8Array[] = [bytes.subarray(0, 8)];

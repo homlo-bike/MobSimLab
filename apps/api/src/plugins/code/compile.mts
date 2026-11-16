@@ -70,7 +70,9 @@ export function checkGlue(js: string): void {
   const versions = new Set([...js.matchAll(/mobsimlab:plugin\/host@([0-9.]+)/g)].map((m) => m[1]));
   for (const v of versions)
     if (v!.split(".")[0] !== PLUGIN_API_VERSION.split(".")[0])
-      throw new ToolError(`the component was built for plugin API ${v}; this MobSimLab runs ${PLUGIN_API_VERSION}`);
+      throw new ToolError(
+        `the component was built for plugin API ${v}; this MobSimLab runs ${PLUGIN_API_VERSION}`,
+      );
 }
 
 /** Purpose: the `plugin-compile` tool (see above). */
@@ -88,7 +90,8 @@ export async function compilePlugin(input: Buffer, ctx: ToolContext) {
   const world = meta.world;
   if (!isWorld(world)) throw new ToolError("unknown world");
   const maxPages = Number(meta.maxPages);
-  if (!component || !Number.isSafeInteger(maxPages) || maxPages < 1) throw new ToolError("nothing to compile");
+  if (!component || !Number.isSafeInteger(maxPages) || maxPages < 1)
+    throw new ToolError("nothing to compile");
 
   const generate = await loadBindgen();
   let out: ReturnType<Generate>;

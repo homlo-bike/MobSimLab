@@ -20,7 +20,9 @@ async function compile(runner: ToolRunner, world: string, bytes: Buffer = compon
     pack({ world, maxPages: pagesOf(256) }, { component: bytes }),
     async (r, scratch) => {
       const files = (r as { files: string[] }).files;
-      return Object.fromEntries(await Promise.all(files.map(async (f) => [f, await scratch.read(f)] as const)));
+      return Object.fromEntries(
+        await Promise.all(files.map(async (f) => [f, await scratch.read(f)] as const)),
+      );
     },
     { wallMs: 60_000 },
   );
@@ -38,7 +40,10 @@ describe("plugin code in the sandbox", () => {
 
     const imported = await runner.run(
       "plugin-run",
-      pack({ world: "importer", id: "csv_import", maxPages: pagesOf(256) }, { ...imp, "file:0:times.csv": Buffer.from(CSV) }),
+      pack(
+        { world: "importer", id: "csv_import", maxPages: pagesOf(256) },
+        { ...imp, "file:0:times.csv": Buffer.from(CSV) },
+      ),
       async (r, s) => ({ r, out: JSON.parse((await s.read("result.json")).toString()) }),
     );
     expect(imported.out.summary).toMatchObject({ routes: 1, stops: 2, trips: 2 });
@@ -70,17 +75,22 @@ describe("plugin code in the sandbox", () => {
     const calc = await compile(runner, "calculation");
     const r = await runner.run(
       "plugin-run",
-      pack({ world: "calculation", id: "nope", maxPages: pagesOf(256) }, { ...calc, input: Buffer.from("{}") }),
+      pack(
+        { world: "calculation", id: "nope", maxPages: pagesOf(256) },
+        { ...calc, input: Buffer.from("{}") },
+      ),
       async (r) => r,
     );
     expect(r).toMatchObject({ ok: false, error: "unknown calculation nope" });
   });
 
   it("refuses a component of the wrong world, a core module and junk", async () => {
-    await expect(compile(runner, "importer", component("calculation"))).rejects.toThrow(/must export only importFiles/);
-    await expect(compile(runner, "calculation", Buffer.from([0, 97, 115, 109, 1, 0, 0, 0]))).rejects.toBeInstanceOf(
-      ToolInputError,
+    await expect(compile(runner, "importer", component("calculation"))).rejects.toThrow(
+      /must export only importFiles/,
     );
+    await expect(
+      compile(runner, "calculation", Buffer.from([0, 97, 115, 109, 1, 0, 0, 0])),
+    ).rejects.toBeInstanceOf(ToolInputError);
     await expect(compile(runner, "calculation", Buffer.from("hello"))).rejects.toBeInstanceOf(ToolInputError);
   });
 });
@@ -88,7 +98,22 @@ describe("plugin code in the sandbox", () => {
 describe("capMemory", () => {
   /** A module with one memory: min 1 page, optional max, optional shared flag. */
   const mod = (flags: number, min: number, max?: number) =>
-    Uint8Array.of(0, 97, 115, 109, 1, 0, 0, 0, 5, max === undefined ? 3 : 4, 1, flags, min, ...(max === undefined ? [] : [max]));
+    Uint8Array.of(
+      0,
+      97,
+      115,
+      109,
+      1,
+      0,
+      0,
+      0,
+      5,
+      max === undefined ? 3 : 4,
+      1,
+      flags,
+      min,
+      ...(max === undefined ? [] : [max]),
+    );
 
   it("adds or lowers the maximum", () => {
     const capped = capMemory(mod(0, 1), 16);
