@@ -3,6 +3,7 @@
  * needs, the bearings of the range map, and how German 2024 prices become the start point's country's.
  */
 import type { CountryEconomy } from "../costs/economy";
+import { distanceM, EARTH_RADIUS_M } from "../../map/geo";
 
 export type LonLat = [number, number];
 export type StreetClass = "separated" | "lane" | "quiet" | "mixed";
@@ -198,17 +199,11 @@ export function tileOf([lon, lat]: LonLat, z = TILE_ZOOM): [number, number] {
   return [x, y];
 }
 
-const EARTH_R = 6_371_008.8;
+const EARTH_R = EARTH_RADIUS_M;
 const rad = (d: number) => (d * Math.PI) / 180;
 const deg = (r: number) => (r * 180) / Math.PI;
 
-/** Purpose: great-circle distance in metres. */
-export function distanceM(a: LonLat, b: LonLat): number {
-  const h =
-    Math.sin(rad(b[1] - a[1]) / 2) ** 2 +
-    Math.cos(rad(a[1])) * Math.cos(rad(b[1])) * Math.sin(rad(b[0] - a[0]) / 2) ** 2;
-  return 2 * EARTH_R * Math.asin(Math.min(1, Math.sqrt(h)));
-}
+export { distanceM };
 
 /** Purpose: the point `distM` from `from` on a compass bearing. */
 export function destinationPoint(from: LonLat, bearingDeg: number, distM: number): LonLat {

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { MAX_REASON } from "./value-history";
 
 /**
  * What a project can hold drawings of, and the shape each document must have. The API checks only the outline
@@ -34,6 +35,7 @@ const gtfsNetwork = z.looseObject({
         id: z.string().min(1).max(64),
         name: z.string().max(200),
         timetable: railTimetable,
+        converted: z.array(z.string().max(200)).max(5000).optional(),
       }),
     )
     .max(5),
@@ -52,6 +54,17 @@ const preferences = z.looseObject({
       z.number().finite(),
     )
     .refine((v) => Object.keys(v).length <= 1000, "at most 1000 values"),
+  /** Why the project changed a value, by assumption id (optional); recorded with the change. */
+  reasons: z
+    .record(
+      z
+        .string()
+        .regex(/^[a-z][a-z0-9_]*(\.[a-z0-9_]+)+$/)
+        .max(120),
+      z.string().max(MAX_REASON),
+    )
+    .refine((v) => Object.keys(v).length <= 1000, "at most 1000 reasons")
+    .optional(),
 });
 
 /** Cost tables settings: the country whose prices apply (ISO 3166-1 alpha-3), when the planner chose one. */
@@ -123,7 +136,7 @@ const scenarios = z.looseObject({
     .max(20),
 });
 
-/** Benefit tables settings (ADR-0040): the project's own formulas, by formula id. */
+/** Benefit tables settings (ADR-0040): the project's own formulas, by formula id, and its own boardings. */
 const benefits = z.looseObject({
   formulas: z
     .record(
@@ -134,6 +147,11 @@ const benefits = z.looseObject({
       z.string().max(2000),
     )
     .refine((v) => Object.keys(v).length <= 50, "at most 50 formulas")
+    .optional(),
+  /** The planner's own weekday boardings per station or stop name, for the simulator's passenger loads. */
+  boardings: z
+    .record(z.string().max(300), z.number().finite().min(0).max(10_000_000))
+    .refine((v) => Object.keys(v).length <= 20000, "at most 20000 stations and stops")
     .optional(),
 });
 
@@ -149,6 +167,51 @@ const regions = z.looseObject({
       }),
     )
     .max(500),
+});
+
+/** Demand model zones (ADR-0019): automatic hexagons or the planner's own zones, and values per zone. */
+const zoneValues = z.record(z.string().max(40), z.union([z.number().finite(), z.boolean()]));
+const demand = z.looseObject({
+  source: z.enum(["auto", "own"]),
+  /** The GBFS feed of the project's shared-bike scheme (https), read with the OpenStreetMap stations. */
+  gbfsUrl: z
+    .url({ protocol: /^https$/ })
+    .max(2000)
+    .optional(),
+  /** What the planner observed (mode shares in %, mean car trip in km, weekday boardings), to calibrate to. */
+  observed: z
+    .looseObject({
+      shares: z.record(z.string().max(20), z.number().finite().min(0).max(100)).optional(),
+      meanCarKm: z.number().finite().min(0).max(1000).nullable().optional(),
+      counts: z
+        .array(
+          z.looseObject({
+            kind: z.enum(["line", "stop"]),
+            id: z.string().max(300),
+            value: z.number().finite().min(0),
+          }),
+        )
+        .max(5000)
+        .optional(),
+    })
+    .optional(),
+  /** The demand run whose ridership the Tables tab, the service table and the system test use. */
+  ridershipRun: z.string().min(1).max(64).optional(),
+  zones: z
+    .array(
+      z.looseObject({
+        id: z.string().min(1).max(64),
+        name: z.string().max(120),
+        ring: z.array(point).min(4).max(200),
+        values: zoneValues,
+      }),
+    )
+    .max(3000)
+    .optional(),
+  autoValues: z
+    .record(z.string().max(64), zoneValues)
+    .refine((v) => Object.keys(v).length <= 3000, "at most 3000 zones")
+    .optional(),
 });
 
 /** Cargo bike tab (plugins/cargo-bike): start point, destination and the values the project changed. */
@@ -195,6 +258,47 @@ const pluginLines = z.looseObject({
     .refine((v) => Object.keys(v).length <= 50, "at most 50 tools"),
 });
 
+/** Road depots shared by the street lines (contracts/depot.schema.json): outline, gates, zones and layout. */
+const depots = z.looseObject({
+  depots: z
+    .array(
+      z.looseObject({
+        id: z.string().min(1).max(64),
+        name: z.string().max(120),
+        modes: z.array(z.enum(["bus", "brt", "trolleybus", "intercity_bus"])).max(4),
+        boundary: z.array(point).max(500),
+        gates: z.array(z.looseObject({ id: z.string().min(1).max(64), lonlat: point })).max(20),
+        zones: z
+          .array(z.looseObject({ id: z.string().min(1).max(64), ring: z.array(point).max(500) }))
+          .max(100),
+        layout: z
+          .looseObject({
+            lanes: z
+              .array(z.looseObject({ id: z.string().min(1), slots: z.array(z.looseObject({})) }))
+              .max(5000),
+            aisles: z.array(z.looseObject({ id: z.string().min(1) })).max(2000),
+          })
+          .nullable(),
+      }),
+    )
+    .max(50),
+});
+
+/** Fare revenue table (ADR-0044): the fare structure and the project's own values (fares in 2023 int. $). */
+const fares = z.looseObject({
+  structure: z.enum(["flat", "zonal", "distance"]).optional(),
+  values: z
+    .record(
+      z
+        .string()
+        .regex(/^[a-z_.]+$/)
+        .max(60),
+      z.number().finite(),
+    )
+    .refine((v) => Object.keys(v).length <= 100, "at most 100 values")
+    .optional(),
+});
+
 /** Drawing kinds with their document outline and current schema version. */
 export const DRAWING_KINDS = {
   /** The street line tool (ADR-0029): bus, BRT, trolleybus and intercity bus lines. */
@@ -223,6 +327,12 @@ export const DRAWING_KINDS = {
   "cargo-bike": { schema: cargoBike, schemaVersion: 1 },
   /** Cable car, people mover and ferry lines of the plugin tools (straight spans and water route kits). */
   "plugin-lines": { schema: pluginLines, schemaVersion: 1 },
+  /** Road depots (07-simulation §7), shared by the street lines whose vehicles fit. */
+  depots: { schema: depots, schemaVersion: 1 },
+  /** Demand model zones in the Tables and GIS tabs (ADR-0019): automatic or own, with the planner's values. */
+  demand: { schema: demand, schemaVersion: 1 },
+  /** Fare revenue table (ADR-0044): fare structure, fares, passes, discounts and the other fare values. */
+  fares: { schema: fares, schemaVersion: 1 },
 } as const satisfies Record<string, { schema: z.ZodType; schemaVersion: number }>;
 
 export type DrawingKind = keyof typeof DRAWING_KINDS;

@@ -3,7 +3,15 @@ import type { Map as MapLibreMap } from "maplibre-gl";
 import { useState } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { strips } from "../src/features/street-setup/CrossSection";
-import { effective, forgetSetups, loadSetups, upsert, verdicts } from "../src/features/street-setup/model";
+import {
+  effective,
+  forgetSetups,
+  loadSetups,
+  parsePeakCars,
+  peakCarsDefault,
+  upsert,
+  verdicts,
+} from "../src/features/street-setup/model";
 import { StreetSetupEditor } from "../src/features/street-setup/StreetSetupEditor";
 import type { StreetInfo, StreetSetup } from "../src/features/street-setup/types";
 
@@ -111,6 +119,26 @@ describe("Street setup model", () => {
     forgetSetups("p1");
     expect(loadSetups("p1")).toEqual([]);
   });
+
+  it("takes traffic peaks from the setup, else the default for the road type", () => {
+    expect(effective(HIGH, undefined)).toMatchObject({ carsMorningPeak: 900, carsEveningPeak: 900 });
+    expect(effective(BACK, undefined).carsMorningPeak).toBe(50);
+    expect(peakCarsDefault("trunk_link")).toBe(1500);
+    expect(peakCarsDefault("secondary")).toBe(600);
+    expect(peakCarsDefault("tertiary")).toBe(300);
+    expect(peakCarsDefault("busway")).toBe(0);
+    expect(effective(HIGH, { way: 100, cars_morning_peak: 1200, cars_evening_peak: 0 })).toMatchObject({
+      carsMorningPeak: 1200,
+      carsEveningPeak: 0,
+    });
+    // A street with only traffic peaks set is kept; clearing them drops it.
+    expect(upsert([], { way: 1, cars_evening_peak: 400 })).toEqual([{ way: 1, cars_evening_peak: 400 }]);
+    expect(upsert([], { way: 1, cars_evening_peak: null })).toEqual([]);
+    expect(parsePeakCars("")).toBeNull();
+    expect(parsePeakCars("-5")).toBeNull();
+    expect(parsePeakCars("812.6")).toBe(813);
+    expect(parsePeakCars("99999")).toBe(8000);
+  });
 });
 
 /** A map with only what the editor touches. */
@@ -200,6 +228,22 @@ describe("Street setup editor", () => {
     expect(within(form).getByText(/Separated bus lane/)).toBeTruthy();
     expect(screen.getByRole("img", { name: /Cross-section: pavement, bus lane, traffic lane/ })).toBeTruthy();
     expect(screen.getByText("Streets set up · 1")).toBeTruthy();
+
+    // Traffic peaks: empty shows the road type's default; a typed value is saved per direction.
+    const traffic = screen.getByRole("group", { name: "Traffic at peak" });
+    expect(within(traffic).getByText(/Empty: 900, the default/)).toBeTruthy();
+    const morning = within(traffic).getByLabelText(/Morning peak, 7:00–9:00/) as HTMLInputElement;
+    expect(morning.placeholder).toBe("900");
+    fireEvent.change(morning, { target: { value: "1200" } });
+    fireEvent.change(within(traffic).getByLabelText(/Evening peak, 16:00–19:00/), {
+      target: { value: "1400" },
+    });
+    expect(onChange).toHaveBeenLastCalledWith([
+      expect.objectContaining({ way: 100, cars_morning_peak: 1200, cars_evening_peak: 1400 }),
+    ]);
+    expect(screen.getByText(/1200 cars\/h morning · 1400 cars\/h evening/)).toBeTruthy();
+    fireEvent.change(morning, { target: { value: "" } });
+    expect(onChange).toHaveBeenLastCalledWith([expect.objectContaining({ cars_morning_peak: null })]);
 
     fireEvent.click(screen.getByRole("button", { name: "Reset to OpenStreetMap" }));
     expect(onChange).toHaveBeenLastCalledWith([]);

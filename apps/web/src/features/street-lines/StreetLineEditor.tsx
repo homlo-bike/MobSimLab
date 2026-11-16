@@ -5,13 +5,24 @@ import { tNow, useI18n } from "../../i18n/i18n";
 import type { MessageKey } from "../../i18n/messages";
 import { fetchStreetTile, loadWasmEngine } from "./engine";
 import { LinePanel, type PanelActions } from "./LinePanel";
-import { drawLine, drawRoads, ensureLayers, HIT_LAYER, removeLayers, setLineColor } from "./mapLayers";
+import {
+  drawLine,
+  drawOtherLines,
+  drawRoads,
+  ensureLayers,
+  HIT_LAYER,
+  removeLayers,
+  setLineColor,
+} from "./mapLayers";
 import { depotElement, pointElement, vehicleElement } from "./markers";
-import { DEFAULT_TIMING, MODES, type Timing } from "./modes";
+import { fullTiming, MODES, type Timing } from "./modes";
+import { profileWith, vehicleById } from "./service";
 import { along, circuitPath } from "./summary";
 import { lineBounds, type SavedStreetLine } from "./saved";
 import { MIN_LOAD_ZOOM, tilesFor } from "./tiles";
 import type { StreetLineInput } from "../journey-planner/network";
+import { depotFit, depotGates } from "../depots/model";
+import type { SavedDepot } from "../depots/types";
 import type { StreetSetup } from "../street-setup/types";
 import { basemapLabels, featuresFromLabels, preferTransitKind } from "../naming/labels";
 import {
@@ -70,6 +81,8 @@ function stopPlaces(view: LineView): NamedPlace[] {
 }
 
 const NO_SETUPS: readonly StreetSetup[] = [];
+const NO_LINES: readonly SavedStreetLine[] = [];
+const NO_DEPOTS: readonly SavedDepot[] = [];
 
 /** The preview runs this many times faster than the timetable. */
 const PREVIEW_SPEEDUP = 30;
@@ -98,10 +111,20 @@ interface Props {
   initial?: SavedStreetLine | null;
   /** Told about the line after every change the planner makes, so the project can save it. */
   onSave?: (line: SavedStreetLine) => void;
+  /** Name for a new line (the project's other lines have theirs). */
+  defaultName?: string;
+  /** The project's other street lines, drawn faded under this one. */
+  otherLines?: readonly SavedStreetLine[];
+  /** The list of the project's lines (switch, add, delete), shown at the top of the panel. */
+  lineList?: React.ReactNode;
   /** Noise engine loader (noise plugin); tests inject a fake. */
   loadNoise?: NoiseEngineLoader;
   /** Offer the noise band; defaults to whether the noise plugin is installed. */
   noiseAvailable?: boolean;
+  /** The project's shared road depots; the line pulls out of and in to one of them through its gates. */
+  depots?: readonly SavedDepot[];
+  /** Opens the depot tool (Create tab), to draw a depot. */
+  onOpenDepots?: () => void;
 }
 
 /** A JSON file the planner loaded in the panel. */
@@ -129,8 +152,13 @@ export function StreetLineEditor({
   delays = null,
   initial = null,
   onSave,
+  defaultName,
+  otherLines = NO_LINES,
+  lineList = null,
   loadNoise = loadWasmNoise,
   noiseAvailable = noiseCalculationIn("street-line-tool"),
+  depots = NO_DEPOTS,
+  onOpenDepots,
 }: Props) {
   const { t } = useI18n();
   const engine = useRef<StreetEngine | null>(null);
@@ -144,11 +172,13 @@ export function StreetLineEditor({
   const [ready, setReady] = useState(false);
   const [profile, setProfile] = useState<VehicleProfile | null>(null);
   const [rules, setRules] = useState<RoutingRules | null>(null);
-  const [timing, setTiming] = useState<Timing>(initial?.timing ?? DEFAULT_TIMING);
-  const [lineName, setLineName] = useState(initial?.name ?? tNow("street.defaultName"));
+  const [timing, setTiming] = useState<Timing>(fullTiming(initial?.timing));
+  const [vehicle, setVehicle] = useState<string | null>(vehicleById(initial?.vehicle)?.id ?? null);
+  const [lineName, setLineName] = useState(initial?.name ?? defaultName ?? tNow("street.defaultName"));
   const [tool, setTool] = useState<Tool>("add");
   const [selected, setSelected] = useState<number | null>(null);
   const [depotStops, setDepotStops] = useState<{ out?: number; in?: number }>({});
+  const [depotId, setDepotId] = useState<string | null>(initial?.depotId ?? null);
   const [showDepot, setShowDepot] = useState(true);
   const [showRoads, setShowRoads] = useState(false);
   const [previewing, setPreviewing] = useState(false);
@@ -243,6 +273,19 @@ export function StreetLineEditor({
       return v;
     });
   }, [ready, run]);
+
+  // A shared depot: the depot runs start at its exit gates and end at its entrance gates, again whenever
+  // the depot's gates change. A depot deleted from the project leaves the line without depot runs.
+  const sharedDepot = depotId ? (depots.find((d) => d.id === depotId) ?? null) : null;
+  const gatesKey = depotId ? (sharedDepot ? JSON.stringify(depotGates(sharedDepot)) : "gone") : "";
+  useEffect(() => {
+    if (!ready || pending.current || !gatesKey) return;
+    if (gatesKey === "gone") run((e) => e.clearDepot());
+    else {
+      const g = JSON.parse(gatesKey) as ReturnType<typeof depotGates>;
+      run((e) => e.setDepotGates(g.exits, g.entrances));
+    }
+  }, [gatesKey, ready, run]);
 
   // Street setups from the GIS tab: bus lanes and separation change running times and checks.
   const setupsJson = JSON.stringify(streetSetups);
@@ -346,8 +389,21 @@ export function StreetLineEditor({
       view,
       dwellS: timing.dwellS,
       headwayMin: timing.headwayMin,
+      offPeakHeadwayMin: timing.offPeakHeadwayMin,
+      firstMin: timing.firstMin,
+      lastMin: timing.lastMin,
     });
-  }, [view, lineName, profile?.mode, color, timing.dwellS, timing.headwayMin]);
+  }, [
+    view,
+    lineName,
+    profile?.mode,
+    color,
+    timing.dwellS,
+    timing.headwayMin,
+    timing.offPeakHeadwayMin,
+    timing.firstMin,
+    timing.lastMin,
+  ]);
   const terminals = [...new Set(view.depot_trips.map((t) => t.stop))];
   const pick = (s: number | undefined) => (s !== undefined && terminals.includes(s) ? s : terminals[0]);
   const shownDepot = { out: pick(depotStops.out), in: pick(depotStops.in) };
@@ -366,6 +422,14 @@ export function StreetLineEditor({
   useEffect(() => {
     if (map && map.getSource("sl-legs")) drawLine(map, view, showDepot ? shownDepot : null);
   }, [map, view, showDepot, shownDepot.out, shownDepot.in, rules?.traffic_side]);
+
+  useEffect(() => {
+    if (map && map.getSource("sl-others"))
+      drawOtherLines(
+        map,
+        otherLines.map((l) => ({ view: l.view, color: MODES[l.profile.mode]?.color ?? MODES.bus.color })),
+      );
+  }, [map, otherLines, rules?.traffic_side]);
 
   useEffect(() => {
     if (map && map.getSource("sl-roads"))
@@ -431,7 +495,10 @@ export function StreetLineEditor({
       return m;
     });
     if (view.depot) {
-      const m = new Marker({ element: depotElement(), draggable }).setLngLat(view.depot).addTo(map);
+      // A shared depot's gates move in the depot tool only.
+      const m = new Marker({ element: depotElement(), draggable: draggable && !depotId })
+        .setLngLat(view.depot)
+        .addTo(map);
       m.on("dragend", () => {
         const { lng, lat } = m.getLngLat();
         run((e) => e.setDepot([lng, lat]));
@@ -439,7 +506,7 @@ export function StreetLineEditor({
       markers.push(m);
     }
     return () => markers.forEach((m) => m.remove());
-  }, [map, view, selected, color, tool, run]);
+  }, [map, view, selected, color, tool, run, depotId]);
 
   // Preview run: one vehicle drives the circuit, stopping at every stop.
   useEffect(() => {
@@ -535,6 +602,7 @@ export function StreetLineEditor({
       ? {
           name: lineName,
           profile,
+          vehicle,
           rules,
           timing,
           points: view.points.map((p) => ({
@@ -543,7 +611,8 @@ export function StreetLineEditor({
             name: named.current.get(p.id) ?? null,
             ...(p.kind !== "via" && stopFeatures[p.id]?.length ? { features: stopFeatures[p.id] } : {}),
           })),
-          depot: view.depot,
+          depot: depotId ? null : view.depot,
+          ...(depotId ? { depotId } : {}),
           depotStops: {
             ...(depotStops.out !== undefined && ids.has(depotStops.out) && { out: ids.get(depotStops.out) }),
             ...(depotStops.in !== undefined && ids.has(depotStops.in) && { in: ids.get(depotStops.in) }),
@@ -557,9 +626,10 @@ export function StreetLineEditor({
     const first = lastKey.current === null;
     lastKey.current = savedKey;
     const line = JSON.parse(savedKey) as Omit<SavedStreetLine, "view">;
-    drawn.current ||= line.points.length > 0 || line.depot !== null;
-    // Opening the tool is not a change; the first state after opening is only saved for a new drawing.
-    if (first && initial !== null) return;
+    drawn.current ||= line.points.length > 0 || line.depot !== null || !!line.depotId;
+    // Opening the tool is not a change; the first state after opening is only saved for a new drawing, or
+    // for a line that was never routed (one made from an imported GTFS route).
+    if (first && initial !== null && initial.view.points.length > 0) return;
     if (drawn.current) saveTo.current?.({ ...line, view: latestView.current });
   }, [savedKey]);
 
@@ -604,7 +674,19 @@ export function StreetLineEditor({
   const actions: PanelActions = {
     setName: setLineName,
     setPointFeatures: (id, f) => setStopFeatures((m) => ({ ...m, [id]: f })),
-    setMode: (m) => engine.current && rules && settings(engine.current.defaultProfile(m), rules),
+    setMode: (m) => {
+      if (!engine.current || !rules) return;
+      setVehicle(null);
+      settings(engine.current.defaultProfile(m), rules);
+    },
+    setVehicle: (id) => {
+      const v = vehicleById(id);
+      if (!engine.current || !profile || !rules) return;
+      setVehicle(v?.id ?? null);
+      const base = engine.current.defaultProfile(profile.mode);
+      const keep = { battery_range_m: profile.battery_range_m, doors_both_sides: profile.doors_both_sides };
+      settings(v ? profileWith({ ...base, ...keep }, v) : { ...base, ...keep }, rules);
+    },
     setProfile: (p) => rules && settings(p, rules),
     setRules: (r) => profile && settings(profile, r),
     setTiming,
@@ -623,6 +705,10 @@ export function StreetLineEditor({
     },
     placeDepot: () => setTool("depot"),
     removeDepot: () => run((e) => e.clearDepot()),
+    chooseDepot: (id) => {
+      setDepotId(id);
+      if (!id) run((e) => e.clearDepot());
+    },
     setDepotStops,
     setShowDepot,
     setShowRoads,
@@ -649,8 +735,13 @@ export function StreetLineEditor({
       profile={profile}
       rules={rules}
       timing={timing}
+      vehicle={vehicle}
+      lineList={lineList}
       selected={selected}
       depotStops={shownDepot}
+      depotId={depotId}
+      depots={depots.map((d) => ({ id: d.id, name: d.name, problem: depotFit(d, { profile, vehicle }) }))}
+      onOpenDepots={onOpenDepots}
       showDepot={showDepot}
       showRoads={showRoads}
       crossingSources={{

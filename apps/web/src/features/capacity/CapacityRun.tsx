@@ -1,15 +1,36 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { clock, parseClock } from "../journey-planner/format";
-import {
-  type Translate,
-  type TranslatePlural,
-  translate,
-  translatePlural,
-  useI18n,
-  withNodes,
-} from "../../i18n/i18n";
+import { parseClock } from "../journey-planner/format";
+import { useI18n } from "../../i18n/i18n";
+import { paramValue } from "../benefits/params";
+import type { SavedStreetLine } from "../street-lines/saved";
+import type { Network } from "../railways/types";
+import { NetworkPicker, RunSettings } from "./CapacityForm";
+import { type LineState, RunResults, StreetResults } from "./CapacityResults";
+import { projectRunSettings } from "./projectSettings";
+import { every, serverStatus, VERDICTS } from "./capacityText";
+import { buildDrawnNetwork, type DrawnProblem, drawnProblem } from "./drawn";
 import { loadWorkerEngine } from "./engine";
+import { PERIODS, pickStreetParams, railLoadPlans, streetLoadPlans } from "./loadPlans";
+import { type LineLoad, type LoadLine, lineLoad } from "./loads";
+import {
+  type Boardings,
+  estimatedBoardings,
+  lineBoardings,
+  loadZones,
+  type RidershipInput,
+  type RidershipZones,
+} from "./ridership";
+import { type DemandRidership, demandStopBoardings } from "../demand/ridership";
+import { SavedRunBar, SavedRunsList } from "./SavedRuns";
+import {
+  circuit,
+  runStreetLine,
+  STREET_RUN_DEFAULTS,
+  type StreetLineResult,
+  type StreetRunParams,
+} from "./streetRun";
+import { isOpen, type RunsApi, type SavedRun, type SavedRunDetail, type ServerNetwork } from "./server";
 import type {
   CapacityEngine,
   CapacityParams,
@@ -17,103 +38,142 @@ import type {
   EngineLoader,
   LineInfo,
   NetworkSource,
-  Point,
-  Verdict,
 } from "./types";
 
-const H = 3600;
+export { explain, practicalMaximum, VERDICTS, verdictText } from "./capacityText";
 
-/** Periods to pick from; "custom" lets the planner type the times. */
-const PERIODS = [
-  { id: "am", from: 7 * H, to: 9 * H },
-  { id: "midday", from: 11 * H, to: 13 * H },
-  { id: "pm", from: 16 * H, to: 18 * H },
-  { id: "evening", from: 20 * H, to: 22 * H },
-] as const;
-
-/** English, for the helpers when no translator is given (tests, logs). */
-const EN: Translate = (key, vars) => translate("en", key, vars);
-const EN_N: TranslatePlural = (key, count, vars) => translatePlural("en", key, count, vars);
-
-/** Verdict wording and colours, best first. */
-export const VERDICTS: Record<Verdict, { tone: string; rank: number }> = {
-  works: { tone: "bg-emerald-100 text-emerald-900 border-emerald-300", rank: 0 },
-  near_limit: { tone: "bg-lime-100 text-lime-900 border-lime-300", rank: 1 },
-  over_limit: { tone: "bg-amber-100 text-amber-900 border-amber-300", rank: 2 },
-  delays_pile_up: { tone: "bg-orange-100 text-orange-900 border-orange-300", rank: 3 },
-  not_enough_capacity: { tone: "bg-red-100 text-red-900 border-red-300", rank: 4 },
-};
-
-/** Purpose: a verdict's title and one-sentence explanation in the reader's language. */
-export function verdictText(v: Verdict, t: Translate = EN): { title: string; text: string } {
-  return { title: t(`capacity.verdict.${v}.title`), text: t(`capacity.verdict.${v}.text`) };
-}
-
-const pct = (x: number) => `${Math.round(x * 100)} %`;
-const perHour = (x: number) => (Math.abs(x - Math.round(x)) < 0.05 ? `${Math.round(x)}` : x.toFixed(1));
-const secs = (s: number, t: Translate = EN) =>
-  s < 90 ? t("capacity.seconds", { n: Math.round(s) }) : t("capacity.minutes", { n: (s / 60).toFixed(1) });
-const every = (h: number, t: Translate = EN) => {
-  const m = h / 60;
-  return t("capacity.every", { n: Number.isInteger(m) ? m : m.toFixed(1) });
-};
-
-/** Purpose: the practical maximum: the highest frequency that works (placed, under the limit, stable). */
-export function practicalMaximum(points: Point[]): number | null {
-  const ok = points.filter((p) => VERDICTS[p.verdict].rank <= 1).map((p) => p.per_hour);
-  return ok.length ? Math.max(...ok) : null;
-}
-
-/** Purpose: one sentence that says why a point got its verdict. */
-export function explain(p: Point, limit: number, t: Translate = EN, tn: TranslatePlural = EN_N): string {
-  if (p.unplaced > 0) return tn("capacity.unplaced", p.unplaced);
-  if (p.problems.length && p.verdict === "not_enough_capacity")
-    return t("capacity.stopped", { problem: p.problems[0]! });
-  const part =
-    p.terminal_share > p.consumption
-      ? t("capacity.partTerminal", { name: p.terminal })
-      : t("capacity.partLine", { name: p.bottleneck });
-  const use = t("capacity.busiest", {
-    part,
-    share: pct(Math.max(p.consumption, p.terminal_share)),
-    limit: pct(limit),
-  });
-  if (!p.stable) return `${use} ${t("capacity.stillLate", { late: secs(p.residual_delay_s, t) })}`;
-  return use;
-}
+const NO_STREETS: readonly SavedStreetLine[] = [];
+const NO_BOARDINGS: Boardings = {};
+const DRAWN_PROBLEMS: Record<DrawnProblem, true> = { noTrack: true, noLines: true, errors: true };
 
 interface Props {
   /** Where the panel renders; inline when `null`. */
   panel?: HTMLElement | null;
   /** Engine loader; tests inject a fake. */
   loadEngine?: EngineLoader;
+  /** The railway drawn in the project, with its service lines. */
+  railway?: Network | null;
+  /** Builds the drawn railway for the test; tests inject a fake. */
+  buildDrawn?: typeof buildDrawnNetwork;
+  /** The project's street lines, run along their routes with traffic delays. */
+  streetLines?: readonly SavedStreetLine[];
+  /** What the Tables tab's ridership estimate needs; passenger loads are left out without it. */
+  ridership?: RidershipInput | null;
+  /** The demand model run the planner picked for ridership: its boardings by stop replace the estimate. */
+  demandRidership?: DemandRidership | null;
+  /** The planner's own weekday boardings per station or stop. */
+  ownBoardings?: Boardings;
+  /** Saves them; absent when the project is read-only. */
+  onOwnBoardings?: (b: Boardings) => void;
+  /** Loads the estimate's zones; tests inject a fake. */
+  loadRidership?: (input: RidershipInput) => Promise<RidershipZones>;
+  /** The project's values (Project preferences), for vehicle places and the load shares. */
+  prefs?: Record<string, number>;
+  /** The project's saved runs on the server; without it the panel only runs in the browser. */
+  runs?: RunsApi | null;
+  /** Whether the reader may start and stop runs on the server (Owners and Editors). */
+  canRun?: boolean;
+  /** Milliseconds between checks of runs that are still going (tests make it short). */
+  pollMs?: number;
 }
 
-type LineState = { info: LineInfo; planned: Point; sweep: Point[]; sweeping: boolean };
-
 /**
- * The simulator tab's "Test the system" panel: the rail capacity run. The planner picks a network (the example
- * metro, or the railway editor's track topology with a lines file) and a period; the run plans the period with the
- * timetable planner, measures UIC 406 capacity, runs it through the interlocking, repeats it with random delays,
- * and tries other frequencies to find the most each line can carry. Plain verdicts first, numbers behind them.
+ * The simulator tab's "Test the system" panel. The planner picks a network (the lines drawn in the project,
+ * the example metro, or the railway editor's track topology with a lines file) and a period. Rail lines are
+ * planned with the timetable planner, measured for UIC 406 capacity, run through the interlocking, repeated
+ * with random delays, and tried at other frequencies to find the most each line can carry. Street lines run
+ * their timetables along their routes with traffic delays that vary from trip to trip. Passenger loads come
+ * from the Tables tab's ridership estimate or the planner's own boardings. Plain verdicts first, numbers
+ * behind them.
  */
-export function CapacityRun({ panel = null, loadEngine = loadWorkerEngine }: Props) {
-  const { t } = useI18n();
-  const [source, setSource] = useState<"example" | "files">("example");
+export function CapacityRun({
+  panel = null,
+  loadEngine = loadWorkerEngine,
+  railway = null,
+  buildDrawn = buildDrawnNetwork,
+  streetLines = NO_STREETS,
+  ridership = null,
+  demandRidership = null,
+  ownBoardings = NO_BOARDINGS,
+  onOwnBoardings,
+  loadRidership = loadZones,
+  prefs,
+  runs = null,
+  canRun = false,
+  pollMs = 2000,
+}: Props) {
+  const { t, language } = useI18n();
+  const drawn = drawnProblem(railway);
+  const streets = useMemo(
+    () => streetLines.map((line, index) => ({ line, index })).filter(({ line }) => circuit(line) !== null),
+    [streetLines],
+  );
+  const drawnReady = drawn === null || streets.length > 0;
+  // Until the planner picks one: the lines drawn in the project when there are any, else the example.
+  const [picked, setSource] = useState<"example" | "drawn" | "files" | null>(null);
+  const source = picked ?? (drawnReady ? "drawn" : "example");
   const [topology, setTopology] = useState<{ name: string; text: string } | null>(null);
   const [linesFile, setLinesFile] = useState<{ name: string; text: string } | null>(null);
   const [period, setPeriod] = useState<string>("am");
   const [from, setFrom] = useState("07:00");
   const [to, setTo] = useState("09:00");
   const [sweep, setSweep] = useState(true);
+  const [withLoads, setWithLoads] = useState(true);
   const [advanced, setAdvanced] = useState<Partial<CapacityParams>>({});
+  // The project's values (All parameters) under the settings changed for this run.
+  const settings = useMemo(() => ({ ...projectRunSettings(prefs), ...advanced }), [prefs, advanced]);
   const [status, setStatus] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [run, setRun] = useState<Run | null>(null);
   const [lines, setLines] = useState<LineState[]>([]);
   const [notes, setNotes] = useState<string[]>([]);
+  const [streetResults, setStreetResults] = useState<StreetLineResult[]>([]);
+  const [loads, setLoads] = useState<Record<string, LineLoad>>({});
+  const [zones, setZones] = useState<RidershipZones | null>(null);
   const engine = useRef<{ key: string; engine: CapacityEngine } | null>(null);
+  const zonesRun = useRef<{ key: string; zones: Promise<RidershipZones> } | null>(null);
   const generation = useRef(0);
+  // Runs saved on the server: the project's list, and the one open in the panel (null: the browser's run).
+  const [saved, setSaved] = useState<SavedRun[]>([]);
+  const [viewing, setViewing] = useState<SavedRunDetail | null>(null);
+  const [sending, setSending] = useState(false);
+  const [serverError, setServerError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!runs) return;
+    let live = true;
+    void runs.list().then(
+      (l) => live && setSaved(l),
+      (e: unknown) => live && setServerError(e instanceof Error ? e.message : String(e)),
+    );
+    return () => {
+      live = false;
+    };
+  }, [runs]);
+
+  // While a run is still going, check on it (and on the list) until it is settled.
+  const viewingId = viewing?.id ?? null;
+  const viewingOpen = viewing !== null && isOpen(viewing);
+  const listOpen = saved.some(isOpen);
+  useEffect(() => {
+    if (!runs || (!viewingOpen && !listOpen)) return;
+    let live = true;
+    const timer = setInterval(() => {
+      void runs.list().then(
+        (l) => live && setSaved(l),
+        () => undefined,
+      );
+      if (viewingId && viewingOpen)
+        void runs.get(viewingId).then(
+          (r) => live && setViewing((v) => (v?.id === r.id ? r : v)),
+          () => undefined,
+        );
+    }, pollMs);
+    return () => {
+      live = false;
+      clearInterval(timer);
+    };
+  }, [runs, viewingId, viewingOpen, listOpen, pollMs]);
 
   useEffect(
     () => () => {
@@ -132,8 +192,93 @@ export function CapacityRun({ panel = null, loadEngine = loadWorkerEngine }: Pro
     return { from_s: a, to_s: b };
   };
 
-  const ready = source === "example" || (topology !== null && linesFile !== null);
+  const ready =
+    source === "example" || (source === "drawn" ? drawnReady : topology !== null && linesFile !== null);
   const busy = status !== null;
+
+  // The drawn lines without their service bands (for the boardings editor before a run).
+  const plans = useMemo(
+    () => [
+      ...(drawn === null && railway ? railLoadPlans(railway, []) : []),
+      ...streetLoadPlans(streets, prefs),
+    ],
+    [drawn, railway, streets, prefs],
+  );
+  const stopNames = useMemo(() => [...new Set(plans.flatMap((p) => p.sequences.flat()))], [plans]);
+  const linesAt = (n: string) => plans.filter((p) => p.sequences.some((s) => s.includes(n))).length;
+  const estimates = useMemo(() => {
+    if (!zones && !demandRidership) return null;
+    const out: Record<string, number> = {};
+    for (const p of zones ? plans : []) {
+      const e = estimatedBoardings(
+        zones!.zones,
+        p.mode,
+        [...new Set(p.sequences.flat())],
+        prefs,
+        ridership?.doc ?? null,
+      );
+      for (const [n, v] of Object.entries(e)) out[n] = (out[n] ?? 0) + v;
+    }
+    if (demandRidership)
+      Object.assign(
+        out,
+        demandStopBoardings(stopNames, demandRidership, () => 1),
+      );
+    return out;
+  }, [zones, plans, prefs, ridership?.doc, demandRidership, stopNames]);
+
+  /** Loads the estimate's zones once per published network. */
+  const ensureZones = (): Promise<RidershipZones> | null => {
+    if (!ridership) return null;
+    const key = JSON.stringify([ridership.timetable, ridership.regions, ridership.prefs, ridership.country]);
+    if (zonesRun.current?.key !== key) {
+      const z = loadRidership(ridership);
+      zonesRun.current = { key, zones: z };
+      void z.then(
+        (v) => zonesRun.current?.key === key && setZones(v),
+        () => undefined,
+      );
+    }
+    return zonesRun.current.zones;
+  };
+
+  /** Runs the street lines and works out the passenger loads of the drawn lines. */
+  const drawnExtras = async (
+    w: { from_s: number; to_s: number },
+    infos: LineInfo[],
+    alive: () => boolean,
+  ) => {
+    const params: StreetRunParams = { ...STREET_RUN_DEFAULTS, ...pickStreetParams(settings), ...w };
+    setStreetResults(
+      streets.flatMap(({ line, index }) => {
+        const r = runStreetLine(line, index, params);
+        return r ? [r] : [];
+      }),
+    );
+    if (!withLoads || !ridership) return;
+    setStatus(t("capacity.loads.estimating"));
+    const z = await ensureZones()!.catch(() => ({ zones: [], notes: [] }) as RidershipZones);
+    if (!alive()) return;
+    const shares = {
+      peakHour: paramValue("benefit.ridership.peak_hour_share", "*", prefs)[1],
+      peakDirection: paramValue("benefit.ridership.peak_direction_share", "*", prefs)[1],
+    };
+    const all = [
+      ...(drawn === null && railway ? railLoadPlans(railway, infos) : []),
+      ...streetLoadPlans(streets, prefs),
+    ];
+    const out: Record<string, LineLoad> = {};
+    for (const p of all) {
+      const names = [...new Set(p.sequences.flat())];
+      const est = {
+        ...estimatedBoardings(z.zones, p.mode, names, prefs, ridership.doc),
+        ...(demandRidership ? demandStopBoardings(names, demandRidership, linesAt) : {}),
+      };
+      const line: LoadLine = { ...p, boardings: lineBoardings(names, est, ownBoardings, linesAt) };
+      out[p.key] = lineLoad(line, w.from_s, w.to_s, shares);
+    }
+    setLoads(out);
+  };
 
   const start = async () => {
     const w = periodWindow();
@@ -143,26 +288,48 @@ export function CapacityRun({ panel = null, loadEngine = loadWorkerEngine }: Pro
     }
     const gen = ++generation.current;
     const alive = () => gen === generation.current;
+    setViewing(null);
     setError(null);
     setRun(null);
     setLines([]);
-    const src: NetworkSource =
-      source === "example"
-        ? { kind: "example" }
-        : { kind: "files", topology: topology!.text, lines: linesFile!.text };
+    setStreetResults([]);
+    setLoads({});
+    const railOn = source !== "drawn" || drawn === null;
     const key =
-      source === "example" ? "example" : `${topology!.name}|${topology!.text.length}|${linesFile!.text}`;
+      source === "example"
+        ? "example"
+        : source === "drawn"
+          ? `drawn|${JSON.stringify(railway)}`
+          : `${topology!.name}|${topology!.text.length}|${linesFile!.text}`;
     try {
+      if (!railOn) {
+        await drawnExtras(w, [], alive);
+        return;
+      }
       if (engine.current?.key !== key) {
-        setStatus(t("capacity.loading"));
         engine.current?.engine.dispose();
         engine.current = null;
+        let src: NetworkSource;
+        if (source === "example") src = { kind: "example" };
+        else if (source === "files")
+          src = { kind: "files", topology: topology!.text, lines: linesFile!.text };
+        else {
+          setStatus(t("capacity.building"));
+          const built = await buildDrawn(railway, undefined, undefined, prefs);
+          if (!alive()) return;
+          if (typeof built === "string") {
+            setError(t(`capacity.drawn.${built}`));
+            return;
+          }
+          src = { kind: "files", ...built };
+        }
+        setStatus(t("capacity.loading"));
         const e = await loadEngine(src);
         if (!alive()) return e.dispose();
         engine.current = { key, engine: e };
       }
       const e = engine.current.engine;
-      const params = { ...advanced, ...w };
+      const params = { ...settings, ...w };
       setNotes(await e.notes());
       const infos = await e.lines();
       setStatus(t("capacity.planning"));
@@ -176,6 +343,8 @@ export function CapacityRun({ panel = null, loadEngine = loadWorkerEngine }: Pro
         sweeping: sweep,
       }));
       setLines(states);
+      if (source === "drawn") await drawnExtras(w, infos, alive);
+      if (!alive()) return;
       if (sweep) {
         for (let k = 0; k < states.length; k++) {
           const li = infos.findIndex((i) => i.id === states[k]!.info.id);
@@ -210,6 +379,123 @@ export function CapacityRun({ panel = null, loadEngine = loadWorkerEngine }: Pro
     }
   };
 
+  /** Purpose: start the same run on the server, saved to the project, and open it in the panel. */
+  const startOnServer = async () => {
+    if (!runs) return;
+    const w = periodWindow();
+    if (!w) {
+      setServerError(t("capacity.badPeriod"));
+      return;
+    }
+    let network: ServerNetwork;
+    if (source === "drawn") {
+      // The server runs the rail test only: the drawn railway and its service lines.
+      if (drawn !== null) {
+        setServerError(t(`capacity.drawn.${drawn}`));
+        return;
+      }
+      setSending(true);
+      const built = await buildDrawn(railway, undefined, undefined, prefs).catch((e: unknown) =>
+        e instanceof Error ? e.message : String(e),
+      );
+      setSending(false);
+      if (typeof built === "string") {
+        setServerError(built in DRAWN_PROBLEMS ? t(`capacity.drawn.${built as DrawnProblem}`) : built);
+        return;
+      }
+      network = {
+        kind: "files",
+        topology: built.topology,
+        topologyName: t("capacity.drawn"),
+        lines: built.lines,
+        linesName: t("capacity.drawn"),
+      };
+    } else
+      network =
+        source === "example"
+          ? { kind: "example" }
+          : {
+              kind: "files",
+              topology: topology!.text,
+              topologyName: topology!.name,
+              lines: linesFile!.text,
+              linesName: linesFile!.name,
+            };
+    const params = Object.fromEntries(
+      Object.entries({ ...settings, ...w }).filter(([, v]) => v !== undefined),
+    ) as SavedRun["params"];
+    setSending(true);
+    setServerError(null);
+    try {
+      const r = await runs.start(network, params, sweep);
+      generation.current++;
+      setStatus(null);
+      setViewing(r);
+      setSaved((l) => [r, ...l.filter((x) => x.id !== r.id)]);
+    } catch (e) {
+      setServerError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setSending(false);
+    }
+  };
+
+  /** Purpose: open a saved run in the panel. */
+  const open = async (id: string) => {
+    if (!runs) return;
+    setServerError(null);
+    try {
+      const r = await runs.get(id);
+      generation.current++;
+      setStatus(null);
+      setConfirmDelete(false);
+      setViewing(r);
+    } catch (e) {
+      setServerError(e instanceof Error ? e.message : String(e));
+    }
+  };
+
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
+  /** Purpose: run the open saved run again with its own settings; its old result is replaced. */
+  const rerunSaved = async () => {
+    if (!runs || !viewing) return;
+    setServerError(null);
+    try {
+      const r = await runs.rerun(viewing.id);
+      setViewing(r);
+      setSaved((l) => [r, ...l.filter((x) => x.id !== r.id)]);
+    } catch (e) {
+      setServerError(e instanceof Error ? e.message : String(e));
+    }
+  };
+
+  /** Purpose: delete the open saved run for everyone. */
+  const deleteSaved = async () => {
+    if (!runs || !viewing) return;
+    const id = viewing.id;
+    setServerError(null);
+    try {
+      await runs.remove(id);
+      setConfirmDelete(false);
+      setViewing(null);
+      setSaved((l) => l.filter((x) => x.id !== id));
+    } catch (e) {
+      setServerError(e instanceof Error ? e.message : String(e));
+    }
+  };
+
+  /** Purpose: stop the open saved run; the server keeps what it found so far. */
+  const cancelSaved = async () => {
+    if (!runs || !viewing) return;
+    try {
+      const r = await runs.cancel(viewing.id);
+      setViewing(r);
+      setSaved((l) => l.map((x) => (x.id === r.id ? r : x)));
+    } catch (e) {
+      setServerError(e instanceof Error ? e.message : String(e));
+    }
+  };
+
   const stop = () => {
     // The worker finishes its current step; later results are ignored and the sweep ends.
     generation.current++;
@@ -217,59 +503,14 @@ export function CapacityRun({ panel = null, loadEngine = loadWorkerEngine }: Pro
     setLines((ls) => ls.map((l) => ({ ...l, sweeping: false })));
   };
 
-  const limit = run?.params.occupancy_limit_share ?? 0.85;
-  const file = (
-    label: string,
-    value: { name: string } | null,
-    set: (v: { name: string; text: string }) => void,
-  ) => (
-    <label className="flex min-h-10 cursor-pointer items-center justify-between gap-2 rounded-[10px] border border-slate-300 bg-white px-3 py-2 hover:bg-slate-50">
-      <span className="min-w-0">
-        <span className="block font-medium">{label}</span>
-        <span className="block truncate text-xs text-slate-500">
-          {value ? value.name : t("capacity.noFile")}
-        </span>
-      </span>
-      <span className="text-sm text-blue-700">{value ? t("capacity.replace") : t("capacity.choose")}</span>
-      <input
-        type="file"
-        accept="application/json,.json"
-        className="sr-only"
-        aria-label={label}
-        onChange={(e) => {
-          const f = e.target.files?.[0];
-          e.target.value = "";
-          if (f) void f.text().then((text) => set({ name: f.name, text }));
-        }}
-      />
-    </label>
-  );
-
-  const num = (
-    key: keyof CapacityParams,
-    label: string,
-    scale: number,
-    unit: string,
-    step: number,
-    def: number,
-  ) => (
-    <label className="flex items-center justify-between gap-2 text-sm">
-      <span>{label}</span>
-      <span className="flex items-center gap-1">
-        <input
-          type="number"
-          step={step}
-          className="w-20 rounded-md border border-slate-300 px-2 py-1 text-right"
-          value={advanced[key] !== undefined ? Number(advanced[key]) / scale : def}
-          onChange={(e) => {
-            const v = Number(e.target.value);
-            setAdvanced((a) => ({ ...a, [key]: Number.isFinite(v) ? v * scale : undefined }));
-          }}
-        />
-        <span className="w-6 text-slate-500">{unit}</span>
-      </span>
-    </label>
-  );
+  // What the panel shows: the open saved run, or the run in this browser.
+  const shownRun: Run | null = viewing ? (viewing.result?.run ?? null) : run;
+  const shownLines: LineState[] = viewing ? (viewing.result?.lines ?? []) : lines;
+  const shownNotes: string[] = viewing ? (viewing.result?.notes ?? []) : notes;
+  const shownStatus = viewing ? (isOpen(viewing) ? serverStatus(viewing, t) : null) : status;
+  const shownError = viewing ? (viewing.status === "failed" ? viewing.error : null) : error;
+  const when = (iso: string) =>
+    new Date(iso).toLocaleString(language, { dateStyle: "medium", timeStyle: "short" });
 
   const body = (
     <section aria-label={t("capacity.title")} className="space-y-4 px-4 pb-6 md:px-5">
@@ -278,105 +519,38 @@ export function CapacityRun({ panel = null, loadEngine = loadWorkerEngine }: Pro
         <p className="mt-1 text-sm text-slate-600">{t("capacity.intro")}</p>
       </div>
 
-      <fieldset className="space-y-2">
-        <legend className="caps mb-1.5">{t("capacity.network")}</legend>
-        <div className="seg" role="radiogroup" aria-label={t("capacity.network")}>
-          <button
-            type="button"
-            role="radio"
-            aria-checked={source === "example"}
-            aria-pressed={source === "example"}
-            onClick={() => setSource("example")}
-          >
-            {t("capacity.example")}
-          </button>
-          <button
-            type="button"
-            role="radio"
-            aria-checked={source === "files"}
-            aria-pressed={source === "files"}
-            onClick={() => setSource("files")}
-          >
-            {t("capacity.mine")}
-          </button>
-        </div>
-        {source === "example" ? (
-          <p className="text-xs text-slate-600">{t("capacity.exampleText")}</p>
-        ) : (
-          <div className="space-y-2">
-            {file(t("capacity.topologyFile"), topology, setTopology)}
-            {file(t("capacity.linesFile"), linesFile, setLinesFile)}
-            <p className="text-xs text-slate-600">
-              {withNodes(t("capacity.filesHelp"), { download: <em>{t("capacity.download")}</em> })}
-            </p>
-          </div>
-        )}
-      </fieldset>
+      <NetworkPicker
+        source={source}
+        setSource={setSource}
+        drawn={drawn}
+        railway={railway}
+        streets={streets}
+        topology={topology}
+        setTopology={setTopology}
+        linesFile={linesFile}
+        setLinesFile={setLinesFile}
+      />
 
-      <fieldset className="space-y-2">
-        <legend className="caps mb-1.5">{t("capacity.period")}</legend>
-        <div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label={t("capacity.period")}>
-          {[...PERIODS, { id: "custom", from: 0, to: 0 } as const].map((p) => (
-            <button
-              key={p.id}
-              type="button"
-              role="radio"
-              className="chip"
-              aria-checked={period === p.id}
-              aria-pressed={period === p.id}
-              onClick={() => setPeriod(p.id)}
-            >
-              {t(`capacity.period.${p.id}`)}
-              {p.id !== "custom" && (
-                <span className="text-xs font-normal text-slate-500">
-                  {clock(p.from)}–{clock(p.to)}
-                </span>
-              )}
-            </button>
-          ))}
-        </div>
-        {period === "custom" && (
-          <div className="flex items-center gap-2">
-            <label className="field w-28">
-              <span className="sr-only">{t("capacity.from")}</span>
-              <input
-                value={from}
-                onChange={(e) => setFrom(e.target.value)}
-                aria-label={t("capacity.from")}
-                inputMode="numeric"
-              />
-            </label>
-            <span>{t("capacity.toWord")}</span>
-            <label className="field w-28">
-              <span className="sr-only">{t("capacity.to")}</span>
-              <input
-                value={to}
-                onChange={(e) => setTo(e.target.value)}
-                aria-label={t("capacity.to")}
-                inputMode="numeric"
-              />
-            </label>
-          </div>
-        )}
-        <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" checked={sweep} onChange={(e) => setSweep(e.target.checked)} />
-          {t("capacity.sweep")}
-        </label>
-        <details className="rounded-[10px] border border-slate-200 bg-slate-50 px-3 py-2">
-          <summary className="cursor-pointer text-sm font-medium">{t("capacity.settings")}</summary>
-          <div className="mt-2 space-y-1.5">
-            {num("stability_runs", t("capacity.set.runs"), 1, "", 1, 8)}
-            {num("delayed_share", t("capacity.set.delayed"), 0.01, "%", 5, 20)}
-            {num("primary_delay_mean_s", t("capacity.set.mean"), 1, "s", 5, 45)}
-            {num("primary_delay_max_s", t("capacity.set.max"), 1, "s", 30, 180)}
-            {num("occupancy_limit_share", t("capacity.set.limit"), 0.01, "%", 5, 85)}
-            {num("min_buffer_s", t("capacity.set.buffer"), 1, "s", 5, 20)}
-            {num("late_threshold_s", t("capacity.set.lateFrom"), 1, "s", 30, 120)}
-            {num("seed", t("capacity.set.seed"), 1, "", 1, 1)}
-            <p className="pt-1 text-xs text-slate-500">{t("capacity.settingsNote")}</p>
-          </div>
-        </details>
-      </fieldset>
+      <RunSettings
+        period={period}
+        setPeriod={setPeriod}
+        from={from}
+        setFrom={setFrom}
+        to={to}
+        setTo={setTo}
+        sweep={sweep}
+        setSweep={setSweep}
+        showLoads={source === "drawn" && !!ridership}
+        withLoads={withLoads}
+        setWithLoads={setWithLoads}
+        stopNames={stopNames}
+        estimates={estimates}
+        ownBoardings={ownBoardings}
+        onOwnBoardings={onOwnBoardings}
+        ensureZones={ensureZones}
+        advanced={settings}
+        setAdvanced={setAdvanced}
+      />
 
       <div className="flex gap-2">
         <button
@@ -385,7 +559,7 @@ export function CapacityRun({ panel = null, loadEngine = loadWorkerEngine }: Pro
           disabled={!ready || busy}
           onClick={() => void start()}
         >
-          {run ? t("capacity.runAgain") : t("capacity.run")}
+          {run && !viewing ? t("capacity.runAgain") : t("capacity.run")}
         </button>
         {busy && (
           <button type="button" className="btn" onClick={stop}>
@@ -393,184 +567,69 @@ export function CapacityRun({ panel = null, loadEngine = loadWorkerEngine }: Pro
           </button>
         )}
       </div>
+      {runs && canRun && (
+        <div className="space-y-1">
+          <button
+            type="button"
+            className="btn w-full"
+            disabled={!ready || sending}
+            onClick={() => void startOnServer()}
+          >
+            {t("capacity.runServer")}
+          </button>
+          <p className="text-xs text-slate-600">{t("capacity.serverHint")}</p>
+        </div>
+      )}
       {!ready && source === "files" && <p className="text-xs text-slate-600">{t("capacity.chooseBoth")}</p>}
-      {status && (
+      {serverError && (
+        <p
+          role="alert"
+          className="rounded-[10px] border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800"
+        >
+          {serverError}
+        </p>
+      )}
+
+      {runs && <SavedRunsList saved={saved} viewing={viewing} open={open} when={when} />}
+
+      {viewing && (
+        <SavedRunBar
+          viewing={viewing}
+          canRun={canRun}
+          confirmDelete={confirmDelete}
+          setConfirmDelete={setConfirmDelete}
+          close={() => {
+            setConfirmDelete(false);
+            setViewing(null);
+          }}
+          cancelSaved={cancelSaved}
+          rerunSaved={rerunSaved}
+          deleteSaved={deleteSaved}
+          when={when}
+        />
+      )}
+      {shownStatus && (
         <p role="status" className="flex items-center gap-2 text-sm text-slate-700">
           <span
             className="h-3 w-3 animate-spin rounded-full border-2 border-blue-700 border-t-transparent"
             aria-hidden
           />
-          {status}
+          {shownStatus}
         </p>
       )}
-      {error && (
+      {shownError && (
         <p
           role="alert"
           className="rounded-[10px] border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800"
         >
-          {error}
+          {shownError}
         </p>
       )}
 
-      {run && (
-        <div className="space-y-3" data-testid="capacity-result">
-          <div className={`rounded-xl border px-3.5 py-3 ${VERDICTS[run.verdict].tone}`}>
-            <p className="text-base font-semibold">{verdictText(run.verdict, t).title}</p>
-            <p className="mt-0.5 text-sm">{verdictText(run.verdict, t).text}</p>
-            <p className="mt-1.5 text-xs opacity-80">
-              {t("capacity.summary", {
-                period: `${clock(run.params.from_s)}–${clock(run.params.to_s)}`,
-                trips: run.fleet.trips,
-                out: run.fleet.peak_out,
-                reserve: run.fleet.reserve,
-              })}
-            </p>
-          </div>
-          {lines.map((l) => (
-            <LineCard key={l.info.id} line={l} limit={limit} />
-          ))}
-          {notes.length > 0 && (
-            <details className="text-xs text-slate-600">
-              <summary className="cursor-pointer">{t("capacity.importNotes", { n: notes.length })}</summary>
-              <ul className="mt-1 list-disc pl-4">
-                {notes.map((n) => (
-                  <li key={n}>{n}</li>
-                ))}
-              </ul>
-            </details>
-          )}
-          {run.issues.length > 0 && (
-            <details className="text-xs text-slate-600">
-              <summary className="cursor-pointer">
-                {t("capacity.plannerNotes", { n: run.issues.length })}
-              </summary>
-              <ul className="mt-1 list-disc pl-4 break-all">
-                {run.issues.slice(0, 20).map((n, i) => (
-                  <li key={i}>{n}</li>
-                ))}
-              </ul>
-            </details>
-          )}
-          <p className="text-xs text-slate-500">
-            {t("capacity.method", {
-              runs: run.params.stability_runs,
-              share: pct(run.params.delayed_share),
-              late: secs(run.params.primary_delay_max_s, t),
-            })}
-          </p>
-        </div>
-      )}
+      {shownRun && <RunResults run={shownRun} lines={shownLines} notes={shownNotes} loads={loads} />}
+
+      <StreetResults results={streetResults} loads={loads} advanced={settings} prefs={prefs} />
     </section>
   );
   return panel ? createPortal(body, panel) : body;
-}
-
-function LineCard({ line, limit }: { line: LineState; limit: number }) {
-  const { t, tn } = useI18n();
-  const p = line.planned;
-  const all = [p, ...line.sweep].sort((a, b) => b.headway_s - a.headway_s);
-  const max = practicalMaximum(all);
-  const v = { ...VERDICTS[p.verdict], ...verdictText(p.verdict, t) };
-  const metric = (label: string, value: string, hint?: string) => (
-    <div className="rounded-lg bg-slate-50 px-2.5 py-2">
-      <dt className="text-xs text-slate-500">{label}</dt>
-      <dd className="font-semibold">{value}</dd>
-      {hint && <dd className="text-xs text-slate-500">{hint}</dd>}
-    </div>
-  );
-  return (
-    <article
-      aria-label={t("capacity.line", { name: line.info.name })}
-      className="rounded-xl border border-slate-200 bg-white p-3.5"
-    >
-      <header className="flex items-center justify-between gap-2">
-        <h3 className="font-semibold">
-          {line.info.name}{" "}
-          <span className="text-sm font-normal text-slate-500">
-            {every(p.headway_s, t)} · {t("capacity.eachWay", { n: perHour(p.per_hour) })}
-          </span>
-        </h3>
-        <span className={`tag border ${v.tone}`}>{v.title}</span>
-      </header>
-      <p className="mt-1.5 text-sm text-slate-700">{explain(p, limit, t, tn)}</p>
-      <dl className="mt-2.5 grid grid-cols-2 gap-1.5">
-        {metric(
-          t("capacity.used"),
-          pct(Math.max(p.consumption, p.terminal_share)),
-          t("capacity.usedHint", {
-            line: pct(p.consumption),
-            terminal: p.terminal || t("capacity.terminal"),
-            share: pct(p.terminal_share),
-          }),
-        )}
-        {metric(
-          t("capacity.room"),
-          t("capacity.roomValue", { n: perHour(p.theoretical_per_hour) }),
-          t("capacity.roomHint", { n: perHour(p.limit_per_hour) }),
-        )}
-        {metric(
-          t("capacity.onTime"),
-          pct(p.punctuality),
-          t("capacity.onTimeHint", { share: pct(p.disturbed_punctuality) }),
-        )}
-        {metric(
-          t("capacity.delays"),
-          p.stable ? t("capacity.dieOut") : t("capacity.pileUp"),
-          t("capacity.delaysHint", { passed: secs(p.knock_on_s, t), left: secs(p.residual_delay_s, t) }),
-        )}
-      </dl>
-      {(line.sweep.length > 0 || line.sweeping) && (
-        <div className="mt-3">
-          <p className="text-sm font-medium">
-            {max !== null
-              ? t("capacity.worksUpTo", { n: perHour(max) })
-              : line.sweeping
-                ? t("capacity.tryingOthers")
-                : t("capacity.noneWorks")}
-          </p>
-          <table className="mt-1.5 w-full text-left text-xs">
-            <thead className="text-slate-500">
-              <tr>
-                <th className="py-1 pr-2 font-medium">{t("capacity.col.service")}</th>
-                <th className="py-1 pr-2 font-medium">{t("capacity.col.used")}</th>
-                <th className="py-1 pr-2 font-medium">{t("capacity.col.delays")}</th>
-                <th className="py-1 pr-2 font-medium">{t("capacity.col.result")}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {all.map((x) => (
-                <tr
-                  key={x.headway_s}
-                  className={`border-t border-slate-100 ${x === p ? "font-semibold" : ""}`}
-                >
-                  <td className="py-1 pr-2">
-                    {t(x === p ? "capacity.ratePlanned" : "capacity.rate", { n: perHour(x.per_hour) })}
-                  </td>
-                  <td className="py-1 pr-2">
-                    {x.unplaced > 0
-                      ? tn("capacity.notFit", x.unplaced)
-                      : pct(Math.max(x.consumption, x.terminal_share))}
-                  </td>
-                  <td className="py-1 pr-2">
-                    {x.unplaced > 0 ? "–" : x.stable ? t("capacity.dieOutRow") : t("capacity.pileUpRow")}
-                  </td>
-                  <td className="py-1 pr-2">{verdictText(x.verdict, t).title}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-      {p.problems.length > 0 && (
-        <details className="mt-2 text-xs text-slate-600">
-          <summary className="cursor-pointer">{t("capacity.kernelNotes", { n: p.problems.length })}</summary>
-          <ul className="mt-1 list-disc pl-4">
-            {p.problems.map((x) => (
-              <li key={x}>{x}</li>
-            ))}
-          </ul>
-        </details>
-      )}
-    </article>
-  );
 }

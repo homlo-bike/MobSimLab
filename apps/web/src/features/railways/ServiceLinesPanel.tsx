@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
+import { CommentBadge, ObjectComments } from "../comments/Comments";
 import { type Translate, useI18n } from "../../i18n/i18n";
 import { fmtM, fmtTime } from "./modes";
-import { Num, Row, Section } from "./RailPanel";
+import { DayTypeChoice } from "../timetables/DayTypeChoice";
+import { type DayService, editDay, hasOwnDay, railWeekday, shownDay, withDay } from "../timetables/dayTypes";
+import type { DayTypeId } from "../../workspace/calendar";
+import { Num, Row, Section } from "./panelControls";
 import {
   hhmm,
   lineMode,
@@ -14,7 +18,18 @@ import {
   updateLine,
 } from "./serviceLines";
 import { TimeDistanceGraph } from "./TimeDistanceGraph";
-import type { LonLat, Network, RailView, ServiceLine, ServicePublication } from "./types";
+import {
+  type Access,
+  type Grade,
+  type StopAccess,
+  accessRules,
+  gradeGap,
+  gradeStep,
+  lineAccess,
+} from "./platformAccess";
+import { usedVehicles } from "../../workspace/preferences";
+import { useVehiclesOff } from "../../workspace/projectVehicles";
+import type { CatalogueTrain, LonLat, Network, RailView, ServiceLine, ServicePublication } from "./types";
 
 /** The last publication, and whether the drawing changed since. */
 export interface Publication {
@@ -34,6 +49,8 @@ interface Props {
   setPicking: (id: string | null) => void;
   newLine: () => void;
   show: (at: LonLat | null, ref: number | null) => void;
+  /** The project's design rules (Project preferences) as `<mode>.<field>`; the library's when absent. */
+  designValues?: Readonly<Record<string, number>> | null;
 }
 
 const field = "rounded border border-slate-300 bg-slate-50 px-2 py-1";
@@ -62,6 +79,7 @@ export function ServiceLinesPanel({
   setPicking,
   newLine,
   show,
+  designValues = null,
 }: Props) {
   const { t, tn } = useI18n();
   const lines = doc.lines ?? [];
@@ -111,6 +129,7 @@ export function ServiceLinesPanel({
                     {r && !publication?.stale ? ` · ${tn("rail.line.trips", r.trips)}` : ""}
                   </span>
                 </span>
+                <CommentBadge type="service-line" id={l.id} />
               </button>
               {open === l.id && (
                 <LineEditor
@@ -126,9 +145,15 @@ export function ServiceLinesPanel({
                   picking={picking === l.id}
                   setPicking={(on) => setPicking(on ? l.id : null)}
                   show={show}
+                  designValues={designValues}
                   report={publication?.stale ? null : r}
                   published={publication?.stale ? null : (publication?.result ?? null)}
                 />
+              )}
+              {open === l.id && (
+                <div className="px-2 pb-2">
+                  <ObjectComments type="service-line" id={l.id} />
+                </div>
               )}
             </li>
           );
@@ -190,6 +215,7 @@ function LineEditor({
   picking,
   setPicking,
   show,
+  designValues,
   report,
   published,
 }: {
@@ -201,6 +227,7 @@ function LineEditor({
   picking: boolean;
   setPicking: (on: boolean) => void;
   show: (at: LonLat | null, ref: number | null) => void;
+  designValues: Readonly<Record<string, number>> | null;
   report: ServicePublication["lines"][number] | null;
   /** The publication the report comes from, for the time-distance graph. */
   published: ServicePublication | null;
@@ -208,11 +235,27 @@ function LineEditor({
   const { t, tn } = useI18n();
   const [graph, setGraph] = useState(false);
   const mode = lineMode(doc, l);
-  const trains = trainsFor(mode);
+  const vehiclesOff = useVehiclesOff();
+  const trains = usedVehicles(trainsFor(mode), vehiclesOff, l.vehicle);
   const train = trainById(l.vehicle);
   const name = (id: number) => doc.stations.find((s) => s.id === id)?.name ?? t("rail.stationN", { id });
   const lonlat = (id: number) => view.stations.find((s) => s.id === id)?.lonlat ?? null;
   const length = train ? train.length_m * l.units : 0;
+  // The day type whose times and headways the fields show and change.
+  const [day, setDay] = useState<DayTypeId>("weekday");
+  const shown = shownDay(railWeekday(l), l.days, day);
+  const setDayService = (patch: Partial<DayService>) =>
+    set((x) => {
+      const next = editDay(railWeekday(x), x.days, day, patch);
+      return {
+        ...x,
+        first_min: next.weekday.firstMin,
+        last_min: next.weekday.lastMin,
+        peak_headway_min: next.weekday.peakHeadwayMin,
+        offpeak_headway_min: next.weekday.offPeakHeadwayMin,
+        days: next.days,
+      };
+    });
 
   return (
     <div className="flex flex-col gap-2 border-t border-slate-200 p-2">
@@ -318,18 +361,36 @@ function LineEditor({
         </p>
       )}
 
+      {train && l.stations.length > 0 && (
+        <PlatformAccess
+          doc={doc}
+          line={l}
+          train={train}
+          designValues={designValues}
+          show={(id) => show(lonlat(id), id)}
+        />
+      )}
+
+      <DayTypeChoice
+        day={day}
+        onDay={setDay}
+        own={hasOwnDay(l.days, day)}
+        onOwn={(own) =>
+          day !== "weekday" && set((x) => ({ ...x, days: withDay(x.days, day, own ? shown : null) }))
+        }
+      />
       <Row label={t("rail.line.first")}>
         <TimeInput
           label={t("rail.line.first")}
-          value={l.first_min}
-          onChange={(v) => set((x) => ({ ...x, first_min: v }))}
+          value={shown.firstMin}
+          onChange={(v) => setDayService({ firstMin: v })}
         />
       </Row>
       <Row label={t("rail.line.last")}>
         <TimeInput
           label={t("rail.line.last")}
-          value={l.last_min}
-          onChange={(v) => set((x) => ({ ...x, last_min: v }))}
+          value={shown.lastMin}
+          onChange={(v) => setDayService({ lastMin: v })}
         />
       </Row>
       <Row label={t("rail.line.everyPeaks")}>
@@ -338,8 +399,8 @@ function LineEditor({
           unit="min"
           min={1}
           step={0.5}
-          value={l.peak_headway_min}
-          onChange={(v) => set((x) => ({ ...x, peak_headway_min: v }))}
+          value={shown.peakHeadwayMin}
+          onChange={(v) => setDayService({ peakHeadwayMin: v })}
         />
       </Row>
       <Row label={t("rail.line.everyOffpeak")}>
@@ -348,8 +409,8 @@ function LineEditor({
           unit="min"
           min={1}
           step={0.5}
-          value={l.offpeak_headway_min}
-          onChange={(v) => set((x) => ({ ...x, offpeak_headway_min: v }))}
+          value={shown.offPeakHeadwayMin}
+          onChange={(v) => setDayService({ offPeakHeadwayMin: v })}
         />
       </Row>
       <p className="text-xs text-slate-500">{t("rail.line.peaks")}</p>
@@ -400,8 +461,238 @@ function LineEditor({
   );
 }
 
+const ACCESS_STYLE: Record<Access, string> = {
+  level: "bg-emerald-100 text-emerald-900",
+  step: "bg-sky-100 text-sky-900",
+  aid: "bg-amber-100 text-amber-900",
+  clash: "bg-red-100 text-red-900",
+};
+
+/** Purpose: "+20 mm" / "−150 mm" (a signed step: positive is up into the train). */
+const signedMm = (mm: number) => `${mm > 0 ? "+" : mm < 0 ? "−" : "±"}${Math.abs(Math.round(mm))} mm`;
+
+const ACCESS_FILL: Record<Access, string> = {
+  level: "#047857",
+  step: "#0369a1",
+  aid: "#b45309",
+  clash: "#b91c1c",
+};
+
+/**
+ * Purpose: the platform access check of a line (TSI PRM step and gap, platform length), against the limits in
+ * Project preferences. Stops that board the same way share one cross-section of platform and train, with the
+ * step and the gap measured on it and checked against their limits. A train without a floor height in the
+ * catalogue is drawn at the mode's default floor height, marked as assumed.
+ */
+function PlatformAccess({
+  doc,
+  line,
+  train,
+  designValues,
+  show,
+}: {
+  doc: Network;
+  line: ServiceLine;
+  train: CatalogueTrain;
+  designValues: Readonly<Record<string, number>> | null;
+  show: (station: number) => void;
+}) {
+  const { t } = useI18n();
+  const stops = lineAccess(doc, line, train, (m) => accessRules(designValues, m));
+  if (stops.length === 0) return null;
+  // Stops with the same platform, floor and gap look the same: one drawing for each such group.
+  const groups = new Map<string, StopAccess[]>();
+  for (const s of stops) {
+    const k = `${s.platform_height_mm}|${s.floor_height_mm}|${s.horizontal_mm}|${JSON.stringify(s.rules)}`;
+    groups.set(k, [...(groups.get(k) ?? []), s]);
+  }
+  return (
+    <div className="flex flex-col gap-2" data-testid="platform-access">
+      <p className="text-xs font-semibold text-slate-700">{t("rail.access.title")}</p>
+      {[...groups.values()].map((g) => {
+        const s = g[0]!;
+        return (
+          <div key={s.station} className="rounded border border-slate-200 p-2 text-xs">
+            <div className="flex flex-wrap items-center gap-1.5">
+              <span className={`rounded px-1.5 py-0.5 font-semibold ${ACCESS_STYLE[s.access]}`}>
+                {t(`rail.access.${s.access}`)}
+              </span>
+              {g.map((x) => (
+                <button
+                  key={x.station}
+                  type="button"
+                  onClick={() => show(x.station)}
+                  className="rounded px-0.5 text-slate-800 underline decoration-slate-300 hover:bg-slate-100"
+                >
+                  {x.name}
+                </button>
+              ))}
+            </div>
+            <CrossSection stop={s} />
+            <Measure
+              label={t("rail.access.stepLabel")}
+              value={signedMm(s.vertical_mm)}
+              grade={gradeStep(s.vertical_mm, s.rules)}
+              limit={t("rail.access.limits", {
+                level: `±${s.rules.level_gap_vertical_mm}`,
+                step: `+${s.rules.step_above_platform_mm} / −${s.rules.step_below_platform_mm}`,
+              })}
+            />
+            {s.horizontal_mm !== null && (
+              <Measure
+                label={t("rail.access.gapLabel")}
+                value={`${Math.round(s.horizontal_mm)} mm`}
+                grade={gradeGap(s.horizontal_mm, s.rules)}
+                limit={t("rail.access.limits", {
+                  level: `${s.rules.level_gap_horizontal_mm}`,
+                  step: `${s.rules.step_gap_horizontal_mm}`,
+                })}
+              />
+            )}
+            {s.floor_assumed && (
+              <p className="mt-1 text-amber-800" data-testid="floor-assumed">
+                ⚠ {t("rail.access.floorAssumedShort", { value: s.floor_height_mm })}
+              </p>
+            )}
+            {g
+              .filter((x) => x.platform_length_m < x.needed_length_m)
+              .map((x) => (
+                <p key={x.station} className="mt-1 text-red-800">
+                  ✗{" "}
+                  {t("rail.access.shortAt", {
+                    name: x.name,
+                    platform: fmtM(x.platform_length_m),
+                    needed: fmtM(x.needed_length_m),
+                  })}
+                </p>
+              ))}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+const GRADE_MARK: Record<Grade, [string, string]> = {
+  level: ["✓", "text-emerald-700"],
+  step: ["✓", "text-sky-700"],
+  over: ["✗", "text-red-700"],
+};
+const GRADE_HEX: Record<Grade, string> = { level: "#047857", step: "#0369a1", over: "#b91c1c" };
+
+/** Purpose: one measure, whether it meets the level-access or the step limit (or neither), and the limits. */
+function Measure({
+  label,
+  value,
+  grade,
+  limit,
+}: {
+  label: string;
+  value: string;
+  grade: Grade;
+  limit: string;
+}) {
+  const { t } = useI18n();
+  const [mark, colour] = GRADE_MARK[grade];
+  return (
+    <div className="mt-1 grid grid-cols-[3rem_4.5rem_1fr] items-baseline gap-x-1.5">
+      <span className="text-slate-600">{label}</span>
+      <span className="font-semibold tabular-nums">{value}</span>
+      <span className={colour}>
+        <span className="font-bold">{mark}</span> {grade === "over" ? limit : t(`rail.access.${grade}`)}
+      </span>
+    </div>
+  );
+}
+
+/**
+ * Purpose: a true-to-scale cross-section at the door: the rail, the platform at its height, the train's floor at
+ * its height and the gap between the platform edge and the train, with the platform height, the floor height,
+ * the step and the gap labelled.
+ */
+function CrossSection({ stop: s }: { stop: StopAccess }) {
+  const { t } = useI18n();
+  const W = 320;
+  const mm = 90 / 1400; // px per mm, heights true to scale
+  const body = 44; // drawn height of the car body above its floor, px
+  const H = Math.round(body + 16 + Math.max(s.platform_height_mm, s.floor_height_mm, 400) * mm + 20);
+  const base = H - 14; // rail top
+  const y = (h: number) => base - Math.max(0, h) * mm;
+  const edge = 120; // platform edge, px
+  const gapMm = s.horizontal_mm ?? 0;
+  const gapPx = Math.max(0, Math.min(70, gapMm * 0.2)); // 5 mm per px, clamped
+  const left = edge + (gapMm < 0 ? gapMm * 0.2 : gapPx); // the train's side
+  const pTop = y(s.platform_height_mm);
+  const fTop = y(s.floor_height_mm);
+  const fill = ACCESS_FILL[s.access];
+  const gapColour = GRADE_HEX[gradeGap(gapMm, s.rules)];
+  const stepColour = GRADE_HEX[gradeStep(s.vertical_mm, s.rules)];
+  return (
+    <svg
+      viewBox={`0 0 ${W} ${H}`}
+      className="mt-1.5 h-auto w-full max-w-80"
+      role="img"
+      aria-label={t("rail.access.detail", {
+        vertical: signedMm(s.vertical_mm),
+        platform: s.platform_height_mm,
+        gap: `${Math.round(gapMm)} mm`,
+      })}
+    >
+      {/* ground and rail */}
+      <line x1={0} y1={base + 6} x2={W} y2={base + 6} stroke="#94a3b8" />
+      <rect x={left + 30} y={base} width={10} height={6} fill="#475569" />
+      <rect x={W - 40} y={base} width={10} height={6} fill="#475569" />
+      {/* platform */}
+      <rect x={0} y={pTop} width={edge} height={base + 6 - pTop} fill="#e2e8f0" stroke="#94a3b8" />
+      <text x={6} y={Math.min(base, pTop + 13)} fontSize={10} fill="#334155">
+        {t("rail.access.platformMm", { value: s.platform_height_mm })}
+      </text>
+      {/* train: floor, door opening and body */}
+      <rect x={left} y={fTop - body} width={W - left} height={body} fill={fill} opacity={0.12} />
+      <line x1={left} y1={fTop - body} x2={left} y2={fTop} stroke={fill} strokeWidth={2} />
+      <line x1={left} y1={fTop} x2={W} y2={fTop} stroke={fill} strokeWidth={3} />
+      <rect
+        x={left + 24}
+        y={fTop}
+        width={W - left - 48}
+        height={Math.max(0, base - fTop - 2)}
+        fill="#cbd5e1"
+        opacity={0.5}
+      />
+      <text x={W - 6} y={fTop - body + 14} fontSize={10} fill="#334155" textAnchor="end">
+        {t("rail.access.floorMm", { value: s.floor_height_mm })}
+        {s.floor_assumed ? " ⚠" : ""}
+      </text>
+      {/* gap */}
+      {s.horizontal_mm !== null && (
+        <g stroke={gapColour} fill={gapColour}>
+          <line x1={edge} y1={pTop - 16} x2={edge} y2={pTop - 4} />
+          <line x1={left} y1={pTop - 16} x2={left} y2={pTop - 4} />
+          <line x1={Math.min(edge, left)} y1={pTop - 10} x2={Math.max(edge, left)} y2={pTop - 10} />
+          <text x={edge - 4} y={pTop - 20} fontSize={10} stroke="none" textAnchor="end">
+            {t("rail.access.gapLabel")} {Math.round(gapMm)} mm
+          </text>
+        </g>
+      )}
+      {/* step */}
+      <g stroke={stepColour} fill={stepColour}>
+        <line x1={left + 14} y1={pTop} x2={left + 14} y2={fTop} strokeDasharray="3 2" />
+        <line x1={edge - 6} y1={pTop} x2={left + 18} y2={pTop} strokeDasharray="3 2" />
+        <text
+          x={left + 20}
+          y={Math.abs(fTop - pTop) < 14 ? Math.max(pTop, fTop) + 13 : (pTop + fTop) / 2 + 4}
+          fontSize={10}
+          stroke="none"
+        >
+          {t("rail.access.stepLabel")} {signedMm(s.vertical_mm)}
+        </text>
+      </g>
+    </svg>
+  );
+}
+
 /** Purpose: an "HH:MM" field that keeps what is typed until it is a valid time. */
-function TimeInput({
+export function TimeInput({
   value,
   onChange,
   label,

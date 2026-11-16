@@ -25,6 +25,7 @@ vi.mock("../src/features/street-lines/mapLayers", () => ({
   setLineColor: vi.fn(),
   drawLine: vi.fn(),
   drawRoads: vi.fn(),
+  drawOtherLines: vi.fn(),
 }));
 const drawNoise = vi.fn();
 vi.mock("../src/features/noise/mapLayer", () => ({
@@ -207,6 +208,7 @@ function streetEngine(): StreetEngine {
     setKind: vi.fn(() => view),
     setName: vi.fn(() => view),
     setDepot: vi.fn(() => view),
+    setDepotGates: vi.fn(() => view),
     clearDepot: vi.fn(() => view),
     optimise: vi.fn(() => view),
     setSettings: vi.fn(() => view),

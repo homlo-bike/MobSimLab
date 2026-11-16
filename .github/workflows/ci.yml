@@ -51,12 +51,20 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - uses: taiki-e/install-action@v2
         with: { tool: wasm-bindgen@0.2.129 }
-      - name: Build the street routing, railway design, rail capacity run, journey planner, mode kits, noise, energy, GTFS and cargo bike WebAssembly modules (browser and API)
-        run: tools/wasm/build-street-routing.sh && tools/wasm/build-rail-design.sh && tools/wasm/build-rail-sim.sh && tools/wasm/build-journey-planner.sh && tools/wasm/build-mode-kits.sh && tools/wasm/build-noise.sh && tools/wasm/build-energy.sh && tools/wasm/build-gtfs.sh && tools/wasm/build-cargo-bike.sh && tools/wasm/build-api.sh
+      - name: Build the street routing, railway design, rail capacity run, journey planner, mode kits, noise, energy, GTFS, cargo bike and depot layout WebAssembly modules (browser and API)
+        run: tools/wasm/build-street-routing.sh && tools/wasm/build-rail-design.sh && tools/wasm/build-rail-sim.sh && tools/wasm/build-journey-planner.sh && tools/wasm/build-mode-kits.sh && tools/wasm/build-noise.sh && tools/wasm/build-energy.sh && tools/wasm/build-gtfs.sh && tools/wasm/build-cargo-bike.sh && tools/wasm/build-depot-layout.sh && tools/wasm/build-api.sh
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v5
         with: { node-version-file: .nvmrc, cache: pnpm }
       - run: pnpm install --frozen-lockfile
+      - uses: astral-sh/setup-uv@v6
+        with: { python-version: "3.12" }
+      - name: Python worker with the Rust kernels (the API's simulation run test starts it)
+        working-directory: worker
+        run: |
+          uv sync --frozen --no-dev
+          uv pip install "maturin>=1.9,<2"
+          uv run --no-sync maturin develop --release -m ../crates/mobsim-py/Cargo.toml
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm test
@@ -70,11 +78,19 @@ jobs:
       - uses: actions/checkout@v5
       - uses: astral-sh/setup-uv@v6
         with: { python-version: "3.12" }
-      - run: uv sync --frozen
-      - run: uv run ruff check .
-      - run: uv run ruff format --check .
-      - run: uv run mypy
-      - run: uv run pytest -q
+      # The sim extra brings Eclipse SUMO, so the road simulation tests run a real SUMO run; the demand extra
+      # brings AequilibraE for the demand model tests.
+      - run: uv sync --frozen --extra sim --extra demand
+      - run: uv run --frozen --extra sim --extra demand ruff check .
+      - run: uv run --frozen --extra sim --extra demand ruff format --check .
+      - run: uv run --frozen --extra sim --extra demand mypy
+      - run: uv run --frozen --extra sim --extra demand pytest -q
+      - name: Demand test town matches contracts/demand-input.schema.json
+        run: |
+          (cd .. && uvx ruff check tools/contracts && uvx ruff format --check tools/contracts)
+          mkdir -p "$RUNNER_TEMP/demand"
+          uv run --frozen --extra sim --extra demand python -c "import json, sys; sys.path.insert(0, 'tests'); from test_demand import town; json.dump(town(), open(sys.argv[1], 'w'))" "$RUNNER_TEMP/demand/town.json"
+          uv run --no-project --with jsonschema python ../tools/contracts/check_demand_input.py "$RUNNER_TEMP"/demand/*.json
 
   assumptions:
     name: Assumption library (schema, sources, DEFAULTS.md up to date)
@@ -88,6 +104,16 @@ jobs:
         run: uvx ruff check tools/costs && uvx ruff format --check tools/costs && uv run --no-project --with pyyaml python tools/costs/export_defaults.py --check
       - name: Benefit tables values match the assumption library
         run: uvx ruff check tools/benefits && uvx ruff format --check tools/benefits && uv run --no-project --with pyyaml python tools/benefits/export_defaults.py --check
+      - name: Fare revenue values match the assumption library
+        run: uvx ruff check tools/fares && uvx ruff format --check tools/fares && uv run --no-project --with pyyaml python tools/fares/export_defaults.py --check
+      - name: Design rules in Project preferences match the assumption library
+        run: uvx ruff check tools/design-rules && uvx ruff format --check tools/design-rules && uv run --no-project --with pyyaml python tools/design-rules/export_defaults.py --check
+      - name: Demand model values match the assumption library
+        run: uvx ruff check tools/demand && uvx ruff format --check tools/demand && uv run --no-project --with pyyaml python tools/demand/export_defaults.py --check
+      - name: Parameters in Project preferences match the assumption library
+        run: uvx ruff check tools/parameters && uvx ruff format --check tools/parameters && uv run --no-project --with pyyaml python tools/parameters/export_defaults.py --check
+      - name: Assumptions report sources match the assumption library
+        run: uvx ruff check tools/assumptions-report && uvx ruff format --check tools/assumptions-report && uv run --no-project --with pyyaml python tools/assumptions-report/export_sources.py --check
 
   rust:
     name: Kernels (fmt, clippy, test, S2 smoke benchmark)
@@ -100,8 +126,8 @@ jobs:
       - run: cargo fmt --all --check
       - run: cargo clippy --workspace --all-targets -- -D warnings
       - run: cargo test --workspace --exclude mobsim-py
-      - name: Street routing, railway design, rail capacity run, journey planner, mode kits, noise, energy, GTFS and cargo bike compile to WebAssembly
-        run: rustup target add wasm32-unknown-unknown && cargo build --locked --target wasm32-unknown-unknown -p street-routing-wasm -p rail-design-wasm -p rail-sim-wasm -p journey-planner-wasm -p mode-kits-wasm -p noise-wasm -p energy-wasm -p gtfs-wasm -p cargo-bike-wasm
+      - name: Street routing, railway design, rail capacity run, journey planner, mode kits, noise, energy, GTFS, cargo bike and depot layout compile to WebAssembly
+        run: rustup target add wasm32-unknown-unknown && cargo build --locked --target wasm32-unknown-unknown -p street-routing-wasm -p rail-design-wasm -p rail-sim-wasm -p journey-planner-wasm -p mode-kits-wasm -p noise-wasm -p energy-wasm -p gtfs-wasm -p cargo-bike-wasm -p depot-layout-wasm
       - uses: astral-sh/setup-uv@v6
         with: { python-version: "3.12" }
       - name: Railway topology export matches contracts/rail-topology.schema.json
@@ -110,6 +136,11 @@ jobs:
           mkdir -p "$RUNNER_TEMP/topology"
           cargo run -q -p rail-design --example topology -- "$RUNNER_TEMP/topology"
           uv run --no-project --with jsonschema python tools/contracts/check_rail_topology.py "$RUNNER_TEMP"/topology/*.json
+      - name: Saved depots match contracts/depot.schema.json
+        run: |
+          mkdir -p "$RUNNER_TEMP/depots"
+          cargo run -q -p depot-layout --example export -- "$RUNNER_TEMP/depots"
+          uv run --no-project --with jsonschema python tools/contracts/check_depot.py "$RUNNER_TEMP"/depots/*.json
       - name: S2 benchmark (one simulated hour, must not deadlock)
         run: cargo run --release -p rail-sim --bin bench_s2 -- 3600 1.0 | tee bench.json
 
@@ -138,6 +169,7 @@ jobs:
       - run: uvx ruff check tools/vehicles && uvx ruff format --check tools/vehicles
       - run: uv run --no-project --with jsonschema --with pyyaml python tools/vehicles/check.py
       - run: python tools/vehicles/rail_trains.py --check
+      - run: python tools/vehicles/street_vehicles.py --check
       - run: uv run --no-project --with jsonschema --with pyyaml --with pytest pytest -q tools/vehicles
 
   licence-gate:
@@ -157,7 +189,7 @@ jobs:
         run: |
           pnpm licenses list --prod --json > npm.json
           cargo metadata --format-version 1 > cargo.json
-          (cd worker && uv sync --frozen --no-dev --extra sim && uv pip install pip-licenses && \
+          (cd worker && uv sync --frozen --no-dev --extra sim --extra demand && uv pip install pip-licenses && \
            uv run --no-sync pip-licenses --format=json > ../py.json)
       - run: python3 tools/license-gate/license_gate.py --npm npm.json --cargo cargo.json --python py.json
 

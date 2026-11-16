@@ -921,6 +921,7 @@ fn import(t: Topology, opt: &ImportOptions) -> Result<Imported, String> {
                 lineside: s.lineside,
             });
         }
+        stop_departure_signals(&mut spec, &buffers);
     } else if generate {
         generate_signals(&mut spec, &buffers, opt);
         notes.push(format!(
@@ -937,6 +938,59 @@ fn import(t: Topology, opt: &ImportOptions) -> Result<Imported, String> {
         origin,
         platform_places,
     })
+}
+
+/// Purpose: let trams leave their stops. Trams drive on sight (`line_of_sight`), so the design
+/// tool places signals only in front of switch areas and crossings, and a route, which runs
+/// from signal to signal, could never start at a tram stop. The import marks the departure
+/// point at each end of a platform edge on a line-of-sight track, facing out of the platform
+/// (not towards a buffer stop), unless a signal facing that way already stands on the track
+/// beyond the platform.
+/// Side effects: appends signals to `spec`.
+fn stop_departure_signals(spec: &mut InfraSpec, buffers: &BTreeSet<(String, End)>) {
+    let mut out: Vec<SignalSpec> = Vec::new();
+    for p in &spec.platforms {
+        let Some(t) = spec.tracks.iter().find(|t| t.id == p.track) else {
+            continue;
+        };
+        if t.protection != TrainProtection::LineOfSight {
+            continue;
+        }
+        for (end, facing, pos) in [
+            (End::B, Dir::Up, (p.to_m + 5.0).min(t.length_m)),
+            (End::A, Dir::Down, (p.from_m - 5.0).max(0.0)),
+        ] {
+            if buffers.contains(&(t.id.clone(), end)) {
+                continue;
+            }
+            let has = spec.signals.iter().chain(out.iter()).any(|s| {
+                s.track == t.id
+                    && s.facing == facing
+                    && s.kind != SignalKind::Distant
+                    && match facing {
+                        Dir::Up => s.position_m >= p.from_m,
+                        Dir::Down => s.position_m <= p.to_m,
+                    }
+            });
+            if has {
+                continue;
+            }
+            out.push(SignalSpec {
+                id: format!(
+                    "{}:departure:{}",
+                    p.id,
+                    if facing == Dir::Up { "up" } else { "down" }
+                ),
+                track: t.id.clone(),
+                position_m: pos,
+                facing,
+                kind: SignalKind::Main,
+                overlap_m: Some(0.0),
+                lineside: false,
+            });
+        }
+    }
+    spec.signals.extend(out);
 }
 
 /// Purpose: place a provisional signal plan on an imported network.

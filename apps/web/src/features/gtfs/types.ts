@@ -22,6 +22,8 @@ export interface GtfsFeed {
   importedAt: string;
   summary: GtfsSummary;
   timetable: Timetable;
+  /** Routes the planner turned into lines of their own; the journey planner leaves them out of the feed. */
+  converted?: string[];
 }
 
 /** The project's existing network from GTFS feeds. */
@@ -46,6 +48,8 @@ export interface GtfsExportOptions {
   /** GTFS route type of plugin modes. */
   route_types: Record<string, number>;
   feed_version: string;
+  /** Public holidays in the validity, YYYYMMDD: the `holiday` service runs instead of the day's usual one. */
+  holidays?: string[];
 }
 
 export interface GtfsEngine {

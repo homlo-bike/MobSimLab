@@ -5,11 +5,19 @@ description = "MobSimLab simulation worker (SUMO co-simulation, demand, appraisa
 license = "AGPL-3.0-or-later"
 requires-python = ">=3.12,<3.13"
 dependencies = [
+    "psycopg[binary]==3.3.6",
     "structlog>=25.4",
 ]
 
 [project.optional-dependencies]
-sim = ["eclipse-sumo==1.28.0", "libsumo==1.28.0"]
+sim = [
+    "eclipse-sumo==1.28.0",
+    "libsumo==1.28.0",
+    "pyproj==3.7.2",
+    "rtree==1.4.1",
+]
+# The four-step demand model (ADR-0019). AequilibraE brings numpy, pandas, scipy and openmatrix.
+demand = ["aequilibrae==1.7.2", "pyyaml>=6.0"]
 
 [project.scripts]
 mobsim-worker = "mobsim_worker.main:main"
@@ -33,7 +41,7 @@ select = ["E", "F", "W", "I", "B", "UP", "S", "D"]
 convention = "google"
 
 [tool.ruff.lint.per-file-ignores]
-"tests/*" = ["S101", "D"]
+"tests/*" = ["S101", "S106", "D"]
 
 [tool.mypy]
 strict = true
@@ -41,3 +49,12 @@ files = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[[tool.mypy.overrides]]
+module = ["mobsim_kernels", "sumo", "sumolib", "sumolib.*", "libsumo", "aequilibrae", "aequilibrae.*", "openmatrix", "pandas", "pandas.*", "scipy", "scipy.*"]
+ignore_missing_imports = true
+
+[tool.uv]
+# AequilibraE declares pyaml (WTFPL, not on the licence gate's list) but only imports PyYAML (MIT), which the
+# demand extra names itself; leave pyaml out.
+override-dependencies = ["pyaml; sys_platform == 'never'"]

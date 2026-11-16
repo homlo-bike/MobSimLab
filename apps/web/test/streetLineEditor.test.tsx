@@ -1,3 +1,4 @@
+import type { SavedDepot } from "../src/features/depots/types";
 import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import type { Map as MapLibreMap } from "maplibre-gl";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -28,6 +29,7 @@ vi.mock("../src/features/street-lines/mapLayers", () => ({
   setLineColor: vi.fn(),
   drawLine: vi.fn(),
   drawRoads: vi.fn(),
+  drawOtherLines: vi.fn(),
 }));
 
 import {
@@ -39,6 +41,8 @@ import {
 import { clearPlaces, publishPlaces } from "../src/features/naming/registry";
 import { DEFAULT_TIMING } from "../src/features/street-lines/modes";
 import type { SavedStreetLine } from "../src/features/street-lines/saved";
+import { LineList } from "../src/features/street-lines/LineList";
+import { dayService, vehicleById, vehiclesFor } from "../src/features/street-lines/service";
 import { StreetLineEditor } from "../src/features/street-lines/StreetLineEditor";
 import { along, circuitPath, lineChecks, lineStats } from "../src/features/street-lines/summary";
 import { tilesFor, tileX, tileY } from "../src/features/street-lines/tiles";
@@ -162,6 +166,7 @@ function fakeEngine(): StreetEngine {
     ),
     setName: vi.fn(() => view),
     setDepot: vi.fn(() => view),
+    setDepotGates: vi.fn(() => view),
     clearDepot: vi.fn(() => view),
     optimise: vi.fn(() => view),
     setSettings: vi.fn(() => view),
@@ -422,6 +427,67 @@ describe("Street line saved with the project", () => {
     expect(line.view.points).toHaveLength(line.points.length);
   });
 
+  it("runs to and from a shared depot's gates and saves the depot by id", async () => {
+    const engine = fakeEngine();
+    const onSave = vi.fn();
+    const { map } = fakeMap(15);
+    Object.assign(map, { fitBounds: vi.fn(), jumpTo: vi.fn() });
+    const ring: [number, number][] = [
+      [7.41, 43.729],
+      [7.412, 43.729],
+      [7.412, 43.7305],
+      [7.41, 43.7305],
+    ];
+    const depot = (modes: SavedDepot["modes"]): SavedDepot => ({
+      id: "dp1",
+      name: "North depot",
+      modes,
+      boundary: ring,
+      gates: [
+        { id: "g1", kind: "entrance", lonlat: [7.411, 43.729] },
+        { id: "g2", kind: "exit", lonlat: [7.412, 43.73] },
+        { id: "g3", kind: "both", lonlat: [7.41, 43.73] },
+      ],
+      zones: [],
+      layout: null,
+    });
+    const busOnly: SavedDepot = { ...depot(["bus"]), id: "dp2", name: "Bus depot" };
+    render(
+      <StreetLineEditor
+        map={map}
+        loadEngine={async () => engine}
+        fetchTile={async () => "<osm/>"}
+        initial={{ ...saved, depot: null }}
+        onSave={onSave}
+        depots={[depot(["trolleybus", "bus"]), busOnly]}
+      />,
+    );
+    await waitFor(() => expect(engine.insertPoint).toHaveBeenCalledTimes(3));
+    const pick = screen.getByRole("combobox", { name: "Depot" }) as HTMLSelectElement;
+    // A depot that does not take trolleybuses cannot be chosen.
+    const other = [...pick.options].find((o) => o.value === "dp2")!;
+    expect(other.disabled).toBe(true);
+    expect(other.textContent).toContain("does not take this mode");
+    fireEvent.change(pick, { target: { value: "dp1" } });
+    await waitFor(() =>
+      expect(engine.setDepotGates).toHaveBeenCalledWith(
+        [
+          [7.412, 43.73],
+          [7.41, 43.73],
+        ],
+        [
+          [7.411, 43.729],
+          [7.41, 43.73],
+        ],
+      ),
+    );
+    await waitFor(() => expect(onSave).toHaveBeenCalled());
+    const line = onSave.mock.calls.at(-1)![0] as SavedStreetLine;
+    expect(line).toMatchObject({ depotId: "dp1", depot: null });
+    fireEvent.change(pick, { target: { value: "" } });
+    expect(engine.clearDepot).toHaveBeenCalled();
+  });
+
   it("saves a new line only once a point is placed", async () => {
     const engine = fakeEngine();
     const onSave = vi.fn();
@@ -438,6 +504,111 @@ describe("Street line saved with the project", () => {
     // The fake engine routes three sample points on the first build; a real one starts empty.
     act(() => handlers.get("click")!({ lngLat: { lng: 7.42, lat: 43.735 }, point: { x: 10, y: 10 } }));
     await waitFor(() => expect(onSave).toHaveBeenCalled());
+  });
+});
+
+describe("Street line vehicle and service", () => {
+  it("offers the mode's catalogue vehicles and drives with the chosen one's size and speed", async () => {
+    const engine = fakeEngine();
+    const onSave = vi.fn();
+    const { map, handlers } = fakeMap(15);
+    render(
+      <StreetLineEditor
+        map={map}
+        loadEngine={async () => engine}
+        fetchTile={async () => "<osm/>"}
+        onSave={onSave}
+      />,
+    );
+    const select = (await screen.findByRole("combobox", { name: "Vehicle" })) as HTMLSelectElement;
+    expect(select.options).toHaveLength(vehiclesFor("bus").length + 1);
+    expect(select.value).toBe("");
+    const bus = vehicleById("solaris_urbino-18-gen4")!;
+    fireEvent.change(select, { target: { value: bus.id } });
+    expect(engine.setSettings).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        mode: "bus",
+        length_m: bus.length_m,
+        height_m: bus.height_m,
+        weight_t: bus.weight_t,
+        max_speed_kmh: bus.top_speed_kmh,
+      }),
+      expect.anything(),
+    );
+    expect(screen.getByTestId("vehicle-facts").textContent).toContain(`${bus.capacity} places`);
+
+    // First and last departure and the off-peak headway are the planner's to change, and saved.
+    fireEvent.change(screen.getByLabelText("First departure"), { target: { value: "06:15" } });
+    fireEvent.change(screen.getByLabelText("Last departure"), { target: { value: "23:00" } });
+    fireEvent.change(screen.getByRole("spinbutton", { name: /Off-peak headway/ }), {
+      target: { value: "15" },
+    });
+    act(() => handlers.get("click")!({ lngLat: { lng: 7.42, lat: 43.735 }, point: { x: 10, y: 10 } }));
+    await waitFor(() => expect(onSave).toHaveBeenCalled());
+    const line = onSave.mock.calls.at(-1)![0] as SavedStreetLine;
+    expect(line.vehicle).toBe(bus.id);
+    expect(line.timing).toMatchObject({
+      firstMin: 375,
+      lastMin: 1380,
+      offPeakHeadwayMin: 15,
+      headwayMin: 10,
+    });
+
+    // Another mode starts again from its typical vehicle.
+    fireEvent.click(screen.getByRole("radio", { name: "Trolleybus" }));
+    expect(select.value).toBe("");
+  });
+
+  it("starts a new line at 05:00 to 00:30 and flags a last departure before the first", async () => {
+    await opened();
+    expect((screen.getByLabelText("First departure") as HTMLInputElement).value).toBe("05:00");
+    expect((screen.getByLabelText("Last departure") as HTMLInputElement).value).toBe("24:30");
+    fireEvent.change(screen.getByLabelText("Last departure"), { target: { value: "04:00" } });
+    expect(screen.getByRole("list", { name: "Checks" }).textContent).toContain(
+      "The last departure must be after the first.",
+    );
+  });
+
+  it("counts trips and vehicle-hours over the peaks and off peak", () => {
+    const t = { ...DEFAULT_TIMING, headwayMin: 10, offPeakHeadwayMin: 20 };
+    // 05:00–00:30: peaks 07–09 and 16–19 (30 departures), off peak 6 + 21 + 17; a 25 min circuit needs 3
+    // vehicles in the peaks and 2 off peak.
+    const d = dayService(t, 25);
+    expect([d.serviceHours, d.tripsPerDay]).toEqual([19.5, 148]);
+    expect(d.vehicleHours).toBeCloseTo(3 * 5 + 2 * 14.5, 2);
+  });
+});
+
+describe("Street line list", () => {
+  it("switches lines, starts a new one and asks before deleting", () => {
+    const onSelect = vi.fn();
+    const onNew = vi.fn();
+    const onDelete = vi.fn();
+    const confirm = vi.spyOn(window, "confirm").mockReturnValue(true);
+    render(
+      <LineList
+        names={["Line 1", "Harbour"]}
+        current={1}
+        onSelect={onSelect}
+        onNew={onNew}
+        onDelete={onDelete}
+      />,
+    );
+    fireEvent.change(screen.getByRole("combobox"), { target: { value: "0" } });
+    expect(onSelect).toHaveBeenCalledWith(0);
+    fireEvent.click(screen.getByRole("button", { name: "New line" }));
+    expect(onNew).toHaveBeenCalled();
+    fireEvent.click(screen.getByRole("button", { name: "Delete line" }));
+    expect(confirm).toHaveBeenCalledWith(expect.stringContaining("Harbour"));
+    expect(onDelete).toHaveBeenCalledWith(1);
+    confirm.mockRestore();
+  });
+
+  it("shows a new line not drawn yet and offers no delete for it", () => {
+    render(<LineList names={["Line 1"]} current={1} onSelect={vi.fn()} onNew={vi.fn()} onDelete={vi.fn()} />);
+    expect((screen.getByRole("combobox") as HTMLSelectElement).value).toBe("1");
+    expect(screen.getByRole("option", { name: "New line (not drawn yet)" })).toBeTruthy();
+    expect((screen.getByRole("button", { name: "Delete line" }) as HTMLButtonElement).disabled).toBe(true);
   });
 });
 

@@ -6,6 +6,7 @@ import { libraryValue } from "../src/features/costs/params";
 import type { LineReport, Network, RailEngine, RailView, TrackView } from "../src/features/railways/types";
 import type { StreetLinesDoc } from "../src/features/street-lines/saved";
 import type { LineView } from "../src/features/street-lines/types";
+import { vehicleById } from "../src/features/street-lines/service";
 import { lineFacts } from "../src/features/tables/lineFacts";
 import { NetworkTables } from "../src/features/tables/NetworkTables";
 import { quantities } from "../src/features/tables/quantities";
@@ -202,7 +203,13 @@ describe("line facts", () => {
     });
 
   it("gives a rail line's length, stops, speed, service, fleet and capacity", () => {
-    const m1 = facts().find((f) => f.id === "rail:M1")!;
+    const m1 = lineFacts({
+      railway: railway(),
+      view: railView(),
+      reports: { M1: REPORT },
+      streetLines: STREET.lines,
+      prefs: {},
+    }).find((f) => f.id === "rail:M1")!;
     expect(m1.kind).toBe("rail");
     expect(m1.stops).toBe(2);
     expect(m1.lengthKm).toBeGreaterThan(1.9);
@@ -233,18 +240,53 @@ describe("line facts", () => {
     }
   });
 
-  it("uses the library's service hours and places for street lines", () => {
+  it("uses a street line's own service day, and the library's places without a catalogue vehicle", () => {
     const r7 = facts().find((f) => f.id === "street:0")!;
     expect(r7.lengthKm).toBe(3);
     expect(r7.stops).toBe(3);
     expect(r7.spacingM).toBe(1500);
-    expect(r7.hoursAssumed).toBe(true);
-    expect(r7.serviceHours).toBe(libraryValue("cost.service_hours_per_day", "brt")[1]);
+    // Saved before lines had service hours: 05:00 to 00:30, every 10 min in the peaks and 20 min off peak.
+    expect([r7.firstMin, r7.lastMin]).toEqual([5 * 60, 24 * 60 + 30]);
+    expect(r7.serviceHours).toBe(19.5);
+    expect(r7.offpeakHeadwayMin).toBe(20);
     expect(r7.placesPerVehicle).toBe(libraryValue("mode.vehicle_capacity", "brt")[1]);
+    expect(r7.placesAssumed).toBe(true);
     expect(r7.capacityPerHour).toBe(6 * r7.placesPerVehicle);
-    expect(r7.tripsPerDay).toBe(((r7.serviceHours * 60) / 10) * 2);
+    // Peaks 07–09 and 16–19 every 10 min (30), off peak 05–07, 09–16 and 19–00:30 every 20 min (6 + 21 + 17).
+    expect(r7.tripsPerDay).toBe(74 * 2);
     // Half the circuit's running time (25 min) and dwell (3 stops × 20 s).
     expect(r7.tripMin).toBeCloseTo((25 + 1) / 2);
+  });
+
+  it("uses the chosen catalogue vehicle and the line's own hours and headways", () => {
+    const line = {
+      ...STREET.lines[0]!,
+      vehicle: "van-hool_exquicity-24-hybrid",
+      timing: {
+        headwayMin: 6,
+        offPeakHeadwayMin: 12,
+        dwellS: 20,
+        layoverMin: 5,
+        firstMin: 6 * 60,
+        lastMin: 22 * 60,
+      },
+    };
+    const f = lineFacts({
+      railway: null,
+      view: null,
+      reports: {},
+      streetLines: [line],
+      prefs: undefined,
+    })[0]!;
+    const bus = vehicleById("van-hool_exquicity-24-hybrid")!;
+    expect(f.vehicle).toBe(bus.name);
+    expect(f.placesPerVehicle).toBe(bus.capacity);
+    expect(f.placesAssumed).toBe(false);
+    expect([f.firstMin, f.lastMin, f.serviceHours]).toEqual([360, 1320, 16]);
+    expect([f.peakHeadwayMin, f.offpeakHeadwayMin]).toEqual([6, 12]);
+    expect(f.capacityPerHour).toBe(10 * bus.capacity);
+    // Peaks every 6 min (20 + 30), off peak every 12 min: 06–07 (5), 09–16 (35), 19–22:00 and the last (16).
+    expect(f.tripsPerDay).toBe((50 + 5 + 35 + 16) * 2);
   });
 
   it("flags a rail line that could not be published", () => {
@@ -320,6 +362,48 @@ describe("network tables", () => {
     fireEvent.click(within(service).getByRole("button", { name: /Every/ }));
     await waitFor(() => expect(names()).toEqual(["Route 7", "M1"]));
     expect(within(service).getByText("05:00–24:00")).toBeTruthy();
+  });
+
+  it("shows each line's projected riders from the benefit estimate", async () => {
+    const props = {
+      railway: railway(),
+      streetLines: STREET,
+      preferences: { values: {} },
+      loadRail,
+      fetchHeights: async (p: [number, number][]) => p.map(() => 0),
+    };
+    const { rerender } = render(<NetworkTables {...props} riders={null} />);
+    const service = await screen.findByRole("region", { name: "Service and fleet per line" });
+    expect(within(service).getByText(/They show once that estimate is ready/)).toBeTruthy();
+    rerender(
+      <NetworkTables
+        {...props}
+        riders={{ "rail:M1": [8000, 12000, 18500], "street:0": [900, 1500, 2100] }}
+      />,
+    );
+    expect(within(service).getByText("12,000")).toBeTruthy();
+    expect(within(service).getByText("8K–18.5K")).toBeTruthy();
+    expect(within(service).getByText("900–2.1K")).toBeTruthy();
+    const m1 = lineFacts({
+      railway: railway(),
+      view: railView(),
+      reports: { M1: REPORT },
+      streetLines: STREET.lines,
+      prefs: {},
+    }).find((f) => f.id === "rail:M1")!;
+    const day = m1.placesPerVehicle * m1.tripsPerDay;
+    expect(within(service).getByText(`${Math.round((100 * 12000) / day)}% of places`)).toBeTruthy();
+    expect(within(service).queryByText(/They show once/)).toBeNull();
+    const names = () =>
+      within(service)
+        .getAllByRole("row")
+        .slice(1)
+        .map((r) => r.querySelector(".font-medium")?.textContent);
+    const riders = within(service).getByRole("button", { name: /Riders a day/ });
+    fireEvent.click(riders); // most riders first
+    await waitFor(() => expect(names()).toEqual(["M1", "Route 7"]));
+    fireEvent.click(riders);
+    await waitFor(() => expect(names()).toEqual(["Route 7", "M1"]));
   });
 
   it("says when there is nothing to measure", () => {

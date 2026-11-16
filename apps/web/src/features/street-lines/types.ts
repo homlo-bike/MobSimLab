@@ -17,6 +17,31 @@ export interface VehicleProfile {
   doors_both_sides: boolean;
 }
 
+/** A street vehicle of the catalogue (generated into vehicles.ts by tools/vehicles/street_vehicles.py). */
+export interface CatalogueVehicle {
+  id: string;
+  name: string;
+  mode: Mode;
+  length_m: number;
+  /** Null when the catalogue has no height; the mode's profile height then stays. */
+  height_m: number | null;
+  /** Loaded weight, t; null when the catalogue has none. */
+  weight_t: number | null;
+  top_speed_kmh: number;
+  /** Seats plus standing places at the mode's planning density. */
+  capacity: number;
+  /** Body width, m (2.55 m when the catalogue has none). */
+  width_m: number;
+  /** Articulation joints: 0 rigid, 1 articulated, 2 double articulated. */
+  articulations: number;
+  /** Axle positions from the front, m; null when the catalogue has none. */
+  axles_m: number[] | null;
+  /** Kerb-to-kerb turning circle, m; null when the catalogue has none. */
+  turning_circle_m: number | null;
+  /** Energy source (`battery`, `diesel`, `overhead-dc`, `dual`…); null when unknown. */
+  energy: string | null;
+}
+
 export interface RoutingRules {
   traffic_side: "right" | "left";
   detour_warn_m: number;
@@ -150,6 +175,8 @@ export interface StreetEngine {
   setName(id: number, name: string): LineView;
   setDepot(lonlat: LonLat): LineView;
   clearDepot(): LineView;
+  /** Depot runs start at the nearest of `exits` and end at the nearest of `entrances` (a shared depot's gates). */
+  setDepotGates(exits: LonLat[], entrances: LonLat[]): LineView;
   optimise(): LineView;
   setSettings(profile: VehicleProfile, rules: RoutingRules): LineView;
   /**

@@ -1,10 +1,26 @@
+import { useState } from "react";
 import { cleanFeatures, STATION_FEATURES, SymbolPicker } from "../stations/features";
+import { DayTypeChoice } from "../timetables/DayTypeChoice";
+import {
+  type DayService,
+  editDay,
+  hasOwnDay,
+  shownDay,
+  streetWeekday,
+  withDay,
+} from "../timetables/dayTypes";
+import type { DayTypeId } from "../../workspace/calendar";
 import { type Translate, useI18n } from "../../i18n/i18n";
 import type { MessageKey } from "../../i18n/messages";
+import { TimeInput } from "../railways/ServiceLinesPanel";
 import { formatLength } from "./geojson";
 import { MODE_ORDER, MODES, type Timing } from "./modes";
+import { vehicleById, vehiclesFor } from "./service";
+import { usedVehicles } from "../../workspace/preferences";
+import { useVehiclesOff } from "../../workspace/projectVehicles";
 import { lineChecks, lineStats, type Check, type Severity } from "./summary";
 import type { LineView, Mode, PointKind, RoutingRules, VehicleProfile } from "./types";
+import type { FitProblem } from "../depots/model";
 
 const KINDS: { id: PointKind; label: MessageKey; title: MessageKey }[] = [
   { id: "via", label: "street.kind.via", title: "street.kind.viaTitle" },
@@ -24,6 +40,8 @@ export interface PanelActions {
   setName: (name: string) => void;
   setMode: (mode: Mode) => void;
   setProfile: (p: VehicleProfile) => void;
+  /** A catalogue vehicle by id, or null for the mode's typical vehicle. */
+  setVehicle: (id: string | null) => void;
   setRules: (r: RoutingRules) => void;
   setTiming: (t: Timing) => void;
   select: (id: number | null) => void;
@@ -36,6 +54,8 @@ export interface PanelActions {
   clear: () => void;
   placeDepot: () => void;
   removeDepot: () => void;
+  /** Use a shared road depot (its gates), or none. */
+  chooseDepot: (id: string | null) => void;
   setDepotStops: (s: { out?: number; in?: number }) => void;
   setShowDepot: (v: boolean) => void;
   setShowRoads: (v: boolean) => void;
@@ -115,9 +135,19 @@ interface Props {
   profile: VehicleProfile;
   rules: RoutingRules;
   timing: Timing;
+  /** The chosen catalogue vehicle's id, or null for the mode's typical vehicle. */
+  vehicle: string | null;
+  /** The project's lines (switch, add, delete), shown at the top. */
+  lineList?: React.ReactNode;
   selected: number | null;
   depotStops: { out?: number; in?: number };
   showDepot: boolean;
+  /** The shared road depot the line uses, or null. */
+  depotId?: string | null;
+  /** The project's road depots, with why the line cannot use one (null: it can). */
+  depots?: { id: string; name: string; problem: FitProblem }[];
+  /** Opens the depot tool. */
+  onOpenDepots?: () => void;
   showRoads: boolean;
   crossingSources?: CrossingSources;
   status: string | null;
@@ -218,11 +248,36 @@ function NumberField({
  */
 export function LinePanel(props: Props) {
   const { t } = useI18n();
+  const vehiclesOff = useVehiclesOff();
   const { view, profile, rules, timing, selected, actions: a } = props;
+  // The day type whose times and headways the fields below show and change.
+  const [day, setDay] = useState<DayTypeId>("weekday");
+  const weekday = streetWeekday(timing);
+  const shown = shownDay(weekday, timing.days, day);
+  const setDayService = (patch: Partial<DayService>) => {
+    const next = editDay(weekday, timing.days, day, patch);
+    a.setTiming({
+      ...timing,
+      firstMin: next.weekday.firstMin,
+      lastMin: next.weekday.lastMin,
+      headwayMin: next.weekday.peakHeadwayMin,
+      offPeakHeadwayMin: next.weekday.offPeakHeadwayMin,
+      days: next.days,
+    });
+  };
   const mode = MODES[profile.mode];
   const st = lineStats(view, timing);
   const rank: Record<Severity, number> = { error: 0, warn: 1, ok: 2, info: 3 };
-  const checks = [...lineChecks(view), ...(props.extraChecks ?? [])].sort(
+  const vehicle = vehicleById(props.vehicle);
+  const serviceChecks: Check[] = [
+    ...(shown.lastMin <= shown.firstMin
+      ? [{ sev: "error" as const, text: t("rail.line.lastAfterFirst") }]
+      : []),
+    ...(shown.peakHeadwayMin < 1 || shown.offPeakHeadwayMin < 1
+      ? [{ sev: "error" as const, text: t("rail.line.headwayMin") }]
+      : []),
+  ];
+  const checks = [...serviceChecks, ...lineChecks(view), ...(props.extraChecks ?? [])].sort(
     (x, y) => rank[x.sev] - rank[y.sev],
   );
   const stops = view.points.filter((p) => p.kind !== "via");
@@ -238,6 +293,7 @@ export function LinePanel(props: Props) {
 
   return (
     <div className="flex flex-col gap-3 p-4 text-sm">
+      {props.lineList}
       <h2 className="text-xl font-semibold">{props.lineName || t("street.untitled")}</h2>
       <label className="flex flex-col gap-1">
         <span className="text-xs text-slate-600">{t("rail.line.name")}</span>
@@ -268,7 +324,30 @@ export function LinePanel(props: Props) {
             </button>
           ))}
         </div>
-        <p className="text-xs text-slate-600">{t(mode.profile)}</p>
+        <label className="flex flex-col gap-1">
+          <span className="text-xs text-slate-600">{t("street.vehicle")}</span>
+          <select
+            value={vehicle?.id ?? ""}
+            onChange={(e) => a.setVehicle(e.target.value || null)}
+            className="rounded border border-slate-300 bg-slate-50 p-1"
+          >
+            <option value="">{t("street.vehicleTypical", { mode: t(mode.label) })}</option>
+            {usedVehicles(vehiclesFor(profile.mode), vehiclesOff, vehicle?.id).map((v) => (
+              <option key={v.id} value={v.id}>
+                {v.name}
+              </option>
+            ))}
+          </select>
+        </label>
+        <p className="text-xs text-slate-600" data-testid="vehicle-facts">
+          {vehicle
+            ? t("street.vehicleFacts", {
+                length: formatLength(vehicle.length_m),
+                speed: Math.round(vehicle.top_speed_kmh),
+                places: vehicle.capacity,
+              })
+            : t(mode.profile)}
+        </p>
         {profile.mode === "trolleybus" && (
           <NumberField
             label={t("street.battery")}
@@ -529,15 +608,40 @@ export function LinePanel(props: Props) {
 
       <Section title={t("street.depotRuns")}>
         <p className="text-xs text-slate-600">{t("street.depotNote")}</p>
-        {!view.depot ? (
+        <label className="flex items-center gap-2">
+          <span className="w-20">{t("depot.line.depot")}</span>
+          <select
+            value={props.depotId ?? ""}
+            onChange={(e) => a.chooseDepot(e.target.value || null)}
+            className="min-w-0 flex-1 rounded border border-slate-300 p-0.5"
+          >
+            <option value="">{t("depot.line.none")}</option>
+            {(props.depots ?? []).map((d) => (
+              <option key={d.id} value={d.id} disabled={d.problem !== null && d.id !== props.depotId}>
+                {d.problem ? `${d.name} (${t(d.problem)})` : d.name}
+              </option>
+            ))}
+          </select>
+        </label>
+        {props.depotId && (props.depots ?? []).find((d) => d.id === props.depotId)?.problem && (
+          <p className="text-xs text-amber-700">
+            {t((props.depots ?? []).find((d) => d.id === props.depotId)!.problem!)}
+          </p>
+        )}
+        {props.depotId && !(props.depots ?? []).some((d) => d.id === props.depotId) && (
+          <p className="text-xs text-amber-700">{t("depot.line.gone")}</p>
+        )}
+        {!(props.depots ?? []).length && <p className="text-xs text-slate-600">{t("depot.line.noDepots")}</p>}
+        {props.onOpenDepots && (
           <button
             type="button"
             className="w-fit rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
-            onClick={a.placeDepot}
+            onClick={props.onOpenDepots}
           >
-            {t("street.placeDepot")}
+            {t("depot.line.open")}
           </button>
-        ) : (
+        )}
+        {!view.depot ? null : (
           <>
             {terminals.length === 0 && <p className="text-xs text-slate-600">{t("street.addStopsDepot")}</p>}
             {terminals.length > 0 &&
@@ -579,22 +683,24 @@ export function LinePanel(props: Props) {
               />
               {t("street.showDepot")}
             </label>
-            <div className="flex gap-2">
-              <button
-                type="button"
-                className="rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
-                onClick={a.placeDepot}
-              >
-                {t("street.moveDepot")}
-              </button>
-              <button
-                type="button"
-                className="rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
-                onClick={a.removeDepot}
-              >
-                {t("street.removeDepot")}
-              </button>
-            </div>
+            {!props.depotId && (
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  className="rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
+                  onClick={a.placeDepot}
+                >
+                  {t("street.moveDepot")}
+                </button>
+                <button
+                  type="button"
+                  className="rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
+                  onClick={a.removeDepot}
+                >
+                  {t("street.removeDepot")}
+                </button>
+              </div>
+            )}
           </>
         )}
         {stops.length === 0 && view.depot && null}
@@ -628,11 +734,48 @@ export function LinePanel(props: Props) {
           step={50}
           onChange={(v) => a.setRules({ ...rules, detour_warn_m: v })}
         />
+        <DayTypeChoice
+          day={day}
+          onDay={setDay}
+          own={hasOwnDay(timing.days, day)}
+          onOwn={(own) =>
+            day !== "weekday" &&
+            a.setTiming({ ...timing, days: withDay(timing.days, day, own ? shown : null) })
+          }
+        />
+        <label className="flex items-center justify-between gap-2">
+          <span>{t("rail.line.first")}</span>
+          <span className="flex items-center gap-1">
+            <TimeInput
+              label={t("rail.line.first")}
+              value={shown.firstMin}
+              onChange={(v) => setDayService({ firstMin: v })}
+            />
+            <span className="w-6" />
+          </span>
+        </label>
+        <label className="flex items-center justify-between gap-2">
+          <span>{t("rail.line.last")}</span>
+          <span className="flex items-center gap-1">
+            <TimeInput
+              label={t("rail.line.last")}
+              value={shown.lastMin}
+              onChange={(v) => setDayService({ lastMin: v })}
+            />
+            <span className="w-6" />
+          </span>
+        </label>
         <NumberField
-          label={t("street.headway")}
-          value={timing.headwayMin}
+          label={t("rail.line.peakHeadway")}
+          value={shown.peakHeadwayMin}
           unit="min"
-          onChange={(v) => a.setTiming({ ...timing, headwayMin: v })}
+          onChange={(v) => setDayService({ peakHeadwayMin: v })}
+        />
+        <NumberField
+          label={t("rail.line.offpeakHeadway")}
+          value={shown.offPeakHeadwayMin}
+          unit="min"
+          onChange={(v) => setDayService({ offPeakHeadwayMin: v })}
         />
         <NumberField
           label={t("street.dwell")}

@@ -11,9 +11,11 @@
 import type { LonLat, Timetable } from "../journey-planner/types";
 import { compile, type Compiled, type Vars } from "./formula";
 import { type BenefitsDoc, FORMULA_BY_ID, type FormulaId, FORMULAS, formulaText } from "./formulas";
-import { metres, type Net, type NetLine, networkOf, withoutRoutes } from "./network";
+import { type Net, type NetLine, networkOf, withoutRoutes } from "./network";
 import { p10p50p90, paramValue, seeded, triangular, type Triple } from "./params";
 import { type Region, regionAt, ringAreaM2, ringCentre, usable } from "./regions";
+import { distanceM } from "../../map/geo";
+import { sameNameStationM } from "../../workspace/preferences";
 
 export type PlaceKind = "school" | "university" | "hospital" | "clinic";
 export const PLACE_KINDS: PlaceKind[] = ["school", "university", "hospital", "clinic"];
@@ -58,14 +60,12 @@ export type Matrix = number[][];
 export type ReachFn = (from: LonLat, t0: number) => Map<string, number | null>;
 
 export const DEPARTURES_S = [7.5 * 3600, 8 * 3600, 8.5 * 3600];
-export const WALK_KMH = 4.5;
-export const WALK_DETOUR = 1.3;
 const CELL_M = 50;
 
 // ---------------------------------------------------------------------------------------------------
 // Buildings: use, floor area, homes and jobs.
 
-type JobClass = "office" | "retail" | "industrial" | "public";
+export type JobClass = "office" | "retail" | "industrial" | "public";
 const RESIDENTIAL = new Set([
   "house",
   "residential",
@@ -205,6 +205,8 @@ export interface Prepared {
   notes: string[];
   /** How the population of the zones was found. */
   popSource: { worldpop: number; buildings: number; regions: number };
+  /** Walking speed and detour factor, from the project's preferences or the library. */
+  walk: Walk;
 }
 
 export interface PrepareInput {
@@ -239,19 +241,22 @@ export function circle(at: LonLat, r: number, n = 24): LonLat[] {
 
 /** Purpose: the stations of a timetable with their catchment circles, for the WorldPop request. */
 export function catchments(tt: Timetable, prefs: PrepareInput["prefs"]): { id: string; ring: LonLat[] }[] {
-  return networkOf(tt).stations.map((s) => ({ id: s.id, ring: circle(s.at, catchment(s.modes, prefs)) }));
+  return networkOf(tt, sameNameStationM(prefs)).stations.map((s) => ({
+    id: s.id,
+    ring: circle(s.at, catchment(s.modes, prefs)),
+  }));
 }
 
 /** Purpose: the people, jobs and places of every station's zone, and the buildings near the lines. */
 export function prepare(input: PrepareInput): Prepared {
   const { prefs, country, regions } = input;
   const notes: string[] = [];
-  const net = networkOf(input.timetable);
+  const net = networkOf(input.timetable, sameNameStationM(prefs));
   const st = net.stations.map((s) => ({ ...s, radius: catchment(s.modes, prefs) }));
   const nearest = (p: LonLat): { i: number; d: number } | null => {
     let best: { i: number; d: number } | null = null;
     st.forEach((s, i) => {
-      const d = metres(p, s.at);
+      const d = distanceM(p, s.at);
       if (d <= s.radius && (!best || d < best.d)) best = { i, d };
     });
     return best;
@@ -315,7 +320,7 @@ export function prepare(input: PrepareInput): Prepared {
     for (const { l, at: stops } of lineStations) {
       const r = central("mode.catchment_m", l.mode, prefs);
       let d = Infinity;
-      for (const s of stops) d = Math.min(d, metres(at, s.at));
+      for (const s of stops) d = Math.min(d, distanceM(at, s.at));
       if (d <= r) near.push({ line: l.id, d, r });
     }
     if (region) {
@@ -354,7 +359,7 @@ export function prepare(input: PrepareInput): Prepared {
         const at: LonLat = [x + step.x / 2, y + step.y / 2];
         const circles: number[] = [];
         st.forEach((z, i) => {
-          if (metres(at, z.at) <= z.radius) circles.push(i);
+          if (distanceM(at, z.at) <= z.radius) circles.push(i);
         });
         if (!circles.length) continue;
         const zone = nearest(at)!.i;
@@ -412,7 +417,8 @@ export function prepare(input: PrepareInput): Prepared {
     if (z) places[z.i]![p.kind]++;
   }
   const students = central("benefit.age_18_24_share", "*", prefs);
-  const walkMs = WALK_KMH / 3.6;
+  const walkMs = central("demand.walk_speed_kmh", "*", prefs) / 3.6;
+  const detour = central("journey.walk_detour_factor", "*", prefs);
   const zones: Zone[] = st.map((s, i) => {
     const a = zonesAcc[i]!;
     const region = regionAt(regions, s.at);
@@ -433,10 +439,10 @@ export function prepare(input: PrepareInput): Prepared {
       gdpPerCapita,
       gdpPerWorker: a.jobs > 0 ? a.gdp / a.jobs : gdpPerCapita / Math.max(0.05, wpc),
       places: places[i]!,
-      accessMin: Math.max(1, ((2 / 3) * s.radius * WALK_DETOUR) / walkMs / 60),
+      accessMin: Math.max(1, ((2 / 3) * s.radius * detour) / walkMs / 60),
     };
   });
-  return { net, zones, buildings, regionStock, notes, popSource };
+  return { net, zones, buildings, regionStock, notes, popSource, walk: { kmh: walkMs * 3.6, detour } };
 }
 
 // ---------------------------------------------------------------------------------------------------
@@ -472,9 +478,15 @@ export function scenarioTimetable(tt: Timetable, s: Scenario): Timetable | null 
   return s.without.size ? withoutRoutes(tt, s.without) : tt;
 }
 
+/** Walking speed and detour factor of an estimate (`demand.walk_speed_kmh`, `journey.walk_detour_factor`). */
+export interface Walk {
+  kmh: number;
+  detour: number;
+}
+
 /** Purpose: minutes on foot between two stations (door to door is added by `matrix`). */
-export function walkMin(a: LonLat, b: LonLat): number {
-  return (metres(a, b) * WALK_DETOUR) / (WALK_KMH / 3.6) / 60;
+export function walkMin(a: LonLat, b: LonLat, walk: Walk): number {
+  return (distanceM(a, b) * walk.detour) / (walk.kmh / 3.6) / 60;
 }
 
 /**
@@ -482,7 +494,12 @@ export function walkMin(a: LonLat, b: LonLat): number {
  * walking and public transport between the stations, averaged over the peak departures.
  * Inputs: `reach` from a compiled scenario timetable, or null for walking only.
  */
-export function matrix(zones: Zone[], stationStops: string[][], reach: ReachFn | null): Matrix {
+export function matrix(
+  zones: Zone[],
+  stationStops: string[][],
+  reach: ReachFn | null,
+  walking: Walk,
+): Matrix {
   const n = zones.length;
   const out: Matrix = zones.map(() => new Array<number>(n).fill(0));
   for (let i = 0; i < n; i++) {
@@ -490,7 +507,7 @@ export function matrix(zones: Zone[], stationStops: string[][], reach: ReachFn |
     const answers = reach ? DEPARTURES_S.map((t0) => ({ t0, at: reach(zones[i]!.at, t0) })) : [];
     for (let j = 0; j < n; j++) {
       if (i === j) continue;
-      const walk = walkMin(zones[i]!.at, zones[j]!.at);
+      const walk = walkMin(zones[i]!.at, zones[j]!.at, walking);
       if (!answers.length) {
         sums[j] = walk;
         continue;
@@ -576,6 +593,11 @@ export interface Estimate {
   rows: Row[];
   notes: string[];
   draws: number;
+  /**
+   * Weekday boardings of each line at each of its stations with the central parameter values, by line id
+   * and station name (the fare revenue table spreads a line's trips between its stations with them).
+   */
+  stations: Record<string, Record<string, number>>;
 }
 
 export interface EstimateInput {
@@ -902,7 +924,27 @@ export function estimate(input: EstimateInput): Estimate {
   }));
   if (!nationalGdpPerWorker)
     notes.push("Job-years cannot be estimated without the country's GDP per person.");
-  return { rows, notes, draws };
+  const stationName = new Map(P.net.stations.map((s) => [s.id, s.name]));
+  const stations: Estimate["stations"] = {};
+  for (const l of lines) {
+    const out: Record<string, number> = {};
+    for (const id of l.stations) {
+      const z = P.zones[zoneIdx.get(id) ?? -1];
+      if (!z) continue;
+      const k = stationLines.get(id) ?? 1;
+      const v = fns.ridership_daily({
+        pop: z.pop / k,
+        jobs: z.jobs / k,
+        students: z.students / k,
+        resident_share: central("benefit.ridership.resident_share", l.mode, prefs),
+        trips_per_user: central("benefit.ridership.trips_per_user", l.mode, prefs),
+      });
+      const name = stationName.get(id) ?? id;
+      if (Number.isFinite(v)) out[name] = (out[name] ?? 0) + Math.max(0, v);
+    }
+    stations[l.id] = out;
+  }
+  return { rows, notes, draws, stations };
 }
 
 /** Purpose: the formula definition of a metric (for labels and units). */

@@ -42,10 +42,16 @@ export const loadRailEngine: RailEngineLoader = async () => {
     existingSnap: ([lon, lat], maxM) => JSON.parse(d.existing_snap(lon, lat, maxM)),
     setStreetSetups: (s) => d.set_street_setups(JSON.stringify(s)),
     setValues: (v) => d.set_values(JSON.stringify(v)),
+    setSwitchChoice: (c) => d.set_switch_choice(JSON.stringify(c)),
     generateSignals: () => JSON.parse(d.generate_signals()),
     signalAnchor: ([lon, lat], maxM) => JSON.parse(d.signal_anchor(lon, lat, maxM)),
     reachable: (from, to) => JSON.parse(d.reachable(from, to)),
-    publishLines: (lines, serviceId) => JSON.parse(d.publish_lines(JSON.stringify(lines), serviceId)),
+    publishLines: (lines, serviceId, options) =>
+      JSON.parse(
+        options
+          ? d.publish_lines_with(JSON.stringify(lines), serviceId, JSON.stringify(options))
+          : d.publish_lines(JSON.stringify(lines), serviceId),
+      ),
     dispose: () => d.free(),
   };
   return engine;

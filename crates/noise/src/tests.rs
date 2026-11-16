@@ -21,6 +21,7 @@ fn line(mode: Mode, points: Vec<[f64; 2]>, flows: Flows, v: f64, length: f64) ->
         speed_kmh: Some(v),
         ranges: vec![],
         stops_m: vec![],
+        hourly: None,
     }
 }
 
@@ -976,4 +977,88 @@ fn point_source_contexts_take_the_most_specific_value() {
         let r = lib.range_in(key, &[]);
         assert!(r[0] <= r[1] && r[1] <= r[2], "{key} {r:?}");
     }
+}
+
+#[test]
+fn hourly_flows_average_over_each_period() {
+    // 12 trains an hour 07–19, 6 an hour 19–23, 2 an hour 05–07, none otherwise.
+    let mut hourly = vec![0.0; 24];
+    hourly[5] = 2.0;
+    hourly[6] = 2.0;
+    (7..19).for_each(|h| hourly[h] = 12.0);
+    (19..23).for_each(|h| hourly[h] = 6.0);
+    let flows = Flows {
+        day: 12.0,
+        evening: 6.0,
+        night: 0.5,
+    };
+    let base = line(Mode::Tram, straight(400.0), flows, 40.0, 30.0);
+    let by_hour = LineInput {
+        flows: Flows::default(),
+        hourly: Some(hourly.clone()),
+        ..base.clone()
+    };
+    let a = run(vec![base]);
+    let b = run(vec![by_hour]);
+    assert!((a.lden.typical_m[1] - b.lden.typical_m[1]).abs() < 1e-9);
+    assert!((a.lnight.typical_m[1] - b.lnight.typical_m[1]).abs() < 1e-9);
+    // Periods moved an hour earlier by the preferences: 22:00 (6 trains) and 05:00 (2) fall in
+    // the night, 06:00 (2) and 18:00 (12) in the day and evening.
+    let mut lib = Library::builtin().clone();
+    lib.set("noise.day_start_h", 6.0);
+    lib.set("noise.evening_start_h", 18.0);
+    lib.set("noise.night_start_h", 22.0);
+    let f = Periods::new(&lib).hourly_flows([6.0, 18.0, 22.0], &hourly);
+    assert!((f.day - (2.0 + 11.0 * 12.0) / 12.0).abs() < 1e-9, "{f:?}");
+    assert!((f.evening - (12.0 + 3.0 * 6.0) / 4.0).abs() < 1e-9, "{f:?}");
+    assert!((f.night - (6.0 + 2.0) / 8.0).abs() < 1e-9, "{f:?}");
+}
+
+#[test]
+fn a_shared_cover_gives_two_estimates_the_same_grid() {
+    let cover: Vec<[f64; 2]> = (0..=60).map(|i| [i as f64 * 10.0, 0.0]).collect();
+    let grid = |lines: Vec<LineInput>| {
+        let e = estimate(&EstimateInput {
+            lines,
+            grid: true,
+            grid_reach_m: Some(150.0),
+            grid_cover: cover.clone(),
+            input_level: InputLevel::Timetabled,
+            ..Default::default()
+        });
+        assert_eq!(e.input_level, InputLevel::Timetabled);
+        e.grid.unwrap()
+    };
+    let a = grid(vec![line(Mode::Tram, straight(600.0), F, 40.0, 30.0)]);
+    let b = grid(vec![line(
+        Mode::Tram,
+        vec![[0.0, 0.0], [200.0, 0.0]],
+        F,
+        40.0,
+        30.0,
+    )]);
+    assert_eq!(
+        (a.x0, a.y0, a.cell, a.nx, a.ny),
+        (b.x0, b.y0, b.cell, b.nx, b.ny)
+    );
+    // The same cells are computed; the shorter line is quieter at the far end.
+    let computed = |g: &Grid| g.lden.iter().map(|v| !v.is_nan()).collect::<Vec<_>>();
+    assert_eq!(computed(&a), computed(&b));
+    let far = a.ny / 2 * a.nx + a.nx - 20;
+    assert!(a.lden[far] > b.lden[far] + 10.0 || !b.lden[far].is_finite());
+    // Without a cover the shorter line gets a smaller grid.
+    let own = estimate(&EstimateInput {
+        lines: vec![line(
+            Mode::Tram,
+            vec![[0.0, 0.0], [200.0, 0.0]],
+            F,
+            40.0,
+            30.0,
+        )],
+        grid: true,
+        grid_reach_m: Some(150.0),
+        ..Default::default()
+    });
+    assert!(own.grid.unwrap().nx < a.nx);
+    assert_eq!(own.input_level, InputLevel::Planned);
 }

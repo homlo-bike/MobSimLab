@@ -1,0 +1,6 @@
+{
+ "kind": "preferences",
+ "schemaVersion": 1,
+ "updatedAt": "2026-11-16T10:00:00.000Z",
+ "doc": { "values": { "street.mixed_traffic_delay_share": 0.2 } }
+}

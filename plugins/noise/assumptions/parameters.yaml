@@ -230,6 +230,21 @@
       check: unverified
       rationale: "Beyond about 500 m a transit line rarely lifts a receiver above 45 dB L_den; the range is tested in sensitivity runs."
 
+- key: noise.map_reach_m
+  label: "Noise map: how far the map reaches from the lines"
+  group: Noise
+  unit: m
+  used_by: [noise map]
+  values:
+    - context: { mode: "*" }
+      low: 150
+      central: 300
+      high: 500
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: "Buildings, terrain and receivers are loaded within this distance of the lines. 300 m covers the 55 dB L_den band of most urban lines; a fast main line may need more. Never beyond noise.max_source_distance_m."
+
 - key: noise.grid_spacing_m
   label: "Receiver grid spacing"
   group: Noise

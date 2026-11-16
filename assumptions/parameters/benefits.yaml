@@ -433,6 +433,99 @@
       rationale:
         Annual ridership is usually 280–330 times average weekday ridership, as weekends and holidays carry
         less.
+- key: benefit.ridership.saturday_share
+  label: "Ridership: a Saturday's riders as a share of a weekday's"
+  group: Benefits
+  unit: share
+  used_by:
+    - multi-year runs (passengers per day type)
+  values:
+    - context:
+        mode: "*"
+      low: 0.5
+      central: 0.6
+      high: 0.75
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale:
+        Weekend days carry fewer riders than weekdays. With 0.6 on Saturdays and 0.45 on Sundays and public
+        holidays, a year of 250 weekdays, 52 Saturdays, 52 Sundays and 10 holidays comes to about 310
+        weekday equivalents, in line with benefit.ridership.days_per_year (280–330).
+- key: benefit.ridership.sunday_share
+  label: "Ridership: a Sunday's riders as a share of a weekday's"
+  group: Benefits
+  unit: share
+  used_by:
+    - multi-year runs (passengers per day type)
+  values:
+    - context:
+        mode: "*"
+      low: 0.35
+      central: 0.45
+      high: 0.6
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale:
+        Sundays carry the fewest riders of the week; the range keeps the year's weekday equivalents within
+        benefit.ridership.days_per_year (280–330), as for benefit.ridership.saturday_share.
+- key: benefit.ridership.holiday_share
+  label: "Ridership: a public holiday's riders as a share of a weekday's"
+  group: Benefits
+  unit: share
+  used_by:
+    - multi-year runs (passengers per day type)
+  values:
+    - context:
+        mode: "*"
+      low: 0.35
+      central: 0.45
+      high: 0.6
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: A public holiday usually runs like a Sunday, so it takes the Sunday share
+        (benefit.ridership.sunday_share).
+- key: benefit.ridership.peak_hour_share
+  label: "Ridership: share of a weekday's boardings in one peak hour"
+  group: Benefits
+  unit: share
+  used_by:
+    - passenger loads in the simulator's system test
+  values:
+    - context:
+        mode: "*"
+      low: 0.08
+      central: 0.1
+      high: 0.13
+      basis: documented
+      sources: [tcqsm3, mobsimlab-derivation]
+      check: unverified
+      rationale:
+        Transit demand peaks in the morning and evening rush; TCQSM gives peak hour factors and hourly
+        ridership profiles in which the busiest hour carries roughly 8–13 % of the day's riders. The
+        simulator gives each hour of the peak windows (07–09, 16–19) this share and spreads the rest of the
+        day evenly over the other service hours.
+- key: benefit.ridership.peak_direction_share
+  label: "Ridership: share of a peak hour's riders travelling in the busier direction"
+  group: Benefits
+  unit: share
+  used_by:
+    - passenger loads in the simulator's system test
+  values:
+    - context:
+        mode: "*"
+      low: 0.55
+      central: 0.6
+      high: 0.7
+      basis: documented
+      sources: [tcqsm3, mobsimlab-derivation]
+      check: unverified
+      rationale:
+        In the rush hours more people travel towards the centre in the morning and away from it in the
+        evening; directional splits of 55–70 % are common on radial lines (TCQSM directional peaking). Off
+        the peak both directions carry the same, and loop lines are not split.
 - key: benefit.uplift.residential
   label: "Land value: uplift near a new station, homes"
   group: Benefits

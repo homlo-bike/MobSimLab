@@ -241,6 +241,25 @@ impl StreetLineEditor {
         Ok(self.view())
     }
 
+    /// Purpose: use a shared depot by its gates: `exits_json` and `entrances_json` are lists of
+    /// [lon, lat]; pull-out leaves by the quickest exit, pull-in comes in by the quickest entrance.
+    /// Returns the view.
+    pub fn set_depot_gates(
+        &mut self,
+        exits_json: &str,
+        entrances_json: &str,
+    ) -> Result<String, JsError> {
+        let g = self.graph.as_ref().ok_or_else(not_ready)?;
+        let parse = |j: &str| -> Result<Vec<(f64, f64)>, JsError> {
+            let v: Vec<[f64; 2]> =
+                serde_json::from_str(j).map_err(|e| JsError::new(&e.to_string()))?;
+            Ok(v.into_iter().map(|p| (p[0], p[1])).collect())
+        };
+        self.line
+            .set_depot_gates(g, &parse(exits_json)?, &parse(entrances_json)?);
+        Ok(self.view())
+    }
+
     /// Purpose: remove the depot. Returns the view.
     pub fn clear_depot(&mut self) -> Result<String, JsError> {
         let g = self.graph.as_ref().ok_or_else(not_ready)?;

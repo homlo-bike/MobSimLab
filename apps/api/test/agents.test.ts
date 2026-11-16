@@ -13,6 +13,8 @@ import {
   validate,
 } from "../src/agents/scenario";
 import { tilesFor } from "../src/street-network/street-network.service";
+import DEFAULTS from "../src/agents/defaults.json";
+import { projectValues, useValues, values, withValues } from "../src/agents/values";
 
 const stop = (id: string, lon: number, lat: number) => ({ id, name: id, lon, lat });
 const line = (over: Partial<Line> = {}): Line => ({
@@ -70,6 +72,54 @@ describe("agent scenario changes", () => {
     const f = validate(d).map((x) => x.message);
     expect(f).toContain("no service: both headways are null");
     expect(f).toContain("no line calls here");
+  });
+});
+
+describe("a project's values for agent scenarios", () => {
+  it("applies the project's values over the library's, a value for the mode first", () => {
+    const v = projectValues({
+      values: {
+        "mode.max_speed_kmh": 50,
+        "mode.max_speed_kmh.metro": 70,
+        "mode.stop_spacing_m.bus": 300,
+        "timetable.recovery_share": 0,
+        "demand.walk_speed_kmh": 4,
+        "mode.acceleration_ms2": 0,
+        "mode.dwell_s.tram": -5,
+      },
+      choices: { "mode.colour.tram": "#00FF00", "mode.colour.bus": "red" },
+    });
+    expect(v.modes.metro.max_speed_kmh).toBe(70);
+    expect(v.modes.bus.max_speed_kmh).toBe(50);
+    expect(v.modes.bus.stop_spacing_m).toEqual([250, 300, 600]);
+    expect(v.modes.tram.recovery_share).toBe(0);
+    expect(v.walk_speed_kmh).toBe(4);
+    // Nonsense keeps the library's value: no zero acceleration, no negative dwell, no colour that is not hex.
+    expect(v.modes.bus.acceleration_ms2).toBe(DEFAULTS.modes.bus.acceleration_ms2);
+    expect(v.modes.tram.dwell_s).toBe(DEFAULTS.modes.tram.dwell_s);
+    expect(v.modes.tram.colour).toBe("#00FF00");
+    expect(v.modes.bus.colour).toBe(DEFAULTS.modes.bus.colour);
+    expect(projectValues(null)).toEqual(DEFAULTS);
+  });
+
+  it("uses them only inside the tool call that loaded them", async () => {
+    const fast = projectValues({ values: { "mode.max_speed_kmh.metro": 120 } });
+    const lib = kinematicRunS(5000, "metro");
+    const inCall = await withValues(async () => {
+      useValues(fast);
+      await Promise.resolve();
+      return kinematicRunS(5000, "metro");
+    });
+    expect(inCall).toBeLessThan(lib);
+    expect(values()).toBe(DEFAULTS);
+    expect(kinematicRunS(5000, "metro")).toBe(lib);
+  });
+
+  it("links and unlinks a scenario with set_project", () => {
+    const id = "6f1c2b9e-3d4a-4b5c-8d6e-7f8091a2b3c4";
+    const linked = applyChanges(EMPTY_DOC, [{ op: "set_project", project_id: id }]);
+    expect(linked.project_id).toBe(id);
+    expect(applyChanges(linked, [{ op: "set_project", project_id: null }]).project_id).toBeUndefined();
   });
 });
 
@@ -172,7 +222,7 @@ describe("OAuth helpers", () => {
   });
 
   it("parses scopes", () => {
-    expect(parseScopes("")).toEqual(["project:read", "analysis:run", "scenario:write"]);
+    expect(parseScopes("")).toEqual(["project:read", "analysis:run", "scenario:write", "simulation:run"]);
     expect(parseScopes("analysis:run analysis:run")).toEqual(["analysis:run"]);
     expect(parseScopes("admin")).toBeNull();
   });
