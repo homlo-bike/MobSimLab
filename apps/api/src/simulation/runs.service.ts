@@ -1,3 +1,4 @@
+import { gzipSync } from "node:zlib";
 import {
   BadRequestException,
   ConflictException,
@@ -13,11 +14,12 @@ import { type Kysely, sql } from "kysely";
 import { AuditService, projectChain } from "../audit/audit.service";
 import { type DB, DATABASE, type Database, type RunKind, type RunStatus } from "../db/database";
 import { type ProjectActor, ProjectsService } from "../projects/projects.service";
+import { GbfsClient, GbfsError } from "../gateway/gbfs.client";
 import { OverpassError } from "../gateway/overpass.client";
-import { StreetNetworkService } from "../street-network/street-network.service";
+import { type BikeAccess, StreetNetworkService } from "../street-network/street-network.service";
 import type { CapacitySettings, SweepDesign, SweepMetric } from "./params";
 import { type JobState, RunQueue } from "./queue";
-import { MAX_ROAD_TILES, type RoadScenario, type RoadSettings, roadTiles } from "./road";
+import { MAX_ROAD_TILES, type RoadScenario, type RoadSettings, roadTiles, tileOf } from "./road";
 import type { CalendarPlan, CalendarSettings } from "./calendar";
 
 /** The network of a capacity run: the example metro, or the railway editor's topology with a lines file. */
@@ -50,6 +52,36 @@ export interface NewSweepRun {
 }
 
 /**
+ * A demand model run (ADR-0019): the Demand section's bundle (contracts/demand-input.schema.json, JSON text) and
+ * the project's demand values (Project preferences). The worker checks the bundle when it reads it.
+ */
+export interface NewDemandRun {
+  kind: "demand";
+  bundle: string;
+  values: Record<string, number>;
+  /** What the list shows about the bundle. */
+  summary: DemandSummary;
+  /** A GBFS feed of the project's shared-bike scheme, read with the OpenStreetMap stations. */
+  gbfsUrl?: string;
+  /** Observed mode shares, mean car trip and boardings to calibrate to (09 §2.3). */
+  observed?: ObservedDemand;
+}
+
+/** What the planner observed, for a demand run's calibration (worker `demand/calibrate.py`). */
+export interface ObservedDemand {
+  mode_shares?: { car: number; transit: number; walk: number; cycle: number };
+  mean_car_km?: number;
+  counts?: { kind: "line" | "stop"; id: string; value: number }[];
+}
+
+/** Size of a demand run's bundle, for the list of runs. */
+export interface DemandSummary {
+  zones: number;
+  stops: number;
+  lines: number;
+}
+
+/**
  * A road simulation (Phase 5): the project's street lines with their depots and the background traffic of the
  * GIS tab's street setup, in SUMO, for one period. The API adds the street tiles the lines need.
  */
@@ -71,7 +103,7 @@ export interface NewCalendarRun {
   plan: CalendarPlan;
 }
 
-export type NewRun = NewCapacityRun | NewSweepRun | NewRoadRun | NewCalendarRun;
+export type NewRun = NewCapacityRun | NewSweepRun | NewRoadRun | NewDemandRun | NewCalendarRun;
 
 /** What the run list shows about a road run's network: its lines and depots, and how many street tiles. */
 export interface RoadNetworkSummary {
@@ -99,8 +131,10 @@ export interface RunSummary {
     | { kind: "example" }
     | { kind: "files"; topologyName: string; linesName: string }
     | RoadNetworkSummary
+    | ({ kind: "demand" } & DemandSummary)
     | { kind: "none" };
-  params: CapacitySettings | RoadSettings | CalendarSettings;
+  /** Capacity runs and sweeps: their settings; road and calendar runs: theirs; null for demand runs. */
+  params: CapacitySettings | RoadSettings | CalendarSettings | null;
   sweep: boolean;
   /** Calendar runs only: what is run and expanded (./calendar.ts). */
   plan?: CalendarPlan;
@@ -128,11 +162,23 @@ export interface RunDetail extends RunSummary {
 /** Stored settings of a run (`simulation.run.input`). The network texts have their own columns. */
 interface StoredInput {
   network: RunSummary["network"];
-  params: CapacitySettings | RoadSettings | CalendarSettings;
+  params: CapacitySettings | RoadSettings | CalendarSettings | null;
   sweep: boolean;
   plan?: CalendarPlan;
   design?: SweepDesign;
   objectives?: NewSweepRun["objectives"];
+  /** Demand runs: the project's demand values the worker uses, and the shared-bike GBFS feed. */
+  values?: Record<string, number>;
+  gbfsUrl?: string;
+  /** Demand runs: the observed data the worker calibrates to. */
+  observed?: ObservedDemand;
+}
+
+/** A file a run saved next to its result. */
+export interface RunFile {
+  name: string;
+  mediaType: string;
+  content: Buffer;
 }
 
 /** The one example network the kernels know by name (crates/rail-sim/src/capacity_input.rs). */
@@ -140,6 +186,34 @@ const EXAMPLE_NETWORK = "example:metro";
 
 /** Largest street tile text of a road run (db/migrations/0009_road_runs.sql). */
 const MAX_ROAD_NETWORK_CHARS = 64 * 1024 * 1024;
+
+/** Most street tiles one demand run may take (about 18 × 18 km at 50° N). */
+export const MAX_DEMAND_TILES = 160;
+
+/**
+ * Purpose: the street tiles a demand run needs: the tile of every zone centre in the bundle (JSON text,
+ * contracts/demand-input.schema.json) and the tiles around it, so streets reach past each zone's edge.
+ * Output: tiles `[x, y]`, north to south, west to east; empty when the bundle has no zone centres.
+ */
+export function demandTiles(bundle: string): [number, number][] {
+  let zones: unknown;
+  try {
+    zones = (JSON.parse(bundle) as { zones?: unknown }).zones;
+  } catch {
+    throw new BadRequestException("the demand model input is not JSON");
+  }
+  const seen = new Map<string, [number, number]>();
+  for (const z of Array.isArray(zones) ? zones : []) {
+    const c = (z as { centroid?: unknown })?.centroid;
+    if (!Array.isArray(c) || typeof c[0] !== "number" || typeof c[1] !== "number") continue;
+    if (!Number.isFinite(c[0]) || !Number.isFinite(c[1]) || Math.abs(c[1]) > 85) continue;
+    const [x0, y0] = tileOf(c[0], c[1]);
+    for (let dy = -1; dy <= 1; dy++)
+      for (let dx = -1; dx <= 1; dx++) seen.set(`${x0 + dx}/${y0 + dy}`, [x0 + dx, y0 + dy]);
+    if (seen.size > 4 * MAX_DEMAND_TILES) break;
+  }
+  return [...seen.values()].sort((a, b) => a[1] - b[1] || a[0] - b[0]);
+}
 
 /** Message for a run whose worker stopped without settling it (a crash, a restart). */
 export const WORKER_STOPPED = "the background worker stopped before the run finished; start it again";
@@ -165,6 +239,7 @@ export class RunsService {
     private readonly audit: AuditService,
     private readonly queue: RunQueue,
     private readonly streets: StreetNetworkService,
+    private readonly gbfs: GbfsClient,
   ) {}
 
   /**
@@ -175,19 +250,32 @@ export class RunsService {
    */
   async start(actor: ProjectActor, projectId: string, input: NewRun, via?: AgentVia): Promise<RunDetail> {
     await this.projects.authorize(actor, projectId, "edit");
+    const demand = input.kind === "demand" ? this.demandNetwork(input) : null;
     const net =
-      input.kind === "road"
-        ? await this.roadNetwork(input.scenario)
-        : input.network === null
-          ? { stored: { kind: "none" as const }, network: "", lines: "" }
-          : await this.resolveNetwork(projectId, input.network);
-    const stored: StoredInput = {
-      network: net.stored,
-      params: input.params,
-      sweep: input.kind === "capacity" ? input.sweep : false,
-      ...(input.kind === "sweep" ? { design: input.design, objectives: input.objectives } : {}),
-      ...(input.kind === "calendar" ? { plan: input.plan } : {}),
-    };
+      input.kind === "demand"
+        ? demand!
+        : input.kind === "road"
+          ? await this.roadNetwork(input.scenario)
+          : input.network === null
+            ? { stored: { kind: "none" as const }, network: "", lines: "" }
+            : await this.resolveNetwork(projectId, input.network);
+    const stored: StoredInput =
+      input.kind === "demand"
+        ? {
+            network: net.stored,
+            params: null,
+            sweep: false,
+            values: input.values,
+            ...(input.gbfsUrl ? { gbfsUrl: input.gbfsUrl } : {}),
+            ...(input.observed ? { observed: input.observed } : {}),
+          }
+        : {
+            network: net.stored,
+            params: input.params,
+            sweep: input.kind === "capacity" ? input.sweep : false,
+            ...(input.kind === "sweep" ? { design: input.design, objectives: input.objectives } : {}),
+            ...(input.kind === "calendar" ? { plan: input.plan } : {}),
+          };
     const id = await this.db.transaction().execute(async (tx) => {
       if (via) await this.holdToLimit(tx, via);
       const r = await tx
@@ -219,13 +307,26 @@ export class RunsService {
           actorId: actor.userId,
           actorIpHash: actor.ipHash,
           requestId: actor.requestId,
-          after: { kind: input.kind, ...stored, ...(via ? { agent: agentNote(via) } : {}) },
+          after: {
+            kind: input.kind,
+            network: stored.network,
+            params: stored.params,
+            sweep: stored.sweep,
+            ...(stored.design ? { design: stored.design, objectives: stored.objectives } : {}),
+            // A demand run's values are many; the audit trail notes how many the project changed.
+            ...(stored.values ? { values: Object.keys(stored.values).length } : {}),
+            ...(stored.observed ? { observed: true } : {}),
+            ...(via ? { agent: agentNote(via) } : {}),
+          },
         },
         tx,
       );
       return r.id;
     });
-    await this.enqueue(id);
+    // A demand run is queued once its streets are loaded, in the background (they can take minutes).
+    if (demand)
+      void this.prepareDemand(id, demand.tiles, input.kind === "demand" ? input.gbfsUrl : undefined);
+    else await this.enqueue(id);
     return this.get(actor, projectId, id);
   }
 
@@ -249,6 +350,7 @@ export class RunsService {
       if (!r) throw new NotFoundException("run not found");
       if (r.status === "queued" || r.status === "running")
         throw new ConflictException("the run is still going; stop it or wait for it to finish");
+      await tx.deleteFrom("simulation.run_file").where("run_id", "=", runId).execute();
       await tx
         .updateTable("simulation.run")
         .set({
@@ -284,7 +386,16 @@ export class RunsService {
         tx,
       );
     });
-    await this.enqueue(runId);
+    // A demand run whose streets never loaded loads them again first.
+    const stored = await this.db
+      .selectFrom("simulation.run")
+      .select(["kind", "lines", "input"])
+      .where("id", "=", runId)
+      .where("network", "=", "{}")
+      .executeTakeFirst();
+    if (stored?.kind === "demand")
+      void this.prepareDemand(runId, demandTiles(stored.lines), (stored.input as StoredInput).gbfsUrl);
+    else await this.enqueue(runId);
     return this.get(actor, projectId, runId);
   }
 
@@ -357,6 +468,24 @@ export class RunsService {
   }
 
   /**
+   * Purpose: a file a run saved next to its result (a demand run's `od.omx`). 404 when the run or the file is
+   * not there. Every member who can read the project may download it.
+   */
+  async file(actor: ProjectActor, projectId: string, runId: string, name: string): Promise<RunFile> {
+    await this.projects.authorize(actor, projectId, "read");
+    const f = await this.db
+      .selectFrom("simulation.run_file as f")
+      .innerJoin("simulation.run as r", "r.id", "f.run_id")
+      .select(["f.name", "f.media_type", "f.content"])
+      .where("r.project_id", "=", projectId)
+      .where("r.id", "=", runId)
+      .where("f.name", "=", name)
+      .executeTakeFirst();
+    if (!f) throw new NotFoundException("file not found");
+    return { name: f.name, mediaType: f.media_type, content: f.content };
+  }
+
+  /**
    * Purpose: stop a run. A queued run is cancelled at once; a running one stops after the step it is on (the
    * worker checks between sweep points) and keeps what it found. Settled runs are left as they are.
    * Side effects: audit `simulation.run_cancelled`.
@@ -425,6 +554,23 @@ export class RunsService {
     return r.data;
   }
 
+  /**
+   * Purpose: the scenario a road run ran (lines with their legs and departures, depots, streets), as the
+   * simulator panel sent it; the noise map takes the run's lines from it. 404 for another kind of run.
+   */
+  async roadScenario(actor: ProjectActor, projectId: string, runId: string): Promise<string> {
+    await this.projects.authorize(actor, projectId, "read");
+    const r = await this.db
+      .selectFrom("simulation.run")
+      .select("lines")
+      .where("project_id", "=", projectId)
+      .where("id", "=", runId)
+      .where("kind", "=", "road")
+      .executeTakeFirst();
+    if (!r) throw new NotFoundException("no such road run");
+    return r.lines;
+  }
+
   // ---------------------------------------------------------------------------------------------------------
 
   /**
@@ -469,6 +615,142 @@ export class RunsService {
   }
 
   /**
+   * Purpose: what to store for a new demand run before its streets are loaded: the bundle, and the street tiles
+   * around every zone centre that `prepareDemand` loads next. 400 when the bundle has no zone centres or the
+   * zones take more than `MAX_DEMAND_TILES` tiles.
+   */
+  private demandNetwork(input: NewDemandRun): {
+    stored: StoredInput["network"];
+    network: string;
+    lines: string;
+    tiles: [number, number][];
+  } {
+    const tiles = demandTiles(input.bundle);
+    if (!tiles.length) throw new BadRequestException("the demand model input has no zones");
+    if (tiles.length > MAX_DEMAND_TILES)
+      throw new BadRequestException(
+        `the zones cover too large an area for one demand run (${tiles.length} street tiles, at most ${MAX_DEMAND_TILES}); use a smaller buffer or fewer lines`,
+      );
+    return { stored: { kind: "demand", ...input.summary }, network: "{}", lines: input.bundle, tiles };
+  }
+
+  /**
+   * Purpose: load the OpenStreetMap street tiles of a queued demand run in the background, store them gzipped
+   * in its network (worker `jobs/demand.py` `street_tiles`) with the bike parkings and shared-bike stations of
+   * the same tiles and of the GBFS feed (`bikes`), and queue it. The run's progress counts the tiles. A run
+   * stopped meanwhile is left as it is; a run whose streets cannot be loaded fails with the reason. Bike points
+   * that cannot be loaded are left out with a note in the result.
+   */
+  private async prepareDemand(id: string, tiles: [number, number][], gbfsUrl?: string): Promise<void> {
+    const open = async () =>
+      (
+        await this.db
+          .selectFrom("simulation.run")
+          .select(["status", "cancel_requested"])
+          .where("id", "=", id)
+          .executeTakeFirst()
+      )?.status === "queued";
+    try {
+      const xml = new Array<string>(tiles.length);
+      let next = 0;
+      let done = 0;
+      let stopped = false;
+      const worker = async () => {
+        for (let i = next++; i < tiles.length && !stopped; i = next++) {
+          const [x, y] = tiles[i]!;
+          xml[i] = await this.streets.tile(x, y);
+          done++;
+          if (done % 8 === 0 || done === tiles.length) {
+            if (!(await open())) stopped = true;
+            else
+              await this.db
+                .updateTable("simulation.run")
+                .set({ progress: JSON.stringify({ step: "streets", done, of: tiles.length }) })
+                .where("id", "=", id)
+                .execute();
+          }
+        }
+      };
+      await Promise.all([worker(), worker(), worker(), worker()]);
+      if (stopped || !(await open())) return;
+      await this.db
+        .updateTable("simulation.run")
+        .set({ progress: JSON.stringify({ step: "bikes" }) })
+        .where("id", "=", id)
+        .execute();
+      const bikes = await this.demandBikes(tiles, gbfsUrl);
+      if (!(await open())) return;
+      // A city's street tiles are large; gzipped they fit the run's network column.
+      const network = JSON.stringify({
+        tiles_gz: gzipSync(JSON.stringify(xml)).toString("base64"),
+        bikes,
+      });
+      if (network.length > MAX_ROAD_NETWORK_CHARS) {
+        await this.settle(
+          id,
+          "failed",
+          "the streets of the model area are too large for one demand run; use a smaller buffer or fewer lines",
+        );
+        return;
+      }
+      await this.db.updateTable("simulation.run").set({ network }).where("id", "=", id).execute();
+      await this.enqueue(id);
+    } catch (e) {
+      const reason =
+        e instanceof OverpassError
+          ? "OpenStreetMap streets are unavailable right now; run it again in a moment"
+          : e instanceof ServiceUnavailableException
+            ? "the run could not be queued; try again in a moment"
+            : `the streets of the model area could not be loaded: ${e instanceof Error ? e.message : String(e)}`;
+      this.log.warn(`demand run ${id}: ${reason}`);
+      await this.settle(id, "failed", reason).catch(() => undefined);
+    }
+  }
+
+  /**
+   * Purpose: the bike parkings and shared-bike stations of a demand run's tiles (OpenStreetMap), and the
+   * stations of its GBFS feed; each point once. Tiles or a feed that cannot be read give a note instead.
+   */
+  private async demandBikes(
+    tiles: [number, number][],
+    gbfsUrl?: string,
+  ): Promise<{ parking: [number, number][]; rental: [number, number][]; notes: string[] }> {
+    const parking = new Map<string, [number, number]>();
+    const rental = new Map<string, [number, number]>();
+    const add = (m: Map<string, [number, number]>, p: [number, number]) => m.set(`${p[0]},${p[1]}`, p);
+    let failed = 0;
+    let next = 0;
+    const worker = async () => {
+      for (let i = next++; i < tiles.length; i = next++) {
+        const [x, y] = tiles[i]!;
+        try {
+          const t = JSON.parse(await this.streets.bikeAccessTile(x, y)) as BikeAccess;
+          for (const p of t.parking) add(parking, p);
+          for (const p of t.rental) add(rental, p);
+        } catch {
+          failed++;
+        }
+      }
+    };
+    await Promise.all([worker(), worker(), worker(), worker()]);
+    const notes: string[] = [];
+    if (failed)
+      notes.push(
+        `bike parkings and shared-bike stations of ${failed} of ${tiles.length} OpenStreetMap tiles could not be loaded`,
+      );
+    if (gbfsUrl) {
+      try {
+        const stations = await this.gbfs.stations(gbfsUrl);
+        for (const p of stations) add(rental, p);
+        if (!stations.length) notes.push("the GBFS feed lists no shared-bike stations");
+      } catch (e) {
+        notes.push(e instanceof GbfsError ? e.message : "the GBFS feed could not be read");
+      }
+    }
+    return { parking: [...parking.values()], rental: [...rental.values()], notes };
+  }
+
+  /**
    * Purpose: the network texts to store for a new run, and what the list shows about them. A `run` network is
    * copied from a saved run of the same project (404 when there is none).
    */
@@ -490,6 +772,8 @@ export class RunsService {
       .where("id", "=", n.runId)
       .executeTakeFirst();
     if (!r) throw new NotFoundException("the run to take the network from was not found in this project");
+    if ((r.input as StoredInput).network.kind === "demand")
+      throw new BadRequestException("a demand run has no railway network to run again");
     return { stored: (r.input as StoredInput).network, network: r.network, lines: r.lines };
   }
 

@@ -21,6 +21,7 @@ fn main() {
         speed_kmh: Some(40.0),
         ranges: vec![],
         stops_m: vec![],
+        hourly: None,
     };
     // Blocks of 60 × 40 m with 20 m streets, each split into four houses, over 3.4 × 1.6 km.
     let mut buildings = Vec::new();

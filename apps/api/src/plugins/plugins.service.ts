@@ -11,6 +11,8 @@ import { APP_CONFIG } from "../config/config.module";
 import type { AppConfig } from "../config/env";
 import { DATABASE, type Database } from "../db/database";
 import { type ProjectActor, ProjectsService } from "../projects/projects.service";
+import { ToolRunner } from "../tool-runner/runner";
+import { prepareCode, type StoredFile } from "./code/store";
 import { checkChecksums, checkSignature, parsePublicKey, sha256, type SignatureStatus } from "./signature";
 import {
   BUNDLED,
@@ -30,6 +32,15 @@ export interface PluginContributions {
   parameters: number;
   calculations: string[];
   mapLayers: string[];
+  importers: string[];
+  exporters: string[];
+  tabs: string[];
+}
+
+/** Limits for plugin code, set by Admins (ADR-0036 §4): memory and time of one call. */
+export interface PluginLimits {
+  memoryMb: number;
+  timeS: number;
 }
 
 /** One plugin version as the admin screen lists it. */
@@ -46,6 +57,8 @@ export interface PluginSummary {
   permissions: string[];
   dependsOn: Record<string, string>;
   contributes: PluginContributions;
+  /** It brings WebAssembly code or tab pages of its own, which run in the sandbox (ADR-0036 Phase 2). */
+  runsCode: boolean;
   /** Installed plugins only. */
   signature?: { status: "trusted" | "unsigned"; signer: string | null };
   sha256?: string;
@@ -83,6 +96,8 @@ export interface ProjectPlugin {
   missing: boolean;
   /** The registry entry, for enabled installed plugins (the web app has the bundled ones). */
   entry?: PluginEntry;
+  /** SHA-256 of the package of an enabled installed plugin: the address of its tab pages (`/api/plugin-ui/<hash>/`). */
+  sha256?: string;
 }
 
 /** Who acts, with what the audit needs. */
@@ -95,6 +110,9 @@ function contributions(e: PluginEntry): PluginContributions {
     parameters: Object.keys(e.parameters).length,
     calculations: (e.calculations as { label?: string; id: string }[]).map((c) => c.label ?? c.id),
     mapLayers: (e.mapLayers as { label?: string; id: string }[]).map((l) => l.label ?? l.id),
+    importers: ((e.importers ?? []) as { label?: string; id: string }[]).map((l) => l.label ?? l.id),
+    exporters: ((e.exporters ?? []) as { label?: string; id: string }[]).map((l) => l.label ?? l.id),
+    tabs: (e.tabs ?? []).map((t) => t.label),
   };
 }
 
@@ -112,6 +130,7 @@ function summary(e: PluginEntry, dependsOn: Record<string, string> = {}): Omit<P
     permissions: e.permissions,
     dependsOn,
     contributes: contributions(e),
+    runsCode: !e.bundled && (e.tiers.includes("compute") || e.tiers.includes("ui")),
   };
 }
 
@@ -129,6 +148,7 @@ export class PluginsService {
     @Inject(APP_CONFIG) private readonly config: AppConfig,
     private readonly audit: AuditService,
     private readonly projects: ProjectsService,
+    private readonly tools: ToolRunner,
   ) {}
 
   /** Purpose: everything the admin screen shows: bundled and installed plugins, keys and the unsigned setting. */
@@ -157,7 +177,10 @@ export class PluginsService {
         .select(["k.id", "k.name", "k.fingerprint", "k.added_at", "u.display_name as added_by_name"])
         .orderBy("k.name")
         .execute(),
-      this.db.selectFrom("iam.instance").select("allow_unsigned_plugins").executeTakeFirstOrThrow(),
+      this.db
+        .selectFrom("iam.instance")
+        .select(["allow_unsigned_plugins", "plugin_memory_mb", "plugin_time_s"])
+        .executeTakeFirstOrThrow(),
       this.usage(),
     ]);
     const installed = rows
@@ -194,6 +217,7 @@ export class PluginsService {
       })),
       developmentMode: this.config.developmentMode,
       allowUnsigned: this.config.developmentMode && inst.allow_unsigned_plugins,
+      limits: { memoryMb: inst.plugin_memory_mb, timeS: inst.plugin_time_s } satisfies PluginLimits,
     };
   }
 
@@ -202,7 +226,7 @@ export class PluginsService {
    * tiers, permissions, licences, contributions, and every problem that would stop the install).
    */
   async inspect(actor: PluginActor, buf: Buffer): Promise<Inspection> {
-    return (await this.check(actor, buf, this.db)).inspection;
+    return (await this.check(actor, buf, this.db, true)).inspection;
   }
 
   /**
@@ -211,9 +235,16 @@ export class PluginsService {
    * Side effects: stores the package's manifest and registry entry; audit `plugin.installed`.
    */
   async install(actor: PluginActor, buf: Buffer): Promise<PluginSummary> {
+    // Compiling takes seconds in the sandbox, so it runs before the transaction; the checks run again inside.
+    const first = await this.check(actor, buf, this.db, true);
+    if (first.inspection.problems.length > 0)
+      throw new BadRequestException({
+        message: "the plugin cannot be installed",
+        problems: first.inspection.problems,
+      });
     return this.db.transaction().execute(async (tx) => {
       await tx.selectFrom("iam.instance").select("id").forUpdate().executeTakeFirstOrThrow();
-      const { inspection, entry, manifest, sig } = await this.check(actor, buf, tx);
+      const { inspection, entry, manifest, sig } = await this.check(actor, buf, tx, false);
       if (!entry || !manifest || inspection.problems.length > 0)
         throw new BadRequestException({
           message: "the plugin cannot be installed",
@@ -235,6 +266,18 @@ export class PluginsService {
           installed_by: actor.userId,
         })
         .execute();
+      for (const f of first.code)
+        await tx
+          .insertInto("plugin.file")
+          .values({
+            plugin_id: entry.id,
+            version: entry.version,
+            path: f.path,
+            media_type: f.mediaType,
+            data: f.data,
+            sha256: f.sha256,
+          })
+          .execute();
       await this.audit.append(
         {
           action: "plugin.installed",
@@ -250,6 +293,8 @@ export class PluginsService {
             signature: trusted ? "trusted" : "unsigned",
             signer: inspection.signer,
             permissions: entry.permissions,
+            runsCode: inspection.plugin!.runsCode,
+            files: first.code.map((f) => ({ path: f.path, sha256: f.sha256 })),
           },
         },
         tx,
@@ -553,7 +598,7 @@ export class PluginsService {
   private async projectList(db: Database, projectId: string): Promise<ProjectPlugin[]> {
     const [rows, pkgs] = await Promise.all([
       db.selectFrom("project.plugin").selectAll().where("project_id", "=", projectId).execute(),
-      db.selectFrom("plugin.package").select(["plugin_id", "version", "entry"]).execute(),
+      db.selectFrom("plugin.package").select(["plugin_id", "version", "entry", "sha256"]).execute(),
     ]);
     const choice = new Map(rows.map((r) => [r.plugin_id, r]));
     const out: ProjectPlugin[] = BUNDLED.map((e) => ({
@@ -569,11 +614,11 @@ export class PluginsService {
       contributes: contributions(e),
       missing: false,
     }));
-    const byId = new Map<string, { version: string; entry: PluginEntry }[]>();
+    const byId = new Map<string, { version: string; entry: PluginEntry; sha256: string }[]>();
     for (const p of pkgs)
       byId.set(p.plugin_id, [
         ...(byId.get(p.plugin_id) ?? []),
-        { version: p.version, entry: p.entry as PluginEntry },
+        { version: p.version, entry: p.entry as PluginEntry, sha256: p.sha256 },
       ]);
     const ids = new Set([...byId.keys(), ...rows.filter((r) => r.version !== null).map((r) => r.plugin_id)]);
     for (const id of [...ids].sort()) {
@@ -600,9 +645,18 @@ export class PluginsService {
         permissions: e?.permissions ?? [],
         contributes: e
           ? contributions(e)
-          : { modes: [], tools: [], parameters: 0, calculations: [], mapLayers: [] },
+          : {
+              modes: [],
+              tools: [],
+              parameters: 0,
+              calculations: [],
+              mapLayers: [],
+              importers: [],
+              exporters: [],
+              tabs: [],
+            },
         missing,
-        ...(enabled && e ? { entry: e } : {}),
+        ...(enabled && e ? { entry: e, sha256: found!.sha256 } : {}),
       });
     }
     return out;
@@ -638,7 +692,7 @@ export class PluginsService {
   }
 
   /** Unpack, check checksums, signature and contents, and decide whether the trust policy lets it in. */
-  private async check(actor: PluginActor, buf: Buffer, db: Database) {
+  private async check(actor: PluginActor, buf: Buffer, db: Database, compile: boolean) {
     const problems: string[] = [];
     const hash = sha256(buf);
     const fail = (message: string) => ({
@@ -652,6 +706,7 @@ export class PluginsService {
       entry: null,
       manifest: null,
       sig: null,
+      code: [] as StoredFile[],
     });
     let files: Map<string, Buffer>;
     try {
@@ -664,7 +719,10 @@ export class PluginsService {
     const [keys, installed, inst] = await Promise.all([
       this.trustedKeys(db),
       db.selectFrom("plugin.package").select(["plugin_id", "version", "entry"]).execute(),
-      db.selectFrom("iam.instance").select("allow_unsigned_plugins").executeTakeFirstOrThrow(),
+      db
+        .selectFrom("iam.instance")
+        .select(["allow_unsigned_plugins", "plugin_memory_mb"])
+        .executeTakeFirstOrThrow(),
     ]);
     const sig = checkSignature(
       files,
@@ -691,6 +749,13 @@ export class PluginsService {
         "the package is signed with a key this instance does not trust; add the publisher's key first",
       );
     const manifest = result.ok ? result.manifest : null;
+    // Code is compiled only for a package that passed every other check (it is the slow part).
+    let code: StoredFile[] = [];
+    if (compile && entry && problems.length === 0) {
+      const prepared = await prepareCode(files, entry, this.tools, inst.plugin_memory_mb);
+      problems.push(...prepared.problems.map((p) => `${entry.id}: ${p}`));
+      code = prepared.files;
+    }
     return {
       inspection: {
         plugin: entry
@@ -704,6 +769,38 @@ export class PluginsService {
       entry,
       manifest,
       sig,
+      code,
     };
+  }
+
+  /**
+   * Purpose: set the memory and time limits of plugin code (ADR-0036 §4). Admins and Owners.
+   * Side effects: audit `instance.plugin_limits_updated`. Applies to the next call; installed code is not changed.
+   */
+  async setLimits(actor: PluginActor, limits: PluginLimits): Promise<PluginLimits> {
+    await this.db.transaction().execute(async (tx) => {
+      const before = await tx
+        .selectFrom("iam.instance")
+        .select(["plugin_memory_mb", "plugin_time_s"])
+        .forUpdate()
+        .executeTakeFirstOrThrow();
+      await tx
+        .updateTable("iam.instance")
+        .set({ plugin_memory_mb: limits.memoryMb, plugin_time_s: limits.timeS, updated_at: new Date() })
+        .execute();
+      await this.audit.append(
+        {
+          action: "instance.plugin_limits_updated",
+          objectType: "instance",
+          actorId: actor.userId,
+          actorIpHash: actor.ipHash,
+          requestId: actor.requestId,
+          before: { memoryMb: before.plugin_memory_mb, timeS: before.plugin_time_s },
+          after: { ...limits },
+        },
+        tx,
+      );
+    });
+    return limits;
   }
 }

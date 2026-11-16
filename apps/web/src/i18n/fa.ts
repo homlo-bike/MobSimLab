@@ -3,6 +3,8 @@ import { calendarFa } from "./calendar/fa";
 import { editorsFa } from "./editors/fa";
 import { cargoBikeFa } from "./cargo-bike/fa";
 import { depotsFa } from "./depots/fa";
+import { mslabFa } from "./mslab/fa";
+import { pluginCodeFa } from "./plugin-code/fa";
 import { populationFa } from "./population/fa";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -254,6 +256,7 @@ export const fa: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "خیابان‌ها",
   "gis.regionsView": "مناطق",
+  "gis.zonesView": "مناطق تقاضا",
   "gis.intro": "اطلاعاتی را که در محاسبات استفاده می‌شود اضافه و ویرایش کنید.",
   "gis.areas": "ترسیم محدوده‌ها یا وارد کردن از OpenStreetMap",
   "gis.streets": "ساختار خیابان: خطوط اتوبوس، دوچرخه و تراموا، سرعت، سیم بالاسری",
@@ -277,6 +280,7 @@ export const fa: Messages = {
   "prefs.delayLane": "در خط اتوبوس یا تراموای فقط رنگ‌شده",
   "prefs.delayDefault": "کتابخانهٔ فرض‌ها: {value} %",
   "prefs.delayReset": "استفاده از مقدار کتابخانه",
+  "prefs.reason": "دلیل این مقدار (اختیاری)",
   "prefs.stationsTitle": "ایستگاه‌ها",
   "prefs.stationsIntro":
     "ایستگاه‌های هم‌نام درون این فاصله در نقشهٔ شماتیک، برنامه‌ریز سفر و جدول‌های منافع و مسافران یک ایستگاه به شمار می‌آیند.",
@@ -301,6 +305,21 @@ export const fa: Messages = {
   "prefs.rulesChanged": "تغییریافته: {count}",
   "prefs.rulesLibrary": "کتابخانهٔ فرض‌ها: {value} {unit}",
   "prefs.rulesLibraryRange": "کتابخانهٔ فرض‌ها: {value} {unit} (بازه {low}–{high})",
+  "prefs.demandTitle": "مدل تقاضا",
+  "prefs.demandIntro":
+    "همهٔ مقدارهایی که مدل تقاضا به کار می‌برد، گام به گام: ناحیه‌ها، تولید سفر، بازه‌های زمانی، توزیع، انتخاب وسیله و تخصیص. مقداری را برای این پروژه تغییر دهید یا مقدار کتابخانهٔ فرض‌ها را نگه دارید.",
+  "prefs.demandStep": "گام مدل",
+  "prefs.demandSearch": "جست‌وجوی مقدارها",
+  "prefs.demandNone": "هیچ مقداری پیدا نشد.",
+  "prefs.demandStep.zones": "ناحیه‌ها",
+  "prefs.demandStep.generation": "تولید سفر",
+  "prefs.demandStep.periods": "بازه‌های زمانی",
+  "prefs.demandStep.distribution": "توزیع سفر",
+  "prefs.demandStep.mode_choice": "انتخاب وسیله",
+  "prefs.demandStep.catchment": "حوزه دسترسی",
+  "prefs.demandStep.assignment": "تخصیص",
+  "prefs.demandStep.calibration": "واسنجی",
+  "prefs.demandAll": "همهٔ گام‌ها",
   "prefs.paramsTitle": "همه پارامترها",
   "prefs.paramsIntro":
     "هر مقدار کتابخانهٔ فرض‌ها. مقدار خودتان را برای همهٔ شیوه‌ها یا یک شیوه بگذارید؛ مقدار یک شیوه بر مقدار همهٔ شیوه‌ها مقدم است. مقدار کتابخانه کنار هر یک می‌ماند.",
@@ -415,6 +434,8 @@ export const fa: Messages = {
   ...editorsFa,
   ...cargoBikeFa,
   ...depotsFa,
+  ...mslabFa,
+  ...pluginCodeFa,
   ...populationFa,
   ...roadFa,
   ...calendarFa,

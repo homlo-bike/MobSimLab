@@ -4,7 +4,7 @@
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "https://mobsimlab.org/schemas/plugin-manifest/1.json",
     "title": "MobSimLab plugin manifest (mobsimlab-plugin.json)",
-    "description": "What a plugin contributes to MobSimLab (ADR-0036 §2 and §3). Producer: plugin authors; the bundled plugins live in plugins/. Consumer: tools/plugins/check.py (validation and the web app's generated registry, apps/web/src/plugins/bundled.generated.json), later the install flow. Plugin API major version 1. Bundled plugins may also add project tabs (`tabs`). Contribution points that are not built yet (checks, engines, schematics, panels, kpis) are reserved: the schema accepts no entries for them yet.",
+    "description": "What a plugin contributes to MobSimLab (ADR-0036 §2 and §3). Producer: plugin authors; the bundled plugins live in plugins/. Consumer: tools/plugins/check.py (validation and the web app's generated registry, apps/web/src/plugins/bundled.generated.json), later the install flow. Plugin API major version 1. Bundled plugins and installed plugins may add project tabs (`tabs`); installed plugins run their own code as WebAssembly components (`runtime: component`, contracts/wit/plugin.wit) and their tabs as sandboxed pages (`ui`). Contribution points that are not built yet (checks, engines, schematics, panels, kpis) are reserved: the schema accepts no entries for them yet.",
     "type": "object",
     "additionalProperties": false,
     "required": [
@@ -231,7 +231,7 @@
             }
           },
           "calculations": {
-            "description": "Calculations over the project's network (ADR-0036 §3). Until the sandboxed plugin host exists (Phase 2), only bundled plugins may contribute them, with runtime `bundled-wasm`: the code is a core crate compiled to WebAssembly (tools/wasm/build-<module>.sh, loaded from apps/web/src/wasm/<module>), released and reviewed with MobSimLab. Third-party `component` calculations come with Phase 2.",
+            "description": "Calculations over the project's data (ADR-0036 §3, §4). Runtime `bundled-wasm`: a core crate compiled to WebAssembly (tools/wasm/build-<module>.sh, loaded from apps/web/src/wasm/<module>), bundled plugins only. Runtime `component`: a WebAssembly component in the package that targets the `calculation` world of contracts/wit/plugin.wit, run in a sandbox in the browser and the API (installed plugins).",
             "type": "array",
             "items": {
               "type": "object",
@@ -240,7 +240,6 @@
                 "id",
                 "label",
                 "runtime",
-                "module",
                 "inputs",
                 "outputs"
               ],
@@ -257,11 +256,12 @@
                 },
                 "runtime": {
                   "enum": [
-                    "bundled-wasm"
+                    "bundled-wasm",
+                    "component"
                   ]
                 },
                 "module": {
-                  "description": "WebAssembly module name under apps/web/src/wasm/ (bundled-wasm).",
+                  "description": "WebAssembly module name under apps/web/src/wasm/ (runtime bundled-wasm).",
                   "type": "string",
                   "pattern": "^[a-z][a-z0-9-]*$"
                 },
@@ -310,8 +310,52 @@
                       "plugin-tab"
                     ]
                   }
+                },
+                "component": {
+                  "description": "Path of the WebAssembly component in the package (runtime component), such as wasm/calculation.wasm.",
+                  "$ref": "#/$defs/packagePath"
                 }
-              }
+              },
+              "allOf": [
+                {
+                  "if": {
+                    "properties": {
+                      "runtime": {
+                        "const": "bundled-wasm"
+                      }
+                    }
+                  },
+                  "then": {
+                    "required": [
+                      "module"
+                    ],
+                    "not": {
+                      "required": [
+                        "component"
+                      ]
+                    }
+                  }
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "runtime": {
+                        "const": "component"
+                      }
+                    }
+                  },
+                  "then": {
+                    "required": [
+                      "component"
+                    ],
+                    "not": {
+                      "required": [
+                        "module"
+                      ]
+                    }
+                  }
+                }
+              ]
             }
           },
           "checks": {
@@ -383,15 +427,14 @@
             "$ref": "#/$defs/reserved"
           },
           "tabs": {
-            "description": "Project tabs after the core ones (Simulator … Preferences). Until the UI tier exists (ADR-0036 §6), only bundled plugins may contribute tabs: `view` names a view built into the web app (apps/web/src/features/<view>), reviewed and released with MobSimLab, and the tab shows the plugin's own calculations.",
+            "description": "Project tabs after the core ones (Simulator … Preferences). A bundled plugin names a view built into the web app (`view`, apps/web/src/features/<view>). An installed plugin ships its own page (`ui`, an HTML file in the package) that the app shows in a sandboxed frame without access to the app, cookies or the network; it talks to the app through a message API that checks the plugin's permissions (ADR-0036 §6). `calculations` lists the plugin's calculations the tab may run.",
             "type": "array",
             "items": {
               "type": "object",
               "additionalProperties": false,
               "required": [
                 "id",
-                "label",
-                "view"
+                "label"
               ],
               "properties": {
                 "id": {
@@ -413,8 +456,24 @@
                   "items": {
                     "type": "string"
                   }
+                },
+                "ui": {
+                  "description": "HTML page of the tab in the package (installed plugins), such as tab/index.html; the files next to it are served with it.",
+                  "$ref": "#/$defs/packagePath"
                 }
-              }
+              },
+              "oneOf": [
+                {
+                  "required": [
+                    "view"
+                  ]
+                },
+                {
+                  "required": [
+                    "ui"
+                  ]
+                }
+              ]
             }
           }
         }
@@ -475,8 +534,6 @@
           "format",
           "contract",
           "runtime",
-          "module",
-          "function",
           "maxBytes"
         ],
         "properties": {
@@ -512,16 +569,17 @@
           },
           "runtime": {
             "enum": [
-              "bundled-wasm"
+              "bundled-wasm",
+              "component"
             ]
           },
           "module": {
-            "description": "WebAssembly module name under apps/web/src/wasm/ (bundled-wasm).",
+            "description": "WebAssembly module name under apps/web/src/wasm/ (runtime bundled-wasm).",
             "type": "string",
             "pattern": "^[a-z][a-z0-9-]*$"
           },
           "function": {
-            "description": "Exported function of the module: JSON in, JSON out.",
+            "description": "Exported function of the module, JSON in and out (runtime bundled-wasm).",
             "type": "string",
             "pattern": "^[a-z][a-z0-9_]*$"
           },
@@ -530,13 +588,75 @@
             "type": "integer",
             "minimum": 1,
             "maximum": 268435456
+          },
+          "component": {
+            "description": "Path of the WebAssembly component in the package (runtime component): the `importer` or `exporter` world of contracts/wit/plugin.wit.",
+            "$ref": "#/$defs/packagePath"
           }
-        }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "runtime": {
+                  "const": "bundled-wasm"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "module",
+                "function"
+              ],
+              "not": {
+                "required": [
+                  "component"
+                ]
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "runtime": {
+                  "const": "component"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "component"
+              ],
+              "not": {
+                "anyOf": [
+                  {
+                    "required": [
+                      "module"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "function"
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        ]
       },
       "reserved": {
         "description": "Contribution point of a later phase of ADR-0036; no entries are accepted yet.",
         "type": "array",
         "maxItems": 0
+      },
+      "packagePath": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9_-]+(/[A-Za-z0-9_.-]+)*\\.[a-z0-9]+$",
+        "not": {
+          "pattern": "\\.\\."
+        },
+        "maxLength": 200
       }
     }
   },
@@ -751,7 +871,137 @@
     "curve.cant_tram_mm",
     "curve.max_cant_gradient_mm_m",
     "curve.vertical_radius_m",
+    "demand.area_buffer_m",
+    "demand.attraction.cbd_factor",
+    "demand.attraction.clinic_visits",
+    "demand.attraction.hospital_visits",
+    "demand.attraction.nhb_per_other_job",
+    "demand.attraction.nhb_per_resident",
+    "demand.attraction.nhb_per_retail_job",
+    "demand.attraction.per_other_job",
+    "demand.attraction.per_resident",
+    "demand.attraction.per_retail_job",
+    "demand.attraction.school_pupils",
+    "demand.attraction.tourism_visits",
+    "demand.attraction.university_students",
+    "demand.bike_ride.max_m",
+    "demand.bike_ride.parking_max_m",
+    "demand.bike_ride.parking_min",
+    "demand.calibration.damping",
+    "demand.calibration.geh_hours",
+    "demand.calibration.max_iterations",
+    "demand.calibration.tolerance",
+    "demand.car_occupancy",
+    "demand.cbd_job_density_km2",
+    "demand.connector.count",
+    "demand.cycle.factor.busy_road",
+    "demand.cycle.factor.lane",
+    "demand.cycle.factor.track",
+    "demand.deterrence.hbe.exponential",
+    "demand.deterrence.hbe.power",
+    "demand.deterrence.hbo.exponential",
+    "demand.deterrence.hbo.power",
+    "demand.deterrence.hbw.exponential",
+    "demand.deterrence.hbw.power",
+    "demand.deterrence.nhb.exponential",
+    "demand.deterrence.nhb.power",
+    "demand.feedback.gap",
+    "demand.feedback.max_iterations",
+    "demand.from_home_share.am.hbe",
+    "demand.from_home_share.am.hbo",
+    "demand.from_home_share.am.hbw",
+    "demand.from_home_share.ev.hbe",
+    "demand.from_home_share.ev.hbo",
+    "demand.from_home_share.ev.hbw",
+    "demand.from_home_share.md.hbe",
+    "demand.from_home_share.md.hbo",
+    "demand.from_home_share.md.hbw",
+    "demand.from_home_share.pm.hbe",
+    "demand.from_home_share.pm.hbo",
+    "demand.from_home_share.pm.hbw",
+    "demand.intrazonal_share",
+    "demand.mode.asc.cycle",
+    "demand.mode.asc.transit",
+    "demand.mode.asc.walk",
+    "demand.mode.car_availability",
+    "demand.mode.car_cost_per_km_usd",
+    "demand.mode.car_terminal_min",
+    "demand.mode.cycle_availability",
+    "demand.mode.cycle_mode_weight",
+    "demand.mode.fare_usd",
+    "demand.mode.ivt.hbe",
+    "demand.mode.ivt.hbo",
+    "demand.mode.ivt.hbw",
+    "demand.mode.ivt.nhb",
+    "demand.mode.nest_scale",
+    "demand.mode.parking_cost_usd",
+    "demand.mode.transfer_penalty_min",
+    "demand.mode.wait_weight",
+    "demand.mode.walk_mode_weight",
+    "demand.mode.walk_weight",
+    "demand.pedestrian_zone.car_min",
+    "demand.period.am_end_h",
+    "demand.period.am_start_h",
+    "demand.period.ev_end_h",
+    "demand.period.pm_end_h",
+    "demand.period.pm_start_h",
+    "demand.period_share.am.hbe",
+    "demand.period_share.am.hbo",
+    "demand.period_share.am.hbw",
+    "demand.period_share.am.nhb",
+    "demand.period_share.ev.hbe",
+    "demand.period_share.ev.hbo",
+    "demand.period_share.ev.hbw",
+    "demand.period_share.ev.nhb",
+    "demand.period_share.md.hbe",
+    "demand.period_share.md.hbo",
+    "demand.period_share.md.hbw",
+    "demand.period_share.md.nhb",
+    "demand.period_share.pm.hbe",
+    "demand.period_share.pm.hbo",
+    "demand.period_share.pm.hbw",
+    "demand.period_share.pm.nhb",
+    "demand.road.bpr_alpha",
+    "demand.road.bpr_beta",
+    "demand.road.capacity.local",
+    "demand.road.capacity.motorway",
+    "demand.road.capacity.primary",
+    "demand.road.capacity.secondary",
+    "demand.road.capacity.tertiary",
+    "demand.road.capacity.trunk",
+    "demand.road.free_flow_share",
+    "demand.road.lanes.local",
+    "demand.road.lanes.motorway",
+    "demand.road.lanes.primary",
+    "demand.road.lanes.secondary",
+    "demand.road.lanes.tertiary",
+    "demand.road.lanes.trunk",
+    "demand.road.max_iterations",
+    "demand.road.relative_gap",
+    "demand.road.speed_kmh.local",
+    "demand.road.speed_kmh.motorway",
+    "demand.road.speed_kmh.primary",
+    "demand.road.speed_kmh.secondary",
+    "demand.road.speed_kmh.tertiary",
+    "demand.road.speed_kmh.trunk",
+    "demand.shared_bike.fare_usd",
+    "demand.shared_bike.max_m",
+    "demand.shared_bike.station_max_m",
+    "demand.shared_bike.unlock_min",
+    "demand.step_free.penalty_min",
+    "demand.step_free.share",
+    "demand.transit.access_factor",
+    "demand.transit.transfer_max_m",
+    "demand.trip_rate.hbe",
+    "demand.trip_rate.hbo",
+    "demand.trip_rate.hbw",
+    "demand.trip_rate.nhb",
+    "demand.vot.income_hours",
+    "demand.vot.share.hbw",
+    "demand.vot.share.other",
+    "demand.walk.pedestrian_factor",
     "demand.walk_speed_kmh",
+    "demand.zone_max_count",
     "depot.aisle_width_m",
     "depot.charger_power_kw",
     "depot.lateral_spacing_m",
@@ -909,6 +1159,8 @@
     "becker-kreuzungsweichen",
     "bostrab",
     "bostrab-trr",
+    "bpr-1964",
+    "broach-2012",
     "ceder-2016",
     "cornell-ebus-cold",
     "crchi-hs-turnouts",
@@ -937,6 +1189,7 @@
     "eu-dir-92-6",
     "eu-dir-96-53",
     "eu-reco-2001-290",
+    "fishman-2016",
     "flyvbjerg-2003",
     "fra-rr0610",
     "fra-td99-021",
@@ -951,21 +1204,28 @@
     "ilostat-labour-share",
     "isacsson-2015",
     "itdp-pnft",
+    "ite-trip-generation",
     "krakow-tram-switches",
     "litman-transit-elasticities",
+    "martens-2004",
     "metro-no9-optimised",
+    "mid-2017",
     "mobsimlab-derivation",
     "mohammad-2013",
     "moreno-2021",
     "mutcd-2009",
     "mutcd-2009-part8",
+    "nchrp-716",
+    "nhts-2017",
     "nortrak-transit",
     "nr-anglia-ole",
     "nr-cwr-sft",
     "nra-tech-rules",
+    "nts-2019",
     "oecd-icio",
     "orr-ole-heat",
     "orr-ppm",
+    "ortuzar-willumsen-2011",
     "osm-switch-2500",
     "pachl-roc",
     "paulley-2006",
@@ -982,6 +1242,8 @@
     "stvo",
     "suburban-no12",
     "sumo-vtype",
+    "tag-m2",
+    "tag-m3-1",
     "tcqsm3",
     "tcrp-94",
     "tcrp-spare-ratio",
@@ -1001,10 +1263,13 @@
     "unece-r107",
     "up-5015",
     "us-49cfr234",
+    "usdot-vot-2016",
     "vde-ebus-fleet",
     "vienna-convention-1968",
     "voestalpine-tram-train-hu",
     "vuchic-2007",
+    "wardman-2004",
+    "who-2011-disability",
     "worldbank-benefit-wdi",
     "worldbank-china-hsr",
     "worldbank-wdi",
@@ -6335,7 +6600,7 @@
           "label": "Noise band",
           "calculation": "noise_estimate",
           "style": {
-            "_comment": "The noise band is drawn as a picture of the receiver grid (raster), coloured in 5 dB bands after ISO 1996-2 / DIN 45682. Colours are applied by the engine (noise::band_colour); this layer sets how the picture is shown.",
+            "_comment": "The noise band is drawn as a picture of the receiver grid (raster), coloured in 5 dB bands after ISO 1996-2 / DIN 45682. Colours are applied by the engine (noise::band_colour); this layer sets how the picture is shown. The difference map between two scenarios (step N3) is coloured by the change in dB: `difference` gives each class's lower edge (null: no lower edge) and colour (null: not drawn).",
             "layers": [
               {
                 "id": "noise-band",
@@ -6375,6 +6640,44 @@
               {
                 "from_db": 75,
                 "color": "#75085c"
+              }
+            ],
+            "difference": [
+              {
+                "from_db": null,
+                "color": "#08519c"
+              },
+              {
+                "from_db": -10,
+                "color": "#3182bd"
+              },
+              {
+                "from_db": -5,
+                "color": "#6baed6"
+              },
+              {
+                "from_db": -3,
+                "color": "#c6dbef"
+              },
+              {
+                "from_db": -1,
+                "color": null
+              },
+              {
+                "from_db": 1,
+                "color": "#fcbba1"
+              },
+              {
+                "from_db": 3,
+                "color": "#fb6a4a"
+              },
+              {
+                "from_db": 5,
+                "color": "#de2d26"
+              },
+              {
+                "from_db": 10,
+                "color": "#a50f15"
               }
             ]
           }

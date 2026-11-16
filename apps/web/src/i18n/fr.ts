@@ -3,6 +3,8 @@ import { calendarFr } from "./calendar/fr";
 import { editorsFr } from "./editors/fr";
 import { cargoBikeFr } from "./cargo-bike/fr";
 import { depotsFr } from "./depots/fr";
+import { mslabFr } from "./mslab/fr";
+import { pluginCodeFr } from "./plugin-code/fr";
 import { populationFr } from "./population/fr";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -266,6 +268,7 @@ export const fr: Messages = {
   "gis.spacing": "Interstation",
   "gis.streetsView": "Rues",
   "gis.regionsView": "Régions",
+  "gis.zonesView": "Zones de demande",
 
   "tables.title": "Tableaux",
   "tables.intro": "Tous les calculs du projet, pour estimer ses performances.",
@@ -284,6 +287,7 @@ export const fr: Messages = {
   "prefs.delayLane": "Dans une voie bus ou tram marquée",
   "prefs.delayDefault": "Bibliothèque d'hypothèses : {value} %",
   "prefs.delayReset": "Utiliser la valeur de la bibliothèque",
+  "prefs.reason": "Raison de cette valeur (facultatif)",
   "prefs.stationsTitle": "Stations",
   "prefs.stationsIntro":
     "Les arrêts de même nom situés dans ce rayon comptent comme une seule station dans le plan schématique, le calculateur d'itinéraires et les tableaux des bénéfices et de fréquentation.",
@@ -309,6 +313,21 @@ export const fr: Messages = {
   "prefs.rulesChanged": "{count} modifiées",
   "prefs.rulesLibrary": "Bibliothèque d'hypothèses : {value} {unit}",
   "prefs.rulesLibraryRange": "Bibliothèque d'hypothèses : {value} {unit} (plage {low}–{high})",
+  "prefs.demandTitle": "Modèle de demande",
+  "prefs.demandIntro":
+    "Chaque valeur utilisée par le modèle de demande, étape par étape : zones, génération des déplacements, périodes, distribution, choix modal et affectation. Modifiez une valeur pour ce projet ou gardez celle de la bibliothèque d'hypothèses.",
+  "prefs.demandStep": "Étape du modèle",
+  "prefs.demandSearch": "Rechercher une valeur",
+  "prefs.demandNone": "Aucune valeur ne correspond.",
+  "prefs.demandStep.zones": "Zones",
+  "prefs.demandStep.generation": "Génération des déplacements",
+  "prefs.demandStep.periods": "Périodes",
+  "prefs.demandStep.distribution": "Distribution des déplacements",
+  "prefs.demandStep.mode_choice": "Choix modal",
+  "prefs.demandStep.catchment": "Zone de desserte",
+  "prefs.demandStep.assignment": "Affectation",
+  "prefs.demandStep.calibration": "Calage",
+  "prefs.demandAll": "Toutes les étapes",
   "prefs.paramsTitle": "Tous les paramètres",
   "prefs.paramsIntro":
     "Chaque valeur de la bibliothèque d'hypothèses. Définissez la vôtre pour tous les modes ou pour un mode ; une valeur pour un mode l'emporte sur celle pour tous les modes. La valeur de la bibliothèque reste affichée à côté.",
@@ -426,6 +445,8 @@ export const fr: Messages = {
   ...editorsFr,
   ...cargoBikeFr,
   ...depotsFr,
+  ...mslabFr,
+  ...pluginCodeFr,
   ...populationFr,
   ...roadFr,
   ...calendarFr,

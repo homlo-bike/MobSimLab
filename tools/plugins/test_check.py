@@ -62,7 +62,7 @@ def test_unknown_context_option_is_refused(plugins: Path):
     assert any("submarine is not an option of vessel_type" in e for e in errors)
 
 
-def test_calculations_only_in_bundled_plugins(plugins: Path):
+def test_installed_plugins_bring_components(plugins: Path):
     def f(m):
         m["bundled"] = False
         m["contributes"]["calculations"] = [
@@ -78,7 +78,7 @@ def test_calculations_only_in_bundled_plugins(plugins: Path):
 
     edit(plugins / "ferry" / "mobsimlab-plugin.json", f)
     errors, _ = check.build(plugins)
-    assert any("only bundled plugins may contribute calculations" in e for e in errors)
+    assert any("installed plugins bring their code as runtime component" in e for e in errors)
 
 
 def test_tool_must_draw_own_modes(plugins: Path):
@@ -115,7 +115,7 @@ def test_tab_may_not_take_a_core_tab_or_unknown_calculation(plugins: Path):
     assert any("shows unknown calculation nope" in e for e in errors)
 
 
-def test_tabs_only_in_bundled_plugins(plugins: Path):
+def test_installed_plugins_bring_their_own_tab_pages(plugins: Path):
     edit(
         plugins / "ferry" / "mobsimlab-plugin.json",
         lambda m: m["contributes"].update(
@@ -128,4 +128,54 @@ def test_tabs_only_in_bundled_plugins(plugins: Path):
 
     edit(plugins / "ferry" / "mobsimlab-plugin.json", g)
     errors, _ = check.build(plugins)
-    assert any("only bundled plugins may contribute tabs" in e for e in errors)
+    assert any("installed plugins bring their own page (ui)" in e for e in errors)
+
+
+EXAMPLES = check.ROOT / "examples" / "plugins"
+
+
+@pytest.fixture
+def example(tmp_path: Path) -> Path:
+    """A copy of the example third-party plugin with code (examples/plugins/timetable-csv)."""
+    dst = tmp_path / "examples"
+    shutil.copytree(EXAMPLES, dst, ignore=shutil.ignore_patterns("target", "code"))
+    return dst
+
+
+def test_example_plugin_with_code_passes(example: Path):
+    errors, reg = check.build(example)
+    assert errors == []
+    (p,) = reg["plugins"]
+    assert p["calculations"][0]["component"] == "wasm/calculation.wasm"
+    assert p["tabs"][0]["ui"] == "tab/index.html"
+
+
+def test_component_rules(example: Path):
+    def f(m):
+        m["tiers"] = ["ui"]
+        m["permissions"] = []
+        m["contributes"]["calculations"][0]["where"] = ["street-line-tool"]
+        m["contributes"]["calculations"][0]["component"] = "wasm/missing.wasm"
+        m["contributes"]["tabs"][0]["ui"] = "tab/index.htm"
+
+    edit(example / "timetable-csv" / "mobsimlab-plugin.json", f)
+    errors, _ = check.build(example)
+    text = "\n".join(errors)
+    assert "must list the compute tier" in text
+    assert "reads timetable, which needs the read:timetable permission" in text
+    assert "cannot appear in street-line-tool" in text
+    assert "wasm/missing.wasm does not exist" in text
+    assert "importer csv_import adds to the project, which needs the write:scenario permission" in text
+    assert "tab/index.htm must be a .html file" in text
+
+
+def test_bundled_plugins_use_core_code(plugins: Path):
+    edit(
+        plugins / "noise" / "mobsimlab-plugin.json",
+        lambda m: (
+            m["contributes"]["calculations"][0].update(runtime="component", component="x.wasm"),
+            m["contributes"]["calculations"][0].pop("module"),
+        ),
+    )
+    errors, _ = check.build(plugins)
+    assert any("bundled plugins use runtime bundled-wasm" in e for e in errors)

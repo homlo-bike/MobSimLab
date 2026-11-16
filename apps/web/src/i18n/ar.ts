@@ -3,6 +3,8 @@ import { calendarAr } from "./calendar/ar";
 import { editorsAr } from "./editors/ar";
 import { cargoBikeAr } from "./cargo-bike/ar";
 import { depotsAr } from "./depots/ar";
+import { mslabAr } from "./mslab/ar";
+import { pluginCodeAr } from "./plugin-code/ar";
 import { populationAr } from "./population/ar";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -249,6 +251,7 @@ export const ar: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "الشوارع",
   "gis.regionsView": "المناطق",
+  "gis.zonesView": "مناطق الطلب",
   "gis.intro": "أضف أو عدّل المعلومات التي تستخدمها الحسابات.",
   "gis.areas": "ارسم منطقة أو استوردها من OpenStreetMap",
   "gis.streets": "تخطيط الشوارع: مسارات الحافلات والدراجات والترام، السرعات، الأسلاك العلوية",
@@ -272,6 +275,7 @@ export const ar: Messages = {
   "prefs.delayLane": "في مسار مخصّص مطلي للحافلات أو الترام",
   "prefs.delayDefault": "مكتبة الافتراضات: {value} %",
   "prefs.delayReset": "استخدام قيمة المكتبة",
+  "prefs.reason": "سبب هذه القيمة (اختياري)",
   "prefs.stationsTitle": "المحطات",
   "prefs.stationsIntro":
     "تُعدّ المواقف التي تحمل الاسم نفسه ضمن هذه المسافة محطة واحدة في المخطط التخطيطي ومخطط الرحلات وجداول المنافع والركاب.",
@@ -296,6 +300,21 @@ export const ar: Messages = {
   "prefs.rulesChanged": "المعدّلة: {count}",
   "prefs.rulesLibrary": "مكتبة الافتراضات: {value} {unit}",
   "prefs.rulesLibraryRange": "مكتبة الافتراضات: {value} {unit} (النطاق {low}–{high})",
+  "prefs.demandTitle": "نموذج الطلب",
+  "prefs.demandIntro":
+    "كل قيمة يستخدمها نموذج الطلب، خطوة بخطوة: المناطق وتوليد الرحلات والفترات الزمنية والتوزيع واختيار الوسيلة والتخصيص. غيّر قيمة لهذا المشروع أو احتفظ بقيمة مكتبة الافتراضات.",
+  "prefs.demandStep": "خطوة النموذج",
+  "prefs.demandSearch": "ابحث في القيم",
+  "prefs.demandNone": "لا توجد قيمة مطابقة.",
+  "prefs.demandStep.zones": "المناطق",
+  "prefs.demandStep.generation": "توليد الرحلات",
+  "prefs.demandStep.periods": "الفترات الزمنية",
+  "prefs.demandStep.distribution": "توزيع الرحلات",
+  "prefs.demandStep.mode_choice": "اختيار الوسيلة",
+  "prefs.demandStep.catchment": "منطقة الوصول",
+  "prefs.demandStep.assignment": "التخصيص",
+  "prefs.demandStep.calibration": "المعايرة",
+  "prefs.demandAll": "كل الخطوات",
   "prefs.paramsTitle": "كل المعاملات",
   "prefs.paramsIntro":
     "كل قيمة في مكتبة الافتراضات. حدّد قيمتك لكل الأنماط أو لنمط واحد؛ قيمة النمط الواحد تتقدّم على قيمة كل الأنماط. تبقى قيمة المكتبة بجانب كل منها.",
@@ -407,6 +426,8 @@ export const ar: Messages = {
   ...editorsAr,
   ...cargoBikeAr,
   ...depotsAr,
+  ...mslabAr,
+  ...pluginCodeAr,
   ...populationAr,
   ...roadAr,
   ...calendarAr,

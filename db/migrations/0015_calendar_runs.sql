@@ -3,4 +3,4 @@
 -- and lines: only the expansion of the day figures runs.
 
 ALTER TABLE simulation.run DROP CONSTRAINT run_kind_check;
-ALTER TABLE simulation.run ADD CONSTRAINT run_kind_check CHECK (kind IN ('capacity', 'sweep', 'road', 'calendar'));
+ALTER TABLE simulation.run ADD CONSTRAINT run_kind_check CHECK (kind IN ('capacity', 'sweep', 'road', 'demand', 'calendar'));

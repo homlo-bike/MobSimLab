@@ -3,6 +3,8 @@ import { calendarNl } from "./calendar/nl";
 import { editorsNl } from "./editors/nl";
 import { cargoBikeNl } from "./cargo-bike/nl";
 import { depotsNl } from "./depots/nl";
+import { mslabNl } from "./mslab/nl";
+import { pluginCodeNl } from "./plugin-code/nl";
 import { populationNl } from "./population/nl";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -264,6 +266,7 @@ export const nl: Messages = {
   "gis.spacing": "Halteafstand",
   "gis.streetsView": "Straten",
   "gis.regionsView": "Gebieden",
+  "gis.zonesView": "Vraagzones",
 
   "tables.title": "Tabellen",
   "tables.intro": "Alle berekeningen over het project, om te schatten hoe goed het zal presteren.",
@@ -282,6 +285,7 @@ export const nl: Messages = {
   "prefs.delayLane": "Op een geschilderde bus- of trambaan",
   "prefs.delayDefault": "Aannamebibliotheek: {value} %",
   "prefs.delayReset": "Waarde van de bibliotheek gebruiken",
+  "prefs.reason": "Reden voor deze waarde (optioneel)",
   "prefs.stationsTitle": "Stations",
   "prefs.stationsIntro":
     "Haltes met dezelfde naam binnen deze afstand tellen als één station in de netkaart, de reisplanner en de baten- en reizigerstabellen.",
@@ -307,6 +311,21 @@ export const nl: Messages = {
   "prefs.rulesChanged": "{count} gewijzigd",
   "prefs.rulesLibrary": "Aannamebibliotheek: {value} {unit}",
   "prefs.rulesLibraryRange": "Aannamebibliotheek: {value} {unit} (bereik {low}–{high})",
+  "prefs.demandTitle": "Vraagmodel",
+  "prefs.demandIntro":
+    "Elke waarde die het vraagmodel gebruikt, stap voor stap: zones, ritgeneratie, tijdvakken, ritdistributie, vervoerwijzekeuze en toedeling. Wijzig een waarde voor dit project of houd die van de aannamebibliotheek.",
+  "prefs.demandStep": "Modelstap",
+  "prefs.demandSearch": "Waarden zoeken",
+  "prefs.demandNone": "Geen waarde gevonden.",
+  "prefs.demandStep.zones": "Zones",
+  "prefs.demandStep.generation": "Ritgeneratie",
+  "prefs.demandStep.periods": "Tijdvakken",
+  "prefs.demandStep.distribution": "Ritdistributie",
+  "prefs.demandStep.mode_choice": "Vervoerwijzekeuze",
+  "prefs.demandStep.catchment": "Invloedsgebied",
+  "prefs.demandStep.assignment": "Toedeling",
+  "prefs.demandStep.calibration": "Kalibratie",
+  "prefs.demandAll": "Alle stappen",
   "prefs.paramsTitle": "Alle parameters",
   "prefs.paramsIntro":
     "Elke waarde uit de aannamebibliotheek. Stel je eigen waarde in voor alle modaliteiten of voor één; een waarde voor één modaliteit gaat voor die voor alle. De waarde van de bibliotheek staat ernaast.",
@@ -422,6 +441,8 @@ export const nl: Messages = {
   ...editorsNl,
   ...cargoBikeNl,
   ...depotsNl,
+  ...mslabNl,
+  ...pluginCodeNl,
   ...populationNl,
   ...roadNl,
   ...calendarNl,

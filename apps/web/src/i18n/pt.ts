@@ -3,6 +3,8 @@ import { calendarPt } from "./calendar/pt";
 import { editorsPt } from "./editors/pt";
 import { cargoBikePt } from "./cargo-bike/pt";
 import { depotsPt } from "./depots/pt";
+import { mslabPt } from "./mslab/pt";
+import { pluginCodePt } from "./plugin-code/pt";
 import { populationPt } from "./population/pt";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -259,6 +261,7 @@ export const pt: Messages = {
   "gis.title": "SIG",
   "gis.streetsView": "Ruas",
   "gis.regionsView": "Regiões",
+  "gis.zonesView": "Zonas de procura",
   "gis.intro": "Adicione ou edite as informações usadas nos cálculos.",
   "gis.areas": "Desenhe uma área ou importe uma do OpenStreetMap",
   "gis.streets": "Configuração das ruas: faixas de ônibus, bicicleta e bonde, velocidades, rede aérea",
@@ -282,6 +285,7 @@ export const pt: Messages = {
   "prefs.delayLane": "Em uma faixa pintada de ônibus ou bonde",
   "prefs.delayDefault": "Biblioteca de premissas: {value} %",
   "prefs.delayReset": "Usar o valor da biblioteca",
+  "prefs.reason": "Motivo deste valor (opcional)",
   "prefs.stationsTitle": "Estações",
   "prefs.stationsIntro":
     "Paradas com o mesmo nome dentro desta distância contam como uma só estação no mapa esquemático, no planejador de viagens e nas tabelas de benefícios e de passageiros.",
@@ -307,6 +311,21 @@ export const pt: Messages = {
   "prefs.rulesChanged": "{count} alterados",
   "prefs.rulesLibrary": "Biblioteca de premissas: {value} {unit}",
   "prefs.rulesLibraryRange": "Biblioteca de premissas: {value} {unit} (intervalo {low}–{high})",
+  "prefs.demandTitle": "Modelo de procura",
+  "prefs.demandIntro":
+    "Cada valor que o modelo de procura usa, passo a passo: zonas, geração de viagens, períodos, distribuição, escolha modal e alocação. Altere um valor para este projeto ou mantenha o da biblioteca de pressupostos.",
+  "prefs.demandStep": "Passo do modelo",
+  "prefs.demandSearch": "Pesquisar valores",
+  "prefs.demandNone": "Nenhum valor corresponde.",
+  "prefs.demandStep.zones": "Zonas",
+  "prefs.demandStep.generation": "Geração de viagens",
+  "prefs.demandStep.periods": "Períodos",
+  "prefs.demandStep.distribution": "Distribuição de viagens",
+  "prefs.demandStep.mode_choice": "Escolha modal",
+  "prefs.demandStep.catchment": "Área de influência",
+  "prefs.demandStep.assignment": "Alocação",
+  "prefs.demandStep.calibration": "Calibração",
+  "prefs.demandAll": "Todos os passos",
   "prefs.paramsTitle": "Todos os parâmetros",
   "prefs.paramsIntro":
     "Cada valor da biblioteca de pressupostos. Defina o seu para todos os modos ou para um modo; o valor de um modo prevalece sobre o de todos os modos. O valor da biblioteca fica ao lado.",
@@ -423,6 +442,8 @@ export const pt: Messages = {
   ...editorsPt,
   ...cargoBikePt,
   ...depotsPt,
+  ...mslabPt,
+  ...pluginCodePt,
   ...populationPt,
   ...roadPt,
   ...calendarPt,

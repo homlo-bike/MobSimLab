@@ -3,6 +3,8 @@ import { calendarIg } from "./calendar/ig";
 import { editorsIg } from "./editors/ig";
 import { cargoBikeIg } from "./cargo-bike/ig";
 import { depotsIg } from "./depots/ig";
+import { mslabIg } from "./mslab/ig";
+import { pluginCodeIg } from "./plugin-code/ig";
 import { populationIg } from "./population/ig";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -257,6 +259,7 @@ export const ig: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "Okporo ụzọ",
   "gis.regionsView": "Mpaghara",
+  "gis.zonesView": "Mpaghara ọchịchọ",
   "gis.intro": "Tinye ma ọ bụ dezie ozi ngụkọ na-eji.",
   "gis.areas": "See mpaghara ma ọ bụ bubata otu site na OpenStreetMap",
   "gis.streets": "Nhazi okporo ụzọ: ụzọ bọs, igwe kwụ otu ebe na tram, ọsọ, waya elu",
@@ -280,6 +283,7 @@ export const ig: Messages = {
   "prefs.delayLane": "N'ụzọ bọs ma ọ bụ tram e ji agba see",
   "prefs.delayDefault": "Ọbá akwụkwọ echiche: {value} %",
   "prefs.delayReset": "Jiri uru ọbá akwụkwọ",
+  "prefs.reason": "Ihe kpatara uru a (nhọrọ)",
   "prefs.stationsTitle": "Ọdụ",
   "prefs.stationsIntro":
     "Ebe nkwụsị nwere otu aha n'ime anya a ka a na-agụ dị ka otu ọdụ na maapụ eserese, onye nhazi njem na tebụl uru na ndị njem.",
@@ -306,6 +310,21 @@ export const ig: Messages = {
   "prefs.rulesChanged": "agbanwere: {count}",
   "prefs.rulesLibrary": "Ọbá akwụkwọ echiche: {value} {unit}",
   "prefs.rulesLibraryRange": "Ọbá akwụkwọ echiche: {value} {unit} (oke {low}–{high})",
+  "prefs.demandTitle": "Ụdị ọchịchọ njem",
+  "prefs.demandIntro":
+    "Uru ọ bụla ụdị ọchịchọ njem na-eji, nzọụkwụ na nzọụkwụ: mpaghara, imepụta njem, oge, nkesa, nhọrọ ụzọ njem na nkenye. Gbanwee uru maka ọrụ a, ma ọ bụ debe nke ọbá akwụkwọ echiche.",
+  "prefs.demandStep": "Nzọụkwụ ụdị",
+  "prefs.demandSearch": "Chọọ uru",
+  "prefs.demandNone": "Enweghị uru dabara.",
+  "prefs.demandStep.zones": "Mpaghara",
+  "prefs.demandStep.generation": "Imepụta njem",
+  "prefs.demandStep.periods": "Oge",
+  "prefs.demandStep.distribution": "Nkesa njem",
+  "prefs.demandStep.mode_choice": "Nhọrọ ụzọ njem",
+  "prefs.demandStep.catchment": "Mpaghara nnweta",
+  "prefs.demandStep.assignment": "Nkenye",
+  "prefs.demandStep.calibration": "Nhazi",
+  "prefs.demandAll": "Nzọụkwụ niile",
   "prefs.paramsTitle": "Paramita niile",
   "prefs.paramsIntro":
     "Uru ọ bụla nke ọbá echiche. Tọọ nke gị maka ụzọ niile ma ọ bụ otu ụzọ; uru otu ụzọ na-akarị nke ụzọ niile. Uru ọbá ahụ na-anọ n'akụkụ.",
@@ -419,6 +438,8 @@ export const ig: Messages = {
   ...editorsIg,
   ...cargoBikeIg,
   ...depotsIg,
+  ...mslabIg,
+  ...pluginCodeIg,
   ...populationIg,
   ...roadIg,
   ...calendarIg,

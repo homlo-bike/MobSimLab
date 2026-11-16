@@ -3,6 +3,8 @@ import { calendarDe } from "./calendar/de";
 import { editorsDe } from "./editors/de";
 import { cargoBikeDe } from "./cargo-bike/de";
 import { depotsDe } from "./depots/de";
+import { mslabDe } from "./mslab/de";
+import { pluginCodeDe } from "./plugin-code/de";
 import { populationDe } from "./population/de";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -269,6 +271,7 @@ export const de: Messages = {
   "gis.spacing": "Haltestellenabstände",
   "gis.streetsView": "Straßen",
   "gis.regionsView": "Gebiete",
+  "gis.zonesView": "Nachfragezonen",
 
   "tables.title": "Tabellen",
   "tables.intro": "Alle Berechnungen zum Projekt, um abzuschätzen, wie gut es funktionieren wird.",
@@ -287,6 +290,7 @@ export const de: Messages = {
   "prefs.delayLane": "Auf einer markierten Bus- oder Straßenbahnspur",
   "prefs.delayDefault": "Annahmenbibliothek: {value} %",
   "prefs.delayReset": "Wert der Bibliothek verwenden",
+  "prefs.reason": "Grund für diesen Wert (optional)",
   "prefs.stationsTitle": "Stationen",
   "prefs.stationsIntro":
     "Gleichnamige Haltestellen innerhalb dieser Entfernung gelten im Liniennetzplan, in der Reiseplanung und in den Nutzen- und Fahrgasttabellen als eine Station.",
@@ -312,6 +316,21 @@ export const de: Messages = {
   "prefs.rulesChanged": "{count} geändert",
   "prefs.rulesLibrary": "Annahmenbibliothek: {value} {unit}",
   "prefs.rulesLibraryRange": "Annahmenbibliothek: {value} {unit} (Bereich {low}–{high})",
+  "prefs.demandTitle": "Nachfragemodell",
+  "prefs.demandIntro":
+    "Jeder Wert, den das Nachfragemodell verwendet, Schritt für Schritt: Zonen, Verkehrserzeugung, Zeitabschnitte, Verkehrsverteilung, Verkehrsmittelwahl und Umlegung. Ändern Sie einen Wert für dieses Projekt oder behalten Sie den der Annahmenbibliothek.",
+  "prefs.demandStep": "Modellschritt",
+  "prefs.demandSearch": "Werte durchsuchen",
+  "prefs.demandNone": "Kein Wert passt.",
+  "prefs.demandStep.zones": "Zonen",
+  "prefs.demandStep.generation": "Verkehrserzeugung",
+  "prefs.demandStep.periods": "Zeitabschnitte",
+  "prefs.demandStep.distribution": "Verkehrsverteilung",
+  "prefs.demandStep.mode_choice": "Verkehrsmittelwahl",
+  "prefs.demandStep.catchment": "Einzugsgebiet",
+  "prefs.demandStep.assignment": "Umlegung",
+  "prefs.demandStep.calibration": "Kalibrierung",
+  "prefs.demandAll": "Alle Schritte",
   "prefs.paramsTitle": "Alle Parameter",
   "prefs.paramsIntro":
     "Jeder Wert der Annahmenbibliothek. Lege eigene Werte für alle Verkehrsmittel oder für ein Verkehrsmittel fest; ein Wert für ein Verkehrsmittel hat Vorrang vor dem für alle. Der Wert der Bibliothek steht jeweils daneben.",
@@ -428,6 +447,8 @@ export const de: Messages = {
   ...editorsDe,
   ...cargoBikeDe,
   ...depotsDe,
+  ...mslabDe,
+  ...pluginCodeDe,
   ...populationDe,
   ...roadDe,
   ...calendarDe,

@@ -3,6 +3,8 @@ import { calendarVi } from "./calendar/vi";
 import { editorsVi } from "./editors/vi";
 import { cargoBikeVi } from "./cargo-bike/vi";
 import { depotsVi } from "./depots/vi";
+import { mslabVi } from "./mslab/vi";
+import { pluginCodeVi } from "./plugin-code/vi";
 import { populationVi } from "./population/vi";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -258,6 +260,7 @@ export const vi: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "Đường phố",
   "gis.regionsView": "Khu vực",
+  "gis.zonesView": "Vùng nhu cầu",
   "gis.intro": "Thêm và chỉnh sửa thông tin dùng trong tính toán.",
   "gis.areas": "Vẽ khu vực hoặc nhập từ OpenStreetMap",
   "gis.streets": "Cấu trúc đường phố: làn xe buýt, xe đạp và tàu điện, tốc độ, dây điện trên cao",
@@ -281,6 +284,7 @@ export const vi: Messages = {
   "prefs.delayLane": "Trên làn xe buýt hoặc tàu điện chỉ được sơn",
   "prefs.delayDefault": "Thư viện giả định: {value} %",
   "prefs.delayReset": "Dùng giá trị thư viện",
+  "prefs.reason": "Lý do cho giá trị này (không bắt buộc)",
   "prefs.stationsTitle": "Ga",
   "prefs.stationsIntro":
     "Các điểm dừng cùng tên trong khoảng cách này được tính là một ga trên sơ đồ mạng lưới, công cụ lập hành trình và các bảng lợi ích và hành khách.",
@@ -306,6 +310,21 @@ export const vi: Messages = {
   "prefs.rulesChanged": "đã đổi {count}",
   "prefs.rulesLibrary": "Thư viện giả định: {value} {unit}",
   "prefs.rulesLibraryRange": "Thư viện giả định: {value} {unit} (khoảng {low}–{high})",
+  "prefs.demandTitle": "Mô hình nhu cầu",
+  "prefs.demandIntro":
+    "Mọi giá trị mô hình nhu cầu sử dụng, theo từng bước: vùng, phát sinh chuyến đi, khung giờ, phân bố, lựa chọn phương thức và phân bổ. Đổi một giá trị cho dự án này, hoặc giữ giá trị của thư viện giả định.",
+  "prefs.demandStep": "Bước mô hình",
+  "prefs.demandSearch": "Tìm giá trị",
+  "prefs.demandNone": "Không có giá trị phù hợp.",
+  "prefs.demandStep.zones": "Vùng",
+  "prefs.demandStep.generation": "Phát sinh chuyến đi",
+  "prefs.demandStep.periods": "Khung giờ",
+  "prefs.demandStep.distribution": "Phân bố chuyến đi",
+  "prefs.demandStep.mode_choice": "Lựa chọn phương thức",
+  "prefs.demandStep.catchment": "Vùng tiếp cận",
+  "prefs.demandStep.assignment": "Phân bổ",
+  "prefs.demandStep.calibration": "Hiệu chỉnh",
+  "prefs.demandAll": "Tất cả các bước",
   "prefs.paramsTitle": "Tất cả tham số",
   "prefs.paramsIntro":
     "Mọi giá trị trong thư viện giả định. Đặt giá trị của bạn cho mọi phương thức hoặc cho một phương thức; giá trị của một phương thức được ưu tiên hơn giá trị cho mọi phương thức. Giá trị thư viện hiển thị bên cạnh.",
@@ -417,6 +436,8 @@ export const vi: Messages = {
   ...editorsVi,
   ...cargoBikeVi,
   ...depotsVi,
+  ...mslabVi,
+  ...pluginCodeVi,
   ...populationVi,
   ...roadVi,
   ...calendarVi,
