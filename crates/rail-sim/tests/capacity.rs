@@ -113,3 +113,24 @@ fn a_switch_moves_while_a_train_waits_at_the_signal_in_front_of_it() {
     sim.run_until(10.0 * 3600.0).unwrap();
     assert!(sim.finished());
 }
+
+#[test]
+fn the_projects_signalling_values_reach_the_planner_and_kernel() {
+    use rail_sim::capacity::Signalling;
+    let p: CapacityParams = serde_json::from_str(
+        r#"{"signalling": {"route_setting_s": 8, "sighting_m": 200, "supervision_tolerance_kmh": 3.6, "terminal_separation_s": 120}}"#,
+    )
+    .unwrap();
+    let pp = p.signalling.plan(rail_plan::PlanParams::default());
+    assert_eq!(pp.blocking.route_setting_s, 8.0);
+    assert_eq!(pp.blocking.sighting_m, 200.0);
+    assert_eq!(pp.terminal_separation_s, 120.0);
+    let np = p.signalling.net(rail_sim::network::NetParams::default());
+    assert_eq!(np.interlocking.route_setting_s, 8.0);
+    assert_eq!(np.request_margin_m, 200.0);
+    assert!((np.supervision_tol_mps - 1.0).abs() < 1e-9);
+    // Left out, the defaults stay, and the run's settings serialise as before.
+    assert!(Signalling::default().is_empty());
+    let out = serde_json::to_value(CapacityParams::default()).unwrap();
+    assert!(out.get("signalling").is_none());
+}

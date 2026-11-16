@@ -112,6 +112,8 @@ interface Props {
   delays?: DelayShares | null;
   /** The project's design rules per mode (Project preferences), as `<mode>.<field>`; the library's when absent. */
   designValues?: Readonly<Record<string, number>> | null;
+  /** The project's preference values by id (running values of the service lines: dwell, layover…). */
+  prefValues?: Readonly<Record<string, number>> | null;
   /** The project's choice from the switches and crossings catalogue (Project preferences); all when absent. */
   switchChoice?: SwitchChoice | null;
   /** Stations closer than this share a name, m (`analysis.station_grouping_m`); the library's when absent. */
@@ -149,6 +151,7 @@ export function RailwayEditor({
   streetSetups = NO_SETUPS,
   delays = null,
   designValues = null,
+  prefValues = null,
   switchChoice = null,
   stationGroupingM = STATION_GROUPING_M,
   initial = null,
@@ -550,7 +553,7 @@ export function RailwayEditor({
     try {
       // The engine plans on its last build: build the drawing without a draft first.
       e.build(doc, null);
-      const result = e.publishLines(engineLines(doc), "weekday");
+      const result = e.publishLines(engineLines(doc, doc.lines ?? [], prefValues), "weekday");
       next = { result, error: null, key: publishKey(doc) };
       onPublish?.(result.timetable);
     } catch (err) {
