@@ -794,7 +794,9 @@ describe("building blocks", () => {
       tab: "simulator",
       fresh: true,
     });
-    expect(parseRoute(`/projects/${P1}/nope`)).toMatchObject({ tab: "simulator" });
+    // A tab a plugin may add is kept; the workspace falls back to the simulator when the project has no such tab.
+    expect(parseRoute(`/projects/${P1}/nope`)).toMatchObject({ tab: "nope" });
+    expect(parseRoute(`/projects/${P1}/Nope`)).toEqual({ page: "home" });
     expect(parseRoute("/agents/consent")).toEqual({ page: "consent" });
     expect(routePath({ page: "project", id: P1, tab: "create", fresh: true })).toBe(
       `/projects/${P1}/create?new=1`,

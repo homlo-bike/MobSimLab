@@ -13,14 +13,15 @@ import { SwitchChoiceSection } from "./SwitchChoice";
 import { ParametersSection } from "./Parameters";
 import { AssumptionsReportSection } from "./AssumptionsReport";
 import { roadValue } from "../features/road-sim/params";
+import { DemandParamsSection } from "./DemandParams";
 import { StationsSection } from "./StationsSection";
 import { CURRENCY_CODES } from "../features/costs/currencies";
 import { type CurrencyState, NO_CURRENCY, RATE_PREF, withCurrency } from "../features/costs/currency";
 
 /**
  * Preferences tab (mockup "Project preferences"): the project's name, description, study area and modes, which
- * Owners and Editors can change, the design rules per rail mode and the catalogue vehicles and switches used.
- * Calendar, demand and costs follow.
+ * Owners and Editors can change, the design rules per rail mode, the catalogue vehicles and switches used and the
+ * demand model's values. Calendar and costs follow.
  */
 export function ProjectPreferences({
   api,
@@ -155,6 +156,11 @@ export function ProjectPreferences({
         />
         <SwitchChoiceSection
           projectModes={project.modes}
+          preferences={preferences}
+          editable={editable && !!onPreferences}
+          onPreferences={(d) => onPreferences?.(d)}
+        />
+        <DemandParamsSection
           preferences={preferences}
           editable={editable && !!onPreferences}
           onPreferences={(d) => onPreferences?.(d)}

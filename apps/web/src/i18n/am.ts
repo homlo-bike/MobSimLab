@@ -3,6 +3,7 @@ import { editorsAm } from "./editors/am";
 import { cargoBikeAm } from "./cargo-bike/am";
 import { depotsAm } from "./depots/am";
 import { mslabAm } from "./mslab/am";
+import { pluginCodeAm } from "./plugin-code/am";
 import { populationAm } from "./population/am";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -248,6 +249,7 @@ export const am: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "መንገዶች",
   "gis.regionsView": "ክልሎች",
+  "gis.zonesView": "የጉዞ ዞኖች",
   "gis.intro": "ስሌቶች የሚጠቀሙበትን መረጃ ያክሉ ወይም ያርትዑ።",
   "gis.areas": "አካባቢ ይሳሉ ወይም ከ OpenStreetMap ያስገቡ",
   "gis.streets": "የመንገድ አቀማመጥ፦ የአውቶቡስ፣ የብስክሌት እና የትራም መስመሮች፣ ፍጥነቶች፣ የላይ ሽቦዎች",
@@ -295,6 +297,21 @@ export const am: Messages = {
   "prefs.rulesChanged": "የተቀየሩ፦ {count}",
   "prefs.rulesLibrary": "የግምቶች ቤተ መጻሕፍት: {value} {unit}",
   "prefs.rulesLibraryRange": "የግምቶች ቤተ መጻሕፍት: {value} {unit} (ክልል {low}–{high})",
+  "prefs.demandTitle": "የፍላጎት ሞዴል",
+  "prefs.demandIntro":
+    "የፍላጎት ሞዴሉ የሚጠቀምበት እያንዳንዱ እሴት በደረጃ፦ ዞኖች፣ የጉዞ ማመንጨት፣ የጊዜ ክፍሎች፣ ስርጭት፣ የትራንስፖርት ዘዴ ምርጫ እና ምደባ። ለዚህ ፕሮጀክት እሴት ይቀይሩ ወይም የግምቶች ቤተ-መጻሕፍቱን ይጠብቁ።",
+  "prefs.demandStep": "የሞዴል ደረጃ",
+  "prefs.demandSearch": "እሴቶችን ይፈልጉ",
+  "prefs.demandNone": "የሚዛመድ እሴት የለም።",
+  "prefs.demandStep.zones": "ዞኖች",
+  "prefs.demandStep.generation": "የጉዞ ማመንጨት",
+  "prefs.demandStep.periods": "የጊዜ ክፍሎች",
+  "prefs.demandStep.distribution": "የጉዞ ስርጭት",
+  "prefs.demandStep.mode_choice": "የትራንስፖርት ዘዴ ምርጫ",
+  "prefs.demandStep.catchment": "የመድረሻ ክልል",
+  "prefs.demandStep.assignment": "ምደባ",
+  "prefs.demandStep.calibration": "ማስተካከያ",
+  "prefs.demandAll": "ሁሉም ደረጃዎች",
   "prefs.paramsTitle": "ሁሉም መለኪያዎች",
   "prefs.paramsIntro":
     "የግምት ቤተ-መጻሕፍት እያንዳንዱ እሴት። ለሁሉም ዘዴዎች ወይም ለአንድ ዘዴ የራስዎን እሴት ያስቀምጡ፤ የአንድ ዘዴ እሴት ከሁሉም ዘዴዎች እሴት ይቀድማል። የቤተ-መጻሕፍቱ እሴት ከጎኑ ይቆያል።",
@@ -454,6 +471,7 @@ export const am: Messages = {
   ...cargoBikeAm,
   ...depotsAm,
   ...mslabAm,
+  ...pluginCodeAm,
   ...populationAm,
   ...roadAm,
   ...PLUGIN_MESSAGES.am,

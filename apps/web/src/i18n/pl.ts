@@ -3,6 +3,7 @@ import { editorsPl } from "./editors/pl";
 import { cargoBikePl } from "./cargo-bike/pl";
 import { depotsPl } from "./depots/pl";
 import { mslabPl } from "./mslab/pl";
+import { pluginCodePl } from "./plugin-code/pl";
 import { populationPl } from "./population/pl";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -258,6 +259,7 @@ export const pl: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "Ulice",
   "gis.regionsView": "Obszary",
+  "gis.zonesView": "Strefy popytu",
   "gis.intro": "Dodawaj i edytuj informacje używane w obliczeniach.",
   "gis.areas": "Rysuj obszary lub importuj je z OpenStreetMap",
   "gis.streets": "Układ ulic: buspasy, drogi rowerowe i torowiska, prędkości, sieć trakcyjna",
@@ -307,6 +309,21 @@ export const pl: Messages = {
   "prefs.rulesChanged": "zmienione: {count}",
   "prefs.rulesLibrary": "Biblioteka założeń: {value} {unit}",
   "prefs.rulesLibraryRange": "Biblioteka założeń: {value} {unit} (zakres {low}–{high})",
+  "prefs.demandTitle": "Model popytu",
+  "prefs.demandIntro":
+    "Każda wartość używana przez model popytu, krok po kroku: rejony, generacja podróży, okresy doby, rozkład przestrzenny, wybór środka transportu i rozkład na sieć. Zmień wartość dla tego projektu albo zostaw wartość z biblioteki założeń.",
+  "prefs.demandStep": "Krok modelu",
+  "prefs.demandSearch": "Szukaj wartości",
+  "prefs.demandNone": "Brak pasujących wartości.",
+  "prefs.demandStep.zones": "Rejony",
+  "prefs.demandStep.generation": "Generacja podróży",
+  "prefs.demandStep.periods": "Okresy doby",
+  "prefs.demandStep.distribution": "Rozkład przestrzenny podróży",
+  "prefs.demandStep.mode_choice": "Wybór środka transportu",
+  "prefs.demandStep.catchment": "Obszar dojścia",
+  "prefs.demandStep.assignment": "Rozkład na sieć",
+  "prefs.demandStep.calibration": "Kalibracja",
+  "prefs.demandAll": "Wszystkie kroki",
   "prefs.paramsTitle": "Wszystkie parametry",
   "prefs.paramsIntro":
     "Każda wartość z biblioteki założeń. Ustaw własną dla wszystkich środków transportu lub dla jednego; wartość dla jednego ma pierwszeństwo przed wartością dla wszystkich. Wartość biblioteki widać obok.",
@@ -469,6 +486,7 @@ export const pl: Messages = {
   ...cargoBikePl,
   ...depotsPl,
   ...mslabPl,
+  ...pluginCodePl,
   ...populationPl,
   ...roadPl,
   ...PLUGIN_MESSAGES.pl,

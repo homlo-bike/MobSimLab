@@ -3,6 +3,7 @@ import { editorsZh } from "./editors/zh";
 import { cargoBikeZh } from "./cargo-bike/zh";
 import { depotsZh } from "./depots/zh";
 import { mslabZh } from "./mslab/zh";
+import { pluginCodeZh } from "./plugin-code/zh";
 import { populationZh } from "./population/zh";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -247,6 +248,7 @@ export const zh: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "街道",
   "gis.regionsView": "区域",
+  "gis.zonesView": "需求分区",
   "gis.intro": "添加或编辑计算所用的信息。",
   "gis.areas": "绘制区域或从 OpenStreetMap 导入",
   "gis.streets": "街道布局：公交、自行车和有轨电车车道，车速，架空线",
@@ -292,6 +294,21 @@ export const zh: Messages = {
   "prefs.rulesChanged": "已修改 {count} 项",
   "prefs.rulesLibrary": "假设库：{value} {unit}",
   "prefs.rulesLibraryRange": "假设库：{value} {unit}（范围 {low}–{high}）",
+  "prefs.demandTitle": "需求模型",
+  "prefs.demandIntro":
+    "需求模型使用的每个值，按步骤列出：分区、出行生成、时段、出行分布、方式选择和交通分配。可为本项目修改某个值，或保留假设库的值。",
+  "prefs.demandStep": "模型步骤",
+  "prefs.demandSearch": "搜索数值",
+  "prefs.demandNone": "没有匹配的值。",
+  "prefs.demandStep.zones": "分区",
+  "prefs.demandStep.generation": "出行生成",
+  "prefs.demandStep.periods": "时段",
+  "prefs.demandStep.distribution": "出行分布",
+  "prefs.demandStep.mode_choice": "方式选择",
+  "prefs.demandStep.catchment": "可达范围",
+  "prefs.demandStep.assignment": "交通分配",
+  "prefs.demandStep.calibration": "校准",
+  "prefs.demandAll": "全部步骤",
   "prefs.paramsTitle": "全部参数",
   "prefs.paramsIntro":
     "假设库中的每个值。可为所有方式或单一方式设置自己的值；单一方式的值优先于所有方式的值。库中的值显示在旁边。",
@@ -447,6 +464,7 @@ export const zh: Messages = {
   ...cargoBikeZh,
   ...depotsZh,
   ...mslabZh,
+  ...pluginCodeZh,
   ...populationZh,
   ...roadZh,
   ...PLUGIN_MESSAGES.zh,

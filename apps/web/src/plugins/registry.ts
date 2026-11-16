@@ -25,19 +25,25 @@ export interface PluginTool {
   modes: string[];
 }
 
-/** A calculation a bundled plugin adds (runtime `bundled-wasm`: a core crate built to WebAssembly). */
+/**
+ * A calculation a plugin adds: runtime `bundled-wasm` (a core crate built to WebAssembly, bundled plugins) or
+ * `component` (an installed plugin's own WebAssembly component, run in a sandboxed worker, ADR-0036 Phase 2).
+ */
 export interface PluginCalculation {
   id: string;
   label: string;
   description?: string;
-  runtime: "bundled-wasm";
-  module: string;
+  runtime: "bundled-wasm" | "component";
+  /** bundled-wasm: module under apps/web/src/wasm/. */
+  module?: string;
+  /** component: the component's path in the package. */
+  component?: string;
   inputs: string[];
   outputs: string[];
   where?: string[];
 }
 
-/** An importer or exporter a bundled plugin adds: a file format to or from a published contract. */
+/** An importer or exporter a plugin adds: a file format to or from a published contract. */
 export interface PluginConverter {
   id: string;
   label: string;
@@ -45,9 +51,12 @@ export interface PluginConverter {
   format: string;
   extensions?: string[];
   contract: "published-timetable";
-  runtime: "bundled-wasm";
-  module: string;
-  function: string;
+  runtime: "bundled-wasm" | "component";
+  /** bundled-wasm: module and function. */
+  module?: string;
+  function?: string;
+  /** component: the component's path in the package. */
+  component?: string;
   maxBytes: number;
 }
 
@@ -59,11 +68,15 @@ export interface PluginMapLayer {
   style: unknown;
 }
 
-/** A project tab a bundled plugin adds after the core tabs; `view` names a view built into the web app. */
+/**
+ * A project tab a plugin adds after the core tabs: `view` names a view built into the web app (bundled
+ * plugins), `ui` the plugin's own page, shown in a sandboxed frame (installed plugins, ADR-0036 §6).
+ */
 export interface PluginTab {
   id: string;
   label: string;
-  view: string;
+  view?: string;
+  ui?: string;
   calculations?: string[];
 }
 
@@ -119,10 +132,16 @@ export interface ProjectPlugin {
     parameters: number;
     calculations: string[];
     mapLayers: string[];
+    /** Labels of its importers, exporters and tabs (older servers leave them out). */
+    importers?: string[];
+    exporters?: string[];
+    tabs?: string[];
   };
   missing: boolean;
   /** Registry entry of an installed plugin the project has turned on. */
   entry?: Plugin;
+  /** Package hash of an installed plugin the project has turned on: where its tab pages are served. */
+  sha256?: string;
 }
 
 let active: readonly Plugin[] = PLUGINS;
@@ -172,6 +191,28 @@ export function pluginTools(
   plugins: readonly Plugin[] = activePlugins(),
 ): (PluginTool & { plugin: string })[] {
   return plugins.flatMap((p) => p.tools.map((t) => ({ ...t, plugin: p.id })));
+}
+
+/** Purpose: the calculations of installed plugins (their own code) offered in a place such as "tables". */
+export function componentCalculations(
+  where: string,
+  plugins: readonly Plugin[] = activePlugins(),
+): (PluginCalculation & { plugin: Plugin })[] {
+  return plugins.flatMap((p) =>
+    (p.calculations ?? [])
+      .filter((c) => c.runtime === "component" && (c.where ?? []).includes(where))
+      .map((c) => ({ ...c, plugin: p })),
+  );
+}
+
+/** Purpose: the importers or exporters of installed plugins (their own code), with their plugin. */
+export function componentConverters(
+  kind: "importers" | "exporters",
+  plugins: readonly Plugin[] = activePlugins(),
+): (PluginConverter & { plugin: Plugin })[] {
+  return plugins.flatMap((p) =>
+    (p[kind] ?? []).filter((c) => c.runtime === "component").map((c) => ({ ...c, plugin: p })),
+  );
 }
 
 /** Purpose: the project tabs the plugins add, in plugin order. */
