@@ -1,5 +1,7 @@
 import { Injectable } from "@nestjs/common";
+import { DESTINATION_FILTERS, type DestinationPoint, destinationCategories } from "../agents/destinations";
 import { OverpassClient } from "../gateway/overpass.client";
+import { type Bbox, waterQuery, waterShapes } from "./water";
 
 /** Street tiles use this web-mercator zoom: about 2.4 km × 2.4 km at the equator, 1.5 km at 50° N. */
 export const TILE_ZOOM = 14;
@@ -351,6 +353,50 @@ export function bikeAmenities(json: string): BikeAmenity[] {
   return out;
 }
 
+/**
+ * Purpose: Overpass QL for the daily-needs destinations of one tile (shops, schools, doctors, pharmacies, parks,
+ * workplaces; nodes, ways and relations with their centre), for the 15-minute city preset (ADR-0035 §6).
+ */
+export function destinationQuery(z: number, x: number, y: number): string {
+  const b = tileBbox(z, x, y)
+    .map((v) => v.toFixed(7))
+    .join(",");
+  return (
+    `[out:json][timeout:90][maxsize:33554432];(` +
+    DESTINATION_FILTERS.map((f) => `${f}(${b});`).join("") +
+    `);out tags center;`
+  );
+}
+
+/** Purpose: the destinations in an Overpass JSON answer (`out tags center`), each with its categories. */
+export function destinations(json: string): DestinationPoint[] {
+  const els =
+    (
+      JSON.parse(json) as {
+        elements?: (OverpassElement & {
+          lat?: number;
+          lon?: number;
+          center?: { lat: number; lon: number };
+        })[];
+      }
+    ).elements ?? [];
+  const r7 = (v: number) => Math.round(v * 1e7) / 1e7;
+  const out: DestinationPoint[] = [];
+  for (const e of els) {
+    const categories = destinationCategories(e.tags ?? {});
+    const at = e.center ?? (e.lat !== undefined && e.lon !== undefined ? { lat: e.lat, lon: e.lon } : null);
+    if (!categories.length || !at) continue;
+    const name = e.tags?.name;
+    out.push({
+      id: `${e.type[0]}${e.id}`,
+      categories,
+      lonlat: [r7(at.lon), r7(at.lat)],
+      ...(name ? { name } : {}),
+    });
+  }
+  return out;
+}
+
 function clean<T extends object>(o: T): Partial<T> {
   return Object.fromEntries(Object.entries(o).filter(([, v]) => v !== undefined)) as Partial<T>;
 }
@@ -421,6 +467,19 @@ export class StreetNetworkService {
   }
 
   /**
+   * Purpose: sea, lakes and rivers inside a box as JSON `WaterShapes` (water.ts), for the Schematic tab.
+   * Inputs: `[west, south, east, north]`, already checked and rounded by the controller.
+   * Side effects: may call Overpass.
+   */
+  water(b: Bbox): Promise<string> {
+    return this.cached(
+      `water/${b.join(",")}`,
+      () => waterQuery(b),
+      (json) => JSON.stringify(waterShapes(json, b)),
+    );
+  }
+
+  /**
    * Purpose: the bicycle charging points and secure or cargo bike parkings of tile x/y at TILE_ZOOM as
    * JSON `{amenities: BikeAmenity[]}`, for the cargo bike plugin. Side effects: may call Overpass.
    */
@@ -429,6 +488,18 @@ export class StreetNetworkService {
       `bike-amenity/${x}/${y}`,
       () => bikeAmenityQuery(TILE_ZOOM, x, y),
       (json) => JSON.stringify({ amenities: bikeAmenities(json) }),
+    );
+  }
+
+  /**
+   * Purpose: the daily-needs destinations of tile x/y at TILE_ZOOM as JSON `{destinations: DestinationPoint[]}`.
+   * Side effects: may call Overpass.
+   */
+  destinationTile(x: number, y: number): Promise<string> {
+    return this.cached(
+      `destination/${x}/${y}`,
+      () => destinationQuery(TILE_ZOOM, x, y),
+      (json) => JSON.stringify({ destinations: destinations(json) }),
     );
   }
 

@@ -186,6 +186,24 @@ export const FerryIcon = (p: P) => (
     <path d="M2 21c2 0 2-1 4-1s2 1 4 1 2-1 4-1 2 1 4 1 2-1 4-1" />
   </Icon>
 );
+export const HelpIcon = (p: P) => (
+  <Icon {...p}>
+    <circle cx="12" cy="12" r="9" />
+    <path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.3M12 17v.5" />
+  </Icon>
+);
+export const PrintIcon = (p: P) => (
+  <Icon {...p}>
+    <path d="M7 9V4h10v5M7 17H5a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-2" />
+    <path d="M7 14h10v6H7z" />
+  </Icon>
+);
+export const CompassIcon = (p: P) => (
+  <Icon {...p}>
+    <circle cx="12" cy="12" r="9" />
+    <path d="m15.5 8.5-2 5-5 2 2-5z" />
+  </Icon>
+);
 /** A cargo tricycle: box in front on two wheels, rider's wheel behind. */
 export const CargoBikeIcon = (p: P) => (
   <Icon {...p}>

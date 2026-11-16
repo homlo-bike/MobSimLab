@@ -1,4 +1,4 @@
-# ADR-0041: On-demand dispatch simulation: one random day, booking by booking, with cheapest insertion in the browser
+# ADR-0042: On-demand dispatch simulation: one random day, booking by booking, with cheapest insertion in the browser
 
 - Status: Proposed; first version built (2026-11-15)
 - Date: 2026-11-15

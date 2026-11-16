@@ -41,7 +41,7 @@ pub fn estimate_zone(input: &str) -> Result<String, JsError> {
     serde_json::to_string(&mode_kits::zone::estimate(&zone)).map_err(js)
 }
 
-/// Purpose: simulate one service day of an on-demand zone, request by request (ADR-0041).
+/// Purpose: simulate one service day of an on-demand zone, request by request (ADR-0042).
 /// Input: `mode_kits::dispatch::DispatchInput` as JSON. Output: `DispatchResult` as JSON.
 #[wasm_bindgen]
 pub fn simulate_zone(input: &str) -> Result<String, JsError> {

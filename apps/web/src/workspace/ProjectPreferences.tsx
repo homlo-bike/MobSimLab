@@ -6,6 +6,8 @@ import { ModePicker } from "../projects/ProjectDialogs";
 import { Placeholder } from "./Placeholder";
 import type { ProjectPlugin } from "../plugins/registry";
 import { ProjectPlugins } from "./ProjectPlugins";
+import { CURRENCY_CODES } from "../features/costs/currencies";
+import { type CurrencyState, NO_CURRENCY, RATE_PREF, withCurrency } from "../features/costs/currency";
 
 /**
  * Preferences tab (mockup "Project preferences"): the project's name, description, study area and modes, which
@@ -19,6 +21,7 @@ export function ProjectPreferences({
   onPreferences,
   plugins = null,
   onSetPlugin,
+  currency = NO_CURRENCY,
 }: {
   api: ProjectsApi;
   project: Project;
@@ -31,6 +34,8 @@ export function ProjectPreferences({
   plugins?: readonly ProjectPlugin[] | null;
   /** Turn a plugin on or off for the project (Owners). */
   onSetPlugin?: (pluginId: string, enabled: boolean, version?: string) => Promise<void>;
+  /** The project's currency and its exchange rate. */
+  currency?: CurrencyState;
 }) {
   const { t } = useI18n();
   const editable = can.edit(project);
@@ -148,6 +153,12 @@ export function ProjectPreferences({
           </div>
           {!editable && <p className="mt-3 text-sm text-slate-500">{t("prefs.readOnly")}</p>}
         </section>
+        <CurrencySection
+          state={currency}
+          preferences={preferences}
+          editable={editable && !!onPreferences}
+          onPreferences={(d) => onPreferences?.(d)}
+        />
         {onSetPlugin && <ProjectPlugins plugins={plugins} manage={can.manage(project)} onSet={onSetPlugin} />}
         <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-4 md:p-6">
           <Placeholder
@@ -233,5 +244,130 @@ function ShareField({
         )}
       </div>
     </div>
+  );
+}
+
+const sig = (v: number) => String(Number(v.toPrecision(6)));
+
+/**
+ * Purpose: the currency all money in the project is shown in, and its rate per US$: the World Bank's official
+ * exchange rate, or the project's own.
+ */
+function CurrencySection({
+  state,
+  preferences,
+  editable,
+  onPreferences,
+}: {
+  state: CurrencyState;
+  preferences: PreferencesDoc | null;
+  editable: boolean;
+  onPreferences: (doc: PreferencesDoc) => void;
+}) {
+  const { t, language } = useI18n();
+  const rateId = useId();
+  const [text, setText] = useState<string | null>(null);
+  const names = (() => {
+    try {
+      return new Intl.DisplayNames([language, "en"], { type: "currency" });
+    } catch {
+      return null;
+    }
+  })();
+  const nameOf = (code: string) => {
+    const n = names?.of(code);
+    return n && n !== code ? `${code} · ${n}` : code;
+  };
+  const chosen = state.chosen;
+  const own = prefValue(preferences, RATE_PREF);
+  const shown = own ?? state.worldBank?.value;
+  const commit = (raw: string) => {
+    const n = Number(raw.replace(",", "."));
+    if (raw.trim() === "" || !Number.isFinite(n) || n <= 0) return;
+    onPreferences(withPref(preferences, RATE_PREF, n));
+  };
+  return (
+    <section
+      aria-labelledby="pp-currency"
+      className="mt-6 rounded-2xl border border-slate-200 bg-white p-4 md:p-6"
+    >
+      <h2 id="pp-currency" className="caps m-0">
+        {t("prefs.currencyTitle")}
+      </h2>
+      <p className="mt-1 text-sm text-slate-600">{t("prefs.currencyIntro")}</p>
+      <label className="mt-4 mb-1.5 block font-semibold" htmlFor="pp-currency-code">
+        {t("prefs.currencyLabel")}
+      </label>
+      <div className="field">
+        <select
+          id="pp-currency-code"
+          disabled={!editable}
+          value={chosen ?? ""}
+          onChange={(e) => {
+            setText(null);
+            onPreferences(withCurrency(preferences, e.target.value || null));
+          }}
+        >
+          <option value="">{t("prefs.currencyCountry")}</option>
+          {CURRENCY_CODES.map((c) => (
+            <option key={c} value={c}>
+              {nameOf(c)}
+            </option>
+          ))}
+        </select>
+      </div>
+      {chosen && chosen !== "USD" && (
+        <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-slate-100 pt-3">
+          <label htmlFor={rateId} className="min-w-48 flex-1 font-semibold">
+            {t("prefs.currencyRate", { code: chosen })}
+          </label>
+          <div className="field w-36">
+            <input
+              id={rateId}
+              type="number"
+              inputMode="decimal"
+              min={0}
+              step="any"
+              disabled={!editable}
+              value={text ?? (shown !== undefined ? sig(shown) : "")}
+              onChange={(e) => {
+                setText(e.target.value);
+                commit(e.target.value);
+              }}
+              onBlur={() => setText(null)}
+              className="text-end"
+            />
+          </div>
+          <div className="flex w-full flex-wrap items-center gap-2 text-sm text-slate-500">
+            <span>
+              {state.worldBank
+                ? t("prefs.currencyWorldBank", {
+                    year: state.worldBank.year,
+                    value: sig(state.worldBank.value),
+                  })
+                : state.status === "loading"
+                  ? t("common.loading")
+                  : own === undefined
+                    ? t("prefs.currencyMissing", { code: chosen })
+                    : ""}
+            </span>
+            {editable && own !== undefined && (
+              <button
+                type="button"
+                className="min-h-10 text-blue-700 underline"
+                onClick={() => {
+                  setText(null);
+                  onPreferences(withPref(preferences, RATE_PREF, null));
+                }}
+              >
+                {t("prefs.currencyReset")}
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+      {chosen && <p className="mt-3 text-sm text-slate-500">{t("prefs.currencyHow")}</p>}
+      {!editable && <p className="mt-3 text-sm text-slate-500">{t("prefs.readOnly")}</p>}
+    </section>
   );
 }
