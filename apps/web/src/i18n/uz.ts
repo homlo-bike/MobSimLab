@@ -1,6 +1,7 @@
 import { roadUz } from "./road/uz";
 import { editorsUz } from "./editors/uz";
 import { cargoBikeUz } from "./cargo-bike/uz";
+import { commentsUz } from "./comments/uz";
 import { depotsUz } from "./depots/uz";
 import { mslabUz } from "./mslab/uz";
 import { pluginCodeUz } from "./plugin-code/uz";
@@ -171,7 +172,7 @@ export const uz: Messages = {
 
   "share.title": "“{name}” ni ulashish",
   "share.rolesNote":
-    "Egalar kirish huquqini boshqaradi. Muharrirlar tarmoqni oʻzgartiradi. Izohlovchilar va kuzatuvchilar faqat koʻradi.",
+    "Egalar kirish huquqini boshqaradi. Muharrirlar tarmoqni oʻzgartiradi. Izohlovchilar unga izoh qoldiradi. Kuzatuvchilar faqat koʻradi.",
   "share.invite": "E-pochta orqali taklif qilish",
   "share.emailPlaceholder": "Ular kiradigan e-pochta",
   "share.inviteRole": "Taklif qilinuvchining roli",
@@ -500,6 +501,7 @@ export const uz: Messages = {
   ...editorsUz,
   ...cargoBikeUz,
   ...depotsUz,
+  ...commentsUz,
   ...mslabUz,
   ...pluginCodeUz,
   ...populationUz,

@@ -1,6 +1,7 @@
 import { roadAr } from "./road/ar";
 import { editorsAr } from "./editors/ar";
 import { cargoBikeAr } from "./cargo-bike/ar";
+import { commentsAr } from "./comments/ar";
 import { depotsAr } from "./depots/ar";
 import { mslabAr } from "./mslab/ar";
 import { pluginCodeAr } from "./plugin-code/ar";
@@ -163,7 +164,8 @@ export const ar: Messages = {
   "prole.viewer": "مُشاهِد",
 
   "share.title": "مشاركة «{name}»",
-  "share.rolesNote": "يدير المالكون الوصول. يغيّر المحرّرون الشبكة. يكتفي المعلّقون والمشاهدون بالاطلاع.",
+  "share.rolesNote":
+    "يدير المالكون الوصول. يغيّر المحرّرون الشبكة. يعلّق عليها المعلّقون. يكتفي المشاهدون بالاطلاع.",
   "share.invite": "دعوة بالبريد الإلكتروني",
   "share.emailPlaceholder": "البريد الإلكتروني الذي يسجّل به الدخول",
   "share.inviteRole": "دور الشخص الذي تدعوه",
@@ -481,6 +483,7 @@ export const ar: Messages = {
   ...editorsAr,
   ...cargoBikeAr,
   ...depotsAr,
+  ...commentsAr,
   ...mslabAr,
   ...pluginCodeAr,
   ...populationAr,

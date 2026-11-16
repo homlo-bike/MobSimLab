@@ -1,6 +1,7 @@
 import { roadAm } from "./road/am";
 import { editorsAm } from "./editors/am";
 import { cargoBikeAm } from "./cargo-bike/am";
+import { commentsAm } from "./comments/am";
 import { depotsAm } from "./depots/am";
 import { mslabAm } from "./mslab/am";
 import { pluginCodeAm } from "./plugin-code/am";
@@ -163,7 +164,8 @@ export const am: Messages = {
   "prole.viewer": "ተመልካች",
 
   "share.title": "“{name}”ን አጋራ",
-  "share.rolesNote": "ባለቤቶች መዳረሻን ያስተዳድራሉ። አርታዒዎች አውታሩን ይቀይራሉ። አስተያየት ሰጪዎች እና ተመልካቾች ያያሉ ብቻ።",
+  "share.rolesNote":
+    "ባለቤቶች መዳረሻን ያስተዳድራሉ። አርታዒዎች አውታሩን ይቀይራሉ። አስተያየት ሰጪዎች በእሱ ላይ አስተያየት ይሰጣሉ። ተመልካቾች ያያሉ ብቻ።",
   "share.invite": "በኢሜይል ጋብዝ",
   "share.emailPlaceholder": "የሚገቡበት ኢሜይል",
   "share.inviteRole": "ለሚጋብዙት ሰው ሚና",
@@ -478,6 +480,7 @@ export const am: Messages = {
   ...editorsAm,
   ...cargoBikeAm,
   ...depotsAm,
+  ...commentsAm,
   ...mslabAm,
   ...pluginCodeAm,
   ...populationAm,

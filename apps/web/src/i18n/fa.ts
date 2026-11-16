@@ -1,6 +1,7 @@
 import { roadFa } from "./road/fa";
 import { editorsFa } from "./editors/fa";
 import { cargoBikeFa } from "./cargo-bike/fa";
+import { commentsFa } from "./comments/fa";
 import { depotsFa } from "./depots/fa";
 import { mslabFa } from "./mslab/fa";
 import { pluginCodeFa } from "./plugin-code/fa";
@@ -167,7 +168,7 @@ export const fa: Messages = {
 
   "share.title": "اشتراک‌گذاری «{name}»",
   "share.rolesNote":
-    "مالکان دسترسی را مدیریت می‌کنند. ویرایشگرها شبکه را تغییر می‌دهند. نظردهندگان و بینندگان فقط می‌بینند.",
+    "مالکان دسترسی را مدیریت می‌کنند. ویرایشگرها شبکه را تغییر می‌دهند. نظردهندگان درباره‌اش نظر می‌دهند. بینندگان فقط می‌بینند.",
   "share.invite": "دعوت با ایمیل",
   "share.emailPlaceholder": "ایمیلی که با آن وارد می‌شوند",
   "share.inviteRole": "نقش فرد دعوت‌شده",
@@ -490,6 +491,7 @@ export const fa: Messages = {
   ...editorsFa,
   ...cargoBikeFa,
   ...depotsFa,
+  ...commentsFa,
   ...mslabFa,
   ...pluginCodeFa,
   ...populationFa,

@@ -1,6 +1,7 @@
 import { roadMr } from "./road/mr";
 import { editorsMr } from "./editors/mr";
 import { cargoBikeMr } from "./cargo-bike/mr";
+import { commentsMr } from "./comments/mr";
 import { depotsMr } from "./depots/mr";
 import { mslabMr } from "./mslab/mr";
 import { pluginCodeMr } from "./plugin-code/mr";
@@ -168,7 +169,8 @@ export const mr: Messages = {
   "prole.viewer": "दर्शक",
 
   "share.title": "“{name}” शेअर करा",
-  "share.rolesNote": "मालक प्रवेश व्यवस्थापित करतात. संपादक जाळे बदलतात. टिप्पणीकार आणि दर्शक फक्त पाहतात.",
+  "share.rolesNote":
+    "मालक प्रवेश व्यवस्थापित करतात. संपादक जाळे बदलतात. टिप्पणीकार त्यावर टिप्पणी करतात. दर्शक फक्त पाहतात.",
   "share.invite": "ई-मेलने आमंत्रित करा",
   "share.emailPlaceholder": "ते ज्या ई-मेलने साइन इन करतात",
   "share.inviteRole": "आमंत्रित व्यक्तीची भूमिका",
@@ -488,6 +490,7 @@ export const mr: Messages = {
   ...editorsMr,
   ...cargoBikeMr,
   ...depotsMr,
+  ...commentsMr,
   ...mslabMr,
   ...pluginCodeMr,
   ...populationMr,

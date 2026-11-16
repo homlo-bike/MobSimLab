@@ -1,6 +1,7 @@
 import { roadId } from "./road/id";
 import { editorsId } from "./editors/id";
 import { cargoBikeId } from "./cargo-bike/id";
+import { commentsId } from "./comments/id";
 import { depotsId } from "./depots/id";
 import { mslabId } from "./mslab/id";
 import { pluginCodeId } from "./plugin-code/id";
@@ -169,7 +170,7 @@ export const id: Messages = {
 
   "share.title": "Bagikan “{name}”",
   "share.rolesNote":
-    "Pemilik mengelola akses. Editor mengubah jaringan. Pemberi komentar dan pemirsa hanya melihat.",
+    "Pemilik mengelola akses. Editor mengubah jaringan. Pemberi komentar mengomentarinya. Pemirsa hanya melihat.",
   "share.invite": "Undang lewat email",
   "share.emailPlaceholder": "Email yang mereka gunakan untuk masuk",
   "share.inviteRole": "Peran untuk orang yang diundang",
@@ -496,6 +497,7 @@ export const id: Messages = {
   ...editorsId,
   ...cargoBikeId,
   ...depotsId,
+  ...commentsId,
   ...mslabId,
   ...pluginCodeId,
   ...populationId,

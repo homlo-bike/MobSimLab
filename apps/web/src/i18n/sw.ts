@@ -1,6 +1,7 @@
 import { roadSw } from "./road/sw";
 import { editorsSw } from "./editors/sw";
 import { cargoBikeSw } from "./cargo-bike/sw";
+import { commentsSw } from "./comments/sw";
 import { depotsSw } from "./depots/sw";
 import { mslabSw } from "./mslab/sw";
 import { pluginCodeSw } from "./plugin-code/sw";
@@ -168,7 +169,7 @@ export const sw: Messages = {
 
   "share.title": "Shiriki “{name}”",
   "share.rolesNote":
-    "Wamiliki husimamia ufikiaji. Wahariri hubadilisha mtandao. Watoa maoni na Watazamaji hutazama tu.",
+    "Wamiliki husimamia ufikiaji. Wahariri hubadilisha mtandao. Watoa maoni huutolea maoni. Watazamaji hutazama tu.",
   "share.invite": "Alika kwa barua pepe",
   "share.emailPlaceholder": "Barua pepe anayoingia nayo",
   "share.inviteRole": "Jukumu la mtu unayemwalika",
@@ -495,6 +496,7 @@ export const sw: Messages = {
   ...editorsSw,
   ...cargoBikeSw,
   ...depotsSw,
+  ...commentsSw,
   ...mslabSw,
   ...pluginCodeSw,
   ...populationSw,

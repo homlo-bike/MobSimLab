@@ -1,6 +1,7 @@
 import { roadBn } from "./road/bn";
 import { editorsBn } from "./editors/bn";
 import { cargoBikeBn } from "./cargo-bike/bn";
+import { commentsBn } from "./comments/bn";
 import { depotsBn } from "./depots/bn";
 import { mslabBn } from "./mslab/bn";
 import { pluginCodeBn } from "./plugin-code/bn";
@@ -168,7 +169,7 @@ export const bn: Messages = {
 
   "share.title": "“{name}” শেয়ার করুন",
   "share.rolesNote":
-    "মালিকরা প্রবেশাধিকার পরিচালনা করেন। সম্পাদকরা নেটওয়ার্ক বদলান। মন্তব্যকারী ও দর্শকরা শুধু দেখেন।",
+    "মালিকরা প্রবেশাধিকার পরিচালনা করেন। সম্পাদকরা নেটওয়ার্ক বদলান। মন্তব্যকারীরা তাতে মন্তব্য করেন। দর্শকরা শুধু দেখেন।",
   "share.invite": "ইমেলে আমন্ত্রণ জানান",
   "share.emailPlaceholder": "যে ইমেলে তাঁরা সাইন ইন করেন",
   "share.inviteRole": "আমন্ত্রিত ব্যক্তির ভূমিকা",
@@ -488,6 +489,7 @@ export const bn: Messages = {
   ...editorsBn,
   ...cargoBikeBn,
   ...depotsBn,
+  ...commentsBn,
   ...mslabBn,
   ...pluginCodeBn,
   ...populationBn,
