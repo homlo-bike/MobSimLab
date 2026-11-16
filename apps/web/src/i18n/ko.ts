@@ -211,6 +211,7 @@ export const ko: Messages = {
   "drawing.rail-timetable": "철도 시간표",
   "drawing.preferences": "프로젝트 환경설정",
   "drawing.costs": "비용 설정",
+  "drawing.schematic": "노선도",
   "drawing.scenarios": "저장된 시나리오",
   "drawing.benefits": "편익 산식",
   "drawing.regions": "지역",
@@ -244,10 +245,6 @@ export const ko: Messages = {
 
   "schematic.title": "노선도",
   "schematic.intro": "노선도를 보고 편집하거나 한 노선만 볼 수 있습니다.",
-  "schematic.network": "도식화된 노선이 있는 네트워크 지도",
-  "schematic.line": "한 노선: 띠 형태 노선도와 환승",
-  "schematic.layers": "레이어, 드래그, 곡선",
-  "schematic.export": "인쇄 및 화면용 내보내기",
 
   "gis.title": "GIS",
   "gis.streetsView": "도로",
@@ -275,6 +272,17 @@ export const ko: Messages = {
   "prefs.delayLane": "도색만 된 버스·트램 차로",
   "prefs.delayDefault": "가정값 라이브러리: {value} %",
   "prefs.delayReset": "라이브러리 값 사용",
+  "prefs.currencyTitle": "통화",
+  "prefs.currencyIntro":
+    "프로젝트의 모든 금액은 이 통화로 표시됩니다: 비용 표, 편익, 시나리오, 화물 자전거 절감액.",
+  "prefs.currencyLabel": "금액 표시 통화",
+  "prefs.currencyCountry": "해당 국가의 통화",
+  "prefs.currencyRate": "1 US$당 {code}",
+  "prefs.currencyWorldBank": "세계은행 공식 환율({year}): {value}",
+  "prefs.currencyMissing":
+    "세계은행에 {code} 환율이 없습니다. 환산하려면 환율을 입력하세요. 그때까지 각 도구는 해당 국가의 통화로 표시합니다.",
+  "prefs.currencyReset": "세계은행 환율 사용",
+  "prefs.currencyHow": "금액은 각 국가의 세계은행 공식 환율로 미국 달러를 거쳐 환산됩니다.",
   "prefs.moreTitle": "규칙, 차량, 가정값",
   "prefs.moreIntro": "각 변수의 최솟값과 권장값, 그리고 프로젝트에서 쓰는 차량.",
   "prefs.rules": "교통수단별 설계 규칙(최솟값과 권장값)",

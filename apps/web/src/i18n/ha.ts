@@ -214,6 +214,7 @@ export const ha: Messages = {
   "drawing.rail-timetable": "jadawalin jirgin ƙasa",
   "drawing.preferences": "zaɓuɓɓukan aiki",
   "drawing.costs": "saitunan kuɗi",
+  "drawing.schematic": "taswirar zane",
   "drawing.scenarios": "yanayin da aka adana",
   "drawing.benefits": "dabarun fa'idodi",
   "drawing.regions": "yankuna",
@@ -249,10 +250,6 @@ export const ha: Messages = {
 
   "schematic.title": "Taswirar zane",
   "schematic.intro": "Kalli ka gyara taswirar sufuri, kuma ka kalli layi ɗaya shi kaɗai.",
-  "schematic.network": "Taswirar hanyar sadarwa tare da layukan da aka zana a sauƙaƙe",
-  "schematic.line": "Layi ɗaya: taswirar tsirinsa da haɗe-haɗensa",
-  "schematic.layers": "Matakai, ja da lanƙwasa",
-  "schematic.export": "Fitarwa don bugawa da allo",
 
   "gis.title": "GIS",
   "gis.streetsView": "Tituna",
@@ -280,6 +277,18 @@ export const ha: Messages = {
   "prefs.delayLane": "A cikin hanyar bas ko tram da aka zana da fenti",
   "prefs.delayDefault": "Ɗakin zato: {value} %",
   "prefs.delayReset": "Yi amfani da ƙimar ɗakin",
+  "prefs.currencyTitle": "Kuɗi",
+  "prefs.currencyIntro":
+    "Duk kuɗin aikin ana nuna su a wannan kuɗin: teburorin kuɗaɗe, fa'idodi, yanayi da tanadin keken kaya.",
+  "prefs.currencyLabel": "Nuna kuɗi a",
+  "prefs.currencyCountry": "Kuɗin ƙasar kanta",
+  "prefs.currencyRate": "{code} a kowace US$",
+  "prefs.currencyWorldBank": "Farashin musayar kuɗi na hukuma na Bankin Duniya ({year}): {value}",
+  "prefs.currencyMissing":
+    "Bankin Duniya ba shi da farashin musaya na {code}. Shigar da ɗaya don canzawa; har zuwa lokacin kowane kayan aiki yana nuna kuɗin ƙasar.",
+  "prefs.currencyReset": "Yi amfani da farashin Bankin Duniya",
+  "prefs.currencyHow":
+    "Ana canza adadi ta hanyar dalar Amurka, da farashin musaya na hukuma na Bankin Duniya na kowace ƙasa.",
   "prefs.moreTitle": "Dokoki, ababen hawa da zato",
   "prefs.moreIntro":
     "Kowane maɓalli tare da ƙaramar ƙimarsa da wadda aka ba da shawara, da ababen hawan da aikin ke amfani da su.",

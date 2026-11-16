@@ -157,6 +157,8 @@ export function StreetLineEditor({
   const pending = useRef(initial);
   // Names the planner gave (or the naming rules chose), by point id; other points take the street's name.
   const named = useRef(new Map<number, string>());
+  // Facilities of stops by point id, saved with the points.
+  const [stopFeatures, setStopFeatures] = useState<Record<number, string[]>>({});
   const [view, setView] = useState<LineView>(EMPTY_VIEW);
   const [ready, setReady] = useState(false);
   const [profile, setProfile] = useState<VehicleProfile | null>(null);
@@ -249,6 +251,10 @@ export function StreetLineEditor({
         if (id !== undefined && p.name) {
           named.current.set(id, p.name);
           v = e.setName(id, p.name);
+        }
+        if (id !== undefined && p.features?.length) {
+          const f = p.features;
+          setStopFeatures((m) => ({ ...m, [id]: f }));
         }
       });
       if (saved.depot) v = e.setDepot(saved.depot);
@@ -577,6 +583,7 @@ export function StreetLineEditor({
             lonlat: p.lonlat,
             kind: p.kind,
             name: named.current.get(p.id) ?? null,
+            ...(p.kind !== "via" && stopFeatures[p.id]?.length ? { features: stopFeatures[p.id] } : {}),
           })),
           depot: view.depot,
           depotStops: {
@@ -638,6 +645,7 @@ export function StreetLineEditor({
 
   const actions: PanelActions = {
     setName: setLineName,
+    setPointFeatures: (id, f) => setStopFeatures((m) => ({ ...m, [id]: f })),
     setMode: (m) => {
       if (!engine.current || !rules) return;
       setVehicle(null);
@@ -709,6 +717,7 @@ export function StreetLineEditor({
       status={null}
       error={error}
       actions={actions}
+      stopFeatures={stopFeatures}
       noise={
         noiseAvailable && (
           <NoiseSection

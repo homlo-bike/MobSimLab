@@ -8,7 +8,8 @@ import { projectTimetable } from "../features/benefits/timetable";
 import { CargoBikeTab } from "../features/cargo-bike/CargoBikeTab";
 import type { CargoBikeDoc } from "../features/cargo-bike/model";
 import { CapacityRun } from "../features/capacity/CapacityRun";
-import type { Prices } from "../features/costs/economy";
+import { economyApi, type Prices } from "../features/costs/economy";
+import { useProjectCurrency } from "../features/costs/currency";
 import type { Estimate as CostEstimate } from "../features/costs/model";
 import { CostTables, type CostsDoc } from "../features/costs/CostTables";
 import { WalkAnalysis } from "../features/walk/WalkAnalysis";
@@ -22,6 +23,7 @@ import type { PluginLineInput, StreetLineInput } from "../features/journey-plann
 import type { GtfsFeed, GtfsNetworkDoc } from "../features/gtfs/types";
 import type { Timetable } from "../features/journey-planner/types";
 import { RailwayEditor } from "../features/railways/RailwayEditor";
+import { Schematic, type SchematicDoc } from "../features/schematic/Schematic";
 import type { Network } from "../features/railways/types";
 import { LineList } from "../features/street-lines/LineList";
 import { lineInput, type SavedStreetLine, type StreetLinesDoc } from "../features/street-lines/saved";
@@ -65,7 +67,6 @@ import { HelpMenu } from "../shell/HelpMenu";
 import { TopBar } from "../shell/TopBar";
 import { PROJECT_TOUR, Tour } from "../shell/Tour";
 import { PrintReport } from "./PrintReport";
-import { Placeholder } from "./Placeholder";
 import { ProjectPreferences } from "./ProjectPreferences";
 import { delaysFrom, type PreferencesDoc } from "./preferences";
 import type { DelayShares } from "../features/street-lines/types";
@@ -96,11 +97,14 @@ const NO_REGIONS: Region[] = [];
 const NO_FEEDS: GtfsFeed[] = [];
 /** "street", "rail", or the id of a plugin tool (cable car, ferry…). */
 type Build = string;
+/** The economy API for the project's currency rate. */
+const ECONOMY = economyApi();
 
 /**
  * One open project (mockups "Project app"): the project name and the six tabs in the top bar (a bottom tab bar on
  * phones), the map, and a side panel (a bottom sheet on phones). Simulator holds the capacity run and the journey planner; Create holds
- * the street line tool and the railway editor; Tables holds the network and cost tables; the other tabs are placeholders
+ * the street line tool and the railway editor; Schematic holds the network diagram and strip maps;
+ * Tables holds the network and cost tables; the other tabs are placeholders
  * until their tools exist.
  */
 export function Workspace({
@@ -139,10 +143,11 @@ export function Workspace({
     estimate: CostEstimate;
     currency: string | null;
     country: string | null;
+    rate: number;
   } | null>(null);
   const onCostEstimate = useCallback(
-    (estimate: CostEstimate, prices: Prices, country: string | null) =>
-      setCostInfo({ estimate, currency: prices.currency, country }),
+    (estimate: CostEstimate, prices: Prices, country: string | null, rate: number) =>
+      setCostInfo({ estimate, currency: prices.currency, country, rate }),
     [],
   );
   const [build, setBuild] = useState<Build | null>(null);
@@ -226,6 +231,9 @@ export function Workspace({
   const regions = drawings.doc<RegionsDoc>("regions")?.regions ?? NO_REGIONS;
   // Project preferences: assumption values the project changes, such as the delays in traffic.
   const preferences = drawings.doc<PreferencesDoc>("preferences");
+  // The currency all money is shown in, and its exchange rate (Project preferences).
+  const currencyState = useProjectCurrency(preferences, ECONOMY);
+  const currency = currencyState.currency;
   const delaysJson = JSON.stringify(delaysFrom(preferences));
   const delays = useMemo(() => JSON.parse(delaysJson) as DelayShares, [delaysJson]);
   // Street setups made before projects saved drawings were kept in this browser: move them to the project once.
@@ -521,7 +529,7 @@ export function Workspace({
               regions={regions}
               onChange={(next) => drawings.set("regions", { regions: next } satisfies RegionsDoc)}
               editable={editable}
-              currency={costInfo?.currency ?? null}
+              currency={currency?.code ?? costInfo?.currency ?? null}
             />
           )}
           {project && drawings.loaded && tab === "gis" && gis === "streets" && (
@@ -542,6 +550,7 @@ export function Workspace({
               doc={drawings.doc<CargoBikeDoc>("cargo-bike")}
               onDoc={editable ? (d) => drawings.set("cargo-bike", d) : undefined}
               setups={setups}
+              currency={currency}
             />
           )}
           {project && tab === "simulator" && sim === "journey" && (
@@ -640,17 +649,27 @@ export function Workspace({
               onPreferences={drawings.loaded ? (d) => drawings.set("preferences", d) : undefined}
               plugins={plugins}
               onSetPlugin={setPlugin}
+              currency={currencyState}
             />
           </div>
         )}
         {!onMap && tab === "schematic" && (
           <div className="min-h-0 flex-1">
-            <Placeholder
-              page
-              title="schematic.title"
-              intro="schematic.intro"
-              items={["schematic.network", "schematic.line", "schematic.layers", "schematic.export"]}
-            />
+            {project && drawings.loaded ? (
+              <Schematic
+                railway={railway}
+                streetLines={streetLines}
+                pluginLines={pluginLineList}
+                doc={drawings.doc<SchematicDoc>("schematic")}
+                onDoc={editable ? (d) => drawings.set("schematic", d) : undefined}
+                projectName={project.name}
+                onCreate={editable ? () => onTab("create") : undefined}
+              />
+            ) : (
+              <p role="status" className="mt-6 text-center text-slate-500">
+                {t("common.loading")}
+              </p>
+            )}
           </div>
         )}
         {!onMap && tab === "tables" && (
@@ -673,6 +692,7 @@ export function Workspace({
                     onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
                     costs={drawings.doc<CostsDoc>("costs")}
                     onCosts={editable ? (d) => drawings.set("costs", d) : undefined}
+                    currency={currency}
                     onEstimate={onCostEstimate}
                   />
                 </>
@@ -698,6 +718,7 @@ export function Workspace({
                   streetLines={streetLines}
                   preferences={preferences}
                   doc={drawings.doc<ScenariosDoc>("scenarios")}
+                  currency={currency}
                   onChange={editable ? (d) => drawings.set("scenarios", d) : undefined}
                 />
               )}

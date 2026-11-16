@@ -1,3 +1,4 @@
+import { cleanFeatures, STATION_FEATURES, SymbolPicker } from "../stations/features";
 import { type Translate, useI18n } from "../../i18n/i18n";
 import type { MessageKey } from "../../i18n/messages";
 import { TimeInput } from "../railways/ServiceLinesPanel";
@@ -32,6 +33,8 @@ export interface PanelActions {
   select: (id: number | null) => void;
   setKind: (id: number, kind: PointKind) => void;
   setPointName: (id: number, name: string) => void;
+  /** Facilities of a stop (step-free access, elevators and so on). */
+  setPointFeatures: (id: number, features: string[]) => void;
   deletePoint: (id: number) => void;
   optimise: () => void;
   clear: () => void;
@@ -132,6 +135,8 @@ interface Props {
   noise?: React.ReactNode;
   /** Checks from plugins (noise), added to the line's own. */
   extraChecks?: Check[];
+  /** Facilities of the stops by point id. */
+  stopFeatures?: Record<number, string[]>;
 }
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
@@ -411,6 +416,15 @@ export function LinePanel(props: Props) {
                         defaultValue={p.name}
                         key={p.name}
                         onBlur={(e) => e.target.value !== p.name && a.setPointName(p.id, e.target.value)}
+                      />
+                    )}
+                    {p.kind !== "via" && (
+                      <SymbolPicker
+                        options={STATION_FEATURES}
+                        value={cleanFeatures(props.stopFeatures?.[p.id])}
+                        label={t("station.features")}
+                        onChange={(f) => a.setPointFeatures(p.id, f)}
+                        t={t}
                       />
                     )}
                     <div className="flex items-center gap-1">

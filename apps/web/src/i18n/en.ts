@@ -209,6 +209,7 @@ export const en = {
   "drawing.rail-timetable": "rail timetable",
   "drawing.preferences": "project preferences",
   "drawing.costs": "cost settings",
+  "drawing.schematic": "schematic",
   "drawing.scenarios": "saved scenarios",
   "drawing.benefits": "benefit formulas",
   "drawing.regions": "regions",
@@ -242,10 +243,6 @@ export const en = {
 
   "schematic.title": "Schematic",
   "schematic.intro": "View and edit the transport map, and look at one line on its own.",
-  "schematic.network": "Network map with lines drawn schematically",
-  "schematic.line": "One line: its strip map and connections",
-  "schematic.layers": "Layers, dragging and curves",
-  "schematic.export": "Export for print and screens",
 
   "gis.title": "GIS",
   "gis.intro": "Add or edit the information that calculations use.",
@@ -273,6 +270,18 @@ export const en = {
   "prefs.delayLane": "In a painted bus or tram lane",
   "prefs.delayDefault": "Assumption library: {value} %",
   "prefs.delayReset": "Use the library value",
+  "prefs.currencyTitle": "Currency",
+  "prefs.currencyIntro":
+    "All money in the project is shown in this currency: the cost tables, the benefits, the scenarios and the cargo bike savings.",
+  "prefs.currencyLabel": "Show money in",
+  "prefs.currencyCountry": "The country's own currency",
+  "prefs.currencyRate": "{code} per US$",
+  "prefs.currencyWorldBank": "World Bank official exchange rate ({year}): {value}",
+  "prefs.currencyMissing":
+    "The World Bank has no exchange rate for {code}. Enter one to convert; until then each tool shows the country's own currency.",
+  "prefs.currencyReset": "Use the World Bank rate",
+  "prefs.currencyHow":
+    "Amounts are converted through the US dollar, with the World Bank's official exchange rate of each country.",
   "prefs.moreTitle": "Rules, vehicles and assumptions",
   "prefs.moreIntro":
     "Every variable with its minimum and recommended value, and the vehicles the project uses.",

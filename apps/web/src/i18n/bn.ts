@@ -213,6 +213,7 @@ export const bn: Messages = {
   "drawing.rail-timetable": "রেলের সময়সূচি",
   "drawing.preferences": "প্রকল্পের পছন্দ",
   "drawing.costs": "খরচের সেটিংস",
+  "drawing.schematic": "নকশা মানচিত্র",
   "drawing.scenarios": "সংরক্ষিত পরিস্থিতি",
   "drawing.benefits": "সুফলের সূত্র",
   "drawing.regions": "অঞ্চল",
@@ -247,10 +248,6 @@ export const bn: Messages = {
 
   "schematic.title": "নকশাচিত্র",
   "schematic.intro": "পরিবহন মানচিত্র দেখুন ও সম্পাদনা করুন, এবং একটি লাইন আলাদাভাবে দেখুন।",
-  "schematic.network": "নকশাচিত্র আকারে আঁকা লাইনসহ নেটওয়ার্ক মানচিত্র",
-  "schematic.line": "একটি লাইন: তার স্ট্রিপ মানচিত্র ও সংযোগ",
-  "schematic.layers": "স্তর, টেনে আনা ও বক্ররেখা",
-  "schematic.export": "মুদ্রণ ও পর্দার জন্য রপ্তানি",
 
   "gis.title": "GIS",
   "gis.streetsView": "রাস্তা",
@@ -278,6 +275,18 @@ export const bn: Messages = {
   "prefs.delayLane": "রং দিয়ে আঁকা বাস বা ট্রাম লেনে",
   "prefs.delayDefault": "অনুমান লাইব্রেরি: {value} %",
   "prefs.delayReset": "লাইব্রেরির মান ব্যবহার করুন",
+  "prefs.currencyTitle": "মুদ্রা",
+  "prefs.currencyIntro":
+    "প্রকল্পের সব অর্থ এই মুদ্রায় দেখানো হয়: খরচের সারণি, সুফল, পরিস্থিতি ও কার্গো বাইকের সাশ্রয়।",
+  "prefs.currencyLabel": "অর্থ দেখান এতে",
+  "prefs.currencyCountry": "দেশের নিজস্ব মুদ্রা",
+  "prefs.currencyRate": "প্রতি US$-এ {code}",
+  "prefs.currencyWorldBank": "বিশ্বব্যাংকের সরকারি বিনিময় হার ({year}): {value}",
+  "prefs.currencyMissing":
+    "বিশ্বব্যাংকের কাছে {code}-এর বিনিময় হার নেই। রূপান্তর করতে একটি হার দিন; ততক্ষণ প্রতিটি টুল দেশের মুদ্রা দেখায়।",
+  "prefs.currencyReset": "বিশ্বব্যাংকের হার ব্যবহার করুন",
+  "prefs.currencyHow":
+    "অর্থ মার্কিন ডলারের মাধ্যমে, প্রতিটি দেশের বিশ্বব্যাংকের সরকারি বিনিময় হারে রূপান্তর করা হয়।",
   "prefs.moreTitle": "নিয়ম, যানবাহন ও অনুমান",
   "prefs.moreIntro": "প্রতিটি চলক তার সর্বনিম্ন ও প্রস্তাবিত মানসহ, এবং প্রকল্পে ব্যবহৃত যানবাহন।",
   "prefs.rules": "প্রতিটি মাধ্যমের নকশার নিয়ম, সর্বনিম্ন ও প্রস্তাবিত",
