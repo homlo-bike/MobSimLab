@@ -11,6 +11,10 @@ export const mslabEn = {
   "mslab.body":
     "Saves the project’s drawings, preferences, scenarios and plugins in one file that you can open again on any MobSimLab.",
   "mslab.runs": "Include saved simulation runs (makes the file larger)",
+  "mslab.map":
+    "Include map data for the static viewer: streets, buildings, population and country figures of the project area (larger file; can take a few minutes)",
+  "static.empty":
+    "No projects in this site yet. Put .mslab files in its projects folder and run tools/add-projects.mjs.",
   "mslab.save": "Save file",
 } as const;
 

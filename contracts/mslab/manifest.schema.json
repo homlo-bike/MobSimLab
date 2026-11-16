@@ -72,6 +72,10 @@
       "properties": {
         "runs": {
           "type": "boolean"
+        },
+        "map": {
+          "description": "Format 1.1: the file carries map data (map/) for the static viewer.",
+          "type": "boolean"
         }
       }
     },

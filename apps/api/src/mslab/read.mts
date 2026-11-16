@@ -166,6 +166,7 @@ export function readMslab(input: Buffer, ctx: ToolContext): MslabReadResult {
   const skipped: string[] = [];
   const drawings: ReadDrawing[] = [];
   const runIds = new Set<string>();
+  let hasMap = false;
   for (const name of [...files.keys()].sort()) {
     if (
       name === FILES.manifest ||
@@ -206,9 +207,16 @@ export function readMslab(input: Buffer, ctx: ToolContext): MslabReadResult {
       runIds.add(r[1]!);
       continue;
     }
+    // Map data (format 1.1) is for the static viewer; this MobSimLab loads its own.
+    if (FILE_PATTERNS.map.test(name)) {
+      hasMap = true;
+      continue;
+    }
     throw new MslabError(`${name} is not a file a MobSimLab project file can hold`);
   }
 
+  if (hasMap && !manifest.includes.map)
+    throw new MslabError("the file holds map data but its manifest says it does not");
   if (runIds.size > 0 && !manifest.includes.runs)
     throw new MslabError("the file holds simulation runs but its manifest says it does not");
   const runs: ReadRun[] = [];
@@ -237,8 +245,10 @@ export function readMslab(input: Buffer, ctx: ToolContext): MslabReadResult {
   }
 
   return {
-    formatVersion: FORMAT_VERSION,
-    migratedFrom: version === FORMAT_VERSION ? null : version,
+    // A file of an older minor version is read as it is (minor versions only add); only a migration step
+    // changes its version.
+    formatVersion: migrated.version,
+    migratedFrom: migrated.version === version ? null : version,
     appVersion: manifest.app.version,
     project,
     plugins,
