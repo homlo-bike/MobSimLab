@@ -87,7 +87,7 @@ jobs:
         include:
           - { name: Linux, runner: ubuntu-24.04, conda: "postgresql=18 postgis=3.7 osmium-tool osm2pgsql" }
           - { name: macOS, runner: macos-14, conda: "postgresql=18 postgis=3.7 osmium-tool osm2pgsql" }
-          - { name: Windows, runner: windows-2022, conda: "osmium-tool osm2pgsql" }
+          - { name: Windows, runner: windows-2022, conda: "osmium-tool osm2pgsql postgresql" }
     defaults:
       run:
         shell: bash
@@ -121,6 +121,7 @@ jobs:
         with:
           init-shell: none
           cache-downloads: true
+      # On Windows conda-forge's postgresql only provides psql: the server with PostGIS comes from the next step.
       - name: PostgreSQL with PostGIS (Linux, macOS) and the OpenStreetMap tools, from conda-forge
         run: |
           "$MAMBA_EXE" create -y -p desktop/runtime/conda -c conda-forge --override-channels ${{ matrix.conda }}
