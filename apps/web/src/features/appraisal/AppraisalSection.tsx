@@ -2,7 +2,8 @@ import { useMemo } from "react";
 import type { Estimate as BenefitEstimate } from "../benefits/model";
 import type { Triple } from "../benefits/params";
 import { useTip } from "../costs/charts";
-import { card, fmtMoney, modeLabel, num, td, th, Tile } from "../costs/CostTables";
+import { card, modeLabel, num, td, th, Tile } from "../costs/CostTables";
+import { BenefitCostChart, CashFlowChart, DrawsChart, RankingChart } from "./charts";
 import type { Estimate as CostEstimate } from "../costs/model";
 import type { DemandRidership } from "../demand/ridership";
 import type { FareInput } from "../fares/model";
@@ -43,6 +44,14 @@ interface Props {
 
 const pct = (v: number | null) => (v === null || !Number.isFinite(v) ? "–" : `${(v * 100).toFixed(1)} %`);
 const ratio = (v: number | null) => (v === null || !Number.isFinite(v) ? "–" : v.toFixed(2));
+/** Purpose: money in short form with three significant digits and a true minus sign. */
+export function fmtMoney(v: number, currency: string | null): string {
+  const opts: Intl.NumberFormatOptions = { notation: "compact", maximumSignificantDigits: 3 };
+  const s = currency
+    ? new Intl.NumberFormat("en", { ...opts, style: "currency", currency }).format(v)
+    : `${new Intl.NumberFormat("en", opts).format(v)} LCU`;
+  return s.replace(/^-/, "−");
+}
 const sig = (v: number) => new Intl.NumberFormat("en", { maximumSignificantDigits: 3 }).format(v);
 
 /** Colours of the tornado chart: the value at its low and at its high (categorical slots 1 and 2). */
@@ -107,12 +116,8 @@ export function AppraisalSection({
         Appraisal
       </h2>
       <p className="mt-1 max-w-3xl text-slate-600">
-        Costs and benefits year by year, discounted to today: construction and operating costs from the cost
-        tables, fare revenue, the users' benefit and the car-km saved from the demand run, and GDP growth from
-        the benefit tables. Economic results (ENPV, ERR, benefit-cost ratio) count every benefit to society;
-        financial results (FNPV, FIRR) count the operator's fares and costs only. Low, medium and high are the
-        10th, 50th and 90th percentile of {result?.draws ?? draws ?? 200} draws over the ranges of the values;
-        the timeline, discount rates and conversion factor you set stay fixed.
+        Is the project worth it? Every cost and benefit from the tables above, year by year, discounted to
+        today. Ranges are the 10th to 90th percentile of {result?.draws ?? draws ?? 200} random draws.
       </p>
       {!costs && (
         <p role="status" className="mt-4 text-sm text-slate-500">
@@ -157,9 +162,19 @@ export function AppraisalSection({
               sub={`FIRR ${total.firrShare >= 0.5 ? pct(total.firr[1]) : "–"}; fares less the operator's costs`}
             />
           </div>
-          <Rows rows={result.rows} money={money} />
           <Breakdown p={total.central} row={total} money={money} />
-          <CashFlow a={result} money={money} />
+          <section className={card} aria-labelledby="appraisal-draws">
+            <h3 id="appraisal-draws" className="caps m-0">
+              How sure is the result
+            </h3>
+            <p className="mt-1 text-xs text-slate-500">
+              ENPV of each of the {result.draws} draws. It is above 0 in {Math.round(total.positive * 100)} %
+              of them.
+            </p>
+            <DrawsChart draws={total.enpvDraws} p={total.enpv} money={money} />
+          </section>
+          <Rows rows={result.rows} money={money} />
+          <CashFlow a={result} base={total.central} money={money} />
           <Tornado a={result} base={total.central.enpv} money={money} perIntl={perIntl} />
           <SwitchingAndTests a={result} money={money} />
           {mcaResult && (
@@ -289,85 +304,91 @@ function Breakdown({ p, row, money }: { p: Present; row: AppraisalRow; money: (v
   return (
     <section className={card} aria-labelledby="appraisal-present">
       <h3 id="appraisal-present" className="caps m-0">
-        Present values, all lines
+        Benefits against costs, all lines
       </h3>
-      <p className="mt-1 text-xs text-slate-500">
-        Medium case, discounted at the social rate over {row.timeline.build} years of building and{" "}
-        {row.timeline.period} of operation. Costs are after the conversion factor. Fares count as a benefit
-        because the users' benefit is net of the fares they pay.
+      <p className="mt-1 mb-3 text-xs text-slate-500">
+        Medium case, discounted over {row.timeline.build} years of building and {row.timeline.period} of
+        operation. Fares count as a benefit because the users' benefit is net of the fares they pay.
       </p>
-      <div className="mt-2 overflow-x-auto">
-        <table className="w-full min-w-[28rem] text-sm">
-          <tbody>
-            {items.map((x) => line(x))}
-            {line(["Benefits", p.benefits], true)}
-            {costs.map((x) => line(x))}
-            {line(["Costs", p.costs], true)}
-            {line(["Economic net present value", p.enpv], true)}
-          </tbody>
-        </table>
-      </div>
+      <BenefitCostChart p={p} money={money} />
+      <details className="mt-3 text-sm">
+        <summary className="cursor-pointer text-slate-700">Show as a table</summary>
+        <div className="mt-2 overflow-x-auto">
+          <table className="w-full min-w-[28rem] text-sm">
+            <tbody>
+              {items.map((x) => line(x))}
+              {line(["Benefits", p.benefits], true)}
+              {costs.map((x) => line(x))}
+              {line(["Costs", p.costs], true)}
+              {line(["Economic net present value", p.enpv], true)}
+            </tbody>
+          </table>
+        </div>
+      </details>
     </section>
   );
 }
 
-function CashFlow({ a, money }: { a: Appraisal; money: (v: number) => string }) {
+function CashFlow({ a, base, money }: { a: Appraisal; base: Present; money: (v: number) => string }) {
   const keep = new Set(shownYears(a));
   return (
     <section className={card} aria-labelledby="appraisal-years">
       <h3 id="appraisal-years" className="caps m-0">
         Year by year, all lines
       </h3>
-      <p className="mt-1 text-xs text-slate-500">
-        Medium case, in today's prices, before discounting and the conversion factor. Construction years
-        first; assets are bought again at the end of their life and their remaining value comes back in the
-        last year.
+      <p className="mt-1 mb-3 text-xs text-slate-500">
+        Medium case, in today's prices. Construction years first; assets are bought again at the end of their
+        life and their remaining value comes back in the last year.
       </p>
-      <div className="mt-2 overflow-x-auto">
-        <table className="w-full min-w-[60rem] text-sm">
-          <thead>
-            <tr className="border-b border-slate-200">
-              <th className={th}>Year</th>
-              <th className={`${th} text-right`}>Construction</th>
-              <th className={`${th} text-right`}>Renewals</th>
-              <th className={`${th} text-right`}>Residual value</th>
-              <th className={`${th} text-right`}>Operating</th>
-              <th className={`${th} text-right`}>Users' benefit</th>
-              <th className={`${th} text-right`}>Fares</th>
-              <th className={`${th} text-right`}>Car-km saved</th>
-              <th className={`${th} text-right`}>GDP growth</th>
-            </tr>
-          </thead>
-          <tbody>
-            {a.years
-              .filter((y) => keep.has(y.year))
-              .map((y) => (
-                <tr key={y.year} className="border-b border-slate-100">
-                  <td className={td}>
-                    {y.year}
-                    <span className="block text-xs text-slate-500">
-                      {y.op === 0 ? "building" : `operation year ${y.op}`}
-                    </span>
-                  </td>
-                  {[
-                    y.construction,
-                    y.renewals,
-                    y.residual,
-                    y.operating,
-                    y.user,
-                    y.fares,
-                    y.external,
-                    y.gdp,
-                  ].map((v, i) => (
-                    <td key={i} className={num}>
-                      {v ? money(v) : "–"}
+      <CashFlowChart years={a.years} rate={base.rate} cf={base.cf} money={money} />
+      <details className="mt-3 text-sm">
+        <summary className="cursor-pointer text-slate-700">Show as a table</summary>
+        <div className="mt-2 overflow-x-auto">
+          <table className="w-full min-w-[60rem] text-sm">
+            <thead>
+              <tr className="border-b border-slate-200">
+                <th className={th}>Year</th>
+                <th className={`${th} text-right`}>Construction</th>
+                <th className={`${th} text-right`}>Renewals</th>
+                <th className={`${th} text-right`}>Residual value</th>
+                <th className={`${th} text-right`}>Operating</th>
+                <th className={`${th} text-right`}>Users' benefit</th>
+                <th className={`${th} text-right`}>Fares</th>
+                <th className={`${th} text-right`}>Car-km saved</th>
+                <th className={`${th} text-right`}>GDP growth</th>
+              </tr>
+            </thead>
+            <tbody>
+              {a.years
+                .filter((y) => keep.has(y.year))
+                .map((y) => (
+                  <tr key={y.year} className="border-b border-slate-100">
+                    <td className={td}>
+                      {y.year}
+                      <span className="block text-xs text-slate-500">
+                        {y.op === 0 ? "building" : `operation year ${y.op}`}
+                      </span>
                     </td>
-                  ))}
-                </tr>
-              ))}
-          </tbody>
-        </table>
-      </div>
+                    {[
+                      y.construction,
+                      y.renewals,
+                      y.residual,
+                      y.operating,
+                      y.user,
+                      y.fares,
+                      y.external,
+                      y.gdp,
+                    ].map((v, i) => (
+                      <td key={i} className={num}>
+                        {v ? money(v) : "–"}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </div>
+      </details>
     </section>
   );
 }
@@ -614,7 +635,10 @@ function Mca({
         costs), weights are shares of all weights. Access gains are per resident near the line's stations
         (benefit tables). Add your own criteria and score each line by hand.
       </p>
-      <div className="mt-2 overflow-x-auto">
+      <div className="mt-3 max-w-2xl">
+        <RankingChart lines={result.lines} />
+      </div>
+      <div className="mt-5 overflow-x-auto">
         <table className="w-full min-w-[40rem] text-sm">
           <caption className="caps pb-1 text-left text-slate-700">Criteria and weights</caption>
           <thead>
