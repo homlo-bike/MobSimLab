@@ -106,6 +106,7 @@ export const uk: Messages = {
   "home.shared": "Надані мені",
   "home.sharedEdit": "Надані мені · можна редагувати",
   "home.viewOnly": "Лише перегляд",
+  "home.public": "Публічні проєкти",
   "home.archived": "В архіві",
   "home.none": "Тут нічого немає.",
   "home.edited": "Змінено {when}",
@@ -179,11 +180,16 @@ export const uk: Messages = {
   "share.roleOf": "Роль: {name}",
   "share.remove": "Вилучити: {name}",
   "share.leave": "Вийти",
-  "share.link": "Посилання лише для перегляду",
-  "share.linkOn": "Відкрити може будь-хто, хто ввійшов у цей MobSimLab",
-  "share.linkOff": "Вимкнено: відкрити можуть лише люди вище",
-  "share.linkTurnOn": "Увімкнути",
-  "share.linkTurnOff": "Вимкнути",
+  "share.visibility": "Хто може відкрити",
+  "share.private": "Приватний: відкрити можуть лише люди вище",
+  "share.public":
+    "Публічний: будь-хто, хто ввійшов у цей MobSimLab, може знайти й відкрити його лише для перегляду",
+  "share.makePublic": "Зробити публічним",
+  "share.makePrivate": "Зробити приватним",
+  "share.licenceTitle": "Перш ніж зробити його публічним",
+  "share.licenceNote":
+    "Цей проєкт використовує дані OpenStreetMap. Їх буде поширено за ліцензією Open Database License (ODbL), © учасники OpenStreetMap. Робіть його публічним, лише якщо все інше в ньому теж можна поширювати.",
+  "share.confirmPublic": "Зрозуміло, зробити публічним",
   "share.copyLink": "Копіювати посилання",
   "share.copied": "Скопійовано",
 
@@ -200,6 +206,8 @@ export const uk: Messages = {
 
   "project.back": "Назад до проєктів",
   "project.viewOnly": "Лише перегляд",
+  "project.public": "Публічний",
+  "project.publicNote": "Публічний проєкт. Дані карти © учасники OpenStreetMap, ODbL.",
   "project.notFound": "Проєкт не знайдено",
   "project.notFoundHint": "Можливо, його видалено або у вас більше немає доступу.",
   "project.toHome": "Назад до проєктів",

@@ -105,6 +105,7 @@ export const ru: Messages = {
   "home.shared": "Доступные мне",
   "home.sharedEdit": "Доступные мне · можно редактировать",
   "home.viewOnly": "Только просмотр",
+  "home.public": "Публичные проекты",
   "home.archived": "В архиве",
   "home.none": "Здесь ничего нет.",
   "home.edited": "Изменён {when}",
@@ -178,11 +179,16 @@ export const ru: Messages = {
   "share.roleOf": "Роль: {name}",
   "share.remove": "Удалить {name}",
   "share.leave": "Выйти",
-  "share.link": "Ссылка для просмотра",
-  "share.linkOn": "Открыть может любой, кто вошёл в этот MobSimLab",
-  "share.linkOff": "Выключено: открыть могут только люди выше",
-  "share.linkTurnOn": "Включить",
-  "share.linkTurnOff": "Выключить",
+  "share.visibility": "Кто может открыть",
+  "share.private": "Закрытый: открыть могут только люди выше",
+  "share.public":
+    "Публичный: любой, кто вошёл в этот MobSimLab, может найти и открыть его только для просмотра",
+  "share.makePublic": "Сделать публичным",
+  "share.makePrivate": "Сделать закрытым",
+  "share.licenceTitle": "Прежде чем сделать его публичным",
+  "share.licenceNote":
+    "Этот проект использует данные OpenStreetMap. Они будут распространяться по лицензии Open Database License (ODbL), © участники OpenStreetMap. Делайте проект публичным, только если всё остальное в нём тоже можно распространять.",
+  "share.confirmPublic": "Понятно, сделать публичным",
   "share.copyLink": "Копировать ссылку",
   "share.copied": "Скопировано",
 
@@ -199,6 +205,8 @@ export const ru: Messages = {
 
   "project.back": "Назад к проектам",
   "project.viewOnly": "Только просмотр",
+  "project.public": "Публичный",
+  "project.publicNote": "Публичный проект. Данные карты © участники OpenStreetMap, ODbL.",
   "project.notFound": "Проект не найден",
   "project.notFoundHint": "Возможно, он удалён или у вас больше нет доступа.",
   "project.toHome": "Назад к проектам",

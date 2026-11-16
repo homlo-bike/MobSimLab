@@ -107,6 +107,7 @@ export const fr: Messages = {
   "home.shared": "Partagés avec moi",
   "home.sharedEdit": "Partagés avec moi · vous pouvez modifier",
   "home.viewOnly": "Lecture seule",
+  "home.public": "Projets publics",
   "home.archived": "Archivés",
   "home.none": "Rien ici.",
   "home.edited": "Modifié {when}",
@@ -180,11 +181,16 @@ export const fr: Messages = {
   "share.roleOf": "Rôle de {name}",
   "share.remove": "Retirer {name}",
   "share.leave": "Quitter",
-  "share.link": "Lien en lecture seule",
-  "share.linkOn": "Toute personne connectée à ce MobSimLab peut l’ouvrir",
-  "share.linkOff": "Désactivé : seules les personnes ci-dessus peuvent l’ouvrir",
-  "share.linkTurnOn": "Activer",
-  "share.linkTurnOff": "Désactiver",
+  "share.visibility": "Qui peut l’ouvrir",
+  "share.private": "Privé : seules les personnes ci-dessus peuvent l’ouvrir",
+  "share.public":
+    "Public : toute personne connectée à ce MobSimLab peut le trouver et l’ouvrir en lecture seule",
+  "share.makePublic": "Rendre public",
+  "share.makePrivate": "Rendre privé",
+  "share.licenceTitle": "Avant de le rendre public",
+  "share.licenceNote":
+    "Ce projet utilise des données d’OpenStreetMap. Elles seront partagées sous la licence Open Database License (ODbL), © contributeurs OpenStreetMap. Ne le rendez public que si tout le reste peut aussi être partagé.",
+  "share.confirmPublic": "J’ai compris, le rendre public",
   "share.copyLink": "Copier le lien",
   "share.copied": "Copié",
 
@@ -201,6 +207,8 @@ export const fr: Messages = {
 
   "project.back": "Retour aux projets",
   "project.viewOnly": "Lecture seule",
+  "project.public": "Public",
+  "project.publicNote": "Projet public. Données cartographiques © contributeurs OpenStreetMap, ODbL.",
   "project.notFound": "Projet introuvable",
   "project.notFoundHint": "Il a peut-être été supprimé, ou vous n’y avez plus accès.",
   "project.toHome": "Retour aux projets",

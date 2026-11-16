@@ -8,7 +8,13 @@ import {
 } from "@nestjs/common";
 import { sql } from "kysely";
 import { AuditService, projectChain } from "../audit/audit.service";
-import { DATABASE, type Database, type InstanceRole, type ProjectRole } from "../db/database";
+import {
+  DATABASE,
+  type Database,
+  type InstanceRole,
+  type ProjectRole,
+  type ProjectVisibility,
+} from "../db/database";
 import { DRAWING_KINDS, type DrawingKind } from "./drawings";
 import { VALUE_CHANGED, VALUE_OBJECT, VALUE_REASON, type ValueState, valueChanges } from "./value-history";
 
@@ -29,11 +35,12 @@ export interface ProjectSummary {
   modes: string[];
   /** The caller's effective role: project role capped by the instance role (05 §3.2). */
   myRole: ProjectRole;
-  /** True when the caller reaches the project only through its view-only link. */
-  viaLink: boolean;
+  /** True when the caller is not a member and reaches the project only because it is public (read-only). */
+  viaPublic: boolean;
   owner: { id: string; displayName: string | null };
   memberCount: number;
-  linkAccess: boolean;
+  /** Private: only members open it. Public: anyone signed in to this instance can open it read-only. */
+  visibility: ProjectVisibility;
   createdAt: string;
   updatedAt: string;
   archivedAt: string | null;
@@ -125,10 +132,36 @@ export class ProjectsService {
     });
   }
 
-  /** Purpose: one project the caller may read (as a member or through its view-only link). 404 otherwise. */
+  /**
+   * Purpose: the public projects the caller is not a member of, newest change first, for the projects home.
+   * Archived and deleted projects never show. The caller opens them read-only (FR-PLAT-02).
+   */
+  async listPublic(actor: ProjectActor): Promise<ProjectSummary[]> {
+    const role = effectiveRole(actor.role, "viewer");
+    if (!role) return [];
+    const rows = await this.baseQuery()
+      .where("p.visibility", "=", "public")
+      .where("p.archived_at", "is", null)
+      .where(({ not, exists, selectFrom }) =>
+        not(
+          exists(
+            selectFrom("project.member as me")
+              .select("me.user_id")
+              .whereRef("me.project_id", "=", "p.id")
+              .where("me.user_id", "=", actor.userId),
+          ),
+        ),
+      )
+      .orderBy("p.updated_at", "desc")
+      .limit(500)
+      .execute();
+    return rows.map((r) => this.summary(r, role, true));
+  }
+
+  /** Purpose: one project the caller may read (as a member, or any signed-in person when public). 404 otherwise. */
   async get(actor: ProjectActor, id: string): Promise<ProjectSummary> {
-    const { row, role, viaLink } = await this.load(actor, id, "read");
-    return this.summary(row, role, viaLink);
+    const { row, role, viaPublic } = await this.load(actor, id, "read");
+    return this.summary(row, role, viaPublic);
   }
 
   /**
@@ -202,12 +235,15 @@ export class ProjectsService {
   }
 
   /**
-   * Purpose: copy a project the caller can read into a new project the caller owns. Members are not copied.
+   * Purpose: copy a project the caller is a member of into a new project the caller owns. Members are not
+   * copied, and the copy is private. Public projects are read-only to people who are not members, so they
+   * cannot copy them (403).
    * Side effects: audit `project.duplicated` on the source chain and `project.created` on the new one.
    */
   async duplicate(actor: ProjectActor, id: string, name?: string): Promise<ProjectSummary> {
     const newId = await this.db.transaction().execute(async (tx) => {
-      const { row } = await this.load(actor, id, "read", tx);
+      const { row, viaPublic } = await this.load(actor, id, "read", tx);
+      if (viaPublic) throw new ForbiddenException("public projects are read-only; ask the owner for access");
       const copyName = name ?? `${row.name} (copy)`.slice(0, 200);
       const p = await tx
         .insertInto("project.project")
@@ -272,9 +308,13 @@ export class ProjectsService {
     });
   }
 
-  /** Purpose: the people with access, owner first. Any member may see who else has access. */
+  /**
+   * Purpose: the people with access, owner first. Any member may see who else has access; people who only see
+   * the project because it is public may not (403), so members' e-mail addresses stay among the members.
+   */
   async members(actor: ProjectActor, id: string): Promise<ProjectMember[]> {
-    await this.load(actor, id, "read");
+    const { viaPublic } = await this.load(actor, id, "read");
+    if (viaPublic) throw new ForbiddenException("only members see who has access");
     const rows = await this.db
       .selectFrom("project.member as m")
       .innerJoin("iam.user as u", "u.id", "m.user_id")
@@ -380,12 +420,32 @@ export class ProjectsService {
     });
   }
 
-  /** Purpose: switch the view-only link on or off. Owners only. */
-  async setLinkAccess(actor: ProjectActor, id: string, on: boolean): Promise<ProjectSummary> {
+  /**
+   * Purpose: make a project public or private again. Owners only (10 §1.1).
+   * Inputs: the new visibility; `licenceAccepted` must be true to make a project public, after the Owner has seen
+   * that its OpenStreetMap-derived data is shared under the ODbL (C-12).
+   * Side effects: audit `project.visibility_changed` with the old and new visibility. 409 when nothing changes.
+   */
+  async setVisibility(
+    actor: ProjectActor,
+    id: string,
+    visibility: ProjectVisibility,
+    licenceAccepted: boolean,
+  ): Promise<ProjectSummary> {
     await this.db.transaction().execute(async (tx) => {
-      await this.load(actor, id, "manage", tx, true);
-      await tx.updateTable("project.project").set({ link_access: on }).where("id", "=", id).execute();
-      await this.log(actor, id, "project.link_access_changed", null, { linkAccess: on }, tx);
+      const { row } = await this.load(actor, id, "manage", tx, true);
+      if (row.visibility === visibility) throw new ConflictException(`project is already ${visibility}`);
+      if (visibility === "public" && !licenceAccepted)
+        throw new BadRequestException("confirm the licence notice before making the project public");
+      await tx.updateTable("project.project").set({ visibility }).where("id", "=", id).execute();
+      await this.log(
+        actor,
+        id,
+        "project.visibility_changed",
+        { visibility: row.visibility },
+        visibility === "public" ? { visibility, licenceAccepted: true } : { visibility },
+        tx,
+      );
     });
     return this.get(actor, id);
   }
@@ -600,7 +660,7 @@ export class ProjectsService {
         "p.description",
         "p.area_name",
         "p.modes",
-        "p.link_access",
+        "p.visibility",
         "p.created_at",
         "p.updated_at",
         "p.archived_at",
@@ -660,15 +720,15 @@ export class ProjectsService {
     if (lock) q = q.forUpdate("p");
     const row = await q.executeTakeFirst();
     if (!row) throw new NotFoundException("project not found");
-    const viaLink = !row.my_role && row.link_access;
+    const viaPublic = !row.my_role && row.visibility === "public";
     const role = row.my_role
       ? effectiveRole(actor.role, row.my_role)
-      : viaLink
+      : viaPublic
         ? effectiveRole(actor.role, "viewer")
         : null;
     if (!allows(role, "read") || !role) throw new NotFoundException("project not found");
     if (!allows(role, action)) throw new ForbiddenException("your role on this project does not allow this");
-    return { row, role, viaLink };
+    return { row, role, viaPublic };
   }
 
   private async member(db: Database, projectId: string, userId: string) {
@@ -689,7 +749,7 @@ export class ProjectsService {
       description: string;
       area_name: string | null;
       modes: string[];
-      link_access: boolean;
+      visibility: ProjectVisibility;
       created_at: Date;
       updated_at: Date;
       archived_at: Date | null;
@@ -698,7 +758,7 @@ export class ProjectsService {
       member_count: number;
     },
     role: ProjectRole,
-    viaLink: boolean,
+    viaPublic: boolean,
   ): ProjectSummary {
     return {
       id: r.id,
@@ -707,10 +767,10 @@ export class ProjectsService {
       areaName: r.area_name,
       modes: r.modes,
       myRole: role,
-      viaLink,
+      viaPublic,
       owner: { id: r.owner_id, displayName: r.owner_name },
       memberCount: Number(r.member_count),
-      linkAccess: r.link_access,
+      visibility: r.visibility,
       createdAt: r.created_at.toISOString(),
       updatedAt: r.updated_at.toISOString(),
       archivedAt: iso(r.archived_at),

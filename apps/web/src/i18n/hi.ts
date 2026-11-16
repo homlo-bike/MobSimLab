@@ -106,6 +106,7 @@ export const hi: Messages = {
   "home.shared": "मेरे साथ साझा किए गए",
   "home.sharedEdit": "मेरे साथ साझा · आप संपादित कर सकते हैं",
   "home.viewOnly": "केवल देखने के लिए",
+  "home.public": "सार्वजनिक परियोजनाएँ",
   "home.archived": "संग्रहीत",
   "home.none": "यहाँ कुछ नहीं है।",
   "home.edited": "{when} संपादित",
@@ -178,11 +179,16 @@ export const hi: Messages = {
   "share.roleOf": "{name} की भूमिका",
   "share.remove": "{name} को हटाएँ",
   "share.leave": "छोड़ें",
-  "share.link": "केवल देखने का लिंक",
-  "share.linkOn": "इस MobSimLab में साइन इन किया कोई भी इसे खोल सकता है",
-  "share.linkOff": "बंद: केवल ऊपर के लोग इसे खोल सकते हैं",
-  "share.linkTurnOn": "चालू करें",
-  "share.linkTurnOff": "बंद करें",
+  "share.visibility": "इसे कौन खोल सकता है",
+  "share.private": "निजी: केवल ऊपर के लोग इसे खोल सकते हैं",
+  "share.public":
+    "सार्वजनिक: इस MobSimLab में साइन इन कोई भी व्यक्ति इसे ढूँढ़कर केवल पढ़ने के लिए खोल सकता है",
+  "share.makePublic": "सार्वजनिक करें",
+  "share.makePrivate": "निजी करें",
+  "share.licenceTitle": "सार्वजनिक करने से पहले",
+  "share.licenceNote":
+    "यह परियोजना OpenStreetMap के डेटा का उपयोग करती है। इसे Open Database License (ODbL) के तहत साझा किया जाएगा, © OpenStreetMap योगदानकर्ता। इसे तभी सार्वजनिक करें जब इसमें बाकी सब कुछ भी साझा किया जा सकता हो।",
+  "share.confirmPublic": "समझ गया, सार्वजनिक करें",
   "share.copyLink": "लिंक कॉपी करें",
   "share.copied": "कॉपी हो गया",
 
@@ -199,6 +205,8 @@ export const hi: Messages = {
 
   "project.back": "प्रोजेक्ट पर वापस जाएँ",
   "project.viewOnly": "केवल देखने के लिए",
+  "project.public": "सार्वजनिक",
+  "project.publicNote": "सार्वजनिक परियोजना। मानचित्र डेटा © OpenStreetMap योगदानकर्ता, ODbL।",
   "project.notFound": "प्रोजेक्ट नहीं मिला",
   "project.notFoundHint": "हो सकता है इसे हटा दिया गया हो, या अब आपके पास पहुँच न हो।",
   "project.toHome": "प्रोजेक्ट पर वापस जाएँ",

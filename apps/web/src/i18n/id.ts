@@ -105,6 +105,7 @@ export const id: Messages = {
   "home.shared": "Dibagikan kepada saya",
   "home.sharedEdit": "Dibagikan kepada saya · dapat diedit",
   "home.viewOnly": "Hanya lihat",
+  "home.public": "Proyek publik",
   "home.archived": "Diarsipkan",
   "home.none": "Tidak ada apa pun di sini.",
   "home.edited": "Diedit {when}",
@@ -178,11 +179,16 @@ export const id: Messages = {
   "share.roleOf": "Peran {name}",
   "share.remove": "Hapus {name}",
   "share.leave": "Keluar",
-  "share.link": "Tautan hanya lihat",
-  "share.linkOn": "Siapa pun yang masuk ke MobSimLab ini dapat membukanya",
-  "share.linkOff": "Mati: hanya orang di atas yang dapat membukanya",
-  "share.linkTurnOn": "Nyalakan",
-  "share.linkTurnOff": "Matikan",
+  "share.visibility": "Siapa yang dapat membukanya",
+  "share.private": "Pribadi: hanya orang di atas yang dapat membukanya",
+  "share.public":
+    "Publik: siapa pun yang masuk ke MobSimLab ini dapat menemukannya dan membukanya hanya-baca",
+  "share.makePublic": "Jadikan publik",
+  "share.makePrivate": "Jadikan pribadi",
+  "share.licenceTitle": "Sebelum Anda menjadikannya publik",
+  "share.licenceNote":
+    "Proyek ini memakai data dari OpenStreetMap. Data itu akan dibagikan dengan Open Database License (ODbL), © kontributor OpenStreetMap. Jadikan publik hanya jika semua hal lain di dalamnya juga boleh dibagikan.",
+  "share.confirmPublic": "Saya mengerti, jadikan publik",
   "share.copyLink": "Salin tautan",
   "share.copied": "Disalin",
 
@@ -200,6 +206,8 @@ export const id: Messages = {
 
   "project.back": "Kembali ke proyek",
   "project.viewOnly": "Hanya lihat",
+  "project.public": "Publik",
+  "project.publicNote": "Proyek publik. Data peta © kontributor OpenStreetMap, ODbL.",
   "project.notFound": "Proyek tidak ditemukan",
   "project.notFoundHint": "Mungkin sudah dihapus, atau Anda tidak lagi memiliki akses.",
   "project.toHome": "Kembali ke proyek",

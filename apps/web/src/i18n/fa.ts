@@ -103,6 +103,7 @@ export const fa: Messages = {
   "home.shared": "اشتراک‌گذاشته با من",
   "home.sharedEdit": "اشتراک‌گذاشته با من · قابل ویرایش",
   "home.viewOnly": "فقط مشاهده",
+  "home.public": "پروژه‌های عمومی",
   "home.archived": "بایگانی‌شده",
   "home.none": "اینجا چیزی نیست.",
   "home.edited": "ویرایش {when}",
@@ -176,11 +177,16 @@ export const fa: Messages = {
   "share.roleOf": "نقش {name}",
   "share.remove": "حذف {name}",
   "share.leave": "ترک کردن",
-  "share.link": "پیوند فقط مشاهده",
-  "share.linkOn": "هر کسی که در این MobSimLab وارد شده باشد می‌تواند آن را باز کند",
-  "share.linkOff": "خاموش: فقط افراد بالا می‌توانند آن را باز کنند",
-  "share.linkTurnOn": "روشن کردن",
-  "share.linkTurnOff": "خاموش کردن",
+  "share.visibility": "چه کسانی می‌توانند آن را باز کنند",
+  "share.private": "خصوصی: فقط افراد بالا می‌توانند آن را باز کنند",
+  "share.public":
+    "عمومی: هر کسی که وارد این MobSimLab شده باشد می‌تواند آن را پیدا کند و فقط‌خواندنی باز کند",
+  "share.makePublic": "عمومی کن",
+  "share.makePrivate": "خصوصی کن",
+  "share.licenceTitle": "پیش از عمومی کردن",
+  "share.licenceNote":
+    "این پروژه از داده‌های OpenStreetMap استفاده می‌کند. این داده‌ها با مجوز Open Database License ‏(ODbL) به اشتراک گذاشته می‌شوند، © مشارکت‌کنندگان OpenStreetMap. فقط وقتی آن را عمومی کنید که همهٔ چیزهای دیگر آن هم قابل اشتراک باشد.",
+  "share.confirmPublic": "متوجه شدم، عمومی کن",
   "share.copyLink": "کپی پیوند",
   "share.copied": "کپی شد",
 
@@ -196,6 +202,8 @@ export const fa: Messages = {
 
   "project.back": "بازگشت به پروژه‌ها",
   "project.viewOnly": "فقط مشاهده",
+  "project.public": "عمومی",
+  "project.publicNote": "پروژهٔ عمومی. داده‌های نقشه © مشارکت‌کنندگان OpenStreetMap، ‏ODbL.",
   "project.notFound": "پروژه پیدا نشد",
   "project.notFoundHint": "ممکن است حذف شده باشد یا دیگر به آن دسترسی نداشته باشید.",
   "project.toHome": "بازگشت به پروژه‌ها",
