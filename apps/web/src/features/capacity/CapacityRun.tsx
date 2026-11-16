@@ -7,6 +7,7 @@ import type { SavedStreetLine } from "../street-lines/saved";
 import type { Network } from "../railways/types";
 import { NetworkPicker, RunSettings } from "./CapacityForm";
 import { type LineState, RunResults, StreetResults } from "./CapacityResults";
+import { projectRunSettings } from "./projectSettings";
 import { every, serverStatus, VERDICTS } from "./capacityText";
 import { buildDrawnNetwork, type DrawnProblem, drawnProblem } from "./drawn";
 import { loadWorkerEngine } from "./engine";
@@ -119,6 +120,8 @@ export function CapacityRun({
   const [sweep, setSweep] = useState(true);
   const [withLoads, setWithLoads] = useState(true);
   const [advanced, setAdvanced] = useState<Partial<CapacityParams>>({});
+  // The project's values (All parameters) under the settings changed for this run.
+  const settings = useMemo(() => ({ ...projectRunSettings(prefs), ...advanced }), [prefs, advanced]);
   const [status, setStatus] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [run, setRun] = useState<Run | null>(null);
@@ -245,7 +248,7 @@ export function CapacityRun({
     infos: LineInfo[],
     alive: () => boolean,
   ) => {
-    const params: StreetRunParams = { ...STREET_RUN_DEFAULTS, ...pickStreetParams(advanced), ...w };
+    const params: StreetRunParams = { ...STREET_RUN_DEFAULTS, ...pickStreetParams(settings), ...w };
     setStreetResults(
       streets.flatMap(({ line, index }) => {
         const r = runStreetLine(line, index, params);
@@ -312,7 +315,7 @@ export function CapacityRun({
           src = { kind: "files", topology: topology!.text, lines: linesFile!.text };
         else {
           setStatus(t("capacity.building"));
-          const built = await buildDrawn(railway);
+          const built = await buildDrawn(railway, undefined, undefined, prefs);
           if (!alive()) return;
           if (typeof built === "string") {
             setError(t(`capacity.drawn.${built}`));
@@ -326,7 +329,7 @@ export function CapacityRun({
         engine.current = { key, engine: e };
       }
       const e = engine.current.engine;
-      const params = { ...advanced, ...w };
+      const params = { ...settings, ...w };
       setNotes(await e.notes());
       const infos = await e.lines();
       setStatus(t("capacity.planning"));
@@ -392,7 +395,7 @@ export function CapacityRun({
         return;
       }
       setSending(true);
-      const built = await buildDrawn(railway).catch((e: unknown) =>
+      const built = await buildDrawn(railway, undefined, undefined, prefs).catch((e: unknown) =>
         e instanceof Error ? e.message : String(e),
       );
       setSending(false);
@@ -419,7 +422,7 @@ export function CapacityRun({
               linesName: linesFile!.name,
             };
     const params = Object.fromEntries(
-      Object.entries({ ...advanced, ...w }).filter(([, v]) => v !== undefined),
+      Object.entries({ ...settings, ...w }).filter(([, v]) => v !== undefined),
     ) as SavedRun["params"];
     setSending(true);
     setServerError(null);
@@ -545,7 +548,7 @@ export function CapacityRun({
         ownBoardings={ownBoardings}
         onOwnBoardings={onOwnBoardings}
         ensureZones={ensureZones}
-        advanced={advanced}
+        advanced={settings}
         setAdvanced={setAdvanced}
       />
 
@@ -625,7 +628,7 @@ export function CapacityRun({
 
       {shownRun && <RunResults run={shownRun} lines={shownLines} notes={shownNotes} loads={loads} />}
 
-      <StreetResults results={streetResults} loads={loads} advanced={advanced} prefs={prefs} />
+      <StreetResults results={streetResults} loads={loads} advanced={settings} prefs={prefs} />
     </section>
   );
   return panel ? createPortal(body, panel) : body;
