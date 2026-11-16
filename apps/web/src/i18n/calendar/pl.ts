@@ -90,4 +90,45 @@ export const calendarPl = {
   "calrun.fig.passengers": "Pasażerowie",
   "calrun.fig.energy_kwh": "Energia (MWh)",
   "calrun.fig.operating_cost": "Koszty eksploatacji",
+  "climate.title": "Klimat",
+  "climate.intro":
+    "Temperatury powietrza w miejscu projektu, miesiąc po miesiącu. Przebiegi kalendarzowe przewidują na ich podstawie dni upalne, bardzo upalne i mroźne oraz ich wpływ na kolej i zużycie energii. Klimat jest taki sam w każdym roku symulacji.",
+  "climate.noPlace": "Najpierw narysuj kolej lub linię uliczną: klimat jest pobierany dla miejsca projektu.",
+  "climate.loading": "Pobieranie klimatu…",
+  "climate.failed": "Nie udało się pobrać klimatu: {error}",
+  "climate.refetch": "Pobierz ponownie dla miejsca projektu",
+  "climate.month": "Miesiąc",
+  "climate.mean": "Średnia (°C)",
+  "climate.max": "Średnia maksymalna (°C)",
+  "climate.min": "Średnia minimalna (°C)",
+  "climate.maxSd": "Rozrzut maksimów (°C)",
+  "climate.minSd": "Rozrzut minimów (°C)",
+  "climate.hotDays": "Dni upalne",
+  "climate.veryHotDays": "Dni bardzo upalne",
+  "climate.coldDays": "Dni mroźne",
+  "climate.ownHint": "Wpisz liczbę, aby użyć własnej; otrzyma ramkę, a ↺ przywraca wartość z Open-Meteo.",
+  "climate.reset": "Wróć do {value} z Open-Meteo",
+  "climate.clear": "Wyczyść",
+  "climate.limits":
+    "Dzień upalny osiąga {heat} °C (ograniczenie prędkości z powodu upału na torze, {heatKmh} km/h) lub {sag} °C (zwis sieci trakcyjnej, {sagKmh} km/h pod przewodem), zależnie od tego, co niższe; dzień bardzo upalny osiąga oba progi. Dzień mroźny spada do {frost} °C lub niżej. {switches} Zmień te progi w Wszystkie parametry, grupa Energia i klimat.",
+  "climate.switchesHeated": "Rozjazdy są ogrzewane.",
+  "climate.switchesFreeze": "Rozjazdy nie są ogrzewane i mogą zamarzać.",
+  "climate.source":
+    "Dane pogodowe z Open-Meteo.com (CC BY 4.0): temperatury dobowe {from}–{to} w punkcie {lat}, {lon}. Projekt zachowuje własną kopię.",
+  "calrun.weatherOn":
+    "Pogoda: dni upalne, bardzo upalne i mroźne są przewidywane na podstawie klimatu projektu, każdy ze swoim wpływem na kolej i zużycie energii.",
+  "calrun.weatherOff": "Brak klimatu, więc każdy dzień jest symulowany jako zwykły.",
+  "calrun.openClimate": "Ustaw klimat w preferencjach projektu",
+  "calrun.weatherDays":
+    "Przewidywana pogoda: {hot} dni upalnych, {veryHot} bardzo upalnych i {cold} mroźnych",
+  "calrun.variant.hot": "Dni upalne",
+  "calrun.variant.very_hot": "Dni bardzo upalne",
+  "calrun.variant.cold": "Dni mroźne",
+  "calrun.hotAll": "Dni upalne i bardzo upalne",
+  "calrun.restricted": "ograniczenia {from}–{to}",
+  "calrun.step.variant": "Symulacja: {day}, {variant} ({n} z {total})…",
+  "calrun.extraEnergy":
+    "Energia obejmuje {hvac} MWh na ogrzewanie i klimatyzację w pojazdach oraz {switches} MWh na ogrzewanie rozjazdów.",
+  "calrun.weatherMethod":
+    "Dni upalne, bardzo upalne i mroźne to wartości oczekiwane ze średniej i rozrzutu każdego miesiąca, więc mogą mieć części dziesiętne. Ograniczenia z powodu upału są symulowane w ich godzinach, zamarznięte rozjazdy przez cały dzień. Pojazdokilometry, pojazdogodziny i pasażerowie pozostają takie same przy każdej pogodzie.",
 } satisfies CalendarMessages;

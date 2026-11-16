@@ -90,4 +90,45 @@ export const calendarBn = {
   "calrun.fig.passengers": "যাত্রী",
   "calrun.fig.energy_kwh": "শক্তি (MWh)",
   "calrun.fig.operating_cost": "পরিচালন ব্যয়",
+  "climate.title": "জলবায়ু",
+  "climate.intro":
+    "প্রকল্পের স্থানে মাসে মাসে বাতাসের তাপমাত্রা। ক্যালেন্ডার রান এ থেকে গরম, খুব গরম ও তুষারপাতের দিন এবং রেল ও শক্তির ওপর তাদের প্রভাব অনুমান করে। প্রতিটি সিমুলেশন বছরে জলবায়ু একই থাকে।",
+  "climate.noPlace": "আগে রেলপথ বা একটি রাস্তার লাইন আঁকুন: জলবায়ু প্রকল্পের স্থানের জন্য আনা হয়।",
+  "climate.loading": "জলবায়ু আনা হচ্ছে…",
+  "climate.failed": "জলবায়ু আনা যায়নি: {error}",
+  "climate.refetch": "প্রকল্পের স্থানের জন্য আবার আনুন",
+  "climate.month": "মাস",
+  "climate.mean": "গড় (°C)",
+  "climate.max": "গড় সর্বোচ্চ (°C)",
+  "climate.min": "গড় সর্বনিম্ন (°C)",
+  "climate.maxSd": "সর্বোচ্চের বিস্তার (°C)",
+  "climate.minSd": "সর্বনিম্নের বিস্তার (°C)",
+  "climate.hotDays": "গরম দিন",
+  "climate.veryHotDays": "খুব গরম দিন",
+  "climate.coldDays": "তুষারপাতের দিন",
+  "climate.ownHint":
+    "নিজের মান ব্যবহার করতে একটি সংখ্যা লিখুন; এটি চিহ্নিত হবে এবং ↺ Open-Meteo-র মান ফেরায়।",
+  "climate.reset": "Open-Meteo-র {value}-এ ফিরুন",
+  "climate.clear": "মুছুন",
+  "climate.limits":
+    "গরম দিন {heat} °C (লাইনে গরমের কারণে গতিসীমা, {heatKmh} km/h) বা {sag} °C (ওভারহেড তার ঝুলে পড়া, তারের নিচে {sagKmh} km/h) ছোঁয়, যেটি কম; খুব গরম দিন দুটিই ছোঁয়। তুষারপাতের দিন {frost} °C বা তার নিচে নামে। {switches} এই সীমাগুলো সব প্যারামিটার, শক্তি ও জলবায়ু গোষ্ঠীতে বদলান।",
+  "climate.switchesHeated": "পয়েন্টগুলো গরম রাখা হয়।",
+  "climate.switchesFreeze": "পয়েন্টগুলো গরম রাখা হয় না এবং জমে যেতে পারে।",
+  "climate.source":
+    "আবহাওয়ার তথ্য Open-Meteo.com থেকে (CC BY 4.0): {lat}, {lon}-এ {from}–{to} সালের দৈনিক তাপমাত্রা। প্রকল্প নিজস্ব কপি রাখে।",
+  "calrun.weatherOn":
+    "আবহাওয়া: গরম, খুব গরম ও তুষারপাতের দিন প্রকল্পের জলবায়ু থেকে অনুমান করা হয়, প্রতিটির রেল ও শক্তির ওপর প্রভাবসহ।",
+  "calrun.weatherOff": "এখনও জলবায়ু নেই, তাই প্রতিটি দিন সাধারণ দিন হিসেবে চলে।",
+  "calrun.openClimate": "প্রকল্পের পছন্দসমূহে জলবায়ু ঠিক করুন",
+  "calrun.weatherDays": "প্রত্যাশিত আবহাওয়া: {hot}টি গরম, {veryHot}টি খুব গরম ও {cold}টি তুষারপাতের দিন",
+  "calrun.variant.hot": "গরম দিন",
+  "calrun.variant.very_hot": "খুব গরম দিন",
+  "calrun.variant.cold": "তুষারপাতের দিন",
+  "calrun.hotAll": "গরম ও খুব গরম দিন",
+  "calrun.restricted": "সীমাবদ্ধতা {from}–{to}",
+  "calrun.step.variant": "{day} সিমুলেট হচ্ছে, {variant} ({total}-এর মধ্যে {n})…",
+  "calrun.extraEnergy":
+    "শক্তিতে যানের ভেতরে গরম ও শীতাতপ নিয়ন্ত্রণের জন্য {hvac} MWh এবং পয়েন্ট গরম রাখার জন্য {switches} MWh অন্তর্ভুক্ত।",
+  "calrun.weatherMethod":
+    "গরম, খুব গরম ও তুষারপাতের দিন প্রতিটি মাসের গড় ও বিস্তার থেকে প্রত্যাশিত সংখ্যা, তাই এগুলোতে দশমিক থাকতে পারে। গরমের সীমাবদ্ধতা তার ঘণ্টাগুলোতে এবং জমে যাওয়া পয়েন্ট সারা দিন ধরে সিমুলেট হয়। যান-কিমি, যান-ঘণ্টা ও যাত্রী যেকোনো আবহাওয়ায় একই থাকে।",
 } satisfies CalendarMessages;

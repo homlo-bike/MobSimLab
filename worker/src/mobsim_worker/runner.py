@@ -176,7 +176,9 @@ def process(
                 conn.execute(REPLAY, {"id": run_id, "data": replay})
         elif kind == "calendar":
             # A project without rail service lines has no network: only the expansion runs.
-            outcome, result = run_calendar(loader(network, lines) if network else None, settings, reporter)
+            outcome, result = run_calendar(
+                (lambda net: loader(net, lines)) if network else None, settings, reporter, network or None
+            )
         elif kind == "sweep":
             outcome, result = run_sweep(loader(network, lines), settings, reporter)
         else:

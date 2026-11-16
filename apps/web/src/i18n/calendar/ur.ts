@@ -91,4 +91,45 @@ export const calendarUr = {
   "calrun.fig.passengers": "مسافر",
   "calrun.fig.energy_kwh": "توانائی (MWh)",
   "calrun.fig.operating_cost": "آپریٹنگ لاگت",
+  "climate.title": "آب و ہوا",
+  "climate.intro":
+    "منصوبے کے مقام پر ہوا کا درجۂ حرارت، مہینہ بہ مہینہ۔ کیلنڈر رنز اس سے گرم، بہت گرم اور پالے والے دنوں اور ریلوے و توانائی پر ان کے اثرات کا اندازہ لگاتے ہیں۔ آب و ہوا ہر سمولیشن سال میں یکساں ہے۔",
+  "climate.noPlace": "پہلے ریلوے یا کوئی سڑک لائن بنائیں: آب و ہوا منصوبے کے مقام کے لیے حاصل کی جاتی ہے۔",
+  "climate.loading": "آب و ہوا حاصل کی جا رہی ہے…",
+  "climate.failed": "آب و ہوا حاصل نہ ہو سکی: {error}",
+  "climate.refetch": "منصوبے کے مقام کے لیے دوبارہ حاصل کریں",
+  "climate.month": "مہینہ",
+  "climate.mean": "اوسط (°C)",
+  "climate.max": "اوسط زیادہ سے زیادہ (°C)",
+  "climate.min": "اوسط کم سے کم (°C)",
+  "climate.maxSd": "زیادہ سے زیادہ کا پھیلاؤ (°C)",
+  "climate.minSd": "کم سے کم کا پھیلاؤ (°C)",
+  "climate.hotDays": "گرم دن",
+  "climate.veryHotDays": "بہت گرم دن",
+  "climate.coldDays": "پالے کے دن",
+  "climate.ownHint":
+    "اپنی قدر استعمال کرنے کے لیے عدد لکھیں؛ اسے فریم ملتا ہے اور ↺ Open-Meteo کی قدر واپس لاتا ہے۔",
+  "climate.reset": "Open-Meteo کی {value} پر واپس جائیں",
+  "climate.clear": "صاف کریں",
+  "climate.limits":
+    "گرم دن {heat} °C (پٹری پر گرمی کی وجہ سے رفتار کی حد، {heatKmh} km/h) یا {sag} °C (اوور ہیڈ لائن کا جھکاؤ، تار کے نیچے {sagKmh} km/h) تک پہنچتا ہے، جو بھی کم ہو؛ بہت گرم دن دونوں تک پہنچتا ہے۔ پالے کا دن {frost} °C یا اس سے نیچے گرتا ہے۔ {switches} یہ حدیں تمام پیرامیٹرز، گروپ توانائی اور آب و ہوا میں بدلیں۔",
+  "climate.switchesHeated": "سوئچ گرم کیے جاتے ہیں۔",
+  "climate.switchesFreeze": "سوئچ گرم نہیں کیے جاتے اور جم سکتے ہیں۔",
+  "climate.source":
+    "موسمی ڈیٹا Open-Meteo.com سے (CC BY 4.0): {lat}، {lon} پر {from}–{to} کے روزانہ درجۂ حرارت۔ منصوبہ اپنی نقل رکھتا ہے۔",
+  "calrun.weatherOn":
+    "موسم: گرم، بہت گرم اور پالے کے دن منصوبے کی آب و ہوا سے متوقع ہیں، ہر ایک ریلوے اور توانائی پر اپنے اثر کے ساتھ۔",
+  "calrun.weatherOff": "ابھی آب و ہوا نہیں، اس لیے ہر دن عام دن کی طرح چلتا ہے۔",
+  "calrun.openClimate": "منصوبے کی ترجیحات میں آب و ہوا مقرر کریں",
+  "calrun.weatherDays": "متوقع موسم: {hot} گرم، {veryHot} بہت گرم اور {cold} پالے کے دن",
+  "calrun.variant.hot": "گرم دن",
+  "calrun.variant.very_hot": "بہت گرم دن",
+  "calrun.variant.cold": "پالے کے دن",
+  "calrun.hotAll": "گرم اور بہت گرم دن",
+  "calrun.restricted": "پابندیاں {from}–{to}",
+  "calrun.step.variant": "{day} کی سمولیشن، {variant} ({total} میں سے {n})…",
+  "calrun.extraEnergy":
+    "توانائی میں گاڑی کے اندر ہیٹنگ اور ایئر کنڈیشننگ کے لیے {hvac} MWh اور سوئچ ہیٹنگ کے لیے {switches} MWh شامل ہیں۔",
+  "calrun.weatherMethod":
+    "گرم، بہت گرم اور پالے کے دن ہر مہینے کے اوسط اور پھیلاؤ سے متوقع تعداد ہیں، اس لیے ان میں اعشاریہ ہو سکتا ہے۔ گرمی کی پابندیاں اپنے گھنٹوں میں اور جمے ہوئے سوئچ پورے دن کے لیے سمولیٹ ہوتے ہیں۔ گاڑی کلومیٹر، گاڑی گھنٹے اور مسافر ہر موسم میں یکساں رہتے ہیں۔",
 } satisfies CalendarMessages;

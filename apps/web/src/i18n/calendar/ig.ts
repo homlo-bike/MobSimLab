@@ -91,4 +91,46 @@ export const calendarIg = {
   "calrun.fig.passengers": "Ndị njem",
   "calrun.fig.energy_kwh": "Ike (MWh)",
   "calrun.fig.operating_cost": "Ọnụ ahịa ọrụ",
+  "climate.title": "Ihu igwe",
+  "climate.intro":
+    "Okpomọkụ ikuku n'ebe ọrụ ahụ dị, ọnwa n'ọnwa. Ọrụ kalenda na-eji ya atụle ụbọchị okpomọkụ, okpomọkụ dị ukwuu na ụbọchị oyi kpụkọrọ akpụkọ, na mmetụta ha n'ụgbọ oloko na ike. Ihu igwe bụ otu n'afọ nṅomi ọ bụla.",
+  "climate.noPlace":
+    "Buru ụzọ see ụzọ ụgbọ oloko ma ọ bụ ahịrị okporo ụzọ: a na-ewetara ihu igwe maka ebe ọrụ ahụ dị.",
+  "climate.loading": "Na-ewetara ihu igwe…",
+  "climate.failed": "Enweghị ike iwetara ihu igwe: {error}",
+  "climate.refetch": "Weta ọzọ maka ebe ọrụ ahụ dị",
+  "climate.month": "Ọnwa",
+  "climate.mean": "Nkezi (°C)",
+  "climate.max": "Nkezi kachasị elu (°C)",
+  "climate.min": "Nkezi kachasị ala (°C)",
+  "climate.maxSd": "Mgbasa nke ndị kachasị elu (°C)",
+  "climate.minSd": "Mgbasa nke ndị kachasị ala (°C)",
+  "climate.hotDays": "Ụbọchị okpomọkụ",
+  "climate.veryHotDays": "Ụbọchị okpomọkụ dị ukwuu",
+  "climate.coldDays": "Ụbọchị oyi kpụkọrọ akpụkọ",
+  "climate.ownHint": "Pịa nọmba iji jiri nke gị; a ga-etinye ya n'okpokoro, ↺ na-eweghachi nke Open-Meteo.",
+  "climate.reset": "Laghachi na {value} nke Open-Meteo",
+  "climate.clear": "Hichapụ",
+  "climate.limits":
+    "Ụbọchị okpomọkụ na-eru {heat} °C (oke ọsọ n'ihi okpomọkụ n'ụzọ, {heatKmh} km/h) ma ọ bụ {sag} °C (waya dị n'elu na-agbada, {sagKmh} km/h n'okpuru waya), nke dị ala; ụbọchị okpomọkụ dị ukwuu na-eru ha abụọ. Ụbọchị oyi kpụkọrọ akpụkọ na-agbada ruo {frost} °C ma ọ bụ n'okpuru. {switches} Gbanwee oke ndị a na Paramita niile, otu Ike na ihu igwe.",
+  "climate.switchesHeated": "A na-ekpo ihe mgbanwe ụzọ ọkụ.",
+  "climate.switchesFreeze": "A naghị ekpo ihe mgbanwe ụzọ ọkụ, ha nwere ike ịkpụ akpụ.",
+  "climate.source":
+    "Data ihu igwe sitere na Open-Meteo.com (CC BY 4.0): okpomọkụ kwa ụbọchị {from}–{to} na {lat}, {lon}. Ọrụ ahụ na-edebe mbipụta nke ya.",
+  "calrun.weatherOn":
+    "Ihu igwe: a na-atụle ụbọchị okpomọkụ, okpomọkụ dị ukwuu na oyi kpụkọrọ akpụkọ site n'ihu igwe ọrụ ahụ, nke ọ bụla na mmetụta ya n'ụgbọ oloko na ike.",
+  "calrun.weatherOff": "Enwebeghị ihu igwe, ya mere ụbọchị ọ bụla na-arụ ọrụ dị ka ụbọchị nkịtị.",
+  "calrun.openClimate": "Setịpụ ihu igwe na Mmasị ọrụ",
+  "calrun.weatherDays":
+    "Ihu igwe a tụrụ anya: ụbọchị {hot} okpomọkụ, {veryHot} okpomọkụ dị ukwuu na {cold} oyi kpụkọrọ akpụkọ",
+  "calrun.variant.hot": "Ụbọchị okpomọkụ",
+  "calrun.variant.very_hot": "Ụbọchị okpomọkụ dị ukwuu",
+  "calrun.variant.cold": "Ụbọchị oyi kpụkọrọ akpụkọ",
+  "calrun.hotAll": "Ụbọchị okpomọkụ na okpomọkụ dị ukwuu",
+  "calrun.restricted": "mmachi {from}–{to}",
+  "calrun.step.variant": "Na-eṅomi {day}, {variant} ({n} n'ime {total})…",
+  "calrun.extraEnergy":
+    "Ike ahụ gụnyere MWh {hvac} maka ikpo ọkụ na ime ka ọ dị jụụ n'ime ụgbọ na MWh {switches} maka ikpo ihe mgbanwe ụzọ ọkụ.",
+  "calrun.weatherMethod":
+    "Ụbọchị okpomọkụ, okpomọkụ dị ukwuu na oyi kpụkọrọ akpụkọ bụ ọnụ ọgụgụ a tụrụ anya site na nkezi na mgbasa nke ọnwa ọ bụla, ya mere ha nwere ike inwe ntụpọ. A na-eṅomi mmachi okpomọkụ n'awa ha, ihe mgbanwe ụzọ kpụrụ akpụ ụbọchị niile. Ụgbọ-km, ụgbọ-awa na ndị njem na-anọgide otu n'ihu igwe ọ bụla.",
 } satisfies CalendarMessages;

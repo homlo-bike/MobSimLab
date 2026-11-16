@@ -1,7 +1,7 @@
 import json
 from typing import Any
 
-from mobsim_worker.jobs.calendar import expand, run_calendar
+from mobsim_worker.jobs.calendar import capped_network, expand, run_calendar
 
 
 class FakeKernel:
@@ -125,3 +125,118 @@ def test_stops_between_days() -> None:
     outcome, result = run_calendar(FakeKernel(), s, reporter)
     assert outcome == "stopped"
     assert result["periods"] == []
+
+
+NETWORK = json.dumps(
+    {
+        "sections": [
+            {
+                "id": "a",
+                "use": "running",
+                "power": {"kind": "overhead", "system": None},
+                "speed_kmh": [{"from_m": 0, "to_m": 500, "value": 120}],
+            },
+            {
+                "id": "b",
+                "use": "running",
+                "power": {"kind": "third_rail", "system": None},
+                "speed_kmh": [
+                    {"from_m": 0, "to_m": 500, "value": 100},
+                    {"from_m": 500, "to_m": 900, "value": 50},
+                ],
+            },
+            {
+                "id": "c",
+                "use": "storage",
+                "power": {"kind": "overhead", "system": None},
+                "speed_kmh": [{"from_m": 0, "to_m": 100, "value": 25}],
+            },
+        ]
+    }
+)
+
+
+def speeds(network: str) -> dict[str, list[float]]:
+    return {s["id"]: [r["value"] for r in s["speed_kmh"]] for s in json.loads(network)["sections"]}
+
+
+def test_caps_running_sections_in_heat() -> None:
+    hot = capped_network(NETWORK, 60, None)
+    assert hot is not None
+    assert speeds(hot) == {"a": [60], "b": [60, 50], "c": [25]}
+    very_hot = capped_network(NETWORK, 90, 70)
+    assert very_hot is not None
+    # Only the section under overhead line sags.
+    assert speeds(very_hot) == {"a": [70], "b": [90, 50], "c": [25]}
+    assert capped_network("example:metro", 60, None) is None
+
+
+class Factory:
+    """Builds fake kernels and remembers the networks they got."""
+
+    def __init__(self) -> None:
+        self.networks: list[str] = []
+        self.kernels: list[FakeKernel] = []
+        self.params: list[dict[str, Any]] = []
+
+    def __call__(self, network: str) -> FakeKernel:
+        self.networks.append(network)
+        k = FakeKernel()
+        outer = self
+        original = k.run
+
+        def run(params_json: str) -> str:
+            outer.params.append(json.loads(params_json))
+            return original(params_json)
+
+        k.run = run  # type: ignore[method-assign]
+        self.kernels.append(k)
+        return k
+
+
+def test_runs_weather_variants_and_adds_their_energy() -> None:
+    s = plan(
+        [
+            {
+                "label": "2027",
+                "counts": {"weekday": 240.5, "weekday.hot": 10, "weekday.very_hot": 2.5, "weekday.cold": 2},
+                "share_of_year": 1,
+                "extra": {"hvac_kwh": 5000, "switch_heating_kwh": 800},
+            }
+        ]
+    )
+    s["plan"]["weather"] = {
+        "hot": {"from_s": 12 * 3600, "to_s": 20 * 3600, "speed_cap_kmh": 60, "overhead_cap_kmh": None},
+        "very_hot": {"from_s": 12 * 3600, "to_s": 20 * 3600, "speed_cap_kmh": 60, "overhead_cap_kmh": 80},
+        "cold": {"delayed_share": 0.4, "primary_delay_mean_s": 300, "primary_delay_max_s": 1800},
+    }
+    factory = Factory()
+    outcome, result = run_calendar(factory, s, Reporter(), NETWORK)
+    assert outcome == "done"
+    # The project's network, then one capped network per heat variant.
+    assert len(factory.networks) == 3
+    assert factory.networks[0] == NETWORK
+    assert speeds(factory.networks[1])["a"] == [60]
+    weekday = result["day_types"]["weekday"]
+    assert weekday["days"] == 255
+    assert weekday["weather"]["hot"]["days"] == 10
+    # Heat restrictions run over their hours only; the cold day runs the whole day with frozen switches.
+    assert (weekday["weather"]["hot"]["rail"]["from_s"], weekday["weather"]["hot"]["rail"]["to_s"]) == (
+        12 * 3600,
+        20 * 3600,
+    )
+    cold = [p for p in factory.params if p.get("delayed_share") == 0.4]
+    assert cold and cold[0]["from_s"] == 5 * 3600 and cold[0]["primary_delay_mean_s"] == 300
+    row = result["periods"][0]
+    assert row["counts"]["weekday"] == 255
+    assert row["weather"] == {"hot": 10, "very_hot": 2.5, "cold": 2}
+    assert row["energy_kwh"] == 255 * 2000 + 5800
+    assert row["extra"] == {"hvac_kwh": 5000, "switch_heating_kwh": 800}
+
+
+def test_cold_with_switch_heating_runs_as_an_ordinary_day() -> None:
+    s = plan([{"label": "2027", "counts": {"weekday": 250, "weekday.cold": 5}}])
+    s["plan"]["weather"] = {"cold": None}
+    factory = Factory()
+    run_calendar(factory, s, Reporter(), NETWORK)
+    assert len(factory.params) == 1

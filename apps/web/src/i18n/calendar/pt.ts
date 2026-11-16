@@ -92,4 +92,45 @@ export const calendarPt = {
   "calrun.fig.passengers": "Passageiros",
   "calrun.fig.energy_kwh": "Energia (MWh)",
   "calrun.fig.operating_cost": "Custo de operação",
+  "climate.title": "Clima",
+  "climate.intro":
+    "Temperaturas do ar no local do projeto, mês a mês. As simulações de calendário usam-nas para prever dias quentes, muito quentes e de geada e os seus efeitos na ferrovia e na energia. O clima é o mesmo em todos os anos de simulação.",
+  "climate.noPlace":
+    "Desenhe primeiro a ferrovia ou uma linha de rua: o clima é obtido para o local do projeto.",
+  "climate.loading": "A obter o clima…",
+  "climate.failed": "Não foi possível obter o clima: {error}",
+  "climate.refetch": "Obter de novo para o local do projeto",
+  "climate.month": "Mês",
+  "climate.mean": "Média (°C)",
+  "climate.max": "Máxima média (°C)",
+  "climate.min": "Mínima média (°C)",
+  "climate.maxSd": "Dispersão das máximas (°C)",
+  "climate.minSd": "Dispersão das mínimas (°C)",
+  "climate.hotDays": "Dias quentes",
+  "climate.veryHotDays": "Dias muito quentes",
+  "climate.coldDays": "Dias de geada",
+  "climate.ownHint": "Escreva um número para usar o seu; fica emoldurado e ↺ repõe o do Open-Meteo.",
+  "climate.reset": "Voltar a {value} do Open-Meteo",
+  "climate.clear": "Limpar",
+  "climate.limits":
+    "Um dia quente atinge {heat} °C (restrição de velocidade por calor na via, {heatKmh} km/h) ou {sag} °C (catenária descaída, {sagKmh} km/h sob o fio), o que for menor; um dia muito quente atinge ambos. Um dia de geada desce a {frost} °C ou menos. {switches} Altere estes limites em Todos os parâmetros, grupo Energia e clima.",
+  "climate.switchesHeated": "Os aparelhos de mudança de via são aquecidos.",
+  "climate.switchesFreeze": "Os aparelhos de mudança de via não são aquecidos e podem congelar.",
+  "climate.source":
+    "Dados meteorológicos do Open-Meteo.com (CC BY 4.0): temperaturas diárias {from}–{to} em {lat}, {lon}. O projeto guarda a sua própria cópia.",
+  "calrun.weatherOn":
+    "Tempo: os dias quentes, muito quentes e de geada são previstos a partir do clima do projeto, cada um com os seus efeitos na ferrovia e na energia.",
+  "calrun.weatherOff": "Ainda sem clima, por isso cada dia é simulado como um dia normal.",
+  "calrun.openClimate": "Definir o clima nas preferências do projeto",
+  "calrun.weatherDays": "Tempo previsto: {hot} dias quentes, {veryHot} muito quentes e {cold} de geada",
+  "calrun.variant.hot": "Dias quentes",
+  "calrun.variant.very_hot": "Dias muito quentes",
+  "calrun.variant.cold": "Dias de geada",
+  "calrun.hotAll": "Dias quentes e muito quentes",
+  "calrun.restricted": "restrições {from}–{to}",
+  "calrun.step.variant": "A simular {day}, {variant} ({n} de {total})…",
+  "calrun.extraEnergy":
+    "A energia inclui {hvac} MWh para aquecimento e ar condicionado a bordo e {switches} MWh para aquecimento de agulhas.",
+  "calrun.weatherMethod":
+    "Os dias quentes, muito quentes e de geada são números esperados a partir da média e da dispersão de cada mês, por isso podem ter casas decimais. As restrições por calor são simuladas durante as suas horas, as agulhas congeladas durante o dia inteiro. Os veículos-km, veículos-hora e passageiros mantêm-se com qualquer tempo.",
 } satisfies CalendarMessages;

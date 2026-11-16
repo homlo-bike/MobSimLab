@@ -91,4 +91,45 @@ export const calendarYo = {
   "calrun.fig.passengers": "Àwọn èrò",
   "calrun.fig.energy_kwh": "Agbára (MWh)",
   "calrun.fig.operating_cost": "Iye owó iṣẹ́",
+  "climate.title": "Ojú ọjọ́",
+  "climate.intro":
+    "Ìwọ̀n ooru afẹ́fẹ́ ní ibi iṣẹ́ àkànṣe náà, oṣù kọ̀ọ̀kan. Àwọn ìṣiṣẹ́ kàlẹ́ńdà ń lò ó láti ṣírò àwọn ọjọ́ gbígbóná, gbígbóná gidigidi àti ọjọ́ yìnyín, àti ipa wọn lórí ọ̀nà ojú irin àti agbára. Ojú ọjọ́ kò yàtọ̀ ní ọdún àfarawé kọ̀ọ̀kan.",
+  "climate.noPlace": "Kọ́kọ́ ya ọ̀nà ojú irin tàbí ìlà òpópónà: a ń gba ojú ọjọ́ fún ibi iṣẹ́ àkànṣe náà.",
+  "climate.loading": "Ó ń gba ojú ọjọ́…",
+  "climate.failed": "Kò ṣeé ṣe láti gba ojú ọjọ́: {error}",
+  "climate.refetch": "Gbà á lẹ́ẹ̀kan sí i fún ibi iṣẹ́ àkànṣe náà",
+  "climate.month": "Oṣù",
+  "climate.mean": "Àròpín (°C)",
+  "climate.max": "Àròpín ti gíga jùlọ (°C)",
+  "climate.min": "Àròpín ti kékeré jùlọ (°C)",
+  "climate.maxSd": "Ìtànkálẹ̀ àwọn gíga jùlọ (°C)",
+  "climate.minSd": "Ìtànkálẹ̀ àwọn kékeré jùlọ (°C)",
+  "climate.hotDays": "Àwọn ọjọ́ gbígbóná",
+  "climate.veryHotDays": "Àwọn ọjọ́ gbígbóná gidigidi",
+  "climate.coldDays": "Àwọn ọjọ́ yìnyín",
+  "climate.ownHint": "Tẹ nọ́ńbà kan láti lo tìrẹ; yóò ní férémù, ↺ yóò sì dá ti Open-Meteo padà.",
+  "climate.reset": "Padà sí {value} ti Open-Meteo",
+  "climate.clear": "Pa rẹ́",
+  "climate.limits":
+    "Ọjọ́ gbígbóná dé {heat} °C (ìdínkù ìyára nítorí ooru lórí ọ̀nà, {heatKmh} km/h) tàbí {sag} °C (wáyà orí tí ó rọ̀, {sagKmh} km/h lábẹ́ wáyà), èyí tí ó kéré jù; ọjọ́ gbígbóná gidigidi dé méjèèjì. Ọjọ́ yìnyín lọ sílẹ̀ sí {frost} °C tàbí kéré sí i. {switches} Yí àwọn ààlà wọ̀nyí padà nínú Gbogbo àwọn pàrámítà, ẹgbẹ́ Agbára àti ojú ọjọ́.",
+  "climate.switchesHeated": "A ń mú àwọn ìyípadà ọ̀nà gbóná.",
+  "climate.switchesFreeze": "A kò mú àwọn ìyípadà ọ̀nà gbóná, wọ́n sì lè dì.",
+  "climate.source":
+    "Dátà ojú ọjọ́ láti Open-Meteo.com (CC BY 4.0): ìwọ̀n ooru ojoojúmọ́ {from}–{to} ní {lat}, {lon}. Iṣẹ́ àkànṣe náà ń pa ẹ̀dà tirẹ̀ mọ́.",
+  "calrun.weatherOn":
+    "Ojú ọjọ́: a ń ṣírò àwọn ọjọ́ gbígbóná, gbígbóná gidigidi àti yìnyín láti ojú ọjọ́ iṣẹ́ àkànṣe náà, ọ̀kọ̀ọ̀kan pẹ̀lú ipa rẹ̀ lórí ọ̀nà ojú irin àti agbára.",
+  "calrun.weatherOff": "Kò sí ojú ọjọ́ síbẹ̀, nítorí náà ọjọ́ kọ̀ọ̀kan ń ṣiṣẹ́ bí ọjọ́ àṣà.",
+  "calrun.openClimate": "Ṣètò ojú ọjọ́ nínú Àwọn Ààyò iṣẹ́ àkànṣe",
+  "calrun.weatherDays":
+    "Ojú ọjọ́ tí a retí: ọjọ́ {hot} gbígbóná, {veryHot} gbígbóná gidigidi àti {cold} ọjọ́ yìnyín",
+  "calrun.variant.hot": "Àwọn ọjọ́ gbígbóná",
+  "calrun.variant.very_hot": "Àwọn ọjọ́ gbígbóná gidigidi",
+  "calrun.variant.cold": "Àwọn ọjọ́ yìnyín",
+  "calrun.hotAll": "Àwọn ọjọ́ gbígbóná àti gbígbóná gidigidi",
+  "calrun.restricted": "ìdínkù {from}–{to}",
+  "calrun.step.variant": "Ó ń ṣe àfarawé {day}, {variant} ({n} nínú {total})…",
+  "calrun.extraEnergy":
+    "Agbára náà ní {hvac} MWh fún ìgbóná àti ìtútù nínú ọkọ̀ àti {switches} MWh fún ìgbóná àwọn ìyípadà ọ̀nà.",
+  "calrun.weatherMethod":
+    "Àwọn ọjọ́ gbígbóná, gbígbóná gidigidi àti yìnyín jẹ́ iye tí a retí láti àròpín àti ìtànkálẹ̀ oṣù kọ̀ọ̀kan, nítorí náà wọ́n lè ní ẹ̀sẹ̀ ìdá. A ń ṣe àfarawé ìdínkù ooru ní wákàtí wọn, àwọn ìyípadà ọ̀nà tí ó dì ní gbogbo ọjọ́. Ọkọ̀-km, ọkọ̀-wákàtí àti àwọn èrò kò yí padà ní ojú ọjọ́ èyíkéyìí.",
 } satisfies CalendarMessages;

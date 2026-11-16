@@ -1413,7 +1413,7 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 
 ### Rail temperature above air temperature in sunlight (climate note)
 
-`climate.rail_temp_above_air_c` · unit: °C · used by: heat-related speed restriction note
+`climate.rail_temp_above_air_c` · unit: °C · used by: heat-related speed restriction note, calendar run hot days
 
 | Context | Low | Central | High | Basis | Check | Sources | Rationale |
 |---|---|---|---|---|---|---|---|
@@ -1421,7 +1421,7 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 
 ### Rail temperature the track is designed for (stress-free or neutral temperature, climate note)
 
-`climate.rail_design_temp_c` · unit: °C · used by: buckling-risk note (risk rises as rail temperature exceeds this by a margin)
+`climate.rail_design_temp_c` · unit: °C · used by: buckling-risk note (risk rises as rail temperature exceeds this by a margin), calendar run hot days
 
 | Context | Low | Central | High | Basis | Check | Sources | Rationale |
 |---|---|---|---|---|---|---|---|
@@ -1477,7 +1477,7 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 
 ### Heating and air-conditioning power of a battery vehicle in service
 
-`energy.hvac_power_kw` · unit: kW · used by: auxiliary energy demand
+`energy.hvac_power_kw` · unit: kW · used by: auxiliary energy demand, calendar run heating and air conditioning energy
 
 | Context | Low | Central | High | Basis | Check | Sources | Rationale |
 |---|---|---|---|---|---|---|---|
@@ -1488,11 +1488,123 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 
 ### Air temperature above which the overhead contact line sags too far
 
-`climate.ocl_sag_air_temp_c` · unit: °C · used by: heat-related speed restriction note
+`climate.ocl_sag_air_temp_c` · unit: °C · used by: heat-related speed restriction note, calendar run hot days
 
 | Context | Low | Central | High | Basis | Check | Sources | Rationale |
 |---|---|---|---|---|---|---|---|
 | all | 32 | 38 | 45 | cited | secondary | [orr-ole-heat](#src-orr-ole-heat) | ORR: UK legacy overhead line equipment is designed for −18 °C to +38 °C; modern auto-tensioned systems and hot-climate designs go higher. |
+
+### Rail temperature above the design temperature at which heat speed restrictions start
+
+`climate.heat_restriction_margin_c` · unit: °C · used by: calendar run hot days (heat speed restriction on welded track)
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 15 | 25 | 35 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | With a 25 °C design temperature and rails 20 °C above the air, restrictions start at about 30 °C air temperature; well-maintained track tolerates more, track with weak ballast less. |
+
+### Speed limit of a heat speed restriction (buckling risk on welded track)
+
+`climate.heat_speed_kmh` · unit: km/h · used by: calendar run hot days
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 30 | 60 | 90 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Blanket emergency speed restrictions in hot weather are typically 30–100 km/h; lines slower than the limit are not affected. |
+
+### Hour of the day heat speed restrictions start on a hot day
+
+`climate.heat_from_h` · unit: h · used by: calendar run hot days
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 10 | 12 | 14 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Rail temperature follows the sun and peaks in the afternoon. |
+
+### Hour of the day heat speed restrictions end on a hot day
+
+`climate.heat_to_h` · unit: h · used by: calendar run hot days
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 18 | 20 | 22 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Rails cool down in the evening. |
+
+### Speed limit under a sagging overhead contact line on a very hot day
+
+`climate.ocl_sag_speed_kmh` · unit: km/h · used by: calendar run very hot days
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 40 | 80 | 120 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Lower speeds keep the pantograph from losing contact or catching the sagging wire. |
+
+### Daily minimum air temperature at or below which a day counts as a frost day
+
+`climate.frost_day_min_c` · unit: °C · used by: calendar run cold days (frozen switches, switch heating)
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | -5 | 0 | 2 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Climatology counts a day with a minimum below 0 °C as a frost day; snow and ice in the switches need frost. |
+
+### Switch heating on the switches of the railway
+
+`climate.switch_heating` · unit: choice · used by: calendar run cold days (frozen switches or switch heating energy)
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | – | fitted | – | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Railways with frost fit heating to their switches; without it, switches freeze and fail. |
+
+### Heating power of one switch on a frost day
+
+`climate.switch_heating_kw` · unit: kW · used by: calendar run switch heating energy
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 2 | 4 | 8 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Electric point heating is a few kW per switch; long high-speed turnouts need more. |
+
+### Hours switch heating runs on a frost day
+
+`climate.switch_heating_hours` · unit: h · used by: calendar run switch heating energy
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 6 | 12 | 24 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Controlled heating runs while the rail is near or below freezing, mostly at night and in the morning. |
+
+### Extra share of trips delayed on a frost day without switch heating (frozen switches)
+
+`climate.frost_extra_delayed_share` · unit: share · used by: calendar run cold days
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.05 | 0.1 | 0.3 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Added to the stability test's share of delayed trips (simulation.stability.delayed_share). |
+
+### Mean primary delay on a frost day without switch heating (frozen switches)
+
+`climate.frost_delay_mean_s` · unit: s · used by: calendar run cold days
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 120 | 300 | 900 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Clearing a frozen switch or routing round it takes minutes. |
+
+### Daily mean air temperature below which vehicles heat
+
+`climate.comfort_low_c` · unit: °C · used by: calendar run heating and air conditioning energy
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 12 | 15 | 18 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Heating degree days are often counted below 15 °C. |
+
+### Daily mean air temperature above which vehicles cool
+
+`climate.comfort_high_c` · unit: °C · used by: calendar run heating and air conditioning energy
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 20 | 22 | 26 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Cooling degree days are often counted above 22 °C. |
+
+### Degrees beyond the comfort range at which heating or air conditioning runs at full power
+
+`climate.hvac_full_delta_c` · unit: °C · used by: calendar run heating and air conditioning energy
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 15 | 20 | 30 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Heating and cooling power grows with the gap to the comfort range up to the full power (energy.hvac_power_kw). |
 
 ## Cost
 

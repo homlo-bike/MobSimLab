@@ -91,4 +91,45 @@ export const calendarTr = {
   "calrun.fig.passengers": "Yolcular",
   "calrun.fig.energy_kwh": "Enerji (MWh)",
   "calrun.fig.operating_cost": "İşletme maliyeti",
+  "climate.title": "İklim",
+  "climate.intro":
+    "Proje konumundaki hava sıcaklıkları, ay ay. Takvim çalıştırmaları bunlardan sıcak, çok sıcak ve don günlerini ve bunların demiryoluna ve enerjiye etkilerini öngörür. İklim her simülasyon yılında aynıdır.",
+  "climate.noPlace": "Önce demiryolunu ya da bir cadde hattını çizin: iklim projenin konumu için alınır.",
+  "climate.loading": "İklim alınıyor…",
+  "climate.failed": "İklim alınamadı: {error}",
+  "climate.refetch": "Proje konumu için yeniden al",
+  "climate.month": "Ay",
+  "climate.mean": "Ortalama (°C)",
+  "climate.max": "Ortalama en yüksek (°C)",
+  "climate.min": "Ortalama en düşük (°C)",
+  "climate.maxSd": "En yükseklerin yayılımı (°C)",
+  "climate.minSd": "En düşüklerin yayılımı (°C)",
+  "climate.hotDays": "Sıcak günler",
+  "climate.veryHotDays": "Çok sıcak günler",
+  "climate.coldDays": "Don günleri",
+  "climate.ownHint":
+    "Kendi değerinizi kullanmak için bir sayı yazın; çerçeve alır ve ↺ Open-Meteo değerini geri getirir.",
+  "climate.reset": "Open-Meteo'nun {value} değerine dön",
+  "climate.clear": "Temizle",
+  "climate.limits":
+    "Sıcak bir gün {heat} °C'ye (hatta sıcaklık nedeniyle hız kısıtlaması, {heatKmh} km/sa) ya da {sag} °C'ye (katener sarkması, tel altında {sagKmh} km/sa) ulaşır, hangisi düşükse; çok sıcak bir gün ikisine de ulaşır. Don günü {frost} °C veya altına iner. {switches} Bu sınırları Tüm parametreler, Enerji ve iklim grubunda değiştirin.",
+  "climate.switchesHeated": "Makaslar ısıtılıyor.",
+  "climate.switchesFreeze": "Makaslar ısıtılmıyor ve donabilir.",
+  "climate.source":
+    "Hava verisi Open-Meteo.com'dan (CC BY 4.0): {lat}, {lon} noktasında {from}–{to} günlük sıcaklıkları. Proje kendi kopyasını saklar.",
+  "calrun.weatherOn":
+    "Hava: sıcak, çok sıcak ve don günleri projenin ikliminden öngörülür; her biri demiryoluna ve enerjiye etkisiyle.",
+  "calrun.weatherOff": "Henüz iklim yok, bu yüzden her gün sıradan bir gün olarak çalışır.",
+  "calrun.openClimate": "İklimi proje tercihlerinde ayarlayın",
+  "calrun.weatherDays": "Beklenen hava: {hot} sıcak, {veryHot} çok sıcak ve {cold} don günü",
+  "calrun.variant.hot": "Sıcak günler",
+  "calrun.variant.very_hot": "Çok sıcak günler",
+  "calrun.variant.cold": "Don günleri",
+  "calrun.hotAll": "Sıcak ve çok sıcak günler",
+  "calrun.restricted": "kısıtlamalar {from}–{to}",
+  "calrun.step.variant": "{day} simüle ediliyor, {variant} ({total} içinden {n})…",
+  "calrun.extraEnergy":
+    "Enerjiye araç içi ısıtma ve klima için {hvac} MWh ve makas ısıtması için {switches} MWh dahildir.",
+  "calrun.weatherMethod":
+    "Sıcak, çok sıcak ve don günleri her ayın ortalaması ve yayılımından beklenen sayılardır, bu yüzden ondalıklı olabilir. Sıcaklık kısıtlamaları kendi saatlerinde, donmuş makaslar tüm gün boyunca simüle edilir. Araç-km, araç-saat ve yolcular her havada aynı kalır.",
 } satisfies CalendarMessages;

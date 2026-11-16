@@ -92,4 +92,46 @@ export const calendarDe = {
   "calrun.fig.passengers": "Fahrgäste",
   "calrun.fig.energy_kwh": "Energie (MWh)",
   "calrun.fig.operating_cost": "Betriebskosten",
+  "climate.title": "Klima",
+  "climate.intro":
+    "Lufttemperaturen am Ort des Projekts, Monat für Monat. Kalenderläufe erwarten daraus heiße, sehr heiße und Frosttage und ihre Wirkung auf die Bahn und den Energiebedarf. Das Klima ist in jedem Simulationsjahr gleich.",
+  "climate.noPlace":
+    "Zeichnen Sie zuerst die Bahn oder eine Straßenlinie: Das Klima wird für den Ort des Projekts abgerufen.",
+  "climate.loading": "Klima wird abgerufen…",
+  "climate.failed": "Das Klima konnte nicht abgerufen werden: {error}",
+  "climate.refetch": "Für den Ort des Projekts neu abrufen",
+  "climate.month": "Monat",
+  "climate.mean": "Mittel (°C)",
+  "climate.max": "Mittleres Maximum (°C)",
+  "climate.min": "Mittleres Minimum (°C)",
+  "climate.maxSd": "Streuung der Maxima (°C)",
+  "climate.minSd": "Streuung der Minima (°C)",
+  "climate.hotDays": "Heiße Tage",
+  "climate.veryHotDays": "Sehr heiße Tage",
+  "climate.coldDays": "Frosttage",
+  "climate.ownHint":
+    "Geben Sie eine Zahl ein, um Ihren eigenen Wert zu verwenden; er bekommt einen Rahmen und ↺ holt den Wert von Open-Meteo zurück.",
+  "climate.reset": "Zurück zu {value} von Open-Meteo",
+  "climate.clear": "Leeren",
+  "climate.limits":
+    "Ein heißer Tag erreicht {heat} °C (Hitze-Langsamfahrstelle auf dem Gleis, {heatKmh} km/h) oder {sag} °C (Durchhang der Oberleitung, {sagKmh} km/h unter dem Fahrdraht), je nachdem, was niedriger ist; ein sehr heißer Tag erreicht beides. Ein Frosttag fällt auf {frost} °C oder darunter. {switches} Ändern Sie diese Grenzen unter Alle Parameter, Gruppe Energie und Klima.",
+  "climate.switchesHeated": "Die Weichen werden beheizt.",
+  "climate.switchesFreeze": "Die Weichen werden nicht beheizt und können einfrieren.",
+  "climate.source":
+    "Wetterdaten von Open-Meteo.com (CC BY 4.0): Tagestemperaturen {from}–{to} bei {lat}, {lon}. Das Projekt behält eine eigene Kopie.",
+  "calrun.weatherOn":
+    "Wetter: Heiße, sehr heiße und Frosttage werden aus dem Klima des Projekts erwartet, jeweils mit ihrer Wirkung auf die Bahn und den Energiebedarf.",
+  "calrun.weatherOff": "Noch kein Klima, daher läuft jeder Tag als gewöhnlicher Tag.",
+  "calrun.openClimate": "Klima in den Projekteinstellungen festlegen",
+  "calrun.weatherDays": "Erwartetes Wetter: {hot} heiße, {veryHot} sehr heiße und {cold} Frosttage",
+  "calrun.variant.hot": "Heiße Tage",
+  "calrun.variant.very_hot": "Sehr heiße Tage",
+  "calrun.variant.cold": "Frosttage",
+  "calrun.hotAll": "Heiße und sehr heiße Tage",
+  "calrun.restricted": "Einschränkungen {from}–{to}",
+  "calrun.step.variant": "Simuliere {day}, {variant} ({n} von {total})…",
+  "calrun.extraEnergy":
+    "Die Energie enthält {hvac} MWh für Heizung und Klimatisierung an Bord und {switches} MWh für die Weichenheizung.",
+  "calrun.weatherMethod":
+    "Heiße, sehr heiße und Frosttage sind Erwartungswerte aus Mittel und Streuung jedes Monats und können daher Nachkommastellen haben. Hitze-Langsamfahrstellen werden über ihre Stunden simuliert, eingefrorene Weichen über den ganzen Tag. Fahrzeug-km, Fahrzeugstunden und Fahrgäste bleiben bei jedem Wetter gleich.",
 } satisfies CalendarMessages;

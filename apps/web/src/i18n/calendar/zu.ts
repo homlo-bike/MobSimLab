@@ -92,4 +92,47 @@ export const calendarZu = {
   "calrun.fig.passengers": "Abagibeli",
   "calrun.fig.energy_kwh": "Amandla (MWh)",
   "calrun.fig.operating_cost": "Izindleko zokusebenza",
+  "climate.title": "Isimo sezulu",
+  "climate.intro":
+    "Amazinga okushisa omoya endaweni yephrojekthi, inyanga ngenyanga. Ukusebenza kwekhalenda kukusebenzisela ukulinganisa izinsuku ezishisayo, ezishisa kakhulu nezinsuku zeqhwa, kanye nemithelela yazo kujantshi nakumandla. Isimo sezulu siyafana kuyo yonke iminyaka yokulingisa.",
+  "climate.noPlace":
+    "Qala ngokudweba ujantshi noma umugqa womgwaqo: isimo sezulu silandwa endaweni yephrojekthi.",
+  "climate.loading": "Kulandwa isimo sezulu…",
+  "climate.failed": "Ayikwazanga ukulanda isimo sezulu: {error}",
+  "climate.refetch": "Landa futhi endaweni yephrojekthi",
+  "climate.month": "Inyanga",
+  "climate.mean": "Isilinganiso (°C)",
+  "climate.max": "Isilinganiso esiphezulu (°C)",
+  "climate.min": "Isilinganiso esiphansi (°C)",
+  "climate.maxSd": "Ukusabalala kwamazinga aphezulu (°C)",
+  "climate.minSd": "Ukusabalala kwamazinga aphansi (°C)",
+  "climate.hotDays": "Izinsuku ezishisayo",
+  "climate.veryHotDays": "Izinsuku ezishisa kakhulu",
+  "climate.coldDays": "Izinsuku zeqhwa",
+  "climate.ownHint":
+    "Thayipha inombolo ukuze usebenzise eyakho; izoba nohlaka futhi ↺ ibuyisa eka-Open-Meteo.",
+  "climate.reset": "Buyela ku-{value} ka-Open-Meteo",
+  "climate.clear": "Sula",
+  "climate.limits":
+    "Usuku olushisayo lufika ku-{heat} °C (umkhawulo wejubane ngenxa yokushisa kujantshi, {heatKmh} km/h) noma ku-{sag} °C (ukuxega kocingo olungaphezulu, {sagKmh} km/h ngaphansi kocingo), noma yikuphi okuphansi; usuku olushisa kakhulu lufika kukho kokubili. Usuku lweqhwa lwehla luye ku-{frost} °C noma ngaphansi. {switches} Shintsha le mikhawulo ku-Wonke amapharamitha, iqembu Amandla nesimo sezulu.",
+  "climate.switchesHeated": "Amaswishi ayafudunyezwa.",
+  "climate.switchesFreeze": "Amaswishi awafudunyezwa futhi angaqandeka.",
+  "climate.source":
+    "Idatha yesimo sezulu evela ku-Open-Meteo.com (CC BY 4.0): amazinga okushisa ansuku zonke {from}–{to} ku-{lat}, {lon}. Iphrojekthi igcina ikhophi yayo.",
+  "calrun.weatherOn":
+    "Isimo sezulu: izinsuku ezishisayo, ezishisa kakhulu nezeqhwa zilinganiswa kusukela esimweni sezulu sephrojekthi, ngalunye nomthelela walo kujantshi nakumandla.",
+  "calrun.weatherOff": "Asikabikho isimo sezulu, ngakho usuku ngalunye lusebenza njengosuku olujwayelekile.",
+  "calrun.openClimate": "Setha isimo sezulu kokuthandwayo kwephrojekthi",
+  "calrun.weatherDays":
+    "Isimo sezulu esilindelekile: izinsuku ezingu-{hot} ezishisayo, {veryHot} ezishisa kakhulu no-{cold} zeqhwa",
+  "calrun.variant.hot": "Izinsuku ezishisayo",
+  "calrun.variant.very_hot": "Izinsuku ezishisa kakhulu",
+  "calrun.variant.cold": "Izinsuku zeqhwa",
+  "calrun.hotAll": "Izinsuku ezishisayo nezishisa kakhulu",
+  "calrun.restricted": "imikhawulo {from}–{to}",
+  "calrun.step.variant": "Kulingiswa {day}, {variant} ({n} kokungu-{total})…",
+  "calrun.extraEnergy":
+    "Amandla ahlanganisa u-{hvac} MWh wokufudumeza nokupholisa ngaphakathi nemoto no-{switches} MWh wokufudumeza amaswishi.",
+  "calrun.weatherMethod":
+    "Izinsuku ezishisayo, ezishisa kakhulu nezeqhwa ziyizinombolo ezilindelekile ezivela esilinganisweni nasekusabalaleni kwenyanga ngayinye, ngakho zingaba namadesimali. Imikhawulo yokushisa ilingiswa emahoreni ayo, amaswishi aqandekile usuku lonke. Imoto-km, imoto-amahora nabagibeli ahlala efana kunoma yisiphi isimo sezulu.",
 } satisfies CalendarMessages;

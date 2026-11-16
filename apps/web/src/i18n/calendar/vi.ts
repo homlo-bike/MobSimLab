@@ -89,4 +89,46 @@ export const calendarVi = {
   "calrun.fig.passengers": "Hành khách",
   "calrun.fig.energy_kwh": "Năng lượng (MWh)",
   "calrun.fig.operating_cost": "Chi phí vận hành",
+  "climate.title": "Khí hậu",
+  "climate.intro":
+    "Nhiệt độ không khí tại vị trí dự án theo từng tháng. Các lượt chạy theo lịch dùng nó để ước tính ngày nóng, rất nóng và ngày sương giá cùng tác động lên đường sắt và năng lượng. Khí hậu giống nhau ở mọi năm mô phỏng.",
+  "climate.noPlace": "Hãy vẽ đường sắt hoặc một tuyến đường phố trước: khí hậu được lấy cho vị trí dự án.",
+  "climate.loading": "Đang lấy khí hậu…",
+  "climate.failed": "Không lấy được khí hậu: {error}",
+  "climate.refetch": "Lấy lại cho vị trí dự án",
+  "climate.month": "Tháng",
+  "climate.mean": "Trung bình (°C)",
+  "climate.max": "Cao nhất trung bình (°C)",
+  "climate.min": "Thấp nhất trung bình (°C)",
+  "climate.maxSd": "Độ phân tán của mức cao nhất (°C)",
+  "climate.minSd": "Độ phân tán của mức thấp nhất (°C)",
+  "climate.hotDays": "Ngày nóng",
+  "climate.veryHotDays": "Ngày rất nóng",
+  "climate.coldDays": "Ngày sương giá",
+  "climate.ownHint":
+    "Nhập một số để dùng giá trị của bạn; ô sẽ có khung và ↺ trả lại giá trị của Open-Meteo.",
+  "climate.reset": "Trở về {value} của Open-Meteo",
+  "climate.clear": "Xóa",
+  "climate.limits":
+    "Ngày nóng đạt {heat} °C (hạn chế tốc độ do nóng trên đường ray, {heatKmh} km/h) hoặc {sag} °C (dây tiếp xúc trên cao bị võng, {sagKmh} km/h dưới dây), tùy mức nào thấp hơn; ngày rất nóng đạt cả hai. Ngày sương giá xuống {frost} °C hoặc thấp hơn. {switches} Đổi các ngưỡng này trong Tất cả tham số, nhóm Năng lượng và khí hậu.",
+  "climate.switchesHeated": "Ghi được sưởi.",
+  "climate.switchesFreeze": "Ghi không được sưởi và có thể đóng băng.",
+  "climate.source":
+    "Dữ liệu thời tiết từ Open-Meteo.com (CC BY 4.0): nhiệt độ hằng ngày {from}–{to} tại {lat}, {lon}. Dự án giữ bản sao riêng.",
+  "calrun.weatherOn":
+    "Thời tiết: ngày nóng, rất nóng và sương giá được ước tính từ khí hậu của dự án, mỗi loại có tác động riêng lên đường sắt và năng lượng.",
+  "calrun.weatherOff": "Chưa có khí hậu nên mọi ngày đều chạy như ngày thường.",
+  "calrun.openClimate": "Đặt khí hậu trong tùy chọn dự án",
+  "calrun.weatherDays":
+    "Thời tiết dự kiến: {hot} ngày nóng, {veryHot} ngày rất nóng và {cold} ngày sương giá",
+  "calrun.variant.hot": "Ngày nóng",
+  "calrun.variant.very_hot": "Ngày rất nóng",
+  "calrun.variant.cold": "Ngày sương giá",
+  "calrun.hotAll": "Ngày nóng và rất nóng",
+  "calrun.restricted": "hạn chế {from}–{to}",
+  "calrun.step.variant": "Đang mô phỏng {day}, {variant} ({n} trên {total})…",
+  "calrun.extraEnergy":
+    "Năng lượng gồm {hvac} MWh cho sưởi và điều hòa trên xe và {switches} MWh cho sưởi ghi.",
+  "calrun.weatherMethod":
+    "Ngày nóng, rất nóng và sương giá là số kỳ vọng từ trung bình và độ phân tán của từng tháng nên có thể có phần thập phân. Hạn chế do nóng được mô phỏng trong các giờ của nó, ghi đóng băng trong cả ngày. Xe-km, xe-giờ và hành khách giữ nguyên trong mọi thời tiết.",
 } satisfies CalendarMessages;

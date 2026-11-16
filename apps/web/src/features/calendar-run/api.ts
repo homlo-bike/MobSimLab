@@ -3,6 +3,7 @@ import { get, send } from "../../session/api";
 import type { RunStatus, ServerNetwork } from "../capacity/server";
 import type { DayTypeId } from "../../workspace/calendar";
 import type { CalendarPlan, DayFigures } from "./model";
+import type { Variant } from "./weather";
 
 /** One saved calendar run in the project's list. */
 export interface CalendarRun {
@@ -23,7 +24,8 @@ export interface CalendarRun {
 
 /** What the worker is doing now (worker/src/mobsim_worker/jobs/calendar.py). */
 export type CalendarStep =
-  { step: "day"; day_type: DayTypeId; n: number; total: number } | { step: "expanding" };
+  | { step: "day"; day_type: DayTypeId; variant?: Variant | null; n: number; total: number }
+  | { step: "expanding" };
 
 /** A representative day's rail run, as the calendar run keeps it. */
 export interface RailDay {
@@ -31,6 +33,9 @@ export interface RailDay {
   trips: number | null;
   vehicles: number | null;
   peak_out: number | null;
+  /** The hours the run covered, s after midnight (a heat variant covers its restriction hours). */
+  from_s?: number;
+  to_s?: number;
   lines: {
     line: string;
     name: string;
@@ -46,9 +51,28 @@ export interface CalendarResult {
   notes: string[];
   run: { verdict: string | null };
   day_types: Partial<
-    Record<DayTypeId, { from_s: number; to_s: number; per_day: DayFigures; days: number; rail?: RailDay }>
+    Record<
+      DayTypeId,
+      {
+        from_s: number;
+        to_s: number;
+        per_day: DayFigures;
+        days: number;
+        rail?: RailDay;
+        /** Expected days and the rail run of each weather variant that occurs. */
+        weather?: Partial<Record<Variant, { days: number; rail?: RailDay }>>;
+      }
+    >
   >;
-  periods: ({ label: string; counts: Record<DayTypeId, number>; days: number } & DayFigures)[];
+  periods: ({
+    label: string;
+    counts: Record<DayTypeId, number>;
+    /** Expected days per weather variant (absent in runs without a climate). */
+    weather?: Record<Variant, number>;
+    days: number;
+    /** The weather's energy, kWh, included in `energy_kwh`. */
+    extra?: { hvac_kwh?: number; switch_heating_kwh?: number };
+  } & DayFigures)[];
 }
 
 export interface CalendarRunDetail extends CalendarRun {
@@ -59,7 +83,11 @@ export interface CalendarRunDetail extends CalendarRun {
 export interface CalendarRunsApi {
   list(): Promise<CalendarRun[]>;
   get(id: string): Promise<CalendarRunDetail>;
-  start(network: ServerNetwork | null, plan: CalendarPlan): Promise<CalendarRunDetail>;
+  start(
+    network: ServerNetwork | null,
+    plan: CalendarPlan,
+    params?: Record<string, unknown>,
+  ): Promise<CalendarRunDetail>;
   cancel(id: string): Promise<CalendarRunDetail>;
   rerun(id: string): Promise<CalendarRunDetail>;
   remove(id: string): Promise<void>;
@@ -75,12 +103,12 @@ export function projectCalendarRuns(projectId: string, csrf: string): CalendarRu
         (r): r is CalendarRun => r.kind === "calendar",
       ),
     get: async (id) => (await get<{ run: CalendarRunDetail }>(one(id))).run,
-    start: async (network, plan) =>
+    start: async (network, plan, params = {}) =>
       (
         await send<{ run: CalendarRunDetail }>("POST", base, csrf, {
           kind: "calendar",
           network,
-          params: {},
+          params,
           plan,
         })
       ).run,

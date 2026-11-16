@@ -94,6 +94,47 @@ export const calendarEn = {
   "calrun.fig.passengers": "Passengers",
   "calrun.fig.energy_kwh": "Energy (MWh)",
   "calrun.fig.operating_cost": "Operating cost",
+  "climate.title": "Climate",
+  "climate.intro":
+    "Air temperatures at the project's location, month by month. Calendar runs use them to expect hot, very hot and frost days and their effects on the railway and on energy. The climate is the same every simulation year.",
+  "climate.noPlace":
+    "Draw the railway or a street line first: the climate is fetched for the project's location.",
+  "climate.loading": "Fetching the climate…",
+  "climate.failed": "Could not fetch the climate: {error}",
+  "climate.refetch": "Fetch again for the project's location",
+  "climate.month": "Month",
+  "climate.mean": "Average (°C)",
+  "climate.max": "Average high (°C)",
+  "climate.min": "Average low (°C)",
+  "climate.maxSd": "Spread of highs (°C)",
+  "climate.minSd": "Spread of lows (°C)",
+  "climate.hotDays": "Hot days",
+  "climate.veryHotDays": "Very hot days",
+  "climate.coldDays": "Frost days",
+  "climate.ownHint": "Type a number to use your own; it gets a frame and ↺ brings back Open-Meteo's.",
+  "climate.reset": "Back to Open-Meteo's {value}",
+  "climate.clear": "Clear",
+  "climate.limits":
+    "A hot day reaches {heat} °C (heat speed restriction on the track, {heatKmh} km/h) or {sag} °C (overhead line sag, {sagKmh} km/h under the wire), whichever is lower; a very hot day reaches both. A frost day falls to {frost} °C or below. {switches} Change these limits in All parameters, group Energy and climate.",
+  "climate.switchesHeated": "Switches are heated.",
+  "climate.switchesFreeze": "Switches are not heated and can freeze.",
+  "climate.source":
+    "Weather data by Open-Meteo.com (CC BY 4.0): daily temperatures {from}–{to} at {lat}, {lon}. The project keeps its own copy.",
+  "calrun.weatherOn":
+    "Weather: hot, very hot and frost days are expected from the project's climate, each with its effects on the railway and on energy.",
+  "calrun.weatherOff": "No climate yet, so every day runs as an ordinary day.",
+  "calrun.openClimate": "Set the climate in Project preferences",
+  "calrun.weatherDays": "Expected weather: {hot} hot, {veryHot} very hot and {cold} frost days",
+  "calrun.variant.hot": "Hot days",
+  "calrun.variant.very_hot": "Very hot days",
+  "calrun.variant.cold": "Frost days",
+  "calrun.hotAll": "Hot and very hot days",
+  "calrun.restricted": "restrictions {from}–{to}",
+  "calrun.step.variant": "Simulating {day}, {variant} ({n} of {total})…",
+  "calrun.extraEnergy":
+    "Energy includes {hvac} MWh for heating and air conditioning on board and {switches} MWh for switch heating.",
+  "calrun.weatherMethod":
+    "Hot, very hot and frost days are expected numbers from each month's average and spread, so they can have decimals. Heat restrictions are simulated over their hours, frozen switches over the whole day. Vehicle-km, vehicle-hours and passengers stay the same in any weather.",
 };
 
 /** A language's calendar messages: every key of the English ones. */

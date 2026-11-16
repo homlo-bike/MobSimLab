@@ -92,4 +92,45 @@ export const calendarEs = {
   "calrun.fig.passengers": "Pasajeros",
   "calrun.fig.energy_kwh": "Energía (MWh)",
   "calrun.fig.operating_cost": "Coste de operación",
+  "climate.title": "Clima",
+  "climate.intro":
+    "Temperaturas del aire en la ubicación del proyecto, mes a mes. Las simulaciones de calendario las usan para prever días calurosos, muy calurosos y de helada, y sus efectos en el ferrocarril y en la energía. El clima es el mismo en cada año de simulación.",
+  "climate.noPlace":
+    "Dibuja primero el ferrocarril o una línea de calle: el clima se obtiene para la ubicación del proyecto.",
+  "climate.loading": "Obteniendo el clima…",
+  "climate.failed": "No se pudo obtener el clima: {error}",
+  "climate.refetch": "Volver a obtener para la ubicación del proyecto",
+  "climate.month": "Mes",
+  "climate.mean": "Media (°C)",
+  "climate.max": "Máxima media (°C)",
+  "climate.min": "Mínima media (°C)",
+  "climate.maxSd": "Dispersión de las máximas (°C)",
+  "climate.minSd": "Dispersión de las mínimas (°C)",
+  "climate.hotDays": "Días calurosos",
+  "climate.veryHotDays": "Días muy calurosos",
+  "climate.coldDays": "Días de helada",
+  "climate.ownHint": "Escribe un número para usar el tuyo; se enmarca y ↺ recupera el de Open-Meteo.",
+  "climate.reset": "Volver a {value} de Open-Meteo",
+  "climate.clear": "Borrar",
+  "climate.limits":
+    "Un día caluroso alcanza {heat} °C (limitación de velocidad por calor en la vía, {heatKmh} km/h) o {sag} °C (catenaria combada, {sagKmh} km/h bajo el hilo), lo que sea menor; un día muy caluroso alcanza ambos. Un día de helada baja a {frost} °C o menos. {switches} Cambia estos límites en Todos los parámetros, grupo Energía y clima.",
+  "climate.switchesHeated": "Los desvíos tienen calefacción.",
+  "climate.switchesFreeze": "Los desvíos no tienen calefacción y pueden helarse.",
+  "climate.source":
+    "Datos meteorológicos de Open-Meteo.com (CC BY 4.0): temperaturas diarias {from}–{to} en {lat}, {lon}. El proyecto guarda su propia copia.",
+  "calrun.weatherOn":
+    "Tiempo: los días calurosos, muy calurosos y de helada se prevén a partir del clima del proyecto, cada uno con sus efectos en el ferrocarril y en la energía.",
+  "calrun.weatherOff": "Aún no hay clima, así que cada día se simula como un día normal.",
+  "calrun.openClimate": "Definir el clima en las preferencias del proyecto",
+  "calrun.weatherDays": "Tiempo previsto: {hot} días calurosos, {veryHot} muy calurosos y {cold} de helada",
+  "calrun.variant.hot": "Días calurosos",
+  "calrun.variant.very_hot": "Días muy calurosos",
+  "calrun.variant.cold": "Días de helada",
+  "calrun.hotAll": "Días calurosos y muy calurosos",
+  "calrun.restricted": "limitaciones {from}–{to}",
+  "calrun.step.variant": "Simulando {day}, {variant} ({n} de {total})…",
+  "calrun.extraEnergy":
+    "La energía incluye {hvac} MWh de calefacción y aire acondicionado a bordo y {switches} MWh de calefacción de desvíos.",
+  "calrun.weatherMethod":
+    "Los días calurosos, muy calurosos y de helada son cifras esperadas a partir de la media y la dispersión de cada mes, por lo que pueden tener decimales. Las limitaciones por calor se simulan durante sus horas y los desvíos helados durante todo el día. Los vehículos-km, vehículos-hora y pasajeros son los mismos con cualquier tiempo.",
 } satisfies CalendarMessages;

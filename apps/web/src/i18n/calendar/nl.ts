@@ -92,4 +92,46 @@ export const calendarNl = {
   "calrun.fig.passengers": "Reizigers",
   "calrun.fig.energy_kwh": "Energie (MWh)",
   "calrun.fig.operating_cost": "Exploitatiekosten",
+  "climate.title": "Klimaat",
+  "climate.intro":
+    "Luchttemperaturen op de locatie van het project, maand voor maand. Kalenderruns verwachten daaruit hete, zeer hete en vorstdagen en hun gevolgen voor het spoor en het energieverbruik. Het klimaat is elk simulatiejaar hetzelfde.",
+  "climate.noPlace":
+    "Teken eerst het spoor of een straatlijn: het klimaat wordt opgehaald voor de locatie van het project.",
+  "climate.loading": "Klimaat ophalen…",
+  "climate.failed": "Het klimaat kon niet worden opgehaald: {error}",
+  "climate.refetch": "Opnieuw ophalen voor de locatie van het project",
+  "climate.month": "Maand",
+  "climate.mean": "Gemiddelde (°C)",
+  "climate.max": "Gemiddeld maximum (°C)",
+  "climate.min": "Gemiddeld minimum (°C)",
+  "climate.maxSd": "Spreiding van de maxima (°C)",
+  "climate.minSd": "Spreiding van de minima (°C)",
+  "climate.hotDays": "Hete dagen",
+  "climate.veryHotDays": "Zeer hete dagen",
+  "climate.coldDays": "Vorstdagen",
+  "climate.ownHint":
+    "Typ een getal om je eigen waarde te gebruiken; het krijgt een kader en ↺ zet de waarde van Open-Meteo terug.",
+  "climate.reset": "Terug naar {value} van Open-Meteo",
+  "climate.clear": "Wissen",
+  "climate.limits":
+    "Een hete dag bereikt {heat} °C (snelheidsbeperking wegens hitte op het spoor, {heatKmh} km/h) of {sag} °C (doorhangende bovenleiding, {sagKmh} km/h onder de draad), wat het laagst is; een zeer hete dag bereikt beide. Een vorstdag zakt tot {frost} °C of lager. {switches} Wijzig deze grenzen in Alle parameters, groep Energie en klimaat.",
+  "climate.switchesHeated": "De wissels worden verwarmd.",
+  "climate.switchesFreeze": "De wissels worden niet verwarmd en kunnen bevriezen.",
+  "climate.source":
+    "Weergegevens van Open-Meteo.com (CC BY 4.0): dagtemperaturen {from}–{to} bij {lat}, {lon}. Het project bewaart een eigen kopie.",
+  "calrun.weatherOn":
+    "Weer: hete, zeer hete en vorstdagen worden verwacht uit het klimaat van het project, elk met hun gevolgen voor het spoor en het energieverbruik.",
+  "calrun.weatherOff": "Nog geen klimaat, dus elke dag loopt als een gewone dag.",
+  "calrun.openClimate": "Stel het klimaat in bij de projectvoorkeuren",
+  "calrun.weatherDays": "Verwacht weer: {hot} hete, {veryHot} zeer hete en {cold} vorstdagen",
+  "calrun.variant.hot": "Hete dagen",
+  "calrun.variant.very_hot": "Zeer hete dagen",
+  "calrun.variant.cold": "Vorstdagen",
+  "calrun.hotAll": "Hete en zeer hete dagen",
+  "calrun.restricted": "beperkingen {from}–{to}",
+  "calrun.step.variant": "{day} simuleren, {variant} ({n} van {total})…",
+  "calrun.extraEnergy":
+    "De energie omvat {hvac} MWh voor verwarming en airconditioning aan boord en {switches} MWh voor wisselverwarming.",
+  "calrun.weatherMethod":
+    "Hete, zeer hete en vorstdagen zijn verwachte aantallen uit het gemiddelde en de spreiding van elke maand en kunnen dus decimalen hebben. Snelheidsbeperkingen wegens hitte worden over hun uren gesimuleerd, bevroren wissels over de hele dag. Voertuig-km, voertuiguren en reizigers blijven bij elk weer gelijk.",
 } satisfies CalendarMessages;

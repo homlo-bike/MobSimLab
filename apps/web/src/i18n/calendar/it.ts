@@ -93,4 +93,46 @@ export const calendarIt = {
   "calrun.fig.passengers": "Passeggeri",
   "calrun.fig.energy_kwh": "Energia (MWh)",
   "calrun.fig.operating_cost": "Costo di esercizio",
+  "climate.title": "Clima",
+  "climate.intro":
+    "Temperature dell'aria nel luogo del progetto, mese per mese. Le simulazioni di calendario le usano per prevedere giorni caldi, molto caldi e di gelo e i loro effetti sulla ferrovia e sull'energia. Il clima è lo stesso in ogni anno di simulazione.",
+  "climate.noPlace":
+    "Disegna prima la ferrovia o una linea stradale: il clima viene recuperato per il luogo del progetto.",
+  "climate.loading": "Recupero del clima…",
+  "climate.failed": "Impossibile recuperare il clima: {error}",
+  "climate.refetch": "Recupera di nuovo per il luogo del progetto",
+  "climate.month": "Mese",
+  "climate.mean": "Media (°C)",
+  "climate.max": "Massima media (°C)",
+  "climate.min": "Minima media (°C)",
+  "climate.maxSd": "Dispersione delle massime (°C)",
+  "climate.minSd": "Dispersione delle minime (°C)",
+  "climate.hotDays": "Giorni caldi",
+  "climate.veryHotDays": "Giorni molto caldi",
+  "climate.coldDays": "Giorni di gelo",
+  "climate.ownHint":
+    "Digita un numero per usare il tuo; viene incorniciato e ↺ ripristina quello di Open-Meteo.",
+  "climate.reset": "Torna a {value} di Open-Meteo",
+  "climate.clear": "Cancella",
+  "climate.limits":
+    "Un giorno caldo raggiunge {heat} °C (rallentamento per caldo sul binario, {heatKmh} km/h) o {sag} °C (abbassamento della linea aerea, {sagKmh} km/h sotto il filo), il più basso dei due; un giorno molto caldo li raggiunge entrambi. Un giorno di gelo scende a {frost} °C o meno. {switches} Modifica questi limiti in Tutti i parametri, gruppo Energia e clima.",
+  "climate.switchesHeated": "Gli scambi sono riscaldati.",
+  "climate.switchesFreeze": "Gli scambi non sono riscaldati e possono gelare.",
+  "climate.source":
+    "Dati meteo di Open-Meteo.com (CC BY 4.0): temperature giornaliere {from}–{to} a {lat}, {lon}. Il progetto ne conserva una propria copia.",
+  "calrun.weatherOn":
+    "Meteo: i giorni caldi, molto caldi e di gelo sono previsti dal clima del progetto, ciascuno con i suoi effetti sulla ferrovia e sull'energia.",
+  "calrun.weatherOff": "Ancora nessun clima, quindi ogni giorno viene simulato come un giorno normale.",
+  "calrun.openClimate": "Imposta il clima nelle preferenze del progetto",
+  "calrun.weatherDays": "Meteo previsto: {hot} giorni caldi, {veryHot} molto caldi e {cold} di gelo",
+  "calrun.variant.hot": "Giorni caldi",
+  "calrun.variant.very_hot": "Giorni molto caldi",
+  "calrun.variant.cold": "Giorni di gelo",
+  "calrun.hotAll": "Giorni caldi e molto caldi",
+  "calrun.restricted": "limitazioni {from}–{to}",
+  "calrun.step.variant": "Simulazione di {day}, {variant} ({n} di {total})…",
+  "calrun.extraEnergy":
+    "L'energia comprende {hvac} MWh per riscaldamento e climatizzazione a bordo e {switches} MWh per il riscaldamento degli scambi.",
+  "calrun.weatherMethod":
+    "I giorni caldi, molto caldi e di gelo sono valori attesi dalla media e dalla dispersione di ogni mese, quindi possono avere decimali. I rallentamenti per caldo sono simulati nelle loro ore, gli scambi gelati per tutto il giorno. Veicoli-km, veicoli-ora e passeggeri restano uguali con ogni tempo.",
 } satisfies CalendarMessages;

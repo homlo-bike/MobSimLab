@@ -92,4 +92,46 @@ export const calendarHa = {
   "calrun.fig.passengers": "Fasinjoji",
   "calrun.fig.energy_kwh": "Makamashi (MWh)",
   "calrun.fig.operating_cost": "Kuɗin gudanarwa",
+  "climate.title": "Yanayi",
+  "climate.intro":
+    "Zafin iska a wurin aikin, wata bayan wata. Gudanar kalanda na amfani da shi don ƙiyasta ranakun zafi, zafi mai tsanani da sanyi mai ƙanƙara, da tasirinsu kan layin dogo da makamashi. Yanayin ɗaya ne a kowace shekarar kwaikwayo.",
+  "climate.noPlace": "Zana layin dogo ko layin titi da farko: ana samo yanayi don wurin aikin.",
+  "climate.loading": "Ana samo yanayi…",
+  "climate.failed": "Ba a iya samo yanayi ba: {error}",
+  "climate.refetch": "Sake samowa don wurin aikin",
+  "climate.month": "Wata",
+  "climate.mean": "Matsakaici (°C)",
+  "climate.max": "Matsakaicin mafi girma (°C)",
+  "climate.min": "Matsakaicin mafi ƙanƙanta (°C)",
+  "climate.maxSd": "Bazuwar mafi girma (°C)",
+  "climate.minSd": "Bazuwar mafi ƙanƙanta (°C)",
+  "climate.hotDays": "Ranakun zafi",
+  "climate.veryHotDays": "Ranakun zafi mai tsanani",
+  "climate.coldDays": "Ranakun ƙanƙara",
+  "climate.ownHint":
+    "Rubuta lamba don amfani da naka; za a yi mata firam kuma ↺ yana mayar da ta Open-Meteo.",
+  "climate.reset": "Koma zuwa {value} na Open-Meteo",
+  "climate.clear": "Share",
+  "climate.limits":
+    "Ranar zafi tana kaiwa {heat} °C (iyakar gudu saboda zafi a kan hanya, {heatKmh} km/h) ko {sag} °C (sagewar wayar sama, {sagKmh} km/h a ƙarƙashin waya), duk wadda ta fi ƙasa; ranar zafi mai tsanani tana kaiwa duka biyun. Ranar ƙanƙara tana sauka zuwa {frost} °C ko ƙasa. {switches} Canza waɗannan iyakoki a Duk sigogi, rukunin Makamashi da yanayi.",
+  "climate.switchesHeated": "Ana dumama makunnan hanya.",
+  "climate.switchesFreeze": "Ba a dumama makunnan hanya ba kuma suna iya daskarewa.",
+  "climate.source":
+    "Bayanan yanayi daga Open-Meteo.com (CC BY 4.0): zafin yau da kullum {from}–{to} a {lat}, {lon}. Aikin yana riƙe da nasa kwafi.",
+  "calrun.weatherOn":
+    "Yanayi: ana ƙiyasta ranakun zafi, zafi mai tsanani da ƙanƙara daga yanayin aikin, kowanne da tasirinsa kan layin dogo da makamashi.",
+  "calrun.weatherOff": "Babu yanayi tukuna, don haka kowace rana tana gudana kamar rana ta yau da kullum.",
+  "calrun.openClimate": "Saita yanayi a Zaɓuɓɓukan aiki",
+  "calrun.weatherDays":
+    "Yanayin da ake tsammani: ranaku {hot} na zafi, {veryHot} na zafi mai tsanani da {cold} na ƙanƙara",
+  "calrun.variant.hot": "Ranakun zafi",
+  "calrun.variant.very_hot": "Ranakun zafi mai tsanani",
+  "calrun.variant.cold": "Ranakun ƙanƙara",
+  "calrun.hotAll": "Ranakun zafi da zafi mai tsanani",
+  "calrun.restricted": "iyakoki {from}–{to}",
+  "calrun.step.variant": "Ana kwaikwayon {day}, {variant} ({n} cikin {total})…",
+  "calrun.extraEnergy":
+    "Makamashin ya haɗa da MWh {hvac} na dumama da sanyaya cikin abin hawa da MWh {switches} na dumama makunnan hanya.",
+  "calrun.weatherMethod":
+    "Ranakun zafi, zafi mai tsanani da ƙanƙara adadi ne da ake tsammani daga matsakaici da bazuwar kowane wata, don haka suna iya samun goma-goma. Ana kwaikwayon iyakokin zafi a sa'o'insu, makunnan da suka daskare kuma tsawon yini. Abin hawa-km, abin hawa-awa da fasinjoji ba sa canzawa a kowane yanayi.",
 } satisfies CalendarMessages;
