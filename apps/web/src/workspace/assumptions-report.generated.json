@@ -845,6 +845,63 @@
     "*": 0
    }
   },
+  "analysis.station_grouping_m": {
+   "used_by": [
+    "stop and station names in the railway editor",
+    "renaming stops and stations"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "06-gis §9.3 default: platforms of one interchange (a tram stop in front of a station, two bus stops on either side of a junction) usually lie within about 150 m of each other; farther apart they are separate stops that need their own names. A street line's own grouping distance (line rules) still applies to its stops."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "analysis.same_place_m": {
+   "used_by": [
+    "network and strip maps",
+    "fare zones"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Two stops this close are on the same platform or kerb even when their names differ (a renamed stop, a typo), so the diagrams merge them. Stops with the same name are merged over a longer distance."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "analysis.gap_cell_m": {
+   "used_by": [
+    "walk coverage gaps",
+    "people not reached"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "The population grid is 100 m; gathering it in 200 m cells keeps the walk request small and makes each gap a block rather than a single grid cell. Smaller cells show gaps in more detail and take longer; 100 m is the grid itself."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
   "benefit.uplift_inner_share": {
    "used_by": [
     "land value uplift: distance decay"
@@ -1268,6 +1325,60 @@
       "mobsimlab-derivation"
      ],
      "rationale": "Annual ridership is usually 280–330 times average weekday ridership, as weekends and holidays carry less."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "benefit.ridership.saturday_share": {
+   "used_by": [
+    "multi-year runs (passengers per day type)"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Weekend days carry fewer riders than weekdays. With 0.6 on Saturdays and 0.45 on Sundays and public holidays, a year of 250 weekdays, 52 Saturdays, 52 Sundays and 10 holidays comes to about 310 weekday equivalents, in line with benefit.ridership.days_per_year (280–330)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "benefit.ridership.sunday_share": {
+   "used_by": [
+    "multi-year runs (passengers per day type)"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Sundays carry the fewest riders of the week; the range keeps the year's weekday equivalents within benefit.ridership.days_per_year (280–330), as for benefit.ridership.saturday_share."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "benefit.ridership.holiday_share": {
+   "used_by": [
+    "multi-year runs (passengers per day type)"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "A public holiday usually runs like a Sunday, so it takes the Sunday share (benefit.ridership.sunday_share)."
     }
    ],
    "modes": {
@@ -2346,6 +2457,24 @@
     "metro": 2,
     "long_distance_rail": 3,
     "high_speed_rail": 3
+   }
+  },
+  "cost.opex.car_length_m": {
+   "used_by": [
+    "operating cost: service"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "The per car-km running costs are for cars of about 25 m (main-line coaches 24–27 m, metro cars 18–23 m). A train's car-km are its length over this value times its km, so short articulated tram modules are not each counted as a full car."
+    }
+   ],
+   "modes": {
+    "*": 0
    }
   },
   "cost.opex.car_km": {
@@ -4923,7 +5052,8 @@
   },
   "climate.rail_temp_above_air_c": {
    "used_by": [
-    "heat-related speed restriction note"
+    "heat-related speed restriction note",
+    "calendar run hot days"
    ],
    "entries": [
     {
@@ -4941,7 +5071,8 @@
   },
   "climate.rail_design_temp_c": {
    "used_by": [
-    "buckling-risk note (risk rises as rail temperature exceeds this by a margin)"
+    "buckling-risk note (risk rises as rail temperature exceeds this by a margin)",
+    "calendar run hot days"
    ],
    "entries": [
     {
@@ -5071,7 +5202,8 @@
   },
   "energy.hvac_power_kw": {
    "used_by": [
-    "auxiliary energy demand"
+    "auxiliary energy demand",
+    "calendar run heating and air conditioning energy"
    ],
    "entries": [
     {
@@ -5119,7 +5251,8 @@
   },
   "climate.ocl_sag_air_temp_c": {
    "used_by": [
-    "heat-related speed restriction note"
+    "heat-related speed restriction note",
+    "calendar run hot days"
    ],
    "entries": [
     {
@@ -5129,6 +5262,259 @@
       "orr-ole-heat"
      ],
      "rationale": "ORR: UK legacy overhead line equipment is designed for −18 °C to +38 °C; modern auto-tensioned systems and hot-climate designs go higher."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "climate.heat_restriction_margin_c": {
+   "used_by": [
+    "calendar run hot days (heat speed restriction on welded track)"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "With a 25 °C design temperature and rails 20 °C above the air, restrictions start at about 30 °C air temperature; well-maintained track tolerates more, track with weak ballast less."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "climate.heat_speed_kmh": {
+   "used_by": [
+    "calendar run hot days"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Blanket emergency speed restrictions in hot weather are typically 30–100 km/h; lines slower than the limit are not affected."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "climate.heat_from_h": {
+   "used_by": [
+    "calendar run hot days"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Rail temperature follows the sun and peaks in the afternoon."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "climate.heat_to_h": {
+   "used_by": [
+    "calendar run hot days"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Rails cool down in the evening."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "climate.ocl_sag_speed_kmh": {
+   "used_by": [
+    "calendar run very hot days"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Lower speeds keep the pantograph from losing contact or catching the sagging wire."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "climate.frost_day_min_c": {
+   "used_by": [
+    "calendar run cold days (frozen switches",
+    "switch heating)"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Climatology counts a day with a minimum below 0 °C as a frost day; snow and ice in the switches need frost."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "climate.switch_heating": {
+   "used_by": [
+    "calendar run cold days (frozen switches or switch heating energy)"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Railways with frost fit heating to their switches; without it, switches freeze and fail."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "climate.switch_heating_kw": {
+   "used_by": [
+    "calendar run switch heating energy"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Electric point heating is a few kW per switch; long high-speed turnouts need more."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "climate.switch_heating_hours": {
+   "used_by": [
+    "calendar run switch heating energy"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Controlled heating runs while the rail is near or below freezing, mostly at night and in the morning."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "climate.frost_extra_delayed_share": {
+   "used_by": [
+    "calendar run cold days"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Added to the stability test's share of delayed trips (simulation.stability.delayed_share)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "climate.frost_delay_mean_s": {
+   "used_by": [
+    "calendar run cold days"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Clearing a frozen switch or routing round it takes minutes."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "climate.comfort_low_c": {
+   "used_by": [
+    "calendar run heating and air conditioning energy"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Heating degree days are often counted below 15 °C."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "climate.comfort_high_c": {
+   "used_by": [
+    "calendar run heating and air conditioning energy"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Cooling degree days are often counted above 22 °C."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "climate.hvac_full_delta_c": {
+   "used_by": [
+    "calendar run heating and air conditioning energy"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Heating and cooling power grows with the gap to the comfort range up to the full power (energy.hvac_power_kw)."
     }
    ],
    "modes": {
@@ -8621,7 +9007,8 @@
    "used_by": [
     "transfer links",
     "access/egress links",
-    "catchment"
+    "catchment",
+    "benefit estimate walks"
    ],
    "entries": [
     {
@@ -8641,7 +9028,8 @@
   "journey.walk_detour_factor": {
    "used_by": [
     "journey planner access",
-    "egress and transfer walks"
+    "egress and transfer walks",
+    "benefit estimate walks"
    ],
    "entries": [
     {
@@ -8753,6 +9141,25 @@
     "diesel": 2,
     "hydrogen": 2,
     "cng": 2
+   }
+  },
+  "timetable.max_terminal_wait_min": {
+   "used_by": [
+    "vehicle scheduling",
+    "fleet size"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Vehicle blocks: a vehicle that would stand longer than this between trips (for example between the peaks) runs back to the depot and a vehicle pulls out again later, so it does not block a terminal stand or platform. The rail timetable planner used 20 min; operators choose by depot distance and terminal space."
+    }
+   ],
+   "modes": {
+    "*": 0
    }
   },
   "timetable.min_buffer_s": {
