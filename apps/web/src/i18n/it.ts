@@ -312,6 +312,7 @@ export const it: Messages = {
   "prefs.demandStep.periods": "Fasce orarie",
   "prefs.demandStep.distribution": "Distribuzione degli spostamenti",
   "prefs.demandStep.mode_choice": "Scelta modale",
+  "prefs.demandStep.catchment": "Bacino d'utenza",
   "prefs.demandStep.assignment": "Assegnazione",
   "prefs.demandAll": "Tutti i passi",
   "prefs.vehiclesTitle": "Veicoli",

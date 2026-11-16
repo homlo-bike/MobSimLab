@@ -313,6 +313,7 @@ export const ha: Messages = {
   "prefs.demandStep.periods": "Lokuta",
   "prefs.demandStep.distribution": "Rarraba tafiye-tafiye",
   "prefs.demandStep.mode_choice": "Zaɓin hanyar sufuri",
+  "prefs.demandStep.catchment": "Yankin isa",
   "prefs.demandStep.assignment": "Rabawa a hanyoyi",
   "prefs.demandAll": "Duk matakai",
   "prefs.vehiclesTitle": "Ababen hawa",

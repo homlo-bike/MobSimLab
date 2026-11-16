@@ -315,6 +315,7 @@ export const fr: Messages = {
   "prefs.demandStep.periods": "Périodes",
   "prefs.demandStep.distribution": "Distribution des déplacements",
   "prefs.demandStep.mode_choice": "Choix modal",
+  "prefs.demandStep.catchment": "Zone de desserte",
   "prefs.demandStep.assignment": "Affectation",
   "prefs.demandAll": "Toutes les étapes",
   "prefs.vehiclesTitle": "Véhicules",

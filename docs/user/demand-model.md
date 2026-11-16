@@ -20,6 +20,19 @@ The model area is everything within `demand.area_buffer_m` (2 km by default) of 
 
 **Run the demand model** sends the zones, the published lines (their stopping patterns, running times and headways in each period) and the country's GDP per person and price level to the server. The server adds the OpenStreetMap streets around the zones. A run of a few hundred zones takes about a minute.
 
+## Cycling, walking and getting to the stops
+
+The model counts what makes walking, cycling and reaching a stop easier or harder. Every value below is in **Project preferences → Demand model → Catchment**.
+
+- **Cycle lanes and tracks.** A metre on a separate track counts as less than a metre on a plain street (`demand.cycle.factor.track`), a painted lane a little less (`demand.cycle.factor.lane`), and a main road without either counts as more (`demand.cycle.factor.busy_road`). Lanes and tracks come from OpenStreetMap (`cycleway=*`) and from the bike lanes you set up in the GIS tab's street setup, where **separated** makes a track.
+- **Street setup.** The traffic lanes and bus lanes you set in the GIS tab change road capacity. A bus lane is not a car lane.
+- **Pedestrian streets.** Walking along a pedestrian or living street counts as shorter (`demand.walk.pedestrian_factor`). A car trip into a zone takes longer by `demand.pedestrian_zone.car_min` times the share of the zone's streets that are pedestrian.
+- **Bike and ride.** People with a bicycle may ride up to `demand.bike_ride.max_m` to a stop with a bike parking within `demand.bike_ride.parking_max_m`, and park (`demand.bike_ride.parking_min`). Bike parkings come from OpenStreetMap.
+- **Shared bikes.** Where a shared-bike station is within `demand.shared_bike.station_max_m` of both ends, people without a bicycle can cycle too, and everyone can ride a shared bike to or from a stop. Each ride takes unlocking time and a fare. Stations come from OpenStreetMap and, if you enter it, from your scheme's **GBFS feed** in the Run card (its `gbfs.json` or `station_information.json`, an https address).
+- **Step-free stops.** Boarding at a stop recorded in Create without step-free access, a lift or a ramp costs more for the share of riders who cannot use steps (`demand.step_free.share`, `demand.step_free.penalty_min`). Stops with no recorded features are not penalised.
+
+The results show what the model area has of each and what it did: trips on a shared bike, riders who cycle to a stop and park, and shared-bike rides to and from stops.
+
 ## Results
 
 - Trips by mode and period, and by purpose.

@@ -310,6 +310,7 @@ export const kk: Messages = {
   "prefs.demandStep.periods": "Уақыт кезеңдері",
   "prefs.demandStep.distribution": "Сапарларды бөлу",
   "prefs.demandStep.mode_choice": "Көлік түрін таңдау",
+  "prefs.demandStep.catchment": "Қолжетімділік аймағы",
   "prefs.demandStep.assignment": "Жүктеу",
   "prefs.demandAll": "Барлық қадамдар",
   "prefs.vehiclesTitle": "Көліктер",

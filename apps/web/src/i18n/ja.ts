@@ -307,6 +307,7 @@ export const ja: Messages = {
   "prefs.demandStep.periods": "時間帯",
   "prefs.demandStep.distribution": "分布",
   "prefs.demandStep.mode_choice": "交通手段選択",
+  "prefs.demandStep.catchment": "アクセス圏",
   "prefs.demandStep.assignment": "配分",
   "prefs.demandAll": "すべての手順",
   "prefs.vehiclesTitle": "車両",

@@ -30,6 +30,8 @@ ROAD_CLASSES = ("motorway", "trunk", "primary", "secondary", "tertiary", "local"
 MAX_ZONES = 3000
 MAX_LINKS = 400_000
 MAX_STOPS = 20_000
+#: Most bike parkings and most shared-bike stations a run takes.
+MAX_BIKE_POINTS = 50_000
 
 Floats = NDArray[np.float64]
 
@@ -111,6 +113,10 @@ class Streets:
     car_bwd: NDArray[np.bool_]
     walk: NDArray[np.bool_]
     cycle: NDArray[np.bool_]
+    #: Cycle facility along the link: 0 none, 1 painted lane, 2 separate track.
+    cycle_facility: NDArray[np.int64]
+    #: A pedestrian street or living street.
+    pedestrian: NDArray[np.bool_]
 
 
 @dataclass
@@ -141,10 +147,25 @@ class Transit:
     stop_lonlat: Floats  # (S, 2)
     stop_mode: list[str]
     lines: list[Line]
+    #: Whether a stop has step-free access (a lift, a ramp or level boarding); None where nobody recorded it.
+    stop_step_free: list[bool | None]
     #: Walk to a stop most riders accept, by mode (mode.catchment_m), m.
     catchment_m: dict[str, float]
     #: Catchment for a mode the run did not give, m.
     default_catchment_m: float = 400.0
+
+
+@dataclass
+class Bikes:
+    """Bike parkings (for bike and ride) and shared-bike stations of the model area, lon/lat."""
+
+    parking: Floats  # (P, 2)
+    rental: Floats  # (R, 2)
+
+    @classmethod
+    def none(cls) -> Bikes:
+        """No bike parkings and no shared bikes."""
+        return cls(np.zeros((0, 2)), np.zeros((0, 2)))
 
 
 @dataclass
@@ -165,6 +186,7 @@ class Bundle:
     transit: Transit
     economy: Economy
     values: Values
+    bikes: Bikes = field(default_factory=Bikes.none)
     notes: list[str] = field(default_factory=list)
 
 
@@ -255,7 +277,7 @@ def parse_zones(raw: Any, values: Values) -> Zones:
 
 def parse_streets(raw: Any, n_zones: int) -> Streets:
     """Read the street network: ``{"nodes": [[lon, lat]], "links": [[a, b, length_m, class, speed_kmh,
-    lanes_fwd, lanes_bwd, car_fwd, car_bwd, walk, cycle]]}``.
+    lanes_fwd, lanes_bwd, car_fwd, car_bwd, walk, cycle, cycle_facility?, pedestrian?]]}``.
     """  # noqa: D205
     if not isinstance(raw, dict):
         raise InputError("the street network is missing")
@@ -270,7 +292,12 @@ def parse_streets(raw: Any, n_zones: int) -> Streets:
         lk = np.asarray(links, dtype=np.float64)
     except (TypeError, ValueError) as e:
         raise InputError("the street network is not in the expected form") from e
-    if nd.ndim != 2 or lk.ndim != 2 or tuple(nd.shape)[1:] != (2,) or tuple(lk.shape)[1:] != (11,):
+    if (
+        nd.ndim != 2
+        or lk.ndim != 2
+        or tuple(nd.shape)[1:] != (2,)
+        or tuple(lk.shape)[1:] not in ((11,), (13,))
+    ):
         raise InputError("the street network is not in the expected form")
     if not np.isfinite(nd).all() or not np.isfinite(lk).all():
         raise InputError("the street network has missing numbers")
@@ -295,7 +322,29 @@ def parse_streets(raw: Any, n_zones: int) -> Streets:
         car_bwd=lk[:, 8] > 0,
         walk=lk[:, 9] > 0,
         cycle=lk[:, 10] > 0,
+        cycle_facility=(
+            np.clip(lk[:, 11], 0, 2).astype(np.int64)
+            if int(lk.shape[-1]) > 11
+            else np.zeros(len(lk), dtype=np.int64)
+        ),
+        pedestrian=lk[:, 12] > 0 if int(lk.shape[-1]) > 12 else np.zeros(len(lk), dtype=bool),
     )
+
+
+def parse_bikes(raw: Any) -> Bikes:
+    """Read ``{"parking": [[lon, lat]], "rental": [[lon, lat]]}``; either may be missing."""
+    if raw is None:
+        return Bikes.none()
+    if not isinstance(raw, dict):
+        raise InputError("the bike parkings and shared-bike stations are not in the expected form")
+
+    def pts(key: str, what: str) -> Floats:
+        v = raw.get(key) or []
+        if not isinstance(v, list) or len(v) > MAX_BIKE_POINTS:
+            raise InputError(f"too many {what} (at most {MAX_BIKE_POINTS})")
+        return np.asarray([_lonlat(p, what) for p in v], dtype=np.float64).reshape(-1, 2)
+
+    return Bikes(parking=pts("parking", "bike parkings"), rental=pts("rental", "shared-bike stations"))
 
 
 def parse_transit(raw: Any) -> Transit:
@@ -309,6 +358,7 @@ def parse_transit(raw: Any) -> Transit:
     names: list[str] = []
     lonlat: list[tuple[float, float]] = []
     modes: list[str] = []
+    step_free: list[bool | None] = []
     index: dict[str, int] = {}
     for i, s in enumerate(stops):
         if not isinstance(s, dict):
@@ -321,6 +371,10 @@ def parse_transit(raw: Any) -> Transit:
         names.append(str(s.get("name") or sid))
         lonlat.append(_lonlat(s.get("lonlat"), f"stop {sid}"))
         modes.append(str(s.get("mode") or "bus"))
+        sf = s.get("step_free")
+        if sf is not None and not isinstance(sf, bool):
+            raise InputError(f"stop {sid} step-free flag must be true, false or null")
+        step_free.append(sf)
     lines: list[Line] = []
     for i, ln in enumerate(raw.get("lines") or []):
         if not isinstance(ln, dict):
@@ -362,6 +416,7 @@ def parse_transit(raw: Any) -> Transit:
         stop_lonlat=np.asarray(lonlat, dtype=np.float64).reshape(-1, 2),
         stop_mode=modes,
         lines=lines,
+        stop_step_free=step_free,
         catchment_m=catch,
         default_catchment_m=catch.get("*", 400.0),
     )
@@ -379,12 +434,16 @@ def parse_economy(raw: Any) -> Economy:
 
 
 def parse_bundle(
-    text: str, given_values: dict[str, Any] | None, tiles: Iterable[str] | None = None
+    text: str,
+    given_values: dict[str, Any] | None,
+    tiles: Iterable[str] | None = None,
+    bikes: Any = None,
 ) -> Bundle:
     """Read and check a run's bundle (JSON text) and values.
 
     A bundle without ``streets`` takes them from ``tiles``, the OpenStreetMap street tiles of the model area
-    that the API stored with the run (``demand.osm``).
+    that the API stored with the run (``demand.osm``), with the planner's ``street_setups`` applied. A bundle
+    without ``bikes`` takes ``bikes``, the bike parkings and shared-bike stations the API found.
 
     Raises:
         InputError: Something is missing or not in the expected form; the message says what.
@@ -401,11 +460,18 @@ def parse_bundle(
     if streets is None and tiles is not None:
         from mobsim_worker.demand.osm import streets_from_tiles  # noqa: PLC0415
 
-        streets = streets_from_tiles(tiles, values)
+        setups = raw.get("street_setups") or []
+        if not isinstance(setups, list):
+            raise InputError("the street setups are not a list")
+        streets = streets_from_tiles(tiles, values, [s for s in setups if isinstance(s, dict)])
+    given_bikes = raw.get("bikes") if raw.get("bikes") is not None else bikes
+    notes = given_bikes.get("notes") if isinstance(given_bikes, dict) else None
     return Bundle(
         zones=zones,
         streets=parse_streets(streets, len(zones)),
         transit=parse_transit(raw.get("transit")),
         economy=parse_economy(raw.get("economy")),
         values=values,
+        bikes=parse_bikes(given_bikes),
+        notes=[str(n) for n in notes if isinstance(n, str)][:20] if isinstance(notes, list) else [],
     )

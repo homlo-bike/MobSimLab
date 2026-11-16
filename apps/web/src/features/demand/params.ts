@@ -7,7 +7,8 @@ import data from "./defaults.generated.json";
 import { type PreferencesDoc, prefValue } from "../../workspace/preferences";
 
 /** Model step a parameter belongs to, in the order the model runs them. */
-export type DemandStep = "zones" | "generation" | "periods" | "distribution" | "mode_choice" | "assignment";
+export type DemandStep =
+  "zones" | "generation" | "periods" | "distribution" | "mode_choice" | "catchment" | "assignment";
 
 export interface DemandParam {
   key: string;

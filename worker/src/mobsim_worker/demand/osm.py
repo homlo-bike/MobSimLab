@@ -11,6 +11,12 @@ junctions, so every link joins two junctions or ends. Each link gets:
   whether people may walk and cycle along it (not on motorways, ``motorroad`` or where ``foot`` or
   ``bicycle`` is ``no``).
 
+- its cycle facility (``cycleway*=track`` or ``separate`` a track, ``cycleway*=lane`` or a bicycle road a
+  lane) and whether it is a pedestrian or living street.
+
+The planner's street setups (GIS tab) change lanes, bus lanes and bike lanes first. Bus lanes are not counted
+as car lanes.
+
 Only the largest connected piece of the network is kept, so no zone joins an island it cannot leave.
 """
 
@@ -26,7 +32,7 @@ from scipy.sparse import coo_matrix
 from scipy.sparse.csgraph import connected_components
 
 from mobsim_worker.demand.inputs import ROAD_CLASSES, InputError, Values
-from mobsim_worker.jobs.road.osm import merge_tiles
+from mobsim_worker.jobs.road.osm import OsmData, apply_street_setup, merge_tiles
 
 #: Road class of each OSM highway value; any other street is ``local``.
 CLASS_OF = {
@@ -79,6 +85,45 @@ def _metres(a: tuple[float, float], b: tuple[float, float]) -> float:
     return math.hypot((a[0] - b[0]) * kx, (a[1] - b[1]) * 110_574.0)
 
 
+_CYCLE_KEYS = ("cycleway", "cycleway:both", "cycleway:left", "cycleway:right")
+#: Streets people walk along without traffic, or with cars at walking pace.
+PEDESTRIAN = frozenset({"pedestrian", "living_street"})
+
+
+def cycle_facility(t: dict[str, str]) -> int:
+    """0 none, 1 painted lane (or a bicycle road), 2 separate track, from a way's tags."""
+    vals = {t.get(k, "") for k in _CYCLE_KEYS}
+    if vals & {"track", "separate", "opposite_track"}:
+        return 2
+    if vals & {"lane", "opposite_lane"} or t.get("bicycle_road") == "yes" or t.get("cyclestreet") == "yes":
+        return 1
+    return 0
+
+
+def _bus_lanes(t: dict[str, str], side: str) -> float:
+    """Bus lanes in one direction (``forward``, ``backward``, or ``""`` for a one-way street's lanes)."""
+    n = 0
+    for k in ("bus:lanes", "psv:lanes"):
+        v = t.get(f"{k}:{side}" if side else k)
+        if v:
+            n = max(n, v.split("|").count("designated"))
+    return float(n)
+
+
+def apply_setups(data: OsmData, setups: list[dict[str, Any]]) -> None:
+    """The planner's street setups: lanes and bus lanes as the road simulation reads them, and bike lanes."""
+    apply_street_setup(data, setups)
+    for s in setups:
+        w = data.ways.get(int(s.get("way", 0) or 0))
+        bike = s.get("bike_lane")
+        if w is None or not isinstance(bike, bool):
+            continue
+        for k in _CYCLE_KEYS:
+            w.tags.pop(k, None)
+        if bike:
+            w.tags["cycleway:both"] = "track" if s.get("separated") is True else "lane"
+
+
 def _access(t: dict[str, str]) -> tuple[bool, bool, bool]:
     """Cars, walking and cycling allowed on a way at all."""
     hw = t.get("highway", "")
@@ -95,7 +140,9 @@ def _access(t: dict[str, str]) -> tuple[bool, bool, bool]:
     return car, walk, cycle
 
 
-def streets_from_tiles(tiles: Iterable[str], values: Values) -> dict[str, Any]:
+def streets_from_tiles(
+    tiles: Iterable[str], values: Values, setups: list[dict[str, Any]] | None = None
+) -> dict[str, Any]:
     """The ``streets`` part of the bundle (contracts/demand-input.schema.json) from OSM street tiles.
 
     Raises:
@@ -105,6 +152,8 @@ def streets_from_tiles(tiles: Iterable[str], values: Values) -> dict[str, Any]:
         data = merge_tiles(tiles)
     except ValueError as e:
         raise InputError(str(e)) from e
+    if setups:
+        apply_setups(data, setups)
     default_speed = {c: values[f"demand.road.speed_kmh.{c}"] for c in ROAD_CLASSES}
     usable = []
     uses: dict[int, int] = {}
@@ -139,10 +188,16 @@ def streets_from_tiles(tiles: Iterable[str], values: Values) -> dict[str, Any]:
         bwd = _lanes(t.get("lanes:backward"))
         if one or rev:
             fwd = fwd or total
+            fwd = max(1.0, fwd - _bus_lanes(t, "")) if fwd else 0.0
             bwd = 0.0
-        elif total and not (fwd and bwd):
-            fwd = fwd or max(1.0, (total - bwd) if bwd else math.floor(total / 2))
-            bwd = bwd or max(1.0, total - fwd)
+        else:
+            if total and not (fwd and bwd):
+                fwd = fwd or max(1.0, (total - bwd) if bwd else math.floor(total / 2))
+                bwd = bwd or max(1.0, total - fwd)
+            fwd = max(1.0, fwd - _bus_lanes(t, "forward")) if fwd else 0.0
+            bwd = max(1.0, bwd - _bus_lanes(t, "backward")) if bwd else 0.0
+        facility = cycle_facility(t)
+        ped = int(t.get("highway", "") in PEDESTRIAN)
         car_f = car and not rev
         car_b = car and not one
         if rev:
@@ -167,6 +222,8 @@ def streets_from_tiles(tiles: Iterable[str], values: Values) -> dict[str, Any]:
                             int(car_b),
                             int(walk),
                             int(cycle),
+                            facility,
+                            ped,
                         ]
                     )
                 start = k

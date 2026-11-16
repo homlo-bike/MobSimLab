@@ -310,6 +310,7 @@ export const yo: Messages = {
   "prefs.demandStep.periods": "Àwọn àkókò",
   "prefs.demandStep.distribution": "Pínpín ìrìn-àjò",
   "prefs.demandStep.mode_choice": "Yíyàn ọ̀nà ìrìnnà",
+  "prefs.demandStep.catchment": "Agbègbè ìwọlé",
   "prefs.demandStep.assignment": "Ìpínsí",
   "prefs.demandAll": "Gbogbo ìgbésẹ̀",
   "prefs.vehiclesTitle": "Àwọn ọkọ̀",

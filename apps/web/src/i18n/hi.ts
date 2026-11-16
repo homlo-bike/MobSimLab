@@ -310,6 +310,7 @@ export const hi: Messages = {
   "prefs.demandStep.periods": "समय अवधियाँ",
   "prefs.demandStep.distribution": "यात्रा वितरण",
   "prefs.demandStep.mode_choice": "साधन चयन",
+  "prefs.demandStep.catchment": "पहुँच क्षेत्र",
   "prefs.demandStep.assignment": "असाइनमेंट",
   "prefs.demandAll": "सभी चरण",
   "prefs.vehiclesTitle": "वाहन",

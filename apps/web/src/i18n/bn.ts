@@ -310,6 +310,7 @@ export const bn: Messages = {
   "prefs.demandStep.periods": "সময়কাল",
   "prefs.demandStep.distribution": "যাত্রা বণ্টন",
   "prefs.demandStep.mode_choice": "যানবাহন নির্বাচন",
+  "prefs.demandStep.catchment": "প্রবেশ এলাকা",
   "prefs.demandStep.assignment": "বরাদ্দ",
   "prefs.demandAll": "সব ধাপ",
   "prefs.vehiclesTitle": "যানবাহন",

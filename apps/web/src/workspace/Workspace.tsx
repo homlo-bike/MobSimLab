@@ -3,6 +3,7 @@ import { type ReactNode, useCallback, useEffect, useMemo, useState } from "react
 import { BenefitTables } from "../features/benefits/BenefitTables";
 import { DemandSection } from "../features/demand/DemandSection";
 import { DemandZoneEditor } from "../features/demand/ZoneEditor";
+import { partStepFree, schematicNetwork } from "../features/schematic/lines";
 import type { DemandDoc } from "../features/demand/zones";
 import type { Estimate as BenefitEstimate } from "../features/benefits/model";
 import type { Triple } from "../features/benefits/params";
@@ -282,6 +283,14 @@ export function Workspace({
   const gtfsFeeds = drawings.doc<GtfsNetworkDoc>("gtfs-network")?.feeds ?? NO_FEEDS;
   // Street setups from the GIS tab: they override OSM in the street line tool and the railway editor.
   const setups = drawings.doc<StreetSetup[]>("street-setups") ?? NO_SETUPS;
+  // Drawn stops and platforms with their recorded step-free access, for the demand model.
+  const stopAccess = useMemo(
+    () =>
+      schematicNetwork(railway, streetLines).stations.flatMap((st) =>
+        st.parts.map((p) => ({ lonlat: p.lonlat, stepFree: partStepFree(p) })),
+      ),
+    [railway, streetLines],
+  );
   const changeSetups = (next: StreetSetup[]) => drawings.set("street-setups", next);
   // GIS tab regions: their values take priority in the benefit tables.
   const regions = drawings.doc<RegionsDoc>("regions")?.regions ?? NO_REGIONS;
@@ -881,6 +890,8 @@ export function Workspace({
                   costs={costInfo}
                   runs={demandRuns}
                   canRun={editable}
+                  streetSetups={setups}
+                  stopAccess={stopAccess}
                 />
               )}
               {project && drawings.loaded && (

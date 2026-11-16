@@ -307,6 +307,7 @@ export const fa: Messages = {
   "prefs.demandStep.periods": "بازه‌های زمانی",
   "prefs.demandStep.distribution": "توزیع سفر",
   "prefs.demandStep.mode_choice": "انتخاب وسیله",
+  "prefs.demandStep.catchment": "حوزه دسترسی",
   "prefs.demandStep.assignment": "تخصیص",
   "prefs.demandAll": "همهٔ گام‌ها",
   "prefs.vehiclesTitle": "وسایل نقلیه",

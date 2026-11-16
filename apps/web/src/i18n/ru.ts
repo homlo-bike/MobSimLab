@@ -314,6 +314,7 @@ export const ru: Messages = {
   "prefs.demandStep.periods": "Периоды",
   "prefs.demandStep.distribution": "Распределение поездок",
   "prefs.demandStep.mode_choice": "Выбор вида транспорта",
+  "prefs.demandStep.catchment": "Зона доступности",
   "prefs.demandStep.assignment": "Назначение",
   "prefs.demandAll": "Все шаги",
   "prefs.vehiclesTitle": "Подвижной состав",

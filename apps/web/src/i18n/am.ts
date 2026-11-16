@@ -300,6 +300,7 @@ export const am: Messages = {
   "prefs.demandStep.periods": "የጊዜ ክፍሎች",
   "prefs.demandStep.distribution": "የጉዞ ስርጭት",
   "prefs.demandStep.mode_choice": "የትራንስፖርት ዘዴ ምርጫ",
+  "prefs.demandStep.catchment": "የመድረሻ ክልል",
   "prefs.demandStep.assignment": "ምደባ",
   "prefs.demandAll": "ሁሉም ደረጃዎች",
   "prefs.vehiclesTitle": "ተሽከርካሪዎች",

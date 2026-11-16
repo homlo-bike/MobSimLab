@@ -348,3 +348,123 @@ def test_reads_the_street_tiles_in_either_form() -> None:
     assert street_tiles("") == []
     with pytest.raises(ValueError, match="cannot be read"):
         street_tiles(json.dumps({"tiles_gz": "not base64 gzip"}))
+
+
+# ----------------------------------------------------------------------------------------------------
+# Catchment effects: cycle facilities, pedestrian streets, step-free stops, bike and ride, shared bikes
+
+
+def catchment_run(bundle: dict[str, Any], values: dict[str, float] | None = None) -> dict[str, Any]:
+    outcome, result, _ = run_demand(json.dumps(bundle), {"values": values or {}}, Recorder())
+    assert outcome == "done"
+    return result
+
+
+def with_columns(bundle: dict[str, Any], facility: Any = 0, pedestrian: Any = 0) -> dict[str, Any]:
+    """The town with the two catchment columns; ``facility`` and ``pedestrian`` may be functions of a link."""
+    f = facility if callable(facility) else (lambda _lk: facility)
+    p = pedestrian if callable(pedestrian) else (lambda _lk: pedestrian)
+    bundle["streets"]["links"] = [[*lk, f(lk), p(lk)] for lk in bundle["streets"]["links"]]
+    return bundle
+
+
+def test_cycle_tracks_on_the_main_roads_win_cyclists(run: tuple[str, dict[str, Any], list[Any]]) -> None:
+    plain = run[1]["totals"]["by_mode"]["cycle"]
+    tracks = catchment_run(with_columns(town(), facility=lambda lk: 2 if lk[3] == 2 else 0))
+    assert tracks["totals"]["by_mode"]["cycle"] > plain * 1.02
+    assert tracks["catchment"]["cycle_track_km"] == pytest.approx(24 * 0.4, rel=0.01)
+    # Without tracks, a main road without a bike lane puts cyclists off.
+    busy = catchment_run(town(), {"demand.cycle.factor.busy_road": 2.0})
+    assert busy["totals"]["by_mode"]["cycle"] < plain
+
+
+def test_pedestrian_streets_in_the_centre_put_cars_off() -> None:
+    def in_centre(lk: list[float]) -> int:
+        # Links between nodes of columns and rows 2 to 4: the centre zone's streets.
+        a, b = int(lk[0]), int(lk[1])
+        return int(all(2 <= k % 7 <= 4 and 2 <= k // 7 <= 4 for k in (a, b)))
+
+    def to_centre(r: dict[str, Any]) -> float:
+        return next(z for z in r["zones"] if z["id"] == "z11")["destinations"]["car"]
+
+    plain = catchment_run(with_columns(town()))
+    ped = catchment_run(with_columns(town(), pedestrian=in_centre))
+    assert to_centre(ped) < to_centre(plain)
+    assert ped["catchment"]["pedestrian_km"] > 0
+
+
+def test_stops_with_steps_lose_riders() -> None:
+    plain = catchment_run(town())
+    b = town()
+    for s in b["transit"]["stops"]:
+        s["step_free"] = s["id"] != "s1"
+    steps_ = catchment_run(b, {"demand.step_free.share": 0.5})
+    assert steps_["transit"]["stops"]["s1"]["boardings"] < plain["transit"]["stops"]["s1"]["boardings"]
+    assert steps_["catchment"]["stops_with_steps"] == 1
+    assert steps_["catchment"]["stops_step_free"] == 3
+
+
+def test_bike_parking_at_the_stops_brings_bike_and_ride() -> None:
+    b = town()
+    b["bikes"] = {"parking": [s["lonlat"] for s in b["transit"]["stops"]], "rental": []}
+    r = catchment_run(b)
+    c = r["catchment"]
+    assert c["bike_parkings"] == 4
+    assert c["bike_and_ride"] > 0
+    assert c["transit_by_bike_owners"] > 0
+    assert r["totals"]["by_mode"]["transit"] >= catchment_run(town())["totals"]["by_mode"]["transit"]
+
+
+def test_shared_bikes_let_people_without_a_bicycle_cycle() -> None:
+    plain = catchment_run(town())
+    b = town()
+    stations = [z["centroid"] for z in b["zones"]] + [s["lonlat"] for s in b["transit"]["stops"]]
+    b["bikes"] = {"parking": [], "rental": stations}
+    r = catchment_run(b)
+    c = r["catchment"]
+    assert c["shared_bike_stations"] == 13
+    assert c["shared_bike_trips"] > 0
+    assert r["totals"]["by_mode"]["cycle"] > plain["totals"]["by_mode"]["cycle"]
+    assert c["shared_bike_to_transit"] >= 0
+
+
+def test_reads_cycle_facilities_and_street_setups_from_openstreetmap() -> None:
+    from mobsim_worker.demand.osm import cycle_facility, streets_from_tiles
+
+    assert cycle_facility({"cycleway:right": "track"}) == 2
+    assert cycle_facility({"cycleway": "lane"}) == 1
+    assert cycle_facility({"bicycle_road": "yes"}) == 1
+    assert cycle_facility({"cycleway": "no"}) == 0
+    tiles = town_tiles()
+    setups = [
+        {"way": 103, "bike_lane": True, "separated": True},  # east–west main street: a track
+        {"way": 203, "bike_lane": True},  # north–south main street: a lane
+        {"way": 203, "traffic_lanes": 2, "bus_lane": True},
+    ]
+    s = streets_from_tiles(tiles, library_values(), setups)
+    assert all(len(lk) == 13 for lk in s["links"])
+    main = [lk for lk in s["links"] if lk[3] == 2]
+    assert {lk[11] for lk in main} == {1, 2}
+    # The bus lane is not a car lane: one car lane each way remains of 2 traffic lanes plus 2 bus lanes.
+    ns = [lk for lk in main if lk[11] == 1]
+    assert all(lk[5] == 1 and lk[6] == 1 for lk in ns)
+    plain = streets_from_tiles(tiles, library_values())
+    assert all(lk[11] == 0 and lk[12] == 0 for lk in plain["links"])
+
+
+def test_reads_the_bike_points_the_api_stored() -> None:
+    from mobsim_worker.jobs.demand import street_bikes
+
+    assert street_bikes(json.dumps({"tiles": [], "bikes": {"parking": [[13, 52]], "rental": []}})) == {
+        "parking": [[13, 52]],
+        "rental": [],
+    }
+    assert street_bikes(json.dumps({"tiles": []})) is None
+    with pytest.raises(InputError, match="shared-bike"):
+        parse_bundle(json.dumps({**town(), "bikes": {"rental": [[500, 1]]}}), {})
+
+
+def test_notes_about_bike_points_reach_the_result() -> None:
+    b = town()
+    b["bikes"] = {"parking": [], "rental": [], "notes": ["the GBFS feed answered 404"]}
+    assert "the GBFS feed answered 404" in catchment_run(b)["notes"]

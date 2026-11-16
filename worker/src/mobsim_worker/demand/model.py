@@ -18,6 +18,7 @@ from pathlib import Path
 from typing import Any, Literal, Protocol
 
 import numpy as np
+import pandas as pd
 
 from mobsim_worker.demand import network, roads, steps, transit
 from mobsim_worker.demand.inputs import ALL_PERIODS, MODES, PERIODS, PURPOSES, Bundle, Floats, InputError
@@ -73,6 +74,9 @@ class PeriodResult:
     by_purpose: dict[str, dict[str, float]]
     road: roads.RoadResult | None = None
     transit_edges: Any = None
+    #: Cycling trips on a shared bike, and public transport trips by people with a bicycle (OD, persons).
+    shared_od: Floats | None = None
+    transit_bike_od: Floats | None = None
     rounds: list[dict[str, float]] = field(default_factory=list)
 
 
@@ -139,6 +143,9 @@ class DemandModel:
             pts.append(bundle.transit.stop_lonlat)
         self.proj = network.Projection(np.vstack(pts))
         self.done_steps: list[str] = []
+        self.tsk: dict[str, transit.TransitSkims] = {}
+        self.tsk_bike: dict[str, transit.TransitSkims] = {}
+        self.shared: tuple[Floats, np.ndarray] | None = None
 
     def _progress(self, step: str, detail: dict[str, Any] | None = None) -> bool:
         """Report the step; True when the run should stop."""
@@ -150,7 +157,8 @@ class DemandModel:
         b, v = self.b, self.b.values
         if self._progress("skims", {"what": "walking and cycling"}):
             return "stopped", {}, []
-        walk_min, cycle_min, walk_dist = network.walk_cycle_skims(b, self.proj)
+        act = network.walk_cycle_skims(b, self.proj)
+        walk_min, cycle_min = act.walk_min, act.cycle_min
         car_net = network.car_network(b, self.proj)
         if self._progress("skims", {"what": "car, free flow"}):
             return "stopped", {}, []
@@ -159,39 +167,39 @@ class DemandModel:
         ff_min, ff_km = network.with_intrazonal(ff_min, share), network.with_intrazonal(ff_km, share)
         ends, notes = steps.generate(b)
         self.notes += notes
-        money = steps.money(b, ends.cbd)
+        money = steps.money(b, ends.cbd, network.pedestrian_share(b, self.proj))
         self.done_steps.append("generation")
+        acc = None
+        if len(b.bikes.rental) or len(b.bikes.parking):
+            acc = transit.access(b, self.proj, money.vot_per_min["hbo"])
+        self.shared = self._shared_skims(act, acc)
         graphs: dict[str, transit.TransitGraph] = {}
-        tsk: dict[str, transit.TransitSkims] = {}
+        bike_graphs: dict[str, transit.TransitGraph] = {}
         for per in PERIODS:
             if self._progress("skims", {"what": "public transport", "period": per}):
                 return "stopped", {}, []
-            graphs[per] = transit.build_graph(b, walk_dist, per)
-            tsk[per] = transit.skims(b, graphs[per])
-        if not any(t.available.any() for t in tsk.values()):
+            graphs[per] = transit.build_graph(b, act, per, acc)
+            self.tsk[per] = transit.skims(b, graphs[per])
+            bg = transit.with_bike(b, graphs[per], act, acc) if acc is not None else None
+            if bg is not None:
+                bike_graphs[per] = bg
+                self.tsk_bike[per] = transit.skims(b, bg)
+        if not any(t.available.any() for t in self.tsk.values()):
             self.notes.append("no zone reaches another by public transport; is the network published?")
         results: dict[str, PeriodResult] = {}
         for per in PERIODS:
-            pr = self._period(per, car_net, tsk[per], walk_min, cycle_min, ff_min, ff_km, ends, money)
+            pr = self._period(per, car_net, walk_min, cycle_min, ff_min, ff_km, ends, money)
             if pr is None:
                 return "stopped", {}, []
             if self._progress("transit assignment", {"period": per}):
                 return "stopped", {}, []
-            pr.transit_edges = transit.assign(graphs[per], pr.od["transit"])
+            pr.transit_edges = self._assign(graphs[per], bike_graphs.get(per), pr)
             results[per] = pr
             self.done_steps.append(per)
         # The night: free-flow roads and the evening's timetable; counted in the weekday total only.
-        sk = steps.Skims(
-            car_min=ff_min,
-            car_km=ff_km,
-            transit_perceived_min=tsk["ev"].perceived_min,
-            transit_available=tsk["ev"].available,
-            transit_ivt_min=tsk["ev"].ivt_min,
-            walk_min=walk_min,
-            cycle_min=cycle_min,
-        )
+        sk = self._skims("ev", ff_min, ff_km, walk_min, cycle_min)
         night = self._choose_all("nt", sk, ends, money)
-        night.transit_edges = transit.assign(graphs["ev"], night.od["transit"])
+        night.transit_edges = self._assign(graphs["ev"], bike_graphs.get("ev"), night)
         results["nt"] = night
         result = self._result(
             results, ends, car_net, graphs, sk_by={"ff_km": ff_km, "walk": walk_min, "cycle": cycle_min}
@@ -199,11 +207,62 @@ class DemandModel:
         files = [self._omx(results)]
         return "done", result, files
 
+    def _shared_skims(
+        self, act: network.ActiveSkims, acc: transit.Access | None
+    ) -> tuple[Floats, np.ndarray] | None:
+        """Walks to and from shared-bike stations between zones (min), and where a shared bike can be used."""
+        if acc is None or not len(self.b.bikes.rental):
+            return None
+        v = self.b.values
+        nz = len(self.b.zones)
+        ok = acc.zone_station_m <= v["demand.shared_bike.station_max_m"]
+        if not ok.any():
+            return None
+        walk = np.where(ok, acc.zone_station_m, 0.0) / 1000.0 / v["demand.walk_speed_kmh"] * 60.0
+        ride = act.cycle_dist[:nz, :nz]
+        avail = ok[:, None] & ok[None, :] & (ride <= v["demand.shared_bike.max_m"])
+        return walk[:, None] + walk[None, :], avail
+
+    def _skims(
+        self, per: str, car_min: Floats, car_km: Floats, walk_min: Floats, cycle_min: Floats
+    ) -> steps.Skims:
+        """The skims of one period (the night uses the evening's public transport)."""
+        ts = self.tsk[per]
+        tb = self.tsk_bike.get(per)
+        return steps.Skims(
+            car_min=car_min,
+            car_km=car_km,
+            transit_perceived_min=ts.perceived_min,
+            transit_available=ts.available,
+            transit_ivt_min=ts.ivt_min,
+            walk_min=walk_min,
+            cycle_min=cycle_min,
+            transit_bike_perceived_min=None if tb is None else tb.perceived_min,
+            transit_bike_available=None if tb is None else tb.available,
+            shared_walk_min=None if self.shared is None else self.shared[0],
+            shared_available=None if self.shared is None else self.shared[1],
+        )
+
+    def _assign(self, g: transit.TransitGraph, bike: transit.TransitGraph | None, pr: PeriodResult) -> Any:
+        """Public transport assignment: people with a bicycle on the bike-and-ride graph, others on ``g``."""
+        od = pr.od["transit"]
+        if bike is None or pr.transit_bike_od is None:
+            return transit.assign(g, od)
+        tb = np.minimum(pr.transit_bike_od, od)
+        base = transit.assign(g, od - tb)
+        withb = transit.assign(bike, tb)
+        n = len(base)
+        base["volume"] = base["volume"].to_numpy() + withb["volume"].to_numpy()[:n]
+        extra = withb.iloc[n:]
+        return pd.concat([base, extra], ignore_index=True) if len(extra) else base
+
     def _choose_all(self, per: str, sk: steps.Skims, ends: steps.Ends, money: steps.Money) -> PeriodResult:
         """Distribution and mode choice of every purpose in one period."""
         b = self.b
         nz = len(b.zones)
         od = {m: np.zeros((nz, nz)) for m in MODES}
+        shared = np.zeros((nz, nz))
+        transit_bike = np.zeros((nz, nz))
         by_purpose: dict[str, dict[str, float]] = {}
         for p in PURPOSES:
             s = self.shares[p][per]
@@ -216,13 +275,16 @@ class DemandModel:
                 trips = to_od(b, p, per, pa * ch.shares[m])
                 od[m] += trips
                 by_purpose[p][m] = float(trips.sum())
-        return PeriodResult(od=od, by_purpose=by_purpose)
+            if ch.shared_share is not None:
+                shared += to_od(b, p, per, pa * ch.shared_share)
+            if ch.transit_bike_share is not None:
+                transit_bike += to_od(b, p, per, pa * ch.transit_bike_share)
+        return PeriodResult(od=od, by_purpose=by_purpose, shared_od=shared, transit_bike_od=transit_bike)
 
     def _period(
         self,
         per: str,
         car_net: network.CarNetwork,
-        ts: transit.TransitSkims,
         walk_min: Floats,
         cycle_min: Floats,
         ff_min: Floats,
@@ -242,15 +304,7 @@ class DemandModel:
         for k in range(1, int(v["demand.feedback.max_iterations"]) + 1):
             if self._progress("feedback", {"period": per, "round": k, "rounds": rounds}):
                 return None
-            sk = steps.Skims(
-                car_min=car_min,
-                car_km=car_km,
-                transit_perceived_min=ts.perceived_min,
-                transit_available=ts.available,
-                transit_ivt_min=ts.ivt_min,
-                walk_min=walk_min,
-                cycle_min=cycle_min,
-            )
+            sk = self._skims(per, car_min, car_km, walk_min, cycle_min)
             last = self._choose_all(per, sk, ends, money)
             new = last.od["car"]
             if avg is None:
@@ -346,6 +400,7 @@ class DemandModel:
             "desire_lines": desire,
             "road": self._road(res, car_net),
             "transit": self._transit(res),
+            "catchment": self._catchment(res),
             "files": ["od.omx"],
         }
 
@@ -424,6 +479,43 @@ class DemandModel:
         }
         return {"lines": lines, "stops": stops}
 
+    def _catchment(self, res: dict[str, PeriodResult]) -> dict[str, Any]:
+        """What the catchment effects did over the weekday, and what the model area has of them."""
+        b = self.b
+        s, t = b.streets, b.transit
+        km = s.length_m / 1000.0
+
+        def day(attr: str) -> float:
+            total = 0.0
+            for p in ALL_PERIODS:
+                m = getattr(res[p], attr)
+                if m is not None:
+                    total += float(m.sum())
+            return r1(total)
+
+        def riders(kind: str) -> float:
+            total = 0.0
+            for p in ALL_PERIODS:
+                e = res[p].transit_edges
+                if e is not None and len(e):
+                    total += float(e.loc[e["link_type"] == kind, "volume"].sum())
+            return r1(total)
+
+        return {
+            "cycle_lane_km": r1(km[s.cycle_facility == 1].sum()),
+            "cycle_track_km": r1(km[s.cycle_facility == 2].sum()),
+            "pedestrian_km": r1(km[s.pedestrian].sum()),
+            "bike_parkings": len(b.bikes.parking),
+            "shared_bike_stations": len(b.bikes.rental),
+            "stops_with_steps": sum(1 for x in t.stop_step_free if x is False),
+            "stops_step_free": sum(1 for x in t.stop_step_free if x is True),
+            "shared_bike_trips": day("shared_od"),
+            "shared_bike_to_transit": riders("shared_bike_access"),
+            "shared_bike_from_transit": riders("shared_bike_egress"),
+            "bike_and_ride": riders("bike_ride_access"),
+            "transit_by_bike_owners": day("transit_bike_od"),
+        }
+
     def _omx(self, res: dict[str, PeriodResult]) -> RunFile:
         """Origin–destination trips (persons) per mode and period, and for the weekday, as OMX."""
         import openmatrix as omx  # noqa: PLC0415
@@ -450,6 +542,7 @@ def run_demand(
     settings: dict[str, Any],
     reporter: Reporter,
     tiles: list[str] | None = None,
+    bikes: dict[str, Any] | None = None,
 ) -> tuple[Outcome, dict[str, Any], list[RunFile]]:
     """Read a run's bundle and values and run the model.
 
@@ -458,11 +551,12 @@ def run_demand(
         settings: The run's settings: ``{"values": {key: number}}`` (the project's demand values).
         reporter: Where progress goes.
         tiles: OpenStreetMap street tiles of the model area, for a bundle without ``streets``.
+        bikes: Bike parkings and shared-bike stations the API found, for a bundle without ``bikes``.
 
     Raises:
         InputError: The bundle or values cannot be used.
     """
     from mobsim_worker.demand.inputs import parse_bundle  # noqa: PLC0415
 
-    bundle = parse_bundle(network_text, settings.get("values"), tiles)
+    bundle = parse_bundle(network_text, settings.get("values"), tiles, bikes)
     return DemandModel(bundle, reporter).run()

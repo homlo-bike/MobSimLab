@@ -318,6 +318,7 @@ export const de: Messages = {
   "prefs.demandStep.periods": "Zeitabschnitte",
   "prefs.demandStep.distribution": "Verkehrsverteilung",
   "prefs.demandStep.mode_choice": "Verkehrsmittelwahl",
+  "prefs.demandStep.catchment": "Einzugsgebiet",
   "prefs.demandStep.assignment": "Umlegung",
   "prefs.demandAll": "Alle Schritte",
   "prefs.vehiclesTitle": "Fahrzeuge",

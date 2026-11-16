@@ -302,6 +302,7 @@ export const ar: Messages = {
   "prefs.demandStep.periods": "الفترات الزمنية",
   "prefs.demandStep.distribution": "توزيع الرحلات",
   "prefs.demandStep.mode_choice": "اختيار الوسيلة",
+  "prefs.demandStep.catchment": "منطقة الوصول",
   "prefs.demandStep.assignment": "التخصيص",
   "prefs.demandAll": "كل الخطوات",
   "prefs.vehiclesTitle": "المركبات",
