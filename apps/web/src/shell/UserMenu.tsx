@@ -40,8 +40,11 @@ export function UserMenu({
   const user = me.user;
   if (!user) return null;
   const name = user.displayName ?? user.email ?? "";
-  const admin = user.role === "owner" || user.role === "admin";
-  const agents = user.role === "owner" || user.role === "admin" || user.role === "user";
+  // The desktop app's local mode has one person and no sign-in: no administration of others, no sign out.
+  const local = Boolean(me.instance.local);
+  const admin = !local && (user.role === "owner" || user.role === "admin");
+  const agents =
+    me.instance.agents !== false && (user.role === "owner" || user.role === "admin" || user.role === "user");
   const run = (f: () => void) => () => {
     setAt(null);
     f();
@@ -113,15 +116,19 @@ export function UserMenu({
               </button>
             </>
           )}
-          <hr className="my-1.5 border-slate-200" />
-          <button
-            type="button"
-            role="menuitem"
-            className="menu-item text-red-700"
-            onClick={run(() => void signOut())}
-          >
-            {t("user.signOut")}
-          </button>
+          {!local && (
+            <>
+              <hr className="my-1.5 border-slate-200" />
+              <button
+                type="button"
+                role="menuitem"
+                className="menu-item text-red-700"
+                onClick={run(() => void signOut())}
+              >
+                {t("user.signOut")}
+              </button>
+            </>
+          )}
         </Popover>
       )}
     </>

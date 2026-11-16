@@ -1,6 +1,13 @@
 /** What `GET /api/auth/me` returns. */
 export interface Me {
-  instance: { mode: "setup" | "open"; name: string };
+  instance: {
+    mode: "setup" | "open";
+    name: string;
+    /** Desktop app on this computer: one local Owner, signed in by the app, no administration of other people. */
+    local?: boolean;
+    /** AI agents (MCP) switched on; the desktop app's local mode starts with them off. */
+    agents?: boolean;
+  };
   signInAvailable: boolean;
   user?: {
     id: string;
@@ -29,11 +36,20 @@ export async function savePreferences(csrfToken: string, patch: Preferences): Pr
     .preferences;
 }
 
-/** Purpose: load the current session and instance state. */
+/**
+ * Purpose: load the current session and instance state. In the desktop app's local mode a missing or expired
+ * session is renewed at once: the app adds its launch key to this request, so nobody has to sign in.
+ */
 export async function fetchMe(): Promise<Me> {
-  const res = await fetch("/api/auth/me", { credentials: "same-origin" });
-  if (!res.ok) throw new Error(`GET /api/auth/me failed: ${res.status}`);
-  return (await res.json()) as Me;
+  const get = async () => {
+    const res = await fetch("/api/auth/me", { credentials: "same-origin" });
+    if (!res.ok) throw new Error(`GET /api/auth/me failed: ${res.status}`);
+    return (await res.json()) as Me;
+  };
+  const me = await get();
+  if (!me.instance.local || me.user) return me;
+  const res = await fetch("/api/auth/local", { method: "POST", credentials: "same-origin" });
+  return res.ok ? get() : me;
 }
 
 /**
