@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { createWriteStream } from "node:fs";
-import { mkdir, readdir, rename, rm, stat } from "node:fs/promises";
+import { mkdir, open, readdir, rename, rm, stat } from "node:fs/promises";
 import { join } from "node:path";
 import { Transform } from "node:stream";
 import { pipeline } from "node:stream/promises";
@@ -24,7 +24,8 @@ import { OverpassClient, overpassEndpoint } from "../gateway/overpass.client";
 import { projectArea } from "../projects/project-area";
 import { type ProjectActor, ProjectsService } from "../projects/projects.service";
 
-import { cutTiles, encodeValues, tileBounds } from "./dem-tiles";
+import { cutTiles, type DemTile, encodeValues, tileBounds } from "./dem-tiles";
+import { DemUploadError, resampleDem } from "./dem-upload";
 import { type Box, OsmTools } from "./osm-tools";
 import { fetchArea } from "./overpass-import";
 import { bboxAreaKm2, type GeodataSettings, geodataDirs, geodataSettings } from "./settings";
@@ -325,6 +326,51 @@ export class GeodataService implements OnApplicationBootstrap {
     return run;
   }
 
+  /**
+   * Purpose: take the planner's own elevation GeoTIFF (streamed to the data volume, at most `dem.maxUploadMb`) and
+   * queue its import. It replaces the planner's earlier grid and wins over GLO-30 where it has heights.
+   * Inputs: the request body and what the planner says about the grid (all optional but the file name).
+   */
+  async uploadDem(
+    actor: ProjectActor,
+    projectId: string,
+    body: NodeJS.ReadableStream,
+    o: {
+      fileName: string;
+      crs?: string | null;
+      sourceName?: string | null;
+      licence?: string | null;
+      accuracyM?: number | null;
+    },
+  ): Promise<ImportRun> {
+    await this.projects.access(actor, projectId, "edit");
+    const area = await this.requireArea(projectId);
+    const km2 = bboxAreaKm2(area.bbox);
+    if (km2 > this.settings.dem.maxAreaKm2)
+      throw new BadRequestException(
+        `The project area is ${Math.round(km2)} km², more than the ${this.settings.dem.maxAreaKm2} km² an elevation import accepts`,
+      );
+    await mkdir(this.dirs.uploads, { recursive: true });
+    const file = join(this.dirs.uploads, `${randomUUID()}.tif`);
+    const size = await this.saveUpload(body, file, this.settings.dem.maxUploadMb);
+    const options = {
+      upload: { name: o.fileName.slice(0, 200), bytes: size },
+      crs: o.crs?.trim() || null,
+      sourceName: o.sourceName?.trim() || null,
+      licence: o.licence?.trim() || null,
+      accuracyM: o.accuracyM ?? null,
+    };
+    const run = await this.insert(actor, projectId, "dem_upload", "geotiff", area, options);
+    this.enqueue(run.id, async () => {
+      try {
+        await this.demUploadJob(run, projectId, file, options);
+      } finally {
+        await rm(file, { force: true });
+      }
+    });
+    return run;
+  }
+
   /** Purpose: cancel a queued or running import. Already finished imports are left as they are. */
   async cancel(actor: ProjectActor, projectId: string, importId: string): Promise<ImportRun> {
     await this.projects.access(actor, projectId, "edit");
@@ -352,33 +398,6 @@ export class GeodataService implements OnApplicationBootstrap {
     await sql`DELETE FROM geo.import WHERE id = ${importId}`.execute(this.db);
     await rm(join(this.dirs.project(projectId), `area-${importId}.osm.pbf`), { force: true });
     this.changed(projectId);
-  }
-
-  /**
-   * Purpose: record a finished upload-type import done by another service (the planner's elevation GeoTIFF):
-   * insert a run, let `work` fill it, then replace the earlier import of the kind.
-   */
-  async runNow(
-    actor: ProjectActor,
-    projectId: string,
-    kind: ImportKind,
-    method: ImportMethod,
-    options: Record<string, unknown>,
-    work: (run: ImportRun) => Promise<{ stats: Record<string, unknown>; source: Record<string, unknown> }>,
-  ): Promise<ImportRun> {
-    await this.projects.access(actor, projectId, "edit");
-    const area = await this.requireArea(projectId);
-    const run = await this.insert(actor, projectId, kind, method, area, options);
-    let result: Awaited<ReturnType<typeof work>>;
-    try {
-      await this.mark(run.id, { status: "running" });
-      result = await work(run);
-    } catch (e) {
-      await this.fail(run.id, e);
-      throw e;
-    }
-    await this.finish(run, projectId, result.stats, result.source);
-    return (await this.get(run.id))!;
   }
 
   /** Purpose: the project's current import of a kind, or null. */
@@ -578,20 +597,7 @@ export class GeodataService implements OnApplicationBootstrap {
         continue;
       }
       const cut = cutTiles(win);
-      for (let k = 0; k < cut.length; k += 32) {
-        const batch = cut.slice(k, k + 32);
-        await sql`
-          INSERT INTO geo.dem_tile (project_id, import_id, priority, width, height, origin_lon, origin_lat,
-            step_lon, step_lat, data, envelope)
-          VALUES ${sql.join(
-            batch.map((t) => {
-              const [bw, bs, be, bn] = tileBounds(t);
-              return sql`(${projectId}::uuid, ${run.id}::uuid, 0, ${t.width}, ${t.height}, ${t.originLon},
-                ${t.originLat}, ${t.stepLon}, ${t.stepLat}, ${encodeValues(t.values)},
-                ST_MakeEnvelope(${bw}, ${bs}, ${be}, ${bn}, 4326))`;
-            }),
-          )}`.execute(this.db);
-      }
+      await this.writeTiles(run.id, projectId, 0, cut);
       tiles += cut.length;
       pixels += win.width * win.height;
     }
@@ -601,6 +607,83 @@ export class GeodataService implements OnApplicationBootstrap {
       { cells: cells.length, cellsWithoutData: missingCells, tiles, pixels },
       { ...TERRAIN_SOURCE, retrievedAt: new Date().toISOString() },
     );
+  }
+
+  private async demUploadJob(
+    run: ImportRun,
+    projectId: string,
+    file: string,
+    o: {
+      upload: { name: string; bytes: number };
+      crs: string | null;
+      sourceName: string | null;
+      licence: string | null;
+      accuracyM: number | null;
+    },
+  ): Promise<void> {
+    await this.mark(run.id, { progress: { step: "extract" } });
+    const fh = await open(file, "r");
+    let res;
+    try {
+      res = await resampleDem(
+        async (offset, len) => {
+          const buf = Buffer.alloc(len);
+          const { bytesRead } = await fh.read(buf, 0, len, offset);
+          if (bytesRead < len) throw new DemUploadError("The file ends early; it may be damaged");
+          return buf;
+        },
+        run.bbox,
+        { crs: o.crs, maxCells: this.settings.dem.maxUploadCells },
+      );
+    } finally {
+      await fh.close();
+    }
+    this.check(run.id);
+    await this.mark(run.id, { progress: { step: "database" } });
+    const cut = cutTiles(res.window);
+    await this.writeTiles(run.id, projectId, 1, cut);
+    this.check(run.id);
+    await this.finish(
+      run,
+      projectId,
+      {
+        tiles: cut.length,
+        pixels: res.window.width * res.window.height,
+        cellsWithData: res.cellsWithData,
+        notes: res.notes,
+      },
+      {
+        id: "own_geotiff",
+        name: o.sourceName ?? o.upload.name,
+        kind: "own",
+        file: o.upload.name,
+        licence: o.licence,
+        crs: res.crs,
+        resolutionM: Math.round(res.resolutionM * 10) / 10,
+        fileResolutionM: Math.round(res.fileResolutionM * 10) / 10,
+        ...(o.accuracyM !== null ? { verticalAccuracyM: o.accuracyM } : {}),
+        note: "Uploaded by the planner; heights taken as metres.",
+        retrievedAt: new Date().toISOString(),
+      },
+    );
+  }
+
+  /** Purpose: store elevation tiles of an import, 32 rows a statement. Higher `priority` wins when reading. */
+  private async writeTiles(importId: string, projectId: string, priority: number, cut: DemTile[]) {
+    for (let k = 0; k < cut.length; k += 32) {
+      const batch = cut.slice(k, k + 32);
+      await sql`
+        INSERT INTO geo.dem_tile (project_id, import_id, priority, width, height, origin_lon, origin_lat,
+          step_lon, step_lat, data, envelope)
+        VALUES ${sql.join(
+          batch.map((t) => {
+            const [bw, bs, be, bn] = tileBounds(t);
+            return sql`(${projectId}::uuid, ${importId}::uuid, ${priority}, ${t.width}, ${t.height}, ${t.originLon},
+              ${t.originLat}, ${t.stepLon}, ${t.stepLat}, ${encodeValues(t.values)},
+              ST_MakeEnvelope(${bw}, ${bs}, ${be}, ${bn}, 4326))`;
+          }),
+        )}`.execute(this.db);
+    }
   }
 
   // ---- rows ------------------------------------------------------------------------------------------------

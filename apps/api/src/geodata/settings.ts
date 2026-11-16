@@ -39,6 +39,8 @@ export interface GeodataSettings {
     maxAreaKm2: number;
     /** Largest uploaded elevation GeoTIFF, MB. */
     maxUploadMb: number;
+    /** Most grid cells an uploaded elevation GeoTIFF is read or resampled into (memory bound). */
+    maxUploadCells: number;
   };
   /** Longest a single osmium or osm2pgsql run may take, minutes. */
   toolTimeoutMin: number;
@@ -68,6 +70,7 @@ const schema = z.object({
   MOBSIMLAB_GEOFABRIK_CACHE_DAYS: num(0, 365, 7),
   MOBSIMLAB_DEM_MAX_AREA_KM2: num(1, 1_000_000, 20_000),
   MOBSIMLAB_DEM_UPLOAD_MAX_MB: num(1, 50_000, 500),
+  MOBSIMLAB_DEM_UPLOAD_MAX_CELLS: num(10_000, 500_000_000, 25_000_000),
   MOBSIMLAB_OSM_TOOL_TIMEOUT_MIN: num(1, 24 * 60, 120),
 });
 
@@ -89,7 +92,11 @@ export function geodataSettings(env: NodeJS.ProcessEnv = process.env): GeodataSe
     maxPbfMb: e.MOBSIMLAB_OSM_PBF_MAX_MB,
     geofabrikUrl: e.MOBSIMLAB_GEOFABRIK_URL.replace(/\/+$/, ""),
     geofabrikCacheDays: e.MOBSIMLAB_GEOFABRIK_CACHE_DAYS,
-    dem: { maxAreaKm2: e.MOBSIMLAB_DEM_MAX_AREA_KM2, maxUploadMb: e.MOBSIMLAB_DEM_UPLOAD_MAX_MB },
+    dem: {
+      maxAreaKm2: e.MOBSIMLAB_DEM_MAX_AREA_KM2,
+      maxUploadMb: e.MOBSIMLAB_DEM_UPLOAD_MAX_MB,
+      maxUploadCells: e.MOBSIMLAB_DEM_UPLOAD_MAX_CELLS,
+    },
     toolTimeoutMin: e.MOBSIMLAB_OSM_TOOL_TIMEOUT_MIN,
   };
 }

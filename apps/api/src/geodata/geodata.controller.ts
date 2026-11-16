@@ -26,6 +26,15 @@ const osmBody = z.strictObject({
   planned: z.boolean().default(false),
 });
 
+const text = (max: number) => z.string().trim().min(1).max(max).optional().catch(undefined);
+const demUploadQuery = z.object({
+  name: text(200),
+  crs: z.string().trim().max(10_000).optional(),
+  source: text(200),
+  licence: text(500),
+  accuracy: z.coerce.number().min(0).max(1000).optional(),
+});
+
 function parse<T>(schema: z.ZodType<T>, value: unknown): T {
   const r = schema.safeParse(value ?? {});
   if (!r.success) throw new BadRequestException(r.error.issues.map((i) => i.message));
@@ -106,6 +115,32 @@ export class GeodataController {
   @Requires("projects.read")
   async dem(@Param("id") id: string, @Req() req: MslRequest) {
     return { import: await this.geodata.startDem(this.actor(req), parse(uuid, id)) };
+  }
+
+  /**
+   * Purpose: import the planner's own elevation GeoTIFF (such as a LiDAR terrain model), sent as
+   * `application/octet-stream`. It wins over GLO-30 where it has heights. Query, all optional but `name`:
+   * `name` (file name), `crs` (PROJ string, WKT or EPSG:n when the file does not name its system), `source`,
+   * `licence` and `accuracy` (vertical accuracy, metres), kept as the grid's Source record.
+   */
+  @Post("dem/upload")
+  @Requires("projects.read")
+  async demUpload(
+    @Param("id") id: string,
+    @Query() q: Record<string, string | undefined>,
+    @Req() req: MslRequest,
+  ) {
+    if (!/^application\/octet-stream\b/.test(req.headers["content-type"] ?? ""))
+      throw new BadRequestException("Send the GeoTIFF file as application/octet-stream");
+    const m = parse(demUploadQuery, q);
+    const run = await this.geodata.uploadDem(this.actor(req), parse(uuid, id), req, {
+      fileName: m.name ?? "elevation.tif",
+      crs: m.crs ?? null,
+      sourceName: m.source ?? null,
+      licence: m.licence ?? null,
+      accuracyM: m.accuracy ?? null,
+    });
+    return { import: run };
   }
 
   /** Purpose: cancel a queued or running import. */
