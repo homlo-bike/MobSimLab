@@ -2,6 +2,7 @@ import { roadRu } from "./road/ru";
 import { editorsRu } from "./editors/ru";
 import { cargoBikeRu } from "./cargo-bike/ru";
 import { depotsRu } from "./depots/ru";
+import { populationRu } from "./population/ru";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -422,6 +423,7 @@ export const ru: Messages = {
   ...editorsRu,
   ...cargoBikeRu,
   ...depotsRu,
+  ...populationRu,
   ...roadRu,
   ...PLUGIN_MESSAGES.ru,
 };
