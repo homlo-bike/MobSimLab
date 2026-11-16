@@ -282,6 +282,11 @@ export interface EngineServiceLine {
   peak_headway_s: number;
   offpeak_headway_s: number;
   dwell_s: number | null;
+  /** The project's running values (Project preferences); absent ones take the mode's. */
+  turnback_s?: number;
+  supplement_share?: number;
+  accel_ms2?: number;
+  decel_ms2?: number;
 }
 
 export type Severity = "error" | "warning" | "info" | "ok";
