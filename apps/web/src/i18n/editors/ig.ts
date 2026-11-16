@@ -568,6 +568,12 @@ export const editorsIg = {
     "A na-ebudata grid ọnụ ọgụgụ mmadụ WorldPop nke {countries} na sava. Ruo mgbe ọ ga-adị, a na-eme atụmatụ ndị bi na ya site n'ịdị ukwuu ụlọ; gbakọọ ọzọ mgbe nkeji ole na ole gasịrị iji jiri WorldPop.",
   "noise.popUnavailable":
     "Ọnụ ọgụgụ mmadụ WorldPop adịghị ({reason}), ya mere a na-eme atụmatụ ndị bi na ya site n'ịdị ukwuu ụlọ.",
+  "noise.cancelled": "Akagburu map mkpọtụ.",
+  "noise.popWaiting":
+    "A na-ebudata grid ọnụ ọgụgụ mmadụ WorldPop nke {countries} na sava: {received} n'ime {total} MB. Nke a na-eme otu ugboro kwa obodo.",
+  "noise.popWaitingUnknown":
+    "A na-ebudata grid ọnụ ọgụgụ mmadụ WorldPop nke {countries} na sava: {received} MB ruo ugbu a. Nke a na-eme otu ugboro kwa obodo.",
+  "noise.popSkip": "Jiri nha ụlọ kama",
   "noise.residents": "Ndị bi na ya",
   "noise.popGrid":
     "Ndị bi na ya si WorldPop {year} ({countries}): e kesara ndị mmadụ nọ n'igbe m 100 ọ bụla n'ụlọ obibi ya dị ka mbara ala ụlọ si dị. {reached} n'ime ndị {total} bi n'ụlọ ndị e bugoro bi n'ime nso.",

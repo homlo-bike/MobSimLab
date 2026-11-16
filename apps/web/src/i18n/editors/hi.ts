@@ -587,6 +587,12 @@ export const editorsHi = {
     "{countries} का WorldPop जनसंख्या ग्रिड सर्वर पर डाउनलोड हो रहा है। तब तक निवासियों का अनुमान इमारत के आकार से लगाया जाता है; WorldPop उपयोग करने के लिए कुछ मिनट बाद फिर से गणना करें।",
   "noise.popUnavailable":
     "WorldPop जनसंख्या उपलब्ध नहीं है ({reason}), इसलिए निवासियों का अनुमान इमारत के आकार से लगाया जाता है।",
+  "noise.cancelled": "शोर मानचित्र रद्द कर दिया गया।",
+  "noise.popWaiting":
+    "{countries} का WorldPop जनसंख्या ग्रिड सर्वर पर डाउनलोड हो रहा है: {received} / {total} MB। यह हर देश के लिए एक बार होता है।",
+  "noise.popWaitingUnknown":
+    "{countries} का WorldPop जनसंख्या ग्रिड सर्वर पर डाउनलोड हो रहा है: अब तक {received} MB। यह हर देश के लिए एक बार होता है।",
+  "noise.popSkip": "इसके बजाय इमारत का आकार उपयोग करें",
   "noise.residents": "निवासी",
   "noise.popGrid":
     "WorldPop {year} ({countries}) से निवासी: हर 100 मी कोष्ठ के लोग फ़र्श क्षेत्रफल के अनुसार उसके घरों में बाँटे गए। लोड की गई इमारतों के {total} निवासियों में से {reached} पहुँच में रहते हैं।",

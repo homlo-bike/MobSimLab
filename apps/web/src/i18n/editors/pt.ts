@@ -597,6 +597,12 @@ export const editorsPt = {
     "A grade de população do WorldPop de {countries} está sendo baixada para o servidor. Até lá, os moradores são estimados pelo tamanho dos edifícios; calcule novamente em alguns minutos para usar o WorldPop.",
   "noise.popUnavailable":
     "A população do WorldPop não está disponível ({reason}), então os moradores são estimados pelo tamanho dos edifícios.",
+  "noise.cancelled": "O mapa de ruído foi cancelado.",
+  "noise.popWaiting":
+    "A transferir para o servidor a grelha de população WorldPop de {countries}: {received} de {total} MB. Isto acontece uma vez por país.",
+  "noise.popWaitingUnknown":
+    "A transferir para o servidor a grelha de população WorldPop de {countries}: {received} MB até agora. Isto acontece uma vez por país.",
+  "noise.popSkip": "Usar antes o tamanho dos edifícios",
   "noise.residents": "Moradores",
   "noise.popGrid":
     "Moradores do WorldPop {year} ({countries}): as pessoas de cada célula de 100 m repartidas entre suas moradias pela área construída. {reached} de {total} moradores dos edifícios carregados vivem ao alcance.",

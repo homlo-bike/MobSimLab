@@ -403,6 +403,8 @@ export class WorldPopClient {
   private readonly o: WorldPopOptions;
   private readonly entries = new Map<string, Promise<WorldPopEntry | null>>();
   private readonly files = new Map<string, Promise<GridFile>>();
+  /** Bytes received of the downloads under way, by file URL, so a waiting request can show how far it is. */
+  private readonly downloads = new Map<string, { receivedBytes: number; totalBytes: number | null }>();
   private readonly tiles: Lru<string, Promise<Float32Array>>;
 
   constructor(options: Partial<WorldPopOptions> = {}) {
@@ -535,19 +537,35 @@ export class WorldPopClient {
     return p;
   }
 
+  /**
+   * Purpose: how far the download of an entry's file is, or null when none is under way (not started,
+   * finished or failed). `totalBytes` is null when WorldPop does not say the size.
+   */
+  downloadProgress(entry: WorldPopEntry): { receivedBytes: number; totalBytes: number | null } | null {
+    const d = this.downloads.get(entry.url);
+    return d ? { ...d } : null;
+  }
+
   /** Purpose: download a file to `path` through a temporary name, within the size limit. */
   private async download(url: string, path: string): Promise<void> {
     await mkdir(this.o.cacheDir, { recursive: true });
-    const { res, finish } = await this.request(url, this.o.downloadTimeoutMs);
+    this.downloads.set(url, { receivedBytes: 0, totalBytes: null });
     try {
-      await this.save(res, path);
+      const { res, finish } = await this.request(url, this.o.downloadTimeoutMs);
+      try {
+        await this.save(res, path, url);
+      } finally {
+        finish();
+      }
     } finally {
-      finish();
+      this.downloads.delete(url);
     }
   }
 
-  private async save(res: Response, path: string): Promise<void> {
+  private async save(res: Response, path: string, url: string): Promise<void> {
     const declared = Number(res.headers.get("content-length") ?? 0);
+    const progress = this.downloads.get(url);
+    if (progress) progress.totalBytes = declared || null;
     if (declared > this.o.maxFileBytes) {
       await res.body?.cancel();
       throw new WorldPopError(
@@ -563,6 +581,7 @@ export class WorldPopClient {
     const limit = new Transform({
       transform(chunk: Buffer, _enc, done) {
         got += chunk.length;
+        if (progress) progress.receivedBytes = got;
         if (got > max) done(new WorldPopError("The WorldPop file is above the size limit", 502));
         else done(null, chunk);
       },

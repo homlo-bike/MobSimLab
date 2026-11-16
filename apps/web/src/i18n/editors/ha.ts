@@ -587,6 +587,12 @@ export const editorsHa = {
     "Ana sauke grid ɗin yawan jama'a na WorldPop na {countries} zuwa sabar. Har sai ya kammala, ana ƙiyasta mazauna daga girman gine-gine; sake lissafawa bayan 'yan mintuna don amfani da WorldPop.",
   "noise.popUnavailable":
     "Babu yawan jama'a na WorldPop ({reason}), don haka ana ƙiyasta mazauna daga girman gine-gine.",
+  "noise.cancelled": "An soke taswirar hayaniya.",
+  "noise.popWaiting":
+    "Ana sauke grid ɗin yawan jama'a na WorldPop na {countries} zuwa sabar: {received} cikin {total} MB. Wannan yana faruwa sau ɗaya ga kowace ƙasa.",
+  "noise.popWaitingUnknown":
+    "Ana sauke grid ɗin yawan jama'a na WorldPop na {countries} zuwa sabar: {received} MB zuwa yanzu. Wannan yana faruwa sau ɗaya ga kowace ƙasa.",
+  "noise.popSkip": "Yi amfani da girman gini maimakon haka",
   "noise.residents": "Mazauna",
   "noise.popGrid":
     "Mazauna daga WorldPop {year} ({countries}): an raba mutanen kowane akwati na m 100 tsakanin gidajensa bisa faɗin bene. Mazauna {reached} cikin {total} na gine-ginen da aka loda suna zaune a cikin isa.",

@@ -588,6 +588,12 @@ export const editorsUr = {
     "{countries} کا WorldPop آبادی گرڈ سرور پر ڈاؤن لوڈ ہو رہا ہے۔ تب تک رہائشیوں کا اندازہ عمارت کے سائز سے لگایا جاتا ہے؛ WorldPop استعمال کرنے کے لیے چند منٹ بعد دوبارہ حساب کریں۔",
   "noise.popUnavailable":
     "WorldPop آبادی دستیاب نہیں ({reason})، اس لیے رہائشیوں کا اندازہ عمارت کے سائز سے لگایا جاتا ہے۔",
+  "noise.cancelled": "شور کا نقشہ منسوخ کر دیا گیا۔",
+  "noise.popWaiting":
+    "{countries} کا WorldPop آبادی گرڈ سرور پر ڈاؤن لوڈ ہو رہا ہے: {received} از {total} MB۔ یہ ہر ملک کے لیے ایک بار ہوتا ہے۔",
+  "noise.popWaitingUnknown":
+    "{countries} کا WorldPop آبادی گرڈ سرور پر ڈاؤن لوڈ ہو رہا ہے: اب تک {received} MB۔ یہ ہر ملک کے لیے ایک بار ہوتا ہے۔",
+  "noise.popSkip": "اس کے بجائے عمارت کا سائز استعمال کریں",
   "noise.residents": "رہائشی",
   "noise.popGrid":
     "WorldPop {year} ({countries}) سے رہائشی: ہر 100 میٹر خانے کے لوگ فرشی رقبے کے مطابق اس کے گھروں میں بانٹے گئے۔ لوڈ کی گئی عمارتوں کے {total} رہائشیوں میں سے {reached} حد میں رہتے ہیں۔",

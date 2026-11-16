@@ -53,13 +53,24 @@ export function buildingTiles(points: LonLat[], reachM: number): [number, number
   return out.sort((a, b) => Math.hypot(a[0] - cx, a[1] - cy) - Math.hypot(b[0] - cx, b[1] - cy));
 }
 
-/** Purpose: buildings of several tiles, once each (a building on a tile edge comes in both). */
+/**
+ * Purpose: buildings of several tiles, once each (a building on a tile edge comes in both).
+ * Inputs: the tiles, the fetcher, and optionally a callback after each tile (tiles done, tiles in all) and a
+ * signal that stops before the next tile (throwing the signal's reason).
+ */
 export async function loadBuildings(
   tiles: [number, number][],
   fetchTile: BuildingTileFetcher,
+  onProgress?: (done: number, total: number) => void,
+  signal?: AbortSignal,
 ): Promise<NoiseBuilding[]> {
   const seen = new Map<string, NoiseBuilding>();
-  for (const [x, y] of tiles) for (const b of await fetchTile(x, y)) if (!seen.has(b.id)) seen.set(b.id, b);
+  for (const [i, [x, y]] of tiles.entries()) {
+    signal?.throwIfAborted();
+    for (const b of await fetchTile(x, y)) if (!seen.has(b.id)) seen.set(b.id, b);
+    onProgress?.(i + 1, tiles.length);
+  }
+  signal?.throwIfAborted();
   return [...seen.values()];
 }
 

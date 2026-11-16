@@ -605,6 +605,12 @@ export const editorsDe = {
     "Das WorldPop-Bevölkerungsraster von {countries} wird auf den Server heruntergeladen. Bis dahin werden die Bewohner aus der Gebäudegröße geschätzt; berechnen Sie in einigen Minuten erneut, um WorldPop zu verwenden.",
   "noise.popUnavailable":
     "WorldPop-Bevölkerung ist nicht verfügbar ({reason}), daher werden die Bewohner aus der Gebäudegröße geschätzt.",
+  "noise.cancelled": "Die Lärmkarte wurde abgebrochen.",
+  "noise.popWaiting":
+    "Das WorldPop-Bevölkerungsraster von {countries} wird auf den Server geladen: {received} von {total} MB. Das geschieht einmal pro Land.",
+  "noise.popWaitingUnknown":
+    "Das WorldPop-Bevölkerungsraster von {countries} wird auf den Server geladen: bisher {received} MB. Das geschieht einmal pro Land.",
+  "noise.popSkip": "Stattdessen die Gebäudegröße verwenden",
   "noise.residents": "Bewohner",
   "noise.popGrid":
     "Bewohner aus WorldPop {year} ({countries}): die Menschen jeder 100-m-Zelle, nach Geschossfläche auf ihre Wohngebäude verteilt. {reached} von {total} Bewohnern der geladenen Gebäude wohnen in Reichweite.",

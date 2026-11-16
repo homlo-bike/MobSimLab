@@ -596,6 +596,12 @@ export const editorsEn = {
     "WorldPop's population grid of {countries} is being downloaded to the server. Until it is there, residents are estimated from the building size; compute again in a few minutes to use WorldPop.",
   "noise.popUnavailable":
     "WorldPop population is not available ({reason}), so residents are estimated from the building size.",
+  "noise.cancelled": "The noise map was cancelled.",
+  "noise.popWaiting":
+    "Downloading WorldPop's population grid of {countries} to the server: {received} of {total} MB. This happens once per country.",
+  "noise.popWaitingUnknown":
+    "Downloading WorldPop's population grid of {countries} to the server: {received} MB so far. This happens once per country.",
+  "noise.popSkip": "Use the building size instead",
   "noise.residents": "Residents",
   "noise.popGrid":
     "Residents from WorldPop {year} ({countries}): the people of each 100 m cell shared among its homes by floor area. {reached} of {total} residents of the buildings loaded live in reach.",
