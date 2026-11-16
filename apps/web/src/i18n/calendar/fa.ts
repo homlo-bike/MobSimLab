@@ -37,6 +37,18 @@ export const calendarFa = {
   "cal.total": "جمع",
   "cal.noHolidaysYear": "هنوز تعطیلی رسمی دریافت نشده",
   "cal.resetCount": "بازگشت به {value} شمرده‌شده",
+  "cal.service": "روز خدمت برای هر نوع روز",
+  "cal.serviceIntro":
+    "زمان شروع و پایان خدمت در هر نوع روز و اوج صبح و عصر آن، به صورت HH:MM. ساعت‌های پس از نیمه‌شب بعد از 24:00 ادامه می‌یابند، مانند 24:30. اگر اوجی نیست، آن را خالی بگذارید.",
+  "cal.serviceDefault": "پیش‌فرض برای هر نوع روز: {first} تا {last}، اوج‌ها {peaks}.",
+  "cal.firstDep": "نخستین حرکت",
+  "cal.lastDep": "آخرین حرکت",
+  "cal.morningPeak": "اوج صبح",
+  "cal.eveningPeak": "اوج عصر",
+  "cal.peakFrom": "از",
+  "cal.peakTo": "تا",
+  "cal.serviceInvalid":
+    "هنوز ذخیره نشده: آخرین حرکت باید پس از نخستین باشد و هر اوج باید پس از شروعش پایان یابد.",
   "cal.day.weekday": "روز کاری",
   "cal.day.saturday": "شنبه",
   "cal.day.sunday": "یکشنبه",

@@ -39,6 +39,18 @@ export const calendarEs = {
   "cal.total": "Total",
   "cal.noHolidaysYear": "Aún no se han obtenido días festivos",
   "cal.resetCount": "volver a los {value} contados",
+  "cal.service": "Día de servicio por tipo de día",
+  "cal.serviceIntro":
+    "Cuándo empieza y termina el servicio en cada tipo de día, y su punta de la mañana y de la tarde, como HH:MM. Las horas después de medianoche siguen más allá de 24:00, por ejemplo 24:30. Deja una punta vacía si no hay.",
+  "cal.serviceDefault": "Por defecto para cada tipo de día: {first} a {last}, puntas {peaks}.",
+  "cal.firstDep": "Primera salida",
+  "cal.lastDep": "Última salida",
+  "cal.morningPeak": "Punta de la mañana",
+  "cal.eveningPeak": "Punta de la tarde",
+  "cal.peakFrom": "desde",
+  "cal.peakTo": "hasta",
+  "cal.serviceInvalid":
+    "Aún no guardado: la última salida debe ser posterior a la primera, y cada punta debe terminar después de empezar.",
   "cal.day.weekday": "Día laborable",
   "cal.day.saturday": "Sábado",
   "cal.day.sunday": "Domingo",
