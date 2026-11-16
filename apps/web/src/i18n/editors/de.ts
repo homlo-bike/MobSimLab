@@ -267,11 +267,14 @@ export const editorsDe = {
   "rail.access.aid": "Einstiegshilfe nötig",
   "rail.access.clash": "Zug breiter als die Bahnsteigkante zulässt",
   "rail.access.detail": "Fußboden {vertical} zum {platform}-mm-Bahnsteig · Spalt {gap}",
-  "rail.access.floorOnly": "Fußboden {vertical} zum {platform}-mm-Bahnsteig",
-  "rail.access.floorAssumed":
-    "Für diesen Zug fehlt im Fahrzeugkatalog die Fußbodenhöhe; angenommen wird der Standardwert des Verkehrsmittels von {value} mm (Einstellungen).",
-  "rail.access.short":
-    "Bahnsteig {platform} ist zu kurz für einen {train}-Zug plus {tolerance} Haltetoleranz.",
+  "rail.access.stepLabel": "Stufe",
+  "rail.access.gapLabel": "Spalt",
+  "rail.access.limits": "niveaugleich ≤ {level} · Stufe ≤ {step} mm",
+  "rail.access.floorAssumedShort":
+    "Fußbodenhöhe angenommen: {value} mm, Standardwert des Verkehrsmittels (nicht im Fahrzeugkatalog)",
+  "rail.access.shortAt": "{name}: Bahnsteig {platform}, nötig {needed}",
+  "rail.access.platformMm": "Bahnsteig {value} mm",
+  "rail.access.floorMm": "Zugboden {value} mm",
 
   "rail.hint.select":
     "Klicken Sie auf eine Station, ein Gleis, eine Weiche oder ein Signal, um es zu bearbeiten. Ziehen Sie Stationen und Gleispunkte; ziehe eine Weiche oder ein Signal entlang seines Gleises.",

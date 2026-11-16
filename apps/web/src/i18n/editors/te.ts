@@ -267,10 +267,13 @@ export const editorsTe = {
   "rail.access.aid": "ఎక్కడానికి సహాయం అవసరం",
   "rail.access.clash": "ప్లాట్‌ఫారం అంచు అనుమతించిన దానికంటే రైలు వెడల్పు",
   "rail.access.detail": "నేల {platform} మి.మీ. ప్లాట్‌ఫారం నుండి {vertical} · ఖాళీ {gap}",
-  "rail.access.floorOnly": "నేల {platform} మి.మీ. ప్లాట్‌ఫారం నుండి {vertical}",
-  "rail.access.floorAssumed":
-    "వాహన జాబితాలో ఈ రైలుకు నేల ఎత్తు లేదు, కాబట్టి రీతి డిఫాల్ట్ {value} మి.మీ. (ప్రాధాన్యతలు) తీసుకోబడింది.",
-  "rail.access.short": "ప్లాట్‌ఫారం {platform}, {train} రైలు మరియు {tolerance} ఆగే సహనానికి చాలా చిన్నది.",
+  "rail.access.stepLabel": "మెట్టు",
+  "rail.access.gapLabel": "ఖాళీ",
+  "rail.access.limits": "సమతలం ≤ {level} · మెట్టు ≤ {step} మి.మీ.",
+  "rail.access.floorAssumedShort": "నేల ఎత్తు ఊహించబడింది: {value} మి.మీ., రీతి డిఫాల్ట్ (జాబితాలో లేదు)",
+  "rail.access.shortAt": "{name}: ప్లాట్‌ఫారం {platform}, అవసరం {needed}",
+  "rail.access.platformMm": "ప్లాట్‌ఫారం {value} మి.మీ.",
+  "rail.access.floorMm": "రైలు నేల {value} మి.మీ.",
 
   "rail.hint.select":
     "సవరించడానికి స్టేషన్, పట్టా, స్విచ్ లేదా సిగ్నల్‌పై క్లిక్ చేయండి. స్టేషన్లు మరియు పట్టా బిందువులను లాగండి; స్విచ్ లేదా సిగ్నల్‌ను దాని పట్టా వెంట లాగండి.",

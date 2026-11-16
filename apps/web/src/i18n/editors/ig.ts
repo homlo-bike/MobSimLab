@@ -246,11 +246,13 @@ export const editorsIg = {
   "rail.access.aid": "A chọrọ enyemaka ịbanye",
   "rail.access.clash": "Ụgbọ okporo ígwè sara mbara karịa ihe nsọtụ ikpo okwu kwere",
   "rail.access.detail": "Ala {vertical} site na ikpo okwu mm {platform} · oghere {gap}",
-  "rail.access.floorOnly": "Ala {vertical} site na ikpo okwu mm {platform}",
-  "rail.access.floorAssumed":
-    "Ụgbọ a enweghị ịdị elu ala na katalọgụ ụgbọ, ya mere e weere ndabara ụdị ahụ, mm {value} (Mmasị).",
-  "rail.access.short":
-    "Ikpo okwu {platform} dị mkpụmkpụ maka ụgbọ {train} gbakwunyere {tolerance} maka nkwụsị.",
+  "rail.access.stepLabel": "Steepụ",
+  "rail.access.gapLabel": "Oghere",
+  "rail.access.limits": "ọkwa otu ≤ {level} · steepụ ≤ {step} mm",
+  "rail.access.floorAssumedShort": "E chere ịdị elu ala: mm {value}, ndabara ụdị (adịghị na katalọgụ)",
+  "rail.access.shortAt": "{name}: ikpo okwu {platform}, chọrọ {needed}",
+  "rail.access.platformMm": "Ikpo okwu mm {value}",
+  "rail.access.floorMm": "Ala ụgbọ mm {value}",
 
   "rail.hint.select":
     "Pịa ọdụ, ụzọ ígwè, ihe ntụgharị ma ọ bụ akara iji dezie ya. Dọkpụ ọdụ na ntụpọ ụzọ ígwè; dọkpụ ihe ntụgharị ma ọ bụ akara n'ụzọ ígwè ya.",

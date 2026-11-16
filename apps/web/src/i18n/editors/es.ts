@@ -267,11 +267,14 @@ export const editorsEs = {
   "rail.access.aid": "Se necesita ayuda para subir",
   "rail.access.clash": "Tren más ancho de lo que permite el borde del andén",
   "rail.access.detail": "Piso {vertical} respecto al andén de {platform} mm · hueco {gap}",
-  "rail.access.floorOnly": "Piso {vertical} respecto al andén de {platform} mm",
-  "rail.access.floorAssumed":
-    "Este tren no tiene altura de piso en el catálogo de vehículos; se supone el valor por defecto del modo, {value} mm (Preferencias).",
-  "rail.access.short":
-    "El andén de {platform} es demasiado corto para un tren de {train} más {tolerance} de tolerancia de parada.",
+  "rail.access.stepLabel": "Escalón",
+  "rail.access.gapLabel": "Hueco",
+  "rail.access.limits": "a nivel ≤ {level} · escalón ≤ {step} mm",
+  "rail.access.floorAssumedShort":
+    "Altura de piso supuesta: {value} mm, valor por defecto del modo (no está en el catálogo)",
+  "rail.access.shortAt": "{name}: andén {platform}, necesita {needed}",
+  "rail.access.platformMm": "Andén {value} mm",
+  "rail.access.floorMm": "Piso del tren {value} mm",
 
   "rail.hint.select":
     "Haz clic en una estación, vía, desvío o señal para editarla. Arrastra estaciones y puntos de vía; arrastra un desvío o una señal a lo largo de su vía.",

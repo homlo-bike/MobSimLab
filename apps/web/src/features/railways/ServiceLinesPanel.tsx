@@ -14,7 +14,15 @@ import {
   updateLine,
 } from "./serviceLines";
 import { TimeDistanceGraph } from "./TimeDistanceGraph";
-import { type Access, accessRules, lineAccess } from "./platformAccess";
+import {
+  type Access,
+  type Grade,
+  type StopAccess,
+  accessRules,
+  gradeGap,
+  gradeStep,
+  lineAccess,
+} from "./platformAccess";
 import { usedVehicles } from "../../workspace/preferences";
 import { useVehiclesOff } from "../../workspace/projectVehicles";
 import type { CatalogueTrain, LonLat, Network, RailView, ServiceLine, ServicePublication } from "./types";
@@ -430,10 +438,18 @@ const ACCESS_STYLE: Record<Access, string> = {
 /** Purpose: "+20 mm" / "−150 mm" (a signed step: positive is up into the train). */
 const signedMm = (mm: number) => `${mm > 0 ? "+" : mm < 0 ? "−" : "±"}${Math.abs(Math.round(mm))} mm`;
 
+const ACCESS_FILL: Record<Access, string> = {
+  level: "#047857",
+  step: "#0369a1",
+  aid: "#b45309",
+  clash: "#b91c1c",
+};
+
 /**
- * Purpose: the platform access check of a line (TSI PRM step and gap, platform length) at each stop, against
- * the limits in Project preferences. A train without a floor height in the catalogue is checked at the mode's
- * default floor height, and says so.
+ * Purpose: the platform access check of a line (TSI PRM step and gap, platform length), against the limits in
+ * Project preferences. Stops that board the same way share one cross-section of platform and train, with the
+ * step and the gap measured on it and checked against their limits. A train without a floor height in the
+ * catalogue is drawn at the mode's default floor height, marked as assumed.
  */
 function PlatformAccess({
   doc,
@@ -451,131 +467,193 @@ function PlatformAccess({
   const { t } = useI18n();
   const stops = lineAccess(doc, line, train, (m) => accessRules(designValues, m));
   if (stops.length === 0) return null;
-  const assumed = stops[0]!.floor_assumed ? stops[0]!.floor_height_mm : null;
+  // Stops with the same platform, floor and gap look the same: one drawing for each such group.
+  const groups = new Map<string, StopAccess[]>();
+  for (const s of stops) {
+    const k = `${s.platform_height_mm}|${s.floor_height_mm}|${s.horizontal_mm}|${JSON.stringify(s.rules)}`;
+    groups.set(k, [...(groups.get(k) ?? []), s]);
+  }
   return (
-    <div className="rounded border border-slate-200 p-2 text-xs" data-testid="platform-access">
-      <div className="flex flex-wrap items-center gap-1.5">
-        <p className="font-semibold text-slate-700">{t("rail.access.title")}</p>
-        {assumed !== null && (
-          <span
-            className="rounded bg-amber-100 px-1 text-amber-900"
-            data-testid="floor-assumed"
-            title={t("rail.access.floorAssumed", { value: assumed })}
-          >
-            ≈ {assumed} mm
-          </span>
-        )}
-      </div>
-      <ul className="mt-1 flex flex-col">
-        {stops.map((s) => {
-          const short = s.platform_length_m < s.needed_length_m;
-          const detail =
-            s.horizontal_mm === null
-              ? t("rail.access.floorOnly", {
-                  vertical: signedMm(s.vertical_mm),
-                  platform: s.platform_height_mm,
-                })
-              : t("rail.access.detail", {
-                  vertical: signedMm(s.vertical_mm),
-                  platform: s.platform_height_mm,
-                  gap: `${Math.round(s.horizontal_mm)} mm`,
-                });
-          return (
-            <li
-              key={s.station}
-              className="flex items-center gap-2 border-t border-slate-100 py-1 first:border-t-0"
-            >
-              <StepGap vertical={s.vertical_mm} gap={s.horizontal_mm} access={s.access} label={detail} />
-              <div className="min-w-0 flex-1">
+    <div className="flex flex-col gap-2" data-testid="platform-access">
+      <p className="text-xs font-semibold text-slate-700">{t("rail.access.title")}</p>
+      {[...groups.values()].map((g) => {
+        const s = g[0]!;
+        return (
+          <div key={s.station} className="rounded border border-slate-200 p-2 text-xs">
+            <div className="flex flex-wrap items-center gap-1.5">
+              <span className={`rounded px-1.5 py-0.5 font-semibold ${ACCESS_STYLE[s.access]}`}>
+                {t(`rail.access.${s.access}`)}
+              </span>
+              {g.map((x) => (
                 <button
+                  key={x.station}
                   type="button"
-                  onClick={() => show(s.station)}
-                  className="block max-w-full truncate rounded text-start font-medium hover:bg-slate-100"
+                  onClick={() => show(x.station)}
+                  className="rounded px-0.5 text-slate-800 underline decoration-slate-300 hover:bg-slate-100"
                 >
-                  {s.name}
+                  {x.name}
                 </button>
-                <div className="flex flex-wrap items-center gap-1">
-                  <span className={`rounded px-1 ${ACCESS_STYLE[s.access]}`}>
-                    {t(`rail.access.${s.access}`)}
-                  </span>
-                  {short && (
-                    <span
-                      className="rounded bg-red-100 px-1 text-red-900"
-                      title={t("rail.access.short", {
-                        platform: fmtM(s.platform_length_m),
-                        train: fmtM(s.train_length_m),
-                        tolerance: fmtM(s.stopping_tolerance_m),
-                      })}
-                    >
-                      ⟷ {fmtM(s.platform_length_m)} &lt; {fmtM(s.needed_length_m)}
-                    </span>
-                  )}
-                </div>
-              </div>
-            </li>
-          );
-        })}
-      </ul>
+              ))}
+            </div>
+            <CrossSection stop={s} />
+            <Measure
+              label={t("rail.access.stepLabel")}
+              value={signedMm(s.vertical_mm)}
+              grade={gradeStep(s.vertical_mm, s.rules)}
+              limit={t("rail.access.limits", {
+                level: `±${s.rules.level_gap_vertical_mm}`,
+                step: `+${s.rules.step_above_platform_mm} / −${s.rules.step_below_platform_mm}`,
+              })}
+            />
+            {s.horizontal_mm !== null && (
+              <Measure
+                label={t("rail.access.gapLabel")}
+                value={`${Math.round(s.horizontal_mm)} mm`}
+                grade={gradeGap(s.horizontal_mm, s.rules)}
+                limit={t("rail.access.limits", {
+                  level: `${s.rules.level_gap_horizontal_mm}`,
+                  step: `${s.rules.step_gap_horizontal_mm}`,
+                })}
+              />
+            )}
+            {s.floor_assumed && (
+              <p className="mt-1 text-amber-800" data-testid="floor-assumed">
+                ⚠ {t("rail.access.floorAssumedShort", { value: s.floor_height_mm })}
+              </p>
+            )}
+            {g
+              .filter((x) => x.platform_length_m < x.needed_length_m)
+              .map((x) => (
+                <p key={x.station} className="mt-1 text-red-800">
+                  ✗{" "}
+                  {t("rail.access.shortAt", {
+                    name: x.name,
+                    platform: fmtM(x.platform_length_m),
+                    needed: fmtM(x.needed_length_m),
+                  })}
+                </p>
+              ))}
+          </div>
+        );
+      })}
     </div>
   );
 }
 
-const ACCESS_FILL: Record<Access, string> = {
-  level: "#047857",
-  step: "#0369a1",
-  aid: "#b45309",
-  clash: "#b91c1c",
+const GRADE_MARK: Record<Grade, [string, string]> = {
+  level: ["✓", "text-emerald-700"],
+  step: ["✓", "text-sky-700"],
+  over: ["✗", "text-red-700"],
 };
+const GRADE_HEX: Record<Grade, string> = { level: "#047857", step: "#0369a1", over: "#b91c1c" };
+
+/** Purpose: one measure, whether it meets the level-access or the step limit (or neither), and the limits. */
+function Measure({
+  label,
+  value,
+  grade,
+  limit,
+}: {
+  label: string;
+  value: string;
+  grade: Grade;
+  limit: string;
+}) {
+  const { t } = useI18n();
+  const [mark, colour] = GRADE_MARK[grade];
+  return (
+    <div className="mt-1 grid grid-cols-[3rem_4.5rem_1fr] items-baseline gap-x-1.5">
+      <span className="text-slate-600">{label}</span>
+      <span className="font-semibold tabular-nums">{value}</span>
+      <span className={colour}>
+        <span className="font-bold">{mark}</span> {grade === "over" ? limit : t(`rail.access.${grade}`)}
+      </span>
+    </div>
+  );
+}
 
 /**
- * Purpose: a small cross-section of one stop: the platform on the left, the train's floor on the right, the
- * step between them (up or down) and the gap, with both in mm. Drawn to an exaggerated scale so small steps show.
+ * Purpose: a true-to-scale cross-section at the door: the rail, the platform at its height, the train's floor at
+ * its height and the gap between the platform edge and the train, with the platform height, the floor height,
+ * the step and the gap labelled.
  */
-function StepGap({
-  vertical,
-  gap,
-  access,
-  label,
-}: {
-  vertical: number;
-  gap: number | null;
-  access: Access;
-  label: string;
-}) {
-  const W = 120;
-  const H = 46;
-  const top = 26; // platform top, px
-  const dy = Math.max(-14, Math.min(14, vertical / 20)); // 20 mm per px, clamped
-  const gx = gap === null ? 6 : Math.max(0, Math.min(26, gap / 12)); // 12 mm per px, clamped
-  const pr = 38; // platform's right edge
-  const floor = top - dy;
-  const fill = ACCESS_FILL[access];
+function CrossSection({ stop: s }: { stop: StopAccess }) {
+  const { t } = useI18n();
+  const W = 320;
+  const mm = 90 / 1400; // px per mm, heights true to scale
+  const body = 44; // drawn height of the car body above its floor, px
+  const H = Math.round(body + 16 + Math.max(s.platform_height_mm, s.floor_height_mm, 400) * mm + 20);
+  const base = H - 14; // rail top
+  const y = (h: number) => base - Math.max(0, h) * mm;
+  const edge = 120; // platform edge, px
+  const gapMm = s.horizontal_mm ?? 0;
+  const gapPx = Math.max(0, Math.min(70, gapMm * 0.2)); // 5 mm per px, clamped
+  const left = edge + (gapMm < 0 ? gapMm * 0.2 : gapPx); // the train's side
+  const pTop = y(s.platform_height_mm);
+  const fTop = y(s.floor_height_mm);
+  const fill = ACCESS_FILL[s.access];
+  const gapColour = GRADE_HEX[gradeGap(gapMm, s.rules)];
+  const stepColour = GRADE_HEX[gradeStep(s.vertical_mm, s.rules)];
   return (
-    <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} role="img" aria-label={label} className="shrink-0">
-      <title>{label}</title>
-      <rect x={0} y={top} width={pr} height={H - top} fill="#cbd5e1" />
-      <rect x={pr + gx} y={floor - 14} width={W - pr - gx} height={14} rx={2} fill={fill} opacity={0.18} />
-      <line x1={pr + gx} y1={floor} x2={W} y2={floor} stroke={fill} strokeWidth={2.5} />
-      <line x1={pr + gx} y1={floor - 14} x2={pr + gx} y2={floor} stroke={fill} strokeWidth={2} />
-      {Math.abs(dy) > 0.5 && (
-        <line
-          x1={pr + gx + 4}
-          y1={top}
-          x2={pr + gx + 4}
-          y2={floor}
-          stroke="#334155"
-          strokeWidth={1}
-          strokeDasharray="2 2"
-        />
-      )}
-      <text x={W - 2} y={10} textAnchor="end" fontSize={9} fill="#334155">
-        ↕ {signedMm(vertical)}
+    <svg
+      viewBox={`0 0 ${W} ${H}`}
+      className="mt-1.5 h-auto w-full max-w-80"
+      role="img"
+      aria-label={t("rail.access.detail", {
+        vertical: signedMm(s.vertical_mm),
+        platform: s.platform_height_mm,
+        gap: `${Math.round(gapMm)} mm`,
+      })}
+    >
+      {/* ground and rail */}
+      <line x1={0} y1={base + 6} x2={W} y2={base + 6} stroke="#94a3b8" />
+      <rect x={left + 30} y={base} width={10} height={6} fill="#475569" />
+      <rect x={W - 40} y={base} width={10} height={6} fill="#475569" />
+      {/* platform */}
+      <rect x={0} y={pTop} width={edge} height={base + 6 - pTop} fill="#e2e8f0" stroke="#94a3b8" />
+      <text x={6} y={Math.min(base, pTop + 13)} fontSize={10} fill="#334155">
+        {t("rail.access.platformMm", { value: s.platform_height_mm })}
       </text>
-      {gap !== null && (
-        <text x={2} y={10} fontSize={9} fill="#334155">
-          ↔ {Math.round(gap)} mm
-        </text>
+      {/* train: floor, door opening and body */}
+      <rect x={left} y={fTop - body} width={W - left} height={body} fill={fill} opacity={0.12} />
+      <line x1={left} y1={fTop - body} x2={left} y2={fTop} stroke={fill} strokeWidth={2} />
+      <line x1={left} y1={fTop} x2={W} y2={fTop} stroke={fill} strokeWidth={3} />
+      <rect
+        x={left + 24}
+        y={fTop}
+        width={W - left - 48}
+        height={Math.max(0, base - fTop - 2)}
+        fill="#cbd5e1"
+        opacity={0.5}
+      />
+      <text x={W - 6} y={fTop - body + 14} fontSize={10} fill="#334155" textAnchor="end">
+        {t("rail.access.floorMm", { value: s.floor_height_mm })}
+        {s.floor_assumed ? " ⚠" : ""}
+      </text>
+      {/* gap */}
+      {s.horizontal_mm !== null && (
+        <g stroke={gapColour} fill={gapColour}>
+          <line x1={edge} y1={pTop - 16} x2={edge} y2={pTop - 4} />
+          <line x1={left} y1={pTop - 16} x2={left} y2={pTop - 4} />
+          <line x1={Math.min(edge, left)} y1={pTop - 10} x2={Math.max(edge, left)} y2={pTop - 10} />
+          <text x={edge - 4} y={pTop - 20} fontSize={10} stroke="none" textAnchor="end">
+            {t("rail.access.gapLabel")} {Math.round(gapMm)} mm
+          </text>
+        </g>
       )}
+      {/* step */}
+      <g stroke={stepColour} fill={stepColour}>
+        <line x1={left + 14} y1={pTop} x2={left + 14} y2={fTop} strokeDasharray="3 2" />
+        <line x1={edge - 6} y1={pTop} x2={left + 18} y2={pTop} strokeDasharray="3 2" />
+        <text
+          x={left + 20}
+          y={Math.abs(fTop - pTop) < 14 ? Math.max(pTop, fTop) + 13 : (pTop + fTop) / 2 + 4}
+          fontSize={10}
+          stroke="none"
+        >
+          {t("rail.access.stepLabel")} {signedMm(s.vertical_mm)}
+        </text>
+      </g>
     </svg>
   );
 }

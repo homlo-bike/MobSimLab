@@ -247,10 +247,14 @@ export const editorsTr = {
   "rail.access.aid": "Biniş yardımı gerekli",
   "rail.access.clash": "Tren, peron kenarının izin verdiğinden geniş",
   "rail.access.detail": "Taban, {platform} mm perona göre {vertical} · boşluk {gap}",
-  "rail.access.floorOnly": "Taban, {platform} mm perona göre {vertical}",
-  "rail.access.floorAssumed":
-    "Bu trenin araç kataloğunda taban yüksekliği yok; türün varsayılan değeri {value} mm (Tercihler) kabul edildi.",
-  "rail.access.short": "{platform} peron, {train} tren ve {tolerance} durma toleransı için çok kısa.",
+  "rail.access.stepLabel": "Basamak",
+  "rail.access.gapLabel": "Boşluk",
+  "rail.access.limits": "seviye ≤ {level} · basamak ≤ {step} mm",
+  "rail.access.floorAssumedShort":
+    "Taban yüksekliği varsayıldı: {value} mm, türün varsayılanı (katalogda yok)",
+  "rail.access.shortAt": "{name}: peron {platform}, gereken {needed}",
+  "rail.access.platformMm": "Peron {value} mm",
+  "rail.access.floorMm": "Tren tabanı {value} mm",
 
   "rail.hint.select":
     "Düzenlemek için istasyon, ray, makas veya sinyale tıklayın. İstasyonları ve ray noktalarını taşımak için sürükleyin; makasları ve sinyalleri rayları boyunca sürükleyin.",

@@ -266,11 +266,14 @@ export const editorsIt = {
   "rail.access.aid": "Serve un ausilio per salire",
   "rail.access.clash": "Treno più largo di quanto consenta il bordo del marciapiede",
   "rail.access.detail": "Pavimento {vertical} rispetto al marciapiede da {platform} mm · distanza {gap}",
-  "rail.access.floorOnly": "Pavimento {vertical} rispetto al marciapiede da {platform} mm",
-  "rail.access.floorAssumed":
-    "Questo treno non ha l'altezza del pavimento nel catalogo veicoli; si assume il valore predefinito della modalità, {value} mm (Preferenze).",
-  "rail.access.short":
-    "Il marciapiede di {platform} è troppo corto per un treno di {train} più {tolerance} di tolleranza di arresto.",
+  "rail.access.stepLabel": "Gradino",
+  "rail.access.gapLabel": "Distanza",
+  "rail.access.limits": "a raso ≤ {level} · gradino ≤ {step} mm",
+  "rail.access.floorAssumedShort":
+    "Altezza pavimento ipotizzata: {value} mm, valore predefinito della modalità (assente dal catalogo)",
+  "rail.access.shortAt": "{name}: marciapiede {platform}, servono {needed}",
+  "rail.access.platformMm": "Marciapiede {value} mm",
+  "rail.access.floorMm": "Pavimento treno {value} mm",
 
   "rail.hint.select":
     "Fai clic su una stazione, un binario, un deviatoio o un segnale per modificarlo. Trascina stazioni e punti dei binari per spostarli; trascina deviatoi e segnali lungo il loro binario.",

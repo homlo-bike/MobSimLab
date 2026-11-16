@@ -267,11 +267,13 @@ export const editorsUz = {
   "rail.access.aid": "Chiqish uchun yordam kerak",
   "rail.access.clash": "Poyezd platforma cheti ruxsat berganidan kengroq",
   "rail.access.detail": "Pol {platform} mm platformaga nisbatan {vertical} · bo‘shliq {gap}",
-  "rail.access.floorOnly": "Pol {platform} mm platformaga nisbatan {vertical}",
-  "rail.access.floorAssumed":
-    "Transport katalogida bu poyezdning pol balandligi yo‘q, shuning uchun turning standart qiymati {value} mm (Sozlamalar) qabul qilindi.",
-  "rail.access.short":
-    "{platform} platforma {train} poyezd va {tolerance} to‘xtash zaxirasi uchun juda qisqa.",
+  "rail.access.stepLabel": "Zinapoya",
+  "rail.access.gapLabel": "Bo‘shliq",
+  "rail.access.limits": "bir sath ≤ {level} · zinapoya ≤ {step} mm",
+  "rail.access.floorAssumedShort": "Pol balandligi taxminiy: {value} mm, turning standarti (katalogda yo‘q)",
+  "rail.access.shortAt": "{name}: platforma {platform}, kerak {needed}",
+  "rail.access.platformMm": "Platforma {value} mm",
+  "rail.access.floorMm": "Poyezd poli {value} mm",
 
   "rail.hint.select":
     "Tahrirlash uchun stansiya, yoʻl, strelka yoki svetoforni bosing. Stansiyalar va yoʻl nuqtalarini torting; strelka yoki svetoforni yoʻli boʻylab torting.",

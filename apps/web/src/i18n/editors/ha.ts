@@ -265,11 +265,13 @@ export const editorsHa = {
   "rail.access.aid": "Ana bukatar taimakon hawa",
   "rail.access.clash": "Jirgi ya fi faɗin da gefen dandamali ya yarda",
   "rail.access.detail": "Ƙasan jirgi {vertical} daga dandamalin mm {platform} · tazara {gap}",
-  "rail.access.floorOnly": "Ƙasan jirgi {vertical} daga dandamalin mm {platform}",
-  "rail.access.floorAssumed":
-    "Babu tsayin ƙasan wannan jirgi a cikin kundin ababen hawa, don haka an ɗauki tsoho na nau'in, mm {value} (Zaɓuɓɓuka).",
-  "rail.access.short":
-    "Dandamalin {platform} ya yi gajere ga jirgin {train} tare da {tolerance} na juriyar tsayawa.",
+  "rail.access.stepLabel": "Mataki",
+  "rail.access.gapLabel": "Tazara",
+  "rail.access.limits": "daidai ≤ {level} · mataki ≤ {step} mm",
+  "rail.access.floorAssumedShort": "An ɗauki tsayin ƙasa: mm {value}, tsoho na nau'in (babu a kundi)",
+  "rail.access.shortAt": "{name}: dandamali {platform}, ana buƙatar {needed}",
+  "rail.access.platformMm": "Dandamali mm {value}",
+  "rail.access.floorMm": "Ƙasan jirgi mm {value}",
 
   "rail.hint.select":
     "Danna tasha, dogo, makunni ko alama don gyara ta. Ja tashoshi da wuraren dogo; ja makunni ko alama a kan dogonsa.",

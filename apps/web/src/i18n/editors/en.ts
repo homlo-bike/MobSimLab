@@ -272,11 +272,14 @@ export const editorsEn = {
   "rail.access.aid": "Boarding aid needed",
   "rail.access.clash": "Train wider than the platform edge allows",
   "rail.access.detail": "Floor {vertical} from the {platform} mm platform · gap {gap}",
-  "rail.access.floorOnly": "Floor {vertical} from the {platform} mm platform",
-  "rail.access.floorAssumed":
-    "This train has no floor height in the vehicle catalogue, so the mode's default of {value} mm (Preferences) is assumed.",
-  "rail.access.short":
-    "Platform {platform} is too short for a {train} train plus {tolerance} stopping tolerance.",
+  "rail.access.stepLabel": "Step",
+  "rail.access.gapLabel": "Gap",
+  "rail.access.limits": "level ≤ {level} · step ≤ {step} mm",
+  "rail.access.floorAssumedShort":
+    "Floor height assumed: {value} mm, the mode's default (none in the vehicle catalogue)",
+  "rail.access.shortAt": "{name}: platform {platform}, needs {needed}",
+  "rail.access.platformMm": "Platform {value} mm",
+  "rail.access.floorMm": "Train floor {value} mm",
 
   "rail.hint.select":
     "Click a station, track, switch or signal to edit it. Drag stations and track points; drag a switch or signal along its track.",

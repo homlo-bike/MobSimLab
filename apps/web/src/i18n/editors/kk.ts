@@ -266,10 +266,13 @@ export const editorsKk = {
   "rail.access.aid": "Отыруға көмек қажет",
   "rail.access.clash": "Пойыз платформа жиегі рұқсат ететіннен кеңірек",
   "rail.access.detail": "Еден {platform} мм платформаға қатысты {vertical} · саңылау {gap}",
-  "rail.access.floorOnly": "Еден {platform} мм платформаға қатысты {vertical}",
-  "rail.access.floorAssumed":
-    "Көлік каталогында бұл пойыздың еден биіктігі жоқ, сондықтан түрдің әдепкі мәні {value} мм (Баптаулар) алынды.",
-  "rail.access.short": "{platform} платформа {train} пойыз бен {tolerance} тоқтау қорына тым қысқа.",
+  "rail.access.stepLabel": "Баспалдақ",
+  "rail.access.gapLabel": "Саңылау",
+  "rail.access.limits": "бір деңгей ≤ {level} · баспалдақ ≤ {step} мм",
+  "rail.access.floorAssumedShort": "Еден биіктігі болжамды: {value} мм, түрдің әдепкісі (каталогта жоқ)",
+  "rail.access.shortAt": "{name}: платформа {platform}, қажет {needed}",
+  "rail.access.platformMm": "Платформа {value} мм",
+  "rail.access.floorMm": "Пойыз едені {value} мм",
 
   "rail.hint.select":
     "Өңдеу үшін станцияны, жолды, бағыттаманы немесе бағдаршамды басыңыз. Станциялар мен жол нүктелерін сүйреңіз; бағыттаманы немесе бағдаршамды жолы бойымен сүйреңіз.",

@@ -265,10 +265,13 @@ export const editorsMr = {
   "rail.access.aid": "चढण्यासाठी मदत आवश्यक",
   "rail.access.clash": "गाडी फलाटाच्या कडेला परवानगीपेक्षा रुंद आहे",
   "rail.access.detail": "तळ {platform} मिमी फलाटापासून {vertical} · फट {gap}",
-  "rail.access.floorOnly": "तळ {platform} मिमी फलाटापासून {vertical}",
-  "rail.access.floorAssumed":
-    "वाहन सूचीत या गाडीची तळ उंची नाही, म्हणून साधनाचे पूर्वनिर्धारित {value} मिमी (प्राधान्ये) गृहीत धरले.",
-  "rail.access.short": "फलाट {platform} हा {train} गाडी आणि {tolerance} थांबा सहनशीलतेसाठी खूप लहान आहे.",
+  "rail.access.stepLabel": "पायरी",
+  "rail.access.gapLabel": "फट",
+  "rail.access.limits": "समपातळी ≤ {level} · पायरी ≤ {step} मिमी",
+  "rail.access.floorAssumedShort": "तळ उंची गृहीत: {value} मिमी, साधनाचे पूर्वनिर्धारित (सूचीत नाही)",
+  "rail.access.shortAt": "{name}: फलाट {platform}, आवश्यक {needed}",
+  "rail.access.platformMm": "फलाट {value} मिमी",
+  "rail.access.floorMm": "गाडीचा तळ {value} मिमी",
 
   "rail.hint.select":
     "संपादित करण्यासाठी स्थानक, रूळ, स्विच किंवा सिग्नलवर क्लिक करा. स्थानके आणि रुळांचे बिंदू ओढा; स्विच किंवा सिग्नल त्याच्या रुळावरून ओढा.",

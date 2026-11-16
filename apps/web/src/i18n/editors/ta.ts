@@ -267,11 +267,14 @@ export const editorsTa = {
   "rail.access.aid": "ஏற உதவி தேவை",
   "rail.access.clash": "நடைமேடை விளிம்பு அனுமதிப்பதை விட ரயில் அகலமானது",
   "rail.access.detail": "தளம் {platform} மி.மீ. நடைமேடையிலிருந்து {vertical} · இடைவெளி {gap}",
-  "rail.access.floorOnly": "தளம் {platform} மி.மீ. நடைமேடையிலிருந்து {vertical}",
-  "rail.access.floorAssumed":
-    "வாகனப் பட்டியலில் இந்த ரயிலுக்குத் தள உயரம் இல்லை; முறையின் இயல்புநிலை {value} மி.மீ. (விருப்பங்கள்) கொள்ளப்பட்டது.",
-  "rail.access.short":
-    "நடைமேடை {platform}, {train} ரயிலுக்கும் {tolerance} நிறுத்த சகிப்புக்கும் மிகக் குறுகியது.",
+  "rail.access.stepLabel": "படி",
+  "rail.access.gapLabel": "இடைவெளி",
+  "rail.access.limits": "சமமட்டம் ≤ {level} · படி ≤ {step} மி.மீ.",
+  "rail.access.floorAssumedShort":
+    "தள உயரம் ஊகிக்கப்பட்டது: {value} மி.மீ., முறையின் இயல்புநிலை (பட்டியலில் இல்லை)",
+  "rail.access.shortAt": "{name}: நடைமேடை {platform}, தேவை {needed}",
+  "rail.access.platformMm": "நடைமேடை {value} மி.மீ.",
+  "rail.access.floorMm": "ரயில் தளம் {value} மி.மீ.",
 
   "rail.hint.select":
     "திருத்த நிலையம், தண்டவாளம், சுவிட்சு அல்லது சமிக்ஞையைக் கிளிக் செய்யவும். நிலையங்களையும் தண்டவாளப் புள்ளிகளையும் இழுக்கவும்; சுவிட்சு அல்லது சமிக்ஞையை அதன் தண்டவாளத்தில் இழுக்கவும்.",

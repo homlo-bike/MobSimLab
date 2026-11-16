@@ -246,10 +246,13 @@ export const editorsKo = {
   "rail.access.aid": "승차 보조 필요",
   "rail.access.clash": "열차 폭이 승강장 끝 허용치보다 넓음",
   "rail.access.detail": "바닥 {platform} mm 승강장 대비 {vertical} · 틈 {gap}",
-  "rail.access.floorOnly": "바닥 {platform} mm 승강장 대비 {vertical}",
-  "rail.access.floorAssumed":
-    "차량 목록에 이 열차의 바닥 높이가 없어 수단 기본값 {value} mm(환경설정)를 가정합니다.",
-  "rail.access.short": "승강장 {platform}은 {train} 열차와 정차 허용 오차 {tolerance}에 비해 짧습니다.",
+  "rail.access.stepLabel": "단차",
+  "rail.access.gapLabel": "틈",
+  "rail.access.limits": "평면 ≤ {level} · 단차 ≤ {step} mm",
+  "rail.access.floorAssumedShort": "바닥 높이 가정: {value} mm, 수단 기본값(목록에 없음)",
+  "rail.access.shortAt": "{name}: 승강장 {platform}, 필요 {needed}",
+  "rail.access.platformMm": "승강장 {value} mm",
+  "rail.access.floorMm": "열차 바닥 {value} mm",
 
   "rail.hint.select":
     "역, 선로, 분기기, 신호기를 클릭해 편집합니다. 역과 선로의 점은 드래그로 옮기고, 분기기와 신호기는 선로를 따라 드래그합니다.",

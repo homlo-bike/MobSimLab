@@ -305,10 +305,13 @@ export const editorsAr = {
   "rail.access.aid": "يلزم مساعد للصعود",
   "rail.access.clash": "القطار أعرض مما تسمح به حافة الرصيف",
   "rail.access.detail": "الأرضية {vertical} عن رصيف {platform} مم · الفجوة {gap}",
-  "rail.access.floorOnly": "الأرضية {vertical} عن رصيف {platform} مم",
-  "rail.access.floorAssumed":
-    "لا يوجد ارتفاع أرضية لهذا القطار في كتالوج المركبات، لذا يُفترض الافتراضي للنمط {value} مم (التفضيلات).",
-  "rail.access.short": "الرصيف {platform} أقصر من قطار {train} مع {tolerance} هامش توقف.",
+  "rail.access.stepLabel": "الدرجة",
+  "rail.access.gapLabel": "الفجوة",
+  "rail.access.limits": "مستوٍ ≤ {level} · درجة ≤ {step} مم",
+  "rail.access.floorAssumedShort": "ارتفاع الأرضية مفترض: {value} مم، افتراضي النمط (غير موجود في الكتالوج)",
+  "rail.access.shortAt": "{name}: الرصيف {platform}، المطلوب {needed}",
+  "rail.access.platformMm": "الرصيف {value} مم",
+  "rail.access.floorMm": "أرضية القطار {value} مم",
 
   "rail.hint.select":
     "انقر على محطة أو سكة أو محوّل أو إشارة لتعديلها. اسحب المحطات ونقاط السكة؛ واسحب المحوّل أو الإشارة على طول سكته.",

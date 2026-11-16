@@ -246,10 +246,13 @@ export const editorsJa = {
   "rail.access.aid": "乗降補助が必要",
   "rail.access.clash": "列車幅がホーム縁の許容を超えています",
   "rail.access.detail": "床面 {platform} mm ホームに対し {vertical} ・すき間 {gap}",
-  "rail.access.floorOnly": "床面 {platform} mm ホームに対し {vertical}",
-  "rail.access.floorAssumed":
-    "車両カタログにこの列車の床面高さがないため、モードの既定値 {value} mm（設定）を仮定しています。",
-  "rail.access.short": "ホーム {platform} は {train} の列車と停止余裕 {tolerance} には短すぎます。",
+  "rail.access.stepLabel": "段差",
+  "rail.access.gapLabel": "すき間",
+  "rail.access.limits": "段差なし ≤ {level} ・段差 ≤ {step} mm",
+  "rail.access.floorAssumedShort": "床面高さは仮定値：{value} mm、モードの既定値（カタログにない）",
+  "rail.access.shortAt": "{name}：ホーム {platform}、必要 {needed}",
+  "rail.access.platformMm": "ホーム {value} mm",
+  "rail.access.floorMm": "車両床面 {value} mm",
 
   "rail.hint.select":
     "駅・線路・分岐器・信号機をクリックして編集します。駅や線路の点はドラッグで動かせます。分岐器や信号機は線路に沿ってドラッグします。",
