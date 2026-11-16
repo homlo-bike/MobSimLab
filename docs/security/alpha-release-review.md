@@ -8,7 +8,7 @@ a test; how everything was checked is at the end.
 **Overall:** no critical or high-severity problems. Nine problems were fixed (one medium SSRF gap found in this
 review, two medium findings from the earlier audit, and lows), plus one broken page: the aerial basemap was
 blocked by the app's own Content Security Policy. One medium finding (M2, database passwords) stays open as an
-accepted risk for alpha, by Homlo's decision.
+accepted risk, by Homlo's decision.
 
 ## Fixed in this review
 
@@ -91,8 +91,8 @@ Further hardening that answers checklist items directly:
 
 - **M2. All three database passwords are in one container** (medium). The migrator password, which owns the
   database, can be read by the API and the worker, so a break-in to either could rewrite the audit log. **Homlo
-  chose to keep two containers for alpha;** the fix (a one-shot migrate container that alone gets that password)
-  is planned before beta.
+  accepted this risk (16 November 2026) and chose to keep two containers.** If it is revisited, the fix is a
+  one-shot migrate container that alone gets that password.
 - **L6. Secret files are mode 644** inside a 700 folder. They must stay readable by the container users (uid
   10001 and 999) through Docker's bind mounts, so 600 would break start-up. The folder mode protects them; keep
   `deploy/secrets` out of backups that do not keep modes.
