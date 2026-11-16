@@ -4,6 +4,7 @@ import { editorsKk } from "./editors/kk";
 import { cargoBikeKk } from "./cargo-bike/kk";
 import { commentsKk } from "./comments/kk";
 import { depotsKk } from "./depots/kk";
+import { fleetKk } from "./fleet/kk";
 import { timetablesKk } from "./timetables/kk";
 import { mslabKk } from "./mslab/kk";
 import { pluginCodeKk } from "./plugin-code/kk";
@@ -351,6 +352,7 @@ export const kk: Messages = {
   "prefs.group.cost": "Шығындар",
   "prefs.group.benefits": "Пайда",
   "prefs.group.fares": "Жол ақысы",
+  "prefs.group.appraisal": "Бағалау",
   "prefs.group.noise": "Шу",
   "prefs.traction.battery": "аккумулятор",
   "prefs.traction.diesel": "дизель",
@@ -496,6 +498,7 @@ export const kk: Messages = {
   ...editorsKk,
   ...cargoBikeKk,
   ...depotsKk,
+  ...fleetKk,
   ...timetablesKk,
   ...commentsKk,
   ...mslabKk,

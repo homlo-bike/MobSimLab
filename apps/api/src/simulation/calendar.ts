@@ -26,6 +26,15 @@ const dayType = z
     from_s: z.number().finite().min(0).max(DAY),
     to_s: z.number().finite().min(0).max(DAY),
     per_day: dayFigures,
+    /**
+     * The day type's own service lines (JSON text, as the run's lines file) when its lines run other times
+     * than on a weekday; absent: the run's lines.
+     */
+    lines: z
+      .string()
+      .min(2)
+      .max(8 * 1024 * 1024)
+      .optional(),
   })
   .refine((d) => d.to_s > d.from_s, "a service day must end after it starts");
 /** Day count keys: a day type, or a day type in a weather variant (`weekday.hot`). */

@@ -4,6 +4,7 @@ import { editorsHi } from "./editors/hi";
 import { cargoBikeHi } from "./cargo-bike/hi";
 import { commentsHi } from "./comments/hi";
 import { depotsHi } from "./depots/hi";
+import { fleetHi } from "./fleet/hi";
 import { timetablesHi } from "./timetables/hi";
 import { mslabHi } from "./mslab/hi";
 import { pluginCodeHi } from "./plugin-code/hi";
@@ -352,6 +353,7 @@ export const hi: Messages = {
   "prefs.group.cost": "लागत",
   "prefs.group.benefits": "लाभ",
   "prefs.group.fares": "किराया",
+  "prefs.group.appraisal": "मूल्यांकन",
   "prefs.group.noise": "शोर",
   "prefs.traction.battery": "बैटरी",
   "prefs.traction.diesel": "डीज़ल",
@@ -495,6 +497,7 @@ export const hi: Messages = {
   ...editorsHi,
   ...cargoBikeHi,
   ...depotsHi,
+  ...fleetHi,
   ...timetablesHi,
   ...commentsHi,
   ...mslabHi,

@@ -260,7 +260,7 @@ export const editorsEn = {
   "rail.line.peakHeadway": "Peak headway",
   "rail.line.everyOffpeak": "Every, off-peak",
   "rail.line.offpeakHeadway": "Off-peak headway",
-  "rail.line.peaks": "Peaks 07:00–09:00 and 16:00–19:00.",
+  "rail.line.peaks": "Peaks {peaks}.",
   "rail.line.delete": "Delete line",
   "rail.line.needsStops": "Needs at least two stops.",
   "rail.line.needsTrain": "Choose a train.",

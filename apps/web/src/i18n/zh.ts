@@ -4,6 +4,7 @@ import { editorsZh } from "./editors/zh";
 import { cargoBikeZh } from "./cargo-bike/zh";
 import { commentsZh } from "./comments/zh";
 import { depotsZh } from "./depots/zh";
+import { fleetZh } from "./fleet/zh";
 import { timetablesZh } from "./timetables/zh";
 import { mslabZh } from "./mslab/zh";
 import { pluginCodeZh } from "./plugin-code/zh";
@@ -338,6 +339,7 @@ export const zh: Messages = {
   "prefs.group.cost": "成本",
   "prefs.group.benefits": "效益",
   "prefs.group.fares": "票价",
+  "prefs.group.appraisal": "评估",
   "prefs.group.noise": "噪声",
   "prefs.traction.battery": "电池",
   "prefs.traction.diesel": "柴油",
@@ -474,6 +476,7 @@ export const zh: Messages = {
   ...editorsZh,
   ...cargoBikeZh,
   ...depotsZh,
+  ...fleetZh,
   ...timetablesZh,
   ...commentsZh,
   ...mslabZh,

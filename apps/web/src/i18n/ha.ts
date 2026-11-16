@@ -4,6 +4,7 @@ import { editorsHa } from "./editors/ha";
 import { cargoBikeHa } from "./cargo-bike/ha";
 import { commentsHa } from "./comments/ha";
 import { depotsHa } from "./depots/ha";
+import { fleetHa } from "./fleet/ha";
 import { timetablesHa } from "./timetables/ha";
 import { mslabHa } from "./mslab/ha";
 import { pluginCodeHa } from "./plugin-code/ha";
@@ -355,6 +356,7 @@ export const ha: Messages = {
   "prefs.group.cost": "Kuɗaɗe",
   "prefs.group.benefits": "Fa'idodi",
   "prefs.group.fares": "Kuɗin mota",
+  "prefs.group.appraisal": "Kimantawa",
   "prefs.group.noise": "Hayaniya",
   "prefs.traction.battery": "batir",
   "prefs.traction.diesel": "dizal",
@@ -499,6 +501,7 @@ export const ha: Messages = {
   ...editorsHa,
   ...cargoBikeHa,
   ...depotsHa,
+  ...fleetHa,
   ...timetablesHa,
   ...commentsHa,
   ...mslabHa,

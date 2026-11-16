@@ -38,6 +38,18 @@ export const calendarId = {
   "cal.total": "Total",
   "cal.noHolidaysYear": "Belum ada hari libur nasional yang diambil",
   "cal.resetCount": "kembali ke hasil hitungan {value}",
+  "cal.service": "Hari layanan per jenis hari",
+  "cal.serviceIntro":
+    "Kapan layanan mulai dan berakhir pada setiap jenis hari, serta puncak pagi dan sorenya, dalam format HH:MM. Waktu setelah tengah malam berlanjut melewati 24:00, misalnya 24:30. Kosongkan puncak jika tidak ada.",
+  "cal.serviceDefault": "Bawaan untuk setiap jenis hari: {first} sampai {last}, puncak {peaks}.",
+  "cal.firstDep": "Keberangkatan pertama",
+  "cal.lastDep": "Keberangkatan terakhir",
+  "cal.morningPeak": "Puncak pagi",
+  "cal.eveningPeak": "Puncak sore",
+  "cal.peakFrom": "dari",
+  "cal.peakTo": "sampai",
+  "cal.serviceInvalid":
+    "Belum disimpan: keberangkatan terakhir harus setelah yang pertama, dan setiap puncak harus berakhir setelah dimulai.",
   "cal.day.weekday": "Hari kerja",
   "cal.day.saturday": "Sabtu",
   "cal.day.sunday": "Minggu",

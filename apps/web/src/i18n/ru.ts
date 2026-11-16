@@ -4,6 +4,7 @@ import { editorsRu } from "./editors/ru";
 import { cargoBikeRu } from "./cargo-bike/ru";
 import { commentsRu } from "./comments/ru";
 import { depotsRu } from "./depots/ru";
+import { fleetRu } from "./fleet/ru";
 import { timetablesRu } from "./timetables/ru";
 import { mslabRu } from "./mslab/ru";
 import { pluginCodeRu } from "./plugin-code/ru";
@@ -356,6 +357,7 @@ export const ru: Messages = {
   "prefs.group.cost": "Затраты",
   "prefs.group.benefits": "Выгоды",
   "prefs.group.fares": "Тарифы",
+  "prefs.group.appraisal": "Оценка",
   "prefs.group.noise": "Шум",
   "prefs.traction.battery": "аккумулятор",
   "prefs.traction.diesel": "дизель",
@@ -501,6 +503,7 @@ export const ru: Messages = {
   ...editorsRu,
   ...cargoBikeRu,
   ...depotsRu,
+  ...fleetRu,
   ...timetablesRu,
   ...commentsRu,
   ...mslabRu,

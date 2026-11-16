@@ -4,6 +4,7 @@ import { editorsKo } from "./editors/ko";
 import { cargoBikeKo } from "./cargo-bike/ko";
 import { commentsKo } from "./comments/ko";
 import { depotsKo } from "./depots/ko";
+import { fleetKo } from "./fleet/ko";
 import { timetablesKo } from "./timetables/ko";
 import { mslabKo } from "./mslab/ko";
 import { pluginCodeKo } from "./plugin-code/ko";
@@ -347,6 +348,7 @@ export const ko: Messages = {
   "prefs.group.cost": "비용",
   "prefs.group.benefits": "편익",
   "prefs.group.fares": "요금",
+  "prefs.group.appraisal": "평가",
   "prefs.group.noise": "소음",
   "prefs.traction.battery": "배터리",
   "prefs.traction.diesel": "디젤",
@@ -487,6 +489,7 @@ export const ko: Messages = {
   ...editorsKo,
   ...cargoBikeKo,
   ...depotsKo,
+  ...fleetKo,
   ...timetablesKo,
   ...commentsKo,
   ...mslabKo,

@@ -43,6 +43,7 @@ import { DEFAULT_TIMING } from "../src/features/street-lines/modes";
 import type { SavedStreetLine } from "../src/features/street-lines/saved";
 import { LineList } from "../src/features/street-lines/LineList";
 import { dayService, vehicleById, vehiclesFor } from "../src/features/street-lines/service";
+import { setProjectServiceDay } from "../src/features/journey-planner/network";
 import { StreetLineEditor } from "../src/features/street-lines/StreetLineEditor";
 import { along, circuitPath, lineChecks, lineStats } from "../src/features/street-lines/summary";
 import { tilesFor, tileX, tileY } from "../src/features/street-lines/tiles";
@@ -576,6 +577,18 @@ describe("Street line vehicle and service", () => {
     const d = dayService(t, 25);
     expect([d.serviceHours, d.tripsPerDay]).toEqual([19.5, 148]);
     expect(d.vehicleHours).toBeCloseTo(3 * 5 + 2 * 14.5, 2);
+  });
+
+  it("uses the project's weekday peaks when the workspace sets them", () => {
+    const t = { ...DEFAULT_TIMING, headwayMin: 10, offPeakHeadwayMin: 20 };
+    // One peak, 07:00–10:00: 3 h at three vehicles, 16.5 h at two.
+    setProjectServiceDay({ firstS: 5 * 3600, lastS: 24.5 * 3600, peaks: [[7 * 3600, 10 * 3600]] });
+    try {
+      expect(dayService(t, 25).vehicleHours).toBeCloseTo(3 * 3 + 2 * 16.5, 2);
+    } finally {
+      setProjectServiceDay(null);
+    }
+    expect(dayService(t, 25).vehicleHours).toBeCloseTo(3 * 5 + 2 * 14.5, 2);
   });
 });
 

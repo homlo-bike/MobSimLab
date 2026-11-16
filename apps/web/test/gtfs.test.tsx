@@ -217,4 +217,58 @@ describe("GTFS in the journey planner", () => {
     expect((click.mock.contexts[0] as HTMLAnchorElement).download).toBe("harbour-gtfs.zip");
     click.mockRestore();
   });
+
+  it("downloads every day type with the public holidays when the project gives them", async () => {
+    const { loader } = fakeLoader();
+    const trip = (id: string, service: string) => ({
+      trip_id: id,
+      route_id: "S1",
+      service_id: service,
+      stop_times: [
+        { stop_id: "p1", stop_sequence: 1, arrival_time: 21600, departure_time: 21600 },
+        { stop_id: "p2", stop_sequence: 2, arrival_time: 22200, departure_time: 22200 },
+      ],
+    });
+    const lines = {
+      stops: [
+        { stop_id: "p1", stop_name: "Quay", stop_lat: 50, stop_lon: 10 },
+        { stop_id: "p2", stop_name: "Market", stop_lat: 50.01, stop_lon: 10.01 },
+      ],
+      routes: [{ route_id: "S1", route_short_name: "S1", mode: "regional_rail" }],
+      trips: [trip("t", "weekday")],
+      frequency_patterns: [],
+      transfers: [],
+    } as unknown as Timetable;
+    const all = {
+      ...lines,
+      trips: [trip("t", "weekday"), trip("t~sunday", "sunday"), trip("t~holiday", "holiday")],
+    };
+    const blobs: Blob[] = [];
+    Object.assign(URL, {
+      createObjectURL: (b: Blob) => {
+        blobs.push(b);
+        return "blob:gtfs";
+      },
+      revokeObjectURL: () => {},
+    });
+    const click = vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => {});
+    const allDayFeed = vi.fn(async () => ({ timetable: all, holidays: ["20261225"] }));
+    render(
+      <JourneyPlanner
+        map={null}
+        loadPlanner={loader}
+        railLines={lines}
+        projectName="Harbour"
+        allDayFeed={allDayFeed}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Download my lines as GTFS" }));
+    await waitFor(() => expect(click).toHaveBeenCalled());
+    expect(allDayFeed).toHaveBeenCalledOnce();
+    const files = await readZip(new Uint8Array(await blobs[0]!.arrayBuffer()));
+    expect(files["trips.txt"]).toContain("t~sunday");
+    expect(files["calendar.txt"]).toMatch(/^sunday,0,0,0,0,0,0,1,/m);
+    expect(files["calendar_dates.txt"]).toContain("holiday,20261225,1");
+    click.mockRestore();
+  });
 });

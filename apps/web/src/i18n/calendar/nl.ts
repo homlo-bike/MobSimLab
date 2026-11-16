@@ -39,6 +39,18 @@ export const calendarNl = {
   "cal.total": "Totaal",
   "cal.noHolidaysYear": "Nog geen feestdagen opgehaald",
   "cal.resetCount": "terug naar de getelde {value}",
+  "cal.service": "Dienstdag per dagtype",
+  "cal.serviceIntro":
+    "Wanneer de dienst op elk dagtype begint en eindigt, en de ochtend- en avondspits, als HH:MM. Tijden na middernacht lopen door na 24:00, zoals 24:30. Laat een spits leeg voor geen.",
+  "cal.serviceDefault": "Standaard voor elk dagtype: {first} tot {last}, spitsen {peaks}.",
+  "cal.firstDep": "Eerste vertrek",
+  "cal.lastDep": "Laatste vertrek",
+  "cal.morningPeak": "Ochtendspits",
+  "cal.eveningPeak": "Avondspits",
+  "cal.peakFrom": "van",
+  "cal.peakTo": "tot",
+  "cal.serviceInvalid":
+    "Nog niet opgeslagen: het laatste vertrek moet na het eerste liggen, en elke spits moet na het begin eindigen.",
   "cal.day.weekday": "Werkdag",
   "cal.day.saturday": "Zaterdag",
   "cal.day.sunday": "Zondag",

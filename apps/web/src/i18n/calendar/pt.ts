@@ -39,6 +39,18 @@ export const calendarPt = {
   "cal.total": "Total",
   "cal.noHolidaysYear": "Ainda não foram obtidos feriados",
   "cal.resetCount": "voltar aos {value} contados",
+  "cal.service": "Dia de serviço por tipo de dia",
+  "cal.serviceIntro":
+    "Quando o serviço começa e termina em cada tipo de dia, e a sua ponta da manhã e da tarde, como HH:MM. As horas depois da meia-noite continuam além das 24:00, por exemplo 24:30. Deixe uma ponta vazia se não houver.",
+  "cal.serviceDefault": "Padrão para cada tipo de dia: {first} a {last}, pontas {peaks}.",
+  "cal.firstDep": "Primeira partida",
+  "cal.lastDep": "Última partida",
+  "cal.morningPeak": "Ponta da manhã",
+  "cal.eveningPeak": "Ponta da tarde",
+  "cal.peakFrom": "de",
+  "cal.peakTo": "até",
+  "cal.serviceInvalid":
+    "Ainda não guardado: a última partida tem de ser depois da primeira, e cada ponta tem de terminar depois de começar.",
   "cal.day.weekday": "Dia útil",
   "cal.day.saturday": "Sábado",
   "cal.day.sunday": "Domingo",

@@ -9,10 +9,15 @@ An open-source, self-hosted platform for public transport planning, GIS analysis
 
 ```bash
 deploy/scripts/init-secrets          # random secrets in deploy/secrets (never committed)
-cp .env.example .env                 # set MOBSIMLAB_PUBLIC_URL and the OIDC provider
-docker compose up -d --build         # two containers: mobsimlab and postgres
+cp .env.example .env                 # set MOBSIMLAB_VERSION, MOBSIMLAB_PUBLIC_URL and the OIDC provider
+docker compose pull                  # ready-made image from ghcr.io, nothing to build
+docker compose up -d                 # two containers: mobsimlab and postgres
 open http://localhost:8080
 ```
+
+Each release publishes a ready-made image for Intel/AMD and ARM servers to `ghcr.io/homlo-bike/mobsimlab`, tagged with its version only (for example `2026.11.1-alpha`; there is no `latest` tag). Set that version as `MOBSIMLAB_VERSION` in `.env` before pulling; to update, change it to the newer version and run `docker compose pull && docker compose up -d`. To build the image yourself from this checkout instead, run `docker compose up -d --build`.
+
+Releases are made by pushing a version tag (`git tag -s v2026.11.1-alpha -m "MobSimLab 2026.11.1-alpha" && git push origin v2026.11.1-alpha`); the **Release image** workflow builds, smoke-tests and publishes the image.
 
 ### Sign-in and first setup
 
@@ -25,6 +30,8 @@ MobSimLab has no local passwords; people sign in with an OpenID Connect provider
 5. Behind a TLS reverse proxy, set `MOBSIMLAB_TRUSTED_PROXIES` to the proxy's address so sign-in rate limits (10 per minute per client by default) and audit records see the real client address.
 
 **AI agents:** Owners, Admins and Editors can connect Claude or another MCP app at `<MOBSIMLAB_PUBLIC_URL>/mcp` to build scenarios and check them against the 15-minute walk rule. See [docs/user/ai-agents.md](docs/user/ai-agents.md). The instance must be reachable over HTTPS from the AI app, and `MOBSIMLAB_PUBLIC_URL` must be the address the app uses.
+
+**Static viewer:** `pnpm build:static` builds a website with no server that shows saved `.mslab` projects read-only (simulator, schematic, tables and preferences), ready to upload to Cloudflare Pages. See [docs/user/static-viewer.md](docs/user/static-viewer.md).
 
 Lost the Owner account? Run `docker compose exec mobsimlab /app/bin/mobsimlab admin reset-owner`. This demotes the current Owner to Admin, signs them out, returns the instance to setup mode and records the action in the audit log.
 

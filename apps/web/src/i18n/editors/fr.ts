@@ -255,7 +255,7 @@ export const editorsFr = {
   "rail.line.peakHeadway": "Intervalle en pointe",
   "rail.line.everyOffpeak": "Intervalle en heures creuses",
   "rail.line.offpeakHeadway": "Intervalle en heures creuses",
-  "rail.line.peaks": "Pointes 07:00–09:00 et 16:00–19:00.",
+  "rail.line.peaks": "Pointes {peaks}.",
   "rail.line.delete": "Supprimer la ligne",
   "rail.line.needsStops": "Il faut au moins deux arrêts.",
   "rail.line.needsTrain": "Choisissez un train.",

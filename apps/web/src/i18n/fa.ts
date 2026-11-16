@@ -4,6 +4,7 @@ import { editorsFa } from "./editors/fa";
 import { cargoBikeFa } from "./cargo-bike/fa";
 import { commentsFa } from "./comments/fa";
 import { depotsFa } from "./depots/fa";
+import { fleetFa } from "./fleet/fa";
 import { timetablesFa } from "./timetables/fa";
 import { mslabFa } from "./mslab/fa";
 import { pluginCodeFa } from "./plugin-code/fa";
@@ -349,6 +350,7 @@ export const fa: Messages = {
   "prefs.group.cost": "هزینه‌ها",
   "prefs.group.benefits": "منافع",
   "prefs.group.fares": "کرایه‌ها",
+  "prefs.group.appraisal": "ارزیابی اقتصادی",
   "prefs.group.noise": "نوفه",
   "prefs.traction.battery": "باتری",
   "prefs.traction.diesel": "دیزل",
@@ -493,6 +495,7 @@ export const fa: Messages = {
   ...editorsFa,
   ...cargoBikeFa,
   ...depotsFa,
+  ...fleetFa,
   ...timetablesFa,
   ...commentsFa,
   ...mslabFa,

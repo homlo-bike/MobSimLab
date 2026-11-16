@@ -6,6 +6,7 @@ export default tseslint.config(
   {
     ignores: [
       "**/dist/**",
+      "apps/web/dist-static/**",
       "**/node_modules/**",
       "target/**",
       "**/*.d.ts",
@@ -22,5 +23,11 @@ export default tseslint.config(
       "no-console": "error",
       "@typescript-eslint/no-explicit-any": "error",
     },
+  },
+  {
+    // Command-line scripts run by Node.js (the static viewer's build and add-projects tools).
+    files: ["tools/**/*.mjs"],
+    languageOptions: { globals: { process: "readonly", console: "readonly", Buffer: "readonly" } },
+    rules: { "no-console": "off" },
   },
 );

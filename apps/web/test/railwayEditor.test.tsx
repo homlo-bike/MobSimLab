@@ -887,6 +887,15 @@ describe("Railway editor", () => {
     expect(access.textContent).toMatch(/Step [+−±]\d+ mm/);
     fireEvent.change(screen.getByLabelText("Peak headway"), { target: { value: "10" } });
     fireEvent.change(screen.getByLabelText("Off-peak headway"), { target: { value: "20" } });
+    // The calendar's peaks of the day type.
+    expect(screen.getByText("Peaks 07:00–09:00, 16:00–19:00.")).toBeTruthy();
+    // Sundays every 30 minutes all day.
+    const dayType = screen.getByLabelText("Timetable for");
+    fireEvent.change(dayType, { target: { value: "sunday" } });
+    fireEvent.click(screen.getByLabelText("Same as weekday"));
+    fireEvent.change(screen.getByLabelText("Peak headway"), { target: { value: "30" } });
+    fireEvent.change(screen.getByLabelText("Off-peak headway"), { target: { value: "30" } });
+    fireEvent.change(dayType, { target: { value: "weekday" } });
 
     fireEvent.click(screen.getByRole("button", { name: "Publish timetable" }));
     const done = await screen.findByTestId("lines-published");
@@ -911,6 +920,14 @@ describe("Railway editor", () => {
     expect(within(dialog).getAllByTestId(/^tdg-trip-/).length).toBe(tt.trips.length);
     fireEvent.click(within(dialog).getByRole("button", { name: "Close" }));
     expect(screen.queryByRole("dialog")).toBeNull();
+
+    // The report follows the day type shown: fewer trips on a Sunday; the journey planner keeps the weekday.
+    const trips = () => Number(/(\d+) trips/.exec(screen.getByTestId("line-report").textContent!)![1]);
+    const weekday = trips();
+    fireEvent.change(screen.getByLabelText("Timetable for"), { target: { value: "sunday" } });
+    expect(trips()).toBeLessThan(weekday);
+    fireEvent.change(screen.getByLabelText("Timetable for"), { target: { value: "weekday" } });
+    expect(trips()).toBe(weekday);
 
     // Editing the line marks the publication out of date.
     fireEvent.change(screen.getByLabelText("Line name"), { target: { value: "U5" } });
