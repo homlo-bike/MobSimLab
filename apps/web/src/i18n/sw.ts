@@ -278,6 +278,10 @@ export const sw: Messages = {
   "prefs.delayLane": "Katika njia ya basi au tramu iliyochorwa kwa rangi",
   "prefs.delayDefault": "Maktaba ya dhana: {value} %",
   "prefs.delayReset": "Tumia thamani ya maktaba",
+  "prefs.stationsTitle": "Stesheni",
+  "prefs.stationsIntro":
+    "Vituo vyenye jina moja ndani ya umbali huu vinahesabiwa kama stesheni moja kwenye ramani ya mchoro, kipanga safari na majedwali ya manufaa na abiria.",
+  "prefs.libraryM": "Maktaba ya dhana: {value} m",
   "prefs.currencyTitle": "Sarafu",
   "prefs.currencyIntro":
     "Fedha zote za mradi zinaonyeshwa kwa sarafu hii: majedwali ya gharama, manufaa, matukio na akiba ya baiskeli ya mizigo.",

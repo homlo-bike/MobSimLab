@@ -279,6 +279,10 @@ export const ha: Messages = {
   "prefs.delayLane": "A cikin hanyar bas ko tram da aka zana da fenti",
   "prefs.delayDefault": "Ɗakin zato: {value} %",
   "prefs.delayReset": "Yi amfani da ƙimar ɗakin",
+  "prefs.stationsTitle": "Tashoshi",
+  "prefs.stationsIntro":
+    "Tashoshi masu suna ɗaya cikin wannan nisa ana ƙidaya su a matsayin tasha ɗaya a taswirar zane, mai tsara tafiya da teburan fa'idodi da fasinjoji.",
+  "prefs.libraryM": "Ɗakin zato: {value} m",
   "prefs.currencyTitle": "Kuɗi",
   "prefs.currencyIntro":
     "Duk kuɗin aikin ana nuna su a wannan kuɗin: teburorin kuɗaɗe, fa'idodi, yanayi da tanadin keken kaya.",
