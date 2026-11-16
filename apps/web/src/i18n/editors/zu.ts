@@ -1076,6 +1076,9 @@ export const editorsZu = {
     "Lokhu kuhlolwa kumiswe ngaphambi kokuphela; le yimiphumela etholakale kuze kube yileso sikhathi.",
   "capacity.waiting": "Ilinde iseva ukuthi iqale ukuhlolwa…",
   "capacity.stopping": "Kuzomiswa ngemva kwesinyathelo samanje…",
+  "capacity.delete": "Susa",
+  "capacity.deleteAsk": "Susa lokhu kuhlolwa kubo bonke abakule phrojekthi?",
+  "capacity.keep": "Gcina",
   "rail.levelHeight":
     "Kuyisicaba, izinsimbi zingu-{rail} m ngaphezu kolwandle · umhlaba eduze kwazo {min}–{max} m",
   "rail.profileRange":

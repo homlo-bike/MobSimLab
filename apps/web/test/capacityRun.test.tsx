@@ -182,6 +182,8 @@ describe("capacity runs on the server", () => {
       get: vi.fn(async () => next()),
       start: vi.fn(async () => states[0]!),
       cancel: vi.fn(async () => ({ ...states[0]!, cancelRequested: true, status: "running" as const })),
+      rerun: vi.fn(async () => ({ ...states[0]!, status: "queued" as const, result: null, verdict: null })),
+      remove: vi.fn(async () => undefined),
     };
   }
 
@@ -239,5 +241,37 @@ describe("capacity runs on the server", () => {
     render(<CapacityRun runs={runs} canRun />);
     fireEvent.click(await screen.findByRole("button", { name: "Run on the server and save" }));
     expect((await screen.findByRole("alert")).textContent).toContain("topology: expected value");
+  });
+
+  it("runs a saved run again and deletes one after asking", async () => {
+    const done = saved({ status: "done", verdict: "near_limit", result: result() });
+    const runs = fakeRuns([done], [done]);
+    render(<CapacityRun runs={runs} canRun pollMs={100000} />);
+    const list = await screen.findByRole("region", { name: "Saved runs" });
+    fireEvent.click(within(list).getAllByRole("button")[0]!);
+    await screen.findByTestId("capacity-result");
+    fireEvent.click(screen.getByRole("button", { name: "Run again" }));
+    await waitFor(() => expect(runs.rerun).toHaveBeenCalledWith("r1"));
+    // The old result is replaced; the run waits for the worker again.
+    expect((await screen.findByRole("status")).textContent).toContain("Waiting for the server");
+    expect(screen.queryByTestId("capacity-result")).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Delete" }));
+    const ask = screen.getByRole("alertdialog", { name: "Delete this run for everyone in the project?" });
+    fireEvent.click(within(ask).getByRole("button", { name: "Keep" }));
+    expect(runs.remove).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole("button", { name: "Delete" }));
+    fireEvent.click(within(screen.getByRole("alertdialog")).getByRole("button", { name: "Delete" }));
+    await waitFor(() => expect(runs.remove).toHaveBeenCalledWith("r1"));
+    expect(await screen.findByText("No saved runs in this project yet.")).toBeTruthy();
+  });
+
+  it("offers neither Run again nor Delete to a reader who cannot run", async () => {
+    const done = saved({ status: "done", verdict: "near_limit", result: result() });
+    render(<CapacityRun runs={fakeRuns([done], [done])} />);
+    const list = await screen.findByRole("region", { name: "Saved runs" });
+    fireEvent.click(within(list).getAllByRole("button")[0]!);
+    await screen.findByTestId("capacity-result");
+    expect(screen.queryByRole("button", { name: "Run again" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Delete" })).toBeNull();
   });
 });

@@ -1043,6 +1043,9 @@ export const editorsTe = {
   "capacity.stoppedEarly": "ఈ రన్ ముగియకముందే ఆపబడింది; ఇవి అప్పటి వరకు వచ్చిన ఫలితాలు.",
   "capacity.waiting": "సర్వర్ రన్ ప్రారంభించే వరకు వేచి ఉంది…",
   "capacity.stopping": "ప్రస్తుత దశ తర్వాత ఆపుతోంది…",
+  "capacity.delete": "తొలగించు",
+  "capacity.deleteAsk": "ప్రాజెక్ట్‌లో అందరికీ ఈ రన్‌ను తొలగించాలా?",
+  "capacity.keep": "ఉంచు",
   "rail.levelHeight": "సమతలం, పట్టాలు సముద్ర మట్టానికి {rail} మీ ఎత్తులో · పక్కన నేల {min}–{max} మీ",
   "rail.profileRange":
     "పట్టాలు సముద్ర మట్టానికి {min}–{max} మీ · అత్యంత నిటారు వాలు {steep} (గరిష్ఠం {limit} ‰)",

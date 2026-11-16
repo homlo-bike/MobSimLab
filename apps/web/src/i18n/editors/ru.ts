@@ -1113,6 +1113,9 @@ export const editorsRu = {
   "capacity.stoppedEarly": "Этот прогон остановлен до конца; это результаты, полученные к тому моменту.",
   "capacity.waiting": "Ожидание запуска прогона на сервере…",
   "capacity.stopping": "Остановка после текущего шага…",
+  "capacity.delete": "Удалить",
+  "capacity.deleteAsk": "Удалить этот прогон для всех участников проекта?",
+  "capacity.keep": "Оставить",
   "rail.levelHeight":
     "Горизонтально, рельсы на высоте {rail} м над уровнем моря · рельеф вдоль {min}–{max} м",
   "rail.profileRange":

@@ -1,4 +1,11 @@
-import { Inject, Injectable, Logger, NotFoundException, ServiceUnavailableException } from "@nestjs/common";
+import {
+  ConflictException,
+  Inject,
+  Injectable,
+  Logger,
+  NotFoundException,
+  ServiceUnavailableException,
+} from "@nestjs/common";
 import { AuditService, projectChain } from "../audit/audit.service";
 import { DATABASE, type Database, type RunStatus } from "../db/database";
 import { type ProjectActor, ProjectsService } from "../projects/projects.service";
@@ -58,7 +65,8 @@ export const WORKER_STOPPED = "the background worker stopped before the run fini
 const iso = (d: Date | null) => (d ? d.toISOString() : null);
 
 /**
- * Simulation runs saved with a project (ADR-0003, ADR-0023). Owners and Editors start and stop runs; every
+ * Simulation runs saved with a project (ADR-0003, ADR-0023). Owners and Editors start, stop, run again and
+ * delete runs; every
  * member who can read the project sees them. The run is stored first and then queued; a sim-worker process
  * does the work and writes progress and the result to the run.
  */
@@ -123,15 +131,105 @@ export class RunsService {
       );
       return r.id;
     });
-    try {
-      const jobId = await this.queue.send({ runId: id });
-      await this.db.updateTable("simulation.run").set({ job_id: jobId }).where("id", "=", id).execute();
-    } catch (e) {
-      this.log.error(`could not queue run ${id}: ${e instanceof Error ? e.message : String(e)}`);
-      await this.settle(id, "failed", "the run could not be queued; try again in a moment");
-      throw new ServiceUnavailableException("the background worker queue cannot be reached; try again");
-    }
+    await this.enqueue(id);
     return this.get(actor, projectId, id);
+  }
+
+  /**
+   * Purpose: run a saved run again with the same network and settings, replacing its result ("Run again").
+   * The run keeps its ID and its place in the list; who started it and when become the caller and now.
+   * 409 while it is still queued or running. Side effects: clears progress, result and error, queues a new
+   * job, audit `simulation.run_restarted` (with how the old run had ended).
+   */
+  async rerun(actor: ProjectActor, projectId: string, runId: string): Promise<RunDetail> {
+    await this.projects.authorize(actor, projectId, "edit");
+    await this.db.transaction().execute(async (tx) => {
+      const r = await tx
+        .selectFrom("simulation.run")
+        .select(["status", "result"])
+        .where("project_id", "=", projectId)
+        .where("id", "=", runId)
+        .forUpdate()
+        .executeTakeFirst();
+      if (!r) throw new NotFoundException("run not found");
+      if (r.status === "queued" || r.status === "running")
+        throw new ConflictException("the run is still going; stop it or wait for it to finish");
+      await tx
+        .updateTable("simulation.run")
+        .set({
+          status: "queued",
+          progress: null,
+          result: null,
+          error: null,
+          cancel_requested: false,
+          job_id: null,
+          created_by: actor.userId,
+          created_at: new Date(),
+          started_at: null,
+          finished_at: null,
+        })
+        .where("id", "=", runId)
+        .execute();
+      const verdict = (r.result as { run?: { verdict?: unknown } } | null)?.run?.verdict;
+      await this.audit.append(
+        {
+          chain: projectChain(projectId),
+          action: "simulation.run_restarted",
+          objectType: "simulation_run",
+          objectId: runId,
+          projectId,
+          actorId: actor.userId,
+          actorIpHash: actor.ipHash,
+          requestId: actor.requestId,
+          before: { status: r.status, verdict: typeof verdict === "string" ? verdict : null },
+        },
+        tx,
+      );
+    });
+    await this.enqueue(runId);
+    return this.get(actor, projectId, runId);
+  }
+
+  /**
+   * Purpose: delete a saved run and its result for everyone. A run that is still going is stopped: a queued
+   * job is cancelled, and a running worker finds the run gone at its next step and stops.
+   * Side effects: deletes `simulation.run`, audit `simulation.run_deleted` (settings and how it had ended).
+   */
+  async remove(actor: ProjectActor, projectId: string, runId: string): Promise<void> {
+    await this.projects.authorize(actor, projectId, "edit");
+    const jobId = await this.db.transaction().execute(async (tx) => {
+      const r = await tx
+        .deleteFrom("simulation.run")
+        .where("project_id", "=", projectId)
+        .where("id", "=", runId)
+        .returning(["status", "input", "job_id", "result"])
+        .executeTakeFirst();
+      if (!r) throw new NotFoundException("run not found");
+      const verdict = (r.result as { run?: { verdict?: unknown } } | null)?.run?.verdict;
+      await this.audit.append(
+        {
+          chain: projectChain(projectId),
+          action: "simulation.run_deleted",
+          objectType: "simulation_run",
+          objectId: runId,
+          projectId,
+          actorId: actor.userId,
+          actorIpHash: actor.ipHash,
+          requestId: actor.requestId,
+          before: {
+            status: r.status,
+            verdict: typeof verdict === "string" ? verdict : null,
+            ...(r.input as StoredInput),
+          },
+        },
+        tx,
+      );
+      return r.status === "queued" ? r.job_id : null;
+    });
+    if (jobId)
+      await this.queue.cancel(jobId).catch((e: unknown) => {
+        this.log.warn(`could not cancel job ${jobId}: ${e instanceof Error ? e.message : String(e)}`);
+      });
   }
 
   /** Purpose: the project's runs, newest first (at most 100), for every member who can read the project. */
@@ -212,6 +310,18 @@ export class RunsService {
   }
 
   // ---------------------------------------------------------------------------------------------------------
+
+  /** Purpose: queue a stored run. 503 when the queue cannot be reached: the run is then settled as failed. */
+  private async enqueue(id: string): Promise<void> {
+    try {
+      const jobId = await this.queue.send({ runId: id });
+      await this.db.updateTable("simulation.run").set({ job_id: jobId }).where("id", "=", id).execute();
+    } catch (e) {
+      this.log.error(`could not queue run ${id}: ${e instanceof Error ? e.message : String(e)}`);
+      await this.settle(id, "failed", "the run could not be queued; try again in a moment");
+      throw new ServiceUnavailableException("the background worker queue cannot be reached; try again");
+    }
+  }
 
   private query() {
     return this.db

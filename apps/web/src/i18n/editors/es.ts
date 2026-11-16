@@ -1064,6 +1064,9 @@ export const editorsEs = {
     "Esta prueba se detuvo antes de terminar; estos son los resultados obtenidos hasta entonces.",
   "capacity.waiting": "Esperando a que el servidor inicie la prueba…",
   "capacity.stopping": "Deteniendo tras el paso actual…",
+  "capacity.delete": "Eliminar",
+  "capacity.deleteAsk": "¿Eliminar esta prueba para todos en el proyecto?",
+  "capacity.keep": "Conservar",
   "rail.levelHeight": "Llano, carriles a {rail} m sobre el nivel del mar · terreno a lo largo {min}–{max} m",
   "rail.profileRange":
     "Carriles a {min}–{max} m sobre el nivel del mar · pendiente máxima {steep} (máx. {limit} ‰)",

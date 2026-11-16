@@ -1055,6 +1055,9 @@ export const editorsSw = {
     "Jaribio hili lilisimamishwa kabla ya mwisho; haya ni matokeo yaliyopatikana hadi wakati huo.",
   "capacity.waiting": "Inasubiri seva ianze jaribio…",
   "capacity.stopping": "Itasimama baada ya hatua ya sasa…",
+  "capacity.delete": "Futa",
+  "capacity.deleteAsk": "Ufute jaribio hili kwa kila mtu katika mradi?",
+  "capacity.keep": "Baki nalo",
   "rail.levelHeight": "Tambarare, reli ziko m {rail} juu ya usawa wa bahari · ardhi kando yake m {min}–{max}",
   "rail.profileRange":
     "Reli m {min}–{max} juu ya usawa wa bahari · mteremko mkali zaidi {steep} (upeo {limit} ‰)",
