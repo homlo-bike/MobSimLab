@@ -474,6 +474,49 @@ export function ShareDialog({
 }
 
 /** Delete confirmation (mockup "Delete confirmation"): offers archive instead, and needs the name typed. */
+/** Save a project as a `.mslab` file (ADR-0021): with or without its saved simulation runs. */
+export function SaveMslabDialog({
+  api,
+  project,
+  onClose,
+}: {
+  api: ProjectsApi;
+  project: Project;
+  onClose: () => void;
+}) {
+  const { t } = useI18n();
+  const [runs, setRuns] = useState(false);
+  return (
+    <Dialog
+      title={t("menu.saveMslab")}
+      onClose={onClose}
+      width="max-w-md"
+      footer={
+        <>
+          <button type="button" className="btn" onClick={onClose}>
+            {t("common.cancel")}
+          </button>
+          <a className="btn btn-pri" href={api.mslabUrl(project.id, runs)} download onClick={onClose}>
+            {t("mslab.save")}
+          </a>
+        </>
+      }
+    >
+      <p className="m-0 text-sm text-slate-600">{t("mslab.body")}</p>
+      <label className="mt-4 flex items-start gap-2 text-sm">
+        <input
+          type="checkbox"
+          className="mt-0.5"
+          data-autofocus
+          checked={runs}
+          onChange={(e) => setRuns(e.target.checked)}
+        />
+        <span>{t("mslab.runs")}</span>
+      </label>
+    </Dialog>
+  );
+}
+
 export function DeleteDialog({
   api,
   project,

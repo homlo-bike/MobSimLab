@@ -2,6 +2,7 @@ import { roadFr } from "./road/fr";
 import { editorsFr } from "./editors/fr";
 import { cargoBikeFr } from "./cargo-bike/fr";
 import { depotsFr } from "./depots/fr";
+import { mslabFr } from "./mslab/fr";
 import { populationFr } from "./population/fr";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -474,6 +475,7 @@ export const fr: Messages = {
   ...editorsFr,
   ...cargoBikeFr,
   ...depotsFr,
+  ...mslabFr,
   ...populationFr,
   ...roadFr,
   ...PLUGIN_MESSAGES.fr,

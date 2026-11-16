@@ -129,6 +129,10 @@ export function projectsApi(csrf: string) {
         (r) => r.history ?? [],
       );
     },
+    /** Where to download the project as a `.mslab` file (ADR-0021), with or without its simulation runs. */
+    mslabUrl: (id: string, runs: boolean) => `${one(id)}/mslab${runs ? "?runs=true" : ""}`,
+    /** Open a `.mslab` file as a new project owned by the caller; `skipped` lists what was left out. */
+    importMslab: (file: Blob) => importMslab(csrf, file),
     drawings: (id: string) => loadDrawings(id),
     saveDrawing: <T>(id: string, kind: DrawingKind, doc: T, baseVersion: number | null) =>
       saveDrawing(csrf, id, kind, doc, baseVersion),
@@ -141,3 +145,23 @@ export function projectsApi(csrf: string) {
   };
 }
 export type ProjectsApi = ReturnType<typeof projectsApi>;
+
+/** Purpose: upload a `.mslab` file as the raw request body. Output: the new project and what was left out. */
+async function importMslab(csrf: string, file: Blob): Promise<{ project: Project; skipped: string[] }> {
+  const res = await fetch(`${base}/import`, {
+    method: "POST",
+    credentials: "same-origin",
+    headers: { "Content-Type": "application/octet-stream", "X-CSRF-Token": csrf },
+    body: file,
+  });
+  const body = (await res.json().catch(() => ({}))) as {
+    project?: Project;
+    skipped?: string[];
+    message?: string | string[];
+  };
+  if (!res.ok || !body.project) {
+    const m = Array.isArray(body.message) ? body.message.join("; ") : body.message;
+    throw new Error(m ?? `POST ${base}/import failed: ${res.status}`);
+  }
+  return { project: body.project, skipped: body.skipped ?? [] };
+}

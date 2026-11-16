@@ -2,6 +2,7 @@ import { roadIg } from "./road/ig";
 import { editorsIg } from "./editors/ig";
 import { cargoBikeIg } from "./cargo-bike/ig";
 import { depotsIg } from "./depots/ig";
+import { mslabIg } from "./mslab/ig";
 import { populationIg } from "./population/ig";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -467,6 +468,7 @@ export const ig: Messages = {
   ...editorsIg,
   ...cargoBikeIg,
   ...depotsIg,
+  ...mslabIg,
   ...populationIg,
   ...roadIg,
   ...PLUGIN_MESSAGES.ig,
