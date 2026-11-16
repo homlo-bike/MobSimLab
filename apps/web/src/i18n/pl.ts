@@ -4,12 +4,14 @@ import { editorsPl } from "./editors/pl";
 import { cargoBikePl } from "./cargo-bike/pl";
 import { commentsPl } from "./comments/pl";
 import { depotsPl } from "./depots/pl";
+import { geodataPl } from "./geodata/pl";
+import { tablesPl } from "./tables/pl";
 import { fleetPl } from "./fleet/pl";
 import { timetablesPl } from "./timetables/pl";
 import { mslabPl } from "./mslab/pl";
 import { pluginCodePl } from "./plugin-code/pl";
 import { populationPl } from "./population/pl";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsPl } from "./plugins/pl";
 import type { Messages } from "./en";
 
 /** Polski */
@@ -498,6 +500,8 @@ export const pl: Messages = {
   ...editorsPl,
   ...cargoBikePl,
   ...depotsPl,
+  ...geodataPl,
+  ...tablesPl,
   ...fleetPl,
   ...timetablesPl,
   ...commentsPl,
@@ -506,5 +510,5 @@ export const pl: Messages = {
   ...populationPl,
   ...roadPl,
   ...calendarPl,
-  ...PLUGIN_MESSAGES.pl,
+  ...pluginsPl,
 };

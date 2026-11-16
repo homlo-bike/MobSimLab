@@ -1,0 +1,51 @@
+import type { PluginKey } from "../plugins";
+
+/** Plugin messages (ta). */
+export const pluginsTa = {
+  "admin.plugins": "செருகுநிரல்கள்",
+  "plugins.title": "செருகுநிரல்கள்",
+  "plugins.intro":
+    "செருகுநிரல்கள் போக்குவரத்து முறைகள், கருவிகள், கணக்கீடுகளைச் சேர்க்கின்றன. இந்தத் திட்டம் பயன்படுத்துபவற்றை இயக்குங்கள்; அணைத்தால் கருவிகள் மறையும், வரைந்தவை இருக்கும்.",
+  "plugins.bundled": "MobSimLab உடன் வருகிறது",
+  "plugins.by": "வெளியீட்டாளர்: {publisher}",
+  "plugins.versionN": "பதிப்பு {version}",
+  "plugins.adds": "சேர்க்கிறது: {list}",
+  "plugins.uses": "பயன்படுத்துகிறது: {list}",
+  "plugins.parameters": "{count} அனுமான மதிப்புகள்",
+  "plugins.missing":
+    "பதிப்பு {version} இந்த MobSimLab இலிருந்து நீக்கப்பட்டது. மீண்டும் பயன்படுத்த வேறு பதிப்பைத் தேர்ந்தெடுங்கள்.",
+  "plugins.versionOf": "{name} பதிப்பு",
+  "plugins.useIn": "இந்தத் திட்டத்தில் {name} பயன்படுத்து",
+  "plugins.ownerOnly": "திட்ட உரிமையாளர் மட்டுமே செருகுநிரல்களை இயக்கவோ அணைக்கவோ முடியும்.",
+  "plugins.perm.readNetwork": "திட்டத்தின் வலையமைப்பு",
+  "plugins.perm.readTimetable": "கால அட்டவணை",
+  "plugins.perm.readFleet": "வாகனங்கள் மற்றும் தொகுதி",
+  "plugins.perm.readGeodata": "இறக்குமதி செய்த வரைபடத் தரவு",
+  "plugins.perm.readResults": "உருவகப்படுத்தல் முடிவுகள்",
+  "plugins.perm.writeResults": "தன் முடிவுகளைச் சேமிக்கிறது",
+  "plugins.perm.writeScenario": "சூழ்நிலையில் மாற்றங்களை முன்மொழிகிறது",
+  "plugins.installTitle": "செருகுநிரலை நிறுவு",
+  "plugins.choose": ".msplugin கோப்பைத் தேர்ந்தெடு",
+  "plugins.problems": "இந்தச் செருகுநிரலை நிறுவ முடியாது:",
+  "plugins.install": "நிறுவு",
+  "plugins.installed": "நிறுவிய செருகுநிரல்கள்",
+  "plugins.none": "இன்னும் செருகுநிரல் எதுவும் நிறுவப்படவில்லை.",
+  "plugins.removeOne": "{name} {version} நீக்கு",
+  "plugins.inProjects": "{count} திட்டங்களில் பயன்பாட்டில்",
+  "plugins.bundledTitle": "MobSimLab உடன் வந்தவை",
+  "plugins.keys": "நம்பகமான வெளியீட்டாளர்கள்",
+  "plugins.keysIntro":
+    "வெளியீட்டாளர் இவற்றில் ஒரு விசையால் கையொப்பமிட்டால் மட்டுமே செருகுநிரல் நிறுவப்படும் (ECDSA P-256 அல்லது Ed25519, PEM).",
+  "plugins.noKeys": "இன்னும் நம்பகமான விசைகள் இல்லை.",
+  "plugins.removeKey": "{name} மீதான நம்பிக்கையை நீக்கு",
+  "plugins.addKey": "விசையைச் சேர்",
+  "plugins.keyName": "வெளியீட்டாளர் பெயர்",
+  "plugins.keyPem": "பொது விசை",
+  "plugins.allowUnsigned": "கையொப்பமில்லாத செருகுநிரல்களை அனுமதி (மேம்பாட்டு முறை, உரிமையாளர்கள் மட்டும்)",
+  "plugins.signedBy": "கையொப்பம்: {name}",
+  "plugins.untrusted": "இந்த நிகழ்வு நம்பாத விசையால் கையொப்பமிடப்பட்டது",
+  "plugins.unsigned": "கையொப்பமில்லை",
+  "plugins.licences": "உரிமங்கள்: நிரல் {code}, தரவு {data}",
+  "plugins.removeConfirm":
+    "{name} {count} திட்டங்களில் இயக்கத்தில் உள்ளது. இருந்தாலும் நீக்கவா? அங்கு அணைக்கப்படும், வரைபடங்கள் இருக்கும்.",
+} satisfies Record<PluginKey, string>;

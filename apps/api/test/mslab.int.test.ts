@@ -272,7 +272,7 @@ describe("mslab project files", () => {
         .mockResolvedValue({ iso3: "DEU", iso2: "DE", name: "Germany" }),
       vi
         .spyOn(app.get(EconomyService), "countries")
-        .mockResolvedValue([{ iso3: "DEU", iso2: "DE", name: "Germany", income: "HIC" }]),
+        .mockResolvedValue([{ iso3: "DEU", iso2: "DE", name: "Germany", income: null }]),
       vi.spyOn(app.get(EconomyService), "economy").mockResolvedValue({ fx: null } as never),
       vi.spyOn(app.get(BenefitsService), "indicators").mockResolvedValue({ gdp: null } as never),
     ];

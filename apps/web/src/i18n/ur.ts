@@ -4,12 +4,14 @@ import { editorsUr } from "./editors/ur";
 import { cargoBikeUr } from "./cargo-bike/ur";
 import { commentsUr } from "./comments/ur";
 import { depotsUr } from "./depots/ur";
+import { geodataUr } from "./geodata/ur";
+import { tablesUr } from "./tables/ur";
 import { fleetUr } from "./fleet/ur";
 import { timetablesUr } from "./timetables/ur";
 import { mslabUr } from "./mslab/ur";
 import { pluginCodeUr } from "./plugin-code/ur";
 import { populationUr } from "./population/ur";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsUr } from "./plugins/ur";
 import type { Messages } from "./en";
 
 /** اردو */
@@ -499,6 +501,8 @@ export const ur: Messages = {
   ...editorsUr,
   ...cargoBikeUr,
   ...depotsUr,
+  ...geodataUr,
+  ...tablesUr,
   ...fleetUr,
   ...timetablesUr,
   ...commentsUr,
@@ -507,5 +511,5 @@ export const ur: Messages = {
   ...populationUr,
   ...roadUr,
   ...calendarUr,
-  ...PLUGIN_MESSAGES.ur,
+  ...pluginsUr,
 };

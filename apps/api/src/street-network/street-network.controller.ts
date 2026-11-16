@@ -1,16 +1,33 @@
-import { BadRequestException, Controller, Get, Header, HttpException, Param, Query } from "@nestjs/common";
+import {
+  BadRequestException,
+  Controller,
+  Get,
+  Header,
+  HttpException,
+  Param,
+  Query,
+  Req,
+  Optional,
+} from "@nestjs/common";
+import type { MslRequest } from "../auth/session.service";
 import { OverpassError } from "../gateway/overpass.client";
+import { ProjectGate } from "../geodata/project-gate";
+import { ToolError } from "../geodata/osm-tools";
 import { Requires } from "../iam/requires";
 import { StreetNetworkService, TILE_ZOOM } from "./street-network.service";
 import { type Bbox, MAX_WATER_SPAN_DEG } from "./water";
 
 /**
  * Street tiles for the map editor. Read-only public OSM data, but members only: each uncached tile
- * costs a request to the Overpass service.
+ * costs a request to the Overpass service. With `?project=<id>` (a project the caller can read) the tiles,
+ * buildings, places and water come from that project's OpenStreetMap import where it covers them (ADR-0046).
  */
 @Controller("api/street-network")
 export class StreetNetworkController {
-  constructor(private readonly streets: StreetNetworkService) {}
+  constructor(
+    private readonly streets: StreetNetworkService,
+    @Optional() private readonly gate?: ProjectGate,
+  ) {}
 
   /**
    * Purpose: OSM XML with the streets of one web-mercator tile at zoom 14.
@@ -20,13 +37,21 @@ export class StreetNetworkController {
   @Requires("instance.read")
   @Header("Content-Type", "application/xml; charset=utf-8")
   @Header("Cache-Control", "private, max-age=86400")
-  async tile(@Param("x") xs: string, @Param("y") ys: string): Promise<string> {
+  async tile(
+    @Param("x") xs: string,
+    @Param("y") ys: string,
+    @Query("project") project: string | undefined,
+    @Req() req: MslRequest,
+  ): Promise<string> {
     const [x, y] = parseTile(xs, ys);
+    const projectId = await this.gate?.readable(req, project);
     try {
-      return await this.streets.tile(x, y);
+      return await this.streets.tile(x, y, projectId);
     } catch (e) {
       if (e instanceof OverpassError)
         throw new HttpException("OpenStreetMap streets are unavailable right now", e.status);
+      if (e instanceof ToolError)
+        throw new HttpException("The project's OpenStreetMap import could not be read", 502);
       throw e;
     }
   }
@@ -40,13 +65,21 @@ export class StreetNetworkController {
   @Requires("instance.read")
   @Header("Content-Type", "application/xml; charset=utf-8")
   @Header("Cache-Control", "private, max-age=86400")
-  async walkTile(@Param("x") xs: string, @Param("y") ys: string): Promise<string> {
+  async walkTile(
+    @Param("x") xs: string,
+    @Param("y") ys: string,
+    @Query("project") project: string | undefined,
+    @Req() req: MslRequest,
+  ): Promise<string> {
     const [x, y] = parseTile(xs, ys);
+    const projectId = await this.gate?.readable(req, project);
     try {
-      return await this.streets.walkTile(x, y);
+      return await this.streets.walkTile(x, y, projectId);
     } catch (e) {
       if (e instanceof OverpassError)
         throw new HttpException("OpenStreetMap streets are unavailable right now", e.status);
+      if (e instanceof ToolError)
+        throw new HttpException("The project's OpenStreetMap import could not be read", 502);
       throw e;
     }
   }
@@ -60,13 +93,21 @@ export class StreetNetworkController {
   @Requires("instance.read")
   @Header("Content-Type", "application/xml; charset=utf-8")
   @Header("Cache-Control", "private, max-age=86400")
-  async railTile(@Param("x") xs: string, @Param("y") ys: string): Promise<string> {
+  async railTile(
+    @Param("x") xs: string,
+    @Param("y") ys: string,
+    @Query("project") project: string | undefined,
+    @Req() req: MslRequest,
+  ): Promise<string> {
     const [x, y] = parseTile(xs, ys);
+    const projectId = await this.gate?.readable(req, project);
     try {
-      return await this.streets.railTile(x, y);
+      return await this.streets.railTile(x, y, projectId);
     } catch (e) {
       if (e instanceof OverpassError)
         throw new HttpException("OpenStreetMap railways are unavailable right now", e.status);
+      if (e instanceof ToolError)
+        throw new HttpException("The project's OpenStreetMap import could not be read", 502);
       throw e;
     }
   }
@@ -80,10 +121,16 @@ export class StreetNetworkController {
   @Requires("instance.read")
   @Header("Content-Type", "application/json; charset=utf-8")
   @Header("Cache-Control", "private, max-age=86400")
-  async buildingTile(@Param("x") xs: string, @Param("y") ys: string): Promise<string> {
+  async buildingTile(
+    @Param("x") xs: string,
+    @Param("y") ys: string,
+    @Query("project") project: string | undefined,
+    @Req() req: MslRequest,
+  ): Promise<string> {
     const [x, y] = parseTile(xs, ys);
+    const projectId = await this.gate?.readable(req, project);
     try {
-      return await this.streets.buildingTile(x, y);
+      return await this.streets.buildingTile(x, y, projectId);
     } catch (e) {
       if (e instanceof OverpassError)
         throw new HttpException("OpenStreetMap buildings are unavailable right now", e.status);
@@ -100,10 +147,16 @@ export class StreetNetworkController {
   @Requires("instance.read")
   @Header("Content-Type", "application/json; charset=utf-8")
   @Header("Cache-Control", "private, max-age=86400")
-  async placeTile(@Param("x") xs: string, @Param("y") ys: string): Promise<string> {
+  async placeTile(
+    @Param("x") xs: string,
+    @Param("y") ys: string,
+    @Query("project") project: string | undefined,
+    @Req() req: MslRequest,
+  ): Promise<string> {
     const [x, y] = parseTile(xs, ys);
+    const projectId = await this.gate?.readable(req, project);
     try {
-      return await this.streets.placeTile(x, y);
+      return await this.streets.placeTile(x, y, projectId);
     } catch (e) {
       if (e instanceof OverpassError)
         throw new HttpException("OpenStreetMap places are unavailable right now", e.status);
@@ -120,10 +173,15 @@ export class StreetNetworkController {
   @Requires("instance.read")
   @Header("Content-Type", "application/json; charset=utf-8")
   @Header("Cache-Control", "private, max-age=86400")
-  async water(@Query("bbox") bbox: string | undefined): Promise<string> {
+  async water(
+    @Query("bbox") bbox: string | undefined,
+    @Query("project") project: string | undefined,
+    @Req() req: MslRequest,
+  ): Promise<string> {
     const b = parseBbox(bbox);
+    const projectId = await this.gate?.readable(req, project);
     try {
-      return await this.streets.water(b);
+      return await this.streets.water(b, projectId);
     } catch (e) {
       if (e instanceof OverpassError)
         throw new HttpException("OpenStreetMap water is unavailable right now", e.status);

@@ -11,6 +11,8 @@ import { dayService } from "../street-lines/service";
 import { lineStats } from "../street-lines/summary";
 import type { Prices } from "./economy";
 import { paramValue, type Triple } from "./params";
+import { type Translate, translate } from "../../i18n/i18n";
+import type { MessageKey } from "../../i18n/messages";
 import { distanceKm } from "../../map/geo";
 
 /** Kinds of construction cost; the first seven are the alignment by construction type. */
@@ -34,25 +36,26 @@ export type Category =
   | "maintenance"
   | "overheads";
 
-export const CATEGORY_LABEL: Record<Category, string> = {
-  at_grade: "Track at street level",
-  elevated: "Elevated guideway",
-  viaduct: "Viaduct",
-  bridge: "Bridge",
-  ramp: "Ramp between levels",
-  cut_and_cover: "Tunnel, cut and cover",
-  tbm: "Tunnel, bored (TBM)",
-  systems: "Track, power and signalling",
-  switches: "Switches and crossings",
-  stations: "Stations and stops",
-  street_works: "Bus lanes and trolley wires",
-  depots: "Depots",
-  vehicles: "Vehicles",
-  engineering: "Design and management",
-  contingency: "Contingency",
-  service: "Running the service",
-  maintenance: "Infrastructure upkeep",
-  overheads: "Administration and overheads",
+/** Message key of each category's name. */
+export const CATEGORY_LABEL: Record<Category, MessageKey> = {
+  at_grade: "cost.cat.at_grade",
+  elevated: "cost.cat.elevated",
+  viaduct: "cost.cat.viaduct",
+  bridge: "cost.cat.bridge",
+  ramp: "cost.cat.ramp",
+  cut_and_cover: "cost.cat.cut_and_cover",
+  tbm: "cost.cat.tbm",
+  systems: "cost.cat.systems",
+  switches: "cost.cat.switches",
+  stations: "cost.cat.stations",
+  street_works: "cost.cat.street_works",
+  depots: "cost.cat.depots",
+  vehicles: "cost.cat.vehicles",
+  engineering: "cost.cat.engineering",
+  contingency: "cost.cat.contingency",
+  service: "cost.cat.service",
+  maintenance: "cost.cat.maintenance",
+  overheads: "cost.cat.overheads",
 };
 
 /** Construction categories in table order. */
@@ -130,6 +133,8 @@ export interface EstimateInput {
   streetLines: SavedStreetLine[];
   prefs: Record<string, number> | undefined;
   prices: Prices;
+  /** Translates the labels and notes; English when absent. */
+  t?: Translate;
 }
 
 const URBAN: RailMode[] = ["tram", "light_rail", "metro"];
@@ -183,12 +188,12 @@ const STATION_PARAM: Record<Level, string> = {
   underground2: "cost.station.underground_deep",
 };
 
-const STATION_LABEL: Record<Level, string> = {
-  street: "at street level",
-  elevated: "elevated",
-  elevated2: "elevated",
-  underground: "underground",
-  underground2: "underground, deep",
+const STATION_LABEL: Record<Level, MessageKey> = {
+  street: "cost.x.stations.street",
+  elevated: "cost.x.stations.elevated",
+  elevated2: "cost.x.stations.elevated",
+  underground: "cost.x.stations.underground",
+  underground2: "cost.x.stations.underground2",
 };
 
 /**
@@ -199,6 +204,7 @@ const STATION_LABEL: Record<Level, string> = {
  */
 export function estimate(input: EstimateInput): Estimate {
   const { railway, view, reports, streetLines, prefs, prices } = input;
+  const t: Translate = input.t ?? ((key, vars) => translate("en", key, vars));
   const items: CostItem[] = [];
   const lines: LineSummary[] = [];
   const notes: string[] = [];
@@ -229,8 +235,11 @@ export function estimate(input: EstimateInput): Estimate {
       if (!doc) continue;
       const mode = tv.mode;
       const factor: Triple = tv.tracks === 2 ? [1, 1, 1] : single;
-      const name = doc.name || `Track ${doc.id}`;
-      const what = `${name}, ${tv.tracks === 2 ? "double" : "single"} track`;
+      const name = doc.name || t("tbl.trackName", { id: doc.id });
+      const what = t("cost.x.track", {
+        name,
+        kind: t(tv.tracks === 2 ? "cost.x.double" : "cost.x.single"),
+      });
       const byStructure = new Map<StructureCategory, number>();
       for (const z of tv.levels) {
         const s = structureOf(z.level, doc, mode);
@@ -239,7 +248,7 @@ export function estimate(input: EstimateInput): Estimate {
       if (!tv.levels.length) byStructure.set(structureOf(doc.level, doc, mode), tv.length_m / 1000);
       for (const [s, lenKm] of byStructure) {
         const p = CIVIL_PARAM[s];
-        add(s, mode, null, what, lenKm, "km", p, mul(prod(v(p, mode), factor), ppp * 1e6));
+        add(s, mode, null, what, lenKm, t("cost.unit.km"), p, mul(prod(v(p, mode), factor), ppp * 1e6));
       }
       add(
         "systems",
@@ -247,7 +256,7 @@ export function estimate(input: EstimateInput): Estimate {
         null,
         what,
         tv.length_m / 1000,
-        "km",
+        t("cost.unit.km"),
         "cost.systems_per_km",
         mul(prod(v("cost.systems_per_km", mode), factor), ppp * 1e6),
       );
@@ -262,9 +271,9 @@ export function estimate(input: EstimateInput): Estimate {
         "switches",
         mode,
         null,
-        "Switches and crossings",
+        t("cost.cat.switches"),
         n,
-        "each",
+        t("cost.unit.each"),
         "cost.switch_each",
         mul(v("cost.switch_each", mode), ppp * 1e6),
       );
@@ -283,9 +292,9 @@ export function estimate(input: EstimateInput): Estimate {
         "stations",
         e.mode,
         null,
-        `Stations ${STATION_LABEL[e.level]}`,
+        t(STATION_LABEL[e.level]),
         e.n,
-        "each",
+        t("cost.unit.each"),
         p,
         mul(v(p, e.mode), ppp * 1e6),
       );
@@ -305,8 +314,8 @@ export function estimate(input: EstimateInput): Estimate {
       const id = `rail:${l.id}`;
       const name = l.name || l.id;
       if (!r || !train || r.trains === 0) {
-        const why = r?.issues[0] ?? "the line could not be published.";
-        notes.push(`${name}: no trains, depot or service costed yet: ${why}`);
+        const why = r?.issues[0] ?? t("cost.note.unpublished");
+        notes.push(t("cost.note.noTrains", { name, why }));
         lines.push({
           id,
           name,
@@ -347,9 +356,9 @@ export function estimate(input: EstimateInput): Estimate {
         category: "vehicles",
         mode,
         line: id,
-        label: `${train.name} × ${units}, ${trainM.toFixed(0)} m trains`,
+        label: t("cost.x.trains", { train: train.name, units, m: trainM.toFixed(0) }),
         quantity: fleet[1],
-        unit: "trains",
+        unit: t("cost.unit.trains"),
         rate: vehicleRate,
         amount: prod(vehicleRate, fleet),
         param: "cost.vehicle_per_train_m",
@@ -359,9 +368,9 @@ export function estimate(input: EstimateInput): Estimate {
         category: "depots",
         mode,
         line: id,
-        label: "Depot and stabling for the fleet",
+        label: t("cost.x.depotFleet"),
         quantity: fleet[1],
-        unit: "trains",
+        unit: t("cost.unit.trains"),
         rate: depotRate,
         amount: prod(depotRate, fleet),
         param: "cost.depot_per_train_m",
@@ -371,9 +380,9 @@ export function estimate(input: EstimateInput): Estimate {
         category: "service",
         mode,
         line: id,
-        label: "Crew, per train-hour",
+        label: t("cost.x.crew"),
         quantity: trainHours[1],
-        unit: "train-h / year",
+        unit: t("cost.unit.trainHours"),
         rate: hourRate,
         amount: prod(hourRate, trainHours),
         param: "cost.opex.train_hour",
@@ -386,9 +395,9 @@ export function estimate(input: EstimateInput): Estimate {
         category: "service",
         mode,
         line: id,
-        label: `Energy and vehicle upkeep, ${cars.toFixed(1)} cars of ${carM} m`,
+        label: t("cost.x.carKm", { cars: cars.toFixed(1), m: carM }),
         quantity: trainKm[1] * cars,
-        unit: "car-km / year",
+        unit: t("cost.unit.carKm"),
         rate: carKmRate,
         amount: prod(carKmRate, mul(trainKm, cars)),
         param: "cost.opex.car_km",
@@ -401,7 +410,7 @@ export function estimate(input: EstimateInput): Estimate {
     if (l.view.points.length < 2) return;
     const mode = l.profile.mode;
     const id = `street:${i}`;
-    const name = l.name || `Street line ${i + 1}`;
+    const name = l.name || t("tbl.streetLineName", { n: i + 1 });
     const timing = fullTiming(l.timing);
     const stats = lineStats(l.view, timing);
     const routeKm = l.view.length_m / 2000;
@@ -425,9 +434,9 @@ export function estimate(input: EstimateInput): Estimate {
       "stations",
       mode,
       id,
-      "Stops",
+      t("tbl.stops"),
       stats.stops,
-      "each",
+      t("cost.unit.each"),
       "cost.street.stop_each",
       mul(v("cost.street.stop_each", mode), ppp * 1e6),
     );
@@ -436,9 +445,9 @@ export function estimate(input: EstimateInput): Estimate {
       "street_works",
       mode,
       id,
-      mode === "brt" ? "Busway the line uses" : "Bus lanes the line uses",
+      t(mode === "brt" ? "cost.x.busway" : "cost.x.busLanes"),
       laneKm,
-      "lane-km",
+      t("cost.unit.laneKm"),
       "cost.street.bus_lane_per_km",
       mul(v("cost.street.bus_lane_per_km", mode), ppp * 1e6),
     );
@@ -447,9 +456,9 @@ export function estimate(input: EstimateInput): Estimate {
         "street_works",
         mode,
         id,
-        "Trolley wires",
+        t("cost.x.trolleyWires"),
         routeKm,
-        "route-km",
+        t("cost.unit.routeKm"),
         "cost.street.trolley_wire_per_km",
         mul(v("cost.street.trolley_wire_per_km", mode), ppp * 1e6),
       );
@@ -458,9 +467,9 @@ export function estimate(input: EstimateInput): Estimate {
       category: "vehicles",
       mode,
       line: id,
-      label: "Vehicles with reserves",
+      label: t("cost.x.vehicles"),
       quantity: fleet[1],
-      unit: "vehicles",
+      unit: t("cost.unit.vehicles"),
       rate: vehicleRate,
       amount: prod(vehicleRate, fleet),
       param: "cost.vehicle_each",
@@ -470,9 +479,9 @@ export function estimate(input: EstimateInput): Estimate {
       category: "depots",
       mode,
       line: id,
-      label: "Depot places",
+      label: t("cost.x.depotPlaces"),
       quantity: fleet[1],
-      unit: "vehicles",
+      unit: t("cost.unit.vehicles"),
       rate: depotRate,
       amount: prod(depotRate, fleet),
       param: "cost.depot_per_bus",
@@ -482,9 +491,13 @@ export function estimate(input: EstimateInput): Estimate {
       category: "service",
       mode,
       line: id,
-      label: `${stats.vehicles} vehicles at the peak, ${hhmm(timing.firstMin)}–${hhmm(timing.lastMin)}`,
+      label: t("cost.x.vehicleHours", {
+        n: stats.vehicles,
+        from: hhmm(timing.firstMin),
+        to: hhmm(timing.lastMin),
+      }),
       quantity: vehHours[1],
-      unit: "vehicle-h / year",
+      unit: t("cost.unit.vehicleHours"),
       rate: hourRate,
       amount: prod(hourRate, vehHours),
       param: "cost.opex.vehicle_hour",
@@ -526,7 +539,7 @@ export function estimate(input: EstimateInput): Estimate {
         category: "engineering",
         mode,
         line,
-        label: `${pct(eng)} % of the infrastructure`,
+        label: t("cost.x.ofInfra", { pct: pct(eng) }),
         quantity: 1,
         unit: "",
         rate: prod(base, eng),
@@ -537,7 +550,7 @@ export function estimate(input: EstimateInput): Estimate {
         category: "contingency",
         mode,
         line,
-        label: `${pct(cont)} % of the infrastructure`,
+        label: t("cost.x.ofInfra", { pct: pct(cont) }),
         quantity: 1,
         unit: "",
         rate: prod(base, cont),
@@ -548,7 +561,7 @@ export function estimate(input: EstimateInput): Estimate {
         category: "maintenance",
         mode,
         line,
-        label: `${pct(upkeep)} % of the infrastructure a year`,
+        label: t("cost.x.ofInfraYear", { pct: pct(upkeep) }),
         quantity: 1,
         unit: "",
         rate: prod(base, upkeep),
@@ -566,7 +579,7 @@ export function estimate(input: EstimateInput): Estimate {
         category: "overheads",
         mode,
         line: null,
-        label: "Share of the operating cost",
+        label: t("cost.x.ofOperating"),
         quantity: 1,
         unit: "",
         rate: prod(running, overhead),
@@ -575,7 +588,7 @@ export function estimate(input: EstimateInput): Estimate {
       });
   }
   if (railway && view && !(railway.lines ?? []).length && view.tracks.length)
-    notes.push("The railway has no service lines yet, so it has no fleet, depot or service costs.");
+    notes.push(t("cost.note.noLines"));
   return { items, lines, modes, notes };
 }
 

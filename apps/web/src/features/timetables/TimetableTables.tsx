@@ -1,5 +1,5 @@
 import { Fragment, useMemo, useState } from "react";
-import { card, fmtQty, modeLabel, num, NumberField, td, th } from "../costs/CostTables";
+import { card, fmtQty, num, NumberField, td, th } from "../costs/CostTables";
 import { paramValue, prefId } from "../costs/params";
 import { loadWasmGtfs } from "../gtfs/engine";
 import { gtfsAvailable, saveFeed } from "../gtfs/GtfsSection";
@@ -12,6 +12,9 @@ import { fullTiming } from "../street-lines/modes";
 import type { StreetLinesDoc } from "../street-lines/saved";
 import { calendarFrom, DAY_TYPES, type DayTypeId, type ServiceCalendar } from "../../workspace/calendar";
 import { type PreferencesDoc, withPref } from "../../workspace/preferences";
+import { type Translate, useI18n } from "../../i18n/i18n";
+import type { MessageKey } from "../../i18n/messages";
+import { useModeLabel } from "../schematic/common";
 import { blockSummary, fleetRow, railBlocks, streetBlocks, type BlockRun, type VehicleBlock } from "./blocks";
 import { railLineFor } from "./dayTypes";
 import { feedHolidays, mergeDays, streetDay } from "./feed";
@@ -55,12 +58,26 @@ interface LineBlocks {
   timetable: Timetable | null;
 }
 
-/** Day type names in the tables (English, like the other tables). */
+/** Day type names in the downloads (CSV and print), which stay in English. */
 export const DAY_LABEL: Record<DayTypeId, string> = {
   weekday: "Weekday",
   saturday: "Saturday",
   sunday: "Sunday",
   holiday: "Public holiday",
+};
+
+/** Day type names on screen, and as they read inside a sentence. */
+const DAY_KEY: Record<DayTypeId, MessageKey> = {
+  weekday: "tt.tbl.day.weekday",
+  saturday: "tt.tbl.day.saturday",
+  sunday: "tt.tbl.day.sunday",
+  holiday: "tt.tbl.day.holiday",
+};
+const DAY_IN_KEY: Record<DayTypeId, MessageKey> = {
+  weekday: "tt.tbl.dayIn.weekday",
+  saturday: "tt.tbl.dayIn.saturday",
+  sunday: "tt.tbl.dayIn.sunday",
+  holiday: "tt.tbl.dayIn.holiday",
 };
 
 const WAIT_KEY = "timetable.max_terminal_wait_min";
@@ -77,6 +94,7 @@ function linesOn(
   streetLines: StreetLinesDoc | null,
   cal: ServiceCalendar,
   maxWaitMin: number,
+  t: Translate,
 ): LineBlocks[] {
   const out: LineBlocks[] = [];
   const pub = publications[day];
@@ -101,7 +119,7 @@ function linesOn(
     const { input, timetable } = own;
     out.push({
       key: `street:${i}`,
-      name: input.name || `Street line ${i + 1}`,
+      name: input.name || t("tbl.streetLineName", { n: i + 1 }),
       color: input.color,
       mode: input.mode,
       units: 1,
@@ -143,7 +161,7 @@ export function allDays(
 /**
  * The timetables of the Tables tab, per day type (weekday, Saturday, Sunday, public holiday): the vehicle
  * blocks (FR-TT-04), each vehicle's runs from pull-out to pull-in with the fleet each line needs, and the
- * departures of each line (FR-TT-05) with CSV, PDF (print) and GTFS downloads. In English, like the other tables.
+ * departures of each line (FR-TT-05) with CSV, PDF (print) and GTFS downloads. The downloads stay in English.
  * Side effects: publishes the railway's service lines with the rail engine.
  */
 export function TimetableTables({
@@ -155,6 +173,7 @@ export function TimetableTables({
   loadRail,
   loadGtfs = loadWasmGtfs,
 }: Props) {
+  const { t } = useI18n();
   const prefs = preferences?.values;
   const maxWaitMin = paramValue(WAIT_KEY, "*", prefs)[1];
   const options = useMemo(() => ({ max_idle_s: maxWaitMin * 60 }), [maxWaitMin]);
@@ -165,9 +184,9 @@ export function TimetableTables({
   const byDay = useMemo(
     () =>
       Object.fromEntries(
-        DAY_TYPES.map((d) => [d, linesOn(d, railway, publications, streetLines, cal, maxWaitMin)]),
+        DAY_TYPES.map((d) => [d, linesOn(d, railway, publications, streetLines, cal, maxWaitMin, t)]),
       ) as Record<DayTypeId, LineBlocks[]>,
-    [railway, publications, streetLines, cal, maxWaitMin],
+    [railway, publications, streetLines, cal, maxWaitMin, t],
   );
   const lines = byDay[day];
 
@@ -205,11 +224,11 @@ export function TimetableTables({
   return (
     <section aria-labelledby="timetables-title" className="mt-10">
       <h2 id="timetables-title" className="text-xl font-semibold tracking-tight">
-        Timetables
+        {t("tt.tbl.title")}
       </h2>
       <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
         <label className="flex items-center gap-2">
-          <span className="font-medium">Day type</span>
+          <span className="font-medium">{t("tt.tbl.dayType")}</span>
           <select
             value={day}
             onChange={(e) => setDay(e.target.value as DayTypeId)}
@@ -217,7 +236,7 @@ export function TimetableTables({
           >
             {DAY_TYPES.map((d) => (
               <option key={d} value={d}>
-                {DAY_LABEL[d]}
+                {t(DAY_KEY[d])}
               </option>
             ))}
           </select>
@@ -225,36 +244,28 @@ export function TimetableTables({
         {!nothing && (
           <span className="flex flex-wrap gap-2">
             <button type="button" className="btn" disabled={busy} onClick={downloadCsv}>
-              Download CSV
+              {t("tt.tbl.csv")}
             </button>
             <button type="button" className="btn" disabled={busy} onClick={print}>
-              Print or save as PDF
+              {t("tt.tbl.print")}
             </button>
             {exporter && (
               <button type="button" className="btn" disabled={busy} onClick={() => void downloadGtfs()}>
-                Download GTFS
+                {t("tt.tbl.gtfs")}
               </button>
             )}
           </span>
         )}
       </div>
-      {!nothing && (
-        <p className="mt-1 text-xs text-slate-500">
-          The downloads hold every line on every day type: the CSV every stop time with its vehicle block, the
-          PDF a page per line and day type, and the GTFS feed the four day types with the project's public
-          holidays.
-        </p>
-      )}
+      {!nothing && <p className="mt-1 text-xs text-slate-500">{t("tt.tbl.downloadsNote")}</p>}
       {(error || failed) && (
         <p role="alert" className="mt-3 text-sm text-red-700">
-          {error
-            ? `The rail lines could not be planned: ${error}`
-            : `The GTFS feed could not be made: ${failed}`}
+          {error ? t("tt.tbl.railError", { error }) : t("tt.tbl.gtfsError", { error: failed ?? "" })}
         </p>
       )}
       {nothing ? (
         <p className="mt-3 rounded-xl border border-dashed border-slate-300 bg-white px-4 py-5 text-slate-600">
-          No lines yet. Draw a street line or a railway with service lines in the Create tab.
+          {t("tt.tbl.empty")}
         </p>
       ) : (
         <>
@@ -278,14 +289,16 @@ function Departures({ lines, day }: { lines: LineBlocks[]; day: DayTypeId }) {
   const [chosen, setChosen] = useState<string | null>(null);
   const line = lines.find((l) => l.key === chosen) ?? lines[0] ?? null;
   const grids = useMemo(() => (line ? directionGrids(line.trips) : []), [line]);
+  const { t } = useI18n();
+  const modeLabel = useModeLabel();
   return (
     <section className={card} aria-labelledby="departures-title">
       <h3 id="departures-title" className="caps m-0">
-        Departures, {DAY_LABEL[day].toLowerCase()}
+        {t("tt.tbl.departures", { day: t(DAY_IN_KEY[day]) })}
       </h3>
       {line && (
         <label className="mt-2 flex flex-wrap items-center gap-2 text-sm">
-          <span className="font-medium">Line</span>
+          <span className="font-medium">{t("tt.tbl.line")}</span>
           <select
             value={line.key}
             onChange={(e) => setChosen(e.target.value)}
@@ -299,19 +312,20 @@ function Departures({ lines, day }: { lines: LineBlocks[]; day: DayTypeId }) {
           </select>
         </label>
       )}
-      {!grids.length && <p className="mt-2 text-sm text-slate-600">No trips on this day type.</p>}
+      {!grids.length && <p className="mt-2 text-sm text-slate-600">{t("tt.tbl.noTrips")}</p>}
       {grids.map((g) => {
         const from = g.stops[0]?.name ?? "";
         const to = g.stops[g.stops.length - 1]?.name ?? "";
         return (
           <div key={g.direction} className="mt-4">
             <p className="text-sm font-medium">
-              {from} → {to} <span className="font-normal text-slate-500">({g.trips.length} trips)</span>
+              {from} → {to}{" "}
+              <span className="font-normal text-slate-500">{t("tt.tbl.nTrips", { n: g.trips.length })}</span>
             </p>
             <div className="mt-1 overflow-x-auto">
               <table className="text-xs">
                 <caption className="sr-only">
-                  {line!.name}, {from} to {to}
+                  {t("tt.tbl.dirCaption", { line: line!.name, from, to })}
                 </caption>
                 <tbody>
                   {g.stops.map((s, i) => (
@@ -362,22 +376,19 @@ function VehicleBlocks({
   }));
   const modes = [...new Set(lines.map((l) => l.mode))];
   const waitLib = paramValue(WAIT_KEY, "*", undefined)[1];
+  const { t } = useI18n();
+  const modeLabel = useModeLabel();
   return (
     <section className={card} aria-labelledby="blocks-title">
       <h3 id="blocks-title" className="caps m-0">
-        Vehicle blocks, {DAY_LABEL[day].toLowerCase()}
+        {t("tt.tbl.blocksTitle", { day: t(DAY_IN_KEY[day]) })}
       </h3>
-      <p className="mt-1 text-sm text-slate-600">
-        Each block is the day of one vehicle (one train for rail): its pull-out from the depot, the trips it
-        runs one after another with the layover at each end, and its pull-in. A vehicle that would wait longer
-        than the limit below for its next trip returns to the depot and comes out again later. The fleet is
-        one vehicle per block plus the spare share.
-      </p>
+      <p className="mt-1 text-sm text-slate-600">{t("tt.tbl.blocksIntro")}</p>
       <div className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
         <label className="flex items-center gap-2">
-          <span>Longest wait at a terminal, min</span>
+          <span>{t("tt.tbl.wait")}</span>
           <NumberField
-            label="Longest wait at a terminal before returning to the depot, min"
+            label={t("tt.tbl.waitAria")}
             value={prefs?.[WAIT_KEY]}
             placeholder={fmtQty(waitLib)}
             editable={editable}
@@ -389,9 +400,9 @@ function VehicleBlocks({
           const own = prefs?.[id];
           return (
             <label key={m} className="flex items-center gap-2">
-              <span>Spare vehicles, {modeLabel(m)}, %</span>
+              <span>{t("tt.tbl.spare", { mode: modeLabel(m) })}</span>
               <NumberField
-                label={`Spare vehicles for ${modeLabel(m)}, percent of the vehicles in service`}
+                label={t("tt.tbl.spareAria", { mode: modeLabel(m) })}
                 value={own === undefined ? undefined : Number((own * 100).toPrecision(4))}
                 placeholder={fmtQty(paramValue(SPARE_KEY, m, undefined)[1] * 100)}
                 editable={editable}
@@ -403,21 +414,21 @@ function VehicleBlocks({
       </div>
       {busy && (
         <p role="status" className="mt-3 text-sm text-slate-500">
-          Planning the rail lines…
+          {t("tt.tbl.planning")}
         </p>
       )}
       <div className="mt-3 overflow-x-auto">
         <table className="w-full min-w-[44rem] text-sm">
           <thead>
             <tr className="border-b border-slate-200">
-              <th className={th}>Line</th>
-              <th className={`${th} text-right`}>Blocks</th>
-              <th className={`${th} text-right`}>Spares</th>
-              <th className={`${th} text-right`}>Fleet</th>
-              <th className={`${th} text-right`}>Trips</th>
-              <th className={`${th} text-right`}>Vehicle-hours</th>
-              <th className={`${th} text-right`}>Vehicle-km</th>
-              <th className={`${th} text-right`}>Of which empty</th>
+              <th className={th}>{t("tt.tbl.line")}</th>
+              <th className={`${th} text-right`}>{t("tt.tbl.blocks")}</th>
+              <th className={`${th} text-right`}>{t("tt.tbl.spares")}</th>
+              <th className={`${th} text-right`}>{t("tt.tbl.fleet")}</th>
+              <th className={`${th} text-right`}>{t("tt.tbl.trips")}</th>
+              <th className={`${th} text-right`}>{t("tt.tbl.vehHours")}</th>
+              <th className={`${th} text-right`}>{t("tt.tbl.vehKm")}</th>
+              <th className={`${th} text-right`}>{t("tt.tbl.ofWhichEmpty")}</th>
             </tr>
           </thead>
           <tbody>
@@ -439,7 +450,9 @@ function VehicleBlocks({
                 <td className={num}>
                   {int(f.fleet)}
                   {f.units > 1 && (
-                    <span className="block text-xs text-slate-500">units of {f.units} per train</span>
+                    <span className="block text-xs text-slate-500">
+                      {t("tt.tbl.unitsPerTrain", { n: f.units })}
+                    </span>
                   )}
                 </td>
                 <td className={num}>{int(f.trips)}</td>
@@ -454,7 +467,7 @@ function VehicleBlocks({
       {line && (
         <div className="mt-5">
           <label className="flex flex-wrap items-center gap-2 text-sm">
-            <span className="font-medium">Blocks of</span>
+            <span className="font-medium">{t("tt.tbl.blocksOf")}</span>
             <select
               value={line.key}
               onChange={(e) => setChosen(e.target.value)}
@@ -471,50 +484,39 @@ function VehicleBlocks({
         </div>
       )}
       <ul className="mt-3 list-disc ps-5 text-xs text-slate-500">
-        <li>
-          Rail blocks come from the timetable planner on the drawn track, with its turn-backs, stabling and
-          depot runs. Street lines run as a closed circuit: a vehicle takes the next trip back that leaves at
-          least the line's layover after it arrives.
-        </li>
-        <li>
-          Vehicle-hours run from pull-out to pull-in and leave out time in the depot. Empty kilometres are the
-          depot runs. Street lines without a depot start and end their blocks at the terminals.
-        </li>
-        <li>
-          The terminal wait limit is timetable.max_terminal_wait_min and the spares are mode.spare_share in
-          the assumption library. Leave a field empty to return to the library's value.
-        </li>
+        <li>{t("tt.tbl.note.rail")}</li>
+        <li>{t("tt.tbl.note.hours")}</li>
+        <li>{t("tt.tbl.note.library")}</li>
       </ul>
     </section>
   );
 }
 
-const KIND: Record<BlockRun["kind"], string> = {
-  service: "Trip",
-  pull_out: "Pull-out",
-  pull_in: "Pull-in",
+const KIND: Record<BlockRun["kind"], MessageKey> = {
+  service: "tt.tbl.kind.service",
+  pull_out: "tt.tbl.kind.pull_out",
+  pull_in: "tt.tbl.kind.pull_in",
 };
 
 /** Purpose: the blocks of one line, each with its runs on demand. */
 function BlockList({ line, day }: { line: LineBlocks; day: DayTypeId }) {
   const [open, setOpen] = useState<number | null>(null);
+  const { t } = useI18n();
   if (!line.blocks.length)
     return (
-      <p className="mt-2 text-sm text-slate-600">
-        This line has no trips on this day type ({DAY_LABEL[day].toLowerCase()}).
-      </p>
+      <p className="mt-2 text-sm text-slate-600">{t("tt.tbl.lineNoTrips", { day: t(DAY_IN_KEY[day]) })}</p>
     );
   return (
     <div className="mt-2 overflow-x-auto">
       <table className="w-full min-w-[40rem] text-sm">
         <thead>
           <tr className="border-b border-slate-200">
-            <th className={th}>Block</th>
-            <th className={`${th} text-right`}>Starts</th>
-            <th className={`${th} text-right`}>Ends</th>
-            <th className={`${th} text-right`}>Trips</th>
-            <th className={`${th} text-right`}>In service</th>
-            <th className={`${th} text-right`}>km</th>
+            <th className={th}>{t("tt.tbl.block")}</th>
+            <th className={`${th} text-right`}>{t("tt.tbl.starts")}</th>
+            <th className={`${th} text-right`}>{t("tt.tbl.ends")}</th>
+            <th className={`${th} text-right`}>{t("tt.tbl.trips")}</th>
+            <th className={`${th} text-right`}>{t("tt.tbl.inService")}</th>
+            <th className={`${th} text-right`}>{t("tt.tbl.km")}</th>
           </tr>
         </thead>
         <tbody>
@@ -538,11 +540,13 @@ function BlockList({ line, day }: { line: LineBlocks; day: DayTypeId }) {
                   </td>
                   <td className={num}>
                     {clockS(s.startS)}
-                    <span className="block text-xs text-slate-500">{first.from ?? "depot"}</span>
+                    <span className="block text-xs text-slate-500">
+                      {first.from ?? t("tt.tbl.depotLower")}
+                    </span>
                   </td>
                   <td className={num}>
                     {clockS(s.endS)}
-                    <span className="block text-xs text-slate-500">{last.to ?? "depot"}</span>
+                    <span className="block text-xs text-slate-500">{last.to ?? t("tt.tbl.depotLower")}</span>
                   </td>
                   <td className={num}>{int(s.trips)}</td>
                   <td className={num}>{hours(s.endS - s.startS)}</td>
@@ -553,25 +557,25 @@ function BlockList({ line, day }: { line: LineBlocks; day: DayTypeId }) {
                     <td colSpan={6} className="px-2 py-2">
                       <table className="w-full text-xs">
                         <caption className="sr-only">
-                          Runs of block {line.name}/{b.n}
+                          {t("tt.tbl.runsCaption", { block: `${line.name}/${b.n}` })}
                         </caption>
                         <thead>
                           <tr>
-                            <th className={th}>Run</th>
-                            <th className={th}>From</th>
-                            <th className={`${th} text-right`}>Departs</th>
-                            <th className={th}>To</th>
-                            <th className={`${th} text-right`}>Arrives</th>
-                            <th className={`${th} text-right`}>km</th>
+                            <th className={th}>{t("tt.tbl.run")}</th>
+                            <th className={th}>{t("tt.tbl.from")}</th>
+                            <th className={`${th} text-right`}>{t("tt.tbl.departs")}</th>
+                            <th className={th}>{t("tt.tbl.to")}</th>
+                            <th className={`${th} text-right`}>{t("tt.tbl.arrives")}</th>
+                            <th className={`${th} text-right`}>{t("tt.tbl.km")}</th>
                           </tr>
                         </thead>
                         <tbody>
                           {b.runs.map((r) => (
                             <tr key={r.trip}>
-                              <td className={td}>{KIND[r.kind]}</td>
-                              <td className={td}>{r.from ?? "Depot"}</td>
+                              <td className={td}>{t(KIND[r.kind])}</td>
+                              <td className={td}>{r.from ?? t("tt.tbl.depot")}</td>
                               <td className={num}>{clockS(r.departS)}</td>
-                              <td className={td}>{r.to ?? "Depot"}</td>
+                              <td className={td}>{r.to ?? t("tt.tbl.depot")}</td>
                               <td className={num}>{clockS(r.arriveS)}</td>
                               <td className={num}>{fmtQty(r.km)}</td>
                             </tr>

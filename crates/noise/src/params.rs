@@ -127,6 +127,27 @@ impl Library {
             .unwrap_or_else(|| panic!("{key} has no global value"))
     }
 
+    /// Purpose: `[low, central, high]` of `key` for the first of `contexts` it has a value for
+    /// (plugin modes such as `cable_car/3s`, then `cable_car`), else the `*` value.
+    /// Panics on an unknown key, like `range`.
+    pub fn range_in(&self, key: &str, contexts: &[String]) -> [f64; 3] {
+        let row = self
+            .params
+            .get(key)
+            .unwrap_or_else(|| panic!("unknown noise parameter {key}"));
+        contexts
+            .iter()
+            .find_map(|c| row.get(c.as_str()))
+            .or_else(|| row.get("*"))
+            .copied()
+            .unwrap_or_else(|| panic!("{key} has no global value"))
+    }
+
+    /// Purpose: whether `key` is a numeric parameter of the library.
+    pub fn has(&self, key: &str) -> bool {
+        self.params.contains_key(key)
+    }
+
     /// Purpose: the value of `key` for `mode` at the given variant.
     pub fn get(&self, key: &str, mode: Option<Mode>, v: Variant) -> f64 {
         self.range(key, mode)[v as usize]

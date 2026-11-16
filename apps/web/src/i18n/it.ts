@@ -4,12 +4,14 @@ import { editorsIt } from "./editors/it";
 import { cargoBikeIt } from "./cargo-bike/it";
 import { commentsIt } from "./comments/it";
 import { depotsIt } from "./depots/it";
+import { geodataIt } from "./geodata/it";
+import { tablesIt } from "./tables/it";
 import { fleetIt } from "./fleet/it";
 import { timetablesIt } from "./timetables/it";
 import { mslabIt } from "./mslab/it";
 import { pluginCodeIt } from "./plugin-code/it";
 import { populationIt } from "./population/it";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsIt } from "./plugins/it";
 import type { Messages } from "./en";
 
 /** Italiano */
@@ -499,6 +501,8 @@ export const it: Messages = {
   ...editorsIt,
   ...cargoBikeIt,
   ...depotsIt,
+  ...geodataIt,
+  ...tablesIt,
   ...fleetIt,
   ...timetablesIt,
   ...commentsIt,
@@ -507,5 +511,5 @@ export const it: Messages = {
   ...populationIt,
   ...roadIt,
   ...calendarIt,
-  ...PLUGIN_MESSAGES.it,
+  ...pluginsIt,
 };

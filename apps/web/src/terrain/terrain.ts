@@ -1,8 +1,10 @@
 /**
  * Terrain heights for the editors: one shared source for the railway, cable car and other tools.
  * The API reads the Copernicus GLO-30 DEM (and optionally the OpenStreetMap buildings a line passes
- * over); see apps/api/src/terrain. Answers are cached per request for the session.
+ * over); see apps/api/src/terrain. With a project open, it reads the project's imported elevation and
+ * OpenStreetMap data first (ADR-0046). Answers are cached per request for the session.
  */
+import { dataProject } from "../geodata/projectData";
 
 export type LonLat = [number, number];
 
@@ -44,7 +46,10 @@ export interface TerrainLine {
 export interface TerrainProfiles {
   spacingM: number;
   lines: TerrainLine[];
+  /** The least accurate source the heights came from (shown next to gradients). */
   source: TerrainSource;
+  /** Every source used: the project's imported grids, the live GLO-30 bucket, or the Open-Elevation fallback. */
+  sources?: TerrainSource[];
   buildingSource?: { name: string; note: string; licence: string; url: string };
 }
 
@@ -91,7 +96,13 @@ async function post<T>(path: string, body: unknown, fetchImpl: typeof fetch): Pr
  */
 export function fetchProfiles(lines: LonLat[][], options: ProfileOptions = {}): Promise<TerrainProfiles> {
   const { spacingM = 50, buildings = false, fetchImpl = (...a) => fetch(...a) } = options;
-  const body = { lines: lines.map((l) => l.map(round)), spacingM, ...(buildings ? { buildings } : {}) };
+  const project = dataProject();
+  const body = {
+    lines: lines.map((l) => l.map(round)),
+    spacingM,
+    ...(buildings ? { buildings } : {}),
+    ...(project ? { projectId: project } : {}),
+  };
   return post<TerrainProfiles>("/api/terrain/profile", body, fetchImpl);
 }
 
@@ -100,7 +111,12 @@ export function fetchElevations(
   points: LonLat[],
   fetchImpl: typeof fetch = (...a) => fetch(...a),
 ): Promise<{ elevationsM: (number | null)[]; source: TerrainSource }> {
-  return post("/api/terrain/points", { points: points.map(round) }, fetchImpl);
+  const project = dataProject();
+  return post(
+    "/api/terrain/points",
+    { points: points.map(round), ...(project ? { projectId: project } : {}) },
+    fetchImpl,
+  );
 }
 
 /** Coordinates to 1e-7° (1 cm), so equal drawings share cache entries. */

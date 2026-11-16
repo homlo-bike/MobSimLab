@@ -1,0 +1,51 @@
+import type { PluginKey } from "../plugins";
+
+/** Plugin messages (tr). */
+export const pluginsTr = {
+  "admin.plugins": "Eklentiler",
+  "plugins.title": "Eklentiler",
+  "plugins.intro":
+    "Eklentiler ulaşım türleri, araçlar ve hesaplamalar ekler. Bu projenin kullandıklarını açın; kapatılan eklentinin araçları gizlenir, çizilenler korunur.",
+  "plugins.bundled": "MobSimLab ile gelir",
+  "plugins.by": "Yayıncı: {publisher}",
+  "plugins.versionN": "Sürüm {version}",
+  "plugins.adds": "Ekler: {list}",
+  "plugins.uses": "Kullanır: {list}",
+  "plugins.parameters": "{count} varsayım değeri",
+  "plugins.missing":
+    "{version} sürümü bu MobSimLab'den kaldırıldı. Yeniden kullanmak için başka bir sürüm seçin.",
+  "plugins.versionOf": "{name} sürümü",
+  "plugins.useIn": "{name} eklentisini bu projede kullan",
+  "plugins.ownerOnly": "Eklentileri yalnızca proje sahibi açıp kapatabilir.",
+  "plugins.perm.readNetwork": "projenin ağı",
+  "plugins.perm.readTimetable": "tarife",
+  "plugins.perm.readFleet": "araçlar ve filo",
+  "plugins.perm.readGeodata": "içe aktarılan harita verileri",
+  "plugins.perm.readResults": "simülasyon sonuçları",
+  "plugins.perm.writeResults": "kendi sonuçlarını kaydeder",
+  "plugins.perm.writeScenario": "senaryoda değişiklik önerir",
+  "plugins.installTitle": "Eklenti kur",
+  "plugins.choose": "Bir .msplugin dosyası seçin",
+  "plugins.problems": "Bu eklenti kurulamaz:",
+  "plugins.install": "Kur",
+  "plugins.installed": "Kurulu eklentiler",
+  "plugins.none": "Henüz kurulu eklenti yok.",
+  "plugins.removeOne": "{name} {version} kaldır",
+  "plugins.inProjects": "{count} projede kullanılıyor",
+  "plugins.bundledTitle": "MobSimLab ile gelenler",
+  "plugins.keys": "Güvenilen yayıncılar",
+  "plugins.keysIntro":
+    "Bir eklenti yalnızca yayıncısı onu bu anahtarlardan biriyle imzaladıysa kurulur (ECDSA P-256 veya Ed25519, PEM).",
+  "plugins.noKeys": "Henüz güvenilen anahtar yok.",
+  "plugins.removeKey": "{name} için güveni kaldır",
+  "plugins.addKey": "Anahtar ekle",
+  "plugins.keyName": "Yayıncı adı",
+  "plugins.keyPem": "Açık anahtar",
+  "plugins.allowUnsigned": "İmzasız eklentilere izin ver (geliştirme modu, yalnızca sahipler)",
+  "plugins.signedBy": "İmzalayan: {name}",
+  "plugins.untrusted": "Bu kurulumun güvenmediği bir anahtarla imzalanmış",
+  "plugins.unsigned": "İmzasız",
+  "plugins.licences": "Lisanslar: kod {code}, veri {data}",
+  "plugins.removeConfirm":
+    "{name} {count} projede açık. Yine de kaldırılsın mı? Oralarda kapatılır, çizimler korunur.",
+} satisfies Record<PluginKey, string>;

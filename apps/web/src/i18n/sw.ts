@@ -4,12 +4,14 @@ import { editorsSw } from "./editors/sw";
 import { cargoBikeSw } from "./cargo-bike/sw";
 import { commentsSw } from "./comments/sw";
 import { depotsSw } from "./depots/sw";
+import { geodataSw } from "./geodata/sw";
+import { tablesSw } from "./tables/sw";
 import { fleetSw } from "./fleet/sw";
 import { timetablesSw } from "./timetables/sw";
 import { mslabSw } from "./mslab/sw";
 import { pluginCodeSw } from "./plugin-code/sw";
 import { populationSw } from "./population/sw";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsSw } from "./plugins/sw";
 import type { Messages } from "./en";
 
 /** Kiswahili. */
@@ -500,6 +502,8 @@ export const sw: Messages = {
   ...editorsSw,
   ...cargoBikeSw,
   ...depotsSw,
+  ...geodataSw,
+  ...tablesSw,
   ...fleetSw,
   ...timetablesSw,
   ...commentsSw,
@@ -508,5 +512,5 @@ export const sw: Messages = {
   ...populationSw,
   ...roadSw,
   ...calendarSw,
-  ...PLUGIN_MESSAGES.sw,
+  ...pluginsSw,
 };

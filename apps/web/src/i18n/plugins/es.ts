@@ -1,0 +1,51 @@
+import type { PluginKey } from "../plugins";
+
+/** Plugin messages (es). */
+export const pluginsEs = {
+  "admin.plugins": "Complementos",
+  "plugins.title": "Complementos",
+  "plugins.intro":
+    "Los complementos añaden modos de transporte, herramientas y cálculos. Active los que usa este proyecto; al desactivar uno se ocultan sus herramientas y se conserva lo dibujado.",
+  "plugins.bundled": "Incluido en MobSimLab",
+  "plugins.by": "De {publisher}",
+  "plugins.versionN": "Versión {version}",
+  "plugins.adds": "Añade: {list}",
+  "plugins.uses": "Usa: {list}",
+  "plugins.parameters": "{count} valores de supuestos",
+  "plugins.missing":
+    "La versión {version} se eliminó de este MobSimLab. Elija otra versión para volver a usarlo.",
+  "plugins.versionOf": "Versión de {name}",
+  "plugins.useIn": "Usar {name} en este proyecto",
+  "plugins.ownerOnly": "Solo el propietario del proyecto puede activar o desactivar complementos.",
+  "plugins.perm.readNetwork": "la red del proyecto",
+  "plugins.perm.readTimetable": "el horario",
+  "plugins.perm.readFleet": "vehículos y flota",
+  "plugins.perm.readGeodata": "datos de mapa importados",
+  "plugins.perm.readResults": "resultados de simulación",
+  "plugins.perm.writeResults": "guarda sus propios resultados",
+  "plugins.perm.writeScenario": "propone cambios al escenario",
+  "plugins.installTitle": "Instalar un complemento",
+  "plugins.choose": "Elegir un archivo .msplugin",
+  "plugins.problems": "Este complemento no se puede instalar:",
+  "plugins.install": "Instalar",
+  "plugins.installed": "Complementos instalados",
+  "plugins.none": "Aún no hay complementos instalados.",
+  "plugins.removeOne": "Quitar {name} {version}",
+  "plugins.inProjects": "Usado en {count} proyectos",
+  "plugins.bundledTitle": "Incluidos en MobSimLab",
+  "plugins.keys": "Editores de confianza",
+  "plugins.keysIntro":
+    "Un complemento solo se instala si su editor lo firmó con una de estas claves (ECDSA P-256 o Ed25519, PEM).",
+  "plugins.noKeys": "Aún no hay claves de confianza.",
+  "plugins.removeKey": "Dejar de confiar en {name}",
+  "plugins.addKey": "Añadir clave",
+  "plugins.keyName": "Nombre del editor",
+  "plugins.keyPem": "Clave pública",
+  "plugins.allowUnsigned": "Permitir complementos sin firma (modo de desarrollo, solo propietarios)",
+  "plugins.signedBy": "Firmado por {name}",
+  "plugins.untrusted": "Firmado con una clave en la que esta instancia no confía",
+  "plugins.unsigned": "Sin firma",
+  "plugins.licences": "Licencias: código {code}, datos {data}",
+  "plugins.removeConfirm":
+    "{name} está activado en {count} proyectos. ¿Quitarlo de todos modos? Se desactivará en ellos y los dibujos se conservarán.",
+} satisfies Record<PluginKey, string>;

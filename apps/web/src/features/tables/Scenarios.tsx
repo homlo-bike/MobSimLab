@@ -5,6 +5,8 @@ import type { StreetLinesDoc } from "../street-lines/saved";
 import type { PreferencesDoc } from "../../workspace/preferences";
 import { convertTo, type ProjectCurrency } from "../costs/currency";
 import { buildRailway } from "./railBuild";
+import { type Translate, useI18n } from "../../i18n/i18n";
+import type { MessageKey } from "../../i18n/messages";
 import {
   type Figures,
   figures,
@@ -29,35 +31,35 @@ interface Props {
 }
 
 const int = (v: number) => new Intl.NumberFormat("en").format(Math.round(v));
-const km = (v: number) => `${fmtQty(v)} km`;
+const km = (v: number, _m: unknown, t: Translate) => t("tbl.u.km", { v: fmtQty(v) });
 const money = (v: number, m: (v: number) => string) => m(v);
 
 /** Rows of the comparison: label, value and format (money rows get the project's money format). */
 const ROWS: {
-  label: string;
+  label: MessageKey;
   key: keyof Figures;
-  fmt: (v: number, money: (v: number) => string) => string;
+  fmt: (v: number, money: (v: number) => string, t: Translate) => string;
 }[] = [
-  { label: "Lines", key: "lines", fmt: int },
-  { label: "Railway route length", key: "railKm", fmt: km },
-  { label: "Railway track length", key: "trackKm", fmt: km },
-  { label: "Street line route length", key: "streetKm", fmt: km },
-  { label: "Stations", key: "stations", fmt: int },
-  { label: "Street stops", key: "stops", fmt: int },
-  { label: "In tunnel", key: "tunnelKm", fmt: km },
-  { label: "On bridges and viaducts", key: "bridgeKm", fmt: km },
-  { label: "Fleet with spares", key: "fleet", fmt: int },
-  { label: "In service at the peak", key: "inService", fmt: int },
-  { label: "Vehicle-km a year", key: "kmPerYear", fmt: int },
-  { label: "Peak capacity, places an hour", key: "capacityPerHour", fmt: int },
-  { label: "Construction (medium)", key: "construction", fmt: money },
-  { label: "Operating a year (medium)", key: "operating", fmt: money },
+  { label: "tbl.lines", key: "lines", fmt: int },
+  { label: "scn.row.railKm", key: "railKm", fmt: km },
+  { label: "scn.row.trackKm", key: "trackKm", fmt: km },
+  { label: "scn.row.streetKm", key: "streetKm", fmt: km },
+  { label: "scn.row.stations", key: "stations", fmt: int },
+  { label: "scn.row.stops", key: "stops", fmt: int },
+  { label: "tbl.inTunnel", key: "tunnelKm", fmt: km },
+  { label: "tbl.onBridges", key: "bridgeKm", fmt: km },
+  { label: "tbl.fleetSpares", key: "fleet", fmt: int },
+  { label: "scn.row.inService", key: "inService", fmt: int },
+  { label: "tbl.vehicleKmYear", key: "kmPerYear", fmt: int },
+  { label: "scn.row.capacity", key: "capacityPerHour", fmt: int },
+  { label: "scn.row.construction", key: "construction", fmt: money },
+  { label: "scn.row.operating", key: "operating", fmt: money },
 ];
 
-/** Purpose: a scenario's difference from the current design, as "+12 %" or "new". */
-function change(v: number, base: number): string | null {
+/** Purpose: a scenario's difference from the current design, as "+12 %" or "new" (in the language). */
+function change(v: number, base: number, t: Translate): string | null {
   if (Math.abs(v - base) < 1e-9) return null;
-  if (base === 0) return "new";
+  if (base === 0) return t("scn.new");
   const p = ((v - base) / Math.abs(base)) * 100;
   return `${p > 0 ? "+" : "−"}${fmtQty(Math.abs(p))} %`;
 }
@@ -78,7 +80,7 @@ async function measure(
 
 /**
  * The scenario comparison of the Tables tab: save the current design under a name, and compare the saved
- * copies with the current design side by side. In English for now, like the other tables.
+ * copies with the current design side by side, in the chosen language.
  * Side effects: builds every railway with the rail engine; saves through `onChange`.
  */
 export function Scenarios({
@@ -90,6 +92,7 @@ export function Scenarios({
   currency = null,
   loadRail,
 }: Props) {
+  const { t, language } = useI18n();
   const prefs = preferences?.values;
   // US dollars of the library's price base, in the project's currency at the exchange rate.
   const conv = convertTo(currency, "USD", 1);
@@ -133,19 +136,16 @@ export function Scenarios({
   };
   const remove = (s: Scenario) => {
     if (!onChange) return;
-    if (!window.confirm(`Delete the scenario "${s.name}"? This cannot be undone.`)) return;
+    if (!window.confirm(t("scn.confirmDelete", { name: s.name }))) return;
     onChange(withoutScenario(doc, s.id));
   };
 
   return (
     <section aria-labelledby="compare-title" className="mt-10">
       <h2 id="compare-title" className="text-xl font-semibold tracking-tight">
-        Compare scenarios
+        {t("scn.title")}
       </h2>
-      <p className="mt-1 max-w-3xl text-slate-600">
-        Save the current railway design and street lines as a scenario, change the design, and compare. Every
-        scenario is measured with the project's current preferences.
-      </p>
+      <p className="mt-1 max-w-3xl text-slate-600">{t("scn.intro")}</p>
       {onChange && (
         <form
           className="mt-4 flex flex-wrap items-end gap-2"
@@ -155,56 +155,57 @@ export function Scenarios({
           }}
         >
           <label className="flex min-w-0 flex-1 flex-col gap-1 text-sm sm:max-w-xs">
-            <span className="font-medium text-slate-700">Scenario name</span>
+            <span className="font-medium text-slate-700">{t("scn.name")}</span>
             <input
               className="rounded-lg border border-slate-300 bg-white px-3 py-2"
               value={name}
               maxLength={120}
-              placeholder="For example: Metro to the harbour"
+              placeholder={t("scn.placeholder")}
               onChange={(e) => setName(e.target.value)}
             />
           </label>
           <button type="submit" className="btn btn-pri min-h-10" disabled={!name.trim() || full}>
-            Save current design
+            {t("scn.save")}
           </button>
-          {full && (
-            <span className="text-sm text-slate-600">
-              A project keeps {MAX_SCENARIOS} scenarios. Delete one to save another.
-            </span>
-          )}
+          {full && <span className="text-sm text-slate-600">{t("scn.full", { max: MAX_SCENARIOS })}</span>}
         </form>
       )}
       {error && (
         <p role="alert" className="mt-3 text-sm text-red-700">
-          A design could not be measured: {error}
+          {t("scn.error", { error })}
         </p>
       )}
       {list.length === 0 ? (
         <p className="mt-4 rounded-xl border border-dashed border-slate-300 bg-white px-4 py-5 text-slate-600">
-          No scenarios saved yet.
+          {t("scn.none")}
         </p>
       ) : (
-        <section className={card} aria-label="Scenarios side by side">
+        <section className={card} aria-label={t("scn.aria")}>
           <div className="overflow-x-auto">
             <table className="w-full text-sm" style={{ minWidth: `${16 + 9 * (list.length + 1)}rem` }}>
               <thead>
                 <tr className="border-b border-slate-200 align-bottom">
-                  <th className={th}>Figure</th>
-                  <th className={`${th} text-right`}>Current design</th>
+                  <th className={th}>{t("scn.figure")}</th>
+                  <th className={`${th} text-right`}>{t("scn.current")}</th>
                   {list.map((s) => (
                     <th key={s.id} className={`${th} text-right`}>
                       <span className="block text-slate-900">{s.name}</span>
                       <span className="block text-xs font-normal text-slate-500">
-                        saved {new Date(s.savedAt).toLocaleDateString("en", { dateStyle: "medium" })}
+                        {t("scn.saved", {
+                          date: new Date(s.savedAt).toLocaleDateString(language, {
+                            dateStyle: "medium",
+                            numberingSystem: "latn",
+                          }),
+                        })}
                       </span>
                       {onChange && (
                         <button
                           type="button"
                           className="mt-1 text-xs font-normal text-red-700 hover:underline"
-                          aria-label={`Delete ${s.name}`}
+                          aria-label={t("scn.deleteName", { name: s.name })}
                           onClick={() => remove(s)}
                         >
-                          Delete
+                          {t("scn.delete")}
                         </button>
                       )}
                     </th>
@@ -215,18 +216,22 @@ export function Scenarios({
                 {ROWS.map((row) => (
                   <tr key={row.key} className="border-b border-slate-100">
                     <th scope="row" className={`${td} text-left font-normal`}>
-                      {row.label}
+                      {t(row.label)}
                     </th>
                     <td className={`${num} font-medium`}>
-                      {current ? row.fmt(current[row.key], fmtCost) : "…"}
+                      {current ? row.fmt(current[row.key], fmtCost, t) : "…"}
                     </td>
                     {list.map((s) => {
                       const f = saved[s.id];
-                      const d = f && current ? change(f[row.key], current[row.key]) : null;
+                      const d = f && current ? change(f[row.key], current[row.key], t) : null;
                       return (
                         <td key={s.id} className={num}>
-                          {f ? row.fmt(f[row.key], fmtCost) : "…"}
-                          {d && <span className="block text-xs text-slate-500">{d} vs current</span>}
+                          {f ? row.fmt(f[row.key], fmtCost, t) : "…"}
+                          {d && (
+                            <span className="block text-xs text-slate-500">
+                              {t("scn.vsCurrent", { change: d })}
+                            </span>
+                          )}
                         </td>
                       );
                     })}
@@ -236,12 +241,12 @@ export function Scenarios({
             </table>
           </div>
           <p className="mt-3 text-xs text-slate-500">
-            Costs are medium estimates at the assumption library's price base, before the conversion to the
-            project's country, so scenarios compare on equal terms
             {conv.currency === "USD"
-              ? "; they are in US dollars"
-              : `; they are US dollars shown in ${conv.currency} at ${String(Number(conv.rate.toPrecision(4)))} ${conv.currency} per US$`}
-            . The cost tables above give the current design at the country's prices.
+              ? t("scn.note.usd")
+              : t("scn.note.converted", {
+                  currency: conv.currency ?? "",
+                  rate: String(Number(conv.rate.toPrecision(4))),
+                })}
           </p>
         </section>
       )}

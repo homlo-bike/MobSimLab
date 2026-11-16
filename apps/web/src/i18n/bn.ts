@@ -4,12 +4,14 @@ import { editorsBn } from "./editors/bn";
 import { cargoBikeBn } from "./cargo-bike/bn";
 import { commentsBn } from "./comments/bn";
 import { depotsBn } from "./depots/bn";
+import { geodataBn } from "./geodata/bn";
+import { tablesBn } from "./tables/bn";
 import { fleetBn } from "./fleet/bn";
 import { timetablesBn } from "./timetables/bn";
 import { mslabBn } from "./mslab/bn";
 import { pluginCodeBn } from "./plugin-code/bn";
 import { populationBn } from "./population/bn";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsBn } from "./plugins/bn";
 import type { Messages } from "./en";
 
 /** বাংলা। */
@@ -493,6 +495,8 @@ export const bn: Messages = {
   ...editorsBn,
   ...cargoBikeBn,
   ...depotsBn,
+  ...geodataBn,
+  ...tablesBn,
   ...fleetBn,
   ...timetablesBn,
   ...commentsBn,
@@ -501,5 +505,5 @@ export const bn: Messages = {
   ...populationBn,
   ...roadBn,
   ...calendarBn,
-  ...PLUGIN_MESSAGES.bn,
+  ...pluginsBn,
 };

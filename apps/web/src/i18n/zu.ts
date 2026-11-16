@@ -4,12 +4,14 @@ import { editorsZu } from "./editors/zu";
 import { cargoBikeZu } from "./cargo-bike/zu";
 import { commentsZu } from "./comments/zu";
 import { depotsZu } from "./depots/zu";
+import { geodataZu } from "./geodata/zu";
+import { tablesZu } from "./tables/zu";
 import { fleetZu } from "./fleet/zu";
 import { timetablesZu } from "./timetables/zu";
 import { mslabZu } from "./mslab/zu";
 import { pluginCodeZu } from "./plugin-code/zu";
 import { populationZu } from "./population/zu";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsZu } from "./plugins/zu";
 import type { Messages } from "./en";
 
 /** isiZulu. */
@@ -506,6 +508,8 @@ export const zu: Messages = {
   ...editorsZu,
   ...cargoBikeZu,
   ...depotsZu,
+  ...geodataZu,
+  ...tablesZu,
   ...fleetZu,
   ...timetablesZu,
   ...commentsZu,
@@ -514,5 +518,5 @@ export const zu: Messages = {
   ...populationZu,
   ...roadZu,
   ...calendarZu,
-  ...PLUGIN_MESSAGES.zu,
+  ...pluginsZu,
 };

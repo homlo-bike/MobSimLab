@@ -4,12 +4,14 @@ import { editorsHa } from "./editors/ha";
 import { cargoBikeHa } from "./cargo-bike/ha";
 import { commentsHa } from "./comments/ha";
 import { depotsHa } from "./depots/ha";
+import { geodataHa } from "./geodata/ha";
+import { tablesHa } from "./tables/ha";
 import { fleetHa } from "./fleet/ha";
 import { timetablesHa } from "./timetables/ha";
 import { mslabHa } from "./mslab/ha";
 import { pluginCodeHa } from "./plugin-code/ha";
 import { populationHa } from "./population/ha";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsHa } from "./plugins/ha";
 import type { Messages } from "./en";
 
 /** Hausa. */
@@ -501,6 +503,8 @@ export const ha: Messages = {
   ...editorsHa,
   ...cargoBikeHa,
   ...depotsHa,
+  ...geodataHa,
+  ...tablesHa,
   ...fleetHa,
   ...timetablesHa,
   ...commentsHa,
@@ -509,5 +513,5 @@ export const ha: Messages = {
   ...populationHa,
   ...roadHa,
   ...calendarHa,
-  ...PLUGIN_MESSAGES.ha,
+  ...pluginsHa,
 };

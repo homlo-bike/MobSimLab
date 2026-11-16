@@ -4,12 +4,14 @@ import { editorsFa } from "./editors/fa";
 import { cargoBikeFa } from "./cargo-bike/fa";
 import { commentsFa } from "./comments/fa";
 import { depotsFa } from "./depots/fa";
+import { geodataFa } from "./geodata/fa";
+import { tablesFa } from "./tables/fa";
 import { fleetFa } from "./fleet/fa";
 import { timetablesFa } from "./timetables/fa";
 import { mslabFa } from "./mslab/fa";
 import { pluginCodeFa } from "./plugin-code/fa";
 import { populationFa } from "./population/fa";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsFa } from "./plugins/fa";
 import type { Messages } from "./en";
 
 /** فارسی */
@@ -495,6 +497,8 @@ export const fa: Messages = {
   ...editorsFa,
   ...cargoBikeFa,
   ...depotsFa,
+  ...geodataFa,
+  ...tablesFa,
   ...fleetFa,
   ...timetablesFa,
   ...commentsFa,
@@ -503,5 +507,5 @@ export const fa: Messages = {
   ...populationFa,
   ...roadFa,
   ...calendarFa,
-  ...PLUGIN_MESSAGES.fa,
+  ...pluginsFa,
 };

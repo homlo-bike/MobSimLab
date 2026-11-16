@@ -1,6 +1,7 @@
 import { tNow } from "../../i18n/i18n";
 import type { TileFetcher } from "../street-lines/types";
 import type { RailEngine, RailEngineLoader, RailView } from "./types";
+import { withProject } from "../../geodata/projectData";
 
 let wasmModule: Promise<typeof import("../../wasm/rail-design/rail_design_wasm.js")> | null = null;
 
@@ -59,7 +60,7 @@ export const loadRailEngine: RailEngineLoader = async () => {
 
 /** Purpose: fetch one railway tile from the API (existing OSM railways, cached server-side). */
 export const fetchRailTile: TileFetcher = async (x, y) => {
-  const res = await fetch(`/api/street-network/rail-tiles/14/${x}/${y}`);
+  const res = await fetch(withProject(`/api/street-network/rail-tiles/14/${x}/${y}`));
   if (res.status === 401) throw new Error(tNow("rail.osmUnauthorised"));
   if (!res.ok)
     throw new Error(res.status === 400 ? tNow("rail.osmInvalidTile") : tNow("rail.osmUnavailable"));

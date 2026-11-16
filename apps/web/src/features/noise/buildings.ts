@@ -7,6 +7,7 @@ import type {
 } from "maplibre-gl";
 import { LEGEND } from "./mapLayer";
 import type { Indicator, LonLat, NoiseBuilding } from "./types";
+import { withProject } from "../../geodata/projectData";
 
 /** Building tiles use the street tiles' zoom (about 1.5 km square at 50° N). */
 export const BUILDING_TILE_ZOOM = 14;
@@ -18,7 +19,7 @@ export type BuildingTileFetcher = (x: number, y: number) => Promise<NoiseBuildin
 
 /** Purpose: fetch one tile of OSM building footprints from the API (cached server-side). */
 export const fetchBuildingTile: BuildingTileFetcher = async (x, y) => {
-  const res = await fetch(`/api/street-network/building-tiles/${BUILDING_TILE_ZOOM}/${x}/${y}`);
+  const res = await fetch(withProject(`/api/street-network/building-tiles/${BUILDING_TILE_ZOOM}/${x}/${y}`));
   if (res.status === 401) throw new Error(tNow("noise.signIn"));
   if (!res.ok) throw new Error(tNow("noise.buildingsDown"));
   return ((await res.json()) as { buildings?: NoiseBuilding[] }).buildings ?? [];
