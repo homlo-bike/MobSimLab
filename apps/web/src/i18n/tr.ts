@@ -255,6 +255,7 @@ export const tr: Messages = {
   "gis.title": "CBS",
   "gis.streetsView": "Sokaklar",
   "gis.regionsView": "Bölgeler",
+  "gis.zonesView": "Talep bölgeleri",
   "gis.intro": "Hesaplarda kullanılan bilgileri ekleyin ve düzenleyin.",
   "gis.areas": "Alan çizin veya OpenStreetMap'ten içe aktarın",
   "gis.streets": "Sokak düzeni: otobüs, bisiklet ve tramvay şeritleri, hızlar, havai hat",

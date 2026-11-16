@@ -31,7 +31,7 @@
   group: Demand
   unit: zones
   used_by:
-    - automatic zones (H3 resolution chosen from the area)
+    - automatic zones (hexagon size chosen from the area)
   values:
     - context:
         mode: "*"
@@ -43,7 +43,7 @@
         - mobsimlab-derivation
       check: unverified
       rationale:
-        The finest H3 resolution (9, about 0.1 km² per hexagon, down to 6, about 36 km²) that gives at most
+        The smallest hexagon of the H3 sizes (resolution 9, about 0.1 km², up to 6, about 36 km²) that gives at most
         this many zones is used. 600 zones keeps a run to minutes on the worker; 2000 zones gives stop-level detail
         in a large city at about ten times the run time (the skims grow with the square of the zone count).
 
@@ -2010,6 +2010,114 @@
         - mobsimlab-derivation
       check: unverified
       rationale: Used only when the way has no lanes tag.
+
+- key: demand.road.speed_kmh.motorway
+  label: "Road assignment: legal speed of a motorway where OpenStreetMap gives no maxspeed"
+  group: Demand
+  unit: km/h
+  used_by:
+    - "road assignment: free-flow time"
+  values:
+    - context:
+        mode: "*"
+      low: 80
+      central: 100
+      high: 120
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Used only when the way has no usable maxspeed tag. Urban motorways are often limited to 80–100 km/h; rural ones run faster.
+
+- key: demand.road.speed_kmh.trunk
+  label: "Road assignment: legal speed of a trunk road where OpenStreetMap gives no maxspeed"
+  group: Demand
+  unit: km/h
+  used_by:
+    - "road assignment: free-flow time"
+  values:
+    - context:
+        mode: "*"
+      low: 50
+      central: 70
+      high: 100
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Used only when the way has no usable maxspeed tag. Urban trunk roads are usually limited to 50–80 km/h.
+
+- key: demand.road.speed_kmh.primary
+  label: "Road assignment: legal speed of a primary road where OpenStreetMap gives no maxspeed"
+  group: Demand
+  unit: km/h
+  used_by:
+    - "road assignment: free-flow time"
+  values:
+    - context:
+        mode: "*"
+      low: 40
+      central: 50
+      high: 70
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Used only when the way has no usable maxspeed tag. The general urban limit in most countries is 50 km/h (30 mph in the UK and US cities).
+
+- key: demand.road.speed_kmh.secondary
+  label: "Road assignment: legal speed of a secondary road where OpenStreetMap gives no maxspeed"
+  group: Demand
+  unit: km/h
+  used_by:
+    - "road assignment: free-flow time"
+  values:
+    - context:
+        mode: "*"
+      low: 40
+      central: 50
+      high: 60
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Used only when the way has no usable maxspeed tag. The general urban limit in most countries is 50 km/h.
+
+- key: demand.road.speed_kmh.tertiary
+  label: "Road assignment: legal speed of a tertiary road where OpenStreetMap gives no maxspeed"
+  group: Demand
+  unit: km/h
+  used_by:
+    - "road assignment: free-flow time"
+  values:
+    - context:
+        mode: "*"
+      low: 30
+      central: 40
+      high: 50
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Used only when the way has no usable maxspeed tag. Between the urban limit and the 30 km/h zones many cities set on smaller streets.
+
+- key: demand.road.speed_kmh.local
+  label: "Road assignment: legal speed of a local street where OpenStreetMap gives no maxspeed"
+  group: Demand
+  unit: km/h
+  used_by:
+    - "road assignment: free-flow time"
+  values:
+    - context:
+        mode: "*"
+      low: 20
+      central: 30
+      high: 50
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Used only when the way has no usable maxspeed tag. Residential streets are often 30 km/h zones; living streets walking pace.
 
 - key: demand.road.max_iterations
   label: "Road assignment: most iterations of the equilibrium"

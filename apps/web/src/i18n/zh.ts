@@ -245,6 +245,7 @@ export const zh: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "街道",
   "gis.regionsView": "区域",
+  "gis.zonesView": "需求分区",
   "gis.intro": "添加或编辑计算所用的信息。",
   "gis.areas": "绘制区域或从 OpenStreetMap 导入",
   "gis.streets": "街道布局：公交、自行车和有轨电车车道，车速，架空线",

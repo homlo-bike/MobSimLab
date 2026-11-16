@@ -252,6 +252,7 @@ export const fa: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "خیابان‌ها",
   "gis.regionsView": "مناطق",
+  "gis.zonesView": "مناطق تقاضا",
   "gis.intro": "اطلاعاتی را که در محاسبات استفاده می‌شود اضافه و ویرایش کنید.",
   "gis.areas": "ترسیم محدوده‌ها یا وارد کردن از OpenStreetMap",
   "gis.streets": "ساختار خیابان: خطوط اتوبوس، دوچرخه و تراموا، سرعت، سیم بالاسری",

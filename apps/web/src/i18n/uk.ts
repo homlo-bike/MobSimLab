@@ -256,6 +256,7 @@ export const uk: Messages = {
   "gis.title": "ГІС",
   "gis.streetsView": "Вулиці",
   "gis.regionsView": "Райони",
+  "gis.zonesView": "Зони попиту",
   "gis.intro": "Додавайте й редагуйте відомості, що використовуються в розрахунках.",
   "gis.areas": "Малюйте території або імпортуйте з OpenStreetMap",
   "gis.streets":

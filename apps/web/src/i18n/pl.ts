@@ -256,6 +256,7 @@ export const pl: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "Ulice",
   "gis.regionsView": "Obszary",
+  "gis.zonesView": "Strefy popytu",
   "gis.intro": "Dodawaj i edytuj informacje używane w obliczeniach.",
   "gis.areas": "Rysuj obszary lub importuj je z OpenStreetMap",
   "gis.streets": "Układ ulic: buspasy, drogi rowerowe i torowiska, prędkości, sieć trakcyjna",

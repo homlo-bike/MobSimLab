@@ -256,6 +256,7 @@ export const it: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "Strade",
   "gis.regionsView": "Aree",
+  "gis.zonesView": "Zone di domanda",
   "gis.intro": "Aggiungi e modifica le informazioni usate nei calcoli.",
   "gis.areas": "Disegna aree o importale da OpenStreetMap",
   "gis.streets": "Configurazione stradale: corsie bus, ciclabili e tram, velocità, linea aerea",

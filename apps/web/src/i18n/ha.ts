@@ -256,6 +256,7 @@ export const ha: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "Tituna",
   "gis.regionsView": "Yankuna",
+  "gis.zonesView": "Yankunan bukata",
   "gis.intro": "Ƙara ko gyara bayanan da ƙididdiga ke amfani da su.",
   "gis.areas": "Zana yanki ko shigo da ɗaya daga OpenStreetMap",
   "gis.streets": "Tsarin titi: hanyoyin bas, keke da tram, gudu, wayoyin sama",

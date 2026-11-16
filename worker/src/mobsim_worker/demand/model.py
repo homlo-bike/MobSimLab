@@ -446,7 +446,10 @@ class DemandModel:
 
 
 def run_demand(
-    network_text: str, settings: dict[str, Any], reporter: Reporter
+    network_text: str,
+    settings: dict[str, Any],
+    reporter: Reporter,
+    tiles: list[str] | None = None,
 ) -> tuple[Outcome, dict[str, Any], list[RunFile]]:
     """Read a run's bundle and values and run the model.
 
@@ -454,11 +457,12 @@ def run_demand(
         network_text: The bundle (contracts/demand-input.schema.json) as JSON text.
         settings: The run's settings: ``{"values": {key: number}}`` (the project's demand values).
         reporter: Where progress goes.
+        tiles: OpenStreetMap street tiles of the model area, for a bundle without ``streets``.
 
     Raises:
         InputError: The bundle or values cannot be used.
     """
     from mobsim_worker.demand.inputs import parse_bundle  # noqa: PLC0415
 
-    bundle = parse_bundle(network_text, settings.get("values"))
+    bundle = parse_bundle(network_text, settings.get("values"), tiles)
     return DemandModel(bundle, reporter).run()

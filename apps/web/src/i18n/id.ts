@@ -257,6 +257,7 @@ export const id: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "Jalan",
   "gis.regionsView": "Wilayah",
+  "gis.zonesView": "Zona permintaan",
   "gis.intro": "Tambahkan dan edit informasi yang digunakan dalam perhitungan.",
   "gis.areas": "Gambar wilayah atau impor dari OpenStreetMap",
   "gis.streets": "Susunan jalan: lajur bus, sepeda, dan trem, kecepatan, kabel atas",

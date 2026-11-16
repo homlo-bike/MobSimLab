@@ -254,6 +254,7 @@ export const bn: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "রাস্তা",
   "gis.regionsView": "অঞ্চল",
+  "gis.zonesView": "চাহিদা জোন",
   "gis.intro": "গণনায় ব্যবহৃত তথ্য যোগ বা সম্পাদনা করুন।",
   "gis.areas": "একটি এলাকা আঁকুন বা OpenStreetMap থেকে আমদানি করুন",
   "gis.streets": "রাস্তার বিন্যাস: বাস, সাইকেল ও ট্রাম লেন, গতি, উপরের তার",

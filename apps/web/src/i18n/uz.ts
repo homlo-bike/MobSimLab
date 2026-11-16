@@ -259,6 +259,7 @@ export const uz: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "Koʻchalar",
   "gis.regionsView": "Hududlar",
+  "gis.zonesView": "Talab zonalari",
   "gis.intro": "Hisob-kitoblar foydalanadigan maʼlumotlarni qoʻshing yoki tahrirlang.",
   "gis.areas": "Hudud chizing yoki OpenStreetMap dan import qiling",
   "gis.streets": "Koʻcha tuzilishi: avtobus, velosiped va tramvay yoʻlaklari, tezliklar, havo simlari",

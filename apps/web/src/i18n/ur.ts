@@ -255,6 +255,7 @@ export const ur: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "سڑکیں",
   "gis.regionsView": "علاقے",
+  "gis.zonesView": "طلب کے زون",
   "gis.intro": "وہ معلومات شامل کریں یا ان میں ترمیم کریں جو حسابات استعمال کرتے ہیں۔",
   "gis.areas": "علاقہ بنائیں یا OpenStreetMap سے درآمد کریں",
   "gis.streets": "سڑکوں کی ترتیب: بس، سائیکل اور ٹرام لین، رفتار، اوپری تاریں",

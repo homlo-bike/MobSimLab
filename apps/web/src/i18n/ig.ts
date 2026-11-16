@@ -255,6 +255,7 @@ export const ig: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "Okporo ụzọ",
   "gis.regionsView": "Mpaghara",
+  "gis.zonesView": "Mpaghara ọchịchọ",
   "gis.intro": "Tinye ma ọ bụ dezie ozi ngụkọ na-eji.",
   "gis.areas": "See mpaghara ma ọ bụ bubata otu site na OpenStreetMap",
   "gis.streets": "Nhazi okporo ụzọ: ụzọ bọs, igwe kwụ otu ebe na tram, ọsọ, waya elu",

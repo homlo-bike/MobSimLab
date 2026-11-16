@@ -255,6 +255,7 @@ export const sw: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "Barabara",
   "gis.regionsView": "Maeneo",
+  "gis.zonesView": "Kanda za mahitaji",
   "gis.intro": "Ongeza au hariri taarifa ambazo hesabu zinatumia.",
   "gis.areas": "Chora eneo au lilete kutoka OpenStreetMap",
   "gis.streets": "Mpangilio wa barabara: njia za basi, baiskeli na tramu, kasi, nyaya za juu",

@@ -1,0 +1,129 @@
+/** The project's demand model runs on the server (apps/api/src/simulation): list, start, follow, stop. */
+import { get, send } from "../../session/api";
+import type { RunStatus } from "../capacity/server";
+import type { Bundle } from "./bundle";
+
+export type Mode = "car" | "transit" | "walk" | "cycle";
+export const MODES: Mode[] = ["transit", "car", "walk", "cycle"];
+export type Purpose = "hbw" | "hbe" | "hbo" | "nhb";
+export const PURPOSES: Purpose[] = ["hbw", "hbe", "hbo", "nhb"];
+export type Period = "am" | "md" | "pm" | "ev" | "nt";
+
+/** What the worker reports while a demand run goes (worker `demand/model.py` `Reporter`). */
+export interface DemandStep {
+  step?: string;
+  period?: string;
+  round?: number;
+  gap?: number;
+  [k: string]: unknown;
+}
+
+/** Trips, boardings and loads of one stopping pattern, by period and for the weekday (`day`). */
+export interface PatternLoads {
+  stops: string[];
+  boardings: Record<string, number[]>;
+  alightings: Record<string, number[]>;
+  /** Riders on board between consecutive stops. */
+  load: Record<string, number[]>;
+}
+
+/** The result of a demand run (worker `DemandModel._result`). */
+export interface DemandResult {
+  version: 1;
+  uncalibrated: boolean;
+  attribution: string;
+  currency: string;
+  notes: string[];
+  zones_count: number;
+  period_hours: Record<string, number>;
+  totals: {
+    trips: number;
+    by_mode: Record<Mode, number>;
+    by_period: Record<string, Record<Mode, number>>;
+    by_purpose: Record<string, Record<Mode, number>>;
+    car_km: number | null;
+    walk_min: number | null;
+    cycle_min: number | null;
+  };
+  convergence: Record<string, unknown>;
+  zones: {
+    id: string;
+    centre: boolean;
+    productions: Record<Purpose, number>;
+    attractions: Record<Purpose, number>;
+    origins: Record<Mode, number>;
+    destinations: Record<Mode, number>;
+  }[];
+  desire_lines: ({ from: string; to: string } & Record<Mode, number>)[];
+  road: { columns: string[]; links: [number, number, number, number][]; rgap: Record<string, number> };
+  transit: {
+    lines: { id: string; name: string; mode: string; patterns: PatternLoads[] }[];
+    stops: Record<string, { name: string; boardings: number; alightings: number }>;
+  };
+  files: string[];
+}
+
+/** One saved demand run in the project's list. */
+export interface DemandRun {
+  id: string;
+  kind: "demand";
+  status: RunStatus;
+  network: { kind: "demand"; zones: number; stops: number; lines: number };
+  error: string | null;
+  cancelRequested: boolean;
+  createdBy: { id: string; displayName: string | null } | null;
+  createdAt: string;
+  startedAt: string | null;
+  finishedAt: string | null;
+}
+
+export interface DemandRunDetail extends DemandRun {
+  progress: DemandStep | null;
+  result: DemandResult | null;
+}
+
+export interface DemandRunsApi {
+  list(): Promise<DemandRun[]>;
+  get(id: string): Promise<DemandRunDetail>;
+  start(
+    bundle: Bundle,
+    values: Record<string, number>,
+    summary: { zones: number; stops: number; lines: number },
+  ): Promise<DemandRunDetail>;
+  cancel(id: string): Promise<DemandRunDetail>;
+  remove(id: string): Promise<void>;
+  /** Where the browser downloads a file the run saved (the OD matrices, `od.omx`). */
+  fileUrl(id: string, name: string): string;
+}
+
+/** Purpose: the demand runs of one project, through the session cookie and CSRF token. */
+export function projectDemandRuns(projectId: string, csrf: string): DemandRunsApi {
+  const base = `/api/projects/${encodeURIComponent(projectId)}/simulation-runs`;
+  const one = (id: string) => `${base}/${encodeURIComponent(id)}`;
+  return {
+    list: async () =>
+      ((await get<{ runs?: { kind: string }[] }>(base)).runs ?? []).filter(
+        (r): r is DemandRun => r.kind === "demand",
+      ),
+    get: async (id) => (await get<{ run: DemandRunDetail }>(one(id))).run,
+    start: async (bundle, values, summary) =>
+      (
+        await send<{ run: DemandRunDetail }>("POST", base, csrf, {
+          kind: "demand",
+          bundle: JSON.stringify(bundle),
+          values,
+          summary,
+        })
+      ).run,
+    cancel: async (id) => (await send<{ run: DemandRunDetail }>("POST", `${one(id)}/cancel`, csrf, {})).run,
+    remove: async (id) => {
+      await send<{ ok: true }>("DELETE", one(id), csrf);
+    },
+    fileUrl: (id, name) => `${one(id)}/files/${encodeURIComponent(name)}`,
+  };
+}
+
+/** Purpose: whether a run is still queued or running. */
+export function isOpen(r: { status: RunStatus }): boolean {
+  return r.status === "queued" || r.status === "running";
+}

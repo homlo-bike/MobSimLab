@@ -253,6 +253,7 @@ export const mr: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "रस्ते",
   "gis.regionsView": "प्रदेश",
+  "gis.zonesView": "मागणी झोन",
   "gis.intro": "गणनेसाठी वापरली जाणारी माहिती जोडा किंवा संपादित करा.",
   "gis.areas": "क्षेत्र काढा किंवा OpenStreetMap वरून आयात करा",
   "gis.streets": "रस्त्यांची रचना: बस, सायकल आणि ट्राम मार्गिका, वेग, वरच्या तारा",

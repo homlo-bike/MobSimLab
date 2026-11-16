@@ -262,6 +262,7 @@ export const nl: Messages = {
   "gis.spacing": "Halteafstand",
   "gis.streetsView": "Straten",
   "gis.regionsView": "Gebieden",
+  "gis.zonesView": "Vraagzones",
 
   "tables.title": "Tabellen",
   "tables.intro": "Alle berekeningen over het project, om te schatten hoe goed het zal presteren.",

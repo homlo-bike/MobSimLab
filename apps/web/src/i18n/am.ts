@@ -246,6 +246,7 @@ export const am: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "መንገዶች",
   "gis.regionsView": "ክልሎች",
+  "gis.zonesView": "የጉዞ ዞኖች",
   "gis.intro": "ስሌቶች የሚጠቀሙበትን መረጃ ያክሉ ወይም ያርትዑ።",
   "gis.areas": "አካባቢ ይሳሉ ወይም ከ OpenStreetMap ያስገቡ",
   "gis.streets": "የመንገድ አቀማመጥ፦ የአውቶቡስ፣ የብስክሌት እና የትራም መስመሮች፣ ፍጥነቶች፣ የላይ ሽቦዎች",

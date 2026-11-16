@@ -257,6 +257,7 @@ export const pt: Messages = {
   "gis.title": "SIG",
   "gis.streetsView": "Ruas",
   "gis.regionsView": "Regiões",
+  "gis.zonesView": "Zonas de procura",
   "gis.intro": "Adicione ou edite as informações usadas nos cálculos.",
   "gis.areas": "Desenhe uma área ou importe uma do OpenStreetMap",
   "gis.streets": "Configuração das ruas: faixas de ônibus, bicicleta e bonde, velocidades, rede aérea",
