@@ -2,6 +2,7 @@ import { roadVi } from "./road/vi";
 import { editorsVi } from "./editors/vi";
 import { cargoBikeVi } from "./cargo-bike/vi";
 import { depotsVi } from "./depots/vi";
+import { mslabVi } from "./mslab/vi";
 import { populationVi } from "./population/vi";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -287,6 +288,7 @@ export const vi: Messages = {
   "prefs.delayLane": "Trên làn xe buýt hoặc tàu điện chỉ được sơn",
   "prefs.delayDefault": "Thư viện giả định: {value} %",
   "prefs.delayReset": "Dùng giá trị thư viện",
+  "prefs.reason": "Lý do cho giá trị này (không bắt buộc)",
   "prefs.stationsTitle": "Ga",
   "prefs.stationsIntro":
     "Các điểm dừng cùng tên trong khoảng cách này được tính là một ga trên sơ đồ mạng lưới, công cụ lập hành trình và các bảng lợi ích và hành khách.",
@@ -423,6 +425,7 @@ export const vi: Messages = {
   ...editorsVi,
   ...cargoBikeVi,
   ...depotsVi,
+  ...mslabVi,
   ...populationVi,
   ...roadVi,
   ...PLUGIN_MESSAGES.vi,

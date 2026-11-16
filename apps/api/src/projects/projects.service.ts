@@ -16,6 +16,7 @@ import {
   type ProjectVisibility,
 } from "../db/database";
 import { DRAWING_KINDS, type DrawingKind } from "./drawings";
+import { VALUE_CHANGED, VALUE_OBJECT, VALUE_REASON, type ValueState, valueChanges } from "./value-history";
 
 /** Who is acting, with what they need for the audit record. */
 export interface ProjectActor {
@@ -61,6 +62,21 @@ export interface ProjectDrawing {
   version: number;
   updatedAt: string;
   updatedBy: { id: string; displayName: string | null } | null;
+}
+
+/** One entry of a project value's change history, newest first. */
+export interface ValueHistoryEntry {
+  /** Position in the project's audit chain; pass as `before` for the next page. */
+  seq: number;
+  /** Assumption id, for example `street.mixed_traffic_delay_share`. */
+  id: string;
+  /** `changed`: the number changed (null: the library's applies); `reason`: only a reason was given. */
+  kind: "changed" | "reason";
+  before: ValueState;
+  after: ValueState;
+  reason: string | null;
+  at: string;
+  by: { id: string; displayName: string | null } | null;
 }
 
 /** What each project role may do. Owners manage access, archive and delete. */
@@ -459,7 +475,8 @@ export class ProjectsService {
    * the caller started from, or null when the caller has never seen a saved drawing of this kind.
    * Output: the saved drawing with its new version.
    * Side effects: replaces the document and bumps its version and the project's `updated_at`; audit
-   * `project.drawing_saved` (kind, versions and size, not the document). 409 with the current drawing when
+   * `project.drawing_saved` (kind, versions and size, not the document), and for the preferences one
+   * `project.value_changed` or `project.value_reason` per value changed (who, when, old, new, reason). 409 with the current drawing when
    * someone else saved since `baseVersion` (10 §1.2), so the caller can choose whose drawing to keep.
    */
   async saveDrawing(
@@ -518,12 +535,80 @@ export class ProjectsService {
         { kind, version: (cur?.version ?? 0) + 1, bytes: Buffer.byteLength(json) },
         tx,
       );
+      if (kind === "preferences")
+        for (const c of valueChanges(cur?.doc ?? null, doc))
+          await this.audit.append(
+            {
+              chain: projectChain(id),
+              action: c.action,
+              objectType: VALUE_OBJECT,
+              objectId: c.id,
+              projectId: id,
+              actorId: actor.userId,
+              actorIpHash: actor.ipHash,
+              requestId: actor.requestId,
+              before: c.before,
+              after: c.after,
+              reason: c.after.reason,
+            },
+            tx,
+          );
     });
     const saved = await this.drawingQuery(this.db)
       .where("d.project_id", "=", id)
       .where("d.kind", "=", kind)
       .executeTakeFirstOrThrow();
     return this.drawing(saved);
+  }
+
+  /**
+   * Purpose: the change history of the project's values, newest first, for anyone who may read the project.
+   * Inputs: `valueId` limits it to one assumption id; `before` (a `seq`) pages back; `limit` at most 500.
+   * Output: who changed which value when, from what to what, and why.
+   */
+  async valueHistory(
+    actor: ProjectActor,
+    id: string,
+    opts: { valueId?: string; before?: number; limit: number },
+  ): Promise<ValueHistoryEntry[]> {
+    await this.load(actor, id, "read");
+    let q = this.db
+      .selectFrom("audit.record as r")
+      .leftJoin("iam.user as u", "u.id", "r.actor_id")
+      .select([
+        "r.seq",
+        "r.at",
+        "r.actor_id",
+        "u.display_name",
+        "r.action",
+        "r.object_id",
+        "r.before",
+        "r.after",
+        "r.reason",
+      ])
+      .where("r.chain", "=", projectChain(id))
+      .where("r.object_type", "=", VALUE_OBJECT)
+      .where("r.action", "in", [VALUE_CHANGED, VALUE_REASON]);
+    if (opts.valueId) q = q.where("r.object_id", "=", opts.valueId);
+    if (opts.before !== undefined) q = q.where("r.seq", "<", String(opts.before));
+    const rows = await q.orderBy("r.seq", "desc").limit(opts.limit).execute();
+    const state = (v: unknown): ValueState => {
+      const o = (v ?? {}) as { value?: unknown; reason?: unknown };
+      return {
+        value: typeof o.value === "number" ? o.value : null,
+        reason: typeof o.reason === "string" ? o.reason : null,
+      };
+    };
+    return rows.map((r) => ({
+      seq: Number(r.seq),
+      id: r.object_id ?? "",
+      kind: r.action === VALUE_REASON ? "reason" : "changed",
+      before: state(r.before),
+      after: state(r.after),
+      reason: r.reason,
+      at: r.at.toISOString(),
+      by: r.actor_id ? { id: r.actor_id, displayName: r.display_name } : null,
+    }));
   }
 
   // ---------------------------------------------------------------------------------------------------------

@@ -71,6 +71,15 @@ const visibilityBody = z.strictObject({
   visibility: z.enum(PROJECT_VISIBILITIES),
   licenceAccepted: z.boolean().optional(),
 });
+const historyQuery = z.strictObject({
+  id: z
+    .string()
+    .regex(/^[a-z][a-z0-9_]*(\.[a-z0-9_]+)+$/)
+    .max(120)
+    .optional(),
+  before: z.coerce.number().int().positive().optional(),
+  limit: z.coerce.number().int().min(1).max(500).default(100),
+});
 const drawingBody = z.strictObject({
   doc: z.unknown(),
   baseVersion: z.number().int().min(1).nullable(),
@@ -234,6 +243,23 @@ export class ProjectsController {
       throw new BadRequestException("the drawing is too large to save");
     return {
       drawing: await this.projects.saveDrawing(this.actor(req), parse(uuid, id), kind, doc, b.baseVersion),
+    };
+  }
+
+  /**
+   * Purpose: the change history of the project's values (who, when, old and new value, reason), newest first.
+   * Query: `id` (one assumption id), `before` (a `seq`, for the next page), `limit` (default 100, max 500).
+   */
+  @Get(":id/value-history")
+  @Requires("projects.read")
+  async valueHistory(@Param("id") id: string, @Query() query: unknown, @Req() req: MslRequest) {
+    const q = parse(historyQuery, query);
+    return {
+      history: await this.projects.valueHistory(this.actor(req), parse(uuid, id), {
+        valueId: q.id,
+        before: q.before,
+        limit: q.limit,
+      }),
     };
   }
 

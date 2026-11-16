@@ -2,6 +2,7 @@ import { roadYo } from "./road/yo";
 import { editorsYo } from "./editors/yo";
 import { cargoBikeYo } from "./cargo-bike/yo";
 import { depotsYo } from "./depots/yo";
+import { mslabYo } from "./mslab/yo";
 import { populationYo } from "./population/yo";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -284,6 +285,7 @@ export const yo: Messages = {
   "prefs.delayLane": "Nínú ọ̀nà bọ́ọ̀sì tàbí tírámù tí a fi kun yà",
   "prefs.delayDefault": "Ilé ìkàwé àròsọ: {value} %",
   "prefs.delayReset": "Lo iye ti ilé ìkàwé",
+  "prefs.reason": "Ìdí fún iye yìí (kò pọn dandan)",
   "prefs.stationsTitle": "Àwọn ibùdókọ̀",
   "prefs.stationsIntro":
     "Àwọn ibùdókọ̀ orúkọ kan náà láàárín ìjìnnà yìí ni a kà sí ibùdókọ̀ kan nínú máàpù àwòrán, olùṣètò ìrìn-àjò àti àwọn tábìlì àǹfààní àti èrò.",
@@ -423,6 +425,7 @@ export const yo: Messages = {
   ...editorsYo,
   ...cargoBikeYo,
   ...depotsYo,
+  ...mslabYo,
   ...populationYo,
   ...roadYo,
   ...PLUGIN_MESSAGES.yo,

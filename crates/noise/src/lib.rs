@@ -27,7 +27,8 @@ pub mod rail;
 pub mod screening;
 
 pub use estimate::{
-    estimate, Estimate, EstimateInput, Flows, LineInput, PointSourceInput, Range, RangeKind,
+    estimate, Estimate, EstimateInput, Flows, InputLevel, LineInput, PointSourceInput, Range,
+    RangeKind,
 };
 pub use ground::TerrainInput;
 pub use params::{Library, Mode, Variant};

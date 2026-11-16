@@ -199,6 +199,7 @@ describe("projects", () => {
     // Read-only: no changes, no copies, and no look at who has access.
     expect((await as("carol").patch(`/api/projects/${lakeside}`, { name: "x" })).status).toBe(403);
     expect((await as("carol").post(`/api/projects/${lakeside}/duplicate`)).status).toBe(403);
+    expect((await as("carol").get(`/api/projects/${lakeside}/mslab`)).status).toBe(403);
     expect((await as("carol").get(`/api/projects/${lakeside}/members`)).status).toBe(403);
     expect(
       (await as("carol").put(`/api/projects/${lakeside}/visibility`, { visibility: "private" })).status,
@@ -364,6 +365,76 @@ describe("projects", () => {
     ).toBe(413);
   });
 
+  it("records who changed each project value, when, from what to what and why", async () => {
+    const path = `/api/projects/${lakeside}`;
+    const mixed = "street.mixed_traffic_delay_share";
+    const lane = "street.bus_lane_delay_share";
+    const history = async (query = "") =>
+      (await as("carol").get(`${path}/value-history${query}`)).body.history;
+    // The first save (in the drawings test) set both values.
+    const first = await history();
+    expect(first.map((h: { id: string }) => h.id).sort()).toEqual([lane, mixed]);
+    expect(first[0]).toMatchObject({
+      kind: "changed",
+      before: { value: null, reason: null },
+      reason: null,
+      by: { id: browsers.alice?.id },
+    });
+    // A changed value with a reason, and a value reset to the library's.
+    const v2 = { values: { [mixed]: 0.35 }, reasons: { [mixed]: "  Survey of 2026  " } };
+    expect((await as("alice").put(`${path}/drawings/preferences`, { doc: v2, baseVersion: 1 })).status).toBe(
+      200,
+    );
+    // A reason given later for the same number.
+    const v3 = { values: { [mixed]: 0.35 }, reasons: { [mixed]: "Survey of 2026, peak hour" } };
+    expect((await as("alice").put(`${path}/drawings/preferences`, { doc: v3, baseVersion: 2 })).status).toBe(
+      200,
+    );
+    // Saving the same values again records nothing.
+    expect((await as("alice").put(`${path}/drawings/preferences`, { doc: v3, baseVersion: 3 })).status).toBe(
+      200,
+    );
+    const all = await history();
+    expect(all).toHaveLength(5);
+    expect(all.slice(0, 3)).toMatchObject([
+      {
+        id: mixed,
+        kind: "reason",
+        before: { value: 0.35, reason: "Survey of 2026" },
+        after: { value: 0.35, reason: "Survey of 2026, peak hour" },
+        reason: "Survey of 2026, peak hour",
+      },
+      {
+        id: mixed,
+        kind: "changed",
+        before: { value: 0.3 },
+        after: { value: 0.35, reason: "Survey of 2026" },
+      },
+      { id: lane, kind: "changed", before: { value: 0.05 }, after: { value: null }, reason: null },
+    ]);
+    expect(all[0].by.id).toBe(browsers.alice?.id);
+    expect(Date.parse(all[0].at)).toBeGreaterThan(0);
+    // One value, and paging back.
+    expect((await history(`?id=${mixed}`)).map((h: { kind: string }) => h.kind)).toEqual([
+      "reason",
+      "changed",
+      "changed",
+    ]);
+    const page = await history(`?limit=2`);
+    expect(page).toHaveLength(2);
+    expect(await history(`?before=${page[1].seq}`)).toEqual(all.slice(2));
+    expect((await as("carol").get(`${path}/value-history?id=Not%20An%20Id`)).status).toBe(400);
+    // Reasons are short text.
+    expect(
+      (
+        await as("alice").put(`${path}/drawings/preferences`, {
+          doc: { ...v3, reasons: { [mixed]: "x".repeat(501) } },
+          baseVersion: 4,
+        })
+      ).status,
+    ).toBe(400);
+  });
+
   it("duplicates into a project the caller owns", async () => {
     const dup = await as("bob").post(`/api/projects/${lakeside}/duplicate`);
     expect(dup.status).toBe(201);
@@ -433,11 +504,21 @@ describe("projects", () => {
       "project.drawing_saved",
       "project.drawing_saved",
       "project.drawing_saved",
+      // The preferences drawing sets two values.
+      "project.drawing_saved",
+      "project.value_changed",
+      "project.value_changed",
+      // The two schematic drawings saved in the drawings test.
+      "project.drawing_saved",
       "project.drawing_saved",
       // The scenarios drawing saved in the drawings test.
       "project.drawing_saved",
-      // The two schematic drawings saved in the drawings test.
+      // The value history test: a change and a reset, a reason given later, the same values again.
       "project.drawing_saved",
+      "project.value_changed",
+      "project.value_changed",
+      "project.drawing_saved",
+      "project.value_reason",
       "project.drawing_saved",
       "project.duplicated",
       "project.archived",

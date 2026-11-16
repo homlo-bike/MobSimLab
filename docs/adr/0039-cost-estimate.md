@@ -1,6 +1,6 @@
 # ADR-0039: Construction and operating cost tables from sourced unit costs and World Bank price levels
 
-- Status: Proposed (first version built: Tables tab cost tables)
+- Status: Accepted (product owner, 2026-11-16); before that Proposed: first version built: Tables tab cost tables
 - Date: 2026-11-09
 - Deciders: product owner, architecture
 - Related: 09-planning-models §3.1, ADR-0017 (outbound gateway), ADR-0018 (assumption engine), ADR-0030 (railway design tool)

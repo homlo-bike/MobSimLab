@@ -2,6 +2,7 @@ import { roadUk } from "./road/uk";
 import { editorsUk } from "./editors/uk";
 import { cargoBikeUk } from "./cargo-bike/uk";
 import { depotsUk } from "./depots/uk";
+import { mslabUk } from "./mslab/uk";
 import { populationUk } from "./population/uk";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -289,6 +290,7 @@ export const uk: Messages = {
   "prefs.delayLane": "На лише нанесеній смузі для автобусів чи трамваїв",
   "prefs.delayDefault": "Бібліотека припущень: {value} %",
   "prefs.delayReset": "Використати значення з бібліотеки",
+  "prefs.reason": "Причина цього значення (необов’язково)",
   "prefs.stationsTitle": "Станції",
   "prefs.stationsIntro":
     "Зупинки з однаковою назвою в межах цієї відстані вважаються однією станцією на схемі мережі, у планувальнику поїздок і в таблицях вигод та пасажирів.",
@@ -429,6 +431,7 @@ export const uk: Messages = {
   ...editorsUk,
   ...cargoBikeUk,
   ...depotsUk,
+  ...mslabUk,
   ...populationUk,
   ...roadUk,
   ...PLUGIN_MESSAGES.uk,

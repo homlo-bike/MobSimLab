@@ -128,6 +128,21 @@ export class RunsController {
     return new StreamableFile(data);
   }
 
+  /** Purpose: the scenario a road run ran, as JSON (`RoadScenario`, ./road.ts). */
+  @Get(":runId/scenario")
+  @Requires("projects.read")
+  async scenario(
+    @Param("id") id: string,
+    @Param("runId") runId: string,
+    @Req() req: MslRequest,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const text = await this.runs.roadScenario(this.actor(req), parse(uuid, id), parse(uuid, runId));
+    res.setHeader("Content-Type", "application/json");
+    res.setHeader("Cache-Control", "private, no-cache");
+    return text;
+  }
+
   /** Purpose: run a saved run again with the same network and settings, replacing its result. */
   @Post(":runId/rerun")
   @HttpCode(200)

@@ -2,6 +2,7 @@ import { roadIg } from "./road/ig";
 import { editorsIg } from "./editors/ig";
 import { cargoBikeIg } from "./cargo-bike/ig";
 import { depotsIg } from "./depots/ig";
+import { mslabIg } from "./mslab/ig";
 import { populationIg } from "./population/ig";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -287,6 +288,7 @@ export const ig: Messages = {
   "prefs.delayLane": "N'ụzọ bọs ma ọ bụ tram e ji agba see",
   "prefs.delayDefault": "Ọbá akwụkwọ echiche: {value} %",
   "prefs.delayReset": "Jiri uru ọbá akwụkwọ",
+  "prefs.reason": "Ihe kpatara uru a (nhọrọ)",
   "prefs.stationsTitle": "Ọdụ",
   "prefs.stationsIntro":
     "Ebe nkwụsị nwere otu aha n'ime anya a ka a na-agụ dị ka otu ọdụ na maapụ eserese, onye nhazi njem na tebụl uru na ndị njem.",
@@ -426,6 +428,7 @@ export const ig: Messages = {
   ...editorsIg,
   ...cargoBikeIg,
   ...depotsIg,
+  ...mslabIg,
   ...populationIg,
   ...roadIg,
   ...PLUGIN_MESSAGES.ig,

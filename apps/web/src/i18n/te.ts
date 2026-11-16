@@ -2,6 +2,7 @@ import { roadTe } from "./road/te";
 import { editorsTe } from "./editors/te";
 import { cargoBikeTe } from "./cargo-bike/te";
 import { depotsTe } from "./depots/te";
+import { mslabTe } from "./mslab/te";
 import { populationTe } from "./population/te";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -287,6 +288,7 @@ export const te: Messages = {
   "prefs.delayLane": "రంగు వేసిన బస్సు లేదా ట్రామ్ లేన్‌లో",
   "prefs.delayDefault": "ఊహల గ్రంథాలయం: {value} %",
   "prefs.delayReset": "గ్రంథాలయ విలువను ఉపయోగించండి",
+  "prefs.reason": "ఈ విలువకు కారణం (ఐచ్ఛికం)",
   "prefs.stationsTitle": "స్టేషన్లు",
   "prefs.stationsIntro":
     "ఈ దూరంలో ఒకే పేరున్న స్టాప్‌లు స్కీమాటిక్ మ్యాప్, ప్రయాణ ప్లానర్, ప్రయోజనాలు మరియు ప్రయాణికుల పట్టికలలో ఒక స్టేషన్‌గా లెక్కించబడతాయి.",
@@ -423,6 +425,7 @@ export const te: Messages = {
   ...editorsTe,
   ...cargoBikeTe,
   ...depotsTe,
+  ...mslabTe,
   ...populationTe,
   ...roadTe,
   ...PLUGIN_MESSAGES.te,
