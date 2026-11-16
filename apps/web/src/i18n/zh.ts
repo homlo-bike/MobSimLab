@@ -3,6 +3,7 @@ import { calendarZh } from "./calendar/zh";
 import { editorsZh } from "./editors/zh";
 import { cargoBikeZh } from "./cargo-bike/zh";
 import { depotsZh } from "./depots/zh";
+import { populationZh } from "./population/zh";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -269,6 +270,9 @@ export const zh: Messages = {
   "prefs.delayLane": "在划线的公交或有轨电车专用道中",
   "prefs.delayDefault": "假设库：{value} %",
   "prefs.delayReset": "使用假设库的值",
+  "prefs.stationsTitle": "车站",
+  "prefs.stationsIntro": "在此距离内的同名站点在线路示意图、出行规划器以及效益和客流表中计为同一车站。",
+  "prefs.libraryM": "假设库：{value} 米",
   "prefs.currencyTitle": "货币",
   "prefs.currencyIntro": "项目中的所有金额都以此货币显示：成本表、效益、方案和货运自行车节省。",
   "prefs.currencyLabel": "金额显示货币",
@@ -287,6 +291,30 @@ export const zh: Messages = {
   "prefs.rulesChanged": "已修改 {count} 项",
   "prefs.rulesLibrary": "假设库：{value} {unit}",
   "prefs.rulesLibraryRange": "假设库：{value} {unit}（范围 {low}–{high}）",
+  "prefs.paramsTitle": "全部参数",
+  "prefs.paramsIntro":
+    "假设库中的每个值。可为所有方式或单一方式设置自己的值；单一方式的值优先于所有方式的值。库中的值显示在旁边。",
+  "prefs.paramsGroup": "分组",
+  "prefs.paramsMode": "交通方式",
+  "prefs.paramsAllModes": "所有方式",
+  "prefs.paramsFromAll": "你为所有方式设置的值",
+  "prefs.group.modes": "交通方式",
+  "prefs.group.operations": "运营",
+  "prefs.group.demand": "需求",
+  "prefs.group.analysis": "分析",
+  "prefs.group.simulation": "仿真",
+  "prefs.group.infrastructure": "基础设施标准",
+  "prefs.group.accessibility": "无障碍",
+  "prefs.group.depots": "车辆段与街道",
+  "prefs.group.energy": "能源与气候",
+  "prefs.group.cost": "成本",
+  "prefs.group.benefits": "效益",
+  "prefs.group.fares": "票价",
+  "prefs.traction.battery": "电池",
+  "prefs.traction.diesel": "柴油",
+  "prefs.traction.hydrogen": "氢能",
+  "prefs.traction.cng": "天然气（CNG）",
+  "prefs.traction.electric": "电力",
   "prefs.accessTitle": "站台无障碍",
   "prefs.accessIntro":
     "站台与列车之间的台阶和间隙限值（TSI PRM），以及车辆目录中缺少地板高度时使用的值。线路在每个停靠站按此检查。",
@@ -369,6 +397,7 @@ export const zh: Messages = {
   ...editorsZh,
   ...cargoBikeZh,
   ...depotsZh,
+  ...populationZh,
   ...roadZh,
   ...calendarZh,
   ...PLUGIN_MESSAGES.zh,

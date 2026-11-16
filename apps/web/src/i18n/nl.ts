@@ -3,6 +3,7 @@ import { calendarNl } from "./calendar/nl";
 import { editorsNl } from "./editors/nl";
 import { cargoBikeNl } from "./cargo-bike/nl";
 import { depotsNl } from "./depots/nl";
+import { populationNl } from "./population/nl";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -281,6 +282,10 @@ export const nl: Messages = {
   "prefs.delayLane": "Op een geschilderde bus- of trambaan",
   "prefs.delayDefault": "Aannamebibliotheek: {value} %",
   "prefs.delayReset": "Waarde van de bibliotheek gebruiken",
+  "prefs.stationsTitle": "Stations",
+  "prefs.stationsIntro":
+    "Haltes met dezelfde naam binnen deze afstand tellen als één station in de netkaart, de reisplanner en de baten- en reizigerstabellen.",
+  "prefs.libraryM": "Aannamebibliotheek: {value} m",
   "prefs.currencyTitle": "Valuta",
   "prefs.currencyIntro":
     "Alle bedragen in het project worden in deze valuta getoond: de kostentabellen, de baten, de scenario's en de besparingen van de bakfiets.",
@@ -302,6 +307,30 @@ export const nl: Messages = {
   "prefs.rulesChanged": "{count} gewijzigd",
   "prefs.rulesLibrary": "Aannamebibliotheek: {value} {unit}",
   "prefs.rulesLibraryRange": "Aannamebibliotheek: {value} {unit} (bereik {low}–{high})",
+  "prefs.paramsTitle": "Alle parameters",
+  "prefs.paramsIntro":
+    "Elke waarde uit de aannamebibliotheek. Stel je eigen waarde in voor alle modaliteiten of voor één; een waarde voor één modaliteit gaat voor die voor alle. De waarde van de bibliotheek staat ernaast.",
+  "prefs.paramsGroup": "Groep",
+  "prefs.paramsMode": "Modaliteit",
+  "prefs.paramsAllModes": "Alle modaliteiten",
+  "prefs.paramsFromAll": "jouw waarde voor alle modaliteiten",
+  "prefs.group.modes": "Modaliteiten",
+  "prefs.group.operations": "Exploitatie",
+  "prefs.group.demand": "Vraag",
+  "prefs.group.analysis": "Analyse",
+  "prefs.group.simulation": "Simulatie",
+  "prefs.group.infrastructure": "Infrastructuurnormen",
+  "prefs.group.accessibility": "Toegankelijkheid",
+  "prefs.group.depots": "Remises en straten",
+  "prefs.group.energy": "Energie en klimaat",
+  "prefs.group.cost": "Kosten",
+  "prefs.group.benefits": "Baten",
+  "prefs.group.fares": "Tarieven",
+  "prefs.traction.battery": "batterij",
+  "prefs.traction.diesel": "diesel",
+  "prefs.traction.hydrogen": "waterstof",
+  "prefs.traction.cng": "aardgas (CNG)",
+  "prefs.traction.electric": "elektrisch",
   "prefs.accessTitle": "Toegankelijkheid van perrons",
   "prefs.accessIntro":
     "Grenzen voor trede en kier tussen perron en trein (TSI PRM) en de vloerhoogte voor treinen zonder waarde in de voertuigcatalogus. Lijnen worden bij elke halte gecontroleerd.",
@@ -393,6 +422,7 @@ export const nl: Messages = {
   ...editorsNl,
   ...cargoBikeNl,
   ...depotsNl,
+  ...populationNl,
   ...roadNl,
   ...calendarNl,
   ...PLUGIN_MESSAGES.nl,

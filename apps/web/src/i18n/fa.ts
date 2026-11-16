@@ -3,6 +3,7 @@ import { calendarFa } from "./calendar/fa";
 import { editorsFa } from "./editors/fa";
 import { cargoBikeFa } from "./cargo-bike/fa";
 import { depotsFa } from "./depots/fa";
+import { populationFa } from "./population/fa";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -276,6 +277,10 @@ export const fa: Messages = {
   "prefs.delayLane": "در خط اتوبوس یا تراموای فقط رنگ‌شده",
   "prefs.delayDefault": "کتابخانهٔ فرض‌ها: {value} %",
   "prefs.delayReset": "استفاده از مقدار کتابخانه",
+  "prefs.stationsTitle": "ایستگاه‌ها",
+  "prefs.stationsIntro":
+    "ایستگاه‌های هم‌نام درون این فاصله در نقشهٔ شماتیک، برنامه‌ریز سفر و جدول‌های منافع و مسافران یک ایستگاه به شمار می‌آیند.",
+  "prefs.libraryM": "کتابخانهٔ فرض‌ها: {value} m",
   "prefs.currencyTitle": "واحد پول",
   "prefs.currencyIntro":
     "همهٔ مبالغ پروژه با این واحد پول نشان داده می‌شوند: جدول‌های هزینه، منافع، سناریوها و صرفه‌جویی دوچرخهٔ باری.",
@@ -296,6 +301,30 @@ export const fa: Messages = {
   "prefs.rulesChanged": "تغییریافته: {count}",
   "prefs.rulesLibrary": "کتابخانهٔ فرض‌ها: {value} {unit}",
   "prefs.rulesLibraryRange": "کتابخانهٔ فرض‌ها: {value} {unit} (بازه {low}–{high})",
+  "prefs.paramsTitle": "همه پارامترها",
+  "prefs.paramsIntro":
+    "هر مقدار کتابخانهٔ فرض‌ها. مقدار خودتان را برای همهٔ شیوه‌ها یا یک شیوه بگذارید؛ مقدار یک شیوه بر مقدار همهٔ شیوه‌ها مقدم است. مقدار کتابخانه کنار هر یک می‌ماند.",
+  "prefs.paramsGroup": "گروه",
+  "prefs.paramsMode": "شیوه",
+  "prefs.paramsAllModes": "همهٔ شیوه‌ها",
+  "prefs.paramsFromAll": "مقدار شما برای همهٔ شیوه‌ها",
+  "prefs.group.modes": "شیوه‌ها",
+  "prefs.group.operations": "بهره‌برداری",
+  "prefs.group.demand": "تقاضا",
+  "prefs.group.analysis": "تحلیل",
+  "prefs.group.simulation": "شبیه‌سازی",
+  "prefs.group.infrastructure": "استانداردهای زیرساخت",
+  "prefs.group.accessibility": "دسترس‌پذیری",
+  "prefs.group.depots": "پایانه‌ها و خیابان‌ها",
+  "prefs.group.energy": "انرژی و اقلیم",
+  "prefs.group.cost": "هزینه‌ها",
+  "prefs.group.benefits": "منافع",
+  "prefs.group.fares": "کرایه‌ها",
+  "prefs.traction.battery": "باتری",
+  "prefs.traction.diesel": "دیزل",
+  "prefs.traction.hydrogen": "هیدروژن",
+  "prefs.traction.cng": "گاز طبیعی (CNG)",
+  "prefs.traction.electric": "برقی",
   "prefs.accessTitle": "دسترس‌پذیری سکو",
   "prefs.accessIntro":
     "حدود پله و فاصله میان سکو و قطار (TSI PRM) و ارتفاع کف برای قطارهایی که در کاتالوگ ندارند. خطوط در هر ایستگاه با این‌ها بررسی می‌شوند.",
@@ -386,6 +415,7 @@ export const fa: Messages = {
   ...editorsFa,
   ...cargoBikeFa,
   ...depotsFa,
+  ...populationFa,
   ...roadFa,
   ...calendarFa,
   ...PLUGIN_MESSAGES.fa,

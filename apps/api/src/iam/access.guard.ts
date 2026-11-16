@@ -11,6 +11,7 @@ import {
 } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { type MslRequest, SessionService } from "../auth/session.service";
+import { addToLogContext, currentLogContext } from "../logging/context";
 import { APP_CONFIG } from "../config/config.module";
 import type { AppConfig } from "../config/env";
 import { type Action, can } from "./policy";
@@ -40,7 +41,12 @@ export class AccessGuard implements CanActivate {
 
   async canActivate(ctx: ExecutionContext): Promise<boolean> {
     const req = ctx.switchToHttp().getRequest<MslRequest>();
-    req.requestId = randomUUID();
+    req.requestId = currentLogContext()?.requestId ?? randomUUID();
+    const params = (req.params ?? {}) as Record<string, string | undefined>;
+    addToLogContext({
+      projectId: req.path.startsWith("/api/projects/") ? params.id : undefined,
+      runId: params.runId,
+    });
     const targets = [ctx.getHandler(), ctx.getClass()];
     if (this.reflector.getAllAndOverride<string>(RATE_LIMIT_KEY, targets) === "auth") {
       const key = `auth:${ctx.getHandler().name}:${req.ip ?? "unknown"}`;
@@ -55,6 +61,7 @@ export class AccessGuard implements CanActivate {
       return true;
     const token = (req.cookies as Record<string, string> | undefined)?.[this.sessions.cookieName];
     req.session = token ? ((await this.sessions.resolve(token)) ?? undefined) : undefined;
+    addToLogContext({ userId: req.session?.actor.userId });
 
     const unsafe = !SAFE_METHODS.has(req.method);
     if (unsafe && !this.sameOrigin(req)) throw new ForbiddenException("cross-origin request refused");
