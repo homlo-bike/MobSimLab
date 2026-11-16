@@ -561,6 +561,12 @@ export const editorsKo = {
   "noise.popDownloading":
     "{countries}의 WorldPop 인구 격자를 서버로 내려받는 중입니다. 그때까지 거주자는 건물 크기로 추정합니다. WorldPop을 쓰려면 몇 분 뒤 다시 계산하세요.",
   "noise.popUnavailable": "WorldPop 인구를 사용할 수 없으므로({reason}) 거주자는 건물 크기로 추정합니다.",
+  "noise.cancelled": "소음 지도가 취소되었습니다.",
+  "noise.popWaiting":
+    "{countries}의 WorldPop 인구 격자를 서버로 내려받는 중: {received}/{total} MB. 나라마다 한 번만 합니다.",
+  "noise.popWaitingUnknown":
+    "{countries}의 WorldPop 인구 격자를 서버로 내려받는 중: 지금까지 {received} MB. 나라마다 한 번만 합니다.",
+  "noise.popSkip": "대신 건물 크기 사용",
   "noise.residents": "거주자",
   "noise.popGrid":
     "WorldPop {year}({countries}) 거주자: 100 m 격자마다의 인구를 연면적에 따라 격자 안 주택에 나눴습니다. 불러온 건물의 거주자 {total}명 중 {reached}명이 범위 안에 삽니다.",

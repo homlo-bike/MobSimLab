@@ -627,6 +627,12 @@ export const editorsAr = {
   "noise.popDownloading":
     "يجري تنزيل شبكة سكان WorldPop لـ {countries} إلى الخادم. وإلى أن تكتمل، يُقدَّر السكان من حجم المباني؛ أعد الحساب بعد بضع دقائق لاستخدام WorldPop.",
   "noise.popUnavailable": "سكان WorldPop غير متاحين ({reason})، لذا يُقدَّر السكان من حجم المباني.",
+  "noise.cancelled": "أُلغيت خريطة الضوضاء.",
+  "noise.popWaiting":
+    "يجري تنزيل شبكة سكان WorldPop لـ {countries} إلى الخادم: {received} من {total} ميغابايت. يحدث هذا مرة واحدة لكل بلد.",
+  "noise.popWaitingUnknown":
+    "يجري تنزيل شبكة سكان WorldPop لـ {countries} إلى الخادم: {received} ميغابايت حتى الآن. يحدث هذا مرة واحدة لكل بلد.",
+  "noise.popSkip": "استخدم حجم المبنى بدلًا من ذلك",
   "noise.residents": "السكان",
   "noise.popGrid":
     "السكان من WorldPop ‏{year} ({countries}): وُزِّع سكان كل خلية 100 م على مساكنها حسب مساحة الطوابق. {reached} من {total} من سكان المباني المحمَّلة يعيشون في النطاق.",

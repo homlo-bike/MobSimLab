@@ -606,6 +606,12 @@ export const editorsZu = {
     "Igridi yenani labantu le-WorldPop ka-{countries} iyadawunilodwa iya kuseva. Ize ifike, izakhamuzi zilinganiswa ngobukhulu bezakhiwo; bala futhi emva kwemizuzu embalwa ukuze usebenzise i-WorldPop.",
   "noise.popUnavailable":
     "Inani labantu le-WorldPop alitholakali ({reason}), ngakho izakhamuzi zilinganiswa ngobukhulu bezakhiwo.",
+  "noise.cancelled": "Imephu yomsindo ikhanseliwe.",
+  "noise.popWaiting":
+    "Ilanda igridi yabantu ye-WorldPop ka-{countries} kuseva: {received} kwezingu-{total} MB. Lokhu kwenzeka kanye ezweni ngalinye.",
+  "noise.popWaitingUnknown":
+    "Ilanda igridi yabantu ye-WorldPop ka-{countries} kuseva: {received} MB kuze kube manje. Lokhu kwenzeka kanye ezweni ngalinye.",
+  "noise.popSkip": "Sebenzisa usayizi wesakhiwo esikhundleni salokho",
   "noise.residents": "Izakhamuzi",
   "noise.popGrid":
     "Izakhamuzi ezivela ku-WorldPop {year} ({countries}): abantu besikwele ngasinye esingu-100 m bahlukaniswe phakathi kwezindlu zaso ngokwendawo yaphansi. Izakhamuzi ezingu-{reached} kwezingu-{total} zezakhiwo ezilayishiwe zihlala ebangeni.",

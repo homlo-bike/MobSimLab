@@ -567,6 +567,12 @@ export const editorsVi = {
     "Lưới dân số WorldPop của {countries} đang được tải về máy chủ. Trong lúc đó, cư dân được ước tính theo kích thước công trình; hãy tính lại sau vài phút để dùng WorldPop.",
   "noise.popUnavailable":
     "Không có dân số WorldPop ({reason}), nên cư dân được ước tính theo kích thước công trình.",
+  "noise.cancelled": "Đã hủy bản đồ tiếng ồn.",
+  "noise.popWaiting":
+    "Đang tải lưới dân số WorldPop của {countries} về máy chủ: {received}/{total} MB. Việc này chỉ diễn ra một lần cho mỗi nước.",
+  "noise.popWaitingUnknown":
+    "Đang tải lưới dân số WorldPop của {countries} về máy chủ: đã được {received} MB. Việc này chỉ diễn ra một lần cho mỗi nước.",
+  "noise.popSkip": "Dùng kích thước tòa nhà thay thế",
   "noise.residents": "Cư dân",
   "noise.popGrid":
     "Cư dân theo WorldPop {year} ({countries}): dân số mỗi ô 100 m được chia cho các nhà ở trong ô theo diện tích sàn. {reached} trên {total} cư dân của các công trình đã tải sống trong tầm.",

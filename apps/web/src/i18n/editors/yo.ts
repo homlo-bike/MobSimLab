@@ -571,6 +571,12 @@ export const editorsYo = {
     "A ń ṣe ìgbàsílẹ̀ àwọ̀n iye ènìyàn WorldPop ti {countries} sí sáfà. Títí yóò fi dé, a ń fojú díwọ̀n olùgbé láti ìtóbi ilé; ṣírò lẹ́ẹ̀kan sí i ní ìṣẹ́jú díẹ̀ láti lo WorldPop.",
   "noise.popUnavailable":
     "Iye ènìyàn WorldPop kò sí ({reason}), nítorí náà a ń fojú díwọ̀n olùgbé láti ìtóbi ilé.",
+  "noise.cancelled": "A ti fagilé máàpù ariwo.",
+  "noise.popWaiting":
+    "A ń gba àkójọ ènìyàn WorldPop ti {countries} sórí sáfà: {received} nínú {total} MB. Èyí ń ṣẹlẹ̀ lẹ́ẹ̀kan fún orílẹ̀-èdè kọ̀ọ̀kan.",
+  "noise.popWaitingUnknown":
+    "A ń gba àkójọ ènìyàn WorldPop ti {countries} sórí sáfà: {received} MB títí di báyìí. Èyí ń ṣẹlẹ̀ lẹ́ẹ̀kan fún orílẹ̀-èdè kọ̀ọ̀kan.",
+  "noise.popSkip": "Lo ìwọ̀n ilé dípò rẹ̀",
   "noise.residents": "Olùgbé",
   "noise.popGrid":
     "Olùgbé láti WorldPop {year} ({countries}): a pín àwọn ènìyàn inú àpótí 100 m kọ̀ọ̀kan sí àwọn ilé gbígbé rẹ̀ gẹ́gẹ́ bí àyè ilẹ̀ àjà. {reached} nínú {total} olùgbé àwọn ilé tí a gbé wọlé ń gbé ní àrọ́wọ́tó.",

@@ -591,6 +591,12 @@ export const editorsId = {
     "Grid penduduk WorldPop untuk {countries} sedang diunduh ke server. Sampai selesai, penghuni diperkirakan dari ukuran bangunan; hitung lagi dalam beberapa menit untuk memakai WorldPop.",
   "noise.popUnavailable":
     "Penduduk WorldPop tidak tersedia ({reason}), sehingga penghuni diperkirakan dari ukuran bangunan.",
+  "noise.cancelled": "Peta kebisingan dibatalkan.",
+  "noise.popWaiting":
+    "Mengunduh grid penduduk WorldPop untuk {countries} ke server: {received} dari {total} MB. Ini terjadi sekali per negara.",
+  "noise.popWaitingUnknown":
+    "Mengunduh grid penduduk WorldPop untuk {countries} ke server: sejauh ini {received} MB. Ini terjadi sekali per negara.",
+  "noise.popSkip": "Gunakan ukuran bangunan saja",
   "noise.residents": "Penghuni",
   "noise.popGrid":
     "Penghuni dari WorldPop {year} ({countries}): penduduk tiap sel 100 m dibagi ke hunian di dalamnya menurut luas lantai. {reached} dari {total} penghuni bangunan yang dimuat tinggal dalam jangkauan.",
