@@ -21,3 +21,7 @@ examples/plugins/*/code/target/
 apps/web/dist-static/
 apps/web/mobsimlab-static.zip
 /static-projects/
+
+# Desktop app (desktop/): bundled server and installers built in CI
+desktop/runtime/
+desktop/release/

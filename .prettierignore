@@ -31,3 +31,6 @@ apps/api/src/mslab/drawing-schemas.generated.json
 contracts/mslab
 apps/web/src/workspace/parameters.generated.json
 apps/web/src/workspace/assumptions-report.generated.json
+desktop/package-lock.json
+desktop/runtime
+desktop/release
