@@ -43,4 +43,16 @@ export const geodataTe = {
     "ప్రాంతం {area} చ.కి.మీ, Overpass పరిధి కంటే ఎక్కువ. ఒక Geofabrik ప్రాంతాన్ని ఎంచుకోండి లేదా ఫైల్‌ను అప్‌లోడ్ చేయండి.",
   "data.readOnly": "యజమానులు మరియు ఎడిటర్లు డేటాను దిగుమతి చేయగలరు.",
   "data.licence": "© OpenStreetMap contributors, ODbL 1.0",
+  "data.own": "మీ స్వంత ఎత్తు గ్రిడ్",
+  "data.ownIntro":
+    "మీటర్లలో ఎత్తులున్న GeoTIFF, ఉదా. LiDAR భూభాగ నమూనా. ఎత్తులు ఉన్న చోట ఇది GLO-30 కంటే ముందు వాడబడుతుంది.",
+  "data.ownFacts": "{res} మీ గ్రిడ్, {crs}",
+  "data.ownAccuracy": "ఎత్తులు ±{acc} మీ లోపు",
+  "data.ownCrs": "నిర్దేశాంక వ్యవస్థ, ఫైల్ దాన్ని పేర్కొనకపోతే (EPSG కోడ్, PROJ లేదా WKT)",
+  "data.ownSource": "మూలం",
+  "data.ownLicence": "లైసెన్స్",
+  "data.ownAccuracyField": "నిలువు ఖచ్చితత్వం (మీ)",
+  "data.ownChoose": "GeoTIFF ఫైల్‌ను ఎంచుకోండి ({max} MB వరకు)",
+  "data.ownReplace": "మరో GeoTIFF తో మార్చండి ({max} MB వరకు)",
+  "data.remove": "తీసివేయి",
 } satisfies GeodataMessages;

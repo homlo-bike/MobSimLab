@@ -42,4 +42,16 @@ export const geodataVi = {
     "Khu vực rộng {area} km², vượt quá phạm vi của Overpass. Hãy chọn một vùng Geofabrik hoặc tải lên một tệp.",
   "data.readOnly": "Chủ sở hữu và Biên tập viên có thể nhập dữ liệu.",
   "data.licence": "© OpenStreetMap contributors, ODbL 1.0",
+  "data.own": "Lưới độ cao của riêng bạn",
+  "data.ownIntro":
+    "Một GeoTIFF độ cao tính bằng mét, như mô hình địa hình LiDAR. Ở nơi có độ cao, nó được dùng trước GLO-30.",
+  "data.ownFacts": "Lưới {res} m, {crs}",
+  "data.ownAccuracy": "độ cao trong khoảng ±{acc} m",
+  "data.ownCrs": "Hệ tọa độ, nếu tệp không ghi (mã EPSG, PROJ hoặc WKT)",
+  "data.ownSource": "Nguồn",
+  "data.ownLicence": "Giấy phép",
+  "data.ownAccuracyField": "Độ chính xác theo chiều đứng (m)",
+  "data.ownChoose": "Chọn tệp GeoTIFF (tối đa {max} MB)",
+  "data.ownReplace": "Thay bằng GeoTIFF khác (tối đa {max} MB)",
+  "data.remove": "Xóa",
 } satisfies GeodataMessages;

@@ -43,4 +43,16 @@ export const geodataDe = {
     "Das Gebiet ist {area} km² groß, mehr als Overpass abdeckt. Wählen Sie eine Geofabrik-Region oder laden Sie eine Datei hoch.",
   "data.readOnly": "Eigentümer und Bearbeiter können Daten importieren.",
   "data.licence": "© OpenStreetMap contributors, ODbL 1.0",
+  "data.own": "Eigenes Höhenraster",
+  "data.ownIntro":
+    "Ein GeoTIFF mit Höhen in Metern, etwa ein LiDAR-Geländemodell. Wo es Höhen hat, wird es vor GLO-30 verwendet.",
+  "data.ownFacts": "{res} m Raster, {crs}",
+  "data.ownAccuracy": "Höhen auf ±{acc} m genau",
+  "data.ownCrs": "Koordinatensystem, falls die Datei es nicht nennt (EPSG-Code, PROJ oder WKT)",
+  "data.ownSource": "Quelle",
+  "data.ownLicence": "Lizenz",
+  "data.ownAccuracyField": "Höhengenauigkeit (m)",
+  "data.ownChoose": "GeoTIFF-Datei wählen (bis {max} MB)",
+  "data.ownReplace": "Durch ein anderes GeoTIFF ersetzen (bis {max} MB)",
+  "data.remove": "Entfernen",
 } satisfies GeodataMessages;

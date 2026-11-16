@@ -43,4 +43,16 @@ export const geodataTa = {
     "பகுதி {area} ச.கி.மீ, Overpass வரம்பை விட அதிகம். ஒரு Geofabrik பிராந்தியத்தைத் தேர்ந்தெடுக்கவும் அல்லது கோப்பைப் பதிவேற்றவும்.",
   "data.readOnly": "உரிமையாளர்களும் தொகுப்பாளர்களும் தரவை இறக்குமதி செய்யலாம்.",
   "data.licence": "© OpenStreetMap contributors, ODbL 1.0",
+  "data.own": "உங்கள் சொந்த உயர வலை",
+  "data.ownIntro":
+    "மீட்டரில் உயரங்களைக் கொண்ட GeoTIFF, எ.கா. LiDAR நில மாதிரி. உயரங்கள் உள்ள இடங்களில் இது GLO-30-க்கு முன் பயன்படுத்தப்படும்.",
+  "data.ownFacts": "{res} மீ வலை, {crs}",
+  "data.ownAccuracy": "உயரங்கள் ±{acc} மீ-க்குள்",
+  "data.ownCrs": "ஆய அமைப்பு, கோப்பு அதைக் குறிப்பிடாவிட்டால் (EPSG குறியீடு, PROJ அல்லது WKT)",
+  "data.ownSource": "மூலம்",
+  "data.ownLicence": "உரிமம்",
+  "data.ownAccuracyField": "செங்குத்து துல்லியம் (மீ)",
+  "data.ownChoose": "GeoTIFF கோப்பைத் தேர்ந்தெடுக்கவும் ({max} MB வரை)",
+  "data.ownReplace": "வேறு GeoTIFF-ஆல் மாற்றவும் ({max} MB வரை)",
+  "data.remove": "நீக்கு",
 } satisfies GeodataMessages;

@@ -42,4 +42,16 @@ export const geodataKk = {
     "Аумақ {area} км², бұл Overpass қамтитыннан үлкен. Geofabrik өңірін таңдаңыз немесе файл жүктеңіз.",
   "data.readOnly": "Деректерді иелер мен редакторлар импорттай алады.",
   "data.licence": "© OpenStreetMap contributors, ODbL 1.0",
+  "data.own": "Өз биіктік торыңыз",
+  "data.ownIntro":
+    "Метрмен берілген биіктіктердің GeoTIFF файлы, мысалы LiDAR жер бедері моделі. Биіктік бар жерде ол GLO-30-дан бұрын қолданылады.",
+  "data.ownFacts": "{res} м тор, {crs}",
+  "data.ownAccuracy": "биіктік дәлдігі ±{acc} м",
+  "data.ownCrs": "Координаттар жүйесі, файл оны атамаса (EPSG коды, PROJ немесе WKT)",
+  "data.ownSource": "Дереккөз",
+  "data.ownLicence": "Лицензия",
+  "data.ownAccuracyField": "Тік дәлдік (м)",
+  "data.ownChoose": "GeoTIFF файлын таңдаңыз ({max} МБ дейін)",
+  "data.ownReplace": "Басқа GeoTIFF-пен ауыстыру ({max} МБ дейін)",
+  "data.remove": "Жою",
 } satisfies GeodataMessages;

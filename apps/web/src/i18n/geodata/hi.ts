@@ -42,4 +42,16 @@ export const geodataHi = {
     "क्षेत्र {area} वर्ग किमी है, Overpass की सीमा से अधिक। कोई Geofabrik क्षेत्र चुनें या फ़ाइल अपलोड करें।",
   "data.readOnly": "मालिक और संपादक डेटा आयात कर सकते हैं।",
   "data.licence": "© OpenStreetMap contributors, ODbL 1.0",
+  "data.own": "आपका अपना ऊँचाई ग्रिड",
+  "data.ownIntro":
+    "मीटर में ऊँचाइयों वाली एक GeoTIFF, जैसे LiDAR भू-भाग मॉडल। जहाँ इसमें ऊँचाइयाँ हैं, वहाँ यह GLO-30 से पहले उपयोग होती है।",
+  "data.ownFacts": "{res} मी ग्रिड, {crs}",
+  "data.ownAccuracy": "ऊँचाइयाँ ±{acc} मी के भीतर",
+  "data.ownCrs": "निर्देशांक प्रणाली, यदि फ़ाइल उसका नाम नहीं देती (EPSG कोड, PROJ या WKT)",
+  "data.ownSource": "स्रोत",
+  "data.ownLicence": "लाइसेंस",
+  "data.ownAccuracyField": "ऊर्ध्वाधर सटीकता (मी)",
+  "data.ownChoose": "GeoTIFF फ़ाइल चुनें ({max} MB तक)",
+  "data.ownReplace": "दूसरी GeoTIFF से बदलें ({max} MB तक)",
+  "data.remove": "हटाएँ",
 } satisfies GeodataMessages;

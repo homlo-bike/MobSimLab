@@ -42,4 +42,16 @@ export const geodataHa = {
     "Yankin ya kai km² {area}, fiye da abin da Overpass ke amfani da shi. Zaɓi yankin Geofabrik ko ɗora fayil.",
   "data.readOnly": "Masu aiki da Masu gyara za su iya shigo da bayanai.",
   "data.licence": "© OpenStreetMap contributors, ODbL 1.0",
+  "data.own": "Grid ɗin tsayinka na kanka",
+  "data.ownIntro":
+    "GeoTIFF na tsayi a mita, kamar samfurin ƙasa na LiDAR. Inda yake da tsayi, ana amfani da shi kafin GLO-30.",
+  "data.ownFacts": "Grid na m {res}, {crs}",
+  "data.ownAccuracy": "tsayi cikin ±{acc} m",
+  "data.ownCrs": "Tsarin daidaitawa, idan fayil bai ambace shi ba (lambar EPSG, PROJ ko WKT)",
+  "data.ownSource": "Tushe",
+  "data.ownLicence": "Lasisi",
+  "data.ownAccuracyField": "Daidaiton tsaye (m)",
+  "data.ownChoose": "Zaɓi fayil na GeoTIFF (har zuwa MB {max})",
+  "data.ownReplace": "Maye gurbinsa da wani GeoTIFF (har zuwa MB {max})",
+  "data.remove": "Cire",
 } satisfies GeodataMessages;

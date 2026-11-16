@@ -42,4 +42,16 @@ export const geodataKo = {
     "영역이 {area} km²로 Overpass가 다루는 범위를 넘습니다. Geofabrik 지역을 고르거나 파일을 올리세요.",
   "data.readOnly": "소유자와 편집자가 데이터를 가져올 수 있습니다.",
   "data.licence": "© OpenStreetMap contributors, ODbL 1.0",
+  "data.own": "자체 고도 격자",
+  "data.ownIntro":
+    "미터 단위 높이의 GeoTIFF(예: LiDAR 지형 모델). 높이가 있는 곳에서는 GLO-30보다 먼저 사용됩니다.",
+  "data.ownFacts": "{res} m 격자, {crs}",
+  "data.ownAccuracy": "높이 정확도 ±{acc} m",
+  "data.ownCrs": "좌표계(파일에 명시되지 않은 경우, EPSG 코드, PROJ 또는 WKT)",
+  "data.ownSource": "출처",
+  "data.ownLicence": "라이선스",
+  "data.ownAccuracyField": "수직 정확도 (m)",
+  "data.ownChoose": "GeoTIFF 파일 선택(최대 {max} MB)",
+  "data.ownReplace": "다른 GeoTIFF로 바꾸기(최대 {max} MB)",
+  "data.remove": "삭제",
 } satisfies GeodataMessages;

@@ -43,4 +43,16 @@ export const geodataJa = {
     "範囲は {area} km² で、Overpass の対象を超えています。Geofabrik の地域を選ぶか、ファイルをアップロードしてください。",
   "data.readOnly": "データをインポートできるのはオーナーと編集者です。",
   "data.licence": "© OpenStreetMap contributors, ODbL 1.0",
+  "data.own": "独自の標高グリッド",
+  "data.ownIntro":
+    "メートル単位の標高の GeoTIFF(LiDAR 地形モデルなど)。標高がある場所では GLO-30 より優先して使われます。",
+  "data.ownFacts": "{res} m グリッド、{crs}",
+  "data.ownAccuracy": "標高精度 ±{acc} m",
+  "data.ownCrs": "座標系(ファイルに記載がない場合。EPSG コード、PROJ または WKT)",
+  "data.ownSource": "出典",
+  "data.ownLicence": "ライセンス",
+  "data.ownAccuracyField": "鉛直精度 (m)",
+  "data.ownChoose": "GeoTIFF ファイルを選択(最大 {max} MB)",
+  "data.ownReplace": "別の GeoTIFF に置き換える(最大 {max} MB)",
+  "data.remove": "削除",
 } satisfies GeodataMessages;

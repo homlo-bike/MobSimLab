@@ -41,4 +41,16 @@ export const geodataAr = {
     "مساحة المنطقة {area} كم²، أكبر مما يغطيه Overpass. اختر منطقة من Geofabrik أو ارفع ملفًا.",
   "data.readOnly": "يستطيع المالكون والمحررون استيراد البيانات.",
   "data.licence": "© OpenStreetMap contributors, ODbL 1.0",
+  "data.own": "شبكة الارتفاعات الخاصة بك",
+  "data.ownIntro":
+    "ملف GeoTIFF للارتفاعات بالأمتار، مثل نموذج تضاريس LiDAR. حيث توجد فيه ارتفاعات يُستخدم قبل GLO-30.",
+  "data.ownFacts": "شبكة {res} م، {crs}",
+  "data.ownAccuracy": "ارتفاعات بدقة ±{acc} م",
+  "data.ownCrs": "نظام الإحداثيات إن لم يذكره الملف (رمز EPSG أو PROJ أو WKT)",
+  "data.ownSource": "المصدر",
+  "data.ownLicence": "الترخيص",
+  "data.ownAccuracyField": "الدقة الرأسية (م)",
+  "data.ownChoose": "اختر ملف GeoTIFF (حتى {max} ميغابايت)",
+  "data.ownReplace": "استبدله بملف GeoTIFF آخر (حتى {max} ميغابايت)",
+  "data.remove": "إزالة",
 } satisfies GeodataMessages;

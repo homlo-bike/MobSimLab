@@ -42,4 +42,16 @@ export const geodataMr = {
     "क्षेत्र {area} चौ. किमी आहे, Overpass च्या मर्यादेपेक्षा जास्त. एक Geofabrik प्रदेश निवडा किंवा फाइल अपलोड करा.",
   "data.readOnly": "मालक आणि संपादक डेटा आयात करू शकतात.",
   "data.licence": "© OpenStreetMap contributors, ODbL 1.0",
+  "data.own": "तुमची स्वतःची उंची जाळी",
+  "data.ownIntro":
+    "मीटरमधील उंचींची GeoTIFF, उदा. LiDAR भूप्रदेश मॉडेल. जिथे तिच्यात उंची आहे, तिथे ती GLO-30 आधी वापरली जाते.",
+  "data.ownFacts": "{res} मी जाळी, {crs}",
+  "data.ownAccuracy": "उंची ±{acc} मी आत",
+  "data.ownCrs": "समन्वय प्रणाली, फाइल तिचे नाव देत नसल्यास (EPSG कोड, PROJ किंवा WKT)",
+  "data.ownSource": "स्रोत",
+  "data.ownLicence": "परवाना",
+  "data.ownAccuracyField": "उभी अचूकता (मी)",
+  "data.ownChoose": "GeoTIFF फाइल निवडा ({max} MB पर्यंत)",
+  "data.ownReplace": "दुसऱ्या GeoTIFF ने बदला ({max} MB पर्यंत)",
+  "data.remove": "काढा",
 } satisfies GeodataMessages;

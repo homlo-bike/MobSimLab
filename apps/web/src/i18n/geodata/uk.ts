@@ -43,4 +43,16 @@ export const geodataUk = {
     "Площа області {area} км² — більше, ніж охоплює Overpass. Виберіть регіон Geofabrik або завантажте файл.",
   "data.readOnly": "Імпортувати дані можуть власники й редактори.",
   "data.licence": "© OpenStreetMap contributors, ODbL 1.0",
+  "data.own": "Власна сітка висот",
+  "data.ownIntro":
+    "GeoTIFF з висотами в метрах, наприклад модель рельєфу LiDAR. Де в ньому є висоти, він використовується перед GLO-30.",
+  "data.ownFacts": "Сітка {res} м, {crs}",
+  "data.ownAccuracy": "висоти з точністю ±{acc} м",
+  "data.ownCrs": "Система координат, якщо файл її не вказує (код EPSG, PROJ або WKT)",
+  "data.ownSource": "Джерело",
+  "data.ownLicence": "Ліцензія",
+  "data.ownAccuracyField": "Точність за висотою (м)",
+  "data.ownChoose": "Вибрати файл GeoTIFF (до {max} МБ)",
+  "data.ownReplace": "Замінити іншим GeoTIFF (до {max} МБ)",
+  "data.remove": "Видалити",
 } satisfies GeodataMessages;

@@ -42,4 +42,16 @@ export const geodataZu = {
     "Indawo ingu-{area} km², ngaphezu kwalokho i-Overpass esetshenziselwa khona. Khetha isifunda se-Geofabrik noma layisha ifayela.",
   "data.readOnly": "Abanikazi Nabahleli bangangenisa idatha.",
   "data.licence": "© OpenStreetMap contributors, ODbL 1.0",
+  "data.own": "Igridi yakho yokuphakama",
+  "data.ownIntro":
+    "I-GeoTIFF yokuphakama ngamamitha, njengemodeli yendawo ye-LiDAR. Lapho inokuphakama khona, isetshenziswa ngaphambi kwe-GLO-30.",
+  "data.ownFacts": "Igridi engu-{res} m, {crs}",
+  "data.ownAccuracy": "ukuphakama ngaphakathi kuka-±{acc} m",
+  "data.ownCrs": "Uhlelo lwezixhumanisi, uma ifayela lingalubizi (ikhodi ye-EPSG, PROJ noma i-WKT)",
+  "data.ownSource": "Umthombo",
+  "data.ownLicence": "Ilayisensi",
+  "data.ownAccuracyField": "Ukunemba okuqondile (m)",
+  "data.ownChoose": "Khetha ifayela le-GeoTIFF (kuze kube ngu-{max} MB)",
+  "data.ownReplace": "Shintsha ngenye i-GeoTIFF (kuze kube ngu-{max} MB)",
+  "data.remove": "Susa",
 } satisfies GeodataMessages;
