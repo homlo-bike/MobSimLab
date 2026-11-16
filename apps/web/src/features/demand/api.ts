@@ -94,6 +94,35 @@ export interface DemandRunsApi {
   remove(id: string): Promise<void>;
   /** Where the browser downloads a file the run saved (the OD matrices, `od.omx`). */
   fileUrl(id: string, name: string): string;
+  /** Load one zoom-14 street tile into the server's street cache, so starting a run does not wait for it. */
+  streetTile(x: number, y: number): Promise<void>;
+}
+
+/** Most street tiles one demand run may take (apps/api `MAX_DEMAND_TILES`). */
+export const MAX_DEMAND_TILES = 160;
+
+/** Purpose: the web-mercator tile at zoom 14 holding a point (apps/api `tileOf`). */
+function tileOf(lon: number, lat: number): [number, number] {
+  const n = 2 ** 14;
+  const x = Math.floor(((lon + 180) / 360) * n);
+  const r = (lat * Math.PI) / 180;
+  const y = Math.floor(((1 - Math.log(Math.tan(r) + 1 / Math.cos(r)) / Math.PI) / 2) * n);
+  return [Math.min(n - 1, Math.max(0, x)), Math.min(n - 1, Math.max(0, y))];
+}
+
+/**
+ * Purpose: the street tiles the server adds to a demand run: the tile of every zone centre and the tiles
+ * around it (apps/api `demandTiles`, which must agree).
+ */
+export function demandTiles(centres: [number, number][]): [number, number][] {
+  const seen = new Map<string, [number, number]>();
+  for (const [lon, lat] of centres) {
+    if (!Number.isFinite(lon) || !Number.isFinite(lat) || Math.abs(lat) > 85) continue;
+    const [x0, y0] = tileOf(lon, lat);
+    for (let dy = -1; dy <= 1; dy++)
+      for (let dx = -1; dx <= 1; dx++) seen.set(`${x0 + dx}/${y0 + dy}`, [x0 + dx, y0 + dy]);
+  }
+  return [...seen.values()].sort((a, b) => a[1] - b[1] || a[0] - b[0]);
 }
 
 /** Purpose: the demand runs of one project, through the session cookie and CSRF token. */
@@ -120,6 +149,12 @@ export function projectDemandRuns(projectId: string, csrf: string): DemandRunsAp
       await send<{ ok: true }>("DELETE", one(id), csrf);
     },
     fileUrl: (id, name) => `${one(id)}/files/${encodeURIComponent(name)}`,
+    streetTile: async (x, y) => {
+      const res = await fetch(`/api/street-network/tiles/14/${x}/${y}`, { credentials: "same-origin" });
+      if (!res.ok)
+        throw new Error(`OpenStreetMap streets are unavailable right now (${res.status}); try again`);
+      await res.text();
+    },
   };
 }
 

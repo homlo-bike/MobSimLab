@@ -7,6 +7,8 @@ import type { Region } from "../benefits/regions";
 import type { Timetable } from "../journey-planner/types";
 import type { PreferencesDoc } from "../../workspace/preferences";
 import {
+  demandTiles,
+  MAX_DEMAND_TILES,
   type DemandResult,
   type DemandRun,
   type DemandRunDetail,
@@ -224,6 +226,7 @@ export function DemandSection({
   const [viewing, setViewing] = useState<DemandRunDetail | null>(null);
   const [sending, setSending] = useState(false);
   const [runError, setRunError] = useState<string | null>(null);
+  const [streets, setStreets] = useState<number | null>(null);
   useEffect(() => {
     if (!runs) return;
     let live = true;
@@ -300,6 +303,25 @@ export function DemandSection({
         prefs: preferences,
       });
       const { bundle, summary } = makeBundle(est.zones, transit, economy);
+      // The server adds the streets around the zones; loading them first keeps the start request short.
+      const tiles = demandTiles(bundle.zones.map((z) => z.centroid));
+      if (tiles.length > MAX_DEMAND_TILES) {
+        setRunError(
+          `The zones cover too large an area for one run (${tiles.length} street tiles, at most ${MAX_DEMAND_TILES}). Use a smaller buffer in Project preferences, or fewer zones.`,
+        );
+        return;
+      }
+      let done = 0;
+      setStreets(0);
+      const queue = [...tiles];
+      const worker = async () => {
+        for (let t = queue.shift(); t; t = queue.shift()) {
+          await runs.streetTile(t[0], t[1]);
+          setStreets(++done / tiles.length);
+        }
+      };
+      await Promise.all([worker(), worker(), worker(), worker()]);
+      setStreets(null);
       const r = await runs.start(bundle, demandValues(preferences), summary);
       setViewing(r);
       setSaved((l) => [r, ...l.filter((x) => x.id !== r.id)]);
@@ -307,6 +329,7 @@ export function DemandSection({
       setRunError(message(e));
     } finally {
       setSending(false);
+      setStreets(null);
     }
   };
 
@@ -520,6 +543,11 @@ export function DemandSection({
             </button>
           )}
         </div>
+        {streets !== null && (
+          <p role="status" className="mt-2 text-sm text-slate-500">
+            Loading the OpenStreetMap streets of the zones… {fmt(streets * 100)} %
+          </p>
+        )}
         {runError && (
           <p role="alert" className="mt-2 text-sm text-red-700">
             {runError}
