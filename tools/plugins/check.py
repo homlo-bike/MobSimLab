@@ -104,7 +104,8 @@ def resolve(param: dict, mode: str, key: str | None, option: str | None) -> dict
     return best
 
 
-# What a calculation's input kind needs among the manifest's permissions (ADR-0036 §5); `parameters` needs none.
+# What a calculation's input kind needs among the manifest's permissions (ADR-0036 §5).
+# `parameters` needs none.
 INPUT_PERMISSION = {
     "network": "read:network",
     "street_lines": "read:network",
@@ -118,9 +119,12 @@ COMPONENT_WHERE = {"tables", "plugin-tab"}
 
 
 def check_code(pid: str, manifest: dict, folder: Path | None) -> list[str]:
-    """Rules for code and tabs (ADR-0036 §4, §6). Bundled plugins use core crates (`bundled-wasm`) and views the
-    web app ships; installed plugins bring WebAssembly components (`component`) and sandboxed pages (`ui`).
-    `folder` is None when the files are checked elsewhere (the API checks uploaded packages)."""
+    """Check the rules for code and tabs (ADR-0036 §4, §6).
+
+    Bundled plugins use core crates (`bundled-wasm`) and views the web app ships; installed plugins bring
+    WebAssembly components (`component`) and sandboxed pages (`ui`). `folder` is None when the files are
+    checked elsewhere (the API checks uploaded packages).
+    """
     errors: list[str] = []
     c = manifest["contributes"]
     bundled = manifest.get("bundled", False)
@@ -149,16 +153,26 @@ def check_code(pid: str, manifest: dict, folder: Path | None) -> list[str]:
             for i in x["inputs"]:
                 need = INPUT_PERMISSION.get(i)
                 if need and need not in perms:
-                    errors.append(f"{pid}: calculation {x['id']} reads {i}, which needs the {need} permission")
+                    errors.append(
+                        f"{pid}: calculation {x['id']} reads {i}, which needs the {need} permission"
+                    )
             for w in x.get("where", []):
                 if w not in COMPONENT_WHERE:
-                    errors.append(f"{pid}: calculation {x['id']}: an installed plugin's calculation cannot appear in {w}")
-            if "plugin-tab" in x.get("where", []) and not any(x["id"] in t.get("calculations", []) for t in tabs):
+                    errors.append(
+                        f"{pid}: calculation {x['id']}: "
+                        f"an installed plugin's calculation cannot appear in {w}"
+                    )
+            listed = any(x["id"] in t.get("calculations", []) for t in tabs)
+            if "plugin-tab" in x.get("where", []) and not listed:
                 errors.append(f"{pid}: calculation {x['id']} is for a plugin tab, but no tab lists it")
         elif kind == "importer" and "write:scenario" not in perms:
-            errors.append(f"{pid}: importer {x['id']} adds to the project, which needs the write:scenario permission")
+            errors.append(
+                f"{pid}: importer {x['id']} adds to the project, which needs the write:scenario permission"
+            )
         elif kind == "exporter" and "read:timetable" not in perms:
-            errors.append(f"{pid}: exporter {x['id']} reads the timetable, which needs the read:timetable permission")
+            errors.append(
+                f"{pid}: exporter {x['id']} reads the timetable, which needs the read:timetable permission"
+            )
     if any(x["runtime"] == "component" for _, x in code) and "compute" not in tiers:
         errors.append(f"{pid}: a plugin with components must list the compute tier")
     for tab in tabs:
