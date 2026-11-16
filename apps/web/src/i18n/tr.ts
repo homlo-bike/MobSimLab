@@ -4,6 +4,7 @@ import { editorsTr } from "./editors/tr";
 import { cargoBikeTr } from "./cargo-bike/tr";
 import { commentsTr } from "./comments/tr";
 import { depotsTr } from "./depots/tr";
+import { fleetTr } from "./fleet/tr";
 import { timetablesTr } from "./timetables/tr";
 import { mslabTr } from "./mslab/tr";
 import { pluginCodeTr } from "./plugin-code/tr";
@@ -497,6 +498,7 @@ export const tr: Messages = {
   ...editorsTr,
   ...cargoBikeTr,
   ...depotsTr,
+  ...fleetTr,
   ...timetablesTr,
   ...commentsTr,
   ...mslabTr,

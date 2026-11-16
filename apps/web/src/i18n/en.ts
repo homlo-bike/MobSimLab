@@ -2,6 +2,7 @@ import { editorsEn } from "./editors/en";
 import { cargoBikeEn } from "./cargo-bike/en";
 import { commentsEn } from "./comments/en";
 import { depotsEn } from "./depots/en";
+import { fleetEn } from "./fleet/en";
 import { timetablesEn } from "./timetables/en";
 import { mslabEn } from "./mslab/en";
 import { pluginCodeEn } from "./plugin-code/en";
@@ -490,6 +491,7 @@ export const en = {
   ...editorsEn,
   ...cargoBikeEn,
   ...depotsEn,
+  ...fleetEn,
   ...timetablesEn,
   ...commentsEn,
   ...mslabEn,

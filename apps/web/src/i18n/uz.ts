@@ -4,6 +4,7 @@ import { editorsUz } from "./editors/uz";
 import { cargoBikeUz } from "./cargo-bike/uz";
 import { commentsUz } from "./comments/uz";
 import { depotsUz } from "./depots/uz";
+import { fleetUz } from "./fleet/uz";
 import { timetablesUz } from "./timetables/uz";
 import { mslabUz } from "./mslab/uz";
 import { pluginCodeUz } from "./plugin-code/uz";
@@ -503,6 +504,7 @@ export const uz: Messages = {
   ...editorsUz,
   ...cargoBikeUz,
   ...depotsUz,
+  ...fleetUz,
   ...timetablesUz,
   ...commentsUz,
   ...mslabUz,

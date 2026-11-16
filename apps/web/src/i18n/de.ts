@@ -4,6 +4,7 @@ import { editorsDe } from "./editors/de";
 import { cargoBikeDe } from "./cargo-bike/de";
 import { commentsDe } from "./comments/de";
 import { depotsDe } from "./depots/de";
+import { fleetDe } from "./fleet/de";
 import { timetablesDe } from "./timetables/de";
 import { mslabDe } from "./mslab/de";
 import { pluginCodeDe } from "./plugin-code/de";
@@ -507,6 +508,7 @@ export const de: Messages = {
   ...editorsDe,
   ...cargoBikeDe,
   ...depotsDe,
+  ...fleetDe,
   ...timetablesDe,
   ...commentsDe,
   ...mslabDe,

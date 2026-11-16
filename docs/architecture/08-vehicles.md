@@ -27,6 +27,8 @@ Every mode has its own folder, even where the brief merges them (intercity bus i
 
 Custom vehicles: uploaded or created in the UI, validated against the same schema, stored **inside the project** (`fleet.vehicle_type` with `origin='project'`, and in the `.mslab` export under `vehicles/`). An instance admin may add an **instance library** (a folder on the data volume) shared by all projects.
 
+Status: built in Project preferences (user guide: [Own vehicles and fleet](../user/vehicles-and-fleet.md)). Until vehicle types are stored as rows, own vehicles and the fleet (§4) are kept in the project's `fleet` drawing (`apps/web/src/features/fleet/model.ts`); uploads take the research format and the catalogue format, and a vehicle without a core field is rejected. Not yet: the `.mslab` export and the instance library.
+
 ## 2. Data model
 
 All fields from the brief, grouped. Every leaf numeric field is a `Quantity` = `AssumedValue` with a unit (see 04 §2.3). Lists of positions are measured **from the front coupling face / front bumper, along the vehicle centre line, in metres**.

@@ -4,6 +4,7 @@ import { editorsVi } from "./editors/vi";
 import { cargoBikeVi } from "./cargo-bike/vi";
 import { commentsVi } from "./comments/vi";
 import { depotsVi } from "./depots/vi";
+import { fleetVi } from "./fleet/vi";
 import { timetablesVi } from "./timetables/vi";
 import { mslabVi } from "./mslab/vi";
 import { pluginCodeVi } from "./plugin-code/vi";
@@ -494,6 +495,7 @@ export const vi: Messages = {
   ...editorsVi,
   ...cargoBikeVi,
   ...depotsVi,
+  ...fleetVi,
   ...timetablesVi,
   ...commentsVi,
   ...mslabVi,

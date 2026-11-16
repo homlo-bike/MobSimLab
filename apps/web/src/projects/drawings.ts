@@ -15,6 +15,7 @@ export type DrawingKind =
   | "scenarios"
   | "cargo-bike"
   | "depots"
+  | "fleet"
   | "demand"
   | "fares";
 export const DRAWING_KINDS: readonly DrawingKind[] = [
@@ -31,6 +32,7 @@ export const DRAWING_KINDS: readonly DrawingKind[] = [
   "regions",
   "cargo-bike",
   "depots",
+  "fleet",
   "demand",
   "fares",
 ];

@@ -113,6 +113,8 @@ import {
   vehiclesOffFrom,
 } from "./preferences";
 import { VehiclesOffContext } from "./projectVehicles";
+import { EMPTY_FLEET, fleetFrom, type FleetDoc } from "../features/fleet/model";
+import { setOwnVehicles } from "../features/fleet/registry";
 import type { DelayShares } from "../features/street-lines/types";
 import { type Drawings, useDrawings } from "./useDrawings";
 import { CalendarRun } from "../features/calendar-run/CalendarRun";
@@ -429,10 +431,20 @@ export function Workspace({
     () => JSON.parse(switchJson) as ReturnType<typeof switchChoiceFrom>,
     [switchJson],
   );
+  // The project's own vehicles and its fleet (Project preferences). Own vehicles join the catalogue's for
+  // every tool: set them before the tools render, and leave the catalogue alone when the project closes.
+  const fleetRaw = drawings.doc<FleetDoc>("fleet");
+  const fleet = useMemo(() => (fleetRaw ? fleetFrom(fleetRaw) : EMPTY_FLEET), [fleetRaw]);
+  setOwnVehicles(fleet.vehicles);
+  useEffect(() => () => setOwnVehicles([]), []);
   const offJson = JSON.stringify([...vehiclesOffFrom(preferences)]);
   const vehiclesOff = useMemo(
-    () => new Set(JSON.parse(offJson) as string[]) as ReadonlySet<string>,
-    [offJson],
+    // A new set when the own vehicles change too, so the line tools' vehicle lists render again.
+    () => {
+      void fleet.vehicles;
+      return new Set(JSON.parse(offJson) as string[]) as ReadonlySet<string>;
+    },
+    [offJson, fleet.vehicles],
   );
   // Street setups made before projects saved drawings were kept in this browser: move them to the project once.
   useEffect(() => {
@@ -982,6 +994,9 @@ export function Workspace({
               plugins={plugins}
               onSetPlugin={setPlugin}
               currency={currencyState}
+              fleet={drawings.loaded ? fleet : null}
+              onFleet={drawings.loaded ? (d) => drawings.set("fleet", d) : undefined}
+              depots={depotsDoc?.depots ?? NO_DEPOTS}
               country={placeCountry}
               place={place}
             />

@@ -4,6 +4,7 @@ import { editorsTa } from "./editors/ta";
 import { cargoBikeTa } from "./cargo-bike/ta";
 import { commentsTa } from "./comments/ta";
 import { depotsTa } from "./depots/ta";
+import { fleetTa } from "./fleet/ta";
 import { timetablesTa } from "./timetables/ta";
 import { mslabTa } from "./mslab/ta";
 import { pluginCodeTa } from "./plugin-code/ta";
@@ -506,6 +507,7 @@ export const ta: Messages = {
   ...editorsTa,
   ...cargoBikeTa,
   ...depotsTa,
+  ...fleetTa,
   ...timetablesTa,
   ...commentsTa,
   ...mslabTa,
