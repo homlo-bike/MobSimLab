@@ -11,6 +11,7 @@ import { SessionService } from "./auth/session.service";
 import { ConfigModule } from "./config/config.module";
 import type { AppConfig } from "./config/env";
 import { HealthController } from "./health/health.controller";
+import { LoggingModule } from "./logging/logging.module";
 import { StreetNetworkModule } from "./street-network/street-network.module";
 import { BenefitsModule } from "./benefits/benefits.module";
 import { PopulationModule } from "./population/population.module";
@@ -39,6 +40,7 @@ export class AppModule {
       module: AppModule,
       imports: [
         ConfigModule.forRoot(config),
+        LoggingModule,
         StreetNetworkModule,
         TerrainModule,
         PopulationModule,
