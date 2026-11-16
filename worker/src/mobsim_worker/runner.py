@@ -15,6 +15,7 @@ from typing import Any, Protocol
 import structlog
 from psycopg.types.json import Jsonb
 
+from mobsim_worker.jobs.calendar import run_calendar
 from mobsim_worker.jobs.capacity import KernelLoader, load_kernel, run_capacity
 from mobsim_worker.jobs.sweep import run_sweep
 from mobsim_worker.queue import Connection, Job, Queue
@@ -161,7 +162,7 @@ def process(
     bound.info("run started")
     reporter = RunReporter(conn, queue, job, run_id, stop)
     try:
-        if kind not in ("capacity", "sweep", "road"):
+        if kind not in ("capacity", "sweep", "road", "calendar"):
             raise ValueError(f"this worker cannot run {kind!r} runs")
         if cancel_requested:
             settle(conn, run_id, "cancelled", None, None)
@@ -173,6 +174,9 @@ def process(
             outcome, result, replay = road(settings, json.loads(lines), list(tiles), reporter)
             if replay is not None and outcome == "done":
                 conn.execute(REPLAY, {"id": run_id, "data": replay})
+        elif kind == "calendar":
+            # A project without rail service lines has no network: only the expansion runs.
+            outcome, result = run_calendar(loader(network, lines) if network else None, settings, reporter)
         elif kind == "sweep":
             outcome, result = run_sweep(loader(network, lines), settings, reporter)
         else:

@@ -1954,6 +1954,30 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 |---|---|---|---|---|---|---|---|
 | all | 280 | 300 | 330 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Annual ridership is usually 280–330 times average weekday ridership, as weekends and holidays carry less. |
 
+### Ridership: a Saturday's riders as a share of a weekday's
+
+`benefit.ridership.saturday_share` · unit: share · used by: multi-year runs (passengers per day type)
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.5 | 0.6 | 0.75 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Weekend days carry fewer riders than weekdays. With 0.6 on Saturdays and 0.45 on Sundays and public holidays, a year of 250 weekdays, 52 Saturdays, 52 Sundays and 10 holidays comes to about 310 weekday equivalents, in line with benefit.ridership.days_per_year (280–330). |
+
+### Ridership: a Sunday's riders as a share of a weekday's
+
+`benefit.ridership.sunday_share` · unit: share · used by: multi-year runs (passengers per day type)
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.35 | 0.45 | 0.6 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Sundays carry the fewest riders of the week; the range keeps the year's weekday equivalents within benefit.ridership.days_per_year (280–330), as for benefit.ridership.saturday_share. |
+
+### Ridership: a public holiday's riders as a share of a weekday's
+
+`benefit.ridership.holiday_share` · unit: share · used by: multi-year runs (passengers per day type)
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.35 | 0.45 | 0.6 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | A public holiday usually runs like a Sunday, so it takes the Sunday share (benefit.ridership.sunday_share). |
+
 ### Ridership: share of a weekday's boardings in one peak hour
 
 `benefit.ridership.peak_hour_share` · unit: share · used by: passenger loads in the simulator's system test

@@ -273,6 +273,39 @@
     ]
    }
   },
+  "benefit.ridership.saturday_share": {
+   "label": "Ridership: a Saturday's riders as a share of a weekday's",
+   "unit": "share",
+   "values": {
+    "*": [
+     0.5,
+     0.6,
+     0.75
+    ]
+   }
+  },
+  "benefit.ridership.sunday_share": {
+   "label": "Ridership: a Sunday's riders as a share of a weekday's",
+   "unit": "share",
+   "values": {
+    "*": [
+     0.35,
+     0.45,
+     0.6
+    ]
+   }
+  },
+  "benefit.ridership.holiday_share": {
+   "label": "Ridership: a public holiday's riders as a share of a weekday's",
+   "unit": "share",
+   "values": {
+    "*": [
+     0.35,
+     0.45,
+     0.6
+    ]
+   }
+  },
   "benefit.ridership.peak_hour_share": {
    "label": "Ridership: share of a weekday's boardings in one peak hour",
    "unit": "share",

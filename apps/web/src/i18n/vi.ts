@@ -1,4 +1,5 @@
 import { roadVi } from "./road/vi";
+import { calendarVi } from "./calendar/vi";
 import { editorsVi } from "./editors/vi";
 import { cargoBikeVi } from "./cargo-bike/vi";
 import { depotsVi } from "./depots/vi";
@@ -388,5 +389,6 @@ export const vi: Messages = {
   ...cargoBikeVi,
   ...depotsVi,
   ...roadVi,
+  ...calendarVi,
   ...PLUGIN_MESSAGES.vi,
 };

@@ -1,4 +1,5 @@
 import { roadHi } from "./road/hi";
+import { calendarHi } from "./calendar/hi";
 import { editorsHi } from "./editors/hi";
 import { cargoBikeHi } from "./cargo-bike/hi";
 import { depotsHi } from "./depots/hi";
@@ -388,5 +389,6 @@ export const hi: Messages = {
   ...cargoBikeHi,
   ...depotsHi,
   ...roadHi,
+  ...calendarHi,
   ...PLUGIN_MESSAGES.hi,
 };
