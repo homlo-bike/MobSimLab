@@ -938,6 +938,77 @@
       "additionalProperties": {}
     }
   },
+  "plugin-lines": {
+    "schemaVersion": 1,
+    "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "https://github.com/homlo-bike/MobSimLab/blob/main/contracts/mslab/drawings/plugin-lines.schema.json",
+      "title": "Document of a \"plugin-lines\" drawing (data/plugin-lines.json, field doc)",
+      "type": "object",
+      "properties": {
+        "tools": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "maxLength": 60,
+            "pattern": "^[a-z0-9-]+$"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "kit": {
+                "type": "string",
+                "enum": [
+                  "straight-spans",
+                  "water-route"
+                ]
+              },
+              "doc": {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": {}
+              },
+              "line": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {},
+                    "additionalProperties": {}
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "noise": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {},
+                    "additionalProperties": {}
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "kit",
+              "doc",
+              "line",
+              "noise"
+            ],
+            "additionalProperties": {}
+          }
+        }
+      },
+      "required": [
+        "tools"
+      ],
+      "additionalProperties": {}
+    }
+  },
   "depots": {
     "schemaVersion": 1,
     "schema": {
