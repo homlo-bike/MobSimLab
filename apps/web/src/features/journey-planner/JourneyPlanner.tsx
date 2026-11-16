@@ -15,6 +15,7 @@ import {
   pluginLineTimetable,
   prefixTimetable,
   type PluginLineInput,
+  streetHeadways,
   streetLineTimetable,
   type StreetLineInput,
 } from "./network";
@@ -33,11 +34,13 @@ import type {
   Timetable,
 } from "./types";
 
+const NO_STREET_LINES: readonly StreetLineInput[] = [];
+
 interface Props {
   map: MapLibreMap | null;
   /** Where the side panel renders; inline when `null`. */
   panel?: HTMLElement | null;
-  /** The lines drawn in the street line tool. */
+  /** The lines drawn in the street line tool (those with two points or more). */
   streetLines?: readonly StreetLineInput[];
   /** Rail service lines published in the railway tool, if any. */
   railLines?: Timetable | null;
@@ -63,12 +66,6 @@ const PROFILE_START = 4 * 3600;
 const PROFILE_END = 25 * 3600;
 const NO_PLUGIN_LINES: readonly PluginLineInput[] = [];
 const NO_FEEDS: readonly GtfsFeed[] = [];
-const NO_STREET_LINES: readonly StreetLineInput[] = [];
-/** Purpose: one street line's timetable, its ids kept apart from the other lines'. */
-const streetPart = (l: StreetLineInput, i: number): Timetable | null => {
-  const tt = streetLineTimetable(l);
-  return tt && i > 0 ? prefixTimetable(tt, `street${i}:`) : tt;
-};
 const NO_ZONES: readonly DemandZone[] = [];
 
 /** Purpose: whether a point lies inside a ring (even-odd rule). */
@@ -217,10 +214,14 @@ export function JourneyPlanner({
   const [showTable, setShowTable] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const street = useMemo(
-    () => streetLines.map((l, i) => (skipped.has(`street:${i}`) ? null : streetPart(l, i))),
-    [streetLines, skipped],
-  );
+  // Each street line with its own ids, so two lines of the same name cannot collide.
+  const street = useMemo(() => {
+    const parts = streetLines.flatMap((l, i) => {
+      const tt = skipped.has(`street:${i}`) ? null : streetLineTimetable(l);
+      return tt ? [prefixTimetable(tt, `s${i}:`)] : [];
+    });
+    return parts.length ? mergeTimetables(parts) : null;
+  }, [streetLines, skipped]);
   const drawnRail = useMemo(
     () =>
       railLines && useRailLines && (railLines.trips.length || railLines.frequency_patterns?.length)
@@ -233,13 +234,16 @@ export function JourneyPlanner({
     const existing = gtfsFeeds
       .filter((f) => !skipped.has(`gtfs:${f.id}`))
       .map((f) => prefixTimetable(feedTimetable(f), `gtfs:${f.id}:`));
-    const parts = [...street, drawnRail, ...plugin, ...existing].filter((p): p is Timetable => p !== null);
+    const parts = [street, drawnRail, ...plugin, ...existing].filter((p): p is Timetable => p !== null);
     return parts.length ? mergeTimetables(parts) : null;
   }, [street, drawnRail, pluginLines, gtfsFeeds, skipped]);
   // The project's own lines, all of them, for the GTFS download.
   const ownLines: Timetable | null = useMemo(() => {
     const parts = [
-      ...streetLines.map(streetPart),
+      ...streetLines.map((l, i) => {
+        const tt = streetLineTimetable(l);
+        return tt ? prefixTimetable(tt, `s${i}:`) : null;
+      }),
       railLines && (railLines.trips.length || railLines.frequency_patterns?.length)
         ? prefixTimetable(railLines, "lines:")
         : null,
@@ -416,20 +420,31 @@ export function JourneyPlanner({
 
   const networkControls = (
     <div className="space-y-2">
-      {streetLines.map((l, i) => (
-        <label key={i} className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            checked={!skipped.has(`street:${i}`)}
-            onChange={(e) => toggle(`street:${i}`, e.target.checked)}
-          />
-          {t("jp.streetLine", {
-            name: l.name,
-            headway: l.headwayMin,
-            peak: Math.max(1, Math.round(l.headwayMin / 2)),
-          })}
-        </label>
-      ))}
+      {streetLines.map((l, i) => {
+        const key = `street:${i}`;
+        const { peakS, offPeakS } = streetHeadways(l);
+        return (
+          <label key={key} className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={!skipped.has(key)}
+              onChange={(e) =>
+                setSkipped((s) => {
+                  const n = new Set(s);
+                  if (e.target.checked) n.delete(key);
+                  else n.add(key);
+                  return n;
+                })
+              }
+            />
+            {t("jp.streetLine", {
+              name: l.name,
+              headway: Math.round(offPeakS / 6) / 10,
+              peak: Math.round(peakS / 6) / 10,
+            })}
+          </label>
+        );
+      })}
       {railLines && (railLines.trips.length > 0 || railLines.frequency_patterns?.length > 0) && (
         <label className="flex items-center gap-2">
           <input type="checkbox" checked={useRailLines} onChange={(e) => setUseRailLines(e.target.checked)} />

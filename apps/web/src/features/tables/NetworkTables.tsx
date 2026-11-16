@@ -407,7 +407,6 @@ function ServiceAndFleet({ facts }: { facts: LineFact[] }) {
   );
   const dash = "—";
   const sub = (text: ReactNode) => <span className="block text-xs text-slate-500">{text}</span>;
-  const assumedHours = facts.some((f) => f.hoursAssumed);
   const assumedPlaces = facts.some((f) => f.placesAssumed);
   return (
     <section aria-labelledby="service-title" className="mt-10">
@@ -484,7 +483,7 @@ function ServiceAndFleet({ facts }: { facts: LineFact[] }) {
                       </td>
                       <td className={num}>
                         {int(f.placesPerVehicle)}
-                        {sub(f.placesAssumed ? "assumed" : "per train")}
+                        {sub(f.placesAssumed ? "assumed" : f.kind === "rail" ? "per train" : "per vehicle")}
                       </td>
                       <td className={num}>
                         {int(f.capacityPerHour)}
@@ -513,16 +512,11 @@ function ServiceAndFleet({ facts }: { facts: LineFact[] }) {
               Rail fleets count units: a line of 4 trains of 2 coupled units has a fleet of 8. Spares come
               from the assumption library (mode.spare_share).
             </li>
-            {assumedHours && (
-              <li>
-                Street lines have no first and last departure yet, so their service hours are the library's
-                (cost.service_hours_per_day).
-              </li>
-            )}
             {assumedPlaces && (
               <li>
-                Street lines have no catalogue vehicle yet, so their places per vehicle are the library's
-                (mode.vehicle_capacity). Rail lines use the chosen train's seats plus standing places.
+                Street lines without a catalogue vehicle use the library's places per vehicle
+                (mode.vehicle_capacity); choose a vehicle for them in the street line tool. Other lines use
+                the chosen vehicle's seats plus standing places.
               </li>
             )}
           </ul>

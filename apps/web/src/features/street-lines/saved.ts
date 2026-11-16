@@ -1,6 +1,6 @@
 /** A street line as the project saves it (drawing kind "street-lines"). */
 import type { StreetLineInput } from "../journey-planner/network";
-import { MODES, type Timing } from "./modes";
+import { fullTiming, MODES, type Timing } from "./modes";
 import type { LineView, LonLat, PointKind, RoutingRules, VehicleProfile } from "./types";
 
 /** One point as the planner placed it; `name` only when the planner named it (otherwise the street's name). */
@@ -16,6 +16,8 @@ export interface SavedPoint {
 export interface SavedStreetLine {
   name: string;
   profile: VehicleProfile;
+  /** The catalogue vehicle (vehicles.ts id); null or absent for the mode's typical vehicle. */
+  vehicle?: string | null;
   rules: RoutingRules;
   timing: Timing;
   points: SavedPoint[];
@@ -29,7 +31,7 @@ export interface SavedStreetLine {
   view: LineView;
 }
 
-/** The project's street lines; the street line tool edits one at a time and picks among them. */
+/** The project's street lines; the street line tool edits one at a time. */
 export interface StreetLinesDoc {
   lines: SavedStreetLine[];
 }
@@ -37,13 +39,17 @@ export interface StreetLinesDoc {
 /** Purpose: the journey planner's view of a saved line, or null if it has fewer than two points. */
 export function lineInput(line: SavedStreetLine | undefined): StreetLineInput | null {
   if (!line || line.view.points.length < 2) return null;
+  const t = fullTiming(line.timing);
   return {
     name: line.name,
     mode: line.profile.mode,
     color: MODES[line.profile.mode]?.color ?? MODES.bus.color,
     view: line.view,
-    dwellS: line.timing.dwellS,
-    headwayMin: line.timing.headwayMin,
+    dwellS: t.dwellS,
+    headwayMin: t.headwayMin,
+    offPeakHeadwayMin: t.offPeakHeadwayMin,
+    firstMin: t.firstMin,
+    lastMin: t.lastMin,
   };
 }
 

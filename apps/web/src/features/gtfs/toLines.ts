@@ -157,7 +157,14 @@ export function toStreetLine(p: MainPattern, profile: VehicleProfile, rules: Rou
     name: p.route.route_short_name || p.route.route_id,
     profile,
     rules,
-    timing: { headwayMin: h.peakMin, dwellS: Math.max(5, Math.round(p.dwellS)), layoverMin: 5 },
+    timing: {
+      headwayMin: h.peakMin,
+      offPeakHeadwayMin: h.offPeakMin,
+      dwellS: Math.max(5, Math.round(p.dwellS)),
+      layoverMin: 5,
+      firstMin: h.firstMin,
+      lastMin: Math.max(h.lastMin, h.firstMin + 1),
+    },
     points: p.stops.map((s, i) => ({
       lonlat: [s.stop_lon, s.stop_lat],
       kind: i === 0 || i === last ? "end_stop" : "stop",
