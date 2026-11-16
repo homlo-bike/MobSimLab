@@ -10,6 +10,14 @@ import {
   withNodes,
 } from "../../i18n/i18n";
 import { loadWorkerEngine } from "./engine";
+import {
+  isOpen,
+  type RunsApi,
+  type RunStatus,
+  type SavedRun,
+  type SavedRunDetail,
+  type ServerNetwork,
+} from "./server";
 import type {
   CapacityEngine,
   CapacityParams,
@@ -87,7 +95,24 @@ interface Props {
   panel?: HTMLElement | null;
   /** Engine loader; tests inject a fake. */
   loadEngine?: EngineLoader;
+  /** The project's saved runs on the server; without it the panel only runs in the browser. */
+  runs?: RunsApi | null;
+  /** Whether the reader may start and stop runs on the server (Owners and Editors). */
+  canRun?: boolean;
+  /** Milliseconds between checks of runs that are still going (tests make it short). */
+  pollMs?: number;
 }
+
+/** Tag colours of a saved run's status. */
+const STATUS_TONE: Record<RunStatus, string> = {
+  queued: "bg-slate-100 text-slate-700 border-slate-300",
+  running: "bg-blue-50 text-blue-800 border-blue-200",
+  done: "bg-emerald-50 text-emerald-800 border-emerald-200",
+  failed: "bg-red-50 text-red-800 border-red-200",
+  cancelled: "bg-amber-50 text-amber-900 border-amber-200",
+};
+
+const isVerdict = (v: string | null): v is Verdict => v !== null && Object.hasOwn(VERDICTS, v);
 
 type LineState = { info: LineInfo; planned: Point; sweep: Point[]; sweeping: boolean };
 
@@ -97,8 +122,14 @@ type LineState = { info: LineInfo; planned: Point; sweep: Point[]; sweeping: boo
  * timetable planner, measures UIC 406 capacity, runs it through the interlocking, repeats it with random delays,
  * and tries other frequencies to find the most each line can carry. Plain verdicts first, numbers behind them.
  */
-export function CapacityRun({ panel = null, loadEngine = loadWorkerEngine }: Props) {
-  const { t } = useI18n();
+export function CapacityRun({
+  panel = null,
+  loadEngine = loadWorkerEngine,
+  runs = null,
+  canRun = false,
+  pollMs = 2000,
+}: Props) {
+  const { t, language } = useI18n();
   const [source, setSource] = useState<"example" | "files">("example");
   const [topology, setTopology] = useState<{ name: string; text: string } | null>(null);
   const [linesFile, setLinesFile] = useState<{ name: string; text: string } | null>(null);
@@ -114,6 +145,47 @@ export function CapacityRun({ panel = null, loadEngine = loadWorkerEngine }: Pro
   const [notes, setNotes] = useState<string[]>([]);
   const engine = useRef<{ key: string; engine: CapacityEngine } | null>(null);
   const generation = useRef(0);
+  // Runs saved on the server: the project's list, and the one open in the panel (null: the browser's run).
+  const [saved, setSaved] = useState<SavedRun[]>([]);
+  const [viewing, setViewing] = useState<SavedRunDetail | null>(null);
+  const [sending, setSending] = useState(false);
+  const [serverError, setServerError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!runs) return;
+    let live = true;
+    void runs.list().then(
+      (l) => live && setSaved(l),
+      (e: unknown) => live && setServerError(e instanceof Error ? e.message : String(e)),
+    );
+    return () => {
+      live = false;
+    };
+  }, [runs]);
+
+  // While a run is still going, check on it (and on the list) until it is settled.
+  const viewingId = viewing?.id ?? null;
+  const viewingOpen = viewing !== null && isOpen(viewing);
+  const listOpen = saved.some(isOpen);
+  useEffect(() => {
+    if (!runs || (!viewingOpen && !listOpen)) return;
+    let live = true;
+    const timer = setInterval(() => {
+      void runs.list().then(
+        (l) => live && setSaved(l),
+        () => undefined,
+      );
+      if (viewingId && viewingOpen)
+        void runs.get(viewingId).then(
+          (r) => live && setViewing((v) => (v?.id === r.id ? r : v)),
+          () => undefined,
+        );
+    }, pollMs);
+    return () => {
+      live = false;
+      clearInterval(timer);
+    };
+  }, [runs, viewingId, viewingOpen, listOpen, pollMs]);
 
   useEffect(
     () => () => {
@@ -143,6 +215,7 @@ export function CapacityRun({ panel = null, loadEngine = loadWorkerEngine }: Pro
     }
     const gen = ++generation.current;
     const alive = () => gen === generation.current;
+    setViewing(null);
     setError(null);
     setRun(null);
     setLines([]);
@@ -210,6 +283,99 @@ export function CapacityRun({ panel = null, loadEngine = loadWorkerEngine }: Pro
     }
   };
 
+  /** Purpose: start the same run on the server, saved to the project, and open it in the panel. */
+  const startOnServer = async () => {
+    if (!runs) return;
+    const w = periodWindow();
+    if (!w) {
+      setServerError(t("capacity.badPeriod"));
+      return;
+    }
+    const network: ServerNetwork =
+      source === "example"
+        ? { kind: "example" }
+        : {
+            kind: "files",
+            topology: topology!.text,
+            topologyName: topology!.name,
+            lines: linesFile!.text,
+            linesName: linesFile!.name,
+          };
+    const params = Object.fromEntries(
+      Object.entries({ ...advanced, ...w }).filter(([, v]) => v !== undefined),
+    ) as SavedRun["params"];
+    setSending(true);
+    setServerError(null);
+    try {
+      const r = await runs.start(network, params, sweep);
+      generation.current++;
+      setStatus(null);
+      setViewing(r);
+      setSaved((l) => [r, ...l.filter((x) => x.id !== r.id)]);
+    } catch (e) {
+      setServerError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setSending(false);
+    }
+  };
+
+  /** Purpose: open a saved run in the panel. */
+  const open = async (id: string) => {
+    if (!runs) return;
+    setServerError(null);
+    try {
+      const r = await runs.get(id);
+      generation.current++;
+      setStatus(null);
+      setConfirmDelete(false);
+      setViewing(r);
+    } catch (e) {
+      setServerError(e instanceof Error ? e.message : String(e));
+    }
+  };
+
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
+  /** Purpose: run the open saved run again with its own settings; its old result is replaced. */
+  const rerunSaved = async () => {
+    if (!runs || !viewing) return;
+    setServerError(null);
+    try {
+      const r = await runs.rerun(viewing.id);
+      setViewing(r);
+      setSaved((l) => [r, ...l.filter((x) => x.id !== r.id)]);
+    } catch (e) {
+      setServerError(e instanceof Error ? e.message : String(e));
+    }
+  };
+
+  /** Purpose: delete the open saved run for everyone. */
+  const deleteSaved = async () => {
+    if (!runs || !viewing) return;
+    const id = viewing.id;
+    setServerError(null);
+    try {
+      await runs.remove(id);
+      setConfirmDelete(false);
+      setViewing(null);
+      setSaved((l) => l.filter((x) => x.id !== id));
+    } catch (e) {
+      setServerError(e instanceof Error ? e.message : String(e));
+    }
+  };
+
+  /** Purpose: stop the open saved run; the server keeps what it found so far. */
+  const cancelSaved = async () => {
+    if (!runs || !viewing) return;
+    try {
+      const r = await runs.cancel(viewing.id);
+      setViewing(r);
+      setSaved((l) => l.map((x) => (x.id === r.id ? r : x)));
+    } catch (e) {
+      setServerError(e instanceof Error ? e.message : String(e));
+    }
+  };
+
   const stop = () => {
     // The worker finishes its current step; later results are ignored and the sweep ends.
     generation.current++;
@@ -217,7 +383,15 @@ export function CapacityRun({ panel = null, loadEngine = loadWorkerEngine }: Pro
     setLines((ls) => ls.map((l) => ({ ...l, sweeping: false })));
   };
 
-  const limit = run?.params.occupancy_limit_share ?? 0.85;
+  // What the panel shows: the open saved run, or the run in this browser.
+  const shownRun: Run | null = viewing ? (viewing.result?.run ?? null) : run;
+  const shownLines: LineState[] = viewing ? (viewing.result?.lines ?? []) : lines;
+  const shownNotes: string[] = viewing ? (viewing.result?.notes ?? []) : notes;
+  const shownStatus = viewing ? (isOpen(viewing) ? serverStatus(viewing, t) : null) : status;
+  const shownError = viewing ? (viewing.status === "failed" ? viewing.error : null) : error;
+  const when = (iso: string) =>
+    new Date(iso).toLocaleString(language, { dateStyle: "medium", timeStyle: "short" });
+  const limit = shownRun?.params.occupancy_limit_share ?? 0.85;
   const file = (
     label: string,
     value: { name: string } | null,
@@ -385,7 +559,7 @@ export function CapacityRun({ panel = null, loadEngine = loadWorkerEngine }: Pro
           disabled={!ready || busy}
           onClick={() => void start()}
         >
-          {run ? t("capacity.runAgain") : t("capacity.run")}
+          {run && !viewing ? t("capacity.runAgain") : t("capacity.run")}
         </button>
         {busy && (
           <button type="button" className="btn" onClick={stop}>
@@ -393,59 +567,182 @@ export function CapacityRun({ panel = null, loadEngine = loadWorkerEngine }: Pro
           </button>
         )}
       </div>
+      {runs && canRun && (
+        <div className="space-y-1">
+          <button
+            type="button"
+            className="btn w-full"
+            disabled={!ready || sending}
+            onClick={() => void startOnServer()}
+          >
+            {t("capacity.runServer")}
+          </button>
+          <p className="text-xs text-slate-600">{t("capacity.serverHint")}</p>
+        </div>
+      )}
       {!ready && source === "files" && <p className="text-xs text-slate-600">{t("capacity.chooseBoth")}</p>}
-      {status && (
+      {serverError && (
+        <p
+          role="alert"
+          className="rounded-[10px] border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800"
+        >
+          {serverError}
+        </p>
+      )}
+
+      {runs && (
+        <section aria-label={t("capacity.saved")} className="space-y-1.5">
+          <h3 className="caps">{t("capacity.saved")}</h3>
+          {saved.length === 0 ? (
+            <p className="text-xs text-slate-600">{t("capacity.savedNone")}</p>
+          ) : (
+            <ul className="space-y-1.5">
+              {saved.map((r) => (
+                <li key={r.id}>
+                  <button
+                    type="button"
+                    aria-current={viewing?.id === r.id ? "true" : undefined}
+                    className={`w-full rounded-[10px] border px-3 py-2 text-left text-sm hover:bg-slate-50 ${
+                      viewing?.id === r.id ? "border-blue-400 bg-blue-50" : "border-slate-200 bg-white"
+                    }`}
+                    onClick={() => void open(r.id)}
+                  >
+                    <span className="flex items-center justify-between gap-2">
+                      <span className="font-medium">
+                        {clock(r.params.from_s)}–{clock(r.params.to_s)} ·{" "}
+                        {r.network.kind === "example" ? t("capacity.example") : r.network.topologyName}
+                      </span>
+                      <span className={`tag border ${STATUS_TONE[r.status]}`}>
+                        {r.status === "done" && isVerdict(r.verdict)
+                          ? verdictText(r.verdict, t).title
+                          : t(`capacity.status.${r.status}`)}
+                      </span>
+                    </span>
+                    <span className="block text-xs text-slate-500">
+                      {t("capacity.savedBy", {
+                        who: r.createdBy?.displayName ?? t("capacity.someone"),
+                        when: when(r.createdAt),
+                      })}
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      )}
+
+      {viewing && (
+        <div className="flex flex-wrap items-center justify-between gap-2 rounded-[10px] border border-blue-200 bg-blue-50 px-3 py-2 text-sm">
+          <span>
+            {t("capacity.viewing", { when: when(viewing.createdAt) })}{" "}
+            <span className={`tag border ${STATUS_TONE[viewing.status]}`}>
+              {t(`capacity.status.${viewing.status}`)}
+            </span>
+          </span>
+          <span className="flex gap-2">
+            {isOpen(viewing) && canRun && !viewing.cancelRequested && (
+              <button type="button" className="btn" onClick={() => void cancelSaved()}>
+                {t("capacity.stop")}
+              </button>
+            )}
+            {!isOpen(viewing) && canRun && (
+              <button type="button" className="btn" onClick={() => void rerunSaved()}>
+                {t("capacity.runAgain")}
+              </button>
+            )}
+            {canRun && (
+              <button type="button" className="btn" onClick={() => setConfirmDelete(true)}>
+                {t("capacity.delete")}
+              </button>
+            )}
+            <button
+              type="button"
+              className="btn"
+              onClick={() => {
+                setConfirmDelete(false);
+                setViewing(null);
+              }}
+            >
+              {t("capacity.close")}
+            </button>
+          </span>
+        </div>
+      )}
+      {viewing && confirmDelete && (
+        <div
+          role="alertdialog"
+          aria-label={t("capacity.deleteAsk")}
+          className="flex flex-wrap items-center justify-between gap-2 rounded-[10px] border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-900"
+        >
+          <span>{t("capacity.deleteAsk")}</span>
+          <span className="flex gap-2">
+            <button type="button" className="btn" onClick={() => setConfirmDelete(false)}>
+              {t("capacity.keep")}
+            </button>
+            <button type="button" className="btn btn-danger" onClick={() => void deleteSaved()}>
+              {t("capacity.delete")}
+            </button>
+          </span>
+        </div>
+      )}
+      {viewing?.status === "cancelled" && viewing.result && (
+        <p className="text-xs text-slate-600">{t("capacity.stoppedEarly")}</p>
+      )}
+      {shownStatus && (
         <p role="status" className="flex items-center gap-2 text-sm text-slate-700">
           <span
             className="h-3 w-3 animate-spin rounded-full border-2 border-blue-700 border-t-transparent"
             aria-hidden
           />
-          {status}
+          {shownStatus}
         </p>
       )}
-      {error && (
+      {shownError && (
         <p
           role="alert"
           className="rounded-[10px] border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800"
         >
-          {error}
+          {shownError}
         </p>
       )}
 
-      {run && (
+      {shownRun && (
         <div className="space-y-3" data-testid="capacity-result">
-          <div className={`rounded-xl border px-3.5 py-3 ${VERDICTS[run.verdict].tone}`}>
-            <p className="text-base font-semibold">{verdictText(run.verdict, t).title}</p>
-            <p className="mt-0.5 text-sm">{verdictText(run.verdict, t).text}</p>
+          <div className={`rounded-xl border px-3.5 py-3 ${VERDICTS[shownRun.verdict].tone}`}>
+            <p className="text-base font-semibold">{verdictText(shownRun.verdict, t).title}</p>
+            <p className="mt-0.5 text-sm">{verdictText(shownRun.verdict, t).text}</p>
             <p className="mt-1.5 text-xs opacity-80">
               {t("capacity.summary", {
-                period: `${clock(run.params.from_s)}–${clock(run.params.to_s)}`,
-                trips: run.fleet.trips,
-                out: run.fleet.peak_out,
-                reserve: run.fleet.reserve,
+                period: `${clock(shownRun.params.from_s)}–${clock(shownRun.params.to_s)}`,
+                trips: shownRun.fleet.trips,
+                out: shownRun.fleet.peak_out,
+                reserve: shownRun.fleet.reserve,
               })}
             </p>
           </div>
-          {lines.map((l) => (
+          {shownLines.map((l) => (
             <LineCard key={l.info.id} line={l} limit={limit} />
           ))}
-          {notes.length > 0 && (
+          {shownNotes.length > 0 && (
             <details className="text-xs text-slate-600">
-              <summary className="cursor-pointer">{t("capacity.importNotes", { n: notes.length })}</summary>
+              <summary className="cursor-pointer">
+                {t("capacity.importNotes", { n: shownNotes.length })}
+              </summary>
               <ul className="mt-1 list-disc pl-4">
-                {notes.map((n) => (
+                {shownNotes.map((n) => (
                   <li key={n}>{n}</li>
                 ))}
               </ul>
             </details>
           )}
-          {run.issues.length > 0 && (
+          {shownRun.issues.length > 0 && (
             <details className="text-xs text-slate-600">
               <summary className="cursor-pointer">
-                {t("capacity.plannerNotes", { n: run.issues.length })}
+                {t("capacity.plannerNotes", { n: shownRun.issues.length })}
               </summary>
               <ul className="mt-1 list-disc pl-4 break-all">
-                {run.issues.slice(0, 20).map((n, i) => (
+                {shownRun.issues.slice(0, 20).map((n, i) => (
                   <li key={i}>{n}</li>
                 ))}
               </ul>
@@ -453,9 +750,9 @@ export function CapacityRun({ panel = null, loadEngine = loadWorkerEngine }: Pro
           )}
           <p className="text-xs text-slate-500">
             {t("capacity.method", {
-              runs: run.params.stability_runs,
-              share: pct(run.params.delayed_share),
-              late: secs(run.params.primary_delay_max_s, t),
+              runs: shownRun.params.stability_runs,
+              share: pct(shownRun.params.delayed_share),
+              late: secs(shownRun.params.primary_delay_max_s, t),
             })}
           </p>
         </div>
@@ -463,6 +760,17 @@ export function CapacityRun({ panel = null, loadEngine = loadWorkerEngine }: Pro
     </section>
   );
   return panel ? createPortal(body, panel) : body;
+}
+
+/** Purpose: what a saved run that is still going is doing now, in the reader's language. */
+function serverStatus(r: SavedRunDetail, t: Translate): string {
+  if (r.status === "queued") return t("capacity.waiting");
+  if (r.cancelRequested) return t("capacity.stopping");
+  const p = r.progress;
+  if (p?.step === "sweeping" && p.headway_s !== undefined && p.n !== undefined && p.total !== undefined)
+    return t("capacity.trying", { line: p.line, every: every(p.headway_s, t), n: p.n, total: p.total });
+  if (p?.step === "sweeping") return t("capacity.tryingOthers");
+  return t("capacity.planning");
 }
 
 function LineCard({ line, limit }: { line: LineState; limit: number }) {

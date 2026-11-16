@@ -1,5 +1,6 @@
 import type { ProjectPlugin } from "../plugins/registry";
 import { get, send } from "../session/api";
+import { projectRuns } from "../features/capacity/server";
 import { type DrawingKind, loadDrawings, saveDrawing } from "./drawings";
 
 export type ProjectRole = "owner" | "editor" | "commenter" | "viewer";
@@ -104,6 +105,8 @@ export function projectsApi(csrf: string) {
     drawings: (id: string) => loadDrawings(id),
     saveDrawing: <T>(id: string, kind: DrawingKind, doc: T, baseVersion: number | null) =>
       saveDrawing(csrf, id, kind, doc, baseVersion),
+    /** The project's simulation runs on the background worker, saved with the project. */
+    runs: (id: string) => projectRuns(id, csrf),
   };
 }
 export type ProjectsApi = ReturnType<typeof projectsApi>;

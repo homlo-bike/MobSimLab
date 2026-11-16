@@ -57,6 +57,14 @@ jobs:
       - uses: actions/setup-node@v5
         with: { node-version-file: .nvmrc, cache: pnpm }
       - run: pnpm install --frozen-lockfile
+      - uses: astral-sh/setup-uv@v6
+        with: { python-version: "3.12" }
+      - name: Python worker with the Rust kernels (the API's simulation run test starts it)
+        working-directory: worker
+        run: |
+          uv sync --frozen --no-dev
+          uv pip install "maturin>=1.9,<2"
+          uv run --no-sync maturin develop --release -m ../crates/mobsim-py/Cargo.toml
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm test
@@ -138,6 +146,7 @@ jobs:
       - run: uvx ruff check tools/vehicles && uvx ruff format --check tools/vehicles
       - run: uv run --no-project --with jsonschema --with pyyaml python tools/vehicles/check.py
       - run: python tools/vehicles/rail_trains.py --check
+      - run: python tools/vehicles/street_vehicles.py --check
       - run: uv run --no-project --with jsonschema --with pyyaml --with pytest pytest -q tools/vehicles
 
   licence-gate:

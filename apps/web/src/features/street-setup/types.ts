@@ -21,6 +21,13 @@ export interface StreetSetup {
   separated?: boolean | null;
   /** A tram along this street: own lane or mixed traffic. */
   tram?: TramShare | null;
+  /**
+   * Cars per hour in each direction in the morning peak (the shared peak windows), for the road
+   * simulation's background traffic. Unset: the default for the road type (`peakCarsDefault`).
+   */
+  cars_morning_peak?: number | null;
+  /** Cars per hour in each direction in the evening peak; as `cars_morning_peak`. */
+  cars_evening_peak?: number | null;
   /** Street name when it was set up, for the list. */
   name?: string;
   /** A point on the street, to show it again. */

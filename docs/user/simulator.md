@@ -12,6 +12,21 @@ Find out whether your rail lines work: do they fit the tracks, do they run on ti
 4. Leave **Also find the most trains each line can carry** on to try other frequencies (it takes longer: one more test per frequency).
 5. Click **Run the test**. Everything runs in your browser; **Stop** ends the frequency search after the current step.
 
+## Run on the server and save
+
+Owners and Editors of the project can also click **Run on the server and save**. The same test, with the same network, period and settings, then runs on the background worker of the server instead of in your browser:
+
+- It keeps running when you close the tab or the project.
+- It is saved to the project. **Saved runs** lists every run of the project, newest first, with who started it and when, and every member of the project (Viewers included) can open one to see its results.
+- While it runs, the panel shows what the worker is doing (planning the period, or which frequency it is trying) and the results so far. **Stop** ends it after the current step and keeps what it found.
+- If the worker stops in the middle (a restart of the server), the run is marked **Failed** with a note to start it again.
+- **Run again** (Owners and Editors) runs an open saved run again with its own network, period and settings and replaces its result; it moves to the top of the list with your name.
+- **Delete** (Owners and Editors) removes the run and its result for everyone, after you confirm. A run that is still going is stopped.
+
+Runs wait their turn: the server runs as many at the same time as it has background workers (`MOBSIMLAB_SIM_WORKERS` in `.env`, 1 by default), and the others show **Waiting** until a worker is free.
+
+The result is the same as in the browser: both use the same Rust code. The run in the browser stays as it was, instant and not saved.
+
 ## What the test does
 
 For the period, with half an hour of service before it (so the line is full when the period starts) and half an hour after it:

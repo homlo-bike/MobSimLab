@@ -173,3 +173,37 @@ fn stations_joined_by_track_are_reachable_in_both_directions() {
     assert!(station_reachable(&topo, "st2", "st1").unwrap().ok);
     assert!(station_reachable(&topo, "st1", "st9").is_err());
 }
+
+#[test]
+fn trams_leave_their_stops_although_they_drive_on_sight() {
+    // Trams drive on sight: the design tool places signals only in front of switch areas and
+    // crossings, none at the stops, yet a tram line over the editor's example must publish.
+    use rail_design::{design::build, sample::sample, topology::topology, RailMode};
+    use rail_plan::station_reachable;
+    let topo =
+        serde_json::to_string(&topology(&build(&sample(RailMode::Tram, 7.0, 50.9), None))).unwrap();
+    assert!(station_reachable(&topo, "st1", "st2").unwrap().ok);
+    assert!(station_reachable(&topo, "st2", "st1").unwrap().ok);
+    let mut l = shuttle();
+    l.id = "T4".into();
+    l.name = "T4".into();
+    l.mode = "tram".into();
+    // Siemens Avenio (Munich, 4 sections) from `vehicles/tram/siemens_avenio-munich-4-car.json`.
+    l.vehicle = ServiceVehicle {
+        id: "siemens_avenio-munich-4-car".into(),
+        name: "Siemens Avenio".into(),
+        length_m: 36.85,
+        top_speed_kmh: 70.0,
+        power_kw: Some(600.0),
+        empty_mass_t: None,
+        capacity: 219.0,
+    };
+    let out = publish_service(&topo, &[l], "weekday").unwrap();
+    let r = &out.lines[0];
+    assert!(
+        !r.issues.iter().any(|i| i.starts_with("No track connects")),
+        "{:?}",
+        r.issues
+    );
+    assert!(r.trips > 0, "{:?}", r.issues);
+}
