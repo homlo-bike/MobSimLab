@@ -2,6 +2,7 @@ import type { DelayShares } from "../features/street-lines/types";
 import { MIXED_DELAY, PAINTED_DELAY } from "../features/street-setup/model";
 import rulesData from "./design-rules.generated.json";
 import paramsData from "./parameters.generated.json";
+import libraryData from "../features/walk/defaults.generated.json";
 
 /**
  * The project's preferences document (drawing kind `preferences`): assumption library values the project
@@ -47,6 +48,21 @@ export function delaysFrom(doc: PreferencesDoc | null | undefined): DelayShares 
     if (v !== undefined) out[p.key] = Math.min(MAX_DELAY_SHARE, Math.max(0, v));
   }
   return out;
+}
+
+/** Preference id of the distance within which stops with the same name are one station. */
+export const SAME_NAME_PREF = "journey.same_name_station_m";
+
+/** The assumption library's same-name station distance in metres (`journey.same_name_station_m`). */
+export const LIBRARY_SAME_NAME_M = (libraryData as { same_name_station_m: number }).same_name_station_m;
+
+/**
+ * Purpose: the distance in metres within which stops with the same name are one station, for the schematic
+ * map, the journey planner and the benefits and ridership networks: the project's value, else the library's.
+ */
+export function sameNameStationM(values: PreferencesDoc["values"] | undefined): number {
+  const v = values?.[SAME_NAME_PREF];
+  return typeof v === "number" && Number.isFinite(v) && v >= 0 ? v : LIBRARY_SAME_NAME_M;
 }
 
 /** Purpose: the document with one value set, or removed (`null`) so the library's applies again. */

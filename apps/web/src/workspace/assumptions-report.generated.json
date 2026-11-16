@@ -6160,6 +6160,26 @@
     "*": 0
    }
   },
+  "journey.same_name_station_m": {
+   "used_by": [
+    "schematic map stations",
+    "journey planner interchanges",
+    "benefits and ridership station catchments"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "A bus or tram stop named like the railway station beside it is an interchange even when it is farther than an ordinary change walk: station names are shared within the 150 m grouping distance of the platform line, so a long platform's middle can be a few hundred metres from the stop. Lower it where unrelated stops share a name nearby; raise it for large stations with spread-out stops."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
   "operations.energy_reserve_share": {
    "used_by": [
     "block feasibility",

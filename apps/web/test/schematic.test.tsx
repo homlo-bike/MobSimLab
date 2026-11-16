@@ -6,6 +6,8 @@ import { layerOf, linesAt, schematicNetwork } from "../src/features/schematic/li
 import { bundles, octiRoute, offsetPolyline, pathD, placeLabels } from "../src/features/schematic/paths";
 import { Schematic, type SchematicDoc } from "../src/features/schematic/Schematic";
 import { RAILWAY, STREET_LINES } from "./fixtures/schematic";
+import { EARTH_RADIUS_M } from "../src/map/geo";
+import type { PluginLineInput } from "../src/features/journey-planner/network";
 
 afterEach(cleanup);
 
@@ -64,6 +66,32 @@ describe("schematic network", () => {
     ]);
     expect(n.lines[0]!.stops.map((s) => n.stations[s]!.name)).toEqual(["Summit", "Valley"]);
     expect(n.lines[0]!.layer).toBe("other");
+  });
+
+  it("joins stops of one name within the project's same-name distance", () => {
+    // Two plugin lines each call at "Harbour"; the two stops are about 500 m apart.
+    const line = (id: string, harbour: [number, number], other: [number, number]): PluginLineInput => ({
+      id,
+      name: id,
+      mode: "ferry",
+      color: "#0369a1",
+      stops: [
+        { name: "Harbour", lonlat: harbour },
+        { name: `${id} pier`, lonlat: other },
+      ],
+      directions: [
+        [
+          { stop: 0, run_s: 0, dwell_s: 0 },
+          { stop: 1, run_s: 300, dwell_s: 30 },
+        ],
+      ],
+      headwayS: 600,
+    });
+    const lines = [line("A", [4.9, 52.37], [4.95, 52.37]), line("B", [4.9, 52.3745], [4.85, 52.4])];
+    const harbours = (m: number) =>
+      schematicNetwork(null, null, lines, m).stations.filter((s) => s.name === "Harbour");
+    expect(harbours(600)).toHaveLength(1);
+    expect(harbours(400)).toHaveLength(2);
   });
 
   it("lays out every section at 45° steps and keeps the planner's stations where they put them", () => {
@@ -627,8 +655,8 @@ describe("strip map extras", () => {
   it("samples the ground every 50 m and works out gradients and one scale for length and height", async () => {
     const { profilePoints } = await import("../src/features/schematic/details");
     const { profileChart } = await import("../src/features/schematic/StripMap");
-    // Two sections due north, 1000 m and 230 m long.
-    const north = (m: number): [number, number] => [5, 52 + m / 111_320];
+    // Two sections due north, 1000 m and 230 m long (metres per degree of latitude on the shared Earth radius).
+    const north = (m: number): [number, number] => [5, 52 + (m * 180) / (Math.PI * EARTH_RADIUS_M)];
     const p = profilePoints([
       [north(0), north(1000)],
       [north(1000), north(1230)],
