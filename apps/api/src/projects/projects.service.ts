@@ -374,6 +374,15 @@ export class ProjectsService {
     return this.get(actor, id);
   }
 
+  /**
+   * Purpose: check that the caller may perform `action` on a project, for other modules' project routes
+   * (simulation runs). Same answers as the project routes: 404 when the caller cannot read it, 403 when the
+   * role does not allow the action. Output: the caller's effective role.
+   */
+  async authorize(actor: ProjectActor, id: string, action: ProjectAction): Promise<ProjectRole> {
+    return (await this.load(actor, id, action)).role;
+  }
+
   /** Purpose: every drawing saved in a project the caller may read, by kind. Kinds never saved are absent. */
   async drawings(actor: ProjectActor, id: string): Promise<Partial<Record<DrawingKind, ProjectDrawing>>> {
     await this.load(actor, id, "read");

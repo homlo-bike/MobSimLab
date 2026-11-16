@@ -8,6 +8,10 @@
 
 use pyo3::exceptions::{PyRuntimeError, PyValueError};
 use pyo3::prelude::*;
+use rail_model::Model;
+use rail_plan::LineSpec;
+use rail_sim::capacity::{capacity_run, sweep_headways, sweep_point, CapacityParams};
+use rail_sim::capacity_input::{compile_network, example_lines_json, line_summaries, parse_lines};
 use rail_sim::{RailSim, SimConfig, TdsSpec, TrainSpec};
 
 fn json_err(e: serde_json::Error) -> PyErr {
@@ -98,9 +102,85 @@ impl PyRailSim {
     }
 }
 
+/// Rail capacity run (`rail_sim::capacity`): the same calls as the simulator tab's
+/// WebAssembly module, so a run on the server gives the same result as one in the browser.
+#[pyclass(name = "CapacityRunner", unsendable)]
+struct PyCapacityRunner {
+    model: Model,
+    lines: Vec<LineSpec>,
+    notes: Vec<String>,
+}
+
+fn params(params_json: &str) -> PyResult<CapacityParams> {
+    serde_json::from_str(params_json).map_err(json_err)
+}
+
+#[pymethods]
+impl PyCapacityRunner {
+    /// Purpose: compile the network (`"example:metro"` or a topology export, JSON text) and read
+    /// the lines (JSON text). Raises ValueError naming the problem.
+    #[new]
+    fn new(network: &str, lines_json: &str) -> PyResult<Self> {
+        let (model, notes) = compile_network(network).map_err(PyValueError::new_err)?;
+        let lines = parse_lines(lines_json).map_err(PyValueError::new_err)?;
+        Ok(Self {
+            model,
+            lines,
+            notes,
+        })
+    }
+
+    /// Purpose: the lines with their service bands, as JSON.
+    fn lines(&self) -> PyResult<String> {
+        serde_json::to_string(&line_summaries(&self.lines)).map_err(json_err)
+    }
+
+    /// Purpose: notes from importing the topology, as JSON (a list of strings).
+    fn notes(&self) -> PyResult<String> {
+        serde_json::to_string(&self.notes).map_err(json_err)
+    }
+
+    /// Purpose: the capacity run of the period (JSON `CapacityParams`; missing fields take their
+    /// defaults). Output: JSON `CapacityRun`. Raises ValueError on invalid settings.
+    fn run(&self, params_json: &str) -> PyResult<String> {
+        let r = capacity_run(&self.model, &self.lines, &params(params_json)?)
+            .map_err(PyValueError::new_err)?;
+        serde_json::to_string(&r).map_err(json_err)
+    }
+
+    /// Purpose: the headways the frequency sweep tries for line `line`. Output: JSON list of s.
+    fn sweep_headways(&self, params_json: &str, line: usize, works: bool) -> PyResult<String> {
+        let l = self
+            .lines
+            .get(line)
+            .ok_or_else(|| PyValueError::new_err("no such line"))?;
+        serde_json::to_string(&sweep_headways(l, &params(params_json)?, works)).map_err(json_err)
+    }
+
+    /// Purpose: one point of the frequency sweep. Output: JSON `Point`.
+    fn sweep_point(&self, params_json: &str, line: usize, headway_s: f64) -> PyResult<String> {
+        let pt = sweep_point(
+            &self.model,
+            &self.lines,
+            &params(params_json)?,
+            line,
+            headway_s,
+        )
+        .map_err(PyValueError::new_err)?;
+        serde_json::to_string(&pt).map_err(json_err)
+    }
+
+    /// Purpose: the lines file of the example metro (line M1), as JSON.
+    #[staticmethod]
+    fn example_lines() -> String {
+        example_lines_json()
+    }
+}
+
 /// MobSimLab simulation kernels.
 #[pymodule]
 fn mobsim_kernels(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<PyRailSim>()?;
+    m.add_class::<PyCapacityRunner>()?;
     Ok(())
 }
