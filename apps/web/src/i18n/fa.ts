@@ -275,6 +275,7 @@ export const fa: Messages = {
   "prefs.delayLane": "در خط اتوبوس یا تراموای فقط رنگ‌شده",
   "prefs.delayDefault": "کتابخانهٔ فرض‌ها: {value} %",
   "prefs.delayReset": "استفاده از مقدار کتابخانه",
+  "prefs.reason": "دلیل این مقدار (اختیاری)",
   "prefs.currencyTitle": "واحد پول",
   "prefs.currencyIntro":
     "همهٔ مبالغ پروژه با این واحد پول نشان داده می‌شوند: جدول‌های هزینه، منافع، سناریوها و صرفه‌جویی دوچرخهٔ باری.",

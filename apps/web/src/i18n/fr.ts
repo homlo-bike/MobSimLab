@@ -282,6 +282,7 @@ export const fr: Messages = {
   "prefs.delayLane": "Dans une voie bus ou tram marquée",
   "prefs.delayDefault": "Bibliothèque d'hypothèses : {value} %",
   "prefs.delayReset": "Utiliser la valeur de la bibliothèque",
+  "prefs.reason": "Raison de cette valeur (facultatif)",
   "prefs.currencyTitle": "Devise",
   "prefs.currencyIntro":
     "Tout l'argent du projet est affiché dans cette devise : tableaux de coûts, bénéfices, scénarios et économies du vélo cargo.",

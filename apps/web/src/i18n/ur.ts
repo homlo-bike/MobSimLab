@@ -278,6 +278,7 @@ export const ur: Messages = {
   "prefs.delayLane": "رنگ سے بنی بس یا ٹرام لین میں",
   "prefs.delayDefault": "مفروضات کی لائبریری: {value} %",
   "prefs.delayReset": "لائبریری کی قدر استعمال کریں",
+  "prefs.reason": "اس قدر کی وجہ (اختیاری)",
   "prefs.currencyTitle": "کرنسی",
   "prefs.currencyIntro":
     "منصوبے کی تمام رقوم اسی کرنسی میں دکھائی جاتی ہیں: لاگت کی جدولیں، فوائد، منظرنامے اور کارگو بائیک کی بچت۔",

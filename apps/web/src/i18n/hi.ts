@@ -277,6 +277,7 @@ export const hi: Messages = {
   "prefs.delayLane": "पेंट की गई बस या ट्राम लेन में",
   "prefs.delayDefault": "धारणा पुस्तकालय: {value} %",
   "prefs.delayReset": "पुस्तकालय मान इस्तेमाल करें",
+  "prefs.reason": "इस मान का कारण (वैकल्पिक)",
   "prefs.currencyTitle": "मुद्रा",
   "prefs.currencyIntro":
     "परियोजना की सारी राशियाँ इसी मुद्रा में दिखती हैं: लागत तालिकाएँ, लाभ, परिदृश्य और कार्गो बाइक की बचत।",

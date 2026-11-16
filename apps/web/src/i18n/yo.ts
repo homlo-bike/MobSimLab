@@ -276,6 +276,7 @@ export const yo: Messages = {
   "prefs.delayLane": "Nínú ọ̀nà bọ́ọ̀sì tàbí tírámù tí a fi kun yà",
   "prefs.delayDefault": "Ilé ìkàwé àròsọ: {value} %",
   "prefs.delayReset": "Lo iye ti ilé ìkàwé",
+  "prefs.reason": "Ìdí fún iye yìí (kò pọn dandan)",
   "prefs.currencyTitle": "Owó",
   "prefs.currencyIntro":
     "Gbogbo owó inú iṣẹ́ náà ni a ń fihàn ní owó yìí: àwọn tábìlì iye owó, àǹfààní, àwọn ìṣẹ̀lẹ̀ àti ìfipamọ́ kẹ̀kẹ́ ẹrù.",

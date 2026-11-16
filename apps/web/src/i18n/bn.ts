@@ -277,6 +277,7 @@ export const bn: Messages = {
   "prefs.delayLane": "রং দিয়ে আঁকা বাস বা ট্রাম লেনে",
   "prefs.delayDefault": "অনুমান লাইব্রেরি: {value} %",
   "prefs.delayReset": "লাইব্রেরির মান ব্যবহার করুন",
+  "prefs.reason": "এই মানের কারণ (ঐচ্ছিক)",
   "prefs.currencyTitle": "মুদ্রা",
   "prefs.currencyIntro":
     "প্রকল্পের সব অর্থ এই মুদ্রায় দেখানো হয়: খরচের সারণি, সুফল, পরিস্থিতি ও কার্গো বাইকের সাশ্রয়।",

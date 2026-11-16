@@ -275,6 +275,7 @@ export const ja: Messages = {
   "prefs.delayLane": "塗装のみのバス・路面電車レーン",
   "prefs.delayDefault": "前提値ライブラリ：{value} %",
   "prefs.delayReset": "ライブラリの値を使う",
+  "prefs.reason": "この値の理由（任意）",
   "prefs.currencyTitle": "通貨",
   "prefs.currencyIntro":
     "プロジェクトの金額はすべてこの通貨で表示されます（費用表、便益、シナリオ、カーゴバイクの節約額）。",

@@ -274,6 +274,7 @@ export const ko: Messages = {
   "prefs.delayLane": "도색만 된 버스·트램 차로",
   "prefs.delayDefault": "가정값 라이브러리: {value} %",
   "prefs.delayReset": "라이브러리 값 사용",
+  "prefs.reason": "이 값의 이유(선택 사항)",
   "prefs.currencyTitle": "통화",
   "prefs.currencyIntro":
     "프로젝트의 모든 금액은 이 통화로 표시됩니다: 비용 표, 편익, 시나리오, 화물 자전거 절감액.",

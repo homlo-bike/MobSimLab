@@ -280,6 +280,7 @@ export const id: Messages = {
   "prefs.delayLane": "Di lajur bus atau trem yang hanya dicat",
   "prefs.delayDefault": "Pustaka asumsi: {value} %",
   "prefs.delayReset": "Gunakan nilai pustaka",
+  "prefs.reason": "Alasan nilai ini (opsional)",
   "prefs.currencyTitle": "Mata uang",
   "prefs.currencyIntro":
     "Semua jumlah uang dalam proyek ditampilkan dalam mata uang ini: tabel biaya, manfaat, skenario, dan penghematan sepeda kargo.",

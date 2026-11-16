@@ -272,6 +272,7 @@ export const en = {
   "prefs.delayLane": "In a painted bus or tram lane",
   "prefs.delayDefault": "Assumption library: {value} %",
   "prefs.delayReset": "Use the library value",
+  "prefs.reason": "Reason for this value (optional)",
   "prefs.currencyTitle": "Currency",
   "prefs.currencyIntro":
     "All money in the project is shown in this currency: the cost tables, the benefits, the scenarios and the cargo bike savings.",

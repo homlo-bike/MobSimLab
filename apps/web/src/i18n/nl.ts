@@ -280,6 +280,7 @@ export const nl: Messages = {
   "prefs.delayLane": "Op een geschilderde bus- of trambaan",
   "prefs.delayDefault": "Aannamebibliotheek: {value} %",
   "prefs.delayReset": "Waarde van de bibliotheek gebruiken",
+  "prefs.reason": "Reden voor deze waarde (optioneel)",
   "prefs.currencyTitle": "Valuta",
   "prefs.currencyIntro":
     "Alle bedragen in het project worden in deze valuta getoond: de kostentabellen, de baten, de scenario's en de besparingen van de bakfiets.",
