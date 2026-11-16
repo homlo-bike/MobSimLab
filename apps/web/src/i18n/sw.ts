@@ -302,7 +302,14 @@ export const sw: Messages = {
   "prefs.accessTitle": "Ufikivu wa jukwaa",
   "prefs.accessIntro":
     "Mipaka ya ngazi na pengo kati ya jukwaa na treni (TSI PRM), na kimo cha sakafu kwa treni zisizo nacho kwenye orodha. Njia hukaguliwa kila kituo.",
-  "prefs.vehicles": "Magari yanayotumika, kutoka katalogi ya magari",
+  "prefs.vehiclesTitle": "Magari",
+  "prefs.vehiclesIntro":
+    "Magari ya katalogi ambayo mradi huu unatumia, kwa kila aina. Zana za njia za barabarani na za reli zinaonyesha yaliyowekewa alama tu.",
+  "prefs.vehiclesMode": "Aina",
+  "prefs.vehiclesUsed": "{used} kati ya {total} yanatumika",
+  "prefs.vehiclesAll": "Tumia yote",
+  "prefs.vehiclesFacts": "m {length} · nafasi {places} · km/h {speed}",
+  "prefs.vehiclesLast": "Angalau gari moja hubaki likitumika kwa kila aina.",
   "prefs.switches": "Swichi za reli, kutoka katalogi ya swichi",
   "prefs.calendar": "Kalenda, mahitaji na gharama",
 

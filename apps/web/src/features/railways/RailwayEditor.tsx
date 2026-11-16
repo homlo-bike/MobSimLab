@@ -1,4 +1,5 @@
 import { Marker, type Map as MapLibreMap, type MapMouseEvent } from "maplibre-gl";
+import { useVehiclesOff } from "../../workspace/projectVehicles";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { tNow, useI18n } from "../../i18n/i18n";
@@ -170,6 +171,8 @@ export function RailwayEditor({
 }: Props) {
   const { t } = useI18n();
   const engine = useRef<RailEngine | null>(null);
+  // Catalogue trains the project does not use (Project preferences → Vehicles).
+  const vehiclesOff = useVehiclesOff();
   const [ready, setReady] = useState(false);
   const [doc, setDoc] = useState<Network | null>(initial);
   const [draft, setDraft] = useState<Track | null>(null);
@@ -1023,7 +1026,7 @@ export function RailwayEditor({
   const newLine = () => {
     const d0 = latest.current.doc;
     if (!d0) return;
-    const [d, id] = addLine(d0, (view?.params.platform_length_m ?? 120) - 5, { empty: true });
+    const [d, id] = addLine(d0, (view?.params.platform_length_m ?? 120) - 5, { empty: true, vehiclesOff });
     setDoc(d);
     setDraft(null);
     setCursor(null);

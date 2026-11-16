@@ -300,7 +300,14 @@ export const hi: Messages = {
   "prefs.accessTitle": "प्लेटफ़ॉर्म सुगम्यता",
   "prefs.accessIntro":
     "प्लेटफ़ॉर्म और ट्रेन के बीच सीढ़ी और अंतर की सीमाएँ (TSI PRM), और सूची में न होने वाली ट्रेनों की फ़र्श ऊँचाई। लाइनें हर स्टॉप पर जाँची जाती हैं।",
-  "prefs.vehicles": "इस्तेमाल किए गए वाहन, वाहन सूची से",
+  "prefs.vehiclesTitle": "वाहन",
+  "prefs.vehiclesIntro":
+    "इस परियोजना में हर साधन के लिए इस्तेमाल होने वाले सूची के वाहन। सड़क लाइन और रेलवे उपकरण केवल चुने गए वाहन दिखाते हैं।",
+  "prefs.vehiclesMode": "साधन",
+  "prefs.vehiclesUsed": "{total} में से {used} इस्तेमाल में",
+  "prefs.vehiclesAll": "सभी इस्तेमाल करें",
+  "prefs.vehiclesFacts": "{length} मी · {places} स्थान · {speed} किमी/घं",
+  "prefs.vehiclesLast": "हर साधन के लिए कम से कम एक वाहन इस्तेमाल में रहता है।",
   "prefs.switches": "पटरी स्विच, स्विच सूची से",
   "prefs.calendar": "कैलेंडर, माँग और लागत",
 

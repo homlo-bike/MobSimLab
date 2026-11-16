@@ -405,6 +405,42 @@ describe("project workspace", () => {
     expect((mixed as HTMLInputElement).value).toBe("25");
     expect(screen.queryByRole("button", { name: "Use the library value" })).toBeNull();
   });
+  it("leaves a catalogue vehicle out of the project and uses all again", async () => {
+    const calls = stubApi(owner, {
+      [`GET /api/projects/${P1}/drawings`]: { drawings: {} },
+      [`PUT /api/projects/${P1}/drawings/preferences`]: {
+        drawing: {
+          kind: "preferences",
+          schemaVersion: 1,
+          doc: { values: {}, vehiclesOff: ["siemens_avenio-munich-4-car"] },
+          version: 1,
+          updatedAt: "2026-11-16T10:00:00Z",
+          updatedBy: { id: "u1", displayName: "Alice Smith" },
+        },
+      },
+    });
+    window.history.replaceState(null, "", `/projects/${P1}/preferences`);
+    render(<App />);
+    const section = await screen.findByRole("region", { name: "Vehicles" });
+    // The project plans for trams, so its trams show first, all in use.
+    expect((within(section).getByLabelText("Mode") as HTMLSelectElement).value).toBe("tram");
+    const avenio = within(section).getByRole("checkbox", { name: /Siemens Avenio/ }) as HTMLInputElement;
+    expect(avenio.checked).toBe(true);
+    fireEvent.click(avenio);
+    await waitFor(
+      () =>
+        expect(calls.find((c) => c.method === "PUT" && c.url.endsWith("/drawings/preferences"))).toBeTruthy(),
+      { timeout: 3000 },
+    );
+    expect(calls.find((c) => c.url.endsWith("/drawings/preferences"))?.body).toEqual({
+      doc: { values: {}, vehiclesOff: ["siemens_avenio-munich-4-car"] },
+      baseVersion: null,
+    });
+    expect(avenio.checked).toBe(false);
+    fireEvent.click(within(section).getByRole("button", { name: "Use all" }));
+    expect(avenio.checked).toBe(true);
+  });
+
   it("changes a design rule for one rail mode and goes back to the library value", async () => {
     const calls = stubApi(owner, {
       [`GET /api/projects/${P1}/drawings`]: { drawings: {} },
