@@ -25,6 +25,7 @@ Schema and contribution rules: [README.md](README.md).
 - [Cost](#cost)
 - [Benefits](#benefits)
 - [Fares](#fares)
+- [Appraisal](#appraisal)
 - [Energy supply systems](#energy-supply-systems)
 - [Switches and crossings](#switches-and-crossings)
 - [Sources](#sources)
@@ -3292,6 +3293,179 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 |---|---|---|---|---|---|---|---|
 | all | 0.05 | 0.1 | 0.15 | documented | unverified | [tcrp-94](#src-tcrp-94), [mobsimlab-derivation](#src-mobsimlab-derivation) | Agencies spend roughly 5–15 % of fare revenue on selling tickets, maintaining machines and gates, card and payment fees and inspection; smart cards and open payment are at the low end. |
 
+## Appraisal
+
+### Construction period: years from the start of works to opening
+
+`appraisal.build_years` · unit: years · used by: appraisal: timeline
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 2 | 4 | 7 | educated-guess | unverified | [eu-cba-guide-2014](#src-eu-cba-guide-2014), [mobsimlab-derivation](#src-mobsimlab-derivation) | Urban rail and tram projects typically take three to six years of works; bus projects one to two. Construction costs are spread evenly over these years. Your choice — the Monte Carlo run keeps it fixed. |
+| bus, brt, trolleybus, intercity_bus | 1 | 2 | 3 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Bus, BRT and trolleybus works (lanes, stops, wires, depots, vehicles) usually take one to three years. |
+
+### Appraisal period: years of operation counted after opening
+
+`appraisal.period_years` · unit: years · used by: appraisal: timeline
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 25 | 30 | 40 | cited | unverified | [eu-cba-guide-2014](#src-eu-cba-guide-2014) | The EU CBA Guide (2014) gives a reference period of 30 years for railways and 25–30 years for urban transport, counted including construction; MobSimLab counts the 30 years after opening. Your choice — kept fixed in the Monte Carlo run. |
+| bus, brt, trolleybus, intercity_bus | 15 | 20 | 25 | documented | unverified | [eu-cba-guide-2014](#src-eu-cba-guide-2014), [mobsimlab-derivation](#src-mobsimlab-derivation) | Bus-based projects have shorter-lived assets (vehicles 12–15 years); 20 years covers a vehicle renewal. Mixed networks use the longest period of their modes. |
+
+### Financial discount rate (real)
+
+`appraisal.discount.financial` · unit: share a year · used by: appraisal: FNPV, FIRR
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.03 | 0.04 | 0.05 | cited | unverified | [eu-cba-guide-2014](#src-eu-cba-guide-2014) | The EU CBA Guide (2014) recommends 4 % in real terms as the benchmark financial discount rate. Your choice — kept fixed in the Monte Carlo run. |
+
+### Social discount rate (real), EU Cohesion Fund countries and countries outside the EU
+
+`appraisal.discount.social_cohesion` · unit: share a year · used by: appraisal: ENPV, BCR
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.04 | 0.05 | 0.07 | cited | unverified | [eu-cba-guide-2014](#src-eu-cba-guide-2014), [eu-cohesion-fund](#src-eu-cohesion-fund) | The EU CBA Guide (2014) recommends 5 % for Cohesion countries. MobSimLab also uses it outside the EU, where faster expected growth usually means a higher social rate; national guidance (UK 3.5 %, Germany 1.7 %) can be set as the project's value. Your choice — kept fixed in the Monte Carlo run. |
+
+### Social discount rate (real), other EU countries
+
+`appraisal.discount.social_other` · unit: share a year · used by: appraisal: ENPV, BCR
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.02 | 0.03 | 0.04 | cited | unverified | [eu-cba-guide-2014](#src-eu-cba-guide-2014) | The EU CBA Guide (2014) recommends 3 % for EU countries outside the Cohesion Fund. Your choice — kept fixed in the Monte Carlo run. |
+
+### Conversion factor from financial to economic costs (shadow prices)
+
+`appraisal.conversion_factor` · unit: factor · used by: appraisal: ENPV, BCR
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.8 | 1.0 | 1.0 | documented | unverified | [eu-cba-guide-2014](#src-eu-cba-guide-2014) | Economic costs are financial costs times this factor. The EU CBA Guide allows a standard conversion factor below 1 where taxes and labour market distortions are known; without country data 1.0 (market prices) is used. Your choice — kept fixed in the Monte Carlo run. |
+
+### Asset life: civil works (track bed, tunnels, viaducts, stations, depots)
+
+`appraisal.life.civil` · unit: years · used by: appraisal: renewals, residual value
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 40 | 60 | 100 | documented | unverified | [eu-cba-guide-2014](#src-eu-cba-guide-2014), [mobsimlab-derivation](#src-mobsimlab-derivation) | Civil engineering structures are designed for 50–120 years; 60 years is a cautious straight-line life. Within a 30-year appraisal they are not renewed and leave a residual value. |
+
+### Asset life: track, power, signalling, switches and bus lanes
+
+`appraisal.life.systems` · unit: years · used by: appraisal: renewals, residual value
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 20 | 25 | 35 | documented | unverified | [eu-cba-guide-2014](#src-eu-cba-guide-2014), [mobsimlab-derivation](#src-mobsimlab-derivation) | Rails, overhead lines and signalling are renewed every 20–40 years (09-planning-models §3.1 — systems 15–25 years, track 25–40 years). |
+
+### Asset life: vehicles
+
+`appraisal.life.vehicles` · unit: years · used by: appraisal: renewals, residual value
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 25 | 30 | 40 | documented | unverified | [eu-cba-guide-2014](#src-eu-cba-guide-2014), [mobsimlab-derivation](#src-mobsimlab-derivation) | Rail vehicles run 25–40 years (09-planning-models §3.1); the product owner approved 30 years (2026-11-16). |
+| bus, brt, trolleybus, intercity_bus | 10 | 12 | 15 | documented | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Buses run 12–15 years (09-planning-models §3.1); the product owner approved 12 years (2026-11-16). |
+
+### Yearly real growth of the value of time
+
+`appraisal.vot_growth` · unit: share a year · used by: appraisal: user benefits
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.0 | 0.01 | 0.02 | documented | unverified | [eu-cba-guide-2014](#src-eu-cba-guide-2014), [mobsimlab-derivation](#src-mobsimlab-derivation) | The value of time grows with real GDP per person, with an elasticity of about 0.7–1; 1 % a year matches long-run growth of 1–1.5 % a year in most countries. |
+
+### External cost of a car-km: climate change and well-to-tank emissions
+
+`appraisal.external.climate` · unit: US$ per car-km (2023, PPP) · used by: appraisal: car-km saved
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.01 | 0.025 | 0.06 | educated-guess | unverified | [eu-external-costs-2019](#src-eu-external-costs-2019), [worldbank-wdi](#src-worldbank-wdi) | About 1.5–2.5 € cents per car-km in the Handbook's EU averages for climate and well-to-tank costs, about 2–4 US$ cents at 2023 PPP prices; the high value allows for higher carbon prices. Converted from 2016 euros with the EU PPP factor and US inflation; read the Handbook's country table before relying on it. |
+
+### External cost of a car-km: air pollution
+
+`appraisal.external.air_pollution` · unit: US$ per car-km (2023, PPP) · used by: appraisal: car-km saved
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.005 | 0.015 | 0.04 | educated-guess | unverified | [eu-external-costs-2019](#src-eu-external-costs-2019), [worldbank-wdi](#src-worldbank-wdi) | About 0.5–1.5 € cents per car-km for an average EU car, higher in dense cities and for diesel cars. Converted from 2016 euros with the EU PPP factor and US inflation; read the Handbook's country table before relying on it. |
+
+### External cost of a car-km: noise
+
+`appraisal.external.noise` · unit: US$ per car-km (2023, PPP) · used by: appraisal: car-km saved
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.005 | 0.015 | 0.05 | educated-guess | unverified | [eu-external-costs-2019](#src-eu-external-costs-2019), [worldbank-wdi](#src-worldbank-wdi) | Average noise cost of a car is about 0.5–1 € cents per km; marginal urban values at night are several times higher. Converted from 2016 euros with the EU PPP factor and US inflation; read the Handbook's country table before relying on it. |
+
+### External cost of a car-km: accidents not paid by the driver
+
+`appraisal.external.accidents` · unit: US$ per car-km (2023, PPP) · used by: appraisal: car-km saved
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.03 | 0.07 | 0.12 | educated-guess | unverified | [eu-external-costs-2019](#src-eu-external-costs-2019), [worldbank-wdi](#src-worldbank-wdi) | External accident costs of cars are the largest average item in the Handbook, about 4–7 € cents per car- km. Converted from 2016 euros with the EU PPP factor and US inflation; read the Handbook's country table before relying on it. |
+
+### External cost of a car-km: congestion caused to other road users
+
+`appraisal.external.congestion` · unit: US$ per car-km (2023, PPP) · used by: appraisal: car-km saved
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.0 | 0.1 | 0.4 | educated-guess | unverified | [eu-external-costs-2019](#src-eu-external-costs-2019), [worldbank-wdi](#src-worldbank-wdi) | Marginal congestion costs range from nothing on free-flowing roads to over 50 € cents per car-km on congested urban roads at the peak; 0.1 is an educated average for a city over the day. Converted from 2016 euros with the EU PPP factor and US inflation; read the Handbook's country table before relying on it. |
+
+### Multi-criteria weight: economic net present value
+
+`appraisal.mca.weight.enpv` · unit: weight · used by: appraisal: multi-criteria analysis
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0 | 1 | 3 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Equal weights to start; weights are the planner's or the decision makers' choice and are normalised to add up to 1. |
+
+### Multi-criteria weight: boardings a year
+
+`appraisal.mca.weight.ridership` · unit: weight · used by: appraisal: multi-criteria analysis
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0 | 1 | 3 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Equal weights to start; weights are the planner's or the decision makers' choice and are normalised to add up to 1. |
+
+### Multi-criteria weight: jobs reachable per resident, gain
+
+`appraisal.mca.weight.jobs` · unit: weight · used by: appraisal: multi-criteria analysis
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0 | 1 | 3 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Equal weights to start; weights are the planner's or the decision makers' choice and are normalised to add up to 1. |
+
+### Multi-criteria weight: schools and universities reachable, gain
+
+`appraisal.mca.weight.education` · unit: weight · used by: appraisal: multi-criteria analysis
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0 | 1 | 3 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Equal weights to start; weights are the planner's or the decision makers' choice and are normalised to add up to 1. |
+
+### Multi-criteria weight: hospitals and clinics reachable, gain
+
+`appraisal.mca.weight.healthcare` · unit: weight · used by: appraisal: multi-criteria analysis
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0 | 1 | 3 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Equal weights to start; weights are the planner's or the decision makers' choice and are normalised to add up to 1. |
+
+### Multi-criteria weight: construction cost (lower is better)
+
+`appraisal.mca.weight.construction_cost` · unit: weight · used by: appraisal: multi-criteria analysis
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0 | 1 | 3 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Equal weights to start; weights are the planner's or the decision makers' choice and are normalised to add up to 1. |
+
 ## Energy supply systems
 
 Vehicles list the supply systems they support (`supplySystems`); a section can only be run by a vehicle
@@ -3489,3 +3663,6 @@ and rationale per attribute: [`switches.yaml`](switches.yaml); geometry model:
 | <a id="src-martens-2004"></a>`martens-2004` | [Martens, K.: The bicycle as a feedering mode: experiences from three European countries, Transportation Research Part D 9(4), 281–294 (2004)](https://doi.org/10.1016/j.trd.2004.02.005) | paywalled | © Elsevier; numbers cited as facts | 2026-11-16 | none |
 | <a id="src-fishman-2016"></a>`fishman-2016` | [Fishman, E.: Bikeshare: A Review of Recent Literature, Transport Reviews 36(1), 92–113 (2016)](https://doi.org/10.1080/01441647.2015.1033036) | paywalled | © Taylor & Francis; numbers cited as facts | 2026-11-16 | none |
 | <a id="src-who-2011-disability"></a>`who-2011-disability` | [World Health Organization and World Bank: World report on disability (2011)](https://www.who.int/publications/i/item/9789241564182) | free | CC BY-NC-SA 3.0 IGO | 2026-11-16 | none |
+| <a id="src-eu-cba-guide-2014"></a>`eu-cba-guide-2014` | [Guide to Cost-Benefit Analysis of Investment Projects: Economic appraisal tool for Cohesion Policy 2014–2020 (reference periods, 4 % financial and 5 %/3 % social discount rates, conversion factors, residual value)](https://ec.europa.eu/regional_policy/sources/studies/cba_guide.pdf) | free | © European Union, reuse authorised with acknowledgement (Commission Decision 2011/833/EU) | 2026-11-16 | none |
+| <a id="src-eu-external-costs-2019"></a>`eu-external-costs-2019` | [Handbook on the external costs of transport, version 2019 – 1.1 (CE Delft for DG MOVE): average and marginal external costs per vehicle-km by mode](https://cedelft.eu/publications/handbook-on-the-external-costs-of-transport-version-2019) | free | © European Union, reuse authorised with acknowledgement (Commission Decision 2011/833/EU) | 2026-11-16 | search-snippet |
+| <a id="src-eu-cohesion-fund"></a>`eu-cohesion-fund` | [Cohesion Fund 2021–2027: eligible member states (gross national income per person below 90 % of the EU average)](https://ec.europa.eu/regional_policy/funding/cohesion-fund_en) | free | © European Union, reuse authorised with acknowledgement (Commission Decision 2011/833/EU) | 2026-11-16 | none |

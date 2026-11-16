@@ -1,0 +1,458 @@
+# Appraisal parameters (ADR-0045): construction period, appraisal period, discount rates, the conversion
+# factor to economic costs, asset lives for renewals and residual values, growth of the value of time, external
+# costs of the car-km the project saves, and the default multi-criteria weights. Schema: assumptions/README.md.
+#
+# Money is 2023 international dollars at purchasing power parity, like the operating costs; the appraisal
+# converts it with the World Bank PPP factor and the US GDP deflator into the project's currency.
+
+- key: appraisal.build_years
+  label: "Construction period: years from the start of works to opening"
+  group: Appraisal
+  unit: years
+  used_by:
+    - "appraisal: timeline"
+  values:
+    - context:
+        mode: "*"
+      low: 2
+      central: 4
+      high: 7
+      basis: educated-guess
+      sources:
+        - eu-cba-guide-2014
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        Urban rail and tram projects typically take three to six years of works; bus projects one to two.
+        Construction costs are spread evenly over these years. Your choice — the Monte Carlo run keeps it fixed.
+    - context:
+        mode: [bus, brt, trolleybus, intercity_bus]
+      low: 1
+      central: 2
+      high: 3
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Bus, BRT and trolleybus works (lanes, stops, wires, depots, vehicles) usually take one to three years.
+- key: appraisal.period_years
+  label: "Appraisal period: years of operation counted after opening"
+  group: Appraisal
+  unit: years
+  used_by:
+    - "appraisal: timeline"
+  values:
+    - context:
+        mode: "*"
+      low: 25
+      central: 30
+      high: 40
+      basis: cited
+      sources:
+        - eu-cba-guide-2014
+      check: unverified
+      rationale:
+        The EU CBA Guide (2014) gives a reference period of 30 years for railways and 25–30 years for urban
+        transport, counted including construction; MobSimLab counts the 30 years after opening. Your choice —
+        kept fixed in the Monte Carlo run.
+    - context:
+        mode: [bus, brt, trolleybus, intercity_bus]
+      low: 15
+      central: 20
+      high: 25
+      basis: documented
+      sources:
+        - eu-cba-guide-2014
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        Bus-based projects have shorter-lived assets (vehicles 12–15 years); 20 years covers a vehicle renewal.
+        Mixed networks use the longest period of their modes.
+- key: appraisal.discount.financial
+  label: "Financial discount rate (real)"
+  group: Appraisal
+  unit: share a year
+  used_by:
+    - "appraisal: FNPV, FIRR"
+  values:
+    - context:
+        mode: "*"
+      low: 0.03
+      central: 0.04
+      high: 0.05
+      basis: cited
+      sources:
+        - eu-cba-guide-2014
+      check: unverified
+      rationale:
+        The EU CBA Guide (2014) recommends 4 % in real terms as the benchmark financial discount rate. Your
+        choice — kept fixed in the Monte Carlo run.
+- key: appraisal.discount.social_cohesion
+  label: "Social discount rate (real), EU Cohesion Fund countries and countries outside the EU"
+  group: Appraisal
+  unit: share a year
+  used_by:
+    - "appraisal: ENPV, BCR"
+  values:
+    - context:
+        mode: "*"
+      low: 0.04
+      central: 0.05
+      high: 0.07
+      basis: cited
+      sources:
+        - eu-cba-guide-2014
+        - eu-cohesion-fund
+      check: unverified
+      rationale:
+        The EU CBA Guide (2014) recommends 5 % for Cohesion countries. MobSimLab also uses it outside the EU,
+        where faster expected growth usually means a higher social rate; national guidance (UK 3.5 %, Germany
+        1.7 %) can be set as the project's value. Your choice — kept fixed in the Monte Carlo run.
+- key: appraisal.discount.social_other
+  label: "Social discount rate (real), other EU countries"
+  group: Appraisal
+  unit: share a year
+  used_by:
+    - "appraisal: ENPV, BCR"
+  values:
+    - context:
+        mode: "*"
+      low: 0.02
+      central: 0.03
+      high: 0.04
+      basis: cited
+      sources:
+        - eu-cba-guide-2014
+      check: unverified
+      rationale:
+        The EU CBA Guide (2014) recommends 3 % for EU countries outside the Cohesion Fund. Your choice — kept
+        fixed in the Monte Carlo run.
+- key: appraisal.conversion_factor
+  label: "Conversion factor from financial to economic costs (shadow prices)"
+  group: Appraisal
+  unit: factor
+  used_by:
+    - "appraisal: ENPV, BCR"
+  values:
+    - context:
+        mode: "*"
+      low: 0.8
+      central: 1.0
+      high: 1.0
+      basis: documented
+      sources:
+        - eu-cba-guide-2014
+      check: unverified
+      rationale:
+        Economic costs are financial costs times this factor. The EU CBA Guide allows a standard conversion
+        factor below 1 where taxes and labour market distortions are known; without country data 1.0 (market
+        prices) is used. Your choice — kept fixed in the Monte Carlo run.
+- key: appraisal.life.civil
+  label: "Asset life: civil works (track bed, tunnels, viaducts, stations, depots)"
+  group: Appraisal
+  unit: years
+  used_by:
+    - "appraisal: renewals, residual value"
+  values:
+    - context:
+        mode: "*"
+      low: 40
+      central: 60
+      high: 100
+      basis: documented
+      sources:
+        - eu-cba-guide-2014
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        Civil engineering structures are designed for 50–120 years; 60 years is a cautious straight-line life.
+        Within a 30-year appraisal they are not renewed and leave a residual value.
+- key: appraisal.life.systems
+  label: "Asset life: track, power, signalling, switches and bus lanes"
+  group: Appraisal
+  unit: years
+  used_by:
+    - "appraisal: renewals, residual value"
+  values:
+    - context:
+        mode: "*"
+      low: 20
+      central: 25
+      high: 35
+      basis: documented
+      sources:
+        - eu-cba-guide-2014
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        Rails, overhead lines and signalling are renewed every 20–40 years (09-planning-models §3.1 — systems
+        15–25 years, track 25–40 years).
+- key: appraisal.life.vehicles
+  label: "Asset life: vehicles"
+  group: Appraisal
+  unit: years
+  used_by:
+    - "appraisal: renewals, residual value"
+  values:
+    - context:
+        mode: "*"
+      low: 25
+      central: 30
+      high: 40
+      basis: documented
+      sources:
+        - eu-cba-guide-2014
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Rail vehicles run 25–40 years (09-planning-models §3.1); the product owner approved 30 years
+        (2026-11-16).
+    - context:
+        mode: [bus, brt, trolleybus, intercity_bus]
+      low: 10
+      central: 12
+      high: 15
+      basis: documented
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Buses run 12–15 years (09-planning-models §3.1); the product owner approved 12 years (2026-11-16).
+- key: appraisal.vot_growth
+  label: "Yearly real growth of the value of time"
+  group: Appraisal
+  unit: share a year
+  used_by:
+    - "appraisal: user benefits"
+  values:
+    - context:
+        mode: "*"
+      low: 0.0
+      central: 0.01
+      high: 0.02
+      basis: documented
+      sources:
+        - eu-cba-guide-2014
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        The value of time grows with real GDP per person, with an elasticity of about 0.7–1; 1 % a year matches
+        long-run growth of 1–1.5 % a year in most countries.
+- key: appraisal.external.climate
+  label: "External cost of a car-km: climate change and well-to-tank emissions"
+  group: Appraisal
+  unit: US$ per car-km (2023, PPP)
+  used_by:
+    - "appraisal: car-km saved"
+  values:
+    - context:
+        mode: "*"
+      low: 0.01
+      central: 0.025
+      high: 0.06
+      basis: educated-guess
+      sources:
+        - eu-external-costs-2019
+        - worldbank-wdi
+      check: unverified
+      rationale:
+        About 1.5–2.5 € cents per car-km in the Handbook's EU averages for climate and well-to-tank costs, about
+        2–4 US$ cents at 2023 PPP prices; the high value allows for higher carbon prices. Converted from 2016
+        euros with the EU PPP factor and US inflation; read the Handbook's country table before relying on it.
+- key: appraisal.external.air_pollution
+  label: "External cost of a car-km: air pollution"
+  group: Appraisal
+  unit: US$ per car-km (2023, PPP)
+  used_by:
+    - "appraisal: car-km saved"
+  values:
+    - context:
+        mode: "*"
+      low: 0.005
+      central: 0.015
+      high: 0.04
+      basis: educated-guess
+      sources:
+        - eu-external-costs-2019
+        - worldbank-wdi
+      check: unverified
+      rationale:
+        About 0.5–1.5 € cents per car-km for an average EU car, higher in dense cities and for diesel cars.
+        Converted from 2016 euros with the EU PPP factor and US inflation; read the Handbook's country table
+        before relying on it.
+- key: appraisal.external.noise
+  label: "External cost of a car-km: noise"
+  group: Appraisal
+  unit: US$ per car-km (2023, PPP)
+  used_by:
+    - "appraisal: car-km saved"
+  values:
+    - context:
+        mode: "*"
+      low: 0.005
+      central: 0.015
+      high: 0.05
+      basis: educated-guess
+      sources:
+        - eu-external-costs-2019
+        - worldbank-wdi
+      check: unverified
+      rationale:
+        Average noise cost of a car is about 0.5–1 € cents per km; marginal urban values at night are several
+        times higher. Converted from 2016 euros with the EU PPP factor and US inflation; read the Handbook's
+        country table before relying on it.
+- key: appraisal.external.accidents
+  label: "External cost of a car-km: accidents not paid by the driver"
+  group: Appraisal
+  unit: US$ per car-km (2023, PPP)
+  used_by:
+    - "appraisal: car-km saved"
+  values:
+    - context:
+        mode: "*"
+      low: 0.03
+      central: 0.07
+      high: 0.12
+      basis: educated-guess
+      sources:
+        - eu-external-costs-2019
+        - worldbank-wdi
+      check: unverified
+      rationale:
+        External accident costs of cars are the largest average item in the Handbook, about 4–7 € cents per car-
+        km. Converted from 2016 euros with the EU PPP factor and US inflation; read the Handbook's country table
+        before relying on it.
+- key: appraisal.external.congestion
+  label: "External cost of a car-km: congestion caused to other road users"
+  group: Appraisal
+  unit: US$ per car-km (2023, PPP)
+  used_by:
+    - "appraisal: car-km saved"
+  values:
+    - context:
+        mode: "*"
+      low: 0.0
+      central: 0.1
+      high: 0.4
+      basis: educated-guess
+      sources:
+        - eu-external-costs-2019
+        - worldbank-wdi
+      check: unverified
+      rationale:
+        Marginal congestion costs range from nothing on free-flowing roads to over 50 € cents per car-km on
+        congested urban roads at the peak; 0.1 is an educated average for a city over the day. Converted from
+        2016 euros with the EU PPP factor and US inflation; read the Handbook's country table before relying on
+        it.
+- key: appraisal.mca.weight.enpv
+  label: "Multi-criteria weight: economic net present value"
+  group: Appraisal
+  unit: weight
+  used_by:
+    - "appraisal: multi-criteria analysis"
+  values:
+    - context:
+        mode: "*"
+      low: 0
+      central: 1
+      high: 3
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        Equal weights to start; weights are the planner's or the decision makers' choice and are normalised to
+        add up to 1.
+- key: appraisal.mca.weight.ridership
+  label: "Multi-criteria weight: boardings a year"
+  group: Appraisal
+  unit: weight
+  used_by:
+    - "appraisal: multi-criteria analysis"
+  values:
+    - context:
+        mode: "*"
+      low: 0
+      central: 1
+      high: 3
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        Equal weights to start; weights are the planner's or the decision makers' choice and are normalised to
+        add up to 1.
+- key: appraisal.mca.weight.jobs
+  label: "Multi-criteria weight: jobs reachable per resident, gain"
+  group: Appraisal
+  unit: weight
+  used_by:
+    - "appraisal: multi-criteria analysis"
+  values:
+    - context:
+        mode: "*"
+      low: 0
+      central: 1
+      high: 3
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        Equal weights to start; weights are the planner's or the decision makers' choice and are normalised to
+        add up to 1.
+- key: appraisal.mca.weight.education
+  label: "Multi-criteria weight: schools and universities reachable, gain"
+  group: Appraisal
+  unit: weight
+  used_by:
+    - "appraisal: multi-criteria analysis"
+  values:
+    - context:
+        mode: "*"
+      low: 0
+      central: 1
+      high: 3
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        Equal weights to start; weights are the planner's or the decision makers' choice and are normalised to
+        add up to 1.
+- key: appraisal.mca.weight.healthcare
+  label: "Multi-criteria weight: hospitals and clinics reachable, gain"
+  group: Appraisal
+  unit: weight
+  used_by:
+    - "appraisal: multi-criteria analysis"
+  values:
+    - context:
+        mode: "*"
+      low: 0
+      central: 1
+      high: 3
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        Equal weights to start; weights are the planner's or the decision makers' choice and are normalised to
+        add up to 1.
+- key: appraisal.mca.weight.construction_cost
+  label: "Multi-criteria weight: construction cost (lower is better)"
+  group: Appraisal
+  unit: weight
+  used_by:
+    - "appraisal: multi-criteria analysis"
+  values:
+    - context:
+        mode: "*"
+      low: 0
+      central: 1
+      high: 3
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        Equal weights to start; weights are the planner's or the decision makers' choice and are normalised to
+        add up to 1.

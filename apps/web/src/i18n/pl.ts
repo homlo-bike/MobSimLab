@@ -343,6 +343,7 @@ export const pl: Messages = {
   "prefs.group.cost": "Koszty",
   "prefs.group.benefits": "Korzyści",
   "prefs.group.fares": "Taryfy",
+  "prefs.group.appraisal": "Ocena",
   "prefs.traction.battery": "akumulator",
   "prefs.traction.diesel": "diesel",
   "prefs.traction.hydrogen": "wodór",

@@ -180,10 +180,25 @@ def test_saves_the_od_matrices_as_omx(run: tuple[str, dict[str, Any], list[Any]]
             m.close()
 
 
+def test_values_the_tram_against_no_public_transport(run: tuple[str, dict[str, Any], list[Any]]) -> None:
+    _, result, _ = run
+    a = result["appraisal"]
+    assert a["currency"] == result["currency"]
+    # Riders gain, and some of them would drive without the tram.
+    assert a["user_benefit"] > 0
+    assert a["user_benefit"] == pytest.approx(sum(a["user_benefit_by_purpose"].values()), rel=1e-6)
+    assert a["generalised_hours"] > 0
+    assert a["car_trips_saved"] > 0 and a["car_vehicle_km_saved"] > 0
+    # Nobody in the town depends on the tram alone: everyone can walk.
+    assert a["no_alternative_trips"] == pytest.approx(0, abs=1e-6)
+
+
 def test_a_better_tram_wins_riders() -> None:
     slow = run_demand(json.dumps(town(headway_s=1200)), {"values": {}}, Recorder())[1]
     fast = run_demand(json.dumps(town(headway_s=180)), {"values": {}}, Recorder())[1]
     assert fast["totals"]["by_mode"]["transit"] > slow["totals"]["by_mode"]["transit"]
+    # A better tram is worth more to its users.
+    assert fast["appraisal"]["user_benefit"] > slow["appraisal"]["user_benefit"]
 
 
 def test_without_a_line_nobody_rides() -> None:
@@ -191,6 +206,10 @@ def test_without_a_line_nobody_rides() -> None:
     assert outcome == "done"
     assert result["totals"]["by_mode"]["transit"] == 0
     assert any("public transport" in n for n in result["notes"])
+    # Nothing to appraise: the trips are the same with and without public transport.
+    a = result["appraisal"]
+    assert a["user_benefit"] == pytest.approx(0, abs=1e-6)
+    assert a["car_vehicle_km_saved"] == pytest.approx(0, abs=1e-6)
 
 
 def test_project_values_change_the_result() -> None:

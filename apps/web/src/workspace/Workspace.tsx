@@ -28,7 +28,9 @@ import { JourneyPlanner } from "../features/journey-planner/JourneyPlanner";
 import { NoiseMap } from "../features/noise/NoiseMap";
 import { NetworkTables } from "../features/tables/NetworkTables";
 import { FareTables } from "../features/fares/FareTables";
-import type { FaresDoc } from "../features/fares/model";
+import { AppraisalSection } from "../features/appraisal/AppraisalSection";
+import type { AppraisalDoc } from "../features/appraisal/model";
+import type { FareInput, FaresDoc } from "../features/fares/model";
 import { Scenarios } from "../features/tables/Scenarios";
 import type { ScenariosDoc } from "../features/tables/scenarioModel";
 import { noiseCalculationIn } from "../features/noise/plugin";
@@ -215,6 +217,20 @@ export function Workspace({
     [benefitEst],
   );
   const onBenefitEstimate = useCallback((e: BenefitEstimate | null) => setBenefitEst(e), []);
+  // The fare revenue table's input, for the appraisal's fare revenue draws.
+  const [fareInput, setFareInput] = useState<FareInput | null>(null);
+  const appraisalCosts = useMemo(
+    () =>
+      costInfo
+        ? {
+            estimate: costInfo.estimate,
+            currency: costInfo.currency,
+            country: costInfo.country,
+            perIntl: costInfo.perIntl,
+          }
+        : null,
+    [costInfo],
+  );
   const farePrices = useMemo(
     () => (costInfo ? { currency: costInfo.currency, perIntl: costInfo.perIntl } : null),
     [costInfo?.currency, costInfo?.perIntl],
@@ -1019,6 +1035,19 @@ export function Workspace({
                   prices={farePrices}
                   doc={drawings.doc<FaresDoc>("fares")}
                   onDoc={editable ? (d) => drawings.set("fares", d) : undefined}
+                  onInput={setFareInput}
+                />
+              )}
+              {project && drawings.loaded && (
+                <AppraisalSection
+                  costs={appraisalCosts}
+                  benefits={benefitEst}
+                  fares={fareInput}
+                  demand={usedRidership}
+                  preferences={preferences}
+                  onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
+                  doc={drawings.doc<AppraisalDoc>("appraisal")}
+                  onDoc={editable ? (d) => drawings.set("appraisal", d) : undefined}
                 />
               )}
               {project && drawings.loaded && (

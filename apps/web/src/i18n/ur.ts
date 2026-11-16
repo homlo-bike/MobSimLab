@@ -343,6 +343,7 @@ export const ur: Messages = {
   "prefs.group.cost": "لاگت",
   "prefs.group.benefits": "فوائد",
   "prefs.group.fares": "کرایے",
+  "prefs.group.appraisal": "جائزہ",
   "prefs.traction.battery": "بیٹری",
   "prefs.traction.diesel": "ڈیزل",
   "prefs.traction.hydrogen": "ہائیڈروجن",

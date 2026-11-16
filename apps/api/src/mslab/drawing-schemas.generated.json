@@ -1341,5 +1341,59 @@
       },
       "additionalProperties": {}
     }
+  },
+  "appraisal": {
+    "schemaVersion": 1,
+    "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "https://github.com/homlo-bike/MobSimLab/blob/main/contracts/mslab/drawings/appraisal.schema.json",
+      "title": "Document of a \"appraisal\" drawing (data/appraisal.json, field doc)",
+      "type": "object",
+      "properties": {
+        "criteria": {
+          "maxItems": 30,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "maxLength": 40
+              },
+              "name": {
+                "type": "string",
+                "maxLength": 120
+              },
+              "weight": {
+                "type": "number",
+                "minimum": 0
+              },
+              "higher": {
+                "type": "boolean"
+              },
+              "scores": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string",
+                  "maxLength": 200
+                },
+                "additionalProperties": {
+                  "type": "number"
+                }
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "weight",
+              "higher",
+              "scores"
+            ],
+            "additionalProperties": {}
+          }
+        }
+      },
+      "additionalProperties": {}
+    }
   }
 }

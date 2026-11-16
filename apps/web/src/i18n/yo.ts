@@ -341,6 +341,7 @@ export const yo: Messages = {
   "prefs.group.cost": "Iye owó",
   "prefs.group.benefits": "Àǹfààní",
   "prefs.group.fares": "Owó ọkọ̀",
+  "prefs.group.appraisal": "Ìgbéléwọ̀n",
   "prefs.traction.battery": "bátìrì",
   "prefs.traction.diesel": "díẹ́sẹ́lì",
   "prefs.traction.hydrogen": "hydrogen",

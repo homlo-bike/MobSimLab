@@ -349,6 +349,7 @@ export const zu: Messages = {
   "prefs.group.cost": "Izindleko",
   "prefs.group.benefits": "Izinzuzo",
   "prefs.group.fares": "Imali yokugibela",
+  "prefs.group.appraisal": "Ukuhlola",
   "prefs.traction.battery": "ibhethri",
   "prefs.traction.diesel": "udizili",
   "prefs.traction.hydrogen": "i-hydrogen",
