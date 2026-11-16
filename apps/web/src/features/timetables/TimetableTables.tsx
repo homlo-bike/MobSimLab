@@ -8,6 +8,9 @@ import { lineInput, type StreetLinesDoc } from "../street-lines/saved";
 import { type PreferencesDoc, withPref } from "../../workspace/preferences";
 import { blockSummary, fleetRow, railBlocks, streetBlocks, type BlockRun, type VehicleBlock } from "./blocks";
 import { useRailPublication } from "./railPublish";
+import { dayServiceOf, lineDay, railLineFor, streetTimingFor, streetWeekday } from "./dayTypes";
+import { streetLineTimetable } from "../journey-planner/network";
+import { calendarFrom, DAY_TYPES, type DayTypeId } from "../../workspace/calendar";
 
 interface Props {
   railway: Network | null;
@@ -30,6 +33,14 @@ interface LineBlocks {
   blocks: VehicleBlock[];
 }
 
+/** Day type names in the tables (English, like the other tables). */
+export const DAY_LABEL: Record<DayTypeId, string> = {
+  weekday: "Weekday",
+  saturday: "Saturday",
+  sunday: "Sunday",
+  holiday: "Public holiday",
+};
+
 const WAIT_KEY = "timetable.max_terminal_wait_min";
 const SPARE_KEY = "mode.spare_share";
 const int = (v: number) => new Intl.NumberFormat("en").format(Math.round(v));
@@ -39,7 +50,7 @@ const hours = (s: number) =>
   `${Math.floor(s / 3600)} h ${String(Math.round((s % 3600) / 60)).padStart(2, "0")} min`;
 
 /**
- * The timetables of the Tables tab: for now the vehicle blocks of a weekday (FR-TT-04): each vehicle's runs
+ * The timetables of the Tables tab for a day type (weekday, Saturday, Sunday, public holiday): the vehicle blocks (FR-TT-04): each vehicle's runs
  * from pull-out to pull-in, and the fleet each line needs with its spare vehicles. In English, like the other
  * tables.
  * Side effects: publishes the railway's service lines with the rail engine.
@@ -48,11 +59,15 @@ export function TimetableTables({ railway, streetLines, preferences, onPreferenc
   const prefs = preferences?.values;
   const maxWaitMin = paramValue(WAIT_KEY, "*", prefs)[1];
   const options = useMemo(() => ({ max_idle_s: maxWaitMin * 60 }), [maxWaitMin]);
-  const { publication, busy, error } = useRailPublication(railway, "weekday", options, loadRail);
+  const [day, setDay] = useState<DayTypeId>("weekday");
+  const calKey = JSON.stringify(calendarFrom(preferences).days ?? null);
+  const cal = useMemo(() => calendarFrom(preferences), [calKey]);
+  const { publication, busy, error } = useRailPublication(railway, day, cal, options, loadRail);
   const lines = useMemo<LineBlocks[]>(() => {
     const out: LineBlocks[] = [];
-    for (const l of railway?.lines ?? []) {
+    for (const line of railway?.lines ?? []) {
       if (!publication) break;
+      const l = railLineFor(line, day);
       const mode = lineMode(railway!, l);
       const name = l.name || l.id;
       out.push({
@@ -65,8 +80,10 @@ export function TimetableTables({ railway, streetLines, preferences, onPreferenc
       });
     }
     for (const [i, s] of (streetLines?.lines ?? []).entries()) {
-      const input = lineInput(s);
+      const timing = streetTimingFor(s.timing, day);
+      const input = lineInput({ ...s, timing });
       if (!input) continue;
+      const service = dayServiceOf(streetWeekday(s.timing), s.timing.days, day);
       out.push({
         key: `street:${i}`,
         name: input.name || `Street line ${i + 1}`,
@@ -78,11 +95,13 @@ export function TimetableTables({ railway, streetLines, preferences, onPreferenc
           layoverMin: fullTiming(s.timing).layoverMin,
           hasDepot: !!(s.depotId || s.depot),
           maxWaitMin,
+          timetable: streetLineTimetable(input, lineDay(cal, day, service), day),
         }),
       });
     }
     return out;
-  }, [railway, publication, streetLines, maxWaitMin]);
+    // The calendar's peaks of the day type shape the street lines' periods (`calKey` stands for `cal`).
+  }, [railway, publication, streetLines, maxWaitMin, day, calKey]);
 
   const editable = !!onPreferences;
   const setPref = (id: string, v: number | null) => onPreferences?.(withPref(preferences, id, v));
@@ -93,6 +112,20 @@ export function TimetableTables({ railway, streetLines, preferences, onPreferenc
       <h2 id="timetables-title" className="text-xl font-semibold tracking-tight">
         Timetables
       </h2>
+      <label className="mt-2 flex items-center gap-2 text-sm">
+        <span className="font-medium">Day type</span>
+        <select
+          value={day}
+          onChange={(e) => setDay(e.target.value as DayTypeId)}
+          className="rounded border border-slate-300 px-2 py-1"
+        >
+          {DAY_TYPES.map((d) => (
+            <option key={d} value={d}>
+              {DAY_LABEL[d]}
+            </option>
+          ))}
+        </select>
+      </label>
       {error && (
         <p role="alert" className="mt-3 text-sm text-red-700">
           The rail lines could not be planned: {error}
@@ -103,7 +136,14 @@ export function TimetableTables({ railway, streetLines, preferences, onPreferenc
           No lines yet. Draw a street line or a railway with service lines in the Create tab.
         </p>
       ) : (
-        <VehicleBlocks lines={lines} busy={busy} prefs={prefs} editable={editable} setPref={setPref} />
+        <VehicleBlocks
+          lines={lines}
+          day={day}
+          busy={busy}
+          prefs={prefs}
+          editable={editable}
+          setPref={setPref}
+        />
       )}
     </section>
   );
@@ -111,12 +151,14 @@ export function TimetableTables({ railway, streetLines, preferences, onPreferenc
 
 function VehicleBlocks({
   lines,
+  day,
   busy,
   prefs,
   editable,
   setPref,
 }: {
   lines: LineBlocks[];
+  day: DayTypeId;
   busy: boolean;
   prefs: PreferencesDoc["values"] | undefined;
   editable: boolean;
@@ -133,7 +175,7 @@ function VehicleBlocks({
   return (
     <section className={card} aria-labelledby="blocks-title">
       <h3 id="blocks-title" className="caps m-0">
-        Vehicle blocks, weekday
+        Vehicle blocks, {DAY_LABEL[day].toLowerCase()}
       </h3>
       <p className="mt-1 text-sm text-slate-600">
         Each block is the day of one vehicle (one train for rail): its pull-out from the depot, the trips it
@@ -235,7 +277,7 @@ function VehicleBlocks({
               ))}
             </select>
           </label>
-          <BlockList line={line} />
+          <BlockList line={line} day={day} />
         </div>
       )}
       <ul className="mt-3 list-disc ps-5 text-xs text-slate-500">
@@ -264,10 +306,14 @@ const KIND: Record<BlockRun["kind"], string> = {
 };
 
 /** Purpose: the blocks of one line, each with its runs on demand. */
-function BlockList({ line }: { line: LineBlocks }) {
+function BlockList({ line, day }: { line: LineBlocks; day: DayTypeId }) {
   const [open, setOpen] = useState<number | null>(null);
   if (!line.blocks.length)
-    return <p className="mt-2 text-sm text-slate-600">This line has no trips on a weekday.</p>;
+    return (
+      <p className="mt-2 text-sm text-slate-600">
+        This line has no trips on this day type ({DAY_LABEL[day].toLowerCase()}).
+      </p>
+    );
   return (
     <div className="mt-2 overflow-x-auto">
       <table className="w-full min-w-[40rem] text-sm">

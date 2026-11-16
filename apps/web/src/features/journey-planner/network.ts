@@ -100,6 +100,7 @@ export function streetLineTimetable(
     ...(line.firstMin !== undefined && { firstS: line.firstMin * 60 }),
     ...(line.lastMin !== undefined && { lastS: line.lastMin * 60 }),
   },
+  serviceId = "weekday",
 ): Timetable | null {
   const v = line.view;
   const pts = new Map(v.points.map((p) => [p.id, p]));
@@ -138,7 +139,7 @@ export function streetLineTimetable(
         pattern_id: `${id}-${d.direction}`,
         route_id: id,
         direction_id: d.direction,
-        service_id: "weekday",
+        service_id: serviceId,
         stops: seq,
         periods: servicePeriods(day, peak, headway),
       });

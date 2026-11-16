@@ -1,5 +1,6 @@
 /** The railway design document (Rust `rail_design::model`) and the view returned by the engine. */
 
+import type { DayServices } from "../timetables/dayTypes";
 import type { Timetable } from "../journey-planner/types";
 import type { StreetSetup } from "../street-setup/types";
 
@@ -225,6 +226,8 @@ export interface ServiceLine {
   offpeak_headway_min: number;
   /** Dwell at intermediate stops, s; the mode's when absent. */
   dwell_s?: number | null;
+  /** Its own first and last departure and headways on Saturdays, Sundays and holidays; absent: as on a weekday. */
+  days?: DayServices;
 }
 
 /** What publishing found for one line (Rust `rail_plan::LineReport`). */
@@ -302,6 +305,8 @@ export interface EngineServiceLine {
   peak_headway_s: number;
   offpeak_headway_s: number;
   dwell_s: number | null;
+  /** Peak windows `[from, to)`, s after midnight; the planner's 07–09 and 16–19 when absent. */
+  peaks?: [number, number][];
 }
 
 export type Severity = "error" | "warning" | "info" | "ok";

@@ -2,6 +2,7 @@ import { roadUz } from "./road/uz";
 import { editorsUz } from "./editors/uz";
 import { cargoBikeUz } from "./cargo-bike/uz";
 import { depotsUz } from "./depots/uz";
+import { timetablesUz } from "./timetables/uz";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -396,6 +397,7 @@ export const uz: Messages = {
   ...editorsUz,
   ...cargoBikeUz,
   ...depotsUz,
+  ...timetablesUz,
   ...roadUz,
   ...PLUGIN_MESSAGES.uz,
 };
