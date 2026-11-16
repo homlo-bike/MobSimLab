@@ -1,5 +1,5 @@
 import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("maplibre-gl", () => {
   class Map {
@@ -112,6 +112,47 @@ function stubApi(me: Me | Me[], overrides: Record<string, unknown> = {}) {
   return calls;
 }
 
+// The app downloads each language and each screen when first shown. Load them once up front, so a slow first
+// compile on a CI runner does not use up the time the tests give a screen to appear.
+beforeAll(async () => {
+  await Promise.all([
+    ...MESSAGE_LANGUAGES.map(loadMessages),
+    import("../src/workspace/Workspace"),
+    import("../src/features/appraisal/AppraisalSection"),
+    import("../src/features/benefits/BenefitTables"),
+    import("../src/features/benefits/RegionEditor"),
+    import("../src/features/calendar-run/CalendarRun"),
+    import("../src/features/capacity/CapacityRun"),
+    import("../src/features/cargo-bike/CargoBikeTab"),
+    import("../src/features/costs/CostTables"),
+    import("../src/features/demand/DemandSection"),
+    import("../src/features/demand/ZoneEditor"),
+    import("../src/features/depots/DepotEditor"),
+    import("../src/features/fares/FareTables"),
+    import("../src/features/journey-planner/JourneyPlanner"),
+    import("../src/features/noise/NoiseMap"),
+    import("../src/features/population/PopulationPanel"),
+    import("../src/features/railways/RailwayEditor"),
+    import("../src/features/road-sim/RoadSimulation"),
+    import("../src/features/schematic/Schematic"),
+    import("../src/features/street-lines/StreetLineEditor"),
+    import("../src/features/street-setup/StreetSetupEditor"),
+    import("../src/features/tables/NetworkTables"),
+    import("../src/features/tables/Scenarios"),
+    import("../src/features/timetables/TimetableTables"),
+    import("../src/features/walk/WalkAnalysis"),
+    import("../src/kits/SpanLineEditor"),
+    import("../src/kits/WaterRouteEditor"),
+    import("../src/kits/ZoneEditor"),
+    import("../src/workspace/PrintReport"),
+    import("../src/workspace/ProjectPreferences"),
+    import("../src/admin/AdminPanel"),
+    import("../src/agents/AgentsPanel"),
+    import("../src/agents/ConsentPage"),
+    import("../src/setup/SetupPanel"),
+  ]);
+}, 120_000);
+
 let languages: string[] = ["en-GB", "en"];
 beforeEach(() => {
   languages = ["en-GB", "en"];
@@ -141,7 +182,7 @@ describe("sign-in page", () => {
     stubApi(signedOut);
     render(<App />);
     expect(await screen.findByRole("heading", { name: "Anmelden" })).toBeTruthy();
-    expect(document.documentElement.lang).toBe("de");
+    await waitFor(() => expect(document.documentElement.lang).toBe("de"));
     fireEvent.click(screen.getByRole("button", { name: /Deutsch \(vom Gerät\)/ }));
     // The menu says translations are machine-made and links to the message files on GitHub.
     expect(screen.getByRole("link", { name: /Übersetzungen zu verbessern/ }).getAttribute("href")).toMatch(
@@ -157,12 +198,12 @@ describe("sign-in page", () => {
     stubApi(signedOut);
     render(<App />);
     expect(await screen.findByRole("heading", { name: "تسجيل الدخول" })).toBeTruthy();
-    expect(document.documentElement.lang).toBe("ar");
+    await waitFor(() => expect(document.documentElement.lang).toBe("ar"));
     expect(document.documentElement.dir).toBe("rtl");
     fireEvent.click(screen.getByRole("button", { name: /العربية \(من الجهاز\)/ }));
     fireEvent.click(screen.getByRole("menuitemradio", { name: "中文（简体）" }));
     expect(await screen.findByRole("heading", { name: "登录" })).toBeTruthy();
-    expect(document.documentElement.dir).toBe("ltr");
+    await waitFor(() => expect(document.documentElement.dir).toBe("ltr"));
   });
 
   it("opens the About dialog with the version, licence and source link", async () => {
