@@ -1,5 +1,7 @@
+import { roadBn } from "./road/bn";
 import { editorsBn } from "./editors/bn";
 import { cargoBikeBn } from "./cargo-bike/bn";
+import { depotsBn } from "./depots/bn";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -275,6 +277,10 @@ export const bn: Messages = {
   "prefs.delayLane": "রং দিয়ে আঁকা বাস বা ট্রাম লেনে",
   "prefs.delayDefault": "অনুমান লাইব্রেরি: {value} %",
   "prefs.delayReset": "লাইব্রেরির মান ব্যবহার করুন",
+  "prefs.stationsTitle": "স্টেশন",
+  "prefs.stationsIntro":
+    "এই দূরত্বের মধ্যে একই নামের স্টপগুলো স্কিম্যাটিক মানচিত্র, যাত্রা পরিকল্পক এবং সুবিধা ও যাত্রী সারণিতে একটি স্টেশন হিসেবে গণ্য হয়।",
+  "prefs.libraryM": "অনুমান লাইব্রেরি: {value} মি",
   "prefs.currencyTitle": "মুদ্রা",
   "prefs.currencyIntro":
     "প্রকল্পের সব অর্থ এই মুদ্রায় দেখানো হয়: খরচের সারণি, সুফল, পরিস্থিতি ও কার্গো বাইকের সাশ্রয়।",
@@ -296,8 +302,25 @@ export const bn: Messages = {
   "prefs.rulesChanged": "পরিবর্তিত: {count}",
   "prefs.rulesLibrary": "অনুমান লাইব্রেরি: {value} {unit}",
   "prefs.rulesLibraryRange": "অনুমান লাইব্রেরি: {value} {unit} (পরিসর {low}–{high})",
-  "prefs.vehicles": "ব্যবহৃত যানবাহন, যানবাহন তালিকা থেকে",
-  "prefs.switches": "রেল সুইচ, সুইচ তালিকা থেকে",
+  "prefs.accessTitle": "প্ল্যাটফর্ম প্রবেশযোগ্যতা",
+  "prefs.accessIntro":
+    "প্ল্যাটফর্ম ও ট্রেনের মধ্যে ধাপ ও ফাঁকের সীমা (TSI PRM), এবং তালিকায় না থাকা ট্রেনের মেঝের উচ্চতা। লাইনগুলো প্রতিটি স্টপে যাচাই হয়।",
+  "prefs.vehiclesTitle": "যানবাহন",
+  "prefs.vehiclesIntro":
+    "এই প্রকল্প প্রতিটি মাধ্যমে তালিকার যে যানবাহন ব্যবহার করে। রাস্তার লাইন ও রেলপথ সরঞ্জাম শুধু টিক দেওয়াগুলো দেখায়।",
+  "prefs.vehiclesMode": "মাধ্যম",
+  "prefs.vehiclesUsed": "{total}টির মধ্যে {used}টি ব্যবহৃত",
+  "prefs.vehiclesAll": "সব ব্যবহার করুন",
+  "prefs.vehiclesFacts": "{length} মি · {places} আসন · {speed} কিমি/ঘ",
+  "prefs.vehiclesLast": "প্রতিটি মাধ্যমে অন্তত একটি যান ব্যবহারে থাকে।",
+  "prefs.switchesTitle": "পয়েন্ট",
+  "prefs.switchesIntro":
+    "তালিকার যে পয়েন্ট ও ক্রসিং রেলপথ সম্পাদক প্রতিটি রেল মাধ্যমে দেয়, এবং নতুন পয়েন্ট যেটি দিয়ে শুরু হয়।",
+  "prefs.switchesTurnouts": "পয়েন্ট",
+  "prefs.switchesSlips": "ক্রসিংয়ে স্লিপ",
+  "prefs.switchesDefault": "ডিফল্ট",
+  "prefs.switchesFacts": "1:{n} · R {radius} মি · বাঁকা লাইনে {speed} কিমি/ঘ",
+  "prefs.switchesLast": "ডিফল্ট পয়েন্ট ব্যবহারে থাকে। বাদ দিতে আগে অন্য ডিফল্ট বেছে নিন।",
   "prefs.calendar": "ক্যালেন্ডার, চাহিদা ও খরচ",
 
   "job.stepOf": "ধাপ {step} / {steps}",
@@ -364,5 +387,7 @@ export const bn: Messages = {
 
   ...editorsBn,
   ...cargoBikeBn,
+  ...depotsBn,
+  ...roadBn,
   ...PLUGIN_MESSAGES.bn,
 };

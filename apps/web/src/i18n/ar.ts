@@ -1,5 +1,7 @@
+import { roadAr } from "./road/ar";
 import { editorsAr } from "./editors/ar";
 import { cargoBikeAr } from "./cargo-bike/ar";
+import { depotsAr } from "./depots/ar";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -268,6 +270,10 @@ export const ar: Messages = {
   "prefs.delayLane": "في مسار مخصّص مطلي للحافلات أو الترام",
   "prefs.delayDefault": "مكتبة الافتراضات: {value} %",
   "prefs.delayReset": "استخدام قيمة المكتبة",
+  "prefs.stationsTitle": "المحطات",
+  "prefs.stationsIntro":
+    "تُعدّ المواقف التي تحمل الاسم نفسه ضمن هذه المسافة محطة واحدة في المخطط التخطيطي ومخطط الرحلات وجداول المنافع والركاب.",
+  "prefs.libraryM": "مكتبة الافتراضات: {value} م",
   "prefs.currencyTitle": "العملة",
   "prefs.currencyIntro":
     "تُعرض كل المبالغ في المشروع بهذه العملة: جداول التكاليف والمنافع والسيناريوهات ووفورات دراجة الشحن.",
@@ -288,8 +294,25 @@ export const ar: Messages = {
   "prefs.rulesChanged": "المعدّلة: {count}",
   "prefs.rulesLibrary": "مكتبة الافتراضات: {value} {unit}",
   "prefs.rulesLibraryRange": "مكتبة الافتراضات: {value} {unit} (النطاق {low}–{high})",
-  "prefs.vehicles": "المركبات المستخدمة، من كتالوج المركبات",
-  "prefs.switches": "تحويلات السكك، من كتالوج التحويلات",
+  "prefs.accessTitle": "إتاحة الرصيف",
+  "prefs.accessIntro":
+    "حدود الدرجة والفجوة بين الرصيف والقطار (TSI PRM)، وارتفاع الأرضية للقطارات التي لا تملكه في الكتالوج. تُفحص الخطوط عند كل محطة.",
+  "prefs.vehiclesTitle": "المركبات",
+  "prefs.vehiclesIntro":
+    "مركبات الكتالوج التي يستخدمها هذا المشروع لكل نمط. لا تعرض أدوات خطوط الشوارع والسكك الحديدية إلا المحددة.",
+  "prefs.vehiclesMode": "النمط",
+  "prefs.vehiclesUsed": "{used} من {total} مستخدمة",
+  "prefs.vehiclesAll": "استخدام الكل",
+  "prefs.vehiclesFacts": "{length} م · {places} مقعدًا · {speed} كم/س",
+  "prefs.vehiclesLast": "تبقى مركبة واحدة على الأقل مستخدمة لكل نمط.",
+  "prefs.switchesTitle": "المحولات",
+  "prefs.switchesIntro":
+    "المحولات والتقاطعات من الكتالوج التي يعرضها محرر السكك الحديدية لكل نمط سككي، والمحول الذي تبدأ به المحولات الجديدة.",
+  "prefs.switchesTurnouts": "المحولات",
+  "prefs.switchesSlips": "المحولات المنزلقة في التقاطعات",
+  "prefs.switchesDefault": "الافتراضي",
+  "prefs.switchesFacts": "1:{n} · نصف قطر {radius} م · {speed} كم/س في الاتجاه المنحرف",
+  "prefs.switchesLast": "يبقى المحول الافتراضي مستخدمًا. لإزالته، اختر محولًا افتراضيًا آخر أولًا.",
   "prefs.calendar": "التقويم والطلب والتكاليف",
 
   "job.stepOf": "الخطوة {step} من {steps}",
@@ -357,5 +380,7 @@ export const ar: Messages = {
 
   ...editorsAr,
   ...cargoBikeAr,
+  ...depotsAr,
+  ...roadAr,
   ...PLUGIN_MESSAGES.ar,
 };

@@ -1,5 +1,7 @@
+import { roadDe } from "./road/de";
 import { editorsDe } from "./editors/de";
 import { cargoBikeDe } from "./cargo-bike/de";
+import { depotsDe } from "./depots/de";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -283,6 +285,10 @@ export const de: Messages = {
   "prefs.delayLane": "Auf einer markierten Bus- oder Straßenbahnspur",
   "prefs.delayDefault": "Annahmenbibliothek: {value} %",
   "prefs.delayReset": "Wert der Bibliothek verwenden",
+  "prefs.stationsTitle": "Stationen",
+  "prefs.stationsIntro":
+    "Gleichnamige Haltestellen innerhalb dieser Entfernung gelten im Liniennetzplan, in der Reiseplanung und in den Nutzen- und Fahrgasttabellen als eine Station.",
+  "prefs.libraryM": "Annahmenbibliothek: {value} m",
   "prefs.currencyTitle": "Währung",
   "prefs.currencyIntro":
     "Alle Geldbeträge des Projekts werden in dieser Währung angezeigt: Kostentabellen, Nutzen, Szenarien und die Einsparungen des Lastenrads.",
@@ -304,8 +310,26 @@ export const de: Messages = {
   "prefs.rulesChanged": "{count} geändert",
   "prefs.rulesLibrary": "Annahmenbibliothek: {value} {unit}",
   "prefs.rulesLibraryRange": "Annahmenbibliothek: {value} {unit} (Bereich {low}–{high})",
-  "prefs.vehicles": "Eingesetzte Fahrzeuge aus dem Fahrzeugkatalog",
-  "prefs.switches": "Weichen aus dem Weichenkatalog",
+  "prefs.accessTitle": "Barrierefreiheit am Bahnsteig",
+  "prefs.accessIntro":
+    "Grenzwerte für Stufe und Spalt zwischen Bahnsteig und Zug (TSI PRM) sowie die Fußbodenhöhe für Züge ohne Angabe im Fahrzeugkatalog. Linien werden an jedem Halt daran geprüft.",
+  "prefs.vehiclesTitle": "Fahrzeuge",
+  "prefs.vehiclesIntro":
+    "Die Katalogfahrzeuge, die dieses Projekt je Verkehrsmittel einsetzt. Linien- und Gleiseditor bieten nur die angehakten an.",
+  "prefs.vehiclesMode": "Verkehrsmittel",
+  "prefs.vehiclesUsed": "{used} von {total} eingesetzt",
+  "prefs.vehiclesAll": "Alle einsetzen",
+  "prefs.vehiclesFacts": "{length} m · {places} Plätze · {speed} km/h",
+  "prefs.vehiclesLast": "Je Verkehrsmittel bleibt mindestens ein Fahrzeug im Einsatz.",
+  "prefs.switchesTitle": "Weichen",
+  "prefs.switchesIntro":
+    "Die Weichen und Kreuzungen aus dem Katalog, die der Gleiseditor je Schienenverkehrsmittel anbietet, und die Weiche, mit der neue Weichen beginnen.",
+  "prefs.switchesTurnouts": "Weichen",
+  "prefs.switchesSlips": "Kreuzungsweichen",
+  "prefs.switchesDefault": "Standard",
+  "prefs.switchesFacts": "1:{n} · R {radius} m · {speed} km/h abzweigend",
+  "prefs.switchesLast":
+    "Die Standardweiche bleibt im Einsatz. Um sie wegzulassen, wählen Sie zuerst eine andere als Standard.",
   "prefs.calendar": "Kalender, Nachfrage und Kosten",
 
   "job.stepOf": "Schritt {step} von {steps}",
@@ -377,5 +401,7 @@ export const de: Messages = {
 
   ...editorsDe,
   ...cargoBikeDe,
+  ...depotsDe,
+  ...roadDe,
   ...PLUGIN_MESSAGES.de,
 };

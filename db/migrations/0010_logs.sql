@@ -1,4 +1,4 @@
--- 0009: the PostgreSQL log sink (ADR-0022, 03 §6). Only WARN, ERROR and CRITICAL are stored here; every level
+-- 0010: the PostgreSQL log sink (ADR-0022, 03 §6). Only WARN, ERROR and CRITICAL are stored here; every level
 -- goes to the console and the log file. The table is split into one partition per UTC day, and a partition is
 -- dropped once it is older than 30 days, so the logs never bloat the database (C-13).
 -- AUDIT is not a log level here: audit records go to audit.record (ADR-0012).

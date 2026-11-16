@@ -1,0 +1,294 @@
+//! What a depot is made of, as the web app saves it and the simulation reads it (contracts/depot.schema.json):
+//! the outline, gates, zones, and the generated (and then edited) lanes, slots and aisles. Positions are
+//! `[lon, lat]`; the kernel works in local metres through [`Proj`].
+
+use crate::geom::V2;
+use crate::vehicle::VehicleSpec;
+use serde::{Deserialize, Serialize};
+
+/// `[lon, lat]` in degrees (WGS 84).
+pub type LonLat = [f64; 2];
+
+/// What a gate lets through.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum GateKind {
+    /// Vehicles come in here (pull-in).
+    Entrance,
+    /// Vehicles leave here (pull-out).
+    Exit,
+    /// Both ways.
+    Both,
+}
+
+impl GateKind {
+    /// Purpose: whether vehicles may enter the depot here.
+    pub fn enters(self) -> bool {
+        matches!(self, GateKind::Entrance | GateKind::Both)
+    }
+    /// Purpose: whether vehicles may leave the depot here.
+    pub fn leaves(self) -> bool {
+        matches!(self, GateKind::Exit | GateKind::Both)
+    }
+}
+
+/// A gate in the depot fence where it meets the street.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Gate {
+    /// Stable id.
+    pub id: String,
+    /// Entrance, exit or both.
+    pub kind: GateKind,
+    /// On the depot outline.
+    pub lonlat: LonLat,
+}
+
+/// What a zone of the depot is for.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum ZoneKind {
+    /// Overnight parking.
+    Parking,
+    /// Parking with a charger at every slot.
+    Charging,
+    /// Workshop positions (not used for overnight parking).
+    Maintenance,
+    /// Parking for spare vehicles.
+    Reserve,
+    /// Driving area only: no slots.
+    Circulation,
+}
+
+impl ZoneKind {
+    /// Purpose: whether the zone gets lanes of slots.
+    pub fn has_slots(self) -> bool {
+        !matches!(self, ZoneKind::Circulation)
+    }
+}
+
+/// A zone drawn inside the depot.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Zone {
+    /// Stable id.
+    pub id: String,
+    /// What it is for.
+    pub kind: ZoneKind,
+    /// Outline (open or closed ring).
+    pub ring: Vec<LonLat>,
+    /// Angle of the lanes to the aisles: 90 (straight), 60 or 45 (angled), degrees.
+    #[serde(default = "default_angle")]
+    pub angle_deg: f64,
+    /// Vehicles one behind the other in a lane; None: the project value (maintenance: 1).
+    #[serde(default)]
+    pub vehicles_per_lane: Option<u32>,
+    /// The vehicle the slots are sized for (a [`VehicleSpec::key`]); None: the longest the depot holds.
+    #[serde(default)]
+    pub vehicle: Option<String>,
+    /// Aisle width; None: the narrowest the swept path allows.
+    #[serde(default)]
+    pub aisle_width_m: Option<f64>,
+    /// Direction of the aisles, degrees clockwise from north; None: the best of the zone's long sides.
+    #[serde(default)]
+    pub heading_deg: Option<f64>,
+}
+
+fn default_angle() -> f64 {
+    90.0
+}
+
+/// One parking place for one vehicle.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct Slot {
+    /// Stable id.
+    pub id: String,
+    /// Middle of the slot.
+    pub center: LonLat,
+    /// Direction the parked vehicle faces, degrees clockwise from north.
+    pub heading_deg: f64,
+    /// Length of the slot (the longest vehicle it takes), m.
+    pub length_m: f64,
+    /// Width of the slot, m.
+    pub width_m: f64,
+    /// A charger at this slot.
+    pub charger: bool,
+}
+
+/// A drive-through lane of slots one behind the other: vehicles come in at `entry` and leave at `exit`
+/// (first in, first out). Slots are listed from the exit end.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct Lane {
+    /// Stable id.
+    pub id: String,
+    /// Zone it was made in.
+    pub zone: String,
+    /// What its slots are for (the zone's kind).
+    pub kind: ZoneKind,
+    /// Middle of the entry end.
+    pub entry: LonLat,
+    /// Middle of the exit end.
+    pub exit: LonLat,
+    /// Width of the lane, m.
+    pub width_m: f64,
+    /// Aisle the lane is entered from (None: the nearest one is used).
+    #[serde(default)]
+    pub aisle_in: Option<String>,
+    /// Aisle the lane is left into (None: the nearest one is used).
+    #[serde(default)]
+    pub aisle_out: Option<String>,
+    /// The slots, exit end first.
+    pub slots: Vec<Slot>,
+}
+
+/// A one-way aisle along the lane ends; vehicles drive from the first to the last point.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct Aisle {
+    /// Stable id.
+    pub id: String,
+    /// Zone it was made in.
+    pub zone: String,
+    /// Centreline in the direction of travel.
+    pub coords: Vec<LonLat>,
+    /// Width, m.
+    pub width_m: f64,
+    /// Vehicles may drive it both ways (straight lanes); angled lanes need one-way aisles.
+    #[serde(default)]
+    pub two_way: bool,
+}
+
+/// The lanes and aisles of a depot, generated by [`crate::layout::generate`] and edited by the planner.
+#[derive(Debug, Clone, Default, Serialize, Deserialize, PartialEq)]
+pub struct Layout {
+    /// Lanes of slots.
+    pub lanes: Vec<Lane>,
+    /// Aisles between the lanes.
+    pub aisles: Vec<Aisle>,
+}
+
+/// Project values the layout uses (assumption library `depot.*`, with the project's own values).
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(default)]
+pub struct Rules {
+    /// `depot.vehicles_per_lane`.
+    pub vehicles_per_lane: f64,
+    /// `depot.lateral_spacing_m`.
+    pub lateral_spacing_m: f64,
+    /// `depot.walkway_width_m`.
+    pub walkway_width_m: f64,
+    /// `depot.walkway_every_n_lanes`.
+    pub walkway_every_n_lanes: f64,
+    /// `depot.aisle_width_m`: the perimeter road and the drives between zones.
+    pub aisle_width_m: f64,
+    /// `depot.longitudinal_gap_m`.
+    pub longitudinal_gap_m: f64,
+    /// `depot.turning_circle_m`: for vehicles the catalogue gives none.
+    pub turning_circle_m: f64,
+    /// `depot.swept_clearance_m`.
+    pub swept_clearance_m: f64,
+    /// `depot.charger_power_kw`.
+    pub charger_power_kw: f64,
+}
+
+impl Default for Rules {
+    fn default() -> Self {
+        Self {
+            vehicles_per_lane: 4.0,
+            lateral_spacing_m: 1.0,
+            walkway_width_m: 1.2,
+            walkway_every_n_lanes: 2.0,
+            aisle_width_m: 12.0,
+            longitudinal_gap_m: 1.0,
+            turning_circle_m: 24.0,
+            swept_clearance_m: 0.3,
+            charger_power_kw: 150.0,
+        }
+    }
+}
+
+/// The vehicles of one street line that park in the depot.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct FleetGroup {
+    /// Line id (stable within the project).
+    pub line: String,
+    /// Line name for messages.
+    #[serde(default)]
+    pub name: String,
+    /// The line's vehicle ([`VehicleSpec::key`]).
+    pub vehicle: String,
+    /// Vehicles with spares.
+    pub count: u32,
+    /// Battery vehicles that must charge in the depot.
+    #[serde(default)]
+    pub charging: bool,
+}
+
+/// Everything about one depot: what the planner drew, and for the checks the vehicles and fleet.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DepotInput {
+    /// Depot outline.
+    pub boundary: Vec<LonLat>,
+    /// Gates.
+    #[serde(default)]
+    pub gates: Vec<Gate>,
+    /// Zones.
+    #[serde(default)]
+    pub zones: Vec<Zone>,
+    /// The vehicle types the depot holds (sizes of the slots and the swept-path check).
+    #[serde(default)]
+    pub vehicles: Vec<VehicleSpec>,
+    /// The fleet of the lines that use the depot.
+    #[serde(default)]
+    pub fleet: Vec<FleetGroup>,
+    /// Project values.
+    #[serde(default)]
+    pub rules: Rules,
+    /// The current layout (for the checks).
+    #[serde(default)]
+    pub layout: Option<Layout>,
+}
+
+/// Local plane projection about a fixed origin (equirectangular, good to a few cm over a depot).
+#[derive(Debug, Clone, Copy)]
+pub struct Proj {
+    lon0: f64,
+    lat0: f64,
+    kx: f64,
+    ky: f64,
+}
+
+const EARTH_M: f64 = 6_371_008.8;
+
+impl Proj {
+    /// Purpose: a projection about the middle of some points.
+    pub fn around(pts: &[LonLat]) -> Self {
+        let n = pts.len().max(1) as f64;
+        let lon0 = pts.iter().map(|p| p[0]).sum::<f64>() / n;
+        let lat0 = pts.iter().map(|p| p[1]).sum::<f64>() / n;
+        let ky = EARTH_M * std::f64::consts::PI / 180.0;
+        Self {
+            lon0,
+            lat0,
+            kx: ky * lat0.to_radians().cos(),
+            ky,
+        }
+    }
+    /// Purpose: degrees to local metres.
+    pub fn xy(&self, p: LonLat) -> V2 {
+        V2::new((p[0] - self.lon0) * self.kx, (p[1] - self.lat0) * self.ky)
+    }
+    /// Purpose: local metres to degrees (rounded to about 1 mm).
+    pub fn ll(&self, v: V2) -> LonLat {
+        let r = |x: f64| (x * 1e8).round() / 1e8;
+        [r(self.lon0 + v.x / self.kx), r(self.lat0 + v.y / self.ky)]
+    }
+}
+
+/// Purpose: a heading in the plane (rad from east, anticlockwise) as degrees clockwise from north.
+pub fn bearing_deg(h: f64) -> f64 {
+    let b = (90.0 - h.to_degrees()).rem_euclid(360.0);
+    (b * 100.0).round() / 100.0
+}
+
+/// Purpose: degrees clockwise from north as a heading in the plane (rad from east, anticlockwise).
+pub fn heading_rad(bearing: f64) -> f64 {
+    (90.0 - bearing).to_radians()
+}

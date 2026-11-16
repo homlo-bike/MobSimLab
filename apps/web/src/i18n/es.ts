@@ -1,5 +1,7 @@
+import { roadEs } from "./road/es";
 import { editorsEs } from "./editors/es";
 import { cargoBikeEs } from "./cargo-bike/es";
+import { depotsEs } from "./depots/es";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -278,6 +280,10 @@ export const es: Messages = {
   "prefs.delayLane": "En un carril bus o tranvía pintado",
   "prefs.delayDefault": "Biblioteca de supuestos: {value} %",
   "prefs.delayReset": "Usar el valor de la biblioteca",
+  "prefs.stationsTitle": "Estaciones",
+  "prefs.stationsIntro":
+    "Las paradas con el mismo nombre dentro de esta distancia cuentan como una sola estación en el mapa esquemático, el planificador de viajes y las tablas de beneficios y de viajeros.",
+  "prefs.libraryM": "Biblioteca de supuestos: {value} m",
   "prefs.currencyTitle": "Moneda",
   "prefs.currencyIntro":
     "Todo el dinero del proyecto se muestra en esta moneda: las tablas de costes, los beneficios, los escenarios y los ahorros de la bicicleta de carga.",
@@ -299,8 +305,26 @@ export const es: Messages = {
   "prefs.rulesChanged": "{count} cambiados",
   "prefs.rulesLibrary": "Biblioteca de supuestos: {value} {unit}",
   "prefs.rulesLibraryRange": "Biblioteca de supuestos: {value} {unit} (intervalo {low}–{high})",
-  "prefs.vehicles": "Vehículos usados, del catálogo de vehículos",
-  "prefs.switches": "Desvíos, del catálogo de desvíos",
+  "prefs.accessTitle": "Accesibilidad del andén",
+  "prefs.accessIntro":
+    "Límites de escalón y hueco entre andén y tren (ETI PMR) y la altura de piso usada para trenes sin dato en el catálogo. Las líneas se comprueban en cada parada.",
+  "prefs.vehiclesTitle": "Vehículos",
+  "prefs.vehiclesIntro":
+    "Los vehículos del catálogo que usa este proyecto, por modo. Las herramientas de líneas de calle y ferroviarias solo ofrecen los marcados.",
+  "prefs.vehiclesMode": "Modo",
+  "prefs.vehiclesUsed": "{used} de {total} en uso",
+  "prefs.vehiclesAll": "Usar todos",
+  "prefs.vehiclesFacts": "{length} m · {places} plazas · {speed} km/h",
+  "prefs.vehiclesLast": "Cada modo mantiene al menos un vehículo en uso.",
+  "prefs.switchesTitle": "Desvíos",
+  "prefs.switchesIntro":
+    "Los desvíos y cruces del catálogo que ofrece el editor ferroviario, por modo ferroviario, y el desvío con el que empiezan los nuevos.",
+  "prefs.switchesTurnouts": "Desvíos",
+  "prefs.switchesSlips": "Escapes en cruces",
+  "prefs.switchesDefault": "Predeterminado",
+  "prefs.switchesFacts": "1:{n} · R {radius} m · {speed} km/h por la desviada",
+  "prefs.switchesLast":
+    "El desvío predeterminado sigue en uso. Para quitarlo, elija antes otro predeterminado.",
   "prefs.calendar": "Calendario, demanda y costes",
 
   "job.stepOf": "Paso {step} de {steps}",
@@ -372,5 +396,7 @@ export const es: Messages = {
 
   ...editorsEs,
   ...cargoBikeEs,
+  ...depotsEs,
+  ...roadEs,
   ...PLUGIN_MESSAGES.es,
 };

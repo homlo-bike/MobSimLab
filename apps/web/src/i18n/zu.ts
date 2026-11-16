@@ -1,5 +1,7 @@
+import { roadZu } from "./road/zu";
 import { editorsZu } from "./editors/zu";
 import { cargoBikeZu } from "./cargo-bike/zu";
+import { depotsZu } from "./depots/zu";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -282,6 +284,10 @@ export const zu: Messages = {
   "prefs.delayLane": "Emzileni webhasi noma wethremu odwetshwe ngopende",
   "prefs.delayDefault": "Umtapo wolwazi wemicabango: {value} %",
   "prefs.delayReset": "Sebenzisa inani lomtapo wolwazi",
+  "prefs.stationsTitle": "Iziteshi",
+  "prefs.stationsIntro":
+    "Iziteshi ezinegama elifanayo ngaphakathi kwaleli banga zibalwa njengesiteshi esisodwa kumephu yomdwebo, kumhleli wohambo nasematafuleni ezinzuzo nabagibeli.",
+  "prefs.libraryM": "Umtapo wolwazi wemicabango: {value} m",
   "prefs.currencyTitle": "Imali",
   "prefs.currencyIntro":
     "Yonke imali yephrojekthi iboniswa ngale mali: amathebula ezindleko, izinzuzo, izimo kanye nokonga kwebhayisikili lempahla.",
@@ -304,8 +310,25 @@ export const zu: Messages = {
   "prefs.rulesChanged": "okushintshiwe: {count}",
   "prefs.rulesLibrary": "Umtapo wolwazi wemicabango: {value} {unit}",
   "prefs.rulesLibraryRange": "Umtapo wolwazi wemicabango: {value} {unit} (ububanzi {low}–{high})",
-  "prefs.vehicles": "Izimoto ezisetshenziswayo, kusuka kukhathalogi yezimoto",
-  "prefs.switches": "Izishintshi zikajantshi, kusuka kukhathalogi yezishintshi",
+  "prefs.accessTitle": "Ukufinyeleleka kwepulatifomu",
+  "prefs.accessIntro":
+    "Imingcele yesinyathelo negebe phakathi kwepulatifomu nesitimela (TSI PRM), nokuphakama kwaphansi kwezitimela ezingenakho ohlwini. Imizila ihlolwa kuso sonke isiteshi.",
+  "prefs.vehiclesTitle": "Izimoto",
+  "prefs.vehiclesIntro":
+    "Izimoto zekhathalogi le phrojekthi ezisebenzisayo, ngohlobo ngalunye. Amathuluzi emizila yasemgwaqweni neyesitimela anikeza lezo ezimakiwe kuphela.",
+  "prefs.vehiclesMode": "Uhlobo",
+  "prefs.vehiclesUsed": "{used} kwezingu-{total} ezisetshenziswayo",
+  "prefs.vehiclesAll": "Sebenzisa zonke",
+  "prefs.vehiclesFacts": "{length} m · izindawo {places} · {speed} km/h",
+  "prefs.vehiclesLast": "Okungenani imoto eyodwa ihlala isetshenziswa ohlotsheni ngalunye.",
+  "prefs.switchesTitle": "Amaswishi",
+  "prefs.switchesIntro":
+    "Amaswishi nezimpambano ezivela kukhathalogi umhleli wesitimela azinikezayo, ohlotsheni ngalunye, neswishi amasha aqala ngayo.",
+  "prefs.switchesTurnouts": "Amaswishi",
+  "prefs.switchesSlips": "Amaswishi ezimpambanweni",
+  "prefs.switchesDefault": "Okuzenzakalelayo",
+  "prefs.switchesFacts": "1:{n} · R {radius} m · {speed} km/h ohlangothini",
+  "prefs.switchesLast": "Iswishi ezenzakalelayo ihlala isetshenziswa. Ukuyisusa, khetha enye kuqala.",
   "prefs.calendar": "Ikhalenda, isidingo nezindleko",
 
   "job.stepOf": "Isinyathelo {step} kwezingu-{steps}",
@@ -376,5 +399,7 @@ export const zu: Messages = {
 
   ...editorsZu,
   ...cargoBikeZu,
+  ...depotsZu,
+  ...roadZu,
   ...PLUGIN_MESSAGES.zu,
 };

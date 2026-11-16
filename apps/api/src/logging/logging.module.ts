@@ -20,7 +20,7 @@ const MAINTAIN_EVERY_MS = 60 * 60 * 1000;
 
 /**
  * Connects the logger to the database once the app is up, and keeps the daily log partitions: makes the next
- * days' partitions and drops those older than 30 days (`logs.maintain`, db/migrations/0009_logs.sql).
+ * days' partitions and drops those older than 30 days (`logs.maintain`, db/migrations/0010_logs.sql).
  */
 @Injectable()
 export class LogMaintenance implements OnApplicationBootstrap, BeforeApplicationShutdown {

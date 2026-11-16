@@ -8,6 +8,7 @@ JSON Schemas for data that one part of MobSimLab produces and another consumes. 
 | [level-crossing-closures.schema.json](level-crossing-closures.schema.json) | `crates/rail-plan` (`closures` module; `--example level_crossing_closures`) | Street line tool: expected wait at level crossings in bus running times | `crates/rail-plan/tests/closures.rs`, `crates/street-routing/src/crossings.rs` |
 | [published-timetable.schema.json](published-timetable.schema.json) | `crates/rail-plan` (`journeys` module; `cargo run -p rail-plan --example publish_journeys -- TOPOLOGY LINES`), the web app's street lines | Journey planner (ADR-0034): `crates/journey-planner`, the panel's **Add rail timetable (JSON)** | `cargo test -p rail-plan --test journeys` |
 | [log-redaction.json](log-redaction.json) | The log redaction deny-list (ADR-0022) | The API's, web app's and worker's loggers (`apps/api/src/logging/redact.ts`, `apps/web/src/logging/redact.ts`, `worker/src/mobsim_worker/logsink.py`) | `apps/api/test/logging.test.ts` |
+| [depot.schema.json](depot.schema.json) | The Create tab's depot tool (`apps/web/src/features/depots`) with the layout from `crates/depot-layout` | Road simulation (07-simulation §3.2, §7): each vehicle starts and ends the run in its slot | `cargo run -p depot-layout --example export -- DIR`, then `tools/contracts/check_depot.py DIR/*.json` |
 | [plugin-manifest.schema.json](plugin-manifest.schema.json), [plugin-mode.schema.json](plugin-mode.schema.json) | Plugin authors; the bundled plugins in `plugins/` (ADR-0036) | `tools/plugins/check.py`, which writes the web app's registry `apps/web/src/plugins/bundled.generated.json` | `tools/plugins/check.py --check-rendered` |
 
 ## Railway topology
@@ -27,6 +28,12 @@ The railway design (ADR-0030, ADR-0033) is exported as a graph of physical track
 - **Depot groups**: connected storage sections.
 
 Ids come from the document's ids, so they stay the same while the elements they come from stay (see the schema's descriptions). `valid` is false while the design has errors.
+
+## Road depots
+
+A depot (drawing kind `depots`) is shared by all street lines; a line names its depot by id and routes its pull-out from an exit gate and its pull-in to an entrance gate. The layout is a set of **drive-through lanes**: vehicles enter at a lane's entry end and leave at its exit end, first in first out, so no vehicle reverses. Lanes are straight (90°, two-way aisles) or angled (60°, 45°, one-way aisles) to the aisles they join. Slots are listed from the exit end and each faces the exit.
+
+For a simulation run, add the vehicles of the lines that use the depot, their fleet with spares and the project values (`$defs/analysis`) and call `depot_layout::analyse`. The report has, per lane, the swept-path result of driving in and out; the **driving network** (nodes and edges: `gate` from the fence to just inside, one-way or two-way `aisle`, one-way `lane` from the junction on its entry aisle to the one on its exit aisle, and `drive` through open yard space), with which lanes can be reached from an entrance and left to an exit; and the **capacity**: slots by kind, chargers, and an `assignments` list that gives every vehicle (`line`, number from 1) its own `slot`. Battery vehicles get charging slots first.
 
 ## Level crossing closures
 
