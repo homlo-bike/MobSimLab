@@ -10,6 +10,7 @@ import { DesignRulesSection } from "./DesignRules";
 import { VehicleChoiceSection } from "./VehicleChoice";
 import { SwitchChoiceSection } from "./SwitchChoice";
 import { ParametersSection } from "./Parameters";
+import { AssumptionsReportSection } from "./AssumptionsReport";
 import { roadValue } from "../features/road-sim/params";
 import { CURRENCY_CODES } from "../features/costs/currencies";
 import { type CurrencyState, NO_CURRENCY, RATE_PREF, withCurrency } from "../features/costs/currency";
@@ -207,6 +208,12 @@ export function ProjectPreferences({
           preferences={preferences}
           editable={editable && !!onPreferences}
           onPreferences={(d) => onPreferences?.(d)}
+        />
+        <AssumptionsReportSection
+          projectName={project.name}
+          projectModes={project.modes}
+          preferences={preferences}
+          currency={currency.chosen}
         />
         {onSetPlugin && <ProjectPlugins plugins={plugins} manage={can.manage(project)} onSet={onSetPlugin} />}
         <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-4 md:p-6">
