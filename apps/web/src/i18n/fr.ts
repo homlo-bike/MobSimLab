@@ -2,6 +2,7 @@ import { roadFr } from "./road/fr";
 import { editorsFr } from "./editors/fr";
 import { cargoBikeFr } from "./cargo-bike/fr";
 import { depotsFr } from "./depots/fr";
+import { geodataFr } from "./geodata/fr";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -393,6 +394,7 @@ export const fr: Messages = {
   ...editorsFr,
   ...cargoBikeFr,
   ...depotsFr,
+  ...geodataFr,
   ...roadFr,
   ...PLUGIN_MESSAGES.fr,
 };

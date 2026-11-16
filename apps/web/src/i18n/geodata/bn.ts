@@ -1,0 +1,45 @@
+import type { GeodataMessages } from "./en";
+
+/** Map data view messages (bn). */
+export const geodataBn = {
+  "gis.dataView": "মানচিত্রের ডেটা",
+  "data.title": "মানচিত্রের ডেটা",
+  "data.intro":
+    "এই প্রকল্পের জন্য OpenStreetMap ও উচ্চতা, প্রকল্পের সঙ্গে রাখা। রাস্তা, রেল, ভবন, জল ও ভূখণ্ড টুলগুলো প্রতিবার OpenStreetMap ও উচ্চতা সার্ভারকে জিজ্ঞেস না করে এগুলো পড়ে।",
+  "data.noArea":
+    "আগে প্রকল্পে কিছু আঁকুন: আমদানি আঁকা সবকিছুর চারপাশের আয়তক্ষেত্র ও একটি বাড়তি পরিসর জুড়ে থাকে।",
+  "data.area": "এলাকা: {area} বর্গ কিমি, আঁকা সবকিছুর চারপাশের আয়তক্ষেত্র ও {buffer} কিমি",
+  "data.osm": "OpenStreetMap",
+  "data.dem": "উচ্চতা",
+  "data.notImported": "এখনো আমদানি হয়নি।",
+  "data.imported": "আমদানি {date}",
+  "data.dataDate": "{date} তারিখের ডেটা",
+  "data.outside": "আঁকাটি এখন আমদানি করা এলাকার বাইরে যায়। নতুন এলাকা আমদানি করতে রিফ্রেশ করুন।",
+  "data.method": "ডেটা নিন",
+  "data.method.overpass": "Overpass ({max} বর্গ কিমি পর্যন্ত এলাকা)",
+  "data.method.geofabrik": "একটি Geofabrik অঞ্চল",
+  "data.method.upload": "একটি .osm.pbf ফাইল",
+  "data.region": "অঞ্চল",
+  "data.regionsLoading": "অঞ্চল খোঁজা হচ্ছে…",
+  "data.noRegions": "কোনো Geofabrik অঞ্চল পুরো এলাকা ধরে না।",
+  "data.planned": "পরিকল্পিত রাস্তা রাখুন (প্রস্তাবিত ও নির্মাণাধীন)",
+  "data.import": "আমদানি",
+  "data.refresh": "রিফ্রেশ",
+  "data.chooseFile": "একটি .osm.pbf ফাইল বাছুন ({max} MB পর্যন্ত)",
+  "data.cancel": "বাতিল",
+  "data.queued": "অন্য একটি আমদানি শেষ হওয়ার অপেক্ষা…",
+  "data.step.download": "ডাউনলোড হচ্ছে…",
+  "data.step.downloadN": "ডাউনলোড {done} / {total}…",
+  "data.step.merge": "টাইল জোড়া হচ্ছে…",
+  "data.step.extract": "প্রকল্প এলাকা কাটা হচ্ছে…",
+  "data.step.database": "ডেটাবেসে লেখা হচ্ছে…",
+  "data.failed": "শেষ আমদানি ব্যর্থ হয়েছে: {error}",
+  "data.cancelled": "শেষ আমদানি বাতিল করা হয়েছে।",
+  "data.counts": "{roads}টি রাস্তা, {rails}টি রেলপথ, {buildings}টি ভবন, {stops}টি স্টপ",
+  "data.demFacts": "Copernicus GLO-30, {res} মি গ্রিড, উচ্চতা ±{acc} মি নির্ভুল",
+  "data.demNoData": "এলাকার 1° ঘরের {n}টিতে উচ্চতার ডেটা নেই (খোলা সমুদ্র)।",
+  "data.tooLarge":
+    "এলাকাটি {area} বর্গ কিমি, Overpass-এর সীমার বেশি। একটি Geofabrik অঞ্চল বাছুন বা ফাইল আপলোড করুন।",
+  "data.readOnly": "মালিক ও সম্পাদকেরা ডেটা আমদানি করতে পারেন।",
+  "data.licence": "© OpenStreetMap contributors, ODbL 1.0",
+} satisfies GeodataMessages;

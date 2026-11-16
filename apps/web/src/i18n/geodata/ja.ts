@@ -1,0 +1,46 @@
+import type { GeodataMessages } from "./en";
+
+/** Map data view messages (ja). */
+export const geodataJa = {
+  "gis.dataView": "地図データ",
+  "data.title": "地図データ",
+  "data.intro":
+    "このプロジェクトの OpenStreetMap と標高データ。プロジェクトと一緒に保存されます。道路・鉄道・建物・水域・地形のツールは、毎回 OpenStreetMap や標高サーバーに問い合わせる代わりにこれを読みます。",
+  "data.noArea":
+    "まずプロジェクトに何か描いてください。インポートは描いたものすべてを囲む矩形に余白を加えた範囲を対象にします。",
+  "data.area": "範囲: {area} km²(描いたものすべてを囲む矩形+{buffer} km)",
+  "data.osm": "OpenStreetMap",
+  "data.dem": "標高",
+  "data.notImported": "まだインポートされていません。",
+  "data.imported": "インポート {date}",
+  "data.dataDate": "{date} 時点のデータ",
+  "data.outside":
+    "図面がインポート済みの範囲を超えています。新しい範囲をインポートするには更新してください。",
+  "data.method": "データの取得元",
+  "data.method.overpass": "Overpass({max} km² までの範囲)",
+  "data.method.geofabrik": "Geofabrik の地域",
+  "data.method.upload": ".osm.pbf ファイル",
+  "data.region": "地域",
+  "data.regionsLoading": "地域を検索中…",
+  "data.noRegions": "範囲全体を含む Geofabrik の地域はありません。",
+  "data.planned": "計画中の道路を残す(計画中・建設中)",
+  "data.import": "インポート",
+  "data.refresh": "更新",
+  "data.chooseFile": ".osm.pbf ファイルを選択({max} MB まで)",
+  "data.cancel": "キャンセル",
+  "data.queued": "別のインポートの完了を待っています…",
+  "data.step.download": "ダウンロード中…",
+  "data.step.downloadN": "ダウンロード中 {done}/{total}…",
+  "data.step.merge": "タイルを結合中…",
+  "data.step.extract": "プロジェクト範囲を切り出し中…",
+  "data.step.database": "データベースに書き込み中…",
+  "data.failed": "前回のインポートに失敗しました: {error}",
+  "data.cancelled": "前回のインポートはキャンセルされました。",
+  "data.counts": "道路 {roads}、線路 {rails}、建物 {buildings}、停留所 {stops}",
+  "data.demFacts": "Copernicus GLO-30、{res} m グリッド、標高精度 ±{acc} m",
+  "data.demNoData": "範囲内の 1° セルのうち {n} 個には標高データがありません(外洋)。",
+  "data.tooLarge":
+    "範囲は {area} km² で、Overpass の対象を超えています。Geofabrik の地域を選ぶか、ファイルをアップロードしてください。",
+  "data.readOnly": "データをインポートできるのはオーナーと編集者です。",
+  "data.licence": "© OpenStreetMap contributors, ODbL 1.0",
+} satisfies GeodataMessages;

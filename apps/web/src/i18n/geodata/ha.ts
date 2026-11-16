@@ -1,0 +1,45 @@
+import type { GeodataMessages } from "./en";
+
+/** Map data view messages (ha). */
+export const geodataHa = {
+  "gis.dataView": "Bayanan taswira",
+  "data.title": "Bayanan taswira",
+  "data.intro":
+    "OpenStreetMap da tsayin ƙasa na wannan aiki, ana adana su tare da aikin. Kayan aikin titi, layin dogo, gine-gine, ruwa da yanayin ƙasa suna karanta su maimakon tambayar OpenStreetMap da sabar tsayi kowane lokaci.",
+  "data.noArea":
+    "Ka zana wani abu a cikin aikin tukuna: shigowar ta rufe murabba'i da ke kewaye da duk abin da aka zana, tare da ƙarin gefe.",
+  "data.area": "Yanki: km² {area}, murabba'in da ke kewaye da duk abin da aka zana da km {buffer}",
+  "data.osm": "OpenStreetMap",
+  "data.dem": "Tsayin ƙasa",
+  "data.notImported": "Ba a shigo da shi ba tukuna.",
+  "data.imported": "An shigo da shi {date}",
+  "data.dataDate": "bayanan {date}",
+  "data.outside": "Zanen yanzu ya wuce yankin da aka shigo da shi. Sabunta don shigo da sabon yankin.",
+  "data.method": "Samo bayanan daga",
+  "data.method.overpass": "Overpass (yankuna har zuwa km² {max})",
+  "data.method.geofabrik": "Yankin Geofabrik",
+  "data.method.upload": "Fayil .osm.pbf",
+  "data.region": "Yanki",
+  "data.regionsLoading": "Ana neman yankuna…",
+  "data.noRegions": "Babu yankin Geofabrik da ya ƙunshi dukan yankin.",
+  "data.planned": "Ajiye hanyoyin da aka tsara (na shawara da ake ginawa)",
+  "data.import": "Shigo da",
+  "data.refresh": "Sabunta",
+  "data.chooseFile": "Zaɓi fayil .osm.pbf (har zuwa MB {max})",
+  "data.cancel": "Soke",
+  "data.queued": "Ana jiran wata shigowa ta ƙare…",
+  "data.step.download": "Ana saukewa…",
+  "data.step.downloadN": "Ana saukewa {done} cikin {total}…",
+  "data.step.merge": "Ana haɗa tayal…",
+  "data.step.extract": "Ana yanke yankin aikin…",
+  "data.step.database": "Ana rubutawa a rumbun bayanai…",
+  "data.failed": "Shigowa ta ƙarshe ta gaza: {error}",
+  "data.cancelled": "An soke shigowa ta ƙarshe.",
+  "data.counts": "Tituna {roads}, layin dogo {rails}, gine-gine {buildings}, tashoshi {stops}",
+  "data.demFacts": "Copernicus GLO-30, raga ta m {res}, tsayi cikin ±m {acc}",
+  "data.demNoData": "Ƙwayoyin 1° {n} na yankin ba su da bayanan tsayi (buɗaɗɗen teku).",
+  "data.tooLarge":
+    "Yankin ya kai km² {area}, fiye da abin da Overpass ke amfani da shi. Zaɓi yankin Geofabrik ko ɗora fayil.",
+  "data.readOnly": "Masu aiki da Masu gyara za su iya shigo da bayanai.",
+  "data.licence": "© OpenStreetMap contributors, ODbL 1.0",
+} satisfies GeodataMessages;

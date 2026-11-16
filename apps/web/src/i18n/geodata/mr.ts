@@ -1,0 +1,45 @@
+import type { GeodataMessages } from "./en";
+
+/** Map data view messages (mr). */
+export const geodataMr = {
+  "gis.dataView": "नकाशाचा डेटा",
+  "data.title": "नकाशाचा डेटा",
+  "data.intro":
+    "या प्रकल्पासाठी OpenStreetMap आणि उंची, प्रकल्पासोबत ठेवलेली. रस्ता, रेल्वे, इमारत, पाणी आणि भूप्रदेश साधने दर वेळी OpenStreetMap आणि उंची सर्व्हरला विचारण्याऐवजी ती वाचतात.",
+  "data.noArea":
+    "आधी प्रकल्पात काहीतरी काढा: आयात काढलेल्या सर्व गोष्टींभोवतीचा आयत आणि एक जादा कडा व्यापते.",
+  "data.area": "क्षेत्र: {area} चौ. किमी, काढलेल्या सर्व गोष्टींभोवतीचा आयत आणि {buffer} किमी",
+  "data.osm": "OpenStreetMap",
+  "data.dem": "उंची",
+  "data.notImported": "अजून आयात केलेले नाही.",
+  "data.imported": "आयात {date}",
+  "data.dataDate": "{date} चा डेटा",
+  "data.outside": "रेखाचित्र आता आयात केलेल्या क्षेत्राबाहेर जाते. नवीन क्षेत्र आयात करण्यासाठी रिफ्रेश करा.",
+  "data.method": "डेटा येथून घ्या",
+  "data.method.overpass": "Overpass ({max} चौ. किमी पर्यंतची क्षेत्रे)",
+  "data.method.geofabrik": "एक Geofabrik प्रदेश",
+  "data.method.upload": "एक .osm.pbf फाइल",
+  "data.region": "प्रदेश",
+  "data.regionsLoading": "प्रदेश शोधत आहे…",
+  "data.noRegions": "कोणताही Geofabrik प्रदेश संपूर्ण क्षेत्र व्यापत नाही.",
+  "data.planned": "नियोजित रस्ते ठेवा (प्रस्तावित आणि बांधकामाधीन)",
+  "data.import": "आयात करा",
+  "data.refresh": "रिफ्रेश करा",
+  "data.chooseFile": "एक .osm.pbf फाइल निवडा ({max} MB पर्यंत)",
+  "data.cancel": "रद्द करा",
+  "data.queued": "दुसरी आयात पूर्ण होण्याची वाट पाहत आहे…",
+  "data.step.download": "डाउनलोड होत आहे…",
+  "data.step.downloadN": "डाउनलोड {done} पैकी {total}…",
+  "data.step.merge": "टाइल्स जोडत आहे…",
+  "data.step.extract": "प्रकल्प क्षेत्र कापत आहे…",
+  "data.step.database": "डेटाबेसमध्ये लिहित आहे…",
+  "data.failed": "शेवटची आयात अयशस्वी झाली: {error}",
+  "data.cancelled": "शेवटची आयात रद्द झाली.",
+  "data.counts": "{roads} रस्ते, {rails} रेल्वे मार्ग, {buildings} इमारती, {stops} थांबे",
+  "data.demFacts": "Copernicus GLO-30, {res} मी ग्रिड, उंची ±{acc} मी अचूक",
+  "data.demNoData": "क्षेत्राच्या 1° च्या {n} कप्प्यांमध्ये उंचीचा डेटा नाही (खुला समुद्र).",
+  "data.tooLarge":
+    "क्षेत्र {area} चौ. किमी आहे, Overpass च्या मर्यादेपेक्षा जास्त. एक Geofabrik प्रदेश निवडा किंवा फाइल अपलोड करा.",
+  "data.readOnly": "मालक आणि संपादक डेटा आयात करू शकतात.",
+  "data.licence": "© OpenStreetMap contributors, ODbL 1.0",
+} satisfies GeodataMessages;

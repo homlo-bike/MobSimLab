@@ -6,6 +6,8 @@ import type { Triple } from "../features/benefits/params";
 import type { BenefitsDoc } from "../features/benefits/formulas";
 import { RegionEditor } from "../features/benefits/RegionEditor";
 import type { Region, RegionsDoc } from "../features/benefits/regions";
+import { MapDataPanel } from "../features/geodata/MapDataPanel";
+import { setDataProject } from "../geodata/projectData";
 import { projectTimetable } from "../features/benefits/timetable";
 import { CargoBikeTab } from "../features/cargo-bike/CargoBikeTab";
 import type { CargoBikeDoc } from "../features/cargo-bike/model";
@@ -118,7 +120,7 @@ const NO_SETUPS: StreetSetup[] = [];
 const NO_STREET_LINES: SavedStreetLine[] = [];
 
 type SimView = "test" | "journey" | "road";
-type GisView = "streets" | "regions";
+type GisView = "streets" | "regions" | "data";
 const NO_REGIONS: Region[] = [];
 const NO_FEEDS: GtfsFeed[] = [];
 const NO_DEPOTS: SavedDepot[] = [];
@@ -230,6 +232,17 @@ export function Workspace({
     setMissing(false);
     api.get(projectId).then(setProject, () => setMissing(true));
   }, [api, projectId]);
+
+  // The map tools read this project's imported OpenStreetMap and elevation data where it has some (ADR-0045).
+  const geodata = useMemo(() => api.geodata(projectId), [api, projectId]);
+  useEffect(() => {
+    setDataProject(projectId);
+    geodata.status().then(
+      (s) => setDataProject(projectId, s.osm.current?.id ?? null),
+      () => undefined,
+    );
+    return () => setDataProject(null);
+  }, [geodata, projectId]);
 
   // The plugins this project uses (ADR-0036 §9): bundled ones it has not turned off and installed ones it has
   // turned on. Until they load, the bundled plugins are used.
@@ -675,6 +688,15 @@ export function Workspace({
               currency={currency?.code ?? costInfo?.currency ?? null}
             />
           )}
+          {project && tab === "gis" && gis === "data" && (
+            <MapDataPanel
+              key={projectId}
+              api={geodata}
+              map={map}
+              panel={panel}
+              onOsmImport={(id) => setDataProject(projectId, id)}
+            />
+          )}
           {project && drawings.loaded && tab === "gis" && gis === "streets" && (
             <StreetSetupEditor
               map={map}
@@ -956,6 +978,14 @@ export function Workspace({
                     onClick={() => setGis("regions")}
                   >
                     {t("gis.regionsView")}
+                  </button>
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={gis === "data"}
+                    onClick={() => setGis("data")}
+                  >
+                    {t("gis.dataView")}
                   </button>
                 </div>
               </div>

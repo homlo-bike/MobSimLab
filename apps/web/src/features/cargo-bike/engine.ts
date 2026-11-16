@@ -24,6 +24,7 @@ import {
   thin,
   type Trip,
 } from "./model";
+import { withProject } from "../../geodata/projectData";
 
 let wasmModule: Promise<typeof import("../../wasm/cargo-bike/cargo_bike_wasm.js")> | null = null;
 
@@ -69,7 +70,9 @@ const MAX_AMENITY_TILES = 120;
 
 /** Purpose: fetch one walk tile (OSM XML) from the API. */
 async function fetchWalkTile(x: number, y: number): Promise<string> {
-  const res = await fetch(`/api/street-network/walk-tiles/14/${x}/${y}`, { credentials: "same-origin" });
+  const res = await fetch(withProject(`/api/street-network/walk-tiles/14/${x}/${y}`), {
+    credentials: "same-origin",
+  });
   if (!res.ok) throw new TripError("tiles", `walk tile ${x}/${y}: ${res.status}`);
   return res.text();
 }

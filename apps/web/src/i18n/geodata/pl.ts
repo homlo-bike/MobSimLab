@@ -1,0 +1,45 @@
+import type { GeodataMessages } from "./en";
+
+/** Map data view messages (pl). */
+export const geodataPl = {
+  "gis.dataView": "Dane mapy",
+  "data.title": "Dane mapy",
+  "data.intro":
+    "OpenStreetMap i wysokości dla tego projektu, zapisane z projektem. Narzędzia ulic, kolei, budynków, wód i terenu czytają je, zamiast za każdym razem pytać OpenStreetMap i serwer wysokości.",
+  "data.noArea":
+    "Najpierw narysuj coś w projekcie: import obejmuje prostokąt wokół wszystkiego, co narysowano, plus bufor.",
+  "data.area": "Obszar: {area} km², prostokąt wokół wszystkiego, co narysowano, plus {buffer} km",
+  "data.osm": "OpenStreetMap",
+  "data.dem": "Wysokości",
+  "data.notImported": "Jeszcze nie zaimportowano.",
+  "data.imported": "Zaimportowano {date}",
+  "data.dataDate": "dane z {date}",
+  "data.outside": "Rysunek wychodzi teraz poza zaimportowany obszar. Odśwież, aby zaimportować nowy obszar.",
+  "data.method": "Pobierz dane z",
+  "data.method.overpass": "Overpass (obszary do {max} km²)",
+  "data.method.geofabrik": "Regionu Geofabrik",
+  "data.method.upload": "Pliku .osm.pbf",
+  "data.region": "Region",
+  "data.regionsLoading": "Wyszukiwanie regionów…",
+  "data.noRegions": "Żaden region Geofabrik nie obejmuje całego obszaru.",
+  "data.planned": "Zachowaj planowane drogi (projektowane i w budowie)",
+  "data.import": "Importuj",
+  "data.refresh": "Odśwież",
+  "data.chooseFile": "Wybierz plik .osm.pbf (do {max} MB)",
+  "data.cancel": "Anuluj",
+  "data.queued": "Czeka na zakończenie innego importu…",
+  "data.step.download": "Pobieranie…",
+  "data.step.downloadN": "Pobieranie {done} z {total}…",
+  "data.step.merge": "Łączenie kafelków…",
+  "data.step.extract": "Wycinanie obszaru projektu…",
+  "data.step.database": "Zapisywanie do bazy danych…",
+  "data.failed": "Ostatni import nie powiódł się: {error}",
+  "data.cancelled": "Ostatni import został anulowany.",
+  "data.counts": "Ulice: {roads}, tory: {rails}, budynki: {buildings}, przystanki: {stops}",
+  "data.demFacts": "Copernicus GLO-30, siatka {res} m, wysokości z dokładnością ±{acc} m",
+  "data.demNoData": "{n} z komórek 1° obszaru nie ma danych o wysokości (otwarte morze).",
+  "data.tooLarge":
+    "Obszar ma {area} km², więcej niż obejmuje Overpass. Wybierz region Geofabrik lub prześlij plik.",
+  "data.readOnly": "Właściciele i edytorzy mogą importować dane.",
+  "data.licence": "© OpenStreetMap contributors, ODbL 1.0",
+} satisfies GeodataMessages;

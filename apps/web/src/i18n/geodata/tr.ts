@@ -1,0 +1,45 @@
+import type { GeodataMessages } from "./en";
+
+/** Map data view messages (tr). */
+export const geodataTr = {
+  "gis.dataView": "Harita verileri",
+  "data.title": "Harita verileri",
+  "data.intro":
+    "Bu proje için OpenStreetMap ve yükseklik verileri, projeyle birlikte saklanır. Sokak, demiryolu, bina, su ve arazi araçları her seferinde OpenStreetMap'e ve yükseklik sunucusuna sormak yerine bunları okur.",
+  "data.noArea":
+    "Önce projede bir şey çizin: içe aktarma, çizilen her şeyin çevresindeki dikdörtgeni ve bir tampon payını kapsar.",
+  "data.area": "Alan: {area} km², çizilen her şeyin çevresindeki dikdörtgen artı {buffer} km",
+  "data.osm": "OpenStreetMap",
+  "data.dem": "Yükseklik",
+  "data.notImported": "Henüz içe aktarılmadı.",
+  "data.imported": "İçe aktarıldı: {date}",
+  "data.dataDate": "{date} tarihli veri",
+  "data.outside": "Çizim artık içe aktarılan alanın dışına taşıyor. Yeni alanı içe aktarmak için yenileyin.",
+  "data.method": "Verileri şuradan al",
+  "data.method.overpass": "Overpass ({max} km²'ye kadar alanlar)",
+  "data.method.geofabrik": "Bir Geofabrik bölgesi",
+  "data.method.upload": "Bir .osm.pbf dosyası",
+  "data.region": "Bölge",
+  "data.regionsLoading": "Bölgeler aranıyor…",
+  "data.noRegions": "Hiçbir Geofabrik bölgesi alanın tamamını kapsamıyor.",
+  "data.planned": "Planlanan yolları koru (proje ve inşaat hâlinde)",
+  "data.import": "İçe aktar",
+  "data.refresh": "Yenile",
+  "data.chooseFile": "Bir .osm.pbf dosyası seçin ({max} MB'a kadar)",
+  "data.cancel": "İptal",
+  "data.queued": "Başka bir içe aktarmanın bitmesi bekleniyor…",
+  "data.step.download": "İndiriliyor…",
+  "data.step.downloadN": "İndiriliyor: {done} / {total}…",
+  "data.step.merge": "Karolar birleştiriliyor…",
+  "data.step.extract": "Proje alanı kesiliyor…",
+  "data.step.database": "Veritabanına yazılıyor…",
+  "data.failed": "Son içe aktarma başarısız oldu: {error}",
+  "data.cancelled": "Son içe aktarma iptal edildi.",
+  "data.counts": "{roads} yol, {rails} demiryolu, {buildings} bina, {stops} durak",
+  "data.demFacts": "Copernicus GLO-30, {res} m ızgara, yükseklikler ±{acc} m doğrulukta",
+  "data.demNoData": "Alanın 1°'lik hücrelerinden {n} tanesinde yükseklik verisi yok (açık deniz).",
+  "data.tooLarge":
+    "Alan {area} km², Overpass'ın kapsadığından büyük. Bir Geofabrik bölgesi seçin ya da bir dosya yükleyin.",
+  "data.readOnly": "Verileri sahipler ve düzenleyiciler içe aktarabilir.",
+  "data.licence": "© OpenStreetMap contributors, ODbL 1.0",
+} satisfies GeodataMessages;

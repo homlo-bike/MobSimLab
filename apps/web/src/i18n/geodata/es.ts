@@ -1,0 +1,45 @@
+import type { GeodataMessages } from "./en";
+
+/** Map data view messages (es). */
+export const geodataEs = {
+  "gis.dataView": "Datos del mapa",
+  "data.title": "Datos del mapa",
+  "data.intro":
+    "OpenStreetMap y elevación para este proyecto, guardados con el proyecto. Las herramientas de calles, ferrocarriles, edificios, agua y terreno los leen en lugar de consultar OpenStreetMap y el servidor de elevación cada vez.",
+  "data.noArea":
+    "Dibuja algo en el proyecto primero: la importación cubre el rectángulo alrededor de todo lo dibujado, más un margen.",
+  "data.area": "Zona: {area} km², el rectángulo alrededor de todo lo dibujado más {buffer} km",
+  "data.osm": "OpenStreetMap",
+  "data.dem": "Elevación",
+  "data.notImported": "Aún no importado.",
+  "data.imported": "Importado {date}",
+  "data.dataDate": "datos del {date}",
+  "data.outside": "El dibujo ya sale de la zona importada. Actualiza para importar la zona nueva.",
+  "data.method": "Obtener los datos de",
+  "data.method.overpass": "Overpass (zonas de hasta {max} km²)",
+  "data.method.geofabrik": "Una región de Geofabrik",
+  "data.method.upload": "Un archivo .osm.pbf",
+  "data.region": "Región",
+  "data.regionsLoading": "Buscando regiones…",
+  "data.noRegions": "Ninguna región de Geofabrik contiene toda la zona.",
+  "data.planned": "Conservar las calles previstas (proyectadas y en construcción)",
+  "data.import": "Importar",
+  "data.refresh": "Actualizar",
+  "data.chooseFile": "Elegir un archivo .osm.pbf (hasta {max} MB)",
+  "data.cancel": "Cancelar",
+  "data.queued": "Esperando a que termine otra importación…",
+  "data.step.download": "Descargando…",
+  "data.step.downloadN": "Descargando {done} de {total}…",
+  "data.step.merge": "Uniendo las teselas…",
+  "data.step.extract": "Recortando la zona del proyecto…",
+  "data.step.database": "Escribiendo en la base de datos…",
+  "data.failed": "La última importación falló: {error}",
+  "data.cancelled": "La última importación se canceló.",
+  "data.counts": "{roads} calles, {rails} vías férreas, {buildings} edificios, {stops} paradas",
+  "data.demFacts": "Copernicus GLO-30, malla de {res} m, alturas con ±{acc} m",
+  "data.demNoData": "{n} de las celdas de 1° de la zona no tienen datos de elevación (mar abierto).",
+  "data.tooLarge":
+    "La zona mide {area} km², más de lo que cubre Overpass. Elige una región de Geofabrik o sube un archivo.",
+  "data.readOnly": "Los propietarios y editores pueden importar datos.",
+  "data.licence": "© OpenStreetMap contributors, ODbL 1.0",
+} satisfies GeodataMessages;

@@ -2,6 +2,7 @@ import type { ProjectPlugin } from "../plugins/registry";
 import { get, send } from "../session/api";
 import { projectRuns } from "../features/capacity/server";
 import { projectRoadRuns } from "../features/road-sim/api";
+import { projectGeodata } from "../features/geodata/api";
 import { type DrawingKind, loadDrawings, saveDrawing } from "./drawings";
 
 export type ProjectRole = "owner" | "editor" | "commenter" | "viewer";
@@ -110,6 +111,8 @@ export function projectsApi(csrf: string) {
     runs: (id: string) => projectRuns(id, csrf),
     /** The project's road simulation runs (SUMO) on the background worker, with their replays. */
     roadRuns: (id: string) => projectRoadRuns(id, csrf),
+    /** The project's OpenStreetMap and elevation imports (GIS tab, Map data). */
+    geodata: (id: string) => projectGeodata(id, csrf),
   };
 }
 export type ProjectsApi = ReturnType<typeof projectsApi>;
