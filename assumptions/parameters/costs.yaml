@@ -874,8 +874,29 @@
       check: unverified
       rationale: Driver and on-board staff.
 
+- key: cost.opex.car_length_m
+  label: "Rail running cost: length of train counted as one car"
+  group: Cost
+  unit: m
+  used_by:
+    - "operating cost: service"
+  values:
+    - context:
+        mode: "*"
+      low: 20
+      central: 25
+      high: 27
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        The per car-km running costs are for cars of about 25 m (main-line coaches 24–27 m, metro cars
+        18–23 m). A train's car-km are its length over this value times its km, so short articulated tram
+        modules are not each counted as a full car.
+
 - key: cost.opex.car_km
-  label: Rail running cost per car-km (per 25 m of train)
+  label: Rail running cost per car-km (per car of cost.opex.car_length_m)
   group: Cost
   unit: US$ per car-km (2023, PPP)
   used_by:
