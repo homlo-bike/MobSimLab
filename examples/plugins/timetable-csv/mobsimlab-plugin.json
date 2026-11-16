@@ -1,0 +1,61 @@
+{
+  "$schema": "../../../contracts/plugin-manifest.schema.json",
+  "id": "org.example.timetable-csv",
+  "name": "CSV timetables",
+  "description": "Example third-party plugin with its own code: imports and exports timetables as a simple CSV, sums up each route, and shows the sums in a tab of its own.",
+  "version": "1.0.0",
+  "publisher": { "name": "Example Transit Lab", "url": "https://example.org" },
+  "license": "AGPL-3.0-or-later",
+  "dataLicense": "CC-BY-4.0",
+  "engines": { "mobsimlab": ">=0.1 <1", "pluginApi": "1" },
+  "tiers": ["compute", "ui"],
+  "contributes": {
+    "calculations": [
+      {
+        "id": "route_summary",
+        "label": "Route summary",
+        "description": "Trips, stops, first and last departure and mean headway of each route.",
+        "runtime": "component",
+        "component": "wasm/calculation.wasm",
+        "inputs": ["timetable"],
+        "outputs": ["table", "kpis"],
+        "where": ["tables", "plugin-tab"]
+      }
+    ],
+    "importers": [
+      {
+        "id": "csv_import",
+        "label": "CSV timetable",
+        "description": "One row per call: trip_id,route,mode,stop_name,lat,lon,time.",
+        "format": "csv-timetable",
+        "extensions": [".csv"],
+        "contract": "published-timetable",
+        "runtime": "component",
+        "component": "wasm/importer.wasm",
+        "maxBytes": 10485760
+      }
+    ],
+    "exporters": [
+      {
+        "id": "csv_export",
+        "label": "CSV timetable",
+        "description": "The project's trips, one row per call.",
+        "format": "csv-timetable",
+        "extensions": [".csv"],
+        "contract": "published-timetable",
+        "runtime": "component",
+        "component": "wasm/exporter.wasm",
+        "maxBytes": 10485760
+      }
+    ],
+    "tabs": [
+      {
+        "id": "csv-routes",
+        "label": "Routes",
+        "ui": "tab/index.html",
+        "calculations": ["route_summary"]
+      }
+    ]
+  },
+  "permissions": ["read:timetable", "write:scenario"]
+}

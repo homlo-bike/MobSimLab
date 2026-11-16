@@ -2155,5 +2155,11 @@
    "underground_level_depth_m": "structure.underground_level_depth_m",
    "vertical_radius_m": "curve.vertical_radius_m"
   }
+ },
+ "engine_text_keys": {
+  "electrification": "mode.new_track_electrification",
+  "colour": "mode.colour",
+  "level_crossing_permitted": "level_crossing.permitted",
+  "signalling_system": "signalling.system"
  }
 }

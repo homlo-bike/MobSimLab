@@ -3,6 +3,8 @@ import { editorsBn } from "./editors/bn";
 import { cargoBikeBn } from "./cargo-bike/bn";
 import { depotsBn } from "./depots/bn";
 import { timetablesBn } from "./timetables/bn";
+import { mslabBn } from "./mslab/bn";
+import { pluginCodeBn } from "./plugin-code/bn";
 import { populationBn } from "./population/bn";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -256,6 +258,7 @@ export const bn: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "রাস্তা",
   "gis.regionsView": "অঞ্চল",
+  "gis.zonesView": "চাহিদা জোন",
   "gis.intro": "গণনায় ব্যবহৃত তথ্য যোগ বা সম্পাদনা করুন।",
   "gis.areas": "একটি এলাকা আঁকুন বা OpenStreetMap থেকে আমদানি করুন",
   "gis.streets": "রাস্তার বিন্যাস: বাস, সাইকেল ও ট্রাম লেন, গতি, উপরের তার",
@@ -279,6 +282,7 @@ export const bn: Messages = {
   "prefs.delayLane": "রং দিয়ে আঁকা বাস বা ট্রাম লেনে",
   "prefs.delayDefault": "অনুমান লাইব্রেরি: {value} %",
   "prefs.delayReset": "লাইব্রেরির মান ব্যবহার করুন",
+  "prefs.reason": "এই মানের কারণ (ঐচ্ছিক)",
   "prefs.stationsTitle": "স্টেশন",
   "prefs.stationsIntro":
     "এই দূরত্বের মধ্যে একই নামের স্টপগুলো স্কিম্যাটিক মানচিত্র, যাত্রা পরিকল্পক এবং সুবিধা ও যাত্রী সারণিতে একটি স্টেশন হিসেবে গণ্য হয়।",
@@ -304,6 +308,21 @@ export const bn: Messages = {
   "prefs.rulesChanged": "পরিবর্তিত: {count}",
   "prefs.rulesLibrary": "অনুমান লাইব্রেরি: {value} {unit}",
   "prefs.rulesLibraryRange": "অনুমান লাইব্রেরি: {value} {unit} (পরিসর {low}–{high})",
+  "prefs.demandTitle": "চাহিদা মডেল",
+  "prefs.demandIntro":
+    "চাহিদা মডেল যে সব মান ব্যবহার করে, ধাপে ধাপে: অঞ্চল, যাত্রা উৎপাদন, সময়কাল, বণ্টন, যানবাহন নির্বাচন ও বরাদ্দ। এই প্রকল্পের জন্য একটি মান বদলান, অথবা অনুমান লাইব্রেরির মান রাখুন।",
+  "prefs.demandStep": "মডেলের ধাপ",
+  "prefs.demandSearch": "মান খুঁজুন",
+  "prefs.demandNone": "কোনো মান মেলেনি।",
+  "prefs.demandStep.zones": "অঞ্চল",
+  "prefs.demandStep.generation": "যাত্রা উৎপাদন",
+  "prefs.demandStep.periods": "সময়কাল",
+  "prefs.demandStep.distribution": "যাত্রা বণ্টন",
+  "prefs.demandStep.mode_choice": "যানবাহন নির্বাচন",
+  "prefs.demandStep.catchment": "প্রবেশ এলাকা",
+  "prefs.demandStep.assignment": "বরাদ্দ",
+  "prefs.demandStep.calibration": "ক্রমাঙ্কন",
+  "prefs.demandAll": "সব ধাপ",
   "prefs.paramsTitle": "সব প্যারামিটার",
   "prefs.paramsIntro":
     "অনুমান লাইব্রেরির প্রতিটি মান। সব মাধ্যম বা একটি মাধ্যমের জন্য নিজের মান দিন; একটি মাধ্যমের মান সব মাধ্যমের মানের চেয়ে অগ্রাধিকার পায়। লাইব্রেরির মান পাশে থাকে।",
@@ -415,6 +434,8 @@ export const bn: Messages = {
   ...cargoBikeBn,
   ...depotsBn,
   ...timetablesBn,
+  ...mslabBn,
+  ...pluginCodeBn,
   ...populationBn,
   ...roadBn,
   ...PLUGIN_MESSAGES.bn,

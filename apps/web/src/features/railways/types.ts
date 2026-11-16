@@ -282,6 +282,14 @@ export interface PublishOptions {
   max_idle_s?: number | null;
 }
 
+/** Trains of one line in each clock hour on one section of the topology export (Rust `rail_plan::SectionTrains`). */
+export interface SectionTrains {
+  section: string;
+  line: string;
+  /** Trains entering the section in each hour 0–23, both directions. */
+  hours: number[];
+}
+
 /** Published service lines (Rust `rail_plan::ServicePublication`). */
 export interface ServicePublication {
   timetable: Timetable;
@@ -289,6 +297,8 @@ export interface ServicePublication {
   notes: string[];
   /** Each train's runs of the day, by first departure (absent from engines built before blocks). */
   blocks?: RailVehicleBlock[];
+  /** Trains per hour on each section, for the noise map's timetabled input. */
+  section_trains?: SectionTrains[];
 }
 
 /** A service line as the engine takes it (Rust `rail_plan::ServiceLine`). */
@@ -625,8 +635,11 @@ export interface RailEngine {
   existingSnap(at: LonLat, maxM: number): ExistingSnap | null;
   /** Applies the planner's street setups from the GIS tab; the next build uses them. */
   setStreetSetups(setups: readonly StreetSetup[]): void;
-  /** Design values the project's preferences change for every mode, by name; the next build uses them. */
-  setValues?(values: Record<string, number>): void;
+  /**
+   * Design values the project's preferences change, by name for every mode or `<mode>.<name>` for one; numbers,
+   * and text for the text values (electrification, colour, level crossings, signalling). The next build uses them.
+   */
+  setValues?(values: Record<string, number | string>): void;
   /** The project's choice from the switches and crossings catalogue (Project preferences → Switches). */
   setSwitchChoice?(choice: SwitchChoice): void;
   /** A signal plan generated from the last build, with ids continuing the document's. */

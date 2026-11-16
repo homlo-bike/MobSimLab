@@ -3,6 +3,8 @@ import { editorsRu } from "./editors/ru";
 import { cargoBikeRu } from "./cargo-bike/ru";
 import { depotsRu } from "./depots/ru";
 import { timetablesRu } from "./timetables/ru";
+import { mslabRu } from "./mslab/ru";
+import { pluginCodeRu } from "./plugin-code/ru";
 import { populationRu } from "./population/ru";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -259,6 +261,7 @@ export const ru: Messages = {
   "gis.title": "ГИС",
   "gis.streetsView": "Улицы",
   "gis.regionsView": "Районы",
+  "gis.zonesView": "Зоны спроса",
   "gis.intro": "Добавляйте и изменяйте данные, которые используются в расчётах.",
   "gis.areas": "Нарисуйте территорию или импортируйте её из OpenStreetMap",
   "gis.streets": "Профиль улиц: полосы для автобусов, велосипедов и трамваев, скорости, контактная сеть",
@@ -282,6 +285,7 @@ export const ru: Messages = {
   "prefs.delayLane": "На выделенной разметкой полосе для автобусов или трамваев",
   "prefs.delayDefault": "Библиотека допущений: {value} %",
   "prefs.delayReset": "Использовать значение из библиотеки",
+  "prefs.reason": "Причина этого значения (необязательно)",
   "prefs.stationsTitle": "Станции",
   "prefs.stationsIntro":
     "Одноимённые остановки в пределах этого расстояния считаются одной станцией на схеме сети, в планировщике поездок и в таблицах выгод и пассажиров.",
@@ -308,6 +312,21 @@ export const ru: Messages = {
   "prefs.rulesChanged": "изменено: {count}",
   "prefs.rulesLibrary": "Библиотека допущений: {value} {unit}",
   "prefs.rulesLibraryRange": "Библиотека допущений: {value} {unit} (диапазон {low}–{high})",
+  "prefs.demandTitle": "Модель спроса",
+  "prefs.demandIntro":
+    "Все значения, которые использует модель спроса, по шагам: зоны, генерация поездок, периоды, распределение, выбор вида транспорта и назначение. Измените значение для этого проекта или оставьте значение из библиотеки допущений.",
+  "prefs.demandStep": "Шаг модели",
+  "prefs.demandSearch": "Поиск значений",
+  "prefs.demandNone": "Ничего не найдено.",
+  "prefs.demandStep.zones": "Зоны",
+  "prefs.demandStep.generation": "Генерация поездок",
+  "prefs.demandStep.periods": "Периоды",
+  "prefs.demandStep.distribution": "Распределение поездок",
+  "prefs.demandStep.mode_choice": "Выбор вида транспорта",
+  "prefs.demandStep.catchment": "Зона доступности",
+  "prefs.demandStep.assignment": "Назначение",
+  "prefs.demandStep.calibration": "Калибровка",
+  "prefs.demandAll": "Все шаги",
   "prefs.paramsTitle": "Все параметры",
   "prefs.paramsIntro":
     "Каждое значение библиотеки допущений. Задайте своё для всех видов транспорта или для одного; значение для вида транспорта важнее значения для всех. Значение библиотеки показано рядом.",
@@ -424,6 +443,8 @@ export const ru: Messages = {
   ...cargoBikeRu,
   ...depotsRu,
   ...timetablesRu,
+  ...mslabRu,
+  ...pluginCodeRu,
   ...populationRu,
   ...roadRu,
   ...PLUGIN_MESSAGES.ru,

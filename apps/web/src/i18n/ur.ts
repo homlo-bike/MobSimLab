@@ -3,6 +3,8 @@ import { editorsUr } from "./editors/ur";
 import { cargoBikeUr } from "./cargo-bike/ur";
 import { depotsUr } from "./depots/ur";
 import { timetablesUr } from "./timetables/ur";
+import { mslabUr } from "./mslab/ur";
+import { pluginCodeUr } from "./plugin-code/ur";
 import { populationUr } from "./population/ur";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -257,6 +259,7 @@ export const ur: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "سڑکیں",
   "gis.regionsView": "علاقے",
+  "gis.zonesView": "طلب کے زون",
   "gis.intro": "وہ معلومات شامل کریں یا ان میں ترمیم کریں جو حسابات استعمال کرتے ہیں۔",
   "gis.areas": "علاقہ بنائیں یا OpenStreetMap سے درآمد کریں",
   "gis.streets": "سڑکوں کی ترتیب: بس، سائیکل اور ٹرام لین، رفتار، اوپری تاریں",
@@ -280,6 +283,7 @@ export const ur: Messages = {
   "prefs.delayLane": "رنگ سے بنی بس یا ٹرام لین میں",
   "prefs.delayDefault": "مفروضات کی لائبریری: {value} %",
   "prefs.delayReset": "لائبریری کی قدر استعمال کریں",
+  "prefs.reason": "اس قدر کی وجہ (اختیاری)",
   "prefs.stationsTitle": "اسٹیشن",
   "prefs.stationsIntro":
     "اس فاصلے کے اندر ایک ہی نام کے اسٹاپ اسکیمیٹک نقشے، سفر منصوبہ ساز اور فوائد و مسافر جدولوں میں ایک اسٹیشن شمار ہوتے ہیں۔",
@@ -306,6 +310,21 @@ export const ur: Messages = {
   "prefs.rulesChanged": "تبدیل شدہ: {count}",
   "prefs.rulesLibrary": "مفروضات کی لائبریری: {value} {unit}",
   "prefs.rulesLibraryRange": "مفروضات کی لائبریری: {value} {unit} (حد {low}–{high})",
+  "prefs.demandTitle": "طلب کا ماڈل",
+  "prefs.demandIntro":
+    "طلب کا ماڈل جو بھی قدر استعمال کرتا ہے، قدم بہ قدم: زون، سفر کی پیدائش، اوقات، تقسیم، ذریعۂ سفر کا انتخاب اور تفویض۔ اس منصوبے کے لیے کوئی قدر بدلیں، یا مفروضات کی لائبریری والی رکھیں۔",
+  "prefs.demandStep": "ماڈل کا قدم",
+  "prefs.demandSearch": "قدریں تلاش کریں",
+  "prefs.demandNone": "کوئی قدر نہیں ملی۔",
+  "prefs.demandStep.zones": "زون",
+  "prefs.demandStep.generation": "سفر کی پیدائش",
+  "prefs.demandStep.periods": "اوقات",
+  "prefs.demandStep.distribution": "سفر کی تقسیم",
+  "prefs.demandStep.mode_choice": "ذریعۂ سفر کا انتخاب",
+  "prefs.demandStep.catchment": "رسائی کا علاقہ",
+  "prefs.demandStep.assignment": "تفویض",
+  "prefs.demandStep.calibration": "انشانکن",
+  "prefs.demandAll": "تمام قدم",
   "prefs.paramsTitle": "تمام پیرامیٹر",
   "prefs.paramsIntro":
     "مفروضات کی لائبریری کی ہر قدر۔ تمام طریقوں یا ایک طریقے کے لیے اپنی قدر رکھیں؛ ایک طریقے کی قدر تمام طریقوں والی پر فوقیت رکھتی ہے۔ لائبریری کی قدر ساتھ رہتی ہے۔",
@@ -421,6 +440,8 @@ export const ur: Messages = {
   ...cargoBikeUr,
   ...depotsUr,
   ...timetablesUr,
+  ...mslabUr,
+  ...pluginCodeUr,
   ...populationUr,
   ...roadUr,
   ...PLUGIN_MESSAGES.ur,

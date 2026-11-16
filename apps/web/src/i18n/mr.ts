@@ -3,6 +3,8 @@ import { editorsMr } from "./editors/mr";
 import { cargoBikeMr } from "./cargo-bike/mr";
 import { depotsMr } from "./depots/mr";
 import { timetablesMr } from "./timetables/mr";
+import { mslabMr } from "./mslab/mr";
+import { pluginCodeMr } from "./plugin-code/mr";
 import { populationMr } from "./population/mr";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -255,6 +257,7 @@ export const mr: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "रस्ते",
   "gis.regionsView": "प्रदेश",
+  "gis.zonesView": "मागणी झोन",
   "gis.intro": "गणनेसाठी वापरली जाणारी माहिती जोडा किंवा संपादित करा.",
   "gis.areas": "क्षेत्र काढा किंवा OpenStreetMap वरून आयात करा",
   "gis.streets": "रस्त्यांची रचना: बस, सायकल आणि ट्राम मार्गिका, वेग, वरच्या तारा",
@@ -278,6 +281,7 @@ export const mr: Messages = {
   "prefs.delayLane": "रंगवलेल्या बस किंवा ट्राम मार्गिकेत",
   "prefs.delayDefault": "गृहीतकांचे ग्रंथालय: {value} %",
   "prefs.delayReset": "ग्रंथालयातील मूल्य वापरा",
+  "prefs.reason": "या मूल्याचे कारण (ऐच्छिक)",
   "prefs.stationsTitle": "स्थानके",
   "prefs.stationsIntro":
     "या अंतरातील एकाच नावाचे थांबे योजनाबद्ध नकाशा, प्रवास नियोजक आणि लाभ व प्रवासी तक्त्यांमध्ये एक स्थानक म्हणून मोजले जातात.",
@@ -303,6 +307,21 @@ export const mr: Messages = {
   "prefs.rulesChanged": "बदललेले: {count}",
   "prefs.rulesLibrary": "गृहीतकांचे ग्रंथालय: {value} {unit}",
   "prefs.rulesLibraryRange": "गृहीतकांचे ग्रंथालय: {value} {unit} (श्रेणी {low}–{high})",
+  "prefs.demandTitle": "मागणी मॉडेल",
+  "prefs.demandIntro":
+    "मागणी मॉडेल वापरत असलेले प्रत्येक मूल्य, टप्प्याटप्प्याने: क्षेत्रे, प्रवास निर्मिती, कालावधी, वितरण, साधन निवड आणि नियुक्ती. या प्रकल्पासाठी मूल्य बदला, किंवा गृहितक ग्रंथालयाचे मूल्य ठेवा.",
+  "prefs.demandStep": "मॉडेलचा टप्पा",
+  "prefs.demandSearch": "मूल्ये शोधा",
+  "prefs.demandNone": "कोणतेही मूल्य जुळत नाही.",
+  "prefs.demandStep.zones": "क्षेत्रे",
+  "prefs.demandStep.generation": "प्रवास निर्मिती",
+  "prefs.demandStep.periods": "कालावधी",
+  "prefs.demandStep.distribution": "प्रवास वितरण",
+  "prefs.demandStep.mode_choice": "साधन निवड",
+  "prefs.demandStep.catchment": "पोहोच क्षेत्र",
+  "prefs.demandStep.assignment": "नियुक्ती",
+  "prefs.demandStep.calibration": "अंशांकन",
+  "prefs.demandAll": "सर्व टप्पे",
   "prefs.paramsTitle": "सर्व पॅरामीटर",
   "prefs.paramsIntro":
     "गृहीतक ग्रंथालयातील प्रत्येक मूल्य. सर्व साधनांसाठी किंवा एका साधनासाठी तुमचे मूल्य द्या; एका साधनाचे मूल्य सर्व साधनांच्या मूल्यापेक्षा वरचढ ठरते. ग्रंथालयाचे मूल्य शेजारी दिसते.",
@@ -415,6 +434,8 @@ export const mr: Messages = {
   ...cargoBikeMr,
   ...depotsMr,
   ...timetablesMr,
+  ...mslabMr,
+  ...pluginCodeMr,
   ...populationMr,
   ...roadMr,
   ...PLUGIN_MESSAGES.mr,

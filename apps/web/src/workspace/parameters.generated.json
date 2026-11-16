@@ -1776,6 +1776,1826 @@
    }
   },
   {
+   "id": "demand.area_buffer_m",
+   "label": "Model area: distance around the project's lines and stations that the model covers",
+   "group": "Demand",
+   "unit": "m",
+   "kind": "number",
+   "values": {
+    "*": [
+     1000,
+     2000,
+     5000
+    ]
+   }
+  },
+  {
+   "id": "demand.zone_max_count",
+   "label": "Automatic zones: most hexagons the model area is cut into",
+   "group": "Demand",
+   "unit": "zones",
+   "kind": "number",
+   "values": {
+    "*": [
+     200,
+     600,
+     2000
+    ]
+   }
+  },
+  {
+   "id": "demand.trip_rate.hbw",
+   "label": "Trips: home–work trips per worker living in the zone, a weekday",
+   "group": "Demand",
+   "unit": "trips/worker",
+   "kind": "number",
+   "values": {
+    "*": [
+     1.3,
+     1.6,
+     1.9
+    ]
+   }
+  },
+  {
+   "id": "demand.trip_rate.hbe",
+   "label": "Trips: home–education trips per child under 15 living in the zone, a weekday",
+   "group": "Demand",
+   "unit": "trips/child",
+   "kind": "number",
+   "values": {
+    "*": [
+     1.4,
+     1.7,
+     1.9
+    ]
+   }
+  },
+  {
+   "id": "demand.trip_rate.hbo",
+   "label": "Trips: home–other trips (shopping, errands, leisure, visits, care) per person, a weekday",
+   "group": "Demand",
+   "unit": "trips/person",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.9,
+     1.3,
+     1.7
+    ]
+   }
+  },
+  {
+   "id": "demand.trip_rate.nhb",
+   "label": "Trips: trips that neither start nor end at home, per person living in the model area, a weekday",
+   "group": "Demand",
+   "unit": "trips/person",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.4,
+     0.6,
+     0.9
+    ]
+   }
+  },
+  {
+   "id": "demand.attraction.per_retail_job",
+   "label": "Attraction: weight of one retail job for home–other trips",
+   "group": "Demand",
+   "unit": "weight",
+   "kind": "number",
+   "values": {
+    "*": [
+     5,
+     8,
+     12
+    ]
+   }
+  },
+  {
+   "id": "demand.attraction.per_other_job",
+   "label": "Attraction: weight of one non-retail job for home–other trips",
+   "group": "Demand",
+   "unit": "weight",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.5,
+     1.4,
+     2.5
+    ]
+   }
+  },
+  {
+   "id": "demand.attraction.per_resident",
+   "label": "Attraction: weight of one resident for home–other trips (visits, local errands)",
+   "group": "Demand",
+   "unit": "weight",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.1,
+     0.25,
+     0.5
+    ]
+   }
+  },
+  {
+   "id": "demand.attraction.nhb_per_retail_job",
+   "label": "Attraction: weight of one retail job for trips not based at home",
+   "group": "Demand",
+   "unit": "weight",
+   "kind": "number",
+   "values": {
+    "*": [
+     2,
+     4,
+     6
+    ]
+   }
+  },
+  {
+   "id": "demand.attraction.nhb_per_other_job",
+   "label": "Attraction: weight of one non-retail job for trips not based at home",
+   "group": "Demand",
+   "unit": "weight",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.5,
+     1,
+     1.5
+    ]
+   }
+  },
+  {
+   "id": "demand.attraction.nhb_per_resident",
+   "label": "Attraction: weight of one resident for trips not based at home",
+   "group": "Demand",
+   "unit": "weight",
+   "kind": "number",
+   "values": {
+    "*": [
+     0,
+     0.15,
+     0.3
+    ]
+   }
+  },
+  {
+   "id": "demand.attraction.school_pupils",
+   "label": "Special generator: pupils per school, where the school has no number of its own",
+   "group": "Demand",
+   "unit": "pupils",
+   "kind": "number",
+   "values": {
+    "*": [
+     200,
+     500,
+     1000
+    ]
+   }
+  },
+  {
+   "id": "demand.attraction.university_students",
+   "label": "Special generator: students per university or college, where it has no number of its own",
+   "group": "Demand",
+   "unit": "students",
+   "kind": "number",
+   "values": {
+    "*": [
+     2000,
+     8000,
+     25000
+    ]
+   }
+  },
+  {
+   "id": "demand.attraction.hospital_visits",
+   "label": "Special generator: visitor and patient trips a weekday per hospital",
+   "group": "Demand",
+   "unit": "trips",
+   "kind": "number",
+   "values": {
+    "*": [
+     500,
+     1500,
+     4000
+    ]
+   }
+  },
+  {
+   "id": "demand.attraction.clinic_visits",
+   "label": "Special generator: patient trips a weekday per clinic or doctor's practice",
+   "group": "Demand",
+   "unit": "trips",
+   "kind": "number",
+   "values": {
+    "*": [
+     50,
+     150,
+     400
+    ]
+   }
+  },
+  {
+   "id": "demand.attraction.tourism_visits",
+   "label": "Special generator: visitor trips a weekday per tourist attraction or museum",
+   "group": "Demand",
+   "unit": "trips",
+   "kind": "number",
+   "values": {
+    "*": [
+     100,
+     1000,
+     5000
+    ]
+   }
+  },
+  {
+   "id": "demand.attraction.cbd_factor",
+   "label": "Central business district: attraction uplift for zones in the centre",
+   "group": "Demand",
+   "unit": "factor",
+   "kind": "number",
+   "values": {
+    "*": [
+     1,
+     1.2,
+     1.5
+    ]
+   }
+  },
+  {
+   "id": "demand.cbd_job_density_km2",
+   "label": "Central business district: jobs per km² from which a zone counts as centre",
+   "group": "Demand",
+   "unit": "jobs/km²",
+   "kind": "number",
+   "values": {
+    "*": [
+     5000,
+     10000,
+     20000
+    ]
+   }
+  },
+  {
+   "id": "demand.period.am_start_h",
+   "label": "Time periods: morning peak starts",
+   "group": "Demand",
+   "unit": "h",
+   "kind": "number",
+   "values": {
+    "*": [
+     6,
+     7,
+     7.5
+    ]
+   }
+  },
+  {
+   "id": "demand.period.am_end_h",
+   "label": "Time periods: morning peak ends, midday starts",
+   "group": "Demand",
+   "unit": "h",
+   "kind": "number",
+   "values": {
+    "*": [
+     8.5,
+     9,
+     10
+    ]
+   }
+  },
+  {
+   "id": "demand.period.pm_start_h",
+   "label": "Time periods: midday ends, evening peak starts",
+   "group": "Demand",
+   "unit": "h",
+   "kind": "number",
+   "values": {
+    "*": [
+     15,
+     16,
+     17
+    ]
+   }
+  },
+  {
+   "id": "demand.period.pm_end_h",
+   "label": "Time periods: evening peak ends, evening starts",
+   "group": "Demand",
+   "unit": "h",
+   "kind": "number",
+   "values": {
+    "*": [
+     18,
+     19,
+     20
+    ]
+   }
+  },
+  {
+   "id": "demand.period.ev_end_h",
+   "label": "Time periods: evening ends",
+   "group": "Demand",
+   "unit": "h",
+   "kind": "number",
+   "values": {
+    "*": [
+     22,
+     23,
+     24
+    ]
+   }
+  },
+  {
+   "id": "demand.period_share.am.hbw",
+   "label": "Time periods: share of the weekday's home–work trips made in the morning peak",
+   "group": "Demand",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.25,
+     0.3,
+     0.35
+    ]
+   }
+  },
+  {
+   "id": "demand.period_share.md.hbw",
+   "label": "Time periods: share of the weekday's home–work trips made in the midday",
+   "group": "Demand",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.07,
+     0.12,
+     0.17
+    ]
+   }
+  },
+  {
+   "id": "demand.period_share.pm.hbw",
+   "label": "Time periods: share of the weekday's home–work trips made in the evening peak",
+   "group": "Demand",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.25,
+     0.3,
+     0.35
+    ]
+   }
+  },
+  {
+   "id": "demand.period_share.ev.hbw",
+   "label": "Time periods: share of the weekday's home–work trips made in the evening",
+   "group": "Demand",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.07,
+     0.12,
+     0.17
+    ]
+   }
+  },
+  {
+   "id": "demand.period_share.am.hbe",
+   "label": "Time periods: share of the weekday's home–education trips made in the morning peak",
+   "group": "Demand",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.35,
+     0.4,
+     0.45
+    ]
+   }
+  },
+  {
+   "id": "demand.period_share.md.hbe",
+   "label": "Time periods: share of the weekday's home–education trips made in the midday",
+   "group": "Demand",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.25,
+     0.3,
+     0.35
+    ]
+   }
+  },
+  {
+   "id": "demand.period_share.pm.hbe",
+   "label": "Time periods: share of the weekday's home–education trips made in the evening peak",
+   "group": "Demand",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.1,
+     0.15,
+     0.2
+    ]
+   }
+  },
+  {
+   "id": "demand.period_share.ev.hbe",
+   "label": "Time periods: share of the weekday's home–education trips made in the evening",
+   "group": "Demand",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.0,
+     0.05,
+     0.1
+    ]
+   }
+  },
+  {
+   "id": "demand.period_share.am.hbo",
+   "label": "Time periods: share of the weekday's home–other trips made in the morning peak",
+   "group": "Demand",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.05,
+     0.1,
+     0.15
+    ]
+   }
+  },
+  {
+   "id": "demand.period_share.md.hbo",
+   "label": "Time periods: share of the weekday's home–other trips made in the midday",
+   "group": "Demand",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.37,
+     0.42,
+     0.47
+    ]
+   }
+  },
+  {
+   "id": "demand.period_share.pm.hbo",
+   "label": "Time periods: share of the weekday's home–other trips made in the evening peak",
+   "group": "Demand",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.2,
+     0.25,
+     0.3
+    ]
+   }
+  },
+  {
+   "id": "demand.period_share.ev.hbo",
+   "label": "Time periods: share of the weekday's home–other trips made in the evening",
+   "group": "Demand",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.1,
+     0.15,
+     0.2
+    ]
+   }
+  },
+  {
+   "id": "demand.period_share.am.nhb",
+   "label": "Time periods: share of the weekday's non-home-based trips made in the morning peak",
+   "group": "Demand",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.03,
+     0.08,
+     0.13
+    ]
+   }
+  },
+  {
+   "id": "demand.period_share.md.nhb",
+   "label": "Time periods: share of the weekday's non-home-based trips made in the midday",
+   "group": "Demand",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.45,
+     0.5,
+     0.55
+    ]
+   }
+  },
+  {
+   "id": "demand.period_share.pm.nhb",
+   "label": "Time periods: share of the weekday's non-home-based trips made in the evening peak",
+   "group": "Demand",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.22,
+     0.27,
+     0.32
+    ]
+   }
+  },
+  {
+   "id": "demand.period_share.ev.nhb",
+   "label": "Time periods: share of the weekday's non-home-based trips made in the evening",
+   "group": "Demand",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.05,
+     0.1,
+     0.15
+    ]
+   }
+  },
+  {
+   "id": "demand.from_home_share.am.hbw",
+   "label": "Time periods: share of the morning peak's home–work trips that go from home (the rest go home)",
+   "group": "Demand",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.8,
+     0.9,
+     1.0
+    ]
+   }
+  },
+  {
+   "id": "demand.from_home_share.md.hbw",
+   "label": "Time periods: share of the midday's home–work trips that go from home (the rest go home)",
+   "group": "Demand",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.35,
+     0.45,
+     0.55
+    ]
+   }
+  },
+  {
+   "id": "demand.from_home_share.pm.hbw",
+   "label": "Time periods: share of the evening peak's home–work trips that go from home (the rest go home)",
+   "group": "Demand",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.05,
+     0.15,
+     0.25
+    ]
+   }
+  },
+  {
+   "id": "demand.from_home_share.ev.hbw",
+   "label": "Time periods: share of the evening's home–work trips that go from home (the rest go home)",
+   "group": "Demand",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.2,
+     0.3,
+     0.4
+    ]
+   }
+  },
+  {
+   "id": "demand.from_home_share.am.hbe",
+   "label": "Time periods: share of the morning peak's home–education trips that go from home (the rest go home)",
+   "group": "Demand",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.85,
+     0.95,
+     1.0
+    ]
+   }
+  },
+  {
+   "id": "demand.from_home_share.md.hbe",
+   "label": "Time periods: share of the midday's home–education trips that go from home (the rest go home)",
+   "group": "Demand",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.3,
+     0.4,
+     0.5
+    ]
+   }
+  },
+  {
+   "id": "demand.from_home_share.pm.hbe",
+   "label": "Time periods: share of the evening peak's home–education trips that go from home (the rest go home)",
+   "group": "Demand",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.1,
+     0.2,
+     0.3
+    ]
+   }
+  },
+  {
+   "id": "demand.from_home_share.ev.hbe",
+   "label": "Time periods: share of the evening's home–education trips that go from home (the rest go home)",
+   "group": "Demand",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.3,
+     0.4,
+     0.5
+    ]
+   }
+  },
+  {
+   "id": "demand.from_home_share.am.hbo",
+   "label": "Time periods: share of the morning peak's home–other trips that go from home (the rest go home)",
+   "group": "Demand",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.55,
+     0.65,
+     0.75
+    ]
+   }
+  },
+  {
+   "id": "demand.from_home_share.md.hbo",
+   "label": "Time periods: share of the midday's home–other trips that go from home (the rest go home)",
+   "group": "Demand",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.4,
+     0.5,
+     0.6
+    ]
+   }
+  },
+  {
+   "id": "demand.from_home_share.pm.hbo",
+   "label": "Time periods: share of the evening peak's home–other trips that go from home (the rest go home)",
+   "group": "Demand",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.35,
+     0.45,
+     0.55
+    ]
+   }
+  },
+  {
+   "id": "demand.from_home_share.ev.hbo",
+   "label": "Time periods: share of the evening's home–other trips that go from home (the rest go home)",
+   "group": "Demand",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.25,
+     0.35,
+     0.45
+    ]
+   }
+  },
+  {
+   "id": "demand.deterrence.hbw.power",
+   "label": "Distribution: power b of the deterrence function for home–work trips (f = t^b · e^(c·t))",
+   "group": "Demand",
+   "unit": "–",
+   "kind": "number",
+   "values": {
+    "*": [
+     -0.026,
+     -0.02,
+     -0.014
+    ]
+   }
+  },
+  {
+   "id": "demand.deterrence.hbw.exponential",
+   "label": "Distribution: exponential c of the deterrence function for home–work trips, per minute",
+   "group": "Demand",
+   "unit": "1/min",
+   "kind": "number",
+   "values": {
+    "*": [
+     -0.1845,
+     -0.123,
+     -0.0615
+    ]
+   }
+  },
+  {
+   "id": "demand.deterrence.hbe.power",
+   "label": "Distribution: power b of the deterrence function for home–education trips (f = t^b · e^(c·t))",
+   "group": "Demand",
+   "unit": "–",
+   "kind": "number",
+   "values": {
+    "*": [
+     -0.65,
+     -0.5,
+     -0.35
+    ]
+   }
+  },
+  {
+   "id": "demand.deterrence.hbe.exponential",
+   "label": "Distribution: exponential c of the deterrence function for home–education trips, per minute",
+   "group": "Demand",
+   "unit": "1/min",
+   "kind": "number",
+   "values": {
+    "*": [
+     -0.225,
+     -0.15,
+     -0.075
+    ]
+   }
+  },
+  {
+   "id": "demand.deterrence.hbo.power",
+   "label": "Distribution: power b of the deterrence function for home–other trips (f = t^b · e^(c·t))",
+   "group": "Demand",
+   "unit": "–",
+   "kind": "number",
+   "values": {
+    "*": [
+     -1.67,
+     -1.285,
+     -0.899
+    ]
+   }
+  },
+  {
+   "id": "demand.deterrence.hbo.exponential",
+   "label": "Distribution: exponential c of the deterrence function for home–other trips, per minute",
+   "group": "Demand",
+   "unit": "1/min",
+   "kind": "number",
+   "values": {
+    "*": [
+     -0.141,
+     -0.094,
+     -0.047
+    ]
+   }
+  },
+  {
+   "id": "demand.deterrence.nhb.power",
+   "label": "Distribution: power b of the deterrence function for non-home-based trips (f = t^b · e^(c·t))",
+   "group": "Demand",
+   "unit": "–",
+   "kind": "number",
+   "values": {
+    "*": [
+     -1.732,
+     -1.332,
+     -0.932
+    ]
+   }
+  },
+  {
+   "id": "demand.deterrence.nhb.exponential",
+   "label": "Distribution: exponential c of the deterrence function for non-home-based trips, per minute",
+   "group": "Demand",
+   "unit": "1/min",
+   "kind": "number",
+   "values": {
+    "*": [
+     -0.15,
+     -0.1,
+     -0.05
+    ]
+   }
+  },
+  {
+   "id": "demand.intrazonal_share",
+   "label": "Distribution: time within a zone as a share of the time to its nearest neighbouring zone",
+   "group": "Demand",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.3,
+     0.5,
+     0.7
+    ]
+   }
+  },
+  {
+   "id": "demand.mode.ivt.hbw",
+   "label": "Mode choice: utility of one minute in a vehicle for home–work trips",
+   "group": "Demand",
+   "unit": "1/min",
+   "kind": "number",
+   "values": {
+    "*": [
+     -0.035,
+     -0.025,
+     -0.015
+    ]
+   }
+  },
+  {
+   "id": "demand.mode.ivt.hbe",
+   "label": "Mode choice: utility of one minute in a vehicle for home–education trips",
+   "group": "Demand",
+   "unit": "1/min",
+   "kind": "number",
+   "values": {
+    "*": [
+     -0.028,
+     -0.02,
+     -0.012
+    ]
+   }
+  },
+  {
+   "id": "demand.mode.ivt.hbo",
+   "label": "Mode choice: utility of one minute in a vehicle for home–other trips",
+   "group": "Demand",
+   "unit": "1/min",
+   "kind": "number",
+   "values": {
+    "*": [
+     -0.021,
+     -0.015,
+     -0.009
+    ]
+   }
+  },
+  {
+   "id": "demand.mode.ivt.nhb",
+   "label": "Mode choice: utility of one minute in a vehicle for non-home-based trips",
+   "group": "Demand",
+   "unit": "1/min",
+   "kind": "number",
+   "values": {
+    "*": [
+     -0.028,
+     -0.02,
+     -0.012
+    ]
+   }
+  },
+  {
+   "id": "demand.mode.wait_weight",
+   "label": "Mode choice: weight of a minute waiting, relative to a minute in a vehicle",
+   "group": "Demand",
+   "unit": "×",
+   "kind": "number",
+   "values": {
+    "*": [
+     1.5,
+     2.0,
+     2.5
+    ]
+   }
+  },
+  {
+   "id": "demand.mode.walk_weight",
+   "label": "Mode choice: weight of a minute walking to, from or between stops, relative to a minute in a vehicle",
+   "group": "Demand",
+   "unit": "×",
+   "kind": "number",
+   "values": {
+    "*": [
+     1.5,
+     2.0,
+     2.5
+    ]
+   }
+  },
+  {
+   "id": "demand.mode.transfer_penalty_min",
+   "label": "Mode choice: penalty for each change of vehicle, in minutes of in-vehicle time",
+   "group": "Demand",
+   "unit": "min",
+   "kind": "number",
+   "values": {
+    "*": [
+     3,
+     5,
+     10
+    ]
+   }
+  },
+  {
+   "id": "demand.mode.walk_mode_weight",
+   "label": "Mode choice: weight of a minute of a trip made on foot, relative to a minute in a vehicle",
+   "group": "Demand",
+   "unit": "×",
+   "kind": "number",
+   "values": {
+    "*": [
+     1.5,
+     2.0,
+     3.0
+    ]
+   }
+  },
+  {
+   "id": "demand.mode.cycle_mode_weight",
+   "label": "Mode choice: weight of a minute of a trip made by bicycle, relative to a minute in a vehicle",
+   "group": "Demand",
+   "unit": "×",
+   "kind": "number",
+   "values": {
+    "*": [
+     1.5,
+     2.0,
+     3.0
+    ]
+   }
+  },
+  {
+   "id": "demand.mode.nest_scale",
+   "label": "Mode choice: nest scale of motorised (car, public transport) and non-motorised (walk, cycle) modes",
+   "group": "Demand",
+   "unit": "–",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.4,
+     0.6,
+     0.9
+    ]
+   }
+  },
+  {
+   "id": "demand.mode.asc.transit",
+   "label": "Mode choice: constant of public transport, relative to car",
+   "group": "Demand",
+   "unit": "utility",
+   "kind": "number",
+   "values": {
+    "*": [
+     -2.0,
+     -1.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "id": "demand.mode.asc.walk",
+   "label": "Mode choice: constant of walking, relative to car",
+   "group": "Demand",
+   "unit": "utility",
+   "kind": "number",
+   "values": {
+    "*": [
+     -1.0,
+     0.0,
+     1.0
+    ]
+   }
+  },
+  {
+   "id": "demand.mode.asc.cycle",
+   "label": "Mode choice: constant of cycling, relative to car",
+   "group": "Demand",
+   "unit": "utility",
+   "kind": "number",
+   "values": {
+    "*": [
+     -2.5,
+     -1.5,
+     -0.5
+    ]
+   }
+  },
+  {
+   "id": "demand.mode.car_availability",
+   "label": "Mode choice: share of people who have a car available for the trip",
+   "group": "Demand",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.2,
+     0.6,
+     0.9
+    ]
+   }
+  },
+  {
+   "id": "demand.mode.cycle_availability",
+   "label": "Mode choice: share of people who have a bicycle available and can ride it",
+   "group": "Demand",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.3,
+     0.7,
+     0.9
+    ]
+   }
+  },
+  {
+   "id": "demand.vot.share.hbw",
+   "label": "Value of time: home–work trips, as a share of income per hour",
+   "group": "Demand",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.4,
+     0.5,
+     0.7
+    ]
+   }
+  },
+  {
+   "id": "demand.vot.share.other",
+   "label": "Value of time: education, other and non-home-based trips, as a share of income per hour",
+   "group": "Demand",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.3,
+     0.5,
+     0.6
+    ]
+   }
+  },
+  {
+   "id": "demand.vot.income_hours",
+   "label": "Value of time: hours a year over which GDP per capita is spread to give income per hour",
+   "group": "Demand",
+   "unit": "h",
+   "kind": "number",
+   "values": {
+    "*": [
+     1600,
+     2080,
+     2500
+    ]
+   }
+  },
+  {
+   "id": "demand.mode.fare_usd",
+   "label": "Mode choice: average fare paid per public transport trip (2023 US$ PPP)",
+   "group": "Demand",
+   "unit": "US$ (2023 PPP)",
+   "kind": "number",
+   "values": {
+    "*": [
+     0,
+     1.5,
+     3
+    ]
+   }
+  },
+  {
+   "id": "demand.mode.car_cost_per_km_usd",
+   "label": "Mode choice: perceived cost of driving per km, fuel and wear (2023 US$ PPP)",
+   "group": "Demand",
+   "unit": "US$/km (2023 PPP)",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.08,
+     0.15,
+     0.3
+    ]
+   }
+  },
+  {
+   "id": "demand.mode.parking_cost_usd",
+   "label": "Mode choice: parking cost at a trip end in the central business district (2023 US$ PPP)",
+   "group": "Demand",
+   "unit": "US$ (2023 PPP)",
+   "kind": "number",
+   "values": {
+    "*": [
+     0,
+     5,
+     15
+    ]
+   }
+  },
+  {
+   "id": "demand.car_occupancy",
+   "label": "Assignment: people per car",
+   "group": "Demand",
+   "unit": "persons",
+   "kind": "number",
+   "values": {
+    "*": [
+     1.1,
+     1.3,
+     1.6
+    ]
+   }
+  },
+  {
+   "id": "demand.road.bpr_alpha",
+   "label": "Road assignment: BPR volume-delay α",
+   "group": "Demand",
+   "unit": "–",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.15,
+     0.15,
+     1.0
+    ]
+   }
+  },
+  {
+   "id": "demand.road.bpr_beta",
+   "label": "Road assignment: BPR volume-delay β",
+   "group": "Demand",
+   "unit": "–",
+   "kind": "number",
+   "values": {
+    "*": [
+     4,
+     4,
+     8
+    ]
+   }
+  },
+  {
+   "id": "demand.road.free_flow_share",
+   "label": "Road assignment: free-flow speed as a share of the legal speed",
+   "group": "Demand",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.6,
+     0.8,
+     1.0
+    ]
+   }
+  },
+  {
+   "id": "demand.road.capacity.motorway",
+   "label": "Road assignment: capacity of a motorway road, cars per hour per lane",
+   "group": "Demand",
+   "unit": "cars/h/lane",
+   "kind": "number",
+   "values": {
+    "*": [
+     1800,
+     2000,
+     2200
+    ]
+   }
+  },
+  {
+   "id": "demand.road.capacity.trunk",
+   "label": "Road assignment: capacity of a trunk road, cars per hour per lane",
+   "group": "Demand",
+   "unit": "cars/h/lane",
+   "kind": "number",
+   "values": {
+    "*": [
+     1400,
+     1700,
+     2000
+    ]
+   }
+  },
+  {
+   "id": "demand.road.capacity.primary",
+   "label": "Road assignment: capacity of a primary road, cars per hour per lane",
+   "group": "Demand",
+   "unit": "cars/h/lane",
+   "kind": "number",
+   "values": {
+    "*": [
+     700,
+     900,
+     1200
+    ]
+   }
+  },
+  {
+   "id": "demand.road.capacity.secondary",
+   "label": "Road assignment: capacity of a secondary road, cars per hour per lane",
+   "group": "Demand",
+   "unit": "cars/h/lane",
+   "kind": "number",
+   "values": {
+    "*": [
+     600,
+     800,
+     1000
+    ]
+   }
+  },
+  {
+   "id": "demand.road.capacity.tertiary",
+   "label": "Road assignment: capacity of a tertiary road, cars per hour per lane",
+   "group": "Demand",
+   "unit": "cars/h/lane",
+   "kind": "number",
+   "values": {
+    "*": [
+     500,
+     650,
+     800
+    ]
+   }
+  },
+  {
+   "id": "demand.road.capacity.local",
+   "label": "Road assignment: capacity of a local road, cars per hour per lane",
+   "group": "Demand",
+   "unit": "cars/h/lane",
+   "kind": "number",
+   "values": {
+    "*": [
+     300,
+     450,
+     600
+    ]
+   }
+  },
+  {
+   "id": "demand.road.lanes.motorway",
+   "label": "Road assignment: lanes per direction of a motorway road where OpenStreetMap does not say",
+   "group": "Demand",
+   "unit": "lanes",
+   "kind": "number",
+   "values": {
+    "*": [
+     1,
+     2,
+     3
+    ]
+   }
+  },
+  {
+   "id": "demand.road.lanes.trunk",
+   "label": "Road assignment: lanes per direction of a trunk road where OpenStreetMap does not say",
+   "group": "Demand",
+   "unit": "lanes",
+   "kind": "number",
+   "values": {
+    "*": [
+     1,
+     2,
+     3
+    ]
+   }
+  },
+  {
+   "id": "demand.road.lanes.primary",
+   "label": "Road assignment: lanes per direction of a primary road where OpenStreetMap does not say",
+   "group": "Demand",
+   "unit": "lanes",
+   "kind": "number",
+   "values": {
+    "*": [
+     1,
+     2,
+     2
+    ]
+   }
+  },
+  {
+   "id": "demand.road.lanes.secondary",
+   "label": "Road assignment: lanes per direction of a secondary road where OpenStreetMap does not say",
+   "group": "Demand",
+   "unit": "lanes",
+   "kind": "number",
+   "values": {
+    "*": [
+     1,
+     1,
+     2
+    ]
+   }
+  },
+  {
+   "id": "demand.road.lanes.tertiary",
+   "label": "Road assignment: lanes per direction of a tertiary road where OpenStreetMap does not say",
+   "group": "Demand",
+   "unit": "lanes",
+   "kind": "number",
+   "values": {
+    "*": [
+     1,
+     1,
+     2
+    ]
+   }
+  },
+  {
+   "id": "demand.road.lanes.local",
+   "label": "Road assignment: lanes per direction of a local road where OpenStreetMap does not say",
+   "group": "Demand",
+   "unit": "lanes",
+   "kind": "number",
+   "values": {
+    "*": [
+     1,
+     1,
+     2
+    ]
+   }
+  },
+  {
+   "id": "demand.road.speed_kmh.motorway",
+   "label": "Road assignment: legal speed of a motorway where OpenStreetMap gives no maxspeed",
+   "group": "Demand",
+   "unit": "km/h",
+   "kind": "number",
+   "values": {
+    "*": [
+     80,
+     100,
+     120
+    ]
+   }
+  },
+  {
+   "id": "demand.road.speed_kmh.trunk",
+   "label": "Road assignment: legal speed of a trunk road where OpenStreetMap gives no maxspeed",
+   "group": "Demand",
+   "unit": "km/h",
+   "kind": "number",
+   "values": {
+    "*": [
+     50,
+     70,
+     100
+    ]
+   }
+  },
+  {
+   "id": "demand.road.speed_kmh.primary",
+   "label": "Road assignment: legal speed of a primary road where OpenStreetMap gives no maxspeed",
+   "group": "Demand",
+   "unit": "km/h",
+   "kind": "number",
+   "values": {
+    "*": [
+     40,
+     50,
+     70
+    ]
+   }
+  },
+  {
+   "id": "demand.road.speed_kmh.secondary",
+   "label": "Road assignment: legal speed of a secondary road where OpenStreetMap gives no maxspeed",
+   "group": "Demand",
+   "unit": "km/h",
+   "kind": "number",
+   "values": {
+    "*": [
+     40,
+     50,
+     60
+    ]
+   }
+  },
+  {
+   "id": "demand.road.speed_kmh.tertiary",
+   "label": "Road assignment: legal speed of a tertiary road where OpenStreetMap gives no maxspeed",
+   "group": "Demand",
+   "unit": "km/h",
+   "kind": "number",
+   "values": {
+    "*": [
+     30,
+     40,
+     50
+    ]
+   }
+  },
+  {
+   "id": "demand.road.speed_kmh.local",
+   "label": "Road assignment: legal speed of a local street where OpenStreetMap gives no maxspeed",
+   "group": "Demand",
+   "unit": "km/h",
+   "kind": "number",
+   "values": {
+    "*": [
+     20,
+     30,
+     50
+    ]
+   }
+  },
+  {
+   "id": "demand.road.max_iterations",
+   "label": "Road assignment: most iterations of the equilibrium",
+   "group": "Demand",
+   "unit": "iterations",
+   "kind": "number",
+   "values": {
+    "*": [
+     20,
+     100,
+     500
+    ]
+   }
+  },
+  {
+   "id": "demand.road.relative_gap",
+   "label": "Road assignment: relative gap at which the equilibrium counts as reached",
+   "group": "Demand",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.0001,
+     0.001,
+     0.01
+    ]
+   }
+  },
+  {
+   "id": "demand.feedback.max_iterations",
+   "label": "Feedback: most rounds of skims, distribution, mode choice and assignment",
+   "group": "Demand",
+   "unit": "rounds",
+   "kind": "number",
+   "values": {
+    "*": [
+     3,
+     10,
+     20
+    ]
+   }
+  },
+  {
+   "id": "demand.feedback.gap",
+   "label": "Feedback: change in car trips between rounds at which the model counts as settled",
+   "group": "Demand",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.005,
+     0.01,
+     0.05
+    ]
+   }
+  },
+  {
+   "id": "demand.connector.count",
+   "label": "Zones: street junctions each zone's centre is joined to",
+   "group": "Demand",
+   "unit": "junctions",
+   "kind": "number",
+   "values": {
+    "*": [
+     1,
+     3,
+     6
+    ]
+   }
+  },
+  {
+   "id": "demand.mode.car_terminal_min",
+   "label": "Mode choice: minutes to walk to and from the car and to park, per car trip",
+   "group": "Demand",
+   "unit": "min",
+   "kind": "number",
+   "values": {
+    "*": [
+     1,
+     3,
+     8
+    ]
+   }
+  },
+  {
+   "id": "demand.transit.access_factor",
+   "label": "Public transport: longest walk to or from a stop, as a multiple of the mode's catchment",
+   "group": "Demand",
+   "unit": "×",
+   "kind": "number",
+   "values": {
+    "*": [
+     1,
+     2,
+     3
+    ]
+   }
+  },
+  {
+   "id": "demand.transit.transfer_max_m",
+   "label": "Public transport: longest walk between two stops to change lines",
+   "group": "Demand",
+   "unit": "m",
+   "kind": "number",
+   "values": {
+    "*": [
+     200,
+     400,
+     800
+    ]
+   }
+  },
+  {
+   "id": "demand.cycle.factor.track",
+   "label": "Catchment: a metre on a separate cycle track counts as this much of a metre on a plain street",
+   "group": "Demand",
+   "unit": "×",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.6,
+     0.75,
+     0.9
+    ]
+   }
+  },
+  {
+   "id": "demand.cycle.factor.lane",
+   "label": "Catchment: a metre on a painted bike lane counts as this much of a metre on a plain street",
+   "group": "Demand",
+   "unit": "×",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.8,
+     0.9,
+     1.0
+    ]
+   }
+  },
+  {
+   "id": "demand.cycle.factor.busy_road",
+   "label": "Catchment: a metre on a main road without a bike lane counts as this much of a metre on a plain street",
+   "group": "Demand",
+   "unit": "×",
+   "kind": "number",
+   "values": {
+    "*": [
+     1.2,
+     1.4,
+     2.0
+    ]
+   }
+  },
+  {
+   "id": "demand.walk.pedestrian_factor",
+   "label": "Catchment: a metre walked in a pedestrian street counts as this much of a metre along traffic",
+   "group": "Demand",
+   "unit": "×",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.7,
+     0.85,
+     1.0
+    ]
+   }
+  },
+  {
+   "id": "demand.pedestrian_zone.car_min",
+   "label": "Catchment: extra minutes for a car trip into a zone whose streets are all pedestrian",
+   "group": "Demand",
+   "unit": "min",
+   "kind": "number",
+   "values": {
+    "*": [
+     0,
+     5,
+     10
+    ]
+   }
+  },
+  {
+   "id": "demand.bike_ride.max_m",
+   "label": "Catchment: longest ride on one's own bicycle to a stop (bike and ride)",
+   "group": "Demand",
+   "unit": "m",
+   "kind": "number",
+   "values": {
+    "*": [
+     2000,
+     3000,
+     5000
+    ]
+   }
+  },
+  {
+   "id": "demand.bike_ride.parking_max_m",
+   "label": "Catchment: farthest a bike parking may be from a stop for bike and ride",
+   "group": "Demand",
+   "unit": "m",
+   "kind": "number",
+   "values": {
+    "*": [
+     50,
+     150,
+     300
+    ]
+   }
+  },
+  {
+   "id": "demand.bike_ride.parking_min",
+   "label": "Catchment: minutes to park and lock the bicycle at the stop",
+   "group": "Demand",
+   "unit": "min",
+   "kind": "number",
+   "values": {
+    "*": [
+     1,
+     2,
+     5
+    ]
+   }
+  },
+  {
+   "id": "demand.shared_bike.station_max_m",
+   "label": "Catchment: farthest walk to or from a shared-bike station",
+   "group": "Demand",
+   "unit": "m",
+   "kind": "number",
+   "values": {
+    "*": [
+     150,
+     300,
+     500
+    ]
+   }
+  },
+  {
+   "id": "demand.shared_bike.max_m",
+   "label": "Catchment: longest ride on a shared bike",
+   "group": "Demand",
+   "unit": "m",
+   "kind": "number",
+   "values": {
+    "*": [
+     3000,
+     5000,
+     8000
+    ]
+   }
+  },
+  {
+   "id": "demand.shared_bike.unlock_min",
+   "label": "Catchment: minutes to take and return a shared bike",
+   "group": "Demand",
+   "unit": "min",
+   "kind": "number",
+   "values": {
+    "*": [
+     1,
+     2,
+     5
+    ]
+   }
+  },
+  {
+   "id": "demand.shared_bike.fare_usd",
+   "label": "Catchment: price of one shared-bike trip, 2023 US$ PPP",
+   "group": "Demand",
+   "unit": "US$",
+   "kind": "number",
+   "values": {
+    "*": [
+     0,
+     1,
+     3
+    ]
+   }
+  },
+  {
+   "id": "demand.step_free.share",
+   "label": "Catchment: share of riders who cannot use steps (wheelchair, pram, heavy luggage, walking difficulty)",
+   "group": "Demand",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.04,
+     0.08,
+     0.15
+    ]
+   }
+  },
+  {
+   "id": "demand.step_free.penalty_min",
+   "label": "Catchment: extra minutes at a stop without step-free access, for those who cannot use steps",
+   "group": "Demand",
+   "unit": "min",
+   "kind": "number",
+   "values": {
+    "*": [
+     5,
+     15,
+     30
+    ]
+   }
+  },
+  {
+   "id": "demand.calibration.max_iterations",
+   "label": "Calibration: most runs of the whole model to fit the observed data",
+   "group": "Demand",
+   "unit": "runs",
+   "kind": "number",
+   "values": {
+    "*": [
+     1,
+     5,
+     10
+    ]
+   }
+  },
+  {
+   "id": "demand.calibration.damping",
+   "label": "Calibration: share of each round's correction that is applied",
+   "group": "Demand",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.5,
+     0.8,
+     1
+    ]
+   }
+  },
+  {
+   "id": "demand.calibration.tolerance",
+   "label": "Calibration: largest relative gap to the observed data at which it stops",
+   "group": "Demand",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.005,
+     0.01,
+     0.05
+    ]
+   }
+  },
+  {
+   "id": "demand.calibration.geh_hours",
+   "label": "Calibration: hours a weekday count is spread over for the GEH statistic",
+   "group": "Demand",
+   "unit": "h",
+   "kind": "number",
+   "values": {
+    "*": [
+     12,
+     16,
+     24
+    ]
+   }
+  },
+  {
    "id": "demand.walk_speed_kmh",
    "label": "Walking speed for walking links between stations",
    "group": "Demand",

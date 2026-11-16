@@ -2,6 +2,8 @@ import { editorsEn } from "./editors/en";
 import { cargoBikeEn } from "./cargo-bike/en";
 import { depotsEn } from "./depots/en";
 import { timetablesEn } from "./timetables/en";
+import { mslabEn } from "./mslab/en";
+import { pluginCodeEn } from "./plugin-code/en";
 import { roadEn } from "./road/en";
 import { calendarEn } from "./calendar/en";
 import { populationEn } from "./population/en";
@@ -257,6 +259,7 @@ export const en = {
   "gis.spacing": "Stop spacing",
   "gis.streetsView": "Streets",
   "gis.regionsView": "Regions",
+  "gis.zonesView": "Demand zones",
 
   "tables.title": "Tables",
   "tables.intro": "Every calculation about the project, to estimate how well it will perform.",
@@ -275,6 +278,7 @@ export const en = {
   "prefs.delayLane": "In a painted bus or tram lane",
   "prefs.delayDefault": "Assumption library: {value} %",
   "prefs.delayReset": "Use the library value",
+  "prefs.reason": "Reason for this value (optional)",
   "prefs.stationsTitle": "Stations",
   "prefs.stationsIntro":
     "Stops with the same name within this distance count as one station in the schematic map, the journey planner and the benefits and ridership tables.",
@@ -301,6 +305,21 @@ export const en = {
   "prefs.rulesChanged": "{count} changed",
   "prefs.rulesLibrary": "Assumption library: {value} {unit}",
   "prefs.rulesLibraryRange": "Assumption library: {value} {unit} (range {low}–{high})",
+  "prefs.demandTitle": "Demand model",
+  "prefs.demandIntro":
+    "Every value the demand model uses, step by step: zones, trip generation, time periods, distribution, mode choice and assignment. Change a value for this project, or keep the assumption library's.",
+  "prefs.demandStep": "Model step",
+  "prefs.demandSearch": "Search the values",
+  "prefs.demandNone": "No value matches.",
+  "prefs.demandStep.zones": "Zones",
+  "prefs.demandStep.generation": "Trip generation",
+  "prefs.demandStep.periods": "Time periods",
+  "prefs.demandStep.distribution": "Trip distribution",
+  "prefs.demandStep.mode_choice": "Mode choice",
+  "prefs.demandStep.catchment": "Catchment",
+  "prefs.demandStep.assignment": "Assignment",
+  "prefs.demandStep.calibration": "Calibration",
+  "prefs.demandAll": "All steps",
   "prefs.paramsTitle": "All parameters",
   "prefs.paramsIntro":
     "Every value of the assumption library. Set your own for all modes or for one mode; a value for one mode wins over the one for all modes. The library's value stays beside each.",
@@ -414,6 +433,8 @@ export const en = {
   ...cargoBikeEn,
   ...depotsEn,
   ...timetablesEn,
+  ...mslabEn,
+  ...pluginCodeEn,
   ...roadEn,
   ...calendarEn,
   ...populationEn,

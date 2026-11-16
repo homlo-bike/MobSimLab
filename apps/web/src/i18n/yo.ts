@@ -3,6 +3,8 @@ import { editorsYo } from "./editors/yo";
 import { cargoBikeYo } from "./cargo-bike/yo";
 import { depotsYo } from "./depots/yo";
 import { timetablesYo } from "./timetables/yo";
+import { mslabYo } from "./mslab/yo";
+import { pluginCodeYo } from "./plugin-code/yo";
 import { populationYo } from "./population/yo";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -255,6 +257,7 @@ export const yo: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "Àwọn òpópónà",
   "gis.regionsView": "Àwọn agbègbè",
+  "gis.zonesView": "Àwọn agbègbè ìbéèrè",
   "gis.intro": "Fi kún tàbí ṣàtúnṣe ìsọfúnni tí àwọn ìṣirò ń lò.",
   "gis.areas": "Ya agbègbè kan tàbí gbé ọ̀kan wọlé láti OpenStreetMap",
   "gis.streets": "Ìṣètò òpópónà: ọ̀nà bọ́ọ̀sì, kẹ̀kẹ́ àti tírámù, ìyára, wáyà òkè",
@@ -278,6 +281,7 @@ export const yo: Messages = {
   "prefs.delayLane": "Nínú ọ̀nà bọ́ọ̀sì tàbí tírámù tí a fi kun yà",
   "prefs.delayDefault": "Ilé ìkàwé àròsọ: {value} %",
   "prefs.delayReset": "Lo iye ti ilé ìkàwé",
+  "prefs.reason": "Ìdí fún iye yìí (kò pọn dandan)",
   "prefs.stationsTitle": "Àwọn ibùdókọ̀",
   "prefs.stationsIntro":
     "Àwọn ibùdókọ̀ orúkọ kan náà láàárín ìjìnnà yìí ni a kà sí ibùdókọ̀ kan nínú máàpù àwòrán, olùṣètò ìrìn-àjò àti àwọn tábìlì àǹfààní àti èrò.",
@@ -304,6 +308,21 @@ export const yo: Messages = {
   "prefs.rulesChanged": "tí a yí padà: {count}",
   "prefs.rulesLibrary": "Ilé ìkàwé àròsọ: {value} {unit}",
   "prefs.rulesLibraryRange": "Ilé ìkàwé àròsọ: {value} {unit} (ìwọ̀n {low}–{high})",
+  "prefs.demandTitle": "Àwòṣe ìbéèrè ìrìn-àjò",
+  "prefs.demandIntro":
+    "Gbogbo iye tí àwòṣe ìbéèrè ń lò, ní ìgbésẹ̀ kọ̀ọ̀kan: àwọn agbègbè, ìpilẹ̀ṣẹ̀ ìrìn-àjò, àwọn àkókò, pínpín, yíyàn ọ̀nà ìrìnnà àti ìpínsí. Yí iye kan padà fún iṣẹ́ yìí, tàbí pa ti ilé-ìkàwé àròsọ mọ́.",
+  "prefs.demandStep": "Ìgbésẹ̀ àwòṣe",
+  "prefs.demandSearch": "Wá àwọn iye",
+  "prefs.demandNone": "Kò sí iye tó bá a mu.",
+  "prefs.demandStep.zones": "Àwọn agbègbè",
+  "prefs.demandStep.generation": "Ìpilẹ̀ṣẹ̀ ìrìn-àjò",
+  "prefs.demandStep.periods": "Àwọn àkókò",
+  "prefs.demandStep.distribution": "Pínpín ìrìn-àjò",
+  "prefs.demandStep.mode_choice": "Yíyàn ọ̀nà ìrìnnà",
+  "prefs.demandStep.catchment": "Agbègbè ìwọlé",
+  "prefs.demandStep.assignment": "Ìpínsí",
+  "prefs.demandStep.calibration": "Ìṣàtúnṣe",
+  "prefs.demandAll": "Gbogbo ìgbésẹ̀",
   "prefs.paramsTitle": "Gbogbo àwọn pàrámítà",
   "prefs.paramsIntro":
     "Gbogbo iye inú ibi-ìkàwé àròsọ. Ṣètò tìrẹ fún gbogbo ọ̀nà tàbí fún ọ̀nà kan; iye ọ̀nà kan ló borí ti gbogbo ọ̀nà. Iye ibi-ìkàwé wà lẹ́gbẹ̀ẹ́.",
@@ -418,6 +437,8 @@ export const yo: Messages = {
   ...cargoBikeYo,
   ...depotsYo,
   ...timetablesYo,
+  ...mslabYo,
+  ...pluginCodeYo,
   ...populationYo,
   ...roadYo,
   ...PLUGIN_MESSAGES.yo,

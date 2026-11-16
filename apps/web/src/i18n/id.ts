@@ -3,6 +3,8 @@ import { editorsId } from "./editors/id";
 import { cargoBikeId } from "./cargo-bike/id";
 import { depotsId } from "./depots/id";
 import { timetablesId } from "./timetables/id";
+import { mslabId } from "./mslab/id";
+import { pluginCodeId } from "./plugin-code/id";
 import { populationId } from "./population/id";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -259,6 +261,7 @@ export const id: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "Jalan",
   "gis.regionsView": "Wilayah",
+  "gis.zonesView": "Zona permintaan",
   "gis.intro": "Tambahkan dan edit informasi yang digunakan dalam perhitungan.",
   "gis.areas": "Gambar wilayah atau impor dari OpenStreetMap",
   "gis.streets": "Susunan jalan: lajur bus, sepeda, dan trem, kecepatan, kabel atas",
@@ -282,6 +285,7 @@ export const id: Messages = {
   "prefs.delayLane": "Di lajur bus atau trem yang hanya dicat",
   "prefs.delayDefault": "Pustaka asumsi: {value} %",
   "prefs.delayReset": "Gunakan nilai pustaka",
+  "prefs.reason": "Alasan nilai ini (opsional)",
   "prefs.stationsTitle": "Stasiun",
   "prefs.stationsIntro":
     "Halte bernama sama dalam jarak ini dihitung sebagai satu stasiun di peta skematik, perencana perjalanan, serta tabel manfaat dan penumpang.",
@@ -308,6 +312,21 @@ export const id: Messages = {
   "prefs.rulesChanged": "{count} diubah",
   "prefs.rulesLibrary": "Pustaka asumsi: {value} {unit}",
   "prefs.rulesLibraryRange": "Pustaka asumsi: {value} {unit} (rentang {low}–{high})",
+  "prefs.demandTitle": "Model permintaan",
+  "prefs.demandIntro":
+    "Setiap nilai yang dipakai model permintaan, langkah demi langkah: zona, bangkitan perjalanan, periode waktu, distribusi, pemilihan moda, dan pembebanan. Ubah nilai untuk proyek ini, atau pertahankan nilai pustaka asumsi.",
+  "prefs.demandStep": "Langkah model",
+  "prefs.demandSearch": "Cari nilai",
+  "prefs.demandNone": "Tidak ada nilai yang cocok.",
+  "prefs.demandStep.zones": "Zona",
+  "prefs.demandStep.generation": "Bangkitan perjalanan",
+  "prefs.demandStep.periods": "Periode waktu",
+  "prefs.demandStep.distribution": "Distribusi perjalanan",
+  "prefs.demandStep.mode_choice": "Pemilihan moda",
+  "prefs.demandStep.catchment": "Daerah tangkapan",
+  "prefs.demandStep.assignment": "Pembebanan",
+  "prefs.demandStep.calibration": "Kalibrasi",
+  "prefs.demandAll": "Semua langkah",
   "prefs.paramsTitle": "Semua parameter",
   "prefs.paramsIntro":
     "Setiap nilai pustaka asumsi. Tetapkan nilai Anda untuk semua moda atau untuk satu moda; nilai satu moda mengalahkan nilai untuk semua moda. Nilai pustaka tetap di sampingnya.",
@@ -422,6 +441,8 @@ export const id: Messages = {
   ...cargoBikeId,
   ...depotsId,
   ...timetablesId,
+  ...mslabId,
+  ...pluginCodeId,
   ...populationId,
   ...roadId,
   ...PLUGIN_MESSAGES.id,

@@ -3,6 +3,8 @@ import { editorsSw } from "./editors/sw";
 import { cargoBikeSw } from "./cargo-bike/sw";
 import { depotsSw } from "./depots/sw";
 import { timetablesSw } from "./timetables/sw";
+import { mslabSw } from "./mslab/sw";
+import { pluginCodeSw } from "./plugin-code/sw";
 import { populationSw } from "./population/sw";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -257,6 +259,7 @@ export const sw: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "Barabara",
   "gis.regionsView": "Maeneo",
+  "gis.zonesView": "Kanda za mahitaji",
   "gis.intro": "Ongeza au hariri taarifa ambazo hesabu zinatumia.",
   "gis.areas": "Chora eneo au lilete kutoka OpenStreetMap",
   "gis.streets": "Mpangilio wa barabara: njia za basi, baiskeli na tramu, kasi, nyaya za juu",
@@ -280,6 +283,7 @@ export const sw: Messages = {
   "prefs.delayLane": "Katika njia ya basi au tramu iliyochorwa kwa rangi",
   "prefs.delayDefault": "Maktaba ya dhana: {value} %",
   "prefs.delayReset": "Tumia thamani ya maktaba",
+  "prefs.reason": "Sababu ya thamani hii (si lazima)",
   "prefs.stationsTitle": "Stesheni",
   "prefs.stationsIntro":
     "Vituo vyenye jina moja ndani ya umbali huu vinahesabiwa kama stesheni moja kwenye ramani ya mchoro, kipanga safari na majedwali ya manufaa na abiria.",
@@ -306,6 +310,21 @@ export const sw: Messages = {
   "prefs.rulesChanged": "zilizobadilishwa: {count}",
   "prefs.rulesLibrary": "Maktaba ya dhana: {value} {unit}",
   "prefs.rulesLibraryRange": "Maktaba ya dhana: {value} {unit} (kiwango {low}–{high})",
+  "prefs.demandTitle": "Muundo wa mahitaji",
+  "prefs.demandIntro":
+    "Kila thamani ambayo muundo wa mahitaji unatumia, hatua kwa hatua: kanda, uzalishaji wa safari, vipindi vya muda, mgawanyo, uchaguzi wa njia ya usafiri na ugawaji. Badilisha thamani kwa mradi huu, au uhifadhi ile ya maktaba ya dhana.",
+  "prefs.demandStep": "Hatua ya muundo",
+  "prefs.demandSearch": "Tafuta thamani",
+  "prefs.demandNone": "Hakuna thamani inayolingana.",
+  "prefs.demandStep.zones": "Kanda",
+  "prefs.demandStep.generation": "Uzalishaji wa safari",
+  "prefs.demandStep.periods": "Vipindi vya muda",
+  "prefs.demandStep.distribution": "Mgawanyo wa safari",
+  "prefs.demandStep.mode_choice": "Uchaguzi wa njia ya usafiri",
+  "prefs.demandStep.catchment": "Eneo la kufikia",
+  "prefs.demandStep.assignment": "Ugawaji",
+  "prefs.demandStep.calibration": "Urekebishaji",
+  "prefs.demandAll": "Hatua zote",
   "prefs.paramsTitle": "Vigezo vyote",
   "prefs.paramsIntro":
     "Kila thamani ya maktaba ya dhana. Weka yako kwa njia zote au kwa njia moja; thamani ya njia moja inatangulia ile ya njia zote. Thamani ya maktaba hubaki kando.",
@@ -421,6 +440,8 @@ export const sw: Messages = {
   ...cargoBikeSw,
   ...depotsSw,
   ...timetablesSw,
+  ...mslabSw,
+  ...pluginCodeSw,
   ...populationSw,
   ...roadSw,
   ...PLUGIN_MESSAGES.sw,

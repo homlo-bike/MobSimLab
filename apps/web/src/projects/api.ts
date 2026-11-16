@@ -1,6 +1,9 @@
+import { setPluginRuntime } from "../plugins/code/context";
+import type { PluginLimits } from "../plugins/code/runtime";
 import type { ProjectPlugin } from "../plugins/registry";
 import { get, send } from "../session/api";
 import { projectRuns } from "../features/capacity/server";
+import { projectDemandRuns } from "../features/demand/api";
 import { projectPopulation } from "../features/population/api";
 import { projectRoadRuns } from "../features/road-sim/api";
 import { type DrawingKind, loadDrawings, saveDrawing } from "./drawings";
@@ -95,7 +98,11 @@ export function projectsApi(csrf: string) {
       send<{ project: Project }>("PUT", `${one(id)}/link`, csrf, { linkAccess }).then((r) => r.project),
     /** The plugins the project can use, with whether each is on (ADR-0036 §9). */
     plugins: (id: string) =>
-      get<{ plugins?: ProjectPlugin[] }>(`${one(id)}/plugins`).then((r) => r.plugins ?? []),
+      get<{ plugins?: ProjectPlugin[]; limits?: PluginLimits }>(`${one(id)}/plugins`).then((r) => {
+        // The Admins' limits for plugin code, which the browser's plugin host runs with.
+        if (r.limits) setPluginRuntime({ limits: r.limits });
+        return r.plugins ?? [];
+      }),
     /** Turn a plugin on or off for the project (Owners), pinning the version of an installed plugin. */
     setPlugin: (id: string, pluginId: string, enabled: boolean, version?: string) =>
       send<{ plugins: ProjectPlugin[] }>(
@@ -104,6 +111,10 @@ export function projectsApi(csrf: string) {
         csrf,
         version ? { enabled, version } : { enabled },
       ).then((r) => r.plugins),
+    /** Where to download the project as a `.mslab` file (ADR-0021), with or without its simulation runs. */
+    mslabUrl: (id: string, runs: boolean) => `${one(id)}/mslab${runs ? "?runs=true" : ""}`,
+    /** Open a `.mslab` file as a new project owned by the caller; `skipped` lists what was left out. */
+    importMslab: (file: Blob) => importMslab(csrf, file),
     drawings: (id: string) => loadDrawings(id),
     saveDrawing: <T>(id: string, kind: DrawingKind, doc: T, baseVersion: number | null) =>
       saveDrawing(csrf, id, kind, doc, baseVersion),
@@ -111,8 +122,30 @@ export function projectsApi(csrf: string) {
     runs: (id: string) => projectRuns(id, csrf),
     /** The project's road simulation runs (SUMO) on the background worker, with their replays. */
     roadRuns: (id: string) => projectRoadRuns(id, csrf),
+    /** The project's demand model runs (AequilibraE) on the background worker, with their OD matrices. */
+    demandRuns: (id: string) => projectDemandRuns(id, csrf),
     /** The project's population layers (GIS tab): imports, uploads, the layer the project uses. */
     population: (id: string) => projectPopulation(id, csrf),
   };
 }
 export type ProjectsApi = ReturnType<typeof projectsApi>;
+
+/** Purpose: upload a `.mslab` file as the raw request body. Output: the new project and what was left out. */
+async function importMslab(csrf: string, file: Blob): Promise<{ project: Project; skipped: string[] }> {
+  const res = await fetch(`${base}/import`, {
+    method: "POST",
+    credentials: "same-origin",
+    headers: { "Content-Type": "application/octet-stream", "X-CSRF-Token": csrf },
+    body: file,
+  });
+  const body = (await res.json().catch(() => ({}))) as {
+    project?: Project;
+    skipped?: string[];
+    message?: string | string[];
+  };
+  if (!res.ok || !body.project) {
+    const m = Array.isArray(body.message) ? body.message.join("; ") : body.message;
+    throw new Error(m ?? `POST ${base}/import failed: ${res.status}`);
+  }
+  return { project: body.project, skipped: body.skipped ?? [] };
+}

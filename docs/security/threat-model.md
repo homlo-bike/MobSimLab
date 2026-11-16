@@ -102,6 +102,17 @@ Risk = likelihood × impact (H/M/L) **after** planned mitigations; anything stil
 | AG5 | Agent loops exhaust the server | Per-connection rate limit, 200 scenarios per user, 2000 stops / 100 lines per scenario, street tile and candidate caps; the exact stop solver (HiGHS) runs in a worker thread with a time limit of at most 60 s; destination, origin and transit-origin caps for the 15-minute city; at most 2 simulation runs queued or running per agent connection, and at most 200 variants per sweep | L |
 | AG6 | Cookie-authenticated browser request reaches `/mcp` or `/oauth/*` | `/mcp` accepts only bearer tokens; consent decisions need the session cookie, CSRF token and same origin | L |
 
+### Plugins (ADR-0036)
+
+| ID | Threat | Mitigation | Residual |
+|----|--------|------------|----------|
+| PL1 | Malicious plugin exfiltrates project data | Components may import only `mobsimlab:plugin/host` (log, progress): no WASI, network, files, environment or clock; the install check refuses any other import and any JavaScript in jco's glue that could reach them. In the browser the code runs in a fresh module Web Worker with `fetch`, XHR, WebSocket, `importScripts`, IndexedDB, caches and messaging removed before the glue loads; on the server in the tool-runner (empty environment, no network, read-only files). Data is assembled by the app for the open project and only for the kinds the manifest's permissions allow. Tab pages are served from `/api/plugin-ui/<package hash>/` with `sandbox allow-scripts` and `connect-src 'none'`, shown in an `iframe sandbox="allow-scripts"` (opaque origin, no cookies or storage), and reach the app only through a three-method `postMessage` API checked against the plugin's permissions | M |
+| PL2 | Plugin code escapes the sandbox | Code is WebAssembly in the engine of the browser or Node, never native; server runs are child processes under Node's permission model with `prlimit`, never the API process | L |
+| PL3 | Plugin exhausts CPU or memory | Memory maximum written into every core module (shared and 64-bit memories refused), time limit by terminating the worker or child; both set by Admins (default 256 MB, 30 s); capped input and output sizes | L |
+| PL4 | Tampered or typosquatted package | Signature over `SHA256SUMS` with a trusted publisher key, per-file hashes, Admin-only install, audit events with the package hash; code is compiled once at install and served by package hash | L |
+| PL5 | Plugin changes results silently | Plugin output is read defensively (tables, KPIs and findings only, text cut) and always shown under the plugin's and publisher's name; agents get it marked as a third-party plugin's data, not instructions | M |
+| PL6 | Plugin page tricks the user (fake sign-in, fake consent) | The page sits inside the app's frame with a line naming the plugin and publisher under it; the sandbox allows no pop-ups, navigation of the app, forms or same-origin access | M |
+
 ### Supply chain
 
 | ID | Threat | Mitigation | Residual |
