@@ -51,6 +51,7 @@ pub use published::{gtfs_time, publish, Published, StopRow, StopTimeRow, TripRow
 pub use report::{report, HourCapacity, MaxCapacity, Report};
 pub use service::{
     line_spec, publish_service, publish_service_with, service_bands, station_reachable,
-    train_params, train_params_with, BlockRun, LineReport, PublishOptions, Reach, ServiceLine,
-    ServicePublication, ServiceVehicle, ShiftedTrip, StationKm, UnplacedTrip, VehicleBlock,
+    train_params, train_params_with, BlockRun, LineReport, PublishOptions, Reach, SectionTrains,
+    ServiceLine, ServicePublication, ServiceVehicle, ShiftedTrip, StationKm, UnplacedTrip,
+    VehicleBlock,
 };

@@ -2,6 +2,7 @@ import { roadFa } from "./road/fa";
 import { editorsFa } from "./editors/fa";
 import { cargoBikeFa } from "./cargo-bike/fa";
 import { depotsFa } from "./depots/fa";
+import { mslabFa } from "./mslab/fa";
 import { populationFa } from "./population/fa";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -276,6 +277,7 @@ export const fa: Messages = {
   "prefs.delayLane": "در خط اتوبوس یا تراموای فقط رنگ‌شده",
   "prefs.delayDefault": "کتابخانهٔ فرض‌ها: {value} %",
   "prefs.delayReset": "استفاده از مقدار کتابخانه",
+  "prefs.reason": "دلیل این مقدار (اختیاری)",
   "prefs.stationsTitle": "ایستگاه‌ها",
   "prefs.stationsIntro":
     "ایستگاه‌های هم‌نام درون این فاصله در نقشهٔ شماتیک، برنامه‌ریز سفر و جدول‌های منافع و مسافران یک ایستگاه به شمار می‌آیند.",
@@ -414,6 +416,7 @@ export const fa: Messages = {
   ...editorsFa,
   ...cargoBikeFa,
   ...depotsFa,
+  ...mslabFa,
   ...populationFa,
   ...roadFa,
   ...PLUGIN_MESSAGES.fa,

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { MAX_REASON } from "./value-history";
 
 /**
  * What a project can hold drawings of, and the shape each document must have. The API checks only the outline
@@ -53,6 +54,17 @@ const preferences = z.looseObject({
       z.number().finite(),
     )
     .refine((v) => Object.keys(v).length <= 1000, "at most 1000 values"),
+  /** Why the project changed a value, by assumption id (optional); recorded with the change. */
+  reasons: z
+    .record(
+      z
+        .string()
+        .regex(/^[a-z][a-z0-9_]*(\.[a-z0-9_]+)+$/)
+        .max(120),
+      z.string().max(MAX_REASON),
+    )
+    .refine((v) => Object.keys(v).length <= 1000, "at most 1000 reasons")
+    .optional(),
 });
 
 /** Cost tables settings: the country whose prices apply (ISO 3166-1 alpha-3), when the planner chose one. */
