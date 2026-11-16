@@ -1,0 +1,1420 @@
+{
+  "street-lines": {
+    "schemaVersion": 1,
+    "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "https://github.com/homlo-bike/MobSimLab/blob/main/contracts/mslab/drawings/street-lines.schema.json",
+      "title": "Document of a \"street-lines\" drawing (data/street-lines.json, field doc)",
+      "type": "object",
+      "properties": {
+        "lines": {
+          "maxItems": 200,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "points": {
+                "maxItems": 2000,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "lonlat": {
+                      "type": "array",
+                      "prefixItems": [
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ],
+                      "items": false,
+                      "minItems": 2,
+                      "maxItems": 2
+                    }
+                  },
+                  "required": [
+                    "lonlat"
+                  ],
+                  "additionalProperties": {}
+                }
+              }
+            },
+            "required": [
+              "points"
+            ],
+            "additionalProperties": {}
+          }
+        }
+      },
+      "required": [
+        "lines"
+      ],
+      "additionalProperties": {}
+    }
+  },
+  "railway": {
+    "schemaVersion": 1,
+    "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "https://github.com/homlo-bike/MobSimLab/blob/main/contracts/mslab/drawings/railway.schema.json",
+      "title": "Document of a \"railway\" drawing (data/railway.json, field doc)",
+      "type": "object",
+      "properties": {
+        "origin": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "items": false,
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "mode": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "stations": {
+          "maxItems": 5000,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "id"
+            ],
+            "additionalProperties": {}
+          }
+        },
+        "tracks": {
+          "maxItems": 20000,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "id"
+            ],
+            "additionalProperties": {}
+          }
+        },
+        "switches": {
+          "maxItems": 20000,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "id"
+            ],
+            "additionalProperties": {}
+          }
+        }
+      },
+      "required": [
+        "origin",
+        "mode",
+        "stations",
+        "tracks",
+        "switches"
+      ],
+      "additionalProperties": {}
+    }
+  },
+  "street-setups": {
+    "schemaVersion": 1,
+    "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "https://github.com/homlo-bike/MobSimLab/blob/main/contracts/mslab/drawings/street-setups.schema.json",
+      "title": "Document of a \"street-setups\" drawing (data/street-setups.json, field doc)",
+      "maxItems": 50000,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "way": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "way"
+        ],
+        "additionalProperties": {}
+      }
+    }
+  },
+  "rail-timetable": {
+    "schemaVersion": 1,
+    "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "https://github.com/homlo-bike/MobSimLab/blob/main/contracts/mslab/drawings/rail-timetable.schema.json",
+      "title": "Document of a \"rail-timetable\" drawing (data/rail-timetable.json, field doc)",
+      "type": "object",
+      "properties": {
+        "stops": {
+          "maxItems": 50000,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "stop_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "stop_id"
+            ],
+            "additionalProperties": {}
+          }
+        },
+        "routes": {
+          "maxItems": 2000,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "route_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "route_id"
+            ],
+            "additionalProperties": {}
+          }
+        },
+        "trips": {
+          "maxItems": 100000,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "trip_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "trip_id"
+            ],
+            "additionalProperties": {}
+          }
+        }
+      },
+      "required": [
+        "stops",
+        "routes",
+        "trips"
+      ],
+      "additionalProperties": {}
+    }
+  },
+  "gtfs-network": {
+    "schemaVersion": 1,
+    "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "https://github.com/homlo-bike/MobSimLab/blob/main/contracts/mslab/drawings/gtfs-network.schema.json",
+      "title": "Document of a \"gtfs-network\" drawing (data/gtfs-network.json, field doc)",
+      "type": "object",
+      "properties": {
+        "feeds": {
+          "maxItems": 5,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 64
+              },
+              "name": {
+                "type": "string",
+                "maxLength": 200
+              },
+              "timetable": {
+                "type": "object",
+                "properties": {
+                  "stops": {
+                    "maxItems": 50000,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "stop_id": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "stop_id"
+                      ],
+                      "additionalProperties": {}
+                    }
+                  },
+                  "routes": {
+                    "maxItems": 2000,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "route_id": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "route_id"
+                      ],
+                      "additionalProperties": {}
+                    }
+                  },
+                  "trips": {
+                    "maxItems": 100000,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "trip_id": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "trip_id"
+                      ],
+                      "additionalProperties": {}
+                    }
+                  }
+                },
+                "required": [
+                  "stops",
+                  "routes",
+                  "trips"
+                ],
+                "additionalProperties": {}
+              },
+              "converted": {
+                "maxItems": 5000,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "maxLength": 200
+                }
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "timetable"
+            ],
+            "additionalProperties": {}
+          }
+        }
+      },
+      "required": [
+        "feeds"
+      ],
+      "additionalProperties": {}
+    }
+  },
+  "preferences": {
+    "schemaVersion": 1,
+    "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "https://github.com/homlo-bike/MobSimLab/blob/main/contracts/mslab/drawings/preferences.schema.json",
+      "title": "Document of a \"preferences\" drawing (data/preferences.json, field doc)",
+      "type": "object",
+      "properties": {
+        "values": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "maxLength": 120,
+            "pattern": "^[a-z][a-z0-9_]*(\\.[a-z0-9_]+)+$"
+          },
+          "additionalProperties": {
+            "type": "number"
+          }
+        },
+        "reasons": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "maxLength": 120,
+            "pattern": "^[a-z][a-z0-9_]*(\\.[a-z0-9_]+)+$"
+          },
+          "additionalProperties": {
+            "type": "string",
+            "maxLength": 500
+          }
+        }
+      },
+      "required": [
+        "values"
+      ],
+      "additionalProperties": {}
+    }
+  },
+  "costs": {
+    "schemaVersion": 1,
+    "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "https://github.com/homlo-bike/MobSimLab/blob/main/contracts/mslab/drawings/costs.schema.json",
+      "title": "Document of a \"costs\" drawing (data/costs.json, field doc)",
+      "type": "object",
+      "properties": {
+        "country": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[A-Z]{3}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "additionalProperties": {}
+    }
+  },
+  "schematic": {
+    "schemaVersion": 1,
+    "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "https://github.com/homlo-bike/MobSimLab/blob/main/contracts/mslab/drawings/schematic.schema.json",
+      "title": "Document of a \"schematic\" drawing (data/schematic.json, field doc)",
+      "type": "object",
+      "properties": {
+        "origin": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "items": false,
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "pins": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "maxLength": 300
+          },
+          "additionalProperties": {
+            "type": "array",
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "items": false,
+            "minItems": 2,
+            "maxItems": 2
+          }
+        },
+        "labels": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "maxLength": 300
+          },
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 7
+          }
+        },
+        "hidden": {
+          "maxItems": 20,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 40
+          }
+        },
+        "rotate": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "maxLength": 300
+          },
+          "additionalProperties": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90
+          }
+        },
+        "statuses": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "maxLength": 300
+          },
+          "additionalProperties": {
+            "maxItems": 8,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "central_station",
+                "bus_station",
+                "airport",
+                "seaport",
+                "park_and_ride",
+                "hospital",
+                "university",
+                "stadium"
+              ]
+            }
+          }
+        },
+        "areas": {
+          "maxItems": 200,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 64
+              },
+              "name": {
+                "type": "string",
+                "maxLength": 80
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "zone",
+                  "landmark"
+                ]
+              },
+              "color": {
+                "type": "string",
+                "pattern": "^#[0-9a-fA-F]{6}$"
+              },
+              "points": {
+                "minItems": 3,
+                "maxItems": 500,
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "number"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 2,
+                  "maxItems": 2
+                }
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "kind",
+              "color",
+              "points"
+            ],
+            "additionalProperties": {}
+          }
+        }
+      },
+      "required": [
+        "pins",
+        "labels"
+      ],
+      "additionalProperties": {}
+    }
+  },
+  "scenarios": {
+    "schemaVersion": 1,
+    "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "https://github.com/homlo-bike/MobSimLab/blob/main/contracts/mslab/drawings/scenarios.schema.json",
+      "title": "Document of a \"scenarios\" drawing (data/scenarios.json, field doc)",
+      "type": "object",
+      "properties": {
+        "scenarios": {
+          "maxItems": 20,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 64
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              },
+              "savedAt": {
+                "type": "string",
+                "maxLength": 40
+              },
+              "railway": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "origin": {
+                        "type": "array",
+                        "prefixItems": [
+                          {
+                            "type": "number"
+                          },
+                          {
+                            "type": "number"
+                          }
+                        ],
+                        "items": false,
+                        "minItems": 2,
+                        "maxItems": 2
+                      },
+                      "mode": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 40
+                      },
+                      "stations": {
+                        "maxItems": 5000,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "id"
+                          ],
+                          "additionalProperties": {}
+                        }
+                      },
+                      "tracks": {
+                        "maxItems": 20000,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "id"
+                          ],
+                          "additionalProperties": {}
+                        }
+                      },
+                      "switches": {
+                        "maxItems": 20000,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "id"
+                          ],
+                          "additionalProperties": {}
+                        }
+                      }
+                    },
+                    "required": [
+                      "origin",
+                      "mode",
+                      "stations",
+                      "tracks",
+                      "switches"
+                    ],
+                    "additionalProperties": {}
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "streetLines": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "lines": {
+                        "maxItems": 200,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "points": {
+                              "maxItems": 2000,
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "lonlat": {
+                                    "type": "array",
+                                    "prefixItems": [
+                                      {
+                                        "type": "number"
+                                      },
+                                      {
+                                        "type": "number"
+                                      }
+                                    ],
+                                    "items": false,
+                                    "minItems": 2,
+                                    "maxItems": 2
+                                  }
+                                },
+                                "required": [
+                                  "lonlat"
+                                ],
+                                "additionalProperties": {}
+                              }
+                            }
+                          },
+                          "required": [
+                            "points"
+                          ],
+                          "additionalProperties": {}
+                        }
+                      }
+                    },
+                    "required": [
+                      "lines"
+                    ],
+                    "additionalProperties": {}
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "savedAt",
+              "railway",
+              "streetLines"
+            ],
+            "additionalProperties": {}
+          }
+        }
+      },
+      "required": [
+        "scenarios"
+      ],
+      "additionalProperties": {}
+    }
+  },
+  "benefits": {
+    "schemaVersion": 1,
+    "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "https://github.com/homlo-bike/MobSimLab/blob/main/contracts/mslab/drawings/benefits.schema.json",
+      "title": "Document of a \"benefits\" drawing (data/benefits.json, field doc)",
+      "type": "object",
+      "properties": {
+        "formulas": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "maxLength": 40,
+            "pattern": "^[a-z_]+$"
+          },
+          "additionalProperties": {
+            "type": "string",
+            "maxLength": 2000
+          }
+        },
+        "boardings": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "maxLength": 300
+          },
+          "additionalProperties": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 10000000
+          }
+        }
+      },
+      "additionalProperties": {}
+    }
+  },
+  "regions": {
+    "schemaVersion": 1,
+    "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "https://github.com/homlo-bike/MobSimLab/blob/main/contracts/mslab/drawings/regions.schema.json",
+      "title": "Document of a \"regions\" drawing (data/regions.json, field doc)",
+      "type": "object",
+      "properties": {
+        "regions": {
+          "maxItems": 500,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100
+              },
+              "name": {
+                "type": "string",
+                "maxLength": 200
+              },
+              "ring": {
+                "minItems": 4,
+                "maxItems": 5000,
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "number"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 2,
+                  "maxItems": 2
+                }
+              },
+              "values": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string",
+                  "maxLength": 40
+                },
+                "additionalProperties": {
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string",
+                      "maxLength": 40
+                    }
+                  ]
+                }
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "ring",
+              "values"
+            ],
+            "additionalProperties": {}
+          }
+        }
+      },
+      "required": [
+        "regions"
+      ],
+      "additionalProperties": {}
+    }
+  },
+  "cargo-bike": {
+    "schemaVersion": 1,
+    "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "https://github.com/homlo-bike/MobSimLab/blob/main/contracts/mslab/drawings/cargo-bike.schema.json",
+      "title": "Document of a \"cargo-bike\" drawing (data/cargo-bike.json, field doc)",
+      "type": "object",
+      "properties": {
+        "start": {
+          "anyOf": [
+            {
+              "type": "array",
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "items": false,
+              "minItems": 2,
+              "maxItems": 2
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "destination": {
+          "anyOf": [
+            {
+              "type": "array",
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "items": false,
+              "minItems": 2,
+              "maxItems": 2
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "values": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "maxLength": 60,
+            "pattern": "^[a-z_.]+$"
+          },
+          "additionalProperties": {
+            "type": "number"
+          }
+        },
+        "kit": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 40,
+              "pattern": "^[a-z0-9-]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "additionalProperties": {}
+    }
+  },
+  "depots": {
+    "schemaVersion": 1,
+    "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "https://github.com/homlo-bike/MobSimLab/blob/main/contracts/mslab/drawings/depots.schema.json",
+      "title": "Document of a \"depots\" drawing (data/depots.json, field doc)",
+      "type": "object",
+      "properties": {
+        "depots": {
+          "maxItems": 50,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 64
+              },
+              "name": {
+                "type": "string",
+                "maxLength": 120
+              },
+              "modes": {
+                "maxItems": 4,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "bus",
+                    "brt",
+                    "trolleybus",
+                    "intercity_bus"
+                  ]
+                }
+              },
+              "boundary": {
+                "maxItems": 500,
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "number"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 2,
+                  "maxItems": 2
+                }
+              },
+              "gates": {
+                "maxItems": 20,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 64
+                    },
+                    "lonlat": {
+                      "type": "array",
+                      "prefixItems": [
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ],
+                      "items": false,
+                      "minItems": 2,
+                      "maxItems": 2
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "lonlat"
+                  ],
+                  "additionalProperties": {}
+                }
+              },
+              "zones": {
+                "maxItems": 100,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 64
+                    },
+                    "ring": {
+                      "maxItems": 500,
+                      "type": "array",
+                      "items": {
+                        "type": "array",
+                        "prefixItems": [
+                          {
+                            "type": "number"
+                          },
+                          {
+                            "type": "number"
+                          }
+                        ],
+                        "items": false,
+                        "minItems": 2,
+                        "maxItems": 2
+                      }
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "ring"
+                  ],
+                  "additionalProperties": {}
+                }
+              },
+              "layout": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "lanes": {
+                        "maxItems": 5000,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "slots": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {},
+                                "additionalProperties": {}
+                              }
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "slots"
+                          ],
+                          "additionalProperties": {}
+                        }
+                      },
+                      "aisles": {
+                        "maxItems": 2000,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "minLength": 1
+                            }
+                          },
+                          "required": [
+                            "id"
+                          ],
+                          "additionalProperties": {}
+                        }
+                      }
+                    },
+                    "required": [
+                      "lanes",
+                      "aisles"
+                    ],
+                    "additionalProperties": {}
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "modes",
+              "boundary",
+              "gates",
+              "zones",
+              "layout"
+            ],
+            "additionalProperties": {}
+          }
+        }
+      },
+      "required": [
+        "depots"
+      ],
+      "additionalProperties": {}
+    }
+  },
+  "fleet": {
+    "schemaVersion": 1,
+    "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "https://github.com/homlo-bike/MobSimLab/blob/main/contracts/mslab/drawings/fleet.schema.json",
+      "title": "Document of a \"fleet\" drawing (data/fleet.json, field doc)",
+      "type": "object",
+      "properties": {
+        "vehicles": {
+          "maxItems": 500,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "maxLength": 80,
+                "pattern": "^own-[a-z0-9-]+$"
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "mode": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 40
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "mode"
+            ],
+            "additionalProperties": {}
+          }
+        },
+        "units": {
+          "maxItems": 5000,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 64
+              },
+              "vehicle": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              },
+              "number": {
+                "type": "string",
+                "maxLength": 40
+              }
+            },
+            "required": [
+              "id",
+              "vehicle",
+              "number"
+            ],
+            "additionalProperties": {}
+          }
+        }
+      },
+      "required": [
+        "vehicles",
+        "units"
+      ],
+      "additionalProperties": {}
+    }
+  },
+  "demand": {
+    "schemaVersion": 1,
+    "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "https://github.com/homlo-bike/MobSimLab/blob/main/contracts/mslab/drawings/demand.schema.json",
+      "title": "Document of a \"demand\" drawing (data/demand.json, field doc)",
+      "type": "object",
+      "properties": {
+        "source": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "own"
+          ]
+        },
+        "gbfsUrl": {
+          "type": "string",
+          "maxLength": 2000,
+          "format": "uri"
+        },
+        "observed": {
+          "type": "object",
+          "properties": {
+            "shares": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string",
+                "maxLength": 20
+              },
+              "additionalProperties": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 100
+              }
+            },
+            "meanCarKm": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1000
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "counts": {
+              "maxItems": 5000,
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "type": "string",
+                    "enum": [
+                      "line",
+                      "stop"
+                    ]
+                  },
+                  "id": {
+                    "type": "string",
+                    "maxLength": 300
+                  },
+                  "value": {
+                    "type": "number",
+                    "minimum": 0
+                  }
+                },
+                "required": [
+                  "kind",
+                  "id",
+                  "value"
+                ],
+                "additionalProperties": {}
+              }
+            }
+          },
+          "additionalProperties": {}
+        },
+        "ridershipRun": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "zones": {
+          "maxItems": 3000,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 64
+              },
+              "name": {
+                "type": "string",
+                "maxLength": 120
+              },
+              "ring": {
+                "minItems": 4,
+                "maxItems": 200,
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "number"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 2,
+                  "maxItems": 2
+                }
+              },
+              "values": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string",
+                  "maxLength": 40
+                },
+                "additionalProperties": {
+                  "type": [
+                    "number",
+                    "boolean"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "ring",
+              "values"
+            ],
+            "additionalProperties": {}
+          }
+        },
+        "autoValues": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "additionalProperties": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string",
+              "maxLength": 40
+            },
+            "additionalProperties": {
+              "type": [
+                "number",
+                "boolean"
+              ]
+            }
+          }
+        }
+      },
+      "required": [
+        "source"
+      ],
+      "additionalProperties": {}
+    }
+  },
+  "fares": {
+    "schemaVersion": 1,
+    "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "https://github.com/homlo-bike/MobSimLab/blob/main/contracts/mslab/drawings/fares.schema.json",
+      "title": "Document of a \"fares\" drawing (data/fares.json, field doc)",
+      "type": "object",
+      "properties": {
+        "structure": {
+          "type": "string",
+          "enum": [
+            "flat",
+            "zonal",
+            "distance"
+          ]
+        },
+        "values": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "maxLength": 60,
+            "pattern": "^[a-z_.]+$"
+          },
+          "additionalProperties": {
+            "type": "number"
+          }
+        }
+      },
+      "additionalProperties": {}
+    }
+  }
+}

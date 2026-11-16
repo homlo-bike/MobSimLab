@@ -1,8 +1,13 @@
 import { roadIt } from "./road/it";
+import { calendarIt } from "./calendar/it";
 import { editorsIt } from "./editors/it";
 import { cargoBikeIt } from "./cargo-bike/it";
+import { commentsIt } from "./comments/it";
 import { depotsIt } from "./depots/it";
 import { fleetIt } from "./fleet/it";
+import { timetablesIt } from "./timetables/it";
+import { mslabIt } from "./mslab/it";
+import { pluginCodeIt } from "./plugin-code/it";
 import { populationIt } from "./population/it";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -104,6 +109,7 @@ export const it: Messages = {
   "home.shared": "Condivisi con me",
   "home.sharedEdit": "Condivisi con me · modificabili",
   "home.viewOnly": "Sola lettura",
+  "home.public": "Progetti pubblici",
   "home.archived": "Archiviati",
   "home.none": "Non c'è niente qui.",
   "home.edited": "Modificato {when}",
@@ -167,7 +173,7 @@ export const it: Messages = {
 
   "share.title": "Condividi “{name}”",
   "share.rolesNote":
-    "I proprietari gestiscono l'accesso. Gli editor modificano la rete. Commentatori e lettori guardano soltanto.",
+    "I proprietari gestiscono l'accesso. Gli editor modificano la rete. I commentatori la commentano. I lettori guardano soltanto.",
   "share.invite": "Invita via email",
   "share.emailPlaceholder": "L'email con cui accedono",
   "share.inviteRole": "Ruolo della persona invitata",
@@ -177,11 +183,16 @@ export const it: Messages = {
   "share.roleOf": "Ruolo di {name}",
   "share.remove": "Rimuovi {name}",
   "share.leave": "Esci",
-  "share.link": "Link di sola lettura",
-  "share.linkOn": "Chiunque abbia effettuato l'accesso a questo MobSimLab può aprirlo",
-  "share.linkOff": "Disattivato: solo le persone sopra possono aprirlo",
-  "share.linkTurnOn": "Attiva",
-  "share.linkTurnOff": "Disattiva",
+  "share.visibility": "Chi può aprirlo",
+  "share.private": "Privato: solo le persone qui sopra possono aprirlo",
+  "share.public":
+    "Pubblico: chiunque abbia effettuato l’accesso a questo MobSimLab può trovarlo e aprirlo in sola lettura",
+  "share.makePublic": "Rendi pubblico",
+  "share.makePrivate": "Rendi privato",
+  "share.licenceTitle": "Prima di renderlo pubblico",
+  "share.licenceNote":
+    "Questo progetto usa dati di OpenStreetMap. Saranno condivisi con la Open Database License (ODbL), © contributori di OpenStreetMap. Rendilo pubblico solo se anche tutto il resto può essere condiviso.",
+  "share.confirmPublic": "Ho capito, rendilo pubblico",
   "share.copyLink": "Copia link",
   "share.copied": "Copiato",
 
@@ -198,6 +209,8 @@ export const it: Messages = {
 
   "project.back": "Torna ai progetti",
   "project.viewOnly": "Sola lettura",
+  "project.public": "Pubblico",
+  "project.publicNote": "Progetto pubblico. Dati della mappa © contributori di OpenStreetMap, ODbL.",
   "project.notFound": "Progetto non trovato",
   "project.notFoundHint": "Potrebbe essere stato eliminato oppure non hai più accesso.",
   "project.toHome": "Torna ai progetti",
@@ -258,6 +271,7 @@ export const it: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "Strade",
   "gis.regionsView": "Aree",
+  "gis.zonesView": "Zone di domanda",
   "gis.intro": "Aggiungi e modifica le informazioni usate nei calcoli.",
   "gis.areas": "Disegna aree o importale da OpenStreetMap",
   "gis.streets": "Configurazione stradale: corsie bus, ciclabili e tram, velocità, linea aerea",
@@ -281,6 +295,7 @@ export const it: Messages = {
   "prefs.delayLane": "Su una corsia bus o tram solo dipinta",
   "prefs.delayDefault": "Libreria delle ipotesi: {value} %",
   "prefs.delayReset": "Usa il valore della libreria",
+  "prefs.reason": "Motivo di questo valore (facoltativo)",
   "prefs.stationsTitle": "Stazioni",
   "prefs.stationsIntro":
     "Le fermate con lo stesso nome entro questa distanza contano come una sola stazione nella mappa schematica, nel pianificatore di viaggio e nelle tabelle dei benefici e dei passeggeri.",
@@ -306,6 +321,21 @@ export const it: Messages = {
   "prefs.rulesChanged": "{count} modificati",
   "prefs.rulesLibrary": "Libreria delle ipotesi: {value} {unit}",
   "prefs.rulesLibraryRange": "Libreria delle ipotesi: {value} {unit} (intervallo {low}–{high})",
+  "prefs.demandTitle": "Modello di domanda",
+  "prefs.demandIntro":
+    "Ogni valore usato dal modello di domanda, passo per passo: zone, generazione degli spostamenti, fasce orarie, distribuzione, scelta modale e assegnazione. Cambia un valore per questo progetto o mantieni quello della libreria delle ipotesi.",
+  "prefs.demandStep": "Passo del modello",
+  "prefs.demandSearch": "Cerca i valori",
+  "prefs.demandNone": "Nessun valore corrisponde.",
+  "prefs.demandStep.zones": "Zone",
+  "prefs.demandStep.generation": "Generazione degli spostamenti",
+  "prefs.demandStep.periods": "Fasce orarie",
+  "prefs.demandStep.distribution": "Distribuzione degli spostamenti",
+  "prefs.demandStep.mode_choice": "Scelta modale",
+  "prefs.demandStep.catchment": "Bacino d'utenza",
+  "prefs.demandStep.assignment": "Assegnazione",
+  "prefs.demandStep.calibration": "Calibrazione",
+  "prefs.demandAll": "Tutti i passi",
   "prefs.paramsTitle": "Tutti i parametri",
   "prefs.paramsIntro":
     "Ogni valore della libreria delle ipotesi. Imposta il tuo per tutti i modi o per un modo; il valore di un modo prevale su quello per tutti i modi. Il valore della libreria resta accanto.",
@@ -325,11 +355,60 @@ export const it: Messages = {
   "prefs.group.cost": "Costi",
   "prefs.group.benefits": "Benefici",
   "prefs.group.fares": "Tariffe",
+  "prefs.group.noise": "Rumore",
   "prefs.traction.battery": "batteria",
   "prefs.traction.diesel": "diesel",
   "prefs.traction.hydrogen": "idrogeno",
   "prefs.traction.cng": "metano (CNG)",
   "prefs.traction.electric": "elettrico",
+  "report.title": "Rapporto sulle ipotesi",
+  "report.intro":
+    "Ogni valore della libreria di ipotesi usato da questo progetto: il valore, l'intervallo della libreria, la provenienza e se il progetto lo ha modificato. Scaricalo in CSV, oppure stampalo o salvalo in PDF.",
+  "report.csv": "Scarica CSV",
+  "report.changedOnly": "Solo valori modificati",
+  "report.noneChanged": "Nessun valore di questo gruppo è modificato.",
+  "report.loadError": "Impossibile caricare le fonti. Ricarica la pagina per riprovare.",
+  "report.changed": "modificato",
+  "report.yes": "Sì",
+  "report.no": "No",
+  "report.basis.cited": "citato",
+  "report.basis.documented": "documentato",
+  "report.basis.guess": "stima ragionata",
+  "report.check.read": "verificato sulla fonte",
+  "report.check.secondary": "verificato tramite una fonte secondaria",
+  "report.check.unverified": "non ancora verificato sulla fonte",
+  "report.sources": "Fonti:",
+  "report.usedBy": "Usato da: {list}",
+  "report.other": "Altre scelte",
+  "report.currency": "Valuta",
+  "report.currencyCountry": "Ogni strumento mostra la valuta del paese",
+  "report.rate": "Tasso di cambio per US$",
+  "report.rateWorldBank": "Tasso ufficiale della Banca Mondiale",
+  "report.vehiclesOff": "Veicoli non usati",
+  "report.switchesOff": "Deviatoi non usati",
+  "report.allUsed": "Tutti usati",
+  "report.turnout": "Deviatoio predefinito",
+  "report.col.group": "Gruppo",
+  "report.col.parameter": "Parametro",
+  "report.col.id": "Id",
+  "report.col.mode": "Modo",
+  "report.col.value": "Valore usato",
+  "report.col.unit": "Unità",
+  "report.col.changed": "Modificato",
+  "report.col.libLow": "Libreria basso",
+  "report.col.libCentral": "Libreria centrale",
+  "report.col.libHigh": "Libreria alto",
+  "report.col.basis": "Base",
+  "report.col.check": "Verifica",
+  "report.col.sources": "Fonti",
+  "report.col.reasoning": "Motivazione",
+  "report.col.usedBy": "Usato da",
+  "report.col.reason": "Motivo",
+  "report.col.changedBy": "Modificato da",
+  "report.col.changedAt": "Modificato il",
+  "report.changedBy": "Modificato da {name} il {date}",
+  "report.changedOn": "Modificato il {date}",
+  "report.reason": "Motivo: {reason}",
   "prefs.accessTitle": "Accessibilità dei marciapiedi",
   "prefs.accessIntro":
     "Limiti di gradino e distanza tra marciapiede e treno (STI PMR) e altezza del pavimento usata per i treni che non l'hanno nel catalogo. Le linee sono verificate a ogni fermata.",
@@ -420,7 +499,12 @@ export const it: Messages = {
   ...cargoBikeIt,
   ...depotsIt,
   ...fleetIt,
+  ...timetablesIt,
+  ...commentsIt,
+  ...mslabIt,
+  ...pluginCodeIt,
   ...populationIt,
   ...roadIt,
+  ...calendarIt,
   ...PLUGIN_MESSAGES.it,
 };

@@ -1,8 +1,13 @@
 import { roadVi } from "./road/vi";
+import { calendarVi } from "./calendar/vi";
 import { editorsVi } from "./editors/vi";
 import { cargoBikeVi } from "./cargo-bike/vi";
+import { commentsVi } from "./comments/vi";
 import { depotsVi } from "./depots/vi";
 import { fleetVi } from "./fleet/vi";
+import { timetablesVi } from "./timetables/vi";
+import { mslabVi } from "./mslab/vi";
+import { pluginCodeVi } from "./plugin-code/vi";
 import { populationVi } from "./population/vi";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -104,6 +109,7 @@ export const vi: Messages = {
   "home.shared": "Được chia sẻ với tôi",
   "home.sharedEdit": "Được chia sẻ với tôi · có thể sửa",
   "home.viewOnly": "Chỉ xem",
+  "home.public": "Dự án công khai",
   "home.archived": "Đã lưu trữ",
   "home.none": "Không có gì ở đây.",
   "home.edited": "Đã sửa {when}",
@@ -167,7 +173,7 @@ export const vi: Messages = {
 
   "share.title": "Chia sẻ “{name}”",
   "share.rolesNote":
-    "Chủ sở hữu quản lý quyền truy cập. Người chỉnh sửa thay đổi mạng lưới. Người bình luận và người xem chỉ xem.",
+    "Chủ sở hữu quản lý quyền truy cập. Người chỉnh sửa thay đổi mạng lưới. Người bình luận góp ý về nó. Người xem chỉ xem.",
   "share.invite": "Mời qua email",
   "share.emailPlaceholder": "Email họ dùng để đăng nhập",
   "share.inviteRole": "Vai trò của người được mời",
@@ -177,11 +183,15 @@ export const vi: Messages = {
   "share.roleOf": "Vai trò của {name}",
   "share.remove": "Xóa {name}",
   "share.leave": "Rời khỏi",
-  "share.link": "Liên kết chỉ xem",
-  "share.linkOn": "Bất kỳ ai đã đăng nhập vào MobSimLab này đều có thể mở",
-  "share.linkOff": "Tắt: chỉ những người ở trên mới mở được",
-  "share.linkTurnOn": "Bật",
-  "share.linkTurnOff": "Tắt",
+  "share.visibility": "Ai có thể mở",
+  "share.private": "Riêng tư: chỉ những người ở trên mới mở được",
+  "share.public": "Công khai: bất kỳ ai đã đăng nhập MobSimLab này đều có thể tìm và mở ở chế độ chỉ xem",
+  "share.makePublic": "Công khai",
+  "share.makePrivate": "Đặt riêng tư",
+  "share.licenceTitle": "Trước khi công khai",
+  "share.licenceNote":
+    "Dự án này dùng dữ liệu từ OpenStreetMap. Dữ liệu sẽ được chia sẻ theo Open Database License (ODbL), © những người đóng góp OpenStreetMap. Chỉ công khai nếu mọi thứ khác trong dự án cũng được phép chia sẻ.",
+  "share.confirmPublic": "Tôi hiểu, công khai dự án",
   "share.copyLink": "Sao chép liên kết",
   "share.copied": "Đã sao chép",
 
@@ -197,6 +207,8 @@ export const vi: Messages = {
 
   "project.back": "Quay lại dự án",
   "project.viewOnly": "Chỉ xem",
+  "project.public": "Công khai",
+  "project.publicNote": "Dự án công khai. Dữ liệu bản đồ © những người đóng góp OpenStreetMap, ODbL.",
   "project.notFound": "Không tìm thấy dự án",
   "project.notFoundHint": "Có thể dự án đã bị xóa hoặc bạn không còn quyền truy cập.",
   "project.toHome": "Quay lại dự án",
@@ -258,6 +270,7 @@ export const vi: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "Đường phố",
   "gis.regionsView": "Khu vực",
+  "gis.zonesView": "Vùng nhu cầu",
   "gis.intro": "Thêm và chỉnh sửa thông tin dùng trong tính toán.",
   "gis.areas": "Vẽ khu vực hoặc nhập từ OpenStreetMap",
   "gis.streets": "Cấu trúc đường phố: làn xe buýt, xe đạp và tàu điện, tốc độ, dây điện trên cao",
@@ -281,6 +294,7 @@ export const vi: Messages = {
   "prefs.delayLane": "Trên làn xe buýt hoặc tàu điện chỉ được sơn",
   "prefs.delayDefault": "Thư viện giả định: {value} %",
   "prefs.delayReset": "Dùng giá trị thư viện",
+  "prefs.reason": "Lý do cho giá trị này (không bắt buộc)",
   "prefs.stationsTitle": "Ga",
   "prefs.stationsIntro":
     "Các điểm dừng cùng tên trong khoảng cách này được tính là một ga trên sơ đồ mạng lưới, công cụ lập hành trình và các bảng lợi ích và hành khách.",
@@ -306,6 +320,21 @@ export const vi: Messages = {
   "prefs.rulesChanged": "đã đổi {count}",
   "prefs.rulesLibrary": "Thư viện giả định: {value} {unit}",
   "prefs.rulesLibraryRange": "Thư viện giả định: {value} {unit} (khoảng {low}–{high})",
+  "prefs.demandTitle": "Mô hình nhu cầu",
+  "prefs.demandIntro":
+    "Mọi giá trị mô hình nhu cầu sử dụng, theo từng bước: vùng, phát sinh chuyến đi, khung giờ, phân bố, lựa chọn phương thức và phân bổ. Đổi một giá trị cho dự án này, hoặc giữ giá trị của thư viện giả định.",
+  "prefs.demandStep": "Bước mô hình",
+  "prefs.demandSearch": "Tìm giá trị",
+  "prefs.demandNone": "Không có giá trị phù hợp.",
+  "prefs.demandStep.zones": "Vùng",
+  "prefs.demandStep.generation": "Phát sinh chuyến đi",
+  "prefs.demandStep.periods": "Khung giờ",
+  "prefs.demandStep.distribution": "Phân bố chuyến đi",
+  "prefs.demandStep.mode_choice": "Lựa chọn phương thức",
+  "prefs.demandStep.catchment": "Vùng tiếp cận",
+  "prefs.demandStep.assignment": "Phân bổ",
+  "prefs.demandStep.calibration": "Hiệu chỉnh",
+  "prefs.demandAll": "Tất cả các bước",
   "prefs.paramsTitle": "Tất cả tham số",
   "prefs.paramsIntro":
     "Mọi giá trị trong thư viện giả định. Đặt giá trị của bạn cho mọi phương thức hoặc cho một phương thức; giá trị của một phương thức được ưu tiên hơn giá trị cho mọi phương thức. Giá trị thư viện hiển thị bên cạnh.",
@@ -325,11 +354,60 @@ export const vi: Messages = {
   "prefs.group.cost": "Chi phí",
   "prefs.group.benefits": "Lợi ích",
   "prefs.group.fares": "Giá vé",
+  "prefs.group.noise": "Tiếng ồn",
   "prefs.traction.battery": "pin",
   "prefs.traction.diesel": "diesel",
   "prefs.traction.hydrogen": "hydro",
   "prefs.traction.cng": "khí tự nhiên (CNG)",
   "prefs.traction.electric": "điện",
+  "report.title": "Báo cáo giả định",
+  "report.intro":
+    "Mọi giá trị trong thư viện giả định mà dự án này dùng: giá trị, khoảng của thư viện, nguồn gốc và việc dự án có thay đổi nó hay không. Tải xuống dạng CSV, hoặc in hay lưu dạng PDF.",
+  "report.csv": "Tải CSV",
+  "report.changedOnly": "Chỉ giá trị đã thay đổi",
+  "report.noneChanged": "Không có giá trị nào trong nhóm này bị thay đổi.",
+  "report.loadError": "Không tải được nguồn. Hãy tải lại trang để thử lại.",
+  "report.changed": "đã thay đổi",
+  "report.yes": "Có",
+  "report.no": "Không",
+  "report.basis.cited": "được trích dẫn",
+  "report.basis.documented": "có tài liệu",
+  "report.basis.guess": "ước tính có cơ sở",
+  "report.check.read": "đã đối chiếu với nguồn",
+  "report.check.secondary": "đã kiểm tra qua nguồn thứ cấp",
+  "report.check.unverified": "chưa đối chiếu với nguồn",
+  "report.sources": "Nguồn:",
+  "report.usedBy": "Được dùng bởi: {list}",
+  "report.other": "Lựa chọn khác",
+  "report.currency": "Tiền tệ",
+  "report.currencyCountry": "Mỗi công cụ hiển thị tiền tệ của quốc gia",
+  "report.rate": "Tỷ giá trên mỗi US$",
+  "report.rateWorldBank": "Tỷ giá chính thức của Ngân hàng Thế giới",
+  "report.vehiclesOff": "Phương tiện không dùng",
+  "report.switchesOff": "Ghi không dùng",
+  "report.allUsed": "Dùng tất cả",
+  "report.turnout": "Ghi mặc định",
+  "report.col.group": "Nhóm",
+  "report.col.parameter": "Tham số",
+  "report.col.id": "Mã",
+  "report.col.mode": "Phương thức",
+  "report.col.value": "Giá trị dùng",
+  "report.col.unit": "Đơn vị",
+  "report.col.changed": "Đã thay đổi",
+  "report.col.libLow": "Thư viện thấp",
+  "report.col.libCentral": "Thư viện trung tâm",
+  "report.col.libHigh": "Thư viện cao",
+  "report.col.basis": "Cơ sở",
+  "report.col.check": "Kiểm tra",
+  "report.col.sources": "Nguồn",
+  "report.col.reasoning": "Lý do",
+  "report.col.usedBy": "Được dùng bởi",
+  "report.col.reason": "Lý do",
+  "report.col.changedBy": "Người thay đổi",
+  "report.col.changedAt": "Ngày thay đổi",
+  "report.changedBy": "{name} đã thay đổi ngày {date}",
+  "report.changedOn": "Đã thay đổi ngày {date}",
+  "report.reason": "Lý do: {reason}",
   "prefs.accessTitle": "Khả năng tiếp cận sân ga",
   "prefs.accessIntro":
     "Giới hạn bậc và khe hở giữa sân ga và tàu (TSI PRM), cùng chiều cao sàn dùng cho tàu không có trong danh mục. Các tuyến được kiểm tra tại mọi điểm dừng.",
@@ -418,7 +496,12 @@ export const vi: Messages = {
   ...cargoBikeVi,
   ...depotsVi,
   ...fleetVi,
+  ...timetablesVi,
+  ...commentsVi,
+  ...mslabVi,
+  ...pluginCodeVi,
   ...populationVi,
   ...roadVi,
+  ...calendarVi,
   ...PLUGIN_MESSAGES.vi,
 };

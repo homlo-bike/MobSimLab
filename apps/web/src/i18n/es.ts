@@ -1,8 +1,13 @@
 import { roadEs } from "./road/es";
+import { calendarEs } from "./calendar/es";
 import { editorsEs } from "./editors/es";
 import { cargoBikeEs } from "./cargo-bike/es";
+import { commentsEs } from "./comments/es";
 import { depotsEs } from "./depots/es";
 import { fleetEs } from "./fleet/es";
+import { timetablesEs } from "./timetables/es";
+import { mslabEs } from "./mslab/es";
+import { pluginCodeEs } from "./plugin-code/es";
 import { populationEs } from "./population/es";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -106,6 +111,7 @@ export const es: Messages = {
   "home.shared": "Compartidos conmigo",
   "home.sharedEdit": "Compartidos conmigo · puedes editar",
   "home.viewOnly": "Solo lectura",
+  "home.public": "Proyectos públicos",
   "home.archived": "Archivados",
   "home.none": "No hay nada aquí.",
   "home.edited": "Editado {when}",
@@ -169,7 +175,7 @@ export const es: Messages = {
 
   "share.title": "Compartir «{name}»",
   "share.rolesNote":
-    "Los propietarios gestionan el acceso. Los editores cambian la red. Comentaristas y lectores solo miran.",
+    "Los propietarios gestionan el acceso. Los editores cambian la red. Los comentaristas la comentan. Los lectores solo miran.",
   "share.invite": "Invitar por correo",
   "share.emailPlaceholder": "Correo con el que inicia sesión",
   "share.inviteRole": "Rol de la persona invitada",
@@ -179,11 +185,16 @@ export const es: Messages = {
   "share.roleOf": "Rol de {name}",
   "share.remove": "Quitar a {name}",
   "share.leave": "Salir",
-  "share.link": "Enlace de solo lectura",
-  "share.linkOn": "Cualquiera que haya iniciado sesión en este MobSimLab puede abrirlo",
-  "share.linkOff": "Desactivado: solo las personas de arriba pueden abrirlo",
-  "share.linkTurnOn": "Activar",
-  "share.linkTurnOff": "Desactivar",
+  "share.visibility": "Quién puede abrirlo",
+  "share.private": "Privado: solo las personas de arriba pueden abrirlo",
+  "share.public":
+    "Público: cualquier persona con sesión en este MobSimLab puede encontrarlo y abrirlo en solo lectura",
+  "share.makePublic": "Hacer público",
+  "share.makePrivate": "Hacer privado",
+  "share.licenceTitle": "Antes de hacerlo público",
+  "share.licenceNote":
+    "Este proyecto usa datos de OpenStreetMap. Se compartirán bajo la Open Database License (ODbL), © colaboradores de OpenStreetMap. Hazlo público solo si todo lo demás que contiene también se puede compartir.",
+  "share.confirmPublic": "Entendido, hacerlo público",
   "share.copyLink": "Copiar enlace",
   "share.copied": "Copiado",
 
@@ -200,6 +211,8 @@ export const es: Messages = {
 
   "project.back": "Volver a los proyectos",
   "project.viewOnly": "Solo lectura",
+  "project.public": "Público",
+  "project.publicNote": "Proyecto público. Datos del mapa © colaboradores de OpenStreetMap, ODbL.",
   "project.notFound": "No se encontró el proyecto",
   "project.notFoundHint": "Puede que se haya eliminado o que ya no tengas acceso.",
   "project.toHome": "Volver a los proyectos",
@@ -264,6 +277,7 @@ export const es: Messages = {
   "gis.spacing": "Distancia entre paradas",
   "gis.streetsView": "Calles",
   "gis.regionsView": "Regiones",
+  "gis.zonesView": "Zonas de demanda",
 
   "tables.title": "Tablas",
   "tables.intro": "Todos los cálculos del proyecto, para estimar lo bien que funcionará.",
@@ -282,6 +296,7 @@ export const es: Messages = {
   "prefs.delayLane": "En un carril bus o tranvía pintado",
   "prefs.delayDefault": "Biblioteca de supuestos: {value} %",
   "prefs.delayReset": "Usar el valor de la biblioteca",
+  "prefs.reason": "Motivo de este valor (opcional)",
   "prefs.stationsTitle": "Estaciones",
   "prefs.stationsIntro":
     "Las paradas con el mismo nombre dentro de esta distancia cuentan como una sola estación en el mapa esquemático, el planificador de viajes y las tablas de beneficios y de viajeros.",
@@ -307,6 +322,21 @@ export const es: Messages = {
   "prefs.rulesChanged": "{count} cambiados",
   "prefs.rulesLibrary": "Biblioteca de supuestos: {value} {unit}",
   "prefs.rulesLibraryRange": "Biblioteca de supuestos: {value} {unit} (intervalo {low}–{high})",
+  "prefs.demandTitle": "Modelo de demanda",
+  "prefs.demandIntro":
+    "Cada valor que usa el modelo de demanda, paso a paso: zonas, generación de viajes, periodos, distribución, elección modal y asignación. Cambie un valor para este proyecto o mantenga el de la biblioteca de supuestos.",
+  "prefs.demandStep": "Paso del modelo",
+  "prefs.demandSearch": "Buscar valores",
+  "prefs.demandNone": "Ningún valor coincide.",
+  "prefs.demandStep.zones": "Zonas",
+  "prefs.demandStep.generation": "Generación de viajes",
+  "prefs.demandStep.periods": "Periodos",
+  "prefs.demandStep.distribution": "Distribución de viajes",
+  "prefs.demandStep.mode_choice": "Elección modal",
+  "prefs.demandStep.catchment": "Área de captación",
+  "prefs.demandStep.assignment": "Asignación",
+  "prefs.demandStep.calibration": "Calibración",
+  "prefs.demandAll": "Todos los pasos",
   "prefs.paramsTitle": "Todos los parámetros",
   "prefs.paramsIntro":
     "Cada valor de la biblioteca de supuestos. Define el tuyo para todos los modos o para un modo; el valor de un modo prevalece sobre el de todos los modos. El valor de la biblioteca se muestra al lado.",
@@ -326,11 +356,60 @@ export const es: Messages = {
   "prefs.group.cost": "Costes",
   "prefs.group.benefits": "Beneficios",
   "prefs.group.fares": "Tarifas",
+  "prefs.group.noise": "Ruido",
   "prefs.traction.battery": "batería",
   "prefs.traction.diesel": "diésel",
   "prefs.traction.hydrogen": "hidrógeno",
   "prefs.traction.cng": "gas natural (GNC)",
   "prefs.traction.electric": "eléctrico",
+  "report.title": "Informe de supuestos",
+  "report.intro":
+    "Cada valor de la biblioteca de supuestos que usa este proyecto: el valor, el rango de la biblioteca, de dónde procede y si el proyecto lo cambió. Descárgalo en CSV, o imprímelo o guárdalo en PDF.",
+  "report.csv": "Descargar CSV",
+  "report.changedOnly": "Solo valores cambiados",
+  "report.noneChanged": "Ningún valor de este grupo está cambiado.",
+  "report.loadError": "No se pudieron cargar las fuentes. Recarga la página para intentarlo de nuevo.",
+  "report.changed": "cambiado",
+  "report.yes": "Sí",
+  "report.no": "No",
+  "report.basis.cited": "citado",
+  "report.basis.documented": "documentado",
+  "report.basis.guess": "estimación razonada",
+  "report.check.read": "comprobado en la fuente",
+  "report.check.secondary": "comprobado mediante una fuente secundaria",
+  "report.check.unverified": "aún no comprobado en la fuente",
+  "report.sources": "Fuentes:",
+  "report.usedBy": "Usado por: {list}",
+  "report.other": "Otras elecciones",
+  "report.currency": "Moneda",
+  "report.currencyCountry": "Cada herramienta muestra la moneda del país",
+  "report.rate": "Tipo de cambio por US$",
+  "report.rateWorldBank": "Tipo oficial del Banco Mundial",
+  "report.vehiclesOff": "Vehículos no usados",
+  "report.switchesOff": "Aparatos de vía no usados",
+  "report.allUsed": "Todos usados",
+  "report.turnout": "Desvío predeterminado",
+  "report.col.group": "Grupo",
+  "report.col.parameter": "Parámetro",
+  "report.col.id": "Id",
+  "report.col.mode": "Modo",
+  "report.col.value": "Valor usado",
+  "report.col.unit": "Unidad",
+  "report.col.changed": "Cambiado",
+  "report.col.libLow": "Biblioteca bajo",
+  "report.col.libCentral": "Biblioteca central",
+  "report.col.libHigh": "Biblioteca alto",
+  "report.col.basis": "Base",
+  "report.col.check": "Comprobación",
+  "report.col.sources": "Fuentes",
+  "report.col.reasoning": "Justificación",
+  "report.col.usedBy": "Usado por",
+  "report.col.reason": "Motivo",
+  "report.col.changedBy": "Cambiado por",
+  "report.col.changedAt": "Cambiado el",
+  "report.changedBy": "Cambiado por {name} el {date}",
+  "report.changedOn": "Cambiado el {date}",
+  "report.reason": "Motivo: {reason}",
   "prefs.accessTitle": "Accesibilidad del andén",
   "prefs.accessIntro":
     "Límites de escalón y hueco entre andén y tren (ETI PMR) y la altura de piso usada para trenes sin dato en el catálogo. Las líneas se comprueban en cada parada.",
@@ -424,7 +503,12 @@ export const es: Messages = {
   ...cargoBikeEs,
   ...depotsEs,
   ...fleetEs,
+  ...timetablesEs,
+  ...commentsEs,
+  ...mslabEs,
+  ...pluginCodeEs,
   ...populationEs,
   ...roadEs,
+  ...calendarEs,
   ...PLUGIN_MESSAGES.es,
 };

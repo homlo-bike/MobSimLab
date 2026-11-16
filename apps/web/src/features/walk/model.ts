@@ -3,6 +3,7 @@
  * they are measured against (assumption library values, exported by tools/assumptions/check.py --render).
  */
 import data from "./defaults.generated.json";
+import { paramNumber } from "../../workspace/preferences";
 import type { Network, RailView } from "../railways/types";
 import type { StreetLinesDoc } from "../street-lines/saved";
 import { MODES } from "../street-lines/modes";
@@ -38,8 +39,13 @@ export const MAX_MINUTES = 30;
 /** Most zoom-14 walk tiles one analysis loads (about 12 km × 12 km at 50° N), as the agent tools. */
 export const MAX_WALK_TILES = 64;
 
-/** Size of the cells the people of the population grid are gathered in, m (also the gap size). */
-export const GAP_CELL_M = 200;
+/** Size of the cells the people of the population grid are gathered in, m (also the gap size): the library's. */
+export const GAP_CELL_M = paramNumber("analysis.gap_cell_m", undefined);
+
+/** Purpose: the gap cell size a project uses (`analysis.gap_cell_m`): its own where set, else the library's. */
+export function gapCellM(prefs: Record<string, number> | undefined): number {
+  return Math.max(50, paramNumber("analysis.gap_cell_m", prefs));
+}
 
 const TILE_ZOOM = 14;
 

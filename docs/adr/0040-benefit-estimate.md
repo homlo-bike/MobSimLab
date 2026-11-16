@@ -1,6 +1,6 @@
 # ADR-0040: Economic and social benefit tables from travel times with and without each line, open location data and editable formulas
 
-- Status: Proposed (first version built: Tables tab benefit tables and GIS tab regions)
+- Status: Accepted (product owner, 2026-11-16); before that Proposed: first version built: Tables tab benefit tables and GIS tab regions
 - Date: 2026-11-10
 - Deciders: product owner, architecture
 - Related: 09-planning-models §3.2–3.3, 06-gis §3, ADR-0018 (assumption engine), ADR-0034 (journey planner), ADR-0039 (cost tables), [Research R2](../research/r2-economic-and-social-benefits.md)

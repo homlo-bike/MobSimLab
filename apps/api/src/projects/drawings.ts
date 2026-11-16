@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { MAX_REASON } from "./value-history";
 
 /**
  * What a project can hold drawings of, and the shape each document must have. The API checks only the outline
@@ -53,6 +54,17 @@ const preferences = z.looseObject({
       z.number().finite(),
     )
     .refine((v) => Object.keys(v).length <= 1000, "at most 1000 values"),
+  /** Why the project changed a value, by assumption id (optional); recorded with the change. */
+  reasons: z
+    .record(
+      z
+        .string()
+        .regex(/^[a-z][a-z0-9_]*(\.[a-z0-9_]+)+$/)
+        .max(120),
+      z.string().max(MAX_REASON),
+    )
+    .refine((v) => Object.keys(v).length <= 1000, "at most 1000 reasons")
+    .optional(),
 });
 
 /** Cost tables settings: the country whose prices apply (ISO 3166-1 alpha-3), when the planner chose one. */
@@ -155,6 +167,51 @@ const regions = z.looseObject({
       }),
     )
     .max(500),
+});
+
+/** Demand model zones (ADR-0019): automatic hexagons or the planner's own zones, and values per zone. */
+const zoneValues = z.record(z.string().max(40), z.union([z.number().finite(), z.boolean()]));
+const demand = z.looseObject({
+  source: z.enum(["auto", "own"]),
+  /** The GBFS feed of the project's shared-bike scheme (https), read with the OpenStreetMap stations. */
+  gbfsUrl: z
+    .url({ protocol: /^https$/ })
+    .max(2000)
+    .optional(),
+  /** What the planner observed (mode shares in %, mean car trip in km, weekday boardings), to calibrate to. */
+  observed: z
+    .looseObject({
+      shares: z.record(z.string().max(20), z.number().finite().min(0).max(100)).optional(),
+      meanCarKm: z.number().finite().min(0).max(1000).nullable().optional(),
+      counts: z
+        .array(
+          z.looseObject({
+            kind: z.enum(["line", "stop"]),
+            id: z.string().max(300),
+            value: z.number().finite().min(0),
+          }),
+        )
+        .max(5000)
+        .optional(),
+    })
+    .optional(),
+  /** The demand run whose ridership the Tables tab, the service table and the system test use. */
+  ridershipRun: z.string().min(1).max(64).optional(),
+  zones: z
+    .array(
+      z.looseObject({
+        id: z.string().min(1).max(64),
+        name: z.string().max(120),
+        ring: z.array(point).min(4).max(200),
+        values: zoneValues,
+      }),
+    )
+    .max(3000)
+    .optional(),
+  autoValues: z
+    .record(z.string().max(64), zoneValues)
+    .refine((v) => Object.keys(v).length <= 3000, "at most 3000 zones")
+    .optional(),
 });
 
 /** Cargo bike tab (plugins/cargo-bike): start point, destination and the values the project changed. */
@@ -275,6 +332,8 @@ export const DRAWING_KINDS = {
   depots: { schema: depots, schemaVersion: 1 },
   /** The project's own vehicle types and its individual vehicles (08-vehicles.md §1, §4). */
   fleet: { schema: fleet, schemaVersion: 1 },
+  /** Demand model zones in the Tables and GIS tabs (ADR-0019): automatic or own, with the planner's values. */
+  demand: { schema: demand, schemaVersion: 1 },
   /** Fare revenue table (ADR-0044): fare structure, fares, passes, discounts and the other fare values. */
   fares: { schema: fares, schemaVersion: 1 },
 } as const satisfies Record<string, { schema: z.ZodType; schemaVersion: number }>;

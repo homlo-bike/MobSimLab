@@ -11,11 +11,12 @@
  *   qualifier, "Market (Old Town)", or else a number, "Market 2".
  */
 import { tNow } from "../../i18n/i18n";
+import { paramNumber } from "../../workspace/preferences";
 import type { FeatureCategory, LonLat, NameFeature } from "./labels";
 import { distanceM } from "../../map/geo";
 
-/** Stops and stations closer than this form one station group (06-gis §9.3 default, 150 m). */
-export const STATION_GROUPING_M = 150;
+/** Stops and stations closer than this form one station group: the library's `analysis.station_grouping_m`. */
+export const STATION_GROUPING_M = paramNumber("analysis.station_grouping_m", undefined);
 
 /** Map features farther than this are not offered as names. */
 export const SUGGESTION_RADIUS_M = 500;

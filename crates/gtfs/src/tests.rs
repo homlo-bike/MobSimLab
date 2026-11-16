@@ -202,6 +202,7 @@ fn export_round_trips() {
         end_date: "20271231".into(),
         route_types: BTreeMap::from([("aerial_tramway".to_string(), 6)]),
         feed_version: "v1".into(),
+        holidays: Vec::new(),
     });
     for f in [
         "agency.txt",
@@ -267,5 +268,88 @@ fn export_round_trips() {
     assert_eq!(
         serde_json::to_value(&back.timetable.frequency_patterns[0].stops).unwrap(),
         serde_json::to_value(&got.timetable.frequency_patterns[0].stops).unwrap()
+    );
+}
+
+#[test]
+fn export_runs_each_day_type_on_its_days_and_holidays_instead() {
+    let got = import(&ImportInput {
+        files: feed(),
+        date: None,
+        bbox: Some([12.9, 51.9, 13.1, 52.1]),
+    })
+    .unwrap();
+    let mut tt = got.timetable.clone();
+    let base = tt.trips[0].clone();
+    for day in ["weekday", "saturday", "sunday", "holiday"] {
+        let mut t = base.clone();
+        t.trip_id = format!("{}~{day}", base.trip_id);
+        t.service_id = day.into();
+        tt.trips.push(t);
+    }
+    let files = export(&ExportInput {
+        timetable: tt,
+        agency_name: "Study".into(),
+        agency_url: "https://example.org".into(),
+        agency_timezone: "Europe/Berlin".into(),
+        lang: "en".into(),
+        start_date: "20270101".into(),
+        end_date: "20271231".into(),
+        route_types: BTreeMap::new(),
+        feed_version: "v1".into(),
+        // New Year's Day (a Friday), Easter Monday, a Saturday holiday, and one outside the validity.
+        holidays: vec![
+            "20270101".into(),
+            "20270329".into(),
+            "20271225".into(),
+            "20280101".into(),
+        ],
+    });
+    let cal = csv::parse(&files["calendar.txt"]);
+    let days = |id: &str| {
+        let r = cal
+            .rows
+            .iter()
+            .find(|r| cal.get(r, "service_id") == id)
+            .unwrap();
+        [
+            "monday",
+            "tuesday",
+            "wednesday",
+            "thursday",
+            "friday",
+            "saturday",
+            "sunday",
+        ]
+        .map(|c| cal.get(r, c).to_string())
+        .concat()
+    };
+    assert_eq!(days("weekday"), "1111100");
+    assert_eq!(days("saturday"), "0000010");
+    assert_eq!(days("sunday"), "0000001");
+    assert_eq!(days("holiday"), "0000000");
+    let dates = csv::parse(&files["calendar_dates.txt"]);
+    let rows: Vec<String> = dates
+        .rows
+        .iter()
+        .map(|r| {
+            format!(
+                "{} {} {}",
+                dates.get(r, "service_id"),
+                dates.get(r, "date"),
+                dates.get(r, "exception_type")
+            )
+        })
+        .collect();
+    assert_eq!(
+        rows,
+        [
+            "holiday 20270101 1",
+            "weekday 20270101 2",
+            "holiday 20270329 1",
+            "weekday 20270329 2",
+            "holiday 20271225 1",
+            "saturday 20271225 2",
+        ]
     );
 }

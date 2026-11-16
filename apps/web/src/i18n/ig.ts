@@ -1,8 +1,13 @@
 import { roadIg } from "./road/ig";
+import { calendarIg } from "./calendar/ig";
 import { editorsIg } from "./editors/ig";
 import { cargoBikeIg } from "./cargo-bike/ig";
+import { commentsIg } from "./comments/ig";
 import { depotsIg } from "./depots/ig";
 import { fleetIg } from "./fleet/ig";
+import { timetablesIg } from "./timetables/ig";
+import { mslabIg } from "./mslab/ig";
+import { pluginCodeIg } from "./plugin-code/ig";
 import { populationIg } from "./population/ig";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -105,6 +110,7 @@ export const ig: Messages = {
   "home.shared": "Ekeresoro m",
   "home.sharedEdit": "Ekeresoro m · ị nwere ike idezi",
   "home.viewOnly": "Naanị ilele",
+  "home.public": "Ọrụ ọha",
   "home.archived": "Edebere n'ebe nchekwa",
   "home.none": "Ọ dịghị ihe ebe a.",
   "home.edited": "Edeziri {when}",
@@ -167,7 +173,7 @@ export const ig: Messages = {
 
   "share.title": "Kesaa “{name}”",
   "share.rolesNote":
-    "Ndị nwe na-ejikwa ohere. Ndị ndezi na-agbanwe netwọk. Ndị nkọwa na ndị na-ele na-ele naanị.",
+    "Ndị nwe na-ejikwa ohere. Ndị ndezi na-agbanwe netwọk. Ndị nkọwa na-akọwa ya. Ndị na-ele na-ele naanị.",
   "share.invite": "Kpọọ site na email",
   "share.emailPlaceholder": "Email ha ji abanye",
   "share.inviteRole": "Ọrụ maka onye ị na-akpọ",
@@ -177,11 +183,16 @@ export const ig: Messages = {
   "share.roleOf": "Ọrụ {name}",
   "share.remove": "Wepụ {name}",
   "share.leave": "Hapụ",
-  "share.link": "Njikọ naanị ilele",
-  "share.linkOn": "Onye ọ bụla banyere na MobSimLab a nwere ike imepe ya",
-  "share.linkOff": "Gbanyụrụ: naanị ndị dị n'elu nwere ike imepe ya",
-  "share.linkTurnOn": "Gbanye",
-  "share.linkTurnOff": "Gbanyụọ",
+  "share.visibility": "Onye nwere ike imeghe ya",
+  "share.private": "Nzuzo: naanị ndị nọ n'elu nwere ike imeghe ya",
+  "share.public":
+    "Nke ọha: onye ọ bụla banyere na MobSimLab a nwere ike ịchọta ya ma meghee ya maka ịgụ naanị",
+  "share.makePublic": "Mee ya nke ọha",
+  "share.makePrivate": "Mee ya nzuzo",
+  "share.licenceTitle": "Tupu i mee ya nke ọha",
+  "share.licenceNote":
+    "Ọrụ a na-eji data sitere na OpenStreetMap. A ga-ekesa ya n'okpuru Open Database License (ODbL), © ndị na-enye aka na OpenStreetMap. Mee ya nke ọha naanị ma ọ bụrụ na ihe ndị ọzọ niile dị n'ime ya nwekwara ike ịkesa.",
+  "share.confirmPublic": "Aghọtara m, mee ya nke ọha",
   "share.copyLink": "Detuo njikọ",
   "share.copied": "Edetuola",
 
@@ -198,6 +209,8 @@ export const ig: Messages = {
 
   "project.back": "Laghachi na ọrụ",
   "project.viewOnly": "Naanị ilele",
+  "project.public": "Nke ọha",
+  "project.publicNote": "Ọrụ ọha. Data maapụ © ndị na-enye aka na OpenStreetMap, ODbL.",
   "project.notFound": "Achọtaghị ọrụ ahụ",
   "project.notFoundHint": "Ọ nwere ike ịbụ na ehichapụla ya, ma ọ bụ na ịnweghị ohere ọzọ.",
   "project.toHome": "Laghachi na ọrụ",
@@ -257,6 +270,7 @@ export const ig: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "Okporo ụzọ",
   "gis.regionsView": "Mpaghara",
+  "gis.zonesView": "Mpaghara ọchịchọ",
   "gis.intro": "Tinye ma ọ bụ dezie ozi ngụkọ na-eji.",
   "gis.areas": "See mpaghara ma ọ bụ bubata otu site na OpenStreetMap",
   "gis.streets": "Nhazi okporo ụzọ: ụzọ bọs, igwe kwụ otu ebe na tram, ọsọ, waya elu",
@@ -280,6 +294,7 @@ export const ig: Messages = {
   "prefs.delayLane": "N'ụzọ bọs ma ọ bụ tram e ji agba see",
   "prefs.delayDefault": "Ọbá akwụkwọ echiche: {value} %",
   "prefs.delayReset": "Jiri uru ọbá akwụkwọ",
+  "prefs.reason": "Ihe kpatara uru a (nhọrọ)",
   "prefs.stationsTitle": "Ọdụ",
   "prefs.stationsIntro":
     "Ebe nkwụsị nwere otu aha n'ime anya a ka a na-agụ dị ka otu ọdụ na maapụ eserese, onye nhazi njem na tebụl uru na ndị njem.",
@@ -306,6 +321,21 @@ export const ig: Messages = {
   "prefs.rulesChanged": "agbanwere: {count}",
   "prefs.rulesLibrary": "Ọbá akwụkwọ echiche: {value} {unit}",
   "prefs.rulesLibraryRange": "Ọbá akwụkwọ echiche: {value} {unit} (oke {low}–{high})",
+  "prefs.demandTitle": "Ụdị ọchịchọ njem",
+  "prefs.demandIntro":
+    "Uru ọ bụla ụdị ọchịchọ njem na-eji, nzọụkwụ na nzọụkwụ: mpaghara, imepụta njem, oge, nkesa, nhọrọ ụzọ njem na nkenye. Gbanwee uru maka ọrụ a, ma ọ bụ debe nke ọbá akwụkwọ echiche.",
+  "prefs.demandStep": "Nzọụkwụ ụdị",
+  "prefs.demandSearch": "Chọọ uru",
+  "prefs.demandNone": "Enweghị uru dabara.",
+  "prefs.demandStep.zones": "Mpaghara",
+  "prefs.demandStep.generation": "Imepụta njem",
+  "prefs.demandStep.periods": "Oge",
+  "prefs.demandStep.distribution": "Nkesa njem",
+  "prefs.demandStep.mode_choice": "Nhọrọ ụzọ njem",
+  "prefs.demandStep.catchment": "Mpaghara nnweta",
+  "prefs.demandStep.assignment": "Nkenye",
+  "prefs.demandStep.calibration": "Nhazi",
+  "prefs.demandAll": "Nzọụkwụ niile",
   "prefs.paramsTitle": "Paramita niile",
   "prefs.paramsIntro":
     "Uru ọ bụla nke ọbá echiche. Tọọ nke gị maka ụzọ niile ma ọ bụ otu ụzọ; uru otu ụzọ na-akarị nke ụzọ niile. Uru ọbá ahụ na-anọ n'akụkụ.",
@@ -325,11 +355,60 @@ export const ig: Messages = {
   "prefs.group.cost": "Ego ọ na-efu",
   "prefs.group.benefits": "Uru",
   "prefs.group.fares": "Ụgwọ njem",
+  "prefs.group.noise": "Mkpọtụ",
   "prefs.traction.battery": "batrị",
   "prefs.traction.diesel": "dizel",
   "prefs.traction.hydrogen": "hydrogen",
   "prefs.traction.cng": "gas sitere n'okike (CNG)",
   "prefs.traction.electric": "eletrik",
+  "report.title": "Akụkọ echiche",
+  "report.intro":
+    "Uru ọ bụla nke ọbá echiche nke ọrụ a na-eji: uru ahụ, oke ọbá ahụ, ebe o si, na ma ọrụ ahụ gbanwere ya. Budata ya dị ka CSV, ma ọ bụ bipụta ya ma ọ bụ chekwaa ya dị ka PDF.",
+  "report.csv": "Budata CSV",
+  "report.changedOnly": "Naanị uru agbanwere",
+  "report.noneChanged": "Ọ dịghị uru agbanwere n'otu a.",
+  "report.loadError": "Enweghị ike ibunye isi mmalite. Bugharịa ibe ahụ ka ịnwalee ọzọ.",
+  "report.changed": "agbanwere",
+  "report.yes": "Ee",
+  "report.no": "Mba",
+  "report.basis.cited": "e hotara",
+  "report.basis.documented": "e dekọrọ",
+  "report.basis.guess": "atụmatụ nwere ihe kpatara ya",
+  "report.check.read": "e lere ya anya na isi mmalite",
+  "report.check.secondary": "e lere ya anya site na isi mmalite nke abụọ",
+  "report.check.unverified": "e leghị ya anya na isi mmalite",
+  "report.sources": "Isi mmalite:",
+  "report.usedBy": "Ihe na-eji ya: {list}",
+  "report.other": "Nhọrọ ndị ọzọ",
+  "report.currency": "Ego",
+  "report.currencyCountry": "Ngwaọrụ ọ bụla na-egosi ego obodo ahụ",
+  "report.rate": "Ọnụ mgbanwe kwa US$",
+  "report.rateWorldBank": "Ọnụ gọọmentị nke World Bank",
+  "report.vehiclesOff": "Ụgbọ a na-anaghị eji",
+  "report.switchesOff": "Ihe ntụgharị ụzọ a na-anaghị eji",
+  "report.allUsed": "A na-eji ha niile",
+  "report.turnout": "Ihe ntụgharị ụzọ ndabara",
+  "report.col.group": "Otu",
+  "report.col.parameter": "Paramita",
+  "report.col.id": "Njirimara",
+  "report.col.mode": "Ụdị njem",
+  "report.col.value": "Uru ejiri",
+  "report.col.unit": "Nkeji",
+  "report.col.changed": "Agbanwere",
+  "report.col.libLow": "Ọbá dị ala",
+  "report.col.libCentral": "Ọbá etiti",
+  "report.col.libHigh": "Ọbá dị elu",
+  "report.col.basis": "Ntọala",
+  "report.col.check": "Nlele",
+  "report.col.sources": "Isi mmalite",
+  "report.col.reasoning": "Ihe kpatara ya",
+  "report.col.usedBy": "Ihe na-eji ya",
+  "report.col.reason": "Ihe kpatara ya",
+  "report.col.changedBy": "Onye gbanwere ya",
+  "report.col.changedAt": "Ụbọchị agbanwere ya",
+  "report.changedBy": "{name} gbanwere ya na {date}",
+  "report.changedOn": "Agbanwere ya na {date}",
+  "report.reason": "Ihe kpatara ya: {reason}",
   "prefs.accessTitle": "Ịnweta ikpo okwu",
   "prefs.accessIntro":
     "Oke steepụ na oghere n'etiti ikpo okwu na ụgbọ (TSI PRM), yana ịdị elu ala maka ụgbọ na-enweghị ya na katalọgụ. A na-enyocha ahịrị n'ọdụ ọ bụla.",
@@ -420,7 +499,12 @@ export const ig: Messages = {
   ...cargoBikeIg,
   ...depotsIg,
   ...fleetIg,
+  ...timetablesIg,
+  ...commentsIg,
+  ...mslabIg,
+  ...pluginCodeIg,
   ...populationIg,
   ...roadIg,
+  ...calendarIg,
   ...PLUGIN_MESSAGES.ig,
 };

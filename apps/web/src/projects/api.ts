@@ -1,8 +1,13 @@
+import { setPluginRuntime } from "../plugins/code/context";
+import type { PluginLimits } from "../plugins/code/runtime";
 import type { ProjectPlugin } from "../plugins/registry";
 import { get, send } from "../session/api";
 import { projectRuns } from "../features/capacity/server";
+import { projectComments } from "../features/comments/api";
+import { projectDemandRuns } from "../features/demand/api";
 import { projectPopulation } from "../features/population/api";
 import { projectRoadRuns } from "../features/road-sim/api";
+import { projectCalendarRuns } from "../features/calendar-run/api";
 import { type DrawingKind, loadDrawings, saveDrawing } from "./drawings";
 
 export type ProjectRole = "owner" | "editor" | "commenter" | "viewer";
@@ -15,10 +20,12 @@ export interface Project {
   areaName: string | null;
   modes: string[];
   myRole: ProjectRole;
-  viaLink: boolean;
+  /** True when the caller is not a member and sees the project only because it is public (read-only). */
+  viaPublic: boolean;
   owner: { id: string; displayName: string | null };
   memberCount: number;
-  linkAccess: boolean;
+  /** Private: only members open it. Public: anyone signed in to this MobSimLab opens it read-only. */
+  visibility: "private" | "public";
   createdAt: string;
   updatedAt: string;
   archivedAt: string | null;
@@ -44,11 +51,30 @@ export const RAIL_MODES = [
 ] as const;
 export type Mode = (typeof STREET_MODES)[number] | (typeof RAIL_MODES)[number];
 
-/** Where a project shows on the projects home. */
-export type Shelf = "mine" | "shared" | "viewOnly";
+/** One recorded change of a project value (GET /api/projects/:id/value-history), newest first. */
+export interface ValueHistoryEntry {
+  seq: number;
+  /** Assumption id, for example `mode.dwell_s.tram`. */
+  id: string;
+  /** "changed": the value changed; "reason": only a new reason was given. */
+  kind: "changed" | "reason";
+  /** The value before and after; a null value means the library's applies. */
+  before: { value: number | null; reason: string | null };
+  after: { value: number | null; reason: string | null };
+  reason: string | null;
+  at: string;
+  by: { id: string; displayName: string | null } | null;
+}
 
-/** Purpose: the home shelf for a role: own projects, shared ones the caller can edit, and read-only ones. */
-export function shelfOf(p: Pick<Project, "myRole">): Shelf {
+/** Where a project shows on the projects home. */
+export type Shelf = "mine" | "shared" | "viewOnly" | "public";
+
+/**
+ * Purpose: the home shelf of a project: own projects, shared ones the caller can edit, read-only ones, and public
+ * projects the caller is not a member of.
+ */
+export function shelfOf(p: Pick<Project, "myRole" | "viaPublic">): Shelf {
+  if (p.viaPublic) return "public";
   if (p.myRole === "owner") return "mine";
   if (p.myRole === "editor") return "shared";
   return "viewOnly";
@@ -58,6 +84,7 @@ export function shelfOf(p: Pick<Project, "myRole">): Shelf {
 export const can = {
   edit: (p: Pick<Project, "myRole">) => p.myRole === "owner" || p.myRole === "editor",
   manage: (p: Pick<Project, "myRole">) => p.myRole === "owner",
+  comment: (p: Pick<Project, "myRole">) => p.myRole !== "viewer",
 };
 
 const base = "/api/projects";
@@ -68,6 +95,8 @@ export function projectsApi(csrf: string) {
   return {
     list: (archived = false) =>
       get<{ projects: Project[] }>(archived ? `${base}?archived=true` : base).then((r) => r.projects),
+    /** Public projects the caller is not a member of. */
+    listPublic: () => get<{ projects: Project[] }>(`${base}?public=true`).then((r) => r.projects),
     get: (id: string) => get<{ project: Project }>(one(id)).then((r) => r.project),
     create: (body: { name: string; areaName?: string | null; modes?: string[]; description?: string }) =>
       send<{ project: Project }>("POST", base, csrf, body).then((r) => r.project),
@@ -91,11 +120,19 @@ export function projectsApi(csrf: string) {
       }).then((r) => r.members),
     removeMember: (id: string, userId: string) =>
       send<{ ok: true }>("DELETE", `${one(id)}/members/${encodeURIComponent(userId)}`, csrf),
-    setLink: (id: string, linkAccess: boolean) =>
-      send<{ project: Project }>("PUT", `${one(id)}/link`, csrf, { linkAccess }).then((r) => r.project),
+    /** Make a project public (after the Owner confirmed the licence notice) or private again. Owners only. */
+    setVisibility: (id: string, visibility: Project["visibility"]) =>
+      send<{ project: Project }>("PUT", `${one(id)}/visibility`, csrf, {
+        visibility,
+        ...(visibility === "public" && { licenceAccepted: true }),
+      }).then((r) => r.project),
     /** The plugins the project can use, with whether each is on (ADR-0036 §9). */
     plugins: (id: string) =>
-      get<{ plugins?: ProjectPlugin[] }>(`${one(id)}/plugins`).then((r) => r.plugins ?? []),
+      get<{ plugins?: ProjectPlugin[]; limits?: PluginLimits }>(`${one(id)}/plugins`).then((r) => {
+        // The Admins' limits for plugin code, which the browser's plugin host runs with.
+        if (r.limits) setPluginRuntime({ limits: r.limits });
+        return r.plugins ?? [];
+      }),
     /** Turn a plugin on or off for the project (Owners), pinning the version of an installed plugin. */
     setPlugin: (id: string, pluginId: string, enabled: boolean, version?: string) =>
       send<{ plugins: ProjectPlugin[] }>(
@@ -104,6 +141,20 @@ export function projectsApi(csrf: string) {
         csrf,
         version ? { enabled, version } : { enabled },
       ).then((r) => r.plugins),
+    /** The change history of the project's values, newest first; `before` is a `seq`, for the next page. */
+    valueHistory: (id: string, opts: { before?: number; limit?: number } = {}) => {
+      const q = new URLSearchParams();
+      if (opts.before !== undefined) q.set("before", String(opts.before));
+      if (opts.limit !== undefined) q.set("limit", String(opts.limit));
+      const qs = q.toString();
+      return get<{ history?: ValueHistoryEntry[] }>(`${one(id)}/value-history${qs ? `?${qs}` : ""}`).then(
+        (r) => r.history ?? [],
+      );
+    },
+    /** Where to download the project as a `.mslab` file (ADR-0021), with or without its simulation runs. */
+    mslabUrl: (id: string, runs: boolean) => `${one(id)}/mslab${runs ? "?runs=true" : ""}`,
+    /** Open a `.mslab` file as a new project owned by the caller; `skipped` lists what was left out. */
+    importMslab: (file: Blob) => importMslab(csrf, file),
     drawings: (id: string) => loadDrawings(id),
     saveDrawing: <T>(id: string, kind: DrawingKind, doc: T, baseVersion: number | null) =>
       saveDrawing(csrf, id, kind, doc, baseVersion),
@@ -111,8 +162,34 @@ export function projectsApi(csrf: string) {
     runs: (id: string) => projectRuns(id, csrf),
     /** The project's road simulation runs (SUMO) on the background worker, with their replays. */
     roadRuns: (id: string) => projectRoadRuns(id, csrf),
+    /** The project's calendar runs: many years, one date or a row of dates (ADR-0020). */
+    calendarRuns: (id: string) => projectCalendarRuns(id, csrf),
+    /** The project's demand model runs (AequilibraE) on the background worker, with their OD matrices. */
+    demandRuns: (id: string) => projectDemandRuns(id, csrf),
     /** The project's population layers (GIS tab): imports, uploads, the layer the project uses. */
     population: (id: string) => projectPopulation(id, csrf),
+    /** Comments on the project's objects: threads, replies, resolving. */
+    comments: (id: string) => projectComments(id, csrf),
   };
 }
 export type ProjectsApi = ReturnType<typeof projectsApi>;
+
+/** Purpose: upload a `.mslab` file as the raw request body. Output: the new project and what was left out. */
+async function importMslab(csrf: string, file: Blob): Promise<{ project: Project; skipped: string[] }> {
+  const res = await fetch(`${base}/import`, {
+    method: "POST",
+    credentials: "same-origin",
+    headers: { "Content-Type": "application/octet-stream", "X-CSRF-Token": csrf },
+    body: file,
+  });
+  const body = (await res.json().catch(() => ({}))) as {
+    project?: Project;
+    skipped?: string[];
+    message?: string | string[];
+  };
+  if (!res.ok || !body.project) {
+    const m = Array.isArray(body.message) ? body.message.join("; ") : body.message;
+    throw new Error(m ?? `POST ${base}/import failed: ${res.status}`);
+  }
+  return { project: body.project, skipped: body.skipped ?? [] };
+}

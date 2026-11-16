@@ -23,6 +23,8 @@ export interface EditorState {
   view: RailView | null;
   cursor: Cursor | null;
   picking: string | null;
+  /** Stations closer than this share a name, m (`analysis.station_grouping_m`). */
+  stationGroupingM: number;
 }
 
 /** What is being dragged on the map. */

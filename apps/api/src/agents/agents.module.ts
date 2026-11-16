@@ -4,6 +4,7 @@ import { SessionService } from "../auth/session.service";
 import { RateLimitService } from "../iam/rate-limit.service";
 import { StreetNetworkModule } from "../street-network/street-network.module";
 import { StreetNetworkService } from "../street-network/street-network.service";
+import { PluginsModule } from "../plugins/plugins.module";
 import { SimulationModule } from "../simulation/simulation.module";
 import { AccessService } from "./access.service";
 import { AgentsController } from "./agents.controller";
@@ -19,7 +20,7 @@ import { ScenariosService } from "./scenarios.service";
  * the analyses agents run. MobSimLab never calls a model; agents connect from outside.
  */
 @Module({
-  imports: [StreetNetworkModule, SimulationModule],
+  imports: [StreetNetworkModule, SimulationModule, PluginsModule],
   controllers: [McpController, OAuthController, AgentsController],
   providers: [
     AuditService,

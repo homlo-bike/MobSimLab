@@ -1,8 +1,13 @@
 import { roadFa } from "./road/fa";
+import { calendarFa } from "./calendar/fa";
 import { editorsFa } from "./editors/fa";
 import { cargoBikeFa } from "./cargo-bike/fa";
+import { commentsFa } from "./comments/fa";
 import { depotsFa } from "./depots/fa";
 import { fleetFa } from "./fleet/fa";
+import { timetablesFa } from "./timetables/fa";
+import { mslabFa } from "./mslab/fa";
+import { pluginCodeFa } from "./plugin-code/fa";
 import { populationFa } from "./population/fa";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -102,6 +107,7 @@ export const fa: Messages = {
   "home.shared": "اشتراک‌گذاشته با من",
   "home.sharedEdit": "اشتراک‌گذاشته با من · قابل ویرایش",
   "home.viewOnly": "فقط مشاهده",
+  "home.public": "پروژه‌های عمومی",
   "home.archived": "بایگانی‌شده",
   "home.none": "اینجا چیزی نیست.",
   "home.edited": "ویرایش {when}",
@@ -165,7 +171,7 @@ export const fa: Messages = {
 
   "share.title": "اشتراک‌گذاری «{name}»",
   "share.rolesNote":
-    "مالکان دسترسی را مدیریت می‌کنند. ویرایشگرها شبکه را تغییر می‌دهند. نظردهندگان و بینندگان فقط می‌بینند.",
+    "مالکان دسترسی را مدیریت می‌کنند. ویرایشگرها شبکه را تغییر می‌دهند. نظردهندگان درباره‌اش نظر می‌دهند. بینندگان فقط می‌بینند.",
   "share.invite": "دعوت با ایمیل",
   "share.emailPlaceholder": "ایمیلی که با آن وارد می‌شوند",
   "share.inviteRole": "نقش فرد دعوت‌شده",
@@ -175,11 +181,16 @@ export const fa: Messages = {
   "share.roleOf": "نقش {name}",
   "share.remove": "حذف {name}",
   "share.leave": "ترک کردن",
-  "share.link": "پیوند فقط مشاهده",
-  "share.linkOn": "هر کسی که در این MobSimLab وارد شده باشد می‌تواند آن را باز کند",
-  "share.linkOff": "خاموش: فقط افراد بالا می‌توانند آن را باز کنند",
-  "share.linkTurnOn": "روشن کردن",
-  "share.linkTurnOff": "خاموش کردن",
+  "share.visibility": "چه کسانی می‌توانند آن را باز کنند",
+  "share.private": "خصوصی: فقط افراد بالا می‌توانند آن را باز کنند",
+  "share.public":
+    "عمومی: هر کسی که وارد این MobSimLab شده باشد می‌تواند آن را پیدا کند و فقط‌خواندنی باز کند",
+  "share.makePublic": "عمومی کن",
+  "share.makePrivate": "خصوصی کن",
+  "share.licenceTitle": "پیش از عمومی کردن",
+  "share.licenceNote":
+    "این پروژه از داده‌های OpenStreetMap استفاده می‌کند. این داده‌ها با مجوز Open Database License ‏(ODbL) به اشتراک گذاشته می‌شوند، © مشارکت‌کنندگان OpenStreetMap. فقط وقتی آن را عمومی کنید که همهٔ چیزهای دیگر آن هم قابل اشتراک باشد.",
+  "share.confirmPublic": "متوجه شدم، عمومی کن",
   "share.copyLink": "کپی پیوند",
   "share.copied": "کپی شد",
 
@@ -195,6 +206,8 @@ export const fa: Messages = {
 
   "project.back": "بازگشت به پروژه‌ها",
   "project.viewOnly": "فقط مشاهده",
+  "project.public": "عمومی",
+  "project.publicNote": "پروژهٔ عمومی. داده‌های نقشه © مشارکت‌کنندگان OpenStreetMap، ‏ODbL.",
   "project.notFound": "پروژه پیدا نشد",
   "project.notFoundHint": "ممکن است حذف شده باشد یا دیگر به آن دسترسی نداشته باشید.",
   "project.toHome": "بازگشت به پروژه‌ها",
@@ -254,6 +267,7 @@ export const fa: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "خیابان‌ها",
   "gis.regionsView": "مناطق",
+  "gis.zonesView": "مناطق تقاضا",
   "gis.intro": "اطلاعاتی را که در محاسبات استفاده می‌شود اضافه و ویرایش کنید.",
   "gis.areas": "ترسیم محدوده‌ها یا وارد کردن از OpenStreetMap",
   "gis.streets": "ساختار خیابان: خطوط اتوبوس، دوچرخه و تراموا، سرعت، سیم بالاسری",
@@ -277,6 +291,7 @@ export const fa: Messages = {
   "prefs.delayLane": "در خط اتوبوس یا تراموای فقط رنگ‌شده",
   "prefs.delayDefault": "کتابخانهٔ فرض‌ها: {value} %",
   "prefs.delayReset": "استفاده از مقدار کتابخانه",
+  "prefs.reason": "دلیل این مقدار (اختیاری)",
   "prefs.stationsTitle": "ایستگاه‌ها",
   "prefs.stationsIntro":
     "ایستگاه‌های هم‌نام درون این فاصله در نقشهٔ شماتیک، برنامه‌ریز سفر و جدول‌های منافع و مسافران یک ایستگاه به شمار می‌آیند.",
@@ -301,6 +316,21 @@ export const fa: Messages = {
   "prefs.rulesChanged": "تغییریافته: {count}",
   "prefs.rulesLibrary": "کتابخانهٔ فرض‌ها: {value} {unit}",
   "prefs.rulesLibraryRange": "کتابخانهٔ فرض‌ها: {value} {unit} (بازه {low}–{high})",
+  "prefs.demandTitle": "مدل تقاضا",
+  "prefs.demandIntro":
+    "همهٔ مقدارهایی که مدل تقاضا به کار می‌برد، گام به گام: ناحیه‌ها، تولید سفر، بازه‌های زمانی، توزیع، انتخاب وسیله و تخصیص. مقداری را برای این پروژه تغییر دهید یا مقدار کتابخانهٔ فرض‌ها را نگه دارید.",
+  "prefs.demandStep": "گام مدل",
+  "prefs.demandSearch": "جست‌وجوی مقدارها",
+  "prefs.demandNone": "هیچ مقداری پیدا نشد.",
+  "prefs.demandStep.zones": "ناحیه‌ها",
+  "prefs.demandStep.generation": "تولید سفر",
+  "prefs.demandStep.periods": "بازه‌های زمانی",
+  "prefs.demandStep.distribution": "توزیع سفر",
+  "prefs.demandStep.mode_choice": "انتخاب وسیله",
+  "prefs.demandStep.catchment": "حوزه دسترسی",
+  "prefs.demandStep.assignment": "تخصیص",
+  "prefs.demandStep.calibration": "واسنجی",
+  "prefs.demandAll": "همهٔ گام‌ها",
   "prefs.paramsTitle": "همه پارامترها",
   "prefs.paramsIntro":
     "هر مقدار کتابخانهٔ فرض‌ها. مقدار خودتان را برای همهٔ شیوه‌ها یا یک شیوه بگذارید؛ مقدار یک شیوه بر مقدار همهٔ شیوه‌ها مقدم است. مقدار کتابخانه کنار هر یک می‌ماند.",
@@ -320,11 +350,60 @@ export const fa: Messages = {
   "prefs.group.cost": "هزینه‌ها",
   "prefs.group.benefits": "منافع",
   "prefs.group.fares": "کرایه‌ها",
+  "prefs.group.noise": "نوفه",
   "prefs.traction.battery": "باتری",
   "prefs.traction.diesel": "دیزل",
   "prefs.traction.hydrogen": "هیدروژن",
   "prefs.traction.cng": "گاز طبیعی (CNG)",
   "prefs.traction.electric": "برقی",
+  "report.title": "گزارش فرض‌ها",
+  "report.intro":
+    "هر مقدار کتابخانهٔ فرض‌ها که این پروژه به کار می‌برد: مقدار، بازهٔ کتابخانه، منبع آن و اینکه آیا پروژه آن را تغییر داده است. آن را به صورت CSV دانلود کنید، یا چاپ کنید یا به صورت PDF ذخیره کنید.",
+  "report.csv": "دانلود CSV",
+  "report.changedOnly": "فقط مقادیر تغییرکرده",
+  "report.noneChanged": "هیچ مقداری در این گروه تغییر نکرده است.",
+  "report.loadError": "منابع بارگذاری نشدند. برای تلاش دوباره صفحه را دوباره بارگذاری کنید.",
+  "report.changed": "تغییر کرده",
+  "report.yes": "بله",
+  "report.no": "خیر",
+  "report.basis.cited": "استنادشده",
+  "report.basis.documented": "مستندشده",
+  "report.basis.guess": "برآورد مستدل",
+  "report.check.read": "با منبع بررسی شده",
+  "report.check.secondary": "از طریق منبع ثانویه بررسی شده",
+  "report.check.unverified": "هنوز با منبع بررسی نشده",
+  "report.sources": "منابع:",
+  "report.usedBy": "استفاده در: {list}",
+  "report.other": "گزینه‌های دیگر",
+  "report.currency": "واحد پول",
+  "report.currencyCountry": "هر ابزار واحد پول کشور را نشان می‌دهد",
+  "report.rate": "نرخ ارز به ازای هر دلار آمریکا",
+  "report.rateWorldBank": "نرخ رسمی بانک جهانی",
+  "report.vehiclesOff": "وسایل نقلیهٔ استفاده‌نشده",
+  "report.switchesOff": "سوزن‌های استفاده‌نشده",
+  "report.allUsed": "همه استفاده می‌شوند",
+  "report.turnout": "سوزن پیش‌فرض",
+  "report.col.group": "گروه",
+  "report.col.parameter": "پارامتر",
+  "report.col.id": "شناسه",
+  "report.col.mode": "شیوهٔ حمل‌ونقل",
+  "report.col.value": "مقدار استفاده‌شده",
+  "report.col.unit": "واحد",
+  "report.col.changed": "تغییر کرده",
+  "report.col.libLow": "کتابخانه: کمینه",
+  "report.col.libCentral": "کتابخانه: میانه",
+  "report.col.libHigh": "کتابخانه: بیشینه",
+  "report.col.basis": "مبنا",
+  "report.col.check": "بررسی",
+  "report.col.sources": "منابع",
+  "report.col.reasoning": "استدلال",
+  "report.col.usedBy": "استفاده در",
+  "report.col.reason": "دلیل",
+  "report.col.changedBy": "تغییر توسط",
+  "report.col.changedAt": "تاریخ تغییر",
+  "report.changedBy": "تغییر توسط {name} در {date}",
+  "report.changedOn": "تغییر در {date}",
+  "report.reason": "دلیل: {reason}",
   "prefs.accessTitle": "دسترس‌پذیری سکو",
   "prefs.accessIntro":
     "حدود پله و فاصله میان سکو و قطار (TSI PRM) و ارتفاع کف برای قطارهایی که در کاتالوگ ندارند. خطوط در هر ایستگاه با این‌ها بررسی می‌شوند.",
@@ -416,7 +495,12 @@ export const fa: Messages = {
   ...cargoBikeFa,
   ...depotsFa,
   ...fleetFa,
+  ...timetablesFa,
+  ...commentsFa,
+  ...mslabFa,
+  ...pluginCodeFa,
   ...populationFa,
   ...roadFa,
+  ...calendarFa,
   ...PLUGIN_MESSAGES.fa,
 };

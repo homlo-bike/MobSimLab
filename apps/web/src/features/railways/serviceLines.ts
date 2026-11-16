@@ -177,8 +177,18 @@ export function lineProblem(doc: Network, line: ServiceLine): MessageKey | null 
   const known = line.stations.filter((id) => doc.stations.some((s) => s.id === id));
   if (known.length < 2) return "rail.line.needsStops";
   if (!trainById(line.vehicle)) return "rail.line.needsTrain";
-  if (line.last_min <= line.first_min) return "rail.line.lastAfterFirst";
-  if (line.peak_headway_min < 1 || line.offpeak_headway_min < 1) return "rail.line.headwayMin";
+  // The weekday and every day type with its own times.
+  const days = [
+    [line.first_min, line.last_min, line.peak_headway_min, line.offpeak_headway_min],
+    ...Object.values(line.days ?? {}).map((d) => [
+      d.firstMin,
+      d.lastMin,
+      d.peakHeadwayMin,
+      d.offPeakHeadwayMin,
+    ]),
+  ];
+  if (days.some(([first, last]) => !(last! > first!))) return "rail.line.lastAfterFirst";
+  if (days.some(([, , peak, off]) => !(peak! >= 1) || !(off! >= 1))) return "rail.line.headwayMin";
   return null;
 }
 

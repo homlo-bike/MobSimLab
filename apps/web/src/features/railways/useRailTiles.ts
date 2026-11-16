@@ -23,6 +23,7 @@ export function useRailTiles({
   streetSetups,
   delays,
   designValues,
+  designTexts = null,
   switchChoice,
 }: {
   map: MapLibreMap | null;
@@ -34,6 +35,8 @@ export function useRailTiles({
   streetSetups: readonly StreetSetup[];
   delays: DelayShares | null;
   designValues: Readonly<Record<string, number>> | null;
+  /** The project's text design values (electrification, colour…), as `<mode>.<field>` or `<field>`. */
+  designTexts?: Readonly<Record<string, string>> | null;
   switchChoice: SwitchChoice | null;
 }) {
   // Streets for level crossings and existing railways for joins: the tiles on screen, loaded when
@@ -52,7 +55,8 @@ export function useRailTiles({
   }, [ready, setupsJson]);
   // The project's delays in traffic (a tram's running time in streets) and design rules per mode; a change rebuilds.
   const delaysJson = delays ? JSON.stringify(delays) : "";
-  const rulesJson = designValues && Object.keys(designValues).length ? JSON.stringify(designValues) : "";
+  const rules = { ...designTexts, ...designValues };
+  const rulesJson = Object.keys(rules).length ? JSON.stringify(rules) : "";
   const valuesSet = useRef(false);
   useEffect(() => {
     const e = engine.current;
@@ -64,7 +68,7 @@ export function useRailTiles({
       ...(d
         ? { street_mixed_traffic_delay_share: d.mixed_traffic, street_bus_lane_delay_share: d.bus_lane }
         : {}),
-      ...(rulesJson ? (JSON.parse(rulesJson) as Record<string, number>) : {}),
+      ...(rulesJson ? (JSON.parse(rulesJson) as Record<string, number | string>) : {}),
     });
     setStreets((n) => n + 1);
   }, [ready, delaysJson, rulesJson]);
