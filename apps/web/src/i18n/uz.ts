@@ -295,7 +295,13 @@ export const uz: Messages = {
   "prefs.moreTitle": "Qoidalar, transport vositalari va farazlar",
   "prefs.moreIntro":
     "Har bir oʻzgaruvchi minimal va tavsiya etilgan qiymati bilan, hamda loyihada ishlatiladigan transport vositalari.",
-  "prefs.rules": "Har bir tur uchun loyihalash qoidalari, minimal va tavsiya etilgan",
+  "prefs.rulesTitle": "Har bir tur uchun loyihalash qoidalari",
+  "prefs.rulesIntro":
+    "Temir yo'l muharriri har bir relsli tur uchun chizmalarni tekshiradigan qiymatlar. Ushbu loyiha uchun qiymatni o'zgartiring yoki farazlar kutubxonasinikini qoldiring.",
+  "prefs.rulesMode": "Relsli transport turi",
+  "prefs.rulesChanged": "o'zgartirilgan: {count}",
+  "prefs.rulesLibrary": "Farazlar kutubxonasi: {value} {unit}",
+  "prefs.rulesLibraryRange": "Farazlar kutubxonasi: {value} {unit} (oraliq {low}–{high})",
   "prefs.vehicles": "Ishlatiladigan transport vositalari, katalogdan",
   "prefs.switches": "Rels strelkalari, strelkalar katalogidan",
   "prefs.calendar": "Kalendar, talab va xarajatlar",

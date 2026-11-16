@@ -67,7 +67,7 @@ import { TopBar } from "../shell/TopBar";
 import { PROJECT_TOUR, Tour } from "../shell/Tour";
 import { PrintReport } from "./PrintReport";
 import { ProjectPreferences } from "./ProjectPreferences";
-import { delaysFrom, type PreferencesDoc } from "./preferences";
+import { delaysFrom, designValuesFrom, type PreferencesDoc } from "./preferences";
 import type { DelayShares } from "../features/street-lines/types";
 import { type Drawings, useDrawings } from "./useDrawings";
 
@@ -232,6 +232,8 @@ export function Workspace({
   const currency = currencyState.currency;
   const delaysJson = JSON.stringify(delaysFrom(preferences));
   const delays = useMemo(() => JSON.parse(delaysJson) as DelayShares, [delaysJson]);
+  const rulesJson = JSON.stringify(designValuesFrom(preferences));
+  const designValues = useMemo(() => JSON.parse(rulesJson) as Record<string, number>, [rulesJson]);
   // Street setups made before projects saved drawings were kept in this browser: move them to the project once.
   useEffect(() => {
     if (!drawings.loaded || !editable) return;
@@ -443,6 +445,7 @@ export function Workspace({
               panel={panel}
               streetSetups={setups}
               delays={delays}
+              designValues={designValues}
               existingRailways={existingRailways}
               initial={railway}
               onDocChange={(d) => drawings.set("railway", d)}

@@ -293,7 +293,13 @@ export const id: Messages = {
   "prefs.moreTitle": "Aturan, kendaraan, dan asumsi",
   "prefs.moreIntro":
     "Nilai minimum dan yang disarankan untuk setiap variabel, serta kendaraan yang digunakan proyek.",
-  "prefs.rules": "Aturan desain per moda (minimum dan disarankan)",
+  "prefs.rulesTitle": "Aturan desain per moda",
+  "prefs.rulesIntro":
+    "Nilai yang dipakai editor rel untuk memeriksa gambar, untuk setiap moda rel. Ubah nilai untuk proyek ini, atau tetap gunakan nilai pustaka asumsi.",
+  "prefs.rulesMode": "Moda rel",
+  "prefs.rulesChanged": "{count} diubah",
+  "prefs.rulesLibrary": "Pustaka asumsi: {value} {unit}",
+  "prefs.rulesLibraryRange": "Pustaka asumsi: {value} {unit} (rentang {low}–{high})",
   "prefs.vehicles": "Kendaraan yang digunakan (dari katalog kendaraan)",
   "prefs.switches": "Wesel (dari katalog wesel)",
   "prefs.calendar": "Kalender, permintaan, dan biaya",

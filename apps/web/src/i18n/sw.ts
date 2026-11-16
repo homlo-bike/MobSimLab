@@ -291,7 +291,13 @@ export const sw: Messages = {
   "prefs.moreTitle": "Kanuni, magari na dhana",
   "prefs.moreIntro":
     "Kila kigezo na thamani yake ya chini na inayopendekezwa, na magari ambayo mradi unatumia.",
-  "prefs.rules": "Kanuni za usanifu kwa kila aina, za chini na zinazopendekezwa",
+  "prefs.rulesTitle": "Kanuni za usanifu kwa kila aina",
+  "prefs.rulesIntro":
+    "Thamani ambazo kihariri cha reli hukagua michoro dhidi yake, kwa kila aina ya reli. Badilisha thamani kwa mradi huu, au baki na ile ya maktaba ya dhana.",
+  "prefs.rulesMode": "Aina ya reli",
+  "prefs.rulesChanged": "zilizobadilishwa: {count}",
+  "prefs.rulesLibrary": "Maktaba ya dhana: {value} {unit}",
+  "prefs.rulesLibraryRange": "Maktaba ya dhana: {value} {unit} (kiwango {low}–{high})",
   "prefs.vehicles": "Magari yanayotumika, kutoka katalogi ya magari",
   "prefs.switches": "Swichi za reli, kutoka katalogi ya swichi",
   "prefs.calendar": "Kalenda, mahitaji na gharama",

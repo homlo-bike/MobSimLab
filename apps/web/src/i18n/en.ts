@@ -285,7 +285,13 @@ export const en = {
   "prefs.moreTitle": "Rules, vehicles and assumptions",
   "prefs.moreIntro":
     "Every variable with its minimum and recommended value, and the vehicles the project uses.",
-  "prefs.rules": "Design rules per mode, minimum and recommended",
+  "prefs.rulesTitle": "Design rules per mode",
+  "prefs.rulesIntro":
+    "The values the railway editor checks drawings against, for each rail mode. Change a value for this project, or keep the assumption library's.",
+  "prefs.rulesMode": "Rail mode",
+  "prefs.rulesChanged": "{count} changed",
+  "prefs.rulesLibrary": "Assumption library: {value} {unit}",
+  "prefs.rulesLibraryRange": "Assumption library: {value} {unit} (range {low}–{high})",
   "prefs.vehicles": "Vehicles used, from the vehicle catalogue",
   "prefs.switches": "Track switches, from the switch catalogue",
   "prefs.calendar": "Calendar, demand and costs",
