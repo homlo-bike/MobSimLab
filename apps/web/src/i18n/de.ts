@@ -286,6 +286,10 @@ export const de: Messages = {
   "prefs.delayLane": "Auf einer markierten Bus- oder Straßenbahnspur",
   "prefs.delayDefault": "Annahmenbibliothek: {value} %",
   "prefs.delayReset": "Wert der Bibliothek verwenden",
+  "prefs.stationsTitle": "Stationen",
+  "prefs.stationsIntro":
+    "Gleichnamige Haltestellen innerhalb dieser Entfernung gelten im Liniennetzplan, in der Reiseplanung und in den Nutzen- und Fahrgasttabellen als eine Station.",
+  "prefs.libraryM": "Annahmenbibliothek: {value} m",
   "prefs.currencyTitle": "Währung",
   "prefs.currencyIntro":
     "Alle Geldbeträge des Projekts werden in dieser Währung angezeigt: Kostentabellen, Nutzen, Szenarien und die Einsparungen des Lastenrads.",

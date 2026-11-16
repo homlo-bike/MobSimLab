@@ -278,6 +278,10 @@ export const bn: Messages = {
   "prefs.delayLane": "রং দিয়ে আঁকা বাস বা ট্রাম লেনে",
   "prefs.delayDefault": "অনুমান লাইব্রেরি: {value} %",
   "prefs.delayReset": "লাইব্রেরির মান ব্যবহার করুন",
+  "prefs.stationsTitle": "স্টেশন",
+  "prefs.stationsIntro":
+    "এই দূরত্বের মধ্যে একই নামের স্টপগুলো স্কিম্যাটিক মানচিত্র, যাত্রা পরিকল্পক এবং সুবিধা ও যাত্রী সারণিতে একটি স্টেশন হিসেবে গণ্য হয়।",
+  "prefs.libraryM": "অনুমান লাইব্রেরি: {value} মি",
   "prefs.currencyTitle": "মুদ্রা",
   "prefs.currencyIntro":
     "প্রকল্পের সব অর্থ এই মুদ্রায় দেখানো হয়: খরচের সারণি, সুফল, পরিস্থিতি ও কার্গো বাইকের সাশ্রয়।",

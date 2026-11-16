@@ -281,6 +281,10 @@ export const nl: Messages = {
   "prefs.delayLane": "Op een geschilderde bus- of trambaan",
   "prefs.delayDefault": "Aannamebibliotheek: {value} %",
   "prefs.delayReset": "Waarde van de bibliotheek gebruiken",
+  "prefs.stationsTitle": "Stations",
+  "prefs.stationsIntro":
+    "Haltes met dezelfde naam binnen deze afstand tellen als één station in de netkaart, de reisplanner en de baten- en reizigerstabellen.",
+  "prefs.libraryM": "Aannamebibliotheek: {value} m",
   "prefs.currencyTitle": "Valuta",
   "prefs.currencyIntro":
     "Alle bedragen in het project worden in deze valuta getoond: de kostentabellen, de baten, de scenario's en de besparingen van de bakfiets.",

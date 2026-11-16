@@ -3,7 +3,7 @@ import { fmtMoney, modeLabel } from "../costs/CostTables";
 import type { Estimate as CostEstimate } from "../costs/model";
 import { loadWasmReach } from "../journey-planner/engine";
 import type { ReachLoader, Timetable } from "../journey-planner/types";
-import { type PreferencesDoc, withPref } from "../../workspace/preferences";
+import { type PreferencesDoc, sameNameStationM, withPref } from "../../workspace/preferences";
 import { formulaProblem } from "./formula";
 import {
   type BenefitsDoc,
@@ -151,7 +151,8 @@ export function BenefitTables({
   const [accError, setAccError] = useState<string | null>(null);
   const [scope, setScope] = useState("total");
 
-  const net = useMemo(() => (timetable ? networkOf(timetable) : null), [timetable]);
+  const sameNameM = sameNameStationM(prefs);
+  const net = useMemo(() => (timetable ? networkOf(timetable, sameNameM) : null), [timetable, sameNameM]);
   // Catchment circles: the key changes only when stations or catchment sizes change.
   const areas = useMemo(() => (timetable ? catchments(timetable, prefs) : []), [timetable, prefs]);
   const areasKey = JSON.stringify(areas);

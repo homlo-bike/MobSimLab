@@ -283,6 +283,10 @@ export const uz: Messages = {
   "prefs.delayLane": "Boʻyalgan avtobus yoki tramvay yoʻlagida",
   "prefs.delayDefault": "Farazlar kutubxonasi: {value} %",
   "prefs.delayReset": "Kutubxona qiymatidan foydalanish",
+  "prefs.stationsTitle": "Stansiyalar",
+  "prefs.stationsIntro":
+    "Shu masofadagi bir xil nomli bekatlar sxematik xaritada, sayohat rejalashtiruvchida hamda foyda va yo'lovchilar jadvallarida bitta stansiya hisoblanadi.",
+  "prefs.libraryM": "Farazlar kutubxonasi: {value} m",
   "prefs.currencyTitle": "Valyuta",
   "prefs.currencyIntro":
     "Loyihadagi barcha pul miqdorlari shu valyutada ko‘rsatiladi: xarajat jadvallari, foydalar, ssenariylar va yuk velosipedi tejamlari.",

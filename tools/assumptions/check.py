@@ -64,6 +64,7 @@ AGENT_GLOBAL_FIELDS = {
     "cycle_speed_kmh": "analysis.cycle_speed_kmh",
     "frequent_headway_min": "analysis.frequent_headway_min",
     "min_change_s": "journey.min_change_s",
+    "same_name_station_m": "journey.same_name_station_m",
 }
 RAIL_MODES = [
     "tram",
