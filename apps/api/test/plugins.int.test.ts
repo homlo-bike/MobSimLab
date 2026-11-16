@@ -237,6 +237,9 @@ describe("plugins", () => {
     expect(glue.status).toBe(200);
     expect(glue.headers["content-type"]).toContain("text/javascript");
     expect(String(glue.text)).toContain("export function instantiate");
+    const names = (await as("bob").get(code.replace("glue.js", "files.json"))).body as string[];
+    expect(names).toContain("glue.core.wasm");
+    expect(names).toContain("glue.js");
     const wasm = await as("bob").get(code.replace("glue.js", "glue.core.wasm")).buffer(true);
     expect(wasm.headers["content-type"]).toBe("application/wasm");
     // Non-members get nothing.

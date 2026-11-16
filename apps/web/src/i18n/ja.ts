@@ -3,6 +3,7 @@ import { editorsJa } from "./editors/ja";
 import { cargoBikeJa } from "./cargo-bike/ja";
 import { depotsJa } from "./depots/ja";
 import { mslabJa } from "./mslab/ja";
+import { pluginCodeJa } from "./plugin-code/ja";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -384,6 +385,7 @@ export const ja: Messages = {
   ...cargoBikeJa,
   ...depotsJa,
   ...mslabJa,
+  ...pluginCodeJa,
   ...roadJa,
   ...PLUGIN_MESSAGES.ja,
 };
