@@ -7,12 +7,13 @@ import { Placeholder } from "./Placeholder";
 import type { ProjectPlugin } from "../plugins/registry";
 import { ProjectPlugins } from "./ProjectPlugins";
 import { DesignRulesSection } from "./DesignRules";
+import { DemandParamsSection } from "./DemandParams";
 import { CURRENCY_CODES } from "../features/costs/currencies";
 import { type CurrencyState, NO_CURRENCY, RATE_PREF, withCurrency } from "../features/costs/currency";
 
 /**
  * Preferences tab (mockup "Project preferences"): the project's name, description, study area and modes, which
- * Owners and Editors can change, and the design rules per rail mode. Vehicles, switches, calendar, demand and
+ * Owners and Editors can change, and the design rules per rail mode and the demand model's values. Vehicles, switches, calendar and
  * costs follow.
  */
 export function ProjectPreferences({
@@ -135,6 +136,11 @@ export function ProjectPreferences({
         </form>
         <DesignRulesSection
           projectModes={project.modes}
+          preferences={preferences}
+          editable={editable && !!onPreferences}
+          onPreferences={(d) => onPreferences?.(d)}
+        />
+        <DemandParamsSection
           preferences={preferences}
           editable={editable && !!onPreferences}
           onPreferences={(d) => onPreferences?.(d)}

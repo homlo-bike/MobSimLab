@@ -990,3 +990,102 @@
   access: free
   retrieved: 2026-11-09
   checked_via: none
+
+- id: nchrp-716
+  title: "NCHRP Report 716: Travel Demand Forecasting: Parameters and Techniques (2012): trip rates, friction factors, mode choice coefficients, time-of-day factors"
+  publisher: Transportation Research Board
+  url: https://nap.nationalacademies.org/catalog/14665/travel-demand-forecasting-parameters-and-techniques
+  licence: © National Academy of Sciences; numbers cited as facts
+  access: free
+  retrieved: 2026-11-16
+  checked_via: none
+
+- id: mid-2017
+  title: "Mobilität in Deutschland 2017 (MiD): results report, trips per person and day, purposes, times of day"
+  publisher: Bundesministerium für Verkehr und digitale Infrastruktur (infas, DLR)
+  url: https://www.mobilitaet-in-deutschland.de/archive/publikationen2017.html
+  licence: © BMVI; numbers cited as facts
+  access: free
+  retrieved: 2026-11-16
+  checked_via: none
+
+- id: nhts-2017
+  title: "2017 National Household Travel Survey (US): summary of travel trends, trips per person, purposes, vehicle occupancy"
+  publisher: US Federal Highway Administration
+  url: https://nhts.ornl.gov/
+  licence: US government work, public domain
+  access: free
+  retrieved: 2026-11-16
+  checked_via: none
+
+- id: nts-2019
+  title: "National Travel Survey: England 2019, trips per person per year by purpose"
+  publisher: UK Department for Transport
+  url: https://www.gov.uk/government/statistics/national-travel-survey-2019
+  licence: Open Government Licence v3.0
+  access: free
+  retrieved: 2026-11-16
+  checked_via: none
+
+- id: ite-trip-generation
+  title: "ITE Trip Generation Manual, 11th edition: hospital and medical office trip rates"
+  publisher: Institute of Transportation Engineers
+  url: https://www.ite.org/technical-resources/topics/trip-and-parking-generation/
+  licence: © ITE; numbers cited as facts
+  access: paywalled
+  retrieved: 2026-11-16
+  checked_via: none
+
+- id: ortuzar-willumsen-2011
+  title: "Ortúzar, J. de D. and Willumsen, L. G.: Modelling Transport, 4th edition (Wiley, 2011): intrazonal costs, gravity models, nested logit"
+  publisher: Wiley
+  url: https://doi.org/10.1002/9781119993308
+  licence: © Wiley; numbers cited as facts
+  access: paywalled
+  retrieved: 2026-11-16
+  checked_via: none
+
+- id: wardman-2004
+  title: "Wardman, M.: Public transport values of time, Transport Policy 11(4), 363–377 (2004): walk, wait and interchange weights"
+  publisher: Elsevier
+  url: https://doi.org/10.1016/j.tranpol.2004.05.001
+  licence: © Elsevier; numbers cited as facts
+  access: paywalled
+  retrieved: 2026-11-16
+  checked_via: none
+
+- id: tag-m2
+  title: "TAG unit M2.1: Variable Demand Modelling, illustrative nest scale parameters"
+  publisher: UK Department for Transport
+  url: https://www.gov.uk/government/publications/tag-unit-m2-1-variable-demand-modelling
+  licence: Open Government Licence v3.0
+  access: free
+  retrieved: 2026-11-16
+  checked_via: none
+
+- id: tag-m3-1
+  title: "TAG unit M3.1: Highway Assignment Modelling, convergence criteria (relative gap)"
+  publisher: UK Department for Transport
+  url: https://www.gov.uk/government/publications/tag-unit-m3-1-highway-assignment-modelling
+  licence: Open Government Licence v3.0
+  access: free
+  retrieved: 2026-11-16
+  checked_via: none
+
+- id: usdot-vot-2016
+  title: "US DOT: Revised Departmental Guidance on Valuation of Travel Time in Economic Analysis (2016)"
+  publisher: US Department of Transportation
+  url: https://www.transportation.gov/office-policy/transportation-policy/revised-departmental-guidance-valuation-travel-time-economic
+  licence: US government work, public domain
+  access: free
+  retrieved: 2026-11-16
+  checked_via: none
+
+- id: bpr-1964
+  title: "Bureau of Public Roads: Traffic Assignment Manual (1964), volume-delay function"
+  publisher: US Department of Commerce, Bureau of Public Roads
+  url: https://catalog.hathitrust.org/Record/001314064
+  licence: US government work, public domain
+  access: free
+  retrieved: 2026-11-16
+  checked_via: none
