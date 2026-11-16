@@ -5,6 +5,7 @@ import { cargoBikeId } from "./cargo-bike/id";
 import { commentsId } from "./comments/id";
 import { depotsId } from "./depots/id";
 import { geodataId } from "./geodata/id";
+import { tablesId } from "./tables/id";
 import { fleetId } from "./fleet/id";
 import { timetablesId } from "./timetables/id";
 import { mslabId } from "./mslab/id";
@@ -503,6 +504,7 @@ export const id: Messages = {
   ...cargoBikeId,
   ...depotsId,
   ...geodataId,
+  ...tablesId,
   ...fleetId,
   ...timetablesId,
   ...commentsId,

@@ -5,6 +5,7 @@ import { cargoBikeIg } from "./cargo-bike/ig";
 import { commentsIg } from "./comments/ig";
 import { depotsIg } from "./depots/ig";
 import { geodataIg } from "./geodata/ig";
+import { tablesIg } from "./tables/ig";
 import { fleetIg } from "./fleet/ig";
 import { timetablesIg } from "./timetables/ig";
 import { mslabIg } from "./mslab/ig";
@@ -501,6 +502,7 @@ export const ig: Messages = {
   ...cargoBikeIg,
   ...depotsIg,
   ...geodataIg,
+  ...tablesIg,
   ...fleetIg,
   ...timetablesIg,
   ...commentsIg,

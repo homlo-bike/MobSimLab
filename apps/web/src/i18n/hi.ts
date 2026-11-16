@@ -5,6 +5,7 @@ import { cargoBikeHi } from "./cargo-bike/hi";
 import { commentsHi } from "./comments/hi";
 import { depotsHi } from "./depots/hi";
 import { geodataHi } from "./geodata/hi";
+import { tablesHi } from "./tables/hi";
 import { fleetHi } from "./fleet/hi";
 import { timetablesHi } from "./timetables/hi";
 import { mslabHi } from "./mslab/hi";
@@ -499,6 +500,7 @@ export const hi: Messages = {
   ...cargoBikeHi,
   ...depotsHi,
   ...geodataHi,
+  ...tablesHi,
   ...fleetHi,
   ...timetablesHi,
   ...commentsHi,

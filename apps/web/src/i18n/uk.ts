@@ -5,6 +5,7 @@ import { cargoBikeUk } from "./cargo-bike/uk";
 import { commentsUk } from "./comments/uk";
 import { depotsUk } from "./depots/uk";
 import { geodataUk } from "./geodata/uk";
+import { tablesUk } from "./tables/uk";
 import { fleetUk } from "./fleet/uk";
 import { timetablesUk } from "./timetables/uk";
 import { mslabUk } from "./mslab/uk";
@@ -504,6 +505,7 @@ export const uk: Messages = {
   ...cargoBikeUk,
   ...depotsUk,
   ...geodataUk,
+  ...tablesUk,
   ...fleetUk,
   ...timetablesUk,
   ...commentsUk,

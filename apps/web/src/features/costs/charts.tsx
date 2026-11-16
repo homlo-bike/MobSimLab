@@ -2,28 +2,30 @@ import { type ReactNode, useState } from "react";
 import type { Category, Estimate } from "./model";
 import { isConstruction, sum } from "./model";
 import type { Triple } from "./params";
+import { useI18n } from "../../i18n/i18n";
+import type { MessageKey } from "../../i18n/messages";
 
 /**
  * Charts of the cost tables (ADR-0039). Colours are the data-viz reference palette's first five categorical
  * slots, in fixed order, validated for colour vision deficiency on the light surface; three of them are below
  * 3:1 contrast, so every chart has a legend with values and the tables below give every number as text.
  */
-export const GROUPS: { id: string; label: string; cats: Category[]; color: string }[] = [
+export const GROUPS: { id: string; label: MessageKey; cats: Category[]; color: string }[] = [
   {
     id: "alignment",
-    label: "Track and structures",
+    label: "cost.group.alignment",
     cats: ["at_grade", "elevated", "viaduct", "bridge", "ramp", "cut_and_cover", "tbm"],
     color: "#2a78d6",
   },
   {
     id: "systems",
-    label: "Systems and street works",
+    label: "cost.group.systems",
     cats: ["systems", "switches", "street_works"],
     color: "#eb6834",
   },
-  { id: "stations", label: "Stations and stops", cats: ["stations"], color: "#1baf7a" },
-  { id: "fleet", label: "Vehicles and depots", cats: ["vehicles", "depots"], color: "#eda100" },
-  { id: "soft", label: "Design and contingency", cats: ["engineering", "contingency"], color: "#e87ba4" },
+  { id: "stations", label: "cost.group.stations", cats: ["stations"], color: "#1baf7a" },
+  { id: "fleet", label: "cost.group.fleet", cats: ["vehicles", "depots"], color: "#eda100" },
+  { id: "soft", label: "cost.group.soft", cats: ["engineering", "contingency"], color: "#e87ba4" },
 ];
 
 /** Sequential single hue for one-series bars. */
@@ -73,6 +75,7 @@ export function CompositionChart({
   money: (v: number) => string;
   labelOf: (mode: string) => string;
 }) {
+  const { t } = useI18n();
   const { show, hide, bubble } = useTip();
   const rowOf = (mode: string | null) =>
     GROUPS.map((g) =>
@@ -84,13 +87,13 @@ export function CompositionChart({
     );
   const rows = [
     ...est.modes.map((m) => ({ id: m, label: labelOf(m), parts: rowOf(m) })),
-    ...(est.modes.length > 1 ? [{ id: "*", label: "Total", parts: rowOf(null) }] : []),
+    ...(est.modes.length > 1 ? [{ id: "*", label: t("tbl.total"), parts: rowOf(null) }] : []),
   ];
   const totals = rows.map((r) => r.parts.reduce((s, p) => s + p[1], 0));
   const max = Math.max(...totals, 1);
   const present = GROUPS.filter((_, i) => rows.some((r) => r.parts[i]![1] > 0));
   return (
-    <figure className="m-0" aria-label="Construction cost by mode and cost group">
+    <figure className="m-0" aria-label={t("cost.chartAria")}>
       <ul className="m-0 flex list-none flex-wrap gap-x-4 gap-y-1 p-0 text-xs text-slate-700">
         {present.map((g) => (
           <li key={g.id} className="flex items-center gap-1.5">
@@ -99,7 +102,7 @@ export function CompositionChart({
               style={{ background: g.color }}
               aria-hidden="true"
             />
-            {g.label}
+            {t(g.label)}
           </li>
         ))}
       </ul>
@@ -117,7 +120,7 @@ export function CompositionChart({
                 const pct = Math.round((v[1] / totals[ri]!) * 100);
                 const body = (
                   <>
-                    <b className="font-semibold">{r.label}</b> · {g.label}
+                    <b className="font-semibold">{r.label}</b> · {t(g.label)}
                     <br />
                     {money(v[1])} ({pct} %), {money(v[0])} – {money(v[2])}
                   </>
@@ -127,7 +130,7 @@ export function CompositionChart({
                     key={g.id}
                     tabIndex={0}
                     role="img"
-                    aria-label={`${r.label}, ${g.label}: ${money(v[1])}, ${pct} %`}
+                    aria-label={`${r.label}, ${t(g.label)}: ${money(v[1])}, ${pct} %`}
                     className="h-full min-w-[3px] first:rounded-l last:rounded-r focus:outline-2 focus:outline-offset-1 focus:outline-slate-900"
                     style={{ flexGrow: v[1], flexBasis: 0, background: g.color }}
                     onMouseMove={(e) => show(e, body)}
@@ -165,6 +168,7 @@ export function BarList({
   money: (v: number) => string;
   label: string;
 }) {
+  const { t } = useI18n();
   const { show, hide, bubble } = useTip();
   const sorted = rows.filter((r) => r.value[2] > 0).sort((a, b) => b.value[1] - a.value[1]);
   const max = Math.max(...sorted.map((r) => r.value[2]), 1);
@@ -177,16 +181,21 @@ export function BarList({
             <>
               <b className="font-semibold">{r.label}</b>
               <br />
-              medium {money(r.value[1])}
+              {t("cost.barMedium", { value: money(r.value[1]) })}
               <br />
-              low {money(r.value[0])}, high {money(r.value[2])}
+              {t("cost.barLowHigh", { low: money(r.value[0]), high: money(r.value[2]) })}
             </>
           );
           return (
             <div
               key={r.id}
               tabIndex={0}
-              aria-label={`${r.label}: ${money(r.value[1])}, from ${money(r.value[0])} to ${money(r.value[2])}`}
+              aria-label={t("cost.barAria", {
+                label: r.label,
+                medium: money(r.value[1]),
+                low: money(r.value[0]),
+                high: money(r.value[2]),
+              })}
               className="grid grid-cols-[1fr_auto] gap-y-1 sm:grid-cols-[minmax(8rem,15rem)_1fr_auto] items-center gap-2 rounded text-sm focus:outline-2 focus:outline-slate-900"
               onMouseMove={(e) => show(e, body)}
               onFocus={(e) => show(e, body)}
@@ -212,9 +221,7 @@ export function BarList({
         })}
         {bubble}
       </div>
-      <figcaption className="mt-2 text-xs text-slate-500">
-        Bar: medium estimate. Line: from low to high.
-      </figcaption>
+      <figcaption className="mt-2 text-xs text-slate-500">{t("cost.barCaption")}</figcaption>
     </figure>
   );
 }

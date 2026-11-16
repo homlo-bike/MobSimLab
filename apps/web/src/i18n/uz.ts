@@ -5,6 +5,7 @@ import { cargoBikeUz } from "./cargo-bike/uz";
 import { commentsUz } from "./comments/uz";
 import { depotsUz } from "./depots/uz";
 import { geodataUz } from "./geodata/uz";
+import { tablesUz } from "./tables/uz";
 import { fleetUz } from "./fleet/uz";
 import { timetablesUz } from "./timetables/uz";
 import { mslabUz } from "./mslab/uz";
@@ -507,6 +508,7 @@ export const uz: Messages = {
   ...cargoBikeUz,
   ...depotsUz,
   ...geodataUz,
+  ...tablesUz,
   ...fleetUz,
   ...timetablesUz,
   ...commentsUz,

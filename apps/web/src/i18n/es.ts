@@ -5,6 +5,7 @@ import { cargoBikeEs } from "./cargo-bike/es";
 import { commentsEs } from "./comments/es";
 import { depotsEs } from "./depots/es";
 import { geodataEs } from "./geodata/es";
+import { tablesEs } from "./tables/es";
 import { fleetEs } from "./fleet/es";
 import { timetablesEs } from "./timetables/es";
 import { mslabEs } from "./mslab/es";
@@ -505,6 +506,7 @@ export const es: Messages = {
   ...cargoBikeEs,
   ...depotsEs,
   ...geodataEs,
+  ...tablesEs,
   ...fleetEs,
   ...timetablesEs,
   ...commentsEs,

@@ -5,6 +5,7 @@ import { cargoBikeIt } from "./cargo-bike/it";
 import { commentsIt } from "./comments/it";
 import { depotsIt } from "./depots/it";
 import { geodataIt } from "./geodata/it";
+import { tablesIt } from "./tables/it";
 import { fleetIt } from "./fleet/it";
 import { timetablesIt } from "./timetables/it";
 import { mslabIt } from "./mslab/it";
@@ -501,6 +502,7 @@ export const it: Messages = {
   ...cargoBikeIt,
   ...depotsIt,
   ...geodataIt,
+  ...tablesIt,
   ...fleetIt,
   ...timetablesIt,
   ...commentsIt,

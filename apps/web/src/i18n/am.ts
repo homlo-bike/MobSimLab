@@ -5,6 +5,7 @@ import { cargoBikeAm } from "./cargo-bike/am";
 import { commentsAm } from "./comments/am";
 import { depotsAm } from "./depots/am";
 import { geodataAm } from "./geodata/am";
+import { tablesAm } from "./tables/am";
 import { fleetAm } from "./fleet/am";
 import { timetablesAm } from "./timetables/am";
 import { mslabAm } from "./mslab/am";
@@ -486,6 +487,7 @@ export const am: Messages = {
   ...cargoBikeAm,
   ...depotsAm,
   ...geodataAm,
+  ...tablesAm,
   ...fleetAm,
   ...timetablesAm,
   ...commentsAm,

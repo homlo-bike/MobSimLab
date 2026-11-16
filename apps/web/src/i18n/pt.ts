@@ -5,6 +5,7 @@ import { cargoBikePt } from "./cargo-bike/pt";
 import { commentsPt } from "./comments/pt";
 import { depotsPt } from "./depots/pt";
 import { geodataPt } from "./geodata/pt";
+import { tablesPt } from "./tables/pt";
 import { fleetPt } from "./fleet/pt";
 import { timetablesPt } from "./timetables/pt";
 import { mslabPt } from "./mslab/pt";
@@ -505,6 +506,7 @@ export const pt: Messages = {
   ...cargoBikePt,
   ...depotsPt,
   ...geodataPt,
+  ...tablesPt,
   ...fleetPt,
   ...timetablesPt,
   ...commentsPt,

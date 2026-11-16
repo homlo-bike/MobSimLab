@@ -5,6 +5,7 @@ import { cargoBikeFr } from "./cargo-bike/fr";
 import { commentsFr } from "./comments/fr";
 import { depotsFr } from "./depots/fr";
 import { geodataFr } from "./geodata/fr";
+import { tablesFr } from "./tables/fr";
 import { fleetFr } from "./fleet/fr";
 import { timetablesFr } from "./timetables/fr";
 import { mslabFr } from "./mslab/fr";
@@ -508,6 +509,7 @@ export const fr: Messages = {
   ...cargoBikeFr,
   ...depotsFr,
   ...geodataFr,
+  ...tablesFr,
   ...fleetFr,
   ...timetablesFr,
   ...commentsFr,

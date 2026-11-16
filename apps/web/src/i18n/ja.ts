@@ -5,6 +5,7 @@ import { cargoBikeJa } from "./cargo-bike/ja";
 import { commentsJa } from "./comments/ja";
 import { depotsJa } from "./depots/ja";
 import { geodataJa } from "./geodata/ja";
+import { tablesJa } from "./tables/ja";
 import { fleetJa } from "./fleet/ja";
 import { timetablesJa } from "./timetables/ja";
 import { mslabJa } from "./mslab/ja";
@@ -493,6 +494,7 @@ export const ja: Messages = {
   ...cargoBikeJa,
   ...depotsJa,
   ...geodataJa,
+  ...tablesJa,
   ...fleetJa,
   ...timetablesJa,
   ...commentsJa,
