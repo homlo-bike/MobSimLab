@@ -22,6 +22,8 @@ import { coverPoints, type Design, designSources, hasLines, type RoadRunInput } 
 import { drawNoise, removeNoise } from "./mapLayer";
 import { NoiseResult } from "./NoiseResult";
 import { type Computed, type Difference, type Done, FROM_DB } from "./result";
+import type { SavedPluginLine } from "../../kits/saved";
+import { pluginSources } from "./sources";
 import { buildingsBbox, fetchPopulation, type PopulationFetcher, type PopulationSource } from "./population";
 import { fetchHeights, type HeightsFetcher, loadTerrain, terrainPlan } from "./terrain";
 import type {
@@ -49,6 +51,8 @@ interface Props {
   map: MapLibreMap | null;
   streetLines: StreetLinesDoc | null;
   railway: Network | null;
+  /** Cable car and ferry lines saved with the project, by plugin tool. */
+  pluginLines?: Record<string, SavedPluginLine>;
   /** Project preferences: `noise.*` values replace the plugin's assumptions. */
   preferences?: Record<string, number>;
   /** Scenarios saved in the Tables tab, to compute or compare with. */
@@ -76,6 +80,8 @@ function abortable<T>(p: Promise<T>, signal: AbortSignal): Promise<T> {
     p.then(resolve, reject).finally(() => signal.removeEventListener("abort", stop));
   });
 }
+
+const NO_PLUGIN_LINES: Record<string, SavedPluginLine> = {};
 
 /** Wait for a first-time WorldPop download for up to this long by default (a large country takes minutes). */
 const POP_WAIT_MS = 15 * 60_000;
@@ -121,6 +127,7 @@ export function NoiseMap({
   map,
   streetLines,
   railway,
+  pluginLines = NO_PLUGIN_LINES,
   preferences,
   scenarios,
   roadRuns,
@@ -153,7 +160,14 @@ export function NoiseMap({
   };
   const main = design(mainId) ?? design(CURRENT)!;
   const other = otherId ? design(otherId) : null;
-  const ready = hasLines(main.design) || (!!other && hasLines(other.design));
+  // Cable car and ferry lines are saved with the project, not with a scenario: they belong to the current design.
+  const pointsOf = (id: string | null) => (id === CURRENT ? pluginSources(pluginLines) : []);
+  const mainPoints = pointsOf(design(mainId) ? mainId : CURRENT);
+  const otherPoints = other ? pointsOf(otherId) : [];
+  const ready =
+    hasLines(main.design) ||
+    mainPoints.length > 0 ||
+    (!!other && (hasLines(other.design) || otherPoints.length > 0));
   const missingRun = level === "simulated" && (!runIds[0] || (!!other && !runIds[1]));
 
   useEffect(
@@ -238,12 +252,15 @@ export function NoiseMap({
       const linesA = await abortable(collect(main, runIds[0]), signal);
       const linesB = other ? await abortable(collect(other, runIds[1]), signal) : null;
       signal.throwIfAborted();
-      if (!linesA.length && !linesB?.length) {
+      if (!linesA.length && !linesB?.length && !mainPoints.length && !otherPoints.length) {
         setStatus({ kind: "error", text: tNow("noise.drawFirst") });
         return;
       }
       let buildings: NoiseBuilding[] | null = null;
-      const points = [...linesA, ...(linesB ?? [])].flatMap((l) => l.points);
+      const points = [
+        ...[...linesA, ...(linesB ?? [])].flatMap((l) => l.points),
+        ...[...mainPoints, ...otherPoints].map((x) => x.p),
+      ];
       const reach = paramNumber("noise.map_reach_m", preferences);
       if (withBuildings) {
         index++;
@@ -305,19 +322,22 @@ export function NoiseMap({
       };
       // Compared scenarios share one grid: the same cover points and projection origin.
       if (linesB) {
-        const cover = coverPoints([...linesA, ...linesB]);
+        const cover = [
+          ...coverPoints([...linesA, ...linesB]),
+          ...[...mainPoints, ...otherPoints].map((x) => x.p),
+        ];
         Object.assign(common, { grid_cover: cover, origin: cover[0] });
       }
       index++;
       step(tNow(linesB ? "noise.computingOf" : "noise.computing", { name: main.name }));
-      const a = await runNoise({ ...common, lines: linesA }, FROM_DB, signal);
+      const a = await runNoise({ ...common, lines: linesA, point_sources: mainPoints }, FROM_DB, signal);
       signal.throwIfAborted();
       let b: Computed | null = null;
       let difference: Difference | null = null;
       if (linesB && other) {
         index++;
         step(tNow("noise.computingOf", { name: other.name }));
-        const r = await runNoise({ ...common, lines: linesB }, FROM_DB, signal);
+        const r = await runNoise({ ...common, lines: linesB, point_sources: otherPoints }, FROM_DB, signal);
         signal.throwIfAborted();
         b = { name: other.name, view: r.view, images: r.images, levels: r.levels ?? null };
         difference = differenceOf(a.view, a.levels ?? null, r.levels ?? null);

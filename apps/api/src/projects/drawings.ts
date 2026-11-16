@@ -236,6 +236,28 @@ const cargoBike = z.looseObject({
     .optional(),
 });
 
+/**
+ * Lines of the plugin tools that draw on a core kit (cable cars and people movers on straight spans, ferries on a
+ * water route), by tool id: the planner's drawing, the line the journey planner rides and the shape the noise map
+ * needs, as the tool last built them.
+ */
+const pluginLines = z.looseObject({
+  tools: z
+    .record(
+      z
+        .string()
+        .regex(/^[a-z0-9-]+$/)
+        .max(60),
+      z.looseObject({
+        kit: z.enum(["straight-spans", "water-route"]),
+        doc: z.looseObject({}),
+        line: z.looseObject({}).nullable(),
+        noise: z.looseObject({}).nullable(),
+      }),
+    )
+    .refine((v) => Object.keys(v).length <= 50, "at most 50 tools"),
+});
+
 /** Road depots shared by the street lines (contracts/depot.schema.json): outline, gates, zones and layout. */
 const depots = z.looseObject({
   depots: z
@@ -346,6 +368,8 @@ export const DRAWING_KINDS = {
   regions: { schema: regions, schemaVersion: 1 },
   /** Cargo bike tab of the cargo bike plugin: start point, destination and the project's own values. */
   "cargo-bike": { schema: cargoBike, schemaVersion: 1 },
+  /** Cable car, people mover and ferry lines of the plugin tools (straight spans and water route kits). */
+  "plugin-lines": { schema: pluginLines, schemaVersion: 1 },
   /** Road depots (07-simulation §7), shared by the street lines whose vehicles fit. */
   depots: { schema: depots, schemaVersion: 1 },
   /** The project's own vehicle types and its individual vehicles (08-vehicles.md §1, §4). */
