@@ -1,0 +1,355 @@
+# Parameters of the energy plugin (assumptions/README.md format), with the context key `mode`.
+# Every entry starts unverified. Checked by tools/plugins/check.py.
+
+- key: energy.electric_share
+  label: Share of vehicle-km run on electricity
+  group: Energy and emissions
+  unit: share
+  used_by:
+    - energy
+    - emissions
+  values:
+    - context:
+        mode: "*"
+      low: 0
+      central: 1
+      high: 1
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Rail and trolleybus lines run under the wire; a diesel regional line sets 0.
+    - context:
+        mode:
+          - bus
+          - brt
+          - intercity_bus
+      low: 0
+      central: 0
+      high: 1
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        Share of the line's buses that are battery electric; 0 is an all-diesel fleet. Set the project's
+        fleet plan in Project Preferences.
+    - context:
+        mode: regional_rail
+      low: 0
+      central: 1
+      high: 1
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Electrified by default; set 0 for a line run with diesel units.
+- key: energy.electric_kwh_per_vkm
+  label: Electricity per vehicle-km, street modes
+  group: Energy and emissions
+  unit: kWh/vehicle-km
+  used_by:
+    - energy
+  values:
+    - context:
+        mode: "*"
+      low: 1.0
+      central: 1.15
+      high: 1.7
+      basis: documented
+      sources:
+        - viriciti-ebus-consumption
+        - thermal-science-ebus-review
+      check: unverified
+      rationale:
+        "12 m battery bus: 1.15 kWh/km measured over 10 months (ViriCiti), 1.3 to 1.7 kWh/km in reviews;
+        more with electric heating."
+    - context:
+        mode: brt
+      low: 1.4
+      central: 1.7
+      high: 2.4
+      basis: educated-guess
+      sources:
+        - viriciti-ebus-consumption
+        - mobsimlab-derivation
+      check: unverified
+      rationale: "18 m articulated battery bus: about 1.5 times a 12 m bus."
+    - context:
+        mode: intercity_bus
+      low: 0.9
+      central: 1.1
+      high: 1.4
+      basis: educated-guess
+      sources:
+        - viriciti-ebus-consumption
+        - mobsimlab-derivation
+      check: unverified
+      rationale: "Battery coach: fewer stops than a city bus, more speed; about a city bus."
+    - context:
+        mode: trolleybus
+      low: 1.3
+      central: 1.6
+      high: 2.2
+      basis: educated-guess
+      sources:
+        - thermal-science-ebus-review
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        "12 to 18 m trolleybus at the substation: a battery bus's traction plus about 10 % line and rectifier
+        losses."
+- key: energy.electric_wh_per_place_km
+  label: Electricity per place-km, rail
+  group: Energy and emissions
+  unit: Wh/place-km
+  used_by:
+    - energy
+  values:
+    - context:
+        mode: "*"
+      low: 0
+      central: 0
+      high: 0
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: "0: the mode's value per vehicle-km applies (street modes)."
+    - context:
+        mode:
+          - tram
+          - light_rail
+      low: 10
+      central: 15
+      high: 25
+      basis: documented
+      sources:
+        - lille-tram-energy-simulation
+        - mobsimlab-derivation
+      check: unverified
+      rationale: About 3.1 kWh per tram-km (Lille) for a tram of about 200 places at the substation.
+    - context:
+        mode: metro
+      low: 6
+      central: 9
+      high: 15
+      basis: documented
+      sources:
+        - tianjin-metro-traction-energy
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        Median 2.0 kWh per car-km (Tianjin) for a car of about 230 places; more with older trains and without
+        regenerative braking.
+    - context:
+        mode: commuter_rail
+      low: 15
+      central: 25
+      high: 40
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        "Electric multiple unit at 120 to 160 km/h with frequent stops: higher speed and fewer places per
+        metre than a metro."
+    - context:
+        mode:
+          - regional_rail
+          - long_distance_rail
+      low: 20
+      central: 30
+      high: 45
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Electric regional and intercity trains at 160 to 200 km/h; per place offered, seats mostly.
+    - context:
+        mode: high_speed_rail
+      low: 25
+      central: 40
+      high: 60
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Aerodynamic drag grows with the square of speed; at 300 km/h about 40 Wh per seat-km.
+- key: energy.diesel_l_per_vkm
+  label: Diesel per vehicle-km, street modes
+  group: Energy and emissions
+  unit: L/vehicle-km
+  used_by:
+    - energy
+    - emissions
+  values:
+    - context:
+        mode: "*"
+      low: 0.3
+      central: 0.39
+      high: 0.5
+      basis: documented
+      sources:
+        - thermal-science-ebus-review
+      check: unverified
+      rationale: "12 m diesel city bus: 3.90 kWh of fuel per km measured, about 0.39 L/km at 10 kWh/L."
+    - context:
+        mode: brt
+      low: 0.45
+      central: 0.55
+      high: 0.65
+      basis: educated-guess
+      sources:
+        - thermal-science-ebus-review
+        - mobsimlab-derivation
+      check: unverified
+      rationale: "18 m articulated diesel bus: about 1.4 times a 12 m bus."
+    - context:
+        mode: intercity_bus
+      low: 0.24
+      central: 0.28
+      high: 0.35
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Coach at steady speed on interurban roads.
+- key: energy.diesel_ml_per_place_km
+  label: Diesel per place-km, rail
+  group: Energy and emissions
+  unit: mL/place-km
+  used_by:
+    - energy
+    - emissions
+  values:
+    - context:
+        mode: "*"
+      low: 0
+      central: 0
+      high: 0
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: "0: the mode's value per vehicle-km applies (street modes)."
+    - context:
+        mode:
+          - tram
+          - light_rail
+          - metro
+          - commuter_rail
+          - regional_rail
+          - long_distance_rail
+          - high_speed_rail
+      low: 3
+      central: 5
+      high: 8
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        "Diesel multiple unit: about 1.2 L per train-km for about 250 places. Used for the share not run
+        on electricity."
+- key: energy.charging_loss_share
+  label: Charging loss, share of the energy taken from the battery
+  group: Energy and emissions
+  unit: share
+  used_by:
+    - energy
+  values:
+    - context:
+        mode: "*"
+      low: 0
+      central: 0
+      high: 0
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Rail and trolleybus energy is counted at the substation, with its losses.
+    - context:
+        mode:
+          - bus
+          - brt
+          - intercity_bus
+      low: 0.05
+      central: 0.1
+      high: 0.15
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Charger and battery losses between the grid and the battery of a battery bus.
+- key: energy.grid_kg_co2e_per_kwh
+  label: Emission intensity of grid electricity
+  group: Energy and emissions
+  unit: kg CO2e/kWh
+  used_by:
+    - emissions
+  values:
+    - context:
+        mode: "*"
+      low: 0.02
+      central: 0.2
+      high: 0.8
+      basis: documented
+      sources:
+        - eea-electricity-ghg-intensity
+      check: unverified
+      rationale:
+        EU average about 0.20 in 2023 (20 % below 2022); from about 0.02 (hydro and nuclear grids) to 0.8
+        (coal grids). Set the project's own country or green power contract.
+- key: energy.diesel_ttw_kg_co2e_per_l
+  label: Diesel emissions burnt, tank-to-wheel
+  group: Energy and emissions
+  unit: kg CO2e/L
+  used_by:
+    - emissions
+  values:
+    - context:
+        mode: "*"
+      low: 2.51
+      central: 2.66
+      high: 2.7
+      basis: documented
+      sources:
+        - desnz-ghg-conversion-factors-2024
+      check: unverified
+      rationale: 2.66 for mineral diesel; about 2.51 for the average biofuel blend at the pump.
+- key: energy.diesel_wtt_kg_co2e_per_l
+  label: Diesel emissions upstream, well-to-tank
+  group: Energy and emissions
+  unit: kg CO2e/L
+  used_by:
+    - emissions
+  values:
+    - context:
+        mode: "*"
+      low: 0.55
+      central: 0.61
+      high: 0.65
+      basis: documented
+      sources:
+        - desnz-ghg-conversion-factors-2024
+      check: unverified
+      rationale: Extraction, refining and delivery of diesel, so it compares with electricity counted at generation.
+- key: energy.diesel_kwh_per_l
+  label: Energy content of diesel
+  group: Energy and emissions
+  unit: kWh/L
+  used_by:
+    - energy
+  values:
+    - context:
+        mode: "*"
+      low: 9.8
+      central: 10.0
+      high: 10.1
+      basis: educated-guess
+      sources:
+        - desnz-ghg-conversion-factors-2024
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Net calorific value of about 36 MJ per litre.

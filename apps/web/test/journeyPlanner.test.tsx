@@ -26,6 +26,7 @@ vi.mock("../src/features/journey-planner/mapLayers", () => ({
   removeLayers: vi.fn(),
   drawNetwork: vi.fn(),
   drawJourney: vi.fn(),
+  drawZones: vi.fn(),
 }));
 
 import { clock, duration, parseClock } from "../src/features/journey-planner/format";

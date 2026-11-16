@@ -30,6 +30,10 @@ export interface SpanSystem {
   terminal_dwell_s: number;
   reserve_share: number;
   capacity_ceiling_pphpd?: number;
+  /** Cabins on a rope (default) or people mover trains on a guideway: the words and the vehicle count. */
+  carrier?: "cabin" | "train";
+  /** Prefix of the plugin parameters the findings name (default `ropeway`). */
+  parameter_prefix?: string;
 }
 
 export type StationKind = "terminal" | "intermediate" | "angle";
@@ -145,9 +149,53 @@ export interface WaterView {
 }
 
 /** The kits as the editors use them; tests can inject a fake. */
+/** The on-demand system of the service zone kit, from the plugin's `drt.*` values. */
+export interface ZoneSystem {
+  speed_kmh: number;
+  network_factor: number;
+  stop_dwell_s: number;
+  vehicle_places: number;
+  target_utilisation: number;
+  pooling_detour_share: number;
+  max_wait_s: number;
+  riders_per_request: number;
+}
+
+export interface ZoneInput {
+  ring: LonLat[];
+  requests_per_hour: number;
+  fleet: number;
+  start_s: number;
+  end_s: number;
+  system: ZoneSystem;
+  parameter_prefix?: string;
+}
+
+/** The service zone kit's estimate (`mode_kits::zone::ZoneView`). */
+export interface ZoneView {
+  area_km2: number;
+  mean_straight_km: number;
+  mean_trip_km: number;
+  vehicles_needed: number;
+  utilisation: number;
+  /** null when the fleet cannot keep up. */
+  wait_s: number | null;
+  ride_s: number;
+  door_to_door_s: number | null;
+  mean_occupancy: number;
+  ride_s_per_km: number;
+  ride_fixed_s: number;
+  service_hours: number;
+  requests_per_day: number;
+  vehicle_hours_per_day: number;
+  vehicle_km_per_day: number;
+  issues: Issue[];
+}
+
 export interface Kits {
   buildSpanLine(line: SpanLine): SpanView;
   buildWaterLine(line: WaterLine): WaterView;
+  estimateZone(zone: ZoneInput): ZoneView;
 }
 
 export type KitsLoader = () => Promise<Kits>;
