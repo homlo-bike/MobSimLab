@@ -1,0 +1,62 @@
+/// MobSimLab plugin API, version 1 (ADR-0036 §4, Phase 2).
+///
+/// A plugin's code is a WebAssembly component that targets one of the worlds below. Data goes in and out as
+/// JSON text against MobSimLab's published contracts (`contracts/*.schema.json`), so MobSimLab's internals can
+/// change without breaking plugins.
+///
+/// A component may import `host` and nothing else: no WASI, so no files, network, clock, environment or
+/// randomness. MobSimLab refuses a component with any other import when it is installed.
+package mobsimlab:plugin@1.0.0;
+
+/// What MobSimLab offers the plugin while it runs.
+interface host {
+  enum level { debug, info, warn, error }
+
+  /// Write a line to the plugin's log (cut to 500 characters; at most 200 lines a call).
+  log: func(level: level, message: string);
+
+  /// How far the call is, from 0 to 1, for the progress bar.
+  progress: func(done: f32);
+}
+
+/// Types shared by the worlds.
+interface types {
+  /// One file going into an importer or coming out of an exporter.
+  record file {
+    /// The name of the uploaded file, or of the file to write; `/` separates folders.
+    name: string,
+    data: list<u8>,
+  }
+}
+
+/// A calculation (`contributes.calculations`).
+world calculation {
+  import host;
+
+  /// `id`: the calculation's id from the manifest, so one component can serve several.
+  /// `input`: JSON `{ "inputs": { <kind>: … }, "parameters": { <key>: number }, "options": { … } }`, holding
+  /// only the input kinds the calculation declares and the plugin's permissions allow.
+  /// Returns JSON `{ "table"?: …, "grid"?: …, "segments"?: …, "kpis"?: …, "findings"?: … }` with the outputs it
+  /// declares (`contracts/plugin-output.schema.json`), or an error message for the person.
+  export calculate: func(id: string, input: string) -> result<string, string>;
+}
+
+/// An importer (`contributes.importers`): files of a format into a published contract.
+world importer {
+  import host;
+  use types.{file};
+
+  /// `files`: the uploaded file. `options`: a JSON object for later options; `{}` today.
+  /// Returns JSON `{ "timetable": <published-timetable>, "summary": { … } }`, or an error message for the person.
+  export import-files: func(id: string, files: list<file>, options: string) -> result<string, string>;
+}
+
+/// An exporter (`contributes.exporters`): a published contract into files of a format.
+world exporter {
+  import host;
+  use types.{file};
+
+  /// `input`: JSON `{ "timetable": <published-timetable>, "options": { … } }`.
+  /// Returns the files to write; more than one is zipped for download.
+  export export-files: func(id: string, input: string) -> result<list<file>, string>;
+}

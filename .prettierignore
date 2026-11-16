@@ -18,10 +18,14 @@ apps/web/src/features/street-lines/vehicles.ts
 apps/web/src/plugins/bundled.generated.json
 apps/web/src/features/costs/defaults.generated.json
 apps/web/src/features/benefits/defaults.generated.json
+apps/web/src/features/demand/defaults.generated.json
 apps/web/src/features/walk/defaults.generated.json
 apps/web/src/features/depots/defaults.generated.json
 apps/web/src/features/fares/defaults.generated.json
 apps/web/src/features/road-sim/defaults.generated.json
 apps/api/src/plugins/core.generated.json
 apps/web/src/workspace/design-rules.generated.json
+apps/api/test/fixtures/mslab
+apps/api/src/mslab/drawing-schemas.generated.json
+contracts/mslab
 apps/web/src/workspace/parameters.generated.json

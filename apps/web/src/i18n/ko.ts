@@ -3,6 +3,8 @@ import { calendarKo } from "./calendar/ko";
 import { editorsKo } from "./editors/ko";
 import { cargoBikeKo } from "./cargo-bike/ko";
 import { depotsKo } from "./depots/ko";
+import { mslabKo } from "./mslab/ko";
+import { pluginCodeKo } from "./plugin-code/ko";
 import { populationKo } from "./population/ko";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -253,6 +255,7 @@ export const ko: Messages = {
   "gis.title": "GIS",
   "gis.streetsView": "도로",
   "gis.regionsView": "지역",
+  "gis.zonesView": "수요 존",
   "gis.intro": "계산에 쓰이는 정보를 추가하고 편집합니다.",
   "gis.areas": "지역을 그리거나 OpenStreetMap에서 가져오기",
   "gis.streets": "도로 구성: 버스·자전거·트램 차로, 속도, 가선",
@@ -276,6 +279,7 @@ export const ko: Messages = {
   "prefs.delayLane": "도색만 된 버스·트램 차로",
   "prefs.delayDefault": "가정값 라이브러리: {value} %",
   "prefs.delayReset": "라이브러리 값 사용",
+  "prefs.reason": "이 값의 이유(선택 사항)",
   "prefs.stationsTitle": "역",
   "prefs.stationsIntro":
     "이 거리 안의 같은 이름 정류장은 노선도, 경로 탐색, 편익 및 승객 표에서 하나의 역으로 계산됩니다.",
@@ -300,6 +304,21 @@ export const ko: Messages = {
   "prefs.rulesChanged": "{count}개 변경됨",
   "prefs.rulesLibrary": "가정값 라이브러리: {value} {unit}",
   "prefs.rulesLibraryRange": "가정값 라이브러리: {value} {unit} (범위 {low}–{high})",
+  "prefs.demandTitle": "수요 모형",
+  "prefs.demandIntro":
+    "수요 모형이 쓰는 모든 값을 단계별로 보여 줍니다: 존, 통행 발생, 시간대, 통행 분포, 수단 선택, 통행 배정. 이 프로젝트의 값을 바꾸거나 가정 라이브러리 값을 그대로 쓰세요.",
+  "prefs.demandStep": "모형 단계",
+  "prefs.demandSearch": "값 검색",
+  "prefs.demandNone": "일치하는 값이 없습니다.",
+  "prefs.demandStep.zones": "존",
+  "prefs.demandStep.generation": "통행 발생",
+  "prefs.demandStep.periods": "시간대",
+  "prefs.demandStep.distribution": "통행 분포",
+  "prefs.demandStep.mode_choice": "수단 선택",
+  "prefs.demandStep.catchment": "접근 권역",
+  "prefs.demandStep.assignment": "통행 배정",
+  "prefs.demandStep.calibration": "보정",
+  "prefs.demandAll": "모든 단계",
   "prefs.paramsTitle": "모든 매개변수",
   "prefs.paramsIntro":
     "가정 라이브러리의 모든 값입니다. 모든 수단 또는 한 수단에 대해 직접 값을 정하세요. 한 수단의 값이 모든 수단의 값보다 우선합니다. 라이브러리 값은 옆에 표시됩니다.",
@@ -410,6 +429,8 @@ export const ko: Messages = {
   ...editorsKo,
   ...cargoBikeKo,
   ...depotsKo,
+  ...mslabKo,
+  ...pluginCodeKo,
   ...populationKo,
   ...roadKo,
   ...calendarKo,

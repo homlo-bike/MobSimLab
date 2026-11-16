@@ -83,7 +83,7 @@ function stubApi(me: Me | Me[], overrides: Record<string, unknown> = {}) {
     "fetch",
     vi.fn(async (url: string, init?: RequestInit) => {
       const method = init?.method ?? "GET";
-      const body = init?.body ? JSON.parse(String(init.body)) : undefined;
+      const body = typeof init?.body === "string" ? JSON.parse(init.body) : (init?.body ?? undefined);
       calls.push({ url, method, body, headers: (init?.headers as Record<string, string>) ?? {} });
       const key = `${method} ${url}`;
       const reply = (b: unknown, status = 200) => new Response(JSON.stringify(b), { status });
@@ -202,7 +202,16 @@ describe("projects home", () => {
     const items = within(menu)
       .getAllByRole("menuitem")
       .map((b) => b.textContent);
-    expect(items).toEqual(["Open", "Rename", "Share", "Manage access", "Duplicate", "Archive", "Delete…"]);
+    expect(items).toEqual([
+      "Open",
+      "Rename",
+      "Share",
+      "Manage access",
+      "Duplicate",
+      "Save as .mslab file",
+      "Archive",
+      "Delete…",
+    ]);
     fireEvent.keyDown(menu, { key: "Escape" });
     fireEvent.click(screen.getByRole("button", { name: "Actions for City-wide 2030" }));
     const viewer = screen.getByRole("menu", { name: "Actions for City-wide 2030" });
@@ -210,7 +219,47 @@ describe("projects home", () => {
       within(viewer)
         .getAllByRole("menuitem")
         .map((b) => b.textContent),
-    ).toEqual(["Open", "Manage access", "Duplicate"]);
+    ).toEqual(["Open", "Manage access", "Duplicate", "Save as .mslab file"]);
+  });
+
+  it("saves a project as a .mslab file, with its runs when asked", async () => {
+    stubApi(owner);
+    render(<App />);
+    fireEvent.contextMenu(await screen.findByText("Lakeside network"));
+    fireEvent.click(screen.getByRole("menuitem", { name: "Save as .mslab file" }));
+    const dlg = screen.getByRole("dialog", { name: "Save as .mslab file" });
+    const save = within(dlg).getByRole("link", { name: "Save file" });
+    expect(save.getAttribute("href")).toBe(`/api/projects/${P1}/mslab`);
+    expect(save.hasAttribute("download")).toBe(true);
+    fireEvent.click(within(dlg).getByLabelText(/Include saved simulation runs/));
+    expect(save.getAttribute("href")).toBe(`/api/projects/${P1}/mslab?runs=true`);
+  });
+
+  it("opens a .mslab file as a new project and says what was left out", async () => {
+    const calls = stubApi(owner, {
+      "POST /api/projects/import": {
+        project: project(NEW, "Lakeside tram", "owner"),
+        skipped: ["plugin com.example.missing 1.0.0: not installed on this MobSimLab"],
+      },
+    });
+    const { container } = render(<App />);
+    await screen.findByText("Lakeside network");
+    const input = container.querySelector<HTMLInputElement>('input[type="file"][accept=".mslab"]')!;
+    const file = new File([new Uint8Array([0x50, 0x4b, 3, 4])], "lakeside.mslab");
+    fireEvent.change(input, { target: { files: [file] } });
+    expect(
+      await screen.findByText(
+        "Opened “Lakeside tram” as a new project. Left out: plugin com.example.missing 1.0.0: not installed on this MobSimLab",
+      ),
+    ).toBeTruthy();
+    const call = calls.find((c) => c.url === "/api/projects/import")!;
+    expect(call.method).toBe("POST");
+    expect(call.body).toBe(file);
+    expect(call.headers["Content-Type"]).toBe("application/octet-stream");
+    expect(call.headers["X-CSRF-Token"]).toBe("csrf-123");
+    expect(
+      within(screen.getByRole("region", { name: "My projects" })).getByText("Lakeside tram"),
+    ).toBeTruthy();
   });
 
   it("deletes only after the name is typed", async () => {
@@ -678,7 +727,9 @@ describe("building blocks", () => {
       tab: "simulator",
       fresh: true,
     });
-    expect(parseRoute(`/projects/${P1}/nope`)).toMatchObject({ tab: "simulator" });
+    // A tab a plugin may add is kept; the workspace falls back to the simulator when the project has no such tab.
+    expect(parseRoute(`/projects/${P1}/nope`)).toMatchObject({ tab: "nope" });
+    expect(parseRoute(`/projects/${P1}/Nope`)).toEqual({ page: "home" });
     expect(parseRoute("/agents/consent")).toEqual({ page: "consent" });
     expect(routePath({ page: "project", id: P1, tab: "create", fresh: true })).toBe(
       `/projects/${P1}/create?new=1`,

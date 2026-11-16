@@ -799,7 +799,7 @@ export const editorsPl = {
   "noise.dbOrMore": "{db} dB lub więcej",
   "noise.dbRange": "{from}–{to} dB",
   "noise.mapNote":
-    "Tylko planowana obsługa, bez ruchu ogólnego. Budynki ekranują ponad dachami i wokół swoich krańców (ISO 9613-2), a ich elewacje odbijają raz (pierwszy rząd). Budynki bez wysokości w OpenStreetMap otrzymują 3 m na podaną kondygnację lub 8 m (założenia wtyczki hałasu). Poziom budynku pomija odbicie od jego własnej elewacji. Budynki © współtwórcy OpenStreetMap.",
+    "Tylko linie komunikacyjne, bez ruchu ogólnego. Budynki ekranują ponad dachami i wokół swoich krańców (ISO 9613-2), a ich elewacje odbijają raz (pierwszy rząd). Budynki bez wysokości w OpenStreetMap otrzymują 3 m na podaną kondygnację lub 8 m (założenia wtyczki hałasu). Poziom budynku pomija odbicie od jego własnej elewacji. Budynki © współtwórcy OpenStreetMap.",
   "noise.terrain": "Uwzględnij wysokości terenu (Copernicus GLO-30)",
   "noise.terrainTooLarge":
     "Linie obejmują zbyt duży obszar, by wczytać teren, więc ta mapa jest liczona dla płaskiego terenu.",
@@ -830,6 +830,48 @@ export const editorsPl = {
     "Źródła, budynki i odbiorniki stoją na terenie, a wzgórza ekranują; dachy i drzewa są odfiltrowane z modelu powierzchni. Teren: Copernicus DEM GLO-30 © DLR e.V. i © Airbus Defence and Space GmbH, udostępniony w ramach COPERNICUS przez Unię Europejską i ESA.",
   "noise.flat": "Płaski teren.",
   "noise.popCredit": "Ludność: WorldPop, University of Southampton (doi:10.5258/SOTON/WP00839), CC BY 4.0.",
+  "noise.scenario": "Scenariusz",
+  "noise.currentDesign": "Bieżący projekt",
+  "noise.compareTo": "Porównaj z",
+  "noise.noComparison": "Bez porównania",
+  "noise.inputLevel": "Pojazdy i prędkości z",
+  "noise.level.planned": "Planowane: takty i przykładowe natężenia",
+  "noise.level.timetabled": "Rozkładowe: kursy całego dnia",
+  "noise.level.simulated": "Symulowane: zapisana symulacja drogowa",
+  "noise.simulatedIntro":
+    "Linie uliczne przyjmują autobusy policzone przez symulację drogową na każdym odcinku i ich prędkości. Godziny, których symulacja nie obejmuje w całości, oraz koleje zachowują rozkład.",
+  "noise.noRuns":
+    "Brak zakończonej symulacji drogowej: najpierw zasymuluj linie uliczne w symulacji drogowej.",
+  "noise.chooseRun": "Wybierz symulację drogową",
+  "noise.run": "Symulacja drogowa",
+  "noise.runFor": "Symulacja drogowa dla {name}",
+  "noise.runLabel": "{when}, {from}–{to}",
+  "noise.runHours": "Autobusy z symulacji drogowej z {run} dla {hours}; rozkład dla pozostałych godzin.",
+  "noise.runNoHours":
+    "Symulacja drogowa z {run} nie obejmuje żadnej pełnej godziny, więc linie uliczne zachowują rozkład.",
+  "noise.runNoTimetable":
+    "Brak linii ulicznej o tym samym numerze dla {lines}: poza godzinami symulacji na tych liniach nie ma autobusów.",
+  "noise.railTimetabled":
+    "Koleje zachowują rozkład: symulacja przepustowości kolei nie zapisuje pozycji pociągów.",
+  "noise.noRailService": "Kolej nie ma opublikowanej linii, więc na tej mapie nie ma pociągów.",
+  "noise.railNotPublished":
+    "Nie udało się opublikować linii kolei ({error}), więc na tej mapie nie ma pociągów.",
+  "noise.computingOf": "Obliczanie mapy hałasu dla {name}…",
+  "noise.noDifference":
+    "Nie udało się porównać obu map komórka po komórce, więc mapa różnic nie jest pokazana.",
+  "noise.inputUsed": "{name} · {level}",
+  "noise.comparing": "{name} w porównaniu z {other} · {level}",
+  "noise.differenceNote":
+    "Zmiana w dB tam, gdzie któryś scenariusz osiąga najniższy przedział; zmiany poniżej 1 dB nie są pokazane. Oba używają tych samych budynków, terenu i mieszkańców, więc ruch ogólny by się znosił.",
+  "noise.changeBelow": "poniżej {db}",
+  "noise.changeAbove": "{db} lub więcej",
+  "noise.changeRange": "od {from} do {to}",
+  "noise.comparisonTable": "Zmiana według przedziału hałasu",
+  "noise.comparisonCaptionPeople": "Mieszkańcy według poziomu przy najbardziej narażonej stronie budynku",
+  "noise.comparisonCaptionBuildings": "Budynki według poziomu przy ich najbardziej narażonej stronie",
+  "noise.change": "Zmiana",
+  "noise.exportContours": "Eksportuj kontury (GeoJSON)",
+  "noise.exportTable": "Eksportuj tabelę (CSV)",
   "jp.title": "Podróże",
   "jp.s": "{n} s",
   "jp.min": "{n} min",
