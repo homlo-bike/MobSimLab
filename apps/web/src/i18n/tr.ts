@@ -1,4 +1,5 @@
 import { editorsTr } from "./editors/tr";
+import { cargoBikeTr } from "./cargo-bike/tr";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -285,6 +286,74 @@ export const tr: Messages = {
   "prefs.switches": "Makaslar (makas kataloğundan)",
   "prefs.calendar": "Takvim, talep ve maliyetler",
 
+  "job.stepOf": "Adım {step}/{steps}",
+  "job.cancel": "İptal",
+  "map.search": "Yer ara",
+  "map.searchPlaceholder": "Şehir, sokak, istasyon veya adres",
+  "map.searching": "Aranıyor…",
+  "map.searchFailed": "Yer araması başarısız oldu: {error}",
+  "map.noPlaces": "Yer bulunamadı.",
+  "map.places": "Bulunan yerler",
+  "map.searchCredit": "Yer adları © OpenStreetMap katkıcıları, Photon ile bulundu",
+  "map.layers": "Harita katmanları",
+  "map.basemap": "Altlık harita",
+  "map.streetMap": "Harita",
+  "map.aerial": "Hava",
+  "map.aerialNote":
+    "Piksel başına yaklaşık 10 m uydu görüntüsü: arazi kullanımını görmek için iyi, ray veya bordür çizmek için fazla kaba.",
+  "map.projectLayers": "Proje katmanları",
+  "map.noLayers": "Çizdiğiniz hatlar ve sonuçlar burada görünür.",
+  "map.group.streetLines": "Cadde hatları",
+  "map.group.railways": "Demiryolları",
+  "map.group.cableFerry": "Teleferikler ve feribotlar",
+  "map.group.streetSetups": "Cadde düzenlemeleri",
+  "map.group.noise": "Gürültü haritası",
+  "map.group.journey": "Yolculuk planlayıcı",
+  "map.group.agents": "Yapay zekâ ajanı senaryosu",
+  "help.menu": "Yardım",
+  "help.tour": "Turu başlat",
+  "help.tourHint": "Projenin sekmeleri ve araçları arasında kısa bir gezinti",
+  "tour.stepOf": "{step}/{steps}",
+  "tour.close": "Kapat",
+  "tour.back": "Geri",
+  "tour.next": "İleri",
+  "tour.done": "Bitti",
+  "tour.tabs.title": "Projenin sekmeleri",
+  "tour.tabs.body":
+    "Her sekme işin bir parçasıdır: simülasyon, hat oluşturma, şema, CBS, tablolar ve tercihler.",
+  "tour.create.title": "Hat çizin",
+  "tour.create.body":
+    "Oluştur sekmesinde cadde hattı aracını, demiryolu düzenleyicisini veya bir eklenti aracını seçin. Ayarları, denetimleri ve sonuçları bu panelde görünür.",
+  "tour.search.title": "Bir yer bulun",
+  "tour.search.body": "Haritayı oraya taşımak için bir şehir, sokak, istasyon veya adres arayın.",
+  "tour.layers.title": "Altlık harita ve katmanlar",
+  "tour.layers.body":
+    "Sokak haritaları ile hava görüntüleri arasında geçiş yapın, projenin katmanlarını gösterin veya gizleyin.",
+  "tour.simulator.title": "Simülasyon",
+  "tour.simulator.body":
+    "Demiryolu kapasite testini çalıştırın ve çizdiğiniz hatlar üzerinde yolculuk planlayın.",
+  "tour.gis.title": "CBS",
+  "tour.gis.body":
+    "Caddeleri otobüs ve tramvay için düzenleyin, hatların çevresindeki gürültü haritasını hesaplayın.",
+  "tour.tables.title": "Tablolar",
+  "tour.tables.body": "Hatların yapım ve işletme maliyeti tahminleri.",
+  "tour.save.title": "Sizin için kaydedilir",
+  "tour.save.body":
+    "Değişiklikler yaptıktan kısa süre sonra projeye kaydedilir. Kaydedilip kaydedilmediğini burada görürsünüz.",
+  "tour.print.title": "Yazdır veya PDF olarak kaydet",
+  "tour.print.body": "Bir rapor için haritayı ve maliyet tablolarını yazdırın ya da PDF olarak kaydedin.",
+  "tour.help.title": "Yardım",
+  "tour.help.body": "Bu turu istediğiniz zaman buradan yeniden başlatın.",
+  "print.title": "Yazdır veya PDF olarak kaydet",
+  "print.intro": "Proje adını ve bugünün tarihini içeren bir rapor.",
+  "print.include": "Dahil et",
+  "print.map": "Harita, şu an göründüğü gibi",
+  "print.mapHidden": "Haritayı eklemek için Simülatör, Oluştur veya CBS sekmesini açın.",
+  "print.tables": "Maliyet tabloları",
+  "print.pdfHint": "PDF kaydetmek için açılan pencerede yazıcı olarak “PDF olarak kaydet”i seçin.",
+  "print.print": "Yazdır…",
+
   ...editorsTr,
+  ...cargoBikeTr,
   ...PLUGIN_MESSAGES.tr,
 };

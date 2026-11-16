@@ -14,7 +14,13 @@ export interface PopulationSource {
 /** The API's answer: the grid, or why there is none. */
 export type PopulationAnswer =
   | { status: "ready"; grid: NoisePopulation; source: PopulationSource }
-  | { status: "loading"; reason: string; countries: string[] }
+  | {
+      status: "loading";
+      reason: string;
+      countries: string[];
+      /** How far the server's downloads are; `totalBytes` null when a size is unknown. Older servers omit it. */
+      progress?: { receivedBytes: number; totalBytes: number | null };
+    }
   | { status: "unavailable"; reason: string };
 
 /** Fetches people per cell over `[west, south, east, north]`. */

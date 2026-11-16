@@ -2,9 +2,12 @@ import { Marker, type Map as MapLibreMap, type MapMouseEvent } from "maplibre-gl
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { tNow, useI18n } from "../../i18n/i18n";
+import { GtfsSection } from "../gtfs/GtfsSection";
+import type { GtfsEngineLoader, GtfsFeed, GtfsNetworkDoc } from "../gtfs/types";
 import { loadWasmPlanner } from "./engine";
 import { clock, duration, minutes, PARTS, parseClock } from "./format";
-import { drawJourney, drawNetwork, ensureLayers, removeLayers } from "./mapLayers";
+import type { DemandZone } from "../../kits/ZoneEditor";
+import { drawJourney, drawNetwork, drawZones, ensureLayers, removeLayers } from "./mapLayers";
 import {
   DEFAULT_SERVICE_DAY,
   mergeTimetables,
@@ -42,13 +45,42 @@ interface Props {
   railLines?: Timetable | null;
   /** Cable car and ferry lines from the plugin tools (ADR-0037). */
   pluginLines?: readonly PluginLineInput[];
+  /** On-demand bus zones from the service zone kit. */
+  demandZones?: readonly DemandZone[];
+  /** Existing networks imported from GTFS feeds (GTFS plugin). */
+  gtfsFeeds?: readonly GtfsFeed[];
+  /** Saves the imported feeds; absent when the planner may only look. */
+  onGtfsFeeds?: (doc: GtfsNetworkDoc) => void;
+  /** The project's name, for the GTFS download. */
+  projectName?: string;
   /** Planner loader; tests inject a fake. */
   loadPlanner?: PlannerLoader;
+  /** GTFS engine loader; tests inject one. */
+  loadGtfs?: GtfsEngineLoader;
 }
 
 const PROFILE_START = 4 * 3600;
 const PROFILE_END = 25 * 3600;
 const NO_PLUGIN_LINES: readonly PluginLineInput[] = [];
+const NO_FEEDS: readonly GtfsFeed[] = [];
+const NO_ZONES: readonly DemandZone[] = [];
+
+/** Purpose: whether a point lies inside a ring (even-odd rule). */
+function inRing(p: LonLat, ring: readonly LonLat[]): boolean {
+  let c = false;
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    const [xi, yi] = ring[i]!;
+    const [xj, yj] = ring[j]!;
+    if (yi > p[1] !== yj > p[1] && p[0] < ((xj - xi) * (p[1] - yi)) / (yj - yi) + xi) c = !c;
+  }
+  return c;
+}
+
+/** Purpose: straight distance in km between two points (equirectangular, fine within a town). */
+function km(a: LonLat, b: LonLat): number {
+  const k = Math.cos((((a[1] + b[1]) / 2) * Math.PI) / 180);
+  return (Math.hypot((b[0] - a[0]) * k, b[1] - a[1]) * 111_320) / 1000;
+}
 
 /** Purpose: a headway as "45 s" or "15 min". */
 const formatHeadway = (s: number) =>
@@ -155,7 +187,12 @@ export function JourneyPlanner({
   streetLines = NO_STREET_LINES,
   railLines = null,
   pluginLines = NO_PLUGIN_LINES,
+  demandZones = NO_ZONES,
+  gtfsFeeds = NO_FEEDS,
+  onGtfsFeeds,
+  projectName = "",
   loadPlanner = loadWasmPlanner,
+  loadGtfs,
 }: Props) {
   const { t, tn } = useI18n();
   const [skipped, setSkipped] = useState<ReadonlySet<string>>(new Set());
@@ -190,9 +227,30 @@ export function JourneyPlanner({
   );
   const timetable: Timetable | null = useMemo(() => {
     const plugin = pluginLines.filter((l) => !skipped.has(l.id)).map((l) => pluginLineTimetable(l));
-    const parts = [street, drawnRail, ...plugin].filter((p): p is Timetable => p !== null);
+    const existing = gtfsFeeds
+      .filter((f) => !skipped.has(`gtfs:${f.id}`))
+      .map((f) => prefixTimetable(f.timetable, `gtfs:${f.id}:`));
+    const parts = [street, drawnRail, ...plugin, ...existing].filter((p): p is Timetable => p !== null);
     return parts.length ? mergeTimetables(parts) : null;
-  }, [street, drawnRail, pluginLines, skipped]);
+  }, [street, drawnRail, pluginLines, gtfsFeeds, skipped]);
+  // The project's own lines, all of them, for the GTFS download.
+  const ownLines: Timetable | null = useMemo(() => {
+    const parts = [
+      streetLine ? streetLineTimetable(streetLine) : null,
+      railLines && (railLines.trips.length || railLines.frequency_patterns?.length)
+        ? prefixTimetable(railLines, "lines:")
+        : null,
+      ...pluginLines.map((l) => pluginLineTimetable(l)),
+    ].filter((p): p is Timetable => p !== null);
+    return parts.length ? mergeTimetables(parts) : null;
+  }, [streetLine, railLines, pluginLines]);
+  const toggle = (id: string, use: boolean) =>
+    setSkipped((s) => {
+      const n = new Set(s);
+      if (use) n.delete(id);
+      else n.add(id);
+      return n;
+    });
 
   // Compile the timetable whenever it or the settings change.
   useEffect(() => {
@@ -260,6 +318,21 @@ export function JourneyPlanner({
   useEffect(() => {
     if (map) drawJourney(map, journey);
   }, [map, journey]);
+  const shownZones = useMemo(
+    () => demandZones.filter((z) => !skipped.has(`zone:${z.id}`)),
+    [demandZones, skipped],
+  );
+  useEffect(() => {
+    if (map) drawZones(map, shownZones);
+  }, [map, shownZones]);
+  // An on-demand ride when A and B are both in a zone: the zone's average wait plus the ride for this trip.
+  const onDemand = useMemo(() => {
+    if (!a || !b) return null;
+    const z = shownZones.find((x) => inRing(a, x.ring) && inRing(b, x.ring) && x.view.wait_s !== null);
+    if (!z) return null;
+    const ride = z.view.ride_fixed_s + km(a, b) * z.view.ride_s_per_km;
+    return { name: z.name, wait: z.view.wait_s!, ride };
+  }, [a, b, shownZones]);
 
   // Picking A and B by clicking the map.
   const pickRef = useRef(picking);
@@ -326,6 +399,11 @@ export function JourneyPlanner({
     [],
   );
 
+  const gtfsSkipped = useMemo(
+    () => new Set([...skipped].filter((k) => k.startsWith("gtfs:")).map((k) => k.slice(5))),
+    [skipped],
+  );
+
   const totals = profile.flatMap((p) => (p.journey ? [p.journey.total_s] : []));
   const arriveBy = mode === "arrive_by";
   const parts = journey ? PARTS.filter((p) => p.key !== "early_arrival_s" || arriveBy) : [];
@@ -371,14 +449,7 @@ export function JourneyPlanner({
           <input
             type="checkbox"
             checked={!skipped.has(l.id)}
-            onChange={(e) =>
-              setSkipped((s) => {
-                const n = new Set(s);
-                if (e.target.checked) n.delete(l.id);
-                else n.add(l.id);
-                return n;
-              })
-            }
+            onChange={(e) => toggle(l.id, e.target.checked)}
           />
           {t(l.mode === "ferry" ? "jp.ferry" : "jp.cableCar", {
             name: l.name,
@@ -386,7 +457,29 @@ export function JourneyPlanner({
           })}
         </label>
       ))}
+      {demandZones.map((z) => (
+        <label key={z.id} className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            checked={!skipped.has(`zone:${z.id}`)}
+            onChange={(e) => toggle(`zone:${z.id}`, e.target.checked)}
+          />
+          {z.view.wait_s === null
+            ? t("jp.drtZoneShort", { name: z.name })
+            : t("jp.drtZone", { name: z.name, wait: duration(z.view.wait_s), ride: duration(z.view.ride_s) })}
+        </label>
+      ))}
       {!timetable && <p className="text-xs text-slate-600">{t("jp.noTimetable")}</p>}
+      <GtfsSection
+        map={map}
+        feeds={gtfsFeeds}
+        skipped={gtfsSkipped}
+        onToggle={(id, use) => toggle(`gtfs:${id}`, use)}
+        onChange={onGtfsFeeds}
+        ownLines={ownLines}
+        projectName={projectName}
+        {...(loadGtfs ? { loadEngine: loadGtfs } : {})}
+      />
       {summary && (
         <p className="text-xs text-slate-600" data-testid="network-summary">
           {t("jp.summary", { stops: summary.stops, routes: summary.routes, trips: summary.trips })}
@@ -477,6 +570,16 @@ export function JourneyPlanner({
         {(error ?? planned.error) && (
           <p role="alert" className="text-xs text-red-700">
             {error ?? planned.error}
+          </p>
+        )}
+        {onDemand && (
+          <p className="rounded-lg bg-purple-50 px-3 py-2 text-purple-950" data-testid="on-demand">
+            {t("jp.drtTrip", {
+              name: onDemand.name,
+              total: duration(onDemand.wait + onDemand.ride),
+              wait: duration(onDemand.wait),
+              ride: duration(onDemand.ride),
+            })}
           </p>
         )}
 

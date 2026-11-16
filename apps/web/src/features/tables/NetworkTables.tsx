@@ -11,6 +11,9 @@ import {
   th,
   Tile,
 } from "../costs/CostTables";
+import { EnergySection } from "../energy/EnergySection";
+import { energyInTables } from "../energy/params";
+import type { EnergyEngineLoader } from "../energy/types";
 import { hhmm } from "../railways/serviceLines";
 import type { Network, RailEngineLoader } from "../railways/types";
 import type { StreetLinesDoc } from "../street-lines/saved";
@@ -33,8 +36,11 @@ interface Props {
   railway: Network | null;
   streetLines: StreetLinesDoc | null;
   preferences: PreferencesDoc | null;
+  /** Saves the project's own values (the energy section's grid intensity and battery bus share). */
+  onPreferences?: (d: PreferencesDoc) => void;
   /** Tests inject these. */
   loadRail?: RailEngineLoader;
+  loadEnergy?: EnergyEngineLoader;
   fetchHeights?: HeightsFetcher;
 }
 
@@ -43,11 +49,19 @@ const int = (v: number) => new Intl.NumberFormat("en").format(Math.round(v));
 const sumOf = <T,>(xs: T[], f: (x: T) => number) => xs.reduce((s, x) => s + f(x), 0);
 
 /**
- * The network tables of the Tables tab: a summary of the project, its infrastructure quantities, and the
- * service and fleet of each line. In English for now, like the cost tables.
+ * The network tables of the Tables tab: a summary of the project, its infrastructure quantities, the
+ * service and fleet of each line, and, with the energy plugin, their energy and emissions. In English for now, like the cost tables.
  * Side effects: builds the railway with the rail engine and loads the terrain heights under it.
  */
-export function NetworkTables({ railway, streetLines, preferences, loadRail, fetchHeights }: Props) {
+export function NetworkTables({
+  railway,
+  streetLines,
+  preferences,
+  onPreferences,
+  loadRail,
+  loadEnergy,
+  fetchHeights,
+}: Props) {
   const { build, error } = useRailBuild(railway, loadRail, fetchHeights);
   const prefs = preferences?.values;
   const lines = streetLines?.lines ?? [];
@@ -91,6 +105,14 @@ export function NetworkTables({ railway, streetLines, preferences, loadRail, fet
           <Summary facts={facts} q={q} />
           <Infrastructure q={q} terrain={build?.terrain ?? null} />
           <ServiceAndFleet facts={facts} />
+          {energyInTables() && (
+            <EnergySection
+              facts={facts}
+              preferences={preferences}
+              onPreferences={onPreferences}
+              loadEngine={loadEnergy}
+            />
+          )}
         </>
       )}
     </div>

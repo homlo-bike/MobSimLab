@@ -1,4 +1,5 @@
 import { editorsUr } from "./editors/ur";
+import { cargoBikeUr } from "./cargo-bike/ur";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -286,6 +287,73 @@ export const ur: Messages = {
   "prefs.switches": "پٹری کے سوئچ، سوئچوں کی فہرست سے",
   "prefs.calendar": "کیلنڈر، طلب اور لاگت",
 
+  "job.stepOf": "مرحلہ {step} از {steps}",
+  "job.cancel": "منسوخ کریں",
+  "map.search": "مقامات تلاش کریں",
+  "map.searchPlaceholder": "قصبہ، سڑک، اسٹیشن یا پتہ",
+  "map.searching": "تلاش جاری ہے…",
+  "map.searchFailed": "مقام کی تلاش ناکام رہی: {error}",
+  "map.noPlaces": "کوئی مقام نہیں ملا۔",
+  "map.places": "ملے ہوئے مقامات",
+  "map.searchCredit": "مقامات کے نام © OpenStreetMap کے معاونین، Photon سے تلاش کیے گئے",
+  "map.layers": "نقشے کی پرتیں",
+  "map.basemap": "بنیادی نقشہ",
+  "map.streetMap": "نقشہ",
+  "map.aerial": "فضائی",
+  "map.aerialNote":
+    "تقریباً 10 میٹر فی پکسل کی سیٹلائٹ تصاویر: زمین کے استعمال کو دیکھنے کے لیے اچھی، پٹری یا فٹ پاتھ کے کنارے بنانے کے لیے بہت موٹی۔",
+  "map.projectLayers": "منصوبے کی پرتیں",
+  "map.noLayers": "آپ کی بنائی ہوئی لائنیں اور نتائج یہاں دکھائی دیتے ہیں۔",
+  "map.group.streetLines": "سڑک کی لائنیں",
+  "map.group.railways": "ریلوے",
+  "map.group.cableFerry": "کیبل کار اور فیری",
+  "map.group.streetSetups": "سڑک کی ترتیبات",
+  "map.group.noise": "شور کا نقشہ",
+  "map.group.journey": "سفر منصوبہ ساز",
+  "map.group.agents": "اے آئی ایجنٹ کا منظرنامہ",
+  "help.menu": "مدد",
+  "help.tour": "تعارفی دورہ کریں",
+  "help.tourHint": "منصوبے کے ٹیبز اور ٹولز کا مختصر دورہ",
+  "tour.stepOf": "{step} از {steps}",
+  "tour.close": "بند کریں",
+  "tour.back": "پیچھے",
+  "tour.next": "اگلا",
+  "tour.done": "مکمل",
+  "tour.tabs.title": "منصوبے کے ٹیبز",
+  "tour.tabs.body": "ہر ٹیب کام کا ایک حصہ ہے: سمولیشن، لائنیں بنانا، خاکہ، GIS، جدولیں اور ترجیحات۔",
+  "tour.create.title": "لائنیں بنائیں",
+  "tour.create.body":
+    "تخلیق میں سڑک لائن ٹول، ریلوے ایڈیٹر یا کسی پلگ ان کا ٹول چنیں۔ اس کی ترتیبات، جانچ اور نتائج اس پینل میں دکھائی دیتے ہیں۔",
+  "tour.search.title": "مقام تلاش کریں",
+  "tour.search.body": "نقشے کو وہاں لے جانے کے لیے قصبہ، سڑک، اسٹیشن یا پتہ تلاش کریں۔",
+  "tour.layers.title": "بنیادی نقشہ اور پرتیں",
+  "tour.layers.body":
+    "سڑک کے نقشوں اور فضائی تصاویر کے درمیان بدلیں، اور منصوبے کی پرتیں دکھائیں یا چھپائیں۔",
+  "tour.simulator.title": "سمولیشن",
+  "tour.simulator.body":
+    "ریل کی گنجائش کا ٹیسٹ چلائیں اور اپنی بنائی ہوئی لائنوں پر سفر کی منصوبہ بندی کریں۔",
+  "tour.gis.title": "GIS",
+  "tour.gis.body": "بسوں اور ٹراموں کے لیے سڑکیں ترتیب دیں، اور لائنوں کے گرد شور کا نقشہ حساب کریں۔",
+  "tour.tables.title": "جدولیں",
+  "tour.tables.body": "لائنوں کی تعمیر اور چلانے کی لاگت کے تخمینے۔",
+  "tour.save.title": "خودکار محفوظ",
+  "tour.save.body":
+    "تبدیلیاں کرنے کے کچھ ہی دیر بعد منصوبے میں محفوظ ہو جاتی ہیں۔ یہاں دکھتا ہے کہ وہ محفوظ ہوئیں یا نہیں۔",
+  "tour.print.title": "پرنٹ کریں یا PDF کے طور پر محفوظ کریں",
+  "tour.print.body": "رپورٹ کے لیے نقشہ اور لاگت کی جدولیں پرنٹ کریں، یا PDF کے طور پر محفوظ کریں۔",
+  "tour.help.title": "مدد",
+  "tour.help.body": "یہ دورہ کسی بھی وقت یہاں سے دوبارہ شروع کریں۔",
+  "print.title": "پرنٹ کریں یا PDF کے طور پر محفوظ کریں",
+  "print.intro": "منصوبے کے نام اور آج کی تاریخ کے ساتھ ایک رپورٹ۔",
+  "print.include": "شامل کریں",
+  "print.map": "نقشہ، جیسا ابھی دکھائی دے رہا ہے",
+  "print.mapHidden": "نقشہ شامل کرنے کے لیے سمیولیٹر، تخلیق یا GIS ٹیب کھولیں۔",
+  "print.tables": "لاگت کی جدولیں",
+  "print.pdfHint":
+    "PDF محفوظ کرنے کے لیے کھلنے والے ڈائیلاگ میں پرنٹر کے طور پر “PDF کے طور پر محفوظ کریں” چنیں۔",
+  "print.print": "پرنٹ…",
+
   ...editorsUr,
+  ...cargoBikeUr,
   ...PLUGIN_MESSAGES.ur,
 };

@@ -13,9 +13,11 @@ draw the plugin's own modes with the mode's kit, and validates the plugin's para
 the assumption library's rules (ADR-0018), extended by the plugin's modes and context keys.
 
 --render writes apps/web/src/plugins/bundled.generated.json: per plugin its manifest summary, modes,
-contexts, tools, parameter labels and the resolved values per mode and context option (low, central, high).
-It also writes apps/api/src/plugins/core.generated.json, which the API uses to check plugins an Admin uploads:
-the manifest and mode schemas, the core mode ids, parameter keys and source ids, and the bundled plugins.
+contexts, tools, tabs, parameter labels and the resolved values per mode and context option
+(low, central, high). A plugin without modes of its own (a calculation such as the energy estimate) gets its
+values per core mode. It also writes apps/api/src/plugins/core.generated.json, which the API uses to check
+plugins an Admin uploads: the manifest and mode schemas, the core mode ids, parameter keys and source ids,
+and the bundled plugins.
 """
 
 from __future__ import annotations
@@ -38,6 +40,8 @@ API_OUT = ROOT / "apps" / "api" / "src" / "plugins" / "core.generated.json"
 MANIFEST = "mobsimlab-plugin.json"
 # Core mode ids that plugins may not reuse: the assumption library's modes plus the railway tool's.
 EXTRA_CORE_MODES = ["funicular"]
+# The web app's own project tabs (apps/web/src/shell/route.ts); plugin tabs come after them.
+CORE_TABS = ["simulator", "create", "schematic", "gis", "tables", "preferences"]
 
 
 def load_assumption_check():
@@ -106,6 +110,7 @@ def check_plugin(
     core_sources: dict,
     core_keys: set[str],
     seen_modes: dict[str, str],
+    seen_tabs: dict[str, str] | None = None,
 ):
     """Validate one plugin. Output: (errors, registry entry)."""
     errors: list[str] = []
@@ -119,6 +124,7 @@ def check_plugin(
         return errors, None
     pid = manifest["id"]
     c = manifest["contributes"]
+    seen_tabs = {} if seen_tabs is None else seen_tabs
 
     def path_of(item: dict, field: str = "file") -> Path | None:
         p = folder / item[field]
@@ -168,6 +174,25 @@ def check_plugin(
     calc_ids = {x["id"] for x in c.get("calculations", [])}
     if calc_ids and not manifest.get("bundled"):
         errors.append(f"{pid}: only bundled plugins may contribute calculations until the plugin host exists")
+    converters = c.get("importers", []) + c.get("exporters", [])
+    if converters and not manifest.get("bundled"):
+        errors.append(
+            f"{pid}: only bundled plugins may contribute importers and exporters until the plugin host exists"
+        )
+    conv_ids = [x["id"] for x in converters]
+    for cid in sorted({x for x in conv_ids if conv_ids.count(x) > 1}):
+        errors.append(f"{pid}: importer or exporter id {cid} is used twice")
+    for tab in c.get("tabs", []):
+        if not manifest.get("bundled"):
+            errors.append(f"{pid}: only bundled plugins may contribute tabs until the UI tier exists")
+        if tab["id"] in CORE_TABS:
+            errors.append(f"{pid}: tab {tab['id']} is a core tab")
+        if tab["id"] in seen_tabs:
+            errors.append(f"{pid}: tab {tab['id']} is also contributed by {seen_tabs[tab['id']]}")
+        seen_tabs[tab["id"]] = pid
+        for calc in tab.get("calculations", []):
+            if calc not in calc_ids:
+                errors.append(f"{pid}: tab {tab['id']} shows unknown calculation {calc}")
     layers = []
     for layer in c.get("mapLayers", []):
         if layer["calculation"] not in calc_ids:
@@ -228,6 +253,16 @@ def check_plugin(
                 for prm in params
             }
         defaults[m["id"]] = per
+    if not modes and params:
+        # A plugin without modes of its own (a calculation) gives values per core mode, so the app can
+        # resolve them for each line of the project.
+        for mid in sorted(set(chk.MODES) | set(EXTRA_CORE_MODES)):
+            defaults[mid] = {
+                "*": {
+                    prm["key"]: {f: resolve(prm, mid, None, None)[f] for f in ("low", "central", "high")}
+                    for prm in params
+                }
+            }
     entry = {
         "id": pid,
         "name": manifest["name"],
@@ -243,7 +278,10 @@ def check_plugin(
         "contexts": list(contexts.values()),
         "tools": c.get("tools", []),
         "calculations": c.get("calculations", []),
+        "importers": c.get("importers", []),
+        "exporters": c.get("exporters", []),
         "mapLayers": layers,
+        "tabs": c.get("tabs", []),
         "parameters": {prm["key"]: {"label": prm["label"], "unit": prm["unit"]} for prm in params},
         "defaults": defaults,
     }
@@ -256,11 +294,12 @@ def build(root: Path = PLUGINS) -> tuple[list[str], dict]:
     core_sources = chk.load_sources()
     core_keys = {p["key"] for p in chk.load_parameters()}
     seen: dict[str, str] = {}
+    seen_tabs: dict[str, str] = {}
     errors: list[str] = []
     plugins = []
     ids: set[str] = set()
     for folder in discover(root):
-        errs, entry = check_plugin(folder, chk, core_sources, core_keys, seen)
+        errs, entry = check_plugin(folder, chk, core_sources, core_keys, seen, seen_tabs)
         errors += errs
         if entry:
             if entry["id"] in ids:

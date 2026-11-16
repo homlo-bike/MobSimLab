@@ -86,3 +86,55 @@ html.reduce-motion *::after {
   transition-duration: 0.01ms !important;
   scroll-behavior: auto !important;
 }
+
+/* A moving bar for a job step that cannot say how far it is. */
+@keyframes job-sweep {
+  from {
+    inset-inline-start: -25%;
+  }
+  to {
+    inset-inline-start: 100%;
+  }
+}
+.job-sweep {
+  animation: job-sweep 1.4s ease-in-out infinite;
+}
+html.reduce-motion .job-sweep {
+  animation: none;
+  inset-inline-start: 0;
+  width: 100%;
+  opacity: 0.4;
+}
+@media (prefers-reduced-motion: reduce) {
+  .job-sweep {
+    animation: none;
+    inset-inline-start: 0;
+    width: 100%;
+    opacity: 0.4;
+  }
+}
+
+/* The guided tour's spotlight: the page darkened round the part it talks about. */
+.tour-spot {
+  box-shadow: 0 0 0 9999px rgb(15 23 42 / 0.55);
+  transition:
+    left 0.2s,
+    top 0.2s,
+    width 0.2s,
+    height 0.2s;
+}
+
+/* Printing a report: only the report, never the app round it. */
+@media print {
+  body > #root {
+    display: none !important;
+  }
+  .print-report {
+    display: block !important;
+  }
+}
+
+/* The map's search and layer panels open over the tools' palettes and hints. */
+.maplibregl-ctrl-top-right {
+  z-index: 20;
+}

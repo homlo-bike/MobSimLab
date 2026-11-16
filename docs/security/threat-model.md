@@ -99,7 +99,7 @@ Risk = likelihood × impact (H/M/L) **after** planned mitigations; anything stil
 | AG2 | Stolen access or refresh token | Tokens hashed at rest, 1 h access lifetime, bound to this instance's `/mcp` (RFC 8707); refresh rotation with reuse detection revokes the connection; one-click disconnect | L |
 | AG3 | Agent exceeds its user (Viewer, demoted user, wider scope) | Effective rights = scopes ∩ current role, checked on every call; Viewers and Restricted users cannot connect; agents cannot touch base data, sharing, users or settings | L |
 | AG4 | Prompt injection makes an agent destroy work | Agents only write their own scenarios and delete only scenarios their connection created; every change audited with app, tool and argument hash | L |
-| AG5 | Agent loops exhaust the server | Per-connection rate limit, 200 scenarios per user, 2000 stops / 100 lines per scenario, street tile and candidate caps | L |
+| AG5 | Agent loops exhaust the server | Per-connection rate limit, 200 scenarios per user, 2000 stops / 100 lines per scenario, street tile and candidate caps; the exact stop solver (HiGHS) runs in a worker thread with a time limit of at most 60 s; destination, origin and transit-origin caps for the 15-minute city | L |
 | AG6 | Cookie-authenticated browser request reaches `/mcp` or `/oauth/*` | `/mcp` accepts only bearer tokens; consent decisions need the session cookie, CSRF token and same origin | L |
 
 ### Supply chain

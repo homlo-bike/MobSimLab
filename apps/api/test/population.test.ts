@@ -357,6 +357,7 @@ describe("WorldPop grid", () => {
     const bbox: [number, number, number, number] = [LON + 0.001, LAT - 0.005, LON + 0.004, LAT - 0.001];
     const first = await svc.grid(bbox, 20);
     expect(first.status).toBe("loading");
+    if (first.status === "loading") expect(first.progress).toEqual({ receivedBytes: 0, totalBytes: null });
     release(lux);
     await new Promise((r) => setTimeout(r, 50));
     expect((await svc.grid(bbox, 2_000)).status).toBe("ready");

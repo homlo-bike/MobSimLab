@@ -225,6 +225,8 @@ New threats for the threat model (§4, a new "Plugins" table):
 | 3 | Modes and engines: infrastructure elements in the unified graph, the straight spans and water route kits, the mesoscopic segment engine, `mode-dynamics` and `engines`; cable car and ferry as bundled plugins | Two new modes, and proof that the model holds |
 | 4 | Schematic styles and layouts, importers and exporters, UI-tier panels, the public plugin registry | The rest of the asked-for scope |
 
+Built (2026-11-15): `importers` and `exporters` for bundled plugins (runtime `bundled-wasm`, contract `published-timetable`), first used by the GTFS plugin (`plugins/gtfs`) in the journey planner.
+
 ## Alternatives considered
 
 | Option | Why not |
