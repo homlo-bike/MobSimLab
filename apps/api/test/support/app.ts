@@ -1,5 +1,5 @@
 import { randomBytes } from "node:crypto";
-import { Test } from "@nestjs/testing";
+import { Test, type TestingModuleBuilder } from "@nestjs/testing";
 import type { NestExpressApplication } from "@nestjs/platform-express";
 import { AppModule } from "../../src/app.module";
 import { configureApp } from "../../src/app.setup";
@@ -25,9 +25,15 @@ export function testConfig(over: Partial<AppConfig> = {}): AppConfig {
   };
 }
 
-/** Purpose: build and initialise the app with production middleware. */
-export async function createApp(config: AppConfig): Promise<NestExpressApplication> {
-  const mod = await Test.createTestingModule({ imports: [AppModule.forRoot(config)] }).compile();
+/**
+ * Purpose: build and initialise the app with production middleware. `override` can replace providers (for
+ * example the outbound gateway clients) before the module is compiled.
+ */
+export async function createApp(
+  config: AppConfig,
+  override: (b: TestingModuleBuilder) => TestingModuleBuilder = (b) => b,
+): Promise<NestExpressApplication> {
+  const mod = await override(Test.createTestingModule({ imports: [AppModule.forRoot(config)] })).compile();
   const app = mod.createNestApplication<NestExpressApplication>({ logger: false });
   configureApp(app, config);
   await app.init();

@@ -2,6 +2,7 @@ import { editorsEn } from "./editors/en";
 import { cargoBikeEn } from "./cargo-bike/en";
 import { depotsEn } from "./depots/en";
 import { roadEn } from "./road/en";
+import { populationEn } from "./population/en";
 import { pluginsEn } from "./plugins";
 
 /** English: the source language. Every other language must have every key (the type checker enforces it). */
@@ -380,6 +381,7 @@ export const en = {
   ...cargoBikeEn,
   ...depotsEn,
   ...roadEn,
+  ...populationEn,
   ...pluginsEn,
 } as const;
 
