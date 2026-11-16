@@ -1,6 +1,7 @@
 import type { DelayShares } from "../features/street-lines/types";
 import { MIXED_DELAY, PAINTED_DELAY } from "../features/street-setup/model";
 import rulesData from "./design-rules.generated.json";
+import paramsData from "./parameters.generated.json";
 
 /**
  * The project's preferences document (drawing kind `preferences`): assumption library values the project
@@ -14,6 +15,8 @@ export interface PreferencesDoc {
   vehiclesOff?: string[];
   /** Switches and crossings the project does not use, and its default turnout per rail mode; absent: all, library's. */
   switches?: { off?: string[]; default_turnout?: Record<string, string> };
+  /** Values of enum and text assumptions the project changes, by assumption id (as `values` for numbers). */
+  choices?: Record<string, string>;
 }
 
 /** The delays in traffic a project can change, with the library's values. */
@@ -197,4 +200,64 @@ export function withDefaultTurnout(
   if (id === null || id === LIBRARY_DEFAULT_TURNOUT[mode]) delete dt[mode];
   else dt[mode] = id;
   return withSwitchChoice(doc, { ...c, default_turnout: dt });
+}
+
+/** One parameter of the assumption library, as Project Preferences → Parameters lists it. */
+export interface LibraryParam {
+  key: string;
+  label: string;
+  /** Library group (assumptions/parameters/*.yaml), in English. */
+  group: string;
+  unit: string;
+  kind: "number" | "enum" | "string";
+  options?: string[];
+  /** [low, central, high] for numbers, the value for enum and text; by mode, "*" for every mode not listed. */
+  values: Record<string, [number, number, number] | string>;
+  /** Values for a traction (battery, diesel…) that has its own entry. */
+  traction?: Record<string, [number, number, number] | string>;
+}
+
+const PARAMS_DATA = paramsData as unknown as { groups: string[]; params: LibraryParam[] };
+/** Every parameter of the assumption library (tools/parameters/export_defaults.py), in group order. */
+export const LIBRARY_PARAMS = PARAMS_DATA.params;
+/** The library's groups in their order. */
+export const PARAM_GROUPS = PARAMS_DATA.groups;
+
+/** Purpose: the library's value of a parameter for a mode ("*": every mode) or, given, a traction. */
+export function paramLibrary(
+  p: LibraryParam,
+  mode: string,
+  traction?: string,
+): [number, number, number] | string {
+  return (traction ? p.traction?.[traction] : undefined) ?? p.values[mode] ?? (p.values["*"] as never);
+}
+
+/**
+ * Purpose: the preference id of a parameter's project value for a mode or a traction, `key` for every mode.
+ * The same ids the tools read, for example `mode.dwell_s.tram`.
+ */
+export function paramPrefId(key: string, mode: string, traction?: string): string {
+  if (traction) return `${key}.${traction}`;
+  return mode === "*" ? key : `${key}.${mode}`;
+}
+
+/** Purpose: the project's value of an enum or text assumption, or `undefined` when the library's applies. */
+export function choiceValue(doc: PreferencesDoc | null | undefined, id: string): string | undefined {
+  const v = doc?.choices?.[id];
+  return typeof v === "string" ? v : undefined;
+}
+
+/** Purpose: the document with one enum or text value set, or removed (`null`) so the library's applies. */
+export function withChoice(
+  doc: PreferencesDoc | null | undefined,
+  id: string,
+  value: string | null,
+): PreferencesDoc {
+  const choices = { ...(doc?.choices ?? {}) };
+  if (value === null) delete choices[id];
+  else choices[id] = value;
+  const next: PreferencesDoc = { ...(doc ?? {}), values: { ...(doc?.values ?? {}) } };
+  if (Object.keys(choices).length) next.choices = choices;
+  else delete next.choices;
+  return next;
 }
