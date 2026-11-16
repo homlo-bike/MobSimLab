@@ -215,6 +215,7 @@ export const te: Messages = {
   "drawing.rail-timetable": "రైలు సమయపట్టిక",
   "drawing.preferences": "ప్రాజెక్టు ప్రాధాన్యతలు",
   "drawing.costs": "ఖర్చు సెట్టింగ్‌లు",
+  "drawing.schematic": "రేఖాచిత్రం",
   "drawing.scenarios": "సేవ్ చేసిన దృశ్యాలు",
   "drawing.benefits": "ప్రయోజన సూత్రాలు",
   "drawing.regions": "ప్రాంతాలు",
@@ -249,10 +250,6 @@ export const te: Messages = {
 
   "schematic.title": "రేఖాచిత్రం",
   "schematic.intro": "రవాణా మ్యాప్‌ను చూడండి మరియు సవరించండి, ఒక మార్గాన్ని విడిగా చూడండి.",
-  "schematic.network": "రేఖాచిత్రంగా గీసిన మార్గాలతో నెట్‌వర్క్ మ్యాప్",
-  "schematic.line": "ఒక మార్గం: దాని పట్టీ మ్యాప్ మరియు అనుసంధానాలు",
-  "schematic.layers": "పొరలు, లాగడం మరియు వంపులు",
-  "schematic.export": "ముద్రణ మరియు తెరల కోసం ఎగుమతి",
 
   "gis.title": "GIS",
   "gis.streetsView": "వీధులు",
@@ -280,6 +277,18 @@ export const te: Messages = {
   "prefs.delayLane": "రంగు వేసిన బస్సు లేదా ట్రామ్ లేన్‌లో",
   "prefs.delayDefault": "ఊహల గ్రంథాలయం: {value} %",
   "prefs.delayReset": "గ్రంథాలయ విలువను ఉపయోగించండి",
+  "prefs.currencyTitle": "కరెన్సీ",
+  "prefs.currencyIntro":
+    "ప్రాజెక్టులోని మొత్తం డబ్బు ఈ కరెన్సీలో చూపబడుతుంది: ఖర్చు పట్టికలు, ప్రయోజనాలు, దృశ్యాలు, కార్గో బైక్ ఆదాలు.",
+  "prefs.currencyLabel": "డబ్బును ఇందులో చూపించు",
+  "prefs.currencyCountry": "దేశపు స్వంత కరెన్సీ",
+  "prefs.currencyRate": "ఒక్కో US$కు {code}",
+  "prefs.currencyWorldBank": "ప్రపంచ బ్యాంకు అధికారిక మారకపు రేటు ({year}): {value}",
+  "prefs.currencyMissing":
+    "ప్రపంచ బ్యాంకు వద్ద {code} మారకపు రేటు లేదు. మార్చడానికి ఒక రేటు నమోదు చేయండి; అప్పటి వరకు ప్రతి సాధనం దేశపు కరెన్సీని చూపుతుంది.",
+  "prefs.currencyReset": "ప్రపంచ బ్యాంకు రేటును ఉపయోగించండి",
+  "prefs.currencyHow":
+    "మొత్తాలు అమెరికా డాలర్ ద్వారా, ప్రతి దేశపు ప్రపంచ బ్యాంకు అధికారిక మారకపు రేటుతో మార్చబడతాయి.",
   "prefs.moreTitle": "నియమాలు, వాహనాలు మరియు ఊహలు",
   "prefs.moreIntro": "ప్రతి చరరాశి దాని కనిష్ఠ మరియు సిఫార్సు విలువతో, మరియు ప్రాజెక్టు ఉపయోగించే వాహనాలు.",
   "prefs.rules": "ప్రతి విధానానికి రూపకల్పన నియమాలు, కనిష్ఠ మరియు సిఫార్సు",

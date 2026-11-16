@@ -216,6 +216,7 @@ export const nl: Messages = {
   "drawing.rail-timetable": "de dienstregeling van de spoorlijnen",
   "drawing.preferences": "de projectvoorkeuren",
   "drawing.costs": "de kosteninstellingen",
+  "drawing.schematic": "het schema",
   "drawing.scenarios": "de opgeslagen scenario’s",
   "drawing.benefits": "de batenformules",
   "drawing.regions": "de gebieden",
@@ -250,10 +251,6 @@ export const nl: Messages = {
 
   "schematic.title": "Schema",
   "schematic.intro": "De netkaart bekijken en bewerken, en één lijn apart bekijken.",
-  "schematic.network": "Netkaart met schematisch getekende lijnen",
-  "schematic.line": "Eén lijn: lijnfilm en overstappen",
-  "schematic.layers": "Lagen, slepen en bochten",
-  "schematic.export": "Exporteren voor druk en schermen",
 
   "gis.title": "GIS",
   "gis.intro": "Voeg informatie toe die de berekeningen gebruiken, of bewerk die.",
@@ -281,6 +278,18 @@ export const nl: Messages = {
   "prefs.delayLane": "Op een geschilderde bus- of trambaan",
   "prefs.delayDefault": "Aannamebibliotheek: {value} %",
   "prefs.delayReset": "Waarde van de bibliotheek gebruiken",
+  "prefs.currencyTitle": "Valuta",
+  "prefs.currencyIntro":
+    "Alle bedragen in het project worden in deze valuta getoond: de kostentabellen, de baten, de scenario's en de besparingen van de bakfiets.",
+  "prefs.currencyLabel": "Bedragen tonen in",
+  "prefs.currencyCountry": "De eigen valuta van het land",
+  "prefs.currencyRate": "{code} per US$",
+  "prefs.currencyWorldBank": "Officiële wisselkoers van de Wereldbank ({year}): {value}",
+  "prefs.currencyMissing":
+    "De Wereldbank heeft geen wisselkoers voor {code}. Vul er een in om om te rekenen; tot dan toont elk hulpmiddel de valuta van het land.",
+  "prefs.currencyReset": "Koers van de Wereldbank gebruiken",
+  "prefs.currencyHow":
+    "Bedragen worden omgerekend via de Amerikaanse dollar, met de officiële wisselkoers van de Wereldbank voor elk land.",
   "prefs.moreTitle": "Regels, voertuigen en aannames",
   "prefs.moreIntro": "Elke variabele met minimum- en aanbevolen waarde, en de voertuigen van het project.",
   "prefs.rules": "Ontwerpregels per vervoerswijze, minimum en aanbevolen",

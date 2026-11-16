@@ -63,6 +63,48 @@ const costs = z.looseObject({
     .optional(),
 });
 
+/** Schematic edits (ADR-0041): stations the planner moved, label places and display switches. */
+const STATION_STATUSES = [
+  "central_station",
+  "bus_station",
+  "airport",
+  "seaport",
+  "park_and_ride",
+  "hospital",
+  "university",
+  "stadium",
+] as const;
+const schematic = z.looseObject({
+  origin: point.optional(),
+  pins: z
+    .record(z.string().max(300), point)
+    .refine((v) => Object.keys(v).length <= 20000, "at most 20000 pins"),
+  labels: z
+    .record(z.string().max(300), z.number().int().min(0).max(7))
+    .refine((v) => Object.keys(v).length <= 20000, "at most 20000 labels"),
+  hidden: z.array(z.string().max(40)).max(20).optional(),
+  rotate: z
+    .record(z.string().max(300), z.number().min(-90).max(90))
+    .refine((v) => Object.keys(v).length <= 20000, "at most 20000 rotations")
+    .optional(),
+  statuses: z
+    .record(z.string().max(300), z.array(z.enum(STATION_STATUSES)).max(STATION_STATUSES.length))
+    .refine((v) => Object.keys(v).length <= 20000, "at most 20000 stations with a status")
+    .optional(),
+  areas: z
+    .array(
+      z.looseObject({
+        id: z.string().min(1).max(64),
+        name: z.string().max(80),
+        kind: z.enum(["zone", "landmark"]),
+        color: z.string().regex(/^#[0-9a-fA-F]{6}$/),
+        points: z.array(point).min(3).max(500),
+      }),
+    )
+    .max(200)
+    .optional(),
+});
+
 /**
  * Tables tab scenarios: named copies of the railway design and the street lines, kept to compare with the
  * current design.
@@ -147,6 +189,8 @@ export const DRAWING_KINDS = {
   preferences: { schema: preferences, schemaVersion: 1 },
   /** Cost tables settings (ADR-0039): the country chosen for prices. */
   costs: { schema: costs, schemaVersion: 1 },
+  /** Schematic tab (ADR-0041): the planner's edits of the network diagram. */
+  schematic: { schema: schematic, schemaVersion: 1 },
   /** Tables tab: saved copies of the design to compare side by side. */
   scenarios: { schema: scenarios, schemaVersion: 1 },
   /** Benefit tables settings (ADR-0040): the project's own formulas. */

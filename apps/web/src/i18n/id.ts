@@ -215,6 +215,7 @@ export const id: Messages = {
   "drawing.rail-timetable": "jadwal kereta",
   "drawing.preferences": "preferensi proyek",
   "drawing.costs": "pengaturan biaya",
+  "drawing.schematic": "skema",
   "drawing.scenarios": "skenario tersimpan",
   "drawing.benefits": "rumus manfaat",
   "drawing.regions": "wilayah",
@@ -250,10 +251,6 @@ export const id: Messages = {
 
   "schematic.title": "Skema",
   "schematic.intro": "Lihat dan edit peta skema, atau lihat satu jalur saja.",
-  "schematic.network": "Peta jaringan dengan jalur skematis",
-  "schematic.line": "Satu jalur: peta jalur berbentuk pita dengan perpindahan",
-  "schematic.layers": "Lapisan, seret, dan lengkungan",
-  "schematic.export": "Ekspor untuk cetak dan layar",
 
   "gis.title": "GIS",
   "gis.streetsView": "Jalan",
@@ -281,6 +278,18 @@ export const id: Messages = {
   "prefs.delayLane": "Di lajur bus atau trem yang hanya dicat",
   "prefs.delayDefault": "Pustaka asumsi: {value} %",
   "prefs.delayReset": "Gunakan nilai pustaka",
+  "prefs.currencyTitle": "Mata uang",
+  "prefs.currencyIntro":
+    "Semua jumlah uang dalam proyek ditampilkan dalam mata uang ini: tabel biaya, manfaat, skenario, dan penghematan sepeda kargo.",
+  "prefs.currencyLabel": "Tampilkan uang dalam",
+  "prefs.currencyCountry": "Mata uang negara itu sendiri",
+  "prefs.currencyRate": "{code} per US$",
+  "prefs.currencyWorldBank": "Kurs resmi Bank Dunia ({year}): {value}",
+  "prefs.currencyMissing":
+    "Bank Dunia tidak punya kurs untuk {code}. Masukkan kurs untuk mengonversi; sampai saat itu setiap alat menampilkan mata uang negara.",
+  "prefs.currencyReset": "Gunakan kurs Bank Dunia",
+  "prefs.currencyHow":
+    "Jumlah dikonversi melalui dolar AS, dengan kurs resmi Bank Dunia untuk setiap negara.",
   "prefs.moreTitle": "Aturan, kendaraan, dan asumsi",
   "prefs.moreIntro":
     "Nilai minimum dan yang disarankan untuk setiap variabel, serta kendaraan yang digunakan proyek.",

@@ -42,6 +42,7 @@ The commuter and regional rail examples show a tram line crossing the railway on
 - A new station takes the name of a stop or station within 150 m of its platforms (they are one station), or else a name from the map around it that no other stop or station uses. Renaming a station renames the ones next to it. See [stop and station names](street-line-tool.md#stop-and-station-names).
 - A station has side platforms (at most two) and island platforms. Each platform edge serves one track, so an island serves two tracks.
 - Platform length comes from the mode. Change it, the name, the level and the platforms in the panel.
+- Under **Features**, mark what the station has: step-free access, ramp, lift, escalator, tactile paving, toilets, bike parking. The [Schematic](schematic.md) tab shows them as symbols.
 - The level is street, underground (−1, −2) or elevated (+1, +2). Underground stations show thick box walls; elevated stations show the deck edge.
 - Each end of a station has connection points: one per station track and one for each pair of tracks. Tracks start and end there and leave the station in a straight line.
 

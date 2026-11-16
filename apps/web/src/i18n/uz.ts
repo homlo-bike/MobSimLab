@@ -217,6 +217,7 @@ export const uz: Messages = {
   "drawing.rail-timetable": "poyezdlar jadvali",
   "drawing.preferences": "loyiha sozlamalari",
   "drawing.costs": "xarajat sozlamalari",
+  "drawing.schematic": "sxema",
   "drawing.scenarios": "saqlangan ssenariylar",
   "drawing.benefits": "foyda formulalari",
   "drawing.regions": "hududlar",
@@ -252,10 +253,6 @@ export const uz: Messages = {
 
   "schematic.title": "Sxema",
   "schematic.intro": "Transport xaritasini koʻring va tahrirlang, bitta yoʻnalishni alohida koʻring.",
-  "schematic.network": "Yoʻnalishlar sxematik chizilgan tarmoq xaritasi",
-  "schematic.line": "Bitta yoʻnalish: uning tasmali xaritasi va ulanishlari",
-  "schematic.layers": "Qatlamlar, sudrash va egriliklar",
-  "schematic.export": "Chop etish va ekranlar uchun eksport",
 
   "gis.title": "GIS",
   "gis.streetsView": "Koʻchalar",
@@ -283,6 +280,18 @@ export const uz: Messages = {
   "prefs.delayLane": "Boʻyalgan avtobus yoki tramvay yoʻlagida",
   "prefs.delayDefault": "Farazlar kutubxonasi: {value} %",
   "prefs.delayReset": "Kutubxona qiymatidan foydalanish",
+  "prefs.currencyTitle": "Valyuta",
+  "prefs.currencyIntro":
+    "Loyihadagi barcha pul miqdorlari shu valyutada ko‘rsatiladi: xarajat jadvallari, foydalar, ssenariylar va yuk velosipedi tejamlari.",
+  "prefs.currencyLabel": "Pulni quyidagida ko‘rsatish",
+  "prefs.currencyCountry": "Mamlakatning o‘z valyutasi",
+  "prefs.currencyRate": "1 US$ uchun {code}",
+  "prefs.currencyWorldBank": "Jahon bankining rasmiy almashuv kursi ({year}): {value}",
+  "prefs.currencyMissing":
+    "Jahon bankida {code} uchun almashuv kursi yo‘q. Aylantirish uchun kurs kiriting; ungacha har bir vosita mamlakat valyutasini ko‘rsatadi.",
+  "prefs.currencyReset": "Jahon banki kursidan foydalanish",
+  "prefs.currencyHow":
+    "Miqdorlar AQSh dollari orqali, har bir mamlakat uchun Jahon bankining rasmiy kursi bilan aylantiriladi.",
   "prefs.moreTitle": "Qoidalar, transport vositalari va farazlar",
   "prefs.moreIntro":
     "Har bir oʻzgaruvchi minimal va tavsiya etilgan qiymati bilan, hamda loyihada ishlatiladigan transport vositalari.",

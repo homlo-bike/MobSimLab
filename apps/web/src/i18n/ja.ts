@@ -212,6 +212,7 @@ export const ja: Messages = {
   "drawing.rail-timetable": "鉄道時刻表",
   "drawing.preferences": "プロジェクト設定",
   "drawing.costs": "費用の設定",
+  "drawing.schematic": "路線図",
   "drawing.scenarios": "保存したシナリオ",
   "drawing.benefits": "便益の計算式",
   "drawing.regions": "地域",
@@ -245,10 +246,6 @@ export const ja: Messages = {
 
   "schematic.title": "路線図",
   "schematic.intro": "路線図を表示・編集し、1つの路線だけを見ることもできます。",
-  "schematic.network": "路線を模式的に描いたネットワーク図",
-  "schematic.line": "1路線：帯状の路線図と乗り換え",
-  "schematic.layers": "レイヤー、ドラッグ、曲線",
-  "schematic.export": "印刷・画面用に書き出し",
 
   "gis.title": "GIS",
   "gis.streetsView": "道路",
@@ -276,6 +273,17 @@ export const ja: Messages = {
   "prefs.delayLane": "塗装のみのバス・路面電車レーン",
   "prefs.delayDefault": "前提値ライブラリ：{value} %",
   "prefs.delayReset": "ライブラリの値を使う",
+  "prefs.currencyTitle": "通貨",
+  "prefs.currencyIntro":
+    "プロジェクトの金額はすべてこの通貨で表示されます（費用表、便益、シナリオ、カーゴバイクの節約額）。",
+  "prefs.currencyLabel": "金額の表示通貨",
+  "prefs.currencyCountry": "その国の通貨",
+  "prefs.currencyRate": "1 US$ あたりの {code}",
+  "prefs.currencyWorldBank": "世界銀行の公式為替レート（{year}）：{value}",
+  "prefs.currencyMissing":
+    "世界銀行には {code} の為替レートがありません。換算するにはレートを入力してください。それまでは各ツールがその国の通貨で表示します。",
+  "prefs.currencyReset": "世界銀行のレートを使う",
+  "prefs.currencyHow": "金額は米ドルを介して、各国の世界銀行公式為替レートで換算されます。",
   "prefs.moreTitle": "ルール、車両、前提値",
   "prefs.moreIntro": "各変数の最小値と推奨値、およびプロジェクトで使う車両。",
   "prefs.rules": "モード別の設計ルール（最小値と推奨値）",

@@ -215,6 +215,7 @@ export const ru: Messages = {
   "drawing.rail-timetable": "расписание поездов",
   "drawing.preferences": "параметры проекта",
   "drawing.costs": "настройки затрат",
+  "drawing.schematic": "схему",
   "drawing.scenarios": "сохранённые сценарии",
   "drawing.benefits": "формулы выгод",
   "drawing.regions": "районы",
@@ -250,10 +251,6 @@ export const ru: Messages = {
 
   "schematic.title": "Схема",
   "schematic.intro": "Просматривайте и редактируйте схему транспорта и отдельные линии.",
-  "schematic.network": "Схема сети с линиями в схематичном виде",
-  "schematic.line": "Одна линия: схема линии и пересадки",
-  "schematic.layers": "Слои, перетаскивание и кривые",
-  "schematic.export": "Экспорт для печати и экранов",
 
   "gis.title": "ГИС",
   "gis.streetsView": "Улицы",
@@ -281,6 +278,18 @@ export const ru: Messages = {
   "prefs.delayLane": "На выделенной разметкой полосе для автобусов или трамваев",
   "prefs.delayDefault": "Библиотека допущений: {value} %",
   "prefs.delayReset": "Использовать значение из библиотеки",
+  "prefs.currencyTitle": "Валюта",
+  "prefs.currencyIntro":
+    "Все денежные суммы проекта показываются в этой валюте: таблицы затрат, выгоды, сценарии и экономия грузового велосипеда.",
+  "prefs.currencyLabel": "Показывать деньги в",
+  "prefs.currencyCountry": "Собственная валюта страны",
+  "prefs.currencyRate": "{code} за 1 US$",
+  "prefs.currencyWorldBank": "Официальный обменный курс Всемирного банка ({year}): {value}",
+  "prefs.currencyMissing":
+    "У Всемирного банка нет обменного курса для {code}. Введите курс для пересчёта; до тех пор каждый инструмент показывает валюту страны.",
+  "prefs.currencyReset": "Использовать курс Всемирного банка",
+  "prefs.currencyHow":
+    "Суммы пересчитываются через доллар США по официальному обменному курсу Всемирного банка для каждой страны.",
   "prefs.moreTitle": "Правила, подвижной состав и допущения",
   "prefs.moreIntro":
     "Каждая переменная с минимальным и рекомендуемым значением, а также подвижной состав, используемый в проекте.",

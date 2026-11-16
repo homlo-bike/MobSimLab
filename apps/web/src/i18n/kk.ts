@@ -214,6 +214,7 @@ export const kk: Messages = {
   "drawing.rail-timetable": "пойыз кестесі",
   "drawing.preferences": "жоба параметрлері",
   "drawing.costs": "шығын баптаулары",
+  "drawing.schematic": "сызбаны",
   "drawing.scenarios": "сақталған сценарийлер",
   "drawing.benefits": "пайда формулалары",
   "drawing.regions": "аймақтар",
@@ -247,10 +248,6 @@ export const kk: Messages = {
 
   "schematic.title": "Сызба",
   "schematic.intro": "Көлік картасын қарап, өңдеңіз және бір бағытты бөлек қараңыз.",
-  "schematic.network": "Бағыттары сызбалық түрде салынған желі картасы",
-  "schematic.line": "Бір бағыт: оның таспалы картасы мен қосылыстары",
-  "schematic.layers": "Қабаттар, сүйреу және қисықтар",
-  "schematic.export": "Басып шығару мен экрандарға экспорттау",
 
   "gis.title": "GIS",
   "gis.streetsView": "Көшелер",
@@ -278,6 +275,18 @@ export const kk: Messages = {
   "prefs.delayLane": "Боялған автобус немесе трамвай жолағында",
   "prefs.delayDefault": "Болжамдар кітапханасы: {value} %",
   "prefs.delayReset": "Кітапхана мәнін пайдалану",
+  "prefs.currencyTitle": "Валюта",
+  "prefs.currencyIntro":
+    "Жобадағы барлық ақша сомалары осы валютада көрсетіледі: шығын кестелері, пайдалар, сценарийлер және жүк велосипедінің үнемдеуі.",
+  "prefs.currencyLabel": "Ақшаны мына валютада көрсету",
+  "prefs.currencyCountry": "Елдің өз валютасы",
+  "prefs.currencyRate": "1 US$ үшін {code}",
+  "prefs.currencyWorldBank": "Дүниежүзілік банктің ресми айырбас бағамы ({year}): {value}",
+  "prefs.currencyMissing":
+    "Дүниежүзілік банкте {code} үшін айырбас бағамы жоқ. Айырбастау үшін бағам енгізіңіз; оған дейін әр құрал елдің валютасын көрсетеді.",
+  "prefs.currencyReset": "Дүниежүзілік банк бағамын пайдалану",
+  "prefs.currencyHow":
+    "Сомалар АҚШ доллары арқылы, әр елдің Дүниежүзілік банктегі ресми бағамымен айырбасталады.",
   "prefs.moreTitle": "Ережелер, көліктер және болжамдар",
   "prefs.moreIntro": "Әр айнымалы ең аз және ұсынылған мәнімен, сондай-ақ жобада пайдаланылатын көліктер.",
   "prefs.rules": "Әр түр үшін жобалау ережелері, ең аз және ұсынылған",

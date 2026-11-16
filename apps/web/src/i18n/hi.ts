@@ -214,6 +214,7 @@ export const hi: Messages = {
   "drawing.rail-timetable": "रेल समय-सारणी",
   "drawing.preferences": "प्रोजेक्ट प्राथमिकताएँ",
   "drawing.costs": "लागत सेटिंग्स",
+  "drawing.schematic": "योजनाबद्ध मानचित्र",
   "drawing.scenarios": "सहेजे गए परिदृश्य",
   "drawing.benefits": "लाभ के सूत्र",
   "drawing.regions": "क्षेत्र",
@@ -247,10 +248,6 @@ export const hi: Messages = {
 
   "schematic.title": "योजनाबद्ध",
   "schematic.intro": "परिवहन मानचित्र देखें और संपादित करें, और किसी एक लाइन को अलग से देखें।",
-  "schematic.network": "योजनाबद्ध ढंग से बनी लाइनों वाला नेटवर्क मानचित्र",
-  "schematic.line": "एक लाइन: उसका स्ट्रिप मानचित्र और कनेक्शन",
-  "schematic.layers": "परतें, खींचना और वक्र",
-  "schematic.export": "प्रिंट और स्क्रीन के लिए निर्यात",
 
   "gis.title": "GIS",
   "gis.streetsView": "सड़कें",
@@ -278,6 +275,18 @@ export const hi: Messages = {
   "prefs.delayLane": "पेंट की गई बस या ट्राम लेन में",
   "prefs.delayDefault": "धारणा पुस्तकालय: {value} %",
   "prefs.delayReset": "पुस्तकालय मान इस्तेमाल करें",
+  "prefs.currencyTitle": "मुद्रा",
+  "prefs.currencyIntro":
+    "परियोजना की सारी राशियाँ इसी मुद्रा में दिखती हैं: लागत तालिकाएँ, लाभ, परिदृश्य और कार्गो बाइक की बचत।",
+  "prefs.currencyLabel": "राशि इसमें दिखाएँ",
+  "prefs.currencyCountry": "देश की अपनी मुद्रा",
+  "prefs.currencyRate": "प्रति US$ {code}",
+  "prefs.currencyWorldBank": "विश्व बैंक की आधिकारिक विनिमय दर ({year}): {value}",
+  "prefs.currencyMissing":
+    "विश्व बैंक के पास {code} की विनिमय दर नहीं है। बदलने के लिए एक दर डालें; तब तक हर टूल देश की मुद्रा दिखाता है।",
+  "prefs.currencyReset": "विश्व बैंक की दर इस्तेमाल करें",
+  "prefs.currencyHow":
+    "राशियाँ अमेरिकी डॉलर के ज़रिए, हर देश की विश्व बैंक की आधिकारिक विनिमय दर से बदली जाती हैं।",
   "prefs.moreTitle": "नियम, वाहन और धारणाएँ",
   "prefs.moreIntro": "हर चर अपने न्यूनतम और अनुशंसित मान के साथ, और प्रोजेक्ट में इस्तेमाल होने वाले वाहन।",
   "prefs.rules": "हर साधन के लिए डिज़ाइन नियम, न्यूनतम और अनुशंसित",

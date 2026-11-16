@@ -215,6 +215,7 @@ export const ur: Messages = {
   "drawing.rail-timetable": "ریل کا ٹائم ٹیبل",
   "drawing.preferences": "منصوبے کی ترجیحات",
   "drawing.costs": "لاگت کی ترتیبات",
+  "drawing.schematic": "خاکہ نقشہ",
   "drawing.scenarios": "محفوظ منظرنامے",
   "drawing.benefits": "فوائد کے فارمولے",
   "drawing.regions": "علاقے",
@@ -248,10 +249,6 @@ export const ur: Messages = {
 
   "schematic.title": "خاکہ",
   "schematic.intro": "نقل و حمل کا نقشہ دیکھیں اور اس میں ترمیم کریں، اور ایک لائن کو الگ سے دیکھیں۔",
-  "schematic.network": "خاکہ نما لائنوں والا نیٹ ورک کا نقشہ",
-  "schematic.line": "ایک لائن: اس کا پٹی نقشہ اور رابطے",
-  "schematic.layers": "تہیں، کھینچنا اور خم",
-  "schematic.export": "پرنٹ اور اسکرینوں کے لیے برآمد",
 
   "gis.title": "GIS",
   "gis.streetsView": "سڑکیں",
@@ -279,6 +276,18 @@ export const ur: Messages = {
   "prefs.delayLane": "رنگ سے بنی بس یا ٹرام لین میں",
   "prefs.delayDefault": "مفروضات کی لائبریری: {value} %",
   "prefs.delayReset": "لائبریری کی قدر استعمال کریں",
+  "prefs.currencyTitle": "کرنسی",
+  "prefs.currencyIntro":
+    "منصوبے کی تمام رقوم اسی کرنسی میں دکھائی جاتی ہیں: لاگت کی جدولیں، فوائد، منظرنامے اور کارگو بائیک کی بچت۔",
+  "prefs.currencyLabel": "رقم اس میں دکھائیں",
+  "prefs.currencyCountry": "ملک کی اپنی کرنسی",
+  "prefs.currencyRate": "فی US$ {code}",
+  "prefs.currencyWorldBank": "عالمی بینک کی سرکاری شرحِ تبادلہ ({year}): {value}",
+  "prefs.currencyMissing":
+    "عالمی بینک کے پاس {code} کی شرحِ تبادلہ نہیں ہے۔ تبدیل کرنے کے لیے شرح درج کریں؛ تب تک ہر ٹول ملک کی کرنسی دکھاتا ہے۔",
+  "prefs.currencyReset": "عالمی بینک کی شرح استعمال کریں",
+  "prefs.currencyHow":
+    "رقوم امریکی ڈالر کے ذریعے، ہر ملک کی عالمی بینک کی سرکاری شرحِ تبادلہ سے تبدیل کی جاتی ہیں۔",
   "prefs.moreTitle": "اصول، گاڑیاں اور مفروضات",
   "prefs.moreIntro":
     "ہر متغیر اپنی کم از کم اور تجویز کردہ قدر کے ساتھ، اور منصوبے میں استعمال ہونے والی گاڑیاں۔",

@@ -213,6 +213,7 @@ export const sw: Messages = {
   "drawing.rail-timetable": "ratiba ya reli",
   "drawing.preferences": "mapendeleo ya mradi",
   "drawing.costs": "mipangilio ya gharama",
+  "drawing.schematic": "ramani ya mchoro",
   "drawing.scenarios": "hali zilizohifadhiwa",
   "drawing.benefits": "fomula za manufaa",
   "drawing.regions": "maeneo",
@@ -248,10 +249,6 @@ export const sw: Messages = {
 
   "schematic.title": "Mchoro",
   "schematic.intro": "Tazama na hariri ramani ya usafiri, na uangalie njia moja peke yake.",
-  "schematic.network": "Ramani ya mtandao yenye njia zilizochorwa kimchoro",
-  "schematic.line": "Njia moja: ramani yake ya mstari na miunganiko",
-  "schematic.layers": "Matabaka, kuburuta na mikunjo",
-  "schematic.export": "Hamisha kwa uchapishaji na skrini",
 
   "gis.title": "GIS",
   "gis.streetsView": "Barabara",
@@ -279,6 +276,18 @@ export const sw: Messages = {
   "prefs.delayLane": "Katika njia ya basi au tramu iliyochorwa kwa rangi",
   "prefs.delayDefault": "Maktaba ya dhana: {value} %",
   "prefs.delayReset": "Tumia thamani ya maktaba",
+  "prefs.currencyTitle": "Sarafu",
+  "prefs.currencyIntro":
+    "Fedha zote za mradi zinaonyeshwa kwa sarafu hii: majedwali ya gharama, manufaa, matukio na akiba ya baiskeli ya mizigo.",
+  "prefs.currencyLabel": "Onyesha fedha kwa",
+  "prefs.currencyCountry": "Sarafu ya nchi yenyewe",
+  "prefs.currencyRate": "{code} kwa kila US$",
+  "prefs.currencyWorldBank": "Kiwango rasmi cha ubadilishaji cha Benki ya Dunia ({year}): {value}",
+  "prefs.currencyMissing":
+    "Benki ya Dunia haina kiwango cha ubadilishaji kwa {code}. Weka kiwango ili kubadilisha; hadi hapo kila zana inaonyesha sarafu ya nchi.",
+  "prefs.currencyReset": "Tumia kiwango cha Benki ya Dunia",
+  "prefs.currencyHow":
+    "Kiasi hubadilishwa kupitia dola ya Marekani, kwa kiwango rasmi cha Benki ya Dunia cha kila nchi.",
   "prefs.moreTitle": "Kanuni, magari na dhana",
   "prefs.moreIntro":
     "Kila kigezo na thamani yake ya chini na inayopendekezwa, na magari ambayo mradi unatumia.",

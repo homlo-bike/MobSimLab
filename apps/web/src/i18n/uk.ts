@@ -215,6 +215,7 @@ export const uk: Messages = {
   "drawing.rail-timetable": "розклад залізниці",
   "drawing.preferences": "параметри проєкту",
   "drawing.costs": "налаштування витрат",
+  "drawing.schematic": "схему",
   "drawing.scenarios": "збережені сценарії",
   "drawing.benefits": "формули вигод",
   "drawing.regions": "райони",
@@ -249,10 +250,6 @@ export const uk: Messages = {
 
   "schematic.title": "Схема",
   "schematic.intro": "Переглядайте й редагуйте схематичну карту або подивіться одну лінію.",
-  "schematic.network": "Карта мережі зі схематизованими лініями",
-  "schematic.line": "Одна лінія: стрічкова схема з пересадками",
-  "schematic.layers": "Шари, перетягування й криві",
-  "schematic.export": "Експорт для друку й екрана",
 
   "gis.title": "ГІС",
   "gis.streetsView": "Вулиці",
@@ -281,6 +278,18 @@ export const uk: Messages = {
   "prefs.delayLane": "На лише нанесеній смузі для автобусів чи трамваїв",
   "prefs.delayDefault": "Бібліотека припущень: {value} %",
   "prefs.delayReset": "Використати значення з бібліотеки",
+  "prefs.currencyTitle": "Валюта",
+  "prefs.currencyIntro":
+    "Усі грошові суми проєкту показуються в цій валюті: таблиці витрат, вигоди, сценарії та заощадження вантажного велосипеда.",
+  "prefs.currencyLabel": "Показувати гроші в",
+  "prefs.currencyCountry": "Власна валюта країни",
+  "prefs.currencyRate": "{code} за 1 US$",
+  "prefs.currencyWorldBank": "Офіційний обмінний курс Світового банку ({year}): {value}",
+  "prefs.currencyMissing":
+    "Світовий банк не має обмінного курсу для {code}. Введіть курс для перерахунку; доти кожен інструмент показує валюту країни.",
+  "prefs.currencyReset": "Використати курс Світового банку",
+  "prefs.currencyHow":
+    "Суми перераховуються через долар США за офіційним обмінним курсом Світового банку для кожної країни.",
   "prefs.moreTitle": "Правила, транспортні засоби й припущення",
   "prefs.moreIntro": "Мінімальні й рекомендовані значення кожної змінної та транспортні засоби проєкту.",
   "prefs.rules": "Правила проєктування для кожного виду транспорту (мінімальні й рекомендовані)",

@@ -213,6 +213,7 @@ export const mr: Messages = {
   "drawing.rail-timetable": "रेल्वे वेळापत्रक",
   "drawing.preferences": "प्रकल्पाची प्राधान्ये",
   "drawing.costs": "खर्च सेटिंग्ज",
+  "drawing.schematic": "आराखडा नकाशा",
   "drawing.scenarios": "जतन केलेली परिस्थिती",
   "drawing.benefits": "लाभाची सूत्रे",
   "drawing.regions": "प्रदेश",
@@ -246,10 +247,6 @@ export const mr: Messages = {
 
   "schematic.title": "आराखडा",
   "schematic.intro": "वाहतूक नकाशा पाहा आणि संपादित करा, आणि एक मार्ग स्वतंत्रपणे पाहा.",
-  "schematic.network": "आराखड्याप्रमाणे काढलेल्या मार्गांसह जाळ्याचा नकाशा",
-  "schematic.line": "एक मार्ग: त्याचा पट्टी नकाशा आणि जोडण्या",
-  "schematic.layers": "स्तर, ओढणे आणि वळणे",
-  "schematic.export": "छपाई आणि पडद्यांसाठी निर्यात",
 
   "gis.title": "GIS",
   "gis.streetsView": "रस्ते",
@@ -277,6 +274,18 @@ export const mr: Messages = {
   "prefs.delayLane": "रंगवलेल्या बस किंवा ट्राम मार्गिकेत",
   "prefs.delayDefault": "गृहीतकांचे ग्रंथालय: {value} %",
   "prefs.delayReset": "ग्रंथालयातील मूल्य वापरा",
+  "prefs.currencyTitle": "चलन",
+  "prefs.currencyIntro":
+    "प्रकल्पातील सर्व रक्कम या चलनात दाखवली जाते: खर्चाच्या तक्त्या, लाभ, परिस्थिती आणि कार्गो बाइकची बचत.",
+  "prefs.currencyLabel": "रक्कम यात दाखवा",
+  "prefs.currencyCountry": "देशाचे स्वतःचे चलन",
+  "prefs.currencyRate": "प्रति US$ {code}",
+  "prefs.currencyWorldBank": "जागतिक बँकेचा अधिकृत विनिमय दर ({year}): {value}",
+  "prefs.currencyMissing":
+    "जागतिक बँकेकडे {code} साठी विनिमय दर नाही. रूपांतरासाठी दर लिहा; तोपर्यंत प्रत्येक साधन देशाचे चलन दाखवते.",
+  "prefs.currencyReset": "जागतिक बँकेचा दर वापरा",
+  "prefs.currencyHow":
+    "रक्कम अमेरिकी डॉलरमार्गे, प्रत्येक देशाच्या जागतिक बँकेच्या अधिकृत विनिमय दराने रूपांतरित केली जाते.",
   "prefs.moreTitle": "नियम, वाहने आणि गृहीतके",
   "prefs.moreIntro": "प्रत्येक चल त्याच्या किमान आणि शिफारस केलेल्या मूल्यासह, आणि प्रकल्पात वापरलेली वाहने.",
   "prefs.rules": "प्रत्येक साधनाचे रचना नियम, किमान आणि शिफारस केलेले",

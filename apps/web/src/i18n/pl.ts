@@ -215,6 +215,7 @@ export const pl: Messages = {
   "drawing.rail-timetable": "rozkład kolejowy",
   "drawing.preferences": "preferencje projektu",
   "drawing.costs": "ustawienia kosztów",
+  "drawing.schematic": "schemat",
   "drawing.scenarios": "zapisane scenariusze",
   "drawing.benefits": "formuły korzyści",
   "drawing.regions": "obszary",
@@ -249,10 +250,6 @@ export const pl: Messages = {
 
   "schematic.title": "Schemat",
   "schematic.intro": "Przeglądaj i edytuj mapę schematyczną lub obejrzyj jedną linię.",
-  "schematic.network": "Mapa sieci ze schematycznymi liniami",
-  "schematic.line": "Jedna linia: mapa paskowa z przesiadkami",
-  "schematic.layers": "Warstwy, przeciąganie i łuki",
-  "schematic.export": "Eksport do druku i na ekran",
 
   "gis.title": "GIS",
   "gis.streetsView": "Ulice",
@@ -280,6 +277,18 @@ export const pl: Messages = {
   "prefs.delayLane": "Na buspasie lub pasie tramwajowym tylko wymalowanym",
   "prefs.delayDefault": "Biblioteka założeń: {value} %",
   "prefs.delayReset": "Użyj wartości z biblioteki",
+  "prefs.currencyTitle": "Waluta",
+  "prefs.currencyIntro":
+    "Wszystkie kwoty w projekcie są pokazywane w tej walucie: tabele kosztów, korzyści, scenariusze i oszczędności roweru towarowego.",
+  "prefs.currencyLabel": "Pokazuj kwoty w",
+  "prefs.currencyCountry": "Własna waluta kraju",
+  "prefs.currencyRate": "{code} za 1 US$",
+  "prefs.currencyWorldBank": "Oficjalny kurs wymiany Banku Światowego ({year}): {value}",
+  "prefs.currencyMissing":
+    "Bank Światowy nie ma kursu wymiany dla {code}. Wpisz kurs, aby przeliczyć; do tego czasu każde narzędzie pokazuje walutę kraju.",
+  "prefs.currencyReset": "Użyj kursu Banku Światowego",
+  "prefs.currencyHow":
+    "Kwoty są przeliczane przez dolara amerykańskiego, według oficjalnego kursu Banku Światowego dla każdego kraju.",
   "prefs.moreTitle": "Zasady, pojazdy i założenia",
   "prefs.moreIntro": "Wartości minimalne i zalecane dla każdej zmiennej oraz pojazdy używane w projekcie.",
   "prefs.rules": "Zasady projektowe dla każdego środka transportu (minimalne i zalecane)",

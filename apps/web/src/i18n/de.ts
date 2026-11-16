@@ -220,6 +220,7 @@ export const de: Messages = {
   "drawing.rail-timetable": "den Fahrplan der Bahnlinien",
   "drawing.preferences": "die Projekteinstellungen",
   "drawing.costs": "die Kosteneinstellungen",
+  "drawing.schematic": "das Schema",
   "drawing.scenarios": "die gespeicherten Szenarien",
   "drawing.benefits": "die Nutzenformeln",
   "drawing.regions": "die Gebiete",
@@ -255,10 +256,6 @@ export const de: Messages = {
 
   "schematic.title": "Schema",
   "schematic.intro": "Den Liniennetzplan ansehen und bearbeiten und einzelne Linien betrachten.",
-  "schematic.network": "Liniennetzplan in schematischer Darstellung",
-  "schematic.line": "Eine Linie: Linienband und Anschlüsse",
-  "schematic.layers": "Ebenen, Verschieben und Kurven",
-  "schematic.export": "Export für Druck und Bildschirme",
 
   "gis.title": "GIS",
   "gis.intro": "Informationen hinzufügen oder bearbeiten, die in die Berechnungen eingehen.",
@@ -286,6 +283,18 @@ export const de: Messages = {
   "prefs.delayLane": "Auf einer markierten Bus- oder Straßenbahnspur",
   "prefs.delayDefault": "Annahmenbibliothek: {value} %",
   "prefs.delayReset": "Wert der Bibliothek verwenden",
+  "prefs.currencyTitle": "Währung",
+  "prefs.currencyIntro":
+    "Alle Geldbeträge des Projekts werden in dieser Währung angezeigt: Kostentabellen, Nutzen, Szenarien und die Einsparungen des Lastenrads.",
+  "prefs.currencyLabel": "Geld anzeigen in",
+  "prefs.currencyCountry": "Die eigene Währung des Landes",
+  "prefs.currencyRate": "{code} je US$",
+  "prefs.currencyWorldBank": "Amtlicher Wechselkurs der Weltbank ({year}): {value}",
+  "prefs.currencyMissing":
+    "Die Weltbank hat keinen Wechselkurs für {code}. Geben Sie einen ein, um umzurechnen; bis dahin zeigt jedes Werkzeug die Währung des Landes.",
+  "prefs.currencyReset": "Kurs der Weltbank verwenden",
+  "prefs.currencyHow":
+    "Beträge werden über den US-Dollar umgerechnet, mit dem amtlichen Wechselkurs der Weltbank für jedes Land.",
   "prefs.moreTitle": "Regeln, Fahrzeuge und Annahmen",
   "prefs.moreIntro": "Jede Variable mit Mindest- und Richtwert sowie die Fahrzeuge des Projekts.",
   "prefs.rules": "Entwurfsregeln je Verkehrsmittel, Mindest- und Richtwert",

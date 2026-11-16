@@ -3,6 +3,7 @@ import { card, fmtMoney, fmtQty, num, td, th } from "../costs/CostTables";
 import type { Network, RailEngineLoader } from "../railways/types";
 import type { StreetLinesDoc } from "../street-lines/saved";
 import type { PreferencesDoc } from "../../workspace/preferences";
+import { convertTo, type ProjectCurrency } from "../costs/currency";
 import { buildRailway } from "./railBuild";
 import {
   type Figures,
@@ -21,16 +22,22 @@ interface Props {
   doc: ScenariosDoc | null;
   /** Saves the scenarios; absent when the planner may only view the project. */
   onChange?: (doc: ScenariosDoc) => void;
+  /** The project's currency (Project preferences); null keeps US dollars. */
+  currency?: ProjectCurrency | null;
   /** Tests inject this. */
   loadRail?: RailEngineLoader;
 }
 
 const int = (v: number) => new Intl.NumberFormat("en").format(Math.round(v));
 const km = (v: number) => `${fmtQty(v)} km`;
-const usd = (v: number) => fmtMoney(v, "USD");
+const money = (v: number, m: (v: number) => string) => m(v);
 
-/** Rows of the comparison: label, value and format. */
-const ROWS: { label: string; key: keyof Figures; fmt: (v: number) => string }[] = [
+/** Rows of the comparison: label, value and format (money rows get the project's money format). */
+const ROWS: {
+  label: string;
+  key: keyof Figures;
+  fmt: (v: number, money: (v: number) => string) => string;
+}[] = [
   { label: "Lines", key: "lines", fmt: int },
   { label: "Railway route length", key: "railKm", fmt: km },
   { label: "Railway track length", key: "trackKm", fmt: km },
@@ -43,8 +50,8 @@ const ROWS: { label: string; key: keyof Figures; fmt: (v: number) => string }[] 
   { label: "In service at the peak", key: "inService", fmt: int },
   { label: "Vehicle-km a year", key: "kmPerYear", fmt: int },
   { label: "Peak capacity, places an hour", key: "capacityPerHour", fmt: int },
-  { label: "Construction (medium)", key: "construction", fmt: usd },
-  { label: "Operating a year (medium)", key: "operating", fmt: usd },
+  { label: "Construction (medium)", key: "construction", fmt: money },
+  { label: "Operating a year (medium)", key: "operating", fmt: money },
 ];
 
 /** Purpose: a scenario's difference from the current design, as "+12 %" or "new". */
@@ -74,8 +81,19 @@ async function measure(
  * copies with the current design side by side. In English for now, like the other tables.
  * Side effects: builds every railway with the rail engine; saves through `onChange`.
  */
-export function Scenarios({ railway, streetLines, preferences, doc, onChange, loadRail }: Props) {
+export function Scenarios({
+  railway,
+  streetLines,
+  preferences,
+  doc,
+  onChange,
+  currency = null,
+  loadRail,
+}: Props) {
   const prefs = preferences?.values;
+  // US dollars of the library's price base, in the project's currency at the exchange rate.
+  const conv = convertTo(currency, "USD", 1);
+  const fmtCost = (v: number) => fmtMoney(v * conv.rate, conv.currency);
   const list = doc?.scenarios ?? [];
   const [name, setName] = useState("");
   const [current, setCurrent] = useState<Figures | null>(null);
@@ -199,13 +217,15 @@ export function Scenarios({ railway, streetLines, preferences, doc, onChange, lo
                     <th scope="row" className={`${td} text-left font-normal`}>
                       {row.label}
                     </th>
-                    <td className={`${num} font-medium`}>{current ? row.fmt(current[row.key]) : "…"}</td>
+                    <td className={`${num} font-medium`}>
+                      {current ? row.fmt(current[row.key], fmtCost) : "…"}
+                    </td>
                     {list.map((s) => {
                       const f = saved[s.id];
                       const d = f && current ? change(f[row.key], current[row.key]) : null;
                       return (
                         <td key={s.id} className={num}>
-                          {f ? row.fmt(f[row.key]) : "…"}
+                          {f ? row.fmt(f[row.key], fmtCost) : "…"}
                           {d && <span className="block text-xs text-slate-500">{d} vs current</span>}
                         </td>
                       );
@@ -216,9 +236,12 @@ export function Scenarios({ railway, streetLines, preferences, doc, onChange, lo
             </table>
           </div>
           <p className="mt-3 text-xs text-slate-500">
-            Costs are medium estimates in US dollars at the assumption library's price base, before the
-            conversion to the project's country, so scenarios compare on equal terms; the cost tables above
-            give the current design in the country's currency.
+            Costs are medium estimates at the assumption library's price base, before the conversion to the
+            project's country, so scenarios compare on equal terms
+            {conv.currency === "USD"
+              ? "; they are in US dollars"
+              : `; they are US dollars shown in ${conv.currency} at ${String(Number(conv.rate.toPrecision(4)))} ${conv.currency} per US$`}
+            . The cost tables above give the current design at the country's prices.
           </p>
         </section>
       )}

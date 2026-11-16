@@ -216,6 +216,7 @@ export const es: Messages = {
   "drawing.rail-timetable": "el horario ferroviario",
   "drawing.preferences": "las preferencias del proyecto",
   "drawing.costs": "los ajustes de costes",
+  "drawing.schematic": "el plano esquemático",
   "drawing.scenarios": "los escenarios guardados",
   "drawing.benefits": "las fórmulas de beneficios",
   "drawing.regions": "las regiones",
@@ -250,10 +251,6 @@ export const es: Messages = {
 
   "schematic.title": "Esquema",
   "schematic.intro": "Ver y editar el plano de la red y ver cada línea por separado.",
-  "schematic.network": "Plano de la red con las líneas en forma esquemática",
-  "schematic.line": "Una línea: su diagrama y correspondencias",
-  "schematic.layers": "Capas, arrastrar y curvas",
-  "schematic.export": "Exportar para impresión y pantallas",
 
   "gis.title": "SIG",
   "gis.intro": "Añade o edita la información que usan los cálculos.",
@@ -281,6 +278,18 @@ export const es: Messages = {
   "prefs.delayLane": "En un carril bus o tranvía pintado",
   "prefs.delayDefault": "Biblioteca de supuestos: {value} %",
   "prefs.delayReset": "Usar el valor de la biblioteca",
+  "prefs.currencyTitle": "Moneda",
+  "prefs.currencyIntro":
+    "Todo el dinero del proyecto se muestra en esta moneda: las tablas de costes, los beneficios, los escenarios y los ahorros de la bicicleta de carga.",
+  "prefs.currencyLabel": "Mostrar el dinero en",
+  "prefs.currencyCountry": "La moneda propia del país",
+  "prefs.currencyRate": "{code} por US$",
+  "prefs.currencyWorldBank": "Tipo de cambio oficial del Banco Mundial ({year}): {value}",
+  "prefs.currencyMissing":
+    "El Banco Mundial no tiene tipo de cambio para {code}. Introduzca uno para convertir; mientras tanto, cada herramienta muestra la moneda del país.",
+  "prefs.currencyReset": "Usar el tipo del Banco Mundial",
+  "prefs.currencyHow":
+    "Los importes se convierten a través del dólar estadounidense, con el tipo de cambio oficial del Banco Mundial de cada país.",
   "prefs.moreTitle": "Reglas, vehículos y supuestos",
   "prefs.moreIntro": "Cada variable con su valor mínimo y recomendado, y los vehículos que usa el proyecto.",
   "prefs.rules": "Reglas de diseño por modo, mínimas y recomendadas",

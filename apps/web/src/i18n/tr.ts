@@ -215,6 +215,7 @@ export const tr: Messages = {
   "drawing.rail-timetable": "tren tarifesi",
   "drawing.preferences": "proje tercihleri",
   "drawing.costs": "maliyet ayarları",
+  "drawing.schematic": "şema",
   "drawing.scenarios": "kaydedilen senaryolar",
   "drawing.benefits": "fayda formülleri",
   "drawing.regions": "bölgeler",
@@ -248,10 +249,6 @@ export const tr: Messages = {
 
   "schematic.title": "Şematik",
   "schematic.intro": "Şematik haritayı görüntüleyin ve düzenleyin ya da yalnızca bir hatta bakın.",
-  "schematic.network": "Şematik hatlarla ağ haritası",
-  "schematic.line": "Tek hat: aktarmalı şerit harita",
-  "schematic.layers": "Katmanlar, sürükleme ve eğriler",
-  "schematic.export": "Baskı ve ekran için dışa aktar",
 
   "gis.title": "CBS",
   "gis.streetsView": "Sokaklar",
@@ -279,6 +276,18 @@ export const tr: Messages = {
   "prefs.delayLane": "Yalnızca boyanmış otobüs veya tramvay şeridinde",
   "prefs.delayDefault": "Varsayımlar kitaplığı: %{value}",
   "prefs.delayReset": "Kitaplık değerini kullan",
+  "prefs.currencyTitle": "Para birimi",
+  "prefs.currencyIntro":
+    "Projedeki tüm para tutarları bu para biriminde gösterilir: maliyet tabloları, faydalar, senaryolar ve kargo bisikleti tasarrufları.",
+  "prefs.currencyLabel": "Parayı şu birimde göster",
+  "prefs.currencyCountry": "Ülkenin kendi para birimi",
+  "prefs.currencyRate": "1 US$ başına {code}",
+  "prefs.currencyWorldBank": "Dünya Bankası resmî döviz kuru ({year}): {value}",
+  "prefs.currencyMissing":
+    "Dünya Bankası'nın {code} için döviz kuru yok. Dönüştürmek için bir kur girin; o zamana kadar her araç ülkenin para birimini gösterir.",
+  "prefs.currencyReset": "Dünya Bankası kurunu kullan",
+  "prefs.currencyHow":
+    "Tutarlar, her ülkenin Dünya Bankası resmî döviz kuruyla ABD doları üzerinden dönüştürülür.",
   "prefs.moreTitle": "Kurallar, araçlar ve varsayımlar",
   "prefs.moreIntro": "Her değişken için en düşük ve önerilen değerler ile projenin kullandığı araçlar.",
   "prefs.rules": "Türe göre tasarım kuralları (en düşük ve önerilen)",

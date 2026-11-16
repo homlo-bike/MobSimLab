@@ -16,6 +16,7 @@ import {
   pricesFrom,
   type WbCountry,
 } from "./economy";
+import { convertTo, type ProjectCurrency } from "./currency";
 import { BarList, CompositionChart, InlineBar, totalsOf } from "./charts";
 import {
   CATEGORY_LABEL,
@@ -43,8 +44,13 @@ interface Props {
   onPreferences?: (doc: PreferencesDoc) => void;
   costs: CostsDoc | null;
   onCosts?: (doc: CostsDoc) => void;
-  /** Told the estimate, the prices and the country code whenever they change (the benefit tables use them). */
-  onEstimate?: (e: Estimate, prices: Prices, country: string | null) => void;
+  /** The project's currency (Project preferences); null keeps the country's own currency. */
+  currency?: ProjectCurrency | null;
+  /**
+   * Told the estimate, the prices (in the currency shown), the country code and the factor from the country's
+   * currency to the one shown whenever they change (the benefit tables use them).
+   */
+  onEstimate?: (e: Estimate, prices: Prices, country: string | null, rate: number) => void;
   /** Tests inject these. */
   loadRail?: RailEngineLoader;
   api?: EconomyApi;
@@ -87,6 +93,7 @@ export function CostTables({
   onPreferences,
   costs,
   onCosts,
+  currency = null,
   onEstimate,
   loadRail = loadRailEngine,
   api = DEFAULT_API,
@@ -98,7 +105,6 @@ export function CostTables({
   const [econ, setEcon] = useState<CountryEconomy | null>(null);
   const [econError, setEconError] = useState<string | null>(null);
   const [countries, setCountries] = useState<WbCountry[]>([]);
-  const [usd, setUsd] = useState(false);
 
   // The railway as the engine builds it, and its service lines as published.
   const railJson = JSON.stringify(railway);
@@ -173,7 +179,16 @@ export function CostTables({
     };
   }, [api]);
 
-  const prices = useMemo(() => pricesFrom(econ, prefs), [econ, prefs]);
+  // The country's prices, then the same in the project's currency (Project preferences).
+  const local = useMemo(() => pricesFrom(econ, prefs), [econ, prefs]);
+  const conv = convertTo(currency, local.currency, local.fx);
+  const prices = useMemo(
+    () =>
+      conv.rate === 1 && conv.currency === local.currency
+        ? local
+        : { ...local, currency: conv.currency, ppp: local.ppp * conv.rate, fx: local.fx * conv.rate },
+    [local, conv.currency, conv.rate],
+  );
   const est = useMemo(
     () =>
       estimate({
@@ -187,11 +202,9 @@ export function CostTables({
     [railway, rail, streetLines, prefs, prices],
   );
   useEffect(() => {
-    onEstimate?.(est, prices, code ?? null);
-  }, [est, prices, code, onEstimate]);
-  const shownCurrency = usd ? "USD" : prices.currency;
-  const k = usd ? 1 / prices.fx : 1;
-  const money = (v: number) => fmtMoney(v * k, shownCurrency);
+    onEstimate?.(est, prices, code ?? null, conv.rate);
+  }, [est, prices, code, onEstimate, conv.rate]);
+  const money = (v: number) => fmtMoney(v, prices.currency);
   const range = (t: Triple) => `${money(t[0])} – ${money(t[2])}`;
   const editable = !!onPreferences;
   const setPref = (id: string, value: number | null) => onPreferences?.(withPref(preferences, id, value));
@@ -213,17 +226,12 @@ export function CostTables({
           any unit cost or the conversion below.
         </p>
         <div className="mt-4 flex flex-wrap items-center gap-3">
-          <div className="seg" role="tablist" aria-label="Currency">
-            <button type="button" role="tab" aria-selected={!usd} onClick={() => setUsd(false)}>
-              {prices.currency ?? "Local currency"}
-            </button>
-            <button type="button" role="tab" aria-selected={usd} onClick={() => setUsd(true)}>
-              US$
-            </button>
-          </div>
           <span className="text-xs text-slate-500">
-            {prices.year ? `${prices.year} prices` : `${BASE_YEAR} prices`}
-            {usd && prices.currency !== "USD" ? " at the market exchange rate" : ""}
+            {prices.year ? `${prices.year} prices` : `${BASE_YEAR} prices`}, in{" "}
+            {prices.currency ?? "local currency"}
+            {conv.currency !== local.currency
+              ? ` (Project preferences), at ${sig(conv.rate)} ${prices.currency} per ${local.currency ?? "local currency unit"}`
+              : ""}
           </span>
         </div>
         {railError && (
@@ -303,7 +311,7 @@ export function CostTables({
         <PricesSection
           econ={econ}
           error={econError}
-          prices={prices}
+          prices={local}
           countries={countries}
           code={code}
           chosen={!!costs?.country}
