@@ -6,7 +6,7 @@
 // the workflow before this runs.
 //   node scripts/assemble-runtime.mjs --app <built app folder> --wheels <folder with the mobsim-kernels wheel>
 import { execFileSync } from "node:child_process";
-import { cpSync, existsSync, mkdirSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, readdirSync, realpathSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { parseArgs } from "node:util";
@@ -39,7 +39,10 @@ cpSync(process.execPath, nodeTarget);
 
 log("python: 3.12 from python-build-standalone");
 sh("uv", ["python", "install", "3.12"]);
-const found = execFileSync("uv", ["python", "find", "--managed-python", "3.12"], { encoding: "utf8" }).trim();
+// uv may answer through its "cpython-3.12-…" link to the patch release's folder; copy the real folder, not the link.
+const found = realpathSync(
+  execFileSync("uv", ["python", "find", "--managed-python", "3.12"], { encoding: "utf8" }).trim(),
+);
 // …/cpython-3.12.x-<platform>/bin/python3.12 (or …\python.exe on Windows): copy the whole installation.
 const pyRoot = win ? dirname(found) : dirname(dirname(found));
 rmSync(join(out, "python"), { recursive: true, force: true });
@@ -57,6 +60,8 @@ writeFileSync(
   ),
 );
 const pip = ["pip", "install", "--python", python, "--break-system-packages", "--no-cache"];
+if (realpathSync(join(out, "python")) !== join(out, "python"))
+  throw new Error("runtime/python must be a real folder");
 sh("uv", [...pip, "-r", req]);
 const wheels = readdirSync(resolve(values.wheels))
   .filter((f) => f.endsWith(".whl"))
