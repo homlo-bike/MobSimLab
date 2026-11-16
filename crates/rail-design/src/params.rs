@@ -5,8 +5,27 @@
 //! documented derivation there. A project can override any value (Project Preferences).
 
 use serde::{Deserialize, Serialize};
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 use std::sync::OnceLock;
+
+/// The project's choice from the switches and crossings catalogue (Project preferences →
+/// Switches): the elements the railway editor offers, and the default turnout per mode.
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub struct SwitchChoice {
+    /// Catalogue elements the project does not use (ids).
+    #[serde(default)]
+    pub off: BTreeSet<String>,
+    /// Default turnout for new switches, by mode id.
+    #[serde(default)]
+    pub default_turnout: BTreeMap<String, String>,
+}
+
+impl SwitchChoice {
+    /// Purpose: whether the project uses a catalogue element.
+    pub fn uses(&self, id: &str) -> bool {
+        !self.off.contains(id)
+    }
+}
 
 /// Rail modes drawn with the railway design tool (ADR-0030).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
@@ -216,6 +235,34 @@ impl ModeParams {
         self.with_values(&own)
     }
 
+    /// Purpose: the values of one mode with the project's switch choice applied. The default
+    /// turnout is the project's when it is a turnout of the mode the project uses; else the
+    /// library's when the project uses it; else the mode's first turnout the project uses.
+    pub fn with_switch_choice(&self, mode: RailMode, choice: &SwitchChoice) -> ModeParams {
+        let usable: Vec<&str> = defaults()
+            .turnouts_for(mode)
+            .into_iter()
+            .map(|s| s.id.as_str())
+            .filter(|id| choice.uses(id))
+            .collect();
+        let pick = choice
+            .default_turnout
+            .get(mode.id())
+            .map(String::as_str)
+            .filter(|id| usable.contains(id))
+            .or_else(|| {
+                usable
+                    .contains(&self.default_turnout.as_str())
+                    .then_some(self.default_turnout.as_str())
+            })
+            .or_else(|| usable.first().copied());
+        let mut p = self.clone();
+        if let Some(id) = pick {
+            p.default_turnout = id.to_string();
+        }
+        p
+    }
+
     /// Purpose: gauge in metres.
     pub fn gauge_m(&self) -> f64 {
         self.gauge_mm / 1000.0
@@ -410,6 +457,51 @@ impl Defaults {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn the_project_chooses_the_default_turnout_from_the_turnouts_it_uses() {
+        let d = defaults();
+        let tram = d.mode(RailMode::Tram);
+        let lib = tram.default_turnout.clone();
+        let none = SwitchChoice::default();
+        assert_eq!(
+            tram.with_switch_choice(RailMode::Tram, &none)
+                .default_turnout,
+            lib
+        );
+        let ids: Vec<String> = d
+            .turnouts_for(RailMode::Tram)
+            .iter()
+            .map(|s| s.id.clone())
+            .collect();
+        let other = ids.iter().find(|id| **id != lib).unwrap().clone();
+        // The project's own default.
+        let mut c = SwitchChoice::default();
+        c.default_turnout.insert("tram".into(), other.clone());
+        assert_eq!(
+            tram.with_switch_choice(RailMode::Tram, &c).default_turnout,
+            other
+        );
+        // A default the project left out, or of another mode, is not used.
+        c.off.insert(other.clone());
+        assert_eq!(
+            tram.with_switch_choice(RailMode::Tram, &c).default_turnout,
+            lib
+        );
+        c.default_turnout
+            .insert("tram".into(), "db-ew-2500-1-26.5-fb".into());
+        assert_eq!(
+            tram.with_switch_choice(RailMode::Tram, &c).default_turnout,
+            lib
+        );
+        // The library's default left out too: the first turnout still in use.
+        c.off.insert(lib.clone());
+        let first = ids.iter().find(|id| !c.off.contains(*id)).unwrap();
+        assert_eq!(
+            &tram.with_switch_choice(RailMode::Tram, &c).default_turnout,
+            first
+        );
+    }
 
     #[test]
     fn a_value_for_one_mode_changes_only_that_mode() {

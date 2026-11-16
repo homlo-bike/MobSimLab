@@ -1,3 +1,4 @@
+import { roadHi } from "./road/hi";
 import { editorsHi } from "./editors/hi";
 import { cargoBikeHi } from "./cargo-bike/hi";
 import { depotsHi } from "./depots/hi";
@@ -308,7 +309,14 @@ export const hi: Messages = {
   "prefs.vehiclesAll": "सभी इस्तेमाल करें",
   "prefs.vehiclesFacts": "{length} मी · {places} स्थान · {speed} किमी/घं",
   "prefs.vehiclesLast": "हर साधन के लिए कम से कम एक वाहन इस्तेमाल में रहता है।",
-  "prefs.switches": "पटरी स्विच, स्विच सूची से",
+  "prefs.switchesTitle": "पॉइंट्स",
+  "prefs.switchesIntro":
+    "सूची के वे पॉइंट्स और क्रॉसिंग जो रेलवे संपादक हर रेल साधन के लिए देता है, और वह पॉइंट जिससे नए पॉइंट शुरू होते हैं।",
+  "prefs.switchesTurnouts": "पॉइंट्स",
+  "prefs.switchesSlips": "क्रॉसिंग में स्लिप",
+  "prefs.switchesDefault": "डिफ़ॉल्ट",
+  "prefs.switchesFacts": "1:{n} · R {radius} मी · मुड़ती लाइन पर {speed} किमी/घं",
+  "prefs.switchesLast": "डिफ़ॉल्ट पॉइंट इस्तेमाल में रहता है। उसे हटाने के लिए पहले दूसरा डिफ़ॉल्ट चुनें।",
   "prefs.calendar": "कैलेंडर, माँग और लागत",
 
   "job.stepOf": "चरण {step} / {steps}",
@@ -379,5 +387,6 @@ export const hi: Messages = {
   ...editorsHi,
   ...cargoBikeHi,
   ...depotsHi,
+  ...roadHi,
   ...PLUGIN_MESSAGES.hi,
 };

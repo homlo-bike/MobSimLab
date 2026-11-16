@@ -103,6 +103,8 @@ pub struct Design {
     pub signals: Vec<crate::signal::PlanSignal>,
     /// The document it was built from.
     pub network: Network,
+    /// The project's choice from the switches and crossings catalogue.
+    pub switch_choice: crate::params::SwitchChoice,
 }
 
 impl Design {
@@ -308,12 +310,35 @@ pub fn build_with_terrain(
     values: &BTreeMap<String, f64>,
     terrain: &crate::terrain::Terrain,
 ) -> Design {
+    build_with_choice(
+        net,
+        draft,
+        streets,
+        railways,
+        values,
+        &crate::params::SwitchChoice::default(),
+        terrain,
+    )
+}
+
+/// Purpose: as [`build_with_terrain`], with the project's choice from the switches and crossings
+/// catalogue: the default turnout per mode, and the elements the panel offers (pure).
+pub fn build_with_choice(
+    net: &Network,
+    draft: Option<u32>,
+    streets: &[crate::street::Street],
+    railways: &[crate::existing::ExistingRail],
+    values: &BTreeMap<String, f64>,
+    choice: &crate::params::SwitchChoice,
+    terrain: &crate::terrain::Terrain,
+) -> Design {
     let d = defaults();
     let params = net
         .params
         .clone()
         .unwrap_or_else(|| d.mode(net.mode).clone())
-        .with_mode_values(net.mode, values);
+        .with_mode_values(net.mode, values)
+        .with_switch_choice(net.mode, choice);
     let track_modes: BTreeMap<u32, RailMode> = net
         .tracks
         .iter()
@@ -327,9 +352,11 @@ pub fn build_with_terrain(
         .filter_map(|s| s.mode)
         .chain(track_modes.values().copied())
     {
-        modes
-            .entry(m)
-            .or_insert_with(|| d.mode(m).with_mode_values(m, values));
+        modes.entry(m).or_insert_with(|| {
+            d.mode(m)
+                .with_mode_values(m, values)
+                .with_switch_choice(m, choice)
+        });
     }
     let mode_params = |m: RailMode| modes.get(&m).unwrap_or(&params);
     let storage_radius = |p: &ModeParams| {
@@ -435,6 +462,7 @@ pub fn build_with_terrain(
         heights: Default::default(),
         signals: vec![],
         network: net.clone(),
+        switch_choice: choice.clone(),
     };
     design.existing = crate::existing::locate(&design, railways);
     // Joins before the checks: an end joining an existing railway is not an open end.

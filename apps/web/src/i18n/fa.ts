@@ -1,3 +1,4 @@
+import { roadFa } from "./road/fa";
 import { editorsFa } from "./editors/fa";
 import { cargoBikeFa } from "./cargo-bike/fa";
 import { depotsFa } from "./depots/fa";
@@ -305,7 +306,15 @@ export const fa: Messages = {
   "prefs.vehiclesAll": "استفاده از همه",
   "prefs.vehiclesFacts": "{length} متر · {places} جا · {speed} کیلومتر بر ساعت",
   "prefs.vehiclesLast": "برای هر شیوه دست‌کم یک وسیله در استفاده می‌ماند.",
-  "prefs.switches": "سوزن‌ها (از کاتالوگ سوزن‌ها)",
+  "prefs.switchesTitle": "سوزن‌ها",
+  "prefs.switchesIntro":
+    "سوزن‌ها و تقاطع‌های کاتالوگ که ویرایشگر راه‌آهن برای هر شیوهٔ ریلی ارائه می‌کند، و سوزنی که سوزن‌های تازه با آن آغاز می‌شوند.",
+  "prefs.switchesTurnouts": "سوزن‌ها",
+  "prefs.switchesSlips": "سوزن‌های لغزشی در تقاطع‌ها",
+  "prefs.switchesDefault": "پیش‌فرض",
+  "prefs.switchesFacts": "1:{n} · R {radius} متر · {speed} کیلومتر بر ساعت در انحراف",
+  "prefs.switchesLast":
+    "سوزن پیش‌فرض در استفاده می‌ماند. برای کنار گذاشتن آن، اول پیش‌فرض دیگری انتخاب کنید.",
   "prefs.calendar": "تقویم، تقاضا و هزینه‌ها",
 
   "job.stepOf": "گام {step} از {steps}",
@@ -376,5 +385,6 @@ export const fa: Messages = {
   ...editorsFa,
   ...cargoBikeFa,
   ...depotsFa,
+  ...roadFa,
   ...PLUGIN_MESSAGES.fa,
 };

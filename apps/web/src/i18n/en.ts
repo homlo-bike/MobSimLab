@@ -1,6 +1,7 @@
 import { editorsEn } from "./editors/en";
 import { cargoBikeEn } from "./cargo-bike/en";
 import { depotsEn } from "./depots/en";
+import { roadEn } from "./road/en";
 import { pluginsEn } from "./plugins";
 
 /** English: the source language. Every other language must have every key (the type checker enforces it). */
@@ -304,7 +305,14 @@ export const en = {
   "prefs.vehiclesAll": "Use all",
   "prefs.vehiclesFacts": "{length} m · {places} places · {speed} km/h",
   "prefs.vehiclesLast": "At least one vehicle stays in use for each mode.",
-  "prefs.switches": "Track switches, from the switch catalogue",
+  "prefs.switchesTitle": "Switches",
+  "prefs.switchesIntro":
+    "The switches and crossings from the catalogue that the railway editor offers, per rail mode, and the turnout new switches start with.",
+  "prefs.switchesTurnouts": "Turnouts",
+  "prefs.switchesSlips": "Slips in diamond crossings",
+  "prefs.switchesDefault": "Default",
+  "prefs.switchesFacts": "1:{n} · R {radius} m · {speed} km/h diverging",
+  "prefs.switchesLast": "The default turnout stays in use. To leave it out, choose another default first.",
   "prefs.calendar": "Calendar, demand and costs",
 
   "job.stepOf": "Step {step} of {steps}",
@@ -374,6 +382,7 @@ export const en = {
   ...editorsEn,
   ...cargoBikeEn,
   ...depotsEn,
+  ...roadEn,
   ...pluginsEn,
 } as const;
 

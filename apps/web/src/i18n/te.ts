@@ -1,3 +1,4 @@
+import { roadTe } from "./road/te";
 import { editorsTe } from "./editors/te";
 import { cargoBikeTe } from "./cargo-bike/te";
 import { depotsTe } from "./depots/te";
@@ -310,7 +311,14 @@ export const te: Messages = {
   "prefs.vehiclesAll": "అన్నీ వాడండి",
   "prefs.vehiclesFacts": "{length} మీ · {places} స్థానాలు · {speed} కి.మీ/గం",
   "prefs.vehiclesLast": "ప్రతి విధానానికి కనీసం ఒక వాహనం వాడుకలో ఉంటుంది.",
-  "prefs.switches": "పట్టా స్విచ్‌లు, స్విచ్ జాబితా నుండి",
+  "prefs.switchesTitle": "పాయింట్లు",
+  "prefs.switchesIntro":
+    "ప్రతి రైలు విధానానికి రైల్వే ఎడిటర్ అందించే జాబితాలోని పాయింట్లు, క్రాసింగ్‌లు, మరియు కొత్త పాయింట్లు ప్రారంభమయ్యే పాయింట్.",
+  "prefs.switchesTurnouts": "పాయింట్లు",
+  "prefs.switchesSlips": "క్రాసింగ్‌లలో స్లిప్‌లు",
+  "prefs.switchesDefault": "డిఫాల్ట్",
+  "prefs.switchesFacts": "1:{n} · R {radius} మీ · మళ్లే మార్గంలో {speed} కి.మీ/గం",
+  "prefs.switchesLast": "డిఫాల్ట్ పాయింట్ వాడుకలో ఉంటుంది. దాన్ని తీసేయడానికి ముందు మరొకటి ఎంచుకోండి.",
   "prefs.calendar": "క్యాలెండర్, డిమాండ్ మరియు ఖర్చులు",
 
   "job.stepOf": "దశ {step} / {steps}",
@@ -379,5 +387,6 @@ export const te: Messages = {
   ...editorsTe,
   ...cargoBikeTe,
   ...depotsTe,
+  ...roadTe,
   ...PLUGIN_MESSAGES.te,
 };

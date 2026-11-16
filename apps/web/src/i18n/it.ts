@@ -1,3 +1,4 @@
+import { roadIt } from "./road/it";
 import { editorsIt } from "./editors/it";
 import { cargoBikeIt } from "./cargo-bike/it";
 import { depotsIt } from "./depots/it";
@@ -310,7 +311,15 @@ export const it: Messages = {
   "prefs.vehiclesAll": "Usa tutti",
   "prefs.vehiclesFacts": "{length} m · {places} posti · {speed} km/h",
   "prefs.vehiclesLast": "Ogni modo mantiene almeno un veicolo in uso.",
-  "prefs.switches": "Deviatoi (dal catalogo dei deviatoi)",
+  "prefs.switchesTitle": "Deviatoi",
+  "prefs.switchesIntro":
+    "I deviatoi e gli incroci del catalogo che l'editor ferroviario propone per ogni modo ferroviario, e il deviatoio con cui partono i nuovi.",
+  "prefs.switchesTurnouts": "Deviatoi",
+  "prefs.switchesSlips": "Deviatoi inglesi negli incroci",
+  "prefs.switchesDefault": "Predefinito",
+  "prefs.switchesFacts": "1:{n} · R {radius} m · {speed} km/h in deviata",
+  "prefs.switchesLast":
+    "Il deviatoio predefinito resta in uso. Per escluderlo, scegli prima un altro predefinito.",
   "prefs.calendar": "Calendario, domanda e costi",
 
   "job.stepOf": "Passo {step} di {steps}",
@@ -380,5 +389,6 @@ export const it: Messages = {
   ...editorsIt,
   ...cargoBikeIt,
   ...depotsIt,
+  ...roadIt,
   ...PLUGIN_MESSAGES.it,
 };
