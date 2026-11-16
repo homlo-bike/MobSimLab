@@ -18,6 +18,7 @@ import { useProjectCurrency } from "../features/costs/currency";
 import type { Estimate as CostEstimate } from "../features/costs/model";
 import { CostTables, type CostsDoc } from "../features/costs/CostTables";
 import { WalkAnalysis } from "../features/walk/WalkAnalysis";
+import { journeySettingsFrom } from "../features/journey-planner/projectSettings";
 import { JourneyPlanner } from "../features/journey-planner/JourneyPlanner";
 import { NoiseMap } from "../features/noise/NoiseMap";
 import { NetworkTables } from "../features/tables/NetworkTables";
@@ -312,6 +313,7 @@ export function Workspace({
   const benefitsDoc = drawings.doc<BenefitsDoc>("benefits");
   // Project preferences: assumption values the project changes, such as the delays in traffic.
   const preferences = drawings.doc<PreferencesDoc>("preferences");
+  const journeySettings = useMemo(() => journeySettingsFrom(preferences?.values), [preferences]);
   // Road depots shared by the street lines (depot tool).
   const depotsDoc = drawings.doc<DepotsDoc>("depots");
   // The currency all money is shown in, and its exchange rate (Project preferences).
@@ -733,6 +735,7 @@ export function Workspace({
               pluginLines={pluginLineList}
               demandZones={demandZoneList}
               sameNameM={sameNameStationM(preferences?.values)}
+              projectSettings={journeySettings}
               gtfsFeeds={gtfsFeeds}
               {...(editable ? { onGtfsFeeds: (d: GtfsNetworkDoc) => drawings.set("gtfs-network", d) } : {})}
               projectName={project.name}
