@@ -38,6 +38,18 @@ export const calendarUz = {
   "cal.total": "Jami",
   "cal.noHolidaysYear": "Hali rasmiy bayramlar olinmagan",
   "cal.resetCount": "Hisoblangan {value} ga qaytarish",
+  "cal.service": "Kun turi bo'yicha xizmat kuni",
+  "cal.serviceIntro":
+    "Har bir kun turida xizmat qachon boshlanib tugashi hamda ertalabki va kechki tig'iz vaqti, SS:DD ko'rinishida. Yarim tundan keyingi vaqtlar 24:00 dan oshib davom etadi, masalan 24:30. Tig'iz vaqt bo'lmasa, bo'sh qoldiring.",
+  "cal.serviceDefault": "Har bir kun turi uchun standart: {first} dan {last} gacha, tig'iz vaqtlar {peaks}.",
+  "cal.firstDep": "Birinchi jo'nash",
+  "cal.lastDep": "Oxirgi jo'nash",
+  "cal.morningPeak": "Ertalabki tig'iz vaqt",
+  "cal.eveningPeak": "Kechki tig'iz vaqt",
+  "cal.peakFrom": "dan",
+  "cal.peakTo": "gacha",
+  "cal.serviceInvalid":
+    "Hali saqlanmadi: oxirgi jo'nash birinchisidan keyin bo'lishi, har bir tig'iz vaqt boshlangandan keyin tugashi kerak.",
   "cal.day.weekday": "Ish kuni",
   "cal.day.saturday": "Shanba",
   "cal.day.sunday": "Yakshanba",

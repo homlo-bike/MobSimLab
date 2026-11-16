@@ -38,6 +38,18 @@ export const calendarHi = {
   "cal.total": "कुल",
   "cal.noHolidaysYear": "अभी कोई सार्वजनिक छुट्टी नहीं लाई गई",
   "cal.resetCount": "गिने हुए {value} पर लौटें",
+  "cal.service": "दिन के प्रकार के अनुसार सेवा दिवस",
+  "cal.serviceIntro":
+    "हर दिन के प्रकार में सेवा कब शुरू और खत्म होती है, और उसका सुबह और शाम का पीक, HH:MM के रूप में। आधी रात के बाद के समय 24:00 के आगे चलते हैं, जैसे 24:30। पीक न हो तो खाली छोड़ें।",
+  "cal.serviceDefault": "हर दिन के प्रकार के लिए डिफ़ॉल्ट: {first} से {last}, पीक {peaks}।",
+  "cal.firstDep": "पहला प्रस्थान",
+  "cal.lastDep": "अंतिम प्रस्थान",
+  "cal.morningPeak": "सुबह का पीक",
+  "cal.eveningPeak": "शाम का पीक",
+  "cal.peakFrom": "से",
+  "cal.peakTo": "तक",
+  "cal.serviceInvalid":
+    "अभी सहेजा नहीं गया: अंतिम प्रस्थान पहले के बाद होना चाहिए, और हर पीक अपनी शुरुआत के बाद खत्म होना चाहिए।",
   "cal.day.weekday": "कार्यदिवस",
   "cal.day.saturday": "शनिवार",
   "cal.day.sunday": "रविवार",

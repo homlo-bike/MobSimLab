@@ -40,6 +40,18 @@ export const calendarIt = {
   "cal.total": "Totale",
   "cal.noHolidaysYear": "Nessun giorno festivo ancora scaricato",
   "cal.resetCount": "torna ai {value} contati",
+  "cal.service": "Giornata di servizio per tipo di giorno",
+  "cal.serviceIntro":
+    "Quando il servizio inizia e finisce in ogni tipo di giorno, e la sua punta del mattino e della sera, come HH:MM. Gli orari dopo mezzanotte proseguono oltre le 24:00, ad esempio 24:30. Lascia vuota una punta se non c'è.",
+  "cal.serviceDefault": "Predefinito per ogni tipo di giorno: dalle {first} alle {last}, punte {peaks}.",
+  "cal.firstDep": "Prima partenza",
+  "cal.lastDep": "Ultima partenza",
+  "cal.morningPeak": "Punta del mattino",
+  "cal.eveningPeak": "Punta della sera",
+  "cal.peakFrom": "dalle",
+  "cal.peakTo": "alle",
+  "cal.serviceInvalid":
+    "Non ancora salvato: l'ultima partenza deve seguire la prima, e ogni punta deve finire dopo il suo inizio.",
   "cal.day.weekday": "Feriale",
   "cal.day.saturday": "Sabato",
   "cal.day.sunday": "Domenica",
