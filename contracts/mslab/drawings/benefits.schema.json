@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/homlo-bike/MobSimLab/blob/main/contracts/mslab/drawings/benefits.schema.json",
+  "title": "Document of a \"benefits\" drawing (data/benefits.json, field doc)",
+  "type": "object",
+  "properties": {
+    "formulas": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "maxLength": 40,
+        "pattern": "^[a-z_]+$"
+      },
+      "additionalProperties": {
+        "type": "string",
+        "maxLength": 2000
+      }
+    },
+    "boardings": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "maxLength": 300
+      },
+      "additionalProperties": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 10000000
+      }
+    }
+  },
+  "additionalProperties": {}
+}

@@ -1,0 +1,6 @@
+{
+ "kind": "street-lines",
+ "schemaVersion": 1,
+ "updatedAt": "2026-11-16T10:00:00.000Z",
+ "doc": { "lines": [{ "name": "1", "points": [{ "lonlat": [13.4, 52.5] }, { "lonlat": [13.41, 52.5] }] }] }
+}
