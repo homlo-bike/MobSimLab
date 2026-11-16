@@ -33,7 +33,7 @@ Risk = likelihood × impact (H/M/L) **after** planned mitigations; anything stil
 
 | ID | Threat | Mitigation | Residual |
 |----|--------|------------|----------|
-| S1 | Someone else logs in first and becomes Owner of a fresh instance | Deployment on a private network (product decision); setup mode refuses all other logins until the Owner finishes setup; first-owner creation shown in the wizard and audited; optional `MOBSIMLAB_BOOTSTRAP_OWNER_EMAIL` pin; `reset-owner` operator command (ADR-0015) | M (if exposed or IdP shared) / L (private network) |
+| S1 | Someone else logs in first and becomes Owner of a fresh instance | Deployment on a private network (product decision); setup mode refuses all other logins until the Owner finishes setup; first-owner creation shown in the wizard and audited; setup mode refuses every sign-in until `MOBSIMLAB_BOOTSTRAP_OWNER_EMAIL` or `_SUBJECT` names the first Owner (security review 2026-11), and a Restricted account never claims it; `reset-owner` operator command (ADR-0015) | M (if exposed or IdP shared) / L (private network) |
 | S2 | Account linking by email across IdPs leads to takeover | Match on (issuer, subject) only | L |
 | S3 | ID token replay / forged token | PKCE, nonce, state, signature/iss/aud/exp validation with certified library | L |
 | S4 | Session hijack via XSS | HttpOnly `__Host-` cookies, strict CSP, no inline scripts, sanitised Markdown | L |

@@ -1,5 +1,5 @@
 import { randomBytes } from "node:crypto";
-import { Inject, Injectable } from "@nestjs/common";
+import { Inject, Injectable, Logger } from "@nestjs/common";
 import { sql } from "kysely";
 import { AuditService } from "../audit/audit.service";
 import { APP_CONFIG } from "../config/config.module";
@@ -54,6 +54,8 @@ export interface TokenResponse {
 
 /** Throttle for last-used updates. */
 const TOUCH_MS = 60_000;
+/** Self-registered clients nobody connected within this time are deleted (see removeUnusedClients). */
+export const UNUSED_CLIENT_MS = 24 * 3600 * 1000;
 
 /**
  * The authorization server for agent connections (ADR-0035 §2): Dynamic Client Registration, consent,
@@ -63,6 +65,9 @@ const TOUCH_MS = 60_000;
  */
 @Injectable()
 export class OAuthService {
+  /** Token replays (WARN, so they are also kept in the database for 30 days). */
+  private readonly security = new Logger("security");
+
   constructor(
     @Inject(DATABASE) private readonly db: Database,
     @Inject(APP_CONFIG) private readonly config: AppConfig,
@@ -165,6 +170,7 @@ export class OAuthService {
       typeof body.client_uri === "string" && /^https:\/\//.test(body.client_uri) ? body.client_uri : null;
     const id = `msl_client_${randomBytes(18).toString("base64url")}`;
     const now = new Date();
+    await this.removeUnusedClients(now);
     await this.db
       .insertInto("agent.client")
       .values({ id, name, redirect_uris: uris as string[], client_uri: clientUri, registered_by: "dynamic" })
@@ -179,6 +185,22 @@ export class OAuthService {
       response_types: ["code"],
       token_endpoint_auth_method: "none",
     };
+  }
+
+  /**
+   * Purpose: delete self-registered clients that nobody connected within a day of registering (security review:
+   * registration is open to anyone who can reach the instance, so abandoned registrations must not pile up).
+   * Clients with a connection, even a revoked one, and clients an Admin registered stay.
+   */
+  private async removeUnusedClients(now: Date): Promise<void> {
+    await this.db
+      .deleteFrom("agent.client as c")
+      .where("c.registered_by", "=", "dynamic")
+      .where("c.created_at", "<", new Date(now.getTime() - UNUSED_CLIENT_MS))
+      .where(({ not, exists, selectFrom }) =>
+        not(exists(selectFrom("agent.connection as k").select("k.id").whereRef("k.client_id", "=", "c.id"))),
+      )
+      .execute();
   }
 
   /**
@@ -383,8 +405,7 @@ export class OAuthService {
       const row = await this.tokenRow(code, "code");
       if (!row || row.client_id !== clientId) throw new OAuthError("invalid_grant", "unknown code");
       if (row.used_at) {
-        await this.revokeConnection(row.connection_id);
-        throw new OAuthError("invalid_grant", "code already used; the connection was revoked");
+        return this.replayed(row.connection_id, "code");
       }
       if (row.expires_at < new Date()) throw new OAuthError("invalid_grant", "code expired");
       const redirect = str("redirect_uri");
@@ -395,7 +416,9 @@ export class OAuthService {
       const resource = str("resource");
       if (resource && !this.isOurResource(resource))
         throw new OAuthError("invalid_target", "unknown resource");
-      await this.markUsed(code);
+      if (!(await this.claim(code))) {
+        return this.replayed(row.connection_id, "code");
+      }
       return this.issue(row.connection_id);
     }
     if (grant === "refresh_token") {
@@ -404,12 +427,13 @@ export class OAuthService {
       const row = await this.tokenRow(rt, "refresh");
       if (!row || row.client_id !== clientId) throw new OAuthError("invalid_grant", "unknown refresh token");
       if (row.used_at) {
-        await this.revokeConnection(row.connection_id);
-        throw new OAuthError("invalid_grant", "refresh token already used; the connection was revoked");
+        return this.replayed(row.connection_id, "refresh token");
       }
       if (row.expires_at < new Date()) throw new OAuthError("invalid_grant", "refresh token expired");
       const narrow = parseScopes(str("scope") ?? null);
-      await this.markUsed(rt);
+      if (!(await this.claim(rt))) {
+        return this.replayed(row.connection_id, "refresh token");
+      }
       return this.issue(row.connection_id, str("scope") ? (narrow ?? undefined) : undefined);
     }
     throw new OAuthError("unsupported_grant_type", "grant_type must be authorization_code or refresh_token");
@@ -433,12 +457,19 @@ export class OAuthService {
       .executeTakeFirst();
   }
 
-  private async markUsed(t: string): Promise<void> {
-    await this.db
+  /**
+   * Purpose: mark a single-use code or refresh token as used, atomically. Output: false when another request
+   * already used it (a concurrent replay), so the caller treats it like any other reuse.
+   */
+  private async claim(t: string): Promise<boolean> {
+    const row = await this.db
       .updateTable("agent.token")
       .set({ used_at: new Date() })
       .where("token_hash", "=", tokenHash(t))
-      .execute();
+      .where("used_at", "is", null)
+      .returning("token_hash")
+      .executeTakeFirst();
+    return Boolean(row);
   }
 
   /** Purpose: a new access and refresh token for a connection whose user may still use agents. */
@@ -514,6 +545,13 @@ export class OAuthService {
   }
 
   /** Purpose: end a connection and delete its tokens. */
+  /** Purpose: a reused code or refresh token: revoke its connection and log it, as it may have been stolen. */
+  private async replayed(connectionId: string, kind: "code" | "refresh token"): Promise<never> {
+    await this.revokeConnection(connectionId);
+    this.security.warn(`agent ${kind} used twice; connection ${connectionId} revoked`);
+    throw new OAuthError("invalid_grant", `${kind} already used; the connection was revoked`);
+  }
+
   async revokeConnection(connectionId: string): Promise<void> {
     await this.db.transaction().execute(async (tx) => {
       await tx

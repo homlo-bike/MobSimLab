@@ -84,15 +84,15 @@ MobSimLab has no local passwords; people sign in with an OpenID Connect provider
 
 1. Register MobSimLab with your provider as a web application. Redirect URI: `<MOBSIMLAB_PUBLIC_URL>/api/auth/callback`. Post-logout redirect URI: `<MOBSIMLAB_PUBLIC_URL>/`.
 2. Put the issuer URL and client ID in `.env` (`MOBSIMLAB_OIDC_ISSUER`, `MOBSIMLAB_OIDC_CLIENT_ID`). If the provider gave you a client secret, paste it into `deploy/secrets/oidc_client_secret`.
-3. Start the stack. The instance starts in **setup mode**: the first person who signs in becomes **Owner**, and everyone else is refused until the Owner presses **Finish setup**. To control who that first person is, set `MOBSIMLAB_BOOTSTRAP_OWNER_EMAIL` (a provider-verified e-mail) or `MOBSIMLAB_BOOTSTRAP_OWNER_SUBJECT`.
+3. Name the first Owner in `.env`: `MOBSIMLAB_BOOTSTRAP_OWNER_EMAIL` (an e-mail the provider has verified) or `MOBSIMLAB_BOOTSTRAP_OWNER_SUBJECT` (the provider's user ID). Start the stack. The instance starts in **setup mode**: only that person can sign in, becomes **Owner**, and everyone else is refused until the Owner presses **Finish setup**. Without either setting nobody can sign in during setup, so nobody else at the provider can claim the instance first.
 4. After setup, new users wait for approval (auto-registration is off by default). Owners and Admins handle this under **Administration** in the account menu: approve or reject people, change roles (Restricted suspends an account without deleting it), set sign-up rules (auto-registration, allowed e-mail domains and IdP groups) and map IdP groups to roles. Only an Owner can create Owners or Admins, and the last Owner cannot be removed.
-5. Behind a TLS reverse proxy, set `MOBSIMLAB_TRUSTED_PROXIES` to the proxy's address so sign-in rate limits (10 per minute per client by default) and audit records see the real client address.
+5. Behind a TLS reverse proxy, set `MOBSIMLAB_TRUSTED_PROXIES` to the proxy's address so sign-in rate limits (10 per minute per client by default) and audit records see the real client address, and browsers that arrive over plain http are sent to https. See [docs/user/reverse-proxy.md](docs/user/reverse-proxy.md) for an nginx example.
 
 **AI agents:** Owners, Admins and Editors can connect Claude or another MCP app at `<MOBSIMLAB_PUBLIC_URL>/mcp`. The instance must be reachable over HTTPS from the AI app, and `MOBSIMLAB_PUBLIC_URL` must be the address the app uses. See [docs/user/ai-agents.md](docs/user/ai-agents.md).
 
 **Static viewer:** `pnpm build:static` builds the read-only website. See [docs/user/static-viewer.md](docs/user/static-viewer.md).
 
-Lost the Owner account? Run `docker compose exec mobsimlab /app/bin/mobsimlab admin reset-owner`. This demotes the current Owner to Admin, signs them out, returns the instance to setup mode and records the action in the audit log.
+Lost the Owner account? Run `docker compose exec mobsimlab /app/bin/mobsimlab admin reset-owner`. This demotes the current Owner to Admin, signs them out, returns the instance to setup mode and records the action in the audit log. Only the person named by `MOBSIMLAB_BOOTSTRAP_OWNER_EMAIL` or `_SUBJECT` can then claim it, and never a Restricted account.
 
 ## Documentation
 

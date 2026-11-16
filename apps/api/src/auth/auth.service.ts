@@ -1,7 +1,7 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { Inject, Injectable, Logger } from "@nestjs/common";
 import { AuditService } from "../audit/audit.service";
 import { APP_CONFIG } from "../config/config.module";
-import type { AppConfig } from "../config/env";
+import { type AppConfig, bootstrapOwnerSet } from "../config/env";
 import { DATABASE, type Database, type InstanceRole } from "../db/database";
 import { mappedRole, meetsRegistrationRules } from "../iam/roles";
 import type { OidcIdentity } from "./oidc.service";
@@ -22,6 +22,8 @@ export interface RequestMeta {
 /** Decides who may sign in, including first-owner setup mode (05 §3.1, ADR-0015). */
 @Injectable()
 export class AuthService {
+  private readonly log = new Logger("security");
+
   constructor(
     @Inject(DATABASE) private readonly db: Database,
     @Inject(APP_CONFIG) private readonly config: AppConfig,
@@ -59,7 +61,18 @@ export class AuthService {
             .where("status", "=", "active")
             .executeTakeFirst();
           if (owner) return { ok: false, reason: "setup_in_progress" } as const;
-          if (!this.mayBecomeOwner(id)) return { ok: false, reason: "not_bootstrap_owner" } as const;
+          if (!bootstrapOwnerSet(this.config))
+            this.log.warn(
+              "sign-in refused in setup mode: set MOBSIMLAB_BOOTSTRAP_OWNER_EMAIL or MOBSIMLAB_BOOTSTRAP_OWNER_SUBJECT to name the first Owner",
+            );
+          // Nobody may claim the instance unless the operator named the first Owner, and a suspended account
+          // never may, even when it matches (security review: first sign-in must not hand out the instance).
+          if (
+            !bootstrapOwnerSet(this.config) ||
+            existing?.instance_role === "restricted" ||
+            !this.mayBecomeOwner(id)
+          )
+            return { ok: false, reason: "not_bootstrap_owner" } as const;
           if (existing) {
             await tx
               .updateTable("iam.user")
@@ -119,7 +132,12 @@ export class AuthService {
         .execute();
       await tx
         .updateTable("iam.user")
-        .set({ last_login_at: new Date(), email: id.email, display_name: id.name })
+        .set({
+          last_login_at: new Date(),
+          email: id.email,
+          email_verified: Boolean(id.email && id.emailVerified),
+          display_name: id.name,
+        })
         .where("id", "=", userId)
         .execute();
       await this.audit.append({ ...auditBase, action: "auth.login", objectId: userId, actorId: userId }, tx);
@@ -149,7 +167,7 @@ export class AuthService {
     );
   }
 
-  /** Purpose: apply the optional MOBSIMLAB_BOOTSTRAP_OWNER_* restrictions. */
+  /** Purpose: apply the MOBSIMLAB_BOOTSTRAP_OWNER_* restrictions (at least one is set, see signIn). */
   private mayBecomeOwner(id: OidcIdentity): boolean {
     const { bootstrapOwnerEmail: email, bootstrapOwnerSubject: subject } = this.config;
     if (email && !(id.emailVerified && id.email === email.toLowerCase())) return false;
@@ -165,7 +183,14 @@ export class AuthService {
   ): Promise<string> {
     const u = await tx
       .insertInto("iam.user")
-      .values({ email: id.email, display_name: id.name, instance_role: role, status, last_login_at: null })
+      .values({
+        email: id.email,
+        email_verified: Boolean(id.email && id.emailVerified),
+        display_name: id.name,
+        instance_role: role,
+        status,
+        last_login_at: null,
+      })
       .returning("id")
       .executeTakeFirstOrThrow();
     await tx
