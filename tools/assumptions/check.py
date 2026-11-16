@@ -182,6 +182,7 @@ GROUP_ORDER = [
     "Benefits",
     "Fares",
     "Appraisal",
+    "Noise",
 ]
 COLLECTIONS = {"ocl", "trolley", "third-rail", "fourth-rail"}
 SUPPLY_FIELDS = {"id", "label", "collection", "current", "typical_modes", "attributes"}

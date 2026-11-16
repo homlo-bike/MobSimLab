@@ -1,6 +1,8 @@
 import type { DelayShares } from "../features/street-lines/types";
 import { MIXED_DELAY, PAINTED_DELAY } from "../features/street-setup/model";
 import rulesData from "./design-rules.generated.json";
+import type { ServiceCalendar, SimulationYears } from "./calendar";
+import type { ProjectClimate } from "./climate";
 import paramsData from "./parameters.generated.json";
 import libraryData from "../features/walk/defaults.generated.json";
 
@@ -21,6 +23,12 @@ export interface PreferencesDoc {
   vehiclesOff?: string[];
   /** Switches and crossings the project does not use, and its default turnout per rail mode; absent: all, library's. */
   switches?: { off?: string[]; default_turnout?: Record<string, string> };
+  /** Day types, public holidays and service days (calendar.ts); absent: the defaults. */
+  calendar?: ServiceCalendar;
+  /** Years the multi-year run simulates (calendar.ts `simulationYearsFrom`); absent: the defaults. */
+  simulationYears?: SimulationYears;
+  /** Monthly air temperatures at the project's location (climate.ts); absent: not fetched yet. */
+  climate?: ProjectClimate;
   /** Values of enum and text assumptions the project changes, by assumption id (as `values` for numbers). */
   choices?: Record<string, string>;
 }
@@ -367,4 +375,19 @@ export function withChoice(
   if (Object.keys(choices).length) next.choices = choices;
   else delete next.choices;
   return next;
+}
+
+/**
+ * Purpose: the central value a project uses for a number parameter of the library: its own value for the
+ * mode, else its own for every mode, else the library's. Example: `paramNumber("analysis.gap_cell_m", prefs)`.
+ */
+export function paramNumber(key: string, values: PreferencesDoc["values"] | undefined, mode = "*"): number {
+  for (const id of mode === "*" ? [key] : [`${key}.${mode}`, key]) {
+    const v = values?.[id];
+    if (typeof v === "number" && Number.isFinite(v) && v >= 0) return v;
+  }
+  const p = LIBRARY_PARAMS.find((x) => x.id === key);
+  const lib = p ? paramLibrary(p, mode) : undefined;
+  if (!Array.isArray(lib)) throw new Error(`no number parameter ${key} in the assumption library`);
+  return lib[1];
 }

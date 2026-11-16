@@ -2,6 +2,7 @@ import type { Map as MapLibreMap, MapMouseEvent } from "maplibre-gl";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useI18n } from "../../i18n/i18n";
+import { CommentBadge, ObjectComments } from "../comments/Comments";
 import type { MessageKey } from "../../i18n/messages";
 import type { PreferencesDoc } from "../../workspace/preferences";
 import type { SavedStreetLine } from "../street-lines/saved";
@@ -402,6 +403,7 @@ export function DepotEditor({
                 <span className="shrink-0 text-xs text-slate-500">
                   {t("depot.slotsN", { n: (d.layout?.lanes ?? []).reduce((s, l) => s + l.slots.length, 0) })}
                 </span>
+                <CommentBadge type="depot" id={d.id} />
               </button>
             </li>
           ))}
@@ -830,6 +832,7 @@ export function DepotEditor({
           >
             {t("depot.delete")}
           </button>
+          <ObjectComments type="depot" id={selected.id} />
         </section>
       )}
       <ul className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-slate-600">

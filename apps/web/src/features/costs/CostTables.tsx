@@ -770,7 +770,7 @@ function ItemRow({ x, money, est }: { x: CostItem; money: (v: number) => string;
 }
 
 /** Purpose: a number field that commits on blur or Enter; empty returns to the default. */
-function NumberField({
+export function NumberField({
   label,
   value,
   placeholder,

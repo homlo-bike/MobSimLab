@@ -444,6 +444,14 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 | traction: battery | 0.1 | 0.2 | 0.3 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Operators plan against the usable state-of-charge window and keep a reserve for diversions, traffic and battery ageing; 20 % of nominal is a common planning figure. |
 | traction: diesel, hydrogen, cng | 0.1 | 0.15 | 0.25 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Fuel reserve for disruption. |
 
+### Longest a vehicle waits at a terminal for its next trip before it returns to the depot instead
+
+`timetable.max_terminal_wait_min` · unit: min · used by: vehicle scheduling, fleet size
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 10 | 20 | 45 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Vehicle blocks: a vehicle that would stand longer than this between trips (for example between the peaks) runs back to the depot and a vehicle pulls out again later, so it does not block a terminal stand or platform. The rail timetable planner used 20 min; operators choose by depot distance and terminal space. |
+
 ### Minimum buffer time between the blocking times of two trains on one section
 
 `timetable.min_buffer_s` · unit: s · used by: timetable construction, conflict detection, capacity
@@ -1616,15 +1624,15 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 
 ### Walking speed for walking links between stations
 
-`demand.walk_speed_kmh` · unit: km/h · used by: transfer links, access/egress links, catchment
+`demand.walk_speed_kmh` · unit: km/h · used by: transfer links, access/egress links, catchment, benefit estimate walks
 
 | Context | Low | Central | High | Basis | Check | Sources | Rationale |
 |---|---|---|---|---|---|---|---|
 | all | 3.8 | 4.5 | 5.4 | cited | unverified | [mutcd-2009](#src-mutcd-2009), [hcm7](#src-hcm7) | MUTCD uses 3.5 ft/s (≈ 3.8 km/h) for slow pedestrians at crossings; typical free walking is about 1.25 m/s (4.5 km/h); HCM free-flow up to about 1.5 m/s (5.4 km/h). |
 
-### Journey planner: walking distance over straight-line distance
+### Walking distance over straight-line distance (journey planner, benefit estimate)
 
-`journey.walk_detour_factor` · unit: ratio · used by: journey planner access, egress and transfer walks
+`journey.walk_detour_factor` · unit: ratio · used by: journey planner access, egress and transfer walks, benefit estimate walks
 
 | Context | Low | Central | High | Basis | Check | Sources | Rationale |
 |---|---|---|---|---|---|---|---|
@@ -1687,6 +1695,30 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 | Context | Low | Central | High | Basis | Check | Sources | Rationale |
 |---|---|---|---|---|---|---|---|
 | all | 12 | 15 | 18 | documented | unverified | [moreno-2021](#src-moreno-2021), [mobsimlab-derivation](#src-mobsimlab-derivation) | Average urban cycling speed door to door, with waits at junctions folded in, as used for the bicycle variant of the 15-minute city (Moreno et al. 2021 count destinations within 15 minutes on foot or by bicycle). 12 km/h is a cautious value for older or casual riders, 18 km/h a commuter on a fast cycle network. Signalised crossings add walk.crossing_delay_s on top, as for walking. |
+
+### Station grouping: stops and stations closer than this are one stop or station and share a name
+
+`analysis.station_grouping_m` · unit: m · used by: stop and station names in the railway editor, renaming stops and stations
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 100 | 150 | 250 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | 06-gis §9.3 default: platforms of one interchange (a tram stop in front of a station, two bus stops on either side of a junction) usually lie within about 150 m of each other; farther apart they are separate stops that need their own names. A street line's own grouping distance (line rules) still applies to its stops. |
+
+### Network map: stops of any name closer than this are drawn as one station
+
+`analysis.same_place_m` · unit: m · used by: network and strip maps, fare zones
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 20 | 40 | 80 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Two stops this close are on the same platform or kerb even when their names differ (a renamed stop, a typo), so the diagrams merge them. Stops with the same name are merged over a longer distance. |
+
+### Walk coverage: size of the cells people are gathered in, and of each gap
+
+`analysis.gap_cell_m` · unit: m · used by: walk coverage gaps, people not reached
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 100 | 200 | 400 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | The population grid is 100 m; gathering it in 200 m cells keeps the walk request small and makes each gap a block rather than a single grid cell. Smaller cells show gaps in more detail and take longer; 100 m is the grid itself. |
 
 ## Simulation
 
@@ -2454,7 +2486,7 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 
 ### Rail temperature above air temperature in sunlight (climate note)
 
-`climate.rail_temp_above_air_c` · unit: °C · used by: heat-related speed restriction note
+`climate.rail_temp_above_air_c` · unit: °C · used by: heat-related speed restriction note, calendar run hot days
 
 | Context | Low | Central | High | Basis | Check | Sources | Rationale |
 |---|---|---|---|---|---|---|---|
@@ -2462,7 +2494,7 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 
 ### Rail temperature the track is designed for (stress-free or neutral temperature, climate note)
 
-`climate.rail_design_temp_c` · unit: °C · used by: buckling-risk note (risk rises as rail temperature exceeds this by a margin)
+`climate.rail_design_temp_c` · unit: °C · used by: buckling-risk note (risk rises as rail temperature exceeds this by a margin), calendar run hot days
 
 | Context | Low | Central | High | Basis | Check | Sources | Rationale |
 |---|---|---|---|---|---|---|---|
@@ -2518,7 +2550,7 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 
 ### Heating and air-conditioning power of a battery vehicle in service
 
-`energy.hvac_power_kw` · unit: kW · used by: auxiliary energy demand
+`energy.hvac_power_kw` · unit: kW · used by: auxiliary energy demand, calendar run heating and air conditioning energy
 
 | Context | Low | Central | High | Basis | Check | Sources | Rationale |
 |---|---|---|---|---|---|---|---|
@@ -2529,11 +2561,123 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 
 ### Air temperature above which the overhead contact line sags too far
 
-`climate.ocl_sag_air_temp_c` · unit: °C · used by: heat-related speed restriction note
+`climate.ocl_sag_air_temp_c` · unit: °C · used by: heat-related speed restriction note, calendar run hot days
 
 | Context | Low | Central | High | Basis | Check | Sources | Rationale |
 |---|---|---|---|---|---|---|---|
 | all | 32 | 38 | 45 | cited | secondary | [orr-ole-heat](#src-orr-ole-heat) | ORR: UK legacy overhead line equipment is designed for −18 °C to +38 °C; modern auto-tensioned systems and hot-climate designs go higher. |
+
+### Rail temperature above the design temperature at which heat speed restrictions start
+
+`climate.heat_restriction_margin_c` · unit: °C · used by: calendar run hot days (heat speed restriction on welded track)
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 15 | 25 | 35 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | With a 25 °C design temperature and rails 20 °C above the air, restrictions start at about 30 °C air temperature; well-maintained track tolerates more, track with weak ballast less. |
+
+### Speed limit of a heat speed restriction (buckling risk on welded track)
+
+`climate.heat_speed_kmh` · unit: km/h · used by: calendar run hot days
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 30 | 60 | 90 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Blanket emergency speed restrictions in hot weather are typically 30–100 km/h; lines slower than the limit are not affected. |
+
+### Hour of the day heat speed restrictions start on a hot day
+
+`climate.heat_from_h` · unit: h · used by: calendar run hot days
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 10 | 12 | 14 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Rail temperature follows the sun and peaks in the afternoon. |
+
+### Hour of the day heat speed restrictions end on a hot day
+
+`climate.heat_to_h` · unit: h · used by: calendar run hot days
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 18 | 20 | 22 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Rails cool down in the evening. |
+
+### Speed limit under a sagging overhead contact line on a very hot day
+
+`climate.ocl_sag_speed_kmh` · unit: km/h · used by: calendar run very hot days
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 40 | 80 | 120 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Lower speeds keep the pantograph from losing contact or catching the sagging wire. |
+
+### Daily minimum air temperature at or below which a day counts as a frost day
+
+`climate.frost_day_min_c` · unit: °C · used by: calendar run cold days (frozen switches, switch heating)
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | -5 | 0 | 2 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Climatology counts a day with a minimum below 0 °C as a frost day; snow and ice in the switches need frost. |
+
+### Switch heating on the switches of the railway
+
+`climate.switch_heating` · unit: choice · used by: calendar run cold days (frozen switches or switch heating energy)
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | – | fitted | – | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Railways with frost fit heating to their switches; without it, switches freeze and fail. |
+
+### Heating power of one switch on a frost day
+
+`climate.switch_heating_kw` · unit: kW · used by: calendar run switch heating energy
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 2 | 4 | 8 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Electric point heating is a few kW per switch; long high-speed turnouts need more. |
+
+### Hours switch heating runs on a frost day
+
+`climate.switch_heating_hours` · unit: h · used by: calendar run switch heating energy
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 6 | 12 | 24 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Controlled heating runs while the rail is near or below freezing, mostly at night and in the morning. |
+
+### Extra share of trips delayed on a frost day without switch heating (frozen switches)
+
+`climate.frost_extra_delayed_share` · unit: share · used by: calendar run cold days
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.05 | 0.1 | 0.3 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Added to the stability test's share of delayed trips (simulation.stability.delayed_share). |
+
+### Mean primary delay on a frost day without switch heating (frozen switches)
+
+`climate.frost_delay_mean_s` · unit: s · used by: calendar run cold days
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 120 | 300 | 900 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Clearing a frozen switch or routing round it takes minutes. |
+
+### Daily mean air temperature below which vehicles heat
+
+`climate.comfort_low_c` · unit: °C · used by: calendar run heating and air conditioning energy
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 12 | 15 | 18 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Heating degree days are often counted below 15 °C. |
+
+### Daily mean air temperature above which vehicles cool
+
+`climate.comfort_high_c` · unit: °C · used by: calendar run heating and air conditioning energy
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 20 | 22 | 26 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Cooling degree days are often counted above 22 °C. |
+
+### Degrees beyond the comfort range at which heating or air conditioning runs at full power
+
+`climate.hvac_full_delta_c` · unit: °C · used by: calendar run heating and air conditioning energy
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 15 | 20 | 30 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Heating and cooling power grows with the gap to the comfort range up to the full power (energy.hvac_power_kw). |
 
 ## Cost
 
@@ -2772,7 +2916,15 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 | long_distance_rail | 100 | 150 | 220 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Driver and on-board staff. |
 | high_speed_rail | 120 | 180 | 260 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Driver and on-board staff. |
 
-### Rail running cost per car-km (per 25 m of train)
+### Rail running cost: length of train counted as one car
+
+`cost.opex.car_length_m` · unit: m · used by: operating cost: service
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 20 | 25 | 27 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | The per car-km running costs are for cars of about 25 m (main-line coaches 24–27 m, metro cars 18–23 m). A train's car-km are its length over this value times its km, so short articulated tram modules are not each counted as a full car. |
+
+### Rail running cost per car-km (per car of cost.opex.car_length_m)
 
 `cost.opex.car_km` · unit: US$ per car-km (2023, PPP) · used by: operating cost: service
 
@@ -3002,6 +3154,30 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 | Context | Low | Central | High | Basis | Check | Sources | Rationale |
 |---|---|---|---|---|---|---|---|
 | all | 280 | 300 | 330 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Annual ridership is usually 280–330 times average weekday ridership, as weekends and holidays carry less. |
+
+### Ridership: a Saturday's riders as a share of a weekday's
+
+`benefit.ridership.saturday_share` · unit: share · used by: multi-year runs (passengers per day type)
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.5 | 0.6 | 0.75 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Weekend days carry fewer riders than weekdays. With 0.6 on Saturdays and 0.45 on Sundays and public holidays, a year of 250 weekdays, 52 Saturdays, 52 Sundays and 10 holidays comes to about 310 weekday equivalents, in line with benefit.ridership.days_per_year (280–330). |
+
+### Ridership: a Sunday's riders as a share of a weekday's
+
+`benefit.ridership.sunday_share` · unit: share · used by: multi-year runs (passengers per day type)
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.35 | 0.45 | 0.6 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Sundays carry the fewest riders of the week; the range keeps the year's weekday equivalents within benefit.ridership.days_per_year (280–330), as for benefit.ridership.saturday_share. |
+
+### Ridership: a public holiday's riders as a share of a weekday's
+
+`benefit.ridership.holiday_share` · unit: share · used by: multi-year runs (passengers per day type)
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.35 | 0.45 | 0.6 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | A public holiday usually runs like a Sunday, so it takes the Sunday share (benefit.ridership.sunday_share). |
 
 ### Ridership: share of a weekday's boardings in one peak hour
 

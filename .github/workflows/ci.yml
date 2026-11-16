@@ -114,6 +114,8 @@ jobs:
         run: uvx ruff check tools/demand && uvx ruff format --check tools/demand && uv run --no-project --with pyyaml python tools/demand/export_defaults.py --check
       - name: Parameters in Project preferences match the assumption library
         run: uvx ruff check tools/parameters && uvx ruff format --check tools/parameters && uv run --no-project --with pyyaml python tools/parameters/export_defaults.py --check
+      - name: Assumptions report sources match the assumption library
+        run: uvx ruff check tools/assumptions-report && uvx ruff format --check tools/assumptions-report && uv run --no-project --with pyyaml python tools/assumptions-report/export_sources.py --check
 
   rust:
     name: Kernels (fmt, clippy, test, S2 smoke benchmark)
