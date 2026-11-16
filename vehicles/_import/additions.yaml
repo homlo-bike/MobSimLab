@@ -282,3 +282,107 @@ siemens-velaro-e320-class-374:
   high: 2.95
   rationale: Owner's figure from the Siemens specification, no link; not confirmed.
   source: *id001
+# Floor heights above top of rail, looked up 2026-11-16 for the platform accessibility check.
+hitachi-frecciarossa-1000:
+- field: floorHeight
+  value: 1240
+  unit: mm
+  basis: cited
+  source:
+    url: https://en.wikipedia.org/wiki/Frecciarossa_1000
+    title: Frecciarossa 1000
+    publisher: Wikipedia
+    accessed: '2026-11-16'
+    kind: secondary
+    checked_via: search-snippet
+    note: Floor height read from a search-result extract of the page, 2026-11-16.
+obb-railjet:
+- field: floorHeight
+  value: 1250
+  unit: mm
+  basis: cited
+  rationale: Siemens' Viaggio platform brochure gives the ÖBB railjet as its reference, with floor and entrance height
+    1250 mm above rail head. Coach floor; not stated for every railjet batch.
+  source:
+    url: https://assets.new.siemens.com/siemens/assets/api/uuid:d40e9eab978aa2ec88b844ac314ac695e11e088c/viaggio-platform-german.pdf
+    title: Viaggio Plattform
+    publisher: Siemens Mobility
+    accessed: '2026-11-16'
+    kind: primary
+    checked_via: search-snippet
+    note: Floor height read from a search-result extract of the document, 2026-11-16.
+siemens-class-185:
+- field: floorHeight
+  value: 1247
+  unit: mm
+  basis: cited
+  source:
+    url: https://en.wikipedia.org/wiki/British_Rail_Class_185
+    title: British Rail Class 185
+    publisher: Wikipedia
+    accessed: '2026-11-16'
+    kind: secondary
+    checked_via: search-snippet
+    note: Floor height read from a search-result extract of the page, 2026-11-16.
+alstom-metropolis-sydney-6-car:
+- field: floorHeight
+  value: 1200
+  unit: mm
+  basis: cited
+  source:
+    url: https://api.environdec.com/api/v1/EPDLibrary/Files/32a46be5-fc8c-47cc-1b8a-08da2ccce1bd/Data
+    title: Environmental Product Declaration, Sydney Metro Metropolis train
+    publisher: Alstom (EPD International)
+    accessed: '2026-11-16'
+    kind: primary
+    checked_via: search-snippet
+    note: Floor height read from a search-result extract of the document, 2026-11-16.
+stadler-citylink-saarbahn:
+- field: floorHeight
+  value: 380
+  unit: mm
+  basis: cited
+  rationale: Stadler's Saarbahn data sheet gives an access height of 350–380 mm; the upper value is used.
+  source:
+    url: https://events.stadlerrail.com/wp-content/uploads/2024/09/CL_SAARB0924_en.pdf
+    title: CITYLINK Saarbahn
+    publisher: Stadler Rail
+    accessed: '2026-11-16'
+    kind: primary
+    checked_via: search-snippet
+    note: Access height read from a search-result extract of the document, 2026-11-16.
+stadler-citylink-avg:
+- field: floorHeight
+  value: 550
+  unit: mm
+  basis: cited
+  rationale: Entrance height 550 mm for the Karlsruhe / Heilbronn (AVG) variant.
+  source:
+    url: https://www.avg.info/fileadmin/user_upload/avg/Dateien/Aufsteller_VDV-TramTrain_V04.pdf
+    title: VDV TramTrain
+    publisher: Albtal-Verkehrs-Gesellschaft
+    accessed: '2026-11-16'
+    kind: primary
+    checked_via: search-snippet
+    note: Entrance height read from a search-result extract of the document, 2026-11-16.
+stadler-dt8-16-stuttgart-2car:
+- field: floorHeight
+  value: 1000
+  unit: mm
+  basis: documented
+  rationale: The SSB DT 8 family has a 1000 mm floor (high-floor Stadtbahn platforms); taken as the same for the DT 8.16.
+  source: &dt8
+    url: https://en.wikipedia.org/wiki/SSB_DT_8
+    title: SSB DT 8
+    publisher: Wikipedia
+    accessed: '2026-11-16'
+    kind: secondary
+    checked_via: search-snippet
+    note: Floor height of the DT 8 family read from a search-result extract of the page, 2026-11-16.
+stadler-dt8-16-stuttgart-4car:
+- field: floorHeight
+  value: 1000
+  unit: mm
+  basis: documented
+  rationale: The SSB DT 8 family has a 1000 mm floor (high-floor Stadtbahn platforms); taken as the same for the DT 8.16.
+  source: *dt8

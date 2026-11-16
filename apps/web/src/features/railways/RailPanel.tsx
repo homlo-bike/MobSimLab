@@ -93,6 +93,8 @@ interface Props {
   extraIssues?: IssueView[];
   /** Service lines: the last publication, publishing, and picking stops on the map. */
   service: {
+    /** The project's design rules (Project preferences), for the platform access check. */
+    designValues?: Readonly<Record<string, number>> | null;
     publication: Publication | null;
     publish: () => void;
     picking: string | null;

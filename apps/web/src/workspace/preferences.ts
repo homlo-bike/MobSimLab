@@ -64,6 +64,8 @@ export interface DesignRule {
   field: string;
   label: string;
   unit: string;
+  /** A rail engine value (ModeParams); false for the platform accessibility rules the web app checks (the engine ignores those). */
+  engine: boolean;
   /** Library key and [low, central, high] per rail mode. */
   modes: Record<string, { key: string; values: [number, number, number] }>;
 }
@@ -91,6 +93,21 @@ export function designValuesFrom(doc: PreferencesDoc | null | undefined): Record
     }
   }
   return out;
+}
+
+/**
+ * Purpose: a design rule's value for a mode, from the values `designValuesFrom` gives (`<mode>.<field>`): the
+ * project's where it set one, else the library's central value. `undefined` when the rule or mode is unknown.
+ */
+export function ruleValue(
+  values: Readonly<Record<string, number>> | null | undefined,
+  field: string,
+  mode: string,
+): number | undefined {
+  const lib = DESIGN_RULES.find((r) => r.field === field)?.modes[mode];
+  if (!lib) return undefined;
+  const own = values?.[`${mode}.${field}`];
+  return typeof own === "number" && Number.isFinite(own) && own > 0 ? own : lib.values[1];
 }
 
 /** Purpose: the catalogue vehicles the project does not use. */

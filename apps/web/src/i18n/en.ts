@@ -294,6 +294,9 @@ export const en = {
   "prefs.rulesChanged": "{count} changed",
   "prefs.rulesLibrary": "Assumption library: {value} {unit}",
   "prefs.rulesLibraryRange": "Assumption library: {value} {unit} (range {low}–{high})",
+  "prefs.accessTitle": "Platform accessibility",
+  "prefs.accessIntro":
+    "Step and gap limits between platform and train (TSI PRM), and the floor height used for trains that have none in the vehicle catalogue. Service lines are checked against these at every stop.",
   "prefs.vehiclesTitle": "Vehicles",
   "prefs.vehiclesIntro":
     "The catalogue vehicles this project uses, per mode. The street line and railway tools only offer the ticked ones.",
