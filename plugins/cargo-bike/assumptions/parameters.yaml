@@ -552,6 +552,26 @@
         - homlo-kit-2026
       check: unverified
       rationale: A working year without holidays and the worst weather weeks.
+- key: cargo_bike.savings.price_year
+  label: Year of the reference prices
+  group: Cargo bike
+  unit: year
+  used_by:
+    - cargo bike savings
+  values:
+    - context:
+        mode: "*"
+      low: 2024
+      central: 2024
+      high: 2024
+      basis: documented
+      sources:
+        - homlo-kit-2026
+      check: unverified
+      rationale:
+        The savings prices below are German prices of this year. The tab converts them to the start
+        point's country with that country's and Germany's World Bank exchange rate and price level of the same
+        year; change it when you enter prices of another year.
 - key: cargo_bike.savings.bike_price_eur
   label: Cargo bike purchase price (2024 EUR)
   group: Cargo bike

@@ -246,7 +246,7 @@
   label: Walking speed for walking links between stations
   group: Demand
   unit: km/h
-  used_by: [transfer links, access/egress links, catchment]
+  used_by: [transfer links, access/egress links, catchment, benefit estimate walks]
   values:
     - context:
         mode: "*"
@@ -259,10 +259,10 @@
       rationale: MUTCD uses 3.5 ft/s (≈ 3.8 km/h) for slow pedestrians at crossings; typical free walking is about 1.25 m/s (4.5 km/h); HCM free-flow up to about 1.5 m/s (5.4 km/h).
 
 - key: journey.walk_detour_factor
-  label: "Journey planner: walking distance over straight-line distance"
+  label: "Walking distance over straight-line distance (journey planner, benefit estimate)"
   group: Demand
   unit: ratio
-  used_by: [journey planner access, egress and transfer walks]
+  used_by: [journey planner access, egress and transfer walks, benefit estimate walks]
   values:
     - context:
         mode: "*"

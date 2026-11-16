@@ -317,6 +317,7 @@ export const ko: Messages = {
   "prefs.group.cost": "비용",
   "prefs.group.benefits": "편익",
   "prefs.group.fares": "요금",
+  "prefs.group.noise": "소음",
   "prefs.traction.battery": "배터리",
   "prefs.traction.diesel": "디젤",
   "prefs.traction.hydrogen": "수소",

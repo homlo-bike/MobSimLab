@@ -320,6 +320,7 @@ export const mr: Messages = {
   "prefs.group.cost": "खर्च",
   "prefs.group.benefits": "लाभ",
   "prefs.group.fares": "भाडे",
+  "prefs.group.noise": "आवाज",
   "prefs.traction.battery": "बॅटरी",
   "prefs.traction.diesel": "डिझेल",
   "prefs.traction.hydrogen": "हायड्रोजन",
