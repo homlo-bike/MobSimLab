@@ -246,6 +246,7 @@ describe.skipIf(!WASM)("AI agent integration (ADR-0035)", () => {
         "create_scenario",
         "delete_agent_scenario",
         "diff_scenarios",
+        "export_gtfs",
         "find_coverage_gaps",
         "get_assumptions",
         "get_scenario",
@@ -427,6 +428,14 @@ describe.skipIf(!WASM)("AI agent integration (ADR-0035)", () => {
     });
     expect(s.error).toBe(false);
     expect(s.json.solver).toMatch(/HiGHS/);
+    const g = await mcp(tokens.access_token, "tools/call", {
+      name: "export_gtfs",
+      arguments: { scenario_id: scenario, agency_timezone: "Europe/Berlin" },
+    });
+    const [summary, file] = g.body.result.content;
+    expect(JSON.parse(summary.text).rows["routes.txt"]).toBe(2);
+    expect(file.resource.mimeType).toBe("application/zip");
+    expect(Buffer.from(file.resource.blob, "base64").readUInt32LE(0)).toBe(0x04034b50);
   });
 
   it("enforces scopes", async () => {
