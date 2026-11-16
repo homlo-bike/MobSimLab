@@ -299,6 +299,16 @@ export const editorsAr = {
   "rail.line.needsTrain": "اختر قطارًا.",
   "rail.line.lastAfterFirst": "يجب أن يكون آخر انطلاق بعد أول انطلاق.",
   "rail.line.headwayMin": "يجب ألا يقل الفاصل الزمني عن دقيقة واحدة.",
+  "rail.access.title": "الوصول من الرصيف",
+  "rail.access.level": "صعود مستوٍ",
+  "rail.access.step": "صعود بدرجة",
+  "rail.access.aid": "يلزم مساعد للصعود",
+  "rail.access.clash": "القطار أعرض مما تسمح به حافة الرصيف",
+  "rail.access.detail": "الأرضية {vertical} عن رصيف {platform} مم · الفجوة {gap}",
+  "rail.access.floorOnly": "الأرضية {vertical} عن رصيف {platform} مم",
+  "rail.access.floorAssumed":
+    "لا يوجد ارتفاع أرضية لهذا القطار في كتالوج المركبات، لذا يُفترض الافتراضي للنمط {value} مم (التفضيلات).",
+  "rail.access.short": "الرصيف {platform} أقصر من قطار {train} مع {tolerance} هامش توقف.",
 
   "rail.hint.select":
     "انقر على محطة أو سكة أو محوّل أو إشارة لتعديلها. اسحب المحطات ونقاط السكة؛ واسحب المحوّل أو الإشارة على طول سكته.",

@@ -305,6 +305,9 @@ export const zu: Messages = {
   "prefs.rulesChanged": "okushintshiwe: {count}",
   "prefs.rulesLibrary": "Umtapo wolwazi wemicabango: {value} {unit}",
   "prefs.rulesLibraryRange": "Umtapo wolwazi wemicabango: {value} {unit} (ububanzi {low}–{high})",
+  "prefs.accessTitle": "Ukufinyeleleka kwepulatifomu",
+  "prefs.accessIntro":
+    "Imingcele yesinyathelo negebe phakathi kwepulatifomu nesitimela (TSI PRM), nokuphakama kwaphansi kwezitimela ezingenakho ohlwini. Imizila ihlolwa kuso sonke isiteshi.",
   "prefs.vehicles": "Izimoto ezisetshenziswayo, kusuka kukhathalogi yezimoto",
   "prefs.switches": "Izishintshi zikajantshi, kusuka kukhathalogi yezishintshi",
   "prefs.calendar": "Ikhalenda, isidingo nezindleko",

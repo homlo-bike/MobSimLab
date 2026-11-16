@@ -260,6 +260,16 @@ export const editorsKk = {
   "rail.line.needsTrain": "Пойызды таңдаңыз.",
   "rail.line.lastAfterFirst": "Соңғы жөнелу біріншісінен кейін болуы керек.",
   "rail.line.headwayMin": "Аралық кемінде 1 минут болуы керек.",
+  "rail.access.title": "Платформаға қолжетімділік",
+  "rail.access.level": "Бір деңгейде отыру",
+  "rail.access.step": "Баспалдақпен отыру",
+  "rail.access.aid": "Отыруға көмек қажет",
+  "rail.access.clash": "Пойыз платформа жиегі рұқсат ететіннен кеңірек",
+  "rail.access.detail": "Еден {platform} мм платформаға қатысты {vertical} · саңылау {gap}",
+  "rail.access.floorOnly": "Еден {platform} мм платформаға қатысты {vertical}",
+  "rail.access.floorAssumed":
+    "Көлік каталогында бұл пойыздың еден биіктігі жоқ, сондықтан түрдің әдепкі мәні {value} мм (Баптаулар) алынды.",
+  "rail.access.short": "{platform} платформа {train} пойыз бен {tolerance} тоқтау қорына тым қысқа.",
 
   "rail.hint.select":
     "Өңдеу үшін станцияны, жолды, бағыттаманы немесе бағдаршамды басыңыз. Станциялар мен жол нүктелерін сүйреңіз; бағыттаманы немесе бағдаршамды жолы бойымен сүйреңіз.",

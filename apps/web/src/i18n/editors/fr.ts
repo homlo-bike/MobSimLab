@@ -261,6 +261,17 @@ export const editorsFr = {
   "rail.line.needsTrain": "Choisissez un train.",
   "rail.line.lastAfterFirst": "Le dernier départ doit être après le premier.",
   "rail.line.headwayMin": "Les intervalles doivent être d’au moins 1 min.",
+  "rail.access.title": "Accès au quai",
+  "rail.access.level": "Accès de plain-pied",
+  "rail.access.step": "Accès avec marche",
+  "rail.access.aid": "Aide à l'embarquement nécessaire",
+  "rail.access.clash": "Train plus large que ne le permet le bord du quai",
+  "rail.access.detail": "Plancher {vertical} par rapport au quai de {platform} mm · lacune {gap}",
+  "rail.access.floorOnly": "Plancher {vertical} par rapport au quai de {platform} mm",
+  "rail.access.floorAssumed":
+    "Ce train n'a pas de hauteur de plancher dans le catalogue des véhicules ; la valeur par défaut du mode, {value} mm (Préférences), est utilisée.",
+  "rail.access.short":
+    "Le quai de {platform} est trop court pour un train de {train} plus {tolerance} de tolérance d'arrêt.",
 
   "rail.hint.select":
     "Cliquez sur une station, une voie, un aiguillage ou un signal pour le modifier. Faites glisser les stations et les points de voie ; faites glisser un aiguillage ou un signal le long de sa voie.",

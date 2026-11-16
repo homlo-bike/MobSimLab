@@ -285,6 +285,9 @@ export const zh: Messages = {
   "prefs.rulesChanged": "已修改 {count} 项",
   "prefs.rulesLibrary": "假设库：{value} {unit}",
   "prefs.rulesLibraryRange": "假设库：{value} {unit}（范围 {low}–{high}）",
+  "prefs.accessTitle": "站台无障碍",
+  "prefs.accessIntro":
+    "站台与列车之间的台阶和间隙限值（TSI PRM），以及车辆目录中缺少地板高度时使用的值。线路在每个停靠站按此检查。",
   "prefs.vehicles": "使用的车辆，来自车辆目录",
   "prefs.switches": "轨道道岔，来自道岔目录",
   "prefs.calendar": "日历、需求和成本",

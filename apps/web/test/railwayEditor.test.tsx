@@ -853,6 +853,14 @@ describe("Railway editor", () => {
     fireEvent.change(screen.getByLabelText("Units coupled"), { target: { value: "2" } });
     expect(screen.getByTestId("train-length").textContent).toContain(fmtM(len * 2));
     fireEvent.change(screen.getByLabelText("Units coupled"), { target: { value: "1" } });
+    // Platform access: each stop is judged against the TSI PRM step and gap limits.
+    const access = screen.getByTestId("platform-access");
+    expect(access.textContent).toMatch(/Platform access/);
+    expect(access.textContent).toMatch(
+      /Riverside.*(Level access|Step access|Boarding aid needed|Train wider)/,
+    );
+    expect(access.textContent).toMatch(/Northgate/);
+    expect(access.textContent).toMatch(/gap -?\d+ mm/);
     fireEvent.change(screen.getByLabelText("Peak headway"), { target: { value: "10" } });
     fireEvent.change(screen.getByLabelText("Off-peak headway"), { target: { value: "20" } });
 

@@ -241,6 +241,16 @@ export const editorsTr = {
   "rail.line.needsTrain": "Bir tren seçin.",
   "rail.line.lastAfterFirst": "Son kalkış ilkinden sonra olmalıdır.",
   "rail.line.headwayMin": "Sefer aralığı en az 1 dakikadır.",
+  "rail.access.title": "Perona erişim",
+  "rail.access.level": "Basamaksız biniş",
+  "rail.access.step": "Basamaklı biniş",
+  "rail.access.aid": "Biniş yardımı gerekli",
+  "rail.access.clash": "Tren, peron kenarının izin verdiğinden geniş",
+  "rail.access.detail": "Taban, {platform} mm perona göre {vertical} · boşluk {gap}",
+  "rail.access.floorOnly": "Taban, {platform} mm perona göre {vertical}",
+  "rail.access.floorAssumed":
+    "Bu trenin araç kataloğunda taban yüksekliği yok; türün varsayılan değeri {value} mm (Tercihler) kabul edildi.",
+  "rail.access.short": "{platform} peron, {train} tren ve {tolerance} durma toleransı için çok kısa.",
 
   "rail.hint.select":
     "Düzenlemek için istasyon, ray, makas veya sinyale tıklayın. İstasyonları ve ray noktalarını taşımak için sürükleyin; makasları ve sinyalleri rayları boyunca sürükleyin.",

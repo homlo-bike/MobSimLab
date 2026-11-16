@@ -259,6 +259,16 @@ export const editorsBn = {
   "rail.line.needsTrain": "একটি ট্রেন বেছে নিন।",
   "rail.line.lastAfterFirst": "শেষ ছাড়ার সময় প্রথমটির পরে হতে হবে।",
   "rail.line.headwayMin": "ব্যবধান কমপক্ষে ১ মিনিট হতে হবে।",
+  "rail.access.title": "প্ল্যাটফর্ম থেকে প্রবেশ",
+  "rail.access.level": "সমতল ওঠা",
+  "rail.access.step": "ধাপসহ ওঠা",
+  "rail.access.aid": "ওঠার সহায়তা দরকার",
+  "rail.access.clash": "ট্রেন প্ল্যাটফর্মের কিনারার অনুমতির চেয়ে চওড়া",
+  "rail.access.detail": "মেঝে {platform} মিমি প্ল্যাটফর্ম থেকে {vertical} · ফাঁক {gap}",
+  "rail.access.floorOnly": "মেঝে {platform} মিমি প্ল্যাটফর্ম থেকে {vertical}",
+  "rail.access.floorAssumed":
+    "যানবাহন তালিকায় এই ট্রেনের মেঝের উচ্চতা নেই, তাই মাধ্যমের ডিফল্ট {value} মিমি (পছন্দ) ধরা হয়েছে।",
+  "rail.access.short": "প্ল্যাটফর্ম {platform}, {train} ট্রেন ও {tolerance} থামার সহনশীলতার জন্য খুব ছোট।",
 
   "rail.hint.select":
     "সম্পাদনা করতে স্টেশন, লাইন, সুইচ বা সিগন্যালে ক্লিক করুন। স্টেশন ও লাইনের বিন্দু টানুন; সুইচ বা সিগন্যাল তার লাইন বরাবর টানুন।",

@@ -300,6 +300,9 @@ export const ha: Messages = {
   "prefs.rulesChanged": "an canza: {count}",
   "prefs.rulesLibrary": "Ɗakin zato: {value} {unit}",
   "prefs.rulesLibraryRange": "Ɗakin zato: {value} {unit} (iyaka {low}–{high})",
+  "prefs.accessTitle": "Samun damar dandamali",
+  "prefs.accessIntro":
+    "Iyakokin mataki da tazara tsakanin dandamali da jirgi (TSI PRM), da tsayin ƙasa ga jiragen da babu a kundi. Ana duba layuka a kowace tasha.",
   "prefs.vehicles": "Ababen hawan da ake amfani da su, daga kundin ababen hawa",
   "prefs.switches": "Makunnan dogo, daga kundin makunnai",
   "prefs.calendar": "Kalanda, buƙata da kuɗi",

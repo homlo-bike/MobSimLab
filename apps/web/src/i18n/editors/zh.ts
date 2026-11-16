@@ -237,6 +237,16 @@ export const editorsZh = {
   "rail.line.needsTrain": "请选择列车。",
   "rail.line.lastAfterFirst": "末班发车必须晚于首班。",
   "rail.line.headwayMin": "发车间隔至少为 1 分钟。",
+  "rail.access.title": "站台无障碍",
+  "rail.access.level": "水平登乘",
+  "rail.access.step": "有台阶登乘",
+  "rail.access.aid": "需要登乘辅助",
+  "rail.access.clash": "列车宽度超出站台边缘允许值",
+  "rail.access.detail": "地板相对 {platform} 毫米站台 {vertical} · 间隙 {gap}",
+  "rail.access.floorOnly": "地板相对 {platform} 毫米站台 {vertical}",
+  "rail.access.floorAssumed":
+    "车辆目录中没有此列车的地板高度，因此采用该方式的默认值 {value} 毫米（偏好设置）。",
+  "rail.access.short": "站台 {platform} 不足以容纳 {train} 列车加 {tolerance} 停车容差。",
 
   "rail.hint.select": "点击车站、轨道、道岔或信号机进行编辑。拖动车站和轨道点；沿轨道拖动道岔或信号机。",
   "rail.hint.station": "点击地图放置车站，然后将其拖到位并旋转。",

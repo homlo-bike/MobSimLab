@@ -259,6 +259,16 @@ export const editorsMr = {
   "rail.line.needsTrain": "गाडी निवडा.",
   "rail.line.lastAfterFirst": "शेवटचे प्रस्थान पहिल्यानंतर असावे.",
   "rail.line.headwayMin": "अंतराल किमान 1 मिनिट असावा.",
+  "rail.access.title": "फलाटावरून प्रवेश",
+  "rail.access.level": "समपातळी चढणे",
+  "rail.access.step": "पायरीसह चढणे",
+  "rail.access.aid": "चढण्यासाठी मदत आवश्यक",
+  "rail.access.clash": "गाडी फलाटाच्या कडेला परवानगीपेक्षा रुंद आहे",
+  "rail.access.detail": "तळ {platform} मिमी फलाटापासून {vertical} · फट {gap}",
+  "rail.access.floorOnly": "तळ {platform} मिमी फलाटापासून {vertical}",
+  "rail.access.floorAssumed":
+    "वाहन सूचीत या गाडीची तळ उंची नाही, म्हणून साधनाचे पूर्वनिर्धारित {value} मिमी (प्राधान्ये) गृहीत धरले.",
+  "rail.access.short": "फलाट {platform} हा {train} गाडी आणि {tolerance} थांबा सहनशीलतेसाठी खूप लहान आहे.",
 
   "rail.hint.select":
     "संपादित करण्यासाठी स्थानक, रूळ, स्विच किंवा सिग्नलवर क्लिक करा. स्थानके आणि रुळांचे बिंदू ओढा; स्विच किंवा सिग्नल त्याच्या रुळावरून ओढा.",

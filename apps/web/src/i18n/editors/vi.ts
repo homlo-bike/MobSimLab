@@ -240,6 +240,16 @@ export const editorsVi = {
   "rail.line.needsTrain": "Hãy chọn đoàn tàu.",
   "rail.line.lastAfterFirst": "Chuyến cuối phải sau chuyến đầu.",
   "rail.line.headwayMin": "Giãn cách tối thiểu là 1 phút.",
+  "rail.access.title": "Tiếp cận sân ga",
+  "rail.access.level": "Lên tàu ngang bằng",
+  "rail.access.step": "Lên tàu có bậc",
+  "rail.access.aid": "Cần thiết bị hỗ trợ lên tàu",
+  "rail.access.clash": "Tàu rộng hơn mức mép sân ga cho phép",
+  "rail.access.detail": "Sàn {vertical} so với sân ga {platform} mm · khe hở {gap}",
+  "rail.access.floorOnly": "Sàn {vertical} so với sân ga {platform} mm",
+  "rail.access.floorAssumed":
+    "Danh mục phương tiện không có chiều cao sàn của tàu này, nên dùng giá trị mặc định của loại hình là {value} mm (Tùy chọn).",
+  "rail.access.short": "Sân ga {platform} quá ngắn cho đoàn tàu {train} cộng {tolerance} dung sai dừng.",
 
   "rail.hint.select":
     "Nhấp vào ga, đường ray, ghi hoặc tín hiệu để chỉnh sửa. Kéo ga và điểm của đường ray để di chuyển; kéo ghi và tín hiệu dọc theo đường ray.",

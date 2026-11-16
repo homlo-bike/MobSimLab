@@ -299,6 +299,9 @@ export const sw: Messages = {
   "prefs.rulesChanged": "zilizobadilishwa: {count}",
   "prefs.rulesLibrary": "Maktaba ya dhana: {value} {unit}",
   "prefs.rulesLibraryRange": "Maktaba ya dhana: {value} {unit} (kiwango {low}–{high})",
+  "prefs.accessTitle": "Ufikivu wa jukwaa",
+  "prefs.accessIntro":
+    "Mipaka ya ngazi na pengo kati ya jukwaa na treni (TSI PRM), na kimo cha sakafu kwa treni zisizo nacho kwenye orodha. Njia hukaguliwa kila kituo.",
   "prefs.vehicles": "Magari yanayotumika, kutoka katalogi ya magari",
   "prefs.switches": "Swichi za reli, kutoka katalogi ya swichi",
   "prefs.calendar": "Kalenda, mahitaji na gharama",

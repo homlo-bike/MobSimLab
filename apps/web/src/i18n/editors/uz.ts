@@ -261,6 +261,17 @@ export const editorsUz = {
   "rail.line.needsTrain": "Poyezdni tanlang.",
   "rail.line.lastAfterFirst": "Oxirgi joʻnash birinchisidan keyin boʻlishi kerak.",
   "rail.line.headwayMin": "Oraliq kamida 1 daqiqa boʻlishi kerak.",
+  "rail.access.title": "Platformaga kirish",
+  "rail.access.level": "Bir sathda chiqish",
+  "rail.access.step": "Zinapoya bilan chiqish",
+  "rail.access.aid": "Chiqish uchun yordam kerak",
+  "rail.access.clash": "Poyezd platforma cheti ruxsat berganidan kengroq",
+  "rail.access.detail": "Pol {platform} mm platformaga nisbatan {vertical} · bo‘shliq {gap}",
+  "rail.access.floorOnly": "Pol {platform} mm platformaga nisbatan {vertical}",
+  "rail.access.floorAssumed":
+    "Transport katalogida bu poyezdning pol balandligi yo‘q, shuning uchun turning standart qiymati {value} mm (Sozlamalar) qabul qilindi.",
+  "rail.access.short":
+    "{platform} platforma {train} poyezd va {tolerance} to‘xtash zaxirasi uchun juda qisqa.",
 
   "rail.hint.select":
     "Tahrirlash uchun stansiya, yoʻl, strelka yoki svetoforni bosing. Stansiyalar va yoʻl nuqtalarini torting; strelka yoki svetoforni yoʻli boʻylab torting.",

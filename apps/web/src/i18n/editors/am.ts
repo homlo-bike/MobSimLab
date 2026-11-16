@@ -257,6 +257,16 @@ export const editorsAm = {
   "rail.line.needsTrain": "ባቡር ይምረጡ።",
   "rail.line.lastAfterFirst": "የመጨረሻው መነሻ ከመጀመሪያው በኋላ መሆን አለበት።",
   "rail.line.headwayMin": "ክፍተቶች ቢያንስ 1 ደቂቃ መሆን አለባቸው።",
+  "rail.access.title": "የመድረክ ተደራሽነት",
+  "rail.access.level": "ደረጃ የሌለው መሳፈሪያ",
+  "rail.access.step": "በደረጃ መሳፈሪያ",
+  "rail.access.aid": "የመሳፈሪያ እርዳታ ያስፈልጋል",
+  "rail.access.clash": "ባቡሩ የመድረኩ ጠርዝ ከሚፈቅደው በላይ ሰፊ ነው",
+  "rail.access.detail": "ወለል ከ{platform} ሚ.ሜ መድረክ {vertical} · ክፍተት {gap}",
+  "rail.access.floorOnly": "ወለል ከ{platform} ሚ.ሜ መድረክ {vertical}",
+  "rail.access.floorAssumed":
+    "ይህ ባቡር በተሽከርካሪ ካታሎግ ውስጥ የወለል ከፍታ የለውም፤ ስለዚህ የዓይነቱ ነባሪ {value} ሚ.ሜ (ምርጫዎች) ተወስዷል።",
+  "rail.access.short": "መድረክ {platform} ለ{train} ባቡር እና ለ{tolerance} የማቆሚያ መቻቻል በጣም አጭር ነው።",
 
   "rail.hint.select":
     "ለማርትዕ ጣቢያ፣ ሐዲድ፣ መቀየሪያ ወይም ምልክት ጠቅ ያድርጉ። ጣቢያዎችን እና የሐዲድ ነጥቦችን ይጎትቱ፤ መቀየሪያን ወይም ምልክትን በሐዲዱ ላይ ይጎትቱ።",

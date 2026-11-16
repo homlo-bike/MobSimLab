@@ -303,6 +303,9 @@ export const uz: Messages = {
   "prefs.rulesChanged": "o'zgartirilgan: {count}",
   "prefs.rulesLibrary": "Farazlar kutubxonasi: {value} {unit}",
   "prefs.rulesLibraryRange": "Farazlar kutubxonasi: {value} {unit} (oraliq {low}–{high})",
+  "prefs.accessTitle": "Platforma qulayligi",
+  "prefs.accessIntro":
+    "Platforma va poyezd orasidagi zinapoya va bo‘shliq chegaralari (TSI PRM) hamda katalogda yo‘q poyezdlar uchun pol balandligi. Liniyalar har bir bekatda tekshiriladi.",
   "prefs.vehicles": "Ishlatiladigan transport vositalari, katalogdan",
   "prefs.switches": "Rels strelkalari, strelkalar katalogidan",
   "prefs.calendar": "Kalendar, talab va xarajatlar",
