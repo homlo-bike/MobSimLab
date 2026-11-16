@@ -300,6 +300,9 @@ export const pl: Messages = {
   "prefs.rulesChanged": "zmienione: {count}",
   "prefs.rulesLibrary": "Biblioteka założeń: {value} {unit}",
   "prefs.rulesLibraryRange": "Biblioteka założeń: {value} {unit} (zakres {low}–{high})",
+  "prefs.accessTitle": "Dostępność peronów",
+  "prefs.accessIntro":
+    "Limity stopnia i szczeliny między peronem a pociągiem (TSI PRM) oraz wysokość podłogi dla pociągów bez tej wartości w katalogu. Linie są sprawdzane na każdym przystanku.",
   "prefs.vehiclesTitle": "Pojazdy",
   "prefs.vehiclesIntro":
     "Pojazdy z katalogu używane w tym projekcie, dla każdego środka transportu. Narzędzia linii ulicznych i kolejowych pokazują tylko zaznaczone.",

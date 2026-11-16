@@ -11,6 +11,16 @@
   kind: primary
   date: '2020'
   note: Imported with the 2026-10-26 catalogue; not re-read in this repository.
+- id: albtal-verkehrs-gese-vdv-tramtrain
+  title: VDV TramTrain
+  publisher: Albtal-Verkehrs-Gesellschaft
+  url: https://www.avg.info/fileadmin/user_upload/avg/Dateien/Aufsteller_VDV-TramTrain_V04.pdf
+  licence: Publisher's terms; facts cited only
+  access: free
+  retrieved: '2026-11-16'
+  checked_via: search-snippet
+  kind: primary
+  note: Entrance height read from a search-result extract of the document, 2026-11-16.
 - id: alexander-dennis-enviro500ev-asia-pacific
   title: Enviro500EV (Asia Pacific)
   publisher: Alexander Dennis
@@ -21,6 +31,16 @@
   checked_via: none
   kind: primary
   note: Imported with the 2026-10-26 catalogue; not re-read in this repository.
+- id: alstom-environmental-product-declaration-sydney
+  title: Environmental Product Declaration, Sydney Metro Metropolis train
+  publisher: Alstom (EPD International)
+  url: https://api.environdec.com/api/v1/EPDLibrary/Files/32a46be5-fc8c-47cc-1b8a-08da2ccce1bd/Data
+  licence: Publisher's terms; facts cited only
+  access: free
+  retrieved: '2026-11-16'
+  checked_via: search-snippet
+  kind: primary
+  note: Floor height read from a search-result extract of the document, 2026-11-16.
 - id: blogto-com-toronto-transit-commission
   title: Toronto Transit Commission
   publisher: blogto.com
@@ -823,6 +843,16 @@
   kind: primary
   date: '2024'
   note: Imported with the 2026-10-26 catalogue; not re-read in this repository.
+- id: siemens-mobility-viaggio-plattform
+  title: Viaggio Plattform
+  publisher: Siemens Mobility
+  url: https://assets.new.siemens.com/siemens/assets/api/uuid:d40e9eab978aa2ec88b844ac314ac695e11e088c/viaggio-platform-german.pdf
+  licence: Publisher's terms; facts cited only
+  access: free
+  retrieved: '2026-11-16'
+  checked_via: search-snippet
+  kind: primary
+  note: Floor height read from a search-result extract of the document, 2026-11-16.
 - id: stadler-citylink-tram-train-das-projekt-vehicle
   title: CITYLINK Tram-Train – Das Projekt (vehicle data)
   publisher: Stadler
@@ -911,6 +941,16 @@
   kind: primary
   date: '2012'
   note: Imported with the 2026-10-26 catalogue; not re-read in this repository.
+- id: stadler-rail-citylink-saarbahn
+  title: CITYLINK Saarbahn
+  publisher: Stadler Rail
+  url: https://events.stadlerrail.com/wp-content/uploads/2024/09/CL_SAARB0924_en.pdf
+  licence: Publisher's terms; facts cited only
+  access: free
+  retrieved: '2026-11-16'
+  checked_via: search-snippet
+  kind: primary
+  note: Access height read from a search-result extract of the document, 2026-11-16.
 - id: stadler-smile-electric-high-speed-multiple-unit
   title: SMILE electric high-speed multiple unit – SBB, Switzerland
   publisher: Stadler
@@ -1655,6 +1695,16 @@
   checked_via: none
   kind: secondary
   note: Imported with the 2026-10-26 catalogue; not re-read in this repository.
+- id: wp-ssb-dt-8
+  title: SSB DT 8
+  publisher: Wikipedia
+  url: https://en.wikipedia.org/wiki/SSB_DT_8
+  licence: CC BY-SA 4.0 (text); facts cited only
+  access: free
+  retrieved: '2026-11-16'
+  checked_via: search-snippet
+  kind: secondary
+  note: Floor height of the DT 8 family read from a search-result extract of the page, 2026-11-16.
 - id: wp-stadler-variobahn
   title: Stadler Variobahn
   publisher: Wikipedia
