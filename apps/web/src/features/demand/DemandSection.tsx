@@ -226,7 +226,6 @@ export function DemandSection({
   const [viewing, setViewing] = useState<DemandRunDetail | null>(null);
   const [sending, setSending] = useState(false);
   const [runError, setRunError] = useState<string | null>(null);
-  const [streets, setStreets] = useState<number | null>(null);
   useEffect(() => {
     if (!runs) return;
     let live = true;
@@ -303,7 +302,7 @@ export function DemandSection({
         prefs: preferences,
       });
       const { bundle, summary } = makeBundle(est.zones, transit, economy);
-      // The server adds the streets around the zones; loading them first keeps the start request short.
+      // The server loads the streets around the zones; it takes at most MAX_DEMAND_TILES tiles.
       const tiles = demandTiles(bundle.zones.map((z) => z.centroid));
       if (tiles.length > MAX_DEMAND_TILES) {
         setRunError(
@@ -311,17 +310,6 @@ export function DemandSection({
         );
         return;
       }
-      let done = 0;
-      setStreets(0);
-      const queue = [...tiles];
-      const worker = async () => {
-        for (let t = queue.shift(); t; t = queue.shift()) {
-          await runs.streetTile(t[0], t[1]);
-          setStreets(++done / tiles.length);
-        }
-      };
-      await Promise.all([worker(), worker(), worker(), worker()]);
-      setStreets(null);
       const r = await runs.start(bundle, demandValues(preferences), summary);
       setViewing(r);
       setSaved((l) => [r, ...l.filter((x) => x.id !== r.id)]);
@@ -329,7 +317,6 @@ export function DemandSection({
       setRunError(message(e));
     } finally {
       setSending(false);
-      setStreets(null);
     }
   };
 
@@ -543,11 +530,6 @@ export function DemandSection({
             </button>
           )}
         </div>
-        {streets !== null && (
-          <p role="status" className="mt-2 text-sm text-slate-500">
-            Loading the OpenStreetMap streets of the zones… {fmt(streets * 100)} %
-          </p>
-        )}
         {runError && (
           <p role="alert" className="mt-2 text-sm text-red-700">
             {runError}
@@ -795,7 +777,9 @@ function RunStatusLine({ run }: { run: DemandRunDetail }) {
   const p = run.progress;
   const text =
     run.status === "queued"
-      ? "Waiting for the server…"
+      ? p?.step === "streets" && typeof p.done === "number" && typeof p.of === "number"
+        ? `Loading the OpenStreetMap streets of the zones: ${p.done} of ${p.of} tiles…`
+        : "Waiting for the server…"
       : run.status === "running"
         ? `Running: ${STEP_LABEL[String(p?.step ?? "")] ?? "preparing"}${
             p?.period ? `, ${PERIOD_LABEL[String(p.period)]?.toLowerCase() ?? String(p.period)}` : ""
