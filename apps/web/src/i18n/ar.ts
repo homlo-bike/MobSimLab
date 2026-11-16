@@ -1,3 +1,4 @@
+import { roadAr } from "./road/ar";
 import { editorsAr } from "./editors/ar";
 import { cargoBikeAr } from "./cargo-bike/ar";
 import { depotsAr } from "./depots/ar";
@@ -359,5 +360,6 @@ export const ar: Messages = {
   ...editorsAr,
   ...cargoBikeAr,
   ...depotsAr,
+  ...roadAr,
   ...PLUGIN_MESSAGES.ar,
 };

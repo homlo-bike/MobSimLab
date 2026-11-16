@@ -1,3 +1,4 @@
+import { roadFr } from "./road/fr";
 import { editorsFr } from "./editors/fr";
 import { cargoBikeFr } from "./cargo-bike/fr";
 import { depotsFr } from "./depots/fr";
@@ -377,5 +378,6 @@ export const fr: Messages = {
   ...editorsFr,
   ...cargoBikeFr,
   ...depotsFr,
+  ...roadFr,
   ...PLUGIN_MESSAGES.fr,
 };

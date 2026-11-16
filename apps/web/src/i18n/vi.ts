@@ -1,3 +1,4 @@
+import { roadVi } from "./road/vi";
 import { editorsVi } from "./editors/vi";
 import { cargoBikeVi } from "./cargo-bike/vi";
 import { depotsVi } from "./depots/vi";
@@ -369,5 +370,6 @@ export const vi: Messages = {
   ...editorsVi,
   ...cargoBikeVi,
   ...depotsVi,
+  ...roadVi,
   ...PLUGIN_MESSAGES.vi,
 };

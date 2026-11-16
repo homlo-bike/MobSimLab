@@ -2,6 +2,8 @@
 
 Find out whether your lines work: do the rail lines fit the tracks, do the trains and buses run on time, do small delays die out, how many trains could each line carry, and does everyone fit in the vehicles? The rail method is in [ADR-0032 §3 step 8 and §4](../adr/0032-railway-operations-management.md).
 
+To run your street lines in traffic, from their depots and back, see [Road simulation](road-simulation.md).
+
 ## Start
 
 1. Open a project and click **Simulator** in the top bar. **Test the system** is the first view of the panel.

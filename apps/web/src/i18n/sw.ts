@@ -1,3 +1,4 @@
+import { roadSw } from "./road/sw";
 import { editorsSw } from "./editors/sw";
 import { cargoBikeSw } from "./cargo-bike/sw";
 import { depotsSw } from "./depots/sw";
@@ -372,5 +373,6 @@ export const sw: Messages = {
   ...editorsSw,
   ...cargoBikeSw,
   ...depotsSw,
+  ...roadSw,
   ...PLUGIN_MESSAGES.sw,
 };

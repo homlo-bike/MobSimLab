@@ -1,3 +1,4 @@
+import { roadZh } from "./road/zh";
 import { editorsZh } from "./editors/zh";
 import { cargoBikeZh } from "./cargo-bike/zh";
 import { depotsZh } from "./depots/zh";
@@ -352,5 +353,6 @@ export const zh: Messages = {
   ...editorsZh,
   ...cargoBikeZh,
   ...depotsZh,
+  ...roadZh,
   ...PLUGIN_MESSAGES.zh,
 };

@@ -10,6 +10,7 @@ import { projectTimetable } from "../features/benefits/timetable";
 import { CargoBikeTab } from "../features/cargo-bike/CargoBikeTab";
 import type { CargoBikeDoc } from "../features/cargo-bike/model";
 import { CapacityRun } from "../features/capacity/CapacityRun";
+import { RoadSimulation } from "../features/road-sim/RoadSimulation";
 import { economyApi, type Prices } from "../features/costs/economy";
 import { useProjectCurrency } from "../features/costs/currency";
 import type { Estimate as CostEstimate } from "../features/costs/model";
@@ -107,7 +108,7 @@ const MAP_TABS: readonly Tab[] = ["simulator", "create", "gis", ...PLUGIN_TABS.m
 const NO_SETUPS: StreetSetup[] = [];
 const NO_STREET_LINES: SavedStreetLine[] = [];
 
-type SimView = "test" | "journey";
+type SimView = "test" | "journey" | "road";
 type GisView = "streets" | "regions";
 const NO_REGIONS: Region[] = [];
 const NO_FEEDS: GtfsFeed[] = [];
@@ -248,6 +249,10 @@ export function Workspace({
   const projectKey = project?.id ?? null;
   const runs = useMemo(
     () => (projectKey && typeof api.runs === "function" ? api.runs(projectKey) : null),
+    [api, projectKey],
+  );
+  const roadRuns = useMemo(
+    () => (projectKey && typeof api.roadRuns === "function" ? api.roadRuns(projectKey) : null),
     [api, projectKey],
   );
 
@@ -877,6 +882,14 @@ export function Workspace({
                   >
                     {t("sim.journey")}
                   </button>
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={sim === "road"}
+                    onClick={() => setSim("road")}
+                  >
+                    {t("sim.road")}
+                  </button>
                 </div>
               </div>
             )}
@@ -968,6 +981,17 @@ export function Workspace({
                       ? (b) => drawings.set("benefits", { ...(benefitsDoc ?? {}), boardings: b })
                       : undefined
                   }
+                />
+              )}
+              {tab === "simulator" && sim === "road" && (
+                <RoadSimulation
+                  api={roadRuns}
+                  canRun={editable}
+                  map={map}
+                  streetLines={streetLines?.lines}
+                  depots={depotsDoc?.depots}
+                  setups={setups}
+                  prefs={preferences?.values}
                 />
               )}
               {tab === "create" && !editable && (

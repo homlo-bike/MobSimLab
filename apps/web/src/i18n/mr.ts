@@ -1,3 +1,4 @@
+import { roadMr } from "./road/mr";
 import { editorsMr } from "./editors/mr";
 import { cargoBikeMr } from "./cargo-bike/mr";
 import { depotsMr } from "./depots/mr";
@@ -366,5 +367,6 @@ export const mr: Messages = {
   ...editorsMr,
   ...cargoBikeMr,
   ...depotsMr,
+  ...roadMr,
   ...PLUGIN_MESSAGES.mr,
 };

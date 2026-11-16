@@ -1,3 +1,4 @@
+import { roadPt } from "./road/pt";
 import { editorsPt } from "./editors/pt";
 import { cargoBikePt } from "./cargo-bike/pt";
 import { depotsPt } from "./depots/pt";
@@ -374,5 +375,6 @@ export const pt: Messages = {
   ...editorsPt,
   ...cargoBikePt,
   ...depotsPt,
+  ...roadPt,
   ...PLUGIN_MESSAGES.pt,
 };

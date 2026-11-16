@@ -1,3 +1,4 @@
+import { roadUr } from "./road/ur";
 import { editorsUr } from "./editors/ur";
 import { cargoBikeUr } from "./cargo-bike/ur";
 import { depotsUr } from "./depots/ur";
@@ -372,5 +373,6 @@ export const ur: Messages = {
   ...editorsUr,
   ...cargoBikeUr,
   ...depotsUr,
+  ...roadUr,
   ...PLUGIN_MESSAGES.ur,
 };

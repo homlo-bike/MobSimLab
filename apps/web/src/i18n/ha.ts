@@ -1,3 +1,4 @@
+import { roadHa } from "./road/ha";
 import { editorsHa } from "./editors/ha";
 import { cargoBikeHa } from "./cargo-bike/ha";
 import { depotsHa } from "./depots/ha";
@@ -373,5 +374,6 @@ export const ha: Messages = {
   ...editorsHa,
   ...cargoBikeHa,
   ...depotsHa,
+  ...roadHa,
   ...PLUGIN_MESSAGES.ha,
 };
