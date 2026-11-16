@@ -572,6 +572,28 @@
      5000
     ]
    }
+  },
+  "demand.walk_speed_kmh": {
+   "label": "Walking speed for walking links between stations",
+   "unit": "km/h",
+   "values": {
+    "*": [
+     3.8,
+     4.5,
+     5.4
+    ]
+   }
+  },
+  "journey.walk_detour_factor": {
+   "label": "Walking distance over straight-line distance (journey planner, benefit estimate)",
+   "unit": "ratio",
+   "values": {
+    "*": [
+     1.2,
+     1.3,
+     1.5
+    ]
+   }
   }
  }
 }
