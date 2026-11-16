@@ -335,8 +335,23 @@ fn suggested_stop_covers_the_far_corner() {
         k: 2,
         min_spacing_m: 500.0,
         settings: WalkSettings::default(),
+        return_instance: true,
     });
     assert_eq!(r.suggestions.len(), 2);
+    // The covering problem for the exact solver: candidates that cover something, their cover sets,
+    // and pairs closer than the minimum spacing.
+    let inst = r.instance.as_ref().expect("instance asked for");
+    assert_eq!(inst.candidates.len(), inst.cover.len());
+    assert!(!inst.weights.is_empty());
+    assert!(inst.cover.iter().flatten().all(|&p| p < inst.weights.len()));
+    assert!(inst
+        .conflicts
+        .iter()
+        .all(|[a, b]| a < b && *b < inst.candidates.len()));
+    assert!(
+        !inst.conflicts.is_empty(),
+        "candidates 141 m apart conflict at 500 m spacing"
+    );
     assert!(r.covered_after > r.covered_before);
     let gains: Vec<f64> = r.suggestions.iter().map(|s| s.gain).collect();
     assert!(

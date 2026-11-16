@@ -4,6 +4,7 @@ import { SessionService } from "../auth/session.service";
 import { RateLimitService } from "../iam/rate-limit.service";
 import { StreetNetworkModule } from "../street-network/street-network.module";
 import { StreetNetworkService } from "../street-network/street-network.service";
+import { AccessService } from "./access.service";
 import { AgentsController } from "./agents.controller";
 import { AnalysisService } from "./analysis.service";
 import { McpController } from "./mcp.controller";
@@ -26,6 +27,7 @@ import { ScenariosService } from "./scenarios.service";
     OAuthService,
     ScenariosService,
     AnalysisService,
+    AccessService,
     NetworkService,
     { provide: TILE_SOURCE, useExisting: StreetNetworkService },
   ],
