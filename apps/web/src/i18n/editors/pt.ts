@@ -260,6 +260,20 @@ export const editorsPt = {
   "rail.line.needsTrain": "Escolha um trem.",
   "rail.line.lastAfterFirst": "A última partida deve ser depois da primeira.",
   "rail.line.headwayMin": "Os intervalos devem ser de pelo menos 1 min.",
+  "rail.access.title": "Acesso à plataforma",
+  "rail.access.level": "Acesso nivelado",
+  "rail.access.step": "Acesso com degrau",
+  "rail.access.aid": "Ajuda para embarque necessária",
+  "rail.access.clash": "Trem mais largo do que a borda da plataforma permite",
+  "rail.access.detail": "Piso {vertical} em relação à plataforma de {platform} mm · vão {gap}",
+  "rail.access.stepLabel": "Degrau",
+  "rail.access.gapLabel": "Vão",
+  "rail.access.limits": "nivelado ≤ {level} · degrau ≤ {step} mm",
+  "rail.access.floorAssumedShort":
+    "Altura de piso assumida: {value} mm, padrão do modo (não está no catálogo)",
+  "rail.access.shortAt": "{name}: plataforma {platform}, precisa {needed}",
+  "rail.access.platformMm": "Plataforma {value} mm",
+  "rail.access.floorMm": "Piso do trem {value} mm",
 
   "rail.hint.select":
     "Clique em uma estação, via, AMV ou sinal para editá-lo. Arraste estações e pontos da via; arraste um AMV ou sinal ao longo da sua via.",

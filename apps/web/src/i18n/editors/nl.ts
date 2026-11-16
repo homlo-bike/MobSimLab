@@ -260,6 +260,20 @@ export const editorsNl = {
   "rail.line.needsTrain": "Kies een trein.",
   "rail.line.lastAfterFirst": "Het laatste vertrek moet na het eerste zijn.",
   "rail.line.headwayMin": "Intervallen moeten minstens 1 min zijn.",
+  "rail.access.title": "Toegang tot het perron",
+  "rail.access.level": "Gelijkvloerse instap",
+  "rail.access.step": "Instap met trede",
+  "rail.access.aid": "Instaphulp nodig",
+  "rail.access.clash": "Trein breder dan de perronrand toelaat",
+  "rail.access.detail": "Vloer {vertical} t.o.v. het perron van {platform} mm · kier {gap}",
+  "rail.access.stepLabel": "Trede",
+  "rail.access.gapLabel": "Kier",
+  "rail.access.limits": "gelijkvloers ≤ {level} · trede ≤ {step} mm",
+  "rail.access.floorAssumedShort":
+    "Vloerhoogte aangenomen: {value} mm, standaard van de modaliteit (niet in de catalogus)",
+  "rail.access.shortAt": "{name}: perron {platform}, nodig {needed}",
+  "rail.access.platformMm": "Perron {value} mm",
+  "rail.access.floorMm": "Treinvloer {value} mm",
 
   "rail.hint.select":
     "Klik op een station, spoor, wissel of sein om het te bewerken. Sleep stations en spoorpunten; sleep een wissel of sein langs zijn spoor.",
