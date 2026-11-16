@@ -301,7 +301,14 @@ export const ko: Messages = {
   "prefs.vehiclesAll": "모두 사용",
   "prefs.vehiclesFacts": "{length} m · {places}명 · {speed} km/h",
   "prefs.vehiclesLast": "교통수단마다 차량이 최소 하나는 사용 상태로 남습니다.",
-  "prefs.switches": "분기기(분기기 카탈로그에서)",
+  "prefs.switchesTitle": "분기기",
+  "prefs.switchesIntro":
+    "철도 편집기가 철도 교통수단별로 제시하는 카탈로그의 분기기와 교차, 그리고 새 분기기의 기본값입니다.",
+  "prefs.switchesTurnouts": "분기기",
+  "prefs.switchesSlips": "교차부 슬립",
+  "prefs.switchesDefault": "기본",
+  "prefs.switchesFacts": "1:{n} · R {radius} m · 분기 측 {speed} km/h",
+  "prefs.switchesLast": "기본 분기기는 사용 상태로 남습니다. 빼려면 먼저 다른 기본값을 고르세요.",
   "prefs.calendar": "달력, 수요, 비용",
 
   "job.stepOf": "{steps}단계 중 {step}단계",

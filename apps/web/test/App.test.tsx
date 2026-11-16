@@ -441,6 +441,42 @@ describe("project workspace", () => {
     expect(avenio.checked).toBe(true);
   });
 
+  it("leaves a turnout out of the project and chooses its default turnout", async () => {
+    const calls = stubApi(owner, {
+      [`GET /api/projects/${P1}/drawings`]: { drawings: {} },
+      [`PUT /api/projects/${P1}/drawings/preferences`]: {
+        drawing: {
+          kind: "preferences",
+          schemaVersion: 1,
+          doc: { values: {} },
+          version: 1,
+          updatedAt: "2026-11-16T10:00:00Z",
+          updatedBy: { id: "u1", displayName: "Alice Smith" },
+        },
+      },
+    });
+    window.history.replaceState(null, "", `/projects/${P1}/preferences`);
+    render(<App />);
+    const section = await screen.findByRole("region", { name: "Switches" });
+    const r50 = within(section).getByRole("checkbox", { name: /turnout R 50 m/ }) as HTMLInputElement;
+    // The library's tram default stays in use.
+    expect(r50.disabled).toBe(true);
+    const defaults = within(section).getAllByRole("radio", { name: "Default" }) as HTMLInputElement[];
+    const r100 = defaults.find((r) => r.closest("li")?.textContent?.includes("turnout R 100 m"))!;
+    fireEvent.click(r100);
+    expect(r100.checked).toBe(true);
+    expect(r50.disabled).toBe(false);
+    fireEvent.click(r50);
+    await waitFor(
+      () =>
+        expect(
+          calls.filter((c) => c.method === "PUT" && c.url.endsWith("/drawings/preferences")).length,
+        ).toBeGreaterThan(0),
+      { timeout: 3000 },
+    );
+    expect(r50.checked).toBe(false);
+  });
+
   it("changes a design rule for one rail mode and goes back to the library value", async () => {
     const calls = stubApi(owner, {
       [`GET /api/projects/${P1}/drawings`]: { drawings: {} },

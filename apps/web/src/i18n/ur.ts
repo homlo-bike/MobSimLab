@@ -307,7 +307,14 @@ export const ur: Messages = {
   "prefs.vehiclesAll": "سب استعمال کریں",
   "prefs.vehiclesFacts": "{length} میٹر · {places} جگہیں · {speed} کلومیٹر/گھنٹہ",
   "prefs.vehiclesLast": "ہر ذریعے کے لیے کم از کم ایک گاڑی استعمال میں رہتی ہے۔",
-  "prefs.switches": "پٹری کے سوئچ، سوئچوں کی فہرست سے",
+  "prefs.switchesTitle": "کانٹے",
+  "prefs.switchesIntro":
+    "فہرست کے وہ کانٹے اور کراسنگ جو ریلوے ایڈیٹر ہر ریل ذریعے کے لیے دیتا ہے، اور وہ کانٹا جس سے نئے کانٹے شروع ہوتے ہیں۔",
+  "prefs.switchesTurnouts": "کانٹے",
+  "prefs.switchesSlips": "کراسنگ میں سلپ",
+  "prefs.switchesDefault": "طے شدہ",
+  "prefs.switchesFacts": "1:{n} · R {radius} میٹر · مڑنے والی لائن پر {speed} کلومیٹر/گھنٹہ",
+  "prefs.switchesLast": "طے شدہ کانٹا استعمال میں رہتا ہے۔ اسے ہٹانے کے لیے پہلے کوئی اور طے کریں۔",
   "prefs.calendar": "کیلنڈر، طلب اور لاگت",
 
   "job.stepOf": "مرحلہ {step} از {steps}",

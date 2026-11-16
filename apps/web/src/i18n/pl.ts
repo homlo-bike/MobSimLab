@@ -307,7 +307,15 @@ export const pl: Messages = {
   "prefs.vehiclesAll": "Użyj wszystkich",
   "prefs.vehiclesFacts": "{length} m · {places} miejsc · {speed} km/h",
   "prefs.vehiclesLast": "Dla każdego środka transportu co najmniej jeden pojazd pozostaje w użyciu.",
-  "prefs.switches": "Rozjazdy (z katalogu rozjazdów)",
+  "prefs.switchesTitle": "Rozjazdy",
+  "prefs.switchesIntro":
+    "Rozjazdy i skrzyżowania z katalogu, które edytor kolejowy oferuje dla każdego środka transportu szynowego, oraz rozjazd, od którego zaczynają nowe.",
+  "prefs.switchesTurnouts": "Rozjazdy",
+  "prefs.switchesSlips": "Rozjazdy krzyżowe",
+  "prefs.switchesDefault": "Domyślny",
+  "prefs.switchesFacts": "1:{n} · R {radius} m · {speed} km/h na zwrotny",
+  "prefs.switchesLast":
+    "Domyślny rozjazd pozostaje w użyciu. Aby go wyłączyć, najpierw wybierz inny domyślny.",
   "prefs.calendar": "Kalendarz, popyt i koszty",
 
   "job.stepOf": "Krok {step} z {steps}",
