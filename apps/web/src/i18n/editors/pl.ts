@@ -298,6 +298,20 @@ export const editorsPl = {
   "rail.line.needsTrain": "Wybierz pociąg.",
   "rail.line.lastAfterFirst": "Ostatni odjazd musi być po pierwszym.",
   "rail.line.headwayMin": "Takt wynosi co najmniej 1 minutę.",
+  "rail.access.title": "Dostęp do peronu",
+  "rail.access.level": "Wejście bez stopnia",
+  "rail.access.step": "Wejście ze stopniem",
+  "rail.access.aid": "Potrzebna pomoc przy wsiadaniu",
+  "rail.access.clash": "Pociąg szerszy, niż pozwala krawędź peronu",
+  "rail.access.detail": "Podłoga {vertical} względem peronu {platform} mm · szczelina {gap}",
+  "rail.access.stepLabel": "Stopień",
+  "rail.access.gapLabel": "Szczelina",
+  "rail.access.limits": "bez stopnia ≤ {level} · stopień ≤ {step} mm",
+  "rail.access.floorAssumedShort":
+    "Przyjęta wysokość podłogi: {value} mm, domyślna dla rodzaju transportu (brak w katalogu)",
+  "rail.access.shortAt": "{name}: peron {platform}, potrzeba {needed}",
+  "rail.access.platformMm": "Peron {value} mm",
+  "rail.access.floorMm": "Podłoga pociągu {value} mm",
 
   "rail.hint.select":
     "Kliknij stację, tor, rozjazd lub sygnalizator, aby go edytować. Przeciągaj stacje i punkty torów, aby je przesunąć; rozjazdy i sygnalizatory przeciągaj wzdłuż toru.",

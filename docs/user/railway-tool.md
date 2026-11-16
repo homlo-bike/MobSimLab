@@ -165,6 +165,15 @@ A service line is a route trains run on the drawn track: its stops in order, its
 2. Click the stations in the order trains call at them. Each station must be reachable on track from the one before, in either direction of running; if it is not, the station is not added and the message says which stations no track joins. Press **Enter** or **Esc** to finish. A line left without stops is removed again.
 3. In the panel, change the stops if needed: the arrows change the order and **×** takes a stop off. **Add stops on the map** picks more stations after the last one, with the same check. The return trip runs the stops in reverse.
 4. **Train**: a rail vehicle from the vehicle catalogue, and how many units run coupled. The train's length follows from the two (catalogue length × units); the panel shows it with the top speed and places. The platforms are checked against the longest train of all lines.
+
+   **Platform access** under the train lists every stop with how passengers board, checked against the TSI PRM limits in **Project preferences → Design rules per mode → Platform accessibility**:
+   - **Level access**: the floor is within 50 mm of the platform height and the gap to the platform edge is at most 75 mm.
+   - **Step access**: the floor is at most 230 mm above or 160 mm below the platform, and the gap is at most 200 mm.
+   - **Boarding aid needed**: beyond those limits, so a ramp, lift or gap filler is needed.
+   - **Train wider than the platform edge allows**: the platform edge is closer to the track centre than half the train's width.
+
+   The height difference is the train's floor height minus the platform height of the station's mode. The gap is the platform edge's distance from the track centre minus half the train's width (station tracks are straight). A train whose catalogue entry has no floor height is checked at the mode's default floor height, and the panel says so. Each stop also says when its platform is shorter than this line's train plus the stopping tolerance.
+
 5. **First** and **last departure**, and the headway **in the peaks** (07:00–09:00 and 16:00–19:00) and **off-peak**. A new line starts with the mode's usual headways from 05:00 to 24:00.
 6. Click **Publish timetable**. The timetable planner finds each train's path through the track, its running time from the train's power and speed, and conflict-free departures; trains turn back in the terminal platforms and stable on storage tracks or in the terminals. Each line then shows its trips, trains and end-to-end time, and what could not run and why. The timetable is saved with the project, and the trains are ready in **Simulator → Journey time A → B**.
 
@@ -189,7 +198,7 @@ The panel lists errors and warnings as you draw. Click one to go to it. Among th
 - diamond crossings, and crossings between tracks on different levels without a ramp
 - tracks closer than the clearance marker distance
 - a track running through a station on the same level
-- platforms shorter than the train plus 5 m (the longest train of the service lines, else the mode's usual train)
+- platforms shorter than the train plus the stopping tolerance (5 m unless changed in Project preferences; the longest train of the service lines, else the mode's usual train)
 - a double-track terminus with no crossover
 - storage tracks shorter than one train
 - open track ends and lost connections
