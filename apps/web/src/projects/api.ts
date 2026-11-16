@@ -13,10 +13,12 @@ export interface Project {
   areaName: string | null;
   modes: string[];
   myRole: ProjectRole;
-  viaLink: boolean;
+  /** True when the caller is not a member and sees the project only because it is public (read-only). */
+  viaPublic: boolean;
   owner: { id: string; displayName: string | null };
   memberCount: number;
-  linkAccess: boolean;
+  /** Private: only members open it. Public: anyone signed in to this MobSimLab opens it read-only. */
+  visibility: "private" | "public";
   createdAt: string;
   updatedAt: string;
   archivedAt: string | null;
@@ -43,10 +45,14 @@ export const RAIL_MODES = [
 export type Mode = (typeof STREET_MODES)[number] | (typeof RAIL_MODES)[number];
 
 /** Where a project shows on the projects home. */
-export type Shelf = "mine" | "shared" | "viewOnly";
+export type Shelf = "mine" | "shared" | "viewOnly" | "public";
 
-/** Purpose: the home shelf for a role: own projects, shared ones the caller can edit, and read-only ones. */
-export function shelfOf(p: Pick<Project, "myRole">): Shelf {
+/**
+ * Purpose: the home shelf of a project: own projects, shared ones the caller can edit, read-only ones, and public
+ * projects the caller is not a member of.
+ */
+export function shelfOf(p: Pick<Project, "myRole" | "viaPublic">): Shelf {
+  if (p.viaPublic) return "public";
   if (p.myRole === "owner") return "mine";
   if (p.myRole === "editor") return "shared";
   return "viewOnly";
@@ -66,6 +72,8 @@ export function projectsApi(csrf: string) {
   return {
     list: (archived = false) =>
       get<{ projects: Project[] }>(archived ? `${base}?archived=true` : base).then((r) => r.projects),
+    /** Public projects the caller is not a member of. */
+    listPublic: () => get<{ projects: Project[] }>(`${base}?public=true`).then((r) => r.projects),
     get: (id: string) => get<{ project: Project }>(one(id)).then((r) => r.project),
     create: (body: { name: string; areaName?: string | null; modes?: string[]; description?: string }) =>
       send<{ project: Project }>("POST", base, csrf, body).then((r) => r.project),
@@ -89,8 +97,12 @@ export function projectsApi(csrf: string) {
       }).then((r) => r.members),
     removeMember: (id: string, userId: string) =>
       send<{ ok: true }>("DELETE", `${one(id)}/members/${encodeURIComponent(userId)}`, csrf),
-    setLink: (id: string, linkAccess: boolean) =>
-      send<{ project: Project }>("PUT", `${one(id)}/link`, csrf, { linkAccess }).then((r) => r.project),
+    /** Make a project public (after the Owner confirmed the licence notice) or private again. Owners only. */
+    setVisibility: (id: string, visibility: Project["visibility"]) =>
+      send<{ project: Project }>("PUT", `${one(id)}/visibility`, csrf, {
+        visibility,
+        ...(visibility === "public" && { licenceAccepted: true }),
+      }).then((r) => r.project),
     /** The plugins the project can use, with whether each is on (ADR-0036 §9). */
     plugins: (id: string) =>
       get<{ plugins?: ProjectPlugin[] }>(`${one(id)}/plugins`).then((r) => r.plugins ?? []),

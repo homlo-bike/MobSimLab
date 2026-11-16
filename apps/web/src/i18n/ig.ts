@@ -101,6 +101,7 @@ export const ig: Messages = {
   "home.shared": "Ekeresoro m",
   "home.sharedEdit": "Ekeresoro m · ị nwere ike idezi",
   "home.viewOnly": "Naanị ilele",
+  "home.public": "Ọrụ ọha",
   "home.archived": "Edebere n'ebe nchekwa",
   "home.none": "Ọ dịghị ihe ebe a.",
   "home.edited": "Edeziri {when}",
@@ -173,11 +174,16 @@ export const ig: Messages = {
   "share.roleOf": "Ọrụ {name}",
   "share.remove": "Wepụ {name}",
   "share.leave": "Hapụ",
-  "share.link": "Njikọ naanị ilele",
-  "share.linkOn": "Onye ọ bụla banyere na MobSimLab a nwere ike imepe ya",
-  "share.linkOff": "Gbanyụrụ: naanị ndị dị n'elu nwere ike imepe ya",
-  "share.linkTurnOn": "Gbanye",
-  "share.linkTurnOff": "Gbanyụọ",
+  "share.visibility": "Onye nwere ike imeghe ya",
+  "share.private": "Nzuzo: naanị ndị nọ n'elu nwere ike imeghe ya",
+  "share.public":
+    "Nke ọha: onye ọ bụla banyere na MobSimLab a nwere ike ịchọta ya ma meghee ya maka ịgụ naanị",
+  "share.makePublic": "Mee ya nke ọha",
+  "share.makePrivate": "Mee ya nzuzo",
+  "share.licenceTitle": "Tupu i mee ya nke ọha",
+  "share.licenceNote":
+    "Ọrụ a na-eji data sitere na OpenStreetMap. A ga-ekesa ya n'okpuru Open Database License (ODbL), © ndị na-enye aka na OpenStreetMap. Mee ya nke ọha naanị ma ọ bụrụ na ihe ndị ọzọ niile dị n'ime ya nwekwara ike ịkesa.",
+  "share.confirmPublic": "Aghọtara m, mee ya nke ọha",
   "share.copyLink": "Detuo njikọ",
   "share.copied": "Edetuola",
 
@@ -194,6 +200,8 @@ export const ig: Messages = {
 
   "project.back": "Laghachi na ọrụ",
   "project.viewOnly": "Naanị ilele",
+  "project.public": "Nke ọha",
+  "project.publicNote": "Ọrụ ọha. Data maapụ © ndị na-enye aka na OpenStreetMap, ODbL.",
   "project.notFound": "Achọtaghị ọrụ ahụ",
   "project.notFoundHint": "Ọ nwere ike ịbụ na ehichapụla ya, ma ọ bụ na ịnweghị ohere ọzọ.",
   "project.toHome": "Laghachi na ọrụ",

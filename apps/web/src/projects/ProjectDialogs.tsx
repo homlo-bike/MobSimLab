@@ -276,7 +276,9 @@ const GRANTS: GrantRole[] = ["editor", "commenter", "viewer"];
 
 /**
  * Share and manage access (mockup "Share and manage access"): invite by e-mail with a role, change or remove
- * people's access, and the view-only link. Non-owners see who has access, read-only, and can leave.
+ * people's access, and who can open the project: only the people with access, or anyone signed in (public,
+ * read-only). Making it public first shows the OpenStreetMap licence notice. Non-owners see who has access,
+ * read-only, and can leave.
  */
 export function ShareDialog({
   api,
@@ -301,7 +303,8 @@ export function ShareDialog({
   const [email, setEmail] = useState("");
   const [role, setRole] = useState<GrantRole>("editor");
   const [error, setError] = useState<string | null>(null);
-  const [link, setLink] = useState(project.linkAccess);
+  const [visibility, setVisibility] = useState(project.visibility);
+  const [confirming, setConfirming] = useState(false);
   const [copied, setCopied] = useState(false);
   useEffect(() => {
     api.members(project.id).then(setMembers, (e: unknown) => setError(message(e)));
@@ -430,43 +433,78 @@ export function ShareDialog({
           );
         })}
       </ul>
-      <div className="mt-3 flex flex-wrap items-center gap-3 rounded-xl border border-slate-200 px-3.5 py-3">
-        <LinkIcon />
-        <div className="min-w-40 flex-1">
-          <b className="block">{t("share.link")}</b>
-          <span className="text-xs text-slate-500">{link ? t("share.linkOn") : t("share.linkOff")}</span>
+      <div className="mt-3 rounded-xl border border-slate-200 px-3.5 py-3">
+        <div className="flex flex-wrap items-center gap-3">
+          <LinkIcon />
+          <div className="min-w-40 flex-1">
+            <b className="block">{t("share.visibility")}</b>
+            <span className="text-xs text-slate-500">
+              {visibility === "public" ? t("share.public") : t("share.private")}
+            </span>
+          </div>
+          {owner && visibility === "private" && !confirming && (
+            <button type="button" className="btn" onClick={() => setConfirming(true)}>
+              {t("share.makePublic")}
+            </button>
+          )}
+          {owner && visibility === "public" && (
+            <button
+              type="button"
+              className="btn"
+              onClick={() =>
+                void act(async () => {
+                  const p = await api.setVisibility(project.id, "private");
+                  setVisibility(p.visibility);
+                  onChanged(p);
+                })
+              }
+            >
+              {t("share.makePrivate")}
+            </button>
+          )}
+          {visibility === "public" && (
+            <button
+              type="button"
+              className="btn"
+              onClick={() =>
+                void navigator.clipboard?.writeText(url).then(
+                  () => setCopied(true),
+                  () => setCopied(false),
+                )
+              }
+            >
+              {copied ? t("share.copied") : t("share.copyLink")}
+            </button>
+          )}
         </div>
-        {owner && (
-          <button
-            type="button"
-            role="switch"
-            aria-checked={link}
-            aria-label={t("share.link")}
-            className="btn"
-            onClick={() =>
-              void act(async () => {
-                const p = await api.setLink(project.id, !link);
-                setLink(p.linkAccess);
-                onChanged(p);
-              })
-            }
+        {confirming && visibility === "private" && (
+          <div
+            role="group"
+            aria-label={t("share.licenceTitle")}
+            className="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2.5 text-sm text-amber-950"
           >
-            {link ? t("share.linkTurnOff") : t("share.linkTurnOn")}
-          </button>
-        )}
-        {link && (
-          <button
-            type="button"
-            className="btn"
-            onClick={() =>
-              void navigator.clipboard?.writeText(url).then(
-                () => setCopied(true),
-                () => setCopied(false),
-              )
-            }
-          >
-            {copied ? t("share.copied") : t("share.copyLink")}
-          </button>
+            <b className="block">{t("share.licenceTitle")}</b>
+            <p className="mt-1 mb-2.5">{t("share.licenceNote")}</p>
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                className="btn btn-pri"
+                onClick={() =>
+                  void act(async () => {
+                    const p = await api.setVisibility(project.id, "public");
+                    setVisibility(p.visibility);
+                    setConfirming(false);
+                    onChanged(p);
+                  })
+                }
+              >
+                {t("share.confirmPublic")}
+              </button>
+              <button type="button" className="btn" onClick={() => setConfirming(false)}>
+                {t("common.cancel")}
+              </button>
+            </div>
+          </div>
         )}
       </div>
     </Dialog>

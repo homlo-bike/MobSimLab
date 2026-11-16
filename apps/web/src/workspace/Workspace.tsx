@@ -431,6 +431,12 @@ export function Workspace({
         {project && !editable && (
           <span className="tag bg-slate-100 text-slate-700">{t("project.viewOnly")}</span>
         )}
+        {project?.visibility === "public" && (
+          <span className="tag bg-blue-50 text-blue-800" title={t("project.publicNote")}>
+            {t("project.public")}
+            <span className="sr-only"> · {t("project.publicNote")}</span>
+          </span>
+        )}
       </span>
       {project && editable && drawings.loaded && <SaveStatus drawings={drawings} />}
       {tabs}
