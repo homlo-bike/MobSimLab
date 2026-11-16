@@ -4,6 +4,7 @@ import { z } from "zod";
 import { type AccessService, type DestinationInput } from "./access.service";
 import { type AnalysisService, type DemandPoint, PRESETS } from "./analysis.service";
 import { DESTINATION_CATEGORIES, DESTINATION_LIST_VERSION } from "./destinations";
+import { exportGtfs } from "./gtfs-export";
 import DEFAULTS from "./defaults.json";
 import { KPI_CATALOGUE_VERSION, KPIS } from "./kpis";
 import { NetworkError } from "./network.service";
@@ -23,18 +24,25 @@ import { ScenarioError, type ScenariosService } from "./scenarios.service";
 import { WasmMissingError } from "./wasm";
 
 /** Version of the tool set; tool names and schemas are a public contract (ADR-0035 Consequences). */
-export const TOOLS_VERSION = "0.2.0";
+export const TOOLS_VERSION = "0.3.0";
 
 export interface ToolDeps {
   scenarios: ScenariosService;
   analysis: AnalysisService;
   access: AccessService;
   instanceName: string;
+  /** Origin of this instance, e.g. `https://mobsimlab.example.org`. */
+  instanceUrl?: string;
   requestId?: string;
 }
 
 /** A tool refused for missing scope or a bad request; shown to the agent as a tool error. */
 class ToolRefusal extends Error {}
+
+/** A tool result with its own content blocks (for example a file), returned as is. */
+class Raw {
+  constructor(readonly content: CallToolResult["content"]) {}
+}
 
 const json = (v: unknown): CallToolResult => ({
   content: [{ type: "text", text: JSON.stringify(v, null, 1) }],
@@ -65,7 +73,7 @@ export function buildMcpServer(p: AgentPrincipal, d: ToolDeps): McpServer {
         "coverage_report (headline: 15-minute walk to the nearest stop on the street network), measure_stop_spacing, " +
         "find_coverage_gaps, suggest_stop_locations (exact optimiser), accessibility_to_destinations (the 15-minute " +
         "city: daily needs within 15 minutes on foot, by bicycle or by public transport), coverage_report with the " +
-        "ptal preset (TfL PTAL), plan_journey, and compare with benchmark_scenarios. Every " +
+        "ptal preset (TfL PTAL), plan_journey, compare with benchmark_scenarios, and export a scenario as GTFS with export_gtfs. Every " +
         "number states its rule and the assumption-library keys behind it; quote them. You cannot change the base " +
         "network, sharing or users; a person reviews scenarios in MobSimLab.",
     },
@@ -86,7 +94,8 @@ export function buildMcpServer(p: AgentPrincipal, d: ToolDeps): McpServer {
     async (args: A): Promise<CallToolResult> => {
       try {
         need(scope);
-        return json(await fn(args));
+        const v = await fn(args);
+        return v instanceof Raw ? { content: v.content } : json(v);
       } catch (e) {
         if (
           e instanceof ToolRefusal ||
@@ -629,6 +638,87 @@ export function buildMcpServer(p: AgentPrincipal, d: ToolDeps): McpServer {
           kpis: KPIS.map((k) => ({ id: k.id, unit: k.unit, better: k.better })),
           rows,
         };
+      },
+    ),
+  );
+
+  // ---- Export ---------------------------------------------------------------------------------
+  const ymd = /^\d{8}$/;
+  server.registerTool(
+    "export_gtfs",
+    {
+      title: "Export as GTFS",
+      description:
+        "The scenario's stops and lines as a GTFS Schedule feed (zip): agency, stops, routes, a weekday calendar, trips with frequencies, stop_times and feed_info, from the same timetable plan_journey rides. Returns the zip as an embedded file and the row count of each file.",
+      inputSchema: {
+        scenario_id: scenarioId,
+        agency_timezone: z
+          .string()
+          .min(1)
+          .max(64)
+          .regex(/^[A-Za-z_]+(\/[A-Za-z0-9_+-]+)*$/)
+          .describe("IANA time zone of the service area, e.g. Europe/Berlin"),
+        agency_name: z.string().min(1).max(200).optional().describe("default: the scenario name"),
+        agency_url: z
+          .url({ protocol: /^https?$/ })
+          .optional()
+          .describe("default: this MobSimLab instance"),
+        lang: z.string().min(2).max(12).default("en"),
+        start_date: z.string().regex(ymd).optional().describe("YYYYMMDD, default today"),
+        end_date: z.string().regex(ymd).optional().describe("YYYYMMDD, default one year after the start"),
+        include_text: z
+          .boolean()
+          .default(false)
+          .describe("also return the text of each file (for small scenarios)"),
+      },
+      annotations: read,
+    },
+    run(
+      "project:read",
+      async (a: {
+        scenario_id: string;
+        agency_timezone: string;
+        agency_name?: string;
+        agency_url?: string;
+        lang: string;
+        start_date?: string;
+        end_date?: string;
+        include_text: boolean;
+      }) => {
+        const s = await d.scenarios.get(p.userId, a.scenario_id);
+        const day = (t: Date) => t.toISOString().slice(0, 10).replaceAll("-", "");
+        const start = a.start_date ?? day(new Date());
+        const startT = Date.UTC(+start.slice(0, 4), +start.slice(4, 6) - 1, +start.slice(6, 8));
+        const end = a.end_date ?? day(new Date(startT + 365 * 86_400_000));
+        if (end < start) throw new ToolRefusal("end_date is before start_date");
+        const feed = exportGtfs(s.doc, d.analysis, {
+          agencyName: a.agency_name ?? s.name,
+          agencyUrl: a.agency_url ?? d.instanceUrl ?? "https://mobsimlab.org",
+          timezone: a.agency_timezone,
+          lang: a.lang,
+          startDate: start,
+          endDate: end,
+        });
+        const name = `${s.name.replace(/[^A-Za-z0-9_-]+/g, "-").replace(/^-+|-+$/g, "") || "scenario"}-gtfs.zip`;
+        const summary = {
+          file_name: name,
+          bytes: feed.zip.length,
+          rows: feed.rows,
+          service: `weekdays ${start}–${end}, lines at their headways (frequencies.txt)`,
+          note: "Generated by MobSimLab from an agent scenario; not checked with the MobilityData GTFS Validator.",
+          ...(a.include_text ? { files: feed.files } : {}),
+        };
+        return new Raw([
+          { type: "text", text: JSON.stringify(summary, null, 1) },
+          {
+            type: "resource",
+            resource: {
+              uri: `mobsimlab://scenarios/${s.id}/gtfs.zip`,
+              mimeType: "application/zip",
+              blob: feed.zip.toString("base64"),
+            },
+          },
+        ]);
       },
     ),
   );
