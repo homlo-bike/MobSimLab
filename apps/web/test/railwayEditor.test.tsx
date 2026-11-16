@@ -214,6 +214,30 @@ describe("railway engine (WebAssembly)", () => {
     e.dispose();
   });
 
+  it("offers only the switches the project uses, with its default turnout", async () => {
+    const e = await loadRailEngine();
+    const doc = e.sample("regional_rail", ORIGIN);
+    const all = e.build(doc, null);
+    const ids = all.turnouts.map((x) => x.id);
+    const lib = all.params.default_turnout;
+    const other = ids.find((id) => id !== lib)!;
+    const slip = all.slip_elements[0]!.id;
+    e.setSwitchChoice!({
+      off: [ids.find((id) => id !== lib && id !== other)!, slip],
+      default_turnout: { regional_rail: other },
+    });
+    const v = e.build(doc, null);
+    expect(v.turnouts.length).toBe(ids.length - 1);
+    expect(v.params.default_turnout).toBe(other);
+    expect(v.modes.regional_rail?.params.default_turnout).toBe(other);
+    expect(v.slip_elements.some((x) => x.id === slip)).toBe(false);
+    // The tram network in the same drawing keeps its library default.
+    expect(v.modes.tram?.params.default_turnout).toBe(all.modes.tram?.params.default_turnout);
+    e.setSwitchChoice!({ off: [], default_turnout: {} });
+    expect(e.build(doc, null).turnouts.length).toBe(ids.length);
+    e.dispose();
+  });
+
   it("crosses a tram line and a regional railway on one shared diamond", async () => {
     const e = await loadRailEngine();
     const v = e.build(e.sample("regional_rail", ORIGIN), null);

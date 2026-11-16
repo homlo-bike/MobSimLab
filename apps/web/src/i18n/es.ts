@@ -301,8 +301,23 @@ export const es: Messages = {
   "prefs.rulesChanged": "{count} cambiados",
   "prefs.rulesLibrary": "Biblioteca de supuestos: {value} {unit}",
   "prefs.rulesLibraryRange": "Biblioteca de supuestos: {value} {unit} (intervalo {low}–{high})",
-  "prefs.vehicles": "Vehículos usados, del catálogo de vehículos",
-  "prefs.switches": "Desvíos, del catálogo de desvíos",
+  "prefs.vehiclesTitle": "Vehículos",
+  "prefs.vehiclesIntro":
+    "Los vehículos del catálogo que usa este proyecto, por modo. Las herramientas de líneas de calle y ferroviarias solo ofrecen los marcados.",
+  "prefs.vehiclesMode": "Modo",
+  "prefs.vehiclesUsed": "{used} de {total} en uso",
+  "prefs.vehiclesAll": "Usar todos",
+  "prefs.vehiclesFacts": "{length} m · {places} plazas · {speed} km/h",
+  "prefs.vehiclesLast": "Cada modo mantiene al menos un vehículo en uso.",
+  "prefs.switchesTitle": "Desvíos",
+  "prefs.switchesIntro":
+    "Los desvíos y cruces del catálogo que ofrece el editor ferroviario, por modo ferroviario, y el desvío con el que empiezan los nuevos.",
+  "prefs.switchesTurnouts": "Desvíos",
+  "prefs.switchesSlips": "Escapes en cruces",
+  "prefs.switchesDefault": "Predeterminado",
+  "prefs.switchesFacts": "1:{n} · R {radius} m · {speed} km/h por la desviada",
+  "prefs.switchesLast":
+    "El desvío predeterminado sigue en uso. Para quitarlo, elija antes otro predeterminado.",
   "prefs.calendar": "Calendario, demanda y costes",
 
   "job.stepOf": "Paso {step} de {steps}",
