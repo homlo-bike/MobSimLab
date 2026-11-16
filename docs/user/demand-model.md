@@ -41,4 +41,15 @@ The results show what the model area has of each and what it did: trips on a sha
 - How many street links come near their capacity.
 - **Download trip tables (OMX)**: the origin–destination matrices per mode and period, and for the weekday, in the open OMX format.
 
+## Using the results as the project's ridership
+
+Under a finished run, **Use this run for ridership** makes its boardings the project's ridership instead of the Tables tab's formula estimate:
+
+- the benefit tables' **Riders a weekday** and **Boardings a year**, per line, per mode and in total (the model's number is the medium value; low and high keep the formula's spread);
+- the service table's **Riders a day** column;
+- the fare revenue table, which spreads each line's trips over its stations with the model's boardings;
+- the system test's passenger loads, by stop.
+
+Boardings you typed for a stop in the system test still come first. **Go back to the formula estimate** undoes the choice.
+
 Results are marked **Uncalibrated** because no observed counts have been used yet. Calibration comes in a later step.

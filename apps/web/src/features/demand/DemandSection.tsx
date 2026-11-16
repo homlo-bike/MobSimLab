@@ -568,7 +568,14 @@ export function DemandSection({
       </div>
 
       {result && viewing && (
-        <Results result={result} zoneName={zoneName} fileUrl={runs?.fileUrl(viewing.id, "od.omx") ?? null} />
+        <>
+          <RidershipChoice runId={viewing.id} doc={doc} onDoc={onDoc} />
+          <Results
+            result={result}
+            zoneName={zoneName}
+            fileUrl={runs?.fileUrl(viewing.id, "od.omx") ?? null}
+          />
+        </>
       )}
     </section>
   );
@@ -1162,6 +1169,55 @@ function Catchment({ c }: { c: NonNullable<DemandResult["catchment"]> }) {
           ))}
         </tbody>
       </table>
+    </div>
+  );
+}
+
+/**
+ * Whether the run shown is the one whose ridership the Tables tab (ridership, the service table's Riders
+ * column, fare revenue) and the system test's passenger loads use, instead of the formula estimate.
+ */
+function RidershipChoice({
+  runId,
+  doc,
+  onDoc,
+}: {
+  runId: string;
+  doc: DemandDoc | null;
+  onDoc?: (doc: DemandDoc) => void;
+}) {
+  const used = doc?.ridershipRun === runId;
+  const other = !!doc?.ridershipRun && !used;
+  const set = (id: string | null) => {
+    const next: DemandDoc = { ...(doc ?? { source: "auto" }) };
+    if (id) next.ridershipRun = id;
+    else delete next.ridershipRun;
+    onDoc?.(next);
+  };
+  return (
+    <div className={card} aria-label="Ridership used in the project">
+      <h3 className="caps m-0">Ridership in the project</h3>
+      <p className="mt-2 text-sm text-slate-600">
+        {used
+          ? "This run's boardings are the ridership of the Tables tab, the service table's Riders column, the fare revenue table and the system test's passenger loads."
+          : other
+            ? "Another run's boardings are the project's ridership."
+            : "The project's ridership comes from the Tables tab's formula estimate. Use this run's boardings instead?"}{" "}
+        Boardings you typed in the system test still come first.
+      </p>
+      {onDoc && (
+        <div className="mt-3 flex flex-wrap gap-2">
+          {used ? (
+            <button type="button" className="btn min-h-10" onClick={() => set(null)}>
+              Go back to the formula estimate
+            </button>
+          ) : (
+            <button type="button" className="btn btn-pri min-h-10" onClick={() => set(runId)}>
+              Use this run for ridership
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 }
