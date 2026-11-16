@@ -78,8 +78,11 @@ export interface PluginEntry {
   calculations: unknown[];
   importers?: unknown[];
   exporters?: unknown[];
-  /** Project tabs (bundled plugins only); the web app ships each tab's view. */
-  tabs: { id: string; label: string; view: string; calculations: string[] }[];
+  /**
+   * Project tabs: a view the web app ships (`view`, bundled plugins), or the plugin's own page in a sandboxed
+   * frame (`ui`, installed plugins).
+   */
+  tabs: { id: string; label: string; view?: string; ui?: string; calculations?: string[] }[];
   mapLayers: unknown[];
   parameters: Record<string, { label: string; unit: string }>;
   defaults: Record<string, Record<string, Record<string, Range>>>;
@@ -94,6 +97,7 @@ export interface OtherPlugin {
   version: string;
   modes: string[];
   parameters: string[];
+  tabs?: string[];
 }
 
 /** Purpose: what a plugin entry adds that others must not reuse. */
@@ -103,6 +107,7 @@ export function claims(p: PluginEntry): OtherPlugin {
     version: p.version,
     modes: p.modes.map((m) => m.id),
     parameters: Object.keys(p.parameters),
+    tabs: (p.tabs ?? []).map((t) => t.id),
   };
 }
 
@@ -319,6 +324,103 @@ function validateAssumptions(
   return errors;
 }
 
+/** A calculation, importer or exporter as the manifest lists it. */
+export interface CodeItem {
+  id: string;
+  runtime: "bundled-wasm" | "component";
+  component?: string;
+  inputs?: string[];
+  where?: string[];
+}
+
+/** The web app's own project tabs (apps/web/src/shell/route.ts); plugin tabs come after them. */
+const CORE_TABS = ["simulator", "create", "schematic", "gis", "tables", "preferences"];
+
+/** What a calculation's input kind needs among the permissions (ADR-0036 §5); `parameters` needs none. */
+export const INPUT_PERMISSION: Record<string, string> = {
+  network: "read:network",
+  street_lines: "read:network",
+  rail_design: "read:network",
+  timetable: "read:timetable",
+  fleet: "read:fleet",
+  geodata: "read:geodata",
+};
+
+/** Where an installed plugin's calculation may appear: places the app fills from the manifest alone. */
+const COMPONENT_WHERE = new Set(["tables", "plugin-tab"]);
+
+/**
+ * Purpose: the rules for code and tabs (ADR-0036 §4, §6), as `check_code` in tools/plugins/check.py. Bundled
+ * plugins use core crates (`bundled-wasm`) and views the web app ships; installed plugins bring WebAssembly
+ * components (`component`) and sandboxed pages (`ui`). Output: the errors.
+ */
+export function checkCode(
+  pid: string,
+  m: {
+    bundled: boolean;
+    tiers: string[];
+    permissions: string[];
+    contributes: {
+      calculations?: CodeItem[];
+      importers?: CodeItem[];
+      exporters?: CodeItem[];
+      tabs?: PluginEntry["tabs"];
+    };
+  },
+  files: ReadonlyMap<string, Buffer> | null,
+): string[] {
+  const errors: string[] = [];
+  const c = m.contributes;
+  const tiers = new Set(m.tiers);
+  const perms = new Set(m.permissions);
+  const tabs = c.tabs ?? [];
+  const code: [string, CodeItem][] = [
+    ...(c.calculations ?? []).map((x) => ["calculation", x] as [string, CodeItem]),
+    ...(c.importers ?? []).map((x) => ["importer", x] as [string, CodeItem]),
+    ...(c.exporters ?? []).map((x) => ["exporter", x] as [string, CodeItem]),
+  ];
+  const exists = (path: string, ext: string) => {
+    if (!path.endsWith(ext)) errors.push(`${pid}: ${path} must be a ${ext} file`);
+    else if (files && !files.has(path)) errors.push(`${pid}: ${path} does not exist`);
+  };
+  for (const [kind, x] of code) {
+    if (m.bundled && x.runtime !== "bundled-wasm")
+      errors.push(`${pid}: ${kind} ${x.id}: bundled plugins use runtime bundled-wasm`);
+    if (!m.bundled && x.runtime !== "component")
+      errors.push(`${pid}: ${kind} ${x.id}: installed plugins bring their code as runtime component`);
+    if (x.runtime !== "component") continue;
+    exists(x.component ?? "", ".wasm");
+    if (kind === "calculation") {
+      for (const i of x.inputs ?? []) {
+        const need = INPUT_PERMISSION[i];
+        if (need && !perms.has(need))
+          errors.push(`${pid}: calculation ${x.id} reads ${i}, which needs the ${need} permission`);
+      }
+      for (const w of x.where ?? [])
+        if (!COMPONENT_WHERE.has(w))
+          errors.push(`${pid}: calculation ${x.id}: an installed plugin's calculation cannot appear in ${w}`);
+      if ((x.where ?? []).includes("plugin-tab") && !tabs.some((t) => (t.calculations ?? []).includes(x.id)))
+        errors.push(`${pid}: calculation ${x.id} is for a plugin tab, but no tab lists it`);
+    } else if (kind === "importer" && !perms.has("write:scenario"))
+      errors.push(`${pid}: importer ${x.id} adds to the project, which needs the write:scenario permission`);
+    else if (kind === "exporter" && !perms.has("read:timetable"))
+      errors.push(`${pid}: exporter ${x.id} reads the timetable, which needs the read:timetable permission`);
+  }
+  if (code.some(([, x]) => x.runtime === "component") && !tiers.has("compute"))
+    errors.push(`${pid}: a plugin with components must list the compute tier`);
+  for (const tab of tabs) {
+    if (m.bundled && !tab.view)
+      errors.push(`${pid}: tab ${tab.id}: bundled plugins name a view of the web app`);
+    if (!m.bundled && !tab.ui)
+      errors.push(`${pid}: tab ${tab.id}: installed plugins bring their own page (ui)`);
+    if (tab.ui) {
+      exists(tab.ui, ".html");
+      if (!tiers.has("ui")) errors.push(`${pid}: a plugin with its own tab pages must list the ui tier`);
+    }
+  }
+  return errors;
+}
+
 /** Result of checking a plugin: errors for the Admin, or the registry entry. */
 export type CheckResult =
   { ok: true; manifest: Record<string, unknown>; entry: PluginEntry } | { ok: false; errors: string[] };
@@ -326,7 +428,7 @@ export type CheckResult =
 /**
  * Purpose: check a plugin package's contents with the same rules as tools/plugins/check.py (ADR-0036 §2, §3,
  * ADR-0018), plus what an uploaded plugin needs (§9): its licences are allowed, it fits this MobSimLab version,
- * it is not marked bundled, it brings data only (code runs only in bundled plugins until the sandbox exists),
+ * it is not marked bundled, its code is WebAssembly components and its tabs are its own pages (checkCode),
  * and it does not reuse a mode or parameter of the core, a bundled plugin or another installed plugin.
  * Inputs: path → bytes; the plugins it must not clash with (other versions of the same id are ignored);
  * `bundled` true only when checking the image's own plugins. Output: the registry entry or the errors.
@@ -400,9 +502,9 @@ export function checkPlugin(
       sources?: { file: string }[];
       vehicles?: { dir: string }[];
       tools?: PluginEntry["tools"];
-      calculations?: { id: string }[];
-      importers?: { id: string }[];
-      exporters?: { id: string }[];
+      calculations?: CodeItem[];
+      importers?: CodeItem[];
+      exporters?: CodeItem[];
       tabs?: PluginEntry["tabs"];
       mapLayers?: { id: string; calculation: string; style: string }[];
     };
@@ -412,16 +514,6 @@ export function checkPlugin(
 
   if (!options.bundled) {
     if (m.bundled) errors.push(`${pid}: only plugins that ship with MobSimLab may say "bundled"`);
-    for (const t of m.tiers)
-      if (t !== "data")
-        errors.push(
-          `${pid}: the ${t} tier is not supported for installed plugins yet; only data plugins can be installed`,
-        );
-    if (c.calculations?.length)
-      errors.push(`${pid}: only bundled plugins may contribute calculations for now`);
-    if (c.importers?.length || c.exporters?.length)
-      errors.push(`${pid}: only bundled plugins may contribute importers and exporters for now`);
-    if (c.tabs?.length) errors.push(`${pid}: only bundled plugins may contribute tabs for now`);
     if (m.publisher.url !== undefined && !/^https:\/\/[^\s]+$/.test(m.publisher.url))
       errors.push(`${pid}: the publisher URL must start with https://`);
     for (const [what, lic] of [
@@ -478,7 +570,18 @@ export function checkPlugin(
         errors.push(`${pid}: tool ${t.id} uses kit ${t.kit}, mode ${mid} needs ${kits.get(mid)}`);
     }
 
+  errors.push(...checkCode(pid, { ...m, bundled: Boolean(options.bundled) }, files));
+  const convIds = [...(c.importers ?? []), ...(c.exporters ?? [])].map((x) => x.id);
+  for (const id of new Set(convIds.filter((x, i) => convIds.indexOf(x) !== i)))
+    errors.push(`${pid}: importer or exporter id ${id} is used twice`);
   const calcIds = new Set((c.calculations ?? []).map((x) => x.id));
+  for (const tab of c.tabs ?? []) {
+    if (CORE_TABS.includes(tab.id)) errors.push(`${pid}: tab ${tab.id} is a core tab`);
+    const owner = rivals.find((o) => (o.tabs ?? []).includes(tab.id));
+    if (owner) errors.push(`${pid}: tab ${tab.id} is also contributed by ${owner.id}`);
+    for (const calc of tab.calculations ?? [])
+      if (!calcIds.has(calc)) errors.push(`${pid}: tab ${tab.id} shows unknown calculation ${calc}`);
+  }
   const layers: unknown[] = [];
   for (const layer of c.mapLayers ?? []) {
     if (!calcIds.has(layer.calculation))

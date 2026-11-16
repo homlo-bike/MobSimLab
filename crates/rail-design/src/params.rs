@@ -5,8 +5,41 @@
 //! documented derivation there. A project can override any value (Project Preferences).
 
 use serde::{Deserialize, Serialize};
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 use std::sync::OnceLock;
+
+/// The project's choice from the switches and crossings catalogue (Project preferences →
+/// Switches): the elements the railway editor offers, and the default turnout per mode.
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub struct SwitchChoice {
+    /// Catalogue elements the project does not use (ids).
+    #[serde(default)]
+    pub off: BTreeSet<String>,
+    /// Default turnout for new switches, by mode id.
+    #[serde(default)]
+    pub default_turnout: BTreeMap<String, String>,
+    /// Text values the project sets (Project preferences → All parameters), by field name for
+    /// every mode or by `<mode id>.<field>` for one mode, for example
+    /// `{"tram.electrification": "ocl-600v-dc"}`. Only the text fields of [`TEXT_FIELDS`] change.
+    #[serde(default)]
+    pub texts: BTreeMap<String, String>,
+}
+
+/// The design values that are text and a project may set: electrification, line colour, whether
+/// level crossings are usual, and the signalling system.
+pub const TEXT_FIELDS: [&str; 4] = [
+    "electrification",
+    "colour",
+    "level_crossing_permitted",
+    "signalling_system",
+];
+
+impl SwitchChoice {
+    /// Purpose: whether the project uses a catalogue element.
+    pub fn uses(&self, id: &str) -> bool {
+        !self.off.contains(id)
+    }
+}
 
 /// Rail modes drawn with the railway design tool (ADR-0030).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
@@ -100,6 +133,8 @@ pub struct ModeParams {
     pub island_platform_width_m: f64,
     /// Track centre to platform edge, m.
     pub platform_edge_offset_m: f64,
+    /// Platform length needed beyond the train for stopping, m.
+    pub stopping_tolerance_m: f64,
     /// Station track beyond each platform end, m.
     pub track_beyond_platform_m: f64,
     /// Depth per underground level, m.
@@ -193,6 +228,76 @@ impl ModeParams {
             }
         }
         serde_json::from_value(serde_json::Value::Object(o)).unwrap_or_else(|_| self.clone())
+    }
+
+    /// Purpose: the values of one mode with the project's preferences applied.
+    /// Inputs: numbers by field name for every mode, and by `<mode id>.<field>` (for example
+    /// `tram.min_radius_m`) for one mode; a value for the mode wins over one for every mode.
+    /// Output: a copy with those fields replaced (see [`ModeParams::with_values`]).
+    pub fn with_mode_values(&self, mode: RailMode, values: &BTreeMap<String, f64>) -> ModeParams {
+        let prefix = format!("{}.", mode.id());
+        let mut own: BTreeMap<String, f64> = values
+            .iter()
+            .filter(|(k, _)| !k.contains('.'))
+            .map(|(k, v)| (k.clone(), *v))
+            .collect();
+        for (k, v) in values {
+            if let Some(field) = k.strip_prefix(&prefix) {
+                own.insert(field.to_string(), *v);
+            }
+        }
+        self.with_values(&own)
+    }
+
+    /// Purpose: the values of one mode with the project's switch choice applied. The default
+    /// turnout is the project's when it is a turnout of the mode the project uses; else the
+    /// library's when the project uses it; else the mode's first turnout the project uses.
+    pub fn with_switch_choice(&self, mode: RailMode, choice: &SwitchChoice) -> ModeParams {
+        let usable: Vec<&str> = defaults()
+            .turnouts_for(mode)
+            .into_iter()
+            .map(|s| s.id.as_str())
+            .filter(|id| choice.uses(id))
+            .collect();
+        let pick = choice
+            .default_turnout
+            .get(mode.id())
+            .map(String::as_str)
+            .filter(|id| usable.contains(id))
+            .or_else(|| {
+                usable
+                    .contains(&self.default_turnout.as_str())
+                    .then_some(self.default_turnout.as_str())
+            })
+            .or_else(|| usable.first().copied());
+        let mut p = self.with_mode_texts(mode, &choice.texts);
+        if let Some(id) = pick {
+            p.default_turnout = id.to_string();
+        }
+        p
+    }
+
+    /// Purpose: the values of one mode with the project's text values applied (see
+    /// [`SwitchChoice::texts`]); a value for the mode wins over one for every mode. Fields outside
+    /// [`TEXT_FIELDS`] and empty values are ignored.
+    pub fn with_mode_texts(&self, mode: RailMode, texts: &BTreeMap<String, String>) -> ModeParams {
+        let mut p = self.clone();
+        for field in TEXT_FIELDS {
+            let v = texts
+                .get(&format!("{}.{field}", mode.id()))
+                .or_else(|| texts.get(field))
+                .map(|v| v.trim())
+                .filter(|v| !v.is_empty());
+            let Some(v) = v else { continue };
+            let slot = match field {
+                "electrification" => &mut p.electrification,
+                "colour" => &mut p.colour,
+                "level_crossing_permitted" => &mut p.level_crossing_permitted,
+                _ => &mut p.signalling_system,
+            };
+            *slot = v.to_string();
+        }
+        p
     }
 
     /// Purpose: gauge in metres.
@@ -389,6 +494,109 @@ impl Defaults {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn the_project_chooses_the_default_turnout_from_the_turnouts_it_uses() {
+        let d = defaults();
+        let tram = d.mode(RailMode::Tram);
+        let lib = tram.default_turnout.clone();
+        let none = SwitchChoice::default();
+        assert_eq!(
+            tram.with_switch_choice(RailMode::Tram, &none)
+                .default_turnout,
+            lib
+        );
+        let ids: Vec<String> = d
+            .turnouts_for(RailMode::Tram)
+            .iter()
+            .map(|s| s.id.clone())
+            .collect();
+        let other = ids.iter().find(|id| **id != lib).unwrap().clone();
+        // The project's own default.
+        let mut c = SwitchChoice::default();
+        c.default_turnout.insert("tram".into(), other.clone());
+        assert_eq!(
+            tram.with_switch_choice(RailMode::Tram, &c).default_turnout,
+            other
+        );
+        // A default the project left out, or of another mode, is not used.
+        c.off.insert(other.clone());
+        assert_eq!(
+            tram.with_switch_choice(RailMode::Tram, &c).default_turnout,
+            lib
+        );
+        c.default_turnout
+            .insert("tram".into(), "db-ew-2500-1-26.5-fb".into());
+        assert_eq!(
+            tram.with_switch_choice(RailMode::Tram, &c).default_turnout,
+            lib
+        );
+        // The library's default left out too: the first turnout still in use.
+        c.off.insert(lib.clone());
+        let first = ids.iter().find(|id| !c.off.contains(*id)).unwrap();
+        assert_eq!(
+            &tram.with_switch_choice(RailMode::Tram, &c).default_turnout,
+            first
+        );
+    }
+
+    #[test]
+    fn a_value_for_one_mode_changes_only_that_mode() {
+        let d = defaults();
+        let values: BTreeMap<String, f64> = [
+            ("tram.min_radius_m".to_string(), 18.0),
+            ("min_radius_m".to_string(), 30.0),
+            ("metro.no_such_value".to_string(), 1.0),
+        ]
+        .into_iter()
+        .collect();
+        let tram = d
+            .mode(RailMode::Tram)
+            .with_mode_values(RailMode::Tram, &values);
+        let metro = d
+            .mode(RailMode::Metro)
+            .with_mode_values(RailMode::Metro, &values);
+        // The mode's own value wins over the one for every mode.
+        assert_eq!(tram.min_radius_m, 18.0);
+        assert_eq!(metro.min_radius_m, 30.0);
+        let only_tram: BTreeMap<String, f64> = [("tram.platform_length_m".to_string(), 60.0)]
+            .into_iter()
+            .collect();
+        assert_eq!(
+            d.mode(RailMode::Metro)
+                .with_mode_values(RailMode::Metro, &only_tram),
+            *d.mode(RailMode::Metro)
+        );
+    }
+
+    #[test]
+    fn a_text_value_for_one_mode_wins_and_others_are_ignored() {
+        let d = defaults();
+        let c = SwitchChoice {
+            texts: [
+                ("electrification", "ocl-1500v-dc"),
+                ("tram.electrification", "ocl-600v-dc"),
+                ("level_crossing_permitted", "no"),
+                ("label", "Not a text field"),
+                ("metro.colour", " "),
+            ]
+            .into_iter()
+            .map(|(k, v)| (k.to_string(), v.to_string()))
+            .collect(),
+            ..SwitchChoice::default()
+        };
+        let tram = d
+            .mode(RailMode::Tram)
+            .with_switch_choice(RailMode::Tram, &c);
+        let metro = d
+            .mode(RailMode::Metro)
+            .with_switch_choice(RailMode::Metro, &c);
+        assert_eq!(tram.electrification, "ocl-600v-dc");
+        assert_eq!(metro.electrification, "ocl-1500v-dc");
+        assert_eq!(tram.level_crossing_permitted, "no");
+        assert_eq!(tram.label, d.mode(RailMode::Tram).label);
+        assert_eq!(metro.colour, d.mode(RailMode::Metro).colour);
+    }
 
     #[test]
     fn defaults_cover_every_mode_and_default_turnout() {

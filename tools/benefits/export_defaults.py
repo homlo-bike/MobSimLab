@@ -22,7 +22,7 @@ ROOT = Path(__file__).resolve().parents[2]
 OUT = (
     ROOT / "apps" / "web" / "src" / "features" / "benefits" / "defaults.generated.json"
 )
-EXTRA = {"mode.catchment_m"}
+EXTRA = {"mode.catchment_m", "demand.walk_speed_kmh", "journey.walk_detour_factor"}
 
 
 def assumption_check():

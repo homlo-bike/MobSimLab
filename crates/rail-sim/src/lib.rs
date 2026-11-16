@@ -12,10 +12,12 @@
 //! interlocking, with automatic route setting, train protection and a
 //! driver model. The [`capacity`] module is the simulator tab's capacity run:
 //! UIC 406 capacity, a run through the kernel and a stability test with
-//! seeded primary delays, for one period and a sweep of frequencies.
+//! seeded primary delays, for one period and a sweep of frequencies; its
+//! inputs are read by [`capacity_input`].
 #![warn(missing_docs)]
 
 pub mod capacity;
+pub mod capacity_input;
 pub mod model;
 pub mod network;
 pub mod scenarios;

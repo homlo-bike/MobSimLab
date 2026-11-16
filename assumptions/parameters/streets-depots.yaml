@@ -96,6 +96,54 @@
       check: unverified
       rationale: Room to walk between vehicles and for charging connectors.
 
+- key: depot.turning_circle_m
+  label: "Street depot: kerb-to-kerb turning circle of a bus the catalogue gives none for"
+  group: Depots and streets
+  unit: m
+  used_by: [automatic bus depot layout, swept-path check]
+  values:
+    - context:
+        mode: "*"
+      low: 21
+      central: 24
+      high: 25
+      basis: documented
+      sources: [eu-dir-96-53, mobsimlab-derivation]
+      check: unverified
+      rationale: "A bus must turn within a circle of 12.5 m outer radius (25 m diameter, 96/53/EC); catalogue 12 m buses quote about 19–22 m. The swept-path check uses the vehicle's own value where the catalogue has one."
+
+- key: depot.swept_clearance_m
+  label: "Street depot: smallest gap between a manoeuvring vehicle and a parked vehicle or the fence"
+  group: Depots and streets
+  unit: m
+  used_by: [swept-path check, automatic bus depot layout]
+  values:
+    - context:
+        mode: "*"
+      low: 0.2
+      central: 0.3
+      high: 0.5
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: "Margin for driver accuracy at walking pace in a depot, on top of the body outline (mirrors fold over parked vehicles); swept-path templates are commonly drawn with 0.3–0.5 m."
+
+- key: depot.charger_power_kw
+  label: "Street depot: power of the charger at each charging slot"
+  group: Depots and streets
+  unit: kW
+  used_by: [automatic bus depot layout, road simulation charging]
+  values:
+    - context:
+        mode: "*"
+      low: 50
+      central: 150
+      high: 300
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: "Overnight plug-in depot chargers for battery buses are commonly 40–150 kW per vehicle; 150 kW also allows a midday top-up. Pantograph chargers reach 300 kW or more."
+
 - key: street.lane_width_m
   label: Lane width of a street (vehicles drawn half a lane from the centreline)
   group: Depots and streets
@@ -225,3 +273,149 @@
       sources: [mobsimlab-derivation]
       check: unverified
       rationale: "Follow the national mainline convention: right in for example DE, AT, NL, ES, PL, CZ, US; left in GB, FR (except Alsace-Moselle), BE, CH, IT, SE, PT, JP. Trams and most metros follow road traffic."
+
+- key: street.peak_cars_trunk_vph
+  label: "Cars at peak on an urban trunk road (OSM trunk, trunk_link, motorway_link), per hour in each direction, where the planner sets none"
+  group: Depots and streets
+  unit: cars per hour per direction
+  used_by: [GIS tab street setup traffic peaks, road simulation background traffic]
+  values:
+    - context:
+        mode: "*"
+      low: 800
+      central: 1500
+      high: 2500
+      basis: educated-guess
+      sources: [rast06, hcm7, mobsimlab-derivation]
+      check: unverified
+      rationale: "A two-lane-per-direction urban expressway or trunk road carries roughly 1,000–2,500 vehicles per hour per direction at peak; HCM gives about 1,800–1,900 cars per hour per lane as base saturation flow, and signals and merges keep the hourly flow well below twice that. The same value is used for the morning and the evening peak; set a street's own counts in the GIS tab."
+
+- key: street.peak_cars_primary_vph
+  label: "Cars at peak on a primary road (OSM primary, primary_link), per hour in each direction, where the planner sets none"
+  group: Depots and streets
+  unit: cars per hour per direction
+  used_by: [GIS tab street setup traffic peaks, road simulation background traffic]
+  values:
+    - context:
+        mode: "*"
+      low: 500
+      central: 900
+      high: 1500
+      basis: educated-guess
+      sources: [rast06, hcm7, mobsimlab-derivation]
+      check: unverified
+      rationale: "RASt 06 street types for main roads (Hauptverkehrsstraßen) span roughly 800–2,600 vehicles per hour over the cross-section at peak, so about 400–1,300 per direction; a signalised lane takes about 600–900 per hour at a typical green share (HCM). The same value is used for the morning and the evening peak; set a street's own counts in the GIS tab."
+
+- key: street.peak_cars_secondary_vph
+  label: "Cars at peak on a secondary road (OSM secondary, secondary_link), per hour in each direction, where the planner sets none"
+  group: Depots and streets
+  unit: cars per hour per direction
+  used_by: [GIS tab street setup traffic peaks, road simulation background traffic]
+  values:
+    - context:
+        mode: "*"
+      low: 300
+      central: 600
+      high: 1000
+      basis: educated-guess
+      sources: [rast06, hcm7, mobsimlab-derivation]
+      check: unverified
+      rationale: "Lower end of the RASt 06 main road range: distributor roads with one lane per direction carry a few hundred to about 1,000 vehicles per hour per direction at peak. The same value is used for the morning and the evening peak; set a street's own counts in the GIS tab."
+
+- key: street.peak_cars_tertiary_vph
+  label: "Cars at peak on a tertiary road (OSM tertiary, tertiary_link), per hour in each direction, where the planner sets none"
+  group: Depots and streets
+  unit: cars per hour per direction
+  used_by: [GIS tab street setup traffic peaks, road simulation background traffic]
+  values:
+    - context:
+        mode: "*"
+      low: 150
+      central: 300
+      high: 600
+      basis: educated-guess
+      sources: [rast06, hcm7, mobsimlab-derivation]
+      check: unverified
+      rationale: "RASt 06 collector streets (Sammelstraßen) carry roughly 400–1,000 vehicles per hour over the cross-section at peak, so about 200–500 per direction. The same value is used for the morning and the evening peak; set a street's own counts in the GIS tab."
+
+- key: street.peak_cars_local_vph
+  label: "Cars at peak on a local street (OSM unclassified, residential, living_street, service, road), per hour in each direction, where the planner sets none"
+  group: Depots and streets
+  unit: cars per hour per direction
+  used_by: [GIS tab street setup traffic peaks, road simulation background traffic]
+  values:
+    - context:
+        mode: "*"
+      low: 10
+      central: 50
+      high: 150
+      basis: educated-guess
+      sources: [rast06, hcm7, mobsimlab-derivation]
+      check: unverified
+      rationale: "RASt 06 residential streets (Wohnstraßen, Wohnwege) carry up to about 400 vehicles per hour over the cross-section, most far less; 50 per direction is a quiet street with only its own residents' traffic. The same value is used for the morning and the evening peak; set a street's own counts in the GIS tab."
+
+- key: road.off_peak_traffic_share
+  label: "Road simulation: background traffic outside the peaks, as a share of the street's peak value"
+  group: Depots and streets
+  unit: share
+  used_by: [road simulation background traffic]
+  values:
+    - context:
+        mode: "*"
+      low: 0.4
+      central: 0.6
+      high: 0.8
+      basis: educated-guess
+      sources: [hcm7, mobsimlab-derivation]
+      check: unverified
+      rationale: "Streets only carry peak values (GIS tab traffic peaks), so midday and evening runs scale them. Urban weekday hourly profiles put a midday hour at roughly 5–6 % of the daily traffic against 8–10 % in the peak hour (HCM K-factors), about 0.6 of the peak; late evening is lower, so set your own value for evening runs."
+
+- key: road.trolley_wire_charge_kw
+  label: "Road simulation: power a trolleybus takes from its wires to charge its battery while driving"
+  group: Depots and streets
+  unit: kW
+  used_by: [road simulation trolleybus energy]
+  values:
+    - context:
+        mode: "*"
+      low: 60
+      central: 120
+      high: 200
+      basis: educated-guess
+      sources: [uitp-trolleybus-tco, mobsimlab-derivation]
+      check: unverified
+      rationale: "In-motion charging trolleybuses recharge their traction battery from the wires at roughly 50–200 kW on top of the power for driving; the road simulation gives this power to the battery on every street with a trolleybus wire (OSM trolley_wire)."
+
+- key: road.battery_capacity_kwh
+  label: "Road simulation: usable battery of a battery bus, or of a trolleybus for running off the wires"
+  group: Depots and streets
+  unit: kWh
+  used_by: [road simulation battery energy]
+  values:
+    - context:
+        mode: "*"
+      low: 250
+      central: 350
+      high: 450
+      basis: educated-guess
+      sources: [vde-ebus-fleet, mobsimlab-derivation]
+      check: unverified
+      rationale: "12 m battery buses for overnight depot charging carry about 300–500 kWh installed, of which roughly 80 % is usable."
+    - context:
+        mode: brt
+      low: 350
+      central: 500
+      high: 650
+      basis: educated-guess
+      sources: [vde-ebus-fleet, mobsimlab-derivation]
+      check: unverified
+      rationale: "18 m articulated battery buses carry about 450–800 kWh installed."
+    - context:
+        mode: trolleybus
+      low: 30
+      central: 60
+      high: 120
+      basis: educated-guess
+      sources: [uitp-trolleybus-tco, mobsimlab-derivation]
+      check: unverified
+      rationale: "In-motion charging trolleybuses carry a smaller battery for sections without wires, typically 30–120 kWh."

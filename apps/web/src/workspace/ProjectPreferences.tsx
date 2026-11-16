@@ -1,4 +1,4 @@
-import { type FormEvent, useId, useState } from "react";
+import { type FormEvent, type ReactNode, useCallback, useId, useState } from "react";
 import { useI18n } from "../i18n/i18n";
 import { DELAY_PREFS, MAX_DELAY_SHARE, type PreferencesDoc, prefValue, withPref } from "./preferences";
 import { can, type Project, type ProjectsApi } from "../projects/api";
@@ -6,12 +6,24 @@ import { ModePicker } from "../projects/ProjectDialogs";
 import { Placeholder } from "./Placeholder";
 import type { ProjectPlugin } from "../plugins/registry";
 import { ProjectPlugins } from "./ProjectPlugins";
+import { ReasonField } from "./ReasonField";
+import { DesignRulesSection } from "./DesignRules";
+import { VehicleChoiceSection } from "./VehicleChoice";
+import { SwitchChoiceSection } from "./SwitchChoice";
+import { CalendarSection } from "./CalendarSection";
+import { ClimateSection } from "./ClimateSection";
+import { ParametersSection } from "./Parameters";
+import { AssumptionsReportSection } from "./AssumptionsReport";
+import { roadValue } from "../features/road-sim/params";
+import { DemandParamsSection } from "./DemandParams";
+import { StationsSection } from "./StationsSection";
 import { CURRENCY_CODES } from "../features/costs/currencies";
 import { type CurrencyState, NO_CURRENCY, RATE_PREF, withCurrency } from "../features/costs/currency";
 
 /**
  * Preferences tab (mockup "Project preferences"): the project's name, description, study area and modes, which
- * Owners and Editors can change. Design rules per mode, vehicles, switches, calendar, demand and costs follow.
+ * Owners and Editors can change, the design rules per rail mode, the catalogue vehicles and switches used and the
+ * demand model's values. Calendar and costs follow.
  */
 export function ProjectPreferences({
   api,
@@ -22,6 +34,8 @@ export function ProjectPreferences({
   plugins = null,
   onSetPlugin,
   currency = NO_CURRENCY,
+  country = null,
+  place = null,
 }: {
   api: ProjectsApi;
   project: Project;
@@ -36,9 +50,14 @@ export function ProjectPreferences({
   onSetPlugin?: (pluginId: string, enabled: boolean, version?: string) => Promise<void>;
   /** The project's currency and its exchange rate. */
   currency?: CurrencyState;
+  /** ISO alpha-2 code of the country at the project's location, when known (public holidays). */
+  country?: string | null;
+  /** The project's location [lon, lat], for its climate; null when nothing is drawn yet. */
+  place?: readonly [number, number] | null;
 }) {
   const { t } = useI18n();
   const editable = can.edit(project);
+  const loadHistory = useCallback(() => allValueHistory(api, project.id), [api, project.id]);
   const [name, setName] = useState(project.name);
   const [description, setDescription] = useState(project.description);
   const [area, setArea] = useState(project.areaName ?? "");
@@ -131,6 +150,29 @@ export function ProjectPreferences({
             <p className="mt-4 text-sm text-slate-500">{t("prefs.readOnly")}</p>
           )}
         </form>
+        <DesignRulesSection
+          projectModes={project.modes}
+          preferences={preferences}
+          editable={editable && !!onPreferences}
+          onPreferences={(d) => onPreferences?.(d)}
+        />
+        <VehicleChoiceSection
+          projectModes={project.modes}
+          preferences={preferences}
+          editable={editable && !!onPreferences}
+          onPreferences={(d) => onPreferences?.(d)}
+        />
+        <SwitchChoiceSection
+          projectModes={project.modes}
+          preferences={preferences}
+          editable={editable && !!onPreferences}
+          onPreferences={(d) => onPreferences?.(d)}
+        />
+        <DemandParamsSection
+          preferences={preferences}
+          editable={editable && !!onPreferences}
+          onPreferences={(d) => onPreferences?.(d)}
+        />
         <section
           aria-labelledby="pp-delay"
           className="mt-6 rounded-2xl border border-slate-200 bg-white p-4 md:p-6"
@@ -148,29 +190,94 @@ export function ProjectPreferences({
                 value={prefValue(preferences, p.id)}
                 editable={editable && !!onPreferences}
                 onChange={(v) => onPreferences?.(withPref(preferences, p.id, v))}
+                reason={
+                  <ReasonField
+                    valueId={p.id}
+                    preferences={preferences}
+                    editable={editable && !!onPreferences}
+                    onPreferences={(d) => onPreferences?.(d)}
+                  />
+                }
               />
             ))}
           </div>
           {!editable && <p className="mt-3 text-sm text-slate-500">{t("prefs.readOnly")}</p>}
         </section>
+        <section
+          aria-labelledby="pp-road"
+          className="mt-6 rounded-2xl border border-slate-200 bg-white p-4 md:p-6"
+        >
+          <h2 id="pp-road" className="caps m-0">
+            {t("prefs.roadTitle")}
+          </h2>
+          <p className="mt-1 text-sm text-slate-600">{t("prefs.roadIntro")}</p>
+          <div className="mt-2 flex flex-col gap-1">
+            <ShareField
+              label={t("prefs.offPeakTraffic")}
+              library={OFF_PEAK_LIBRARY}
+              max={1}
+              value={prefValue(preferences, OFF_PEAK_PREF)}
+              editable={editable && !!onPreferences}
+              onChange={(v) => onPreferences?.(withPref(preferences, OFF_PEAK_PREF, v))}
+              reason={
+                <ReasonField
+                  valueId={OFF_PEAK_PREF}
+                  preferences={preferences}
+                  editable={editable && !!onPreferences}
+                  onPreferences={(d) => onPreferences?.(d)}
+                />
+              }
+            />
+          </div>
+          {!editable && <p className="mt-3 text-sm text-slate-500">{t("prefs.readOnly")}</p>}
+        </section>
+        <CalendarSection
+          preferences={preferences}
+          editable={editable && !!onPreferences}
+          onPreferences={(d) => onPreferences?.(d)}
+          detectedCountry={country}
+        />
+        <ClimateSection
+          preferences={preferences}
+          editable={editable && !!onPreferences}
+          onPreferences={(d) => onPreferences?.(d)}
+          place={place}
+        />
+        <StationsSection
+          preferences={preferences}
+          editable={editable && !!onPreferences}
+          onPreferences={(d) => onPreferences?.(d)}
+        />
         <CurrencySection
           state={currency}
           preferences={preferences}
           editable={editable && !!onPreferences}
           onPreferences={(d) => onPreferences?.(d)}
         />
+        <ParametersSection
+          preferences={preferences}
+          editable={editable && !!onPreferences}
+          onPreferences={(d) => onPreferences?.(d)}
+        />
+        <AssumptionsReportSection
+          projectName={project.name}
+          projectModes={project.modes}
+          preferences={preferences}
+          currency={currency.chosen}
+          loadHistory={loadHistory}
+        />
         {onSetPlugin && <ProjectPlugins plugins={plugins} manage={can.manage(project)} onSet={onSetPlugin} />}
         <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-4 md:p-6">
-          <Placeholder
-            title="prefs.moreTitle"
-            intro="prefs.moreIntro"
-            items={["prefs.rules", "prefs.vehicles", "prefs.switches", "prefs.calendar"]}
-          />
+          <Placeholder title="prefs.moreTitle" intro="prefs.moreIntro" items={["prefs.calendar"]} />
         </div>
       </div>
     </div>
   );
 }
+
+/** Off-peak traffic of the road simulation, as a share of each street's peak value. */
+const OFF_PEAK_PREF = "road.off_peak_traffic_share";
+const OFF_PEAK_LIBRARY = roadValue(OFF_PEAK_PREF, "*", undefined)[1];
 
 const pct = (share: number) => String(Math.round(share * 1000) / 10);
 
@@ -181,15 +288,21 @@ const pct = (share: number) => String(Math.round(share * 1000) / 10);
 function ShareField({
   label,
   library,
+  max = MAX_DELAY_SHARE,
   value,
   editable,
   onChange,
+  reason,
 }: {
   label: string;
   library: number;
+  /** Largest share accepted. */
+  max?: number;
   value: number | undefined;
   editable: boolean;
   onChange: (share: number | null) => void;
+  /** The optional reason for the project's own value, shown below it. */
+  reason?: ReactNode;
 }) {
   const { t } = useI18n();
   const id = useId();
@@ -198,7 +311,7 @@ function ShareField({
   const [text, setText] = useState<string | null>(null);
   const commit = (raw: string) => {
     const n = Number(raw.replace(",", "."));
-    if (raw.trim() === "" || !Number.isFinite(n) || n < 0 || n > MAX_DELAY_SHARE * 100) return;
+    if (raw.trim() === "" || !Number.isFinite(n) || n < 0 || n > max * 100) return;
     const share = Math.round(n * 10) / 1000;
     onChange(Math.abs(share - library) < 1e-9 ? null : share);
   };
@@ -214,7 +327,7 @@ function ShareField({
             type="number"
             inputMode="decimal"
             min={0}
-            max={MAX_DELAY_SHARE * 100}
+            max={max * 100}
             step={1}
             disabled={!editable}
             value={text ?? shown}
@@ -243,6 +356,7 @@ function ShareField({
           </button>
         )}
       </div>
+      {reason}
     </div>
   );
 }
@@ -364,10 +478,29 @@ function CurrencySection({
               </button>
             )}
           </div>
+          <ReasonField
+            valueId={RATE_PREF}
+            preferences={preferences}
+            editable={editable}
+            onPreferences={onPreferences}
+          />
         </div>
       )}
       {chosen && <p className="mt-3 text-sm text-slate-500">{t("prefs.currencyHow")}</p>}
       {!editable && <p className="mt-3 text-sm text-slate-500">{t("prefs.readOnly")}</p>}
     </section>
   );
+}
+
+/** Purpose: the project's whole value history, newest first, read page by page (at most 10 000 changes). */
+async function allValueHistory(api: ProjectsApi, projectId: string) {
+  const out = [];
+  let before: number | undefined;
+  for (let page = 0; page < 20; page++) {
+    const h = await api.valueHistory(projectId, { before, limit: 500 });
+    out.push(...h);
+    if (h.length < 500) break;
+    before = h[h.length - 1]!.seq;
+  }
+  return out;
 }

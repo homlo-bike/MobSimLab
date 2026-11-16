@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { tNow, useI18n } from "../../i18n/i18n";
 import { GtfsSection } from "../gtfs/GtfsSection";
+import { feedTimetable } from "../gtfs/toLines";
 import type { GtfsEngineLoader, GtfsFeed, GtfsNetworkDoc } from "../gtfs/types";
 import { loadWasmPlanner } from "./engine";
 import { clock, duration, minutes, PARTS, parseClock } from "./format";
@@ -14,6 +15,7 @@ import {
   pluginLineTimetable,
   prefixTimetable,
   type PluginLineInput,
+  streetHeadways,
   streetLineTimetable,
   type StreetLineInput,
 } from "./network";
@@ -31,25 +33,35 @@ import type {
   TimeMode,
   Timetable,
 } from "./types";
+import { distanceKm } from "../../map/geo";
+import { LIBRARY_SAME_NAME_M } from "../../workspace/preferences";
+
+const NO_STREET_LINES: readonly StreetLineInput[] = [];
 
 interface Props {
   map: MapLibreMap | null;
   /** Where the side panel renders; inline when `null`. */
   panel?: HTMLElement | null;
-  /** The line drawn in the street line tool, if any. */
-  streetLine?: StreetLineInput | null;
+  /** The lines drawn in the street line tool (those with two points or more). */
+  streetLines?: readonly StreetLineInput[];
   /** Rail service lines published in the railway tool, if any. */
   railLines?: Timetable | null;
   /** Cable car and ferry lines from the plugin tools (ADR-0037). */
   pluginLines?: readonly PluginLineInput[];
   /** On-demand bus zones from the service zone kit. */
   demandZones?: readonly DemandZone[];
+  /** Stops with the same name within this many metres are one station (Project preferences). */
+  sameNameM?: number;
+  /** The project's walking and change values (Project preferences → All parameters). */
+  projectSettings?: Partial<Settings>;
   /** Existing networks imported from GTFS feeds (GTFS plugin). */
   gtfsFeeds?: readonly GtfsFeed[];
   /** Saves the imported feeds; absent when the planner may only look. */
   onGtfsFeeds?: (doc: GtfsNetworkDoc) => void;
   /** The project's name, for the GTFS download. */
   projectName?: string;
+  /** Turns an imported GTFS route into a line of the project's own; absent when the planner may only look. */
+  onEditGtfsRoute?: (feedId: string, routeId: string) => void;
   /** Planner loader; tests inject a fake. */
   loadPlanner?: PlannerLoader;
   /** GTFS engine loader; tests inject one. */
@@ -71,12 +83,6 @@ function inRing(p: LonLat, ring: readonly LonLat[]): boolean {
     if (yi > p[1] !== yj > p[1] && p[0] < ((xj - xi) * (p[1] - yi)) / (yj - yi) + xi) c = !c;
   }
   return c;
-}
-
-/** Purpose: straight distance in km between two points (equirectangular, fine within a town). */
-function km(a: LonLat, b: LonLat): number {
-  const k = Math.cos((((a[1] + b[1]) / 2) * Math.PI) / 180);
-  return (Math.hypot((b[0] - a[0]) * k, b[1] - a[1]) * 111_320) / 1000;
 }
 
 /** Purpose: a headway as "45 s" or "15 min". */
@@ -181,10 +187,13 @@ function nearName(tt: Timetable | null, p: LonLat): string | null {
 export function JourneyPlanner({
   map,
   panel = null,
-  streetLine = null,
+  streetLines = NO_STREET_LINES,
   railLines = null,
   pluginLines = NO_PLUGIN_LINES,
   demandZones = NO_ZONES,
+  sameNameM = LIBRARY_SAME_NAME_M,
+  projectSettings,
+  onEditGtfsRoute,
   gtfsFeeds = NO_FEEDS,
   onGtfsFeeds,
   projectName = "",
@@ -193,7 +202,6 @@ export function JourneyPlanner({
 }: Props) {
   const { t, tn } = useI18n();
   const [skipped, setSkipped] = useState<ReadonlySet<string>>(new Set());
-  const [useStreet, setUseStreet] = useState(true);
   const [useRailLines, setUseRailLines] = useState(true);
   const [settings, setSettings] = useState<Partial<Settings>>({});
   const [engine, setEngine] = useState<PlannerEngine | null>(null);
@@ -208,10 +216,14 @@ export function JourneyPlanner({
   const [showTable, setShowTable] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const street = useMemo(
-    () => (streetLine && useStreet ? streetLineTimetable(streetLine) : null),
-    [streetLine, useStreet],
-  );
+  // Each street line with its own ids, so two lines of the same name cannot collide.
+  const street = useMemo(() => {
+    const parts = streetLines.flatMap((l, i) => {
+      const tt = skipped.has(`street:${i}`) ? null : streetLineTimetable(l);
+      return tt ? [prefixTimetable(tt, `s${i}:`)] : [];
+    });
+    return parts.length ? mergeTimetables(parts) : null;
+  }, [streetLines, skipped]);
   const drawnRail = useMemo(
     () =>
       railLines && useRailLines && (railLines.trips.length || railLines.frequency_patterns?.length)
@@ -223,21 +235,24 @@ export function JourneyPlanner({
     const plugin = pluginLines.filter((l) => !skipped.has(l.id)).map((l) => pluginLineTimetable(l));
     const existing = gtfsFeeds
       .filter((f) => !skipped.has(`gtfs:${f.id}`))
-      .map((f) => prefixTimetable(f.timetable, `gtfs:${f.id}:`));
+      .map((f) => prefixTimetable(feedTimetable(f), `gtfs:${f.id}:`));
     const parts = [street, drawnRail, ...plugin, ...existing].filter((p): p is Timetable => p !== null);
     return parts.length ? mergeTimetables(parts) : null;
   }, [street, drawnRail, pluginLines, gtfsFeeds, skipped]);
   // The project's own lines, all of them, for the GTFS download.
   const ownLines: Timetable | null = useMemo(() => {
     const parts = [
-      streetLine ? streetLineTimetable(streetLine) : null,
+      ...streetLines.map((l, i) => {
+        const tt = streetLineTimetable(l);
+        return tt ? prefixTimetable(tt, `s${i}:`) : null;
+      }),
       railLines && (railLines.trips.length || railLines.frequency_patterns?.length)
         ? prefixTimetable(railLines, "lines:")
         : null,
       ...pluginLines.map((l) => pluginLineTimetable(l)),
     ].filter((p): p is Timetable => p !== null);
     return parts.length ? mergeTimetables(parts) : null;
-  }, [streetLine, railLines, pluginLines]);
+  }, [streetLines, railLines, pluginLines]);
   const toggle = (id: string, use: boolean) =>
     setSkipped((s) => {
       const n = new Set(s);
@@ -255,7 +270,7 @@ export function JourneyPlanner({
     }
     let alive = true;
     let made: PlannerEngine | null = null;
-    loadPlanner(timetable, settings)
+    loadPlanner(timetable, { same_name_station_m: sameNameM, ...projectSettings, ...settings })
       .then((e) => {
         made = e;
         if (!alive) return e.dispose();
@@ -270,7 +285,7 @@ export function JourneyPlanner({
       alive = false;
       made?.dispose();
     };
-  }, [timetable, settings, loadPlanner]);
+  }, [timetable, settings, sameNameM, projectSettings, loadPlanner]);
 
   const time = parseClock(timeText);
   const planned = useMemo((): { plan: Plan | null; error: string | null } => {
@@ -322,10 +337,13 @@ export function JourneyPlanner({
   // An on-demand ride when A and B are both in a zone: the zone's average wait plus the ride for this trip.
   const onDemand = useMemo(() => {
     if (!a || !b) return null;
-    const z = shownZones.find((x) => inRing(a, x.ring) && inRing(b, x.ring) && x.view.wait_s !== null);
+    const z = shownZones.find(
+      (x) => inRing(a, x.ring) && inRing(b, x.ring) && (x.simulated || x.view.wait_s !== null),
+    );
     if (!z) return null;
-    const ride = z.view.ride_fixed_s + km(a, b) * z.view.ride_s_per_km;
-    return { name: z.name, wait: z.view.wait_s!, ride };
+    const ride = z.view.ride_fixed_s + distanceKm(a, b) * z.view.ride_s_per_km;
+    // The simulated day's average wait, when the planner ran it; else the estimate's.
+    return { name: z.name, wait: z.simulated?.wait_s ?? z.view.wait_s!, ride };
   }, [a, b, shownZones]);
 
   // Picking A and B by clicking the map.
@@ -404,16 +422,31 @@ export function JourneyPlanner({
 
   const networkControls = (
     <div className="space-y-2">
-      {streetLine && (
-        <label className="flex items-center gap-2">
-          <input type="checkbox" checked={useStreet} onChange={(e) => setUseStreet(e.target.checked)} />
-          {t("jp.streetLine", {
-            name: streetLine.name,
-            headway: streetLine.headwayMin,
-            peak: Math.max(1, Math.round(streetLine.headwayMin / 2)),
-          })}
-        </label>
-      )}
+      {streetLines.map((l, i) => {
+        const key = `street:${i}`;
+        const { peakS, offPeakS } = streetHeadways(l);
+        return (
+          <label key={key} className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={!skipped.has(key)}
+              onChange={(e) =>
+                setSkipped((s) => {
+                  const n = new Set(s);
+                  if (e.target.checked) n.delete(key);
+                  else n.add(key);
+                  return n;
+                })
+              }
+            />
+            {t("jp.streetLine", {
+              name: l.name,
+              headway: Math.round(offPeakS / 6) / 10,
+              peak: Math.round(peakS / 6) / 10,
+            })}
+          </label>
+        );
+      })}
       {railLines && (railLines.trips.length > 0 || railLines.frequency_patterns?.length > 0) && (
         <label className="flex items-center gap-2">
           <input type="checkbox" checked={useRailLines} onChange={(e) => setUseRailLines(e.target.checked)} />
@@ -443,9 +476,19 @@ export function JourneyPlanner({
             checked={!skipped.has(`zone:${z.id}`)}
             onChange={(e) => toggle(`zone:${z.id}`, e.target.checked)}
           />
-          {z.view.wait_s === null
-            ? t("jp.drtZoneShort", { name: z.name })
-            : t("jp.drtZone", { name: z.name, wait: duration(z.view.wait_s), ride: duration(z.view.ride_s) })}
+          {z.simulated
+            ? t("jp.drtZoneSim", {
+                name: z.name,
+                wait: duration(z.simulated.wait_s),
+                ride: duration(z.simulated.ride_s),
+              })
+            : z.view.wait_s === null
+              ? t("jp.drtZoneShort", { name: z.name })
+              : t("jp.drtZone", {
+                  name: z.name,
+                  wait: duration(z.view.wait_s),
+                  ride: duration(z.view.ride_s),
+                })}
         </label>
       ))}
       {!timetable && <p className="text-xs text-slate-600">{t("jp.noTimetable")}</p>}
@@ -457,6 +500,7 @@ export function JourneyPlanner({
         onChange={onGtfsFeeds}
         ownLines={ownLines}
         projectName={projectName}
+        {...(onEditGtfsRoute ? { onEditRoute: onEditGtfsRoute } : {})}
         {...(loadGtfs ? { loadEngine: loadGtfs } : {})}
       />
       {summary && (
@@ -768,7 +812,7 @@ export function JourneyPlanner({
                   ["walk_speed_kmh", "jp.set.walkSpeed", 4.5, 0.1],
                   ["max_access_m", "jp.set.maxAccess", 1000, 50],
                   ["max_transfer_m", "jp.set.maxTransfer", 400, 50],
-                  ["same_name_station_m", "jp.set.sameName", 600, 50],
+                  ["same_name_station_m", "jp.set.sameName", sameNameM, 50],
                   ["min_change_s", "jp.set.minChange", 60, 10],
                   ["max_rides", "jp.set.maxRides", 5, 1],
                 ] as const
@@ -779,7 +823,7 @@ export function JourneyPlanner({
                     type="number"
                     step={stepv}
                     min={0}
-                    value={settings[key] ?? def}
+                    value={settings[key] ?? projectSettings?.[key] ?? def}
                     onChange={(e) => {
                       const v = Number(e.target.value);
                       if (Number.isFinite(v) && v > 0) setSettings((s) => ({ ...s, [key]: v }));

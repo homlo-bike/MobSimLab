@@ -10,8 +10,8 @@ import {
   storedChoice,
   useI18n,
 } from "./i18n/i18n";
+import { setLogSession } from "./logging/logger";
 import { projectsApi } from "./projects/api";
-import { createExampleProject } from "./projects/example";
 import { ProjectsHome } from "./projects/ProjectsHome";
 import { fetchMe, type Me, type Preferences, savePreferences } from "./session/api";
 import { SetupPanel } from "./setup/SetupPanel";
@@ -55,6 +55,8 @@ export function App() {
   useEffect(reload, [reload]);
 
   const csrf = me?.csrfToken;
+  // Browser logs go to the API only while someone is signed in (ADR-0022).
+  useEffect(() => setLogSession(csrf ?? null), [csrf]);
   const savePrefs = useCallback(
     (patch: Preferences) => {
       setPrefs((p) => ({ ...p, ...patch }));
@@ -198,18 +200,10 @@ function Shell({
     </div>
   );
 
-  const canCreate = ["owner", "admin", "user"].includes(user.role);
-  const openExample = async () => {
-    const p = await createExampleProject(api);
-    go({ page: "project", id: p.id, tab: "create", fresh: false });
-  };
-
   if (route.page === "project")
     return (
       <>
         <Workspace
-          // A new project (such as the example, opened from a project) starts with fresh editors and map.
-          key={route.id}
           api={api}
           projectId={route.id}
           tab={route.tab}
@@ -220,13 +214,14 @@ function Shell({
           onHome={home}
           onAbout={about}
           existingRailways={Boolean(prefs.existingRailways)}
-          onExample={canCreate ? openExample : undefined}
+          userId={user?.id ?? null}
         />
         {setup}
         {overlays}
       </>
     );
 
+  const canCreate = ["owner", "admin", "user"].includes(user.role);
   return (
     <div className="flex h-full flex-col">
       <TopBar brand={brand} onHome={home} onAbout={about} account={account} />

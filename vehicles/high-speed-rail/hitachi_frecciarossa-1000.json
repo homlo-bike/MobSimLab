@@ -54,6 +54,15 @@
       "wikipedia-etr-1000"
     ]
   },
+  "floorHeight": {
+    "value": 1240,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "wp-frecciarossa-1000"
+    ]
+  },
   "consist": {
     "cars": {
       "value": 8,

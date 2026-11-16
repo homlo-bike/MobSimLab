@@ -14,7 +14,10 @@ export type DrawingKind =
   | "regions"
   | "scenarios"
   | "cargo-bike"
-  | "plugin-lines";
+  | "plugin-lines"
+  | "depots"
+  | "demand"
+  | "fares";
 export const DRAWING_KINDS: readonly DrawingKind[] = [
   "street-lines",
   "railway",
@@ -29,6 +32,9 @@ export const DRAWING_KINDS: readonly DrawingKind[] = [
   "regions",
   "cargo-bike",
   "plugin-lines",
+  "depots",
+  "demand",
+  "fares",
 ];
 
 /** One saved drawing as the API returns it. */

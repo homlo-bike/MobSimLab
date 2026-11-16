@@ -1,6 +1,7 @@
 import { tNow } from "../../i18n/i18n";
 import type { Timing } from "./modes";
 import type { LineView, LonLat } from "./types";
+import { distanceM } from "../../map/geo";
 
 /** Numbers in the panel's stat tiles. */
 export interface LineStats {
@@ -124,15 +125,6 @@ export interface Circuit {
   length: number;
 }
 
-const R = 6_371_008.8;
-
-function metres(a: LonLat, b: LonLat): number {
-  const kx = Math.cos((((a[1] + b[1]) / 2) * Math.PI) / 180);
-  const dx = (((b[0] - a[0]) * Math.PI) / 180) * kx;
-  const dy = ((b[1] - a[1]) * Math.PI) / 180;
-  return Math.hypot(dx, dy) * R;
-}
-
 /** Purpose: the whole circuit as one polyline with stop positions, starting at point 1. */
 export function circuitPath(view: LineView): Circuit | null {
   if (view.legs.length < 2 || view.legs.some((l) => l.status === "error")) return null;
@@ -143,7 +135,7 @@ export function circuitPath(view: LineView): Circuit | null {
   for (const l of view.legs) {
     if (view.points[l.index]?.kind !== "via") stops.push(acc);
     l.coords.forEach((c, i) => {
-      if (coords.length) acc += metres(coords[coords.length - 1]!, c);
+      if (coords.length) acc += distanceM(coords[coords.length - 1]!, c);
       if (i > 0 || !coords.length) {
         coords.push(c);
         cum.push(acc);

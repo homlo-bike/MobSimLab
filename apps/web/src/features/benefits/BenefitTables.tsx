@@ -3,7 +3,7 @@ import { fmtMoney, modeLabel } from "../costs/CostTables";
 import type { Estimate as CostEstimate } from "../costs/model";
 import { loadWasmReach } from "../journey-planner/engine";
 import type { ReachLoader, Timetable } from "../journey-planner/types";
-import { type PreferencesDoc, withPref } from "../../workspace/preferences";
+import { type PreferencesDoc, sameNameStationM, withPref } from "../../workspace/preferences";
 import { formulaProblem } from "./formula";
 import {
   type BenefitsDoc,
@@ -39,6 +39,7 @@ import {
   type Row,
   type ZoneAccess,
 } from "./model";
+import { type DemandRidership, withDemandRidership } from "../demand/ridership";
 import { networkOf } from "./network";
 import { libraryValue, PARAMS, paramModes, paramValue, prefId, type Triple } from "./params";
 import type { Region } from "./regions";
@@ -57,6 +58,10 @@ interface Props {
    * country's currency to that one (the World Bank's figures are in the country's currency).
    */
   costs: { estimate: CostEstimate; currency: string | null; country: string | null; rate?: number } | null;
+  /** Called with each new estimate, and with null while there is none (the service table shows its riders). */
+  onEstimate?: (e: Estimate | null) => void;
+  /** The demand model run the planner picked for ridership; null for the formula estimate. */
+  ridership?: DemandRidership | null;
   /** Tests inject these. */
   api?: BenefitsApi;
   loadReach?: ReachLoader;
@@ -125,6 +130,8 @@ export function BenefitTables({
   doc,
   onDoc,
   costs,
+  onEstimate,
+  ridership = null,
   api = DEFAULT_API,
   loadReach = loadWasmReach,
   draws,
@@ -144,7 +151,8 @@ export function BenefitTables({
   const [accError, setAccError] = useState<string | null>(null);
   const [scope, setScope] = useState("total");
 
-  const net = useMemo(() => (timetable ? networkOf(timetable) : null), [timetable]);
+  const sameNameM = sameNameStationM(prefs);
+  const net = useMemo(() => (timetable ? networkOf(timetable, sameNameM) : null), [timetable, sameNameM]);
   // Catchment circles: the key changes only when stations or catchment sizes change.
   const areas = useMemo(() => (timetable ? catchments(timetable, prefs) : []), [timetable, prefs]);
   const areasKey = JSON.stringify(areas);
@@ -216,10 +224,17 @@ export function BenefitTables({
   }, [prepared, timetable, loadReach]);
 
   const spending = useMemo(() => spendingFrom(costs?.estimate ?? null), [costs?.estimate]);
-  const est: Estimate | null = useMemo(() => {
+  const formulaEst: Estimate | null = useMemo(() => {
     if (!prepared || !acc) return null;
     return estimate({ prepared, access: acc, spending, country, prefs, doc, draws });
   }, [prepared, acc, spending, country, prefs, doc, draws]);
+  const est = useMemo(
+    () => (formulaEst && ridership ? withDemandRidership(formulaEst, ridership, prefs) : formulaEst),
+    [formulaEst, ridership, prefs],
+  );
+  useEffect(() => {
+    onEstimate?.(est);
+  }, [est, onEstimate]);
 
   const currency = costs?.currency ?? null;
   const money = (v: number) => fmtMoney(v, currency);
@@ -344,10 +359,10 @@ function Sources({
   else items.push("World Bank figures: waiting for the project's country (from the cost tables).");
   if (pop)
     items.push(
-      `WorldPop ${pop.year ?? ""} population (100 m grid)${pop.failed ? `; ${pop.failed} station areas use homes' floor area instead${pop.reasons.length ? ` (${pop.reasons.join("; ")})` : ""}` : ""}. ${pop.source.licence}.`,
+      `${pop.source.name || "WorldPop"} ${pop.year ?? ""} population (100 m grid)${pop.failed ? `; ${pop.failed} station areas use homes' floor area instead${pop.reasons.length ? ` (${pop.reasons.join("; ")})` : ""}` : ""}. ${pop.source.licence}.`,
     );
   else if (popError)
-    items.push(`WorldPop is unavailable (${popError}); population comes from homes' floor area.`);
+    items.push(`The population data is unavailable (${popError}); population comes from homes' floor area.`);
   if (tiles)
     items.push(
       `OpenStreetMap: ${tiles.buildings.length.toLocaleString("en")} buildings and ${tiles.places.length.toLocaleString("en")} schools and health places${tiles.failed ? `; ${tiles.failed} tile requests failed` : ""}${tiles.capped ? `; ${tiles.capped} far tiles left out` : ""}. © OpenStreetMap contributors, ODbL.`,

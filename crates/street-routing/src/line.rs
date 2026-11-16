@@ -58,12 +58,33 @@ pub struct RoutePoint {
     side: Option<f64>,
 }
 
-/// Depot gate where vehicles start and end their day.
+/// One depot gate, snapped to the streets.
 #[derive(Debug, Clone)]
-struct Depot {
+struct Gate {
     click: (f64, f64),
     candidates: Vec<Anchor>,
     error: Option<String>,
+}
+
+/// The depot where vehicles start and end their day: pull-out leaves by an exit gate, pull-in comes in by
+/// an entrance gate (the same point for a depot drawn as one gate).
+#[derive(Debug, Clone)]
+struct Depot {
+    exits: Vec<Gate>,
+    entrances: Vec<Gate>,
+}
+
+impl Depot {
+    fn gates(&self, pull_out: bool) -> &[Gate] {
+        if pull_out {
+            &self.exits
+        } else {
+            &self.entrances
+        }
+    }
+    fn first(&self) -> Option<&Gate> {
+        self.exits.first().or(self.entrances.first())
+    }
 }
 
 /// One routed leg from point `i` to the next point.
@@ -410,25 +431,49 @@ impl StreetLine {
             self.resnap(g, i);
         }
         if let Some(d) = &self.depot {
-            let ll = g.proj.to_lonlat(d.click.0, d.click.1);
-            self.set_depot(g, Some(ll));
+            let ll = |x: &Gate| g.proj.to_lonlat(x.click.0, x.click.1);
+            let exits: Vec<_> = d.exits.iter().map(ll).collect();
+            let entrances: Vec<_> = d.entrances.iter().map(ll).collect();
+            self.set_depot_gates(g, &exits, &entrances);
         }
         self.reroute_all(g);
     }
 
-    /// Purpose: place (or move) the depot gate. `None` removes it.
+    /// Purpose: place (or move) the depot as one gate for pull-out and pull-in. `None` removes it.
     pub fn set_depot(&mut self, g: &RoadGraph, lonlat: Option<(f64, f64)>) {
-        self.depot = lonlat.map(|(lon, lat)| {
-            let click = g.proj.to_xy(lon, lat);
+        match lonlat {
+            Some(p) => self.set_depot_gates(g, &[p], &[p]),
+            None => self.depot = None,
+        }
+    }
+
+    /// Purpose: use a depot with exit gates (pull-out) and entrance gates (pull-in); the depot runs take
+    /// the quickest gate. Both lists empty removes the depot.
+    pub fn set_depot_gates(
+        &mut self,
+        g: &RoadGraph,
+        exits: &[(f64, f64)],
+        entrances: &[(f64, f64)],
+    ) {
+        if exits.is_empty() && entrances.is_empty() {
+            self.depot = None;
+            return;
+        }
+        let gate = |(lon, lat): &(f64, f64)| {
+            let click = g.proj.to_xy(*lon, *lat);
             let (candidates, error) = match self.snap(g, click, false) {
                 Ok((c, _)) => (c, None),
                 Err(e) => (Vec::new(), Some(e)),
             };
-            Depot {
+            Gate {
                 click,
                 candidates,
                 error,
             }
+        };
+        self.depot = Some(Depot {
+            exits: exits.iter().map(gate).collect(),
+            entrances: entrances.iter().map(gate).collect(),
         });
     }
 
@@ -807,15 +852,23 @@ impl StreetLine {
             status: Status::Error,
             message: Some(m),
         };
-        if let Some(e) = &depot.error {
-            return fail(e.clone());
+        let gates = depot.gates(pull_out);
+        if gates.is_empty() {
+            return fail(if pull_out {
+                "The depot has no exit gate.".into()
+            } else {
+                "The depot has no entrance gate.".into()
+            });
+        }
+        if gates.iter().all(|x| x.error.is_some()) {
+            return fail(gates[0].error.clone().unwrap_or_default());
         }
         let Some(s) = stop.anchor else {
             return fail("The terminal stop is not on a usable road.".into());
         };
-        let best = depot
-            .candidates
+        let best = gates
             .iter()
+            .flat_map(|x| x.candidates.iter())
             .filter_map(|&d| {
                 let (a, b) = if pull_out { (d, s) } else { (s, d) };
                 route(
@@ -1078,7 +1131,7 @@ impl StreetLine {
                 .collect(),
             None => Vec::new(),
         };
-        let depot = self.depot.as_ref().map(|d| {
+        let depot = self.depot.as_ref().and_then(Depot::first).map(|d| {
             let xy = d
                 .candidates
                 .first()
@@ -1086,8 +1139,18 @@ impl StreetLine {
             let (lon, lat) = g.proj.to_lonlat(xy.0, xy.1);
             [lon, lat]
         });
-        if let Some(e) = self.depot.as_ref().and_then(|d| d.error.clone()) {
-            issues.push(format!("Depot: {e}"));
+        if let Some(d) = &self.depot {
+            for e in d
+                .exits
+                .iter()
+                .chain(&d.entrances)
+                .filter_map(|x| x.error.clone())
+            {
+                let m = format!("Depot: {e}");
+                if !issues.contains(&m) {
+                    issues.push(m);
+                }
+            }
         }
         LineView {
             points,

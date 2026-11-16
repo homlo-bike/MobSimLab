@@ -618,6 +618,10 @@ pub struct ExportInput {
     pub route_types: BTreeMap<String, u16>,
     #[serde(default)]
     pub feed_version: String,
+    /// Public holidays in the validity, `YYYYMMDD`: the `holiday` service runs on them instead of the
+    /// `weekday`, `saturday` or `sunday` one (`calendar_dates.txt`).
+    #[serde(default)]
+    pub holidays: Vec<String>,
 }
 
 fn en() -> String {
@@ -742,7 +746,8 @@ pub fn export(input: &ExportInput) -> BTreeMap<String, String> {
         ),
     );
 
-    // Services: every one runs Monday to Friday over the feed's validity.
+    // Services: the day types run on their days (`saturday`, `sunday`; `holiday` only on the holidays); any
+    // other service, `weekday` among them, Monday to Friday over the feed's validity.
     let services: BTreeSet<&str> = tt
         .trips
         .iter()
@@ -768,7 +773,13 @@ pub fn export(input: &ExportInput) -> BTreeMap<String, String> {
                 .iter()
                 .map(|s| {
                     let mut r = vec![s.to_string()];
-                    r.extend(["1", "1", "1", "1", "1", "0", "0"].map(String::from));
+                    let days = match *s {
+                        "saturday" => ["0", "0", "0", "0", "0", "1", "0"],
+                        "sunday" => ["0", "0", "0", "0", "0", "0", "1"],
+                        "holiday" => ["0"; 7],
+                        _ => ["1", "1", "1", "1", "1", "0", "0"],
+                    };
+                    r.extend(days.map(String::from));
                     r.push(input.start_date.clone());
                     r.push(input.end_date.clone());
                     r
@@ -776,6 +787,39 @@ pub fn export(input: &ExportInput) -> BTreeMap<String, String> {
                 .collect::<Vec<_>>(),
         ),
     );
+    // Holidays: the holiday service runs and the day's usual service does not.
+    if services.contains("holiday") {
+        let mut dates = Vec::new();
+        let mut hol: Vec<&String> = input
+            .holidays
+            .iter()
+            .filter(|d| {
+                d.len() == 8
+                    && d.as_str() >= input.start_date.as_str()
+                    && d.as_str() <= input.end_date.as_str()
+            })
+            .collect();
+        hol.sort();
+        hol.dedup();
+        for d in hol {
+            let usual = match day_of(d).map(weekday_col) {
+                Some("saturday") => "saturday",
+                Some("sunday") => "sunday",
+                Some(_) => "weekday",
+                None => continue,
+            };
+            dates.push(vec!["holiday".to_string(), d.clone(), "1".into()]);
+            if services.contains(usual) {
+                dates.push(vec![usual.to_string(), d.clone(), "2".into()]);
+            }
+        }
+        if !dates.is_empty() {
+            files.insert(
+                "calendar_dates.txt".into(),
+                csv::write(&["service_id", "date", "exception_type"], &dates),
+            );
+        }
+    }
 
     // Trips: exact ones, then one template trip per frequency pattern.
     let mut trips = Vec::new();

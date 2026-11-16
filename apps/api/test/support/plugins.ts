@@ -1,4 +1,6 @@
 import { sign } from "node:crypto";
+import { readdirSync, readFileSync, statSync } from "node:fs";
+import { join, relative } from "node:path";
 import { CHECKSUMS, sha256, SIGNATURE } from "../../src/plugins/signature";
 
 /** A small third-party data plugin: one ferry-like mode on the water route kit. */
@@ -97,5 +99,30 @@ export function signed(
       Buffer.from(sign(ed ? null : "sha256", Buffer.from(list), privateKey).toString("base64")),
     );
   }
+  return out;
+}
+
+/** Folder of the example third-party plugin with code (examples/plugins/timetable-csv). */
+export const EXAMPLE_DIR = join(__dirname, "..", "..", "..", "..", "examples", "plugins", "timetable-csv");
+
+/**
+ * The example plugin with code as package files: manifest, components (wasm/) and tab page (tab/). The Rust
+ * sources (code/) are not part of the package. `over` replaces manifest fields.
+ */
+export function examplePlugin(over: Record<string, unknown> = {}): Map<string, Buffer> {
+  const out = new Map<string, Buffer>();
+  const walk = (dir: string) => {
+    for (const name of readdirSync(dir)) {
+      const path = join(dir, name);
+      const rel = relative(EXAMPLE_DIR, path).split("\\").join("/");
+      if (rel === "code") continue;
+      if (statSync(path).isDirectory()) walk(path);
+      else out.set(rel, readFileSync(path));
+    }
+  };
+  walk(EXAMPLE_DIR);
+  const manifest = JSON.parse(out.get("mobsimlab-plugin.json")!.toString()) as Record<string, unknown>;
+  delete manifest.$schema;
+  out.set("mobsimlab-plugin.json", Buffer.from(JSON.stringify({ ...manifest, ...over })));
   return out;
 }

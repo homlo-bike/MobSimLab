@@ -141,3 +141,58 @@
         - mobsimlab-derivation
       check: unverified
       rationale: Most bookings are for one person; families and friends book together now and then.
+- key: drt.max_wait_limit_s
+  label: Longest wait before a booking is turned away
+  group: Operations
+  unit: s
+  used_by:
+    - service-zone-kit
+  values:
+    - context:
+        mode: "*"
+      low: 600
+      central: 900
+      high: 1800
+      basis: educated-guess
+      sources:
+        - moia-ride-pooling-small-towns
+      check: unverified
+      rationale:
+        The dispatch simulation turns a booking away when no vehicle can be there within this time. MOIA's
+        simulated services allow 10 min; rural services accept longer.
+- key: drt.max_detour_share
+  label: Longest ride, share over the direct ride
+  group: Operations
+  unit: share
+  used_by:
+    - service-zone-kit
+  values:
+    - context:
+        mode: "*"
+      low: 0.3
+      central: 0.5
+      high: 1
+      basis: documented
+      sources:
+        - moia-ride-pooling-small-towns
+      check: unverified
+      rationale:
+        The dispatcher keeps every ride within the direct ride plus this share plus the fixed allowance
+        below, as in MOIA's service rule of 50 % plus 10 min.
+- key: drt.max_detour_fixed_s
+  label: Longest ride, fixed allowance over the direct ride
+  group: Operations
+  unit: s
+  used_by:
+    - service-zone-kit
+  values:
+    - context:
+        mode: "*"
+      low: 300
+      central: 600
+      high: 900
+      basis: documented
+      sources:
+        - moia-ride-pooling-small-towns
+      check: unverified
+      rationale: Added to the share above; MOIA's service rule allows 10 min.

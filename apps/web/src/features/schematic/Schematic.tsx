@@ -53,6 +53,7 @@ export function Schematic({
   railway,
   streetLines,
   pluginLines = [],
+  prefs,
   doc,
   onDoc,
   projectName,
@@ -64,6 +65,8 @@ export function Schematic({
   railway: Network | null | undefined;
   streetLines: StreetLinesDoc | null | undefined;
   pluginLines?: readonly PluginLineInput[];
+  /** The project's preference values: how near stops must be to be one station (library's when absent). */
+  prefs?: Record<string, number>;
   doc: SchematicDoc | null | undefined;
   onDoc?: (d: SchematicDoc) => void;
   projectName: string;
@@ -80,8 +83,8 @@ export function Schematic({
   // The plugin lines arrive as a new list on every render of the workspace: compare their content.
   const pluginJson = JSON.stringify(pluginLines);
   const base = useMemo(
-    () => schematicNetwork(railway, streetLines, JSON.parse(pluginJson) as PluginLineInput[]),
-    [railway, streetLines, pluginJson],
+    () => schematicNetwork(railway, streetLines, JSON.parse(pluginJson) as PluginLineInput[], prefs),
+    [railway, streetLines, pluginJson, prefs],
   );
   const net = useSchematicDetails(base, railway, loadRail, fetchHeights);
   const [view, setView] = useState<"network" | "line">("network");

@@ -23,6 +23,7 @@ RUN tools/wasm/build-street-routing.sh && tools/wasm/build-rail-design.sh && too
  && tools/wasm/build-energy.sh \
  && tools/wasm/build-gtfs.sh \
  && tools/wasm/build-cargo-bike.sh \
+ && tools/wasm/build-depot-layout.sh \
  && tools/wasm/build-api.sh
 
 # ---- 1. Web SPA and API (Node) ------------------------------------------------
@@ -57,7 +58,7 @@ COPY --from=ghcr.io/astral-sh/uv:0.11 /uv /usr/local/bin/uv
 ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy UV_PYTHON_DOWNLOADS=never
 WORKDIR /src/worker
 COPY worker/pyproject.toml worker/uv.lock ./
-RUN uv venv /app/venv && VIRTUAL_ENV=/app/venv uv sync --active --frozen --no-dev --no-install-project --extra sim
+RUN uv venv /app/venv && VIRTUAL_ENV=/app/venv uv sync --active --frozen --no-dev --no-install-project --extra sim --extra demand
 COPY worker/src src
 COPY --from=rust-build /wheels /wheels
 RUN VIRTUAL_ENV=/app/venv uv pip install --no-deps . /wheels/*.whl
@@ -101,6 +102,7 @@ ENV PATH="/app/venv/bin:/command:${PATH}" \
     NODE_ENV=production \
     MOBSIMLAB_WEB_DIR=/app/web \
     MOBSIMLAB_PORT=8080 \
+    MOBSIMLAB_LOG_DIR=/data/logs \
     S6_READ_ONLY_ROOT=1 \
     S6_BEHAVIOUR_IF_STAGE2_FAILS=2 \
     S6_CMD_WAIT_FOR_SERVICES_MAXTIME=120000

@@ -1,6 +1,6 @@
 /** A street line as the project saves it (drawing kind "street-lines"). */
 import type { StreetLineInput } from "../journey-planner/network";
-import { MODES, type Timing } from "./modes";
+import { fullTiming, MODES, type Timing } from "./modes";
 import type { LineView, LonLat, PointKind, RoutingRules, VehicleProfile } from "./types";
 
 /** One point as the planner placed it; `name` only when the planner named it (otherwise the street's name). */
@@ -14,12 +14,19 @@ export interface SavedPoint {
 
 /** One street line: what the planner drew and set, plus the route last computed from it. */
 export interface SavedStreetLine {
+  /** Stable id, so comments stay on the line when lines before it are deleted; absent on lines saved before ids. */
+  id?: string;
   name: string;
   profile: VehicleProfile;
+  /** The catalogue vehicle (vehicles.ts id); null or absent for the mode's typical vehicle. */
+  vehicle?: string | null;
   rules: RoutingRules;
   timing: Timing;
   points: SavedPoint[];
+  /** A depot point of lines drawn before shared depots; null when the line uses `depotId`. */
   depot: LonLat | null;
+  /** The shared road depot (drawing kind `depots`) the line pulls out of and in to; its gates start and end the depot runs. */
+  depotId?: string | null;
   /** The terminals the depot runs serve, as indexes into `points`. */
   depotStops: { out?: number; in?: number };
   /**
@@ -29,21 +36,30 @@ export interface SavedStreetLine {
   view: LineView;
 }
 
-/** The project's street lines. The street line tool edits one line for now. */
+/** The project's street lines; the street line tool edits one at a time. */
 export interface StreetLinesDoc {
   lines: SavedStreetLine[];
+}
+
+/** Purpose: a new street line id. */
+export function newLineId(): string {
+  return crypto.randomUUID();
 }
 
 /** Purpose: the journey planner's view of a saved line, or null if it has fewer than two points. */
 export function lineInput(line: SavedStreetLine | undefined): StreetLineInput | null {
   if (!line || line.view.points.length < 2) return null;
+  const t = fullTiming(line.timing);
   return {
     name: line.name,
     mode: line.profile.mode,
     color: MODES[line.profile.mode]?.color ?? MODES.bus.color,
     view: line.view,
-    dwellS: line.timing.dwellS,
-    headwayMin: line.timing.headwayMin,
+    dwellS: t.dwellS,
+    headwayMin: t.headwayMin,
+    offPeakHeadwayMin: t.offPeakHeadwayMin,
+    firstMin: t.firstMin,
+    lastMin: t.lastMin,
   };
 }
 

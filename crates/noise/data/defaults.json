@@ -169,6 +169,13 @@
     1000
    ]
   },
+  "noise.map_reach_m": {
+   "*": [
+    150,
+    300,
+    500
+   ]
+  },
   "noise.grid_spacing_m": {
    "*": [
     5,

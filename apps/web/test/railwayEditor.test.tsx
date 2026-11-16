@@ -214,6 +214,30 @@ describe("railway engine (WebAssembly)", () => {
     e.dispose();
   });
 
+  it("offers only the switches the project uses, with its default turnout", async () => {
+    const e = await loadRailEngine();
+    const doc = e.sample("regional_rail", ORIGIN);
+    const all = e.build(doc, null);
+    const ids = all.turnouts.map((x) => x.id);
+    const lib = all.params.default_turnout;
+    const other = ids.find((id) => id !== lib)!;
+    const slip = all.slip_elements[0]!.id;
+    e.setSwitchChoice!({
+      off: [ids.find((id) => id !== lib && id !== other)!, slip],
+      default_turnout: { regional_rail: other },
+    });
+    const v = e.build(doc, null);
+    expect(v.turnouts.length).toBe(ids.length - 1);
+    expect(v.params.default_turnout).toBe(other);
+    expect(v.modes.regional_rail?.params.default_turnout).toBe(other);
+    expect(v.slip_elements.some((x) => x.id === slip)).toBe(false);
+    // The tram network in the same drawing keeps its library default.
+    expect(v.modes.tram?.params.default_turnout).toBe(all.modes.tram?.params.default_turnout);
+    e.setSwitchChoice!({ off: [], default_turnout: {} });
+    expect(e.build(doc, null).turnouts.length).toBe(ids.length);
+    e.dispose();
+  });
+
   it("crosses a tram line and a regional railway on one shared diamond", async () => {
     const e = await loadRailEngine();
     const v = e.build(e.sample("regional_rail", ORIGIN), null);
@@ -591,6 +615,30 @@ describe("Railway editor", () => {
     return { map, handlers, engine: () => engine! };
   }
 
+  it("checks the drawing against the project's design rules for its mode", async () => {
+    const { map } = fakeMap();
+    const props = {
+      map,
+      fetchTile: () => Promise.reject(new Error("offline")),
+      loadEngine: loadRailEngine,
+      initial: sample("tram"),
+    };
+    const { rerender } = render(<RailwayEditor {...props} />);
+    await screen.findByText(/0 errors/);
+    // A tram minimum radius far above the example's curves: they become errors. A metro value changes nothing.
+    rerender(<RailwayEditor {...props} designValues={{ "metro.min_radius_m": 5000 }} />);
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 50));
+    });
+    expect(screen.getByText(/0 errors/)).toBeTruthy();
+    rerender(<RailwayEditor {...props} designValues={{ "tram.min_radius_m": 5000 }} />);
+    await waitFor(() => expect(screen.queryByText(/\b0 errors/)).toBeNull());
+    expect(screen.getByText(/[1-9]\d* errors?/)).toBeTruthy();
+    // Back to the library's values.
+    rerender(<RailwayEditor {...props} designValues={{}} />);
+    await screen.findByText(/0 errors/);
+  });
+
   it("opens the drawing saved with the project and reports each change for saving", async () => {
     const [saved] = addStation(lineAcross("tram"), [0, 0], {
       level: "street",
@@ -829,6 +877,14 @@ describe("Railway editor", () => {
     fireEvent.change(screen.getByLabelText("Units coupled"), { target: { value: "2" } });
     expect(screen.getByTestId("train-length").textContent).toContain(fmtM(len * 2));
     fireEvent.change(screen.getByLabelText("Units coupled"), { target: { value: "1" } });
+    // Platform access: each stop is judged against the TSI PRM step and gap limits.
+    const access = screen.getByTestId("platform-access");
+    expect(access.textContent).toMatch(/Platform access/);
+    expect(access.textContent).toMatch(/(Level access|Step access|Boarding aid needed|Train wider)/);
+    expect(access.textContent).toMatch(/Riverside/);
+    expect(access.textContent).toMatch(/Northgate/);
+    expect(access.textContent).toMatch(/Gap -?\d+ mm/);
+    expect(access.textContent).toMatch(/Step [+−±]\d+ mm/);
     fireEvent.change(screen.getByLabelText("Peak headway"), { target: { value: "10" } });
     fireEvent.change(screen.getByLabelText("Off-peak headway"), { target: { value: "20" } });
 
@@ -973,5 +1029,28 @@ describe("service lines", () => {
     expect(hhmm(24 * 60 + 30)).toBe("24:30");
     expect(parseHhmm("5:15")).toBe(315);
     expect(parseHhmm("28:00")).toBeNull();
+  });
+
+  it("gives the engine the project's dwell, layover, supplement, acceleration and braking", () => {
+    const [d] = addLine(doc(), 115);
+    const values = {
+      "mode.dwell_s": 40,
+      "mode.dwell_s.metro": 35,
+      "timetable.layover_min": 4,
+      "timetable.recovery_share": 0.07,
+      "mode.acceleration_ms2.metro": 1.0,
+      "mode.service_braking_ms2.tram": 1.2,
+    };
+    const [e] = engineLines(d, d.lines!, values);
+    // The value for the mode wins over the one for every mode; minutes become seconds.
+    expect(e!.dwell_s).toBe(35);
+    expect(e!.turnback_s).toBe(240);
+    expect(e!.supplement_share).toBe(0.07);
+    expect(e!.accel_ms2).toBe(1.0);
+    expect(e).not.toHaveProperty("decel_ms2");
+    // The line's own dwell still wins; without values nothing is added.
+    const own = updateLine(d, "line1", (l) => ({ ...l, dwell_s: 20 }));
+    expect(engineLines(own, own.lines!, values)[0]!.dwell_s).toBe(20);
+    expect(engineLines(d)[0]).not.toHaveProperty("turnback_s");
   });
 });

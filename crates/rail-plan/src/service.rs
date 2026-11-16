@@ -77,6 +77,15 @@ pub struct ServiceLine {
     /// Minimum turn-back in the terminal platform, s; the mode's layover when absent.
     #[serde(default)]
     pub turnback_s: Option<f64>,
+    /// Starting acceleration, m/s² (`mode.acceleration_ms2`); the mode's when absent.
+    #[serde(default)]
+    pub accel_ms2: Option<f64>,
+    /// Service braking rate, m/s² (`mode.service_braking_ms2`); the mode's when absent.
+    #[serde(default)]
+    pub decel_ms2: Option<f64>,
+    /// Running-time supplement share (`timetable.recovery_share`); 5 % when absent.
+    #[serde(default)]
+    pub supplement_share: Option<f64>,
 }
 
 fn one() -> u32 {
@@ -151,6 +160,65 @@ pub struct ServicePublication {
     pub lines: Vec<LineReport>,
     /// Notes from the topology import and the stop placement.
     pub notes: Vec<String>,
+    /// Trains of each line per clock hour on each topology section, for the noise map's
+    /// timetabled input (ADR-0038 step N3).
+    pub section_trains: Vec<SectionTrains>,
+    /// The day's vehicle blocks (vehicle schedules): each train's runs in order, from its first
+    /// pull-out or trip to its last trip or pull-in. Sorted by the first departure.
+    pub blocks: Vec<VehicleBlock>,
+}
+
+/// One run of a vehicle block.
+#[derive(Clone, Debug, PartialEq, Serialize)]
+pub struct BlockRun {
+    /// `service` (a passenger trip), `pull_out` (from stabling) or `pull_in` (to stabling).
+    pub kind: String,
+    /// Line id.
+    pub line: String,
+    /// Trip id (the journey planner's trip id for a passenger trip).
+    pub trip: String,
+    /// 0 = outbound (the line's station order), 1 = return.
+    pub direction: u8,
+    /// Station the run starts at; None for a storage track.
+    pub from: Option<String>,
+    /// Station the run ends at; None for a storage track.
+    pub to: Option<String>,
+    /// Departure, s after midnight.
+    pub depart_s: f64,
+    /// Arrival, s after midnight.
+    pub arrive_s: f64,
+    /// Distance along the track, km.
+    pub km: f64,
+}
+
+/// The runs one train makes in a day (a vehicle block).
+#[derive(Clone, Debug, PartialEq, Serialize)]
+pub struct VehicleBlock {
+    /// Train number in the plan.
+    pub vehicle: usize,
+    /// Runs in time order.
+    pub runs: Vec<BlockRun>,
+}
+
+/// Settings of a publication the project can change.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+pub struct PublishOptions {
+    /// Longest a train waits in a terminal for its next trip before it goes to stabling instead, s;
+    /// the planner's default when absent.
+    #[serde(default)]
+    pub max_idle_s: Option<f64>,
+}
+
+/// How many trains of one line pass one section of the topology export in each clock hour.
+#[derive(Clone, Debug, PartialEq, Serialize)]
+pub struct SectionTrains {
+    /// Section id of the topology export (`t{track}.{line}.{piece}`, `s…`, `w…`).
+    pub section: String,
+    /// Service line id.
+    pub line: String,
+    /// Trains entering the section in each hour 0–23 of the clock, both directions together;
+    /// trips after midnight count in the early hours.
+    pub hours: [u32; 24],
 }
 
 /// Mode values from the assumption library (central values, `assumptions/DEFAULTS.md`) and estimates.
@@ -199,7 +267,26 @@ const PLANNING_LOAD_SHARE: f64 = 0.5;
 /// else what holds that effort up to 40 % of the top speed. Running resistance follows the Davis form
 /// with educated-guess coefficients per tonne and a front-and-length air term.
 pub fn train_params(v: &ServiceVehicle, units: u32, mode: &str) -> TrainParams {
-    let mv = mode_values(mode);
+    train_params_with(v, units, mode, None, None)
+}
+
+/// Purpose: as [`train_params`], with the project's acceleration and service braking rate (m/s²)
+/// in place of the mode's where given.
+pub fn train_params_with(
+    v: &ServiceVehicle,
+    units: u32,
+    mode: &str,
+    accel_ms2: Option<f64>,
+    decel_ms2: Option<f64>,
+) -> TrainParams {
+    let mut mv = mode_values(mode);
+    let ok = |x: &f64| x.is_finite() && *x > 0.0;
+    if let Some(a) = accel_ms2.filter(ok) {
+        mv.accel = a;
+    }
+    if let Some(d) = decel_ms2.filter(ok) {
+        mv.decel = d;
+    }
     let n = f64::from(units.max(1));
     let length_m = v.length_m.max(5.0) * n;
     let empty_t = v
@@ -300,10 +387,13 @@ pub fn line_spec(l: &ServiceLine, m: &Model) -> LineSpec {
                 dwell_s: None,
             })
             .collect(),
-        train: train_params(&l.vehicle, l.units, &l.mode),
+        train: train_params_with(&l.vehicle, l.units, &l.mode, l.accel_ms2, l.decel_ms2),
         dwell_s: l.dwell_s.unwrap_or(mv.dwell_s),
         turnback_s: l.turnback_s.unwrap_or(mv.turnback_s),
-        supplement_share: 0.05,
+        supplement_share: l
+            .supplement_share
+            .filter(|x| x.is_finite() && (0.0..1.0).contains(x))
+            .unwrap_or(0.05),
         stabling,
         bands: service_bands(l),
         return_offset_s: None,
@@ -385,6 +475,16 @@ pub fn publish_service(
     lines: &[ServiceLine],
     service_id: &str,
 ) -> Result<ServicePublication, String> {
+    publish_service_with(topology_json, lines, service_id, &PublishOptions::default())
+}
+
+/// Purpose: [`publish_service`] with the project's settings (`opts`).
+pub fn publish_service_with(
+    topology_json: &str,
+    lines: &[ServiceLine],
+    service_id: &str,
+    opts: &PublishOptions,
+) -> Result<ServicePublication, String> {
     for l in lines {
         if l.stations.len() < 2 {
             return Err(format!("{} needs at least two stops.", l.name));
@@ -394,7 +494,11 @@ pub fn publish_service(
     let m =
         Model::compile(&imp.spec).map_err(|e| format!("the track layout cannot be used: {e:?}"))?;
     let specs: Vec<LineSpec> = lines.iter().map(|l| line_spec(l, &m)).collect();
-    let p = plan(&m, &specs, &PlanParams::default())?;
+    let mut params = PlanParams::default();
+    if let Some(v) = opts.max_idle_s.filter(|v| v.is_finite() && *v >= 0.0) {
+        params.max_idle_s = v;
+    }
+    let p = plan(&m, &specs, &params)?;
     let routes: Vec<RouteInfo> = lines
         .iter()
         .map(|l| RouteInfo {
@@ -533,11 +637,127 @@ pub fn publish_service(
     }
     notes.extend(imp.notes.iter().filter(|n| !n.is_empty()).cloned());
     notes.extend(jt.notes);
+    let section_trains = section_trains(&m, &p, &ids);
     Ok(ServicePublication {
         timetable: jt.timetable,
         lines: reports,
         notes,
+        section_trains,
+        blocks: vehicle_blocks(&m, &p, &ids),
     })
+}
+
+/// Purpose: the plan's runs grouped by train, each in time order, trains by their first departure.
+fn vehicle_blocks(m: &Model, p: &crate::Plan, ids: &[&str]) -> Vec<VehicleBlock> {
+    let mut by: BTreeMap<usize, Vec<&crate::PlannedRun>> = BTreeMap::new();
+    for r in &p.runs {
+        by.entry(r.vehicle).or_default().push(r);
+    }
+    let place_name = |c: Option<&crate::CallTime>| -> Option<String> {
+        match c?.place {
+            Place::Platform(pf) => {
+                let st = &m.stations[m.platforms[pf as usize].station as usize];
+                Some(m.groups[st.group as usize].name.clone())
+            }
+            Place::Storage(_) => None,
+        }
+    };
+    let mut out: Vec<VehicleBlock> = by
+        .into_iter()
+        .map(|(vehicle, mut runs)| {
+            runs.sort_by(|a, b| a.depart_s().total_cmp(&b.depart_s()));
+            VehicleBlock {
+                vehicle,
+                runs: runs
+                    .into_iter()
+                    .map(|r| {
+                        let length: f64 = r
+                            .run
+                            .routes
+                            .iter()
+                            .map(|&id| m.routes[id as usize].length_m)
+                            .sum();
+                        let end = r.run.end_m.unwrap_or(length);
+                        BlockRun {
+                            kind: match r.kind {
+                                RunKind::Service => "service",
+                                RunKind::PullOut => "pull_out",
+                                RunKind::PullIn => "pull_in",
+                            }
+                            .into(),
+                            line: ids.get(r.line).map_or(String::new(), |s| s.to_string()),
+                            trip: r.name.clone(),
+                            direction: r.direction,
+                            from: place_name(r.calls.first()),
+                            to: place_name(r.calls.last()),
+                            depart_s: r.depart_s(),
+                            arrive_s: r.arrive_s(),
+                            km: ((end - r.run.start_m) / 1000.0).max(0.0),
+                        }
+                    })
+                    .collect(),
+            }
+        })
+        .collect();
+    out.sort_by(|a, b| {
+        let first = |v: &VehicleBlock| v.runs.first().map_or(f64::MAX, |r| r.depart_s);
+        first(a).total_cmp(&first(b))
+    });
+    out
+}
+
+/// Purpose: count the passenger trips of each line on each section of the topology export by the
+/// clock hour they pass it, for the noise map (ADR-0038 step N3).
+/// Inputs: the compiled model, the plan and the line ids in input order.
+/// Output: one row per section and line with trains, sorted by section then line.
+/// A trip passes a sub-track at the time interpolated linearly between its departure and its
+/// arrival by the position of the sub-track's middle along its path; dwells at intermediate stops
+/// are spread over the trip, which moves a time by at most the trip's dwells. A section counts a
+/// trip once even when the trip runs over several of its sub-tracks.
+fn section_trains(m: &Model, p: &crate::Plan, ids: &[&str]) -> Vec<SectionTrains> {
+    let mut out: BTreeMap<(String, usize), [u32; 24]> = BTreeMap::new();
+    for r in p.runs.iter().filter(|r| r.kind == RunKind::Service) {
+        let Ok(steps) = crate::route_steps(m, &r.run.routes) else {
+            continue;
+        };
+        let total: f64 = steps
+            .iter()
+            .map(|s| m.pieces[s.piece as usize].length_m())
+            .sum();
+        let (x0, x1) = (r.run.start_m, r.run.end_m.unwrap_or(total));
+        let (t0, t1) = (r.depart_s(), r.arrive_s());
+        let mut seen: Vec<&str> = Vec::new();
+        let mut pos = 0.0;
+        for st in &steps {
+            let piece = &m.pieces[st.piece as usize];
+            let mid = pos + piece.length_m() / 2.0;
+            pos += piece.length_m();
+            if mid < x0 || mid > x1 {
+                continue;
+            }
+            let id = m.tracks[piece.track].id.as_str();
+            // Sub-tracks of a section are `section/k` (rail_model::topology).
+            let section = id.split_once('/').map_or(id, |(a, _)| a);
+            if seen.contains(&section) {
+                continue;
+            }
+            seen.push(section);
+            let t = if x1 > x0 {
+                t0 + (t1 - t0) * (mid - x0) / (x1 - x0)
+            } else {
+                t0
+            };
+            let hour = ((t / 3600.0).floor() as i64).rem_euclid(24) as usize;
+            out.entry((section.to_string(), r.line)).or_insert([0; 24])[hour] += 1;
+        }
+    }
+    out.into_iter()
+        .map(|((section, line), hours)| SectionTrains {
+            section,
+            line: ids.get(line).map_or_else(String::new, |s| s.to_string()),
+            hours,
+        })
+        .collect()
 }
 
 /// Purpose: the stopping stations of a run with their distance from its origin along the path.

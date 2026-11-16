@@ -10,7 +10,7 @@ import type { StreetLinesDoc } from "../street-lines/saved";
 import { drawWalk, type GapPoint, removeWalk, type SpacingPair } from "./mapLayer";
 import {
   BAND_COLORS,
-  GAP_CELL_M,
+  gapCellM,
   MAX_MINUTES,
   MAX_WALK_TILES,
   MIN_MINUTES,
@@ -264,7 +264,7 @@ export function WalkAnalysis({
       try {
         const a = await fetchPeople(area);
         if (a.status === "ready") {
-          demand = peopleDemand(a.grid, area);
+          demand = peopleDemand(a.grid, area, gapCellM(preferences));
           people = a.source;
           if (!demand.length) demand = null;
         } else if (a.status === "loading")
@@ -287,7 +287,7 @@ export function WalkAnalysis({
         study_area: area,
         settings,
         list_uncovered: GAPS,
-        street_cells_m: demand ? null : GAP_CELL_M,
+        street_cells_m: demand ? null : gapCellM(preferences),
       });
       const catchment = e.catchment(points, limit, settings);
       if (result.stops_off_network.length)
@@ -431,7 +431,18 @@ export function WalkAnalysis({
             <p className="text-xs text-slate-500">
               {t("walk.note")}
               {coverage.people
-                ? ` ${t("walk.popCredit", { year: coverage.people.year, countries: coverage.people.countries.join(", ") })}`
+                ? ` ${
+                    coverage.people.id?.startsWith("layer:")
+                      ? t("walk.popLayerCredit", {
+                          name: coverage.people.name,
+                          year: coverage.people.year ?? "–",
+                          licence: coverage.people.licence,
+                        })
+                      : t("walk.popCredit", {
+                          year: coverage.people.year ?? "",
+                          countries: coverage.people.countries.join(", "),
+                        })
+                  }`
                 : ""}
             </p>
           </>

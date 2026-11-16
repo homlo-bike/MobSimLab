@@ -3,12 +3,15 @@
  * quantities from the railway design and the street lines, times unit costs from the assumption library
  * (low, central, high), converted to the project's country and today's prices.
  */
-import { lineMode, trainById } from "../railways/serviceLines";
+import { hhmm, lineMode, trainById } from "../railways/serviceLines";
 import type { Level, LineReport, Network, RailMode, RailView, Track } from "../railways/types";
 import type { SavedStreetLine } from "../street-lines/saved";
+import { fullTiming } from "../street-lines/modes";
+import { dayService } from "../street-lines/service";
 import { lineStats } from "../street-lines/summary";
 import type { Prices } from "./economy";
 import { paramValue, type Triple } from "./params";
+import { distanceKm } from "../../map/geo";
 
 /** Kinds of construction cost; the first seven are the alignment by construction type. */
 export type Category =
@@ -136,8 +139,6 @@ const STREET_COLOR: Record<string, string> = {
   trolleybus: "#1e8a4f",
   intercity_bus: "#cf7f00",
 };
-/** Car length the per-car-km running cost refers to, m. */
-export const CAR_M = 25;
 
 const mul = (a: Triple, k: number): Triple => [a[0] * k, a[1] * k, a[2] * k];
 const prod = (a: Triple, b: Triple): Triple => [a[0] * b[0], a[1] * b[1], a[2] * b[2]];
@@ -189,15 +190,6 @@ const STATION_LABEL: Record<Level, string> = {
   underground: "underground",
   underground2: "underground, deep",
 };
-
-/** Purpose: great-circle distance in km. */
-export function km(a: [number, number], b: [number, number]): number {
-  const r = Math.PI / 180;
-  const h =
-    Math.sin(((b[1] - a[1]) * r) / 2) ** 2 +
-    Math.cos(a[1] * r) * Math.cos(b[1] * r) * Math.sin(((b[0] - a[0]) * r) / 2) ** 2;
-  return 2 * 6371.0088 * Math.asin(Math.min(1, Math.sqrt(h)));
-}
 
 /**
  * Purpose: the cost estimate of the project.
@@ -309,7 +301,7 @@ export function estimate(input: EstimateInput): Estimate {
       const mode = lineMode(railway, l);
       const stops = l.stations.map((id) => pos.get(id)).filter((p): p is [number, number] => !!p);
       let lengthKm = 0;
-      for (let i = 1; i < stops.length; i++) lengthKm += km(stops[i - 1]!, stops[i]!);
+      for (let i = 1; i < stops.length; i++) lengthKm += distanceKm(stops[i - 1]!, stops[i]!);
       const id = `rail:${l.id}`;
       const name = l.name || l.id;
       if (!r || !train || r.trains === 0) {
@@ -387,12 +379,14 @@ export function estimate(input: EstimateInput): Estimate {
         param: "cost.opex.train_hour",
       });
       const carKmRate = mul(v("cost.opex.car_km", mode), ppp);
-      const cars = trainM / CAR_M;
+      // The per car-km rate is for cars of `cost.opex.car_length_m`; the train's length sets how many.
+      const carM = Math.max(1, v("cost.opex.car_length_m", mode)[1]);
+      const cars = trainM / carM;
       items.push({
         category: "service",
         mode,
         line: id,
-        label: `Energy and vehicle upkeep, ${cars.toFixed(1)} cars of ${CAR_M} m`,
+        label: `Energy and vehicle upkeep, ${cars.toFixed(1)} cars of ${carM} m`,
         quantity: trainKm[1] * cars,
         unit: "car-km / year",
         rate: carKmRate,
@@ -408,12 +402,13 @@ export function estimate(input: EstimateInput): Estimate {
     const mode = l.profile.mode;
     const id = `street:${i}`;
     const name = l.name || `Street line ${i + 1}`;
-    const stats = lineStats(l.view, l.timing);
+    const timing = fullTiming(l.timing);
+    const stats = lineStats(l.view, timing);
     const routeKm = l.view.length_m / 2000;
     const spare = v("mode.spare_share", mode);
     const fleet = spare.map((s) => Math.ceil(stats.vehicles * (1 + s))) as Triple;
-    const serviceHours = v("cost.service_hours_per_day", mode);
-    const vehHours = prod(mul(serviceHours, stats.vehicles), days);
+    // Vehicle-hours a weekday from the line's own service day: peak and off-peak headways, first to last.
+    const vehHours = mul(days, stats.vehicles > 0 ? dayService(timing, stats.cycleMin).vehicleHours : 0);
     const kmh = stats.cycleMin > 0 ? l.view.length_m / 1000 / (stats.cycleMin / 60) : 0;
     lines.push({
       id,
@@ -487,7 +482,7 @@ export function estimate(input: EstimateInput): Estimate {
       category: "service",
       mode,
       line: id,
-      label: `${stats.vehicles} vehicles in service, ${serviceHours[1]} h a day`,
+      label: `${stats.vehicles} vehicles at the peak, ${hhmm(timing.firstMin)}–${hhmm(timing.lastMin)}`,
       quantity: vehHours[1],
       unit: "vehicle-h / year",
       rate: hourRate,

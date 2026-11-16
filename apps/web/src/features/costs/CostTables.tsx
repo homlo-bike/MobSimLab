@@ -764,7 +764,7 @@ function ItemRow({ x, money, est }: { x: CostItem; money: (v: number) => string;
 }
 
 /** Purpose: a number field that commits on blur or Enter; empty returns to the default. */
-function NumberField({
+export function NumberField({
   label,
   value,
   placeholder,
@@ -968,8 +968,6 @@ function UnitCosts({
   used.set("cost.days_per_year|*", { key: "cost.days_per_year", mode: "*" });
   for (const m of est.modes) {
     used.set(`mode.spare_share|${m}`, { key: "mode.spare_share", mode: m });
-    if (!RAIL_MODES.some((r) => r.id === m))
-      used.set(`cost.service_hours_per_day|${m}`, { key: "cost.service_hours_per_day", mode: m });
   }
   const rows = [...used.values()].sort(
     (a, b) => a.key.localeCompare(b.key) || modeLabel(a.mode).localeCompare(modeLabel(b.mode)),

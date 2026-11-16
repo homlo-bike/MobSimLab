@@ -103,6 +103,8 @@ pub struct Design {
     pub signals: Vec<crate::signal::PlanSignal>,
     /// The document it was built from.
     pub network: Network,
+    /// The project's choice from the switches and crossings catalogue.
+    pub switch_choice: crate::params::SwitchChoice,
 }
 
 impl Design {
@@ -157,7 +159,8 @@ impl Design {
         if m == self.mode {
             self.train_length
         } else {
-            (self.params_for(m).platform_length_m - 5.0).max(1.0)
+            let p = self.params_for(m);
+            (p.platform_length_m - p.stopping_tolerance_m).max(1.0)
         }
     }
     /// Purpose: whether street-level track of this alignment is embedded in the road.
@@ -307,12 +310,35 @@ pub fn build_with_terrain(
     values: &BTreeMap<String, f64>,
     terrain: &crate::terrain::Terrain,
 ) -> Design {
+    build_with_choice(
+        net,
+        draft,
+        streets,
+        railways,
+        values,
+        &crate::params::SwitchChoice::default(),
+        terrain,
+    )
+}
+
+/// Purpose: as [`build_with_terrain`], with the project's choice from the switches and crossings
+/// catalogue: the default turnout per mode, and the elements the panel offers (pure).
+pub fn build_with_choice(
+    net: &Network,
+    draft: Option<u32>,
+    streets: &[crate::street::Street],
+    railways: &[crate::existing::ExistingRail],
+    values: &BTreeMap<String, f64>,
+    choice: &crate::params::SwitchChoice,
+    terrain: &crate::terrain::Terrain,
+) -> Design {
     let d = defaults();
     let params = net
         .params
         .clone()
         .unwrap_or_else(|| d.mode(net.mode).clone())
-        .with_values(values);
+        .with_mode_values(net.mode, values)
+        .with_switch_choice(net.mode, choice);
     let track_modes: BTreeMap<u32, RailMode> = net
         .tracks
         .iter()
@@ -326,9 +352,11 @@ pub fn build_with_terrain(
         .filter_map(|s| s.mode)
         .chain(track_modes.values().copied())
     {
-        modes
-            .entry(m)
-            .or_insert_with(|| d.mode(m).with_values(values));
+        modes.entry(m).or_insert_with(|| {
+            d.mode(m)
+                .with_mode_values(m, values)
+                .with_switch_choice(m, choice)
+        });
     }
     let mode_params = |m: RailMode| modes.get(&m).unwrap_or(&params);
     let storage_radius = |p: &ModeParams| {
@@ -410,7 +438,7 @@ pub fn build_with_terrain(
     }
     let train_length = net
         .train_length_m
-        .unwrap_or(params.platform_length_m - 5.0)
+        .unwrap_or(params.platform_length_m - params.stopping_tolerance_m)
         .max(1.0);
     let mut design = Design {
         mode: net.mode,
@@ -434,6 +462,7 @@ pub fn build_with_terrain(
         heights: Default::default(),
         signals: vec![],
         network: net.clone(),
+        switch_choice: choice.clone(),
     };
     design.existing = crate::existing::locate(&design, railways);
     // Joins before the checks: an end joining an existing railway is not an open end.
@@ -861,13 +890,15 @@ fn validate(dz: &mut Design, draft: Option<u32>) {
     // Platforms and termini.
     for (st, doc) in dz.stations.iter().zip(&net.stations) {
         let train = dz.train_length_for(dz.station_mode(doc));
-        if doc.platform_length_m < train + 5.0 {
+        let tolerance = dz.params_for(dz.station_mode(doc)).stopping_tolerance_m;
+        if doc.platform_length_m < train + tolerance {
             iss.push(Issue::error(
                 format!(
-                    "{}: platform {} is too short for a {} train plus 5 m stopping tolerance.",
+                    "{}: platform {} is too short for a {} train plus {} stopping tolerance.",
                     doc.name,
                     fmt_m(doc.platform_length_m),
-                    fmt_m(train)
+                    fmt_m(train),
+                    fmt_m(tolerance)
                 ),
                 Some(st.centre),
                 st.id,

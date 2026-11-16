@@ -1,6 +1,6 @@
 # Regions
 
-In the **GIS** tab, switch from **Streets** to **Regions** to describe areas you know better than the open data: a neighbourhood's population density, land value, tax revenue or jobs. Values you enter take priority over WorldPop, OpenStreetMap and the World Bank in the [benefit tables](benefit-tables.md). The regions are not used anywhere else.
+In the **GIS** tab, switch from **Streets** to **Regions** to describe areas you know better than the open data: a neighbourhood's population density, land value, tax revenue or jobs. Values you enter take priority over WorldPop, OpenStreetMap and the World Bank in the [benefit tables](benefit-tables.md). The [demand model](demand-model.md) also uses a region's primary land use for buildings OpenStreetMap does not describe.
 
 ## Add a region
 
