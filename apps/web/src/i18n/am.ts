@@ -269,6 +269,10 @@ export const am: Messages = {
   "prefs.delayLane": "በቀለም በተሳለ የአውቶቡስ ወይም የትራም መስመር ውስጥ",
   "prefs.delayDefault": "የግምቶች ቤተ መጻሕፍት፦ {value} %",
   "prefs.delayReset": "የቤተ መጻሕፍቱን እሴት ተጠቀም",
+  "prefs.stationsTitle": "ጣቢያዎች",
+  "prefs.stationsIntro":
+    "በዚህ ርቀት ውስጥ ተመሳሳይ ስም ያላቸው ማቆሚያዎች በስኬማቲክ ካርታው፣ በጉዞ እቅድ አውጪው እና በጥቅሞችና በተሳፋሪ ሰንጠረዦች ውስጥ እንደ አንድ ጣቢያ ይቆጠራሉ።",
+  "prefs.libraryM": "የግምቶች ቤተ መጻሕፍት፦ {value} ሜ",
   "prefs.currencyTitle": "ምንዛሪ",
   "prefs.currencyIntro": "የፕሮጀክቱ ገንዘብ ሁሉ በዚህ ምንዛሪ ይታያል፦ የወጪ ሰንጠረዦች፣ ጥቅሞች፣ ሁኔታዎች እና የጭነት ብስክሌት ቁጠባ።",
   "prefs.currencyLabel": "ገንዘብን በዚህ አሳይ",

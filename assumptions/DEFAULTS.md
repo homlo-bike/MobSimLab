@@ -605,6 +605,14 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 |---|---|---|---|---|---|---|---|
 | all | 30 | 60 | 180 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Added to the straight-line walk between two platforms of one station until rail-model provides platform-to-platform times from the station layout (ADR-0032, 06 §9.3). About one flight of stairs or a lift ride; deep metro stations need the high value. |
 
+### Stops with the same name within this straight-line distance are one station
+
+`journey.same_name_station_m` · unit: m · used by: schematic map stations, journey planner interchanges, benefits and ridership station catchments
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 200 | 600 | 1000 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | A bus or tram stop named like the railway station beside it is an interchange even when it is farther than an ordinary change walk: station names are shared within the 150 m grouping distance of the platform line, so a long platform's middle can be a few hundred metres from the stop. Lower it where unrelated stops share a name nearby; raise it for large stations with spread-out stops. |
+
 ## Analysis
 
 ### Walk rule: largest walk to the nearest stop or station, in minutes (headline coverage figure)

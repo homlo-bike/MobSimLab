@@ -270,6 +270,10 @@ export const ar: Messages = {
   "prefs.delayLane": "في مسار مخصّص مطلي للحافلات أو الترام",
   "prefs.delayDefault": "مكتبة الافتراضات: {value} %",
   "prefs.delayReset": "استخدام قيمة المكتبة",
+  "prefs.stationsTitle": "المحطات",
+  "prefs.stationsIntro":
+    "تُعدّ المواقف التي تحمل الاسم نفسه ضمن هذه المسافة محطة واحدة في المخطط التخطيطي ومخطط الرحلات وجداول المنافع والركاب.",
+  "prefs.libraryM": "مكتبة الافتراضات: {value} م",
   "prefs.currencyTitle": "العملة",
   "prefs.currencyIntro":
     "تُعرض كل المبالغ في المشروع بهذه العملة: جداول التكاليف والمنافع والسيناريوهات ووفورات دراجة الشحن.",
