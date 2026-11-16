@@ -343,6 +343,7 @@ export const ig: Messages = {
   "prefs.group.cost": "Ego ọ na-efu",
   "prefs.group.benefits": "Uru",
   "prefs.group.fares": "Ụgwọ njem",
+  "prefs.group.appraisal": "Nyocha",
   "prefs.traction.battery": "batrị",
   "prefs.traction.diesel": "dizel",
   "prefs.traction.hydrogen": "hydrogen",

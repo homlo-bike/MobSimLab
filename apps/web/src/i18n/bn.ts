@@ -341,6 +341,7 @@ export const bn: Messages = {
   "prefs.group.cost": "খরচ",
   "prefs.group.benefits": "সুফল",
   "prefs.group.fares": "ভাড়া",
+  "prefs.group.appraisal": "মূল্যায়ন",
   "prefs.traction.battery": "ব্যাটারি",
   "prefs.traction.diesel": "ডিজেল",
   "prefs.traction.hydrogen": "হাইড্রোজেন",

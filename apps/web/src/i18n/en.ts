@@ -337,6 +337,7 @@ export const en = {
   "prefs.group.cost": "Costs",
   "prefs.group.benefits": "Benefits",
   "prefs.group.fares": "Fares",
+  "prefs.group.appraisal": "Appraisal",
   "prefs.traction.battery": "battery",
   "prefs.traction.diesel": "diesel",
   "prefs.traction.hydrogen": "hydrogen",

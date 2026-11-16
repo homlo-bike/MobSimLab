@@ -5,7 +5,7 @@
  */
 import type { Estimate } from "../benefits/model";
 import { paramValue, type Triple } from "../benefits/params";
-import type { DemandResult } from "./api";
+import type { DemandAppraisal, DemandResult } from "./api";
 
 /** A run's weekday boardings: per line id, per line and stop name, and per stop name over all lines. */
 export interface DemandRidership {
@@ -16,6 +16,8 @@ export interface DemandRidership {
   lines: Record<string, number>;
   stations: Record<string, Record<string, number>>;
   stops: Record<string, number>;
+  /** The run's users' benefit and car-km saved, for the appraisal (null for runs made before it). */
+  appraisal: DemandAppraisal | null;
 }
 
 /** Purpose: a demand run's weekday boardings per line, per line and stop name, and per stop name. */
@@ -44,7 +46,15 @@ export function demandRidership(
   const stops: Record<string, number> = {};
   for (const s of Object.values(result.transit.stops))
     if (s.boardings > 0) stops[s.name] = (stops[s.name] ?? 0) + s.boardings;
-  return { runId, finishedAt, uncalibrated: result.uncalibrated, lines, stations, stops };
+  return {
+    runId,
+    finishedAt,
+    uncalibrated: result.uncalibrated,
+    lines,
+    stations,
+    stops,
+    appraisal: result.appraisal ?? null,
+  };
 }
 
 /** Purpose: a model value with the low and high of the formula estimate's spread around it. */

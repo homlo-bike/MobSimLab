@@ -277,6 +277,24 @@ const fares = z.looseObject({
     .optional(),
 });
 
+/** Appraisal (ADR-0045): the multi-criteria analysis' own criteria with their weights and scores per line. */
+const appraisal = z.looseObject({
+  criteria: z
+    .array(
+      z.looseObject({
+        id: z.string().max(40),
+        name: z.string().max(120),
+        weight: z.number().finite().min(0),
+        higher: z.boolean(),
+        scores: z
+          .record(z.string().max(200), z.number().finite())
+          .refine((v) => Object.keys(v).length <= 500, "at most 500 scores"),
+      }),
+    )
+    .max(30)
+    .optional(),
+});
+
 /** Drawing kinds with their document outline and current schema version. */
 export const DRAWING_KINDS = {
   /** The street line tool (ADR-0029): bus, BRT, trolleybus and intercity bus lines. */
@@ -309,6 +327,8 @@ export const DRAWING_KINDS = {
   demand: { schema: demand, schemaVersion: 1 },
   /** Fare revenue table (ADR-0044): fare structure, fares, passes, discounts and the other fare values. */
   fares: { schema: fares, schemaVersion: 1 },
+  /** Appraisal (ADR-0045): the planner's own multi-criteria criteria, weights and scores. */
+  appraisal: { schema: appraisal, schemaVersion: 1 },
 } as const satisfies Record<string, { schema: z.ZodType; schemaVersion: number }>;
 
 export type DrawingKind = keyof typeof DRAWING_KINDS;

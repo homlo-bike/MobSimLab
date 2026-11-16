@@ -12,7 +12,8 @@
   "Energy and climate",
   "Cost",
   "Benefits",
-  "Fares"
+  "Fares",
+  "Appraisal"
  ],
  "params": [
   {
@@ -6928,6 +6929,360 @@
      0.05,
      0.1,
      0.15
+    ]
+   }
+  },
+  {
+   "id": "appraisal.build_years",
+   "label": "Construction period: years from the start of works to opening",
+   "group": "Appraisal",
+   "unit": "years",
+   "kind": "number",
+   "values": {
+    "*": [
+     2,
+     4,
+     7
+    ],
+    "bus": [
+     1,
+     2,
+     3
+    ],
+    "brt": [
+     1,
+     2,
+     3
+    ],
+    "trolleybus": [
+     1,
+     2,
+     3
+    ],
+    "intercity_bus": [
+     1,
+     2,
+     3
+    ]
+   }
+  },
+  {
+   "id": "appraisal.period_years",
+   "label": "Appraisal period: years of operation counted after opening",
+   "group": "Appraisal",
+   "unit": "years",
+   "kind": "number",
+   "values": {
+    "*": [
+     25,
+     30,
+     40
+    ],
+    "bus": [
+     15,
+     20,
+     25
+    ],
+    "brt": [
+     15,
+     20,
+     25
+    ],
+    "trolleybus": [
+     15,
+     20,
+     25
+    ],
+    "intercity_bus": [
+     15,
+     20,
+     25
+    ]
+   }
+  },
+  {
+   "id": "appraisal.discount.financial",
+   "label": "Financial discount rate (real)",
+   "group": "Appraisal",
+   "unit": "share a year",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.03,
+     0.04,
+     0.05
+    ]
+   }
+  },
+  {
+   "id": "appraisal.discount.social_cohesion",
+   "label": "Social discount rate (real), EU Cohesion Fund countries and countries outside the EU",
+   "group": "Appraisal",
+   "unit": "share a year",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.04,
+     0.05,
+     0.07
+    ]
+   }
+  },
+  {
+   "id": "appraisal.discount.social_other",
+   "label": "Social discount rate (real), other EU countries",
+   "group": "Appraisal",
+   "unit": "share a year",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.02,
+     0.03,
+     0.04
+    ]
+   }
+  },
+  {
+   "id": "appraisal.conversion_factor",
+   "label": "Conversion factor from financial to economic costs (shadow prices)",
+   "group": "Appraisal",
+   "unit": "factor",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.8,
+     1.0,
+     1.0
+    ]
+   }
+  },
+  {
+   "id": "appraisal.life.civil",
+   "label": "Asset life: civil works (track bed, tunnels, viaducts, stations, depots)",
+   "group": "Appraisal",
+   "unit": "years",
+   "kind": "number",
+   "values": {
+    "*": [
+     40,
+     60,
+     100
+    ]
+   }
+  },
+  {
+   "id": "appraisal.life.systems",
+   "label": "Asset life: track, power, signalling, switches and bus lanes",
+   "group": "Appraisal",
+   "unit": "years",
+   "kind": "number",
+   "values": {
+    "*": [
+     20,
+     25,
+     35
+    ]
+   }
+  },
+  {
+   "id": "appraisal.life.vehicles",
+   "label": "Asset life: vehicles",
+   "group": "Appraisal",
+   "unit": "years",
+   "kind": "number",
+   "values": {
+    "*": [
+     25,
+     30,
+     40
+    ],
+    "bus": [
+     10,
+     12,
+     15
+    ],
+    "brt": [
+     10,
+     12,
+     15
+    ],
+    "trolleybus": [
+     10,
+     12,
+     15
+    ],
+    "intercity_bus": [
+     10,
+     12,
+     15
+    ]
+   }
+  },
+  {
+   "id": "appraisal.vot_growth",
+   "label": "Yearly real growth of the value of time",
+   "group": "Appraisal",
+   "unit": "share a year",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.0,
+     0.01,
+     0.02
+    ]
+   }
+  },
+  {
+   "id": "appraisal.external.climate",
+   "label": "External cost of a car-km: climate change and well-to-tank emissions",
+   "group": "Appraisal",
+   "unit": "US$ per car-km (2023, PPP)",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.01,
+     0.025,
+     0.06
+    ]
+   }
+  },
+  {
+   "id": "appraisal.external.air_pollution",
+   "label": "External cost of a car-km: air pollution",
+   "group": "Appraisal",
+   "unit": "US$ per car-km (2023, PPP)",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.005,
+     0.015,
+     0.04
+    ]
+   }
+  },
+  {
+   "id": "appraisal.external.noise",
+   "label": "External cost of a car-km: noise",
+   "group": "Appraisal",
+   "unit": "US$ per car-km (2023, PPP)",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.005,
+     0.015,
+     0.05
+    ]
+   }
+  },
+  {
+   "id": "appraisal.external.accidents",
+   "label": "External cost of a car-km: accidents not paid by the driver",
+   "group": "Appraisal",
+   "unit": "US$ per car-km (2023, PPP)",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.03,
+     0.07,
+     0.12
+    ]
+   }
+  },
+  {
+   "id": "appraisal.external.congestion",
+   "label": "External cost of a car-km: congestion caused to other road users",
+   "group": "Appraisal",
+   "unit": "US$ per car-km (2023, PPP)",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.0,
+     0.1,
+     0.4
+    ]
+   }
+  },
+  {
+   "id": "appraisal.mca.weight.enpv",
+   "label": "Multi-criteria weight: economic net present value",
+   "group": "Appraisal",
+   "unit": "weight",
+   "kind": "number",
+   "values": {
+    "*": [
+     0,
+     1,
+     3
+    ]
+   }
+  },
+  {
+   "id": "appraisal.mca.weight.ridership",
+   "label": "Multi-criteria weight: boardings a year",
+   "group": "Appraisal",
+   "unit": "weight",
+   "kind": "number",
+   "values": {
+    "*": [
+     0,
+     1,
+     3
+    ]
+   }
+  },
+  {
+   "id": "appraisal.mca.weight.jobs",
+   "label": "Multi-criteria weight: jobs reachable per resident, gain",
+   "group": "Appraisal",
+   "unit": "weight",
+   "kind": "number",
+   "values": {
+    "*": [
+     0,
+     1,
+     3
+    ]
+   }
+  },
+  {
+   "id": "appraisal.mca.weight.education",
+   "label": "Multi-criteria weight: schools and universities reachable, gain",
+   "group": "Appraisal",
+   "unit": "weight",
+   "kind": "number",
+   "values": {
+    "*": [
+     0,
+     1,
+     3
+    ]
+   }
+  },
+  {
+   "id": "appraisal.mca.weight.healthcare",
+   "label": "Multi-criteria weight: hospitals and clinics reachable, gain",
+   "group": "Appraisal",
+   "unit": "weight",
+   "kind": "number",
+   "values": {
+    "*": [
+     0,
+     1,
+     3
+    ]
+   }
+  },
+  {
+   "id": "appraisal.mca.weight.construction_cost",
+   "label": "Multi-criteria weight: construction cost (lower is better)",
+   "group": "Appraisal",
+   "unit": "weight",
+   "kind": "number",
+   "values": {
+    "*": [
+     0,
+     1,
+     3
     ]
    }
   }

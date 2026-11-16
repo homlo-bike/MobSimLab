@@ -1152,3 +1152,30 @@
   access: free
   retrieved: 2026-11-16
   checked_via: none
+
+- id: eu-cba-guide-2014
+  title: "Guide to Cost-Benefit Analysis of Investment Projects: Economic appraisal tool for Cohesion Policy 2014–2020 (reference periods, 4 % financial and 5 %/3 % social discount rates, conversion factors, residual value)"
+  publisher: European Commission, DG Regional and Urban Policy
+  url: https://ec.europa.eu/regional_policy/sources/studies/cba_guide.pdf
+  licence: "© European Union, reuse authorised with acknowledgement (Commission Decision 2011/833/EU)"
+  access: free
+  retrieved: 2026-11-16
+  checked_via: none
+
+- id: eu-external-costs-2019
+  title: "Handbook on the external costs of transport, version 2019 – 1.1 (CE Delft for DG MOVE): average and marginal external costs per vehicle-km by mode"
+  publisher: European Commission, DG Mobility and Transport
+  url: https://cedelft.eu/publications/handbook-on-the-external-costs-of-transport-version-2019
+  licence: "© European Union, reuse authorised with acknowledgement (Commission Decision 2011/833/EU)"
+  access: free
+  retrieved: 2026-11-16
+  checked_via: search-snippet
+
+- id: eu-cohesion-fund
+  title: "Cohesion Fund 2021–2027: eligible member states (gross national income per person below 90 % of the EU average)"
+  publisher: European Commission
+  url: https://ec.europa.eu/regional_policy/funding/cohesion-fund_en
+  licence: "© European Union, reuse authorised with acknowledgement (Commission Decision 2011/833/EU)"
+  access: free
+  retrieved: 2026-11-16
+  checked_via: none

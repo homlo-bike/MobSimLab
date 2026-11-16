@@ -344,6 +344,7 @@ export const pt: Messages = {
   "prefs.group.cost": "Custos",
   "prefs.group.benefits": "Benefícios",
   "prefs.group.fares": "Tarifas",
+  "prefs.group.appraisal": "Avaliação",
   "prefs.traction.battery": "bateria",
   "prefs.traction.diesel": "diesel",
   "prefs.traction.hydrogen": "hidrogénio",
