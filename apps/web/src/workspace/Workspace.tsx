@@ -19,6 +19,8 @@ import { WalkAnalysis } from "../features/walk/WalkAnalysis";
 import { JourneyPlanner } from "../features/journey-planner/JourneyPlanner";
 import { NoiseMap } from "../features/noise/NoiseMap";
 import { NetworkTables } from "../features/tables/NetworkTables";
+import { FareTables } from "../features/fares/FareTables";
+import type { FaresDoc } from "../features/fares/model";
 import { Scenarios } from "../features/tables/Scenarios";
 import type { ScenariosDoc } from "../features/tables/scenarioModel";
 import { noiseCalculationIn } from "../features/noise/plugin";
@@ -169,24 +171,36 @@ export function Workspace({
     currency: string | null;
     country: string | null;
     rate: number;
+    /** Units of the currency per 2023 international dollar (PPP factor × price escalation), for fares. */
+    perIntl: number;
   } | null>(null);
   const onCostEstimate = useCallback(
     (estimate: CostEstimate, prices: Prices, country: string | null, rate: number) =>
-      setCostInfo({ estimate, currency: prices.currency, country, rate }),
+      setCostInfo({
+        estimate,
+        currency: prices.currency,
+        country,
+        rate,
+        perIntl: prices.ppp * prices.escalation,
+      }),
     [],
   );
-  // The benefit estimate's riders a weekday per line (low, medium, high), for the service table.
-  const [riders, setRiders] = useState<Record<string, Triple> | null>(null);
-  const onBenefitEstimate = useCallback(
-    (e: BenefitEstimate | null) =>
-      setRiders(
-        e
-          ? Object.fromEntries(
-              e.rows.filter((r) => r.scope === "line").map((r) => [r.id, r.values.ridership_daily]),
-            )
-          : null,
-      ),
-    [],
+  // The benefit estimate: riders a weekday per line (low, medium, high) for the service table, and
+  // boardings a year for the fare revenue table.
+  const [benefitEst, setBenefitEst] = useState<BenefitEstimate | null>(null);
+  const riders = useMemo(
+    () =>
+      benefitEst
+        ? (Object.fromEntries(
+            benefitEst.rows.filter((r) => r.scope === "line").map((r) => [r.id, r.values.ridership_daily]),
+          ) as Record<string, Triple>)
+        : null,
+    [benefitEst],
+  );
+  const onBenefitEstimate = useCallback((e: BenefitEstimate | null) => setBenefitEst(e), []);
+  const farePrices = useMemo(
+    () => (costInfo ? { currency: costInfo.currency, perIntl: costInfo.perIntl } : null),
+    [costInfo?.currency, costInfo?.perIntl],
   );
   const [build, setBuild] = useState<Build | null>(null);
   // The street line being edited, as the tool last routed it, so the journey planner can ride it.
@@ -850,6 +864,19 @@ export function Workspace({
                   onDoc={editable ? (d) => drawings.set("benefits", d) : undefined}
                   costs={costInfo}
                   onEstimate={onBenefitEstimate}
+                />
+              )}
+              {project && drawings.loaded && (
+                <FareTables
+                  benefits={benefitEst}
+                  railway={railway}
+                  streetLines={streetLines}
+                  pluginLines={pluginLineList}
+                  schematic={drawings.doc<SchematicDoc>("schematic")}
+                  boardings={benefitsDoc?.boardings}
+                  prices={farePrices}
+                  doc={drawings.doc<FaresDoc>("fares")}
+                  onDoc={editable ? (d) => drawings.set("fares", d) : undefined}
                 />
               )}
               {project && drawings.loaded && (
