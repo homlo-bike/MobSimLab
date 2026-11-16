@@ -10,7 +10,12 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-sim = ["eclipse-sumo==1.28.0", "libsumo==1.28.0"]
+sim = [
+    "eclipse-sumo==1.28.0",
+    "libsumo==1.28.0",
+    "pyproj==3.7.2",
+    "rtree==1.4.1",
+]
 # The four-step demand model (ADR-0019). AequilibraE brings numpy, pandas, scipy and openmatrix.
 demand = ["aequilibrae==1.7.2", "pyyaml>=6.0"]
 
@@ -46,7 +51,7 @@ files = ["src"]
 testpaths = ["tests"]
 
 [[tool.mypy.overrides]]
-module = ["mobsim_kernels", "aequilibrae", "aequilibrae.*", "openmatrix", "pandas", "pandas.*", "scipy", "scipy.*"]
+module = ["mobsim_kernels", "sumo", "sumolib", "sumolib.*", "libsumo", "aequilibrae", "aequilibrae.*", "openmatrix", "pandas", "pandas.*", "scipy", "scipy.*"]
 ignore_missing_imports = true
 
 [tool.uv]

@@ -1,3 +1,4 @@
+import { roadUk } from "./road/uk";
 import { editorsUk } from "./editors/uk";
 import { cargoBikeUk } from "./cargo-bike/uk";
 import { depotsUk } from "./depots/uk";
@@ -313,8 +314,23 @@ export const uk: Messages = {
   "prefs.demandStep.mode_choice": "Вибір виду транспорту",
   "prefs.demandStep.assignment": "Призначення",
   "prefs.demandAll": "Усі кроки",
-  "prefs.vehicles": "Транспортні засоби (з каталогу транспортних засобів)",
-  "prefs.switches": "Стрілочні переводи (з каталогу стрілок)",
+  "prefs.vehiclesTitle": "Транспортні засоби",
+  "prefs.vehiclesIntro":
+    "Транспортні засоби з каталогу, які використовує проєкт, для кожного виду транспорту. Інструменти ліній показують лише позначені.",
+  "prefs.vehiclesMode": "Вид транспорту",
+  "prefs.vehiclesUsed": "використано: {used} з {total}",
+  "prefs.vehiclesAll": "Використовувати всі",
+  "prefs.vehiclesFacts": "{length} м · {places} місць · {speed} км/год",
+  "prefs.vehiclesLast": "Для кожного виду транспорту залишається щонайменше один засіб.",
+  "prefs.switchesTitle": "Стрілочні переводи",
+  "prefs.switchesIntro":
+    "Стрілочні переводи й перетини з каталогу, які редактор залізниць пропонує для кожного виду рейкового транспорту, і перевід за замовчуванням для нових.",
+  "prefs.switchesTurnouts": "Стрілочні переводи",
+  "prefs.switchesSlips": "Перехресні переводи",
+  "prefs.switchesDefault": "За замовчуванням",
+  "prefs.switchesFacts": "1:{n} · R {radius} м · {speed} км/год на бічну колію",
+  "prefs.switchesLast":
+    "Перевід за замовчуванням залишається у використанні. Щоб прибрати його, спершу виберіть інший.",
   "prefs.calendar": "Календар, попит і витрати",
 
   "job.stepOf": "Крок {step} з {steps}",
@@ -386,5 +402,6 @@ export const uk: Messages = {
   ...editorsUk,
   ...cargoBikeUk,
   ...depotsUk,
+  ...roadUk,
   ...PLUGIN_MESSAGES.uk,
 };

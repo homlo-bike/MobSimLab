@@ -1,3 +1,4 @@
+import { roadTa } from "./road/ta";
 import { editorsTa } from "./editors/ta";
 import { cargoBikeTa } from "./cargo-bike/ta";
 import { depotsTa } from "./depots/ta";
@@ -317,8 +318,23 @@ export const ta: Messages = {
   "prefs.demandStep.mode_choice": "போக்குவரத்து முறைத் தேர்வு",
   "prefs.demandStep.assignment": "ஒதுக்கீடு",
   "prefs.demandAll": "எல்லாப் படிகளும்",
-  "prefs.vehicles": "பயன்படுத்தப்படும் வாகனங்கள், வாகனப் பட்டியலிலிருந்து",
-  "prefs.switches": "தண்டவாள சுவிட்சுகள், சுவிட்சுப் பட்டியலிலிருந்து",
+  "prefs.vehiclesTitle": "வாகனங்கள்",
+  "prefs.vehiclesIntro":
+    "இந்தத் திட்டம் ஒவ்வொரு முறைக்கும் பயன்படுத்தும் பட்டியல் வாகனங்கள். தெரு வழித்தட மற்றும் ரயில்பாதை கருவிகள் குறியிட்டவற்றை மட்டுமே காட்டும்.",
+  "prefs.vehiclesMode": "முறை",
+  "prefs.vehiclesUsed": "{total} இல் {used} பயன்பாட்டில்",
+  "prefs.vehiclesAll": "அனைத்தையும் பயன்படுத்து",
+  "prefs.vehiclesFacts": "{length} மீ · {places} இடங்கள் · {speed} கிமீ/ம",
+  "prefs.vehiclesLast": "ஒவ்வொரு முறைக்கும் குறைந்தது ஒரு வாகனம் பயன்பாட்டில் இருக்கும்.",
+  "prefs.switchesTitle": "பாயிண்ட்கள்",
+  "prefs.switchesIntro":
+    "ஒவ்வொரு ரயில் முறைக்கும் ரயில்பாதை திருத்தி வழங்கும் பட்டியலின் பாயிண்ட்கள், குறுக்குகள், மற்றும் புதிய பாயிண்ட்கள் தொடங்கும் பாயிண்ட்.",
+  "prefs.switchesTurnouts": "பாயிண்ட்கள்",
+  "prefs.switchesSlips": "குறுக்குகளில் ஸ்லிப்கள்",
+  "prefs.switchesDefault": "இயல்புநிலை",
+  "prefs.switchesFacts": "1:{n} · R {radius} மீ · திருப்பு பாதையில் {speed} கிமீ/ம",
+  "prefs.switchesLast":
+    "இயல்புநிலை பாயிண்ட் பயன்பாட்டில் இருக்கும். அதை நீக்க, முதலில் வேறொன்றைத் தேர்ந்தெடுக்கவும்.",
   "prefs.calendar": "நாட்காட்டி, தேவை மற்றும் செலவுகள்",
 
   "job.stepOf": "படி {step} / {steps}",
@@ -392,5 +408,6 @@ export const ta: Messages = {
   ...editorsTa,
   ...cargoBikeTa,
   ...depotsTa,
+  ...roadTa,
   ...PLUGIN_MESSAGES.ta,
 };

@@ -13,8 +13,11 @@ import { type Kysely, sql } from "kysely";
 import { AuditService, projectChain } from "../audit/audit.service";
 import { type DB, DATABASE, type Database, type RunKind, type RunStatus } from "../db/database";
 import { type ProjectActor, ProjectsService } from "../projects/projects.service";
+import { OverpassError } from "../gateway/overpass.client";
+import { StreetNetworkService } from "../street-network/street-network.service";
 import type { CapacitySettings, SweepDesign, SweepMetric } from "./params";
 import { type JobState, RunQueue } from "./queue";
+import { MAX_ROAD_TILES, type RoadScenario, type RoadSettings, roadTiles } from "./road";
 
 /** The network of a capacity run: the example metro, or the railway editor's topology with a lines file. */
 export type RunNetwork =
@@ -65,7 +68,25 @@ export interface DemandSummary {
   lines: number;
 }
 
-export type NewRun = NewCapacityRun | NewSweepRun | NewDemandRun;
+/**
+ * A road simulation (Phase 5): the project's street lines with their depots and the background traffic of the
+ * GIS tab's street setup, in SUMO, for one period. The API adds the street tiles the lines need.
+ */
+export interface NewRoadRun {
+  kind: "road";
+  params: RoadSettings;
+  scenario: RoadScenario;
+}
+
+export type NewRun = NewCapacityRun | NewSweepRun | NewRoadRun | NewDemandRun;
+
+/** What the run list shows about a road run's network: its lines and depots, and how many street tiles. */
+export interface RoadNetworkSummary {
+  kind: "road";
+  lines: { index: number; name: string; mode: string; color: string }[];
+  depots: number;
+  tiles: number;
+}
 
 /** The agent connection a run is started through, for the run limit and the audit trail (ADR-0035 §7). */
 export interface AgentVia {
@@ -84,9 +105,10 @@ export interface RunSummary {
   network:
     | { kind: "example" }
     | { kind: "files"; topologyName: string; linesName: string }
+    | RoadNetworkSummary
     | ({ kind: "demand" } & DemandSummary);
-  /** Capacity runs and sweeps: their settings; null for demand runs. */
-  params: CapacitySettings | null;
+  /** Capacity runs and sweeps: their settings; road runs: theirs; null for demand runs. */
+  params: CapacitySettings | RoadSettings | null;
   sweep: boolean;
   /** Sweeps only: the design and the objectives of the Pareto front. */
   design?: SweepDesign;
@@ -112,7 +134,7 @@ export interface RunDetail extends RunSummary {
 /** Stored settings of a run (`simulation.run.input`). The network texts have their own columns. */
 interface StoredInput {
   network: RunSummary["network"];
-  params: CapacitySettings | null;
+  params: CapacitySettings | RoadSettings | null;
   sweep: boolean;
   design?: SweepDesign;
   objectives?: NewSweepRun["objectives"];
@@ -129,6 +151,9 @@ export interface RunFile {
 
 /** The one example network the kernels know by name (crates/rail-sim/src/capacity_input.rs). */
 const EXAMPLE_NETWORK = "example:metro";
+
+/** Largest street tile text of a road run (db/migrations/0009_road_runs.sql). */
+const MAX_ROAD_NETWORK_CHARS = 64 * 1024 * 1024;
 
 /** Message for a run whose worker stopped without settling it (a crash, a restart). */
 export const WORKER_STOPPED = "the background worker stopped before the run finished; start it again";
@@ -153,6 +178,7 @@ export class RunsService {
     private readonly projects: ProjectsService,
     private readonly audit: AuditService,
     private readonly queue: RunQueue,
+    private readonly streets: StreetNetworkService,
   ) {}
 
   /**
@@ -170,7 +196,9 @@ export class RunsService {
             network: input.bundle,
             lines: "",
           }
-        : await this.resolveNetwork(projectId, input.network);
+        : input.kind === "road"
+          ? await this.roadNetwork(input.scenario)
+          : await this.resolveNetwork(projectId, input.network);
     const stored: StoredInput =
       input.kind === "demand"
         ? { network: net.stored, params: null, sweep: false, values: input.values }
@@ -268,6 +296,7 @@ export class RunsService {
         })
         .where("id", "=", runId)
         .execute();
+      await tx.deleteFrom("simulation.run_replay").where("run_id", "=", runId).execute();
       const verdict = (r.result as { run?: { verdict?: unknown } } | null)?.run?.verdict;
       await this.audit.append(
         {
@@ -427,7 +456,65 @@ export class RunsService {
     return this.get(actor, projectId, runId);
   }
 
+  /**
+   * Purpose: the replay of a road run (gzipped JSON, worker `pack_replay`), for every member who can read the
+   * project. 404 when the run is not in the project or has no replay (not a road run, or not finished).
+   */
+  async replay(actor: ProjectActor, projectId: string, runId: string): Promise<Buffer> {
+    await this.projects.authorize(actor, projectId, "read");
+    const r = await this.db
+      .selectFrom("simulation.run_replay as p")
+      .innerJoin("simulation.run as r", "r.id", "p.run_id")
+      .select("p.data")
+      .where("r.project_id", "=", projectId)
+      .where("r.id", "=", runId)
+      .executeTakeFirst();
+    if (!r) throw new NotFoundException("this run has no replay");
+    return r.data;
+  }
+
   // ---------------------------------------------------------------------------------------------------------
+
+  /**
+   * Purpose: the network of a road run: the street tiles (OSM XML, as the street line tool loads them) of the
+   * area its lines and depots cover, and the scenario. 400 when the area takes more than `MAX_ROAD_TILES`
+   * tiles; 502/504 when OpenStreetMap cannot be reached for a tile that is not cached.
+   */
+  private async roadNetwork(
+    scenario: RoadScenario,
+  ): Promise<{ stored: RoadNetworkSummary; network: string; lines: string }> {
+    const tiles = roadTiles(scenario);
+    if (!tiles.length) throw new BadRequestException("the street lines have no routes");
+    if (tiles.length > MAX_ROAD_TILES)
+      throw new BadRequestException(
+        `the street lines and depots cover too large an area for one road run (${tiles.length} street tiles, at most ${MAX_ROAD_TILES})`,
+      );
+    const xml: string[] = [];
+    for (const [x, y] of tiles) {
+      try {
+        xml.push(await this.streets.tile(x, y));
+      } catch (e) {
+        if (e instanceof OverpassError)
+          throw new HttpException("OpenStreetMap streets are unavailable right now; try again", e.status);
+        throw e;
+      }
+    }
+    const network = JSON.stringify({ tiles: xml });
+    if (network.length > MAX_ROAD_NETWORK_CHARS)
+      throw new BadRequestException(
+        "the streets of the area the street lines cover are too large for one road run; split the lines into smaller areas",
+      );
+    return {
+      stored: {
+        kind: "road",
+        lines: scenario.lines.map((l) => ({ index: l.index, name: l.name, mode: l.mode, color: l.color })),
+        depots: scenario.depots.length,
+        tiles: tiles.length,
+      },
+      network,
+      lines: JSON.stringify(scenario),
+    };
+  }
 
   /**
    * Purpose: the network texts to store for a new run, and what the list shows about them. A `run` network is

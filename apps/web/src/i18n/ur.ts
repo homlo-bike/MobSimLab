@@ -1,3 +1,4 @@
+import { roadUr } from "./road/ur";
 import { editorsUr } from "./editors/ur";
 import { cargoBikeUr } from "./cargo-bike/ur";
 import { depotsUr } from "./depots/ur";
@@ -312,8 +313,22 @@ export const ur: Messages = {
   "prefs.demandStep.mode_choice": "ذریعۂ سفر کا انتخاب",
   "prefs.demandStep.assignment": "تفویض",
   "prefs.demandAll": "تمام قدم",
-  "prefs.vehicles": "استعمال شدہ گاڑیاں، گاڑیوں کی فہرست سے",
-  "prefs.switches": "پٹری کے سوئچ، سوئچوں کی فہرست سے",
+  "prefs.vehiclesTitle": "گاڑیاں",
+  "prefs.vehiclesIntro":
+    "فہرست کی وہ گاڑیاں جو یہ منصوبہ ہر ذریعے کے لیے استعمال کرتا ہے۔ سڑک لائن اور ریلوے ٹولز صرف نشان زدہ گاڑیاں دکھاتے ہیں۔",
+  "prefs.vehiclesMode": "ذریعہ",
+  "prefs.vehiclesUsed": "{total} میں سے {used} استعمال میں",
+  "prefs.vehiclesAll": "سب استعمال کریں",
+  "prefs.vehiclesFacts": "{length} میٹر · {places} جگہیں · {speed} کلومیٹر/گھنٹہ",
+  "prefs.vehiclesLast": "ہر ذریعے کے لیے کم از کم ایک گاڑی استعمال میں رہتی ہے۔",
+  "prefs.switchesTitle": "کانٹے",
+  "prefs.switchesIntro":
+    "فہرست کے وہ کانٹے اور کراسنگ جو ریلوے ایڈیٹر ہر ریل ذریعے کے لیے دیتا ہے، اور وہ کانٹا جس سے نئے کانٹے شروع ہوتے ہیں۔",
+  "prefs.switchesTurnouts": "کانٹے",
+  "prefs.switchesSlips": "کراسنگ میں سلپ",
+  "prefs.switchesDefault": "طے شدہ",
+  "prefs.switchesFacts": "1:{n} · R {radius} میٹر · مڑنے والی لائن پر {speed} کلومیٹر/گھنٹہ",
+  "prefs.switchesLast": "طے شدہ کانٹا استعمال میں رہتا ہے۔ اسے ہٹانے کے لیے پہلے کوئی اور طے کریں۔",
   "prefs.calendar": "کیلنڈر، طلب اور لاگت",
 
   "job.stepOf": "مرحلہ {step} از {steps}",
@@ -385,5 +400,6 @@ export const ur: Messages = {
   ...editorsUr,
   ...cargoBikeUr,
   ...depotsUr,
+  ...roadUr,
   ...PLUGIN_MESSAGES.ur,
 };
