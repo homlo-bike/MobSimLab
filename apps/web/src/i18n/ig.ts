@@ -4,6 +4,7 @@ import { cargoBikeIg } from "./cargo-bike/ig";
 import { depotsIg } from "./depots/ig";
 import { mslabIg } from "./mslab/ig";
 import { pluginCodeIg } from "./plugin-code/ig";
+import { populationIg } from "./population/ig";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -280,6 +281,10 @@ export const ig: Messages = {
   "prefs.delayLane": "N'ụzọ bọs ma ọ bụ tram e ji agba see",
   "prefs.delayDefault": "Ọbá akwụkwọ echiche: {value} %",
   "prefs.delayReset": "Jiri uru ọbá akwụkwọ",
+  "prefs.stationsTitle": "Ọdụ",
+  "prefs.stationsIntro":
+    "Ebe nkwụsị nwere otu aha n'ime anya a ka a na-agụ dị ka otu ọdụ na maapụ eserese, onye nhazi njem na tebụl uru na ndị njem.",
+  "prefs.libraryM": "Ọbá akwụkwọ echiche: {value} m",
   "prefs.currencyTitle": "Ego",
   "prefs.currencyIntro":
     "A na-egosi ego niile nke ọrụ a n'ego a: tebụl ọnụ ahịa, uru, ọnọdụ na nchekwa igwe kaa ibu.",
@@ -302,6 +307,30 @@ export const ig: Messages = {
   "prefs.rulesChanged": "agbanwere: {count}",
   "prefs.rulesLibrary": "Ọbá akwụkwọ echiche: {value} {unit}",
   "prefs.rulesLibraryRange": "Ọbá akwụkwọ echiche: {value} {unit} (oke {low}–{high})",
+  "prefs.paramsTitle": "Paramita niile",
+  "prefs.paramsIntro":
+    "Uru ọ bụla nke ọbá echiche. Tọọ nke gị maka ụzọ niile ma ọ bụ otu ụzọ; uru otu ụzọ na-akarị nke ụzọ niile. Uru ọbá ahụ na-anọ n'akụkụ.",
+  "prefs.paramsGroup": "Otu",
+  "prefs.paramsMode": "Ụzọ njem",
+  "prefs.paramsAllModes": "Ụzọ niile",
+  "prefs.paramsFromAll": "uru gị maka ụzọ niile",
+  "prefs.group.modes": "Ụzọ njem",
+  "prefs.group.operations": "Ọrụ",
+  "prefs.group.demand": "Achọrọ",
+  "prefs.group.analysis": "Nyocha",
+  "prefs.group.simulation": "Ịme ka ọ dị ka",
+  "prefs.group.infrastructure": "Ụkpụrụ akụrụngwa",
+  "prefs.group.accessibility": "Ịnweta",
+  "prefs.group.depots": "Ebe nchekwa ụgbọ na okporo ụzọ",
+  "prefs.group.energy": "Ike na ihu igwe",
+  "prefs.group.cost": "Ego ọ na-efu",
+  "prefs.group.benefits": "Uru",
+  "prefs.group.fares": "Ụgwọ njem",
+  "prefs.traction.battery": "batrị",
+  "prefs.traction.diesel": "dizel",
+  "prefs.traction.hydrogen": "hydrogen",
+  "prefs.traction.cng": "gas sitere n'okike (CNG)",
+  "prefs.traction.electric": "eletrik",
   "prefs.accessTitle": "Ịnweta ikpo okwu",
   "prefs.accessIntro":
     "Oke steepụ na oghere n'etiti ikpo okwu na ụgbọ (TSI PRM), yana ịdị elu ala maka ụgbọ na-enweghị ya na katalọgụ. A na-enyocha ahịrị n'ọdụ ọ bụla.",
@@ -393,6 +422,7 @@ export const ig: Messages = {
   ...depotsIg,
   ...mslabIg,
   ...pluginCodeIg,
+  ...populationIg,
   ...roadIg,
   ...PLUGIN_MESSAGES.ig,
 };

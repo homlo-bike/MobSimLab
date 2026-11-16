@@ -10,6 +10,7 @@ import {
   storedChoice,
   useI18n,
 } from "./i18n/i18n";
+import { setLogSession } from "./logging/logger";
 import { projectsApi } from "./projects/api";
 import { ProjectsHome } from "./projects/ProjectsHome";
 import { fetchMe, type Me, type Preferences, savePreferences } from "./session/api";
@@ -54,6 +55,8 @@ export function App() {
   useEffect(reload, [reload]);
 
   const csrf = me?.csrfToken;
+  // Browser logs go to the API only while someone is signed in (ADR-0022).
+  useEffect(() => setLogSession(csrf ?? null), [csrf]);
   const savePrefs = useCallback(
     (patch: Preferences) => {
       setPrefs((p) => ({ ...p, ...patch }));
