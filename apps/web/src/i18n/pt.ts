@@ -3,6 +3,7 @@ import { editorsPt } from "./editors/pt";
 import { cargoBikePt } from "./cargo-bike/pt";
 import { depotsPt } from "./depots/pt";
 import { mslabPt } from "./mslab/pt";
+import { pluginCodePt } from "./plugin-code/pt";
 import { populationPt } from "./population/pt";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -425,6 +426,7 @@ export const pt: Messages = {
   ...cargoBikePt,
   ...depotsPt,
   ...mslabPt,
+  ...pluginCodePt,
   ...populationPt,
   ...roadPt,
   ...PLUGIN_MESSAGES.pt,

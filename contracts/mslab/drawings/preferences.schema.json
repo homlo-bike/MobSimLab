@@ -14,6 +14,18 @@
       "additionalProperties": {
         "type": "number"
       }
+    },
+    "reasons": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "maxLength": 120,
+        "pattern": "^[a-z][a-z0-9_]*(\\.[a-z0-9_]+)+$"
+      },
+      "additionalProperties": {
+        "type": "string",
+        "maxLength": 500
+      }
     }
   },
   "required": [

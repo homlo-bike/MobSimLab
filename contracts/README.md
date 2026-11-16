@@ -11,6 +11,7 @@ JSON Schemas for data that one part of MobSimLab produces and another consumes. 
 | [depot.schema.json](depot.schema.json) | The Create tab's depot tool (`apps/web/src/features/depots`) with the layout from `crates/depot-layout` | Road simulation (07-simulation §3.2, §7): each vehicle starts and ends the run in its slot | `cargo run -p depot-layout --example export -- DIR`, then `tools/contracts/check_depot.py DIR/*.json` |
 | [mslab/](mslab) (`manifest`, `project`, `plugins`, `drawing`, `run` and `drawings/<kind>`) | `.mslab` project files (ADR-0021): **Save as .mslab file**, `GET /api/projects/:id/mslab` | **Open .mslab file**, `POST /api/projects/import`, and other tools | `apps/api/test/mslab-schemas.test.ts` (generated from `apps/api/src/mslab/format.mts` and the drawing outlines; `UPDATE_MSLAB_SCHEMAS=1` rewrites them) |
 | [plugin-manifest.schema.json](plugin-manifest.schema.json), [plugin-mode.schema.json](plugin-mode.schema.json) | Plugin authors; the bundled plugins in `plugins/` (ADR-0036) | `tools/plugins/check.py`, which writes the web app's registry `apps/web/src/plugins/bundled.generated.json` | `tools/plugins/check.py --check-rendered` |
+| [plugin-output.schema.json](plugin-output.schema.json), [wit/plugin.wit](wit/plugin.wit) | Installed plugins' WebAssembly components (ADR-0036 Phase 2, [docs/plugins](../docs/plugins/README.md)) | The web app's plugin host and the API's `plugin-run` tool | `apps/api/test/plugin-code.test.ts` (the example plugin's components) |
 
 ## Railway topology
 
