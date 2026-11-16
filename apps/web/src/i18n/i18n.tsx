@@ -1,5 +1,5 @@
-import { createContext, type ReactNode, useContext, useEffect, useMemo } from "react";
-import { type MessageKey, MESSAGES, type PluralKey } from "./messages";
+import { createContext, type ReactNode, useContext, useEffect, useMemo, useState } from "react";
+import { loadMessages, type MessageKey, MESSAGES_EN, messagesOf, type PluralKey } from "./messages";
 
 /** Languages the app shell is translated into, with their own names (shown in the picker). */
 export const LANGUAGES = [
@@ -114,14 +114,17 @@ interface I18n {
 
 /** Purpose: whether a string is a message key, for labels that are a key or plain text (such as "+1"). */
 export function hasMessage(key: string): key is MessageKey {
-  return key in MESSAGES.en;
+  return key in MESSAGES_EN;
 }
 
 /**
  * Purpose: look up a message in a language, falling back to English, and fill `{name}` placeholders.
  */
 export function translate(language: Language, key: MessageKey, vars?: Vars): string {
-  const text = (MESSAGES[language] as Record<string, string | undefined>)[key] ?? MESSAGES.en[key] ?? key;
+  const text =
+    (messagesOf(language) as Record<string, string | undefined> | undefined)?.[key] ??
+    MESSAGES_EN[key] ??
+    key;
   if (!vars) return text;
   return text.replace(/\{(\w+)\}/g, (m, name: string) => (name in vars ? String(vars[name]) : m));
 }
@@ -146,7 +149,7 @@ export function withNodes(text: string, nodes: Record<string, ReactNode>): React
  * a language has one, is used for 0.
  */
 export function translatePlural(language: Language, key: PluralKey, count: number, vars?: Vars): string {
-  const table = MESSAGES[language] as Record<string, string | undefined>;
+  const table = (messagesOf(language) ?? MESSAGES_EN) as Record<string, string | undefined>;
   const rule = new Intl.PluralRules(language).select(count);
   const form =
     [count === 0 ? "zero" : null, rule].find((f) => f && table[`${key}.${f}`] !== undefined) ?? "other";
@@ -181,7 +184,21 @@ const Ctx = createContext<I18n>({
   choose: () => {},
 });
 
-/** Provides the language and `t` to the app, and keeps `<html lang>` and `<html dir>` in step. */
+/**
+ * Purpose: download the messages of the language the page will open in (the choice remembered on this device, or
+ * the browser's), so the first render is already in that language. Resolves even if the download fails.
+ */
+export function preloadLanguage(): Promise<void> {
+  return loadMessages(resolveLanguage(storedChoice(), browserLanguages())).then(
+    () => {},
+    () => {},
+  );
+}
+
+/**
+ * Provides the language and `t` to the app, and keeps `<html lang>` and `<html dir>` in step. A language's
+ * messages are downloaded when it is first chosen; until they arrive the page stays in the language shown before.
+ */
 export function I18nProvider({
   choice,
   onChoose,
@@ -191,8 +208,24 @@ export function I18nProvider({
   onChoose: (choice: LanguageChoice) => void;
   children: ReactNode;
 }) {
-  const language = resolveLanguage(choice, browserLanguages());
+  const wanted = resolveLanguage(choice, browserLanguages());
+  // The language last shown whose messages are downloaded; `wanted` replaces it once its messages are here.
+  const [shown, setShown] = useState<Language>(() => (messagesOf(wanted) ? wanted : FALLBACK));
+  const ready = Boolean(messagesOf(wanted));
+  if (ready && shown !== wanted) setShown(wanted);
+  const language = ready ? wanted : shown;
   active = language;
+  useEffect(() => {
+    if (messagesOf(wanted)) return;
+    let live = true;
+    loadMessages(wanted).then(
+      () => live && setShown(wanted),
+      () => {}, // offline or a failed download: keep showing the current language
+    );
+    return () => {
+      live = false;
+    };
+  }, [wanted]);
   const value = useMemo<I18n>(
     () => ({
       language,

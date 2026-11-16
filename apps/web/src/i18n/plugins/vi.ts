@@ -1,0 +1,52 @@
+import type { PluginKey } from "../plugins";
+
+/** Plugin messages (vi). */
+export const pluginsVi = {
+  "admin.plugins": "Plugin",
+  "plugins.title": "Plugin",
+  "plugins.intro":
+    "Plugin bổ sung phương thức giao thông, công cụ và phép tính. Bật những plugin dự án này dùng; khi tắt, công cụ bị ẩn và những gì đã vẽ vẫn được giữ.",
+  "plugins.bundled": "Đi kèm MobSimLab",
+  "plugins.by": "Của {publisher}",
+  "plugins.versionN": "Phiên bản {version}",
+  "plugins.adds": "Bổ sung: {list}",
+  "plugins.uses": "Sử dụng: {list}",
+  "plugins.parameters": "{count} giá trị giả định",
+  "plugins.missing": "Phiên bản {version} đã bị gỡ khỏi MobSimLab này. Chọn phiên bản khác để dùng lại.",
+  "plugins.versionOf": "Phiên bản của {name}",
+  "plugins.useIn": "Dùng {name} trong dự án này",
+  "plugins.ownerOnly": "Chỉ chủ dự án mới bật hoặc tắt được plugin.",
+  "plugins.perm.readNetwork": "mạng lưới của dự án",
+  "plugins.perm.readTimetable": "lịch chạy",
+  "plugins.perm.readFleet": "phương tiện và đội xe",
+  "plugins.perm.readGeodata": "dữ liệu bản đồ đã nhập",
+  "plugins.perm.readResults": "kết quả mô phỏng",
+  "plugins.perm.writeResults": "lưu kết quả riêng",
+  "plugins.perm.writeScenario": "đề xuất thay đổi kịch bản",
+  "plugins.installTitle": "Cài đặt plugin",
+  "plugins.installIntro":
+    "Tải lên tệp .msplugin. MobSimLab sẽ kiểm tra và cho biết nó bổ sung gì trước khi cài. Plugin đã cài có thể thêm phương thức, công cụ, tham số và nguồn; plugin có mã riêng sẽ có sau.",
+  "plugins.choose": "Chọn tệp .msplugin",
+  "plugins.problems": "Không thể cài plugin này:",
+  "plugins.install": "Cài đặt",
+  "plugins.installed": "Plugin đã cài",
+  "plugins.none": "Chưa cài plugin nào.",
+  "plugins.removeOne": "Gỡ {name} {version}",
+  "plugins.inProjects": "Dùng trong {count} dự án",
+  "plugins.bundledTitle": "Đi kèm MobSimLab",
+  "plugins.keys": "Nhà phát hành tin cậy",
+  "plugins.keysIntro":
+    "Plugin chỉ được cài khi nhà phát hành đã ký bằng một trong các khóa này (ECDSA P-256 hoặc Ed25519, PEM).",
+  "plugins.noKeys": "Chưa có khóa tin cậy nào.",
+  "plugins.removeKey": "Ngừng tin cậy {name}",
+  "plugins.addKey": "Thêm khóa",
+  "plugins.keyName": "Tên nhà phát hành",
+  "plugins.keyPem": "Khóa công khai",
+  "plugins.allowUnsigned": "Cho phép plugin chưa ký (chế độ phát triển, chỉ chủ sở hữu)",
+  "plugins.signedBy": "Được ký bởi {name}",
+  "plugins.untrusted": "Được ký bằng khóa mà phiên bản này không tin cậy",
+  "plugins.unsigned": "Chưa ký",
+  "plugins.licences": "Giấy phép: mã {code}, dữ liệu {data}",
+  "plugins.removeConfirm":
+    "{name} đang bật trong {count} dự án. Vẫn gỡ? Nó sẽ bị tắt ở đó và bản vẽ được giữ lại.",
+} satisfies Record<PluginKey, string>;

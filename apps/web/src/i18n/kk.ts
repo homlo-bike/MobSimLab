@@ -1,6 +1,6 @@
 import { editorsKk } from "./editors/kk";
 import { cargoBikeKk } from "./cargo-bike/kk";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsKk } from "./plugins/kk";
 import type { Messages } from "./en";
 
 /** Қазақша */
@@ -368,5 +368,5 @@ export const kk: Messages = {
 
   ...editorsKk,
   ...cargoBikeKk,
-  ...PLUGIN_MESSAGES.kk,
+  ...pluginsKk,
 };

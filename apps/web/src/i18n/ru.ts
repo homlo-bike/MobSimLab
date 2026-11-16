@@ -1,6 +1,6 @@
 import { editorsRu } from "./editors/ru";
 import { cargoBikeRu } from "./cargo-bike/ru";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsRu } from "./plugins/ru";
 import type { Messages } from "./en";
 
 /** Русский. */
@@ -372,5 +372,5 @@ export const ru: Messages = {
 
   ...editorsRu,
   ...cargoBikeRu,
-  ...PLUGIN_MESSAGES.ru,
+  ...pluginsRu,
 };

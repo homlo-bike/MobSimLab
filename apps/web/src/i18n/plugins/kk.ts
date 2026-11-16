@@ -1,0 +1,53 @@
+import type { PluginKey } from "../plugins";
+
+/** Plugin messages (kk). */
+export const pluginsKk = {
+  "admin.plugins": "Плагиндер",
+  "plugins.title": "Плагиндер",
+  "plugins.intro":
+    "Плагиндер көлік түрлерін, құралдар мен есептеулерді қосады. Осы жоба қолданатындарын қосыңыз; өшірілсе, құралдары жасырылады, сызылғандар сақталады.",
+  "plugins.bundled": "MobSimLab-пен бірге келеді",
+  "plugins.by": "Баспагер: {publisher}",
+  "plugins.versionN": "Нұсқа {version}",
+  "plugins.adds": "Қосады: {list}",
+  "plugins.uses": "Пайдаланады: {list}",
+  "plugins.parameters": "Болжам мәндері: {count}",
+  "plugins.missing":
+    "{version} нұсқасы осы MobSimLab-тен жойылды. Қайта қолдану үшін басқа нұсқаны таңдаңыз.",
+  "plugins.versionOf": "{name} нұсқасы",
+  "plugins.useIn": "{name} плагинін осы жобада қолдану",
+  "plugins.ownerOnly": "Плагиндерді тек жоба иесі қосып не өшіре алады.",
+  "plugins.perm.readNetwork": "жобаның желісі",
+  "plugins.perm.readTimetable": "кесте",
+  "plugins.perm.readFleet": "көліктер мен парк",
+  "plugins.perm.readGeodata": "импортталған карта деректері",
+  "plugins.perm.readResults": "модельдеу нәтижелері",
+  "plugins.perm.writeResults": "өз нәтижелерін сақтайды",
+  "plugins.perm.writeScenario": "сценарийге өзгерістер ұсынады",
+  "plugins.installTitle": "Плагин орнату",
+  "plugins.installIntro":
+    ".msplugin файлын жүктеңіз. MobSimLab оны тексеріп, орнатпас бұрын не қосатынын көрсетеді. Орнатылған плагиндер көлік түрлерін, құралдарды, параметрлер мен дереккөздерді қоса алады; өз коды бар плагиндер кейін келеді.",
+  "plugins.choose": ".msplugin файлын таңдаңыз",
+  "plugins.problems": "Бұл плагинді орнату мүмкін емес:",
+  "plugins.install": "Орнату",
+  "plugins.installed": "Орнатылған плагиндер",
+  "plugins.none": "Әзірге плагин орнатылмаған.",
+  "plugins.removeOne": "{name} {version} жою",
+  "plugins.inProjects": "{count} жобада қолданылады",
+  "plugins.bundledTitle": "MobSimLab-пен бірге келгендер",
+  "plugins.keys": "Сенімді баспагерлер",
+  "plugins.keysIntro":
+    "Плагин баспагері оны осы кілттердің бірімен қол қойса ғана орнатылады (ECDSA P-256 немесе Ed25519, PEM).",
+  "plugins.noKeys": "Әзірге сенімді кілттер жоқ.",
+  "plugins.removeKey": "{name} сенімін алып тастау",
+  "plugins.addKey": "Кілт қосу",
+  "plugins.keyName": "Баспагер атауы",
+  "plugins.keyPem": "Ашық кілт",
+  "plugins.allowUnsigned": "Қол қойылмаған плагиндерге рұқсат (әзірлеу режимі, тек иелер)",
+  "plugins.signedBy": "Қол қойған: {name}",
+  "plugins.untrusted": "Бұл дана сенбейтін кілтпен қол қойылған",
+  "plugins.unsigned": "Қол қойылмаған",
+  "plugins.licences": "Лицензиялар: код {code}, деректер {data}",
+  "plugins.removeConfirm":
+    "{name} {count} жобада қосулы. Сонда да жою керек пе? Онда өшіріледі, сызбалар сақталады.",
+} satisfies Record<PluginKey, string>;

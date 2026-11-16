@@ -1,6 +1,6 @@
 import { editorsSw } from "./editors/sw";
 import { cargoBikeSw } from "./cargo-bike/sw";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsSw } from "./plugins/sw";
 import type { Messages } from "./en";
 
 /** Kiswahili. */
@@ -370,5 +370,5 @@ export const sw: Messages = {
 
   ...editorsSw,
   ...cargoBikeSw,
-  ...PLUGIN_MESSAGES.sw,
+  ...pluginsSw,
 };

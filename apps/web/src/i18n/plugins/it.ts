@@ -1,0 +1,53 @@
+import type { PluginKey } from "../plugins";
+
+/** Plugin messages (it). */
+export const pluginsIt = {
+  "admin.plugins": "Plugin",
+  "plugins.title": "Plugin",
+  "plugins.intro":
+    "I plugin aggiungono modi di trasporto, strumenti e calcoli. Attiva quelli usati da questo progetto; disattivandone uno i suoi strumenti spariscono e ciò che è stato disegnato resta.",
+  "plugins.bundled": "Incluso in MobSimLab",
+  "plugins.by": "Di {publisher}",
+  "plugins.versionN": "Versione {version}",
+  "plugins.adds": "Aggiunge: {list}",
+  "plugins.uses": "Usa: {list}",
+  "plugins.parameters": "{count} valori di ipotesi",
+  "plugins.missing":
+    "La versione {version} è stata rimossa da questo MobSimLab. Scegli un'altra versione per usarlo di nuovo.",
+  "plugins.versionOf": "Versione di {name}",
+  "plugins.useIn": "Usa {name} in questo progetto",
+  "plugins.ownerOnly": "Solo il proprietario del progetto può attivare o disattivare i plugin.",
+  "plugins.perm.readNetwork": "la rete del progetto",
+  "plugins.perm.readTimetable": "l'orario",
+  "plugins.perm.readFleet": "veicoli e flotta",
+  "plugins.perm.readGeodata": "dati cartografici importati",
+  "plugins.perm.readResults": "risultati della simulazione",
+  "plugins.perm.writeResults": "salva i propri risultati",
+  "plugins.perm.writeScenario": "propone modifiche allo scenario",
+  "plugins.installTitle": "Installa un plugin",
+  "plugins.installIntro":
+    "Carica un file .msplugin. MobSimLab lo controlla e mostra cosa aggiunge prima dell'installazione. I plugin installati possono aggiungere modi, strumenti, parametri e fonti; quelli con codice proprio arriveranno più avanti.",
+  "plugins.choose": "Scegli un file .msplugin",
+  "plugins.problems": "Questo plugin non può essere installato:",
+  "plugins.install": "Installa",
+  "plugins.installed": "Plugin installati",
+  "plugins.none": "Nessun plugin installato.",
+  "plugins.removeOne": "Rimuovi {name} {version}",
+  "plugins.inProjects": "Usato in {count} progetti",
+  "plugins.bundledTitle": "Inclusi in MobSimLab",
+  "plugins.keys": "Editori fidati",
+  "plugins.keysIntro":
+    "Un plugin si installa solo se l'editore l'ha firmato con una di queste chiavi (ECDSA P-256 o Ed25519, PEM).",
+  "plugins.noKeys": "Nessuna chiave fidata.",
+  "plugins.removeKey": "Non fidarti più di {name}",
+  "plugins.addKey": "Aggiungi chiave",
+  "plugins.keyName": "Nome dell'editore",
+  "plugins.keyPem": "Chiave pubblica",
+  "plugins.allowUnsigned": "Consenti plugin non firmati (modalità sviluppo, solo proprietari)",
+  "plugins.signedBy": "Firmato da {name}",
+  "plugins.untrusted": "Firmato con una chiave di cui questa istanza non si fida",
+  "plugins.unsigned": "Non firmato",
+  "plugins.licences": "Licenze: codice {code}, dati {data}",
+  "plugins.removeConfirm":
+    "{name} è attivo in {count} progetti. Rimuoverlo comunque? Verrà disattivato lì e i disegni resteranno.",
+} satisfies Record<PluginKey, string>;

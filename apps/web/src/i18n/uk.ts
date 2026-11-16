@@ -1,6 +1,6 @@
 import { editorsUk } from "./editors/uk";
 import { cargoBikeUk } from "./cargo-bike/uk";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsUk } from "./plugins/uk";
 import type { Messages } from "./en";
 
 /** Українська */
@@ -371,5 +371,5 @@ export const uk: Messages = {
 
   ...editorsUk,
   ...cargoBikeUk,
-  ...PLUGIN_MESSAGES.uk,
+  ...pluginsUk,
 };

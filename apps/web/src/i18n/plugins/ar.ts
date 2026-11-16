@@ -1,0 +1,52 @@
+import type { PluginKey } from "../plugins";
+
+/** Plugin messages (ar). */
+export const pluginsAr = {
+  "admin.plugins": "الإضافات",
+  "plugins.title": "الإضافات",
+  "plugins.intro":
+    "تضيف الإضافات وسائل نقل وأدوات وحسابات. فعّل ما يستخدمه هذا المشروع؛ إيقاف إضافة يخفي أدواتها ويحتفظ بما رُسم بها.",
+  "plugins.bundled": "مرفقة مع MobSimLab",
+  "plugins.by": "الناشر: {publisher}",
+  "plugins.versionN": "الإصدار {version}",
+  "plugins.adds": "تضيف: {list}",
+  "plugins.uses": "تستخدم: {list}",
+  "plugins.parameters": "عدد قيم الافتراضات: {count}",
+  "plugins.missing": "أُزيل الإصدار {version} من MobSimLab هذا. اختر إصدارًا آخر لاستخدامها مجددًا.",
+  "plugins.versionOf": "إصدار {name}",
+  "plugins.useIn": "استخدام {name} في هذا المشروع",
+  "plugins.ownerOnly": "يمكن لمالك المشروع وحده تشغيل الإضافات أو إيقافها.",
+  "plugins.perm.readNetwork": "شبكة المشروع",
+  "plugins.perm.readTimetable": "الجدول الزمني",
+  "plugins.perm.readFleet": "المركبات والأسطول",
+  "plugins.perm.readGeodata": "بيانات الخرائط المستوردة",
+  "plugins.perm.readResults": "نتائج المحاكاة",
+  "plugins.perm.writeResults": "تحفظ نتائجها الخاصة",
+  "plugins.perm.writeScenario": "تقترح تغييرات على السيناريو",
+  "plugins.installTitle": "تثبيت إضافة",
+  "plugins.installIntro":
+    "ارفع ملف ‎.msplugin. يفحصه MobSimLab ويعرض ما يضيفه قبل التثبيت. يمكن للإضافات المثبتة إضافة وسائل نقل وأدوات ومعاملات ومصادر؛ أما الإضافات ذات الشيفرة الخاصة فستأتي لاحقًا.",
+  "plugins.choose": "اختر ملف ‎.msplugin",
+  "plugins.problems": "لا يمكن تثبيت هذه الإضافة:",
+  "plugins.install": "تثبيت",
+  "plugins.installed": "الإضافات المثبتة",
+  "plugins.none": "لا توجد إضافات مثبتة بعد.",
+  "plugins.removeOne": "إزالة {name} {version}",
+  "plugins.inProjects": "مستخدمة في {count} من المشاريع",
+  "plugins.bundledTitle": "مرفقة مع MobSimLab",
+  "plugins.keys": "الناشرون الموثوقون",
+  "plugins.keysIntro":
+    "لا تُثبَّت الإضافة إلا إذا وقّعها ناشرها بأحد هذه المفاتيح (ECDSA P-256 أو Ed25519، بصيغة PEM).",
+  "plugins.noKeys": "لا توجد مفاتيح موثوقة بعد.",
+  "plugins.removeKey": "إلغاء الثقة في {name}",
+  "plugins.addKey": "إضافة مفتاح",
+  "plugins.keyName": "اسم الناشر",
+  "plugins.keyPem": "المفتاح العام",
+  "plugins.allowUnsigned": "السماح بالإضافات غير الموقعة (وضع التطوير، للمالكين فقط)",
+  "plugins.signedBy": "وقّعها {name}",
+  "plugins.untrusted": "موقعة بمفتاح لا تثق به هذه النسخة",
+  "plugins.unsigned": "غير موقعة",
+  "plugins.licences": "التراخيص: الشيفرة {code}، البيانات {data}",
+  "plugins.removeConfirm":
+    "{name} مفعّلة في {count} من المشاريع. أتريد إزالتها رغم ذلك؟ ستُوقف فيها وتبقى الرسومات محفوظة.",
+} satisfies Record<PluginKey, string>;

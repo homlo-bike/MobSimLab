@@ -1,6 +1,6 @@
 import { editorsBn } from "./editors/bn";
 import { cargoBikeBn } from "./cargo-bike/bn";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsBn } from "./plugins/bn";
 import type { Messages } from "./en";
 
 /** বাংলা। */
@@ -364,5 +364,5 @@ export const bn: Messages = {
 
   ...editorsBn,
   ...cargoBikeBn,
-  ...PLUGIN_MESSAGES.bn,
+  ...pluginsBn,
 };

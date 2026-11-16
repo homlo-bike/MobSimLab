@@ -1,6 +1,6 @@
 import { editorsAr } from "./editors/ar";
 import { cargoBikeAr } from "./cargo-bike/ar";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsAr } from "./plugins/ar";
 import type { Messages } from "./en";
 
 /** العربية (right to left). */
@@ -357,5 +357,5 @@ export const ar: Messages = {
 
   ...editorsAr,
   ...cargoBikeAr,
-  ...PLUGIN_MESSAGES.ar,
+  ...pluginsAr,
 };

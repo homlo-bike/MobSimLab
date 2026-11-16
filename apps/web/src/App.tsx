@@ -1,7 +1,4 @@
 import { type ReactNode, useCallback, useEffect, useMemo, useState } from "react";
-import { AdminPanel } from "./admin/AdminPanel";
-import { AgentsPanel } from "./agents/AgentsPanel";
-import { ConsentPage } from "./agents/ConsentPage";
 import {
   I18nProvider,
   LANGUAGES,
@@ -13,14 +10,20 @@ import {
 import { projectsApi } from "./projects/api";
 import { ProjectsHome } from "./projects/ProjectsHome";
 import { fetchMe, type Me, type Preferences, savePreferences } from "./session/api";
-import { SetupPanel } from "./setup/SetupPanel";
 import { AboutDialog } from "./shell/AboutDialog";
+import { lazyNamed, LoadingScreen } from "./shell/lazy";
 import { useRoute } from "./shell/route";
 import { SettingsDialog } from "./shell/SettingsDialog";
 import { SignIn } from "./shell/SignIn";
 import { TopBar } from "./shell/TopBar";
 import { type SettingsSection, UserMenu } from "./shell/UserMenu";
-import { Workspace } from "./workspace/Workspace";
+
+// Screens downloaded when first opened, so the sign-in page and the projects list load quickly.
+const AdminPanel = lazyNamed(() => import("./admin/AdminPanel"), "AdminPanel");
+const AgentsPanel = lazyNamed(() => import("./agents/AgentsPanel"), "AgentsPanel");
+const ConsentPage = lazyNamed(() => import("./agents/ConsentPage"), "ConsentPage");
+const SetupPanel = lazyNamed(() => import("./setup/SetupPanel"), "SetupPanel");
+const Workspace = lazyNamed(() => import("./workspace/Workspace"), "Workspace");
 
 const asChoice = (v: string | undefined): LanguageChoice | null =>
   v === "system" || LANGUAGES.some((l) => l.tag === v) ? (v as LanguageChoice) : null;
@@ -127,11 +130,13 @@ function Shell({
       )}
       {(overlay?.kind === "admin" || overlay?.kind === "agents") && user && csrf && (
         <div className="fixed inset-0 z-40 bg-slate-900/30">
-          {overlay.kind === "admin" ? (
-            <AdminPanel role={user.role} userId={user.id} csrfToken={csrf} onClose={close} />
-          ) : (
-            <AgentsPanel role={user.role} csrfToken={csrf} map={null} onClose={close} />
-          )}
+          <LoadingScreen>
+            {overlay.kind === "admin" ? (
+              <AdminPanel role={user.role} userId={user.id} csrfToken={csrf} onClose={close} />
+            ) : (
+              <AgentsPanel role={user.role} csrfToken={csrf} map={null} onClose={close} />
+            )}
+          </LoadingScreen>
         </div>
       )}
     </>
@@ -141,7 +146,9 @@ function Shell({
   if (route.page === "consent")
     return (
       <div className="h-full overflow-y-auto bg-slate-50">
-        <ConsentPage me={me} />
+        <LoadingScreen>
+          <ConsentPage me={me} />
+        </LoadingScreen>
       </div>
     );
 
@@ -193,25 +200,29 @@ function Shell({
 
   const setup = me.instance.mode === "setup" && user.role === "owner" && csrf && (
     <div className="fixed inset-x-0 top-14 bottom-0 z-30">
-      <SetupPanel name={me.instance.name} csrfToken={csrf} onFinished={reload} />
+      <LoadingScreen>
+        <SetupPanel name={me.instance.name} csrfToken={csrf} onFinished={reload} />
+      </LoadingScreen>
     </div>
   );
 
   if (route.page === "project")
     return (
       <>
-        <Workspace
-          api={api}
-          projectId={route.id}
-          tab={route.tab}
-          fresh={route.fresh}
-          brand={brand}
-          account={account}
-          onTab={(tab) => go({ ...route, tab, fresh: route.fresh && tab === "create" }, route.fresh)}
-          onHome={home}
-          onAbout={about}
-          existingRailways={Boolean(prefs.existingRailways)}
-        />
+        <LoadingScreen>
+          <Workspace
+            api={api}
+            projectId={route.id}
+            tab={route.tab}
+            fresh={route.fresh}
+            brand={brand}
+            account={account}
+            onTab={(tab) => go({ ...route, tab, fresh: route.fresh && tab === "create" }, route.fresh)}
+            onHome={home}
+            onAbout={about}
+            existingRailways={Boolean(prefs.existingRailways)}
+          />
+        </LoadingScreen>
         {setup}
         {overlays}
       </>

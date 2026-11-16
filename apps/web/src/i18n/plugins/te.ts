@@ -1,0 +1,53 @@
+import type { PluginKey } from "../plugins";
+
+/** Plugin messages (te). */
+export const pluginsTe = {
+  "admin.plugins": "ప్లగిన్‌లు",
+  "plugins.title": "ప్లగిన్‌లు",
+  "plugins.intro":
+    "ప్లగిన్‌లు రవాణా విధానాలు, సాధనాలు, గణనలను జోడిస్తాయి. ఈ ప్రాజెక్ట్ వాడేవాటిని ఆన్ చేయండి; ఆఫ్ చేస్తే సాధనాలు దాగుతాయి, గీసినది అలాగే ఉంటుంది.",
+  "plugins.bundled": "MobSimLab తో వస్తుంది",
+  "plugins.by": "ప్రచురణకర్త: {publisher}",
+  "plugins.versionN": "వెర్షన్ {version}",
+  "plugins.adds": "జోడిస్తుంది: {list}",
+  "plugins.uses": "వాడుతుంది: {list}",
+  "plugins.parameters": "{count} అంచనా విలువలు",
+  "plugins.missing":
+    "వెర్షన్ {version} ఈ MobSimLab నుండి తీసివేయబడింది. మళ్లీ వాడటానికి వేరే వెర్షన్ ఎంచుకోండి.",
+  "plugins.versionOf": "{name} వెర్షన్",
+  "plugins.useIn": "ఈ ప్రాజెక్ట్‌లో {name} వాడండి",
+  "plugins.ownerOnly": "ప్రాజెక్ట్ యజమాని మాత్రమే ప్లగిన్‌లను ఆన్ లేదా ఆఫ్ చేయగలరు.",
+  "plugins.perm.readNetwork": "ప్రాజెక్ట్ నెట్‌వర్క్",
+  "plugins.perm.readTimetable": "టైమ్‌టేబుల్",
+  "plugins.perm.readFleet": "వాహనాలు మరియు ఫ్లీట్",
+  "plugins.perm.readGeodata": "దిగుమతి చేసిన మ్యాప్ డేటా",
+  "plugins.perm.readResults": "సిమ్యులేషన్ ఫలితాలు",
+  "plugins.perm.writeResults": "తన ఫలితాలను సేవ్ చేస్తుంది",
+  "plugins.perm.writeScenario": "దృశ్యంలో మార్పులను సూచిస్తుంది",
+  "plugins.installTitle": "ప్లగిన్ ఇన్‌స్టాల్ చేయండి",
+  "plugins.installIntro":
+    ".msplugin ఫైల్‌ను అప్‌లోడ్ చేయండి. MobSimLab దాన్ని తనిఖీ చేసి, ఇన్‌స్టాల్ చేయకముందే అది ఏమి జోడిస్తుందో చూపిస్తుంది. ఇన్‌స్టాల్ అయిన ప్లగిన్‌లు విధానాలు, సాధనాలు, పారామితులు, మూలాలు జోడించగలవు; సొంత కోడ్ ఉన్న ప్లగిన్‌లు తర్వాత వస్తాయి.",
+  "plugins.choose": ".msplugin ఫైల్ ఎంచుకోండి",
+  "plugins.problems": "ఈ ప్లగిన్‌ను ఇన్‌స్టాల్ చేయలేము:",
+  "plugins.install": "ఇన్‌స్టాల్ చేయండి",
+  "plugins.installed": "ఇన్‌స్టాల్ అయిన ప్లగిన్‌లు",
+  "plugins.none": "ఇంకా ఏ ప్లగిన్ ఇన్‌స్టాల్ కాలేదు.",
+  "plugins.removeOne": "{name} {version} తీసివేయండి",
+  "plugins.inProjects": "{count} ప్రాజెక్ట్‌లలో వాడుతున్నారు",
+  "plugins.bundledTitle": "MobSimLab తో వచ్చినవి",
+  "plugins.keys": "నమ్మకమైన ప్రచురణకర్తలు",
+  "plugins.keysIntro":
+    "ప్రచురణకర్త వీటిలో ఒక కీతో సంతకం చేస్తేనే ప్లగిన్ ఇన్‌స్టాల్ అవుతుంది (ECDSA P-256 లేదా Ed25519, PEM).",
+  "plugins.noKeys": "ఇంకా నమ్మకమైన కీలు లేవు.",
+  "plugins.removeKey": "{name}పై నమ్మకం తీసివేయండి",
+  "plugins.addKey": "కీ జోడించండి",
+  "plugins.keyName": "ప్రచురణకర్త పేరు",
+  "plugins.keyPem": "పబ్లిక్ కీ",
+  "plugins.allowUnsigned": "సంతకం లేని ప్లగిన్‌లను అనుమతించండి (డెవలప్‌మెంట్ మోడ్, యజమానులకే)",
+  "plugins.signedBy": "సంతకం: {name}",
+  "plugins.untrusted": "ఈ ఇన్‌స్టెన్స్ నమ్మని కీతో సంతకం చేయబడింది",
+  "plugins.unsigned": "సంతకం లేదు",
+  "plugins.licences": "లైసెన్సులు: కోడ్ {code}, డేటా {data}",
+  "plugins.removeConfirm":
+    "{name} {count} ప్రాజెక్ట్‌లలో ఆన్‌లో ఉంది. అయినా తీసివేయాలా? అక్కడ అది ఆఫ్ అవుతుంది, డ్రాయింగ్‌లు ఉంటాయి.",
+} satisfies Record<PluginKey, string>;

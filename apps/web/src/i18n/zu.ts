@@ -1,6 +1,6 @@
 import { editorsZu } from "./editors/zu";
 import { cargoBikeZu } from "./cargo-bike/zu";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsZu } from "./plugins/zu";
 import type { Messages } from "./en";
 
 /** isiZulu. */
@@ -376,5 +376,5 @@ export const zu: Messages = {
 
   ...editorsZu,
   ...cargoBikeZu,
-  ...PLUGIN_MESSAGES.zu,
+  ...pluginsZu,
 };

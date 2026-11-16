@@ -1,6 +1,6 @@
 import { editorsHa } from "./editors/ha";
 import { cargoBikeHa } from "./cargo-bike/ha";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsHa } from "./plugins/ha";
 import type { Messages } from "./en";
 
 /** Hausa. */
@@ -371,5 +371,5 @@ export const ha: Messages = {
 
   ...editorsHa,
   ...cargoBikeHa,
-  ...PLUGIN_MESSAGES.ha,
+  ...pluginsHa,
 };

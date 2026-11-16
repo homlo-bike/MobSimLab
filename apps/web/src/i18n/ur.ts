@@ -1,6 +1,6 @@
 import { editorsUr } from "./editors/ur";
 import { cargoBikeUr } from "./cargo-bike/ur";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsUr } from "./plugins/ur";
 import type { Messages } from "./en";
 
 /** اردو */
@@ -370,5 +370,5 @@ export const ur: Messages = {
 
   ...editorsUr,
   ...cargoBikeUr,
-  ...PLUGIN_MESSAGES.ur,
+  ...pluginsUr,
 };

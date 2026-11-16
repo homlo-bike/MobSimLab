@@ -1,0 +1,53 @@
+import type { PluginKey } from "../plugins";
+
+/** Plugin messages (id). */
+export const pluginsId = {
+  "admin.plugins": "Plugin",
+  "plugins.title": "Plugin",
+  "plugins.intro":
+    "Plugin menambahkan moda transportasi, alat, dan perhitungan. Aktifkan yang dipakai proyek ini; menonaktifkan plugin menyembunyikan alatnya dan menyimpan apa yang sudah digambar.",
+  "plugins.bundled": "Bawaan MobSimLab",
+  "plugins.by": "Oleh {publisher}",
+  "plugins.versionN": "Versi {version}",
+  "plugins.adds": "Menambahkan: {list}",
+  "plugins.uses": "Menggunakan: {list}",
+  "plugins.parameters": "{count} nilai asumsi",
+  "plugins.missing":
+    "Versi {version} telah dihapus dari MobSimLab ini. Pilih versi lain untuk memakainya lagi.",
+  "plugins.versionOf": "Versi {name}",
+  "plugins.useIn": "Gunakan {name} di proyek ini",
+  "plugins.ownerOnly": "Hanya pemilik proyek yang dapat mengaktifkan atau menonaktifkan plugin.",
+  "plugins.perm.readNetwork": "jaringan proyek",
+  "plugins.perm.readTimetable": "jadwal",
+  "plugins.perm.readFleet": "kendaraan dan armada",
+  "plugins.perm.readGeodata": "data peta yang diimpor",
+  "plugins.perm.readResults": "hasil simulasi",
+  "plugins.perm.writeResults": "menyimpan hasilnya sendiri",
+  "plugins.perm.writeScenario": "mengusulkan perubahan skenario",
+  "plugins.installTitle": "Pasang plugin",
+  "plugins.installIntro":
+    "Unggah berkas .msplugin. MobSimLab memeriksanya dan menunjukkan apa yang ditambahkan sebelum dipasang. Plugin terpasang dapat menambah moda, alat, parameter, dan sumber; plugin dengan kode sendiri menyusul nanti.",
+  "plugins.choose": "Pilih berkas .msplugin",
+  "plugins.problems": "Plugin ini tidak dapat dipasang:",
+  "plugins.install": "Pasang",
+  "plugins.installed": "Plugin terpasang",
+  "plugins.none": "Belum ada plugin terpasang.",
+  "plugins.removeOne": "Hapus {name} {version}",
+  "plugins.inProjects": "Dipakai di {count} proyek",
+  "plugins.bundledTitle": "Bawaan MobSimLab",
+  "plugins.keys": "Penerbit tepercaya",
+  "plugins.keysIntro":
+    "Plugin hanya terpasang jika penerbitnya menandatanganinya dengan salah satu kunci ini (ECDSA P-256 atau Ed25519, PEM).",
+  "plugins.noKeys": "Belum ada kunci tepercaya.",
+  "plugins.removeKey": "Berhenti memercayai {name}",
+  "plugins.addKey": "Tambah kunci",
+  "plugins.keyName": "Nama penerbit",
+  "plugins.keyPem": "Kunci publik",
+  "plugins.allowUnsigned": "Izinkan plugin tanpa tanda tangan (mode pengembangan, hanya pemilik)",
+  "plugins.signedBy": "Ditandatangani oleh {name}",
+  "plugins.untrusted": "Ditandatangani dengan kunci yang tidak dipercaya instans ini",
+  "plugins.unsigned": "Tanpa tanda tangan",
+  "plugins.licences": "Lisensi: kode {code}, data {data}",
+  "plugins.removeConfirm":
+    "{name} aktif di {count} proyek. Tetap hapus? Plugin akan dinonaktifkan di sana dan gambar tetap disimpan.",
+} satisfies Record<PluginKey, string>;
