@@ -3,6 +3,7 @@ import { editorsPl } from "./editors/pl";
 import { cargoBikePl } from "./cargo-bike/pl";
 import { depotsPl } from "./depots/pl";
 import { timetablesPl } from "./timetables/pl";
+import { populationPl } from "./population/pl";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -419,6 +420,7 @@ export const pl: Messages = {
   ...cargoBikePl,
   ...depotsPl,
   ...timetablesPl,
+  ...populationPl,
   ...roadPl,
   ...PLUGIN_MESSAGES.pl,
 };

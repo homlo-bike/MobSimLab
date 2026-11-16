@@ -3,6 +3,7 @@ import { editorsBn } from "./editors/bn";
 import { cargoBikeBn } from "./cargo-bike/bn";
 import { depotsBn } from "./depots/bn";
 import { timetablesBn } from "./timetables/bn";
+import { populationBn } from "./population/bn";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -414,6 +415,7 @@ export const bn: Messages = {
   ...cargoBikeBn,
   ...depotsBn,
   ...timetablesBn,
+  ...populationBn,
   ...roadBn,
   ...PLUGIN_MESSAGES.bn,
 };

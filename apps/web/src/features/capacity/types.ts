@@ -19,7 +19,25 @@ export interface CapacityParams {
   primary_delay_max_s: number;
   residual_delay_s: number;
   seed: number;
+  /** The project's signalling and driving values (assumption library keys); absent ones keep the defaults. */
+  signalling?: Partial<Record<SignallingField, number>>;
 }
+
+/** Signalling and driving values of a capacity run (crates/rail-sim/src/capacity.rs `Signalling`). */
+export type SignallingField =
+  | "route_setting_s"
+  | "sight_reaction_s"
+  | "release_s"
+  | "sighting_m"
+  | "overlap_release_s"
+  | "approach_release_s"
+  | "barrier_closing_s"
+  | "signal_closing_s"
+  | "moving_block_margin_m"
+  | "supervision_tolerance_kmh"
+  | "emergency_brake_factor"
+  | "ato_brake_share"
+  | "terminal_separation_s";
 
 /** One frequency of a line, planned, run and tested. */
 export interface Point {

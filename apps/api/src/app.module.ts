@@ -14,6 +14,8 @@ import { HealthController } from "./health/health.controller";
 import { LoggingModule } from "./logging/logging.module";
 import { StreetNetworkModule } from "./street-network/street-network.module";
 import { BenefitsModule } from "./benefits/benefits.module";
+import { PopulationLayersController } from "./population/layers.controller";
+import { PopulationLayersModule } from "./population/layers.module";
 import { PopulationModule } from "./population/population.module";
 import { EconomyModule } from "./economy/economy.module";
 import { CalendarModule } from "./calendar/calendar.module";
@@ -45,6 +47,7 @@ export class AppModule {
         StreetNetworkModule,
         TerrainModule,
         PopulationModule,
+        PopulationLayersModule,
         EconomyModule,
         CalendarModule,
         BenefitsModule,
@@ -60,6 +63,7 @@ export class AppModule {
         ProjectsController,
         PluginsController,
         RunsController,
+        PopulationLayersController,
       ],
       providers: [
         AuditService,

@@ -189,10 +189,46 @@ export function lineProblem(doc: Network, line: ServiceLine): MessageKey | null 
   return null;
 }
 
-/** Purpose: the lines in the engine's form (stations as topology ids, the train's catalogue values). */
+/** Running values of a rail mode that the project sets in Project preferences → All parameters. */
+export interface ServiceValues {
+  dwell_s?: number;
+  turnback_s?: number;
+  supplement_share?: number;
+  accel_ms2?: number;
+  decel_ms2?: number;
+}
+
+/** Library keys of the running values; minutes are turned into seconds. */
+const SERVICE_KEYS: [keyof ServiceValues, string, number][] = [
+  ["dwell_s", "mode.dwell_s", 1],
+  ["turnback_s", "timetable.layover_min", 60],
+  ["supplement_share", "timetable.recovery_share", 1],
+  ["accel_ms2", "mode.acceleration_ms2", 1],
+  ["decel_ms2", "mode.service_braking_ms2", 1],
+];
+
+/**
+ * Purpose: a rail mode's running values from the project's preference values: the value for the mode,
+ * else the one for every mode. Values the project leaves alone are absent, so the planner's apply.
+ */
+export function serviceValuesFor(values: Readonly<Record<string, number>> | null | undefined, mode: string) {
+  const out: ServiceValues = {};
+  if (!values) return out;
+  for (const [field, key, scale] of SERVICE_KEYS) {
+    const v = values[`${key}.${mode}`] ?? values[key];
+    if (typeof v === "number" && Number.isFinite(v) && v >= 0) out[field] = v * scale;
+  }
+  return out;
+}
+
+/**
+ * Purpose: the lines in the engine's form (stations as topology ids, the train's catalogue values), with the
+ * project's running values (`values`: Project preferences values by id) where it sets them.
+ */
 export function engineLines(
   doc: Network,
   lines: readonly ServiceLine[] = doc.lines ?? [],
+  values?: Readonly<Record<string, number>> | null,
 ): EngineServiceLine[] {
   return lines.flatMap((l) => {
     const t = trainById(l.vehicle);
@@ -206,6 +242,7 @@ export function engineLines(
       empty_mass_t: t.empty_mass_t,
       capacity: t.capacity,
     };
+    const own = serviceValuesFor(values, lineMode(doc, l));
     return [
       {
         id: l.id,
@@ -219,7 +256,8 @@ export function engineLines(
         last_s: l.last_min * 60,
         peak_headway_s: l.peak_headway_min * 60,
         offpeak_headway_s: l.offpeak_headway_min * 60,
-        dwell_s: l.dwell_s ?? null,
+        ...own,
+        dwell_s: l.dwell_s ?? own.dwell_s ?? null,
       },
     ];
   });

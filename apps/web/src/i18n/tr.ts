@@ -3,6 +3,7 @@ import { editorsTr } from "./editors/tr";
 import { cargoBikeTr } from "./cargo-bike/tr";
 import { depotsTr } from "./depots/tr";
 import { timetablesTr } from "./timetables/tr";
+import { populationTr } from "./population/tr";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -420,6 +421,7 @@ export const tr: Messages = {
   ...cargoBikeTr,
   ...depotsTr,
   ...timetablesTr,
+  ...populationTr,
   ...roadTr,
   ...PLUGIN_MESSAGES.tr,
 };

@@ -1,9 +1,7 @@
-import { createWriteStream } from "node:fs";
-import { mkdir, open, readdir, rename, rm, stat, utimes } from "node:fs/promises";
-import { basename, join } from "node:path";
-import { Readable, Transform } from "node:stream";
-import { pipeline } from "node:stream/promises";
+import { open, utimes } from "node:fs/promises";
+import { join } from "node:path";
 import { z } from "zod";
+import { DownloadCache, fileNameOf } from "./download-cache";
 
 /**
  * WorldPop population grid reader (ADR-0038 step N2, population exposure): a provider of the
@@ -24,8 +22,6 @@ export const DEFAULT_WORLDPOP_API = "https://hub.worldpop.org/rest/data/pop";
 export const WORLDPOP_ALIAS = "G2_CN_POP_R25A_100m";
 /** Files are only fetched from WorldPop's file server. */
 const FILE_HOST = "data.worldpop.org";
-const USER_AGENT = "MobSimLab/0.1 (+https://github.com/homlo-bike/MobSimLab)";
-const RETRY_STATUS = new Set([429, 500, 502, 503, 504]);
 /** WorldPop's 3-arc-second lattice, degrees. */
 export const CELL_DEG = 1 / 1200;
 
@@ -403,8 +399,7 @@ export class WorldPopClient {
   private readonly o: WorldPopOptions;
   private readonly entries = new Map<string, Promise<WorldPopEntry | null>>();
   private readonly files = new Map<string, Promise<GridFile>>();
-  /** Bytes received of the downloads under way, by file URL, so a waiting request can show how far it is. */
-  private readonly downloads = new Map<string, { receivedBytes: number; totalBytes: number | null }>();
+  private readonly cache: DownloadCache;
   private readonly tiles: Lru<string, Promise<Float32Array>>;
 
   constructor(options: Partial<WorldPopOptions> = {}) {
@@ -420,21 +415,29 @@ export class WorldPopClient {
       ...options,
     };
     this.tiles = new Lru(this.o.tileCacheSize);
+    this.cache = new DownloadCache({
+      ...this.o,
+      label: "WorldPop",
+      error: (m, status) => new WorldPopError(m, status),
+      onEvict: (name) => this.files.delete(name),
+    });
   }
 
   /**
-   * Purpose: the dataset entry of a country for the current year (or the nearest year it has).
-   * Output: null when WorldPop has no grid for the country. Side effects: one catalogue request
-   * per country, cached while the process runs.
+   * Purpose: the dataset entry of a country for `year` (default the current year), or the nearest year it has.
+   * Output: null when WorldPop has no grid for the country. Side effects: one catalogue request per country,
+   * cached while the process runs.
    */
-  entry(iso3: string): Promise<WorldPopEntry | null> {
-    const key = iso3.toUpperCase();
-    if (!/^[A-Z]{3}$/.test(key)) return Promise.resolve(null);
+  entry(iso3: string, year?: number): Promise<WorldPopEntry | null> {
+    const code = iso3.toUpperCase();
+    if (!/^[A-Z]{3}$/.test(code)) return Promise.resolve(null);
+    const want = year ?? this.o.now().getUTCFullYear();
+    const key = `${code}:${want}`;
     let p = this.entries.get(key);
     if (!p) {
       p = (async () => {
-        const url = `${this.o.api}/${WORLDPOP_ALIAS}?iso3=${key}`;
-        const { res, finish } = await this.request(url, this.o.timeoutMs);
+        const url = `${this.o.api}/${WORLDPOP_ALIAS}?iso3=${code}`;
+        const { res, finish } = await this.cache.request(url, this.o.timeoutMs);
         let body: string;
         try {
           body = await res.text();
@@ -451,7 +454,7 @@ export class WorldPopClient {
         } catch {
           throw new WorldPopError("WorldPop catalogue answer is not JSON", 502);
         }
-        return pickEntry(json, key, this.o.now().getUTCFullYear());
+        return pickEntry(json, code, want);
       })();
       p.catch(() => this.entries.delete(key));
       this.entries.set(key, p);
@@ -465,13 +468,12 @@ export class WorldPopClient {
    * recently used files to stay within the cache size.
    */
   file(entry: WorldPopEntry): Promise<GridFile> {
-    const name = entry.url.slice(entry.url.lastIndexOf("/") + 1).replace(/[^A-Za-z0-9._-]/g, "_");
+    const name = fileNameOf(entry.url);
     let p = this.files.get(name);
     if (!p) {
       p = (async () => {
-        const path = join(this.o.cacheDir, name);
-        const have = await stat(path).catch(() => null);
-        if (!have) await this.download(entry.url, path);
+        const { path, present } = await this.cache.cached(entry.url);
+        if (!present) await this.cache.download(entry.url, path);
         const header = await withFile(path, readHeader);
         return { path, header };
       })();
@@ -542,124 +544,7 @@ export class WorldPopClient {
    * finished or failed). `totalBytes` is null when WorldPop does not say the size.
    */
   downloadProgress(entry: WorldPopEntry): { receivedBytes: number; totalBytes: number | null } | null {
-    const d = this.downloads.get(entry.url);
-    return d ? { ...d } : null;
-  }
-
-  /** Purpose: download a file to `path` through a temporary name, within the size limit. */
-  private async download(url: string, path: string): Promise<void> {
-    await mkdir(this.o.cacheDir, { recursive: true });
-    this.downloads.set(url, { receivedBytes: 0, totalBytes: null });
-    try {
-      const { res, finish } = await this.request(url, this.o.downloadTimeoutMs);
-      try {
-        await this.save(res, path, url);
-      } finally {
-        finish();
-      }
-    } finally {
-      this.downloads.delete(url);
-    }
-  }
-
-  private async save(res: Response, path: string, url: string): Promise<void> {
-    const declared = Number(res.headers.get("content-length") ?? 0);
-    const progress = this.downloads.get(url);
-    if (progress) progress.totalBytes = declared || null;
-    if (declared > this.o.maxFileBytes) {
-      await res.body?.cancel();
-      throw new WorldPopError(
-        `The WorldPop file is ${Math.round(declared / 1e6)} MB, above the ${Math.round(this.o.maxFileBytes / 1e6)} MB limit`,
-        502,
-      );
-    }
-    await this.makeRoom(declared);
-    if (!res.body) throw new WorldPopError("WorldPop answered without a body", 502);
-    const tmp = `${path}.part-${process.pid}-${Date.now()}`;
-    let got = 0;
-    const max = this.o.maxFileBytes;
-    const limit = new Transform({
-      transform(chunk: Buffer, _enc, done) {
-        got += chunk.length;
-        if (progress) progress.receivedBytes = got;
-        if (got > max) done(new WorldPopError("The WorldPop file is above the size limit", 502));
-        else done(null, chunk);
-      },
-    });
-    try {
-      await pipeline(Readable.fromWeb(res.body as never), limit, createWriteStream(tmp));
-      if (declared && got !== declared) throw new WorldPopError("The WorldPop download was cut short", 502);
-      await rename(tmp, path);
-    } catch (e) {
-      await rm(tmp, { force: true });
-      if (e instanceof WorldPopError) throw e;
-      if (e instanceof Error && e.name === "AbortError")
-        throw new WorldPopError("The WorldPop download timed out", 504);
-      throw new WorldPopError(
-        `The WorldPop download failed: ${e instanceof Error ? e.message : String(e)}`,
-        502,
-      );
-    }
-  }
-
-  /** Purpose: delete the least recently used files until `incoming` more bytes fit the cache. */
-  private async makeRoom(incoming: number): Promise<void> {
-    const names = await readdir(this.o.cacheDir).catch(() => [] as string[]);
-    const files = (
-      await Promise.all(
-        names.map(async (n) => {
-          const p = join(this.o.cacheDir, n);
-          const s = await stat(p).catch(() => null);
-          return s?.isFile() ? { p, size: s.size, used: s.mtimeMs, part: n.includes(".part-") } : null;
-        }),
-      )
-    ).filter((f): f is NonNullable<typeof f> => !!f);
-    // Left-over partial downloads older than the download timeout go first.
-    const stale = Date.now() - this.o.downloadTimeoutMs;
-    for (const f of files.filter((f) => f.part && f.used < stale)) await rm(f.p, { force: true });
-    const kept = files.filter((f) => !f.part).sort((a, b) => a.used - b.used);
-    let total = kept.reduce((s, f) => s + f.size, 0) + incoming;
-    for (const f of kept) {
-      if (total <= this.o.maxCacheBytes) break;
-      await rm(f.p, { force: true });
-      total -= f.size;
-      this.files.delete(basename(f.p));
-    }
-  }
-
-  /**
-   * Purpose: GET with retries. Output: the 200 response and `finish`, which ends its timeout;
-   * call it once the body is read (the timeout covers reading the body too).
-   */
-  private async request(url: string, timeoutMs: number): Promise<{ res: Response; finish: () => void }> {
-    let lastError = new WorldPopError("WorldPop request failed", 502);
-    for (const backoff of [0, ...this.o.backoffMs]) {
-      if (backoff) await this.o.sleep(backoff + Math.random() * (backoff / 2));
-      const ctrl = new AbortController();
-      const timer = setTimeout(() => ctrl.abort(), timeoutMs);
-      const finish = () => clearTimeout(timer);
-      try {
-        const res = await this.o.fetchImpl(url, {
-          headers: { "User-Agent": USER_AGENT },
-          signal: ctrl.signal,
-          redirect: "error",
-        });
-        if (RETRY_STATUS.has(res.status)) {
-          finish();
-          lastError = new WorldPopError(`WorldPop answered ${res.status}`, 502);
-          continue;
-        }
-        if (res.status !== 200) throw new WorldPopError(`WorldPop answered ${res.status}`, 502);
-        return { res, finish };
-      } catch (e) {
-        finish();
-        if (e instanceof WorldPopError) throw e;
-        lastError = ctrl.signal.aborted
-          ? new WorldPopError("WorldPop request timed out", 504)
-          : new WorldPopError(e instanceof Error ? e.message : String(e), 502);
-      }
-    }
-    throw lastError;
+    return this.cache.progress(entry.url);
   }
 }
 

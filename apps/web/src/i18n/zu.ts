@@ -3,6 +3,7 @@ import { editorsZu } from "./editors/zu";
 import { cargoBikeZu } from "./cargo-bike/zu";
 import { depotsZu } from "./depots/zu";
 import { timetablesZu } from "./timetables/zu";
+import { populationZu } from "./population/zu";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -426,6 +427,7 @@ export const zu: Messages = {
   ...cargoBikeZu,
   ...depotsZu,
   ...timetablesZu,
+  ...populationZu,
   ...roadZu,
   ...PLUGIN_MESSAGES.zu,
 };
