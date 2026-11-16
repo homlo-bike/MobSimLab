@@ -4,6 +4,7 @@ import { editorsEs } from "./editors/es";
 import { cargoBikeEs } from "./cargo-bike/es";
 import { commentsEs } from "./comments/es";
 import { depotsEs } from "./depots/es";
+import { tablesEs } from "./tables/es";
 import { fleetEs } from "./fleet/es";
 import { timetablesEs } from "./timetables/es";
 import { mslabEs } from "./mslab/es";
@@ -503,6 +504,7 @@ export const es: Messages = {
   ...editorsEs,
   ...cargoBikeEs,
   ...depotsEs,
+  ...tablesEs,
   ...fleetEs,
   ...timetablesEs,
   ...commentsEs,

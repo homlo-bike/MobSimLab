@@ -4,6 +4,7 @@ import { editorsPl } from "./editors/pl";
 import { cargoBikePl } from "./cargo-bike/pl";
 import { commentsPl } from "./comments/pl";
 import { depotsPl } from "./depots/pl";
+import { tablesPl } from "./tables/pl";
 import { fleetPl } from "./fleet/pl";
 import { timetablesPl } from "./timetables/pl";
 import { mslabPl } from "./mslab/pl";
@@ -498,6 +499,7 @@ export const pl: Messages = {
   ...editorsPl,
   ...cargoBikePl,
   ...depotsPl,
+  ...tablesPl,
   ...fleetPl,
   ...timetablesPl,
   ...commentsPl,
