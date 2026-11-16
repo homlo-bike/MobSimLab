@@ -1,6 +1,6 @@
 # ADR-0035: AI agents connect from outside through an MCP server; MobSimLab supplies deterministic scenario, benchmark and walk-coverage tools
 
-- Status: Accepted, phases A and B implemented (2026-11-02), PTAL, the 15-minute city and exact stop placement (2026-11-16); see *Implementation status* at the end
+- Status: Accepted, phases A and B implemented (2026-11-02), PTAL, the 15-minute city, exact stop placement and GTFS export (2026-11-16); see *Implementation status* at the end
 - Date: 2026-11-01
 - Deciders: product owner, architecture
 - Related: FR-PLAT-05, FR-PLAT-06, FR-ASM-01..05, FR-DEM-03, FR-NET-01, C-10, ADR-0012 (audit), ADR-0013 (scenario overlays), ADR-0014 (results storage), ADR-0015 (OIDC), ADR-0017 (outbound gateway), ADR-0018 (no built-in AI), ADR-0020 (day types), ADR-0023 (job queue), ADR-0027 (collaboration), ADR-0031 (street routing), ADR-0032 (railway operations), ADR-0034 (journey time planner, in progress), [06 §9.3](../architecture/06-gis.md), [09 §2.2](../architecture/09-planning-models.md)
@@ -187,3 +187,7 @@ Tool set 0.2.0:
 - **15-minute city** as the tool `accessibility_to_destinations` (walk, cycle, walk + transit). `access::reach_counts` counts destinations per category within the limit from each origin; the cycle variant runs on a second graph built from the same OSM tiles with `walk::cycle_way`. Walk + transit uses the journey planner's one-to-many `reach` per origin and departure, with street-network walks from the stops (`access` sparse matrix), and reports the median over the departure window. The destination list (`apps/api/src/agents/destinations.ts`, version 2026-11-16) maps OSM tags to the six categories; destination tiles are fetched through the gateway like the walk tiles. New assumption `analysis.cycle_speed_kmh`.
 - **Exact stop placement:** `suggest_stop_locations` returns the covering problem from the greedy run, and HiGHS (npm `highs`, MIT) solves the MIP in a worker thread under a time limit. The better of greedy and HiGHS is returned, with whether optimality was proved.
 - Not done: `walk.gradient_factor` (the OSM tiles still carry no elevation); the walk to the first stop in walk + transit is still the journey planner's straight line × detour factor.
+
+## Implementation status (2026-11-16): GTFS export
+
+Tool set 0.3.0 adds `export_gtfs` (scope `project:read`): the scenario's published timetable (the one `plan_journey` rides) written by the GTFS plugin's exporter (`crates/gtfs`, now also built for the API by `tools/wasm/build-api.sh`) as a weekday feed with `frequencies.txt`, zipped (stored) and returned as an embedded MCP resource with the row count of each file; at most 5 MB. The agent gives the IANA time zone. Running the MobilityData GTFS Validator on the result is not done: it is a Java tool the image does not ship.

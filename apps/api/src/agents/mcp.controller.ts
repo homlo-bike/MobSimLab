@@ -73,6 +73,7 @@ export class McpController {
       analysis: this.analysis,
       access: this.access,
       instanceName: inst.name,
+      instanceUrl: this.config.publicUrl.origin,
       requestId: req.requestId,
     });
     const transport = new StreamableHTTPServerTransport({
