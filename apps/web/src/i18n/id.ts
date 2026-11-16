@@ -281,6 +281,7 @@ export const id: Messages = {
   "prefs.delayLane": "Di lajur bus atau trem yang hanya dicat",
   "prefs.delayDefault": "Pustaka asumsi: {value} %",
   "prefs.delayReset": "Gunakan nilai pustaka",
+  "prefs.reason": "Alasan nilai ini (opsional)",
   "prefs.stationsTitle": "Stasiun",
   "prefs.stationsIntro":
     "Halte bernama sama dalam jarak ini dihitung sebagai satu stasiun di peta skematik, perencana perjalanan, serta tabel manfaat dan penumpang.",
