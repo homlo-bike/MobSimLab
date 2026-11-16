@@ -672,7 +672,7 @@ export function RailwayEditor({
         at: c.at,
         ref_id: null,
       }))}
-      service={{ publication, publish, picking, setPicking: pickFor, newLine }}
+      service={{ publication, publish, picking, setPicking: pickFor, newLine, designValues }}
     />
   );
 

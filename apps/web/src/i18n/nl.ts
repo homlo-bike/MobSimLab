@@ -301,6 +301,9 @@ export const nl: Messages = {
   "prefs.rulesChanged": "{count} gewijzigd",
   "prefs.rulesLibrary": "Aannamebibliotheek: {value} {unit}",
   "prefs.rulesLibraryRange": "Aannamebibliotheek: {value} {unit} (bereik {low}–{high})",
+  "prefs.accessTitle": "Toegankelijkheid van perrons",
+  "prefs.accessIntro":
+    "Grenzen voor trede en kier tussen perron en trein (TSI PRM) en de vloerhoogte voor treinen zonder waarde in de voertuigcatalogus. Lijnen worden bij elke halte gecontroleerd.",
   "prefs.vehiclesTitle": "Voertuigen",
   "prefs.vehiclesIntro":
     "De catalogusvoertuigen die dit project per vervoerswijze gebruikt. De straatlijn- en spoortools bieden alleen de aangevinkte aan.",

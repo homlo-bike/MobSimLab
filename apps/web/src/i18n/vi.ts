@@ -300,6 +300,9 @@ export const vi: Messages = {
   "prefs.rulesChanged": "đã đổi {count}",
   "prefs.rulesLibrary": "Thư viện giả định: {value} {unit}",
   "prefs.rulesLibraryRange": "Thư viện giả định: {value} {unit} (khoảng {low}–{high})",
+  "prefs.accessTitle": "Khả năng tiếp cận sân ga",
+  "prefs.accessIntro":
+    "Giới hạn bậc và khe hở giữa sân ga và tàu (TSI PRM), cùng chiều cao sàn dùng cho tàu không có trong danh mục. Các tuyến được kiểm tra tại mọi điểm dừng.",
   "prefs.vehiclesTitle": "Phương tiện",
   "prefs.vehiclesIntro":
     "Các phương tiện trong danh mục mà dự án này dùng, theo phương thức. Công cụ tuyến đường phố và đường sắt chỉ đưa ra các phương tiện đã chọn.",

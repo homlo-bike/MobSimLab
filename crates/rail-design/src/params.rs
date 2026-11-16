@@ -119,6 +119,8 @@ pub struct ModeParams {
     pub island_platform_width_m: f64,
     /// Track centre to platform edge, m.
     pub platform_edge_offset_m: f64,
+    /// Platform length needed beyond the train for stopping, m.
+    pub stopping_tolerance_m: f64,
     /// Station track beyond each platform end, m.
     pub track_beyond_platform_m: f64,
     /// Depth per underground level, m.
